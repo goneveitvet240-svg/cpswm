@@ -20,9 +20,12 @@ dependencies = [
 [project.optional-dependencies]
 dev = [
   "hypothesis>=6.165.10",
+  "mypy>=2.3.1",
+  "pre-commit>=4.6.2",
   "pytest>=8,<10",
   "pytest-cov>=7.1.0",
   "pytest-xdist>=3.8.0",
+  "ruff>=0.16.3",
 ]
 viz = [
     "jupyterlab>=4.6.3",
@@ -50,6 +53,15 @@ where = ["src"]
 addopts = "-q"
 testpaths = ["tests"]
 pythonpath = ["src"]
+[tool.ruff]
+line-length = 100
+target-version = "py313"
 
-[dependency-groups]
-dev = []
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B", "SIM", "RUF"]
+
+[tool.mypy]
+python_version = "3.13"
+strict = true
+files = ["src"]
+

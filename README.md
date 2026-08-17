@@ -82,6 +82,6 @@ Step 1 提供的是可替换的 A0 参考实现，尚不包含生产数据库、
 A0 阻断修复与复审候选证据见 `docs/reviews/step1-a0-review-closure.md`。
 F0 评价底座与 A0 回放阻断修复及复审证据见 `docs/reviews/f0-evaluation-foundation-blocker-closure.md`。
 
-方向结构三的独立定义、契约和可运行基线见 `docs/research/项目方向结构三_模糊语言联合后验主动确认与具身闭环_v1.0.md`。当前已推进到 `s3-1_oracle_closed_loop_baseline`：M29-L0 真值轨道可以运行主动观察、重新后验、执行反馈规范写回和失败后再规划；它仍不代表 S3-1 全部完成，也不代表真实 VIO、VLM、触觉、MPC 或机器人硬件已经验证。
+方向结构三的独立定义、契约和可运行基线见 `docs/结构三/项目方向结构三_模糊语言联合后验主动确认与具身闭环_v1.0.md`。当前已推进到 `s3-1_oracle_closed_loop_baseline`：M29-L0 真值轨道可以运行主动观察、重新后验、执行反馈规范写回和失败后再规划；它仍不代表 S3-1 全部完成，也不代表真实 VIO、VLM、触觉、MPC 或机器人硬件已经验证。
 
 S3 common pipeline（公共管线）现会在规范日志写入前重验证 request、可替换 fusion result（融合结果）和 provider action/observation/model/domain/outcome/candidate coverage（候选覆盖），将 query/model、候选落地、后验支持集与硬约束绑定回 request，强制具体 schema name/version 与时序绑定，并通过 `GroundedTaskExecution（落地任务执行包）` 绑定所选候选、实体、位置、实际动作、执行机会和反馈；失败更新保持零写入。该结果仍依赖 executor/provider/fusion（执行器/提供器/融合器）诚实报告；当前没有可信 provider/model registry，active verification 的机会 ID 也尚未绑定完整机会 envelope，因此不构成来源认证或硬件 attestation（硬件证明）。

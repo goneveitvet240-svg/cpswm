@@ -1,0 +1,30 @@
+{
+  "household_id": "00000000-0000-0000-0000-000000000001",
+  "start_time": "2026-08-13T00:00:00Z",
+  "duration_days": 3,
+  "random_seed": 20260813,
+  "object_routines": [
+    {
+      "object_instance_id": "00000000-0000-0000-0000-000000000004",
+      "default_actor_id": "00000000-0000-0000-0000-000000000002",
+      "initial_location_id": "00000000-0000-0000-0000-000000000006",
+      "habitual_location_id": "00000000-0000-0000-0000-000000000006",
+      "placement_hour": 9,
+      "placement_minute": 0,
+      "activity_key": "reading",
+      "context_key": "weekday|morning"
+    }
+  ],
+  "changes": [
+    {
+      "change_id": "00000000-0000-0000-0000-000000000008",
+      "kind": "isolated_anomaly",
+      "object_instance_id": "00000000-0000-0000-0000-000000000004",
+      "start_day": 1,
+      "target_location_id": "00000000-0000-0000-0000-000000000007",
+      "transition_days": 1,
+      "period_days": 1
+    }
+  ],
+  "generator_version": "synthetic-routines@0.2"
+}

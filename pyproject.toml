@@ -1,0 +1,25 @@
+[build-system]
+requires = ["setuptools>=75"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "cpswm"
+version = "0.1.0"
+description = "Contracts and runtime foundation for a continual personalized semantic world model"
+requires-python = ">=3.11"
+dependencies = [
+  "pydantic>=2.9,<3",
+]
+
+[project.optional-dependencies]
+dev = [
+  "pytest>=8,<10",
+]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+addopts = "-q"
+testpaths = ["tests"]
+pythonpath = ["src"]

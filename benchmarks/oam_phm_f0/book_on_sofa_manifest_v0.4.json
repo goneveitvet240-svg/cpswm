@@ -1,0 +1,58 @@
+{
+  "manifest_id": "oam-phm-f0-book-on-sofa",
+  "manifest_version": "0.4.0",
+  "manifest_sha256": "7850ac8317c4115a59a10380e2d829489b4356d9496ebcf0184f65e8a9d1bc3f",
+  "routine_plan_id": "00fb7f52-5845-5bbd-b6f7-f4443537f022",
+  "routine_plan_sha256": "ea4cf80aca652a596b01ad00caf1f91ba60067130b3c1d7f6993cce1b08bfc15",
+  "observation_policy_id": "cup-search-incidental@0.3",
+  "observation_policy_sha256": "97cc9231c97922795b334bd901ec565758a53b601e27ce7f932f52bce6083371",
+  "primary_target_object_id": "00000000-0000-0000-0000-000000000005",
+  "scheduled_observation_object_id": "00000000-0000-0000-0000-000000000004",
+  "simulator_version": "symbolic-simulator@0.8",
+  "expected_simulation_content_sha256": "6aa3dd5023478428888ddb6dae1a970b711177e70e6d3d800fc668e5db2cfce4",
+  "household_ids": [
+    "00000000-0000-0000-0000-000000000001"
+  ],
+  "person_ids": [
+    "00000000-0000-0000-0000-000000000002",
+    "00000000-0000-0000-0000-000000000003"
+  ],
+  "object_instance_ids": [
+    "00000000-0000-0000-0000-000000000004",
+    "00000000-0000-0000-0000-000000000005"
+  ],
+  "location_ids": [
+    "00000000-0000-0000-0000-000000000006",
+    "00000000-0000-0000-0000-000000000007"
+  ],
+  "duration_days": 3,
+  "session_duration_hours": 1.0,
+  "tracks": [
+    "controlled_noise"
+  ],
+  "task_families": [
+    "memory_accuracy",
+    "habit_prediction",
+    "adaptation",
+    "explanation",
+    "embodied_utility"
+  ],
+  "household_splits": {
+    "00000000-0000-0000-0000-000000000001": "public_test"
+  },
+  "random_seed": 20260813,
+  "budget": {
+    "max_selected_observation_actions": 20,
+    "max_selected_verifications": 2
+  },
+  "metric_names": [
+    "controlled_observation_recall",
+    "anomaly_observation_recall",
+    "incidental_context_coverage",
+    "declared_primary_task_additional_action_cost_total"
+  ],
+  "oracle_reader_modules": [
+    "cpswm.system.world_model_simulator",
+    "cpswm.system.evaluation_operations"
+  ]
+}

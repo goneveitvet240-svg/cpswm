@@ -109,9 +109,7 @@ class CommittedTransaction(ContractModel):
             if record.record_index != index:
                 raise ValueError("record_index must be contiguous and start at zero")
             if record.committed_at != self.committed_at:
-                raise ValueError(
-                    "committed record time must match its transaction committed_at"
-                )
+                raise ValueError("committed record time must match its transaction committed_at")
             if record.envelope.household_id != self.household_id:
                 raise ValueError("one transaction cannot mix households")
         request_payload = [item.envelope.model_dump(mode="json") for item in self.records]

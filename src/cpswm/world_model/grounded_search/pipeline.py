@@ -26,8 +26,8 @@ from cpswm.foundation.persistence_replay import AppendOnlyTransactionLog
 
 from .active_verification import InformationGainPlanner
 from .adapters import (
-    ActionOutcomeModelProvider,
     GROUNDED_SEARCH_SCHEMA_VERSION,
+    ActionOutcomeModelProvider,
     GroundedTaskExecution,
     GroundedTaskExecutor,
     ObservationActionProvider,
@@ -79,9 +79,7 @@ class DirectionThreePipeline:
         result = self._fuse_validated(request)
         if result.response_policy != ResponsePolicy.ACTIVE_VERIFY:
             return GroundedSearchCycle(search_result=result, observation_plan=None)
-        observation_actions = self._validate_observation_actions(
-            result, observation_actions
-        )
+        observation_actions = self._validate_observation_actions(result, observation_actions)
         plan = self.planner.select(
             result.posterior_by_candidate_id,
             observation_actions,
@@ -123,13 +121,9 @@ class DirectionThreePipeline:
             precomputed_result = None
             if result.response_policy == ResponsePolicy.ACTIVE_VERIFY:
                 proposed_actions = tuple(action_provider.propose(result))
-                proposed_actions = self._validate_observation_actions(
-                    result, proposed_actions
-                )
+                proposed_actions = self._validate_observation_actions(result, proposed_actions)
                 actions = tuple(
-                    action
-                    for action in proposed_actions
-                    if action.action_id not in used_action_ids
+                    action for action in proposed_actions if action.action_id not in used_action_ids
                 )
                 plan = self.planner.select(result.posterior_by_candidate_id, actions)
                 cycles.append(GroundedSearchCycle(result, plan))
@@ -143,16 +137,12 @@ class DirectionThreePipeline:
                         last_target_id,
                         plan.stop_reason,
                     )
-                action = next(
-                    item for item in actions if item.action_id == plan.selected_action_id
-                )
+                action = next(item for item in actions if item.action_id == plan.selected_action_id)
                 observation = observation_provider.observe(action, result)
                 observation = self._validate_verification_observation(
                     current_request, result, action, observation
                 )
-                next_request = self._request_after_observation(
-                    current_request, result, observation
-                )
+                next_request = self._request_after_observation(current_request, result, observation)
                 # Validate the posterior transition before making canonical
                 # evidence visible. A failing update leaves the log untouched.
                 next_result = self._fuse_validated(next_request)
@@ -163,9 +153,7 @@ class DirectionThreePipeline:
                     ),
                 )
                 observations.append(observation)
-                observation_commit_sequences.append(
-                    observation_commit.watermark.global_commit_seq
-                )
+                observation_commit_sequences.append(observation_commit.watermark.global_commit_seq)
                 used_action_ids.add(action.action_id)
                 mark_consumed = getattr(action_provider, "mark_consumed", None)
                 if mark_consumed is not None:
@@ -239,16 +227,11 @@ class DirectionThreePipeline:
             )
             commit = canonical_log.append(
                 execution_records,
-                idempotency_key=(
-                    "direction-three-execution:"
-                    f"{execution.executed_action_id}"
-                ),
+                idempotency_key=(f"direction-three-execution:{execution.executed_action_id}"),
             )
             executed_action_ids.add(execution.executed_action_id)
             feedback_records.extend(produced_feedback)
-            commit_sequences.extend(
-                commit.watermark.global_commit_seq for _ in produced_feedback
-            )
+            commit_sequences.extend(commit.watermark.global_commit_seq for _ in produced_feedback)
             if any(
                 feedback.task_goal_satisfied_probability >= success_threshold
                 for feedback in produced_feedback
@@ -297,13 +280,10 @@ class DirectionThreePipeline:
         if metadata is None:
             raise ValueError(f"{record_kind} requires record metadata")
         if metadata.schema_name != expected_schema_name:
-            raise ValueError(
-                f"{record_kind} schema name must be {expected_schema_name}"
-            )
+            raise ValueError(f"{record_kind} schema name must be {expected_schema_name}")
         if metadata.schema_version != GROUNDED_SEARCH_SCHEMA_VERSION:
             raise ValueError(
-                f"{record_kind} schema version must be "
-                f"{GROUNDED_SEARCH_SCHEMA_VERSION}"
+                f"{record_kind} schema version must be {GROUNDED_SEARCH_SCHEMA_VERSION}"
             )
 
     def _fuse_validated(
@@ -323,9 +303,7 @@ class DirectionThreePipeline:
     ) -> GroundedSearchResult:
         cls._reject_model_copy_extras(result, "grounded fusion result")
         try:
-            result = GroundedSearchResult.model_validate(
-                result.model_dump(mode="python")
-            )
+            result = GroundedSearchResult.model_validate(result.model_dump(mode="python"))
         except (AttributeError, ValidationError) as exc:
             raise ValueError(f"invalid grounded fusion result: {exc}") from exc
         cls._validate_contract_metadata(
@@ -343,24 +321,14 @@ class DirectionThreePipeline:
         if result.fusion_model_version != request.fusion_model_version:
             raise ValueError("fusion result model version must match the request")
 
-        request_by_id = {
-            candidate.candidate_id: candidate for candidate in request.candidates
-        }
+        request_by_id = {candidate.candidate_id: candidate for candidate in request.candidates}
         if set(result.posterior_by_candidate_id) != set(request_by_id):
             raise ValueError("fusion result posterior must cover the request candidates")
-        if set(result.hard_constraint_evaluations_by_candidate_id) != set(
-            request_by_id
-        ):
-            raise ValueError(
-                "fusion result hard constraints must cover the request candidates"
-            )
-        for candidate_id, evaluations in (
-            result.hard_constraint_evaluations_by_candidate_id.items()
-        ):
+        if set(result.hard_constraint_evaluations_by_candidate_id) != set(request_by_id):
+            raise ValueError("fusion result hard constraints must cover the request candidates")
+        for candidate_id, evaluations in result.hard_constraint_evaluations_by_candidate_id.items():
             if evaluations != request_by_id[candidate_id].hard_constraint_evaluations:
-                raise ValueError(
-                    "fusion result hard constraints must match request evidence"
-                )
+                raise ValueError("fusion result hard constraints must match request evidence")
 
         returned_ids = [candidate.candidate_id for candidate in result.candidates]
         if len(returned_ids) != len(set(returned_ids)):
@@ -374,18 +342,14 @@ class DirectionThreePipeline:
                 or candidate.entity != source.entity
                 or candidate.location_id != source.location_id
             ):
-                raise ValueError(
-                    "fusion result candidate grounding must match the request"
-                )
+                raise ValueError("fusion result candidate grounding must match the request")
             contribution_channels = [
                 contribution.channel for contribution in candidate.contributions
             ]
             if len(contribution_channels) != len(set(contribution_channels)) or set(
                 contribution_channels
             ) != set(source.channel_evidence):
-                raise ValueError(
-                    "fusion result contributions must cover each request channel once"
-                )
+                raise ValueError("fusion result contributions must cover each request channel once")
 
         unknown_id = next(
             candidate.candidate_id
@@ -402,14 +366,10 @@ class DirectionThreePipeline:
         return result
 
     @classmethod
-    def _validate_request(
-        cls, request: JointPosteriorRequest
-    ) -> JointPosteriorRequest:
+    def _validate_request(cls, request: JointPosteriorRequest) -> JointPosteriorRequest:
         cls._reject_model_copy_extras(request, "joint posterior request")
         try:
-            request = JointPosteriorRequest.model_validate(
-                request.model_dump(mode="python")
-            )
+            request = JointPosteriorRequest.model_validate(request.model_dump(mode="python"))
         except (AttributeError, ValidationError) as exc:
             raise ValueError(f"invalid joint posterior request: {exc}") from exc
         cls._validate_contract_metadata(
@@ -443,18 +403,14 @@ class DirectionThreePipeline:
         action: ObservationActionCandidate,
         observation: VerificationObservation,
     ) -> VerificationObservation:
-        cls._reject_model_copy_extras(
-            observation, "verification observation"
-        )
+        cls._reject_model_copy_extras(observation, "verification observation")
         try:
             observation = VerificationObservation.model_validate(
                 observation.model_dump(mode="python")
             )
         except (AttributeError, ValidationError) as exc:
             raise ValueError(f"invalid verification observation: {exc}") from exc
-        cls._validate_record_scope(
-            request, observation, record_kind="verification observation"
-        )
+        cls._validate_record_scope(request, observation, record_kind="verification observation")
         cls._validate_contract_metadata(
             observation,
             expected_schema_name="cpswm.VerificationObservation",
@@ -462,23 +418,16 @@ class DirectionThreePipeline:
         )
         if observation.action_id != action.action_id:
             raise ValueError("verification observation must bind the selected action")
-        if (
-            observation.observation_likelihood_model_id
-            != action.observation_likelihood_model_id
-        ):
+        if observation.observation_likelihood_model_id != action.observation_likelihood_model_id:
             raise ValueError("planned and realized observation models must match")
         if observation.calibration_domain != action.calibration_domain:
             raise ValueError("planned and realized calibration domains must match")
         candidate_ids = set(result.posterior_by_candidate_id)
         if set(observation.candidate_likelihoods) != candidate_ids:
             raise ValueError("verification observation must cover every candidate")
-        planned_likelihoods = action.outcome_likelihoods.get(
-            observation.outcome_label
-        )
+        planned_likelihoods = action.outcome_likelihoods.get(observation.outcome_label)
         if planned_likelihoods is None:
-            raise ValueError(
-                "realized outcome was absent from the planned observation model"
-            )
+            raise ValueError("realized outcome was absent from the planned observation model")
         if set(planned_likelihoods) != candidate_ids:
             raise ValueError("planned outcome must cover every current candidate")
         if any(
@@ -490,9 +439,7 @@ class DirectionThreePipeline:
             )
             for candidate_id in candidate_ids
         ):
-            raise ValueError(
-                "realized likelihoods differ from the planned observation model"
-            )
+            raise ValueError("realized likelihoods differ from the planned observation model")
         return observation
 
     @staticmethod
@@ -502,13 +449,9 @@ class DirectionThreePipeline:
     ) -> tuple[ObservationActionCandidate, ...]:
         validated: list[ObservationActionCandidate] = []
         for action in actions:
-            DirectionThreePipeline._reject_model_copy_extras(
-                action, "provider observation action"
-            )
+            DirectionThreePipeline._reject_model_copy_extras(action, "provider observation action")
             try:
-                action = ObservationActionCandidate.model_validate(
-                    action.model_dump(mode="python")
-                )
+                action = ObservationActionCandidate.model_validate(action.model_dump(mode="python"))
             except (AttributeError, ValidationError) as exc:
                 raise ValueError(f"invalid provider observation action: {exc}") from exc
             for likelihoods in action.outcome_likelihoods.values():
@@ -517,9 +460,7 @@ class DirectionThreePipeline:
                         "provider observation action must cover every current candidate"
                     )
             approval = action.safety_approval
-            if approval is not None and (
-                approval.calibration_domain != action.calibration_domain
-            ):
+            if approval is not None and (approval.calibration_domain != action.calibration_domain):
                 raise ValueError(
                     "observation action safety calibration domain must match the action"
                 )
@@ -538,9 +479,7 @@ class DirectionThreePipeline:
     ) -> GroundedTaskExecution:
         cls._reject_model_copy_extras(execution, "grounded task execution")
         try:
-            execution = GroundedTaskExecution.model_validate(
-                execution.model_dump(mode="python")
-            )
+            execution = GroundedTaskExecution.model_validate(execution.model_dump(mode="python"))
         except (AttributeError, ValidationError) as exc:
             raise ValueError(f"invalid grounded task execution: {exc}") from exc
         if execution.selected_target_candidate_id != target.candidate_id:
@@ -563,9 +502,7 @@ class DirectionThreePipeline:
                 record_kind="execution observation opportunity",
             )
         for feedback in execution.feedback_records:
-            cls._validate_record_scope(
-                request, feedback, record_kind="execution feedback"
-            )
+            cls._validate_record_scope(request, feedback, record_kind="execution feedback")
             cls._validate_contract_metadata(
                 feedback,
                 expected_schema_name="cpswm.ExecutionFeedbackRecord",
@@ -579,13 +516,9 @@ class DirectionThreePipeline:
         feedback: ExecutionFeedbackRecord,
         model: ActionOutcomeLikelihoodModel,
     ) -> ActionOutcomeLikelihoodModel:
-        DirectionThreePipeline._reject_model_copy_extras(
-            model, "action outcome likelihood model"
-        )
+        DirectionThreePipeline._reject_model_copy_extras(model, "action outcome likelihood model")
         try:
-            model = ActionOutcomeLikelihoodModel.model_validate(
-                model.model_dump(mode="python")
-            )
+            model = ActionOutcomeLikelihoodModel.model_validate(model.model_dump(mode="python"))
         except (AttributeError, ValidationError) as exc:
             raise ValueError(f"invalid action outcome likelihood model: {exc}") from exc
         if model.action_type != execution.executed_action_type:
@@ -601,14 +534,11 @@ class DirectionThreePipeline:
         ):
             raise ValueError("outcome model must cover every realized feedback outcome")
         opportunity_by_id = {
-            item.metadata.record_id: item
-            for item in execution.observation_opportunities
+            item.metadata.record_id: item for item in execution.observation_opportunities
         }
         opportunity = opportunity_by_id.get(feedback.observation_opportunity_id)
         if opportunity is None:
-            raise ValueError(
-                "search outcome model requires the execution observation opportunity"
-            )
+            raise ValueError("search outcome model requires the execution observation opportunity")
         return model
 
     @staticmethod
@@ -618,8 +548,7 @@ class DirectionThreePipeline:
             unexpected = set(vars(value)) - expected
             if unexpected:
                 raise ValueError(
-                    f"{path} contains fields outside its contract: "
-                    f"{sorted(unexpected)}"
+                    f"{path} contains fields outside its contract: {sorted(unexpected)}"
                 )
             for field_name in expected:
                 DirectionThreePipeline._reject_model_copy_extras(
@@ -627,14 +556,10 @@ class DirectionThreePipeline:
                 )
         elif isinstance(value, dict):
             for key, nested in value.items():
-                DirectionThreePipeline._reject_model_copy_extras(
-                    nested, f"{path}[{key!r}]"
-                )
+                DirectionThreePipeline._reject_model_copy_extras(nested, f"{path}[{key!r}]")
         elif isinstance(value, (list, tuple)):
             for index, nested in enumerate(value):
-                DirectionThreePipeline._reject_model_copy_extras(
-                    nested, f"{path}[{index}]"
-                )
+                DirectionThreePipeline._reject_model_copy_extras(nested, f"{path}[{index}]")
 
     @staticmethod
     def _request_after_observation(
@@ -642,9 +567,7 @@ class DirectionThreePipeline:
         result: GroundedSearchResult,
         observation: VerificationObservation,
     ) -> JointPosteriorRequest:
-        if set(observation.candidate_likelihoods) != set(
-            result.posterior_by_candidate_id
-        ):
+        if set(observation.candidate_likelihoods) != set(result.posterior_by_candidate_id):
             raise ValueError("verification observation must cover every candidate")
         candidates: list[JointCandidateEvidence] = []
         for candidate in request.candidates:

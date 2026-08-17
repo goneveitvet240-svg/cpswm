@@ -10,18 +10,18 @@ from .contracts import (
     VersionBundle,
 )
 from .handlers import ExecutionContext, HandlerOutput
-from .replay import (
-    ReplayInputBindingError,
-    ReplayRun,
-    ReplayRunner,
-    compare_replay_runs,
-)
 from .provenance import (
     RuntimeProvenanceError,
     build_replay_manifest,
     build_version_bundle,
     git_head_code_version,
     source_tree_sha256,
+)
+from .replay import (
+    ReplayInputBindingError,
+    ReplayRun,
+    ReplayRunner,
+    compare_replay_runs,
 )
 from .runtime import (
     HandlerFailedError,
@@ -40,9 +40,9 @@ __all__ = [
     "HandlerStatus",
     "InProcessRuntime",
     "MessageKind",
+    "ReplayInputBindingError",
     "ReplayRun",
     "ReplayRunner",
-    "ReplayInputBindingError",
     "RetryPolicy",
     "RetryableHandlerError",
     "RuntimeDispatchResult",

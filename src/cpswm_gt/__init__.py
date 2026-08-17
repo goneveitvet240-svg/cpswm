@@ -4,12 +4,12 @@ Production world-model, language, and action packages must never import this
 package. Only simulators, evaluators, and explicit oracle adapters may use it.
 """
 
-from .models import GTEntity, GTEvent, GTRelationAssertion, GroundTruthWorldState
 from .habit_trajectories import (
+    GroundTruthHabitTrajectory,
     GTHabitRegimeKind,
     GTPlacementEvent,
-    GroundTruthHabitTrajectory,
 )
+from .models import GroundTruthWorldState, GTEntity, GTEvent, GTRelationAssertion
 
 __all__ = [
     "GTEntity",

@@ -26,15 +26,16 @@ from cpswm.foundation.identity_time_frames.identity import IdentityConflictError
 def test_identity_registry_enforces_namespace_and_household():
     registry = IdentityRegistry()
     household = registry.issue(IdentityNamespace.HOUSEHOLD)
-    session = registry.issue(
-        IdentityNamespace.SESSION, household_id=household.value
-    )
+    session = registry.issue(IdentityNamespace.SESSION, household_id=household.value)
 
-    assert registry.resolve(
-        session.value,
-        namespace=IdentityNamespace.SESSION,
-        household_id=household.value,
-    ) == session
+    assert (
+        registry.resolve(
+            session.value,
+            namespace=IdentityNamespace.SESSION,
+            household_id=household.value,
+        )
+        == session
+    )
     with pytest.raises(IdentityConflictError):
         registry.resolve(session.value, namespace=IdentityNamespace.EVENT)
     with pytest.raises(IdentityConflictError):

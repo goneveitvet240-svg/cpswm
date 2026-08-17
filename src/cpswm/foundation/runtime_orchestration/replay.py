@@ -23,18 +23,14 @@ class ReplayRun(ContractModel):
     input_watermark: InputWatermark
     input_fingerprints: tuple[str, ...]
     output_payloads: tuple[JsonValue, ...]
-    output_fingerprints: tuple[
-        Annotated[str, Field(pattern=r"^[0-9a-f]{64}$")], ...
-    ]
+    output_fingerprints: tuple[Annotated[str, Field(pattern=r"^[0-9a-f]{64}$")], ...]
     emitted_message_fingerprints: tuple[str, ...]
     execution_provenance: tuple[JsonValue, ...]
 
     @model_validator(mode="after")
     def validate_output_bindings(self) -> ReplayRun:
         if len(self.output_payloads) != len(self.output_fingerprints):
-            raise ValueError(
-                "output_payloads and output_fingerprints must have equal length"
-            )
+            raise ValueError("output_payloads and output_fingerprints must have equal length")
         for index, (payload, fingerprint) in enumerate(
             zip(self.output_payloads, self.output_fingerprints)
         ):
@@ -61,9 +57,7 @@ def _reject_live_model_extras(value: object, path: str) -> None:
             names = ", ".join(sorted(unexpected_fields))
             raise ValueError(f"{path} contains unexpected field(s): {names}")
         for field_name in declared_fields:
-            _reject_live_model_extras(
-                getattr(value, field_name), f"{path}.{field_name}"
-            )
+            _reject_live_model_extras(getattr(value, field_name), f"{path}.{field_name}")
     elif isinstance(value, dict):
         for key, nested in value.items():
             _reject_live_model_extras(nested, f"{path}[{key!r}]")
@@ -111,9 +105,7 @@ class ReplayRunner:
             )
         runtime.verify_replay_manifest(manifest)
         try:
-            actual_watermark = input_log.watermark_at(
-                manifest.input_watermark.global_commit_seq
-            )
+            actual_watermark = input_log.watermark_at(manifest.input_watermark.global_commit_seq)
         except LookupError as error:
             raise ReplayInputBindingError(
                 "ReplayManifest input watermark is absent from the supplied log"
@@ -147,9 +139,7 @@ class ReplayRunner:
                     output_fingerprints.append(record.envelope.payload_sha256)
             # RuntimeMessage.fingerprint covers the complete message, while tuple
             # order preserves the exact handler emission order for comparison.
-            emitted_fingerprints.extend(
-                item.fingerprint for item in result.emitted_messages
-            )
+            emitted_fingerprints.extend(item.fingerprint for item in result.emitted_messages)
             for execution in result.executions:
                 watermark = execution.output_watermark
                 execution_provenance.append(
@@ -165,9 +155,7 @@ class ReplayRunner:
                             # is copied from canonical transaction committed_at.
                             # Replay comparison therefore covers output-log time
                             # without making tolerant payload comparison exact.
-                            watermark.model_dump(mode="json")
-                            if watermark is not None
-                            else None
+                            watermark.model_dump(mode="json") if watermark is not None else None
                         ),
                     }
                 )
@@ -188,9 +176,7 @@ class ReplayRunner:
         input_log: AppendOnlyTransactionLog, manifest: ReplayManifest
     ) -> tuple[RuntimeMessage, ...]:
         messages: list[RuntimeMessage] = []
-        transactions = input_log.read(
-            through_commit_seq=manifest.input_watermark.global_commit_seq
-        )
+        transactions = input_log.read(through_commit_seq=manifest.input_watermark.global_commit_seq)
         for transaction in transactions:
             for record in transaction.records:
                 if record.envelope.schema_name != "cpswm.RuntimeMessageRecord":
@@ -212,9 +198,7 @@ def compare_replay_runs(
     *,
     numeric_tolerance: float | None = None,
 ) -> bool:
-    if numeric_tolerance is not None and (
-        not isfinite(numeric_tolerance) or numeric_tolerance < 0
-    ):
+    if numeric_tolerance is not None and (not isfinite(numeric_tolerance) or numeric_tolerance < 0):
         raise ValueError("numeric_tolerance must be finite and non-negative")
     try:
         first = _revalidate_replay_run(first, "first replay run")
@@ -232,9 +216,7 @@ def compare_replay_runs(
         effective_tolerance = declared_tolerance
     else:
         if numeric_tolerance > declared_tolerance:
-            raise ValueError(
-                "numeric_tolerance cannot exceed the ReplayManifest declaration"
-            )
+            raise ValueError("numeric_tolerance cannot exceed the ReplayManifest declaration")
         effective_tolerance = numeric_tolerance
     if first.input_log_sha256 != second.input_log_sha256:
         return False
@@ -250,9 +232,7 @@ def compare_replay_runs(
         return False
     if len(first.output_payloads) != len(second.output_payloads):
         return False
-    if effective_tolerance == 0 and (
-        first.output_fingerprints != second.output_fingerprints
-    ):
+    if effective_tolerance == 0 and (first.output_fingerprints != second.output_fingerprints):
         return False
     return all(
         _values_equal(left, right, effective_tolerance)

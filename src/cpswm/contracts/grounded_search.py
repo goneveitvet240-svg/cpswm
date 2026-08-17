@@ -28,7 +28,6 @@ from .base import (
 )
 from .likelihoods import Pose3D
 
-
 StrictlyPositiveProbability = Annotated[float, Field(gt=0.0, le=1.0)]
 
 
@@ -213,9 +212,7 @@ class JointCandidateEvidence(ContractModel):
                 item.status != HardConstraintStatus.UNKNOWN
                 for item in self.hard_constraint_evaluations
             ):
-                raise ValueError(
-                    "unknown candidate hard constraints must remain unknown"
-                )
+                raise ValueError("unknown candidate hard constraints must remain unknown")
         else:
             if self.entity is None:
                 raise ValueError("object candidate requires an entity")
@@ -251,13 +248,9 @@ class JointPosteriorRequest(ContractModel):
         if len(expected_constraints) != len(self.compiled_query.hard_constraints):
             raise ValueError("compiled hard constraints must be unique")
         for candidate in self.candidates:
-            actual_constraints = {
-                item.constraint for item in candidate.hard_constraint_evaluations
-            }
+            actual_constraints = {item.constraint for item in candidate.hard_constraint_evaluations}
             if actual_constraints != expected_constraints:
-                raise ValueError(
-                    "every candidate must explicitly evaluate every hard constraint"
-                )
+                raise ValueError("every candidate must explicitly evaluate every hard constraint")
         total = sum(item.prior_probability for item in self.candidates)
         if not isclose(total, 1.0, rel_tol=0.0, abs_tol=1e-6):
             raise ValueError("candidate prior probabilities must sum to 1")
@@ -309,9 +302,7 @@ class GroundedSearchResult(ContractModel):
     query_id: UUID
     candidates: tuple[GroundedObjectCandidate, ...] = Field(min_length=1)
     posterior_by_candidate_id: dict[UUID, Probability] = Field(min_length=2)
-    hard_constraint_evaluations_by_candidate_id: dict[
-        UUID, tuple[HardConstraintEvaluation, ...]
-    ]
+    hard_constraint_evaluations_by_candidate_id: dict[UUID, tuple[HardConstraintEvaluation, ...]]
     posterior_mass_returned: Probability
     unknown_probability: Probability
     resolution_status: ResolutionStatus
@@ -337,9 +328,7 @@ class GroundedSearchResult(ContractModel):
         if set(self.hard_constraint_evaluations_by_candidate_id) != set(
             self.posterior_by_candidate_id
         ):
-            raise ValueError(
-                "hard-constraint results must cover the full candidate posterior"
-            )
+            raise ValueError("hard-constraint results must cover the full candidate posterior")
         for item in self.candidates:
             if not isclose(
                 self.posterior_by_candidate_id[item.candidate_id],
@@ -398,8 +387,7 @@ class IdentityVerificationRequest(ContractModel):
             if set(evidence.candidate_likelihoods) != candidate_set:
                 raise ValueError("each view must score every identity candidate")
         tactile_present = any(
-            evidence.modality == VerificationModality.TACTILE
-            for evidence in self.view_evidence
+            evidence.modality == VerificationModality.TACTILE for evidence in self.view_evidence
         )
         if tactile_present and not self.allow_tactile:
             raise ValueError("tactile identity evidence requires explicit authorization")
@@ -464,11 +452,7 @@ class ObservationSafetyApproval(ContractModel):
 
     @property
     def approved(self) -> bool:
-        return (
-            self.authorization_granted
-            and self.affordance_safe
-            and not self.blocked_risks
-        )
+        return self.authorization_granted and self.affordance_safe and not self.blocked_risks
 
 
 class ObservationActionCandidate(ContractModel):
@@ -501,21 +485,16 @@ class ObservationActionCandidate(ContractModel):
             raise ValueError("observation action requires hypotheses")
         for hypothesis_id in hypothesis_ids:
             total = sum(
-                likelihoods[hypothesis_id]
-                for likelihoods in self.outcome_likelihoods.values()
+                likelihoods[hypothesis_id] for likelihoods in self.outcome_likelihoods.values()
             )
             if not isclose(total, 1.0, rel_tol=0.0, abs_tol=1e-6):
-                raise ValueError(
-                    "outcome likelihoods must sum to one for every hypothesis"
-                )
+                raise ValueError("outcome likelihoods must sum to one for every hypothesis")
         if self.action_type in {
             ObservationActionType.TOUCH,
             ObservationActionType.OPEN_CONTAINER,
         }:
             if self.safety_approval is None or not self.safety_approval.approved:
-                raise ValueError(
-                    "touch/open-container actions require an approved safety gate"
-                )
+                raise ValueError("touch/open-container actions require an approved safety gate")
         return self
 
 
@@ -531,9 +510,7 @@ class VerificationObservation(ContractModel):
     observation_opportunity_id: UUID
     outcome_label: str = Field(min_length=1)
     evidence_channel: EvidenceChannel
-    candidate_likelihoods: dict[UUID, StrictlyPositiveProbability] = Field(
-        min_length=2
-    )
+    candidate_likelihoods: dict[UUID, StrictlyPositiveProbability] = Field(min_length=2)
     reliability: Probability = 1.0
     observation_likelihood_model_id: str = Field(min_length=1)
     calibration_domain: str = Field(min_length=1)
@@ -601,9 +578,7 @@ class ExecutionFeedbackRecord(ContractModel):
         if self.task_goal_satisfied_probability > self.outcome_distribution.get(
             RobotActionOutcome.SUCCESS, 0.0
         ):
-            raise ValueError(
-                "task goal satisfaction cannot exceed action success probability"
-            )
+            raise ValueError("task goal satisfaction cannot exceed action success probability")
         if self.outcome_distribution.get(RobotActionOutcome.NOT_FOUND, 0.0) > 0.0:
             if self.action_type != RobotActionType.SEARCH:
                 raise ValueError("not_found is only valid for search feedback")
@@ -639,9 +614,7 @@ class ActionOutcomeLikelihoodModel(ContractModel):
 
     @model_validator(mode="after")
     def validate_distributions(self) -> ActionOutcomeLikelihoodModel:
-        if set(self.p_outcome_given_target_present) != set(
-            self.p_outcome_given_target_absent
-        ):
+        if set(self.p_outcome_given_target_present) != set(self.p_outcome_given_target_absent):
             raise ValueError("present and absent models must cover the same outcomes")
         for distribution in (
             self.p_outcome_given_target_present,
@@ -682,9 +655,7 @@ class MemoryReliabilityRequest(ContractModel):
     metadata: BaseRecordMetadata
     memory_record_id: UUID
     prior_current_probability: StrictlyPositiveProbability
-    factor_evidence: dict[MemoryEvidenceFactor, MemoryFactorEvidence] = Field(
-        min_length=1
-    )
+    factor_evidence: dict[MemoryEvidenceFactor, MemoryFactorEvidence] = Field(min_length=1)
     seconds_since_last_direct_observation: float = Field(ge=0.0)
     stale_after_seconds: float = Field(gt=0.0)
     fresh_threshold: Probability = 0.75
@@ -729,7 +700,5 @@ class MemoryReliabilityProjection(ContractModel):
     @model_validator(mode="after")
     def protect_age_semantics(self) -> MemoryReliabilityProjection:
         if self.age_used_as_direct_reliability_evidence:
-            raise ValueError(
-                "time since last seen cannot be a direct reliability likelihood"
-            )
+            raise ValueError("time since last seen cannot be a direct reliability likelihood")
         return self

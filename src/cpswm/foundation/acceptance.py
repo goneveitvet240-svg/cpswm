@@ -24,9 +24,7 @@ class AlignmentHandler:
     def __init__(self) -> None:
         self.frames = FrameRegistry()
 
-    def __call__(
-        self, message: RuntimeMessage, context: ExecutionContext
-    ) -> HandlerOutput:
+    def __call__(self, message: RuntimeMessage, context: ExecutionContext) -> HandlerOutput:
         if not isinstance(message.payload, dict):
             raise ValueError("alignment message payload must be an object")
         transform = FrameTransform.model_validate(message.payload["transform"])

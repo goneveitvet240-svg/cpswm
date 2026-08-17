@@ -44,9 +44,7 @@ class OracleGroundedCandidateRetriever:
     def __init__(self, candidates: Sequence[JointCandidateEvidence]) -> None:
         self._candidates = tuple(candidates)
 
-    def retrieve(
-        self, query: CompiledSemanticQuery
-    ) -> Sequence[JointCandidateEvidence]:
+    def retrieve(self, query: CompiledSemanticQuery) -> Sequence[JointCandidateEvidence]:
         del query
         return self._candidates
 
@@ -58,13 +56,9 @@ class OracleObservationActionProvider:
         self._actions = tuple(actions)
         self._consumed: set[UUID] = set()
 
-    def propose(
-        self, belief: GroundedSearchResult
-    ) -> Sequence[ObservationActionCandidate]:
+    def propose(self, belief: GroundedSearchResult) -> Sequence[ObservationActionCandidate]:
         del belief
-        return tuple(
-            action for action in self._actions if action.action_id not in self._consumed
-        )
+        return tuple(action for action in self._actions if action.action_id not in self._consumed)
 
     def mark_consumed(self, action_id: UUID) -> None:
         self._consumed.add(action_id)
@@ -84,20 +78,13 @@ class OracleVerificationObservationProvider:
         observation = self._observations[action.action_id]
         if observation.action_id != action.action_id:
             raise ValueError("oracle observation action binding is inconsistent")
-        if (
-            observation.observation_likelihood_model_id
-            != action.observation_likelihood_model_id
-        ):
+        if observation.observation_likelihood_model_id != action.observation_likelihood_model_id:
             raise ValueError("planned and realized observation models must match")
         if observation.calibration_domain != action.calibration_domain:
             raise ValueError("planned and realized calibration domains must match")
-        if set(observation.candidate_likelihoods) != set(
-            belief.posterior_by_candidate_id
-        ):
+        if set(observation.candidate_likelihoods) != set(belief.posterior_by_candidate_id):
             raise ValueError("oracle observation must cover the current hypothesis set")
-        planned_likelihoods = action.outcome_likelihoods.get(
-            observation.outcome_label
-        )
+        planned_likelihoods = action.outcome_likelihoods.get(observation.outcome_label)
         if planned_likelihoods is None:
             raise ValueError("realized outcome was absent from the planned observation model")
         if any(
@@ -122,21 +109,15 @@ class OracleGroundedTaskExecutor:
     ) -> None:
         self._executions = dict(executions_by_candidate_id)
 
-    def execute(
-        self, target: GroundedObjectCandidate
-    ) -> GroundedTaskExecution:
+    def execute(self, target: GroundedObjectCandidate) -> GroundedTaskExecution:
         return self._executions[target.candidate_id]
 
 
 class OracleActionOutcomeModelProvider:
     """Return frozen action-outcome models for oracle feedback projection."""
 
-    def __init__(
-        self, models: Mapping[RobotActionType, ActionOutcomeLikelihoodModel]
-    ) -> None:
+    def __init__(self, models: Mapping[RobotActionType, ActionOutcomeLikelihoodModel]) -> None:
         self._models = dict(models)
 
-    def model_for(
-        self, feedback: ExecutionFeedbackRecord
-    ) -> ActionOutcomeLikelihoodModel:
+    def model_for(self, feedback: ExecutionFeedbackRecord) -> ActionOutcomeLikelihoodModel:
         return self._models[feedback.action_type]

@@ -43,9 +43,7 @@ class AlignedObservation(ContractModel):
 def test_step1_identity_frame_commit_orchestration_and_replay(now):
     semantics = IdentityTimeFrameService()
     household = semantics.identities.issue(IdentityNamespace.HOUSEHOLD)
-    session = semantics.identities.issue(
-        IdentityNamespace.SESSION, household_id=household.value
-    )
+    session = semantics.identities.issue(IdentityNamespace.SESSION, household_id=household.value)
     transform = FrameTransform(
         household_id=household.value,
         source_frame_id="camera",
@@ -92,9 +90,7 @@ def test_step1_identity_frame_commit_orchestration_and_replay(now):
     )
 
     def build_runtime():
-        runtime = InProcessRuntime(
-            transaction_log=AppendOnlyTransactionLog(), versions=versions
-        )
+        runtime = InProcessRuntime(transaction_log=AppendOnlyTransactionLog(), versions=versions)
 
         def align_observation(incoming, context):
             payload = incoming.payload
@@ -104,9 +100,7 @@ def test_step1_identity_frame_commit_orchestration_and_replay(now):
                 household_id=incoming.household_id,
                 at_time=now,
             )
-            aligned = semantics.frames.transform_point(
-                Vector3(**payload["point"]), resolved
-            )
+            aligned = semantics.frames.transform_point(Vector3(**payload["point"]), resolved)
             record = AlignedObservation(
                 metadata=BaseRecordMetadata(
                     record_id=context.deterministic_uuid("aligned-observation"),

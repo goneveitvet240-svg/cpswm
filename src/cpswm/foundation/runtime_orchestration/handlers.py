@@ -2,11 +2,12 @@
 
 from __future__ import annotations
 
+from collections.abc import Callable
 from dataclasses import dataclass, field
 from datetime import datetime
 from random import Random
-from typing import Callable, Protocol
-from uuid import UUID, NAMESPACE_URL, uuid5
+from typing import Protocol
+from uuid import NAMESPACE_URL, UUID, uuid5
 
 from cpswm.contracts.base import ContractModel
 
@@ -30,17 +31,12 @@ class ExecutionContext:
     random: Random
 
     def deterministic_uuid(self, label: str) -> UUID:
-        material = (
-            f"cpswm:{self.message.fingerprint}:{self.handler_name}:"
-            f"{self.attempt}:{label}"
-        )
+        material = f"cpswm:{self.message.fingerprint}:{self.handler_name}:{self.attempt}:{label}"
         return uuid5(NAMESPACE_URL, material)
 
 
 class MessageHandler(Protocol):
-    def __call__(
-        self, message: RuntimeMessage, context: ExecutionContext
-    ) -> HandlerOutput: ...
+    def __call__(self, message: RuntimeMessage, context: ExecutionContext) -> HandlerOutput: ...
 
 
 HandlerClock = Callable[[], datetime]

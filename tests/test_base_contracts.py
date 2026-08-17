@@ -20,9 +20,7 @@ def test_valid_time_is_half_open(now):
 
 def test_adjacent_valid_times_do_not_overlap(now):
     first = ValidTimeInterval(start=now, end=now + timedelta(seconds=10))
-    second = ValidTimeInterval(
-        start=now + timedelta(seconds=10), end=now + timedelta(seconds=20)
-    )
+    second = ValidTimeInterval(start=now + timedelta(seconds=10), end=now + timedelta(seconds=20))
     assert not first.overlaps(second)
 
 
@@ -50,4 +48,3 @@ def test_base_metadata_has_no_reliability_or_posterior_fields():
 def test_posterior_probability_is_bounded():
     with pytest.raises(ValidationError):
         PosteriorMixin(posterior_probability=1.01, normalization_group="location")
-

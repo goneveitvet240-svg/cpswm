@@ -32,18 +32,14 @@ def test_relation_assertion_round_trip(
         subject=cup,
         predicate=RelationPredicate.LOCATED_AT,
         object=EntityRelationObject(entity=kitchen),
-        evidence=EvidenceScoredMixin(
-            evidence_reliability=0.85, evidence_refs=(evidence_ref,)
-        ),
+        evidence=EvidenceScoredMixin(evidence_reliability=0.85, evidence_refs=(evidence_ref,)),
     )
     restored = RelationAssertion.model_validate_json(assertion.model_dump_json())
     assert restored == assertion
     assert "posterior_probability" not in assertion.model_dump_json()
 
 
-def test_relation_cannot_supersede_itself(
-    metadata_factory, interval, now, entity_factory
-):
+def test_relation_cannot_supersede_itself(metadata_factory, interval, now, entity_factory):
     metadata = metadata_factory(schema_name="cpswm.RelationAssertion")
     with pytest.raises(ValidationError):
         RelationAssertion(
@@ -59,14 +55,10 @@ def test_relation_cannot_supersede_itself(
         )
 
 
-def test_event_source_class_is_enforced(
-    metadata_factory, interval, now, entity_factory
-):
+def test_event_source_class_is_enforced(metadata_factory, interval, now, entity_factory):
     with pytest.raises(ValidationError):
         EventRecord(
-            metadata=metadata_factory(
-                schema_name="cpswm.EventRecord", source_type=SourceType.USER
-            ),
+            metadata=metadata_factory(schema_name="cpswm.EventRecord", source_type=SourceType.USER),
             temporal=TemporalValidityMixin(valid_time=interval, observed_time=now),
             event_type=EventType.PICK_UP,
             evidence_class=EventEvidenceClass.INFERRED,
@@ -80,9 +72,7 @@ def test_event_source_class_is_enforced(
         )
 
 
-def test_inferred_event_is_valid(
-    metadata_factory, interval, now, entity_factory, evidence_ref
-):
+def test_inferred_event_is_valid(metadata_factory, interval, now, entity_factory, evidence_ref):
     event = EventRecord(
         metadata=metadata_factory(
             schema_name="cpswm.EventRecord", source_type=SourceType.INFERENCE

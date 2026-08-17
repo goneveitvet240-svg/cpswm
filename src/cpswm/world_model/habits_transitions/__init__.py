@@ -6,4 +6,3 @@ from .hierarchical_dirichlet import (
 )
 
 __all__ = ["HabitPrediction", "HierarchicalDirichletHabitModel"]
-

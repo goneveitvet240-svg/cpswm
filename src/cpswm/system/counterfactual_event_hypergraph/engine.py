@@ -89,9 +89,7 @@ class CounterfactualEventHypergraphEngine:
                 )
             )
 
-        concrete_actors = sorted(
-            actor for actor in actor_prior if actor != "unknown_actor"
-        )
+        concrete_actors = sorted(actor for actor in actor_prior if actor != "unknown_actor")
         for actor_key, recipient_key in permutations(concrete_actors, 2):
             raw_chains.append(
                 (
@@ -106,9 +104,7 @@ class CounterfactualEventHypergraphEngine:
                         interval_start=before.detection_time,
                         interval_end=after.detection_time,
                     ),
-                    handoff_fraction
-                    * actor_prior[actor_key]
-                    * actor_prior[recipient_key],
+                    handoff_fraction * actor_prior[actor_key] * actor_prior[recipient_key],
                     "handoff_relocation",
                 )
             )
@@ -174,8 +170,7 @@ class CounterfactualEventHypergraphEngine:
         raw_weights = {
             item.hypothesis_id: (
                 item.posterior_probability
-                * likelihood_ratios.get(item.responsible_actor_key, 1.0)
-                ** evidence_weight
+                * likelihood_ratios.get(item.responsible_actor_key, 1.0) ** evidence_weight
                 if item.status == EventHypothesisStatus.ACTIVE
                 else 0.0
             )
@@ -191,19 +186,14 @@ class CounterfactualEventHypergraphEngine:
         else:
             normalized_unresolved = raw_unresolved / total
             normalized = {
-                hypothesis_id: weight / total
-                for hypothesis_id, weight in raw_weights.items()
+                hypothesis_id: weight / total for hypothesis_id, weight in raw_weights.items()
             }
 
         retracted_mass = sum(
-            probability
-            for probability in normalized.values()
-            if probability < retraction_threshold
+            probability for probability in normalized.values() if probability < retraction_threshold
         )
         retained = {
-            hypothesis_id: (
-                0.0 if probability < retraction_threshold else probability
-            )
+            hypothesis_id: (0.0 if probability < retraction_threshold else probability)
             for hypothesis_id, probability in normalized.items()
         }
         unresolved = normalized_unresolved + retracted_mass
@@ -318,8 +308,7 @@ class CounterfactualEventHypergraphEngine:
                 item.evidence_cluster_id for item in validated_evidence
             ),
             revision_evidence_semantic_fingerprints=tuple(
-                actor_evidence_semantic_fingerprint(item)
-                for item in validated_evidence
+                actor_evidence_semantic_fingerprint(item) for item in validated_evidence
             ),
             revision_reason=reason,
         )
@@ -346,19 +335,15 @@ class CounterfactualEventHypergraphEngine:
                 detection, f"CHEH {label} endpoint"
             )
             validated = ObservationDetectionResult.model_validate(
-                detection.model_dump(
-                    mode="python", round_trip=True, warnings=False
-                )
+                detection.model_dump(mode="python", round_trip=True, warnings=False)
             )
             if (
-                validated.metadata.schema_name
-                != "cpswm.ObservationDetectionResult"
+                validated.metadata.schema_name != "cpswm.ObservationDetectionResult"
                 or validated.metadata.schema_version
                 != CounterfactualEventHypergraphEngine.schema_version
             ):
                 raise ValueError(
-                    "endpoint metadata schema must be "
-                    "cpswm.ObservationDetectionResult@0.1.0"
+                    "endpoint metadata schema must be cpswm.ObservationDetectionResult@0.1.0"
                 )
             return validated
         except Exception as exc:
@@ -369,13 +354,9 @@ class CounterfactualEventHypergraphEngine:
         history: EventHypothesisHistory,
     ) -> EventHypothesisHistory:
         try:
-            CounterfactualEventHypergraphEngine._reject_model_copy_extras(
-                history, "CHEH history"
-            )
+            CounterfactualEventHypergraphEngine._reject_model_copy_extras(history, "CHEH history")
             return EventHypothesisHistory.model_validate(
-                history.model_dump(
-                    mode="python", round_trip=True, warnings=False
-                )
+                history.model_dump(mode="python", round_trip=True, warnings=False)
             )
         except Exception as exc:
             raise ValueError(f"invalid CHEH history: {exc}") from exc
@@ -398,9 +379,7 @@ class CounterfactualEventHypergraphEngine:
         if after.detection_time <= before.detection_time:
             raise ValueError("CHEH after endpoint must follow before endpoint")
         for field_name in ("household_id", "session_id", "trace_id"):
-            if getattr(before.metadata, field_name) != getattr(
-                after.metadata, field_name
-            ):
+            if getattr(before.metadata, field_name) != getattr(after.metadata, field_name):
                 raise ValueError(f"CHEH endpoints must share {field_name}")
 
     @classmethod
@@ -414,25 +393,19 @@ class CounterfactualEventHypergraphEngine:
         """Validate an evidence object and bind it to a known endpoint/context."""
 
         try:
-            cls._reject_model_copy_extras(
-                evidence, "actor responsibility evidence"
-            )
+            cls._reject_model_copy_extras(evidence, "actor responsibility evidence")
             evidence = ActorResponsibilityEvidence.model_validate(
-                evidence.model_dump(
-                    mode="python", round_trip=True, warnings=False
-                )
+                evidence.model_dump(mode="python", round_trip=True, warnings=False)
             )
         except Exception as exc:
             raise ValueError(f"invalid actor responsibility evidence: {exc}") from exc
 
         if (
-            evidence.metadata.schema_name
-            != "cpswm.ActorResponsibilityEvidence"
+            evidence.metadata.schema_name != "cpswm.ActorResponsibilityEvidence"
             or evidence.metadata.schema_version != cls.schema_version
         ):
             raise ValueError(
-                "actor evidence metadata schema must be "
-                "cpswm.ActorResponsibilityEvidence@0.1.0"
+                "actor evidence metadata schema must be cpswm.ActorResponsibilityEvidence@0.1.0"
             )
 
         current = history.latest
@@ -468,12 +441,8 @@ class CounterfactualEventHypergraphEngine:
         if evidence.evidence_cluster_id in previously_used_clusters | pending_clusters:
             raise ValueError("correlated actor evidence cluster cannot be reused")
         fingerprint = actor_evidence_semantic_fingerprint(evidence)
-        previously_used_fingerprints = (
-            history.consumed_evidence_semantic_fingerprints
-        )
-        pending_fingerprints = {
-            actor_evidence_semantic_fingerprint(item) for item in pending
-        }
+        previously_used_fingerprints = history.consumed_evidence_semantic_fingerprints
+        pending_fingerprints = {actor_evidence_semantic_fingerprint(item) for item in pending}
         if fingerprint in previously_used_fingerprints | pending_fingerprints:
             raise ValueError("semantic actor evidence cannot be reused")
         return evidence
@@ -491,9 +460,7 @@ class CounterfactualEventHypergraphEngine:
                 names = ", ".join(sorted(unexpected_fields))
                 raise ValueError(f"{path} contains unexpected field(s): {names}")
             for field_name in declared_fields:
-                cls._reject_model_copy_extras(
-                    getattr(value, field_name), f"{path}.{field_name}"
-                )
+                cls._reject_model_copy_extras(getattr(value, field_name), f"{path}.{field_name}")
         elif isinstance(value, dict):
             for key, nested in value.items():
                 cls._reject_model_copy_extras(nested, f"{path}[{key!r}]")
@@ -661,9 +628,7 @@ class CounterfactualEventHypergraphEngine:
             unresolved_probability=unresolved_probability,
             revision_evidence_record_ids=revision_evidence_record_ids,
             revision_evidence_cluster_ids=revision_evidence_cluster_ids,
-            revision_evidence_semantic_fingerprints=(
-                revision_evidence_semantic_fingerprints
-            ),
+            revision_evidence_semantic_fingerprints=(revision_evidence_semantic_fingerprints),
             revision_reason=revision_reason,
         )
 

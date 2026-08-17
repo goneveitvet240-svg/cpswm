@@ -3,7 +3,7 @@
 The eight invariants (from
 ``docs/research/opportunistic-observation-personalized-memory-substructure-v0.2.md``):
 
-1. M13–M15 are canonical records; M16 is a rebuildable derived projection.
+1. M13-M15 are canonical records; M16 is a rebuildable derived projection.
 2. M17 outputs are priors, not current facts.
 3. M18 cannot modify M16 directly; it must append candidates via M14/M15.
 4. M19 never deletes historical evidence; lifecycle actions are auditable.
@@ -19,7 +19,7 @@ instances rather than single directed examples.
 
 from __future__ import annotations
 
-from datetime import datetime, timedelta, timezone
+from datetime import UTC, datetime, timedelta
 from uuid import uuid4
 
 import hypothesis.strategies as st
@@ -66,9 +66,9 @@ from cpswm.contracts.habit_learning import (
 )
 from cpswm.contracts.likelihoods import ObservationLikelihoodModel
 from cpswm_gt.models import (
+    GroundTruthWorldState,
     GTEntity,
     GTRelationAssertion,
-    GroundTruthWorldState,
 )
 
 # --------------------------------------------------------------------------- #
@@ -78,17 +78,15 @@ from cpswm_gt.models import (
 _probability = st.floats(0.0, 1.0, allow_nan=False)
 
 aware_datetimes = st.datetimes(
-    min_value=datetime(2020, 1, 1, tzinfo=timezone.utc),
-    max_value=datetime(2030, 1, 1, tzinfo=timezone.utc),
+    min_value=datetime(2020, 1, 1, tzinfo=UTC),
+    max_value=datetime(2030, 1, 1, tzinfo=UTC),
 )
 
 
 @st.composite
 def valid_times(draw):
     start = draw(aware_datetimes)
-    delta = draw(
-        st.timedeltas(min_value=timedelta(seconds=1), max_value=timedelta(days=365))
-    )
+    delta = draw(st.timedeltas(min_value=timedelta(seconds=1), max_value=timedelta(days=365)))
     return ValidTimeInterval(start=start, end=start + delta)
 
 
@@ -150,16 +148,12 @@ def belief_snapshots(draw):
             BeliefHypothesis(
                 label="candidate_a",
                 state={"value": "a"},
-                posterior=PosteriorMixin(
-                    posterior_probability=p, normalization_group=group
-                ),
+                posterior=PosteriorMixin(posterior_probability=p, normalization_group=group),
             ),
             BeliefHypothesis(
                 label="candidate_b",
                 state={"value": "b"},
-                posterior=PosteriorMixin(
-                    posterior_probability=1.0 - p, normalization_group=group
-                ),
+                posterior=PosteriorMixin(posterior_probability=1.0 - p, normalization_group=group),
             ),
         ),
         inference_model_version=draw(st.text(min_size=1, max_size=16)),
@@ -213,9 +207,7 @@ def habit_evidence(draw):
 @st.composite
 def execution_feedback(draw):
     """Random valid M27 execution feedback with an uncertain outcome."""
-    p_success = draw(
-        st.floats(0.0, 1.0, allow_nan=False, exclude_min=True, exclude_max=True)
-    )
+    p_success = draw(st.floats(0.0, 1.0, allow_nan=False, exclude_min=True, exclude_max=True))
     return ExecutionFeedbackRecord(
         metadata=draw(metadata(allowed=[SourceType.ACTION])),
         action_id=draw(st.uuids()),
@@ -225,9 +217,7 @@ def execution_feedback(draw):
             RobotActionOutcome.SUCCESS: p_success,
             RobotActionOutcome.PARTIAL: 1.0 - p_success,
         },
-        task_goal_satisfied_probability=draw(
-            st.floats(0.0, p_success, allow_nan=False)
-        ),
+        task_goal_satisfied_probability=draw(st.floats(0.0, p_success, allow_nan=False)),
     )
 
 
@@ -292,6 +282,7 @@ SETTINGS = settings(max_examples=40, deadline=None)
 # Invariant 1: M13 canonical records, M16 rebuildable projection              #
 # --------------------------------------------------------------------------- #
 
+
 @given(relation_assertions())
 @SETTINGS
 def test_inv1_m13_relation_assertions_are_frozen_canonical_records(assertion):
@@ -308,15 +299,13 @@ def test_inv1_m16_snapshots_are_normalized_versioned_and_rebuildable(snapshot):
     assert snapshot.projection_version >= 1
     assert snapshot.input_watermark is not None
     assert len({h.posterior.normalization_group for h in snapshot.hypotheses}) == 1
-    assert (
-        abs(sum(h.posterior.posterior_probability for h in snapshot.hypotheses) - 1.0)
-        < 1e-6
-    )
+    assert abs(sum(h.posterior.posterior_probability for h in snapshot.hypotheses) - 1.0) < 1e-6
 
 
 # --------------------------------------------------------------------------- #
 # Invariant 2: M17 outputs are priors, not current facts                      #
 # --------------------------------------------------------------------------- #
+
 
 @given(habit_evidence())
 @SETTINGS
@@ -331,6 +320,7 @@ def test_inv2_m17_model_predictions_cannot_train_themselves(evidence):
 # Invariant 3: M18 cannot modify M16 in place                                 #
 # --------------------------------------------------------------------------- #
 
+
 @given(belief_snapshots())
 @SETTINGS
 def test_inv3_m16_is_immutable_so_attribution_must_append_new_records(snapshot):
@@ -343,13 +333,16 @@ def test_inv3_m16_is_immutable_so_attribution_must_append_new_records(snapshot):
 # Invariant 4: M19 never deletes history                                        #
 # --------------------------------------------------------------------------- #
 
+
 @given(relation_assertions())
 @SETTINGS
 def test_inv4_retraction_is_a_status_never_a_deletion(assertion):
     # Forgetting is expressed as a status on a new append-only record.
-    assert {AssertionStatus.RETRACTED, AssertionStatus.SUPERSEDED, AssertionStatus.CONTRADICTED} <= set(
-        AssertionStatus
-    )
+    assert {
+        AssertionStatus.RETRACTED,
+        AssertionStatus.SUPERSEDED,
+        AssertionStatus.CONTRADICTED,
+    } <= set(AssertionStatus)
     # Every assertion retains its own identity and temporal grounding.
     assert assertion.metadata.record_id is not None
     assert assertion.temporal is not None
@@ -359,14 +352,12 @@ def test_inv4_retraction_is_a_status_never_a_deletion(assertion):
 # Invariant 5: M21/LLM only generates queries, never world-model writes       #
 # --------------------------------------------------------------------------- #
 
+
 @given(st.text(min_size=1, max_size=40), st.text(min_size=1, max_size=16))
 @SETTINGS
-def test_inv5_m21_compiled_queries_are_not_world_model_records(
-    utterance, compiler_version
-):
-    query = CompiledSemanticQuery(
-        utterance=utterance, compiler_model_version=compiler_version
-    )
+def test_inv5_m21_compiled_queries_are_not_world_model_records(utterance, compiler_version):
+    query = CompiledSemanticQuery(utterance=utterance, compiler_model_version=compiler_version)
+    assert query.utterance == utterance
     assert "metadata" not in CompiledSemanticQuery.model_fields
     assert "source_type" not in CompiledSemanticQuery.model_fields
     assert "valid_time" not in CompiledSemanticQuery.model_fields
@@ -375,6 +366,7 @@ def test_inv5_m21_compiled_queries_are_not_world_model_records(
 # --------------------------------------------------------------------------- #
 # Invariant 6: M24 and M16 share one ObservationLikelihoodModel               #
 # --------------------------------------------------------------------------- #
+
 
 @given(likelihood_models())
 @SETTINGS
@@ -407,6 +399,7 @@ def test_inv6_verification_observations_carry_the_shared_likelihood_model_id(obs
 # Invariant 7: M27 writes back results but never self-declares a fact         #
 # --------------------------------------------------------------------------- #
 
+
 @given(execution_feedback())
 @SETTINGS
 def test_inv7_m27_feedback_is_action_scoped_uncertain_and_never_factual(feedback):
@@ -421,6 +414,7 @@ def test_inv7_m27_feedback_is_action_scoped_uncertain_and_never_factual(feedback
 # --------------------------------------------------------------------------- #
 # Invariant 8: gt.* only readable by M29/M31/M32 and the oracle adapter       #
 # --------------------------------------------------------------------------- #
+
 
 @given(gt_states())
 @SETTINGS
@@ -469,7 +463,7 @@ def test_inv8_robot_visible_simulation_records_cannot_carry_privileged_refs():
         ObservationOpportunityRecord(
             metadata=sim_metadata,
             observation_action_id=uuid4(),
-            opportunity_time=datetime(2026, 1, 1, tzinfo=timezone.utc),
+            opportunity_time=datetime(2026, 1, 1, tzinfo=UTC),
             selected=True,
             selection_probability=0.5,
             p_visible_given_state=0.8,

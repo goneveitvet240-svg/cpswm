@@ -106,12 +106,11 @@ def test_restart_replay_loads_serialized_log_in_independent_processes(now, tmp_p
     assert compare_replay_runs(first, second, numeric_tolerance=0.0)
     assert first.output_payloads[0]["point"] == {"x": 3.0, "y": 5.0, "z": 1.0}
     provenance = first.execution_provenance[0]
-    assert datetime.fromisoformat(
-        provenance["output_watermark"]["recorded_at"].replace("Z", "+00:00")
-    ) == manifest.created_at
-    assert provenance["versions"]["code_version"] == git_head_code_version(
-        repository_root
+    assert (
+        datetime.fromisoformat(provenance["output_watermark"]["recorded_at"].replace("Z", "+00:00"))
+        == manifest.created_at
     )
+    assert provenance["versions"]["code_version"] == git_head_code_version(repository_root)
     assert provenance["versions"]["source_tree_sha256"] == versions.source_tree_sha256
     assert first.input_log_sha256 == manifest.input_log_sha256
     assert first.input_watermark == manifest.input_watermark

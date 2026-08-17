@@ -18,12 +18,8 @@ class ExecutionFeedbackProjector:
         feedback: ExecutionFeedbackRecord,
         model: ActionOutcomeLikelihoodModel,
     ) -> FeedbackBeliefUpdate:
-        feedback = ExecutionFeedbackRecord.model_validate(
-            feedback.model_dump(mode="python")
-        )
-        model = ActionOutcomeLikelihoodModel.model_validate(
-            model.model_dump(mode="python")
-        )
+        feedback = ExecutionFeedbackRecord.model_validate(feedback.model_dump(mode="python"))
+        model = ActionOutcomeLikelihoodModel.model_validate(model.model_dump(mode="python"))
         if feedback.action_type != model.action_type:
             raise ValueError("feedback and outcome model action types must match")
         if not 0.0 <= prior_target_present <= 1.0:
@@ -35,9 +31,7 @@ class ExecutionFeedbackProjector:
         }
         modeled_outcomes = set(model.p_outcome_given_target_present)
         if not realized_outcomes.issubset(modeled_outcomes):
-            missing = sorted(
-                outcome.value for outcome in realized_outcomes - modeled_outcomes
-            )
+            missing = sorted(outcome.value for outcome in realized_outcomes - modeled_outcomes)
             raise ValueError(
                 f"outcome model must cover every realized feedback outcome; missing={missing}"
             )

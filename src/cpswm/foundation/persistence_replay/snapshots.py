@@ -25,8 +25,6 @@ class SnapshotCatalog:
             raise ValueError("snapshot invalidation requires a reason")
         current = self._snapshots[snapshot_id]
         reasons = (*current.invalidation_reasons, reason)
-        updated = current.model_copy(
-            update={"valid": False, "invalidation_reasons": reasons}
-        )
+        updated = current.model_copy(update={"valid": False, "invalidation_reasons": reasons})
         self._snapshots[snapshot_id] = updated
         return updated

@@ -45,9 +45,7 @@ class ShiftCausePrediction(ContractModel):
 
     @model_validator(mode="after")
     def validate_posterior(self) -> ShiftCausePrediction:
-        if not isclose(
-            sum(self.posterior.values()), 1.0, rel_tol=0.0, abs_tol=1e-6
-        ):
+        if not isclose(sum(self.posterior.values()), 1.0, rel_tol=0.0, abs_tol=1e-6):
             raise ValueError("shift-cause posterior probabilities must sum to 1")
         return self
 
@@ -84,15 +82,11 @@ class ShiftAttributionCase(ContractModel):
             raise ValueError("acceptable_cause_set must not contain duplicates")
         if self.true_cause not in causes:
             raise ValueError("acceptable_cause_set must include the latent true cause")
-        if (
-            self.identifiability_status == IdentifiabilityStatus.IDENTIFIABLE
-            and causes != (self.true_cause,)
+        if self.identifiability_status == IdentifiabilityStatus.IDENTIFIABLE and causes != (
+            self.true_cause,
         ):
             raise ValueError("identifiable cases require one acceptable true cause")
-        if (
-            self.identifiability_status != IdentifiabilityStatus.IDENTIFIABLE
-            and len(causes) < 2
-        ):
+        if self.identifiability_status != IdentifiabilityStatus.IDENTIFIABLE and len(causes) < 2:
             raise ValueError("non-identifiable cases require an equivalence class")
         return self
 
@@ -151,18 +145,14 @@ class ShiftAttributionReport(ContractModel):
 class ShiftAttributionEvaluator:
     """Evaluate whether a method separates observation, actor, and habit shifts."""
 
-    def evaluate(
-        self, cases: Sequence[ShiftAttributionCase]
-    ) -> ShiftAttributionReport:
+    def evaluate(self, cases: Sequence[ShiftAttributionCase]) -> ShiftAttributionReport:
         if not cases:
             raise ValueError("at least one shift-attribution case is required")
         case_ids = [case.case_id for case in cases]
         if len(case_ids) != len(set(case_ids)):
             raise ValueError("shift-attribution case ids must be unique")
 
-        pairs = [
-            (case.true_cause, case.prediction.predicted_cause) for case in cases
-        ]
+        pairs = [(case.true_cause, case.prediction.predicted_cause) for case in cases]
         correct = sum(truth == predicted for truth, predicted in pairs)
         unresolved = sum(predicted == ShiftCause.UNRESOLVED for _, predicted in pairs)
         concrete_truth = sorted({truth for truth, _ in pairs}, key=lambda cause: cause.value)
@@ -170,9 +160,7 @@ class ShiftAttributionEvaluator:
         f1_scores = [self._f1_for_cause(pairs, cause) for cause in concrete_truth]
         confusion = self._confusion_counts(pairs)
         non_habit = [pair for pair in pairs if pair[0] != ShiftCause.OWNER_HABIT_REGIME]
-        observation = [
-            pair for pair in pairs if pair[0] == ShiftCause.OBSERVATION_POLICY
-        ]
+        observation = [pair for pair in pairs if pair[0] == ShiftCause.OBSERVATION_POLICY]
         actor = [pair for pair in pairs if pair[0] == ShiftCause.ACTOR_MIXTURE]
         identifiable = [
             case
@@ -189,9 +177,7 @@ class ShiftAttributionEvaluator:
         )
         epistemic_correct = sum(self._epistemic_correct(case) for case in cases)
         covered = [
-            case
-            for case in cases
-            if case.prediction.predicted_cause != ShiftCause.UNRESOLVED
+            case for case in cases if case.prediction.predicted_cause != ShiftCause.UNRESOLVED
         ]
         selective_risk = self._selective_risk(covered)
 
@@ -242,8 +228,7 @@ class ShiftAttributionEvaluator:
         total = 0.0
         for case in cases:
             total -= sum(
-                target_probability
-                * log(max(case.prediction.posterior.get(cause, 0.0), epsilon))
+                target_probability * log(max(case.prediction.posterior.get(cause, 0.0), epsilon))
                 for cause, target_probability in case.scoring_target.items()
             )
         return total / len(cases)
@@ -253,10 +238,7 @@ class ShiftAttributionEvaluator:
         causes = tuple(ShiftCause)
         return sum(
             sum(
-                (
-                    case.prediction.posterior.get(cause, 0.0)
-                    - case.scoring_target.get(cause, 0.0)
-                )
+                (case.prediction.posterior.get(cause, 0.0) - case.scoring_target.get(cause, 0.0))
                 ** 2
                 for cause in causes
             )
@@ -296,10 +278,7 @@ class ShiftAttributionEvaluator:
     def _selective_risk(cases: Sequence[ShiftAttributionCase]) -> float:
         if not cases:
             return 0.0
-        errors = sum(
-            case.prediction.predicted_cause not in case.accepted_causes
-            for case in cases
-        )
+        errors = sum(case.prediction.predicted_cause not in case.accepted_causes for case in cases)
         return errors / len(cases)
 
     @staticmethod
@@ -308,14 +287,12 @@ class ShiftAttributionEvaluator:
     ) -> float:
         if not cases:
             return 0.0
-        return sum(
-            case.prediction.predicted_cause == predicted_cause for case in cases
-        ) / len(cases)
+        return sum(case.prediction.predicted_cause == predicted_cause for case in cases) / len(
+            cases
+        )
 
     @staticmethod
-    def _f1_for_cause(
-        pairs: Sequence[tuple[ShiftCause, ShiftCause]], cause: ShiftCause
-    ) -> float:
+    def _f1_for_cause(pairs: Sequence[tuple[ShiftCause, ShiftCause]], cause: ShiftCause) -> float:
         true_positive = sum(truth == cause and predicted == cause for truth, predicted in pairs)
         false_positive = sum(truth != cause and predicted == cause for truth, predicted in pairs)
         false_negative = sum(truth == cause and predicted != cause for truth, predicted in pairs)

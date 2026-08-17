@@ -16,9 +16,7 @@ class MultiViewIdentityVerifier:
     """Fuse independent evidence clusters without counting video frames twice."""
 
     def verify(self, request: IdentityVerificationRequest) -> IdentityVerificationResult:
-        request = IdentityVerificationRequest.model_validate(
-            request.model_dump(mode="python")
-        )
+        request = IdentityVerificationRequest.model_validate(request.model_dump(mode="python"))
         best_by_cluster = {}
         for evidence in request.view_evidence:
             previous = best_by_cluster.get(evidence.evidence_cluster_id)
@@ -37,13 +35,11 @@ class MultiViewIdentityVerifier:
 
         maximum = max(log_scores.values())
         exponentials = {
-            candidate_id: exp(score - maximum)
-            for candidate_id, score in log_scores.items()
+            candidate_id: exp(score - maximum) for candidate_id, score in log_scores.items()
         }
         normalizer = sum(exponentials.values())
         posteriors = {
-            candidate_id: value / normalizer
-            for candidate_id, value in exponentials.items()
+            candidate_id: value / normalizer for candidate_id, value in exponentials.items()
         }
         ranked = sorted(posteriors.items(), key=lambda item: item[1], reverse=True)
         best_id, best_probability = ranked[0]

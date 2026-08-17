@@ -1,5 +1,12 @@
 """Counterfactual Hypothesis Event Hypergraph (CHEH)."""
 
+from .baselines import (
+    IndependentEventCandidate,
+    IndependentEventCandidateBaseline,
+    IndependentEventCandidatePrediction,
+    Top1EventGraphBaseline,
+    Top1EventGraphPrediction,
+)
 from .contracts import (
     EventChainHypothesis,
     EventHypothesisHistory,
@@ -10,13 +17,6 @@ from .contracts import (
     actor_evidence_semantic_fingerprint,
 )
 from .engine import CounterfactualEventHypergraphEngine
-from .baselines import (
-    IndependentEventCandidate,
-    IndependentEventCandidateBaseline,
-    IndependentEventCandidatePrediction,
-    Top1EventGraphBaseline,
-    Top1EventGraphPrediction,
-)
 
 __all__ = [
     "CounterfactualEventHypergraphEngine",

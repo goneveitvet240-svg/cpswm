@@ -25,14 +25,10 @@ from cpswm.foundation.runtime_orchestration import (
 def test_step1_identity_log_orchestration_and_strict_replay(now):
     repository_root = Path(__file__).resolve().parents[1]
     configuration = {"handler": "m02.align-observation", "mode": "step1-test"}
-    versions = build_version_bundle(
-        repository_root, configuration=configuration, model_versions={}
-    )
+    versions = build_version_bundle(repository_root, configuration=configuration, model_versions={})
     semantics = IdentityTimeFrameService()
     household = semantics.identities.issue(IdentityNamespace.HOUSEHOLD)
-    session = semantics.identities.issue(
-        IdentityNamespace.SESSION, household_id=household.value
-    )
+    session = semantics.identities.issue(IdentityNamespace.SESSION, household_id=household.value)
     transform = FrameTransform(
         household_id=household.value,
         source_frame_id="camera",
@@ -89,15 +85,9 @@ def test_step1_identity_log_orchestration_and_strict_replay(now):
         return runtime
 
     runner = ReplayRunner()
-    first = runner.run(
-        runtime=build_runtime(), manifest=manifest, input_log=input_log
-    )
-    second = runner.run(
-        runtime=build_runtime(), manifest=manifest, input_log=input_log
-    )
+    first = runner.run(runtime=build_runtime(), manifest=manifest, input_log=input_log)
+    second = runner.run(runtime=build_runtime(), manifest=manifest, input_log=input_log)
 
     assert first.output_payloads[0]["point"] == {"x": 1.5, "y": 2.5, "z": 1.0}
-    assert first.execution_provenance[0]["versions"]["code_version"].startswith(
-        "git:"
-    )
+    assert first.execution_provenance[0]["versions"]["code_version"].startswith("git:")
     assert compare_replay_runs(first, second, numeric_tolerance=0.0)

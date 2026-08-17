@@ -27,9 +27,7 @@ class JointPosteriorFusion:
     """
 
     def fuse(self, request: JointPosteriorRequest) -> GroundedSearchResult:
-        request = JointPosteriorRequest.model_validate(
-            request.model_dump(mode="python")
-        )
+        request = JointPosteriorRequest.model_validate(request.model_dump(mode="python"))
         raw_scores: list[tuple[object, float, tuple[ChannelContribution, ...]]] = []
         for candidate in request.candidates:
             if candidate.kind == CandidateKind.OBJECT_INSTANCE and any(
@@ -41,9 +39,7 @@ class JointPosteriorFusion:
             contributions: list[ChannelContribution] = []
             for channel, evidence in candidate.channel_evidence.items():
                 effective_weight = (
-                    request.channel_weights[channel]
-                    * evidence.reliability
-                    * evidence.availability
+                    request.channel_weights[channel] * evidence.reliability * evidence.availability
                 )
                 weighted_log_likelihood = effective_weight * log(
                     evidence.likelihood_given_candidate
@@ -94,8 +90,7 @@ class JointPosteriorFusion:
             reasons = ("unknown_mass_high", "no_grounded_instance_is_safe_to_assert")
         elif (
             best_has_unknown_hard_constraint
-            or
-            best_object_probability < request.resolution_threshold
+            or best_object_probability < request.resolution_threshold
             or margin < request.ambiguity_margin
         ):
             status = ResolutionStatus.AMBIGUOUS
@@ -124,9 +119,7 @@ class JointPosteriorFusion:
                 posterior_probability=probability,
                 contributions=contributions,
             )
-            for rank, ((source, _, contributions), probability) in enumerate(
-                returned, start=1
-            )
+            for rank, ((source, _, contributions), probability) in enumerate(returned, start=1)
         )
         posterior_mass_returned = min(
             1.0,
@@ -135,10 +128,16 @@ class JointPosteriorFusion:
         return GroundedSearchResult(
             metadata=request.metadata.model_copy(
                 update={
-                    "record_id": UUID(bytes=bytes.fromhex(content_hash({
-                        "kind": "grounded-search-result",
-                        "request": request.model_dump(mode="json"),
-                    })[:32])),
+                    "record_id": UUID(
+                        bytes=bytes.fromhex(
+                            content_hash(
+                                {
+                                    "kind": "grounded-search-result",
+                                    "request": request.model_dump(mode="json"),
+                                }
+                            )[:32]
+                        )
+                    ),
                     "schema_name": "cpswm.GroundedSearchResult",
                 }
             ),

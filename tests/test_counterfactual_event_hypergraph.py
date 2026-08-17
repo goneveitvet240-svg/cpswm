@@ -5,7 +5,7 @@ from uuid import uuid4
 
 import pytest
 
-from cpswm.contracts import ActorEvidenceTrack, EvidenceRef, EventType, SourceType
+from cpswm.contracts import ActorEvidenceTrack, EventType, EvidenceRef, SourceType
 from cpswm.system.counterfactual_event_hypergraph import (
     CounterfactualEventHypergraphEngine,
     EventHypothesisStatus,
@@ -22,9 +22,7 @@ def actor_shift_case():
         actor_evidence_track=ActorEvidenceTrack.CONTROLLED_NOISE
     )
     return next(
-        case
-        for case in suite.cases
-        if case.evaluator_truth.true_cause == ShiftCause.ACTOR_MIXTURE
+        case for case in suite.cases if case.evaluator_truth.true_cause == ShiftCause.ACTOR_MIXTURE
     )
 
 
@@ -62,9 +60,7 @@ def test_cheh_branches_direct_and_handoff_chains_without_committing_top1():
     before, after, actor_evidence = transition_records(case)
     owner = str(case.model_input.target_person_id)
     guest = next(
-        actor
-        for actor in actor_evidence.actor_posterior
-        if actor not in {owner, "unknown_actor"}
+        actor for actor in actor_evidence.actor_posterior if actor not in {owner, "unknown_actor"}
     )
     engine = CounterfactualEventHypergraphEngine()
 
@@ -82,9 +78,10 @@ def test_cheh_branches_direct_and_handoff_chains_without_committing_top1():
     assert sum(
         item.posterior_probability for item in revision.hypotheses
     ) + revision.unresolved_probability == pytest.approx(1.0)
-    assert {
-        item.explanation_code for item in revision.hypotheses
-    } == {"direct_relocation", "handoff_relocation"}
+    assert {item.explanation_code for item in revision.hypotheses} == {
+        "direct_relocation",
+        "handoff_relocation",
+    }
     assert any(
         tuple(step.event_type for step in item.steps)
         == (EventType.PICK_UP, EventType.TRANSFER, EventType.CARRY, EventType.PLACE)
@@ -153,12 +150,8 @@ def test_cheh_revision_uses_actor_evidence_and_preserves_all_alternatives():
     assert len(revised.latest.hypotheses) == len(branched.latest.hypotheses)
     assert revised.latest.map_hypothesis is not None
     assert revised.latest.map_hypothesis.responsible_actor_key == guest
-    assert revised.latest.revision_evidence_record_ids == (
-        actor_evidence.metadata.record_id,
-    )
-    assert revised.latest.revision_evidence_cluster_ids == (
-        actor_evidence.evidence_cluster_id,
-    )
+    assert revised.latest.revision_evidence_record_ids == (actor_evidence.metadata.record_id,)
+    assert revised.latest.revision_evidence_cluster_ids == (actor_evidence.evidence_cluster_id,)
 
 
 def test_cheh_neutral_likelihood_ratio_does_not_multiply_the_prior_twice():
@@ -172,21 +165,15 @@ def test_cheh_neutral_likelihood_ratio_does_not_multiply_the_prior_twice():
     )
     neutral = actor_evidence.model_copy(
         update={
-            "metadata": actor_evidence.metadata.model_copy(
-                update={"record_id": uuid4()}
-            ),
+            "metadata": actor_evidence.metadata.model_copy(update={"record_id": uuid4()}),
             "actor_posterior": actor_evidence.reference_actor_prior,
             "evidence_cluster_id": uuid4(),
         }
     )
 
-    revised = engine.revise_actor_responsibility(
-        history, neutral, retraction_threshold=0.0
-    )
+    revised = engine.revise_actor_responsibility(history, neutral, retraction_threshold=0.0)
 
-    assert tuple(
-        item.posterior_probability for item in revised.latest.hypotheses
-    ) == pytest.approx(
+    assert tuple(item.posterior_probability for item in revised.latest.hypotheses) == pytest.approx(
         tuple(item.posterior_probability for item in history.latest.hypotheses)
     )
     assert revised.latest.unresolved_probability == pytest.approx(
@@ -209,11 +196,7 @@ def test_cheh_rejects_duplicate_record_and_correlated_cluster_evidence():
         engine.revise_actor_responsibility(revised, actor_evidence)
 
     same_cluster = actor_evidence.model_copy(
-        update={
-            "metadata": actor_evidence.metadata.model_copy(
-                update={"record_id": uuid4()}
-            )
-        }
+        update={"metadata": actor_evidence.metadata.model_copy(update={"record_id": uuid4()})}
     )
     with pytest.raises(ValueError, match="cluster cannot be reused"):
         engine.revise_actor_responsibility(revised, same_cluster)
@@ -259,10 +242,9 @@ def test_cheh_semantic_fingerprint_ignores_only_wrapper_identity():
         evidence_refs=(reference.model_copy(update={"evidence_id": uuid4()}),),
     )
 
-    assert (
-        actor_evidence_semantic_fingerprint(actor_evidence)
-        == actor_evidence_semantic_fingerprint(semantic_clone)
-    )
+    assert actor_evidence_semantic_fingerprint(
+        actor_evidence
+    ) == actor_evidence_semantic_fingerprint(semantic_clone)
 
     reordered_or_duplicated_wrapper = validated_actor_evidence_copy(
         actor_evidence,
@@ -273,20 +255,18 @@ def test_cheh_semantic_fingerprint_ignores_only_wrapper_identity():
             reference,
         ),
     )
-    assert (
-        actor_evidence_semantic_fingerprint(actor_evidence)
-        == actor_evidence_semantic_fingerprint(reordered_or_duplicated_wrapper)
-    )
+    assert actor_evidence_semantic_fingerprint(
+        actor_evidence
+    ) == actor_evidence_semantic_fingerprint(reordered_or_duplicated_wrapper)
 
     changed_source = validated_actor_evidence_copy(
         semantic_clone,
         metadata={"record_id": uuid4(), "source_id": "independent-source"},
         evidence_cluster_id=uuid4(),
     )
-    assert (
-        actor_evidence_semantic_fingerprint(actor_evidence)
-        != actor_evidence_semantic_fingerprint(changed_source)
-    )
+    assert actor_evidence_semantic_fingerprint(
+        actor_evidence
+    ) != actor_evidence_semantic_fingerprint(changed_source)
 
     changed_reference = validated_actor_evidence_copy(
         semantic_clone,
@@ -294,10 +274,9 @@ def test_cheh_semantic_fingerprint_ignores_only_wrapper_identity():
         evidence_cluster_id=uuid4(),
         evidence_refs=(reference.model_copy(update={"source_record_id": uuid4()}),),
     )
-    assert (
-        actor_evidence_semantic_fingerprint(actor_evidence)
-        != actor_evidence_semantic_fingerprint(changed_reference)
-    )
+    assert actor_evidence_semantic_fingerprint(
+        actor_evidence
+    ) != actor_evidence_semantic_fingerprint(changed_reference)
 
 
 def test_cheh_semantic_fingerprint_changes_with_real_evidence_content():
@@ -385,9 +364,7 @@ def test_cheh_branch_rejects_endpoint_model_copy_extra_fields(nested):
     if nested:
         before = before.model_copy(
             update={
-                "metadata": before.metadata.model_copy(
-                    update={"injected_extra": "not-declared"}
-                )
+                "metadata": before.metadata.model_copy(update={"injected_extra": "not-declared"})
             }
         )
     else:
@@ -436,18 +413,14 @@ def test_cheh_revise_rejects_model_copy_extra_fields(boundary):
     )
     actor_evidence = actor_evidence.model_copy(
         update={
-            "metadata": actor_evidence.metadata.model_copy(
-                update={"record_id": uuid4()}
-            ),
+            "metadata": actor_evidence.metadata.model_copy(update={"record_id": uuid4()}),
             "evidence_cluster_id": uuid4(),
         }
     )
     if boundary == "history":
         history = history.model_copy(update={"injected_extra": "not-declared"})
     else:
-        actor_evidence = actor_evidence.model_copy(
-            update={"injected_extra": "not-declared"}
-        )
+        actor_evidence = actor_evidence.model_copy(update={"injected_extra": "not-declared"})
 
     with pytest.raises(ValueError, match="unexpected field"):
         engine.revise_actor_responsibility(history, actor_evidence)
@@ -495,22 +468,14 @@ def test_cheh_retract_rejects_counterevidence_without_a_known_endpoint():
     target = history.latest.map_hypothesis
     assert target is not None
     other_actors = tuple(
-        actor
-        for actor in actor_evidence.actor_posterior
-        if actor != target.responsible_actor_key
+        actor for actor in actor_evidence.actor_posterior if actor != target.responsible_actor_key
     )
     bad_counterevidence = actor_evidence.model_copy(
         update={
-            "metadata": actor_evidence.metadata.model_copy(
-                update={"record_id": uuid4()}
-            ),
+            "metadata": actor_evidence.metadata.model_copy(update={"record_id": uuid4()}),
             "source_detection_result_id": uuid4(),
             "actor_posterior": {
-                actor: (
-                    0.0
-                    if actor == target.responsible_actor_key
-                    else 1.0 / len(other_actors)
-                )
+                actor: (0.0 if actor == target.responsible_actor_key else 1.0 / len(other_actors))
                 for actor in actor_evidence.actor_posterior
             },
             "evidence_cluster_id": uuid4(),
@@ -538,19 +503,13 @@ def test_cheh_retract_rejects_semantic_clones_in_one_counterevidence_tuple():
     target = history.latest.map_hypothesis
     assert target is not None
     other_actors = tuple(
-        actor
-        for actor in actor_evidence.actor_posterior
-        if actor != target.responsible_actor_key
+        actor for actor in actor_evidence.actor_posterior if actor != target.responsible_actor_key
     )
     counterevidence = validated_actor_evidence_copy(
         actor_evidence,
         metadata={"record_id": uuid4()},
         actor_posterior={
-            actor: (
-                0.0
-                if actor == target.responsible_actor_key
-                else 1.0 / len(other_actors)
-            )
+            actor: (0.0 if actor == target.responsible_actor_key else 1.0 / len(other_actors))
             for actor in actor_evidence.actor_posterior
         },
         evidence_cluster_id=uuid4(),
@@ -613,9 +572,7 @@ def test_cheh_retract_rejects_duplicate_ref_semantic_clone_in_same_tuple():
     target = history.latest.map_hypothesis
     assert target is not None
     other_actors = tuple(
-        actor
-        for actor in actor_evidence.actor_posterior
-        if actor != target.responsible_actor_key
+        actor for actor in actor_evidence.actor_posterior if actor != target.responsible_actor_key
     )
     reference = EvidenceRef(
         evidence_type="actor-view",
@@ -626,11 +583,7 @@ def test_cheh_retract_rejects_duplicate_ref_semantic_clone_in_same_tuple():
         actor_evidence,
         metadata={"record_id": uuid4(), "source_type": SourceType.MODEL},
         actor_posterior={
-            actor: (
-                0.0
-                if actor == target.responsible_actor_key
-                else 1.0 / len(other_actors)
-            )
+            actor: (0.0 if actor == target.responsible_actor_key else 1.0 / len(other_actors))
             for actor in actor_evidence.actor_posterior
         },
         evidence_cluster_id=uuid4(),
@@ -656,9 +609,7 @@ def test_cheh_semantic_fingerprint_normalizes_negative_zero():
     case = actor_shift_case()
     _, _, actor_evidence = transition_records(case)
     zero_actor = next(iter(actor_evidence.actor_posterior))
-    other_actors = tuple(
-        actor for actor in actor_evidence.actor_posterior if actor != zero_actor
-    )
+    other_actors = tuple(actor for actor in actor_evidence.actor_posterior if actor != zero_actor)
     positive_zero = validated_actor_evidence_copy(
         actor_evidence,
         actor_posterior={
@@ -677,10 +628,9 @@ def test_cheh_semantic_fingerprint_normalizes_negative_zero():
     )
 
     assert positive_zero.actor_posterior == negative_zero.actor_posterior
-    assert (
-        actor_evidence_semantic_fingerprint(positive_zero)
-        == actor_evidence_semantic_fingerprint(negative_zero)
-    )
+    assert actor_evidence_semantic_fingerprint(
+        positive_zero
+    ) == actor_evidence_semantic_fingerprint(negative_zero)
 
 
 def test_cheh_retract_rejects_negative_zero_semantic_clone_in_same_tuple():
@@ -695,9 +645,7 @@ def test_cheh_retract_rejects_negative_zero_semantic_clone_in_same_tuple():
     target = history.latest.map_hypothesis
     assert target is not None
     target_actor = target.responsible_actor_key
-    other_actors = tuple(
-        actor for actor in actor_evidence.actor_posterior if actor != target_actor
-    )
+    other_actors = tuple(actor for actor in actor_evidence.actor_posterior if actor != target_actor)
     counterevidence = validated_actor_evidence_copy(
         actor_evidence,
         metadata={"record_id": uuid4()},
@@ -743,9 +691,7 @@ def test_cheh_retract_moves_mass_to_unresolved_and_rebuilds_exactly():
 
     counterevidence = actor_evidence.model_copy(
         update={
-            "metadata": actor_evidence.metadata.model_copy(
-                update={"record_id": uuid4()}
-            ),
+            "metadata": actor_evidence.metadata.model_copy(update={"record_id": uuid4()}),
             "actor_posterior": {
                 actor: (0.0 if actor == target.responsible_actor_key else 0.5)
                 for actor in actor_evidence.actor_posterior
@@ -761,9 +707,7 @@ def test_cheh_retract_moves_mass_to_unresolved_and_rebuilds_exactly():
     )
 
     target_after = next(
-        item
-        for item in retracted.latest.hypotheses
-        if item.hypothesis_id == target.hypothesis_id
+        item for item in retracted.latest.hypotheses if item.hypothesis_id == target.hypothesis_id
     )
     assert target_after.status == EventHypothesisStatus.RETRACTED
     assert target_after.posterior_probability == 0.0

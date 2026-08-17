@@ -8,7 +8,7 @@ the true cause and latent-factor fingerprints live in
 
 from __future__ import annotations
 
-from datetime import datetime, timedelta, timezone
+from datetime import UTC, datetime, timedelta
 from enum import StrEnum
 from uuid import UUID
 
@@ -77,7 +77,7 @@ class D0ShiftScenarioConfig(ContractModel):
     """Versioned inputs for the first paired D0 benchmark suite."""
 
     suite_name: str = Field(default="d0-shift-attribution", min_length=1)
-    start_time: datetime = datetime(2026, 8, 13, tzinfo=timezone.utc)
+    start_time: datetime = datetime(2026, 8, 13, tzinfo=UTC)
     duration_days: PositiveInt = 8
     change_day: NonNegativeInt = 4
     random_seed: NonNegativeInt = 20260813
@@ -148,9 +148,7 @@ class D0VisibleSimulationRun(ContractModel):
     start_time: datetime
     duration_days: int = Field(gt=0)
     random_seed: int = Field(ge=0)
-    observation_opportunities: tuple[ObservationOpportunityRecord, ...] = Field(
-        min_length=1
-    )
+    observation_opportunities: tuple[ObservationOpportunityRecord, ...] = Field(min_length=1)
     detection_results: tuple[ObservationDetectionResult, ...] = Field(min_length=1)
 
     @field_validator("start_time")
@@ -167,9 +165,7 @@ class D0VisibleSimulationRun(ContractModel):
         if self.visible_run_id != expected_id:
             raise ValueError("visible_run_id does not match visible run content")
 
-        opportunity_ids = {
-            item.metadata.record_id for item in self.observation_opportunities
-        }
+        opportunity_ids = {item.metadata.record_id for item in self.observation_opportunities}
         result_opportunity_ids = {
             item.observation_opportunity_id for item in self.detection_results
         }
@@ -191,9 +187,7 @@ class D0VisibleSimulationRun(ContractModel):
         )
 
     @classmethod
-    def from_simulation(
-        cls, simulation: SymbolicSimulationResult
-    ) -> D0VisibleSimulationRun:
+    def from_simulation(cls, simulation: SymbolicSimulationResult) -> D0VisibleSimulationRun:
         """Project a privileged simulation into the only input a model may read."""
 
         payload = {
@@ -288,9 +282,7 @@ class D0ShiftCaseInput(ContractModel):
             for item in (*run.observation_opportunities, *run.detection_results)
         )
         if len(values) != 1:
-            raise ValueError(
-                f"each D0 visible run must have exactly one normalized {field_name}"
-            )
+            raise ValueError(f"each D0 visible run must have exactly one normalized {field_name}")
         return values
 
     @staticmethod
@@ -302,9 +294,7 @@ class D0ShiftCaseInput(ContractModel):
         evidence_ids = [item.metadata.record_id for item in evidence]
         if len(evidence_ids) != len(set(evidence_ids)):
             raise ValueError(f"{name} actor evidence IDs must be unique")
-        detection_by_id = {
-            item.metadata.record_id: item for item in run.detection_results
-        }
+        detection_by_id = {item.metadata.record_id: item for item in run.detection_results}
         for item in evidence:
             detection = detection_by_id.get(item.source_detection_result_id)
             if detection is None:
@@ -339,8 +329,7 @@ class D0ShiftCaseTruth(ContractModel):
         if changed != expected:
             rendered = ", ".join(item.value for item in changed) or "none"
             raise ValueError(
-                "D0 pair must change exactly the factor bound to true_cause; "
-                f"changed: {rendered}"
+                f"D0 pair must change exactly the factor bound to true_cause; changed: {rendered}"
             )
         return self
 
@@ -361,9 +350,7 @@ class D0GeneratedCase(ContractModel):
             raise ValueError("D0 input and evaluator truth case IDs do not match")
         return self
 
-    def bind_prediction(
-        self, prediction: ShiftCausePrediction
-    ) -> ShiftAttributionCase:
+    def bind_prediction(self, prediction: ShiftCausePrediction) -> ShiftAttributionCase:
         """Bind a model output to hidden truth only after inference has finished."""
 
         return ShiftAttributionCase(
@@ -397,15 +384,14 @@ class D0ShiftSuite(ContractModel):
         return self
 
     def content_payload(self) -> dict:
-        return self.model_dump(
-            mode="json", exclude={"suite_id", "suite_content_sha256"}
-        )
+        return self.model_dump(mode="json", exclude={"suite_id", "suite_content_sha256"})
 
 
 class D0ShiftScenarioGenerator:
     """Build D0-O, D0-A, and D0-H as deterministic single-factor pairs."""
 
     generator_version = "d0-shift-scenarios@0.3"
+
     def generate(
         self,
         config: D0ShiftScenarioConfig | None = None,
@@ -434,7 +420,7 @@ class D0ShiftScenarioGenerator:
                 start_day=config.change_day,
                 target_location_id=config.sofa_id,
                 actor_override_id=config.guest_id,
-            )
+            ),
         )
         habit_shift_config = self._routine_config(
             config,
@@ -444,7 +430,7 @@ class D0ShiftScenarioGenerator:
                 object_instance_id=config.object_id,
                 start_day=config.change_day,
                 target_location_id=config.sofa_id,
-            )
+            ),
         )
 
         cases = (
@@ -546,9 +532,7 @@ class D0ShiftScenarioGenerator:
             change_time=change_time,
         )
         shifted_actor_id = (
-            config.guest_id
-            if true_cause == ShiftCause.ACTOR_MIXTURE
-            else config.owner_id
+            config.guest_id if true_cause == ShiftCause.ACTOR_MIXTURE else config.owner_id
         )
         shifted_actor_evidence = self._actor_evidence(
             simulation=shifted,
@@ -592,21 +576,18 @@ class D0ShiftScenarioGenerator:
                 identifiability_status=(
                     IdentifiabilityStatus.NON_IDENTIFIABLE
                     if actor_evidence_track is None
-                    and true_cause
-                    in {ShiftCause.ACTOR_MIXTURE, ShiftCause.OWNER_HABIT_REGIME}
+                    and true_cause in {ShiftCause.ACTOR_MIXTURE, ShiftCause.OWNER_HABIT_REGIME}
                     else IdentifiabilityStatus.IDENTIFIABLE
                 ),
                 acceptable_cause_set=(
                     (ShiftCause.ACTOR_MIXTURE, ShiftCause.OWNER_HABIT_REGIME)
                     if actor_evidence_track is None
-                    and true_cause
-                    in {ShiftCause.ACTOR_MIXTURE, ShiftCause.OWNER_HABIT_REGIME}
+                    and true_cause in {ShiftCause.ACTOR_MIXTURE, ShiftCause.OWNER_HABIT_REGIME}
                     else (true_cause,)
                 ),
                 intervention_available=(
                     actor_evidence_track is None
-                    and true_cause
-                    in {ShiftCause.ACTOR_MIXTURE, ShiftCause.OWNER_HABIT_REGIME}
+                    and true_cause in {ShiftCause.ACTOR_MIXTURE, ShiftCause.OWNER_HABIT_REGIME}
                 ),
                 control_factors=self._factor_fingerprints(
                     control_config,
@@ -826,22 +807,14 @@ class D0ShiftScenarioGenerator:
         change_time: datetime,
     ) -> D0VisibleSimulationRun:
         opportunities = tuple(
-            item
-            for item in before.observation_opportunities
-            if item.opportunity_time < change_time
+            item for item in before.observation_opportunities if item.opportunity_time < change_time
         ) + tuple(
-            item
-            for item in after.observation_opportunities
-            if item.opportunity_time >= change_time
+            item for item in after.observation_opportunities if item.opportunity_time >= change_time
         )
         results = tuple(
-            item
-            for item in before.detection_results
-            if item.metadata.recorded_time < change_time
+            item for item in before.detection_results if item.metadata.recorded_time < change_time
         ) + tuple(
-            item
-            for item in after.detection_results
-            if item.metadata.recorded_time >= change_time
+            item for item in after.detection_results if item.metadata.recorded_time >= change_time
         )
         return D0VisibleSimulationRun.from_records(
             start_time=before.start_time,

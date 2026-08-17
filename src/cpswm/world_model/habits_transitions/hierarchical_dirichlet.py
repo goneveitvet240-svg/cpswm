@@ -15,7 +15,6 @@ from uuid import UUID
 
 from cpswm.contracts.habit_learning import HabitLearningEvidence
 
-
 CountKey = tuple[UUID, ...] | tuple[UUID, str, UUID] | tuple[UUID, str, UUID, str]
 
 
@@ -53,12 +52,15 @@ class HierarchicalDirichletHabitModel:
         unique_locations = tuple(dict.fromkeys(locations))
         if not unique_locations:
             raise ValueError("locations must contain at least one candidate")
-        if min(
-            common_prior_strength,
-            household_weight,
-            person_weight,
-            context_weight,
-        ) < 0.0:
+        if (
+            min(
+                common_prior_strength,
+                household_weight,
+                person_weight,
+                context_weight,
+            )
+            < 0.0
+        ):
             raise ValueError("prior strength and pooling weights must be non-negative")
 
         self._locations = unique_locations
@@ -78,9 +80,7 @@ class HierarchicalDirichletHabitModel:
             lambda: defaultdict(float)
         )
 
-    def _normalize_prior(
-        self, common_prior: Mapping[UUID, float] | None
-    ) -> dict[UUID, float]:
+    def _normalize_prior(self, common_prior: Mapping[UUID, float] | None) -> dict[UUID, float]:
         if common_prior is None:
             uniform = 1.0 / len(self._locations)
             return {location: uniform for location in self._locations}
@@ -121,12 +121,12 @@ class HierarchicalDirichletHabitModel:
             if actor == self.UNKNOWN_ACTOR or probability <= 0.0:
                 continue
             actor_weight = weight * probability
-            self._person_counts[(household_id, actor, object_id)][
+            self._person_counts[(household_id, actor, object_id)][evidence.location_id] += (
+                actor_weight
+            )
+            self._context_counts[(household_id, actor, object_id, evidence.context_key)][
                 evidence.location_id
             ] += actor_weight
-            self._context_counts[
-                (household_id, actor, object_id, evidence.context_key)
-            ][evidence.location_id] += actor_weight
         return True
 
     def predict(
@@ -140,9 +140,7 @@ class HierarchicalDirichletHabitModel:
         actor = str(person_id)
         household = self._household_counts[(household_id, object_instance_id)]
         person = self._person_counts[(household_id, actor, object_instance_id)]
-        context = self._context_counts[
-            (household_id, actor, object_instance_id, context_key)
-        ]
+        context = self._context_counts[(household_id, actor, object_instance_id, context_key)]
 
         scores: dict[UUID, float] = {}
         for location in self._locations:
@@ -172,7 +170,4 @@ class HierarchicalDirichletHabitModel:
     ) -> float:
         """Expose one statistic for evaluation without leaking mutable state."""
 
-        return self._person_counts[
-            (household_id, str(person_id), object_instance_id)
-        ][location_id]
-
+        return self._person_counts[(household_id, str(person_id), object_instance_id)][location_id]

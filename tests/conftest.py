@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from datetime import datetime, timedelta, timezone
+from datetime import UTC, datetime, timedelta
 from uuid import uuid4
 
 import pytest
@@ -17,7 +17,7 @@ from cpswm.contracts import (
 
 @pytest.fixture
 def now() -> datetime:
-    return datetime(2026, 8, 10, 8, 0, tzinfo=timezone.utc)
+    return datetime(2026, 8, 10, 8, 0, tzinfo=UTC)
 
 
 @pytest.fixture
@@ -72,4 +72,3 @@ def evidence_ref():
         source_record_id=uuid4(),
         locator="frame:17",
     )
-

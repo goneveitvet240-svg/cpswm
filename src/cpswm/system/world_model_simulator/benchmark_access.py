@@ -8,7 +8,6 @@ request the nominal capability before calling ``run_privileged``.
 
 from __future__ import annotations
 
-
 _CAPABILITY_SEAL = object()
 
 
@@ -23,9 +22,7 @@ class BenchmarkGroundTruthCapability:
 
     def __init__(self, seal: object) -> None:
         if seal is not _CAPABILITY_SEAL:
-            raise PermissionError(
-                "ground-truth capability must be issued by benchmark_access"
-            )
+            raise PermissionError("ground-truth capability must be issued by benchmark_access")
         self._seal = seal
 
 

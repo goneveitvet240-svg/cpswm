@@ -1,6 +1,6 @@
-from datetime import datetime, timedelta, timezone
+from datetime import timedelta
 from pathlib import Path
-from uuid import UUID, uuid4
+from uuid import uuid4
 
 import pytest
 from pydantic import ValidationError
@@ -8,8 +8,6 @@ from pydantic import ValidationError
 from cpswm.contracts import BaseRecordMetadata, ContractModel, SourceType
 from cpswm.foundation.persistence_replay import (
     AppendOnlyTransactionLog,
-    ExecutionMode,
-    ReplayManifest,
 )
 from cpswm.foundation.persistence_replay.contracts import content_hash
 from cpswm.foundation.runtime_orchestration import (
@@ -18,11 +16,11 @@ from cpswm.foundation.runtime_orchestration import (
     HandlerStatus,
     InProcessRuntime,
     MessageKind,
+    ReplayInputBindingError,
     ReplayRun,
     ReplayRunner,
-    ReplayInputBindingError,
-    RetryPolicy,
     RetryableHandlerError,
+    RetryPolicy,
     RuntimeMessage,
     RuntimeMessageRecord,
     RuntimeProvenanceError,
@@ -89,9 +87,7 @@ def test_command_dispatch_persists_versioned_output(household_id, session_id, no
             records=(output_record(message, context, message.payload["value"] + 1),)
         )
 
-    runtime.register_command(
-        "observation.process", handler_name="test.increment", handler=handler
-    )
+    runtime.register_command("observation.process", handler_name="test.increment", handler=handler)
     result = runtime.dispatch(make_message(household_id, session_id, now))
 
     assert result.executions[0].status == HandlerStatus.SUCCEEDED
@@ -118,9 +114,7 @@ def test_handler_output_record_is_fully_revalidated_before_persistence(
     runtime = InProcessRuntime(transaction_log=log, versions=versions())
 
     def handler(message, context):
-        invalid = output_record(message, context, 1.0).model_copy(
-            update=invalid_update
-        )
+        invalid = output_record(message, context, 1.0).model_copy(update=invalid_update)
         return HandlerOutput(records=(invalid,))
 
     runtime.register_command(
@@ -135,12 +129,8 @@ def test_handler_output_record_is_fully_revalidated_before_persistence(
     assert log.latest_watermark().global_commit_seq == 0
 
 
-def test_event_subscribers_run_in_deterministic_name_order(
-    household_id, session_id, now
-):
-    runtime = InProcessRuntime(
-        transaction_log=AppendOnlyTransactionLog(), versions=versions()
-    )
+def test_event_subscribers_run_in_deterministic_name_order(household_id, session_id, now):
+    runtime = InProcessRuntime(transaction_log=AppendOnlyTransactionLog(), versions=versions())
     order = []
 
     def make_handler(name):
@@ -150,9 +140,7 @@ def test_event_subscribers_run_in_deterministic_name_order(
 
         return handler
 
-    runtime.subscribe_event(
-        "belief.updated", handler_name="z-last", handler=make_handler("z-last")
-    )
+    runtime.subscribe_event("belief.updated", handler_name="z-last", handler=make_handler("z-last"))
     runtime.subscribe_event(
         "belief.updated", handler_name="a-first", handler=make_handler("a-first")
     )
@@ -205,18 +193,14 @@ def test_retry_is_bounded_and_idempotent(household_id, session_id, now):
     assert log.latest_watermark().global_commit_seq == 1
 
 
-def test_invalid_cross_household_output_is_not_committed(
-    household_id, session_id, now
-):
+def test_invalid_cross_household_output_is_not_committed(household_id, session_id, now):
     log = AppendOnlyTransactionLog()
     runtime = InProcessRuntime(transaction_log=log, versions=versions())
 
     def invalid_handler(message, context):
         record = output_record(message, context, 1.0)
         bad_metadata = record.metadata.model_copy(update={"household_id": uuid4()})
-        return HandlerOutput(
-            records=(record.model_copy(update={"metadata": bad_metadata}),)
-        )
+        return HandlerOutput(records=(record.model_copy(update={"metadata": bad_metadata}),))
 
     runtime.register_command(
         "observation.process", handler_name="test.invalid", handler=invalid_handler
@@ -241,9 +225,7 @@ def test_runtime_idempotency_keys_are_scoped_by_household(now):
     assert log.latest_watermark().global_commit_seq == 2
 
 
-def test_emitted_message_identity_and_order_are_deterministic(
-    household_id, session_id, now
-):
+def test_emitted_message_identity_and_order_are_deterministic(household_id, session_id, now):
     incoming = make_message(household_id, session_id, now)
 
     def build_runtime():
@@ -281,13 +263,9 @@ def test_emitted_message_identity_and_order_are_deterministic(
     first = build_runtime().dispatch(incoming).emitted_messages
     second = build_runtime().dispatch(incoming).emitted_messages
 
-    assert tuple(item.message_id for item in first) == tuple(
-        item.message_id for item in second
-    )
+    assert tuple(item.message_id for item in first) == tuple(item.message_id for item in second)
     assert tuple(item.created_at for item in first) == (now, now)
-    assert tuple(item.fingerprint for item in first) == tuple(
-        item.fingerprint for item in second
-    )
+    assert tuple(item.fingerprint for item in first) == tuple(item.fingerprint for item in second)
 
     empty_log = AppendOnlyTransactionLog()
     common = {
@@ -306,9 +284,7 @@ def test_emitted_message_identity_and_order_are_deterministic(
     )
     reordered_run = ReplayRun(
         **common,
-        emitted_message_fingerprints=tuple(
-            item.fingerprint for item in reversed(second)
-        ),
+        emitted_message_fingerprints=tuple(item.fingerprint for item in reversed(second)),
     )
     changed_identity = second[0].model_copy(update={"message_id": uuid4()})
     changed_identity_run = ReplayRun(
@@ -320,17 +296,11 @@ def test_emitted_message_identity_and_order_are_deterministic(
     )
 
     assert not compare_replay_runs(first_run, reordered_run, numeric_tolerance=0.0)
-    assert not compare_replay_runs(
-        first_run, changed_identity_run, numeric_tolerance=0.0
-    )
+    assert not compare_replay_runs(first_run, changed_identity_run, numeric_tolerance=0.0)
 
 
-def test_emitted_message_cannot_cross_session_boundary(
-    household_id, session_id, now
-):
-    runtime = InProcessRuntime(
-        transaction_log=AppendOnlyTransactionLog(), versions=versions()
-    )
+def test_emitted_message_cannot_cross_session_boundary(household_id, session_id, now):
+    runtime = InProcessRuntime(transaction_log=AppendOnlyTransactionLog(), versions=versions())
 
     def handler(message, context):
         emitted = RuntimeMessage.create(
@@ -357,9 +327,7 @@ def test_emitted_message_cannot_cross_session_boundary(
         runtime.dispatch(make_message(household_id, session_id, now))
 
     assert exc_info.value.execution.error_type == "ValueError"
-    assert exc_info.value.execution.error_message == (
-        "emitted messages must preserve session_id"
-    )
+    assert exc_info.value.execution.error_message == ("emitted messages must preserve session_id")
 
 
 @pytest.mark.parametrize(
@@ -388,9 +356,7 @@ def test_emitted_message_is_fully_revalidated_at_runtime_boundary(
     invalid_update,
     expected_error_type,
 ):
-    runtime = InProcessRuntime(
-        transaction_log=AppendOnlyTransactionLog(), versions=versions()
-    )
+    runtime = InProcessRuntime(transaction_log=AppendOnlyTransactionLog(), versions=versions())
 
     def handler(message, context):
         valid = RuntimeMessage.create(
@@ -405,9 +371,7 @@ def test_emitted_message_is_fully_revalidated_at_runtime_boundary(
             sequence_no=0,
             payload={"status": "valid"},
         )
-        return HandlerOutput(
-            emitted_messages=(valid.model_copy(update=invalid_update),)
-        )
+        return HandlerOutput(emitted_messages=(valid.model_copy(update=invalid_update),))
 
     runtime.register_command(
         "observation.process",
@@ -487,9 +451,7 @@ def test_incoming_message_is_fully_revalidated_before_dispatch(
     now,
     invalid_update,
 ):
-    runtime = InProcessRuntime(
-        transaction_log=AppendOnlyTransactionLog(), versions=versions()
-    )
+    runtime = InProcessRuntime(transaction_log=AppendOnlyTransactionLog(), versions=versions())
     handler_called = False
 
     def handler(message, context):
@@ -502,9 +464,7 @@ def test_incoming_message_is_fully_revalidated_before_dispatch(
         handler_name="test.input-contract-boundary",
         handler=handler,
     )
-    invalid = make_message(household_id, session_id, now).model_copy(
-        update=invalid_update
-    )
+    invalid = make_message(household_id, session_id, now).model_copy(update=invalid_update)
 
     with pytest.raises((ValueError, TypeError)):
         runtime.dispatch(invalid)
@@ -514,9 +474,7 @@ def test_incoming_message_is_fully_revalidated_before_dispatch(
     assert runtime.execution_journal == []
 
 
-def test_replay_is_deterministic_across_fresh_runtimes(
-    household_id, session_id, now
-):
+def test_replay_is_deterministic_across_fresh_runtimes(household_id, session_id, now):
     repository_root = Path(__file__).resolve().parents[1]
     configuration = {"mode": "test", "handler": "test.seeded"}
     replay_versions = build_version_bundle(
@@ -526,9 +484,7 @@ def test_replay_is_deterministic_across_fresh_runtimes(
     )
     message = make_message(household_id, session_id, now, value=3.0)
     input_log = AppendOnlyTransactionLog()
-    input_log.append(
-        [RuntimeMessageRecord.from_message(message)], idempotency_key="replay-input"
-    )
+    input_log.append([RuntimeMessageRecord.from_message(message)], idempotency_key="replay-input")
     manifest = build_replay_manifest(
         input_log,
         schema_version="0.1.0",
@@ -548,9 +504,7 @@ def test_replay_is_deterministic_across_fresh_runtimes(
 
         def stochastic_handler(incoming, context):
             value = incoming.payload["value"] + context.random.random()
-            return HandlerOutput(
-                records=(output_record(incoming, context, value),)
-            )
+            return HandlerOutput(records=(output_record(incoming, context, value),))
 
         runtime.register_command(
             "observation.process",
@@ -562,12 +516,8 @@ def test_replay_is_deterministic_across_fresh_runtimes(
     runner = ReplayRunner()
     first_runtime = build_runtime(now + timedelta(days=1))
     second_runtime = build_runtime(now + timedelta(days=2))
-    first = runner.run(
-        runtime=first_runtime, manifest=manifest, input_log=input_log
-    )
-    second = runner.run(
-        runtime=second_runtime, manifest=manifest, input_log=input_log
-    )
+    first = runner.run(runtime=first_runtime, manifest=manifest, input_log=input_log)
+    second = runner.run(runtime=second_runtime, manifest=manifest, input_log=input_log)
 
     first_commit = first_runtime.transaction_log.read()[0]
     second_commit = second_runtime.transaction_log.read()[0]
@@ -609,11 +559,7 @@ def test_replay_runner_revalidates_manifest_model_copy_bypass(
     )
     input_log = AppendOnlyTransactionLog()
     input_log.append(
-        [
-            RuntimeMessageRecord.from_message(
-                make_message(household_id, session_id, now)
-            )
-        ],
+        [RuntimeMessageRecord.from_message(make_message(household_id, session_id, now))],
         idempotency_key="manifest-boundary-input",
     )
     valid_manifest = build_replay_manifest(
@@ -648,9 +594,7 @@ def test_replay_runner_revalidates_manifest_model_copy_bypass(
     assert runtime.transaction_log.latest_watermark().global_commit_seq == 0
 
 
-def test_replay_comparison_detects_changed_output_log_time(
-    household_id, session_id, now
-):
+def test_replay_comparison_detects_changed_output_log_time(household_id, session_id, now):
     repository_root = Path(__file__).resolve().parents[1]
     configuration = {"mode": "time-binding", "handler": "test.time-binding"}
     replay_versions = build_version_bundle(
@@ -695,11 +639,7 @@ def test_replay_comparison_detects_changed_output_log_time(
         "recorded_at": (now + timedelta(seconds=1)).isoformat(),
     }
     changed = original.model_copy(
-        update={
-            "execution_provenance": (
-                {**provenance, "output_watermark": changed_watermark},
-            )
-        }
+        update={"execution_provenance": ({**provenance, "output_watermark": changed_watermark},)}
     )
 
     assert not compare_replay_runs(original, changed, numeric_tolerance=0.0)
@@ -813,9 +753,7 @@ def test_replay_comparison_rejects_mismatched_manifest_tolerances():
     ),
     ids=("length-mismatch", "stale-fingerprint"),
 )
-def test_replay_run_rejects_unbound_output_fingerprints(
-    payloads, fingerprints, message
-):
+def test_replay_run_rejects_unbound_output_fingerprints(payloads, fingerprints, message):
     empty_log = AppendOnlyTransactionLog()
 
     with pytest.raises(ValidationError, match=message):
@@ -910,9 +848,7 @@ def test_zero_tolerance_compares_large_integers_exactly():
     assert not compare_replay_runs(first, second, numeric_tolerance=0.0)
 
 
-def test_replay_rejects_manifest_runtime_and_input_mismatches(
-    household_id, session_id, now
-):
+def test_replay_rejects_manifest_runtime_and_input_mismatches(household_id, session_id, now):
     repository_root = Path(__file__).resolve().parents[1]
     configuration = {"mode": "binding-test"}
     replay_versions = build_version_bundle(
@@ -922,9 +858,7 @@ def test_replay_rejects_manifest_runtime_and_input_mismatches(
     )
     message = make_message(household_id, session_id, now)
     input_log = AppendOnlyTransactionLog()
-    input_log.append(
-        [RuntimeMessageRecord.from_message(message)], idempotency_key="binding-input"
-    )
+    input_log.append([RuntimeMessageRecord.from_message(message)], idempotency_key="binding-input")
     manifest = build_replay_manifest(
         input_log,
         versions=replay_versions,
@@ -966,9 +900,7 @@ def test_replay_rejects_manifest_runtime_and_input_mismatches(
     with pytest.raises(RuntimeProvenanceError, match="model_versions"):
         runner.run(runtime=runtime(), manifest=bad_models, input_log=input_log)
 
-    fake_watermark = manifest.input_watermark.model_copy(
-        update={"global_commit_seq": 999}
-    )
+    fake_watermark = manifest.input_watermark.model_copy(update={"global_commit_seq": 999})
     bad_watermark = manifest.model_copy(update={"input_watermark": fake_watermark})
     with pytest.raises(ReplayInputBindingError, match="absent"):
         runner.run(runtime=runtime(), manifest=bad_watermark, input_log=input_log)

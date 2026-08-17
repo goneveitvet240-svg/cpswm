@@ -10,9 +10,8 @@ from __future__ import annotations
 
 import random
 from collections.abc import Sequence
-from datetime import datetime, timedelta, timezone
+from datetime import UTC, datetime, timedelta
 from enum import StrEnum
-from math import isclose
 from uuid import UUID
 
 from pydantic import Field, field_validator, model_validator
@@ -65,7 +64,7 @@ _FAMILY_CAUSES = {
 
 
 class OnlineShiftSuiteConfig(ContractModel):
-    start_time: datetime = datetime(2026, 9, 1, tzinfo=timezone.utc)
+    start_time: datetime = datetime(2026, 9, 1, tzinfo=UTC)
     duration_days: PositiveInt = 10
     seeds: tuple[NonNegativeInt, ...] = Field(
         default=(1103, 2207, 3301, 4409, 5519, 6619), min_length=6
@@ -101,12 +100,10 @@ class OnlineShiftCaseInput(ContractModel):
     @model_validator(mode="after")
     def validate_evidence_binding(self) -> OnlineShiftCaseInput:
         detection_ids = {
-            result.metadata.record_id
-            for result in self.observation_stream.detection_results
+            result.metadata.record_id for result in self.observation_stream.detection_results
         }
         if any(
-            item.source_detection_result_id not in detection_ids
-            for item in self.actor_evidence
+            item.source_detection_result_id not in detection_ids for item in self.actor_evidence
         ):
             raise ValueError("online actor evidence must cite the visible stream")
         return self
@@ -158,8 +155,10 @@ class OnlineShiftGeneratedCase(ContractModel):
         if self.model_input.case_id != self.evaluator_truth.case_id:
             raise ValueError("online input and truth case IDs do not match")
         run = self.model_input.observation_stream
-        if not run.start_time < self.evaluator_truth.change_time < (
-            run.start_time + timedelta(days=run.duration_days)
+        if (
+            not run.start_time
+            < self.evaluator_truth.change_time
+            < (run.start_time + timedelta(days=run.duration_days))
         ):
             raise ValueError("online hidden change time must lie within the stream")
         return self
@@ -185,9 +184,7 @@ class OnlineShiftSuite(ContractModel):
         return self
 
     def content_payload(self) -> dict:
-        return self.model_dump(
-            mode="json", exclude={"suite_id", "suite_content_sha256"}
-        )
+        return self.model_dump(mode="json", exclude={"suite_id", "suite_content_sha256"})
 
 
 class OnlineShiftPrediction(ContractModel):
@@ -249,11 +246,7 @@ class OnlineShiftEvaluator:
             raise ValueError("online cause threshold must lie in [0, 1]")
         detected = [case for case in cases if case.prediction.predicted_change_time]
         errors = [
-            abs(
-                (
-                    case.prediction.predicted_change_time - case.truth.change_time
-                ).total_seconds()
-            )
+            abs((case.prediction.predicted_change_time - case.truth.change_time).total_seconds())
             / 3600.0
             for case in detected
             if case.prediction.predicted_change_time is not None
@@ -263,8 +256,16 @@ class OnlineShiftEvaluator:
         true_positive = sum(len(p & t) for p, t in zip(predicted, truth, strict=True))
         false_positive = sum(len(p - t) for p, t in zip(predicted, truth, strict=True))
         false_negative = sum(len(t - p) for p, t in zip(predicted, truth, strict=True))
-        precision = true_positive / (true_positive + false_positive) if true_positive + false_positive else 0.0
-        recall = true_positive / (true_positive + false_negative) if true_positive + false_negative else 0.0
+        precision = (
+            true_positive / (true_positive + false_positive)
+            if true_positive + false_positive
+            else 0.0
+        )
+        recall = (
+            true_positive / (true_positive + false_negative)
+            if true_positive + false_negative
+            else 0.0
+        )
         f1 = 2 * precision * recall / (precision + recall) if precision + recall else 0.0
         non_habit = [
             prediction
@@ -272,8 +273,7 @@ class OnlineShiftEvaluator:
             if ShiftCause.OWNER_HABIT_REGIME not in latent
         ]
         false_habit = (
-            sum(ShiftCause.OWNER_HABIT_REGIME in item for item in non_habit)
-            / len(non_habit)
+            sum(ShiftCause.OWNER_HABIT_REGIME in item for item in non_habit) / len(non_habit)
             if non_habit
             else 0.0
         )
@@ -281,7 +281,8 @@ class OnlineShiftEvaluator:
             sample_count=len(cases),
             change_detection_rate=len(detected) / len(cases),
             mean_absolute_change_time_error_hours=sum(errors) / len(errors) if errors else 0.0,
-            exact_cause_set_accuracy=sum(p == t for p, t in zip(predicted, truth, strict=True)) / len(cases),
+            exact_cause_set_accuracy=sum(p == t for p, t in zip(predicted, truth, strict=True))
+            / len(cases),
             cause_micro_precision=precision,
             cause_micro_recall=recall,
             cause_micro_f1=f1,
@@ -292,9 +293,7 @@ class OnlineShiftEvaluator:
 class OnlineShiftSuiteGenerator:
     generator_version = "online-shift-suite@0.1"
 
-    def generate(
-        self, config: OnlineShiftSuiteConfig | None = None
-    ) -> OnlineShiftSuite:
+    def generate(self, config: OnlineShiftSuiteConfig | None = None) -> OnlineShiftSuite:
         config = config or OnlineShiftSuiteConfig()
         descriptors = [
             (seed_index, seed, family)
@@ -464,11 +463,7 @@ class OnlineShiftSuiteGenerator:
             track=ActorEvidenceTrack.CONTROLLED_NOISE,
             change_time=change_time,
         )
-        visible_detection_ids = {
-            result.metadata.record_id for result in stream.detection_results
-        }
+        visible_detection_ids = {result.metadata.record_id for result in stream.detection_results}
         return stream, tuple(
-            item
-            for item in evidence
-            if item.source_detection_result_id in visible_detection_ids
+            item for item in evidence if item.source_detection_result_id in visible_detection_ids
         )

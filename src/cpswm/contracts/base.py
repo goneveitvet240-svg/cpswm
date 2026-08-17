@@ -2,13 +2,12 @@
 
 from __future__ import annotations
 
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from enum import StrEnum
 from typing import Annotated
 from uuid import UUID, uuid4
 
 from pydantic import BaseModel, ConfigDict, Field, field_validator, model_validator
-
 
 Probability = Annotated[float, Field(ge=0.0, le=1.0)]
 NonNegativeInt = Annotated[int, Field(ge=0)]
@@ -18,7 +17,7 @@ PositiveInt = Annotated[int, Field(gt=0)]
 def utc_now() -> datetime:
     """Return an aware UTC timestamp."""
 
-    return datetime.now(timezone.utc)
+    return datetime.now(UTC)
 
 
 def require_aware(value: datetime, field_name: str) -> datetime:
@@ -110,8 +109,8 @@ class ValidTimeInterval(ContractModel):
         return self.start <= instant and (self.end is None or instant < self.end)
 
     def overlaps(self, other: ValidTimeInterval) -> bool:
-        self_end = self.end or datetime.max.replace(tzinfo=timezone.utc)
-        other_end = other.end or datetime.max.replace(tzinfo=timezone.utc)
+        self_end = self.end or datetime.max.replace(tzinfo=UTC)
+        other_end = other.end or datetime.max.replace(tzinfo=UTC)
         return self.start < other_end and other.start < self_end
 
 

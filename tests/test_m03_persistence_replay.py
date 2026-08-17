@@ -142,16 +142,12 @@ def test_canonical_derived_and_training_stores_are_isolated(metadata_factory):
     assert training_log.latest_watermark().global_commit_seq == 0
 
 
-def test_replay_manifest_fingerprint_ignores_identity_but_binds_logical_time(
-    metadata_factory, now
-):
+def test_replay_manifest_fingerprint_ignores_identity_but_binds_logical_time(metadata_factory, now):
     log = AppendOnlyTransactionLog()
     commit = log.append([make_record(metadata_factory)], idempotency_key="input")
     first = ReplayManifest(
         input_watermark=commit.watermark,
-        input_log_sha256=log.fingerprint(
-            through_commit_seq=commit.watermark.global_commit_seq
-        ),
+        input_log_sha256=log.fingerprint(through_commit_seq=commit.watermark.global_commit_seq),
         schema_version="0.1.0",
         code_version="git:test",
         source_tree_sha256="a" * 64,
@@ -161,12 +157,8 @@ def test_replay_manifest_fingerprint_ignores_identity_but_binds_logical_time(
         execution_mode=ExecutionMode.REPLAY,
         created_at=now,
     )
-    different_identity = first.model_copy(
-        update={"replay_manifest_id": uuid4()}
-    )
-    different_logical_time = first.model_copy(
-        update={"created_at": now + timedelta(minutes=1)}
-    )
+    different_identity = first.model_copy(update={"replay_manifest_id": uuid4()})
+    different_logical_time = first.model_copy(update={"created_at": now + timedelta(minutes=1)})
 
     assert first.fingerprint == different_identity.fingerprint
     assert first.fingerprint != different_logical_time.fingerprint
@@ -193,9 +185,7 @@ def test_append_can_bind_canonical_commit_time(metadata_factory, now):
         )
 
 
-def test_committed_transaction_rejects_record_time_mismatch(
-    metadata_factory, now
-):
+def test_committed_transaction_rejects_record_time_mismatch(metadata_factory, now):
     commit = AppendOnlyTransactionLog().append(
         [make_record(metadata_factory)],
         idempotency_key="transaction-time-binding",
@@ -208,9 +198,7 @@ def test_committed_transaction_rejects_record_time_mismatch(
         type(commit.transaction).model_validate(tampered)
 
 
-def test_transaction_log_round_trips_through_disk(
-    metadata_factory, tmp_path
-):
+def test_transaction_log_round_trips_through_disk(metadata_factory, tmp_path):
     original = AppendOnlyTransactionLog(partition=StorePartition.REPLAY)
     original.append([make_record(metadata_factory)], idempotency_key="first")
     original.append([make_record(metadata_factory)], idempotency_key="second")

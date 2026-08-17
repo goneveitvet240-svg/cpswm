@@ -2,10 +2,10 @@
 
 from __future__ import annotations
 
-from datetime import datetime, timezone
+from collections.abc import Sequence
+from datetime import UTC, datetime
 from pathlib import Path
 from threading import RLock
-from typing import Sequence
 from uuid import UUID
 
 from cpswm.contracts.base import (
@@ -28,9 +28,8 @@ from .contracts import (
     content_hash,
 )
 
-
 ZERO_UUID = UUID(int=0)
-EMPTY_WATERMARK_RECORDED_AT = datetime(1970, 1, 1, tzinfo=timezone.utc)
+EMPTY_WATERMARK_RECORDED_AT = datetime(1970, 1, 1, tzinfo=UTC)
 
 
 class IdempotencyConflictError(ValueError):
@@ -82,9 +81,7 @@ class AppendOnlyTransactionLog:
         if not idempotency_key:
             raise ValueError("idempotency_key cannot be empty")
         requested_committed_at = (
-            require_aware(committed_at, "committed_at")
-            if committed_at is not None
-            else None
+            require_aware(committed_at, "committed_at") if committed_at is not None else None
         )
         envelopes = tuple(envelope_from_contract(record) for record in records)
         batch_record_ids = [item.record_id for item in envelopes]
@@ -124,9 +121,7 @@ class AppendOnlyTransactionLog:
                     idempotent_replay=True,
                 )
 
-            duplicate_ids = self._record_ids.intersection(
-                item.record_id for item in envelopes
-            )
+            duplicate_ids = self._record_ids.intersection(item.record_id for item in envelopes)
             if duplicate_ids:
                 raise RecordAlreadyCommittedError(
                     f"record IDs already committed: {sorted(map(str, duplicate_ids))}"
@@ -189,10 +184,7 @@ class AppendOnlyTransactionLog:
                 item
                 for item in self._transactions
                 if item.global_commit_seq > after_commit_seq
-                and (
-                    through_commit_seq is None
-                    or item.global_commit_seq <= through_commit_seq
-                )
+                and (through_commit_seq is None or item.global_commit_seq <= through_commit_seq)
                 and (household_id is None or item.household_id == household_id)
             )
 
@@ -218,18 +210,13 @@ class AppendOnlyTransactionLog:
 
     def fingerprint(self, *, through_commit_seq: int | None = None) -> str:
         with self._lock:
-            through = (
-                len(self._transactions)
-                if through_commit_seq is None
-                else through_commit_seq
-            )
+            through = len(self._transactions) if through_commit_seq is None else through_commit_seq
             self.watermark_at(through)
             payload = {
                 "format_version": "1.0.0",
                 "partition": self.partition.value,
                 "transactions": [
-                    item.model_dump(mode="json")
-                    for item in self._transactions[:through]
+                    item.model_dump(mode="json") for item in self._transactions[:through]
                 ],
             }
             return content_hash(payload)
@@ -240,9 +227,7 @@ class AppendOnlyTransactionLog:
             partition=self.partition,
             transactions=tuple(self._transactions),
         )
-        target.write_text(
-            canonical_json(snapshot.model_dump(mode="json")), encoding="utf-8"
-        )
+        target.write_text(canonical_json(snapshot.model_dump(mode="json")), encoding="utf-8")
 
     @classmethod
     def load(cls, path: str | Path) -> AppendOnlyTransactionLog:
@@ -251,18 +236,12 @@ class AppendOnlyTransactionLog:
         log = cls(partition=snapshot.partition)
         for transaction in snapshot.transactions:
             log._transactions.append(transaction)
-            log._idempotency[
-                (transaction.household_id, transaction.idempotency_key)
-            ] = transaction
+            log._idempotency[(transaction.household_id, transaction.idempotency_key)] = transaction
             for record in transaction.records:
                 log._record_ids.add(record.envelope.record_id)
                 schema_name = record.envelope.schema_name
-                log._source_local_seq[schema_name] = (
-                    log._source_local_seq.get(schema_name, 0) + 1
-                )
-            log._watermarks[transaction.transaction_id] = log._watermark_for(
-                transaction
-            )
+                log._source_local_seq[schema_name] = log._source_local_seq.get(schema_name, 0) + 1
+            log._watermarks[transaction.transaction_id] = log._watermark_for(transaction)
         return log
 
     def _watermark_for(self, transaction: CommittedTransaction) -> InputWatermark:
@@ -300,12 +279,10 @@ class StoreCatalog:
 
     def __init__(self) -> None:
         self._canonical = {
-            partition: AppendOnlyTransactionLog(partition=partition)
-            for partition in StorePartition
+            partition: AppendOnlyTransactionLog(partition=partition) for partition in StorePartition
         }
         self._derived = {
-            partition: InMemoryProjectionStore(partition=partition)
-            for partition in StorePartition
+            partition: InMemoryProjectionStore(partition=partition) for partition in StorePartition
         }
 
     def canonical(self, partition: StorePartition) -> AppendOnlyTransactionLog:

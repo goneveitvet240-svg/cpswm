@@ -6,8 +6,6 @@ import pytest
 from pydantic import ValidationError
 
 from cpswm.contracts import ActorEvidenceTrack
-from cpswm.system.synthetic_routines import SyntheticRoutineGenerator
-from cpswm.system.world_model_simulator import SymbolicWorldModelSimulator
 from cpswm.system.evaluation_operations import (
     D0FactorFingerprints,
     D0FactorName,
@@ -20,23 +18,20 @@ from cpswm.system.evaluation_operations import (
     ShiftCause,
     ShiftCausePrediction,
 )
+from cpswm.system.synthetic_routines import SyntheticRoutineGenerator
+from cpswm.system.world_model_simulator import SymbolicWorldModelSimulator
 
 
 def suite_by_cause():
     suite = D0ShiftScenarioGenerator().generate()
-    return suite, {
-        case.evaluator_truth.true_cause: case for case in suite.cases
-    }
+    return suite, {case.evaluator_truth.true_cause: case for case in suite.cases}
 
 
 def test_checked_in_d0_config_replays_the_frozen_suite():
     repository_root = Path(__file__).resolve().parents[1]
     config = D0ShiftScenarioConfig.model_validate_json(
         (
-            repository_root
-            / "benchmarks"
-            / "d0_shift_attribution"
-            / "d0_scenario_config_v0.1.json"
+            repository_root / "benchmarks" / "d0_shift_attribution" / "d0_scenario_config_v0.1.json"
         ).read_text(encoding="utf-8")
     )
 
@@ -112,13 +107,9 @@ def test_d0_paired_randomness_reuses_draws_independently_of_policy_identity():
     )
     generator = D0ShiftScenarioGenerator()
     plan = SyntheticRoutineGenerator().generate(generator._routine_config(config))
-    first = generator._policy(
-        config, policy_id="paired-policy-a", selection_probability=0.55
-    )
+    first = generator._policy(config, policy_id="paired-policy-a", selection_probability=0.55)
     renamed = first.model_copy(update={"policy_id": "paired-policy-b"})
-    high = generator._policy(
-        config, policy_id="paired-policy-high", selection_probability=0.75
-    )
+    high = generator._policy(config, policy_id="paired-policy-high", selection_probability=0.75)
 
     run_a, run_b, run_high = SymbolicWorldModelSimulator().run_paired(
         plan,
@@ -131,9 +122,9 @@ def test_d0_paired_randomness_reuses_draws_independently_of_policy_identity():
     selected_high = tuple(item.selected for item in run_high.observation_opportunities)
     assert selected_a == selected_b
     assert all(not low or high for low, high in zip(selected_a, selected_high, strict=True))
-    assert tuple(
-        item.metadata.record_id for item in run_a.observation_opportunities
-    ) == tuple(item.metadata.record_id for item in run_b.observation_opportunities)
+    assert tuple(item.metadata.record_id for item in run_a.observation_opportunities) == tuple(
+        item.metadata.record_id for item in run_b.observation_opportunities
+    )
 
 
 def test_d0_pairs_have_one_shared_session_and_trace_without_splice_shortcut():
@@ -208,8 +199,7 @@ def test_non_identifiable_cases_reward_explicit_abstention_with_proper_scores():
                 posterior={
                     (
                         ShiftCause.UNRESOLVED
-                        if case.evaluator_truth.identifiability_status.value
-                        == "non_identifiable"
+                        if case.evaluator_truth.identifiability_status.value == "non_identifiable"
                         else case.evaluator_truth.true_cause
                     ): 1.0
                 },
@@ -247,9 +237,7 @@ def test_actor_evidence_tracks_break_d0_actor_habit_equivalence(track):
     assert report.shift_cause_accuracy == 1.0
     assert report.actor_mixture_to_owner_leakage == 0.0
     actor_case = next(
-        case
-        for case in suite.cases
-        if case.evaluator_truth.true_cause == ShiftCause.ACTOR_MIXTURE
+        case for case in suite.cases if case.evaluator_truth.true_cause == ShiftCause.ACTOR_MIXTURE
     )
     habit_case = next(
         case
@@ -283,9 +271,7 @@ def test_controlled_actor_evidence_is_uncertain_and_gt_free():
 def test_d0_truth_rejects_a_pair_that_changes_multiple_factors():
     suite = D0ShiftScenarioGenerator().generate()
     original = suite.cases[0].evaluator_truth
-    shifted = original.shifted_factors.model_copy(
-        update={"actor_mixture": "f" * 64}
-    )
+    shifted = original.shifted_factors.model_copy(update={"actor_mixture": "f" * 64})
 
     with pytest.raises(ValidationError, match="change exactly the factor"):
         D0ShiftCaseTruth(

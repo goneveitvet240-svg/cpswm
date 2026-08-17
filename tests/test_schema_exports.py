@@ -3,18 +3,18 @@ import pytest
 from cpswm.contracts import (
     ActorResponsibilityEvidence,
     BeliefSnapshot,
-    ExecutionFeedbackRecord,
-    HardConstraintEvaluation,
-    ObservationSafetyApproval,
-    VerificationObservation,
     EventRecord,
+    ExecutionFeedbackRecord,
     GroundedSearchResult,
+    HardConstraintEvaluation,
     JointPosteriorRequest,
     MemoryReliabilityProjection,
     MemoryReliabilityRequest,
     ObservationLikelihoodModel,
+    ObservationSafetyApproval,
     RelationAssertion,
     UserCorrectionEvent,
+    VerificationObservation,
     WorldModelQuery,
 )
 

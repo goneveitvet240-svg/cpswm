@@ -67,9 +67,7 @@ class SyntheticRoutineGenerator:
                         "object_instance_id": routine.object_instance_id,
                         "event_time": event_time,
                         "actor_id": actor_id,
-                        "source_location_id": current_locations[
-                            routine.object_instance_id
-                        ],
+                        "source_location_id": current_locations[routine.object_instance_id],
                         "destination_location_id": destination_id,
                         "activity_key": routine.activity_key,
                         "context_key": routine.context_key,

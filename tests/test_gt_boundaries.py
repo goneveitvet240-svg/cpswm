@@ -8,7 +8,7 @@ import pytest
 from pydantic import ValidationError
 
 from cpswm.contracts import EntityType, SourceType
-from cpswm_gt import GTEntity, GTRelationAssertion, GroundTruthWorldState
+from cpswm_gt import GroundTruthWorldState, GTEntity, GTRelationAssertion
 from simobs import SyntheticObservation
 
 

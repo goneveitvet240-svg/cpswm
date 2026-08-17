@@ -8,7 +8,8 @@ implementations interchangeable.
 
 from __future__ import annotations
 
-from typing import Protocol, Sequence
+from collections.abc import Sequence
+from typing import Protocol
 from uuid import UUID
 
 from pydantic import Field, model_validator
@@ -27,7 +28,6 @@ from cpswm.contracts.grounded_search import (
     RobotActionType,
     VerificationObservation,
 )
-
 
 GROUNDED_SEARCH_SCHEMA_VERSION = "0.1.0"
 
@@ -76,22 +76,15 @@ class GroundedTaskExecution(ContractModel):
             raise ValueError("execution observation opportunity IDs must be unique")
         for opportunity in opportunities:
             if opportunity.metadata.schema_name != "cpswm.ObservationOpportunityRecord":
-                raise ValueError(
-                    "execution observation opportunity schema name is invalid"
-                )
+                raise ValueError("execution observation opportunity schema name is invalid")
             if opportunity.metadata.schema_version != GROUNDED_SEARCH_SCHEMA_VERSION:
-                raise ValueError(
-                    "execution observation opportunity schema version is invalid"
-                )
+                raise ValueError("execution observation opportunity schema version is invalid")
             if opportunity.metadata.recorded_time != opportunity.opportunity_time:
                 raise ValueError(
-                    "execution observation opportunity recorded time must match "
-                    "opportunity time"
+                    "execution observation opportunity recorded time must match opportunity time"
                 )
             if opportunity.observation_action_id != self.executed_action_id:
-                raise ValueError(
-                    "execution observation opportunity must bind the executed action"
-                )
+                raise ValueError("execution observation opportunity must bind the executed action")
             if not opportunity.selected:
                 raise ValueError(
                     "execution observation opportunity must represent an executed observation"
@@ -101,9 +94,7 @@ class GroundedTaskExecution(ContractModel):
         if self.executed_action_type == RobotActionType.SEARCH and not opportunities:
             raise ValueError("search execution requires a real observation opportunity")
         if self.executed_action_type != RobotActionType.SEARCH and opportunities:
-            raise ValueError(
-                "only search execution may declare observation opportunities"
-            )
+            raise ValueError("only search execution may declare observation opportunities")
         referenced_opportunity_ids: set[UUID] = set()
         for feedback in self.feedback_records:
             if feedback.metadata.schema_name != "cpswm.ExecutionFeedbackRecord":
@@ -111,9 +102,7 @@ class GroundedTaskExecution(ContractModel):
             if feedback.metadata.schema_version != GROUNDED_SEARCH_SCHEMA_VERSION:
                 raise ValueError("execution feedback schema version is invalid")
             if not feedback.valid_time.contains(feedback.metadata.recorded_time):
-                raise ValueError(
-                    "execution feedback recorded time must fall within valid time"
-                )
+                raise ValueError("execution feedback recorded time must fall within valid time")
             if feedback.action_id != self.executed_action_id:
                 raise ValueError("execution feedback must bind the executed action ID")
             if feedback.action_type != self.executed_action_type:
@@ -138,16 +127,12 @@ class GroundedTaskExecution(ContractModel):
                 feedback.action_type == RobotActionType.SEARCH
                 and feedback.observation_opportunity_id is None
             ):
-                raise ValueError(
-                    "search feedback requires an execution observation opportunity"
-                )
+                raise ValueError("search feedback requires an execution observation opportunity")
             if (
                 feedback.action_type != RobotActionType.SEARCH
                 and feedback.observation_opportunity_id is not None
             ):
-                raise ValueError(
-                    "only search feedback may reference an observation opportunity"
-                )
+                raise ValueError("only search feedback may reference an observation opportunity")
 
         if referenced_opportunity_ids != opportunity_id_set:
             raise ValueError(
@@ -165,18 +150,14 @@ class GroundedTaskExecution(ContractModel):
         if len(traces) != 1:
             raise ValueError("one grounded task execution cannot mix traces")
 
-        opportunity_by_id = {
-            item.metadata.record_id: item for item in opportunities
-        }
+        opportunity_by_id = {item.metadata.record_id: item for item in opportunities}
         for feedback in self.feedback_records:
             opportunity_id = feedback.observation_opportunity_id
             if opportunity_id is None:
                 continue
             opportunity_time = opportunity_by_id[opportunity_id].opportunity_time
             if feedback.metadata.recorded_time < opportunity_time:
-                raise ValueError(
-                    "execution feedback cannot precede its observation opportunity"
-                )
+                raise ValueError("execution feedback cannot precede its observation opportunity")
             if not feedback.valid_time.contains(opportunity_time):
                 raise ValueError(
                     "execution observation opportunity must fall within feedback valid time"
@@ -189,9 +170,7 @@ class SemanticQueryCompiler(Protocol):
 
 
 class GroundedCandidateRetriever(Protocol):
-    def retrieve(
-        self, query: CompiledSemanticQuery
-    ) -> Sequence[JointCandidateEvidence]: ...
+    def retrieve(self, query: CompiledSemanticQuery) -> Sequence[JointCandidateEvidence]: ...
 
 
 class IdentityEvidenceProvider(Protocol):
@@ -199,9 +178,7 @@ class IdentityEvidenceProvider(Protocol):
 
 
 class ObservationActionProvider(Protocol):
-    def propose(
-        self, belief: GroundedSearchResult
-    ) -> Sequence[ObservationActionCandidate]: ...
+    def propose(self, belief: GroundedSearchResult) -> Sequence[ObservationActionCandidate]: ...
 
 
 class VerificationObservationProvider(Protocol):
@@ -213,12 +190,8 @@ class VerificationObservationProvider(Protocol):
 
 
 class GroundedTaskExecutor(Protocol):
-    def execute(
-        self, target: GroundedObjectCandidate
-    ) -> GroundedTaskExecution: ...
+    def execute(self, target: GroundedObjectCandidate) -> GroundedTaskExecution: ...
 
 
 class ActionOutcomeModelProvider(Protocol):
-    def model_for(
-        self, feedback: ExecutionFeedbackRecord
-    ) -> ActionOutcomeLikelihoodModel: ...
+    def model_for(self, feedback: ExecutionFeedbackRecord) -> ActionOutcomeLikelihoodModel: ...

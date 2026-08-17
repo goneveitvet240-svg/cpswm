@@ -72,8 +72,6 @@ def simulate_location_observation(
         detected_location_id=detected_location_id if detected else None,
         detection_time=observation_opportunity.opportunity_time if detected else None,
         negative_evidence_strength=(
-            detection_opportunity
-            if outcome == ObservationOutcome.VERIFIED_ABSENCE
-            else 0.0
+            detection_opportunity if outcome == ObservationOutcome.VERIFIED_ABSENCE else 0.0
         ),
     )

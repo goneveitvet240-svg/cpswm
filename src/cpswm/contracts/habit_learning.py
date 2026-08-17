@@ -23,7 +23,6 @@ from .base import (
     require_aware,
 )
 
-
 StrictlyPositiveProbability = Annotated[float, Field(gt=0.0, le=1.0)]
 
 
@@ -189,20 +188,14 @@ class ObservationDetectionResult(ContractModel):
         )
         if self.outcome == ObservationOutcome.DETECTED:
             if any(value is None for value in realized):
-                raise ValueError(
-                    "detected result requires object identity, location, and time"
-                )
+                raise ValueError("detected result requires object identity, location, and time")
         elif any(value is not None for value in realized):
-            raise ValueError(
-                "non-detected result cannot carry object identity, location, or time"
-            )
+            raise ValueError("non-detected result cannot carry object identity, location, or time")
         if self.outcome == ObservationOutcome.VERIFIED_ABSENCE:
             if self.negative_evidence_strength <= 0.0:
                 raise ValueError("verified absence requires positive evidence strength")
         elif self.negative_evidence_strength != 0.0:
-            raise ValueError(
-                "only verified absence can carry negative evidence strength"
-            )
+            raise ValueError("only verified absence can carry negative evidence strength")
         if self.metadata.source_type == SourceType.SIMULATION and self.evidence_refs:
             raise ValueError(
                 "robot-visible simulation result cannot carry privileged evidence references"
@@ -249,16 +242,12 @@ class ActorResponsibilityEvidence(ContractModel):
             raise ValueError("actor responsibility requires a sensing/model source")
         if self.metadata.recorded_time != self.evidence_time:
             raise ValueError("actor evidence metadata time must equal evidence_time")
-        if not isclose(
-            sum(self.actor_posterior.values()), 1.0, rel_tol=0.0, abs_tol=1e-6
-        ):
+        if not isclose(sum(self.actor_posterior.values()), 1.0, rel_tol=0.0, abs_tol=1e-6):
             raise ValueError("actor_posterior probabilities must sum to 1")
         if any(not actor.strip() for actor in self.actor_posterior):
             raise ValueError("actor_posterior keys must be non-empty")
         if set(self.reference_actor_prior) != set(self.actor_posterior):
-            raise ValueError(
-                "reference_actor_prior and actor_posterior require identical support"
-            )
+            raise ValueError("reference_actor_prior and actor_posterior require identical support")
         if not isclose(
             sum(self.reference_actor_prior.values()),
             1.0,

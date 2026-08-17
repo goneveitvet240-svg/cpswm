@@ -30,9 +30,7 @@ def test_watermark_query_requires_watermark(metadata_factory):
     with pytest.raises(ValidationError):
         WorldModelQuery(
             metadata=metadata_factory(schema_name="cpswm.WorldModelQuery"),
-            constraints=(
-                QueryConstraint(field="category", operator="eq", value="cup"),
-            ),
+            constraints=(QueryConstraint(field="category", operator="eq", value="cup"),),
             consistency_mode=QueryConsistencyMode.AT_INPUT_WATERMARK,
             retrieval_budget=RetrievalBudget(max_events=100),
         )

@@ -21,20 +21,16 @@ class LoggedPolicyThenLocationBaseline:
 
     def predict(self, model_input: D0ShiftCaseInput) -> ShiftCausePrediction:
         control_propensities = tuple(
-            item.selection_probability
-            for item in model_input.control_run.observation_opportunities
+            item.selection_probability for item in model_input.control_run.observation_opportunities
         )
         shifted_propensities = tuple(
-            item.selection_probability
-            for item in model_input.shifted_run.observation_opportunities
+            item.selection_probability for item in model_input.shifted_run.observation_opportunities
         )
         if control_propensities != shifted_propensities:
             cause = ShiftCause.OBSERVATION_POLICY
         elif self._detected_location_counts(
             model_input.control_run, model_input.change_time
-        ) != self._detected_location_counts(
-            model_input.shifted_run, model_input.change_time
-        ):
+        ) != self._detected_location_counts(model_input.shifted_run, model_input.change_time):
             cause = ShiftCause.OWNER_HABIT_REGIME
         else:
             cause = ShiftCause.UNRESOLVED
@@ -55,9 +51,7 @@ class LoggedPolicyThenLocationBaseline:
         )
 
     @staticmethod
-    def _detected_location_counts(
-        run: D0VisibleSimulationRun, change_time
-    ) -> Counter[str]:
+    def _detected_location_counts(run: D0VisibleSimulationRun, change_time) -> Counter[str]:
         return Counter(
             str(result.detected_location_id)
             for result in run.detection_results
@@ -73,12 +67,10 @@ class LoggedPolicyActorLocationBaseline(LoggedPolicyThenLocationBaseline):
 
     def predict(self, model_input: D0ShiftCaseInput) -> ShiftCausePrediction:
         control_propensities = tuple(
-            item.selection_probability
-            for item in model_input.control_run.observation_opportunities
+            item.selection_probability for item in model_input.control_run.observation_opportunities
         )
         shifted_propensities = tuple(
-            item.selection_probability
-            for item in model_input.shifted_run.observation_opportunities
+            item.selection_probability for item in model_input.shifted_run.observation_opportunities
         )
         if control_propensities != shifted_propensities:
             cause = ShiftCause.OBSERVATION_POLICY
@@ -86,9 +78,7 @@ class LoggedPolicyActorLocationBaseline(LoggedPolicyThenLocationBaseline):
             cause = ShiftCause.ACTOR_MIXTURE
         elif self._detected_location_counts(
             model_input.control_run, model_input.change_time
-        ) != self._detected_location_counts(
-            model_input.shifted_run, model_input.change_time
-        ):
+        ) != self._detected_location_counts(model_input.shifted_run, model_input.change_time):
             cause = ShiftCause.OWNER_HABIT_REGIME
         else:
             cause = ShiftCause.UNRESOLVED
@@ -115,8 +105,7 @@ class LoggedPolicyActorLocationBaseline(LoggedPolicyThenLocationBaseline):
             return False
         target_key = str(model_input.target_person_id)
         target_mass = sum(
-            item.actor_posterior.get(target_key, 0.0)
-            for item in model_input.shifted_actor_evidence
+            item.actor_posterior.get(target_key, 0.0) for item in model_input.shifted_actor_evidence
         )
         non_target_mass = sum(
             sum(

@@ -58,14 +58,11 @@ from cpswm.world_model.grounded_search import (
     OracleVerificationObservationProvider,
 )
 
-
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 
 
 def pose(x=0.0, y=0.0, z=1.0):
-    return Pose3D(
-        frame_id="map", x=x, y=y, z=z, qx=0.0, qy=0.0, qz=0.0, qw=1.0
-    )
+    return Pose3D(frame_id="map", x=x, y=y, z=z, qx=0.0, qy=0.0, qz=0.0, qw=1.0)
 
 
 def query():
@@ -95,9 +92,7 @@ def joint_request(metadata_factory, entity_factory, *, ambiguous=False, top_k=3)
     glasses = entity_factory(EntityType.OBJECT_INSTANCE)
     phone_scores = (0.91, 0.88, 0.82, 0.90, 0.93, 0.89)
     glasses_scores = (
-        (0.90, 0.87, 0.81, 0.89, 0.92, 0.88)
-        if ambiguous
-        else (0.45, 0.40, 0.55, 0.35, 0.50, 0.42)
+        (0.90, 0.87, 0.81, 0.89, 0.92, 0.88) if ambiguous else (0.45, 0.40, 0.55, 0.35, 0.50, 0.42)
     )
     candidates = (
         JointCandidateEvidence(
@@ -140,15 +135,11 @@ def test_joint_posterior_uses_all_six_channels_and_retains_unknown(
     assert result.resolution_status == ResolutionStatus.RESOLVED
     assert result.response_policy == ResponsePolicy.RETURN_TOP_K
     assert result.candidates[0].kind == CandidateKind.OBJECT_INSTANCE
-    assert {item.channel for item in result.candidates[0].contributions} == set(
-        EvidenceChannel
-    )
+    assert {item.channel for item in result.candidates[0].contributions} == set(EvidenceChannel)
     unknown_id = next(
         item.candidate_id for item in request.candidates if item.kind == CandidateKind.UNKNOWN
     )
-    assert result.unknown_probability == pytest.approx(
-        result.posterior_by_candidate_id[unknown_id]
-    )
+    assert result.unknown_probability == pytest.approx(result.posterior_by_candidate_id[unknown_id])
     assert sum(result.posterior_by_candidate_id.values()) == pytest.approx(1.0)
     assert result.metadata.record_id != request.metadata.record_id
 
@@ -182,9 +173,7 @@ def test_unknown_candidate_can_trigger_abstention(metadata_factory, entity_facto
                 item.model_copy(
                     update={
                         "prior_probability": 0.70,
-                        "channel_evidence": channels(
-                            (0.95, 0.95, 0.95, 0.95, 0.95, 0.95)
-                        ),
+                        "channel_evidence": channels((0.95, 0.95, 0.95, 0.95, 0.95, 0.95)),
                     }
                 )
             )
@@ -215,12 +204,8 @@ def test_joint_contract_rejects_missing_modalities(metadata_factory, entity_fact
         )
 
 
-def test_top_k_does_not_renormalize_or_hide_unreturned_mass(
-    metadata_factory, entity_factory
-):
-    result = JointPosteriorFusion().fuse(
-        joint_request(metadata_factory, entity_factory, top_k=1)
-    )
+def test_top_k_does_not_renormalize_or_hide_unreturned_mass(metadata_factory, entity_factory):
+    result = JointPosteriorFusion().fuse(joint_request(metadata_factory, entity_factory, top_k=1))
     assert len(result.candidates) == 1
     assert result.posterior_mass_returned < 1.0
     assert sum(result.posterior_by_candidate_id.values()) == pytest.approx(1.0)
@@ -332,13 +317,9 @@ def test_tactile_identity_evidence_requires_authorization_and_safety():
         )
 
 
-def test_hard_constraint_violation_cannot_be_resolved(
-    metadata_factory, entity_factory
-):
+def test_hard_constraint_violation_cannot_be_resolved(metadata_factory, entity_factory):
     base = joint_request(metadata_factory, entity_factory)
-    constrained_query = base.compiled_query.model_copy(
-        update={"hard_constraints": ("color=red",)}
-    )
+    constrained_query = base.compiled_query.model_copy(update={"hard_constraints": ("color=red",)})
     candidates = []
     best_candidate_id = JointPosteriorFusion().fuse(base).candidates[0].candidate_id
     for candidate in base.candidates:
@@ -378,9 +359,7 @@ def test_hard_constraint_violation_cannot_be_resolved(
     )
 
 
-def test_hard_constraint_requires_explicit_candidate_evaluations(
-    metadata_factory, entity_factory
-):
+def test_hard_constraint_requires_explicit_candidate_evaluations(metadata_factory, entity_factory):
     base = joint_request(metadata_factory, entity_factory)
     with pytest.raises(ValidationError, match="explicitly evaluate every hard constraint"):
         JointPosteriorRequest(
@@ -542,14 +521,10 @@ def task_execution(target, feedback, *, opportunities=(), **updates):
         executed_action_id=feedback.action_id,
         executed_action_type=feedback.action_type,
         action_outcome_model_version=(
-            "oracle-search-outcome@0.1"
-            if feedback.action_type == RobotActionType.SEARCH
-            else None
+            "oracle-search-outcome@0.1" if feedback.action_type == RobotActionType.SEARCH else None
         ),
         action_outcome_calibration_domain=(
-            "symbolic-household-v0"
-            if feedback.action_type == RobotActionType.SEARCH
-            else None
+            "symbolic-household-v0" if feedback.action_type == RobotActionType.SEARCH else None
         ),
         observation_opportunities=tuple(opportunities),
         feedback_records=(feedback,),
@@ -597,11 +572,7 @@ def test_direction_three_rejects_recursive_live_extras_on_input(
         request = request.model_copy(update={"forged_input": True})
     else:
         request = request.model_copy(
-            update={
-                "metadata": request.metadata.model_copy(
-                    update={"forged_input": True}
-                )
-            }
+            update={"metadata": request.metadata.model_copy(update={"forged_input": True})}
         )
     log = AppendOnlyTransactionLog()
     pipeline = DirectionThreePipeline()
@@ -741,9 +712,7 @@ def test_direction_three_pipeline_connects_ambiguity_to_active_observation(
 def test_decide_revalidates_observation_actions(invalid_update, metadata_factory, entity_factory):
     request = joint_request(metadata_factory, entity_factory, ambiguous=True)
     hypotheses = tuple(item.candidate_id for item in request.candidates)
-    forged = action_candidate(hypotheses, informative=True).model_copy(
-        update=invalid_update
-    )
+    forged = action_candidate(hypotheses, informative=True).model_copy(update=invalid_update)
 
     with pytest.raises(ValueError, match="invalid provider observation action|fields outside"):
         DirectionThreePipeline().decide(request, (forged,))
@@ -785,9 +754,7 @@ def test_common_pipeline_rejects_fusion_grounding_drift_without_a_write(
     "mutation",
     ("schema", "query", "model", "posterior-support", "hard-constraints"),
 )
-def test_pipeline_binds_fusion_result_to_request(
-    metadata_factory, entity_factory, mutation
-):
+def test_pipeline_binds_fusion_result_to_request(metadata_factory, entity_factory, mutation):
     class MutatedFusion(JointPosteriorFusion):
         def fuse(self, request):
             result = super().fuse(request)
@@ -893,28 +860,28 @@ def test_s3_1_oracle_loop_observes_refuses_premature_commit_and_writes_success(
             item.entity for item in request.candidates if item.candidate_id == target_id
         ),
         attempted_location_id=next(
-            item.location_id
-            for item in request.candidates
-            if item.candidate_id == target_id
+            item.location_id for item in request.candidates if item.candidate_id == target_id
         ),
         valid_time=interval,
         outcome_distribution={RobotActionOutcome.SUCCESS: 1.0},
         task_goal_satisfied_probability=1.0,
     )
-    resolved_target = JointPosteriorFusion().fuse(
-        DirectionThreePipeline._request_after_observation(
-            request,
-            JointPosteriorFusion().fuse(request),
-            observation,
+    resolved_target = (
+        JointPosteriorFusion()
+        .fuse(
+            DirectionThreePipeline._request_after_observation(
+                request,
+                JointPosteriorFusion().fuse(request),
+                observation,
+            )
         )
-    ).candidates[0]
+        .candidates[0]
+    )
     log = AppendOnlyTransactionLog()
     trace = DirectionThreePipeline().run_closed_loop(
         request,
         action_provider=OracleObservationActionProvider((action,)),
-        observation_provider=OracleVerificationObservationProvider(
-            {action.action_id: observation}
-        ),
+        observation_provider=OracleVerificationObservationProvider({action.action_id: observation}),
         task_executor=OracleGroundedTaskExecutor(
             {target_id: task_execution(resolved_target, success)}
         ),
@@ -959,8 +926,7 @@ def test_s3_1_oracle_loop_uses_not_found_as_uncertain_evidence_and_replans(
         action_type=RobotActionType.SEARCH,
         target_entity=entity_by_id[first_id],
         attempted_location_id=next(
-            item.location_id for item in first_result.candidates
-            if item.candidate_id == first_id
+            item.location_id for item in first_result.candidates if item.candidate_id == first_id
         ),
         valid_time=interval,
         outcome_distribution={RobotActionOutcome.NOT_FOUND: 1.0},
@@ -978,8 +944,7 @@ def test_s3_1_oracle_loop_uses_not_found_as_uncertain_evidence_and_replans(
         action_type=RobotActionType.GRASP,
         target_entity=entity_by_id[second_id],
         attempted_location_id=next(
-            item.location_id for item in first_result.candidates
-            if item.candidate_id == second_id
+            item.location_id for item in first_result.candidates if item.candidate_id == second_id
         ),
         valid_time=interval,
         outcome_distribution={RobotActionOutcome.SUCCESS: 1.0},
@@ -993,12 +958,8 @@ def test_s3_1_oracle_loop_uses_not_found_as_uncertain_evidence_and_replans(
             )
         }
     )
-    first_target = next(
-        item for item in first_result.candidates if item.candidate_id == first_id
-    )
-    second_target = next(
-        item for item in first_result.candidates if item.candidate_id == second_id
-    )
+    first_target = next(item for item in first_result.candidates if item.candidate_id == first_id)
+    second_target = next(item for item in first_result.candidates if item.candidate_id == second_id)
     search_model = ActionOutcomeLikelihoodModel(
         action_type=RobotActionType.SEARCH,
         p_outcome_given_target_present={
@@ -1041,9 +1002,7 @@ def test_s3_1_oracle_loop_uses_not_found_as_uncertain_evidence_and_replans(
     assert trace.feedback_commit_sequences == (1, 2)
 
 
-def test_oracle_observation_rejects_planning_update_model_drift(
-    metadata_factory, entity_factory
-):
+def test_oracle_observation_rejects_planning_update_model_drift(metadata_factory, entity_factory):
     request = joint_request(metadata_factory, entity_factory, ambiguous=True)
     hypotheses = tuple(item.candidate_id for item in request.candidates)
     action = action_candidate(hypotheses, informative=True, cost=0.0)
@@ -1072,9 +1031,7 @@ def test_oracle_observation_rejects_planning_update_model_drift(
         provider.observe(action, JointPosteriorFusion().fuse(request))
 
 
-def test_oracle_loop_rejects_cross_trace_verification_evidence(
-    metadata_factory, entity_factory
-):
+def test_oracle_loop_rejects_cross_trace_verification_evidence(metadata_factory, entity_factory):
     request = joint_request(metadata_factory, entity_factory, ambiguous=True)
     hypotheses = tuple(item.candidate_id for item in request.candidates)
     action = action_candidate(hypotheses, informative=True, cost=0.0)
@@ -1147,17 +1104,13 @@ def test_common_pipeline_rejects_unbound_provider_observations_without_a_write(
             update={"observation_likelihood_model_id": "drifted-model@9"}
         )
     elif mutation == "domain":
-        observation = observation.model_copy(
-            update={"calibration_domain": "unvalidated-domain"}
-        )
+        observation = observation.model_copy(update={"calibration_domain": "unvalidated-domain"})
     elif mutation == "outcome":
         observation = observation.model_copy(update={"outcome_label": "invented"})
     else:
         likelihoods = dict(observation.candidate_likelihoods)
         likelihoods.pop(next(iter(likelihoods)))
-        observation = observation.model_copy(
-            update={"candidate_likelihoods": likelihoods}
-        )
+        observation = observation.model_copy(update={"candidate_likelihoods": likelihoods})
     log = AppendOnlyTransactionLog()
 
     with pytest.raises(ValueError, match=message):
@@ -1173,8 +1126,7 @@ def test_common_pipeline_rejects_invalid_provider_action_without_a_write(
     hypotheses = tuple(item.candidate_id for item in request.candidates)
     action = action_candidate(hypotheses, informative=True, cost=0.0)
     incomplete = {
-        outcome: dict(likelihoods)
-        for outcome, likelihoods in action.outcome_likelihoods.items()
+        outcome: dict(likelihoods) for outcome, likelihoods in action.outcome_likelihoods.items()
     }
     incomplete["phone_seen"].pop(hypotheses[-1])
     forged = action.model_copy(update={"outcome_likelihoods": incomplete})
@@ -1293,9 +1245,7 @@ def test_execution_feedback_must_bind_real_execution_context_without_a_write(
 ):
     request = joint_request(metadata_factory, entity_factory)
     result = JointPosteriorFusion().fuse(request)
-    target = next(
-        item for item in result.candidates if item.kind == CandidateKind.OBJECT_INSTANCE
-    )
+    target = next(item for item in result.candidates if item.kind == CandidateKind.OBJECT_INSTANCE)
     action_id = uuid4()
     opportunity = execution_opportunity(request.metadata, action_id)
     feedback = ExecutionFeedbackRecord(
@@ -1352,9 +1302,7 @@ def test_execution_outcome_model_is_validated_before_atomic_write(
 ):
     request = joint_request(metadata_factory, entity_factory)
     result = JointPosteriorFusion().fuse(request)
-    target = next(
-        item for item in result.candidates if item.kind == CandidateKind.OBJECT_INSTANCE
-    )
+    target = next(item for item in result.candidates if item.kind == CandidateKind.OBJECT_INSTANCE)
     action_id = uuid4()
     opportunity = execution_opportunity(request.metadata, action_id)
     feedback = ExecutionFeedbackRecord(
@@ -1394,12 +1342,8 @@ def test_execution_outcome_model_is_validated_before_atomic_write(
     else:
         model = model.model_copy(
             update={
-                "p_outcome_given_target_present": {
-                    RobotActionOutcome.UNKNOWN: 1.0
-                },
-                "p_outcome_given_target_absent": {
-                    RobotActionOutcome.UNKNOWN: 1.0
-                },
+                "p_outcome_given_target_present": {RobotActionOutcome.UNKNOWN: 1.0},
+                "p_outcome_given_target_absent": {RobotActionOutcome.UNKNOWN: 1.0},
             }
         )
     log = AppendOnlyTransactionLog()
@@ -1530,11 +1474,7 @@ def test_execution_records_require_schema_and_time_consistency_without_a_write(
         )
     elif mutation == "opportunity_version":
         opportunity = opportunity.model_copy(
-            update={
-                "metadata": opportunity.metadata.model_copy(
-                    update={"schema_version": "9.9.9"}
-                )
-            }
+            update={"metadata": opportunity.metadata.model_copy(update={"schema_version": "9.9.9"})}
         )
     elif mutation == "feedback_name":
         feedback = feedback.model_copy(
@@ -1546,11 +1486,7 @@ def test_execution_records_require_schema_and_time_consistency_without_a_write(
         )
     elif mutation == "feedback_version":
         feedback = feedback.model_copy(
-            update={
-                "metadata": feedback.metadata.model_copy(
-                    update={"schema_version": "9.9.9"}
-                )
-            }
+            update={"metadata": feedback.metadata.model_copy(update={"schema_version": "9.9.9"})}
         )
     elif mutation == "opportunity_time":
         opportunity = opportunity.model_copy(
@@ -1694,9 +1630,7 @@ def test_manipulation_failures_are_uncertain_action_evidence(
     assert len(record.outcome_distribution) == 2
 
 
-def test_not_found_without_observation_opportunity_is_rejected(
-    metadata_factory, interval
-):
+def test_not_found_without_observation_opportunity_is_rejected(metadata_factory, interval):
     with pytest.raises(ValidationError, match="observation opportunity"):
         ExecutionFeedbackRecord(
             metadata=metadata_factory(
@@ -1767,9 +1701,7 @@ def test_feedback_projector_rejects_unmodeled_realized_outcome(
         ExecutionFeedbackProjector().update_target_presence(0.7, feedback, model)
 
 
-def test_action_success_cannot_overstate_task_goal_completion(
-    metadata_factory, interval
-):
+def test_action_success_cannot_overstate_task_goal_completion(metadata_factory, interval):
     with pytest.raises(ValidationError, match="cannot exceed action success"):
         ExecutionFeedbackRecord(
             metadata=metadata_factory(
@@ -1815,9 +1747,7 @@ def test_memory_reliability_uses_evidence_not_raw_age(metadata_factory):
         MemoryReliabilityRequest(**common, seconds_since_last_direct_observation=864000.0)
     )
 
-    assert old.posterior_current_probability == pytest.approx(
-        recent.posterior_current_probability
-    )
+    assert old.posterior_current_probability == pytest.approx(recent.posterior_current_probability)
     assert recent.status == MemoryReliabilityStatus.FRESH
     assert old.status == MemoryReliabilityStatus.STALE
     assert old.lifecycle_action == MemoryLifecycleAction.VERIFY_BEFORE_HIGH_RISK_USE

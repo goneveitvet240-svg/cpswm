@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import hashlib
 import json
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from enum import Enum
 from typing import Any
 from uuid import NAMESPACE_URL, UUID, uuid5
@@ -16,7 +16,7 @@ def _canonical_value(value: Any) -> Any:
     if isinstance(value, BaseModel):
         return _canonical_value(value.model_dump(mode="python"))
     if isinstance(value, datetime):
-        return value.astimezone(timezone.utc).isoformat().replace("+00:00", "Z")
+        return value.astimezone(UTC).isoformat().replace("+00:00", "Z")
     if isinstance(value, UUID):
         return str(value)
     if isinstance(value, Enum):
@@ -28,8 +28,7 @@ def _canonical_value(value: Any) -> Any:
         return 0.0
     if isinstance(value, dict):
         return {
-            str(_canonical_value(key)): _canonical_value(nested)
-            for key, nested in value.items()
+            str(_canonical_value(key)): _canonical_value(nested) for key, nested in value.items()
         }
     if isinstance(value, (list, tuple)):
         return [_canonical_value(item) for item in value]

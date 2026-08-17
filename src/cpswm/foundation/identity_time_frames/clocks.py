@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from collections import deque
-from datetime import datetime, timedelta, timezone
+from datetime import UTC, datetime, timedelta
 from uuid import UUID
 
 from cpswm.contracts.base import require_aware
@@ -14,7 +14,7 @@ from .contracts import ClockAlignment, TimeAlignmentResult
 def normalize_utc(value: datetime) -> datetime:
     """Normalize an aware timestamp to UTC without changing its instant."""
 
-    return require_aware(value, "timestamp").astimezone(timezone.utc)
+    return require_aware(value, "timestamp").astimezone(UTC)
 
 
 class ClockAlignmentConflictError(ValueError):
@@ -37,14 +37,10 @@ class TimeAlignmentRegistry:
                 if existing != alignment:
                     raise ClockAlignmentConflictError("alignment_id is already registered")
                 return
-            same_pair = (
-                existing.household_id == alignment.household_id
-                and {
-                    existing.source_clock_id,
-                    existing.target_clock_id,
-                }
-                == {alignment.source_clock_id, alignment.target_clock_id}
-            )
+            same_pair = existing.household_id == alignment.household_id and {
+                existing.source_clock_id,
+                existing.target_clock_id,
+            } == {alignment.source_clock_id, alignment.target_clock_id}
             if same_pair and existing.valid_time.overlaps(alignment.valid_time):
                 raise ClockAlignmentConflictError(
                     "overlapping alignments for one clock pair are ambiguous"

@@ -21,14 +21,10 @@ from cpswm.foundation.runtime_orchestration import (
 
 def main() -> None:
     if len(sys.argv) != 6:
-        raise SystemExit(
-            "usage: worker REPOSITORY_ROOT INPUT_LOG MANIFEST RUNTIME_SPEC OUTPUT"
-        )
+        raise SystemExit("usage: worker REPOSITORY_ROOT INPUT_LOG MANIFEST RUNTIME_SPEC OUTPUT")
     repository_root = Path(sys.argv[1]).resolve()
     input_log = AppendOnlyTransactionLog.load(sys.argv[2])
-    manifest = ReplayManifest.model_validate_json(
-        Path(sys.argv[3]).read_text(encoding="utf-8")
-    )
+    manifest = ReplayManifest.model_validate_json(Path(sys.argv[3]).read_text(encoding="utf-8"))
     runtime_spec = json.loads(Path(sys.argv[4]).read_text(encoding="utf-8"))
     versions = build_version_bundle(
         repository_root,

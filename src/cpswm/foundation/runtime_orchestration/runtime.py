@@ -4,11 +4,11 @@ from __future__ import annotations
 
 import hashlib
 import random
+from collections.abc import Callable
 from dataclasses import dataclass, replace
 from datetime import datetime
 from pathlib import Path
 from time import sleep
-from typing import Callable
 from uuid import UUID, uuid4
 
 from pydantic import BaseModel, JsonValue
@@ -112,9 +112,7 @@ class InProcessRuntime:
         retry_policy: RetryPolicy | None = None,
     ) -> None:
         if message_name in self._commands:
-            raise HandlerRegistrationError(
-                f"command {message_name!r} already has a handler"
-            )
+            raise HandlerRegistrationError(f"command {message_name!r} already has a handler")
         self._commands[message_name] = _RegisteredHandler(
             handler_name, handler, retry_policy or RetryPolicy()
         )
@@ -129,9 +127,7 @@ class InProcessRuntime:
     ) -> None:
         subscribers = self._events.setdefault(message_name, {})
         if handler_name in subscribers:
-            raise HandlerRegistrationError(
-                f"event handler {handler_name!r} is already registered"
-            )
+            raise HandlerRegistrationError(f"event handler {handler_name!r} is already registered")
         subscribers[handler_name] = _RegisteredHandler(
             handler_name, handler, retry_policy or RetryPolicy()
         )
@@ -160,9 +156,7 @@ class InProcessRuntime:
         commits: list[CommitResult] = []
         emitted: list[RuntimeMessage] = []
         for registered in handlers:
-            execution, commit, messages = self._run_handler(
-                registered, message, replay_manifest
-            )
+            execution, commit, messages = self._run_handler(registered, message, replay_manifest)
             executions.append(execution)
             if commit is not None:
                 commits.append(commit)
@@ -186,9 +180,7 @@ class InProcessRuntime:
         unexpected_fields = (live_fields - declared_fields) | set(pydantic_extras)
         if unexpected_fields:
             names = ", ".join(sorted(unexpected_fields))
-            raise ValueError(
-                f"runtime input contains unexpected field(s): {names}"
-            )
+            raise ValueError(f"runtime input contains unexpected field(s): {names}")
 
         return RuntimeMessage.model_validate(
             message.model_dump(mode="python", round_trip=True, warnings=False)
@@ -236,9 +228,7 @@ class InProcessRuntime:
                 versions=self.versions,
                 attempt=attempt,
                 now=self._logical_now(replay_manifest),
-                random=random.Random(
-                    self._handler_seed(replay_manifest, message, registered.name)
-                ),
+                random=random.Random(self._handler_seed(replay_manifest, message, registered.name)),
             )
             try:
                 output = registered.callback(message, context)
@@ -249,13 +239,9 @@ class InProcessRuntime:
                 if output.records:
                     commit = self.transaction_log.append(
                         output.records,
-                        idempotency_key=(
-                            f"handler:{registered.name}:{message.idempotency_key}"
-                        ),
+                        idempotency_key=(f"handler:{registered.name}:{message.idempotency_key}"),
                         committed_at=(
-                            replay_manifest.created_at
-                            if replay_manifest is not None
-                            else None
+                            replay_manifest.created_at if replay_manifest is not None else None
                         ),
                     )
                 finished_at = self._logical_now(replay_manifest)
@@ -356,9 +342,7 @@ class InProcessRuntime:
                 names = ", ".join(sorted(unexpected_fields))
                 raise ValueError(f"{path} contains unexpected field(s): {names}")
             for field_name in declared_fields:
-                cls._reject_live_model_extras(
-                    getattr(value, field_name), f"{path}.{field_name}"
-                )
+                cls._reject_live_model_extras(getattr(value, field_name), f"{path}.{field_name}")
         elif isinstance(value, dict):
             for key, nested in value.items():
                 cls._reject_live_model_extras(nested, f"{path}[{key!r}]")
@@ -415,9 +399,7 @@ class InProcessRuntime:
         )
         values.update(
             {
-                "message_id": context.deterministic_uuid(
-                    f"emitted-message:{ordinal}"
-                ),
+                "message_id": context.deterministic_uuid(f"emitted-message:{ordinal}"),
                 "created_at": context.now,
             }
         )

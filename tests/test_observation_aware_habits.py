@@ -17,9 +17,9 @@ from cpswm.contracts import (
 )
 from cpswm.world_model.habits_transitions import HierarchicalDirichletHabitModel
 from cpswm_gt import (
+    GroundTruthHabitTrajectory,
     GTHabitRegimeKind,
     GTPlacementEvent,
-    GroundTruthHabitTrajectory,
 )
 from simobs import SelectiveObservationSample, simulate_location_observation
 
@@ -92,9 +92,7 @@ def test_not_observed_never_becomes_negative_evidence(metadata_factory, now):
         observation_opportunity=opportunity,
         detected_object_instance_id=uuid4(),
         detected_location_id=uuid4(),
-        sample=SelectiveObservationSample(
-            selected=False, target_present=True, detection_draw=0.0
-        ),
+        sample=SelectiveObservationSample(selected=False, target_present=True, detection_draw=0.0),
     )
 
     assert not record.supports_negative_evidence
@@ -118,18 +116,14 @@ def test_verified_absence_uses_detection_opportunity(metadata_factory, now):
         observation_opportunity=opportunity,
         detected_object_instance_id=uuid4(),
         detected_location_id=uuid4(),
-        sample=SelectiveObservationSample(
-            selected=True, target_present=False, detection_draw=0.0
-        ),
+        sample=SelectiveObservationSample(selected=True, target_present=False, detection_draw=0.0),
     )
 
     assert record.supports_negative_evidence
     assert record.negative_evidence_strength == pytest.approx(0.6)
 
 
-def test_ambiguous_result_cannot_smuggle_truth_through_evidence_refs(
-    metadata_factory, now
-):
+def test_ambiguous_result_cannot_smuggle_truth_through_evidence_refs(metadata_factory, now):
     opportunity = observation_opportunity(
         metadata_factory,
         now,
@@ -145,9 +139,7 @@ def test_ambiguous_result_cannot_smuggle_truth_through_evidence_refs(
         observation_opportunity=opportunity,
         detected_object_instance_id=uuid4(),
         detected_location_id=uuid4(),
-        sample=SelectiveObservationSample(
-            selected=True, target_present=True, detection_draw=0.0
-        ),
+        sample=SelectiveObservationSample(selected=True, target_present=True, detection_draw=0.0),
     )
     payload = ambiguous.model_dump(mode="python")
     payload["evidence_refs"] = (
@@ -162,9 +154,7 @@ def test_ambiguous_result_cannot_smuggle_truth_through_evidence_refs(
         ObservationDetectionResult.model_validate(payload)
 
 
-def test_simulation_opportunity_cannot_smuggle_truth_through_evidence_refs(
-    metadata_factory, now
-):
+def test_simulation_opportunity_cannot_smuggle_truth_through_evidence_refs(metadata_factory, now):
     opportunity = observation_opportunity(
         metadata_factory,
         now,
@@ -217,17 +207,18 @@ def test_model_prediction_cannot_train_habit_model(metadata_factory, now):
     )
 
     assert before.probabilities == after.probabilities
-    assert model.known_person_count(
-        household_id=evidence.metadata.household_id,
-        person_id=person_id,
-        object_instance_id=object_id,
-        location_id=kitchen_id,
-    ) == 0.0
+    assert (
+        model.known_person_count(
+            household_id=evidence.metadata.household_id,
+            person_id=person_id,
+            object_instance_id=object_id,
+            location_id=kitchen_id,
+        )
+        == 0.0
+    )
 
 
-def test_soft_actor_update_does_not_assign_unknown_mass_to_person(
-    metadata_factory, now
-):
+def test_soft_actor_update_does_not_assign_unknown_mass_to_person(metadata_factory, now):
     person_a = uuid4()
     person_b = uuid4()
     object_id = uuid4()
@@ -261,17 +252,18 @@ def test_soft_actor_update_does_not_assign_unknown_mass_to_person(
         object_instance_id=object_id,
         location_id=kitchen_id,
     ) == pytest.approx(0.25)
-    assert model.known_person_count(
-        household_id=evidence.metadata.household_id,
-        person_id="unknown_actor",
-        object_instance_id=object_id,
-        location_id=kitchen_id,
-    ) == 0.0
+    assert (
+        model.known_person_count(
+            household_id=evidence.metadata.household_id,
+            person_id="unknown_actor",
+            object_instance_id=object_id,
+            location_id=kitchen_id,
+        )
+        == 0.0
+    )
 
 
-def test_personal_evidence_moves_prediction_away_from_common_prior(
-    metadata_factory, now
-):
+def test_personal_evidence_moves_prediction_away_from_common_prior(metadata_factory, now):
     person_id = uuid4()
     object_id = uuid4()
     desk_id = uuid4()
@@ -308,9 +300,7 @@ def test_personal_evidence_moves_prediction_away_from_common_prior(
     assert personalized.probabilities[kitchen_id] > prior_prediction.probabilities[kitchen_id]
 
 
-def test_habit_evidence_requires_normalized_actor_posterior(
-    metadata_factory, now
-):
+def test_habit_evidence_requires_normalized_actor_posterior(metadata_factory, now):
     with pytest.raises(ValidationError):
         habit_evidence(
             metadata_factory,
@@ -336,9 +326,7 @@ def test_ground_truth_habit_trajectory_requires_chronological_events(now):
         regime_id="routine-a",
         regime_kind=GTHabitRegimeKind.STABLE,
     )
-    earlier = later.model_copy(
-        update={"gt_event_id": uuid4(), "event_time": now}
-    )
+    earlier = later.model_copy(update={"gt_event_id": uuid4(), "event_time": now})
 
     with pytest.raises(ValidationError):
         GroundTruthHabitTrajectory(
@@ -381,9 +369,7 @@ def test_selective_observation_is_replayable_and_gt_free(metadata_factory, now):
     assert "ground_truth" not in first.model_dump_json()
 
 
-def test_unselected_opportunity_cannot_update_personal_habit(
-    metadata_factory, now
-):
+def test_unselected_opportunity_cannot_update_personal_habit(metadata_factory, now):
     person_id = uuid4()
     object_id = uuid4()
     desk_id = uuid4()
@@ -411,17 +397,18 @@ def test_unselected_opportunity_cannot_update_personal_habit(
     model = HierarchicalDirichletHabitModel(locations=(desk_id, kitchen_id))
 
     assert observation.outcome == ObservationOutcome.NOT_OBSERVED
-    assert model.known_person_count(
-        household_id=observation.metadata.household_id,
-        person_id=person_id,
-        object_instance_id=object_id,
-        location_id=kitchen_id,
-    ) == 0.0
+    assert (
+        model.known_person_count(
+            household_id=observation.metadata.household_id,
+            person_id=person_id,
+            object_instance_id=object_id,
+            location_id=kitchen_id,
+        )
+        == 0.0
+    )
 
 
-def test_detected_placement_updates_habit_without_world_model_gt_import(
-    metadata_factory, now
-):
+def test_detected_placement_updates_habit_without_world_model_gt_import(metadata_factory, now):
     person_id = uuid4()
     object_id = uuid4()
     desk_id = uuid4()
@@ -447,9 +434,7 @@ def test_detected_placement_updates_habit_without_world_model_gt_import(
         detected_location_id=kitchen_id,
         sample=SelectiveObservationSample(
             selected=True,
-            target_present=(
-                gt_event.destination_location_gt_entity_id == kitchen_id
-            ),
+            target_present=(gt_event.destination_location_gt_entity_id == kitchen_id),
             detection_draw=0.0,
         ),
     )

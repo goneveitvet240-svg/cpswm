@@ -3,8 +3,8 @@
 from __future__ import annotations
 
 import re
+from collections.abc import Iterator
 from datetime import timedelta
-from typing import Iterator
 from uuid import UUID
 
 from pydantic import BaseModel, Field, ValidationError, model_validator
@@ -30,19 +30,16 @@ from cpswm.system.world_model_simulator.symbolic import (
     PrivilegedSymbolicSimulationView,
 )
 from cpswm_gt import (
+    GroundTruthHabitTrajectory,
     GTHabitRegimeKind,
     GTPlacementEvent,
-    GroundTruthHabitTrajectory,
 )
-
 
 _METRIC_TASKS = {
     "controlled_observation_recall": BenchmarkTaskFamily.MEMORY_ACCURACY,
     "anomaly_observation_recall": BenchmarkTaskFamily.ADAPTATION,
     "incidental_context_coverage": BenchmarkTaskFamily.EXPLANATION,
-    "declared_primary_task_additional_action_cost_total": (
-        BenchmarkTaskFamily.EMBODIED_UTILITY
-    ),
+    "declared_primary_task_additional_action_cost_total": (BenchmarkTaskFamily.EMBODIED_UTILITY),
 }
 _BOUNDED_RATE_METRICS = frozenset(
     {
@@ -124,18 +121,14 @@ class EvaluationReport(ContractModel):
             evaluator_version=self.evaluator_version,
         )
         if self.evaluation_run_id != expected_run_id:
-            raise ValueError(
-                "evaluation_run_id does not match evaluation report inputs"
-            )
+            raise ValueError("evaluation_run_id does not match evaluation report inputs")
 
         # Reject an unauthenticated payload before reporting any downstream
         # semantic inconsistency.  Rehashed adversarial fixtures still reach
         # the detailed binding and metric validators below.
         expected_hash = content_sha256(self.content_payload())
         if self.evaluation_report_sha256 != expected_hash:
-            raise ValueError(
-                "evaluation_report_sha256 does not match evaluation report content"
-            )
+            raise ValueError("evaluation_report_sha256 does not match evaluation report content")
 
         metric_names = [metric.metric_name for metric in self.metrics]
         metric_ids = [metric.metric_id for metric in self.metrics]
@@ -155,9 +148,7 @@ class EvaluationReport(ContractModel):
             }
             for field_name, expected in report_bindings.items():
                 if getattr(metric, field_name) != expected:
-                    raise ValueError(
-                        f"metric {field_name} does not match evaluation report"
-                    )
+                    raise ValueError(f"metric {field_name} does not match evaluation report")
             expected_metric_id = content_uuid(
                 "metric",
                 {
@@ -176,23 +167,17 @@ class EvaluationReport(ContractModel):
             if metric.metric_name in _BOUNDED_RATE_METRICS:
                 if metric.sample_count == 0:
                     if metric.value is not None:
-                        raise ValueError(
-                            "zero-sample rate metric must have an undefined value"
-                        )
+                        raise ValueError("zero-sample rate metric must have an undefined value")
                 elif metric.value is None or not 0.0 <= metric.value <= 1.0:
                     raise ValueError("rate metric value must be in [0, 1]")
             else:
                 if metric.value is None or metric.value < 0.0:
                     raise ValueError("declared action cost must be non-negative")
                 if metric.sample_count == 0 and metric.value != 0.0:
-                    raise ValueError(
-                        "zero-sample declared action cost must equal zero"
-                    )
+                    raise ValueError("zero-sample declared action cost must equal zero")
 
         if self.ground_truth_leakage_detected != bool(self.failure_reasons):
-            raise ValueError(
-                "ground-truth leakage flag must match failure reasons"
-            )
+            raise ValueError("ground-truth leakage flag must match failure reasons")
         return self
 
     def content_payload(self) -> dict:
@@ -233,22 +218,17 @@ class EvaluationRunner:
             simulation_run_id=simulation.simulation_run_id,
             simulation_content_sha256=simulation.simulation_content_sha256,
             track=track,
-            evaluator_version=EvaluationReport.model_fields[
-                "evaluator_version"
-            ].default,
+            evaluator_version=EvaluationReport.model_fields["evaluator_version"].default,
         )
         truth = benchmark_view.ground_truth.events
         scored_truth = tuple(
             event
             for event in truth
-            if event.object_gt_entity_id
-            == simulation.scheduled_observation_object_id
+            if event.object_gt_entity_id == simulation.scheduled_observation_object_id
         )
         opportunities = simulation.observation_opportunities
         results = simulation.detection_results
-        detected = [
-            item for item in results if item.outcome == ObservationOutcome.DETECTED
-        ]
+        detected = [item for item in results if item.outcome == ObservationOutcome.DETECTED]
         # This metric is deliberately scoped to temporary/isolated exceptions.
         # Contextual routines and persistent gradual/abrupt changes are not
         # anomalies and require separate adaptation metrics.
@@ -303,8 +283,7 @@ class EvaluationRunner:
                     if item.selected and item.incidental_context is not None
                 ),
                 sum(
-                    item.selected and item.incidental_context is not None
-                    for item in opportunities
+                    item.selected and item.incidental_context is not None for item in opportunities
                 ),
             ),
         }
@@ -372,9 +351,7 @@ class EvaluationRunner:
 
         gt_event_ids = {event.gt_event_id for event in truth_events}
         gt_event_tokens = {
-            token.casefold()
-            for event_id in gt_event_ids
-            for token in (str(event_id), event_id.hex)
+            token.casefold() for event_id in gt_event_ids for token in (str(event_id), event_id.hex)
         }
         failures: list[str] = []
         for path, value in cls._iter_scalar_carriers(simulation, "visible_result"):
@@ -443,13 +420,10 @@ class EvaluationRunner:
             unexpected = set(vars(value)) - expected
             if unexpected:
                 raise ValueError(
-                    f"{path} contains fields outside its contract: "
-                    f"{sorted(unexpected)}"
+                    f"{path} contains fields outside its contract: {sorted(unexpected)}"
                 )
             for field_name in expected:
-                cls._reject_model_copy_extras(
-                    getattr(value, field_name), f"{path}.{field_name}"
-                )
+                cls._reject_model_copy_extras(getattr(value, field_name), f"{path}.{field_name}")
         elif isinstance(value, dict):
             for key, nested in value.items():
                 cls._reject_model_copy_extras(nested, f"{path}[{key!r}]")
@@ -461,9 +435,7 @@ class EvaluationRunner:
     def _revalidate_manifest(cls, manifest: BenchmarkManifest) -> BenchmarkManifest:
         cls._reject_model_copy_extras(manifest, "benchmark manifest")
         try:
-            validated = BenchmarkManifest.model_validate(
-                manifest.model_dump(mode="python")
-            )
+            validated = BenchmarkManifest.model_validate(manifest.model_dump(mode="python"))
         except (AttributeError, ValidationError) as exc:
             raise ValueError(f"invalid benchmark manifest: {exc}") from exc
         expected_hash = content_sha256(validated._identity_payload())
@@ -486,9 +458,7 @@ class EvaluationRunner:
             )
 
         try:
-            return SymbolicSimulationResult.model_validate(
-                simulation.model_dump(mode="python")
-            )
+            return SymbolicSimulationResult.model_validate(simulation.model_dump(mode="python"))
         except ValidationError as exc:
             raise ValueError(f"invalid symbolic simulation result: {exc}") from exc
 
@@ -530,9 +500,7 @@ class EvaluationRunner:
     ) -> None:
         simulation = benchmark_view.visible_result
         if manifest.manifest_version not in self._SUPPORTED_MANIFEST_VERSIONS:
-            raise ValueError(
-                f"unsupported benchmark manifest version: {manifest.manifest_version}"
-            )
+            raise ValueError(f"unsupported benchmark manifest version: {manifest.manifest_version}")
         if simulation.random_seed != manifest.random_seed:
             raise ValueError("simulation random seed does not match benchmark manifest")
         if benchmark_view.routine_plan_id != manifest.routine_plan_id:
@@ -545,27 +513,16 @@ class EvaluationRunner:
             raise ValueError("simulation policy hash does not match benchmark manifest")
         if simulation.primary_target_object_id != manifest.primary_target_object_id:
             raise ValueError("simulation primary target does not match benchmark manifest")
-        if (
-            simulation.scheduled_observation_object_id
-            != manifest.scheduled_observation_object_id
-        ):
+        if simulation.scheduled_observation_object_id != manifest.scheduled_observation_object_id:
             raise ValueError(
-                "simulation scheduled observation object does not match "
-                "benchmark manifest"
+                "simulation scheduled observation object does not match benchmark manifest"
             )
         if simulation.scheduled_observation_object_id not in manifest.object_instance_ids:
-            raise ValueError(
-                "simulation scheduled observation object is outside the benchmark"
-            )
+            raise ValueError("simulation scheduled observation object is outside the benchmark")
         if simulation.simulator_version != manifest.simulator_version:
             raise ValueError("simulation version does not match benchmark manifest")
-        if (
-            simulation.simulation_content_sha256
-            != manifest.expected_simulation_content_sha256
-        ):
-            raise ValueError(
-                "simulation content hash does not match benchmark manifest"
-            )
+        if simulation.simulation_content_sha256 != manifest.expected_simulation_content_sha256:
+            raise ValueError("simulation content hash does not match benchmark manifest")
         if simulation.duration_days != manifest.duration_days:
             raise ValueError("simulation duration does not match benchmark manifest")
         if benchmark_view.ground_truth.simulation_run_id != simulation.simulation_run_id:
@@ -578,21 +535,17 @@ class EvaluationRunner:
             duration_days=simulation.duration_days,
             random_seed=simulation.random_seed,
             primary_target_object_id=simulation.primary_target_object_id,
-            scheduled_observation_object_id=(
-                simulation.scheduled_observation_object_id
-            ),
-            initial_target_location_id=(
-                simulation.initial_target_location_id
-            ),
+            scheduled_observation_object_id=(simulation.scheduled_observation_object_id),
+            initial_target_location_id=(simulation.initial_target_location_id),
         )
         if simulation.simulation_run_id != expected_simulation_run_id:
             raise ValueError("simulation run ID does not match its bound inputs")
         unknown_metrics = set(manifest.metric_names) - set(self._METRIC_TASKS)
         if unknown_metrics:
             raise ValueError(f"unsupported manifest metrics: {sorted(unknown_metrics)}")
-        disabled_tasks = {
-            self._METRIC_TASKS[name] for name in manifest.metric_names
-        } - set(manifest.task_families)
+        disabled_tasks = {self._METRIC_TASKS[name] for name in manifest.metric_names} - set(
+            manifest.task_families
+        )
         if disabled_tasks:
             raise ValueError(
                 "manifest requests metrics for disabled task families: "
@@ -628,88 +581,56 @@ class EvaluationRunner:
         opportunities = simulation.observation_opportunities
         results = simulation.detection_results
         for opportunity in opportunities:
-            unexpected = set(vars(opportunity)) - set(
-                ObservationOpportunityRecord.model_fields
-            )
+            unexpected = set(vars(opportunity)) - set(ObservationOpportunityRecord.model_fields)
             if unexpected:
-                raise ValueError(
-                    "observation opportunity contains fields outside its contract"
-                )
-            ObservationOpportunityRecord.model_validate(
-                opportunity.model_dump(mode="python")
-            )
+                raise ValueError("observation opportunity contains fields outside its contract")
+            ObservationOpportunityRecord.model_validate(opportunity.model_dump(mode="python"))
         for result in results:
-            unexpected = set(vars(result)) - set(
-                ObservationDetectionResult.model_fields
-            )
+            unexpected = set(vars(result)) - set(ObservationDetectionResult.model_fields)
             if unexpected:
-                raise ValueError(
-                    "detection result contains fields outside its contract"
-                )
+                raise ValueError("detection result contains fields outside its contract")
             ObservationDetectionResult.model_validate(result.model_dump(mode="python"))
         run_end = simulation.start_time + timedelta(days=simulation.duration_days)
-        if any(
-            not simulation.start_time <= event.event_time < run_end
-            for event in truth
-        ):
+        if any(not simulation.start_time <= event.event_time < run_end for event in truth):
             raise ValueError("ground-truth event falls outside simulation duration")
         if any(
-            not simulation.start_time <= item.opportunity_time < run_end
-            for item in opportunities
+            not simulation.start_time <= item.opportunity_time < run_end for item in opportunities
         ):
             raise ValueError("observation opportunity falls outside simulation duration")
         if any(
-            item.incidental_context is not None
-            and item.incidental_context.candidate_entity_ids
+            item.incidental_context is not None and item.incidental_context.candidate_entity_ids
             for item in opportunities
         ):
-            raise ValueError(
-                "observation opportunity must not expose candidate identities"
-            )
+            raise ValueError("observation opportunity must not expose candidate identities")
         opportunity_ids = {item.metadata.record_id for item in opportunities}
         if len(opportunity_ids) != len(opportunities):
             raise ValueError("simulation contains duplicate observation opportunities")
         if any(item.observation_opportunity_id not in opportunity_ids for item in results):
             raise ValueError("detection result references an unknown opportunity")
-        opportunity_by_id = {
-            item.metadata.record_id: item for item in opportunities
-        }
+        opportunity_by_id = {item.metadata.record_id: item for item in opportunities}
         for result in results:
             selected = opportunity_by_id[result.observation_opportunity_id].selected
             if not selected and result.outcome != ObservationOutcome.NOT_OBSERVED:
-                raise ValueError(
-                    "unselected observation action requires a not_observed result"
-                )
+                raise ValueError("unselected observation action requires a not_observed result")
             if selected and result.outcome == ObservationOutcome.NOT_OBSERVED:
-                raise ValueError(
-                    "selected observation action cannot have a not_observed result"
-                )
+                raise ValueError("selected observation action cannot have a not_observed result")
         result_ids = [item.metadata.record_id for item in results]
         if len(result_ids) != len(set(result_ids)):
             raise ValueError("simulation contains duplicate detection result IDs")
-        if any(
-            item.metadata.record_id != detection_result_record_id(item)
-            for item in results
-        ):
-            raise ValueError(
-                "detection result record ID does not match realized content"
-            )
+        if any(item.metadata.record_id != detection_result_record_id(item) for item in results):
+            raise ValueError("detection result record ID does not match realized content")
         detected_object_ids = {
             item.detected_object_instance_id
             for item in results
             if item.detected_object_instance_id is not None
         }
         detected_location_ids = {
-            item.detected_location_id
-            for item in results
-            if item.detected_location_id is not None
+            item.detected_location_id for item in results if item.detected_location_id is not None
         }
         if not detected_object_ids.issubset(set(manifest.object_instance_ids)):
             raise ValueError("detection contains an object outside the benchmark")
         if detected_object_ids - {simulation.scheduled_observation_object_id}:
-            raise ValueError(
-                "detected object does not match scheduled observation object"
-            )
+            raise ValueError("detected object does not match scheduled observation object")
         if not detected_location_ids.issubset(set(manifest.location_ids)):
             raise ValueError("detection contains a location outside the benchmark")
         if any(
@@ -719,13 +640,8 @@ class EvaluationRunner:
         ):
             raise ValueError("detection falls outside simulation duration")
         selected_action_count = sum(item.selected for item in opportunities)
-        if (
-            selected_action_count
-            > manifest.budget.max_selected_observation_actions
-        ):
-            raise ValueError(
-                "simulation exceeds manifest selected observation action budget"
-            )
+        if selected_action_count > manifest.budget.max_selected_observation_actions:
+            raise ValueError("simulation exceeds manifest selected observation action budget")
         verification_count = sum(
             item.selected
             and item.incidental_context is not None
@@ -738,9 +654,7 @@ class EvaluationRunner:
             for item in opportunities
         )
         if verification_count > manifest.budget.max_selected_verifications:
-            raise ValueError(
-                "simulation exceeds manifest selected verification budget"
-            )
+            raise ValueError("simulation exceeds manifest selected verification budget")
 
     @staticmethod
     def _match_unique_truth_events(
@@ -771,10 +685,8 @@ class EvaluationRunner:
                 tuple(
                     truth_index
                     for truth_index, event in enumerate(ordered_truth)
-                    if detection.detected_object_instance_id
-                    == event.object_gt_entity_id
-                    and detection.detected_location_id
-                    == event.destination_location_gt_entity_id
+                    if detection.detected_object_instance_id == event.object_gt_entity_id
+                    and detection.detected_location_id == event.destination_location_gt_entity_id
                     and event.event_time <= detection.detection_time
                     and detection.detection_time - event.event_time <= maximum_delay
                 )
@@ -799,7 +711,4 @@ class EvaluationRunner:
         for detection_index in range(len(ordered_detections)):
             augment(detection_index, set())
 
-        return {
-            ordered_truth[truth_index].gt_event_id
-            for truth_index in truth_to_detection
-        }
+        return {ordered_truth[truth_index].gt_event_id for truth_index in truth_to_detection}

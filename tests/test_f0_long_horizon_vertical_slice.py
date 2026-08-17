@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from datetime import datetime, timedelta, timezone
+from datetime import UTC, datetime, timedelta
 from pathlib import Path
 from uuid import UUID, uuid4
 
@@ -46,7 +46,7 @@ def uid(value: int) -> UUID:
 
 
 def build_policy(**updates) -> IncidentalObservationPolicy:
-    start_time = datetime(2026, 8, 13, tzinfo=timezone.utc)
+    start_time = datetime(2026, 8, 13, tzinfo=UTC)
     policy = IncidentalObservationPolicy(
         policy_id="cup-search-incidental@0.3",
         primary_task_id=uid(9),
@@ -118,9 +118,7 @@ def build_manifest(plan=None, policy=None) -> BenchmarkManifest:
         "primary_target_object_id": policy.primary_target_object_id,
         "scheduled_observation_object_id": policy.scheduled_observation_object_id,
         "simulator_version": SymbolicWorldModelSimulator.simulator_version,
-        "expected_simulation_content_sha256": (
-            expected_simulation.simulation_content_sha256
-        ),
+        "expected_simulation_content_sha256": (expected_simulation.simulation_content_sha256),
         "household_ids": (uid(1),),
         "person_ids": (uid(2), uid(3)),
         "object_instance_ids": (uid(4), uid(5)),
@@ -178,9 +176,7 @@ def rehash_simulation(simulation, **updates):
 
     mutated = simulation.model_copy(update=updates)
     return mutated.model_copy(
-        update={
-            "simulation_content_sha256": content_sha256(mutated.content_payload())
-        }
+        update={"simulation_content_sha256": content_sha256(mutated.content_payload())}
     )
 
 
@@ -192,9 +188,7 @@ def rehash_benchmark_view(view, *, visible_updates=None, **updates):
     payload = mutated.content_payload()
     return mutated.model_copy(
         update={
-            "privileged_simulation_id": content_uuid(
-                "privileged-simulation", payload
-            ),
+            "privileged_simulation_id": content_uuid("privileged-simulation", payload),
             "privileged_content_sha256": content_sha256(payload),
         }
     )
@@ -208,9 +202,7 @@ def view_with_visible_result(plan, policy, visible_result):
     payload = mutated.content_payload()
     return mutated.model_copy(
         update={
-            "privileged_simulation_id": content_uuid(
-                "privileged-simulation", payload
-            ),
+            "privileged_simulation_id": content_uuid("privileged-simulation", payload),
             "privileged_content_sha256": content_sha256(payload),
         }
     )
@@ -232,7 +224,7 @@ def rebind_detection_result(result, **updates):
 def build_routine_config() -> RoutineGenerationConfig:
     return RoutineGenerationConfig(
         household_id=uid(1),
-        start_time=datetime(2026, 8, 13, tzinfo=timezone.utc),
+        start_time=datetime(2026, 8, 13, tzinfo=UTC),
         duration_days=3,
         random_seed=20260813,
         object_routines=(
@@ -277,21 +269,14 @@ def test_f0_book_on_sofa_slice_is_replayable_and_gt_isolated():
 
     assert first_run == replay_run
     assert all(
-        result.outcome == ObservationOutcome.DETECTED
-        for result in first_run.detection_results
+        result.outcome == ObservationOutcome.DETECTED for result in first_run.detection_results
     )
     sofa_result = first_run.detection_results[1]
     sofa_opportunity = first_run.observation_opportunities[1]
     assert sofa_result.detected_location_id == uid(7)
     assert sofa_opportunity.incidental_context is not None
-    assert (
-        sofa_opportunity.incidental_context.observation_mode
-        == ObservationMode.INCIDENTAL
-    )
-    assert (
-        sofa_opportunity.incidental_context.primary_task_goal
-        == policy.primary_task_goal
-    )
+    assert sofa_opportunity.incidental_context.observation_mode == ObservationMode.INCIDENTAL
+    assert sofa_opportunity.incidental_context.primary_task_goal == policy.primary_task_goal
     assert sofa_opportunity.incidental_context.candidate_entity_ids == ()
     for record in (sofa_opportunity, sofa_result):
         assert "ground_truth" not in record.model_dump_json()
@@ -312,12 +297,7 @@ def test_f0_book_on_sofa_slice_is_replayable_and_gt_isolated():
     assert not first_report.ground_truth_leakage_detected
     assert first_report.metric_value("anomaly_observation_recall") == 1.0
     assert first_report.metric_value("incidental_context_coverage") == 1.0
-    assert (
-        first_report.metric_value(
-            "declared_primary_task_additional_action_cost_total"
-        )
-        == 0.0
-    )
+    assert first_report.metric_value("declared_primary_task_additional_action_cost_total") == 0.0
 
 
 def test_benchmark_manifest_rejects_split_leakage():
@@ -369,19 +349,13 @@ def test_checked_in_f0_benchmark_assets_produce_the_implemented_report():
     repository_root = Path(__file__).resolve().parents[1]
     benchmark_dir = repository_root / "benchmarks" / "oam_phm_f0"
     manifest = BenchmarkManifest.model_validate_json(
-        (benchmark_dir / "book_on_sofa_manifest_v0.4.json").read_text(
-            encoding="utf-8"
-        )
+        (benchmark_dir / "book_on_sofa_manifest_v0.4.json").read_text(encoding="utf-8")
     )
     routine_config = RoutineGenerationConfig.model_validate_json(
-        (benchmark_dir / "book_on_sofa_routine_v0.2.json").read_text(
-            encoding="utf-8"
-        )
+        (benchmark_dir / "book_on_sofa_routine_v0.2.json").read_text(encoding="utf-8")
     )
     policy = IncidentalObservationPolicy.model_validate_json(
-        (benchmark_dir / "book_on_sofa_policy_v0.3.json").read_text(
-            encoding="utf-8"
-        )
+        (benchmark_dir / "book_on_sofa_policy_v0.3.json").read_text(encoding="utf-8")
     )
 
     plan = SyntheticRoutineGenerator().generate(routine_config)
@@ -391,10 +365,7 @@ def test_checked_in_f0_benchmark_assets_produce_the_implemented_report():
     )
 
     assert report.metric_value("anomaly_observation_recall") == 1.0
-    assert (
-        report.metric_value("declared_primary_task_additional_action_cost_total")
-        == 0.0
-    )
+    assert report.metric_value("declared_primary_task_additional_action_cost_total") == 0.0
     assert not report.ground_truth_leakage_detected
 
 
@@ -476,9 +447,7 @@ def test_undetected_target_relocation_does_not_leak_through_opportunity_visibili
     relocated_routine = base_config.object_routines[0].model_copy(
         update={"habitual_location_id": uid(7)}
     )
-    relocated_config = base_config.model_copy(
-        update={"object_routines": (relocated_routine,)}
-    )
+    relocated_config = base_config.model_copy(update={"object_routines": (relocated_routine,)})
     generator = SyntheticRoutineGenerator()
     base_plan = generator.generate(base_config)
     relocated_plan = generator.generate(relocated_config)
@@ -523,9 +492,7 @@ def test_future_hidden_destination_without_geometry_does_not_change_pre_event_ru
     base_routine = original.object_routines[0].model_copy(
         update={"habitual_location_id": uid(6), "placement_hour": 23}
     )
-    future_routine = base_routine.model_copy(
-        update={"habitual_location_id": uid(11)}
-    )
+    future_routine = base_routine.model_copy(update={"habitual_location_id": uid(11)})
     base_config = original.model_copy(
         update={
             "duration_days": 1,
@@ -533,9 +500,7 @@ def test_future_hidden_destination_without_geometry_does_not_change_pre_event_ru
             "changes": (),
         }
     )
-    future_config = base_config.model_copy(
-        update={"object_routines": (future_routine,)}
-    )
+    future_config = base_config.model_copy(update={"object_routines": (future_routine,)})
     generator = SyntheticRoutineGenerator()
     base_plan = generator.generate(base_config)
     future_plan = generator.generate(future_config)
@@ -623,9 +588,7 @@ def test_observation_queries_causal_state_before_a_future_placement():
             "placement_hour": 23,
         }
     )
-    config = config.model_copy(
-        update={"object_routines": (late_routine,), "changes": ()}
-    )
+    config = config.model_copy(update={"object_routines": (late_routine,), "changes": ()})
     plan = SyntheticRoutineGenerator().generate(config)
     policy = build_policy()
     view = run_benchmark_view(plan, policy)
@@ -634,9 +597,7 @@ def test_observation_queries_causal_state_before_a_future_placement():
     first_truth = view.ground_truth.events[0]
     first_opportunity = simulation.observation_opportunities[0]
     first_result = simulation.detection_results[0]
-    assert first_opportunity.opportunity_time == (
-        config.start_time + timedelta(hours=10)
-    )
+    assert first_opportunity.opportunity_time == (config.start_time + timedelta(hours=10))
     assert first_truth.event_time == config.start_time + timedelta(hours=23)
     assert first_truth.destination_location_gt_entity_id == uid(7)
     assert first_result.outcome == ObservationOutcome.DETECTED
@@ -654,9 +615,7 @@ def test_observation_queries_causal_state_before_a_future_placement():
 
 def test_detection_result_identity_changes_with_realized_target_state():
     config = build_routine_config().model_copy(update={"changes": ()})
-    changed_routine = config.object_routines[0].model_copy(
-        update={"habitual_location_id": uid(7)}
-    )
+    changed_routine = config.object_routines[0].model_copy(update={"habitual_location_id": uid(7)})
     changed_config = config.model_copy(update={"object_routines": (changed_routine,)})
     generator = SyntheticRoutineGenerator()
     base_plan = generator.generate(config)
@@ -666,9 +625,9 @@ def test_detection_result_identity_changes_with_realized_target_state():
     base = SymbolicWorldModelSimulator().run(base_plan, policy)
     changed = SymbolicWorldModelSimulator().run(changed_plan, policy)
 
-    assert tuple(
-        item.metadata.record_id for item in base.observation_opportunities
-    ) == tuple(item.metadata.record_id for item in changed.observation_opportunities)
+    assert tuple(item.metadata.record_id for item in base.observation_opportunities) == tuple(
+        item.metadata.record_id for item in changed.observation_opportunities
+    )
     assert tuple(item.detected_location_id for item in base.detection_results) != tuple(
         item.detected_location_id for item in changed.detection_results
     )
@@ -684,12 +643,8 @@ def test_evaluator_rejects_stale_detection_result_identity():
     policy = build_policy()
     simulation = SymbolicWorldModelSimulator().run(plan, policy)
     original = simulation.detection_results[0]
-    stale_identity = original.model_copy(
-        update={"detected_location_id": uid(7)}
-    )
-    assert stale_identity.metadata.record_id != detection_result_record_id(
-        stale_identity
-    )
+    stale_identity = original.model_copy(update={"detected_location_id": uid(7)})
+    assert stale_identity.metadata.record_id != detection_result_record_id(stale_identity)
     tampered_simulation = rehash_simulation(
         simulation,
         detection_results=(
@@ -699,9 +654,7 @@ def test_evaluator_rejects_stale_detection_result_identity():
     )
     manifest = update_manifest(
         build_manifest(plan, policy),
-        expected_simulation_content_sha256=(
-            tampered_simulation.simulation_content_sha256
-        ),
+        expected_simulation_content_sha256=(tampered_simulation.simulation_content_sha256),
     )
 
     with pytest.raises(ValueError, match="record ID does not match realized content"):
@@ -731,9 +684,7 @@ def test_evaluator_rejects_detection_for_a_non_scheduled_object():
     )
     manifest = update_manifest(
         build_manifest(plan, policy),
-        expected_simulation_content_sha256=(
-            tampered_simulation.simulation_content_sha256
-        ),
+        expected_simulation_content_sha256=(tampered_simulation.simulation_content_sha256),
     )
 
     with pytest.raises(ValueError, match="scheduled observation object"):
@@ -762,9 +713,7 @@ def test_evaluator_rejects_candidate_identity_on_an_opportunity():
     )
     manifest = update_manifest(
         build_manifest(plan, policy),
-        expected_simulation_content_sha256=(
-            tampered_simulation.simulation_content_sha256
-        ),
+        expected_simulation_content_sha256=(tampered_simulation.simulation_content_sha256),
     )
 
     with pytest.raises(ValueError, match="must not expose candidate identities"):
@@ -810,7 +759,7 @@ def test_content_bound_plan_simulation_and_evaluation_ids_change():
     (
         ({"random_seed": 42}, {"random_seed": 42}),
         (
-            {"start_time": datetime(2026, 8, 13, 1, tzinfo=timezone.utc)},
+            {"start_time": datetime(2026, 8, 13, 1, tzinfo=UTC)},
             {},
         ),
         (
@@ -910,9 +859,7 @@ def test_evaluator_rejects_incomplete_manifest_bindings(
     if simulation_update.get("ground_truth") == "mismatched":
         view = rehash_benchmark_view(
             view,
-            ground_truth=view.ground_truth.model_copy(
-                update={"simulation_run_id": uuid4()}
-            ),
+            ground_truth=view.ground_truth.model_copy(update={"simulation_run_id": uuid4()}),
         )
         simulation_update = {}
     if simulation_update:
@@ -920,9 +867,7 @@ def test_evaluator_rejects_incomplete_manifest_bindings(
         view = view_with_visible_result(plan, policy, simulation)
 
     with pytest.raises(ValueError, match=message):
-        EvaluationRunner().evaluate(
-            manifest, view, track=EvaluationTrack.CONTROLLED_NOISE
-        )
+        EvaluationRunner().evaluate(manifest, view, track=EvaluationTrack.CONTROLLED_NOISE)
 
 
 def test_duplicate_detection_from_a_low_recall_run_is_rejected():
@@ -1037,9 +982,7 @@ def test_unselected_verification_does_not_consume_selected_budgets():
             update={"observation_mode": ObservationMode.MICRO_VERIFY}
         )
         opportunities.append(
-            opportunity.model_copy(
-                update={"incidental_context": context, "selected": False}
-            )
+            opportunity.model_copy(update={"incidental_context": context, "selected": False})
         )
     results = tuple(
         rebind_detection_result(
@@ -1086,9 +1029,7 @@ def test_declared_action_cost_counts_only_selected_observation_actions():
         rebind_detection_result(
             result,
             outcome=(
-                ObservationOutcome.NOT_OBSERVED
-                if index == 1
-                else ObservationOutcome.DETECTED
+                ObservationOutcome.NOT_OBSERVED if index == 1 else ObservationOutcome.DETECTED
             ),
             detected_object_instance_id=(
                 None if index == 1 else policy.scheduled_observation_object_id
@@ -1096,13 +1037,9 @@ def test_declared_action_cost_counts_only_selected_observation_actions():
             detected_location_id=(
                 None
                 if index == 1
-                else view.ground_truth.events[
-                    index
-                ].destination_location_gt_entity_id
+                else view.ground_truth.events[index].destination_location_gt_entity_id
             ),
-            detection_time=(
-                None if index == 1 else opportunities[index].opportunity_time
-            ),
+            detection_time=(None if index == 1 else opportunities[index].opportunity_time),
             negative_evidence_strength=0.0,
         )
         for index, result in enumerate(simulation.detection_results)
@@ -1127,8 +1064,7 @@ def test_declared_action_cost_counts_only_selected_observation_actions():
     metric = next(
         item
         for item in report.metrics
-        if item.metric_name
-        == "declared_primary_task_additional_action_cost_total"
+        if item.metric_name == "declared_primary_task_additional_action_cost_total"
     )
 
     assert metric.value == 4.0
@@ -1211,15 +1147,11 @@ def test_manifest_rejects_self_consistent_tampered_simulation_hash():
             "observation_opportunities": simulation.observation_opportunities[:1],
             "detection_results": simulation.detection_results[:1],
         },
-        ground_truth=view.ground_truth.model_copy(
-            update={"events": view.ground_truth.events[:1]}
-        ),
+        ground_truth=view.ground_truth.model_copy(update={"events": view.ground_truth.events[:1]}),
     )
 
     with pytest.raises(ValueError, match="does not match benchmark manifest"):
-        EvaluationRunner().evaluate(
-            manifest, truncated, track=EvaluationTrack.CONTROLLED_NOISE
-        )
+        EvaluationRunner().evaluate(manifest, truncated, track=EvaluationTrack.CONTROLLED_NOISE)
 
 
 def test_evaluator_revalidates_ground_truth_after_model_copy():
@@ -1242,9 +1174,7 @@ def test_evaluator_revalidates_ground_truth_after_model_copy():
     tampered = rehash_benchmark_view(view, ground_truth=invalid_truth)
 
     with pytest.raises(ValueError, match="ground-truth habit event ids"):
-        EvaluationRunner().evaluate(
-            manifest, tampered, track=EvaluationTrack.CONTROLLED_NOISE
-        )
+        EvaluationRunner().evaluate(manifest, tampered, track=EvaluationTrack.CONTROLLED_NOISE)
 
 
 def test_evaluator_revalidates_duplicate_manifest_metrics_after_model_copy():
@@ -1253,10 +1183,7 @@ def test_evaluator_revalidates_duplicate_manifest_metrics_after_model_copy():
     simulation = SymbolicWorldModelSimulator().run(plan, policy)
     manifest = build_manifest(plan, policy)
     duplicated = manifest.model_copy(
-        update={
-            "metric_names": manifest.metric_names
-            + ("controlled_observation_recall",)
-        }
+        update={"metric_names": manifest.metric_names + ("controlled_observation_recall",)}
     )
 
     with pytest.raises(ValueError, match="metric_names must not contain duplicates"):
@@ -1330,9 +1257,7 @@ def test_leakage_detector_finds_exact_gt_event_reference_with_self_consistent_in
         update={
             # Sensor evidence references are legal contract values; it is the
             # evaluator's responsibility to identify a privileged GT link.
-            "metadata": original.metadata.model_copy(
-                update={"source_type": SourceType.SENSOR}
-            ),
+            "metadata": original.metadata.model_copy(update={"source_type": SourceType.SENSOR}),
             "evidence_refs": (
                 EvidenceRef(
                     evidence_type="sensor-frame",
@@ -1349,9 +1274,7 @@ def test_leakage_detector_finds_exact_gt_event_reference_with_self_consistent_in
     )
     manifest = update_manifest(
         build_manifest(plan, policy),
-        expected_simulation_content_sha256=(
-            leaking_simulation.simulation_content_sha256
-        ),
+        expected_simulation_content_sha256=(leaking_simulation.simulation_content_sha256),
     )
 
     report = EvaluationRunner().evaluate(
@@ -1362,7 +1285,9 @@ def test_leakage_detector_finds_exact_gt_event_reference_with_self_consistent_in
 
     assert report.ground_truth_leakage_detected
     assert any("value references a gt_event_id" in reason for reason in report.failure_reasons)
-    assert any("detection_results[0].evidence_refs[0]" in reason for reason in report.failure_reasons)
+    assert any(
+        "detection_results[0].evidence_refs[0]" in reason for reason in report.failure_reasons
+    )
 
 
 def test_leakage_detector_scans_metadata_string_carriers():
@@ -1386,9 +1311,7 @@ def test_leakage_detector_scans_metadata_string_carriers():
     )
     manifest = update_manifest(
         build_manifest(plan, policy),
-        expected_simulation_content_sha256=(
-            leaking_simulation.simulation_content_sha256
-        ),
+        expected_simulation_content_sha256=(leaking_simulation.simulation_content_sha256),
     )
 
     report = EvaluationRunner().evaluate(
@@ -1399,8 +1322,7 @@ def test_leakage_detector_scans_metadata_string_carriers():
 
     assert report.ground_truth_leakage_detected
     assert any(
-        "detection_results[0].metadata.source_id" in reason
-        and "privileged ground truth" in reason
+        "detection_results[0].metadata.source_id" in reason and "privileged ground truth" in reason
         for reason in report.failure_reasons
     )
 
@@ -1430,9 +1352,7 @@ def test_leakage_detector_recognizes_compact_gt_event_uuid_encoding():
     )
     manifest = update_manifest(
         build_manifest(plan, policy),
-        expected_simulation_content_sha256=(
-            leaking_simulation.simulation_content_sha256
-        ),
+        expected_simulation_content_sha256=(leaking_simulation.simulation_content_sha256),
     )
 
     report = EvaluationRunner().evaluate(
@@ -1462,8 +1382,7 @@ def test_leakage_detector_scans_visible_result_top_level_carriers():
 
     assert report.ground_truth_leakage_detected
     assert any(
-        "visible_result.observation_policy_id" in reason
-        and "embeds a gt_event_id" in reason
+        "visible_result.observation_policy_id" in reason and "embeds a gt_event_id" in reason
         for reason in report.failure_reasons
     )
 
@@ -1485,17 +1404,13 @@ def test_recall_matching_maximizes_cardinality_instead_of_greedy_latest_truth():
     detections = [
         detection_template.model_copy(
             update={
-                "metadata": detection_template.metadata.model_copy(
-                    update={"record_id": uid(201)}
-                ),
+                "metadata": detection_template.metadata.model_copy(update={"record_id": uid(201)}),
                 "detection_time": start + timedelta(hours=10),
             }
         ),
         detection_template.model_copy(
             update={
-                "metadata": detection_template.metadata.model_copy(
-                    update={"record_id": uid(202)}
-                ),
+                "metadata": detection_template.metadata.model_copy(update={"record_id": uid(202)}),
                 "detection_time": start + timedelta(hours=11),
             }
         ),
@@ -1523,9 +1438,7 @@ def test_evaluation_report_self_hash_rejects_round_trip_mutation():
     report_type = type(report)
 
     assert report_type.model_validate(report.model_dump(mode="python")) == report
-    tampered = report.model_copy(
-        update={"observation_policy_id": "tampered-policy"}
-    )
+    tampered = report.model_copy(update={"observation_policy_id": "tampered-policy"})
     with pytest.raises(ValidationError, match="evaluation_report_sha256"):
         report_type.model_validate(tampered.model_dump(mode="python"))
 
@@ -1581,9 +1494,7 @@ def test_evaluation_report_rejects_metric_binding_and_duplicate_names():
         run_benchmark_view(plan, policy),
         track=EvaluationTrack.CONTROLLED_NOISE,
     )
-    wrong_run_metric = report.metrics[0].model_copy(
-        update={"simulation_run_id": uid(777)}
-    )
+    wrong_run_metric = report.metrics[0].model_copy(update={"simulation_run_id": uid(777)})
     wrong_binding = rehash_evaluation_report(
         report,
         metrics=(wrong_run_metric, *report.metrics[1:]),
@@ -1643,9 +1554,7 @@ def test_evaluation_report_rejects_invalid_recall_semantics(
 def test_contextual_or_persistent_change_is_not_scored_as_anomaly(change_kind):
     config = build_routine_config()
     change = config.changes[0].model_copy(update={"kind": change_kind})
-    plan = SyntheticRoutineGenerator().generate(
-        config.model_copy(update={"changes": (change,)})
-    )
+    plan = SyntheticRoutineGenerator().generate(config.model_copy(update={"changes": (change,)}))
     policy = build_policy()
     simulation = SymbolicWorldModelSimulator().run(plan, policy)
     manifest = build_manifest(plan, policy)
@@ -1656,9 +1565,7 @@ def test_contextual_or_persistent_change_is_not_scored_as_anomaly(change_kind):
         track=EvaluationTrack.CONTROLLED_NOISE,
     )
     anomaly_metric = next(
-        metric
-        for metric in report.metrics
-        if metric.metric_name == "anomaly_observation_recall"
+        metric for metric in report.metrics if metric.metric_name == "anomaly_observation_recall"
     )
 
     assert anomaly_metric.value is None
@@ -1673,8 +1580,7 @@ def test_zero_field_of_view_coverage_never_emits_a_detection():
 
     assert visible.observation_opportunities
     assert all(
-        result.outcome != ObservationOutcome.DETECTED
-        for result in visible.detection_results
+        result.outcome != ObservationOutcome.DETECTED for result in visible.detection_results
     )
     assert all(
         opportunity.p_visible_given_state == 0.0
@@ -1701,8 +1607,7 @@ def test_camera_frustum_excludes_target_outside_primary_task_view():
     visible = SymbolicWorldModelSimulator().run(plan, policy)
 
     assert all(
-        result.outcome != ObservationOutcome.DETECTED
-        for result in visible.detection_results
+        result.outcome != ObservationOutcome.DETECTED for result in visible.detection_results
     )
 
 
@@ -1764,9 +1669,7 @@ def test_simulator_revalidates_model_copy_inputs_before_execution():
     plan = SyntheticRoutineGenerator().generate(build_routine_config())
     simulator = SymbolicWorldModelSimulator()
 
-    invalid_probability = build_policy().model_copy(
-        update={"field_of_view_coverage": 2.0}
-    )
+    invalid_probability = build_policy().model_copy(update={"field_of_view_coverage": 2.0})
     with pytest.raises(ValueError, match="invalid simulator input"):
         simulator.run(plan, invalid_probability)
 

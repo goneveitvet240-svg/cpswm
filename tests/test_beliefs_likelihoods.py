@@ -1,4 +1,3 @@
-from datetime import timedelta
 from uuid import uuid4
 
 import pytest
@@ -53,9 +52,7 @@ def test_belief_distribution_must_sum_to_one(metadata_factory, interval, now):
         )
 
 
-def test_belief_snapshot_is_rebuildable_from_matching_checkpoint(
-    metadata_factory, interval, now
-):
+def test_belief_snapshot_is_rebuildable_from_matching_checkpoint(metadata_factory, interval, now):
     checkpoint_id = uuid4()
     estimate = RebuildCostEstimate(
         rebuild_from_checkpoint_id=checkpoint_id,
@@ -91,9 +88,7 @@ def test_checkpoint_invalidation_requires_reason(metadata_factory, now):
         )
 
 
-def test_observation_likelihood_composes_visibility_and_detection(
-    metadata_factory, interval
-):
+def test_observation_likelihood_composes_visibility_and_detection(metadata_factory, interval):
     model = ObservationLikelihoodModel(
         metadata=metadata_factory(schema_name="cpswm.ObservationLikelihoodModel"),
         request_id=uuid4(),
@@ -110,9 +105,7 @@ def test_observation_likelihood_composes_visibility_and_detection(
     assert model.p_detect_given_state_action == pytest.approx(0.6)
 
 
-def test_observation_likelihood_distribution_must_normalize(
-    metadata_factory, interval
-):
+def test_observation_likelihood_distribution_must_normalize(metadata_factory, interval):
     with pytest.raises(ValidationError):
         ObservationLikelihoodModel(
             metadata=metadata_factory(schema_name="cpswm.ObservationLikelihoodModel"),
@@ -137,9 +130,7 @@ def test_likelihood_request_rejects_unnormalized_pose(metadata_factory, interval
             ),
             hypothesis_ref=uuid4(),
             state_hypothesis={"location": "Kitchen"},
-            viewpoint_pose=Pose3D(
-                frame_id="map", x=0, y=0, z=1, qx=0, qy=0, qz=0, qw=2
-            ),
+            viewpoint_pose=Pose3D(frame_id="map", x=0, y=0, z=1, qx=0, qy=0, qz=0, qw=2),
             sensor_profile_id="rgbd@0.1",
             scene_snapshot_id=uuid4(),
             perception_model_version="detector@0.1",

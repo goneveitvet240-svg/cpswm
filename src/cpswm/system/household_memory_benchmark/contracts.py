@@ -50,8 +50,7 @@ class BenchmarkBudget(ContractModel):
     def validate_nested_limits(self) -> BenchmarkBudget:
         if self.max_selected_verifications > self.max_selected_observation_actions:
             raise ValueError(
-                "max_selected_verifications cannot exceed "
-                "max_selected_observation_actions"
+                "max_selected_verifications cannot exceed max_selected_observation_actions"
             )
         return self
 
@@ -111,9 +110,7 @@ class BenchmarkManifest(ContractModel):
         if self.primary_target_object_id not in self.object_instance_ids:
             raise ValueError("primary target object must be listed in the benchmark")
         if self.scheduled_observation_object_id not in self.object_instance_ids:
-            raise ValueError(
-                "scheduled observation object must be listed in the benchmark"
-            )
+            raise ValueError("scheduled observation object must be listed in the benchmark")
         return self
 
     @property

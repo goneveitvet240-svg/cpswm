@@ -17,10 +17,6 @@ from .evaluator import (
     MetricRecord,
     evaluation_run_identity,
 )
-from .shift_baselines import (
-    LoggedPolicyActorLocationBaseline,
-    LoggedPolicyThenLocationBaseline,
-)
 from .online_shift_attribution import (
     OnlineShiftAttributionCase,
     OnlineShiftCaseInput,
@@ -44,6 +40,10 @@ from .shift_attribution import (
     ShiftCause,
     ShiftCausePrediction,
 )
+from .shift_baselines import (
+    LoggedPolicyActorLocationBaseline,
+    LoggedPolicyThenLocationBaseline,
+)
 
 __all__ = [
     "D0FactorFingerprints",
@@ -57,9 +57,9 @@ __all__ = [
     "D0VisibleSimulationRun",
     "EvaluationReport",
     "EvaluationRunner",
-    "evaluation_run_identity",
-    "LoggedPolicyThenLocationBaseline",
+    "IdentifiabilityStatus",
     "LoggedPolicyActorLocationBaseline",
+    "LoggedPolicyThenLocationBaseline",
     "MetricRecord",
     "OnlineShiftAttributionCase",
     "OnlineShiftCaseInput",
@@ -73,11 +73,11 @@ __all__ = [
     "OnlineShiftSuite",
     "OnlineShiftSuiteConfig",
     "OnlineShiftSuiteGenerator",
-    "IdentifiabilityStatus",
     "RiskCoveragePoint",
     "ShiftAttributionCase",
     "ShiftAttributionEvaluator",
     "ShiftAttributionReport",
     "ShiftCause",
     "ShiftCausePrediction",
+    "evaluation_run_identity",
 ]

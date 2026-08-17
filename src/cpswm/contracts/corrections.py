@@ -5,7 +5,7 @@ from __future__ import annotations
 from enum import StrEnum
 from uuid import UUID
 
-from pydantic import Field, JsonValue, model_validator
+from pydantic import JsonValue, model_validator
 
 from .base import (
     BaseRecordMetadata,

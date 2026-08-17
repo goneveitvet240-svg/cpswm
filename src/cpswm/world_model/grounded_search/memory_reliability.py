@@ -65,8 +65,7 @@ class MemoryReliabilityProjector:
             reasons = ("explicit_contradiction_supported_by_calibrated_evidence",)
         elif (
             posterior >= request.fresh_threshold
-            and request.seconds_since_last_direct_observation
-            <= request.stale_after_seconds
+            and request.seconds_since_last_direct_observation <= request.stale_after_seconds
         ):
             status = MemoryReliabilityStatus.FRESH
             action = MemoryLifecycleAction.USE_WITH_CURRENT_POSTERIOR
@@ -74,9 +73,7 @@ class MemoryReliabilityProjector:
         elif posterior >= request.usable_threshold:
             status = MemoryReliabilityStatus.STALE
             action = MemoryLifecycleAction.VERIFY_BEFORE_HIGH_RISK_USE
-            reasons = (
-                "memory_may_still_be_useful_but_requires_risk_conditioned_verification",
-            )
+            reasons = ("memory_may_still_be_useful_but_requires_risk_conditioned_verification",)
         else:
             status = MemoryReliabilityStatus.UNCERTAIN
             action = MemoryLifecycleAction.VERIFY_BEFORE_HIGH_RISK_USE

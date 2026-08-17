@@ -22,9 +22,9 @@ from cpswm.contracts.base import ContractModel, Probability, require_aware
 from cpswm.system.reproducibility import content_sha256, content_uuid
 from cpswm.system.synthetic_routines import RoutineChangeKind, RoutinePlan
 from cpswm_gt import (
+    GroundTruthHabitTrajectory,
     GTHabitRegimeKind,
     GTPlacementEvent,
-    GroundTruthHabitTrajectory,
 )
 from simobs import SelectiveObservationSample, simulate_location_observation
 
@@ -54,9 +54,7 @@ def _reject_live_model_extras(value: object, path: str) -> None:
             names = ", ".join(sorted(unexpected_fields))
             raise ValueError(f"{path} contains unexpected field(s): {names}")
         for field_name in declared_fields:
-            _reject_live_model_extras(
-                getattr(value, field_name), f"{path}.{field_name}"
-            )
+            _reject_live_model_extras(getattr(value, field_name), f"{path}.{field_name}")
     elif isinstance(value, dict):
         for key, nested in value.items():
             _reject_live_model_extras(nested, f"{path}[{key!r}]")
@@ -175,18 +173,13 @@ class IncidentalObservationPolicy(ContractModel):
         if self.occlusion_state == OcclusionState.FULL and self.p_visible_given_state > 0:
             raise ValueError("full occlusion requires zero visibility probability")
         sample_times = [sample.sample_time for sample in self.robot_task_trajectory]
-        if sample_times != sorted(sample_times) or len(sample_times) != len(
-            set(sample_times)
-        ):
-            raise ValueError(
-                "robot task trajectory samples must have unique chronological times"
-            )
+        if sample_times != sorted(sample_times) or len(sample_times) != len(set(sample_times)):
+            raise ValueError("robot task trajectory samples must have unique chronological times")
         location_ids = [item.location_id for item in self.location_geometry]
         if len(location_ids) != len(set(location_ids)):
             raise ValueError("location geometry must define each location once")
         if any(
-            sample.pose.frame_id != self.frame_id
-            for sample in self.robot_task_trajectory
+            sample.pose.frame_id != self.frame_id for sample in self.robot_task_trajectory
         ) or any(item.frame_id != self.frame_id for item in self.location_geometry):
             raise ValueError("trajectory and location geometry must use policy frame_id")
         return self
@@ -216,9 +209,7 @@ class SymbolicSimulationResult(ContractModel):
     def validate_content_and_output_bindings(self) -> SymbolicSimulationResult:
         expected_hash = content_sha256(self.content_payload())
         if self.simulation_content_sha256 != expected_hash:
-            raise ValueError(
-                "simulation_content_sha256 does not match simulation content"
-            )
+            raise ValueError("simulation_content_sha256 does not match simulation content")
         expected_run_id = simulation_run_identity(
             observation_policy_id=self.observation_policy_id,
             observation_policy_sha256=self.observation_policy_sha256,
@@ -247,30 +238,22 @@ class SymbolicSimulationResult(ContractModel):
         if set(result_opportunity_ids) != set(opportunity_ids):
             raise ValueError("every observation opportunity requires exactly one result")
 
-        opportunity_by_id = {
-            item.metadata.record_id: item for item in opportunities
-        }
+        opportunity_by_id = {item.metadata.record_id: item for item in opportunities}
         for opportunity in opportunities:
             if (
-                opportunity.metadata.schema_name
-                != "cpswm.ObservationOpportunityRecord"
+                opportunity.metadata.schema_name != "cpswm.ObservationOpportunityRecord"
                 or opportunity.metadata.schema_version != "0.1.0"
             ):
-                raise ValueError(
-                    "opportunity metadata schema does not match its contract"
-                )
+                raise ValueError("opportunity metadata schema does not match its contract")
         for result in results:
             opportunity = opportunity_by_id[result.observation_opportunity_id]
             if (
-                result.metadata.schema_name
-                != "cpswm.ObservationDetectionResult"
+                result.metadata.schema_name != "cpswm.ObservationDetectionResult"
                 or result.metadata.schema_version != "0.1.0"
             ):
                 raise ValueError("result metadata schema does not match its contract")
             if result.metadata.record_id != detection_result_record_id(result):
-                raise ValueError(
-                    "detection result record ID does not match realized content"
-                )
+                raise ValueError("detection result record ID does not match realized content")
             if result.metadata.household_id != opportunity.metadata.household_id:
                 raise ValueError("result and opportunity household IDs do not match")
             if result.metadata.session_id != opportunity.metadata.session_id:
@@ -287,29 +270,20 @@ class SymbolicSimulationResult(ContractModel):
             ):
                 raise ValueError("detection time does not match opportunity time")
             if not opportunity.selected and result.outcome != "not_observed":
-                raise ValueError(
-                    "unselected observation action requires a not_observed result"
-                )
+                raise ValueError("unselected observation action requires a not_observed result")
             if opportunity.selected and result.outcome == "not_observed":
-                raise ValueError(
-                    "selected observation action cannot have a not_observed result"
-                )
+                raise ValueError("selected observation action cannot have a not_observed result")
             if (
                 result.detected_object_instance_id is not None
-                and result.detected_object_instance_id
-                != self.scheduled_observation_object_id
+                and result.detected_object_instance_id != self.scheduled_observation_object_id
             ):
-                raise ValueError(
-                    "detected object does not match scheduled observation object"
-                )
+                raise ValueError("detected object does not match scheduled observation object")
         if any(
             opportunity.incidental_context is not None
             and opportunity.incidental_context.candidate_entity_ids
             for opportunity in opportunities
         ):
-            raise ValueError(
-                "observation opportunity must not expose candidate identities"
-            )
+            raise ValueError("observation opportunity must not expose candidate identities")
         return self
 
     def content_payload(self) -> dict:
@@ -343,9 +317,7 @@ class PrivilegedSymbolicSimulationView(ContractModel):
         payload = self.content_payload()
         if self.privileged_content_sha256 != content_sha256(payload):
             raise ValueError("privileged content hash does not match view content")
-        if self.privileged_simulation_id != content_uuid(
-            "privileged-simulation", payload
-        ):
+        if self.privileged_simulation_id != content_uuid("privileged-simulation", payload):
             raise ValueError("privileged simulation ID does not match view content")
         return self
 
@@ -526,9 +498,7 @@ class SymbolicWorldModelSimulator:
     ) -> SymbolicSimulationResult:
         policy_sha256 = content_sha256(policy)
         if policy.scheduled_observation_object_id not in plan.initial_object_locations:
-            raise ValueError(
-                "scheduled observation object requires an explicit initial location"
-            )
+            raise ValueError("scheduled observation object requires an explicit initial location")
         initial_target_location_id = plan.initial_object_locations[
             policy.scheduled_observation_object_id
         ]
@@ -551,14 +521,10 @@ class SymbolicWorldModelSimulator:
 
         opportunities: list[ObservationOpportunityRecord] = []
         detection_results: list[ObservationDetectionResult] = []
-        location_geometry = {
-            item.location_id: item for item in policy.location_geometry
-        }
+        location_geometry = {item.location_id: item for item in policy.location_geometry}
         target_object_id = policy.scheduled_observation_object_id
         if initial_target_location_id not in location_geometry:
-            raise ValueError(
-                "location geometry must cover the public initial target location"
-            )
+            raise ValueError("location geometry must cover the public initial target location")
 
         run_end = plan.start_time + timedelta(days=plan.duration_days)
         for sequence_no, trajectory_sample in enumerate(policy.robot_task_trajectory):
@@ -611,9 +577,7 @@ class SymbolicWorldModelSimulator:
             # report of the hidden realized target state. Geometry gates the
             # private ``target_present`` sample below. Encoding the realized
             # frustum intersection here would leak an undetected relocation.
-            potential_visibility = (
-                policy.field_of_view_coverage * policy.p_visible_given_state
-            )
+            potential_visibility = policy.field_of_view_coverage * policy.p_visible_given_state
             opportunity = ObservationOpportunityRecord(
                 metadata=opportunity_metadata,
                 observation_action_id=_stable_uuid(
@@ -637,30 +601,21 @@ class SymbolicWorldModelSimulator:
                 }
             )
             detection_result = simulate_location_observation(
-                    metadata=result_metadata,
-                    observation_opportunity=opportunity,
-                    sample=SelectiveObservationSample(
-                        selected=selected,
-                        target_present=(
-                            geometrically_visible
-                            and policy.field_of_view_coverage > 0.0
-                        ),
-                        detection_draw=rng.random(),
-                    ),
-                    detected_object_instance_id=(
-                        policy.scheduled_observation_object_id
-                    ),
-                    detected_location_id=realized_location_id,
-                    minimum_verification_strength=policy.minimum_verification_strength,
-                )
+                metadata=result_metadata,
+                observation_opportunity=opportunity,
+                sample=SelectiveObservationSample(
+                    selected=selected,
+                    target_present=(geometrically_visible and policy.field_of_view_coverage > 0.0),
+                    detection_draw=rng.random(),
+                ),
+                detected_object_instance_id=(policy.scheduled_observation_object_id),
+                detected_location_id=realized_location_id,
+                minimum_verification_strength=policy.minimum_verification_strength,
+            )
             detection_result = detection_result.model_copy(
                 update={
                     "metadata": detection_result.metadata.model_copy(
-                        update={
-                            "record_id": detection_result_record_id(
-                                detection_result
-                            )
-                        }
+                        update={"record_id": detection_result_record_id(detection_result)}
                     )
                 }
             )
@@ -742,17 +697,14 @@ class SymbolicWorldModelSimulator:
         distance = hypot(planar_distance, dz)
         if distance > sample.camera_frustum.max_range_m:
             return False
-        yaw_delta = (
-            degrees(atan2(dy, dx)) - sample.pose.yaw_degrees + 180
-        ) % 360 - 180
+        yaw_delta = (degrees(atan2(dy, dx)) - sample.pose.yaw_degrees + 180) % 360 - 180
         pitch = degrees(atan2(dz, planar_distance))
         pitch_delta = pitch - sample.pose.pitch_degrees
         # Azimuth is undefined directly above/below the camera. In that
         # degenerate direction only the vertical frustum constrains the point.
         horizontally_visible = (
             planar_distance <= 1e-12
-            or abs(yaw_delta)
-            <= sample.camera_frustum.horizontal_fov_degrees / 2
+            or abs(yaw_delta) <= sample.camera_frustum.horizontal_fov_degrees / 2
         )
         return (
             horizontally_visible

@@ -42,9 +42,7 @@ def _conjugate(value: Quaternion) -> Quaternion:
 
 def _rotate(rotation: Quaternion, point: Vector3) -> Vector3:
     pure = (point.x, point.y, point.z, 0.0)
-    rotated = _multiply(
-        _multiply(_as_tuple(rotation), pure), _as_tuple(_conjugate(rotation))
-    )
+    rotated = _multiply(_multiply(_as_tuple(rotation), pure), _as_tuple(_conjugate(rotation)))
     return Vector3(x=rotated[0], y=rotated[1], z=rotated[2])
 
 
@@ -72,8 +70,7 @@ def invert_transform(transform: FrameTransform) -> FrameTransform:
         covariance=None,
         valid_time=transform.valid_time,
         transform_version=transform.transform_version,
-        component_transform_ids=transform.component_transform_ids
-        or (transform.transform_id,),
+        component_transform_ids=transform.component_transform_ids or (transform.transform_id,),
     )
 
 
@@ -99,9 +96,9 @@ def compose_transforms(first: FrameTransform, second: FrameTransform) -> FrameTr
     starts = max(first.valid_time.start, second.valid_time.start)
     ends = [end for end in (first.valid_time.end, second.valid_time.end) if end]
     end = min(ends) if ends else None
-    component_ids = (
-        first.component_transform_ids or (first.transform_id,)
-    ) + (second.component_transform_ids or (second.transform_id,))
+    component_ids = (first.component_transform_ids or (first.transform_id,)) + (
+        second.component_transform_ids or (second.transform_id,)
+    )
     derived_id = uuid5(
         NAMESPACE_URL,
         "cpswm-frame-compose:"
@@ -140,14 +137,10 @@ class FrameRegistry:
                 if existing != transform:
                     raise FrameTransformConflictError("transform_id is already registered")
                 return
-            same_pair = (
-                existing.household_id == transform.household_id
-                and {
-                    existing.source_frame_id,
-                    existing.target_frame_id,
-                }
-                == {transform.source_frame_id, transform.target_frame_id}
-            )
+            same_pair = existing.household_id == transform.household_id and {
+                existing.source_frame_id,
+                existing.target_frame_id,
+            } == {transform.source_frame_id, transform.target_frame_id}
             if same_pair and existing.valid_time.overlaps(transform.valid_time):
                 raise FrameTransformConflictError(
                     "overlapping transforms for one frame pair are ambiguous"
@@ -189,9 +182,7 @@ class FrameRegistry:
             z=rotated.z + transform.translation.z,
         )
 
-    def _edges(
-        self, frame_id: str, household_id: UUID, at_time: datetime
-    ) -> list[FrameTransform]:
+    def _edges(self, frame_id: str, household_id: UUID, at_time: datetime) -> list[FrameTransform]:
         edges: list[FrameTransform] = []
         for item in self._transforms:
             if item.household_id != household_id or not item.valid_time.contains(at_time):

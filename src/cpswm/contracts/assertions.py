@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from enum import StrEnum
-from typing import Annotated, Literal, Union
+from typing import Annotated, Literal
 
 from pydantic import Field, JsonValue, model_validator
 
@@ -52,7 +52,7 @@ class LiteralRelationObject(ContractModel):
 
 
 RelationObject = Annotated[
-    Union[EntityRelationObject, LiteralRelationObject],
+    EntityRelationObject | LiteralRelationObject,
     Field(discriminator="kind"),
 ]
 

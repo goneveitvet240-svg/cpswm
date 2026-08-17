@@ -51,4 +51,3 @@ class GroundTruthHabitTrajectory(ContractModel):
         if len(event_ids) != len(set(event_ids)):
             raise ValueError("ground-truth habit event ids must be unique")
         return self
-

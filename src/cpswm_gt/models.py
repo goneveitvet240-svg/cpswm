@@ -72,4 +72,3 @@ class GroundTruthWorldState(ContractModel):
             if not set(event.participant_gt_entity_ids.values()).issubset(entity_ids):
                 raise ValueError("ground-truth event has an unknown participant")
         return self
-

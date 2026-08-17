@@ -32,9 +32,7 @@ class LayeredSemanticMap:
         if anchor.parent_anchor_id is not None:
             parent = self._static[anchor.parent_anchor_id]
             if anchor.frame_id != parent.frame_id:
-                raise ValueError(
-                    "child static anchor frame must match its parent frame"
-                )
+                raise ValueError("child static anchor frame must match its parent frame")
         self._static[anchor.anchor_id] = anchor
         self._static_revision += 1
 
@@ -43,9 +41,7 @@ class LayeredSemanticMap:
             raise LookupError("dynamic object must reference a static anchor")
         anchor = self._static[state.anchor_id]
         if state.pose.frame_id != anchor.frame_id:
-            raise ValueError(
-                "dynamic object pose frame must match its static anchor frame"
-            )
+            raise ValueError("dynamic object pose frame must match its static anchor frame")
         self._dynamic[state.object_instance.entity_id] = state
         self._dynamic_revision += 1
 

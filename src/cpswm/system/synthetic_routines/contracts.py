@@ -57,10 +57,7 @@ class RoutineChangeSpec(ContractModel):
     def validate_change(self) -> RoutineChangeSpec:
         if self.end_day is not None and self.end_day < self.start_day:
             raise ValueError("end_day must be >= start_day")
-        if (
-            self.kind == RoutineChangeKind.GUEST_CONTAMINATION
-            and self.actor_override_id is None
-        ):
+        if self.kind == RoutineChangeKind.GUEST_CONTAMINATION and self.actor_override_id is None:
             raise ValueError("guest contamination requires actor_override_id")
         return self
 
@@ -84,9 +81,7 @@ class RoutineGenerationConfig(ContractModel):
         routine_objects = [item.object_instance_id for item in self.object_routines]
         if len(routine_objects) != len(set(routine_objects)):
             raise ValueError("object_routines must define each object once")
-        unknown = {
-            change.object_instance_id for change in self.changes
-        } - set(routine_objects)
+        unknown = {change.object_instance_id for change in self.changes} - set(routine_objects)
         if unknown:
             raise ValueError("routine change references an unknown object")
         change_ids = [change.change_id for change in self.changes]

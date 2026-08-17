@@ -24,4 +24,3 @@ class SyntheticObservation(ContractModel):
         if self.ground_truth_refs and not self.oracle_channel:
             raise ValueError("non-oracle observations cannot carry ground-truth references")
         return self
-

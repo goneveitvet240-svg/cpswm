@@ -31,9 +31,7 @@ def actor_evidence_semantic_fingerprint(
     for reference in payload["evidence_refs"]:
         semantic_reference = dict(reference)
         semantic_reference.pop("evidence_id", None)
-        semantic_references_by_hash[content_sha256(semantic_reference)] = (
-            semantic_reference
-        )
+        semantic_references_by_hash[content_sha256(semantic_reference)] = semantic_reference
     payload["evidence_refs"] = tuple(
         semantic_references_by_hash[fingerprint]
         for fingerprint in sorted(semantic_references_by_hash)
@@ -173,17 +171,14 @@ class EventHypothesisRevision(ContractModel):
         )
         if not isclose(total, 1.0, rel_tol=0.0, abs_tol=1e-6):
             raise ValueError("event hypothesis posteriors plus unresolved must sum to 1")
-        if not any(
-            item.status == EventHypothesisStatus.ACTIVE for item in self.hypotheses
-        ) and self.unresolved_probability < 1.0:
+        if (
+            not any(item.status == EventHypothesisStatus.ACTIVE for item in self.hypotheses)
+            and self.unresolved_probability < 1.0
+        ):
             raise ValueError("a fully retracted set must assign all mass to unresolved")
-        if len(self.revision_evidence_record_ids) != len(
-            set(self.revision_evidence_record_ids)
-        ):
+        if len(self.revision_evidence_record_ids) != len(set(self.revision_evidence_record_ids)):
             raise ValueError("CHEH revision evidence record IDs must be unique")
-        if len(self.revision_evidence_cluster_ids) != len(
-            set(self.revision_evidence_cluster_ids)
-        ):
+        if len(self.revision_evidence_cluster_ids) != len(set(self.revision_evidence_cluster_ids)):
             raise ValueError("CHEH revision evidence cluster IDs must be unique")
         if len(self.revision_evidence_semantic_fingerprints) != len(
             set(self.revision_evidence_semantic_fingerprints)
@@ -209,9 +204,7 @@ class EventHypothesisRevision(ContractModel):
                 "CHEH actor evidence records, clusters, and semantic fingerprints "
                 "must align one-to-one"
             )
-        if len(self.source_detection_result_ids) != len(
-            set(self.source_detection_result_ids)
-        ):
+        if len(self.source_detection_result_ids) != len(set(self.source_detection_result_ids)):
             raise ValueError("CHEH endpoint detection IDs must be unique")
         if self.revision_no == 0 and not set(self.source_detection_result_ids).issubset(
             self.revision_evidence_record_ids
@@ -252,9 +245,7 @@ class EventHypothesisRevision(ContractModel):
     @property
     def active_hypotheses(self) -> tuple[EventChainHypothesis, ...]:
         return tuple(
-            item
-            for item in self.hypotheses
-            if item.status == EventHypothesisStatus.ACTIVE
+            item for item in self.hypotheses if item.status == EventHypothesisStatus.ACTIVE
         )
 
     @property
@@ -278,10 +269,7 @@ class EventHypothesisHistory(ContractModel):
         expected_numbers = list(range(len(self.revisions)))
         if [item.revision_no for item in self.revisions] != expected_numbers:
             raise ValueError("CHEH revision history must be contiguous")
-        if any(
-            item.hypothesis_set_id != self.hypothesis_set_id
-            for item in self.revisions
-        ):
+        if any(item.hypothesis_set_id != self.hypothesis_set_id for item in self.revisions):
             raise ValueError("CHEH history cannot mix hypothesis sets")
         evidence_ids = [
             record_id
@@ -303,9 +291,7 @@ class EventHypothesisHistory(ContractModel):
             for fingerprint in revision.revision_evidence_semantic_fingerprints
         ]
         if len(semantic_fingerprints) != len(set(semantic_fingerprints)):
-            raise ValueError(
-                "CHEH semantic actor evidence cannot be reused across revisions"
-            )
+            raise ValueError("CHEH semantic actor evidence cannot be reused across revisions")
         for previous, current in zip(self.revisions, self.revisions[1:]):
             if current.parent_revision_id != previous.revision_id:
                 raise ValueError("CHEH revision parent binding is broken")
@@ -323,15 +309,9 @@ class EventHypothesisHistory(ContractModel):
             )
             for field_name in immutable_bindings:
                 if getattr(current, field_name) != getattr(previous, field_name):
-                    raise ValueError(
-                        f"CHEH revision changed immutable binding {field_name}"
-                    )
-            previous_hypotheses = {
-                item.hypothesis_id: item for item in previous.hypotheses
-            }
-            current_hypotheses = {
-                item.hypothesis_id: item for item in current.hypotheses
-            }
+                    raise ValueError(f"CHEH revision changed immutable binding {field_name}")
+            previous_hypotheses = {item.hypothesis_id: item for item in previous.hypotheses}
+            current_hypotheses = {item.hypothesis_id: item for item in current.hypotheses}
             if set(current_hypotheses) != set(previous_hypotheses):
                 raise ValueError("CHEH revision changed the hypothesis identity set")
             for hypothesis_id, current_hypothesis in current_hypotheses.items():
@@ -345,8 +325,7 @@ class EventHypothesisHistory(ContractModel):
                         previous_hypothesis, field_name
                     ):
                         raise ValueError(
-                            "CHEH revision changed immutable hypothesis field "
-                            f"{field_name}"
+                            f"CHEH revision changed immutable hypothesis field {field_name}"
                         )
                 if not set(previous_hypothesis.source_record_ids).issubset(
                     current_hypothesis.source_record_ids

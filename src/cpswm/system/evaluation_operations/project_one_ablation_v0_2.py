@@ -47,6 +47,28 @@ PROJECT_ONE_ABLATION_TOPOLOGY_GATE_V1: Literal["project-one-ablation-topology-ga
     "project-one-ablation-topology-gate@1"
 )
 
+ATG1_ARM_NOTE_ID: Literal["atg1.arm.topology-binding-validated.no-execution@1"] = (
+    "atg1.arm.topology-binding-validated.no-execution@1"
+)
+ATG1_CAVEAT_IDS = (
+    "atg1.no-model-execution-or-test-access@1",
+    "formal-structure-one-b1.m05-m12-perception.blocked@1",
+    "atg2.independent-tuning-and-measured-budget-ledger.blocked@1",
+    "atg3.compliant-receipt-test-unseal.blocked@1",
+    "joint-cf-bocpd.topology-only-unbound@1",
+)
+ATG1_ALLOWED_CLAIMS = (
+    "all-eleven-arms-have-validated-topology-bindings",
+    "joint-cf-bocpd-is-wired-as-the-eleventh-arm",
+)
+ATG1_FORBIDDEN_CLAIMS = (
+    "formal-structure-one-b1-complete",
+    "test-executed",
+    "comparative-performance-measured",
+    "joint-cf-bocpd-superior",
+    "state-of-the-art",
+)
+
 
 class ProjectOneMatchedComparisonId(StrEnum):
     HABIT_OBSERVATION_CORRECTION = "habit-observation-correction"
@@ -256,11 +278,16 @@ class ProjectOneProtocolPilotManifestV2(ContractModel):
     formal_structure_one_b1_status: Literal["BLOCK"] = "BLOCK"
     tuning_measured_budget_gate_status: Literal["BLOCK"] = "BLOCK"
     compliant_test_unseal_gate_status: Literal["BLOCK"] = "BLOCK"
+    split_experiment_id: str = Field(min_length=1)
     artifact_manifest_sha256: str = Field(pattern=r"^[0-9a-f]{64}$")
+    artifact_manifest_case_count: int = Field(ge=0)
     train_split_sha256: str = Field(pattern=r"^[0-9a-f]{64}$")
     validation_split_sha256: str = Field(pattern=r"^[0-9a-f]{64}$")
     test_split_sha256: str = Field(pattern=r"^[0-9a-f]{64}$")
     observation_trace_sha256: str = Field(pattern=r"^[0-9a-f]{64}$")
+    train_case_count: int = Field(ge=0)
+    validation_case_count: int = Field(ge=0)
+    test_case_count: int = Field(ge=0)
     comparisons: tuple[ProjectOneProtocolComparisonV2, ...] = Field(min_length=5, max_length=5)
 
     @model_validator(mode="after")
@@ -277,6 +304,11 @@ class ProjectOneProtocolPilotManifestV2(ContractModel):
             raise ValueError("v0.2 pilot comparison IDs must be unique")
         if set(comparison_ids) != set(ProjectOneMatchedComparisonId):
             raise ValueError("v0.2 pilot must contain all five matched comparisons")
+        if (
+            self.train_case_count + self.validation_case_count + self.test_case_count
+            != self.artifact_manifest_case_count
+        ):
+            raise ValueError("manifest split counts must equal artifact manifest case count")
         arms = [
             arm.arm_id for comparison in validated_comparisons for arm in comparison.manifest.arms
         ]
@@ -316,7 +348,7 @@ class ProjectOnePilotArmTopologyResultV2(ContractModel):
     method_semantics: tuple[str, ...] = Field(min_length=1)
     topology_result: Literal["validated_topology_binding"] = "validated_topology_binding"
     topology_binding_sha256: str = Field(pattern=r"^[0-9a-f]{64}$")
-    note: str = Field(min_length=1)
+    note: Literal["atg1.arm.topology-binding-validated.no-execution@1"] = ATG1_ARM_NOTE_ID
 
 
 class ProjectOneProtocolPilotReportV2(ContractModel):
@@ -329,7 +361,13 @@ class ProjectOneProtocolPilotReportV2(ContractModel):
     all_adapters_bound: Literal[False] = False
     formal_experiment_ready: Literal[False] = False
     claim_scope: Literal["ablation_topology_only"] = "ablation_topology_only"
-    caveats: tuple[str, ...] = Field(min_length=1)
+    artifact_manifest_case_count: int = Field(ge=0)
+    train_case_count: int = Field(ge=0)
+    validation_case_count: int = Field(ge=0)
+    test_case_count: int = Field(ge=0)
+    caveat_ids: tuple[str, ...] = ATG1_CAVEAT_IDS
+    allowed_claims: tuple[str, ...] = ATG1_ALLOWED_CLAIMS
+    forbidden_claims: tuple[str, ...] = ATG1_FORBIDDEN_CLAIMS
 
     @model_validator(mode="after")
     def validate_report(self) -> ProjectOneProtocolPilotReportV2:
@@ -340,6 +378,26 @@ class ProjectOneProtocolPilotReportV2(ContractModel):
             raise ValueError("v0.2 pilot manifest hash mismatch")
         if self.claim_scope != manifest.claim_scope:
             raise ValueError("v0.2 report claim scope must match its manifest")
+        report_counts = (
+            self.artifact_manifest_case_count,
+            self.train_case_count,
+            self.validation_case_count,
+            self.test_case_count,
+        )
+        manifest_counts = (
+            manifest.artifact_manifest_case_count,
+            manifest.train_case_count,
+            manifest.validation_case_count,
+            manifest.test_case_count,
+        )
+        if report_counts != manifest_counts:
+            raise ValueError("v0.2 report split counts must match its manifest")
+        if self.caveat_ids != ATG1_CAVEAT_IDS:
+            raise ValueError("v0.2 report caveat IDs must match the canonical ATG-1 set")
+        if self.allowed_claims != ATG1_ALLOWED_CLAIMS:
+            raise ValueError("v0.2 report allowed claims must match the ATG-1 policy")
+        if self.forbidden_claims != ATG1_FORBIDDEN_CLAIMS:
+            raise ValueError("v0.2 report forbidden claims must match the ATG-1 policy")
         results = tuple(
             ProjectOnePilotArmTopologyResultV2.model_validate(result.model_dump(mode="json"))
             for result in self.arm_results
@@ -381,6 +439,8 @@ class ProjectOneProtocolPilotReportV2(ContractModel):
                 raise ValueError("arm topology result is not a validated binding")
             if result.topology_binding_sha256 != _topology_binding_sha256(comparison, arm):
                 raise ValueError("arm topology result binding hash mismatch")
+            if result.note != ATG1_ARM_NOTE_ID:
+                raise ValueError("arm topology result note must use the canonical ATG-1 ID")
         return self
 
 
@@ -414,11 +474,16 @@ class ProjectOneProtocolPilotRunnerV2:
             experiment_id=experiment_id,
             protocol_version=config.protocol_version,
             gate_id=config.gate_id,
+            split_experiment_id=metadata.experiment_id,
             artifact_manifest_sha256=metadata.artifact_manifest_sha256,
+            artifact_manifest_case_count=metadata.artifact_manifest_case_count,
             train_split_sha256=metadata.train_split_sha256,
             validation_split_sha256=metadata.validation_split_sha256,
             test_split_sha256=metadata.test_split_sha256,
             observation_trace_sha256=metadata.observation_trace_sha256,
+            train_case_count=metadata.train_case_count,
+            validation_case_count=metadata.validation_case_count,
+            test_case_count=metadata.test_case_count,
             comparisons=comparisons,
         )
         arm_results = tuple(
@@ -431,15 +496,10 @@ class ProjectOneProtocolPilotRunnerV2:
             manifest_sha256=content_sha256(manifest),
             arm_results=arm_results,
             all_adapters_bound=False,
-            caveats=(
-                "ATG-1 topology-only: no model was run and no TEST data was loaded or generated.",
-                "Formal Structure One B1 (M05-M12 perception) remains BLOCKED and incomplete.",
-                "ATG-2 remains blocked: no per-arm tuning or measured-budget ledger exists.",
-                "ATG-3 remains blocked: no compliant receipt has unsealed TEST.",
-                "joint-cause-factorized-bocpd is wired as the 11th arm but stays unbound.",
-                "No experiment supports superiority of joint CF-BOCPD over existing methods.",
-                "cause-factorized-bocpd is retained as the legacy independent-per-cause baseline.",
-            ),
+            artifact_manifest_case_count=metadata.artifact_manifest_case_count,
+            train_case_count=metadata.train_case_count,
+            validation_case_count=metadata.validation_case_count,
+            test_case_count=metadata.test_case_count,
         )
 
     def _comparison(
@@ -508,10 +568,7 @@ class ProjectOneProtocolPilotRunnerV2:
             declared_model_version=arm.model_version,
             method_semantics=semantics,
             topology_binding_sha256=_topology_binding_sha256(comparison, arm),
-            note=(
-                "ATG-1 topology-only wiring; declared version only; "
-                "executed_model_version is None. " + " ".join(semantics)
-            ),
+            note=ATG1_ARM_NOTE_ID,
         )
 
 

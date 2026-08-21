@@ -1,20 +1,24 @@
 from __future__ import annotations
 
-from cpswm.system.evaluation_operations import (
+from cpswm.system.evaluation_operations.online_shift_attribution import (
     OnlineShiftAttributionCase,
     OnlineShiftEvaluator,
     OnlineShiftFamily,
     OnlineShiftPrediction,
     OnlineShiftSplit,
     OnlineShiftSuiteGenerator,
-    ShiftCause,
+)
+from cpswm.system.evaluation_operations.shift_attribution import ShiftCause
+from cpswm.system.evaluation_operations.shift_baselines import (
+    OnlineCauseFactorizedBOCPDBaseline,
+    OnlineOrdinaryBOCPDBaseline,
 )
 
 
 def test_online_suite_is_single_stream_unknown_change_point_and_truth_free():
     suite = OnlineShiftSuiteGenerator().generate()
 
-    assert len(suite.cases) == 30
+    assert len(suite.cases) == 36
     for case in suite.cases:
         serialized = case.model_input.model_dump_json()
         for forbidden in (
@@ -88,3 +92,23 @@ def test_online_simultaneous_shift_cases_contain_both_causes():
     assert combinations
     assert all(ShiftCause.OBSERVATION_POLICY in truth.true_causes for truth in combinations)
     assert all(len(truth.true_causes) == 2 for truth in combinations)
+
+
+def test_online_ordinary_and_factorized_bocpd_share_the_frozen_test_stream():
+    suite = OnlineShiftSuiteGenerator().generate()
+    test_cases = tuple(
+        case for case in suite.cases if case.evaluator_truth.split == OnlineShiftSplit.TEST
+    )
+
+    reports = []
+    for model in (OnlineOrdinaryBOCPDBaseline(), OnlineCauseFactorizedBOCPDBaseline()):
+        bound = tuple(
+            OnlineShiftAttributionCase(
+                truth=case.evaluator_truth,
+                prediction=model.predict(case.model_input),
+            )
+            for case in test_cases
+        )
+        reports.append(OnlineShiftEvaluator().evaluate(bound))
+
+    assert all(report.sample_count == 12 for report in reports)

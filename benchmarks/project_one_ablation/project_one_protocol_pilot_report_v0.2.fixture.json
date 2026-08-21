@@ -1,6 +1,6 @@
 {
   "manifest": {
-    "experiment_id": "db43ed5d-52fe-52b8-927b-b6a6c053f9af",
+    "experiment_id": "f72df578-f0c1-5e46-914c-8d55ec745923",
     "protocol_version": "project-one-ablation-protocol-pilot@0.2",
     "gate_id": "project-one-ablation-topology-gate@1",
     "claim_scope": "ablation_topology_only",
@@ -8,17 +8,22 @@
     "formal_structure_one_b1_status": "BLOCK",
     "tuning_measured_budget_gate_status": "BLOCK",
     "compliant_test_unseal_gate_status": "BLOCK",
-    "artifact_manifest_sha256": "dd2d26a89d5f43888d56447570f0c6468a04029c8ed12d2bf6f7045a7190f2d3",
+    "split_experiment_id": "project-one-v0.2",
+    "artifact_manifest_sha256": "88c6b892516063f428337c54fcbf372431cafc6f45e11f5fa904bb099d7a2b43",
+    "artifact_manifest_case_count": 36,
     "train_split_sha256": "e5915eb2442c0ec0d855345dc35a8380f5e561c2dbb3b8ac8d487d654458c356",
     "validation_split_sha256": "77863337cf9891b015f3898bc90a1fda8863e171c36a3e7a9060217ebf5fd8cc",
     "test_split_sha256": "8c623c37b04de6aede7aa4a3a71cfa62bf79c9902bc8d15e587f09fd96ae053b",
     "observation_trace_sha256": "9eaa440d1642b550bb82184e30f39445c0b66b8192adc5c2e7d8886cfad8cfe6",
+    "train_case_count": 18,
+    "validation_case_count": 6,
+    "test_case_count": 12,
     "comparisons": [
       {
         "comparison_id": "habit-observation-correction",
         "task_adapter_id": "habit-observation-stream@unbound",
         "manifest": {
-          "experiment_id": "19a8027f-612f-54d2-83ff-c221115b7e0e",
+          "experiment_id": "3f62e62d-88de-5c9b-8ac4-f915409c6183",
           "baseline_arm_id": "habit-baseline",
           "arms": [
             {
@@ -48,7 +53,7 @@
                 "validation_split_sha256": "77863337cf9891b015f3898bc90a1fda8863e171c36a3e7a9060217ebf5fd8cc",
                 "objective_name": "protocol_only_no_model_selection"
               },
-              "independent_tuning_run_id": "84059d01-2952-5f90-9a91-803667639f46",
+              "independent_tuning_run_id": "45611c4c-9333-5035-bbdd-11f6c95fd355",
               "observation_trace_sha256": "9eaa440d1642b550bb82184e30f39445c0b66b8192adc5c2e7d8886cfad8cfe6",
               "test_split_sha256": "8c623c37b04de6aede7aa4a3a71cfa62bf79c9902bc8d15e587f09fd96ae053b"
             },
@@ -79,7 +84,7 @@
                 "validation_split_sha256": "77863337cf9891b015f3898bc90a1fda8863e171c36a3e7a9060217ebf5fd8cc",
                 "objective_name": "protocol_only_no_model_selection"
               },
-              "independent_tuning_run_id": "a92a4a21-ffc3-5839-9f05-97803afb1fa5",
+              "independent_tuning_run_id": "51cfe2f3-8231-5125-9af6-f7ff3f60885a",
               "observation_trace_sha256": "9eaa440d1642b550bb82184e30f39445c0b66b8192adc5c2e7d8886cfad8cfe6",
               "test_split_sha256": "8c623c37b04de6aede7aa4a3a71cfa62bf79c9902bc8d15e587f09fd96ae053b"
             }
@@ -90,7 +95,7 @@
         "comparison_id": "habit-actor-contamination",
         "task_adapter_id": "habit-actor-stream@unbound",
         "manifest": {
-          "experiment_id": "05aaf626-916f-55a2-a2d6-a07f64ab4a38",
+          "experiment_id": "cc32819d-3f22-57cf-a3df-8a8e19690c22",
           "baseline_arm_id": "habit-visitor-isolated",
           "arms": [
             {
@@ -120,7 +125,7 @@
                 "validation_split_sha256": "77863337cf9891b015f3898bc90a1fda8863e171c36a3e7a9060217ebf5fd8cc",
                 "objective_name": "protocol_only_no_model_selection"
               },
-              "independent_tuning_run_id": "87895e02-2e07-5381-9755-d0efdbecf80e",
+              "independent_tuning_run_id": "8b68a5f4-ed1c-57a7-9dcd-7257e60642a8",
               "observation_trace_sha256": "9eaa440d1642b550bb82184e30f39445c0b66b8192adc5c2e7d8886cfad8cfe6",
               "test_split_sha256": "8c623c37b04de6aede7aa4a3a71cfa62bf79c9902bc8d15e587f09fd96ae053b"
             },
@@ -151,7 +156,7 @@
                 "validation_split_sha256": "77863337cf9891b015f3898bc90a1fda8863e171c36a3e7a9060217ebf5fd8cc",
                 "objective_name": "protocol_only_no_model_selection"
               },
-              "independent_tuning_run_id": "1a2e551b-f91f-5c14-8744-00cad48315f0",
+              "independent_tuning_run_id": "cac9b423-7c03-5d9f-a6a6-eaa20911d64e",
               "observation_trace_sha256": "9eaa440d1642b550bb82184e30f39445c0b66b8192adc5c2e7d8886cfad8cfe6",
               "test_split_sha256": "8c623c37b04de6aede7aa4a3a71cfa62bf79c9902bc8d15e587f09fd96ae053b"
             }
@@ -162,7 +167,7 @@
         "comparison_id": "shift-cause-factorization",
         "task_adapter_id": "online-shift-attribution@0.1",
         "manifest": {
-          "experiment_id": "a3895b00-a212-51f2-bf1a-dd1cc2660497",
+          "experiment_id": "2a80d147-75f1-5355-81e5-7e67956005c7",
           "baseline_arm_id": "ordinary-bocpd",
           "arms": [
             {
@@ -190,7 +195,7 @@
                 "validation_split_sha256": "77863337cf9891b015f3898bc90a1fda8863e171c36a3e7a9060217ebf5fd8cc",
                 "objective_name": "protocol_only_no_model_selection"
               },
-              "independent_tuning_run_id": "0f40298e-7e90-5e0c-9a9b-00b029d2288e",
+              "independent_tuning_run_id": "3f3b246d-cc79-5e04-a80a-b8c4acd898c3",
               "observation_trace_sha256": "9eaa440d1642b550bb82184e30f39445c0b66b8192adc5c2e7d8886cfad8cfe6",
               "test_split_sha256": "8c623c37b04de6aede7aa4a3a71cfa62bf79c9902bc8d15e587f09fd96ae053b"
             },
@@ -220,7 +225,7 @@
                 "validation_split_sha256": "77863337cf9891b015f3898bc90a1fda8863e171c36a3e7a9060217ebf5fd8cc",
                 "objective_name": "protocol_only_no_model_selection"
               },
-              "independent_tuning_run_id": "c7f1e250-a680-56bd-a881-2134edae917f",
+              "independent_tuning_run_id": "f84eafb5-717b-5c2e-ab24-b724fc6888da",
               "observation_trace_sha256": "9eaa440d1642b550bb82184e30f39445c0b66b8192adc5c2e7d8886cfad8cfe6",
               "test_split_sha256": "8c623c37b04de6aede7aa4a3a71cfa62bf79c9902bc8d15e587f09fd96ae053b"
             },
@@ -252,7 +257,7 @@
                 "validation_split_sha256": "77863337cf9891b015f3898bc90a1fda8863e171c36a3e7a9060217ebf5fd8cc",
                 "objective_name": "protocol_only_no_model_selection"
               },
-              "independent_tuning_run_id": "62634d5f-ca95-57d9-ac60-e41665b0ca75",
+              "independent_tuning_run_id": "7fecdbda-4240-5beb-8bd6-38b106a102e4",
               "observation_trace_sha256": "9eaa440d1642b550bb82184e30f39445c0b66b8192adc5c2e7d8886cfad8cfe6",
               "test_split_sha256": "8c623c37b04de6aede7aa4a3a71cfa62bf79c9902bc8d15e587f09fd96ae053b"
             }
@@ -263,7 +268,7 @@
         "comparison_id": "cheh-source-alignment",
         "task_adapter_id": "hidden-event-provenance@unbound",
         "manifest": {
-          "experiment_id": "9ad56c35-c425-5fc5-aba5-818b48f3a0e1",
+          "experiment_id": "1b936d06-3621-5c9b-a991-6c220f0c13b7",
           "baseline_arm_id": "cheh-internal-consistency",
           "arms": [
             {
@@ -292,7 +297,7 @@
                 "validation_split_sha256": "77863337cf9891b015f3898bc90a1fda8863e171c36a3e7a9060217ebf5fd8cc",
                 "objective_name": "protocol_only_no_model_selection"
               },
-              "independent_tuning_run_id": "3c985c7d-d321-5773-b176-1e103c325d84",
+              "independent_tuning_run_id": "ebf085d2-8b1a-5ce4-b1f7-591a7fff49f8",
               "observation_trace_sha256": "9eaa440d1642b550bb82184e30f39445c0b66b8192adc5c2e7d8886cfad8cfe6",
               "test_split_sha256": "8c623c37b04de6aede7aa4a3a71cfa62bf79c9902bc8d15e587f09fd96ae053b"
             },
@@ -323,7 +328,7 @@
                 "validation_split_sha256": "77863337cf9891b015f3898bc90a1fda8863e171c36a3e7a9060217ebf5fd8cc",
                 "objective_name": "protocol_only_no_model_selection"
               },
-              "independent_tuning_run_id": "0b5b17c1-333a-555f-8125-95cb2b678259",
+              "independent_tuning_run_id": "9fd7e424-e9de-5d25-a832-fd9f23e4ba1a",
               "observation_trace_sha256": "9eaa440d1642b550bb82184e30f39445c0b66b8192adc5c2e7d8886cfad8cfe6",
               "test_split_sha256": "8c623c37b04de6aede7aa4a3a71cfa62bf79c9902bc8d15e587f09fd96ae053b"
             }
@@ -334,7 +339,7 @@
         "comparison_id": "verification-decision-objective",
         "task_adapter_id": "grounded-verification-utility@unbound",
         "manifest": {
-          "experiment_id": "629443ee-a4ae-5465-9808-eccb6aae5803",
+          "experiment_id": "7ce4416b-3a69-5c16-97f2-6d269bfb0b61",
           "baseline_arm_id": "retuned-threshold-verification",
           "arms": [
             {
@@ -362,7 +367,7 @@
                 "validation_split_sha256": "77863337cf9891b015f3898bc90a1fda8863e171c36a3e7a9060217ebf5fd8cc",
                 "objective_name": "protocol_only_no_model_selection"
               },
-              "independent_tuning_run_id": "f31f7445-3b89-5137-aabb-99250cde93d6",
+              "independent_tuning_run_id": "c968b306-92cf-5719-9726-5b0dbab38d2a",
               "observation_trace_sha256": "9eaa440d1642b550bb82184e30f39445c0b66b8192adc5c2e7d8886cfad8cfe6",
               "test_split_sha256": "8c623c37b04de6aede7aa4a3a71cfa62bf79c9902bc8d15e587f09fd96ae053b"
             },
@@ -393,7 +398,7 @@
                 "validation_split_sha256": "77863337cf9891b015f3898bc90a1fda8863e171c36a3e7a9060217ebf5fd8cc",
                 "objective_name": "protocol_only_no_model_selection"
               },
-              "independent_tuning_run_id": "e64f4f6c-bf3b-5b4f-adcd-728dc7ca3b01",
+              "independent_tuning_run_id": "840824a5-a123-533e-b130-bab8baa88115",
               "observation_trace_sha256": "9eaa440d1642b550bb82184e30f39445c0b66b8192adc5c2e7d8886cfad8cfe6",
               "test_split_sha256": "8c623c37b04de6aede7aa4a3a71cfa62bf79c9902bc8d15e587f09fd96ae053b"
             }
@@ -402,15 +407,15 @@
       }
     ]
   },
-  "manifest_sha256": "5c7f99a745f564cc95aabd0c39f4cfe85fa1c45d81f2ca98e8c333f73e248ce2",
+  "manifest_sha256": "357ad04c82d6ae82546f1adef0dd4ba54bce09b991222cdbcb798e40c1c9399e",
   "arm_results": [
     {
       "comparison_id": "habit-observation-correction",
-      "comparison_manifest_id": "19a8027f-612f-54d2-83ff-c221115b7e0e",
-      "comparison_manifest_sha256": "03cf9c08ff90fd2fde1db56619c91331a0dbd042e907b6ce8291dd110bf5166d",
+      "comparison_manifest_id": "3f62e62d-88de-5c9b-8ac4-f915409c6183",
+      "comparison_manifest_sha256": "a7cb26cd027fbebe3e04c6b97b926a796b614f77fefa0d5b1b57585f7f779ea1",
       "arm_id": "habit-baseline",
-      "manifest_arm_sha256": "3c7ba40c081f005d966151509a3a9943f600ee427ced53a8d1a2952ee7d8a789",
-      "independent_tuning_run_id": "84059d01-2952-5f90-9a91-803667639f46",
+      "manifest_arm_sha256": "576b66f43cffdc8ac849274f5661acb4f2f4d2bd4e558382362d346b0cefdbc9",
+      "independent_tuning_run_id": "45611c4c-9333-5035-bbdd-11f6c95fd355",
       "adapter_status": "topology_only",
       "tuning_status": "not_run",
       "declared_model_version": "habit-baseline@adapter-unbound",
@@ -422,16 +427,16 @@
         "no-observation-process-correction"
       ],
       "topology_result": "validated_topology_binding",
-      "topology_binding_sha256": "1eb5f2512e07db06195970b9e5d5076d8774e663fd52ec5846dc7b99bd351355",
-      "note": "ATG-1 topology-only wiring; declared version only; executed_model_version is None. hierarchical-dirichlet-habit-baseline no-observation-process-correction"
+      "topology_binding_sha256": "77b8ad10012212cc77ffe051d42f726e104d740a11cc3091c7951afe84b32670",
+      "note": "atg1.arm.topology-binding-validated.no-execution@1"
     },
     {
       "comparison_id": "habit-observation-correction",
-      "comparison_manifest_id": "19a8027f-612f-54d2-83ff-c221115b7e0e",
-      "comparison_manifest_sha256": "03cf9c08ff90fd2fde1db56619c91331a0dbd042e907b6ce8291dd110bf5166d",
+      "comparison_manifest_id": "3f62e62d-88de-5c9b-8ac4-f915409c6183",
+      "comparison_manifest_sha256": "a7cb26cd027fbebe3e04c6b97b926a796b614f77fefa0d5b1b57585f7f779ea1",
       "arm_id": "habit-observation-corrected",
-      "manifest_arm_sha256": "cc816d684ae30f324f00d4a1be730937510094f8aa4e770e03223031f4f9657d",
-      "independent_tuning_run_id": "a92a4a21-ffc3-5839-9f05-97803afb1fa5",
+      "manifest_arm_sha256": "4992bb9b80d0c83fe18c785db989670695a145bbcab09bb1e259a93f32ada78c",
+      "independent_tuning_run_id": "51cfe2f3-8231-5125-9af6-f7ff3f60885a",
       "adapter_status": "topology_only",
       "tuning_status": "not_run",
       "declared_model_version": "habit-observation-corrected@adapter-unbound",
@@ -443,16 +448,16 @@
         "observation-propensity-corrected"
       ],
       "topology_result": "validated_topology_binding",
-      "topology_binding_sha256": "b1b5d047d902f7ab567751c1dbf410eed392f0353c17d014d37c4263bb131587",
-      "note": "ATG-1 topology-only wiring; declared version only; executed_model_version is None. hierarchical-dirichlet-habit observation-propensity-corrected"
+      "topology_binding_sha256": "ff58641c226d5cef120603398ff133b4c3a899f0939224a04c269902d4ca3b49",
+      "note": "atg1.arm.topology-binding-validated.no-execution@1"
     },
     {
       "comparison_id": "habit-actor-contamination",
-      "comparison_manifest_id": "05aaf626-916f-55a2-a2d6-a07f64ab4a38",
-      "comparison_manifest_sha256": "389ce0e07d3fcd7f12ad7560fd2ed36c1d424231881c2484b6f96d36716d8ef0",
+      "comparison_manifest_id": "cc32819d-3f22-57cf-a3df-8a8e19690c22",
+      "comparison_manifest_sha256": "a51a5678ccac8a804311684e6b4e9239e031fb13c3cdddaef8db2ea92bf0b5d0",
       "arm_id": "habit-visitor-isolated",
-      "manifest_arm_sha256": "b5b82f6a817c735a46f8bfd7cd14711378732d622beb8b16d960e8d940bc543c",
-      "independent_tuning_run_id": "87895e02-2e07-5381-9755-d0efdbecf80e",
+      "manifest_arm_sha256": "1c6d6b7899045bd30aaa80c7615dedf77d8336ae01ce25e5068cbc5373dd48e1",
+      "independent_tuning_run_id": "8b68a5f4-ed1c-57a7-9dcd-7257e60642a8",
       "adapter_status": "topology_only",
       "tuning_status": "not_run",
       "declared_model_version": "habit-visitor-isolated@adapter-unbound",
@@ -464,16 +469,16 @@
         "non-resident-household-channel-isolation"
       ],
       "topology_result": "validated_topology_binding",
-      "topology_binding_sha256": "6a737490984924fd9843c475fded4e2880102b07f46cee7ad47ba5545b18c7a7",
-      "note": "ATG-1 topology-only wiring; declared version only; executed_model_version is None. hierarchical-dirichlet-habit non-resident-household-channel-isolation"
+      "topology_binding_sha256": "8895b733bf49d1e43cec82d8a90cc741cb1b71d7e2231ca5b575072b47c38b7b",
+      "note": "atg1.arm.topology-binding-validated.no-execution@1"
     },
     {
       "comparison_id": "habit-actor-contamination",
-      "comparison_manifest_id": "05aaf626-916f-55a2-a2d6-a07f64ab4a38",
-      "comparison_manifest_sha256": "389ce0e07d3fcd7f12ad7560fd2ed36c1d424231881c2484b6f96d36716d8ef0",
+      "comparison_manifest_id": "cc32819d-3f22-57cf-a3df-8a8e19690c22",
+      "comparison_manifest_sha256": "a51a5678ccac8a804311684e6b4e9239e031fb13c3cdddaef8db2ea92bf0b5d0",
       "arm_id": "habit-actor-residual",
-      "manifest_arm_sha256": "32da133c34e428dbe74357ba54f3a85929c57d8fce4b68cfee1e207537965eb3",
-      "independent_tuning_run_id": "1a2e551b-f91f-5c14-8744-00cad48315f0",
+      "manifest_arm_sha256": "6e4c57319da8f7f853800db6592a07c21b5a8d27169ba840adb31b68c8d97a6d",
+      "independent_tuning_run_id": "cac9b423-7c03-5d9f-a6a6-eaa20911d64e",
       "adapter_status": "topology_only",
       "tuning_status": "not_run",
       "declared_model_version": "habit-actor-residual@adapter-unbound",
@@ -485,16 +490,16 @@
         "shrinkage-actor-residual"
       ],
       "topology_result": "validated_topology_binding",
-      "topology_binding_sha256": "f27a7697bb79ba1eb9df99414468ade900dcd9de3bf1c6247926ab38a7e4661e",
-      "note": "ATG-1 topology-only wiring; declared version only; executed_model_version is None. hierarchical-dirichlet-habit shrinkage-actor-residual"
+      "topology_binding_sha256": "9b1fc7ed4071eb7d964f6af8e98bcb6852183b85a689d54cc3001ee450d2d9d5",
+      "note": "atg1.arm.topology-binding-validated.no-execution@1"
     },
     {
       "comparison_id": "shift-cause-factorization",
-      "comparison_manifest_id": "a3895b00-a212-51f2-bf1a-dd1cc2660497",
-      "comparison_manifest_sha256": "531f5984893c52147c6ec3dd2fcfaccb0a98b6652ddd110d166c99a1fa7daa94",
+      "comparison_manifest_id": "2a80d147-75f1-5355-81e5-7e67956005c7",
+      "comparison_manifest_sha256": "13d7ef8149d7df5faac9bec6d3dd223fd8e0f42ef95c2084ad465eeeffe1409c",
       "arm_id": "ordinary-bocpd",
-      "manifest_arm_sha256": "98131b2f4dc4dacf6886b5ef0b78e3c6383c8233d18e4c13d0e86684c788ce16",
-      "independent_tuning_run_id": "0f40298e-7e90-5e0c-9a9b-00b029d2288e",
+      "manifest_arm_sha256": "0c49d6f27059e57c89cbe7f16a62c8a103d9cf7bc516f83e54a540dee205bedb",
+      "independent_tuning_run_id": "3f3b246d-cc79-5e04-a80a-b8c4acd898c3",
       "adapter_status": "topology_only",
       "tuning_status": "not_run",
       "declared_model_version": "online-ordinary-bocpd@0.1",
@@ -505,16 +510,16 @@
         "ordinary-bocpd"
       ],
       "topology_result": "validated_topology_binding",
-      "topology_binding_sha256": "f70e4a86ae6c3a39737554d91e85d2ec5ef50370ff78935f7ce4a3c29513ba87",
-      "note": "ATG-1 topology-only wiring; declared version only; executed_model_version is None. ordinary-bocpd"
+      "topology_binding_sha256": "19520d0a961a7ad6cfab4421b3cc0acdf94e6fe8c74ed9e02aa26fcd3d2d49e3",
+      "note": "atg1.arm.topology-binding-validated.no-execution@1"
     },
     {
       "comparison_id": "shift-cause-factorization",
-      "comparison_manifest_id": "a3895b00-a212-51f2-bf1a-dd1cc2660497",
-      "comparison_manifest_sha256": "531f5984893c52147c6ec3dd2fcfaccb0a98b6652ddd110d166c99a1fa7daa94",
+      "comparison_manifest_id": "2a80d147-75f1-5355-81e5-7e67956005c7",
+      "comparison_manifest_sha256": "13d7ef8149d7df5faac9bec6d3dd223fd8e0f42ef95c2084ad465eeeffe1409c",
       "arm_id": "cause-factorized-bocpd",
-      "manifest_arm_sha256": "e2444caf280b229e27a353418d347ae972bf8f209e0b264e2a763fb8fa844400",
-      "independent_tuning_run_id": "c7f1e250-a680-56bd-a881-2134edae917f",
+      "manifest_arm_sha256": "990c2903a1235ba2e2b25b354d315f822aae382d622d114d0aa172817251cf6b",
+      "independent_tuning_run_id": "f84eafb5-717b-5c2e-ab24-b724fc6888da",
       "adapter_status": "topology_only",
       "tuning_status": "not_run",
       "declared_model_version": "online-cause-factorized-bocpd@0.1",
@@ -525,16 +530,16 @@
         "legacy-independent-per-cause"
       ],
       "topology_result": "validated_topology_binding",
-      "topology_binding_sha256": "43c10c2b975148ed5e63028c3633d79da3186dc2fea136886702a34de33e1327",
-      "note": "ATG-1 topology-only wiring; declared version only; executed_model_version is None. legacy-independent-per-cause"
+      "topology_binding_sha256": "42b3373e918b66f618ad2ad35c6474c5b3c94f52e32f0ece827a321d63c5fae0",
+      "note": "atg1.arm.topology-binding-validated.no-execution@1"
     },
     {
       "comparison_id": "shift-cause-factorization",
-      "comparison_manifest_id": "a3895b00-a212-51f2-bf1a-dd1cc2660497",
-      "comparison_manifest_sha256": "531f5984893c52147c6ec3dd2fcfaccb0a98b6652ddd110d166c99a1fa7daa94",
+      "comparison_manifest_id": "2a80d147-75f1-5355-81e5-7e67956005c7",
+      "comparison_manifest_sha256": "13d7ef8149d7df5faac9bec6d3dd223fd8e0f42ef95c2084ad465eeeffe1409c",
       "arm_id": "joint-cause-factorized-bocpd",
-      "manifest_arm_sha256": "c5953a5a944994a4a1cf4746632f25f4d9015d975e2f8a843aea9bab403cb99d",
-      "independent_tuning_run_id": "62634d5f-ca95-57d9-ac60-e41665b0ca75",
+      "manifest_arm_sha256": "92ed68618d259b3d21153d655c2fab5174a14e81f418082606b6fec0e9a5f1ee",
+      "independent_tuning_run_id": "7fecdbda-4240-5beb-8bd6-38b106a102e4",
       "adapter_status": "topology_only",
       "tuning_status": "not_run",
       "declared_model_version": "joint-cause-factorized-bocpd@0.3",
@@ -547,16 +552,16 @@
         "transient-noise-state"
       ],
       "topology_result": "validated_topology_binding",
-      "topology_binding_sha256": "680fac03a0fc8ada61d16caa302330f948ff0a2c1ffe2570c2e5cd18dfd820b0",
-      "note": "ATG-1 topology-only wiring; declared version only; executed_model_version is None. joint-cause-factorized selective-reset transient-noise-state"
+      "topology_binding_sha256": "167895b63505acb7525ee3d43770d83cdf8b3f62b9a6f1c3c5544806fcfb2510",
+      "note": "atg1.arm.topology-binding-validated.no-execution@1"
     },
     {
       "comparison_id": "cheh-source-alignment",
-      "comparison_manifest_id": "9ad56c35-c425-5fc5-aba5-818b48f3a0e1",
-      "comparison_manifest_sha256": "380207993c2874ebb2b549b77d39f41c006ef71253274069d35f055da90d6608",
+      "comparison_manifest_id": "1b936d06-3621-5c9b-a991-6c220f0c13b7",
+      "comparison_manifest_sha256": "588476676fc4e82a309161afb0331a0814f6b18391b477a049dd80b097e0a511",
       "arm_id": "cheh-internal-consistency",
-      "manifest_arm_sha256": "917dc3b41fbc46299b6f7a8d18f67af1298af2fbd5df0262e7eeebf51e7af8ba",
-      "independent_tuning_run_id": "3c985c7d-d321-5773-b176-1e103c325d84",
+      "manifest_arm_sha256": "36614d1e15f18113dca89985703ded3682fd208376200b9103620086ad386104",
+      "independent_tuning_run_id": "ebf085d2-8b1a-5ce4-b1f7-591a7fff49f8",
       "adapter_status": "topology_only",
       "tuning_status": "not_run",
       "declared_model_version": "cheh-internal-consistency@adapter-unbound",
@@ -568,16 +573,16 @@
         "no-source-aligned-revision"
       ],
       "topology_result": "validated_topology_binding",
-      "topology_binding_sha256": "a0ecee9c9a5ea3200fef1470f0ea0a34fb837c42e60adad5ca146f5b776bd9f0",
-      "note": "ATG-1 topology-only wiring; declared version only; executed_model_version is None. cheh-internal-consistency no-source-aligned-revision"
+      "topology_binding_sha256": "38bf87e92439d70e2128046e511d278ff586a6a019cc1b2c0380978e0aed0a1e",
+      "note": "atg1.arm.topology-binding-validated.no-execution@1"
     },
     {
       "comparison_id": "cheh-source-alignment",
-      "comparison_manifest_id": "9ad56c35-c425-5fc5-aba5-818b48f3a0e1",
-      "comparison_manifest_sha256": "380207993c2874ebb2b549b77d39f41c006ef71253274069d35f055da90d6608",
+      "comparison_manifest_id": "1b936d06-3621-5c9b-a991-6c220f0c13b7",
+      "comparison_manifest_sha256": "588476676fc4e82a309161afb0331a0814f6b18391b477a049dd80b097e0a511",
       "arm_id": "cheh-source-aligned",
-      "manifest_arm_sha256": "a062663346f7a961c7ced4743c5abd0017ed395007a619cbcbfd5225df859aeb",
-      "independent_tuning_run_id": "0b5b17c1-333a-555f-8125-95cb2b678259",
+      "manifest_arm_sha256": "0281fe517be4be9bed008e1a93650a1fd68b73a07155254768cfcc52ee400f7b",
+      "independent_tuning_run_id": "9fd7e424-e9de-5d25-a832-fd9f23e4ba1a",
       "adapter_status": "topology_only",
       "tuning_status": "not_run",
       "declared_model_version": "cheh-source-aligned@adapter-unbound",
@@ -589,16 +594,16 @@
         "endpoint-and-evidence-cluster-binding"
       ],
       "topology_result": "validated_topology_binding",
-      "topology_binding_sha256": "f51597a8fae81f4e0adaf57c585e9d7e41733c14f8a3f97fb019d5e265254f16",
-      "note": "ATG-1 topology-only wiring; declared version only; executed_model_version is None. cheh-source-aligned-revision endpoint-and-evidence-cluster-binding"
+      "topology_binding_sha256": "effa623a05886f4caf23c2d98a796e86ecad5dc48f8ee4bf4918f8a624821a4d",
+      "note": "atg1.arm.topology-binding-validated.no-execution@1"
     },
     {
       "comparison_id": "verification-decision-objective",
-      "comparison_manifest_id": "629443ee-a4ae-5465-9808-eccb6aae5803",
-      "comparison_manifest_sha256": "7f8243853da23dc78a6e60b54eb15be822c15d5d6c8b0317e8c512c8eaab063e",
+      "comparison_manifest_id": "7ce4416b-3a69-5c16-97f2-6d269bfb0b61",
+      "comparison_manifest_sha256": "595e884a81e5b5a30945f6c18c16ecae90b90cb18ce0677caf16847ea4cbbdd0",
       "arm_id": "retuned-threshold-verification",
-      "manifest_arm_sha256": "f527a56cf2ff3679db583b7408492e342cc7c9aeb3d523a883722b79d02818dd",
-      "independent_tuning_run_id": "f31f7445-3b89-5137-aabb-99250cde93d6",
+      "manifest_arm_sha256": "734dd7434d770f1faf89ad62502a1572ab82115cebe2d08cebe627cc0f3ac5f0",
+      "independent_tuning_run_id": "c968b306-92cf-5719-9726-5b0dbab38d2a",
       "adapter_status": "topology_only",
       "tuning_status": "not_run",
       "declared_model_version": "retuned-threshold-verification@adapter-unbound",
@@ -609,16 +614,16 @@
         "retuned-threshold-verification"
       ],
       "topology_result": "validated_topology_binding",
-      "topology_binding_sha256": "eed9ae28a3b30419e5ec8e7bbadee703f9893f8ab274be864e8cc441c582e276",
-      "note": "ATG-1 topology-only wiring; declared version only; executed_model_version is None. retuned-threshold-verification"
+      "topology_binding_sha256": "6bfbb9ad57aad26deff7e9a9a4d167a5d85ebff87d3939e0884e63b56e3170c6",
+      "note": "atg1.arm.topology-binding-validated.no-execution@1"
     },
     {
       "comparison_id": "verification-decision-objective",
-      "comparison_manifest_id": "629443ee-a4ae-5465-9808-eccb6aae5803",
-      "comparison_manifest_sha256": "7f8243853da23dc78a6e60b54eb15be822c15d5d6c8b0317e8c512c8eaab063e",
+      "comparison_manifest_id": "7ce4416b-3a69-5c16-97f2-6d269bfb0b61",
+      "comparison_manifest_sha256": "595e884a81e5b5a30945f6c18c16ecae90b90cb18ce0677caf16847ea4cbbdd0",
       "arm_id": "decision-utility-verification",
-      "manifest_arm_sha256": "12ace93548a83c8cbef189594edb4eade55b288a1b5ac7ed83bf564af3c5e949",
-      "independent_tuning_run_id": "e64f4f6c-bf3b-5b4f-adcd-728dc7ca3b01",
+      "manifest_arm_sha256": "3eea001b8fa7b6e0531a35d5ceb6d13d56064ccd3bac8caacf705da3336e9b4a",
+      "independent_tuning_run_id": "840824a5-a123-533e-b130-bab8baa88115",
       "adapter_status": "topology_only",
       "tuning_status": "not_run",
       "declared_model_version": "decision-utility-verification@adapter-unbound",
@@ -630,21 +635,34 @@
         "motion-time-interruption-privacy-safety-costs"
       ],
       "topology_result": "validated_topology_binding",
-      "topology_binding_sha256": "8c63f338d39379686e50459a3836f324441b0d7daece3038cf627d79f4d29ee6",
-      "note": "ATG-1 topology-only wiring; declared version only; executed_model_version is None. expected-action-utility-verification motion-time-interruption-privacy-safety-costs"
+      "topology_binding_sha256": "6a0b5e839b9eb5800ebe00181721b3f55b23425fc2c6bb1e5c3ab162bd827e52",
+      "note": "atg1.arm.topology-binding-validated.no-execution@1"
     }
   ],
   "protocol_contracts_valid": true,
   "all_adapters_bound": false,
   "formal_experiment_ready": false,
   "claim_scope": "ablation_topology_only",
-  "caveats": [
-    "ATG-1 topology-only: no model was run and no TEST data was loaded or generated.",
-    "Formal Structure One B1 (M05-M12 perception) remains BLOCKED and incomplete.",
-    "ATG-2 remains blocked: no per-arm tuning or measured-budget ledger exists.",
-    "ATG-3 remains blocked: no compliant receipt has unsealed TEST.",
-    "joint-cause-factorized-bocpd is wired as the 11th arm but stays unbound.",
-    "No experiment supports superiority of joint CF-BOCPD over existing methods.",
-    "cause-factorized-bocpd is retained as the legacy independent-per-cause baseline."
+  "artifact_manifest_case_count": 36,
+  "train_case_count": 18,
+  "validation_case_count": 6,
+  "test_case_count": 12,
+  "caveat_ids": [
+    "atg1.no-model-execution-or-test-access@1",
+    "formal-structure-one-b1.m05-m12-perception.blocked@1",
+    "atg2.independent-tuning-and-measured-budget-ledger.blocked@1",
+    "atg3.compliant-receipt-test-unseal.blocked@1",
+    "joint-cf-bocpd.topology-only-unbound@1"
+  ],
+  "allowed_claims": [
+    "all-eleven-arms-have-validated-topology-bindings",
+    "joint-cf-bocpd-is-wired-as-the-eleventh-arm"
+  ],
+  "forbidden_claims": [
+    "formal-structure-one-b1-complete",
+    "test-executed",
+    "comparative-performance-measured",
+    "joint-cf-bocpd-superior",
+    "state-of-the-art"
   ]
 }

@@ -1,10 +1,4 @@
-"""Run Project One ATG-1, the v0.2 matched-ablation topology gate.
-
-This validates the 11-arm v0.2 topology (adding joint CF-BOCPD as the 11th arm,
-with a three-arm shift comparison) and writes a topology-only report.  It loads
-only a v0.2 config, calls only the v0.2 runner, rejects a v0.1 config, and never
-loads or generates any TEST data.
-"""
+"""Run the protocol-only Project One matched-ablation pilot."""
 
 from __future__ import annotations
 
@@ -15,9 +9,9 @@ from pathlib import Path
 REPOSITORY_ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(REPOSITORY_ROOT / "src"))
 
-from cpswm.system.evaluation_operations.project_one_ablation_v0_2 import (  # noqa: E402
-    ProjectOneProtocolPilotConfigV2,
-    select_pilot_runner,
+from cpswm.system.evaluation_operations.project_one_ablation_pilot import (  # noqa: E402
+    ProjectOneProtocolPilotConfig,
+    ProjectOneProtocolPilotRunner,
 )
 from cpswm.system.evaluation_operations.report_output import (  # noqa: E402
     ProtectedReportOutputError,
@@ -25,17 +19,14 @@ from cpswm.system.evaluation_operations.report_output import (  # noqa: E402
 )
 
 DEFAULT_CONFIG = (
-    REPOSITORY_ROOT / "benchmarks" / "project_one_ablation" / "project_one_protocol_pilot_v0.2.json"
+    REPOSITORY_ROOT / "benchmarks" / "project_one_ablation" / "project_one_protocol_pilot_v0.1.json"
 )
-DEFAULT_OUTPUT = REPOSITORY_ROOT / "output" / "project_one_protocol_pilot_report_v0.2.json"
+DEFAULT_OUTPUT = REPOSITORY_ROOT / "output" / "project_one_protocol_pilot_report.json"
 
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
-        description=(
-            "Validate Project One ATG-1: the 11-arm v0.2 ablation topology only. "
-            "This is not formal Structure One B1 perception."
-        )
+        description="Validate the five-pair Project One ablation protocol and adapter coverage."
     )
     parser.add_argument("--config", type=Path, default=DEFAULT_CONFIG)
     parser.add_argument("--output", type=Path, default=DEFAULT_OUTPUT)
@@ -49,12 +40,10 @@ def parse_args() -> argparse.Namespace:
 
 def main() -> int:
     args = parse_args()
-    # A v0.1 config carries protocol_version @0.1 and will fail this validation,
-    # so a v0.1 config cannot be run through the v0.2 CLI.
-    config = ProjectOneProtocolPilotConfigV2.model_validate_json(
+    config = ProjectOneProtocolPilotConfig.model_validate_json(
         args.config.resolve().read_text(encoding="utf-8")
     )
-    report = select_pilot_runner(config).run(config)
+    report = ProjectOneProtocolPilotRunner().run(config)
     rendered = report.model_dump_json(indent=2) + "\n"
     try:
         write_report_atomic(

@@ -14,6 +14,38 @@ import json
 from collections.abc import Sequence
 from dataclasses import dataclass
 
+from pydantic import Field, model_validator
+
+from cpswm.contracts.base import ContractModel, NonNegativeInt
+from cpswm.system.reproducibility import content_sha256
+
+
+def split_artifact_manifest_sha256(
+    *,
+    experiment_id: str,
+    train_split_sha256: str,
+    validation_split_sha256: str,
+    test_split_sha256: str,
+    observation_trace_sha256: str,
+    train_case_count: int,
+    validation_case_count: int,
+    test_case_count: int,
+) -> str:
+    """Hash the complete split-manifest payload represented by metadata."""
+
+    return content_sha256(
+        {
+            "experiment_id": experiment_id,
+            "train_split_sha256": train_split_sha256,
+            "validation_split_sha256": validation_split_sha256,
+            "test_split_sha256": test_split_sha256,
+            "observation_trace_sha256": observation_trace_sha256,
+            "train_case_count": train_case_count,
+            "validation_case_count": validation_case_count,
+            "test_case_count": test_case_count,
+        }
+    )
+
 
 def _receipt_hash(
     experiment_id: str, validation_split_sha256: str, tuning_runs_completed: int
@@ -29,8 +61,7 @@ def _receipt_hash(
     return hashlib.sha256(payload.encode("utf-8")).hexdigest()
 
 
-@dataclass(frozen=True, slots=True)
-class SealedSplitMetadata:
+class SealedSplitMetadata(ContractModel):
     """Split identity metadata only -- never the cases themselves.
 
     This is the sole split input an ATG-1 topology-only runner may receive.  It
@@ -39,15 +70,35 @@ class SealedSplitMetadata:
     so a runner holding it cannot read or generate any TEST data.
     """
 
-    experiment_id: str
-    artifact_manifest_sha256: str
-    train_split_sha256: str
-    validation_split_sha256: str
-    test_split_sha256: str
-    observation_trace_sha256: str
-    train_case_count: int
-    validation_case_count: int
-    test_case_count: int
+    experiment_id: str = Field(min_length=1)
+    artifact_manifest_sha256: str = Field(pattern=r"^[0-9a-f]{64}$")
+    artifact_manifest_case_count: NonNegativeInt
+    train_split_sha256: str = Field(pattern=r"^[0-9a-f]{64}$")
+    validation_split_sha256: str = Field(pattern=r"^[0-9a-f]{64}$")
+    test_split_sha256: str = Field(pattern=r"^[0-9a-f]{64}$")
+    observation_trace_sha256: str = Field(pattern=r"^[0-9a-f]{64}$")
+    train_case_count: NonNegativeInt
+    validation_case_count: NonNegativeInt
+    test_case_count: NonNegativeInt
+
+    @model_validator(mode="after")
+    def counts_match_artifact_manifest(self) -> SealedSplitMetadata:
+        split_total = self.train_case_count + self.validation_case_count + self.test_case_count
+        if split_total != self.artifact_manifest_case_count:
+            raise ValueError("train/validation/test counts must equal artifact manifest case count")
+        expected_hash = split_artifact_manifest_sha256(
+            experiment_id=self.experiment_id,
+            train_split_sha256=self.train_split_sha256,
+            validation_split_sha256=self.validation_split_sha256,
+            test_split_sha256=self.test_split_sha256,
+            observation_trace_sha256=self.observation_trace_sha256,
+            train_case_count=self.train_case_count,
+            validation_case_count=self.validation_case_count,
+            test_case_count=self.test_case_count,
+        )
+        if self.artifact_manifest_sha256 != expected_hash:
+            raise ValueError("artifact manifest hash does not match split identities and counts")
+        return self
 
 
 @dataclass(frozen=True, slots=True)

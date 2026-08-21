@@ -39,7 +39,10 @@ from cpswm.system.evaluation_operations.project_one_ablation_v0_2 import (
     ProtocolPilotTuningBudgetV2,
     select_pilot_runner,
 )
-from cpswm.system.evaluation_operations.sealed_test_split import SealedSplitMetadata
+from cpswm.system.evaluation_operations.sealed_test_split import (
+    SealedSplitMetadata,
+    split_artifact_manifest_sha256,
+)
 
 REPO = Path(__file__).resolve().parents[1]
 V01_CONFIG = REPO / "benchmarks/project_one_ablation/project_one_protocol_pilot_v0.1.json"
@@ -53,8 +56,8 @@ V02_REPORT_FIXTURE = (
 
 V01_CONFIG_SHA256 = "df0f4d19f172da6df790164ac23e7ccddd88c2643dda102e928459570a7fd307"
 V01_REPORT_FIXTURE_SHA256 = "93c3f5975340a581d74b5541202dfcf706aeb93bc2c0e50e6df8dc322924c648"
-V02_CONFIG_SHA256 = "ffa62c956be0fdda56a6c2d87b0f67e83e4d42c775ccce4b36f607a3c4552b86"
-V02_REPORT_FIXTURE_SHA256 = "27e5a896dea69b2d2c9cf4c5333566cc61c8d0e358c02bb8caa14d7fd810a7ed"
+V02_CONFIG_SHA256 = "b985d7f3f8b2aa7c2659022228e26e16772ba69ebb4f8359b311a9d0e232414c"
+V02_REPORT_FIXTURE_SHA256 = "33c6b4fac08e0e42f0e380c26e7d068c8131e7a59d085ee54d0c7608de378a88"
 
 HEX = "a" * 64
 
@@ -82,9 +85,20 @@ def _budgets():
 
 
 def _metadata():
+    manifest_hash = split_artifact_manifest_sha256(
+        experiment_id="exp",
+        train_split_sha256="b" * 64,
+        validation_split_sha256="c" * 64,
+        test_split_sha256="d" * 64,
+        observation_trace_sha256="e" * 64,
+        train_case_count=10,
+        validation_case_count=5,
+        test_case_count=5,
+    )
     return SealedSplitMetadata(
         experiment_id="exp",
-        artifact_manifest_sha256="a" * 64,
+        artifact_manifest_sha256=manifest_hash,
+        artifact_manifest_case_count=20,
         train_split_sha256="b" * 64,
         validation_split_sha256="c" * 64,
         test_split_sha256="d" * 64,
@@ -299,8 +313,53 @@ def test_v02_manifest_requires_all_eleven_tuning_run_ids_globally_unique():
 
 def test_split_metadata_carries_no_cases_or_loader():
     forbidden = {"cases", "unseal", "load", "require_unsealed", "model_inputs", "evaluator_truth"}
-    assert forbidden.isdisjoint(set(SealedSplitMetadata.__dataclass_fields__))
+    assert forbidden.isdisjoint(set(SealedSplitMetadata.model_fields))
     assert not any(hasattr(SealedSplitMetadata, name) for name in ("unseal", "load"))
+
+
+@pytest.mark.parametrize(
+    ("field", "value"),
+    [
+        ("train_case_count", -1),
+        ("validation_case_count", -1),
+        ("test_case_count", -1),
+        ("artifact_manifest_case_count", -1),
+    ],
+)
+def test_split_metadata_rejects_negative_case_counts(field, value):
+    payload = _metadata().model_dump(mode="json")
+    payload[field] = value
+    with pytest.raises(ValidationError):
+        SealedSplitMetadata.model_validate(payload)
+
+
+def test_split_metadata_rejects_empty_experiment_id():
+    payload = _metadata().model_dump(mode="json")
+    payload["experiment_id"] = ""
+    with pytest.raises(ValidationError):
+        SealedSplitMetadata.model_validate(payload)
+
+
+def test_split_metadata_rejects_invalid_hashes():
+    payload = _metadata().model_dump(mode="json")
+    payload["test_split_sha256"] = "not-a-sha256"
+    with pytest.raises(ValidationError):
+        SealedSplitMetadata.model_validate(payload)
+
+
+def test_split_metadata_rejects_values_inconsistent_with_artifact_manifest_hash():
+    payload = _metadata().model_dump(mode="json")
+    payload["train_case_count"] -= 1
+    payload["test_case_count"] += 1
+    with pytest.raises(ValidationError, match="artifact manifest hash"):
+        SealedSplitMetadata.model_validate(payload)
+
+
+def test_split_metadata_rejects_counts_inconsistent_with_artifact_manifest():
+    payload = _metadata().model_dump(mode="json")
+    payload["artifact_manifest_case_count"] += 1
+    with pytest.raises(ValidationError, match="artifact manifest case count"):
+        SealedSplitMetadata.model_validate(payload)
 
 
 def test_runner_v2_runs_no_model_and_reads_no_test(monkeypatch):
@@ -347,6 +406,11 @@ def test_v0_2_report_forces_protocol_only_and_not_ready():
     dumped = ProjectOneProtocolPilotReportV2.model_validate_json(report.model_dump_json())
     assert dumped.formal_experiment_ready is False
     assert dumped.claim_scope == "ablation_topology_only"
+    assert dumped.artifact_manifest_case_count == 20
+    assert (
+        dumped.train_case_count + dumped.validation_case_count + dumped.test_case_count
+        == dumped.artifact_manifest_case_count
+    )
 
 
 # --- report binding tamper-negative tests ------------------------------------
@@ -410,6 +474,40 @@ def test_report_rejects_tampered_topology_result_status():
     payload = _tampered_report_payload()
     payload["arm_results"][0]["topology_result"] = "claimed_experiment_success"
     with pytest.raises(ValidationError):
+        ProjectOneProtocolPilotReportV2.model_validate(payload)
+
+
+@pytest.mark.parametrize(
+    ("field", "claim"),
+    [
+        ("caveat_ids", "Formal experiment succeeded; joint CF-BOCPD is superior."),
+        ("allowed_claims", "Executed on TEST and achieved state of the art."),
+        ("forbidden_claims", "joint-cf-bocpd-superior-is-allowed"),
+    ],
+)
+def test_report_rejects_contradictory_claim_policy_tampering(field, claim):
+    payload = _tampered_report_payload()
+    payload[field] = [claim]
+    with pytest.raises(ValidationError):
+        ProjectOneProtocolPilotReportV2.model_validate(payload)
+
+
+def test_report_rejects_free_text_caveats_and_arm_notes():
+    payload = _tampered_report_payload()
+    payload["caveats"] = ["Formal experiment succeeded; joint CF-BOCPD is superior."]
+    with pytest.raises(ValidationError):
+        ProjectOneProtocolPilotReportV2.model_validate(payload)
+
+    payload = _tampered_report_payload()
+    payload["arm_results"][0]["note"] = "Executed on TEST and achieved state of the art."
+    with pytest.raises(ValidationError):
+        ProjectOneProtocolPilotReportV2.model_validate(payload)
+
+
+def test_report_rejects_case_counts_that_disagree_with_manifest():
+    payload = _tampered_report_payload()
+    payload["test_case_count"] += 1
+    with pytest.raises(ValidationError, match="split counts must match"):
         ProjectOneProtocolPilotReportV2.model_validate(payload)
 
 

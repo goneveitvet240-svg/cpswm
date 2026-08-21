@@ -12,11 +12,16 @@ import random
 from collections.abc import Sequence
 from datetime import UTC, datetime, timedelta
 from enum import StrEnum
+from math import log
 from uuid import UUID
 
 from pydantic import Field, field_validator, model_validator
 
-from cpswm.contracts import ActorEvidenceTrack, ActorResponsibilityEvidence
+from cpswm.contracts import (
+    ActorEvidenceTrack,
+    ActorResponsibilityEvidence,
+    ObservationOutcome,
+)
 from cpswm.contracts.base import ContractModel, NonNegativeInt, PositiveInt, Probability
 from cpswm.system.reproducibility import content_sha256, content_uuid
 from cpswm.system.synthetic_routines import (
@@ -44,6 +49,7 @@ class OnlineShiftFamily(StrEnum):
     OBSERVATION = "observation"
     ACTOR = "actor"
     HABIT = "habit"
+    NOISE = "noise"
     OBSERVATION_ACTOR = "observation_actor"
     OBSERVATION_HABIT = "observation_habit"
 
@@ -52,6 +58,7 @@ _FAMILY_CAUSES = {
     OnlineShiftFamily.OBSERVATION: (ShiftCause.OBSERVATION_POLICY,),
     OnlineShiftFamily.ACTOR: (ShiftCause.ACTOR_MIXTURE,),
     OnlineShiftFamily.HABIT: (ShiftCause.OWNER_HABIT_REGIME,),
+    OnlineShiftFamily.NOISE: (ShiftCause.TRANSIENT_NOISE,),
     OnlineShiftFamily.OBSERVATION_ACTOR: (
         ShiftCause.OBSERVATION_POLICY,
         ShiftCause.ACTOR_MIXTURE,
@@ -234,6 +241,9 @@ class OnlineShiftReport(ContractModel):
     cause_micro_recall: Probability
     cause_micro_f1: Probability
     false_owner_habit_change_rate: Probability
+    cause_brier_score: float = Field(ge=0.0)
+    cause_negative_log_likelihood: float = Field(ge=0.0)
+    cause_ece: Probability
 
 
 class OnlineShiftEvaluator:
@@ -277,6 +287,23 @@ class OnlineShiftEvaluator:
             if non_habit
             else 0.0
         )
+        calibration_pairs = [
+            (
+                case.prediction.cause_probabilities.get(cause, 0.0),
+                1.0 if cause in case.truth.true_causes else 0.0,
+            )
+            for case in cases
+            for cause in ShiftCause
+            if cause != ShiftCause.UNRESOLVED
+        ]
+        epsilon = 1e-12
+        brier = sum((probability - outcome) ** 2 for probability, outcome in calibration_pairs)
+        brier /= len(calibration_pairs)
+        nll = -sum(
+            outcome * log(max(probability, epsilon))
+            + (1.0 - outcome) * log(max(1.0 - probability, epsilon))
+            for probability, outcome in calibration_pairs
+        ) / len(calibration_pairs)
         return OnlineShiftReport(
             sample_count=len(cases),
             change_detection_rate=len(detected) / len(cases),
@@ -287,7 +314,28 @@ class OnlineShiftEvaluator:
             cause_micro_recall=recall,
             cause_micro_f1=f1,
             false_owner_habit_change_rate=false_habit,
+            cause_brier_score=brier,
+            cause_negative_log_likelihood=nll,
+            cause_ece=self._ece(calibration_pairs),
         )
+
+    @staticmethod
+    def _ece(pairs: list[tuple[float, float]], bin_count: int = 10) -> float:
+        error = 0.0
+        for bin_index in range(bin_count):
+            lower = bin_index / bin_count
+            upper = (bin_index + 1) / bin_count
+            bucket = [
+                pair
+                for pair in pairs
+                if lower <= pair[0] < upper or (bin_index == bin_count - 1 and pair[0] == 1.0)
+            ]
+            if not bucket:
+                continue
+            confidence = sum(pair[0] for pair in bucket) / len(bucket)
+            frequency = sum(pair[1] for pair in bucket) / len(bucket)
+            error += len(bucket) / len(pairs) * abs(confidence - frequency)
+        return error
 
 
 class OnlineShiftSuiteGenerator:
@@ -333,7 +381,9 @@ class OnlineShiftSuiteGenerator:
     ) -> OnlineShiftGeneratedCase:
         scenario = self._scenario_config(config, seed_index, seed)
         d0_generator = D0ShiftScenarioGenerator()
-        if family in {
+        if family == OnlineShiftFamily.NOISE:
+            stream, actor_evidence = self._noise_stream(scenario)
+        elif family in {
             OnlineShiftFamily.OBSERVATION,
             OnlineShiftFamily.ACTOR,
             OnlineShiftFamily.HABIT,
@@ -464,6 +514,67 @@ class OnlineShiftSuiteGenerator:
             change_time=change_time,
         )
         visible_detection_ids = {result.metadata.record_id for result in stream.detection_results}
+        return stream, tuple(
+            item for item in evidence if item.source_detection_result_id in visible_detection_ids
+        )
+
+    @staticmethod
+    def _noise_stream(
+        config: D0ShiftScenarioConfig,
+    ) -> tuple[D0VisibleSimulationRun, tuple[ActorResponsibilityEvidence, ...]]:
+        """Inject post-change ambiguity without changing policy, actor, or habit."""
+
+        generator = D0ShiftScenarioGenerator()
+        plan = SyntheticRoutineGenerator().generate(generator._routine_config(config))
+        policy = generator._policy(
+            config,
+            policy_id="online-noise-control@0.1",
+            selection_probability=config.control_selection_probability,
+        )
+        simulation = SymbolicWorldModelSimulator().run(plan, policy)
+        change_time = config.start_time + timedelta(days=config.change_day)
+        results = []
+        changed_index = 0
+        for result in simulation.detection_results:
+            if result.metadata.recorded_time < change_time or changed_index % 2:
+                results.append(result)
+            else:
+                payload = result.model_dump(mode="python")
+                payload["metadata"]["record_id"] = content_uuid(
+                    "online-transient-noise-result",
+                    {"source_record_id": result.metadata.record_id},
+                )
+                payload.update(
+                    {
+                        "outcome": ObservationOutcome.AMBIGUOUS,
+                        "detected_object_instance_id": None,
+                        "detected_location_id": None,
+                        "detection_time": None,
+                        "negative_evidence_strength": 0.0,
+                    }
+                )
+                results.append(type(result).model_validate(payload))
+            if result.metadata.recorded_time >= change_time:
+                changed_index += 1
+        stream = D0VisibleSimulationRun.from_records(
+            start_time=simulation.start_time,
+            duration_days=simulation.duration_days,
+            random_seed=simulation.random_seed,
+            observation_opportunities=simulation.observation_opportunities,
+            detection_results=tuple(results),
+        )
+        evidence = generator._actor_evidence(
+            simulation=simulation,
+            actor_id=config.owner_id,
+            config=config,
+            track=ActorEvidenceTrack.CONTROLLED_NOISE,
+            change_time=change_time,
+        )
+        visible_detection_ids = {
+            result.metadata.record_id
+            for result in stream.detection_results
+            if result.outcome == ObservationOutcome.DETECTED
+        }
         return stream, tuple(
             item for item in evidence if item.source_detection_result_id in visible_detection_ids
         )

@@ -38,7 +38,10 @@ from .fair_ablation import (
     ProjectOneAblationArmId,
     TuningBudget,
 )
-from .sealed_test_split import SealedSplitMetadata
+from .sealed_test_split import (
+    SealedSplitMetadata,
+    split_artifact_manifest_sha256,
+)
 
 PROJECT_ONE_PILOT_PROTOCOL_V02: Literal["project-one-ablation-protocol-pilot@0.2"] = (
     "project-one-ablation-protocol-pilot@0.2"
@@ -309,6 +312,18 @@ class ProjectOneProtocolPilotManifestV2(ContractModel):
             != self.artifact_manifest_case_count
         ):
             raise ValueError("manifest split counts must equal artifact manifest case count")
+        expected_artifact_hash = split_artifact_manifest_sha256(
+            experiment_id=self.split_experiment_id,
+            train_split_sha256=self.train_split_sha256,
+            validation_split_sha256=self.validation_split_sha256,
+            test_split_sha256=self.test_split_sha256,
+            observation_trace_sha256=self.observation_trace_sha256,
+            train_case_count=self.train_case_count,
+            validation_case_count=self.validation_case_count,
+            test_case_count=self.test_case_count,
+        )
+        if self.artifact_manifest_sha256 != expected_artifact_hash:
+            raise ValueError("manifest artifact hash does not match split identities and counts")
         arms = [
             arm.arm_id for comparison in validated_comparisons for arm in comparison.manifest.arms
         ]

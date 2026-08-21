@@ -5,6 +5,7 @@ from __future__ import annotations
 import subprocess
 import sys
 from pathlib import Path
+from shutil import copy2, copytree
 
 from cpswm.system.evaluation_operations.project_one_ablation_pilot import (
     ProjectOneProtocolPilotReport,
@@ -78,10 +79,63 @@ def test_report_writer_rejects_any_benchmark_output(tmp_path):
             repository_root=repository,
         )
     except ProtectedReportOutputError as exc:
-        assert "benchmarks" in str(exc)
+        assert "only under output/" in str(exc)
     else:
         raise AssertionError("benchmark output was not protected")
     assert not protected.exists()
+
+
+def test_force_cannot_overwrite_repository_pyproject(tmp_path):
+    repository = tmp_path / "repository"
+    config = tmp_path / "config.json"
+    protected = repository / "pyproject.toml"
+    repository.mkdir()
+    config.write_text("{}", encoding="utf-8")
+    protected.write_text("sentinel-project-config", encoding="utf-8")
+
+    try:
+        write_report_atomic(
+            "{}\n",
+            output_path=protected,
+            config_path=config,
+            repository_root=repository,
+            force=True,
+        )
+    except ProtectedReportOutputError as exc:
+        assert "only under output/" in str(exc)
+    else:
+        raise AssertionError("--force expanded the allowed repository output root")
+    assert protected.read_text(encoding="utf-8") == "sentinel-project-config"
+
+
+def test_v02_cli_force_refuses_repository_pyproject_in_subprocess(tmp_path):
+    repository = tmp_path / "repository"
+    copied_cli = repository / "apps/evaluation_runner/run_project_one_ablation_pilot_v0_2.py"
+    copied_cli.parent.mkdir(parents=True)
+    copy2(V02_CLI, copied_cli)
+    copytree(REPO / "src", repository / "src")
+    protected = repository / "pyproject.toml"
+    protected.write_text("sentinel-project-config", encoding="utf-8")
+
+    completed = subprocess.run(
+        [
+            sys.executable,
+            str(copied_cli),
+            "--config",
+            str(V02_CONFIG),
+            "--output",
+            str(protected),
+            "--force",
+        ],
+        cwd=repository,
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+
+    assert completed.returncode != 0
+    assert "only under output/" in completed.stderr
+    assert protected.read_text(encoding="utf-8") == "sentinel-project-config"
 
 
 def test_v01_cli_is_retained_and_regenerates_authoritative_fixture(tmp_path):

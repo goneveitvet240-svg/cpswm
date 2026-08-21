@@ -29,19 +29,21 @@ def write_report_atomic(
 ) -> Path:
     """Write a complete report atomically without risking benchmark assets.
 
-    ``benchmarks/`` is immutable through these CLIs, output may never alias the
-    input config, and an existing output requires an explicit ``force=True``.
+    Inside the repository, only ``output/`` is writable through these CLIs;
+    explicit paths outside the repository remain available. Output may never
+    alias the input config, and an existing output requires ``force=True``.
     The no-force path uses an atomic hard-link publish, so a concurrent creator
     cannot be silently overwritten between the existence check and publish.
     """
 
     output = output_path.resolve(strict=False)
     config = config_path.resolve(strict=False)
-    benchmarks = (repository_root / "benchmarks").resolve(strict=False)
+    repository = repository_root.resolve(strict=False)
+    repository_output = (repository / "output").resolve(strict=False)
     if output == config:
         raise ProtectedReportOutputError("output path must not equal the input config path")
-    if _is_within(output, benchmarks):
-        raise ProtectedReportOutputError("report output under benchmarks/ is protected")
+    if _is_within(output, repository) and not _is_within(output, repository_output):
+        raise ProtectedReportOutputError("repository report output is allowed only under output/")
     if output.exists() and not force:
         raise FileExistsError(f"output already exists; pass --force to replace it: {output}")
 

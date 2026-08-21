@@ -43,6 +43,7 @@ from cpswm.system.evaluation_operations.sealed_test_split import (
     SealedSplitMetadata,
     split_artifact_manifest_sha256,
 )
+from cpswm.system.reproducibility import content_sha256
 
 REPO = Path(__file__).resolve().parents[1]
 V01_CONFIG = REPO / "benchmarks/project_one_ablation/project_one_protocol_pilot_v0.1.json"
@@ -511,6 +512,27 @@ def test_report_rejects_case_counts_that_disagree_with_manifest():
         ProjectOneProtocolPilotReportV2.model_validate(payload)
 
 
+def test_report_rejects_stale_artifact_hash_after_split_experiment_tamper():
+    payload = _tampered_report_payload()
+    payload["manifest"]["split_experiment_id"] = "forged-split-experiment"
+    payload["manifest_sha256"] = content_sha256(payload["manifest"])
+
+    with pytest.raises(ValidationError, match="artifact hash"):
+        ProjectOneProtocolPilotReportV2.model_validate(payload)
+
+
+def test_report_rejects_stale_artifact_hash_after_count_redistribution():
+    payload = _tampered_report_payload()
+    payload["manifest"]["train_case_count"] -= 1
+    payload["manifest"]["test_case_count"] += 1
+    payload["train_case_count"] -= 1
+    payload["test_case_count"] += 1
+    payload["manifest_sha256"] = content_sha256(payload["manifest"])
+
+    with pytest.raises(ValidationError, match="artifact hash"):
+        ProjectOneProtocolPilotReportV2.model_validate(payload)
+
+
 def test_report_rejects_tampered_manifest_even_when_outer_hash_is_recomputed():
     payload = _tampered_report_payload()
     # Modify the arm's method components, then recompute both enclosing hashes.
@@ -519,8 +541,6 @@ def test_report_rejects_tampered_manifest_even_when_outer_hash_is_recomputed():
         "habit-baseline",
         "forged-semantics",
     ]
-    from cpswm.system.reproducibility import content_sha256
-
     comparison_manifest = payload["manifest"]["comparisons"][0]["manifest"]
     payload["arm_results"][0]["comparison_manifest_sha256"] = content_sha256(comparison_manifest)
     payload["arm_results"][0]["manifest_arm_sha256"] = content_sha256(

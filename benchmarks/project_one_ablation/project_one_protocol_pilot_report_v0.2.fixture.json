@@ -1,0 +1,650 @@
+{
+  "manifest": {
+    "experiment_id": "db43ed5d-52fe-52b8-927b-b6a6c053f9af",
+    "protocol_version": "project-one-ablation-protocol-pilot@0.2",
+    "gate_id": "project-one-ablation-topology-gate@1",
+    "claim_scope": "ablation_topology_only",
+    "formal_structure_one_b1_scope": "M05-M12-perception",
+    "formal_structure_one_b1_status": "BLOCK",
+    "tuning_measured_budget_gate_status": "BLOCK",
+    "compliant_test_unseal_gate_status": "BLOCK",
+    "artifact_manifest_sha256": "dd2d26a89d5f43888d56447570f0c6468a04029c8ed12d2bf6f7045a7190f2d3",
+    "train_split_sha256": "e5915eb2442c0ec0d855345dc35a8380f5e561c2dbb3b8ac8d487d654458c356",
+    "validation_split_sha256": "77863337cf9891b015f3898bc90a1fda8863e171c36a3e7a9060217ebf5fd8cc",
+    "test_split_sha256": "8c623c37b04de6aede7aa4a3a71cfa62bf79c9902bc8d15e587f09fd96ae053b",
+    "observation_trace_sha256": "9eaa440d1642b550bb82184e30f39445c0b66b8192adc5c2e7d8886cfad8cfe6",
+    "comparisons": [
+      {
+        "comparison_id": "habit-observation-correction",
+        "task_adapter_id": "habit-observation-stream@unbound",
+        "manifest": {
+          "experiment_id": "19a8027f-612f-54d2-83ff-c221115b7e0e",
+          "baseline_arm_id": "habit-baseline",
+          "arms": [
+            {
+              "arm_id": "habit-baseline",
+              "model_version": "habit-baseline@adapter-unbound",
+              "components": [
+                "habit-baseline",
+                "hierarchical-dirichlet-habit-baseline",
+                "no-observation-process-correction"
+              ],
+              "observation_budget": {
+                "maximum_observation_actions": 0,
+                "maximum_user_interruptions": 0,
+                "maximum_observation_cost": 0.0,
+                "maximum_elapsed_time_seconds": 0.0
+              },
+              "model_budget": {
+                "maximum_train_compute_units": 0.0,
+                "maximum_inference_compute_units": 1.0,
+                "maximum_persistent_memory_bytes": 1000000,
+                "maximum_latency_ms": 1000.0,
+                "maximum_parameter_count": 10000
+              },
+              "tuning_budget": {
+                "maximum_trials": 1,
+                "maximum_compute_units": 1.0,
+                "validation_split_sha256": "77863337cf9891b015f3898bc90a1fda8863e171c36a3e7a9060217ebf5fd8cc",
+                "objective_name": "protocol_only_no_model_selection"
+              },
+              "independent_tuning_run_id": "84059d01-2952-5f90-9a91-803667639f46",
+              "observation_trace_sha256": "9eaa440d1642b550bb82184e30f39445c0b66b8192adc5c2e7d8886cfad8cfe6",
+              "test_split_sha256": "8c623c37b04de6aede7aa4a3a71cfa62bf79c9902bc8d15e587f09fd96ae053b"
+            },
+            {
+              "arm_id": "habit-observation-corrected",
+              "model_version": "habit-observation-corrected@adapter-unbound",
+              "components": [
+                "habit-observation-corrected",
+                "hierarchical-dirichlet-habit",
+                "observation-propensity-corrected"
+              ],
+              "observation_budget": {
+                "maximum_observation_actions": 0,
+                "maximum_user_interruptions": 0,
+                "maximum_observation_cost": 0.0,
+                "maximum_elapsed_time_seconds": 0.0
+              },
+              "model_budget": {
+                "maximum_train_compute_units": 0.0,
+                "maximum_inference_compute_units": 1.0,
+                "maximum_persistent_memory_bytes": 1000000,
+                "maximum_latency_ms": 1000.0,
+                "maximum_parameter_count": 10000
+              },
+              "tuning_budget": {
+                "maximum_trials": 1,
+                "maximum_compute_units": 1.0,
+                "validation_split_sha256": "77863337cf9891b015f3898bc90a1fda8863e171c36a3e7a9060217ebf5fd8cc",
+                "objective_name": "protocol_only_no_model_selection"
+              },
+              "independent_tuning_run_id": "a92a4a21-ffc3-5839-9f05-97803afb1fa5",
+              "observation_trace_sha256": "9eaa440d1642b550bb82184e30f39445c0b66b8192adc5c2e7d8886cfad8cfe6",
+              "test_split_sha256": "8c623c37b04de6aede7aa4a3a71cfa62bf79c9902bc8d15e587f09fd96ae053b"
+            }
+          ]
+        }
+      },
+      {
+        "comparison_id": "habit-actor-contamination",
+        "task_adapter_id": "habit-actor-stream@unbound",
+        "manifest": {
+          "experiment_id": "05aaf626-916f-55a2-a2d6-a07f64ab4a38",
+          "baseline_arm_id": "habit-visitor-isolated",
+          "arms": [
+            {
+              "arm_id": "habit-visitor-isolated",
+              "model_version": "habit-visitor-isolated@adapter-unbound",
+              "components": [
+                "habit-visitor-isolated",
+                "hierarchical-dirichlet-habit",
+                "non-resident-household-channel-isolation"
+              ],
+              "observation_budget": {
+                "maximum_observation_actions": 0,
+                "maximum_user_interruptions": 0,
+                "maximum_observation_cost": 0.0,
+                "maximum_elapsed_time_seconds": 0.0
+              },
+              "model_budget": {
+                "maximum_train_compute_units": 0.0,
+                "maximum_inference_compute_units": 1.0,
+                "maximum_persistent_memory_bytes": 1000000,
+                "maximum_latency_ms": 1000.0,
+                "maximum_parameter_count": 10000
+              },
+              "tuning_budget": {
+                "maximum_trials": 1,
+                "maximum_compute_units": 1.0,
+                "validation_split_sha256": "77863337cf9891b015f3898bc90a1fda8863e171c36a3e7a9060217ebf5fd8cc",
+                "objective_name": "protocol_only_no_model_selection"
+              },
+              "independent_tuning_run_id": "87895e02-2e07-5381-9755-d0efdbecf80e",
+              "observation_trace_sha256": "9eaa440d1642b550bb82184e30f39445c0b66b8192adc5c2e7d8886cfad8cfe6",
+              "test_split_sha256": "8c623c37b04de6aede7aa4a3a71cfa62bf79c9902bc8d15e587f09fd96ae053b"
+            },
+            {
+              "arm_id": "habit-actor-residual",
+              "model_version": "habit-actor-residual@adapter-unbound",
+              "components": [
+                "habit-actor-residual",
+                "hierarchical-dirichlet-habit",
+                "shrinkage-actor-residual"
+              ],
+              "observation_budget": {
+                "maximum_observation_actions": 0,
+                "maximum_user_interruptions": 0,
+                "maximum_observation_cost": 0.0,
+                "maximum_elapsed_time_seconds": 0.0
+              },
+              "model_budget": {
+                "maximum_train_compute_units": 0.0,
+                "maximum_inference_compute_units": 1.0,
+                "maximum_persistent_memory_bytes": 1000000,
+                "maximum_latency_ms": 1000.0,
+                "maximum_parameter_count": 10000
+              },
+              "tuning_budget": {
+                "maximum_trials": 1,
+                "maximum_compute_units": 1.0,
+                "validation_split_sha256": "77863337cf9891b015f3898bc90a1fda8863e171c36a3e7a9060217ebf5fd8cc",
+                "objective_name": "protocol_only_no_model_selection"
+              },
+              "independent_tuning_run_id": "1a2e551b-f91f-5c14-8744-00cad48315f0",
+              "observation_trace_sha256": "9eaa440d1642b550bb82184e30f39445c0b66b8192adc5c2e7d8886cfad8cfe6",
+              "test_split_sha256": "8c623c37b04de6aede7aa4a3a71cfa62bf79c9902bc8d15e587f09fd96ae053b"
+            }
+          ]
+        }
+      },
+      {
+        "comparison_id": "shift-cause-factorization",
+        "task_adapter_id": "online-shift-attribution@0.1",
+        "manifest": {
+          "experiment_id": "a3895b00-a212-51f2-bf1a-dd1cc2660497",
+          "baseline_arm_id": "ordinary-bocpd",
+          "arms": [
+            {
+              "arm_id": "ordinary-bocpd",
+              "model_version": "online-ordinary-bocpd@0.1",
+              "components": [
+                "ordinary-bocpd"
+              ],
+              "observation_budget": {
+                "maximum_observation_actions": 0,
+                "maximum_user_interruptions": 0,
+                "maximum_observation_cost": 0.0,
+                "maximum_elapsed_time_seconds": 0.0
+              },
+              "model_budget": {
+                "maximum_train_compute_units": 0.0,
+                "maximum_inference_compute_units": 1.0,
+                "maximum_persistent_memory_bytes": 1000000,
+                "maximum_latency_ms": 1000.0,
+                "maximum_parameter_count": 10000
+              },
+              "tuning_budget": {
+                "maximum_trials": 1,
+                "maximum_compute_units": 1.0,
+                "validation_split_sha256": "77863337cf9891b015f3898bc90a1fda8863e171c36a3e7a9060217ebf5fd8cc",
+                "objective_name": "protocol_only_no_model_selection"
+              },
+              "independent_tuning_run_id": "0f40298e-7e90-5e0c-9a9b-00b029d2288e",
+              "observation_trace_sha256": "9eaa440d1642b550bb82184e30f39445c0b66b8192adc5c2e7d8886cfad8cfe6",
+              "test_split_sha256": "8c623c37b04de6aede7aa4a3a71cfa62bf79c9902bc8d15e587f09fd96ae053b"
+            },
+            {
+              "arm_id": "cause-factorized-bocpd",
+              "model_version": "online-cause-factorized-bocpd@0.1",
+              "components": [
+                "cause-factorized-bocpd",
+                "legacy-independent-per-cause"
+              ],
+              "observation_budget": {
+                "maximum_observation_actions": 0,
+                "maximum_user_interruptions": 0,
+                "maximum_observation_cost": 0.0,
+                "maximum_elapsed_time_seconds": 0.0
+              },
+              "model_budget": {
+                "maximum_train_compute_units": 0.0,
+                "maximum_inference_compute_units": 1.0,
+                "maximum_persistent_memory_bytes": 1000000,
+                "maximum_latency_ms": 1000.0,
+                "maximum_parameter_count": 10000
+              },
+              "tuning_budget": {
+                "maximum_trials": 1,
+                "maximum_compute_units": 1.0,
+                "validation_split_sha256": "77863337cf9891b015f3898bc90a1fda8863e171c36a3e7a9060217ebf5fd8cc",
+                "objective_name": "protocol_only_no_model_selection"
+              },
+              "independent_tuning_run_id": "c7f1e250-a680-56bd-a881-2134edae917f",
+              "observation_trace_sha256": "9eaa440d1642b550bb82184e30f39445c0b66b8192adc5c2e7d8886cfad8cfe6",
+              "test_split_sha256": "8c623c37b04de6aede7aa4a3a71cfa62bf79c9902bc8d15e587f09fd96ae053b"
+            },
+            {
+              "arm_id": "joint-cause-factorized-bocpd",
+              "model_version": "joint-cause-factorized-bocpd@0.3",
+              "components": [
+                "joint-cause-factorized-bocpd",
+                "joint-cause-factorized",
+                "selective-reset",
+                "transient-noise-state"
+              ],
+              "observation_budget": {
+                "maximum_observation_actions": 0,
+                "maximum_user_interruptions": 0,
+                "maximum_observation_cost": 0.0,
+                "maximum_elapsed_time_seconds": 0.0
+              },
+              "model_budget": {
+                "maximum_train_compute_units": 0.0,
+                "maximum_inference_compute_units": 1.0,
+                "maximum_persistent_memory_bytes": 1000000,
+                "maximum_latency_ms": 1000.0,
+                "maximum_parameter_count": 10000
+              },
+              "tuning_budget": {
+                "maximum_trials": 1,
+                "maximum_compute_units": 1.0,
+                "validation_split_sha256": "77863337cf9891b015f3898bc90a1fda8863e171c36a3e7a9060217ebf5fd8cc",
+                "objective_name": "protocol_only_no_model_selection"
+              },
+              "independent_tuning_run_id": "62634d5f-ca95-57d9-ac60-e41665b0ca75",
+              "observation_trace_sha256": "9eaa440d1642b550bb82184e30f39445c0b66b8192adc5c2e7d8886cfad8cfe6",
+              "test_split_sha256": "8c623c37b04de6aede7aa4a3a71cfa62bf79c9902bc8d15e587f09fd96ae053b"
+            }
+          ]
+        }
+      },
+      {
+        "comparison_id": "cheh-source-alignment",
+        "task_adapter_id": "hidden-event-provenance@unbound",
+        "manifest": {
+          "experiment_id": "9ad56c35-c425-5fc5-aba5-818b48f3a0e1",
+          "baseline_arm_id": "cheh-internal-consistency",
+          "arms": [
+            {
+              "arm_id": "cheh-internal-consistency",
+              "model_version": "cheh-internal-consistency@adapter-unbound",
+              "components": [
+                "cheh-internal-consistency",
+                "no-source-aligned-revision"
+              ],
+              "observation_budget": {
+                "maximum_observation_actions": 0,
+                "maximum_user_interruptions": 0,
+                "maximum_observation_cost": 0.0,
+                "maximum_elapsed_time_seconds": 0.0
+              },
+              "model_budget": {
+                "maximum_train_compute_units": 0.0,
+                "maximum_inference_compute_units": 1.0,
+                "maximum_persistent_memory_bytes": 1000000,
+                "maximum_latency_ms": 1000.0,
+                "maximum_parameter_count": 10000
+              },
+              "tuning_budget": {
+                "maximum_trials": 1,
+                "maximum_compute_units": 1.0,
+                "validation_split_sha256": "77863337cf9891b015f3898bc90a1fda8863e171c36a3e7a9060217ebf5fd8cc",
+                "objective_name": "protocol_only_no_model_selection"
+              },
+              "independent_tuning_run_id": "3c985c7d-d321-5773-b176-1e103c325d84",
+              "observation_trace_sha256": "9eaa440d1642b550bb82184e30f39445c0b66b8192adc5c2e7d8886cfad8cfe6",
+              "test_split_sha256": "8c623c37b04de6aede7aa4a3a71cfa62bf79c9902bc8d15e587f09fd96ae053b"
+            },
+            {
+              "arm_id": "cheh-source-aligned",
+              "model_version": "cheh-source-aligned@adapter-unbound",
+              "components": [
+                "cheh-source-aligned",
+                "cheh-source-aligned-revision",
+                "endpoint-and-evidence-cluster-binding"
+              ],
+              "observation_budget": {
+                "maximum_observation_actions": 0,
+                "maximum_user_interruptions": 0,
+                "maximum_observation_cost": 0.0,
+                "maximum_elapsed_time_seconds": 0.0
+              },
+              "model_budget": {
+                "maximum_train_compute_units": 0.0,
+                "maximum_inference_compute_units": 1.0,
+                "maximum_persistent_memory_bytes": 1000000,
+                "maximum_latency_ms": 1000.0,
+                "maximum_parameter_count": 10000
+              },
+              "tuning_budget": {
+                "maximum_trials": 1,
+                "maximum_compute_units": 1.0,
+                "validation_split_sha256": "77863337cf9891b015f3898bc90a1fda8863e171c36a3e7a9060217ebf5fd8cc",
+                "objective_name": "protocol_only_no_model_selection"
+              },
+              "independent_tuning_run_id": "0b5b17c1-333a-555f-8125-95cb2b678259",
+              "observation_trace_sha256": "9eaa440d1642b550bb82184e30f39445c0b66b8192adc5c2e7d8886cfad8cfe6",
+              "test_split_sha256": "8c623c37b04de6aede7aa4a3a71cfa62bf79c9902bc8d15e587f09fd96ae053b"
+            }
+          ]
+        }
+      },
+      {
+        "comparison_id": "verification-decision-objective",
+        "task_adapter_id": "grounded-verification-utility@unbound",
+        "manifest": {
+          "experiment_id": "629443ee-a4ae-5465-9808-eccb6aae5803",
+          "baseline_arm_id": "retuned-threshold-verification",
+          "arms": [
+            {
+              "arm_id": "retuned-threshold-verification",
+              "model_version": "retuned-threshold-verification@adapter-unbound",
+              "components": [
+                "retuned-threshold-verification"
+              ],
+              "observation_budget": {
+                "maximum_observation_actions": 0,
+                "maximum_user_interruptions": 0,
+                "maximum_observation_cost": 0.0,
+                "maximum_elapsed_time_seconds": 0.0
+              },
+              "model_budget": {
+                "maximum_train_compute_units": 0.0,
+                "maximum_inference_compute_units": 1.0,
+                "maximum_persistent_memory_bytes": 1000000,
+                "maximum_latency_ms": 1000.0,
+                "maximum_parameter_count": 10000
+              },
+              "tuning_budget": {
+                "maximum_trials": 1,
+                "maximum_compute_units": 1.0,
+                "validation_split_sha256": "77863337cf9891b015f3898bc90a1fda8863e171c36a3e7a9060217ebf5fd8cc",
+                "objective_name": "protocol_only_no_model_selection"
+              },
+              "independent_tuning_run_id": "f31f7445-3b89-5137-aabb-99250cde93d6",
+              "observation_trace_sha256": "9eaa440d1642b550bb82184e30f39445c0b66b8192adc5c2e7d8886cfad8cfe6",
+              "test_split_sha256": "8c623c37b04de6aede7aa4a3a71cfa62bf79c9902bc8d15e587f09fd96ae053b"
+            },
+            {
+              "arm_id": "decision-utility-verification",
+              "model_version": "decision-utility-verification@adapter-unbound",
+              "components": [
+                "decision-utility-verification",
+                "expected-action-utility-verification",
+                "motion-time-interruption-privacy-safety-costs"
+              ],
+              "observation_budget": {
+                "maximum_observation_actions": 0,
+                "maximum_user_interruptions": 0,
+                "maximum_observation_cost": 0.0,
+                "maximum_elapsed_time_seconds": 0.0
+              },
+              "model_budget": {
+                "maximum_train_compute_units": 0.0,
+                "maximum_inference_compute_units": 1.0,
+                "maximum_persistent_memory_bytes": 1000000,
+                "maximum_latency_ms": 1000.0,
+                "maximum_parameter_count": 10000
+              },
+              "tuning_budget": {
+                "maximum_trials": 1,
+                "maximum_compute_units": 1.0,
+                "validation_split_sha256": "77863337cf9891b015f3898bc90a1fda8863e171c36a3e7a9060217ebf5fd8cc",
+                "objective_name": "protocol_only_no_model_selection"
+              },
+              "independent_tuning_run_id": "e64f4f6c-bf3b-5b4f-adcd-728dc7ca3b01",
+              "observation_trace_sha256": "9eaa440d1642b550bb82184e30f39445c0b66b8192adc5c2e7d8886cfad8cfe6",
+              "test_split_sha256": "8c623c37b04de6aede7aa4a3a71cfa62bf79c9902bc8d15e587f09fd96ae053b"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "manifest_sha256": "5c7f99a745f564cc95aabd0c39f4cfe85fa1c45d81f2ca98e8c333f73e248ce2",
+  "arm_results": [
+    {
+      "comparison_id": "habit-observation-correction",
+      "comparison_manifest_id": "19a8027f-612f-54d2-83ff-c221115b7e0e",
+      "comparison_manifest_sha256": "03cf9c08ff90fd2fde1db56619c91331a0dbd042e907b6ce8291dd110bf5166d",
+      "arm_id": "habit-baseline",
+      "manifest_arm_sha256": "3c7ba40c081f005d966151509a3a9943f600ee427ced53a8d1a2952ee7d8a789",
+      "independent_tuning_run_id": "84059d01-2952-5f90-9a91-803667639f46",
+      "adapter_status": "topology_only",
+      "tuning_status": "not_run",
+      "declared_model_version": "habit-baseline@adapter-unbound",
+      "executed_model_version": null,
+      "evaluation_split": null,
+      "online_shift_report": null,
+      "method_semantics": [
+        "hierarchical-dirichlet-habit-baseline",
+        "no-observation-process-correction"
+      ],
+      "topology_result": "validated_topology_binding",
+      "topology_binding_sha256": "1eb5f2512e07db06195970b9e5d5076d8774e663fd52ec5846dc7b99bd351355",
+      "note": "ATG-1 topology-only wiring; declared version only; executed_model_version is None. hierarchical-dirichlet-habit-baseline no-observation-process-correction"
+    },
+    {
+      "comparison_id": "habit-observation-correction",
+      "comparison_manifest_id": "19a8027f-612f-54d2-83ff-c221115b7e0e",
+      "comparison_manifest_sha256": "03cf9c08ff90fd2fde1db56619c91331a0dbd042e907b6ce8291dd110bf5166d",
+      "arm_id": "habit-observation-corrected",
+      "manifest_arm_sha256": "cc816d684ae30f324f00d4a1be730937510094f8aa4e770e03223031f4f9657d",
+      "independent_tuning_run_id": "a92a4a21-ffc3-5839-9f05-97803afb1fa5",
+      "adapter_status": "topology_only",
+      "tuning_status": "not_run",
+      "declared_model_version": "habit-observation-corrected@adapter-unbound",
+      "executed_model_version": null,
+      "evaluation_split": null,
+      "online_shift_report": null,
+      "method_semantics": [
+        "hierarchical-dirichlet-habit",
+        "observation-propensity-corrected"
+      ],
+      "topology_result": "validated_topology_binding",
+      "topology_binding_sha256": "b1b5d047d902f7ab567751c1dbf410eed392f0353c17d014d37c4263bb131587",
+      "note": "ATG-1 topology-only wiring; declared version only; executed_model_version is None. hierarchical-dirichlet-habit observation-propensity-corrected"
+    },
+    {
+      "comparison_id": "habit-actor-contamination",
+      "comparison_manifest_id": "05aaf626-916f-55a2-a2d6-a07f64ab4a38",
+      "comparison_manifest_sha256": "389ce0e07d3fcd7f12ad7560fd2ed36c1d424231881c2484b6f96d36716d8ef0",
+      "arm_id": "habit-visitor-isolated",
+      "manifest_arm_sha256": "b5b82f6a817c735a46f8bfd7cd14711378732d622beb8b16d960e8d940bc543c",
+      "independent_tuning_run_id": "87895e02-2e07-5381-9755-d0efdbecf80e",
+      "adapter_status": "topology_only",
+      "tuning_status": "not_run",
+      "declared_model_version": "habit-visitor-isolated@adapter-unbound",
+      "executed_model_version": null,
+      "evaluation_split": null,
+      "online_shift_report": null,
+      "method_semantics": [
+        "hierarchical-dirichlet-habit",
+        "non-resident-household-channel-isolation"
+      ],
+      "topology_result": "validated_topology_binding",
+      "topology_binding_sha256": "6a737490984924fd9843c475fded4e2880102b07f46cee7ad47ba5545b18c7a7",
+      "note": "ATG-1 topology-only wiring; declared version only; executed_model_version is None. hierarchical-dirichlet-habit non-resident-household-channel-isolation"
+    },
+    {
+      "comparison_id": "habit-actor-contamination",
+      "comparison_manifest_id": "05aaf626-916f-55a2-a2d6-a07f64ab4a38",
+      "comparison_manifest_sha256": "389ce0e07d3fcd7f12ad7560fd2ed36c1d424231881c2484b6f96d36716d8ef0",
+      "arm_id": "habit-actor-residual",
+      "manifest_arm_sha256": "32da133c34e428dbe74357ba54f3a85929c57d8fce4b68cfee1e207537965eb3",
+      "independent_tuning_run_id": "1a2e551b-f91f-5c14-8744-00cad48315f0",
+      "adapter_status": "topology_only",
+      "tuning_status": "not_run",
+      "declared_model_version": "habit-actor-residual@adapter-unbound",
+      "executed_model_version": null,
+      "evaluation_split": null,
+      "online_shift_report": null,
+      "method_semantics": [
+        "hierarchical-dirichlet-habit",
+        "shrinkage-actor-residual"
+      ],
+      "topology_result": "validated_topology_binding",
+      "topology_binding_sha256": "f27a7697bb79ba1eb9df99414468ade900dcd9de3bf1c6247926ab38a7e4661e",
+      "note": "ATG-1 topology-only wiring; declared version only; executed_model_version is None. hierarchical-dirichlet-habit shrinkage-actor-residual"
+    },
+    {
+      "comparison_id": "shift-cause-factorization",
+      "comparison_manifest_id": "a3895b00-a212-51f2-bf1a-dd1cc2660497",
+      "comparison_manifest_sha256": "531f5984893c52147c6ec3dd2fcfaccb0a98b6652ddd110d166c99a1fa7daa94",
+      "arm_id": "ordinary-bocpd",
+      "manifest_arm_sha256": "98131b2f4dc4dacf6886b5ef0b78e3c6383c8233d18e4c13d0e86684c788ce16",
+      "independent_tuning_run_id": "0f40298e-7e90-5e0c-9a9b-00b029d2288e",
+      "adapter_status": "topology_only",
+      "tuning_status": "not_run",
+      "declared_model_version": "online-ordinary-bocpd@0.1",
+      "executed_model_version": null,
+      "evaluation_split": null,
+      "online_shift_report": null,
+      "method_semantics": [
+        "ordinary-bocpd"
+      ],
+      "topology_result": "validated_topology_binding",
+      "topology_binding_sha256": "f70e4a86ae6c3a39737554d91e85d2ec5ef50370ff78935f7ce4a3c29513ba87",
+      "note": "ATG-1 topology-only wiring; declared version only; executed_model_version is None. ordinary-bocpd"
+    },
+    {
+      "comparison_id": "shift-cause-factorization",
+      "comparison_manifest_id": "a3895b00-a212-51f2-bf1a-dd1cc2660497",
+      "comparison_manifest_sha256": "531f5984893c52147c6ec3dd2fcfaccb0a98b6652ddd110d166c99a1fa7daa94",
+      "arm_id": "cause-factorized-bocpd",
+      "manifest_arm_sha256": "e2444caf280b229e27a353418d347ae972bf8f209e0b264e2a763fb8fa844400",
+      "independent_tuning_run_id": "c7f1e250-a680-56bd-a881-2134edae917f",
+      "adapter_status": "topology_only",
+      "tuning_status": "not_run",
+      "declared_model_version": "online-cause-factorized-bocpd@0.1",
+      "executed_model_version": null,
+      "evaluation_split": null,
+      "online_shift_report": null,
+      "method_semantics": [
+        "legacy-independent-per-cause"
+      ],
+      "topology_result": "validated_topology_binding",
+      "topology_binding_sha256": "43c10c2b975148ed5e63028c3633d79da3186dc2fea136886702a34de33e1327",
+      "note": "ATG-1 topology-only wiring; declared version only; executed_model_version is None. legacy-independent-per-cause"
+    },
+    {
+      "comparison_id": "shift-cause-factorization",
+      "comparison_manifest_id": "a3895b00-a212-51f2-bf1a-dd1cc2660497",
+      "comparison_manifest_sha256": "531f5984893c52147c6ec3dd2fcfaccb0a98b6652ddd110d166c99a1fa7daa94",
+      "arm_id": "joint-cause-factorized-bocpd",
+      "manifest_arm_sha256": "c5953a5a944994a4a1cf4746632f25f4d9015d975e2f8a843aea9bab403cb99d",
+      "independent_tuning_run_id": "62634d5f-ca95-57d9-ac60-e41665b0ca75",
+      "adapter_status": "topology_only",
+      "tuning_status": "not_run",
+      "declared_model_version": "joint-cause-factorized-bocpd@0.3",
+      "executed_model_version": null,
+      "evaluation_split": null,
+      "online_shift_report": null,
+      "method_semantics": [
+        "joint-cause-factorized",
+        "selective-reset",
+        "transient-noise-state"
+      ],
+      "topology_result": "validated_topology_binding",
+      "topology_binding_sha256": "680fac03a0fc8ada61d16caa302330f948ff0a2c1ffe2570c2e5cd18dfd820b0",
+      "note": "ATG-1 topology-only wiring; declared version only; executed_model_version is None. joint-cause-factorized selective-reset transient-noise-state"
+    },
+    {
+      "comparison_id": "cheh-source-alignment",
+      "comparison_manifest_id": "9ad56c35-c425-5fc5-aba5-818b48f3a0e1",
+      "comparison_manifest_sha256": "380207993c2874ebb2b549b77d39f41c006ef71253274069d35f055da90d6608",
+      "arm_id": "cheh-internal-consistency",
+      "manifest_arm_sha256": "917dc3b41fbc46299b6f7a8d18f67af1298af2fbd5df0262e7eeebf51e7af8ba",
+      "independent_tuning_run_id": "3c985c7d-d321-5773-b176-1e103c325d84",
+      "adapter_status": "topology_only",
+      "tuning_status": "not_run",
+      "declared_model_version": "cheh-internal-consistency@adapter-unbound",
+      "executed_model_version": null,
+      "evaluation_split": null,
+      "online_shift_report": null,
+      "method_semantics": [
+        "cheh-internal-consistency",
+        "no-source-aligned-revision"
+      ],
+      "topology_result": "validated_topology_binding",
+      "topology_binding_sha256": "a0ecee9c9a5ea3200fef1470f0ea0a34fb837c42e60adad5ca146f5b776bd9f0",
+      "note": "ATG-1 topology-only wiring; declared version only; executed_model_version is None. cheh-internal-consistency no-source-aligned-revision"
+    },
+    {
+      "comparison_id": "cheh-source-alignment",
+      "comparison_manifest_id": "9ad56c35-c425-5fc5-aba5-818b48f3a0e1",
+      "comparison_manifest_sha256": "380207993c2874ebb2b549b77d39f41c006ef71253274069d35f055da90d6608",
+      "arm_id": "cheh-source-aligned",
+      "manifest_arm_sha256": "a062663346f7a961c7ced4743c5abd0017ed395007a619cbcbfd5225df859aeb",
+      "independent_tuning_run_id": "0b5b17c1-333a-555f-8125-95cb2b678259",
+      "adapter_status": "topology_only",
+      "tuning_status": "not_run",
+      "declared_model_version": "cheh-source-aligned@adapter-unbound",
+      "executed_model_version": null,
+      "evaluation_split": null,
+      "online_shift_report": null,
+      "method_semantics": [
+        "cheh-source-aligned-revision",
+        "endpoint-and-evidence-cluster-binding"
+      ],
+      "topology_result": "validated_topology_binding",
+      "topology_binding_sha256": "f51597a8fae81f4e0adaf57c585e9d7e41733c14f8a3f97fb019d5e265254f16",
+      "note": "ATG-1 topology-only wiring; declared version only; executed_model_version is None. cheh-source-aligned-revision endpoint-and-evidence-cluster-binding"
+    },
+    {
+      "comparison_id": "verification-decision-objective",
+      "comparison_manifest_id": "629443ee-a4ae-5465-9808-eccb6aae5803",
+      "comparison_manifest_sha256": "7f8243853da23dc78a6e60b54eb15be822c15d5d6c8b0317e8c512c8eaab063e",
+      "arm_id": "retuned-threshold-verification",
+      "manifest_arm_sha256": "f527a56cf2ff3679db583b7408492e342cc7c9aeb3d523a883722b79d02818dd",
+      "independent_tuning_run_id": "f31f7445-3b89-5137-aabb-99250cde93d6",
+      "adapter_status": "topology_only",
+      "tuning_status": "not_run",
+      "declared_model_version": "retuned-threshold-verification@adapter-unbound",
+      "executed_model_version": null,
+      "evaluation_split": null,
+      "online_shift_report": null,
+      "method_semantics": [
+        "retuned-threshold-verification"
+      ],
+      "topology_result": "validated_topology_binding",
+      "topology_binding_sha256": "eed9ae28a3b30419e5ec8e7bbadee703f9893f8ab274be864e8cc441c582e276",
+      "note": "ATG-1 topology-only wiring; declared version only; executed_model_version is None. retuned-threshold-verification"
+    },
+    {
+      "comparison_id": "verification-decision-objective",
+      "comparison_manifest_id": "629443ee-a4ae-5465-9808-eccb6aae5803",
+      "comparison_manifest_sha256": "7f8243853da23dc78a6e60b54eb15be822c15d5d6c8b0317e8c512c8eaab063e",
+      "arm_id": "decision-utility-verification",
+      "manifest_arm_sha256": "12ace93548a83c8cbef189594edb4eade55b288a1b5ac7ed83bf564af3c5e949",
+      "independent_tuning_run_id": "e64f4f6c-bf3b-5b4f-adcd-728dc7ca3b01",
+      "adapter_status": "topology_only",
+      "tuning_status": "not_run",
+      "declared_model_version": "decision-utility-verification@adapter-unbound",
+      "executed_model_version": null,
+      "evaluation_split": null,
+      "online_shift_report": null,
+      "method_semantics": [
+        "expected-action-utility-verification",
+        "motion-time-interruption-privacy-safety-costs"
+      ],
+      "topology_result": "validated_topology_binding",
+      "topology_binding_sha256": "8c63f338d39379686e50459a3836f324441b0d7daece3038cf627d79f4d29ee6",
+      "note": "ATG-1 topology-only wiring; declared version only; executed_model_version is None. expected-action-utility-verification motion-time-interruption-privacy-safety-costs"
+    }
+  ],
+  "protocol_contracts_valid": true,
+  "all_adapters_bound": false,
+  "formal_experiment_ready": false,
+  "claim_scope": "ablation_topology_only",
+  "caveats": [
+    "ATG-1 topology-only: no model was run and no TEST data was loaded or generated.",
+    "Formal Structure One B1 (M05-M12 perception) remains BLOCKED and incomplete.",
+    "ATG-2 remains blocked: no per-arm tuning or measured-budget ledger exists.",
+    "ATG-3 remains blocked: no compliant receipt has unsealed TEST.",
+    "joint-cause-factorized-bocpd is wired as the 11th arm but stays unbound.",
+    "No experiment supports superiority of joint CF-BOCPD over existing methods.",
+    "cause-factorized-bocpd is retained as the legacy independent-per-cause baseline."
+  ]
+}

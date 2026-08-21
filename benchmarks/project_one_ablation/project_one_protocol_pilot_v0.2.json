@@ -1,0 +1,122 @@
+{
+  "protocol_version": "project-one-ablation-protocol-pilot@0.2",
+  "gate_id": "project-one-ablation-topology-gate@1",
+  "comparison_budgets": {
+    "habit-observation-correction": {
+      "budget_scope": "protocol_placeholder",
+      "observation_budget": {
+        "maximum_observation_actions": 0,
+        "maximum_user_interruptions": 0,
+        "maximum_observation_cost": 0.0,
+        "maximum_elapsed_time_seconds": 0.0
+      },
+      "model_budget": {
+        "maximum_train_compute_units": 0.0,
+        "maximum_inference_compute_units": 1.0,
+        "maximum_persistent_memory_bytes": 1000000,
+        "maximum_latency_ms": 1000.0,
+        "maximum_parameter_count": 10000
+      },
+      "tuning_budget": {
+        "maximum_trials": 1,
+        "maximum_compute_units": 1.0,
+        "objective_name": "protocol_only_no_model_selection"
+      }
+    },
+    "habit-actor-contamination": {
+      "budget_scope": "protocol_placeholder",
+      "observation_budget": {
+        "maximum_observation_actions": 0,
+        "maximum_user_interruptions": 0,
+        "maximum_observation_cost": 0.0,
+        "maximum_elapsed_time_seconds": 0.0
+      },
+      "model_budget": {
+        "maximum_train_compute_units": 0.0,
+        "maximum_inference_compute_units": 1.0,
+        "maximum_persistent_memory_bytes": 1000000,
+        "maximum_latency_ms": 1000.0,
+        "maximum_parameter_count": 10000
+      },
+      "tuning_budget": {
+        "maximum_trials": 1,
+        "maximum_compute_units": 1.0,
+        "objective_name": "protocol_only_no_model_selection"
+      }
+    },
+    "shift-cause-factorization": {
+      "budget_scope": "protocol_placeholder",
+      "observation_budget": {
+        "maximum_observation_actions": 0,
+        "maximum_user_interruptions": 0,
+        "maximum_observation_cost": 0.0,
+        "maximum_elapsed_time_seconds": 0.0
+      },
+      "model_budget": {
+        "maximum_train_compute_units": 0.0,
+        "maximum_inference_compute_units": 1.0,
+        "maximum_persistent_memory_bytes": 1000000,
+        "maximum_latency_ms": 1000.0,
+        "maximum_parameter_count": 10000
+      },
+      "tuning_budget": {
+        "maximum_trials": 1,
+        "maximum_compute_units": 1.0,
+        "objective_name": "protocol_only_no_model_selection"
+      }
+    },
+    "cheh-source-alignment": {
+      "budget_scope": "protocol_placeholder",
+      "observation_budget": {
+        "maximum_observation_actions": 0,
+        "maximum_user_interruptions": 0,
+        "maximum_observation_cost": 0.0,
+        "maximum_elapsed_time_seconds": 0.0
+      },
+      "model_budget": {
+        "maximum_train_compute_units": 0.0,
+        "maximum_inference_compute_units": 1.0,
+        "maximum_persistent_memory_bytes": 1000000,
+        "maximum_latency_ms": 1000.0,
+        "maximum_parameter_count": 10000
+      },
+      "tuning_budget": {
+        "maximum_trials": 1,
+        "maximum_compute_units": 1.0,
+        "objective_name": "protocol_only_no_model_selection"
+      }
+    },
+    "verification-decision-objective": {
+      "budget_scope": "protocol_placeholder",
+      "observation_budget": {
+        "maximum_observation_actions": 0,
+        "maximum_user_interruptions": 0,
+        "maximum_observation_cost": 0.0,
+        "maximum_elapsed_time_seconds": 0.0
+      },
+      "model_budget": {
+        "maximum_train_compute_units": 0.0,
+        "maximum_inference_compute_units": 1.0,
+        "maximum_persistent_memory_bytes": 1000000,
+        "maximum_latency_ms": 1000.0,
+        "maximum_parameter_count": 10000
+      },
+      "tuning_budget": {
+        "maximum_trials": 1,
+        "maximum_compute_units": 1.0,
+        "objective_name": "protocol_only_no_model_selection"
+      }
+    }
+  },
+  "split_metadata": {
+    "experiment_id": "project-one-v0.2",
+    "artifact_manifest_sha256": "dd2d26a89d5f43888d56447570f0c6468a04029c8ed12d2bf6f7045a7190f2d3",
+    "train_split_sha256": "e5915eb2442c0ec0d855345dc35a8380f5e561c2dbb3b8ac8d487d654458c356",
+    "validation_split_sha256": "77863337cf9891b015f3898bc90a1fda8863e171c36a3e7a9060217ebf5fd8cc",
+    "test_split_sha256": "8c623c37b04de6aede7aa4a3a71cfa62bf79c9902bc8d15e587f09fd96ae053b",
+    "observation_trace_sha256": "9eaa440d1642b550bb82184e30f39445c0b66b8192adc5c2e7d8886cfad8cfe6",
+    "train_case_count": 18,
+    "validation_case_count": 6,
+    "test_case_count": 12
+  }
+}

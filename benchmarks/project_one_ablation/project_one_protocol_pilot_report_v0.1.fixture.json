@@ -1,0 +1,507 @@
+{
+  "manifest": {
+    "experiment_id": "0d46114d-022d-5daa-a26a-838d189e8930",
+    "protocol_version": "project-one-ablation-protocol-pilot@0.1",
+    "claim_scope": "protocol_only",
+    "online_shift_suite_id": "67f35730-055c-50bc-8722-275e95a3b6fb",
+    "online_shift_suite_sha256": "dd2d26a89d5f43888d56447570f0c6468a04029c8ed12d2bf6f7045a7190f2d3",
+    "validation_split_sha256": "77863337cf9891b015f3898bc90a1fda8863e171c36a3e7a9060217ebf5fd8cc",
+    "test_split_sha256": "8c623c37b04de6aede7aa4a3a71cfa62bf79c9902bc8d15e587f09fd96ae053b",
+    "observation_trace_sha256": "9eaa440d1642b550bb82184e30f39445c0b66b8192adc5c2e7d8886cfad8cfe6",
+    "comparisons": [
+      {
+        "comparison_id": "habit-observation-correction",
+        "task_adapter_id": "habit-observation-stream@unbound",
+        "manifest": {
+          "experiment_id": "f9d28afa-e124-55c5-9e25-ebe89118cb2c",
+          "baseline_arm_id": "habit-baseline",
+          "arms": [
+            {
+              "arm_id": "habit-baseline",
+              "model_version": "habit-baseline@adapter-unbound",
+              "components": [
+                "habit-baseline",
+                "habit-observation-stream@unbound"
+              ],
+              "observation_budget": {
+                "maximum_observation_actions": 0,
+                "maximum_user_interruptions": 0,
+                "maximum_observation_cost": 0.0,
+                "maximum_elapsed_time_seconds": 0.0
+              },
+              "model_budget": {
+                "maximum_train_compute_units": 0.0,
+                "maximum_inference_compute_units": 1.0,
+                "maximum_persistent_memory_bytes": 1000000,
+                "maximum_latency_ms": 1000.0,
+                "maximum_parameter_count": 10000
+              },
+              "tuning_budget": {
+                "maximum_trials": 1,
+                "maximum_compute_units": 1.0,
+                "validation_split_sha256": "77863337cf9891b015f3898bc90a1fda8863e171c36a3e7a9060217ebf5fd8cc",
+                "objective_name": "protocol_only_no_model_selection"
+              },
+              "independent_tuning_run_id": "b1d77fd1-abd1-5ac5-b6a9-277dcc7cd0d1",
+              "observation_trace_sha256": "9eaa440d1642b550bb82184e30f39445c0b66b8192adc5c2e7d8886cfad8cfe6",
+              "test_split_sha256": "8c623c37b04de6aede7aa4a3a71cfa62bf79c9902bc8d15e587f09fd96ae053b"
+            },
+            {
+              "arm_id": "habit-observation-corrected",
+              "model_version": "habit-observation-corrected@adapter-unbound",
+              "components": [
+                "habit-observation-corrected",
+                "habit-observation-stream@unbound"
+              ],
+              "observation_budget": {
+                "maximum_observation_actions": 0,
+                "maximum_user_interruptions": 0,
+                "maximum_observation_cost": 0.0,
+                "maximum_elapsed_time_seconds": 0.0
+              },
+              "model_budget": {
+                "maximum_train_compute_units": 0.0,
+                "maximum_inference_compute_units": 1.0,
+                "maximum_persistent_memory_bytes": 1000000,
+                "maximum_latency_ms": 1000.0,
+                "maximum_parameter_count": 10000
+              },
+              "tuning_budget": {
+                "maximum_trials": 1,
+                "maximum_compute_units": 1.0,
+                "validation_split_sha256": "77863337cf9891b015f3898bc90a1fda8863e171c36a3e7a9060217ebf5fd8cc",
+                "objective_name": "protocol_only_no_model_selection"
+              },
+              "independent_tuning_run_id": "1925cbc4-d9f0-5fb9-8d7b-811934bf2005",
+              "observation_trace_sha256": "9eaa440d1642b550bb82184e30f39445c0b66b8192adc5c2e7d8886cfad8cfe6",
+              "test_split_sha256": "8c623c37b04de6aede7aa4a3a71cfa62bf79c9902bc8d15e587f09fd96ae053b"
+            }
+          ]
+        }
+      },
+      {
+        "comparison_id": "habit-actor-contamination",
+        "task_adapter_id": "habit-actor-stream@unbound",
+        "manifest": {
+          "experiment_id": "e4c519ce-67ff-5f1c-b00b-8c68b0f1bfbc",
+          "baseline_arm_id": "habit-visitor-isolated",
+          "arms": [
+            {
+              "arm_id": "habit-visitor-isolated",
+              "model_version": "habit-visitor-isolated@adapter-unbound",
+              "components": [
+                "habit-visitor-isolated",
+                "habit-actor-stream@unbound"
+              ],
+              "observation_budget": {
+                "maximum_observation_actions": 0,
+                "maximum_user_interruptions": 0,
+                "maximum_observation_cost": 0.0,
+                "maximum_elapsed_time_seconds": 0.0
+              },
+              "model_budget": {
+                "maximum_train_compute_units": 0.0,
+                "maximum_inference_compute_units": 1.0,
+                "maximum_persistent_memory_bytes": 1000000,
+                "maximum_latency_ms": 1000.0,
+                "maximum_parameter_count": 10000
+              },
+              "tuning_budget": {
+                "maximum_trials": 1,
+                "maximum_compute_units": 1.0,
+                "validation_split_sha256": "77863337cf9891b015f3898bc90a1fda8863e171c36a3e7a9060217ebf5fd8cc",
+                "objective_name": "protocol_only_no_model_selection"
+              },
+              "independent_tuning_run_id": "9fbc0be1-74d6-5df0-b899-c88facaf0706",
+              "observation_trace_sha256": "9eaa440d1642b550bb82184e30f39445c0b66b8192adc5c2e7d8886cfad8cfe6",
+              "test_split_sha256": "8c623c37b04de6aede7aa4a3a71cfa62bf79c9902bc8d15e587f09fd96ae053b"
+            },
+            {
+              "arm_id": "habit-actor-residual",
+              "model_version": "habit-actor-residual@adapter-unbound",
+              "components": [
+                "habit-actor-residual",
+                "habit-actor-stream@unbound"
+              ],
+              "observation_budget": {
+                "maximum_observation_actions": 0,
+                "maximum_user_interruptions": 0,
+                "maximum_observation_cost": 0.0,
+                "maximum_elapsed_time_seconds": 0.0
+              },
+              "model_budget": {
+                "maximum_train_compute_units": 0.0,
+                "maximum_inference_compute_units": 1.0,
+                "maximum_persistent_memory_bytes": 1000000,
+                "maximum_latency_ms": 1000.0,
+                "maximum_parameter_count": 10000
+              },
+              "tuning_budget": {
+                "maximum_trials": 1,
+                "maximum_compute_units": 1.0,
+                "validation_split_sha256": "77863337cf9891b015f3898bc90a1fda8863e171c36a3e7a9060217ebf5fd8cc",
+                "objective_name": "protocol_only_no_model_selection"
+              },
+              "independent_tuning_run_id": "212e2427-57d2-52fe-872e-9ff1bedbcca2",
+              "observation_trace_sha256": "9eaa440d1642b550bb82184e30f39445c0b66b8192adc5c2e7d8886cfad8cfe6",
+              "test_split_sha256": "8c623c37b04de6aede7aa4a3a71cfa62bf79c9902bc8d15e587f09fd96ae053b"
+            }
+          ]
+        }
+      },
+      {
+        "comparison_id": "shift-cause-factorization",
+        "task_adapter_id": "online-shift-attribution@0.1",
+        "manifest": {
+          "experiment_id": "24f6f5c8-948b-53d4-81ad-d6f0e01e0aa3",
+          "baseline_arm_id": "ordinary-bocpd",
+          "arms": [
+            {
+              "arm_id": "ordinary-bocpd",
+              "model_version": "online-ordinary-bocpd@0.1",
+              "components": [
+                "ordinary-bocpd",
+                "online-shift-attribution@0.1"
+              ],
+              "observation_budget": {
+                "maximum_observation_actions": 0,
+                "maximum_user_interruptions": 0,
+                "maximum_observation_cost": 0.0,
+                "maximum_elapsed_time_seconds": 0.0
+              },
+              "model_budget": {
+                "maximum_train_compute_units": 0.0,
+                "maximum_inference_compute_units": 1.0,
+                "maximum_persistent_memory_bytes": 1000000,
+                "maximum_latency_ms": 1000.0,
+                "maximum_parameter_count": 10000
+              },
+              "tuning_budget": {
+                "maximum_trials": 1,
+                "maximum_compute_units": 1.0,
+                "validation_split_sha256": "77863337cf9891b015f3898bc90a1fda8863e171c36a3e7a9060217ebf5fd8cc",
+                "objective_name": "protocol_only_no_model_selection"
+              },
+              "independent_tuning_run_id": "2ef33b58-1870-50b8-87dd-efd64e9146a5",
+              "observation_trace_sha256": "9eaa440d1642b550bb82184e30f39445c0b66b8192adc5c2e7d8886cfad8cfe6",
+              "test_split_sha256": "8c623c37b04de6aede7aa4a3a71cfa62bf79c9902bc8d15e587f09fd96ae053b"
+            },
+            {
+              "arm_id": "cause-factorized-bocpd",
+              "model_version": "online-cause-factorized-bocpd@0.1",
+              "components": [
+                "cause-factorized-bocpd",
+                "online-shift-attribution@0.1"
+              ],
+              "observation_budget": {
+                "maximum_observation_actions": 0,
+                "maximum_user_interruptions": 0,
+                "maximum_observation_cost": 0.0,
+                "maximum_elapsed_time_seconds": 0.0
+              },
+              "model_budget": {
+                "maximum_train_compute_units": 0.0,
+                "maximum_inference_compute_units": 1.0,
+                "maximum_persistent_memory_bytes": 1000000,
+                "maximum_latency_ms": 1000.0,
+                "maximum_parameter_count": 10000
+              },
+              "tuning_budget": {
+                "maximum_trials": 1,
+                "maximum_compute_units": 1.0,
+                "validation_split_sha256": "77863337cf9891b015f3898bc90a1fda8863e171c36a3e7a9060217ebf5fd8cc",
+                "objective_name": "protocol_only_no_model_selection"
+              },
+              "independent_tuning_run_id": "92c9ee85-f66a-52e6-a517-9c5406e2ca81",
+              "observation_trace_sha256": "9eaa440d1642b550bb82184e30f39445c0b66b8192adc5c2e7d8886cfad8cfe6",
+              "test_split_sha256": "8c623c37b04de6aede7aa4a3a71cfa62bf79c9902bc8d15e587f09fd96ae053b"
+            }
+          ]
+        }
+      },
+      {
+        "comparison_id": "cheh-source-alignment",
+        "task_adapter_id": "hidden-event-provenance@unbound",
+        "manifest": {
+          "experiment_id": "8ee66204-42e7-5b17-9dba-9abe55df62c0",
+          "baseline_arm_id": "cheh-internal-consistency",
+          "arms": [
+            {
+              "arm_id": "cheh-internal-consistency",
+              "model_version": "cheh-internal-consistency@adapter-unbound",
+              "components": [
+                "cheh-internal-consistency",
+                "hidden-event-provenance@unbound"
+              ],
+              "observation_budget": {
+                "maximum_observation_actions": 0,
+                "maximum_user_interruptions": 0,
+                "maximum_observation_cost": 0.0,
+                "maximum_elapsed_time_seconds": 0.0
+              },
+              "model_budget": {
+                "maximum_train_compute_units": 0.0,
+                "maximum_inference_compute_units": 1.0,
+                "maximum_persistent_memory_bytes": 1000000,
+                "maximum_latency_ms": 1000.0,
+                "maximum_parameter_count": 10000
+              },
+              "tuning_budget": {
+                "maximum_trials": 1,
+                "maximum_compute_units": 1.0,
+                "validation_split_sha256": "77863337cf9891b015f3898bc90a1fda8863e171c36a3e7a9060217ebf5fd8cc",
+                "objective_name": "protocol_only_no_model_selection"
+              },
+              "independent_tuning_run_id": "9ad3602f-d6c8-5ed5-b79e-23e75ac89542",
+              "observation_trace_sha256": "9eaa440d1642b550bb82184e30f39445c0b66b8192adc5c2e7d8886cfad8cfe6",
+              "test_split_sha256": "8c623c37b04de6aede7aa4a3a71cfa62bf79c9902bc8d15e587f09fd96ae053b"
+            },
+            {
+              "arm_id": "cheh-source-aligned",
+              "model_version": "cheh-source-aligned@adapter-unbound",
+              "components": [
+                "cheh-source-aligned",
+                "hidden-event-provenance@unbound"
+              ],
+              "observation_budget": {
+                "maximum_observation_actions": 0,
+                "maximum_user_interruptions": 0,
+                "maximum_observation_cost": 0.0,
+                "maximum_elapsed_time_seconds": 0.0
+              },
+              "model_budget": {
+                "maximum_train_compute_units": 0.0,
+                "maximum_inference_compute_units": 1.0,
+                "maximum_persistent_memory_bytes": 1000000,
+                "maximum_latency_ms": 1000.0,
+                "maximum_parameter_count": 10000
+              },
+              "tuning_budget": {
+                "maximum_trials": 1,
+                "maximum_compute_units": 1.0,
+                "validation_split_sha256": "77863337cf9891b015f3898bc90a1fda8863e171c36a3e7a9060217ebf5fd8cc",
+                "objective_name": "protocol_only_no_model_selection"
+              },
+              "independent_tuning_run_id": "67cb831b-323e-5dc6-98fa-21b0fac5472e",
+              "observation_trace_sha256": "9eaa440d1642b550bb82184e30f39445c0b66b8192adc5c2e7d8886cfad8cfe6",
+              "test_split_sha256": "8c623c37b04de6aede7aa4a3a71cfa62bf79c9902bc8d15e587f09fd96ae053b"
+            }
+          ]
+        }
+      },
+      {
+        "comparison_id": "verification-decision-objective",
+        "task_adapter_id": "grounded-verification-utility@unbound",
+        "manifest": {
+          "experiment_id": "9ae0c386-3450-57b3-800b-fe5d005638a2",
+          "baseline_arm_id": "retuned-threshold-verification",
+          "arms": [
+            {
+              "arm_id": "retuned-threshold-verification",
+              "model_version": "retuned-threshold-verification@adapter-unbound",
+              "components": [
+                "retuned-threshold-verification",
+                "grounded-verification-utility@unbound"
+              ],
+              "observation_budget": {
+                "maximum_observation_actions": 0,
+                "maximum_user_interruptions": 0,
+                "maximum_observation_cost": 0.0,
+                "maximum_elapsed_time_seconds": 0.0
+              },
+              "model_budget": {
+                "maximum_train_compute_units": 0.0,
+                "maximum_inference_compute_units": 1.0,
+                "maximum_persistent_memory_bytes": 1000000,
+                "maximum_latency_ms": 1000.0,
+                "maximum_parameter_count": 10000
+              },
+              "tuning_budget": {
+                "maximum_trials": 1,
+                "maximum_compute_units": 1.0,
+                "validation_split_sha256": "77863337cf9891b015f3898bc90a1fda8863e171c36a3e7a9060217ebf5fd8cc",
+                "objective_name": "protocol_only_no_model_selection"
+              },
+              "independent_tuning_run_id": "c02a8114-2448-5cf3-a6d2-28bf674cd22c",
+              "observation_trace_sha256": "9eaa440d1642b550bb82184e30f39445c0b66b8192adc5c2e7d8886cfad8cfe6",
+              "test_split_sha256": "8c623c37b04de6aede7aa4a3a71cfa62bf79c9902bc8d15e587f09fd96ae053b"
+            },
+            {
+              "arm_id": "decision-utility-verification",
+              "model_version": "decision-utility-verification@adapter-unbound",
+              "components": [
+                "decision-utility-verification",
+                "grounded-verification-utility@unbound"
+              ],
+              "observation_budget": {
+                "maximum_observation_actions": 0,
+                "maximum_user_interruptions": 0,
+                "maximum_observation_cost": 0.0,
+                "maximum_elapsed_time_seconds": 0.0
+              },
+              "model_budget": {
+                "maximum_train_compute_units": 0.0,
+                "maximum_inference_compute_units": 1.0,
+                "maximum_persistent_memory_bytes": 1000000,
+                "maximum_latency_ms": 1000.0,
+                "maximum_parameter_count": 10000
+              },
+              "tuning_budget": {
+                "maximum_trials": 1,
+                "maximum_compute_units": 1.0,
+                "validation_split_sha256": "77863337cf9891b015f3898bc90a1fda8863e171c36a3e7a9060217ebf5fd8cc",
+                "objective_name": "protocol_only_no_model_selection"
+              },
+              "independent_tuning_run_id": "66dcd56c-0cb2-5f23-9975-d6a548931203",
+              "observation_trace_sha256": "9eaa440d1642b550bb82184e30f39445c0b66b8192adc5c2e7d8886cfad8cfe6",
+              "test_split_sha256": "8c623c37b04de6aede7aa4a3a71cfa62bf79c9902bc8d15e587f09fd96ae053b"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "manifest_sha256": "1008c7532b77154ad9ffab2443ce8555a044de18fe417290e28927ef06b95c95",
+  "suite_case_count": 36,
+  "split_case_counts": {
+    "train": 18,
+    "validation": 6,
+    "test": 12
+  },
+  "arm_results": [
+    {
+      "comparison_id": "habit-observation-correction",
+      "arm_id": "habit-baseline",
+      "adapter_status": "adapter_unbound",
+      "tuning_status": "not_run",
+      "model_version": null,
+      "evaluation_split": null,
+      "online_shift_report": null,
+      "note": "No task-valid protocol pilot adapter is bound for this arm."
+    },
+    {
+      "comparison_id": "habit-observation-correction",
+      "arm_id": "habit-observation-corrected",
+      "adapter_status": "adapter_unbound",
+      "tuning_status": "not_run",
+      "model_version": null,
+      "evaluation_split": null,
+      "online_shift_report": null,
+      "note": "No task-valid protocol pilot adapter is bound for this arm."
+    },
+    {
+      "comparison_id": "habit-actor-contamination",
+      "arm_id": "habit-visitor-isolated",
+      "adapter_status": "adapter_unbound",
+      "tuning_status": "not_run",
+      "model_version": null,
+      "evaluation_split": null,
+      "online_shift_report": null,
+      "note": "No task-valid protocol pilot adapter is bound for this arm."
+    },
+    {
+      "comparison_id": "habit-actor-contamination",
+      "arm_id": "habit-actor-residual",
+      "adapter_status": "adapter_unbound",
+      "tuning_status": "not_run",
+      "model_version": null,
+      "evaluation_split": null,
+      "online_shift_report": null,
+      "note": "No task-valid protocol pilot adapter is bound for this arm."
+    },
+    {
+      "comparison_id": "shift-cause-factorization",
+      "arm_id": "ordinary-bocpd",
+      "adapter_status": "executed",
+      "tuning_status": "not_run",
+      "model_version": "online-ordinary-bocpd@0.1",
+      "evaluation_split": "test",
+      "online_shift_report": {
+        "sample_count": 12,
+        "change_detection_rate": 0.8333333333333334,
+        "mean_absolute_change_time_error_hours": 14.4,
+        "exact_cause_set_accuracy": 0.3333333333333333,
+        "cause_micro_precision": 0.6,
+        "cause_micro_recall": 0.75,
+        "cause_micro_f1": 0.6666666666666665,
+        "false_owner_habit_change_rate": 1.0,
+        "cause_brier_score": 0.15905058327614938,
+        "cause_negative_log_likelihood": 0.7079152445598857,
+        "cause_ece": 0.19405940594059407
+      },
+      "note": "Executed as an adapter smoke test without hyperparameter tuning."
+    },
+    {
+      "comparison_id": "shift-cause-factorization",
+      "arm_id": "cause-factorized-bocpd",
+      "adapter_status": "executed",
+      "tuning_status": "not_run",
+      "model_version": "online-cause-factorized-bocpd@0.1",
+      "evaluation_split": "test",
+      "online_shift_report": {
+        "sample_count": 12,
+        "change_detection_rate": 0.8333333333333334,
+        "mean_absolute_change_time_error_hours": 14.4,
+        "exact_cause_set_accuracy": 0.3333333333333333,
+        "cause_micro_precision": 0.6,
+        "cause_micro_recall": 0.375,
+        "cause_micro_f1": 0.4615384615384615,
+        "false_owner_habit_change_rate": 0.5,
+        "cause_brier_score": 0.1979924662694256,
+        "cause_negative_log_likelihood": 0.8825235882824266,
+        "cause_ece": 0.19345301630215647
+      },
+      "note": "Executed as an adapter smoke test without hyperparameter tuning."
+    },
+    {
+      "comparison_id": "cheh-source-alignment",
+      "arm_id": "cheh-internal-consistency",
+      "adapter_status": "adapter_unbound",
+      "tuning_status": "not_run",
+      "model_version": null,
+      "evaluation_split": null,
+      "online_shift_report": null,
+      "note": "No task-valid protocol pilot adapter is bound for this arm."
+    },
+    {
+      "comparison_id": "cheh-source-alignment",
+      "arm_id": "cheh-source-aligned",
+      "adapter_status": "adapter_unbound",
+      "tuning_status": "not_run",
+      "model_version": null,
+      "evaluation_split": null,
+      "online_shift_report": null,
+      "note": "No task-valid protocol pilot adapter is bound for this arm."
+    },
+    {
+      "comparison_id": "verification-decision-objective",
+      "arm_id": "retuned-threshold-verification",
+      "adapter_status": "adapter_unbound",
+      "tuning_status": "not_run",
+      "model_version": null,
+      "evaluation_split": null,
+      "online_shift_report": null,
+      "note": "No task-valid protocol pilot adapter is bound for this arm."
+    },
+    {
+      "comparison_id": "verification-decision-objective",
+      "arm_id": "decision-utility-verification",
+      "adapter_status": "adapter_unbound",
+      "tuning_status": "not_run",
+      "model_version": null,
+      "evaluation_split": null,
+      "online_shift_report": null,
+      "note": "No task-valid protocol pilot adapter is bound for this arm."
+    }
+  ],
+  "protocol_contracts_valid": true,
+  "all_adapters_bound": false,
+  "formal_experiment_ready": false,
+  "claim_scope": "protocol_only",
+  "caveats": [
+    "This dry run validates protocol wiring, not comparative method efficacy.",
+    "Independent hyperparameter tuning was not run.",
+    "Only the two BOCPD arms have online-shift task adapters.",
+    "Unbound arms publish no synthetic or proxy scores."
+  ]
+}

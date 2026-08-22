@@ -114,9 +114,7 @@ class HybridStatisticDelta:
             raise ValueError("delta_a must be a non-empty square matrix")
         dim = int(matrix.shape[0])
         object.__setattr__(self, "_feature_dim", dim)
-        object.__setattr__(
-            self, "delta_a", _immutable_psd_matrix(matrix, dim=dim, name="delta_a")
-        )
+        object.__setattr__(self, "delta_a", _immutable_psd_matrix(matrix, dim=dim, name="delta_a"))
         object.__setattr__(
             self, "delta_b", _immutable_vector(self.delta_b, dim=dim, name="delta_b")
         )
@@ -420,6 +418,130 @@ class HybridStatisticLedger:
         with self._lock:
             return len(self._log)
 
+    @property
+    def head_watermark(self) -> int:
+        """The highest input watermark accepted so far (``-1`` when empty).
+
+        A caller that restarts against a recovered ledger must derive its next
+        watermark from here rather than from its own in-memory counter, or its
+        first write will be rejected as ``input watermark is behind the head``.
+        """
+
+        with self._lock:
+            return self._last_watermark
+
+    def revision_ids(self) -> tuple[UUID, ...]:
+        """Every revision id that has at least one delta in the authoritative log."""
+
+        with self._lock:
+            return tuple(self._by_revision)
+
+    def records_for_revision(self, revision_id: UUID) -> tuple[UUID, ...]:
+        """All delta record ids appended under one revision (append order)."""
+
+        with self._lock:
+            return tuple(self._by_revision.get(revision_id, ()))
+
+    def live_promoted_records_for_revision(self, revision_id: UUID) -> tuple[UUID, ...]:
+        """The promoted, not-yet-retracted delta records of one revision.
+
+        This is the exact set :meth:`retract_revision` will reverse; a caller
+        sizes its reversal record ids from here instead of shadowing the log.
+        """
+
+        with self._lock:
+            return tuple(
+                record_id
+                for record_id in self._by_revision.get(revision_id, ())
+                if record_id in self._promoted and record_id not in self._reversed
+            )
+
+    def location_ids_for_revision(self, revision_id: UUID) -> frozenset[UUID]:
+        """The statistic-key locations one revision touched (for map republish)."""
+
+        with self._lock:
+            return frozenset(
+                self._deltas[record_id].key.location_id
+                for record_id in self._by_revision.get(revision_id, ())
+            )
+
+    def delta(self, record_id: UUID) -> HybridStatisticDelta:
+        """Return one immutable stored delta (its arrays are read-only)."""
+
+        with self._lock:
+            delta = self._deltas.get(record_id)
+            if delta is None:
+                raise HybridLedgerError("unknown delta record")
+            return delta
+
+    def export_log(self) -> tuple[HybridLogRecord, ...]:
+        """Serialize the authoritative append-only log (records are immutable)."""
+
+        with self._lock:
+            return tuple(self._log)
+
+    @classmethod
+    def restore_from_log(
+        cls,
+        *,
+        feature_dim: int,
+        log: tuple[HybridLogRecord, ...],
+        ridge: float = 1e-6,
+        information_ridge: float = 1e-6,
+        alpha_prior: float = 0.0,
+        max_condition_number: float = 1e12,
+    ) -> HybridStatisticLedger:
+        """Rebuild a ledger by replaying an exported log through full validation.
+
+        Recovery re-runs every invariant (dedup, revision lineage, promote/retract
+        state machine), so a tampered or truncated log cannot silently restore a
+        state the write path would have refused.  Multi-key cluster promotions are
+        contiguous in the log and are replayed atomically via ``promote_cluster``.
+        """
+
+        ledger = cls(
+            feature_dim=feature_dim,
+            ridge=ridge,
+            information_ridge=information_ridge,
+            alpha_prior=alpha_prior,
+            max_condition_number=max_condition_number,
+        )
+        records = list(log)
+        index = 0
+        while index < len(records):
+            record = records[index]
+            if isinstance(record, HybridStatisticDelta):
+                ledger.append_delta(record)
+                index += 1
+            elif isinstance(record, HybridPromotion):
+                delta = ledger._deltas.get(record.promotes_record_id)
+                if delta is None:
+                    raise HybridLedgerError("promotion in log targets an unknown delta")
+                cluster_size = len(ledger._cluster_records[delta.evidence_cluster_id])
+                if cluster_size == 1:
+                    ledger.promote(record)
+                    index += 1
+                else:
+                    group = records[index : index + cluster_size]
+                    if len(group) != cluster_size or not all(
+                        isinstance(item, HybridPromotion) for item in group
+                    ):
+                        raise HybridLedgerError("cluster promotions must be contiguous in the log")
+                    ledger.promote_cluster(
+                        evidence_cluster_id=delta.evidence_cluster_id,
+                        promotions=tuple(group),  # type: ignore[arg-type]
+                    )
+                    index += cluster_size
+            elif isinstance(record, HybridReversal):
+                ledger.retract(record)
+                index += 1
+            elif isinstance(record, HybridQuarantineSupersession):
+                ledger.supersede_quarantined_revision(record)
+                index += 1
+            else:  # pragma: no cover - exhaustive over HybridLogRecord
+                raise HybridLedgerError("unknown log record type")
+        return ledger
+
     def append_delta(self, delta: HybridStatisticDelta) -> None:
         with self._lock:
             self._check_header(delta.record_id, delta.input_watermark)
@@ -454,9 +576,7 @@ class HybridStatisticLedger:
             self._log.append(delta)
             self._record_ids.add(delta.record_id)
             self._cluster_keys.add(cluster_key)
-            self._cluster_records.setdefault(delta.evidence_cluster_id, []).append(
-                delta.record_id
-            )
+            self._cluster_records.setdefault(delta.evidence_cluster_id, []).append(delta.record_id)
             self._cluster_identity.setdefault(delta.evidence_cluster_id, cluster_identity)
             self._dedup_ids.add(delta.semantic_dedup_id)
             self._deltas[delta.record_id] = delta
@@ -920,9 +1040,10 @@ class DirichletRLSFusion:
             bases = [1.0 / len(projections)] * len(projections)
         residuals = [float(projected.theta @ vector) for projected in projections]
         logits = np.asarray(
-            [np.log(max(base, self.probability_floor)) + residual for base, residual in zip(
-                bases, residuals, strict=True
-            )]
+            [
+                np.log(max(base, self.probability_floor)) + residual
+                for base, residual in zip(bases, residuals, strict=True)
+            ]
         )
         logits -= float(logits.max())
         weights = np.exp(logits)

@@ -93,9 +93,9 @@ class HybridEventToTaskCoordinatorLoop:
         self._ledger = ledger or HybridStatisticLedger(feature_dim=1)
         self._map = belief_map or VersionedBeliefMap()
         self._coordinator = coordinator or MapTaskCoordinator()
-        self._watermark = 0
-        self._deltas_by_revision: dict[UUID, list[UUID]] = {}
-        self._revision_dest: dict[UUID, UUID] = {}
+        # No shadow state: revision->delta, revision->location, and the watermark
+        # are all derived from the authoritative ledger, so a loop rebuilt on a
+        # recovered ledger keeps retracting, republishing, and writing correctly.
         self._feedback_projector = ExecutionFeedbackProjector()
 
     @property
@@ -115,8 +115,9 @@ class HybridEventToTaskCoordinatorLoop:
         )
 
     def _next_watermark(self) -> int:
-        self._watermark += 1
-        return self._watermark
+        # Derive strictly-increasing watermarks from the ledger head, so a loop
+        # rebuilt on a recovered ledger never writes behind the log.
+        return self._ledger.head_watermark + 1
 
     def ingest_owner_placement(self, placement: OwnerPlacementInput) -> None:
         """Consolidate one revision's owner mass into the Hybrid RGRC ledger."""
@@ -153,13 +154,11 @@ class HybridEventToTaskCoordinatorLoop:
                 risk_certificate=self._clean_certificate(record_id),
             )
         )
-        self._deltas_by_revision.setdefault(placement.revision_id, []).append(record_id)
-        self._revision_dest[placement.revision_id] = placement.destination_location_id
 
     def retract_revision(self, revision_id: UUID) -> int:
         """Retract a superseded revision's owner deltas (O(k))."""
 
-        live = self._deltas_by_revision.get(revision_id, [])
+        live = self._ledger.live_promoted_records_for_revision(revision_id)
         if not live:
             return 0
         return self._ledger.retract_revision(
@@ -176,12 +175,10 @@ class HybridEventToTaskCoordinatorLoop:
         """Retract the superseded revision, consolidate the corrected one, and
         publish the changed habit locations as one atomic map version."""
 
-        superseded_location = self._revision_destination(superseded_revision_id)
+        superseded_locations = self._ledger.location_ids_for_revision(superseded_revision_id)
         self.retract_revision(superseded_revision_id)
         self.ingest_owner_placement(corrected)
-        changed = {corrected.destination_location_id}
-        if superseded_location is not None:
-            changed.add(superseded_location)
+        changed = {corrected.destination_location_id, *superseded_locations}
         return self.publish_snapshot(changed_locations=changed)
 
     def publish_snapshot(self, *, changed_locations: set[UUID]) -> BeliefSnapshot:
@@ -197,6 +194,21 @@ class HybridEventToTaskCoordinatorLoop:
             uncertainty = 1.0 / (1.0 + strength)
             changes[self.node_id(location)] = (payload_hash, uncertainty)
         return self._map.apply_update(changes)
+
+    def recover_map(self) -> BeliefSnapshot:
+        """Rebuild the published map from the authoritative ledger after a restart.
+
+        A loop reconstructed on a recovered ledger starts with an empty map; this
+        republishes every location the ledger has ever touched so the map matches
+        the log without replaying the original event stream.
+        """
+
+        locations: set[UUID] = set()
+        for revision_id in self._ledger.revision_ids():
+            locations.update(self._ledger.location_ids_for_revision(revision_id))
+        if not locations:
+            return self._map.snapshot()
+        return self.publish_snapshot(changed_locations=locations)
 
     def current_snapshot(self) -> BeliefSnapshot:
         return self._map.snapshot()
@@ -247,9 +259,6 @@ class HybridEventToTaskCoordinatorLoop:
             binding=binding,
             likelihood_model=likelihood_model,
         )
-
-    def _revision_destination(self, revision_id: UUID) -> UUID | None:
-        return self._revision_dest.get(revision_id)
 
     def _clean_certificate(self, delta_record_id: UUID) -> ConsolidationRiskCertificate:
         snapshot = self._map.snapshot()

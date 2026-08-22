@@ -11,7 +11,7 @@ from __future__ import annotations
 from collections.abc import Sequence
 from datetime import datetime, timedelta
 from enum import StrEnum
-from math import ceil
+from math import ceil, exp, log
 from statistics import NormalDist, fmean, stdev
 from typing import Literal
 
@@ -38,9 +38,9 @@ from .shift_attribution import ShiftCause
 PRIMARY_ENDPOINT_ID = "downstream-action-regret.normalized-per-case@1"
 KEY_SECONDARY_ENDPOINT_ID = "corrupted-habit-mass.mean-per-case@1"
 ALLOWED_CLAIM_IDS = (
-    "claim.synthetic-shift-action-death-test-reported@1",
-    "claim.detector-neutral-policy-used@1",
-    "claim.validation-retuned-three-arm-comparison@1",
+    "claim.synthetic-shift-action-death-test-reported@2",
+    "claim.shared-policy-track-reported@1",
+    "claim.independently-retuned-policy-track-reported@1",
 )
 FORBIDDEN_CLAIM_IDS = (
     "claim.general-method-superiority.forbidden@3",
@@ -48,6 +48,19 @@ FORBIDDEN_CLAIM_IDS = (
     "claim.external-validity.forbidden@1",
     "claim.formal-structure-one-b1-complete.forbidden@3",
     "claim.all-eleven-arms-experimentally-complete.forbidden@3",
+)
+POWER_REFERENCES = (
+    ProjectOneAblationArmId.ORDINARY_BOCPD,
+    ProjectOneAblationArmId.CAUSE_FACTORIZED_BOCPD,
+)
+POWER_ENDPOINTS = (
+    (PRIMARY_ENDPOINT_ID, "primary", "downstream_action_regret", "practical_regret_mde"),
+    (
+        KEY_SECONDARY_ENDPOINT_ID,
+        "key_secondary",
+        "corrupted_habit_mass",
+        "practical_corruption_mde",
+    ),
 )
 
 
@@ -59,10 +72,14 @@ class ResearchDecision(StrEnum):
     BLOCK_UNDERPOWERED = "block_underpowered"
 
 
+class EvaluationTrack(StrEnum):
+    SHARED_POLICY = "shared_policy"
+    INDEPENDENTLY_RETUNED_POLICY = "independently_retuned_policy"
+
+
 class FrozenActionPolicy(ContractModel):
-    policy_id: Literal["detector-neutral-habit-action-policy@1"] = (
-        "detector-neutral-habit-action-policy@1"
-    )
+    policy_id: Literal["habit-reset-consolidation-policy@2"] = "habit-reset-consolidation-policy@2"
+    probability_temperature: float = Field(default=1.0, gt=0.0)
     reset_probability_threshold: float = Field(default=0.50, ge=0.0, le=1.0)
     consolidation_probability_threshold: float = Field(default=0.70, ge=0.0, le=1.0)
     attribution_margin: float = Field(default=0.15, ge=0.0, lt=1.0)
@@ -92,7 +109,7 @@ class ActionSeedPlan(ContractModel):
         5167,
         5171,
     )
-    test_seeds: tuple[NonNegativeInt, ...] = tuple(range(7101, 7403, 2))
+    test_seeds: tuple[NonNegativeInt, ...] = tuple(range(9101, 9403, 2))
 
     @model_validator(mode="after")
     def validate_partitions(self) -> ActionSeedPlan:
@@ -105,8 +122,8 @@ class ActionSeedPlan(ContractModel):
 
 
 class ProjectOneShiftActionDeathTestConfig(ContractModel):
-    protocol_version: Literal["project-one-shift-action-death-test@1"] = (
-        "project-one-shift-action-death-test@1"
+    protocol_version: Literal["project-one-shift-action-death-test@2"] = (
+        "project-one-shift-action-death-test@2"
     )
     seed_plan: ActionSeedPlan = Field(default_factory=ActionSeedPlan)
     action_policy: FrozenActionPolicy = Field(default_factory=FrozenActionPolicy)
@@ -131,6 +148,9 @@ class CaseActionOutcome(ContractModel):
     reset_issued: bool
     consolidation_issued: bool
     verification_issued: bool
+    action_sequence: tuple[
+        Literal["RESET_OLD_REGIME", "VERIFY_NEW_REGIME", "CONSOLIDATE_NEW_REGIME"], ...
+    ]
     false_reset: bool
     missed_reset: bool
     false_consolidation: bool
@@ -138,7 +158,25 @@ class CaseActionOutcome(ContractModel):
     recovery_time_days: float = Field(ge=0.0)
     unnecessary_verification_cost: float = Field(ge=0.0)
     downstream_action_regret: Probability
-    task_success: bool
+    task_success_proxy: bool
+
+    @model_validator(mode="after")
+    def validate_action_sequence(self) -> CaseActionOutcome:
+        if self.consolidation_issued and not self.reset_issued:
+            raise ValueError("consolidation requires a preceding reset")
+        if self.consolidation_issued:
+            expected = ("RESET_OLD_REGIME", "CONSOLIDATE_NEW_REGIME")
+        elif self.reset_issued and self.verification_issued:
+            expected = ("RESET_OLD_REGIME", "VERIFY_NEW_REGIME")
+        elif self.reset_issued:
+            expected = ("RESET_OLD_REGIME",)
+        elif self.verification_issued:
+            expected = ("VERIFY_NEW_REGIME",)
+        else:
+            expected = ()
+        if self.action_sequence != expected:
+            raise ValueError("action sequence does not encode the declared two-phase transition")
+        return self
 
 
 class ArmActionMetrics(ContractModel):
@@ -150,7 +188,7 @@ class ArmActionMetrics(ContractModel):
     recovery_time_days: float = Field(ge=0.0)
     unnecessary_verification_cost: float = Field(ge=0.0)
     downstream_action_regret: Probability
-    task_success_rate: Probability
+    task_success_proxy_rate: Probability
 
 
 class ActionCaseTruth(ContractModel):
@@ -252,10 +290,72 @@ class ArmActionTuningRecord(ContractModel):
         return self
 
 
+def _retuned_policy_space(template: FrozenActionPolicy) -> tuple[FrozenActionPolicy, ...]:
+    return tuple(
+        template.model_copy(
+            update={
+                "probability_temperature": temperature,
+                "reset_probability_threshold": reset,
+                "consolidation_probability_threshold": consolidation,
+                "attribution_margin": margin,
+            }
+        )
+        for temperature in (0.5, 1.0, 2.0)
+        for reset in (0.25, 0.4, 0.55, 0.7)
+        for consolidation in (0.4, 0.55, 0.7, 0.85)
+        if consolidation >= reset
+        for margin in (0.0, 0.1, 0.2)
+    )
+
+
+class ArmRetunedPolicyTuningRecord(ContractModel):
+    arm_id: ProjectOneAblationArmId
+    detector_trial_count: PositiveInt
+    policy_trial_count: PositiveInt
+    evaluated_candidate_count: PositiveInt
+    validation_case_count: PositiveInt
+    selected_params: dict[str, int | float]
+    selected_params_sha256: str = Field(pattern=r"^[0-9a-f]{64}$")
+    policy_template: FrozenActionPolicy
+    selected_policy: FrozenActionPolicy
+    selected_policy_sha256: str = Field(pattern=r"^[0-9a-f]{64}$")
+    selected_validation_regret: Probability
+    detector_search_space_sha256: str = Field(pattern=r"^[0-9a-f]{64}$")
+    policy_search_space_sha256: str = Field(pattern=r"^[0-9a-f]{64}$")
+
+    @model_validator(mode="after")
+    def validate_record(self) -> ArmRetunedPolicyTuningRecord:
+        detector_space = _SEARCH_SPACES[self.arm_id]
+        policy_space = _retuned_policy_space(self.policy_template)
+        if self.detector_trial_count != len(detector_space):
+            raise ValueError("retuned track detector search is incomplete")
+        if self.policy_trial_count != len(policy_space):
+            raise ValueError("retuned track policy search is incomplete")
+        if self.evaluated_candidate_count != len(detector_space) * len(policy_space):
+            raise ValueError("retuned track must evaluate the detector-policy cross product")
+        if self.selected_params not in detector_space:
+            raise ValueError("retuned detector params are outside the shared search space")
+        if self.selected_policy not in policy_space:
+            raise ValueError("retuned policy is outside the shared policy search space")
+        if self.selected_params_sha256 != content_sha256(self.selected_params):
+            raise ValueError("retuned detector parameter hash mismatch")
+        if self.selected_policy_sha256 != content_sha256(self.selected_policy):
+            raise ValueError("retuned policy hash mismatch")
+        if self.detector_search_space_sha256 != content_sha256(detector_space):
+            raise ValueError("retuned detector search-space hash mismatch")
+        if self.policy_search_space_sha256 != content_sha256(policy_space):
+            raise ValueError("retuned policy search-space hash mismatch")
+        return self
+
+
 class MetricPowerAnalysis(ContractModel):
     endpoint_id: Literal[
         "downstream-action-regret.normalized-per-case@1",
         "corrupted-habit-mass.mean-per-case@1",
+    ]
+    reference_arm_id: Literal[
+        ProjectOneAblationArmId.ORDINARY_BOCPD,
+        ProjectOneAblationArmId.CAUSE_FACTORIZED_BOCPD,
     ]
     role: Literal["primary", "key_secondary"]
     empirical_paired_stddev: float = Field(ge=0.0)
@@ -264,7 +364,7 @@ class MetricPowerAnalysis(ContractModel):
     target_power: float = Field(gt=0.0, lt=1.0)
     pilot_seed_count: PositiveInt
     required_test_seed_count: PositiveInt
-    planned_test_seed_count: PositiveInt
+    planned_test_seed_count: NonNegativeInt
     status: Literal["PASS", "BLOCK"]
 
     @model_validator(mode="after")
@@ -307,8 +407,15 @@ class PreregisteredDecision(ContractModel):
     rationale_id: str = Field(min_length=1)
 
 
+class CrossTrackDecision(ContractModel):
+    decision: ResearchDecision
+    shared_policy_decision: ResearchDecision
+    independently_retuned_policy_decision: ResearchDecision
+    rationale_id: str = Field(min_length=1)
+
+
 class ProjectOneShiftActionDeathTestReport(ContractModel):
-    protocol_version: Literal["project-one-shift-action-death-test@1"]
+    protocol_version: Literal["project-one-shift-action-death-test@2"]
     config: ProjectOneShiftActionDeathTestConfig
     config_sha256: str = Field(pattern=r"^[0-9a-f]{64}$")
     code_snapshot_sha256: str = Field(pattern=r"^[0-9a-f]{64}$")
@@ -320,8 +427,8 @@ class ProjectOneShiftActionDeathTestReport(ContractModel):
         KEY_SECONDARY_ENDPOINT_ID
     )
     multiple_comparisons_policy: Literal[
-        "primary-alpha-0.05-key-secondary-holm-mechanisms-descriptive@1"
-    ] = "primary-alpha-0.05-key-secondary-holm-mechanisms-descriptive@1"
+        "intersection-union-two-tracks-two-references-mechanisms-descriptive@2"
+    ] = "intersection-union-two-tracks-two-references-mechanisms-descriptive@2"
     policy: FrozenActionPolicy
     policy_sha256: str = Field(pattern=r"^[0-9a-f]{64}$")
     tuning_records: tuple[ArmActionTuningRecord, ...]
@@ -330,6 +437,13 @@ class ProjectOneShiftActionDeathTestReport(ContractModel):
     test_artifacts: dict[ProjectOneAblationArmId, ArmActionArtifact]
     paired_test_intervals: tuple[PairedActionInterval, ...]
     decision: PreregisteredDecision
+    retuned_tuning_records: tuple[ArmRetunedPolicyTuningRecord, ...]
+    retuned_pilot_artifacts: dict[ProjectOneAblationArmId, ArmActionArtifact]
+    retuned_power_analyses: tuple[MetricPowerAnalysis, ...]
+    retuned_test_artifacts: dict[ProjectOneAblationArmId, ArmActionArtifact]
+    retuned_paired_test_intervals: tuple[PairedActionInterval, ...]
+    retuned_decision: PreregisteredDecision
+    overall_decision: CrossTrackDecision
     allowed_claims: tuple[str, ...] = ALLOWED_CLAIM_IDS
     forbidden_claims: tuple[str, ...] = FORBIDDEN_CLAIM_IDS
     report_sha256: str = Field(pattern=r"^[0-9a-f]{64}$")
@@ -344,8 +458,12 @@ class ProjectOneShiftActionDeathTestReport(ContractModel):
             raise ValueError("frozen action policy hash mismatch")
         if tuple(item.arm_id for item in self.tuning_records) != SHIFT_THREE_ARMS:
             raise ValueError("tuning records must cover the ordered SHIFT three arms")
+        if tuple(item.arm_id for item in self.retuned_tuning_records) != SHIFT_THREE_ARMS:
+            raise ValueError("retuned tuning records must cover the ordered SHIFT three arms")
         if set(self.pilot_artifacts) != set(SHIFT_THREE_ARMS):
             raise ValueError("pilot artifacts must cover all three arms")
+        if set(self.retuned_pilot_artifacts) != set(SHIFT_THREE_ARMS):
+            raise ValueError("retuned pilot artifacts must cover all three arms")
         selected_hashes = {item.arm_id: item.selected_params_sha256 for item in self.tuning_records}
         for arm, artifact in (*self.pilot_artifacts.items(), *self.test_artifacts.items()):
             if artifact.arm_id != arm:
@@ -354,33 +472,62 @@ class ProjectOneShiftActionDeathTestReport(ContractModel):
                 raise ValueError("all arms must use the identical frozen action policy")
             if artifact.selected_params_sha256 != selected_hashes[arm]:
                 raise ValueError("artifact parameters differ from validation selection")
+        retuned_records = {item.arm_id: item for item in self.retuned_tuning_records}
+        if any(item.policy_template != self.policy for item in self.retuned_tuning_records):
+            raise ValueError("retuned policy search template differs from the frozen config")
+        for arm, artifact in (
+            *self.retuned_pilot_artifacts.items(),
+            *self.retuned_test_artifacts.items(),
+        ):
+            record = retuned_records[arm]
+            if artifact.arm_id != arm:
+                raise ValueError("retuned artifact dictionary key does not match arm")
+            if artifact.selected_params_sha256 != record.selected_params_sha256:
+                raise ValueError("retuned artifact detector params differ from selection")
+            if artifact.policy != record.selected_policy:
+                raise ValueError("retuned artifact policy differs from validation selection")
+            if artifact.policy_sha256 != record.selected_policy_sha256:
+                raise ValueError("retuned artifact policy hash differs from selection")
         if self.allowed_claims != ALLOWED_CLAIM_IDS or self.forbidden_claims != FORBIDDEN_CLAIM_IDS:
             raise ValueError("claim IDs must equal the canonical sets")
-        power_pass = all(item.status == "PASS" for item in self.power_analyses)
-        if power_pass and set(self.test_artifacts) != set(SHIFT_THREE_ARMS):
-            raise ValueError("powered report requires all three TEST artifacts")
-        if not power_pass and (self.test_artifacts or self.paired_test_intervals):
+        self._validate_pilot_bindings(self.pilot_artifacts)
+        self._validate_pilot_bindings(self.retuned_pilot_artifacts)
+        expected_shared_power = _power_analyses_from_pilot(self.pilot_artifacts, self.config)
+        expected_retuned_power = _power_analyses_from_pilot(
+            self.retuned_pilot_artifacts, self.config
+        )
+        if self.power_analyses != expected_shared_power:
+            raise ValueError("shared power analyses do not recompute from pilot artifacts")
+        if self.retuned_power_analyses != expected_retuned_power:
+            raise ValueError("retuned power analyses do not recompute from pilot artifacts")
+        # Exact non-empty topology has now been established, so all([]) cannot
+        # vacuously authorize TEST.
+        power_pass = all(
+            item.status == "PASS" for item in (*self.power_analyses, *self.retuned_power_analyses)
+        )
+        if power_pass and (
+            set(self.test_artifacts) != set(SHIFT_THREE_ARMS)
+            or set(self.retuned_test_artifacts) != set(SHIFT_THREE_ARMS)
+        ):
+            raise ValueError("powered report requires both three-arm TEST tracks")
+        if not power_pass and (
+            self.test_artifacts
+            or self.paired_test_intervals
+            or self.retuned_test_artifacts
+            or self.retuned_paired_test_intervals
+        ):
             raise ValueError("underpowered report must not inspect or report TEST")
         if power_pass:
-            expected_intervals = tuple(
-                _paired_interval(
-                    self.test_artifacts[ProjectOneAblationArmId.JOINT_CAUSE_FACTORIZED_BOCPD],
-                    self.test_artifacts[reference],
-                    metric,
-                    endpoint_id,
-                    bootstrap_samples=self.config.bootstrap_samples,
-                )
-                for reference in (
-                    ProjectOneAblationArmId.ORDINARY_BOCPD,
-                    ProjectOneAblationArmId.CAUSE_FACTORIZED_BOCPD,
-                )
-                for endpoint_id, metric in (
-                    (PRIMARY_ENDPOINT_ID, "downstream_action_regret"),
-                    (KEY_SECONDARY_ENDPOINT_ID, "corrupted_habit_mass"),
-                )
+            expected_intervals = _paired_intervals_for_artifacts(
+                self.test_artifacts, self.config.bootstrap_samples
             )
             if expected_intervals != self.paired_test_intervals:
                 raise ValueError("paired intervals do not recompute from TEST artifacts")
+            expected_retuned_intervals = _paired_intervals_for_artifacts(
+                self.retuned_test_artifacts, self.config.bootstrap_samples
+            )
+            if expected_retuned_intervals != self.retuned_paired_test_intervals:
+                raise ValueError("retuned paired intervals do not recompute from TEST artifacts")
         expected_decision = decide_research_route(
             self.power_analyses,
             self.paired_test_intervals,
@@ -388,10 +535,37 @@ class ProjectOneShiftActionDeathTestReport(ContractModel):
         )
         if self.decision != expected_decision:
             raise ValueError("research decision does not follow preregistered rule")
+        expected_retuned_decision = decide_research_route(
+            self.retuned_power_analyses,
+            self.retuned_paired_test_intervals,
+            self.policy,
+        )
+        if self.retuned_decision != expected_retuned_decision:
+            raise ValueError("retuned decision does not follow preregistered rule")
+        if self.overall_decision != decide_cross_track_route(
+            self.decision, self.retuned_decision, self.policy
+        ):
+            raise ValueError("overall decision does not follow the cross-track rule")
         payload = self.model_dump(mode="json", exclude={"report_sha256"})
         if self.report_sha256 != content_sha256(payload):
             raise ValueError("action death-test report hash mismatch")
         return self
+
+    def _validate_pilot_bindings(
+        self, artifacts: dict[ProjectOneAblationArmId, ArmActionArtifact]
+    ) -> None:
+        expected_seeds = set(self.config.seed_plan.pilot_seeds)
+        case_ids: set[str] | None = None
+        for arm in SHIFT_THREE_ARMS:
+            artifact = artifacts[arm]
+            actual_seeds = {item.scenario_seed for item in artifact.outcomes}
+            if actual_seeds != expected_seeds:
+                raise ValueError("pilot artifact seeds do not match the config seed plan")
+            actual_case_ids = {item.case_id for item in artifact.outcomes}
+            if case_ids is None:
+                case_ids = actual_case_ids
+            elif actual_case_ids != case_ids:
+                raise ValueError("pilot arms do not cover identical paired cases")
 
 
 def required_paired_seed_count(
@@ -412,6 +586,12 @@ def required_paired_seed_count(
     return max(2, ceil(value))
 
 
+def _calibrate_probability(probability: float, temperature: float) -> float:
+    epsilon = 1e-12
+    clipped = min(1.0 - epsilon, max(epsilon, probability))
+    return 1.0 / (1.0 + exp(-log(clipped / (1.0 - clipped)) / temperature))
+
+
 def _case_outcome(
     truth: OnlineShiftCaseTruth,
     prediction: OnlineShiftPrediction,
@@ -420,7 +600,10 @@ def _case_outcome(
     stream_start_time: datetime,
     duration_days: int,
 ) -> CaseActionOutcome:
-    probabilities = prediction.cause_probabilities
+    probabilities = {
+        cause: _calibrate_probability(float(probability), policy.probability_temperature)
+        for cause, probability in prediction.cause_probabilities.items()
+    }
     habit_probability = float(probabilities.get(ShiftCause.OWNER_HABIT_REGIME, 0.0))
     ranked = sorted((float(value) for value in probabilities.values()), reverse=True)
     margin = ranked[0] - ranked[1] if len(ranked) > 1 else ranked[0]
@@ -439,6 +622,16 @@ def _case_outcome(
             or margin < policy.attribution_margin
         )
     )
+    if consolidate:
+        action_sequence = ("RESET_OLD_REGIME", "CONSOLIDATE_NEW_REGIME")
+    elif reset and verify:
+        action_sequence = ("RESET_OLD_REGIME", "VERIFY_NEW_REGIME")
+    elif reset:
+        action_sequence = ("RESET_OLD_REGIME",)
+    elif verify:
+        action_sequence = ("VERIFY_NEW_REGIME",)
+    else:
+        action_sequence = ()
     true_habit = ShiftCause.OWNER_HABIT_REGIME in truth.true_causes
     false_reset = reset and not true_habit
     missed_reset = true_habit and not reset
@@ -470,6 +663,7 @@ def _case_outcome(
         reset_issued=reset,
         consolidation_issued=consolidate,
         verification_issued=verify,
+        action_sequence=action_sequence,
         false_reset=false_reset,
         missed_reset=missed_reset,
         false_consolidation=false_consolidation,
@@ -479,7 +673,7 @@ def _case_outcome(
         if verify and not true_habit
         else 0.0,
         downstream_action_regret=regret,
-        task_success=success,
+        task_success_proxy=success,
     )
 
 
@@ -501,7 +695,7 @@ def aggregate_action_metrics(outcomes: Sequence[CaseActionOutcome]) -> ArmAction
             item.unnecessary_verification_cost for item in outcomes
         ),
         downstream_action_regret=fmean(item.downstream_action_regret for item in outcomes),
-        task_success_rate=fmean(float(item.task_success) for item in outcomes),
+        task_success_proxy_rate=fmean(float(item.task_success_proxy) for item in outcomes),
     )
 
 
@@ -514,6 +708,17 @@ def _evaluate_arm(
 ) -> ArmActionArtifact:
     model = _model_factory(arm, params)
     predictions = tuple(model.predict(case.model_input) for case in cases)  # type: ignore[attr-defined]
+    return _artifact_from_predictions(arm, params, cases, predictions, policy, split_id)
+
+
+def _artifact_from_predictions(
+    arm: ProjectOneAblationArmId,
+    params: dict[str, int | float],
+    cases: Sequence[OnlineShiftGeneratedCase],
+    predictions: tuple[OnlineShiftPrediction, ...],
+    policy: FrozenActionPolicy,
+    split_id: Literal["validation", "pilot", "test"],
+) -> ArmActionArtifact:
     case_truths = tuple(
         ActionCaseTruth(
             truth=case.evaluator_truth,
@@ -551,6 +756,24 @@ def _evaluate_arm(
     return ArmActionArtifact(**payload, artifact_sha256=content_sha256(payload))
 
 
+def _action_metrics_from_predictions(
+    cases: Sequence[OnlineShiftGeneratedCase],
+    predictions: tuple[OnlineShiftPrediction, ...],
+    policy: FrozenActionPolicy,
+) -> ArmActionMetrics:
+    outcomes = tuple(
+        _case_outcome(
+            case.evaluator_truth,
+            prediction,
+            policy,
+            stream_start_time=case.model_input.observation_stream.start_time,
+            duration_days=case.model_input.observation_stream.duration_days,
+        )
+        for case, prediction in zip(cases, predictions, strict=True)
+    )
+    return aggregate_action_metrics(outcomes)
+
+
 def _seed_metric(artifact: ArmActionArtifact, metric: str) -> dict[int, float]:
     by_seed: dict[int, list[CaseActionOutcome]] = {}
     for outcome in artifact.outcomes:
@@ -559,6 +782,50 @@ def _seed_metric(artifact: ArmActionArtifact, metric: str) -> dict[int, float]:
         seed: float(getattr(aggregate_action_metrics(items), metric))
         for seed, items in by_seed.items()
     }
+
+
+def _power_analyses_from_pilot(
+    artifacts: dict[ProjectOneAblationArmId, ArmActionArtifact],
+    config: ProjectOneShiftActionDeathTestConfig,
+) -> tuple[MetricPowerAnalysis, ...]:
+    if set(artifacts) != set(SHIFT_THREE_ARMS):
+        raise ValueError("power analysis requires exact three-arm pilot artifacts")
+    joint = artifacts[ProjectOneAblationArmId.JOINT_CAUSE_FACTORIZED_BOCPD]
+    output = []
+    for reference in POWER_REFERENCES:
+        for endpoint_id, role, metric, mde_field in POWER_ENDPOINTS:
+            joint_by_seed = _seed_metric(joint, metric)
+            reference_by_seed = _seed_metric(artifacts[reference], metric)
+            expected_seeds = tuple(config.seed_plan.pilot_seeds)
+            if set(joint_by_seed) != set(expected_seeds) or set(reference_by_seed) != set(
+                expected_seeds
+            ):
+                raise ValueError("power analysis pilot seeds do not match the config")
+            differences = [joint_by_seed[seed] - reference_by_seed[seed] for seed in expected_seeds]
+            empirical = stdev(differences)
+            mde = float(getattr(config.action_policy, mde_field))
+            required = required_paired_seed_count(
+                empirical,
+                mde,
+                alpha=config.alpha,
+                target_power=config.target_power,
+            )
+            output.append(
+                MetricPowerAnalysis(
+                    endpoint_id=endpoint_id,
+                    reference_arm_id=reference,
+                    role=role,
+                    empirical_paired_stddev=empirical,
+                    minimum_detectable_effect=mde,
+                    alpha=config.alpha,
+                    target_power=config.target_power,
+                    pilot_seed_count=len(expected_seeds),
+                    required_test_seed_count=required,
+                    planned_test_seed_count=len(config.seed_plan.test_seeds),
+                    status=("PASS" if len(config.seed_plan.test_seeds) >= required else "BLOCK"),
+                )
+            )
+    return tuple(output)
 
 
 def _paired_interval(
@@ -589,6 +856,24 @@ def _paired_interval(
         lower_95=draws[lower_index],
         upper_95=draws[upper_index],
         bootstrap_samples=bootstrap_samples,
+    )
+
+
+def _paired_intervals_for_artifacts(
+    artifacts: dict[ProjectOneAblationArmId, ArmActionArtifact],
+    bootstrap_samples: int,
+) -> tuple[PairedActionInterval, ...]:
+    joint = artifacts[ProjectOneAblationArmId.JOINT_CAUSE_FACTORIZED_BOCPD]
+    return tuple(
+        _paired_interval(
+            joint,
+            artifacts[reference],
+            metric,
+            endpoint_id,
+            bootstrap_samples=bootstrap_samples,
+        )
+        for reference in POWER_REFERENCES
+        for endpoint_id, _role, metric, _mde_field in POWER_ENDPOINTS
     )
 
 
@@ -664,6 +949,46 @@ def decide_research_route(
     )
 
 
+def decide_cross_track_route(
+    shared: PreregisteredDecision,
+    retuned: PreregisteredDecision,
+    policy: FrozenActionPolicy,
+) -> CrossTrackDecision:
+    decisions = (shared.decision, retuned.decision)
+    if ResearchDecision.BLOCK_UNDERPOWERED in decisions:
+        decision = ResearchDecision.BLOCK_UNDERPOWERED
+        rationale = "decision.cross-track-test-not-opened-power-block@2"
+    else:
+        shared_legacy = shared.primary_joint_minus_legacy
+        retuned_legacy = retuned.primary_joint_minus_legacy
+        if (
+            shared_legacy is not None
+            and retuned_legacy is not None
+            and shared_legacy.lower_95 >= policy.practical_regret_mde
+            and retuned_legacy.lower_95 >= policy.practical_regret_mde
+        ):
+            decision = ResearchDecision.REBUILD_JOINT
+            rationale = "decision.both-tracks-legacy-clears-action-mde-over-joint@2"
+        elif decisions == (
+            ResearchDecision.CONTINUE_JOINT,
+            ResearchDecision.CONTINUE_JOINT,
+        ):
+            decision = ResearchDecision.CONTINUE_JOINT
+            rationale = "decision.both-tracks-joint-clears-all-gates@2"
+        elif decisions == (ResearchDecision.USE_ORDINARY, ResearchDecision.USE_ORDINARY):
+            decision = ResearchDecision.USE_ORDINARY
+            rationale = "decision.both-tracks-ordinary-clears-action-mde@2"
+        else:
+            decision = ResearchDecision.INCONCLUSIVE
+            rationale = "decision.cross-track-evidence-disagrees-or-crosses-mde@2"
+    return CrossTrackDecision(
+        decision=decision,
+        shared_policy_decision=shared.decision,
+        independently_retuned_policy_decision=retuned.decision,
+        rationale_id=rationale,
+    )
+
+
 class ProjectOneShiftActionDeathTestRunner:
     def run(
         self,
@@ -713,7 +1038,7 @@ class ProjectOneShiftActionDeathTestRunner:
                 key=lambda item: (
                     item[0].metrics.downstream_action_regret,
                     item[0].metrics.corrupted_habit_mass,
-                    -item[0].metrics.task_success_rate,
+                    -item[0].metrics.task_success_proxy_rate,
                     item[0].mechanism_metrics.cause_negative_log_likelihood,
                     content_sha256(item[1]),
                 ),
@@ -731,54 +1056,73 @@ class ProjectOneShiftActionDeathTestRunner:
                 )
             )
 
+        policy_space = _retuned_policy_space(checked.action_policy)
+        retuned_tuning = []
+        retuned_selected_params: dict[ProjectOneAblationArmId, dict[str, int | float]] = {}
+        retuned_selected_policies: dict[ProjectOneAblationArmId, FrozenActionPolicy] = {}
+        for arm in SHIFT_THREE_ARMS:
+            candidates = []
+            for params in _SEARCH_SPACES[arm]:
+                model = _model_factory(arm, params)
+                predictions = tuple(
+                    model.predict(case.model_input)
+                    for case in validation  # type: ignore[attr-defined]
+                )
+                for policy in policy_space:
+                    metrics = _action_metrics_from_predictions(validation, predictions, policy)
+                    candidates.append((metrics, params, policy, predictions))
+            metrics, params, policy, _predictions = min(
+                candidates,
+                key=lambda item: (
+                    item[0].downstream_action_regret,
+                    item[0].corrupted_habit_mass,
+                    -item[0].task_success_proxy_rate,
+                    content_sha256(item[2]),
+                    content_sha256(item[1]),
+                ),
+            )
+            retuned_selected_params[arm] = params
+            retuned_selected_policies[arm] = policy
+            retuned_tuning.append(
+                ArmRetunedPolicyTuningRecord(
+                    arm_id=arm,
+                    detector_trial_count=len(_SEARCH_SPACES[arm]),
+                    policy_trial_count=len(policy_space),
+                    evaluated_candidate_count=len(candidates),
+                    validation_case_count=len(validation),
+                    selected_params=params,
+                    selected_params_sha256=content_sha256(params),
+                    policy_template=checked.action_policy,
+                    selected_policy=policy,
+                    selected_policy_sha256=content_sha256(policy),
+                    selected_validation_regret=metrics.downstream_action_regret,
+                    detector_search_space_sha256=content_sha256(_SEARCH_SPACES[arm]),
+                    policy_search_space_sha256=content_sha256(policy_space),
+                )
+            )
+
         pilot_artifacts = {
             arm: _evaluate_arm(arm, selected[arm], pilot, checked.action_policy, "pilot")
             for arm in SHIFT_THREE_ARMS
         }
-        joint = pilot_artifacts[ProjectOneAblationArmId.JOINT_CAUSE_FACTORIZED_BOCPD]
-        ordinary = pilot_artifacts[ProjectOneAblationArmId.ORDINARY_BOCPD]
-        analyses = []
-        for endpoint_id, role, metric, mde in (
-            (
-                PRIMARY_ENDPOINT_ID,
-                "primary",
-                "downstream_action_regret",
-                checked.action_policy.practical_regret_mde,
-            ),
-            (
-                KEY_SECONDARY_ENDPOINT_ID,
-                "key_secondary",
-                "corrupted_habit_mass",
-                checked.action_policy.practical_corruption_mde,
-            ),
-        ):
-            joint_by_seed = _seed_metric(joint, metric)
-            ordinary_by_seed = _seed_metric(ordinary, metric)
-            differences = [
-                joint_by_seed[seed] - ordinary_by_seed[seed] for seed in plan.pilot_seeds
-            ]
-            empirical = stdev(differences) if len(differences) > 1 else 0.0
-            required = required_paired_seed_count(
-                empirical, mde, alpha=checked.alpha, target_power=checked.target_power
+        retuned_pilot_artifacts = {
+            arm: _evaluate_arm(
+                arm,
+                retuned_selected_params[arm],
+                pilot,
+                retuned_selected_policies[arm],
+                "pilot",
             )
-            analyses.append(
-                MetricPowerAnalysis(
-                    endpoint_id=endpoint_id,
-                    role=role,
-                    empirical_paired_stddev=empirical,
-                    minimum_detectable_effect=mde,
-                    alpha=checked.alpha,
-                    target_power=checked.target_power,
-                    pilot_seed_count=len(plan.pilot_seeds),
-                    required_test_seed_count=required,
-                    planned_test_seed_count=len(plan.test_seeds),
-                    status="PASS" if len(plan.test_seeds) >= required else "BLOCK",
-                )
-            )
+            for arm in SHIFT_THREE_ARMS
+        }
+        analyses = _power_analyses_from_pilot(pilot_artifacts, checked)
+        retuned_analyses = _power_analyses_from_pilot(retuned_pilot_artifacts, checked)
 
         test_artifacts: dict[ProjectOneAblationArmId, ArmActionArtifact] = {}
+        retuned_test_artifacts: dict[ProjectOneAblationArmId, ArmActionArtifact] = {}
         intervals: tuple[PairedActionInterval, ...] = ()
-        if all(item.status == "PASS" for item in analyses):
+        retuned_intervals: tuple[PairedActionInterval, ...] = ()
+        if all(item.status == "PASS" for item in (*analyses, *retuned_analyses)):
             # This is intentionally below the power gate: no TEST inputs or
             # evaluator truths exist in this process before pilot power passes.
             test_suite = OnlineShiftSuiteGenerator().generate(
@@ -804,24 +1148,25 @@ class ProjectOneShiftActionDeathTestRunner:
                 arm: _evaluate_arm(arm, selected[arm], test, checked.action_policy, "test")
                 for arm in SHIFT_THREE_ARMS
             }
-            joint_test = test_artifacts[ProjectOneAblationArmId.JOINT_CAUSE_FACTORIZED_BOCPD]
-            intervals = tuple(
-                _paired_interval(
-                    joint_test,
-                    test_artifacts[reference],
-                    metric,
-                    endpoint_id,
-                    bootstrap_samples=checked.bootstrap_samples,
+            retuned_test_artifacts = {
+                arm: _evaluate_arm(
+                    arm,
+                    retuned_selected_params[arm],
+                    test,
+                    retuned_selected_policies[arm],
+                    "test",
                 )
-                for reference in (
-                    ProjectOneAblationArmId.ORDINARY_BOCPD,
-                    ProjectOneAblationArmId.CAUSE_FACTORIZED_BOCPD,
-                )
-                for endpoint_id, metric in (
-                    (PRIMARY_ENDPOINT_ID, "downstream_action_regret"),
-                    (KEY_SECONDARY_ENDPOINT_ID, "corrupted_habit_mass"),
-                )
+                for arm in SHIFT_THREE_ARMS
+            }
+            intervals = _paired_intervals_for_artifacts(test_artifacts, checked.bootstrap_samples)
+            retuned_intervals = _paired_intervals_for_artifacts(
+                retuned_test_artifacts, checked.bootstrap_samples
             )
+
+        shared_decision = decide_research_route(analyses, intervals, checked.action_policy)
+        retuned_decision = decide_research_route(
+            retuned_analyses, retuned_intervals, checked.action_policy
+        )
 
         payload = {
             "protocol_version": checked.protocol_version,
@@ -836,14 +1181,23 @@ class ProjectOneShiftActionDeathTestRunner:
             "power_analyses": tuple(analyses),
             "test_artifacts": test_artifacts,
             "paired_test_intervals": intervals,
-            "decision": decide_research_route(analyses, intervals, checked.action_policy),
+            "decision": shared_decision,
+            "retuned_tuning_records": tuple(retuned_tuning),
+            "retuned_pilot_artifacts": retuned_pilot_artifacts,
+            "retuned_power_analyses": retuned_analyses,
+            "retuned_test_artifacts": retuned_test_artifacts,
+            "retuned_paired_test_intervals": retuned_intervals,
+            "retuned_decision": retuned_decision,
+            "overall_decision": decide_cross_track_route(
+                shared_decision, retuned_decision, checked.action_policy
+            ),
         }
         full_payload = {
             **payload,
             "primary_endpoint_id": PRIMARY_ENDPOINT_ID,
             "key_secondary_endpoint_id": KEY_SECONDARY_ENDPOINT_ID,
             "multiple_comparisons_policy": (
-                "primary-alpha-0.05-key-secondary-holm-mechanisms-descriptive@1"
+                "intersection-union-two-tracks-two-references-mechanisms-descriptive@2"
             ),
             "allowed_claims": ALLOWED_CLAIM_IDS,
             "forbidden_claims": FORBIDDEN_CLAIM_IDS,

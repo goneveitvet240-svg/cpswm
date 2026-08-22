@@ -21,14 +21,14 @@ from cpswm.system.evaluation_operations.report_output import (  # noqa: E402
 from cpswm.system.reproducibility import content_sha256  # noqa: E402
 
 DEFAULT_CONFIG = REPOSITORY_ROOT / (
-    "benchmarks/project_one_ablation/project_one_shift_action_death_test_v1.json"
+    "benchmarks/project_one_ablation/project_one_shift_action_death_test_v2.json"
 )
-DEFAULT_OUTPUT = REPOSITORY_ROOT / "output/project_one_shift_action_death_test_v1.json"
+DEFAULT_OUTPUT = REPOSITORY_ROOT / "output/project_one_shift_action_death_test_v2.json"
 
 SNAPSHOT_PATHS = (
     "apps/evaluation_runner/run_project_one_shift_action_death_test.py",
-    "benchmarks/project_one_ablation/project_one_shift_action_death_test_v1.json",
-    "docs/reviews/项目一_SHIFT行动级死亡测试预注册_v1.md",
+    "benchmarks/project_one_ablation/project_one_shift_action_death_test_v2.json",
+    "docs/reviews/项目一_SHIFT行动级死亡测试预注册_v2.md",
     "src/cpswm/system/evaluation_operations/online_shift_attribution.py",
     "src/cpswm/system/evaluation_operations/project_one_shift_action_death_test.py",
     "src/cpswm/system/evaluation_operations/project_one_shift_gates.py",
@@ -87,7 +87,9 @@ def main() -> int:
         repository_root=REPOSITORY_ROOT,
         force=args.force,
     )
-    print(f"decision={report.decision.decision.value}")
+    print(f"shared_decision={report.decision.decision.value}")
+    print(f"retuned_decision={report.retuned_decision.decision.value}")
+    print(f"overall_decision={report.overall_decision.decision.value}")
     print(f"report_sha256={report.report_sha256}")
     print(f"code_snapshot_sha256={report.code_snapshot_sha256}")
     print(f"git_commit_sha={report.git_commit_sha}")

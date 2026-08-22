@@ -9,7 +9,7 @@ paired variance before the TEST seed partition is inspected.
 from __future__ import annotations
 
 from collections.abc import Sequence
-from datetime import timedelta
+from datetime import datetime, timedelta
 from enum import StrEnum
 from math import ceil
 from statistics import NormalDist, fmean, stdev
@@ -23,18 +23,17 @@ from cpswm.system.reproducibility import content_sha256
 from .fair_ablation import ProjectOneAblationArmId
 from .online_shift_attribution import (
     OnlineShiftAttributionCase,
+    OnlineShiftCaseTruth,
     OnlineShiftEvaluator,
     OnlineShiftGeneratedCase,
-    OnlineShiftCaseTruth,
     OnlineShiftPrediction,
     OnlineShiftReport,
     OnlineShiftSplit,
     OnlineShiftSuiteConfig,
     OnlineShiftSuiteGenerator,
 )
-from .project_one_shift_gates import SHIFT_THREE_ARMS, _model_factory, _SEARCH_SPACES
+from .project_one_shift_gates import _SEARCH_SPACES, SHIFT_THREE_ARMS, _model_factory
 from .shift_attribution import ShiftCause
-
 
 PRIMARY_ENDPOINT_ID = "downstream-action-regret.normalized-per-case@1"
 KEY_SECONDARY_ENDPOINT_ID = "corrupted-habit-mass.mean-per-case@1"
@@ -93,7 +92,7 @@ class ActionSeedPlan(ContractModel):
         5167,
         5171,
     )
-    test_seeds: tuple[NonNegativeInt, ...] = tuple(range(6101, 6403, 2))
+    test_seeds: tuple[NonNegativeInt, ...] = tuple(range(7101, 7403, 2))
 
     @model_validator(mode="after")
     def validate_partitions(self) -> ActionSeedPlan:
@@ -154,14 +153,26 @@ class ArmActionMetrics(ContractModel):
     task_success_rate: Probability
 
 
+class ActionCaseTruth(ContractModel):
+    truth: OnlineShiftCaseTruth
+    stream_start_time: datetime
+    duration_days: PositiveInt
+
+    @model_validator(mode="after")
+    def validate_horizon(self) -> ActionCaseTruth:
+        horizon_end = self.stream_start_time + timedelta(days=self.duration_days)
+        if not self.stream_start_time < self.truth.change_time < horizon_end:
+            raise ValueError("action truth change time lies outside its stream horizon")
+        return self
+
+
 class ArmActionArtifact(ContractModel):
     arm_id: ProjectOneAblationArmId
     split_id: Literal["validation", "pilot", "test"]
     policy_sha256: str = Field(pattern=r"^[0-9a-f]{64}$")
     policy: FrozenActionPolicy
-    duration_days: PositiveInt
     selected_params_sha256: str = Field(pattern=r"^[0-9a-f]{64}$")
-    truths: tuple[OnlineShiftCaseTruth, ...] = Field(min_length=1)
+    case_truths: tuple[ActionCaseTruth, ...] = Field(min_length=1)
     predictions: tuple[OnlineShiftPrediction, ...] = Field(min_length=1)
     outcomes: tuple[CaseActionOutcome, ...] = Field(min_length=1)
     metrics: ArmActionMetrics
@@ -172,20 +183,30 @@ class ArmActionArtifact(ContractModel):
     def validate_artifact(self) -> ArmActionArtifact:
         if self.policy_sha256 != content_sha256(self.policy):
             raise ValueError("artifact policy hash mismatch")
-        if len(self.predictions) != len(self.outcomes) or len(self.truths) != len(self.outcomes):
+        expected_truth_split = (
+            OnlineShiftSplit.TEST if self.split_id == "test" else OnlineShiftSplit.VALIDATION
+        )
+        if any(item.truth.split != expected_truth_split for item in self.case_truths):
+            raise ValueError("artifact truths carry the wrong split label")
+        if len(self.predictions) != len(self.outcomes) or len(self.case_truths) != len(
+            self.outcomes
+        ):
             raise ValueError("truth/prediction/outcome case counts differ")
         if {str(item.case_id) for item in self.predictions} != {
             item.case_id for item in self.outcomes
-        } or {str(item.case_id) for item in self.truths} != {item.case_id for item in self.outcomes}:
+        } or {str(item.truth.case_id) for item in self.case_truths} != {
+            item.case_id for item in self.outcomes
+        }:
             raise ValueError("prediction/outcome case IDs differ")
         prediction_by_id = {str(item.case_id): item for item in self.predictions}
-        truth_by_id = {str(item.case_id): item for item in self.truths}
+        truth_by_id = {str(item.truth.case_id): item for item in self.case_truths}
         recomputed_outcomes = tuple(
             _case_outcome(
-                truth_by_id[item.case_id],
+                truth_by_id[item.case_id].truth,
                 prediction_by_id[item.case_id],
                 self.policy,
-                duration_days=self.duration_days,
+                stream_start_time=truth_by_id[item.case_id].stream_start_time,
+                duration_days=truth_by_id[item.case_id].duration_days,
             )
             for item in self.outcomes
         )
@@ -194,8 +215,11 @@ class ArmActionArtifact(ContractModel):
         if self.metrics != aggregate_action_metrics(self.outcomes):
             raise ValueError("action metrics do not recompute from case outcomes")
         rebound = tuple(
-            OnlineShiftAttributionCase(truth=truth, prediction=prediction_by_id[str(truth.case_id)])
-            for truth in self.truths
+            OnlineShiftAttributionCase(
+                truth=item.truth,
+                prediction=prediction_by_id[str(item.truth.case_id)],
+            )
+            for item in self.case_truths
         )
         if self.mechanism_metrics != OnlineShiftEvaluator().evaluate(rebound):
             raise ValueError("mechanism metrics do not recompute from truth and predictions")
@@ -276,6 +300,8 @@ class PreregisteredDecision(ContractModel):
     decision: ResearchDecision
     primary_joint_minus_ordinary: PairedActionInterval | None
     corruption_joint_minus_ordinary: PairedActionInterval | None
+    primary_joint_minus_legacy: PairedActionInterval | None
+    corruption_joint_minus_legacy: PairedActionInterval | None
     primary_practical_threshold: float = Field(gt=0.0)
     corruption_practical_threshold: float = Field(gt=0.0)
     rationale_id: str = Field(min_length=1)
@@ -285,12 +311,14 @@ class ProjectOneShiftActionDeathTestReport(ContractModel):
     protocol_version: Literal["project-one-shift-action-death-test@1"]
     config: ProjectOneShiftActionDeathTestConfig
     config_sha256: str = Field(pattern=r"^[0-9a-f]{64}$")
-    primary_endpoint_id: Literal[
-        "downstream-action-regret.normalized-per-case@1"
-    ] = PRIMARY_ENDPOINT_ID
-    key_secondary_endpoint_id: Literal[
-        "corrupted-habit-mass.mean-per-case@1"
-    ] = KEY_SECONDARY_ENDPOINT_ID
+    code_snapshot_sha256: str = Field(pattern=r"^[0-9a-f]{64}$")
+    git_commit_sha: str = Field(pattern=r"^[0-9a-f]{40}$")
+    primary_endpoint_id: Literal["downstream-action-regret.normalized-per-case@1"] = (
+        PRIMARY_ENDPOINT_ID
+    )
+    key_secondary_endpoint_id: Literal["corrupted-habit-mass.mean-per-case@1"] = (
+        KEY_SECONDARY_ENDPOINT_ID
+    )
     multiple_comparisons_policy: Literal[
         "primary-alpha-0.05-key-secondary-holm-mechanisms-descriptive@1"
     ] = "primary-alpha-0.05-key-secondary-holm-mechanisms-descriptive@1"
@@ -336,9 +364,7 @@ class ProjectOneShiftActionDeathTestReport(ContractModel):
         if power_pass:
             expected_intervals = tuple(
                 _paired_interval(
-                    self.test_artifacts[
-                        ProjectOneAblationArmId.JOINT_CAUSE_FACTORIZED_BOCPD
-                    ],
+                    self.test_artifacts[ProjectOneAblationArmId.JOINT_CAUSE_FACTORIZED_BOCPD],
                     self.test_artifacts[reference],
                     metric,
                     endpoint_id,
@@ -391,6 +417,7 @@ def _case_outcome(
     prediction: OnlineShiftPrediction,
     policy: FrozenActionPolicy,
     *,
+    stream_start_time: datetime,
     duration_days: int,
 ) -> CaseActionOutcome:
     probabilities = prediction.cause_probabilities
@@ -404,25 +431,24 @@ def _case_outcome(
         and habit_probability >= policy.consolidation_probability_threshold
         and margin >= policy.attribution_margin
     )
-    verify = detected and not consolidate and (
-        habit_probability >= policy.reset_probability_threshold or margin < policy.attribution_margin
+    verify = (
+        detected
+        and not consolidate
+        and (
+            habit_probability >= policy.reset_probability_threshold
+            or margin < policy.attribution_margin
+        )
     )
     true_habit = ShiftCause.OWNER_HABIT_REGIME in truth.true_causes
     false_reset = reset and not true_habit
     missed_reset = true_habit and not reset
     false_consolidation = consolidate and not true_habit
-    # The generator freezes change day at least three days before the horizon;
-    # use the truth timestamp and the frozen stream duration to bind recovery.
-    scenario_start = truth.change_time - timedelta(days=truth.change_time.day % 20 or 3)
-    # Recovery is capped to the declared horizon.  Exact start time is not an
-    # evaluator input, so the conservative post-change horizon is duration-3.
-    del scenario_start
-    remaining_days = float(max(0, duration_days - 3))
+    horizon_end = stream_start_time + timedelta(days=duration_days)
+    remaining_days = max(0.0, (horizon_end - truth.change_time).total_seconds() / 86400.0)
     if true_habit and reset and prediction.predicted_change_time is not None:
         recovery_days = max(
             0.0,
-            (prediction.predicted_change_time - truth.change_time).total_seconds()
-            / 86400.0,
+            (prediction.predicted_change_time - truth.change_time).total_seconds() / 86400.0,
         )
     elif true_habit:
         recovery_days = remaining_days
@@ -449,7 +475,9 @@ def _case_outcome(
         false_consolidation=false_consolidation,
         corrupted_habit_mass=corrupted_mass,
         recovery_time_days=recovery_days,
-        unnecessary_verification_cost=policy.verification_cost if verify and not true_habit else 0.0,
+        unnecessary_verification_cost=policy.verification_cost
+        if verify and not true_habit
+        else 0.0,
         downstream_action_regret=regret,
         task_success=success,
     )
@@ -486,12 +514,20 @@ def _evaluate_arm(
 ) -> ArmActionArtifact:
     model = _model_factory(arm, params)
     predictions = tuple(model.predict(case.model_input) for case in cases)  # type: ignore[attr-defined]
-    truths = tuple(case.evaluator_truth for case in cases)
+    case_truths = tuple(
+        ActionCaseTruth(
+            truth=case.evaluator_truth,
+            stream_start_time=case.model_input.observation_stream.start_time,
+            duration_days=case.model_input.observation_stream.duration_days,
+        )
+        for case in cases
+    )
     outcomes = tuple(
         _case_outcome(
             case.evaluator_truth,
             prediction,
             policy,
+            stream_start_time=case.model_input.observation_stream.start_time,
             duration_days=case.model_input.observation_stream.duration_days,
         )
         for case, prediction in zip(cases, predictions, strict=True)
@@ -505,9 +541,8 @@ def _evaluate_arm(
         "split_id": split_id,
         "policy_sha256": content_sha256(policy),
         "policy": policy,
-        "duration_days": cases[0].model_input.observation_stream.duration_days,
         "selected_params_sha256": content_sha256(params),
-        "truths": truths,
+        "case_truths": case_truths,
         "predictions": predictions,
         "outcomes": outcomes,
         "metrics": aggregate_action_metrics(outcomes),
@@ -543,9 +578,7 @@ def _paired_interval(
     seeds = tuple(sorted(left))
     differences = [left[seed] - right[seed] for seed in seeds]
     rng = random.Random(content_sha256({"metric": metric, "seeds": seeds}))
-    draws = sorted(
-        fmean(rng.choice(differences) for _ in seeds) for _ in range(bootstrap_samples)
-    )
+    draws = sorted(fmean(rng.choice(differences) for _ in seeds) for _ in range(bootstrap_samples))
     lower_index = max(0, ceil(0.025 * len(draws)) - 1)
     upper_index = max(0, ceil(0.975 * len(draws)) - 1)
     return PairedActionInterval(
@@ -569,6 +602,8 @@ def decide_research_route(
             decision=ResearchDecision.BLOCK_UNDERPOWERED,
             primary_joint_minus_ordinary=None,
             corruption_joint_minus_ordinary=None,
+            primary_joint_minus_legacy=None,
+            corruption_joint_minus_legacy=None,
             primary_practical_threshold=policy.practical_regret_mde,
             corruption_practical_threshold=policy.practical_corruption_mde,
             rationale_id="decision.test-not-opened-power-block@1",
@@ -585,16 +620,33 @@ def decide_research_route(
         if item.endpoint_id == KEY_SECONDARY_ENDPOINT_ID
         and item.reference_arm_id == ProjectOneAblationArmId.ORDINARY_BOCPD
     )
+    primary_legacy = next(
+        item
+        for item in intervals
+        if item.endpoint_id == PRIMARY_ENDPOINT_ID
+        and item.reference_arm_id == ProjectOneAblationArmId.CAUSE_FACTORIZED_BOCPD
+    )
+    corruption_legacy = next(
+        item
+        for item in intervals
+        if item.endpoint_id == KEY_SECONDARY_ENDPOINT_ID
+        and item.reference_arm_id == ProjectOneAblationArmId.CAUSE_FACTORIZED_BOCPD
+    )
     if (
         primary.upper_95 <= -policy.practical_regret_mde
         and corruption.upper_95 <= -policy.practical_corruption_mde
+        and primary_legacy.upper_95 <= -policy.practical_regret_mde
+        and corruption_legacy.upper_95 <= -policy.practical_corruption_mde
     ):
         decision = ResearchDecision.CONTINUE_JOINT
         rationale = "decision.joint-clears-action-mde-and-corruption-guardrail@1"
     elif primary.lower_95 >= policy.practical_regret_mde:
         decision = ResearchDecision.USE_ORDINARY
         rationale = "decision.ordinary-clears-action-mde-over-joint@1"
-    elif primary.difference_joint_minus_reference >= 0.0:
+    elif (
+        primary_legacy.lower_95 >= policy.practical_regret_mde
+        or primary.difference_joint_minus_reference >= 0.0
+    ):
         decision = ResearchDecision.REBUILD_JOINT
         rationale = "decision.joint-no-positive-action-benefit@1"
     else:
@@ -604,6 +656,8 @@ def decide_research_route(
         decision=decision,
         primary_joint_minus_ordinary=primary,
         corruption_joint_minus_ordinary=corruption,
+        primary_joint_minus_legacy=primary_legacy,
+        corruption_joint_minus_legacy=corruption_legacy,
         primary_practical_threshold=policy.practical_regret_mde,
         corruption_practical_threshold=policy.practical_corruption_mde,
         rationale_id=rationale,
@@ -612,22 +666,35 @@ def decide_research_route(
 
 class ProjectOneShiftActionDeathTestRunner:
     def run(
-        self, config: ProjectOneShiftActionDeathTestConfig
+        self,
+        config: ProjectOneShiftActionDeathTestConfig,
+        *,
+        code_snapshot_sha256: str,
+        git_commit_sha: str,
     ) -> ProjectOneShiftActionDeathTestReport:
-        checked = ProjectOneShiftActionDeathTestConfig.model_validate(config.model_dump(mode="json"))
+        checked = ProjectOneShiftActionDeathTestConfig.model_validate(
+            config.model_dump(mode="json")
+        )
         plan = checked.seed_plan
-        all_seeds = plan.validation_seeds + plan.pilot_seeds + plan.test_seeds
-        suite = OnlineShiftSuiteGenerator().generate(
+        non_test_seeds = plan.validation_seeds + plan.pilot_seeds
+        non_test_suite = OnlineShiftSuiteGenerator().generate(
             OnlineShiftSuiteConfig(
                 duration_days=checked.duration_days,
-                seeds=all_seeds,
-                case_id_salt="project-one-action-death-test@1",
+                seeds=non_test_seeds,
+                case_id_salt="project-one-action-death-test-nontest@1",
                 shuffle_seed=20260822,
             )
         )
-        by_seed = {seed: [] for seed in all_seeds}
-        for case in suite.cases:
-            by_seed[case.evaluator_truth.scenario_seed].append(case)
+        by_seed = {seed: [] for seed in non_test_seeds}
+        for case in non_test_suite.cases:
+            by_seed[case.evaluator_truth.scenario_seed].append(
+                OnlineShiftGeneratedCase(
+                    model_input=case.model_input,
+                    evaluator_truth=case.evaluator_truth.model_copy(
+                        update={"split": OnlineShiftSplit.VALIDATION}
+                    ),
+                )
+            )
         validation = tuple(case for seed in plan.validation_seeds for case in by_seed[seed])
         pilot = tuple(case for seed in plan.pilot_seeds for case in by_seed[seed])
 
@@ -635,7 +702,10 @@ class ProjectOneShiftActionDeathTestRunner:
         selected: dict[ProjectOneAblationArmId, dict[str, int | float]] = {}
         for arm in SHIFT_THREE_ARMS:
             trials = [
-                (_evaluate_arm(arm, params, validation, checked.action_policy, "validation"), params)
+                (
+                    _evaluate_arm(arm, params, validation, checked.action_policy, "validation"),
+                    params,
+                )
                 for params in _SEARCH_SPACES[arm]
             ]
             artifact, params = min(
@@ -709,14 +779,32 @@ class ProjectOneShiftActionDeathTestRunner:
         test_artifacts: dict[ProjectOneAblationArmId, ArmActionArtifact] = {}
         intervals: tuple[PairedActionInterval, ...] = ()
         if all(item.status == "PASS" for item in analyses):
-            test = tuple(case for seed in plan.test_seeds for case in by_seed[seed])
+            # This is intentionally below the power gate: no TEST inputs or
+            # evaluator truths exist in this process before pilot power passes.
+            test_suite = OnlineShiftSuiteGenerator().generate(
+                OnlineShiftSuiteConfig(
+                    duration_days=checked.duration_days,
+                    seeds=plan.test_seeds,
+                    case_id_salt="project-one-action-death-test-test@1",
+                    shuffle_seed=20260823,
+                )
+            )
+            test_by_seed = {seed: [] for seed in plan.test_seeds}
+            for case in test_suite.cases:
+                test_by_seed[case.evaluator_truth.scenario_seed].append(
+                    OnlineShiftGeneratedCase(
+                        model_input=case.model_input,
+                        evaluator_truth=case.evaluator_truth.model_copy(
+                            update={"split": OnlineShiftSplit.TEST}
+                        ),
+                    )
+                )
+            test = tuple(case for seed in plan.test_seeds for case in test_by_seed[seed])
             test_artifacts = {
                 arm: _evaluate_arm(arm, selected[arm], test, checked.action_policy, "test")
                 for arm in SHIFT_THREE_ARMS
             }
-            joint_test = test_artifacts[
-                ProjectOneAblationArmId.JOINT_CAUSE_FACTORIZED_BOCPD
-            ]
+            joint_test = test_artifacts[ProjectOneAblationArmId.JOINT_CAUSE_FACTORIZED_BOCPD]
             intervals = tuple(
                 _paired_interval(
                     joint_test,
@@ -739,6 +827,8 @@ class ProjectOneShiftActionDeathTestRunner:
             "protocol_version": checked.protocol_version,
             "config": checked,
             "config_sha256": content_sha256(checked),
+            "code_snapshot_sha256": code_snapshot_sha256,
+            "git_commit_sha": git_commit_sha,
             "policy": checked.action_policy,
             "policy_sha256": content_sha256(checked.action_policy),
             "tuning_records": tuple(tuning),

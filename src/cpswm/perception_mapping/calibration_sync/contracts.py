@@ -15,10 +15,9 @@ run clock synchronization against real devices.
 from __future__ import annotations
 
 from datetime import datetime
-from enum import StrEnum
 from uuid import UUID, uuid4
 
-from pydantic import Field, field_validator, model_validator
+from pydantic import Field, ValidationInfo, field_validator, model_validator
 
 from cpswm.contracts.base import (
     ContractModel,
@@ -54,10 +53,10 @@ class CalibrationUncertainty(ContractModel):
     def validate_uncertainty(self) -> CalibrationUncertainty:
         if self.intrinsics_covariance is None and self.extrinsics_covariance is None:
             raise ValueError("calibration uncertainty requires at least one covariance")
-        if (
-            self.extrinsics_covariance is not None
-            and len(self.extrinsics_covariance) not in {6, 36}
-        ):
+        if self.extrinsics_covariance is not None and len(self.extrinsics_covariance) not in {
+            6,
+            36,
+        }:
             raise ValueError("extrinsics covariance must contain 6 or 36 values")
         return self
 
@@ -84,9 +83,7 @@ class SensorCalibration(ContractModel):
             if self.extrinsics.household_id != self.household_id:
                 raise ValueError("extrinsics household does not match calibration household")
             if self.extrinsics.source_frame_id != self.frame_id:
-                raise ValueError(
-                    "extrinsics source frame must equal the calibration frame_id"
-                )
+                raise ValueError("extrinsics source frame must equal the calibration frame_id")
         return self
 
 
@@ -112,8 +109,8 @@ class SensorTimeSyncResult(ContractModel):
 
     @field_validator("source_time", "target_time")
     @classmethod
-    def validate_times_aware(cls, value: datetime, info) -> datetime:
-        return require_aware(value, info.field_name)
+    def validate_times_aware(cls, value: datetime, info: ValidationInfo) -> datetime:
+        return require_aware(value, info.field_name or "timestamp")
 
     @model_validator(mode="after")
     def validate_sync(self) -> SensorTimeSyncResult:

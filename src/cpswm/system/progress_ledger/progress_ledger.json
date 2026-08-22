@@ -1,0 +1,397 @@
+{
+  "schema_version": "0.1.0",
+  "generated_at": "2026-08-22",
+  "modules": [
+    {
+      "module_id": "M01",
+      "workstream_ids": [],
+      "maturity": "contract_only",
+      "implementation_paths": ["src/cpswm/contracts/"],
+      "test_paths": ["tests/test_base_contracts.py"],
+      "evidence_artifacts": [],
+      "blockers": ["no vertical slice yet"],
+      "allowed_claims": ["versioned contract schema with pydantic validation"],
+      "forbidden_claims": ["implemented system", "real_data_validated", "embodied_validated"]
+    },
+    {
+      "module_id": "M02",
+      "workstream_ids": [],
+      "maturity": "contract_only",
+      "implementation_paths": ["src/cpswm/foundation/identity_time_frames/"],
+      "test_paths": ["tests/test_m02_identity_time_frames.py"],
+      "evidence_artifacts": [],
+      "blockers": ["no distributed ID/clock service yet"],
+      "allowed_claims": ["identity, clock, and frame contracts with validators"],
+      "forbidden_claims": ["implemented system", "real_data_validated", "embodied_validated"]
+    },
+    {
+      "module_id": "M03",
+      "workstream_ids": [],
+      "maturity": "contract_only",
+      "implementation_paths": ["src/cpswm/foundation/persistence_replay/"],
+      "test_paths": ["tests/test_m03_persistence_replay.py"],
+      "evidence_artifacts": [],
+      "blockers": ["in-memory reference store only, no durable backend chosen"],
+      "allowed_claims": ["append-only transaction log contracts with replay manifests"],
+      "forbidden_claims": ["implemented system", "real_data_validated", "embodied_validated"]
+    },
+    {
+      "module_id": "M04",
+      "workstream_ids": [],
+      "maturity": "contract_only",
+      "implementation_paths": ["src/cpswm/foundation/runtime_orchestration/"],
+      "test_paths": ["tests/test_m04_runtime_orchestration.py"],
+      "evidence_artifacts": [],
+      "blockers": ["in-process orchestration only"],
+      "allowed_claims": ["message, handler, and replay orchestration contracts"],
+      "forbidden_claims": ["implemented system", "real_data_validated", "embodied_validated"]
+    },
+    {
+      "module_id": "M05",
+      "workstream_ids": ["WS1"],
+      "maturity": "synthetic_vertical_slice",
+      "implementation_paths": ["src/cpswm/perception_mapping/adapters/"],
+      "test_paths": ["tests/test_m05_m06_observation_envelope.py"],
+      "evidence_artifacts": [
+        {"path": "src/cpswm/perception_mapping/adapters/synthetic_adapter.py", "kind": "synthetic", "description": "simobs-only synthetic simulator adapter, never imports cpswm_gt"}
+      ],
+      "blockers": ["real robot, rosbag, and dataset adapters not implemented"],
+      "allowed_claims": ["unified ObservationEnvelope contract and synthetic simulator adapter with rejection rules"],
+      "forbidden_claims": ["real robot driver", "implemented system", "real_data_validated", "embodied_validated"]
+    },
+    {
+      "module_id": "M06",
+      "workstream_ids": ["WS1"],
+      "maturity": "synthetic_vertical_slice",
+      "implementation_paths": ["src/cpswm/perception_mapping/calibration_sync/"],
+      "test_paths": ["tests/test_m05_m06_observation_envelope.py"],
+      "evidence_artifacts": [
+        {"path": "src/cpswm/perception_mapping/calibration_sync/registry.py", "kind": "synthetic", "description": "deterministic calibration and time-sync registry"}
+      ],
+      "blockers": ["real sensor calibration and clock sync estimation not implemented"],
+      "allowed_claims": ["calibration and time-sync contracts that preserve the original source time"],
+      "forbidden_claims": ["real calibration estimation", "implemented system", "real_data_validated", "embodied_validated"]
+    },
+    {
+      "module_id": "M07",
+      "workstream_ids": ["WS1"],
+      "maturity": "contract_only",
+      "implementation_paths": [],
+      "test_paths": [],
+      "evidence_artifacts": [],
+      "blockers": ["VIO/SLAM not implemented; no real or synthetic localization yet"],
+      "allowed_claims": ["contract design only (RobotPoseEstimate, TrajectorySegment)"],
+      "forbidden_claims": ["implemented system", "real_data_validated", "embodied_validated"]
+    },
+    {
+      "module_id": "M08",
+      "workstream_ids": ["WS1"],
+      "maturity": "contract_only",
+      "implementation_paths": [],
+      "test_paths": [],
+      "evidence_artifacts": [],
+      "blockers": ["scene/topology mapping not implemented"],
+      "allowed_claims": ["contract design only (SceneGraphUpdate, PlaceEntity)"],
+      "forbidden_claims": ["implemented system", "real_data_validated", "embodied_validated"]
+    },
+    {
+      "module_id": "M09",
+      "workstream_ids": ["WS1"],
+      "maturity": "contract_only",
+      "implementation_paths": [],
+      "test_paths": [],
+      "evidence_artifacts": [],
+      "blockers": ["observability and negative-evidence contracts not implemented as a module"],
+      "allowed_claims": ["contract design only (VisibilityReport, NegativeEvidence)"],
+      "forbidden_claims": ["implemented system", "real_data_validated", "embodied_validated"]
+    },
+    {
+      "module_id": "M10",
+      "workstream_ids": ["WS1", "WS2"],
+      "maturity": "contract_only",
+      "implementation_paths": [],
+      "test_paths": [],
+      "evidence_artifacts": [],
+      "blockers": ["open-vocabulary perception not implemented; no real detection"],
+      "allowed_claims": ["contract design only (SemanticObservation, PerceptionCalibrationRun)"],
+      "forbidden_claims": ["implemented system", "real_data_validated", "embodied_validated"]
+    },
+    {
+      "module_id": "M11",
+      "workstream_ids": ["WS1", "WS2"],
+      "maturity": "contract_only",
+      "implementation_paths": [],
+      "test_paths": [],
+      "evidence_artifacts": [],
+      "blockers": ["instance association not implemented"],
+      "allowed_claims": ["contract design only (AssociationHypothesisSet)"],
+      "forbidden_claims": ["implemented system", "real_data_validated", "embodied_validated"]
+    },
+    {
+      "module_id": "M12",
+      "workstream_ids": ["WS1"],
+      "maturity": "contract_only",
+      "implementation_paths": [],
+      "test_paths": [],
+      "evidence_artifacts": [],
+      "blockers": ["person/event perception not implemented"],
+      "allowed_claims": ["contract design only (ObservedEventCandidate)"],
+      "forbidden_claims": ["implemented system", "real_data_validated", "embodied_validated"]
+    },
+    {
+      "module_id": "M13",
+      "workstream_ids": ["WS2"],
+      "maturity": "contract_only",
+      "implementation_paths": ["src/cpswm/contracts/assertions.py"],
+      "test_paths": ["tests/test_assertions_events.py"],
+      "evidence_artifacts": [],
+      "blockers": ["no temporal graph store yet"],
+      "allowed_claims": ["relation assertion contracts"],
+      "forbidden_claims": ["implemented system", "real_data_validated", "embodied_validated"]
+    },
+    {
+      "module_id": "M14",
+      "workstream_ids": ["WS1", "WS2", "WS3"],
+      "maturity": "contract_only",
+      "implementation_paths": ["src/cpswm/contracts/events.py"],
+      "test_paths": ["tests/test_assertions_events.py"],
+      "evidence_artifacts": [],
+      "blockers": ["no episodic memory timeline store yet"],
+      "allowed_claims": ["event record contracts"],
+      "forbidden_claims": ["implemented system", "real_data_validated", "embodied_validated"]
+    },
+    {
+      "module_id": "M15",
+      "workstream_ids": ["WS2", "WS3"],
+      "maturity": "contract_only",
+      "implementation_paths": ["src/cpswm/contracts/base.py"],
+      "test_paths": ["tests/test_base_contracts.py"],
+      "evidence_artifacts": [],
+      "blockers": ["no full provenance audit service yet"],
+      "allowed_claims": ["evidence reference contracts"],
+      "forbidden_claims": ["implemented system", "real_data_validated", "embodied_validated"]
+    },
+    {
+      "module_id": "M16",
+      "workstream_ids": ["WS2", "WS6"],
+      "maturity": "contract_only",
+      "implementation_paths": ["src/cpswm/contracts/beliefs.py"],
+      "test_paths": ["tests/test_beliefs_likelihoods.py"],
+      "evidence_artifacts": [],
+      "blockers": ["belief projection engine not implemented"],
+      "allowed_claims": ["belief snapshot contracts"],
+      "forbidden_claims": ["implemented system", "real_data_validated", "embodied_validated"]
+    },
+    {
+      "module_id": "M17",
+      "workstream_ids": ["WS4", "WS5"],
+      "maturity": "synthetic_vertical_slice",
+      "implementation_paths": ["src/cpswm/world_model/habits_transitions/"],
+      "test_paths": ["tests/test_observation_aware_habits.py"],
+      "evidence_artifacts": [
+        {"path": "output/project_one_protocol_pilot_report.json", "kind": "synthetic", "description": "synthetic habit-learning pilot report"}
+      ],
+      "blockers": ["hierarchical Dirichlet is a baseline, not the final habit model"],
+      "allowed_claims": ["synthetic habit-learning baseline with observation-aware evidence firewall"],
+      "forbidden_claims": ["final habit model", "real_data_validated", "embodied_validated"]
+    },
+    {
+      "module_id": "M18",
+      "workstream_ids": ["WS6", "WS8"],
+      "maturity": "contract_only",
+      "implementation_paths": ["src/cpswm/contracts/hidden_event_evidence.py"],
+      "test_paths": ["tests/test_m30_hidden_event_death_test.py"],
+      "evidence_artifacts": [],
+      "blockers": ["hidden-event inference engine not implemented"],
+      "allowed_claims": ["hidden-event evidence contracts"],
+      "forbidden_claims": ["implemented system", "real_data_validated", "embodied_validated"]
+    },
+    {
+      "module_id": "M19",
+      "workstream_ids": ["WS5", "WS7"],
+      "maturity": "synthetic_vertical_slice",
+      "implementation_paths": [
+        "src/cpswm/world_model/habits_transitions/cause_factorized_bocpd.py",
+        "src/cpswm/world_model/habits_transitions/joint_cause_bocpd.py"
+      ],
+      "test_paths": ["tests/test_joint_cause_factorized_bocpd.py"],
+      "evidence_artifacts": [
+        {"path": "output/project_one_shift_action_death_test_v1.json", "kind": "synthetic", "description": "synthetic shift/change-point death test report"}
+      ],
+      "blockers": ["lifecycle consolidation/forgetting not integrated"],
+      "allowed_claims": ["synthetic change-point detection vertical slice"],
+      "forbidden_claims": ["implemented system", "real_data_validated", "embodied_validated"]
+    },
+    {
+      "module_id": "M20",
+      "workstream_ids": ["WS3", "WS8"],
+      "maturity": "contract_only",
+      "implementation_paths": ["src/cpswm/contracts/queries.py"],
+      "test_paths": [],
+      "evidence_artifacts": [],
+      "blockers": ["query engine not implemented"],
+      "allowed_claims": ["structured query contracts"],
+      "forbidden_claims": ["implemented system", "real_data_validated", "embodied_validated"]
+    },
+    {
+      "module_id": "M21",
+      "workstream_ids": ["WS3", "WS8"],
+      "maturity": "contract_only",
+      "implementation_paths": [],
+      "test_paths": [],
+      "evidence_artifacts": [],
+      "blockers": ["language grounding not implemented"],
+      "allowed_claims": ["contract design only"],
+      "forbidden_claims": ["implemented system", "real_data_validated", "embodied_validated"]
+    },
+    {
+      "module_id": "M22",
+      "workstream_ids": ["WS3", "WS8"],
+      "maturity": "contract_only",
+      "implementation_paths": ["src/cpswm/contracts/corrections.py"],
+      "test_paths": [],
+      "evidence_artifacts": [],
+      "blockers": ["explanation generation not implemented"],
+      "allowed_claims": ["user correction contracts"],
+      "forbidden_claims": ["implemented system", "real_data_validated", "embodied_validated"]
+    },
+    {
+      "module_id": "M23",
+      "workstream_ids": ["WS9"],
+      "maturity": "contract_only",
+      "implementation_paths": [],
+      "test_paths": [],
+      "evidence_artifacts": [],
+      "blockers": ["task planning not implemented"],
+      "allowed_claims": ["contract design only"],
+      "forbidden_claims": ["implemented system", "real_data_validated", "embodied_validated"]
+    },
+    {
+      "module_id": "M24",
+      "workstream_ids": ["WS9"],
+      "maturity": "synthetic_vertical_slice",
+      "implementation_paths": ["src/cpswm/world_model/grounded_search/"],
+      "test_paths": ["tests/test_direction_three_grounded_search.py"],
+      "evidence_artifacts": [
+        {"path": "output/project_one_protocol_pilot_report_v0.2.json", "kind": "synthetic", "description": "synthetic grounded-search pilot report"}
+      ],
+      "blockers": ["active search not integrated with a robot loop"],
+      "allowed_claims": ["synthetic grounded search vertical slice"],
+      "forbidden_claims": ["real robot search", "real_data_validated", "embodied_validated"]
+    },
+    {
+      "module_id": "M25",
+      "workstream_ids": ["WS9"],
+      "maturity": "contract_only",
+      "implementation_paths": [],
+      "test_paths": [],
+      "evidence_artifacts": [],
+      "blockers": ["navigation not implemented"],
+      "allowed_claims": ["contract design only"],
+      "forbidden_claims": ["implemented system", "real_data_validated", "embodied_validated"]
+    },
+    {
+      "module_id": "M26",
+      "workstream_ids": ["WS9"],
+      "maturity": "contract_only",
+      "implementation_paths": [],
+      "test_paths": [],
+      "evidence_artifacts": [],
+      "blockers": ["manipulation not implemented"],
+      "allowed_claims": ["contract design only"],
+      "forbidden_claims": ["implemented system", "real_data_validated", "embodied_validated"]
+    },
+    {
+      "module_id": "M27",
+      "workstream_ids": ["WS1", "WS9"],
+      "maturity": "contract_only",
+      "implementation_paths": [],
+      "test_paths": [],
+      "evidence_artifacts": [],
+      "blockers": ["closed-loop write-back not implemented"],
+      "allowed_claims": ["contract design only"],
+      "forbidden_claims": ["implemented system", "real_data_validated", "embodied_validated"]
+    },
+    {
+      "module_id": "M28",
+      "workstream_ids": ["WS10"],
+      "maturity": "synthetic_vertical_slice",
+      "implementation_paths": ["src/cpswm/system/privacy_governance/"],
+      "test_paths": ["tests/test_m28_privacy_governance.py"],
+      "evidence_artifacts": [
+        {"path": "src/cpswm/system/privacy_governance/governance.py", "kind": "synthetic", "description": "household-scoped capability authorization and tombstone deletion vertical slice"}
+      ],
+      "blockers": ["not a production security system; not full GDPR compliance"],
+      "allowed_claims": ["household-scoped capability, oracle audit, and tombstone deletion vertical slice"],
+      "forbidden_claims": ["production security system", "GDPR compliance", "real_data_validated", "embodied_validated"]
+    },
+    {
+      "module_id": "M29",
+      "workstream_ids": ["WS10"],
+      "maturity": "synthetic_vertical_slice",
+      "implementation_paths": ["src/cpswm/system/world_model_simulator/", "src/cpswm_gt/", "src/simobs/"],
+      "test_paths": ["tests/test_f0_long_horizon_vertical_slice.py"],
+      "evidence_artifacts": [
+        {"path": "output/project_one_protocol_pilot_report.json", "kind": "synthetic", "description": "synthetic world-model simulator run"}
+      ],
+      "blockers": ["L1 embodied physics simulation not implemented"],
+      "allowed_claims": ["symbolic world-model simulator (L0) with robot-visible simobs output"],
+      "forbidden_claims": ["embodied physics simulator", "real_data_validated", "embodied_validated"]
+    },
+    {
+      "module_id": "M30",
+      "workstream_ids": ["WS10"],
+      "maturity": "synthetic_vertical_slice",
+      "implementation_paths": ["src/cpswm/system/synthetic_routines/"],
+      "test_paths": ["tests/test_m30_complete_event_chains.py"],
+      "evidence_artifacts": [
+        {"path": "output/project_one_protocol_pilot_report.json", "kind": "synthetic", "description": "synthetic routine generation run"}
+      ],
+      "blockers": ["no real household routine data"],
+      "allowed_claims": ["synthetic human routine generator vertical slice"],
+      "forbidden_claims": ["real household data", "real_data_validated", "embodied_validated"]
+    },
+    {
+      "module_id": "M31",
+      "workstream_ids": ["WS10"],
+      "maturity": "synthetic_vertical_slice",
+      "implementation_paths": ["src/cpswm/system/household_memory_benchmark/"],
+      "test_paths": ["tests/test_oam_phm_wp0_baselines.py"],
+      "evidence_artifacts": [
+        {"path": "output/project_one_protocol_pilot_report.json", "kind": "synthetic", "description": "benchmark manifest pilot run"}
+      ],
+      "blockers": ["no real-data benchmark track yet"],
+      "allowed_claims": ["benchmark manifest contracts and synthetic pilot runs"],
+      "forbidden_claims": ["real-data benchmark", "real_data_validated", "embodied_validated"]
+    },
+    {
+      "module_id": "M32",
+      "workstream_ids": ["WS10"],
+      "maturity": "synthetic_vertical_slice",
+      "implementation_paths": ["src/cpswm/system/evaluation_operations/"],
+      "test_paths": ["tests/test_oam_phm_wp0_baselines.py"],
+      "evidence_artifacts": [
+        {"path": "output/project_one_protocol_pilot_report.json", "kind": "synthetic", "description": "evaluation runner output"}
+      ],
+      "blockers": ["no deployment monitoring yet"],
+      "allowed_claims": ["evaluation runner and metric contracts for synthetic runs"],
+      "forbidden_claims": ["real deployment", "real_data_validated", "embodied_validated"]
+    }
+  ],
+  "gates": [
+    {
+      "gate_id": "B1",
+      "description": "Real perception replacement: M05-M12 must each reach synthetic_vertical_slice before real B-layer work can be claimed.",
+      "required_module_ids": ["M05", "M06", "M07", "M08", "M09", "M10", "M11", "M12"],
+      "required_workstream_ids": [],
+      "min_maturity": "synthetic_vertical_slice"
+    },
+    {
+      "gate_id": "STRUCTURE_ONE_COMPLETE",
+      "description": "Structure one as a whole must cover WS1-WS10 at replay_validated or above; a SHIFT or WS4-only result cannot substitute.",
+      "required_module_ids": [],
+      "required_workstream_ids": ["WS1", "WS2", "WS3", "WS4", "WS5", "WS6", "WS7", "WS8", "WS9", "WS10"],
+      "min_maturity": "replay_validated"
+    }
+  ]
+}

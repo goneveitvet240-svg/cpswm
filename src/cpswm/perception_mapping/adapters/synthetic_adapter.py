@@ -15,7 +15,7 @@ from __future__ import annotations
 from datetime import datetime
 
 from cpswm.contracts.base import require_aware
-from cpswm.foundation.persistence_replay.contracts import canonical_json, content_hash
+from cpswm.foundation.persistence_replay.contracts import canonical_json
 from simobs import SyntheticObservation
 
 from .contracts import (
@@ -24,6 +24,7 @@ from .contracts import (
     OracleAuthorization,
     PayloadRef,
     SensorRef,
+    content_hash_bytes,
 )
 from .validation import (
     ObservationEnvelopeValidationError,
@@ -88,7 +89,7 @@ class SyntheticSimulatorAdapter:
             clock_domain=clock_domain,
             frame_id=frame_id,
             payload=PayloadRef(
-                payload_sha256=content_hash(payload),
+                payload_sha256=content_hash_bytes(payload),
                 size_bytes=len(payload),
             ),
             oracle_channel=oracle_channel,

@@ -57,28 +57,36 @@ class GovernanceConflictError(ValueError):
     """A governance record conflicts with an existing one."""
 
 
-_GOVERNANCE_ADAPTERS: dict[str, TypeAdapter[Any]] = {
-    cls.__name__: TypeAdapter(cls)
-    for cls in (
-        CapabilityGrant,
-        CapabilityRevocation,
-        DataRetentionPolicy,
-        DeletionExecutionReceipt,
-        OracleAccessAuditRecord,
-        OracleAccessDecision,
-        OracleAccessRequest,
-        UserDeletionRequest,
+def decode_governance_record(payload: Any, schema_name: str | None = None) -> Any:
+    """Decode a persisted governance record from its JSON payload.
+
+    The payload is a ``model_dump(mode="json")`` dict.  The record type is
+    recovered from the payload's discriminating fields rather than trusting the
+    schema name, so a mislabeled record cannot be silently re-typed on restore.
+    """
+
+    if not isinstance(payload, dict):
+        raise GovernanceConflictError("governance payload must be an object")
+
+    if "revocation_id" in payload and "grant_id" in payload and "revoked_by" in payload:
+        return TypeAdapter(CapabilityRevocation).validate_python(payload)
+    if "receipt_id" in payload and "tombstoned_record_ids" in payload:
+        return TypeAdapter(DeletionExecutionReceipt).validate_python(payload)
+    if "audit_id" in payload and "decision_id" in payload and "output_summary" in payload:
+        return TypeAdapter(OracleAccessAuditRecord).validate_python(payload)
+    if "policy_id" in payload and "retention_seconds" in payload:
+        return TypeAdapter(DataRetentionPolicy).validate_python(payload)
+    if "evaluation_only" in payload and "request_id" in payload:
+        return TypeAdapter(OracleAccessRequest).validate_python(payload)
+    if "decision_id" in payload and "allowed" in payload and "decided_by" in payload:
+        return TypeAdapter(OracleAccessDecision).validate_python(payload)
+    if "deletion_request_id" in payload and "subject" in payload:
+        return TypeAdapter(UserDeletionRequest).validate_python(payload)
+    if "grant_id" in payload and "operation" in payload and "issuer" in payload:
+        return TypeAdapter(CapabilityGrant).validate_python(payload)
+    raise GovernanceConflictError(
+        f"unknown governance record schema {schema_name or '<unnamed>'!r}"
     )
-}
-
-
-def decode_governance_record(payload: Any, schema_name: str) -> Any:
-    """Decode a persisted governance record from its JSON payload."""
-
-    for class_name, adapter in _GOVERNANCE_ADAPTERS.items():
-        if schema_name.endswith(class_name):
-            return adapter.validate_python(payload)
-    raise GovernanceConflictError(f"unknown governance schema {schema_name!r}")
 
 
 class HouseholdGovernance:
@@ -106,9 +114,7 @@ class HouseholdGovernance:
 
     def revoke(self, revocation: CapabilityRevocation) -> CapabilityRevocation:
         if revocation.grant_id not in self._grants:
-            raise GovernanceConflictError(
-                f"cannot revoke unknown grant {revocation.grant_id}"
-            )
+            raise GovernanceConflictError(f"cannot revoke unknown grant {revocation.grant_id}")
         if revocation.grant_id in self._revocations:
             existing = self._revocations[revocation.grant_id]
             if existing != revocation:
@@ -322,7 +328,7 @@ class HouseholdGovernance:
                 if isinstance(decoded, CapabilityGrant):
                     self._grants[decoded.grant_id] = decoded
                 elif isinstance(decoded, CapabilityRevocation):
-                    self._revocations[decoded.revocation_id] = decoded
+                    self._revocations[decoded.grant_id] = decoded
                 elif isinstance(decoded, DataRetentionPolicy):
                     self._retention.append(decoded)
                 elif isinstance(decoded, DeletionExecutionReceipt):
@@ -334,15 +340,13 @@ class HouseholdGovernance:
     @property
     def active_grants(self) -> tuple[CapabilityGrant, ...]:
         return tuple(
-            grant
-            for grant in self._grants.values()
-            if grant.grant_id not in self._revocations
+            grant for grant in self._grants.values() if grant.grant_id not in self._revocations
         )
 
 
 __all__ = [
-    "AuthorizationDeniedError",
     "FORBIDDEN_GT_SUBJECT_PREFIXES",
+    "AuthorizationDeniedError",
     "GovernanceConflictError",
     "HouseholdGovernance",
     "decode_governance_record",

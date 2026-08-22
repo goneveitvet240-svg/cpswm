@@ -18,11 +18,12 @@ Design rules enforced here (mirroring `技术框架_模块划分与接口_v1.1.m
 
 from __future__ import annotations
 
+import hashlib
 from datetime import datetime
 from enum import StrEnum
 from uuid import UUID, uuid4
 
-from pydantic import Field, field_validator, model_validator
+from pydantic import Field, ValidationInfo, field_validator, model_validator
 
 from cpswm.contracts.base import (
     BaseRecordMetadata,
@@ -30,7 +31,6 @@ from cpswm.contracts.base import (
     SourceType,
     require_aware,
 )
-from cpswm.foundation.persistence_replay.contracts import content_hash
 
 
 class SensorModality(StrEnum):
@@ -116,8 +116,8 @@ class ObservationEnvelope(ContractModel):
 
     @field_validator("capture_time", "arrival_time")
     @classmethod
-    def validate_times_aware(cls, value: datetime, info) -> datetime:
-        return require_aware(value, info.field_name)
+    def validate_times_aware(cls, value: datetime, info: ValidationInfo) -> datetime:
+        return require_aware(value, info.field_name or "timestamp")
 
     @model_validator(mode="after")
     def validate_envelope(self) -> ObservationEnvelope:
@@ -145,13 +145,13 @@ class ObservationEnvelope(ContractModel):
     def verify_payload(self, payload_bytes: bytes) -> bool:
         """Return whether ``payload_bytes`` matches the bound hash."""
 
-        return content_hash(payload_bytes) == self.payload.payload_sha256
+        return content_hash_bytes(payload_bytes) == self.payload.payload_sha256
 
 
 def content_hash_bytes(value: bytes) -> str:
-    """SHA-256 hex digest of raw bytes, matching :func:`content_hash`."""
+    """SHA-256 hex digest of raw bytes."""
 
-    return content_hash(value)
+    return hashlib.sha256(value).hexdigest()
 
 
 __all__ = [

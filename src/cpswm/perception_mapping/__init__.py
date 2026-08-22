@@ -21,9 +21,9 @@ from .adapters import (
     validate_observation_envelope,
 )
 from .calibration_sync import (
+    CalibratedObservation,
     CalibrationRegistry,
     CalibrationState,
-    CalibratedObservation,
     IntrinsicsModel,
     SensorCalibration,
     SensorTimeSyncResult,

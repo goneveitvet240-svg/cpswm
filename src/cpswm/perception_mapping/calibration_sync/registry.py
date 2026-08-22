@@ -101,9 +101,12 @@ class CalibrationRegistry:
         )
         last_sync = None
         for item in self._syncs:
-            if item.household_id == household_id and item.sensor_id == sensor_id:
-                if item.valid_time.contains(at_time):
-                    last_sync = item
+            if (
+                item.household_id == household_id
+                and item.sensor_id == sensor_id
+                and item.valid_time.contains(at_time)
+            ):
+                last_sync = item
         return CalibrationState(
             household_id=household_id,
             sensor=calibration.sensor,

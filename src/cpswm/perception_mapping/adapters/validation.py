@@ -17,6 +17,7 @@ only ``simobs.*`` and never ``cpswm_gt.*``.
 from __future__ import annotations
 
 from datetime import datetime
+from uuid import UUID
 
 from cpswm.contracts.base import SourceType, require_aware
 
@@ -91,7 +92,7 @@ def validate_observation_envelope(
 
 def reject_ground_truth_leakage(
     *,
-    ground_truth_refs: tuple = (),
+    ground_truth_refs: tuple[UUID, ...] = (),
     oracle_channel: bool,
 ) -> None:
     """Reject ground-truth references on a non-oracle channel.

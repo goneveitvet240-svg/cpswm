@@ -9,14 +9,19 @@ from uuid import UUID
 
 from pydantic import Field, field_validator, model_validator
 
-from cpswm.contracts import ActorResponsibilityEvidence, EventType
+from cpswm.contracts import (
+    ActorResponsibilityEvidence,
+    EventMechanismEvidence,
+    EventType,
+    RoleBindingEvidence,
+)
 from cpswm.contracts.base import ContractModel, NonNegativeInt, Probability, require_aware
 from cpswm.system.reproducibility import content_sha256, content_uuid
 
+HiddenEventEvidence = ActorResponsibilityEvidence | EventMechanismEvidence | RoleBindingEvidence
 
-def actor_evidence_semantic_fingerprint(
-    evidence: ActorResponsibilityEvidence,
-) -> str:
+
+def hidden_event_evidence_semantic_fingerprint(evidence: HiddenEventEvidence) -> str:
     """Hash evidence semantics while ignoring caller-controlled wrapper IDs."""
 
     payload = evidence.model_dump(mode="python")
@@ -39,6 +44,14 @@ def actor_evidence_semantic_fingerprint(
     return content_sha256(payload)
 
 
+def actor_evidence_semantic_fingerprint(
+    evidence: ActorResponsibilityEvidence,
+) -> str:
+    """Backward-compatible actor-evidence specialization of the generic hash."""
+
+    return hidden_event_evidence_semantic_fingerprint(evidence)
+
+
 class EventHypothesisStatus(StrEnum):
     ACTIVE = "active"
     RETRACTED = "retracted"
@@ -47,7 +60,17 @@ class EventHypothesisStatus(StrEnum):
 class EventHypothesisUpdateKind(StrEnum):
     BRANCH = "branch"
     REVISE = "revise"
+    REVISE_MECHANISM = "revise_mechanism"
+    REVISE_ROLE = "revise_role"
     RETRACT = "retract"
+    REACTIVATE = "reactivate"
+
+
+class ActorEvidenceEndpointRole(StrEnum):
+    """The immutable CHEH endpoint to which actor evidence is anchored."""
+
+    SOURCE_STATE = "source_state"
+    DESTINATION_STATE = "destination_state"
 
 
 class HiddenEventStep(ContractModel):
@@ -87,6 +110,10 @@ class EventChainHypothesis(ContractModel):
     responsible_actor_key: str = Field(min_length=1)
     steps: tuple[HiddenEventStep, ...] = Field(min_length=2)
     posterior_probability: Probability
+    # Shadow distribution over every originally generated chain.  It remains
+    # normalized even when thresholding moves actual mass to unresolved, so a
+    # later independent evidence record can audibly reactivate a true chain.
+    revival_probability: Probability
     status: EventHypothesisStatus
     source_record_ids: tuple[UUID, ...] = Field(min_length=2)
     explanation_code: str = Field(min_length=1)
@@ -106,6 +133,27 @@ class EventChainHypothesis(ContractModel):
             raise ValueError("hidden-event chain must begin with pick-up")
         if self.steps[-1].event_type != EventType.PLACE:
             raise ValueError("hidden-event chain must end with place")
+        event_types = tuple(step.event_type for step in self.steps)
+        direct = (EventType.PICK_UP, EventType.CARRY, EventType.PLACE)
+        handoff = (
+            EventType.PICK_UP,
+            EventType.CARRY,
+            EventType.TRANSFER,
+            EventType.PLACE,
+        )
+        if event_types not in {direct, handoff}:
+            raise ValueError("hidden-event chain violates the supported physical grammar")
+        if self.steps[0].actor_key != self.steps[1].actor_key:
+            raise ValueError("hidden pick-up and initial carry require the same actor")
+        if event_types == direct:
+            if self.steps[-1].actor_key != self.steps[1].actor_key:
+                raise ValueError("direct relocation must be placed by the carrying actor")
+        else:
+            transfer = self.steps[2]
+            if transfer.actor_key != self.steps[1].actor_key:
+                raise ValueError("handoff must be performed by the initial carrying actor")
+            if transfer.recipient_actor_key != self.steps[-1].actor_key:
+                raise ValueError("handoff recipient must perform the final placement")
         if self.steps[-1].actor_key != self.responsible_actor_key:
             raise ValueError("responsible actor must be the final placing actor")
         if self.status == EventHypothesisStatus.RETRACTED:
@@ -141,6 +189,8 @@ class EventHypothesisRevision(ContractModel):
     revision_evidence_record_ids: tuple[UUID, ...] = Field(min_length=1)
     revision_evidence_cluster_ids: tuple[UUID, ...] = ()
     revision_evidence_semantic_fingerprints: tuple[str, ...] = ()
+    revision_evidence_source_detection_result_ids: tuple[UUID, ...] = ()
+    revision_evidence_endpoint_roles: tuple[ActorEvidenceEndpointRole, ...] = ()
     revision_reason: str = Field(min_length=1)
     engine_version: str = Field(min_length=1)
 
@@ -171,6 +221,9 @@ class EventHypothesisRevision(ContractModel):
         )
         if not isclose(total, 1.0, rel_tol=0.0, abs_tol=1e-6):
             raise ValueError("event hypothesis posteriors plus unresolved must sum to 1")
+        revival_total = sum(item.revival_probability for item in self.hypotheses)
+        if not isclose(revival_total, 1.0, rel_tol=0.0, abs_tol=1e-6):
+            raise ValueError("event hypothesis revival probabilities must sum to 1")
         if (
             not any(item.status == EventHypothesisStatus.ACTIVE for item in self.hypotheses)
             and self.unresolved_probability < 1.0
@@ -195,17 +248,34 @@ class EventHypothesisRevision(ContractModel):
                 raise ValueError("branch revision cannot consume actor evidence clusters")
             if self.revision_evidence_semantic_fingerprints:
                 raise ValueError("branch revision cannot consume actor evidence fingerprints")
+            if self.revision_evidence_source_detection_result_ids:
+                raise ValueError("branch revision cannot bind actor evidence endpoints")
+            if self.revision_evidence_endpoint_roles:
+                raise ValueError("branch revision cannot bind actor evidence endpoint roles")
         elif not (
             len(self.revision_evidence_record_ids)
             == len(self.revision_evidence_cluster_ids)
             == len(self.revision_evidence_semantic_fingerprints)
+            == len(self.revision_evidence_source_detection_result_ids)
+            == len(self.revision_evidence_endpoint_roles)
         ):
             raise ValueError(
-                "CHEH actor evidence records, clusters, and semantic fingerprints "
-                "must align one-to-one"
+                "CHEH actor evidence records, clusters, fingerprints, endpoint IDs, "
+                "and endpoint roles must align one-to-one"
             )
         if len(self.source_detection_result_ids) != len(set(self.source_detection_result_ids)):
             raise ValueError("CHEH endpoint detection IDs must be unique")
+        endpoint_by_role = {
+            ActorEvidenceEndpointRole.SOURCE_STATE: self.source_detection_result_ids[0],
+            ActorEvidenceEndpointRole.DESTINATION_STATE: self.source_detection_result_ids[1],
+        }
+        for evidence_source, endpoint_role in zip(
+            self.revision_evidence_source_detection_result_ids,
+            self.revision_evidence_endpoint_roles,
+            strict=True,
+        ):
+            if evidence_source != endpoint_by_role[endpoint_role]:
+                raise ValueError("actor evidence endpoint role does not match its source detection")
         if self.revision_no == 0 and not set(self.source_detection_result_ids).issubset(
             self.revision_evidence_record_ids
         ):
@@ -292,7 +362,7 @@ class EventHypothesisHistory(ContractModel):
         ]
         if len(semantic_fingerprints) != len(set(semantic_fingerprints)):
             raise ValueError("CHEH semantic actor evidence cannot be reused across revisions")
-        for previous, current in zip(self.revisions, self.revisions[1:]):
+        for previous, current in zip(self.revisions, self.revisions[1:], strict=False):
             if current.parent_revision_id != previous.revision_id:
                 raise ValueError("CHEH revision parent binding is broken")
             immutable_bindings = (

@@ -84,7 +84,7 @@ def test_cheh_branches_direct_and_handoff_chains_without_committing_top1():
     }
     assert any(
         tuple(step.event_type for step in item.steps)
-        == (EventType.PICK_UP, EventType.TRANSFER, EventType.CARRY, EventType.PLACE)
+        == (EventType.PICK_UP, EventType.CARRY, EventType.TRANSFER, EventType.PLACE)
         for item in revision.hypotheses
     )
     assert all(
@@ -355,6 +355,30 @@ def test_cheh_rejects_actor_evidence_one_hundred_days_after_its_endpoint():
 
     with pytest.raises(ValueError, match="time does not match its endpoint"):
         engine.revise_actor_responsibility(history, late_evidence)
+
+
+def test_cheh_actor_revision_requires_destination_endpoint_evidence():
+    case = actor_shift_case()
+    before, after, actor_evidence = transition_records(case)
+    engine = CounterfactualEventHypergraphEngine()
+    history = engine.branch(
+        before=before,
+        after=after,
+        actor_prior=actor_evidence.reference_actor_prior,
+    )
+    source_bound = actor_evidence.model_copy(
+        update={
+            "metadata": actor_evidence.metadata.model_copy(
+                update={"record_id": uuid4(), "recorded_time": before.detection_time}
+            ),
+            "source_detection_result_id": before.metadata.record_id,
+            "evidence_time": before.detection_time,
+            "evidence_cluster_id": uuid4(),
+        }
+    )
+
+    with pytest.raises(ValueError, match="destination endpoint"):
+        engine.revise_actor_responsibility(history, source_bound)
 
 
 @pytest.mark.parametrize("nested", (False, True), ids=("top-level", "nested"))

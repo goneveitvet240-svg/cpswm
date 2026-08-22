@@ -60,6 +60,11 @@ target-version = "py313"
 [tool.ruff.lint]
 select = ["E", "F", "I", "UP", "B", "SIM", "RUF"]
 
+[tool.ruff.lint.per-file-ignores]
+# 契约校验器一律用 "守卫条件 -> 要求" 的嵌套 if 表达规范原文
+# （安全门、M27 反馈有效性、纠正模式）。压成单个布尔会让安全关键检查更难 review。
+"src/cpswm/contracts/*.py" = ["SIM102"]
+
 [tool.mypy]
 python_version = "3.13"
 strict = true

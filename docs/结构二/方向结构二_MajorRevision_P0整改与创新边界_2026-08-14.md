@@ -22,7 +22,7 @@
 | 先验工作 | 证据等级 | 已覆盖功能 | 对本项目的限制 |
 |---|---|---|---|
 | Bernert & Ramparany, 2021, *A Belief Update System Using an Event Model for Location of People in a Smart Home* | full text checked（Springer HTML 全文） | 在稀疏智能家居观测间探索所有兼容事件序列，用事件序列解释新观察并更新人物位置事实 | “观测间隙事件序列 + 信念更新”不能作为 CHEH 新颖性 |
-| Damen & Hogg, 2012, *Explaining Activities as Consistent Groups of Events* | abstract only（作者仓储摘要；PDF 网络下载失败） | 用 Bayesian parse tree 表示全局事件解释；比较 greedy、multiple-hypothesis trees、RJMCMC 和整数规划求 MAP | “多事件候选/多假设解释”不能作为 CHEH 新颖性；必须在可撤销长期来源和行动污染上区分 |
+| Damen & Hogg, 2012, *Explaining Activities as Consistent Groups of Events* | full text checked（2026-08-21 下载 White Rose 作者稿并检查方法、搜索、实验、结论与限制） | 用 AMG 规定事件层次、属性与约束，映射为 Bayesian network；比较 greedy、MHT、RJMCMC-SA 和整数规划求全局 MAP | “相互依赖事件的全局一致解释/多假设搜索”不能作为 CHEH 新颖性；必须在跨时间可撤销来源、未知人物和行动污染上区分 |
 | Knoblauch & Damoulas, 2018, BOCPDMS | full text checked（PMLR PDF） | 在线联合维护 run length 和 model identity，并进行预测、模型选择与变点检测 | CF-BOCPD 不能只说“BOCPD 加原因变量”；cause-specific selective reset 必须改变不同长期参数块并产生行动收益 |
 | Boutilier, 1996, *Abduction to Plausible Causes: An Event-based Model of Belief Update* | full text checked（作者公开全文经搜索索引核验） | 用可信事件解释观察，再预测这些解释的后果，建立事件溯因式 belief update | “用事件解释新观察并更新信念”已有基础；CHEH 必须落在具身人物—物体责任、概率互斥、来源版本、迟到证据撤销和长期污染代价 |
 
@@ -69,4 +69,4 @@ p(r_t,C_t,Z_t,\Theta_t\mid D_{1:t}),\qquad
 - PCHMP / OPCEU / RGRC / CCRR / CIAV：仍按统一论文范围保留，不能删；下一步按依赖顺序实现；
 - 论文主张：仍为 `Major Revision`，禁止使用“首次”“已证明优于”或把 31 个定向测试当作论文实验。
 
-下一实施门：先扩展 M30 完整隐藏事件链和 faithful 2021/2012 baselines，再实现单流 CF-BOCPD 与 BOCPDMS 对照；随后才进入 PCHMP 联合消息传递、RGRC runtime authorization hard gate 与长期污染/具身效用实验。
+2026-08-21 推进：M30 `synthetic-routines@0.3` 已扩展为完整隐藏交接链；2021 compatible-sequence 和 2012 AMG constrained MAP 的领域适配基线已可运行。80-case 多 seed 死亡测试先发现 CHEH 完整链 Top-1=0.500、unknown handoff 不可表示。随后 ORRER v0.1 已实现开放未知角色、机制/有序角色证据、影子后验和正证据门控 reactivation；完整链与 unknown coverage 均修复到 1.0。但是获得相同三类证据、同样开放 unknown roles 的 matched AMG 也达到 1.0，所以 `strong baseline superiority` 仍失败。下一门为 ORRER×RGRC 的长期错误写入、可逆恢复成本和具身行动效用。项目二其余模块与统一单篇论文范围不删减。

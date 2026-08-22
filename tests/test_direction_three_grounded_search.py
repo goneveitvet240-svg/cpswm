@@ -714,7 +714,7 @@ def test_decide_revalidates_observation_actions(invalid_update, metadata_factory
     hypotheses = tuple(item.candidate_id for item in request.candidates)
     forged = action_candidate(hypotheses, informative=True).model_copy(update=invalid_update)
 
-    with pytest.raises(ValueError, match="invalid provider observation action|fields outside"):
+    with pytest.raises(ValueError, match=r"invalid provider observation action|fields outside"):
         DirectionThreePipeline().decide(request, (forged,))
 
 
@@ -782,7 +782,7 @@ def test_pipeline_binds_fusion_result_to_request(metadata_factory, entity_factor
 
     request = joint_request(metadata_factory, entity_factory, ambiguous=True)
 
-    with pytest.raises(ValueError, match="fusion result|grounded fusion result"):
+    with pytest.raises(ValueError, match=r"fusion result|grounded fusion result"):
         DirectionThreePipeline(fusion=MutatedFusion()).decide(request)
 
 

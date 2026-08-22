@@ -24,7 +24,7 @@ from cpswm.contracts.grounded_search import (
 )
 from cpswm.foundation.persistence_replay import AppendOnlyTransactionLog
 
-from .active_verification import InformationGainPlanner
+from .active_verification import ActionUtilityPlanner, InformationGainPlanner
 from .adapters import (
     GROUNDED_SEARCH_SCHEMA_VERSION,
     ActionOutcomeModelProvider,
@@ -63,26 +63,29 @@ class DirectionThreePipeline:
         self,
         *,
         fusion: JointPosteriorFusion | None = None,
-        planner: InformationGainPlanner | None = None,
+        planner: InformationGainPlanner | ActionUtilityPlanner | None = None,
         feedback_projector: ExecutionFeedbackProjector | None = None,
     ) -> None:
         self.fusion = fusion or JointPosteriorFusion()
-        self.planner = planner or InformationGainPlanner()
+        self.planner = planner or ActionUtilityPlanner()
         self.feedback_projector = feedback_projector or ExecutionFeedbackProjector()
 
     def decide(
         self,
         request: JointPosteriorRequest,
         observation_actions: tuple[ObservationActionCandidate, ...] = (),
+        *,
+        terminal_decision_utilities: dict[UUID, dict[UUID, float]] | None = None,
     ) -> GroundedSearchCycle:
         request = self._validate_request(request)
         result = self._fuse_validated(request)
         if result.response_policy != ResponsePolicy.ACTIVE_VERIFY:
             return GroundedSearchCycle(search_result=result, observation_plan=None)
         observation_actions = self._validate_observation_actions(result, observation_actions)
-        plan = self.planner.select(
+        plan = self._plan_verification(
             result.posterior_by_candidate_id,
             observation_actions,
+            terminal_decision_utilities=terminal_decision_utilities,
         )
         return GroundedSearchCycle(search_result=result, observation_plan=plan)
 
@@ -97,6 +100,7 @@ class DirectionThreePipeline:
         canonical_log: AppendOnlyTransactionLog,
         max_cycles: int = 8,
         success_threshold: float = 0.95,
+        terminal_decision_utilities: dict[UUID, dict[UUID, float]] | None = None,
     ) -> GroundedSearchClosedLoop:
         """Run the M29-L0 oracle loop through canonical M27 feedback writeback."""
 
@@ -125,7 +129,11 @@ class DirectionThreePipeline:
                 actions = tuple(
                     action for action in proposed_actions if action.action_id not in used_action_ids
                 )
-                plan = self.planner.select(result.posterior_by_candidate_id, actions)
+                plan = self._plan_verification(
+                    result.posterior_by_candidate_id,
+                    actions,
+                    terminal_decision_utilities=terminal_decision_utilities,
+                )
                 cycles.append(GroundedSearchCycle(result, plan))
                 if not plan.should_act or plan.selected_action_id is None:
                     return GroundedSearchClosedLoop(
@@ -268,6 +276,28 @@ class DirectionThreePipeline:
             last_target_id,
             "maximum_closed_loop_cycles_reached",
         )
+
+    def _plan_verification(
+        self,
+        prior: dict[UUID, float],
+        actions: tuple[ObservationActionCandidate, ...],
+        *,
+        terminal_decision_utilities: dict[UUID, dict[UUID, float]] | None,
+    ) -> ActiveObservationPlan:
+        if isinstance(self.planner, ActionUtilityPlanner):
+            utilities = terminal_decision_utilities or {
+                decision_id: {
+                    hypothesis_id: 1.0 if decision_id == hypothesis_id else 0.0
+                    for hypothesis_id in prior
+                }
+                for decision_id in prior
+            }
+            return self.planner.select(
+                prior,
+                actions,
+                terminal_decision_utilities=utilities,
+            )
+        return self.planner.select(prior, actions)
 
     @staticmethod
     def _validate_contract_metadata(

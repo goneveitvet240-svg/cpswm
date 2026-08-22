@@ -7,7 +7,7 @@ uv run --extra dev pytest -n auto --cov=src --cov-report=term-missing \
   > .checkout/pytest.log 2>&1
 PYTEST_RC=$?
 tail -25 .checkout/pytest.log
-echo "[pytest 退出码: $PYTEST_RC，完整日志: .checkout/pytest.log]"
+echo "[pytest 退出码: ${PYTEST_RC}，完整日志: .checkout/pytest.log]"
 
 echo
 echo "================ 2. mypy (strict) ================"
@@ -18,11 +18,14 @@ echo "--- 错误按模块统计（Top 15）---"
 grep -oE '^src/[^:]+' .checkout/mypy.log 2>/dev/null | sort | uniq -c | sort -rn | head -15
 echo "--- 错误按类型统计（Top 10）---"
 grep -oE '\[[a-z-]+\]$' .checkout/mypy.log 2>/dev/null | sort | uniq -c | sort -rn | head -10
-echo "[mypy 退出码: $MYPY_RC，完整日志: .checkout/mypy.log]"
+echo "[mypy 退出码: ${MYPY_RC}，完整日志: .checkout/mypy.log]"
 
 echo
 echo "================ 3. ruff ================"
-uv run --extra dev ruff check src tests 2>&1 | tail -5
+uv run --extra dev ruff check src tests --output-format=concise > .checkout/ruff.log 2>&1
+echo "--- ruff 错误按规则统计 ---"
+grep -oE ' [A-Z]+[0-9]+ ' .checkout/ruff.log | tr -d ' ' | sort | uniq -c | sort -rn
+tail -3 .checkout/ruff.log
 uv run --extra dev ruff format --check src tests 2>&1 | tail -3
 
 echo

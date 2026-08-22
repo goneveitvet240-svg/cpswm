@@ -86,6 +86,11 @@ class ObservationActionType(StrEnum):
     ASK_USER = "ask_user"
 
 
+class ObservationPlannerObjective(StrEnum):
+    INFORMATION_GAIN = "information_gain"
+    DECISION_UTILITY = "decision_utility"
+
+
 class ObservationRiskType(StrEnum):
     """Risk families that require an explicit gate before physical inspection."""
 
@@ -534,6 +539,11 @@ class ObservationActionScore(ContractModel):
     expected_posterior_entropy: float = Field(ge=0.0)
     total_cost: float = Field(ge=0.0)
     net_value: float
+    objective: ObservationPlannerObjective = ObservationPlannerObjective.INFORMATION_GAIN
+    baseline_decision_utility: float | None = None
+    expected_decision_utility: float | None = None
+    expected_utility_gain: float | None = Field(default=None, ge=0.0)
+    recommended_terminal_decision_by_outcome: dict[str, UUID] = Field(default_factory=dict)
 
 
 class ActiveObservationPlan(ContractModel):

@@ -24,6 +24,7 @@ from cpswm.system.synthetic_routines import (
     ObjectRoutineSpec,
     RoutineChangeKind,
     RoutineChangeSpec,
+    RoutineEventType,
     RoutineGenerationConfig,
     SyntheticRoutineGenerator,
 )
@@ -255,7 +256,11 @@ def test_f0_book_on_sofa_slice_is_replayable_and_gt_isolated():
     first_plan = generator.generate(build_routine_config())
     replay_plan = generator.generate(build_routine_config())
     assert first_plan == replay_plan
-    assert [event.destination_location_id for event in first_plan.events] == [
+    assert [
+        event.destination_location_id
+        for event in first_plan.events
+        if event.event_type == RoutineEventType.PLACE
+    ] == [
         uid(6),
         uid(7),
         uid(6),
@@ -337,7 +342,7 @@ def test_evaluator_rejects_a_simulation_with_a_different_seed():
     view = run_benchmark_view(plan, policy)
     mismatched = rehash_benchmark_view(view, visible_updates={"random_seed": 7})
 
-    with pytest.raises(ValueError, match="random seed|run ID"):
+    with pytest.raises(ValueError, match=r"random seed|run ID"):
         EvaluationRunner().evaluate(
             manifest,
             mismatched,
@@ -359,7 +364,6 @@ def test_checked_in_f0_benchmark_assets_produce_the_implemented_report():
     )
 
     plan = SyntheticRoutineGenerator().generate(routine_config)
-    simulation = SymbolicWorldModelSimulator().run(plan, policy)
     report = EvaluationRunner().evaluate(
         manifest, run_benchmark_view(plan, policy), track=EvaluationTrack.CONTROLLED_NOISE
     )
@@ -417,8 +421,10 @@ def test_observation_clock_is_independent_of_hidden_truth_event_cardinality():
     base = SymbolicWorldModelSimulator().run(base_plan, policy)
     expanded = SymbolicWorldModelSimulator().run(expanded_plan, policy)
 
-    assert len(base_plan.events) == 3
-    assert len(expanded_plan.events) == 6
+    assert len(base_plan.events) == 9
+    assert len(expanded_plan.events) == 18
+    assert sum(event.event_type == RoutineEventType.PLACE for event in base_plan.events) == 3
+    assert sum(event.event_type == RoutineEventType.PLACE for event in expanded_plan.events) == 6
     assert tuple(item.opportunity_time for item in base.observation_opportunities) == (
         tuple(item.opportunity_time for item in expanded.observation_opportunities)
     )
@@ -535,8 +541,6 @@ def test_controlled_recall_ignores_unrelated_hidden_truth_events():
     expanded_plan = generator.generate(expanded_config)
     policy = build_policy()
     simulator = SymbolicWorldModelSimulator()
-    base_simulation = simulator.run(base_plan, policy)
-    expanded_simulation = simulator.run(expanded_plan, policy)
     base_manifest = build_manifest(base_plan, policy)
     expanded_manifest = update_manifest(
         build_manifest(expanded_plan, policy),
@@ -907,7 +911,7 @@ def test_duplicate_detection_from_a_low_recall_run_is_rejected():
     )
     duplicated = rehash_simulation(
         low_recall,
-        detection_results=low_recall.detection_results + (duplicate,),
+        detection_results=(*low_recall.detection_results, duplicate),
     )
 
     with pytest.raises(ValueError, match="multiple detection results"):
@@ -922,7 +926,6 @@ def test_recall_with_no_anomaly_truth_is_undefined():
     config = build_routine_config().model_copy(update={"changes": ()})
     plan = SyntheticRoutineGenerator().generate(config)
     policy = build_policy()
-    simulation = SymbolicWorldModelSimulator().run(plan, policy)
     manifest = build_manifest(plan, policy)
 
     report = EvaluationRunner().evaluate(
@@ -1084,7 +1087,7 @@ def test_evaluator_rejects_truncated_results_by_content_hash():
 
     with pytest.raises(
         ValueError,
-        match="simulation content hash|every observation opportunity requires",
+        match=r"simulation content hash|every observation opportunity requires",
     ):
         EvaluationRunner().evaluate(
             manifest,
@@ -1127,7 +1130,7 @@ def test_evaluator_rejects_ground_truth_tampering_by_content_hash():
     )
     tampered = view.model_copy(update={"ground_truth": tampered_truth})
 
-    with pytest.raises(ValueError, match="privileged (?:simulation )?content hash"):
+    with pytest.raises(ValueError, match=r"privileged (?:simulation )?content hash"):
         EvaluationRunner().evaluate(
             manifest,
             tampered,
@@ -1141,13 +1144,23 @@ def test_manifest_rejects_self_consistent_tampered_simulation_hash():
     manifest = build_manifest(plan, policy)
     view = run_benchmark_view(plan, policy)
     simulation = view.visible_result
+    first_chain_id = view.ground_truth.interaction_events[0].event_chain_id
     truncated = rehash_benchmark_view(
         view,
         visible_updates={
             "observation_opportunities": simulation.observation_opportunities[:1],
             "detection_results": simulation.detection_results[:1],
         },
-        ground_truth=view.ground_truth.model_copy(update={"events": view.ground_truth.events[:1]}),
+        ground_truth=view.ground_truth.model_copy(
+            update={
+                "events": view.ground_truth.events[:1],
+                "interaction_events": tuple(
+                    event
+                    for event in view.ground_truth.interaction_events
+                    if event.event_chain_id == first_chain_id
+                ),
+            }
+        ),
     )
 
     with pytest.raises(ValueError, match="does not match benchmark manifest"):
@@ -1180,10 +1193,9 @@ def test_evaluator_revalidates_ground_truth_after_model_copy():
 def test_evaluator_revalidates_duplicate_manifest_metrics_after_model_copy():
     plan = SyntheticRoutineGenerator().generate(build_routine_config())
     policy = build_policy()
-    simulation = SymbolicWorldModelSimulator().run(plan, policy)
     manifest = build_manifest(plan, policy)
     duplicated = manifest.model_copy(
-        update={"metric_names": manifest.metric_names + ("controlled_observation_recall",)}
+        update={"metric_names": (*manifest.metric_names, "controlled_observation_recall")}
     )
 
     with pytest.raises(ValueError, match="metric_names must not contain duplicates"):
@@ -1428,7 +1440,6 @@ def test_recall_matching_maximizes_cardinality_instead_of_greedy_latest_truth():
 def test_evaluation_report_self_hash_rejects_round_trip_mutation():
     plan = SyntheticRoutineGenerator().generate(build_routine_config())
     policy = build_policy()
-    simulation = SymbolicWorldModelSimulator().run(plan, policy)
     manifest = build_manifest(plan, policy)
     report = EvaluationRunner().evaluate(
         manifest,
@@ -1453,7 +1464,6 @@ def rehash_evaluation_report(report, **updates):
 def test_evaluation_report_rejects_self_consistent_run_identity_tampering():
     plan = SyntheticRoutineGenerator().generate(build_routine_config())
     policy = build_policy()
-    simulation = SymbolicWorldModelSimulator().run(plan, policy)
     report = EvaluationRunner().evaluate(
         build_manifest(plan, policy),
         run_benchmark_view(plan, policy),
@@ -1488,7 +1498,6 @@ def test_evaluation_report_rejects_self_consistent_run_identity_tampering():
 def test_evaluation_report_rejects_metric_binding_and_duplicate_names():
     plan = SyntheticRoutineGenerator().generate(build_routine_config())
     policy = build_policy()
-    simulation = SymbolicWorldModelSimulator().run(plan, policy)
     report = EvaluationRunner().evaluate(
         build_manifest(plan, policy),
         run_benchmark_view(plan, policy),
@@ -1525,7 +1534,6 @@ def test_evaluation_report_rejects_invalid_recall_semantics(
 ):
     plan = SyntheticRoutineGenerator().generate(build_routine_config())
     policy = build_policy()
-    simulation = SymbolicWorldModelSimulator().run(plan, policy)
     report = EvaluationRunner().evaluate(
         build_manifest(plan, policy),
         run_benchmark_view(plan, policy),
@@ -1556,7 +1564,6 @@ def test_contextual_or_persistent_change_is_not_scored_as_anomaly(change_kind):
     change = config.changes[0].model_copy(update={"kind": change_kind})
     plan = SyntheticRoutineGenerator().generate(config.model_copy(update={"changes": (change,)}))
     policy = build_policy()
-    simulation = SymbolicWorldModelSimulator().run(plan, policy)
     manifest = build_manifest(plan, policy)
 
     report = EvaluationRunner().evaluate(

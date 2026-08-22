@@ -5,6 +5,7 @@ from __future__ import annotations
 import random
 from datetime import datetime, timedelta
 from math import atan2, degrees, hypot
+from typing import ClassVar
 from uuid import NAMESPACE_URL, UUID, uuid5
 
 from pydantic import BaseModel, Field, ValidationError, field_validator, model_validator
@@ -20,10 +21,12 @@ from cpswm.contracts import (
 )
 from cpswm.contracts.base import ContractModel, Probability, require_aware
 from cpswm.system.reproducibility import content_sha256, content_uuid
-from cpswm.system.synthetic_routines import RoutineChangeKind, RoutinePlan
+from cpswm.system.synthetic_routines import RoutineChangeKind, RoutineEventType, RoutinePlan
 from cpswm_gt import (
     GroundTruthHabitTrajectory,
     GTHabitRegimeKind,
+    GTInteractionEvent,
+    GTInteractionEventType,
     GTPlacementEvent,
 )
 from simobs import SelectiveObservationSample, simulate_location_observation
@@ -331,7 +334,7 @@ class PrivilegedSymbolicSimulationView(ContractModel):
 class SymbolicWorldModelSimulator:
     """Execute planned placements and expose only finite observation records."""
 
-    _REGIME_MAP = {
+    _REGIME_MAP: ClassVar[dict[RoutineChangeKind, GTHabitRegimeKind]] = {
         RoutineChangeKind.STATIONARY_ROUTINE: GTHabitRegimeKind.STABLE,
         RoutineChangeKind.PERIODIC_CONTEXT: GTHabitRegimeKind.CONTEXTUAL,
         RoutineChangeKind.ISOLATED_ANOMALY: GTHabitRegimeKind.TEMPORARY_EXCEPTION,
@@ -522,7 +525,6 @@ class SymbolicWorldModelSimulator:
         opportunities: list[ObservationOpportunityRecord] = []
         detection_results: list[ObservationDetectionResult] = []
         location_geometry = {item.location_id: item for item in policy.location_geometry}
-        target_object_id = policy.scheduled_observation_object_id
         if initial_target_location_id not in location_geometry:
             raise ValueError("location geometry must cover the public initial target location")
 
@@ -666,7 +668,26 @@ class SymbolicWorldModelSimulator:
                     regime_kind=self._REGIME_MAP[event.regime_kind],
                 )
                 for event in plan.events
-                if event.destination_location_id is not None
+                if event.event_type == RoutineEventType.PLACE
+            ),
+            interaction_events=tuple(
+                GTInteractionEvent(
+                    gt_event_id=event.event_id,
+                    event_chain_id=event.event_chain_id,
+                    sequence_no=event.sequence_no,
+                    event_time=event.event_time,
+                    event_type=GTInteractionEventType(event.event_type.value),
+                    actor_gt_entity_id=event.actor_id,
+                    recipient_actor_gt_entity_id=event.recipient_actor_id,
+                    object_gt_entity_id=event.object_instance_id,
+                    source_location_gt_entity_id=event.source_location_id,
+                    destination_location_gt_entity_id=event.destination_location_id,
+                    context_key=event.context_key,
+                    regime_id=event.regime_id,
+                    regime_kind=self._REGIME_MAP[event.regime_kind],
+                )
+                for event in plan.events
+                if event.event_chain_id is not None
             ),
         )
 

@@ -1,6 +1,6 @@
 """Direction-structure-three grounded search baseline implementations."""
 
-from .active_verification import InformationGainPlanner
+from .active_verification import ActionUtilityPlanner, InformationGainPlanner
 from .adapters import (
     ActionOutcomeModelProvider,
     GroundedCandidateRetriever,
@@ -32,6 +32,7 @@ from .pipeline import (
 
 __all__ = [
     "ActionOutcomeModelProvider",
+    "ActionUtilityPlanner",
     "DirectionThreePipeline",
     "ExecutionFeedbackProjector",
     "GroundedCandidateRetriever",

@@ -32,7 +32,7 @@ class ReplayRun(ContractModel):
         if len(self.output_payloads) != len(self.output_fingerprints):
             raise ValueError("output_payloads and output_fingerprints must have equal length")
         for index, (payload, fingerprint) in enumerate(
-            zip(self.output_payloads, self.output_fingerprints)
+            zip(self.output_payloads, self.output_fingerprints, strict=True)
         ):
             if content_hash(payload) != fingerprint:
                 raise ValueError(
@@ -236,7 +236,7 @@ def compare_replay_runs(
         return False
     return all(
         _values_equal(left, right, effective_tolerance)
-        for left, right in zip(first.output_payloads, second.output_payloads)
+        for left, right in zip(first.output_payloads, second.output_payloads, strict=True)
     )
 
 
@@ -255,6 +255,6 @@ def _values_equal(left: Any, right: Any, tolerance: float) -> bool:
         )
     if isinstance(left, (list, tuple)) and isinstance(right, (list, tuple)):
         return len(left) == len(right) and all(
-            _values_equal(a, b, tolerance) for a, b in zip(left, right)
+            _values_equal(a, b, tolerance) for a, b in zip(left, right, strict=True)
         )
     return left == right

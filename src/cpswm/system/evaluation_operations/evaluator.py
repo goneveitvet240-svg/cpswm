@@ -5,6 +5,7 @@ from __future__ import annotations
 import re
 from collections.abc import Iterator
 from datetime import timedelta
+from pathlib import Path
 from uuid import UUID
 
 from pydantic import BaseModel, Field, ValidationError, model_validator
@@ -15,6 +16,14 @@ from cpswm.contracts import (
     ObservationOutcome,
 )
 from cpswm.contracts.base import ContractModel
+from cpswm.foundation.runtime_orchestration.provenance import (
+    DIRTY_WORKING_TREE_SUFFIX,
+    UNVERSIONED_CODE_VERSION,
+    RuntimeProvenanceError,
+    file_sha256,
+    git_head_code_version,
+    source_tree_sha256,
+)
 from cpswm.system.household_memory_benchmark import (
     BenchmarkManifest,
     BenchmarkTaskFamily,
@@ -32,6 +41,7 @@ from cpswm.system.world_model_simulator.symbolic import (
 from cpswm_gt import (
     GroundTruthHabitTrajectory,
     GTHabitRegimeKind,
+    GTInteractionEvent,
     GTPlacementEvent,
 )
 
@@ -50,6 +60,79 @@ _BOUNDED_RATE_METRICS = frozenset(
 )
 
 
+#: Repository root inferred from this module's location.
+REPOSITORY_ROOT = Path(__file__).resolve().parents[4]
+
+
+class EvaluationProvenance(ContractModel):
+    """Measured identity of the code that produced an evaluation report.
+
+    ``evaluator_version`` alone is a hardcoded literal and therefore a claim,
+    not a measurement: changing the metric computation does not change it.  The
+    hashes below are measured from the running tree, so an altered evaluator
+    cannot present itself as the released one.
+    """
+
+    code_version: str = Field(min_length=1)
+    source_tree_sha256: str = Field(pattern=r"^[0-9a-f]{64}$")
+    evaluator_module_sha256: str = Field(pattern=r"^[0-9a-f]{64}$")
+    #: ``None`` means the working-tree state could not be determined at all.
+    #: It is never silently reported as clean.
+    working_tree_clean: bool | None
+
+    @model_validator(mode="after")
+    def validate_working_tree_claim(self) -> EvaluationProvenance:
+        if self.code_version == UNVERSIONED_CODE_VERSION:
+            if self.working_tree_clean is not None:
+                raise ValueError("an unversioned tree cannot claim a known working-tree state")
+            return self
+        marked_dirty = self.code_version.endswith(DIRTY_WORKING_TREE_SUFFIX)
+        if self.working_tree_clean is None:
+            raise ValueError("a versioned tree must state its working-tree state")
+        if self.working_tree_clean is marked_dirty:
+            raise ValueError("working_tree_clean contradicts the recorded code_version")
+        return self
+
+    @classmethod
+    def measure(cls, repository_root: Path | str | None = None) -> EvaluationProvenance:
+        root = Path(repository_root or REPOSITORY_ROOT).resolve()
+        try:
+            code_version = git_head_code_version(root)
+            # Unknown is not clean: without Git we cannot rule out local edits.
+            working_tree_clean: bool | None = not code_version.endswith(DIRTY_WORKING_TREE_SUFFIX)
+        except RuntimeProvenanceError:
+            code_version = UNVERSIONED_CODE_VERSION
+            working_tree_clean = None
+        return cls(
+            code_version=code_version,
+            source_tree_sha256=source_tree_sha256(root),
+            evaluator_module_sha256=file_sha256(Path(__file__).resolve()),
+            working_tree_clean=working_tree_clean,
+        )
+
+    def verify_against(self, repository_root: Path | str | None = None) -> None:
+        """Raise unless this block matches code measured from ``repository_root``.
+
+        A report cannot authenticate itself: its self-hash only proves internal
+        consistency, so a forger who recomputes every derived field produces a
+        valid-looking report.  This is the reviewer-side check that turns the
+        recorded provenance into a claim that can actually be falsified against
+        a checkout.
+        """
+
+        measured = type(self).measure(repository_root)
+        if self.source_tree_sha256 != measured.source_tree_sha256:
+            raise ValueError("reported source_tree_sha256 does not match the checked-out tree")
+        if self.evaluator_module_sha256 != measured.evaluator_module_sha256:
+            raise ValueError(
+                "reported evaluator_module_sha256 does not match the checked-out evaluator"
+            )
+
+    @property
+    def content_sha256(self) -> str:
+        return content_sha256(self.model_dump(mode="json"))
+
+
 def evaluation_run_identity(
     *,
     manifest_id: str,
@@ -59,6 +142,7 @@ def evaluation_run_identity(
     simulation_content_sha256: str,
     track: EvaluationTrack,
     evaluator_version: str,
+    provenance_sha256: str,
 ) -> UUID:
     """Return the canonical identity for a fully bound evaluation run."""
 
@@ -72,6 +156,7 @@ def evaluation_run_identity(
             "simulation_content_sha256": simulation_content_sha256,
             "track": track,
             "evaluator_version": evaluator_version,
+            "provenance_sha256": provenance_sha256,
         },
     )
 
@@ -107,7 +192,8 @@ class EvaluationReport(ContractModel):
     metrics: tuple[MetricRecord, ...] = Field(min_length=1)
     ground_truth_leakage_detected: bool
     failure_reasons: tuple[str, ...] = ()
-    evaluator_version: str = "f0-evaluator@0.9"
+    evaluator_version: str = "f0-evaluator@0.10"
+    provenance: EvaluationProvenance
 
     @model_validator(mode="after")
     def validate_identity_bindings_and_content_hash(self) -> EvaluationReport:
@@ -119,6 +205,7 @@ class EvaluationReport(ContractModel):
             simulation_content_sha256=self.simulation_content_sha256,
             track=self.track,
             evaluator_version=self.evaluator_version,
+            provenance_sha256=self.provenance.content_sha256,
         )
         if self.evaluation_run_id != expected_run_id:
             raise ValueError("evaluation_run_id does not match evaluation report inputs")
@@ -204,6 +291,7 @@ class EvaluationRunner:
         benchmark_view: PrivilegedSymbolicSimulationView,
         *,
         track: EvaluationTrack,
+        provenance: EvaluationProvenance | None = None,
     ) -> EvaluationReport:
         manifest = self._revalidate_manifest(manifest)
         benchmark_view = self._revalidate_benchmark_view(benchmark_view)
@@ -211,6 +299,12 @@ class EvaluationRunner:
         if track not in manifest.tracks:
             raise ValueError("evaluation track is not enabled by the manifest")
         self._validate_manifest_binding(manifest, benchmark_view)
+        # Measured, not declared: an altered evaluator yields a different
+        # source/module hash and therefore a different evaluation_run_id.
+        measured_provenance = EvaluationProvenance.measure()
+        if provenance is not None and provenance != measured_provenance:
+            raise ValueError("declared evaluation provenance does not match the running code")
+        provenance = measured_provenance
         evaluation_run_id = evaluation_run_identity(
             manifest_id=manifest.manifest_id,
             manifest_version=manifest.manifest_version,
@@ -219,6 +313,7 @@ class EvaluationRunner:
             simulation_content_sha256=simulation.simulation_content_sha256,
             track=track,
             evaluator_version=EvaluationReport.model_fields["evaluator_version"].default,
+            provenance_sha256=measured_provenance.content_sha256,
         )
         truth = benchmark_view.ground_truth.events
         scored_truth = tuple(
@@ -254,6 +349,7 @@ class EvaluationRunner:
         failures = self._detect_ground_truth_leakage(
             simulation,
             truth,
+            interaction_events=benchmark_view.ground_truth.interaction_events,
         )
         leakage = bool(failures)
 
@@ -323,6 +419,7 @@ class EvaluationRunner:
             ground_truth_leakage_detected=leakage,
             failure_reasons=failures,
             evaluator_version=evaluator_version,
+            provenance=provenance,
         )
         return EvaluationReport(
             **report_payload,
@@ -340,6 +437,8 @@ class EvaluationRunner:
         cls,
         simulation: SymbolicSimulationResult,
         truth_events: tuple[GTPlacementEvent, ...],
+        *,
+        interaction_events: tuple[GTInteractionEvent, ...] = (),
     ) -> tuple[str, ...]:
         """Detect explicit privileged references in robot-visible records.
 
@@ -349,7 +448,7 @@ class EvaluationRunner:
         successful detection outputs and are outside this detector's scope.
         """
 
-        gt_event_ids = {event.gt_event_id for event in truth_events}
+        gt_event_ids = {event.gt_event_id for event in (*truth_events, *interaction_events)}
         gt_event_tokens = {
             token.casefold() for event_id in gt_event_ids for token in (str(event_id), event_id.hex)
         }

@@ -138,6 +138,7 @@ from .structure_two_action_death_test import (
     StructureTwoActionDeathTest,
     StructureTwoActionDeathTestReport,
     StructureTwoActionScenarioGenerator,
+    VisibleActionCase,
 )
 
 __all__ = [
@@ -249,6 +250,7 @@ __all__ = [
     "StructureTwoActionScenarioGenerator",
     "TuningBudget",
     "TuningCompletionReceipt",
+    "VisibleActionCase",
     "compare_baselines",
     "default_baselines",
     "evaluation_run_identity",

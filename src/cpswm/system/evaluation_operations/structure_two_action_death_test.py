@@ -131,7 +131,9 @@ class ActionDayTruth(ContractModel):
     mechanism: EventMechanism
 
 
-class ActionGeneratedCase(ContractModel):
+class VisibleActionCase(ContractModel):
+    """Model-visible inputs only; this contract structurally excludes truth."""
+
     case_id: str = Field(min_length=1)
     seed: int = Field(ge=0)
     object_instance_id: UUID
@@ -139,11 +141,17 @@ class ActionGeneratedCase(ContractModel):
     guest_actor: str = Field(min_length=1)
     locations: tuple[UUID, ...] = Field(min_length=2)
     days: tuple[ActionDayObservation, ...] = Field(min_length=1)
+
+
+class ActionGeneratedCase(ContractModel):
+    """An evaluator case: a visible slice plus evaluator-only truth."""
+
+    visible: VisibleActionCase
     truth_by_day: dict[int, ActionDayTruth]
 
     @model_validator(mode="after")
     def validate_binding(self) -> ActionGeneratedCase:
-        if set(self.truth_by_day) != {obs.day for obs in self.days}:
+        if set(self.truth_by_day) != {obs.day for obs in self.visible.days}:
             raise ValueError("truth must cover exactly the observed days")
         return self
 
@@ -347,13 +355,15 @@ class StructureTwoActionScenarioGenerator:
                 )
             )
         return ActionGeneratedCase(
-            case_id=f"structure-two-action-seed-{seed}",
-            seed=seed,
-            object_instance_id=object_id,
-            owner_actor=owner,
-            guest_actor=guest,
-            locations=locations,
-            days=tuple(observations),
+            visible=VisibleActionCase(
+                case_id=f"structure-two-action-seed-{seed}",
+                seed=seed,
+                object_instance_id=object_id,
+                owner_actor=owner,
+                guest_actor=guest,
+                locations=locations,
+                days=tuple(observations),
+            ),
             truth_by_day=truth,
         )
 
@@ -560,7 +570,13 @@ class _OwnerHabitState:
 
     def argmax_owner(self) -> UUID:
         posterior = self.owner_posterior()
-        return max(posterior, key=lambda location: posterior[location])
+        # Tie-break on the location UUID itself so the argmax is invariant to
+        # the order of the ``locations`` tuple (location permutation
+        # equivariance).
+        return max(
+            self.locations,
+            key=lambda location: (posterior[location], str(location)),
+        )
 
     def write_owner(self, location: UUID) -> None:
         counts = self._active_counts()
@@ -572,7 +588,7 @@ class _AMGMethod:
 
     name = ActionBaselineMethod.AMG_2012
 
-    def __init__(self, case: ActionGeneratedCase) -> None:
+    def __init__(self, case: VisibleActionCase) -> None:
         self.case = case
         self.engine = OpenWorldRoleConditionedReversibleEventRevisionEngine()
         self.amg = DamenHogg2012AMGMatchedEvidenceBaseline()
@@ -634,7 +650,7 @@ class _OStarMethod:
 
     name = ActionBaselineMethod.O_STAR
 
-    def __init__(self, case: ActionGeneratedCase) -> None:
+    def __init__(self, case: VisibleActionCase) -> None:
         self.case = case
         self.counts: dict[UUID, float] = {location: 1.0 for location in case.locations}
         self.last_location: UUID | None = None
@@ -658,7 +674,7 @@ class _DynaMemMethod:
 
     name = ActionBaselineMethod.DYNAMEM
 
-    def __init__(self, case: ActionGeneratedCase) -> None:
+    def __init__(self, case: VisibleActionCase) -> None:
         self.case = case
         self.last_location: UUID | None = None
 
@@ -676,7 +692,7 @@ class _STARMethod:
 
     name = ActionBaselineMethod.STAR
 
-    def __init__(self, case: ActionGeneratedCase) -> None:
+    def __init__(self, case: VisibleActionCase) -> None:
         self.case = case
         self.counts: dict[UUID, float] = {location: 0.0 for location in case.locations}
         self.last_location: UUID | None = None
@@ -703,7 +719,7 @@ class _PchmpCcrrRgrcMethod:
 
     name = ActionBaselineMethod.PCHMP_CCRR_RGRC
 
-    def __init__(self, case: ActionGeneratedCase) -> None:
+    def __init__(self, case: VisibleActionCase) -> None:
         self.case = case
         self.orrer = OpenWorldRoleConditionedReversibleEventRevisionEngine()
         self.pchmp = ProvenanceConstrainedMessagePassing()
@@ -873,7 +889,7 @@ class _ActionMethod(Protocol):
 
 
 _METHOD_FACTORIES: dict[
-    ActionBaselineMethod, Callable[[ActionGeneratedCase], _ActionMethod]
+    ActionBaselineMethod, Callable[[VisibleActionCase], _ActionMethod]
 ] = {
     ActionBaselineMethod.AMG_2012: _AMGMethod,
     ActionBaselineMethod.O_STAR: _OStarMethod,
@@ -918,8 +934,8 @@ class StructureTwoActionDeathTest:
             search_cost_total = 0.0
             search_days = 0
             for case in cases:
-                state = _METHOD_FACTORIES[method](case)
-                for obs in case.days:
+                state = _METHOD_FACTORIES[method](case.visible)
+                for obs in case.visible.days:
                     state.observe(obs)
                     truth = case.truth_by_day[obs.day]
                     put_back = state.predict(ActionTaskType.PUT_BACK)
@@ -928,16 +944,16 @@ class StructureTwoActionDeathTest:
                     search_correct = search == truth.true_location_after
                     # Search cost: visit locations in belief order until found.
                     search_cost = self._search_cost(
-                        state, truth.true_location_after, case.locations
+                        state, truth.true_location_after, case.visible.locations
                     )
                     search_days += 1
                     search_cost_total += search_cost
                     if not put_back_correct:
-                        per_case_error[case.case_id] += 1
+                        per_case_error[case.visible.case_id] += 1
                     if not search_correct:
-                        per_case_search_error[case.case_id] += 1
+                        per_case_search_error[case.visible.case_id] += 1
                     result = ActionDayResult(
-                        case_id=case.case_id,
+                        case_id=case.visible.case_id,
                         method=method,
                         day=obs.day,
                         put_back_correct=put_back_correct,

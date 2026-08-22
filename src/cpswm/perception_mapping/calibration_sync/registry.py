@@ -157,7 +157,10 @@ class CalibrationRegistry:
                 continue
             if item.source_clock_domain != envelope.clock_domain:
                 continue
-            if expected_target_clock is not None and item.target_clock_domain != expected_target_clock:
+            if (
+                expected_target_clock is not None
+                and item.target_clock_domain != expected_target_clock
+            ):
                 continue
             return item
         return None

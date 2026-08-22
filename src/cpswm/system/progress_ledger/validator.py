@@ -89,7 +89,9 @@ class ValidationReport:
     @property
     def required_gates_passed(self) -> bool:
         required = [gate for gate in self.gate_results if gate.required]
-        return bool(required) and all(gate.passed for gate in required)
+        return (
+            self.internally_consistent and bool(required) and all(gate.passed for gate in required)
+        )
 
     def as_dict(self) -> dict[str, object]:
         return {
@@ -211,8 +213,7 @@ def _check_evidence_dedup(ledger: ProgressLedger, report: ValidationReport) -> N
             previous = seen.get(artifact.path)
             if previous is not None:
                 report.errors.append(
-                    f"evidence {artifact.path} is claimed by both "
-                    f"{previous} and {entry.module_id}"
+                    f"evidence {artifact.path} is claimed by both {previous} and {entry.module_id}"
                 )
             else:
                 seen[artifact.path] = entry.module_id

@@ -24,6 +24,11 @@ import hashlib
 from dataclasses import dataclass
 from uuid import UUID, uuid4
 
+from cpswm.contracts import (
+    ActionOutcomeLikelihoodModel,
+    DecisionContextBinding,
+    ExecutionFeedbackRecord,
+)
 from cpswm.world_model.grounded_search.concurrent_map_task import (
     BeliefSnapshot,
     ExactActionRiskVerifier,
@@ -33,6 +38,7 @@ from cpswm.world_model.grounded_search.concurrent_map_task import (
     VersionSwitchDecision,
 )
 
+from .execution_feedback_projector import ExecutionFeedbackProjector, ProjectedFeedbackEvidence
 from .hybrid_statistics import (
     ConsolidationRiskCertificate,
     HybridPromotion,
@@ -87,6 +93,7 @@ class HybridEventToTaskCoordinatorLoop:
         self._watermark = 0
         self._deltas_by_revision: dict[UUID, list[UUID]] = {}
         self._revision_dest: dict[UUID, UUID] = {}
+        self._feedback_projector = ExecutionFeedbackProjector()
 
     @property
     def ledger(self) -> HybridStatisticLedger:
@@ -211,26 +218,27 @@ class HybridEventToTaskCoordinatorLoop:
     def ingest_execution_feedback(
         self,
         *,
-        location_id: UUID,
-        belief_delta: float,
-        source_record_id: UUID,
-        feedback_event_id: UUID,
-    ) -> BeliefSnapshot:
-        """Feedback backflow: fold an execution outcome into the ledger and republish."""
+        feedback: ExecutionFeedbackRecord,
+        binding: DecisionContextBinding,
+        likelihood_model: ActionOutcomeLikelihoodModel,
+        prior_target_present: float,
+    ) -> ProjectedFeedbackEvidence:
+        """Feedback backflow, likelihood-aware and type-routed (review fix #4).
 
-        if belief_delta <= 0.0:
-            return self.publish_snapshot(changed_locations={location_id})
-        revision_id = uuid4()
-        self.ingest_owner_placement(
-            OwnerPlacementInput(
-                event_hypothesis_id=feedback_event_id,
-                revision_id=revision_id,
-                destination_location_id=location_id,
-                owner_mass=belief_delta,
-                source_record_id=source_record_id,
-            )
+        The uncertain outcome is projected to typed evidence; a find/observe
+        outcome updates *target presence* only, and a place/transfer outcome is
+        routed as a candidate location transition whose owner-habit attribution
+        still needs actor responsibility.  **No feedback path writes owner habit
+        directly**, so "found the object" can never inflate the owner model.
+        Replaying the same feedback record is a no-op.
+        """
+
+        return self._feedback_projector.project(
+            feedback=feedback,
+            binding=binding,
+            likelihood_model=likelihood_model,
+            prior_target_present=prior_target_present,
         )
-        return self.publish_snapshot(changed_locations={location_id})
 
     def _revision_destination(self, revision_id: UUID) -> UUID | None:
         return self._revision_dest.get(revision_id)

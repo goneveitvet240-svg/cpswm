@@ -29,7 +29,6 @@ from cpswm.perception_mapping.calibration_sync import (
     CalibrationNotFoundError,
     CalibrationRegistry,
     IntrinsicsModel,
-    SensorCalibration,
     SensorTimeSyncResult,
 )
 from cpswm.system.privacy_governance import (
@@ -112,18 +111,20 @@ def _issued_decision(governance: HouseholdGovernance, household_id) -> OracleAcc
     )
     from cpswm.system.privacy_governance import CapabilityGrant
 
-    metadata = BaseRecordMetadata(
-        schema_name="cpswm.privacy.Record",
-        schema_version="0.1.0",
-        household_id=household_id,
-        session_id=uuid4(),
-        recorded_time=START,
-        source_type=SourceType.MODEL,
-        source_id="governance-test",
-    )
+    def make_metadata() -> BaseRecordMetadata:
+        return BaseRecordMetadata(
+            schema_name="cpswm.privacy.Record",
+            schema_version="0.1.0",
+            household_id=household_id,
+            session_id=uuid4(),
+            recorded_time=START,
+            source_type=SourceType.MODEL,
+            source_id="governance-test",
+        )
+
     governance.issue_grant(
         CapabilityGrant(
-            metadata=metadata,
+            metadata=make_metadata(),
             subject="evaluator.benchmark",
             household_id=household_id,
             resource=ResourceKind.GT,
@@ -137,7 +138,7 @@ def _issued_decision(governance: HouseholdGovernance, household_id) -> OracleAcc
         )
     )
     request = OracleAccessRequest(
-        metadata=metadata,
+        metadata=make_metadata(),
         caller="evaluator.benchmark",
         household_id=household_id,
         resource=ResourceKind.GT,

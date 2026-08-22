@@ -18,7 +18,7 @@ GUEST = "guest"
 def _observed_case_and_history(seed: int = 1):
     case = StructureTwoActionScenarioGenerator().generate(seed)
     engine = OpenWorldRoleConditionedReversibleEventRevisionEngine()
-    for obs in case.days:
+    for obs in case.visible.days:
         if obs.after is None or obs.before is None:
             continue
         history = engine.branch(
@@ -29,13 +29,10 @@ def _observed_case_and_history(seed: int = 1):
         )
         evidence = []
         if obs.actor_evidence is not None:
-            history = engine.revise_actor_responsibility(history, obs.actor_evidence)
             evidence.append(obs.actor_evidence)
         if obs.mechanism_evidence is not None:
-            history = engine.revise_event_mechanism(history, obs.mechanism_evidence)
             evidence.append(obs.mechanism_evidence)
         if obs.role_evidence is not None:
-            history = engine.revise_role_binding(history, obs.role_evidence)
             evidence.append(obs.role_evidence)
         return case, history, tuple(evidence)
     raise RuntimeError("scenario produced no observed day")
@@ -59,7 +56,7 @@ def test_actor_evidence_only_reweights_its_own_actor():
     """The actor firewall: evidence favouring one actor must not reweight the
     other actor's direct hypothesis upward."""
 
-    case, history, evidence = _observed_case_and_history()
+    _case, history, evidence = _observed_case_and_history()
     engine = ProvenanceConstrainedMessagePassing()
     baseline = engine.infer(history, ())
     posterior_with_evidence = engine.infer(history, evidence)
@@ -81,7 +78,7 @@ def test_actor_evidence_only_reweights_its_own_actor():
         for value in posterior_with_evidence.posterior_by_hypothesis_id.values()
     )
     assert owner_hypothesis_ids and guest_hypothesis_ids
-    del baseline, case  # unused beyond setup
+    del baseline  # unused beyond setup
 
 
 def test_permutation_equivariance_holds():
@@ -93,8 +90,8 @@ def test_permutation_equivariance_holds():
     )
 
 
-def test_permutation_is_a_bijection_check():
-    with pytest.raises(ValueError, match="bijection"):
+def test_permutation_must_cover_the_same_actor_universe():
+    with pytest.raises(ValueError, match="same actor universe"):
         permute_actor_keys(
             _observed_case_and_history()[1],
             {OWNER: GUEST, GUEST: GUEST},

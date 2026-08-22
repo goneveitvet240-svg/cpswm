@@ -21,7 +21,7 @@ from uuid import UUID
 
 from pydantic import TypeAdapter
 
-from cpswm.contracts.base import BaseRecordMetadata, InputWatermark, require_aware
+from cpswm.contracts.base import BaseRecordMetadata, require_aware
 from cpswm.foundation.persistence_replay import AppendOnlyTransactionLog, CommittedTransaction
 
 from .contracts import (
@@ -118,13 +118,9 @@ class HouseholdGovernance:
         if grant is None:
             raise GovernanceConflictError(f"cannot revoke unknown grant {revocation.grant_id}")
         if revocation.metadata.household_id != grant.household_id:
-            raise GovernanceConflictError(
-                "revocation household does not match the grant household"
-            )
+            raise GovernanceConflictError("revocation household does not match the grant household")
         if revocation.revoked_time < grant.valid_time.start:
-            raise GovernanceConflictError(
-                "revocation cannot precede the grant's validity start"
-            )
+            raise GovernanceConflictError("revocation cannot precede the grant's validity start")
         existing = self._revocations.get(revocation.grant_id)
         if existing is not None:
             if existing != revocation:

@@ -138,18 +138,12 @@ class SensorCalibration(ContractModel):
             if self.parameters_sha256 != expected:
                 raise ValueError("parameters_sha256 does not match the canonical parameters")
             if self.external_artifact_sha256 is not None or self.external_artifact_ref is not None:
-                raise ValueError(
-                    "parameters provenance cannot carry external artifact fields"
-                )
+                raise ValueError("parameters provenance cannot carry external artifact fields")
         else:
             if self.external_artifact_sha256 is None or self.external_artifact_ref is None:
-                raise ValueError(
-                    "external_artifact provenance requires sha256 and a reference"
-                )
+                raise ValueError("external_artifact provenance requires sha256 and a reference")
             if self.parameters_sha256 is not None:
-                raise ValueError(
-                    "external_artifact provenance cannot carry parameters_sha256"
-                )
+                raise ValueError("external_artifact provenance cannot carry parameters_sha256")
         return self
 
     def compute_artifact_hash(self) -> str:

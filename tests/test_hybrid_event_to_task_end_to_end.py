@@ -170,13 +170,100 @@ def test_hybrid_end_to_end_orrer_rgrc_snapshot_coordinator_feedback():
     assert decision.kind in {VersionSwitchKind.REPLAN_SUFFIX, VersionSwitchKind.CANCEL}
     assert loop.node_id(L2) in decision.changed_belief_nodes
 
-    # Feedback backflow: a successful fetch at L2 folds back into the ledger.
+    # Feedback backflow (review fix #4): a SEARCH "found the object" outcome
+    # updates target presence only and must NOT inflate the owner habit.
     before_feedback = loop.ledger.projection(loop._key(L2)).alpha
-    loop.ingest_execution_feedback(
-        location_id=L2, belief_delta=1.0, source_record_id=uuid4(), feedback_event_id=uuid4()
+    feedback, binding, likelihood = _search_found_feedback(base)
+    projected = loop.ingest_execution_feedback(
+        feedback=feedback, binding=binding, likelihood_model=likelihood, prior_target_present=0.5
     )
     after_feedback = loop.ledger.projection(loop._key(L2)).alpha
-    assert after_feedback > before_feedback
+    assert after_feedback == before_feedback  # found != owner-habit increase
+    assert projected.route.value == "target_presence"
+    assert projected.updates_owner_habit_directly is False
+    assert projected.target_presence_update.posterior_target_present > 0.5
+    # Replaying the same feedback record is a no-op.
+    assert loop.ingest_execution_feedback(
+        feedback=feedback, binding=binding, likelihood_model=likelihood, prior_target_present=0.5
+    ).is_replay
+
+
+def _search_found_feedback(base):
+    from cpswm.contracts import (
+        ActionOutcomeLikelihoodModel,
+        DecisionContextBinding,
+        DecisionSurface,
+        MapConsistencyRevisions,
+        RobotActionOutcome,
+        RobotActionType,
+    )
+    from cpswm.contracts.base import ValidTimeInterval
+    from cpswm.contracts.decision_context import DecisionContext
+
+    fb_meta = base.model_copy(
+        update={
+            "record_id": uuid4(),
+            "schema_name": "cpswm.ExecutionFeedbackRecord",
+            "source_type": SourceType.ACTION,
+            "recorded_time": T1,
+        }
+    )
+    from cpswm.contracts import EntityRef, EntityType, ExecutionFeedbackRecord
+
+    feedback = ExecutionFeedbackRecord(
+        metadata=fb_meta,
+        action_id=uuid4(),
+        action_type=RobotActionType.SEARCH,
+        target_entity=EntityRef(entity_id=OBJ, entity_type=EntityType.OBJECT_INSTANCE),
+        attempted_location_id=L2,
+        valid_time=ValidTimeInterval(start=T1, end=T1 + timedelta(minutes=1)),
+        outcome_distribution={RobotActionOutcome.SUCCESS: 0.9, RobotActionOutcome.UNKNOWN: 0.1},
+        task_goal_satisfied_probability=0.9,
+    )
+    revisions = MapConsistencyRevisions(
+        belief_snapshot_id=uuid4(),
+        projection_id=uuid4(),
+        projection_version=1,
+        static_map_revision=1,
+        dynamic_map_revision=1,
+        event_history_revision=1,
+        input_watermark=1,
+    )
+    context = DecisionContext.create(
+        decision_id=uuid4(),
+        decision_time=T1,
+        valid_time=ValidTimeInterval(start=T1, end=T1 + timedelta(minutes=5)),
+        staleness_budget_seconds=60.0,
+        revisions=revisions,
+        authorization_scope_id=uuid4(),
+        habit_regime_model_version="m@1",
+        model_versions=(("loop", "e2e@0.1"),),
+        code_version="git:test",
+        rationale="feedback context",
+    )
+    binding = DecisionContextBinding(
+        metadata=fb_meta.model_copy(update={"record_id": uuid4()}),
+        surface=DecisionSurface.EXECUTION_FEEDBACK,
+        subject_record_id=feedback.metadata.record_id,
+        subject_household_id=fb_meta.household_id,
+        subject_session_id=fb_meta.session_id,
+        subject_trace_id=fb_meta.trace_id,
+        decision_context=context,
+    )
+    likelihood = ActionOutcomeLikelihoodModel(
+        action_type=RobotActionType.SEARCH,
+        p_outcome_given_target_present={
+            RobotActionOutcome.SUCCESS: 0.8,
+            RobotActionOutcome.UNKNOWN: 0.2,
+        },
+        p_outcome_given_target_absent={
+            RobotActionOutcome.SUCCESS: 0.1,
+            RobotActionOutcome.UNKNOWN: 0.9,
+        },
+        calibration_domain="fixture",
+        model_version="search-likelihood@0.1",
+    )
+    return feedback, binding, likelihood
 
 
 def test_irrelevant_map_change_lets_task_continue():

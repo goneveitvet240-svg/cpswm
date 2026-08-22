@@ -9,6 +9,7 @@ from __future__ import annotations
 
 from cpswm.system.evaluation_operations import (
     ActionBaselineMethod,
+    ActionTaskType,
     StructureTwoActionDeathTest,
     StructureTwoActionScenarioGenerator,
 )
@@ -26,14 +27,16 @@ def test_generation_is_deterministic():
     generator = StructureTwoActionScenarioGenerator()
     first = generator.generate(7)
     second = generator.generate(7)
-    assert first.case_id == second.case_id
-    assert first.days == second.days
+    assert first.visible.case_id == second.visible.case_id
+    assert first.visible.days == second.visible.days
     assert first.truth_by_day == second.truth_by_day
 
 
 def test_truth_is_not_exposed_on_model_inputs():
     case = StructureTwoActionScenarioGenerator().generate(1)
-    for obs in case.days:
+    # The visible slice structurally excludes evaluator truth.
+    assert not hasattr(case.visible, "truth_by_day")
+    for obs in case.visible.days:
         # Robot-visible observations carry no evaluator truth fields.
         assert not hasattr(obs, "true_owner_habit_location")
         assert not hasattr(obs, "true_actor")
@@ -55,6 +58,41 @@ def test_scientific_status_is_one_of_the_expected_values():
     }
 
 
+def test_new_method_is_location_permutation_equivariant():
+    """P0: permuting the locations tuple must not change the new method's
+    predictions (no ``locations[0]/[1]`` hard-coding)."""
+
+    from cpswm.system.evaluation_operations.structure_two_action_death_test import (
+        _PchmpCcrrRgrcMethod,
+    )
+
+    generator = StructureTwoActionScenarioGenerator()
+    base = generator.generate(1)
+    permuted_locations = (
+        base.visible.locations[2],
+        base.visible.locations[0],
+        base.visible.locations[3],
+        base.visible.locations[1],
+    )
+    permuted = base.model_copy(
+        update={
+            "visible": base.visible.model_copy(update={"locations": permuted_locations})
+        }
+    )
+
+    first = _PchmpCcrrRgrcMethod(base.visible)
+    second = _PchmpCcrrRgrcMethod(permuted.visible)
+    for obs in base.visible.days:
+        first.observe(obs)
+        second.observe(obs)
+        assert first.predict(ActionTaskType.PUT_BACK) == second.predict(
+            ActionTaskType.PUT_BACK
+        )
+        assert first.predict(ActionTaskType.SEARCH) == second.predict(
+            ActionTaskType.SEARCH
+        )
+
+
 def test_new_method_uses_all_three_operators_end_to_end():
     """The new method must actually route through PCHMP, CF-BOCPD, and CCRR.
 
@@ -67,10 +105,10 @@ def test_new_method_uses_all_three_operators_end_to_end():
         _PchmpCcrrRgrcMethod,
     )
 
-    method = _PchmpCcrrRgrcMethod(case)
+    method = _PchmpCcrrRgrcMethod(case.visible)
     saw_owner_write = False
     saw_guest_write_to_owner = False
-    for obs in case.days:
+    for obs in case.visible.days:
         if obs.after is None:
             continue
         before_counts = dict(method.state.regimes.get(method.state.active_regime_id, {}))

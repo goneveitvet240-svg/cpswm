@@ -1,0 +1,34 @@
+{
+  "protocol_version": "project-one-shift-gates@2",
+  "base_atg1_config_file_sha256": "b985d7f3f8b2aa7c2659022228e26e16772ba69ebb4f8359b311a9d0e232414c",
+  "suite": {
+    "train_seeds": [1103, 2207, 3301],
+    "validation_seeds": [4409, 5519, 6619],
+    "test_seeds": [7727, 8837, 9949],
+    "base": {
+      "seeds": [1103, 2207, 3301, 4409, 5519, 6619, 7727, 8837, 9949]
+    }
+  },
+  "power_analysis": {
+    "analysis_id": "paired-seed-normal-approximation@1",
+    "alpha": 0.05,
+    "target_power": 0.8,
+    "minimum_detectable_effect": 0.2,
+    "assumed_paired_difference_stddev": 0.1,
+    "required_independent_test_seeds": 2,
+    "planned_independent_test_seeds": 3,
+    "status": "PASS",
+    "analysis_sha256": "66a6c7600860d6e4d78e456507d83d65b2d2702782b61d1029f3cf6f6f073bcf"
+  },
+  "authority_key_id": "project-one-shift-evaluator-key@1",
+  "tuning_budget": {
+    "maximum_trials_per_arm": 18,
+    "maximum_validation_predictions_per_arm": 324,
+    "maximum_elapsed_ns_per_arm": 30000000000,
+    "maximum_peak_tracemalloc_bytes_per_arm": 100000000,
+    "maximum_p95_prediction_latency_ns": 1000000000,
+    "maximum_hyperparameter_json_bytes_per_arm": 4096,
+    "maximum_hyperparameter_field_count_per_arm": 8
+  },
+  "bootstrap_samples": 500
+}

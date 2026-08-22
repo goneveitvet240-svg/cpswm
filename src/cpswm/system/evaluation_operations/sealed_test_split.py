@@ -13,7 +13,7 @@ import hashlib
 import json
 from collections.abc import Sequence
 from dataclasses import dataclass
-from typing import Protocol
+from typing import Protocol, cast
 
 from pydantic import Field, model_validator
 
@@ -146,6 +146,19 @@ class AuthenticTuningReceipt(Protocol):
     def is_authentic(self) -> bool: ...
 
 
+class ATG2ReportAuthority(Protocol):
+    """Independent authority that validates and commits a complete ATG-2 report."""
+
+    def authorize_test_unseal(
+        self,
+        report: object,
+        *,
+        experiment_id: str,
+        validation_split_sha256: str,
+        test_split_sha256: str,
+    ) -> object: ...
+
+
 class SealedTestSplit[T]:
     """Test cases that can only be released after tuning, via a valid receipt."""
 
@@ -165,6 +178,7 @@ class SealedTestSplit[T]:
         self._required_receipt_scope = required_receipt_scope
         self._unsealed = False
         self._unseal_receipt_hash: str | None = None
+        self._unseal_authority_proof: object | None = None
 
     @property
     def test_split_sha256(self) -> str:
@@ -187,9 +201,53 @@ class SealedTestSplit[T]:
     def unseal_receipt_hash(self) -> str | None:
         return self._unseal_receipt_hash
 
-    def unseal(self, receipt: AuthenticTuningReceipt) -> tuple[T, ...]:
+    @property
+    def unseal_authority_proof(self) -> object:
+        if self._unseal_authority_proof is None:
+            raise SealedSplitAccessError("no authority proof exists before TEST unseal")
+        return self._unseal_authority_proof
+
+    def unseal(
+        self,
+        completion: AuthenticTuningReceipt | object,
+        *,
+        authority: ATG2ReportAuthority | object | None = None,
+    ) -> tuple[T, ...]:
         if self._unsealed:
             raise SealedSplitAccessError("the frozen test split has already been unsealed")
+        if self._required_receipt_scope is not None:
+            if authority is None or not hasattr(authority, "authorize_test_unseal"):
+                raise SealedSplitAccessError(
+                    "scope-protected TEST requires an independent ATG-2 report authority"
+                )
+            receipt = getattr(completion, "receipt", None)
+            if receipt is None:
+                raise SealedSplitAccessError(
+                    "scope-protected TEST requires the complete ATG-2 report"
+                )
+            checked_authority = cast(ATG2ReportAuthority, authority)
+            proof = checked_authority.authorize_test_unseal(
+                completion,
+                experiment_id=self._experiment_id,
+                validation_split_sha256=self._required_validation_split_sha256,
+                test_split_sha256=self._test_split_sha256,
+            )
+            if (
+                getattr(proof, "event_type", None) != "TEST_UNSEALED"
+                or getattr(proof, "transaction_id", None) is None
+                or getattr(proof, "log_head_sha256", None) is None
+            ):
+                raise SealedSplitAccessError(
+                    "authority did not return a committed TEST_UNSEALED proof"
+                )
+            self._unseal_authority_proof = proof
+            self._unseal_receipt_hash = getattr(receipt, "authority_receipt_sha256", None)
+            self._unsealed = True
+            return self._cases
+
+        receipt = cast(AuthenticTuningReceipt, completion)
+        if not hasattr(receipt, "is_authentic"):
+            raise SealedSplitAccessError("legacy sealed split requires a tuning receipt")
         if not receipt.is_authentic():
             raise SealedSplitAccessError("tuning-completion receipt is not authentic")
         if receipt.experiment_id != self._experiment_id:
@@ -198,11 +256,6 @@ class SealedTestSplit[T]:
             raise SealedSplitAccessError(
                 "receipt validation split does not match the sealed split's requirement"
             )
-        if self._required_receipt_scope is not None:
-            if getattr(receipt, "receipt_scope", None) != self._required_receipt_scope:
-                raise SealedSplitAccessError("receipt scope cannot unlock this sealed split")
-            if getattr(receipt, "test_split_sha256", None) != self._test_split_sha256:
-                raise SealedSplitAccessError("receipt TEST hash does not match the sealed split")
         self._unsealed = True
         self._unseal_receipt_hash = receipt.receipt_hash
         return self._cases

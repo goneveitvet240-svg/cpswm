@@ -12,6 +12,7 @@ import random
 import tracemalloc
 from collections.abc import Callable, Sequence
 from math import ceil, isfinite
+from statistics import NormalDist
 from time import perf_counter_ns
 from typing import Literal
 from uuid import UUID
@@ -24,11 +25,15 @@ from cpswm.system.reproducibility import canonical_json, content_sha256, content
 from .fair_ablation import ProjectOneAblationArmId
 from .online_shift_attribution import (
     OnlineShiftAttributionCase,
+    OnlineShiftCaseTruth,
     OnlineShiftEvaluator,
     OnlineShiftGeneratedCase,
+    OnlineShiftPrediction,
     OnlineShiftReport,
     OnlineShiftSplit,
+    OnlineShiftSuite,
     OnlineShiftSuiteConfig,
+    OnlineShiftSuiteGenerator,
 )
 from .project_one_ablation_v0_2 import (
     ProjectOneMatchedComparisonId,
@@ -48,6 +53,17 @@ SHIFT_THREE_ARMS: tuple[ProjectOneAblationArmId, ...] = (
 )
 ATG2_SCOPE: Literal["project-one-shift-three-arm-tuning@1"] = "project-one-shift-three-arm-tuning@1"
 ATG3_SCOPE: Literal["project-one-shift-three-arm-test@1"] = "project-one-shift-three-arm-test@1"
+
+ATG3_ALLOWED_CLAIM_IDS = (
+    "atg3.frozen-synthetic-shift-suite-metrics-reported@2",
+    "atg3.paired-scenario-seed-trajectory-bootstrap-intervals-reported@2",
+)
+ATG3_FORBIDDEN_CLAIM_IDS = (
+    "claim.general-method-superiority.forbidden@2",
+    "claim.state-of-the-art.forbidden@2",
+    "claim.formal-structure-one-b1-complete.forbidden@2",
+    "claim.all-eleven-arms-experimentally-complete.forbidden@2",
+)
 
 _SEARCH_SPACES: dict[ProjectOneAblationArmId, tuple[dict[str, int | float], ...]] = {
     ProjectOneAblationArmId.ORDINARY_BOCPD: tuple(
@@ -88,16 +104,144 @@ class MeasuredTuningBudget(ContractModel):
     maximum_trials_per_arm: PositiveInt = 18
     maximum_validation_predictions_per_arm: PositiveInt = 108
     maximum_elapsed_ns_per_arm: PositiveInt = 30_000_000_000
-    maximum_peak_memory_bytes_per_arm: PositiveInt = 100_000_000
-    maximum_p95_prediction_latency_ns: PositiveInt = 100_000_000
-    maximum_persistent_bytes_per_arm: PositiveInt = 4096
-    maximum_parameter_count_per_arm: PositiveInt = 8
+    maximum_peak_tracemalloc_bytes_per_arm: PositiveInt = 100_000_000
+    maximum_p95_prediction_latency_ns: PositiveInt = 1_000_000_000
+    maximum_hyperparameter_json_bytes_per_arm: PositiveInt = 4096
+    maximum_hyperparameter_field_count_per_arm: PositiveInt = 8
+
+
+class FrozenShiftSuiteConfig(ContractModel):
+    """Explicit disjoint seed partitions for the authority-owned suite."""
+
+    train_seeds: tuple[NonNegativeInt, ...] = (1103, 2207, 3301)
+    validation_seeds: tuple[NonNegativeInt, ...] = (4409, 5519, 6619)
+    test_seeds: tuple[NonNegativeInt, ...] = (7727, 8837, 9949)
+    base: OnlineShiftSuiteConfig = Field(
+        default_factory=lambda: OnlineShiftSuiteConfig(
+            seeds=(1103, 2207, 3301, 4409, 5519, 6619, 7727, 8837, 9949)
+        )
+    )
+
+    @model_validator(mode="after")
+    def validate_seed_partitions(self) -> FrozenShiftSuiteConfig:
+        partitions = (self.train_seeds, self.validation_seeds, self.test_seeds)
+        if any(len(partition) < 2 for partition in partitions):
+            raise ValueError("each frozen split requires at least two independent seeds")
+        flattened = tuple(seed for partition in partitions for seed in partition)
+        if len(flattened) != len(set(flattened)):
+            raise ValueError("train/validation/TEST seeds must be globally disjoint")
+        if flattened != self.base.seeds:
+            raise ValueError("base generator seeds must equal the ordered explicit partitions")
+        return self
+
+
+class ShiftPowerAnalysis(ContractModel):
+    analysis_id: Literal["paired-seed-normal-approximation@1"] = (
+        "paired-seed-normal-approximation@1"
+    )
+    alpha: float = Field(default=0.05, gt=0.0, lt=1.0)
+    target_power: float = Field(default=0.8, gt=0.0, lt=1.0)
+    minimum_detectable_effect: float = Field(default=0.2, gt=0.0)
+    assumed_paired_difference_stddev: float = Field(default=0.1, gt=0.0)
+    required_independent_test_seeds: PositiveInt = 2
+    planned_independent_test_seeds: PositiveInt = 3
+    status: Literal["PASS"] = "PASS"
+    analysis_sha256: str = Field(pattern=r"^[0-9a-f]{64}$")
+
+    @classmethod
+    def calculate(
+        cls,
+        *,
+        planned_independent_test_seeds: int,
+        alpha: float = 0.05,
+        target_power: float = 0.8,
+        minimum_detectable_effect: float = 0.2,
+        assumed_paired_difference_stddev: float = 0.1,
+    ) -> ShiftPowerAnalysis:
+        normal = NormalDist()
+        required = ceil(
+            (
+                (normal.inv_cdf(1.0 - alpha / 2.0) + normal.inv_cdf(target_power))
+                * assumed_paired_difference_stddev
+                / minimum_detectable_effect
+            )
+            ** 2
+        )
+        payload = {
+            "analysis_id": "paired-seed-normal-approximation@1",
+            "alpha": alpha,
+            "target_power": target_power,
+            "minimum_detectable_effect": minimum_detectable_effect,
+            "assumed_paired_difference_stddev": assumed_paired_difference_stddev,
+            "required_independent_test_seeds": max(2, required),
+            "planned_independent_test_seeds": planned_independent_test_seeds,
+            "status": "PASS",
+        }
+        return cls.model_validate({**payload, "analysis_sha256": content_sha256(payload)})
+
+    @model_validator(mode="after")
+    def validate_power(self) -> ShiftPowerAnalysis:
+        normal = NormalDist()
+        expected_required = max(
+            2,
+            ceil(
+                (
+                    (normal.inv_cdf(1.0 - self.alpha / 2.0) + normal.inv_cdf(self.target_power))
+                    * self.assumed_paired_difference_stddev
+                    / self.minimum_detectable_effect
+                )
+                ** 2
+            ),
+        )
+        if self.required_independent_test_seeds != expected_required:
+            raise ValueError("power-analysis required seed count is not reproducible")
+        if self.planned_independent_test_seeds < self.required_independent_test_seeds:
+            raise ValueError("planned TEST seeds do not satisfy frozen power analysis")
+        payload = self.model_dump(mode="json", exclude={"analysis_sha256"})
+        if self.analysis_sha256 != content_sha256(payload):
+            raise ValueError("power-analysis hash mismatch")
+        return self
+
+
+def generate_frozen_shift_suite(config: FrozenShiftSuiteConfig) -> OnlineShiftSuite:
+    generated = OnlineShiftSuiteGenerator().generate(config.base)
+    split_by_seed = {
+        **dict.fromkeys(config.train_seeds, OnlineShiftSplit.TRAIN),
+        **dict.fromkeys(config.validation_seeds, OnlineShiftSplit.VALIDATION),
+        **dict.fromkeys(config.test_seeds, OnlineShiftSplit.TEST),
+    }
+    cases = tuple(
+        OnlineShiftGeneratedCase.model_validate(
+            {
+                **case.model_dump(mode="json"),
+                "evaluator_truth": {
+                    **case.evaluator_truth.model_dump(mode="json"),
+                    "split": split_by_seed[case.evaluator_truth.scenario_seed],
+                },
+            }
+        )
+        for case in generated.cases
+    )
+    payload = {
+        "generator_version": "online-shift-suite@0.2-explicit-disjoint-seeds",
+        "config_sha256": content_sha256(config),
+        "cases": cases,
+    }
+    return OnlineShiftSuite.model_validate(
+        {
+            **payload,
+            "suite_id": content_uuid("online-shift-suite", payload),
+            "suite_content_sha256": content_sha256(payload),
+        }
+    )
 
 
 class ProjectOneShiftGateConfig(ContractModel):
-    protocol_version: Literal["project-one-shift-gates@1"] = "project-one-shift-gates@1"
-    atg1_report_file_sha256: str = Field(pattern=r"^[0-9a-f]{64}$")
-    suite: OnlineShiftSuiteConfig = Field(default_factory=OnlineShiftSuiteConfig)
+    protocol_version: Literal["project-one-shift-gates@2"] = "project-one-shift-gates@2"
+    base_atg1_config_file_sha256: str = Field(pattern=r"^[0-9a-f]{64}$")
+    suite: FrozenShiftSuiteConfig = Field(default_factory=FrozenShiftSuiteConfig)
+    power_analysis: ShiftPowerAnalysis
+    authority_key_id: str = Field(min_length=1)
     tuning_budget: MeasuredTuningBudget = Field(default_factory=MeasuredTuningBudget)
     bootstrap_samples: PositiveInt = 500
 
@@ -105,6 +249,8 @@ class ProjectOneShiftGateConfig(ContractModel):
     def validate_bootstrap_budget(self) -> ProjectOneShiftGateConfig:
         if self.bootstrap_samples < 100:
             raise ValueError("ATG-3 paired bootstrap requires at least 100 samples")
+        if self.power_analysis.planned_independent_test_seeds != len(self.suite.test_seeds):
+            raise ValueError("power analysis must bind the frozen TEST seed count")
         return self
 
 
@@ -120,10 +266,10 @@ class TuningTrialRecord(ContractModel):
     validation_split_sha256: str = Field(pattern=r"^[0-9a-f]{64}$")
     validation_report: OnlineShiftReport
     elapsed_ns: PositiveInt
-    peak_memory_bytes: NonNegativeInt
+    peak_tracemalloc_bytes: NonNegativeInt
     p95_prediction_latency_ns: PositiveInt
-    persistent_bytes: PositiveInt
-    parameter_count: PositiveInt
+    hyperparameter_json_bytes: PositiveInt
+    hyperparameter_field_count: PositiveInt
     validation_prediction_count: PositiveInt
     status: Literal["COMPLETED"] = "COMPLETED"
     record_sha256: str = Field(pattern=r"^[0-9a-f]{64}$")
@@ -149,10 +295,10 @@ class ArmMeasuredBudgetLedger(ContractModel):
     selected_params_sha256: str = Field(pattern=r"^[0-9a-f]{64}$")
     total_elapsed_ns: PositiveInt
     total_validation_predictions: PositiveInt
-    peak_memory_bytes: NonNegativeInt
+    peak_tracemalloc_bytes: NonNegativeInt
     p95_prediction_latency_ns: PositiveInt
-    persistent_bytes: PositiveInt
-    parameter_count: PositiveInt
+    hyperparameter_json_bytes: PositiveInt
+    hyperparameter_field_count: PositiveInt
     budget: MeasuredTuningBudget
     within_budget: Literal[True] = True
     canonical_log_head_sha256: str = Field(pattern=r"^[0-9a-f]{64}$")
@@ -202,16 +348,18 @@ class ArmMeasuredBudgetLedger(ContractModel):
             trial.validation_prediction_count for trial in self.trials
         ):
             raise ValueError("measured tuning prediction ledger mismatch")
-        if self.peak_memory_bytes != max(trial.peak_memory_bytes for trial in self.trials):
-            raise ValueError("measured tuning peak-memory ledger mismatch")
+        if self.peak_tracemalloc_bytes != max(
+            trial.peak_tracemalloc_bytes for trial in self.trials
+        ):
+            raise ValueError("measured tuning tracemalloc-peak ledger mismatch")
         selected_trial = next(
             trial for trial in self.trials if trial.params == self.selected_params
         )
         if (
-            self.persistent_bytes != selected_trial.persistent_bytes
-            or self.parameter_count != selected_trial.parameter_count
+            self.hyperparameter_json_bytes != selected_trial.hyperparameter_json_bytes
+            or self.hyperparameter_field_count != selected_trial.hyperparameter_field_count
         ):
-            raise ValueError("selected-model resource ledger mismatch")
+            raise ValueError("selected hyperparameter serialization ledger mismatch")
         if self.p95_prediction_latency_ns != max(
             trial.p95_prediction_latency_ns for trial in self.trials
         ):
@@ -222,14 +370,14 @@ class ArmMeasuredBudgetLedger(ContractModel):
             raise ValueError("ATG-2 trial budget exceeded")
         if self.total_validation_predictions > self.budget.maximum_validation_predictions_per_arm:
             raise ValueError("ATG-2 validation compute budget exceeded")
-        if self.peak_memory_bytes > self.budget.maximum_peak_memory_bytes_per_arm:
-            raise ValueError("ATG-2 peak-memory budget exceeded")
+        if self.peak_tracemalloc_bytes > self.budget.maximum_peak_tracemalloc_bytes_per_arm:
+            raise ValueError("ATG-2 tracemalloc-peak budget exceeded")
         if self.p95_prediction_latency_ns > self.budget.maximum_p95_prediction_latency_ns:
             raise ValueError("ATG-2 latency budget exceeded")
-        if self.persistent_bytes > self.budget.maximum_persistent_bytes_per_arm:
-            raise ValueError("ATG-2 persistent-memory budget exceeded")
-        if self.parameter_count > self.budget.maximum_parameter_count_per_arm:
-            raise ValueError("ATG-2 parameter-count budget exceeded")
+        if self.hyperparameter_json_bytes > self.budget.maximum_hyperparameter_json_bytes_per_arm:
+            raise ValueError("ATG-2 hyperparameter JSON-byte budget exceeded")
+        if self.hyperparameter_field_count > self.budget.maximum_hyperparameter_field_count_per_arm:
+            raise ValueError("ATG-2 hyperparameter-field budget exceeded")
         payload = self.model_dump(mode="json", exclude={"ledger_sha256"})
         if self.ledger_sha256 != content_sha256(payload):
             raise ValueError("ATG-2 measured-budget ledger hash mismatch")
@@ -250,7 +398,7 @@ class TuningArmReceiptBinding(ContractModel):
 
 class ShiftTuningCompletionReceipt(ContractModel):
     receipt_scope: Literal["project-one-shift-atg3"] = "project-one-shift-atg3"
-    protocol_version: Literal["project-one-shift-gates@1"] = "project-one-shift-gates@1"
+    protocol_version: Literal["project-one-shift-gates@2"] = "project-one-shift-gates@2"
     topology_manifest_sha256: str = Field(pattern=r"^[0-9a-f]{64}$")
     experiment_id: str = Field(min_length=1)
     validation_split_sha256: str = Field(pattern=r"^[0-9a-f]{64}$")
@@ -259,7 +407,13 @@ class ShiftTuningCompletionReceipt(ContractModel):
     arm_bindings: tuple[TuningArmReceiptBinding, ...]
     code_snapshot_sha256: str = Field(pattern=r"^[0-9a-f]{64}$")
     completion_status: Literal["COMPLETED_WITHIN_BUDGET"]
-    receipt_hash: str = Field(pattern=r"^[0-9a-f]{64}$")
+    authority_key_id: str = Field(min_length=1)
+    registration_transaction_id: UUID
+    registration_global_commit_seq: PositiveInt
+    registration_request_sha256: str = Field(pattern=r"^[0-9a-f]{64}$")
+    registration_log_head_sha256: str = Field(pattern=r"^[0-9a-f]{64}$")
+    registration_payload_sha256: str = Field(pattern=r"^[0-9a-f]{64}$")
+    authority_hmac_sha256: str = Field(pattern=r"^[0-9a-f]{64}$")
 
     @model_validator(mode="after")
     def validate_receipt(self) -> ShiftTuningCompletionReceipt:
@@ -269,41 +423,95 @@ class ShiftTuningCompletionReceipt(ContractModel):
             raise ValueError("receipt requires one ordered binding per SHIFT arm")
         if len({item.tuning_run_id for item in self.arm_bindings}) != 3:
             raise ValueError("receipt tuning run IDs must be independent")
-        payload = self.model_dump(mode="json", exclude={"receipt_hash"})
-        if self.receipt_hash != content_sha256(payload):
-            raise ValueError("ATG-2 completion receipt hash mismatch")
         return self
 
-    def is_authentic(self) -> bool:
-        try:
-            type(self).model_validate(self.model_dump(mode="json"))
-        except ValueError:
-            return False
-        return True
+    @property
+    def authority_receipt_sha256(self) -> str:
+        return content_sha256(self.model_dump(mode="json"))
+
+
+def _validate_atg2_ledgers(
+    ledgers: tuple[ArmMeasuredBudgetLedger, ...],
+    *,
+    validation_split_sha256: str,
+) -> tuple[ArmMeasuredBudgetLedger, ...]:
+    checked = tuple(
+        ArmMeasuredBudgetLedger.model_validate(item.model_dump(mode="json")) for item in ledgers
+    )
+    if tuple(item.arm_id for item in checked) != SHIFT_THREE_ARMS:
+        raise ValueError("ATG-2 requires the ordered SHIFT three-arm ledgers")
+    if len({item.tuning_run_id for item in checked}) != len(SHIFT_THREE_ARMS):
+        raise ValueError("ATG-2 requires independent tuning run IDs")
+    if any(item.validation_split_sha256 != validation_split_sha256 for item in checked):
+        raise ValueError("ATG-2 ledgers must bind the report validation split")
+    return checked
+
+
+class ShiftATG2Draft(ContractModel):
+    """Validation-only worker output; it has no authority to unlock TEST."""
+
+    gate_id: Literal["ATG-2-DRAFT"] = "ATG-2-DRAFT"
+    scope: Literal["project-one-shift-three-arm-tuning@1"] = ATG2_SCOPE
+    topology_manifest_sha256: str = Field(pattern=r"^[0-9a-f]{64}$")
+    experiment_id: str = Field(min_length=1)
+    validation_split_sha256: str = Field(pattern=r"^[0-9a-f]{64}$")
+    test_split_sha256: str = Field(pattern=r"^[0-9a-f]{64}$")
+    code_snapshot_sha256: str = Field(pattern=r"^[0-9a-f]{64}$")
+    test_split_accessed: Literal[False] = False
+    ledgers: tuple[ArmMeasuredBudgetLedger, ...]
+    worker_input_kind: Literal["validation-cases-only"] = "validation-cases-only"
+    draft_sha256: str = Field(pattern=r"^[0-9a-f]{64}$")
+
+    @model_validator(mode="after")
+    def validate_draft(self) -> ShiftATG2Draft:
+        _validate_atg2_ledgers(
+            self.ledgers,
+            validation_split_sha256=self.validation_split_sha256,
+        )
+        payload = self.model_dump(mode="json", exclude={"draft_sha256"})
+        if self.draft_sha256 != content_sha256(payload):
+            raise ValueError("ATG-2 validation-only draft hash mismatch")
+        return self
 
 
 class ShiftATG2Report(ContractModel):
     gate_id: Literal["ATG-2"] = "ATG-2"
     scope: Literal["project-one-shift-three-arm-tuning@1"] = ATG2_SCOPE
     topology_manifest_sha256: str = Field(pattern=r"^[0-9a-f]{64}$")
+    experiment_id: str = Field(min_length=1)
     validation_split_sha256: str = Field(pattern=r"^[0-9a-f]{64}$")
+    test_split_sha256: str = Field(pattern=r"^[0-9a-f]{64}$")
+    code_snapshot_sha256: str = Field(pattern=r"^[0-9a-f]{64}$")
     test_split_accessed: Literal[False] = False
     ledgers: tuple[ArmMeasuredBudgetLedger, ...]
+    worker_draft_sha256: str = Field(pattern=r"^[0-9a-f]{64}$")
     receipt: ShiftTuningCompletionReceipt
     gate_status: Literal["PASS"] = "PASS"
     global_eleven_arm_tuning_status: Literal["BLOCK"] = "BLOCK"
 
     @model_validator(mode="after")
     def validate_report(self) -> ShiftATG2Report:
-        ledgers = tuple(
-            ArmMeasuredBudgetLedger.model_validate(item.model_dump(mode="json"))
-            for item in self.ledgers
+        ledgers = _validate_atg2_ledgers(
+            self.ledgers,
+            validation_split_sha256=self.validation_split_sha256,
         )
-        if tuple(item.arm_id for item in ledgers) != SHIFT_THREE_ARMS:
-            raise ValueError("ATG-2 requires the ordered SHIFT three-arm ledgers")
         receipt = ShiftTuningCompletionReceipt.model_validate(self.receipt.model_dump(mode="json"))
-        if receipt.topology_manifest_sha256 != self.topology_manifest_sha256:
-            raise ValueError("ATG-2 receipt topology binding mismatch")
+        report_bindings = (
+            receipt.topology_manifest_sha256,
+            receipt.experiment_id,
+            receipt.validation_split_sha256,
+            receipt.test_split_sha256,
+            receipt.code_snapshot_sha256,
+        )
+        expected_bindings = (
+            self.topology_manifest_sha256,
+            self.experiment_id,
+            self.validation_split_sha256,
+            self.test_split_sha256,
+            self.code_snapshot_sha256,
+        )
+        if report_bindings != expected_bindings:
+            raise ValueError("ATG-2 receipt report binding mismatch")
         for ledger, binding in zip(ledgers, receipt.arm_bindings, strict=True):
             expected = {
                 "arm_id": ledger.arm_id,
@@ -320,8 +528,6 @@ class ShiftATG2Report(ContractModel):
                 expected
             ).model_dump(mode="json"):
                 raise ValueError("ATG-2 receipt arm binding mismatch")
-        if receipt.validation_split_sha256 != self.validation_split_sha256:
-            raise ValueError("ATG-2 receipt validation binding mismatch")
         return self
 
 
@@ -336,6 +542,46 @@ class PairedBootstrapInterval(ContractModel):
     bootstrap_samples: PositiveInt
 
 
+class TestTruthArtifact(ContractModel):
+    test_split_sha256: str = Field(pattern=r"^[0-9a-f]{64}$")
+    truths: tuple[OnlineShiftCaseTruth, ...] = Field(min_length=1)
+    artifact_sha256: str = Field(pattern=r"^[0-9a-f]{64}$")
+
+    @model_validator(mode="after")
+    def validate_artifact(self) -> TestTruthArtifact:
+        if any(item.split != OnlineShiftSplit.TEST for item in self.truths):
+            raise ValueError("TEST truth artifact may contain only TEST truths")
+        payload = self.model_dump(mode="json", exclude={"artifact_sha256"})
+        if self.artifact_sha256 != content_sha256(payload):
+            raise ValueError("TEST truth artifact hash mismatch")
+        return self
+
+
+class ArmPredictionArtifact(ContractModel):
+    arm_id: ProjectOneAblationArmId
+    test_split_sha256: str = Field(pattern=r"^[0-9a-f]{64}$")
+    predictions: tuple[OnlineShiftPrediction, ...] = Field(min_length=1)
+    artifact_sha256: str = Field(pattern=r"^[0-9a-f]{64}$")
+
+    @model_validator(mode="after")
+    def validate_artifact(self) -> ArmPredictionArtifact:
+        if len({item.case_id for item in self.predictions}) != len(self.predictions):
+            raise ValueError("prediction artifact case IDs must be unique")
+        payload = self.model_dump(mode="json", exclude={"artifact_sha256"})
+        if self.artifact_sha256 != content_sha256(payload):
+            raise ValueError("prediction artifact hash mismatch")
+        return self
+
+
+class GateStateCommitProof(ContractModel):
+    event_type: Literal["ATG2_COMPLETED", "TEST_UNSEALED", "ATG3_COMPLETED"]
+    transaction_id: UUID
+    global_commit_seq: PositiveInt
+    request_sha256: str = Field(pattern=r"^[0-9a-f]{64}$")
+    log_head_sha256: str = Field(pattern=r"^[0-9a-f]{64}$")
+    event_payload_sha256: str = Field(pattern=r"^[0-9a-f]{64}$")
+
+
 class ShiftATG3Report(ContractModel):
     gate_id: Literal["ATG-3"] = "ATG-3"
     scope: Literal["project-one-shift-three-arm-test@1"] = ATG3_SCOPE
@@ -343,23 +589,19 @@ class ShiftATG3Report(ContractModel):
     receipt: ShiftTuningCompletionReceipt
     test_split_sha256: str = Field(pattern=r"^[0-9a-f]{64}$")
     test_case_count: PositiveInt
+    power_analysis: ShiftPowerAnalysis
+    test_truth_artifact: TestTruthArtifact
+    prediction_artifacts_by_arm: dict[ProjectOneAblationArmId, ArmPredictionArtifact]
     selected_params_sha256_by_arm: dict[ProjectOneAblationArmId, str]
     reports_by_arm: dict[ProjectOneAblationArmId, OnlineShiftReport]
     paired_intervals: tuple[PairedBootstrapInterval, ...]
+    test_unseal_commit: GateStateCommitProof
     test_unseal_audit_sha256: str = Field(pattern=r"^[0-9a-f]{64}$")
     gate_status: Literal["PASS"] = "PASS"
     formal_structure_one_b1_status: Literal["BLOCK"] = "BLOCK"
     global_eleven_arm_experiment_status: Literal["BLOCK"] = "BLOCK"
-    allowed_claims: tuple[str, ...] = (
-        "frozen-synthetic-shift-suite-metrics-reported",
-        "paired-trajectory-bootstrap-intervals-reported",
-    )
-    forbidden_claims: tuple[str, ...] = (
-        "general-method-superiority",
-        "state-of-the-art",
-        "formal-structure-one-b1-complete",
-        "all-eleven-arms-experimentally-complete",
-    )
+    allowed_claims: tuple[str, ...] = ATG3_ALLOWED_CLAIM_IDS
+    forbidden_claims: tuple[str, ...] = ATG3_FORBIDDEN_CLAIM_IDS
 
     @model_validator(mode="after")
     def validate_report(self) -> ShiftATG3Report:
@@ -368,14 +610,29 @@ class ShiftATG3Report(ContractModel):
             raise ValueError("ATG-3 receipt topology binding mismatch")
         if receipt.test_split_sha256 != self.test_split_sha256:
             raise ValueError("ATG-3 receipt TEST binding mismatch")
+        if self.test_unseal_commit.event_type != "TEST_UNSEALED":
+            raise ValueError("ATG-3 requires a committed TEST_UNSEALED event")
+        if self.test_unseal_commit.global_commit_seq <= receipt.registration_global_commit_seq:
+            raise ValueError("TEST_UNSEALED must follow ATG2_COMPLETED")
         if set(self.reports_by_arm) != set(SHIFT_THREE_ARMS):
             raise ValueError("ATG-3 requires one report per SHIFT arm")
+        if set(self.prediction_artifacts_by_arm) != set(SHIFT_THREE_ARMS):
+            raise ValueError("ATG-3 requires one prediction artifact per SHIFT arm")
         if set(self.selected_params_sha256_by_arm) != set(SHIFT_THREE_ARMS):
             raise ValueError("ATG-3 requires frozen params for every SHIFT arm")
         if any(
             report.sample_count != self.test_case_count for report in self.reports_by_arm.values()
         ):
             raise ValueError("ATG-3 report sample counts must equal the frozen TEST count")
+        if len(self.test_truth_artifact.truths) != self.test_case_count:
+            raise ValueError("ATG-3 TEST truth artifact count mismatch")
+        if (
+            len({item.scenario_seed for item in self.test_truth_artifact.truths})
+            != self.power_analysis.planned_independent_test_seeds
+        ):
+            raise ValueError("ATG-3 TEST truths do not satisfy the powered seed count")
+        if self.test_truth_artifact.test_split_sha256 != self.test_split_sha256:
+            raise ValueError("ATG-3 TEST truth artifact split binding mismatch")
         receipt_params = {
             binding.arm_id: binding.selected_params_sha256 for binding in receipt.arm_bindings
         }
@@ -384,7 +641,9 @@ class ShiftATG3Report(ContractModel):
         expected_audit = content_sha256(
             {
                 "event": "TEST_UNSEALED_FOR_ATG3",
-                "receipt_hash": receipt.receipt_hash,
+                "authority_receipt_sha256": receipt.authority_receipt_sha256,
+                "test_unseal_transaction_id": str(self.test_unseal_commit.transaction_id),
+                "test_unseal_log_head_sha256": self.test_unseal_commit.log_head_sha256,
                 "test_split_sha256": receipt.test_split_sha256,
                 "test_case_count": self.test_case_count,
                 "selected_params": {
@@ -394,6 +653,31 @@ class ShiftATG3Report(ContractModel):
         )
         if self.test_unseal_audit_sha256 != expected_audit:
             raise ValueError("ATG-3 TEST-unseal audit hash mismatch")
+        if self.allowed_claims != ATG3_ALLOWED_CLAIM_IDS:
+            raise ValueError("ATG-3 allowed claim IDs must equal the canonical set")
+        if self.forbidden_claims != ATG3_FORBIDDEN_CLAIM_IDS:
+            raise ValueError("ATG-3 forbidden claim IDs must equal the canonical set")
+        truth_by_id = {item.case_id: item for item in self.test_truth_artifact.truths}
+        rebound_by_arm: dict[ProjectOneAblationArmId, tuple[OnlineShiftAttributionCase, ...]] = {}
+        for arm in SHIFT_THREE_ARMS:
+            artifact = ArmPredictionArtifact.model_validate(
+                self.prediction_artifacts_by_arm[arm].model_dump(mode="json")
+            )
+            if artifact.arm_id != arm or artifact.test_split_sha256 != self.test_split_sha256:
+                raise ValueError("ATG-3 prediction artifact arm or split binding mismatch")
+            if set(item.case_id for item in artifact.predictions) != set(truth_by_id):
+                raise ValueError("ATG-3 prediction artifact case coverage mismatch")
+            rebound = tuple(
+                OnlineShiftAttributionCase(
+                    truth=truth_by_id[prediction.case_id],
+                    prediction=prediction,
+                )
+                for prediction in artifact.predictions
+            )
+            rebound_by_arm[arm] = rebound
+            recomputed = OnlineShiftEvaluator().evaluate(rebound)
+            if recomputed != self.reports_by_arm[arm]:
+                raise ValueError("ATG-3 aggregate metrics do not recompute from artifacts")
         metrics = set(OnlineShiftReport.model_fields) - {"sample_count"}
         expected_pairs = {
             (
@@ -420,16 +704,29 @@ class ShiftATG3Report(ContractModel):
             for item in self.paired_intervals
         ):
             raise ValueError("ATG-3 paired interval values are invalid")
+        bootstrap_samples = self.paired_intervals[0].bootstrap_samples
+        if any(item.bootstrap_samples != bootstrap_samples for item in self.paired_intervals):
+            raise ValueError("ATG-3 paired intervals use inconsistent sample counts")
+        recomputed_intervals = ProjectOneShiftGateRunner._paired_intervals(
+            rebound_by_arm,
+            bootstrap_samples=bootstrap_samples,
+        )
+        if tuple(item.model_dump(mode="json") for item in recomputed_intervals) != tuple(
+            item.model_dump(mode="json") for item in self.paired_intervals
+        ):
+            raise ValueError("ATG-3 paired intervals do not recompute from artifacts")
         return self
 
 
 class ProjectOneShiftGateReport(ContractModel):
     """One self-validating snapshot joining ATG-1 evidence to ATG-2/ATG-3."""
 
-    protocol_version: Literal["project-one-shift-gates@1"] = "project-one-shift-gates@1"
+    protocol_version: Literal["project-one-shift-gates@2"] = "project-one-shift-gates@2"
+    frozen_suite_config: FrozenShiftSuiteConfig
     atg1_topology_report: ProjectOneProtocolPilotReportV2
     atg2: ShiftATG2Report
     atg3: ShiftATG3Report
+    atg3_completion_commit: GateStateCommitProof
     report_sha256: str = Field(pattern=r"^[0-9a-f]{64}$")
 
     @model_validator(mode="after")
@@ -439,14 +736,24 @@ class ProjectOneShiftGateReport(ContractModel):
         )
         tuning = ShiftATG2Report.model_validate(self.atg2.model_dump(mode="json"))
         test = ShiftATG3Report.model_validate(self.atg3.model_dump(mode="json"))
+        truth_seeds = {item.scenario_seed for item in test.test_truth_artifact.truths}
+        if truth_seeds != set(self.frozen_suite_config.test_seeds):
+            raise ValueError("ATG-3 truth artifact does not bind the frozen TEST seeds")
         if not (
             topology.manifest_sha256
             == tuning.topology_manifest_sha256
             == test.topology_manifest_sha256
         ):
             raise ValueError("ATG-1/ATG-2/ATG-3 topology hash chain mismatch")
-        if tuning.receipt.receipt_hash != test.receipt.receipt_hash:
+        if tuning.receipt != test.receipt:
             raise ValueError("ATG-2 receipt and ATG-3 unlock receipt differ")
+        if self.atg3_completion_commit.event_type != "ATG3_COMPLETED":
+            raise ValueError("combined report requires committed ATG3_COMPLETED state")
+        if (
+            self.atg3_completion_commit.global_commit_seq
+            <= test.test_unseal_commit.global_commit_seq
+        ):
+            raise ValueError("ATG3_COMPLETED must follow TEST_UNSEALED")
         payload = self.model_dump(mode="json", exclude={"report_sha256"})
         if self.report_sha256 != content_sha256(payload):
             raise ValueError("Project One SHIFT gate report hash mismatch")
@@ -507,7 +814,7 @@ class ProjectOneShiftGateRunner:
         *,
         code_snapshot_sha256: str,
         budget: MeasuredTuningBudget | None = None,
-    ) -> ShiftATG2Report:
+    ) -> ShiftATG2Draft:
         if self._test_unsealed:
             raise RuntimeError("ATG-2 retuning is forbidden after TEST has been unsealed")
         topology = ProjectOneProtocolPilotReportV2.model_validate(
@@ -539,44 +846,27 @@ class ProjectOneShiftGateRunner:
             )
             for arm_id in SHIFT_THREE_ARMS
         )
-        topology_hash = topology.manifest_sha256
-        bindings = tuple(
-            TuningArmReceiptBinding(
-                arm_id=ledger.arm_id,
-                tuning_run_id=ledger.tuning_run_id,
-                trial_count=len(ledger.trials),
-                search_space_sha256=ledger.search_space_sha256,
-                selected_params_sha256=ledger.selected_params_sha256,
-                measured_budget_ledger_sha256=ledger.ledger_sha256,
-                model_version=ledger.model_version,
-                completion_status="COMPLETED_WITHIN_BUDGET",
-                canonical_log_head_sha256=ledger.canonical_log_head_sha256,
-            )
-            for ledger in ledgers
-        )
-        receipt_payload = {
-            "receipt_scope": "project-one-shift-atg3",
-            "protocol_version": "project-one-shift-gates@1",
-            "topology_manifest_sha256": topology_hash,
+        draft_payload = {
+            "topology_manifest_sha256": topology.manifest_sha256,
             "experiment_id": topology.manifest.experiment_id,
             "validation_split_sha256": validation_hash,
             "test_split_sha256": topology.manifest.test_split_sha256,
-            "required_arm_ids": SHIFT_THREE_ARMS,
-            "arm_bindings": bindings,
             "code_snapshot_sha256": code_snapshot_sha256,
-            "completion_status": "COMPLETED_WITHIN_BUDGET",
+            "ledgers": ledgers,
         }
-        receipt = ShiftTuningCompletionReceipt.model_validate(
+        return ShiftATG2Draft.model_validate(
             {
-                **receipt_payload,
-                "receipt_hash": content_sha256(receipt_payload),
+                **draft_payload,
+                "draft_sha256": content_sha256(
+                    {
+                        "gate_id": "ATG-2-DRAFT",
+                        "scope": ATG2_SCOPE,
+                        **draft_payload,
+                        "test_split_accessed": False,
+                        "worker_input_kind": "validation-cases-only",
+                    }
+                ),
             }
-        )
-        return ShiftATG2Report(
-            topology_manifest_sha256=topology_hash,
-            validation_split_sha256=validation_hash,
-            ledgers=ledgers,
-            receipt=receipt,
         )
 
     def _tune_arm(
@@ -613,10 +903,10 @@ class ProjectOneShiftGateRunner:
                 "validation_split_sha256": validation_hash,
                 "validation_report": report,
                 "elapsed_ns": elapsed,
-                "peak_memory_bytes": peak,
+                "peak_tracemalloc_bytes": peak,
                 "p95_prediction_latency_ns": int(_percentile(latencies, 0.95)),
-                "persistent_bytes": len(canonical_json(params).encode("utf-8")),
-                "parameter_count": len(params),
+                "hyperparameter_json_bytes": len(canonical_json(params).encode("utf-8")),
+                "hyperparameter_field_count": len(params),
                 "validation_prediction_count": len(validation_cases),
                 "status": "COMPLETED",
             }
@@ -640,10 +930,10 @@ class ProjectOneShiftGateRunner:
             "total_validation_predictions": sum(
                 item.validation_prediction_count for item in records
             ),
-            "peak_memory_bytes": max(item.peak_memory_bytes for item in records),
+            "peak_tracemalloc_bytes": max(item.peak_tracemalloc_bytes for item in records),
             "p95_prediction_latency_ns": max(item.p95_prediction_latency_ns for item in records),
-            "persistent_bytes": selected.persistent_bytes,
-            "parameter_count": selected.parameter_count,
+            "hyperparameter_json_bytes": selected.hyperparameter_json_bytes,
+            "hyperparameter_field_count": selected.hyperparameter_field_count,
             "budget": budget,
             "within_budget": True,
             "canonical_log_head_sha256": previous,
@@ -661,7 +951,9 @@ class ProjectOneShiftGateRunner:
         atg2_report: ShiftATG2Report,
         sealed_test: SealedTestSplit[OnlineShiftGeneratedCase],
         *,
+        authority: object,
         expected_code_snapshot_sha256: str,
+        power_analysis: ShiftPowerAnalysis,
         bootstrap_samples: int = 500,
     ) -> ShiftATG3Report:
         topology = ProjectOneProtocolPilotReportV2.model_validate(
@@ -679,8 +971,9 @@ class ProjectOneShiftGateRunner:
             raise ValueError("ATG-3 requires a scope-protected sealed TEST split")
         if sealed_test.test_split_sha256 != topology.manifest.test_split_sha256:
             raise ValueError("ATG-3 sealed TEST hash does not match topology")
-        test_cases = sealed_test.unseal(receipt)
+        test_cases = sealed_test.unseal(tuning, authority=authority)
         self._test_unsealed = True
+        unseal_commit = GateStateCommitProof.model_validate(sealed_test.unseal_authority_proof)
         if content_sha256(test_cases) != topology.manifest.test_split_sha256:
             raise ValueError("ATG-3 unsealed TEST content hash mismatch")
         ledgers = {item.arm_id: item for item in tuning.ledgers}
@@ -698,7 +991,9 @@ class ProjectOneShiftGateRunner:
         unseal_audit = content_sha256(
             {
                 "event": "TEST_UNSEALED_FOR_ATG3",
-                "receipt_hash": receipt.receipt_hash,
+                "authority_receipt_sha256": receipt.authority_receipt_sha256,
+                "test_unseal_transaction_id": str(unseal_commit.transaction_id),
+                "test_unseal_log_head_sha256": unseal_commit.log_head_sha256,
                 "test_split_sha256": receipt.test_split_sha256,
                 "test_case_count": len(test_cases),
                 "selected_params": {
@@ -706,16 +1001,43 @@ class ProjectOneShiftGateRunner:
                 },
             }
         )
+        truth_payload = {
+            "test_split_sha256": topology.manifest.test_split_sha256,
+            "truths": tuple(case.evaluator_truth for case in test_cases),
+        }
+        truth_artifact = TestTruthArtifact.model_validate(
+            {
+                **truth_payload,
+                "artifact_sha256": content_sha256(truth_payload),
+            }
+        )
+        prediction_artifacts = {}
+        for arm, bound in bound_by_arm.items():
+            artifact_payload = {
+                "arm_id": arm,
+                "test_split_sha256": topology.manifest.test_split_sha256,
+                "predictions": tuple(item.prediction for item in bound),
+            }
+            prediction_artifacts[arm] = ArmPredictionArtifact.model_validate(
+                {
+                    **artifact_payload,
+                    "artifact_sha256": content_sha256(artifact_payload),
+                }
+            )
         return ShiftATG3Report(
             topology_manifest_sha256=topology.manifest_sha256,
             receipt=receipt,
             test_split_sha256=topology.manifest.test_split_sha256,
             test_case_count=len(test_cases),
+            power_analysis=power_analysis,
+            test_truth_artifact=truth_artifact,
+            prediction_artifacts_by_arm=prediction_artifacts,
             selected_params_sha256_by_arm={
                 arm: ledgers[arm].selected_params_sha256 for arm in SHIFT_THREE_ARMS
             },
             reports_by_arm=reports,
             paired_intervals=intervals,
+            test_unseal_commit=unseal_commit,
             test_unseal_audit_sha256=unseal_audit,
         )
 

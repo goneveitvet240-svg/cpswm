@@ -1,9 +1,15 @@
 """Continual adaptation modules for CPWM components."""
 
 from .event_derived_update_ledger import (
-    EventDerivedUpdate,
+    ConsolidationState,
+    EventDerivedDeltaPromotion,
+    EventDerivedDeltaRecord,
+    EventDerivedDeltaReversal,
     EventDerivedUpdateLedger,
-    owner_contamination_rate,
+    LedgerIntegrityError,
+    RebuildCost,
+    RetractionCost,
+    projection_total_variation,
 )
 from .rls import (
     RecursiveLeastSquares,
@@ -16,14 +22,20 @@ from .rls import (
 )
 
 __all__ = [
-    "EventDerivedUpdate",
+    "ConsolidationState",
+    "EventDerivedDeltaPromotion",
+    "EventDerivedDeltaRecord",
+    "EventDerivedDeltaReversal",
     "EventDerivedUpdateLedger",
+    "LedgerIntegrityError",
     "RLSChannelReliabilityCalibrator",
     "RLSConfig",
     "RLSHabitSample",
     "RLSHabitScoreHead",
     "RLSRegimeBank",
     "RLSRegimeSwitchEvent",
+    "RebuildCost",
     "RecursiveLeastSquares",
-    "owner_contamination_rate",
+    "RetractionCost",
+    "projection_total_variation",
 ]

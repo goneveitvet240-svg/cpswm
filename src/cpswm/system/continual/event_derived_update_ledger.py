@@ -1,165 +1,343 @@
 """Event-derived habit-update ledger (RGRC reversible consolidation).
 
-结构二 §4.7#5 (RGRC): long-term habit statistics must be reconstructable from a
-log and reversible, so that when CHEH/ORRER revises the actor responsibility of
-a hidden event (§4.7#2/ORRER: ``branch/revise/retract/rebuild``), the habit
-updates *derived from that event* can be retracted without a full recompute, and
-the owner model recovers to exactly the state it would have if the contaminating
-event had never been attributed to the owner.
+结构二 §4.7#5 (RGRC) x §4.7#2 (ORRER): long-term habit statistics must be an
+*immutable, append-only* log that is reconstructable and reversible, so that when
+ORRER revises the actor responsibility of a hidden event, the habit updates
+derived from that event can be reversed and a *corrected* revision can re-enter
+the projection, all while keeping full history.
 
-This ledger is the binding between the two: every soft-count habit update records
-its ``source_event_id``.  An ORRER revision that re-attributes an event triggers
-:meth:`retract_event`, which subtracts only that event's derived contributions
-(cost = the event's own entries).  A full rerun instead rebuilds the projection
-from every surviving entry (cost = all surviving entries).  Both reach the same
-owner projection; the ledger exists to prove that equivalence and the cost gap.
+Design (rebuilt 2026-08-22 after review):
+
+* **Immutable append-only log.** The ledger only ever *appends*
+  :class:`EventDerivedDeltaRecord`, :class:`EventDerivedDeltaReversal`, and
+  :class:`EventDerivedDeltaPromotion` records.  It never mutates or replaces a
+  record.  The projection is a cache derived from the log and always equals a
+  from-log rebuild.
+* **True O(k) targeted retract.** A per-event and per-revision index maps to the
+  exact delta record ids, so retracting a revision touches only that revision's
+  ``k`` live deltas -- not the whole log.  ``retract_revision`` reports
+  records-touched and wall-clock; the full rebuild reports records-scanned.
+* **Revision supersede / reactivate (not permanent sealing).** Retract cancels a
+  specific *revision's* deltas via reversal records.  A later corrected revision
+  appends new deltas (parent = the superseded revision), so ORRER's later
+  correction genuinely re-enters long-term memory.
+* **Quarantine -> promote -> retract -> reactivate** consolidation states: a
+  delta counts toward the projection only while PROMOTED and not reversed.
+
+Contamination is measured as a distribution distance from a corrected/reference
+projection, not "any non-home mass", so multi-location habits are not misjudged.
 """
 
 from __future__ import annotations
 
-from dataclasses import dataclass, field
-from uuid import UUID, uuid4
+import json
+import time
+from collections.abc import Mapping
+from enum import StrEnum
+from math import isfinite
+from typing import Annotated
+from uuid import UUID
+
+from pydantic import Field, field_validator
+
+from cpswm.contracts.base import ContractModel
+
+FiniteFloat = Annotated[float, Field()]
+ProjectionKey = tuple[str, UUID, str, UUID]  # (actor, object, parameter_block, location)
 
 
-@dataclass(frozen=True, slots=True)
-class EventDerivedUpdate:
-    """One soft-count habit update, bound to the event it was derived from."""
+class ConsolidationState(StrEnum):
+    """RGRC state of an event-derived delta."""
 
-    update_id: UUID
-    source_event_id: UUID
-    revision_no: int
-    actor_key: str
+    QUARANTINED = "quarantined"
+    PROMOTED = "promoted"
+    RETRACTED = "retracted"
+    REACTIVATED = "reactivated"
+
+
+class EventDerivedDeltaRecord(ContractModel):
+    """One immutable, provenance-complete soft-count delta derived from an event."""
+
+    record_id: UUID
+    event_hypothesis_id: UUID
+    revision_id: UUID
+    parent_revision_id: UUID | None = None
+    evidence_source_id: UUID
+    actor_key: str = Field(min_length=1)
     object_instance_id: UUID
+    regime_id: str = Field(min_length=1)
+    parameter_block: str = Field(min_length=1)
     location_id: UUID
-    weight: float
-    retracted: bool = False
+    signed_delta: FiniteFloat
+    input_watermark: int = Field(ge=0)
+    model_version: str = Field(min_length=1)
+    code_version: str = Field(min_length=1)
+    authorization_scope_id: UUID | None = None
+    semantic_dedup_id: str = Field(min_length=1)
+    initial_state: ConsolidationState = ConsolidationState.PROMOTED
+
+    @field_validator("signed_delta")
+    @classmethod
+    def validate_finite(cls, value: float) -> float:
+        if not isfinite(value):
+            raise ValueError("signed_delta must be finite (no NaN/Inf)")
+        return value
+
+    @field_validator("initial_state")
+    @classmethod
+    def validate_initial_state(cls, value: ConsolidationState) -> ConsolidationState:
+        if value not in {ConsolidationState.QUARANTINED, ConsolidationState.PROMOTED}:
+            raise ValueError("a delta may only be created QUARANTINED or PROMOTED")
+        return value
+
+    @property
+    def projection_key(self) -> ProjectionKey:
+        return (self.actor_key, self.object_instance_id, self.parameter_block, self.location_id)
 
 
-@dataclass
-class _CostMeter:
-    """Counts entry-level operations so retract vs rebuild cost is measurable."""
+class EventDerivedDeltaReversal(ContractModel):
+    """Cancels one delta record; never deletes it (append-only history)."""
 
-    operations: int = 0
+    record_id: UUID
+    reverses_record_id: UUID
+    revision_id: UUID
+    input_watermark: int = Field(ge=0)
+    reason: str = Field(min_length=1)
 
 
-@dataclass
+class EventDerivedDeltaPromotion(ContractModel):
+    """Promotes a quarantined delta into the projection."""
+
+    record_id: UUID
+    promotes_record_id: UUID
+    input_watermark: int = Field(ge=0)
+    reason: str = Field(min_length=1)
+
+
+class LedgerIntegrityError(RuntimeError):
+    """Raised on a write that would violate append-only ledger invariants."""
+
+
+class RetractionCost(ContractModel):
+    records_touched: int
+    wall_clock_seconds: float
+
+
+class RebuildCost(ContractModel):
+    records_scanned: int
+    wall_clock_seconds: float
+
+
 class EventDerivedUpdateLedger:
-    """Append-only, per-event-reversible ledger over owner habit soft counts.
+    """Immutable append-only RGRC ledger with indexed O(k) retract."""
 
-    The owner projection is cached and maintained incrementally on ``record``
-    and ``retract_event``; :meth:`rebuild_owner_projection` recomputes it from
-    scratch over surviving entries for comparison.
+    def __init__(self) -> None:
+        self._log: list[
+            EventDerivedDeltaRecord | EventDerivedDeltaReversal | EventDerivedDeltaPromotion
+        ] = []
+        self._delta_by_id: dict[UUID, EventDerivedDeltaRecord] = {}
+        self._by_event: dict[UUID, list[UUID]] = {}
+        self._by_revision: dict[UUID, list[UUID]] = {}
+        self._reversed: set[UUID] = set()
+        self._promoted: set[UUID] = set()
+        self._dedup: set[str] = set()
+        self._record_ids: set[UUID] = set()
+        self._last_watermark: int = -1
+        self._projection: dict[ProjectionKey, float] = {}
+
+    # --- append-only writes --------------------------------------------------
+
+    def append_delta(self, delta: EventDerivedDeltaRecord) -> EventDerivedDeltaRecord:
+        self._check_new_record_id(delta.record_id)
+        self._check_watermark(delta.input_watermark)
+        if delta.semantic_dedup_id in self._dedup:
+            raise LedgerIntegrityError(f"duplicate semantic_dedup_id {delta.semantic_dedup_id!r}")
+        self._log.append(delta)
+        self._record_ids.add(delta.record_id)
+        self._dedup.add(delta.semantic_dedup_id)
+        self._delta_by_id[delta.record_id] = delta
+        self._by_event.setdefault(delta.event_hypothesis_id, []).append(delta.record_id)
+        self._by_revision.setdefault(delta.revision_id, []).append(delta.record_id)
+        self._last_watermark = delta.input_watermark
+        if delta.initial_state == ConsolidationState.PROMOTED:
+            self._promoted.add(delta.record_id)
+            self._apply_to_projection(delta, +1.0)
+        return delta
+
+    def append_promotion(self, promotion: EventDerivedDeltaPromotion) -> None:
+        self._check_new_record_id(promotion.record_id)
+        self._check_watermark(promotion.input_watermark)
+        delta = self._delta_by_id.get(promotion.promotes_record_id)
+        if delta is None:
+            raise LedgerIntegrityError("promotion targets an unknown delta record")
+        self._log.append(promotion)
+        self._record_ids.add(promotion.record_id)
+        self._last_watermark = promotion.input_watermark
+        if promotion.promotes_record_id in self._promoted:
+            return
+        self._promoted.add(promotion.promotes_record_id)
+        if promotion.promotes_record_id not in self._reversed:
+            self._apply_to_projection(delta, +1.0)
+
+    def append_reversal(self, reversal: EventDerivedDeltaReversal) -> None:
+        self._check_new_record_id(reversal.record_id)
+        self._check_watermark(reversal.input_watermark)
+        delta = self._delta_by_id.get(reversal.reverses_record_id)
+        if delta is None:
+            raise LedgerIntegrityError("reversal targets an unknown delta record")
+        if reversal.reverses_record_id in self._reversed:
+            raise LedgerIntegrityError("delta record is already reversed")
+        self._log.append(reversal)
+        self._record_ids.add(reversal.record_id)
+        self._last_watermark = reversal.input_watermark
+        was_contributing = reversal.reverses_record_id in self._promoted
+        self._reversed.add(reversal.reverses_record_id)
+        if was_contributing:
+            self._apply_to_projection(delta, -1.0)
+
+    # --- ORRER-driven operations --------------------------------------------
+
+    def retract_revision(
+        self, *, revision_id: UUID, watermark: int, reason: str, reversal_ids: list[UUID]
+    ) -> RetractionCost:
+        """RGRC targeted retract: reverse only this revision's live deltas (O(k))."""
+
+        started = time.perf_counter()
+        live = [
+            record_id
+            for record_id in self._by_revision.get(revision_id, [])
+            if record_id not in self._reversed
+        ]
+        if reversal_ids is not None and len(reversal_ids) != len(live):
+            raise LedgerIntegrityError("one reversal record id is required per live delta")
+        touched = 0
+        for offset, record_id in enumerate(live):
+            self.append_reversal(
+                EventDerivedDeltaReversal(
+                    record_id=reversal_ids[offset],
+                    reverses_record_id=record_id,
+                    revision_id=revision_id,
+                    input_watermark=watermark,
+                    reason=reason,
+                )
+            )
+            touched += 1
+        return RetractionCost(
+            records_touched=touched, wall_clock_seconds=time.perf_counter() - started
+        )
+
+    # --- projections ---------------------------------------------------------
+
+    def owner_projection(
+        self, *, actor_key: str, object_instance_id: UUID, parameter_block: str
+    ) -> dict[UUID, float]:
+        """Cached projection over locations for one (actor, object, block)."""
+
+        return {
+            key[3]: value
+            for key, value in self._projection.items()
+            if key[0] == actor_key
+            and key[1] == object_instance_id
+            and key[2] == parameter_block
+            and abs(value) > 1e-12
+        }
+
+    def rebuild_projection_from_log(
+        self, *, actor_key: str, object_instance_id: UUID, parameter_block: str
+    ) -> tuple[dict[UUID, float], RebuildCost]:
+        """Full rerun over the entire log; the cost is every record scanned."""
+
+        started = time.perf_counter()
+        reversed_ids: set[UUID] = set()
+        promoted_ids: set[UUID] = set()
+        deltas: dict[UUID, EventDerivedDeltaRecord] = {}
+        scanned = 0
+        for record in self._log:
+            scanned += 1
+            if isinstance(record, EventDerivedDeltaRecord):
+                deltas[record.record_id] = record
+                if record.initial_state == ConsolidationState.PROMOTED:
+                    promoted_ids.add(record.record_id)
+            elif isinstance(record, EventDerivedDeltaPromotion):
+                promoted_ids.add(record.promotes_record_id)
+            else:  # reversal
+                reversed_ids.add(record.reverses_record_id)
+        counts: dict[UUID, float] = {}
+        for record_id, delta in deltas.items():
+            live = record_id in promoted_ids and record_id not in reversed_ids
+            matches = (
+                delta.actor_key == actor_key
+                and delta.object_instance_id == object_instance_id
+                and delta.parameter_block == parameter_block
+            )
+            if live and matches:
+                counts[delta.location_id] = (
+                    counts.get(delta.location_id, 0.0) + delta.signed_delta
+                )
+        counts = {location: value for location, value in counts.items() if abs(value) > 1e-12}
+        return counts, RebuildCost(
+            records_scanned=scanned, wall_clock_seconds=time.perf_counter() - started
+        )
+
+    def record_count(self) -> int:
+        return len(self._log)
+
+    # --- serialize / restart / replay ---------------------------------------
+
+    def to_jsonl(self) -> str:
+        lines = []
+        for record in self._log:
+            kind = type(record).__name__
+            lines.append(json.dumps({"kind": kind, "record": record.model_dump(mode="json")}))
+        return "\n".join(lines)
+
+    @classmethod
+    def from_jsonl(cls, text: str) -> EventDerivedUpdateLedger:
+        ledger = cls()
+        types = {
+            "EventDerivedDeltaRecord": (EventDerivedDeltaRecord, ledger.append_delta),
+            "EventDerivedDeltaReversal": (EventDerivedDeltaReversal, ledger.append_reversal),
+            "EventDerivedDeltaPromotion": (EventDerivedDeltaPromotion, ledger.append_promotion),
+        }
+        for line in text.splitlines():
+            if not line.strip():
+                continue
+            payload = json.loads(line)
+            model_cls, appender = types[payload["kind"]]
+            appender(model_cls.model_validate(payload["record"]))
+        return ledger
+
+    # --- internals -----------------------------------------------------------
+
+    def _check_new_record_id(self, record_id: UUID) -> None:
+        if record_id in self._record_ids:
+            raise LedgerIntegrityError(f"record id {record_id} already appended")
+
+    def _check_watermark(self, watermark: int) -> None:
+        if watermark < self._last_watermark:
+            raise LedgerIntegrityError(
+                f"input_watermark {watermark} is behind the ledger head {self._last_watermark}"
+            )
+
+    def _apply_to_projection(self, delta: EventDerivedDeltaRecord, sign: float) -> None:
+        key = delta.projection_key
+        updated = self._projection.get(key, 0.0) + sign * delta.signed_delta
+        if abs(updated) < 1e-12:
+            self._projection.pop(key, None)
+        else:
+            self._projection[key] = updated
+
+
+def projection_total_variation(left: Mapping[UUID, float], right: Mapping[UUID, float]) -> float:
+    """Total-variation distance between two location soft-count distributions.
+
+    Robust to multi-location habits: it measures how far one projection is from a
+    reference (e.g. the corrected projection), not "any non-home mass".
     """
 
-    _entries: list[EventDerivedUpdate] = field(default_factory=list)
-    _retracted_events: set[UUID] = field(default_factory=set)
-    # cached owner projection: (owner_key, object) -> {location: soft count}
-    _owner_counts: dict[tuple[str, UUID], dict[UUID, float]] = field(default_factory=dict)
-
-    def record(
-        self,
-        *,
-        source_event_id: UUID,
-        revision_no: int,
-        actor_key: str,
-        object_instance_id: UUID,
-        location_id: UUID,
-        weight: float,
-    ) -> EventDerivedUpdate:
-        if weight < 0.0:
-            raise ValueError("event-derived update weight must be non-negative")
-        entry = EventDerivedUpdate(
-            update_id=uuid4(),
-            source_event_id=source_event_id,
-            revision_no=revision_no,
-            actor_key=actor_key,
-            object_instance_id=object_instance_id,
-            location_id=location_id,
-            weight=weight,
-        )
-        self._entries.append(entry)
-        if source_event_id not in self._retracted_events:
-            self._add_to_cache(entry, +1.0)
-        return entry
-
-    def retract_event(self, source_event_id: UUID) -> int:
-        """RGRC targeted retract: reverse only this event's derived updates.
-
-        Returns the number of entries reversed (the retraction cost).
-        """
-
-        if source_event_id in self._retracted_events:
-            return 0
-        self._retracted_events.add(source_event_id)
-        reversed_count = 0
-        for entry in self._entries:
-            if entry.source_event_id == source_event_id and not entry.retracted:
-                self._add_to_cache(entry, -1.0)
-                reversed_count += 1
-        # Mark entries retracted (frozen dataclass -> replace in place).
-        self._entries = [
-            _mark_retracted(entry) if entry.source_event_id == source_event_id else entry
-            for entry in self._entries
-        ]
-        return reversed_count
-
-    def owner_projection(self, *, owner_key: str, object_instance_id: UUID) -> dict[UUID, float]:
-        """Cached owner soft counts (incrementally maintained)."""
-
-        return dict(self._owner_counts.get((owner_key, object_instance_id), {}))
-
-    def rebuild_owner_projection(
-        self, *, owner_key: str, object_instance_id: UUID
-    ) -> tuple[dict[UUID, float], int]:
-        """Full rerun: recompute the owner projection from all surviving entries.
-
-        Returns the projection and the rebuild cost (surviving entries scanned).
-        """
-
-        meter = _CostMeter()
-        counts: dict[UUID, float] = {}
-        for entry in self._entries:
-            meter.operations += 1
-            if entry.retracted or entry.source_event_id in self._retracted_events:
-                continue
-            if entry.actor_key == owner_key and entry.object_instance_id == object_instance_id:
-                counts[entry.location_id] = counts.get(entry.location_id, 0.0) + entry.weight
-        return counts, meter.operations
-
-    def surviving_entry_count(self) -> int:
-        return sum(1 for entry in self._entries if not entry.retracted)
-
-    def _add_to_cache(self, entry: EventDerivedUpdate, sign: float) -> None:
-        key = (entry.actor_key, entry.object_instance_id)
-        table = self._owner_counts.setdefault(key, {})
-        updated = table.get(entry.location_id, 0.0) + sign * entry.weight
-        # Drop zeroed locations so the cached projection matches a from-log
-        # rebuild, which never materialises absent locations.
-        if abs(updated) < 1e-12:
-            table.pop(entry.location_id, None)
-        else:
-            table[entry.location_id] = updated
-
-
-def _mark_retracted(entry: EventDerivedUpdate) -> EventDerivedUpdate:
-    if entry.retracted:
-        return entry
-    return EventDerivedUpdate(
-        update_id=entry.update_id,
-        source_event_id=entry.source_event_id,
-        revision_no=entry.revision_no,
-        actor_key=entry.actor_key,
-        object_instance_id=entry.object_instance_id,
-        location_id=entry.location_id,
-        weight=entry.weight,
-        retracted=True,
-    )
-
-
-def owner_contamination_rate(projection: dict[UUID, float], *, home_location_id: UUID) -> float:
-    """Share of the owner's soft-count mass that is *not* on the home location."""
-
-    total = sum(projection.values())
-    if total <= 0.0:
-        return 0.0
-    return 1.0 - projection.get(home_location_id, 0.0) / total
+    left_total = sum(left.values())
+    right_total = sum(right.values())
+    left_norm = {k: v / left_total for k, v in left.items()} if left_total > 0 else {}
+    right_norm = {k: v / right_total for k, v in right.items()} if right_total > 0 else {}
+    support = set(left_norm) | set(right_norm)
+    return 0.5 * sum(abs(left_norm.get(k, 0.0) - right_norm.get(k, 0.0)) for k in support)

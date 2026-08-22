@@ -37,9 +37,13 @@ from .corrections import (
     UserCorrectionEvent,
 )
 from .decision_context import (
+    AttributedCause,
     DecisionContext,
     DecisionContextBinding,
     DecisionSurface,
+    MapConsistencyRevisions,
+    RelevantChange,
+    detect_relevant_change,
 )
 from .events import (
     EventEvidenceClass,
@@ -147,6 +151,7 @@ __all__ = [
     "ActorEvidenceTrack",
     "ActorResponsibilityEvidence",
     "AssertionStatus",
+    "AttributedCause",
     "AuditableEvidencePath",
     "AuditableQueryExplanation",
     "AuditedEvidenceClaim",
@@ -202,6 +207,7 @@ __all__ = [
     "JointCandidateEvidence",
     "JointPosteriorRequest",
     "LiteralRelationObject",
+    "MapConsistencyRevisions",
     "MemoryEvidenceFactor",
     "MemoryFactorContribution",
     "MemoryFactorEvidence",
@@ -237,6 +243,7 @@ __all__ = [
     "RebuildCostEstimate",
     "RelationAssertion",
     "RelationPredicate",
+    "RelevantChange",
     "ResolutionStatus",
     "ResponsePolicy",
     "RetrievalBudget",
@@ -254,6 +261,7 @@ __all__ = [
     "VerificationObservation",
     "WorldModelQuery",
     "WorldModelQueryResult",
+    "detect_relevant_change",
     "ordered_role_key",
     "parse_ordered_role_key",
 ]

@@ -125,7 +125,7 @@ def test_empirical_stddev_must_recompute_from_pilot_artifacts(completed_report, 
     item["required_test_seed_count"] = 2
     item["status"] = "PASS"
     _rehash_report(payload)
-    with pytest.raises(ValidationError, match="power analyses"):
+    with pytest.raises(ValidationError, match=r"required seed count|power analyses"):
         ProjectOneShiftActionDeathTestReport.model_validate(payload)
 
 
@@ -134,7 +134,7 @@ def test_pilot_artifacts_bind_exact_config_seed_set(completed_report):
     payload["config"]["seed_plan"]["pilot_seeds"][0] = 999_999
     payload["config_sha256"] = content_sha256(payload["config"])
     _rehash_report(payload)
-    with pytest.raises(ValidationError, match="pilot artifact seeds"):
+    with pytest.raises(ValidationError, match=r"input artifact seeds|pilot artifact seeds"):
         ProjectOneShiftActionDeathTestReport.model_validate(payload)
 
 

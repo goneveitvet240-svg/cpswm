@@ -35,6 +35,7 @@ from cpswm.contracts import (
 )
 from cpswm.world_model.grounded_search.concurrent_map_task import (
     BeliefSnapshot,
+    ConstrainedDependencyBridge,
     ExactActionRiskVerifier,
     MapTaskCoordinator,
     TaskActionGraph,
@@ -307,13 +308,24 @@ class HybridEventToTaskCoordinatorLoop:
         old_snapshot: BeliefSnapshot,
         new_snapshot: BeliefSnapshot,
         verifier: ExactActionRiskVerifier,
+        dependency_bridge: ConstrainedDependencyBridge | None = None,
     ) -> VersionSwitchDecision:
+        """Decide whether a pinned task must switch map versions.
+
+        An optional :class:`ConstrainedDependencyBridge` expands the set of belief
+        nodes each action is considered to depend on (hard candidates plus learned
+        soft relevance), so a coupled habit change that touches a node the action
+        does not statically read can still impact it.  Hard dependencies and the
+        exact risk verifier retain final authority.
+        """
+
         return self._coordinator.evaluate_switch(
             task=task,
             current_action_order=current_action_order,
             old_snapshot=old_snapshot,
             new_snapshot=new_snapshot,
             verifier=verifier,
+            dependency_bridge=dependency_bridge,
         )
 
     def project_execution_feedback(

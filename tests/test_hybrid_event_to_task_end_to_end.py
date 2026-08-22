@@ -27,6 +27,9 @@ from cpswm.system.counterfactual_event_hypergraph import CounterfactualEventHype
 from cpswm.world_model.grounded_search.concurrent_map_task import (
     BayesianRisk,
     BeliefSnapshot,
+    BridgeSupervision,
+    BridgeSupervisionSource,
+    ConstrainedDependencyBridge,
     MapTaskCoordinator,
     TaskAction,
     TaskActionGraph,
@@ -279,6 +282,79 @@ def _search_found_feedback(base, loop_auth):
         model_version="search-likelihood@0.1",
     )
     return feedback, binding, likelihood
+
+
+def test_dependency_bridge_expands_impacted_actions():
+    # Review fix #6 (partial): an action that reads no habit node statically can
+    # still be drawn into the impacted set through a ConstrainedDependencyBridge
+    # hard label.  Without the bridge the coupled L1 change is invisible to the
+    # action; with it, the action is impacted (the exact verifier retains final
+    # authority over whether that impact actually forces a replan).
+    loop = HybridEventToTaskCoordinatorLoop(
+        owner_key=OWNER,
+        object_instance_id=OBJ,
+        authorization_scope_id=uuid4(),
+        model_version="m@1",
+        code_version="git:test",
+    )
+    loop.ingest_owner_placement(
+        OwnerPlacementInput(
+            event_hypothesis_id=uuid4(),
+            revision_id=uuid4(),
+            destination_location_id=L1,
+            owner_mass=1.0,
+            source_record_id=uuid4(),
+        )
+    )
+    old_snapshot = loop.publish_snapshot()
+    loop.ingest_owner_placement(
+        OwnerPlacementInput(
+            event_hypothesis_id=uuid4(),
+            revision_id=uuid4(),
+            destination_location_id=L2,
+            owner_mass=1.0,
+            source_record_id=uuid4(),
+        )
+    )
+    new_snapshot = loop.publish_snapshot()
+
+    # The action declares no static dependency on the habit node.
+    task = TaskActionGraph(
+        task_id=uuid4(),
+        actions=(TaskAction(action_id="fetch", order=0),),
+    )
+    without_bridge = loop.evaluate_task(
+        task=task,
+        current_action_order=0,
+        old_snapshot=old_snapshot,
+        new_snapshot=new_snapshot,
+        verifier=_UncertaintyRiskVerifier(),
+    )
+    assert without_bridge.impacted_action_ids == ()
+
+    bridge = ConstrainedDependencyBridge(
+        (
+            BridgeSupervision(
+                action_id="fetch",
+                belief_node_id=loop.node_id(L1),
+                relevant=True,
+                confidence=1.0,
+                source=BridgeSupervisionSource.SYMBOLIC_RULE,
+                source_record_id=uuid4(),
+                hard_rule=True,
+            ),
+        )
+    )
+    with_bridge = loop.evaluate_task(
+        task=task,
+        current_action_order=0,
+        old_snapshot=old_snapshot,
+        new_snapshot=new_snapshot,
+        verifier=_UncertaintyRiskVerifier(),
+        dependency_bridge=bridge,
+    )
+    assert with_bridge.impacted_action_ids == ("fetch",)
+    assert loop.node_id(L1) in with_bridge.changed_belief_nodes
 
 
 def test_noop_publish_does_not_bump_map_version():

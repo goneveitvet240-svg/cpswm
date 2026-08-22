@@ -30,6 +30,7 @@ projection, not "any non-home mass", so multi-location habits are not misjudged.
 
 from __future__ import annotations
 
+import hashlib
 import json
 import time
 from collections.abc import Mapping
@@ -103,6 +104,7 @@ class EventDerivedDeltaReversal(ContractModel):
     revision_id: UUID
     input_watermark: int = Field(ge=0)
     reason: str = Field(min_length=1)
+    authorization_scope_id: UUID | None = None
 
 
 class EventDerivedDeltaPromotion(ContractModel):
@@ -112,6 +114,7 @@ class EventDerivedDeltaPromotion(ContractModel):
     promotes_record_id: UUID
     input_watermark: int = Field(ge=0)
     reason: str = Field(min_length=1)
+    authorization_scope_id: UUID | None = None
 
 
 class LedgerIntegrityError(RuntimeError):
@@ -142,8 +145,11 @@ class EventDerivedUpdateLedger:
         self._promoted: set[UUID] = set()
         self._dedup: set[str] = set()
         self._record_ids: set[UUID] = set()
+        self._revision_event: dict[UUID, UUID] = {}
+        self._revision_parent: dict[UUID, UUID | None] = {}
         self._last_watermark: int = -1
         self._projection: dict[ProjectionKey, float] = {}
+        self._head_hash = "0" * 64
 
     # --- append-only writes --------------------------------------------------
 
@@ -152,7 +158,8 @@ class EventDerivedUpdateLedger:
         self._check_watermark(delta.input_watermark)
         if delta.semantic_dedup_id in self._dedup:
             raise LedgerIntegrityError(f"duplicate semantic_dedup_id {delta.semantic_dedup_id!r}")
-        self._log.append(delta)
+        self._validate_revision(delta)
+        self._append_to_log(delta)
         self._record_ids.add(delta.record_id)
         self._dedup.add(delta.semantic_dedup_id)
         self._delta_by_id[delta.record_id] = delta
@@ -170,14 +177,17 @@ class EventDerivedUpdateLedger:
         delta = self._delta_by_id.get(promotion.promotes_record_id)
         if delta is None:
             raise LedgerIntegrityError("promotion targets an unknown delta record")
-        self._log.append(promotion)
+        if promotion.promotes_record_id in self._reversed:
+            raise LedgerIntegrityError("a retracted delta cannot be promoted")
+        if promotion.promotes_record_id in self._promoted:
+            raise LedgerIntegrityError("delta record is already promoted")
+        if promotion.authorization_scope_id != delta.authorization_scope_id:
+            raise LedgerIntegrityError("promotion authorization scope does not match delta")
+        self._append_to_log(promotion)
         self._record_ids.add(promotion.record_id)
         self._last_watermark = promotion.input_watermark
-        if promotion.promotes_record_id in self._promoted:
-            return
         self._promoted.add(promotion.promotes_record_id)
-        if promotion.promotes_record_id not in self._reversed:
-            self._apply_to_projection(delta, +1.0)
+        self._apply_to_projection(delta, +1.0)
 
     def append_reversal(self, reversal: EventDerivedDeltaReversal) -> None:
         self._check_new_record_id(reversal.record_id)
@@ -185,9 +195,15 @@ class EventDerivedUpdateLedger:
         delta = self._delta_by_id.get(reversal.reverses_record_id)
         if delta is None:
             raise LedgerIntegrityError("reversal targets an unknown delta record")
+        if reversal.revision_id != delta.revision_id:
+            raise LedgerIntegrityError("reversal revision does not match target delta")
+        if reversal.authorization_scope_id != delta.authorization_scope_id:
+            raise LedgerIntegrityError("reversal authorization scope does not match delta")
+        if reversal.reverses_record_id not in self._promoted:
+            raise LedgerIntegrityError("only a promoted delta can be reversed")
         if reversal.reverses_record_id in self._reversed:
             raise LedgerIntegrityError("delta record is already reversed")
-        self._log.append(reversal)
+        self._append_to_log(reversal)
         self._record_ids.add(reversal.record_id)
         self._last_watermark = reversal.input_watermark
         was_contributing = reversal.reverses_record_id in self._promoted
@@ -206,7 +222,7 @@ class EventDerivedUpdateLedger:
         live = [
             record_id
             for record_id in self._by_revision.get(revision_id, [])
-            if record_id not in self._reversed
+            if record_id in self._promoted and record_id not in self._reversed
         ]
         if reversal_ids is not None and len(reversal_ids) != len(live):
             raise LedgerIntegrityError("one reversal record id is required per live delta")
@@ -219,6 +235,7 @@ class EventDerivedUpdateLedger:
                     revision_id=revision_id,
                     input_watermark=watermark,
                     reason=reason,
+                    authorization_scope_id=self._delta_by_id[record_id].authorization_scope_id,
                 )
             )
             touched += 1
@@ -282,13 +299,41 @@ class EventDerivedUpdateLedger:
     def record_count(self) -> int:
         return len(self._log)
 
+    def state_of(self, record_id: UUID) -> ConsolidationState:
+        """Return the derived state of one delta; corrected revisions are reactivated."""
+
+        delta = self._delta_by_id.get(record_id)
+        if delta is None:
+            raise LedgerIntegrityError("unknown delta record")
+        if record_id in self._reversed:
+            return ConsolidationState.RETRACTED
+        if record_id in self._promoted:
+            if delta.parent_revision_id is not None:
+                return ConsolidationState.REACTIVATED
+            return ConsolidationState.PROMOTED
+        return ConsolidationState.QUARANTINED
+
     # --- serialize / restart / replay ---------------------------------------
 
     def to_jsonl(self) -> str:
         lines = []
+        previous_hash = "0" * 64
         for record in self._log:
             kind = type(record).__name__
-            lines.append(json.dumps({"kind": kind, "record": record.model_dump(mode="json")}))
+            record_payload = record.model_dump(mode="json")
+            entry_hash = self._entry_hash(previous_hash, kind, record_payload)
+            lines.append(
+                json.dumps(
+                    {
+                        "kind": kind,
+                        "record": record_payload,
+                        "previous_hash": previous_hash,
+                        "entry_hash": entry_hash,
+                    },
+                    sort_keys=True,
+                )
+            )
+            previous_hash = entry_hash
         return "\n".join(lines)
 
     @classmethod
@@ -303,8 +348,19 @@ class EventDerivedUpdateLedger:
             if not line.strip():
                 continue
             payload = json.loads(line)
+            if payload.get("previous_hash") != ledger._head_hash:
+                raise LedgerIntegrityError("JSONL hash chain previous_hash mismatch")
+            expected_hash = ledger._entry_hash(
+                ledger._head_hash,
+                payload["kind"],
+                payload["record"],
+            )
+            if payload.get("entry_hash") != expected_hash:
+                raise LedgerIntegrityError("JSONL hash chain entry_hash mismatch")
             model_cls, appender = types[payload["kind"]]
             appender(model_cls.model_validate(payload["record"]))
+            if ledger._head_hash != expected_hash:
+                raise LedgerIntegrityError("replayed hash chain diverged")
         return ledger
 
     # --- internals -----------------------------------------------------------
@@ -318,6 +374,45 @@ class EventDerivedUpdateLedger:
             raise LedgerIntegrityError(
                 f"input_watermark {watermark} is behind the ledger head {self._last_watermark}"
             )
+
+    def _validate_revision(self, delta: EventDerivedDeltaRecord) -> None:
+        known_event = self._revision_event.get(delta.revision_id)
+        if known_event is not None:
+            if known_event != delta.event_hypothesis_id:
+                raise LedgerIntegrityError("revision id cannot span multiple events")
+            if self._revision_parent[delta.revision_id] != delta.parent_revision_id:
+                raise LedgerIntegrityError("revision parent must be stable")
+            return
+        parent = delta.parent_revision_id
+        if parent is not None:
+            parent_event = self._revision_event.get(parent)
+            if parent_event is None:
+                raise LedgerIntegrityError("parent revision does not exist")
+            if parent_event != delta.event_hypothesis_id:
+                raise LedgerIntegrityError("parent revision belongs to another event")
+            parent_records = self._by_revision.get(parent, ())
+            if any(record_id not in self._reversed for record_id in parent_records):
+                raise LedgerIntegrityError("parent revision must be fully retracted")
+        self._revision_event[delta.revision_id] = delta.event_hypothesis_id
+        self._revision_parent[delta.revision_id] = parent
+
+    def _append_to_log(
+        self,
+        record: EventDerivedDeltaRecord | EventDerivedDeltaReversal | EventDerivedDeltaPromotion,
+    ) -> None:
+        kind = type(record).__name__
+        payload = record.model_dump(mode="json")
+        self._head_hash = self._entry_hash(self._head_hash, kind, payload)
+        self._log.append(record)
+
+    @staticmethod
+    def _entry_hash(previous_hash: str, kind: str, payload: Mapping[str, object]) -> str:
+        canonical = json.dumps(
+            {"previous_hash": previous_hash, "kind": kind, "record": payload},
+            sort_keys=True,
+            separators=(",", ":"),
+        ).encode("utf-8")
+        return hashlib.sha256(canonical).hexdigest()
 
     def _apply_to_projection(self, delta: EventDerivedDeltaRecord, sign: float) -> None:
         key = delta.projection_key

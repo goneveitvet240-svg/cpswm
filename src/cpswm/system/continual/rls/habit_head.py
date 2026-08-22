@@ -230,10 +230,7 @@ class RLSHabitScoreHead:
                 location_id=candidate_id,
                 create=False,
             )
-            if model is None:
-                score = 0.0
-            else:
-                score = model.model.predict(features)
+            score = 0.0 if model is None else model.model.predict(features)
             if apply_sigmoid:
                 score = 1.0 / (1.0 + np.exp(-score))
             scores[candidate_id] = float(score)
@@ -265,7 +262,8 @@ class RLSHabitScoreHead:
         for key, model_state in model_snapshots.items():
             if not isinstance(key, tuple) or len(key) != 4:
                 raise ValueError(
-                    "restore expects model keys of (object_instance_id, actor_id, regime_id, location_id)"
+                    "restore expects model keys of "
+                    "(object_instance_id, actor_id, regime_id, location_id)"
                 )
             object_instance_id, actor_id, regime_id, location_id = key
             if not isinstance(object_instance_id, UUID):
@@ -280,5 +278,4 @@ class RLSHabitScoreHead:
                 ridge=self.ridge,
                 prior_scale=self.prior_scale,
             )
-            self._models[key].model.restore(model_state)
             self._models[key].model.restore(model_state)

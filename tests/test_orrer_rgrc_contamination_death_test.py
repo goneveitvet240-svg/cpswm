@@ -42,6 +42,7 @@ def _delta(
     delta=1.0,
     state=ConsolidationState.PROMOTED,
     dedup=None,
+    auth=None,
 ):
     return EventDerivedDeltaRecord(
         record_id=uuid4(),
@@ -60,6 +61,7 @@ def _delta(
         code_version="git:test",
         semantic_dedup_id=dedup or str(uuid4()),
         initial_state=state,
+        authorization_scope_id=auth,
     )
 
 
@@ -229,6 +231,133 @@ def test_double_reversal_rejected():
         )
 
 
+def test_reversal_revision_must_match_target_and_quarantine_cannot_be_reversed():
+    ledger = EventDerivedUpdateLedger()
+    promoted = _delta(watermark=0, location=L1)
+    ledger.append_delta(promoted)
+    with pytest.raises(LedgerIntegrityError, match="revision does not match"):
+        ledger.append_reversal(
+            EventDerivedDeltaReversal(
+                record_id=uuid4(),
+                reverses_record_id=promoted.record_id,
+                revision_id=uuid4(),
+                input_watermark=1,
+                reason="wrong revision",
+            )
+        )
+
+    quarantined = _delta(
+        watermark=1,
+        location=L2,
+        state=ConsolidationState.QUARANTINED,
+    )
+    ledger.append_delta(quarantined)
+    with pytest.raises(LedgerIntegrityError, match="only a promoted"):
+        ledger.append_reversal(
+            EventDerivedDeltaReversal(
+                record_id=uuid4(),
+                reverses_record_id=quarantined.record_id,
+                revision_id=quarantined.revision_id,
+                input_watermark=2,
+                reason="illegal state transition",
+            )
+        )
+
+
+def test_parent_revision_must_exist_and_belong_to_same_event():
+    ledger = EventDerivedUpdateLedger()
+    with pytest.raises(LedgerIntegrityError, match="parent revision does not exist"):
+        ledger.append_delta(
+            _delta(watermark=0, location=L1, parent=uuid4())
+        )
+
+    parent_event, parent_revision = uuid4(), uuid4()
+    parent = _delta(
+        watermark=0,
+        location=L1,
+        event=parent_event,
+        revision=parent_revision,
+    )
+    ledger.append_delta(parent)
+    ledger.retract_revision(
+        revision_id=parent_revision,
+        watermark=1,
+        reason="retired",
+        reversal_ids=[uuid4()],
+    )
+    with pytest.raises(LedgerIntegrityError, match="belongs to another event"):
+        ledger.append_delta(
+            _delta(watermark=2, location=L2, event=uuid4(), parent=parent_revision)
+        )
+
+
+def test_duplicate_promotion_is_rejected_before_it_enters_log():
+    ledger = EventDerivedUpdateLedger()
+    delta = _delta(watermark=0, location=L1, state=ConsolidationState.QUARANTINED)
+    ledger.append_delta(delta)
+    ledger.append_promotion(
+        EventDerivedDeltaPromotion(
+            record_id=uuid4(),
+            promotes_record_id=delta.record_id,
+            input_watermark=1,
+            reason="first",
+        )
+    )
+    count = ledger.record_count()
+    with pytest.raises(LedgerIntegrityError, match="already promoted"):
+        ledger.append_promotion(
+            EventDerivedDeltaPromotion(
+                record_id=uuid4(),
+                promotes_record_id=delta.record_id,
+                input_watermark=2,
+                reason="duplicate",
+            )
+        )
+    assert ledger.record_count() == count
+
+
+def test_promotion_and_reversal_are_bound_to_authorization_scope():
+    ledger = EventDerivedUpdateLedger()
+    authorization = uuid4()
+    delta = _delta(
+        watermark=0,
+        location=L1,
+        state=ConsolidationState.QUARANTINED,
+        auth=authorization,
+    )
+    ledger.append_delta(delta)
+    with pytest.raises(LedgerIntegrityError, match="promotion authorization"):
+        ledger.append_promotion(
+            EventDerivedDeltaPromotion(
+                record_id=uuid4(),
+                promotes_record_id=delta.record_id,
+                input_watermark=1,
+                reason="wrong scope",
+                authorization_scope_id=uuid4(),
+            )
+        )
+    ledger.append_promotion(
+        EventDerivedDeltaPromotion(
+            record_id=uuid4(),
+            promotes_record_id=delta.record_id,
+            input_watermark=1,
+            reason="right scope",
+            authorization_scope_id=authorization,
+        )
+    )
+    with pytest.raises(LedgerIntegrityError, match="reversal authorization"):
+        ledger.append_reversal(
+            EventDerivedDeltaReversal(
+                record_id=uuid4(),
+                reverses_record_id=delta.record_id,
+                revision_id=delta.revision_id,
+                input_watermark=2,
+                reason="wrong scope",
+                authorization_scope_id=uuid4(),
+            )
+        )
+
+
 # --- crash recovery: real serialize / restart / replay -----------------------
 
 
@@ -247,6 +376,14 @@ def test_serialize_restart_replay_is_pointwise_identical():
     )
     assert after == before
     assert after == rebuilt  # ledger increment == full raw rerun, pointwise
+
+
+def test_serialized_hash_chain_rejects_tampering():
+    ledger = EventDerivedUpdateLedger()
+    ledger.append_delta(_delta(watermark=0, location=L1, delta=1.0))
+    text = ledger.to_jsonl().replace('"signed_delta": 1.0', '"signed_delta": 2.0')
+    with pytest.raises(LedgerIntegrityError, match="entry_hash mismatch"):
+        EventDerivedUpdateLedger.from_jsonl(text)
 
 
 # --- partial rollback --------------------------------------------------------

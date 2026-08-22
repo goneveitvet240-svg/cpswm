@@ -11,6 +11,26 @@ from .event_derived_update_ledger import (
     RetractionCost,
     projection_total_variation,
 )
+from .event_to_task_loop import (
+    EventToTaskConsolidationLoop,
+    OwnerPlacement,
+    owner_placement,
+)
+from .hybrid_statistics import (
+    ConsolidationRiskCertificate,
+    DirichletRLSFusion,
+    FusedLocationBelief,
+    HybridConsolidationState,
+    HybridLedgerError,
+    HybridProjection,
+    HybridPromotion,
+    HybridQuarantineSupersession,
+    HybridReversal,
+    HybridStatisticDelta,
+    HybridStatisticLedger,
+    NaturalRidgeResidual,
+    StatisticKey,
+)
 from .rls import (
     RecursiveLeastSquares,
     RLSChannelReliabilityCalibrator,
@@ -22,12 +42,26 @@ from .rls import (
 )
 
 __all__ = [
+    "ConsolidationRiskCertificate",
     "ConsolidationState",
+    "DirichletRLSFusion",
     "EventDerivedDeltaPromotion",
     "EventDerivedDeltaRecord",
     "EventDerivedDeltaReversal",
     "EventDerivedUpdateLedger",
+    "EventToTaskConsolidationLoop",
+    "FusedLocationBelief",
+    "HybridConsolidationState",
+    "HybridLedgerError",
+    "HybridProjection",
+    "HybridPromotion",
+    "HybridQuarantineSupersession",
+    "HybridReversal",
+    "HybridStatisticDelta",
+    "HybridStatisticLedger",
     "LedgerIntegrityError",
+    "NaturalRidgeResidual",
+    "OwnerPlacement",
     "RLSChannelReliabilityCalibrator",
     "RLSConfig",
     "RLSHabitSample",
@@ -37,5 +71,7 @@ __all__ = [
     "RebuildCost",
     "RecursiveLeastSquares",
     "RetractionCost",
+    "StatisticKey",
+    "owner_placement",
     "projection_total_variation",
 ]

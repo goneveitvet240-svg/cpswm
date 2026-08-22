@@ -16,6 +16,10 @@ from .event_to_task_loop import (
     OwnerPlacement,
     owner_placement,
 )
+from .hybrid_event_to_task_loop import (
+    HybridEventToTaskCoordinatorLoop,
+    OwnerPlacementInput,
+)
 from .hybrid_statistics import (
     ConsolidationRiskCertificate,
     DirichletRLSFusion,
@@ -52,6 +56,7 @@ __all__ = [
     "EventToTaskConsolidationLoop",
     "FusedLocationBelief",
     "HybridConsolidationState",
+    "HybridEventToTaskCoordinatorLoop",
     "HybridLedgerError",
     "HybridProjection",
     "HybridPromotion",
@@ -62,6 +67,7 @@ __all__ = [
     "LedgerIntegrityError",
     "NaturalRidgeResidual",
     "OwnerPlacement",
+    "OwnerPlacementInput",
     "RLSChannelReliabilityCalibrator",
     "RLSConfig",
     "RLSHabitSample",

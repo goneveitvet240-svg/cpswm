@@ -29,6 +29,14 @@ from .engine import (
     CounterfactualEventHypergraphEngine,
     OpenWorldRoleConditionedReversibleEventRevisionEngine,
 )
+from .hypothesis_message_passing import (
+    EvidenceFirewallViolation,
+    MessageEdgeType,
+    MessagePassingResult,
+    ProvenanceConstrainedMessagePassing,
+    permute_actor_evidence,
+    permute_actor_keys,
+)
 
 __all__ = [
     "AMGConstrainedMAPPrediction",
@@ -44,14 +52,20 @@ __all__ = [
     "EventHypothesisRevision",
     "EventHypothesisStatus",
     "EventHypothesisUpdateKind",
+    "EvidenceFirewallViolation",
     "HiddenEventEvidence",
     "HiddenEventStep",
     "IndependentEventCandidate",
     "IndependentEventCandidateBaseline",
     "IndependentEventCandidatePrediction",
+    "MessageEdgeType",
+    "MessagePassingResult",
     "OpenWorldRoleConditionedReversibleEventRevisionEngine",
+    "ProvenanceConstrainedMessagePassing",
     "Top1EventGraphBaseline",
     "Top1EventGraphPrediction",
     "actor_evidence_semantic_fingerprint",
     "hidden_event_evidence_semantic_fingerprint",
+    "permute_actor_evidence",
+    "permute_actor_keys",
 ]

@@ -38,7 +38,7 @@ from .shift_attribution import ShiftCause
 PRIMARY_ENDPOINT_ID = "downstream-action-regret.normalized-per-case@1"
 KEY_SECONDARY_ENDPOINT_ID = "corrupted-habit-mass.mean-per-case@1"
 ALLOWED_CLAIM_IDS = (
-    "claim.synthetic-shift-action-death-test-reported@3",
+    "claim.synthetic-shift-action-death-test-reported@4",
     "claim.shared-policy-track-reported@1",
     "claim.independently-retuned-policy-track-reported@1",
 )
@@ -78,7 +78,7 @@ class EvaluationTrack(StrEnum):
 
 
 class FrozenActionPolicy(ContractModel):
-    policy_id: Literal["habit-reset-consolidation-policy@3"] = "habit-reset-consolidation-policy@3"
+    policy_id: Literal["habit-reset-consolidation-policy@4"] = "habit-reset-consolidation-policy@4"
     probability_temperature: float = Field(default=1.0, gt=0.0)
     reset_probability_threshold: float = Field(default=0.50, ge=0.0, le=1.0)
     consolidation_probability_threshold: float = Field(default=0.70, ge=0.0, le=1.0)
@@ -109,7 +109,7 @@ class ActionSeedPlan(ContractModel):
         5167,
         5171,
     )
-    test_seeds: tuple[NonNegativeInt, ...] = tuple(range(11101, 11403, 2))
+    test_seeds: tuple[NonNegativeInt, ...] = tuple(range(13101, 13781, 2))
 
     @model_validator(mode="after")
     def validate_partitions(self) -> ActionSeedPlan:
@@ -121,16 +121,52 @@ class ActionSeedPlan(ContractModel):
         return self
 
 
+class UtilitySensitivityScenario(ContractModel):
+    scenario_id: Literal[
+        "base@1",
+        "false-action-cost-x1.5@1",
+        "unrecovered-habit-cost-x1.5@1",
+        "verification-cost-x2@1",
+    ]
+    false_reset_multiplier: float = Field(default=1.0, gt=0.0)
+    unrecovered_habit_multiplier: float = Field(default=1.0, gt=0.0)
+    corrupted_mass_multiplier: float = Field(default=1.0, gt=0.0)
+    verification_multiplier: float = Field(default=1.0, gt=0.0)
+
+
+def _canonical_utility_scenarios() -> tuple[UtilitySensitivityScenario, ...]:
+    return (
+        UtilitySensitivityScenario(scenario_id="base@1"),
+        UtilitySensitivityScenario(
+            scenario_id="false-action-cost-x1.5@1",
+            false_reset_multiplier=1.5,
+            corrupted_mass_multiplier=1.5,
+        ),
+        UtilitySensitivityScenario(
+            scenario_id="unrecovered-habit-cost-x1.5@1",
+            unrecovered_habit_multiplier=1.5,
+        ),
+        UtilitySensitivityScenario(
+            scenario_id="verification-cost-x2@1",
+            verification_multiplier=2.0,
+        ),
+    )
+
+
 class ProjectOneShiftActionDeathTestConfig(ContractModel):
-    protocol_version: Literal["project-one-shift-action-death-test@3"] = (
-        "project-one-shift-action-death-test@3"
+    protocol_version: Literal["project-one-shift-action-death-test@4"] = (
+        "project-one-shift-action-death-test@4"
     )
     seed_plan: ActionSeedPlan = Field(default_factory=ActionSeedPlan)
     action_policy: FrozenActionPolicy = Field(default_factory=FrozenActionPolicy)
     duration_days: PositiveInt = 10
     alpha: float = Field(default=0.05, gt=0.0, lt=1.0)
     target_power: float = Field(default=0.80, gt=0.0, lt=1.0)
+    power_stddev_safety_factor: float = Field(default=1.5, ge=1.0)
     bootstrap_samples: PositiveInt = 2000
+    utility_sensitivity_scenarios: tuple[UtilitySensitivityScenario, ...] = Field(
+        default_factory=_canonical_utility_scenarios
+    )
 
     @model_validator(mode="after")
     def validate_config(self) -> ProjectOneShiftActionDeathTestConfig:
@@ -138,6 +174,8 @@ class ProjectOneShiftActionDeathTestConfig(ContractModel):
             raise ValueError("action trajectories require at least eight days")
         if self.bootstrap_samples < 500:
             raise ValueError("paired seed bootstrap requires at least 500 samples")
+        if self.utility_sensitivity_scenarios != _canonical_utility_scenarios():
+            raise ValueError("utility sensitivity scenarios must equal the canonical set")
         return self
 
 
@@ -149,8 +187,11 @@ class CaseActionOutcome(ContractModel):
     consolidation_issued: bool
     verification_issued: bool
     action_sequence: tuple[
-        Literal["RESET_OLD_REGIME", "VERIFY_NEW_REGIME", "CONSOLIDATE_NEW_REGIME"], ...
+        Literal["RESET_OLD_REGIME", "VERIFY_NEW_EVIDENCE", "CONSOLIDATE_NEW_REGIME"], ...
     ]
+    reset_time: datetime | None
+    verification_time: datetime | None
+    consolidation_time: datetime | None
     false_reset: bool
     missed_reset: bool
     missed_consolidation: bool
@@ -166,17 +207,31 @@ class CaseActionOutcome(ContractModel):
         if self.consolidation_issued and not self.reset_issued:
             raise ValueError("consolidation requires a preceding reset")
         if self.consolidation_issued:
-            expected = ("RESET_OLD_REGIME", "CONSOLIDATE_NEW_REGIME")
+            expected = (
+                "RESET_OLD_REGIME",
+                "VERIFY_NEW_EVIDENCE",
+                "CONSOLIDATE_NEW_REGIME",
+            )
         elif self.reset_issued and self.verification_issued:
-            expected = ("RESET_OLD_REGIME", "VERIFY_NEW_REGIME")
+            expected = ("RESET_OLD_REGIME", "VERIFY_NEW_EVIDENCE")
         elif self.reset_issued:
             expected = ("RESET_OLD_REGIME",)
         elif self.verification_issued:
-            expected = ("VERIFY_NEW_REGIME",)
+            expected = ("VERIFY_NEW_EVIDENCE",)
         else:
             expected = ()
         if self.action_sequence != expected:
             raise ValueError("action sequence does not encode the declared two-phase transition")
+        if self.reset_issued != (self.reset_time is not None):
+            raise ValueError("reset timestamp does not match reset state")
+        if self.verification_issued != (self.verification_time is not None):
+            raise ValueError("verification timestamp does not match verification state")
+        if self.consolidation_issued != (self.consolidation_time is not None):
+            raise ValueError("consolidation timestamp does not match consolidation state")
+        if self.consolidation_issued and not (
+            self.reset_time < self.verification_time < self.consolidation_time
+        ):
+            raise ValueError("consolidation state transitions must cross increasing timesteps")
         return self
 
 
@@ -197,12 +252,82 @@ class ActionCaseTruth(ContractModel):
     truth: OnlineShiftCaseTruth
     stream_start_time: datetime
     duration_days: PositiveInt
+    new_evidence_times: tuple[datetime, ...]
 
     @model_validator(mode="after")
     def validate_horizon(self) -> ActionCaseTruth:
         horizon_end = self.stream_start_time + timedelta(days=self.duration_days)
         if not self.stream_start_time < self.truth.change_time < horizon_end:
             raise ValueError("action truth change time lies outside its stream horizon")
+        if tuple(sorted(set(self.new_evidence_times))) != self.new_evidence_times:
+            raise ValueError("new evidence times must be unique and ordered")
+        if any(
+            not self.stream_start_time <= item < horizon_end for item in self.new_evidence_times
+        ):
+            raise ValueError("new evidence time lies outside the stream horizon")
+        return self
+
+
+class SplitInputArtifact(ContractModel):
+    split_id: Literal["validation", "pilot", "test"]
+    cases: tuple[OnlineShiftGeneratedCase, ...] = Field(min_length=1)
+    artifact_sha256: str = Field(pattern=r"^[0-9a-f]{64}$")
+
+    @model_validator(mode="after")
+    def validate_artifact(self) -> SplitInputArtifact:
+        expected = OnlineShiftSplit.TEST if self.split_id == "test" else OnlineShiftSplit.VALIDATION
+        if any(item.evaluator_truth.split != expected for item in self.cases):
+            raise ValueError("input artifact carries the wrong split")
+        payload = self.model_dump(mode="json", exclude={"artifact_sha256"})
+        if self.artifact_sha256 != content_sha256(payload):
+            raise ValueError("input artifact hash mismatch")
+        return self
+
+
+class ValidationPredictionCandidate(ContractModel):
+    arm_id: ProjectOneAblationArmId
+    candidate_index: NonNegativeInt
+    params: dict[str, int | float]
+    params_sha256: str = Field(pattern=r"^[0-9a-f]{64}$")
+    validation_input_sha256: str = Field(pattern=r"^[0-9a-f]{64}$")
+    predictions: tuple[OnlineShiftPrediction, ...] = Field(min_length=1)
+    predictions_sha256: str = Field(pattern=r"^[0-9a-f]{64}$")
+    record_sha256: str = Field(pattern=r"^[0-9a-f]{64}$")
+
+    @model_validator(mode="after")
+    def validate_record(self) -> ValidationPredictionCandidate:
+        if self.params_sha256 != content_sha256(self.params):
+            raise ValueError("candidate params hash mismatch")
+        if self.predictions_sha256 != content_sha256(self.predictions):
+            raise ValueError("candidate predictions hash mismatch")
+        payload = self.model_dump(mode="json", exclude={"record_sha256"})
+        if self.record_sha256 != content_sha256(payload):
+            raise ValueError("candidate record hash mismatch")
+        return self
+
+
+class ArmValidationPredictionLedger(ContractModel):
+    arm_id: ProjectOneAblationArmId
+    validation_input_sha256: str = Field(pattern=r"^[0-9a-f]{64}$")
+    candidates: tuple[ValidationPredictionCandidate, ...] = Field(min_length=1)
+    ledger_sha256: str = Field(pattern=r"^[0-9a-f]{64}$")
+
+    @model_validator(mode="after")
+    def validate_ledger(self) -> ArmValidationPredictionLedger:
+        space = _SEARCH_SPACES[self.arm_id]
+        if len(self.candidates) != len(space):
+            raise ValueError("validation prediction ledger must cover every detector candidate")
+        for index, (candidate, params) in enumerate(zip(self.candidates, space, strict=True)):
+            if (
+                candidate.arm_id != self.arm_id
+                or candidate.candidate_index != index
+                or candidate.params != params
+                or candidate.validation_input_sha256 != self.validation_input_sha256
+            ):
+                raise ValueError("validation prediction ledger topology mismatch")
+        payload = self.model_dump(mode="json", exclude={"ledger_sha256"})
+        if self.ledger_sha256 != content_sha256(payload):
+            raise ValueError("validation prediction ledger hash mismatch")
         return self
 
 
@@ -247,6 +372,7 @@ class ArmActionArtifact(ContractModel):
                 self.policy,
                 stream_start_time=truth_by_id[item.case_id].stream_start_time,
                 duration_days=truth_by_id[item.case_id].duration_days,
+                new_evidence_times=truth_by_id[item.case_id].new_evidence_times,
             )
             for item in self.outcomes
         )
@@ -277,6 +403,8 @@ class ArmActionTuningRecord(ContractModel):
     selected_params_sha256: str = Field(pattern=r"^[0-9a-f]{64}$")
     selected_validation_regret: Probability
     search_space_sha256: str = Field(pattern=r"^[0-9a-f]{64}$")
+    candidate_ledger_sha256: str = Field(pattern=r"^[0-9a-f]{64}$")
+    selected_candidate_index: NonNegativeInt
 
     @model_validator(mode="after")
     def validate_record(self) -> ArmActionTuningRecord:
@@ -289,6 +417,8 @@ class ArmActionTuningRecord(ContractModel):
             raise ValueError("selected parameter hash mismatch")
         if self.search_space_sha256 != content_sha256(space):
             raise ValueError("search space hash mismatch")
+        if space[self.selected_candidate_index] != self.selected_params:
+            raise ValueError("selected candidate index does not bind selected params")
         return self
 
 
@@ -324,6 +454,9 @@ class ArmRetunedPolicyTuningRecord(ContractModel):
     selected_validation_regret: Probability
     detector_search_space_sha256: str = Field(pattern=r"^[0-9a-f]{64}$")
     policy_search_space_sha256: str = Field(pattern=r"^[0-9a-f]{64}$")
+    candidate_ledger_sha256: str = Field(pattern=r"^[0-9a-f]{64}$")
+    selected_detector_index: NonNegativeInt
+    selected_policy_index: NonNegativeInt
 
     @model_validator(mode="after")
     def validate_record(self) -> ArmRetunedPolicyTuningRecord:
@@ -347,6 +480,10 @@ class ArmRetunedPolicyTuningRecord(ContractModel):
             raise ValueError("retuned detector search-space hash mismatch")
         if self.policy_search_space_sha256 != content_sha256(policy_space):
             raise ValueError("retuned policy search-space hash mismatch")
+        if detector_space[self.selected_detector_index] != self.selected_params:
+            raise ValueError("selected detector index mismatch")
+        if policy_space[self.selected_policy_index] != self.selected_policy:
+            raise ValueError("selected policy index mismatch")
         return self
 
 
@@ -361,6 +498,8 @@ class MetricPowerAnalysis(ContractModel):
     ]
     role: Literal["primary", "key_secondary"]
     empirical_paired_stddev: float = Field(ge=0.0)
+    stddev_safety_factor: float = Field(ge=1.0)
+    powered_paired_stddev: float = Field(ge=0.0)
     minimum_detectable_effect: float = Field(gt=0.0)
     alpha: float = Field(gt=0.0, lt=1.0)
     target_power: float = Field(gt=0.0, lt=1.0)
@@ -372,13 +511,15 @@ class MetricPowerAnalysis(ContractModel):
     @model_validator(mode="after")
     def validate_power(self) -> MetricPowerAnalysis:
         expected = required_paired_seed_count(
-            self.empirical_paired_stddev,
+            self.powered_paired_stddev,
             self.minimum_detectable_effect,
             alpha=self.alpha,
             target_power=self.target_power,
         )
         if self.required_test_seed_count != expected:
             raise ValueError("required seed count does not recompute")
+        if self.powered_paired_stddev != (self.empirical_paired_stddev * self.stddev_safety_factor):
+            raise ValueError("powered stddev does not apply the frozen safety factor")
         expected_status = (
             "PASS" if self.planned_test_seed_count >= self.required_test_seed_count else "BLOCK"
         )
@@ -396,6 +537,13 @@ class PairedActionInterval(ContractModel):
     upper_95: float
     bootstrap_samples: PositiveInt
     resampling_unit: Literal["scenario_seed"] = "scenario_seed"
+
+
+class UtilitySensitivityResult(ContractModel):
+    track: EvaluationTrack
+    scenario_id: str = Field(min_length=1)
+    metrics_by_arm: dict[ProjectOneAblationArmId, ArmActionMetrics]
+    regret_intervals: tuple[PairedActionInterval, ...]
 
 
 class PreregisteredDecision(ContractModel):
@@ -417,7 +565,7 @@ class CrossTrackDecision(ContractModel):
 
 
 class ProjectOneShiftActionDeathTestReport(ContractModel):
-    protocol_version: Literal["project-one-shift-action-death-test@3"]
+    protocol_version: Literal["project-one-shift-action-death-test@4"]
     config: ProjectOneShiftActionDeathTestConfig
     config_sha256: str = Field(pattern=r"^[0-9a-f]{64}$")
     code_snapshot_sha256: str = Field(pattern=r"^[0-9a-f]{64}$")
@@ -429,10 +577,14 @@ class ProjectOneShiftActionDeathTestReport(ContractModel):
         KEY_SECONDARY_ENDPOINT_ID
     )
     multiple_comparisons_policy: Literal[
-        "intersection-union-two-tracks-two-references-mechanisms-descriptive@3"
-    ] = "intersection-union-two-tracks-two-references-mechanisms-descriptive@3"
+        "intersection-union-two-tracks-two-references-utility-sensitivity@4"
+    ] = "intersection-union-two-tracks-two-references-utility-sensitivity@4"
     policy: FrozenActionPolicy
     policy_sha256: str = Field(pattern=r"^[0-9a-f]{64}$")
+    validation_input_artifact: SplitInputArtifact
+    pilot_input_artifact: SplitInputArtifact
+    test_input_artifact: SplitInputArtifact | None
+    validation_prediction_ledgers: dict[ProjectOneAblationArmId, ArmValidationPredictionLedger]
     tuning_records: tuple[ArmActionTuningRecord, ...]
     pilot_artifacts: dict[ProjectOneAblationArmId, ArmActionArtifact]
     power_analyses: tuple[MetricPowerAnalysis, ...]
@@ -446,6 +598,7 @@ class ProjectOneShiftActionDeathTestReport(ContractModel):
     retuned_paired_test_intervals: tuple[PairedActionInterval, ...]
     retuned_decision: PreregisteredDecision
     overall_decision: CrossTrackDecision
+    utility_sensitivity_results: tuple[UtilitySensitivityResult, ...]
     allowed_claims: tuple[str, ...] = ALLOWED_CLAIM_IDS
     forbidden_claims: tuple[str, ...] = FORBIDDEN_CLAIM_IDS
     report_sha256: str = Field(pattern=r"^[0-9a-f]{64}$")
@@ -462,6 +615,54 @@ class ProjectOneShiftActionDeathTestReport(ContractModel):
             raise ValueError("tuning records must cover the ordered SHIFT three arms")
         if tuple(item.arm_id for item in self.retuned_tuning_records) != SHIFT_THREE_ARMS:
             raise ValueError("retuned tuning records must cover the ordered SHIFT three arms")
+        self._validate_input_seed_binding()
+        if set(self.validation_prediction_ledgers) != set(SHIFT_THREE_ARMS):
+            raise ValueError("validation prediction ledgers must cover all three arms")
+        shared_records = {item.arm_id: item for item in self.tuning_records}
+        retuned_records = {item.arm_id: item for item in self.retuned_tuning_records}
+        policy_space = _retuned_policy_space(self.policy)
+        validation_cases = self.validation_input_artifact.cases
+        for arm in SHIFT_THREE_ARMS:
+            ledger = self.validation_prediction_ledgers[arm]
+            if ledger.arm_id != arm or ledger.validation_input_sha256 != (
+                self.validation_input_artifact.artifact_sha256
+            ):
+                raise ValueError("validation ledger input binding mismatch")
+            for candidate in ledger.candidates:
+                model = _model_factory(arm, candidate.params)
+                replayed = tuple(
+                    model.predict(case.model_input)
+                    for case in validation_cases  # type: ignore[attr-defined]
+                )
+                if replayed != candidate.predictions:
+                    raise ValueError("validation predictions do not replay from input and params")
+            shared_items, shared_index = _shared_candidate_ledger(
+                arm, ledger, validation_cases, self.policy
+            )
+            shared_record = shared_records[arm]
+            if (
+                shared_record.candidate_ledger_sha256 != content_sha256(shared_items)
+                or shared_record.selected_candidate_index != shared_index
+                or shared_record.selected_params != ledger.candidates[shared_index].params
+                or shared_record.selected_validation_regret
+                != shared_items[shared_index]["metrics"].downstream_action_regret
+            ):
+                raise ValueError("shared selected params are not the declared ledger argmin")
+            retuned_items, (detector_index, policy_index) = _retuned_candidate_ledger(
+                ledger, validation_cases, policy_space
+            )
+            retuned_record = retuned_records[arm]
+            selected_flat = detector_index * len(policy_space) + policy_index
+            if (
+                retuned_record.candidate_ledger_sha256 != content_sha256(retuned_items)
+                or retuned_record.selected_detector_index != detector_index
+                or retuned_record.selected_policy_index != policy_index
+                or retuned_record.selected_params != ledger.candidates[detector_index].params
+                or retuned_record.selected_policy != policy_space[policy_index]
+                or retuned_record.selected_validation_regret
+                != retuned_items[selected_flat]["metrics"].downstream_action_regret
+            ):
+                raise ValueError("retuned selected params are not the declared ledger argmin")
         if set(self.pilot_artifacts) != set(SHIFT_THREE_ARMS):
             raise ValueError("pilot artifacts must cover all three arms")
         if set(self.retuned_pilot_artifacts) != set(SHIFT_THREE_ARMS):
@@ -474,7 +675,6 @@ class ProjectOneShiftActionDeathTestReport(ContractModel):
                 raise ValueError("all arms must use the identical frozen action policy")
             if artifact.selected_params_sha256 != selected_hashes[arm]:
                 raise ValueError("artifact parameters differ from validation selection")
-        retuned_records = {item.arm_id: item for item in self.retuned_tuning_records}
         if any(item.policy_template != self.policy for item in self.retuned_tuning_records):
             raise ValueError("retuned policy search template differs from the frozen config")
         for arm, artifact in (
@@ -490,6 +690,18 @@ class ProjectOneShiftActionDeathTestReport(ContractModel):
                 raise ValueError("retuned artifact policy differs from validation selection")
             if artifact.policy_sha256 != record.selected_policy_sha256:
                 raise ValueError("retuned artifact policy hash differs from selection")
+        self._validate_selected_prediction_replay(
+            self.pilot_input_artifact,
+            self.pilot_artifacts,
+            shared_records,
+            retuned=False,
+        )
+        self._validate_selected_prediction_replay(
+            self.pilot_input_artifact,
+            self.retuned_pilot_artifacts,
+            retuned_records,
+            retuned=True,
+        )
         if self.allowed_claims != ALLOWED_CLAIM_IDS or self.forbidden_claims != FORBIDDEN_CLAIM_IDS:
             raise ValueError("claim IDs must equal the canonical sets")
         self._validate_pilot_bindings(self.pilot_artifacts)
@@ -520,6 +732,18 @@ class ProjectOneShiftActionDeathTestReport(ContractModel):
         ):
             raise ValueError("underpowered report must not inspect or report TEST")
         if power_pass:
+            self._validate_selected_prediction_replay(
+                self.test_input_artifact,
+                self.test_artifacts,
+                shared_records,
+                retuned=False,
+            )
+            self._validate_selected_prediction_replay(
+                self.test_input_artifact,
+                self.retuned_test_artifacts,
+                retuned_records,
+                retuned=True,
+            )
             expected_intervals = _paired_intervals_for_artifacts(
                 self.test_artifacts, self.config.bootstrap_samples
             )
@@ -530,6 +754,18 @@ class ProjectOneShiftActionDeathTestReport(ContractModel):
             )
             if expected_retuned_intervals != self.retuned_paired_test_intervals:
                 raise ValueError("retuned paired intervals do not recompute from TEST artifacts")
+            expected_sensitivity = _utility_sensitivity_results(
+                self.config,
+                self.test_input_artifact.cases,
+                self.test_artifacts,
+                self.retuned_test_artifacts,
+                shared_records,
+                retuned_records,
+            )
+            if self.utility_sensitivity_results != expected_sensitivity:
+                raise ValueError("utility sensitivity does not recompute from TEST artifacts")
+        elif self.utility_sensitivity_results:
+            raise ValueError("underpowered report must not contain utility sensitivity")
         expected_decision = decide_research_route(
             self.power_analyses,
             self.paired_test_intervals,
@@ -544,14 +780,65 @@ class ProjectOneShiftActionDeathTestReport(ContractModel):
         )
         if self.retuned_decision != expected_retuned_decision:
             raise ValueError("retuned decision does not follow preregistered rule")
-        if self.overall_decision != decide_cross_track_route(
+        expected_overall = decide_cross_track_route(
             self.decision, self.retuned_decision, self.policy
-        ):
-            raise ValueError("overall decision does not follow the cross-track rule")
+        )
+        sensitivity_not_robust = bool(self.utility_sensitivity_results) and any(
+            next(
+                interval
+                for interval in result.regret_intervals
+                if interval.reference_arm_id == ProjectOneAblationArmId.CAUSE_FACTORIZED_BOCPD
+            ).lower_95
+            < self.policy.practical_regret_mde
+            for result in self.utility_sensitivity_results
+        )
+        if expected_overall.decision == ResearchDecision.REBUILD_JOINT and sensitivity_not_robust:
+            expected_overall = CrossTrackDecision(
+                decision=ResearchDecision.INCONCLUSIVE,
+                shared_policy_decision=self.decision.decision,
+                independently_retuned_policy_decision=self.retuned_decision.decision,
+                rationale_id="decision.utility-sensitivity-not-robust@4",
+            )
+        if self.overall_decision != expected_overall:
+            raise ValueError("overall decision does not follow cross-track sensitivity rules")
         payload = self.model_dump(mode="json", exclude={"report_sha256"})
         if self.report_sha256 != content_sha256(payload):
             raise ValueError("action death-test report hash mismatch")
         return self
+
+    def _validate_input_seed_binding(self) -> None:
+        expected = (
+            (self.validation_input_artifact, set(self.config.seed_plan.validation_seeds)),
+            (self.pilot_input_artifact, set(self.config.seed_plan.pilot_seeds)),
+        )
+        for artifact, seeds in expected:
+            if {item.evaluator_truth.scenario_seed for item in artifact.cases} != seeds:
+                raise ValueError("input artifact seeds do not match the config")
+        if self.test_input_artifact is not None and {
+            item.evaluator_truth.scenario_seed for item in self.test_input_artifact.cases
+        } != set(self.config.seed_plan.test_seeds):
+            raise ValueError("TEST input artifact seeds do not match the config")
+
+    def _validate_selected_prediction_replay(
+        self,
+        inputs: SplitInputArtifact | None,
+        artifacts: dict[ProjectOneAblationArmId, ArmActionArtifact],
+        records: dict,
+        *,
+        retuned: bool,
+    ) -> None:
+        if inputs is None:
+            raise ValueError("selected prediction replay requires input artifacts")
+        for arm in SHIFT_THREE_ARMS:
+            record = records[arm]
+            model = _model_factory(arm, record.selected_params)
+            replayed = tuple(
+                model.predict(case.model_input)
+                for case in inputs.cases  # type: ignore[attr-defined]
+            )
+            if replayed != artifacts[arm].predictions:
+                label = "retuned" if retuned else "shared"
+                raise ValueError(f"{label} predictions do not replay from input and params")
 
     def _validate_pilot_bindings(
         self, artifacts: dict[ProjectOneAblationArmId, ArmActionArtifact]
@@ -601,6 +888,7 @@ def _case_outcome(
     *,
     stream_start_time: datetime,
     duration_days: int,
+    new_evidence_times: tuple[datetime, ...],
 ) -> CaseActionOutcome:
     probabilities = {
         cause: _calibrate_probability(float(probability), policy.probability_temperature)
@@ -611,27 +899,41 @@ def _case_outcome(
     margin = ranked[0] - ranked[1] if len(ranked) > 1 else ranked[0]
     detected = prediction.predicted_change_time is not None
     reset = detected and habit_probability >= policy.reset_probability_threshold
-    consolidate = (
+    consolidation_eligible = (
         detected
         and habit_probability >= policy.consolidation_probability_threshold
         and margin >= policy.attribution_margin
     )
-    verify = (
-        detected
-        and not consolidate
-        and (
-            habit_probability >= policy.reset_probability_threshold
-            or margin < policy.attribution_margin
-        )
+    reset_time = prediction.predicted_change_time if reset else None
+    verification_time = next(
+        (
+            timestamp
+            for timestamp in new_evidence_times
+            if prediction.predicted_change_time is not None
+            and timestamp > prediction.predicted_change_time
+        ),
+        None,
     )
+    verify = (
+        detected and verification_time is not None and (reset or margin < policy.attribution_margin)
+    )
+    # Consolidation is a later transition after reset and a separate evidence
+    # step.  One microsecond makes the commit event strictly later than the
+    # evidence it consumes while preserving deterministic replay.
+    consolidate = reset and consolidation_eligible and verification_time is not None
+    consolidation_time = verification_time + timedelta(microseconds=1) if consolidate else None
     if consolidate:
-        action_sequence = ("RESET_OLD_REGIME", "CONSOLIDATE_NEW_REGIME")
+        action_sequence = (
+            "RESET_OLD_REGIME",
+            "VERIFY_NEW_EVIDENCE",
+            "CONSOLIDATE_NEW_REGIME",
+        )
     elif reset and verify:
-        action_sequence = ("RESET_OLD_REGIME", "VERIFY_NEW_REGIME")
+        action_sequence = ("RESET_OLD_REGIME", "VERIFY_NEW_EVIDENCE")
     elif reset:
         action_sequence = ("RESET_OLD_REGIME",)
     elif verify:
-        action_sequence = ("VERIFY_NEW_REGIME",)
+        action_sequence = ("VERIFY_NEW_EVIDENCE",)
     else:
         action_sequence = ()
     true_habit = ShiftCause.OWNER_HABIT_REGIME in truth.true_causes
@@ -641,10 +943,10 @@ def _case_outcome(
     false_consolidation = consolidate and not true_habit
     horizon_end = stream_start_time + timedelta(days=duration_days)
     remaining_days = max(0.0, (horizon_end - truth.change_time).total_seconds() / 86400.0)
-    if true_habit and consolidate and prediction.predicted_change_time is not None:
+    if true_habit and consolidate and consolidation_time is not None:
         recovery_days = max(
             0.0,
-            (prediction.predicted_change_time - truth.change_time).total_seconds() / 86400.0,
+            (consolidation_time - truth.change_time).total_seconds() / 86400.0,
         )
     elif true_habit:
         recovery_days = remaining_days
@@ -672,6 +974,9 @@ def _case_outcome(
         consolidation_issued=consolidate,
         verification_issued=verify,
         action_sequence=action_sequence,
+        reset_time=reset_time,
+        verification_time=verification_time if verify else None,
+        consolidation_time=consolidation_time,
         false_reset=false_reset,
         missed_reset=missed_reset,
         missed_consolidation=missed_consolidation,
@@ -723,6 +1028,17 @@ def _evaluate_arm(
     return _artifact_from_predictions(arm, params, cases, predictions, policy, split_id)
 
 
+def _new_evidence_times(case: OnlineShiftGeneratedCase) -> tuple[datetime, ...]:
+    return tuple(
+        sorted(
+            {
+                item.metadata.recorded_time
+                for item in case.model_input.observation_stream.detection_results
+            }
+        )
+    )
+
+
 def _artifact_from_predictions(
     arm: ProjectOneAblationArmId,
     params: dict[str, int | float],
@@ -736,6 +1052,7 @@ def _artifact_from_predictions(
             truth=case.evaluator_truth,
             stream_start_time=case.model_input.observation_stream.start_time,
             duration_days=case.model_input.observation_stream.duration_days,
+            new_evidence_times=_new_evidence_times(case),
         )
         for case in cases
     )
@@ -746,6 +1063,7 @@ def _artifact_from_predictions(
             policy,
             stream_start_time=case.model_input.observation_stream.start_time,
             duration_days=case.model_input.observation_stream.duration_days,
+            new_evidence_times=_new_evidence_times(case),
         )
         for case, prediction in zip(cases, predictions, strict=True)
     )
@@ -780,10 +1098,126 @@ def _action_metrics_from_predictions(
             policy,
             stream_start_time=case.model_input.observation_stream.start_time,
             duration_days=case.model_input.observation_stream.duration_days,
+            new_evidence_times=_new_evidence_times(case),
         )
         for case, prediction in zip(cases, predictions, strict=True)
     )
     return aggregate_action_metrics(outcomes)
+
+
+def _input_artifact(
+    cases: Sequence[OnlineShiftGeneratedCase],
+    split_id: Literal["validation", "pilot", "test"],
+) -> SplitInputArtifact:
+    payload = {"split_id": split_id, "cases": tuple(cases)}
+    return SplitInputArtifact(**payload, artifact_sha256=content_sha256(payload))
+
+
+def _validation_prediction_ledgers(
+    validation: Sequence[OnlineShiftGeneratedCase], validation_input_sha256: str
+) -> dict[ProjectOneAblationArmId, ArmValidationPredictionLedger]:
+    output = {}
+    for arm in SHIFT_THREE_ARMS:
+        records = []
+        for index, params in enumerate(_SEARCH_SPACES[arm]):
+            model = _model_factory(arm, params)
+            predictions = tuple(
+                model.predict(case.model_input)
+                for case in validation  # type: ignore[attr-defined]
+            )
+            payload = {
+                "arm_id": arm,
+                "candidate_index": index,
+                "params": params,
+                "params_sha256": content_sha256(params),
+                "validation_input_sha256": validation_input_sha256,
+                "predictions": predictions,
+                "predictions_sha256": content_sha256(predictions),
+            }
+            records.append(
+                ValidationPredictionCandidate(**payload, record_sha256=content_sha256(payload))
+            )
+        ledger_payload = {
+            "arm_id": arm,
+            "validation_input_sha256": validation_input_sha256,
+            "candidates": tuple(records),
+        }
+        output[arm] = ArmValidationPredictionLedger(
+            **ledger_payload, ledger_sha256=content_sha256(ledger_payload)
+        )
+    return output
+
+
+def _mechanism_metrics_from_predictions(
+    cases: Sequence[OnlineShiftGeneratedCase],
+    predictions: tuple[OnlineShiftPrediction, ...],
+) -> OnlineShiftReport:
+    return OnlineShiftEvaluator().evaluate(
+        tuple(
+            OnlineShiftAttributionCase(truth=case.evaluator_truth, prediction=prediction)
+            for case, prediction in zip(cases, predictions, strict=True)
+        )
+    )
+
+
+def _shared_candidate_ledger(
+    arm: ProjectOneAblationArmId,
+    ledger: ArmValidationPredictionLedger,
+    validation: Sequence[OnlineShiftGeneratedCase],
+    policy: FrozenActionPolicy,
+) -> tuple[tuple[dict, ...], int]:
+    items = tuple(
+        {
+            "candidate_index": candidate.candidate_index,
+            "params_sha256": candidate.params_sha256,
+            "metrics": _action_metrics_from_predictions(validation, candidate.predictions, policy),
+            "mechanism_metrics": _mechanism_metrics_from_predictions(
+                validation, candidate.predictions
+            ),
+        }
+        for candidate in ledger.candidates
+    )
+    selected = min(
+        range(len(items)),
+        key=lambda index: (
+            items[index]["metrics"].downstream_action_regret,
+            items[index]["metrics"].corrupted_habit_mass,
+            -items[index]["metrics"].task_success_proxy_rate,
+            items[index]["mechanism_metrics"].cause_negative_log_likelihood,
+            ledger.candidates[index].params_sha256,
+        ),
+    )
+    return items, selected
+
+
+def _retuned_candidate_ledger(
+    ledger: ArmValidationPredictionLedger,
+    validation: Sequence[OnlineShiftGeneratedCase],
+    policy_space: tuple[FrozenActionPolicy, ...],
+) -> tuple[tuple[dict, ...], tuple[int, int]]:
+    items = tuple(
+        {
+            "detector_index": candidate.candidate_index,
+            "policy_index": policy_index,
+            "params_sha256": candidate.params_sha256,
+            "policy_sha256": content_sha256(policy),
+            "metrics": _action_metrics_from_predictions(validation, candidate.predictions, policy),
+        }
+        for candidate in ledger.candidates
+        for policy_index, policy in enumerate(policy_space)
+    )
+    selected_flat = min(
+        range(len(items)),
+        key=lambda index: (
+            items[index]["metrics"].downstream_action_regret,
+            items[index]["metrics"].corrupted_habit_mass,
+            -items[index]["metrics"].task_success_proxy_rate,
+            items[index]["policy_sha256"],
+            items[index]["params_sha256"],
+        ),
+    )
+    selected = items[selected_flat]
+    return items, (selected["detector_index"], selected["policy_index"])
 
 
 def _seed_metric(artifact: ArmActionArtifact, metric: str) -> dict[int, float]:
@@ -815,9 +1249,10 @@ def _power_analyses_from_pilot(
                 raise ValueError("power analysis pilot seeds do not match the config")
             differences = [joint_by_seed[seed] - reference_by_seed[seed] for seed in expected_seeds]
             empirical = stdev(differences)
+            powered = empirical * config.power_stddev_safety_factor
             mde = float(getattr(config.action_policy, mde_field))
             required = required_paired_seed_count(
-                empirical,
+                powered,
                 mde,
                 alpha=config.alpha,
                 target_power=config.target_power,
@@ -828,6 +1263,8 @@ def _power_analyses_from_pilot(
                     reference_arm_id=reference,
                     role=role,
                     empirical_paired_stddev=empirical,
+                    stddev_safety_factor=config.power_stddev_safety_factor,
+                    powered_paired_stddev=powered,
                     minimum_detectable_effect=mde,
                     alpha=config.alpha,
                     target_power=config.target_power,
@@ -887,6 +1324,74 @@ def _paired_intervals_for_artifacts(
         for reference in POWER_REFERENCES
         for endpoint_id, _role, metric, _mde_field in POWER_ENDPOINTS
     )
+
+
+def _scenario_policy(
+    policy: FrozenActionPolicy, scenario: UtilitySensitivityScenario
+) -> FrozenActionPolicy:
+    return policy.model_copy(
+        update={
+            "false_reset_cost": policy.false_reset_cost * scenario.false_reset_multiplier,
+            "missed_reset_daily_cost": policy.missed_reset_daily_cost
+            * scenario.unrecovered_habit_multiplier,
+            "corrupted_mass_daily_cost": policy.corrupted_mass_daily_cost
+            * scenario.corrupted_mass_multiplier,
+            "verification_cost": policy.verification_cost * scenario.verification_multiplier,
+        }
+    )
+
+
+def _utility_sensitivity_results(
+    config: ProjectOneShiftActionDeathTestConfig,
+    test_cases: Sequence[OnlineShiftGeneratedCase],
+    shared_artifacts: dict[ProjectOneAblationArmId, ArmActionArtifact],
+    retuned_artifacts: dict[ProjectOneAblationArmId, ArmActionArtifact],
+    shared_records: dict[ProjectOneAblationArmId, ArmActionTuningRecord],
+    retuned_records: dict[ProjectOneAblationArmId, ArmRetunedPolicyTuningRecord],
+) -> tuple[UtilitySensitivityResult, ...]:
+    output = []
+    for track, source, records in (
+        (EvaluationTrack.SHARED_POLICY, shared_artifacts, shared_records),
+        (
+            EvaluationTrack.INDEPENDENTLY_RETUNED_POLICY,
+            retuned_artifacts,
+            retuned_records,
+        ),
+    ):
+        for scenario in config.utility_sensitivity_scenarios:
+            scenario_artifacts = {}
+            for arm in SHIFT_THREE_ARMS:
+                base_policy = (
+                    config.action_policy
+                    if track == EvaluationTrack.SHARED_POLICY
+                    else records[arm].selected_policy
+                )
+                scenario_artifacts[arm] = _artifact_from_predictions(
+                    arm,
+                    records[arm].selected_params,
+                    test_cases,
+                    source[arm].predictions,
+                    _scenario_policy(base_policy, scenario),
+                    "test",
+                )
+            intervals = tuple(
+                item
+                for item in _paired_intervals_for_artifacts(
+                    scenario_artifacts, config.bootstrap_samples
+                )
+                if item.endpoint_id == PRIMARY_ENDPOINT_ID
+            )
+            output.append(
+                UtilitySensitivityResult(
+                    track=track,
+                    scenario_id=scenario.scenario_id,
+                    metrics_by_arm={
+                        arm: scenario_artifacts[arm].metrics for arm in SHIFT_THREE_ARMS
+                    },
+                    regret_intervals=intervals,
+                )
+            )
+    return tuple(output)
 
 
 def decide_research_route(
@@ -1034,37 +1539,33 @@ class ProjectOneShiftActionDeathTestRunner:
             )
         validation = tuple(case for seed in plan.validation_seeds for case in by_seed[seed])
         pilot = tuple(case for seed in plan.pilot_seeds for case in by_seed[seed])
+        validation_input_artifact = _input_artifact(validation, "validation")
+        pilot_input_artifact = _input_artifact(pilot, "pilot")
+        validation_ledgers = _validation_prediction_ledgers(
+            validation, validation_input_artifact.artifact_sha256
+        )
 
         tuning = []
         selected: dict[ProjectOneAblationArmId, dict[str, int | float]] = {}
         for arm in SHIFT_THREE_ARMS:
-            trials = [
-                (
-                    _evaluate_arm(arm, params, validation, checked.action_policy, "validation"),
-                    params,
-                )
-                for params in _SEARCH_SPACES[arm]
-            ]
-            artifact, params = min(
-                trials,
-                key=lambda item: (
-                    item[0].metrics.downstream_action_regret,
-                    item[0].metrics.corrupted_habit_mass,
-                    -item[0].metrics.task_success_proxy_rate,
-                    item[0].mechanism_metrics.cause_negative_log_likelihood,
-                    content_sha256(item[1]),
-                ),
+            items, selected_index = _shared_candidate_ledger(
+                arm, validation_ledgers[arm], validation, checked.action_policy
             )
+            params = validation_ledgers[arm].candidates[selected_index].params
             selected[arm] = params
             tuning.append(
                 ArmActionTuningRecord(
                     arm_id=arm,
-                    evaluated_trial_count=len(trials),
+                    evaluated_trial_count=len(items),
                     validation_case_count=len(validation),
                     selected_params=params,
                     selected_params_sha256=content_sha256(params),
-                    selected_validation_regret=artifact.metrics.downstream_action_regret,
+                    selected_validation_regret=items[selected_index][
+                        "metrics"
+                    ].downstream_action_regret,
                     search_space_sha256=content_sha256(_SEARCH_SPACES[arm]),
+                    candidate_ledger_sha256=content_sha256(items),
+                    selected_candidate_index=selected_index,
                 )
             )
 
@@ -1073,26 +1574,12 @@ class ProjectOneShiftActionDeathTestRunner:
         retuned_selected_params: dict[ProjectOneAblationArmId, dict[str, int | float]] = {}
         retuned_selected_policies: dict[ProjectOneAblationArmId, FrozenActionPolicy] = {}
         for arm in SHIFT_THREE_ARMS:
-            candidates = []
-            for params in _SEARCH_SPACES[arm]:
-                model = _model_factory(arm, params)
-                predictions = tuple(
-                    model.predict(case.model_input)
-                    for case in validation  # type: ignore[attr-defined]
-                )
-                for policy in policy_space:
-                    metrics = _action_metrics_from_predictions(validation, predictions, policy)
-                    candidates.append((metrics, params, policy, predictions))
-            metrics, params, policy, _predictions = min(
-                candidates,
-                key=lambda item: (
-                    item[0].downstream_action_regret,
-                    item[0].corrupted_habit_mass,
-                    -item[0].task_success_proxy_rate,
-                    content_sha256(item[2]),
-                    content_sha256(item[1]),
-                ),
+            items, (detector_index, policy_index) = _retuned_candidate_ledger(
+                validation_ledgers[arm], validation, policy_space
             )
+            params = validation_ledgers[arm].candidates[detector_index].params
+            policy = policy_space[policy_index]
+            selected_flat = detector_index * len(policy_space) + policy_index
             retuned_selected_params[arm] = params
             retuned_selected_policies[arm] = policy
             retuned_tuning.append(
@@ -1100,16 +1587,21 @@ class ProjectOneShiftActionDeathTestRunner:
                     arm_id=arm,
                     detector_trial_count=len(_SEARCH_SPACES[arm]),
                     policy_trial_count=len(policy_space),
-                    evaluated_candidate_count=len(candidates),
+                    evaluated_candidate_count=len(items),
                     validation_case_count=len(validation),
                     selected_params=params,
                     selected_params_sha256=content_sha256(params),
                     policy_template=checked.action_policy,
                     selected_policy=policy,
                     selected_policy_sha256=content_sha256(policy),
-                    selected_validation_regret=metrics.downstream_action_regret,
+                    selected_validation_regret=items[selected_flat][
+                        "metrics"
+                    ].downstream_action_regret,
                     detector_search_space_sha256=content_sha256(_SEARCH_SPACES[arm]),
                     policy_search_space_sha256=content_sha256(policy_space),
+                    candidate_ledger_sha256=content_sha256(items),
+                    selected_detector_index=detector_index,
+                    selected_policy_index=policy_index,
                 )
             )
 
@@ -1132,6 +1624,8 @@ class ProjectOneShiftActionDeathTestRunner:
 
         test_artifacts: dict[ProjectOneAblationArmId, ArmActionArtifact] = {}
         retuned_test_artifacts: dict[ProjectOneAblationArmId, ArmActionArtifact] = {}
+        test_input_artifact: SplitInputArtifact | None = None
+        test: tuple[OnlineShiftGeneratedCase, ...] = ()
         intervals: tuple[PairedActionInterval, ...] = ()
         retuned_intervals: tuple[PairedActionInterval, ...] = ()
         if all(item.status == "PASS" for item in (*analyses, *retuned_analyses)):
@@ -1156,6 +1650,7 @@ class ProjectOneShiftActionDeathTestRunner:
                     )
                 )
             test = tuple(case for seed in plan.test_seeds for case in test_by_seed[seed])
+            test_input_artifact = _input_artifact(test, "test")
             test_artifacts = {
                 arm: _evaluate_arm(arm, selected[arm], test, checked.action_policy, "test")
                 for arm in SHIFT_THREE_ARMS
@@ -1179,6 +1674,36 @@ class ProjectOneShiftActionDeathTestRunner:
         retuned_decision = decide_research_route(
             retuned_analyses, retuned_intervals, checked.action_policy
         )
+        shared_record_map = {item.arm_id: item for item in tuning}
+        retuned_record_map = {item.arm_id: item for item in retuned_tuning}
+        sensitivity = (
+            _utility_sensitivity_results(
+                checked,
+                test,
+                test_artifacts,
+                retuned_test_artifacts,
+                shared_record_map,
+                retuned_record_map,
+            )
+            if test
+            else ()
+        )
+        overall = decide_cross_track_route(shared_decision, retuned_decision, checked.action_policy)
+        if overall.decision == ResearchDecision.REBUILD_JOINT and any(
+            next(
+                interval
+                for interval in result.regret_intervals
+                if interval.reference_arm_id == ProjectOneAblationArmId.CAUSE_FACTORIZED_BOCPD
+            ).lower_95
+            < checked.action_policy.practical_regret_mde
+            for result in sensitivity
+        ):
+            overall = CrossTrackDecision(
+                decision=ResearchDecision.INCONCLUSIVE,
+                shared_policy_decision=shared_decision.decision,
+                independently_retuned_policy_decision=retuned_decision.decision,
+                rationale_id="decision.utility-sensitivity-not-robust@4",
+            )
 
         payload = {
             "protocol_version": checked.protocol_version,
@@ -1188,6 +1713,10 @@ class ProjectOneShiftActionDeathTestRunner:
             "git_commit_sha": git_commit_sha,
             "policy": checked.action_policy,
             "policy_sha256": content_sha256(checked.action_policy),
+            "validation_input_artifact": validation_input_artifact,
+            "pilot_input_artifact": pilot_input_artifact,
+            "test_input_artifact": test_input_artifact,
+            "validation_prediction_ledgers": validation_ledgers,
             "tuning_records": tuple(tuning),
             "pilot_artifacts": pilot_artifacts,
             "power_analyses": tuple(analyses),
@@ -1200,16 +1729,15 @@ class ProjectOneShiftActionDeathTestRunner:
             "retuned_test_artifacts": retuned_test_artifacts,
             "retuned_paired_test_intervals": retuned_intervals,
             "retuned_decision": retuned_decision,
-            "overall_decision": decide_cross_track_route(
-                shared_decision, retuned_decision, checked.action_policy
-            ),
+            "overall_decision": overall,
+            "utility_sensitivity_results": sensitivity,
         }
         full_payload = {
             **payload,
             "primary_endpoint_id": PRIMARY_ENDPOINT_ID,
             "key_secondary_endpoint_id": KEY_SECONDARY_ENDPOINT_ID,
             "multiple_comparisons_policy": (
-                "intersection-union-two-tracks-two-references-mechanisms-descriptive@3"
+                "intersection-union-two-tracks-two-references-utility-sensitivity@4"
             ),
             "allowed_claims": ALLOWED_CLAIM_IDS,
             "forbidden_claims": FORBIDDEN_CLAIM_IDS,

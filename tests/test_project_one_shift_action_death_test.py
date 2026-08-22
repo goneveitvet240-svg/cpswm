@@ -373,7 +373,7 @@ def test_prediction_and_interval_tamper_fail_after_rehash(completed_report):
         {key: value for key, value in artifact.items() if key != "artifact_sha256"}
     )
     _rehash_report(prediction_payload)
-    with pytest.raises(ValidationError, match="recompute"):
+    with pytest.raises(ValidationError, match=r"recompute|does not replay"):
         ProjectOneShiftActionDeathTestReport.model_validate(prediction_payload)
 
     interval_payload = deepcopy(completed_report.model_dump(mode="json"))

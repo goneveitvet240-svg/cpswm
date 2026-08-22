@@ -24,6 +24,7 @@ snapshots, exact risk gate) lives in the real components it composes.
 from __future__ import annotations
 
 import hashlib
+import json
 from dataclasses import dataclass
 from uuid import UUID, uuid4
 
@@ -44,6 +45,7 @@ from cpswm.world_model.grounded_search.concurrent_map_task import (
 from .execution_feedback_projector import ExecutionFeedbackProjector, ProjectedFeedbackEvidence
 from .hybrid_statistics import (
     ConsolidationRiskCertificate,
+    DirichletRLSFusion,
     HybridPromotion,
     HybridStatisticDelta,
     HybridStatisticLedger,
@@ -97,6 +99,7 @@ class HybridEventToTaskCoordinatorLoop:
         # are all derived from the authoritative ledger, so a loop rebuilt on a
         # recovered ledger keeps retracting, republishing, and writing correctly.
         self._feedback_projector = ExecutionFeedbackProjector()
+        self._fusion = DirichletRLSFusion()
 
     @property
     def ledger(self) -> HybridStatisticLedger:
@@ -198,12 +201,11 @@ class HybridEventToTaskCoordinatorLoop:
         ledger commit succeeds.
         """
 
-        superseded_locations = self._ledger.location_ids_for_revision(superseded_revision_id)
         if corrected.owner_mass <= 1e-12:
             # The correction attributes the event away from the owner entirely:
             # withdraw the belief, nothing new to promote.
             self.retract_revision(superseded_revision_id)
-            return self.publish_snapshot(changed_locations=set(superseded_locations))
+            return self.publish_snapshot()
         live = self._ledger.live_promoted_records_for_revision(superseded_revision_id)
         base = self._ledger.head_watermark
         corrected_delta, promotion = self._build_placement(
@@ -217,37 +219,82 @@ class HybridEventToTaskCoordinatorLoop:
             corrected_delta=corrected_delta,
             promotion=promotion,
         )
-        changed = {corrected.destination_location_id, *superseded_locations}
-        return self.publish_snapshot(changed_locations=changed)
+        return self.publish_snapshot()
 
-    def publish_snapshot(self, *, changed_locations: set[UUID]) -> BeliefSnapshot:
-        """Publish the current fused habit belief for the changed locations."""
+    def publish_snapshot(self) -> BeliefSnapshot:
+        """Publish the whole normalized owner-habit distribution as one map version.
 
+        Owner habit over locations is a *single* B-F1 distribution (a Dirichlet
+        location base fused with a per-location contextual RLS residual), so
+        evidence at one location couples every other -- a change anywhere
+        republishes the whole coupled set, not just the touched location.  The map
+        version is not bumped when every node's belief payload and uncertainty is
+        unchanged, so a no-op consolidation cannot spuriously trip a task replan.
+        """
+
+        keys = self._all_location_keys()
+        if not keys:
+            return self._map.snapshot()
+        beliefs = self._fusion.predict(
+            self._ledger,
+            keys=tuple(keys.values()),
+            context_features=[1.0] * self._ledger.feature_dim,
+        )
         changes: dict[str, tuple[str, float]] = {}
-        for location in changed_locations:
-            projection = self._ledger.projection(self._key(location))
-            strength = max(0.0, projection.alpha)
+        for location, key in keys.items():
+            belief = beliefs[location]
+            # Belief payload is the normalized distribution + its auditable parts;
+            # the ledger version is deliberately excluded so an unchanged belief
+            # produces an unchanged payload.
             payload_hash = hashlib.sha256(
-                f"{strength!r}:{projection.ledger_version}".encode()
+                json.dumps(
+                    {
+                        "fused_probability": repr(belief.fused_probability),
+                        "base_probability": repr(belief.base_probability),
+                        "contextual_residual": repr(belief.contextual_residual),
+                    },
+                    sort_keys=True,
+                ).encode()
             ).hexdigest()
-            uncertainty = 1.0 / (1.0 + strength)
+            # Uncertainty of "object is at this location" combines the normalized
+            # belief with the evidence strength: a coupled drop in probability *or*
+            # a drop in this location's own evidence both raise it.
+            strength = max(0.0, self._ledger.projection(key).alpha)
+            confidence = belief.fused_probability * (strength / (1.0 + strength))
+            uncertainty = 1.0 - confidence
             changes[self.node_id(location)] = (payload_hash, uncertainty)
+        return self._commit_if_changed(changes)
+
+    def _all_location_keys(self) -> dict[UUID, StatisticKey]:
+        keys: dict[UUID, StatisticKey] = {}
+        for revision_id in self._ledger.revision_ids():
+            for location in self._ledger.location_ids_for_revision(revision_id):
+                keys[location] = self._key(location)
+        return keys
+
+    def _commit_if_changed(self, changes: dict[str, tuple[str, float]]) -> BeliefSnapshot:
+        # Skip the version bump only when every node being published already holds
+        # the identical belief, so a no-op republish cannot trip a task replan.
+        # (Other objects' nodes may coexist in a shared map; they are untouched.)
+        current = self._map.snapshot().node_map()
+        if all(
+            node_id in current
+            and current[node_id].payload_hash == payload_hash
+            and current[node_id].uncertainty == uncertainty
+            for node_id, (payload_hash, uncertainty) in changes.items()
+        ):
+            return self._map.snapshot()
         return self._map.apply_update(changes)
 
     def recover_map(self) -> BeliefSnapshot:
         """Rebuild the published map from the authoritative ledger after a restart.
 
-        A loop reconstructed on a recovered ledger starts with an empty map; this
-        republishes every location the ledger has ever touched so the map matches
-        the log without replaying the original event stream.
+        A loop reconstructed on a recovered ledger starts with an empty map; the
+        full-location publish republishes every location the ledger has ever
+        touched, matching the log without replaying the original event stream.
         """
 
-        locations: set[UUID] = set()
-        for revision_id in self._ledger.revision_ids():
-            locations.update(self._ledger.location_ids_for_revision(revision_id))
-        if not locations:
-            return self._map.snapshot()
-        return self.publish_snapshot(changed_locations=locations)
+        return self.publish_snapshot()
 
     def current_snapshot(self) -> BeliefSnapshot:
         return self._map.snapshot()

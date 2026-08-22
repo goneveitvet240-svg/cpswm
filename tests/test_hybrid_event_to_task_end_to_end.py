@@ -27,8 +27,10 @@ from cpswm.system.counterfactual_event_hypergraph import CounterfactualEventHype
 from cpswm.world_model.grounded_search.concurrent_map_task import (
     BayesianRisk,
     BeliefSnapshot,
+    MapTaskCoordinator,
     TaskAction,
     TaskActionGraph,
+    VersionedBeliefMap,
     VersionSwitchKind,
 )
 
@@ -109,7 +111,7 @@ def test_hybrid_end_to_end_orrer_rgrc_snapshot_coordinator_feedback():
 
     # Contamination consolidated into the real Hybrid RGRC ledger.
     loop.ingest_owner_placement(_placement_input(history0))
-    contaminated_snapshot = loop.publish_snapshot(changed_locations={L2})
+    contaminated_snapshot = loop.publish_snapshot()
     contaminated_alpha = loop.ledger.projection(loop._key(L2)).alpha
     assert contaminated_alpha > 0.3
 
@@ -279,7 +281,9 @@ def _search_found_feedback(base, loop_auth):
     return feedback, binding, likelihood
 
 
-def test_irrelevant_map_change_lets_task_continue():
+def test_noop_publish_does_not_bump_map_version():
+    # B-F1 (review fix #5): republishing an unchanged belief must not bump the map
+    # version, or an idle consolidation cycle would spuriously trip task replans.
     loop = HybridEventToTaskCoordinatorLoop(
         owner_key=OWNER,
         object_instance_id=OBJ,
@@ -296,8 +300,34 @@ def test_irrelevant_map_change_lets_task_continue():
             source_record_id=uuid4(),
         )
     )
-    old_snapshot = loop.publish_snapshot(changed_locations={L1})
-    # An unrelated location changes; the task only reads L1.
+    first = loop.publish_snapshot()
+    again = loop.publish_snapshot()
+    assert again.map_version == first.map_version
+    assert again.content_hash == first.content_hash
+
+
+def test_coupled_location_change_triggers_replan():
+    # B-F1 (review fix #5): owner habit over locations is one normalized
+    # distribution, so adding evidence at L2 lowers P(L1).  A task reading the L1
+    # habit node must therefore replan, even though L1's own statistics were never
+    # touched -- the locations are coupled through normalization.
+    loop = HybridEventToTaskCoordinatorLoop(
+        owner_key=OWNER,
+        object_instance_id=OBJ,
+        authorization_scope_id=uuid4(),
+        model_version="m@1",
+        code_version="git:test",
+    )
+    loop.ingest_owner_placement(
+        OwnerPlacementInput(
+            event_hypothesis_id=uuid4(),
+            revision_id=uuid4(),
+            destination_location_id=L1,
+            owner_mass=1.0,
+            source_record_id=uuid4(),
+        )
+    )
+    old_snapshot = loop.publish_snapshot()
     loop.ingest_owner_placement(
         OwnerPlacementInput(
             event_hypothesis_id=uuid4(),
@@ -307,7 +337,9 @@ def test_irrelevant_map_change_lets_task_continue():
             source_record_id=uuid4(),
         )
     )
-    new_snapshot = loop.publish_snapshot(changed_locations={L2})
+    new_snapshot = loop.publish_snapshot()
+    # The coupled republish changed the L1 node without touching L1's own stats.
+    assert loop.node_id(L1) in old_snapshot.changed_nodes(new_snapshot)
     task = TaskActionGraph(
         task_id=uuid4(),
         actions=(
@@ -315,6 +347,67 @@ def test_irrelevant_map_change_lets_task_continue():
         ),
     )
     decision = loop.evaluate_task(
+        task=task,
+        current_action_order=0,
+        old_snapshot=old_snapshot,
+        new_snapshot=new_snapshot,
+        verifier=_UncertaintyRiskVerifier(),
+    )
+    assert decision.kind in {VersionSwitchKind.REPLAN_SUFFIX, VersionSwitchKind.CANCEL}
+
+
+def test_independent_object_change_lets_task_continue():
+    # A genuinely unrelated change (a different object's habit, sharing the map)
+    # leaves this object's nodes untouched, so the task continues.
+    shared_map = VersionedBeliefMap()
+    shared_coordinator = MapTaskCoordinator()
+    loop_a = HybridEventToTaskCoordinatorLoop(
+        owner_key=OWNER,
+        object_instance_id=OBJ,
+        authorization_scope_id=uuid4(),
+        model_version="m@1",
+        code_version="git:test",
+        belief_map=shared_map,
+        coordinator=shared_coordinator,
+    )
+    loop_b = HybridEventToTaskCoordinatorLoop(
+        owner_key=OWNER,
+        object_instance_id=UUID(int=6),
+        authorization_scope_id=uuid4(),
+        model_version="m@1",
+        code_version="git:test",
+        belief_map=shared_map,
+        coordinator=shared_coordinator,
+    )
+    loop_a.ingest_owner_placement(
+        OwnerPlacementInput(
+            event_hypothesis_id=uuid4(),
+            revision_id=uuid4(),
+            destination_location_id=L1,
+            owner_mass=1.0,
+            source_record_id=uuid4(),
+        )
+    )
+    old_snapshot = loop_a.publish_snapshot()
+    # A different object's habit changes in the same map.
+    loop_b.ingest_owner_placement(
+        OwnerPlacementInput(
+            event_hypothesis_id=uuid4(),
+            revision_id=uuid4(),
+            destination_location_id=L2,
+            owner_mass=1.0,
+            source_record_id=uuid4(),
+        )
+    )
+    new_snapshot = loop_b.publish_snapshot()
+    assert loop_a.node_id(L1) not in old_snapshot.changed_nodes(new_snapshot)
+    task = TaskActionGraph(
+        task_id=uuid4(),
+        actions=(
+            TaskAction(action_id="fetch", order=0, hard_read_nodes=frozenset({loop_a.node_id(L1)})),
+        ),
+    )
+    decision = loop_a.evaluate_task(
         task=task,
         current_action_order=0,
         old_snapshot=old_snapshot,

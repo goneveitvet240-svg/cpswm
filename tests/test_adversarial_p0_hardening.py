@@ -353,7 +353,7 @@ def test_P1_6_apply_calibration_rejects_unrelated_sync():
             payload=dict(payload_sha256="0" * 64, size_bytes=0),
         )
     )
-    calibrated = registry.apply_calibration(envelope, at_time=start)
+    calibrated = registry.apply_calibration(envelope)
     # The unrelated sync must not be attached.
     assert calibrated.sync_result_id is None
 
@@ -408,3 +408,187 @@ def test_P0_8_one_file_fake_full_structure_is_rejected():
     assert any("cannot be a .py file" in error for error in report.errors)
     assert any("claimed by both" in error for error in report.errors)
     assert not report.required_gates_passed
+
+
+# ------------------------------------------------------- new attack round
+
+
+def test_P0_1_injected_decision_is_rejected_on_restore():
+    household = uuid4()
+    governance = HouseholdGovernance()
+    grant = governance.issue_grant(_grant(household, subject="evaluator.good"))
+    forged = OracleAccessDecision(
+        metadata=_metadata(household),
+        request_id=uuid4(),
+        request_hash="0" * 64,
+        grant_id=grant.grant_id,
+        caller="evaluator.attacker",
+        household_id=household,
+        allowed=True,
+        decided_by="attacker",
+        decided_time=START,
+        input_watermark=InputWatermark(
+            global_commit_seq=0,
+            transaction_id=uuid4(),
+            recorded_at=START,
+        ),
+    )
+    governance._log.append([forged], idempotency_key="injected-decision")
+    restored = HouseholdGovernance(log=governance._log)
+    with pytest.raises(GovernanceConflictError):
+        restored.restore()
+
+
+def test_P0_2_payload_alias_variants_are_rejected():
+    adapter = SyntheticSimulatorAdapter()
+    for key in [
+        "groundTruthPersonId",
+        "ground-truth-person-id",
+        "ground truth person id",
+        "latentState",
+    ]:
+        observation = _observation({key: uuid4().hex}, oracle_channel=False)
+        with pytest.raises(ObservationEnvelopeValidationError):
+            adapter.adapt(
+                observation,
+                sensor=SensorRef(sensor_id="cam-1", modality=SensorModality.RGB),
+                frame_id="cam_1",
+            )
+
+
+def test_P0_3_gate_threshold_downgrade_is_rejected():
+    ledger = ProgressLedger.model_validate(json.loads(LEDGER_PATH.read_text(encoding="utf-8")))
+    data = ledger.model_dump(mode="json")
+    for gate in data["gates"]:
+        gate["min_maturity"] = "absent"
+    report = validate_ledger(ProgressLedger.model_validate(data), REPO_ROOT)
+    assert any("min_maturity must be" in error for error in report.errors)
+    assert not report.required_gates_passed
+
+
+def test_P0_4_unique_files_fake_completion_is_rejected():
+    import hashlib
+
+    ledger = ProgressLedger.model_validate(json.loads(LEDGER_PATH.read_text(encoding="utf-8")))
+    data = ledger.model_dump(mode="json")
+    real_files = [
+        "README.md",
+        "pyproject.toml",
+        "docs/architecture/B1_M05_M06_M28_progress_ledger.md",
+    ]
+    for index, item in enumerate(data["modules"]):
+        path = real_files[index % len(real_files)]
+        target = REPO_ROOT / path
+        content_sha256 = hashlib.sha256(target.read_bytes()).hexdigest()
+        mid = item["module_id"]
+        if mid in {f"M{i:02d}" for i in range(5, 13)}:
+            item["maturity"] = "real_data_validated"
+        else:
+            item["maturity"] = "replay_validated"
+        item["implementation_paths"] = [path]
+        item["test_paths"] = [path]
+        item["evidence_artifacts"] = [
+            {
+                "path": path,
+                "kind": "replay",
+                "description": "fake",
+                "content_sha256": content_sha256,
+                "artifact_schema": "replay_manifest_json_v1",
+                "run_receipt": "forged-receipt",
+            }
+        ]
+    report = validate_ledger(ProgressLedger.model_validate(data), REPO_ROOT)
+    assert any("run receipt missing" in error for error in report.errors)
+    assert any("does not parse" in error for error in report.errors)
+    assert not report.required_gates_passed
+
+
+def test_P1_5_capture_time_override_is_rejected():
+    household = uuid4()
+    start = START
+    registry = CalibrationRegistry()
+    registry.create_calibration(
+        sensor=SensorRef(sensor_id="cam-1", modality=SensorModality.RGB),
+        frame_id="cam_1_optical",
+        household_id=household,
+        valid_time=ValidTimeInterval(start=start, end=start + timedelta(minutes=10)),
+        intrinsics=IntrinsicsModel(model="pinhole", parameters={"fx": 500.0}),
+    )
+    # An envelope captured a day later is outside the calibration validity.
+    later = start + timedelta(days=1)
+    session_a = uuid4()
+    trace_a = uuid4()
+    envelope = ObservationEnvelope.model_validate(
+        dict(
+            metadata=dict(
+                schema_name="x",
+                schema_version="0.1.0",
+                household_id=household,
+                session_id=session_a,
+                trace_id=trace_a,
+                source_type=SourceType.SIMULATION.value,
+                source_id="s",
+            ),
+            identity=dict(
+                household_id=household,
+                session_id=session_a,
+                trace_id=trace_a,
+            ),
+            sensor=dict(sensor_id="cam-1", modality=SensorModality.RGB.value),
+            capture_time=later,
+            arrival_time=later,
+            clock_domain="sensor",
+            frame_id="cam_1_optical",
+            payload=dict(payload_sha256="0" * 64, size_bytes=0),
+        )
+    )
+    from cpswm.perception_mapping.calibration_sync import (
+        CalibrationConflictError,
+        CalibrationNotFoundError,
+    )
+
+    with pytest.raises((CalibrationConflictError, CalibrationNotFoundError)):
+        registry.apply_calibration(envelope)
+
+
+def test_P1_6_required_sync_missing_is_rejected():
+    household = uuid4()
+    start = START
+    registry = CalibrationRegistry()
+    registry.create_calibration(
+        sensor=SensorRef(sensor_id="cam-1", modality=SensorModality.RGB),
+        frame_id="cam_1_optical",
+        household_id=household,
+        valid_time=ValidTimeInterval(start=start, end=start + timedelta(minutes=10)),
+        intrinsics=IntrinsicsModel(model="pinhole", parameters={"fx": 500.0}),
+    )
+    session_a = uuid4()
+    trace_a = uuid4()
+    envelope = ObservationEnvelope.model_validate(
+        dict(
+            metadata=dict(
+                schema_name="x",
+                schema_version="0.1.0",
+                household_id=household,
+                session_id=session_a,
+                trace_id=trace_a,
+                source_type=SourceType.SIMULATION.value,
+                source_id="s",
+            ),
+            identity=dict(
+                household_id=household,
+                session_id=session_a,
+                trace_id=trace_a,
+            ),
+            sensor=dict(sensor_id="cam-1", modality=SensorModality.RGB.value),
+            capture_time=start,
+            arrival_time=start,
+            clock_domain="sensor",
+            frame_id="cam_1_optical",
+            payload=dict(payload_sha256="0" * 64, size_bytes=0),
+        )
+    )
+    from cpswm.perception_mapping.calibration_sync import CalibrationConflictError
+
+    with pytest.raises(CalibrationConflictError):
+        registry.apply_calibration(envelope, require_sync=True, target_clock="host")

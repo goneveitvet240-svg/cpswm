@@ -424,6 +424,7 @@ class ContextConditionedRegimeReactivator:
             )
         key = (object_instance_id, actor_id)
         if decision.kind == RegimeDecisionKind.REACTIVATE:
+            assert decision.reactivated_regime_id is not None
             entry = self._library[key][decision.reactivated_regime_id]
             refreshed = entry.model_copy(
                 update={
@@ -434,6 +435,7 @@ class ContextConditionedRegimeReactivator:
             self._library[key][entry.regime_id] = refreshed
             self._current_regime[key] = entry.regime_id
         elif decision.kind == RegimeDecisionKind.CREATE:
+            assert decision.created_regime_id is not None
             entry = RegimeLibraryEntry(
                 regime_id=decision.created_regime_id,
                 actor_id=actor_id,

@@ -65,7 +65,7 @@ def test_b1_gate_cannot_be_rewritten_to_atg1():
         if gate["gate_id"] == "B1_SYNTHETIC_READINESS":
             gate["required_module_ids"] = ["ATG-1"]
     report = validate_ledger(ProgressLedger.model_validate(data), REPO_ROOT)
-    assert any("must require exactly M05-M12" in error for error in report.errors)
+    assert any("must require exactly" in error for error in report.errors)
 
 
 def test_synthetic_evidence_cannot_pose_as_real_validation():

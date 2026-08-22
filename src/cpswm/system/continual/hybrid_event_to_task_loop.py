@@ -215,29 +215,32 @@ class HybridEventToTaskCoordinatorLoop:
             verifier=verifier,
         )
 
-    def ingest_execution_feedback(
+    def project_execution_feedback(
         self,
         *,
         feedback: ExecutionFeedbackRecord,
         binding: DecisionContextBinding,
         likelihood_model: ActionOutcomeLikelihoodModel,
-        prior_target_present: float,
     ) -> ProjectedFeedbackEvidence:
-        """Feedback backflow, likelihood-aware and type-routed (review fix #4).
+        """Project (not consolidate) execution feedback into typed evidence.
 
-        The uncertain outcome is projected to typed evidence; a find/observe
-        outcome updates *target presence* only, and a place/transfer outcome is
-        routed as a candidate location transition whose owner-habit attribution
-        still needs actor responsibility.  **No feedback path writes owner habit
-        directly**, so "found the object" can never inflate the owner model.
-        Replaying the same feedback record is a no-op.
+        Honest naming: this projects and routes evidence; it does not itself
+        write a presence log/map or ORRER outbox (that lands after the map/ORRER
+        core is handed over).  The prior comes from the bound decision snapshot,
+        never from the caller.  A find/observe outcome updates target presence
+        only; place/transfer routes to a location transition needing actor
+        responsibility.  No feedback path writes owner habit directly.
         """
 
-        return self._feedback_projector.project(
+        context = binding.decision_context
+        if context.authorization_scope_id != self._auth:
+            raise ValueError("feedback decision context authorization scope does not match the loop")
+        if feedback.target_entity is None or feedback.target_entity.entity_id != self._object:
+            raise ValueError("feedback target object does not match the loop's configured object")
+        return self._feedback_projector.project_execution_feedback(
             feedback=feedback,
             binding=binding,
             likelihood_model=likelihood_model,
-            prior_target_present=prior_target_present,
         )
 
     def _revision_destination(self, revision_id: UUID) -> UUID | None:

@@ -26,15 +26,20 @@ from .contracts import ObservationEnvelope
 
 #: Key substrings that must never appear in a normal (non-oracle) payload.
 #: These name evaluator-only semantics: ground truth, latent state, and oracle
-#: annotations.  The scan is recursive and covers dict keys, list items, and
-#: nested objects.
+#: annotations.  Keys are normalized (case-folded, non-alphanumeric stripped)
+#: before matching, so camelCase / kebab-case / snake_case / spaces all match.
 FORBIDDEN_PAYLOAD_KEY_SUBSTRINGS = (
-    "ground_truth",
-    "latent_state",
+    "groundtruth",
+    "latentstate",
     "oracle",
-    "gt_id",
-    "gt_ref",
+    "evaluatortruth",
+    "trueactor",
+    "changepointtruth",
 )
+
+
+def _normalize_key(key: str) -> str:
+    return "".join(ch for ch in key.casefold() if ch.isalnum())
 
 
 class ObservationEnvelopeValidationError(ValueError):
@@ -45,8 +50,7 @@ def scan_forbidden_payload_fields(value: Any, path: str = "") -> list[str]:
     """Recursively find evaluator-only field names inside a payload.
 
     Covers ``dict`` keys (including nested objects), ``list`` items, and any
-    key containing a forbidden substring.  Returns the dotted paths of every
-    offending field.
+    key whose normalized form contains a forbidden substring.
     """
 
     found: list[str] = []
@@ -54,7 +58,8 @@ def scan_forbidden_payload_fields(value: Any, path: str = "") -> list[str]:
         for key, child in value.items():
             key_text = str(key)
             child_path = f"{path}.{key_text}" if path else key_text
-            if any(sub in key_text.lower() for sub in FORBIDDEN_PAYLOAD_KEY_SUBSTRINGS):
+            normalized = _normalize_key(key_text)
+            if any(sub in normalized for sub in FORBIDDEN_PAYLOAD_KEY_SUBSTRINGS):
                 found.append(child_path)
             found.extend(scan_forbidden_payload_fields(child, child_path))
     elif isinstance(value, list):

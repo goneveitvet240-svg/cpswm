@@ -100,17 +100,19 @@ class CalibrationRegistry:
         self,
         envelope: ObservationEnvelope,
         *,
-        at_time: datetime | None = None,
-        expected_target_clock: str | None = None,
+        target_clock: str | None = None,
+        require_sync: bool = False,
+        max_sync_uncertainty_seconds: float | None = None,
     ) -> CalibratedObservation:
         """Apply a registered calibration to one observation.
 
-        Validates household, sensor, frame, capture time, clock domain, sync
-        validity, and uncertainty, then returns a constrained
-        :class:`CalibratedObservation`.
+        The capture time is always ``envelope.capture_time`` -- it cannot be
+        overridden by a caller (replay overrides need a separate audited API).
+        ``require_sync=True`` fails closed when no matching sync exists, and
+        ``max_sync_uncertainty_seconds`` rejects an out-of-tolerance sync.
         """
 
-        at_time = require_aware(at_time or envelope.capture_time, "at_time")
+        at_time = require_aware(envelope.capture_time, "capture_time")
         calibration = self.calibration_at(
             sensor_id=envelope.sensor.sensor_id,
             household_id=envelope.metadata.household_id,
@@ -125,7 +127,15 @@ class CalibrationRegistry:
         if not calibration.valid_time.contains(at_time):
             raise CalibrationConflictError("calibration is not valid at the capture time")
 
-        sync = self._find_sync(calibration, envelope, at_time, expected_target_clock)
+        sync = self._find_sync(calibration, envelope, at_time, target_clock)
+        if require_sync and sync is None:
+            raise CalibrationConflictError("a matching sync is required but none exists")
+        if (
+            sync is not None
+            and max_sync_uncertainty_seconds is not None
+            and sync.uncertainty_seconds > max_sync_uncertainty_seconds
+        ):
+            raise CalibrationConflictError("sync uncertainty exceeds the tolerated maximum")
         if sync is not None:
             aligned = at_time + timedelta(seconds=sync.offset_seconds)
             return CalibratedObservation(
@@ -146,7 +156,7 @@ class CalibrationRegistry:
         calibration: SensorCalibration,
         envelope: ObservationEnvelope,
         at_time: datetime,
-        expected_target_clock: str | None,
+        target_clock: str | None,
     ) -> SensorTimeSyncResult | None:
         for item in self._syncs:
             if item.household_id != calibration.household_id:
@@ -157,10 +167,7 @@ class CalibrationRegistry:
                 continue
             if item.source_clock_domain != envelope.clock_domain:
                 continue
-            if (
-                expected_target_clock is not None
-                and item.target_clock_domain != expected_target_clock
-            ):
+            if target_clock is not None and item.target_clock_domain != target_clock:
                 continue
             return item
         return None

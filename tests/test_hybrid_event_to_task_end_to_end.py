@@ -98,10 +98,11 @@ def test_hybrid_end_to_end_orrer_rgrc_snapshot_coordinator_feedback():
         before=before, after=after, actor_prior={OWNER: 0.7, GUEST: 0.2, UNKNOWN: 0.1}
     )
 
+    loop_auth = uuid4()
     loop = HybridEventToTaskCoordinatorLoop(
         owner_key=OWNER,
         object_instance_id=OBJ,
-        authorization_scope_id=uuid4(),
+        authorization_scope_id=loop_auth,
         model_version="hier-dirichlet@0.1",
         code_version="git:test",
     )
@@ -173,9 +174,9 @@ def test_hybrid_end_to_end_orrer_rgrc_snapshot_coordinator_feedback():
     # Feedback backflow (review fix #4): a SEARCH "found the object" outcome
     # updates target presence only and must NOT inflate the owner habit.
     before_feedback = loop.ledger.projection(loop._key(L2)).alpha
-    feedback, binding, likelihood = _search_found_feedback(base)
-    projected = loop.ingest_execution_feedback(
-        feedback=feedback, binding=binding, likelihood_model=likelihood, prior_target_present=0.5
+    feedback, binding, likelihood = _search_found_feedback(base, loop_auth)
+    projected = loop.project_execution_feedback(
+        feedback=feedback, binding=binding, likelihood_model=likelihood
     )
     after_feedback = loop.ledger.projection(loop._key(L2)).alpha
     assert after_feedback == before_feedback  # found != owner-habit increase
@@ -183,12 +184,12 @@ def test_hybrid_end_to_end_orrer_rgrc_snapshot_coordinator_feedback():
     assert projected.updates_owner_habit_directly is False
     assert projected.target_presence_update.posterior_target_present > 0.5
     # Replaying the same feedback record is a no-op.
-    assert loop.ingest_execution_feedback(
-        feedback=feedback, binding=binding, likelihood_model=likelihood, prior_target_present=0.5
+    assert loop.project_execution_feedback(
+        feedback=feedback, binding=binding, likelihood_model=likelihood
     ).is_replay
 
 
-def _search_found_feedback(base):
+def _search_found_feedback(base, loop_auth):
     from cpswm.contracts import (
         ActionOutcomeLikelihoodModel,
         DecisionContextBinding,
@@ -235,7 +236,8 @@ def _search_found_feedback(base):
         valid_time=ValidTimeInterval(start=T1, end=T1 + timedelta(minutes=5)),
         staleness_budget_seconds=60.0,
         revisions=revisions,
-        authorization_scope_id=uuid4(),
+        target_presence_prior=0.5,
+        authorization_scope_id=loop_auth,
         habit_regime_model_version="m@1",
         model_versions=(("loop", "e2e@0.1"),),
         code_version="git:test",

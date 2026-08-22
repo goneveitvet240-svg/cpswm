@@ -17,7 +17,7 @@ from __future__ import annotations
 
 from datetime import datetime
 from typing import Any
-from uuid import UUID
+from uuid import UUID, uuid4
 
 from pydantic import TypeAdapter
 
@@ -96,7 +96,11 @@ class HouseholdGovernance:
         self._log = log or AppendOnlyTransactionLog()
         self._grants: dict[UUID, CapabilityGrant] = {}
         self._revocations: dict[UUID, CapabilityRevocation] = {}
+        self._requests: dict[UUID, OracleAccessRequest] = {}
         self._decisions: dict[UUID, OracleAccessDecision] = {}
+        self._grant_seqs: dict[UUID, int] = {}
+        self._request_seqs: dict[UUID, int] = {}
+        self._decision_seqs: dict[UUID, int] = {}
         self._retention: list[DataRetentionPolicy] = []
         self._tombstones: dict[UUID, set[UUID]] = {}
         self._audit_records: list[OracleAccessAuditRecord] = []
@@ -109,8 +113,9 @@ class HouseholdGovernance:
             if self._grants[grant.grant_id] != grant:
                 raise GovernanceConflictError("grant_id already issued with different content")
             return grant
-        self._append(grant, f"grant:{grant.grant_id}")
+        seq = self._append(grant, f"grant:{grant.grant_id}")
         self._grants[grant.grant_id] = grant
+        self._grant_seqs[grant.grant_id] = seq
         return grant
 
     def revoke(self, revocation: CapabilityRevocation) -> CapabilityRevocation:
@@ -212,7 +217,7 @@ class HouseholdGovernance:
         )
         allowed = grant is not None
         decision = OracleAccessDecision(
-            metadata=request.metadata,
+            metadata=request.metadata.model_copy(update={"record_id": uuid4()}),
             request_id=request.request_id,
             request_hash=request.fingerprint(),
             grant_id=grant.grant_id if grant is not None else None,
@@ -224,16 +229,22 @@ class HouseholdGovernance:
             denial_reason=None if allowed else "no active grant authorizes oracle access",
             input_watermark=request.input_watermark,
         )
-        self._append(decision, f"oracle-decision:{decision.decision_id}")
+        request_seq = self._append(request, f"oracle-request:{request.request_id}")
+        self._requests[request.request_id] = request
+        self._request_seqs[request.request_id] = request_seq
+        decision_seq = self._append(decision, f"oracle-decision:{decision.decision_id}")
         self._decisions[decision.decision_id] = decision
+        self._decision_seqs[decision.decision_id] = decision_seq
         return decision
 
     def verify_oracle_receipt(self, receipt: OracleAccessDecision) -> bool:
-        """Verify an oracle decision receipt's provenance.
+        """Verify an oracle decision receipt's full provenance.
 
         The receipt must be an allowed decision that exists (field-for-field)
-        in the append-only log, and its authorizing grant must still be active
-        at ``decided_time``.
+        in the append-only log, its request must exist with a matching
+        fingerprint, and the authorizing grant must match the caller,
+        household, resource, operation, and purpose and still be active at
+        ``decided_time``.
         """
 
         if not isinstance(receipt, OracleAccessDecision):
@@ -243,10 +254,21 @@ class HouseholdGovernance:
         stored = self._decisions.get(receipt.decision_id)
         if stored is None or stored != receipt:
             return False
+        request = self._requests.get(receipt.request_id)
+        if request is None or request.fingerprint() != receipt.request_hash:
+            return False
+        if request.caller != receipt.caller or request.household_id != receipt.household_id:
+            return False
         if receipt.grant_id is None:
             return False
         grant = self._grants.get(receipt.grant_id)
         if grant is None or grant.grant_id in self._revocations:
+            return False
+        if grant.subject != receipt.caller or grant.household_id != receipt.household_id:
+            return False
+        if grant.resource != ResourceKind.GT or grant.operation != Operation.READ:
+            return False
+        if grant.purpose != receipt.purpose:
             return False
         return grant.valid_time.contains(receipt.decided_time)
 
@@ -401,35 +423,49 @@ class HouseholdGovernance:
         if not grant.valid_time.contains(request.requested_time):
             raise AuthorizationDeniedError("deletion grant is expired for the request time")
 
-    def _append(self, record: Any, idempotency_key: str) -> None:
-        self._log.append([record], idempotency_key=idempotency_key)
+    def _append(self, record: Any, idempotency_key: str) -> int:
+        result = self._log.append([record], idempotency_key=idempotency_key)
+        return result.watermark.global_commit_seq
 
     def restore(self) -> None:
         """Rebuild in-memory state from the append-only log (cross-restart).
 
-        Grant policy is re-executed on every restored grant: a log record that
-        violates the GT-subject or household policy is rejected rather than
-        blindly trusted.
+        Grant policy is re-executed on every restored grant.  Oracle decisions
+        are only trusted when their request and grant also exist in the log, in
+        the order ``grant -> request -> decision``, and every binding field
+        matches -- a decision injected into the log without a matching request
+        or grant is rejected.
         """
 
         self._grants.clear()
         self._revocations.clear()
+        self._requests.clear()
         self._decisions.clear()
+        self._grant_seqs.clear()
+        self._request_seqs.clear()
+        self._decision_seqs.clear()
         self._retention.clear()
         self._tombstones.clear()
         self._audit_records.clear()
         for transaction in self._log.read():
+            seq = transaction.global_commit_seq
             for record in transaction.records:
                 payload = record.envelope.payload
                 decoded = decode_governance_record(payload, record.envelope.schema_name)
                 if isinstance(decoded, CapabilityGrant):
                     self._validate_restored_grant(decoded)
                     self._grants[decoded.grant_id] = decoded
+                    self._grant_seqs[decoded.grant_id] = seq
                 elif isinstance(decoded, CapabilityRevocation):
                     self._validate_restored_revocation(decoded)
                     self._revocations[decoded.grant_id] = decoded
+                elif isinstance(decoded, OracleAccessRequest):
+                    self._requests[decoded.request_id] = decoded
+                    self._request_seqs[decoded.request_id] = seq
                 elif isinstance(decoded, OracleAccessDecision):
+                    self._validate_restored_decision(decoded, seq)
                     self._decisions[decoded.decision_id] = decoded
+                    self._decision_seqs[decoded.decision_id] = seq
                 elif isinstance(decoded, DataRetentionPolicy):
                     self._retention.append(decoded)
                 elif isinstance(decoded, DeletionExecutionReceipt):
@@ -437,6 +473,58 @@ class HouseholdGovernance:
                     bucket.update(decoded.tombstoned_record_ids)
                 elif isinstance(decoded, OracleAccessAuditRecord):
                     self._audit_records.append(decoded)
+
+    def _validate_restored_decision(
+        self,
+        decision: OracleAccessDecision,
+        decision_seq: int,
+    ) -> None:
+        request = self._requests.get(decision.request_id)
+        if request is None:
+            raise GovernanceConflictError(
+                f"restored decision {decision.decision_id} references an unknown request"
+            )
+        request_seq = self._request_seqs.get(decision.request_id, -1)
+        if request_seq >= decision_seq:
+            raise GovernanceConflictError(
+                f"restored decision {decision.decision_id} precedes its request in the log"
+            )
+        if request.fingerprint() != decision.request_hash:
+            raise GovernanceConflictError(
+                f"restored decision {decision.decision_id} request hash does not match"
+            )
+        if request.caller != decision.caller or request.household_id != decision.household_id:
+            raise GovernanceConflictError(
+                f"restored decision {decision.decision_id} caller/household does not match request"
+            )
+        if decision.grant_id is None:
+            raise GovernanceConflictError(f"restored decision {decision.decision_id} has no grant")
+        grant = self._grants.get(decision.grant_id)
+        if grant is None:
+            raise GovernanceConflictError(
+                f"restored decision {decision.decision_id} references an unknown grant"
+            )
+        grant_seq = self._grant_seqs.get(decision.grant_id, -1)
+        if grant_seq >= request_seq:
+            raise GovernanceConflictError(
+                f"restored decision {decision.decision_id} grant does not precede its request"
+            )
+        if grant.subject != decision.caller or grant.household_id != decision.household_id:
+            raise GovernanceConflictError(
+                f"restored decision {decision.decision_id} grant subject/household mismatch"
+            )
+        if grant.resource != ResourceKind.GT or grant.operation != Operation.READ:
+            raise GovernanceConflictError(
+                f"restored decision {decision.decision_id} grant is not a gt read"
+            )
+        if grant.purpose != decision.purpose:
+            raise GovernanceConflictError(
+                f"restored decision {decision.decision_id} grant purpose mismatch"
+            )
+        if not grant.valid_time.contains(decision.decided_time):
+            raise GovernanceConflictError(
+                f"restored decision {decision.decision_id} grant is not valid at decided_time"
+            )
 
     def _validate_restored_grant(self, grant: CapabilityGrant) -> None:
         if grant.household_id != grant.metadata.household_id:

@@ -80,6 +80,9 @@ class DecisionContext(ContractModel):
     attributed_cause: AttributedCause = AttributedCause.UNRESOLVED
     segment_change_probability: Probability | None = None
     transient_noise_probability: Probability | None = None
+    #: Target-presence prior the decision was made against; feedback projection
+    #: reads its prior from here, never from an arbitrary caller argument.
+    target_presence_prior: Probability | None = None
     consolidation_ledger_ref: str | None = None
     authorization_scope_id: UUID
     habit_regime_model_version: str = Field(min_length=1)
@@ -132,6 +135,7 @@ class DecisionContext(ContractModel):
             "attributed_cause": self.attributed_cause.value,
             "segment_change_probability": repr(self.segment_change_probability),
             "transient_noise_probability": repr(self.transient_noise_probability),
+            "target_presence_prior": repr(self.target_presence_prior),
             "consolidation_ledger_ref": self.consolidation_ledger_ref,
             "authorization_scope_id": str(self.authorization_scope_id),
             "habit_regime_model_version": self.habit_regime_model_version,

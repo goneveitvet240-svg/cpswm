@@ -81,6 +81,56 @@ def test_actor_evidence_only_reweights_its_own_actor():
     del baseline  # unused beyond setup
 
 
+def test_actor_firewall_shifts_only_the_target_actor():
+    """The actor firewall: evidence favouring one actor must raise that actor's
+    hypotheses and lower (or leave) the other actor's hypotheses."""
+
+    case, history, _evidence = _observed_case_and_history()
+    actor_evidence = _first_actor_evidence(case)
+    assert actor_evidence is not None
+    owner_evidence = actor_evidence.model_copy(
+        update={
+            "actor_posterior": {
+                OWNER: 0.9,
+                GUEST: 0.05,
+                "unknown_actor": 0.05,
+            },
+            "reference_actor_prior": {
+                OWNER: 1 / 3,
+                GUEST: 1 / 3,
+                "unknown_actor": 1 / 3,
+            },
+        }
+    )
+    engine = ProvenanceConstrainedMessagePassing()
+    baseline = engine.infer(history, ())
+    shifted = engine.infer(history, (owner_evidence,))
+
+    owner_ids = [
+        h.hypothesis_id
+        for h in history.latest.hypotheses
+        if h.responsible_actor_key == OWNER
+    ]
+    guest_ids = [
+        h.hypothesis_id
+        for h in history.latest.hypotheses
+        if h.responsible_actor_key == GUEST
+    ]
+    owner_mass_before = sum(baseline.posterior_by_hypothesis_id[i] for i in owner_ids)
+    owner_mass_after = sum(shifted.posterior_by_hypothesis_id[i] for i in owner_ids)
+    guest_mass_before = sum(baseline.posterior_by_hypothesis_id[i] for i in guest_ids)
+    guest_mass_after = sum(shifted.posterior_by_hypothesis_id[i] for i in guest_ids)
+    assert owner_mass_after > owner_mass_before
+    assert guest_mass_after < guest_mass_before
+
+
+def _first_actor_evidence(case):
+    for obs in case.visible.days:
+        if obs.actor_evidence is not None:
+            return obs.actor_evidence
+    return None
+
+
 def test_permutation_equivariance_holds():
     _case, history, evidence = _observed_case_and_history()
     ProvenanceConstrainedMessagePassing.assert_permutation_equivariance(

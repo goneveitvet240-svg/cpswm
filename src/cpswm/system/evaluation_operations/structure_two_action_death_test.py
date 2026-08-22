@@ -23,9 +23,10 @@ only available to the evaluator, never to a model input.
 
 from __future__ import annotations
 
+import hashlib
 import random
 from collections import Counter
-from collections.abc import Callable, Sequence
+from collections.abc import Callable
 from dataclasses import dataclass, field
 from datetime import UTC, datetime, timedelta
 from enum import StrEnum
@@ -84,6 +85,18 @@ def _position_value(location: UUID) -> float:
     """
 
     return float((location.int & 0xFFFF) / 65536.0)
+
+
+def _position_fingerprint(location: UUID) -> tuple[float, ...]:
+    """A centered, multi-component, order-independent context fingerprint.
+
+    SHA-256 bytes are centered to [-0.5, 0.5] so two distinct locations have
+    (with overwhelming probability) near-zero cosine similarity.  This is the
+    location-permutation-equivariant replacement for the former one-hot index.
+    """
+
+    digest = hashlib.sha256(location.bytes).digest()
+    return tuple((byte - 128.0) / 128.0 for byte in digest[:16])
 
 
 class ActionTaskType(StrEnum):
@@ -821,7 +834,7 @@ class _PchmpCcrrRgrcMethod:
                     regime_id="stable",
                     actor_id=owner,
                     object_instance_id=self.case.object_instance_id,
-                    context_fingerprint=(position_value,),
+                    context_fingerprint=_position_fingerprint(location),
                     cause_origin=ChangeCause.HABIT,
                     created_at=frame.timestamp,
                 ),
@@ -831,7 +844,7 @@ class _PchmpCcrrRgrcMethod:
 
         # 5. CCRR regime decision: score (pure) then apply (mutating) under a
         #    library-version check.
-        context_features = (position_value,)
+        context_features = _position_fingerprint(location)
         library = self.reactor.library(
             object_instance_id=self.case.object_instance_id, actor_id=owner
         )
@@ -933,6 +946,7 @@ class StructureTwoActionDeathTest:
             per_case_search_error: Counter[str] = Counter()
             search_cost_total = 0.0
             search_days = 0
+            contamination_days = 0
             for case in cases:
                 state = _METHOD_FACTORIES[method](case.visible)
                 for obs in case.visible.days:
@@ -952,6 +966,10 @@ class StructureTwoActionDeathTest:
                         per_case_error[case.visible.case_id] += 1
                     if not search_correct:
                         per_case_search_error[case.visible.case_id] += 1
+                    # Owner-contamination: a guest day whose placement flipped
+                    # this method's put-back away from the owner habit location.
+                    if truth.true_actor == "guest" and not put_back_correct:
+                        contamination_days += 1
                     result = ActionDayResult(
                         case_id=case.visible.case_id,
                         method=method,
@@ -976,7 +994,7 @@ class StructureTwoActionDeathTest:
                         total_search_errors / total_days if total_days else 0.0
                     ),
                     mean_search_cost=search_cost_total / search_days if search_days else 0.0,
-                    owner_contamination_days=0,
+                    owner_contamination_days=contamination_days,
                     total_put_back_errors=total_put_back_errors,
                     total_search_errors=total_search_errors,
                 )

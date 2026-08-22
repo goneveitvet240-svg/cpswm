@@ -78,6 +78,42 @@ class EvidenceArtifact(ContractModel):
     run_receipt: str = Field(min_length=1)
 
 
+class EvidenceArtifactPayload(ContractModel):
+    """The strongly-typed content every evidence artifact file must carry.
+
+    The validator parses the artifact file with this schema and checks that the
+    declared ``module_id``/``covered_module_ids``, ``evidence_kind``, and
+    ``artifact_sha256`` match the ledger entry, so a random repository file
+    cannot be dressed up as validation evidence.
+    """
+
+    module_id: str = Field(min_length=1)
+    evidence_kind: EvidenceKind
+    artifact_sha256: str = Field(pattern=r"^[0-9a-f]{64}$")
+    dataset_id: str = Field(min_length=1)
+    run_id: str = Field(min_length=1)
+    git_commit_sha: str = Field(min_length=1)
+    config_sha256: str = Field(pattern=r"^[0-9a-f]{64}$")
+    code_snapshot_sha256: str = Field(pattern=r"^[0-9a-f]{64}$")
+    case_count: int = Field(ge=0)
+    result_status: str = Field(min_length=1)
+    covered_module_ids: tuple[str, ...] = ()
+
+
+class RunReceipt(ContractModel):
+    """A run receipt that binds an artifact hash to a run identity.
+
+    ``artifact_sha256`` must equal the evidence artifact's content hash, so a
+    forged receipt cannot attest to an unrelated artifact.
+    """
+
+    run_id: str = Field(min_length=1)
+    artifact_sha256: str = Field(pattern=r"^[0-9a-f]{64}$")
+    git_commit_sha: str = Field(min_length=1)
+    command: str = Field(min_length=1)
+    result_status: str = Field(min_length=1)
+
+
 class ModuleEntry(ContractModel):
     module_id: str
     workstream_ids: tuple[str, ...] = ()
@@ -146,9 +182,11 @@ __all__ = [
     "ALL_WORKSTREAM_IDS",
     "MATURITY_ORDER",
     "EvidenceArtifact",
+    "EvidenceArtifactPayload",
     "EvidenceKind",
     "Gate",
     "Maturity",
     "ModuleEntry",
     "ProgressLedger",
+    "RunReceipt",
 ]

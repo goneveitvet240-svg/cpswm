@@ -21,27 +21,40 @@ cover every one of M01-M32 (a WS1-WS10 or SHIFT-only result cannot substitute).
 from __future__ import annotations
 
 import hashlib
+import json
 from dataclasses import dataclass, field
 from pathlib import Path
 
 from .contracts import (
     ALL_MODULE_IDS,
     MATURITY_ORDER,
+    EvidenceArtifactPayload,
     EvidenceKind,
     Maturity,
     ModuleEntry,
     ProgressLedger,
+    RunReceipt,
 )
 
 _B1_MODULES = tuple(f"M{i:02d}" for i in range(5, 13))
 _ALL_MODULES = tuple(f"M{i:02d}" for i in range(1, 33))
 
-#: The three formal gates that must always exist and be required.
-_REQUIRED_GATE_IDS = (
-    "B1_SYNTHETIC_READINESS",
-    "FORMAL_B1_REAL_VALIDATION",
-    "STRUCTURE_ONE_COMPLETE",
-)
+#: The three formal gates, frozen with their exact module topology and minimum
+#: maturity.  Neither the JSON ledger nor the caller may change these.
+_REQUIRED_GATE_SPECS: dict[str, dict[str, object]] = {
+    "B1_SYNTHETIC_READINESS": {
+        "module_ids": _B1_MODULES,
+        "min_maturity": Maturity.SYNTHETIC_VERTICAL_SLICE,
+    },
+    "FORMAL_B1_REAL_VALIDATION": {
+        "module_ids": _B1_MODULES,
+        "min_maturity": Maturity.REAL_DATA_VALIDATED,
+    },
+    "STRUCTURE_ONE_COMPLETE": {
+        "module_ids": _ALL_MODULES,
+        "min_maturity": Maturity.REPLAY_VALIDATED,
+    },
+}
 
 #: Allowed evidence schemas; an unknown schema is rejected.
 _ALLOWED_EVIDENCE_SCHEMAS = frozenset(
@@ -123,7 +136,7 @@ def validate_ledger(ledger: ProgressLedger, repo_root: Path) -> ValidationReport
 
 def _check_required_gates_present(ledger: ProgressLedger, report: ValidationReport) -> None:
     by_gate_id = {gate.gate_id: gate for gate in ledger.gates}
-    for gate_id in _REQUIRED_GATE_IDS:
+    for gate_id in _REQUIRED_GATE_SPECS:
         if gate_id not in by_gate_id:
             report.errors.append(f"required gate {gate_id} is missing")
         elif not by_gate_id[gate_id].required:
@@ -131,18 +144,22 @@ def _check_required_gates_present(ledger: ProgressLedger, report: ValidationRepo
 
 
 def _check_gate_shapes(ledger: ProgressLedger, report: ValidationReport) -> None:
-    for gate in ledger.gates:
-        if (
-            gate.gate_id in {"B1_SYNTHETIC_READINESS", "FORMAL_B1_REAL_VALIDATION"}
-            and gate.required_module_ids != _B1_MODULES
-        ):
+    by_gate_id = {gate.gate_id: gate for gate in ledger.gates}
+    for gate_id, spec in _REQUIRED_GATE_SPECS.items():
+        gate = by_gate_id.get(gate_id)
+        if gate is None:
+            continue
+        expected_modules: tuple[str, ...] = spec["module_ids"]
+        expected_maturity: Maturity = spec["min_maturity"]
+        if gate.required_module_ids != expected_modules:
             report.errors.append(
-                f"gate {gate.gate_id} must require exactly M05-M12, got {gate.required_module_ids}"
-            )
-        if gate.gate_id == "STRUCTURE_ONE_COMPLETE" and gate.required_module_ids != _ALL_MODULES:
-            report.errors.append(
-                "gate STRUCTURE_ONE_COMPLETE must cover exactly M01-M32, "
+                f"gate {gate_id} must require exactly {expected_modules}, "
                 f"got {gate.required_module_ids}"
+            )
+        if gate.min_maturity != expected_maturity:
+            report.errors.append(
+                f"gate {gate_id} min_maturity must be {expected_maturity.value}, "
+                f"got {gate.min_maturity.value}"
             )
 
 
@@ -202,6 +219,66 @@ def _check_evidence_content(
                 f"{entry.module_id}: {artifact.kind.value} evidence cannot be a .py file: "
                 f"{artifact.path}"
             )
+        _check_evidence_payload(entry, artifact, repo_root, report)
+        _check_run_receipt(entry, artifact, repo_root, report)
+
+
+def _check_evidence_payload(
+    entry: ModuleEntry,
+    artifact,
+    repo_root: Path,
+    report: ValidationReport,
+) -> None:
+    """Parse the artifact file and verify it actually attests this module."""
+
+    target = repo_root / artifact.path
+    try:
+        raw = json.loads(target.read_text(encoding="utf-8"))
+        payload = EvidenceArtifactPayload.model_validate(raw)
+    except Exception as error:
+        report.errors.append(
+            f"{entry.module_id}: evidence {artifact.path} does not parse as "
+            f"{artifact.artifact_schema}: {error}"
+        )
+        return
+    if entry.module_id not in payload.covered_module_ids and payload.module_id != entry.module_id:
+        report.errors.append(
+            f"{entry.module_id}: evidence {artifact.path} does not attest this module"
+        )
+    if payload.artifact_sha256 != artifact.content_sha256:
+        report.errors.append(
+            f"{entry.module_id}: evidence {artifact.path} artifact_sha256 does not match"
+        )
+    if payload.evidence_kind != artifact.kind:
+        report.errors.append(
+            f"{entry.module_id}: evidence {artifact.path} kind does not match ledger"
+        )
+
+
+def _check_run_receipt(
+    entry: ModuleEntry,
+    artifact,
+    repo_root: Path,
+    report: ValidationReport,
+) -> None:
+    """Verify the run receipt exists and binds this artifact's hash."""
+
+    receipt_path = repo_root / artifact.run_receipt
+    if not receipt_path.is_file():
+        report.errors.append(f"{entry.module_id}: run receipt missing: {artifact.run_receipt}")
+        return
+    try:
+        receipt = RunReceipt.model_validate(json.loads(receipt_path.read_text(encoding="utf-8")))
+    except Exception as error:
+        report.errors.append(
+            f"{entry.module_id}: run receipt {artifact.run_receipt} does not parse: {error}"
+        )
+        return
+    if receipt.artifact_sha256 != artifact.content_sha256:
+        report.errors.append(
+            f"{entry.module_id}: run receipt {artifact.run_receipt} does not bind "
+            f"artifact hash for {artifact.path}"
+        )
 
 
 def _check_evidence_dedup(ledger: ProgressLedger, report: ValidationReport) -> None:

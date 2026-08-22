@@ -7,14 +7,16 @@ for household A can never be used to validate an observation from household B.
 from __future__ import annotations
 
 import hashlib
-from datetime import datetime
+from datetime import datetime, timedelta
+from typing import Literal
 from uuid import UUID
 
 from cpswm.contracts.base import ValidTimeInterval, require_aware
 from cpswm.foundation.identity_time_frames.contracts import FrameTransform
-from cpswm.perception_mapping.adapters.contracts import SensorRef
+from cpswm.perception_mapping.adapters.contracts import ObservationEnvelope, SensorRef
 
 from .contracts import (
+    CalibratedObservation,
     CalibrationState,
     CalibrationUncertainty,
     IntrinsicsModel,
@@ -39,7 +41,7 @@ class CalibrationRegistry:
         self._calibrations: list[SensorCalibration] = []
         self._syncs: list[SensorTimeSyncResult] = []
 
-    def calibrate(
+    def create_calibration(
         self,
         *,
         sensor: SensorRef,
@@ -51,23 +53,32 @@ class CalibrationRegistry:
         uncertainty: CalibrationUncertainty | None = None,
         calibration_version: str = "0.1.0",
         artifact_bytes: bytes | None = None,
-        sync: SensorTimeSyncResult | None = None,
+        external_artifact_ref: str | None = None,
     ) -> SensorCalibration:
-        """Build, hash, and register one calibration, optionally with a sync.
+        """Build, hash, and register one calibration.
 
-        The artifact hash is either recomputed from the canonical parameters or
-        taken from the external artifact bytes; it is never caller-supplied.
+        The provenance hash is either recomputed from the canonical parameters
+        (``parameters`` mode) or taken from external artifact bytes
+        (``external_artifact`` mode); it is never caller-supplied as a bare
+        string.
         """
 
         if artifact_bytes is not None:
-            artifact_sha256 = hashlib.sha256(artifact_bytes).hexdigest()
+            if external_artifact_ref is None:
+                raise ValueError("external artifact bytes require a reference")
+            provenance_mode: Literal["parameters", "external_artifact"] = "external_artifact"
+            parameters_sha256 = None
+            external_artifact_sha256 = hashlib.sha256(artifact_bytes).hexdigest()
         else:
-            artifact_sha256 = calibration_artifact_hash(
+            provenance_mode = "parameters"
+            parameters_sha256 = calibration_artifact_hash(
                 calibration_version=calibration_version,
                 frame_id=frame_id,
                 intrinsics=intrinsics,
                 extrinsics=extrinsics,
             )
+            external_artifact_sha256 = None
+            external_artifact_ref = None
         calibration = SensorCalibration(
             household_id=household_id,
             sensor=sensor,
@@ -77,12 +88,79 @@ class CalibrationRegistry:
             intrinsics=intrinsics,
             extrinsics=extrinsics,
             uncertainty=uncertainty,
-            artifact_sha256=artifact_sha256,
+            provenance_mode=provenance_mode,
+            parameters_sha256=parameters_sha256,
+            external_artifact_sha256=external_artifact_sha256,
+            external_artifact_ref=external_artifact_ref,
         )
         self.register(calibration)
-        if sync is not None:
-            self.record_sync(sync)
         return calibration
+
+    def apply_calibration(
+        self,
+        envelope: ObservationEnvelope,
+        *,
+        at_time: datetime | None = None,
+        expected_target_clock: str | None = None,
+    ) -> CalibratedObservation:
+        """Apply a registered calibration to one observation.
+
+        Validates household, sensor, frame, capture time, clock domain, sync
+        validity, and uncertainty, then returns a constrained
+        :class:`CalibratedObservation`.
+        """
+
+        at_time = require_aware(at_time or envelope.capture_time, "at_time")
+        calibration = self.calibration_at(
+            sensor_id=envelope.sensor.sensor_id,
+            household_id=envelope.metadata.household_id,
+            at_time=at_time,
+        )
+        if calibration.household_id != envelope.metadata.household_id:
+            raise CalibrationConflictError("calibration household does not match observation")
+        if calibration.sensor.sensor_id != envelope.sensor.sensor_id:
+            raise CalibrationConflictError("calibration sensor does not match observation")
+        if calibration.frame_id != envelope.frame_id:
+            raise CalibrationConflictError("calibration frame does not match observation")
+        if not calibration.valid_time.contains(at_time):
+            raise CalibrationConflictError("calibration is not valid at the capture time")
+
+        sync = self._find_sync(calibration, envelope, at_time, expected_target_clock)
+        if sync is not None:
+            aligned = at_time + timedelta(seconds=sync.offset_seconds)
+            return CalibratedObservation(
+                envelope=envelope,
+                calibration_id=calibration.calibration_id,
+                sync_result_id=sync.sync_result_id,
+                aligned_capture_time=aligned,
+            )
+        return CalibratedObservation(
+            envelope=envelope,
+            calibration_id=calibration.calibration_id,
+            sync_result_id=None,
+            aligned_capture_time=None,
+        )
+
+    def _find_sync(
+        self,
+        calibration: SensorCalibration,
+        envelope: ObservationEnvelope,
+        at_time: datetime,
+        expected_target_clock: str | None,
+    ) -> SensorTimeSyncResult | None:
+        for item in self._syncs:
+            if item.household_id != calibration.household_id:
+                continue
+            if item.sensor_id != calibration.sensor.sensor_id:
+                continue
+            if not item.valid_time.contains(at_time):
+                continue
+            if item.source_clock_domain != envelope.clock_domain:
+                continue
+            if expected_target_clock is not None and item.target_clock_domain != expected_target_clock:
+                continue
+            return item
+        return None
 
     def register(self, calibration: SensorCalibration) -> None:
         for existing in self._calibrations:

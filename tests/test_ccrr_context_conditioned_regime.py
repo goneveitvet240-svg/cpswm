@@ -104,8 +104,8 @@ def test_posterior_is_normalized_and_covers_all_kinds():
         context_features=(1.0, 0.0),
         now=BASE,
     )
-    assert set(decision.posterior) == set(RegimeDecisionKind)
-    assert sum(decision.posterior.values()) == pytest.approx(1.0, abs=1e-9)
+    assert set(decision.decision_score) == set(RegimeDecisionKind)
+    assert sum(decision.decision_score.values()) == pytest.approx(1.0, abs=1e-9)
 
 
 def test_habit_change_without_match_creates_a_new_regime():
@@ -228,3 +228,134 @@ def test_actor_change_on_owner_stream_stays():
         now=BASE,
     )
     assert decision.kind == RegimeDecisionKind.STAY
+
+
+def test_score_decision_is_pure_and_does_not_mutate_library():
+    reactor = ContextConditionedRegimeReactivator()
+    obj = uuid4()
+    reactor.add_regime(
+        RegimeLibraryEntry(
+            regime_id="old-stage",
+            actor_id=OWNER,
+            object_instance_id=obj,
+            context_fingerprint=(1.0, 0.0),
+            cause_origin=ChangeCause.HABIT,
+            created_at=BASE,
+        )
+    )
+    library_before = reactor.library(object_instance_id=obj, actor_id=OWNER)
+    active_before = reactor.active_regime(object_instance_id=obj, actor_id=OWNER)
+    version_before = reactor.library_version
+
+    reactor.score_decision(
+        object_instance_id=obj,
+        actor_id=OWNER,
+        owner_actor_id=OWNER,
+        snapshot=_habit_change_snapshot(),
+        context_features=(1.0, 0.0),
+        now=BASE,
+    )
+
+    assert reactor.library(object_instance_id=obj, actor_id=OWNER) == library_before
+    assert reactor.active_regime(object_instance_id=obj, actor_id=OWNER) == active_before
+    assert reactor.library_version == version_before
+
+
+def test_apply_decision_rejects_stale_library_version():
+    from cpswm.world_model.habits_transitions import StaleLibraryError
+
+    reactor = ContextConditionedRegimeReactivator()
+    obj = uuid4()
+    decision = reactor.score_decision(
+        object_instance_id=obj,
+        actor_id=OWNER,
+        owner_actor_id=OWNER,
+        snapshot=_habit_change_snapshot(),
+        context_features=(1.0, 0.0),
+        now=BASE,
+    )
+    # Mutate the library underneath the decision.
+    reactor.add_regime(
+        RegimeLibraryEntry(
+            regime_id="concurrent-stage",
+            actor_id=OWNER,
+            object_instance_id=obj,
+            context_fingerprint=(0.5, 0.5),
+            cause_origin=ChangeCause.HABIT,
+            created_at=BASE,
+        )
+    )
+    with pytest.raises(StaleLibraryError):
+        reactor.apply_decision(
+            decision,
+            object_instance_id=obj,
+            actor_id=OWNER,
+            context_features=(1.0, 0.0),
+            expected_library_version=0,
+        )
+
+
+def test_actor_origin_stage_is_not_reactivated_by_habit_change():
+    """P0: a guest/actor stage must not masquerade as an owner habit stage."""
+
+    reactor = ContextConditionedRegimeReactivator()
+    obj = uuid4()
+    # An ACTOR-origin stage whose context fingerprint looks identical to an old
+    # owner habit (same context, same actor stream).
+    reactor.add_regime(
+        RegimeLibraryEntry(
+            regime_id="guest-stage",
+            actor_id=OWNER,
+            object_instance_id=obj,
+            context_fingerprint=(1.0, 0.0),
+            cause_origin=ChangeCause.ACTOR,
+            created_at=BASE,
+        )
+    )
+    decision = reactor.score_decision(
+        object_instance_id=obj,
+        actor_id=OWNER,
+        owner_actor_id=OWNER,
+        snapshot=_habit_change_snapshot(),
+        context_features=(1.0, 0.0),
+        now=BASE,
+    )
+    assert decision.kind != RegimeDecisionKind.REACTIVATE
+
+
+def test_reactivation_tiebreak_is_insertion_order_independent():
+    """P1: two identical-context stages must reactivate the same one regardless
+    of the order in which they were inserted."""
+
+    def _reactivated_id(insert_first: str) -> str | None:
+        reactor = ContextConditionedRegimeReactivator()
+        obj = uuid4()
+        stage_a = RegimeLibraryEntry(
+            regime_id="stage-a",
+            actor_id=OWNER,
+            object_instance_id=obj,
+            context_fingerprint=(1.0, 0.0),
+            cause_origin=ChangeCause.HABIT,
+            created_at=BASE,
+        )
+        stage_b = RegimeLibraryEntry(
+            regime_id="stage-b",
+            actor_id=OWNER,
+            object_instance_id=obj,
+            context_fingerprint=(1.0, 0.0),
+            cause_origin=ChangeCause.HABIT,
+            created_at=BASE,
+        )
+        for stage in (stage_a, stage_b) if insert_first == "a" else (stage_b, stage_a):
+            reactor.add_regime(stage)
+        decision = reactor.score_decision(
+            object_instance_id=obj,
+            actor_id=OWNER,
+            owner_actor_id=OWNER,
+            snapshot=_habit_change_snapshot(),
+            context_features=(1.0, 0.0),
+            now=BASE,
+        )
+        return decision.reactivated_regime_id
+
+    assert _reactivated_id("a") == _reactivated_id("b")

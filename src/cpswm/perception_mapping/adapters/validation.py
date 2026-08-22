@@ -17,15 +17,60 @@ only ``simobs.*`` and never ``cpswm_gt.*``.
 from __future__ import annotations
 
 from datetime import datetime
+from typing import Any
 from uuid import UUID
 
 from cpswm.contracts.base import SourceType, require_aware
 
 from .contracts import ObservationEnvelope
 
+#: Key substrings that must never appear in a normal (non-oracle) payload.
+#: These name evaluator-only semantics: ground truth, latent state, and oracle
+#: annotations.  The scan is recursive and covers dict keys, list items, and
+#: nested objects.
+FORBIDDEN_PAYLOAD_KEY_SUBSTRINGS = (
+    "ground_truth",
+    "latent_state",
+    "oracle",
+    "gt_id",
+    "gt_ref",
+)
+
 
 class ObservationEnvelopeValidationError(ValueError):
     """Raised when an envelope violates the M05 boundary rules."""
+
+
+def scan_forbidden_payload_fields(value: Any, path: str = "") -> list[str]:
+    """Recursively find evaluator-only field names inside a payload.
+
+    Covers ``dict`` keys (including nested objects), ``list`` items, and any
+    key containing a forbidden substring.  Returns the dotted paths of every
+    offending field.
+    """
+
+    found: list[str] = []
+    if isinstance(value, dict):
+        for key, child in value.items():
+            key_text = str(key)
+            child_path = f"{path}.{key_text}" if path else key_text
+            if any(sub in key_text.lower() for sub in FORBIDDEN_PAYLOAD_KEY_SUBSTRINGS):
+                found.append(child_path)
+            found.extend(scan_forbidden_payload_fields(child, child_path))
+    elif isinstance(value, list):
+        for index, child in enumerate(value):
+            found.extend(scan_forbidden_payload_fields(child, f"{path}[{index}]"))
+    return found
+
+
+def reject_forbidden_payload_fields(value: Any) -> None:
+    """Reject a normal payload that carries evaluator-only fields anywhere."""
+
+    forbidden = scan_forbidden_payload_fields(value)
+    if forbidden:
+        raise ObservationEnvelopeValidationError(
+            "normal payload carries evaluator-only fields: " + ", ".join(forbidden)
+        )
 
 
 def _check_aware(value: datetime, field_name: str) -> None:
@@ -110,7 +155,10 @@ def reject_ground_truth_leakage(
 
 
 __all__ = [
+    "FORBIDDEN_PAYLOAD_KEY_SUBSTRINGS",
     "ObservationEnvelopeValidationError",
+    "reject_forbidden_payload_fields",
     "reject_ground_truth_leakage",
+    "scan_forbidden_payload_fields",
     "validate_observation_envelope",
 ]

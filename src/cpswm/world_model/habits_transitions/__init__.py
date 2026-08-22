@@ -16,6 +16,7 @@ from .context_conditioned_regime import (
     RegimeDecision,
     RegimeDecisionKind,
     RegimeLibraryEntry,
+    StaleLibraryError,
 )
 from .habit_regime_write import (
     CanonicalLogEntry,
@@ -85,5 +86,6 @@ __all__ = [
     "RegimeDecision",
     "RegimeDecisionKind",
     "RegimeLibraryEntry",
+    "StaleLibraryError",
     "propensity_from_opportunity",
 ]

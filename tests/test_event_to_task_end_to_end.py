@@ -24,7 +24,7 @@ from cpswm.contracts import (
     SourceType,
 )
 from cpswm.contracts.decision_context import MapConsistencyRevisions
-from cpswm.system.continual import EventToTaskConsolidationLoop
+from cpswm.system.continual.event_to_task_loop import EventToTaskConsolidationLoop
 from cpswm.system.counterfactual_event_hypergraph import CounterfactualEventHypergraphEngine
 
 OWNER = "owner"

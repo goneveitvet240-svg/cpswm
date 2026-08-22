@@ -11,15 +11,12 @@ from .event_derived_update_ledger import (
     RetractionCost,
     projection_total_variation,
 )
-from .event_to_task_loop import (
-    EventToTaskConsolidationLoop,
-    OwnerPlacement,
-    owner_placement,
-)
-from .hybrid_event_to_task_loop import (
-    HybridEventToTaskCoordinatorLoop,
-    OwnerPlacementInput,
-)
+# NOTE: the integration loops (event_to_task_loop, hybrid_event_to_task_loop)
+# are intentionally NOT eagerly re-exported here.  hybrid_event_to_task_loop
+# imports cpswm.world_model.grounded_search.concurrent_map_task, which imports
+# back into this package (hybrid_statistics), so eager re-export creates a
+# package-level import cycle.  Import those loops from their submodules directly:
+#     from cpswm.system.continual.hybrid_event_to_task_loop import ...
 from .hybrid_statistics import (
     ConsolidationRiskCertificate,
     DirichletRLSFusion,
@@ -53,10 +50,8 @@ __all__ = [
     "EventDerivedDeltaRecord",
     "EventDerivedDeltaReversal",
     "EventDerivedUpdateLedger",
-    "EventToTaskConsolidationLoop",
     "FusedLocationBelief",
     "HybridConsolidationState",
-    "HybridEventToTaskCoordinatorLoop",
     "HybridLedgerError",
     "HybridProjection",
     "HybridPromotion",
@@ -66,8 +61,6 @@ __all__ = [
     "HybridStatisticLedger",
     "LedgerIntegrityError",
     "NaturalRidgeResidual",
-    "OwnerPlacement",
-    "OwnerPlacementInput",
     "RLSChannelReliabilityCalibrator",
     "RLSConfig",
     "RLSHabitSample",
@@ -78,6 +71,5 @@ __all__ = [
     "RecursiveLeastSquares",
     "RetractionCost",
     "StatisticKey",
-    "owner_placement",
     "projection_total_variation",
 ]

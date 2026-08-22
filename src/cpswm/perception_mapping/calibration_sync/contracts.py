@@ -16,6 +16,7 @@ from __future__ import annotations
 
 import hashlib
 from datetime import datetime
+from typing import Literal
 from uuid import UUID, uuid4
 
 from pydantic import Field, ValidationInfo, field_validator, model_validator
@@ -90,7 +91,16 @@ def calibration_artifact_hash(
 
 
 class SensorCalibration(ContractModel):
-    """One versioned calibration binding sensor frame to a reference frame."""
+    """One versioned calibration binding sensor frame to a reference frame.
+
+    ``provenance_mode`` separates two distinct hash semantics that must never
+    share one field:
+
+    * ``parameters`` -- ``parameters_sha256`` is the hash of the canonical
+      parameters and is *enforced* to match at construction time;
+    * ``external_artifact`` -- ``external_artifact_sha256`` binds external
+      artifact bytes, referenced by ``external_artifact_ref``.
+    """
 
     calibration_id: UUID = Field(default_factory=uuid4)
     household_id: UUID
@@ -101,7 +111,10 @@ class SensorCalibration(ContractModel):
     intrinsics: IntrinsicsModel | None = None
     extrinsics: FrameTransform | None = None
     uncertainty: CalibrationUncertainty | None = None
-    artifact_sha256: str = Field(pattern=r"^[0-9a-f]{64}$")
+    provenance_mode: Literal["parameters", "external_artifact"]
+    parameters_sha256: str | None = Field(default=None, pattern=r"^[0-9a-f]{64}$")
+    external_artifact_sha256: str | None = Field(default=None, pattern=r"^[0-9a-f]{64}$")
+    external_artifact_ref: str | None = Field(default=None, min_length=1)
 
     @model_validator(mode="after")
     def validate_calibration(self) -> SensorCalibration:
@@ -112,10 +125,35 @@ class SensorCalibration(ContractModel):
                 raise ValueError("extrinsics household does not match calibration household")
             if self.extrinsics.source_frame_id != self.frame_id:
                 raise ValueError("extrinsics source frame must equal the calibration frame_id")
+
+        if self.provenance_mode == "parameters":
+            if self.parameters_sha256 is None:
+                raise ValueError("parameters provenance requires parameters_sha256")
+            expected = calibration_artifact_hash(
+                calibration_version=self.calibration_version,
+                frame_id=self.frame_id,
+                intrinsics=self.intrinsics,
+                extrinsics=self.extrinsics,
+            )
+            if self.parameters_sha256 != expected:
+                raise ValueError("parameters_sha256 does not match the canonical parameters")
+            if self.external_artifact_sha256 is not None or self.external_artifact_ref is not None:
+                raise ValueError(
+                    "parameters provenance cannot carry external artifact fields"
+                )
+        else:
+            if self.external_artifact_sha256 is None or self.external_artifact_ref is None:
+                raise ValueError(
+                    "external_artifact provenance requires sha256 and a reference"
+                )
+            if self.parameters_sha256 is not None:
+                raise ValueError(
+                    "external_artifact provenance cannot carry parameters_sha256"
+                )
         return self
 
     def compute_artifact_hash(self) -> str:
-        """Recompute the artifact hash from the canonical parameters."""
+        """Recompute the parameter hash from the canonical parameters."""
 
         return calibration_artifact_hash(
             calibration_version=self.calibration_version,
@@ -127,12 +165,9 @@ class SensorCalibration(ContractModel):
     def verify_artifact(self, artifact_bytes: bytes) -> bool:
         """Verify external artifact bytes against the stored hash."""
 
-        return hashlib.sha256(artifact_bytes).hexdigest() == self.artifact_sha256
-
-    def verify_computed_hash(self) -> bool:
-        """Verify that the stored hash matches the canonical parameters."""
-
-        return self.compute_artifact_hash() == self.artifact_sha256
+        if self.external_artifact_sha256 is None:
+            return False
+        return hashlib.sha256(artifact_bytes).hexdigest() == self.external_artifact_sha256
 
 
 class SensorTimeSyncResult(ContractModel):

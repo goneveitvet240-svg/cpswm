@@ -46,6 +46,7 @@ from cpswm.contracts.base import ContractModel, Probability
 from .contracts import (
     EventChainHypothesis,
     EventHypothesisHistory,
+    EventHypothesisRevision,
     EventHypothesisStatus,
 )
 
@@ -65,6 +66,14 @@ class EvidenceFirewallViolation(RuntimeError):
     """Raised when a message would cross a source-type firewall boundary."""
 
 
+class EvidenceScopeViolation(RuntimeError):
+    """Raised when evidence does not bind the hypothesis set's scope."""
+
+
+class EvidenceDuplicateViolation(RuntimeError):
+    """Raised when an evidence record or cluster is consumed more than once."""
+
+
 @dataclass(frozen=True, slots=True)
 class _MessageContribution:
     """One firewall-legal evidence message into a hypothesis node."""
@@ -73,6 +82,18 @@ class _MessageContribution:
     likelihood_ratio: float
     evidence_record_id: UUID
     evidence_cluster_id: UUID
+    #: True when the firewall dropped the message (a neutral ratio of 1.0).
+    firewall_dropped: bool
+
+
+class EvidenceMessage(ContractModel):
+    """One auditable evidence message bound to a hypothesis."""
+
+    edge_type: MessageEdgeType
+    likelihood_ratio: float = Field(ge=0.0)
+    evidence_record_id: UUID
+    evidence_cluster_id: UUID
+    firewall_dropped: bool
 
 
 def _firewall_actor_ratio(
@@ -112,16 +133,32 @@ def _firewall_role_ratio(
     return evidence.ordered_role_likelihood_ratios.get(role_key, 1.0)
 
 
+def _unresolved_ratio(
+    evidence: ActorResponsibilityEvidence | EventMechanismEvidence | RoleBindingEvidence,
+) -> float:
+    """Likelihood the evidence assigns to an unresolved / out-of-support cause.
+
+    Actor evidence carries an explicit unknown-actor channel; mechanism and role
+    evidence carry no unknown channel and therefore leave unresolved mass at a
+    neutral ratio.
+    """
+
+    if isinstance(evidence, ActorResponsibilityEvidence):
+        return evidence.actor_likelihood_ratios.get("unknown_actor", 1.0)
+    return 1.0
+
+
 def _apply_evidence(
     hypotheses: tuple[EventChainHypothesis, ...],
+    revision: EventHypothesisRevision,
     evidence: Sequence[
         ActorResponsibilityEvidence | EventMechanismEvidence | RoleBindingEvidence
     ],
-) -> tuple[dict[UUID, list[_MessageContribution]], dict[UUID, float]]:
-    """Aggregate firewall-legal evidence messages per hypothesis.
+) -> tuple[dict[UUID, list[_MessageContribution]], dict[UUID, float], float]:
+    """Aggregate firewall-legal evidence messages with scope and dedup checks.
 
-    Returns the per-hypothesis contribution lists and the per-hypothesis raw
-    (unnormalized) likelihood product.
+    Returns the per-hypothesis contribution lists, the per-hypothesis raw
+    (unnormalized) likelihood product, and the unresolved-node raw likelihood.
     """
 
     contributions: dict[UUID, list[_MessageContribution]] = {
@@ -130,7 +167,25 @@ def _apply_evidence(
     raw: dict[UUID, float] = {
         hypothesis.hypothesis_id: 1.0 for hypothesis in hypotheses
     }
+    unresolved_raw = 1.0
+    seen_record_ids: set[UUID] = set()
+    seen_cluster_ids: set[UUID] = set()
+
     for item in evidence:
+        _validate_evidence_scope(revision, item)
+        if item.metadata.record_id in seen_record_ids:
+            raise EvidenceDuplicateViolation(
+                f"evidence record {item.metadata.record_id} consumed twice"
+            )
+        if item.evidence_cluster_id in seen_cluster_ids:
+            raise EvidenceDuplicateViolation(
+                f"evidence cluster {item.evidence_cluster_id} consumed twice"
+            )
+        seen_record_ids.add(item.metadata.record_id)
+        seen_cluster_ids.add(item.evidence_cluster_id)
+
+        unresolved_raw *= _unresolved_ratio(item) ** item.effective_sample_weight
+
         for hypothesis in hypotheses:
             if isinstance(item, ActorResponsibilityEvidence):
                 ratio = _firewall_actor_ratio(hypothesis, item)
@@ -147,16 +202,40 @@ def _apply_evidence(
                 raise EvidenceFirewallViolation(
                     "evidence likelihood ratios cannot be negative"
                 )
+            dropped = isclose(ratio, 1.0, rel_tol=0.0, abs_tol=1e-12)
             contributions[hypothesis.hypothesis_id].append(
                 _MessageContribution(
                     edge_type=edge_type,
                     likelihood_ratio=ratio,
                     evidence_record_id=item.metadata.record_id,
                     evidence_cluster_id=item.evidence_cluster_id,
+                    firewall_dropped=dropped,
                 )
             )
             raw[hypothesis.hypothesis_id] *= ratio ** item.effective_sample_weight
-    return contributions, raw
+    return contributions, raw, unresolved_raw
+
+
+def _validate_evidence_scope(
+    revision: EventHypothesisRevision,
+    evidence: ActorResponsibilityEvidence | EventMechanismEvidence | RoleBindingEvidence,
+) -> None:
+    """Reject evidence outside the hypothesis set's object / endpoint / scope."""
+
+    if evidence.object_instance_id != revision.object_instance_id:
+        raise EvidenceScopeViolation(
+            "evidence object_instance_id does not match the hypothesis set"
+        )
+    destination_endpoint_id = revision.source_detection_result_ids[1]
+    if evidence.source_detection_result_id != destination_endpoint_id:
+        raise EvidenceScopeViolation(
+            "evidence must cite the hypothesis set's destination endpoint"
+        )
+    for field_name in ("household_id", "session_id", "trace_id"):
+        if getattr(evidence.metadata, field_name) != getattr(revision, field_name):
+            raise EvidenceScopeViolation(
+                f"evidence {field_name} does not match the hypothesis set"
+            )
 
 
 class MessagePassingResult(ContractModel):
@@ -165,7 +244,7 @@ class MessagePassingResult(ContractModel):
     hypothesis_set_id: UUID
     posterior_by_hypothesis_id: dict[UUID, Probability]
     unresolved_probability: Probability
-    evidence_subgraph: dict[UUID, tuple[UUID, ...]]
+    evidence_subgraph: dict[UUID, tuple[EvidenceMessage, ...]]
     model_version: str = Field(min_length=1)
 
     @model_validator(mode="after")
@@ -301,8 +380,11 @@ def _permute_ordered_role_key(key: str, permutation: Mapping[str, str]) -> str:
 def _validate_permutation(permutation: Mapping[str, str]) -> None:
     if not permutation:
         raise ValueError("actor permutation cannot be empty")
-    if len(set(permutation.values())) != len(permutation):
-        raise ValueError("actor permutation must be a bijection")
+    if set(permutation.values()) != set(permutation.keys()):
+        raise ValueError(
+            "actor permutation must permute the same actor universe "
+            "(keys and values must cover the same set of actors)"
+        )
 
 
 class ProvenanceConstrainedMessagePassing:
@@ -316,51 +398,66 @@ class ProvenanceConstrainedMessagePassing:
         evidence: Sequence[
             ActorResponsibilityEvidence | EventMechanismEvidence | RoleBindingEvidence
         ] = (),
-        *,
-        unresolved_prior: float | None = None,
     ) -> MessagePassingResult:
-        """Run one message-passing pass over the latest revision's hypotheses."""
+        """Run one message-passing pass over the latest revision's hypotheses.
+
+        Semantics: ``history.latest`` supplies the prior (the ORRER posterior,
+        including its unresolved mass), and ``evidence`` is the *incremental*
+        evidence not yet consumed by the history.  With no evidence the prior
+        is returned unchanged; with evidence the prior is reweighted by the
+        firewall-legal likelihood ratios and renormalized competitively with
+        the unresolved node.
+        """
 
         revision = history.latest
         hypotheses = revision.hypotheses
         if not hypotheses:
             raise ValueError("message passing requires at least one hypothesis")
-        branch_unresolved = (
-            history.revisions[0].unresolved_probability
-            if unresolved_prior is None
-            else unresolved_prior
+
+        contributions, evidence_raw, unresolved_raw = _apply_evidence(
+            hypotheses, revision, evidence
         )
-        if not 0.0 <= branch_unresolved <= 1.0:
-            raise ValueError("unresolved_prior must lie in [0, 1]")
 
-        contributions, raw = _apply_evidence(hypotheses, evidence)
-
-        # Only active hypotheses carry resolvable mass; retracted hypotheses
-        # hold zero mass (their shadow mass is an ORRER concern, not a message
-        # concern).
+        # Prior: the ORRER posterior over active hypotheses plus its unresolved
+        # mass.  Retracted hypotheses hold zero mass.
         active = {
             hypothesis.hypothesis_id: hypothesis
             for hypothesis in hypotheses
             if hypothesis.status == EventHypothesisStatus.ACTIVE
         }
-        resolved_mass = 1.0 - branch_unresolved
-        raw_total = sum(raw[hypothesis_id] for hypothesis_id in active)
-        if raw_total <= 0.0:
-            # Degenerate all-zero evidence: fall back to a uniform active prior.
-            uniform = 1.0 / len(active) if active else 0.0
-            posterior = {
-                hypothesis_id: resolved_mass * uniform
-                for hypothesis_id in active
-            }
+        prior_by_hypothesis = {
+            hypothesis_id: hypothesis.posterior_probability
+            for hypothesis_id, hypothesis in active.items()
+        }
+        unresolved_prior = revision.unresolved_probability
+
+        # Unnormalized posterior: prior * evidence likelihood.
+        unnormalized = {
+            hypothesis_id: prior_by_hypothesis[hypothesis_id]
+            * evidence_raw[hypothesis_id]
+            for hypothesis_id in active
+        }
+        unresolved_unnormalized = unresolved_prior * unresolved_raw
+        total = unresolved_unnormalized + sum(unnormalized.values())
+        if total <= 0.0:
+            # Degenerate all-zero likelihood: keep the prior distribution.
+            posterior = dict(prior_by_hypothesis)
+            unresolved_probability = unresolved_prior
         else:
             posterior = {
-                hypothesis_id: resolved_mass * raw[hypothesis_id] / raw_total
-                for hypothesis_id in active
+                hypothesis_id: mass / total for hypothesis_id, mass in unnormalized.items()
             }
+            unresolved_probability = unresolved_unnormalized / total
 
         evidence_subgraph = {
             hypothesis.hypothesis_id: tuple(
-                contribution.evidence_record_id
+                EvidenceMessage(
+                    edge_type=contribution.edge_type,
+                    likelihood_ratio=contribution.likelihood_ratio,
+                    evidence_record_id=contribution.evidence_record_id,
+                    evidence_cluster_id=contribution.evidence_cluster_id,
+                    firewall_dropped=contribution.firewall_dropped,
+                )
                 for contribution in contributions[hypothesis.hypothesis_id]
             )
             for hypothesis in hypotheses
@@ -368,7 +465,7 @@ class ProvenanceConstrainedMessagePassing:
         return MessagePassingResult(
             hypothesis_set_id=revision.hypothesis_set_id,
             posterior_by_hypothesis_id=posterior,
-            unresolved_probability=branch_unresolved,
+            unresolved_probability=unresolved_probability,
             evidence_subgraph=evidence_subgraph,
             model_version=self.model_version,
         )

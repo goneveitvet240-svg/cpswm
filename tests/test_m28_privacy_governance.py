@@ -254,14 +254,13 @@ def test_oracle_audit_records_caller_purpose_watermark_summary():
     assert decision.allowed is True
     assert decision.grant_id is not None
     audit = governance.record_oracle_audit(
-        decision=decision,
-        caller="evaluator.benchmark",
-        purpose="evaluation_only",
-        input_watermark=watermark,
+        decision_id=decision.decision_id,
         output_summary={"metric": "ece", "value": 0.12},
         metadata=_metadata(household_id=household),
     )
     assert audit.input_watermark.global_commit_seq == 7
+    assert audit.caller == "evaluator.benchmark"
+    assert audit.purpose == "evaluation_only"
     assert audit.output_summary == {"metric": "ece", "value": 0.12}
 
 
@@ -404,10 +403,7 @@ def test_replay_after_restore_keeps_audit_records():
         decided_time=START,
     )
     governance.record_oracle_audit(
-        decision=decision,
-        caller="evaluator.benchmark",
-        purpose="evaluation_only",
-        input_watermark=watermark,
+        decision_id=decision.decision_id,
         output_summary={"ok": True},
         metadata=_metadata(household_id=household),
     )

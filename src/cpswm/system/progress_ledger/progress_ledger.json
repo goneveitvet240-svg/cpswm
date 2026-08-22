@@ -106,14 +106,7 @@
       "test_paths": [
         "tests/test_m05_m06_observation_envelope.py"
       ],
-      "evidence_artifacts": [
-        {
-          "path": "src/cpswm/perception_mapping/adapters/synthetic_adapter.py",
-          "kind": "synthetic",
-          "description": "simobs-only synthetic simulator adapter, never imports cpswm_gt",
-          "artifact_schema": "synthetic_report_json_v1"
-        }
-      ],
+      "evidence_artifacts": [],
       "blockers": [
         "real robot, rosbag, and dataset adapters not implemented"
       ],
@@ -139,14 +132,7 @@
       "test_paths": [
         "tests/test_m05_m06_observation_envelope.py"
       ],
-      "evidence_artifacts": [
-        {
-          "path": "src/cpswm/perception_mapping/calibration_sync/registry.py",
-          "kind": "synthetic",
-          "description": "deterministic calibration and time-sync registry",
-          "artifact_schema": "synthetic_report_json_v1"
-        }
-      ],
+      "evidence_artifacts": [],
       "blockers": [
         "real sensor calibration and clock sync estimation not implemented"
       ],
@@ -393,14 +379,7 @@
       "test_paths": [
         "tests/test_observation_aware_habits.py"
       ],
-      "evidence_artifacts": [
-        {
-          "path": "output/project_one_protocol_pilot_report.json",
-          "kind": "synthetic",
-          "description": "synthetic habit-learning pilot report",
-          "artifact_schema": "synthetic_report_json_v1"
-        }
-      ],
+      "evidence_artifacts": [],
       "blockers": [
         "hierarchical Dirichlet is a baseline, not the final habit model"
       ],
@@ -453,14 +432,7 @@
       "test_paths": [
         "tests/test_joint_cause_factorized_bocpd.py"
       ],
-      "evidence_artifacts": [
-        {
-          "path": "output/project_one_shift_action_death_test_v1.json",
-          "kind": "synthetic",
-          "description": "synthetic shift/change-point death test report",
-          "artifact_schema": "synthetic_report_json_v1"
-        }
-      ],
+      "evidence_artifacts": [],
       "blockers": [
         "lifecycle consolidation/forgetting not integrated"
       ],
@@ -576,14 +548,7 @@
       "test_paths": [
         "tests/test_direction_three_grounded_search.py"
       ],
-      "evidence_artifacts": [
-        {
-          "path": "output/project_one_protocol_pilot_report_v0.2.json",
-          "kind": "synthetic",
-          "description": "synthetic grounded-search pilot report",
-          "artifact_schema": "synthetic_report_json_v1"
-        }
-      ],
+      "evidence_artifacts": [],
       "blockers": [
         "active search not integrated with a robot loop"
       ],
@@ -666,14 +631,7 @@
       "test_paths": [
         "tests/test_m28_privacy_governance.py"
       ],
-      "evidence_artifacts": [
-        {
-          "path": "src/cpswm/system/privacy_governance/governance.py",
-          "kind": "synthetic",
-          "description": "household-scoped capability authorization and tombstone deletion vertical slice",
-          "artifact_schema": "synthetic_report_json_v1"
-        }
-      ],
+      "evidence_artifacts": [],
       "blockers": [
         "not a production security system; not full GDPR compliance"
       ],
@@ -701,14 +659,7 @@
       "test_paths": [
         "tests/test_f0_long_horizon_vertical_slice.py"
       ],
-      "evidence_artifacts": [
-        {
-          "path": "output/project_one_protocol_pilot_report.json",
-          "kind": "synthetic",
-          "description": "synthetic world-model simulator run",
-          "artifact_schema": "synthetic_report_json_v1"
-        }
-      ],
+      "evidence_artifacts": [],
       "blockers": [
         "L1 embodied physics simulation not implemented"
       ],
@@ -733,14 +684,7 @@
       "test_paths": [
         "tests/test_m30_complete_event_chains.py"
       ],
-      "evidence_artifacts": [
-        {
-          "path": "output/project_one_protocol_pilot_report.json",
-          "kind": "synthetic",
-          "description": "synthetic routine generation run",
-          "artifact_schema": "synthetic_report_json_v1"
-        }
-      ],
+      "evidence_artifacts": [],
       "blockers": [
         "no real household routine data"
       ],
@@ -765,14 +709,7 @@
       "test_paths": [
         "tests/test_oam_phm_wp0_baselines.py"
       ],
-      "evidence_artifacts": [
-        {
-          "path": "output/project_one_protocol_pilot_report.json",
-          "kind": "synthetic",
-          "description": "benchmark manifest pilot run",
-          "artifact_schema": "synthetic_report_json_v1"
-        }
-      ],
+      "evidence_artifacts": [],
       "blockers": [
         "no real-data benchmark track yet"
       ],
@@ -797,14 +734,7 @@
       "test_paths": [
         "tests/test_oam_phm_wp0_baselines.py"
       ],
-      "evidence_artifacts": [
-        {
-          "path": "output/project_one_protocol_pilot_report.json",
-          "kind": "synthetic",
-          "description": "evaluation runner output",
-          "artifact_schema": "synthetic_report_json_v1"
-        }
-      ],
+      "evidence_artifacts": [],
       "blockers": [
         "no deployment monitoring yet"
       ],

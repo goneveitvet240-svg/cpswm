@@ -18,11 +18,11 @@ from cpswm.contracts import (
     ObservationOutcome,
     SourceType,
 )
-from cpswm.system.continual import (
+from cpswm.system.continual.event_to_task_loop import owner_placement
+from cpswm.system.continual.hybrid_event_to_task_loop import (
     HybridEventToTaskCoordinatorLoop,
     OwnerPlacementInput,
 )
-from cpswm.system.continual.event_to_task_loop import owner_placement
 from cpswm.system.counterfactual_event_hypergraph import CounterfactualEventHypergraphEngine
 from cpswm.world_model.grounded_search.concurrent_map_task import (
     BayesianRisk,

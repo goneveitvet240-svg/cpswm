@@ -36,6 +36,28 @@ from .contracts import (
 _B1_MODULES = tuple(f"M{i:02d}" for i in range(5, 13))
 _ALL_MODULES = tuple(f"M{i:02d}" for i in range(1, 33))
 
+#: The three formal gates that must always exist and be required.
+_REQUIRED_GATE_IDS = (
+    "B1_SYNTHETIC_READINESS",
+    "FORMAL_B1_REAL_VALIDATION",
+    "STRUCTURE_ONE_COMPLETE",
+)
+
+#: Allowed evidence schemas; an unknown schema is rejected.
+_ALLOWED_EVIDENCE_SCHEMAS = frozenset(
+    {
+        "synthetic_report_json_v1",
+        "replay_manifest_json_v1",
+        "real_data_manifest_json_v1",
+        "embodied_run_json_v1",
+    }
+)
+
+#: Evidence kinds that must never point at a source/test file.
+_RUNTIME_EVIDENCE_KINDS = frozenset(
+    {EvidenceKind.REPLAY, EvidenceKind.REAL_DATA, EvidenceKind.EMBODIED}
+)
+
 
 @dataclass
 class GateResult:
@@ -88,11 +110,22 @@ def validate_ledger(ledger: ProgressLedger, repo_root: Path) -> ValidationReport
     report = ValidationReport()
     by_id = {item.module_id: item for item in ledger.modules}
 
+    _check_required_gates_present(ledger, report)
     _check_gate_shapes(ledger, report)
     _check_modules(ledger, by_id, repo_root, report)
+    _check_evidence_dedup(ledger, report)
     _build_coverage_matrix(ledger, report)
     _check_gates(ledger, by_id, report)
     return report
+
+
+def _check_required_gates_present(ledger: ProgressLedger, report: ValidationReport) -> None:
+    by_gate_id = {gate.gate_id: gate for gate in ledger.gates}
+    for gate_id in _REQUIRED_GATE_IDS:
+        if gate_id not in by_gate_id:
+            report.errors.append(f"required gate {gate_id} is missing")
+        elif not by_gate_id[gate_id].required:
+            report.errors.append(f"required gate {gate_id} must be required=True")
 
 
 def _check_gate_shapes(ledger: ProgressLedger, report: ValidationReport) -> None:
@@ -149,16 +182,40 @@ def _check_evidence_content(
     """Verify declared evidence content hashes against the actual file bytes."""
 
     for artifact in entry.evidence_artifacts:
-        if artifact.content_sha256 is None:
-            continue
         target = repo_root / artifact.path
         if not target.is_file():
+            report.errors.append(f"{entry.module_id}: evidence artifact missing: {artifact.path}")
             continue
         actual = hashlib.sha256(target.read_bytes()).hexdigest()
         if actual != artifact.content_sha256:
             report.errors.append(
                 f"{entry.module_id}: evidence content hash mismatch for {artifact.path}"
             )
+        if artifact.artifact_schema not in _ALLOWED_EVIDENCE_SCHEMAS:
+            report.errors.append(
+                f"{entry.module_id}: unknown evidence schema {artifact.artifact_schema!r}"
+            )
+        if artifact.kind in _RUNTIME_EVIDENCE_KINDS and artifact.path.endswith(".py"):
+            report.errors.append(
+                f"{entry.module_id}: {artifact.kind.value} evidence cannot be a .py file: "
+                f"{artifact.path}"
+            )
+
+
+def _check_evidence_dedup(ledger: ProgressLedger, report: ValidationReport) -> None:
+    """Reject one evidence file silently backing more than one module."""
+
+    seen: dict[str, str] = {}
+    for entry in ledger.modules:
+        for artifact in entry.evidence_artifacts:
+            previous = seen.get(artifact.path)
+            if previous is not None:
+                report.errors.append(
+                    f"evidence {artifact.path} is claimed by both "
+                    f"{previous} and {entry.module_id}"
+                )
+            else:
+                seen[artifact.path] = entry.module_id
 
 
 def _check_maturity_evidence(

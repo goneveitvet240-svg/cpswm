@@ -96,6 +96,7 @@ class HouseholdGovernance:
         self._log = log or AppendOnlyTransactionLog()
         self._grants: dict[UUID, CapabilityGrant] = {}
         self._revocations: dict[UUID, CapabilityRevocation] = {}
+        self._decisions: dict[UUID, OracleAccessDecision] = {}
         self._retention: list[DataRetentionPolicy] = []
         self._tombstones: dict[UUID, set[UUID]] = {}
         self._audit_records: list[OracleAccessAuditRecord] = []
@@ -113,10 +114,19 @@ class HouseholdGovernance:
         return grant
 
     def revoke(self, revocation: CapabilityRevocation) -> CapabilityRevocation:
-        if revocation.grant_id not in self._grants:
+        grant = self._grants.get(revocation.grant_id)
+        if grant is None:
             raise GovernanceConflictError(f"cannot revoke unknown grant {revocation.grant_id}")
-        if revocation.grant_id in self._revocations:
-            existing = self._revocations[revocation.grant_id]
+        if revocation.metadata.household_id != grant.household_id:
+            raise GovernanceConflictError(
+                "revocation household does not match the grant household"
+            )
+        if revocation.revoked_time < grant.valid_time.start:
+            raise GovernanceConflictError(
+                "revocation cannot precede the grant's validity start"
+            )
+        existing = self._revocations.get(revocation.grant_id)
+        if existing is not None:
             if existing != revocation:
                 raise GovernanceConflictError("grant already revoked with different content")
             return existing
@@ -219,26 +229,57 @@ class HouseholdGovernance:
             input_watermark=request.input_watermark,
         )
         self._append(decision, f"oracle-decision:{decision.decision_id}")
+        self._decisions[decision.decision_id] = decision
         return decision
+
+    def verify_oracle_receipt(self, receipt: OracleAccessDecision) -> bool:
+        """Verify an oracle decision receipt's provenance.
+
+        The receipt must be an allowed decision that exists (field-for-field)
+        in the append-only log, and its authorizing grant must still be active
+        at ``decided_time``.
+        """
+
+        if not isinstance(receipt, OracleAccessDecision):
+            return False
+        if not receipt.allowed:
+            return False
+        stored = self._decisions.get(receipt.decision_id)
+        if stored is None or stored != receipt:
+            return False
+        if receipt.grant_id is None:
+            return False
+        grant = self._grants.get(receipt.grant_id)
+        if grant is None or grant.grant_id in self._revocations:
+            return False
+        return grant.valid_time.contains(receipt.decided_time)
 
     def record_oracle_audit(
         self,
         *,
-        decision: OracleAccessDecision,
-        caller: str,
-        purpose: str,
-        input_watermark: InputWatermark,
+        decision_id: UUID,
         output_summary: Any,
         metadata: BaseRecordMetadata,
     ) -> OracleAccessAuditRecord:
+        """Record an oracle audit bound to a stored decision.
+
+        Caller, purpose, watermark, and household are taken from the stored
+        decision -- never from the caller.
+        """
+
+        decision = self._decisions.get(decision_id)
+        if decision is None:
+            raise GovernanceConflictError("unknown oracle decision")
         if not decision.allowed:
             raise GovernanceConflictError("cannot audit a denied oracle access")
+        if metadata.household_id != decision.household_id:
+            raise GovernanceConflictError("audit metadata household does not match decision")
         record = OracleAccessAuditRecord(
             metadata=metadata,
             decision_id=decision.decision_id,
-            caller=caller,
-            purpose=purpose,
-            input_watermark=input_watermark,
+            caller=decision.caller,
+            purpose=decision.purpose,
+            input_watermark=decision.input_watermark,
             output_summary=output_summary,
         )
         self._append(record, f"oracle-audit:{record.audit_id}")
@@ -377,6 +418,7 @@ class HouseholdGovernance:
 
         self._grants.clear()
         self._revocations.clear()
+        self._decisions.clear()
         self._retention.clear()
         self._tombstones.clear()
         self._audit_records.clear()
@@ -388,7 +430,10 @@ class HouseholdGovernance:
                     self._validate_restored_grant(decoded)
                     self._grants[decoded.grant_id] = decoded
                 elif isinstance(decoded, CapabilityRevocation):
+                    self._validate_restored_revocation(decoded)
                     self._revocations[decoded.grant_id] = decoded
+                elif isinstance(decoded, OracleAccessDecision):
+                    self._decisions[decoded.decision_id] = decoded
                 elif isinstance(decoded, DataRetentionPolicy):
                     self._retention.append(decoded)
                 elif isinstance(decoded, DeletionExecutionReceipt):
@@ -403,6 +448,21 @@ class HouseholdGovernance:
                 f"restored grant {grant.grant_id} has a mismatched household"
             )
         self._validate_gt_grant(grant)
+
+    def _validate_restored_revocation(self, revocation: CapabilityRevocation) -> None:
+        grant = self._grants.get(revocation.grant_id)
+        if grant is None:
+            raise GovernanceConflictError(
+                f"restored revocation references unknown grant {revocation.grant_id}"
+            )
+        if revocation.metadata.household_id != grant.household_id:
+            raise GovernanceConflictError(
+                f"restored revocation {revocation.revocation_id} has a mismatched household"
+            )
+        if revocation.revoked_time < grant.valid_time.start:
+            raise GovernanceConflictError(
+                f"restored revocation {revocation.revocation_id} precedes its grant validity"
+            )
 
     @property
     def active_grants(self) -> tuple[CapabilityGrant, ...]:

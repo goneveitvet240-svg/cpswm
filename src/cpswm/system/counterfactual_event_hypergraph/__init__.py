@@ -30,7 +30,10 @@ from .engine import (
     OpenWorldRoleConditionedReversibleEventRevisionEngine,
 )
 from .hypothesis_message_passing import (
+    EvidenceDuplicateViolation,
     EvidenceFirewallViolation,
+    EvidenceMessage,
+    EvidenceScopeViolation,
     MessageEdgeType,
     MessagePassingResult,
     ProvenanceConstrainedMessagePassing,
@@ -52,7 +55,10 @@ __all__ = [
     "EventHypothesisRevision",
     "EventHypothesisStatus",
     "EventHypothesisUpdateKind",
+    "EvidenceDuplicateViolation",
     "EvidenceFirewallViolation",
+    "EvidenceMessage",
+    "EvidenceScopeViolation",
     "HiddenEventEvidence",
     "HiddenEventStep",
     "IndependentEventCandidate",

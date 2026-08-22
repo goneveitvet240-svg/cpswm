@@ -75,6 +75,17 @@ def _deterministic_uuid(seed: int, *parts: object) -> UUID:
     return uuid5(NAMESPACE_URL, key)
 
 
+def _position_value(location: UUID) -> float:
+    """A location-order-independent [0, 1] feature for one location UUID.
+
+    This is the location-permutation-equivariant replacement for the former
+    ``locations.index(location)`` signal: it depends only on the UUID, never on
+    the order of the ``locations`` tuple.
+    """
+
+    return float((location.int & 0xFFFF) / 65536.0)
+
+
 class ActionTaskType(StrEnum):
     PUT_BACK = "put_back"
     SEARCH = "search"
@@ -688,7 +699,7 @@ class _STARMethod:
 
 class _PchmpCcrrRgrcMethod:
     """New method: PCHMP joint event posterior -> CF-BOCPD cause -> CCRR regime
-    -> RGRC-gated owner habit consolidation."""
+    -> owner-attribution write gate (a stand-in for full Hybrid RGRC)."""
 
     name = ActionBaselineMethod.PCHMP_CCRR_RGRC
 
@@ -705,28 +716,22 @@ class _PchmpCcrrRgrcMethod:
         )
         self._frames: list[CauseSignalFrame] = []
         self._base = datetime(2026, 1, 1, 8, 0, tzinfo=UTC)
-        # Seed the default stage in the CCRR library with the initial owner
-        # habit location so a later recurrence can reactivate it.
-        self.reactor.add_regime(
-            RegimeLibraryEntry(
-                regime_id="stable",
-                actor_id=case.owner_actor,
-                object_instance_id=case.object_instance_id,
-                context_fingerprint=tuple(
-                    1.0 if index == 0 else 0.0
-                    for index in range(len(case.locations))
-                ),
-                cause_origin=ChangeCause.HABIT,
-                created_at=self._base,
-            )
-        )
+        # The default stage is seeded lazily on the first owner placement so
+        # its context fingerprint is learned from observation, not assumed.
+        self._stable_seeded = False
 
     def observe(self, obs: ActionDayObservation) -> None:
         if obs.after is None or obs.before is None:
             return
         owner = self.case.owner_actor
         guest = self.case.guest_actor
-        # 1. Branch a counterfactual hypothesis set and revise with evidence.
+        location = obs.after.detected_location_id
+        if location is None:
+            return
+
+        # 1. Branch a counterfactual hypothesis set and pass the *incremental*
+        #    evidence through PCHMP (the evidence is not first consumed by an
+        #    ORRER revise call, so it is not double-counted).
         actor_prior = {owner: 0.4, guest: 0.3, "unknown_actor": 0.3}
         try:
             history = self.orrer.branch(
@@ -741,13 +746,10 @@ class _PchmpCcrrRgrcMethod:
                 | RoleBindingEvidence
             ] = []
             if obs.actor_evidence is not None:
-                history = self.orrer.revise_actor_responsibility(history, obs.actor_evidence)
                 evidence.append(obs.actor_evidence)
             if obs.mechanism_evidence is not None:
-                history = self.orrer.revise_event_mechanism(history, obs.mechanism_evidence)
                 evidence.append(obs.mechanism_evidence)
             if obs.role_evidence is not None:
-                history = self.orrer.revise_role_binding(history, obs.role_evidence)
                 evidence.append(obs.role_evidence)
             posterior = self.pchmp.infer(history, evidence)
         except ValueError:
@@ -757,32 +759,20 @@ class _PchmpCcrrRgrcMethod:
         #    joint posterior.
         owner_mass = 0.0
         guest_mass = 0.0
-        location = obs.after.detected_location_id
         for hypothesis in history.latest.hypotheses:
             mass = posterior.posterior_by_hypothesis_id.get(hypothesis.hypothesis_id, 0.0)
             if hypothesis.responsible_actor_key == owner:
                 owner_mass += mass
             elif hypothesis.responsible_actor_key == guest:
                 guest_mass += mass
-        if location is None:
-            return
         attributed_owner = owner_mass >= guest_mass
 
-        # 3. Build the cause signal frame for CF-BOCPD.  The habit channel is a
-        #    slow position-value signal over owner-attributed placements: it
-        #    jumps when the owner's habit location changes (abrupt change or
-        #    recurrence), which is exactly what CF-BOCPD should attribute to a
-        #    habit cause.  Guest placements leave the habit channel unchanged
-        #    and raise the actor channel instead.  The two owner habit
-        #    locations map to the extremes (0.0 / 1.0) so a habit shift is a
-        #    full-scale jump; guest/decoy locations map to the midpoint.
-        location_index = self.case.locations.index(location)
-        if location_index == 0:
-            position_value = 0.0
-        elif location_index == 1:
-            position_value = 1.0
-        else:
-            position_value = 0.5
+        # 3. Build the location-order-independent cause signal frame.  The
+        #    habit channel is the position feature of an owner-attributed
+        #    placement (a full-scale jump when the owner's habit location
+        #    changes or returns); guest placements hold the habit channel and
+        #    raise the actor channel instead.
+        position_value = _position_value(location)
         if attributed_owner:
             habit_signal = position_value
             actor_signal = 0.1
@@ -802,34 +792,57 @@ class _PchmpCcrrRgrcMethod:
                 ChangeCause.NOISE: 0.1,
             },
         )
-        # Feed CF-BOCPD one frame at a time (it is online).
         self._frames.append(frame)
         warmup = 2 if len(self._frames) > 2 else 0
         result = self.bocpd.run(self._frames, warmup_steps=warmup)
         snapshot = result.snapshots[-1]
 
-        # 4. CCRR regime decision.  The context fingerprint is a one-hot of the
-        #    observed owner placement location so that a recurrence of the old
-        #    location can be matched back to the archived stage that encoded it
-        #    (this is what makes reactivate, rather than create, fire).
-        context_features = tuple(
-            1.0 if index == location_index else 0.0
-            for index in range(len(self.case.locations))
+        # 4. Seed the default stage from the first observed owner placement so
+        #    its context fingerprint is learned, not assumed.
+        if attributed_owner and not self._stable_seeded:
+            self.reactor.add_regime(
+                RegimeLibraryEntry(
+                    regime_id="stable",
+                    actor_id=owner,
+                    object_instance_id=self.case.object_instance_id,
+                    context_fingerprint=(position_value,),
+                    cause_origin=ChangeCause.HABIT,
+                    created_at=frame.timestamp,
+                ),
+                make_active=True,
+            )
+            self._stable_seeded = True
+
+        # 5. CCRR regime decision: score (pure) then apply (mutating) under a
+        #    library-version check.
+        context_features = (position_value,)
+        library = self.reactor.library(
+            object_instance_id=self.case.object_instance_id, actor_id=owner
         )
-        decision = self.reactor.decide(
+        active_regime_id = self.reactor.active_regime(
+            object_instance_id=self.case.object_instance_id, actor_id=owner
+        )
+        decision = self.reactor.score_decision(
             object_instance_id=self.case.object_instance_id,
             actor_id=owner,
             owner_actor_id=owner,
             snapshot=snapshot,
             context_features=context_features,
             now=frame.timestamp,
+            library=library,
+            active_regime_id=active_regime_id,
+        )
+        self.reactor.apply_decision(
+            decision,
+            object_instance_id=self.case.object_instance_id,
+            actor_id=owner,
+            context_features=context_features,
+            expected_library_version=self.reactor.library_version,
         )
 
-        # 5. RGRC-gated consolidation: only owner-attributed placements under a
-        #    habit-positive regime decision write to the owner habit counts.
-        #    CCRR first switches the active stage (create archives the old
-        #    stage, reactivate reuses an archived one); the write then lands in
-        #    the newly active stage.
+        # 6. Owner-attribution write gate (a stand-in for full Hybrid RGRC):
+        #    only owner-attributed placements under a non-unresolved regime
+        #    decision write to the active owner stage.
         if attributed_owner:
             self.state.last_location = location
         else:

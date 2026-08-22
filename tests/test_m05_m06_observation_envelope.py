@@ -32,6 +32,12 @@ from cpswm.perception_mapping.calibration_sync import (
     SensorCalibration,
     SensorTimeSyncResult,
 )
+from cpswm.system.privacy_governance import (
+    HouseholdGovernance,
+    Operation,
+    OracleAccessRequest,
+    ResourceKind,
+)
 from simobs import SyntheticObservation
 
 
@@ -93,32 +99,60 @@ def _observation(*, oracle_channel: bool = False, ground_truth_refs: tuple[UUID,
     )
 
 
-def _allowed_decision(household_id):
-    """An allowed M28 decision receipt for the given household."""
+START = datetime(2026, 8, 10, 8, 0, tzinfo=UTC)
 
-    return OracleAccessDecision(
-        metadata=dict(
-            schema_name="cpswm.privacy.OracleAccessDecision",
-            schema_version="0.1.0",
+
+def _issued_decision(governance: HouseholdGovernance, household_id) -> OracleAccessDecision:
+    """Issue a grant and return a real, logged oracle decision receipt."""
+
+    from cpswm.contracts import (
+        BaseRecordMetadata,
+        InputWatermark,
+        ValidTimeInterval,
+    )
+    from cpswm.system.privacy_governance import CapabilityGrant
+
+    metadata = BaseRecordMetadata(
+        schema_name="cpswm.privacy.Record",
+        schema_version="0.1.0",
+        household_id=household_id,
+        session_id=uuid4(),
+        recorded_time=START,
+        source_type=SourceType.MODEL,
+        source_id="governance-test",
+    )
+    governance.issue_grant(
+        CapabilityGrant(
+            metadata=metadata,
+            subject="evaluator.benchmark",
             household_id=household_id,
-            session_id=uuid4(),
-            trace_id=uuid4(),
-            source_type=SourceType.MODEL.value,
-            source_id="governance",
-        ),
-        request_id=uuid4(),
-        request_hash="0" * 64,
-        grant_id=uuid4(),
+            resource=ResourceKind.GT,
+            operation=Operation.READ,
+            purpose="evaluation_only",
+            valid_time=ValidTimeInterval(
+                start=START,
+                end=START + timedelta(minutes=60),
+            ),
+            issuer="governance-test",
+        )
+    )
+    request = OracleAccessRequest(
+        metadata=metadata,
         caller="evaluator.benchmark",
         household_id=household_id,
-        allowed=True,
-        decided_by="governance-test",
-        decided_time=datetime(2026, 8, 10, 8, 0, tzinfo=UTC),
-        input_watermark=dict(
+        resource=ResourceKind.GT,
+        evaluation_only=True,
+        purpose="evaluation_only",
+        input_watermark=InputWatermark(
             global_commit_seq=0,
             transaction_id=uuid4(),
-            recorded_at=datetime(2026, 8, 10, 8, 0, tzinfo=UTC),
+            recorded_at=START,
         ),
+    )
+    return governance.decide_oracle_access(
+        request,
+        decided_by="governance-test",
+        decided_time=START,
     )
 
 
@@ -218,6 +252,8 @@ def test_envelope_rejects_sensor_source_with_oracle_channel():
     household = uuid4()
     session = uuid4()
     trace = uuid4()
+    governance = HouseholdGovernance()
+    decision = _issued_decision(governance, household)
     with pytest.raises(ValidationError):
         ObservationEnvelope(
             metadata=dict(
@@ -241,7 +277,7 @@ def test_envelope_rejects_sensor_source_with_oracle_channel():
             frame_id="cam_1",
             oracle_payload=PayloadRef(payload_sha256="0" * 64, size_bytes=0),
             oracle_channel=True,
-            oracle_authorization=_allowed_decision(household),
+            oracle_authorization=decision,
         )
 
 
@@ -294,13 +330,15 @@ def test_adapter_rejects_ground_truth_on_normal_channel():
 
 
 def test_adapter_adapts_oracle_channel_with_authorization():
-    adapter = SyntheticSimulatorAdapter()
+    governance = HouseholdGovernance()
     observation = _observation(oracle_channel=True, ground_truth_refs=(uuid4(),))
+    decision = _issued_decision(governance, observation.metadata.household_id)
+    adapter = SyntheticSimulatorAdapter(governance=governance)
     envelope = adapter.adapt(
         observation,
         sensor=SensorRef(sensor_id="cam-1", modality=SensorModality.RGB),
         frame_id="cam_1",
-        oracle_authorization=_allowed_decision(observation.metadata.household_id),
+        oracle_authorization=decision,
     )
     assert envelope.oracle_channel is True
     assert envelope.oracle_payload is not None
@@ -381,14 +419,16 @@ def test_time_sync_rejects_wrong_offset():
 
 
 def test_calibration_registry_rejects_expired_lookup():
+    from cpswm.contracts import ValidTimeInterval
+
     household = uuid4()
     start = datetime(2026, 8, 10, 8, 0, tzinfo=UTC)
-    calibration = SensorCalibration(
-        household_id=household,
+    registry = CalibrationRegistry()
+    registry.create_calibration(
         sensor=SensorRef(sensor_id="cam-1", modality=SensorModality.RGB),
-        calibration_version="0.1.0",
-        valid_time=dict(start=start, end=start + timedelta(minutes=5)),
         frame_id="cam_1_optical",
+        household_id=household,
+        valid_time=ValidTimeInterval(start=start, end=start + timedelta(minutes=5)),
         intrinsics=IntrinsicsModel(model="pinhole", parameters={"fx": 500.0}),
         extrinsics=FrameTransform(
             household_id=household,
@@ -396,13 +436,10 @@ def test_calibration_registry_rejects_expired_lookup():
             target_frame_id="base_link",
             translation=Vector3(x=0.0, y=0.0, z=1.0),
             rotation=Quaternion(),
-            valid_time=dict(start=start, end=start + timedelta(minutes=5)),
+            valid_time=ValidTimeInterval(start=start, end=start + timedelta(minutes=5)),
             transform_version="0.1.0",
         ),
-        artifact_sha256="0" * 64,
     )
-    registry = CalibrationRegistry()
-    registry.register(calibration)
     assert registry.is_calibration_valid(
         sensor_id="cam-1",
         household_id=household,
@@ -422,20 +459,19 @@ def test_calibration_registry_rejects_expired_lookup():
 
 
 def test_calibration_registry_is_household_scoped():
+    from cpswm.contracts import ValidTimeInterval
+
     household = uuid4()
     other = uuid4()
     start = datetime(2026, 8, 10, 8, 0, tzinfo=UTC)
-    calibration = SensorCalibration(
-        household_id=household,
-        sensor=SensorRef(sensor_id="cam-1", modality=SensorModality.RGB),
-        calibration_version="0.1.0",
-        valid_time=dict(start=start, end=start + timedelta(minutes=5)),
-        frame_id="cam_1_optical",
-        intrinsics=IntrinsicsModel(model="pinhole", parameters={"fx": 500.0}),
-        artifact_sha256="0" * 64,
-    )
     registry = CalibrationRegistry()
-    registry.register(calibration)
+    registry.create_calibration(
+        sensor=SensorRef(sensor_id="cam-1", modality=SensorModality.RGB),
+        frame_id="cam_1_optical",
+        household_id=household,
+        valid_time=ValidTimeInterval(start=start, end=start + timedelta(minutes=5)),
+        intrinsics=IntrinsicsModel(model="pinhole", parameters={"fx": 500.0}),
+    )
     assert not registry.is_calibration_valid(
         sensor_id="cam-1",
         household_id=other,

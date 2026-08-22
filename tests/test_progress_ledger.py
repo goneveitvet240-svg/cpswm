@@ -122,7 +122,15 @@ def test_evidence_content_hash_is_verified():
     data = ledger.model_dump(mode="json")
     for item in data["modules"]:
         if item["module_id"] == "M17":
-            for artifact in item["evidence_artifacts"]:
-                artifact["content_sha256"] = "0" * 64
+            item["evidence_artifacts"] = [
+                {
+                    "path": "tests/test_base_contracts.py",
+                    "kind": "synthetic",
+                    "description": "tampered hash",
+                    "content_sha256": "0" * 64,
+                    "artifact_schema": "synthetic_report_json_v1",
+                    "run_receipt": "run-1",
+                }
+            ]
     report = validate_ledger(ProgressLedger.model_validate(data), REPO_ROOT)
     assert any("content hash mismatch" in error for error in report.errors)

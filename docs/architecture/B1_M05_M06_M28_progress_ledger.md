@@ -129,6 +129,30 @@ sensor/frame/time/household，自动计算产物哈希（或接受外部 artifac
 - 篡改 evidence 内容哈希 → 报 content hash mismatch；
 - 全结构门缺 M01–M32 任一项 → 报 "must cover exactly M01-M32"。
 
+## 4.5 P0/P1 加固
+
+针对 8 项攻击报告的加固（均有回归测试 `tests/test_adversarial_p0_hardening.py`）：
+
+- P0-1 oracle receipt 必须有 provenance：`HouseholdGovernance` 保存并恢复
+  request/decision，`verify_oracle_receipt()` 要求在 append-only log 中找到相同
+  `decision_id`、逐字段一致、且对应 grant 在 `decided_time` 有效；M05 adapter
+  必须持有一个 governance 验证器，不能只读裸 `allowed=True`。
+- P0-2 普通 payload 递归扫描禁止字段（`ground_truth*`、`latent_state`、`oracle`
+  等），覆盖 dict/list/嵌套对象。
+- P0-3 audit 绑定 decision：`record_oracle_audit(decision_id, output_summary,
+  metadata)`，caller/purpose/watermark/household 全部取自存储的 decision。
+- P1-4 撤销校验 household 一致且 `revoked_time >= grant.valid_time.start`；
+  `restore()` 重放相同拓扑校验。
+- P1-5 标定哈希拆分 `provenance_mode`（`parameters` / `external_artifact`），
+  构造与注册时强制验证；`parameters` 模式强制 `parameters_sha256 ==
+  calibration_artifact_hash(...)`。
+- P1-6 `create_calibration(...)` 与 `apply_calibration(envelope, ...)` 分离；
+  apply 验证 household/sensor/frame/capture-time/clock-domain/sync。
+- P0-7 三个正式 gate 必须存在且 `required=True`，不可被替换。
+- P0-8 evidence 的 `content_sha256 / artifact_schema / run_receipt` 均为必需；
+  验证器核验内容哈希、schema 白名单、kind 与文件类型一致、同一证据不能支撑
+  多个模块。
+
 ## 5. 已知限制
 
 - M05/M06 是**契约 + 合成适配器**纵切，不含真实 SLAM、目标检测、真实机器人

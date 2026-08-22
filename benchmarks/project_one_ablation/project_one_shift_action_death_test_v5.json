@@ -1,0 +1,41 @@
+{
+  "protocol_version": "project-one-shift-action-death-test@5",
+  "seed_plan": {
+    "validation_seeds": [4101, 4111, 4127, 4133, 4139],
+    "pilot_seeds": [5101, 5107, 5113, 5119, 5147, 5153, 5167, 5171],
+    "test_seeds": [
+      15101, 15103, 15105, 15107, 15109, 15111, 15113, 15115, 15117, 15119,
+      15121, 15123, 15125, 15127, 15129, 15131, 15133, 15135, 15137, 15139,
+      15141, 15143, 15145, 15147, 15149, 15151, 15153, 15155, 15157, 15159,
+      15161, 15163, 15165, 15167, 15169, 15171, 15173, 15175, 15177, 15179,
+      15181, 15183, 15185, 15187, 15189, 15191, 15193, 15195, 15197, 15199
+    ]
+  },
+  "action_policy": {
+    "policy_id": "habit-reset-consolidation-policy@5",
+    "probability_temperature": 1.0,
+    "reset_probability_threshold": 0.5,
+    "consolidation_probability_threshold": 0.7,
+    "attribution_margin": 0.15,
+    "verification_cost": 0.05,
+    "false_reset_cost": 0.25,
+    "missed_reset_daily_cost": 0.1,
+    "corrupted_mass_daily_cost": 0.1,
+    "practical_regret_mde": 0.05,
+    "practical_corruption_mde": 0.02,
+    "verification_owner_probability_threshold": 0.6,
+    "verification_required_matching_detections": 2
+  },
+  "duration_days": 10,
+  "alpha": 0.05,
+  "target_power": 0.8,
+  "power_stddev_safety_factor": 1.5,
+  "power_paired_stddev_floor": 0.05,
+  "bootstrap_samples": 2000,
+  "utility_sensitivity_scenarios": [
+    {"scenario_id":"base@1"},
+    {"scenario_id":"false-action-cost-x1.5@1","false_reset_multiplier":1.5,"corrupted_mass_multiplier":1.5},
+    {"scenario_id":"unrecovered-habit-cost-x1.5@1","unrecovered_habit_multiplier":1.5},
+    {"scenario_id":"verification-cost-x2@1","verification_multiplier":2.0}
+  ]
+}

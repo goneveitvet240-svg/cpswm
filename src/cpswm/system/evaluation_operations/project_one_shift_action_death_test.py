@@ -17,12 +17,23 @@ from typing import Literal
 
 from pydantic import Field, model_validator
 
+from cpswm.contracts import ObservationOutcome
 from cpswm.contracts.base import ContractModel, NonNegativeInt, PositiveInt, Probability
 from cpswm.system.reproducibility import content_sha256
+from cpswm.world_model.habits_transitions.cause_factorized_bocpd import (
+    CauseFactorizedBOCPD,
+    ChangeCause,
+)
+from cpswm.world_model.habits_transitions.joint_cause_bocpd import (
+    CauseSignalFrame,
+    JointCauseFactorizedBOCPD,
+)
 
+from .d0_shift_scenarios import D0VisibleSimulationRun
 from .fair_ablation import ProjectOneAblationArmId
 from .online_shift_attribution import (
     OnlineShiftAttributionCase,
+    OnlineShiftCaseInput,
     OnlineShiftCaseTruth,
     OnlineShiftEvaluator,
     OnlineShiftGeneratedCase,
@@ -32,13 +43,14 @@ from .online_shift_attribution import (
     OnlineShiftSuiteConfig,
     OnlineShiftSuiteGenerator,
 )
-from .project_one_shift_gates import _SEARCH_SPACES, SHIFT_THREE_ARMS, _model_factory
+from .project_one_shift_gates import _SEARCH_SPACES, SHIFT_THREE_ARMS
 from .shift_attribution import ShiftCause
+from .shift_baselines import OnlineCauseFactorizedBOCPDBaseline
 
-PRIMARY_ENDPOINT_ID = "downstream-action-regret.normalized-per-case@1"
+PRIMARY_ENDPOINT_ID = "downstream-action-regret.balanced-habit-vs-nonhabit@1"
 KEY_SECONDARY_ENDPOINT_ID = "corrupted-habit-mass.mean-per-case@1"
 ALLOWED_CLAIM_IDS = (
-    "claim.synthetic-shift-action-death-test-reported@4",
+    "claim.synthetic-prefix-online-shift-action-death-test-reported@5",
     "claim.shared-policy-track-reported@1",
     "claim.independently-retuned-policy-track-reported@1",
 )
@@ -48,13 +60,20 @@ FORBIDDEN_CLAIM_IDS = (
     "claim.external-validity.forbidden@1",
     "claim.formal-structure-one-b1-complete.forbidden@3",
     "claim.all-eleven-arms-experimentally-complete.forbidden@3",
+    "claim.v4-confirmatory-rebuild-joint.forbidden@1",
+    "claim.v4-confirmatory-legacy-advantage.forbidden@1",
 )
 POWER_REFERENCES = (
     ProjectOneAblationArmId.ORDINARY_BOCPD,
     ProjectOneAblationArmId.CAUSE_FACTORIZED_BOCPD,
 )
 POWER_ENDPOINTS = (
-    (PRIMARY_ENDPOINT_ID, "primary", "downstream_action_regret", "practical_regret_mde"),
+    (
+        PRIMARY_ENDPOINT_ID,
+        "primary",
+        "balanced_downstream_action_regret",
+        "practical_regret_mde",
+    ),
     (
         KEY_SECONDARY_ENDPOINT_ID,
         "key_secondary",
@@ -78,7 +97,7 @@ class EvaluationTrack(StrEnum):
 
 
 class FrozenActionPolicy(ContractModel):
-    policy_id: Literal["habit-reset-consolidation-policy@4"] = "habit-reset-consolidation-policy@4"
+    policy_id: Literal["habit-reset-consolidation-policy@5"] = "habit-reset-consolidation-policy@5"
     probability_temperature: float = Field(default=1.0, gt=0.0)
     reset_probability_threshold: float = Field(default=0.50, ge=0.0, le=1.0)
     consolidation_probability_threshold: float = Field(default=0.70, ge=0.0, le=1.0)
@@ -89,6 +108,8 @@ class FrozenActionPolicy(ContractModel):
     corrupted_mass_daily_cost: float = Field(default=0.10, ge=0.0)
     practical_regret_mde: float = Field(default=0.05, gt=0.0, le=1.0)
     practical_corruption_mde: float = Field(default=0.02, gt=0.0, le=1.0)
+    verification_owner_probability_threshold: float = Field(default=0.60, gt=0.5, le=1.0)
+    verification_required_matching_detections: Literal[2] = 2
 
     @model_validator(mode="after")
     def validate_threshold_order(self) -> FrozenActionPolicy:
@@ -109,7 +130,7 @@ class ActionSeedPlan(ContractModel):
         5167,
         5171,
     )
-    test_seeds: tuple[NonNegativeInt, ...] = tuple(range(13101, 13781, 2))
+    test_seeds: tuple[NonNegativeInt, ...] = tuple(range(15101, 15201, 2))
 
     @model_validator(mode="after")
     def validate_partitions(self) -> ActionSeedPlan:
@@ -154,8 +175,8 @@ def _canonical_utility_scenarios() -> tuple[UtilitySensitivityScenario, ...]:
 
 
 class ProjectOneShiftActionDeathTestConfig(ContractModel):
-    protocol_version: Literal["project-one-shift-action-death-test@4"] = (
-        "project-one-shift-action-death-test@4"
+    protocol_version: Literal["project-one-shift-action-death-test@5"] = (
+        "project-one-shift-action-death-test@5"
     )
     seed_plan: ActionSeedPlan = Field(default_factory=ActionSeedPlan)
     action_policy: FrozenActionPolicy = Field(default_factory=FrozenActionPolicy)
@@ -163,6 +184,7 @@ class ProjectOneShiftActionDeathTestConfig(ContractModel):
     alpha: float = Field(default=0.05, gt=0.0, lt=1.0)
     target_power: float = Field(default=0.80, gt=0.0, lt=1.0)
     power_stddev_safety_factor: float = Field(default=1.5, ge=1.0)
+    power_paired_stddev_floor: float = Field(default=0.05, gt=0.0)
     bootstrap_samples: PositiveInt = 2000
     utility_sensitivity_scenarios: tuple[UtilitySensitivityScenario, ...] = Field(
         default_factory=_canonical_utility_scenarios
@@ -179,6 +201,68 @@ class ProjectOneShiftActionDeathTestConfig(ContractModel):
         return self
 
 
+class PrefixPosteriorSnapshot(ContractModel):
+    as_of_time: datetime
+    change_time_estimate: datetime | None
+    posterior: dict[ShiftCause, Probability] = Field(min_length=1)
+    prefix_input_sha256: str = Field(pattern=r"^[0-9a-f]{64}$")
+    visible_evidence_record_ids: tuple[str, ...]
+
+    @model_validator(mode="after")
+    def validate_prefix_snapshot(self) -> PrefixPosteriorSnapshot:
+        if self.change_time_estimate is not None and self.change_time_estimate >= self.as_of_time:
+            raise ValueError("change-time estimate must precede the prefix decision cutoff")
+        if len(self.visible_evidence_record_ids) != len(set(self.visible_evidence_record_ids)):
+            raise ValueError("prefix evidence IDs must be unique")
+        return self
+
+
+class PrefixOnlinePrediction(ContractModel):
+    case_id: str = Field(min_length=1)
+    model_version: str = Field(min_length=1)
+    snapshots: tuple[PrefixPosteriorSnapshot, ...] = Field(min_length=1)
+
+    @model_validator(mode="after")
+    def validate_trajectory(self) -> PrefixOnlinePrediction:
+        cutoffs = tuple(item.as_of_time for item in self.snapshots)
+        if cutoffs != tuple(sorted(set(cutoffs))):
+            raise ValueError("prefix prediction cutoffs must be unique and increasing")
+        estimates = tuple(
+            item.change_time_estimate
+            for item in self.snapshots
+            if item.change_time_estimate is not None
+        )
+        if estimates and len(set(estimates)) != 1:
+            raise ValueError("first online change-time estimate must remain frozen")
+        for earlier, later in zip(self.snapshots, self.snapshots[1:], strict=False):
+            if not set(earlier.visible_evidence_record_ids).issubset(
+                later.visible_evidence_record_ids
+            ):
+                raise ValueError("visible evidence must grow monotonically across prefixes")
+        return self
+
+
+class VerificationEvidence(ContractModel):
+    predicate_id: Literal["owner-associated-repeat-object-location@1"] = (
+        "owner-associated-repeat-object-location@1"
+    )
+    object_instance_id: str = Field(min_length=1)
+    location_id: str = Field(min_length=1)
+    first_detection_result_id: str = Field(min_length=1)
+    second_detection_result_id: str = Field(min_length=1)
+    first_evidence_time: datetime
+    second_evidence_time: datetime
+    minimum_owner_posterior: Probability
+
+    @model_validator(mode="after")
+    def validate_evidence(self) -> VerificationEvidence:
+        if self.first_detection_result_id == self.second_detection_result_id:
+            raise ValueError("verification requires two distinct detection results")
+        if not self.first_evidence_time < self.second_evidence_time:
+            raise ValueError("verification detections must occur at increasing times")
+        return self
+
+
 class CaseActionOutcome(ContractModel):
     case_id: str = Field(min_length=1)
     scenario_seed: NonNegativeInt
@@ -189,9 +273,13 @@ class CaseActionOutcome(ContractModel):
     action_sequence: tuple[
         Literal["RESET_OLD_REGIME", "VERIFY_NEW_EVIDENCE", "CONSOLIDATE_NEW_REGIME"], ...
     ]
+    change_time_estimate: datetime | None
+    decision_time: datetime | None
+    posterior_at_decision: dict[ShiftCause, Probability] | None
     reset_time: datetime | None
     verification_time: datetime | None
     consolidation_time: datetime | None
+    verification_evidence: VerificationEvidence | None
     false_reset: bool
     missed_reset: bool
     missed_consolidation: bool
@@ -224,8 +312,26 @@ class CaseActionOutcome(ContractModel):
             raise ValueError("action sequence does not encode the declared two-phase transition")
         if self.reset_issued != (self.reset_time is not None):
             raise ValueError("reset timestamp does not match reset state")
+        if self.reset_issued != (self.decision_time is not None):
+            raise ValueError("reset state must bind an explicit decision time")
+        if self.reset_issued != (self.posterior_at_decision is not None):
+            raise ValueError("reset state must bind the posterior at decision")
+        if self.reset_time != self.decision_time:
+            raise ValueError("reset executes at decision time, not at estimated change time")
+        if (
+            self.change_time_estimate is not None
+            and self.decision_time is not None
+            and self.change_time_estimate >= self.decision_time
+        ):
+            raise ValueError("change-time estimate must precede decision time")
         if self.verification_issued != (self.verification_time is not None):
             raise ValueError("verification timestamp does not match verification state")
+        if self.verification_issued != (self.verification_evidence is not None):
+            raise ValueError("verification state must bind semantic evidence")
+        if self.verification_evidence is not None and (
+            self.verification_time != self.verification_evidence.second_evidence_time
+        ):
+            raise ValueError("verification time must equal the predicate satisfaction time")
         if self.consolidation_issued != (self.consolidation_time is not None):
             raise ValueError("consolidation timestamp does not match consolidation state")
         if self.consolidation_issued and not (
@@ -245,6 +351,7 @@ class ArmActionMetrics(ContractModel):
     recovery_time_days: float = Field(ge=0.0)
     unnecessary_verification_cost: float = Field(ge=0.0)
     downstream_action_regret: Probability
+    balanced_downstream_action_regret: Probability
     task_success_proxy_rate: Probability
 
 
@@ -252,19 +359,17 @@ class ActionCaseTruth(ContractModel):
     truth: OnlineShiftCaseTruth
     stream_start_time: datetime
     duration_days: PositiveInt
-    new_evidence_times: tuple[datetime, ...]
+    model_input_sha256: str = Field(pattern=r"^[0-9a-f]{64}$")
+    evaluator_truth_sha256: str = Field(pattern=r"^[0-9a-f]{64}$")
+    generated_case_sha256: str = Field(pattern=r"^[0-9a-f]{64}$")
 
     @model_validator(mode="after")
     def validate_horizon(self) -> ActionCaseTruth:
         horizon_end = self.stream_start_time + timedelta(days=self.duration_days)
         if not self.stream_start_time < self.truth.change_time < horizon_end:
             raise ValueError("action truth change time lies outside its stream horizon")
-        if tuple(sorted(set(self.new_evidence_times))) != self.new_evidence_times:
-            raise ValueError("new evidence times must be unique and ordered")
-        if any(
-            not self.stream_start_time <= item < horizon_end for item in self.new_evidence_times
-        ):
-            raise ValueError("new evidence time lies outside the stream horizon")
+        if self.evaluator_truth_sha256 != content_sha256(self.truth):
+            raise ValueError("action truth hash mismatch")
         return self
 
 
@@ -290,7 +395,7 @@ class ValidationPredictionCandidate(ContractModel):
     params: dict[str, int | float]
     params_sha256: str = Field(pattern=r"^[0-9a-f]{64}$")
     validation_input_sha256: str = Field(pattern=r"^[0-9a-f]{64}$")
-    predictions: tuple[OnlineShiftPrediction, ...] = Field(min_length=1)
+    predictions: tuple[PrefixOnlinePrediction, ...] = Field(min_length=1)
     predictions_sha256: str = Field(pattern=r"^[0-9a-f]{64}$")
     record_sha256: str = Field(pattern=r"^[0-9a-f]{64}$")
 
@@ -338,7 +443,7 @@ class ArmActionArtifact(ContractModel):
     policy: FrozenActionPolicy
     selected_params_sha256: str = Field(pattern=r"^[0-9a-f]{64}$")
     case_truths: tuple[ActionCaseTruth, ...] = Field(min_length=1)
-    predictions: tuple[OnlineShiftPrediction, ...] = Field(min_length=1)
+    predictions: tuple[PrefixOnlinePrediction, ...] = Field(min_length=1)
     outcomes: tuple[CaseActionOutcome, ...] = Field(min_length=1)
     metrics: ArmActionMetrics
     mechanism_metrics: OnlineShiftReport
@@ -370,9 +475,10 @@ class ArmActionArtifact(ContractModel):
                 truth_by_id[item.case_id].truth,
                 prediction_by_id[item.case_id],
                 self.policy,
+                model_input=None,
                 stream_start_time=truth_by_id[item.case_id].stream_start_time,
                 duration_days=truth_by_id[item.case_id].duration_days,
-                new_evidence_times=truth_by_id[item.case_id].new_evidence_times,
+                verification_evidence=item.verification_evidence,
             )
             for item in self.outcomes
         )
@@ -380,18 +486,34 @@ class ArmActionArtifact(ContractModel):
             raise ValueError("case action outcomes do not recompute from truth and predictions")
         if self.metrics != aggregate_action_metrics(self.outcomes):
             raise ValueError("action metrics do not recompute from case outcomes")
-        rebound = tuple(
-            OnlineShiftAttributionCase(
-                truth=item.truth,
-                prediction=prediction_by_id[str(item.truth.case_id)],
-            )
-            for item in self.case_truths
-        )
+        rebound = _terminal_attribution_cases(self.case_truths, prediction_by_id)
         if self.mechanism_metrics != OnlineShiftEvaluator().evaluate(rebound):
-            raise ValueError("mechanism metrics do not recompute from truth and predictions")
+            raise ValueError("mechanism metrics do not recompute from terminal prefix states")
         payload = self.model_dump(mode="json", exclude={"artifact_sha256"})
         if self.artifact_sha256 != content_sha256(payload):
             raise ValueError("action artifact hash mismatch")
+        return self
+
+
+class ActionPolicyBaselineId(StrEnum):
+    NEVER_ACT = "never-act"
+    ALWAYS_RESET_VERIFY = "always-reset-verify"
+
+
+class ActionPolicyBaselineArtifact(ContractModel):
+    baseline_id: ActionPolicyBaselineId
+    split_id: Literal["test"] = "test"
+    outcomes: tuple[CaseActionOutcome, ...] = Field(min_length=1)
+    metrics: ArmActionMetrics
+    artifact_sha256: str = Field(pattern=r"^[0-9a-f]{64}$")
+
+    @model_validator(mode="after")
+    def validate_baseline(self) -> ActionPolicyBaselineArtifact:
+        if self.metrics != aggregate_action_metrics(self.outcomes):
+            raise ValueError("action baseline metrics do not recompute")
+        payload = self.model_dump(mode="json", exclude={"artifact_sha256"})
+        if self.artifact_sha256 != content_sha256(payload):
+            raise ValueError("action baseline artifact hash mismatch")
         return self
 
 
@@ -489,7 +611,7 @@ class ArmRetunedPolicyTuningRecord(ContractModel):
 
 class MetricPowerAnalysis(ContractModel):
     endpoint_id: Literal[
-        "downstream-action-regret.normalized-per-case@1",
+        "downstream-action-regret.balanced-habit-vs-nonhabit@1",
         "corrupted-habit-mass.mean-per-case@1",
     ]
     reference_arm_id: Literal[
@@ -499,6 +621,7 @@ class MetricPowerAnalysis(ContractModel):
     role: Literal["primary", "key_secondary"]
     empirical_paired_stddev: float = Field(ge=0.0)
     stddev_safety_factor: float = Field(ge=1.0)
+    paired_stddev_floor: float = Field(gt=0.0)
     powered_paired_stddev: float = Field(ge=0.0)
     minimum_detectable_effect: float = Field(gt=0.0)
     alpha: float = Field(gt=0.0, lt=1.0)
@@ -518,8 +641,11 @@ class MetricPowerAnalysis(ContractModel):
         )
         if self.required_test_seed_count != expected:
             raise ValueError("required seed count does not recompute")
-        if self.powered_paired_stddev != (self.empirical_paired_stddev * self.stddev_safety_factor):
-            raise ValueError("powered stddev does not apply the frozen safety factor")
+        if self.powered_paired_stddev != max(
+            self.empirical_paired_stddev * self.stddev_safety_factor,
+            self.paired_stddev_floor,
+        ):
+            raise ValueError("powered stddev does not apply the frozen factor and floor")
         expected_status = (
             "PASS" if self.planned_test_seed_count >= self.required_test_seed_count else "BLOCK"
         )
@@ -533,6 +659,20 @@ class PairedActionInterval(ContractModel):
     candidate_arm_id: Literal[ProjectOneAblationArmId.JOINT_CAUSE_FACTORIZED_BOCPD]
     reference_arm_id: ProjectOneAblationArmId
     difference_joint_minus_reference: float
+    lower_95: float
+    upper_95: float
+    bootstrap_samples: PositiveInt
+    resampling_unit: Literal["scenario_seed"] = "scenario_seed"
+
+
+class ActionBaselineInterval(ContractModel):
+    track: EvaluationTrack
+    endpoint_id: Literal["downstream-action-regret.balanced-habit-vs-nonhabit@1"] = (
+        PRIMARY_ENDPOINT_ID
+    )
+    candidate_arm_id: ProjectOneAblationArmId
+    reference_baseline_id: ActionPolicyBaselineId
+    difference_detector_minus_baseline: float
     lower_95: float
     upper_95: float
     bootstrap_samples: PositiveInt
@@ -565,20 +705,20 @@ class CrossTrackDecision(ContractModel):
 
 
 class ProjectOneShiftActionDeathTestReport(ContractModel):
-    protocol_version: Literal["project-one-shift-action-death-test@4"]
+    protocol_version: Literal["project-one-shift-action-death-test@5"]
     config: ProjectOneShiftActionDeathTestConfig
     config_sha256: str = Field(pattern=r"^[0-9a-f]{64}$")
     code_snapshot_sha256: str = Field(pattern=r"^[0-9a-f]{64}$")
     git_commit_sha: str = Field(pattern=r"^[0-9a-f]{40}$")
-    primary_endpoint_id: Literal["downstream-action-regret.normalized-per-case@1"] = (
+    primary_endpoint_id: Literal["downstream-action-regret.balanced-habit-vs-nonhabit@1"] = (
         PRIMARY_ENDPOINT_ID
     )
     key_secondary_endpoint_id: Literal["corrupted-habit-mass.mean-per-case@1"] = (
         KEY_SECONDARY_ENDPOINT_ID
     )
     multiple_comparisons_policy: Literal[
-        "intersection-union-two-tracks-two-references-utility-sensitivity@4"
-    ] = "intersection-union-two-tracks-two-references-utility-sensitivity@4"
+        "intersection-union-two-tracks-two-references-utility-sensitivity@5"
+    ] = "intersection-union-two-tracks-two-references-utility-sensitivity@5"
     policy: FrozenActionPolicy
     policy_sha256: str = Field(pattern=r"^[0-9a-f]{64}$")
     validation_input_artifact: SplitInputArtifact
@@ -599,6 +739,8 @@ class ProjectOneShiftActionDeathTestReport(ContractModel):
     retuned_decision: PreregisteredDecision
     overall_decision: CrossTrackDecision
     utility_sensitivity_results: tuple[UtilitySensitivityResult, ...]
+    action_policy_baselines: dict[ActionPolicyBaselineId, ActionPolicyBaselineArtifact]
+    action_baseline_intervals: tuple[ActionBaselineInterval, ...]
     allowed_claims: tuple[str, ...] = ALLOWED_CLAIM_IDS
     forbidden_claims: tuple[str, ...] = FORBIDDEN_CLAIM_IDS
     report_sha256: str = Field(pattern=r"^[0-9a-f]{64}$")
@@ -629,13 +771,14 @@ class ProjectOneShiftActionDeathTestReport(ContractModel):
             ):
                 raise ValueError("validation ledger input binding mismatch")
             for candidate in ledger.candidates:
-                model = _model_factory(arm, candidate.params)
                 replayed = tuple(
-                    model.predict(case.model_input)
-                    for case in validation_cases  # type: ignore[attr-defined]
+                    _predict_prefix_online(arm, candidate.params, case.model_input)
+                    for case in validation_cases
                 )
                 if replayed != candidate.predictions:
-                    raise ValueError("validation predictions do not replay from input and params")
+                    raise ValueError(
+                        "validation prefix predictions do not replay from input and params"
+                    )
             shared_items, shared_index = _shared_candidate_ledger(
                 arm, ledger, validation_cases, self.policy
             )
@@ -645,7 +788,7 @@ class ProjectOneShiftActionDeathTestReport(ContractModel):
                 or shared_record.selected_candidate_index != shared_index
                 or shared_record.selected_params != ledger.candidates[shared_index].params
                 or shared_record.selected_validation_regret
-                != shared_items[shared_index]["metrics"].downstream_action_regret
+                != shared_items[shared_index]["metrics"].balanced_downstream_action_regret
             ):
                 raise ValueError("shared selected params are not the declared ledger argmin")
             retuned_items, (detector_index, policy_index) = _retuned_candidate_ledger(
@@ -660,7 +803,7 @@ class ProjectOneShiftActionDeathTestReport(ContractModel):
                 or retuned_record.selected_params != ledger.candidates[detector_index].params
                 or retuned_record.selected_policy != policy_space[policy_index]
                 or retuned_record.selected_validation_regret
-                != retuned_items[selected_flat]["metrics"].downstream_action_regret
+                != retuned_items[selected_flat]["metrics"].balanced_downstream_action_regret
             ):
                 raise ValueError("retuned selected params are not the declared ledger argmin")
         if set(self.pilot_artifacts) != set(SHIFT_THREE_ARMS):
@@ -729,6 +872,8 @@ class ProjectOneShiftActionDeathTestReport(ContractModel):
             or self.paired_test_intervals
             or self.retuned_test_artifacts
             or self.retuned_paired_test_intervals
+            or self.action_policy_baselines
+            or self.action_baseline_intervals
         ):
             raise ValueError("underpowered report must not inspect or report TEST")
         if power_pass:
@@ -764,6 +909,19 @@ class ProjectOneShiftActionDeathTestReport(ContractModel):
             )
             if self.utility_sensitivity_results != expected_sensitivity:
                 raise ValueError("utility sensitivity does not recompute from TEST artifacts")
+            expected_baselines = _action_policy_baselines(
+                self.test_input_artifact.cases, self.policy
+            )
+            if self.action_policy_baselines != expected_baselines:
+                raise ValueError("action policy baselines do not recompute from TEST inputs")
+            expected_baseline_intervals = _action_baseline_intervals(
+                self.test_artifacts,
+                self.retuned_test_artifacts,
+                self.action_policy_baselines,
+                self.config.bootstrap_samples,
+            )
+            if self.action_baseline_intervals != expected_baseline_intervals:
+                raise ValueError("action baseline intervals do not recompute")
         elif self.utility_sensitivity_results:
             raise ValueError("underpowered report must not contain utility sensitivity")
         expected_decision = decide_research_route(
@@ -797,7 +955,23 @@ class ProjectOneShiftActionDeathTestReport(ContractModel):
                 decision=ResearchDecision.INCONCLUSIVE,
                 shared_policy_decision=self.decision.decision,
                 independently_retuned_policy_decision=self.retuned_decision.decision,
-                rationale_id="decision.utility-sensitivity-not-robust@4",
+                rationale_id="decision.utility-sensitivity-not-robust@5",
+            )
+        guarded_arm = {
+            ResearchDecision.CONTINUE_JOINT: (ProjectOneAblationArmId.JOINT_CAUSE_FACTORIZED_BOCPD),
+            ResearchDecision.REBUILD_JOINT: (ProjectOneAblationArmId.CAUSE_FACTORIZED_BOCPD),
+            ResearchDecision.USE_ORDINARY: ProjectOneAblationArmId.ORDINARY_BOCPD,
+        }.get(expected_overall.decision)
+        if guarded_arm is not None and not _beats_never_act_in_both_tracks(
+            self.action_baseline_intervals,
+            guarded_arm,
+            self.policy.practical_regret_mde,
+        ):
+            expected_overall = CrossTrackDecision(
+                decision=ResearchDecision.INCONCLUSIVE,
+                shared_policy_decision=self.decision.decision,
+                independently_retuned_policy_decision=self.retuned_decision.decision,
+                rationale_id="decision.action-winner-does-not-beat-never-act@5",
             )
         if self.overall_decision != expected_overall:
             raise ValueError("overall decision does not follow cross-track sensitivity rules")
@@ -831,14 +1005,23 @@ class ProjectOneShiftActionDeathTestReport(ContractModel):
             raise ValueError("selected prediction replay requires input artifacts")
         for arm in SHIFT_THREE_ARMS:
             record = records[arm]
-            model = _model_factory(arm, record.selected_params)
             replayed = tuple(
-                model.predict(case.model_input)
-                for case in inputs.cases  # type: ignore[attr-defined]
+                _predict_prefix_online(arm, record.selected_params, case.model_input)
+                for case in inputs.cases
             )
-            if replayed != artifacts[arm].predictions:
+            expected = _artifact_from_predictions(
+                arm,
+                record.selected_params,
+                inputs.cases,
+                replayed,
+                artifacts[arm].policy,
+                artifacts[arm].split_id,
+            )
+            if expected != artifacts[arm]:
                 label = "retuned" if retuned else "shared"
-                raise ValueError(f"{label} predictions do not replay from input and params")
+                raise ValueError(
+                    f"{label} artifact does not replay from exact input, truth, params, and policy"
+                )
 
     def _validate_pilot_bindings(
         self, artifacts: dict[ProjectOneAblationArmId, ArmActionArtifact]
@@ -881,47 +1064,298 @@ def _calibrate_probability(probability: float, temperature: float) -> float:
     return 1.0 / (1.0 + exp(-log(clipped / (1.0 - clipped)) / temperature))
 
 
+def _prefix_input(
+    model_input: OnlineShiftCaseInput, *, as_of_time: datetime
+) -> OnlineShiftCaseInput:
+    run = model_input.observation_stream
+    prefix_days = int((as_of_time - run.start_time).total_seconds() // 86400)
+    result_by_opportunity = {
+        item.observation_opportunity_id: item for item in run.detection_results
+    }
+    opportunities = tuple(
+        item
+        for item in run.observation_opportunities
+        if item.opportunity_time < as_of_time
+        and result_by_opportunity[item.metadata.record_id].metadata.recorded_time < as_of_time
+    )
+    opportunity_ids = {item.metadata.record_id for item in opportunities}
+    results = tuple(
+        item for item in run.detection_results if item.observation_opportunity_id in opportunity_ids
+    )
+    result_ids = {item.metadata.record_id for item in results}
+    actor_evidence = tuple(
+        item
+        for item in model_input.actor_evidence
+        if item.source_detection_result_id in result_ids and item.evidence_time < as_of_time
+    )
+    prefix_run = D0VisibleSimulationRun.from_records(
+        start_time=run.start_time,
+        duration_days=prefix_days,
+        random_seed=run.random_seed,
+        observation_opportunities=opportunities,
+        detection_results=results,
+    )
+    return model_input.model_copy(
+        update={"observation_stream": prefix_run, "actor_evidence": actor_evidence}
+    )
+
+
+def _detector_state_at_prefix(
+    arm: ProjectOneAblationArmId,
+    params: dict[str, int | float],
+    prefix: OnlineShiftCaseInput,
+) -> tuple[datetime | None, dict[ShiftCause, float], str]:
+    warmup = int(params["warmup_days"])
+    hazard = float(params["hazard_probability"])
+    threshold = float(params["detection_threshold"])
+    frame_adapter = OnlineCauseFactorizedBOCPDBaseline(
+        warmup_days=warmup,
+        hazard_probability=hazard,
+        detection_threshold=threshold,
+    )
+    frames = frame_adapter.evidence_frames(prefix)
+    cause_map = OnlineCauseFactorizedBOCPDBaseline._CAUSE_MAP
+    if arm == ProjectOneAblationArmId.CAUSE_FACTORIZED_BOCPD:
+        model_version = "online-cause-factorized-bocpd@0.1-prefix@1"
+        result = CauseFactorizedBOCPD(
+            hazard_probability=hazard,
+            model_version=model_version,
+        ).run(
+            frames,
+            detection_threshold=threshold,
+            minimum_observations=warmup + 1,
+        )
+        detected = tuple(
+            item for item in result.detected_change_time_by_cause.values() if item is not None
+        )
+        posterior = {
+            cause_map[cause]: probability
+            for cause, probability in result.snapshots[-1].changepoint_probability_by_cause.items()
+        }
+        return (min(detected) if detected else None), posterior, model_version
+    if arm == ProjectOneAblationArmId.JOINT_CAUSE_FACTORIZED_BOCPD:
+        model_version = "joint-cause-factorized-bocpd@0.3-prefix@1"
+        signals = tuple(
+            CauseSignalFrame(
+                timestamp=frame.timestamp,
+                signals={
+                    cause: min(
+                        1.0,
+                        max(0.0, (frame.changepoint_likelihoods[cause] - 0.01) / 0.99),
+                    )
+                    for cause in ChangeCause
+                },
+            )
+            for frame in frames
+        )
+        result = JointCauseFactorizedBOCPD(
+            hazard_probability=hazard,
+            beam_width=int(params["beam_width"]),
+            model_version=model_version,
+        ).run(signals, detection_threshold=threshold, warmup_steps=warmup)
+        detected = tuple(
+            item for item in result.detected_change_time_by_cause.values() if item is not None
+        )
+        current = result.snapshots[-1]
+        posterior = {
+            cause_map[cause]: min(
+                1.0,
+                max(
+                    0.0,
+                    (
+                        current.transient_noise_probability
+                        if cause == ChangeCause.NOISE
+                        else current.segment_change_probability
+                        * current.segment_cause_posterior.get(cause, 0.0)
+                    ),
+                ),
+            )
+            for cause in ChangeCause
+        }
+        return (min(detected) if detected else None), posterior, model_version
+    if arm != ProjectOneAblationArmId.ORDINARY_BOCPD:
+        raise ValueError(f"unsupported prefix-online arm: {arm}")
+    model_version = "online-ordinary-bocpd@0.1-prefix@1"
+    posterior_by_run_length = {0: 1.0}
+    snapshots: list[tuple[datetime, float]] = []
+    for frame in frames:
+        changepoint_likelihood = max(frame.changepoint_likelihoods.values())
+        continuation_likelihood = min(frame.continuation_likelihoods.values())
+        updated = {0: sum(posterior_by_run_length.values()) * hazard * changepoint_likelihood}
+        for run_length, probability in posterior_by_run_length.items():
+            next_length = min(run_length + 1, 256)
+            updated[next_length] = updated.get(next_length, 0.0) + (
+                probability * (1.0 - hazard) * continuation_likelihood
+            )
+        total = sum(updated.values())
+        posterior_by_run_length = {key: value / total for key, value in updated.items()}
+        snapshots.append((frame.timestamp, posterior_by_run_length[0]))
+    eligible = snapshots[warmup:]
+    estimate = next((time for time, probability in eligible if probability >= threshold), None)
+    current_frame = frames[-1]
+    posterior = {
+        cause_map[cause]: (
+            current_frame.changepoint_likelihoods[cause]
+            / (
+                current_frame.changepoint_likelihoods[cause]
+                + current_frame.continuation_likelihoods[cause]
+            )
+        )
+        for cause in ChangeCause
+    }
+    return estimate, posterior, model_version
+
+
+def _predict_prefix_online(
+    arm: ProjectOneAblationArmId,
+    params: dict[str, int | float],
+    model_input: OnlineShiftCaseInput,
+) -> PrefixOnlinePrediction:
+    run = model_input.observation_stream
+    snapshots = []
+    model_version = ""
+    for prefix_days in range(3, run.duration_days + 1):
+        as_of_time = run.start_time + timedelta(days=prefix_days)
+        prefix = _prefix_input(model_input, as_of_time=as_of_time)
+        estimate, posterior, model_version = _detector_state_at_prefix(arm, params, prefix)
+        evidence_ids = tuple(
+            dict.fromkeys(
+                str(item.metadata.record_id)
+                for item in (
+                    *prefix.observation_stream.observation_opportunities,
+                    *prefix.observation_stream.detection_results,
+                    *prefix.actor_evidence,
+                )
+            )
+        )
+        snapshots.append(
+            PrefixPosteriorSnapshot(
+                as_of_time=as_of_time,
+                change_time_estimate=estimate,
+                posterior=posterior,
+                prefix_input_sha256=content_sha256(prefix),
+                visible_evidence_record_ids=evidence_ids,
+            )
+        )
+    return PrefixOnlinePrediction(
+        case_id=str(model_input.case_id),
+        model_version=model_version,
+        snapshots=tuple(snapshots),
+    )
+
+
+def _verification_evidence(
+    model_input: OnlineShiftCaseInput,
+    *,
+    after_time: datetime,
+    policy: FrozenActionPolicy,
+) -> VerificationEvidence | None:
+    actor_by_result = {item.source_detection_result_id: item for item in model_input.actor_evidence}
+    first_by_key = {}
+    results = sorted(
+        model_input.observation_stream.detection_results,
+        key=lambda item: item.metadata.recorded_time,
+    )
+    for result in results:
+        if (
+            result.metadata.recorded_time <= after_time
+            or result.outcome != ObservationOutcome.DETECTED
+            or result.detected_object_instance_id is None
+            or result.detected_location_id is None
+        ):
+            continue
+        actor = actor_by_result.get(result.metadata.record_id)
+        if actor is None:
+            continue
+        owner_probability = float(actor.actor_posterior.get(str(model_input.target_person_id), 0.0))
+        if owner_probability < policy.verification_owner_probability_threshold:
+            continue
+        key = (result.detected_object_instance_id, result.detected_location_id)
+        first = first_by_key.get(key)
+        if first is None:
+            first_by_key[key] = (result, owner_probability)
+            continue
+        first_result, first_owner = first
+        if first_result.metadata.recorded_time >= result.metadata.recorded_time:
+            continue
+        return VerificationEvidence(
+            object_instance_id=str(key[0]),
+            location_id=str(key[1]),
+            first_detection_result_id=str(first_result.metadata.record_id),
+            second_detection_result_id=str(result.metadata.record_id),
+            first_evidence_time=first_result.metadata.recorded_time,
+            second_evidence_time=result.metadata.recorded_time,
+            minimum_owner_posterior=min(first_owner, owner_probability),
+        )
+    return None
+
+
 def _case_outcome(
     truth: OnlineShiftCaseTruth,
-    prediction: OnlineShiftPrediction,
+    prediction: PrefixOnlinePrediction | None,
     policy: FrozenActionPolicy,
     *,
+    model_input: OnlineShiftCaseInput | None,
     stream_start_time: datetime,
     duration_days: int,
-    new_evidence_times: tuple[datetime, ...],
+    verification_evidence: VerificationEvidence | None = None,
+    action_mode: Literal["detector", "never-act", "always-reset-verify"] = "detector",
 ) -> CaseActionOutcome:
-    probabilities = {
-        cause: _calibrate_probability(float(probability), policy.probability_temperature)
-        for cause, probability in prediction.cause_probabilities.items()
-    }
-    habit_probability = float(probabilities.get(ShiftCause.OWNER_HABIT_REGIME, 0.0))
-    ranked = sorted((float(value) for value in probabilities.values()), reverse=True)
-    margin = ranked[0] - ranked[1] if len(ranked) > 1 else ranked[0]
-    detected = prediction.predicted_change_time is not None
-    reset = detected and habit_probability >= policy.reset_probability_threshold
-    consolidation_eligible = (
-        detected
-        and habit_probability >= policy.consolidation_probability_threshold
-        and margin >= policy.attribution_margin
+    snapshots = prediction.snapshots if prediction is not None else ()
+    selected: PrefixPosteriorSnapshot | None = None
+    calibrated: dict[ShiftCause, float] = {}
+    if action_mode == "detector":
+        for snapshot in snapshots:
+            candidate = {
+                cause: _calibrate_probability(float(probability), policy.probability_temperature)
+                for cause, probability in snapshot.posterior.items()
+            }
+            if (
+                snapshot.change_time_estimate is not None
+                and candidate.get(ShiftCause.OWNER_HABIT_REGIME, 0.0)
+                >= policy.reset_probability_threshold
+            ):
+                selected = snapshot
+                calibrated = candidate
+                break
+    elif action_mode == "always-reset-verify" and snapshots:
+        selected = snapshots[0]
+        calibrated = {cause: 0.0 for cause in ShiftCause if cause != ShiftCause.UNRESOLVED}
+        calibrated[ShiftCause.OWNER_HABIT_REGIME] = 1.0
+    reset = selected is not None and action_mode != "never-act"
+    decision_time = selected.as_of_time if selected is not None else None
+    change_time_estimate = selected.change_time_estimate if selected is not None else None
+    posterior_at_decision = selected.posterior if selected is not None else None
+    if action_mode == "always-reset-verify" and selected is not None:
+        posterior_at_decision = calibrated
+    habit_probability = float(calibrated.get(ShiftCause.OWNER_HABIT_REGIME, 0.0))
+    if verification_evidence is None and reset and model_input is not None:
+        verification_evidence = _verification_evidence(
+            model_input, after_time=decision_time, policy=policy
+        )
+    verify = reset and verification_evidence is not None
+    verification_time = (
+        verification_evidence.second_evidence_time if verification_evidence is not None else None
     )
-    reset_time = prediction.predicted_change_time if reset else None
-    verification_time = next(
-        (
-            timestamp
-            for timestamp in new_evidence_times
-            if prediction.predicted_change_time is not None
-            and timestamp > prediction.predicted_change_time
-        ),
-        None,
-    )
-    verify = (
-        detected and verification_time is not None and (reset or margin < policy.attribution_margin)
-    )
-    # Consolidation is a later transition after reset and a separate evidence
-    # step.  One microsecond makes the commit event strictly later than the
-    # evidence it consumes while preserving deterministic replay.
-    consolidate = reset and consolidation_eligible and verification_time is not None
-    consolidation_time = verification_time + timedelta(microseconds=1) if consolidate else None
+    consolidation_time = None
+    if verify and verification_time is not None:
+        for snapshot in snapshots:
+            if snapshot.as_of_time <= verification_time:
+                continue
+            probabilities = {
+                cause: _calibrate_probability(float(probability), policy.probability_temperature)
+                for cause, probability in snapshot.posterior.items()
+            }
+            ranked = sorted(probabilities.values(), reverse=True)
+            margin = ranked[0] - ranked[1] if len(ranked) > 1 else ranked[0]
+            if action_mode == "always-reset-verify" or (
+                probabilities.get(ShiftCause.OWNER_HABIT_REGIME, 0.0)
+                >= policy.consolidation_probability_threshold
+                and margin >= policy.attribution_margin
+            ):
+                consolidation_time = snapshot.as_of_time
+                break
+    consolidate = consolidation_time is not None
     if consolidate:
         action_sequence = (
             "RESET_OLD_REGIME",
@@ -932,8 +1366,6 @@ def _case_outcome(
         action_sequence = ("RESET_OLD_REGIME", "VERIFY_NEW_EVIDENCE")
     elif reset:
         action_sequence = ("RESET_OLD_REGIME",)
-    elif verify:
-        action_sequence = ("VERIFY_NEW_EVIDENCE",)
     else:
         action_sequence = ()
     true_habit = ShiftCause.OWNER_HABIT_REGIME in truth.true_causes
@@ -974,9 +1406,13 @@ def _case_outcome(
         consolidation_issued=consolidate,
         verification_issued=verify,
         action_sequence=action_sequence,
-        reset_time=reset_time,
-        verification_time=verification_time if verify else None,
+        change_time_estimate=change_time_estimate,
+        decision_time=decision_time,
+        posterior_at_decision=posterior_at_decision,
+        reset_time=decision_time,
+        verification_time=verification_time,
         consolidation_time=consolidation_time,
+        verification_evidence=verification_evidence if verify else None,
         false_reset=false_reset,
         missed_reset=missed_reset,
         missed_consolidation=missed_consolidation,
@@ -996,6 +1432,15 @@ def aggregate_action_metrics(outcomes: Sequence[CaseActionOutcome]) -> ArmAction
         raise ValueError("action evaluation requires outcomes")
     habit = [item for item in outcomes if item.habit_shift_required]
     non_habit = [item for item in outcomes if not item.habit_shift_required]
+    habit_regret = fmean(item.downstream_action_regret for item in habit) if habit else 0.0
+    non_habit_regret = (
+        fmean(item.downstream_action_regret for item in non_habit) if non_habit else 0.0
+    )
+    balanced_regret = (
+        0.5 * habit_regret + 0.5 * non_habit_regret
+        if habit and non_habit
+        else fmean(item.downstream_action_regret for item in outcomes)
+    )
     return ArmActionMetrics(
         sample_count=len(outcomes),
         false_reset_rate=fmean(float(item.false_reset) for item in non_habit) if non_habit else 0.0,
@@ -1012,6 +1457,7 @@ def aggregate_action_metrics(outcomes: Sequence[CaseActionOutcome]) -> ArmAction
             item.unnecessary_verification_cost for item in outcomes
         ),
         downstream_action_regret=fmean(item.downstream_action_regret for item in outcomes),
+        balanced_downstream_action_regret=balanced_regret,
         task_success_proxy_rate=fmean(float(item.task_success_proxy) for item in outcomes),
     )
 
@@ -1023,54 +1469,64 @@ def _evaluate_arm(
     policy: FrozenActionPolicy,
     split_id: Literal["validation", "pilot", "test"],
 ) -> ArmActionArtifact:
-    model = _model_factory(arm, params)
-    predictions = tuple(model.predict(case.model_input) for case in cases)  # type: ignore[attr-defined]
+    predictions = tuple(_predict_prefix_online(arm, params, case.model_input) for case in cases)
     return _artifact_from_predictions(arm, params, cases, predictions, policy, split_id)
 
 
-def _new_evidence_times(case: OnlineShiftGeneratedCase) -> tuple[datetime, ...]:
-    return tuple(
-        sorted(
-            {
-                item.metadata.recorded_time
-                for item in case.model_input.observation_stream.detection_results
-            }
-        )
+def _action_truth(case: OnlineShiftGeneratedCase) -> ActionCaseTruth:
+    return ActionCaseTruth(
+        truth=case.evaluator_truth,
+        stream_start_time=case.model_input.observation_stream.start_time,
+        duration_days=case.model_input.observation_stream.duration_days,
+        model_input_sha256=content_sha256(case.model_input),
+        evaluator_truth_sha256=content_sha256(case.evaluator_truth),
+        generated_case_sha256=content_sha256(case),
     )
+
+
+def _terminal_attribution_cases(
+    case_truths: Sequence[ActionCaseTruth],
+    predictions_by_id: dict[str, PrefixOnlinePrediction],
+) -> tuple[OnlineShiftAttributionCase, ...]:
+    output = []
+    for item in case_truths:
+        trajectory = predictions_by_id[str(item.truth.case_id)]
+        terminal = trajectory.snapshots[-1]
+        output.append(
+            OnlineShiftAttributionCase(
+                truth=item.truth,
+                prediction=OnlineShiftPrediction(
+                    case_id=item.truth.case_id,
+                    predicted_change_time=terminal.change_time_estimate,
+                    cause_probabilities=terminal.posterior,
+                    model_version=trajectory.model_version,
+                ),
+            )
+        )
+    return tuple(output)
 
 
 def _artifact_from_predictions(
     arm: ProjectOneAblationArmId,
     params: dict[str, int | float],
     cases: Sequence[OnlineShiftGeneratedCase],
-    predictions: tuple[OnlineShiftPrediction, ...],
+    predictions: tuple[PrefixOnlinePrediction, ...],
     policy: FrozenActionPolicy,
     split_id: Literal["validation", "pilot", "test"],
 ) -> ArmActionArtifact:
-    case_truths = tuple(
-        ActionCaseTruth(
-            truth=case.evaluator_truth,
-            stream_start_time=case.model_input.observation_stream.start_time,
-            duration_days=case.model_input.observation_stream.duration_days,
-            new_evidence_times=_new_evidence_times(case),
-        )
-        for case in cases
-    )
+    case_truths = tuple(_action_truth(case) for case in cases)
     outcomes = tuple(
         _case_outcome(
             case.evaluator_truth,
             prediction,
             policy,
+            model_input=case.model_input,
             stream_start_time=case.model_input.observation_stream.start_time,
             duration_days=case.model_input.observation_stream.duration_days,
-            new_evidence_times=_new_evidence_times(case),
         )
         for case, prediction in zip(cases, predictions, strict=True)
     )
-    bound = tuple(
-        OnlineShiftAttributionCase(truth=case.evaluator_truth, prediction=prediction)
-        for case, prediction in zip(cases, predictions, strict=True)
-    )
+    bound = _terminal_attribution_cases(case_truths, {item.case_id: item for item in predictions})
     payload = {
         "arm_id": arm,
         "split_id": split_id,
@@ -1088,7 +1544,7 @@ def _artifact_from_predictions(
 
 def _action_metrics_from_predictions(
     cases: Sequence[OnlineShiftGeneratedCase],
-    predictions: tuple[OnlineShiftPrediction, ...],
+    predictions: tuple[PrefixOnlinePrediction, ...],
     policy: FrozenActionPolicy,
 ) -> ArmActionMetrics:
     outcomes = tuple(
@@ -1096,9 +1552,9 @@ def _action_metrics_from_predictions(
             case.evaluator_truth,
             prediction,
             policy,
+            model_input=case.model_input,
             stream_start_time=case.model_input.observation_stream.start_time,
             duration_days=case.model_input.observation_stream.duration_days,
-            new_evidence_times=_new_evidence_times(case),
         )
         for case, prediction in zip(cases, predictions, strict=True)
     )
@@ -1113,6 +1569,73 @@ def _input_artifact(
     return SplitInputArtifact(**payload, artifact_sha256=content_sha256(payload))
 
 
+def _policy_baseline_prediction(model_input: OnlineShiftCaseInput) -> PrefixOnlinePrediction:
+    run = model_input.observation_stream
+    snapshots = []
+    for prefix_days in range(3, run.duration_days + 1):
+        as_of_time = run.start_time + timedelta(days=prefix_days)
+        prefix = _prefix_input(model_input, as_of_time=as_of_time)
+        snapshots.append(
+            PrefixPosteriorSnapshot(
+                as_of_time=as_of_time,
+                change_time_estimate=None,
+                posterior={
+                    cause: (1.0 if cause == ShiftCause.OWNER_HABIT_REGIME else 0.0)
+                    for cause in ShiftCause
+                    if cause != ShiftCause.UNRESOLVED
+                },
+                prefix_input_sha256=content_sha256(prefix),
+                visible_evidence_record_ids=tuple(
+                    dict.fromkeys(
+                        str(item.metadata.record_id)
+                        for item in (
+                            *prefix.observation_stream.observation_opportunities,
+                            *prefix.observation_stream.detection_results,
+                            *prefix.actor_evidence,
+                        )
+                    )
+                ),
+            )
+        )
+    return PrefixOnlinePrediction(
+        case_id=str(model_input.case_id),
+        model_version="action-policy-baseline@1",
+        snapshots=tuple(snapshots),
+    )
+
+
+def _action_policy_baselines(
+    cases: Sequence[OnlineShiftGeneratedCase], policy: FrozenActionPolicy
+) -> dict[ActionPolicyBaselineId, ActionPolicyBaselineArtifact]:
+    output = {}
+    for baseline_id, action_mode in (
+        (ActionPolicyBaselineId.NEVER_ACT, "never-act"),
+        (ActionPolicyBaselineId.ALWAYS_RESET_VERIFY, "always-reset-verify"),
+    ):
+        outcomes = tuple(
+            _case_outcome(
+                case.evaluator_truth,
+                _policy_baseline_prediction(case.model_input),
+                policy,
+                model_input=case.model_input,
+                stream_start_time=case.model_input.observation_stream.start_time,
+                duration_days=case.model_input.observation_stream.duration_days,
+                action_mode=action_mode,
+            )
+            for case in cases
+        )
+        payload = {
+            "baseline_id": baseline_id,
+            "split_id": "test",
+            "outcomes": outcomes,
+            "metrics": aggregate_action_metrics(outcomes),
+        }
+        output[baseline_id] = ActionPolicyBaselineArtifact(
+            **payload, artifact_sha256=content_sha256(payload)
+        )
+    return output
+
+
 def _validation_prediction_ledgers(
     validation: Sequence[OnlineShiftGeneratedCase], validation_input_sha256: str
 ) -> dict[ProjectOneAblationArmId, ArmValidationPredictionLedger]:
@@ -1120,10 +1643,8 @@ def _validation_prediction_ledgers(
     for arm in SHIFT_THREE_ARMS:
         records = []
         for index, params in enumerate(_SEARCH_SPACES[arm]):
-            model = _model_factory(arm, params)
             predictions = tuple(
-                model.predict(case.model_input)
-                for case in validation  # type: ignore[attr-defined]
+                _predict_prefix_online(arm, params, case.model_input) for case in validation
             )
             payload = {
                 "arm_id": arm,
@@ -1150,12 +1671,12 @@ def _validation_prediction_ledgers(
 
 def _mechanism_metrics_from_predictions(
     cases: Sequence[OnlineShiftGeneratedCase],
-    predictions: tuple[OnlineShiftPrediction, ...],
+    predictions: tuple[PrefixOnlinePrediction, ...],
 ) -> OnlineShiftReport:
     return OnlineShiftEvaluator().evaluate(
-        tuple(
-            OnlineShiftAttributionCase(truth=case.evaluator_truth, prediction=prediction)
-            for case, prediction in zip(cases, predictions, strict=True)
+        _terminal_attribution_cases(
+            tuple(_action_truth(case) for case in cases),
+            {item.case_id: item for item in predictions},
         )
     )
 
@@ -1180,7 +1701,7 @@ def _shared_candidate_ledger(
     selected = min(
         range(len(items)),
         key=lambda index: (
-            items[index]["metrics"].downstream_action_regret,
+            items[index]["metrics"].balanced_downstream_action_regret,
             items[index]["metrics"].corrupted_habit_mass,
             -items[index]["metrics"].task_success_proxy_rate,
             items[index]["mechanism_metrics"].cause_negative_log_likelihood,
@@ -1209,7 +1730,7 @@ def _retuned_candidate_ledger(
     selected_flat = min(
         range(len(items)),
         key=lambda index: (
-            items[index]["metrics"].downstream_action_regret,
+            items[index]["metrics"].balanced_downstream_action_regret,
             items[index]["metrics"].corrupted_habit_mass,
             -items[index]["metrics"].task_success_proxy_rate,
             items[index]["policy_sha256"],
@@ -1220,7 +1741,9 @@ def _retuned_candidate_ledger(
     return items, (selected["detector_index"], selected["policy_index"])
 
 
-def _seed_metric(artifact: ArmActionArtifact, metric: str) -> dict[int, float]:
+def _seed_metric(
+    artifact: ArmActionArtifact | ActionPolicyBaselineArtifact, metric: str
+) -> dict[int, float]:
     by_seed: dict[int, list[CaseActionOutcome]] = {}
     for outcome in artifact.outcomes:
         by_seed.setdefault(outcome.scenario_seed, []).append(outcome)
@@ -1249,7 +1772,10 @@ def _power_analyses_from_pilot(
                 raise ValueError("power analysis pilot seeds do not match the config")
             differences = [joint_by_seed[seed] - reference_by_seed[seed] for seed in expected_seeds]
             empirical = stdev(differences)
-            powered = empirical * config.power_stddev_safety_factor
+            powered = max(
+                empirical * config.power_stddev_safety_factor,
+                config.power_paired_stddev_floor,
+            )
             mde = float(getattr(config.action_policy, mde_field))
             required = required_paired_seed_count(
                 powered,
@@ -1264,6 +1790,7 @@ def _power_analyses_from_pilot(
                     role=role,
                     empirical_paired_stddev=empirical,
                     stddev_safety_factor=config.power_stddev_safety_factor,
+                    paired_stddev_floor=config.power_paired_stddev_floor,
                     powered_paired_stddev=powered,
                     minimum_detectable_effect=mde,
                     alpha=config.alpha,
@@ -1324,6 +1851,58 @@ def _paired_intervals_for_artifacts(
         for reference in POWER_REFERENCES
         for endpoint_id, _role, metric, _mde_field in POWER_ENDPOINTS
     )
+
+
+def _action_baseline_intervals(
+    shared_artifacts: dict[ProjectOneAblationArmId, ArmActionArtifact],
+    retuned_artifacts: dict[ProjectOneAblationArmId, ArmActionArtifact],
+    baselines: dict[ActionPolicyBaselineId, ActionPolicyBaselineArtifact],
+    bootstrap_samples: int,
+) -> tuple[ActionBaselineInterval, ...]:
+    import random
+
+    output = []
+    for track, artifacts in (
+        (EvaluationTrack.SHARED_POLICY, shared_artifacts),
+        (EvaluationTrack.INDEPENDENTLY_RETUNED_POLICY, retuned_artifacts),
+    ):
+        for arm in SHIFT_THREE_ARMS:
+            candidate = _seed_metric(artifacts[arm], "balanced_downstream_action_regret")
+            for baseline_id in ActionPolicyBaselineId:
+                reference = _seed_metric(
+                    baselines[baseline_id], "balanced_downstream_action_regret"
+                )
+                if set(candidate) != set(reference):
+                    raise ValueError("action baseline comparison requires identical seeds")
+                seeds = tuple(sorted(candidate))
+                differences = [candidate[seed] - reference[seed] for seed in seeds]
+                rng = random.Random(
+                    content_sha256(
+                        {
+                            "track": track,
+                            "arm": arm,
+                            "baseline": baseline_id,
+                            "seeds": seeds,
+                        }
+                    )
+                )
+                draws = sorted(
+                    fmean(rng.choice(differences) for _ in seeds) for _ in range(bootstrap_samples)
+                )
+                lower_index = max(0, ceil(0.025 * len(draws)) - 1)
+                upper_index = max(0, ceil(0.975 * len(draws)) - 1)
+                output.append(
+                    ActionBaselineInterval(
+                        track=track,
+                        candidate_arm_id=arm,
+                        reference_baseline_id=baseline_id,
+                        difference_detector_minus_baseline=fmean(differences),
+                        lower_95=draws[lower_index],
+                        upper_95=draws[upper_index],
+                        bootstrap_samples=bootstrap_samples,
+                    )
+                )
+    return tuple(output)
 
 
 def _scenario_policy(
@@ -1506,6 +2085,23 @@ def decide_cross_track_route(
     )
 
 
+def _beats_never_act_in_both_tracks(
+    intervals: Sequence[ActionBaselineInterval],
+    arm: ProjectOneAblationArmId,
+    minimum_effect: float,
+) -> bool:
+    matched = tuple(
+        item
+        for item in intervals
+        if item.candidate_arm_id == arm
+        and item.reference_baseline_id == ActionPolicyBaselineId.NEVER_ACT
+    )
+    return tuple(item.track for item in matched) == (
+        EvaluationTrack.SHARED_POLICY,
+        EvaluationTrack.INDEPENDENTLY_RETUNED_POLICY,
+    ) and all(item.upper_95 <= -minimum_effect for item in matched)
+
+
 class ProjectOneShiftActionDeathTestRunner:
     def run(
         self,
@@ -1562,7 +2158,7 @@ class ProjectOneShiftActionDeathTestRunner:
                     selected_params_sha256=content_sha256(params),
                     selected_validation_regret=items[selected_index][
                         "metrics"
-                    ].downstream_action_regret,
+                    ].balanced_downstream_action_regret,
                     search_space_sha256=content_sha256(_SEARCH_SPACES[arm]),
                     candidate_ledger_sha256=content_sha256(items),
                     selected_candidate_index=selected_index,
@@ -1596,7 +2192,7 @@ class ProjectOneShiftActionDeathTestRunner:
                     selected_policy_sha256=content_sha256(policy),
                     selected_validation_regret=items[selected_flat][
                         "metrics"
-                    ].downstream_action_regret,
+                    ].balanced_downstream_action_regret,
                     detector_search_space_sha256=content_sha256(_SEARCH_SPACES[arm]),
                     policy_search_space_sha256=content_sha256(policy_space),
                     candidate_ledger_sha256=content_sha256(items),
@@ -1635,8 +2231,8 @@ class ProjectOneShiftActionDeathTestRunner:
                 OnlineShiftSuiteConfig(
                     duration_days=checked.duration_days,
                     seeds=plan.test_seeds,
-                    case_id_salt="project-one-action-death-test-test@1",
-                    shuffle_seed=20260823,
+                    case_id_salt="project-one-action-death-test-test@2",
+                    shuffle_seed=20260824,
                 )
             )
             test_by_seed = {seed: [] for seed in plan.test_seeds}
@@ -1688,6 +2284,19 @@ class ProjectOneShiftActionDeathTestRunner:
             if test
             else ()
         )
+        action_policy_baselines = (
+            _action_policy_baselines(test, checked.action_policy) if test else {}
+        )
+        action_baseline_intervals = (
+            _action_baseline_intervals(
+                test_artifacts,
+                retuned_test_artifacts,
+                action_policy_baselines,
+                checked.bootstrap_samples,
+            )
+            if test
+            else ()
+        )
         overall = decide_cross_track_route(shared_decision, retuned_decision, checked.action_policy)
         if overall.decision == ResearchDecision.REBUILD_JOINT and any(
             next(
@@ -1702,7 +2311,23 @@ class ProjectOneShiftActionDeathTestRunner:
                 decision=ResearchDecision.INCONCLUSIVE,
                 shared_policy_decision=shared_decision.decision,
                 independently_retuned_policy_decision=retuned_decision.decision,
-                rationale_id="decision.utility-sensitivity-not-robust@4",
+                rationale_id="decision.utility-sensitivity-not-robust@5",
+            )
+        guarded_arm = {
+            ResearchDecision.CONTINUE_JOINT: (ProjectOneAblationArmId.JOINT_CAUSE_FACTORIZED_BOCPD),
+            ResearchDecision.REBUILD_JOINT: (ProjectOneAblationArmId.CAUSE_FACTORIZED_BOCPD),
+            ResearchDecision.USE_ORDINARY: ProjectOneAblationArmId.ORDINARY_BOCPD,
+        }.get(overall.decision)
+        if guarded_arm is not None and not _beats_never_act_in_both_tracks(
+            action_baseline_intervals,
+            guarded_arm,
+            checked.action_policy.practical_regret_mde,
+        ):
+            overall = CrossTrackDecision(
+                decision=ResearchDecision.INCONCLUSIVE,
+                shared_policy_decision=shared_decision.decision,
+                independently_retuned_policy_decision=retuned_decision.decision,
+                rationale_id="decision.action-winner-does-not-beat-never-act@5",
             )
 
         payload = {
@@ -1731,13 +2356,15 @@ class ProjectOneShiftActionDeathTestRunner:
             "retuned_decision": retuned_decision,
             "overall_decision": overall,
             "utility_sensitivity_results": sensitivity,
+            "action_policy_baselines": action_policy_baselines,
+            "action_baseline_intervals": action_baseline_intervals,
         }
         full_payload = {
             **payload,
             "primary_endpoint_id": PRIMARY_ENDPOINT_ID,
             "key_secondary_endpoint_id": KEY_SECONDARY_ENDPOINT_ID,
             "multiple_comparisons_policy": (
-                "intersection-union-two-tracks-two-references-utility-sensitivity@4"
+                "intersection-union-two-tracks-two-references-utility-sensitivity@5"
             ),
             "allowed_claims": ALLOWED_CLAIM_IDS,
             "forbidden_claims": FORBIDDEN_CLAIM_IDS,

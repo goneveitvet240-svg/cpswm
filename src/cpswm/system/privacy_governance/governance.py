@@ -134,6 +134,32 @@ class HouseholdGovernance:
         purpose: str,
         at_time: datetime,
     ) -> bool:
+        return (
+            self._find_authorizing_grant(
+                subject=subject,
+                household_id=household_id,
+                resource=resource,
+                operation=operation,
+                purpose=purpose,
+                at_time=at_time,
+            )
+            is not None
+        )
+
+    def authorize_or_raise(self, **kwargs: Any) -> None:
+        if not self.authorize(**kwargs):
+            raise AuthorizationDeniedError("no active grant authorizes this access")
+
+    def _find_authorizing_grant(
+        self,
+        *,
+        subject: str,
+        household_id: UUID,
+        resource: ResourceKind,
+        operation: Operation,
+        purpose: str,
+        at_time: datetime,
+    ) -> CapabilityGrant | None:
         at_time = require_aware(at_time, "at_time")
         for grant in self._grants.values():
             if grant.subject != subject:
@@ -149,12 +175,8 @@ class HouseholdGovernance:
             if grant.purpose != purpose:
                 # A purpose swap (same grant, different purpose) is denied.
                 continue
-            return True
-        return False
-
-    def authorize_or_raise(self, **kwargs: Any) -> None:
-        if not self.authorize(**kwargs):
-            raise AuthorizationDeniedError("no active grant authorizes this access")
+            return grant
+        return None
 
     # ----------------------------------------------------------------- oracle
 
@@ -162,20 +184,38 @@ class HouseholdGovernance:
         self,
         request: OracleAccessRequest,
         *,
-        allowed: bool,
         decided_by: str,
         decided_time: datetime,
-        denial_reason: str | None = None,
     ) -> OracleAccessDecision:
+        """Decide oracle access *from an active grant* -- never from a caller
+        flag.  The caller cannot pass ``allowed``; it is derived by re-running
+        the grant policy.
+        """
+
+        decided_time = require_aware(decided_time, "decided_time")
         if not request.evaluation_only:
             raise GovernanceConflictError("oracle access must be evaluation-only")
+
+        grant = self._find_authorizing_grant(
+            subject=request.caller,
+            household_id=request.household_id,
+            resource=ResourceKind.GT,
+            operation=Operation.READ,
+            purpose="evaluation_only",
+            at_time=decided_time,
+        )
+        allowed = grant is not None
         decision = OracleAccessDecision(
             metadata=request.metadata,
             request_id=request.request_id,
+            request_hash=request.fingerprint(),
+            grant_id=grant.grant_id if grant is not None else None,
+            caller=request.caller,
+            household_id=request.household_id,
             allowed=allowed,
             decided_by=decided_by,
             decided_time=decided_time,
-            denial_reason=denial_reason,
+            denial_reason=None if allowed else "no active grant authorizes oracle access",
             input_watermark=request.input_watermark,
         )
         self._append(decision, f"oracle-decision:{decision.decision_id}")
@@ -283,6 +323,8 @@ class HouseholdGovernance:
             return
         if grant.operation != Operation.READ:
             raise GovernanceConflictError("gt.* grants are read-only")
+        if grant.purpose != "evaluation_only":
+            raise GovernanceConflictError("gt.* grants require purpose=evaluation_only")
         if grant.subject.startswith(FORBIDDEN_GT_SUBJECT_PREFIXES):
             raise GovernanceConflictError(
                 f"ordinary module subject {grant.subject!r} cannot hold a gt.* grant"
@@ -293,28 +335,45 @@ class HouseholdGovernance:
             )
 
     def _authorize_deletion(self, request: UserDeletionRequest) -> None:
+        # Deletion is strictly PRIVACY + DELETE + user_deletion: the grant must
+        # match the subject, the household, the validity interval, and the
+        # exact purpose.  No other grant shape can authorize a deletion.
+        grant: CapabilityGrant | None = None
         if request.authorization_grant_id is not None:
             grant = self._grants.get(request.authorization_grant_id)
-            if grant is None or grant.grant_id in self._revocations:
-                raise AuthorizationDeniedError("deletion authorization grant is not active")
-            if grant.household_id != request.household_id:
-                raise AuthorizationDeniedError("deletion grant belongs to another household")
-            return
-        if not self.authorize(
-            subject=request.subject,
-            household_id=request.household_id,
-            resource=ResourceKind.PRIVACY,
-            operation=Operation.DELETE,
-            purpose="user_deletion",
-            at_time=request.requested_time,
-        ):
+        else:
+            grant = self._find_authorizing_grant(
+                subject=request.subject,
+                household_id=request.household_id,
+                resource=ResourceKind.PRIVACY,
+                operation=Operation.DELETE,
+                purpose="user_deletion",
+                at_time=request.requested_time,
+            )
+
+        if grant is None or grant.grant_id in self._revocations:
             raise AuthorizationDeniedError("no active grant authorizes this deletion")
+        if grant.subject != request.subject:
+            raise AuthorizationDeniedError("deletion grant subject does not match request")
+        if grant.household_id != request.household_id:
+            raise AuthorizationDeniedError("deletion grant belongs to another household")
+        if grant.resource != ResourceKind.PRIVACY or grant.operation != Operation.DELETE:
+            raise AuthorizationDeniedError("deletion requires a PRIVACY + DELETE grant")
+        if grant.purpose != "user_deletion":
+            raise AuthorizationDeniedError("deletion requires purpose=user_deletion")
+        if not grant.valid_time.contains(request.requested_time):
+            raise AuthorizationDeniedError("deletion grant is expired for the request time")
 
     def _append(self, record: Any, idempotency_key: str) -> None:
         self._log.append([record], idempotency_key=idempotency_key)
 
     def restore(self) -> None:
-        """Rebuild in-memory state from the append-only log (cross-restart)."""
+        """Rebuild in-memory state from the append-only log (cross-restart).
+
+        Grant policy is re-executed on every restored grant: a log record that
+        violates the GT-subject or household policy is rejected rather than
+        blindly trusted.
+        """
 
         self._grants.clear()
         self._revocations.clear()
@@ -326,6 +385,7 @@ class HouseholdGovernance:
                 payload = record.envelope.payload
                 decoded = decode_governance_record(payload, record.envelope.schema_name)
                 if isinstance(decoded, CapabilityGrant):
+                    self._validate_restored_grant(decoded)
                     self._grants[decoded.grant_id] = decoded
                 elif isinstance(decoded, CapabilityRevocation):
                     self._revocations[decoded.grant_id] = decoded
@@ -336,6 +396,13 @@ class HouseholdGovernance:
                     bucket.update(decoded.tombstoned_record_ids)
                 elif isinstance(decoded, OracleAccessAuditRecord):
                     self._audit_records.append(decoded)
+
+    def _validate_restored_grant(self, grant: CapabilityGrant) -> None:
+        if grant.household_id != grant.metadata.household_id:
+            raise GovernanceConflictError(
+                f"restored grant {grant.grant_id} has a mismatched household"
+            )
+        self._validate_gt_grant(grant)
 
     @property
     def active_grants(self) -> tuple[CapabilityGrant, ...]:

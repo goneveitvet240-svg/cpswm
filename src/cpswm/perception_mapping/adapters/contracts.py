@@ -31,6 +31,7 @@ from cpswm.contracts.base import (
     SourceType,
     require_aware,
 )
+from cpswm.system.privacy_governance.contracts import OracleAccessDecision
 
 
 class SensorModality(StrEnum):
@@ -68,12 +69,12 @@ class ObservationIdentity(ContractModel):
 
 
 class PayloadRef(ContractModel):
-    """Reference to the raw payload plus its content hash.
+    """Reference to the raw payload plus its content hash and byte size.
 
     The payload bytes themselves live in M03's raw store; the envelope only
-    carries the reference.  ``payload_sha256`` is recomputed by the adapter and
-    re-verified on replay, so a tampered or mis-routed payload cannot be
-    silently accepted.
+    carries the reference.  ``payload_sha256`` and ``size_bytes`` are both
+    re-verified on replay, so a tampered, mis-routed, or truncated payload
+    cannot be silently accepted.
     """
 
     payload_id: UUID = Field(default_factory=uuid4)
@@ -82,25 +83,16 @@ class PayloadRef(ContractModel):
     size_bytes: int = Field(ge=0)
 
 
-class OracleAuthorization(ContractModel):
-    """Explicit authorization carried by an oracle-channel envelope.
-
-    Its presence is what separates a privileged oracle envelope from a normal
-    perception envelope.  ``declared_purpose`` must be evaluation-only, and the
-    record names the authorization that permitted it.
-    """
-
-    authorization_id: UUID
-    declared_purpose: str = Field(min_length=1)
-    access_decision_id: UUID | None = None
-    issued_by: str = Field(min_length=1)
-
-
 class ObservationEnvelope(ContractModel):
     """Unified raw observation produced by M05.
 
     ``metadata`` reuses M01's :class:`BaseRecordMetadata`; the envelope-specific
     identity, sensor, clock, frame, and payload binding live alongside it.
+
+    The normal perception payload and the oracle payload are *separate* fields:
+    a non-oracle envelope carries ``payload`` only, while an oracle envelope
+    carries ``oracle_payload`` only and an M28 decision receipt in
+    ``oracle_authorization``.
     """
 
     metadata: BaseRecordMetadata
@@ -110,9 +102,10 @@ class ObservationEnvelope(ContractModel):
     arrival_time: datetime
     clock_domain: str = Field(min_length=1)
     frame_id: str = Field(min_length=1)
-    payload: PayloadRef
+    payload: PayloadRef | None = None
+    oracle_payload: PayloadRef | None = None
     oracle_channel: bool = False
-    oracle_authorization: OracleAuthorization | None = None
+    oracle_authorization: OracleAccessDecision | None = None
 
     @field_validator("capture_time", "arrival_time")
     @classmethod
@@ -129,23 +122,51 @@ class ObservationEnvelope(ContractModel):
             raise ValueError("observation identity session does not match metadata")
         if self.identity.trace_id != self.metadata.trace_id:
             raise ValueError("observation identity trace does not match metadata")
+
         if self.oracle_channel:
             if self.oracle_authorization is None:
-                raise ValueError("oracle_channel requires an oracle_authorization")
+                raise ValueError("oracle_channel requires an oracle_authorization receipt")
             if self.metadata.source_type not in {SourceType.SIMULATION, SourceType.IMPORT}:
                 raise ValueError(
                     "oracle-channel observations may only originate from simulation or import"
                 )
-        elif self.oracle_authorization is not None:
-            raise ValueError("a non-oracle envelope cannot carry oracle_authorization")
+            if not self.oracle_authorization.allowed:
+                raise ValueError("oracle_authorization receipt is not allowed")
+            if self.oracle_authorization.purpose != "evaluation_only":
+                raise ValueError("oracle_authorization receipt purpose must be evaluation_only")
+            if self.oracle_authorization.household_id != self.identity.household_id:
+                raise ValueError("oracle_authorization household does not match observation")
+            if self.oracle_payload is None:
+                raise ValueError("an oracle-channel envelope requires oracle_payload")
+            if self.payload is not None:
+                raise ValueError("an oracle-channel envelope cannot carry a normal payload")
+        else:
+            if self.oracle_authorization is not None:
+                raise ValueError("a non-oracle envelope cannot carry oracle_authorization")
+            if self.oracle_payload is not None:
+                raise ValueError("a non-oracle envelope cannot carry oracle_payload")
+            if self.payload is None:
+                raise ValueError("a non-oracle envelope requires a normal payload")
+
         if self.metadata.source_type == SourceType.SENSOR and self.oracle_channel:
             raise ValueError("a physical sensor observation cannot be an oracle channel")
         return self
 
-    def verify_payload(self, payload_bytes: bytes) -> bool:
-        """Return whether ``payload_bytes`` matches the bound hash."""
+    def active_payload(self) -> PayloadRef | None:
+        """Return the payload that applies to this envelope's channel."""
 
-        return content_hash_bytes(payload_bytes) == self.payload.payload_sha256
+        return self.oracle_payload if self.oracle_channel else self.payload
+
+    def verify_payload(self, payload_bytes: bytes) -> bool:
+        """Return whether ``payload_bytes`` matches the bound hash and size."""
+
+        reference = self.active_payload()
+        if reference is None:
+            return False
+        return (
+            content_hash_bytes(payload_bytes) == reference.payload_sha256
+            and len(payload_bytes) == reference.size_bytes
+        )
 
 
 def content_hash_bytes(value: bytes) -> str:
@@ -157,7 +178,6 @@ def content_hash_bytes(value: bytes) -> str:
 __all__ = [
     "ObservationEnvelope",
     "ObservationIdentity",
-    "OracleAuthorization",
     "PayloadRef",
     "SensorModality",
     "SensorRef",

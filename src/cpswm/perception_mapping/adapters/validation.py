@@ -69,7 +69,7 @@ def validate_observation_envelope(
         )
 
     if payload_bytes is not None and not envelope.verify_payload(payload_bytes):
-        raise ObservationEnvelopeValidationError("payload hash does not match envelope")
+        raise ObservationEnvelopeValidationError("payload hash or size does not match envelope")
 
     if calibration_valid is False:
         raise ObservationEnvelopeValidationError("calibration is expired for this observation")
@@ -79,15 +79,17 @@ def validate_observation_envelope(
             raise ObservationEnvelopeValidationError("oracle channel lacks authorization")
         if envelope.metadata.source_type not in {SourceType.SIMULATION, SourceType.IMPORT}:
             raise ObservationEnvelopeValidationError("oracle channel has a forbidden source type")
+        if not envelope.oracle_authorization.allowed:
+            raise ObservationEnvelopeValidationError("oracle authorization receipt is denied")
+        if envelope.oracle_authorization.purpose != "evaluation_only":
+            raise ObservationEnvelopeValidationError(
+                "oracle authorization receipt purpose must be evaluation_only"
+            )
     else:
         if envelope.oracle_authorization is not None:
             raise ObservationEnvelopeValidationError(
                 "non-oracle envelope carries oracle authorization"
             )
-        if envelope.metadata.source_type == SourceType.SENSOR:
-            # A physical sensor is never oracle; the contract already rejects
-            # this combination, but the check is repeated for defense in depth.
-            pass
 
 
 def reject_ground_truth_leakage(

@@ -60,7 +60,7 @@ def _grant(
     subject="evaluator.benchmark",
     resource=ResourceKind.GT,
     operation=Operation.READ,
-    purpose="evaluation",
+    purpose="evaluation_only",
     grant_id=None,
     start=START,
     minutes=60,
@@ -88,7 +88,7 @@ def test_grant_binds_all_required_fields():
     assert grant.household_id == household
     assert grant.resource == ResourceKind.GT
     assert grant.operation == Operation.READ
-    assert grant.purpose == "evaluation"
+    assert grant.purpose == "evaluation_only"
     assert grant.valid_time.start == START
     assert grant.issuer
 
@@ -102,7 +102,7 @@ def test_revoked_grant_does_not_authorize():
         household_id=household,
         resource=ResourceKind.GT,
         operation=Operation.READ,
-        purpose="evaluation",
+        purpose="evaluation_only",
         at_time=START + timedelta(minutes=1),
     )
     governance.revoke(
@@ -119,7 +119,7 @@ def test_revoked_grant_does_not_authorize():
         household_id=household,
         resource=ResourceKind.GT,
         operation=Operation.READ,
-        purpose="evaluation",
+        purpose="evaluation_only",
         at_time=START + timedelta(minutes=3),
     )
 
@@ -133,7 +133,7 @@ def test_expired_grant_does_not_authorize():
         household_id=household,
         resource=ResourceKind.GT,
         operation=Operation.READ,
-        purpose="evaluation",
+        purpose="evaluation_only",
         at_time=START + timedelta(minutes=20),
     )
 
@@ -148,7 +148,7 @@ def test_household_a_grant_cannot_authorize_household_b():
         household_id=household_b,
         resource=ResourceKind.GT,
         operation=Operation.READ,
-        purpose="evaluation",
+        purpose="evaluation_only",
         at_time=START + timedelta(minutes=1),
     )
 
@@ -156,7 +156,7 @@ def test_household_a_grant_cannot_authorize_household_b():
 def test_purpose_swap_is_denied():
     household = uuid4()
     governance = HouseholdGovernance()
-    grant = governance.issue_grant(_grant(household_id=household, purpose="evaluation"))
+    grant = governance.issue_grant(_grant(household_id=household, purpose="evaluation_only"))
     assert not governance.authorize(
         subject=grant.subject,
         household_id=household,
@@ -176,7 +176,7 @@ def test_forged_grant_is_not_authorized():
         household_id=household,
         resource=ResourceKind.GT,
         operation=Operation.READ,
-        purpose="evaluation",
+        purpose="evaluation_only",
         at_time=START,
     )
 
@@ -219,7 +219,7 @@ def test_oracle_access_requires_evaluation_only():
             household_id=household,
             resource=ResourceKind.GT,
             evaluation_only=False,
-            purpose="evaluation",
+            purpose="evaluation_only",
             input_watermark=InputWatermark(
                 global_commit_seq=0,
                 transaction_id=uuid4(),
@@ -231,6 +231,7 @@ def test_oracle_access_requires_evaluation_only():
 def test_oracle_audit_records_caller_purpose_watermark_summary():
     household = uuid4()
     governance = HouseholdGovernance()
+    governance.issue_grant(_grant(household_id=household, subject="evaluator.benchmark"))
     watermark = InputWatermark(
         global_commit_seq=7,
         transaction_id=uuid4(),
@@ -242,19 +243,20 @@ def test_oracle_audit_records_caller_purpose_watermark_summary():
         household_id=household,
         resource=ResourceKind.GT,
         evaluation_only=True,
-        purpose="evaluation",
+        purpose="evaluation_only",
         input_watermark=watermark,
     )
     decision = governance.decide_oracle_access(
         request,
-        allowed=True,
         decided_by="governance-test",
         decided_time=START,
     )
+    assert decision.allowed is True
+    assert decision.grant_id is not None
     audit = governance.record_oracle_audit(
         decision=decision,
         caller="evaluator.benchmark",
-        purpose="evaluation",
+        purpose="evaluation_only",
         input_watermark=watermark,
         output_summary={"metric": "ece", "value": 0.12},
         metadata=_metadata(household_id=household),
@@ -269,6 +271,9 @@ def test_oracle_decision_denied_requires_reason():
         OracleAccessDecision(
             metadata=_metadata(household_id=household),
             request_id=uuid4(),
+            request_hash="0" * 64,
+            caller="evaluator.benchmark",
+            household_id=household,
             allowed=False,
             decided_by="governance-test",
             decided_time=START,
@@ -369,7 +374,7 @@ def test_cross_restart_persistence_and_deterministic_replay():
         household_id=household,
         resource=ResourceKind.GT,
         operation=Operation.READ,
-        purpose="evaluation",
+        purpose="evaluation_only",
         at_time=START + timedelta(minutes=3),
     )
 
@@ -378,6 +383,7 @@ def test_replay_after_restore_keeps_audit_records():
     household = uuid4()
     log = AppendOnlyTransactionLog()
     governance = HouseholdGovernance(log=log)
+    governance.issue_grant(_grant(household_id=household, subject="evaluator.benchmark"))
     watermark = InputWatermark(
         global_commit_seq=1,
         transaction_id=uuid4(),
@@ -389,19 +395,18 @@ def test_replay_after_restore_keeps_audit_records():
         household_id=household,
         resource=ResourceKind.GT,
         evaluation_only=True,
-        purpose="evaluation",
+        purpose="evaluation_only",
         input_watermark=watermark,
     )
     decision = governance.decide_oracle_access(
         request,
-        allowed=True,
         decided_by="governance-test",
         decided_time=START,
     )
     governance.record_oracle_audit(
         decision=decision,
         caller="evaluator.benchmark",
-        purpose="evaluation",
+        purpose="evaluation_only",
         input_watermark=watermark,
         output_summary={"ok": True},
         metadata=_metadata(household_id=household),

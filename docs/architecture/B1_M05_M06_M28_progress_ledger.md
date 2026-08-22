@@ -17,9 +17,11 @@
 | M28 隐私与治理纵切 | M28 | `synthetic_vertical_slice` | — |
 | 进度账本 + 验证器 | M01–M32/WS1–WS10 | 机器可读数据 | 见 §4 |
 
-B1 门（M05–M12 全部达到 `synthetic_vertical_slice`）当前 **BLOCK**，因为
-M07–M12 仍为 `contract_only`。全局结构一完成门（WS1–WS10 全部达到
-`replay_validated`）当前 **BLOCK**。
+B1 门已拆为两个：`B1_SYNTHETIC_READINESS`（M05–M12 全部 `synthetic_vertical_slice`，
+当前 **BLOCK**，M07–M12 仍为 `absent`）与 `FORMAL_B1_REAL_VALIDATION`
+（M05–M12 全部 `real_data_validated`，当前 **BLOCK**）。全局结构一完成门
+`STRUCTURE_ONE_COMPLETE`（M01–M32 全部 `replay_validated`，且 WS1–WS10 覆盖）
+当前 **BLOCK**。
 
 ---
 
@@ -31,18 +33,20 @@ M07–M12 仍为 `contract_only`。全局结构一完成门（WS1–WS10 全部�
 - 传感器：`sensor_id + modality`（`SensorRef`，`SensorModality`）；
 - 时间：`capture_time / arrival_time / clock_domain`（三者均要求 aware）；
 - 帧：`frame_id`；
-- 载荷：`PayloadRef`（`payload_sha256 + size_bytes + payload_uri`）；
+- 载荷：普通 `payload` 与 oracle `oracle_payload` **分离**，两者互斥；
 - 来源：复用 M01 `BaseRecordMetadata.source_type`；
-- oracle 标记：`oracle_channel + OracleAuthorization`（必须成对出现）。
+- oracle 标记：`oracle_channel + oracle_authorization`（后者是 M28 的
+  `OracleAccessDecision` decision receipt，`purpose` 固定 `evaluation_only`）。
 
 适配器边界拒绝（`adapters/validation.py`）：
 
 1. GT 字段进入普通感知通道（`ground_truth_refs` 且非 oracle）；
 2. 跨 household/session/frame 混用；
 3. naive datetime；
-4. payload hash 不一致；
+4. payload hash 或**实际字节大小**不一致；
 5. 过期标定（`calibration_valid=False`）；
-6. source type 与 oracle 标记矛盾（物理 SENSOR 不能是 oracle）。
+6. source type 与 oracle 标记矛盾（物理 SENSOR 不能是 oracle）；
+7. oracle 通道携带被拒绝或非 evaluation_only 的 decision receipt。
 
 合成适配器 `SyntheticSimulatorAdapter` 只读取 `simobs.*`，**从不 import
 `cpswm_gt`**（有测试用正则断言源码无 `import cpswm_gt`）。
@@ -56,7 +60,12 @@ M07–M12 仍为 `contract_only`。全局结构一完成门（WS1–WS10 全部�
 - `valid_time`（半开区间）；
 - `frame_id`（source frame，extrinsics.source_frame 必须等于它）；
 - `CalibrationUncertainty`（intrinsics/extrinsics covariance）；
-- `artifact_sha256`（标定产物哈希）。
+- `artifact_sha256`（标定产物哈希，可由 `compute_artifact_hash()` 从规范化
+  参数重算，或由 `verify_artifact(bytes)` 验证外部产物字节）。
+
+`CalibrationRegistry.calibrate(...)` 是真正的标定流程：绑定
+sensor/frame/time/household，自动计算产物哈希（或接受外部 artifact bytes），
+注册标定并可选记录时间同步。
 
 `SensorTimeSyncResult` 保留 `source_time`（原始时间）与 `target_time`
 （对齐时间）、`offset_seconds`、`uncertainty_seconds`；校验
@@ -82,22 +91,33 @@ M07–M12 仍为 `contract_only`。全局结构一完成门（WS1–WS10 全部�
 关键规则：
 
 - `authorize` 检查 grant 有效、未撤销、未过期、household 匹配、purpose 匹配；
+- `decide_oracle_access` **不接受调用方传入 `allowed`**：决策从有效 grant 自动
+  推导，并在 decision 里强制绑定 request_hash、grant、caller、household、
+  purpose（`evaluation_only`）、resource、operation、decision time 和 watermark；
 - 普通模块 subject（`perception_mapping.` / `world_model.` / `language_query.` / `action.` 前缀）
   **不能**获得 `gt.*` grant（`FORBIDDEN_GT_SUBJECT_PREFIXES`）；
+- 删除必须严格满足 `PRIVACY + DELETE + purpose=user_deletion`，并检查 subject
+  与有效期；
 - 删除采用 tombstone/redaction projection，不改写 append-only 历史，
   `redacted_projection` 返回过滤后的派生投影，审计证明保留；
 - household A 的 grant 不能授权 household B（测试覆盖）；
-- `restore()` 从 append-only log 重建状态，支持跨重启持久化与确定性回放。
+- `restore()` 从 append-only log 重建状态，并对每个恢复的 grant **重新执行
+  grant policy 验证**（违反 GT-subject 或 household 约束的日志记录被拒绝）。
 
 ## 4. 进度账本与验证器（`src/cpswm/system/progress_ledger/`）
 
 - 数据：`progress_ledger.json`（M01–M32，每模块记录 module_id / workstream_ids /
   maturity / implementation_paths / test_paths / evidence_artifacts / blockers /
   allowed_claims / forbidden_claims）。
+- 证据：`EvidenceArtifact` 除路径外还可携带 `content_sha256`（内容哈希，验证器
+  逐字节核验）、`artifact_schema` 和 `run_receipt`，不能只检查路径。
 - 成熟度序列：`absent → contract_only → synthetic_vertical_slice →
   integrated_synthetic → replay_validated → real_data_validated → embodied_validated`。
-- CLI：`apps/progress_ledger/validate_progress.py` 校验引用文件存在、检测矛盾
-  声明、输出覆盖矩阵、输出 BLOCK 原因。
+- `contract_only` 要求存在合同实现文件**及**专项测试；无实现的模块只能标 `absent`。
+- CLI：`apps/progress_ledger/validate_progress.py` 校验引用文件与证据哈希、检测
+  矛盾声明、输出覆盖矩阵、输出 BLOCK 原因；**任何 required gate BLOCK 或内部
+  不一致都返回非零退出码**；`internally_consistent` 与 `required_gates_passed`
+  是两个独立布尔。
 
 验证器**只做校验、从不升级**成熟度，也**不替用户决定研究路线**。篡改检测：
 
@@ -105,7 +125,9 @@ M07–M12 仍为 `contract_only`。全局结构一完成门（WS1–WS10 全部�
 - 把 B1 门改写为 ATG-1 → 报 "must require exactly M05-M12"；
 - 用 synthetic evidence 冒充 real validation → 报缺 real-data evidence；
 - 缺失引用文件 → 报 path missing；
-- 声明超出成熟度 → 报 claim exceeds maturity。
+- 声明超出成熟度 → 报 claim exceeds maturity；
+- 篡改 evidence 内容哈希 → 报 content hash mismatch；
+- 全结构门缺 M01–M32 任一项 → 报 "must cover exactly M01-M32"。
 
 ## 5. 已知限制
 

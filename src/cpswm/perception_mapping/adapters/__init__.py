@@ -1,9 +1,10 @@
 """M05 unified observation adapters."""
 
+from cpswm.system.privacy_governance.contracts import OracleAccessDecision
+
 from .contracts import (
     ObservationEnvelope,
     ObservationIdentity,
-    OracleAuthorization,
     PayloadRef,
     SensorModality,
     SensorRef,
@@ -23,7 +24,7 @@ __all__ = [
     "ObservationEnvelope",
     "ObservationEnvelopeValidationError",
     "ObservationIdentity",
-    "OracleAuthorization",
+    "OracleAccessDecision",
     "PayloadRef",
     "SensorModality",
     "SensorRef",

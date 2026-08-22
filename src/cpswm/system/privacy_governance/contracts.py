@@ -17,6 +17,7 @@ from __future__ import annotations
 
 from datetime import datetime
 from enum import StrEnum
+from typing import Literal
 from uuid import UUID, uuid4
 
 from pydantic import Field, JsonValue, field_validator, model_validator
@@ -29,6 +30,7 @@ from cpswm.contracts.base import (
     ValidTimeInterval,
     require_aware,
 )
+from cpswm.foundation.persistence_replay.contracts import content_hash
 
 
 class CapabilityStatus(StrEnum):
@@ -107,8 +109,9 @@ class CapabilityRevocation(ContractModel):
 class OracleAccessRequest(ContractModel):
     """A request to read ``gt.*`` ground truth.
 
-    The request must declare ``evaluation_only`` and name the caller, the
-    purpose, and the input watermark at which the read would happen.
+    The request declares ``evaluation_only`` and names the caller, the purpose,
+    and the input watermark at which the read would happen.  ``purpose`` is
+    fixed to ``evaluation_only``: no other purpose can request ground truth.
     """
 
     metadata: BaseRecordMetadata
@@ -117,7 +120,7 @@ class OracleAccessRequest(ContractModel):
     household_id: UUID
     resource: ResourceKind = ResourceKind.GT
     evaluation_only: bool
-    purpose: str = Field(min_length=1)
+    purpose: Literal["evaluation_only"] = "evaluation_only"
     input_watermark: InputWatermark
 
     @model_validator(mode="after")
@@ -130,13 +133,40 @@ class OracleAccessRequest(ContractModel):
             raise ValueError("request household must match metadata household")
         return self
 
+    def fingerprint(self) -> str:
+        """Content hash of the request, excluding random record identities."""
+
+        payload = {
+            "caller": self.caller,
+            "household_id": str(self.household_id),
+            "resource": self.resource.value,
+            "evaluation_only": self.evaluation_only,
+            "purpose": self.purpose,
+            "input_watermark": self.input_watermark.model_dump(mode="json"),
+        }
+        return content_hash(payload)
+
 
 class OracleAccessDecision(ContractModel):
-    """The authorization outcome for one oracle access request."""
+    """The authorization outcome for one oracle access request.
+
+    The decision binds the request (``request_id`` + ``request_hash``), the
+    authorizing grant (``grant_id``), the caller, household, fixed purpose,
+    resource, operation, decision time, and input watermark.  It is a
+    verifiable receipt: downstream oracle consumers check ``allowed`` and
+    ``purpose`` before trusting ground truth.
+    """
 
     metadata: BaseRecordMetadata
     decision_id: UUID = Field(default_factory=uuid4)
     request_id: UUID
+    request_hash: str = Field(pattern=r"^[0-9a-f]{64}$")
+    grant_id: UUID | None = None
+    caller: str = Field(min_length=1)
+    household_id: UUID
+    purpose: Literal["evaluation_only"] = "evaluation_only"
+    resource: ResourceKind = ResourceKind.GT
+    operation: Operation = Operation.READ
     allowed: bool
     decided_by: str = Field(min_length=1)
     decided_time: datetime
@@ -150,9 +180,16 @@ class OracleAccessDecision(ContractModel):
 
     @model_validator(mode="after")
     def validate_decision(self) -> OracleAccessDecision:
-        if self.allowed and self.denial_reason is not None:
-            raise ValueError("an allowed decision cannot carry a denial reason")
-        if not self.allowed and self.denial_reason is None:
+        if self.household_id != self.metadata.household_id:
+            raise ValueError("decision household must match metadata household")
+        if self.resource != ResourceKind.GT or self.operation != Operation.READ:
+            raise ValueError("oracle decision must be a gt read decision")
+        if self.allowed:
+            if self.grant_id is None:
+                raise ValueError("an allowed oracle decision requires a grant_id")
+            if self.denial_reason is not None:
+                raise ValueError("an allowed decision cannot carry a denial reason")
+        elif self.denial_reason is None:
             raise ValueError("a denied decision requires a denial reason")
         return self
 

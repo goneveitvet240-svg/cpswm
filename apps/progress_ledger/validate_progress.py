@@ -4,10 +4,10 @@ Usage::
 
     python apps/progress_ledger/validate_progress.py [--ledger PATH] [--repo-root PATH]
 
-Exit code 0 means the ledger is internally consistent and every referenced
-file exists.  Exit code 1 means the ledger contains contradictions, missing
-files, or blocked gates.  This CLI never upgrades maturity and never chooses a
-research route.
+Exit code 0 means the ledger is internally consistent AND every required gate
+is passed.  Exit code 1 means the ledger contains contradictions, missing
+files, tampered evidence, or a blocked required gate.  This CLI never upgrades
+maturity and never chooses a research route.
 """
 
 from __future__ import annotations
@@ -68,7 +68,8 @@ def main() -> int:
 
     for gate in report.gate_results:
         status = "PASS" if gate.passed else "BLOCK"
-        print(f"=== gate {gate.gate_id}: {status} ===")
+        required = "required" if gate.required else "optional"
+        print(f"=== gate {gate.gate_id} [{required}]: {status} ===")
         for blocker in gate.blockers:
             print(f"  BLOCK: {blocker}")
         print()
@@ -82,7 +83,12 @@ def main() -> int:
         for warning in report.warnings:
             print(f"  WARN: {warning}")
 
-    if report.errors:
+    print(
+        f"internally_consistent={report.internally_consistent} "
+        f"required_gates_passed={report.required_gates_passed}"
+    )
+
+    if not report.internally_consistent or not report.required_gates_passed:
         return 1
     return 0
 

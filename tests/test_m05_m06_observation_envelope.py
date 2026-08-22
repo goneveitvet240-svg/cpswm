@@ -18,7 +18,7 @@ from cpswm.perception_mapping.adapters import (
     ObservationEnvelope,
     ObservationEnvelopeValidationError,
     ObservationIdentity,
-    OracleAuthorization,
+    OracleAccessDecision,
     PayloadRef,
     SensorModality,
     SensorRef,
@@ -90,6 +90,35 @@ def _observation(*, oracle_channel: bool = False, ground_truth_refs: tuple[UUID,
         noise_profile_id="controlled_noise_v1",
         oracle_channel=oracle_channel,
         ground_truth_refs=ground_truth_refs,
+    )
+
+
+def _allowed_decision(household_id):
+    """An allowed M28 decision receipt for the given household."""
+
+    return OracleAccessDecision(
+        metadata=dict(
+            schema_name="cpswm.privacy.OracleAccessDecision",
+            schema_version="0.1.0",
+            household_id=household_id,
+            session_id=uuid4(),
+            trace_id=uuid4(),
+            source_type=SourceType.MODEL.value,
+            source_id="governance",
+        ),
+        request_id=uuid4(),
+        request_hash="0" * 64,
+        grant_id=uuid4(),
+        caller="evaluator.benchmark",
+        household_id=household_id,
+        allowed=True,
+        decided_by="governance-test",
+        decided_time=datetime(2026, 8, 10, 8, 0, tzinfo=UTC),
+        input_watermark=dict(
+            global_commit_seq=0,
+            transaction_id=uuid4(),
+            recorded_at=datetime(2026, 8, 10, 8, 0, tzinfo=UTC),
+        ),
     )
 
 
@@ -210,13 +239,9 @@ def test_envelope_rejects_sensor_source_with_oracle_channel():
             arrival_time=datetime(2026, 8, 10, 8, 0, tzinfo=UTC),
             clock_domain="sensor",
             frame_id="cam_1",
-            payload=PayloadRef(payload_sha256="0" * 64, size_bytes=0),
+            oracle_payload=PayloadRef(payload_sha256="0" * 64, size_bytes=0),
             oracle_channel=True,
-            oracle_authorization=OracleAuthorization(
-                authorization_id=uuid4(),
-                declared_purpose="evaluation",
-                issued_by="evaluator",
-            ),
+            oracle_authorization=_allowed_decision(household),
         )
 
 
@@ -275,14 +300,11 @@ def test_adapter_adapts_oracle_channel_with_authorization():
         observation,
         sensor=SensorRef(sensor_id="cam-1", modality=SensorModality.RGB),
         frame_id="cam_1",
-        oracle_authorization=OracleAuthorization(
-            authorization_id=uuid4(),
-            declared_purpose="evaluation",
-            issued_by="evaluator",
-        ),
+        oracle_authorization=_allowed_decision(observation.metadata.household_id),
     )
     assert envelope.oracle_channel is True
-    assert envelope.payload.payload_sha256
+    assert envelope.oracle_payload is not None
+    assert envelope.payload is None
     assert envelope.verify_payload(adapter.payload_bytes(observation))
 
 

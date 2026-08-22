@@ -16,12 +16,12 @@ from datetime import datetime
 
 from cpswm.contracts.base import require_aware
 from cpswm.foundation.persistence_replay.contracts import canonical_json
+from cpswm.system.privacy_governance.contracts import OracleAccessDecision
 from simobs import SyntheticObservation
 
 from .contracts import (
     ObservationEnvelope,
     ObservationIdentity,
-    OracleAuthorization,
     PayloadRef,
     SensorRef,
     content_hash_bytes,
@@ -49,7 +49,7 @@ class SyntheticSimulatorAdapter:
         clock_domain: str = "simulation",
         capture_time: datetime | None = None,
         arrival_time: datetime | None = None,
-        oracle_authorization: OracleAuthorization | None = None,
+        oracle_authorization: OracleAccessDecision | None = None,
     ) -> ObservationEnvelope:
         if not isinstance(observation, SyntheticObservation):
             raise ObservationEnvelopeValidationError("expected a simobs.SyntheticObservation")
@@ -63,11 +63,15 @@ class SyntheticSimulatorAdapter:
         )
         if oracle_channel and oracle_authorization is None:
             raise ObservationEnvelopeValidationError(
-                "an oracle-channel synthetic observation requires explicit authorization"
+                "an oracle-channel synthetic observation requires an M28 decision receipt"
             )
         if not oracle_channel and observation.oracle_channel:
             raise ObservationEnvelopeValidationError(
                 "simobs oracle_channel cannot be downgraded to a normal channel"
+            )
+        if oracle_channel and oracle_authorization is not None and not oracle_authorization.allowed:
+            raise ObservationEnvelopeValidationError(
+                "an oracle envelope requires an allowed decision receipt"
             )
 
         capture = capture_time or observation.metadata.recorded_time
@@ -76,6 +80,10 @@ class SyntheticSimulatorAdapter:
         require_aware(arrival, "arrival_time")
 
         payload = _payload_bytes(observation)
+        payload_ref = PayloadRef(
+            payload_sha256=content_hash_bytes(payload),
+            size_bytes=len(payload),
+        )
         envelope = ObservationEnvelope(
             metadata=observation.metadata,
             identity=ObservationIdentity(
@@ -88,10 +96,8 @@ class SyntheticSimulatorAdapter:
             arrival_time=arrival,
             clock_domain=clock_domain,
             frame_id=frame_id,
-            payload=PayloadRef(
-                payload_sha256=content_hash_bytes(payload),
-                size_bytes=len(payload),
-            ),
+            payload=None if oracle_channel else payload_ref,
+            oracle_payload=payload_ref if oracle_channel else None,
             oracle_channel=oracle_channel,
             oracle_authorization=oracle_authorization,
         )

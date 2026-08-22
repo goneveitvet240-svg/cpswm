@@ -23,7 +23,7 @@ def _module(ledger: ProgressLedger, module_id: str):
 def test_ledger_reports_blocked_b1_gate():
     ledger = _load()
     report = validate_ledger(ledger, REPO_ROOT)
-    b1 = next(gate for gate in report.gate_results if gate.gate_id == "B1")
+    b1 = next(gate for gate in report.gate_results if gate.gate_id == "B1_SYNTHETIC_READINESS")
     assert not b1.passed
     # M07-M12 are below synthetic_vertical_slice and must appear as blockers.
     assert any("M07" in blocker for blocker in b1.blockers)
@@ -62,7 +62,7 @@ def test_b1_gate_cannot_be_rewritten_to_atg1():
     ledger = _load()
     data = ledger.model_dump(mode="json")
     for gate in data["gates"]:
-        if gate["gate_id"] == "B1":
+        if gate["gate_id"] == "B1_SYNTHETIC_READINESS":
             gate["required_module_ids"] = ["ATG-1"]
     report = validate_ledger(ProgressLedger.model_validate(data), REPO_ROOT)
     assert any("must require exactly M05-M12" in error for error in report.errors)
@@ -96,3 +96,33 @@ def test_claim_cannot_exceed_maturity():
             item["allowed_claims"] = ["full embodied system"]
     report = validate_ledger(ProgressLedger.model_validate(data), REPO_ROOT)
     assert any("M01" in error for error in report.errors)
+
+
+def test_internally_consistent_is_separate_from_gates_passed():
+    ledger = _load()
+    report = validate_ledger(ledger, REPO_ROOT)
+    # The ledger is internally consistent (no errors) even though required
+    # gates are still BLOCK.
+    assert report.internally_consistent is True
+    assert report.required_gates_passed is False
+
+
+def test_contract_only_requires_implementation_and_test():
+    ledger = _load()
+    data = ledger.model_dump(mode="json")
+    for item in data["modules"]:
+        if item["module_id"] == "M01":
+            item["test_paths"] = []
+    report = validate_ledger(ProgressLedger.model_validate(data), REPO_ROOT)
+    assert any("M01" in error and "test path" in error for error in report.errors)
+
+
+def test_evidence_content_hash_is_verified():
+    ledger = _load()
+    data = ledger.model_dump(mode="json")
+    for item in data["modules"]:
+        if item["module_id"] == "M17":
+            for artifact in item["evidence_artifacts"]:
+                artifact["content_sha256"] = "0" * 64
+    report = validate_ledger(ProgressLedger.model_validate(data), REPO_ROOT)
+    assert any("content hash mismatch" in error for error in report.errors)

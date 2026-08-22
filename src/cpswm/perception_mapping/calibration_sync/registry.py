@@ -6,12 +6,22 @@ for household A can never be used to validate an observation from household B.
 
 from __future__ import annotations
 
+import hashlib
 from datetime import datetime
 from uuid import UUID
 
-from cpswm.contracts.base import require_aware
+from cpswm.contracts.base import ValidTimeInterval, require_aware
+from cpswm.foundation.identity_time_frames.contracts import FrameTransform
+from cpswm.perception_mapping.adapters.contracts import SensorRef
 
-from .contracts import CalibrationState, SensorCalibration, SensorTimeSyncResult
+from .contracts import (
+    CalibrationState,
+    CalibrationUncertainty,
+    IntrinsicsModel,
+    SensorCalibration,
+    SensorTimeSyncResult,
+    calibration_artifact_hash,
+)
 
 
 class CalibrationConflictError(ValueError):
@@ -28,6 +38,51 @@ class CalibrationRegistry:
     def __init__(self) -> None:
         self._calibrations: list[SensorCalibration] = []
         self._syncs: list[SensorTimeSyncResult] = []
+
+    def calibrate(
+        self,
+        *,
+        sensor: SensorRef,
+        frame_id: str,
+        household_id: UUID,
+        valid_time: ValidTimeInterval,
+        intrinsics: IntrinsicsModel | None = None,
+        extrinsics: FrameTransform | None = None,
+        uncertainty: CalibrationUncertainty | None = None,
+        calibration_version: str = "0.1.0",
+        artifact_bytes: bytes | None = None,
+        sync: SensorTimeSyncResult | None = None,
+    ) -> SensorCalibration:
+        """Build, hash, and register one calibration, optionally with a sync.
+
+        The artifact hash is either recomputed from the canonical parameters or
+        taken from the external artifact bytes; it is never caller-supplied.
+        """
+
+        if artifact_bytes is not None:
+            artifact_sha256 = hashlib.sha256(artifact_bytes).hexdigest()
+        else:
+            artifact_sha256 = calibration_artifact_hash(
+                calibration_version=calibration_version,
+                frame_id=frame_id,
+                intrinsics=intrinsics,
+                extrinsics=extrinsics,
+            )
+        calibration = SensorCalibration(
+            household_id=household_id,
+            sensor=sensor,
+            calibration_version=calibration_version,
+            valid_time=valid_time,
+            frame_id=frame_id,
+            intrinsics=intrinsics,
+            extrinsics=extrinsics,
+            uncertainty=uncertainty,
+            artifact_sha256=artifact_sha256,
+        )
+        self.register(calibration)
+        if sync is not None:
+            self.record_sync(sync)
+        return calibration
 
     def register(self, calibration: SensorCalibration) -> None:
         for existing in self._calibrations:

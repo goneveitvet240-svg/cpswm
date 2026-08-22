@@ -64,15 +64,20 @@ class EvidenceKind(StrEnum):
 class EvidenceArtifact(ContractModel):
     """One evidence artifact referenced by a module entry.
 
-    ``path`` is repository-relative and must exist for the claim to hold.
-    ``kind`` declares whether the artifact is synthetic, replay, real, or
-    embodied, so the validator can reject synthetic evidence posing as real
-    validation.
+    ``path`` is repository-relative and must exist.  ``kind`` declares whether
+    the artifact is synthetic, replay, real, or embodied.  ``content_sha256``
+    (when present) is the file's content hash, so the validator can reject
+    tampered evidence instead of only checking the path.  ``artifact_schema``
+    names the artifact's schema and ``run_receipt`` references a run receipt
+    for reproducible runs.
     """
 
     path: str = Field(min_length=1)
     kind: EvidenceKind
     description: str = Field(min_length=1)
+    content_sha256: str | None = Field(default=None, pattern=r"^[0-9a-f]{64}$")
+    artifact_schema: str | None = Field(default=None, min_length=1)
+    run_receipt: str | None = Field(default=None, min_length=1)
 
 
 class ModuleEntry(ContractModel):
@@ -105,6 +110,7 @@ class ModuleEntry(ContractModel):
 class Gate(ContractModel):
     gate_id: str = Field(min_length=1)
     description: str = Field(min_length=1)
+    required: bool = True
     required_module_ids: tuple[str, ...] = ()
     required_workstream_ids: tuple[str, ...] = ()
     min_maturity: Maturity

@@ -14,6 +14,7 @@ run clock synchronization against real devices.
 
 from __future__ import annotations
 
+import hashlib
 from datetime import datetime
 from uuid import UUID, uuid4
 
@@ -26,6 +27,7 @@ from cpswm.contracts.base import (
     require_aware,
 )
 from cpswm.foundation.identity_time_frames.contracts import FrameTransform
+from cpswm.foundation.persistence_replay.contracts import content_hash
 from cpswm.perception_mapping.adapters.contracts import ObservationEnvelope, SensorRef
 
 
@@ -61,6 +63,32 @@ class CalibrationUncertainty(ContractModel):
         return self
 
 
+def calibration_artifact_hash(
+    *,
+    calibration_version: str,
+    frame_id: str,
+    intrinsics: IntrinsicsModel | None,
+    extrinsics: FrameTransform | None,
+) -> str:
+    """Content hash of the canonical calibration parameters.
+
+    Random record identities (``transform_id``, ``component_transform_ids``)
+    are excluded so the same parameter set always produces the same hash.
+    """
+
+    payload = {
+        "calibration_version": calibration_version,
+        "frame_id": frame_id,
+        "intrinsics": intrinsics.model_dump(mode="json") if intrinsics is not None else None,
+        "extrinsics": (
+            extrinsics.model_dump(mode="json", exclude={"transform_id", "component_transform_ids"})
+            if extrinsics is not None
+            else None
+        ),
+    }
+    return content_hash(payload)
+
+
 class SensorCalibration(ContractModel):
     """One versioned calibration binding sensor frame to a reference frame."""
 
@@ -85,6 +113,26 @@ class SensorCalibration(ContractModel):
             if self.extrinsics.source_frame_id != self.frame_id:
                 raise ValueError("extrinsics source frame must equal the calibration frame_id")
         return self
+
+    def compute_artifact_hash(self) -> str:
+        """Recompute the artifact hash from the canonical parameters."""
+
+        return calibration_artifact_hash(
+            calibration_version=self.calibration_version,
+            frame_id=self.frame_id,
+            intrinsics=self.intrinsics,
+            extrinsics=self.extrinsics,
+        )
+
+    def verify_artifact(self, artifact_bytes: bytes) -> bool:
+        """Verify external artifact bytes against the stored hash."""
+
+        return hashlib.sha256(artifact_bytes).hexdigest() == self.artifact_sha256
+
+    def verify_computed_hash(self) -> bool:
+        """Verify that the stored hash matches the canonical parameters."""
+
+        return self.compute_artifact_hash() == self.artifact_sha256
 
 
 class SensorTimeSyncResult(ContractModel):
@@ -164,4 +212,5 @@ __all__ = [
     "IntrinsicsModel",
     "SensorCalibration",
     "SensorTimeSyncResult",
+    "calibration_artifact_hash",
 ]

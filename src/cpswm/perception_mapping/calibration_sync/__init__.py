@@ -7,6 +7,7 @@ from .contracts import (
     IntrinsicsModel,
     SensorCalibration,
     SensorTimeSyncResult,
+    calibration_artifact_hash,
 )
 from .registry import (
     CalibrationConflictError,
@@ -24,4 +25,5 @@ __all__ = [
     "IntrinsicsModel",
     "SensorCalibration",
     "SensorTimeSyncResult",
+    "calibration_artifact_hash",
 ]

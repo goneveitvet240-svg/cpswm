@@ -230,13 +230,22 @@ def _search_found_feedback(base, loop_auth):
         event_history_revision=1,
         input_watermark=1,
     )
+    from cpswm.contracts import TargetPresenceBeliefRef
+
     context = DecisionContext.create(
         decision_id=uuid4(),
         decision_time=T1,
         valid_time=ValidTimeInterval(start=T1, end=T1 + timedelta(minutes=5)),
         staleness_budget_seconds=60.0,
         revisions=revisions,
-        target_presence_prior=0.5,
+        target_presence_belief=TargetPresenceBeliefRef(
+            object_instance_id=OBJ,
+            location_id=L2,
+            belief_node_id=f"habit:{OBJ}",
+            belief_snapshot_id=revisions.belief_snapshot_id,
+            node_content_hash="a" * 64,
+            prior_probability=0.5,
+        ),
         authorization_scope_id=loop_auth,
         habit_regime_model_version="m@1",
         model_versions=(("loop", "e2e@0.1"),),
@@ -244,7 +253,9 @@ def _search_found_feedback(base, loop_auth):
         rationale="feedback context",
     )
     binding = DecisionContextBinding(
-        metadata=fb_meta.model_copy(update={"record_id": uuid4()}),
+        metadata=fb_meta.model_copy(
+            update={"record_id": uuid4(), "schema_name": "cpswm.DecisionContextBinding"}
+        ),
         surface=DecisionSurface.EXECUTION_FEEDBACK,
         subject_record_id=feedback.metadata.record_id,
         subject_household_id=fb_meta.household_id,

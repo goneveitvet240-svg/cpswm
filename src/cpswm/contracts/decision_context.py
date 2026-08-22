@@ -52,6 +52,23 @@ class RelevantChange(StrEnum):
     CANCEL = "cancel"
 
 
+class TargetPresenceBeliefRef(ContractModel):
+    """A target-presence prior bound to the exact belief node it was read from.
+
+    The prior is not a free scalar: it is tied to an object, a location, a belief
+    node id, the snapshot the node lives in, and that node's content hash, so a
+    consumer can verify the prior belongs to *this* object/location/snapshot (and
+    later reconcile ``node_content_hash`` against the live map, review fix #4 tail).
+    """
+
+    object_instance_id: UUID
+    location_id: UUID
+    belief_node_id: str = Field(min_length=1)
+    belief_snapshot_id: UUID
+    node_content_hash: str = Field(min_length=1)
+    prior_probability: Probability
+
+
 class MapConsistencyRevisions(ContractModel):
     """The exact world-state versions a decision was made against."""
 
@@ -80,9 +97,11 @@ class DecisionContext(ContractModel):
     attributed_cause: AttributedCause = AttributedCause.UNRESOLVED
     segment_change_probability: Probability | None = None
     transient_noise_probability: Probability | None = None
-    #: Target-presence prior the decision was made against; feedback projection
-    #: reads its prior from here, never from an arbitrary caller argument.
-    target_presence_prior: Probability | None = None
+    #: Target-presence prior the decision was made against, bound to its belief
+    #: node/snapshot; feedback projection reads its prior from here, never from
+    #: an arbitrary caller argument.  (Adding this field changes context_hash, so
+    #: any persisted pre-field context needs a version/migration.)
+    target_presence_belief: TargetPresenceBeliefRef | None = None
     consolidation_ledger_ref: str | None = None
     authorization_scope_id: UUID
     habit_regime_model_version: str = Field(min_length=1)
@@ -135,7 +154,11 @@ class DecisionContext(ContractModel):
             "attributed_cause": self.attributed_cause.value,
             "segment_change_probability": repr(self.segment_change_probability),
             "transient_noise_probability": repr(self.transient_noise_probability),
-            "target_presence_prior": repr(self.target_presence_prior),
+            "target_presence_belief": (
+                self.target_presence_belief.model_dump(mode="json")
+                if self.target_presence_belief is not None
+                else None
+            ),
             "consolidation_ledger_ref": self.consolidation_ledger_ref,
             "authorization_scope_id": str(self.authorization_scope_id),
             "habit_regime_model_version": self.habit_regime_model_version,

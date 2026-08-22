@@ -11,8 +11,11 @@ It wires the *real* components:
   changed habit projection is published as an atomic map version.
 * **MapTaskCoordinator**: a task pinned to the old snapshot is switched
   (continue / replan-suffix / cancel) by the exact changed-node + risk gate.
-* **Feedback backflow**: an :class:`ExecutionFeedbackRecord` outcome is folded
-  back into the ledger as a new delta and republished.
+* **Feedback projection (option A)**: an :class:`ExecutionFeedbackRecord` outcome
+  is *projected and routed* to typed, likelihood-aware evidence
+  (``project_execution_feedback``).  It is NOT yet folded into the ledger or
+  republished to the map -- that backflow lands with the presence-log/map + ORRER
+  outbox wiring after the map/ORRER core is handed over.
 
 The loop only orchestrates; every guarantee (append-only, O(k) retract, atomic
 snapshots, exact risk gate) lives in the real components it composes.
@@ -234,7 +237,9 @@ class HybridEventToTaskCoordinatorLoop:
 
         context = binding.decision_context
         if context.authorization_scope_id != self._auth:
-            raise ValueError("feedback decision context authorization scope does not match the loop")
+            raise ValueError(
+                "feedback decision context authorization scope does not match the loop"
+            )
         if feedback.target_entity is None or feedback.target_entity.entity_id != self._object:
             raise ValueError("feedback target object does not match the loop's configured object")
         return self._feedback_projector.project_execution_feedback(

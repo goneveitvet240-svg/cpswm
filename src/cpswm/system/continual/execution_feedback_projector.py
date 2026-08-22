@@ -1,27 +1,30 @@
 """Likelihood-aware execution-feedback projection and routing (总纲 §2.11/§2.12).
 
-Review fix #4 (hardened): an uncertain action outcome must not be written into
-long-term memory directly.  The projector re-validates all three input contracts,
-checks surface / household-session-trace / target object / context hash / valid
-time, reads its prior from the *bound snapshot* (never a caller argument), and
-de-duplicates by ``(record_id, content_hash)`` so a forged replay is caught.
+Review fix #4 (round 3): an uncertain action outcome must not be written into
+long-term memory directly, its prior must be *bound to the snapshot node* it came
+from, and de-duplication must cover the full projection inputs.
 
-Routing:
+* **Prior is snapshot-bound** (P0-1): read from a :class:`TargetPresenceBeliefRef`
+  on the bound decision context; the projector checks the ref's object, location,
+  and belief_snapshot_id match the feedback/context (the ``node_content_hash``
+  vs live-map reconciliation lands at #4 tail).
+* **De-dup covers projection inputs** (P0-2): a ``feedback_content_hash`` proves
+  source integrity; a ``projection_input_hash`` also covers the context hash, the
+  likelihood model, and the projector version.  Same feedback with different
+  projection inputs is hard-rejected, never silently replayed.
+* **Honest transition semantics** (P0-3): the likelihood model here is a
+  target-presence likelihood, so place/transfer output is reported as
+  ``reported_action_success_probability`` and a ``TransitionCandidate`` label,
+  *not* a transition posterior.  A slip is a NEGATIVE candidate.
 
-* find/observe (search/navigate/grasp) -> a **target-presence** update only; it
-  can never increase an owner habit;
-* place/transfer -> a distinct :class:`LocationTransitionEvidence` scored by a
-  transition-success likelihood, where a *slip* is never a positive transition;
-  owner-habit attribution still requires actor responsibility.
-
-The entry point is named :meth:`project_execution_feedback`: it *projects and
-routes* evidence.  It does not itself write a presence log, map, or ORRER outbox
-(that wiring lands after the map/ORRER core files are handed over).
+This entry point projects/routes only; it does not write a presence log, map, or
+ORRER outbox (that lands after the map/ORRER core is handed over).
 """
 
 from __future__ import annotations
 
 import hashlib
+import json
 from dataclasses import dataclass
 from enum import StrEnum
 from uuid import UUID
@@ -37,6 +40,10 @@ from cpswm.contracts import (
     RobotActionType,
 )
 
+PROJECTOR_VERSION = "execution-feedback-projector@0.2"
+_FEEDBACK_SCHEMA = "cpswm.ExecutionFeedbackRecord"
+_BINDING_SCHEMA = "cpswm.DecisionContextBinding"
+
 _TARGET_PRESENCE_ACTIONS = frozenset(
     {RobotActionType.SEARCH, RobotActionType.NAVIGATE, RobotActionType.GRASP}
 )
@@ -48,19 +55,31 @@ class FeedbackRoute(StrEnum):
     LOCATION_TRANSITION = "location_transition"
 
 
+class TransitionCandidate(StrEnum):
+    POSITIVE_CANDIDATE = "positive_candidate"
+    NEGATIVE_CANDIDATE = "negative_candidate"
+    UNRESOLVED = "unresolved"
+
+
+class ProjectionInputConflictError(ValueError):
+    """Same feedback record replayed with different projection inputs."""
+
+
 @dataclass(frozen=True, slots=True)
 class LocationTransitionEvidence:
-    """A place/transfer outcome scored as a candidate location transition.
+    """A place/transfer outcome as a *candidate* transition (not a posterior).
 
-    A slip is explicitly *not* a positive transition: the object did not end up
-    placed, so ``is_positive_transition`` is false and cannot feed a habit.
+    Named honestly: it reports the action's own success/slip probabilities, not a
+    P(transition | outcome).  A slip is a NEGATIVE candidate and can never feed a
+    habit.  A true transition posterior needs a location-transition likelihood
+    model (#4 tail).
     """
 
     feedback_record_id: UUID
     location_id: UUID
-    transition_success_probability: float
-    slipped_probability: float
-    is_positive_transition: bool
+    reported_action_success_probability: float
+    reported_slip_probability: float
+    candidate: TransitionCandidate
 
 
 @dataclass(frozen=True, slots=True)
@@ -68,7 +87,8 @@ class ProjectedFeedbackEvidence:
     """The routed, likelihood-aware result of one execution feedback record."""
 
     feedback_record_id: UUID
-    content_hash: str
+    feedback_content_hash: str
+    projection_input_hash: str
     route: FeedbackRoute
     target_presence_update: FeedbackBeliefUpdate | None
     location_transition: LocationTransitionEvidence | None
@@ -78,15 +98,18 @@ class ProjectedFeedbackEvidence:
     rationale: str
 
 
-def _feedback_content_hash(feedback: ExecutionFeedbackRecord) -> str:
-    return hashlib.sha256(feedback.model_dump_json().encode("utf-8")).hexdigest()
+def _canonical_hash(model) -> str:
+    return hashlib.sha256(
+        json.dumps(model.model_dump(mode="json"), sort_keys=True).encode("utf-8")
+    ).hexdigest()
 
 
 class ExecutionFeedbackProjector:
     """Project execution feedback into typed, de-duplicated belief evidence."""
 
     def __init__(self) -> None:
-        self._seen: dict[UUID, ProjectedFeedbackEvidence] = {}
+        # record_id -> (feedback_content_hash, projection_input_hash, result)
+        self._seen: dict[UUID, tuple[str, str, ProjectedFeedbackEvidence]] = {}
 
     def project_execution_feedback(
         self,
@@ -102,7 +125,7 @@ class ExecutionFeedbackProjector:
             likelihood_model.model_dump()
         )
 
-        self._check_binding(feedback, binding)
+        self._check_schema_and_binding(feedback, binding)
         if likelihood_model.action_type != feedback.action_type:
             raise ValueError("likelihood model action type must match the feedback")
         if set(feedback.outcome_distribution) - set(
@@ -111,29 +134,46 @@ class ExecutionFeedbackProjector:
             raise ValueError("likelihood model must cover every observed outcome")
 
         context = binding.decision_context
-        prior = context.target_presence_prior
-        if prior is None:
-            raise ValueError("bound decision context must carry a target_presence_prior")
+        belief = self._resolve_prior(feedback, binding)
 
         record_id = feedback.metadata.record_id
-        content_hash = _feedback_content_hash(feedback)
+        feedback_hash = _canonical_hash(feedback)
+        projection_input_hash = hashlib.sha256(
+            json.dumps(
+                {
+                    "feedback_content_hash": feedback_hash,
+                    "context_hash": context.context_hash,
+                    "likelihood_hash": _canonical_hash(likelihood_model),
+                    "projector_version": PROJECTOR_VERSION,
+                },
+                sort_keys=True,
+            ).encode("utf-8")
+        ).hexdigest()
+
         cached = self._seen.get(record_id)
         if cached is not None:
-            if cached.content_hash != content_hash:
+            cached_feedback_hash, cached_input_hash, result = cached
+            if cached_feedback_hash != feedback_hash:
                 raise ValueError(
                     "feedback record id reused with different content (collision/forgery)"
                 )
-            return _as_replay(cached)
+            if cached_input_hash != projection_input_hash:
+                raise ProjectionInputConflictError(
+                    "feedback replayed with different projection inputs "
+                    "(context/likelihood/version)"
+                )
+            return _as_replay(result)
 
         if feedback.action_type in _LOCATION_TRANSITION_ACTIONS:
-            projected = self._location_transition(feedback, content_hash)
+            projected = self._location_transition(feedback, feedback_hash, projection_input_hash)
         else:
             projected = ProjectedFeedbackEvidence(
                 feedback_record_id=record_id,
-                content_hash=content_hash,
+                feedback_content_hash=feedback_hash,
+                projection_input_hash=projection_input_hash,
                 route=FeedbackRoute.TARGET_PRESENCE,
                 target_presence_update=self._target_presence_update(
-                    feedback, likelihood_model, prior
+                    feedback, likelihood_model, belief.prior_probability
                 ),
                 location_transition=None,
                 requires_actor_responsibility=False,
@@ -141,12 +181,16 @@ class ExecutionFeedbackProjector:
                 is_replay=False,
                 rationale="find/observe outcome updates target presence only; not owner habit",
             )
-        self._seen[record_id] = projected
+        self._seen[record_id] = (feedback_hash, projection_input_hash, projected)
         return projected
 
-    def _check_binding(
+    def _check_schema_and_binding(
         self, feedback: ExecutionFeedbackRecord, binding: DecisionContextBinding
     ) -> None:
+        if feedback.metadata.schema_name != _FEEDBACK_SCHEMA:
+            raise ValueError(f"feedback schema_name must be {_FEEDBACK_SCHEMA}")
+        if binding.metadata.schema_name != _BINDING_SCHEMA:
+            raise ValueError(f"binding schema_name must be {_BINDING_SCHEMA}")
         if binding.surface is not DecisionSurface.EXECUTION_FEEDBACK:
             raise ValueError("feedback binding surface must be execution_feedback")
         if binding.subject_record_id != feedback.metadata.record_id:
@@ -161,8 +205,28 @@ class ExecutionFeedbackProjector:
         context = binding.decision_context
         if not context.verify_hash():
             raise ValueError("bound decision context hash is invalid")
-        if not context.valid_time.contains(feedback.valid_time.start):
-            raise ValueError("feedback occurred outside the decision context valid time")
+        # Whole feedback interval must lie within the decision validity window.
+        ctx_time = context.valid_time
+        fb_time = feedback.valid_time
+        start_ok = fb_time.start >= ctx_time.start
+        end_ok = ctx_time.end is None or (fb_time.end is not None and fb_time.end <= ctx_time.end)
+        if not (start_ok and end_ok):
+            raise ValueError("feedback interval must lie within the decision context valid time")
+
+    def _resolve_prior(self, feedback: ExecutionFeedbackRecord, binding: DecisionContextBinding):
+        context = binding.decision_context
+        belief = context.target_presence_belief
+        if belief is None:
+            raise ValueError("bound decision context must carry a target_presence_belief")
+        # P0-1: the prior must belong to *this* object/location/snapshot.
+        assert feedback.target_entity is not None
+        if belief.object_instance_id != feedback.target_entity.entity_id:
+            raise ValueError("target-presence belief object does not match the feedback target")
+        if belief.location_id != feedback.attempted_location_id:
+            raise ValueError("target-presence belief location does not match the feedback location")
+        if belief.belief_snapshot_id != context.revisions.belief_snapshot_id:
+            raise ValueError("target-presence belief snapshot does not match the decision snapshot")
+        return belief
 
     def _target_presence_update(
         self,
@@ -191,43 +255,53 @@ class ExecutionFeedbackProjector:
         )
 
     def _location_transition(
-        self, feedback: ExecutionFeedbackRecord, content_hash: str
+        self,
+        feedback: ExecutionFeedbackRecord,
+        feedback_hash: str,
+        projection_input_hash: str,
     ) -> ProjectedFeedbackEvidence:
         if feedback.attempted_location_id is None:
             raise ValueError("place/transfer feedback must record an attempted location")
         success = feedback.outcome_distribution.get(RobotActionOutcome.SUCCESS, 0.0)
         slipped = feedback.outcome_distribution.get(RobotActionOutcome.OBJECT_SLIPPED, 0.0)
-        # A slip is never a positive transition: the object was not placed.
+        if slipped >= success:
+            candidate = TransitionCandidate.NEGATIVE_CANDIDATE
+        elif success > 0.5:
+            candidate = TransitionCandidate.POSITIVE_CANDIDATE
+        else:
+            candidate = TransitionCandidate.UNRESOLVED
         transition = LocationTransitionEvidence(
             feedback_record_id=feedback.metadata.record_id,
             location_id=feedback.attempted_location_id,
-            transition_success_probability=success,
-            slipped_probability=slipped,
-            is_positive_transition=success > 0.5 and success > slipped,
+            reported_action_success_probability=success,
+            reported_slip_probability=slipped,
+            candidate=candidate,
         )
         return ProjectedFeedbackEvidence(
             feedback_record_id=feedback.metadata.record_id,
-            content_hash=content_hash,
+            feedback_content_hash=feedback_hash,
+            projection_input_hash=projection_input_hash,
             route=FeedbackRoute.LOCATION_TRANSITION,
             target_presence_update=None,
             location_transition=transition,
             requires_actor_responsibility=True,
             updates_owner_habit_directly=False,
             is_replay=False,
-            rationale="place/transfer: candidate location transition; owner-habit "
-            "attribution requires actor responsibility; a slip is not a transition",
+            rationale="place/transfer: reported-success candidate; owner-habit attribution "
+            "requires actor responsibility; a slip is a negative candidate",
         )
 
 
 def _as_replay(evidence: ProjectedFeedbackEvidence) -> ProjectedFeedbackEvidence:
     return ProjectedFeedbackEvidence(
         feedback_record_id=evidence.feedback_record_id,
-        content_hash=evidence.content_hash,
+        feedback_content_hash=evidence.feedback_content_hash,
+        projection_input_hash=evidence.projection_input_hash,
         route=evidence.route,
         target_presence_update=evidence.target_presence_update,
         location_transition=evidence.location_transition,
         requires_actor_responsibility=evidence.requires_actor_responsibility,
         updates_owner_habit_directly=evidence.updates_owner_habit_directly,
         is_replay=True,
-        rationale="replayed feedback record; no-op",
+        rationale="replayed feedback record with identical projection inputs; no-op",
     )

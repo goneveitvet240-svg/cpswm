@@ -43,6 +43,7 @@ from .decision_context import (
     DecisionSurface,
     MapConsistencyRevisions,
     RelevantChange,
+    TargetPresenceBeliefRef,
     detect_relevant_change,
 )
 from .events import (
@@ -254,6 +255,7 @@ __all__ = [
     "SourceType",
     "StatedPreferenceAssertion",
     "StaticGeometryAnchor",
+    "TargetPresenceBeliefRef",
     "TemporalValidityMixin",
     "UserCorrectionEvent",
     "ValidTimeInterval",

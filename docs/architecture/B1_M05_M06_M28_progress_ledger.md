@@ -153,6 +153,26 @@ sensor/frame/time/household，自动计算产物哈希（或接受外部 artifac
   验证器核验内容哈希、schema 白名单、kind 与文件类型一致、同一证据不能支撑
   多个模块。
 
+### 4.5.1 第二轮加固（P0-1..P0-4 / P1-5 / P1-6）
+
+- P0-1 request 也持久化；`restore()` 只在 `grant → request → decision` 顺序、
+  request fingerprint 与 decision hash 一致、grant 的 subject/household/resource/
+  operation/purpose 全匹配、grant 在 `decided_time` 有效时才信任 decision。
+- P0-2 禁止字段键归一化（casefold + 去除非字母数字）后匹配
+  `groundtruth/latentstate/oracle/evaluatortruth/trueactor/changepointtruth`，
+  camelCase/kebab/snake/空格变形均被拦截。
+- P0-3 gate 规范整体冻结：ID、模块集合与 `min_maturity` 均由代码固定，不能
+  从 JSON 自由修改（降为 `absent` 被拒绝）。
+- P0-4 evidence 文件按 `EvidenceArtifactPayload` 强类型解析（`module_id`/
+  `covered_module_ids`/`evidence_kind`/`artifact_sha256`/`dataset_id`/`run_id`/
+  `git_commit_sha`/`config_sha256`/`code_snapshot_sha256`/`case_count`/
+  `result_status`）；`run_receipt` 是仓库相对路径，按 `RunReceipt` 解析并反向
+  绑定 artifact SHA-256。
+- P1-5 `apply_calibration` 不再接受调用方 `at_time`，强制用
+  `envelope.capture_time`（replay 覆盖需要单独受审计 API）。
+- P1-6 `apply_calibration(target_clock, require_sync, max_sync_uncertainty_seconds)`
+  在要求同步却缺失、或 uncertainty 超阈值时 fail closed。
+
 ## 5. 已知限制
 
 - M05/M06 是**契约 + 合成适配器**纵切，不含真实 SLAM、目标检测、真实机器人

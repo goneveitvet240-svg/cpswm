@@ -28,6 +28,7 @@ from pathlib import Path
 from .contracts import (
     ALL_MODULE_IDS,
     MATURITY_ORDER,
+    EvidenceArtifact,
     EvidenceArtifactPayload,
     EvidenceKind,
     Maturity,
@@ -41,19 +42,15 @@ _ALL_MODULES = tuple(f"M{i:02d}" for i in range(1, 33))
 
 #: The three formal gates, frozen with their exact module topology and minimum
 #: maturity.  Neither the JSON ledger nor the caller may change these.
-_REQUIRED_GATE_SPECS: dict[str, dict[str, object]] = {
-    "B1_SYNTHETIC_READINESS": {
-        "module_ids": _B1_MODULES,
-        "min_maturity": Maturity.SYNTHETIC_VERTICAL_SLICE,
-    },
-    "FORMAL_B1_REAL_VALIDATION": {
-        "module_ids": _B1_MODULES,
-        "min_maturity": Maturity.REAL_DATA_VALIDATED,
-    },
-    "STRUCTURE_ONE_COMPLETE": {
-        "module_ids": _ALL_MODULES,
-        "min_maturity": Maturity.REPLAY_VALIDATED,
-    },
+_REQUIRED_GATE_MODULES: dict[str, tuple[str, ...]] = {
+    "B1_SYNTHETIC_READINESS": _B1_MODULES,
+    "FORMAL_B1_REAL_VALIDATION": _B1_MODULES,
+    "STRUCTURE_ONE_COMPLETE": _ALL_MODULES,
+}
+_REQUIRED_GATE_MATURITIES: dict[str, Maturity] = {
+    "B1_SYNTHETIC_READINESS": Maturity.SYNTHETIC_VERTICAL_SLICE,
+    "FORMAL_B1_REAL_VALIDATION": Maturity.REAL_DATA_VALIDATED,
+    "STRUCTURE_ONE_COMPLETE": Maturity.REPLAY_VALIDATED,
 }
 
 #: Allowed evidence schemas; an unknown schema is rejected.
@@ -136,7 +133,7 @@ def validate_ledger(ledger: ProgressLedger, repo_root: Path) -> ValidationReport
 
 def _check_required_gates_present(ledger: ProgressLedger, report: ValidationReport) -> None:
     by_gate_id = {gate.gate_id: gate for gate in ledger.gates}
-    for gate_id in _REQUIRED_GATE_SPECS:
+    for gate_id in _REQUIRED_GATE_MODULES:
         if gate_id not in by_gate_id:
             report.errors.append(f"required gate {gate_id} is missing")
         elif not by_gate_id[gate_id].required:
@@ -145,12 +142,11 @@ def _check_required_gates_present(ledger: ProgressLedger, report: ValidationRepo
 
 def _check_gate_shapes(ledger: ProgressLedger, report: ValidationReport) -> None:
     by_gate_id = {gate.gate_id: gate for gate in ledger.gates}
-    for gate_id, spec in _REQUIRED_GATE_SPECS.items():
+    for gate_id, expected_modules in _REQUIRED_GATE_MODULES.items():
         gate = by_gate_id.get(gate_id)
         if gate is None:
             continue
-        expected_modules: tuple[str, ...] = spec["module_ids"]
-        expected_maturity: Maturity = spec["min_maturity"]
+        expected_maturity = _REQUIRED_GATE_MATURITIES[gate_id]
         if gate.required_module_ids != expected_modules:
             report.errors.append(
                 f"gate {gate_id} must require exactly {expected_modules}, "
@@ -225,7 +221,7 @@ def _check_evidence_content(
 
 def _check_evidence_payload(
     entry: ModuleEntry,
-    artifact,
+    artifact: EvidenceArtifact,
     repo_root: Path,
     report: ValidationReport,
 ) -> None:
@@ -257,7 +253,7 @@ def _check_evidence_payload(
 
 def _check_run_receipt(
     entry: ModuleEntry,
-    artifact,
+    artifact: EvidenceArtifact,
     repo_root: Path,
     report: ValidationReport,
 ) -> None:

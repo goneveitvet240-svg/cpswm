@@ -119,11 +119,15 @@ class HybridEventToTaskCoordinatorLoop:
         # rebuilt on a recovered ledger never writes behind the log.
         return self._ledger.head_watermark + 1
 
-    def ingest_owner_placement(self, placement: OwnerPlacementInput) -> None:
-        """Consolidate one revision's owner mass into the Hybrid RGRC ledger."""
+    def _build_placement(
+        self,
+        placement: OwnerPlacementInput,
+        *,
+        delta_watermark: int,
+        promotion_watermark: int,
+    ) -> tuple[HybridStatisticDelta, HybridPromotion]:
+        """Build the (quarantined delta, promotion) pair for one owner placement."""
 
-        if placement.owner_mass <= 1e-12:
-            return
         record_id = uuid4()
         delta = HybridStatisticDelta.from_weighted_sample(
             x=[1.0],
@@ -135,25 +139,37 @@ class HybridEventToTaskCoordinatorLoop:
             revision_id=placement.revision_id,
             parent_revision_id=placement.parent_revision_id,
             evidence_cluster_id=uuid4(),
-            semantic_dedup_id=f"{placement.revision_id}:{self._owner}:{placement.destination_location_id}",
+            semantic_dedup_id=(
+                f"{placement.revision_id}:{self._owner}:{placement.destination_location_id}"
+            ),
             source_record_ids=(placement.source_record_id,),
             authorization_scope_id=self._auth,
             key=self._key(placement.destination_location_id),
-            input_watermark=self._next_watermark(),
+            input_watermark=delta_watermark,
             model_version=self._model_version,
             code_version=self._code_version,
         )
-        self._ledger.append_delta(delta)
-        self._ledger.promote(
-            HybridPromotion(
-                record_id=uuid4(),
-                promotes_record_id=record_id,
-                input_watermark=self._next_watermark(),
-                authorization_scope_id=self._auth,
-                reason="owner-attributed hidden-event placement consolidated",
-                risk_certificate=self._clean_certificate(record_id),
-            )
+        promotion = HybridPromotion(
+            record_id=uuid4(),
+            promotes_record_id=record_id,
+            input_watermark=promotion_watermark,
+            authorization_scope_id=self._auth,
+            reason="owner-attributed hidden-event placement consolidated",
+            risk_certificate=self._clean_certificate(record_id),
         )
+        return delta, promotion
+
+    def ingest_owner_placement(self, placement: OwnerPlacementInput) -> None:
+        """Consolidate one revision's owner mass into the Hybrid RGRC ledger."""
+
+        if placement.owner_mass <= 1e-12:
+            return
+        base = self._ledger.head_watermark
+        delta, promotion = self._build_placement(
+            placement, delta_watermark=base + 1, promotion_watermark=base + 2
+        )
+        self._ledger.append_delta(delta)
+        self._ledger.promote(promotion)
 
     def retract_revision(self, revision_id: UUID) -> int:
         """Retract a superseded revision's owner deltas (O(k))."""
@@ -172,12 +188,35 @@ class HybridEventToTaskCoordinatorLoop:
     def apply_orrer_revision(
         self, *, superseded_revision_id: UUID, corrected: OwnerPlacementInput
     ) -> BeliefSnapshot:
-        """Retract the superseded revision, consolidate the corrected one, and
-        publish the changed habit locations as one atomic map version."""
+        """Atomically swap a superseded revision for its ORRER correction, then
+        publish the changed habit locations as one map version.
+
+        The retract-then-promote happens as a single all-or-nothing ledger step
+        (:meth:`HybridStatisticLedger.replace_promoted_revision`): no task ever
+        reads the window where the owner belief has been withdrawn but the
+        correction is not yet in place, and the map is published only after the
+        ledger commit succeeds.
+        """
 
         superseded_locations = self._ledger.location_ids_for_revision(superseded_revision_id)
-        self.retract_revision(superseded_revision_id)
-        self.ingest_owner_placement(corrected)
+        if corrected.owner_mass <= 1e-12:
+            # The correction attributes the event away from the owner entirely:
+            # withdraw the belief, nothing new to promote.
+            self.retract_revision(superseded_revision_id)
+            return self.publish_snapshot(changed_locations=set(superseded_locations))
+        live = self._ledger.live_promoted_records_for_revision(superseded_revision_id)
+        base = self._ledger.head_watermark
+        corrected_delta, promotion = self._build_placement(
+            corrected, delta_watermark=base + 2, promotion_watermark=base + 3
+        )
+        self._ledger.replace_promoted_revision(
+            superseded_revision_id=superseded_revision_id,
+            reversal_record_ids=tuple(uuid4() for _ in live),
+            reversal_watermark=base + 1,
+            reversal_reason="ORRER re-attributed the hidden event away from the owner",
+            corrected_delta=corrected_delta,
+            promotion=promotion,
+        )
         changed = {corrected.destination_location_id, *superseded_locations}
         return self.publish_snapshot(changed_locations=changed)
 

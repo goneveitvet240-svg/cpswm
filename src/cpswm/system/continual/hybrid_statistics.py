@@ -683,6 +683,123 @@ class HybridStatisticLedger:
                 )
             return len(live)
 
+    def replace_promoted_revision(
+        self,
+        *,
+        superseded_revision_id: UUID,
+        reversal_record_ids: tuple[UUID, ...],
+        reversal_watermark: int,
+        reversal_reason: str,
+        corrected_delta: HybridStatisticDelta,
+        promotion: HybridPromotion,
+    ) -> HybridProjection:
+        """Atomically retract a promoted revision and promote its correction.
+
+        This is one all-or-nothing step under a single lock: no reader can observe
+        the window where the superseded revision is retracted but the correction
+        is not yet promoted, and every fallible check runs *before* any mutation,
+        so a rejected replacement leaves the ledger exactly as it was.  Returns the
+        committed projection for the corrected key (verified numerically reliable as
+        a shadow before commit) so the caller can publish the map after the commit.
+        """
+
+        with self._lock:
+            # --- pre-validation: no mutation may happen before this all passes ---
+            if corrected_delta.parent_revision_id != superseded_revision_id:
+                raise HybridLedgerError("corrected delta parent must be the superseded revision")
+            parent_records = self._by_revision.get(superseded_revision_id, ())
+            if not parent_records:
+                raise HybridLedgerError("superseded revision does not exist")
+            if any(record_id not in self._promoted for record_id in parent_records):
+                raise HybridLedgerError("only a fully promoted revision can be atomically replaced")
+            live = tuple(
+                record_id
+                for record_id in parent_records
+                if record_id in self._promoted and record_id not in self._reversed
+            )
+            if len(reversal_record_ids) != len(live):
+                raise HybridLedgerError("one reversal record id is required per live delta")
+            if len(reversal_record_ids) != len(set(reversal_record_ids)):
+                raise HybridLedgerError("reversal record ids must be unique")
+            reserved = set(reversal_record_ids)
+            reserved.update({corrected_delta.record_id, promotion.record_id})
+            if len(reserved) != len(reversal_record_ids) + 2:
+                raise HybridLedgerError("replacement record ids must be pairwise distinct")
+            if any(record_id in self._record_ids for record_id in reserved):
+                raise HybridLedgerError("a replacement record id is already present")
+            if not reversal_reason.strip():
+                raise HybridLedgerError("reversal reason must be non-empty")
+            self._precheck_appendable(corrected_delta)
+            if promotion.promotes_record_id != corrected_delta.record_id:
+                raise HybridLedgerError("promotion must target the corrected delta")
+            if promotion.authorization_scope_id != corrected_delta.authorization_scope_id:
+                raise HybridLedgerError("promotion authorization scope does not match delta")
+            if not promotion.reason.strip():
+                raise HybridLedgerError("promotion reason must be non-empty")
+            if not promotion.risk_certificate.allows_promotion:
+                raise HybridLedgerError("constrained Bayesian risk gate rejected promotion")
+            if promotion.risk_certificate.subject_delta_record_id != corrected_delta.record_id:
+                raise HybridLedgerError("risk certificate is bound to another delta")
+            if not (
+                reversal_watermark >= self._last_watermark
+                and corrected_delta.input_watermark >= reversal_watermark
+                and promotion.input_watermark >= corrected_delta.input_watermark
+            ):
+                raise HybridLedgerError("replacement watermarks must be non-decreasing")
+
+            # Shadow the corrected key's projection to confirm it is reliable
+            # *before* committing anything.
+            shadow = self._copy_projection(corrected_delta.key)
+            for record_id in live:
+                delta = self._deltas[record_id]
+                if delta.key == corrected_delta.key:
+                    self._apply_to(shadow, delta, -1.0)
+            self._apply_to(shadow, corrected_delta, +1.0)
+            shadow_projection = self._freeze(shadow)
+            if shadow_projection.replay_required:
+                raise HybridLedgerError("corrected projection is numerically unreliable")
+
+            # --- commit: pre-validated, so these primitives cannot reject ---
+            for record_id, reversal_id in zip(live, reversal_record_ids, strict=True):
+                self.retract(
+                    HybridReversal(
+                        record_id=reversal_id,
+                        reverses_record_id=record_id,
+                        revision_id=superseded_revision_id,
+                        input_watermark=reversal_watermark,
+                        authorization_scope_id=promotion.authorization_scope_id,
+                        reason=reversal_reason,
+                    )
+                )
+            self.append_delta(corrected_delta)
+            self.promote(promotion)
+            return self.projection(corrected_delta.key)
+
+    def _precheck_appendable(self, delta: HybridStatisticDelta) -> None:
+        """Replicate append_delta's non-lineage checks without mutating state.
+
+        The revision-lineage gate (parent must be fully retracted) is deliberately
+        excluded: an atomic replacement retracts the parent in the same step, so it
+        is validated by construction rather than by current state.
+        """
+
+        if delta.feature_dim != self.feature_dim:
+            raise HybridLedgerError("delta feature dimension does not match ledger")
+        if (delta.evidence_cluster_id, delta.key) in self._cluster_keys:
+            raise HybridLedgerError("duplicate evidence_cluster_id and statistic key")
+        if delta.semantic_dedup_id in self._dedup_ids:
+            raise HybridLedgerError("duplicate semantic_dedup_id")
+        if delta.initial_state != HybridConsolidationState.QUARANTINED:
+            raise HybridLedgerError("a corrected replacement delta must start quarantined")
+        previous_identity = self._cluster_identity.get(delta.evidence_cluster_id)
+        if previous_identity is not None and previous_identity != (
+            delta.event_hypothesis_id,
+            delta.revision_id,
+            delta.authorization_scope_id,
+            delta.source_record_ids,
+        ):
+            raise HybridLedgerError("evidence cluster identity is inconsistent")
+
     def supersede_quarantined_revision(
         self,
         supersession: HybridQuarantineSupersession,

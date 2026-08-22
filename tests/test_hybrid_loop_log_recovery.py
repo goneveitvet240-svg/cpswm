@@ -105,11 +105,12 @@ def test_rebuilt_loop_retracts_and_republishes_a_pre_crash_revision():
 
     # An ORRER correction can still recover the superseded location for republish.
     corrected = OwnerPlacementInput(
-        event_hypothesis_id=uuid4(),
+        event_hypothesis_id=p1.event_hypothesis_id,
         revision_id=uuid4(),
         destination_location_id=L3,
         owner_mass=0.9,
         source_record_id=uuid4(),
+        parent_revision_id=p1.revision_id,
     )
     snapshot = reborn.apply_orrer_revision(
         superseded_revision_id=p1.revision_id, corrected=corrected

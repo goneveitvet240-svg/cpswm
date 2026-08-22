@@ -38,7 +38,7 @@ from .shift_attribution import ShiftCause
 PRIMARY_ENDPOINT_ID = "downstream-action-regret.normalized-per-case@1"
 KEY_SECONDARY_ENDPOINT_ID = "corrupted-habit-mass.mean-per-case@1"
 ALLOWED_CLAIM_IDS = (
-    "claim.synthetic-shift-action-death-test-reported@2",
+    "claim.synthetic-shift-action-death-test-reported@3",
     "claim.shared-policy-track-reported@1",
     "claim.independently-retuned-policy-track-reported@1",
 )
@@ -78,7 +78,7 @@ class EvaluationTrack(StrEnum):
 
 
 class FrozenActionPolicy(ContractModel):
-    policy_id: Literal["habit-reset-consolidation-policy@2"] = "habit-reset-consolidation-policy@2"
+    policy_id: Literal["habit-reset-consolidation-policy@3"] = "habit-reset-consolidation-policy@3"
     probability_temperature: float = Field(default=1.0, gt=0.0)
     reset_probability_threshold: float = Field(default=0.50, ge=0.0, le=1.0)
     consolidation_probability_threshold: float = Field(default=0.70, ge=0.0, le=1.0)
@@ -109,7 +109,7 @@ class ActionSeedPlan(ContractModel):
         5167,
         5171,
     )
-    test_seeds: tuple[NonNegativeInt, ...] = tuple(range(9101, 9403, 2))
+    test_seeds: tuple[NonNegativeInt, ...] = tuple(range(11101, 11403, 2))
 
     @model_validator(mode="after")
     def validate_partitions(self) -> ActionSeedPlan:
@@ -122,8 +122,8 @@ class ActionSeedPlan(ContractModel):
 
 
 class ProjectOneShiftActionDeathTestConfig(ContractModel):
-    protocol_version: Literal["project-one-shift-action-death-test@2"] = (
-        "project-one-shift-action-death-test@2"
+    protocol_version: Literal["project-one-shift-action-death-test@3"] = (
+        "project-one-shift-action-death-test@3"
     )
     seed_plan: ActionSeedPlan = Field(default_factory=ActionSeedPlan)
     action_policy: FrozenActionPolicy = Field(default_factory=FrozenActionPolicy)
@@ -153,6 +153,7 @@ class CaseActionOutcome(ContractModel):
     ]
     false_reset: bool
     missed_reset: bool
+    missed_consolidation: bool
     false_consolidation: bool
     corrupted_habit_mass: Probability
     recovery_time_days: float = Field(ge=0.0)
@@ -183,6 +184,7 @@ class ArmActionMetrics(ContractModel):
     sample_count: PositiveInt
     false_reset_rate: Probability
     missed_reset_rate: Probability
+    missed_consolidation_rate: Probability
     false_consolidation_rate: Probability
     corrupted_habit_mass: Probability
     recovery_time_days: float = Field(ge=0.0)
@@ -415,7 +417,7 @@ class CrossTrackDecision(ContractModel):
 
 
 class ProjectOneShiftActionDeathTestReport(ContractModel):
-    protocol_version: Literal["project-one-shift-action-death-test@2"]
+    protocol_version: Literal["project-one-shift-action-death-test@3"]
     config: ProjectOneShiftActionDeathTestConfig
     config_sha256: str = Field(pattern=r"^[0-9a-f]{64}$")
     code_snapshot_sha256: str = Field(pattern=r"^[0-9a-f]{64}$")
@@ -427,8 +429,8 @@ class ProjectOneShiftActionDeathTestReport(ContractModel):
         KEY_SECONDARY_ENDPOINT_ID
     )
     multiple_comparisons_policy: Literal[
-        "intersection-union-two-tracks-two-references-mechanisms-descriptive@2"
-    ] = "intersection-union-two-tracks-two-references-mechanisms-descriptive@2"
+        "intersection-union-two-tracks-two-references-mechanisms-descriptive@3"
+    ] = "intersection-union-two-tracks-two-references-mechanisms-descriptive@3"
     policy: FrozenActionPolicy
     policy_sha256: str = Field(pattern=r"^[0-9a-f]{64}$")
     tuning_records: tuple[ArmActionTuningRecord, ...]
@@ -635,10 +637,11 @@ def _case_outcome(
     true_habit = ShiftCause.OWNER_HABIT_REGIME in truth.true_causes
     false_reset = reset and not true_habit
     missed_reset = true_habit and not reset
+    missed_consolidation = true_habit and not consolidate
     false_consolidation = consolidate and not true_habit
     horizon_end = stream_start_time + timedelta(days=duration_days)
     remaining_days = max(0.0, (horizon_end - truth.change_time).total_seconds() / 86400.0)
-    if true_habit and reset and prediction.predicted_change_time is not None:
+    if true_habit and consolidate and prediction.predicted_change_time is not None:
         recovery_days = max(
             0.0,
             (prediction.predicted_change_time - truth.change_time).total_seconds() / 86400.0,
@@ -655,7 +658,12 @@ def _case_outcome(
         + policy.verification_cost * float(verify)
     )
     regret = min(1.0, raw_regret)
-    success = not false_reset and not missed_reset and not false_consolidation
+    success = (
+        not false_reset
+        and not missed_reset
+        and not missed_consolidation
+        and not false_consolidation
+    )
     return CaseActionOutcome(
         case_id=str(truth.case_id),
         scenario_seed=truth.scenario_seed,
@@ -666,6 +674,7 @@ def _case_outcome(
         action_sequence=action_sequence,
         false_reset=false_reset,
         missed_reset=missed_reset,
+        missed_consolidation=missed_consolidation,
         false_consolidation=false_consolidation,
         corrupted_habit_mass=corrupted_mass,
         recovery_time_days=recovery_days,
@@ -686,6 +695,9 @@ def aggregate_action_metrics(outcomes: Sequence[CaseActionOutcome]) -> ArmAction
         sample_count=len(outcomes),
         false_reset_rate=fmean(float(item.false_reset) for item in non_habit) if non_habit else 0.0,
         missed_reset_rate=fmean(float(item.missed_reset) for item in habit) if habit else 0.0,
+        missed_consolidation_rate=(
+            fmean(float(item.missed_consolidation) for item in habit) if habit else 0.0
+        ),
         false_consolidation_rate=(
             fmean(float(item.false_consolidation) for item in non_habit) if non_habit else 0.0
         ),
@@ -1197,7 +1209,7 @@ class ProjectOneShiftActionDeathTestRunner:
             "primary_endpoint_id": PRIMARY_ENDPOINT_ID,
             "key_secondary_endpoint_id": KEY_SECONDARY_ENDPOINT_ID,
             "multiple_comparisons_policy": (
-                "intersection-union-two-tracks-two-references-mechanisms-descriptive@2"
+                "intersection-union-two-tracks-two-references-mechanisms-descriptive@3"
             ),
             "allowed_claims": ALLOWED_CLAIM_IDS,
             "forbidden_claims": FORBIDDEN_CLAIM_IDS,

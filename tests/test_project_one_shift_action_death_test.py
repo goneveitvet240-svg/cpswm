@@ -23,7 +23,7 @@ from cpswm.system.evaluation_operations.project_one_shift_gates import SHIFT_THR
 from cpswm.system.reproducibility import content_sha256
 
 ROOT = Path(__file__).resolve().parents[1]
-CONFIG = ROOT / "benchmarks/project_one_ablation/project_one_shift_action_death_test_v2.json"
+CONFIG = ROOT / "benchmarks/project_one_ablation/project_one_shift_action_death_test_v3.json"
 
 
 @pytest.fixture(scope="module")
@@ -62,7 +62,7 @@ def test_power_topology_is_exact_nonempty_ordered_and_covers_both_references(
     assert max(item.required_test_seed_count for item in completed_report.power_analyses) == 151
     assert (
         max(item.required_test_seed_count for item in completed_report.retuned_power_analyses)
-        == 101
+        == 145
     )
 
 
@@ -157,6 +157,13 @@ def test_reset_then_consolidate_is_an_explicit_ordered_transition(completed_repo
         for item in consolidated
     )
     assert all(hasattr(item, "task_success_proxy") for item in outcomes)
+    missed = [
+        item for item in outcomes if item.habit_shift_required and not item.consolidation_issued
+    ]
+    assert missed
+    assert all(item.missed_consolidation for item in missed)
+    assert all(item.recovery_time_days > 0.0 for item in missed)
+    assert all(not item.task_success_proxy for item in missed)
 
 
 def test_predictions_intervals_and_cross_track_decision_recompute(completed_report):
@@ -190,7 +197,7 @@ def test_prediction_and_interval_tamper_fail_after_rehash(completed_report):
 
 
 def test_cli_subprocess_writes_a_self_validating_v2_report(tmp_path):
-    output = tmp_path / "action-report-v2.json"
+    output = tmp_path / "action-report-v3.json"
     completed = subprocess.run(
         [
             sys.executable,

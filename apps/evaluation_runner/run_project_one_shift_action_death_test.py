@@ -21,14 +21,14 @@ from cpswm.system.evaluation_operations.report_output import (  # noqa: E402
 from cpswm.system.reproducibility import content_sha256  # noqa: E402
 
 DEFAULT_CONFIG = REPOSITORY_ROOT / (
-    "benchmarks/project_one_ablation/project_one_shift_action_death_test_v2.json"
+    "benchmarks/project_one_ablation/project_one_shift_action_death_test_v3.json"
 )
-DEFAULT_OUTPUT = REPOSITORY_ROOT / "output/project_one_shift_action_death_test_v2.json"
+DEFAULT_OUTPUT = REPOSITORY_ROOT / "output/project_one_shift_action_death_test_v3.json"
 
 SNAPSHOT_PATHS = (
     "apps/evaluation_runner/run_project_one_shift_action_death_test.py",
-    "benchmarks/project_one_ablation/project_one_shift_action_death_test_v2.json",
-    "docs/reviews/项目一_SHIFT行动级死亡测试预注册_v2.md",
+    "benchmarks/project_one_ablation/project_one_shift_action_death_test_v3.json",
+    "docs/reviews/项目一_SHIFT行动级死亡测试预注册_v3.md",
     "src/cpswm/system/evaluation_operations/online_shift_attribution.py",
     "src/cpswm/system/evaluation_operations/project_one_shift_action_death_test.py",
     "src/cpswm/system/evaluation_operations/project_one_shift_gates.py",

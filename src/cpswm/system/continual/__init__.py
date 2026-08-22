@@ -1,8 +1,23 @@
 """Continual adaptation modules for CPWM components."""
 
-from .rls import *
+from .event_derived_update_ledger import (
+    EventDerivedUpdate,
+    EventDerivedUpdateLedger,
+    owner_contamination_rate,
+)
+from .rls import (
+    RecursiveLeastSquares,
+    RLSChannelReliabilityCalibrator,
+    RLSConfig,
+    RLSHabitSample,
+    RLSHabitScoreHead,
+    RLSRegimeBank,
+    RLSRegimeSwitchEvent,
+)
 
 __all__ = [
+    "EventDerivedUpdate",
+    "EventDerivedUpdateLedger",
     "RLSChannelReliabilityCalibrator",
     "RLSConfig",
     "RLSHabitSample",
@@ -10,4 +25,5 @@ __all__ = [
     "RLSRegimeBank",
     "RLSRegimeSwitchEvent",
     "RecursiveLeastSquares",
+    "owner_contamination_rate",
 ]

@@ -36,6 +36,11 @@ from .corrections import (
     CorrectionMode,
     UserCorrectionEvent,
 )
+from .decision_context import (
+    DecisionContext,
+    DecisionContextBinding,
+    DecisionSurface,
+)
 from .events import (
     EventEvidenceClass,
     EventParticipant,
@@ -159,6 +164,9 @@ __all__ = [
     "CompiledSemanticQuery",
     "ContractModel",
     "CorrectionMode",
+    "DecisionContext",
+    "DecisionContextBinding",
+    "DecisionSurface",
     "DynamicObjectState",
     "EntityRef",
     "EntityRelationObject",

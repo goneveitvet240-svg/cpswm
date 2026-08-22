@@ -13,6 +13,10 @@ from cpswm.world_model.habits_transitions.cause_factorized_bocpd import (
     CauseFactorizedBOCPD,
     ChangeCause,
 )
+from cpswm.world_model.habits_transitions.joint_cause_bocpd import (
+    CauseSignalFrame,
+    JointCauseFactorizedBOCPD,
+)
 
 from .d0_shift_scenarios import D0ShiftCaseInput, D0VisibleSimulationRun
 from .online_shift_attribution import OnlineShiftCaseInput, OnlineShiftPrediction
@@ -318,6 +322,81 @@ class OnlineCauseFactorizedBOCPDBaseline:
     def _total_variation(left: dict[str, float], right: dict[str, float]) -> float:
         support = set(left) | set(right)
         return 0.5 * sum(abs(left.get(key, 0.0) - right.get(key, 0.0)) for key in support)
+
+
+class OnlineJointCauseFactorizedBOCPDBaseline:
+    """Online adapter for the coupled joint CF-BOCPD implementation."""
+
+    model_version = "joint-cause-factorized-bocpd@0.3"
+
+    def __init__(
+        self,
+        *,
+        warmup_days: int = 2,
+        hazard_probability: float = 0.05,
+        detection_threshold: float = 0.5,
+        beam_width: int = 24,
+    ) -> None:
+        if warmup_days < 1:
+            raise ValueError("warmup_days must be positive")
+        if not 0.0 < hazard_probability < 0.25:
+            raise ValueError("joint per-cause hazard must lie in (0, 0.25)")
+        if not 0.0 <= detection_threshold <= 1.0:
+            raise ValueError("detection_threshold must lie in [0, 1]")
+        if beam_width < 1:
+            raise ValueError("beam_width must be positive")
+        self._warmup_days = warmup_days
+        self._hazard_probability = hazard_probability
+        self._detection_threshold = detection_threshold
+        self._beam_width = beam_width
+
+    def predict(self, model_input: OnlineShiftCaseInput) -> OnlineShiftPrediction:
+        likelihood_frames = OnlineCauseFactorizedBOCPDBaseline(
+            warmup_days=self._warmup_days,
+            hazard_probability=self._hazard_probability,
+            detection_threshold=self._detection_threshold,
+        ).evidence_frames(model_input)
+        signal_frames = tuple(
+            CauseSignalFrame(
+                timestamp=frame.timestamp,
+                signals={
+                    cause: min(
+                        1.0,
+                        max(
+                            0.0,
+                            (frame.changepoint_likelihoods[cause] - 0.01) / 0.99,
+                        ),
+                    )
+                    for cause in ChangeCause
+                },
+            )
+            for frame in likelihood_frames
+        )
+        result = JointCauseFactorizedBOCPD(
+            hazard_probability=self._hazard_probability,
+            beam_width=self._beam_width,
+            model_version=self.model_version,
+        ).run(
+            signal_frames,
+            detection_threshold=self._detection_threshold,
+            warmup_steps=self._warmup_days,
+        )
+        detected_times = [
+            timestamp
+            for timestamp in result.detected_change_time_by_cause.values()
+            if timestamp is not None
+        ]
+        return OnlineShiftPrediction(
+            case_id=model_input.case_id,
+            predicted_change_time=min(detected_times) if detected_times else None,
+            cause_probabilities={
+                OnlineCauseFactorizedBOCPDBaseline._CAUSE_MAP[cause]: min(
+                    1.0, max(0.0, probability)
+                )
+                for cause, probability in result.peak_change_cause_probability.items()
+            },
+            model_version=self.model_version,
+        )
 
 
 class OnlineOrdinaryBOCPDBaseline:

@@ -13,6 +13,7 @@ import hashlib
 import json
 from collections.abc import Sequence
 from dataclasses import dataclass
+from typing import Protocol
 
 from pydantic import Field, model_validator
 
@@ -135,6 +136,16 @@ class SealedSplitAccessError(RuntimeError):
     """Raised when a runner tries to read the test split before tuning is done."""
 
 
+class AuthenticTuningReceipt(Protocol):
+    """Minimum receipt interface accepted by a sealed split."""
+
+    experiment_id: str
+    validation_split_sha256: str
+    receipt_hash: str
+
+    def is_authentic(self) -> bool: ...
+
+
 class SealedTestSplit[T]:
     """Test cases that can only be released after tuning, via a valid receipt."""
 
@@ -145,12 +156,15 @@ class SealedTestSplit[T]:
         experiment_id: str,
         test_split_sha256: str,
         required_validation_split_sha256: str,
+        required_receipt_scope: str | None = None,
     ) -> None:
         self._cases = tuple(cases)
         self._experiment_id = experiment_id
         self._test_split_sha256 = test_split_sha256
         self._required_validation_split_sha256 = required_validation_split_sha256
+        self._required_receipt_scope = required_receipt_scope
         self._unsealed = False
+        self._unseal_receipt_hash: str | None = None
 
     @property
     def test_split_sha256(self) -> str:
@@ -165,7 +179,17 @@ class SealedTestSplit[T]:
         # Count is metadata, not the cases themselves, so it is safe pre-unseal.
         return len(self._cases)
 
-    def unseal(self, receipt: TuningCompletionReceipt) -> tuple[T, ...]:
+    @property
+    def required_receipt_scope(self) -> str | None:
+        return self._required_receipt_scope
+
+    @property
+    def unseal_receipt_hash(self) -> str | None:
+        return self._unseal_receipt_hash
+
+    def unseal(self, receipt: AuthenticTuningReceipt) -> tuple[T, ...]:
+        if self._unsealed:
+            raise SealedSplitAccessError("the frozen test split has already been unsealed")
         if not receipt.is_authentic():
             raise SealedSplitAccessError("tuning-completion receipt is not authentic")
         if receipt.experiment_id != self._experiment_id:
@@ -174,7 +198,13 @@ class SealedTestSplit[T]:
             raise SealedSplitAccessError(
                 "receipt validation split does not match the sealed split's requirement"
             )
+        if self._required_receipt_scope is not None:
+            if getattr(receipt, "receipt_scope", None) != self._required_receipt_scope:
+                raise SealedSplitAccessError("receipt scope cannot unlock this sealed split")
+            if getattr(receipt, "test_split_sha256", None) != self._test_split_sha256:
+                raise SealedSplitAccessError("receipt TEST hash does not match the sealed split")
         self._unsealed = True
+        self._unseal_receipt_hash = receipt.receipt_hash
         return self._cases
 
     def require_unsealed(self) -> tuple[T, ...]:

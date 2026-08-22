@@ -146,16 +146,23 @@ def test_power_calculation_uses_metric_specific_empirical_variance():
     )
 
 
-def test_cli_is_preserved_in_snapshot_and_exposes_help():
+def test_cli_subprocess_writes_a_self_validating_report(tmp_path):
+    output = tmp_path / "action-report.json"
     completed = subprocess.run(
         [
             sys.executable,
             str(ROOT / "apps/evaluation_runner/run_project_one_shift_action_death_test.py"),
-            "--help",
+            "--output",
+            str(output),
         ],
         check=False,
         capture_output=True,
         text=True,
     )
     assert completed.returncode == 0
-    assert "action death test" in completed.stdout
+    assert "decision=" in completed.stdout
+    report = ProjectOneShiftActionDeathTestReport.model_validate_json(
+        output.read_text(encoding="utf-8")
+    )
+    assert report.git_commit_sha
+    assert report.code_snapshot_sha256

@@ -81,9 +81,9 @@ def main() -> int:
         git_commit_sha=git_commit_sha(),
     )
     write_report_atomic(
-        args.output,
         report.model_dump_json(indent=2) + "\n",
-        protected_inputs=(args.config,),
+        output_path=args.output,
+        config_path=args.config,
         repository_root=REPOSITORY_ROOT,
         force=args.force,
     )

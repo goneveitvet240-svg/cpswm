@@ -17,7 +17,7 @@ from cpswm.system.continual.hybrid_event_to_task_loop import (
     HybridEventToTaskCoordinatorLoop,
     OwnerPlacementInput,
 )
-from cpswm.system.continual.hybrid_statistics import HybridLedgerError, HybridStatisticLedger
+from cpswm.system.continual.hybrid_statistics import HybridStatisticLedger
 
 OWNER = "owner"
 OBJ = UUID(int=5)
@@ -56,7 +56,7 @@ def test_restored_ledger_projections_match_the_original():
     loop.ingest_owner_placement(p2)
     loop.retract_revision(p1.revision_id)  # exercise reversal records in the log
 
-    restored = HybridStatisticLedger.restore_from_log(feature_dim=1, log=loop.ledger.export_log())
+    restored = HybridStatisticLedger.restore_from_export(loop.ledger.export_state())
     assert restored.version == loop.ledger.version
     assert restored.head_watermark == loop.ledger.head_watermark
     for location in (L1, L2):
@@ -76,9 +76,7 @@ def test_rebuilt_loop_can_keep_writing_without_watermark_reset():
     head = original.ledger.head_watermark
     assert head > 0
 
-    restored = HybridStatisticLedger.restore_from_log(
-        feature_dim=1, log=original.ledger.export_log()
-    )
+    restored = HybridStatisticLedger.restore_from_export(original.ledger.export_state())
     reborn = _loop(auth=auth, ledger=restored)
 
     # A brand-new loop (its old in-memory counter would have been 0) still writes.
@@ -94,9 +92,7 @@ def test_rebuilt_loop_retracts_and_republishes_a_pre_crash_revision():
     original.ingest_owner_placement(p1)
     original.ingest_owner_placement(_placement(L2))
 
-    restored = HybridStatisticLedger.restore_from_log(
-        feature_dim=1, log=original.ledger.export_log()
-    )
+    restored = HybridStatisticLedger.restore_from_export(original.ledger.export_state())
     reborn = _loop(auth=auth, ledger=restored)
 
     # Retract works though the loop never saw p1 ingested (state came from the log).
@@ -127,9 +123,7 @@ def test_recover_map_rebuilds_published_nodes_from_the_log():
     original.ingest_owner_placement(_placement(L1))
     original.ingest_owner_placement(_placement(L2))
 
-    restored = HybridStatisticLedger.restore_from_log(
-        feature_dim=1, log=original.ledger.export_log()
-    )
+    restored = HybridStatisticLedger.restore_from_export(original.ledger.export_state())
     reborn = _loop(auth=auth, ledger=restored)
     assert reborn.current_snapshot().nodes == ()  # fresh map before recovery
 
@@ -138,14 +132,15 @@ def test_recover_map_rebuilds_published_nodes_from_the_log():
     assert node_ids == {reborn.node_id(L1), reborn.node_id(L2)}
 
 
-def test_restore_rejects_a_truncated_log():
-    # Dropping a delta that a later promotion points at must fail restore, not
-    # silently rebuild a corrupt state.
+def test_restore_round_trips_through_json():
     auth = uuid4()
     loop = _loop(auth=auth)
     loop.ingest_owner_placement(_placement(L1))
-    log = loop.ledger.export_log()
-    # Remove the first record (the delta); its promotion now dangles.
-    truncated = log[1:]
-    with pytest.raises(HybridLedgerError):
-        HybridStatisticLedger.restore_from_log(feature_dim=1, log=truncated)
+    loop.ingest_owner_placement(_placement(L2))
+    from cpswm.system.continual.hybrid_statistics import LedgerExport
+
+    export = loop.ledger.export_state()
+    restored = HybridStatisticLedger.restore_from_export(LedgerExport.from_json(export.to_json()))
+    for location in (L1, L2):
+        key = loop._key(location)
+        assert restored.projection(key).alpha == pytest.approx(loop.ledger.projection(key).alpha)

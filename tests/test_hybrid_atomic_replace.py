@@ -163,7 +163,7 @@ def _fingerprint(ledger):
     return (
         ledger.version,
         ledger.head_watermark,
-        ledger.export_log(),
+        ledger.export_state().to_json(),
         tuple(round(ledger.projection(_key(loc)).alpha, 12) for loc in (L1, L2, L3)),
     )
 
@@ -332,7 +332,7 @@ def test_replaced_revision_is_recoverable_from_the_log():
         corrected_delta=corrected,
         promotion=_promotion(corrected, watermark=3),
     )
-    restored = HybridStatisticLedger.restore_from_log(feature_dim=1, log=ledger.export_log())
+    restored = HybridStatisticLedger.restore_from_export(ledger.export_state())
     assert restored.projection(_key(L2)).alpha == pytest.approx(ledger.projection(_key(L2)).alpha)
 
 

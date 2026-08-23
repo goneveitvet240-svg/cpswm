@@ -368,6 +368,318 @@ class _MutableProjection:
     information_vector: Vector
 
 
+_LEDGER_LOG_SCHEMA = "cpswm.hybrid_ledger_log@1"
+_GENESIS_HASH = "0" * 64
+
+
+def _sha256_canonical(payload: object) -> str:
+    return hashlib.sha256(
+        json.dumps(payload, sort_keys=True, separators=(",", ":")).encode()
+    ).hexdigest()
+
+
+def _key_to_canonical(key: StatisticKey) -> dict[str, str]:
+    return {
+        "actor_key": key.actor_key,
+        "object_instance_id": str(key.object_instance_id),
+        "regime_id": key.regime_id,
+        "parameter_block": key.parameter_block,
+        "location_id": str(key.location_id),
+    }
+
+
+def _key_from_canonical(payload: dict[str, str]) -> StatisticKey:
+    return StatisticKey(
+        actor_key=payload["actor_key"],
+        object_instance_id=UUID(payload["object_instance_id"]),
+        regime_id=payload["regime_id"],
+        parameter_block=payload["parameter_block"],
+        location_id=UUID(payload["location_id"]),
+    )
+
+
+def _cert_to_canonical(cert: ConsolidationRiskCertificate) -> dict[str, object]:
+    return {
+        "expected_task_loss": repr(float(cert.expected_task_loss)),
+        "uncertainty_penalty": repr(float(cert.uncertainty_penalty)),
+        "maximum_allowed_risk": repr(float(cert.maximum_allowed_risk)),
+        "exact_verifier_id": cert.exact_verifier_id,
+        "counterfactual_id": str(cert.counterfactual_id),
+        "subject_delta_record_id": str(cert.subject_delta_record_id),
+        "belief_snapshot_id": str(cert.belief_snapshot_id),
+        "map_version": cert.map_version,
+        "hard_safety_violations": list(cert.hard_safety_violations),
+    }
+
+
+def _cert_from_canonical(payload: dict[str, object]) -> ConsolidationRiskCertificate:
+    return ConsolidationRiskCertificate(
+        expected_task_loss=float(payload["expected_task_loss"]),  # type: ignore[arg-type]
+        uncertainty_penalty=float(payload["uncertainty_penalty"]),  # type: ignore[arg-type]
+        maximum_allowed_risk=float(payload["maximum_allowed_risk"]),  # type: ignore[arg-type]
+        exact_verifier_id=str(payload["exact_verifier_id"]),
+        counterfactual_id=UUID(str(payload["counterfactual_id"])),
+        subject_delta_record_id=UUID(str(payload["subject_delta_record_id"])),
+        belief_snapshot_id=UUID(str(payload["belief_snapshot_id"])),
+        map_version=int(payload["map_version"]),  # type: ignore[arg-type]
+        hard_safety_violations=tuple(payload["hard_safety_violations"]),  # type: ignore[arg-type]
+    )
+
+
+def _record_to_canonical(record: HybridLogRecord) -> dict[str, object]:
+    """Serialize one log record to a plain, JSON-safe, buffer-free dict."""
+
+    if isinstance(record, HybridStatisticDelta):
+        return {
+            "kind": "delta",
+            "record_id": str(record.record_id),
+            "event_hypothesis_id": str(record.event_hypothesis_id),
+            "revision_id": str(record.revision_id),
+            "parent_revision_id": (
+                str(record.parent_revision_id) if record.parent_revision_id is not None else None
+            ),
+            "evidence_cluster_id": str(record.evidence_cluster_id),
+            "semantic_dedup_id": record.semantic_dedup_id,
+            "source_record_ids": [str(value) for value in record.source_record_ids],
+            "authorization_scope_id": str(record.authorization_scope_id),
+            "key": _key_to_canonical(record.key),
+            "delta_a": np.asarray(record.delta_a, dtype=float).tolist(),
+            "delta_b": np.asarray(record.delta_b, dtype=float).tolist(),
+            "delta_alpha": repr(float(record.delta_alpha)),
+            "delta_information": np.asarray(record.delta_information, dtype=float).tolist(),
+            "delta_information_vector": np.asarray(
+                record.delta_information_vector, dtype=float
+            ).tolist(),
+            "input_watermark": record.input_watermark,
+            "model_version": record.model_version,
+            "code_version": record.code_version,
+            "initial_state": record.initial_state.value,
+            "content_hash": record.content_hash,
+        }
+    if isinstance(record, HybridPromotion):
+        return {
+            "kind": "promotion",
+            "record_id": str(record.record_id),
+            "promotes_record_id": str(record.promotes_record_id),
+            "input_watermark": record.input_watermark,
+            "authorization_scope_id": str(record.authorization_scope_id),
+            "reason": record.reason,
+            "risk_certificate": _cert_to_canonical(record.risk_certificate),
+        }
+    if isinstance(record, HybridReversal):
+        return {
+            "kind": "reversal",
+            "record_id": str(record.record_id),
+            "reverses_record_id": str(record.reverses_record_id),
+            "revision_id": str(record.revision_id),
+            "input_watermark": record.input_watermark,
+            "authorization_scope_id": str(record.authorization_scope_id),
+            "reason": record.reason,
+        }
+    if isinstance(record, HybridQuarantineSupersession):
+        return {
+            "kind": "supersession",
+            "record_id": str(record.record_id),
+            "supersedes_revision_id": str(record.supersedes_revision_id),
+            "successor_revision_id": str(record.successor_revision_id),
+            "event_hypothesis_id": str(record.event_hypothesis_id),
+            "input_watermark": record.input_watermark,
+            "authorization_scope_id": str(record.authorization_scope_id),
+            "reason": record.reason,
+        }
+    raise HybridLedgerError("unknown log record type")  # pragma: no cover
+
+
+def _record_from_canonical(payload: dict[str, object]) -> HybridLogRecord:
+    """Rebuild a log record from canonical bytes, re-running its own validation.
+
+    Nothing is trusted from a live Python object: arrays are reconstructed from
+    plain lists and every constructor re-validates (a delta recomputes and checks
+    ``content_hash``), so a tampered value cannot survive round-trip.
+    """
+
+    kind = payload["kind"]
+    if kind == "delta":
+        parent = payload["parent_revision_id"]
+        return HybridStatisticDelta(
+            record_id=UUID(str(payload["record_id"])),
+            event_hypothesis_id=UUID(str(payload["event_hypothesis_id"])),
+            revision_id=UUID(str(payload["revision_id"])),
+            parent_revision_id=UUID(str(parent)) if parent is not None else None,
+            evidence_cluster_id=UUID(str(payload["evidence_cluster_id"])),
+            semantic_dedup_id=str(payload["semantic_dedup_id"]),
+            source_record_ids=tuple(
+                UUID(value)
+                for value in payload["source_record_ids"]  # type: ignore[union-attr]
+            ),
+            authorization_scope_id=UUID(str(payload["authorization_scope_id"])),
+            key=_key_from_canonical(payload["key"]),  # type: ignore[arg-type]
+            delta_a=np.asarray(payload["delta_a"], dtype=float),
+            delta_b=np.asarray(payload["delta_b"], dtype=float),
+            delta_alpha=float(payload["delta_alpha"]),  # type: ignore[arg-type]
+            delta_information=np.asarray(payload["delta_information"], dtype=float),
+            delta_information_vector=np.asarray(payload["delta_information_vector"], dtype=float),
+            input_watermark=int(payload["input_watermark"]),  # type: ignore[arg-type]
+            model_version=str(payload["model_version"]),
+            code_version=str(payload["code_version"]),
+            initial_state=HybridConsolidationState(payload["initial_state"]),
+            content_hash=str(payload["content_hash"]),
+        )
+    if kind == "promotion":
+        return HybridPromotion(
+            record_id=UUID(str(payload["record_id"])),
+            promotes_record_id=UUID(str(payload["promotes_record_id"])),
+            input_watermark=int(payload["input_watermark"]),  # type: ignore[arg-type]
+            authorization_scope_id=UUID(str(payload["authorization_scope_id"])),
+            reason=str(payload["reason"]),
+            risk_certificate=_cert_from_canonical(payload["risk_certificate"]),  # type: ignore[arg-type]
+        )
+    if kind == "reversal":
+        return HybridReversal(
+            record_id=UUID(str(payload["record_id"])),
+            reverses_record_id=UUID(str(payload["reverses_record_id"])),
+            revision_id=UUID(str(payload["revision_id"])),
+            input_watermark=int(payload["input_watermark"]),  # type: ignore[arg-type]
+            authorization_scope_id=UUID(str(payload["authorization_scope_id"])),
+            reason=str(payload["reason"]),
+        )
+    if kind == "supersession":
+        return HybridQuarantineSupersession(
+            record_id=UUID(str(payload["record_id"])),
+            supersedes_revision_id=UUID(str(payload["supersedes_revision_id"])),
+            successor_revision_id=UUID(str(payload["successor_revision_id"])),
+            event_hypothesis_id=UUID(str(payload["event_hypothesis_id"])),
+            input_watermark=int(payload["input_watermark"]),  # type: ignore[arg-type]
+            authorization_scope_id=UUID(str(payload["authorization_scope_id"])),
+            reason=str(payload["reason"]),
+        )
+    raise HybridLedgerError("unknown log record kind in export")
+
+
+@dataclass(frozen=True, slots=True)
+class LedgerConfig:
+    """Ledger priors that, together with the log, fully determine ledger state."""
+
+    feature_dim: int
+    ridge: float
+    information_ridge: float
+    alpha_prior: float
+    max_condition_number: float
+
+    def to_canonical(self) -> dict[str, object]:
+        return {
+            "feature_dim": self.feature_dim,
+            "ridge": repr(float(self.ridge)),
+            "information_ridge": repr(float(self.information_ridge)),
+            "alpha_prior": repr(float(self.alpha_prior)),
+            "max_condition_number": repr(float(self.max_condition_number)),
+        }
+
+    @classmethod
+    def from_canonical(cls, payload: dict[str, object]) -> LedgerConfig:
+        return cls(
+            feature_dim=int(payload["feature_dim"]),  # type: ignore[arg-type]
+            ridge=float(payload["ridge"]),  # type: ignore[arg-type]
+            information_ridge=float(payload["information_ridge"]),  # type: ignore[arg-type]
+            alpha_prior=float(payload["alpha_prior"]),  # type: ignore[arg-type]
+            max_condition_number=float(payload["max_condition_number"]),  # type: ignore[arg-type]
+        )
+
+    @property
+    def config_hash(self) -> str:
+        return _sha256_canonical(self.to_canonical())
+
+
+@dataclass(frozen=True, slots=True)
+class LedgerLogEntry:
+    """One hash-chained log envelope: the record plus its integrity links."""
+
+    sequence: int
+    record: dict[str, object]
+    record_hash: str
+    previous_hash: str
+    entry_hash: str
+
+    @staticmethod
+    def compute_entry_hash(*, sequence: int, record_hash: str, previous_hash: str) -> str:
+        return _sha256_canonical(
+            {
+                "sequence": sequence,
+                "record_hash": record_hash,
+                "previous_hash": previous_hash,
+            }
+        )
+
+
+@dataclass(frozen=True, slots=True)
+class LedgerManifest:
+    """Config-bound, count-bound, head-bound proof of one exact ledger state."""
+
+    schema_version: str
+    config_hash: str
+    record_count: int
+    head_hash: str
+
+
+@dataclass(frozen=True, slots=True)
+class LedgerExport:
+    """A durable, tamper-evident, self-describing ledger artifact."""
+
+    manifest: LedgerManifest
+    config: LedgerConfig
+    entries: tuple[LedgerLogEntry, ...]
+
+    def to_json(self) -> str:
+        return json.dumps(
+            {
+                "manifest": {
+                    "schema_version": self.manifest.schema_version,
+                    "config_hash": self.manifest.config_hash,
+                    "record_count": self.manifest.record_count,
+                    "head_hash": self.manifest.head_hash,
+                },
+                "config": self.config.to_canonical(),
+                "entries": [
+                    {
+                        "sequence": entry.sequence,
+                        "record": entry.record,
+                        "record_hash": entry.record_hash,
+                        "previous_hash": entry.previous_hash,
+                        "entry_hash": entry.entry_hash,
+                    }
+                    for entry in self.entries
+                ],
+            },
+            sort_keys=True,
+            separators=(",", ":"),
+        )
+
+    @classmethod
+    def from_json(cls, text: str) -> LedgerExport:
+        payload = json.loads(text)
+        manifest = LedgerManifest(
+            schema_version=payload["manifest"]["schema_version"],
+            config_hash=payload["manifest"]["config_hash"],
+            record_count=payload["manifest"]["record_count"],
+            head_hash=payload["manifest"]["head_hash"],
+        )
+        entries = tuple(
+            LedgerLogEntry(
+                sequence=entry["sequence"],
+                record=entry["record"],
+                record_hash=entry["record_hash"],
+                previous_hash=entry["previous_hash"],
+                entry_hash=entry["entry_hash"],
+            )
+            for entry in payload["entries"]
+        )
+        return cls(
+            manifest=manifest,
+            config=LedgerConfig.from_canonical(payload["config"]),
+            entries=entries,
+        )
+
+
 class HybridStatisticLedger:
     """Thread-safe, append-only scheme-B statistic ledger and projection cache."""
 
@@ -474,52 +786,122 @@ class HybridStatisticLedger:
                 raise HybridLedgerError("unknown delta record")
             return delta
 
-    def export_log(self) -> tuple[HybridLogRecord, ...]:
-        """Serialize the authoritative append-only log (records are immutable)."""
+    @property
+    def config(self) -> LedgerConfig:
+        return LedgerConfig(
+            feature_dim=self.feature_dim,
+            ridge=self.ridge,
+            information_ridge=self.information_ridge,
+            alpha_prior=self.alpha_prior,
+            max_condition_number=self.max_condition_number,
+        )
 
-        with self._lock:
-            return tuple(self._log)
+    def export_state(self) -> LedgerExport:
+        """Serialize the ledger to a durable, tamper-evident, config-bound artifact.
 
-    @classmethod
-    def restore_from_log(
-        cls,
-        *,
-        feature_dim: int,
-        log: tuple[HybridLogRecord, ...],
-        ridge: float = 1e-6,
-        information_ridge: float = 1e-6,
-        alpha_prior: float = 0.0,
-        max_condition_number: float = 1e12,
-    ) -> HybridStatisticLedger:
-        """Rebuild a ledger by replaying an exported log through full validation.
-
-        Recovery re-runs every invariant (dedup, revision lineage, promote/retract
-        state machine), so a tampered or truncated log cannot silently restore a
-        state the write path would have refused.  Multi-key cluster promotions are
-        contiguous in the log and are replayed atomically via ``promote_cluster``.
+        Each record is emitted as a buffer-free canonical dict, hash-chained to its
+        predecessor; the manifest binds the ledger configuration, the record count,
+        and the head hash.  This is what makes recovery authoritative: truncation,
+        deletion, reordering, config drift, or value tampering all break the chain
+        or the manifest.
         """
 
+        with self._lock:
+            entries: list[LedgerLogEntry] = []
+            previous_hash = _GENESIS_HASH
+            for sequence, record in enumerate(self._log):
+                canonical = _record_to_canonical(record)
+                record_hash = _sha256_canonical(canonical)
+                entry_hash = LedgerLogEntry.compute_entry_hash(
+                    sequence=sequence, record_hash=record_hash, previous_hash=previous_hash
+                )
+                entries.append(
+                    LedgerLogEntry(
+                        sequence=sequence,
+                        record=canonical,
+                        record_hash=record_hash,
+                        previous_hash=previous_hash,
+                        entry_hash=entry_hash,
+                    )
+                )
+                previous_hash = entry_hash
+            config = self.config
+            manifest = LedgerManifest(
+                schema_version=_LEDGER_LOG_SCHEMA,
+                config_hash=config.config_hash,
+                record_count=len(entries),
+                head_hash=previous_hash,
+            )
+            return LedgerExport(manifest=manifest, config=config, entries=tuple(entries))
+
+    @classmethod
+    def restore_from_export(cls, export: LedgerExport) -> HybridStatisticLedger:
+        """Rebuild a ledger from a tamper-evident export, refusing any corruption.
+
+        Verification order: schema, config hash, record count, then the full hash
+        chain (each record hash, link, and the head hash against the manifest).
+        Records are then rebuilt from canonical bytes (never trusting a live Python
+        object) and replayed through the write path, so every business invariant is
+        re-run.  A valid prefix cannot impersonate a complete log, and a caller
+        cannot substitute different priors.
+        """
+
+        manifest = export.manifest
+        if manifest.schema_version != _LEDGER_LOG_SCHEMA:
+            raise HybridLedgerError("unsupported ledger log schema version")
+        if export.config.config_hash != manifest.config_hash:
+            raise HybridLedgerError("ledger configuration does not match the manifest")
+        if manifest.record_count != len(export.entries):
+            raise HybridLedgerError("manifest record count does not match the log")
+
+        previous_hash = _GENESIS_HASH
+        records: list[HybridLogRecord] = []
+        for sequence, entry in enumerate(export.entries):
+            if entry.sequence != sequence:
+                raise HybridLedgerError("log entry is out of sequence")
+            if entry.previous_hash != previous_hash:
+                raise HybridLedgerError("log hash chain is broken (deletion/reorder)")
+            if _sha256_canonical(entry.record) != entry.record_hash:
+                raise HybridLedgerError("log record hash does not match its bytes (tampered)")
+            expected_entry_hash = LedgerLogEntry.compute_entry_hash(
+                sequence=sequence,
+                record_hash=entry.record_hash,
+                previous_hash=previous_hash,
+            )
+            if entry.entry_hash != expected_entry_hash:
+                raise HybridLedgerError("log entry hash is inconsistent (tampered)")
+            records.append(_record_from_canonical(entry.record))
+            previous_hash = entry.entry_hash
+        if previous_hash != manifest.head_hash:
+            raise HybridLedgerError("log head hash does not match the manifest (truncated)")
+
+        config = export.config
         ledger = cls(
-            feature_dim=feature_dim,
-            ridge=ridge,
-            information_ridge=information_ridge,
-            alpha_prior=alpha_prior,
-            max_condition_number=max_condition_number,
+            feature_dim=config.feature_dim,
+            ridge=config.ridge,
+            information_ridge=config.information_ridge,
+            alpha_prior=config.alpha_prior,
+            max_condition_number=config.max_condition_number,
         )
-        records = list(log)
+        ledger._replay(records)
+        return ledger
+
+    def _replay(self, records: list[HybridLogRecord]) -> None:
+        """Replay validated records through the write path, re-running invariants."""
+
         index = 0
         while index < len(records):
             record = records[index]
             if isinstance(record, HybridStatisticDelta):
-                ledger.append_delta(record)
+                self.append_delta(record)
                 index += 1
             elif isinstance(record, HybridPromotion):
-                delta = ledger._deltas.get(record.promotes_record_id)
+                delta = self._deltas.get(record.promotes_record_id)
                 if delta is None:
                     raise HybridLedgerError("promotion in log targets an unknown delta")
-                cluster_size = len(ledger._cluster_records[delta.evidence_cluster_id])
+                cluster_size = len(self._cluster_records[delta.evidence_cluster_id])
                 if cluster_size == 1:
-                    ledger.promote(record)
+                    self.promote(record)
                     index += 1
                 else:
                     group = records[index : index + cluster_size]
@@ -527,20 +909,19 @@ class HybridStatisticLedger:
                         isinstance(item, HybridPromotion) for item in group
                     ):
                         raise HybridLedgerError("cluster promotions must be contiguous in the log")
-                    ledger.promote_cluster(
+                    self.promote_cluster(
                         evidence_cluster_id=delta.evidence_cluster_id,
                         promotions=tuple(group),  # type: ignore[arg-type]
                     )
                     index += cluster_size
             elif isinstance(record, HybridReversal):
-                ledger.retract(record)
+                self.retract(record)
                 index += 1
             elif isinstance(record, HybridQuarantineSupersession):
-                ledger.supersede_quarantined_revision(record)
+                self.supersede_quarantined_revision(record)
                 index += 1
             else:  # pragma: no cover - exhaustive over HybridLogRecord
                 raise HybridLedgerError("unknown log record type")
-        return ledger
 
     def append_delta(self, delta: HybridStatisticDelta) -> None:
         with self._lock:

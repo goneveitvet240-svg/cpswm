@@ -21,6 +21,8 @@ from uuid import UUID, uuid4
 
 from cpswm.system.continual.hybrid_statistics import NaturalRidgeResidual
 
+_NIL_MAP_ID = UUID(int=0)
+
 
 @dataclass(frozen=True, slots=True, order=True)
 class BeliefNode:
@@ -42,12 +44,19 @@ class BeliefNode:
 
 @dataclass(frozen=True, slots=True)
 class BeliefSnapshot:
-    """Atomic immutable map-belief graph snapshot."""
+    """Atomic immutable map-belief graph snapshot.
+
+    ``snapshot_id`` is the *stable* identity of one committed map version: every
+    read of the same version returns the same id, so ``DecisionContext`` can bind
+    an exact snapshot rather than a fresh uuid per read.  ``map_id`` identifies the
+    map lineage the version belongs to.
+    """
 
     snapshot_id: UUID
     map_version: int
     nodes: tuple[BeliefNode, ...]
     content_hash: str
+    map_id: UUID = _NIL_MAP_ID
 
     def __post_init__(self) -> None:
         if self.map_version < 0:
@@ -94,10 +103,17 @@ class BeliefSnapshot:
 class VersionedBeliefMap:
     """Thread-safe map writer that publishes only complete atomic snapshots."""
 
-    def __init__(self) -> None:
+    def __init__(self, *, map_id: UUID | None = None) -> None:
         self._lock = threading.RLock()
         self._nodes: dict[str, BeliefNode] = {}
         self._version = 0
+        self._map_id = map_id or uuid4()
+        # One stable identity per committed version, minted at commit time.
+        self._snapshot_id = uuid4()
+
+    @property
+    def map_id(self) -> UUID:
+        return self._map_id
 
     def apply_update(
         self,
@@ -123,6 +139,8 @@ class VersionedBeliefMap:
                 )
             self._nodes = next_nodes
             self._version = next_version
+            # A new committed version gets a new stable identity, minted once.
+            self._snapshot_id = uuid4()
             return self._snapshot_unlocked()
 
     def snapshot(self) -> BeliefSnapshot:
@@ -132,10 +150,11 @@ class VersionedBeliefMap:
     def _snapshot_unlocked(self) -> BeliefSnapshot:
         nodes = tuple(sorted(self._nodes.values()))
         return BeliefSnapshot(
-            snapshot_id=uuid4(),
+            snapshot_id=self._snapshot_id,
             map_version=self._version,
             nodes=nodes,
             content_hash=BeliefSnapshot.compute_hash(self._version, nodes),
+            map_id=self._map_id,
         )
 
 

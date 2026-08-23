@@ -284,6 +284,24 @@ def _search_found_feedback(base, loop_auth):
     return feedback, binding, likelihood
 
 
+def test_committed_map_version_has_a_stable_snapshot_identity():
+    # Review fix (snapshot identity): repeated reads of the same committed version
+    # return the same snapshot_id and map_id, not a fresh uuid per read.
+    belief_map = VersionedBeliefMap()
+    first = belief_map.snapshot()
+    second = belief_map.snapshot()
+    assert first.snapshot_id == second.snapshot_id
+    assert first.map_id == second.map_id == belief_map.map_id
+
+    committed = belief_map.apply_update({"n": ("a" * 64, 0.5)})
+    # A new committed version gets a new, then stable, identity.
+    assert committed.snapshot_id != first.snapshot_id
+    assert committed.map_id == belief_map.map_id
+    assert belief_map.snapshot().snapshot_id == committed.snapshot_id
+    # Two independent maps have distinct lineages.
+    assert VersionedBeliefMap().map_id != belief_map.map_id
+
+
 def test_dependency_bridge_expands_impacted_actions():
     # Review fix #6 (partial): an action that reads no habit node statically can
     # still be drawn into the impacted set through a ConstrainedDependencyBridge

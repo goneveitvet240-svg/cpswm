@@ -30,12 +30,16 @@ from .engine import (
     OpenWorldRoleConditionedReversibleEventRevisionEngine,
 )
 from .feedback_revision_loop import (
+    ActorDiscriminationEvidence,
     EventRevisionOutcome,
     FeedbackProvenanceError,
     HypothesisPosteriorInconsistencyError,
+    LineageConflictError,
     ProjectOneRequestKind,
     ProjectOneStatRequest,
     ProjectTwoFeedbackRevisionLoop,
+    StaleFeedbackError,
+    TransitionRevisionModel,
     UnsupportedFeedbackRouteError,
     apply_project_one_request,
 )
@@ -53,6 +57,7 @@ from .hypothesis_message_passing import (
 
 __all__ = [
     "AMGConstrainedMAPPrediction",
+    "ActorDiscriminationEvidence",
     "ActorEvidenceEndpointRole",
     "BernertRamparany2021SequenceBaseline",
     "CompatibleEventSequence",
@@ -77,6 +82,7 @@ __all__ = [
     "IndependentEventCandidate",
     "IndependentEventCandidateBaseline",
     "IndependentEventCandidatePrediction",
+    "LineageConflictError",
     "MessageEdgeType",
     "MessagePassingResult",
     "OpenWorldRoleConditionedReversibleEventRevisionEngine",
@@ -84,8 +90,10 @@ __all__ = [
     "ProjectOneStatRequest",
     "ProjectTwoFeedbackRevisionLoop",
     "ProvenanceConstrainedMessagePassing",
+    "StaleFeedbackError",
     "Top1EventGraphBaseline",
     "Top1EventGraphPrediction",
+    "TransitionRevisionModel",
     "UnsupportedFeedbackRouteError",
     "actor_evidence_semantic_fingerprint",
     "apply_project_one_request",

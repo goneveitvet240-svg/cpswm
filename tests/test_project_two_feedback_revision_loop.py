@@ -27,6 +27,7 @@ from cpswm.contracts import (
     DecisionSurface,
     EntityRef,
     EntityType,
+    EventMechanism,
     ExecutionFeedbackRecord,
     MapConsistencyRevisions,
     ObservationDetectionResult,
@@ -45,7 +46,11 @@ from cpswm.system.counterfactual_event_hypergraph import (
 )
 from cpswm.system.counterfactual_event_hypergraph.feedback_revision_loop import (
     UNKNOWN_ACTOR,
+    ActorDiscriminationEvidence,
     FeedbackProvenanceError,
+    LineageConflictError,
+    StaleFeedbackError,
+    TransitionRevisionModel,
     UnsupportedFeedbackRouteError,
     apply_project_one_request,
 )
@@ -373,7 +378,11 @@ def test_actor_discriminating_evidence_changes_owner_vs_guest_odds():
         binding=_binding(fb),
         likelihood_model=_likelihood(),
         owner_key=OWNER,
-        actor_likelihood_ratios={OWNER: 0.2, GUEST: 3.0},
+        actor_evidence=ActorDiscriminationEvidence(
+            ratios={OWNER: 0.2, GUEST: 3.0},
+            model_version="actor-channel@0.1",
+            source_record_id=uuid4(),
+        ),
     )
     before = outcome.actor_posterior_before
     after = outcome.actor_posterior_after
@@ -580,3 +589,233 @@ def test_project_one_consumes_a_correct_request():
     alpha_after = p1.ledger.projection(p1._key(L2)).alpha
     assert alpha_after == pytest.approx(outcome.owner_mass_after)
     assert alpha_after < alpha_before  # project one really consumed the correction
+
+
+# --- review round 3: fixes #1..#6 ---------------------------------------------
+
+
+def _place_feedback():
+    return _feedback(
+        RobotActionType.PLACE,
+        {RobotActionOutcome.SUCCESS: 0.2, RobotActionOutcome.OBJECT_SLIPPED: 0.8},
+    )
+
+
+def _place_likelihood():
+    return ActionOutcomeLikelihoodModel(
+        action_type=RobotActionType.PLACE,
+        p_outcome_given_target_present={
+            RobotActionOutcome.SUCCESS: 0.8,
+            RobotActionOutcome.OBJECT_SLIPPED: 0.2,
+        },
+        p_outcome_given_target_absent={
+            RobotActionOutcome.SUCCESS: 0.3,
+            RobotActionOutcome.OBJECT_SLIPPED: 0.7,
+        },
+        calibration_domain="fixture",
+        model_version="place-likelihood@0.1",
+    )
+
+
+def _transition_model(*, with_actor=True):
+    from cpswm.contracts import ordered_role_key
+
+    return TransitionRevisionModel(
+        mechanism_posterior={
+            EventMechanism.DIRECT_RELOCATION: 0.25,
+            EventMechanism.HANDOFF_RELOCATION: 0.75,
+        },
+        mechanism_prior={
+            EventMechanism.DIRECT_RELOCATION: 0.5,
+            EventMechanism.HANDOFF_RELOCATION: 0.5,
+        },
+        ordered_role_posterior={
+            ordered_role_key(OWNER, GUEST): 0.7,
+            ordered_role_key(GUEST, OWNER): 0.3,
+        },
+        ordered_role_prior={
+            ordered_role_key(OWNER, GUEST): 0.5,
+            ordered_role_key(GUEST, OWNER): 0.5,
+        },
+        model_version="transition-model@0.1",
+        source_record_id=uuid4(),
+        actor=(
+            ActorDiscriminationEvidence(
+                ratios={OWNER: 0.5, GUEST: 2.0},
+                model_version="actor-channel@0.1",
+                source_record_id=uuid4(),
+            )
+            if with_actor
+            else None
+        ),
+    )
+
+
+def test_delayed_feedback_after_a_subsequent_move_is_rejected():
+    # Fix #1: a later move happened before the feedback observed -> stale for this event.
+    history = _history()
+    loop = _loop()
+    # Feedback observes at TB+1h; a subsequent move happened at TB+30m, before it.
+    late = TB + timedelta(hours=1)
+    fb = _search_failed().model_copy(
+        update={"valid_time": ValidTimeInterval(start=late, end=late + timedelta(minutes=1))}
+    )
+    next_move = TB + timedelta(minutes=30)
+    with pytest.raises(StaleFeedbackError):
+        loop.ingest_feedback(
+            history=history,
+            feedback=fb,
+            binding=_binding(fb),
+            likelihood_model=_likelihood(),
+            owner_key=OWNER,
+            next_move_time=next_move,
+        )
+    assert len(history.revisions) == 1
+
+
+@pytest.mark.parametrize(
+    ("ratios", "version"),
+    [
+        ({OWNER: 0.0}, "v@1"),  # zero
+        ({OWNER: float("nan")}, "v@1"),  # NaN
+        ({OWNER: float("inf")}, "v@1"),  # inf
+        ({"stranger": 2.0}, "v@1"),  # unknown actor
+        ({OWNER: 2.0}, ""),  # no source version
+    ],
+)
+def test_actor_discrimination_evidence_is_validated(ratios, version):
+    # Fix #2: 0 / NaN / inf / unknown-actor / no-version are all rejected.
+    history = _history()
+    loop = _loop()
+    fb = _search_found()
+    with pytest.raises(ValueError):
+        loop.ingest_feedback(
+            history=history,
+            feedback=fb,
+            binding=_binding(fb),
+            likelihood_model=_likelihood(),
+            owner_key=OWNER,
+            actor_evidence=ActorDiscriminationEvidence(
+                ratios=ratios, model_version=version, source_record_id=uuid4()
+            ),
+        )
+    assert len(history.revisions) == 1
+
+
+def test_replay_against_incompatible_history_raises_lineage_conflict():
+    # Fix #3: same feedback replayed against a foreign history lineage is a conflict.
+    history = _history()
+    loop = _loop()
+    fb = _search_failed()
+    binding = _binding(fb)
+    loop.ingest_feedback(
+        history=history,
+        feedback=fb,
+        binding=binding,
+        likelihood_model=_likelihood(),
+        owner_key=OWNER,
+    )
+    # A fresh, unrelated history (different revision lineage) replaying the same record.
+    foreign = _history()
+    with pytest.raises(LineageConflictError):
+        loop.ingest_feedback(
+            history=foreign,
+            feedback=fb,
+            binding=binding,
+            likelihood_model=_likelihood(),
+            owner_key=OWNER,
+        )
+
+
+def test_reinforce_request_produces_a_real_statistic_update():
+    # Fix #5: REINFORCE must actually raise owner-habit statistics, not return False.
+    from cpswm.system.continual.hybrid_event_to_task_loop import (
+        HybridEventToTaskCoordinatorLoop,
+        OwnerPlacementInput,
+    )
+    from cpswm.system.counterfactual_event_hypergraph.feedback_revision_loop import (
+        ProjectOneRequestKind,
+        ProjectOneStatRequest,
+    )
+
+    evt = uuid4()
+    superseded = uuid4()
+    p1 = HybridEventToTaskCoordinatorLoop(
+        owner_key=OWNER,
+        object_instance_id=OBJ,
+        authorization_scope_id=uuid4(),
+        model_version="m@1",
+        code_version="git:test",
+    )
+    p1.ingest_owner_placement(
+        OwnerPlacementInput(
+            event_hypothesis_id=evt,
+            revision_id=superseded,
+            destination_location_id=L2,
+            owner_mass=0.3,
+            source_record_id=uuid4(),
+        )
+    )
+    before = (
+        p1.hybrid_alpha_or(L2)
+        if hasattr(p1, "hybrid_alpha_or")
+        else p1.ledger.projection(p1._key(L2)).alpha
+    )
+    request = ProjectOneStatRequest(
+        kind=ProjectOneRequestKind.REINFORCE,
+        superseded_revision_id=superseded,
+        corrected_revision_id=uuid4(),
+        event_hypothesis_id=evt,
+        owner_key=OWNER,
+        object_instance_id=OBJ,
+        location_id=L2,
+        owner_mass_before=0.3,
+        owner_mass_after=0.7,
+        owner_mass_delta=0.4,
+        source_feedback_record_id=uuid4(),
+    )
+    changed = apply_project_one_request(request, p1)
+    assert changed is True
+    after = p1.ledger.projection(p1._key(L2)).alpha
+    assert after == pytest.approx(0.7)
+    assert after > before  # a real reinforcement, not a silent no-op
+
+
+def test_place_feedback_with_transition_model_does_multi_axis_revision():
+    # Fix #6: place/transfer + a transition model enters mechanism/role/actor revision.
+    history = _history()
+    loop = _loop()
+    fb = _place_feedback()
+    new_history, outcome = loop.ingest_feedback(
+        history=history,
+        feedback=fb,
+        binding=_binding(fb),
+        likelihood_model=_place_likelihood(),
+        owner_key=OWNER,
+        transition_model=_transition_model(with_actor=True),
+    )
+    # mechanism + role + actor => three reversible, parent-linked revisions appended.
+    assert len(new_history.revisions) == len(history.revisions) + 3
+    assert new_history.revisions[-2] == new_history.revisions[-2]  # chain intact
+    assert outcome.superseded_revision_id == history.latest.revision_id
+    assert outcome.corrected_revision_id == new_history.latest.revision_id
+    # The multi-axis update shifted the hypothesis posterior away from the prior.
+    assert outcome.hypothesis_posterior_after != outcome.hypothesis_posterior_before
+    # PCHMP and the sequential ORRER revisions agree.
+    for hid, mass in outcome.repropagated_posterior.items():
+        assert outcome.hypothesis_posterior_after[hid] == pytest.approx(mass, abs=1e-9)
+
+
+def test_place_feedback_without_transition_model_is_still_isolated():
+    # The isolation still holds when no model is provided (never folded to presence).
+    history = _history()
+    loop = _loop()
+    fb = _place_feedback()
+    with pytest.raises(UnsupportedFeedbackRouteError):
+        loop.ingest_feedback(
+            history=history,
+            feedback=fb,
+            binding=_binding(fb),
+            likelihood_model=_place_likelihood(),
+            owner_key=OWNER,
+        )

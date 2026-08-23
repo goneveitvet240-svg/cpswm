@@ -65,14 +65,40 @@ Each known actor is then re-weighted by `r × factor[actor]`, so relative odds
 genuinely change. Both modes compose; a search outcome alone is honestly the
 former, not the latter.
 
-### Isolated route (place/transfer)
+### Place/transfer: isolated by default, multi-axis with a model
 
 Place/transfer feedback is projected only as an action success/slip *candidate* by
 the `ExecutionFeedbackProjector`, not a transition/presence/actor posterior.
 Folding it into a presence ratio would mislabel a gripper slip as reduced
-historical responsibility, so the loop **rejects** that route
-(`UnsupportedFeedbackRouteError`) until a real location/mechanism/role likelihood
-model is wired. It is isolated, not silently converted.
+historical responsibility. So without a model the loop **rejects** the route
+(`UnsupportedFeedbackRouteError`) — never silently converts it. Supplying a
+`TransitionRevisionModel` (mechanism, ordered-role, and optional actor likelihoods,
+each provenance-carrying) promotes it to a genuine **multi-axis** revision: the
+loop applies `revise_event_mechanism`, then `revise_role_binding`, then
+`revise_actor_responsibility` as three separate reversible, parent-linked ORRER
+steps, and asserts their joint result equals the PCHMP re-propagation over all
+axes.
+
+### Delayed feedback vs a later move (causality)
+
+`ingest_feedback` takes `next_move_time`: if the feedback observes at or after a
+*subsequent* known move of the object, it describes a later world state and cannot
+revise this event — it raises `StaleFeedbackError` (route it to the newer event).
+This closes the earlier "delayed search back-filled as synchronous" gap.
+
+### Actor-discrimination provenance
+
+The actor-discriminating channel is a typed `ActorDiscriminationEvidence`
+(`ratios`, `model_version`, `source_record_id`). Ratios that are zero, non-finite
+(NaN/inf), name an actor outside the hypothesis support, or arrive without a model
+version are rejected — a discriminating claim must be attributable and well-posed.
+
+### Replay lineage
+
+A replayed feedback record is idempotent only against the lineage it was first
+applied to: if the presented history's head is neither the cached
+superseded nor corrected revision, the loop raises `LineageConflictError` rather
+than returning a stale outcome that references revisions absent from that history.
 
 ### Provenance firewall (binding)
 
@@ -119,12 +145,18 @@ touches project-one Dirichlet/RLS state directly. Kinds:
 
 Each request names the superseded/corrected revisions, the event hypothesis set,
 owner key, object, destination location, owner-mass delta, and the source feedback
-record. `apply_project_one_request(request, loop)` consumes it into a real
-`HybridEventToTaskCoordinatorLoop` (project one keys its ledger by the CHEH revision
-id): `RETRACT → retract_revision`, `CORRECT → apply_orrer_revision` with the
-corrected owner mass. `REINFORCE` is an **explicit no-op** (returns `False`) because
-project one has no positive-reinforcement event-revision interface yet — a retained
-gap, never a silent state change.
+record. `apply_project_one_request(request, loop)` consumes it:
+
+- If `loop` exposes `apply_project_one_stat_request` (the `CorePrototypeSpine`), it
+  delegates — the spine applies the request as one **atomic transaction across
+  Hybrid RGRC, the Dirichlet habit model, and RLS**, with capture/rollback so a
+  mid-stage fault leaves all three stores unchanged (verified by the spine's
+  `..._atomically_revises_all_three_models` / `..._rolls_back_all_stores_on_stage_failure`
+  tests).
+- Otherwise it updates a `HybridEventToTaskCoordinatorLoop` directly: `RETRACT →
+  retract_revision`; `CORRECT` **and** `REINFORCE → apply_orrer_revision` with the
+  corrected owner mass. `REINFORCE` raises owner-habit statistics — a **real
+  update**, never a silent no-op.
 
 ## Invariants enforced (with tests)
 
@@ -135,20 +167,33 @@ gap, never a silent state change.
 - feedback appends a new revision and the old one stays traceable;
 - unexplained feedback grows unresolved/unknown mass (no fabricated actor);
 - an actor-posterior revision emits a project-one-consumable retract/correct request;
-- a replayed feedback record is idempotent (dedup);
-- a provenance-firewall-rejected feedback cannot move any posterior.
+- a replayed feedback record is idempotent (dedup); an incompatible-history replay is
+  a `LineageConflictError`;
+- a provenance-firewall-rejected feedback cannot move any posterior;
+- **actor-discriminating** evidence moves owner/guest relative odds; a presence-only
+  search does not (it revises event-existence confidence);
+- delayed feedback after a subsequent move is rejected (`StaleFeedbackError`);
+- actor ratios that are 0 / NaN / inf / unknown-actor / unversioned are rejected;
+- place/transfer with a `TransitionRevisionModel` runs mechanism→role→actor revision;
+  without one it stays isolated;
+- REINFORCE produces a real statistic update;
+- through `CorePrototypeSpine`, a request revises Hybrid + Dirichlet + RLS atomically
+  (spine tests).
 
 ## Retained adaptation points (not removed, not "no longer needed")
 
-- **Place-failure multi-axis revision.** ORRER already exposes
-  `revise_event_mechanism` and `revise_role_binding`; the prototype folds
-  place-failure onto the actor axis. Jointly revising location/mechanism/role from
-  a single place-failure is a wired-but-unused capability to complete.
 - **Real perception & signatures.** Feedback records are trusted inputs here; a
   signed, sensor-derived path remains to be attached.
-- **Adversarial / provenance firewall depth.** The loop enforces object-binding and
-  reuses projector + PCHMP firewalls; deeper adversarial hardening is future work.
+- **Adversarial / provenance firewall depth.** The loop enforces object/location/HST/
+  causality binding and reuses projector + PCHMP firewalls; deeper adversarial
+  hardening is future work.
 - **Production project-one outbox.** `ProjectOneStatRequest` is returned in-process;
   a durable, exactly-once cross-component outbox (shared with the MVCC/presence-log
   design) is still to be built.
+- **Transition likelihood model source.** The `TransitionRevisionModel` is supplied
+  by the caller; a learned/calibrated location/mechanism/role likelihood model that
+  produces it from raw place/transfer perception remains to be built.
+- **Actor evidence endpoint time.** Actor evidence binds to the CHEH destination
+  endpoint time (engine constraint); `next_move_time` guards the stale case, but
+  native multi-event routing of one feedback stream is future work.
 ```

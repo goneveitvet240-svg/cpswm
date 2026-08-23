@@ -1,0 +1,384 @@
+"""Project-two core loop: execution feedback as reversible counterfactual evidence.
+
+This orchestrator closes the open-world hidden-event loop *by reusing* the existing
+stack -- it builds no second event-reasoning engine:
+
+    ExecutionFeedbackRecord
+      -> ExecutionFeedbackProjector          (typed, likelihood-aware, de-duplicated)
+      -> ActorResponsibilityEvidence         (likelihood ratios from the outcome model)
+      -> ProvenanceConstrainedMessagePassing (re-propagate the joint posterior)
+      -> ORRER.revise_actor_responsibility   (one reversible, parent-linked revision)
+      -> EventRevisionOutcome                (before/after posteriors + owner-mass delta)
+      -> ProjectOneStatRequest               (explicit retract/correct for project one)
+
+Design invariants honoured here:
+
+* Feedback is *evidence with strength*, never a hard fact: a failed search lowers
+  the relevant hypotheses by a likelihood ratio derived from the
+  :class:`ActionOutcomeLikelihoodModel`, and never forces a posterior to zero.
+* Open-world mass is preserved: unknown-actor and unresolved mass are never
+  drained to make room for a known actor; unexplained feedback grows them.
+* Every ingestion appends a new parent-linked revision; the prior revision stays
+  fully traceable (the ORRER history is append-only).
+* Project one is only ever handed an *explicit* :class:`EventRevisionOutcome` /
+  :class:`ProjectOneStatRequest`; this module never touches project one's
+  Dirichlet/RLS state directly.
+
+Deliberately retained adaptation points (kept as interfaces, not deleted): a
+place-failure may in principle revise mechanism/role jointly with actor
+(``revise_event_mechanism``/``revise_role_binding`` exist and are reused for the
+actor axis here); real perception, signatures, adversarial firewalls, and a
+production project-one outbox remain to be wired.
+"""
+
+from __future__ import annotations
+
+from dataclasses import dataclass
+from datetime import datetime
+from enum import StrEnum
+from uuid import UUID, uuid4
+
+from cpswm.contracts import (
+    ActionOutcomeLikelihoodModel,
+    ActorEvidenceTrack,
+    ActorResponsibilityEvidence,
+    BaseRecordMetadata,
+    DecisionContextBinding,
+    ExecutionFeedbackRecord,
+    SourceType,
+)
+
+from .contracts import (
+    EventHypothesisHistory,
+    EventHypothesisRevision,
+)
+from .engine import OpenWorldRoleConditionedReversibleEventRevisionEngine
+from .hypothesis_message_passing import MessagePassingResult, ProvenanceConstrainedMessagePassing
+
+# Project-one's abstract "no chain explains this" actor bucket.
+UNKNOWN_ACTOR = "unknown_actor"
+_PROBABILITY_FLOOR = 1e-6
+
+
+class FeedbackProvenanceError(ValueError):
+    """The feedback cannot be bound to this hidden-event set (firewall reject)."""
+
+
+class ProjectOneRequestKind(StrEnum):
+    RETRACT = "retract"
+    CORRECT = "correct"
+    REINFORCE = "reinforce"
+
+
+@dataclass(frozen=True, slots=True)
+class ProjectOneStatRequest:
+    """The explicit, auditable instruction project one may consume.
+
+    Project one decides whether/how to act; this is a request, not a mutation.
+    """
+
+    kind: ProjectOneRequestKind
+    superseded_revision_id: UUID
+    corrected_revision_id: UUID
+    owner_key: str
+    object_instance_id: UUID
+    location_id: UUID
+    owner_mass_before: float
+    owner_mass_after: float
+    owner_mass_delta: float
+    source_feedback_record_id: UUID
+
+
+@dataclass(frozen=True, slots=True)
+class EventRevisionOutcome:
+    """The full, reversible result of folding one feedback record into the chain."""
+
+    superseded_revision_id: UUID
+    corrected_revision_id: UUID
+    hypothesis_posterior_before: dict[UUID, float]
+    hypothesis_posterior_after: dict[UUID, float]
+    actor_posterior_before: dict[str, float]
+    actor_posterior_after: dict[str, float]
+    unresolved_before: float
+    unresolved_after: float
+    owner_mass_before: float
+    owner_mass_after: float
+    source_feedback_record_id: UUID
+    presence_likelihood_ratio: float
+    repropagated_posterior: dict[UUID, float]
+    project_one_requests: tuple[ProjectOneStatRequest, ...]
+    is_replay: bool
+    reason: str
+
+
+def _actor_posterior(revision: EventHypothesisRevision) -> dict[str, float]:
+    """Marginalize hypothesis posteriors over the responsible actor.
+
+    Unresolved mass is reported under the open-world ``unknown_actor`` key so the
+    distribution always sums to one and never hides open-world uncertainty.
+    """
+
+    posterior: dict[str, float] = {}
+    for hypothesis in revision.hypotheses:
+        posterior[hypothesis.responsible_actor_key] = (
+            posterior.get(hypothesis.responsible_actor_key, 0.0) + hypothesis.posterior_probability
+        )
+    posterior[UNKNOWN_ACTOR] = posterior.get(UNKNOWN_ACTOR, 0.0) + revision.unresolved_probability
+    return posterior
+
+
+def _hypothesis_posterior(revision: EventHypothesisRevision) -> dict[UUID, float]:
+    return {item.hypothesis_id: item.posterior_probability for item in revision.hypotheses}
+
+
+def _clamp_probability(value: float) -> float:
+    return min(max(value, _PROBABILITY_FLOOR), 1.0 - _PROBABILITY_FLOOR)
+
+
+def _bayes_factor(*, prior: float, posterior: float) -> float:
+    """Presence Bayes factor P(obs|present)/P(obs|absent) from a prior/posterior."""
+
+    prior = _clamp_probability(prior)
+    posterior = _clamp_probability(posterior)
+    return (posterior / (1.0 - posterior)) / (prior / (1.0 - prior))
+
+
+class ProjectTwoFeedbackRevisionLoop:
+    """Turn execution feedback into a reversible ORRER revision + project-one request."""
+
+    def __init__(
+        self,
+        *,
+        projector,
+        engine: OpenWorldRoleConditionedReversibleEventRevisionEngine | None = None,
+        message_passing: ProvenanceConstrainedMessagePassing | None = None,
+        retraction_threshold: float = 0.0,
+    ) -> None:
+        # `projector` is an ExecutionFeedbackProjector; typed loosely to avoid a
+        # continual<->cheh import cycle.
+        self._projector = projector
+        self._engine = engine or OpenWorldRoleConditionedReversibleEventRevisionEngine()
+        self._message_passing = message_passing or ProvenanceConstrainedMessagePassing()
+        self._retraction_threshold = retraction_threshold
+        # feedback record id -> outcome, for idempotent replay.
+        self._outcomes: dict[UUID, EventRevisionOutcome] = {}
+
+    def ingest_feedback(
+        self,
+        *,
+        history: EventHypothesisHistory,
+        feedback: ExecutionFeedbackRecord,
+        binding: DecisionContextBinding,
+        likelihood_model: ActionOutcomeLikelihoodModel,
+        owner_key: str,
+    ) -> tuple[EventHypothesisHistory, EventRevisionOutcome]:
+        """Fold one feedback record into the hidden-event chain as new evidence.
+
+        Returns the appended history and the reversible outcome.  A replayed
+        feedback record is idempotent: the history is returned unchanged and the
+        original outcome (marked ``is_replay``) is returned.
+        """
+
+        record_id = feedback.metadata.record_id
+        if record_id in self._outcomes:
+            cached = self._outcomes[record_id]
+            return history, _as_replay(cached)
+
+        current = history.latest
+        # --- provenance firewall: the feedback must concern this hidden event ---
+        if feedback.target_entity is None:
+            raise FeedbackProvenanceError("feedback has no target entity to bind")
+        if feedback.target_entity.entity_id != current.object_instance_id:
+            raise FeedbackProvenanceError(
+                "feedback target object does not match the hidden-event set"
+            )
+
+        # --- 1. project the feedback (typed, likelihood-aware, de-duplicated) ---
+        projected = self._projector.project_execution_feedback(
+            feedback=feedback,
+            binding=binding,
+            likelihood_model=likelihood_model,
+        )
+        if projected.is_replay:  # projector-level dedup: idempotent no-op
+            cached = self._outcomes.get(record_id)
+            if cached is not None:
+                return history, _as_replay(cached)
+
+        ratio = self._presence_likelihood_ratio(projected)
+
+        # --- 2. build actor evidence whose ratios come from the outcome model ---
+        evidence = self._actor_evidence(current, ratio=ratio, likelihood_model=likelihood_model)
+
+        # --- 3. re-propagate the joint posterior (firewall + single-consumption) ---
+        repropagated: MessagePassingResult = self._message_passing.infer(history, [evidence])
+
+        # --- 4. one reversible, parent-linked ORRER revision ---
+        revised_history = self._engine.revise_actor_responsibility(
+            history, evidence, retraction_threshold=self._retraction_threshold
+        )
+        corrected = revised_history.latest
+
+        # --- 5. assemble the reversible outcome + explicit project-one request ---
+        outcome = self._build_outcome(
+            superseded=current,
+            corrected=corrected,
+            feedback=feedback,
+            owner_key=owner_key,
+            ratio=ratio,
+            repropagated=repropagated,
+        )
+        self._outcomes[record_id] = outcome
+        return revised_history, outcome
+
+    def _presence_likelihood_ratio(self, projected) -> float:
+        update = projected.target_presence_update
+        if update is not None:
+            return _bayes_factor(
+                prior=update.prior_target_present,
+                posterior=update.posterior_target_present,
+            )
+        # Location-transition route: use the reported action success as odds vs 0.5.
+        transition = projected.location_transition
+        if transition is None:
+            return 1.0
+        return _bayes_factor(prior=0.5, posterior=transition.reported_action_success_probability)
+
+    def _actor_evidence(
+        self,
+        current: EventHypothesisRevision,
+        *,
+        ratio: float,
+        likelihood_model: ActionOutcomeLikelihoodModel,
+    ) -> ActorResponsibilityEvidence:
+        """Encode a presence Bayes factor as firewall-legal actor evidence.
+
+        Every responsible *known* actor asserts the object reached the destination,
+        so each carries the presence ratio; the ``unknown_actor`` bucket carries a
+        neutral ratio so a failed observation shifts mass toward open-world
+        uncertainty rather than inventing a culprit.
+        """
+
+        responsible = {item.responsible_actor_key for item in current.hypotheses}
+        support = sorted(responsible | {UNKNOWN_ACTOR})
+        uniform = 1.0 / len(support)
+        reference_actor_prior = {actor: uniform for actor in support}
+        raw = {actor: (uniform if actor == UNKNOWN_ACTOR else uniform * ratio) for actor in support}
+        total = sum(raw.values())
+        actor_posterior = {actor: value / total for actor, value in raw.items()}
+
+        destination_detection_id = current.source_detection_result_ids[1]
+        evidence_time: datetime = current.interval_end
+        metadata = BaseRecordMetadata(
+            record_id=uuid4(),
+            schema_name="cpswm.ActorResponsibilityEvidence",
+            schema_version=self._engine.schema_version,
+            household_id=current.household_id,
+            session_id=current.session_id,
+            trace_id=current.trace_id,
+            recorded_time=evidence_time,
+            source_type=SourceType.MODEL,
+            source_id="project-two-feedback-loop",
+        )
+        return ActorResponsibilityEvidence(
+            metadata=metadata,
+            source_detection_result_id=destination_detection_id,
+            object_instance_id=current.object_instance_id,
+            evidence_time=evidence_time,
+            actor_posterior=actor_posterior,
+            reference_actor_prior=reference_actor_prior,
+            evidence_cluster_id=uuid4(),
+            effective_sample_weight=1.0,
+            evidence_track=ActorEvidenceTrack.CONTROLLED_NOISE,
+            evidence_model_id=likelihood_model.model_version,
+        )
+
+    def _build_outcome(
+        self,
+        *,
+        superseded: EventHypothesisRevision,
+        corrected: EventHypothesisRevision,
+        feedback: ExecutionFeedbackRecord,
+        owner_key: str,
+        ratio: float,
+        repropagated: MessagePassingResult,
+    ) -> EventRevisionOutcome:
+        actor_before = _actor_posterior(superseded)
+        actor_after = _actor_posterior(corrected)
+        owner_before = actor_before.get(owner_key, 0.0)
+        owner_after = actor_after.get(owner_key, 0.0)
+        delta = owner_after - owner_before
+
+        requests: tuple[ProjectOneStatRequest, ...] = ()
+        if abs(delta) > _PROBABILITY_FLOOR:
+            if delta < 0.0:
+                kind = (
+                    ProjectOneRequestKind.RETRACT
+                    if owner_after <= 0.0
+                    else (ProjectOneRequestKind.CORRECT)
+                )
+            else:
+                kind = ProjectOneRequestKind.REINFORCE
+            requests = (
+                ProjectOneStatRequest(
+                    kind=kind,
+                    superseded_revision_id=superseded.revision_id,
+                    corrected_revision_id=corrected.revision_id,
+                    owner_key=owner_key,
+                    object_instance_id=corrected.object_instance_id,
+                    location_id=corrected.destination_location_id,
+                    owner_mass_before=owner_before,
+                    owner_mass_after=owner_after,
+                    owner_mass_delta=delta,
+                    source_feedback_record_id=feedback.metadata.record_id,
+                ),
+            )
+
+        return EventRevisionOutcome(
+            superseded_revision_id=superseded.revision_id,
+            corrected_revision_id=corrected.revision_id,
+            hypothesis_posterior_before=_hypothesis_posterior(superseded),
+            hypothesis_posterior_after=_hypothesis_posterior(corrected),
+            actor_posterior_before=actor_before,
+            actor_posterior_after=actor_after,
+            unresolved_before=superseded.unresolved_probability,
+            unresolved_after=corrected.unresolved_probability,
+            owner_mass_before=owner_before,
+            owner_mass_after=owner_after,
+            source_feedback_record_id=feedback.metadata.record_id,
+            presence_likelihood_ratio=ratio,
+            repropagated_posterior=dict(repropagated.posterior_by_hypothesis_id),
+            project_one_requests=requests,
+            is_replay=False,
+            reason="execution feedback folded as reversible actor-responsibility evidence",
+        )
+
+
+def _as_replay(outcome: EventRevisionOutcome) -> EventRevisionOutcome:
+    return EventRevisionOutcome(
+        superseded_revision_id=outcome.superseded_revision_id,
+        corrected_revision_id=outcome.corrected_revision_id,
+        hypothesis_posterior_before=outcome.hypothesis_posterior_before,
+        hypothesis_posterior_after=outcome.hypothesis_posterior_after,
+        actor_posterior_before=outcome.actor_posterior_before,
+        actor_posterior_after=outcome.actor_posterior_after,
+        unresolved_before=outcome.unresolved_before,
+        unresolved_after=outcome.unresolved_after,
+        owner_mass_before=outcome.owner_mass_before,
+        owner_mass_after=outcome.owner_mass_after,
+        source_feedback_record_id=outcome.source_feedback_record_id,
+        presence_likelihood_ratio=outcome.presence_likelihood_ratio,
+        repropagated_posterior=outcome.repropagated_posterior,
+        project_one_requests=outcome.project_one_requests,
+        is_replay=True,
+        reason=outcome.reason,
+    )
+
+
+__all__ = [
+    "UNKNOWN_ACTOR",
+    "EventRevisionOutcome",
+    "FeedbackProvenanceError",
+    "ProjectOneRequestKind",
+    "ProjectOneStatRequest",
+    "ProjectTwoFeedbackRevisionLoop",
+]

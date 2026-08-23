@@ -29,6 +29,13 @@ from .engine import (
     CounterfactualEventHypergraphEngine,
     OpenWorldRoleConditionedReversibleEventRevisionEngine,
 )
+from .feedback_revision_loop import (
+    EventRevisionOutcome,
+    FeedbackProvenanceError,
+    ProjectOneRequestKind,
+    ProjectOneStatRequest,
+    ProjectTwoFeedbackRevisionLoop,
+)
 from .hypothesis_message_passing import (
     EvidenceDuplicateViolation,
     EvidenceFirewallViolation,
@@ -55,10 +62,12 @@ __all__ = [
     "EventHypothesisRevision",
     "EventHypothesisStatus",
     "EventHypothesisUpdateKind",
+    "EventRevisionOutcome",
     "EvidenceDuplicateViolation",
     "EvidenceFirewallViolation",
     "EvidenceMessage",
     "EvidenceScopeViolation",
+    "FeedbackProvenanceError",
     "HiddenEventEvidence",
     "HiddenEventStep",
     "IndependentEventCandidate",
@@ -67,6 +76,9 @@ __all__ = [
     "MessageEdgeType",
     "MessagePassingResult",
     "OpenWorldRoleConditionedReversibleEventRevisionEngine",
+    "ProjectOneRequestKind",
+    "ProjectOneStatRequest",
+    "ProjectTwoFeedbackRevisionLoop",
     "ProvenanceConstrainedMessagePassing",
     "Top1EventGraphBaseline",
     "Top1EventGraphPrediction",

@@ -819,3 +819,188 @@ def test_place_feedback_without_transition_model_is_still_isolated():
             likelihood_model=_place_likelihood(),
             owner_key=OWNER,
         )
+
+
+# --- review round 4: fixes #1..#7 ---------------------------------------------
+
+from cpswm.system.continual.execution_feedback_projector import (  # noqa: E402
+    ProjectionInputConflictError,
+)
+
+
+def test_original_history_replay_returns_history_with_corrected_revision():
+    # Fix #1: replaying against the ORIGINAL history returns the revised history
+    # that actually contains the corrected revision (self-consistent with outcome).
+    history = _history()
+    loop = _loop()
+    fb = _search_failed()
+    binding = _binding(fb)
+    revised, first = loop.ingest_feedback(
+        history=history,
+        feedback=fb,
+        binding=binding,
+        likelihood_model=_likelihood(),
+        owner_key=OWNER,
+    )
+    replay_history, replay = loop.ingest_feedback(
+        history=history,
+        feedback=fb,
+        binding=binding,  # the ORIGINAL history again
+        likelihood_model=_likelihood(),
+        owner_key=OWNER,
+    )
+    assert replay.is_replay is True
+    assert replay_history.latest.revision_id == first.corrected_revision_id
+    assert len(replay_history.revisions) == len(revised.revisions)
+
+
+def test_mutating_first_outcome_does_not_pollute_cached_replay():
+    # Fix #2: the cached replay is independent of the returned first outcome.
+    history = _history()
+    loop = _loop()
+    fb = _search_failed()
+    binding = _binding(fb)
+    _, first = loop.ingest_feedback(
+        history=history,
+        feedback=fb,
+        binding=binding,
+        likelihood_model=_likelihood(),
+        owner_key=OWNER,
+    )
+    original_owner = first.actor_posterior_after[OWNER]
+    first.actor_posterior_after[OWNER] = 999.0
+    first.repropagated_posterior.clear()
+    _, replay = loop.ingest_feedback(
+        history=history,
+        feedback=fb,
+        binding=binding,
+        likelihood_model=_likelihood(),
+        owner_key=OWNER,
+    )
+    assert replay.actor_posterior_after[OWNER] == pytest.approx(original_owner)
+    assert replay.repropagated_posterior  # not cleared
+
+
+def test_actor_and_transition_sources_appear_in_revision_provenance():
+    # Fix #3: the actor/transition source records are auditable on the outcome.
+    history = _history()
+    loop = _loop()
+    actor_src = uuid4()
+    fb = _search_found()
+    _, outcome = loop.ingest_feedback(
+        history=history,
+        feedback=fb,
+        binding=_binding(fb),
+        likelihood_model=_likelihood(),
+        owner_key=OWNER,
+        actor_evidence=ActorDiscriminationEvidence(
+            ratios={OWNER: 0.5, GUEST: 2.0}, model_version="v@1", source_record_id=actor_src
+        ),
+    )
+    assert fb.metadata.record_id in outcome.evidence_source_record_ids
+    assert actor_src in outcome.evidence_source_record_ids
+
+    # And the transition path carries its model + actor sources.
+    history2 = _history()
+    model = _transition_model(with_actor=True)
+    place = _place_feedback()
+    _, outcome2 = loop.ingest_feedback(
+        history=history2,
+        feedback=place,
+        binding=_binding(place),
+        likelihood_model=_place_likelihood(),
+        owner_key=OWNER,
+        transition_model=model,
+    )
+    assert model.source_record_id in outcome2.evidence_source_record_ids
+    assert model.actor.source_record_id in outcome2.evidence_source_record_ids
+
+
+def test_replay_with_different_actor_evidence_is_a_conflict():
+    # Fix #4: same feedback + different actor evidence must raise a conflict.
+    history = _history()
+    loop = _loop()
+    fb = _search_found()
+    binding = _binding(fb)
+    loop.ingest_feedback(
+        history=history,
+        feedback=fb,
+        binding=binding,
+        likelihood_model=_likelihood(),
+        owner_key=OWNER,
+        actor_evidence=ActorDiscriminationEvidence(
+            ratios={OWNER: 0.5, GUEST: 2.0}, model_version="v@1", source_record_id=uuid4()
+        ),
+    )
+    with pytest.raises(ProjectionInputConflictError):
+        loop.ingest_feedback(
+            history=history,
+            feedback=fb,
+            binding=binding,
+            likelihood_model=_likelihood(),
+            owner_key=OWNER,
+            actor_evidence=ActorDiscriminationEvidence(
+                ratios={OWNER: 3.0, GUEST: 0.2}, model_version="v@2", source_record_id=uuid4()
+            ),
+        )
+
+
+def test_place_wrong_location_yields_a_corrected_destination():
+    # Fix #5: a place that landed elsewhere changes the corrected destination.
+    history = _history()
+    loop = _loop()
+    place = _feedback(
+        RobotActionType.PLACE,
+        {RobotActionOutcome.SUCCESS: 0.9, RobotActionOutcome.OBJECT_SLIPPED: 0.1},
+        location=L3,  # not the event destination L2
+    )
+    _, outcome = loop.ingest_feedback(
+        history=history,
+        feedback=place,
+        binding=_binding(place),
+        likelihood_model=_place_likelihood(),
+        owner_key=OWNER,
+        transition_model=_transition_model(with_actor=True),
+    )
+    assert outcome.corrected_destination_location_id == L3
+    assert outcome.project_one_requests
+    assert outcome.project_one_requests[0].location_id == L3
+
+
+def test_search_window_spanning_a_subsequent_move_is_rejected():
+    # Fix #6: the observation window crossing a later move is contaminated -> reject.
+    history = _history()
+    loop = _loop()
+    start = TB + timedelta(minutes=10)
+    end = TB + timedelta(minutes=50)
+    move = TB + timedelta(minutes=30)  # inside [start, end]
+    fb = _search_failed().model_copy(update={"valid_time": ValidTimeInterval(start=start, end=end)})
+    with pytest.raises(StaleFeedbackError):
+        loop.ingest_feedback(
+            history=history,
+            feedback=fb,
+            binding=_binding(fb),
+            likelihood_model=_likelihood(),
+            owner_key=OWNER,
+            next_move_time=move,
+        )
+
+
+def test_place_three_revisions_have_a_verified_parent_chain():
+    # Fix #7: mechanism -> role -> actor are parent-linked step by step.
+    history = _history()
+    loop = _loop()
+    place = _place_feedback()
+    new_history, _ = loop.ingest_feedback(
+        history=history,
+        feedback=place,
+        binding=_binding(place),
+        likelihood_model=_place_likelihood(),
+        owner_key=OWNER,
+        transition_model=_transition_model(with_actor=True),
+    )
+    revs = new_history.revisions
+    assert len(revs) == 4  # branch + mechanism + role + actor
+    assert revs[1].parent_revision_id == revs[0].revision_id  # mechanism <- branch
+    assert revs[2].parent_revision_id == revs[1].revision_id  # role <- mechanism
+    assert revs[3].parent_revision_id == revs[2].revision_id  # actor <- role

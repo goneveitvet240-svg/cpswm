@@ -81,10 +81,19 @@ axes.
 
 ### Delayed feedback vs a later move (causality)
 
-`ingest_feedback` takes `next_move_time`: if the feedback observes at or after a
-*subsequent* known move of the object, it describes a later world state and cannot
-revise this event — it raises `StaleFeedbackError` (route it to the newer event).
-This closes the earlier "delayed search back-filled as synchronous" gap.
+`ingest_feedback` takes `next_move_time`: if the feedback's observation *window*
+(`valid_time`) reaches or crosses a *subsequent* known move of the object, the
+window is contaminated by the later world state and cannot revise this event — it
+raises `StaleFeedbackError` (route it to the newer event). This covers both a
+feedback that starts after the move and one whose interval spans it.
+
+### Self-consistent replay & tamper isolation
+
+A replayed feedback returns the **cached revised history** (which contains the
+corrected revision), so the returned history is always consistent with the returned
+outcome — even when the caller re-presents the *original* pre-application history.
+The cached outcome is deep-copied on store and on serve, so mutating the first
+returned outcome's mappings can never pollute the replay (and vice versa).
 
 ### Actor-discrimination provenance
 
@@ -93,12 +102,33 @@ The actor-discriminating channel is a typed `ActorDiscriminationEvidence`
 (NaN/inf), name an actor outside the hypothesis support, or arrive without a model
 version are rejected — a discriminating claim must be attributable and well-posed.
 
-### Replay lineage
+### Replay lineage & evidence conflict
 
 A replayed feedback record is idempotent only against the lineage it was first
-applied to: if the presented history's head is neither the cached
-superseded nor corrected revision, the loop raises `LineageConflictError` rather
-than returning a stale outcome that references revisions absent from that history.
+applied to: if the presented history's head is neither the cached superseded nor
+corrected revision, the loop raises `LineageConflictError`. And because the
+projector only fingerprints the feedback/context/likelihood, the loop *also*
+fingerprints the actor-discrimination channel, the transition model, the owner key,
+and the move window — so re-presenting the same feedback record with **different**
+actor/transition evidence is a `ProjectionInputConflictError`, not a silent replay.
+
+### Source-record provenance
+
+The actor and transition source records are threaded into the generated
+`ActorResponsibilityEvidence` / `EventMechanismEvidence` / `RoleBindingEvidence`
+via `evidence_refs` (so they are baked into each revision's immutable semantic
+fingerprint) and surfaced on `EventRevisionOutcome.evidence_source_record_ids`
+alongside the feedback record — the revision is auditable back to every source.
+
+### Wrong-location place → corrected destination
+
+A place/transfer that lands at a location other than the event's recorded
+destination is no longer rejected as a provenance error (that check applies only to
+the search/presence route). Instead the loop records
+`corrected_destination_location_id` on the outcome and sets the
+`ProjectOneStatRequest.location_id` to it, so project one moves the habit to the
+observed location. Each of the mechanism→role→actor revisions is parent-lineage
+verified step by step.
 
 ### Provenance firewall (binding)
 
@@ -178,7 +208,14 @@ record. `apply_project_one_request(request, loop)` consumes it:
   without one it stays isolated;
 - REINFORCE produces a real statistic update;
 - through `CorePrototypeSpine`, a request revises Hybrid + Dirichlet + RLS atomically
-  (spine tests).
+  (spine tests);
+- an original-history replay returns a history containing the corrected revision;
+- mutating the first outcome cannot pollute the cached replay;
+- actor/transition source records are on the outcome provenance;
+- replaying with different actor/transition evidence is a conflict;
+- a place at the wrong location yields a corrected destination;
+- a search window spanning a subsequent move is rejected;
+- the three place revisions have a verified parent-lineage chain.
 
 ## Retained adaptation points (not removed, not "no longer needed")
 

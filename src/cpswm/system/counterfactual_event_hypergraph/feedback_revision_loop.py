@@ -43,6 +43,8 @@ Deliberately retained (kept as interfaces, not deleted, and NOT faked):
 
 from __future__ import annotations
 
+import hashlib
+import json
 from collections.abc import Mapping
 from dataclasses import dataclass
 from datetime import datetime
@@ -58,11 +60,13 @@ from cpswm.contracts import (
     DecisionContextBinding,
     EventMechanism,
     EventMechanismEvidence,
+    EvidenceRef,
     ExecutionFeedbackRecord,
     HiddenEventEvidenceTrack,
     RoleBindingEvidence,
     SourceType,
 )
+from cpswm.system.continual.execution_feedback_projector import ProjectionInputConflictError
 
 from .contracts import (
     EventHypothesisHistory,
@@ -175,6 +179,21 @@ class EventRevisionOutcome:
     project_one_requests: tuple[ProjectOneStatRequest, ...]
     is_replay: bool
     reason: str
+    # Every source record that fed this revision: the feedback plus any actor /
+    # transition-model source records, so the revision is auditable end-to-end.
+    evidence_source_record_ids: tuple[UUID, ...] = ()
+    # Set when a place/transfer landed at a location other than the event's
+    # recorded destination -- the destination project one should move the habit to.
+    corrected_destination_location_id: UUID | None = None
+
+
+@dataclass(frozen=True, slots=True)
+class _CachedRevision:
+    """Cached first application of one feedback record, for self-consistent replay."""
+
+    input_fingerprint: str
+    revised_history: EventHypothesisHistory
+    outcome: EventRevisionOutcome
 
 
 def _actor_posterior(revision: EventHypothesisRevision) -> dict[str, float]:
@@ -226,8 +245,8 @@ class ProjectTwoFeedbackRevisionLoop:
         self._engine = engine or OpenWorldRoleConditionedReversibleEventRevisionEngine()
         self._message_passing = message_passing or ProvenanceConstrainedMessagePassing()
         self._retraction_threshold = retraction_threshold
-        # feedback record id -> outcome, for idempotent replay.
-        self._outcomes: dict[UUID, EventRevisionOutcome] = {}
+        # feedback record id -> cached first application, for self-consistent replay.
+        self._outcomes: dict[UUID, _CachedRevision] = {}
 
     def ingest_feedback(
         self,
@@ -260,6 +279,12 @@ class ProjectTwoFeedbackRevisionLoop:
         record_id = feedback.metadata.record_id
         current = history.latest
         self._check_provenance(current, feedback, binding, next_move_time)
+        input_fingerprint = _loop_input_fingerprint(
+            owner_key=owner_key,
+            actor_evidence=actor_evidence,
+            transition_model=transition_model,
+            next_move_time=next_move_time,
+        )
 
         # --- 1. project & validate (dedup + forgery/input-conflict) via projector ---
         # prepare validates and detects replay/forgery WITHOUT consuming the key, so
@@ -277,31 +302,52 @@ class ProjectTwoFeedbackRevisionLoop:
                 )
             # Idempotent only against the lineage it was first applied to.
             if current.revision_id not in (
-                cached.superseded_revision_id,
-                cached.corrected_revision_id,
+                cached.outcome.superseded_revision_id,
+                cached.outcome.corrected_revision_id,
             ):
                 raise LineageConflictError(
                     "replayed feedback presented against an incompatible history lineage"
                 )
-            return history, _as_replay(cached)
+            # Same feedback + different actor/transition evidence is a conflict, not a replay.
+            if cached.input_fingerprint != input_fingerprint:
+                raise ProjectionInputConflictError(
+                    "replayed feedback presented with different actor/transition evidence"
+                )
+            # Return the revised history (with the corrected revision), self-consistent
+            # with the outcome regardless of which lineage head was presented.
+            return cached.revised_history, _as_replay(cached.outcome)
 
+        corrected_destination: UUID | None = None
         if projected.target_presence_update is not None:
-            revised_history, corrected, presence_ratio, repropagated = self._revise_presence(
-                history,
-                current,
-                projected,
-                likelihood_model,
-                actor_evidence,
-            )
+            # A search must concern this event's destination.
+            if feedback.attempted_location_id != current.destination_location_id:
+                raise FeedbackProvenanceError(
+                    "search feedback location does not match the hidden-event destination"
+                )
+            (
+                revised_history,
+                corrected,
+                presence_ratio,
+                repropagated,
+                source_records,
+            ) = self._revise_presence(history, current, projected, likelihood_model, actor_evidence)
         else:
             if transition_model is None:
                 raise UnsupportedFeedbackRouteError(
                     "place/transfer feedback requires a TransitionRevisionModel to revise "
                     "mechanism/role/actor; it is not folded into a presence ratio"
                 )
-            revised_history, corrected, presence_ratio, repropagated = self._revise_transition(
-                history, current, transition_model
-            )
+            # A place/transfer that landed somewhere other than the recorded
+            # destination is a location signal: project one must move the habit.
+            if feedback.attempted_location_id != current.destination_location_id:
+                corrected_destination = feedback.attempted_location_id
+            (
+                revised_history,
+                corrected,
+                presence_ratio,
+                repropagated,
+                source_records,
+            ) = self._revise_transition(history, current, transition_model)
 
         outcome = self._build_outcome(
             superseded=current,
@@ -310,15 +356,27 @@ class ProjectTwoFeedbackRevisionLoop:
             owner_key=owner_key,
             ratio=presence_ratio,
             repropagated=repropagated,
+            source_records=source_records,
+            corrected_destination=corrected_destination,
         )
         # Commit the projector idempotency key only once the revision succeeded.
         self._projector.commit_execution_feedback(projected)
-        self._outcomes[record_id] = outcome
+        self._outcomes[record_id] = _CachedRevision(
+            input_fingerprint=input_fingerprint,
+            revised_history=revised_history,
+            outcome=_copy_outcome(outcome, is_replay=False),
+        )
         return revised_history, outcome
 
     def _revise_presence(
         self, history, current, projected, likelihood_model, actor_evidence
-    ) -> tuple[EventHypothesisHistory, EventHypothesisRevision, float, MessagePassingResult]:
+    ) -> tuple[
+        EventHypothesisHistory,
+        EventHypothesisRevision,
+        float,
+        MessagePassingResult,
+        tuple[UUID, ...],
+    ]:
         presence_ratio = self._presence_ratio(projected)
         evidence = self._actor_evidence(
             current,
@@ -332,18 +390,26 @@ class ProjectTwoFeedbackRevisionLoop:
         )
         corrected = revised_history.latest
         self._assert_consistent(repropagated, corrected)
-        return revised_history, corrected, presence_ratio, repropagated
+        sources = () if actor_evidence is None else (actor_evidence.source_record_id,)
+        return revised_history, corrected, presence_ratio, repropagated, sources
 
     def _revise_transition(
         self,
         history: EventHypothesisHistory,
         current: EventHypothesisRevision,
         model: TransitionRevisionModel,
-    ) -> tuple[EventHypothesisHistory, EventHypothesisRevision, float, MessagePassingResult]:
+    ) -> tuple[
+        EventHypothesisHistory,
+        EventHypothesisRevision,
+        float,
+        MessagePassingResult,
+        tuple[UUID, ...],
+    ]:
         """Multi-axis place/transfer revision: mechanism, then role, then actor.
 
         Each axis is a separate reversible, parent-linked ORRER revision, so the
-        chain records *why* it moved on every axis and can be undone per axis.
+        chain records *why* it moved on every axis and can be undone per axis.  The
+        parent lineage of every appended revision is verified step by step.
         """
 
         if not model.model_version.strip():
@@ -366,16 +432,36 @@ class ProjectTwoFeedbackRevisionLoop:
         working = self._engine.revise_event_mechanism(
             history, mechanism, retraction_threshold=self._retraction_threshold
         )
+        self._assert_child_of(working.latest, current)
+        parent = working.latest
         working = self._engine.revise_role_binding(
             working, role, retraction_threshold=self._retraction_threshold
         )
+        self._assert_child_of(working.latest, parent)
         if actor is not None:
+            parent = working.latest
             working = self._engine.revise_actor_responsibility(
                 working, actor, retraction_threshold=self._retraction_threshold
             )
+            self._assert_child_of(working.latest, parent)
         corrected = working.latest
         self._assert_consistent(repropagated, corrected)
-        return working, corrected, 1.0, repropagated
+        sources = tuple(
+            dict.fromkeys(
+                (
+                    model.source_record_id,
+                    *(() if model.actor is None else (model.actor.source_record_id,)),
+                )
+            )
+        )
+        return working, corrected, 1.0, repropagated, sources
+
+    @staticmethod
+    def _assert_child_of(child: EventHypothesisRevision, parent: EventHypothesisRevision) -> None:
+        if child.parent_revision_id != parent.revision_id:
+            raise HypothesisPosteriorInconsistencyError(
+                "multi-axis revision broke the parent lineage chain"
+            )
 
     def _transition_metadata(
         self, current: EventHypothesisRevision, schema_name: str
@@ -406,6 +492,12 @@ class ProjectTwoFeedbackRevisionLoop:
             effective_sample_weight=1.0,
             evidence_track=HiddenEventEvidenceTrack.CONTROLLED_NOISE,
             evidence_model_id=model.model_version,
+            evidence_refs=(
+                EvidenceRef(
+                    evidence_type="transition_model",
+                    source_record_id=model.source_record_id,
+                ),
+            ),
         )
 
     def _role_evidence(
@@ -422,6 +514,12 @@ class ProjectTwoFeedbackRevisionLoop:
             effective_sample_weight=1.0,
             evidence_track=HiddenEventEvidenceTrack.CONTROLLED_NOISE,
             evidence_model_id=model.model_version,
+            evidence_refs=(
+                EvidenceRef(
+                    evidence_type="transition_model",
+                    source_record_id=model.source_record_id,
+                ),
+            ),
         )
 
     def _check_provenance(
@@ -439,26 +537,27 @@ class ProjectTwoFeedbackRevisionLoop:
             raise FeedbackProvenanceError(
                 "feedback target object does not match the hidden-event set"
             )
-        if feedback.attempted_location_id != current.destination_location_id:
-            raise FeedbackProvenanceError(
-                "feedback location does not match the hidden-event destination"
-            )
         for field_name in ("household_id", "session_id", "trace_id"):
             if getattr(feedback.metadata, field_name) != getattr(current, field_name):
                 raise FeedbackProvenanceError(f"feedback {field_name} does not match the event set")
             if getattr(binding, f"subject_{field_name}") != getattr(current, field_name):
                 raise FeedbackProvenanceError(f"binding {field_name} does not match the event set")
+        # (Location is checked per-route: a search must match the destination; a
+        # place elsewhere is a location signal, not a provenance error.)
         # Causal window: feedback must observe the world *after* the event closed.
         if feedback.valid_time.start < current.interval_end:
             raise FeedbackProvenanceError(
                 "feedback precedes the hidden-event end; not a valid post-event observation"
             )
-        # A later move already happened before this feedback observed: the feedback
-        # is evidence about the newer world state, not about this event.
-        if next_move_time is not None and feedback.valid_time.start >= next_move_time:
-            raise StaleFeedbackError(
-                "feedback observes after a subsequent move; revise the newer event instead"
-            )
+        # A subsequent move already happened during or before the feedback's
+        # observation window: the window is contaminated by the newer world state,
+        # so the feedback cannot revise this event.
+        if next_move_time is not None:
+            window_end = feedback.valid_time.end or feedback.valid_time.start
+            if window_end >= next_move_time or feedback.valid_time.start >= next_move_time:
+                raise StaleFeedbackError(
+                    "feedback window crosses a subsequent move; revise the newer event instead"
+                )
 
     def _presence_ratio(self, projected) -> float:
         """Presence Bayes factor for a target-presence route (caller guarantees one)."""
@@ -542,6 +641,14 @@ class ProjectTwoFeedbackRevisionLoop:
             source_type=SourceType.MODEL,
             source_id="project-two-feedback-loop",
         )
+        evidence_refs: tuple[EvidenceRef, ...] = ()
+        if actor_evidence is not None:
+            evidence_refs = (
+                EvidenceRef(
+                    evidence_type="actor_discrimination",
+                    source_record_id=actor_evidence.source_record_id,
+                ),
+            )
         return ActorResponsibilityEvidence(
             metadata=metadata,
             source_detection_result_id=destination_detection_id,
@@ -553,6 +660,7 @@ class ProjectTwoFeedbackRevisionLoop:
             effective_sample_weight=1.0,
             evidence_track=ActorEvidenceTrack.CONTROLLED_NOISE,
             evidence_model_id=model_id,
+            evidence_refs=evidence_refs,
         )
 
     @staticmethod
@@ -587,20 +695,27 @@ class ProjectTwoFeedbackRevisionLoop:
         owner_key: str,
         ratio: float,
         repropagated: MessagePassingResult,
+        source_records: tuple[UUID, ...],
+        corrected_destination: UUID | None,
     ) -> EventRevisionOutcome:
         actor_before = _actor_posterior(superseded)
         actor_after = _actor_posterior(corrected)
         owner_before = actor_before.get(owner_key, 0.0)
         owner_after = actor_after.get(owner_key, 0.0)
         delta = owner_after - owner_before
+        # Where project one should hold the habit: the corrected destination when a
+        # place landed elsewhere, otherwise the event's recorded destination.
+        request_location = corrected_destination or corrected.destination_location_id
 
         requests: tuple[ProjectOneStatRequest, ...] = ()
-        if abs(delta) > _PROBABILITY_FLOOR:
-            if delta < 0.0:
+        # A moved destination is itself an actionable location correction, even when
+        # the owner mass is unchanged.
+        if abs(delta) > _PROBABILITY_FLOOR or corrected_destination is not None:
+            if corrected_destination is not None or delta < 0.0:
                 kind = (
                     ProjectOneRequestKind.RETRACT
-                    if owner_after <= 0.0
-                    else (ProjectOneRequestKind.CORRECT)
+                    if owner_after <= 0.0 and corrected_destination is None
+                    else ProjectOneRequestKind.CORRECT
                 )
             else:
                 kind = ProjectOneRequestKind.REINFORCE
@@ -612,7 +727,7 @@ class ProjectTwoFeedbackRevisionLoop:
                     event_hypothesis_id=corrected.hypothesis_set_id,
                     owner_key=owner_key,
                     object_instance_id=corrected.object_instance_id,
-                    location_id=corrected.destination_location_id,
+                    location_id=request_location,
                     owner_mass_before=owner_before,
                     owner_mass_after=owner_after,
                     owner_mass_delta=delta,
@@ -637,28 +752,101 @@ class ProjectTwoFeedbackRevisionLoop:
             project_one_requests=requests,
             is_replay=False,
             reason="execution feedback folded as reversible actor-responsibility evidence",
+            evidence_source_record_ids=(feedback.metadata.record_id, *source_records),
+            corrected_destination_location_id=corrected_destination,
         )
 
 
-def _as_replay(outcome: EventRevisionOutcome) -> EventRevisionOutcome:
+def _copy_outcome(outcome: EventRevisionOutcome, *, is_replay: bool) -> EventRevisionOutcome:
+    """Return an independent copy so mutating one outcome cannot pollute the other.
+
+    Every mutable mapping is copied, so a caller that mutates the first returned
+    outcome's dicts can never change the cached copy served on replay (and vice
+    versa).  ``project_one_requests`` is a tuple of frozen dataclasses (immutable).
+    """
+
     return EventRevisionOutcome(
         superseded_revision_id=outcome.superseded_revision_id,
         corrected_revision_id=outcome.corrected_revision_id,
-        hypothesis_posterior_before=outcome.hypothesis_posterior_before,
-        hypothesis_posterior_after=outcome.hypothesis_posterior_after,
-        actor_posterior_before=outcome.actor_posterior_before,
-        actor_posterior_after=outcome.actor_posterior_after,
+        hypothesis_posterior_before=dict(outcome.hypothesis_posterior_before),
+        hypothesis_posterior_after=dict(outcome.hypothesis_posterior_after),
+        actor_posterior_before=dict(outcome.actor_posterior_before),
+        actor_posterior_after=dict(outcome.actor_posterior_after),
         unresolved_before=outcome.unresolved_before,
         unresolved_after=outcome.unresolved_after,
         owner_mass_before=outcome.owner_mass_before,
         owner_mass_after=outcome.owner_mass_after,
         source_feedback_record_id=outcome.source_feedback_record_id,
         presence_likelihood_ratio=outcome.presence_likelihood_ratio,
-        repropagated_posterior=outcome.repropagated_posterior,
+        repropagated_posterior=dict(outcome.repropagated_posterior),
         project_one_requests=outcome.project_one_requests,
-        is_replay=True,
+        is_replay=is_replay,
         reason=outcome.reason,
+        evidence_source_record_ids=outcome.evidence_source_record_ids,
+        corrected_destination_location_id=outcome.corrected_destination_location_id,
     )
+
+
+def _as_replay(outcome: EventRevisionOutcome) -> EventRevisionOutcome:
+    return _copy_outcome(outcome, is_replay=True)
+
+
+def _loop_input_fingerprint(
+    *,
+    owner_key: str,
+    actor_evidence: ActorDiscriminationEvidence | None,
+    transition_model: TransitionRevisionModel | None,
+    next_move_time: datetime | None,
+) -> str:
+    """Fingerprint the loop-level inputs the projector does not already cover.
+
+    The projector fingerprints the feedback, context, and likelihood model; this
+    covers the actor-discrimination channel, the transition model, the owner key,
+    and the move window, so a replay of the same feedback with *different* such
+    inputs is detected as a conflict.
+    """
+
+    def _actor(evidence: ActorDiscriminationEvidence | None) -> object:
+        if evidence is None:
+            return None
+        return {
+            "ratios": {actor: repr(float(v)) for actor, v in sorted(evidence.ratios.items())},
+            "model_version": evidence.model_version,
+            "source_record_id": str(evidence.source_record_id),
+        }
+
+    payload = {
+        "owner_key": owner_key,
+        "next_move_time": None if next_move_time is None else next_move_time.isoformat(),
+        "actor_evidence": _actor(actor_evidence),
+        "transition_model": None
+        if transition_model is None
+        else {
+            "mechanism_posterior": {
+                m.value: repr(float(v))
+                for m, v in sorted(
+                    transition_model.mechanism_posterior.items(), key=lambda kv: kv[0].value
+                )
+            },
+            "mechanism_prior": {
+                m.value: repr(float(v))
+                for m, v in sorted(
+                    transition_model.mechanism_prior.items(), key=lambda kv: kv[0].value
+                )
+            },
+            "ordered_role_posterior": {
+                k: repr(float(v))
+                for k, v in sorted(transition_model.ordered_role_posterior.items())
+            },
+            "ordered_role_prior": {
+                k: repr(float(v)) for k, v in sorted(transition_model.ordered_role_prior.items())
+            },
+            "model_version": transition_model.model_version,
+            "source_record_id": str(transition_model.source_record_id),
+            "actor": _actor(transition_model.actor),
+        },
+    }
+    return hashlib.sha256(json.dumps(payload, sort_keys=True).encode("utf-8")).hexdigest()
 
 
 def apply_project_one_request(request: ProjectOneStatRequest, loop) -> bool:

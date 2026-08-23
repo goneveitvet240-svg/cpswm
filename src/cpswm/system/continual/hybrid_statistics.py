@@ -729,7 +729,17 @@ class HybridStatisticLedger:
                 raise HybridLedgerError("a replacement record id is already present")
             if not reversal_reason.strip():
                 raise HybridLedgerError("reversal reason must be non-empty")
+            # Every live parent delta must share the reversal's authorization scope,
+            # or retract() would reject after we had begun withdrawing state.
+            if any(
+                self._deltas[record_id].authorization_scope_id != promotion.authorization_scope_id
+                for record_id in live
+            ):
+                raise HybridLedgerError(
+                    "reversal authorization scope does not match a parent delta"
+                )
             self._precheck_appendable(corrected_delta)
+            self._precheck_replacement_lineage(corrected_delta, superseded_revision_id)
             if promotion.promotes_record_id != corrected_delta.record_id:
                 raise HybridLedgerError("promotion must target the corrected delta")
             if promotion.authorization_scope_id != corrected_delta.authorization_scope_id:
@@ -747,40 +757,50 @@ class HybridStatisticLedger:
             ):
                 raise HybridLedgerError("replacement watermarks must be non-decreasing")
 
-            # Shadow the corrected key's projection to confirm it is reliable
-            # *before* committing anything.
-            shadow = self._copy_projection(corrected_delta.key)
-            for record_id in live:
-                delta = self._deltas[record_id]
-                if delta.key == corrected_delta.key:
-                    self._apply_to(shadow, delta, -1.0)
-            self._apply_to(shadow, corrected_delta, +1.0)
-            shadow_projection = self._freeze(shadow)
-            if shadow_projection.replay_required:
-                raise HybridLedgerError("corrected projection is numerically unreliable")
+            # Shadow *every* affected key (the corrected key and each retracted
+            # key) to confirm numerical reliability before committing anything.
+            affected_keys = {corrected_delta.key}
+            affected_keys.update(self._deltas[record_id].key for record_id in live)
+            for key in affected_keys:
+                shadow = self._copy_projection(key)
+                for record_id in live:
+                    delta = self._deltas[record_id]
+                    if delta.key == key:
+                        self._apply_to(shadow, delta, -1.0)
+                if corrected_delta.key == key:
+                    self._apply_to(shadow, corrected_delta, +1.0)
+                if self._freeze(shadow).replay_required:
+                    raise HybridLedgerError("an affected projection is numerically unreliable")
 
-            # --- commit: pre-validated, so these primitives cannot reject ---
-            for record_id, reversal_id in zip(live, reversal_record_ids, strict=True):
-                self.retract(
-                    HybridReversal(
-                        record_id=reversal_id,
-                        reverses_record_id=record_id,
-                        revision_id=superseded_revision_id,
-                        input_watermark=reversal_watermark,
-                        authorization_scope_id=promotion.authorization_scope_id,
-                        reason=reversal_reason,
+            # --- commit: all-or-nothing.  Any exception (including an unexpected
+            # one from a mutator or a monkeypatched failure) rolls the ledger back
+            # to exactly its pre-call state before re-raising.
+            snapshot = self._capture_state()
+            try:
+                for record_id, reversal_id in zip(live, reversal_record_ids, strict=True):
+                    self.retract(
+                        HybridReversal(
+                            record_id=reversal_id,
+                            reverses_record_id=record_id,
+                            revision_id=superseded_revision_id,
+                            input_watermark=reversal_watermark,
+                            authorization_scope_id=promotion.authorization_scope_id,
+                            reason=reversal_reason,
+                        )
                     )
-                )
-            self.append_delta(corrected_delta)
-            self.promote(promotion)
+                self.append_delta(corrected_delta)
+                self.promote(promotion)
+            except BaseException:
+                self._restore_state(snapshot)
+                raise
             return self.projection(corrected_delta.key)
 
     def _precheck_appendable(self, delta: HybridStatisticDelta) -> None:
         """Replicate append_delta's non-lineage checks without mutating state.
 
-        The revision-lineage gate (parent must be fully retracted) is deliberately
-        excluded: an atomic replacement retracts the parent in the same step, so it
-        is validated by construction rather than by current state.
+        The revision-lineage gate is validated separately by
+        :meth:`_precheck_replacement_lineage`, which accounts for the parent being
+        retracted in the same atomic step.
         """
 
         if delta.feature_dim != self.feature_dim:
@@ -799,6 +819,85 @@ class HybridStatisticLedger:
             delta.source_record_ids,
         ):
             raise HybridLedgerError("evidence cluster identity is inconsistent")
+
+    def _precheck_replacement_lineage(
+        self, corrected_delta: HybridStatisticDelta, superseded_revision_id: UUID
+    ) -> None:
+        """Fully validate the corrected revision's lineage before any mutation.
+
+        Mirrors :meth:`_validate_revision`, but treats the superseded parent as if
+        it were already retracted (the atomic step retracts it), so the commit
+        phase's ``append_delta`` cannot reject on lineage after live state has been
+        withdrawn.
+        """
+
+        known_event = self._revision_event.get(corrected_delta.revision_id)
+        if known_event is not None:
+            if known_event != corrected_delta.event_hypothesis_id:
+                raise HybridLedgerError("revision id cannot span multiple events")
+            if self._revision_parent[corrected_delta.revision_id] != superseded_revision_id:
+                raise HybridLedgerError("revision parent must be stable")
+            return
+        parent_event = self._revision_event.get(superseded_revision_id)
+        if parent_event is None:
+            raise HybridLedgerError("parent revision does not exist")
+        if parent_event != corrected_delta.event_hypothesis_id:
+            raise HybridLedgerError("parent revision belongs to another event")
+        quarantine_successor = self._quarantine_successor.get(superseded_revision_id)
+        if quarantine_successor is not None and quarantine_successor != corrected_delta.revision_id:
+            raise HybridLedgerError("corrected revision does not match quarantine successor")
+        ancestor: UUID | None = superseded_revision_id
+        while ancestor is not None:
+            if ancestor == corrected_delta.revision_id:
+                raise HybridLedgerError("revision lineage cannot contain a cycle")
+            ancestor = self._revision_parent.get(ancestor)
+
+    def _capture_state(self) -> dict[str, object]:
+        """Deep-enough snapshot of every mutable field for all-or-nothing rollback."""
+
+        return {
+            "log_len": len(self._log),
+            "record_ids": set(self._record_ids),
+            "cluster_keys": set(self._cluster_keys),
+            "cluster_records": {key: list(value) for key, value in self._cluster_records.items()},
+            "cluster_identity": dict(self._cluster_identity),
+            "dedup_ids": set(self._dedup_ids),
+            "deltas": dict(self._deltas),
+            "promoted": set(self._promoted),
+            "reversed": set(self._reversed),
+            "by_revision": {key: list(value) for key, value in self._by_revision.items()},
+            "revision_event": dict(self._revision_event),
+            "revision_parent": dict(self._revision_parent),
+            "quarantine_successor": dict(self._quarantine_successor),
+            "projection": {
+                key: _MutableProjection(
+                    a=value.a.copy(),
+                    b=value.b.copy(),
+                    alpha=value.alpha,
+                    information=value.information.copy(),
+                    information_vector=value.information_vector.copy(),
+                )
+                for key, value in self._projection.items()
+            },
+            "last_watermark": self._last_watermark,
+        }
+
+    def _restore_state(self, snapshot: dict[str, object]) -> None:
+        del self._log[snapshot["log_len"] :]  # type: ignore[index]
+        self._record_ids = snapshot["record_ids"]  # type: ignore[assignment]
+        self._cluster_keys = snapshot["cluster_keys"]  # type: ignore[assignment]
+        self._cluster_records = snapshot["cluster_records"]  # type: ignore[assignment]
+        self._cluster_identity = snapshot["cluster_identity"]  # type: ignore[assignment]
+        self._dedup_ids = snapshot["dedup_ids"]  # type: ignore[assignment]
+        self._deltas = snapshot["deltas"]  # type: ignore[assignment]
+        self._promoted = snapshot["promoted"]  # type: ignore[assignment]
+        self._reversed = snapshot["reversed"]  # type: ignore[assignment]
+        self._by_revision = snapshot["by_revision"]  # type: ignore[assignment]
+        self._revision_event = snapshot["revision_event"]  # type: ignore[assignment]
+        self._revision_parent = snapshot["revision_parent"]  # type: ignore[assignment]
+        self._quarantine_successor = snapshot["quarantine_successor"]  # type: ignore[assignment]
+        self._projection = snapshot["projection"]  # type: ignore[assignment]
+        self._last_watermark = snapshot["last_watermark"]  # type: ignore[assignment]
 
     def supersede_quarantined_revision(
         self,

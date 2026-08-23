@@ -32,9 +32,12 @@ from .engine import (
 from .feedback_revision_loop import (
     EventRevisionOutcome,
     FeedbackProvenanceError,
+    HypothesisPosteriorInconsistencyError,
     ProjectOneRequestKind,
     ProjectOneStatRequest,
     ProjectTwoFeedbackRevisionLoop,
+    UnsupportedFeedbackRouteError,
+    apply_project_one_request,
 )
 from .hypothesis_message_passing import (
     EvidenceDuplicateViolation,
@@ -70,6 +73,7 @@ __all__ = [
     "FeedbackProvenanceError",
     "HiddenEventEvidence",
     "HiddenEventStep",
+    "HypothesisPosteriorInconsistencyError",
     "IndependentEventCandidate",
     "IndependentEventCandidateBaseline",
     "IndependentEventCandidatePrediction",
@@ -82,7 +86,9 @@ __all__ = [
     "ProvenanceConstrainedMessagePassing",
     "Top1EventGraphBaseline",
     "Top1EventGraphPrediction",
+    "UnsupportedFeedbackRouteError",
     "actor_evidence_semantic_fingerprint",
+    "apply_project_one_request",
     "hidden_event_evidence_semantic_fingerprint",
     "permute_actor_evidence",
     "permute_actor_keys",

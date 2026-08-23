@@ -54,12 +54,43 @@ Implementation: `src/cpswm/system/counterfactual_event_hypergraph/feedback_revis
    a neutral ratio. A failed observation therefore *shifts mass toward unresolved /
    unknown* rather than re-normalising it onto a different known culprit.
 
+### Two revision modes (event-existence vs actor-responsibility)
+
+A presence-only outcome carries the *same* `r` to every known actor, so it revises
+**event-existence confidence** (the explained chains vs unresolved/unknown) and, by
+construction, leaves owner-vs-guest *relative* odds unchanged. To revise **actor
+responsibility** — moving mass between owner / guest / robot / unknown — the caller
+supplies `actor_likelihood_ratios` (an actor-discriminating observation channel).
+Each known actor is then re-weighted by `r × factor[actor]`, so relative odds
+genuinely change. Both modes compose; a search outcome alone is honestly the
+former, not the latter.
+
+### Isolated route (place/transfer)
+
+Place/transfer feedback is projected only as an action success/slip *candidate* by
+the `ExecutionFeedbackProjector`, not a transition/presence/actor posterior.
+Folding it into a presence ratio would mislabel a gripper slip as reduced
+historical responsibility, so the loop **rejects** that route
+(`UnsupportedFeedbackRouteError`) until a real location/mechanism/role likelihood
+model is wired. It is isolated, not silently converted.
+
+### Provenance firewall (binding)
+
+Before any mutation the loop binds the feedback to *this exact* hidden event:
+object id, `attempted_location_id == destination_location_id`, matching
+household/session/trace on both the feedback and its binding, and a causal window
+(`feedback.valid_time.start >= interval_end`). De-duplication and forgery detection
+(same record id, different content/inputs) run through the projector's
+prepare/commit, so a forged replay cannot bypass validation via a loop-side cache.
+
 ## How ORRER / PCHMP produce the reversible revision
 
 * `ProvenanceConstrainedMessagePassing.infer` re-propagates the joint posterior
   over the latest revision’s hypotheses under the provenance firewall and
   single-consumption rules; its result is recorded on the outcome
-  (`repropagated_posterior`).
+  (`repropagated_posterior`) **and asserted equal** to the ORRER revision posterior
+  (`HypothesisPosteriorInconsistencyError` otherwise), so the two updates can never
+  ship contradictory posteriors.
 * `OpenWorldRoleConditionedReversibleEventRevisionEngine.revise_actor_responsibility`
   appends **one new revision** whose `parent_revision_id` is the superseded
   revision. The ORRER history is append-only, so the prior revision stays fully
@@ -86,10 +117,14 @@ touches project-one Dirichlet/RLS state directly. Kinds:
 - `CORRECT` — owner mass fell but remains positive,
 - `REINFORCE` — owner mass rose (a corroborated success).
 
-Each request names the superseded/corrected revisions, owner key, object,
-destination location, owner-mass delta, and the source feedback record, so project
-one’s `HybridEventToTaskCoordinatorLoop` can retract/correct/reinforce its
-owner-habit statistics against an explicit, reversible event revision.
+Each request names the superseded/corrected revisions, the event hypothesis set,
+owner key, object, destination location, owner-mass delta, and the source feedback
+record. `apply_project_one_request(request, loop)` consumes it into a real
+`HybridEventToTaskCoordinatorLoop` (project one keys its ledger by the CHEH revision
+id): `RETRACT → retract_revision`, `CORRECT → apply_orrer_revision` with the
+corrected owner mass. `REINFORCE` is an **explicit no-op** (returns `False`) because
+project one has no positive-reinforcement event-revision interface yet — a retained
+gap, never a silent state change.
 
 ## Invariants enforced (with tests)
 

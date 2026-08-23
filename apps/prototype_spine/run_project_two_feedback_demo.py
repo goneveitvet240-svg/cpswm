@@ -49,6 +49,10 @@ GUEST = "guest"
 OBJ = UUID(int=5)
 L1 = UUID(int=1)
 L2 = UUID(int=2)
+# Shared household/session/trace so feedback binds to the same event context.
+HH = UUID(int=100)
+SS = UUID(int=101)
+TT = UUID(int=102)
 TA = datetime(2026, 8, 22, 8, 0, tzinfo=UTC)
 TB = TA + timedelta(hours=1)
 TF = datetime(2026, 8, 22, 9, 0, tzinfo=UTC)
@@ -75,8 +79,9 @@ def _history():
     base = BaseRecordMetadata(
         schema_name="cpswm.ObservationDetectionResult",
         schema_version="0.1.0",
-        household_id=uuid4(),
-        session_id=uuid4(),
+        household_id=HH,
+        session_id=SS,
+        trace_id=TT,
         recorded_time=TA,
         source_type=SourceType.SIMULATION,
         source_id="sim",
@@ -92,8 +97,9 @@ def _feedback(outcomes):
     meta = BaseRecordMetadata(
         schema_name="cpswm.ExecutionFeedbackRecord",
         schema_version="0.1.0",
-        household_id=uuid4(),
-        session_id=uuid4(),
+        household_id=HH,
+        session_id=SS,
+        trace_id=TT,
         recorded_time=TF,
         source_type=SourceType.ACTION,
         source_id="executor",

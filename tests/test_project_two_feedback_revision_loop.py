@@ -46,6 +46,8 @@ from cpswm.system.counterfactual_event_hypergraph import (
 from cpswm.system.counterfactual_event_hypergraph.feedback_revision_loop import (
     UNKNOWN_ACTOR,
     FeedbackProvenanceError,
+    UnsupportedFeedbackRouteError,
+    apply_project_one_request,
 )
 
 OWNER = "owner"
@@ -54,6 +56,12 @@ OBJ = UUID(int=5)
 OTHER_OBJ = UUID(int=6)
 L1 = UUID(int=1)
 L2 = UUID(int=2)
+L3 = UUID(int=3)
+# Shared household/session/trace: the feedback must belong to the same context as
+# the hidden event it revises.
+HH = UUID(int=100)
+SS = UUID(int=101)
+TT = UUID(int=102)
 TA = datetime(2026, 8, 22, 8, 0, tzinfo=UTC)
 TB = TA + timedelta(hours=1)
 TF = datetime(2026, 8, 22, 9, 0, tzinfo=UTC)
@@ -69,8 +77,9 @@ def _base():
     return BaseRecordMetadata(
         schema_name="cpswm.ObservationDetectionResult",
         schema_version="0.1.0",
-        household_id=uuid4(),
-        session_id=uuid4(),
+        household_id=HH,
+        session_id=SS,
+        trace_id=TT,
         recorded_time=TA,
         source_type=SourceType.SIMULATION,
         source_id="sim",
@@ -104,8 +113,9 @@ def _feedback(action_type, outcomes, *, target=OBJ, location=L2):
     meta = BaseRecordMetadata(
         schema_name="cpswm.ExecutionFeedbackRecord",
         schema_version="0.1.0",
-        household_id=uuid4(),
-        session_id=uuid4(),
+        household_id=HH,
+        session_id=SS,
+        trace_id=TT,
         recorded_time=TF,
         source_type=SourceType.ACTION,
         source_id="executor",
@@ -346,3 +356,227 @@ def test_provenance_firewall_rejected_feedback_does_not_change_posterior():
         )
     # History and posteriors are untouched.
     assert len(history.revisions) == 1
+
+
+# --- review round 2: fixes #1..#6 ---------------------------------------------
+
+
+def test_actor_discriminating_evidence_changes_owner_vs_guest_odds():
+    # Fix #1: with a per-actor likelihood channel, owner/guest *relative* odds move
+    # (true actor-responsibility revision, not only event-existence confidence).
+    history = _history()
+    loop = _loop()
+    fb = _search_found()
+    _, outcome = loop.ingest_feedback(
+        history=history,
+        feedback=fb,
+        binding=_binding(fb),
+        likelihood_model=_likelihood(),
+        owner_key=OWNER,
+        actor_likelihood_ratios={OWNER: 0.2, GUEST: 3.0},
+    )
+    before = outcome.actor_posterior_before
+    after = outcome.actor_posterior_after
+    odds_before = before[OWNER] / before[GUEST]
+    odds_after = after[OWNER] / after[GUEST]
+    assert odds_after < odds_before * 0.5  # the odds genuinely shifted toward guest
+
+
+def test_presence_only_feedback_keeps_owner_guest_odds_fixed():
+    # The honest complement of #1: a presence-only search revises event-existence
+    # confidence and leaves owner/guest relative odds essentially unchanged.
+    history = _history()
+    loop = _loop()
+    fb = _search_failed()
+    _, outcome = loop.ingest_feedback(
+        history=history,
+        feedback=fb,
+        binding=_binding(fb),
+        likelihood_model=_likelihood(),
+        owner_key=OWNER,
+    )
+    before = outcome.actor_posterior_before
+    after = outcome.actor_posterior_after
+    assert (after[OWNER] / after[GUEST]) == pytest.approx(before[OWNER] / before[GUEST], rel=1e-6)
+
+
+def test_place_feedback_route_is_isolated_not_folded_to_presence():
+    # Fix #2: place/transfer must not be silently folded into a presence ratio.
+    history = _history()
+    loop = _loop()
+    fb = _feedback(
+        RobotActionType.PLACE,
+        {RobotActionOutcome.SUCCESS: 0.2, RobotActionOutcome.OBJECT_SLIPPED: 0.8},
+    )
+    place_ll = ActionOutcomeLikelihoodModel(
+        action_type=RobotActionType.PLACE,
+        p_outcome_given_target_present={
+            RobotActionOutcome.SUCCESS: 0.8,
+            RobotActionOutcome.OBJECT_SLIPPED: 0.2,
+        },
+        p_outcome_given_target_absent={
+            RobotActionOutcome.SUCCESS: 0.3,
+            RobotActionOutcome.OBJECT_SLIPPED: 0.7,
+        },
+        calibration_domain="fixture",
+        model_version="likelihood@0.1",
+    )
+    with pytest.raises(UnsupportedFeedbackRouteError):
+        loop.ingest_feedback(
+            history=history,
+            feedback=fb,
+            binding=_binding(fb),
+            likelihood_model=place_ll,
+            owner_key=OWNER,
+        )
+    assert len(history.revisions) == 1
+
+
+def test_forged_replay_with_different_content_is_rejected():
+    # Fix #3: same record id + different content must be caught by the projector,
+    # never short-circuited by a loop-side cache.
+    history = _history()
+    loop = _loop()
+    fb = _search_failed()
+    binding = _binding(fb)
+    new_history, _ = loop.ingest_feedback(
+        history=history,
+        feedback=fb,
+        binding=binding,
+        likelihood_model=_likelihood(),
+        owner_key=OWNER,
+    )
+    forged = fb.model_copy(
+        update={
+            "outcome_distribution": {
+                RobotActionOutcome.SUCCESS: 0.9,
+                RobotActionOutcome.UNKNOWN: 0.1,
+            }
+        }
+    )
+    assert forged.metadata.record_id == fb.metadata.record_id
+    with pytest.raises(ValueError, match="collision/forgery"):
+        loop.ingest_feedback(
+            history=new_history,
+            feedback=forged,
+            binding=binding,
+            likelihood_model=_likelihood(),
+            owner_key=OWNER,
+        )
+
+
+def test_feedback_wrong_location_is_rejected():
+    # Fix #4: feedback must concern the event's destination location.
+    history = _history()
+    loop = _loop()
+    fb = _feedback(
+        RobotActionType.SEARCH,
+        {RobotActionOutcome.SUCCESS: 0.1, RobotActionOutcome.UNKNOWN: 0.9},
+        location=L3,
+    )
+    with pytest.raises(FeedbackProvenanceError, match="location"):
+        loop.ingest_feedback(
+            history=history,
+            feedback=fb,
+            binding=_binding(fb),
+            likelihood_model=_likelihood(),
+            owner_key=OWNER,
+        )
+    assert len(history.revisions) == 1
+
+
+def test_feedback_before_event_end_is_rejected():
+    # Fix #4: a pre-event observation cannot be back-filled as post-event evidence.
+    history = _history()
+    loop = _loop()
+    fb = _search_failed()
+    early = fb.model_copy(
+        update={"valid_time": ValidTimeInterval(start=TA, end=TA + timedelta(minutes=1))}
+    )
+    with pytest.raises(FeedbackProvenanceError, match="precedes the hidden-event end"):
+        loop.ingest_feedback(
+            history=history,
+            feedback=early,
+            binding=_binding(early),
+            likelihood_model=_likelihood(),
+            owner_key=OWNER,
+        )
+
+
+def test_feedback_foreign_household_is_rejected():
+    # Fix #4: feedback from another household/session/trace cannot revise this event.
+    history = _history()
+    loop = _loop()
+    fb = _search_failed()
+    foreign = fb.model_copy(
+        update={"metadata": fb.metadata.model_copy(update={"household_id": uuid4()})}
+    )
+    with pytest.raises(FeedbackProvenanceError, match="household_id"):
+        loop.ingest_feedback(
+            history=history,
+            feedback=foreign,
+            binding=_binding(foreign),
+            likelihood_model=_likelihood(),
+            owner_key=OWNER,
+        )
+
+
+def test_pchmp_and_orrer_posteriors_agree():
+    # Fix #6: the re-propagated PCHMP posterior equals the ORRER revision posterior.
+    history = _history()
+    loop = _loop()
+    fb = _search_failed()
+    _, outcome = loop.ingest_feedback(
+        history=history,
+        feedback=fb,
+        binding=_binding(fb),
+        likelihood_model=_likelihood(),
+        owner_key=OWNER,
+    )
+    for hid, mass in outcome.repropagated_posterior.items():
+        assert outcome.hypothesis_posterior_after[hid] == pytest.approx(mass, abs=1e-9)
+
+
+def test_project_one_consumes_a_correct_request():
+    # Fix #5: the emitted request actually changes project-one owner-habit stats.
+    from cpswm.system.continual.hybrid_event_to_task_loop import (
+        HybridEventToTaskCoordinatorLoop,
+        OwnerPlacementInput,
+    )
+
+    history = _history()
+    superseded_id = history.latest.revision_id
+    p1 = HybridEventToTaskCoordinatorLoop(
+        owner_key=OWNER,
+        object_instance_id=OBJ,
+        authorization_scope_id=uuid4(),
+        model_version="m@1",
+        code_version="git:test",
+    )
+    p1.ingest_owner_placement(
+        OwnerPlacementInput(
+            event_hypothesis_id=history.hypothesis_set_id,
+            revision_id=superseded_id,
+            destination_location_id=L2,
+            owner_mass=0.6,
+            source_record_id=uuid4(),
+        )
+    )
+    alpha_before = p1.ledger.projection(p1._key(L2)).alpha
+    assert alpha_before == pytest.approx(0.6)
+
+    loop = _loop()
+    fb = _search_failed()
+    _, outcome = loop.ingest_feedback(
+        history=history,
+        feedback=fb,
+        binding=_binding(fb),
+        likelihood_model=_likelihood(),
+        owner_key=OWNER,
+    )
+    request = outcome.project_one_requests[0]
+    changed = apply_project_one_request(request, p1)
+    assert changed is True
+    alpha_after = p1.ledger.projection(p1._key(L2)).alpha
+    assert alpha_after == pytest.approx(outcome.owner_mass_after)
+    assert alpha_after < alpha_before  # project one really consumed the correction

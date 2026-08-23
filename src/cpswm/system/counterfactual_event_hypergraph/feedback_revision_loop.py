@@ -21,21 +21,33 @@ Design invariants honoured here:
 * Every ingestion appends a new parent-linked revision; the prior revision stays
   fully traceable (the ORRER history is append-only).
 * Project one is only ever handed an *explicit* :class:`EventRevisionOutcome` /
-  :class:`ProjectOneStatRequest`; this module never touches project one's
-  Dirichlet/RLS state directly.
+  :class:`ProjectOneStatRequest`, consumed via :func:`apply_project_one_request`;
+  this module never touches project one's Dirichlet/RLS state directly.
 
-Deliberately retained adaptation points (kept as interfaces, not deleted): a
-place-failure may in principle revise mechanism/role jointly with actor
-(``revise_event_mechanism``/``revise_role_binding`` exist and are reused for the
-actor axis here); real perception, signatures, adversarial firewalls, and a
-production project-one outbox remain to be wired.
+Two revision modes: a presence outcome (search) drives **event-existence
+confidence** (chains vs unresolved) and cannot move owner-vs-guest odds on its own;
+supplying ``actor_likelihood_ratios`` (an actor-discriminating channel) drives true
+**actor-responsibility** revision where relative odds change. The two multiply.
+
+Deliberately retained (kept as interfaces, not deleted, and NOT faked):
+* place/transfer feedback is *isolated* (raises :class:`UnsupportedFeedbackRouteError`)
+  until a real location/mechanism/role likelihood model exists -- it is never folded
+  into a presence ratio;
+* `REINFORCE` has no project-one positive-reinforcement interface yet (explicit
+  no-op in the adapter);
+* real perception, signatures, adversarial firewalls, a production project-one
+  outbox, and re-move-after-event handling remain to be wired.  The actor evidence
+  is bound to the CHEH destination endpoint time (an engine constraint), so a
+  *delayed* search that post-dates a later move is a known limitation.
 """
 
 from __future__ import annotations
 
+from collections.abc import Mapping
 from dataclasses import dataclass
 from datetime import datetime
 from enum import StrEnum
+from math import isclose
 from uuid import UUID, uuid4
 
 from cpswm.contracts import (
@@ -64,6 +76,14 @@ class FeedbackProvenanceError(ValueError):
     """The feedback cannot be bound to this hidden-event set (firewall reject)."""
 
 
+class UnsupportedFeedbackRouteError(ValueError):
+    """The projected route has no honest hidden-event evidence mapping yet."""
+
+
+class HypothesisPosteriorInconsistencyError(RuntimeError):
+    """PCHMP re-propagation and the ORRER revision disagreed on the posterior."""
+
+
 class ProjectOneRequestKind(StrEnum):
     RETRACT = "retract"
     CORRECT = "correct"
@@ -80,6 +100,7 @@ class ProjectOneStatRequest:
     kind: ProjectOneRequestKind
     superseded_revision_id: UUID
     corrected_revision_id: UUID
+    event_hypothesis_id: UUID
     owner_key: str
     object_instance_id: UUID
     location_id: UUID
@@ -171,43 +192,54 @@ class ProjectTwoFeedbackRevisionLoop:
         binding: DecisionContextBinding,
         likelihood_model: ActionOutcomeLikelihoodModel,
         owner_key: str,
+        actor_likelihood_ratios: Mapping[str, float] | None = None,
     ) -> tuple[EventHypothesisHistory, EventRevisionOutcome]:
         """Fold one feedback record into the hidden-event chain as new evidence.
 
-        Returns the appended history and the reversible outcome.  A replayed
-        feedback record is idempotent: the history is returned unchanged and the
-        original outcome (marked ``is_replay``) is returned.
+        Two revision modes, combinable:
+
+        * **event-existence confidence** (default) -- a presence outcome (search)
+          re-weights every responsible known actor by the *same* presence Bayes
+          factor, shifting mass between the explained chains and unresolved/unknown.
+          It cannot, by itself, change owner-vs-guest relative odds.
+        * **actor responsibility** -- when ``actor_likelihood_ratios`` is supplied
+          (an actor-discriminating observation channel), each known actor is
+          re-weighted by its *own* ratio, so owner/guest/robot/unknown relative
+          odds do change.  The two are multiplied when both are present.
+
+        A replayed feedback record is idempotent; forgery (same record id, different
+        content/inputs) is rejected by the projector before any mutation.
         """
 
         record_id = feedback.metadata.record_id
-        if record_id in self._outcomes:
-            cached = self._outcomes[record_id]
-            return history, _as_replay(cached)
-
         current = history.latest
-        # --- provenance firewall: the feedback must concern this hidden event ---
-        if feedback.target_entity is None:
-            raise FeedbackProvenanceError("feedback has no target entity to bind")
-        if feedback.target_entity.entity_id != current.object_instance_id:
-            raise FeedbackProvenanceError(
-                "feedback target object does not match the hidden-event set"
-            )
+        self._check_provenance(current, feedback, binding)
 
-        # --- 1. project the feedback (typed, likelihood-aware, de-duplicated) ---
-        projected = self._projector.project_execution_feedback(
+        # --- 1. project & validate (dedup + forgery/input-conflict) via projector ---
+        # prepare validates and detects replay/forgery WITHOUT consuming the key, so
+        # a forged replay never bypasses the projector by hitting a loop-side cache.
+        projected = self._projector.prepare_execution_feedback(
             feedback=feedback,
             binding=binding,
             likelihood_model=likelihood_model,
         )
-        if projected.is_replay:  # projector-level dedup: idempotent no-op
+        if projected.is_replay:
             cached = self._outcomes.get(record_id)
-            if cached is not None:
-                return history, _as_replay(cached)
+            if cached is None:
+                raise FeedbackProvenanceError(
+                    "replayed feedback has no committed outcome in this loop instance"
+                )
+            return history, _as_replay(cached)
 
-        ratio = self._presence_likelihood_ratio(projected)
+        presence_ratio = self._presence_ratio(projected)
 
-        # --- 2. build actor evidence whose ratios come from the outcome model ---
-        evidence = self._actor_evidence(current, ratio=ratio, likelihood_model=likelihood_model)
+        # --- 2. actor evidence: presence (event-existence) x per-actor discrimination ---
+        evidence = self._actor_evidence(
+            current,
+            presence_ratio=presence_ratio,
+            actor_factors=actor_likelihood_ratios,
+            likelihood_model=likelihood_model,
+        )
 
         # --- 3. re-propagate the joint posterior (firewall + single-consumption) ---
         repropagated: MessagePassingResult = self._message_passing.infer(history, [evidence])
@@ -218,52 +250,129 @@ class ProjectTwoFeedbackRevisionLoop:
         )
         corrected = revised_history.latest
 
-        # --- 5. assemble the reversible outcome + explicit project-one request ---
+        # --- 5. PCHMP and ORRER must agree, or we refuse a contradictory output ---
+        self._assert_consistent(repropagated, corrected)
+
+        # --- 6. assemble the reversible outcome + explicit project-one request ---
         outcome = self._build_outcome(
             superseded=current,
             corrected=corrected,
             feedback=feedback,
             owner_key=owner_key,
-            ratio=ratio,
+            ratio=presence_ratio,
             repropagated=repropagated,
         )
+        # Commit the projector idempotency key only once the revision succeeded.
+        self._projector.commit_execution_feedback(projected)
         self._outcomes[record_id] = outcome
         return revised_history, outcome
 
-    def _presence_likelihood_ratio(self, projected) -> float:
+    def _check_provenance(
+        self,
+        current: EventHypothesisRevision,
+        feedback: ExecutionFeedbackRecord,
+        binding: DecisionContextBinding,
+    ) -> None:
+        """Bind the feedback to this exact hidden event: object, place, HST, causality."""
+
+        if feedback.target_entity is None:
+            raise FeedbackProvenanceError("feedback has no target entity to bind")
+        if feedback.target_entity.entity_id != current.object_instance_id:
+            raise FeedbackProvenanceError(
+                "feedback target object does not match the hidden-event set"
+            )
+        if feedback.attempted_location_id != current.destination_location_id:
+            raise FeedbackProvenanceError(
+                "feedback location does not match the hidden-event destination"
+            )
+        for field_name in ("household_id", "session_id", "trace_id"):
+            if getattr(feedback.metadata, field_name) != getattr(current, field_name):
+                raise FeedbackProvenanceError(f"feedback {field_name} does not match the event set")
+            if getattr(binding, f"subject_{field_name}") != getattr(current, field_name):
+                raise FeedbackProvenanceError(f"binding {field_name} does not match the event set")
+        # Causal window: feedback must observe the world *after* the event closed.
+        if feedback.valid_time.start < current.interval_end:
+            raise FeedbackProvenanceError(
+                "feedback precedes the hidden-event end; not a valid post-event observation"
+            )
+
+    def _presence_ratio(self, projected) -> float:
+        """Presence Bayes factor for a target-presence route.
+
+        Place/transfer feedback is deliberately *isolated*: the projector reports it
+        only as an action success/slip candidate, not a transition/presence/actor
+        posterior, so folding it in as a presence ratio would silently mislabel a
+        gripper slip as reduced historical responsibility.  Until a real
+        location/mechanism/role likelihood model is wired, that route is rejected.
+        """
+
         update = projected.target_presence_update
         if update is not None:
             return _bayes_factor(
                 prior=update.prior_target_present,
                 posterior=update.posterior_target_present,
             )
-        # Location-transition route: use the reported action success as odds vs 0.5.
-        transition = projected.location_transition
-        if transition is None:
-            return 1.0
-        return _bayes_factor(prior=0.5, posterior=transition.reported_action_success_probability)
+        raise UnsupportedFeedbackRouteError(
+            "place/transfer feedback has no honest hidden-event mapping yet "
+            "(needs a location/mechanism/role likelihood model); route isolated"
+        )
+
+    def _assert_consistent(
+        self, repropagated: MessagePassingResult, corrected: EventHypothesisRevision
+    ) -> None:
+        after = {
+            item.hypothesis_id: item.posterior_probability for item in corrected.active_hypotheses
+        }
+        for hypothesis_id, mass in repropagated.posterior_by_hypothesis_id.items():
+            if not isclose(mass, after.get(hypothesis_id, 0.0), rel_tol=0.0, abs_tol=1e-9):
+                raise HypothesisPosteriorInconsistencyError(
+                    "PCHMP re-propagation disagrees with the ORRER revision posterior"
+                )
+        if not isclose(
+            repropagated.unresolved_probability,
+            corrected.unresolved_probability,
+            rel_tol=0.0,
+            abs_tol=1e-9,
+        ):
+            raise HypothesisPosteriorInconsistencyError(
+                "PCHMP and ORRER disagree on unresolved mass"
+            )
 
     def _actor_evidence(
         self,
         current: EventHypothesisRevision,
         *,
-        ratio: float,
+        presence_ratio: float,
+        actor_factors: Mapping[str, float] | None,
         likelihood_model: ActionOutcomeLikelihoodModel,
     ) -> ActorResponsibilityEvidence:
-        """Encode a presence Bayes factor as firewall-legal actor evidence.
+        """Encode presence x per-actor evidence as firewall-legal actor evidence.
 
-        Every responsible *known* actor asserts the object reached the destination,
-        so each carries the presence ratio; the ``unknown_actor`` bucket carries a
-        neutral ratio so a failed observation shifts mass toward open-world
-        uncertainty rather than inventing a culprit.
+        Each responsible known actor carries ``presence_ratio`` (all assert the
+        object reached the destination) multiplied by its own discriminating factor
+        (default 1.0); the ``unknown_actor`` bucket carries a neutral ratio so a
+        failed observation shifts mass toward open-world uncertainty.  When the
+        per-actor factors differ, owner/guest relative odds genuinely change.
         """
 
+        factors = dict(actor_factors or {})
+        if any(value < 0.0 for value in factors.values()):
+            raise ValueError("actor likelihood ratios cannot be negative")
         responsible = {item.responsible_actor_key for item in current.hypotheses}
         support = sorted(responsible | {UNKNOWN_ACTOR})
         uniform = 1.0 / len(support)
         reference_actor_prior = {actor: uniform for actor in support}
-        raw = {actor: (uniform if actor == UNKNOWN_ACTOR else uniform * ratio) for actor in support}
+        raw = {
+            actor: (
+                uniform * factors.get(actor, 1.0)
+                if actor == UNKNOWN_ACTOR
+                else uniform * presence_ratio * factors.get(actor, 1.0)
+            )
+            for actor in support
+        }
         total = sum(raw.values())
+        if total <= 0.0:
+            raise ValueError("actor evidence collapsed to zero mass")
         actor_posterior = {actor: value / total for actor, value in raw.items()}
 
         destination_detection_id = current.source_detection_result_ids[1]
@@ -323,6 +432,7 @@ class ProjectTwoFeedbackRevisionLoop:
                     kind=kind,
                     superseded_revision_id=superseded.revision_id,
                     corrected_revision_id=corrected.revision_id,
+                    event_hypothesis_id=corrected.hypothesis_set_id,
                     owner_key=owner_key,
                     object_instance_id=corrected.object_instance_id,
                     location_id=corrected.destination_location_id,
@@ -374,11 +484,53 @@ def _as_replay(outcome: EventRevisionOutcome) -> EventRevisionOutcome:
     )
 
 
+def apply_project_one_request(request: ProjectOneStatRequest, loop) -> bool:
+    """Consume a project-two request into a project-one owner-habit loop.
+
+    Project one keys its ledger by the CHEH revision id, so the request's
+    superseded/corrected revision ids map directly onto the loop's retract/replace
+    operations.  Returns True when project-one state was changed.
+
+    A ``CorePrototypeSpine``-compatible consumer handles every request kind as a
+    revision transaction across Dirichlet, RLS, and Hybrid RGRC.  The narrower
+    Hybrid-only adapter below remains for legacy coordinator-loop callers.
+    """
+
+    from cpswm.system.continual.hybrid_event_to_task_loop import OwnerPlacementInput
+
+    apply_all = getattr(loop, "apply_project_one_stat_request", None)
+    if apply_all is not None:
+        apply_all(request)
+        return True
+
+    if request.kind is ProjectOneRequestKind.RETRACT:
+        loop.retract_revision(request.superseded_revision_id)
+        return True
+    if request.kind is ProjectOneRequestKind.CORRECT:
+        loop.apply_orrer_revision(
+            superseded_revision_id=request.superseded_revision_id,
+            corrected=OwnerPlacementInput(
+                event_hypothesis_id=request.event_hypothesis_id,
+                revision_id=request.corrected_revision_id,
+                destination_location_id=request.location_id,
+                owner_mass=request.owner_mass_after,
+                source_record_id=request.source_feedback_record_id,
+                parent_revision_id=request.superseded_revision_id,
+            ),
+        )
+        return True
+    # REINFORCE: intentionally unmapped for now (see docstring).
+    return False
+
+
 __all__ = [
     "UNKNOWN_ACTOR",
     "EventRevisionOutcome",
     "FeedbackProvenanceError",
+    "HypothesisPosteriorInconsistencyError",
     "ProjectOneRequestKind",
     "ProjectOneStatRequest",
     "ProjectTwoFeedbackRevisionLoop",
+    "UnsupportedFeedbackRouteError",
+    "apply_project_one_request",
 ]

@@ -7,6 +7,8 @@ not evidence that the formal M01-M32 maturity gates have passed.
 
 from __future__ import annotations
 
+import hashlib
+import json
 from collections import defaultdict
 from collections.abc import Mapping, Sequence
 from copy import deepcopy
@@ -14,7 +16,7 @@ from dataclasses import dataclass, replace
 from datetime import datetime
 from enum import StrEnum
 from math import exp, isfinite, log, tanh
-from uuid import UUID, uuid4
+from uuid import NAMESPACE_URL, UUID, uuid4, uuid5
 
 import numpy as np
 
@@ -28,8 +30,11 @@ from cpswm.contracts import (
     HabitLearningEvidence,
     ObservationDetectionResult,
     ObservationOpportunityRecord,
+    ProjectOneRequestApplicationReceipt,
+    ProjectOneRequestApplicationStatus,
     RoleBindingEvidence,
     SourceType,
+    StatisticDelta,
 )
 from cpswm.system.continual.hybrid_event_to_task_loop import (
     HybridEventToTaskCoordinatorLoop,
@@ -73,6 +78,23 @@ from cpswm.world_model.habits_transitions import (
 )
 
 StructuredEventEvidence = ActorResponsibilityEvidence | EventMechanismEvidence | RoleBindingEvidence
+
+
+def _project_one_request_fingerprint(request) -> str:
+    payload = {
+        "kind": request.kind.value,
+        "superseded_revision_id": str(request.superseded_revision_id),
+        "corrected_revision_id": str(request.corrected_revision_id),
+        "event_hypothesis_id": str(request.event_hypothesis_id),
+        "owner_key": request.owner_key,
+        "object_instance_id": str(request.object_instance_id),
+        "location_id": str(request.location_id),
+        "owner_mass_before": repr(float(request.owner_mass_before)),
+        "owner_mass_after": repr(float(request.owner_mass_after)),
+        "owner_mass_delta": repr(float(request.owner_mass_delta)),
+        "source_feedback_record_id": str(request.source_feedback_record_id),
+    }
+    return hashlib.sha256(json.dumps(payload, sort_keys=True).encode()).hexdigest()
 
 
 def _require_probability(value: float, name: str) -> None:
@@ -183,6 +205,76 @@ class DerivedEvidenceLifecycle(StrEnum):
     TOMBSTONED_ANCESTOR_INVALIDATED = "tombstoned_ancestor_invalidated"
 
 
+class ActionReadout(StrEnum):
+    """Which surviving evidence the planner is allowed to read for an action.
+
+    ``HYBRID_ALPHA`` is the frozen v0.2 boundary: a pooled cumulative
+    owner-weighted count.  It is kept as the default so every existing reading
+    stays byte-reproducible.  The other modes exist because a pooled count
+    cannot express *which* owner-attributed evidence currently survives -- which
+    is the entire product of the reversible revision machinery.
+    """
+
+    HYBRID_ALPHA = "hybrid_alpha"
+    REGIME_LOCAL = "regime_local"
+    SURVIVING_OWNER_REVISIONS = "surviving_owner_revisions"
+    REVISION_AWARE = "revision_aware"
+
+
+@dataclass(frozen=True, slots=True)
+class ActionReadoutConfig:
+    """Planner read policy over the spine's surviving statistics.
+
+    ``owner_mass_floor`` and ``recency_half_life`` are *readout* parameters: they
+    never change what is written to Dirichlet/RLS/Hybrid, only which surviving
+    evidence the next action is allowed to weigh.  ``pending_correction_discount``
+    closes the quarantine handoff gate on the action side: a correction whose
+    long-term write is still deferred behind CCRR quarantine must still be able
+    to move the next action, because RGRC quarantine is about writing to long-term
+    memory, not about what the robot should do next.
+    """
+
+    readout: ActionReadout = ActionReadout.HYBRID_ALPHA
+    owner_mass_floor: float = 0.0
+    recency_half_life: float = 0.0
+    hybrid_alpha_weight: float = 1.0
+    regime_local_weight: float = 0.0
+    surviving_revision_weight: float = 0.0
+    pending_correction_discount: float = 1.0
+    active_regime_only: bool = False
+
+    def __post_init__(self) -> None:
+        if not 0.0 <= self.owner_mass_floor <= 1.0:
+            raise ValueError("owner_mass_floor must be a probability")
+        if self.recency_half_life < 0.0:
+            raise ValueError("recency_half_life must be non-negative")
+        if not 0.0 <= self.pending_correction_discount <= 1.0:
+            raise ValueError("pending_correction_discount must be in [0, 1]")
+        for name in (
+            "hybrid_alpha_weight",
+            "regime_local_weight",
+            "surviving_revision_weight",
+        ):
+            if getattr(self, name) < 0.0:
+                raise ValueError(f"{name} must be non-negative")
+
+    @property
+    def component_weights(self) -> dict[str, float]:
+        """Resolve the named readout into explicit component weights."""
+
+        if self.readout is ActionReadout.HYBRID_ALPHA:
+            return {"hybrid_alpha": 1.0, "regime_local": 0.0, "surviving": 0.0}
+        if self.readout is ActionReadout.REGIME_LOCAL:
+            return {"hybrid_alpha": 0.0, "regime_local": 1.0, "surviving": 0.0}
+        if self.readout is ActionReadout.SURVIVING_OWNER_REVISIONS:
+            return {"hybrid_alpha": 0.0, "regime_local": 0.0, "surviving": 1.0}
+        return {
+            "hybrid_alpha": self.hybrid_alpha_weight,
+            "regime_local": self.regime_local_weight,
+            "surviving": self.surviving_revision_weight,
+        }
+
+
 @dataclass(frozen=True, slots=True)
 class _CommittedPrototypeEvent:
     event_hypothesis_id: UUID
@@ -226,6 +318,7 @@ class CorePrototypeSpine:
         event_engine: OpenWorldRoleConditionedReversibleEventRevisionEngine | None = None,
         message_passing: ProvenanceConstrainedMessagePassing | None = None,
         rgrc_gate_enabled: bool = True,
+        action_readout: ActionReadoutConfig | None = None,
     ) -> None:
         self.owner_key = owner_key
         self.object_instance_id = object_instance_id
@@ -266,6 +359,27 @@ class CorePrototypeSpine:
         self._last_context_value = 0.0
         self._last_household_id: UUID | None = None
         self._last_observed_location: UUID | None = None
+        self._last_ccrr_decision = "stay"
+        # fingerprint -> (request, revision whose promotion unblocks it, mode).
+        # ``apply_request`` means the original request has not run; ``promotion_finalizes``
+        # means the corrected event is already in the CCRR quarantine and its later
+        # ordinary promotion is the exactly-once statistic application.
+        self._deferred_project_one_requests: dict[str, tuple[object, UUID, str]] = {}
+        self._project_one_application_receipts: dict[
+            UUID, list[ProjectOneRequestApplicationReceipt]
+        ] = defaultdict(list)
+        # Frozen default: the planner reads the pooled hybrid alpha, exactly as
+        # the 2026-08-24 D0 report did.  Callers opt into a revision-aware
+        # readout explicitly; nothing changes implicitly.
+        self._action_readout = action_readout or ActionReadoutConfig()
+        # Action-scoped negatives close the quarantine/discard handoff gate.
+        # When CCRR refuses a corrected event -- because the underlying
+        # observation was a short-term disturbance, or because the superseded
+        # revision has already been superseded again -- the *statistic* must not
+        # move.  The robot still learned that its own put-back at that location
+        # failed.  This ledger keeps that action consequence alive without ever
+        # touching Dirichlet/RLS/Hybrid.  fingerprint -> (location, owner-mass delta).
+        self._action_scoped_negatives: dict[str, tuple[UUID, float]] = {}
 
     def _new_habit_model(self) -> HierarchicalDirichletHabitModel:
         return HierarchicalDirichletHabitModel(
@@ -318,6 +432,115 @@ class CorePrototypeSpine:
 
     def is_quarantined_revision(self, revision_id: UUID) -> bool:
         return any(event.revision_id == revision_id for event in self._quarantined_events)
+
+    def application_receipts_for_feedback(
+        self, feedback_record_id: UUID
+    ) -> tuple[ProjectOneRequestApplicationReceipt, ...]:
+        return tuple(self._project_one_application_receipts.get(feedback_record_id, ()))
+
+    def retry_deferred_project_one_requests(
+        self, revision_id: UUID
+    ) -> tuple[ProjectOneRequestApplicationReceipt, ...]:
+        """Retry every request waiting on one newly promoted event exactly once."""
+
+        pending = [
+            (fingerprint, request, mode)
+            for fingerprint, (
+                request,
+                waiting_revision_id,
+                mode,
+            ) in self._deferred_project_one_requests.items()
+            if waiting_revision_id == revision_id
+        ]
+        if pending:
+            receipts: list[ProjectOneRequestApplicationReceipt] = []
+            for fingerprint, request, mode in pending:
+                if mode == "apply_request":
+                    # This is the one authorized retry transition. Remove the
+                    # outbox guard immediately before re-entering application;
+                    # ordinary caller replays still observe the guard above.
+                    self._deferred_project_one_requests.pop(fingerprint, None)
+                    receipts.append(self.apply_project_one_stat_request(request))
+                    continue
+                event = self._committed_events.get(revision_id)
+                if event is None:
+                    continue
+                semantics = self.committed_weight_semantics(revision_id)
+                receipt = self._record_request_receipt(
+                    request=request,
+                    fingerprint=fingerprint,
+                    status=ProjectOneRequestApplicationStatus.APPLIED,
+                    old_snapshot=self.current_snapshot,
+                    new_snapshot=self.current_snapshot,
+                    dirichlet=(
+                        StatisticDelta(
+                            statistic="owner_training_weight",
+                            before=0.0,
+                            after=semantics["dirichlet_owner_weight"],
+                            delta=semantics["dirichlet_owner_weight"],
+                        ),
+                    ),
+                    rls=(
+                        StatisticDelta(
+                            statistic="owner_gate",
+                            before=0.0,
+                            after=semantics["rls_owner_weight"],
+                            delta=semantics["rls_owner_weight"],
+                        ),
+                    ),
+                    hybrid=(
+                        StatisticDelta(
+                            statistic=f"alpha:{event.location_id}",
+                            before=0.0,
+                            after=self.hybrid_alpha(event.location_id),
+                            delta=self.hybrid_alpha(event.location_id),
+                        ),
+                    ),
+                    ccrr_decision=self._last_ccrr_decision,
+                    rationale="CCRR promotion finalized the deferred corrected statistic",
+                )
+                self._deferred_project_one_requests.pop(fingerprint, None)
+                receipts.append(receipt)
+            return tuple(receipts)
+        # A manual or duplicate promotion notification is an auditable replay noop.
+        previous = [
+            receipt
+            for receipts in self._project_one_application_receipts.values()
+            for receipt in receipts
+            if receipt.superseded_revision_id == revision_id
+            and receipt.status is ProjectOneRequestApplicationStatus.APPLIED
+        ]
+        return tuple(self._replay_receipt(receipt) for receipt in previous[-1:])
+
+    def _reject_deferred_project_one_requests(
+        self, revision_ids: set[UUID], *, rationale: str
+    ) -> tuple[ProjectOneRequestApplicationReceipt, ...]:
+        """Close deferred requests when CCRR explicitly discards quarantine."""
+
+        pending = [
+            (fingerprint, request)
+            for fingerprint, (
+                request,
+                waiting_revision_id,
+                _mode,
+            ) in self._deferred_project_one_requests.items()
+            if waiting_revision_id in revision_ids
+        ]
+        receipts = []
+        for fingerprint, request in pending:
+            receipts.append(
+                self._record_request_receipt(
+                    request=request,
+                    fingerprint=fingerprint,
+                    status=ProjectOneRequestApplicationStatus.REJECTED,
+                    old_snapshot=self.current_snapshot,
+                    new_snapshot=self.current_snapshot,
+                    ccrr_decision=self._last_ccrr_decision,
+                    rationale=rationale,
+                )
+            )
+            self._deferred_project_one_requests.pop(fingerprint, None)
+        return tuple(receipts)
 
     @property
     def derived_reactivation_policy(self) -> str:
@@ -477,6 +700,15 @@ class CorePrototypeSpine:
         )
         if assessment.new_regime != self.active_regime:
             self.switch_regime(assessment.new_regime, event_time=transition.after.detection_time)
+        self._last_ccrr_decision = (
+            assessment.ccrr_decision.kind.value
+            if assessment.ccrr_decision is not None
+            else (
+                "deferred"
+                if assessment.conclusion is HabitStateConclusion.INSUFFICIENT_EVIDENCE
+                else "stay"
+            )
+        )
         self._last_observed_location = location_id
 
         regime = self.active_regime
@@ -506,15 +738,20 @@ class CorePrototypeSpine:
         )
         self._observed_events[current_event.revision_id] = current_event
 
+        promoted_audits: dict[UUID, HabitUpdateAudit] = {}
         if assessment.conclusion is HabitStateConclusion.HABIT_CHANGE:
             for quarantined in self._quarantined_events:
                 promoted = replace(
                     quarantined,
                     rls_sample=replace(quarantined.rls_sample, regime_id=regime),
                 )
-                self._commit_event(promoted)
+                promoted_audits[promoted.revision_id] = self._commit_event(promoted)
             self._quarantined_events.clear()
         elif assessment.conclusion is HabitStateConclusion.SHORT_TERM_DISTURBANCE:
+            self._reject_deferred_project_one_requests(
+                {item.revision_id for item in self._quarantined_events},
+                rationale="CCRR classified the quarantined event as a short-term disturbance",
+            )
             self._quarantined_events.clear()
         elif (
             assessment.conclusion is HabitStateConclusion.INSUFFICIENT_EVIDENCE
@@ -523,10 +760,19 @@ class CorePrototypeSpine:
             if assessment.ccrr_decision is None:
                 self._quarantined_events.append(current_event)
             else:
+                self._reject_deferred_project_one_requests(
+                    {item.revision_id for item in self._quarantined_events},
+                    rationale="CCRR closed quarantine without promoting the corrected event",
+                )
                 self._quarantined_events.clear()
 
         if assessment.allow_long_term_write or not self._rgrc_gate_enabled:
-            habit_update = self._commit_event(current_event)
+            if current_event.revision_id in self._committed_events:
+                habit_update = promoted_audits.get(current_event.revision_id)
+                if habit_update is None:
+                    habit_update = self._habit.update_audited(evidence, weight_multiplier=0.0)
+            else:
+                habit_update = self._commit_event(current_event)
         else:
             habit_update = self._habit.update_audited(evidence, weight_multiplier=0.0)
         rls_scores = self._regimes.score_candidates(
@@ -642,6 +888,7 @@ class CorePrototypeSpine:
             )
             for archived in archived_children:
                 self._commit_event(replace(archived, belief_snapshot_id=None))
+        self.retry_deferred_project_one_requests(event.revision_id)
         return audit
 
     def _ingest_event_hybrid(self, event: _CommittedPrototypeEvent) -> _CommittedPrototypeEvent:
@@ -844,6 +1091,9 @@ class CorePrototypeSpine:
             "last_context_value": self._last_context_value,
             "last_household_id": self._last_household_id,
             "switch_sequence": self._switch_sequence,
+            "last_ccrr_decision": self._last_ccrr_decision,
+            "deferred_project_one_requests": dict(self._deferred_project_one_requests),
+            "project_one_application_receipts": deepcopy(self._project_one_application_receipts),
             "hybrid_export": self._hybrid_loop.ledger.export_state(),
             "belief_snapshot": self.current_snapshot,
         }
@@ -864,6 +1114,9 @@ class CorePrototypeSpine:
         self._last_context_value = checkpoint["last_context_value"]  # type: ignore[assignment]
         self._last_household_id = checkpoint["last_household_id"]  # type: ignore[assignment]
         self._switch_sequence = checkpoint["switch_sequence"]  # type: ignore[assignment]
+        self._last_ccrr_decision = checkpoint["last_ccrr_decision"]  # type: ignore[assignment]
+        self._deferred_project_one_requests = checkpoint["deferred_project_one_requests"]  # type: ignore[assignment]
+        self._project_one_application_receipts = checkpoint["project_one_application_receipts"]  # type: ignore[assignment]
         self._hybrid_loop._ledger = type(self._hybrid_loop.ledger).restore_from_export(
             checkpoint["hybrid_export"]  # type: ignore[arg-type]
         )
@@ -875,8 +1128,8 @@ class CorePrototypeSpine:
         belief_map._snapshot_id = snapshot.snapshot_id
         self._hybrid_loop._map = belief_map
 
-    def apply_project_one_stat_request(self, request) -> PrototypeRevisionResult:
-        """Apply one project-two stat request across all three personalized stores."""
+    def apply_project_one_stat_request(self, request) -> ProjectOneRequestApplicationReceipt:
+        """Apply/defer/reject one request with exactly-once receipt semantics."""
 
         from cpswm.system.counterfactual_event_hypergraph.feedback_revision_loop import (
             ProjectOneStatRequest,
@@ -884,21 +1137,82 @@ class CorePrototypeSpine:
 
         if not isinstance(request, ProjectOneStatRequest):
             raise TypeError("request must be a ProjectOneStatRequest")
+        fingerprint = _project_one_request_fingerprint(request)
+        prior_receipts = self._project_one_application_receipts.get(
+            request.source_feedback_record_id, []
+        )
+        already_applied = next(
+            (
+                receipt
+                for receipt in prior_receipts
+                if receipt.request_fingerprint == fingerprint
+                and receipt.status is ProjectOneRequestApplicationStatus.APPLIED
+            ),
+            None,
+        )
+        if already_applied is not None:
+            return self._replay_receipt(already_applied)
+        if fingerprint in self._deferred_project_one_requests:
+            previous = next(
+                receipt
+                for receipt in reversed(prior_receipts)
+                if receipt.request_fingerprint == fingerprint
+            )
+            return self._replay_receipt(previous)
         original = self._committed_events.get(request.superseded_revision_id)
         if original is None:
-            raise KeyError("request superseded revision is not committed")
+            if self.is_quarantined_revision(request.superseded_revision_id):
+                self._deferred_project_one_requests[fingerprint] = (
+                    request,
+                    request.superseded_revision_id,
+                    "apply_request",
+                )
+                return self._record_request_receipt(
+                    request=request,
+                    fingerprint=fingerprint,
+                    status=ProjectOneRequestApplicationStatus.DEFERRED_DUE_TO_QUARANTINE,
+                    old_snapshot=self.current_snapshot,
+                    new_snapshot=self.current_snapshot,
+                    ccrr_decision="deferred_due_to_quarantine",
+                    rationale="superseded event is quarantined; retry is bound to its promotion",
+                )
+            return self._record_request_receipt(
+                request=request,
+                fingerprint=fingerprint,
+                status=ProjectOneRequestApplicationStatus.REJECTED,
+                old_snapshot=self.current_snapshot,
+                new_snapshot=self.current_snapshot,
+                ccrr_decision=self._last_ccrr_decision,
+                rationale=(
+                    "superseded revision was already superseded by a later "
+                    "correction; the request targets a stale lineage head"
+                    if request.superseded_revision_id in self._observed_events
+                    or request.superseded_revision_id in self._derived_event_archive
+                    else "superseded revision is neither committed nor quarantined"
+                ),
+            )
         if request.owner_key != self.owner_key:
-            raise ValueError("request owner does not match the prototype spine")
+            return self._rejected_request(request, fingerprint, "request owner mismatch")
         if request.object_instance_id != self.object_instance_id:
-            raise ValueError("request object does not match the prototype spine")
+            return self._rejected_request(request, fingerprint, "request object mismatch")
         if request.event_hypothesis_id != original.event_hypothesis_id:
-            raise ValueError("request event hypothesis does not match the revision")
+            return self._rejected_request(request, fingerprint, "event hypothesis mismatch")
         if abs(request.owner_mass_before - original.owner_mass) > 1e-9:
-            raise ValueError("request owner_mass_before does not match the revision")
+            return self._rejected_request(request, fingerprint, "owner_mass_before mismatch")
         declared_delta = request.owner_mass_after - request.owner_mass_before
         if abs(request.owner_mass_delta - declared_delta) > 1e-9:
-            raise ValueError("request owner mass delta is inconsistent")
-        return self.apply_event_revision_outcome(
+            return self._rejected_request(request, fingerprint, "owner mass delta mismatch")
+
+        # The Project One request is a wider transaction than the internal
+        # EventRevisionOutcome call: a CCRR/RGRC rebuild may deliberately drop
+        # the corrected event after the revision itself succeeded. Preserve a
+        # checkpoint so that this becomes an explicit rejected receipt without
+        # leaving a half-applied Dirichlet/RLS/Hybrid mutation.
+        request_checkpoint = self._capture_revision_transaction()
+        old_snapshot = self.current_snapshot
+        before = self.committed_weight_semantics(request.superseded_revision_id)
+        hybrid_before = self.hybrid_alpha(request.location_id)
+        result = self.apply_event_revision_outcome(
             EventRevisionOutcome(
                 kind=EventRevisionKind.CORRECT,
                 superseded_revision_id=request.superseded_revision_id,
@@ -909,6 +1223,352 @@ class CorePrototypeSpine:
                 rationale=f"project-two {request.kind.value} stat request",
             )
         )
+        if request.corrected_revision_id not in self._committed_events:
+            if not self.is_quarantined_revision(request.corrected_revision_id):
+                ccrr_decision = result.ccrr_conclusion
+                self._restore_revision_transaction(request_checkpoint)
+                return self._record_request_receipt(
+                    request=request,
+                    fingerprint=fingerprint,
+                    status=ProjectOneRequestApplicationStatus.REJECTED,
+                    old_snapshot=old_snapshot,
+                    new_snapshot=self.current_snapshot,
+                    ccrr_decision=ccrr_decision,
+                    rationale=(
+                        "CCRR/RGRC rejected the corrected event; the complete "
+                        "Project One statistics transaction was rolled back"
+                    ),
+                )
+            self._deferred_project_one_requests[fingerprint] = (
+                request,
+                request.corrected_revision_id,
+                "promotion_finalizes",
+            )
+            return self._record_request_receipt(
+                request=request,
+                fingerprint=fingerprint,
+                status=ProjectOneRequestApplicationStatus.DEFERRED_DUE_TO_QUARANTINE,
+                old_snapshot=old_snapshot,
+                new_snapshot=self.current_snapshot,
+                ccrr_decision=result.ccrr_conclusion,
+                rationale=(
+                    "revision was accepted but CCRR quarantined the corrected event; "
+                    "its promotion will finalize statistics exactly once"
+                ),
+            )
+        after = self.committed_weight_semantics(request.corrected_revision_id)
+        hybrid_after = self.hybrid_alpha(request.location_id)
+        self._deferred_project_one_requests.pop(fingerprint, None)
+        return self._record_request_receipt(
+            request=request,
+            fingerprint=fingerprint,
+            status=ProjectOneRequestApplicationStatus.APPLIED,
+            old_snapshot=old_snapshot,
+            new_snapshot=self.current_snapshot,
+            dirichlet=(
+                StatisticDelta(
+                    statistic="owner_training_weight",
+                    before=before["dirichlet_owner_weight"],
+                    after=after["dirichlet_owner_weight"],
+                    delta=after["dirichlet_owner_weight"] - before["dirichlet_owner_weight"],
+                ),
+            ),
+            rls=(
+                StatisticDelta(
+                    statistic="owner_gate",
+                    before=before["rls_owner_weight"],
+                    after=after["rls_owner_weight"],
+                    delta=after["rls_owner_weight"] - before["rls_owner_weight"],
+                ),
+            ),
+            hybrid=(
+                StatisticDelta(
+                    statistic=f"alpha:{request.location_id}",
+                    before=hybrid_before,
+                    after=hybrid_after,
+                    delta=hybrid_after - hybrid_before,
+                ),
+            ),
+            ccrr_decision=result.ccrr_conclusion,
+            rationale=result.rationale,
+        )
+
+    def _record_request_receipt(
+        self,
+        *,
+        request,
+        fingerprint: str,
+        status: ProjectOneRequestApplicationStatus,
+        old_snapshot: BeliefSnapshot,
+        new_snapshot: BeliefSnapshot,
+        ccrr_decision: str,
+        rationale: str,
+        dirichlet: tuple[StatisticDelta, ...] = (),
+        rls: tuple[StatisticDelta, ...] = (),
+        hybrid: tuple[StatisticDelta, ...] = (),
+    ) -> ProjectOneRequestApplicationReceipt:
+        self._update_action_scoped_negative(request, fingerprint, status)
+        history = self._project_one_application_receipts[request.source_feedback_record_id]
+        receipt = ProjectOneRequestApplicationReceipt(
+            receipt_id=uuid5(NAMESPACE_URL, f"{fingerprint}:{len(history) + 1}:{status.value}"),
+            request_fingerprint=fingerprint,
+            status=status,
+            superseded_revision_id=request.superseded_revision_id,
+            corrected_revision_id=request.corrected_revision_id,
+            source_feedback_record_id=request.source_feedback_record_id,
+            evidence_source_record_ids=(request.source_feedback_record_id,),
+            attempt_number=len(history) + 1,
+            old_belief_snapshot_id=old_snapshot.snapshot_id,
+            new_belief_snapshot_id=new_snapshot.snapshot_id,
+            dirichlet_deltas=dirichlet,
+            rls_deltas=rls,
+            hybrid_rgrc_deltas=hybrid,
+            ccrr_decision=ccrr_decision,
+            rationale=rationale,
+        )
+        history.append(receipt)
+        return receipt
+
+    def _rejected_request(self, request, fingerprint: str, rationale: str):
+        return self._record_request_receipt(
+            request=request,
+            fingerprint=fingerprint,
+            status=ProjectOneRequestApplicationStatus.REJECTED,
+            old_snapshot=self.current_snapshot,
+            new_snapshot=self.current_snapshot,
+            ccrr_decision=self._last_ccrr_decision,
+            rationale=rationale,
+        )
+
+    def _replay_receipt(
+        self, applied: ProjectOneRequestApplicationReceipt
+    ) -> ProjectOneRequestApplicationReceipt:
+        receipt = ProjectOneRequestApplicationReceipt(
+            receipt_id=uuid5(
+                NAMESPACE_URL,
+                f"{applied.request_fingerprint}:{applied.attempt_number + 1}:replay_noop",
+            ),
+            request_fingerprint=applied.request_fingerprint,
+            status=ProjectOneRequestApplicationStatus.REPLAY_NOOP,
+            superseded_revision_id=applied.superseded_revision_id,
+            corrected_revision_id=applied.corrected_revision_id,
+            source_feedback_record_id=applied.source_feedback_record_id,
+            evidence_source_record_ids=applied.evidence_source_record_ids,
+            attempt_number=len(
+                self._project_one_application_receipts[applied.source_feedback_record_id]
+            )
+            + 1,
+            old_belief_snapshot_id=self.current_snapshot.snapshot_id,
+            new_belief_snapshot_id=self.current_snapshot.snapshot_id,
+            ccrr_decision="replay_noop",
+            rationale="request fingerprint was already applied exactly once",
+        )
+        self._project_one_application_receipts[applied.source_feedback_record_id].append(receipt)
+        return receipt
+
+    def publish_project_two_revision_snapshot(self, outcome) -> BeliefSnapshot:
+        payload = {
+            "corrected_revision_id": str(outcome.corrected_revision_id),
+            "actor_posterior": sorted(outcome.actor_posterior_after.items()),
+            "mechanism_posterior": sorted(outcome.mechanism_posterior_after.items()),
+            "role_posterior": sorted(outcome.role_posterior_after.items()),
+            "location_posterior": sorted(outcome.location_posterior_after.items()),
+            "sources": [str(item) for item in outcome.evidence_source_record_ids],
+        }
+        digest = hashlib.sha256(json.dumps(payload, sort_keys=True).encode()).hexdigest()
+        return self._hybrid_loop.publish_project_two_revision(
+            corrected_revision_id=outcome.corrected_revision_id,
+            posterior_content_hash=digest,
+            unresolved_probability=min(
+                1.0, outcome.unresolved_after + outcome.unknown_mechanism_after
+            ),
+        )
+
+    def action_location_distribution(
+        self,
+        snapshot: BeliefSnapshot,
+        *,
+        readout: ActionReadoutConfig | None = None,
+    ) -> dict[UUID, float]:
+        """Planner read boundary: reject any stale/pre-correction snapshot.
+
+        The default readout is the frozen pooled hybrid alpha.  A caller may pass
+        an explicit :class:`ActionReadoutConfig` to read the *surviving* revision
+        set and the regime-local model instead -- the two things the reversible
+        machinery actually maintains and the pooled count cannot express.
+        """
+
+        if snapshot.snapshot_id != self.current_snapshot.snapshot_id:
+            raise ValueError("planner attempted to read a stale belief snapshot")
+        config = readout or self._action_readout
+        weights = config.component_weights
+        components: list[tuple[float, dict[UUID, float]]] = []
+        if weights["hybrid_alpha"] > 0.0:
+            components.append((weights["hybrid_alpha"], self._hybrid_alpha_component()))
+        if weights["regime_local"] > 0.0:
+            components.append((weights["regime_local"], self._regime_local_component()))
+        if weights["surviving"] > 0.0:
+            components.append(
+                (weights["surviving"], self._surviving_owner_revision_component(config))
+            )
+        mixed = self._mix_action_components(components)
+        return self._apply_pending_correction_discount(mixed, config)
+
+    # -- readout components -------------------------------------------------
+
+    def _hybrid_alpha_component(self) -> dict[UUID, float]:
+        """Pooled cumulative owner-weighted mass (the frozen v0.2 boundary)."""
+
+        return {location: max(0.0, self.hybrid_alpha(location)) for location in self.locations}
+
+    def _regime_local_component(self) -> dict[UUID, float]:
+        """Current-regime Dirichlet prediction gated by the regime-local RLS head.
+
+        This is the same evidence ``_current_suggestion`` already uses for the
+        map's put-back suggestion.  Before this readout existed, the planner in
+        the action benchmark could not see it at all.
+        """
+
+        if self._last_household_id is None:
+            return dict.fromkeys(self.locations, 1.0)
+        prediction = self._habit.predict(
+            household_id=self._last_household_id,
+            person_id=self.owner_key,
+            object_instance_id=self.object_instance_id,
+            context_key=self._last_context_key,
+        )
+        scores = self._regimes.score_candidates(
+            object_instance_id=self.object_instance_id,
+            actor_id=self.owner_key,
+            context_features=np.array([self._last_context_value], dtype=float),
+            candidate_locations=self.locations,
+            location_embeddings=self._embeddings,
+        )
+        return {
+            location: max(0.0, prediction.probabilities.get(location, 0.0))
+            * max(0.0, scores.get(location, 0.0))
+            for location in self.locations
+        }
+
+    def _surviving_owner_revision_component(self, config: ActionReadoutConfig) -> dict[UUID, float]:
+        """Mass over locations whose owner-attributed evidence currently survives.
+
+        ``self._committed_events`` is the authoritative surviving set: an explicit
+        retract deletes its entry, a correction replaces it with the corrected
+        revision, and a rebuild re-commits in ``event_time`` order.  Reading it
+        directly is what makes a reversible revision visible to the next action
+        instead of being averaged away inside a cumulative count.
+        """
+
+        ordered = sorted(
+            self._committed_events.values(),
+            key=lambda event: (event.evidence.event_time, str(event.revision_id)),
+        )
+        if config.active_regime_only:
+            active = [
+                event for event in ordered if event.rls_sample.regime_id == self.active_regime
+            ]
+            # An empty active regime is a cold start, not evidence of absence.
+            ordered = active or ordered
+        weights = dict.fromkeys(self.locations, 0.0)
+        count = len(ordered)
+        for index, event in enumerate(ordered):
+            if event.owner_mass < config.owner_mass_floor:
+                continue
+            if event.location_id not in weights:
+                continue
+            age = count - 1 - index
+            decay = (
+                0.5 ** (age / config.recency_half_life) if config.recency_half_life > 0.0 else 1.0
+            )
+            weights[event.location_id] += max(0.0, event.statistical_owner_weight) * decay
+        return weights
+
+    def _mix_action_components(
+        self, components: Sequence[tuple[float, Mapping[UUID, float]]]
+    ) -> dict[UUID, float]:
+        mixed = dict.fromkeys(self.locations, 0.0)
+        used = 0.0
+        for weight, component in components:
+            total = sum(max(0.0, value) for value in component.values())
+            if total <= 0.0:
+                continue
+            used += weight
+            for location in self.locations:
+                mixed[location] += weight * max(0.0, component.get(location, 0.0)) / total
+        if used <= 0.0:
+            return dict.fromkeys(self.locations, 1.0 / len(self.locations))
+        return {location: value / used for location, value in mixed.items()}
+
+    def _update_action_scoped_negative(
+        self, request, fingerprint: str, status: ProjectOneRequestApplicationStatus
+    ) -> None:
+        """Keep a refused correction's action consequence, never its statistic.
+
+        Applied requests release their entry: the long-term statistic now carries
+        the correction, and counting it twice would let one piece of evidence move
+        the planner twice.
+        """
+
+        if status is ProjectOneRequestApplicationStatus.APPLIED:
+            self._action_scoped_negatives.pop(fingerprint, None)
+            return
+        if status is ProjectOneRequestApplicationStatus.REPLAY_NOOP:
+            return
+        location_id = getattr(request, "location_id", None)
+        delta = float(getattr(request, "owner_mass_delta", 0.0))
+        if location_id is None or delta >= 0.0:
+            return
+        self._action_scoped_negatives[fingerprint] = (location_id, delta)
+
+    def action_scoped_negative_ledger(self) -> dict[str, tuple[UUID, float]]:
+        """Audit view: every refused correction still influencing the next action."""
+
+        return dict(self._action_scoped_negatives)
+
+    def pending_correction_mass(self) -> dict[UUID, float]:
+        """Owner-mass delta of corrections that have not reached the statistics.
+
+        Two disjoint sources, both honest:
+
+        * deferred requests -- the revision was accepted and only its statistic
+          write waits on CCRR promotion;
+        * action-scoped negatives -- CCRR refused the statistic write outright,
+          but the execution failure that produced the request still happened.
+
+        Neither ever mutates Dirichlet/RLS/Hybrid.  Exposing them lets the planner
+        act on a correction while the long-term ledger stays exactly as strict.
+        """
+
+        pending: dict[UUID, float] = {}
+        for request, _waiting_revision_id, _mode in self._deferred_project_one_requests.values():
+            location_id = getattr(request, "location_id", None)
+            delta = float(getattr(request, "owner_mass_delta", 0.0))
+            if location_id is None:
+                continue
+            pending[location_id] = pending.get(location_id, 0.0) + delta
+        for location_id, delta in self._action_scoped_negatives.values():
+            pending[location_id] = pending.get(location_id, 0.0) + delta
+        return pending
+
+    def _apply_pending_correction_discount(
+        self, distribution: Mapping[UUID, float], config: ActionReadoutConfig
+    ) -> dict[UUID, float]:
+        if config.pending_correction_discount >= 1.0:
+            return dict(distribution)
+        pending = self.pending_correction_mass()
+        adjusted = {
+            location: (
+                value * config.pending_correction_discount
+                if pending.get(location, 0.0) < 0.0
+                else value
+            )
+            for location, value in distribution.items()
+        }
+        total = sum(adjusted.values())
+        if total <= 0.0:
+            return {location: 1.0 / len(self.locations) for location in self.locations}
+        return {location: value / total for location, value in adjusted.items()}
 
     def _descendant_revision_ids(self, revision_id: UUID) -> tuple[UUID, ...]:
         return self._derived_descendants_in(
@@ -1368,6 +2028,15 @@ class CorePrototypeSpine:
                 owner_probability=event.owner_mass,
                 evidence_source_record_ids=event.evidence.source_record_ids,
             )
+            self._last_ccrr_decision = (
+                assessment.ccrr_decision.kind.value
+                if assessment.ccrr_decision is not None
+                else (
+                    "deferred"
+                    if assessment.conclusion is HabitStateConclusion.INSUFFICIENT_EVIDENCE
+                    else "stay"
+                )
+            )
             active = self._automatic_regimes.ccrr.active_regime(
                 object_instance_id=self.object_instance_id,
                 actor_id=self.owner_key,
@@ -1418,7 +2087,7 @@ class CorePrototypeSpine:
             old_regime=old_regime,
             new_regime=self.active_regime,
             change_probability=0.0,
-            ccrr_conclusion="not_applicable",
+            ccrr_conclusion=self._last_ccrr_decision,
             rationale=rationale,
             feedback_posterior_probability=feedback_posterior_probability,
         )
@@ -1470,12 +2139,12 @@ class CorePrototypeSpine:
         for hypothesis_id, probability in result.posterior_by_hypothesis_id.items():
             hypothesis = hypotheses[hypothesis_id]
             mass[hypothesis.responsible_actor_key] += probability
-        # Keep project-one's committed owner mass identical to the authoritative
-        # ORRER marginal used by ProjectTwoFeedbackRevisionLoop: unresolved event
-        # mass and open-world unknown-mechanism mass are not owner evidence.
-        mass[HierarchicalDirichletHabitModel.UNKNOWN_ACTOR] += (
-            result.unresolved_probability + result.unknown_mechanism_probability
-        )
+        # Full actor marginal: known-mechanism chains plus the actor-conditional
+        # mass inside the unknown-mechanism bucket. Only globally unresolved event
+        # mass is unattributable and therefore assigned to unknown_actor.
+        for actor, conditional in result.unknown_mechanism_actor_posterior.items():
+            mass[actor] += result.unknown_mechanism_probability * conditional
+        mass[HierarchicalDirichletHabitModel.UNKNOWN_ACTOR] += result.unresolved_probability
         total = sum(mass.values())
         if total <= 0.0:
             return {HierarchicalDirichletHabitModel.UNKNOWN_ACTOR: 1.0}

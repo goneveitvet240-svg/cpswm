@@ -38,7 +38,7 @@ from __future__ import annotations
 
 from dataclasses import asdict, dataclass
 from enum import StrEnum
-from math import isfinite, log
+from math import exp, isfinite, log, sqrt
 
 from cpswm.system.continual.project_one_regime_loop import (
     HabitStateConclusion,
@@ -54,13 +54,15 @@ from cpswm.system.prototype_spine import (
 from cpswm.system.reproducibility import content_sha256
 
 __all__ = [
+    "DEFAULT_RESIDUAL_CALIBRATION_NAME",
     "PROTOCOL_VERSION",
     "SIGMOID_AT_ONE",
     "SIGMOID_RESIDUAL_FLOOR",
     "CategoricalBOCPDConfig",
     "ContextFrequencyConfig",
-    "OnlineResidualCalibrator",
+    "HistogramResidualCalibrator",
     "PersistenceConfig",
+    "PlattResidualCalibrator",
     "ProjectOneDecision",
     "ProjectOneProtocolConfig",
     "ProjectOneStepTrace",
@@ -73,7 +75,13 @@ __all__ = [
     "residual_severity",
 ]
 
-PROTOCOL_VERSION = "project-one-evaluation-protocol@0.2"
+PROTOCOL_VERSION = "project-one-evaluation-protocol@0.3"
+
+
+#: The one calibration route the benchmark, the tuner and the default config all
+#: use.  Having each entry point pick its own default is how two runs end up
+#: incomparable without anyone noticing.
+DEFAULT_RESIDUAL_CALIBRATION_NAME = "raw_clip"
 
 
 def config_identity(config: object) -> str:
@@ -154,9 +162,17 @@ class ResidualCalibration(StrEnum):
     #: ``[0, 1]``.  Keeps the head untouched and needs no inverse, but assumes
     #: the raw score really does live in ``[0, 1]``.
     RECENTER = "recenter"
-    #: Online empirical calibration: map the score through the observed hit
+    #: Bucketed empirical calibration: map the score through the observed hit
     #: rate of nearby scores.  Makes no assumption about the head's output
-    #: scale at all, at the cost of needing history before it is meaningful.
+    #: scale, at the cost of needing history before it is meaningful.  This is
+    #: histogram binning, *not* Platt scaling -- it was misnamed ``PLATT`` in
+    #: v0.2, which claimed a method it did not implement.
+    HISTOGRAM = "histogram"
+    #: Platt scaling proper: a one-dimensional logistic regression
+    #: ``P(hit | s) = sigmoid(-(A * s + B))`` fitted online by gradient descent
+    #: on the log-loss, with Platt's own target smoothing.  Parametric, so it
+    #: needs far less history than binning, but it can only express a monotone
+    #: sigmoid in the score.
     PLATT = "platt"
 
 
@@ -168,7 +184,7 @@ SIGMOID_AT_ONE = 0.7310585786300049
 SIGMOID_RESIDUAL_FLOOR = 0.2689414213699951
 
 
-class OnlineResidualCalibrator:
+class HistogramResidualCalibrator:
     """Empirical ``P(hit | score)`` over a fixed score grid.
 
     Deliberately simple: bucket the score, keep Laplace-smoothed hit and miss
@@ -178,7 +194,9 @@ class OnlineResidualCalibrator:
 
     It is also the one route with a cold start: before a bucket has seen
     anything, it returns the smoothed prior (0.5), so early residuals are
-    uninformative rather than wrong.
+    uninformative rather than wrong.  Because every bucket starts cold
+    independently, that cold start is long -- which is exactly what
+    :class:`PlattResidualCalibrator` trades away for a parametric form.
     """
 
     __slots__ = ("_buckets", "_hits", "_misses", "_prior")
@@ -212,9 +230,135 @@ class OnlineResidualCalibrator:
 
     def snapshot(self) -> dict[str, object]:
         return {
+            "kind": "histogram",
             "buckets": self._buckets,
             "hits": list(self._hits),
             "misses": list(self._misses),
+        }
+
+
+#: Bound on the fitted Platt parameters; see :meth:`PlattResidualCalibrator.update`.
+_PLATT_BOUND = 25.0
+
+
+class PlattResidualCalibrator:
+    r"""Platt scaling: a one-dimensional logistic fit of ``P(hit | score)``.
+
+    Platt (1999) fits ``P(y=1 | s) = 1 / (1 + exp(A * s + B))`` by minimizing
+    the log-loss, using smoothed targets
+
+    .. math::
+        t_+ = \frac{N_+ + 1}{N_+ + 2}, \qquad t_- = \frac{1}{N_- + 2}
+
+    rather than hard 0/1, which is what stops the fit from running away to
+    infinity on separable data.  Both pieces are implemented here; the fit is
+    online gradient descent rather than Platt's Newton solver, because the
+    arm sees one event at a time and cannot hold the batch.
+
+    ``A`` starts negative so that a *higher* score means a *higher* hit
+    probability before any data arrives -- the identity-like starting point.
+    That matters: a calibrator initialized flat would make every early residual
+    exactly 0.5 and drown the first few steps of a short stream.
+
+    The score is **standardized** with a running mean and variance before the
+    logistic.  This is not cosmetic.  Under the ``as_is`` route the head's whole
+    informative range is ``[0.5, 0.731]`` -- 0.231 wide -- so an unstandardized
+    fit needs a slope near -33 and creeps toward it, while under ``raw_clip``
+    the same data spans the full unit interval and converges immediately.
+    Without standardization this calibrator would look bad on ``as_is`` for a
+    reason that has nothing to do with calibration, and the route comparison
+    would be measuring conditioning instead of method.
+    """
+
+    __slots__ = (
+        "_a",
+        "_b",
+        "_count",
+        "_learning_rate",
+        "_m2",
+        "_mean",
+        "_negatives",
+        "_positives",
+        "_updates",
+    )
+
+    def __init__(self, learning_rate: float = 0.5) -> None:
+        if learning_rate <= 0.0 or not isfinite(learning_rate):
+            raise ValueError("learning_rate must be finite and positive")
+        self._learning_rate = learning_rate
+        self._a = -4.0
+        self._b = 0.0
+        self._positives = 0.0
+        self._negatives = 0.0
+        self._updates = 0
+        self._count = 0
+        self._mean = 0.0
+        self._m2 = 0.0
+
+    def _standardize(self, score: float) -> float:
+        """Welford-standardized score; identity-ish until a spread is known."""
+
+        if self._count < 2:
+            return score - self._mean
+        variance = self._m2 / (self._count - 1)
+        deviation = sqrt(variance)
+        if deviation < 1e-9:
+            return 0.0
+        return float((score - self._mean) / deviation)
+
+    def _observe_score(self, score: float) -> None:
+        self._count += 1
+        delta = score - self._mean
+        self._mean += delta / self._count
+        self._m2 += delta * (score - self._mean)
+
+    def _probability(self, score: float) -> float:
+        z = self._a * self._standardize(score) + self._b
+        z = min(60.0, max(-60.0, z))
+        return 1.0 / (1.0 + exp(z))
+
+    def residual(self, score: float) -> float:
+        return min(1.0, max(0.0, 1.0 - self._probability(score)))
+
+    def update(self, score: float, hit: bool, weight: float = 1.0) -> None:
+        """One weighted gradient step on the smoothed-target log-loss."""
+
+        if weight <= 0.0:
+            return
+        if hit:
+            self._positives += weight
+            target = (self._positives + 1.0) / (self._positives + 2.0)
+        else:
+            self._negatives += weight
+            target = 1.0 / (self._negatives + 2.0)
+
+        self._observe_score(score)
+        standardized = self._standardize(score)
+        probability = self._probability(score)
+        # With z = A*s + B and p = sigmoid(-z), d(log-loss)/dz = target - p.
+        # Descent therefore *subtracts* it: raising the target lowers z, which
+        # raises p.  Adding it would push the fit away from the data, which is
+        # exactly the sign error that made the v0.3 draft report P(hit) = 1 for
+        # a score whose observed hit rate was 1 in 4.
+        step = self._learning_rate * weight * (target - probability)
+        self._a -= step * standardized
+        self._b -= step
+        # A runaway fit is not a better fit; separable data would otherwise send
+        # both parameters to infinity even with smoothed targets.
+        self._a = min(_PLATT_BOUND, max(-_PLATT_BOUND, self._a))
+        self._b = min(_PLATT_BOUND, max(-_PLATT_BOUND, self._b))
+        self._updates += 1
+
+    def snapshot(self) -> dict[str, object]:
+        return {
+            "kind": "platt",
+            "a": self._a,
+            "b": self._b,
+            "score_mean": self._mean,
+            "score_std": sqrt(self._m2 / (self._count - 1)) if self._count > 1 else 0.0,
+            "positives": self._positives,
+            "negatives": self._negatives,
+            "updates": self._updates,
         }
 
 
@@ -264,7 +408,7 @@ class ProjectOneProtocolConfig:
     #: before v0.2 it was declared here and never used.
     rls_regularization: float = 1e-6
     ablation: SignalAblation = SignalAblation.FULL
-    residual_calibration: ResidualCalibration = ResidualCalibration.AS_IS
+    residual_calibration: ResidualCalibration = ResidualCalibration.RAW_CLIP
     protocol_version: str = PROTOCOL_VERSION
 
     def __post_init__(self) -> None:
@@ -388,8 +532,8 @@ def calibrated_residual(score: float, calibration: ResidualCalibration) -> float
 
     if not isfinite(score):
         raise ValueError("score must be finite")
-    if calibration is ResidualCalibration.PLATT:
-        raise ValueError("PLATT is stateful; the arm owns an OnlineResidualCalibrator for it")
+    if calibration in (ResidualCalibration.HISTOGRAM, ResidualCalibration.PLATT):
+        raise ValueError(f"{calibration.value} is stateful; the arm owns a calibrator for it")
     if calibration is ResidualCalibration.RECENTER:
         span = SIGMOID_AT_ONE - 0.5
         rescaled = min(1.0, max(0.0, (score - 0.5) / span))

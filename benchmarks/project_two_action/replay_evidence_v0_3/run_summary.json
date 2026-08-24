@@ -1,0 +1,144 @@
+{
+  "d0": {
+    "dataset_version": "project-two-d0-multiseed-evidence@0.3",
+    "episode_count": 80,
+    "step_count": 2560,
+    "aggregate_metrics": {
+      "put_back_error_rate": {
+        "mean": 0.312109375,
+        "ci95": [
+          0.302734375,
+          0.322265625
+        ],
+        "n": 80
+      },
+      "search_success_rate": {
+        "mean": 0.90859375,
+        "ci95": [
+          0.896875,
+          0.919921875
+        ],
+        "n": 80
+      },
+      "cumulative_action_regret": {
+        "mean": 12.9125,
+        "ci95": [
+          12.3875,
+          13.4625
+        ],
+        "n": 80
+      },
+      "mean_search_cost": {
+        "mean": 1.14375,
+        "ci95": [
+          1.123828125,
+          1.165625
+        ],
+        "n": 80
+      },
+      "hidden_event_hypothesis_accuracy": {
+        "mean": 0.65234375,
+        "ci95": [
+          0.632421875,
+          0.670703125
+        ],
+        "n": 2560
+      },
+      "revision_accuracy": {
+        "mean": 0.65234375,
+        "ci95": [
+          0.633984375,
+          0.671875
+        ],
+        "n": 2560
+      },
+      "mean_unresolved_mass": {
+        "mean": 0.33846398525288796,
+        "ci95": [
+          0.32012090126998133,
+          0.3570180303666705
+        ],
+        "n": 2560
+      },
+      "cumulative_utility": {
+        "mean": 23.9,
+        "ci95": [
+          23.025,
+          24.7625
+        ],
+        "n": 80
+      }
+    }
+  },
+  "d1": {
+    "dataset_version": "project-two-d1-generic-annotated-development@0.1",
+    "episode_count": 30,
+    "step_count": 960,
+    "aggregate_metrics": {
+      "put_back_error_rate": {
+        "mean": 0.334375,
+        "ci95": [
+          0.315625,
+          0.35520833333333335
+        ],
+        "n": 30
+      },
+      "search_success_rate": {
+        "mean": 0.8979166666666667,
+        "ci95": [
+          0.8697916666666666,
+          0.9229166666666667
+        ],
+        "n": 30
+      },
+      "cumulative_action_regret": {
+        "mean": 13.966666666666667,
+        "ci95": [
+          12.833333333333334,
+          15.2
+        ],
+        "n": 30
+      },
+      "mean_search_cost": {
+        "mean": 1.1614583333333333,
+        "ci95": [
+          1.11875,
+          1.2072916666666667
+        ],
+        "n": 30
+      },
+      "hidden_event_hypothesis_accuracy": {
+        "mean": 0.6322916666666667,
+        "ci95": [
+          0.5989583333333334,
+          0.6635416666666667
+        ],
+        "n": 960
+      },
+      "revision_accuracy": {
+        "mean": 0.6322916666666667,
+        "ci95": [
+          0.6010416666666667,
+          0.6604166666666667
+        ],
+        "n": 960
+      },
+      "mean_unresolved_mass": {
+        "mean": 0.3556923820523175,
+        "ci95": [
+          0.32568111958048845,
+          0.3852589567800738
+        ],
+        "n": 960
+      },
+      "cumulative_utility": {
+        "mean": 23.1,
+        "ci95": [
+          21.533333333333335,
+          24.566666666666666
+        ],
+        "n": 30
+      }
+    }
+  }
+}

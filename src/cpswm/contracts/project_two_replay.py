@@ -59,6 +59,50 @@ class ReplayFieldAvailability(StrEnum):
     PARTIAL = "partial"
 
 
+class PerceptionModality(StrEnum):
+    RGB = "rgb"
+    RGBD = "rgbd"
+
+
+class PerceptionFrameReference(ContractModel):
+    """Immutable reference to raw sensor material; pixels stay outside JSONL."""
+
+    frame_id: str = Field(min_length=1)
+    timestamp: datetime
+    modality: PerceptionModality
+    rgb_uri: str = Field(min_length=1)
+    depth_uri: str | None = None
+    sensor_id: str = Field(min_length=1)
+    rgb_sha256: str | None = Field(default=None, pattern=r"^[0-9a-f]{64}$")
+    depth_sha256: str | None = Field(default=None, pattern=r"^[0-9a-f]{64}$")
+
+    @field_validator("timestamp")
+    @classmethod
+    def _frame_aware(cls, value: datetime) -> datetime:
+        return require_aware(value, "timestamp")
+
+    @model_validator(mode="after")
+    def _depth_required_for_rgbd(self) -> PerceptionFrameReference:
+        if self.modality is PerceptionModality.RGBD and not self.depth_uri:
+            raise ValueError("RGB-D frame requires depth_uri")
+        if self.modality is PerceptionModality.RGB and self.depth_uri is not None:
+            raise ValueError("RGB-only frame cannot carry depth_uri")
+        return self
+
+
+class ObjectTrackObservation(ContractModel):
+    """Detector/tracker output retained as visible evidence, never evaluator truth."""
+
+    frame_id: str = Field(min_length=1)
+    track_id: str = Field(min_length=1)
+    object_instance_id: UUID
+    object_category: str = Field(min_length=1)
+    detection_confidence: Probability
+    visibility_probability: Probability
+    occlusion_state: OcclusionState
+    bounding_box_xyxy: tuple[float, float, float, float] | None = None
+
+
 class ProjectTwoReplayStep(ContractModel):
     """One time-ordered, model-visible replay unit; never contains truth."""
 
@@ -82,6 +126,8 @@ class ProjectTwoReplayStep(ContractModel):
     observation_opportunity: ObservationOpportunityRecord | None = None
     action_opportunity: bool = True
     unavailable_fields: tuple[str, ...] = ()
+    perception_frames: tuple[PerceptionFrameReference, ...] = ()
+    object_tracks: tuple[ObjectTrackObservation, ...] = ()
 
     @field_validator("timestamp")
     @classmethod
@@ -106,6 +152,13 @@ class ProjectTwoReplayStep(ContractModel):
                 or self.after.detected_location_id != self.observed_destination_location_id
             ):
                 raise ValueError("observed destination must be supported by a visible detection")
+        frame_ids = {frame.frame_id for frame in self.perception_frames}
+        if len(frame_ids) != len(self.perception_frames):
+            raise ValueError("duplicate perception frame id")
+        if any(track.frame_id not in frame_ids for track in self.object_tracks):
+            raise ValueError("object track must reference a perception frame")
+        if any(track.object_instance_id != self.object_instance_id for track in self.object_tracks):
+            raise ValueError("object track instance must match replay step")
         return self
 
 
@@ -248,6 +301,9 @@ __all__ = [
     in {
         "PROJECT_TWO_REPLAY_SCHEMA_VERSION",
         "ReplayFieldAvailability",
+        "PerceptionModality",
+        "PerceptionFrameReference",
+        "ObjectTrackObservation",
         "TRUTH_FIELD_ALIASES",
         "reject_truth_leakage",
     }

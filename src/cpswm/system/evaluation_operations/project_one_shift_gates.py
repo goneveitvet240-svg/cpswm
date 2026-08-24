@@ -41,6 +41,7 @@ from .project_one_ablation_v0_2 import (
 )
 from .sealed_test_split import SealedTestSplit
 from .shift_baselines import (
+    OnlineBOCPDMSBaseline,
     OnlineCauseFactorizedBOCPDBaseline,
     OnlineJointCauseFactorizedBOCPDBaseline,
     OnlineOrdinaryBOCPDBaseline,
@@ -50,6 +51,15 @@ SHIFT_THREE_ARMS: tuple[ProjectOneAblationArmId, ...] = (
     ProjectOneAblationArmId.ORDINARY_BOCPD,
     ProjectOneAblationArmId.CAUSE_FACTORIZED_BOCPD,
     ProjectOneAblationArmId.JOINT_CAUSE_FACTORIZED_BOCPD,
+)
+
+#: Frozen three-arm scope above stays byte-identical so existing ATG2/ATG3
+#: artifacts keep validating.  The four-arm scope adds the BOCPDMS matched
+#: adaptation, which is the arm that can actually disconfirm the CF-BOCPD
+#: cause-factorization claim.
+SHIFT_FOUR_ARMS: tuple[ProjectOneAblationArmId, ...] = (
+    *SHIFT_THREE_ARMS,
+    ProjectOneAblationArmId.BOCPDMS_MODEL_SELECTION,
 )
 ATG2_SCOPE: Literal["project-one-shift-three-arm-tuning@1"] = "project-one-shift-three-arm-tuning@1"
 ATG3_SCOPE: Literal["project-one-shift-three-arm-test@1"] = "project-one-shift-three-arm-test@1"
@@ -96,6 +106,21 @@ _SEARCH_SPACES: dict[ProjectOneAblationArmId, tuple[dict[str, int | float], ...]
         for hazard in (0.01, 0.05, 0.1)
         for threshold in (0.2, 0.35, 0.5)
         for beam in (12, 24)
+    ),
+    # Same 18-trial budget as every other arm.  The third dimension is the model
+    # prior concentration -- BOCPDMS's own knob -- rather than a second copy of a
+    # dimension the CF-BOCPD arms already search, so the budget buys this arm the
+    # same amount of real freedom.
+    ProjectOneAblationArmId.BOCPDMS_MODEL_SELECTION: tuple(
+        {
+            "warmup_days": 2,
+            "hazard_probability": hazard,
+            "detection_threshold_hazard_fraction": fraction,
+            "model_switch_weight": switch,
+        }
+        for hazard in (0.01, 0.05, 0.1)
+        for fraction in (0.05, 0.2, 0.5)
+        for switch in (0.0, 0.25)
     ),
 }
 
@@ -767,6 +792,7 @@ def _model_factory(arm_id: ProjectOneAblationArmId, params: dict[str, int | floa
         ProjectOneAblationArmId.JOINT_CAUSE_FACTORIZED_BOCPD: (
             OnlineJointCauseFactorizedBOCPDBaseline
         ),
+        ProjectOneAblationArmId.BOCPDMS_MODEL_SELECTION: OnlineBOCPDMSBaseline,
     }
     return factories[arm_id](**params)
 

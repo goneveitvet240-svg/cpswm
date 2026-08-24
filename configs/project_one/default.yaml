@@ -8,7 +8,7 @@
 # 生成，覆盖下面全部字段）。两次结果只有在 config_hash 相同、或差异恰好是被研究
 # 的那一个字段时，才允许直接比较。
 
-protocol_version: "project-one-evaluation-protocol@0.2"
+protocol_version: "project-one-evaluation-protocol@0.3"
 
 # --- 状态判断链 -------------------------------------------------------------
 # 与 PrototypeLoopConfig 的默认值保持一致，使"协议默认"与"原型默认"是同一组数字。
@@ -33,11 +33,15 @@ rls_regularization: 1.0e-6            # 传给 RLSHabitScoreHead 的 ridge；与
 # ablation: full | no_rls | shuffled_rls | rls_only
 #   full          两个通道都在（被测方法）
 #   no_rls        residual 固定为 0
-#   shuffled_rls  residual 用固定滞后替换（保留量级、破坏配对）
+#   shuffled_rls  residual 用**严格 derangement**（无不动点的置换）替换：完整保留
+#                 边缘分布、彻底打断配对。需要 prime() 预跑整条流，因此它是消融，
+#                 不是可部署方法。v0.2 的固定滞后不是 derangement——residual 序列
+#                 里大量重复值会让滞后把值映射到相同值，且前 lag 步没有历史，
+#                 静默退化成 No-RLS。
 #   rls_only      Dirichlet surprise 固定为 0
 ablation: full
 
-# residual_calibration: as_is | logit | raw_clip | recenter | platt
+# residual_calibration: as_is | logit | raw_clip | recenter | histogram | platt
 #   as_is     复现出厂接线：score_candidates 默认再套一层 sigmoid，把已经拟合到
 #             {0,1} 的回归输出压成 [0.269, 0.5]，正确预测的事件也带 0.269 底噪。
 #   logit     反解 sigmoid，取 |1-raw| 截到 1。**不推荐**：把过度自信的分数
@@ -45,10 +49,24 @@ ablation: full
 #   raw_clip  反解后先把 raw 夹进 [0,1]，再取 1-raw。当前推荐。
 #   recenter  把 [sigmoid(0), sigmoid(1)] 仿射映回 [0,1]；不需要反解，实测与
 #             raw_clip 无法区分。
-#   platt     在线经验校准 P(hit|score)，不做任何量程假设；合成流上因冷启动更差，
-#             但真实数据上 raw 未必落在 [0,1]，届时它是唯一安全的路线。
-# 五个选项都不修改 prototype_spine 或共享的 RLS head。
+#   histogram 分桶经验校准 P(hit|score)。v0.2 把它错叫成 platt——它是直方图分箱，
+#             不是 Platt scaling。每个桶各自冷启动，所以冷启动很长。
+#   platt     真正的 Platt scaling：对 score 做一维逻辑回归 P(hit|s)=sigmoid(-(A*s+B))，
+#             用 Platt 自己的目标平滑在线拟合，并对 score 做 Welford 标准化——
+#             否则 as_is 那 0.231 宽的量程会让它因为条件数而不是因为方法显得差。
+#             参数化形式让它比分箱少得多的历史就能收敛。
+# 六个选项都不修改 prototype_spine 或共享的 RLS head。
 residual_calibration: raw_clip
+
+# --- 阶段 7 选择规则（tuner 的默认权重，可用命令行覆盖）----------------------
+# utility = w_confirm*变化确认 + w_anomaly*异常检出 - w_switch*误切换 - w_alarm*误报
+# 四项都在，因为只写变化确认的规则等于宣布短期扰动能力不重要。
+# Pareto 前沿是**三维**的：(误切换↓, 变化确认↑, 异常检出↑)。
+selection_weights:
+  w_confirm: 1.0
+  w_anomaly: 1.0
+  w_switch: 1.0
+  w_alarm: 1.0
 
 # --- 阶段 7 调参起始网格（此处仅作记录，runner 当前不读取）--------------------
 # 每个 arm 必须使用相同搜索预算、各自独立选择最优配置，且只能在 validation 上搜索。

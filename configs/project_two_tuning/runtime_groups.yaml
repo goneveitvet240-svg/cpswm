@@ -1,0 +1,34 @@
+protocol_version: project-two-runtime-tuning-groups@0.2
+selection_split: validation_only
+common_early_stop_rule: lexicographic_put_back_error_then_action_regret
+groups:
+  feedback_likelihood:
+    - likelihood_calibration
+  open_world_semantics:
+    - actor_evidence_weight
+    - mechanism_evidence_weight
+    - role_evidence_weight
+    - unresolved_prior
+    - unknown_actor_prior
+    - unknown_mechanism_prior
+    - pchmp_weight
+  reversible_revision:
+    - orrer_retraction_threshold
+    - orrer_reactivation_threshold
+  project_one_regime:
+    - bocpd_hazard
+    - ccrr_create_threshold
+    - ccrr_reactivate_threshold
+    - ccrr_stay_threshold
+    - rgrc_write_threshold
+    - rgrc_quarantine_threshold
+    - rgrc_retract_threshold
+  action_selection:
+    - action_utility_threshold
+  llm_request:
+    - prompt_template_version
+    - temperature
+    - candidate_count
+joint_stage: after_each_applicable_group_has_an_independent_validation_receipt
+unused_parameter_policy: fail_candidate
+held_out_policy: forbidden_until_freeze

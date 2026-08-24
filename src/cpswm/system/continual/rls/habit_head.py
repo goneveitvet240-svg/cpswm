@@ -208,9 +208,22 @@ class RLSHabitScoreHead:
         context_features: np.ndarray,
         candidate_locations: tuple[UUID, ...],
         location_embeddings: LocationEmbedding,
-        apply_sigmoid: bool = True,
+        apply_sigmoid: bool = False,
     ) -> LocationScores:
-        """Score each candidate location under current RLS state."""
+        """Score each candidate location under current RLS state.
+
+        The underlying model is a recursive least-squares regressor already
+        fitted to ``{0, 1}`` targets, so its raw output *is* the calibrated
+        score.  Squashing it again compresses a perfectly learned score from
+        ``1.0`` to ``0.731`` and a perfectly rejected one from ``0.0`` to
+        ``0.5``, which pins any residual read as ``1 - score`` inside
+        ``[0.269, 0.5]`` -- a correctly predicted location can then never
+        report zero error.  ``apply_sigmoid`` therefore defaults to ``False``.
+
+        Pass ``apply_sigmoid=True`` only to reproduce the pre-fix wiring; it is
+        kept so historical runs stay comparable, not because a second squash is
+        ever the right readout.
+        """
 
         if not candidate_locations:
             return {}

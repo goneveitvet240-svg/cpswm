@@ -68,6 +68,8 @@ from __future__ import annotations
 
 from dataclasses import replace
 from datetime import UTC, datetime, timedelta
+from functools import lru_cache
+from statistics import median
 
 import numpy as np
 import pytest
@@ -127,6 +129,30 @@ def _final(location: str) -> ProjectOneDatasetRecord:
     return _record(2 * CYCLES, morning=True, location=location)
 
 
+@lru_cache(maxsize=1)
+def _warm_snapshot() -> CoreHabitChainMethod:
+    """One arm, trained once on the shared prefix.
+
+    Every branch below is a deep copy of *this* object, so the two branches do
+    not merely receive the same inputs — they start from byte-identical model
+    state.  That distinction is not pedantic: running two ablations over the
+    same prefix gives them different habit signals from the first step, hence
+    different quarantine decisions, hence different learned counts long before
+    the step under study.  v0.2 compared arms that had already diverged.
+
+    The snapshot is built with ``FULL`` and the default calibration; the
+    interventions below replace only the read path, which is what a
+    final-step matched pair is supposed to isolate.  Whole-stream effects of a
+    calibration route are a different question, and the benchmark answers it.
+    """
+
+    arm = _arm(SignalAblation.FULL, ResidualCalibration.RAW_CLIP)
+    arm.reset()
+    for record in _prefix():
+        arm.observe(record)
+    return arm
+
+
 def _arm(ablation: SignalAblation, calibration: ResidualCalibration) -> CoreHabitChainMethod:
     return CoreHabitChainMethod(
         name=f"{ablation.value}/{calibration.value}",
@@ -147,19 +173,62 @@ def _run_branch(
     calibration: ResidualCalibration,
     final_location: str,
 ) -> StepPrediction:
-    """Train on the shared prefix, then observe one final morning event."""
+    """Clone the shared warm snapshot, intervene once, observe one event.
 
-    method = _arm(ablation, calibration)
-    method.reset()
-    for record in _prefix():
-        method.observe(record)
-    return method.observe(_final(final_location))
+    ``SHUFFLED_RLS`` is a stream-level ablation — a derangement of one element
+    is meaningless — so its pointwise form substitutes a residual drawn from
+    the arm's *own* prefix marginal.  Same magnitude, wrong pairing, which is
+    exactly the claim the arm exists to test.  Its whole-stream form, with a
+    real strict derangement, runs in the benchmark.
+    """
+
+    warm = _warm_snapshot()
+    clone = warm.clone_with(ablation=ablation, residual_calibration=calibration)
+    if ablation is SignalAblation.SHUFFLED_RLS:
+        clone.pointwise_residual_override = median(warm.residual_history)
+    return clone.observe(_final(final_location))
+
+
+@lru_cache(maxsize=64)
+def _run_consistent(
+    ablation: SignalAblation,
+    calibration: ResidualCalibration,
+    final_location: str,
+) -> StepPrediction:
+    """Train *and* read under one route, over the whole fixture stream.
+
+    The shared snapshot above answers "given one trained model, what does the
+    read path do to this event?".  That is the right question for comparing
+    ablations, and the wrong one for comparing calibration routes: a route
+    changes the residual on every training step too, and the changepoint
+    detector adapts to whatever level it sees.  Reading a snapshot trained
+    under one route with a different route measures the mismatch, not the
+    route.
+
+    This helper also primes the arm over the full record list, so the shuffled
+    ablation gets its real strict derangement instead of silently falling back
+    to reporting its own residual.
+    """
+
+    records = [*_prefix(), _final(final_location)]
+    arm = _arm(ablation, calibration)
+    arm.reset()
+    arm.prime(records)
+    for record in records[:-1]:
+        arm.observe(record)
+    return arm.observe(records[-1])
 
 
 def _margin(ablation: SignalAblation, calibration: ResidualCalibration) -> float:
-    expected = _run_branch(ablation, calibration, "dining_table")
-    anomalous = _run_branch(ablation, calibration, "balcony")
+    """Anomalous minus expected habit signal, under one self-consistent route."""
+
+    expected = _run_consistent(ablation, calibration, "dining_table")
+    anomalous = _run_consistent(ablation, calibration, "balcony")
     return anomalous.habit_signal - expected.habit_signal
+
+
+def _change_probability(ablation: SignalAblation, calibration: ResidualCalibration) -> float:
+    return _run_consistent(ablation, calibration, "balcony").change_probability
 
 
 # ---------------------------------------------------------------------------
@@ -203,16 +272,16 @@ def test_both_branches_see_the_same_previous_location() -> None:
 
 
 def test_expected_residual_is_below_anomalous_residual() -> None:
-    expected = _run_branch(SignalAblation.FULL, ResidualCalibration.LOGIT, "dining_table")
-    anomalous = _run_branch(SignalAblation.FULL, ResidualCalibration.LOGIT, "balcony")
+    expected = _run_consistent(SignalAblation.FULL, ResidualCalibration.LOGIT, "dining_table")
+    anomalous = _run_consistent(SignalAblation.FULL, ResidualCalibration.LOGIT, "balcony")
     assert expected.rls_residual is not None
     assert anomalous.rls_residual is not None
     assert expected.rls_residual < anomalous.rls_residual
 
 
 def test_expected_habit_signal_is_below_anomalous_habit_signal() -> None:
-    expected = _run_branch(SignalAblation.FULL, ResidualCalibration.LOGIT, "dining_table")
-    anomalous = _run_branch(SignalAblation.FULL, ResidualCalibration.LOGIT, "balcony")
+    expected = _run_consistent(SignalAblation.FULL, ResidualCalibration.LOGIT, "dining_table")
+    anomalous = _run_consistent(SignalAblation.FULL, ResidualCalibration.LOGIT, "balcony")
     assert expected.habit_signal < anomalous.habit_signal
 
 
@@ -296,14 +365,14 @@ def test_the_rls_head_learns_the_context_perfectly_before_the_sigmoid() -> None:
 def test_a_perfectly_predicted_event_still_carries_a_residual_floor() -> None:
     """Under the shipped wiring the residual can never reach zero."""
 
-    expected = _run_branch(SignalAblation.FULL, ResidualCalibration.AS_IS, "dining_table")
+    expected = _run_consistent(SignalAblation.FULL, ResidualCalibration.AS_IS, "dining_table")
     assert expected.rls_residual == pytest.approx(SIGMOID_RESIDUAL_FLOOR, abs=1e-4)
 
 
 def test_the_residual_floor_pins_the_habit_signal_of_every_move() -> None:
     """``1 - (1 - 0.269) ** 2``: any move scores at least this, however expected."""
 
-    expected = _run_branch(SignalAblation.FULL, ResidualCalibration.AS_IS, "dining_table")
+    expected = _run_consistent(SignalAblation.FULL, ResidualCalibration.AS_IS, "dining_table")
     floor = 1.0 - (1.0 - SIGMOID_RESIDUAL_FLOOR) ** 2
     assert expected.habit_signal == pytest.approx(floor, abs=1e-4)
 
@@ -357,7 +426,7 @@ def test_each_arm_is_deterministic(
 
 
 def test_no_rls_arm_really_reports_a_zero_residual() -> None:
-    prediction = _run_branch(SignalAblation.NO_RLS, ResidualCalibration.AS_IS, "balcony")
+    prediction = _run_consistent(SignalAblation.NO_RLS, ResidualCalibration.AS_IS, "balcony")
     assert prediction.rls_residual == 0.0
 
 
@@ -375,24 +444,20 @@ def test_every_arm_carries_a_distinct_config_hash() -> None:
 # ---------------------------------------------------------------------------
 
 
-def _change_probability(ablation: SignalAblation, calibration: ResidualCalibration) -> float:
-    return _run_branch(ablation, calibration, "balcony").change_probability
-
-
 def test_change_probability_separates_the_two_branches() -> None:
-    expected = _run_branch(SignalAblation.FULL, ResidualCalibration.LOGIT, "dining_table")
-    anomalous = _run_branch(SignalAblation.FULL, ResidualCalibration.LOGIT, "balcony")
+    expected = _run_consistent(SignalAblation.FULL, ResidualCalibration.LOGIT, "dining_table")
+    anomalous = _run_consistent(SignalAblation.FULL, ResidualCalibration.LOGIT, "balcony")
     assert anomalous.change_probability > expected.change_probability
 
 
 def test_the_expected_branch_is_decided_stable() -> None:
     for calibration in ResidualCalibration:
-        prediction = _run_branch(SignalAblation.FULL, calibration, "dining_table")
+        prediction = _run_consistent(SignalAblation.FULL, calibration, "dining_table")
         assert prediction.decision is ProjectOneDecision.STABLE, calibration
 
 
 def test_the_anomalous_branch_leaves_stable() -> None:
-    prediction = _run_branch(SignalAblation.FULL, ResidualCalibration.LOGIT, "balcony")
+    prediction = _run_consistent(SignalAblation.FULL, ResidualCalibration.LOGIT, "balcony")
     assert prediction.decision is not ProjectOneDecision.STABLE
 
 
@@ -405,14 +470,14 @@ def test_one_anomaly_is_not_confirmed_as_a_habit_change() -> None:
     left as an implicit property.
     """
 
-    prediction = _run_branch(SignalAblation.FULL, ResidualCalibration.LOGIT, "balcony")
+    prediction = _run_consistent(SignalAblation.FULL, ResidualCalibration.LOGIT, "balcony")
     assert prediction.decision is ProjectOneDecision.INSUFFICIENT_EVIDENCE
 
 
 def test_rls_only_escalates_once_the_sigmoid_is_inverted() -> None:
     """With the residual as its only channel, it must still reach the anomaly."""
 
-    prediction = _run_branch(SignalAblation.RLS_ONLY, ResidualCalibration.LOGIT, "balcony")
+    prediction = _run_consistent(SignalAblation.RLS_ONLY, ResidualCalibration.LOGIT, "balcony")
     assert prediction.change_probability > 0.9
     assert prediction.decision is not ProjectOneDecision.STABLE
 
@@ -420,7 +485,7 @@ def test_rls_only_escalates_once_the_sigmoid_is_inverted() -> None:
 def test_shipped_wiring_leaves_the_rls_only_arm_blind() -> None:
     """Pinned defect: under ``as_is`` the residual alone never flags the anomaly."""
 
-    prediction = _run_branch(SignalAblation.RLS_ONLY, ResidualCalibration.AS_IS, "balcony")
+    prediction = _run_consistent(SignalAblation.RLS_ONLY, ResidualCalibration.AS_IS, "balcony")
     assert prediction.change_probability < 0.5
     assert prediction.decision is ProjectOneDecision.STABLE
 
@@ -438,3 +503,103 @@ def test_shipped_wiring_full_change_probability_exceeds_no_rls() -> None:
     assert _change_probability(SignalAblation.FULL, ResidualCalibration.AS_IS) > (
         _change_probability(SignalAblation.NO_RLS, ResidualCalibration.AS_IS)
     )
+
+
+# ---------------------------------------------------------------------------
+# The matched pair is matched at the level of model state, not just inputs
+# ---------------------------------------------------------------------------
+
+
+def test_all_branches_start_from_one_shared_snapshot() -> None:
+    """Every branch is a deep copy of the same trained arm."""
+
+    warm = _warm_snapshot()
+    first = warm.clone_with(ablation=SignalAblation.NO_RLS)
+    second = warm.clone_with(ablation=SignalAblation.RLS_ONLY)
+    assert first is not warm and second is not warm
+    assert first.snapshot()["steps"] == second.snapshot()["steps"] == 2 * CYCLES
+    assert first.residual_history == second.residual_history == warm.residual_history
+
+
+def test_a_clone_cannot_write_back_into_the_snapshot() -> None:
+    warm = _warm_snapshot()
+    before = len(warm.residual_history)
+    clone = warm.clone_with(ablation=SignalAblation.FULL)
+    clone.observe(_final("balcony"))
+    assert len(warm.residual_history) == before
+
+
+def test_the_pointwise_override_is_consumed_exactly_once() -> None:
+    """It must not leak into any later step."""
+
+    clone = _warm_snapshot().clone_with(ablation=SignalAblation.SHUFFLED_RLS)
+    clone.pointwise_residual_override = 0.77
+    first = clone.observe(_final("balcony"))
+    assert first.rls_residual == pytest.approx(0.77)
+    assert clone.pointwise_residual_override is None
+
+
+# ---------------------------------------------------------------------------
+# The stream-level shuffle really is a strict derangement
+# ---------------------------------------------------------------------------
+
+
+def test_the_shuffle_is_a_strict_derangement_of_the_real_residuals() -> None:
+    from cpswm.system.evaluation_operations.project_one_methods import _strict_derangement
+
+    values = [0.269] * 5 + [0.5, 1.0, 0.0]
+    deranged = _strict_derangement(values, seed=12345)
+    assert sorted(deranged) == sorted(values), "the marginal must be preserved exactly"
+    order = list(range(len(values)))
+    # Rebuild the index map to assert strictness rather than trusting the values,
+    # which repeat and therefore cannot prove it.
+    permutation = _strict_derangement(order, seed=12345)
+    assert all(position != index for index, position in enumerate(permutation))
+
+
+def test_a_primed_shuffled_arm_shuffles_every_step() -> None:
+    from cpswm.system.evaluation_operations.project_one_methods import CoreHabitChainMethod
+    from cpswm.system.evaluation_operations.project_one_runner import ProjectOneRunner
+    from cpswm.system.evaluation_operations.project_one_scenarios import (
+        LOCATIONS as SCENARIO_LOCATIONS,
+    )
+    from cpswm.system.evaluation_operations.project_one_scenarios import build_stream
+
+    stream, truth = build_stream("permanent_change")
+    arm = CoreHabitChainMethod(
+        name="shuffled_rls",
+        locations=SCENARIO_LOCATIONS,
+        owner_id=OWNER,
+        household_id=HOUSEHOLD,
+        object_id=OBJECT,
+        config=replace(ProjectOneProtocolConfig(), ablation=SignalAblation.SHUFFLED_RLS),
+    )
+    result = ProjectOneRunner().run_arm(arm, stream, truth)
+    assert result.failure is None
+    assert result.snapshot["derangement_length"] == len(stream)
+    assert result.snapshot["unprimed_shuffle_steps"] == 0, (
+        "a fixed-lag substitute used to leave the first steps unshuffled"
+    )
+
+
+def test_reading_a_fixed_model_under_the_shipped_route_fabricates_an_alarm() -> None:
+    """What the shared snapshot exposes that a divergent prefix hid.
+
+    Train once under ``raw_clip``, then read one perfectly ordinary event under
+    ``as_is``.  The 0.269 residual floor injects a habit signal of 0.466 into a
+    detector that was calibrated against a channel sitting near zero, and the
+    change probability goes to ~1 on an event the model predicted correctly.
+
+    Trained *and* read under ``as_is`` the effect is far weaker, because the
+    detector absorbs the floor as its normal level.  That is why the two
+    helpers in this file exist, and why a route comparison must hold the
+    training route fixed with the reading route.
+    """
+
+    fixed_model = _run_branch(SignalAblation.FULL, ResidualCalibration.AS_IS, "dining_table")
+    self_consistent = _run_consistent(
+        SignalAblation.FULL, ResidualCalibration.AS_IS, "dining_table"
+    )
+    assert fixed_model.habit_signal == pytest.approx(0.4656, abs=1e-3)
+    assert fixed_model.change_probability > 0.9
+    assert self_consistent.change_probability < fixed_model.change_probability

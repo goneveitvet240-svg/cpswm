@@ -67,9 +67,9 @@ from cpswm.contracts import (
     RoleBindingEvidence,
     SourceType,
 )
+from cpswm.contracts.events import EventType
 from cpswm.system.continual.execution_feedback_projector import (
     ProjectionInputConflictError,
-    TransitionCandidate,
 )
 
 from .contracts import (
@@ -173,6 +173,14 @@ class EventRevisionOutcome:
     hypothesis_posterior_after: dict[UUID, float]
     actor_posterior_before: dict[str, float]
     actor_posterior_after: dict[str, float]
+    known_mechanism_actor_mass_before: dict[str, float]
+    known_mechanism_actor_mass_after: dict[str, float]
+    mechanism_posterior_before: dict[str, float]
+    mechanism_posterior_after: dict[str, float]
+    role_posterior_before: dict[str, float]
+    role_posterior_after: dict[str, float]
+    location_posterior_before: dict[str, float]
+    location_posterior_after: dict[str, float]
     unresolved_before: float
     unresolved_after: float
     unknown_mechanism_before: float
@@ -193,6 +201,8 @@ class EventRevisionOutcome:
     # Set when a place/transfer landed at a location other than the event's
     # recorded destination -- the destination project one should move the habit to.
     corrected_destination_location_id: UUID | None = None
+    observed_destination_location_id: UUID | None = None
+    confirmed_location_evidence_id: UUID | None = None
 
 
 @dataclass(frozen=True, slots=True)
@@ -204,23 +214,70 @@ class _CachedRevision:
     outcome: EventRevisionOutcome
 
 
-def _actor_posterior(revision: EventHypothesisRevision) -> dict[str, float]:
-    """Marginalize hypothesis posteriors over the responsible actor.
-
-    Unresolved mass is reported under the open-world ``unknown_actor`` key so the
-    distribution always sums to one and never hides open-world uncertainty.
-    """
+def _known_mechanism_actor_mass(revision: EventHypothesisRevision) -> dict[str, float]:
+    """Actor mass carried by concrete direct/handoff hypotheses only."""
 
     posterior: dict[str, float] = {}
     for hypothesis in revision.hypotheses:
         posterior[hypothesis.responsible_actor_key] = (
             posterior.get(hypothesis.responsible_actor_key, 0.0) + hypothesis.posterior_probability
         )
-    posterior[UNKNOWN_ACTOR] = posterior.get(UNKNOWN_ACTOR, 0.0) + revision.unresolved_probability
-    # Owner-habit mass is credited only to physically modelled chains.  The
-    # separate unknown-mechanism actor breakdown remains available on the outcome.
-    posterior[UNKNOWN_ACTOR] += revision.unknown_mechanism_probability
     return posterior
+
+
+def _unknown_mechanism_actor_mass(revision: EventHypothesisRevision) -> dict[str, float]:
+    return {
+        actor: revision.unknown_mechanism_probability * probability
+        for actor, probability in revision.unknown_mechanism_actor_posterior.items()
+    }
+
+
+def _actor_posterior(revision: EventHypothesisRevision) -> dict[str, float]:
+    """Full actor marginal across concrete and unknown mechanisms.
+
+    Mathematically, for actor ``a`` this is
+    ``sum_h[actor(h)=a] p(h) + p(M=unknown) p(a|M=unknown)``.  Global unresolved
+    event mass has no attributable actor and is therefore added only to the open-
+    world ``unknown_actor`` bucket.  The result sums to one.
+    """
+
+    posterior = _known_mechanism_actor_mass(revision)
+    for actor, mass in _unknown_mechanism_actor_mass(revision).items():
+        posterior[actor] = posterior.get(actor, 0.0) + mass
+    posterior[UNKNOWN_ACTOR] = posterior.get(UNKNOWN_ACTOR, 0.0) + revision.unresolved_probability
+    return posterior
+
+
+def _axis_marginals(
+    revision: EventHypothesisRevision,
+) -> tuple[dict[str, float], dict[str, float], dict[str, float]]:
+    mechanisms: dict[str, float] = {}
+    roles: dict[str, float] = {}
+    locations: dict[str, float] = {}
+    for hypothesis in revision.hypotheses:
+        mass = hypothesis.posterior_probability
+        transfer = next(
+            (step for step in hypothesis.steps if step.event_type is EventType.TRANSFER), None
+        )
+        mechanism = (
+            EventMechanism.HANDOFF_RELOCATION.value
+            if transfer is not None
+            else EventMechanism.DIRECT_RELOCATION.value
+        )
+        mechanisms[mechanism] = mechanisms.get(mechanism, 0.0) + mass
+        role = (
+            f"{transfer.actor_key}->{transfer.recipient_actor_key}"
+            if transfer is not None
+            else f"direct:{hypothesis.responsible_actor_key}"
+        )
+        roles[role] = roles.get(role, 0.0) + mass
+        location = str(hypothesis.steps[-1].destination_location_id)
+        locations[location] = locations.get(location, 0.0) + mass
+    mechanisms[EventMechanism.UNKNOWN_MECHANISM.value] = revision.unknown_mechanism_probability
+    locations["unresolved_location"] = (
+        revision.unknown_mechanism_probability + revision.unresolved_probability
+    )
+    return mechanisms, roles, locations
 
 
 def _hypothesis_posterior(revision: EventHypothesisRevision) -> dict[UUID, float]:
@@ -249,6 +306,7 @@ class ProjectTwoFeedbackRevisionLoop:
         engine: OpenWorldRoleConditionedReversibleEventRevisionEngine | None = None,
         message_passing: ProvenanceConstrainedMessagePassing | None = None,
         retraction_threshold: float = 0.0,
+        reactivation_threshold: float = 0.5,
     ) -> None:
         # `projector` is an ExecutionFeedbackProjector; typed loosely to avoid a
         # continual<->cheh import cycle.
@@ -256,6 +314,9 @@ class ProjectTwoFeedbackRevisionLoop:
         self._engine = engine or OpenWorldRoleConditionedReversibleEventRevisionEngine()
         self._message_passing = message_passing or ProvenanceConstrainedMessagePassing()
         self._retraction_threshold = retraction_threshold
+        if not 0.0 <= reactivation_threshold <= 1.0:
+            raise ValueError("reactivation_threshold must lie in [0, 1]")
+        self._reactivation_threshold = reactivation_threshold
         # feedback record id -> cached first application, for self-consistent replay.
         self._outcomes: dict[UUID, _CachedRevision] = {}
 
@@ -270,6 +331,8 @@ class ProjectTwoFeedbackRevisionLoop:
         actor_evidence: ActorDiscriminationEvidence | None = None,
         next_move_time: datetime | None = None,
         transition_model: TransitionRevisionModel | None = None,
+        observed_destination_location_id: UUID | None = None,
+        post_action_observation_record_id: UUID | None = None,
     ) -> tuple[EventHypothesisHistory, EventRevisionOutcome]:
         """Fold one feedback record into the hidden-event chain as new evidence.
 
@@ -295,7 +358,15 @@ class ProjectTwoFeedbackRevisionLoop:
             actor_evidence=actor_evidence,
             transition_model=transition_model,
             next_move_time=next_move_time,
+            observed_destination_location_id=observed_destination_location_id,
+            post_action_observation_record_id=post_action_observation_record_id,
         )
+        if (observed_destination_location_id is None) != (
+            post_action_observation_record_id is None
+        ):
+            raise FeedbackProvenanceError(
+                "a confirmed landing requires both observed destination and source observation"
+            )
 
         # --- 1. project & validate (dedup + forgery/input-conflict) via projector ---
         # prepare validates and detects replay/forgery WITHOUT consuming the key, so
@@ -348,15 +419,16 @@ class ProjectTwoFeedbackRevisionLoop:
                     "place/transfer feedback requires a TransitionRevisionModel to revise "
                     "mechanism/role/actor; it is not folded into a presence ratio"
                 )
-            # A place/transfer that landed somewhere other than the recorded
-            # destination is a location signal: project one must move the habit.
+            # Outcome probability alone is never a certain landing observation.
+            # Only a separately sourced post-action detection may rewrite the
+            # destination.  A failed action may still have an observed landing.
             transition = projected.location_transition
             assert transition is not None
             if (
-                transition.candidate is TransitionCandidate.POSITIVE_CANDIDATE
-                and feedback.attempted_location_id != current.destination_location_id
+                observed_destination_location_id is not None
+                and observed_destination_location_id != current.destination_location_id
             ):
-                corrected_destination = feedback.attempted_location_id
+                corrected_destination = observed_destination_location_id
             (
                 revised_history,
                 corrected,
@@ -382,6 +454,8 @@ class ProjectTwoFeedbackRevisionLoop:
             repropagated=repropagated,
             source_records=source_records,
             corrected_destination=corrected_destination,
+            observed_destination=observed_destination_location_id,
+            confirmed_location_evidence_id=post_action_observation_record_id,
         )
         # Commit the projector idempotency key only once the revision succeeded.
         self._projector.commit_execution_feedback(projected)
@@ -410,9 +484,17 @@ class ProjectTwoFeedbackRevisionLoop:
             feedback_record_id=projected.feedback_record_id,
         )
         repropagated = self._message_passing.infer(history, [evidence])
-        revised_history = self._engine.revise_actor_responsibility(
-            history, evidence, retraction_threshold=self._retraction_threshold
-        )
+        if (
+            any(item.posterior_probability == 0.0 for item in current.hypotheses)
+            and max(evidence.actor_posterior.values()) >= self._reactivation_threshold
+        ):
+            revised_history = self._engine.reactivate_with_evidence(
+                history, evidence, retraction_threshold=self._retraction_threshold
+            )
+        else:
+            revised_history = self._engine.revise_actor_responsibility(
+                history, evidence, retraction_threshold=self._retraction_threshold
+            )
         corrected = revised_history.latest
         self._assert_consistent(repropagated, corrected)
         sources = () if actor_evidence is None else (actor_evidence.source_record_id,)
@@ -622,6 +704,33 @@ class ProjectTwoFeedbackRevisionLoop:
         after = {
             item.hypothesis_id: item.posterior_probability for item in corrected.active_hypotheses
         }
+        if self._retraction_threshold > 0.0 and not after:
+            if corrected.unresolved_probability <= 0.0:
+                raise HypothesisPosteriorInconsistencyError(
+                    "ORRER removed all PCHMP support without unresolved mass"
+                )
+            return
+        if self._retraction_threshold > 0.0 and after:
+            # ORRER transfers thresholded branch mass into open-world unresolved
+            # mass. PCHMP supplies the pre-threshold joint posterior, so compare
+            # the conditional distribution on ORRER's surviving support.
+            pchmp_total = sum(
+                repropagated.posterior_by_hypothesis_id.get(key, 0.0) for key in after
+            )
+            orrer_total = sum(after.values())
+            if pchmp_total <= 0.0 or orrer_total <= 0.0:
+                raise HypothesisPosteriorInconsistencyError(
+                    "PCHMP and ORRER surviving support cannot be normalized"
+                )
+            for hypothesis_id, mass in after.items():
+                expected = (
+                    repropagated.posterior_by_hypothesis_id.get(hypothesis_id, 0.0) / pchmp_total
+                )
+                if not isclose(mass / orrer_total, expected, rel_tol=0.0, abs_tol=1e-9):
+                    raise HypothesisPosteriorInconsistencyError(
+                        "PCHMP conditional support disagrees with thresholded ORRER"
+                    )
+            return
         for hypothesis_id, mass in repropagated.posterior_by_hypothesis_id.items():
             if not isclose(mass, after.get(hypothesis_id, 0.0), rel_tol=0.0, abs_tol=1e-9):
                 raise HypothesisPosteriorInconsistencyError(
@@ -772,9 +881,17 @@ class ProjectTwoFeedbackRevisionLoop:
         repropagated: MessagePassingResult,
         source_records: tuple[UUID, ...],
         corrected_destination: UUID | None,
+        observed_destination: UUID | None,
+        confirmed_location_evidence_id: UUID | None,
     ) -> EventRevisionOutcome:
+        known_actor_before = _known_mechanism_actor_mass(superseded)
+        known_actor_after = _known_mechanism_actor_mass(corrected)
+        unknown_actor_mass_before = _unknown_mechanism_actor_mass(superseded)
+        unknown_actor_mass_after = _unknown_mechanism_actor_mass(corrected)
         actor_before = _actor_posterior(superseded)
         actor_after = _actor_posterior(corrected)
+        mechanism_before, role_before, location_before = _axis_marginals(superseded)
+        mechanism_after, role_after, location_after = _axis_marginals(corrected)
         owner_before = actor_before.get(owner_key, 0.0)
         owner_after = actor_after.get(owner_key, 0.0)
         delta = owner_after - owner_before
@@ -817,18 +934,20 @@ class ProjectTwoFeedbackRevisionLoop:
             hypothesis_posterior_after=_hypothesis_posterior(corrected),
             actor_posterior_before=actor_before,
             actor_posterior_after=actor_after,
+            known_mechanism_actor_mass_before=known_actor_before,
+            known_mechanism_actor_mass_after=known_actor_after,
+            mechanism_posterior_before=mechanism_before,
+            mechanism_posterior_after=mechanism_after,
+            role_posterior_before=role_before,
+            role_posterior_after=role_after,
+            location_posterior_before=location_before,
+            location_posterior_after=location_after,
             unresolved_before=superseded.unresolved_probability,
             unresolved_after=corrected.unresolved_probability,
             unknown_mechanism_before=superseded.unknown_mechanism_probability,
             unknown_mechanism_after=corrected.unknown_mechanism_probability,
-            unknown_mechanism_actor_mass_before={
-                actor: superseded.unknown_mechanism_probability * probability
-                for actor, probability in superseded.unknown_mechanism_actor_posterior.items()
-            },
-            unknown_mechanism_actor_mass_after={
-                actor: corrected.unknown_mechanism_probability * probability
-                for actor, probability in corrected.unknown_mechanism_actor_posterior.items()
-            },
+            unknown_mechanism_actor_mass_before=unknown_actor_mass_before,
+            unknown_mechanism_actor_mass_after=unknown_actor_mass_after,
             owner_mass_before=owner_before,
             owner_mass_after=owner_after,
             source_feedback_record_id=feedback.metadata.record_id,
@@ -839,6 +958,8 @@ class ProjectTwoFeedbackRevisionLoop:
             reason="execution feedback folded as reversible actor-responsibility evidence",
             evidence_source_record_ids=(feedback.metadata.record_id, *source_records),
             corrected_destination_location_id=corrected_destination,
+            observed_destination_location_id=observed_destination,
+            confirmed_location_evidence_id=confirmed_location_evidence_id,
         )
 
 
@@ -857,6 +978,14 @@ def _copy_outcome(outcome: EventRevisionOutcome, *, is_replay: bool) -> EventRev
         hypothesis_posterior_after=dict(outcome.hypothesis_posterior_after),
         actor_posterior_before=dict(outcome.actor_posterior_before),
         actor_posterior_after=dict(outcome.actor_posterior_after),
+        known_mechanism_actor_mass_before=dict(outcome.known_mechanism_actor_mass_before),
+        known_mechanism_actor_mass_after=dict(outcome.known_mechanism_actor_mass_after),
+        mechanism_posterior_before=dict(outcome.mechanism_posterior_before),
+        mechanism_posterior_after=dict(outcome.mechanism_posterior_after),
+        role_posterior_before=dict(outcome.role_posterior_before),
+        role_posterior_after=dict(outcome.role_posterior_after),
+        location_posterior_before=dict(outcome.location_posterior_before),
+        location_posterior_after=dict(outcome.location_posterior_after),
         unresolved_before=outcome.unresolved_before,
         unresolved_after=outcome.unresolved_after,
         unknown_mechanism_before=outcome.unknown_mechanism_before,
@@ -873,6 +1002,8 @@ def _copy_outcome(outcome: EventRevisionOutcome, *, is_replay: bool) -> EventRev
         reason=outcome.reason,
         evidence_source_record_ids=outcome.evidence_source_record_ids,
         corrected_destination_location_id=outcome.corrected_destination_location_id,
+        observed_destination_location_id=outcome.observed_destination_location_id,
+        confirmed_location_evidence_id=outcome.confirmed_location_evidence_id,
     )
 
 
@@ -886,6 +1017,8 @@ def _loop_input_fingerprint(
     actor_evidence: ActorDiscriminationEvidence | None,
     transition_model: TransitionRevisionModel | None,
     next_move_time: datetime | None,
+    observed_destination_location_id: UUID | None,
+    post_action_observation_record_id: UUID | None,
 ) -> str:
     """Fingerprint the loop-level inputs the projector does not already cover.
 
@@ -907,6 +1040,16 @@ def _loop_input_fingerprint(
     payload = {
         "owner_key": owner_key,
         "next_move_time": None if next_move_time is None else next_move_time.isoformat(),
+        "observed_destination_location_id": (
+            None
+            if observed_destination_location_id is None
+            else str(observed_destination_location_id)
+        ),
+        "post_action_observation_record_id": (
+            None
+            if post_action_observation_record_id is None
+            else str(post_action_observation_record_id)
+        ),
         "actor_evidence": _actor(actor_evidence),
         "transition_model": None
         if transition_model is None
@@ -954,8 +1097,12 @@ def apply_project_one_request(request: ProjectOneStatRequest, loop) -> bool:
 
     apply_all = getattr(loop, "apply_project_one_stat_request", None)
     if apply_all is not None:
-        apply_all(request)
-        return True
+        receipt = apply_all(request)
+        # Backward-compatible bool adapter. Callers that need the explicit state
+        # machine consume ``apply_project_one_stat_request`` and its receipt.
+        from cpswm.contracts import ProjectOneRequestApplicationStatus
+
+        return receipt.status is ProjectOneRequestApplicationStatus.APPLIED
 
     if request.kind is ProjectOneRequestKind.RETRACT:
         loop.retract_revision(request.superseded_revision_id)

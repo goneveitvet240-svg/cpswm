@@ -23,6 +23,7 @@ from pathlib import Path
 from cpswm.system.evaluation_operations.project_one_methods import build_first_batch
 from cpswm.system.evaluation_operations.project_one_metrics import paired_step_differences
 from cpswm.system.evaluation_operations.project_one_protocol import (
+    DEFAULT_RESIDUAL_CALIBRATION_NAME,
     ProjectOneProtocolConfig,
     ResidualCalibration,
 )
@@ -91,10 +92,11 @@ def main() -> int:
     parser.add_argument(
         "--calibration",
         choices=[item.value for item in ResidualCalibration],
-        default=ResidualCalibration.AS_IS.value,
+        default=DEFAULT_RESIDUAL_CALIBRATION_NAME,
         help=(
-            "as_is reproduces the shipped RLS wiring; logit inverts the head's "
-            "sigmoid inside the harness to measure what that wiring costs"
+            "as_is reproduces the shipped RLS wiring; the other routes recover "
+            "the head's own score inside the harness. The default is shared "
+            "with the tuner so the two entry points stay comparable."
         ),
     )
     parser.add_argument("--scenarios", nargs="*", default=list(SCENARIO_NAMES))

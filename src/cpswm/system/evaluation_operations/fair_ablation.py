@@ -92,6 +92,10 @@ class ProjectOneAblationArmId(StrEnum):
     CAUSE_FACTORIZED_BOCPD = "cause-factorized-bocpd"
     # New real joint CF-BOCPD (JointCauseFactorizedBOCPD); added for v0.2 only.
     JOINT_CAUSE_FACTORIZED_BOCPD = "joint-cause-factorized-bocpd"
+    # BOCPDMS (Knoblauch & Damoulas 2018) matched adaptation; added for the
+    # four-arm scope only.  It is the direct disconfirming control for the claim
+    # that joint run-length/cause inference is CF-BOCPD's contribution.
+    BOCPDMS_MODEL_SELECTION = "bocpdms-model-selection"
     CHEH_INTERNAL_CONSISTENCY = "cheh-internal-consistency"
     CHEH_SOURCE_ALIGNED = "cheh-source-aligned"
     THRESHOLD_VERIFICATION = "retuned-threshold-verification"

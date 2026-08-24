@@ -13,18 +13,30 @@ Three rules, all of them the point of the exercise:
   *scenario*, not by event, because scenarios are the entities here — splitting
   events would leak a regime's own history into its test half.
 
-The selection rule is stated in the output rather than hidden in a weighted
-score: ``maximize (confirmation rate - false switch rate)``, ties broken by
-lower mean detection delay.  The full frontier over
-``(false switch rate, confirmation rate)`` is saved alongside, so a different
-utility weighting can be applied afterwards without re-running the search.
+The selection rule is stated in the output and settable on the command line
+rather than hidden in a weighted score.  It has four terms, because a rule with
+only change-confirmation in it silently declares that the short-disturbance
+capability does not matter:
+
+.. code-block:: text
+
+    utility =  w_confirm  * habit-change confirmation rate
+             + w_anomaly  * anomaly detection rate
+             - w_switch   * false switch rate
+             - w_alarm    * false candidate rate
+
+The full **three-dimensional** frontier over
+``(false switch rate down, confirmation up, anomaly detection up)`` is saved
+alongside, so a different weighting can be applied afterwards without re-running
+the search.  v0.2 selected on confirmation alone and reported a two-dimensional
+frontier, which is why every arm's disturbance behaviour was invisible to it.
 """
 
 from __future__ import annotations
 
 import argparse
 import json
-from collections.abc import Callable, Sequence
+from collections.abc import Callable, Mapping, Sequence
 from dataclasses import replace
 from pathlib import Path
 
@@ -36,6 +48,7 @@ from cpswm.system.evaluation_operations.project_one_methods import (
     ProjectOneMethod,
 )
 from cpswm.system.evaluation_operations.project_one_protocol import (
+    DEFAULT_RESIDUAL_CALIBRATION_NAME,
     CategoricalBOCPDConfig,
     ContextFrequencyConfig,
     PersistenceConfig,
@@ -175,20 +188,43 @@ def _score(builder: Builder, scenarios: Sequence[str]) -> dict[str, float]:
     }
 
 
+#: (metric name, +1 if larger is better) for the frontier's axes.
+_FRONTIER_AXES = (
+    ("false_switch_rate", -1.0),
+    ("confirmation_rate", +1.0),
+    ("anomaly_detection_rate", +1.0),
+)
+
+
+def _objective(metrics: Mapping[str, float], weights: Mapping[str, float]) -> float:
+    """The stated utility.  Every term is visible; none is hidden in a default."""
+
+    return (
+        weights["confirm"] * float(metrics["confirmation_rate"])
+        + weights["anomaly"] * float(metrics["anomaly_detection_rate"])
+        - weights["switch"] * float(metrics["false_switch_rate"])
+        - weights["alarm"] * float(metrics["false_candidate_rate"])
+    )
+
+
 def _pareto(trials: list[dict[str, object]]) -> list[dict[str, object]]:
-    """Non-dominated points over (false switch rate down, confirmation up)."""
+    """Non-dominated points over the three frontier axes.
+
+    Three axes, not two: a point that confirms fewer real changes but catches
+    the transient disturbances is not dominated, and dropping that axis is how
+    an entire capability disappears from the search.
+    """
+
+    def coordinates(trial: dict[str, object]) -> tuple[float, ...]:
+        metrics = trial["validation"]  # type: ignore[index]
+        return tuple(sign * float(metrics[name]) for name, sign in _FRONTIER_AXES)  # type: ignore[index]
 
     frontier: list[dict[str, object]] = []
     for candidate in trials:
-        c_switch = float(candidate["validation"]["false_switch_rate"])  # type: ignore[index]
-        c_confirm = float(candidate["validation"]["confirmation_rate"])  # type: ignore[index]
+        here = coordinates(candidate)
         dominated = any(
-            float(other["validation"]["false_switch_rate"]) <= c_switch  # type: ignore[index]
-            and float(other["validation"]["confirmation_rate"]) >= c_confirm  # type: ignore[index]
-            and (
-                float(other["validation"]["false_switch_rate"]) < c_switch  # type: ignore[index]
-                or float(other["validation"]["confirmation_rate"]) > c_confirm  # type: ignore[index]
-            )
+            all(theirs >= mine for theirs, mine in zip(coordinates(other), here, strict=True))
+            and any(theirs > mine for theirs, mine in zip(coordinates(other), here, strict=True))
             for other in trials
         )
         if not dominated:
@@ -199,16 +235,31 @@ def _pareto(trials: list[dict[str, object]]) -> list[dict[str, object]]:
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--output", type=Path, default=Path("artifacts/project_one/tuning"))
+    parser.add_argument("--w-confirm", type=float, default=1.0, help="weight on confirmation rate")
+    parser.add_argument(
+        "--w-anomaly",
+        type=float,
+        default=1.0,
+        help="weight on anomaly detection rate (the disturbance capability)",
+    )
+    parser.add_argument("--w-switch", type=float, default=1.0, help="penalty on false switches")
+    parser.add_argument("--w-alarm", type=float, default=1.0, help="penalty on false candidates")
     parser.add_argument("--budget", type=int, default=12, help="grid points per arm")
     parser.add_argument(
         "--calibration",
         choices=[item.value for item in ResidualCalibration],
-        default=ResidualCalibration.RAW_CLIP.value,
+        default=DEFAULT_RESIDUAL_CALIBRATION_NAME,
     )
     arguments = parser.parse_args()
 
     calibration = ResidualCalibration(arguments.calibration)
     budget: int = arguments.budget
+    weights = {
+        "confirm": float(arguments.w_confirm),
+        "anomaly": float(arguments.w_anomaly),
+        "switch": float(arguments.w_switch),
+        "alarm": float(arguments.w_alarm),
+    }
 
     grids: dict[str, list[tuple[dict[str, object], Builder]]] = {
         "full": _chain_grid("full", SignalAblation.FULL, calibration, budget),
@@ -228,8 +279,12 @@ def main() -> int:
         "validation_scenarios": list(VALIDATION),
         "test_scenarios": list(TEST),
         "selection_rule": (
-            "maximize (confirmation_rate - false_switch_rate); tie-break on lower delay"
+            "maximize w_confirm*confirmation + w_anomaly*anomaly_detection "
+            "- w_switch*false_switch - w_alarm*false_candidate; "
+            "tie-break on lower mean detection delay"
         ),
+        "selection_weights": weights,
+        "frontier_axes": [name for name, _ in _FRONTIER_AXES],
         "arms": {},
     }
 
@@ -245,7 +300,7 @@ def main() -> int:
             metrics = trial["validation"]  # type: ignore[index]
             delay = float(metrics["mean_detection_delay"])  # type: ignore[index]
             return (
-                -(float(metrics["confirmation_rate"]) - float(metrics["false_switch_rate"])),  # type: ignore[index]
+                -_objective(metrics, weights),  # type: ignore[arg-type]
                 delay if delay == delay else 1e9,
             )
 
@@ -254,16 +309,19 @@ def main() -> int:
         test_metrics = _score(selected_builder, TEST)
         report["arms"][arm] = {  # type: ignore[index]
             "selected_params": selected["params"],
+            "selected_utility": _objective(selected["validation"], weights),  # type: ignore[arg-type]
             "validation": selected["validation"],
             "test": test_metrics,
+            "test_utility": _objective(test_metrics, weights) if test_metrics else None,
             "trials": trials,
             "pareto_frontier": [dict(point) for point in _pareto(trials)],
         }
         print(
-            f"{arm:<20} selected={selected['params']} "
-            f"val_conf={selected['validation']['confirmation_rate']:.3f} "  # type: ignore[index]
+            f"{arm:<20} util={_objective(selected['validation'], weights):+.3f}  "  # type: ignore[arg-type]
             f"test_conf={test_metrics.get('confirmation_rate', float('nan')):.3f} "
-            f"test_fsw={test_metrics.get('false_switch_rate', float('nan')):.3f}"
+            f"test_det={test_metrics.get('anomaly_detection_rate', float('nan')):.3f} "
+            f"test_fsw={test_metrics.get('false_switch_rate', float('nan')):.3f} "
+            f"pareto={len(report['arms'][arm]['pareto_frontier'])}"  # type: ignore[index]
         )
 
     output: Path = arguments.output

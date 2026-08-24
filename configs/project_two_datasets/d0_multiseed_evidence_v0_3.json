@@ -1,0 +1,24 @@
+{
+  "schema_version": "0.3.0",
+  "dataset_version": "project-two-d0-multiseed-evidence@0.3",
+  "adapter": "D0SyntheticOracleReplayAdapter",
+  "evidence_stage": "development_multiseed",
+  "confirmatory": false,
+  "validation_seed_start": 1001,
+  "validation_seed_count": 20,
+  "test_seed_start": 2001,
+  "test_seed_count": 60,
+  "steps_per_episode": 32,
+  "object_family_bucket_count": 10,
+  "development_uuid_seal_secret": "project-two-d0-multiseed-development-v0.3",
+  "split_keys": ["household_id", "scene_id", "object_instance_id", "object_family"],
+  "truth_store": "separate_evaluator_envelope",
+  "external_dataset_selected": false,
+  "retained_capabilities": [
+    "hidden_event_inference",
+    "multi_actor_reasoning",
+    "open_world_unknowns",
+    "reversible_attribution",
+    "embodied_execution_feedback"
+  ]
+}

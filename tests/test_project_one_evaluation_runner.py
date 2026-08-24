@@ -221,6 +221,9 @@ def test_a_failing_arm_is_recorded_with_the_offending_event() -> None:
         def reset(self) -> None:
             self._seen = 0
 
+        def prime(self, records: object) -> None:
+            return None
+
         def observe(self, event: ProjectOneDatasetRecord) -> StepPrediction:
             self._seen += 1
             if self._seen == 3:

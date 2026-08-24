@@ -488,3 +488,151 @@ class OnlineOrdinaryBOCPDBaseline:
             cause_probabilities=cause_probabilities,
             model_version=self.model_version,
         )
+
+
+class OnlineBOCPDMSBaseline:
+    """Matched adaptation of BOCPDMS (Knoblauch & Damoulas, ICML 2018).
+
+    **Why this arm exists.**  CF-BOCPD's claimed novelty is that the *cause* of a
+    change is a latent variable inferred jointly with the run length, rather than
+    a label attached after detection.  BOCPDMS already infers a joint posterior
+    over ``(run length, model identity)`` and performs Bayesian model selection
+    inside that recursion.  If a model universe whose members *are* the cause
+    channels reproduces CF-BOCPD's cause attribution on the same evidence, then
+    "joint run-length/cause inference" is not the contribution and the ledger
+    must say so.  This is the disconfirming control, so it is built to win.
+
+    **Fidelity.**  A faithful *adaptation* to the shared online evidence frames,
+    not a port of the authors' code.  Retained from BOCPDMS:
+
+    * one joint recursion over ``(r_t, m_t)``, never detection-then-classification;
+    * model-specific predictive likelihoods -- each model scores the stream
+      through its own channel;
+    * model identity carried through growth, and re-drawn only at change points,
+      governed by an explicit switch weight;
+    * the model posterior read out as the model-selection answer.
+
+    Not retained, and therefore not claimed: the authors' spatio-temporal
+    autoregressive model universe, their pruning scheme, and their
+    hyperparameter optimisation, none of which have an analogue here.
+
+    **Threshold scale.**  This arm's detection statistic is a genuine
+    ``p(r_t = 0)`` posterior mass, which is bounded near the hazard rate.  The
+    ordinary-BOCPD control reaches much larger values only because it scores
+    growth with the *minimum* continuation likelihood across channels.  Tuning
+    this arm over the other arms' absolute threshold grid would mean it could
+    never fire -- and a baseline that never fires is not evidence.  The threshold
+    is therefore expressed as a **fraction of the hazard rate**, so every point in
+    the grid is reachable at every hazard in the grid.  An absolute grid also let
+    the tuner select a configuration that answered the cause question while
+    abstaining from detection entirely, which scored well on cause F1 and then
+    reported a vacuous zero timing error.
+    """
+
+    model_version = "bocpdms-matched@0.3"
+
+    def __init__(
+        self,
+        *,
+        warmup_days: int = 2,
+        hazard_probability: float = 0.05,
+        detection_threshold_hazard_fraction: float = 0.2,
+        maximum_run_length: int = 256,
+        model_switch_weight: float = 0.0,
+    ) -> None:
+        if warmup_days < 1:
+            raise ValueError("warmup_days must be positive")
+        if not 0.0 < hazard_probability < 1.0:
+            raise ValueError("BOCPDMS hazard must lie in (0, 1)")
+        if not 0.0 < detection_threshold_hazard_fraction <= 1.0:
+            raise ValueError("detection_threshold_hazard_fraction must lie in (0, 1]")
+        if maximum_run_length < 1:
+            raise ValueError("maximum_run_length must be positive")
+        if not 0.0 <= model_switch_weight < 1.0:
+            raise ValueError("model_switch_weight must lie in [0, 1)")
+        self._warmup_days = warmup_days
+        self._hazard_probability = hazard_probability
+        self._detection_threshold_hazard_fraction = detection_threshold_hazard_fraction
+        self._detection_threshold = detection_threshold_hazard_fraction * hazard_probability
+        self._maximum_run_length = maximum_run_length
+        self._model_switch_weight = model_switch_weight
+
+    @property
+    def _models(self) -> tuple[ChangeCause, ...]:
+        """The model universe: one model per cause channel."""
+
+        return tuple(ChangeCause)
+
+    def predict(self, model_input: OnlineShiftCaseInput) -> OnlineShiftPrediction:
+        frames = OnlineCauseFactorizedBOCPDBaseline(
+            warmup_days=self._warmup_days,
+            hazard_probability=self._hazard_probability,
+            detection_threshold=self._detection_threshold,
+        ).evidence_frames(model_input)
+
+        models = self._models
+        hazard = self._hazard_probability
+        switch = self._model_switch_weight
+        prior = {model: 1.0 / len(models) for model in models}
+        joint: dict[tuple[int, ChangeCause], float] = {
+            (0, model): probability for model, probability in prior.items()
+        }
+        snapshots: list[tuple[CauseEvidenceFrame, float, dict[ChangeCause, float]]] = []
+        for frame in frames:
+            grown: dict[tuple[int, ChangeCause], float] = {}
+            released = dict.fromkeys(models, 0.0)
+            for (run_length, model), probability in joint.items():
+                next_length = min(run_length + 1, self._maximum_run_length)
+                key = (next_length, model)
+                grown[key] = grown.get(key, 0.0) + (
+                    probability * (1.0 - hazard) * frame.continuation_likelihoods[model]
+                )
+                # The mass a model releases is scored by *its own* changepoint
+                # likelihood.  Carrying that identity onto the r=0 branch is what
+                # makes the model index a cause label rather than a bookkeeping
+                # index; ``model_switch_weight`` leaks part of it back to the
+                # prior, which is BOCPDMS's own model-switching freedom.
+                released[model] += probability * hazard * frame.changepoint_likelihoods[model]
+            total_released = sum(released.values())
+            next_joint = dict(grown)
+            for model in models:
+                next_joint[(0, model)] = next_joint.get((0, model), 0.0) + (
+                    (1.0 - switch) * released[model] + switch * total_released * prior[model]
+                )
+            total = sum(next_joint.values())
+            if total <= 0.0:
+                raise ValueError("BOCPDMS update produced zero posterior mass")
+            joint = {key: value / total for key, value in next_joint.items()}
+            change_probability = sum(
+                probability
+                for (run_length, _model), probability in joint.items()
+                if run_length == 0
+            )
+            if change_probability > 0.0:
+                model_posterior = {
+                    model: joint.get((0, model), 0.0) / change_probability for model in models
+                }
+            else:
+                model_posterior = dict(prior)
+            snapshots.append((frame, change_probability, model_posterior))
+
+        eligible = snapshots[self._warmup_days :]
+        if not eligible:
+            raise ValueError("online stream is too short for the configured warmup")
+        detected = next(
+            (item for item in eligible if item[1] >= self._detection_threshold),
+            None,
+        )
+        # Read the model-selection answer where a BOCPDMS user would read it: at
+        # the declared change point when one was declared, otherwise at the
+        # posterior peak.
+        _frame, _probability, posterior = detected or max(eligible, key=lambda item: item[1])
+        return OnlineShiftPrediction(
+            case_id=model_input.case_id,
+            predicted_change_time=detected[0].timestamp if detected else None,
+            cause_probabilities={
+                OnlineCauseFactorizedBOCPDBaseline._CAUSE_MAP[model]: min(1.0, max(0.0, share))
+                for model, share in posterior.items()
+            },
+            model_version=self.model_version,
+        )

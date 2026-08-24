@@ -1,0 +1,44 @@
+# 项目一 LLM 基线臂：真实 provider 模板
+#
+# 复制这份文件、填好 endpoint 与 model，然后：
+#
+#   export CPSWM_PROJECT_ONE_LLM_API_KEY=你的密钥
+#   PYTHONPATH=src .venv/bin/python \
+#     apps/evaluation_runner/run_project_one_llm_pilot.py \
+#     --input /absolute/path/to/events.jsonl --adapter jsonl \
+#     --llm-config configs/project_one/llm_openai_compatible.yaml \
+#     --allow-network \
+#     --output artifacts/project_one/llm_pilot_real
+#
+# 三件事必须先想清楚，`--allow-network` 就是为了逼你想：
+#
+# 1. **这会把家庭位置历史发给第三方。** prompt 里含住民的物体摆放序列。
+#    谁的数据、发给谁、对方留存多久、能否用于训练——这些是你的决定，不是默认值。
+# 2. **会产生费用。** 每个事件一次调用；一条 600 事件的日志约 600 次调用
+#    （缓存命中会少一些）。先用小日志估一次单价再放开跑。
+# 3. **结果不可逐字节复现。** temperature=0 也只是趋近确定，供应商换模型版本
+#    结果就会变。所以 `model` 字段必须写**带版本的具体型号**，不要写会滚动的别名。
+
+provider: openai_compatible
+
+# --- provider 位置（不进 config_hash：这是部署细节，不是实验参数）-------------
+endpoint: USER_DECISION_REQUIRED        # 必须 https://，例如 .../v1/chat/completions
+api_key_env: CPSWM_PROJECT_ONE_LLM_API_KEY
+# 密钥只从环境变量读。**不要**把它写进这个文件——配置文件会进 git、进 manifest、
+# 进 bug 报告。代码里没有任何一条路径会从 yaml 里取密钥。
+
+# --- 实验参数（进 config_hash）------------------------------------------------
+model: USER_DECISION_REQUIRED           # 写带版本的具体型号，不要写滚动别名
+temperature: 0.0                        # 基线臂应当尽量可复现
+timeout_seconds: 30.0
+max_attempts: 3                         # 首次 + 2 次重试；超时与 schema 失败都计入
+cache: true                             # 相同 (model, temperature, 候选集, prompt) 只调一次
+history_window: 20
+
+# 模型返回自由文本 cause，协议只有四类。越过该阈值后除非 cause 明确读作短期扰动，
+# 否则判为 habit_change——保守方向，算在误报里而不是替它加分。
+change_threshold: 0.5
+
+# --- 计费（按你的供应商价目表填）----------------------------------------------
+prompt_cost_per_1k_usd: 0.0
+completion_cost_per_1k_usd: 0.0

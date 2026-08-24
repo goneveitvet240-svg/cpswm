@@ -329,6 +329,12 @@ class GatedHierarchicalDirichletConsolidator:
                     "attributed_cause": decision.attributed_cause.value
                     if decision.attributed_cause
                     else None,
+                    "attributed_causes": [
+                        cause.value
+                        for cause in sorted(
+                            decision.attributed_causes, key=lambda cause: cause.value
+                        )
+                    ],
                     "segment_cause_posterior": {
                         cause.value: repr(value)
                         for cause, value in sorted(

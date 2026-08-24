@@ -27,8 +27,6 @@ DEFAULT_OUTPUT = REPOSITORY_ROOT / "output/project_one_shift_action_death_test_v
 
 SNAPSHOT_PATHS = (
     "apps/evaluation_runner/run_project_one_shift_action_death_test.py",
-    "benchmarks/project_one_ablation/project_one_shift_action_death_test_v5.json",
-    "docs/reviews/项目一_SHIFT行动级死亡测试预注册_v5.md",
     "src/cpswm/system/evaluation_operations/online_shift_attribution.py",
     "src/cpswm/system/evaluation_operations/project_one_shift_action_death_test.py",
     "src/cpswm/system/evaluation_operations/project_one_shift_gates.py",
@@ -43,9 +41,24 @@ def _file_sha256(path: Path) -> str:
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
-def code_snapshot_sha256() -> str:
+def code_snapshot_sha256(config_path: Path = DEFAULT_CONFIG) -> str:
+    resolved_config = config_path.resolve(strict=True)
+    relative_config = str(resolved_config.relative_to(REPOSITORY_ROOT))
+    versioned_paths = [relative_config]
+    if resolved_config.stem.endswith("_v6"):
+        versioned_paths.extend(
+            (
+                "docs/experiments/project_one_shift_action_death_test_v6_preregistration.md",
+                "tests/test_project_one_action_policy_v6.py",
+            )
+        )
+    else:
+        versioned_paths.append("docs/reviews/项目一_SHIFT行动级死亡测试预注册_v5.md")
     return content_sha256(
-        {relative: _file_sha256(REPOSITORY_ROOT / relative) for relative in SNAPSHOT_PATHS}
+        {
+            relative: _file_sha256(REPOSITORY_ROOT / relative)
+            for relative in (*SNAPSHOT_PATHS, *versioned_paths)
+        }
     )
 
 
@@ -77,7 +90,7 @@ def main() -> int:
     )
     report = ProjectOneShiftActionDeathTestRunner().run(
         config,
-        code_snapshot_sha256=code_snapshot_sha256(),
+        code_snapshot_sha256=code_snapshot_sha256(args.config),
         git_commit_sha=git_commit_sha(),
     )
     write_report_atomic(

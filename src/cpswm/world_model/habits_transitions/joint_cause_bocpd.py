@@ -14,6 +14,12 @@ directly changes the transition kernel and which parameters may reset.
 
 Structure (reviews 2026-08-21):
 
+* **Event--regime separation.**  The filter reports both the instantaneous
+  event posterior and the durable cause set that created the active regime, so
+  downstream consolidation does not confuse "no new change today" with "the
+  cause of the current regime is unknown".
+* **Sparse multi-cause state.**  A segment event may reset a configurable sparse
+  cause set (two causes by default), using the union selective-reset operator.
 * **Measure 1 -- history-conditioned state.**  Each surviving hypothesis is a
   full segmentation carrying, per substantive block, Normal-Normal sufficient
   statistics ``(n, sum)`` since that block last reset (``Theta_{r,c}``); its
@@ -37,6 +43,7 @@ from __future__ import annotations
 from collections.abc import Mapping, Sequence
 from dataclasses import dataclass, replace
 from datetime import datetime
+from itertools import combinations
 from math import exp, isfinite, log, pi
 
 from .cause_factorized_bocpd import ChangeCause
@@ -78,6 +85,15 @@ class CauseResetMatrix:
 
     def resets(self, cause: ChangeCause, block: ChangeCause) -> bool:
         return block in self._matrix[cause]
+
+    def blocks_reset_by_causes(self, causes: frozenset[ChangeCause]) -> frozenset[ChangeCause]:
+        """Return the union reset operator for a simultaneous cause set."""
+
+        if not causes or ChangeCause.NOISE in causes:
+            raise ValueError("a substantive cause set must be non-empty and exclude noise")
+        if not causes <= set(SUBSTANTIVE_CAUSES):
+            raise ValueError("cause set contains an unknown substantive cause")
+        return frozenset().union(*(self._matrix[cause] for cause in causes))
 
 
 @dataclass(frozen=True, slots=True)
@@ -156,12 +172,22 @@ class JointCauseSnapshot:
     timestamp: datetime
     #: P(run_length, segment cause) as a coupled, jointly normalized posterior.
     joint_run_length_cause_posterior: Mapping[tuple[int, ChangeCause], float]
+    #: Exact P(run_length, active cause set), retaining simultaneous causes.
+    joint_run_length_cause_set_posterior: Mapping[tuple[int, frozenset[ChangeCause]], float]
     #: P(this step continued the current segment).
     continue_probability: float
     #: P(this step began a new substantive segment: observation/actor/habit).
     segment_change_probability: float
     #: P(segment cause | a segment change happened); over substantive causes.
+    #: These are inclusion marginals, so they may sum above one when a
+    #: simultaneous multi-cause event has posterior mass.
     segment_cause_posterior: Mapping[ChangeCause, float]
+    #: P(exact cause set | a substantive segment change happened this step).
+    segment_cause_set_posterior: Mapping[frozenset[ChangeCause], float]
+    #: P(exact cause set that created the currently active regime).
+    active_regime_cause_set_posterior: Mapping[frozenset[ChangeCause], float]
+    #: Inclusive marginal P(cause belongs to the active regime's cause set).
+    active_regime_cause_posterior: Mapping[ChangeCause, float]
     #: P(this step was a transient outlier explained by the noise state).
     transient_noise_probability: float
     #: Beam-weighted per-block posterior means (substantive channels only).
@@ -177,7 +203,13 @@ class JointCauseSnapshot:
         }
         mapped_probabilities = {
             "joint_run_length_cause_posterior": (self.joint_run_length_cause_posterior.values()),
+            "joint_run_length_cause_set_posterior": (
+                self.joint_run_length_cause_set_posterior.values()
+            ),
             "segment_cause_posterior": self.segment_cause_posterior.values(),
+            "segment_cause_set_posterior": self.segment_cause_set_posterior.values(),
+            "active_regime_cause_set_posterior": (self.active_regime_cause_set_posterior.values()),
+            "active_regime_cause_posterior": self.active_regime_cause_posterior.values(),
         }
         for name, probability in scalar_probabilities.items():
             if not isfinite(probability) or not 0.0 <= probability <= 1.0:
@@ -199,7 +231,7 @@ class JointCauseSnapshot:
 @dataclass(frozen=True, slots=True)
 class _Hypothesis:
     run_length: int
-    last_cause: ChangeCause
+    active_causes: frozenset[ChangeCause]
     blocks: tuple[tuple[ChangeCause, _Block], ...]
     log_weight: float
 
@@ -227,8 +259,8 @@ def _cause_score(snapshot: JointCauseSnapshot, cause: ChangeCause) -> float:
 
 
 def _renormalize_pairs(
-    items: list[tuple[ChangeCause | None, _Hypothesis]],
-) -> list[tuple[ChangeCause | None, _Hypothesis]]:
+    items: list[tuple[frozenset[ChangeCause] | ChangeCause | None, _Hypothesis]],
+) -> list[tuple[frozenset[ChangeCause] | ChangeCause | None, _Hypothesis]]:
     """Return the same (event, hypothesis) pairs with log weights summing to 1."""
 
     peak = max(hypothesis.log_weight for _event, hypothesis in items)
@@ -255,8 +287,10 @@ class JointCauseFactorizedBOCPD:
         noise_indicator_variance: float = 0.02,
         beam_width: int = 24,
         maximum_run_length: int = 256,
+        maximum_simultaneous_causes: int = 2,
+        simultaneous_hazard_scale: float = 0.25,
         reset_matrix: CauseResetMatrix | None = None,
-        model_version: str = "joint-cause-factorized-bocpd@0.3",
+        model_version: str = "joint-cause-factorized-bocpd@0.4",
     ) -> None:
         if isinstance(hazard_probability, Mapping):
             if set(hazard_probability) != set(ChangeCause):
@@ -280,7 +314,25 @@ class JointCauseFactorizedBOCPD:
             raise ValueError("beam_width must be positive")
         if maximum_run_length < 1:
             raise ValueError("maximum_run_length must be positive")
+        if not 1 <= maximum_simultaneous_causes <= len(SUBSTANTIVE_CAUSES):
+            raise ValueError("maximum_simultaneous_causes is outside the cause space")
+        if not 0.0 < simultaneous_hazard_scale <= 1.0:
+            raise ValueError("simultaneous_hazard_scale must lie in (0, 1]")
+        event_hazards: dict[frozenset[ChangeCause], float] = {
+            frozenset({cause}): hazards[cause] for cause in SUBSTANTIVE_CAUSES
+        }
+        for size in range(2, maximum_simultaneous_causes + 1):
+            for cause_tuple in combinations(SUBSTANTIVE_CAUSES, size):
+                # Sparse prior: a joint event is possible but less likely than
+                # each of its singleton explanations.
+                event_hazards[frozenset(cause_tuple)] = simultaneous_hazard_scale ** (
+                    size - 1
+                ) * min(hazards[cause] for cause in cause_tuple)
+        total_hazard = hazards[ChangeCause.NOISE] + sum(event_hazards.values())
+        if total_hazard >= 1.0:
+            raise ValueError("total singleton, simultaneous, and noise hazard must be below 1")
         self._hazards = hazards
+        self._event_hazards = event_hazards
         self._config = _NormalNormalConfig(
             prior_mean,
             prior_precision,
@@ -301,7 +353,7 @@ class JointCauseFactorizedBOCPD:
         return [
             _Hypothesis(
                 run_length=0,
-                last_cause=ChangeCause.NOISE,
+                active_causes=frozenset(),
                 blocks=tuple((cause, _FRESH_BLOCK) for cause in SUBSTANTIVE_CAUSES),
                 log_weight=0.0,
             )
@@ -374,7 +426,7 @@ class JointCauseFactorizedBOCPD:
         cfg = self._config
         signals = frame.signals
         noise_level = signals[ChangeCause.NOISE]
-        hazard_total = sum(self._hazards.values())
+        hazard_total = self._hazards[ChangeCause.NOISE] + sum(self._event_hazards.values())
         log_no_change = log(1.0 - hazard_total)
         # Non-noise events expect a low ambiguity indicator; the noise state
         # expects a high one.
@@ -385,7 +437,7 @@ class JointCauseFactorizedBOCPD:
             noise_level, cfg.noise_indicator_high, cfg.noise_indicator_variance
         )
 
-        children: list[tuple[ChangeCause | None, _Hypothesis]] = []
+        children: list[tuple[frozenset[ChangeCause] | ChangeCause | None, _Hypothesis]] = []
         for hypothesis in beam:
             # Continuation: no change; every substantive block absorbs today.
             cont_loglik = low_indicator
@@ -399,15 +451,16 @@ class JointCauseFactorizedBOCPD:
                     None,
                     _Hypothesis(
                         run_length=min(hypothesis.run_length + 1, self._maximum_run_length),
-                        last_cause=hypothesis.last_cause,
+                        active_causes=hypothesis.active_causes,
                         blocks=tuple(grown_blocks),
                         log_weight=hypothesis.log_weight + log_no_change + cont_loglik,
                     ),
                 )
             )
-            # Segment change of a substantive cause: R_C(k) blocks restart.
-            for changed in SUBSTANTIVE_CAUSES:
-                reset_blocks = self._reset_matrix.blocks_reset_by(changed)
+            # Segment change of one or more causes: the union R_C resets only
+            # the blocks owned by the selected sparse cause set.
+            for changed_set, event_hazard in self._event_hazards.items():
+                reset_blocks = self._reset_matrix.blocks_reset_by_causes(changed_set)
                 change_loglik = low_indicator
                 new_blocks = []
                 for cause in SUBSTANTIVE_CAUSES:
@@ -416,14 +469,12 @@ class JointCauseFactorizedBOCPD:
                     new_blocks.append((cause, base.absorb(signals[cause])))
                 children.append(
                     (
-                        changed,
+                        changed_set,
                         _Hypothesis(
                             run_length=0,
-                            last_cause=changed,
+                            active_causes=changed_set,
                             blocks=tuple(new_blocks),
-                            log_weight=hypothesis.log_weight
-                            + log(self._hazards[changed])
-                            + change_loglik,
+                            log_weight=hypothesis.log_weight + log(event_hazard) + change_loglik,
                         ),
                     )
                 )
@@ -438,7 +489,7 @@ class JointCauseFactorizedBOCPD:
                     ChangeCause.NOISE,
                     _Hypothesis(
                         run_length=min(hypothesis.run_length + 1, self._maximum_run_length),
-                        last_cause=hypothesis.last_cause,
+                        active_causes=hypothesis.active_causes,
                         blocks=hypothesis.blocks,
                         log_weight=hypothesis.log_weight
                         + log(self._hazards[ChangeCause.NOISE])
@@ -458,20 +509,33 @@ class JointCauseFactorizedBOCPD:
 
     def _snapshot(
         self,
-        survivors: list[tuple[ChangeCause | None, _Hypothesis]],
+        survivors: list[tuple[frozenset[ChangeCause] | ChangeCause | None, _Hypothesis]],
         timestamp: datetime,
     ) -> JointCauseSnapshot:
         cfg = self._config
         joint: dict[tuple[int, ChangeCause], float] = {}
+        joint_sets: dict[tuple[int, frozenset[ChangeCause]], float] = {}
         block_reference: dict[ChangeCause, float] = dict.fromkeys(SUBSTANTIVE_CAUSES, 0.0)
         continue_mass = 0.0
         segment_mass: dict[ChangeCause, float] = dict.fromkeys(SUBSTANTIVE_CAUSES, 0.0)
+        segment_set_mass: dict[frozenset[ChangeCause], float] = {}
+        active_set_mass: dict[frozenset[ChangeCause], float] = {}
         noise_mass = 0.0
         normalizer = sum(exp(hypothesis.log_weight) for _event, hypothesis in survivors)
         for event, hypothesis in survivors:
             probability = exp(hypothesis.log_weight) / normalizer
-            key = (hypothesis.run_length, hypothesis.last_cause)
-            joint[key] = joint.get(key, 0.0) + probability
+            set_key = (hypothesis.run_length, hypothesis.active_causes)
+            joint_sets[set_key] = joint_sets.get(set_key, 0.0) + probability
+            active_set_mass[hypothesis.active_causes] = (
+                active_set_mass.get(hypothesis.active_causes, 0.0) + probability
+            )
+            # Backward-compatible single-cause projection. Multi-cause mass is
+            # split evenly only in this legacy view; the exact set posterior
+            # above retains the full semantics.
+            projected_causes = hypothesis.active_causes or frozenset({ChangeCause.NOISE})
+            for cause in projected_causes:
+                key = (hypothesis.run_length, cause)
+                joint[key] = joint.get(key, 0.0) + probability / len(projected_causes)
             for cause in SUBSTANTIVE_CAUSES:
                 block_reference[cause] += probability * hypothesis.block(cause).posterior_mean(cfg)
             # Fix 2: continuation, substantive segment change, and transient
@@ -481,14 +545,30 @@ class JointCauseFactorizedBOCPD:
             elif event == ChangeCause.NOISE:
                 noise_mass += probability
             else:
-                segment_mass[event] += probability
+                assert isinstance(event, frozenset)
+                segment_set_mass[event] = segment_set_mass.get(event, 0.0) + probability
+                for cause in event:
+                    segment_mass[cause] += probability
 
         joint_normalizer = sum(joint.values())
         joint = {
             key: min(1.0, max(0.0, probability / joint_normalizer))
             for key, probability in joint.items()
         }
-        event_normalizer = continue_mass + sum(segment_mass.values()) + noise_mass
+        set_normalizer = sum(joint_sets.values())
+        joint_sets = {
+            key: min(1.0, max(0.0, probability / set_normalizer))
+            for key, probability in joint_sets.items()
+        }
+        active_normalizer = sum(active_set_mass.values())
+        active_set_mass = {
+            causes: min(1.0, max(0.0, mass / active_normalizer))
+            for causes, mass in active_set_mass.items()
+        }
+        # Exact event sets partition the segment mass. Inclusive per-cause
+        # marginals intentionally do not: a two-cause event contributes to two
+        # marginals but remains one event.
+        event_normalizer = continue_mass + sum(segment_set_mass.values()) + noise_mass
         continue_mass = min(1.0, max(0.0, continue_mass / event_normalizer))
         noise_mass = min(1.0, max(0.0, noise_mass / event_normalizer))
         segment_mass = {
@@ -497,7 +577,7 @@ class JointCauseFactorizedBOCPD:
         }
         segment_change_probability = min(
             1.0,
-            max(0.0, sum(segment_mass.values())),
+            max(0.0, sum(segment_set_mass.values()) / event_normalizer),
         )
         segment_cause_posterior = (
             {
@@ -507,12 +587,34 @@ class JointCauseFactorizedBOCPD:
             if segment_change_probability > 0.0
             else {}
         )
+        segment_cause_set_posterior = (
+            {
+                causes: min(1.0, max(0.0, mass / event_normalizer / segment_change_probability))
+                for causes, mass in segment_set_mass.items()
+            }
+            if segment_change_probability > 0.0
+            else {}
+        )
+        active_regime_cause_posterior = {
+            cause: min(
+                1.0,
+                max(
+                    0.0,
+                    sum(mass for causes, mass in active_set_mass.items() if cause in causes),
+                ),
+            )
+            for cause in SUBSTANTIVE_CAUSES
+        }
         return JointCauseSnapshot(
             timestamp=timestamp,
             joint_run_length_cause_posterior=joint,
+            joint_run_length_cause_set_posterior=joint_sets,
             continue_probability=continue_mass,
             segment_change_probability=segment_change_probability,
             segment_cause_posterior=segment_cause_posterior,
+            segment_cause_set_posterior=segment_cause_set_posterior,
+            active_regime_cause_set_posterior=active_set_mass,
+            active_regime_cause_posterior=active_regime_cause_posterior,
             transient_noise_probability=noise_mass,
             block_reference=block_reference,
             beam_size=len(survivors),

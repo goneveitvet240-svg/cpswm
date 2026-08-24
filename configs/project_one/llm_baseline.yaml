@@ -1,0 +1,40 @@
+# 项目一 LLM 基线臂配置（阶段 9 第一版）
+#
+# 这一份只定义 `llm_direct` 这一个臂。其余七个臂的参数仍来自
+# configs/project_one/default.yaml，两边不得互相覆盖——LLM 臂调整了共享阈值，
+# 比较就不再是同预算对照。
+#
+# 重要边界：`provider: offline_stub` **不是**语言模型基线。
+# 它是一个本地确定性替身，用历史频率作答，目的只是在没有配置任何 provider 时
+# 把整条链路（prompt 构造 → schema 校验 → 缓存 → 计费 → 指标）跑通。
+# 任何基于 offline_stub 的数字都必须明确标注为接线检查，不能写成
+# "LLM 基线达到 X"。真实 provider 接入前，阶段 9 不算开始。
+
+provider: offline_stub          # 当前唯一已实现；接入真实 provider 见文末
+model: offline-stub-1
+
+# --- 调用行为 ---------------------------------------------------------------
+timeout_seconds: 20.0
+max_attempts: 3                 # 首次 + 2 次重试；schema 失败与超时都计入
+cache: true                     # 相同 prompt 只调用一次；关掉可测真实吞吐
+
+# --- prompt 形状（进入 config_hash，改了就不能与旧结果直接比较）-------------
+history_window: 20              # 只展示最近 N 次历史；更长的周期性习惯对它不可见
+temperature: 0.0                # 基线臂必须可复现
+
+# --- 决策映射 ---------------------------------------------------------------
+# 模型返回自由文本 cause，协议只有四类。change_probability 越过该阈值后，
+# 除非 cause 明确读作短期扰动，否则一律判为 habit_change——这是保守方向，
+# 会算在误报指标里而不是替它加分。
+change_threshold: 0.5
+
+# --- 计费（真实 provider 接入后按其价目表填写）-------------------------------
+prompt_cost_per_1k_usd: 0.0
+completion_cost_per_1k_usd: 0.0
+
+# --- 尚未支持 ---------------------------------------------------------------
+# 接入真实 provider 需要新增一个实现 LLMClient Protocol 的类
+# （`complete(*, prompt, timeout_seconds) -> LLMCompletion`），
+# 并在 apps/evaluation_runner/run_project_one_llm_pilot.py 的 PROVIDERS 里注册。
+# 该类负责鉴权、限流与网络重试；method 层只负责 schema 校验、缓存与计费，
+# 两者职责不得混在一起。

@@ -26,6 +26,7 @@ class HabitWriteDecision:
 
     change_detected: bool
     attributed_cause: ChangeCause | None
+    attributed_causes: frozenset[ChangeCause]
     writable_blocks: frozenset[ChangeCause]
     habit_block_writable: bool
     ambiguous: bool
@@ -57,6 +58,7 @@ class CauseGatedHabitConsolidation:
             return HabitWriteDecision(
                 change_detected=False,
                 attributed_cause=None,
+                attributed_causes=frozenset(),
                 writable_blocks=frozenset(),
                 habit_block_writable=False,
                 ambiguous=False,
@@ -64,10 +66,10 @@ class CauseGatedHabitConsolidation:
             )
 
         ranked = sorted(
-            snapshot.segment_cause_posterior.items(),
-            key=lambda item: (-item[1], item[0].value),
+            snapshot.segment_cause_set_posterior.items(),
+            key=lambda item: (-item[1], tuple(sorted(cause.value for cause in item[0]))),
         )
-        top_cause, top_mass = ranked[0]
+        top_causes, top_mass = ranked[0]
         runner_mass = ranked[1][1] if len(ranked) > 1 else 0.0
         if top_mass - runner_mass < self._attribution_margin:
             # Change is real but its cause is not separable: write nothing and
@@ -75,20 +77,24 @@ class CauseGatedHabitConsolidation:
             return HabitWriteDecision(
                 change_detected=True,
                 attributed_cause=None,
+                attributed_causes=frozenset(),
                 writable_blocks=frozenset(),
                 habit_block_writable=False,
                 ambiguous=True,
                 rationale="change detected but its cause is ambiguous; defer to verification",
             )
 
-        writable = self._reset_matrix.blocks_reset_by(top_cause)
+        writable = self._reset_matrix.blocks_reset_by_causes(top_causes)
+        attributed_cause = next(iter(top_causes)) if len(top_causes) == 1 else None
+        cause_label = "+".join(sorted(cause.value for cause in top_causes))
         return HabitWriteDecision(
             change_detected=True,
-            attributed_cause=top_cause,
+            attributed_cause=attributed_cause,
+            attributed_causes=top_causes,
             writable_blocks=writable,
             habit_block_writable=ChangeCause.HABIT in writable,
             ambiguous=False,
-            rationale=f"change attributed to {top_cause.value}; only its blocks may be rewritten",
+            rationale=f"change attributed to {cause_label}; only its blocks may be rewritten",
         )
 
     def habit_consolidation_weight(self, snapshot: JointCauseSnapshot) -> float:

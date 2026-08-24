@@ -384,8 +384,11 @@ def test_actor_discriminating_evidence_changes_owner_vs_guest_odds():
             source_record_id=uuid4(),
         ),
     )
-    before = outcome.actor_posterior_before
-    after = outcome.actor_posterior_after
+    # Actor-discriminating evidence changes relative odds inside the known-
+    # mechanism support. The full marginal additionally includes known-actor
+    # mass carried by the separately modelled unknown-mechanism bucket.
+    before = outcome.known_mechanism_actor_mass_before
+    after = outcome.known_mechanism_actor_mass_after
     odds_before = before[OWNER] / before[GUEST]
     odds_after = after[OWNER] / after[GUEST]
     assert odds_after < odds_before * 0.5  # the odds genuinely shifted toward guest
@@ -404,8 +407,8 @@ def test_presence_only_feedback_keeps_owner_guest_odds_fixed():
         likelihood_model=_likelihood(),
         owner_key=OWNER,
     )
-    before = outcome.actor_posterior_before
-    after = outcome.actor_posterior_after
+    before = outcome.known_mechanism_actor_mass_before
+    after = outcome.known_mechanism_actor_mass_after
     assert (after[OWNER] / after[GUEST]) == pytest.approx(before[OWNER] / before[GUEST], rel=1e-6)
 
 
@@ -954,6 +957,29 @@ def test_place_wrong_location_yields_a_corrected_destination():
         {RobotActionOutcome.SUCCESS: 0.9, RobotActionOutcome.OBJECT_SLIPPED: 0.1},
         location=L3,  # not the event destination L2
     )
+    _revised, outcome = loop.ingest_feedback(
+        history=history,
+        feedback=place,
+        binding=_binding(place),
+        likelihood_model=_place_likelihood(),
+        owner_key=OWNER,
+        transition_model=_transition_model(with_actor=True),
+        observed_destination_location_id=L3,
+        post_action_observation_record_id=uuid4(),
+    )
+    assert outcome.corrected_destination_location_id == L3
+    assert outcome.project_one_requests
+    assert outcome.project_one_requests[0].location_id == L3
+
+
+def test_place_probability_without_observed_landing_does_not_rewrite_destination():
+    history = _history()
+    loop = _loop()
+    place = _feedback(
+        RobotActionType.PLACE,
+        {RobotActionOutcome.SUCCESS: 0.9, RobotActionOutcome.OBJECT_SLIPPED: 0.1},
+        location=L3,
+    )
     revised, outcome = loop.ingest_feedback(
         history=history,
         feedback=place,
@@ -962,9 +988,33 @@ def test_place_wrong_location_yields_a_corrected_destination():
         owner_key=OWNER,
         transition_model=_transition_model(with_actor=True),
     )
+    assert outcome.corrected_destination_location_id is None
+    assert outcome.confirmed_location_evidence_id is None
+    assert revised.latest.destination_location_id == L2
+
+
+def test_place_failure_with_observed_landing_can_revise_location():
+    history = _history()
+    loop = _loop()
+    place = _feedback(
+        RobotActionType.PLACE,
+        {RobotActionOutcome.SUCCESS: 0.1, RobotActionOutcome.OBJECT_SLIPPED: 0.9},
+        location=L2,
+    )
+    observation_id = uuid4()
+    revised, outcome = loop.ingest_feedback(
+        history=history,
+        feedback=place,
+        binding=_binding(place),
+        likelihood_model=_place_likelihood(),
+        owner_key=OWNER,
+        transition_model=_transition_model(with_actor=True),
+        observed_destination_location_id=L3,
+        post_action_observation_record_id=observation_id,
+    )
+    assert revised.latest.destination_location_id == L3
     assert outcome.corrected_destination_location_id == L3
-    assert outcome.project_one_requests
-    assert outcome.project_one_requests[0].location_id == L3
+    assert outcome.confirmed_location_evidence_id == observation_id
     assert revised.latest.destination_location_id == L3
     assert revised.latest.update_kind.value == "revise_location"
     assert all(

@@ -6,6 +6,7 @@ import hashlib
 import json
 import time
 import urllib.request
+from collections.abc import Callable
 from dataclasses import dataclass
 from datetime import datetime
 from itertools import permutations
@@ -283,6 +284,21 @@ class DeterministicEvidenceProvider:
         )
 
 
+class LocalModelEvidenceProvider:
+    """Provider-neutral local-model seam using the same typed request/output."""
+
+    def __init__(self, inference: Callable[[LLMEvidenceRequest], LLMEvidenceOutput]) -> None:
+        self._inference = inference
+        self.invocation_count = 0
+
+    def invoke(self, request: LLMEvidenceRequest) -> LLMEvidenceOutput:
+        self.invocation_count += 1
+        output = self._inference(request)
+        if not isinstance(output, LLMEvidenceOutput):
+            raise TypeError("local inference must return LLMEvidenceOutput")
+        return output
+
+
 @dataclass(frozen=True, slots=True)
 class LLMStructuredEvidenceBundle:
     actor: ActorResponsibilityEvidence
@@ -314,6 +330,10 @@ class LLMEvidenceAdapter:
             output = self.provider.invoke(request)
             self._validate_output(request, output)
             self.cache.put(request.cache_key, output)
+        else:
+            # Cache contents cross the same trust boundary as provider output.
+            # This rejects disk/cache poisoning before typed evidence is built.
+            self._validate_output(request, output)
         return LLMEvidenceAdapterResult(output, self._to_typed(request, output), from_cache)
 
     @staticmethod

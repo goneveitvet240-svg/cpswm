@@ -18,12 +18,16 @@ from __future__ import annotations
 from collections.abc import Iterable, Iterator, Mapping, Sequence
 from dataclasses import asdict, dataclass, field
 from datetime import datetime
+from enum import StrEnum
 from math import isfinite
 
 from cpswm.system.reproducibility import content_sha256
 
 __all__ = [
+    "ANOMALY_CAUSES",
     "DATASET_CONTRACT_VERSION",
+    "REGIME_CAUSES",
+    "ChangeCause",
     "ProjectOneDatasetManifest",
     "ProjectOneDatasetRecord",
     "ProjectOneGroundTruth",
@@ -31,6 +35,48 @@ __all__ = [
     "ProjectOneTruthSet",
     "build_manifest",
 ]
+
+
+class ChangeCause(StrEnum):
+    """Why the evaluator says an event looks the way it does.
+
+    One vocabulary, shared by every truth producer.  Before this existed there
+    were three: the controlled scenarios said ``transient``, the semi-synthetic
+    injector said ``planted_one_shot_disturbance``, and the metric module
+    recognised only ``{"transient", "guest"}``.  The injector's disturbances
+    were therefore invisible to scoring, and ``anomaly_detection_rate`` on any
+    semi-synthetic stream was structurally zero -- not a low reading, an
+    arithmetic certainty.
+
+    :class:`ProjectOneGroundTruth` validates against this enum, so a future
+    producer cannot reintroduce a private spelling and have it silently score
+    as nothing.  A producer that needs finer provenance (which *kind* of
+    disturbance was planted) records that alongside, never in place of, the
+    cause.
+    """
+
+    #: A genuine new regime: the owner's habit moved and stayed moved.
+    OWNER_HABIT = "owner_habit"
+    #: A return to a regime seen earlier in the same stream.
+    REGIME_RECURRENCE = "regime_recurrence"
+    #: One-off or short-lived displacement; the habit did not move.
+    TRANSIENT = "transient"
+    #: Someone other than the subject moved it; the subject's habit is intact.
+    GUEST = "guest"
+    #: The context changed and the habit followed it.  Not a regime change.
+    CONTEXT_SWITCH = "context_switch"
+    #: Degraded or missing observation.  Absence of evidence, not evidence.
+    OBSERVATION_GAP = "observation_gap"
+
+
+#: Steps an arm *ought* to react to: the object is somewhere the habit would not
+#: have put it, and the cause is transient rather than a new regime.
+ANOMALY_CAUSES: frozenset[ChangeCause] = frozenset({ChangeCause.TRANSIENT, ChangeCause.GUEST})
+
+#: Causes that mark a real regime boundary.
+REGIME_CAUSES: frozenset[ChangeCause] = frozenset(
+    {ChangeCause.OWNER_HABIT, ChangeCause.REGIME_RECURRENCE}
+)
 
 DATASET_CONTRACT_VERSION = "project-one-dataset@0.1"
 
@@ -107,11 +153,22 @@ class ProjectOneGroundTruth:
     expected_location: str | None = None
     true_regime_id: str | None = None
     true_change_point: bool = False
-    true_change_cause: str | None = None
+    true_change_cause: ChangeCause | None = None
 
     def __post_init__(self) -> None:
         if not self.stream_id.strip() or not self.event_id.strip():
             raise ValueError("truth must bind a stream and an event")
+        if self.true_change_cause is not None:
+            # Validated rather than free text: a private spelling would score as
+            # nothing at all, silently, and the reading would look like a
+            # detector failure rather than a vocabulary mismatch.
+            try:
+                object.__setattr__(self, "true_change_cause", ChangeCause(self.true_change_cause))
+            except ValueError as error:
+                allowed = sorted(item.value for item in ChangeCause)
+                raise ValueError(
+                    f"unknown true_change_cause {self.true_change_cause!r}; allowed: {allowed}"
+                ) from error
 
 
 @dataclass(frozen=True, slots=True)
@@ -142,10 +199,17 @@ class ProjectOneTruthSet:
     runner never passes it one.
     """
 
-    __slots__ = ("_by_event", "_stream_id")
+    __slots__ = ("_by_event", "_carries_change_labels", "_stream_id")
 
-    def __init__(self, stream_id: str, truths: Iterable[ProjectOneGroundTruth]) -> None:
+    def __init__(
+        self,
+        stream_id: str,
+        truths: Iterable[ProjectOneGroundTruth],
+        *,
+        carries_change_labels: bool = False,
+    ) -> None:
         self._stream_id = stream_id
+        self._carries_change_labels = carries_change_labels
         by_event: dict[str, ProjectOneGroundTruth] = {}
         for truth in truths:
             if truth.stream_id != stream_id:
@@ -158,6 +222,20 @@ class ProjectOneTruthSet:
     @property
     def stream_id(self) -> str:
         return self._stream_id
+
+    @property
+    def carries_change_labels(self) -> bool:
+        """Whether this truth set annotates change points at all.
+
+        **Declared by the producer, never inferred from the contents.**  A
+        controlled ``stable_habit`` stream is fully annotated and contains zero
+        changes; a raw household log contains zero change *annotations*.  Those
+        look identical from the data -- every entry has ``true_change_point =
+        False`` -- and they mean opposite things.  Counting changes to decide
+        would report "no false switches" for a log where nothing was checked.
+        """
+
+        return self._carries_change_labels
 
     def get(self, event_id: str) -> ProjectOneGroundTruth | None:
         return self._by_event.get(event_id)

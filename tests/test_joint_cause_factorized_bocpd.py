@@ -52,6 +52,12 @@ def test_joint_posterior_is_one_coupled_normalized_distribution():
     for snapshot in result.snapshots:
         total = sum(snapshot.joint_run_length_cause_posterior.values())
         assert total == pytest.approx(1.0, abs=1e-9)
+        assert sum(snapshot.joint_run_length_cause_set_posterior.values()) == pytest.approx(
+            1.0, abs=1e-9
+        )
+        assert sum(snapshot.active_regime_cause_set_posterior.values()) == pytest.approx(
+            1.0, abs=1e-9
+        )
         # Fix 1/2: the three step events partition the mass, and every field is
         # accounted from the same pruned+renormalized beam.
         partition = (
@@ -88,10 +94,51 @@ def test_reset_matrix_resets_only_the_habit_block_on_a_habit_change():
     assert final[ChangeCause.ACTOR] == pytest.approx(0.2, abs=0.05)
 
 
+def test_simultaneous_observation_and_habit_change_is_an_explicit_joint_state():
+    frames = tuple(
+        CauseSignalFrame(
+            timestamp=BASE + timedelta(days=index),
+            signals={
+                ChangeCause.OBSERVATION: 0.2 if index < 3 else 0.9,
+                ChangeCause.ACTOR: 0.2,
+                ChangeCause.HABIT: 0.2 if index < 3 else 0.9,
+                ChangeCause.NOISE: 0.1,
+            },
+        )
+        for index in range(8)
+    )
+    result = JointCauseFactorizedBOCPD(beam_width=64).run(frames, warmup_steps=2)
+    joint_causes = frozenset({ChangeCause.OBSERVATION, ChangeCause.HABIT})
+    shift = result.snapshots[3]
+    assert shift.segment_cause_set_posterior[joint_causes] > 0.9
+    assert shift.segment_cause_posterior[ChangeCause.OBSERVATION] > 0.9
+    assert shift.segment_cause_posterior[ChangeCause.HABIT] > 0.9
+    # R_{observation,habit} is the union selective reset: both changed blocks
+    # follow the new regime while the actor block is preserved.
+    final = result.snapshots[-1].block_reference
+    assert final[ChangeCause.OBSERVATION] > 0.7
+    assert final[ChangeCause.HABIT] > 0.7
+    assert final[ChangeCause.ACTOR] == pytest.approx(0.2, abs=0.05)
+
+
+def test_active_regime_cause_persists_after_instantaneous_event_probability_decays():
+    result = JointCauseFactorizedBOCPD(beam_width=64).run(
+        _frames([0.2, 0.2, 0.2, 0.9, 0.9, 0.9, 0.9, 0.9]), warmup_steps=2
+    )
+    event = result.snapshots[3]
+    stable_new_regime = result.snapshots[-1]
+    assert event.segment_change_probability > 0.9
+    assert stable_new_regime.segment_change_probability < 0.1
+    assert stable_new_regime.active_regime_cause_posterior[ChangeCause.HABIT] > 0.9
+
+
 def test_noise_cause_resets_no_block():
     matrix = CauseResetMatrix()
     assert matrix.blocks_reset_by(ChangeCause.NOISE) == frozenset()
     assert matrix.blocks_reset_by(ChangeCause.HABIT) == frozenset({ChangeCause.HABIT})
+    assert matrix.blocks_reset_by_causes(
+        frozenset({ChangeCause.OBSERVATION, ChangeCause.HABIT})
+    ) == frozenset({ChangeCause.OBSERVATION, ChangeCause.HABIT})
 
 
 def test_reset_matrix_rejects_a_noise_reset():

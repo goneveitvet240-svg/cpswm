@@ -1,0 +1,130 @@
+{
+  "dataset_version": "project-two-d0-multiseed-evidence@0.3",
+  "maturity": [
+    "d0_synthetic_oracle"
+  ],
+  "quality": {
+    "dataset_version": "project-two-d0-multiseed-evidence@0.3",
+    "episode_count": 80,
+    "step_count": 2560,
+    "feedback_count": 1718,
+    "observation_coverage": 0.67109375,
+    "delayed_feedback_count": 1718,
+    "unknown_actor_count": 2560,
+    "unknown_mechanism_count": 2399,
+    "evaluator_unknown_actor_count": 80,
+    "evaluator_unknown_mechanism_count": 80,
+    "family_counts": {
+      "family-validation-01": 2,
+      "family-validation-02": 2,
+      "family-validation-03": 2,
+      "family-validation-04": 2,
+      "family-validation-05": 2,
+      "family-validation-06": 2,
+      "family-validation-07": 2,
+      "family-validation-08": 2,
+      "family-validation-09": 2,
+      "family-validation-00": 2,
+      "family-test-01": 6,
+      "family-test-02": 6,
+      "family-test-03": 6,
+      "family-test-04": 6,
+      "family-test-05": 6,
+      "family-test-06": 6,
+      "family-test-07": 6,
+      "family-test-08": 6,
+      "family-test-09": 6,
+      "family-test-00": 6
+    },
+    "missingness_counts": {
+      "real_sensor_calibration": 2560,
+      "robot_pose_covariance": 2560,
+      "post_action_destination_observation": 2560
+    },
+    "checks_passed": [
+      "schema_version",
+      "missingness",
+      "duplicate_ids",
+      "timestamp_ordering",
+      "feedback_time_ordering",
+      "observation_coverage",
+      "delayed_feedback",
+      "unknown_coverage",
+      "class_family_balance",
+      "identity_consistency",
+      "join_coverage",
+      "source_label_leakage",
+      "household_scene_object_family_split",
+      "visible_content_integrity",
+      "evaluator_content_integrity"
+    ],
+    "failures": [],
+    "warnings": [
+      "declared unavailable fields remain and must be collected at higher maturity"
+    ],
+    "ready": true
+  },
+  "coverage": {
+    "dataset_version": "project-two-d0-multiseed-evidence@0.3",
+    "split_episode_counts": {
+      "validation": 20,
+      "test": 60
+    },
+    "unique_household_count": 80,
+    "unique_scene_count": 80,
+    "unique_object_count": 80,
+    "unique_object_family_count": 20,
+    "family_episode_counts": {
+      "family-validation-01": 2,
+      "family-validation-02": 2,
+      "family-validation-03": 2,
+      "family-validation-04": 2,
+      "family-validation-05": 2,
+      "family-validation-06": 2,
+      "family-validation-07": 2,
+      "family-validation-08": 2,
+      "family-validation-09": 2,
+      "family-validation-00": 2,
+      "family-test-01": 6,
+      "family-test-02": 6,
+      "family-test-03": 6,
+      "family-test-04": 6,
+      "family-test-05": 6,
+      "family-test-06": 6,
+      "family-test-07": 6,
+      "family-test-08": 6,
+      "family-test-09": 6,
+      "family-test-00": 6
+    },
+    "true_actor_counts": {
+      "owner": 1840,
+      "unknown_actor": 80,
+      "guest": 640
+    },
+    "true_mechanism_counts": {
+      "direct_relocation": 2186,
+      "unknown_mechanism": 80,
+      "handoff_relocation": 294
+    },
+    "dominant_feedback_outcome_counts": {
+      "object_slipped": 602,
+      "success": 1116
+    },
+    "observed_step_count": 1718,
+    "missing_observation_step_count": 842
+  },
+  "provenance": [
+    "adapter:D0SyntheticOracleReplayAdapter",
+    "family_bucket_count:10",
+    "generated:StructureTwoActionScenarioGenerator"
+  ],
+  "physical_separation": {
+    "visible": "visible_replay.jsonl",
+    "evaluator_only": "evaluator_truth.jsonl"
+  },
+  "content_hashes": {
+    "manifest.json": "1e9fadd08d1d147039b46d713118e0564afb215114233fa560c645b992f157da",
+    "visible_replay.jsonl": "8f066863ae103d02d84f2585fca302dac3420e4f46a01ec56260ef9d002d900e",
+    "evaluator_truth.jsonl": "9f9e963209aa7c42f3250b8d43a63e475304c675121d7dafc5db0031c39b9fd5"
+  }
+}

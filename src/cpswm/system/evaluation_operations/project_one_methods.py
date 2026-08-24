@@ -42,8 +42,10 @@ the spine composes and uses the signal formulas pinned in
 
 from __future__ import annotations
 
+import copy
+import random
 from abc import ABC, abstractmethod
-from collections import defaultdict, deque
+from collections import defaultdict
 from collections.abc import Mapping, Sequence
 from dataclasses import dataclass, replace
 from datetime import UTC, datetime
@@ -61,6 +63,7 @@ from cpswm.contracts import (
 )
 from cpswm.system.continual.project_one_regime_loop import AutomaticCFBOCPDCCRRRouter
 from cpswm.system.continual.rls import RLSHabitSample, RLSHabitScoreHead, RLSRegimeBank
+from cpswm.system.reproducibility import content_sha256
 from cpswm.world_model.habits_transitions import (
     CauseSignalFrame,
     ChangeCause,
@@ -71,8 +74,9 @@ from .project_one_dataset import ProjectOneDatasetRecord
 from .project_one_protocol import (
     CategoricalBOCPDConfig,
     ContextFrequencyConfig,
-    OnlineResidualCalibrator,
+    HistogramResidualCalibrator,
     PersistenceConfig,
+    PlattResidualCalibrator,
     ProjectOneDecision,
     ProjectOneProtocolConfig,
     ProjectOneStepTrace,
@@ -99,6 +103,35 @@ _EPOCH = datetime(2026, 1, 1, tzinfo=UTC)
 
 def _uuid(kind: str, value: str) -> UUID:
     return uuid5(_NS, f"{kind}:{value}")
+
+
+def _strict_derangement(values: Sequence[float], *, seed: int) -> list[float]:
+    """Permute ``values`` so that no element keeps its own index.
+
+    A seeded shuffle is repaired rather than rejection-sampled: any surviving
+    fixed point is swapped with its cyclic neighbour, which removes it without
+    creating a new one.  The result is a genuine derangement of the *indices*,
+    so the multiset of residuals is preserved exactly.
+
+    Index-level strictness is the right definition here.  Forcing every
+    *value* to change would distort the marginal, which is the one thing this
+    ablation must keep -- when the residual sequence contains repeats, some
+    positions legitimately end up holding an equal value, and the count of
+    those is reported in the arm's snapshot rather than engineered away.
+    """
+
+    count = len(values)
+    if count < 2:
+        return list(values)
+    order = list(range(count))
+    random.Random(seed).shuffle(order)
+    for index in range(count):
+        if order[index] == index:
+            partner = (index + 1) % count
+            order[index], order[partner] = order[partner], order[index]
+    if any(order[index] == index for index in range(count)):  # pragma: no cover
+        raise RuntimeError("failed to build a strict derangement")
+    return [values[position] for position in order]
 
 
 @dataclass(frozen=True, slots=True)
@@ -142,6 +175,15 @@ class ProjectOneMethod(Protocol):
 
     def reset(self) -> None:
         """Return to the state the method had before any event."""
+
+    def prime(self, records: Sequence[ProjectOneDatasetRecord]) -> None:
+        """Optional offline preparation, called once before replay.
+
+        Almost every arm ignores this.  It exists for ablations that are
+        *defined* in terms of the whole stream -- a shuffle needs the marginal
+        it is shuffling -- and an arm that uses it is by construction not a
+        deployable online method.
+        """
 
     def observe(self, event: ProjectOneDatasetRecord) -> StepPrediction:
         """Absorb one event and predict, using no future information."""
@@ -213,11 +255,27 @@ class _BaseMethod(ABC):
             "config_hash": self.config_hash(),
         }
 
+    def prime(self, records: Sequence[ProjectOneDatasetRecord]) -> None:  # noqa: B027
+        """No-op by default; only the shuffled ablation overrides this.
+
+        Deliberately concrete and empty: this is an *optional* hook, not a
+        requirement.  Making it abstract would force six arms that have nothing
+        to prepare to write a stub apiece.
+        """
+
     @abstractmethod
     def config_payload(self) -> Mapping[str, object]: ...
 
-    @abstractmethod
-    def config_hash(self) -> str: ...
+    def config_hash(self) -> str:
+        """Content identity of the **entire** payload.
+
+        Hashing only the protocol config (as v0.2 did) let two arms that differ
+        in owner, household, object, candidate locations or shuffle seed share
+        one hash -- which is exactly the collision that makes a stored result
+        untraceable.
+        """
+
+        return content_sha256(dict(self.config_payload()))
 
 
 # ---------------------------------------------------------------------------
@@ -287,9 +345,17 @@ class CoreHabitChainMethod(_BaseMethod):
             owner_actor_id=self.owner_id,
             config=loop_config,
         )
-        self._residual_history: deque[float] = deque(maxlen=self._shuffle_lag)
         self._pending: list[tuple[ProjectOneDatasetRecord, float]] = []
-        self._platt = OnlineResidualCalibrator()
+        self._histogram = HistogramResidualCalibrator()
+        self._platt = PlattResidualCalibrator()
+        self._deranged: list[float] = []
+        self._derangement_fixed_values = 0
+        self._unprimed_shuffle_steps = 0
+        self._residual_history: list[float] = []
+        #: Set to intervene on exactly one step, for matched-pair experiments
+        #: that clone a warm arm and change only the step under study.  Cleared
+        #: after it is consumed, so it can never leak into a later step.
+        self.pointwise_residual_override: float | None = None
 
     @property
     def active_regime(self) -> str:
@@ -311,10 +377,50 @@ class CoreHabitChainMethod(_BaseMethod):
             "residual_calibration": self.config.residual_calibration.value,
         }
 
-    def config_hash(self) -> str:
-        return self.config.config_hash()
-
     # -- ablation ----------------------------------------------------------
+
+    def prime(self, records: Sequence[ProjectOneDatasetRecord]) -> None:
+        """Build the strict derangement the shuffled ablation needs.
+
+        Only ``SHUFFLED_RLS`` uses this.  The arm runs a shadow copy of *itself*
+        configured as ``FULL`` over the same stream, collects the residual
+        sequence it would have produced, and permutes it with a seeded strict
+        derangement -- a permutation with no fixed point.
+
+        This is deliberately offline, and that is the honest cost of the arm.
+        A causal fixed-lag substitute (what v0.2 did) is not a derangement: the
+        residual sequence is full of repeated values, so a lag can map a value
+        onto an identical one, and the first ``lag`` steps had no history at all
+        and silently degenerated into ``NO_RLS``.  The shuffled arm exists to
+        answer "same marginal, wrong pairing", which requires knowing the
+        marginal, so it is an ablation and never a deployable method.
+        """
+
+        if self.config.ablation is not SignalAblation.SHUFFLED_RLS or not records:
+            return
+
+        shadow = self.clone_with(ablation=SignalAblation.FULL)
+        # Only start the shadow from scratch when this arm is itself cold.  A
+        # warm arm being primed mid-stream must continue from its own state, or
+        # the residuals it collects would describe a different model.
+        if self._step_index == 0:
+            shadow.reset()
+        residuals = [
+            value
+            for record in records
+            if (value := shadow.observe(record).rls_residual) is not None
+        ]
+        self._deranged = _strict_derangement(residuals, seed=self._shuffle_seed(records))
+        self._derangement_fixed_values = sum(
+            1
+            for original, shuffled in zip(residuals, self._deranged, strict=True)
+            if original == shuffled
+        )
+
+    def _shuffle_seed(self, records: Sequence[ProjectOneDatasetRecord]) -> int:
+        """Deterministic per-stream seed, so a rerun reproduces the permutation."""
+
+        return int(content_sha256([records[0].stream_id, len(records)])[:8], 16)
 
     def _apply_ablation(self, surprise: float, residual: float) -> tuple[float, float]:
         ablation = self.config.ablation
@@ -324,15 +430,63 @@ class CoreHabitChainMethod(_BaseMethod):
             return surprise, 0.0
         if ablation is SignalAblation.RLS_ONLY:
             return 0.0, residual
-        # SHUFFLED_RLS: emit the residual observed ``shuffle_lag`` steps ago.
-        # This preserves the residual's marginal magnitude while destroying its
-        # pairing with the current event.  The first ``shuffle_lag`` steps have
-        # no earlier residual and therefore behave like NO_RLS; they fall inside
-        # the baseline window, where no decision can fire anyway.
-        have_history = len(self._residual_history) == self._shuffle_lag
-        substitute = self._residual_history[0] if have_history else 0.0
-        self._residual_history.append(residual)
-        return surprise, substitute
+        # SHUFFLED_RLS
+        if self.pointwise_residual_override is not None:
+            substitute = self.pointwise_residual_override
+            self.pointwise_residual_override = None
+            return surprise, substitute
+        if self._step_index < len(self._deranged):
+            return surprise, self._deranged[self._step_index]
+        # Unprimed (a caller drove observe() directly).  Reporting the real
+        # residual would silently turn this into the FULL arm, so the arm keeps
+        # its own residual but records that the step was never shuffled.
+        self._unprimed_shuffle_steps += 1
+        return surprise, residual
+
+    @property
+    def residual_history(self) -> tuple[float, ...]:
+        """Every residual this arm has computed, in order.
+
+        Exposed so a matched-pair experiment can draw a substitute residual
+        from the arm's *own* marginal rather than inventing one.
+        """
+
+        return tuple(self._residual_history)
+
+    def clone_with(
+        self,
+        *,
+        ablation: SignalAblation | None = None,
+        residual_calibration: ResidualCalibration | None = None,
+    ) -> CoreHabitChainMethod:
+        """A deep copy whose *read* path is re-configured but whose state is kept.
+
+        This is what makes a matched pair actually matched.  Running two arms
+        over the same prefix does **not** give them the same state: the habit
+        signal differs from the first step, so the quarantine decisions differ,
+        so the two arms learn different things long before the step under study.
+        Cloning one primed arm and intervening only on the final step removes
+        that confound entirely.
+
+        The RLS bank and Dirichlet counts are carried over untouched -- only the
+        ablation and the calibration route, both of which are read at scoring
+        time, are replaced.
+        """
+
+        clone = copy.deepcopy(self)
+        clone.config = replace(
+            self.config,
+            ablation=self.config.ablation if ablation is None else ablation,
+            residual_calibration=(
+                self.config.residual_calibration
+                if residual_calibration is None
+                else residual_calibration
+            ),
+        )
+        clone.name = (
+            f"{self.name}->{clone.config.ablation.value}/{clone.config.residual_calibration.value}"
+        )
+        return clone
 
     def _residual_from(self, score: float) -> float:
         """Dispatch the score to the configured calibration route.
@@ -341,6 +495,8 @@ class CoreHabitChainMethod(_BaseMethod):
         routes are pure and live in :func:`calibrated_residual`.
         """
 
+        if self.config.residual_calibration is ResidualCalibration.HISTOGRAM:
+            return self._histogram.residual(score)
         if self.config.residual_calibration is ResidualCalibration.PLATT:
             return self._platt.residual(score)
         return calibrated_residual(score, self.config.residual_calibration)
@@ -375,6 +531,7 @@ class CoreHabitChainMethod(_BaseMethod):
             prior[event.observed_location], len(self.locations)
         )
         raw_residual = self._residual_from(prior_rls[location_uuid])
+        self._residual_history.append(raw_residual)
         surprise, residual = self._apply_ablation(raw_surprise, raw_residual)
 
         signal = habit_signal(
@@ -422,9 +579,14 @@ class CoreHabitChainMethod(_BaseMethod):
         # The empirical calibrator learns from the same one-vs-rest outcome the
         # RLS head is trained on, using the scores that were read *before* this
         # event was absorbed.
-        if self.config.residual_calibration is ResidualCalibration.PLATT:
+        calibrator: HistogramResidualCalibrator | PlattResidualCalibrator | None = None
+        if self.config.residual_calibration is ResidualCalibration.HISTOGRAM:
+            calibrator = self._histogram
+        elif self.config.residual_calibration is ResidualCalibration.PLATT:
+            calibrator = self._platt
+        if calibrator is not None:
             for candidate, score in prior_rls.items():
-                self._platt.update(
+                calibrator.update(
                     score,
                     hit=candidate == location_uuid,
                     weight=event.observation_quality,
@@ -503,6 +665,9 @@ class CoreHabitChainMethod(_BaseMethod):
             "regime_count": self._regimes.regime_count(),
             "pending_quarantined": len(self._pending),
             "residual_calibration": self.config.residual_calibration.value,
+            "derangement_length": len(self._deranged),
+            "derangement_unchanged_values": self._derangement_fixed_values,
+            "unprimed_shuffle_steps": self._unprimed_shuffle_steps,
         }
 
 
@@ -527,9 +692,6 @@ class PersistenceMethod(_BaseMethod):
 
     def config_payload(self) -> Mapping[str, object]:
         return {"kind": "persistence", "confidence": self.config.confidence}
-
-    def config_hash(self) -> str:
-        return self.config.config_hash()
 
     def _predict(self, event: ProjectOneDatasetRecord) -> dict[str, float]:
         if self._last_location is None:
@@ -580,9 +742,6 @@ class ContextFrequencyMethod(_BaseMethod):
             "alpha": self.config.alpha,
             "change_threshold": self.config.change_threshold,
         }
-
-    def config_hash(self) -> str:
-        return self.config.config_hash()
 
     def _predict(self, event: ProjectOneDatasetRecord) -> dict[str, float]:
         counts = self._counts[event.context_key]
@@ -655,9 +814,6 @@ class CategoricalBOCPDMethod(_BaseMethod):
             "max_run_length": self.config.max_run_length,
             "context_conditioned": self.config.context_conditioned,
         }
-
-    def config_hash(self) -> str:
-        return self.config.config_hash()
 
     def _run_predictive(self, run_length: int, event: ProjectOneDatasetRecord) -> float:
         """Dirichlet-multinomial predictive for this event under one run length."""

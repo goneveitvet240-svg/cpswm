@@ -763,11 +763,31 @@ def _snapshot_payload(snapshot: JointCauseSnapshot) -> dict:
                 snapshot.joint_run_length_cause_posterior.items()
             )
         },
+        "joint_run_length_cause_set_posterior": {
+            (
+                f"{run_length}:{'+'.join(sorted(cause.value for cause in causes)) or 'initial'}"
+            ): probability
+            for (run_length, causes), probability in (
+                snapshot.joint_run_length_cause_set_posterior.items()
+            )
+        },
         "continue_probability": snapshot.continue_probability,
         "segment_change_probability": snapshot.segment_change_probability,
         "segment_cause_posterior": {
             cause.value: probability
             for cause, probability in snapshot.segment_cause_posterior.items()
+        },
+        "segment_cause_set_posterior": {
+            "+".join(sorted(cause.value for cause in causes)): probability
+            for causes, probability in snapshot.segment_cause_set_posterior.items()
+        },
+        "active_regime_cause_set_posterior": {
+            "+".join(sorted(cause.value for cause in causes)) or "initial": probability
+            for causes, probability in snapshot.active_regime_cause_set_posterior.items()
+        },
+        "active_regime_cause_posterior": {
+            cause.value: probability
+            for cause, probability in snapshot.active_regime_cause_posterior.items()
         },
         "transient_noise_probability": snapshot.transient_noise_probability,
         "block_reference": {

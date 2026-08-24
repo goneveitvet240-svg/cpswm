@@ -74,9 +74,9 @@ def test_persistent_noise_never_opens_the_habit_block():
         assert gate.habit_consolidation_weight(snapshot) == 0.0
 
 
-def test_ambiguous_simultaneous_shift_defers_instead_of_writing(metadata_factory):
-    # Observation and habit shift on the same day: attribution is ambiguous, so
-    # the gate must refuse to open the habit block (defer to verification).
+def test_simultaneous_shift_opens_exact_union_of_attributed_blocks(metadata_factory):
+    # Observation and habit shift on the same day: the multi-label state makes
+    # the joint explanation explicit instead of forcing an ambiguous singleton.
     frames = tuple(
         CauseSignalFrame(
             timestamp=BASE + timedelta(days=index),
@@ -93,7 +93,11 @@ def test_ambiguous_simultaneous_shift_defers_instead_of_writing(metadata_factory
     gate = CauseGatedHabitConsolidation(change_threshold=0.3, attribution_margin=0.3)
     shift = result.snapshots[3]
     decision = gate.decide(shift)
-    assert decision.ambiguous or not decision.habit_block_writable
+    assert not decision.ambiguous
+    assert decision.attributed_cause is None
+    assert decision.attributed_causes == frozenset({ChangeCause.OBSERVATION, ChangeCause.HABIT})
+    assert decision.writable_blocks == decision.attributed_causes
+    assert decision.habit_block_writable
 
 
 def _bound_pair(metadata_factory, person):

@@ -41,6 +41,16 @@ class DatasetAdapter(ABC):
 
         return {}
 
+    def carries_change_labels(self) -> bool:
+        """Whether this source annotates change points.
+
+        Defaults to ``False`` -- the safe answer for anything external, because
+        reporting a supervised metric that was never checkable is worse than
+        omitting one that was.
+        """
+
+        return False
+
     def load(self, *, stream_id: str, split: str) -> tuple[ProjectOneStream, ProjectOneTruthSet]:
         """Validate, sort and package one stream.
 
@@ -66,7 +76,9 @@ class DatasetAdapter(ABC):
         for truth in raw_truths:
             if truth.event_id not in known_events:
                 raise ValueError(f"truth references unknown event {truth.event_id}")
-        return stream, ProjectOneTruthSet(stream_id, raw_truths)
+        return stream, ProjectOneTruthSet(
+            stream_id, raw_truths, carries_change_labels=self.carries_change_labels()
+        )
 
 
 class InMemoryAdapter(DatasetAdapter):
@@ -87,10 +99,12 @@ class InMemoryAdapter(DatasetAdapter):
         source: str | None = None,
         source_version: str | None = None,
         preprocessing: Mapping[str, str] | None = None,
+        change_labels: bool = False,
     ) -> None:
         self._records = tuple(records)
         self._truths = tuple(truths)
         self._preprocessing = dict(preprocessing or {})
+        self._change_labels = change_labels
         if source is not None:
             self.source = source
         if source_version is not None:
@@ -101,3 +115,6 @@ class InMemoryAdapter(DatasetAdapter):
 
     def preprocessing(self) -> Mapping[str, str]:
         return dict(self._preprocessing)
+
+    def carries_change_labels(self) -> bool:
+        return self._change_labels

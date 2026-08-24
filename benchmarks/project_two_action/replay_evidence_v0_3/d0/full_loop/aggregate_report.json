@@ -1,0 +1,3727 @@
+{
+  "schema_version": "0.1.0",
+  "dataset_version": "project-two-d0-multiseed-evidence@0.3",
+  "episode_count": 80,
+  "step_count": 2560,
+  "inference_chain": [
+    "ObservationDetectionResult",
+    "CHEH",
+    "ORRER",
+    "PCHMP",
+    "actor/role/mechanism posterior",
+    "action",
+    "ExecutionFeedbackRecord",
+    "ExecutionFeedbackProjector",
+    "feedback likelihood",
+    "PCHMP rerun",
+    "ORRER revision",
+    "EventRevisionOutcome",
+    "ProjectOneStatRequest",
+    "HybridEventToTaskCoordinatorLoop",
+    "new BeliefSnapshot",
+    "next action distribution",
+    "action utility"
+  ],
+  "configuration_selection": {
+    "owner_threshold": 0.5,
+    "tuned": false,
+    "test_truth_used": false,
+    "selection_scope": "fixed configuration applied identically to validation and test"
+  },
+  "aggregate_metrics": {
+    "put_back_error_rate": {
+      "mean": 0.312109375,
+      "ci95": [
+        0.302734375,
+        0.322265625
+      ],
+      "n": 80
+    },
+    "search_success_rate": {
+      "mean": 0.90859375,
+      "ci95": [
+        0.896875,
+        0.919921875
+      ],
+      "n": 80
+    },
+    "cumulative_action_regret": {
+      "mean": 12.9125,
+      "ci95": [
+        12.3875,
+        13.4625
+      ],
+      "n": 80
+    },
+    "mean_search_cost": {
+      "mean": 1.14375,
+      "ci95": [
+        1.123828125,
+        1.165625
+      ],
+      "n": 80
+    },
+    "hidden_event_hypothesis_accuracy": {
+      "mean": 0.65234375,
+      "ci95": [
+        0.632421875,
+        0.670703125
+      ],
+      "n": 2560
+    },
+    "revision_accuracy": {
+      "mean": 0.65234375,
+      "ci95": [
+        0.633984375,
+        0.671875
+      ],
+      "n": 2560
+    },
+    "mean_unresolved_mass": {
+      "mean": 0.33846398525288796,
+      "ci95": [
+        0.32012090126998133,
+        0.3570180303666705
+      ],
+      "n": 2560
+    },
+    "cumulative_utility": {
+      "mean": 23.9,
+      "ci95": [
+        23.025,
+        24.7625
+      ],
+      "n": 80
+    }
+  },
+  "split_metrics": {
+    "validation": {
+      "put_back_error_rate": {
+        "mean": 0.3078125,
+        "ci95": [
+          0.2953125,
+          0.321875
+        ],
+        "n": 20
+      },
+      "search_success_rate": {
+        "mean": 0.8953125,
+        "ci95": [
+          0.86875,
+          0.921875
+        ],
+        "n": 20
+      },
+      "cumulative_action_regret": {
+        "mean": 13.2,
+        "ci95": [
+          12.1,
+          14.3
+        ],
+        "n": 20
+      },
+      "mean_search_cost": {
+        "mean": 1.15,
+        "ci95": [
+          1.1078125,
+          1.1921875
+        ],
+        "n": 20
+      },
+      "cumulative_utility": {
+        "mean": 24.6,
+        "ci95": [
+          22.85,
+          26.3
+        ],
+        "n": 20
+      }
+    },
+    "test": {
+      "put_back_error_rate": {
+        "mean": 0.31354166666666666,
+        "ci95": [
+          0.3020833333333333,
+          0.3255208333333333
+        ],
+        "n": 60
+      },
+      "search_success_rate": {
+        "mean": 0.9130208333333333,
+        "ci95": [
+          0.9005208333333333,
+          0.9244791666666666
+        ],
+        "n": 60
+      },
+      "cumulative_action_regret": {
+        "mean": 12.816666666666666,
+        "ci95": [
+          12.2,
+          13.483333333333333
+        ],
+        "n": 60
+      },
+      "mean_search_cost": {
+        "mean": 1.1416666666666666,
+        "ci95": [
+          1.1182291666666666,
+          1.1671875
+        ],
+        "n": 60
+      },
+      "cumulative_utility": {
+        "mean": 23.666666666666668,
+        "ci95": [
+          22.616666666666667,
+          24.666666666666668
+        ],
+        "n": 60
+      }
+    }
+  },
+  "strata": {
+    "actor": {
+      "owner": {
+        "step_count": 1840,
+        "hidden_event_hypothesis_accuracy": 0.7070652173913043,
+        "revision_accuracy": 0.7070652173913043,
+        "put_back_success": 0.5793478260869566,
+        "search_success": 0.925,
+        "mean_unresolved_mass": 0.2938875663763377
+      },
+      "guest": {
+        "step_count": 640,
+        "hidden_event_hypothesis_accuracy": 0.5765625,
+        "revision_accuracy": 0.5765625,
+        "put_back_success": 1,
+        "search_success": 0.9,
+        "mean_unresolved_mass": 0.42412760503617963
+      },
+      "unknown_actor": {
+        "step_count": 80,
+        "hidden_event_hypothesis_accuracy": 0,
+        "revision_accuracy": 0,
+        "put_back_success": 0.6875,
+        "search_success": 0.6,
+        "mean_unresolved_mass": 0.6784126611472093
+      }
+    },
+    "mechanism": {
+      "direct_relocation": {
+        "step_count": 2186,
+        "hidden_event_hypothesis_accuracy": 0.6903019213174748,
+        "revision_accuracy": 0.6903019213174748,
+        "put_back_success": 0.645928636779506,
+        "search_success": 0.923604757548033,
+        "mean_unresolved_mass": 0.3106048582033021
+      },
+      "handoff_relocation": {
+        "step_count": 294,
+        "hidden_event_hypothesis_accuracy": 0.5476190476190477,
+        "revision_accuracy": 0.5476190476190477,
+        "put_back_success": 1,
+        "search_success": 0.8809523809523809,
+        "mean_unresolved_mass": 0.4531039772897891
+      },
+      "unknown_mechanism": {
+        "step_count": 80,
+        "hidden_event_hypothesis_accuracy": 0,
+        "revision_accuracy": 0,
+        "put_back_success": 0.6875,
+        "search_success": 0.6,
+        "mean_unresolved_mass": 0.6784126611472093
+      }
+    }
+  },
+  "groups": {
+    "household": {
+      "00c76925-7e0d-98a5-ca60-a2f0517fc137": {
+        "put_back_error_rate": {
+          "mean": 0.28125,
+          "ci95": [
+            0.28125,
+            0.28125
+          ],
+          "n": 1
+        },
+        "search_success_rate": {
+          "mean": 0.90625,
+          "ci95": [
+            0.90625,
+            0.90625
+          ],
+          "n": 1
+        },
+        "cumulative_action_regret": {
+          "mean": 12.0,
+          "ci95": [
+            12.0,
+            12.0
+          ],
+          "n": 1
+        },
+        "mean_search_cost": {
+          "mean": 1.15625,
+          "ci95": [
+            1.15625,
+            1.15625
+          ],
+          "n": 1
+        }
+      },
+      "03733aa6-f35e-ed27-bd2f-a94a202a7de1": {
+        "put_back_error_rate": {
+          "mean": 0.28125,
+          "ci95": [
+            0.28125,
+            0.28125
+          ],
+          "n": 1
+        },
+        "search_success_rate": {
+          "mean": 0.9375,
+          "ci95": [
+            0.9375,
+            0.9375
+          ],
+          "n": 1
+        },
+        "cumulative_action_regret": {
+          "mean": 11.0,
+          "ci95": [
+            11.0,
+            11.0
+          ],
+          "n": 1
+        },
+        "mean_search_cost": {
+          "mean": 1.0625,
+          "ci95": [
+            1.0625,
+            1.0625
+          ],
+          "n": 1
+        }
+      },
+      "0c05f0a2-431f-7088-222e-545dfb52af8f": {
+        "put_back_error_rate": {
+          "mean": 0.28125,
+          "ci95": [
+            0.28125,
+            0.28125
+          ],
+          "n": 1
+        },
+        "search_success_rate": {
+          "mean": 0.9375,
+          "ci95": [
+            0.9375,
+            0.9375
+          ],
+          "n": 1
+        },
+        "cumulative_action_regret": {
+          "mean": 11.0,
+          "ci95": [
+            11.0,
+            11.0
+          ],
+          "n": 1
+        },
+        "mean_search_cost": {
+          "mean": 1.125,
+          "ci95": [
+            1.125,
+            1.125
+          ],
+          "n": 1
+        }
+      },
+      "0e3c898a-d126-febd-c9a0-b5fab645020a": {
+        "put_back_error_rate": {
+          "mean": 0.34375,
+          "ci95": [
+            0.34375,
+            0.34375
+          ],
+          "n": 1
+        },
+        "search_success_rate": {
+          "mean": 0.96875,
+          "ci95": [
+            0.96875,
+            0.96875
+          ],
+          "n": 1
+        },
+        "cumulative_action_regret": {
+          "mean": 12.0,
+          "ci95": [
+            12.0,
+            12.0
+          ],
+          "n": 1
+        },
+        "mean_search_cost": {
+          "mean": 1.0625,
+          "ci95": [
+            1.0625,
+            1.0625
+          ],
+          "n": 1
+        }
+      },
+      "0ed2ad6f-63e5-6489-607d-1b1fc567610a": {
+        "put_back_error_rate": {
+          "mean": 0.34375,
+          "ci95": [
+            0.34375,
+            0.34375
+          ],
+          "n": 1
+        },
+        "search_success_rate": {
+          "mean": 0.84375,
+          "ci95": [
+            0.84375,
+            0.84375
+          ],
+          "n": 1
+        },
+        "cumulative_action_regret": {
+          "mean": 16.0,
+          "ci95": [
+            16.0,
+            16.0
+          ],
+          "n": 1
+        },
+        "mean_search_cost": {
+          "mean": 1.25,
+          "ci95": [
+            1.25,
+            1.25
+          ],
+          "n": 1
+        }
+      },
+      "1d121006-c816-e016-52bb-646091d2abdc": {
+        "put_back_error_rate": {
+          "mean": 0.4375,
+          "ci95": [
+            0.4375,
+            0.4375
+          ],
+          "n": 1
+        },
+        "search_success_rate": {
+          "mean": 0.84375,
+          "ci95": [
+            0.84375,
+            0.84375
+          ],
+          "n": 1
+        },
+        "cumulative_action_regret": {
+          "mean": 19.0,
+          "ci95": [
+            19.0,
+            19.0
+          ],
+          "n": 1
+        },
+        "mean_search_cost": {
+          "mean": 1.21875,
+          "ci95": [
+            1.21875,
+            1.21875
+          ],
+          "n": 1
+        }
+      },
+      "20162a9e-3460-ac2e-38f2-fd9ecc9a152b": {
+        "put_back_error_rate": {
+          "mean": 0.28125,
+          "ci95": [
+            0.28125,
+            0.28125
+          ],
+          "n": 1
+        },
+        "search_success_rate": {
+          "mean": 0.8125,
+          "ci95": [
+            0.8125,
+            0.8125
+          ],
+          "n": 1
+        },
+        "cumulative_action_regret": {
+          "mean": 15.0,
+          "ci95": [
+            15.0,
+            15.0
+          ],
+          "n": 1
+        },
+        "mean_search_cost": {
+          "mean": 1.21875,
+          "ci95": [
+            1.21875,
+            1.21875
+          ],
+          "n": 1
+        }
+      },
+      "216a4570-ade0-b000-eba2-ba8a5e042848": {
+        "put_back_error_rate": {
+          "mean": 0.28125,
+          "ci95": [
+            0.28125,
+            0.28125
+          ],
+          "n": 1
+        },
+        "search_success_rate": {
+          "mean": 0.9375,
+          "ci95": [
+            0.9375,
+            0.9375
+          ],
+          "n": 1
+        },
+        "cumulative_action_regret": {
+          "mean": 11.0,
+          "ci95": [
+            11.0,
+            11.0
+          ],
+          "n": 1
+        },
+        "mean_search_cost": {
+          "mean": 1.0625,
+          "ci95": [
+            1.0625,
+            1.0625
+          ],
+          "n": 1
+        }
+      },
+      "238d884d-3110-3281-9b8c-bc4ceb19509d": {
+        "put_back_error_rate": {
+          "mean": 0.28125,
+          "ci95": [
+            0.28125,
+            0.28125
+          ],
+          "n": 1
+        },
+        "search_success_rate": {
+          "mean": 0.84375,
+          "ci95": [
+            0.84375,
+            0.84375
+          ],
+          "n": 1
+        },
+        "cumulative_action_regret": {
+          "mean": 14.0,
+          "ci95": [
+            14.0,
+            14.0
+          ],
+          "n": 1
+        },
+        "mean_search_cost": {
+          "mean": 1.15625,
+          "ci95": [
+            1.15625,
+            1.15625
+          ],
+          "n": 1
+        }
+      },
+      "244fde53-a3b7-faee-7ff8-43dd885fec08": {
+        "put_back_error_rate": {
+          "mean": 0.28125,
+          "ci95": [
+            0.28125,
+            0.28125
+          ],
+          "n": 1
+        },
+        "search_success_rate": {
+          "mean": 0.96875,
+          "ci95": [
+            0.96875,
+            0.96875
+          ],
+          "n": 1
+        },
+        "cumulative_action_regret": {
+          "mean": 10.0,
+          "ci95": [
+            10.0,
+            10.0
+          ],
+          "n": 1
+        },
+        "mean_search_cost": {
+          "mean": 1.03125,
+          "ci95": [
+            1.03125,
+            1.03125
+          ],
+          "n": 1
+        }
+      },
+      "27740759-d254-e04e-67dc-da98426bc91e": {
+        "put_back_error_rate": {
+          "mean": 0.34375,
+          "ci95": [
+            0.34375,
+            0.34375
+          ],
+          "n": 1
+        },
+        "search_success_rate": {
+          "mean": 0.90625,
+          "ci95": [
+            0.90625,
+            0.90625
+          ],
+          "n": 1
+        },
+        "cumulative_action_regret": {
+          "mean": 14.0,
+          "ci95": [
+            14.0,
+            14.0
+          ],
+          "n": 1
+        },
+        "mean_search_cost": {
+          "mean": 1.125,
+          "ci95": [
+            1.125,
+            1.125
+          ],
+          "n": 1
+        }
+      },
+      "2a443ae8-8ea4-c619-b06b-4d9b88cfaeb7": {
+        "put_back_error_rate": {
+          "mean": 0.28125,
+          "ci95": [
+            0.28125,
+            0.28125
+          ],
+          "n": 1
+        },
+        "search_success_rate": {
+          "mean": 0.96875,
+          "ci95": [
+            0.96875,
+            0.96875
+          ],
+          "n": 1
+        },
+        "cumulative_action_regret": {
+          "mean": 10.0,
+          "ci95": [
+            10.0,
+            10.0
+          ],
+          "n": 1
+        },
+        "mean_search_cost": {
+          "mean": 1.03125,
+          "ci95": [
+            1.03125,
+            1.03125
+          ],
+          "n": 1
+        }
+      },
+      "309f7bcb-efba-8562-aba1-0ae5ff4343d8": {
+        "put_back_error_rate": {
+          "mean": 0.34375,
+          "ci95": [
+            0.34375,
+            0.34375
+          ],
+          "n": 1
+        },
+        "search_success_rate": {
+          "mean": 0.96875,
+          "ci95": [
+            0.96875,
+            0.96875
+          ],
+          "n": 1
+        },
+        "cumulative_action_regret": {
+          "mean": 12.0,
+          "ci95": [
+            12.0,
+            12.0
+          ],
+          "n": 1
+        },
+        "mean_search_cost": {
+          "mean": 1.03125,
+          "ci95": [
+            1.03125,
+            1.03125
+          ],
+          "n": 1
+        }
+      },
+      "33846b37-958b-7343-3b3d-74d96b22e762": {
+        "put_back_error_rate": {
+          "mean": 0.28125,
+          "ci95": [
+            0.28125,
+            0.28125
+          ],
+          "n": 1
+        },
+        "search_success_rate": {
+          "mean": 0.90625,
+          "ci95": [
+            0.90625,
+            0.90625
+          ],
+          "n": 1
+        },
+        "cumulative_action_regret": {
+          "mean": 12.0,
+          "ci95": [
+            12.0,
+            12.0
+          ],
+          "n": 1
+        },
+        "mean_search_cost": {
+          "mean": 1.09375,
+          "ci95": [
+            1.09375,
+            1.09375
+          ],
+          "n": 1
+        }
+      },
+      "3b2d3437-f435-842c-e48a-487ac18b533a": {
+        "put_back_error_rate": {
+          "mean": 0.3125,
+          "ci95": [
+            0.3125,
+            0.3125
+          ],
+          "n": 1
+        },
+        "search_success_rate": {
+          "mean": 0.96875,
+          "ci95": [
+            0.96875,
+            0.96875
+          ],
+          "n": 1
+        },
+        "cumulative_action_regret": {
+          "mean": 11.0,
+          "ci95": [
+            11.0,
+            11.0
+          ],
+          "n": 1
+        },
+        "mean_search_cost": {
+          "mean": 1.0625,
+          "ci95": [
+            1.0625,
+            1.0625
+          ],
+          "n": 1
+        }
+      },
+      "3e99d2f4-87fe-728b-528f-4bcb37daa299": {
+        "put_back_error_rate": {
+          "mean": 0.34375,
+          "ci95": [
+            0.34375,
+            0.34375
+          ],
+          "n": 1
+        },
+        "search_success_rate": {
+          "mean": 0.90625,
+          "ci95": [
+            0.90625,
+            0.90625
+          ],
+          "n": 1
+        },
+        "cumulative_action_regret": {
+          "mean": 14.0,
+          "ci95": [
+            14.0,
+            14.0
+          ],
+          "n": 1
+        },
+        "mean_search_cost": {
+          "mean": 1.15625,
+          "ci95": [
+            1.15625,
+            1.15625
+          ],
+          "n": 1
+        }
+      },
+      "3f0c0b7d-d0c1-2f6b-b25b-5046ea0a43b5": {
+        "put_back_error_rate": {
+          "mean": 0.34375,
+          "ci95": [
+            0.34375,
+            0.34375
+          ],
+          "n": 1
+        },
+        "search_success_rate": {
+          "mean": 0.875,
+          "ci95": [
+            0.875,
+            0.875
+          ],
+          "n": 1
+        },
+        "cumulative_action_regret": {
+          "mean": 15.0,
+          "ci95": [
+            15.0,
+            15.0
+          ],
+          "n": 1
+        },
+        "mean_search_cost": {
+          "mean": 1.125,
+          "ci95": [
+            1.125,
+            1.125
+          ],
+          "n": 1
+        }
+      },
+      "3f475135-61e7-d3d3-72ad-f72cccf2e556": {
+        "put_back_error_rate": {
+          "mean": 0.28125,
+          "ci95": [
+            0.28125,
+            0.28125
+          ],
+          "n": 1
+        },
+        "search_success_rate": {
+          "mean": 0.90625,
+          "ci95": [
+            0.90625,
+            0.90625
+          ],
+          "n": 1
+        },
+        "cumulative_action_regret": {
+          "mean": 12.0,
+          "ci95": [
+            12.0,
+            12.0
+          ],
+          "n": 1
+        },
+        "mean_search_cost": {
+          "mean": 1.15625,
+          "ci95": [
+            1.15625,
+            1.15625
+          ],
+          "n": 1
+        }
+      },
+      "3fd01c8f-349d-9910-8082-a83a6588bf28": {
+        "put_back_error_rate": {
+          "mean": 0.375,
+          "ci95": [
+            0.375,
+            0.375
+          ],
+          "n": 1
+        },
+        "search_success_rate": {
+          "mean": 0.90625,
+          "ci95": [
+            0.90625,
+            0.90625
+          ],
+          "n": 1
+        },
+        "cumulative_action_regret": {
+          "mean": 15.0,
+          "ci95": [
+            15.0,
+            15.0
+          ],
+          "n": 1
+        },
+        "mean_search_cost": {
+          "mean": 1.125,
+          "ci95": [
+            1.125,
+            1.125
+          ],
+          "n": 1
+        }
+      },
+      "471eb306-d758-7b65-a3cf-06ee4e160a3a": {
+        "put_back_error_rate": {
+          "mean": 0.28125,
+          "ci95": [
+            0.28125,
+            0.28125
+          ],
+          "n": 1
+        },
+        "search_success_rate": {
+          "mean": 0.9375,
+          "ci95": [
+            0.9375,
+            0.9375
+          ],
+          "n": 1
+        },
+        "cumulative_action_regret": {
+          "mean": 11.0,
+          "ci95": [
+            11.0,
+            11.0
+          ],
+          "n": 1
+        },
+        "mean_search_cost": {
+          "mean": 1.125,
+          "ci95": [
+            1.125,
+            1.125
+          ],
+          "n": 1
+        }
+      },
+      "472becc5-5250-c638-e3b6-19db9811625a": {
+        "put_back_error_rate": {
+          "mean": 0.34375,
+          "ci95": [
+            0.34375,
+            0.34375
+          ],
+          "n": 1
+        },
+        "search_success_rate": {
+          "mean": 0.8125,
+          "ci95": [
+            0.8125,
+            0.8125
+          ],
+          "n": 1
+        },
+        "cumulative_action_regret": {
+          "mean": 17.0,
+          "ci95": [
+            17.0,
+            17.0
+          ],
+          "n": 1
+        },
+        "mean_search_cost": {
+          "mean": 1.3125,
+          "ci95": [
+            1.3125,
+            1.3125
+          ],
+          "n": 1
+        }
+      },
+      "47b3bb5f-653f-d501-03a9-68c205f70219": {
+        "put_back_error_rate": {
+          "mean": 0.28125,
+          "ci95": [
+            0.28125,
+            0.28125
+          ],
+          "n": 1
+        },
+        "search_success_rate": {
+          "mean": 0.90625,
+          "ci95": [
+            0.90625,
+            0.90625
+          ],
+          "n": 1
+        },
+        "cumulative_action_regret": {
+          "mean": 12.0,
+          "ci95": [
+            12.0,
+            12.0
+          ],
+          "n": 1
+        },
+        "mean_search_cost": {
+          "mean": 1.09375,
+          "ci95": [
+            1.09375,
+            1.09375
+          ],
+          "n": 1
+        }
+      },
+      "54a340db-914a-e517-cf51-79d3dee56461": {
+        "put_back_error_rate": {
+          "mean": 0.28125,
+          "ci95": [
+            0.28125,
+            0.28125
+          ],
+          "n": 1
+        },
+        "search_success_rate": {
+          "mean": 0.9375,
+          "ci95": [
+            0.9375,
+            0.9375
+          ],
+          "n": 1
+        },
+        "cumulative_action_regret": {
+          "mean": 11.0,
+          "ci95": [
+            11.0,
+            11.0
+          ],
+          "n": 1
+        },
+        "mean_search_cost": {
+          "mean": 1.0625,
+          "ci95": [
+            1.0625,
+            1.0625
+          ],
+          "n": 1
+        }
+      },
+      "586dc8d2-5a8e-907a-1ac9-c2ef0223cf1c": {
+        "put_back_error_rate": {
+          "mean": 0.34375,
+          "ci95": [
+            0.34375,
+            0.34375
+          ],
+          "n": 1
+        },
+        "search_success_rate": {
+          "mean": 0.84375,
+          "ci95": [
+            0.84375,
+            0.84375
+          ],
+          "n": 1
+        },
+        "cumulative_action_regret": {
+          "mean": 16.0,
+          "ci95": [
+            16.0,
+            16.0
+          ],
+          "n": 1
+        },
+        "mean_search_cost": {
+          "mean": 1.21875,
+          "ci95": [
+            1.21875,
+            1.21875
+          ],
+          "n": 1
+        }
+      },
+      "611bf134-17b9-d52b-937e-10fa12573711": {
+        "put_back_error_rate": {
+          "mean": 0.34375,
+          "ci95": [
+            0.34375,
+            0.34375
+          ],
+          "n": 1
+        },
+        "search_success_rate": {
+          "mean": 0.9375,
+          "ci95": [
+            0.9375,
+            0.9375
+          ],
+          "n": 1
+        },
+        "cumulative_action_regret": {
+          "mean": 13.0,
+          "ci95": [
+            13.0,
+            13.0
+          ],
+          "n": 1
+        },
+        "mean_search_cost": {
+          "mean": 1.09375,
+          "ci95": [
+            1.09375,
+            1.09375
+          ],
+          "n": 1
+        }
+      },
+      "615d2163-38e1-4434-9fc7-542891bcef83": {
+        "put_back_error_rate": {
+          "mean": 0.28125,
+          "ci95": [
+            0.28125,
+            0.28125
+          ],
+          "n": 1
+        },
+        "search_success_rate": {
+          "mean": 0.875,
+          "ci95": [
+            0.875,
+            0.875
+          ],
+          "n": 1
+        },
+        "cumulative_action_regret": {
+          "mean": 13.0,
+          "ci95": [
+            13.0,
+            13.0
+          ],
+          "n": 1
+        },
+        "mean_search_cost": {
+          "mean": 1.28125,
+          "ci95": [
+            1.28125,
+            1.28125
+          ],
+          "n": 1
+        }
+      },
+      "63efb696-9102-d2f1-b41a-a2f211db5386": {
+        "put_back_error_rate": {
+          "mean": 0.375,
+          "ci95": [
+            0.375,
+            0.375
+          ],
+          "n": 1
+        },
+        "search_success_rate": {
+          "mean": 0.9375,
+          "ci95": [
+            0.9375,
+            0.9375
+          ],
+          "n": 1
+        },
+        "cumulative_action_regret": {
+          "mean": 14.0,
+          "ci95": [
+            14.0,
+            14.0
+          ],
+          "n": 1
+        },
+        "mean_search_cost": {
+          "mean": 1.0625,
+          "ci95": [
+            1.0625,
+            1.0625
+          ],
+          "n": 1
+        }
+      },
+      "6603ad9d-42a8-0514-89a9-e5644c660de4": {
+        "put_back_error_rate": {
+          "mean": 0.28125,
+          "ci95": [
+            0.28125,
+            0.28125
+          ],
+          "n": 1
+        },
+        "search_success_rate": {
+          "mean": 0.9375,
+          "ci95": [
+            0.9375,
+            0.9375
+          ],
+          "n": 1
+        },
+        "cumulative_action_regret": {
+          "mean": 11.0,
+          "ci95": [
+            11.0,
+            11.0
+          ],
+          "n": 1
+        },
+        "mean_search_cost": {
+          "mean": 1.15625,
+          "ci95": [
+            1.15625,
+            1.15625
+          ],
+          "n": 1
+        }
+      },
+      "672f2b00-6936-b24f-dbaf-b12c6d78b0d8": {
+        "put_back_error_rate": {
+          "mean": 0.28125,
+          "ci95": [
+            0.28125,
+            0.28125
+          ],
+          "n": 1
+        },
+        "search_success_rate": {
+          "mean": 0.90625,
+          "ci95": [
+            0.90625,
+            0.90625
+          ],
+          "n": 1
+        },
+        "cumulative_action_regret": {
+          "mean": 12.0,
+          "ci95": [
+            12.0,
+            12.0
+          ],
+          "n": 1
+        },
+        "mean_search_cost": {
+          "mean": 1.21875,
+          "ci95": [
+            1.21875,
+            1.21875
+          ],
+          "n": 1
+        }
+      },
+      "6787a4fd-3f20-8dc9-6345-24ffb02240c0": {
+        "put_back_error_rate": {
+          "mean": 0.25,
+          "ci95": [
+            0.25,
+            0.25
+          ],
+          "n": 1
+        },
+        "search_success_rate": {
+          "mean": 0.90625,
+          "ci95": [
+            0.90625,
+            0.90625
+          ],
+          "n": 1
+        },
+        "cumulative_action_regret": {
+          "mean": 11.0,
+          "ci95": [
+            11.0,
+            11.0
+          ],
+          "n": 1
+        },
+        "mean_search_cost": {
+          "mean": 1.1875,
+          "ci95": [
+            1.1875,
+            1.1875
+          ],
+          "n": 1
+        }
+      },
+      "69e24554-6b69-1b91-31f2-ada3902d1f51": {
+        "put_back_error_rate": {
+          "mean": 0.28125,
+          "ci95": [
+            0.28125,
+            0.28125
+          ],
+          "n": 1
+        },
+        "search_success_rate": {
+          "mean": 0.875,
+          "ci95": [
+            0.875,
+            0.875
+          ],
+          "n": 1
+        },
+        "cumulative_action_regret": {
+          "mean": 13.0,
+          "ci95": [
+            13.0,
+            13.0
+          ],
+          "n": 1
+        },
+        "mean_search_cost": {
+          "mean": 1.25,
+          "ci95": [
+            1.25,
+            1.25
+          ],
+          "n": 1
+        }
+      },
+      "69eec79e-ce40-0f0c-4e60-d7b219a8a6de": {
+        "put_back_error_rate": {
+          "mean": 0.28125,
+          "ci95": [
+            0.28125,
+            0.28125
+          ],
+          "n": 1
+        },
+        "search_success_rate": {
+          "mean": 1.0,
+          "ci95": [
+            1.0,
+            1.0
+          ],
+          "n": 1
+        },
+        "cumulative_action_regret": {
+          "mean": 9.0,
+          "ci95": [
+            9.0,
+            9.0
+          ],
+          "n": 1
+        },
+        "mean_search_cost": {
+          "mean": 1.0,
+          "ci95": [
+            1.0,
+            1.0
+          ],
+          "n": 1
+        }
+      },
+      "6cb4c7f5-6bbf-f355-fc0a-dd14ec266743": {
+        "put_back_error_rate": {
+          "mean": 0.3125,
+          "ci95": [
+            0.3125,
+            0.3125
+          ],
+          "n": 1
+        },
+        "search_success_rate": {
+          "mean": 0.84375,
+          "ci95": [
+            0.84375,
+            0.84375
+          ],
+          "n": 1
+        },
+        "cumulative_action_regret": {
+          "mean": 15.0,
+          "ci95": [
+            15.0,
+            15.0
+          ],
+          "n": 1
+        },
+        "mean_search_cost": {
+          "mean": 1.3125,
+          "ci95": [
+            1.3125,
+            1.3125
+          ],
+          "n": 1
+        }
+      },
+      "6f3c66cb-33b0-e008-21ea-056e9906da8b": {
+        "put_back_error_rate": {
+          "mean": 0.34375,
+          "ci95": [
+            0.34375,
+            0.34375
+          ],
+          "n": 1
+        },
+        "search_success_rate": {
+          "mean": 0.96875,
+          "ci95": [
+            0.96875,
+            0.96875
+          ],
+          "n": 1
+        },
+        "cumulative_action_regret": {
+          "mean": 12.0,
+          "ci95": [
+            12.0,
+            12.0
+          ],
+          "n": 1
+        },
+        "mean_search_cost": {
+          "mean": 1.0625,
+          "ci95": [
+            1.0625,
+            1.0625
+          ],
+          "n": 1
+        }
+      },
+      "71bcc9ee-ccea-f190-1c18-8ef3ecb627fe": {
+        "put_back_error_rate": {
+          "mean": 0.375,
+          "ci95": [
+            0.375,
+            0.375
+          ],
+          "n": 1
+        },
+        "search_success_rate": {
+          "mean": 0.90625,
+          "ci95": [
+            0.90625,
+            0.90625
+          ],
+          "n": 1
+        },
+        "cumulative_action_regret": {
+          "mean": 15.0,
+          "ci95": [
+            15.0,
+            15.0
+          ],
+          "n": 1
+        },
+        "mean_search_cost": {
+          "mean": 1.1875,
+          "ci95": [
+            1.1875,
+            1.1875
+          ],
+          "n": 1
+        }
+      },
+      "7270cc19-a02e-9b06-9c3a-851a7947d3e4": {
+        "put_back_error_rate": {
+          "mean": 0.28125,
+          "ci95": [
+            0.28125,
+            0.28125
+          ],
+          "n": 1
+        },
+        "search_success_rate": {
+          "mean": 0.9375,
+          "ci95": [
+            0.9375,
+            0.9375
+          ],
+          "n": 1
+        },
+        "cumulative_action_regret": {
+          "mean": 11.0,
+          "ci95": [
+            11.0,
+            11.0
+          ],
+          "n": 1
+        },
+        "mean_search_cost": {
+          "mean": 1.09375,
+          "ci95": [
+            1.09375,
+            1.09375
+          ],
+          "n": 1
+        }
+      },
+      "7a426ee2-2d48-6a7d-7800-86b700786425": {
+        "put_back_error_rate": {
+          "mean": 0.34375,
+          "ci95": [
+            0.34375,
+            0.34375
+          ],
+          "n": 1
+        },
+        "search_success_rate": {
+          "mean": 0.875,
+          "ci95": [
+            0.875,
+            0.875
+          ],
+          "n": 1
+        },
+        "cumulative_action_regret": {
+          "mean": 15.0,
+          "ci95": [
+            15.0,
+            15.0
+          ],
+          "n": 1
+        },
+        "mean_search_cost": {
+          "mean": 1.21875,
+          "ci95": [
+            1.21875,
+            1.21875
+          ],
+          "n": 1
+        }
+      },
+      "7c4692e3-e912-fa7b-2009-08920e28a59a": {
+        "put_back_error_rate": {
+          "mean": 0.3125,
+          "ci95": [
+            0.3125,
+            0.3125
+          ],
+          "n": 1
+        },
+        "search_success_rate": {
+          "mean": 0.8125,
+          "ci95": [
+            0.8125,
+            0.8125
+          ],
+          "n": 1
+        },
+        "cumulative_action_regret": {
+          "mean": 16.0,
+          "ci95": [
+            16.0,
+            16.0
+          ],
+          "n": 1
+        },
+        "mean_search_cost": {
+          "mean": 1.3125,
+          "ci95": [
+            1.3125,
+            1.3125
+          ],
+          "n": 1
+        }
+      },
+      "7e887873-b137-ffe6-5cf9-ebdda2aa1558": {
+        "put_back_error_rate": {
+          "mean": 0.3125,
+          "ci95": [
+            0.3125,
+            0.3125
+          ],
+          "n": 1
+        },
+        "search_success_rate": {
+          "mean": 0.9375,
+          "ci95": [
+            0.9375,
+            0.9375
+          ],
+          "n": 1
+        },
+        "cumulative_action_regret": {
+          "mean": 12.0,
+          "ci95": [
+            12.0,
+            12.0
+          ],
+          "n": 1
+        },
+        "mean_search_cost": {
+          "mean": 1.0625,
+          "ci95": [
+            1.0625,
+            1.0625
+          ],
+          "n": 1
+        }
+      },
+      "825a6b71-2241-ff41-f0ac-174baf6aebf9": {
+        "put_back_error_rate": {
+          "mean": 0.375,
+          "ci95": [
+            0.375,
+            0.375
+          ],
+          "n": 1
+        },
+        "search_success_rate": {
+          "mean": 0.78125,
+          "ci95": [
+            0.78125,
+            0.78125
+          ],
+          "n": 1
+        },
+        "cumulative_action_regret": {
+          "mean": 19.0,
+          "ci95": [
+            19.0,
+            19.0
+          ],
+          "n": 1
+        },
+        "mean_search_cost": {
+          "mean": 1.25,
+          "ci95": [
+            1.25,
+            1.25
+          ],
+          "n": 1
+        }
+      },
+      "853a7812-f4f2-ef83-6c04-f75edde33adb": {
+        "put_back_error_rate": {
+          "mean": 0.28125,
+          "ci95": [
+            0.28125,
+            0.28125
+          ],
+          "n": 1
+        },
+        "search_success_rate": {
+          "mean": 0.9375,
+          "ci95": [
+            0.9375,
+            0.9375
+          ],
+          "n": 1
+        },
+        "cumulative_action_regret": {
+          "mean": 11.0,
+          "ci95": [
+            11.0,
+            11.0
+          ],
+          "n": 1
+        },
+        "mean_search_cost": {
+          "mean": 1.09375,
+          "ci95": [
+            1.09375,
+            1.09375
+          ],
+          "n": 1
+        }
+      },
+      "8826735f-fa88-dca9-886d-94ab51b5ac47": {
+        "put_back_error_rate": {
+          "mean": 0.28125,
+          "ci95": [
+            0.28125,
+            0.28125
+          ],
+          "n": 1
+        },
+        "search_success_rate": {
+          "mean": 0.90625,
+          "ci95": [
+            0.90625,
+            0.90625
+          ],
+          "n": 1
+        },
+        "cumulative_action_regret": {
+          "mean": 12.0,
+          "ci95": [
+            12.0,
+            12.0
+          ],
+          "n": 1
+        },
+        "mean_search_cost": {
+          "mean": 1.15625,
+          "ci95": [
+            1.15625,
+            1.15625
+          ],
+          "n": 1
+        }
+      },
+      "8a32ea54-cfd0-1201-381d-7745c5ce70dc": {
+        "put_back_error_rate": {
+          "mean": 0.34375,
+          "ci95": [
+            0.34375,
+            0.34375
+          ],
+          "n": 1
+        },
+        "search_success_rate": {
+          "mean": 0.8125,
+          "ci95": [
+            0.8125,
+            0.8125
+          ],
+          "n": 1
+        },
+        "cumulative_action_regret": {
+          "mean": 17.0,
+          "ci95": [
+            17.0,
+            17.0
+          ],
+          "n": 1
+        },
+        "mean_search_cost": {
+          "mean": 1.375,
+          "ci95": [
+            1.375,
+            1.375
+          ],
+          "n": 1
+        }
+      },
+      "8c9fbc68-c34e-fb46-0274-dac59c5b634b": {
+        "put_back_error_rate": {
+          "mean": 0.34375,
+          "ci95": [
+            0.34375,
+            0.34375
+          ],
+          "n": 1
+        },
+        "search_success_rate": {
+          "mean": 0.9375,
+          "ci95": [
+            0.9375,
+            0.9375
+          ],
+          "n": 1
+        },
+        "cumulative_action_regret": {
+          "mean": 13.0,
+          "ci95": [
+            13.0,
+            13.0
+          ],
+          "n": 1
+        },
+        "mean_search_cost": {
+          "mean": 1.09375,
+          "ci95": [
+            1.09375,
+            1.09375
+          ],
+          "n": 1
+        }
+      },
+      "8ea7ec9e-be20-71c6-a469-300b41890d72": {
+        "put_back_error_rate": {
+          "mean": 0.3125,
+          "ci95": [
+            0.3125,
+            0.3125
+          ],
+          "n": 1
+        },
+        "search_success_rate": {
+          "mean": 0.90625,
+          "ci95": [
+            0.90625,
+            0.90625
+          ],
+          "n": 1
+        },
+        "cumulative_action_regret": {
+          "mean": 13.0,
+          "ci95": [
+            13.0,
+            13.0
+          ],
+          "n": 1
+        },
+        "mean_search_cost": {
+          "mean": 1.125,
+          "ci95": [
+            1.125,
+            1.125
+          ],
+          "n": 1
+        }
+      },
+      "91210e12-9612-2db0-9ee4-63868f3c1a04": {
+        "put_back_error_rate": {
+          "mean": 0.34375,
+          "ci95": [
+            0.34375,
+            0.34375
+          ],
+          "n": 1
+        },
+        "search_success_rate": {
+          "mean": 0.96875,
+          "ci95": [
+            0.96875,
+            0.96875
+          ],
+          "n": 1
+        },
+        "cumulative_action_regret": {
+          "mean": 12.0,
+          "ci95": [
+            12.0,
+            12.0
+          ],
+          "n": 1
+        },
+        "mean_search_cost": {
+          "mean": 1.03125,
+          "ci95": [
+            1.03125,
+            1.03125
+          ],
+          "n": 1
+        }
+      },
+      "947bfe44-41d4-fa34-444a-69387e58d454": {
+        "put_back_error_rate": {
+          "mean": 0.28125,
+          "ci95": [
+            0.28125,
+            0.28125
+          ],
+          "n": 1
+        },
+        "search_success_rate": {
+          "mean": 0.96875,
+          "ci95": [
+            0.96875,
+            0.96875
+          ],
+          "n": 1
+        },
+        "cumulative_action_regret": {
+          "mean": 10.0,
+          "ci95": [
+            10.0,
+            10.0
+          ],
+          "n": 1
+        },
+        "mean_search_cost": {
+          "mean": 1.09375,
+          "ci95": [
+            1.09375,
+            1.09375
+          ],
+          "n": 1
+        }
+      },
+      "954383fa-fefd-97c6-3731-27b7f171cb91": {
+        "put_back_error_rate": {
+          "mean": 0.46875,
+          "ci95": [
+            0.46875,
+            0.46875
+          ],
+          "n": 1
+        },
+        "search_success_rate": {
+          "mean": 0.75,
+          "ci95": [
+            0.75,
+            0.75
+          ],
+          "n": 1
+        },
+        "cumulative_action_regret": {
+          "mean": 23.0,
+          "ci95": [
+            23.0,
+            23.0
+          ],
+          "n": 1
+        },
+        "mean_search_cost": {
+          "mean": 1.40625,
+          "ci95": [
+            1.40625,
+            1.40625
+          ],
+          "n": 1
+        }
+      },
+      "97f847c6-b47d-2e02-adaa-bec3e0bf9c7a": {
+        "put_back_error_rate": {
+          "mean": 0.28125,
+          "ci95": [
+            0.28125,
+            0.28125
+          ],
+          "n": 1
+        },
+        "search_success_rate": {
+          "mean": 0.9375,
+          "ci95": [
+            0.9375,
+            0.9375
+          ],
+          "n": 1
+        },
+        "cumulative_action_regret": {
+          "mean": 11.0,
+          "ci95": [
+            11.0,
+            11.0
+          ],
+          "n": 1
+        },
+        "mean_search_cost": {
+          "mean": 1.125,
+          "ci95": [
+            1.125,
+            1.125
+          ],
+          "n": 1
+        }
+      },
+      "9df76568-9435-ac01-d004-c3246a5533d8": {
+        "put_back_error_rate": {
+          "mean": 0.28125,
+          "ci95": [
+            0.28125,
+            0.28125
+          ],
+          "n": 1
+        },
+        "search_success_rate": {
+          "mean": 0.90625,
+          "ci95": [
+            0.90625,
+            0.90625
+          ],
+          "n": 1
+        },
+        "cumulative_action_regret": {
+          "mean": 12.0,
+          "ci95": [
+            12.0,
+            12.0
+          ],
+          "n": 1
+        },
+        "mean_search_cost": {
+          "mean": 1.09375,
+          "ci95": [
+            1.09375,
+            1.09375
+          ],
+          "n": 1
+        }
+      },
+      "9e98bc54-3547-f2d6-a68b-61bc1d991e5f": {
+        "put_back_error_rate": {
+          "mean": 0.28125,
+          "ci95": [
+            0.28125,
+            0.28125
+          ],
+          "n": 1
+        },
+        "search_success_rate": {
+          "mean": 0.9375,
+          "ci95": [
+            0.9375,
+            0.9375
+          ],
+          "n": 1
+        },
+        "cumulative_action_regret": {
+          "mean": 11.0,
+          "ci95": [
+            11.0,
+            11.0
+          ],
+          "n": 1
+        },
+        "mean_search_cost": {
+          "mean": 1.0625,
+          "ci95": [
+            1.0625,
+            1.0625
+          ],
+          "n": 1
+        }
+      },
+      "9feb924c-4b2b-2f47-2fae-43581f6cbde6": {
+        "put_back_error_rate": {
+          "mean": 0.28125,
+          "ci95": [
+            0.28125,
+            0.28125
+          ],
+          "n": 1
+        },
+        "search_success_rate": {
+          "mean": 0.96875,
+          "ci95": [
+            0.96875,
+            0.96875
+          ],
+          "n": 1
+        },
+        "cumulative_action_regret": {
+          "mean": 10.0,
+          "ci95": [
+            10.0,
+            10.0
+          ],
+          "n": 1
+        },
+        "mean_search_cost": {
+          "mean": 1.03125,
+          "ci95": [
+            1.03125,
+            1.03125
+          ],
+          "n": 1
+        }
+      },
+      "a364dbb3-a081-9668-ee31-db68dda25e1c": {
+        "put_back_error_rate": {
+          "mean": 0.28125,
+          "ci95": [
+            0.28125,
+            0.28125
+          ],
+          "n": 1
+        },
+        "search_success_rate": {
+          "mean": 0.90625,
+          "ci95": [
+            0.90625,
+            0.90625
+          ],
+          "n": 1
+        },
+        "cumulative_action_regret": {
+          "mean": 12.0,
+          "ci95": [
+            12.0,
+            12.0
+          ],
+          "n": 1
+        },
+        "mean_search_cost": {
+          "mean": 1.25,
+          "ci95": [
+            1.25,
+            1.25
+          ],
+          "n": 1
+        }
+      },
+      "a7f82d1c-94c8-7c95-2853-4c26e87a408b": {
+        "put_back_error_rate": {
+          "mean": 0.28125,
+          "ci95": [
+            0.28125,
+            0.28125
+          ],
+          "n": 1
+        },
+        "search_success_rate": {
+          "mean": 0.96875,
+          "ci95": [
+            0.96875,
+            0.96875
+          ],
+          "n": 1
+        },
+        "cumulative_action_regret": {
+          "mean": 10.0,
+          "ci95": [
+            10.0,
+            10.0
+          ],
+          "n": 1
+        },
+        "mean_search_cost": {
+          "mean": 1.0625,
+          "ci95": [
+            1.0625,
+            1.0625
+          ],
+          "n": 1
+        }
+      },
+      "ac2d2809-3ac2-0037-0a07-cbeff31a7642": {
+        "put_back_error_rate": {
+          "mean": 0.34375,
+          "ci95": [
+            0.34375,
+            0.34375
+          ],
+          "n": 1
+        },
+        "search_success_rate": {
+          "mean": 0.96875,
+          "ci95": [
+            0.96875,
+            0.96875
+          ],
+          "n": 1
+        },
+        "cumulative_action_regret": {
+          "mean": 12.0,
+          "ci95": [
+            12.0,
+            12.0
+          ],
+          "n": 1
+        },
+        "mean_search_cost": {
+          "mean": 1.03125,
+          "ci95": [
+            1.03125,
+            1.03125
+          ],
+          "n": 1
+        }
+      },
+      "ae7d9550-38b9-7497-805c-5003008756bc": {
+        "put_back_error_rate": {
+          "mean": 0.28125,
+          "ci95": [
+            0.28125,
+            0.28125
+          ],
+          "n": 1
+        },
+        "search_success_rate": {
+          "mean": 1.0,
+          "ci95": [
+            1.0,
+            1.0
+          ],
+          "n": 1
+        },
+        "cumulative_action_regret": {
+          "mean": 9.0,
+          "ci95": [
+            9.0,
+            9.0
+          ],
+          "n": 1
+        },
+        "mean_search_cost": {
+          "mean": 1.0,
+          "ci95": [
+            1.0,
+            1.0
+          ],
+          "n": 1
+        }
+      },
+      "b335bade-0903-7e4d-36d5-d84cafb66806": {
+        "put_back_error_rate": {
+          "mean": 0.34375,
+          "ci95": [
+            0.34375,
+            0.34375
+          ],
+          "n": 1
+        },
+        "search_success_rate": {
+          "mean": 0.9375,
+          "ci95": [
+            0.9375,
+            0.9375
+          ],
+          "n": 1
+        },
+        "cumulative_action_regret": {
+          "mean": 13.0,
+          "ci95": [
+            13.0,
+            13.0
+          ],
+          "n": 1
+        },
+        "mean_search_cost": {
+          "mean": 1.09375,
+          "ci95": [
+            1.09375,
+            1.09375
+          ],
+          "n": 1
+        }
+      },
+      "b36fa4ec-96eb-0266-6ad2-05a944b7d0ab": {
+        "put_back_error_rate": {
+          "mean": 0.3125,
+          "ci95": [
+            0.3125,
+            0.3125
+          ],
+          "n": 1
+        },
+        "search_success_rate": {
+          "mean": 0.875,
+          "ci95": [
+            0.875,
+            0.875
+          ],
+          "n": 1
+        },
+        "cumulative_action_regret": {
+          "mean": 14.0,
+          "ci95": [
+            14.0,
+            14.0
+          ],
+          "n": 1
+        },
+        "mean_search_cost": {
+          "mean": 1.1875,
+          "ci95": [
+            1.1875,
+            1.1875
+          ],
+          "n": 1
+        }
+      },
+      "bbbd20fa-0d89-4a24-3d8a-2a4b6a6f270d": {
+        "put_back_error_rate": {
+          "mean": 0.34375,
+          "ci95": [
+            0.34375,
+            0.34375
+          ],
+          "n": 1
+        },
+        "search_success_rate": {
+          "mean": 0.875,
+          "ci95": [
+            0.875,
+            0.875
+          ],
+          "n": 1
+        },
+        "cumulative_action_regret": {
+          "mean": 15.0,
+          "ci95": [
+            15.0,
+            15.0
+          ],
+          "n": 1
+        },
+        "mean_search_cost": {
+          "mean": 1.15625,
+          "ci95": [
+            1.15625,
+            1.15625
+          ],
+          "n": 1
+        }
+      },
+      "bcc18bbe-2975-ded4-5cbb-a4ba1659f5ea": {
+        "put_back_error_rate": {
+          "mean": 0.375,
+          "ci95": [
+            0.375,
+            0.375
+          ],
+          "n": 1
+        },
+        "search_success_rate": {
+          "mean": 0.875,
+          "ci95": [
+            0.875,
+            0.875
+          ],
+          "n": 1
+        },
+        "cumulative_action_regret": {
+          "mean": 16.0,
+          "ci95": [
+            16.0,
+            16.0
+          ],
+          "n": 1
+        },
+        "mean_search_cost": {
+          "mean": 1.1875,
+          "ci95": [
+            1.1875,
+            1.1875
+          ],
+          "n": 1
+        }
+      },
+      "bf8e242d-b700-2899-6f54-36421cd953a8": {
+        "put_back_error_rate": {
+          "mean": 0.34375,
+          "ci95": [
+            0.34375,
+            0.34375
+          ],
+          "n": 1
+        },
+        "search_success_rate": {
+          "mean": 0.875,
+          "ci95": [
+            0.875,
+            0.875
+          ],
+          "n": 1
+        },
+        "cumulative_action_regret": {
+          "mean": 15.0,
+          "ci95": [
+            15.0,
+            15.0
+          ],
+          "n": 1
+        },
+        "mean_search_cost": {
+          "mean": 1.34375,
+          "ci95": [
+            1.34375,
+            1.34375
+          ],
+          "n": 1
+        }
+      },
+      "bfc9ae47-2a59-b70c-e11e-2fdc6292fae9": {
+        "put_back_error_rate": {
+          "mean": 0.28125,
+          "ci95": [
+            0.28125,
+            0.28125
+          ],
+          "n": 1
+        },
+        "search_success_rate": {
+          "mean": 0.90625,
+          "ci95": [
+            0.90625,
+            0.90625
+          ],
+          "n": 1
+        },
+        "cumulative_action_regret": {
+          "mean": 12.0,
+          "ci95": [
+            12.0,
+            12.0
+          ],
+          "n": 1
+        },
+        "mean_search_cost": {
+          "mean": 1.15625,
+          "ci95": [
+            1.15625,
+            1.15625
+          ],
+          "n": 1
+        }
+      },
+      "c0eb5771-946a-1be5-80cf-1d8444eb7ffd": {
+        "put_back_error_rate": {
+          "mean": 0.28125,
+          "ci95": [
+            0.28125,
+            0.28125
+          ],
+          "n": 1
+        },
+        "search_success_rate": {
+          "mean": 0.96875,
+          "ci95": [
+            0.96875,
+            0.96875
+          ],
+          "n": 1
+        },
+        "cumulative_action_regret": {
+          "mean": 10.0,
+          "ci95": [
+            10.0,
+            10.0
+          ],
+          "n": 1
+        },
+        "mean_search_cost": {
+          "mean": 1.0625,
+          "ci95": [
+            1.0625,
+            1.0625
+          ],
+          "n": 1
+        }
+      },
+      "c6c67144-4a38-cae1-35f5-a5009432f63c": {
+        "put_back_error_rate": {
+          "mean": 0.34375,
+          "ci95": [
+            0.34375,
+            0.34375
+          ],
+          "n": 1
+        },
+        "search_success_rate": {
+          "mean": 0.9375,
+          "ci95": [
+            0.9375,
+            0.9375
+          ],
+          "n": 1
+        },
+        "cumulative_action_regret": {
+          "mean": 13.0,
+          "ci95": [
+            13.0,
+            13.0
+          ],
+          "n": 1
+        },
+        "mean_search_cost": {
+          "mean": 1.09375,
+          "ci95": [
+            1.09375,
+            1.09375
+          ],
+          "n": 1
+        }
+      },
+      "c85012fd-22fd-09c0-9803-01921d6c7072": {
+        "put_back_error_rate": {
+          "mean": 0.28125,
+          "ci95": [
+            0.28125,
+            0.28125
+          ],
+          "n": 1
+        },
+        "search_success_rate": {
+          "mean": 0.9375,
+          "ci95": [
+            0.9375,
+            0.9375
+          ],
+          "n": 1
+        },
+        "cumulative_action_regret": {
+          "mean": 11.0,
+          "ci95": [
+            11.0,
+            11.0
+          ],
+          "n": 1
+        },
+        "mean_search_cost": {
+          "mean": 1.125,
+          "ci95": [
+            1.125,
+            1.125
+          ],
+          "n": 1
+        }
+      },
+      "c9727f18-4c4c-d923-b6c4-2032812d1973": {
+        "put_back_error_rate": {
+          "mean": 0.28125,
+          "ci95": [
+            0.28125,
+            0.28125
+          ],
+          "n": 1
+        },
+        "search_success_rate": {
+          "mean": 0.96875,
+          "ci95": [
+            0.96875,
+            0.96875
+          ],
+          "n": 1
+        },
+        "cumulative_action_regret": {
+          "mean": 10.0,
+          "ci95": [
+            10.0,
+            10.0
+          ],
+          "n": 1
+        },
+        "mean_search_cost": {
+          "mean": 1.0625,
+          "ci95": [
+            1.0625,
+            1.0625
+          ],
+          "n": 1
+        }
+      },
+      "cffa4379-8d46-937f-7382-0962bc246c72": {
+        "put_back_error_rate": {
+          "mean": 0.34375,
+          "ci95": [
+            0.34375,
+            0.34375
+          ],
+          "n": 1
+        },
+        "search_success_rate": {
+          "mean": 0.90625,
+          "ci95": [
+            0.90625,
+            0.90625
+          ],
+          "n": 1
+        },
+        "cumulative_action_regret": {
+          "mean": 14.0,
+          "ci95": [
+            14.0,
+            14.0
+          ],
+          "n": 1
+        },
+        "mean_search_cost": {
+          "mean": 1.1875,
+          "ci95": [
+            1.1875,
+            1.1875
+          ],
+          "n": 1
+        }
+      },
+      "d0f7f2f6-47b5-7d53-1ba3-a7873044375d": {
+        "put_back_error_rate": {
+          "mean": 0.28125,
+          "ci95": [
+            0.28125,
+            0.28125
+          ],
+          "n": 1
+        },
+        "search_success_rate": {
+          "mean": 0.9375,
+          "ci95": [
+            0.9375,
+            0.9375
+          ],
+          "n": 1
+        },
+        "cumulative_action_regret": {
+          "mean": 11.0,
+          "ci95": [
+            11.0,
+            11.0
+          ],
+          "n": 1
+        },
+        "mean_search_cost": {
+          "mean": 1.09375,
+          "ci95": [
+            1.09375,
+            1.09375
+          ],
+          "n": 1
+        }
+      },
+      "d4a0d27a-c27d-c52f-3a5d-711f64a172ab": {
+        "put_back_error_rate": {
+          "mean": 0.34375,
+          "ci95": [
+            0.34375,
+            0.34375
+          ],
+          "n": 1
+        },
+        "search_success_rate": {
+          "mean": 0.90625,
+          "ci95": [
+            0.90625,
+            0.90625
+          ],
+          "n": 1
+        },
+        "cumulative_action_regret": {
+          "mean": 14.0,
+          "ci95": [
+            14.0,
+            14.0
+          ],
+          "n": 1
+        },
+        "mean_search_cost": {
+          "mean": 1.125,
+          "ci95": [
+            1.125,
+            1.125
+          ],
+          "n": 1
+        }
+      },
+      "da2f1915-1a8e-c61a-7380-3314da170f45": {
+        "put_back_error_rate": {
+          "mean": 0.28125,
+          "ci95": [
+            0.28125,
+            0.28125
+          ],
+          "n": 1
+        },
+        "search_success_rate": {
+          "mean": 0.90625,
+          "ci95": [
+            0.90625,
+            0.90625
+          ],
+          "n": 1
+        },
+        "cumulative_action_regret": {
+          "mean": 12.0,
+          "ci95": [
+            12.0,
+            12.0
+          ],
+          "n": 1
+        },
+        "mean_search_cost": {
+          "mean": 1.1875,
+          "ci95": [
+            1.1875,
+            1.1875
+          ],
+          "n": 1
+        }
+      },
+      "dabbd9b6-c5f6-e3d5-25f3-7cd742eb89e1": {
+        "put_back_error_rate": {
+          "mean": 0.28125,
+          "ci95": [
+            0.28125,
+            0.28125
+          ],
+          "n": 1
+        },
+        "search_success_rate": {
+          "mean": 0.96875,
+          "ci95": [
+            0.96875,
+            0.96875
+          ],
+          "n": 1
+        },
+        "cumulative_action_regret": {
+          "mean": 10.0,
+          "ci95": [
+            10.0,
+            10.0
+          ],
+          "n": 1
+        },
+        "mean_search_cost": {
+          "mean": 1.03125,
+          "ci95": [
+            1.03125,
+            1.03125
+          ],
+          "n": 1
+        }
+      },
+      "dc88e355-ba9c-c8e7-ad95-ef47d6ba14c2": {
+        "put_back_error_rate": {
+          "mean": 0.21875,
+          "ci95": [
+            0.21875,
+            0.21875
+          ],
+          "n": 1
+        },
+        "search_success_rate": {
+          "mean": 0.78125,
+          "ci95": [
+            0.78125,
+            0.78125
+          ],
+          "n": 1
+        },
+        "cumulative_action_regret": {
+          "mean": 14.0,
+          "ci95": [
+            14.0,
+            14.0
+          ],
+          "n": 1
+        },
+        "mean_search_cost": {
+          "mean": 1.375,
+          "ci95": [
+            1.375,
+            1.375
+          ],
+          "n": 1
+        }
+      },
+      "df5da4ea-8dfb-9280-9d78-d9ed7acfe33f": {
+        "put_back_error_rate": {
+          "mean": 0.28125,
+          "ci95": [
+            0.28125,
+            0.28125
+          ],
+          "n": 1
+        },
+        "search_success_rate": {
+          "mean": 0.875,
+          "ci95": [
+            0.875,
+            0.875
+          ],
+          "n": 1
+        },
+        "cumulative_action_regret": {
+          "mean": 13.0,
+          "ci95": [
+            13.0,
+            13.0
+          ],
+          "n": 1
+        },
+        "mean_search_cost": {
+          "mean": 1.125,
+          "ci95": [
+            1.125,
+            1.125
+          ],
+          "n": 1
+        }
+      },
+      "df8e9cce-af49-3d0a-ab79-cb567cbb278c": {
+        "put_back_error_rate": {
+          "mean": 0.28125,
+          "ci95": [
+            0.28125,
+            0.28125
+          ],
+          "n": 1
+        },
+        "search_success_rate": {
+          "mean": 0.9375,
+          "ci95": [
+            0.9375,
+            0.9375
+          ],
+          "n": 1
+        },
+        "cumulative_action_regret": {
+          "mean": 11.0,
+          "ci95": [
+            11.0,
+            11.0
+          ],
+          "n": 1
+        },
+        "mean_search_cost": {
+          "mean": 1.0625,
+          "ci95": [
+            1.0625,
+            1.0625
+          ],
+          "n": 1
+        }
+      },
+      "e9fb50c5-2552-3bee-7c7e-b23f8c480d02": {
+        "put_back_error_rate": {
+          "mean": 0.28125,
+          "ci95": [
+            0.28125,
+            0.28125
+          ],
+          "n": 1
+        },
+        "search_success_rate": {
+          "mean": 0.96875,
+          "ci95": [
+            0.96875,
+            0.96875
+          ],
+          "n": 1
+        },
+        "cumulative_action_regret": {
+          "mean": 10.0,
+          "ci95": [
+            10.0,
+            10.0
+          ],
+          "n": 1
+        },
+        "mean_search_cost": {
+          "mean": 1.03125,
+          "ci95": [
+            1.03125,
+            1.03125
+          ],
+          "n": 1
+        }
+      },
+      "ed3acd9f-a6f3-bfd5-f46a-9f03816bf2dd": {
+        "put_back_error_rate": {
+          "mean": 0.28125,
+          "ci95": [
+            0.28125,
+            0.28125
+          ],
+          "n": 1
+        },
+        "search_success_rate": {
+          "mean": 0.90625,
+          "ci95": [
+            0.90625,
+            0.90625
+          ],
+          "n": 1
+        },
+        "cumulative_action_regret": {
+          "mean": 12.0,
+          "ci95": [
+            12.0,
+            12.0
+          ],
+          "n": 1
+        },
+        "mean_search_cost": {
+          "mean": 1.09375,
+          "ci95": [
+            1.09375,
+            1.09375
+          ],
+          "n": 1
+        }
+      },
+      "eec31454-1124-c2ce-c074-c53d74cb5081": {
+        "put_back_error_rate": {
+          "mean": 0.3125,
+          "ci95": [
+            0.3125,
+            0.3125
+          ],
+          "n": 1
+        },
+        "search_success_rate": {
+          "mean": 0.875,
+          "ci95": [
+            0.875,
+            0.875
+          ],
+          "n": 1
+        },
+        "cumulative_action_regret": {
+          "mean": 14.0,
+          "ci95": [
+            14.0,
+            14.0
+          ],
+          "n": 1
+        },
+        "mean_search_cost": {
+          "mean": 1.125,
+          "ci95": [
+            1.125,
+            1.125
+          ],
+          "n": 1
+        }
+      },
+      "f0df6790-0d6d-a07f-3d16-d62330603588": {
+        "put_back_error_rate": {
+          "mean": 0.28125,
+          "ci95": [
+            0.28125,
+            0.28125
+          ],
+          "n": 1
+        },
+        "search_success_rate": {
+          "mean": 0.8125,
+          "ci95": [
+            0.8125,
+            0.8125
+          ],
+          "n": 1
+        },
+        "cumulative_action_regret": {
+          "mean": 15.0,
+          "ci95": [
+            15.0,
+            15.0
+          ],
+          "n": 1
+        },
+        "mean_search_cost": {
+          "mean": 1.375,
+          "ci95": [
+            1.375,
+            1.375
+          ],
+          "n": 1
+        }
+      },
+      "f6110bb1-60fc-b476-89d1-d7d62fd5da52": {
+        "put_back_error_rate": {
+          "mean": 0.46875,
+          "ci95": [
+            0.46875,
+            0.46875
+          ],
+          "n": 1
+        },
+        "search_success_rate": {
+          "mean": 0.90625,
+          "ci95": [
+            0.90625,
+            0.90625
+          ],
+          "n": 1
+        },
+        "cumulative_action_regret": {
+          "mean": 18.0,
+          "ci95": [
+            18.0,
+            18.0
+          ],
+          "n": 1
+        },
+        "mean_search_cost": {
+          "mean": 1.125,
+          "ci95": [
+            1.125,
+            1.125
+          ],
+          "n": 1
+        }
+      },
+      "fac7821e-1e38-eaa8-da2b-c857870bb982": {
+        "put_back_error_rate": {
+          "mean": 0.3125,
+          "ci95": [
+            0.3125,
+            0.3125
+          ],
+          "n": 1
+        },
+        "search_success_rate": {
+          "mean": 0.875,
+          "ci95": [
+            0.875,
+            0.875
+          ],
+          "n": 1
+        },
+        "cumulative_action_regret": {
+          "mean": 14.0,
+          "ci95": [
+            14.0,
+            14.0
+          ],
+          "n": 1
+        },
+        "mean_search_cost": {
+          "mean": 1.25,
+          "ci95": [
+            1.25,
+            1.25
+          ],
+          "n": 1
+        }
+      }
+    },
+    "object_family": {
+      "family-test-00": {
+        "put_back_error_rate": {
+          "mean": 0.328125,
+          "ci95": [
+            0.2916666666666667,
+            0.3854166666666667
+          ],
+          "n": 6
+        },
+        "search_success_rate": {
+          "mean": 0.9166666666666666,
+          "ci95": [
+            0.8958333333333334,
+            0.9427083333333334
+          ],
+          "n": 6
+        },
+        "cumulative_action_regret": {
+          "mean": 13.166666666666666,
+          "ci95": [
+            11.666666666666666,
+            15.333333333333334
+          ],
+          "n": 6
+        },
+        "mean_search_cost": {
+          "mean": 1.1302083333333333,
+          "ci95": [
+            1.0833333333333333,
+            1.1822916666666667
+          ],
+          "n": 6
+        }
+      },
+      "family-test-01": {
+        "put_back_error_rate": {
+          "mean": 0.2916666666666667,
+          "ci95": [
+            0.28125,
+            0.3125
+          ],
+          "n": 6
+        },
+        "search_success_rate": {
+          "mean": 0.9322916666666666,
+          "ci95": [
+            0.90625,
+            0.953125
+          ],
+          "n": 6
+        },
+        "cumulative_action_regret": {
+          "mean": 11.5,
+          "ci95": [
+            10.666666666666666,
+            12.333333333333334
+          ],
+          "n": 6
+        },
+        "mean_search_cost": {
+          "mean": 1.1145833333333333,
+          "ci95": [
+            1.0625,
+            1.1875
+          ],
+          "n": 6
+        }
+      },
+      "family-test-02": {
+        "put_back_error_rate": {
+          "mean": 0.328125,
+          "ci95": [
+            0.3020833333333333,
+            0.3541666666666667
+          ],
+          "n": 6
+        },
+        "search_success_rate": {
+          "mean": 0.921875,
+          "ci95": [
+            0.8854166666666666,
+            0.953125
+          ],
+          "n": 6
+        },
+        "cumulative_action_regret": {
+          "mean": 13.0,
+          "ci95": [
+            11.5,
+            14.666666666666666
+          ],
+          "n": 6
+        },
+        "mean_search_cost": {
+          "mean": 1.125,
+          "ci95": [
+            1.0677083333333333,
+            1.1822916666666667
+          ],
+          "n": 6
+        }
+      },
+      "family-test-03": {
+        "put_back_error_rate": {
+          "mean": 0.28125,
+          "ci95": [
+            0.265625,
+            0.296875
+          ],
+          "n": 6
+        },
+        "search_success_rate": {
+          "mean": 0.921875,
+          "ci95": [
+            0.890625,
+            0.9583333333333334
+          ],
+          "n": 6
+        },
+        "cumulative_action_regret": {
+          "mean": 11.5,
+          "ci95": [
+            10.333333333333334,
+            12.666666666666666
+          ],
+          "n": 6
+        },
+        "mean_search_cost": {
+          "mean": 1.1197916666666667,
+          "ci95": [
+            1.0677083333333333,
+            1.1666666666666667
+          ],
+          "n": 6
+        }
+      },
+      "family-test-04": {
+        "put_back_error_rate": {
+          "mean": 0.296875,
+          "ci95": [
+            0.28125,
+            0.3177083333333333
+          ],
+          "n": 6
+        },
+        "search_success_rate": {
+          "mean": 0.9322916666666666,
+          "ci95": [
+            0.90625,
+            0.9583333333333334
+          ],
+          "n": 6
+        },
+        "cumulative_action_regret": {
+          "mean": 11.666666666666666,
+          "ci95": [
+            10.5,
+            12.833333333333334
+          ],
+          "n": 6
+        },
+        "mean_search_cost": {
+          "mean": 1.125,
+          "ci95": [
+            1.0677083333333333,
+            1.1822916666666667
+          ],
+          "n": 6
+        }
+      },
+      "family-test-05": {
+        "put_back_error_rate": {
+          "mean": 0.3177083333333333,
+          "ci95": [
+            0.2708333333333333,
+            0.3541666666666667
+          ],
+          "n": 6
+        },
+        "search_success_rate": {
+          "mean": 0.9010416666666666,
+          "ci95": [
+            0.84375,
+            0.9479166666666666
+          ],
+          "n": 6
+        },
+        "cumulative_action_regret": {
+          "mean": 13.333333333333334,
+          "ci95": [
+            12.0,
+            14.833333333333334
+          ],
+          "n": 6
+        },
+        "mean_search_cost": {
+          "mean": 1.1614583333333333,
+          "ci95": [
+            1.0729166666666667,
+            1.265625
+          ],
+          "n": 6
+        }
+      },
+      "family-test-06": {
+        "put_back_error_rate": {
+          "mean": 0.3385416666666667,
+          "ci95": [
+            0.3125,
+            0.3645833333333333
+          ],
+          "n": 6
+        },
+        "search_success_rate": {
+          "mean": 0.90625,
+          "ci95": [
+            0.890625,
+            0.921875
+          ],
+          "n": 6
+        },
+        "cumulative_action_regret": {
+          "mean": 13.833333333333334,
+          "ci95": [
+            13.0,
+            14.666666666666666
+          ],
+          "n": 6
+        },
+        "mean_search_cost": {
+          "mean": 1.1458333333333333,
+          "ci95": [
+            1.0885416666666667,
+            1.2291666666666667
+          ],
+          "n": 6
+        }
+      },
+      "family-test-07": {
+        "put_back_error_rate": {
+          "mean": 0.3333333333333333,
+          "ci95": [
+            0.2916666666666667,
+            0.3958333333333333
+          ],
+          "n": 6
+        },
+        "search_success_rate": {
+          "mean": 0.90625,
+          "ci95": [
+            0.8385416666666666,
+            0.9479166666666666
+          ],
+          "n": 6
+        },
+        "cumulative_action_regret": {
+          "mean": 13.666666666666666,
+          "ci95": [
+            11.166666666666666,
+            17.666666666666668
+          ],
+          "n": 6
+        },
+        "mean_search_cost": {
+          "mean": 1.1458333333333333,
+          "ci95": [
+            1.0729166666666667,
+            1.2552083333333333
+          ],
+          "n": 6
+        }
+      },
+      "family-test-08": {
+        "put_back_error_rate": {
+          "mean": 0.3020833333333333,
+          "ci95": [
+            0.28125,
+            0.3229166666666667
+          ],
+          "n": 6
+        },
+        "search_success_rate": {
+          "mean": 0.8854166666666666,
+          "ci95": [
+            0.8385416666666666,
+            0.9270833333333334
+          ],
+          "n": 6
+        },
+        "cumulative_action_regret": {
+          "mean": 13.333333333333334,
+          "ci95": [
+            11.5,
+            15.333333333333334
+          ],
+          "n": 6
+        },
+        "mean_search_cost": {
+          "mean": 1.203125,
+          "ci95": [
+            1.09375,
+            1.3177083333333333
+          ],
+          "n": 6
+        }
+      },
+      "family-test-09": {
+        "put_back_error_rate": {
+          "mean": 0.3177083333333333,
+          "ci95": [
+            0.28125,
+            0.3697916666666667
+          ],
+          "n": 6
+        },
+        "search_success_rate": {
+          "mean": 0.90625,
+          "ci95": [
+            0.8645833333333334,
+            0.9479166666666666
+          ],
+          "n": 6
+        },
+        "cumulative_action_regret": {
+          "mean": 13.166666666666666,
+          "ci95": [
+            10.666666666666666,
+            15.833333333333334
+          ],
+          "n": 6
+        },
+        "mean_search_cost": {
+          "mean": 1.1458333333333333,
+          "ci95": [
+            1.09375,
+            1.1979166666666667
+          ],
+          "n": 6
+        }
+      },
+      "family-validation-00": {
+        "put_back_error_rate": {
+          "mean": 0.3125,
+          "ci95": [
+            0.28125,
+            0.34375
+          ],
+          "n": 2
+        },
+        "search_success_rate": {
+          "mean": 0.9375,
+          "ci95": [
+            0.9375,
+            0.9375
+          ],
+          "n": 2
+        },
+        "cumulative_action_regret": {
+          "mean": 12.0,
+          "ci95": [
+            11.0,
+            13.0
+          ],
+          "n": 2
+        },
+        "mean_search_cost": {
+          "mean": 1.078125,
+          "ci95": [
+            1.0625,
+            1.09375
+          ],
+          "n": 2
+        }
+      },
+      "family-validation-01": {
+        "put_back_error_rate": {
+          "mean": 0.359375,
+          "ci95": [
+            0.34375,
+            0.375
+          ],
+          "n": 2
+        },
+        "search_success_rate": {
+          "mean": 0.828125,
+          "ci95": [
+            0.78125,
+            0.875
+          ],
+          "n": 2
+        },
+        "cumulative_action_regret": {
+          "mean": 17.0,
+          "ci95": [
+            15.0,
+            19.0
+          ],
+          "n": 2
+        },
+        "mean_search_cost": {
+          "mean": 1.1875,
+          "ci95": [
+            1.125,
+            1.25
+          ],
+          "n": 2
+        }
+      },
+      "family-validation-02": {
+        "put_back_error_rate": {
+          "mean": 0.3125,
+          "ci95": [
+            0.28125,
+            0.34375
+          ],
+          "n": 2
+        },
+        "search_success_rate": {
+          "mean": 0.90625,
+          "ci95": [
+            0.8125,
+            1.0
+          ],
+          "n": 2
+        },
+        "cumulative_action_regret": {
+          "mean": 13.0,
+          "ci95": [
+            9.0,
+            17.0
+          ],
+          "n": 2
+        },
+        "mean_search_cost": {
+          "mean": 1.15625,
+          "ci95": [
+            1.0,
+            1.3125
+          ],
+          "n": 2
+        }
+      },
+      "family-validation-03": {
+        "put_back_error_rate": {
+          "mean": 0.296875,
+          "ci95": [
+            0.28125,
+            0.3125
+          ],
+          "n": 2
+        },
+        "search_success_rate": {
+          "mean": 0.828125,
+          "ci95": [
+            0.8125,
+            0.84375
+          ],
+          "n": 2
+        },
+        "cumulative_action_regret": {
+          "mean": 15.0,
+          "ci95": [
+            14.0,
+            16.0
+          ],
+          "n": 2
+        },
+        "mean_search_cost": {
+          "mean": 1.234375,
+          "ci95": [
+            1.15625,
+            1.3125
+          ],
+          "n": 2
+        }
+      },
+      "family-validation-04": {
+        "put_back_error_rate": {
+          "mean": 0.28125,
+          "ci95": [
+            0.28125,
+            0.28125
+          ],
+          "n": 2
+        },
+        "search_success_rate": {
+          "mean": 0.921875,
+          "ci95": [
+            0.90625,
+            0.9375
+          ],
+          "n": 2
+        },
+        "cumulative_action_regret": {
+          "mean": 11.5,
+          "ci95": [
+            11.0,
+            12.0
+          ],
+          "n": 2
+        },
+        "mean_search_cost": {
+          "mean": 1.078125,
+          "ci95": [
+            1.0625,
+            1.09375
+          ],
+          "n": 2
+        }
+      },
+      "family-validation-05": {
+        "put_back_error_rate": {
+          "mean": 0.28125,
+          "ci95": [
+            0.28125,
+            0.28125
+          ],
+          "n": 2
+        },
+        "search_success_rate": {
+          "mean": 0.890625,
+          "ci95": [
+            0.8125,
+            0.96875
+          ],
+          "n": 2
+        },
+        "cumulative_action_regret": {
+          "mean": 12.5,
+          "ci95": [
+            10.0,
+            15.0
+          ],
+          "n": 2
+        },
+        "mean_search_cost": {
+          "mean": 1.125,
+          "ci95": [
+            1.03125,
+            1.21875
+          ],
+          "n": 2
+        }
+      },
+      "family-validation-06": {
+        "put_back_error_rate": {
+          "mean": 0.3125,
+          "ci95": [
+            0.28125,
+            0.34375
+          ],
+          "n": 2
+        },
+        "search_success_rate": {
+          "mean": 0.921875,
+          "ci95": [
+            0.875,
+            0.96875
+          ],
+          "n": 2
+        },
+        "cumulative_action_regret": {
+          "mean": 12.5,
+          "ci95": [
+            12.0,
+            13.0
+          ],
+          "n": 2
+        },
+        "mean_search_cost": {
+          "mean": 1.15625,
+          "ci95": [
+            1.0625,
+            1.25
+          ],
+          "n": 2
+        }
+      },
+      "family-validation-07": {
+        "put_back_error_rate": {
+          "mean": 0.3125,
+          "ci95": [
+            0.28125,
+            0.34375
+          ],
+          "n": 2
+        },
+        "search_success_rate": {
+          "mean": 0.90625,
+          "ci95": [
+            0.90625,
+            0.90625
+          ],
+          "n": 2
+        },
+        "cumulative_action_regret": {
+          "mean": 13.0,
+          "ci95": [
+            12.0,
+            14.0
+          ],
+          "n": 2
+        },
+        "mean_search_cost": {
+          "mean": 1.125,
+          "ci95": [
+            1.09375,
+            1.15625
+          ],
+          "n": 2
+        }
+      },
+      "family-validation-08": {
+        "put_back_error_rate": {
+          "mean": 0.328125,
+          "ci95": [
+            0.3125,
+            0.34375
+          ],
+          "n": 2
+        },
+        "search_success_rate": {
+          "mean": 0.875,
+          "ci95": [
+            0.84375,
+            0.90625
+          ],
+          "n": 2
+        },
+        "cumulative_action_regret": {
+          "mean": 14.5,
+          "ci95": [
+            14.0,
+            15.0
+          ],
+          "n": 2
+        },
+        "mean_search_cost": {
+          "mean": 1.25,
+          "ci95": [
+            1.1875,
+            1.3125
+          ],
+          "n": 2
+        }
+      },
+      "family-validation-09": {
+        "put_back_error_rate": {
+          "mean": 0.28125,
+          "ci95": [
+            0.28125,
+            0.28125
+          ],
+          "n": 2
+        },
+        "search_success_rate": {
+          "mean": 0.9375,
+          "ci95": [
+            0.90625,
+            0.96875
+          ],
+          "n": 2
+        },
+        "cumulative_action_regret": {
+          "mean": 11.0,
+          "ci95": [
+            10.0,
+            12.0
+          ],
+          "n": 2
+        },
+        "mean_search_cost": {
+          "mean": 1.109375,
+          "ci95": [
+            1.03125,
+            1.1875
+          ],
+          "n": 2
+        }
+      }
+    }
+  },
+  "runtime_summary": {
+    "revision_action_trace_count": 1718,
+    "project_one_request_count": 1718,
+    "project_one_request_status_counts": {
+      "applied": 1548,
+      "deferred_due_to_quarantine": 0,
+      "rejected": 170,
+      "replay_noop": 0
+    },
+    "request_application_rate": 0.9010477299185099,
+    "retract_correct_precision": 0.8848920863309353,
+    "retract_correct_count": 417,
+    "feedback_dominant_outcome_counts": {
+      "object_slipped": 602,
+      "success": 1116
+    },
+    "feedback_posterior_changed_rate": 1,
+    "operator_runtime": {
+      "cheh_hypothesis_support": {
+        "records": 1718,
+        "executed": 1718,
+        "changed_state": 1718
+      },
+      "pchmp_repropagation": {
+        "records": 1718,
+        "executed": 1718,
+        "changed_state": 1718
+      },
+      "orrer_revision": {
+        "records": 1718,
+        "executed": 1718,
+        "changed_state": 1718
+      },
+      "project_one_request_generation": {
+        "records": 1718,
+        "executed": 1718,
+        "changed_state": 1718
+      },
+      "quarantine_handoff": {
+        "records": 1718,
+        "executed": 1718,
+        "changed_state": 149
+      },
+      "dirichlet_rls_application": {
+        "records": 1718,
+        "executed": 1548,
+        "changed_state": 1548
+      },
+      "ccrr_regime_decision": {
+        "records": 1718,
+        "executed": 1718,
+        "changed_state": 134
+      },
+      "planner_belief_read": {
+        "records": 1785,
+        "executed": 1785,
+        "changed_state": 0
+      },
+      "utility_action_selection": {
+        "records": 1718,
+        "executed": 1718,
+        "changed_state": 0
+      }
+    }
+  },
+  "metric_semantics": {
+    "action_utility_evidence": [
+      "put_back_error_rate",
+      "search_success_rate",
+      "cumulative_action_regret",
+      "mean_search_cost",
+      "cumulative_utility"
+    ],
+    "diagnostic_only": [
+      "hidden_event_hypothesis_accuracy",
+      "actor_posterior",
+      "role_posterior",
+      "mechanism_posterior",
+      "unresolved_mass",
+      "revision_accuracy",
+      "retract_correct_precision"
+    ]
+  },
+  "scientific_status": "development replay evidence; not paper-level real-world evidence"
+}

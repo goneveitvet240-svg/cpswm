@@ -213,7 +213,26 @@ class RLSRegimeBank:
         candidate_locations: tuple[UUID, ...],
         location_embeddings: dict[UUID, np.ndarray],
         regime_id: str | None = None,
+        apply_sigmoid: bool = False,
     ) -> dict[UUID, float]:
+        """Score candidates under the active (or named) regime head.
+
+        ``apply_sigmoid`` is passed straight through to
+        :meth:`RLSHabitScoreHead.score_candidates` and defaults to ``False`` for
+        the same reason it does there: the head's raw output is already the
+        calibrated score, and squashing it a second time pins ``1 - score``
+        inside ``[0.269, 0.5]``.  Callers that need the pre-fix readout -- the
+        evaluation harness reproducing historical runs -- ask for it explicitly.
+
+        The no-head fallback is a uniform ``1 / n`` *on the raw scale*, squashed
+        on the way out when a sigmoid was asked for.  Returning a bare ``1 / n``
+        under both settings -- as this method did before the fix -- meant the
+        same number denoted two different scores, so a caller reading the raw
+        route and a caller inverting the sigmoid route disagreed on every event
+        before the regime had a head.  That is the same scale defect as the
+        double squash, one level up.
+        """
+
         active_regime = regime_id or self.active_regime(
             object_instance_id=object_instance_id,
             actor_id=actor_id,
@@ -223,6 +242,8 @@ class RLSRegimeBank:
             if not candidate_locations:
                 return {}
             uniform_score = 1.0 / len(candidate_locations)
+            if apply_sigmoid:
+                uniform_score = float(1.0 / (1.0 + np.exp(-uniform_score)))
             return {location_id: uniform_score for location_id in candidate_locations}
         return head.score_candidates(
             object_instance_id=object_instance_id,
@@ -231,6 +252,7 @@ class RLSRegimeBank:
             context_features=context_features,
             candidate_locations=candidate_locations,
             location_embeddings=location_embeddings,
+            apply_sigmoid=apply_sigmoid,
         )
 
     def regime_count(self) -> int:

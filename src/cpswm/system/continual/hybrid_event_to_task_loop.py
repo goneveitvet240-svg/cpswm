@@ -266,6 +266,35 @@ class HybridEventToTaskCoordinatorLoop:
             changes[self.node_id(location)] = (payload_hash, uncertainty)
         return self._commit_if_changed(changes)
 
+    def publish_project_two_revision(
+        self,
+        *,
+        corrected_revision_id: UUID,
+        posterior_content_hash: str,
+        unresolved_probability: float,
+    ) -> BeliefSnapshot:
+        """Bind an event-posterior revision into a new atomic belief snapshot.
+
+        A Project Two revision can be decision-relevant even when RGRC correctly
+        defers its long-term statistic write.  Publishing a provenance-bound event
+        node prevents the planner from silently continuing on the pre-feedback
+        snapshot while preserving the distinction between event belief and habit
+        statistics.
+        """
+
+        if len(posterior_content_hash) != 64:
+            raise ValueError("posterior_content_hash must be a sha256 hex digest")
+        if not 0.0 <= unresolved_probability <= 1.0:
+            raise ValueError("unresolved_probability must lie in [0, 1]")
+        return self._map.apply_update(
+            {
+                f"project_two_revision:{corrected_revision_id}": (
+                    posterior_content_hash,
+                    unresolved_probability,
+                )
+            }
+        )
+
     def _all_location_keys(self) -> dict[UUID, StatisticKey]:
         keys: dict[UUID, StatisticKey] = {}
         for revision_id in self._ledger.revision_ids():

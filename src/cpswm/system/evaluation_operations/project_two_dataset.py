@@ -93,6 +93,23 @@ class ProjectTwoReplayQualityReport(ContractModel):
     ready: bool = False
 
 
+class ProjectTwoEvidenceCoverageReport(ContractModel):
+    """Evaluator-side inventory for a materialized data evidence batch."""
+
+    dataset_version: str
+    split_episode_counts: dict[str, int]
+    unique_household_count: int = Field(ge=0)
+    unique_scene_count: int = Field(ge=0)
+    unique_object_count: int = Field(ge=0)
+    unique_object_family_count: int = Field(ge=0)
+    family_episode_counts: dict[str, int]
+    true_actor_counts: dict[str, int]
+    true_mechanism_counts: dict[str, int]
+    dominant_feedback_outcome_counts: dict[str, int]
+    observed_step_count: int = Field(ge=0)
+    missing_observation_step_count: int = Field(ge=0)
+
+
 class ProjectTwoReplayGateError(ValueError):
     pass
 
@@ -235,6 +252,37 @@ def enforce_project_two_replay_gate(
     return report
 
 
+def summarize_project_two_evidence_coverage(
+    dataset: ProjectTwoReplayDataset,
+) -> ProjectTwoEvidenceCoverageReport:
+    """Summarize data volume and factor coverage without exposing truth to methods."""
+
+    steps = [step for episode in dataset.episodes for step in episode.steps]
+    truth_items = [
+        item for envelope in dataset.evaluator_store for item in envelope.truth_by_step.values()
+    ]
+    feedback = [item for step in steps for item in step.execution_feedback]
+    dominant_outcomes = Counter(
+        max(item.outcome_distribution, key=item.outcome_distribution.get).value for item in feedback
+    )
+    return ProjectTwoEvidenceCoverageReport(
+        dataset_version=dataset.manifest.dataset_version,
+        split_episode_counts=dict(Counter(item.split.value for item in dataset.episodes)),
+        unique_household_count=len({item.household_id for item in dataset.episodes}),
+        unique_scene_count=len({item.scene_id for item in dataset.episodes}),
+        unique_object_count=len(
+            {step.object_instance_id for episode in dataset.episodes for step in episode.steps}
+        ),
+        unique_object_family_count=len({item.object_family for item in dataset.episodes}),
+        family_episode_counts=dict(Counter(item.object_family for item in dataset.episodes)),
+        true_actor_counts=dict(Counter(item.true_actor for item in truth_items)),
+        true_mechanism_counts=dict(Counter(item.true_mechanism.value for item in truth_items)),
+        dominant_feedback_outcome_counts=dict(dominant_outcomes),
+        observed_step_count=sum(step.after is not None for step in steps),
+        missing_observation_step_count=sum(step.after is None for step in steps),
+    )
+
+
 class ProjectTwoReplayConsumer(Protocol):
     """Model-facing consumers accept visible episodes only, never truth stores."""
 
@@ -242,10 +290,12 @@ class ProjectTwoReplayConsumer(Protocol):
 
 
 __all__ = [
+    "ProjectTwoEvidenceCoverageReport",
     "ProjectTwoReplayConsumer",
     "ProjectTwoReplayDataset",
     "ProjectTwoReplayGateError",
     "ProjectTwoReplayQualityReport",
     "audit_project_two_replay",
     "enforce_project_two_replay_gate",
+    "summarize_project_two_evidence_coverage",
 ]

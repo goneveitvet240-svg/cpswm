@@ -14,6 +14,7 @@ from cpswm.system.llm_evidence import (
     LLMEvidenceCache,
     LLMEvidenceRequest,
     LLMProviderIdentity,
+    LocalModelEvidenceProvider,
     OpenAICompatibleEvidenceProvider,
     ProviderHTTPResponse,
     TruthLeakageError,
@@ -63,6 +64,25 @@ def test_same_cache_key_replays_identical_result_without_second_call():
     assert provider.invocation_count == 1
 
 
+def test_cache_poisoning_is_rejected_before_typed_evidence_projection():
+    provider = DeterministicEvidenceProvider()
+    cache = LLMEvidenceCache()
+    adapter = LLMEvidenceAdapter(provider=provider, cache=cache)
+    request = _request()
+    valid = adapter.generate(request).output
+    cache._values[request.cache_key] = valid.model_copy(update={"content_hash": "0" * 64})
+    with pytest.raises(ValueError, match="content hash"):
+        adapter.generate(request)
+
+
+def test_local_model_uses_same_typed_provider_contract():
+    fixture = DeterministicEvidenceProvider()
+    provider = LocalModelEvidenceProvider(fixture.invoke)
+    result = LLMEvidenceAdapter(provider=provider, cache=LLMEvidenceCache()).generate(_request())
+    assert provider.invocation_count == 1
+    assert result.typed_evidence.orrer_required is True
+
+
 def test_prompt_or_model_change_produces_new_cache_and_provenance():
     provider = DeterministicEvidenceProvider()
     adapter = LLMEvidenceAdapter(provider=provider, cache=LLMEvidenceCache())
@@ -75,9 +95,19 @@ def test_prompt_or_model_change_produces_new_cache_and_provenance():
             )
         }
     )
-    outputs = [adapter.generate(item).output for item in (base, prompt_changed, model_changed)]
-    assert len({item.cache_key for item in outputs}) == 3
-    assert len({item.provenance_id for item in outputs}) == 3
+    provider_changed = base.model_copy(
+        update={
+            "identity": LLMProviderIdentity(
+                provider="second-fixture", model="evidence-fixture", version="1.0"
+            )
+        }
+    )
+    outputs = [
+        adapter.generate(item).output
+        for item in (base, prompt_changed, model_changed, provider_changed)
+    ]
+    assert len({item.cache_key for item in outputs}) == 4
+    assert len({item.provenance_id for item in outputs}) == 4
 
 
 def test_unknown_and_abstain_reach_open_world_typed_evidence():

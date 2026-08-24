@@ -61,6 +61,9 @@ class PrototypeLoopConfig:
     context_confirmation_max_distance: float = 0.25
     dirichlet_surprise_weight: float = 0.1
     rls_residual_weight: float = 0.1
+    bocpd_hazard_probability: float = 0.05
+    ccrr_similarity_threshold: float = 0.6
+    ccrr_attribution_margin: float = 0.15
     derived_reactivation_policy: DerivedEvidenceReactivationPolicy = (
         DerivedEvidenceReactivationPolicy.REQUIRE_FRESH_FEEDBACK
     )
@@ -79,12 +82,17 @@ class PrototypeLoopConfig:
             "feedback_decision_margin",
             "dirichlet_surprise_weight",
             "rls_residual_weight",
+            "ccrr_attribution_margin",
         ):
             value = getattr(self, name)
             if not 0.0 <= value <= 1.0:
                 raise ValueError(f"{name} must lie in [0, 1]")
         if not 0.0 < self.forgetting_factor <= 1.0:
             raise ValueError("forgetting_factor must lie in (0, 1]")
+        if not 0.0 < self.bocpd_hazard_probability < 0.25:
+            raise ValueError("bocpd_hazard_probability must lie in (0, 0.25)")
+        if not -1.0 <= self.ccrr_similarity_threshold <= 1.0:
+            raise ValueError("ccrr_similarity_threshold must lie in [-1, 1]")
         if (
             not isfinite(self.context_confirmation_max_distance)
             or self.context_confirmation_max_distance < 0.0
@@ -138,9 +146,13 @@ class AutomaticCFBOCPDCCRRRouter:
         self.actor_id = actor_id
         self.owner_actor_id = owner_actor_id
         self.config = config
-        self.bocpd = bocpd or JointCauseFactorizedBOCPD()
+        self.bocpd = bocpd or JointCauseFactorizedBOCPD(
+            hazard_probability=config.bocpd_hazard_probability
+        )
         self.ccrr = ccrr or ContextConditionedRegimeReactivator(
-            change_threshold=config.habit_change_probability_threshold
+            change_threshold=config.habit_change_probability_threshold,
+            similarity_threshold=config.ccrr_similarity_threshold,
+            attribution_margin=config.ccrr_attribution_margin,
         )
         self._observation_count = 0
         self._last_observation_time: datetime | None = None

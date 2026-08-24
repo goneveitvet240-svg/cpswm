@@ -1,256 +1,224 @@
-# 项目一评测协议 v0.2
+# 项目一评测协议 v0.3
 
 日期：2026-08-23
-状态：`阶段 0–7 已落地；结论仍为 UNDERPOWERED，不支持任何方法优越性主张`
-性质：**评测协议与首批结果**，不是论文证据。
+状态：`阶段 0–7 已落地；结论仍为 UNDERPOWERED`
+性质：**评测协议与结果**，不是论文证据。
 
-v0.2 相对 v0.1 修了三个会让读数失真的问题，并把 BOCPD 基线换成信息对等版本。
-**v0.1 的全部数字作废**——其中链式 arm 的 log-loss 是偷看来的。
-
----
-
-## 0. 范围边界（只说一次）
-
-协议覆盖**习惯变化判断链**：Dirichlet predictive surprise、RLS residual、由二者
-导出的 habit signal、joint CF-BOCPD 变化概率、CCRR 路由决策、结果 active regime。
-
-不覆盖 `CorePrototypeSpine` 同时集成的 ORRER/PCHMP 事件层与 hybrid RGRC 账本。
-
-`prototype_spine.py` 冻结，只消费不修改。协议层的 surprise 公式直接 `import`
-spine 的私有实现，spine 改动会在此立刻报错而不会静默分叉。
-
-本次仍**没有修改** `evaluation_operations/__init__.py`（项目二在改），全部用全路径导入。
+v0.3 修了六个会让读数失真的问题。**v0.2 的调参结论作废**（选择规则里没有异常检出，
+shuffled 不是真 derangement，matched pair 的前缀已经分叉）。
 
 ---
 
-## 1. v0.2 修了什么
+## 0. 范围边界
 
-### 1.1 prediction timing（这条最严重）
+协议覆盖**习惯变化判断链**：Dirichlet predictive surprise、RLS residual、habit
+signal、joint CF-BOCPD 变化概率、CCRR 路由决策、active regime。不覆盖 ORRER/PCHMP
+事件层与 hybrid RGRC 账本。
 
-v0.1 里链式 arm 的 `predicted_location_probabilities` 取自 **吸收当前事件之后**
-的后验，而 `context_frequency` 取自**之前**的先验。等于链式 arm 在被打分的那道题上
-先看了答案。
-
-修法是结构性的：`_BaseMethod.observe` 变成模板方法，顺序固定为
-**预测 → 决策 → 学习**，子类只实现 `_predict`（只能读事件前状态）和 `_step`。
-
-代价立刻可见：
-
-| | v0.1（泄漏） | v0.2（修复后） |
-|---|---:|---:|
-| 链式 arm log-loss | 0.390 | **0.529** |
-| context_frequency log-loss | 0.623 | 0.623 |
-
-链式 arm 原本 0.23 的 log-loss 优势，有 0.14 是偷看来的。
-
-> 注意：在学习前读 `event.observed_location` **不是**泄漏——surprise 和 residual
-> 的定义就是"先验对随后看到的东西错得多离谱"，它们读的是产生预测的同一个事前状态。
-
-通用防泄漏测试 `test_no_arm_peeks_at_the_event_it_is_scored_on`：两条只在**最后一个
-事件位置**不同的流，最后一步的位置概率必须完全相同。七个 arm 逐个参数化验证。
-
-### 1.2 所有配置字段真实生效，并写入 artifact
-
-- `rls_regularization` 之前**声明了但从未使用**，现在传给
-  `RLSHabitScoreHead(ridge=...)`。默认值改成 `1e-6`（该类自己的默认），所以接线
-  本身不改变行为。`test_the_rls_regularization_field_actually_reaches_the_head`
-  用两个 ridge 值产生不同 residual 来证明它活着。
-- 基线参数之前是硬编码的，既不能独立调参也无法审计。现在每个基线有自己的
-  `CategoricalBOCPDConfig` / `ContextFrequencyConfig` / `PersistenceConfig`。
-- 每个 arm 实现 `config_payload()` 与 `config_hash()`；runner 把它们写进
-  `ArmRunResult`，benchmark 写进 `metrics.json` 的 `arm_configs`，并逐行写进
-  `predictions.jsonl`。
-- 顺带发现一个协议/spine 不一致：协议允许 `confirmation_window >= 1`，而冻结的
-  `PrototypeLoopConfig` 要求 `>= 2`——调参扫到 1 时才会在运行中途炸。已收紧并加测试。
-
-### 1.3 BOCPD 换成 categorical / context-matched
-
-v0.1 的 BOCPD 跑的是二元"是否移动"指示量，而链式 arm 看到完整分类位置 + 上下文。
-那是被削弱的基线，削弱的基线不构成证据。
-
-v0.2 是 Dirichlet-multinomial changepoint 模型，观测量是**位置类别**，每个游程的
-充分统计量按 `context_key` 分层——与链式 Dirichlet 同一个 pooling 层级。
-
-效果：在 morning 上下文预测 dining_table 0.734，evening 上下文预测 desk 0.736。
-`test_categorical_bocpd_ranks_locations_a_binary_detector_cannot` 断言它能把
-"同上下文里偶尔出现"和"从未出现"排序——二元指示量根本没有这个表示能力。
-
-log-loss 相应从 0.607 提升到 0.560。
-
-> 读数约定：常数 hazard 下 Adams–MacKay 递推给出 `P(r_t=0) ≡ H`，changepoint 分支
-> 与 growth 分支共用同一组 per-run predictive，归一化后正好抵消成 hazard。拿它当
-> 变化概率会让这个基线由构造得到直线。所以变化信号取**短游程后验质量**（`r ≤ 1`）。
-
-### 1.4 same-context test 延伸到 change probability 与 decision
-
-原本只断言 residual 和 habit_signal。现在加了变化概率排序、四类 decision、以及
-"单次异常不得被确认为习惯变化"（应为 `INSUFFICIENT_EVIDENCE`，确认窗口的护栏）。
-
-**决策层暴露了出厂接线更严重的后果**（anomalous 分支）：
-
-| calibration | full | no_rls | shuffled | rls_only |
-|---|---:|---:|---:|---:|
-| `as_is`（出厂） | 0.9728 | 1.0000 | 0.9416 | **0.2135 → decision 停在 STABLE** |
-| `raw_clip`（修复） | 1.0000 | 1.0000 | 1.0000 | 1.0000 |
-
-出厂接线下 `rls_only` **根本没能把异常报出来**；而给 surprise 加上出厂 residual
-反而**压低**了 full 的变化概率（0.9728 < no_rls 的 1.0000），因为 residual 底噪
-把平常日子的 habit 通道也抬高了，变点检测器于是学会了"高 habit 信号是常态"。
+`prototype_spine.py` 冻结，只消费不修改。surprise 公式直接 `import` spine 的私有
+实现，spine 改动会立刻报错而不会静默分叉。仍未修改 `evaluation_operations/__init__.py`
+（项目二在改），全部用全路径导入。
 
 ---
 
-## 2. 阶段 1：same-context matched test
+## 1. v0.3 修了什么
 
-两分支看到的一切都相同（object、actor、context_key、context_value、时间槽、观测
-质量、完整 12 周期学习前缀）。前缀结束在 evening，两分支上一位置都是书桌，
-`habit_transition` 都等于 1。唯一差异是最后一个早晨杯子在餐桌还是阳台。
+### 1.1 `config_hash` 覆盖完整 payload
 
-### 缺陷本身
+v0.2 的链式 arm 只哈希 `ProjectOneProtocolConfig`。owner、household、object、候选
+位置集合、shuffle 种子**都不进哈希**——两个实质不同的 arm 会共享同一个身份，存下的
+结果就再也追不回来。
 
-`RLSHabitScoreHead.score_candidates` 默认 `apply_sigmoid=True`，但底层是已经拟合到
-`{0,1}` 目标的最小二乘回归——**它的原始输出就是分数**。再套一层 sigmoid：
+现在 `_BaseMethod.config_hash()` 统一返回 `content_sha256(config_payload())`，四个
+子类的覆盖全部删掉。
+
+### 1.2 Shuffled 改成严格 derangement
+
+v0.2 用固定滞后。那不是 derangement：
+
+- residual 序列里**大量重复值**（`as_is` 下正确预测一律是 0.269），滞后经常把一个值
+  映射到相同的值；
+- **前 lag 步没有历史**，v0.2 填 0.0，等于那几步静默退化成 `NO_RLS`。
+
+v0.3 新增 `prime()` 钩子（runner 在 `reset()` 之后、回放之前调用一次）。shuffled arm
+在 `prime()` 里跑一份配置为 `FULL` 的自身影子副本，拿到它自己会产生的 residual 序列，
+再用带种子的**严格 derangement**（无不动点的置换，用邻位交换修复残余不动点）打乱。
+
+- 严格性定义在**索引**层，不在值层：强行要求每个值都变会扭曲边缘分布，而边缘分布正是
+  这个消融唯一必须保留的东西。恰好取到相同值的位置数写进 arm 的 snapshot
+  (`derangement_unchanged_values`)，而不是工程掉。
+- 这是**离线**的，这就是这个 arm 的诚实代价：它是消融，永远不是可部署方法。文档和
+  Protocol docstring 都写明了。
+- 如果有人绕过 runner 直接调 `observe()`，未 prime 的步骤会返回**自己的**residual 并
+  计入 `unprimed_shuffle_steps`——绝不静默变成 FULL。
+
+### 1.3 共享 snapshot 的 final-step intervention
+
+**v0.2 的 matched pair 名不副实。** 让两个 ablation 跑同一段前缀并不会让它们状态相同：
+habit signal 从第一步就不同 → 隔离决策不同 → 学到的计数不同，早在被研究的那一步之前
+就已经分叉了。
+
+v0.3 的 `_warm_snapshot()` 只训练**一个** arm，每个分支都是它的 `copy.deepcopy`，
+`clone_with(ablation=..., residual_calibration=...)` 只替换读取路径，Dirichlet 计数和
+RLS bank 原样带过去。测试断言 `first.residual_history == second.residual_history ==
+warm.residual_history`，并断言 clone 写不回 snapshot。
+
+shuffled 是流级消融（一个元素的 derangement 没有意义），它的逐点形式用
+`pointwise_residual_override` 从 arm **自己的**前缀边缘分布里取一个值——同量级、错配对。
+该字段消费后立即清空，有测试保证不会泄漏到后续步骤。
+
+**这个改动立刻暴露了 v0.2 藏起来的东西**：拿一个在 `raw_clip` 下训练好的模型，用
+`as_is` 去读一个完全正常的事件，0.269 的 residual 底噪把 habit signal 注入到 0.466，
+而变点检测器是在一个接近 0 的通道上标定的——于是**在模型预测正确的事件上变化概率冲到
+~1**。同样用 `as_is` 训练**并**读取时效果弱得多，因为检测器把底噪吸收成了常态。
+
+所以这个文件里有两个 helper，各答各的问题：
+
+| helper | 问题 | 用于 |
+|---|---|---|
+| `_run_branch` | 给定一个训练好的模型，读取路径对这一个事件做了什么 | **消融**对比 |
+| `_run_consistent` | 训练和读取用同一条路线时，整体是什么 | **校准路线**对比 |
+
+用一条路线训练的快照去用另一条路线读取，测的是**失配**，不是路线。
+
+### 1.4 benchmark 与 tuner 的 calibration 统一
+
+v0.2 里 benchmark 默认 `as_is`、tuner 默认 `raw_clip`。两个入口各自挑默认值，正是
+两次结果不可比而没人发现的原因。现在两边都读
+`DEFAULT_RESIDUAL_CALIBRATION_NAME`（= `raw_clip`），`ProjectOneProtocolConfig` 的
+默认值也是它。
+
+### 1.5 `PLATT` 更名 + 实现真正的 Platt scaling
+
+v0.2 里叫 `PLATT` 的其实是**分桶经验直方图**——它声称了一个自己没实现的方法。
+
+- 直方图更名为 `HISTOGRAM`（`HistogramResidualCalibrator`）。
+- 新增真正的 `PLATT`（`PlattResidualCalibrator`）：一维逻辑回归
+  `P(hit|s) = 1/(1+exp(A·s+B))`，用 Platt 自己的**目标平滑**
+  `t₊=(N₊+1)/(N₊+2)`、`t₋=1/(N₋+2)` 在线梯度拟合。
+
+实现过程中抓到自己的一个符号错误：`z = A·s+B`、`p = sigmoid(-z)` 时
+`d(log-loss)/dz = t − p`，**下降要减**。第一版写成了加，结果对一个真实命中率 1/4 的
+分数报出 `P(hit)=1`。代码里留了注释。
+
+还做了一件必要的事：**对 score 做 Welford 标准化**。`as_is` 路线下 head 的全部信息量程
+只有 `[0.5, 0.731]`——0.231 宽，未标准化的拟合需要 −33 量级的斜率，会爬得很慢；而
+`raw_clip` 下同样的数据铺满整个单位区间，立刻收敛。不标准化的话，这条路线在 `as_is`
+上显得差的原因将是**条件数而不是方法**，路线对比就变成了在测条件数。
+
+标准化后两种量程收敛完全一致（8 次更新后 residual(命中)=0.002 / residual(未命中)=0.856）。
+
+### 1.6 异常检出进入调参目标与 Pareto 门
+
+v0.2 的选择规则是 `confirmation − false_switch`，**完全没有异常检出**——等于宣布短期
+扰动能力不重要。
+
+v0.3 的规则四项俱全，权重可在命令行覆盖，并写进 artifact：
 
 ```text
-完美学到的  1.0  ->  sigmoid(1.0) = 0.7311  ->  residual = 0.2689
-完美排除的  0.0  ->  sigmoid(0.0) = 0.5000  ->  residual = 0.5000
+utility =  w_confirm * 变化确认率
+         + w_anomaly * 异常检出率
+         - w_switch  * 误切换率
+         - w_alarm   * 误报率
 ```
 
-residual 被压进 `[0.269, 0.5]`，只剩约四分之一量程，正确预测的事件永远带 0.269
-的常数底噪；经 `1-(1-r)²` 后任何一次移动的 habit signal 都不低于 **0.466**。
-
-`test_the_rls_head_learns_the_context_perfectly_before_the_sigmoid` 证明模型本身
-没问题：`apply_sigmoid=False` 时原始分数正好是 `[1.0, 0.0, 0.0, 0.0]`。
+Pareto 前沿升为**三维**：`(误切换↓, 变化确认↑, 异常检出↑)`。少了第三个轴，一整项能力
+会从搜索里消失。
 
 ---
 
-## 3. 阶段 5 的四条 residual 路线对比（供你决定）
+## 2. 阶段 6 重跑：固定阈值（10 场景平均）
 
-`ResidualCalibration` 现在有五个取值，都**不修改**冻结的 spine 或共享的 RLS head：
+链式 arm 随 residual 路线的变化：
 
-| 路线 | 做法 | 假设 |
-|---|---|---|
-| `as_is` | 原样使用 | 复现出厂行为 |
-| `logit` | 反解 sigmoid，取 `\|1-raw\|` 截到 1 | 无 |
-| `raw_clip` | 反解后先把 raw 夹进 `[0,1]`，再取 `1-raw` | raw 落在 `[0,1]` |
-| `recenter` | 把 `[sigmoid(0), sigmoid(1)]` 仿射映回 `[0,1]` | 同上；不需要反解 |
-| `platt` | 在线经验校准 `P(hit \| score)` | 无，但有冷启动 |
+| route | arm | 误报↓ | 误切换↓ | 确认↑ | 伪 regime↓ | 配对间隔↑ |
+|---|---|---:|---:|---:|---:|---:|
+| `as_is` | full | 0.040 | 0.024 | 0.400 | 3 | 0.055 |
+| | shuffled | 0.044 | 0.024 | 0.400 | 3 | **0.047**（≈full） |
+| `raw_clip` | **full** | 0.030 | 0.009 | 0.400 | 2 | **0.126** |
+| | shuffled | 0.033 | 0.009 | 0.400 | 2 | 0.098 |
+| `recenter` | full | 0.030 | 0.009 | 0.400 | 2 | **0.127** |
+| `platt` | full | 0.030 | 0.015 | 0.400 | 3 | 0.094 |
+| `histogram` | full | 0.030 | 0.015 | 0.400 | 3 | 0.069 |
 
-关键分歧点在**过度自信**的分数（raw > 1，即 score > 0.731）：
+基线（不随 residual 路线变化）：
 
-| score | as_is | logit | raw_clip | recenter |
-|---|---:|---:|---:|---:|
-| 0.7311 | 0.2689 | 0.0 | 0.0 | 0.0 |
-| 0.5000 | 0.5 | 1.0 | 1.0 | 1.0 |
-| **0.9000** | 0.1 | **1.0** | **0.0** | **0.0** |
-
-`logit` 把过度自信当成"错得离谱"，方向是反的。**这排除了 logit。**
-
-十场景基准（链式 arm，固定阈值，平均）：
-
-| route | full 配对间隔↑ | shuffled 配对间隔 | full 误切换↓ | full 伪 regime↓ |
-|---|---:|---:|---:|---:|
-| `as_is` | 0.055 | 0.052（≈full） | 0.024 | 3 |
-| `logit` | 0.126 | 0.095 | 0.009 | 2 |
-| **`raw_clip`** | **0.126** | 0.095 | **0.009** | **2** |
-| `recenter` | 0.127 | 0.095 | 0.009 | 2 |
-| `platt` | 0.069 | 0.052 | 0.015 | 3 |
-
-`raw_clip` 与 `recenter` 实测上无法区分（0.126 vs 0.127）；`platt` 因冷启动明显更差，
-并重新引入了 0.084 的 residual 底噪。
-
-### 建议（决定权在你）
-
-1. **真正的修法是在源头**：让 `RLSRegimeBank.score_candidates` 透传
-   `apply_sigmoid=False`。那样评测层这四条路线全都不需要。但那个文件同时服务
-   项目二，所以是你的决定。
-2. 源头修好之前，评测层用 **`raw_clip`**：它恢复模型真实输出，且把过度自信正确地
-   当作零误差。
-3. **`platt` 不要丢**——真实数据上 raw 分数未必落在 `[0,1]`，那时它是唯一不做量程
-   假设的路线。现在差只是因为合成流太短、桶里没数据。
-
----
-
-## 4. 阶段 6 重跑：固定阈值（10 场景平均，`raw_clip`）
-
-| arm | 误报↓ | 误切换↓ | 异常检出↑ | 变化确认↑ | 伪 regime↓ | 配对间隔↑ | logloss↓ |
-|---|---:|---:|---:|---:|---:|---:|---:|
-| full | 0.030 | 0.009 | 0.067 | **0.400** | 2 | **0.126** | 0.528 |
-| no_rls | **0.014** | **0.004** | 0.067 | 0.250 | **1** | 0.131 | 0.528 |
-| shuffled_rls | 0.033 | 0.009 | 0.067 | 0.300 | 2 | 0.095 | 0.527 |
-| rls_only | 0.030 | 0.009 | 0.067 | 0.400 | 2 | 0.126 | 0.528 |
-| categorical_bocpd | 0.049 | 0.049 | 0.000 | 0.000 | **0** | −0.062 | 0.560 |
-| context_frequency | **0.000** | **0.000** | 0.100 | 0.250 | **0** | 0.092 | 0.623 |
-| persistence | 0.151 | 0.151 | **0.167** | 0.400 | **0** | 0.015 | 0.669 |
-
----
-
-## 5. 阶段 7：独立调参
-
-每个 arm **自己的网格、相同预算（12 点）**；只在 validation 上选择；TEST 跑一次。
-按**场景**划分而不是按事件——事件划分会把同一个 regime 的历史泄漏进它自己的测试半边。
-
-选择规则写在输出里而不是藏进加权分：`max(confirmation_rate − false_switch_rate)`，
-延迟低者优先。完整 Pareto 前沿一并保存。
-
-- validation：`stable_habit` `short_disturbance` `permanent_change` `context_change` `gradual_drift`
-- test：`periodic_habit` `recurring_regime` `missing_observations` `biased_observation` `abrupt_change`
-
-### TEST 结果（跑一次）
-
-| arm | 变化确认↑ | 误切换↓ | 误报↓ | 异常检出↑ | logloss↓ |
+| arm | 误报↓ | 误切换↓ | 检出↑ | 确认↑ | logloss↓ |
 |---|---:|---:|---:|---:|---:|
-| full | **0.400** | **0.000** | **0.000** | 0.133 | 0.562 |
-| rls_only | **0.400** | **0.000** | **0.000** | 0.133 | 0.562 |
-| **shuffled_rls** | **0.400** | **0.000** | 0.017 | 0.133 | 0.559 |
-| no_rls | 0.300 | **0.000** | **0.000** | 0.133 | 0.561 |
-| context_frequency | 0.300 | **0.000** | **0.000** | 0.000 | **0.544** |
-| categorical_bocpd | 0.000 | 0.049 | 0.049 | 0.000 | 0.593 |
-| persistence | 0.400 | 0.213 | 0.213 | 0.133 | 1.180 |
+| categorical_bocpd | 0.049 | 0.049 | 0.000 | 0.000 | 0.560 |
+| context_frequency | **0.000** | **0.000** | 0.100 | 0.250 | **0.544** |
+| persistence | 0.151 | 0.151 | **0.167** | 0.400 | 0.669 |
+
+**路线排序**：`recenter` (0.127) ≈ `raw_clip` = `logit` (0.126) > `platt` (0.094)
+> `histogram` (0.069) > `as_is` (0.055)。
+
+真 Platt 明显优于直方图分箱——短流上参数化形式比逐桶冷启动收敛快得多，这正是重实现
+（而不是只改个名字）该得到的结果。
+
+`logit` 仍然**不推荐**：过度自信的分数（raw > 1）它给出 residual = 1.0，方向是反的。
+`raw_clip` 和 `recenter` 给 0.0。
+
+---
+
+## 3. 阶段 7 重跑：独立调参（权重全 1.0）
+
+每个 arm 自己的网格、相同 12 点预算、按场景划分、TEST 跑一次。
+
+| arm | val utility | **test utility** | 确认↑ | 检出↑ | 误切换↓ | 误报↓ | logloss↓ | Pareto |
+|---|---:|---:|---:|---:|---:|---:|---:|---:|
+| rls_only | +0.321 | **+0.533** | 0.400 | 0.133 | 0.000 | 0.000 | 0.562 | 6 |
+| **full** | +0.321 | **+0.533** | 0.400 | 0.133 | 0.000 | 0.000 | 0.562 | 6 |
+| shuffled_rls | **+0.331** | +0.517 | 0.400 | 0.133 | 0.000 | 0.017 | 0.561 | 6 |
+| categorical_bocpd | +0.260 | +0.434 | 0.400 | 0.133 | 0.049 | 0.049 | 0.583 | 3 |
+| no_rls | +0.163 | +0.433 | 0.300 | 0.133 | 0.000 | 0.000 | 0.561 | 12 |
+| context_frequency | +0.400 | +0.300 | 0.300 | 0.000 | 0.000 | 0.000 | **0.544** | 2 |
+| persistence | **+0.420** | **+0.108** | 0.400 | 0.133 | 0.213 | 0.213 | 1.180 | 12 |
 
 ### 这张表说明什么
 
-**独立调参之后，`shuffled_rls` 在 TEST 上追平了 `full`（0.400 vs 0.400）。**
+**1. full 在 TEST 上确实超过了 shuffled，但只差 0.016。** 而且差距**全部**来自误报
+（0.000 vs 0.017）——就是一个事件。
 
-按你自己阶段 10 的结论分级表，这正是「Shuffled 与 Full 相同 → RLS residual 可能
-只是尺度信号」那一行——**而且这次是在 `raw_clip` 下，不是出厂接线**。
+**2. 更要命的是方向反转：validation 上 shuffled（+0.331）高于 full（+0.321），选择
+规则实际上更偏好 shuffled。** 一个在 validation 上占优、在 TEST 上落后的差异，就是
+噪声的定义。
 
-但在下这个结论之前必须看清楚它的统计强度：
+**3. `full` 与 `rls_only` 在每一个指标上完全相同。** 在这些阈值下，Dirichlet surprise
+通道**没有提供任何 residual 之外的东西**。这是本轮最值得追的一条。
 
-1. validation 上 full=0.400、shuffled=0.200，差异是存在的，只是没活到 test。
-2. TEST 只有 5 个场景、单 seed，变化点总数是个位数，confirmation rate 的**最小
-   刻度就是 0.2**。0.300 与 0.400 之间只差**一个事件**。
-3. `full` 的 Pareto 前沿上 6 个非支配点的 (fsw, conf) **完全相同**——说明在这批
-   场景上，链式 arm 的阈值几乎不起作用。场景没有压到阈值。
+**4. persistence 是选择性过拟合的教科书例子**：validation utility 最高（+0.420），
+TEST utility 最低（+0.108）。全 1.0 权重下 validation 奖励了它的无差别报警，TEST 的
+误切换 0.213 把它打回原形。三维前沿 + 显式权重正在起作用。
 
-**因此当前判决是 `UNDERPOWERED`，不是 `shuffled == full`。** 这个规模的实验既不能
-证明 residual 有用，也不能证明它没用。
+**5. categorical_bocpd 从 v0.2 的确认率 0.000 变成 0.400。** 不是基线变强了，是把
+异常检出加进目标之后，选到了不同的阈值。v0.2 的目标函数让这个基线看起来比实际弱。
 
-另外两条必须记的：
+**6. context_frequency 的 log-loss 仍然最好（0.544）。** 地板基线在位置预测上赢过链式 arm。
 
-- **`context_frequency` 的 log-loss 最好（0.544）**，比链式 arm 好。地板基线在
-  位置预测上赢了。
-- `categorical_bocpd` 调参后 TEST 确认率仍是 0.000。它选到 `run_length=20,
-  threshold=0.2`，但在测试场景上短游程质量没有到过 0.2。这是基线的真实读数，不是
-  被削弱的结果。
+### 当前判决
+
+**`UNDERPOWERED`。** TEST 只有 5 个场景、单 seed，确认率的最小刻度是 0.2，utility 的
+差距是单个事件量级，而且 validation→TEST 出现方向反转。这个规模既不能证明 residual
+有用，也不能证明它没用。
 
 ---
 
-## 6. 产物清单
+## 4. 产物清单
 
 ```text
-src/cpswm/system/evaluation_operations/project_one_protocol.py    冻结接口 + 五条 residual 路线 + 全部 config hash
+src/cpswm/system/evaluation_operations/project_one_protocol.py    冻结接口 + 六条 residual 路线 + 两个校准器 + config hash
 src/cpswm/system/evaluation_operations/project_one_dataset.py     记录/真值/流/manifest
 src/cpswm/system/evaluation_operations/dataset_adapters.py        adapter 抽象
 src/cpswm/system/evaluation_operations/project_one_scenarios.py   十个确定性场景
-src/cpswm/system/evaluation_operations/project_one_methods.py     预测时序模板 + 七个 arm
+src/cpswm/system/evaluation_operations/project_one_methods.py     预测时序模板 + prime 钩子 + 严格 derangement + clone_with
 src/cpswm/system/evaluation_operations/project_one_metrics.py     逐步指标 + 配对差值
-src/cpswm/system/evaluation_operations/project_one_runner.py      统一 runner（含 config hash）
+src/cpswm/system/evaluation_operations/project_one_runner.py      统一 runner（prime + config hash）
 apps/evaluation_runner/generate_project_one_scenarios.py          场景落盘
 apps/evaluation_runner/run_project_one_benchmark.py               固定阈值基准
-apps/evaluation_runner/tune_project_one.py                        独立调参 + Pareto
-configs/project_one/default.yaml                                  默认配置
+apps/evaluation_runner/tune_project_one.py                        独立调参 + 三维 Pareto
+configs/project_one/default.yaml                                  默认配置 + 选择权重
 tests/test_project_one_protocol.py                                阶段 0 验收
-tests/test_project_one_same_context_rls_ablation.py               阶段 1 matched test
+tests/test_project_one_same_context_rls_ablation.py               阶段 1 matched test（共享快照）
 tests/test_project_one_dataset_contract.py                        阶段 2 验收
 tests/test_project_one_evaluation_runner.py                       阶段 3/4 验收 + 防泄漏
 ```
@@ -259,23 +227,25 @@ tests/test_project_one_evaluation_runner.py                       阶段 3/4 验
 
 ```bash
 PYTHONPATH=src python apps/evaluation_runner/run_project_one_benchmark.py \
-  --output artifacts/project_one/fixed --calibration raw_clip
+  --output artifacts/project_one/fixed          # 默认 raw_clip，与 tuner 一致
 PYTHONPATH=src python apps/evaluation_runner/tune_project_one.py \
-  --output artifacts/project_one/tuning --calibration raw_clip
+  --output artifacts/project_one/tuning         # 权重可用 --w-anomaly 等覆盖
 ```
 
 ---
 
-## 7. 下一步（按依赖顺序）
+## 5. 下一步（按依赖顺序）
 
-1. **处置 sigmoid 双重压缩**（见 §3.建议）。这是你的决定。
-2. **加多 seed**——当前所有结论都卡在 `UNDERPOWERED`。阶段 3 步骤 5 的多 seed 随机
-   版本现在是**最高优先级**，没有它后面每一步都得不出结论。
-3. 查异常检出率只有 0.133 的原因。
-4. 阶段 5 补齐：EWMA、CUSUM、RLS-fixed-threshold、No-CF-BOCPD、No-CCRR、
+1. **多 seed，最高优先级。** 每一条结论都卡在 `UNDERPOWERED`，validation→TEST 已经
+   出现方向反转。没有它后面每一步都得不出结论。
+2. **查 `full == rls_only` 完全相同。** Dirichlet surprise 通道当前是死的，要么是
+   `habit_signal` 的 `max` 结构让 residual 恒占优，要么是场景没有能区分二者的情形。
+3. **处置 sigmoid 双重压缩**（源头修法：`RLSRegimeBank.score_candidates` 透传
+   `apply_sigmoid=False`；那之后评测层的四条恢复路线都不需要）。这是你的决定。
+4. 查异常检出率只有 0.133 的原因。
+5. 阶段 5 补齐：EWMA、CUSUM、RLS-fixed-threshold、No-CF-BOCPD、No-CCRR、
    No-regime-reactivation。
-5. 按匹配 FPR / 匹配 TPR / 匹配检出率分别重报（现在 fsw 基本全是 0，匹配报告还没有
-   意义；要等场景能压到阈值之后）。
+6. 按匹配 FPR / 匹配 TPR 分别重报（现在 fsw 大多是 0，匹配报告还没有意义）。
 
-阶段 8（半合成与真实数据）和阶段 9（LLM 三种角色）接口已经就位：新数据源只需要一个
+阶段 8（半合成与真实数据）和阶段 9（LLM 三种角色）接口已就位：新数据源只需要一个
 adapter，LLM 语义解析器的输出目标就是 `ProjectOneDatasetRecord`。

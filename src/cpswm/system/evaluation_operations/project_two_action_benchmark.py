@@ -25,6 +25,7 @@ from pydantic import Field, model_validator
 
 from cpswm.contracts import (
     ActionOutcomeLikelihoodModel,
+    ActionProbability,
     AttributedCause,
     ContractModel,
     DecisionContext,
@@ -32,12 +33,19 @@ from cpswm.contracts import (
     DecisionSurface,
     EventMechanism,
     MapConsistencyRevisions,
+    OperatorDiagnostic,
+    ProbabilityMass,
+    ProjectOneRequestApplicationStatus,
+    ProjectOneStatRequestTrace,
     ProjectTwoDatasetSplit,
     ProjectTwoReplayEpisode,
     ProjectTwoReplayStep,
+    ProjectTwoRevisionActionTrace,
+    RevisionActionOperator,
     RobotActionOutcome,
     RobotActionType,
     TargetPresenceBeliefRef,
+    UUIDProbabilityMass,
     ValidTimeInterval,
     ordered_role_key,
     reject_truth_leakage,
@@ -58,7 +66,12 @@ from cpswm.system.evaluation_operations.project_two_dataset import (
     ProjectTwoReplayDataset,
     enforce_project_two_replay_gate,
 )
-from cpswm.system.prototype_spine import CorePrototypeSpine, PrototypeTransition
+from cpswm.system.prototype_spine import (
+    ActionReadout,
+    ActionReadoutConfig,
+    CorePrototypeSpine,
+    PrototypeTransition,
+)
 
 BENCHMARK_VERSION = "project-two-action-benchmark@0.2"
 
@@ -103,8 +116,8 @@ FIDELITY: dict[ProjectTwoActionMethod, BenchmarkFidelity] = {
 
 class MethodTuningSelection(ContractModel):
     method: ProjectTwoActionMethod
-    parameter_space: tuple[dict[str, float], ...]
-    selected_parameters: dict[str, float]
+    parameter_space: tuple[dict[str, float | str], ...]
+    selected_parameters: dict[str, float | str]
     validation_episode_ids: tuple[UUID, ...]
     test_episode_ids_seen: tuple[UUID, ...] = ()
     search_budget: int = Field(gt=0)
@@ -140,6 +153,9 @@ class ActionCaseMetric(ContractModel):
     project_one_stat_requests: int = Field(ge=0)
     project_one_stat_applications: int = Field(ge=0)
     project_one_stat_rejections: int = Field(ge=0)
+    project_one_stat_deferred: int = Field(default=0, ge=0)
+    project_one_stat_replay_noops: int = Field(default=0, ge=0)
+    revision_action_traces: tuple[ProjectTwoRevisionActionTrace, ...] = ()
     visible_input_hash: str = Field(pattern=r"^[0-9a-f]{64}$")
 
 
@@ -354,6 +370,9 @@ class _FullProjectTwoMethod:
         *,
         owner_threshold: float,
         evidence_transform: Callable[[ProjectTwoReplayStep], ProjectTwoReplayStep] | None = None,
+        actor_prior_transform: (
+            Callable[[ProjectTwoReplayStep, Mapping[str, float]], Mapping[str, float]] | None
+        ) = None,
         feedback_mode: str = "success_and_failure",
         apply_project_one_revisions: bool = True,
         unresolved_probability: float = 0.1,
@@ -362,6 +381,17 @@ class _FullProjectTwoMethod:
         rgrc_gate_enabled: bool = True,
         revision_strategy: str = "orrer",
         include_unknown_actor: bool = True,
+        likelihood_calibration: float = 1.0,
+        actor_evidence_weight: float = 1.0,
+        mechanism_evidence_weight: float = 1.0,
+        role_evidence_weight: float = 1.0,
+        pchmp_evidence_weight: float = 1.0,
+        unknown_actor_prior: float | None = None,
+        unknown_mechanism_prior: float | None = None,
+        orrer_retraction_threshold: float = 0.0,
+        orrer_reactivation_threshold: float = 0.5,
+        action_utility_threshold: float = 0.0,
+        action_readout: ActionReadoutConfig | None = None,
     ) -> None:
         self.episode = episode
         self.locations = _locations(episode)
@@ -373,6 +403,17 @@ class _FullProjectTwoMethod:
         self.rgrc_gate_enabled = rgrc_gate_enabled
         self.revision_strategy = revision_strategy
         self.include_unknown_actor = include_unknown_actor
+        self.likelihood_calibration = likelihood_calibration
+        self.actor_evidence_weight = actor_evidence_weight
+        self.mechanism_evidence_weight = mechanism_evidence_weight
+        self.role_evidence_weight = role_evidence_weight
+        self.pchmp_evidence_weight = pchmp_evidence_weight
+        self.unknown_actor_prior = unknown_actor_prior
+        self.unknown_mechanism_prior = unknown_mechanism_prior
+        self.orrer_retraction_threshold = orrer_retraction_threshold
+        self.orrer_reactivation_threshold = orrer_reactivation_threshold
+        self.action_utility_threshold = action_utility_threshold
+        self.action_readout = action_readout or ActionReadoutConfig()
         self.spine = CorePrototypeSpine(
             owner_key=episode.owner_actor_key,
             object_instance_id=episode.steps[0].object_instance_id,
@@ -381,9 +422,15 @@ class _FullProjectTwoMethod:
             loop_config=self.loop_config,
             message_passing=message_passing,
             rgrc_gate_enabled=rgrc_gate_enabled,
+            action_readout=self.action_readout,
         )
-        self.feedback_loop = ProjectTwoFeedbackRevisionLoop(projector=ExecutionFeedbackProjector())
+        self.feedback_loop = ProjectTwoFeedbackRevisionLoop(
+            projector=ExecutionFeedbackProjector(),
+            retraction_threshold=orrer_retraction_threshold,
+            reactivation_threshold=orrer_reactivation_threshold,
+        )
         self.evidence_transform = evidence_transform or (lambda step: step)
+        self.actor_prior_transform = actor_prior_transform
         self.feedback_mode = feedback_mode
         self.apply_project_one_revisions = apply_project_one_revisions
         self.unresolved_probability = unresolved_probability
@@ -395,6 +442,11 @@ class _FullProjectTwoMethod:
         self.revision_calls = self.project_one_requests = self.project_one_applications = 0
         self.rejected_feedback = self.unnecessary_revisions = 0
         self.project_one_rejections = 0
+        self.project_one_deferred = 0
+        self.project_one_replay_noops = 0
+        self.revision_action_traces: list[ProjectTwoRevisionActionTrace] = []
+        self._pending_trace_indices: list[int] = []
+        self._prediction_index = 0
         self._observed_steps: list[ProjectTwoReplayStep] = []
 
     def observe(self, step: ProjectTwoReplayStep) -> None:
@@ -403,7 +455,21 @@ class _FullProjectTwoMethod:
             return
         evidence = tuple(
             item
-            for item in (step.actor_evidence, step.mechanism_evidence, step.ordered_role_evidence)
+            for item in (
+                self._weighted_axis_evidence(
+                    step.actor_evidence,
+                    self.actor_evidence_weight * self.pchmp_evidence_weight,
+                ),
+                self._weighted_axis_evidence(
+                    step.mechanism_evidence,
+                    self.mechanism_evidence_weight * self.pchmp_evidence_weight,
+                    unknown_prior=self.unknown_mechanism_prior,
+                ),
+                self._weighted_axis_evidence(
+                    step.ordered_role_evidence,
+                    self.role_evidence_weight * self.pchmp_evidence_weight,
+                ),
+            )
             if item is not None
         )
         actors = tuple(
@@ -411,7 +477,22 @@ class _FullProjectTwoMethod:
             for actor in self.episode.resident_actor_keys
             if self.include_unknown_actor or actor != "unknown_actor"
         )
-        prior = {actor: 1.0 / len(actors) for actor in actors}
+        if self.unknown_actor_prior is not None and "unknown_actor" in actors:
+            known = tuple(actor for actor in actors if actor != "unknown_actor")
+            prior = {
+                actor: (
+                    self.unknown_actor_prior
+                    if actor == "unknown_actor"
+                    else (1.0 - self.unknown_actor_prior) / max(len(known), 1)
+                )
+                for actor in actors
+            }
+        else:
+            prior = {actor: 1.0 / len(actors) for actor in actors}
+        if self.actor_prior_transform is not None:
+            prior = dict(self.actor_prior_transform(step, prior))
+            if set(prior) != set(actors) or abs(sum(prior.values()) - 1.0) > 1e-6:
+                raise ValueError("actor prior transform must normalize over resident actors")
         result = self.spine.process_transition(
             PrototypeTransition(
                 opportunity=step.observation_opportunity,
@@ -430,13 +511,194 @@ class _FullProjectTwoMethod:
         self.last_location = step.after.detected_location_id or self.last_location
         self.unknown_probability = result.actor_posterior.get("unknown_actor", 0.0)
         self._observed_steps.append(step)
+        # A transition may promote a corrected event that CCRR had quarantined.
+        # Refresh its originating trace before the next real planner call.
+        self._refresh_application_receipts()
 
     def predict(self) -> _Prediction:
-        counts = {location: self.spine.hybrid_alpha(location) for location in self.locations}
+        snapshot = self.spine.current_snapshot
+        distribution = self.spine.action_location_distribution(
+            snapshot, readout=self.action_readout
+        )
+        action_distribution = self._next_action_distribution(distribution)
+        for index in self._pending_trace_indices:
+            self.revision_action_traces[index] = self.revision_action_traces[index].model_copy(
+                update={
+                    "planner_read_snapshot_id": snapshot.snapshot_id,
+                    "planner_prediction_index": self._prediction_index,
+                    "next_action_distribution": action_distribution,
+                    "operator_diagnostics": (
+                        *self.revision_action_traces[index].operator_diagnostics,
+                        OperatorDiagnostic(
+                            operator=RevisionActionOperator.PLANNER_BELIEF_READ,
+                            executed=True,
+                            changed_state=False,
+                            detail=f"planner consumed snapshot {snapshot.snapshot_id}",
+                        ),
+                    ),
+                }
+            )
+        self._pending_trace_indices.clear()
+        self._prediction_index += 1
         return _Prediction(
-            put_back=_argmax(self.locations, counts),
-            search_order=tuple(_rank(self.locations, counts, first=self.last_location)),
+            put_back=_argmax(self.locations, distribution),
+            search_order=tuple(_rank(self.locations, distribution, first=self.last_location)),
             unknown_probability=self.unknown_probability,
+        )
+
+    def _refresh_application_receipts(self) -> None:
+        """Project deferred receipts into their final exactly-once trace state."""
+
+        for index, trace in enumerate(self.revision_action_traces):
+            if trace.project_one_request is None:
+                continue
+            receipts = self.spine.application_receipts_for_feedback(trace.feedback_record_id)
+            if not receipts:
+                continue
+            applied = next(
+                (
+                    item
+                    for item in reversed(receipts)
+                    if item.status is ProjectOneRequestApplicationStatus.APPLIED
+                ),
+                None,
+            )
+            receipt = applied or receipts[-1]
+            became_applied = (
+                trace.request_application_status
+                is ProjectOneRequestApplicationStatus.DEFERRED_DUE_TO_QUARANTINE
+                and receipt.status is ProjectOneRequestApplicationStatus.APPLIED
+            )
+            update: dict[str, Any] = {
+                "request_application_status": receipt.status,
+                "application_receipt_id": receipt.receipt_id,
+                "dirichlet_deltas": receipt.dirichlet_deltas,
+                "rls_deltas": receipt.rls_deltas,
+                "hybrid_rgrc_deltas": receipt.hybrid_rgrc_deltas,
+                "ccrr_decision": receipt.ccrr_decision,
+                "operator_diagnostics": tuple(
+                    diagnostic.model_copy(
+                        update={
+                            "executed": receipt.status
+                            is ProjectOneRequestApplicationStatus.APPLIED,
+                            "changed_state": bool(
+                                receipt.dirichlet_deltas
+                                or receipt.rls_deltas
+                                or receipt.hybrid_rgrc_deltas
+                            ),
+                            "detail": receipt.status.value,
+                        }
+                    )
+                    if diagnostic.operator is RevisionActionOperator.DIRICHLET_RLS_APPLICATION
+                    else diagnostic.model_copy(
+                        update={
+                            "executed": True,
+                            "changed_state": receipt.ccrr_decision in {"create", "reactivate"},
+                            "detail": receipt.ccrr_decision,
+                        }
+                    )
+                    if diagnostic.operator is RevisionActionOperator.CCRR_REGIME_DECISION
+                    else diagnostic
+                    for diagnostic in trace.operator_diagnostics
+                ),
+            }
+            if became_applied:
+                snapshot = self.spine.current_snapshot
+                update.update(
+                    {
+                        "new_belief_snapshot_id": snapshot.snapshot_id,
+                        "planner_read_snapshot_id": None,
+                        "planner_prediction_index": None,
+                        "next_action_distribution": (),
+                    }
+                )
+                if index not in self._pending_trace_indices:
+                    self._pending_trace_indices.append(index)
+            self.revision_action_traces[index] = trace.model_copy(update=update)
+
+        request_traces = [
+            item for item in self.revision_action_traces if item.project_one_request is not None
+        ]
+        self.project_one_requests = len(request_traces)
+        self.project_one_applications = sum(
+            item.request_application_status is ProjectOneRequestApplicationStatus.APPLIED
+            for item in request_traces
+        )
+        self.project_one_deferred = sum(
+            item.request_application_status
+            is ProjectOneRequestApplicationStatus.DEFERRED_DUE_TO_QUARANTINE
+            for item in request_traces
+        )
+        self.project_one_rejections = sum(
+            item.request_application_status is ProjectOneRequestApplicationStatus.REJECTED
+            for item in request_traces
+        )
+        self.project_one_replay_noops = sum(
+            item.request_application_status is ProjectOneRequestApplicationStatus.REPLAY_NOOP
+            for item in request_traces
+        )
+
+    def _next_action_distribution(
+        self, location_distribution: Mapping[UUID, float]
+    ) -> tuple[ActionProbability, ...]:
+        confidence = max(location_distribution.values(), default=0.0)
+        threshold_gap = max(0.0, self.action_utility_threshold - confidence)
+        ask_mass = min(0.5, 0.25 * self.unknown_probability + threshold_gap)
+        remaining = 1.0 - ask_mass
+        action_weights = {"put_back": 0.45, "search": 0.40, "deliver": 0.15}
+        items = [
+            ActionProbability(
+                action=action,
+                location_id=location,
+                probability=remaining * action_weight * probability,
+            )
+            for action, action_weight in action_weights.items()
+            for location, probability in location_distribution.items()
+        ]
+        if ask_mass > 0.0:
+            items.append(ActionProbability(action="ask", probability=ask_mass))
+        return tuple(items)
+
+    @staticmethod
+    def _weighted_axis_evidence(evidence, weight: float, *, unknown_prior=None):
+        if evidence is None:
+            return None
+        if weight < 0.0:
+            raise ValueError("evidence weight must be non-negative")
+        if hasattr(evidence, "actor_posterior"):
+            posterior_name, prior_name = "actor_posterior", "reference_actor_prior"
+        elif hasattr(evidence, "mechanism_posterior"):
+            posterior_name, prior_name = (
+                "mechanism_posterior",
+                "reference_mechanism_prior",
+            )
+        else:
+            posterior_name, prior_name = (
+                "ordered_role_posterior",
+                "reference_ordered_role_prior",
+            )
+        posterior = dict(getattr(evidence, posterior_name))
+        prior = dict(getattr(evidence, prior_name))
+        if unknown_prior is not None and EventMechanism.UNKNOWN_MECHANISM in posterior:
+            known = [key for key in posterior if key is not EventMechanism.UNKNOWN_MECHANISM]
+            prior = {
+                key: (
+                    unknown_prior
+                    if key is EventMechanism.UNKNOWN_MECHANISM
+                    else (1.0 - unknown_prior) / max(len(known), 1)
+                )
+                for key in posterior
+            }
+        weighted = {
+            key: max(prior[key], 1e-12) * (max(value, 1e-12) / max(prior[key], 1e-12)) ** weight
+            for key, value in posterior.items()
+        }
+        total = sum(weighted.values())
+        return evidence.model_copy(
+            update={
+                posterior_name: {key: value / total for key, value in weighted.items()},
+                prior_name: prior,
+            }
         )
 
     def feedback(self, step: ProjectTwoReplayStep) -> None:
@@ -475,15 +737,26 @@ class _FullProjectTwoMethod:
             if self.feedback_mode == "success_only" and success <= 0.5:
                 continue
             try:
+                old_snapshot = self.spine.current_snapshot
                 revised, outcome = self.feedback_loop.ingest_feedback(
                     history=history,
                     feedback=feedback,
                     binding=_binding(feedback, result, self.spine.authorization_scope_id),
-                    likelihood_model=_likelihood(feedback.action_type),
+                    likelihood_model=_likelihood(
+                        feedback.action_type,
+                        calibration=self.likelihood_calibration,
+                    ),
                     owner_key=self.episode.owner_actor_key,
                     transition_model=(
                         _transition_model(step, self.episode)
                         if feedback.action_type in {RobotActionType.PLACE, RobotActionType.TRANSFER}
+                        else None
+                    ),
+                    observed_destination_location_id=step.observed_destination_location_id,
+                    post_action_observation_record_id=(
+                        step.after.metadata.record_id
+                        if step.observed_destination_location_id is not None
+                        and step.after is not None
                         else None
                     ),
                 )
@@ -496,21 +769,205 @@ class _FullProjectTwoMethod:
             self.unknown_probability = outcome.actor_posterior_after.get("unknown_actor", 0.0)
             if not outcome.project_one_requests:
                 self.unnecessary_revisions += 1
+            receipt = None
             for request in outcome.project_one_requests:
                 self.project_one_requests += 1
                 if not self.apply_project_one_revisions:
-                    continue
-                try:
-                    applied = apply_project_one_request(request, self.spine)
-                except (KeyError, ValueError):
-                    # A quarantined (not promoted) project-one event has no live
-                    # statistic to retract, and a posterior mismatch must never
-                    # be forced into project one. Keep the request auditable and
-                    # count the unavailable application as a rejected route.
                     self.project_one_rejections += 1
                     continue
-                if applied:
+                apply_project_one_request(request, self.spine)
+                receipt = self.spine.application_receipts_for_feedback(
+                    request.source_feedback_record_id
+                )[-1]
+                if receipt.status is ProjectOneRequestApplicationStatus.APPLIED:
                     self.project_one_applications += 1
+                elif (
+                    receipt.status is ProjectOneRequestApplicationStatus.DEFERRED_DUE_TO_QUARANTINE
+                ):
+                    self.project_one_deferred += 1
+                elif receipt.status is ProjectOneRequestApplicationStatus.REPLAY_NOOP:
+                    self.project_one_replay_noops += 1
+                else:
+                    self.project_one_rejections += 1
+            new_snapshot = self.spine.publish_project_two_revision_snapshot(outcome)
+            # Multiple feedback records can arrive before one planner tick. Every
+            # record in that causal batch points to the final corrected snapshot
+            # that the next planner will actually consume.
+            for index in self._pending_trace_indices:
+                self.revision_action_traces[index] = self.revision_action_traces[index].model_copy(
+                    update={"new_belief_snapshot_id": new_snapshot.snapshot_id}
+                )
+            trace = self._trace(
+                feedback=feedback,
+                outcome=outcome,
+                receipt=receipt,
+                old_snapshot_id=old_snapshot.snapshot_id,
+                new_snapshot_id=new_snapshot.snapshot_id,
+            )
+            self.revision_action_traces.append(trace)
+            self._pending_trace_indices.append(len(self.revision_action_traces) - 1)
+
+        # Close the feedback -> corrected snapshot -> planner edge immediately.
+        # A later robot observation may legitimately create yet another snapshot,
+        # but cannot be used as a substitute for proving this feedback was read.
+        if self._pending_trace_indices:
+            snapshot = self.spine.current_snapshot
+            distribution = self.spine.action_location_distribution(snapshot)
+            action_distribution = self._next_action_distribution(distribution)
+            for index in self._pending_trace_indices:
+                self.revision_action_traces[index] = self.revision_action_traces[index].model_copy(
+                    update={
+                        "new_belief_snapshot_id": snapshot.snapshot_id,
+                        "planner_read_snapshot_id": snapshot.snapshot_id,
+                        "planner_prediction_index": self._prediction_index,
+                        "next_action_distribution": action_distribution,
+                        "operator_diagnostics": (
+                            *self.revision_action_traces[index].operator_diagnostics,
+                            OperatorDiagnostic(
+                                operator=RevisionActionOperator.PLANNER_BELIEF_READ,
+                                executed=True,
+                                changed_state=False,
+                                detail=(
+                                    f"planner consumed corrected snapshot {snapshot.snapshot_id}"
+                                ),
+                            ),
+                        ),
+                    }
+                )
+            self._pending_trace_indices.clear()
+
+    @staticmethod
+    def _mass(values: Mapping[str, float]) -> tuple[ProbabilityMass, ...]:
+        return tuple(
+            ProbabilityMass(key=key, probability=min(1.0, max(0.0, value)))
+            for key, value in sorted(values.items())
+        )
+
+    @staticmethod
+    def _uuid_mass(values: Mapping[UUID, float]) -> tuple[UUIDProbabilityMass, ...]:
+        return tuple(
+            UUIDProbabilityMass(key=key, probability=min(1.0, max(0.0, value)))
+            for key, value in sorted(values.items(), key=lambda item: str(item[0]))
+        )
+
+    def _trace(self, *, feedback, outcome, receipt, old_snapshot_id, new_snapshot_id):
+        request = outcome.project_one_requests[0] if outcome.project_one_requests else None
+        request_trace = (
+            None
+            if request is None
+            else ProjectOneStatRequestTrace(
+                kind=request.kind.value,
+                superseded_revision_id=request.superseded_revision_id,
+                corrected_revision_id=request.corrected_revision_id,
+                event_hypothesis_id=request.event_hypothesis_id,
+                owner_key=request.owner_key,
+                object_instance_id=request.object_instance_id,
+                location_id=request.location_id,
+                owner_mass_before=request.owner_mass_before,
+                owner_mass_after=request.owner_mass_after,
+                owner_mass_delta=request.owner_mass_delta,
+                source_feedback_record_id=request.source_feedback_record_id,
+            )
+        )
+        status = None if receipt is None else receipt.status
+        diagnostics = (
+            OperatorDiagnostic(
+                operator=RevisionActionOperator.CHEH_HYPOTHESIS_SUPPORT,
+                executed=True,
+                changed_state=bool(outcome.hypothesis_posterior_after),
+                detail=f"{len(outcome.hypothesis_posterior_after)} supported hypotheses",
+            ),
+            OperatorDiagnostic(
+                operator=RevisionActionOperator.PCHMP_REPROPAGATION,
+                executed=True,
+                changed_state=(
+                    outcome.hypothesis_posterior_before != outcome.hypothesis_posterior_after
+                ),
+                detail="joint posterior re-propagated with provenance constraints",
+            ),
+            OperatorDiagnostic(
+                operator=RevisionActionOperator.ORRER_REVISION,
+                executed=True,
+                changed_state=(outcome.superseded_revision_id != outcome.corrected_revision_id),
+                detail="append-only corrected revision produced",
+            ),
+            OperatorDiagnostic(
+                operator=RevisionActionOperator.PROJECT_ONE_REQUEST_GENERATION,
+                executed=True,
+                changed_state=request is not None,
+                detail=("typed request emitted" if request else "no statistic delta required"),
+            ),
+            OperatorDiagnostic(
+                operator=RevisionActionOperator.QUARANTINE_HANDOFF,
+                executed=request is not None,
+                changed_state=(
+                    status is ProjectOneRequestApplicationStatus.DEFERRED_DUE_TO_QUARANTINE
+                ),
+                detail=(status.value if status is not None else "not requested"),
+            ),
+            OperatorDiagnostic(
+                operator=RevisionActionOperator.DIRICHLET_RLS_APPLICATION,
+                executed=(status is ProjectOneRequestApplicationStatus.APPLIED),
+                changed_state=bool(
+                    receipt
+                    and (
+                        receipt.dirichlet_deltas or receipt.rls_deltas or receipt.hybrid_rgrc_deltas
+                    )
+                ),
+                detail=(status.value if status is not None else "not requested"),
+            ),
+            OperatorDiagnostic(
+                operator=RevisionActionOperator.CCRR_REGIME_DECISION,
+                executed=receipt is not None,
+                changed_state=bool(receipt and receipt.ccrr_decision in {"create", "reactivate"}),
+                detail=(receipt.ccrr_decision if receipt is not None else "not requested"),
+            ),
+        )
+        return ProjectTwoRevisionActionTrace(
+            feedback_record_id=feedback.metadata.record_id,
+            evidence_source_record_ids=outcome.evidence_source_record_ids,
+            superseded_revision_id=outcome.superseded_revision_id,
+            corrected_revision_id=outcome.corrected_revision_id,
+            hypothesis_posterior_before=self._uuid_mass(outcome.hypothesis_posterior_before),
+            hypothesis_posterior_after=self._uuid_mass(outcome.hypothesis_posterior_after),
+            actor_posterior_before=self._mass(outcome.actor_posterior_before),
+            actor_posterior_after=self._mass(outcome.actor_posterior_after),
+            known_mechanism_actor_mass_before=self._mass(outcome.known_mechanism_actor_mass_before),
+            known_mechanism_actor_mass_after=self._mass(outcome.known_mechanism_actor_mass_after),
+            mechanism_posterior_before=self._mass(outcome.mechanism_posterior_before),
+            mechanism_posterior_after=self._mass(outcome.mechanism_posterior_after),
+            role_posterior_before=self._mass(outcome.role_posterior_before),
+            role_posterior_after=self._mass(outcome.role_posterior_after),
+            location_posterior_before=self._mass(outcome.location_posterior_before),
+            location_posterior_after=self._mass(outcome.location_posterior_after),
+            unknown_actor_before=outcome.actor_posterior_before.get("unknown_actor", 0.0),
+            unknown_actor_after=outcome.actor_posterior_after.get("unknown_actor", 0.0),
+            unknown_mechanism_before=outcome.unknown_mechanism_before,
+            unknown_mechanism_after=outcome.unknown_mechanism_after,
+            unresolved_before=outcome.unresolved_before,
+            unresolved_after=outcome.unresolved_after,
+            unknown_mechanism_actor_mass_before=self._mass(
+                outcome.unknown_mechanism_actor_mass_before
+            ),
+            unknown_mechanism_actor_mass_after=self._mass(
+                outcome.unknown_mechanism_actor_mass_after
+            ),
+            owner_mass_before=outcome.owner_mass_before,
+            owner_mass_after=outcome.owner_mass_after,
+            project_one_request=request_trace,
+            request_application_status=status,
+            application_receipt_id=(None if receipt is None else receipt.receipt_id),
+            dirichlet_deltas=(() if receipt is None else receipt.dirichlet_deltas),
+            rls_deltas=(() if receipt is None else receipt.rls_deltas),
+            hybrid_rgrc_deltas=(() if receipt is None else receipt.hybrid_rgrc_deltas),
+            ccrr_decision=("not_requested" if receipt is None else receipt.ccrr_decision),
+            old_belief_snapshot_id=old_snapshot_id,
+            new_belief_snapshot_id=new_snapshot_id,
+            attempted_location_id=feedback.attempted_location_id,
+            observed_destination_location_id=outcome.observed_destination_location_id,
+            confirmed_location_evidence_id=outcome.confirmed_location_evidence_id,
+            operator_diagnostics=diagnostics,
+        )
 
 
 def _binding(feedback, result, authorization_scope_id: UUID) -> DecisionContextBinding:
@@ -563,19 +1020,29 @@ def _binding(feedback, result, authorization_scope_id: UUID) -> DecisionContextB
     )
 
 
-def _likelihood(action_type: RobotActionType) -> ActionOutcomeLikelihoodModel:
+def _likelihood(
+    action_type: RobotActionType, *, calibration: float = 1.0
+) -> ActionOutcomeLikelihoodModel:
+    if calibration <= 0.0:
+        raise ValueError("likelihood calibration must be positive")
     if action_type in {RobotActionType.PLACE, RobotActionType.TRANSFER}:
         present = {RobotActionOutcome.SUCCESS: 0.85, RobotActionOutcome.OBJECT_SLIPPED: 0.15}
         absent = {RobotActionOutcome.SUCCESS: 0.25, RobotActionOutcome.OBJECT_SLIPPED: 0.75}
     else:
         present = {RobotActionOutcome.SUCCESS: 0.85, RobotActionOutcome.NOT_FOUND: 0.15}
         absent = {RobotActionOutcome.SUCCESS: 0.1, RobotActionOutcome.NOT_FOUND: 0.9}
+
+    def calibrated(values):
+        powered = {key: value**calibration for key, value in values.items()}
+        total = sum(powered.values())
+        return {key: value / total for key, value in powered.items()}
+
     return ActionOutcomeLikelihoodModel(
         action_type=action_type,
-        p_outcome_given_target_present=present,
-        p_outcome_given_target_absent=absent,
+        p_outcome_given_target_present=calibrated(present),
+        p_outcome_given_target_absent=calibrated(absent),
         calibration_domain="D0 replay pilot",
-        model_version="matched-feedback-likelihood@0.2",
+        model_version=f"matched-feedback-likelihood@0.3-calibration-{calibration:g}",
     )
 
 
@@ -682,7 +1149,7 @@ def _visible_hash(episode: ProjectTwoReplayEpisode) -> str:
     ).hexdigest()
 
 
-PARAMETER_SPACE: dict[ProjectTwoActionMethod, tuple[dict[str, float], ...]] = {
+PARAMETER_SPACE: dict[ProjectTwoActionMethod, tuple[dict[str, float | str], ...]] = {
     ProjectTwoActionMethod.FREQUENCY: ({"parameter": 0.0}, {"parameter": 0.5}, {"parameter": 1.0}),
     ProjectTwoActionMethod.RECENCY: ({"parameter": 0.5}, {"parameter": 0.8}, {"parameter": 0.95}),
     ProjectTwoActionMethod.MARKOV: ({"parameter": 0.1}, {"parameter": 0.5}, {"parameter": 1.0}),
@@ -695,10 +1162,41 @@ PARAMETER_SPACE: dict[ProjectTwoActionMethod, tuple[dict[str, float], ...]] = {
     ProjectTwoActionMethod.DYNAMEM: ({"parameter": 0.5}, {"parameter": 0.8}, {"parameter": 0.95}),
     ProjectTwoActionMethod.STAR: ({"parameter": 0.8}, {"parameter": 0.9}, {"parameter": 1.0}),
     ProjectTwoActionMethod.FULL_RERUN: ({"parameter": 0.0}, {"parameter": 0.5}, {"parameter": 1.0}),
+    # v0.3 search space.  Budget is unchanged at three points, so tuning parity
+    # with every baseline holds.  What changed is *where* the three points sit:
+    # v0.2 searched three owner thresholds that all produced the identical
+    # validation reading (0.3281), i.e. it searched a dimension with no variance
+    # while the planner read boundary -- the thing the reversible machinery
+    # actually moves -- was frozen at the pooled hybrid alpha.  The frozen
+    # pooled-alpha point is retained as the third candidate so the selector must
+    # *win* the new readout on validation rather than have it imposed.
+    #
+    # ``pending_correction_discount`` stays inert (1.0) on purpose: the frozen
+    # validation split produces zero deferred requests, so it cannot be tuned
+    # there, and an untunable knob must not silently influence a sealed reading.
+    # Its semantics are unit-tested and measured in a separate diagnostic arm.
     ProjectTwoActionMethod.PROJECT_TWO: (
-        {"owner_threshold": 0.4},
-        {"owner_threshold": 0.5},
-        {"owner_threshold": 0.6},
+        {
+            "owner_threshold": 0.4,
+            "readout": ActionReadout.SURVIVING_OWNER_REVISIONS.value,
+            "owner_mass_floor": 0.5,
+            "recency_half_life": 1.0,
+            "pending_correction_discount": 1.0,
+        },
+        {
+            "owner_threshold": 0.5,
+            "readout": ActionReadout.REVISION_AWARE.value,
+            "hybrid_alpha_weight": 0.2,
+            "regime_local_weight": 0.3,
+            "surviving_revision_weight": 0.5,
+            "owner_mass_floor": 0.5,
+            "recency_half_life": 1.0,
+            "pending_correction_discount": 1.0,
+        },
+        {
+            "owner_threshold": 0.6,
+            "readout": ActionReadout.HYBRID_ALPHA.value,
+        },
     ),
 }
 
@@ -723,7 +1221,7 @@ class ProjectTwoActionBenchmarkV02:
             if method is not ProjectTwoActionMethod.ORACLE
         )
         selections: list[MethodTuningSelection] = []
-        chosen: dict[ProjectTwoActionMethod, dict[str, float]] = {}
+        chosen: dict[ProjectTwoActionMethod, dict[str, float | str]] = {}
         for method in methods:
             space = PARAMETER_SPACE[method]
             scores = []
@@ -876,9 +1374,33 @@ class ProjectTwoActionBenchmarkV02:
             paper_level_gate_failures=tuple(paper_gate_failures),
         )
 
+    @staticmethod
+    def _readout_from_params(params: Mapping[str, float]) -> ActionReadoutConfig:
+        """Build the planner read policy from one tuning point.
+
+        Absent keys reproduce the frozen v0.2 pooled-alpha readout exactly, so an
+        old parameter dict keeps its old behaviour.
+        """
+
+        name = str(params.get("readout", ActionReadout.HYBRID_ALPHA.value))
+        return ActionReadoutConfig(
+            readout=ActionReadout(name),
+            owner_mass_floor=float(params.get("owner_mass_floor", 0.0)),
+            recency_half_life=float(params.get("recency_half_life", 0.0)),
+            hybrid_alpha_weight=float(params.get("hybrid_alpha_weight", 1.0)),
+            regime_local_weight=float(params.get("regime_local_weight", 0.0)),
+            surviving_revision_weight=float(params.get("surviving_revision_weight", 0.0)),
+            pending_correction_discount=float(params.get("pending_correction_discount", 1.0)),
+            active_regime_only=bool(params.get("active_regime_only", False)),
+        )
+
     def _method(self, episode, method, params) -> _ReplayMethod:
         if method is ProjectTwoActionMethod.PROJECT_TWO:
-            return _FullProjectTwoMethod(episode, owner_threshold=params["owner_threshold"])
+            return _FullProjectTwoMethod(
+                episode,
+                owner_threshold=params["owner_threshold"],
+                action_readout=self._readout_from_params(params),
+            )
         if method is ProjectTwoActionMethod.AMG_MATCHED:
             return _AMGOpenWorldMethod(episode, mode="amg", parameter=params["parameter"])
         if method is ProjectTwoActionMethod.FULL_RERUN:
@@ -906,7 +1428,7 @@ class ProjectTwoActionBenchmarkV02:
                         1.0 if item.true_actor == "unknown_actor" else 0.0,
                     )
                 )
-            stats = (0, 0, 0, 0, 0, 0)
+            stats = (0, 0, 0, 0, 0, 0, 0, 0, ())
         else:
             state = self._method(episode, method, params)
             predictions = []
@@ -921,6 +1443,9 @@ class ProjectTwoActionBenchmarkV02:
                 state.rejected_feedback,
                 state.unnecessary_revisions,
                 state.project_one_rejections,
+                getattr(state, "project_one_deferred", 0),
+                getattr(state, "project_one_replay_noops", 0),
+                tuple(getattr(state, "revision_action_traces", ())),
             )
         return self._score_predictions(
             dataset=dataset,
@@ -959,6 +1484,9 @@ class ProjectTwoActionBenchmarkV02:
                 state.rejected_feedback,
                 state.unnecessary_revisions,
                 state.project_one_rejections,
+                getattr(state, "project_one_deferred", 0),
+                getattr(state, "project_one_replay_noops", 0),
+                tuple(getattr(state, "revision_action_traces", ())),
             ),
         )
 
@@ -998,6 +1526,49 @@ class ProjectTwoActionBenchmarkV02:
                             break
                     recovery_cost += latency
         n = len(predictions)
+        enriched_traces: list[ProjectTwoRevisionActionTrace] = []
+        for trace in stats[8]:
+            trace_index = min(trace.planner_prediction_index or 0, n - 1)
+            target = ordered_truth[trace_index]
+            put_candidates = [
+                item for item in trace.next_action_distribution if item.action == "put_back"
+            ]
+            search_candidates = [
+                item for item in trace.next_action_distribution if item.action == "search"
+            ]
+            selected_put = (
+                max(put_candidates, key=lambda item: item.probability).location_id
+                if put_candidates
+                else None
+            )
+            selected_search = (
+                max(search_candidates, key=lambda item: item.probability).location_id
+                if search_candidates
+                else None
+            )
+            regret = float(selected_put != target.true_owner_habit_location) + float(
+                selected_search != target.true_location
+            )
+            enriched_traces.append(
+                trace.model_copy(
+                    update={
+                        "evaluator_utility": 2.0 - regret,
+                        "evaluator_regret": regret,
+                        "operator_diagnostics": (
+                            *trace.operator_diagnostics,
+                            OperatorDiagnostic(
+                                operator=RevisionActionOperator.UTILITY_ACTION_SELECTION,
+                                executed=True,
+                                changed_state=False,
+                                detail=(
+                                    f"frozen evaluator scored planner index {trace_index}: "
+                                    f"utility={2.0 - regret}, regret={regret}"
+                                ),
+                            ),
+                        ),
+                    }
+                )
+            )
         return ActionCaseMetric(
             episode_id=episode.episode_id,
             method=method,
@@ -1024,6 +1595,9 @@ class ProjectTwoActionBenchmarkV02:
             project_one_stat_requests=stats[1],
             project_one_stat_applications=stats[2],
             project_one_stat_rejections=stats[5],
+            project_one_stat_deferred=stats[6],
+            project_one_stat_replay_noops=stats[7],
+            revision_action_traces=tuple(enriched_traces),
             visible_input_hash=visible_hash,
         )
 

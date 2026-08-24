@@ -130,6 +130,9 @@ class ProjectOneRunner:
         """Replay one stream through one arm, measuring cost as we go."""
 
         method.reset()
+        # Offline preparation, for ablations defined over the whole stream.
+        # Called after reset so a primed arm cannot carry priming across runs.
+        method.prime(stream.records)
         predictions: list[StepPrediction] = []
         failure: RunFailure | None = None
 

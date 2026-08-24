@@ -5,7 +5,11 @@ from uuid import uuid4
 import pytest
 from pydantic import ValidationError
 
-from cpswm.contracts import ProjectTwoDatasetSplit, ProjectTwoReplayStep
+from cpswm.contracts import ProjectTwoDataMaturity, ProjectTwoDatasetSplit, ProjectTwoReplayStep
+from cpswm.system.evaluation_operations.project_two_action_benchmark import (
+    ProjectTwoActionBenchmarkV02,
+    ProjectTwoActionMethod,
+)
 from cpswm.system.evaluation_operations.project_two_dataset import (
     ProjectTwoReplayGateError,
     audit_project_two_replay,
@@ -13,7 +17,10 @@ from cpswm.system.evaluation_operations.project_two_dataset import (
 )
 from cpswm.system.evaluation_operations.project_two_dataset_adapters import (
     D0SyntheticOracleReplayAdapter,
+    D1SimulatorAnnotatedReplayAdapter,
+    D2RealPerceptionReplayAdapter,
 )
+from cpswm.system.reproducibility import content_sha256
 
 
 def _dataset():
@@ -28,6 +35,46 @@ def test_d0_contract_keeps_truth_in_separate_store():
     assert not hasattr(episode, "truth_by_step")
     assert dataset.truth_for(episode.episode_id).truth_by_step
     assert "true_actor" not in episode.model_dump_json()
+
+
+def test_d0_d1_d2_use_same_replay_contract_evaluator_and_metric_definition():
+    d0 = D0SyntheticOracleReplayAdapter(
+        validation_seeds=(101,), test_seeds=(211,), max_steps_per_episode=2
+    ).build()
+    scorer = ProjectTwoActionBenchmarkV02()
+    adapters = (
+        (D1SimulatorAnnotatedReplayAdapter, ProjectTwoDataMaturity.D1_SIMULATOR_ANNOTATED_REPLAY),
+        (D2RealPerceptionReplayAdapter, ProjectTwoDataMaturity.D2_REAL_PERCEPTION_REPLAY),
+    )
+    metric_definitions = []
+    for adapter_type, maturity in adapters:
+        version = f"typed-fixture-{maturity.value}@0.2"
+        episodes = tuple(
+            item.model_copy(update={"maturity": maturity, "dataset_version": version})
+            for item in d0.episodes
+        )
+        evaluator_store = []
+        for item in episodes:
+            envelope = d0.truth_for(item.episode_id).model_copy(update={"dataset_version": version})
+            payload = envelope.model_dump(mode="python", exclude={"evaluator_content_hash"})
+            evaluator_store.append(
+                envelope.model_copy(update={"evaluator_content_hash": content_sha256(payload)})
+            )
+        dataset = adapter_type(
+            dataset_version=version,
+            episodes=episodes,
+            evaluator_store=tuple(evaluator_store),
+            adapter_provenance="test typed replay; not an external dataset claim",
+        ).build()
+        assert all(type(item) is type(d0.episodes[0]) for item in dataset.episodes)
+        metric = scorer._evaluate_episode(
+            dataset,
+            dataset.episodes[0],
+            ProjectTwoActionMethod.ORACLE,
+            {},
+        )
+        metric_definitions.append(tuple(type(metric).model_fields))
+    assert len(set(metric_definitions)) == 1
 
 
 def test_attempted_and_observed_destination_are_not_interchangeable():

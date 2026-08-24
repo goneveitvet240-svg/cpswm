@@ -1,0 +1,1687 @@
+{
+  "schema_version": "0.1.0",
+  "dataset_version": "project-two-d1-generic-annotated-development@0.1",
+  "episode_count": 30,
+  "step_count": 960,
+  "inference_chain": [
+    "ObservationDetectionResult",
+    "CHEH",
+    "ORRER",
+    "PCHMP",
+    "actor/role/mechanism posterior",
+    "action",
+    "ExecutionFeedbackRecord",
+    "ExecutionFeedbackProjector",
+    "feedback likelihood",
+    "PCHMP rerun",
+    "ORRER revision",
+    "EventRevisionOutcome",
+    "ProjectOneStatRequest",
+    "HybridEventToTaskCoordinatorLoop",
+    "new BeliefSnapshot",
+    "next action distribution",
+    "action utility"
+  ],
+  "configuration_selection": {
+    "owner_threshold": 0.5,
+    "tuned": false,
+    "test_truth_used": false,
+    "selection_scope": "fixed configuration applied identically to validation and test"
+  },
+  "aggregate_metrics": {
+    "put_back_error_rate": {
+      "mean": 0.334375,
+      "ci95": [
+        0.315625,
+        0.35520833333333335
+      ],
+      "n": 30
+    },
+    "search_success_rate": {
+      "mean": 0.8979166666666667,
+      "ci95": [
+        0.8697916666666666,
+        0.9229166666666667
+      ],
+      "n": 30
+    },
+    "cumulative_action_regret": {
+      "mean": 13.966666666666667,
+      "ci95": [
+        12.833333333333334,
+        15.2
+      ],
+      "n": 30
+    },
+    "mean_search_cost": {
+      "mean": 1.1614583333333333,
+      "ci95": [
+        1.11875,
+        1.2072916666666667
+      ],
+      "n": 30
+    },
+    "hidden_event_hypothesis_accuracy": {
+      "mean": 0.6322916666666667,
+      "ci95": [
+        0.5989583333333334,
+        0.6635416666666667
+      ],
+      "n": 960
+    },
+    "revision_accuracy": {
+      "mean": 0.6322916666666667,
+      "ci95": [
+        0.6010416666666667,
+        0.6604166666666667
+      ],
+      "n": 960
+    },
+    "mean_unresolved_mass": {
+      "mean": 0.3556923820523175,
+      "ci95": [
+        0.32568111958048845,
+        0.3852589567800738
+      ],
+      "n": 960
+    },
+    "cumulative_utility": {
+      "mean": 23.1,
+      "ci95": [
+        21.533333333333335,
+        24.566666666666666
+      ],
+      "n": 30
+    }
+  },
+  "split_metrics": {
+    "validation": {
+      "put_back_error_rate": {
+        "mean": 0.34375,
+        "ci95": [
+          0.315625,
+          0.375
+        ],
+        "n": 10
+      },
+      "search_success_rate": {
+        "mean": 0.859375,
+        "ci95": [
+          0.803125,
+          0.909375
+        ],
+        "n": 10
+      },
+      "cumulative_action_regret": {
+        "mean": 15.5,
+        "ci95": [
+          13.5,
+          17.7
+        ],
+        "n": 10
+      },
+      "mean_search_cost": {
+        "mean": 1.21875,
+        "ci95": [
+          1.13125,
+          1.309375
+        ],
+        "n": 10
+      },
+      "cumulative_utility": {
+        "mean": 22.3,
+        "ci95": [
+          19.3,
+          25.2
+        ],
+        "n": 10
+      }
+    },
+    "test": {
+      "put_back_error_rate": {
+        "mean": 0.3296875,
+        "ci95": [
+          0.3078125,
+          0.353125
+        ],
+        "n": 20
+      },
+      "search_success_rate": {
+        "mean": 0.9171875,
+        "ci95": [
+          0.89375,
+          0.9375
+        ],
+        "n": 20
+      },
+      "cumulative_action_regret": {
+        "mean": 13.2,
+        "ci95": [
+          11.9,
+          14.55
+        ],
+        "n": 20
+      },
+      "mean_search_cost": {
+        "mean": 1.1328125,
+        "ci95": [
+          1.09375,
+          1.1765625
+        ],
+        "n": 20
+      },
+      "cumulative_utility": {
+        "mean": 23.5,
+        "ci95": [
+          21.8,
+          25.25
+        ],
+        "n": 20
+      }
+    }
+  },
+  "strata": {
+    "actor": {
+      "owner": {
+        "step_count": 690,
+        "hidden_event_hypothesis_accuracy": 0.6797101449275362,
+        "revision_accuracy": 0.6797101449275362,
+        "put_back_success": 0.5492753623188406,
+        "search_success": 0.9028985507246376,
+        "mean_unresolved_mass": 0.32120109915770334
+      },
+      "guest": {
+        "step_count": 240,
+        "hidden_event_hypothesis_accuracy": 0.575,
+        "revision_accuracy": 0.575,
+        "put_back_success": 1,
+        "search_success": 0.9,
+        "mean_unresolved_mass": 0.42568101253097146
+      },
+      "unknown_actor": {
+        "step_count": 30,
+        "hidden_event_hypothesis_accuracy": 0,
+        "revision_accuracy": 0,
+        "put_back_success": 0.6666666666666666,
+        "search_success": 0.7666666666666667,
+        "mean_unresolved_mass": 0.5890828447992119
+      }
+    },
+    "mechanism": {
+      "direct_relocation": {
+        "step_count": 804,
+        "hidden_event_hypothesis_accuracy": 0.6616915422885572,
+        "revision_accuracy": 0.6616915422885572,
+        "put_back_success": 0.6131840796019901,
+        "search_success": 0.900497512437811,
+        "mean_unresolved_mass": 0.33917214370181814
+      },
+      "handoff_relocation": {
+        "step_count": 126,
+        "hidden_event_hypothesis_accuracy": 0.5952380952380952,
+        "revision_accuracy": 0.5952380952380952,
+        "put_back_success": 1,
+        "search_success": 0.9126984126984127,
+        "mean_unresolved_mass": 0.4055380784919577
+      },
+      "unknown_mechanism": {
+        "step_count": 30,
+        "hidden_event_hypothesis_accuracy": 0,
+        "revision_accuracy": 0,
+        "put_back_success": 0.6666666666666666,
+        "search_success": 0.7666666666666667,
+        "mean_unresolved_mass": 0.5890828447992119
+      }
+    }
+  },
+  "groups": {
+    "household": {
+      "0fed5b8e-671f-8094-e927-9aacc678bcdf": {
+        "put_back_error_rate": {
+          "mean": 0.28125,
+          "ci95": [
+            0.28125,
+            0.28125
+          ],
+          "n": 1
+        },
+        "search_success_rate": {
+          "mean": 1.0,
+          "ci95": [
+            1.0,
+            1.0
+          ],
+          "n": 1
+        },
+        "cumulative_action_regret": {
+          "mean": 9.0,
+          "ci95": [
+            9.0,
+            9.0
+          ],
+          "n": 1
+        },
+        "mean_search_cost": {
+          "mean": 1.0,
+          "ci95": [
+            1.0,
+            1.0
+          ],
+          "n": 1
+        }
+      },
+      "1008bf83-34a6-27e6-e130-d0f87bbca1b2": {
+        "put_back_error_rate": {
+          "mean": 0.34375,
+          "ci95": [
+            0.34375,
+            0.34375
+          ],
+          "n": 1
+        },
+        "search_success_rate": {
+          "mean": 0.875,
+          "ci95": [
+            0.875,
+            0.875
+          ],
+          "n": 1
+        },
+        "cumulative_action_regret": {
+          "mean": 15.0,
+          "ci95": [
+            15.0,
+            15.0
+          ],
+          "n": 1
+        },
+        "mean_search_cost": {
+          "mean": 1.25,
+          "ci95": [
+            1.25,
+            1.25
+          ],
+          "n": 1
+        }
+      },
+      "149e2400-565d-33e4-3e66-8198bd4eb13e": {
+        "put_back_error_rate": {
+          "mean": 0.28125,
+          "ci95": [
+            0.28125,
+            0.28125
+          ],
+          "n": 1
+        },
+        "search_success_rate": {
+          "mean": 0.8125,
+          "ci95": [
+            0.8125,
+            0.8125
+          ],
+          "n": 1
+        },
+        "cumulative_action_regret": {
+          "mean": 15.0,
+          "ci95": [
+            15.0,
+            15.0
+          ],
+          "n": 1
+        },
+        "mean_search_cost": {
+          "mean": 1.25,
+          "ci95": [
+            1.25,
+            1.25
+          ],
+          "n": 1
+        }
+      },
+      "18c9b9f7-a398-fde2-1ac2-edb82f124aca": {
+        "put_back_error_rate": {
+          "mean": 0.28125,
+          "ci95": [
+            0.28125,
+            0.28125
+          ],
+          "n": 1
+        },
+        "search_success_rate": {
+          "mean": 0.9375,
+          "ci95": [
+            0.9375,
+            0.9375
+          ],
+          "n": 1
+        },
+        "cumulative_action_regret": {
+          "mean": 11.0,
+          "ci95": [
+            11.0,
+            11.0
+          ],
+          "n": 1
+        },
+        "mean_search_cost": {
+          "mean": 1.09375,
+          "ci95": [
+            1.09375,
+            1.09375
+          ],
+          "n": 1
+        }
+      },
+      "1edefc2d-902e-3df7-1500-e8eac47925ca": {
+        "put_back_error_rate": {
+          "mean": 0.28125,
+          "ci95": [
+            0.28125,
+            0.28125
+          ],
+          "n": 1
+        },
+        "search_success_rate": {
+          "mean": 0.8125,
+          "ci95": [
+            0.8125,
+            0.8125
+          ],
+          "n": 1
+        },
+        "cumulative_action_regret": {
+          "mean": 15.0,
+          "ci95": [
+            15.0,
+            15.0
+          ],
+          "n": 1
+        },
+        "mean_search_cost": {
+          "mean": 1.375,
+          "ci95": [
+            1.375,
+            1.375
+          ],
+          "n": 1
+        }
+      },
+      "37615717-3b3d-2fa5-5277-a665ed4ae859": {
+        "put_back_error_rate": {
+          "mean": 0.3125,
+          "ci95": [
+            0.3125,
+            0.3125
+          ],
+          "n": 1
+        },
+        "search_success_rate": {
+          "mean": 0.9375,
+          "ci95": [
+            0.9375,
+            0.9375
+          ],
+          "n": 1
+        },
+        "cumulative_action_regret": {
+          "mean": 12.0,
+          "ci95": [
+            12.0,
+            12.0
+          ],
+          "n": 1
+        },
+        "mean_search_cost": {
+          "mean": 1.1875,
+          "ci95": [
+            1.1875,
+            1.1875
+          ],
+          "n": 1
+        }
+      },
+      "4c65ea1c-f7b0-48c6-71cc-fdb6efad92f9": {
+        "put_back_error_rate": {
+          "mean": 0.34375,
+          "ci95": [
+            0.34375,
+            0.34375
+          ],
+          "n": 1
+        },
+        "search_success_rate": {
+          "mean": 0.9375,
+          "ci95": [
+            0.9375,
+            0.9375
+          ],
+          "n": 1
+        },
+        "cumulative_action_regret": {
+          "mean": 13.0,
+          "ci95": [
+            13.0,
+            13.0
+          ],
+          "n": 1
+        },
+        "mean_search_cost": {
+          "mean": 1.09375,
+          "ci95": [
+            1.09375,
+            1.09375
+          ],
+          "n": 1
+        }
+      },
+      "546b39b1-c87b-5a9a-1e79-17f09cc3fd3e": {
+        "put_back_error_rate": {
+          "mean": 0.4375,
+          "ci95": [
+            0.4375,
+            0.4375
+          ],
+          "n": 1
+        },
+        "search_success_rate": {
+          "mean": 0.71875,
+          "ci95": [
+            0.71875,
+            0.71875
+          ],
+          "n": 1
+        },
+        "cumulative_action_regret": {
+          "mean": 23.0,
+          "ci95": [
+            23.0,
+            23.0
+          ],
+          "n": 1
+        },
+        "mean_search_cost": {
+          "mean": 1.40625,
+          "ci95": [
+            1.40625,
+            1.40625
+          ],
+          "n": 1
+        }
+      },
+      "578556ca-3799-3b53-006b-0e3ede79a341": {
+        "put_back_error_rate": {
+          "mean": 0.28125,
+          "ci95": [
+            0.28125,
+            0.28125
+          ],
+          "n": 1
+        },
+        "search_success_rate": {
+          "mean": 0.96875,
+          "ci95": [
+            0.96875,
+            0.96875
+          ],
+          "n": 1
+        },
+        "cumulative_action_regret": {
+          "mean": 10.0,
+          "ci95": [
+            10.0,
+            10.0
+          ],
+          "n": 1
+        },
+        "mean_search_cost": {
+          "mean": 1.03125,
+          "ci95": [
+            1.03125,
+            1.03125
+          ],
+          "n": 1
+        }
+      },
+      "5b6c553c-3fff-5af5-83d3-6479f7819798": {
+        "put_back_error_rate": {
+          "mean": 0.40625,
+          "ci95": [
+            0.40625,
+            0.40625
+          ],
+          "n": 1
+        },
+        "search_success_rate": {
+          "mean": 0.90625,
+          "ci95": [
+            0.90625,
+            0.90625
+          ],
+          "n": 1
+        },
+        "cumulative_action_regret": {
+          "mean": 16.0,
+          "ci95": [
+            16.0,
+            16.0
+          ],
+          "n": 1
+        },
+        "mean_search_cost": {
+          "mean": 1.1875,
+          "ci95": [
+            1.1875,
+            1.1875
+          ],
+          "n": 1
+        }
+      },
+      "684d1b8b-2a34-04c4-4476-a00726f06e5d": {
+        "put_back_error_rate": {
+          "mean": 0.28125,
+          "ci95": [
+            0.28125,
+            0.28125
+          ],
+          "n": 1
+        },
+        "search_success_rate": {
+          "mean": 0.9375,
+          "ci95": [
+            0.9375,
+            0.9375
+          ],
+          "n": 1
+        },
+        "cumulative_action_regret": {
+          "mean": 11.0,
+          "ci95": [
+            11.0,
+            11.0
+          ],
+          "n": 1
+        },
+        "mean_search_cost": {
+          "mean": 1.0625,
+          "ci95": [
+            1.0625,
+            1.0625
+          ],
+          "n": 1
+        }
+      },
+      "78794b99-21b3-e74b-2260-7552644cc783": {
+        "put_back_error_rate": {
+          "mean": 0.28125,
+          "ci95": [
+            0.28125,
+            0.28125
+          ],
+          "n": 1
+        },
+        "search_success_rate": {
+          "mean": 0.90625,
+          "ci95": [
+            0.90625,
+            0.90625
+          ],
+          "n": 1
+        },
+        "cumulative_action_regret": {
+          "mean": 12.0,
+          "ci95": [
+            12.0,
+            12.0
+          ],
+          "n": 1
+        },
+        "mean_search_cost": {
+          "mean": 1.09375,
+          "ci95": [
+            1.09375,
+            1.09375
+          ],
+          "n": 1
+        }
+      },
+      "7d0f09c3-80d2-9ab1-47f7-52a66fad5aa1": {
+        "put_back_error_rate": {
+          "mean": 0.34375,
+          "ci95": [
+            0.34375,
+            0.34375
+          ],
+          "n": 1
+        },
+        "search_success_rate": {
+          "mean": 0.90625,
+          "ci95": [
+            0.90625,
+            0.90625
+          ],
+          "n": 1
+        },
+        "cumulative_action_regret": {
+          "mean": 14.0,
+          "ci95": [
+            14.0,
+            14.0
+          ],
+          "n": 1
+        },
+        "mean_search_cost": {
+          "mean": 1.125,
+          "ci95": [
+            1.125,
+            1.125
+          ],
+          "n": 1
+        }
+      },
+      "83b25b87-d397-8bfe-f686-b092ae5b2378": {
+        "put_back_error_rate": {
+          "mean": 0.375,
+          "ci95": [
+            0.375,
+            0.375
+          ],
+          "n": 1
+        },
+        "search_success_rate": {
+          "mean": 0.9375,
+          "ci95": [
+            0.9375,
+            0.9375
+          ],
+          "n": 1
+        },
+        "cumulative_action_regret": {
+          "mean": 14.0,
+          "ci95": [
+            14.0,
+            14.0
+          ],
+          "n": 1
+        },
+        "mean_search_cost": {
+          "mean": 1.09375,
+          "ci95": [
+            1.09375,
+            1.09375
+          ],
+          "n": 1
+        }
+      },
+      "8694dcbc-56eb-2587-0835-1333f62655e2": {
+        "put_back_error_rate": {
+          "mean": 0.4375,
+          "ci95": [
+            0.4375,
+            0.4375
+          ],
+          "n": 1
+        },
+        "search_success_rate": {
+          "mean": 0.8125,
+          "ci95": [
+            0.8125,
+            0.8125
+          ],
+          "n": 1
+        },
+        "cumulative_action_regret": {
+          "mean": 20.0,
+          "ci95": [
+            20.0,
+            20.0
+          ],
+          "n": 1
+        },
+        "mean_search_cost": {
+          "mean": 1.34375,
+          "ci95": [
+            1.34375,
+            1.34375
+          ],
+          "n": 1
+        }
+      },
+      "8aaabb08-5b13-c69f-ef8d-3f0963689bb1": {
+        "put_back_error_rate": {
+          "mean": 0.28125,
+          "ci95": [
+            0.28125,
+            0.28125
+          ],
+          "n": 1
+        },
+        "search_success_rate": {
+          "mean": 1.0,
+          "ci95": [
+            1.0,
+            1.0
+          ],
+          "n": 1
+        },
+        "cumulative_action_regret": {
+          "mean": 9.0,
+          "ci95": [
+            9.0,
+            9.0
+          ],
+          "n": 1
+        },
+        "mean_search_cost": {
+          "mean": 1.0,
+          "ci95": [
+            1.0,
+            1.0
+          ],
+          "n": 1
+        }
+      },
+      "8b78ea07-fb49-6734-4310-da33778b7192": {
+        "put_back_error_rate": {
+          "mean": 0.4375,
+          "ci95": [
+            0.4375,
+            0.4375
+          ],
+          "n": 1
+        },
+        "search_success_rate": {
+          "mean": 0.84375,
+          "ci95": [
+            0.84375,
+            0.84375
+          ],
+          "n": 1
+        },
+        "cumulative_action_regret": {
+          "mean": 19.0,
+          "ci95": [
+            19.0,
+            19.0
+          ],
+          "n": 1
+        },
+        "mean_search_cost": {
+          "mean": 1.28125,
+          "ci95": [
+            1.28125,
+            1.28125
+          ],
+          "n": 1
+        }
+      },
+      "a15429a1-e986-bb2b-9240-f914d30b563b": {
+        "put_back_error_rate": {
+          "mean": 0.375,
+          "ci95": [
+            0.375,
+            0.375
+          ],
+          "n": 1
+        },
+        "search_success_rate": {
+          "mean": 1.0,
+          "ci95": [
+            1.0,
+            1.0
+          ],
+          "n": 1
+        },
+        "cumulative_action_regret": {
+          "mean": 12.0,
+          "ci95": [
+            12.0,
+            12.0
+          ],
+          "n": 1
+        },
+        "mean_search_cost": {
+          "mean": 1.0,
+          "ci95": [
+            1.0,
+            1.0
+          ],
+          "n": 1
+        }
+      },
+      "ac9e9ae8-0c1e-39c5-a94c-e73945f93b19": {
+        "put_back_error_rate": {
+          "mean": 0.40625,
+          "ci95": [
+            0.40625,
+            0.40625
+          ],
+          "n": 1
+        },
+        "search_success_rate": {
+          "mean": 0.8125,
+          "ci95": [
+            0.8125,
+            0.8125
+          ],
+          "n": 1
+        },
+        "cumulative_action_regret": {
+          "mean": 19.0,
+          "ci95": [
+            19.0,
+            19.0
+          ],
+          "n": 1
+        },
+        "mean_search_cost": {
+          "mean": 1.40625,
+          "ci95": [
+            1.40625,
+            1.40625
+          ],
+          "n": 1
+        }
+      },
+      "bca9e86e-367e-1682-7e23-81784c0183a5": {
+        "put_back_error_rate": {
+          "mean": 0.34375,
+          "ci95": [
+            0.34375,
+            0.34375
+          ],
+          "n": 1
+        },
+        "search_success_rate": {
+          "mean": 0.84375,
+          "ci95": [
+            0.84375,
+            0.84375
+          ],
+          "n": 1
+        },
+        "cumulative_action_regret": {
+          "mean": 16.0,
+          "ci95": [
+            16.0,
+            16.0
+          ],
+          "n": 1
+        },
+        "mean_search_cost": {
+          "mean": 1.25,
+          "ci95": [
+            1.25,
+            1.25
+          ],
+          "n": 1
+        }
+      },
+      "cde4c0cc-4c23-8dd6-1624-e06e34cf4a5a": {
+        "put_back_error_rate": {
+          "mean": 0.3125,
+          "ci95": [
+            0.3125,
+            0.3125
+          ],
+          "n": 1
+        },
+        "search_success_rate": {
+          "mean": 0.90625,
+          "ci95": [
+            0.90625,
+            0.90625
+          ],
+          "n": 1
+        },
+        "cumulative_action_regret": {
+          "mean": 13.0,
+          "ci95": [
+            13.0,
+            13.0
+          ],
+          "n": 1
+        },
+        "mean_search_cost": {
+          "mean": 1.125,
+          "ci95": [
+            1.125,
+            1.125
+          ],
+          "n": 1
+        }
+      },
+      "d480aa17-ea76-b40b-4e5a-ae66ce9e6edf": {
+        "put_back_error_rate": {
+          "mean": 0.34375,
+          "ci95": [
+            0.34375,
+            0.34375
+          ],
+          "n": 1
+        },
+        "search_success_rate": {
+          "mean": 0.90625,
+          "ci95": [
+            0.90625,
+            0.90625
+          ],
+          "n": 1
+        },
+        "cumulative_action_regret": {
+          "mean": 14.0,
+          "ci95": [
+            14.0,
+            14.0
+          ],
+          "n": 1
+        },
+        "mean_search_cost": {
+          "mean": 1.1875,
+          "ci95": [
+            1.1875,
+            1.1875
+          ],
+          "n": 1
+        }
+      },
+      "d835a970-599d-b8a1-047b-a28fd7b32339": {
+        "put_back_error_rate": {
+          "mean": 0.40625,
+          "ci95": [
+            0.40625,
+            0.40625
+          ],
+          "n": 1
+        },
+        "search_success_rate": {
+          "mean": 0.9375,
+          "ci95": [
+            0.9375,
+            0.9375
+          ],
+          "n": 1
+        },
+        "cumulative_action_regret": {
+          "mean": 15.0,
+          "ci95": [
+            15.0,
+            15.0
+          ],
+          "n": 1
+        },
+        "mean_search_cost": {
+          "mean": 1.0625,
+          "ci95": [
+            1.0625,
+            1.0625
+          ],
+          "n": 1
+        }
+      },
+      "dc4e1051-07f4-fb63-17c0-552c6df2167f": {
+        "put_back_error_rate": {
+          "mean": 0.28125,
+          "ci95": [
+            0.28125,
+            0.28125
+          ],
+          "n": 1
+        },
+        "search_success_rate": {
+          "mean": 0.96875,
+          "ci95": [
+            0.96875,
+            0.96875
+          ],
+          "n": 1
+        },
+        "cumulative_action_regret": {
+          "mean": 10.0,
+          "ci95": [
+            10.0,
+            10.0
+          ],
+          "n": 1
+        },
+        "mean_search_cost": {
+          "mean": 1.03125,
+          "ci95": [
+            1.03125,
+            1.03125
+          ],
+          "n": 1
+        }
+      },
+      "dcebd235-13dc-bd84-fd82-3be27b8fb56c": {
+        "put_back_error_rate": {
+          "mean": 0.34375,
+          "ci95": [
+            0.34375,
+            0.34375
+          ],
+          "n": 1
+        },
+        "search_success_rate": {
+          "mean": 0.875,
+          "ci95": [
+            0.875,
+            0.875
+          ],
+          "n": 1
+        },
+        "cumulative_action_regret": {
+          "mean": 15.0,
+          "ci95": [
+            15.0,
+            15.0
+          ],
+          "n": 1
+        },
+        "mean_search_cost": {
+          "mean": 1.21875,
+          "ci95": [
+            1.21875,
+            1.21875
+          ],
+          "n": 1
+        }
+      },
+      "ec6ba854-8e86-c999-c86c-2bfaf813a1f3": {
+        "put_back_error_rate": {
+          "mean": 0.28125,
+          "ci95": [
+            0.28125,
+            0.28125
+          ],
+          "n": 1
+        },
+        "search_success_rate": {
+          "mean": 0.96875,
+          "ci95": [
+            0.96875,
+            0.96875
+          ],
+          "n": 1
+        },
+        "cumulative_action_regret": {
+          "mean": 10.0,
+          "ci95": [
+            10.0,
+            10.0
+          ],
+          "n": 1
+        },
+        "mean_search_cost": {
+          "mean": 1.09375,
+          "ci95": [
+            1.09375,
+            1.09375
+          ],
+          "n": 1
+        }
+      },
+      "ee855138-9404-4a70-f059-8f98f667b92a": {
+        "put_back_error_rate": {
+          "mean": 0.34375,
+          "ci95": [
+            0.34375,
+            0.34375
+          ],
+          "n": 1
+        },
+        "search_success_rate": {
+          "mean": 0.90625,
+          "ci95": [
+            0.90625,
+            0.90625
+          ],
+          "n": 1
+        },
+        "cumulative_action_regret": {
+          "mean": 14.0,
+          "ci95": [
+            14.0,
+            14.0
+          ],
+          "n": 1
+        },
+        "mean_search_cost": {
+          "mean": 1.125,
+          "ci95": [
+            1.125,
+            1.125
+          ],
+          "n": 1
+        }
+      },
+      "f62ec590-41be-85a3-e4b7-362ece63683d": {
+        "put_back_error_rate": {
+          "mean": 0.28125,
+          "ci95": [
+            0.28125,
+            0.28125
+          ],
+          "n": 1
+        },
+        "search_success_rate": {
+          "mean": 0.71875,
+          "ci95": [
+            0.71875,
+            0.71875
+          ],
+          "n": 1
+        },
+        "cumulative_action_regret": {
+          "mean": 18.0,
+          "ci95": [
+            18.0,
+            18.0
+          ],
+          "n": 1
+        },
+        "mean_search_cost": {
+          "mean": 1.28125,
+          "ci95": [
+            1.28125,
+            1.28125
+          ],
+          "n": 1
+        }
+      },
+      "f6e13417-751c-733d-28a1-780f6023cddf": {
+        "put_back_error_rate": {
+          "mean": 0.28125,
+          "ci95": [
+            0.28125,
+            0.28125
+          ],
+          "n": 1
+        },
+        "search_success_rate": {
+          "mean": 0.9375,
+          "ci95": [
+            0.9375,
+            0.9375
+          ],
+          "n": 1
+        },
+        "cumulative_action_regret": {
+          "mean": 11.0,
+          "ci95": [
+            11.0,
+            11.0
+          ],
+          "n": 1
+        },
+        "mean_search_cost": {
+          "mean": 1.0625,
+          "ci95": [
+            1.0625,
+            1.0625
+          ],
+          "n": 1
+        }
+      },
+      "f88066ba-211e-412f-0db5-1dbb6c0d2c13": {
+        "put_back_error_rate": {
+          "mean": 0.34375,
+          "ci95": [
+            0.34375,
+            0.34375
+          ],
+          "n": 1
+        },
+        "search_success_rate": {
+          "mean": 0.90625,
+          "ci95": [
+            0.90625,
+            0.90625
+          ],
+          "n": 1
+        },
+        "cumulative_action_regret": {
+          "mean": 14.0,
+          "ci95": [
+            14.0,
+            14.0
+          ],
+          "n": 1
+        },
+        "mean_search_cost": {
+          "mean": 1.125,
+          "ci95": [
+            1.125,
+            1.125
+          ],
+          "n": 1
+        }
+      }
+    },
+    "object_family": {
+      "family-test-00": {
+        "put_back_error_rate": {
+          "mean": 0.3359375,
+          "ci95": [
+            0.296875,
+            0.3828125
+          ],
+          "n": 4
+        },
+        "search_success_rate": {
+          "mean": 0.9296875,
+          "ci95": [
+            0.90625,
+            0.953125
+          ],
+          "n": 4
+        },
+        "cumulative_action_regret": {
+          "mean": 13.0,
+          "ci95": [
+            11.0,
+            15.0
+          ],
+          "n": 4
+        },
+        "mean_search_cost": {
+          "mean": 1.1328125,
+          "ci95": [
+            1.0703125,
+            1.1875
+          ],
+          "n": 4
+        }
+      },
+      "family-test-01": {
+        "put_back_error_rate": {
+          "mean": 0.3359375,
+          "ci95": [
+            0.28125,
+            0.3984375
+          ],
+          "n": 4
+        },
+        "search_success_rate": {
+          "mean": 0.8984375,
+          "ci95": [
+            0.84375,
+            0.953125
+          ],
+          "n": 4
+        },
+        "cumulative_action_regret": {
+          "mean": 14.0,
+          "ci95": [
+            10.5,
+            17.75
+          ],
+          "n": 4
+        },
+        "mean_search_cost": {
+          "mean": 1.1796875,
+          "ci95": [
+            1.0703125,
+            1.28125
+          ],
+          "n": 4
+        }
+      },
+      "family-test-02": {
+        "put_back_error_rate": {
+          "mean": 0.3125,
+          "ci95": [
+            0.28125,
+            0.359375
+          ],
+          "n": 4
+        },
+        "search_success_rate": {
+          "mean": 0.953125,
+          "ci95": [
+            0.921875,
+            0.984375
+          ],
+          "n": 4
+        },
+        "cumulative_action_regret": {
+          "mean": 11.5,
+          "ci95": [
+            9.5,
+            13.75
+          ],
+          "n": 4
+        },
+        "mean_search_cost": {
+          "mean": 1.0625,
+          "ci95": [
+            1.015625,
+            1.109375
+          ],
+          "n": 4
+        }
+      },
+      "family-test-03": {
+        "put_back_error_rate": {
+          "mean": 0.3515625,
+          "ci95": [
+            0.296875,
+            0.4140625
+          ],
+          "n": 4
+        },
+        "search_success_rate": {
+          "mean": 0.890625,
+          "ci95": [
+            0.859375,
+            0.921875
+          ],
+          "n": 4
+        },
+        "cumulative_action_regret": {
+          "mean": 14.75,
+          "ci95": [
+            12.0,
+            17.75
+          ],
+          "n": 4
+        },
+        "mean_search_cost": {
+          "mean": 1.1875,
+          "ci95": [
+            1.109375,
+            1.265625
+          ],
+          "n": 4
+        }
+      },
+      "family-test-04": {
+        "put_back_error_rate": {
+          "mean": 0.3125,
+          "ci95": [
+            0.28125,
+            0.375
+          ],
+          "n": 4
+        },
+        "search_success_rate": {
+          "mean": 0.9140625,
+          "ci95": [
+            0.84375,
+            0.9765625
+          ],
+          "n": 4
+        },
+        "cumulative_action_regret": {
+          "mean": 12.75,
+          "ci95": [
+            10.5,
+            15.0
+          ],
+          "n": 4
+        },
+        "mean_search_cost": {
+          "mean": 1.1015625,
+          "ci95": [
+            1.0234375,
+            1.203125
+          ],
+          "n": 4
+        }
+      },
+      "family-validation-00": {
+        "put_back_error_rate": {
+          "mean": 0.34375,
+          "ci95": [
+            0.34375,
+            0.34375
+          ],
+          "n": 2
+        },
+        "search_success_rate": {
+          "mean": 0.921875,
+          "ci95": [
+            0.90625,
+            0.9375
+          ],
+          "n": 2
+        },
+        "cumulative_action_regret": {
+          "mean": 13.5,
+          "ci95": [
+            13.0,
+            14.0
+          ],
+          "n": 2
+        },
+        "mean_search_cost": {
+          "mean": 1.140625,
+          "ci95": [
+            1.09375,
+            1.1875
+          ],
+          "n": 2
+        }
+      },
+      "family-validation-01": {
+        "put_back_error_rate": {
+          "mean": 0.34375,
+          "ci95": [
+            0.28125,
+            0.40625
+          ],
+          "n": 2
+        },
+        "search_success_rate": {
+          "mean": 0.8125,
+          "ci95": [
+            0.8125,
+            0.8125
+          ],
+          "n": 2
+        },
+        "cumulative_action_regret": {
+          "mean": 17.0,
+          "ci95": [
+            15.0,
+            19.0
+          ],
+          "n": 2
+        },
+        "mean_search_cost": {
+          "mean": 1.390625,
+          "ci95": [
+            1.375,
+            1.40625
+          ],
+          "n": 2
+        }
+      },
+      "family-validation-02": {
+        "put_back_error_rate": {
+          "mean": 0.390625,
+          "ci95": [
+            0.34375,
+            0.4375
+          ],
+          "n": 2
+        },
+        "search_success_rate": {
+          "mean": 0.78125,
+          "ci95": [
+            0.71875,
+            0.84375
+          ],
+          "n": 2
+        },
+        "cumulative_action_regret": {
+          "mean": 19.5,
+          "ci95": [
+            16.0,
+            23.0
+          ],
+          "n": 2
+        },
+        "mean_search_cost": {
+          "mean": 1.328125,
+          "ci95": [
+            1.25,
+            1.40625
+          ],
+          "n": 2
+        }
+      },
+      "family-validation-03": {
+        "put_back_error_rate": {
+          "mean": 0.359375,
+          "ci95": [
+            0.34375,
+            0.375
+          ],
+          "n": 2
+        },
+        "search_success_rate": {
+          "mean": 0.953125,
+          "ci95": [
+            0.90625,
+            1.0
+          ],
+          "n": 2
+        },
+        "cumulative_action_regret": {
+          "mean": 13.0,
+          "ci95": [
+            12.0,
+            14.0
+          ],
+          "n": 2
+        },
+        "mean_search_cost": {
+          "mean": 1.0625,
+          "ci95": [
+            1.0,
+            1.125
+          ],
+          "n": 2
+        }
+      },
+      "family-validation-04": {
+        "put_back_error_rate": {
+          "mean": 0.28125,
+          "ci95": [
+            0.28125,
+            0.28125
+          ],
+          "n": 2
+        },
+        "search_success_rate": {
+          "mean": 0.828125,
+          "ci95": [
+            0.71875,
+            0.9375
+          ],
+          "n": 2
+        },
+        "cumulative_action_regret": {
+          "mean": 14.5,
+          "ci95": [
+            11.0,
+            18.0
+          ],
+          "n": 2
+        },
+        "mean_search_cost": {
+          "mean": 1.171875,
+          "ci95": [
+            1.0625,
+            1.28125
+          ],
+          "n": 2
+        }
+      }
+    }
+  },
+  "runtime_summary": {
+    "revision_action_trace_count": 630,
+    "project_one_request_count": 630,
+    "project_one_request_status_counts": {
+      "applied": 564,
+      "deferred_due_to_quarantine": 0,
+      "rejected": 66,
+      "replay_noop": 0
+    },
+    "request_application_rate": 0.8952380952380953,
+    "retract_correct_precision": 0.8571428571428571,
+    "retract_correct_count": 161,
+    "feedback_dominant_outcome_counts": {
+      "success": 416,
+      "object_slipped": 214
+    },
+    "feedback_posterior_changed_rate": 1,
+    "operator_runtime": {
+      "cheh_hypothesis_support": {
+        "records": 630,
+        "executed": 630,
+        "changed_state": 630
+      },
+      "pchmp_repropagation": {
+        "records": 630,
+        "executed": 630,
+        "changed_state": 630
+      },
+      "orrer_revision": {
+        "records": 630,
+        "executed": 630,
+        "changed_state": 630
+      },
+      "project_one_request_generation": {
+        "records": 630,
+        "executed": 630,
+        "changed_state": 630
+      },
+      "quarantine_handoff": {
+        "records": 630,
+        "executed": 630,
+        "changed_state": 51
+      },
+      "dirichlet_rls_application": {
+        "records": 630,
+        "executed": 564,
+        "changed_state": 564
+      },
+      "ccrr_regime_decision": {
+        "records": 630,
+        "executed": 630,
+        "changed_state": 50
+      },
+      "planner_belief_read": {
+        "records": 655,
+        "executed": 655,
+        "changed_state": 0
+      },
+      "utility_action_selection": {
+        "records": 630,
+        "executed": 630,
+        "changed_state": 0
+      }
+    }
+  },
+  "metric_semantics": {
+    "action_utility_evidence": [
+      "put_back_error_rate",
+      "search_success_rate",
+      "cumulative_action_regret",
+      "mean_search_cost",
+      "cumulative_utility"
+    ],
+    "diagnostic_only": [
+      "hidden_event_hypothesis_accuracy",
+      "actor_posterior",
+      "role_posterior",
+      "mechanism_posterior",
+      "unresolved_mass",
+      "revision_accuracy",
+      "retract_correct_precision"
+    ]
+  },
+  "scientific_status": "development replay evidence; not paper-level real-world evidence"
+}

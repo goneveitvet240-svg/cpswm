@@ -54,6 +54,12 @@ ALLOWED_CLAIM_IDS = (
     "claim.shared-policy-track-reported@1",
     "claim.independently-retuned-policy-track-reported@1",
 )
+ALLOWED_CLAIM_IDS_V6 = (
+    "claim.synthetic-prefix-online-shift-action-death-test-reported@6",
+    "claim.shared-policy-track-reported@1",
+    "claim.independently-retuned-policy-track-reported@1",
+    "claim.active-verification-and-multilabel-policy-reported@1",
+)
 FORBIDDEN_CLAIM_IDS = (
     "claim.general-method-superiority.forbidden@3",
     "claim.state-of-the-art.forbidden@3",
@@ -63,6 +69,13 @@ FORBIDDEN_CLAIM_IDS = (
     "claim.v4-confirmatory-rebuild-joint.forbidden@1",
     "claim.v4-confirmatory-legacy-advantage.forbidden@1",
 )
+
+
+def _claim_ids(protocol_version: str) -> tuple[tuple[str, ...], tuple[str, ...]]:
+    allowed = ALLOWED_CLAIM_IDS_V6 if protocol_version.endswith("@6") else ALLOWED_CLAIM_IDS
+    return allowed, FORBIDDEN_CLAIM_IDS
+
+
 POWER_REFERENCES = (
     ProjectOneAblationArmId.ORDINARY_BOCPD,
     ProjectOneAblationArmId.CAUSE_FACTORIZED_BOCPD,
@@ -97,7 +110,10 @@ class EvaluationTrack(StrEnum):
 
 
 class FrozenActionPolicy(ContractModel):
-    policy_id: Literal["habit-reset-consolidation-policy@5"] = "habit-reset-consolidation-policy@5"
+    policy_id: Literal[
+        "habit-reset-consolidation-policy@5",
+        "habit-reset-consolidation-policy@6",
+    ] = "habit-reset-consolidation-policy@5"
     probability_temperature: float = Field(default=1.0, gt=0.0)
     reset_probability_threshold: float = Field(default=0.50, ge=0.0, le=1.0)
     consolidation_probability_threshold: float = Field(default=0.70, ge=0.0, le=1.0)
@@ -110,11 +126,20 @@ class FrozenActionPolicy(ContractModel):
     practical_corruption_mde: float = Field(default=0.02, gt=0.0, le=1.0)
     verification_owner_probability_threshold: float = Field(default=0.60, gt=0.5, le=1.0)
     verification_required_matching_detections: Literal[2] = 2
+    active_verification_enabled: bool = False
+    active_verification_latency_hours: PositiveInt = 12
+    active_verification_positive_owner_probability: float = Field(default=0.98, gt=0.5, le=1.0)
+    active_verification_negative_owner_probability: float = Field(default=0.02, ge=0.0, lt=0.5)
+    multi_label_consolidation: bool = False
 
     @model_validator(mode="after")
     def validate_threshold_order(self) -> FrozenActionPolicy:
         if self.consolidation_probability_threshold < self.reset_probability_threshold:
             raise ValueError("consolidation threshold must not be below reset threshold")
+        if self.policy_id.endswith("@6") and not (
+            self.active_verification_enabled and self.multi_label_consolidation
+        ):
+            raise ValueError("policy@6 requires active verification and multi-label consolidation")
         return self
 
 
@@ -175,9 +200,10 @@ def _canonical_utility_scenarios() -> tuple[UtilitySensitivityScenario, ...]:
 
 
 class ProjectOneShiftActionDeathTestConfig(ContractModel):
-    protocol_version: Literal["project-one-shift-action-death-test@5"] = (
-        "project-one-shift-action-death-test@5"
-    )
+    protocol_version: Literal[
+        "project-one-shift-action-death-test@5",
+        "project-one-shift-action-death-test@6",
+    ] = "project-one-shift-action-death-test@5"
     seed_plan: ActionSeedPlan = Field(default_factory=ActionSeedPlan)
     action_policy: FrozenActionPolicy = Field(default_factory=FrozenActionPolicy)
     duration_days: PositiveInt = 10
@@ -198,6 +224,14 @@ class ProjectOneShiftActionDeathTestConfig(ContractModel):
             raise ValueError("paired seed bootstrap requires at least 500 samples")
         if self.utility_sensitivity_scenarios != _canonical_utility_scenarios():
             raise ValueError("utility sensitivity scenarios must equal the canonical set")
+        if self.protocol_version.endswith("@6"):
+            legacy_test_seeds = set(range(15101, 15201, 2))
+            if len(self.seed_plan.test_seeds) < 152:
+                raise ValueError("protocol@6 requires at least 152 preregistered TEST seeds")
+            if legacy_test_seeds.intersection(self.seed_plan.test_seeds):
+                raise ValueError("protocol@6 TEST seeds must be fresh against protocol@5")
+            if not self.action_policy.policy_id.endswith("@6"):
+                raise ValueError("protocol@6 requires policy@6")
         return self
 
 
@@ -243,9 +277,10 @@ class PrefixOnlinePrediction(ContractModel):
 
 
 class VerificationEvidence(ContractModel):
-    predicate_id: Literal["owner-associated-repeat-object-location@1"] = (
-        "owner-associated-repeat-object-location@1"
-    )
+    predicate_id: Literal[
+        "owner-associated-repeat-object-location@1",
+        "active-owner-confirmation-across-observations@1",
+    ] = "owner-associated-repeat-object-location@1"
     object_instance_id: str = Field(min_length=1)
     location_id: str = Field(min_length=1)
     first_detection_result_id: str = Field(min_length=1)
@@ -705,7 +740,10 @@ class CrossTrackDecision(ContractModel):
 
 
 class ProjectOneShiftActionDeathTestReport(ContractModel):
-    protocol_version: Literal["project-one-shift-action-death-test@5"]
+    protocol_version: Literal[
+        "project-one-shift-action-death-test@5",
+        "project-one-shift-action-death-test@6",
+    ]
     config: ProjectOneShiftActionDeathTestConfig
     config_sha256: str = Field(pattern=r"^[0-9a-f]{64}$")
     code_snapshot_sha256: str = Field(pattern=r"^[0-9a-f]{64}$")
@@ -717,7 +755,8 @@ class ProjectOneShiftActionDeathTestReport(ContractModel):
         KEY_SECONDARY_ENDPOINT_ID
     )
     multiple_comparisons_policy: Literal[
-        "intersection-union-two-tracks-two-references-utility-sensitivity@5"
+        "intersection-union-two-tracks-two-references-utility-sensitivity@5",
+        "intersection-union-two-tracks-two-references-utility-sensitivity@6",
     ] = "intersection-union-two-tracks-two-references-utility-sensitivity@5"
     policy: FrozenActionPolicy
     policy_sha256: str = Field(pattern=r"^[0-9a-f]{64}$")
@@ -747,6 +786,15 @@ class ProjectOneShiftActionDeathTestReport(ContractModel):
 
     @model_validator(mode="after")
     def validate_report(self) -> ProjectOneShiftActionDeathTestReport:
+        if self.protocol_version != self.config.protocol_version:
+            raise ValueError("report protocol version differs from its config")
+        expected_comparisons = (
+            "intersection-union-two-tracks-two-references-utility-sensitivity@6"
+            if self.protocol_version.endswith("@6")
+            else "intersection-union-two-tracks-two-references-utility-sensitivity@5"
+        )
+        if self.multiple_comparisons_policy != expected_comparisons:
+            raise ValueError("multiple-comparisons policy version differs from protocol")
         if self.config_sha256 != content_sha256(self.config):
             raise ValueError("death-test config hash mismatch")
         if self.policy != self.config.action_policy:
@@ -845,7 +893,8 @@ class ProjectOneShiftActionDeathTestReport(ContractModel):
             retuned_records,
             retuned=True,
         )
-        if self.allowed_claims != ALLOWED_CLAIM_IDS or self.forbidden_claims != FORBIDDEN_CLAIM_IDS:
+        expected_allowed, expected_forbidden = _claim_ids(self.protocol_version)
+        if self.allowed_claims != expected_allowed or self.forbidden_claims != expected_forbidden:
             raise ValueError("claim IDs must equal the canonical sets")
         self._validate_pilot_bindings(self.pilot_artifacts)
         self._validate_pilot_bindings(self.retuned_pilot_artifacts)
@@ -1134,7 +1183,7 @@ def _detector_state_at_prefix(
         }
         return (min(detected) if detected else None), posterior, model_version
     if arm == ProjectOneAblationArmId.JOINT_CAUSE_FACTORIZED_BOCPD:
-        model_version = "joint-cause-factorized-bocpd@0.3-prefix@1"
+        model_version = "joint-cause-factorized-bocpd@0.4-event-regime-multicause-prefix@1"
         signals = tuple(
             CauseSignalFrame(
                 timestamp=frame.timestamp,
@@ -1151,6 +1200,8 @@ def _detector_state_at_prefix(
         result = JointCauseFactorizedBOCPD(
             hazard_probability=hazard,
             beam_width=int(params["beam_width"]),
+            maximum_simultaneous_causes=int(params["maximum_simultaneous_causes"]),
+            simultaneous_hazard_scale=float(params["simultaneous_hazard_scale"]),
             model_version=model_version,
         ).run(signals, detection_threshold=threshold, warmup_steps=warmup)
         detected = tuple(
@@ -1165,8 +1216,11 @@ def _detector_state_at_prefix(
                     (
                         current.transient_noise_probability
                         if cause == ChangeCause.NOISE
-                        else current.segment_change_probability
-                        * current.segment_cause_posterior.get(cause, 0.0)
+                        # Action gates need the durable cause of the currently
+                        # active regime, not P(a fresh change happened today).
+                        # The latter correctly decays after the event and was
+                        # the source of systematic missed consolidations.
+                        else current.active_regime_cause_posterior.get(cause, 0.0)
                     ),
                 ),
             )
@@ -1290,6 +1344,73 @@ def _verification_evidence(
     return None
 
 
+def _active_verification_evidence(
+    model_input: OnlineShiftCaseInput,
+    truth: OnlineShiftCaseTruth,
+    *,
+    after_time: datetime,
+    policy: FrozenActionPolicy,
+) -> VerificationEvidence | None:
+    """Simulate the preregistered on-demand identity confirmation intervention.
+
+    The policy may request a confirmation after the same object has been seen
+    before and after the decision (locations may differ under a real habit
+    change).  The response is generated behind the
+    evaluator boundary from the latent scenario and is returned with declared
+    latency and cost; it is not inserted into the ordinary model input.
+    """
+
+    if not policy.active_verification_enabled or not truth.intervention_available:
+        return None
+    results = sorted(
+        model_input.observation_stream.detection_results,
+        key=lambda item: item.metadata.recorded_time,
+    )
+    valid_results = [
+        result
+        for result in results
+        if (
+            result.outcome == ObservationOutcome.DETECTED
+            and result.detected_object_instance_id is not None
+            and result.detected_location_id is not None
+        )
+    ]
+    for result in valid_results:
+        if result.metadata.recorded_time <= after_time:
+            continue
+        first = next(
+            (
+                candidate
+                for candidate in reversed(valid_results)
+                if candidate.metadata.recorded_time < result.metadata.recorded_time
+                and candidate.detected_object_instance_id == result.detected_object_instance_id
+            ),
+            None,
+        )
+        if first is None:
+            continue
+        response_time = result.metadata.recorded_time + timedelta(
+            hours=policy.active_verification_latency_hours
+        )
+        true_habit = ShiftCause.OWNER_HABIT_REGIME in truth.true_causes
+        owner_probability = (
+            policy.active_verification_positive_owner_probability
+            if true_habit
+            else policy.active_verification_negative_owner_probability
+        )
+        return VerificationEvidence(
+            predicate_id="active-owner-confirmation-across-observations@1",
+            object_instance_id=str(result.detected_object_instance_id),
+            location_id=str(result.detected_location_id),
+            first_detection_result_id=str(first.metadata.record_id),
+            second_detection_result_id=str(result.metadata.record_id),
+            first_evidence_time=first.metadata.recorded_time,
+            second_evidence_time=response_time,
+            minimum_owner_posterior=owner_probability,
+        )
+    return None
+
+
 def _case_outcome(
     truth: OnlineShiftCaseTruth,
     prediction: PrefixOnlinePrediction | None,
@@ -1333,12 +1454,24 @@ def _case_outcome(
         verification_evidence = _verification_evidence(
             model_input, after_time=decision_time, policy=policy
         )
+    if verification_evidence is None and reset and model_input is not None:
+        verification_evidence = _active_verification_evidence(
+            model_input,
+            truth,
+            after_time=decision_time,
+            policy=policy,
+        )
     verify = reset and verification_evidence is not None
     verification_time = (
         verification_evidence.second_evidence_time if verification_evidence is not None else None
     )
     consolidation_time = None
-    if verify and verification_time is not None:
+    positive_owner_verification = (
+        verification_evidence is not None
+        and verification_evidence.minimum_owner_posterior
+        >= policy.verification_owner_probability_threshold
+    )
+    if verify and positive_owner_verification and verification_time is not None:
         for snapshot in snapshots:
             if snapshot.as_of_time <= verification_time:
                 continue
@@ -1346,8 +1479,24 @@ def _case_outcome(
                 cause: _calibrate_probability(float(probability), policy.probability_temperature)
                 for cause, probability in snapshot.posterior.items()
             }
-            ranked = sorted(probabilities.values(), reverse=True)
-            margin = ranked[0] - ranked[1] if len(ranked) > 1 else ranked[0]
+            if (
+                verification_evidence is not None
+                and verification_evidence.predicate_id
+                == "active-owner-confirmation-across-observations@1"
+            ):
+                model_habit = probabilities.get(ShiftCause.OWNER_HABIT_REGIME, 0.0)
+                confirmation = float(verification_evidence.minimum_owner_posterior)
+                probabilities[ShiftCause.OWNER_HABIT_REGIME] = 1.0 - (
+                    (1.0 - model_habit) * (1.0 - confirmation)
+                )
+            if policy.multi_label_consolidation:
+                habit_probability_at_prefix = probabilities.get(ShiftCause.OWNER_HABIT_REGIME, 0.0)
+                # Independent/multi-label causes may coexist, so observation
+                # mass must not count as evidence against a habit change.
+                margin = max(0.0, 2.0 * habit_probability_at_prefix - 1.0)
+            else:
+                ranked = sorted(probabilities.values(), reverse=True)
+                margin = ranked[0] - ranked[1] if len(ranked) > 1 else ranked[0]
             if action_mode == "always-reset-verify" or (
                 probabilities.get(ShiftCause.OWNER_HABIT_REGIME, 0.0)
                 >= policy.consolidation_probability_threshold
@@ -2119,8 +2268,12 @@ class ProjectOneShiftActionDeathTestRunner:
             OnlineShiftSuiteConfig(
                 duration_days=checked.duration_days,
                 seeds=non_test_seeds,
-                case_id_salt="project-one-action-death-test-nontest@1",
-                shuffle_seed=20260822,
+                case_id_salt=(
+                    "project-one-action-death-test-nontest@2"
+                    if checked.protocol_version.endswith("@6")
+                    else "project-one-action-death-test-nontest@1"
+                ),
+                shuffle_seed=(20260826 if checked.protocol_version.endswith("@6") else 20260822),
             )
         )
         by_seed = {seed: [] for seed in non_test_seeds}
@@ -2129,7 +2282,12 @@ class ProjectOneShiftActionDeathTestRunner:
                 OnlineShiftGeneratedCase(
                     model_input=case.model_input,
                     evaluator_truth=case.evaluator_truth.model_copy(
-                        update={"split": OnlineShiftSplit.VALIDATION}
+                        update={
+                            "split": OnlineShiftSplit.VALIDATION,
+                            "intervention_available": (
+                                checked.action_policy.active_verification_enabled
+                            ),
+                        }
                     ),
                 )
             )
@@ -2231,8 +2389,14 @@ class ProjectOneShiftActionDeathTestRunner:
                 OnlineShiftSuiteConfig(
                     duration_days=checked.duration_days,
                     seeds=plan.test_seeds,
-                    case_id_salt="project-one-action-death-test-test@2",
-                    shuffle_seed=20260824,
+                    case_id_salt=(
+                        "project-one-action-death-test-test@3"
+                        if checked.protocol_version.endswith("@6")
+                        else "project-one-action-death-test-test@2"
+                    ),
+                    shuffle_seed=(
+                        20260827 if checked.protocol_version.endswith("@6") else 20260824
+                    ),
                 )
             )
             test_by_seed = {seed: [] for seed in plan.test_seeds}
@@ -2241,7 +2405,12 @@ class ProjectOneShiftActionDeathTestRunner:
                     OnlineShiftGeneratedCase(
                         model_input=case.model_input,
                         evaluator_truth=case.evaluator_truth.model_copy(
-                            update={"split": OnlineShiftSplit.TEST}
+                            update={
+                                "split": OnlineShiftSplit.TEST,
+                                "intervention_available": (
+                                    checked.action_policy.active_verification_enabled
+                                ),
+                            }
                         ),
                     )
                 )
@@ -2364,10 +2533,12 @@ class ProjectOneShiftActionDeathTestRunner:
             "primary_endpoint_id": PRIMARY_ENDPOINT_ID,
             "key_secondary_endpoint_id": KEY_SECONDARY_ENDPOINT_ID,
             "multiple_comparisons_policy": (
-                "intersection-union-two-tracks-two-references-utility-sensitivity@5"
+                "intersection-union-two-tracks-two-references-utility-sensitivity@6"
+                if checked.protocol_version.endswith("@6")
+                else "intersection-union-two-tracks-two-references-utility-sensitivity@5"
             ),
-            "allowed_claims": ALLOWED_CLAIM_IDS,
-            "forbidden_claims": FORBIDDEN_CLAIM_IDS,
+            "allowed_claims": _claim_ids(checked.protocol_version)[0],
+            "forbidden_claims": _claim_ids(checked.protocol_version)[1],
         }
         return ProjectOneShiftActionDeathTestReport(
             **full_payload,

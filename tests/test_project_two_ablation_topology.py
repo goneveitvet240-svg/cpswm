@@ -7,6 +7,12 @@ from cpswm.system.evaluation_operations.project_two_ablation import (
     ProjectTwoAblation,
     ProjectTwoAblationProtocol,
 )
+from cpswm.system.evaluation_operations.project_two_dataset_adapters import (
+    D0SyntheticOracleReplayAdapter,
+)
+from cpswm.system.evaluation_operations.project_two_llm_experiment import (
+    ProjectTwoLLMExperimentPilot,
+)
 from cpswm.system.evaluation_operations.project_two_tuning import (
     ProjectTwoExperimentalTrack,
     ProjectTwoFairTuner,
@@ -74,3 +80,35 @@ def test_target_module_is_not_accidentally_left_connected():
         ProjectTwoAblation.NO_PROJECT_ONE_RETRACT_CORRECT
     ).project_one_revision
     assert not protocol.topology_for(ProjectTwoAblation.NO_PROVENANCE_FIREWALL).provenance_firewall
+
+
+def test_each_ablation_has_runtime_proof_not_only_a_topology_dataclass():
+    dataset = D0SyntheticOracleReplayAdapter(
+        validation_seeds=(101,), test_seeds=(211,), max_steps_per_episode=3
+    ).build()
+    report = ProjectTwoLLMExperimentPilot(search_budget=1).run(dataset)
+    proof = {item.ablation: "|".join(item.runtime_proof) for item in report.ablation_impacts}
+    expected = {
+        ProjectTwoAblation.NO_EXECUTION_FEEDBACK_RETURN: "feedback_mode:none",
+        ProjectTwoAblation.FAILURE_ONLY_FEEDBACK: "feedback_mode:failure_only",
+        ProjectTwoAblation.SUCCESS_ONLY_FEEDBACK: "feedback_mode:success_only",
+        ProjectTwoAblation.NO_UNKNOWN_ACTOR: "unknown_actor:cut",
+        ProjectTwoAblation.NO_UNKNOWN_MECHANISM: "unknown_mechanism:cut",
+        ProjectTwoAblation.NO_UNRESOLVED_MASS: "unresolved_mass:cut",
+        ProjectTwoAblation.NO_PCHMP_JOINT_PROPAGATION: "PCHMP_joint:cut",
+        ProjectTwoAblation.INDEPENDENT_HYPOTHESIS_SCORING: "hypothesis_scoring:independent",
+        ProjectTwoAblation.ORRER_IN_PLACE_OVERWRITE: "ORRER:in_place",
+        ProjectTwoAblation.ORRER_FULL_RERUN: "ORRER:full_rerun",
+        ProjectTwoAblation.NO_MECHANISM_ROLE_REVISION: "mechanism_role_revision:cut",
+        ProjectTwoAblation.NO_PROVENANCE_FIREWALL: "provenance_firewall:cut_in_evaluator_sandbox",
+        ProjectTwoAblation.NO_DEDUPLICATION: "deduplication:cut_in_evaluator_sandbox",
+        ProjectTwoAblation.NO_PROJECT_ONE_RETRACT_CORRECT: "ProjectOne_retract_correct:cut",
+        ProjectTwoAblation.NO_CCRR_MULTI_REGIME_MEMORY: "CCRR_multi_regime:cut",
+        ProjectTwoAblation.NO_RGRC_GATE: "RGRC_gate:cut",
+        ProjectTwoAblation.NO_LLM: "LLM:cut",
+        ProjectTwoAblation.LLM_PRIOR_ONLY: "LLM_prior_only:executed_full_project_two",
+        ProjectTwoAblation.LLM_DIRECT_DECISION: "LLM_direct_decision:executed",
+    }
+    assert set(proof) == set(ProjectTwoAblation)
+    for ablation, marker in expected.items():
+        assert marker in proof[ablation]

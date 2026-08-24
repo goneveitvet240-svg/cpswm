@@ -114,18 +114,48 @@ from .project_two_action_benchmark import (
     ProjectTwoActionBenchmarkV02,
     ProjectTwoActionMethod,
 )
+from .project_two_d1_development import (
+    D1_DEVELOPMENT_VERSION,
+    SCENE_CATEGORIES,
+    build_d1_development_batch,
+)
 from .project_two_dataset import (
+    ProjectTwoEvidenceCoverageReport,
     ProjectTwoReplayDataset,
     ProjectTwoReplayGateError,
     ProjectTwoReplayQualityReport,
     audit_project_two_replay,
     enforce_project_two_replay_gate,
+    summarize_project_two_evidence_coverage,
 )
 from .project_two_dataset_adapters import (
     D0SyntheticOracleReplayAdapter,
+    D1SimulatorAnnotatedReplayAdapter,
+    D2RealPerceptionReplayAdapter,
     ProjectTwoDatasetAdapter,
+    SuppliedReplayDatasetAdapter,
     UnavailableProjectTwoDatasetAdapter,
     adapter_tiers,
+)
+from .project_two_multiseed_evidence import (
+    INFERENCE_CHAIN,
+    run_project_two_replay_evidence,
+    write_project_two_replay_evidence,
+)
+from .project_two_real_perception import (
+    AnnotationSourceKind,
+    D2AnnotationAgreementReport,
+    D2AnnotationSubmission,
+    D2EvaluatorAdjudication,
+    D2RealPerceptionConverter,
+    D2RealPerceptionRawEpisode,
+    annotation_agreement_report,
+    build_d2_example_batch,
+    materialize_d2_example_batch,
+)
+from .project_two_replay_importer import (
+    ProjectTwoReplayFileImporter,
+    export_project_two_replay_dataset,
 )
 from .sealed_test_split import (
     SealedSplitAccessError,
@@ -145,6 +175,7 @@ from .shift_attribution import (
 from .shift_baselines import (
     LoggedPolicyActorLocationBaseline,
     LoggedPolicyThenLocationBaseline,
+    OnlineBOCPDMSBaseline,
     OnlineCauseFactorizedBOCPDBaseline,
     OnlineOrdinaryBOCPDBaseline,
 )
@@ -167,9 +198,12 @@ from .structure_two_action_death_test import (
 )
 
 __all__ = [
+    "D1_DEVELOPMENT_VERSION",
+    "INFERENCE_CHAIN",
     "PROJECT_ONE_ABLATION_TOPOLOGY_GATE_V1",
     "PROJECT_ONE_ARMS_V01",
     "PROJECT_ONE_ARMS_V02",
+    "SCENE_CATEGORIES",
     "SECTION_9_1_REGISTRY",
     "ActionBaselineMethod",
     "ActionCaseMetric",
@@ -182,6 +216,7 @@ __all__ = [
     "ActionSuite",
     "ActionTaskType",
     "AggregateMetric",
+    "AnnotationSourceKind",
     "BaselineFairnessRecord",
     "BaselineRegistryEntry",
     "BaselineScore",
@@ -199,6 +234,13 @@ __all__ = [
     "D0ShiftSuite",
     "D0SyntheticOracleReplayAdapter",
     "D0VisibleSimulationRun",
+    "D1SimulatorAnnotatedReplayAdapter",
+    "D2AnnotationAgreementReport",
+    "D2AnnotationSubmission",
+    "D2EvaluatorAdjudication",
+    "D2RealPerceptionConverter",
+    "D2RealPerceptionRawEpisode",
+    "D2RealPerceptionReplayAdapter",
     "EvaluationProvenance",
     "EvaluationReport",
     "EvaluationRunner",
@@ -232,6 +274,7 @@ __all__ = [
     "MetricRecord",
     "ModelBudget",
     "ObservationBudget",
+    "OnlineBOCPDMSBaseline",
     "OnlineCauseFactorizedBOCPDBaseline",
     "OnlineOrdinaryBOCPDBaseline",
     "OnlineShiftAttributionCase",
@@ -269,7 +312,9 @@ __all__ = [
     "ProjectTwoActionBenchmarkV02",
     "ProjectTwoActionMethod",
     "ProjectTwoDatasetAdapter",
+    "ProjectTwoEvidenceCoverageReport",
     "ProjectTwoReplayDataset",
+    "ProjectTwoReplayFileImporter",
     "ProjectTwoReplayGateError",
     "ProjectTwoReplayQualityReport",
     "ProtocolPilotTuningBudget",
@@ -286,20 +331,29 @@ __all__ = [
     "StructureTwoActionDeathTest",
     "StructureTwoActionDeathTestReport",
     "StructureTwoActionScenarioGenerator",
+    "SuppliedReplayDatasetAdapter",
     "TuningBudget",
     "TuningCompletionReceipt",
     "UnavailableProjectTwoDatasetAdapter",
     "VisibleActionCase",
     "adapter_tiers",
     "adversarial_seed_oracle",
+    "annotation_agreement_report",
     "audit_project_two_replay",
+    "build_d1_development_batch",
+    "build_d2_example_batch",
     "compare_baselines",
     "default_baselines",
     "enforce_project_two_replay_gate",
     "evaluation_run_identity",
     "experimental_baselines",
+    "export_project_two_replay_dataset",
+    "materialize_d2_example_batch",
     "new_sealed_secret",
     "registry_status_counts",
+    "run_project_two_replay_evidence",
     "score_baseline",
     "select_pilot_runner",
+    "summarize_project_two_evidence_coverage",
+    "write_project_two_replay_evidence",
 ]

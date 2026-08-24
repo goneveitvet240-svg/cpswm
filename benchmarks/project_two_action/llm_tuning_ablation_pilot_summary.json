@@ -1,0 +1,37 @@
+{
+  "protocol_version": "project-two-llm-tuning-ablation@0.1",
+  "run_date": "2026-08-24",
+  "evidence_maturity": "D0 deterministic adapter fixture; no external LLM/VLM invoked",
+  "validation_seeds": [101, 103],
+  "sealed_test_seeds": [211, 223],
+  "steps_per_episode": 16,
+  "search_budget_per_arm": 3,
+  "independent_tuning_receipts": 23,
+  "held_out_run_count": 1,
+  "tracks": {
+    "no_llm_project_two_core": {"put_back_error_rate": 0.09375, "action_regret": 5.5},
+    "llm_as_evidence_project_two": {"put_back_error_rate": 0.34375, "action_regret": 9.5},
+    "llm_direct_decision_baseline": {"put_back_error_rate": 0.5625, "action_regret": 13.0},
+    "oracle_evidence_upper_bound": {"put_back_error_rate": 0.0, "action_regret": 0.0}
+  },
+  "superiority_claim": false,
+  "runtime_ablation_status": {
+    "executed": [
+      "no_execution_feedback_return", "failure_only_feedback", "success_only_feedback",
+      "no_unknown_actor",
+      "no_unknown_mechanism",
+      "no_unresolved_mass",
+      "no_pchmp_joint_propagation",
+      "independent_hypothesis_scoring",
+      "orrer_replaced_by_in_place_overwrite",
+      "orrer_replaced_by_full_rerun",
+      "no_mechanism_role_revision",
+      "no_provenance_firewall",
+      "no_deduplication",
+      "no_project_one_retract_correct",
+      "no_ccrr_multi_regime_memory",
+      "no_rgrc_gate", "no_llm", "llm_prior_only", "llm_direct_decision"
+    ],
+    "topology_frozen_runtime_pending": []
+  }
+}

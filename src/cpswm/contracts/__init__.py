@@ -127,6 +127,19 @@ from .placement_memory import (
     PlacementSubject,
     StatedPreferenceAssertion,
 )
+from .project_two_replay import (
+    PROJECT_TWO_REPLAY_SCHEMA_VERSION,
+    ProjectTwoDataMaturity,
+    ProjectTwoDatasetSplit,
+    ProjectTwoEvaluatorStepTruth,
+    ProjectTwoEvaluatorTruthEnvelope,
+    ProjectTwoReplayDatasetManifest,
+    ProjectTwoReplayEpisode,
+    ProjectTwoReplayManifestEntry,
+    ProjectTwoReplayStep,
+    ReplayFieldAvailability,
+    reject_truth_leakage,
+)
 from .queries import (
     AuditableEvidencePath,
     AuditableQueryExplanation,
@@ -147,6 +160,7 @@ from .queries import (
 
 __all__ = [
     "NORM_CLASSES",
+    "PROJECT_TWO_REPLAY_SCHEMA_VERSION",
     "ActionOutcomeLikelihoodModel",
     "ActiveObservationPlan",
     "ActorEvidenceTrack",
@@ -237,6 +251,14 @@ __all__ = [
     "PosteriorMixin",
     "PrivacyScope",
     "ProbabilityInterval",
+    "ProjectTwoDataMaturity",
+    "ProjectTwoDatasetSplit",
+    "ProjectTwoEvaluatorStepTruth",
+    "ProjectTwoEvaluatorTruthEnvelope",
+    "ProjectTwoReplayDatasetManifest",
+    "ProjectTwoReplayEpisode",
+    "ProjectTwoReplayManifestEntry",
+    "ProjectTwoReplayStep",
     "ProjectionCheckpoint",
     "ProjectionLag",
     "QueryCandidate",
@@ -245,6 +267,7 @@ __all__ = [
     "RelationAssertion",
     "RelationPredicate",
     "RelevantChange",
+    "ReplayFieldAvailability",
     "ResolutionStatus",
     "ResponsePolicy",
     "RetrievalBudget",
@@ -266,4 +289,5 @@ __all__ = [
     "detect_relevant_change",
     "ordered_role_key",
     "parse_ordered_role_key",
+    "reject_truth_leakage",
 ]

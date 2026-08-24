@@ -169,6 +169,26 @@ class JointCauseSnapshot:
     #: Number of hypotheses retained after pruning (persistent state size).
     beam_size: int
 
+    def __post_init__(self) -> None:
+        scalar_probabilities = {
+            "continue_probability": self.continue_probability,
+            "segment_change_probability": self.segment_change_probability,
+            "transient_noise_probability": self.transient_noise_probability,
+        }
+        mapped_probabilities = {
+            "joint_run_length_cause_posterior": (self.joint_run_length_cause_posterior.values()),
+            "segment_cause_posterior": self.segment_cause_posterior.values(),
+        }
+        for name, probability in scalar_probabilities.items():
+            if not isfinite(probability) or not 0.0 <= probability <= 1.0:
+                raise ValueError(f"{name} must lie in [0, 1]")
+        for name, probabilities in mapped_probabilities.items():
+            if any(
+                not isfinite(probability) or not 0.0 <= probability <= 1.0
+                for probability in probabilities
+            ):
+                raise ValueError(f"{name} values must lie in [0, 1]")
+
     def marginal_cause_posterior(self) -> dict[ChangeCause, float]:
         marginal: dict[ChangeCause, float] = dict.fromkeys(ChangeCause, 0.0)
         for (_run_length, cause), probability in self.joint_run_length_cause_posterior.items():
@@ -274,6 +294,36 @@ class JointCauseFactorizedBOCPD:
         self._maximum_run_length = maximum_run_length
         self._reset_matrix = reset_matrix or CauseResetMatrix()
         self._model_version = model_version
+        self.reset_online()
+
+    @staticmethod
+    def _fresh_beam() -> list[_Hypothesis]:
+        return [
+            _Hypothesis(
+                run_length=0,
+                last_cause=ChangeCause.NOISE,
+                blocks=tuple((cause, _FRESH_BLOCK) for cause in SUBSTANTIVE_CAUSES),
+                log_weight=0.0,
+            )
+        ]
+
+    def reset_online(self) -> None:
+        """Reset the prefix-online posterior without changing configuration."""
+
+        self._online_beam = self._fresh_beam()
+        self._online_last_timestamp: datetime | None = None
+
+    def observe_online(self, frame: CauseSignalFrame) -> JointCauseSnapshot:
+        """Advance exactly one posterior step for a new chronological frame."""
+
+        if (
+            self._online_last_timestamp is not None
+            and frame.timestamp <= self._online_last_timestamp
+        ):
+            raise ValueError("online frames must have unique increasing timestamps")
+        self._online_beam, snapshot = self._step(self._online_beam, frame)
+        self._online_last_timestamp = frame.timestamp
+        return snapshot
 
     def run(
         self,
@@ -292,14 +342,7 @@ class JointCauseFactorizedBOCPD:
         if timestamps != sorted(timestamps) or len(timestamps) != len(set(timestamps)):
             raise ValueError("frames must have unique increasing timestamps")
 
-        beam = [
-            _Hypothesis(
-                run_length=0,
-                last_cause=ChangeCause.NOISE,
-                blocks=tuple((cause, _FRESH_BLOCK) for cause in SUBSTANTIVE_CAUSES),
-                log_weight=0.0,
-            )
-        ]
+        beam = self._fresh_beam()
         snapshots: list[JointCauseSnapshot] = []
         for frame in frames:
             beam, snapshot = self._step(beam, frame)
@@ -424,8 +467,9 @@ class JointCauseFactorizedBOCPD:
         continue_mass = 0.0
         segment_mass: dict[ChangeCause, float] = dict.fromkeys(SUBSTANTIVE_CAUSES, 0.0)
         noise_mass = 0.0
+        normalizer = sum(exp(hypothesis.log_weight) for _event, hypothesis in survivors)
         for event, hypothesis in survivors:
-            probability = exp(hypothesis.log_weight)
+            probability = exp(hypothesis.log_weight) / normalizer
             key = (hypothesis.run_length, hypothesis.last_cause)
             joint[key] = joint.get(key, 0.0) + probability
             for cause in SUBSTANTIVE_CAUSES:
@@ -439,9 +483,27 @@ class JointCauseFactorizedBOCPD:
             else:
                 segment_mass[event] += probability
 
-        segment_change_probability = sum(segment_mass.values())
+        joint_normalizer = sum(joint.values())
+        joint = {
+            key: min(1.0, max(0.0, probability / joint_normalizer))
+            for key, probability in joint.items()
+        }
+        event_normalizer = continue_mass + sum(segment_mass.values()) + noise_mass
+        continue_mass = min(1.0, max(0.0, continue_mass / event_normalizer))
+        noise_mass = min(1.0, max(0.0, noise_mass / event_normalizer))
+        segment_mass = {
+            cause: min(1.0, max(0.0, mass / event_normalizer))
+            for cause, mass in segment_mass.items()
+        }
+        segment_change_probability = min(
+            1.0,
+            max(0.0, sum(segment_mass.values())),
+        )
         segment_cause_posterior = (
-            {cause: mass / segment_change_probability for cause, mass in segment_mass.items()}
+            {
+                cause: min(1.0, max(0.0, mass / segment_change_probability))
+                for cause, mass in segment_mass.items()
+            }
             if segment_change_probability > 0.0
             else {}
         )

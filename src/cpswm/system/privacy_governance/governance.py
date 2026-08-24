@@ -11,18 +11,47 @@ compliance claim.  It provides:
 
 Persistence uses the M03 :class:`AppendOnlyTransactionLog` so a governance
 history survives restart and can be replayed deterministically.
+
+Threat model (explicit, because the checks below are easy to over-read):
+
+* **In scope without a key.** Restore enforces log order, request
+  fingerprints, and grant/request/decision field agreement, so an isolated
+  forged decision, a decision that precedes its request, a mutated request, or
+  a decision naming a grant it does not match are all rejected.  These prove
+  *internal consistency* only.
+* **In scope with an authority.**  Constructing the service with an
+  :class:`~cpswm.system.attestation.AttestationAuthority` adds the missing
+  half: every grant, request and decision is MAC'd on write under its own
+  domain and re-verified on restore.  A coherent ``grant -> request ->
+  decision`` triple appended by code that does not hold the key no longer
+  restores, which is the log-injection laundering the earlier reviews
+  demonstrated.  ``tests/test_major_revision_round4.py`` runs that attack.
+* **Still out of scope.** HMAC is symmetric, so an attacker who *obtains* the
+  key can mint records indistinguishable from the authority's.  Separating
+  signer from verifier needs an asymmetric signature.  A service constructed
+  without an authority keeps the old, weaker behaviour and reports
+  :attr:`HouseholdGovernance.attested` as ``False`` -- an unattested log must
+  never be described as authenticated.
 """
 
 from __future__ import annotations
 
 from datetime import datetime
-from typing import Any
+from typing import Any, TypeVar
 from uuid import UUID, uuid4
 
 from pydantic import TypeAdapter
 
 from cpswm.contracts.base import BaseRecordMetadata, require_aware
 from cpswm.foundation.persistence_replay import AppendOnlyTransactionLog, CommittedTransaction
+from cpswm.system.attestation import (
+    DOMAIN_CAPABILITY_GRANT,
+    DOMAIN_ORACLE_DECISION,
+    DOMAIN_ORACLE_REQUEST,
+    AttestationAuthority,
+    AttestationError,
+    attested_payload,
+)
 
 from .contracts import (
     CapabilityGrant,
@@ -47,6 +76,14 @@ FORBIDDEN_GT_SUBJECT_PREFIXES = (
 )
 
 _EVALUATOR_SUBJECT_PREFIXES = ("evaluator.", "benchmark.", "oracle_adapter.")
+
+
+#: The governance records that carry an authority attestation.  A structural
+#: Protocol cannot express this: pydantic's ``model_dump`` signature is far
+#: richer than any hand-written stub, so a nominal union is both accurate and
+#: exhaustive -- adding a fourth attested record type is a deliberate edit here.
+_Attestable = CapabilityGrant | OracleAccessRequest | OracleAccessDecision
+_AttestableT = TypeVar("_AttestableT", CapabilityGrant, OracleAccessRequest, OracleAccessDecision)
 
 
 class AuthorizationDeniedError(PermissionError):
@@ -92,7 +129,22 @@ def decode_governance_record(payload: Any, schema_name: str | None = None) -> An
 class HouseholdGovernance:
     """Household-scoped capability and deletion authority."""
 
-    def __init__(self, log: AppendOnlyTransactionLog | None = None) -> None:
+    def __init__(
+        self,
+        log: AppendOnlyTransactionLog | None = None,
+        *,
+        authority: AttestationAuthority | None = None,
+    ) -> None:
+        """``authority`` holds the signing key this service does not mint.
+
+        When supplied, every grant, request and decision is attested on write
+        and re-verified on restore, so appending a self-consistent forged chain
+        no longer restores.  When omitted the service keeps its previous
+        behaviour and :attr:`attested` reports ``False``, so a caller can never
+        mistake an unattested log for an authenticated one.
+        """
+
+        self._authority = authority
         self._log = log or AppendOnlyTransactionLog()
         self._grants: dict[UUID, CapabilityGrant] = {}
         self._revocations: dict[UUID, CapabilityRevocation] = {}
@@ -105,6 +157,34 @@ class HouseholdGovernance:
         self._tombstones: dict[UUID, set[UUID]] = {}
         self._audit_records: list[OracleAccessAuditRecord] = []
 
+    @property
+    def attested(self) -> bool:
+        """Whether this service signs and verifies its governance log."""
+
+        return self._authority is not None
+
+    def _attest(self, record: _AttestableT, domain: str) -> _AttestableT:
+        """Return ``record`` carrying a fresh authority attestation."""
+
+        if self._authority is None:
+            return record
+        unsigned = record.model_copy(update={"attestation": None})
+        signature = self._authority.sign(domain, attested_payload(unsigned))
+        signed: _AttestableT = record.model_copy(update={"attestation": signature})
+        return signed
+
+    def _verify_attestation(self, record: _Attestable, domain: str, label: str) -> None:
+        if self._authority is None:
+            return
+        try:
+            self._authority.verify(
+                domain,
+                attested_payload(record.model_copy(update={"attestation": None})),
+                record.attestation,
+            )
+        except AttestationError as error:
+            raise GovernanceConflictError(f"{label}: {error}") from error
+
     # ------------------------------------------------------------------ grants
 
     def issue_grant(self, grant: CapabilityGrant) -> CapabilityGrant:
@@ -113,6 +193,7 @@ class HouseholdGovernance:
             if self._grants[grant.grant_id] != grant:
                 raise GovernanceConflictError("grant_id already issued with different content")
             return grant
+        grant = self._attest(grant, DOMAIN_CAPABILITY_GRANT)
         seq = self._append(grant, f"grant:{grant.grant_id}")
         self._grants[grant.grant_id] = grant
         self._grant_seqs[grant.grant_id] = seq
@@ -229,6 +310,8 @@ class HouseholdGovernance:
             denial_reason=None if allowed else "no active grant authorizes oracle access",
             input_watermark=request.input_watermark,
         )
+        request = self._attest(request, DOMAIN_ORACLE_REQUEST)
+        decision = self._attest(decision, DOMAIN_ORACLE_DECISION)
         request_seq = self._append(request, f"oracle-request:{request.request_id}")
         self._requests[request.request_id] = request
         self._request_seqs[request.request_id] = request_seq
@@ -251,6 +334,23 @@ class HouseholdGovernance:
             return False
         if not receipt.allowed:
             return False
+        # An attested service must not verify an unsigned or altered receipt,
+        # nor one whose grant/request were not themselves attested.
+        if self._authority is not None:
+            for record, domain in (
+                (receipt, DOMAIN_ORACLE_DECISION),
+                (self._requests.get(receipt.request_id), DOMAIN_ORACLE_REQUEST),
+                (
+                    self._grants.get(receipt.grant_id) if receipt.grant_id else None,
+                    DOMAIN_CAPABILITY_GRANT,
+                ),
+            ):
+                if record is None:
+                    return False
+                try:
+                    self._verify_attestation(record, domain, "receipt")
+                except GovernanceConflictError:
+                    return False
         stored = self._decisions.get(receipt.decision_id)
         if stored is None or stored != receipt:
             return False
@@ -460,6 +560,11 @@ class HouseholdGovernance:
                     self._validate_restored_revocation(decoded)
                     self._revocations[decoded.grant_id] = decoded
                 elif isinstance(decoded, OracleAccessRequest):
+                    self._verify_attestation(
+                        decoded,
+                        DOMAIN_ORACLE_REQUEST,
+                        f"restored request {decoded.request_id}",
+                    )
                     self._requests[decoded.request_id] = decoded
                     self._request_seqs[decoded.request_id] = seq
                 elif isinstance(decoded, OracleAccessDecision):
@@ -479,6 +584,11 @@ class HouseholdGovernance:
         decision: OracleAccessDecision,
         decision_seq: int,
     ) -> None:
+        # Authenticity first: an unsigned or altered decision must not reach the
+        # ordering and binding checks, which only prove internal consistency.
+        self._verify_attestation(
+            decision, DOMAIN_ORACLE_DECISION, f"restored decision {decision.decision_id}"
+        )
         request = self._requests.get(decision.request_id)
         if request is None:
             raise GovernanceConflictError(
@@ -497,8 +607,18 @@ class HouseholdGovernance:
             raise GovernanceConflictError(
                 f"restored decision {decision.decision_id} caller/household does not match request"
             )
+        # A denial legitimately carries no grant. Requiring one unconditionally
+        # let a single ordinary refusal poison every later restore.
+        if not decision.allowed:
+            if decision.grant_id is not None:
+                raise GovernanceConflictError(
+                    f"restored decision {decision.decision_id} is denied but names a grant"
+                )
+            return
         if decision.grant_id is None:
-            raise GovernanceConflictError(f"restored decision {decision.decision_id} has no grant")
+            raise GovernanceConflictError(
+                f"restored decision {decision.decision_id} is allowed but has no grant"
+            )
         grant = self._grants.get(decision.grant_id)
         if grant is None:
             raise GovernanceConflictError(
@@ -527,6 +647,7 @@ class HouseholdGovernance:
             )
 
     def _validate_restored_grant(self, grant: CapabilityGrant) -> None:
+        self._verify_attestation(grant, DOMAIN_CAPABILITY_GRANT, f"restored grant {grant.grant_id}")
         if grant.household_id != grant.metadata.household_id:
             raise GovernanceConflictError(
                 f"restored grant {grant.grant_id} has a mismatched household"

@@ -235,3 +235,13 @@ class RLSRegimeBank:
 
     def regime_count(self) -> int:
         return len(self._heads)
+
+    def regime_snapshot(self, regime_id: str) -> dict:
+        """Return a copy of one regime's sufficient statistics for audit/reuse."""
+
+        if not regime_id.strip():
+            raise ValueError("regime_id must be non-empty")
+        head = self._head_if_exists(regime_id)
+        if head is None:
+            return {"models": {}}
+        return head.snapshot()

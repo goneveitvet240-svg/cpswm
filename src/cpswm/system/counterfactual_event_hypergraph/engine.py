@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from datetime import datetime
 from itertools import permutations
-from math import isclose
+from math import isclose, isfinite
 from typing import Any, TypeVar
 from uuid import UUID
 
@@ -53,6 +53,7 @@ class CounterfactualEventHypergraphEngine:
         after: ObservationDetectionResult,
         actor_prior: dict[str, float],
         unresolved_probability: float = 0.1,
+        unknown_mechanism_probability: float = 0.0,
         handoff_fraction: float = 0.2,
         allow_unknown_handoff_roles: bool = False,
     ) -> EventHypothesisHistory:
@@ -64,6 +65,10 @@ class CounterfactualEventHypergraphEngine:
             raise ValueError("CHEH branch requires at least two actor hypotheses")
         if not 0.0 <= unresolved_probability < 1.0:
             raise ValueError("unresolved_probability must be in [0, 1)")
+        if not 0.0 <= unknown_mechanism_probability < 1.0:
+            raise ValueError("unknown_mechanism_probability must be in [0, 1)")
+        if unresolved_probability + unknown_mechanism_probability >= 1.0:
+            raise ValueError("unknown mechanism plus unresolved probability must be below one")
         if not 0.0 <= handoff_fraction < 1.0:
             raise ValueError("handoff_fraction must be in [0, 1)")
 
@@ -128,7 +133,7 @@ class CounterfactualEventHypergraphEngine:
             )
 
         raw_total = sum(weight for _, _, weight, _ in raw_chains)
-        resolved_mass = 1.0 - unresolved_probability
+        resolved_mass = 1.0 - unresolved_probability - unknown_mechanism_probability
         hypotheses = tuple(
             self._make_hypothesis(
                 hypothesis_set_id=hypothesis_set_id,
@@ -160,6 +165,10 @@ class CounterfactualEventHypergraphEngine:
                 after.metadata.record_id,
             ),
             hypotheses=hypotheses,
+            unknown_mechanism_probability=unknown_mechanism_probability,
+            unknown_mechanism_actor_posterior=(
+                dict(actor_prior) if unknown_mechanism_probability > 0.0 else {}
+            ),
             unresolved_probability=unresolved_probability,
             revision_evidence_record_ids=source_ids,
             revision_evidence_cluster_ids=(),
@@ -191,6 +200,15 @@ class CounterfactualEventHypergraphEngine:
                 for item in history.latest.hypotheses
             },
             unresolved_likelihood_ratio=likelihood_ratios.get("unknown_actor", 1.0),
+            unknown_mechanism_likelihood_ratio=1.0,
+            unknown_mechanism_actor_likelihood_ratios=(
+                likelihood_ratios
+                if any(
+                    reference.evidence_type == "actor_discrimination"
+                    for reference in evidence.evidence_refs
+                )
+                else None
+            ),
             evidence_weight=evidence.effective_sample_weight,
             retraction_threshold=retraction_threshold,
             update_kind=EventHypothesisUpdateKind.REVISE,
@@ -217,6 +235,8 @@ class CounterfactualEventHypergraphEngine:
                 for item in history.latest.hypotheses
             },
             unresolved_likelihood_ratio=1.0,
+            unknown_mechanism_likelihood_ratio=likelihood_ratios[EventMechanism.UNKNOWN_MECHANISM],
+            unknown_mechanism_actor_likelihood_ratios=None,
             evidence_weight=evidence.effective_sample_weight,
             retraction_threshold=retraction_threshold,
             update_kind=EventHypothesisUpdateKind.REVISE_MECHANISM,
@@ -243,6 +263,8 @@ class CounterfactualEventHypergraphEngine:
                 for item in history.latest.hypotheses
             },
             unresolved_likelihood_ratio=1.0,
+            unknown_mechanism_likelihood_ratio=1.0,
+            unknown_mechanism_actor_likelihood_ratios=None,
             evidence_weight=evidence.effective_sample_weight,
             retraction_threshold=retraction_threshold,
             update_kind=EventHypothesisUpdateKind.REVISE_ROLE,
@@ -274,6 +296,15 @@ class CounterfactualEventHypergraphEngine:
                 for item in history.latest.hypotheses
             }
             unresolved_ratio = actor_ratios.get("unknown_actor", 1.0)
+            unknown_mechanism_ratio = 1.0
+            unknown_mechanism_actor_ratios = (
+                actor_ratios
+                if any(
+                    reference.evidence_type == "actor_discrimination"
+                    for reference in actor_evidence.evidence_refs
+                )
+                else None
+            )
             weight = actor_evidence.effective_sample_weight
             reason = "actor evidence reactivation"
         elif isinstance(evidence, EventMechanismEvidence):
@@ -284,6 +315,8 @@ class CounterfactualEventHypergraphEngine:
                 for item in history.latest.hypotheses
             }
             unresolved_ratio = 1.0
+            unknown_mechanism_ratio = mechanism_ratios[EventMechanism.UNKNOWN_MECHANISM]
+            unknown_mechanism_actor_ratios = None
             weight = validated.effective_sample_weight
             reason = "event mechanism evidence reactivation"
         elif isinstance(evidence, RoleBindingEvidence):
@@ -294,6 +327,8 @@ class CounterfactualEventHypergraphEngine:
                 for item in history.latest.hypotheses
             }
             unresolved_ratio = 1.0
+            unknown_mechanism_ratio = 1.0
+            unknown_mechanism_actor_ratios = None
             weight = validated.effective_sample_weight
             reason = "ordered role evidence reactivation"
         else:
@@ -303,6 +338,8 @@ class CounterfactualEventHypergraphEngine:
             evidence=validated,
             hypothesis_likelihood_ratios=hypothesis_ratios,
             unresolved_likelihood_ratio=unresolved_ratio,
+            unknown_mechanism_likelihood_ratio=unknown_mechanism_ratio,
+            unknown_mechanism_actor_likelihood_ratios=unknown_mechanism_actor_ratios,
             evidence_weight=weight,
             retraction_threshold=retraction_threshold,
             update_kind=EventHypothesisUpdateKind.REACTIVATE,
@@ -317,6 +354,8 @@ class CounterfactualEventHypergraphEngine:
         evidence: HiddenEventEvidence,
         hypothesis_likelihood_ratios: dict[UUID, float],
         unresolved_likelihood_ratio: float,
+        unknown_mechanism_likelihood_ratio: float,
+        unknown_mechanism_actor_likelihood_ratios: dict[str, float] | None,
         evidence_weight: float,
         retraction_threshold: float,
         update_kind: EventHypothesisUpdateKind,
@@ -333,6 +372,24 @@ class CounterfactualEventHypergraphEngine:
             raise ValueError("evidence likelihood ratios cannot be negative")
         if unresolved_likelihood_ratio < 0.0:
             raise ValueError("unresolved likelihood ratio cannot be negative")
+        if unknown_mechanism_likelihood_ratio < 0.0:
+            raise ValueError("unknown mechanism likelihood ratio cannot be negative")
+        unknown_actor_raw = {
+            actor: probability
+            * (
+                1.0
+                if unknown_mechanism_actor_likelihood_ratios is None
+                else unknown_mechanism_actor_likelihood_ratios.get(actor, 1.0)
+            )
+            ** evidence_weight
+            for actor, probability in current.unknown_mechanism_actor_posterior.items()
+        }
+        unknown_actor_total = sum(unknown_actor_raw.values())
+        unknown_actor_posterior = (
+            dict(current.unknown_mechanism_actor_posterior)
+            if unknown_actor_total <= 0.0
+            else {actor: value / unknown_actor_total for actor, value in unknown_actor_raw.items()}
+        )
 
         shadow_raw = {
             item.hypothesis_id: item.revival_probability
@@ -358,8 +415,10 @@ class CounterfactualEventHypergraphEngine:
         }
         if allow_reactivation and reactivation_eligible:
             branch_unresolved = history.revisions[0].unresolved_probability
-            resolved_mass = 1.0 - branch_unresolved
+            branch_unknown_mechanism = history.revisions[0].unknown_mechanism_probability
+            resolved_mass = 1.0 - branch_unresolved - branch_unknown_mechanism
             normalized_unresolved = branch_unresolved
+            normalized_unknown_mechanism = branch_unknown_mechanism
             eligible = {
                 item.hypothesis_id
                 for item in current.hypotheses
@@ -387,12 +446,17 @@ class CounterfactualEventHypergraphEngine:
             raw_unresolved = current.unresolved_probability * (
                 unresolved_likelihood_ratio**evidence_weight
             )
-            total = raw_unresolved + sum(raw_weights.values())
+            raw_unknown_mechanism = current.unknown_mechanism_probability * (
+                unknown_mechanism_likelihood_ratio**evidence_weight
+            )
+            total = raw_unresolved + raw_unknown_mechanism + sum(raw_weights.values())
             if total <= 0.0:
                 normalized_unresolved = 1.0
+                normalized_unknown_mechanism = 0.0
                 normalized = {item.hypothesis_id: 0.0 for item in current.hypotheses}
             else:
                 normalized_unresolved = raw_unresolved / total
+                normalized_unknown_mechanism = raw_unknown_mechanism / total
                 normalized = {
                     hypothesis_id: weight / total for hypothesis_id, weight in raw_weights.items()
                 }
@@ -423,6 +487,8 @@ class CounterfactualEventHypergraphEngine:
         revision = self._make_revision_from_current(
             current,
             hypotheses=revised,
+            unknown_mechanism_probability=normalized_unknown_mechanism,
+            unknown_mechanism_actor_posterior=unknown_actor_posterior,
             unresolved_probability=unresolved,
             update_kind=update_kind,
             revision_evidence_record_ids=(evidence.metadata.record_id,),
@@ -450,6 +516,93 @@ class CounterfactualEventHypergraphEngine:
             ),
             1.0,
         )
+
+    def revise_destination_location(
+        self,
+        history: EventHypothesisHistory,
+        *,
+        destination_location_id: UUID,
+        feedback_record_id: UUID,
+        evidence_cluster_id: UUID,
+        transition_candidate: str,
+        transition_likelihood_ratio: float,
+        evidence_model_id: str,
+    ) -> EventHypothesisHistory:
+        """Append an auditable location correction without rewriting prior revisions.
+
+        Hypothesis IDs remain the stable identity of the causal actor/mechanism
+        alternative; the revised step payload and revision content hash record the
+        new destination.  Only destination-bearing steps may change.
+        """
+
+        history = self._revalidate_history(history)
+        current = history.latest
+        if destination_location_id == current.destination_location_id:
+            return history
+        if destination_location_id == current.source_location_id:
+            raise ValueError("corrected destination must differ from the source location")
+        if feedback_record_id in history.consumed_evidence_record_ids:
+            raise ValueError("location feedback record cannot be reused")
+        if evidence_cluster_id in history.consumed_evidence_cluster_ids:
+            raise ValueError("location feedback cluster cannot be reused")
+        if not transition_candidate.strip() or not evidence_model_id.strip():
+            raise ValueError("location revision requires candidate and model identifiers")
+        if not isfinite(transition_likelihood_ratio) or transition_likelihood_ratio <= 0.0:
+            raise ValueError("location transition likelihood ratio must be finite and positive")
+
+        fingerprint = content_sha256(
+            {
+                "kind": "location_transition_feedback",
+                "from": current.destination_location_id,
+                "to": destination_location_id,
+                "candidate": transition_candidate,
+                "likelihood_ratio": transition_likelihood_ratio,
+                "model_id": evidence_model_id,
+            }
+        )
+        if fingerprint in history.consumed_evidence_semantic_fingerprints:
+            raise ValueError("semantic location feedback cannot be reused")
+
+        revised_hypotheses = tuple(
+            item.model_copy(
+                update={
+                    "steps": tuple(
+                        step.model_copy(
+                            update={
+                                "step_id": content_uuid(
+                                    "cheh-step-location-revision",
+                                    {
+                                        "previous_step_id": step.step_id,
+                                        "destination_location_id": destination_location_id,
+                                        "feedback_record_id": feedback_record_id,
+                                    },
+                                ),
+                                "destination_location_id": destination_location_id,
+                            }
+                        )
+                        if step.destination_location_id == current.destination_location_id
+                        else step
+                        for step in item.steps
+                    ),
+                    "source_record_ids": (*item.source_record_ids, feedback_record_id),
+                }
+            )
+            for item in current.hypotheses
+        )
+        revision = self._make_revision_from_current(
+            current,
+            hypotheses=revised_hypotheses,
+            unresolved_probability=current.unresolved_probability,
+            destination_location_id=destination_location_id,
+            update_kind=EventHypothesisUpdateKind.REVISE_LOCATION,
+            revision_evidence_record_ids=(feedback_record_id,),
+            revision_evidence_cluster_ids=(evidence_cluster_id,),
+            revision_evidence_semantic_fingerprints=(fingerprint,),
+            revision_evidence_source_detection_result_ids=(current.source_detection_result_ids[1],),
+            revision_evidence_endpoint_roles=(ActorEvidenceEndpointRole.DESTINATION_STATE,),
+            revision_reason="execution-feedback destination-location correction",
+        )
+        return history.append(revision)
 
     def retract(
         self,
@@ -522,6 +675,8 @@ class CounterfactualEventHypergraphEngine:
         revision = self._make_revision_from_current(
             current,
             hypotheses=revised,
+            unknown_mechanism_probability=current.unknown_mechanism_probability,
+            unknown_mechanism_actor_posterior=current.unknown_mechanism_actor_posterior,
             unresolved_probability=current.unresolved_probability + removed_mass,
             update_kind=EventHypothesisUpdateKind.RETRACT,
             revision_evidence_record_ids=tuple(
@@ -905,7 +1060,10 @@ class CounterfactualEventHypergraphEngine:
         current: EventHypothesisRevision,
         *,
         hypotheses: tuple[EventChainHypothesis, ...],
+        unknown_mechanism_probability: float | None = None,
+        unknown_mechanism_actor_posterior: dict[str, float] | None = None,
         unresolved_probability: float,
+        destination_location_id: UUID | None = None,
         update_kind: EventHypothesisUpdateKind,
         revision_evidence_record_ids: tuple[UUID, ...],
         revision_evidence_cluster_ids: tuple[UUID, ...],
@@ -926,9 +1084,23 @@ class CounterfactualEventHypergraphEngine:
             interval_start=current.interval_start,
             interval_end=current.interval_end,
             source_location_id=current.source_location_id,
-            destination_location_id=current.destination_location_id,
+            destination_location_id=(
+                current.destination_location_id
+                if destination_location_id is None
+                else destination_location_id
+            ),
             source_detection_result_ids=current.source_detection_result_ids,
             hypotheses=hypotheses,
+            unknown_mechanism_probability=(
+                current.unknown_mechanism_probability
+                if unknown_mechanism_probability is None
+                else unknown_mechanism_probability
+            ),
+            unknown_mechanism_actor_posterior=(
+                current.unknown_mechanism_actor_posterior
+                if unknown_mechanism_actor_posterior is None
+                else unknown_mechanism_actor_posterior
+            ),
             unresolved_probability=unresolved_probability,
             revision_evidence_record_ids=revision_evidence_record_ids,
             revision_evidence_cluster_ids=revision_evidence_cluster_ids,
@@ -961,6 +1133,7 @@ class OpenWorldRoleConditionedReversibleEventRevisionEngine(CounterfactualEventH
         after: ObservationDetectionResult,
         actor_prior: dict[str, float],
         unresolved_probability: float = 0.1,
+        unknown_mechanism_probability: float = 0.05,
         handoff_fraction: float = 0.2,
         allow_unknown_handoff_roles: bool = True,
     ) -> EventHypothesisHistory:
@@ -971,6 +1144,7 @@ class OpenWorldRoleConditionedReversibleEventRevisionEngine(CounterfactualEventH
             after=after,
             actor_prior=actor_prior,
             unresolved_probability=unresolved_probability,
+            unknown_mechanism_probability=unknown_mechanism_probability,
             handoff_fraction=handoff_fraction,
             allow_unknown_handoff_roles=True,
         )

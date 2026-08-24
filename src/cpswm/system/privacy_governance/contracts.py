@@ -31,6 +31,7 @@ from cpswm.contracts.base import (
     require_aware,
 )
 from cpswm.foundation.persistence_replay.contracts import content_hash
+from cpswm.system.attestation import Attestation
 
 
 class CapabilityStatus(StrEnum):
@@ -78,6 +79,8 @@ class CapabilityGrant(ContractModel):
     purpose: str = Field(min_length=1)
     valid_time: ValidTimeInterval
     issuer: str = Field(min_length=1)
+    #: Signed by the governance authority; restore rejects an unattested grant.
+    attestation: Attestation | None = None
 
     @model_validator(mode="after")
     def validate_grant(self) -> CapabilityGrant:
@@ -122,6 +125,7 @@ class OracleAccessRequest(ContractModel):
     evaluation_only: bool
     purpose: Literal["evaluation_only"] = "evaluation_only"
     input_watermark: InputWatermark
+    attestation: Attestation | None = None
 
     @model_validator(mode="after")
     def validate_request(self) -> OracleAccessRequest:
@@ -168,6 +172,7 @@ class OracleAccessDecision(ContractModel):
     resource: ResourceKind = ResourceKind.GT
     operation: Operation = Operation.READ
     allowed: bool
+    attestation: Attestation | None = None
     decided_by: str = Field(min_length=1)
     decided_time: datetime
     denial_reason: str | None = None

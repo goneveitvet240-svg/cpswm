@@ -1,0 +1,74 @@
+# 项目一评测协议默认配置 (阶段 0)
+#
+# 这里的每一个数值都只是**原型默认值**，不是预注册阈值。
+#   阶段 6 用这一份固定阈值跑不调参的 paired ablation；
+#   阶段 7 才给每个 arm 独立调参，且只能用 validation 划分。
+#
+# 任何一次运行都必须记录 config_hash（由 ProjectOneProtocolConfig.config_hash()
+# 生成，覆盖下面全部字段）。两次结果只有在 config_hash 相同、或差异恰好是被研究
+# 的那一个字段时，才允许直接比较。
+
+protocol_version: "project-one-evaluation-protocol@0.2"
+
+# --- 状态判断链 -------------------------------------------------------------
+# 与 PrototypeLoopConfig 的默认值保持一致，使"协议默认"与"原型默认"是同一组数字。
+minimum_baseline_observations: 3      # 少于这么多观测时只输出 insufficient_evidence
+confirmation_window: 2                # 候选必须在窗口内重复出现才能确认为新 regime（冻结的 PrototypeLoopConfig 要求 >= 2）
+habit_change_probability_threshold: 0.5
+transient_disturbance_probability_threshold: 0.5
+owner_evidence_threshold: 0.5         # 低于此值的 owner 后验不允许写入长期统计
+context_confirmation_max_distance: 0.25   # 情境指纹距离超过此值不算同一候选
+
+# --- 信号通道 ---------------------------------------------------------------
+# 两个独立护栏权重。habit_signal = max(unexpected_move, w_s*surprise, w_r*residual)
+dirichlet_surprise_weight: 0.1
+rls_residual_weight: 0.1
+
+# --- RLS ---------------------------------------------------------------------
+forgetting_factor: 1.0                # regime 内不遗忘；非平稳性由 CCRR 的阶段竞争处理
+rls_regularization: 1.0e-6            # 传给 RLSHabitScoreHead 的 ridge；与该类自身默认一致
+                                      # v0.1 里这个字段声明了但从未使用
+
+# --- 实验臂 ------------------------------------------------------------------
+# ablation: full | no_rls | shuffled_rls | rls_only
+#   full          两个通道都在（被测方法）
+#   no_rls        residual 固定为 0
+#   shuffled_rls  residual 用固定滞后替换（保留量级、破坏配对）
+#   rls_only      Dirichlet surprise 固定为 0
+ablation: full
+
+# residual_calibration: as_is | logit | raw_clip | recenter | platt
+#   as_is     复现出厂接线：score_candidates 默认再套一层 sigmoid，把已经拟合到
+#             {0,1} 的回归输出压成 [0.269, 0.5]，正确预测的事件也带 0.269 底噪。
+#   logit     反解 sigmoid，取 |1-raw| 截到 1。**不推荐**：把过度自信的分数
+#             （raw>1）当成"错得离谱"，方向是反的。
+#   raw_clip  反解后先把 raw 夹进 [0,1]，再取 1-raw。当前推荐。
+#   recenter  把 [sigmoid(0), sigmoid(1)] 仿射映回 [0,1]；不需要反解，实测与
+#             raw_clip 无法区分。
+#   platt     在线经验校准 P(hit|score)，不做任何量程假设；合成流上因冷启动更差，
+#             但真实数据上 raw 未必落在 [0,1]，届时它是唯一安全的路线。
+# 五个选项都不修改 prototype_spine 或共享的 RLS head。
+residual_calibration: raw_clip
+
+# --- 阶段 7 调参起始网格（此处仅作记录，runner 当前不读取）--------------------
+# 每个 arm 必须使用相同搜索预算、各自独立选择最优配置，且只能在 validation 上搜索。
+tuning_grid:
+  forgetting_factor: [1.0, 0.999, 0.99, 0.95, 0.9]
+  bocpd_expected_run_length: [20, 50, 100, 200]
+  candidate_threshold: [0.4, 0.5, 0.6, 0.7]
+  confirmation_threshold: [0.6, 0.7, 0.8, 0.9]
+  ccrr_reactivation_threshold: [0.5, 0.7, 0.9]
+
+# --- 基线自己的配置（阶段 7 必须各自独立调参，不得沿用链式 arm 的阈值）---------
+baselines:
+  categorical_bocpd:
+    expected_run_length: 50.0
+    dirichlet_alpha: 1.0
+    change_threshold: 0.5
+    max_run_length: 200
+    context_conditioned: true
+  context_frequency:
+    alpha: 1.0
+    change_threshold: 0.5
+  persistence:
+    confidence: 0.9

@@ -11,6 +11,7 @@ from .event_derived_update_ledger import (
     RetractionCost,
     projection_total_variation,
 )
+
 # NOTE: the integration loops (event_to_task_loop, hybrid_event_to_task_loop)
 # are intentionally NOT eagerly re-exported here.  hybrid_event_to_task_loop
 # imports cpswm.world_model.grounded_search.concurrent_map_task, which imports
@@ -32,6 +33,21 @@ from .hybrid_statistics import (
     NaturalRidgeResidual,
     StatisticKey,
 )
+from .project_one_feedback import (
+    DefaultPrototypeFeedbackPolicy,
+    EventRevisionKind,
+    EventRevisionOutcome,
+    ExecutionFeedbackInterpretationPolicy,
+    FeedbackInterpretation,
+)
+from .project_one_regime_loop import (
+    AutomaticCFBOCPDCCRRRouter,
+    AutomaticRegimeAssessment,
+    DerivedEvidenceReactivationPolicy,
+    HabitStateConclusion,
+    PrototypeLoopConfig,
+    PrototypeStatisticOperation,
+)
 from .rls import (
     RecursiveLeastSquares,
     RLSChannelReliabilityCalibrator,
@@ -43,14 +59,23 @@ from .rls import (
 )
 
 __all__ = [
+    "AutomaticCFBOCPDCCRRRouter",
+    "AutomaticRegimeAssessment",
     "ConsolidationRiskCertificate",
     "ConsolidationState",
+    "DefaultPrototypeFeedbackPolicy",
+    "DerivedEvidenceReactivationPolicy",
     "DirichletRLSFusion",
     "EventDerivedDeltaPromotion",
     "EventDerivedDeltaRecord",
     "EventDerivedDeltaReversal",
     "EventDerivedUpdateLedger",
+    "EventRevisionKind",
+    "EventRevisionOutcome",
+    "ExecutionFeedbackInterpretationPolicy",
+    "FeedbackInterpretation",
     "FusedLocationBelief",
+    "HabitStateConclusion",
     "HybridConsolidationState",
     "HybridLedgerError",
     "HybridProjection",
@@ -61,6 +86,8 @@ __all__ = [
     "HybridStatisticLedger",
     "LedgerIntegrityError",
     "NaturalRidgeResidual",
+    "PrototypeLoopConfig",
+    "PrototypeStatisticOperation",
     "RLSChannelReliabilityCalibrator",
     "RLSConfig",
     "RLSHabitSample",

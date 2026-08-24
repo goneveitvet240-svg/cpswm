@@ -1,9 +1,8 @@
-"""Run the structure-two action-level matched death test.
+"""Run project-two action-level matched benchmark v0.2.
 
-The benchmark compares PCHMP x CCRR x RGRC against four faithfully adapted
-baselines (AMG / O-STaR / DynaMem / STAR) on a multi-day household scenario
-with selective observation, hidden direct/handoff relocations, guest
-contamination, an abrupt owner-habit change, and a recurrence of the old habit.
+Validation and sealed test episodes are household/scene/object-family disjoint.
+The old v0.1 reduced-skill death test remains importable for regression only;
+this CLI is the authoritative v0.2 entry point.
 """
 
 from __future__ import annotations
@@ -16,43 +15,26 @@ REPOSITORY_ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(REPOSITORY_ROOT / "src"))
 
 from cpswm.system.evaluation_operations import (  # noqa: E402
-    StructureTwoActionDeathTest,
-    StructureTwoActionScenarioGenerator,
+    D0SyntheticOracleReplayAdapter,
+    ProjectTwoActionBenchmarkV02,
+    audit_project_two_replay,
 )
 
-DEFAULT_SEEDS = tuple(range(1, 21))
+VALIDATION_SEEDS = (101, 103)
+SEALED_TEST_SEEDS = (211, 223)
 
 
 def run() -> dict[str, object]:
-    generator = StructureTwoActionScenarioGenerator()
-    report = StructureTwoActionDeathTest(generator).run(DEFAULT_SEEDS)
+    dataset = D0SyntheticOracleReplayAdapter(
+        validation_seeds=VALIDATION_SEEDS,
+        test_seeds=SEALED_TEST_SEEDS,
+        max_steps_per_episode=32,
+    ).build()
+    quality = audit_project_two_replay(dataset)
+    report = ProjectTwoActionBenchmarkV02().run(dataset)
     return {
-        "generator_version": report.generator_version,
-        "seed_count": len(DEFAULT_SEEDS),
-        "method_reports": [
-            report.model_dump(mode="json") for report in report.method_reports
-        ],
-        "scientific_status": report.scientific_status,
-        "interpretation": {
-            "fairness": (
-                "every method receives the same robot-visible stream and action "
-                "budget; ground truth is only available to the evaluator"
-            ),
-            "baselines": (
-                "domain adaptations, not full reproductions: AMG MAP event parse, "
-                "O-STaR Dirichlet counts, DynaMem latest state, STAR frequency "
-                "retrieval"
-            ),
-            "new_method": (
-                "PCHMP joint event posterior -> CF-BOCPD cause posterior -> CCRR "
-                "stay/create/reactivate/unresolved -> RGRC-gated owner habit "
-                "consolidation"
-            ),
-            "claim_discipline": (
-                "a strictly-better put-back result is a research signal, not a "
-                "general superiority claim; external validity remains unproven"
-            ),
-        },
+        "data_quality": quality.model_dump(mode="json"),
+        "benchmark": report.model_dump(mode="json"),
     }
 
 

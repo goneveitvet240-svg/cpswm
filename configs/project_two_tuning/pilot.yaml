@@ -1,0 +1,27 @@
+search_budget_per_arm: 3
+validation_seeds: [101, 103]
+sealed_test_seeds: [211, 223]
+held_out_runs_after_freeze: 1
+independent_retuning_per_ablation: true
+dimensions:
+  - likelihood_calibration
+  - actor_evidence_weight
+  - mechanism_evidence_weight
+  - role_evidence_weight
+  - unresolved_prior
+  - unknown_actor_prior
+  - unknown_mechanism_prior
+  - orrer_retraction_threshold
+  - orrer_reactivation_threshold
+  - pchmp_weight
+  - bocpd_hazard
+  - ccrr_create_threshold
+  - ccrr_reactivate_threshold
+  - ccrr_stay_threshold
+  - rgrc_write_threshold
+  - rgrc_quarantine_threshold
+  - rgrc_retract_threshold
+  - action_utility_threshold
+  - prompt_template_version
+  - temperature
+  - candidate_count

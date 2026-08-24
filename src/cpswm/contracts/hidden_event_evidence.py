@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from datetime import datetime
 from enum import StrEnum
-from math import isclose
+from math import isclose, log
 from typing import Annotated
 from uuid import UUID
 
@@ -33,6 +33,10 @@ class HiddenEventEvidenceTrack(StrEnum):
 class EventMechanism(StrEnum):
     DIRECT_RELOCATION = "direct_relocation"
     HANDOFF_RELOCATION = "handoff_relocation"
+    # A real transition occurred, but none of the currently modelled physical
+    # grammars explains it.  This is deliberately distinct from global
+    # ``unresolved_probability`` (which means the event itself is unresolved).
+    UNKNOWN_MECHANISM = "unknown_mechanism"
 
 
 def ordered_role_key(initiator_actor_key: str, recipient_actor_key: str) -> str:
@@ -59,7 +63,7 @@ def parse_ordered_role_key(value: str) -> tuple[str, str]:
 
 
 class EventMechanismEvidence(ContractModel):
-    """Posterior evidence distinguishing direct relocation from handoff."""
+    """Posterior evidence over direct, handoff, and optional unknown mechanism."""
 
     metadata: BaseRecordMetadata
     source_detection_result_id: UUID
@@ -88,11 +92,18 @@ class EventMechanismEvidence(ContractModel):
             raise ValueError("event mechanism evidence requires a sensing/model source")
         if self.metadata.recorded_time != self.evidence_time:
             raise ValueError("event mechanism metadata time must equal evidence_time")
-        expected = set(EventMechanism)
-        if set(self.mechanism_posterior) != expected:
-            raise ValueError("mechanism_posterior must cover direct and handoff")
-        if set(self.reference_mechanism_prior) != expected:
-            raise ValueError("reference_mechanism_prior must cover direct and handoff")
+        required = {
+            EventMechanism.DIRECT_RELOCATION,
+            EventMechanism.HANDOFF_RELOCATION,
+        }
+        posterior_support = set(self.mechanism_posterior)
+        prior_support = set(self.reference_mechanism_prior)
+        if posterior_support != prior_support:
+            raise ValueError("mechanism posterior and reference prior require identical support")
+        if not required.issubset(posterior_support):
+            raise ValueError("mechanism evidence must cover direct and handoff")
+        if posterior_support - set(EventMechanism):
+            raise ValueError("mechanism evidence contains an unsupported mechanism")
         if not isclose(sum(self.mechanism_posterior.values()), 1.0, rel_tol=0.0, abs_tol=1e-6):
             raise ValueError("mechanism_posterior probabilities must sum to one")
         if not isclose(
@@ -113,10 +124,31 @@ class EventMechanismEvidence(ContractModel):
 
     @property
     def mechanism_likelihood_ratios(self) -> dict[EventMechanism, float]:
-        return {
+        ratios = {
             mechanism: posterior / self.reference_mechanism_prior[mechanism]
             for mechanism, posterior in self.mechanism_posterior.items()
         }
+        # Backward-compatible two-mechanism evidence is neutral about the new
+        # open-world mechanism bucket; three-way evidence can move it explicitly.
+        ratios.setdefault(EventMechanism.UNKNOWN_MECHANISM, 1.0)
+        return ratios
+
+    @property
+    def log_mechanism_likelihood_ratios(self) -> dict[EventMechanism, float]:
+        """Log likelihood ratios in log space (no division overflow)."""
+
+        result: dict[EventMechanism, float] = {}
+        for mechanism, posterior in self.mechanism_posterior.items():
+            prior = self.reference_mechanism_prior[mechanism]
+            if posterior == 0.0:
+                result[mechanism] = float("-inf")
+                continue
+            value = log(posterior) - log(prior)
+            if value == float("inf") or value != value:
+                raise ValueError("log mechanism likelihood ratio must be finite or -inf")
+            result[mechanism] = value
+        result.setdefault(EventMechanism.UNKNOWN_MECHANISM, 0.0)
+        return result
 
 
 class RoleBindingEvidence(ContractModel):
@@ -182,3 +214,19 @@ class RoleBindingEvidence(ContractModel):
             role: posterior / self.reference_ordered_role_prior[role]
             for role, posterior in self.ordered_role_posterior.items()
         }
+
+    @property
+    def log_ordered_role_likelihood_ratios(self) -> dict[str, float]:
+        """Log likelihood ratios in log space (no division overflow)."""
+
+        result: dict[str, float] = {}
+        for role, posterior in self.ordered_role_posterior.items():
+            prior = self.reference_ordered_role_prior[role]
+            if posterior == 0.0:
+                result[role] = float("-inf")
+                continue
+            value = log(posterior) - log(prior)
+            if value == float("inf") or value != value:
+                raise ValueError("log ordered-role likelihood ratio must be finite or -inf")
+            result[role] = value
+        return result

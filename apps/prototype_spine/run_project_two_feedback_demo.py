@@ -180,6 +180,10 @@ def _show(title: str, outcome: EventRevisionOutcome) -> None:
         f"{outcome.unresolved_after:.3f}"
     )
     print(
+        f"  unknown mech before/after : {outcome.unknown_mechanism_before:.3f} -> "
+        f"{outcome.unknown_mechanism_after:.3f}"
+    )
+    print(
         f"  owner mass  before/after  : {outcome.owner_mass_before:.3f} -> "
         f"{outcome.owner_mass_after:.3f}"
     )
@@ -203,6 +207,7 @@ def main() -> None:
     history = _history()
     print(
         f"branched hidden-event set with {len(history.latest.hypotheses)} hypotheses; "
+        f"unknown_mechanism={history.latest.unknown_mechanism_probability:.3f}; "
         f"unresolved={history.latest.unresolved_probability:.3f}"
     )
 

@@ -954,7 +954,7 @@ def test_place_wrong_location_yields_a_corrected_destination():
         {RobotActionOutcome.SUCCESS: 0.9, RobotActionOutcome.OBJECT_SLIPPED: 0.1},
         location=L3,  # not the event destination L2
     )
-    _, outcome = loop.ingest_feedback(
+    revised, outcome = loop.ingest_feedback(
         history=history,
         feedback=place,
         binding=_binding(place),
@@ -965,6 +965,138 @@ def test_place_wrong_location_yields_a_corrected_destination():
     assert outcome.corrected_destination_location_id == L3
     assert outcome.project_one_requests
     assert outcome.project_one_requests[0].location_id == L3
+    assert revised.latest.destination_location_id == L3
+    assert revised.latest.update_kind.value == "revise_location"
+    assert all(
+        hypothesis.steps[-1].destination_location_id == L3
+        for hypothesis in revised.latest.hypotheses
+    )
+    rebuilt = OpenWorldRoleConditionedReversibleEventRevisionEngine.rebuild(revised.revisions)
+    assert rebuilt.latest.revision_id == revised.latest.revision_id
+    assert rebuilt.latest.destination_location_id == L3
+    # The old revision remains immutable and rebuildable.
+    assert history.latest.destination_location_id == L2
+
+
+def test_same_transition_model_success_and_slip_produce_different_posteriors():
+    """Projector candidate evidence must affect the multi-axis posterior."""
+
+    model = _transition_model(with_actor=True)
+    success = _feedback(
+        RobotActionType.PLACE,
+        {RobotActionOutcome.SUCCESS: 0.9, RobotActionOutcome.OBJECT_SLIPPED: 0.1},
+    )
+    slipped = _feedback(
+        RobotActionType.PLACE,
+        {RobotActionOutcome.SUCCESS: 0.1, RobotActionOutcome.OBJECT_SLIPPED: 0.9},
+    )
+    _, success_outcome = _loop().ingest_feedback(
+        history=_history(),
+        feedback=success,
+        binding=_binding(success),
+        likelihood_model=_place_likelihood(),
+        owner_key=OWNER,
+        transition_model=model,
+    )
+    _, slip_outcome = _loop().ingest_feedback(
+        history=_history(),
+        feedback=slipped,
+        binding=_binding(slipped),
+        likelihood_model=_place_likelihood(),
+        owner_key=OWNER,
+        transition_model=model,
+    )
+    assert success_outcome.presence_likelihood_ratio > 1.0
+    assert slip_outcome.presence_likelihood_ratio < 1.0
+    assert success_outcome.hypothesis_posterior_after != slip_outcome.hypothesis_posterior_after
+    assert success_outcome.owner_mass_after > slip_outcome.owner_mass_after
+
+
+def test_slip_at_an_alternate_location_does_not_rewrite_event_destination():
+    history = _history()
+    slipped = _feedback(
+        RobotActionType.PLACE,
+        {RobotActionOutcome.SUCCESS: 0.1, RobotActionOutcome.OBJECT_SLIPPED: 0.9},
+        location=L3,
+    )
+    revised, outcome = _loop().ingest_feedback(
+        history=history,
+        feedback=slipped,
+        binding=_binding(slipped),
+        likelihood_model=_place_likelihood(),
+        owner_key=OWNER,
+        transition_model=_transition_model(with_actor=True),
+    )
+    assert outcome.corrected_destination_location_id is None
+    assert revised.latest.destination_location_id == L2
+    assert all(
+        hypothesis.steps[-1].destination_location_id == L2
+        for hypothesis in revised.latest.hypotheses
+    )
+
+
+def test_unknown_mechanism_is_separate_from_global_unresolved_and_actor_unknown():
+    """All three open-world combinations remain independently auditable."""
+
+    from cpswm.contracts import ordered_role_key
+
+    history = _history()
+    model = TransitionRevisionModel(
+        mechanism_posterior={
+            EventMechanism.DIRECT_RELOCATION: 0.2,
+            EventMechanism.HANDOFF_RELOCATION: 0.3,
+            EventMechanism.UNKNOWN_MECHANISM: 0.5,
+        },
+        mechanism_prior={
+            EventMechanism.DIRECT_RELOCATION: 0.45,
+            EventMechanism.HANDOFF_RELOCATION: 0.45,
+            EventMechanism.UNKNOWN_MECHANISM: 0.1,
+        },
+        ordered_role_posterior={
+            ordered_role_key(OWNER, GUEST): 0.6,
+            ordered_role_key(GUEST, OWNER): 0.4,
+        },
+        ordered_role_prior={
+            ordered_role_key(OWNER, GUEST): 0.5,
+            ordered_role_key(GUEST, OWNER): 0.5,
+        },
+        model_version="open-mechanism@0.1",
+        source_record_id=uuid4(),
+    )
+    success = _feedback(
+        RobotActionType.PLACE,
+        {RobotActionOutcome.SUCCESS: 0.9, RobotActionOutcome.OBJECT_SLIPPED: 0.1},
+    )
+    revised, outcome = _loop().ingest_feedback(
+        history=history,
+        feedback=success,
+        binding=_binding(success),
+        likelihood_model=_place_likelihood(),
+        owner_key=OWNER,
+        transition_model=model,
+    )
+    latest = revised.latest
+    assert latest.unknown_mechanism_probability > history.latest.unknown_mechanism_probability
+    assert latest.unresolved_probability > 0.0
+    assert (
+        sum(item.posterior_probability for item in latest.hypotheses)
+        + latest.unknown_mechanism_probability
+        + latest.unresolved_probability
+    ) == pytest.approx(1.0)
+    known_mechanism_unknown_actor = sum(
+        item.posterior_probability
+        for item in latest.hypotheses
+        if item.responsible_actor_key == UNKNOWN_ACTOR
+    )
+    unknown_mechanism_known_actor = sum(
+        mass
+        for actor, mass in outcome.unknown_mechanism_actor_mass_after.items()
+        if actor != UNKNOWN_ACTOR
+    )
+    unknown_mechanism_unknown_actor = outcome.unknown_mechanism_actor_mass_after[UNKNOWN_ACTOR]
+    assert known_mechanism_unknown_actor > 0.0
+    assert unknown_mechanism_known_actor > 0.0
+    assert unknown_mechanism_unknown_actor > 0.0
 
 
 def test_search_window_spanning_a_subsequent_move_is_rejected():

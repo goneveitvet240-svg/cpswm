@@ -29,12 +29,13 @@ confidence** (chains vs unresolved) and cannot move owner-vs-guest odds on its o
 supplying ``actor_likelihood_ratios`` (an actor-discriminating channel) drives true
 **actor-responsibility** revision where relative odds change. The two multiply.
 
-Deliberately retained (kept as interfaces, not deleted, and NOT faked):
-* place/transfer feedback is *isolated* (raises :class:`UnsupportedFeedbackRouteError`)
-  until a real location/mechanism/role likelihood model exists -- it is never folded
-  into a presence ratio;
-* `REINFORCE` has no project-one positive-reinforcement interface yet (explicit
-  no-op in the adapter);
+Current transition semantics:
+* place/transfer feedback requires a location/mechanism/role model, and the
+  projector's calibrated positive/negative candidate factor is consumed jointly
+  with those axes;
+* a confirmed alternate destination appends a location revision in the same ORRER
+  lineage; project one receives that exact revised destination;
+* `REINFORCE` is a real reversible replace in the project-one adapter;
 * real perception, signatures, adversarial firewalls, a production project-one
   outbox, and re-move-after-event handling remain to be wired.  The actor evidence
   is bound to the CHEH destination endpoint time (an engine constraint), so a
@@ -66,7 +67,10 @@ from cpswm.contracts import (
     RoleBindingEvidence,
     SourceType,
 )
-from cpswm.system.continual.execution_feedback_projector import ProjectionInputConflictError
+from cpswm.system.continual.execution_feedback_projector import (
+    ProjectionInputConflictError,
+    TransitionCandidate,
+)
 
 from .contracts import (
     EventHypothesisHistory,
@@ -171,6 +175,10 @@ class EventRevisionOutcome:
     actor_posterior_after: dict[str, float]
     unresolved_before: float
     unresolved_after: float
+    unknown_mechanism_before: float
+    unknown_mechanism_after: float
+    unknown_mechanism_actor_mass_before: dict[str, float]
+    unknown_mechanism_actor_mass_after: dict[str, float]
     owner_mass_before: float
     owner_mass_after: float
     source_feedback_record_id: UUID
@@ -209,6 +217,9 @@ def _actor_posterior(revision: EventHypothesisRevision) -> dict[str, float]:
             posterior.get(hypothesis.responsible_actor_key, 0.0) + hypothesis.posterior_probability
         )
     posterior[UNKNOWN_ACTOR] = posterior.get(UNKNOWN_ACTOR, 0.0) + revision.unresolved_probability
+    # Owner-habit mass is credited only to physically modelled chains.  The
+    # separate unknown-mechanism actor breakdown remains available on the outcome.
+    posterior[UNKNOWN_ACTOR] += revision.unknown_mechanism_probability
     return posterior
 
 
@@ -339,7 +350,12 @@ class ProjectTwoFeedbackRevisionLoop:
                 )
             # A place/transfer that landed somewhere other than the recorded
             # destination is a location signal: project one must move the habit.
-            if feedback.attempted_location_id != current.destination_location_id:
+            transition = projected.location_transition
+            assert transition is not None
+            if (
+                transition.candidate is TransitionCandidate.POSITIVE_CANDIDATE
+                and feedback.attempted_location_id != current.destination_location_id
+            ):
                 corrected_destination = feedback.attempted_location_id
             (
                 revised_history,
@@ -347,7 +363,15 @@ class ProjectTwoFeedbackRevisionLoop:
                 presence_ratio,
                 repropagated,
                 source_records,
-            ) = self._revise_transition(history, current, transition_model)
+            ) = self._revise_transition(
+                history,
+                current,
+                projected,
+                likelihood_model,
+                feedback,
+                transition_model,
+                corrected_destination,
+            )
 
         outcome = self._build_outcome(
             superseded=current,
@@ -383,6 +407,7 @@ class ProjectTwoFeedbackRevisionLoop:
             presence_ratio=presence_ratio,
             actor_evidence=actor_evidence,
             base_model_version=likelihood_model.model_version,
+            feedback_record_id=projected.feedback_record_id,
         )
         repropagated = self._message_passing.infer(history, [evidence])
         revised_history = self._engine.revise_actor_responsibility(
@@ -397,7 +422,11 @@ class ProjectTwoFeedbackRevisionLoop:
         self,
         history: EventHypothesisHistory,
         current: EventHypothesisRevision,
+        projected,
+        likelihood_model: ActionOutcomeLikelihoodModel,
+        feedback: ExecutionFeedbackRecord,
         model: TransitionRevisionModel,
+        corrected_destination: UUID | None,
     ) -> tuple[
         EventHypothesisHistory,
         EventHypothesisRevision,
@@ -416,16 +445,23 @@ class ProjectTwoFeedbackRevisionLoop:
             raise ValueError("transition model must carry a model version")
         mechanism = self._mechanism_evidence(current, model)
         role = self._role_evidence(current, model)
-        evidences: list[object] = [mechanism, role]
-        actor = None
-        if model.actor is not None:
-            actor = self._actor_evidence(
-                current,
-                presence_ratio=1.0,
-                actor_evidence=model.actor,
-                base_model_version=model.model_version,
-            )
-            evidences.append(actor)
+        evidences: list[
+            ActorResponsibilityEvidence | EventMechanismEvidence | RoleBindingEvidence
+        ] = [mechanism, role]
+        transition = projected.location_transition
+        assert transition is not None
+        transition_ratio = transition.candidate_likelihood_ratio
+        actor = self._actor_evidence(
+            current,
+            presence_ratio=transition_ratio,
+            actor_evidence=model.actor,
+            base_model_version=(
+                f"{model.model_version}+{likelihood_model.model_version}+"
+                f"{transition.candidate.value}"
+            ),
+            feedback_record_id=feedback.metadata.record_id,
+        )
+        evidences.append(actor)
 
         # Joint re-propagation over all axes must equal the sequential revision.
         repropagated = self._message_passing.infer(history, evidences)
@@ -438,10 +474,21 @@ class ProjectTwoFeedbackRevisionLoop:
             working, role, retraction_threshold=self._retraction_threshold
         )
         self._assert_child_of(working.latest, parent)
-        if actor is not None:
+        parent = working.latest
+        working = self._engine.revise_actor_responsibility(
+            working, actor, retraction_threshold=self._retraction_threshold
+        )
+        self._assert_child_of(working.latest, parent)
+        if corrected_destination is not None:
             parent = working.latest
-            working = self._engine.revise_actor_responsibility(
-                working, actor, retraction_threshold=self._retraction_threshold
+            working = self._engine.revise_destination_location(
+                working,
+                destination_location_id=corrected_destination,
+                feedback_record_id=feedback.metadata.record_id,
+                evidence_cluster_id=uuid4(),
+                transition_candidate=transition.candidate.value,
+                transition_likelihood_ratio=transition_ratio,
+                evidence_model_id=transition.likelihood_model_version,
             )
             self._assert_child_of(working.latest, parent)
         corrected = working.latest
@@ -454,7 +501,7 @@ class ProjectTwoFeedbackRevisionLoop:
                 )
             )
         )
-        return working, corrected, 1.0, repropagated, sources
+        return working, corrected, transition_ratio, repropagated, sources
 
     @staticmethod
     def _assert_child_of(child: EventHypothesisRevision, parent: EventHypothesisRevision) -> None:
@@ -589,6 +636,27 @@ class ProjectTwoFeedbackRevisionLoop:
             raise HypothesisPosteriorInconsistencyError(
                 "PCHMP and ORRER disagree on unresolved mass"
             )
+        if not isclose(
+            repropagated.unknown_mechanism_probability,
+            corrected.unknown_mechanism_probability,
+            rel_tol=0.0,
+            abs_tol=1e-9,
+        ):
+            raise HypothesisPosteriorInconsistencyError(
+                "PCHMP and ORRER disagree on unknown-mechanism mass"
+            )
+        for actor in set(repropagated.unknown_mechanism_actor_posterior) | set(
+            corrected.unknown_mechanism_actor_posterior
+        ):
+            if not isclose(
+                repropagated.unknown_mechanism_actor_posterior.get(actor, 0.0),
+                corrected.unknown_mechanism_actor_posterior.get(actor, 0.0),
+                rel_tol=0.0,
+                abs_tol=1e-9,
+            ):
+                raise HypothesisPosteriorInconsistencyError(
+                    "PCHMP and ORRER disagree on unknown-mechanism actor mass"
+                )
 
     def _actor_evidence(
         self,
@@ -597,6 +665,7 @@ class ProjectTwoFeedbackRevisionLoop:
         presence_ratio: float,
         actor_evidence: ActorDiscriminationEvidence | None,
         base_model_version: str,
+        feedback_record_id: UUID,
     ) -> ActorResponsibilityEvidence:
         """Encode presence x per-actor evidence as firewall-legal actor evidence.
 
@@ -641,9 +710,15 @@ class ProjectTwoFeedbackRevisionLoop:
             source_type=SourceType.MODEL,
             source_id="project-two-feedback-loop",
         )
-        evidence_refs: tuple[EvidenceRef, ...] = ()
+        evidence_refs: tuple[EvidenceRef, ...] = (
+            EvidenceRef(
+                evidence_type="execution_feedback",
+                source_record_id=feedback_record_id,
+            ),
+        )
         if actor_evidence is not None:
             evidence_refs = (
+                *evidence_refs,
                 EvidenceRef(
                     evidence_type="actor_discrimination",
                     source_record_id=actor_evidence.source_record_id,
@@ -744,6 +819,16 @@ class ProjectTwoFeedbackRevisionLoop:
             actor_posterior_after=actor_after,
             unresolved_before=superseded.unresolved_probability,
             unresolved_after=corrected.unresolved_probability,
+            unknown_mechanism_before=superseded.unknown_mechanism_probability,
+            unknown_mechanism_after=corrected.unknown_mechanism_probability,
+            unknown_mechanism_actor_mass_before={
+                actor: superseded.unknown_mechanism_probability * probability
+                for actor, probability in superseded.unknown_mechanism_actor_posterior.items()
+            },
+            unknown_mechanism_actor_mass_after={
+                actor: corrected.unknown_mechanism_probability * probability
+                for actor, probability in corrected.unknown_mechanism_actor_posterior.items()
+            },
             owner_mass_before=owner_before,
             owner_mass_after=owner_after,
             source_feedback_record_id=feedback.metadata.record_id,
@@ -774,6 +859,10 @@ def _copy_outcome(outcome: EventRevisionOutcome, *, is_replay: bool) -> EventRev
         actor_posterior_after=dict(outcome.actor_posterior_after),
         unresolved_before=outcome.unresolved_before,
         unresolved_after=outcome.unresolved_after,
+        unknown_mechanism_before=outcome.unknown_mechanism_before,
+        unknown_mechanism_after=outcome.unknown_mechanism_after,
+        unknown_mechanism_actor_mass_before=dict(outcome.unknown_mechanism_actor_mass_before),
+        unknown_mechanism_actor_mass_after=dict(outcome.unknown_mechanism_actor_mass_after),
         owner_mass_before=outcome.owner_mass_before,
         owner_mass_after=outcome.owner_mass_after,
         source_feedback_record_id=outcome.source_feedback_record_id,

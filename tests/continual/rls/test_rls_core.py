@@ -55,3 +55,19 @@ def test_fractional_gate_matches_weighted_least_squares_transform():
 
     assert np.allclose(gated.snapshot()["theta"], transformed.snapshot()["theta"])
     assert np.allclose(gated.snapshot()["covariance"], transformed.snapshot()["covariance"])
+
+
+def test_ipw_gate_above_one_matches_weighted_least_squares_transform():
+    weighted = RecursiveLeastSquares(RLSConfig(feature_dim=1, forgetting_factor=1.0))
+    transformed = RecursiveLeastSquares(RLSConfig(feature_dim=1, forgetting_factor=1.0))
+    ipw_weight = 2.5
+
+    weighted.update(np.array([2.0]), y=3.0, gate=ipw_weight)
+    transformed.update(
+        np.array([2.0 * np.sqrt(ipw_weight)]),
+        y=3.0 * np.sqrt(ipw_weight),
+        gate=1.0,
+    )
+
+    assert np.allclose(weighted.snapshot()["theta"], transformed.snapshot()["theta"])
+    assert np.allclose(weighted.snapshot()["covariance"], transformed.snapshot()["covariance"])

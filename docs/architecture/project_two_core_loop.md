@@ -18,12 +18,12 @@ components.
 ObservationDetectionResult (before @ L1, after @ L2)
   └─ CHEH branch ─────────────► open-world hidden-event hypotheses
                                 (direct + handoff, per responsible actor,
-                                 + unresolved mass)
+                                 + unknown-mechanism mass + unresolved mass)
 ExecutionFeedbackRecord (search/place outcome)
   └─ ExecutionFeedbackProjector ─► ProjectedFeedbackEvidence
         (typed route, likelihood-aware, snapshot-bound prior, de-duplicated)
-  └─ presence Bayes factor r  (odds(posterior)/odds(prior) from the projection,
-                               whose magnitude comes from ActionOutcomeLikelihoodModel)
+  └─ calibrated factor r      (search: presence Bayes factor; transition:
+                               candidate-directed calibrated likelihood factor)
   └─ ActorResponsibilityEvidence  (r on every responsible KNOWN actor;
                                    neutral on unknown_actor -> open world grows)
   └─ PCHMP.infer ─────────────► re-propagated joint posterior
@@ -67,10 +67,14 @@ former, not the latter.
 
 ### Place/transfer: isolated by default, multi-axis with a model
 
-Place/transfer feedback is projected only as an action success/slip *candidate* by
-the `ExecutionFeedbackProjector`, not a transition/presence/actor posterior.
-Folding it into a presence ratio would mislabel a gripper slip as reduced
-historical responsibility. So without a model the loop **rejects** the route
+Place/transfer feedback is projected as an action success/slip *candidate* plus a
+calibrated `candidate_likelihood_ratio`. Candidate direction is authoritative:
+positive uses a factor greater than one, negative its reciprocal, and unresolved
+is neutral; magnitude comes from `ActionOutcomeLikelihoodModel`. This factor is
+consumed by every concrete transition chain while global unresolved and
+unknown-mechanism mass remain neutral. Thus the same history and
+`TransitionRevisionModel` produce different posteriors for success and slip.
+Without a transition model the loop **rejects** the route
 (`UnsupportedFeedbackRouteError`) — never silently converts it. Supplying a
 `TransitionRevisionModel` (mechanism, ordered-role, and optional actor likelihoods,
 each provenance-carrying) promotes it to a genuine **multi-axis** revision: the
@@ -78,6 +82,18 @@ loop applies `revise_event_mechanism`, then `revise_role_binding`, then
 `revise_actor_responsibility` as three separate reversible, parent-linked ORRER
 steps, and asserts their joint result equals the PCHMP re-propagation over all
 axes.
+
+### Explicit unknown mechanism vs global unresolved
+
+`EventMechanism.UNKNOWN_MECHANISM` and
+`EventHypothesisRevision.unknown_mechanism_probability` mean that a transition is
+supported but its mechanism lies outside the direct/handoff grammar.
+`unresolved_probability` instead means the event existence/attribution itself is
+unresolved. `unknown_mechanism_actor_posterior` separately audits known versus
+unknown actors inside the unknown-mechanism bucket. Therefore known mechanism +
+unknown actor, unknown mechanism + known actor, and unknown mechanism + unknown
+actor remain distinguishable. Normalization is `sum(concrete hypotheses) +
+unknown_mechanism_probability + unresolved_probability = 1`.
 
 ### Delayed feedback vs a later move (causality)
 
@@ -122,18 +138,20 @@ alongside the feedback record — the revision is auditable back to every source
 
 ### Wrong-location place → corrected destination
 
-A place/transfer that lands at a location other than the event's recorded
-destination is no longer rejected as a provenance error (that check applies only to
-the search/presence route). Instead the loop records
-`corrected_destination_location_id` on the outcome and sets the
-`ProjectOneStatRequest.location_id` to it, so project one moves the habit to the
-observed location. Each of the mechanism→role→actor revisions is parent-lineage
-verified step by step.
+A positive place/transfer candidate at a location other than the recorded
+destination appends `REVISE_LOCATION` to the same ORRER history. The latest
+revision's `destination_location_id` and destination-bearing physical steps are
+updated; the old revision remains immutable. The outcome and
+`ProjectOneStatRequest.location_id` are derived from that revised event, so event
+history and project one cannot disagree. A slip or unresolved candidate never
+claims that the attempted location became the true destination. Every
+mechanism→role→actor→optional-location parent link is verified.
 
 ### Provenance firewall (binding)
 
 Before any mutation the loop binds the feedback to *this exact* hidden event:
-object id, `attempted_location_id == destination_location_id`, matching
+object id, a matching search destination (alternate successful placement is a
+location correction), matching
 household/session/trace on both the feedback and its binding, and a causal window
 (`feedback.valid_time.start >= interval_end`). De-duplication and forgery detection
 (same record id, different content/inputs) run through the projector's
@@ -162,7 +180,8 @@ prepare/commit, so a forged replay cannot bypass validation via a loop-side cach
 - `superseded_revision_id`, `corrected_revision_id`
 - `hypothesis_posterior_before` / `_after`
 - `actor_posterior_before` / `_after` (unresolved surfaced under `unknown_actor`)
-- `unresolved_before` / `_after`, `owner_mass_before` / `_after`
+- `unresolved_before` / `_after`, `unknown_mechanism_before` / `_after`
+- `unknown_mechanism_actor_mass_before` / `_after`, `owner_mass_before` / `_after`
 - `source_feedback_record_id`, `presence_likelihood_ratio`, `repropagated_posterior`
 - `project_one_requests: tuple[ProjectOneStatRequest, ...]`
 
@@ -204,7 +223,8 @@ record. `apply_project_one_request(request, loop)` consumes it:
   search does not (it revises event-existence confidence);
 - delayed feedback after a subsequent move is rejected (`StaleFeedbackError`);
 - actor ratios that are 0 / NaN / inf / unknown-actor / unversioned are rejected;
-- place/transfer with a `TransitionRevisionModel` runs mechanism→role→actor revision;
+- place/transfer with a `TransitionRevisionModel` runs mechanism→role→actor revision
+  and consumes the projector's calibrated candidate factor;
   without one it stays isolated;
 - REINFORCE produces a real statistic update;
 - through `CorePrototypeSpine`, a request revises Hybrid + Dirichlet + RLS atomically
@@ -213,9 +233,33 @@ record. `apply_project_one_request(request, loop)` consumes it:
 - mutating the first outcome cannot pollute the cached replay;
 - actor/transition source records are on the outcome provenance;
 - replaying with different actor/transition evidence is a conflict;
-- a place at the wrong location yields a corrected destination;
+- a successful place at the wrong location appends a reversible location revision;
+- identical transition models yield different posteriors for success and slip;
+- unknown mechanism, global unresolved, and unknown actor masses remain distinct;
 - a search window spanning a subsequent move is rejected;
-- the three place revisions have a verified parent-lineage chain.
+- the transition revisions have a verified parent-lineage chain.
+
+## Paper-method innovation candidates (not yet novelty-validated)
+
+1. **Candidate-Directed Calibrated Likelihood Fusion (候选方向校准似然融合).** The
+   projector's semantic candidate fixes update direction, while a calibrated
+   outcome model supplies strength; this prevents a contradictory likelihood
+   table from silently reversing success/slip semantics and makes the consumed
+   factor auditable.
+2. **Factorized Open-Mechanism Residual (因子化开放机制余量).** A separate unknown-
+   mechanism mass with a conditional actor posterior distinguishes unknown
+   mechanism from globally unresolved events and from known mechanisms with an
+   unknown actor.
+3. **Lineage-Preserving Location Correction (保持谱系的位置修正).** Location evidence
+   revises destination-bearing physical steps inside the same append-only event
+   history, while retaining stable causal-hypothesis identities and the complete
+   prior revision.
+
+These are project-specific method candidates, not a claim that the literature has
+not implemented related Bayesian evidence fusion, open-set latent causes, or
+event-sourced correction. Before a paper claims novelty, they still require a
+full-text prior-art check and a matched-baseline test with independently tuned
+thresholds.
 
 ## Retained adaptation points (not removed, not "no longer needed")
 

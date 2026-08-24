@@ -190,6 +190,7 @@ def test_place_success_is_positive_candidate_needing_actor():
     assert projected.requires_actor_responsibility is True
     assert projected.updates_owner_habit_directly is False
     assert projected.location_transition.candidate is TransitionCandidate.POSITIVE_CANDIDATE
+    assert projected.location_transition.candidate_likelihood_ratio > 1.0
 
 
 def test_slip_is_a_negative_candidate():
@@ -203,6 +204,7 @@ def test_slip_is_a_negative_candidate():
         likelihood_model=_likelihood(RobotActionType.PLACE, _PLACE_LL),
     )
     assert projected.location_transition.candidate is TransitionCandidate.NEGATIVE_CANDIDATE
+    assert projected.location_transition.candidate_likelihood_ratio < 1.0
 
 
 def test_replay_is_noop_but_forged_content_and_changed_inputs_are_rejected():

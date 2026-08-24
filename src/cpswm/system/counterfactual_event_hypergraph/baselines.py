@@ -301,7 +301,11 @@ class DamenHogg2012AMGMatchedEvidenceBaseline(DamenHogg2012AMGGlobalMAPBaseline)
         mechanism_likelihoods: dict[EventMechanism, float],
         handoff_role_likelihoods: dict[tuple[str, str], float],
     ) -> AMGConstrainedMAPPrediction:
-        if set(mechanism_likelihoods) != set(EventMechanism):
+        required = {
+            EventMechanism.DIRECT_RELOCATION,
+            EventMechanism.HANDOFF_RELOCATION,
+        }
+        if not required.issubset(mechanism_likelihoods):
             raise ValueError("matched AMG mechanism likelihoods require direct and handoff")
         return super().predict(
             before=before,

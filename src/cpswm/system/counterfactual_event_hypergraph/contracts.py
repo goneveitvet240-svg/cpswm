@@ -62,6 +62,7 @@ class EventHypothesisUpdateKind(StrEnum):
     REVISE = "revise"
     REVISE_MECHANISM = "revise_mechanism"
     REVISE_ROLE = "revise_role"
+    REVISE_LOCATION = "revise_location"
     RETRACT = "retract"
     REACTIVATE = "reactivate"
 
@@ -185,6 +186,14 @@ class EventHypothesisRevision(ContractModel):
     destination_location_id: UUID
     source_detection_result_ids: tuple[UUID, UUID]
     hypotheses: tuple[EventChainHypothesis, ...] = Field(min_length=2)
+    # Probability that a transition happened through a mechanism outside the
+    # current direct/handoff grammar.  Global unresolved instead means that the
+    # event itself (existence/attribution) is not resolved.
+    unknown_mechanism_probability: Probability = 0.0
+    # Conditional actor distribution inside the unknown-mechanism bucket.  This
+    # keeps "unknown mechanism + known actor" distinct from both known-mechanism
+    # unknown-actor chains and unknown-mechanism unknown-actor mass.
+    unknown_mechanism_actor_posterior: dict[str, Probability] = Field(default_factory=dict)
     unresolved_probability: Probability
     revision_evidence_record_ids: tuple[UUID, ...] = Field(min_length=1)
     revision_evidence_cluster_ids: tuple[UUID, ...] = ()
@@ -216,19 +225,37 @@ class EventHypothesisRevision(ContractModel):
         hypothesis_ids = [item.hypothesis_id for item in self.hypotheses]
         if len(hypothesis_ids) != len(set(hypothesis_ids)):
             raise ValueError("event hypothesis IDs must be unique within a revision")
-        total = self.unresolved_probability + sum(
-            item.posterior_probability for item in self.hypotheses
+        total = (
+            self.unresolved_probability
+            + self.unknown_mechanism_probability
+            + sum(item.posterior_probability for item in self.hypotheses)
         )
         if not isclose(total, 1.0, rel_tol=0.0, abs_tol=1e-6):
-            raise ValueError("event hypothesis posteriors plus unresolved must sum to 1")
+            raise ValueError(
+                "event hypothesis posteriors plus unknown mechanism and unresolved must sum to 1"
+            )
+        if self.unknown_mechanism_probability > 0.0:
+            if not self.unknown_mechanism_actor_posterior:
+                raise ValueError("positive unknown-mechanism mass requires an actor posterior")
+            if any(not actor.strip() for actor in self.unknown_mechanism_actor_posterior):
+                raise ValueError("unknown-mechanism actor keys must be non-empty")
+            if not isclose(
+                sum(self.unknown_mechanism_actor_posterior.values()),
+                1.0,
+                rel_tol=0.0,
+                abs_tol=1e-6,
+            ):
+                raise ValueError("unknown-mechanism actor posterior must sum to one")
         revival_total = sum(item.revival_probability for item in self.hypotheses)
         if not isclose(revival_total, 1.0, rel_tol=0.0, abs_tol=1e-6):
             raise ValueError("event hypothesis revival probabilities must sum to 1")
         if (
             not any(item.status == EventHypothesisStatus.ACTIVE for item in self.hypotheses)
-            and self.unresolved_probability < 1.0
+            and self.unresolved_probability + self.unknown_mechanism_probability < 1.0
         ):
-            raise ValueError("a fully retracted set must assign all mass to unresolved")
+            raise ValueError(
+                "a fully retracted set must assign all mass to unknown mechanism/unresolved"
+            )
         if len(self.revision_evidence_record_ids) != len(set(self.revision_evidence_record_ids)):
             raise ValueError("CHEH revision evidence record IDs must be unique")
         if len(self.revision_evidence_cluster_ids) != len(set(self.revision_evidence_cluster_ids)):
@@ -373,30 +400,62 @@ class EventHypothesisHistory(ContractModel):
                 "interval_start",
                 "interval_end",
                 "source_location_id",
-                "destination_location_id",
                 "source_detection_result_ids",
                 "engine_version",
             )
             for field_name in immutable_bindings:
                 if getattr(current, field_name) != getattr(previous, field_name):
                     raise ValueError(f"CHEH revision changed immutable binding {field_name}")
+            location_revision = current.update_kind == EventHypothesisUpdateKind.REVISE_LOCATION
+            if not location_revision and (
+                current.destination_location_id != previous.destination_location_id
+            ):
+                raise ValueError("CHEH non-location revision changed destination_location_id")
+            if location_revision and (
+                current.destination_location_id == previous.destination_location_id
+            ):
+                raise ValueError("CHEH location revision must change destination_location_id")
             previous_hypotheses = {item.hypothesis_id: item for item in previous.hypotheses}
             current_hypotheses = {item.hypothesis_id: item for item in current.hypotheses}
             if set(current_hypotheses) != set(previous_hypotheses):
                 raise ValueError("CHEH revision changed the hypothesis identity set")
             for hypothesis_id, current_hypothesis in current_hypotheses.items():
                 previous_hypothesis = previous_hypotheses[hypothesis_id]
-                for field_name in (
-                    "responsible_actor_key",
-                    "steps",
-                    "explanation_code",
-                ):
+                immutable_hypothesis_fields = ["responsible_actor_key", "explanation_code"]
+                if not location_revision:
+                    immutable_hypothesis_fields.append("steps")
+                for field_name in immutable_hypothesis_fields:
                     if getattr(current_hypothesis, field_name) != getattr(
                         previous_hypothesis, field_name
                     ):
                         raise ValueError(
                             f"CHEH revision changed immutable hypothesis field {field_name}"
                         )
+                if location_revision:
+                    if len(current_hypothesis.steps) != len(previous_hypothesis.steps):
+                        raise ValueError("CHEH location revision changed the physical grammar")
+                    for old_step, new_step in zip(
+                        previous_hypothesis.steps, current_hypothesis.steps, strict=True
+                    ):
+                        excluded_location_fields = {
+                            "step_id",
+                            "destination_location_id",
+                        }
+                        old_payload = old_step.model_dump(exclude=excluded_location_fields)
+                        new_payload = new_step.model_dump(exclude=excluded_location_fields)
+                        if old_payload != new_payload:
+                            raise ValueError(
+                                "CHEH location revision changed a non-location step field"
+                            )
+                        expected_destination = (
+                            current.destination_location_id
+                            if old_step.destination_location_id == previous.destination_location_id
+                            else old_step.destination_location_id
+                        )
+                        if new_step.destination_location_id != expected_destination:
+                            raise ValueError(
+                                "CHEH location revision did not consistently replace destination"
+                            )
                 if not set(previous_hypothesis.source_record_ids).issubset(
                     current_hypothesis.source_record_ids
                 ):

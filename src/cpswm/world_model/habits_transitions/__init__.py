@@ -13,9 +13,12 @@ from .cause_gated_consolidation import (
 )
 from .context_conditioned_regime import (
     ContextConditionedRegimeReactivator,
+    ForgedDecisionError,
     RegimeDecision,
     RegimeDecisionKind,
     RegimeLibraryEntry,
+    RegimeLibraryView,
+    RegimeScoringEnvelope,
     StaleLibraryError,
 )
 from .habit_regime_write import (
@@ -65,6 +68,7 @@ __all__ = [
     "CauseSignalFrame",
     "ChangeCause",
     "ContextConditionedRegimeReactivator",
+    "ForgedDecisionError",
     "GatedHabitRegimeWriter",
     "GatedHierarchicalDirichletConsolidator",
     "HabitPrediction",
@@ -86,6 +90,8 @@ __all__ = [
     "RegimeDecision",
     "RegimeDecisionKind",
     "RegimeLibraryEntry",
+    "RegimeLibraryView",
+    "RegimeScoringEnvelope",
     "StaleLibraryError",
     "propensity_from_opportunity",
 ]

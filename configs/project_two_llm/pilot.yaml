@@ -1,0 +1,18 @@
+protocol_version: project-two-llm-tuning-ablation@0.1
+provider:
+  provider: offline-fixture
+  model: deterministic-evidence-provider
+  version: "0.1"
+  real_llm_selected: false
+tracks:
+  - no_llm_project_two_core
+  - llm_as_evidence_project_two
+  - llm_direct_decision_baseline
+  - oracle_evidence_upper_bound
+firewall:
+  evaluator_truth_allowed: false
+  direct_event_history_write: false
+  direct_project_one_write: false
+  require_orrer_route: true
+cache:
+  key_fields: [provider, model, version, prompt_template_version, temperature, candidate_count, input_evidence_refs, visible_payload]

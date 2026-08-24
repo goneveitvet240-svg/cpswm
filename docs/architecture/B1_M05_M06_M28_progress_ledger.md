@@ -173,6 +173,57 @@ sensor/frame/time/household，自动计算产物哈希（或接受外部 artifac
 - P1-6 `apply_calibration(target_clock, require_sync, max_sync_uncertainty_seconds)`
   在要求同步却缺失、或 uncertainty 超阈值时 fail closed。
 
+### 4.5.2 第三、四轮加固（Major Revision：P0-1 / P0-2 / P0-3 与两项 P1）
+
+前三轮修复共享同一个结构性漏洞，值得单独写清楚：**每个字段都由候选实现自己
+写入，并且只与候选实现自己写入的其它字段互相校验。内部自洽不等于真实性。**
+所以一条构造得当的伪造链总能通过。本轮的三个 P0 分别在治理日志、运行回执和
+门拓扑三处补上缺失的那一半。
+
+- **P0-1（方案 A：授权方签名）** 新增 `cpswm.system.attestation`：
+  `AttestationAuthority` 用 HMAC-SHA256 对记录的规范化内容签名，域串长度前缀
+  参与签名（`capability_grant` 的签名不能当作 `oracle_decision` 用），密钥
+  短于 32 字节直接拒绝。`HouseholdGovernance(log, authority=...)` 在 `issue_grant`
+  与 `decide_oracle_access` 写入时签名，在 `restore()` 与 `verify_oracle_receipt()`
+  校验；没有密钥的代码写入的 `grant → request → decision` 三元组不再能 restore。
+  **仍然做不到的事**：HMAC 是对称的，能验证的一方也能签名——它把*候选实现*和
+  *授权方*分开，不是防止密钥泄露；那需要非对称签名。未传 `authority` 时行为
+  与旧版一致，且 `attested` 属性报告 `False`，不允许把未签名日志说成已认证。
+- **P0-2（运行回执绑定真实执行）** `RunReceipt` 从 5 个字段扩展为绑定
+  `module_id / evidence_kind / dataset_id / dataset_manifest_sha256 /
+  config_sha256 / code_snapshot_sha256 / git_commit_sha / command_argv /
+  exit_code / started_at / finished_at / artifact_sha256`，并携带
+  `attestation`。契约层强制：`command == shlex.join(command_argv)`（自由文本
+  不能和 argv 各说各话）、`passed` 必须配 `exit_code == 0`、`finished_at`
+  不早于 `started_at`。验证器额外核验 commit 在本仓库可解析、
+  `code_snapshot_sha256 == sha256("cpswm.code-snapshot.v1|" + tree_sha)`，
+  且 replay/real_data/embodied 各有专属必填字段（不能用一份合成报告的字段
+  冒充具身实验）。**`replay_validated` 及以上的门必须有授权方签名的回执**，
+  候选自签的 `passed` 不再能开门；没有密钥时这些门直接 BLOCK 并写明原因，
+  "无法核验"绝不折叠成"通过"。
+- **P0-3（门拓扑冻结）** `STRUCTURE_ONE_COMPLETE` 的
+  `required_workstream_ids` 冻结为 WS1–WS10，模块 → 工作流映射同样冻结在代码
+  里；改 JSON 把工作流删掉、或把成熟模块改挂到缺人的工作流下，都会 BLOCK。
+  工作流成员判定读取冻结映射而非 JSON。
+- **P1（路径包含性）** `implementation_paths` / `test_paths` 与 evidence 同样
+  做仓库包含性解析（`a/../b`、绝对路径、指向树外的符号链接全部拒绝），目录
+  形式的实现引用必须至少含一个 `.py`——`mkdir` 不算实现。
+- **P1（NaN 阈值的真实行为测试）** 原测试用 `inspect.getsource` 断言函数体里
+  出现两个字符串，那只证明字符串存在，不证明函数会拒绝任何东西——对一个算出
+  守卫却忽略结果的实现同样会通过。已换成调用 `apply_calibration()` 的行为
+  测试（NaN / Inf / 负值被拒；有限阈值仍接受紧同步、拒绝松同步）。
+- **门结论与整体结论一致** 之前门行会在账本存在错误时仍显示 PASS（整体结论
+  正确，但读者看的是门行）。现在只要某个门所需模块被任何错误提及，该门即
+  BLOCK 并写明"存在校验错误，其声明成熟度未经核验"。
+- **工具链** `apps/progress_ledger/validate_progress.py --authority-key-file`
+  （或 `$CPSWM_ATTESTATION_KEY_FILE`）传入密钥；
+  `apps/progress_ledger/sign_run_receipt.py` 供持有密钥的一方签发/核验回执。
+  没有签发工具的验证器等于一堵墙而不是一道闸。
+- **攻击测试** `tests/test_major_revision_round4.py` 逐条复现攻击而非断言守卫
+  存在，包含整体攻击：空实现目录 + 空测试文件 + 全部模块声明
+  `embodied_validated` + 自签回执，任何门都不能通过。
+
+
 ## 5. 已知限制
 
 - M05/M06 是**契约 + 合成适配器**纵切，不含真实 SLAM、目标检测、真实机器人

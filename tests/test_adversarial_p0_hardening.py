@@ -471,11 +471,15 @@ def test_P0_4_unique_files_fake_completion_is_rejected():
 
     ledger = ProgressLedger.model_validate(json.loads(LEDGER_PATH.read_text(encoding="utf-8")))
     data = ledger.model_dump(mode="json")
+    # Every entry must be a tracked file, or this test fails on a clean
+    # checkout for a reason that has nothing to do with the attack.
     real_files = [
-        "README.md",
+        "docs/architecture/step1-a0-foundation.md",
         "pyproject.toml",
         "docs/architecture/B1_M05_M06_M28_progress_ledger.md",
     ]
+    for candidate in real_files:
+        assert (REPO_ROOT / candidate).is_file(), f"fixture file missing: {candidate}"
     for index, item in enumerate(data["modules"]):
         path = real_files[index % len(real_files)]
         target = REPO_ROOT / path

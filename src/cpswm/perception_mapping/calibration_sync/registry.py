@@ -7,6 +7,7 @@ for household A can never be used to validate an observation from household B.
 from __future__ import annotations
 
 import hashlib
+import math
 from datetime import datetime, timedelta
 from typing import Literal
 from uuid import UUID
@@ -112,6 +113,14 @@ class CalibrationRegistry:
         ``max_sync_uncertainty_seconds`` rejects an out-of-tolerance sync.
         """
 
+        if max_sync_uncertainty_seconds is not None and not (
+            math.isfinite(max_sync_uncertainty_seconds) and max_sync_uncertainty_seconds >= 0.0
+        ):
+            # NaN compares false against everything, so an unvalidated NaN
+            # threshold silently accepts every sync however uncertain.
+            raise CalibrationConflictError(
+                "max_sync_uncertainty_seconds must be a finite non-negative number"
+            )
         at_time = require_aware(envelope.capture_time, "capture_time")
         calibration = self.calibration_at(
             sensor_id=envelope.sensor.sensor_id,
@@ -158,6 +167,7 @@ class CalibrationRegistry:
         at_time: datetime,
         target_clock: str | None,
     ) -> SensorTimeSyncResult | None:
+        matches: list[SensorTimeSyncResult] = []
         for item in self._syncs:
             if item.household_id != calibration.household_id:
                 continue
@@ -169,8 +179,18 @@ class CalibrationRegistry:
                 continue
             if target_clock is not None and item.target_clock_domain != target_clock:
                 continue
-            return item
-        return None
+            matches.append(item)
+        if not matches:
+            return None
+        if len(matches) > 1:
+            # Two overlapping syncs give two different aligned times for the
+            # same observation. Picking the first would make alignment depend
+            # on registration order, so the ambiguity is refused instead.
+            raise CalibrationConflictError(
+                "multiple overlapping syncs match this observation; "
+                f"ambiguous alignment between {[str(item.sync_result_id) for item in matches]}"
+            )
+        return matches[0]
 
     def register(self, calibration: SensorCalibration) -> None:
         for existing in self._calibrations:

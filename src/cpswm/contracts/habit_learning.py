@@ -8,7 +8,7 @@ from __future__ import annotations
 
 from datetime import datetime
 from enum import StrEnum
-from math import isclose
+from math import isclose, log
 from typing import Annotated
 from uuid import UUID
 
@@ -274,6 +274,27 @@ class ActorResponsibilityEvidence(ContractModel):
             actor: posterior / self.reference_actor_prior[actor]
             for actor, posterior in self.actor_posterior.items()
         }
+
+    @property
+    def log_actor_likelihood_ratios(self) -> dict[str, float]:
+        """Log likelihood ratios computed in log space.
+
+        ``log(posterior) - log(prior)`` cannot overflow to ``+inf`` the way
+        ``posterior / prior`` can for a tiny-but-positive reference prior; an
+        exact-zero posterior yields ``-inf`` (finite-safe in log space).
+        """
+
+        result: dict[str, float] = {}
+        for actor, posterior in self.actor_posterior.items():
+            prior = self.reference_actor_prior[actor]
+            if posterior == 0.0:
+                result[actor] = float("-inf")
+                continue
+            value = log(posterior) - log(prior)
+            if value == float("inf") or value != value:
+                raise ValueError("log actor likelihood ratio must be finite or -inf")
+            result[actor] = value
+        return result
 
 
 class HabitLearningEvidence(ContractModel):

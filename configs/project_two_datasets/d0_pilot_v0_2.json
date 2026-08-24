@@ -1,0 +1,13 @@
+{
+  "schema_version": "0.2.0",
+  "dataset_version": "project-two-d0-pilot@0.2",
+  "adapter": "D0SyntheticOracleReplayAdapter",
+  "validation_seed_count": 2,
+  "sealed_test_seed_count": 2,
+  "seed_values": "evaluator_private",
+  "uuid_seal_secret": "fresh_per_run_evaluator_private",
+  "steps_per_episode": 32,
+  "split_keys": ["household_id", "scene_id", "object_instance_id", "object_family"],
+  "external_dataset_selected": false,
+  "truth_store": "separate_evaluator_envelope"
+}

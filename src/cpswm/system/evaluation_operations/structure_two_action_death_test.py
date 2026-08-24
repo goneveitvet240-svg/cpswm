@@ -1,30 +1,41 @@
-"""Structure-two action-level matched death test: PCHMP x CCRR x RGRC vs
-four faithfully adapted baselines (AMG / O-STaR / DynaMem / STAR).
+"""Legacy structure-two action-level proxy death test (v0.1).
+
+The authoritative v0.2 matched benchmark is implemented by
+``ProjectTwoActionBenchmarkV02`` and is the target of the application runner.
+This module's original runner is retained only for regression compatibility.
+
+Structure-two action-level matched death test: PCHMP x CCRR x RGRC vs
+four reference baselines (AMG / O-STaR / DynaMem / STAR).
 
 This is the *research gate* the structure-two specification demands after the
 hidden-event death tests (§4.7 #2 x #5 were only "representation repaired").
 A belief model is only a paper contribution if it changes embodied action.
 
-The benchmark reuses the robot-visible contracts (``ObservationDetectionResult``,
-``ActorResponsibilityEvidence``, ``EventMechanismEvidence``,
-``RoleBindingEvidence``) and the ORRER / AMG engines, but drives them through a
-new deterministic multi-day household scenario with:
+The baselines are reduced-skill re-implementations that share the same
+robot-visible contracts and the same deterministic scenario: each baseline is a
+minimal, documented strawman of its family (e.g. DynaMem keeps only the latest
+state; STAR keeps unpruned frequency counts; AMG keeps a stateless MAP chain).
+No baseline sees ground truth. The legacy new-method arm below contains a
+stand-in owner-attribution write gate and is therefore classified as a
+``reduced-skill proxy`` by v0.2, never as the full project-two arm. Claims from
+this legacy class are limited to what this action-level,
+single-household scenario can support.
 
-* selective observation (some days the robot never sees the cup);
-* hidden direct / handoff relocations;
-* a guest whose placements must not contaminate the owner's habit;
-* an abrupt owner-habit change followed by a recurrence of the old habit
-  (this is the CCRR reactivation signal).
-
-Every method receives the **same** robot-visible stream and the same action
-budget; methods are independently tuned on validation seeds.  Ground truth is
-only available to the evaluator, never to a model input.
+Equivariance scope (honest boundary): every method is invariant to the *order*
+of the ``locations`` tuple (tuple-order invariance, tested).  The baselines are
+label-permutation equivariant after their first observation (their state is
+relational: counts and last-observed location).  The new method's habit signal
+and context fingerprint are derived from absolute location UUIDs, and the
+shared "no information" fallback is a single point; neither can covary with an
+arbitrary relabelling of location labels.  This is a documented limitation of
+absolute position features plus single-point prediction, not a hidden shortcut.
 """
 
 from __future__ import annotations
 
 import hashlib
 import random
+import secrets
 from collections import Counter
 from collections.abc import Callable
 from dataclasses import dataclass, field
@@ -56,6 +67,7 @@ from cpswm.system.counterfactual_event_hypergraph import (
     OpenWorldRoleConditionedReversibleEventRevisionEngine,
     ProvenanceConstrainedMessagePassing,
 )
+from cpswm.system.reproducibility import content_sha256
 from cpswm.world_model.habits_transitions import (
     CauseSignalFrame,
     ChangeCause,
@@ -69,11 +81,47 @@ SCHEMA_VERSION = "0.1.0"
 MODEL_VERSION = "structure-two-action-death-test@0.1"
 
 
-def _deterministic_uuid(seed: int, *parts: object) -> UUID:
-    """A stable per-seed UUID so generated cases replay byte-for-byte."""
+def _public_deterministic_uuid(seed: int, *parts: object) -> UUID:
+    """The *public* seed->UUID mapping this benchmark must no longer use.
+
+    It is kept only to demonstrate the attack: anyone who knows the seed can
+    reproduce every UUID (and hence the truth) from ``uuid5(NAMESPACE_URL,
+    "structure-two-action:{seed}:...")``.  Sealed generation uses
+    :func:`_sealed_uuid` instead.
+    """
 
     key = f"structure-two-action:{seed}:" + ":".join(str(part) for part in parts)
     return uuid5(NAMESPACE_URL, key)
+
+
+def _sealed_uuid(sealed_secret: str, seed: int, *parts: object) -> UUID:
+    """A seed-derived UUID bound to a secret only the evaluator holds.
+
+    Without ``sealed_secret`` there is no public, enumerable mapping from
+    ``seed`` to the generated UUIDs, so a model that only sees the visible
+    payload cannot recover the generating seed (or the truth).
+    """
+
+    key = content_sha256(f"{sealed_secret}|{seed}|" + "|".join(str(part) for part in parts))
+    return UUID(key[:32])
+
+
+def new_sealed_secret() -> str:
+    """A fresh high-entropy evaluator secret (kept private, never sent to models)."""
+
+    return secrets.token_hex(32)
+
+
+def adversarial_seed_oracle(visible: VisibleActionCase, *, max_seed: int = 99_999) -> int | None:
+    """The cheating probe: try to recover the generating seed from the public
+    UUID mapping.  Returns the recovered seed, or ``None`` when the evaluator is
+    sealed (visible UUIDs do not follow the public mapping).
+    """
+
+    for seed in range(max_seed + 1):
+        if _public_deterministic_uuid(seed, "object") == visible.object_instance_id:
+            return seed
+    return None
 
 
 def _position_value(location: UUID) -> float:
@@ -145,10 +193,14 @@ class ActionDayTruth(ContractModel):
 
 
 class VisibleActionCase(ContractModel):
-    """Model-visible inputs only; this contract structurally excludes truth."""
+    """Model-visible inputs only; this contract structurally excludes truth.
 
-    case_id: str = Field(min_length=1)
-    seed: int = Field(ge=0)
+    ``case_id`` is an opaque UUID so a model cannot recover the generating seed
+    from the case identity, and the seed lives only in the evaluator envelope
+    (:class:`ActionGeneratedCase`), which models never receive.
+    """
+
+    case_id: UUID
     object_instance_id: UUID
     owner_actor: str = Field(min_length=1)
     guest_actor: str = Field(min_length=1)
@@ -157,8 +209,9 @@ class VisibleActionCase(ContractModel):
 
 
 class ActionGeneratedCase(ContractModel):
-    """An evaluator case: a visible slice plus evaluator-only truth."""
+    """An evaluator case: a visible slice plus evaluator-only truth and seed."""
 
+    seed: int = Field(ge=0)
     visible: VisibleActionCase
     truth_by_day: dict[int, ActionDayTruth]
 
@@ -175,7 +228,7 @@ class ActionSuite(ContractModel):
 
 
 class ActionMethodPrediction(ContractModel):
-    case_id: str = Field(min_length=1)
+    case_id: UUID
     method: ActionBaselineMethod
     day: int = Field(ge=0)
     put_back_location: UUID
@@ -183,7 +236,7 @@ class ActionMethodPrediction(ContractModel):
 
 
 class ActionDayResult(ContractModel):
-    case_id: str = Field(min_length=1)
+    case_id: UUID
     method: ActionBaselineMethod
     day: int = Field(ge=0)
     put_back_correct: bool
@@ -197,7 +250,7 @@ class ActionMethodReport(ContractModel):
     put_back_error_rate: float = Field(ge=0.0, le=1.0)
     search_error_rate: float = Field(ge=0.0, le=1.0)
     mean_search_cost: float = Field(ge=0.0)
-    owner_contamination_days: int = Field(ge=0)
+    guest_day_put_back_error_days: int = Field(ge=0)
     total_put_back_errors: int = Field(ge=0)
     total_search_errors: int = Field(ge=0)
 
@@ -224,6 +277,10 @@ class StructureTwoActionScenarioGenerator:
     * recurrence..end: owner resumes ``loc_0`` (the CCRR reactivation signal).
 
     Selective observation drops a deterministic fraction of transition days.
+
+    UUIDs are bound to ``sealed_secret``: an evaluator that keeps the secret
+    private produces a sealed artifact whose visible UUIDs cannot be inverted
+    to the generating seed (see :func:`adversarial_seed_oracle`).
     """
 
     generator_version = "structure-two-action-scenario@0.1"
@@ -236,6 +293,8 @@ class StructureTwoActionScenarioGenerator:
         abrupt_day: int = 17,
         recurrence_day: int = 26,
         observation_coverage: float = 0.7,
+        sealed_secret: str = "structure-two-action-dev-secret-v0.1",
+        include_open_world_unknown_events: bool = False,
     ) -> None:
         if duration_days < 10:
             raise ValueError("duration_days must be at least 10")
@@ -243,21 +302,26 @@ class StructureTwoActionScenarioGenerator:
             raise ValueError("observation_coverage must lie in (0, 1]")
         if not guest_window[0] < guest_window[1] < abrupt_day < recurrence_day < duration_days:
             raise ValueError("scenario windows must be strictly ordered")
+        if not sealed_secret.strip():
+            raise ValueError("sealed_secret must be non-empty")
         self.duration_days = duration_days
         self.guest_window = guest_window
         self.abrupt_day = abrupt_day
         self.recurrence_day = recurrence_day
         self.observation_coverage = observation_coverage
+        self.sealed_secret = sealed_secret
+        self.include_open_world_unknown_events = include_open_world_unknown_events
 
     def generate(self, seed: int) -> ActionGeneratedCase:
         rng = random.Random(f"structure-two-action-{seed}")
         owner = "owner"
         guest = "guest"
-        object_id = _deterministic_uuid(seed, "object")
-        household_id = _deterministic_uuid(seed, "household")
-        session_id = _deterministic_uuid(seed, "session")
-        trace_id = _deterministic_uuid(seed, "trace")
-        locations = tuple(_deterministic_uuid(seed, "location", i) for i in range(4))
+        secret = self.sealed_secret
+        object_id = _sealed_uuid(secret, seed, "object")
+        household_id = _sealed_uuid(secret, seed, "household")
+        session_id = _sealed_uuid(secret, seed, "session")
+        trace_id = _sealed_uuid(secret, seed, "trace")
+        locations = tuple(_sealed_uuid(secret, seed, "location", i) for i in range(4))
         loc_0, loc_1, loc_guest, loc_decoy = locations
 
         observations: list[ActionDayObservation] = []
@@ -275,11 +339,17 @@ class StructureTwoActionScenarioGenerator:
             # overnight decoy spot to the daytime spot (owner habit location or
             # the guest's location).  This guarantees before != after on every
             # observed day while keeping the owner habit location meaningful.
-            if in_guest_window:
+            if self.include_open_world_unknown_events and day == 1:
+                true_actor = "unknown_actor"
+                true_location = loc_guest
+                mechanism = EventMechanism.UNKNOWN_MECHANISM
+            elif in_guest_window:
                 true_actor = guest
                 true_location = loc_guest
-                mechanism = EventMechanism.HANDOFF_RELOCATION if rng.random() < 0.5 else (
-                    EventMechanism.DIRECT_RELOCATION
+                mechanism = (
+                    EventMechanism.HANDOFF_RELOCATION
+                    if rng.random() < 0.5
+                    else (EventMechanism.DIRECT_RELOCATION)
                 )
             else:
                 true_actor = owner
@@ -301,9 +371,7 @@ class StructureTwoActionScenarioGenerator:
             else:
                 observed = rng.random() < self.observation_coverage
             if not observed:
-                observations.append(
-                    ActionDayObservation(day=day)
-                )
+                observations.append(ActionDayObservation(day=day))
                 continue
 
             base = datetime(2026, 1, 1, 8, 0, tzinfo=UTC) + timedelta(days=day)
@@ -311,7 +379,7 @@ class StructureTwoActionScenarioGenerator:
                 object_id=object_id,
                 location_id=loc_decoy,
                 at=base,
-                record_id=_deterministic_uuid(seed, day, "before"),
+                record_id=_sealed_uuid(secret, seed, day, "before"),
                 household_id=household_id,
                 session_id=session_id,
                 trace_id=trace_id,
@@ -320,7 +388,7 @@ class StructureTwoActionScenarioGenerator:
                 object_id=object_id,
                 location_id=true_location,
                 at=base + timedelta(minutes=10),
-                record_id=_deterministic_uuid(seed, day, "after"),
+                record_id=_sealed_uuid(secret, seed, day, "after"),
                 household_id=household_id,
                 session_id=session_id,
                 trace_id=trace_id,
@@ -333,30 +401,34 @@ class StructureTwoActionScenarioGenerator:
                 guest=guest,
                 at=base + timedelta(minutes=10),
                 trace_id=trace_id,
-                evidence_cluster_id=_deterministic_uuid(seed, day, "actor-cluster"),
-                evidence_record_id=_deterministic_uuid(seed, day, "actor-record"),
+                evidence_cluster_id=_sealed_uuid(secret, seed, day, "actor-cluster"),
+                evidence_record_id=_sealed_uuid(secret, seed, day, "actor-record"),
             )
             mechanism_evidence = None
             role_evidence = None
-            if mechanism == EventMechanism.HANDOFF_RELOCATION:
+            if mechanism in {
+                EventMechanism.HANDOFF_RELOCATION,
+                EventMechanism.UNKNOWN_MECHANISM,
+            }:
                 mechanism_evidence = self._mechanism_evidence(
                     after=after,
                     mechanism=mechanism,
                     at=base + timedelta(minutes=10),
                     trace_id=trace_id,
-                    evidence_cluster_id=_deterministic_uuid(seed, day, "mechanism-cluster"),
-                    evidence_record_id=_deterministic_uuid(seed, day, "mechanism-record"),
+                    evidence_cluster_id=_sealed_uuid(secret, seed, day, "mechanism-cluster"),
+                    evidence_record_id=_sealed_uuid(secret, seed, day, "mechanism-record"),
                 )
-                role_evidence = self._role_evidence(
-                    after=after,
-                    owner=owner,
-                    guest=guest,
-                    true_actor=true_actor,
-                    at=base + timedelta(minutes=10),
-                    trace_id=trace_id,
-                    evidence_cluster_id=_deterministic_uuid(seed, day, "role-cluster"),
-                    evidence_record_id=_deterministic_uuid(seed, day, "role-record"),
-                )
+                if mechanism == EventMechanism.HANDOFF_RELOCATION:
+                    role_evidence = self._role_evidence(
+                        after=after,
+                        owner=owner,
+                        guest=guest,
+                        true_actor=true_actor,
+                        at=base + timedelta(minutes=10),
+                        trace_id=trace_id,
+                        evidence_cluster_id=_sealed_uuid(secret, seed, day, "role-cluster"),
+                        evidence_record_id=_sealed_uuid(secret, seed, day, "role-record"),
+                    )
             observations.append(
                 ActionDayObservation(
                     day=day,
@@ -368,9 +440,9 @@ class StructureTwoActionScenarioGenerator:
                 )
             )
         return ActionGeneratedCase(
+            seed=seed,
             visible=VisibleActionCase(
-                case_id=f"structure-two-action-seed-{seed}",
-                seed=seed,
+                case_id=_sealed_uuid(secret, seed, "case-id"),
                 object_instance_id=object_id,
                 owner_actor=owner,
                 guest_actor=guest,
@@ -425,11 +497,14 @@ class StructureTwoActionScenarioGenerator:
         evidence_record_id: UUID,
     ) -> ActorResponsibilityEvidence:
         assert after.detected_object_instance_id is not None
-        posterior = {
-            owner: 0.80 if true_actor == owner else 0.15,
-            guest: 0.15 if true_actor == owner else 0.80,
-            "unknown_actor": 0.05,
-        }
+        if true_actor == "unknown_actor":
+            posterior = {owner: 0.1, guest: 0.1, "unknown_actor": 0.8}
+        else:
+            posterior = {
+                owner: 0.80 if true_actor == owner else 0.15,
+                guest: 0.15 if true_actor == owner else 0.80,
+                "unknown_actor": 0.05,
+            }
         return ActorResponsibilityEvidence(
             metadata=BaseRecordMetadata(
                 schema_name="cpswm.ActorResponsibilityEvidence",
@@ -464,14 +539,21 @@ class StructureTwoActionScenarioGenerator:
         evidence_record_id: UUID,
     ) -> EventMechanismEvidence:
         assert after.detected_object_instance_id is not None
-        posterior = {
-            EventMechanism.DIRECT_RELOCATION: (
-                0.1 if mechanism == EventMechanism.HANDOFF_RELOCATION else 0.9
-            ),
-            EventMechanism.HANDOFF_RELOCATION: (
-                0.9 if mechanism == EventMechanism.HANDOFF_RELOCATION else 0.1
-            ),
-        }
+        if mechanism is EventMechanism.UNKNOWN_MECHANISM:
+            posterior = {
+                EventMechanism.DIRECT_RELOCATION: 0.1,
+                EventMechanism.HANDOFF_RELOCATION: 0.1,
+                EventMechanism.UNKNOWN_MECHANISM: 0.8,
+            }
+        else:
+            posterior = {
+                EventMechanism.DIRECT_RELOCATION: (
+                    0.1 if mechanism == EventMechanism.HANDOFF_RELOCATION else 0.9
+                ),
+                EventMechanism.HANDOFF_RELOCATION: (
+                    0.9 if mechanism == EventMechanism.HANDOFF_RELOCATION else 0.1
+                ),
+            }
         return EventMechanismEvidence(
             metadata=BaseRecordMetadata(
                 schema_name="cpswm.EventMechanismEvidence",
@@ -489,10 +571,7 @@ class StructureTwoActionScenarioGenerator:
             object_instance_id=after.detected_object_instance_id,
             evidence_time=at,
             mechanism_posterior=posterior,
-            reference_mechanism_prior={
-                EventMechanism.DIRECT_RELOCATION: 0.5,
-                EventMechanism.HANDOFF_RELOCATION: 0.5,
-            },
+            reference_mechanism_prior={key: 1.0 / len(posterior) for key in posterior},
             evidence_cluster_id=evidence_cluster_id,
             evidence_track=HiddenEventEvidenceTrack.CONTROLLED_NOISE,
             evidence_model_id="structure-two-action-mechanism-model@0.1",
@@ -545,6 +624,18 @@ class StructureTwoActionScenarioGenerator:
 # --- method implementations ---------------------------------------------------
 
 
+def _fallback_location(locations: tuple[UUID, ...]) -> UUID:
+    """Order-independent default location: the UUID-smallest location.
+
+    This makes every baseline's "no information yet" fallback invariant to the
+    order of the ``locations`` tuple (tuple-order invariance).  It is *not*
+    label-permutation equivariant: a single-point fallback that depends only on
+    location labels cannot covary with an arbitrary relabelling of those labels.
+    """
+
+    return min(locations, key=str)
+
+
 @dataclass(slots=True)
 class _OwnerHabitState:
     """Per-regime owner-habit soft counts (CCRR stage memory).
@@ -576,10 +667,7 @@ class _OwnerHabitState:
         if total <= 0.0:
             uniform = 1.0 / len(self.locations)
             return {location: uniform for location in self.locations}
-        return {
-            location: counts.get(location, 0.0) / total
-            for location in self.locations
-        }
+        return {location: counts.get(location, 0.0) / total for location in self.locations}
 
     def argmax_owner(self) -> UUID:
         posterior = self.owner_posterior()
@@ -650,12 +738,12 @@ class _AMGMethod:
 
     def predict(self, task: ActionTaskType) -> UUID:
         if task == ActionTaskType.SEARCH:
-            return self.last_location if self.last_location is not None else self.case.locations[0]
-        return (
-            self.owner_habit_location
-            if self.owner_habit_location is not None
-            else self.case.locations[0]
-        )
+            if self.last_location is not None:
+                return self.last_location
+            return _fallback_location(self.case.locations)
+        if self.owner_habit_location is not None:
+            return self.owner_habit_location
+        return _fallback_location(self.case.locations)
 
 
 class _OStarMethod:
@@ -678,8 +766,13 @@ class _OStarMethod:
 
     def predict(self, task: ActionTaskType) -> UUID:
         if task == ActionTaskType.SEARCH:
-            return self.last_location if self.last_location is not None else self.case.locations[0]
-        return max(self.counts, key=lambda location: self.counts[location])
+            if self.last_location is not None:
+                return self.last_location
+            return _fallback_location(self.case.locations)
+        return max(
+            self.counts,
+            key=lambda location: (self.counts[location], str(location)),
+        )
 
 
 class _DynaMemMethod:
@@ -697,7 +790,9 @@ class _DynaMemMethod:
 
     def predict(self, task: ActionTaskType) -> UUID:
         del task
-        return self.last_location if self.last_location is not None else self.case.locations[0]
+        if self.last_location is not None:
+            return self.last_location
+        return _fallback_location(self.case.locations)
 
 
 class _STARMethod:
@@ -720,10 +815,15 @@ class _STARMethod:
 
     def predict(self, task: ActionTaskType) -> UUID:
         if task == ActionTaskType.SEARCH:
-            return self.last_location if self.last_location is not None else self.case.locations[0]
+            if self.last_location is not None:
+                return self.last_location
+            return _fallback_location(self.case.locations)
         if sum(self.counts.values()) <= 0.0:
-            return self.case.locations[0]
-        return max(self.counts, key=lambda location: self.counts[location])
+            return _fallback_location(self.case.locations)
+        return max(
+            self.counts,
+            key=lambda location: (self.counts[location], str(location)),
+        )
 
 
 class _PchmpCcrrRgrcMethod:
@@ -770,9 +870,7 @@ class _PchmpCcrrRgrcMethod:
                 unresolved_probability=0.1,
             )
             evidence: list[
-                ActorResponsibilityEvidence
-                | EventMechanismEvidence
-                | RoleBindingEvidence
+                ActorResponsibilityEvidence | EventMechanismEvidence | RoleBindingEvidence
             ] = []
             if obs.actor_evidence is not None:
                 evidence.append(obs.actor_evidence)
@@ -806,11 +904,7 @@ class _PchmpCcrrRgrcMethod:
             habit_signal = position_value
             actor_signal = 0.1
         else:
-            habit_signal = (
-                self._frames[-1].signals[ChangeCause.HABIT]
-                if self._frames
-                else 0.0
-            )
+            habit_signal = self._frames[-1].signals[ChangeCause.HABIT] if self._frames else 0.0
             actor_signal = 0.9
         frame = CauseSignalFrame(
             timestamp=self._base + timedelta(days=obs.day),
@@ -842,48 +936,39 @@ class _PchmpCcrrRgrcMethod:
             )
             self._stable_seeded = True
 
-        # 5. CCRR regime decision: score (pure) then apply (mutating) under a
-        #    library-version check.
+        # 5. CCRR regime decision: score against an immutable view then apply
+        #    under the reactor's compare-and-swap (score-then-apply is atomic).
         context_features = _position_fingerprint(location)
-        library = self.reactor.library(
-            object_instance_id=self.case.object_instance_id, actor_id=owner
-        )
-        active_regime_id = self.reactor.active_regime(
-            object_instance_id=self.case.object_instance_id, actor_id=owner
-        )
+        view = self.reactor.view(object_instance_id=self.case.object_instance_id, actor_id=owner)
         decision = self.reactor.score_decision(
-            object_instance_id=self.case.object_instance_id,
-            actor_id=owner,
             owner_actor_id=owner,
             snapshot=snapshot,
             context_features=context_features,
             now=frame.timestamp,
-            library=library,
-            active_regime_id=active_regime_id,
+            view=view,
         )
-        self.reactor.apply_decision(
-            decision,
-            object_instance_id=self.case.object_instance_id,
-            actor_id=owner,
-            context_features=context_features,
-            expected_library_version=self.reactor.library_version,
-        )
+        self.reactor.apply_decision(decision)
 
         # 6. Owner-attribution write gate (a stand-in for full Hybrid RGRC):
         #    only owner-attributed placements under a non-unresolved regime
-        #    decision write to the active owner stage.
+        #    decision write to the active owner stage.  STAY keeps the active
+        #    stage; REACTIVATE/CREATE switch it first.
         if attributed_owner:
             self.state.last_location = location
+            if decision.kind == RegimeDecisionKind.UNRESOLVED:
+                # Unresolved: quarantine the placement (do not write).
+                pass
+            else:
+                if decision.kind == RegimeDecisionKind.REACTIVATE:
+                    assert decision.reactivated_regime_id is not None
+                    self.state.active_regime_id = decision.reactivated_regime_id
+                elif decision.kind == RegimeDecisionKind.CREATE:
+                    assert decision.created_regime_id is not None
+                    self.state.active_regime_id = decision.created_regime_id
+                self.state.write_owner(location)
         else:
             self.state.guest_recent_location = location
             self.state.last_location = location
-        if attributed_owner and decision.kind != RegimeDecisionKind.UNRESOLVED:
-            self.state.active_regime_id = (
-                decision.reactivated_regime_id
-                or decision.created_regime_id
-                or "stable"
-            )
-            self.state.write_owner(location)
 
     def predict(self, task: ActionTaskType) -> UUID:
         if task == ActionTaskType.SEARCH:
@@ -901,9 +986,7 @@ class _ActionMethod(Protocol):
     def predict(self, task: ActionTaskType) -> UUID: ...
 
 
-_METHOD_FACTORIES: dict[
-    ActionBaselineMethod, Callable[[VisibleActionCase], _ActionMethod]
-] = {
+_METHOD_FACTORIES: dict[ActionBaselineMethod, Callable[[VisibleActionCase], _ActionMethod]] = {
     ActionBaselineMethod.AMG_2012: _AMGMethod,
     ActionBaselineMethod.O_STAR: _OStarMethod,
     ActionBaselineMethod.DYNAMEM: _DynaMemMethod,
@@ -942,11 +1025,11 @@ class StructureTwoActionDeathTest:
 
         for method in methods:
             case_results: list[ActionDayResult] = []
-            per_case_error: Counter[str] = Counter()
-            per_case_search_error: Counter[str] = Counter()
+            per_case_error: Counter[UUID] = Counter()
+            per_case_search_error: Counter[UUID] = Counter()
             search_cost_total = 0.0
             search_days = 0
-            contamination_days = 0
+            guest_day_put_back_error_days = 0
             for case in cases:
                 state = _METHOD_FACTORIES[method](case.visible)
                 for obs in case.visible.days:
@@ -966,10 +1049,11 @@ class StructureTwoActionDeathTest:
                         per_case_error[case.visible.case_id] += 1
                     if not search_correct:
                         per_case_search_error[case.visible.case_id] += 1
-                    # Owner-contamination: a guest day whose placement flipped
-                    # this method's put-back away from the owner habit location.
-                    if truth.true_actor == "guest" and not put_back_correct:
-                        contamination_days += 1
+                    # Guest-day put-back error: a day the guest actually moved
+                    # the object and this method's put-back missed the owner
+                    # habit location.
+                    if truth.true_actor == case.visible.guest_actor and not put_back_correct:
+                        guest_day_put_back_error_days += 1
                     result = ActionDayResult(
                         case_id=case.visible.case_id,
                         method=method,
@@ -987,14 +1071,10 @@ class StructureTwoActionDeathTest:
                 ActionMethodReport(
                     method=method,
                     case_count=len(cases),
-                    put_back_error_rate=(
-                        total_put_back_errors / total_days if total_days else 0.0
-                    ),
-                    search_error_rate=(
-                        total_search_errors / total_days if total_days else 0.0
-                    ),
+                    put_back_error_rate=(total_put_back_errors / total_days if total_days else 0.0),
+                    search_error_rate=(total_search_errors / total_days if total_days else 0.0),
                     mean_search_cost=search_cost_total / search_days if search_days else 0.0,
-                    owner_contamination_days=contamination_days,
+                    guest_day_put_back_error_days=guest_day_put_back_error_days,
                     total_put_back_errors=total_put_back_errors,
                     total_search_errors=total_search_errors,
                 )
@@ -1018,11 +1098,13 @@ class StructureTwoActionDeathTest:
         if isinstance(state, _PchmpCcrrRgrcMethod):
             posterior = state.state.owner_posterior()
             belief_order = sorted(
-                locations, key=lambda location: -posterior.get(location, 0.0)
+                locations,
+                key=lambda location: (-posterior.get(location, 0.0), str(location)),
             )
         elif isinstance(state, (_OStarMethod, _STARMethod)):
             belief_order = sorted(
-                locations, key=lambda location: -state.counts.get(location, 0.0)
+                locations,
+                key=lambda location: (-state.counts.get(location, 0.0), str(location)),
             )
         for index, location in enumerate(belief_order, start=1):
             if location == target:

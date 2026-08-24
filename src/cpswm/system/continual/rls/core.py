@@ -86,7 +86,8 @@ class RecursiveLeastSquares:
         Args:
             x: feature vector.
             y: target scalar label.
-            gate: update weight in ``[0, 1]``. A gate of ``0`` disables update.
+            gate: non-negative update weight. A gate of ``0`` disables update;
+                values above one are valid for IPW-weighted least squares.
             forgetting_factor: optional override of ``config.forgetting_factor``.
         """
 
@@ -95,7 +96,7 @@ class RecursiveLeastSquares:
             raise ValueError("gate must be finite")
         if update_gate <= 0.0:
             return self.snapshot()
-        update_gate = min(1.0, max(0.0, update_gate))
+        update_gate = max(0.0, update_gate)
 
         lam = (
             self._config.forgetting_factor

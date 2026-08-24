@@ -345,6 +345,23 @@ class HybridEventToTaskCoordinatorLoop:
         responsibility.  No feedback path writes owner habit directly.
         """
 
+        projected = self.prepare_execution_feedback(
+            feedback=feedback,
+            binding=binding,
+            likelihood_model=likelihood_model,
+        )
+        self.commit_execution_feedback(projected)
+        return projected
+
+    def prepare_execution_feedback(
+        self,
+        *,
+        feedback: ExecutionFeedbackRecord,
+        binding: DecisionContextBinding,
+        likelihood_model: ActionOutcomeLikelihoodModel,
+    ) -> ProjectedFeedbackEvidence:
+        """Project feedback without consuming its idempotency key."""
+
         context = binding.decision_context
         if context.authorization_scope_id != self._auth:
             raise ValueError(
@@ -352,11 +369,16 @@ class HybridEventToTaskCoordinatorLoop:
             )
         if feedback.target_entity is None or feedback.target_entity.entity_id != self._object:
             raise ValueError("feedback target object does not match the loop's configured object")
-        return self._feedback_projector.project_execution_feedback(
+        return self._feedback_projector.prepare_execution_feedback(
             feedback=feedback,
             binding=binding,
             likelihood_model=likelihood_model,
         )
+
+    def commit_execution_feedback(self, projected: ProjectedFeedbackEvidence) -> None:
+        """Commit replay state after the caller's statistic transaction succeeds."""
+
+        self._feedback_projector.commit_execution_feedback(projected)
 
     def _clean_certificate(self, delta_record_id: UUID) -> ConsolidationRiskCertificate:
         snapshot = self._map.snapshot()

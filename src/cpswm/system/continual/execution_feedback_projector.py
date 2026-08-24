@@ -27,6 +27,7 @@ import hashlib
 import json
 from dataclasses import dataclass
 from enum import StrEnum
+from math import isfinite
 from uuid import UUID
 
 from cpswm.contracts import (
@@ -80,6 +81,23 @@ class LocationTransitionEvidence:
     reported_action_success_probability: float
     reported_slip_probability: float
     candidate: TransitionCandidate
+    # Direction comes from the candidate; magnitude comes from the calibrated
+    # outcome model.  This is the factor downstream ORRER must consume.
+    candidate_likelihood_ratio: float = 1.0
+    likelihood_model_version: str = "legacy-unversioned"
+
+    def __post_init__(self) -> None:
+        for name in (
+            "reported_action_success_probability",
+            "reported_slip_probability",
+        ):
+            value = getattr(self, name)
+            if not isfinite(value) or not 0.0 <= value <= 1.0:
+                raise ValueError(f"{name} must lie in [0, 1]")
+        if not isfinite(self.candidate_likelihood_ratio) or self.candidate_likelihood_ratio <= 0.0:
+            raise ValueError("candidate_likelihood_ratio must be finite and positive")
+        if not self.likelihood_model_version.strip():
+            raise ValueError("location transition evidence requires a model version")
 
 
 @dataclass(frozen=True, slots=True)
@@ -118,6 +136,25 @@ class ExecutionFeedbackProjector:
         binding: DecisionContextBinding,
         likelihood_model: ActionOutcomeLikelihoodModel,
     ) -> ProjectedFeedbackEvidence:
+        """Compatibility one-shot API: prepare and immediately commit replay state."""
+
+        projected = self.prepare_execution_feedback(
+            feedback=feedback,
+            binding=binding,
+            likelihood_model=likelihood_model,
+        )
+        self.commit_execution_feedback(projected)
+        return projected
+
+    def prepare_execution_feedback(
+        self,
+        *,
+        feedback: ExecutionFeedbackRecord,
+        binding: DecisionContextBinding,
+        likelihood_model: ActionOutcomeLikelihoodModel,
+    ) -> ProjectedFeedbackEvidence:
+        """Validate and project without consuming the idempotency key."""
+
         # Re-validate all three contracts at the trust boundary (schema).
         feedback = ExecutionFeedbackRecord.model_validate(feedback.model_dump())
         binding = DecisionContextBinding.model_validate(binding.model_dump())
@@ -165,7 +202,12 @@ class ExecutionFeedbackProjector:
             return _as_replay(result)
 
         if feedback.action_type in _LOCATION_TRANSITION_ACTIONS:
-            projected = self._location_transition(feedback, feedback_hash, projection_input_hash)
+            projected = self._location_transition(
+                feedback,
+                likelihood_model,
+                feedback_hash,
+                projection_input_hash,
+            )
         else:
             projected = ProjectedFeedbackEvidence(
                 feedback_record_id=record_id,
@@ -181,8 +223,31 @@ class ExecutionFeedbackProjector:
                 is_replay=False,
                 rationale="find/observe outcome updates target presence only; not owner habit",
             )
-        self._seen[record_id] = (feedback_hash, projection_input_hash, projected)
         return projected
+
+    def commit_execution_feedback(self, projected: ProjectedFeedbackEvidence) -> None:
+        """Consume a prepared projection only after downstream statistics commit."""
+
+        if projected.is_replay:
+            return
+        record_id = projected.feedback_record_id
+        cached = self._seen.get(record_id)
+        if cached is not None:
+            cached_feedback_hash, cached_input_hash, _result = cached
+            if cached_feedback_hash != projected.feedback_content_hash:
+                raise ValueError(
+                    "feedback record id reused with different content (collision/forgery)"
+                )
+            if cached_input_hash != projected.projection_input_hash:
+                raise ProjectionInputConflictError(
+                    "feedback projection inputs changed before commit"
+                )
+            return
+        self._seen[record_id] = (
+            projected.feedback_content_hash,
+            projected.projection_input_hash,
+            projected,
+        )
 
     def _check_schema_and_binding(
         self, feedback: ExecutionFeedbackRecord, binding: DecisionContextBinding
@@ -257,6 +322,7 @@ class ExecutionFeedbackProjector:
     def _location_transition(
         self,
         feedback: ExecutionFeedbackRecord,
+        likelihood_model: ActionOutcomeLikelihoodModel,
         feedback_hash: str,
         projection_input_hash: str,
     ) -> ProjectedFeedbackEvidence:
@@ -270,12 +336,31 @@ class ExecutionFeedbackProjector:
             candidate = TransitionCandidate.POSITIVE_CANDIDATE
         else:
             candidate = TransitionCandidate.UNRESOLVED
+        present_ll = sum(
+            probability * likelihood_model.p_outcome_given_target_present[outcome]
+            for outcome, probability in feedback.outcome_distribution.items()
+        )
+        absent_ll = sum(
+            probability * likelihood_model.p_outcome_given_target_absent[outcome]
+            for outcome, probability in feedback.outcome_distribution.items()
+        )
+        raw_ratio = present_ll / absent_ll if absent_ll > 0.0 else 1.0 / 1e-6
+        strength = max(raw_ratio, 1.0 / max(raw_ratio, 1e-6))
+        candidate_ratio = (
+            strength
+            if candidate is TransitionCandidate.POSITIVE_CANDIDATE
+            else 1.0 / strength
+            if candidate is TransitionCandidate.NEGATIVE_CANDIDATE
+            else 1.0
+        )
         transition = LocationTransitionEvidence(
             feedback_record_id=feedback.metadata.record_id,
             location_id=feedback.attempted_location_id,
             reported_action_success_probability=success,
             reported_slip_probability=slipped,
             candidate=candidate,
+            candidate_likelihood_ratio=candidate_ratio,
+            likelihood_model_version=likelihood_model.model_version,
         )
         return ProjectedFeedbackEvidence(
             feedback_record_id=feedback.metadata.record_id,

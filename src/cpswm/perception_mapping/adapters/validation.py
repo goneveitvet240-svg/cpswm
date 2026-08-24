@@ -16,6 +16,7 @@ only ``simobs.*`` and never ``cpswm_gt.*``.
 
 from __future__ import annotations
 
+import unicodedata
 from datetime import datetime
 from typing import Any
 from uuid import UUID
@@ -39,7 +40,28 @@ FORBIDDEN_PAYLOAD_KEY_SUBSTRINGS = (
 
 
 def _normalize_key(key: str) -> str:
-    return "".join(ch for ch in key.casefold() if ch.isalnum())
+    """Fold a key so ASCII spelling variants collapse onto one form.
+
+    NFKC first: it maps compatibility characters such as the fullwidth
+    ``ｔ`` onto plain ``t``, which ``casefold`` alone does not.
+    """
+
+    folded = unicodedata.normalize("NFKC", key).casefold()
+    return "".join(ch for ch in folded if ch.isalnum())
+
+
+def _has_non_ascii_letter(key: str) -> bool:
+    """Whether a key still carries a non-ASCII letter after NFKC.
+
+    A substring denylist cannot be completed against homoglyphs: Cyrillic
+    ``т`` and Greek ``ο`` are distinct code points that NFKC deliberately
+    preserves, and enumerating every confusable is a losing race.  Every such
+    attack must, however, use a non-ASCII letter, so the class is closed by
+    reporting those keys instead of by extending the denylist.
+    """
+
+    normalized = unicodedata.normalize("NFKC", key)
+    return any(ch.isalpha() and ord(ch) > 127 for ch in normalized)
 
 
 class ObservationEnvelopeValidationError(ValueError):
@@ -61,6 +83,10 @@ def scan_forbidden_payload_fields(value: Any, path: str = "") -> list[str]:
             normalized = _normalize_key(key_text)
             if any(sub in normalized for sub in FORBIDDEN_PAYLOAD_KEY_SUBSTRINGS):
                 found.append(child_path)
+            elif _has_non_ascii_letter(key_text):
+                # Not on the denylist, but unverifiable against it: report the
+                # key rather than let a homoglyph spelling through.
+                found.append(f"{child_path} (non-ascii key)")
             found.extend(scan_forbidden_payload_fields(child, child_path))
     elif isinstance(value, list):
         for index, child in enumerate(value):

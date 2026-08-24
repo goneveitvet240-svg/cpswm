@@ -90,7 +90,9 @@ def test_not_found_scenario_replans_to_true_target_without_wrong_pickup():
     assert scenario["selected_target_candidate_id"] == scenario["true_target_candidate_id"]
     assert scenario["task_success"]
     assert not scenario["wrong_object_pickup"]
-    assert scenario["canonical_log_watermark"] == 4
+    # Each grounded execution appends its opportunity and feedback atomically
+    # as one transaction, so two search attempts advance the watermark twice.
+    assert scenario["canonical_log_watermark"] == 2
 
 
 def test_unknown_target_abstains_without_canonical_write():

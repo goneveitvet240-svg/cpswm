@@ -9,7 +9,8 @@ Authoritative runner:
 The runner constructs a provenance-safe D0 replay pilot, tunes each method only
 on the validation split, opens the sealed test split only after tuning, and
 emits per-case, aggregate, worst-group, paired-difference and 95% bootstrap-CI
-records. O-STaR, DynaMem and STAR are explicitly labelled `reduced_skill_proxy`;
-they are not mixed with faithful/matched baseline claims.
+records. O-STaR, DynaMem and STAR are labelled `matched_replay_adapter`; the
+report records their missing faithful inputs and excludes them from a
+paper-superiority claim. AMG remains the strongest faithful matched arm in D0.
 
 No external dataset is selected by this directory.

@@ -107,6 +107,7 @@ from .project_one_ablation_v0_2 import (
 from .project_two_action_benchmark import (
     ActionCaseMetric,
     AggregateMetric,
+    BaselineFairnessRecord,
     BenchmarkFidelity,
     MethodTuningSelection,
     ProjectTwoActionBenchmarkReport,
@@ -115,8 +116,10 @@ from .project_two_action_benchmark import (
 )
 from .project_two_dataset import (
     ProjectTwoReplayDataset,
+    ProjectTwoReplayGateError,
     ProjectTwoReplayQualityReport,
     audit_project_two_replay,
+    enforce_project_two_replay_gate,
 )
 from .project_two_dataset_adapters import (
     D0SyntheticOracleReplayAdapter,
@@ -179,6 +182,7 @@ __all__ = [
     "ActionSuite",
     "ActionTaskType",
     "AggregateMetric",
+    "BaselineFairnessRecord",
     "BaselineRegistryEntry",
     "BaselineScore",
     "BaselineStatus",
@@ -266,6 +270,7 @@ __all__ = [
     "ProjectTwoActionMethod",
     "ProjectTwoDatasetAdapter",
     "ProjectTwoReplayDataset",
+    "ProjectTwoReplayGateError",
     "ProjectTwoReplayQualityReport",
     "ProtocolPilotTuningBudget",
     "RLSDecayedFrequencyBaseline",
@@ -290,6 +295,7 @@ __all__ = [
     "audit_project_two_replay",
     "compare_baselines",
     "default_baselines",
+    "enforce_project_two_replay_gate",
     "evaluation_run_identity",
     "experimental_baselines",
     "new_sealed_secret",

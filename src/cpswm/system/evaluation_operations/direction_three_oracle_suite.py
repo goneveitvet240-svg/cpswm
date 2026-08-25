@@ -8,9 +8,11 @@ scenario report so failures can be attributed to one upstream dimension.
 
 from __future__ import annotations
 
+import json
 from dataclasses import dataclass
 from datetime import UTC, datetime, timedelta
 from enum import StrEnum
+from pathlib import Path
 from typing import Any
 from uuid import UUID, uuid5
 
@@ -23,6 +25,7 @@ from cpswm.contracts import (
     EntityRef,
     EntityType,
     EvidenceChannel,
+    EvidenceRef,
     ExecutionFeedbackRecord,
     JointCandidateEvidence,
     JointPosteriorRequest,
@@ -35,6 +38,7 @@ from cpswm.contracts import (
     SourceType,
     ValidTimeInterval,
     VerificationObservation,
+    build_query_compiler_provenance,
 )
 from cpswm.foundation.persistence_replay import AppendOnlyTransactionLog
 from cpswm.world_model.grounded_search import (
@@ -81,6 +85,7 @@ class OracleScenarioSpec:
     semantic_tags: tuple[str, ...]
     initial_belief: OracleInitialBelief
     decisive_dimension: OracleTruthDimension | None = None
+    additional_decisive_dimensions: tuple[OracleTruthDimension, ...] = ()
     verification_action: ObservationActionType | None = None
     terminal_action: RobotActionType | None = RobotActionType.GRASP
     terminal_outcome: RobotActionOutcome | None = RobotActionOutcome.SUCCESS
@@ -95,10 +100,87 @@ class OracleScenarioSpec:
             stopping = self.verification_action is None and self.terminal_action is None
             if self.verification_action is None and not stopping:
                 raise ValueError("ambiguous scenarios must verify or explicitly stop")
-        if self.initial_belief != OracleInitialBelief.RESOLVED and self.decisive_dimension:
+        decisive_dimensions = (
+            () if self.decisive_dimension is None else (self.decisive_dimension,)
+        ) + self.additional_decisive_dimensions
+        if len(decisive_dimensions) != len(set(decisive_dimensions)):
+            raise ValueError("oracle decisive truth dimensions must be unique")
+        if self.initial_belief != OracleInitialBelief.RESOLVED and decisive_dimensions:
             raise ValueError("decisive truth dimensions apply to resolved oracle probes")
         if self.true_target_is_unknown and self.initial_belief != OracleInitialBelief.UNKNOWN:
             raise ValueError("unknown truth requires an unknown initial belief")
+
+    def to_manifest_payload(self) -> dict[str, Any]:
+        if self.additional_decisive_dimensions:
+            raise ValueError("v0.1 manifest cannot serialize combination truth dimensions")
+        return {
+            "scenario_id": self.scenario_id,
+            "description": self.description,
+            "semantic_tags": list(self.semantic_tags),
+            "initial_belief": self.initial_belief.value,
+            "decisive_dimension": (
+                None if self.decisive_dimension is None else self.decisive_dimension.value
+            ),
+            "verification_action": (
+                None if self.verification_action is None else self.verification_action.value
+            ),
+            "terminal_action": (
+                None if self.terminal_action is None else self.terminal_action.value
+            ),
+            "terminal_outcome": (
+                None if self.terminal_outcome is None else self.terminal_outcome.value
+            ),
+            "replan_after_not_found": self.replan_after_not_found,
+            "expected_termination": self.expected_termination,
+            "true_target_is_unknown": self.true_target_is_unknown,
+        }
+
+    @classmethod
+    def from_manifest_payload(cls, payload: dict[str, Any]) -> OracleScenarioSpec:
+        expected = {
+            "scenario_id",
+            "description",
+            "semantic_tags",
+            "initial_belief",
+            "decisive_dimension",
+            "verification_action",
+            "terminal_action",
+            "terminal_outcome",
+            "replan_after_not_found",
+            "expected_termination",
+            "true_target_is_unknown",
+        }
+        if set(payload) != expected:
+            raise ValueError("oracle scenario manifest fields must match the frozen v0.1 schema")
+        return cls(
+            scenario_id=str(payload["scenario_id"]),
+            description=str(payload["description"]),
+            semantic_tags=tuple(str(value) for value in payload["semantic_tags"]),
+            initial_belief=OracleInitialBelief(payload["initial_belief"]),
+            decisive_dimension=(
+                None
+                if payload["decisive_dimension"] is None
+                else OracleTruthDimension(payload["decisive_dimension"])
+            ),
+            verification_action=(
+                None
+                if payload["verification_action"] is None
+                else ObservationActionType(payload["verification_action"])
+            ),
+            terminal_action=(
+                None
+                if payload["terminal_action"] is None
+                else RobotActionType(payload["terminal_action"])
+            ),
+            terminal_outcome=(
+                None
+                if payload["terminal_outcome"] is None
+                else RobotActionOutcome(payload["terminal_outcome"])
+            ),
+            replan_after_not_found=bool(payload["replan_after_not_found"]),
+            expected_termination=str(payload["expected_termination"]),
+            true_target_is_unknown=bool(payload["true_target_is_unknown"]),
+        )
 
 
 def default_oracle_scenarios() -> tuple[OracleScenarioSpec, ...]:
@@ -243,6 +325,84 @@ def default_oracle_scenarios() -> tuple[OracleScenarioSpec, ...]:
     )
 
 
+def combination_oracle_scenarios() -> tuple[OracleScenarioSpec, ...]:
+    """Parallel multi-truth probes without changing the frozen v0.1 suite."""
+
+    return (
+        OracleScenarioSpec(
+            "identity_location_combination_probe",
+            "Similar cross-time instances require identity and current location jointly.",
+            ("similar_instances", "cross_time", "identity", "location"),
+            OracleInitialBelief.RESOLVED,
+            OracleTruthDimension.IDENTITY,
+            additional_decisive_dimensions=(OracleTruthDimension.LOCATION,),
+        ),
+        OracleScenarioSpec(
+            "person_event_habit_combination_probe",
+            "Multiple actors, a hidden move, and a changed habit jointly select the target.",
+            ("multi_person", "hidden_event", "object_moved", "habit_regime", "cross_time"),
+            OracleInitialBelief.RESOLVED,
+            OracleTruthDimension.PERSON,
+            additional_decisive_dimensions=(
+                OracleTruthDimension.EVENT,
+                OracleTruthDimension.HABIT,
+            ),
+        ),
+        OracleScenarioSpec(
+            "all_dimensions_container_time_combination_probe",
+            "A closed-container cross-time scene combines all five truth dimensions.",
+            (
+                "multi_person",
+                "similar_instances",
+                "hidden_event",
+                "closed_container",
+                "occlusion",
+                "cross_time",
+                "habit_regime",
+            ),
+            OracleInitialBelief.RESOLVED,
+            OracleTruthDimension.IDENTITY,
+            additional_decisive_dimensions=(
+                OracleTruthDimension.LOCATION,
+                OracleTruthDimension.PERSON,
+                OracleTruthDimension.EVENT,
+                OracleTruthDimension.HABIT,
+            ),
+        ),
+    )
+
+
+def oracle_scenario_manifest_payload(
+    scenarios: tuple[OracleScenarioSpec, ...] | None = None,
+) -> dict[str, Any]:
+    selected = scenarios or default_oracle_scenarios()
+    return {
+        "schema_name": "cpswm.DirectionThreeOracleScenarioManifest",
+        "schema_version": "0.1.0",
+        "scenario_count": len(selected),
+        "scenarios": [scenario.to_manifest_payload() for scenario in selected],
+    }
+
+
+def load_oracle_scenario_manifest(path: Path) -> tuple[OracleScenarioSpec, ...]:
+    payload = json.loads(path.read_text(encoding="utf-8"))
+    if set(payload) != {"schema_name", "schema_version", "scenario_count", "scenarios"}:
+        raise ValueError("oracle manifest top-level fields do not match v0.1")
+    if payload["schema_name"] != "cpswm.DirectionThreeOracleScenarioManifest":
+        raise ValueError("oracle manifest schema name is invalid")
+    if payload["schema_version"] != "0.1.0":
+        raise ValueError("oracle manifest schema version is unsupported")
+    scenarios = tuple(
+        OracleScenarioSpec.from_manifest_payload(item) for item in payload["scenarios"]
+    )
+    if payload["scenario_count"] != len(scenarios):
+        raise ValueError("oracle manifest scenario_count does not match its scenarios")
+    ids = [scenario.scenario_id for scenario in scenarios]
+    if len(ids) != len(set(ids)):
+        raise ValueError("oracle manifest scenario ids must be unique")
+    return scenarios
+
+
 def _uid(scenario_id: str, role: str) -> UUID:
     return uuid5(_NAMESPACE, f"{scenario_id}:{role}")
 
@@ -275,17 +435,16 @@ def _channel_evidence(
     candidate_role: str,
 ) -> dict[EvidenceChannel, ChannelEvidence]:
     evidence: dict[EvidenceChannel, ChannelEvidence] = {}
-    decisive_channel = (
-        None
-        if scenario.decisive_dimension is None
-        else _DIMENSION_CHANNEL[scenario.decisive_dimension]
-    )
+    decisive_dimensions = set(scenario.additional_decisive_dimensions)
+    if scenario.decisive_dimension is not None:
+        decisive_dimensions.add(scenario.decisive_dimension)
+    decisive_channels = {_DIMENSION_CHANNEL[dimension] for dimension in decisive_dimensions}
     for channel in EvidenceChannel:
         if scenario.initial_belief == OracleInitialBelief.AMBIGUOUS:
             likelihood = 0.70 if candidate_role != "unknown" else 0.10
         elif scenario.initial_belief == OracleInitialBelief.UNKNOWN:
             likelihood = 0.10 if candidate_role != "unknown" else 0.95
-        elif channel == decisive_channel:
+        elif channel in decisive_channels:
             likelihood = {"target": 0.97, "distractor": 0.08, "unknown": 0.05}[candidate_role]
         else:
             likelihood = 0.70 if candidate_role != "unknown" else 0.10
@@ -298,7 +457,7 @@ def _channel_evidence(
     return evidence
 
 
-def _build_request(
+def build_oracle_request(
     scenario: OracleScenarioSpec,
 ) -> tuple[JointPosteriorRequest, UUID, UUID, UUID]:
     target = _uid(scenario.scenario_id, "target")
@@ -319,9 +478,11 @@ def _build_request(
         priors = (0.80, 0.15, 0.05)
     else:
         priors = (0.45, 0.45, 0.10)
+    query_utterance = f"oracle query for {scenario.scenario_id}"
+    query_source_record_id = _uid(scenario.scenario_id, "query-source")
     query = CompiledSemanticQuery(
         query_id=_uid(scenario.scenario_id, "query"),
-        utterance=f"oracle query for {scenario.scenario_id}",
+        utterance=query_utterance,
         category_candidates=("personal_object",),
         attributes=("similar_instance",),
         relations=("used_by", "currently_located_at"),
@@ -330,6 +491,21 @@ def _build_request(
         activity_candidates=("household_use",),
         soft_constraints=scenario.semantic_tags,
         compiler_model_version="s3-oracle-compiler@0.1",
+        input_evidence_refs=(
+            EvidenceRef(
+                evidence_type="oracle_query_utterance",
+                source_record_id=query_source_record_id,
+            ),
+        ),
+        invocation_provenance=build_query_compiler_provenance(
+            provider="oracle-fixture",
+            model="s3-oracle-compiler",
+            version="0.1",
+            temperature=0.0,
+            prompt_template_version="s3-oracle-query@0.1",
+            prompt=query_utterance,
+            input_evidence_refs=(query_source_record_id,),
+        ),
     )
     candidates = (
         JointCandidateEvidence(
@@ -595,8 +771,11 @@ def _truth_payload(
     target: UUID,
 ) -> dict[str, dict[str, Any]]:
     payload: dict[str, dict[str, Any]] = {}
+    decisive_dimensions = set(scenario.additional_decisive_dimensions)
+    if scenario.decisive_dimension is not None:
+        decisive_dimensions.add(scenario.decisive_dimension)
     for dimension in OracleTruthDimension:
-        injected = scenario.decisive_dimension == dimension
+        injected = dimension in decisive_dimensions
         payload[dimension.value] = {
             "true_candidate_id": str(true_target),
             "oracle_value": (
@@ -611,7 +790,7 @@ def _truth_payload(
 
 
 def run_oracle_scenario(scenario: OracleScenarioSpec) -> dict[str, Any]:
-    request, true_target, target, distractor = _build_request(scenario)
+    request, true_target, target, distractor = build_oracle_request(scenario)
     unknown = next(
         item.candidate_id for item in request.candidates if item.kind == CandidateKind.UNKNOWN
     )
@@ -724,6 +903,11 @@ def run_oracle_suite(
         )
         for dimension in OracleTruthDimension
     }
+    if any(
+        scenario.terminal_action is None and scenario.verification_action is None
+        for scenario in selected
+    ):
+        action_coverage.append("stop_or_abstain")
     target_tasks = [report for report in reports if "unknown" not in report["semantic_tags"]]
     return {
         "schema_name": "cpswm.DirectionThreeOracleSuiteReport",
@@ -754,7 +938,7 @@ def run_oracle_suite(
             "total_motion_cost": sum(report["motion_cost"] for report in reports),
             "total_time_cost": sum(report["time_cost"] for report in reports),
             "total_interruption_cost": sum(report["interruption_cost"] for report in reports),
-            "action_coverage": [*action_coverage, "stop_or_abstain"],
+            "action_coverage": action_coverage,
             "execution_outcome_coverage": outcome_coverage,
             "oracle_dimension_coverage": dimension_coverage,
         },

@@ -27,6 +27,7 @@ __all__ = [
     "ANOMALY_CAUSES",
     "DATASET_CONTRACT_VERSION",
     "REGIME_CAUSES",
+    "UNKNOWN_LOCATION",
     "ChangeCause",
     "ProjectOneDatasetManifest",
     "ProjectOneDatasetRecord",
@@ -79,6 +80,11 @@ REGIME_CAUSES: frozenset[ChangeCause] = frozenset(
 )
 
 DATASET_CONTRACT_VERSION = "project-one-dataset@0.1"
+
+#: Canonical model-vocabulary slot for a location that was not present when
+#: the candidate set was frozen.  Adapters, binders and methods share this
+#: exact value so an unseen room never changes meaning between layers.
+UNKNOWN_LOCATION = "unknown_location"
 
 #: Field names a record may never carry.  Enforced by the contract test.
 FORBIDDEN_RECORD_FIELDS = frozenset(

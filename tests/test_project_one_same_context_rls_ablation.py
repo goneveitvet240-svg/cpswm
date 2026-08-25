@@ -348,7 +348,7 @@ def test_the_rls_head_learns_the_context_perfectly_before_the_sigmoid() -> None:
     assert raw[locations[0]] == pytest.approx(1.0, abs=1e-4)
     assert raw[locations[2]] == pytest.approx(0.0, abs=1e-4)
 
-    squashed = head.score_candidates(
+    default_scores = head.score_candidates(
         object_instance_id=object_id,
         actor_id=actor,
         regime_id="stable",
@@ -356,36 +356,35 @@ def test_the_rls_head_learns_the_context_perfectly_before_the_sigmoid() -> None:
         candidate_locations=locations,
         location_embeddings=embeddings,
     )
-    # The default path squashes a perfect 1.0 to sigmoid(1.0) and a perfect
-    # 0.0 to sigmoid(0.0) = 0.5, which is the whole defect in two numbers.
-    assert squashed[locations[0]] == pytest.approx(1.0 - SIGMOID_RESIDUAL_FLOOR, abs=1e-4)
-    assert squashed[locations[2]] == pytest.approx(0.5, abs=1e-4)
+    assert default_scores == pytest.approx(raw, abs=1e-12)
+
+    historical = head.score_candidates(
+        object_instance_id=object_id,
+        actor_id=actor,
+        regime_id="stable",
+        context_features=np.array([0.0]),
+        candidate_locations=locations,
+        location_embeddings=embeddings,
+        apply_sigmoid=True,
+    )
+    assert historical[locations[0]] == pytest.approx(1.0 - SIGMOID_RESIDUAL_FLOOR, abs=1e-4)
+    assert historical[locations[2]] == pytest.approx(0.5, abs=1e-4)
 
 
-def test_a_perfectly_predicted_event_still_carries_a_residual_floor() -> None:
-    """Under the shipped wiring the residual can never reach zero."""
+def test_a_perfectly_predicted_event_has_no_sigmoid_residual_floor() -> None:
+    """The corrected default reads the raw RLS score exactly once."""
 
     expected = _run_consistent(SignalAblation.FULL, ResidualCalibration.AS_IS, "dining_table")
-    assert expected.rls_residual == pytest.approx(SIGMOID_RESIDUAL_FLOOR, abs=1e-4)
+    assert expected.rls_residual == pytest.approx(0.0, abs=1e-4)
 
 
-def test_the_residual_floor_pins_the_habit_signal_of_every_move() -> None:
-    """``1 - (1 - 0.269) ** 2``: any move scores at least this, however expected."""
+def test_a_correctly_predicted_move_has_negligible_habit_signal() -> None:
 
     expected = _run_consistent(SignalAblation.FULL, ResidualCalibration.AS_IS, "dining_table")
-    floor = 1.0 - (1.0 - SIGMOID_RESIDUAL_FLOOR) ** 2
-    assert expected.habit_signal == pytest.approx(floor, abs=1e-4)
+    assert expected.habit_signal == pytest.approx(0.0, abs=1e-4)
 
 
-@pytest.mark.xfail(
-    strict=True,
-    reason=(
-        "Shipped wiring double-squashes the RLS score, so the full arm's margin "
-        "(0.5195) is worse than dropping the residual entirely (0.9402). Delete "
-        "this xfail once RLSHabitScoreHead stops applying a sigmoid by default."
-    ),
-)
-def test_shipped_wiring_full_margin_exceeds_no_rls_margin() -> None:
+def test_corrected_wiring_full_margin_exceeds_no_rls_margin() -> None:
     assert _margin(SignalAblation.FULL, ResidualCalibration.AS_IS) > _margin(
         SignalAblation.NO_RLS, ResidualCalibration.AS_IS
     )
@@ -482,24 +481,14 @@ def test_rls_only_escalates_once_the_sigmoid_is_inverted() -> None:
     assert prediction.decision is not ProjectOneDecision.STABLE
 
 
-def test_shipped_wiring_leaves_the_rls_only_arm_blind() -> None:
-    """Pinned defect: under ``as_is`` the residual alone never flags the anomaly."""
+def test_corrected_as_is_wiring_lets_the_rls_only_arm_see_the_anomaly() -> None:
 
     prediction = _run_consistent(SignalAblation.RLS_ONLY, ResidualCalibration.AS_IS, "balcony")
-    assert prediction.change_probability < 0.5
-    assert prediction.decision is ProjectOneDecision.STABLE
+    assert prediction.change_probability > 0.9
+    assert prediction.decision is not ProjectOneDecision.STABLE
 
 
-@pytest.mark.xfail(
-    strict=True,
-    reason=(
-        "Shipped wiring: the residual floor inflates the habit channel on every "
-        "ordinary day, so the full arm's change probability on the real anomaly "
-        "(0.9728) sits below the no-residual arm's (1.0000). Delete this xfail "
-        "once RLSHabitScoreHead stops applying a sigmoid by default."
-    ),
-)
-def test_shipped_wiring_full_change_probability_exceeds_no_rls() -> None:
+def test_corrected_wiring_full_change_probability_exceeds_no_rls() -> None:
     assert _change_probability(SignalAblation.FULL, ResidualCalibration.AS_IS) > (
         _change_probability(SignalAblation.NO_RLS, ResidualCalibration.AS_IS)
     )
@@ -582,24 +571,15 @@ def test_a_primed_shuffled_arm_shuffles_every_step() -> None:
     )
 
 
-def test_reading_a_fixed_model_under_the_shipped_route_fabricates_an_alarm() -> None:
-    """What the shared snapshot exposes that a divergent prefix hid.
-
-    Train once under ``raw_clip``, then read one perfectly ordinary event under
-    ``as_is``.  The 0.269 residual floor injects a habit signal of 0.466 into a
-    detector that was calibrated against a channel sitting near zero, and the
-    change probability goes to ~1 on an event the model predicted correctly.
-
-    Trained *and* read under ``as_is`` the effect is far weaker, because the
-    detector absorbs the floor as its normal level.  That is why the two
-    helpers in this file exist, and why a route comparison must hold the
-    training route fixed with the reading route.
-    """
+def test_raw_clip_and_as_is_are_equivalent_on_one_fixed_model() -> None:
+    """The historical scale conversion and corrected raw readout must agree."""
 
     fixed_model = _run_branch(SignalAblation.FULL, ResidualCalibration.AS_IS, "dining_table")
     self_consistent = _run_consistent(
         SignalAblation.FULL, ResidualCalibration.AS_IS, "dining_table"
     )
-    assert fixed_model.habit_signal == pytest.approx(0.4656, abs=1e-3)
-    assert fixed_model.change_probability > 0.9
-    assert self_consistent.change_probability < fixed_model.change_probability
+    assert fixed_model.habit_signal == pytest.approx(0.0, abs=1e-4)
+    assert fixed_model.habit_signal == pytest.approx(self_consistent.habit_signal, abs=1e-9)
+    assert fixed_model.change_probability == pytest.approx(
+        self_consistent.change_probability, abs=1e-9
+    )

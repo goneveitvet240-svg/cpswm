@@ -22,6 +22,7 @@ from cpswm.system.evaluation_operations.project_one_methods import build_first_b
 from cpswm.system.evaluation_operations.project_one_protocol import (
     PROTOCOL_VERSION,
     SIGMOID_RESIDUAL_FLOOR,
+    DecisionChainAblation,
     ProjectOneDecision,
     ProjectOneProtocolConfig,
     ProjectOneStepTrace,
@@ -139,6 +140,7 @@ def test_the_config_hash_covers_every_field() -> None:
         "rls_regularization": 2.0,
         "ablation": SignalAblation.RLS_ONLY,
         "residual_calibration": ResidualCalibration.LOGIT,
+        "decision_chain_ablation": DecisionChainAblation.NO_CCRR,
         "protocol_version": "other@0.0",
     }
     assert set(alternatives) == {field.name for field in fields(ProjectOneProtocolConfig)}

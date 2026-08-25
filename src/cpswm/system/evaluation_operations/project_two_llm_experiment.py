@@ -2,20 +2,26 @@
 
 from __future__ import annotations
 
+import hashlib
+import json
+from enum import StrEnum
 from statistics import mean
 from uuid import UUID
 
-from pydantic import Field, model_validator
+from pydantic import Field, computed_field, model_validator
 
 from cpswm.contracts import (
     ContractModel,
     EventMechanism,
+    LLMIntegrationRole,
+    LLMInvocationProvenance,
     ProjectTwoDatasetSplit,
     ProjectTwoReplayStep,
 )
 from cpswm.system.continual.project_one_regime_loop import PrototypeLoopConfig
 from cpswm.system.llm_evidence import (
     DeterministicEvidenceProvider,
+    LLMCallAuditReceipt,
     LLMEvidenceAdapter,
     LLMEvidenceCache,
     LLMEvidenceRequest,
@@ -60,6 +66,8 @@ class ProjectTwoLLMCaseMetric(ContractModel):
     llm_tokens: int = Field(ge=0)
     llm_latency_ms: float = Field(ge=0.0)
     llm_cost_usd: float = Field(ge=0.0)
+    llm_provenance: tuple[LLMInvocationProvenance, ...] = ()
+    llm_call_audits: tuple[LLMCallAuditReceipt, ...] = ()
     runtime_parameter_receipt: RuntimeParameterInjectionReceipt | None = None
     runtime_module_trace: tuple[str, ...] = ()
 
@@ -97,6 +105,77 @@ class ProjectTwoAblationImpact(ContractModel):
     runtime_proof: tuple[str, ...] = Field(min_length=1)
 
 
+class ReceiptMetricPolicy(ContractModel):
+    semantics_validated: bool
+    validation_scenario: str = Field(min_length=1)
+    paper_result_eligible: bool = False
+    operational_metrics: tuple[str, ...] = Field(min_length=1)
+
+
+class PoweredMechanismStage(StrEnum):
+    D0 = "powered_d0"
+    D1 = "powered_d1"
+
+
+class PoweredMechanismCompletionReceipt(ContractModel):
+    stage: PoweredMechanismStage
+    artifact_uri: str = Field(min_length=1)
+    artifact_sha256: str = Field(pattern=r"^[0-9a-f]{64}$")
+    power_analysis_uri: str = Field(min_length=1)
+    power_analysis_sha256: str = Field(pattern=r"^[0-9a-f]{64}$")
+    protocol_version: str = Field(min_length=1)
+    completion_authority: str = Field(min_length=1)
+    observed_sample_size: int = Field(gt=0)
+    required_sample_size: int = Field(gt=0)
+
+    @model_validator(mode="after")
+    def _powered(self) -> PoweredMechanismCompletionReceipt:
+        if self.observed_sample_size < self.required_sample_size:
+            raise ValueError("completion receipt cannot claim an underpowered artifact")
+        return self
+
+    @computed_field
+    @property
+    def receipt_sha256(self) -> str:
+        payload = {
+            "stage": self.stage.value,
+            "artifact_uri": self.artifact_uri,
+            "artifact_sha256": self.artifact_sha256,
+            "power_analysis_uri": self.power_analysis_uri,
+            "power_analysis_sha256": self.power_analysis_sha256,
+            "protocol_version": self.protocol_version,
+            "completion_authority": self.completion_authority,
+            "observed_sample_size": self.observed_sample_size,
+            "required_sample_size": self.required_sample_size,
+        }
+        encoded = json.dumps(payload, sort_keys=True, separators=(",", ":")).encode()
+        return hashlib.sha256(encoded).hexdigest()
+
+
+class LLMMechanismProgressionGate(ContractModel):
+    powered_d0_receipt: PoweredMechanismCompletionReceipt | None = None
+    powered_d1_receipt: PoweredMechanismCompletionReceipt | None = None
+
+    @model_validator(mode="after")
+    def _ordered_maturity(self) -> LLMMechanismProgressionGate:
+        if (
+            self.powered_d0_receipt is not None
+            and self.powered_d0_receipt.stage is not PoweredMechanismStage.D0
+        ):
+            raise ValueError("powered_d0_receipt must bind a D0 artifact")
+        if (
+            self.powered_d1_receipt is not None
+            and self.powered_d1_receipt.stage is not PoweredMechanismStage.D1
+        ):
+            raise ValueError("powered_d1_receipt must bind a D1 artifact")
+        return self
+
+    @computed_field
+    @property
+    def d2_allowed(self) -> bool:
+        return self.powered_d0_receipt is not None and self.powered_d1_receipt is not None
+
+
 class ProjectTwoLLMExperimentReport(ContractModel):
     protocol_version: str = "project-two-llm-tuning-ablation@0.2"
     evidence_maturity: str
@@ -107,6 +186,9 @@ class ProjectTwoLLMExperimentReport(ContractModel):
     aggregates: tuple[ProjectTwoLLMAggregate, ...]
     ablation_impacts: tuple[ProjectTwoAblationImpact, ...]
     held_out_run_count: int
+    role_comparison: dict[str, str]
+    receipt_metric_policy: ReceiptMetricPolicy
+    progression_gate: LLMMechanismProgressionGate
     claims: tuple[str, ...]
 
 
@@ -125,18 +207,35 @@ class _DirectLLMDecisionMethod:
         self.project_one_rejections = 0
         self.tokens = 0
         self.latency_ms = self.cost_usd = 0.0
+        self.provenance: list[LLMInvocationProvenance] = []
+        self.call_audits: list[LLMCallAuditReceipt] = []
 
     def observe(self, step):
-        result = self.adapter.generate(_request(self.episode, step, self.candidate))
+        result = self.adapter.generate(
+            _request(
+                self.episode,
+                step,
+                self.candidate,
+                role=LLMIntegrationRole.LLM_DIRECT_BASELINE,
+            )
+        )
         output = result.output
+        self.call_audits.append(result.call_audit)
         self.tokens += output.accounting.input_tokens + output.accounting.output_tokens
         self.latency_ms += output.accounting.latency_ms
         self.cost_usd += output.accounting.cost_usd
-        if result.typed_evidence.location_prior:
+        if not result.from_cache:
+            self.provenance.append(output.invocation_provenance)
+        location_prior = {
+            item.value: item.score
+            for item in output.generated_candidates
+            if item.kind.value == "location"
+        }
+        if location_prior:
             self.last = UUID(
                 max(
-                    result.typed_evidence.location_prior,
-                    key=result.typed_evidence.location_prior.get,
+                    location_prior,
+                    key=location_prior.get,
                 )
             )
         self.unknown = output.unknown_probability
@@ -351,7 +450,13 @@ def _runtime_module_trace(arm, state, *, tokens):
     )
 
 
-def _request(episode, step, candidate):
+def _request(
+    episode,
+    step,
+    candidate,
+    *,
+    role=LLMIntegrationRole.STRUCTURE_TWO_EVIDENCE_PROVIDER,
+):
     return LLMEvidenceRequest.from_replay_step(
         episode=episode,
         step=step,
@@ -363,6 +468,7 @@ def _request(episode, step, candidate):
         prompt_template_version=candidate.prompt_template_version,
         temperature=candidate.temperature,
         candidate_count=candidate.candidate_count,
+        role=role,
     )
 
 
@@ -493,9 +599,31 @@ class ProjectTwoLLMExperimentPilot:
             aggregates=aggregates,
             ablation_impacts=tuple(impacts),
             held_out_run_count=1,
+            role_comparison={
+                "no_llm": ProjectTwoExperimentalTrack.NO_LLM_CORE.value,
+                "llm_prior_only": ProjectTwoExperimentalTrack.LLM_PRIOR_ONLY.value,
+                "llm_evidence": ProjectTwoExperimentalTrack.LLM_AS_EVIDENCE.value,
+                "llm_direct": ProjectTwoExperimentalTrack.LLM_DIRECT_DECISION.value,
+            },
+            receipt_metric_policy=ReceiptMetricPolicy(
+                semantics_validated=True,
+                validation_scenario="delayed-correction-ccrr-rejection@0.2",
+                paper_result_eligible=False,
+                operational_metrics=(
+                    "project_one_stat_applications",
+                    "project_one_stat_rejections",
+                    "project_one_stat_deferred",
+                    "project_one_stat_replay_noops",
+                    "request_application_rate",
+                ),
+            ),
+            progression_gate=LLMMechanismProgressionGate(),
             claims=(
                 "The pilot validates typed evidence, cache, tuning, and replay plumbing only.",
                 "No synthetic result supports real-world or paper-level superiority.",
+                "Receipt application/rejection/defer counts are operational diagnostics, "
+                "not paper outcomes.",
+                "Powered D0 and D1 mechanism tests are required before D2.",
                 "All structural cuts execute in an evaluator-only sandbox.",
             ),
         )
@@ -507,16 +635,21 @@ class ProjectTwoLLMExperimentPilot:
         state = None
         tokens = 0
         latency = cost = 0.0
+        provenance: list[LLMInvocationProvenance] = []
+        call_audits: list[LLMCallAuditReceipt] = []
 
         def llm_transform(step: ProjectTwoReplayStep) -> ProjectTwoReplayStep:
             nonlocal tokens, latency, cost
             result = adapter.generate(_request(episode, step, candidate))
+            call_audits.append(result.call_audit)
             if not result.from_cache:
                 accounting = result.output.accounting
                 tokens += accounting.input_tokens + accounting.output_tokens
                 latency += accounting.latency_ms
                 cost += accounting.cost_usd
+                provenance.append(result.output.invocation_provenance)
             bundle = result.typed_evidence
+            assert bundle is not None
             actor = bundle.actor
             mechanism = bundle.mechanism
             role = bundle.role
@@ -566,12 +699,16 @@ class ProjectTwoLLMExperimentPilot:
         ) -> dict[str, float]:
             nonlocal tokens, latency, cost
             result = adapter.generate(_request(episode, step, candidate))
+            call_audits.append(result.call_audit)
             if not result.from_cache:
                 accounting = result.output.accounting
                 tokens += accounting.input_tokens + accounting.output_tokens
                 latency += accounting.latency_ms
                 cost += accounting.cost_usd
-            proposed = result.typed_evidence.actor.actor_posterior
+                provenance.append(result.output.invocation_provenance)
+            bundle = result.typed_evidence
+            assert bundle is not None
+            proposed = bundle.actor.actor_posterior
             values = {key: proposed.get(key, prior[key]) for key in prior}
             total = sum(values.values())
             return {key: value / total for key, value in values.items()}
@@ -588,6 +725,8 @@ class ProjectTwoLLMExperimentPilot:
             state = _DirectLLMDecisionMethod(episode, adapter, candidate)
             metric = self.scorer.evaluate_custom_state(dataset, episode, state)
             tokens, latency, cost = state.tokens, state.latency_ms, state.cost_usd
+            provenance = state.provenance
+            call_audits = state.call_audits
         else:
             feedback_mode = {
                 ProjectTwoAblation.NO_EXECUTION_FEEDBACK_RETURN.value: "none",
@@ -634,12 +773,21 @@ class ProjectTwoLLMExperimentPilot:
                     owner_threshold=candidate.rgrc_write_threshold,
                     evidence_transform=(
                         None
-                        if arm in no_llm or arm == ProjectTwoAblation.LLM_PRIOR_ONLY.value
+                        if arm in no_llm
+                        or arm
+                        in {
+                            ProjectTwoExperimentalTrack.LLM_PRIOR_ONLY.value,
+                            ProjectTwoAblation.LLM_PRIOR_ONLY.value,
+                        }
                         else llm_transform
                     ),
                     actor_prior_transform=(
                         llm_prior_transform
-                        if arm == ProjectTwoAblation.LLM_PRIOR_ONLY.value
+                        if arm
+                        in {
+                            ProjectTwoExperimentalTrack.LLM_PRIOR_ONLY.value,
+                            ProjectTwoAblation.LLM_PRIOR_ONLY.value,
+                        }
                         else None
                     ),
                     feedback_mode=feedback_mode,
@@ -705,6 +853,8 @@ class ProjectTwoLLMExperimentPilot:
             llm_tokens=tokens,
             llm_latency_ms=latency,
             llm_cost_usd=cost,
+            llm_provenance=tuple(provenance),
+            llm_call_audits=tuple(call_audits),
             runtime_parameter_receipt=(
                 None
                 if state is None
@@ -727,7 +877,6 @@ class ProjectTwoLLMExperimentPilot:
             "late_feedback_recovery_latency",
             "unknown_calibration_brier",
             "revision_precision",
-            "request_application_rate",
             "llm_tokens",
             "llm_latency_ms",
             "llm_cost_usd",
@@ -766,8 +915,12 @@ class ProjectTwoLLMExperimentPilot:
 
 
 __all__ = [
+    "LLMMechanismProgressionGate",
+    "PoweredMechanismCompletionReceipt",
+    "PoweredMechanismStage",
     "ProjectTwoAblationImpact",
     "ProjectTwoLLMCaseMetric",
     "ProjectTwoLLMExperimentPilot",
     "ProjectTwoLLMExperimentReport",
+    "ReceiptMetricPolicy",
 ]

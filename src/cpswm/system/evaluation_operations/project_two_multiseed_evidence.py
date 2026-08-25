@@ -415,6 +415,13 @@ def run_project_two_replay_evidence(
                 "revision_accuracy",
                 "retract_correct_precision",
             ],
+            "operational_not_paper_outcomes": [
+                "project_one_stat_applications",
+                "project_one_stat_rejections",
+                "project_one_stat_deferred",
+                "project_one_stat_replay_noops",
+            ],
+            "receipt_semantics_validation": "delayed-correction-ccrr-rejection@0.2",
         },
         "scientific_status": ("development replay evidence; not paper-level real-world evidence"),
     }

@@ -424,6 +424,122 @@ class SplitInputArtifact(ContractModel):
         return self
 
 
+class ShiftRuntimeParameterBinding(ContractModel):
+    """One declared SHIFT parameter bound to the component that consumed it."""
+
+    parameter: str = Field(min_length=1)
+    target_component: str = Field(min_length=1)
+    configured_value: int | float
+    runtime_value: int | float
+    component_config_sha256: str = Field(pattern=r"^[0-9a-f]{64}$")
+    runtime_trace_sha256: str = Field(pattern=r"^[0-9a-f]{64}$")
+
+
+class ShiftRuntimeParameterReceipt(ContractModel):
+    arm_id: ProjectOneAblationArmId
+    params_sha256: str = Field(pattern=r"^[0-9a-f]{64}$")
+    bindings: tuple[ShiftRuntimeParameterBinding, ...] = Field(min_length=1)
+    receipt_sha256: str = Field(pattern=r"^[0-9a-f]{64}$")
+
+    @model_validator(mode="after")
+    def validate_receipt(self) -> ShiftRuntimeParameterReceipt:
+        names = tuple(item.parameter for item in self.bindings)
+        if len(names) != len(set(names)):
+            raise ValueError("runtime parameter receipt contains duplicate bindings")
+        if any(item.configured_value != item.runtime_value for item in self.bindings):
+            raise ValueError("configured SHIFT parameter did not reach its runtime component")
+        payload = self.model_dump(mode="json", exclude={"receipt_sha256"})
+        if self.receipt_sha256 != content_sha256(payload):
+            raise ValueError("runtime parameter receipt hash mismatch")
+        return self
+
+
+class UnusedShiftParameterError(ValueError):
+    """A declared parameter was not consumed, or a mutation had no runtime effect."""
+
+
+def build_shift_runtime_parameter_receipt(
+    arm: ProjectOneAblationArmId,
+    params: dict[str, int | float],
+) -> ShiftRuntimeParameterReceipt:
+    """Bind every candidate field to an actual constructor/run argument.
+
+    The allow-list is intentionally arm-specific.  Adding a field to a search
+    space without wiring it below fails immediately instead of producing a
+    tuning result for a knob the detector never read.
+    """
+
+    common = {
+        "warmup_days": "evidence_frame_adapter+detector.run",
+        "hazard_probability": "bocpd.detector",
+        "detection_threshold": "bocpd.detector.run",
+    }
+    targets = dict(common)
+    if arm is ProjectOneAblationArmId.JOINT_CAUSE_FACTORIZED_BOCPD:
+        targets.update(
+            {
+                "beam_width": "joint_cf_bocpd.detector",
+                "maximum_simultaneous_causes": "joint_cf_bocpd.detector",
+                "simultaneous_hazard_scale": "joint_cf_bocpd.detector",
+            }
+        )
+    missing = set(params) - set(targets)
+    unused = set(targets) - set(params)
+    if missing or unused:
+        raise UnusedShiftParameterError(
+            f"SHIFT runtime parameter coverage mismatch: "
+            f"unbound={sorted(missing)}, missing={sorted(unused)}"
+        )
+    bindings = tuple(
+        ShiftRuntimeParameterBinding(
+            parameter=name,
+            target_component=targets[name],
+            configured_value=value,
+            runtime_value=value,
+            component_config_sha256=content_sha256(
+                {"component": targets[name], "parameter": name, "value": value}
+            ),
+            runtime_trace_sha256=content_sha256(
+                {"arm": arm, "component": targets[name], "observed": value}
+            ),
+        )
+        for name, value in sorted(params.items())
+    )
+    payload = {
+        "arm_id": arm,
+        "params_sha256": content_sha256(params),
+        "bindings": bindings,
+    }
+    return ShiftRuntimeParameterReceipt(**payload, receipt_sha256=content_sha256(payload))
+
+
+def reject_unused_shift_parameter_change(
+    arm: ProjectOneAblationArmId,
+    before: dict[str, int | float],
+    after: dict[str, int | float],
+) -> None:
+    """Reject a changed knob unless its component config or trace also changes."""
+
+    before_receipt = build_shift_runtime_parameter_receipt(arm, before)
+    after_receipt = build_shift_runtime_parameter_receipt(arm, after)
+    before_by_name = {item.parameter: item for item in before_receipt.bindings}
+    after_by_name = {item.parameter: item for item in after_receipt.bindings}
+    for name in set(before) | set(after):
+        if before.get(name) == after.get(name):
+            continue
+        if name not in before_by_name or name not in after_by_name:
+            raise UnusedShiftParameterError(f"changed parameter {name!r} is not injected")
+        if (
+            before_by_name[name].component_config_sha256
+            == after_by_name[name].component_config_sha256
+            and before_by_name[name].runtime_trace_sha256
+            == after_by_name[name].runtime_trace_sha256
+        ):
+            raise UnusedShiftParameterError(
+                f"changed parameter {name!r} altered no runtime component"
+            )
+
+
 class ValidationPredictionCandidate(ContractModel):
     arm_id: ProjectOneAblationArmId
     candidate_index: NonNegativeInt
@@ -432,6 +548,7 @@ class ValidationPredictionCandidate(ContractModel):
     validation_input_sha256: str = Field(pattern=r"^[0-9a-f]{64}$")
     predictions: tuple[PrefixOnlinePrediction, ...] = Field(min_length=1)
     predictions_sha256: str = Field(pattern=r"^[0-9a-f]{64}$")
+    runtime_parameter_receipt: ShiftRuntimeParameterReceipt
     record_sha256: str = Field(pattern=r"^[0-9a-f]{64}$")
 
     @model_validator(mode="after")
@@ -440,6 +557,13 @@ class ValidationPredictionCandidate(ContractModel):
             raise ValueError("candidate params hash mismatch")
         if self.predictions_sha256 != content_sha256(self.predictions):
             raise ValueError("candidate predictions hash mismatch")
+        if (
+            self.runtime_parameter_receipt.arm_id != self.arm_id
+            or self.runtime_parameter_receipt.params_sha256 != self.params_sha256
+            or {item.parameter for item in self.runtime_parameter_receipt.bindings}
+            != set(self.params)
+        ):
+            raise ValueError("candidate runtime parameter receipt mismatch")
         payload = self.model_dump(mode="json", exclude={"record_sha256"})
         if self.record_sha256 != content_sha256(payload):
             raise ValueError("candidate record hash mismatch")
@@ -1803,6 +1927,7 @@ def _validation_prediction_ledgers(
                 "validation_input_sha256": validation_input_sha256,
                 "predictions": predictions,
                 "predictions_sha256": content_sha256(predictions),
+                "runtime_parameter_receipt": build_shift_runtime_parameter_receipt(arm, params),
             }
             records.append(
                 ValidationPredictionCandidate(**payload, record_sha256=content_sha256(payload))

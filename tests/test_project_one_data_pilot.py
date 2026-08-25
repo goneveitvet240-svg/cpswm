@@ -112,7 +112,11 @@ def test_the_llm_pilot_adds_exactly_one_arm() -> None:
 
 
 def test_a_run_produces_one_result_per_arm_per_evaluable_binding() -> None:
-    report = run_data_pilot(streams=_streams(), candidate_policy=CandidatePolicy.OBSERVED_ALL)
+    report = run_data_pilot(
+        streams=_streams(),
+        candidate_policy=CandidatePolicy.OBSERVED_ALL,
+        allow_leaky_observed_all=True,
+    )
     evaluable = [item for item in report.bindings if item.is_evaluable]
     assert len(evaluable) == 1
     assert len(report.results) == len(DATA_PILOT_ARMS)
@@ -130,7 +134,11 @@ def test_the_llm_arm_appears_only_when_a_client_is_supplied() -> None:
 
 
 def test_a_non_evaluable_binding_is_reported_with_a_reason() -> None:
-    report = run_data_pilot(streams=_streams(), candidate_policy=CandidatePolicy.OBSERVED_ALL)
+    report = run_data_pilot(
+        streams=_streams(),
+        candidate_policy=CandidatePolicy.OBSERVED_ALL,
+        allow_leaky_observed_all=True,
+    )
     skipped = [item for item in report.bindings if not item.is_evaluable]
     assert len(skipped) == 1
     assert skipped[0].key.object_id == "keys"
@@ -153,7 +161,11 @@ def test_a_stream_with_no_evaluable_binding_fails_loudly() -> None:
         )
     ]
     with pytest.raises(ValueError, match="no evaluable"):
-        run_data_pilot(streams=streams, candidate_policy=CandidatePolicy.OBSERVED_ALL)
+        run_data_pilot(
+            streams=streams,
+            candidate_policy=CandidatePolicy.OBSERVED_ALL,
+            allow_leaky_observed_all=True,
+        )
 
 
 # ---------------------------------------------------------------------------
@@ -219,7 +231,11 @@ def test_every_prediction_row_carries_its_binding_and_config_hash(tmp_path: Path
 
 
 def test_the_manifest_records_the_dataset_provenance(tmp_path: Path) -> None:
-    report = run_data_pilot(streams=_streams(), candidate_policy=CandidatePolicy.OBSERVED_ALL)
+    report = run_data_pilot(
+        streams=_streams(),
+        candidate_policy=CandidatePolicy.OBSERVED_ALL,
+        allow_leaky_observed_all=True,
+    )
     write_pilot_outputs(report, tmp_path)
     manifest = json.loads((tmp_path / "manifest.json").read_text(encoding="utf-8"))
 

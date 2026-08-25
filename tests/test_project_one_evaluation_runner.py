@@ -368,6 +368,7 @@ def test_metrics_are_computed_from_steps_not_from_self_report() -> None:
         stream_id=result.stream_id,
         predictions=result.predictions,
         truth=truth,
+        observed={record.event_id: record.observed_location for record in stream.records},
         confirmation_window=3,
     )
     assert recomputed == result.metrics

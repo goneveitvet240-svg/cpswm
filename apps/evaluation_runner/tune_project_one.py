@@ -40,6 +40,17 @@ from collections.abc import Callable, Mapping, Sequence
 from dataclasses import replace
 from pathlib import Path
 
+from cpswm.system.evaluation_operations.project_one_matched_baselines import (
+    BOCPDMSConfig,
+    BOCPDMSMethod,
+    CUSUMConfig,
+    CUSUMMethod,
+    EWMAConfig,
+    EWMAMethod,
+    OrdinaryBOCPDMethod,
+    RLSFixedThresholdConfig,
+    RLSFixedThresholdMethod,
+)
 from cpswm.system.evaluation_operations.project_one_methods import (
     CategoricalBOCPDMethod,
     ContextFrequencyMethod,
@@ -51,12 +62,16 @@ from cpswm.system.evaluation_operations.project_one_protocol import (
     DEFAULT_RESIDUAL_CALIBRATION_NAME,
     CategoricalBOCPDConfig,
     ContextFrequencyConfig,
+    DecisionChainAblation,
     PersistenceConfig,
     ProjectOneProtocolConfig,
     ResidualCalibration,
     SignalAblation,
 )
 from cpswm.system.evaluation_operations.project_one_runner import ProjectOneRunner
+from cpswm.system.evaluation_operations.project_one_runtime_parameters import (
+    build_project_one_runtime_parameter_receipt,
+)
 from cpswm.system.evaluation_operations.project_one_scenarios import (
     LOCATIONS,
     build_all_scenarios,
@@ -87,10 +102,25 @@ TEST = (
 Builder = Callable[[], ProjectOneMethod]
 
 
+def _configured(
+    method_type: Callable[[Sequence[str], object], ProjectOneMethod], config: object
+) -> Builder:
+    return lambda: method_type(LOCATIONS, config)
+
+
 def _chain_grid(
-    name: str, ablation: SignalAblation, calibration: ResidualCalibration, budget: int
+    name: str,
+    ablation: SignalAblation,
+    calibration: ResidualCalibration,
+    budget: int,
+    decision_chain_ablation: DecisionChainAblation = DecisionChainAblation.FULL,
 ) -> list[tuple[dict[str, object], Builder]]:
-    base = replace(ProjectOneProtocolConfig(), ablation=ablation, residual_calibration=calibration)
+    base = replace(
+        ProjectOneProtocolConfig(),
+        ablation=ablation,
+        residual_calibration=calibration,
+        decision_chain_ablation=decision_chain_ablation,
+    )
     points: list[tuple[dict[str, object], Builder]] = []
     for threshold in (0.4, 0.5, 0.6):
         for window in (2, 3):
@@ -135,6 +165,83 @@ def _bocpd_grid(budget: int) -> list[tuple[dict[str, object], Builder]]:
                 )
             )
     return points[:budget]
+
+
+def _ordinary_bocpd_grid(budget: int) -> list[tuple[dict[str, object], Builder]]:
+    points: list[tuple[dict[str, object], Builder]] = []
+    for run_length in (20.0, 50.0, 100.0):
+        for threshold in (0.05, 0.1, 0.2, 0.4):
+            config = CategoricalBOCPDConfig(
+                expected_run_length=run_length,
+                change_threshold=threshold,
+                context_conditioned=False,
+            )
+            points.append(
+                (
+                    {"expected_run_length": run_length, "change_threshold": threshold},
+                    lambda config=config: OrdinaryBOCPDMethod(LOCATIONS, config),
+                )
+            )
+    return points[:budget]
+
+
+def _ewma_grid(budget: int) -> list[tuple[dict[str, object], Builder]]:
+    return [
+        (
+            {"smoothing": smoothing, "threshold": threshold},
+            _configured(EWMAMethod, EWMAConfig(smoothing=smoothing, threshold=threshold)),
+        )
+        for smoothing in (0.1, 0.3, 0.5)
+        for threshold in (0.2, 0.4, 0.6, 0.8)
+    ][:budget]
+
+
+def _cusum_grid(budget: int) -> list[tuple[dict[str, object], Builder]]:
+    return [
+        (
+            {"reference": reference, "threshold": threshold},
+            _configured(CUSUMMethod, CUSUMConfig(reference=reference, threshold=threshold)),
+        )
+        for reference in (0.1, 0.25, 0.4)
+        for threshold in (0.5, 1.0, 1.5, 2.0)
+    ][:budget]
+
+
+def _rls_fixed_grid(budget: int) -> list[tuple[dict[str, object], Builder]]:
+    return [
+        (
+            {"forgetting_factor": forgetting, "threshold": threshold},
+            _configured(
+                RLSFixedThresholdMethod,
+                RLSFixedThresholdConfig(forgetting_factor=forgetting, threshold=threshold),
+            ),
+        )
+        for forgetting in (0.95, 0.99, 1.0)
+        for threshold in (0.2, 0.4, 0.6, 0.8)
+    ][:budget]
+
+
+def _bocpdms_grid(budget: int) -> list[tuple[dict[str, object], Builder]]:
+    return [
+        (
+            {
+                "expected_run_length": run_length,
+                "model_switch_probability": switch,
+                "change_threshold": threshold,
+            },
+            _configured(
+                BOCPDMSMethod,
+                BOCPDMSConfig(
+                    expected_run_length=run_length,
+                    model_switch_probability=switch,
+                    change_threshold=threshold,
+                ),
+            ),
+        )
+        for run_length in (20.0, 50.0, 100.0)
+        for switch in (0.01, 0.1)
+        for threshold in (0.1, 0.3)
+    ][:budget]
 
 
 def _frequency_grid(budget: int) -> list[tuple[dict[str, object], Builder]]:
@@ -268,7 +375,33 @@ def main() -> int:
             "shuffled_rls", SignalAblation.SHUFFLED_RLS, calibration, budget
         ),
         "rls_only": _chain_grid("rls_only", SignalAblation.RLS_ONLY, calibration, budget),
+        "no_cf_bocpd": _chain_grid(
+            "no_cf_bocpd",
+            SignalAblation.FULL,
+            calibration,
+            budget,
+            DecisionChainAblation.NO_CF_BOCPD,
+        ),
+        "no_ccrr": _chain_grid(
+            "no_ccrr",
+            SignalAblation.FULL,
+            calibration,
+            budget,
+            DecisionChainAblation.NO_CCRR,
+        ),
+        "no_regime_reactivation": _chain_grid(
+            "no_regime_reactivation",
+            SignalAblation.FULL,
+            calibration,
+            budget,
+            DecisionChainAblation.NO_REGIME_REACTIVATION,
+        ),
         "categorical_bocpd": _bocpd_grid(budget),
+        "ewma": _ewma_grid(budget),
+        "cusum": _cusum_grid(budget),
+        "rls_fixed_threshold": _rls_fixed_grid(budget),
+        "ordinary_bocpd": _ordinary_bocpd_grid(budget),
+        "bocpdms": _bocpdms_grid(budget),
         "context_frequency": _frequency_grid(budget),
         "persistence": _persistence_grid(budget),
     }
@@ -293,8 +426,29 @@ def main() -> int:
             raise RuntimeError(f"{arm} received {len(grid)} points, not the shared budget {budget}")
         trials: list[dict[str, object]] = []
         for params, builder in grid:
+            runtime_receipt = build_project_one_runtime_parameter_receipt(builder(), params)
             validation = _score(builder, VALIDATION)
-            trials.append({"params": params, "validation": validation})
+            trials.append(
+                {
+                    "params": params,
+                    "runtime_parameter_receipt": {
+                        "method": runtime_receipt.method,
+                        "method_config_hash": runtime_receipt.method_config_hash,
+                        "bindings": [
+                            {
+                                "parameter": item.parameter,
+                                "target_path": item.target_path,
+                                "configured_value": item.configured_value,
+                                "runtime_value": item.runtime_value,
+                                "runtime_binding_sha256": item.runtime_binding_sha256,
+                            }
+                            for item in runtime_receipt.bindings
+                        ],
+                        "receipt_sha256": runtime_receipt.receipt_sha256,
+                    },
+                    "validation": validation,
+                }
+            )
 
         def rank(trial: dict[str, object]) -> tuple[float, float]:
             metrics = trial["validation"]  # type: ignore[index]

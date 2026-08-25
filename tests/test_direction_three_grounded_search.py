@@ -16,6 +16,7 @@ from cpswm.contracts import (
     DynamicObjectState,
     EntityType,
     EvidenceChannel,
+    EvidenceRef,
     ExecutionFeedbackRecord,
     HardConstraintEvaluation,
     HardConstraintStatus,
@@ -41,6 +42,7 @@ from cpswm.contracts import (
     StaticGeometryAnchor,
     VerificationModality,
     VerificationObservation,
+    build_query_compiler_provenance,
 )
 from cpswm.foundation.persistence_replay import AppendOnlyTransactionLog
 from cpswm.world_model.grounded_search import (
@@ -66,13 +68,27 @@ def pose(x=0.0, y=0.0, z=1.0):
 
 
 def query():
+    utterance = "找我晚上经常放在床边用的那个东西"
+    source_record_id = uuid4()
     return CompiledSemanticQuery(
-        utterance="找我晚上经常放在床边用的那个东西",
+        utterance=utterance,
         category_candidates=("phone", "glasses", "cup"),
         relations=("used_by", "usually_located_at"),
         time_expression="night",
         soft_constraints=("bedside", "frequently_used"),
         compiler_model_version="structured-llm@0.1",
+        input_evidence_refs=(
+            EvidenceRef(evidence_type="query_utterance", source_record_id=source_record_id),
+        ),
+        invocation_provenance=build_query_compiler_provenance(
+            provider="test-fixture",
+            model="structured-llm",
+            version="0.1",
+            temperature=0.0,
+            prompt_template_version="grounded-search-test@0.1",
+            prompt=utterance,
+            input_evidence_refs=(source_record_id,),
+        ),
     )
 
 

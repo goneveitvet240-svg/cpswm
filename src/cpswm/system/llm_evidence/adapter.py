@@ -11,7 +11,7 @@ from dataclasses import dataclass
 from datetime import datetime
 from itertools import permutations
 from typing import Any, Protocol
-from uuid import NAMESPACE_URL, UUID, uuid5
+from uuid import NAMESPACE_URL, UUID, uuid4, uuid5
 
 from cpswm.contracts import (
     ActorEvidenceTrack,
@@ -20,17 +20,21 @@ from cpswm.contracts import (
     EventMechanism,
     EventMechanismEvidence,
     HiddenEventEvidenceTrack,
+    LLMIntegrationRole,
     RoleBindingEvidence,
     SourceType,
     ordered_role_key,
 )
 
 from .contracts import (
+    LLMCacheStatus,
+    LLMCallAuditReceipt,
     LLMCandidateKind,
     LLMEvidenceOutput,
     LLMEvidenceRequest,
     LLMGeneratedCandidate,
     LLMInvocationAccounting,
+    enforce_no_prompt_truth,
     enforce_no_truth,
 )
 
@@ -111,10 +115,7 @@ class OpenAICompatibleEvidenceProvider:
             "messages": [
                 {
                     "role": "system",
-                    "content": (
-                        "Return only candidate evidence JSON. Preserve unknown/abstain. "
-                        "Never assert evaluator truth or request state writes."
-                    ),
+                    "content": request.prompt,
                 },
                 {
                     "role": "user",
@@ -155,8 +156,11 @@ class OpenAICompatibleEvidenceProvider:
         input_tokens = int(usage.get("prompt_tokens", 0))
         output_tokens = int(usage.get("completion_tokens", 0))
         return LLMEvidenceOutput(
+            role=request.role,
             identity=request.identity,
             prompt_template_version=request.prompt_template_version,
+            prompt_sha256=request.prompt_sha256,
+            temperature=request.temperature,
             input_evidence_refs=request.input_evidence_refs,
             generated_candidates=candidates,
             confidence=parsed["confidence"],
@@ -205,56 +209,73 @@ class DeterministicEvidenceProvider:
         unknown = 0.55 if self.force_abstain else 0.15
         remaining = 1.0 - unknown
         candidates: list[LLMGeneratedCandidate] = []
-        for actor in actors:
-            score = unknown if actor == "unknown_actor" else remaining / max(len(known), 1)
-            candidates.append(
-                LLMGeneratedCandidate(
-                    kind=LLMCandidateKind.ACTOR,
-                    value=actor,
-                    score=score,
-                    evidence_refs=request.input_evidence_refs,
+        if request.role is LLMIntegrationRole.STRUCTURE_TWO_EVIDENCE_PROVIDER:
+            for actor in actors:
+                score = unknown if actor == "unknown_actor" else remaining / max(len(known), 1)
+                candidates.append(
+                    LLMGeneratedCandidate(
+                        kind=LLMCandidateKind.ACTOR,
+                        value=actor,
+                        score=score,
+                        evidence_refs=request.input_evidence_refs,
+                    )
                 )
-            )
-        mechanism_scores = {
-            EventMechanism.DIRECT_RELOCATION.value: 0.45 * remaining,
-            EventMechanism.HANDOFF_RELOCATION.value: 0.55 * remaining,
-            EventMechanism.UNKNOWN_MECHANISM.value: unknown,
-        }
-        for value, score in mechanism_scores.items():
+            mechanism_scores = {
+                EventMechanism.DIRECT_RELOCATION.value: 0.45 * remaining,
+                EventMechanism.HANDOFF_RELOCATION.value: 0.55 * remaining,
+                EventMechanism.UNKNOWN_MECHANISM.value: unknown,
+            }
+            for value, score in mechanism_scores.items():
+                candidates.append(
+                    LLMGeneratedCandidate(
+                        kind=LLMCandidateKind.MECHANISM,
+                        value=value,
+                        score=score,
+                        evidence_refs=request.input_evidence_refs,
+                    )
+                )
+            pairs = tuple(permutations(known[:2], 2))
+            for left, right in pairs:
+                candidates.append(
+                    LLMGeneratedCandidate(
+                        kind=LLMCandidateKind.ORDERED_ROLE,
+                        value=ordered_role_key(left, right),
+                        score=1.0 / len(pairs),
+                        evidence_refs=request.input_evidence_refs,
+                    )
+                )
+        visible_locations = tuple(request.visible_payload.get("candidate_location_ids", ()))
+        preferred = next(
+            (
+                request.visible_payload.get(field)
+                for field in (
+                    "observed_destination_location_id",
+                    "attempted_location_id",
+                    "source_location_id",
+                )
+                if request.visible_payload.get(field)
+            ),
+            None,
+        )
+        for value in visible_locations:
+            score = 0.6 if value == preferred else 0.4 / max(len(visible_locations) - 1, 1)
             candidates.append(
                 LLMGeneratedCandidate(
-                    kind=LLMCandidateKind.MECHANISM,
+                    kind=LLMCandidateKind.LOCATION,
                     value=value,
                     score=score,
                     evidence_refs=request.input_evidence_refs,
                 )
             )
-        pairs = tuple(permutations(known[:2], 2))
-        for left, right in pairs:
-            candidates.append(
-                LLMGeneratedCandidate(
-                    kind=LLMCandidateKind.ORDERED_ROLE,
-                    value=ordered_role_key(left, right),
-                    score=1.0 / len(pairs),
-                    evidence_refs=request.input_evidence_refs,
-                )
-            )
-        for field in (
-            "observed_destination_location_id",
-            "attempted_location_id",
-            "source_location_id",
-        ):
-            value = request.visible_payload.get(field)
-            if value:
+            if request.role is LLMIntegrationRole.LLM_DIRECT_BASELINE:
                 candidates.append(
                     LLMGeneratedCandidate(
-                        kind=LLMCandidateKind.LOCATION,
-                        value=value,
-                        score=0.6,
+                        kind=LLMCandidateKind.ACTION,
+                        value=f"put_back:{value}",
+                        score=score,
                         evidence_refs=request.input_evidence_refs,
                     )
                 )
-                break
         selected_candidates = tuple(candidates[: request.candidate_count * 4])
         payload = {
             "candidates": [item.model_dump(mode="json") for item in selected_candidates],
@@ -265,8 +286,11 @@ class DeterministicEvidenceProvider:
         content_hash = LLMEvidenceOutput.content_digest(payload)
         provenance_id = hashlib.sha256(f"{request.cache_key}|{content_hash}".encode()).hexdigest()
         return LLMEvidenceOutput(
+            role=request.role,
             identity=request.identity,
             prompt_template_version=request.prompt_template_version,
+            prompt_sha256=request.prompt_sha256,
+            temperature=request.temperature,
             input_evidence_refs=request.input_evidence_refs,
             generated_candidates=selected_candidates,
             confidence=1.0 - unknown,
@@ -313,17 +337,31 @@ class LLMStructuredEvidenceBundle:
 @dataclass(frozen=True, slots=True)
 class LLMEvidenceAdapterResult:
     output: LLMEvidenceOutput
-    typed_evidence: LLMStructuredEvidenceBundle
+    typed_evidence: LLMStructuredEvidenceBundle | None
     from_cache: bool
+    call_audit: LLMCallAuditReceipt
 
 
 class LLMEvidenceAdapter:
-    def __init__(self, *, provider: LLMEvidenceProvider, cache: LLMEvidenceCache) -> None:
+    def __init__(
+        self,
+        *,
+        provider: LLMEvidenceProvider,
+        cache: LLMEvidenceCache,
+        audit_session_id: UUID | None = None,
+    ) -> None:
         self.provider = provider
         self.cache = cache
+        self.audit_session_id = audit_session_id or uuid4()
+        self._call_audits: list[LLMCallAuditReceipt] = []
+
+    @property
+    def call_audits(self) -> tuple[LLMCallAuditReceipt, ...]:
+        return tuple(self._call_audits)
 
     def generate(self, request: LLMEvidenceRequest) -> LLMEvidenceAdapterResult:
         enforce_no_truth(request.visible_payload)
+        enforce_no_prompt_truth(request.prompt)
         output = self.cache.get(request.cache_key)
         from_cache = output is not None
         if output is None:
@@ -334,7 +372,40 @@ class LLMEvidenceAdapter:
             # Cache contents cross the same trust boundary as provider output.
             # This rejects disk/cache poisoning before typed evidence is built.
             self._validate_output(request, output)
-        return LLMEvidenceAdapterResult(output, self._to_typed(request, output), from_cache)
+        typed_evidence = (
+            self._to_typed(request, output)
+            if request.role is LLMIntegrationRole.STRUCTURE_TWO_EVIDENCE_PROVIDER
+            else None
+        )
+        call_sequence = len(self._call_audits) + 1
+        call_audit = LLMCallAuditReceipt(
+            audit_id=uuid5(
+                NAMESPACE_URL,
+                f"{self.audit_session_id}:{request.cache_key}:call:{call_sequence}:"
+                f"{'hit' if from_cache else 'miss'}",
+            ),
+            call_sequence=call_sequence,
+            role=request.role,
+            cache_status=LLMCacheStatus.HIT if from_cache else LLMCacheStatus.MISS,
+            provider_invoked=not from_cache,
+            cache_key=request.cache_key,
+            output_provenance_id=output.provenance_id,
+            prompt_sha256=request.prompt_sha256,
+            input_evidence_refs=request.input_evidence_refs,
+            source_invocation_provenance=output.invocation_provenance,
+            call_accounting=(
+                LLMInvocationAccounting(
+                    input_tokens=0,
+                    output_tokens=0,
+                    latency_ms=0.0,
+                    cost_usd=0.0,
+                )
+                if from_cache
+                else output.accounting
+            ),
+        )
+        self._call_audits.append(call_audit)
+        return LLMEvidenceAdapterResult(output, typed_evidence, from_cache, call_audit)
 
     @staticmethod
     def _validate_output(request: LLMEvidenceRequest, output: LLMEvidenceOutput) -> None:
@@ -342,7 +413,10 @@ class LLMEvidenceAdapter:
         if output.cache_key != request.cache_key:
             raise ValueError("provider returned a mismatched deterministic cache key")
         if (
-            output.identity != request.identity
+            output.role != request.role
+            or output.temperature != request.temperature
+            or output.prompt_sha256 != request.prompt_sha256
+            or output.identity != request.identity
             or output.prompt_template_version != request.prompt_template_version
         ):
             raise ValueError("provider provenance does not match request")

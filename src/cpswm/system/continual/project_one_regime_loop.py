@@ -64,6 +64,9 @@ class PrototypeLoopConfig:
     bocpd_hazard_probability: float = 0.05
     ccrr_similarity_threshold: float = 0.6
     ccrr_attribution_margin: float = 0.15
+    cause_factorized_bocpd_enabled: bool = True
+    ccrr_enabled: bool = True
+    regime_reactivation_enabled: bool = True
     derived_reactivation_policy: DerivedEvidenceReactivationPolicy = (
         DerivedEvidenceReactivationPolicy.REQUIRE_FRESH_FEEDBACK
     )
@@ -153,6 +156,7 @@ class AutomaticCFBOCPDCCRRRouter:
             change_threshold=config.habit_change_probability_threshold,
             similarity_threshold=config.ccrr_similarity_threshold,
             attribution_margin=config.ccrr_attribution_margin,
+            allow_reactivation=config.regime_reactivation_enabled,
         )
         self._observation_count = 0
         self._last_observation_time: datetime | None = None
@@ -188,7 +192,11 @@ class AutomaticCFBOCPDCCRRRouter:
             raise ValueError("automatic regime observations must be strictly chronological")
         self._observation_count += 1
         self._last_observation_time = frame.timestamp
-        snapshot = self.bocpd.observe_online(frame)
+        snapshot = (
+            self.bocpd.observe_online(frame)
+            if self.config.cause_factorized_bocpd_enabled
+            else self._direct_signal_snapshot(frame)
+        )
         old_regime = self.ccrr.active_regime(
             object_instance_id=self.object_instance_id,
             actor_id=self.actor_id,
@@ -280,21 +288,38 @@ class AutomaticCFBOCPDCCRRRouter:
                     False,
                     "candidate is still inside the confirmation window",
                 )
-            decision = self.ccrr.decide(
-                object_instance_id=self.object_instance_id,
-                actor_id=self.actor_id,
-                owner_actor_id=self.owner_actor_id,
-                snapshot=candidate.snapshot,
-                context_features=context_features,
-                identity_switch_probability=identity_switch_probability,
-                now=frame.timestamp,
-            )
+            decision = None
+            if self.config.ccrr_enabled:
+                decision = self.ccrr.decide(
+                    object_instance_id=self.object_instance_id,
+                    actor_id=self.actor_id,
+                    owner_actor_id=self.owner_actor_id,
+                    snapshot=candidate.snapshot,
+                    context_features=context_features,
+                    identity_switch_probability=identity_switch_probability,
+                    now=frame.timestamp,
+                )
+            else:
+                self.ccrr.add_regime(
+                    RegimeLibraryEntry(
+                        regime_id=(
+                            f"{self.actor_id}@no-ccrr@{frame.timestamp.isoformat()}@"
+                            f"{self.object_instance_id.hex[:8]}"
+                        ),
+                        actor_id=self.actor_id,
+                        object_instance_id=self.object_instance_id,
+                        context_fingerprint=context_features,
+                        cause_origin=ChangeCause.HABIT,
+                        created_at=frame.timestamp,
+                    ),
+                    make_active=True,
+                )
             self._pending = None
             new_regime = self.ccrr.active_regime(
                 object_instance_id=self.object_instance_id,
                 actor_id=self.actor_id,
             )
-            if decision.kind in {
+            if decision is None or decision.kind in {
                 RegimeDecisionKind.CREATE,
                 RegimeDecisionKind.REACTIVATE,
             }:
@@ -319,7 +344,11 @@ class AutomaticCFBOCPDCCRRRouter:
                     snapshot,
                     candidate.snapshot.timestamp,
                     True,
-                    "CCRR confirmed a persistent candidate",
+                    (
+                        "persistent candidate created a fresh regime without CCRR"
+                        if decision is None
+                        else "CCRR confirmed a persistent candidate"
+                    ),
                 )
             return self._assessment(
                 HabitStateConclusion.INSUFFICIENT_EVIDENCE,
@@ -384,6 +413,44 @@ class AutomaticCFBOCPDCCRRRouter:
             None,
             True,
             "no candidate crossed the configured gate",
+        )
+
+    @staticmethod
+    def _direct_signal_snapshot(frame: CauseSignalFrame) -> JointCauseSnapshot:
+        """A no-CF snapshot derived only from the current cause-signal frame."""
+
+        substantive = {
+            cause: frame.signals[cause]
+            for cause in (ChangeCause.OBSERVATION, ChangeCause.ACTOR, ChangeCause.HABIT)
+        }
+        total = sum(substantive.values())
+        cause_posterior = {
+            cause: (value / total if total > 0.0 else 0.0) for cause, value in substantive.items()
+        }
+        noise = frame.signals[ChangeCause.NOISE]
+        segment_change = (1.0 - noise) * max(substantive.values(), default=0.0)
+        continuing = max(0.0, 1.0 - noise - segment_change)
+        dominant = max(substantive, key=substantive.__getitem__) if total > 0.0 else None
+        active_set = frozenset({dominant}) if dominant is not None else frozenset()
+        set_posterior = {active_set: 1.0}
+        joint_cause = (
+            {(0, cause): probability for cause, probability in cause_posterior.items()}
+            if total > 0.0
+            else {(0, ChangeCause.HABIT): 1.0}
+        )
+        return JointCauseSnapshot(
+            timestamp=frame.timestamp,
+            joint_run_length_cause_posterior=joint_cause,
+            joint_run_length_cause_set_posterior={(0, active_set): 1.0},
+            continue_probability=continuing,
+            segment_change_probability=segment_change,
+            segment_cause_posterior=cause_posterior,
+            segment_cause_set_posterior=set_posterior,
+            active_regime_cause_set_posterior=set_posterior,
+            active_regime_cause_posterior=cause_posterior,
+            transient_noise_probability=noise,
+            block_reference=substantive,
+            beam_size=1,
         )
 
     @staticmethod

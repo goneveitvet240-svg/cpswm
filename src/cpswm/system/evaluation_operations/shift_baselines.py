@@ -336,6 +336,8 @@ class OnlineJointCauseFactorizedBOCPDBaseline:
         hazard_probability: float = 0.05,
         detection_threshold: float = 0.5,
         beam_width: int = 24,
+        maximum_simultaneous_causes: int = 1,
+        simultaneous_hazard_scale: float = 0.25,
     ) -> None:
         if warmup_days < 1:
             raise ValueError("warmup_days must be positive")
@@ -345,10 +347,16 @@ class OnlineJointCauseFactorizedBOCPDBaseline:
             raise ValueError("detection_threshold must lie in [0, 1]")
         if beam_width < 1:
             raise ValueError("beam_width must be positive")
+        if not 1 <= maximum_simultaneous_causes <= len(ChangeCause) - 1:
+            raise ValueError("maximum_simultaneous_causes is outside the cause space")
+        if not 0.0 < simultaneous_hazard_scale <= 1.0:
+            raise ValueError("simultaneous_hazard_scale must lie in (0, 1]")
         self._warmup_days = warmup_days
         self._hazard_probability = hazard_probability
         self._detection_threshold = detection_threshold
         self._beam_width = beam_width
+        self._maximum_simultaneous_causes = maximum_simultaneous_causes
+        self._simultaneous_hazard_scale = simultaneous_hazard_scale
 
     def predict(self, model_input: OnlineShiftCaseInput) -> OnlineShiftPrediction:
         likelihood_frames = OnlineCauseFactorizedBOCPDBaseline(
@@ -375,6 +383,8 @@ class OnlineJointCauseFactorizedBOCPDBaseline:
         result = JointCauseFactorizedBOCPD(
             hazard_probability=self._hazard_probability,
             beam_width=self._beam_width,
+            maximum_simultaneous_causes=self._maximum_simultaneous_causes,
+            simultaneous_hazard_scale=self._simultaneous_hazard_scale,
             model_version=self.model_version,
         ).run(
             signal_frames,

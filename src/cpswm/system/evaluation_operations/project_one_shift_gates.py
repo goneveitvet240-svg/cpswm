@@ -102,6 +102,11 @@ _SEARCH_SPACES: dict[ProjectOneAblationArmId, tuple[dict[str, int | float], ...]
             "hazard_probability": hazard,
             "detection_threshold": threshold,
             "beam_width": beam,
+            # Backward-compatible SHIFT arm: the pre-joint-event benchmark
+            # allowed one cause per changepoint.  Carry that choice explicitly
+            # now that the detector exposes multi-cause event regimes.
+            "maximum_simultaneous_causes": 1,
+            "simultaneous_hazard_scale": 0.25,
         }
         for hazard in (0.01, 0.05, 0.1)
         for threshold in (0.2, 0.35, 0.5)

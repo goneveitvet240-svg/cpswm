@@ -47,7 +47,7 @@ import random
 from abc import ABC, abstractmethod
 from collections import defaultdict
 from collections.abc import Mapping, Sequence
-from dataclasses import dataclass, replace
+from dataclasses import asdict, dataclass, replace
 from datetime import UTC, datetime
 from math import isfinite, log, tanh
 from typing import Protocol, runtime_checkable
@@ -70,7 +70,7 @@ from cpswm.world_model.habits_transitions import (
     HierarchicalDirichletHabitModel,
 )
 
-from .project_one_dataset import ProjectOneDatasetRecord
+from .project_one_dataset import UNKNOWN_LOCATION, ProjectOneDatasetRecord
 from .project_one_protocol import (
     CategoricalBOCPDConfig,
     ContextFrequencyConfig,
@@ -88,6 +88,7 @@ from .project_one_protocol import (
 )
 
 __all__ = [
+    "OPEN_SET_LOCATION",
     "CategoricalBOCPDMethod",
     "ContextFrequencyMethod",
     "CoreHabitChainMethod",
@@ -99,6 +100,12 @@ __all__ = [
 
 _NS = uuid5(NAMESPACE_URL, "cpswm.project-one-evaluation")
 _EPOCH = datetime(2026, 1, 1, tzinfo=UTC)
+
+# Reserved model-vocabulary slot for any location not available when the
+# candidate set was frozen.  The raw location remains in the dataset record;
+# only the method-facing copy is mapped to this slot.
+# Backward-compatible public name for the canonical dataset sentinel.
+OPEN_SET_LOCATION = UNKNOWN_LOCATION
 
 
 def _uuid(kind: str, value: str) -> UUID:
@@ -206,18 +213,29 @@ class _BaseMethod(ABC):
     ``_last_location`` bookkeeping is left to each subclass to remember.
     """
 
-    def __init__(self, name: str, locations: Sequence[str]) -> None:
+    def __init__(
+        self,
+        name: str,
+        locations: Sequence[str],
+        *,
+        open_set: bool = False,
+    ) -> None:
         unique = tuple(dict.fromkeys(locations))
         if len(unique) < 2:
             raise ValueError("a project-one method needs at least two candidate locations")
         self.name = name
         self.locations = unique
+        self.open_set = open_set
+        if self.open_set and OPEN_SET_LOCATION not in self.locations:
+            raise ValueError("open_set=True requires OPEN_SET_LOCATION in candidate locations")
         self._last_location: str | None = None
         self._step_index = 0
+        self._open_set_hits = 0
 
     def reset(self) -> None:
         self._last_location = None
         self._step_index = 0
+        self._open_set_hits = 0
         self._reset_state()
 
     @abstractmethod
@@ -233,7 +251,12 @@ class _BaseMethod(ABC):
 
     def observe(self, event: ProjectOneDatasetRecord) -> StepPrediction:
         if event.observed_location not in self.locations:
-            raise ValueError(f"location {event.observed_location!r} is outside the candidate set")
+            if not self.open_set:
+                raise ValueError(
+                    f"location {event.observed_location!r} is outside the candidate set"
+                )
+            event = replace(event, observed_location=OPEN_SET_LOCATION)
+            self._open_set_hits += 1
         prior = self._predict(event)
         prediction = self._step(event, prior)
         self._last_location = event.observed_location
@@ -253,6 +276,8 @@ class _BaseMethod(ABC):
             "steps": self._step_index,
             "last_location": self._last_location,
             "config_hash": self.config_hash(),
+            "open_set": self.open_set,
+            "open_set_hits": self._open_set_hits,
         }
 
     def prime(self, records: Sequence[ProjectOneDatasetRecord]) -> None:  # noqa: B027
@@ -302,8 +327,9 @@ class CoreHabitChainMethod(_BaseMethod):
         object_id: str,
         config: ProjectOneProtocolConfig,
         shuffle_lag: int = 3,
+        open_set: bool = False,
     ) -> None:
-        super().__init__(name, locations)
+        super().__init__(name, locations, open_set=open_set)
         if shuffle_lag < 1:
             raise ValueError("shuffle_lag must be at least 1")
         self.config = config
@@ -371,9 +397,12 @@ class CoreHabitChainMethod(_BaseMethod):
             "household_id": self.household_id,
             "object_id": self.object_id,
             "locations": list(self.locations),
+            "open_set": self.open_set,
             "shuffle_lag": self._shuffle_lag,
+            "protocol_config": asdict(self.config),
             "protocol_config_hash": self.config.config_hash(),
             "ablation": self.config.ablation.value,
+            "decision_chain_ablation": self.config.decision_chain_ablation.value,
             "residual_calibration": self.config.residual_calibration.value,
         }
 
@@ -525,6 +554,17 @@ class CoreHabitChainMethod(_BaseMethod):
             candidate_locations=self._location_uuids,
             location_embeddings=self._embeddings,
             regime_id=self.active_regime,
+            # These routes are explicitly defined as transformations of the
+            # historical sigmoid readout.  AS_IS consumes the corrected raw
+            # RLS score.  Asking the bank for the matching scale here makes
+            # RAW_CLIP a true equivalence control instead of applying a logit
+            # to an already-raw score.
+            apply_sigmoid=self.config.residual_calibration
+            in (
+                ResidualCalibration.LOGIT,
+                ResidualCalibration.RAW_CLIP,
+                ResidualCalibration.RECENTER,
+            ),
         )
 
         raw_surprise = normalized_predictive_surprise(
@@ -682,8 +722,14 @@ class PersistenceMethod(_BaseMethod):
     The floor.  Any method that cannot beat this is not doing useful work.
     """
 
-    def __init__(self, locations: Sequence[str], config: PersistenceConfig | None = None) -> None:
-        super().__init__("persistence", locations)
+    def __init__(
+        self,
+        locations: Sequence[str],
+        config: PersistenceConfig | None = None,
+        *,
+        open_set: bool = False,
+    ) -> None:
+        super().__init__("persistence", locations, open_set=open_set)
         self.config = config or PersistenceConfig()
         self._reset_state()
 
@@ -691,7 +737,12 @@ class PersistenceMethod(_BaseMethod):
         return None
 
     def config_payload(self) -> Mapping[str, object]:
-        return {"kind": "persistence", "confidence": self.config.confidence}
+        return {
+            "kind": "persistence",
+            "confidence": self.config.confidence,
+            "locations": list(self.locations),
+            "open_set": self.open_set,
+        }
 
     def _predict(self, event: ProjectOneDatasetRecord) -> dict[str, float]:
         if self._last_location is None:
@@ -725,9 +776,13 @@ class ContextFrequencyMethod(_BaseMethod):
     """
 
     def __init__(
-        self, locations: Sequence[str], config: ContextFrequencyConfig | None = None
+        self,
+        locations: Sequence[str],
+        config: ContextFrequencyConfig | None = None,
+        *,
+        open_set: bool = False,
     ) -> None:
-        super().__init__("context_frequency", locations)
+        super().__init__("context_frequency", locations, open_set=open_set)
         self.config = config or ContextFrequencyConfig()
         self._reset_state()
 
@@ -741,6 +796,8 @@ class ContextFrequencyMethod(_BaseMethod):
             "kind": "context_frequency",
             "alpha": self.config.alpha,
             "change_threshold": self.config.change_threshold,
+            "locations": list(self.locations),
+            "open_set": self.open_set,
         }
 
     def _predict(self, event: ProjectOneDatasetRecord) -> dict[str, float]:
@@ -794,9 +851,13 @@ class CategoricalBOCPDMethod(_BaseMethod):
     """
 
     def __init__(
-        self, locations: Sequence[str], config: CategoricalBOCPDConfig | None = None
+        self,
+        locations: Sequence[str],
+        config: CategoricalBOCPDConfig | None = None,
+        *,
+        open_set: bool = False,
     ) -> None:
-        super().__init__("categorical_bocpd", locations)
+        super().__init__("categorical_bocpd", locations, open_set=open_set)
         self.config = config or CategoricalBOCPDConfig()
         self._hazard = 1.0 / self.config.expected_run_length
         self._reset_state()
@@ -813,6 +874,8 @@ class CategoricalBOCPDMethod(_BaseMethod):
             "change_threshold": self.config.change_threshold,
             "max_run_length": self.config.max_run_length,
             "context_conditioned": self.config.context_conditioned,
+            "locations": list(self.locations),
+            "open_set": self.open_set,
         }
 
     def _run_predictive(self, run_length: int, event: ProjectOneDatasetRecord) -> float:

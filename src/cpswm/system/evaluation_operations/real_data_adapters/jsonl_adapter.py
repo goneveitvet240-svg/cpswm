@@ -30,6 +30,7 @@ from pathlib import Path
 from ..dataset_adapters import DatasetAdapter
 from ..project_one_dataset import (
     FORBIDDEN_RECORD_FIELDS,
+    UNKNOWN_LOCATION,
     ProjectOneDatasetRecord,
     ProjectOneGroundTruth,
 )
@@ -66,8 +67,6 @@ REQUIRED_EVENT_FIELDS: tuple[str, ...] = (
 #: Explicit stand-in for "the log says it does not know".  Distinct from every
 #: real location, and only ever produced under
 #: :attr:`UnknownLocationPolicy.SENTINEL`.
-UNKNOWN_LOCATION = "__unknown_location__"
-
 #: Spellings real exports use for "no idea".  Matched case-insensitively after
 #: stripping, so ``"  Unknown "`` is caught too.
 _UNKNOWN_TOKENS = frozenset({"", "unknown", "none", "null", "n/a", "na", "?", "-"})

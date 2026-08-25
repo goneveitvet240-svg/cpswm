@@ -17,6 +17,7 @@ from cpswm.contracts import ContractModel
 
 class ProjectTwoExperimentalTrack(StrEnum):
     NO_LLM_CORE = "no_llm_project_two_core"
+    LLM_PRIOR_ONLY = "llm_prior_only_project_two"
     LLM_AS_EVIDENCE = "llm_as_evidence_project_two"
     LLM_DIRECT_DECISION = "llm_direct_decision_baseline"
     ORACLE_EVIDENCE = "oracle_evidence_upper_bound"

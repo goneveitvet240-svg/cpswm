@@ -60,6 +60,7 @@ __all__ = [
     "SIGMOID_RESIDUAL_FLOOR",
     "CategoricalBOCPDConfig",
     "ContextFrequencyConfig",
+    "DecisionChainAblation",
     "HistogramResidualCalibrator",
     "PersistenceConfig",
     "PlattResidualCalibrator",
@@ -72,6 +73,7 @@ __all__ = [
     "config_identity",
     "habit_signal",
     "normalized_predictive_surprise",
+    "payload_identity",
     "residual_severity",
 ]
 
@@ -94,6 +96,19 @@ def config_identity(config: object) -> str:
     """
 
     return content_sha256(asdict(config))  # type: ignore[call-overload]
+
+
+def payload_identity(payload: object) -> str:
+    """Content identity for an already-materialized runtime payload.
+
+    ``config_identity`` intentionally accepts frozen dataclasses.  Runtime
+    method receipts also include derived fields such as candidate locations,
+    so they are mappings rather than dataclasses and must be hashed directly.
+    Keeping the two entry points distinct prevents an ``asdict`` type error
+    while preserving one canonical SHA-256 implementation.
+    """
+
+    return content_sha256(payload)
 
 
 class ProjectOneDecision(StrEnum):
@@ -131,6 +146,15 @@ class SignalAblation(StrEnum):
     SHUFFLED_RLS = "shuffled_rls"
     #: Dirichlet surprise forced to zero; RLS residual untouched.
     RLS_ONLY = "rls_only"
+
+
+class DecisionChainAblation(StrEnum):
+    """One-at-a-time structural cuts after the Dirichlet/RLS signal."""
+
+    FULL = "full"
+    NO_CF_BOCPD = "no_cf_bocpd"
+    NO_CCRR = "no_ccrr"
+    NO_REGIME_REACTIVATION = "no_regime_reactivation"
 
 
 class ResidualCalibration(StrEnum):
@@ -408,6 +432,7 @@ class ProjectOneProtocolConfig:
     #: before v0.2 it was declared here and never used.
     rls_regularization: float = 1e-6
     ablation: SignalAblation = SignalAblation.FULL
+    decision_chain_ablation: DecisionChainAblation = DecisionChainAblation.FULL
     residual_calibration: ResidualCalibration = ResidualCalibration.RAW_CLIP
     protocol_version: str = PROTOCOL_VERSION
 
@@ -458,6 +483,13 @@ class ProjectOneProtocolConfig:
             context_confirmation_max_distance=self.context_confirmation_max_distance,
             dirichlet_surprise_weight=self.dirichlet_surprise_weight,
             rls_residual_weight=self.rls_residual_weight,
+            cause_factorized_bocpd_enabled=(
+                self.decision_chain_ablation is not DecisionChainAblation.NO_CF_BOCPD
+            ),
+            ccrr_enabled=(self.decision_chain_ablation is not DecisionChainAblation.NO_CCRR),
+            regime_reactivation_enabled=(
+                self.decision_chain_ablation is not DecisionChainAblation.NO_REGIME_REACTIVATION
+            ),
         )
 
 

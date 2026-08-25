@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import json
 import sys
-from datetime import datetime, timedelta, timezone
+from datetime import UTC, datetime, timedelta
 from pathlib import Path
 from uuid import UUID
 
@@ -15,7 +15,7 @@ _SOURCE_ROOT = _PROJECT_ROOT / "src"
 if str(_SOURCE_ROOT) not in sys.path:
     sys.path.insert(0, str(_SOURCE_ROOT))
 
-from cpswm.contracts import (
+from cpswm.contracts import (  # noqa: E402
     ActionOutcomeLikelihoodModel,
     BaseRecordMetadata,
     CandidateKind,
@@ -24,6 +24,7 @@ from cpswm.contracts import (
     EntityRef,
     EntityType,
     EvidenceChannel,
+    EvidenceRef,
     ExecutionFeedbackRecord,
     JointCandidateEvidence,
     JointPosteriorRequest,
@@ -35,9 +36,10 @@ from cpswm.contracts import (
     SourceType,
     ValidTimeInterval,
     VerificationObservation,
+    build_query_compiler_provenance,
 )
-from cpswm.foundation.persistence_replay import AppendOnlyTransactionLog
-from cpswm.world_model.grounded_search import (
+from cpswm.foundation.persistence_replay import AppendOnlyTransactionLog  # noqa: E402
+from cpswm.world_model.grounded_search import (  # noqa: E402
     DirectionThreePipeline,
     GroundedTaskExecution,
     OracleActionOutcomeModelProvider,
@@ -48,10 +50,10 @@ from cpswm.world_model.grounded_search import (
     OracleVerificationObservationProvider,
 )
 
-
 HOUSEHOLD = UUID("00000000-0000-0000-0000-000000000101")
 SESSION = UUID("00000000-0000-0000-0000-000000000102")
 TRACE = UUID("00000000-0000-0000-0000-000000000103")
+QUERY_SOURCE = UUID("00000000-0000-0000-0000-000000000104")
 PHONE = UUID("00000000-0000-0000-0000-000000000201")
 GLASSES = UUID("00000000-0000-0000-0000-000000000202")
 UNKNOWN = UUID("00000000-0000-0000-0000-000000000299")
@@ -60,7 +62,7 @@ GLASSES_LOCATION = UUID("00000000-0000-0000-0000-000000000302")
 OBSERVATION_ACTION = UUID("00000000-0000-0000-0000-000000000401")
 OBSERVATION_OPPORTUNITY = UUID("00000000-0000-0000-0000-000000000402")
 GRASP_ACTION = UUID("00000000-0000-0000-0000-000000000403")
-RECORDED_AT = datetime(2026, 8, 14, 0, 0, tzinfo=timezone.utc)
+RECORDED_AT = datetime(2026, 8, 14, 0, 0, tzinfo=UTC)
 
 
 def metadata(
@@ -93,13 +95,29 @@ def channel_evidence(likelihoods: tuple[float, ...]):
 
 
 def main() -> None:
+    query_utterance = "找我晚上经常放在床边用的那个东西"
     truth_query = CompiledSemanticQuery(
-        utterance="找我晚上经常放在床边用的那个东西",
+        utterance=query_utterance,
         category_candidates=("phone", "glasses", "cup"),
         relations=("used_by", "usually_located_at"),
         time_expression="night",
         soft_constraints=("bedside", "frequently_used"),
         compiler_model_version="m29-l0-oracle-compiler@0.1",
+        input_evidence_refs=(
+            EvidenceRef(
+                evidence_type="oracle_query_utterance",
+                source_record_id=QUERY_SOURCE,
+            ),
+        ),
+        invocation_provenance=build_query_compiler_provenance(
+            provider="oracle-fixture",
+            model="m29-l0-oracle-compiler",
+            version="0.1",
+            temperature=0.0,
+            prompt_template_version="m29-l0-oracle-query@0.1",
+            prompt=query_utterance,
+            input_evidence_refs=(QUERY_SOURCE,),
+        ),
     )
     compiler = OracleSemanticQueryCompiler(truth_query)
     compiled_query = compiler.compile(truth_query.utterance)
@@ -130,9 +148,7 @@ def main() -> None:
     )
     retriever = OracleGroundedCandidateRetriever(candidates)
     request = JointPosteriorRequest(
-        metadata=metadata(
-            "cpswm.JointPosteriorRequest", SourceType.SIMULATION, "m29-l0-oracle"
-        ),
+        metadata=metadata("cpswm.JointPosteriorRequest", SourceType.SIMULATION, "m29-l0-oracle"),
         compiled_query=compiled_query,
         candidates=tuple(retriever.retrieve(compiled_query)),
         resolution_threshold=0.70,
@@ -180,18 +196,12 @@ def main() -> None:
         calibration_domain="m29-l0-oracle-household",
     )
     success_feedback = ExecutionFeedbackRecord(
-        metadata=metadata(
-            "cpswm.ExecutionFeedbackRecord", SourceType.ACTION, "oracle-gripper"
-        ),
+        metadata=metadata("cpswm.ExecutionFeedbackRecord", SourceType.ACTION, "oracle-gripper"),
         action_id=GRASP_ACTION,
         action_type=RobotActionType.GRASP,
-        target_entity=EntityRef(
-            entity_id=PHONE, entity_type=EntityType.OBJECT_INSTANCE
-        ),
+        target_entity=EntityRef(entity_id=PHONE, entity_type=EntityType.OBJECT_INSTANCE),
         attempted_location_id=PHONE_LOCATION,
-        valid_time=ValidTimeInterval(
-            start=RECORDED_AT, end=RECORDED_AT + timedelta(seconds=10)
-        ),
+        valid_time=ValidTimeInterval(start=RECORDED_AT, end=RECORDED_AT + timedelta(seconds=10)),
         outcome_distribution={RobotActionOutcome.SUCCESS: 1.0},
         task_goal_satisfied_probability=1.0,
     )
@@ -230,9 +240,7 @@ def main() -> None:
         "resolution_sequence": [
             cycle.search_result.resolution_status.value for cycle in trace.cycles
         ],
-        "selected_observation_action_id": str(
-            trace.cycles[0].observation_plan.selected_action_id
-        ),
+        "selected_observation_action_id": str(trace.cycles[0].observation_plan.selected_action_id),
         "selected_target_candidate_id": str(trace.selected_target_candidate_id),
         "termination_reason": trace.termination_reason,
         "canonical_commit_sequences": {

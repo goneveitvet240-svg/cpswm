@@ -119,6 +119,15 @@ from .likelihoods import (
     ObservationLikelihoodRequest,
     Pose3D,
 )
+from .llm_roles import (
+    FORBIDDEN_LLM_WORLD_MODEL_TARGETS,
+    LLM_ROLE_AUTHORITY,
+    LLMIntegrationRole,
+    LLMInvocationProvenance,
+    LLMOutputAuthority,
+    build_query_compiler_provenance,
+    require_role_authority,
+)
 from .placement_memory import (
     NORM_CLASSES,
     NormRuleKind,
@@ -174,6 +183,8 @@ from .queries import (
 )
 
 __all__ = [
+    "FORBIDDEN_LLM_WORLD_MODEL_TARGETS",
+    "LLM_ROLE_AUTHORITY",
     "NORM_CLASSES",
     "PROJECT_TWO_REPLAY_SCHEMA_VERSION",
     "ActionOutcomeLikelihoodModel",
@@ -237,6 +248,9 @@ __all__ = [
     "InputWatermark",
     "JointCandidateEvidence",
     "JointPosteriorRequest",
+    "LLMIntegrationRole",
+    "LLMInvocationProvenance",
+    "LLMOutputAuthority",
     "LiteralRelationObject",
     "MapConsistencyRevisions",
     "MemoryEvidenceFactor",
@@ -314,8 +328,10 @@ __all__ = [
     "VerificationObservation",
     "WorldModelQuery",
     "WorldModelQueryResult",
+    "build_query_compiler_provenance",
     "detect_relevant_change",
     "ordered_role_key",
     "parse_ordered_role_key",
     "reject_truth_leakage",
+    "require_role_authority",
 ]

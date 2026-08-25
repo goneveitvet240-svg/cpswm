@@ -381,7 +381,11 @@ def test_observed_all_leaks_the_future_location() -> None:
     """The behaviour being replaced, pinned so the contrast is explicit."""
 
     stream, _truth = _moving_stream()
-    (binding,) = bind_stream(stream, policy=CandidatePolicy.OBSERVED_ALL)
+    (binding,) = bind_stream(
+        stream,
+        policy=CandidatePolicy.OBSERVED_ALL,
+        allow_leaky_observed_all=True,
+    )
     assert set(binding.candidate_locations) == {"table", "desk"}
     assert binding.location_source == "observed_all"
 
@@ -389,11 +393,9 @@ def test_observed_all_leaks_the_future_location() -> None:
 def test_train_only_sees_only_the_prefix() -> None:
     stream, _truth = _moving_stream()
     (binding,) = bind_stream(stream, policy=CandidatePolicy.TRAIN_ONLY, train_fraction=0.4)
-    assert binding.candidate_locations == ("table",)
+    assert binding.candidate_locations == ("table", OPEN_SET_LOCATION)
     assert binding.location_source == "train_only"
-    # One candidate is not evaluable -- which is the honest consequence, and
-    # exactly why TRAIN_ONLY is paired with OPEN_SET in practice.
-    assert binding.is_evaluable is False
+    assert binding.is_evaluable is True
 
 
 def test_open_set_adds_a_bucket_instead_of_leaking_or_crashing() -> None:
@@ -414,17 +416,22 @@ def test_the_default_policy_is_manifest_when_one_is_declared() -> None:
     stream, _truth = _moving_stream()
     (binding,) = bind_stream(stream, candidate_locations={KEY: ("table", "desk", "sofa")})
     assert binding.location_source == "manifest"
-    assert binding.candidate_locations == ("table", "desk", "sofa")
+    assert binding.candidate_locations == (
+        "table",
+        "desk",
+        "sofa",
+        OPEN_SET_LOCATION,
+    )
 
 
-def test_a_manifest_that_contradicts_the_data_is_still_refused() -> None:
+def test_a_manifest_does_not_peek_at_future_locations() -> None:
     stream, _truth = _moving_stream()
-    with pytest.raises(ValueError, match="omits observed location"):
-        bind_stream(
-            stream,
-            policy=CandidatePolicy.MANIFEST,
-            candidate_locations={KEY: ("table",)},
-        )
+    (binding,) = bind_stream(
+        stream,
+        policy=CandidatePolicy.MANIFEST,
+        candidate_locations={KEY: ("table",)},
+    )
+    assert binding.candidate_locations == ("table", OPEN_SET_LOCATION)
 
 
 def test_manifest_without_a_manifest_is_a_configuration_error() -> None:
@@ -467,11 +474,11 @@ def test_the_factory_gives_open_set_bindings_open_set_arms() -> None:
         assert method.open_set is True
 
 
-def test_the_factory_gives_manifest_bindings_closed_arms() -> None:
+def test_the_factory_gives_manifest_bindings_unknown_aware_arms() -> None:
     stream, _truth = _moving_stream()
     (binding,) = bind_stream(stream, candidate_locations={KEY: ("table", "desk")})
     for method in ProjectOneMethodFactory().build(binding):
-        assert method.open_set is False
+        assert method.open_set is True
 
 
 def test_open_set_hits_reset_with_the_arm() -> None:

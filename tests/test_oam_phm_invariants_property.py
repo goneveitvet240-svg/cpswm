@@ -65,6 +65,7 @@ from cpswm.contracts.habit_learning import (
     ObservationOpportunityRecord,
 )
 from cpswm.contracts.likelihoods import ObservationLikelihoodModel
+from cpswm.contracts.llm_roles import build_query_compiler_provenance
 from cpswm_gt.models import (
     GroundTruthWorldState,
     GTEntity,
@@ -356,7 +357,23 @@ def test_inv4_retraction_is_a_status_never_a_deletion(assertion):
 @given(st.text(min_size=1, max_size=40), st.text(min_size=1, max_size=16))
 @SETTINGS
 def test_inv5_m21_compiled_queries_are_not_world_model_records(utterance, compiler_version):
-    query = CompiledSemanticQuery(utterance=utterance, compiler_model_version=compiler_version)
+    source_record_id = uuid4()
+    query = CompiledSemanticQuery(
+        utterance=utterance,
+        compiler_model_version=compiler_version,
+        input_evidence_refs=(
+            EvidenceRef(evidence_type="query_utterance", source_record_id=source_record_id),
+        ),
+        invocation_provenance=build_query_compiler_provenance(
+            provider="property-test",
+            model=compiler_version,
+            version=compiler_version,
+            temperature=0.0,
+            prompt_template_version="property-test@0.1",
+            prompt=utterance,
+            input_evidence_refs=(source_record_id,),
+        ),
+    )
     assert query.utterance == utterance
     assert "metadata" not in CompiledSemanticQuery.model_fields
     assert "source_type" not in CompiledSemanticQuery.model_fields

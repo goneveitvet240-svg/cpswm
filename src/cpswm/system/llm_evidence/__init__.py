@@ -13,6 +13,8 @@ from .adapter import (
     UrllibLLMHTTPTransport,
 )
 from .contracts import (
+    LLMCacheStatus,
+    LLMCallAuditReceipt,
     LLMCandidateKind,
     LLMEvidenceCapability,
     LLMEvidenceOutput,
@@ -25,6 +27,8 @@ from .contracts import (
 
 __all__ = [
     "DeterministicEvidenceProvider",
+    "LLMCacheStatus",
+    "LLMCallAuditReceipt",
     "LLMCandidateKind",
     "LLMEvidenceAdapter",
     "LLMEvidenceAdapterResult",

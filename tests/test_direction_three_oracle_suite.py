@@ -7,7 +7,10 @@ from pathlib import Path
 from cpswm.contracts import ObservationActionType, RobotActionOutcome
 from cpswm.system.evaluation_operations.direction_three_oracle_suite import (
     OracleTruthDimension,
+    combination_oracle_scenarios,
     default_oracle_scenarios,
+    load_oracle_scenario_manifest,
+    oracle_scenario_manifest_payload,
     run_oracle_suite,
 )
 
@@ -134,6 +137,25 @@ def test_oracle_scenario_ids_are_frozen_and_unique():
     assert len({scenario.scenario_id for scenario in scenarios}) == len(scenarios)
 
 
+def test_frozen_manifest_round_trips_the_default_suite(tmp_path):
+    manifest = tmp_path / "manifest.json"
+    manifest.write_text(
+        json.dumps(oracle_scenario_manifest_payload(), ensure_ascii=False),
+        encoding="utf-8",
+    )
+
+    loaded = load_oracle_scenario_manifest(manifest)
+    assert loaded == default_oracle_scenarios()
+    assert run_oracle_suite(loaded)["summary"] == run_oracle_suite()["summary"]
+
+
+def test_repository_manifest_is_the_frozen_default_suite():
+    repository = Path(__file__).resolve().parents[1]
+    manifest = repository / "configs/direction_three/s3_1_oracle_suite_v0_1.json"
+
+    assert load_oracle_scenario_manifest(manifest) == default_oracle_scenarios()
+
+
 def test_oracle_suite_cli_runs_directly_and_emits_json():
     repository = Path(__file__).resolve().parents[1]
     completed = subprocess.run(
@@ -150,3 +172,41 @@ def test_oracle_suite_cli_runs_directly_and_emits_json():
     report = json.loads(completed.stdout)
     assert report["schema_name"] == "cpswm.DirectionThreeOracleSuiteReport"
     assert report["scenario_count"] == 17
+
+
+def test_combination_suite_injects_two_three_and_five_truth_dimensions():
+    report = run_oracle_suite(combination_oracle_scenarios())
+
+    assert report["scenario_count"] == 3
+    injected_counts = [
+        sum(truth["injected_as_decisive_evidence"] for truth in scenario["oracle_truth"].values())
+        for scenario in report["scenarios"]
+    ]
+    assert injected_counts == [2, 3, 5]
+    assert report["summary"]["expected_behavior_met_rate"] == 1.0
+    assert report["summary"]["wrong_object_pickup_rate"] == 0.0
+
+
+def test_combination_suite_covers_joint_semantic_axes_and_cli():
+    repository = Path(__file__).resolve().parents[1]
+    completed = subprocess.run(
+        [
+            str(repository / ".venv/bin/python"),
+            str(repository / "apps/evaluation_runner/run_direction_three_oracle_suite.py"),
+            "--combinations",
+        ],
+        cwd="/tmp",
+        check=True,
+        capture_output=True,
+        text=True,
+    )
+    report = json.loads(completed.stdout)
+    tags = {tag for scenario in report["scenarios"] for tag in scenario["semantic_tags"]}
+    assert report["scenario_count"] == 3
+    assert {
+        "multi_person",
+        "similar_instances",
+        "hidden_event",
+        "closed_container",
+        "cross_time",
+    } <= tags

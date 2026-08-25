@@ -31,7 +31,7 @@ from collections.abc import Mapping, Sequence
 from dataclasses import dataclass, replace
 from enum import StrEnum
 
-from .project_one_dataset import ProjectOneDatasetRecord, ProjectOneStream
+from .project_one_dataset import UNKNOWN_LOCATION, ProjectOneDatasetRecord, ProjectOneStream
 from .project_one_methods import (
     OPEN_SET_LOCATION,
     CategoricalBOCPDMethod,
@@ -82,11 +82,11 @@ class CandidatePolicy(StrEnum):
     candidate set leaks the answer* before a single event is scored.
     """
 
-    #: Derive from the binding's training prefix only.  No leak, but an unseen
-    #: location later is an error -- use when the vocabulary is genuinely closed.
+    #: Derive known locations from the binding's training prefix only.  Later
+    #: unseen locations map to :data:`UNKNOWN_LOCATION`.
     TRAIN_ONLY = "train_only"
-    #: The operator declares the vocabulary.  No leak, because a human supplied
-    #: it rather than the data; the declaration must cover what is observed.
+    #: The operator declares the known vocabulary.  Anything outside it maps
+    #: to :data:`UNKNOWN_LOCATION`; the full stream is never scanned.
     MANIFEST = "manifest"
     #: Training prefix (or a declaration) plus :data:`OPEN_SET_LOCATION`.
     #: Anything unseen maps to that bucket instead of crashing the arm.  The
@@ -203,6 +203,7 @@ def bind_stream(
     candidate_locations: Mapping[ProjectOneBindingKey, Sequence[str]] | None = None,
     minimum_locations: int = MINIMUM_CANDIDATE_LOCATIONS,
     train_fraction: float = DEFAULT_TRAIN_FRACTION,
+    allow_leaky_observed_all: bool = False,
 ) -> tuple[ProjectOneStreamBinding, ...]:
     """Partition a stream into one binding per (household, subject, object).
 
@@ -252,23 +253,21 @@ def bind_stream(
         if resolved is CandidatePolicy.MANIFEST:
             if key not in declared:
                 raise ValueError(f"no declared candidate set for {key}")
-            locations = tuple(dict.fromkeys(declared[key]))
-            missing = [name for name in observed if name not in locations]
-            if missing:
-                raise ValueError(
-                    f"declared candidate set for {key} omits observed location(s) "
-                    f"{sorted(missing)}; declare them, or use CandidatePolicy.OPEN_SET "
-                    "to route unseen locations to an explicit bucket"
-                )
+            locations = (*dict.fromkeys(declared[key]), UNKNOWN_LOCATION)
             source = "manifest"
         elif resolved is CandidatePolicy.TRAIN_ONLY:
-            locations = prefix
+            locations = (*dict.fromkeys(prefix), UNKNOWN_LOCATION)
             source = "train_only"
         elif resolved is CandidatePolicy.OPEN_SET:
             base = tuple(declared[key]) if key in declared else prefix
-            locations = (*dict.fromkeys(base), OPEN_SET_LOCATION)
+            locations = (*dict.fromkeys(base), UNKNOWN_LOCATION)
             source = "open_set"
         else:  # OBSERVED_ALL
+            if not allow_leaky_observed_all:
+                raise ValueError(
+                    "CandidatePolicy.OBSERVED_ALL reads future locations; pass "
+                    "allow_leaky_observed_all=True only to reproduce a legacy run"
+                )
             locations = observed
             source = "observed_all"
 
@@ -325,7 +324,7 @@ class ProjectOneMethodFactory:
                 f"binding {binding.binding_id} is not evaluable: {binding.skip_reason}"
             )
 
-        open_set = binding.location_source == CandidatePolicy.OPEN_SET.value
+        open_set = UNKNOWN_LOCATION in binding.candidate_locations
         arms: list[ProjectOneMethod] = [
             CoreHabitChainMethod(
                 name=name,

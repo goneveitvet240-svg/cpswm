@@ -14,6 +14,7 @@ from __future__ import annotations
 
 import pytest
 
+from cpswm.system.evaluation_operations.project_one_dataset import UNKNOWN_LOCATION
 from cpswm.system.evaluation_operations.project_one_household_generator import (
     HOUSEHOLD_LOG_VERSION,
     build_household_log,
@@ -97,14 +98,20 @@ def test_the_declared_manifest_makes_every_binding_evaluable() -> None:
     bindings = bind_stream(log.stream, candidate_locations=log.candidate_locations)
     assert all(binding.is_evaluable for binding in bindings)
     assert all(binding.location_source == "manifest" for binding in bindings)
-    assert all(binding.candidate_locations == LOCATIONS for binding in bindings)
+    assert all(
+        binding.candidate_locations == (*LOCATIONS, UNKNOWN_LOCATION) for binding in bindings
+    )
 
 
 def test_without_the_manifest_the_single_location_bindings_are_skipped() -> None:
     """The contrast that justifies shipping a manifest at all."""
 
     log = _log(families=("stable_habit", "permanent_change"))
-    bindings = bind_stream(log.stream, policy=CandidatePolicy.OBSERVED_ALL)
+    bindings = bind_stream(
+        log.stream,
+        policy=CandidatePolicy.OBSERVED_ALL,
+        allow_leaky_observed_all=True,
+    )
     assert any(not binding.is_evaluable for binding in bindings)
 
 

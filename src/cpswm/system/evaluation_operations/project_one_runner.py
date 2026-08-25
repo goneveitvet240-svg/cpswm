@@ -29,7 +29,7 @@ from pathlib import Path
 from cpswm.system.reproducibility import content_sha256
 
 from .project_one_dataset import ProjectOneStream, ProjectOneTruthSet
-from .project_one_methods import ProjectOneMethod, StepPrediction
+from .project_one_methods import OPEN_SET_LOCATION, ProjectOneMethod, StepPrediction
 from .project_one_metrics import ProjectOneMetrics, compute_metrics
 from .project_one_protocol import PROTOCOL_VERSION
 
@@ -167,6 +167,15 @@ class ProjectOneRunner:
                 stream_id=stream.manifest.stream_id,
                 predictions=predictions,
                 truth=truth,
+                observed={
+                    record.event_id: (
+                        record.observed_location
+                        if record.observed_location
+                        in predictions[index].predicted_location_probabilities
+                        else OPEN_SET_LOCATION
+                    )
+                    for index, record in enumerate(stream.records)
+                },
                 confirmation_window=self._confirmation_window,
             )
             if predictions and failure is None

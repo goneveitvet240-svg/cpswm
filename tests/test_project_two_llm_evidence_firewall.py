@@ -10,6 +10,7 @@ from cpswm.system.evaluation_operations.project_two_dataset_adapters import (
 )
 from cpswm.system.llm_evidence import (
     DeterministicEvidenceProvider,
+    LLMCacheStatus,
     LLMEvidenceAdapter,
     LLMEvidenceCache,
     LLMEvidenceRequest,
@@ -62,6 +63,20 @@ def test_same_cache_key_replays_identical_result_without_second_call():
     assert first.from_cache is False
     assert second.from_cache is True
     assert provider.invocation_count == 1
+    assert first.call_audit.cache_status is LLMCacheStatus.MISS
+    assert first.call_audit.provider_invoked
+    assert second.call_audit.cache_status is LLMCacheStatus.HIT
+    assert not second.call_audit.provider_invoked
+    assert second.call_audit.call_accounting.input_tokens == 0
+    assert second.call_audit.call_accounting.output_tokens == 0
+    assert second.call_audit.call_accounting.latency_ms == 0.0
+    assert second.call_audit.call_accounting.cost_usd == 0.0
+    assert first.call_audit.audit_id != second.call_audit.audit_id
+    assert (first.call_audit.call_sequence, second.call_audit.call_sequence) == (1, 2)
+    assert second.call_audit.source_invocation_provenance == (
+        first.call_audit.source_invocation_provenance
+    )
+    assert adapter.call_audits == (first.call_audit, second.call_audit)
 
 
 def test_cache_poisoning_is_rejected_before_typed_evidence_projection():

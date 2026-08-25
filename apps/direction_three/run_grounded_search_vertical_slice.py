@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import json
 import sys
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from pathlib import Path
 from uuid import UUID
 
@@ -16,7 +16,7 @@ _SOURCE_ROOT = _PROJECT_ROOT / "src"
 if str(_SOURCE_ROOT) not in sys.path:
     sys.path.insert(0, str(_SOURCE_ROOT))
 
-from cpswm.contracts import (
+from cpswm.contracts import (  # noqa: E402
     BaseRecordMetadata,
     CandidateKind,
     ChannelEvidence,
@@ -24,15 +24,16 @@ from cpswm.contracts import (
     EntityRef,
     EntityType,
     EvidenceChannel,
+    EvidenceRef,
     JointCandidateEvidence,
     JointPosteriorRequest,
     ObservationActionCandidate,
     ObservationActionType,
     Pose3D,
     SourceType,
+    build_query_compiler_provenance,
 )
-from cpswm.world_model.grounded_search import DirectionThreePipeline
-
+from cpswm.world_model.grounded_search import DirectionThreePipeline  # noqa: E402
 
 HOUSEHOLD = UUID("00000000-0000-0000-0000-000000000101")
 SESSION = UUID("00000000-0000-0000-0000-000000000102")
@@ -42,6 +43,7 @@ UNKNOWN = UUID("00000000-0000-0000-0000-000000000299")
 TRACE = UUID("00000000-0000-0000-0000-000000000103")
 REQUEST_RECORD = UUID("00000000-0000-0000-0000-000000000104")
 QUERY = UUID("00000000-0000-0000-0000-000000000105")
+QUERY_SOURCE = UUID("00000000-0000-0000-0000-000000000106")
 OBSERVATION_ACTION = UUID("00000000-0000-0000-0000-000000000401")
 
 
@@ -63,20 +65,33 @@ def main() -> None:
         schema_version="0.1.0",
         household_id=HOUSEHOLD,
         session_id=SESSION,
-        recorded_time=datetime(2026, 8, 13, 12, 0, tzinfo=timezone.utc),
+        recorded_time=datetime(2026, 8, 13, 12, 0, tzinfo=UTC),
         source_type=SourceType.MODEL,
         source_id="direction-three-demo",
         model_version="log-opinion-pool@0.1",
         trace_id=TRACE,
     )
+    query_utterance = "找我晚上经常放在床边用的那个东西"
     compiled_query = CompiledSemanticQuery(
         query_id=QUERY,
-        utterance="找我晚上经常放在床边用的那个东西",
+        utterance=query_utterance,
         category_candidates=("phone", "glasses", "cup"),
         relations=("used_by", "usually_located_at"),
         time_expression="night",
         soft_constraints=("bedside", "frequently_used"),
         compiler_model_version="structured-llm-symbolic@0.1",
+        input_evidence_refs=(
+            EvidenceRef(evidence_type="query_utterance", source_record_id=QUERY_SOURCE),
+        ),
+        invocation_provenance=build_query_compiler_provenance(
+            provider="symbolic-fixture",
+            model="structured-llm-symbolic",
+            version="0.1",
+            temperature=0.0,
+            prompt_template_version="direction-three-symbolic-query@0.1",
+            prompt=query_utterance,
+            input_evidence_refs=(QUERY_SOURCE,),
+        ),
     )
     candidates = (
         JointCandidateEvidence(
@@ -115,9 +130,7 @@ def main() -> None:
         label="inspect bedside from a second RGB-D viewpoint",
         observation_likelihood_model_id="symbolic-rgbd-observation@0.1",
         calibration_domain="direction-three-symbolic-demo",
-        viewpoint_pose=Pose3D(
-            frame_id="map", x=0.5, y=0.0, z=1.0, qx=0.0, qy=0.0, qz=0.0, qw=1.0
-        ),
+        viewpoint_pose=Pose3D(frame_id="map", x=0.5, y=0.0, z=1.0, qx=0.0, qy=0.0, qz=0.0, qw=1.0),
         outcome_likelihoods={
             "phone_features": {PHONE: 0.9, GLASSES: 0.1, UNKNOWN: 0.2},
             "other_features": {PHONE: 0.1, GLASSES: 0.9, UNKNOWN: 0.8},

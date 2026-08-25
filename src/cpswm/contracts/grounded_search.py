@@ -27,6 +27,7 @@ from .base import (
     ValidTimeInterval,
 )
 from .likelihoods import Pose3D
+from .llm_roles import LLMIntegrationRole, LLMInvocationProvenance
 
 StrictlyPositiveProbability = Annotated[float, Field(gt=0.0, le=1.0)]
 
@@ -163,6 +164,24 @@ class CompiledSemanticQuery(ContractModel):
     hard_constraints: tuple[str, ...] = ()
     soft_constraints: tuple[str, ...] = ()
     compiler_model_version: str = Field(min_length=1)
+    role: LLMIntegrationRole = LLMIntegrationRole.M21_QUERY_COMPILER
+    unknown_terms: tuple[str, ...] = ()
+    abstain: bool = False
+    input_evidence_refs: tuple[EvidenceRef, ...] = Field(min_length=1)
+    invocation_provenance: LLMInvocationProvenance
+
+    @model_validator(mode="after")
+    def _compiler_authority(self) -> CompiledSemanticQuery:
+        if self.role is not LLMIntegrationRole.M21_QUERY_COMPILER:
+            raise ValueError("CompiledSemanticQuery is reserved for the M21 query compiler")
+        if self.invocation_provenance.role is not self.role:
+            raise ValueError("query compiler provenance role mismatch")
+        cited = {item.source_record_id for item in self.input_evidence_refs}
+        if set(self.invocation_provenance.input_evidence_refs) != cited:
+            raise ValueError("query compiler provenance must bind every input citation")
+        if self.abstain and not self.unknown_terms:
+            raise ValueError("query compiler abstention must identify unknown terms")
+        return self
 
 
 class ChannelEvidence(ContractModel):

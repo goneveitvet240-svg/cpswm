@@ -40,6 +40,7 @@ from cpswm.system.reproducibility import content_sha256
 
 from .dataset_adapters import InMemoryAdapter
 from .project_one_dataset import ProjectOneStream, ProjectOneTruthSet
+from .project_one_evaluation_path import BYPASSED_MODULES, OFFLINE_METHOD_EVALUATION
 from .project_one_llm_method import LLMClient, LLMMethodConfig, LLMProjectOneMethod, LLMUsage
 from .project_one_methods import ProjectOneMethod, StepPrediction
 from .project_one_metrics import ProjectOneMetrics, paired_step_differences
@@ -112,11 +113,23 @@ class DataPilotReport:
     results: tuple[PilotArmResult, ...]
     calibration_consistency: Mapping[str, object]
     arms: tuple[str, ...]
+    evaluation_mode: str = OFFLINE_METHOD_EVALUATION
+    claim_scope: str = "method_evaluation_only"
+    formal_b1_claim_allowed: bool = False
+    bypassed_modules: tuple[str, ...] = BYPASSED_MODULES
     llm_usage: Mapping[str, object] | None = None
     environment: Mapping[str, str] = field(default_factory=dict)
 
     def failures(self) -> tuple[RunFailure, ...]:
         return tuple(item.failure for item in self.results if item.failure is not None)
+
+    def __post_init__(self) -> None:
+        if self.evaluation_mode != OFFLINE_METHOD_EVALUATION:
+            raise ValueError("the data pilot must be labelled offline_method_evaluation")
+        if self.formal_b1_claim_allowed:
+            raise ValueError("offline_method_evaluation cannot authorize a formal B1 claim")
+        if self.bypassed_modules != BYPASSED_MODULES:
+            raise ValueError("offline path must disclose the exact M05-M16 bypass")
 
 
 def binding_stream(
@@ -196,6 +209,7 @@ def run_data_pilot(
     llm_config: LLMMethodConfig | None = None,
     llm_client: LLMClient | None = None,
     confirmation_window: int = 3,
+    allow_leaky_observed_all: bool = False,
 ) -> DataPilotReport:
     """Replay every evaluable binding through every arm at fixed parameters.
 
@@ -221,7 +235,10 @@ def run_data_pilot(
     for stream, truth in streams:
         manifests.append(asdict(stream.manifest))
         bindings = bind_stream(
-            stream, policy=candidate_policy, candidate_locations=candidate_locations
+            stream,
+            policy=candidate_policy,
+            candidate_locations=candidate_locations,
+            allow_leaky_observed_all=allow_leaky_observed_all,
         )
         all_bindings.extend(bindings)
 
@@ -375,6 +392,10 @@ def write_pilot_outputs(report: DataPilotReport, output_dir: Path | str) -> dict
     }
     metrics = {
         "protocol_version": report.protocol_version,
+        "evaluation_mode": report.evaluation_mode,
+        "claim_scope": report.claim_scope,
+        "formal_b1_claim_allowed": report.formal_b1_claim_allowed,
+        "bypassed_modules": list(report.bypassed_modules),
         "arms": list(report.arms),
         "predictions_sha256": predictions_hash,
         "environment": dict(report.environment),
@@ -410,6 +431,10 @@ def write_pilot_outputs(report: DataPilotReport, output_dir: Path | str) -> dict
 
     manifest = {
         "protocol_version": report.protocol_version,
+        "evaluation_mode": report.evaluation_mode,
+        "claim_scope": report.claim_scope,
+        "formal_b1_claim_allowed": report.formal_b1_claim_allowed,
+        "bypassed_modules": list(report.bypassed_modules),
         "arms": list(report.arms),
         "environment": dict(report.environment),
         "stream_manifests": [dict(item) for item in report.stream_manifests],

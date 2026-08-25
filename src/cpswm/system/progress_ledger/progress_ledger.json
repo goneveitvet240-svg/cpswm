@@ -1,6 +1,6 @@
 {
   "schema_version": "0.1.0",
-  "generated_at": "2026-08-22",
+  "generated_at": "2026-08-25",
   "modules": [
     {
       "module_id": "M01",
@@ -707,7 +707,9 @@
         "src/cpswm/system/household_memory_benchmark/"
       ],
       "test_paths": [
-        "tests/test_oam_phm_wp0_baselines.py"
+        "tests/test_oam_phm_wp0_baselines.py",
+        "tests/test_project_one_p0_hard_gate.py",
+        "tests/test_project_one_data_pilot.py"
       ],
       "evidence_artifacts": [],
       "blockers": [
@@ -736,10 +738,12 @@
       ],
       "evidence_artifacts": [],
       "blockers": [
-        "no deployment monitoring yet"
+        "no deployment monitoring yet",
+        "offline_method_evaluation bypasses M05-M16 and has only method-input contract equivalence, not formal B1 execution"
       ],
       "allowed_claims": [
-        "evaluation runner and metric contracts for synthetic runs"
+        "evaluation runner and metric contracts for synthetic runs",
+        "offline_method_evaluation is explicitly labelled and blocked from formal B1 claims"
       ],
       "forbidden_claims": [
         "real deployment",

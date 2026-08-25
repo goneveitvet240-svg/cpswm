@@ -44,6 +44,7 @@ def _record(
     *,
     household: str = "h1",
     actor: str = "alice",
+    subject: str | None = None,
     object_id: str = "cup",
     location: str = "table",
     context: str = "morning",
@@ -51,7 +52,7 @@ def _record(
     return ProjectOneDatasetRecord(
         stream_id="multi",
         event_id=f"e{index:03d}",
-        subject_id=actor,
+        subject_id=subject or actor,
         household_id=household,
         object_id=object_id,
         actor_id=actor,
@@ -152,7 +153,12 @@ def test_candidate_locations_come_from_the_binding_own_records() -> None:
 
     stream, _truth = _stream(_mixed_records())
     by_key = {
-        binding.key: binding for binding in bind_stream(stream, policy=CandidatePolicy.OBSERVED_ALL)
+        binding.key: binding
+        for binding in bind_stream(
+            stream,
+            policy=CandidatePolicy.OBSERVED_ALL,
+            allow_leaky_observed_all=True,
+        )
     }
     cup_h1 = by_key[ProjectOneBindingKey("h1", "alice", "cup")]
     assert set(cup_h1.candidate_locations) == {"table", "sink"}
@@ -166,17 +172,18 @@ def test_an_explicit_manifest_overrides_the_observed_locations() -> None:
     key = ProjectOneBindingKey("h1", "alice", "cup")
     bindings = bind_stream(stream, candidate_locations={key: ("table", "sink", "balcony")})
     binding = next(item for item in bindings if item.key == key)
-    assert binding.candidate_locations == ("table", "sink", "balcony")
+    assert binding.candidate_locations == ("table", "sink", "balcony", "unknown_location")
     assert binding.location_source == "manifest"
 
 
-def test_a_manifest_that_omits_an_observed_location_is_rejected() -> None:
-    """A candidate set the data contradicts is an operator error, not a filter."""
+def test_a_manifest_that_omits_a_future_location_maps_it_to_unknown() -> None:
+    """Manifest validation must not inspect future observations."""
 
     stream, _truth = _stream(_mixed_records())
     key = ProjectOneBindingKey("h1", "alice", "cup")
-    with pytest.raises(ValueError, match="observed"):
-        bind_stream(stream, candidate_locations={key: ("table",)})
+    bindings = bind_stream(stream, candidate_locations={key: ("table",)})
+    binding = next(item for item in bindings if item.key == key)
+    assert binding.candidate_locations == ("table", "unknown_location")
 
 
 def test_a_single_location_binding_is_reported_not_silently_dropped() -> None:
@@ -190,7 +197,12 @@ def test_a_single_location_binding_is_reported_not_silently_dropped() -> None:
 
     stream, _truth = _stream(_mixed_records())
     by_key = {
-        binding.key: binding for binding in bind_stream(stream, policy=CandidatePolicy.OBSERVED_ALL)
+        binding.key: binding
+        for binding in bind_stream(
+            stream,
+            policy=CandidatePolicy.OBSERVED_ALL,
+            allow_leaky_observed_all=True,
+        )
     }
     keys_binding = by_key[ProjectOneBindingKey("h1", "alice", "keys")]
     assert keys_binding.candidate_locations == ("hook",)
@@ -287,7 +299,12 @@ def test_the_chain_arm_carries_the_binding_identity() -> None:
 def test_building_a_non_evaluable_binding_is_refused() -> None:
     stream, _truth = _stream(_mixed_records())
     by_key = {
-        binding.key: binding for binding in bind_stream(stream, policy=CandidatePolicy.OBSERVED_ALL)
+        binding.key: binding
+        for binding in bind_stream(
+            stream,
+            policy=CandidatePolicy.OBSERVED_ALL,
+            allow_leaky_observed_all=True,
+        )
     }
     with pytest.raises(ValueError, match="evaluable"):
         _factory().build(by_key[ProjectOneBindingKey("h1", "alice", "keys")])
@@ -322,3 +339,20 @@ def test_binding_id_is_stable_and_distinct() -> None:
     ids = [binding.binding_id for binding in first]
     assert ids == [binding.binding_id for binding in second]
     assert len(set(ids)) == len(ids)
+
+
+def test_actor_does_not_replace_subject_in_the_binding_key() -> None:
+    records = [
+        _record(0, actor="alice", subject="alice", location="table"),
+        _record(1, actor="guest", subject="alice", location="sink"),
+    ]
+    stream, _truth = _stream(records)
+    (binding,) = bind_stream(stream)
+    assert binding.key.subject_id == "alice"
+    assert {record.actor_id for record in binding.records} == {"alice", "guest"}
+
+
+def test_observed_all_requires_an_explicit_leakage_opt_in() -> None:
+    stream, _truth = _stream(_mixed_records())
+    with pytest.raises(ValueError, match="reads future locations"):
+        bind_stream(stream, policy=CandidatePolicy.OBSERVED_ALL)

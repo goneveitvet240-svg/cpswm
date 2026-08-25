@@ -479,6 +479,7 @@ class LLMProjectOneMethod(_BaseMethod):
             "change_threshold": self.config.change_threshold,
             "cache": self.config.cache,
             "locations": list(self.locations),
+            "open_set": self.open_set,
         }
 
     def config_hash(self) -> str:

@@ -263,6 +263,7 @@ class ContextConditionedRegimeReactivator:
         identity_switch_threshold: float = 0.5,
         default_regime_id: str = "stable",
         model_version: str = "ccrr@0.1",
+        allow_reactivation: bool = True,
     ) -> None:
         if not 0.0 < change_threshold <= 1.0:
             raise ValueError("change_threshold must lie in (0, 1]")
@@ -280,6 +281,7 @@ class ContextConditionedRegimeReactivator:
         self.identity_switch_threshold = identity_switch_threshold
         self.default_regime_id = default_regime_id
         self.model_version = model_version
+        self.allow_reactivation = allow_reactivation
         self.model_config_hash = content_sha256(
             {
                 "change_threshold": change_threshold,
@@ -288,6 +290,7 @@ class ContextConditionedRegimeReactivator:
                 "identity_switch_threshold": identity_switch_threshold,
                 "default_regime_id": default_regime_id,
                 "model_version": model_version,
+                "allow_reactivation": allow_reactivation,
             }
         )
         self._library: dict[tuple[UUID, str], dict[str, RegimeLibraryEntry]] = {}
@@ -309,6 +312,7 @@ class ContextConditionedRegimeReactivator:
             identity_switch_threshold=self.identity_switch_threshold,
             default_regime_id=self.default_regime_id,
             model_version=self.model_version,
+            allow_reactivation=self.allow_reactivation,
         )
         memo[id(self)] = clone
         clone._library = deepcopy(self._library, memo)
@@ -484,7 +488,7 @@ class ContextConditionedRegimeReactivator:
         # stage that still clears the similarity threshold, then rank by a
         # frozen ordering (similarity ↓, last_active_at ↓, regime_id ↑).
         compatible_candidates: list[tuple[RegimeLibraryEntry, float]] = []
-        for entry in entries:
+        for entry in entries if self.allow_reactivation else ():
             if entry.regime_id == current_regime_id:
                 continue
             if entry.actor_id != actor_id:

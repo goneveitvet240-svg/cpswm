@@ -1,0 +1,30 @@
+{
+  "protocol": "structure-two-world-seed-block-attestation@0.4",
+  "status": "INVALIDATED-recovered-material-is-candidate-visible",
+  "completed_preconditions": {
+    "official_v0_4_arm_adapter_implemented": true,
+    "producer_and_custodian_recomputation_source_bundle_frozen": true,
+    "producer_source_bundle_sha256": "1e9d0f39edc712065bf4e898e987fbef7b7137c1905ef2e558e194800080f921",
+    "producer_source_bundle_file_count": 237,
+    "invalidated_validation_draft_sha256": "4e29fd16ff242a5cb3dcb2a6bcbd68ce87c1dc06baa8af72a8e23eb61e66e326",
+    "user_freeze_approval_id": "structure-two-v0.4-freeze-approved-by-user-2026-08-31"
+  },
+  "required_inputs_not_in_repository": [
+    "all 24 raw sealed holdout world seeds",
+    "the evaluator custody salt that reproduces the v0.2 commitments",
+    "an externally held Ed25519 private key",
+    "a custodian key id and public-key SHA-256 trust anchor preregistered in the validation DRAFT",
+    "an independent custodian key id and public-key SHA-256 trust anchor preregistered in the validation DRAFT"
+  ],
+  "public_output_must_assert": [
+    "all 24 frozen commitments were recomputed",
+    "raw holdout seeds are unique",
+    "raw holdout seeds are disjoint from 410001-410024, 420001-420012, and 440001-440012",
+    "440001-440012 are disjoint from the disclosed train and prior-validation splits",
+    "the signature binds the exact validation DRAFT SHA-256 and train artifact content SHA-256",
+    "neither raw seeds nor the custody salt are disclosed"
+  ],
+  "overwrite_policy": "the signer and finalizer both refuse to overwrite an existing attestation or frozen manifest",
+  "signer": "apps/evaluation_runner/attest_structure_two_seed_block_v0_4.py",
+  "fail_closed_rule": "the recovered preimage cannot truthfully satisfy the non-disclosure assertion; this draft is not an attestation and does not authorize generating any v0.4 validation world"
+}

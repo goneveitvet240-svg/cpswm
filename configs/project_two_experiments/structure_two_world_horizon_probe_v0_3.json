@@ -1,0 +1,68 @@
+{
+  "protocol": "structure-two-world-horizon-probe@0.3",
+  "status": "frozen-before-320-380-train-only-run",
+  "evidence_scope": "train-only benchmark-design probe; no validation world and no research method",
+  "base_manifest": "configs/project_two_experiments/structure_two_world_generator_manifest_v0_2.json",
+  "base_manifest_sha256": "88fbf4a47601401b0b95642c99d2bf0644a8d97ac5ae03171cd60bbfabc62cd4",
+  "world_change_under_test": {
+    "duration_days_inclusive": [320, 380],
+    "all_other_world_distribution_fields": "byte-for-byte inherited from v0.2"
+  },
+  "train_sampling": {
+    "world_seeds": [410001, 410002, 410003, 410004, 410005, 410006, 410007, 410008, 410009, 410010, 410011, 410012, 410013, 410014, 410015, 410016, 410017, 410018, 410019, 410020, 410021, 410022, 410023, 410024],
+    "trajectory_seeds": [13, 29, 41],
+    "observation_seeds": [103, 223]
+  },
+  "four_fold_world_split": [
+    [410001, 410005, 410009, 410013, 410017, 410021],
+    [410002, 410006, 410010, 410014, 410018, 410022],
+    [410003, 410007, 410011, 410015, 410019, 410023],
+    [410004, 410008, 410012, 410016, 410020, 410024]
+  ],
+  "frozen_last_observed_baseline": {
+    "top1": "current observation when visible, otherwise last observed location",
+    "path_tail": "all remaining locations by cumulative observed count, matching project_two_action_benchmark.py"
+  },
+  "witness_grid": {
+    "recent_window": [4, 6, 10],
+    "divergence_threshold": [0.55, 0.70],
+    "minimum_reference_observations": [8, 16],
+    "context_shrinkage_pseudocounts": [0.0, 2.0, 4.0, 8.0],
+    "owner_probability_threshold": [0.5],
+    "cartesian_candidate_count": 48
+  },
+  "stationary_false_alarm_check": {
+    "stream_seeds": [0, 1, 2, 3, 4, 5, 6, 7],
+    "observations_per_stream": 400,
+    "burn_in_observations": 60,
+    "mode_masses": [0.45, 0.50, 0.55],
+    "location_count": 10,
+    "maximum_mean_false_alarm_rate_per_observation": 0.025
+  },
+  "false_reset_definition": {
+    "grace_days_after_true_change_inclusive": 14,
+    "matching": "one-to-one; each true change can excuse at most one reset, every additional reset is false"
+  },
+  "candidate_selection": {
+    "eligibility": [
+      "mean false resets per rollout <= 1.0",
+      "mean stationary false-alarm rate per observation <= 0.025"
+    ],
+    "ranking": [
+      "maximum worst held-out-fold top-1 gain",
+      "maximum world-weighted mean top-1 gain",
+      "minimum mean false resets per rollout",
+      "lexicographic parameter tuple"
+    ]
+  },
+  "promotion_requirements": {
+    "minimum_world_weighted_mean_top1_gain": 0.020,
+    "minimum_worst_held_out_fold_top1_gain": 0.018,
+    "maximum_mean_false_resets_per_rollout": 1.0,
+    "maximum_stationary_false_alarm_rate_per_observation": 0.025,
+    "report_effective_admissions_by_calendar_context": true,
+    "formal_pooled_tail_path_cost_required": true
+  },
+  "output": "artifacts/project_two_v04_development/structure_two_world_horizon_probe_v0_3.json",
+  "policy": "write [320,380] into the unsigned v0.3 manifest draft only if every promotion requirement passes; never generate validation worlds in this probe"
+}

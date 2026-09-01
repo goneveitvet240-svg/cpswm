@@ -18,7 +18,8 @@ def test_d1_development_batch_has_required_scale_scenes_families_and_seeds():
     assert len({item.scene_id.rsplit("-", 1)[-1] for item in dataset.episodes}) >= 3
     assert len({item.object_family for item in dataset.episodes}) >= 5
     assert all(
-        item.maturity is ProjectTwoDataMaturity.D1_SIMULATOR_ANNOTATED_REPLAY
+        item.maturity is ProjectTwoDataMaturity.D0_DEVELOPMENT_FIXTURE
+        and item.source_evidence_maturity is ProjectTwoDataMaturity.D0_SYNTHETIC_ORACLE
         for item in dataset.episodes
     )
     assert (

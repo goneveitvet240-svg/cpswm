@@ -11,7 +11,7 @@ from enum import StrEnum
 from math import isclose
 from uuid import UUID, uuid4
 
-from pydantic import Field, field_validator, model_validator
+from pydantic import Field, ValidationInfo, field_validator, model_validator
 
 from cpswm.contracts.base import ContractModel, ValidTimeInterval, require_aware
 
@@ -75,8 +75,8 @@ class TimeAlignmentResult(ContractModel):
 
     @field_validator("source_time", "target_time")
     @classmethod
-    def validate_times(cls, value: datetime, info) -> datetime:
-        return require_aware(value, info.field_name)
+    def validate_times(cls, value: datetime, info: ValidationInfo) -> datetime:
+        return require_aware(value, info.field_name or "datetime")
 
 
 class Vector3(ContractModel):

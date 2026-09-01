@@ -1,0 +1,67 @@
+{
+  "schema_version": "0.1.0",
+  "selection_id": "structure-two-combination-a@0.1",
+  "decision_source": "user_selection",
+  "primary_utility_metric": "cumulative_action_regret",
+  "optimization_direction": "minimize",
+  "hard_guardrails": [
+    "owner_contamination",
+    "recovery_latency",
+    "full_rerun_equivalence"
+  ],
+  "ordinary_graph_baselines": [
+    "graph_free_mlp",
+    "r_gcn",
+    "hgt"
+  ],
+  "regime_baselines": [
+    "factorized_sticky_finite_hmm",
+    "sticky_hdp_hsmm"
+  ],
+  "factorial_design": "full_2x2x2x2x2",
+  "factorial_independent_unit": "household",
+  "factor_levels": {
+    "observation_process": [
+      "complete_observation",
+      "selective_mnar_observation"
+    ],
+    "actor_mixture": [
+      "owner_only",
+      "owner_plus_visitor"
+    ],
+    "identity_association": [
+      "verified_identity",
+      "identity_association_error"
+    ],
+    "owner_habit_regime": [
+      "stationary_owner_habit",
+      "owner_habit_change"
+    ],
+    "transient_noise": [
+      "transient_noise_absent",
+      "transient_noise_present"
+    ]
+  },
+  "external_comparison_sequence": [
+    "o_star_faithful",
+    "enhanced_o_star"
+  ],
+  "retained_capabilities": [
+    "hidden_event_inference",
+    "multi_actor_reasoning",
+    "open_world_unknowns",
+    "reversible_attribution",
+    "embodied_execution_feedback"
+  ],
+  "unresolved_execution_bindings": [
+    "train_split",
+    "validation_split",
+    "sealed_test_split",
+    "independent_tuning_budgets",
+    "primary_benefit_margin",
+    "guardrail_thresholds",
+    "power_analysis",
+    "factorial_unit_manifest",
+    "o_star_fidelity_manifest"
+  ]
+}

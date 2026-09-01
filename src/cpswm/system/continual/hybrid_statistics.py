@@ -20,7 +20,7 @@ import threading
 from dataclasses import dataclass, field
 from enum import StrEnum
 from math import isfinite
-from typing import TypeAlias
+from typing import TypeAlias, cast
 from uuid import UUID
 
 import numpy as np
@@ -80,7 +80,25 @@ def _immutable_psd_matrix(value: Matrix, *, dim: int, name: str) -> Matrix:
     if float(np.linalg.eigvalsh(array).min()) < -1e-10:
         raise ValueError(f"{name} must be positive semidefinite")
     array.setflags(write=False)
-    return array
+    return cast(Matrix, array)
+
+
+def _canonical_int(value: object, name: str) -> int:
+    if not isinstance(value, (int, str)) or isinstance(value, bool):
+        raise HybridLedgerError(f"{name} must be a canonical integer")
+    return int(value)
+
+
+def _canonical_float(value: object, name: str) -> float:
+    if not isinstance(value, (int, float, str)) or isinstance(value, bool):
+        raise HybridLedgerError(f"{name} must be a canonical number")
+    return float(value)
+
+
+def _canonical_strings(value: object, name: str) -> tuple[str, ...]:
+    if not isinstance(value, (list, tuple)) or not all(isinstance(item, str) for item in value):
+        raise HybridLedgerError(f"{name} must be a string sequence")
+    return tuple(value)
 
 
 @dataclass(frozen=True, slots=True)
@@ -414,15 +432,19 @@ def _cert_to_canonical(cert: ConsolidationRiskCertificate) -> dict[str, object]:
 
 def _cert_from_canonical(payload: dict[str, object]) -> ConsolidationRiskCertificate:
     return ConsolidationRiskCertificate(
-        expected_task_loss=float(payload["expected_task_loss"]),  # type: ignore[arg-type]
-        uncertainty_penalty=float(payload["uncertainty_penalty"]),  # type: ignore[arg-type]
-        maximum_allowed_risk=float(payload["maximum_allowed_risk"]),  # type: ignore[arg-type]
+        expected_task_loss=_canonical_float(payload["expected_task_loss"], "expected_task_loss"),
+        uncertainty_penalty=_canonical_float(payload["uncertainty_penalty"], "uncertainty_penalty"),
+        maximum_allowed_risk=_canonical_float(
+            payload["maximum_allowed_risk"], "maximum_allowed_risk"
+        ),
         exact_verifier_id=str(payload["exact_verifier_id"]),
         counterfactual_id=UUID(str(payload["counterfactual_id"])),
         subject_delta_record_id=UUID(str(payload["subject_delta_record_id"])),
         belief_snapshot_id=UUID(str(payload["belief_snapshot_id"])),
-        map_version=int(payload["map_version"]),  # type: ignore[arg-type]
-        hard_safety_violations=tuple(payload["hard_safety_violations"]),  # type: ignore[arg-type]
+        map_version=_canonical_int(payload["map_version"], "map_version"),
+        hard_safety_violations=_canonical_strings(
+            payload["hard_safety_violations"], "hard_safety_violations"
+        ),
     )
 
 
@@ -510,36 +532,38 @@ def _record_from_canonical(payload: dict[str, object]) -> HybridLogRecord:
             semantic_dedup_id=str(payload["semantic_dedup_id"]),
             source_record_ids=tuple(
                 UUID(value)
-                for value in payload["source_record_ids"]  # type: ignore[union-attr]
+                for value in _canonical_strings(payload["source_record_ids"], "source_record_ids")
             ),
             authorization_scope_id=UUID(str(payload["authorization_scope_id"])),
-            key=_key_from_canonical(payload["key"]),  # type: ignore[arg-type]
+            key=_key_from_canonical(cast(dict[str, str], payload["key"])),
             delta_a=np.asarray(payload["delta_a"], dtype=float),
             delta_b=np.asarray(payload["delta_b"], dtype=float),
-            delta_alpha=float(payload["delta_alpha"]),  # type: ignore[arg-type]
+            delta_alpha=_canonical_float(payload["delta_alpha"], "delta_alpha"),
             delta_information=np.asarray(payload["delta_information"], dtype=float),
             delta_information_vector=np.asarray(payload["delta_information_vector"], dtype=float),
-            input_watermark=int(payload["input_watermark"]),  # type: ignore[arg-type]
+            input_watermark=_canonical_int(payload["input_watermark"], "input_watermark"),
             model_version=str(payload["model_version"]),
             code_version=str(payload["code_version"]),
-            initial_state=HybridConsolidationState(payload["initial_state"]),
+            initial_state=HybridConsolidationState(str(payload["initial_state"])),
             content_hash=str(payload["content_hash"]),
         )
     if kind == "promotion":
         return HybridPromotion(
             record_id=UUID(str(payload["record_id"])),
             promotes_record_id=UUID(str(payload["promotes_record_id"])),
-            input_watermark=int(payload["input_watermark"]),  # type: ignore[arg-type]
+            input_watermark=_canonical_int(payload["input_watermark"], "input_watermark"),
             authorization_scope_id=UUID(str(payload["authorization_scope_id"])),
             reason=str(payload["reason"]),
-            risk_certificate=_cert_from_canonical(payload["risk_certificate"]),  # type: ignore[arg-type]
+            risk_certificate=_cert_from_canonical(
+                cast(dict[str, object], payload["risk_certificate"])
+            ),
         )
     if kind == "reversal":
         return HybridReversal(
             record_id=UUID(str(payload["record_id"])),
             reverses_record_id=UUID(str(payload["reverses_record_id"])),
             revision_id=UUID(str(payload["revision_id"])),
-            input_watermark=int(payload["input_watermark"]),  # type: ignore[arg-type]
+            input_watermark=_canonical_int(payload["input_watermark"], "input_watermark"),
             authorization_scope_id=UUID(str(payload["authorization_scope_id"])),
             reason=str(payload["reason"]),
         )
@@ -549,7 +573,7 @@ def _record_from_canonical(payload: dict[str, object]) -> HybridLogRecord:
             supersedes_revision_id=UUID(str(payload["supersedes_revision_id"])),
             successor_revision_id=UUID(str(payload["successor_revision_id"])),
             event_hypothesis_id=UUID(str(payload["event_hypothesis_id"])),
-            input_watermark=int(payload["input_watermark"]),  # type: ignore[arg-type]
+            input_watermark=_canonical_int(payload["input_watermark"], "input_watermark"),
             authorization_scope_id=UUID(str(payload["authorization_scope_id"])),
             reason=str(payload["reason"]),
         )
@@ -578,11 +602,13 @@ class LedgerConfig:
     @classmethod
     def from_canonical(cls, payload: dict[str, object]) -> LedgerConfig:
         return cls(
-            feature_dim=int(payload["feature_dim"]),  # type: ignore[arg-type]
-            ridge=float(payload["ridge"]),  # type: ignore[arg-type]
-            information_ridge=float(payload["information_ridge"]),  # type: ignore[arg-type]
-            alpha_prior=float(payload["alpha_prior"]),  # type: ignore[arg-type]
-            max_condition_number=float(payload["max_condition_number"]),  # type: ignore[arg-type]
+            feature_dim=_canonical_int(payload["feature_dim"], "feature_dim"),
+            ridge=_canonical_float(payload["ridge"], "ridge"),
+            information_ridge=_canonical_float(payload["information_ridge"], "information_ridge"),
+            alpha_prior=_canonical_float(payload["alpha_prior"], "alpha_prior"),
+            max_condition_number=_canonical_float(
+                payload["max_condition_number"], "max_condition_number"
+            ),
         )
 
     @property
@@ -1264,7 +1290,7 @@ class HybridStatisticLedger:
         }
 
     def _restore_state(self, snapshot: dict[str, object]) -> None:
-        del self._log[snapshot["log_len"] :]  # type: ignore[index]
+        del self._log[_canonical_int(snapshot["log_len"], "log_len") :]
         self._record_ids = snapshot["record_ids"]  # type: ignore[assignment]
         self._cluster_keys = snapshot["cluster_keys"]  # type: ignore[assignment]
         self._cluster_records = snapshot["cluster_records"]  # type: ignore[assignment]

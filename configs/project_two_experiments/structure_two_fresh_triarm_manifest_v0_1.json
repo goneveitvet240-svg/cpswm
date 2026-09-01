@@ -1,0 +1,82 @@
+{
+  "schema_version": "0.1.0",
+  "protocol": "structure-two-fresh-multiaxis-triarm@0.1",
+  "freeze_status": "repository_local_before_first_benchmark_run",
+  "validation_seeds": [52101, 52102, 52103, 52104],
+  "sealed_holdout_seed_count": 12,
+  "sealed_holdout_seed_commitments": [
+    "7805d4297ea46562160ae9ae5ce539fc0779610679e32783e3b291fb1a9df818",
+    "f1bd8bacc775578aac6a6ddd73321e340d9b6e18843a063b4cc83f9ec10f6558",
+    "aac8884c0c1eed8a7a0838c31fb86007adb7157bac6304235e9e0f1a59a7d6b0",
+    "771ed384a9e6f9c0a64d5558ba17be049bb8aa4fac56849753b9a2b68b10bd04",
+    "9ddaebc0dadf79271057855ca7110adfff5e28c09f025d5b4574269e58d44869",
+    "1880190533c2f954306591c479b9d7e6efeb72a13a866f3d8bc7b8b3337c4742",
+    "e801119217c2597f7825784c3ddc45e771b935f631ea47b77707ee256346e681",
+    "9d4b9b9dade9098a16a07b0513173b7402ea7b7d205f339c4035c41195126c8f",
+    "8e5b58dd101c68d14cbb2b8452a797589b396316c2db2528a03a920e5f2b7751",
+    "a9bd6441c1c500db001ad1bd07e2a2024cf8bc3175c8d9c905c1962416f17f53",
+    "3024432871926f3062cc08e07e9c18b87bee3e1c18e11f562eecc293ee025d82",
+    "f960c0dac7fc670a5c81bf03b7c3e71202763560e4cd9a2280508c203fe71bf2"
+  ],
+  "sealed_seed_file_sha256": "33326c76c63cf8cac671b8e1ee8918564e77773bd0acdf69737d0da636cce3a7",
+  "max_steps": 20,
+  "particle_budget": 24,
+  "scenario_families": [
+    {
+      "family_id": "fresh_role_chain_shift",
+      "guest_window": [2, 7],
+      "abrupt_day": 10,
+      "recurrence_day": 17,
+      "observation_coverage": 0.78,
+      "unknown_event_days": [3, 11, 18],
+      "actor_ambiguity_mix": 0.65,
+      "identity_confidence_scale": 0.82,
+      "feedback_flip_rate": 0.25
+    },
+    {
+      "family_id": "fresh_identity_occlusion_reentry",
+      "guest_window": [4, 9],
+      "abrupt_day": 12,
+      "recurrence_day": 16,
+      "observation_coverage": 0.62,
+      "unknown_event_days": [5, 14],
+      "actor_ambiguity_mix": 0.25,
+      "identity_confidence_scale": 0.55,
+      "feedback_flip_rate": 0.15
+    },
+    {
+      "family_id": "fresh_cause_collision_short",
+      "guest_window": [1, 4],
+      "abrupt_day": 7,
+      "recurrence_day": 12,
+      "observation_coverage": 0.80,
+      "unknown_event_days": [2, 8, 15],
+      "actor_ambiguity_mix": 0.55,
+      "identity_confidence_scale": 0.72,
+      "feedback_flip_rate": 0.30
+    },
+    {
+      "family_id": "fresh_long_recurrence_open_actor",
+      "guest_window": [5, 10],
+      "abrupt_day": 13,
+      "recurrence_day": 18,
+      "observation_coverage": 0.70,
+      "unknown_event_days": [1, 6, 12, 19],
+      "actor_ambiguity_mix": 0.45,
+      "identity_confidence_scale": 0.68,
+      "feedback_flip_rate": 0.20
+    }
+  ],
+  "search_spaces": {
+    "corrected_amg": [0.20, 0.33, 0.50],
+    "old_full_multiaxis": ["conservative", "balanced", "responsive"],
+    "joint_revision_multiaxis": ["conservative", "balanced", "responsive"]
+  },
+  "primary_endpoint": "net_action_loss_per_step",
+  "paired_cluster_unit": "holdout_seed_across_scenario_families",
+  "registered_comparisons": [
+    "joint_revision_minus_old_full",
+    "joint_revision_minus_corrected_amg",
+    "old_full_minus_corrected_amg"
+  ]
+}

@@ -1,0 +1,97 @@
+{
+  "schema_version": "0.1.0",
+  "protocol": "structure-two-sequential-consolidation-gate@0.1",
+  "freeze_status": "repository_local_before_first_benchmark_run",
+  "validation_seeds": [73101, 73102, 73103, 73104],
+  "sealed_holdout_seed_count": 12,
+  "sealed_holdout_seed_commitments": [
+    "cfa897a34089919b3b06ca152214e6b3cd02f610f3788a080f90447edd26efd8",
+    "6d07ba8604cca245aa585259c80bffb35657827486af1170e3924a3ec1ceb63e",
+    "69164f967fa2419c3f9e18d605bedc5f17f70829775993741c6ccad67225a358",
+    "c2de59552f12d02a7074d25d5b685ba6301cd14af1a358c60b8808fd0bbabde3",
+    "fda3854d1befc76d19290433b28ad12affd4513fef54078c38e29ddca9a4b456",
+    "5e35c749d559f85246d7666f1b760c24587b68d94057c5b441d11e57fd0239e6",
+    "d8677601e126443fc82e48e771045e9f10337373e4d82ea82ad1200c9621cb78",
+    "22770d5daad97b843de119bd84d745497462b351ea8b5075ed2cb845462d0997",
+    "7906b3b4ba253906e452d0b25885960eb0d5967431ef1e9d019743d324e39a77",
+    "9b952fc67c4434e385ae91670805e752b4eed0f7f1951a814ee44aa463e1025f",
+    "7de2814281e8cd5783ed45107d636080969c50b5f5db3dc2e7698e106d02b58b",
+    "61b178e2be08777e902b3106b80214681623420a34dfc83fd03aaf9325892d39"
+  ],
+  "sealed_seed_file_sha256": "d2b30b5c4a10b69cf5ae9f33f2f17b1be9f5da442b7bcfebd92394f7b6e6c37a",
+  "max_steps": 24,
+  "particle_budget": 24,
+  "scenario_families": [
+    {
+      "family_id": "sequential_identity_decoy_swap",
+      "family_role": "required_identity_gain",
+      "guest_window": [4, 10],
+      "abrupt_day": 12,
+      "recurrence_day": 20,
+      "observation_coverage": 0.70,
+      "unknown_event_days": [5, 14, 21],
+      "actor_ambiguity_mix": 0.30,
+      "identity_confidence_scale": 0.90,
+      "feedback_flip_rate": 0.15,
+      "decoy_days": [6, 7, 15, 16]
+    },
+    {
+      "family_id": "sequential_long_recurrence_delayed_feedback",
+      "family_role": "required_long_recurrence_gain",
+      "guest_window": [3, 8],
+      "abrupt_day": 10,
+      "recurrence_day": 22,
+      "observation_coverage": 0.68,
+      "unknown_event_days": [2, 9, 17, 23],
+      "actor_ambiguity_mix": 0.40,
+      "identity_confidence_scale": 0.75,
+      "feedback_flip_rate": 0.35,
+      "decoy_days": []
+    },
+    {
+      "family_id": "sequential_role_chain_guardrail",
+      "family_role": "role_guardrail",
+      "guest_window": [2, 7],
+      "abrupt_day": 11,
+      "recurrence_day": 19,
+      "observation_coverage": 0.78,
+      "unknown_event_days": [3, 12, 20],
+      "actor_ambiguity_mix": 0.65,
+      "identity_confidence_scale": 0.82,
+      "feedback_flip_rate": 0.25,
+      "decoy_days": []
+    },
+    {
+      "family_id": "sequential_cause_collision_guardrail",
+      "family_role": "cause_guardrail",
+      "guest_window": [1, 5],
+      "abrupt_day": 8,
+      "recurrence_day": 16,
+      "observation_coverage": 0.80,
+      "unknown_event_days": [2, 9, 18],
+      "actor_ambiguity_mix": 0.55,
+      "identity_confidence_scale": 0.72,
+      "feedback_flip_rate": 0.30,
+      "decoy_days": []
+    }
+  ],
+  "search_spaces": {
+    "corrected_amg": [0.20, 0.33, 0.50],
+    "old_full_multiaxis": ["conservative", "balanced", "responsive"],
+    "per_step_particle_projection": ["conservative", "balanced", "responsive"],
+    "sequential_particle_no_consolidation": ["conservative", "balanced", "responsive"],
+    "sequential_particle_reversible_consolidation": ["conservative", "balanced", "responsive"]
+  },
+  "primary_endpoint": "net_action_loss_per_step",
+  "primary_comparison": "sequential_consolidation_minus_per_step",
+  "required_family_gains": [
+    "sequential_identity_decoy_swap",
+    "sequential_long_recurrence_delayed_feedback"
+  ],
+  "guardrail_families": [
+    "sequential_role_chain_guardrail",
+    "sequential_cause_collision_guardrail"
+  ],
+  "guardrail_noninferiority_margin": 0.02,
+  "paired_cluster_unit": "holdout_seed_across_scenario_families"
+}

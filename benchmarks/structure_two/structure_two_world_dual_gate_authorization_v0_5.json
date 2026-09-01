@@ -1,0 +1,250 @@
+{
+  "protocol": "structure-two-world-arm-distinguishability-gate-b@0.5",
+  "gate_a_passed": true,
+  "gate_b": {
+    "protocol": "task-nontriviality-and-arm-distinguishability-gates@0.1",
+    "gate": "arm_distinguishability",
+    "declared_arm_count": 10,
+    "distinguishable_arm_count": 9,
+    "prediction_digests": {
+      "corrected_amg": "fe046c959244a3b806bc3f901129aa2a8d8a2e4698e8f8b5fa4c88162dd2a0df",
+      "o_star_matched": "b2eb69f150a2008e6d322e5e72635fa87b274b9e9c9f1a13a0d429bcb39c7f2c",
+      "sequential_no_consolidation": "0c3f379057f97c8dbfb4f26780cea620bfe551a9b8cea15392d36f89fe2581c5",
+      "active_dreaming_matched": "343c7334b482382e7d5285bf20a5ca31887a084386c234633de691c6c2d9e5a7",
+      "auto_dreamer_matched": "31c3c91f4e445ab21415431fb2950bc48586b8e248df15cef70344cc9ee2a645",
+      "trustmem_matched": "be394dca428e39aecebc41717069c249bc97701f58c03340ba7a6274823d2aca",
+      "brainctl_matched": "343c7334b482382e7d5285bf20a5ca31887a084386c234633de691c6c2d9e5a7",
+      "care_no_action_regret": "c295d5df0832dc634e635d17bdb43556f3e064e6895484b55586a9d2da20398f",
+      "care_wm": "b9a6c989797a0e004e11ce444a4f7255ecd0108d4057c9cadc02d6d4b3d2c335",
+      "full_rerun": "a8cc49de523154c0f72e84acb297842722463c8663c3b84231cfdefe809cb9ee"
+    },
+    "identical_arm_groups": [
+      [
+        "active_dreaming_matched",
+        "brainctl_matched"
+      ]
+    ],
+    "pairwise_identical": {
+      "active_dreaming_matched|auto_dreamer_matched": false,
+      "active_dreaming_matched|brainctl_matched": true,
+      "active_dreaming_matched|care_no_action_regret": false,
+      "active_dreaming_matched|care_wm": false,
+      "active_dreaming_matched|corrected_amg": false,
+      "active_dreaming_matched|full_rerun": false,
+      "active_dreaming_matched|o_star_matched": false,
+      "active_dreaming_matched|sequential_no_consolidation": false,
+      "active_dreaming_matched|trustmem_matched": false,
+      "auto_dreamer_matched|brainctl_matched": false,
+      "auto_dreamer_matched|care_no_action_regret": false,
+      "auto_dreamer_matched|care_wm": false,
+      "auto_dreamer_matched|corrected_amg": false,
+      "auto_dreamer_matched|full_rerun": false,
+      "auto_dreamer_matched|o_star_matched": false,
+      "auto_dreamer_matched|sequential_no_consolidation": false,
+      "auto_dreamer_matched|trustmem_matched": false,
+      "brainctl_matched|care_no_action_regret": false,
+      "brainctl_matched|care_wm": false,
+      "brainctl_matched|corrected_amg": false,
+      "brainctl_matched|full_rerun": false,
+      "brainctl_matched|o_star_matched": false,
+      "brainctl_matched|sequential_no_consolidation": false,
+      "brainctl_matched|trustmem_matched": false,
+      "care_no_action_regret|care_wm": false,
+      "care_no_action_regret|corrected_amg": false,
+      "care_no_action_regret|full_rerun": false,
+      "care_no_action_regret|o_star_matched": false,
+      "care_no_action_regret|sequential_no_consolidation": false,
+      "care_no_action_regret|trustmem_matched": false,
+      "care_wm|corrected_amg": false,
+      "care_wm|full_rerun": false,
+      "care_wm|o_star_matched": false,
+      "care_wm|sequential_no_consolidation": false,
+      "care_wm|trustmem_matched": false,
+      "corrected_amg|full_rerun": false,
+      "corrected_amg|o_star_matched": false,
+      "corrected_amg|sequential_no_consolidation": false,
+      "corrected_amg|trustmem_matched": false,
+      "full_rerun|o_star_matched": false,
+      "full_rerun|sequential_no_consolidation": false,
+      "full_rerun|trustmem_matched": false,
+      "o_star_matched|sequential_no_consolidation": false,
+      "o_star_matched|trustmem_matched": false,
+      "sequential_no_consolidation|trustmem_matched": false
+    },
+    "pairwise_prediction_disagreement_rates": {
+      "active_dreaming_matched|auto_dreamer_matched": 0.00012309207287050715,
+      "active_dreaming_matched|brainctl_matched": 0.0,
+      "active_dreaming_matched|care_no_action_regret": 0.00020515345478417857,
+      "active_dreaming_matched|care_wm": 0.011939931068439193,
+      "active_dreaming_matched|corrected_amg": 0.3244296733957,
+      "active_dreaming_matched|full_rerun": 0.7988675529295913,
+      "active_dreaming_matched|o_star_matched": 0.45638437551288363,
+      "active_dreaming_matched|sequential_no_consolidation": 0.011529624158870835,
+      "active_dreaming_matched|trustmem_matched": 0.0003282455276546857,
+      "auto_dreamer_matched|brainctl_matched": 0.00012309207287050715,
+      "auto_dreamer_matched|care_no_action_regret": 0.00020515345478417857,
+      "auto_dreamer_matched|care_wm": 0.011816838995568686,
+      "auto_dreamer_matched|corrected_amg": 0.3244296733957,
+      "auto_dreamer_matched|full_rerun": 0.7988675529295913,
+      "auto_dreamer_matched|o_star_matched": 0.45650746758575417,
+      "auto_dreamer_matched|sequential_no_consolidation": 0.011652716231741342,
+      "auto_dreamer_matched|trustmem_matched": 0.0003282455276546857,
+      "brainctl_matched|care_no_action_regret": 0.00020515345478417857,
+      "brainctl_matched|care_wm": 0.011939931068439193,
+      "brainctl_matched|corrected_amg": 0.3244296733957,
+      "brainctl_matched|full_rerun": 0.7988675529295913,
+      "brainctl_matched|o_star_matched": 0.45638437551288363,
+      "brainctl_matched|sequential_no_consolidation": 0.011529624158870835,
+      "brainctl_matched|trustmem_matched": 0.0003282455276546857,
+      "care_no_action_regret|care_wm": 0.012021992450352863,
+      "care_no_action_regret|corrected_amg": 0.32451173477761364,
+      "care_no_action_regret|full_rerun": 0.798949614311505,
+      "care_no_action_regret|o_star_matched": 0.4565895289676678,
+      "care_no_action_regret|sequential_no_consolidation": 0.011734777613655014,
+      "care_no_action_regret|trustmem_matched": 0.00041030690956835714,
+      "care_wm|corrected_amg": 0.3321434432955851,
+      "care_wm|full_rerun": 0.8066633842113902,
+      "care_wm|o_star_matched": 0.46672410963400623,
+      "care_wm|sequential_no_consolidation": 0.022525849335302807,
+      "care_wm|trustmem_matched": 0.012145084523223371,
+      "corrected_amg|full_rerun": 0.7271048744460856,
+      "corrected_amg|o_star_matched": 0.39926965370096834,
+      "corrected_amg|sequential_no_consolidation": 0.3263170851797144,
+      "corrected_amg|trustmem_matched": 0.3244296733957,
+      "full_rerun|o_star_matched": 0.6574757918923355,
+      "full_rerun|sequential_no_consolidation": 0.7968980797636632,
+      "full_rerun|trustmem_matched": 0.7987444608567208,
+      "o_star_matched|sequential_no_consolidation": 0.4521171836533727,
+      "o_star_matched|trustmem_matched": 0.4564664368947973,
+      "sequential_no_consolidation|trustmem_matched": 0.01185786968652552
+    },
+    "minimum_pairwise_prediction_disagreement_rate": 0.0,
+    "episode_count_with_multiple_arm_trajectories": 72,
+    "episode_fraction_with_multiple_arm_trajectories": 1.0,
+    "thresholds": {
+      "min_pairwise_prediction_disagreement_rate": 0.01,
+      "min_episode_fraction_with_multiple_arm_trajectories": 0.2
+    },
+    "criteria": {
+      "b1_no_two_arms_produce_identical_predictions": false,
+      "b2_every_arm_pair_has_preregistered_disagreement": false,
+      "b3_multiple_arm_trajectories_cover_preregistered_episode_fraction": true
+    },
+    "gate_b_passed": false
+  },
+  "gate_b_passed": false,
+  "external_adapter_fidelity_audit": {
+    "protocol": "structure-two-external-adapter-fidelity-gate@0.1",
+    "claim_boundary": "Gate B behavioral distinguishability is necessary but insufficient for external-method fidelity or efficacy comparison.",
+    "audited_external_arms": [
+      {
+        "arm": "corrected_amg",
+        "method": "Damen-Hogg AMG",
+        "verdict": "not_independently_audited",
+        "official_source": null,
+        "official_code_commit": null,
+        "verified_components": [],
+        "missing_or_changed_components": [
+          "primary-source and official-code semantic audit",
+          "published-protocol result recheck"
+        ]
+      },
+      {
+        "arm": "o_star_matched",
+        "method": "O-STaR",
+        "verdict": "non_faithful_proxy",
+        "official_source": "https://www.hrl.uni-bonn.de/publications/2026/menon26grc/menon26grc_paper_poster.pdf/@@download/file",
+        "official_code_commit": null,
+        "verified_components": [],
+        "missing_or_changed_components": [
+          "LLM Day-0 semantic prior",
+          "3D geometric candidate pruning and dynamic scene graph",
+          "Dirichlet-Categorical hit and miss updates",
+          "Stay+Leak and relaxed transition inference",
+          "cost-aware active search",
+          "opportunistic multi-target perception",
+          "published physical and HOMER+ protocol recheck"
+        ],
+        "local_adapter_observation": "Gate B instantiates _CountMethod(mode='o_star'); it does not use the separate OStarReferenceBelief equation core."
+      },
+      {
+        "arm": "active_dreaming_matched",
+        "method": "Active Dreaming Memory",
+        "verdict": "non_faithful_proxy",
+        "official_source": "https://engrxiv.org/preprint/download/5919/9826/8234",
+        "official_code_url": "https://github.com/KasimVali2207/active-dreaming-memory",
+        "official_code_commit": "9c05baf41673d10e92c076ba7db18b1b6553a60d",
+        "verified_components": [],
+        "missing_or_changed_components": [
+          "failure-episode retrieval and episodic/semantic dual-store lifecycle",
+          "embedding-based DBSCAN failure clustering",
+          "LLM rule abstraction",
+          "LLM counterfactual executable-scenario generation",
+          "actual scenario execution before semantic-memory insertion",
+          "official evaluation protocol and published-result recheck"
+        ],
+        "local_adapter_observation": "The adapter applies a confidence-entropy-coverage threshold and marks a local verifier as executed without running the official dreaming pipeline."
+      },
+      {
+        "arm": "auto_dreamer_matched",
+        "method": "Auto-Dreamer",
+        "verdict": "not_independently_audited",
+        "official_source": null,
+        "official_code_commit": null,
+        "verified_components": [],
+        "missing_or_changed_components": [
+          "primary-source and official-code semantic audit",
+          "published-protocol result recheck"
+        ]
+      },
+      {
+        "arm": "trustmem_matched",
+        "method": "TrustMem",
+        "verdict": "not_independently_audited",
+        "official_source": null,
+        "official_code_commit": null,
+        "verified_components": [],
+        "missing_or_changed_components": [
+          "primary-source and official-code semantic audit",
+          "published-protocol result recheck"
+        ]
+      },
+      {
+        "arm": "brainctl_matched",
+        "method": "brainctl",
+        "verdict": "non_faithful_proxy",
+        "official_source": "https://www.brainctl.org/whitepaper",
+        "official_code_url": "https://github.com/TSchonleber/brainctl",
+        "official_code_commit": "c6348087dd07e54583f762e07bf960ac982019e6",
+        "verified_components": [
+          "the adapter copies the whitepaper's five top-level worthiness weights"
+        ],
+        "missing_or_changed_components": [
+          "source-trust categories and category-specific priors",
+          "embedding-based semantic novelty",
+          "scope, historical recall, arousal, and valence factors",
+          "two-stage write-decision gate and tier routing",
+          "Bayesian confidence, merge, supersede, rejection, and consolidation lifecycle",
+          "official evaluation protocol and result recheck"
+        ],
+        "local_adapter_observation": "The adapter maps a simplified weighted score directly to embodied-state promotion/escrow, although brainctl describes a memory-control layer rather than a planner."
+      }
+    ],
+    "required_external_arm_count": 6,
+    "external_fidelity_gate_passed": false,
+    "external_method_efficacy_comparison_allowed": false,
+    "completion_rule": "Every external arm must be faithful_reproduction with content-bound primary source, official-code semantics where available, executable component tests, and a published-protocol result recheck.",
+    "content_sha256": "5f419bd392116021edda58e96baedf6bdfc0b4ece0b185c9efbe651871c307ac"
+  },
+  "external_fidelity_gate_passed": false,
+  "proxy_method_comparison_allowed": false,
+  "official_method_comparison_allowed": false,
+  "method_comparison_allowed": false,
+  "sealed_holdout_opened": false,
+  "producer_run_id": "09000ed95dc0fe05660dd6f8d7b1021f66394876a14db581f668b1ec58459177",
+  "producer_source_bundle_sha256": "a9f7ecba788304aec010380bdb2da1b5e5be75723f24c3caf004ab1db8619c4c",
+  "gate_a_content_sha256": "5a2226c733c89a0a0733331f9923fda0797670d6f4f62a867a35c3100ba07e04",
+  "manifest_sha256": "402887a3ba8649a91b276dab92f87c4abff55c16ec392e94903e6248224a6452",
+  "claim_boundary": "Gate A and B can authorize transparent proxy/baseline comparison; official external-method claims additionally require the independent fidelity gate.",
+  "content_sha256": "47c54b04c92981abdfd6a0f18505d52ccc766ea9a25da1b1914c40902c7c4893"
+}

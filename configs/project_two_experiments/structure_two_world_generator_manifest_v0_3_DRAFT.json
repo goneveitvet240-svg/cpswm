@@ -1,0 +1,240 @@
+{
+ "protocol": "structure-two-world-generator-gate-a@0.3",
+ "status": "DRAFT-awaiting-signature-not-frozen",
+ "evidence_scope": "additive Gate A reachability and finite-sample recoverability; no method comparison",
+ "inherits": {
+  "world_generator": "structure_two_world_generator_v0_2.py (byte-identical, unchanged)",
+  "v0_2_manifest_sha256": "88fbf4a47601401b0b95642c99d2bf0644a8d97ac5ae03171cd60bbfabc62cd4",
+  "world_distribution": "CORRECTED: generator code is byte-identical; the world distribution is NOT identical to v0.2 if the duration field is reopened. Accurate statement: generator code byte-identical; world distribution reopens the duration field only, every other field inherited from v0.2.",
+  "v0_2_verdict": "the v0.2 Gate A failure stands as recorded and is not superseded"
+ },
+ "open_decision_blocking_freeze": {
+  "question": "which finite-sample criterion binds for the search target",
+  "option_1_top1_only": {
+   "criterion": "witness top-1 search gain >= 0.02",
+   "train_measurement": 0.016602,
+   "expected_outcome": "fails again on validation; burns a new world block for a second negative"
+  },
+  "option_2_path_cost_plus_reachability": {
+   "status": "WITHDRAWN",
+   "reason": "the 0.032114 path-cost gain came from a degenerate ranking baseline in the tuning script (lexicographic tail). Against the formal evaluator's baseline -- last observed first, remaining locations by cumulative count -- the witness path-cost gain is 0.005845, so this option never cleared 0.02.",
+   "corrected_witness_path_cost_gain": 0.005845
+  }
+ },
+ "split_policy": {
+  "unit": "world_seed",
+  "seed_block_allocation": {
+   "note": "absent from v0.2; declared here so no future version can collide by accident",
+   "train": "410001-419999",
+   "validation_v0_2_spent": "420001-429999",
+   "validation_v0_3": "440001-449999",
+   "sealed_holdout": "reserved, disjoint, custodian-held"
+  },
+  "validation_v0_3_world_seeds": "TO BE ASSIGNED after custodian attestation",
+  "custodian_attestation_required": "the holdout custodian attests that every sealed seed lies in the dedicated holdout block and is disjoint from 440001-449999, without disclosing any seed or the custody salt",
+  "v0_2_validation_worlds": "SPENT - seen by the v0.2 gate and by v0.3 development; never confirmatory again",
+  "train_trajectory_seeds": [
+   13,
+   29,
+   41
+  ],
+  "train_observation_seeds": [
+   103,
+   223
+  ]
+ },
+ "reachability_references": {
+  "observable_parameter_oracle": {
+   "knows": [
+    "world parameters",
+    "regime (implied by world parameters and day)"
+   ],
+   "does_not_know": [
+    "latent actor",
+    "future observations"
+   ],
+   "must_condition_on_unobserved": true,
+   "analytic_field": "search_observable_oracle_unobserved_error_analytic",
+   "empirical_field": "search_observable_oracle_unobserved_error_empirical",
+   "subtraction_rule": "only the empirical field may be subtracted from an empirical estimator error; the analytic field is a property of the world and differs systematically (0.628582 vs 0.652515 on the v0.2 validation seeds, a 0.023933 gap larger than the 0.02 threshold itself)"
+  },
+  "true_actor_oracle": {
+   "binding": false,
+   "reason": "no actor evidence exists on unobserved steps"
+  },
+  "put_back_reference_gap": "the put-back target IS the mode of the habit distribution, so a parameter oracle scores zero by construction and its headroom bound is vacuous. The put-back pass is therefore still protected only from below. A visible-history reachability reference for put-back is REQUIRED before the put-back criteria can be called symmetric.",
+  "true_change_point_variant": {
+   "binding": false,
+   "status": "report-only",
+   "reason": "it reads evaluator truth; it may bound the room left for a change-point operator but may never participate in method_comparison_allowed"
+  }
+ },
+ "regime_adaptive_witness": {
+  "purpose": "minimal executable learnability witness, not a strong baseline",
+  "reads": [
+   "observed_location",
+   "visible_owner_probability",
+   "calendar context"
+  ],
+  "never_reads": [
+   "latent actor",
+   "true change points",
+   "true regime label",
+   "CPSWM internal state"
+  ],
+  "detector": "two-window total-variation test, centred under the null",
+  "superseded_detector": {
+   "form": "CUSUM on I[mispredicted] - drift_allowance",
+   "defect": "not centred: a stable habit has mode mass 0.42-0.58, so the mispredict rate already exceeds any usable drift allowance and the statistic climbs with elapsed time. It resets on a schedule, so its reset count carried no evidence about detection and the 0.016602 gain it produced must not be read as adaptivity."
+  },
+  "train_results_with_false_reset_constraint": {
+   "constraint": "false resets per rollout <= 1.0 (a reset outside 14 days after a true change)",
+   "selected": {
+    "recent_window": 6,
+    "divergence_threshold": 0.55,
+    "context_shrinkage_pseudocounts": 4.0,
+    "minimum_reference_observations": 8
+   },
+   "train_gain": 0.009227,
+   "worst_held_out_fold": 0.004751,
+   "false_resets_per_rollout": 0.583,
+   "total_resets_per_rollout": 1.12
+  },
+  "reading": "gain rises with reset frequency and most extra resets are false, so the benefit is 'forget old data often', not 'detect the change'. Constrained to a credible false reset rate the witness reaches 0.009227 on train, far below 0.02."
+ },
+ "contribution_safety_check": {
+  "question": "does the witness absorb the benefit a change-point operator would claim",
+  "witness_top1_gain": 0.016602,
+  "same_rule_with_true_change_points_top1_gain": 0.030346,
+  "gap_left_by_imperfect_detection": 0.013744,
+  "reading": "the minimal CUSUM captures 55% of the top-1 gain and 83% of the path-cost gain that perfect detection provides; the top-1 gap it leaves (0.013744) is 83% of the witness's own gain and comparable to the entire rolling-count family ceiling (0.015831), so the witness does not foreclose a change-point contribution"
+ },
+ "reported_but_not_binding": [
+  "search normalised path cost for every rule",
+  "analytic observable oracle",
+  "true-actor oracle",
+  "CUSUM reset counts"
+ ],
+ "method_comparison_policy": "forbidden unless every frozen v0.3 criterion passes on new validation worlds",
+ "notes": [
+  "Thresholds are author-selected; 0.02 is inherited from v0.2 and is not re-derived here.",
+  "The estimator changed, so the search criterion is a NEW v0.3 criterion and must not be described as the untouched v0.2 gate.",
+  "No v0.3 validation world has been generated. No method has been run.",
+  "No v0.3 world, criterion, or threshold is frozen. Nothing is signed."
+ ],
+ "horizon_probe": {
+  "status": "train-only design probe on fresh seeds; not a gate, no method involved",
+  "question": "is 0.02 unreachable because the detector is weak or because the world is too short",
+  "measurements": [
+   {
+    "duration_days": [
+     96,
+     120
+    ],
+    "observed_owner_placements_per_world": 37.5,
+    "best_constrained_gain": 0.006307
+   },
+   {
+    "duration_days": [
+     150,
+     180
+    ],
+    "observed_owner_placements_per_world": 57.1,
+    "best_constrained_gain": 0.011164
+   },
+   {
+    "duration_days": [
+     220,
+     260
+    ],
+    "observed_owner_placements_per_world": 78.1,
+    "best_constrained_gain": 0.019133
+   },
+   {
+    "duration_days": [
+     320,
+     380
+    ],
+    "observed_owner_placements_per_world": 119.8,
+    "best_constrained_gain": 0.021632
+   }
+  ],
+  "reading": "the frozen v0.2 horizon yields about 37.5 observed owner placements over three regimes and two calendar contexts, roughly six per cell. CORRECTED: this is not an information-theoretic impossibility. Method-free sampling from the frozen train worlds' own habit distributions recovers the true mode from six samples 74.8% of the time (3 -> 0.583, 6 -> 0.748, 10 -> 0.836, 13 -> 0.873, 20 -> 0.919). The supportable claim is only that the current horizon is not enough for the false-alarm-constrained TV witness to reach 0.02 reliably.",
+  "lever_note": "raising base_observation_probability would also add samples but would weaken the selective-observation claim the paper rests on; lengthening the horizon does not",
+  "candidate_decision": {
+   "selected_next_train_only_candidate": [
+    320,
+    380
+   ],
+   "rejected": {
+    "duration_days": [
+     220,
+     260
+    ],
+    "reason": "its own train gain 0.019133 is below 0.02"
+   },
+   "caveat": "[320,380] reached 0.021632, only 0.001632 above the bar, with no worst-fold or interval yet; that is not a credible pass",
+   "status": "NOT frozen; a train-only candidate awaiting a detector that is stationary-safe"
+  }
+ },
+ "blocking_defects": [
+  {
+   "item": "witness detector false-alarm rate rises with stream length",
+   "evidence": "tests/test_structure_two_world_gate_v0_3.py::test_false_reset_rate_does_not_rise_with_stream_length is xfail(strict)",
+   "consequence": "any tuning run on this detector is contaminated; the [320,380] re-tune must wait"
+  },
+  {
+   "item": "stationary false-alarm ceiling not met by current defaults",
+   "measured": 0.07,
+   "ceiling": 0.025,
+   "ceiling_derivation": "at most one false alarm per regime; a regime holds about forty observed owner placements at the candidate horizon"
+  },
+  {
+   "item": "horizon probe not yet a reproducible artifact",
+   "consequence": "its seeds, grid and results live only in the draft"
+  }
+ ],
+ "tie_break_correction": {
+  "finding": "three different tie-breaks were in use: the formal evaluator ranks by encounter order (position in the episode's location tuple), while the v0.2 gate and the first v0.3 draft both ranked lexicographically by location string. Locations are hex suffixed, so the two orders differ, and with integer counts and zero shrinkage ties are frequent.",
+  "v0_3_now_uses": "encounter order, matching project_two_action_benchmark._rank",
+  "recomputation_under_the_formal_tie_break": {
+   "note": "diagnostic recomputation on the v0.2 validation seeds; the v0.2 artifact and verdict are archived unchanged and are not superseded",
+   "search_last_observed_error": {
+    "formal": 0.485902,
+    "v0_2_archived": 0.485902
+   },
+   "search_contextual_fallback_error": {
+    "formal": 0.470701,
+    "v0_2_archived": 0.472514
+   },
+   "search_contextual_fallback_gain": {
+    "formal": 0.015201,
+    "v0_2_archived": 0.013388
+   },
+   "put_back_context_mode_error": {
+    "formal": 0.575922,
+    "v0_2_archived": 0.59782
+   }
+  },
+  "consequence": "the search verdict direction is unchanged (0.015201 is still below 0.02), but the put-back level moves by 0.021898, which is larger than the search shift. The v0.2 put-back criteria PASSED under the non-formal tie-break, so the put-back aggregation and context gains must be re-measured under the formal rule before any v0.3 criterion is written; a pass must not be inherited unexamined."
+ },
+ "gate_path": {
+  "estimator": "plain window + shrinkage rolling estimator; no change detector",
+  "witness_status": "retained in code and in the xfail test so its failure stays reproducible, but removed from the Gate A decision path",
+  "what_this_does_not_mean": "dropping the detector from the gate is not a statement about CF-BOCPD. When method comparison resumes, a change-point operator must still beat fixed-window, multi-window and simple change-detector baselines."
+ },
+ "negative_result_taxonomy": {
+  "1_evaluation_implementation_error": [
+   "search readout",
+   "cost accounting",
+   "tie-break",
+   "pseudo cross-validation"
+  ],
+  "2_benchmark_design_error": [
+   "horizon too short",
+   "target absorbed by a trivial rule"
+  ],
+  "3_genuine_method_failure": "confirmable only by re-comparing after the new instrument passes",
+  "rule": "only class 3 may ever be reported as a method result"
+ }
+}

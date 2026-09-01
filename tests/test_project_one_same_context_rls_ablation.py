@@ -488,10 +488,20 @@ def test_corrected_as_is_wiring_lets_the_rls_only_arm_see_the_anomaly() -> None:
     assert prediction.decision is not ProjectOneDecision.STABLE
 
 
-def test_corrected_wiring_full_change_probability_exceeds_no_rls() -> None:
-    assert _change_probability(SignalAblation.FULL, ResidualCalibration.AS_IS) > (
-        _change_probability(SignalAblation.NO_RLS, ResidualCalibration.AS_IS)
-    )
+def test_extreme_anomaly_preserves_rls_signal_even_when_change_probability_saturates() -> None:
+    """Do not mistake a saturated posterior for evidence that RLS added no signal.
+
+    This fixture is an intentionally extreme location anomaly.  Both arms drive
+    CF-BOCPD to a machine-precision posterior of one, so ordering the final
+    probabilities is not an identifiable invariant.  The surgical ablation is
+    still visible at the input to that detector and is tested there; action-level
+    benefit remains a separate matched benchmark question.
+    """
+
+    full = _run_consistent(SignalAblation.FULL, ResidualCalibration.AS_IS, "balcony")
+    no_rls = _run_consistent(SignalAblation.NO_RLS, ResidualCalibration.AS_IS, "balcony")
+    assert full.change_probability == no_rls.change_probability == 1.0
+    assert full.habit_signal > no_rls.habit_signal
 
 
 # ---------------------------------------------------------------------------

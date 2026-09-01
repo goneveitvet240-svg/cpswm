@@ -1,0 +1,25 @@
+{
+  "protocol": "structure-two-world-validation-gate-a-spec@0.6",
+  "status": "DEVELOPMENT_SPEC_TO_BE_EXTERNALLY_FROZEN",
+  "criteria": {
+    "all_validation_worlds_are_structurally_unique": {"metric": "unique_validation_world_fraction", "operator": "ge", "threshold": 1.0},
+    "put_back_sticky_rule_leaves_headroom": {"metric": "put_back_sticky_error", "operator": "ge", "threshold": 0.2},
+    "put_back_visible_history_beats_sticky": {"metric": "put_back_visible_history_gain_over_sticky", "operator": "ge", "threshold": 0.05},
+    "put_back_visible_history_gain_is_world_robust": {"metric": "put_back_visible_history_gain_ci_lower", "operator": "ge", "threshold": 0.01},
+    "put_back_context_is_action_relevant": {"metric": "put_back_context_gain_over_pooled", "operator": "ge", "threshold": 0.015},
+    "put_back_retains_method_headroom": {"metric": "put_back_visible_history_error", "operator": "ge", "threshold": 0.1},
+    "owner_observation_is_not_the_habit_target": {"metric": "on_owner_observed_target_match_rate", "operator": "le", "threshold": 0.85},
+    "search_last_observed_rule_leaves_headroom": {"metric": "search_last_observed_error", "operator": "ge", "threshold": 0.15},
+    "search_visible_history_beats_last_observed": {"metric": "search_top1_gain", "operator": "ge", "threshold": 0.02},
+    "search_retains_method_headroom": {"metric": "search_visible_history_error", "operator": "ge", "threshold": 0.1},
+    "unobserved_location_dynamics_are_nontrivial": {"metric": "unobserved_location_change_rate", "operator": "ge", "threshold": 0.2}
+  },
+  "required_artifacts": [
+    "validation_input_bundle",
+    "deterministic_execution_log",
+    "machine_readable_metric_result"
+  ],
+  "required_signatures": ["executor", "custodian"],
+  "gate_b_requires_passed_gate_a": true,
+  "content_sha256": "be0b2fadf6e123b70a99e26a166ea0adfbd826f74c6e43ef8ad3aa9c7341933b"
+}

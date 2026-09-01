@@ -180,7 +180,7 @@ class D0VisibleSimulationRun(ContractModel):
             raise ValueError("visible run contains duplicate detection results")
         return self
 
-    def content_payload(self) -> dict:
+    def content_payload(self) -> dict[str, object]:
         return self.model_dump(
             mode="json",
             exclude={"visible_run_id", "visible_content_sha256"},
@@ -278,9 +278,8 @@ class D0ShiftCaseInput(ContractModel):
     @staticmethod
     def _stream_identity(run: D0VisibleSimulationRun, field_name: str) -> frozenset[UUID]:
         values = frozenset(
-            getattr(item.metadata, field_name)
-            for item in (*run.observation_opportunities, *run.detection_results)
-        )
+            getattr(item.metadata, field_name) for item in run.observation_opportunities
+        ) | frozenset(getattr(item.metadata, field_name) for item in run.detection_results)
         if len(values) != 1:
             raise ValueError(f"each D0 visible run must have exactly one normalized {field_name}")
         return values
@@ -383,7 +382,7 @@ class D0ShiftSuite(ContractModel):
             raise ValueError("suite_id does not match D0 suite content")
         return self
 
-    def content_payload(self) -> dict:
+    def content_payload(self) -> dict[str, object]:
         return self.model_dump(mode="json", exclude={"suite_id", "suite_content_sha256"})
 
 
@@ -685,7 +684,7 @@ class D0ShiftScenarioGenerator:
         self,
         config: RoutineGenerationConfig,
         *,
-        observation_process: dict,
+        observation_process: dict[str, object],
     ) -> D0FactorFingerprints:
         return D0FactorFingerprints(
             observation_process=content_sha256(observation_process),
@@ -792,7 +791,7 @@ class D0ShiftScenarioGenerator:
         before: IncidentalObservationPolicy,
         after: IncidentalObservationPolicy,
         change_day: int,
-    ) -> dict:
+    ) -> dict[str, object]:
         return {
             "change_day": change_day,
             "before": before.model_dump(mode="python", exclude={"policy_id"}),
@@ -825,7 +824,7 @@ class D0ShiftScenarioGenerator:
         )
 
     @staticmethod
-    def _actor_factor(config: RoutineGenerationConfig) -> dict:
+    def _actor_factor(config: RoutineGenerationConfig) -> dict[str, object]:
         return {
             "default_actors": [
                 {
@@ -847,7 +846,7 @@ class D0ShiftScenarioGenerator:
         }
 
     @staticmethod
-    def _owner_habit_factor(config: RoutineGenerationConfig) -> dict:
+    def _owner_habit_factor(config: RoutineGenerationConfig) -> dict[str, object]:
         return {
             "base_habits": [
                 {

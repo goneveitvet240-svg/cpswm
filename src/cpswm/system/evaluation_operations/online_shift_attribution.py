@@ -190,7 +190,7 @@ class OnlineShiftSuite(ContractModel):
             raise ValueError("online suite ID mismatch")
         return self
 
-    def content_payload(self) -> dict:
+    def content_payload(self) -> dict[str, object]:
         return self.model_dump(mode="json", exclude={"suite_id", "suite_content_sha256"})
 
 

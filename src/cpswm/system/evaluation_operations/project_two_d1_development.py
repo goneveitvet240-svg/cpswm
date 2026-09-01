@@ -1,4 +1,4 @@
-"""Deterministic D1 annotated-simulator development fixture.
+"""Deterministic D0 development fixture using the full replay contract.
 
 This is deliberately source-neutral: it exercises the D1 adapter and complete
 Project Two contracts while AI2-THOR/Habitat/ProcTHOR selection remains a user
@@ -11,7 +11,7 @@ from cpswm.contracts import ProjectTwoDataMaturity
 from cpswm.system.evaluation_operations.project_two_dataset import ProjectTwoReplayDataset
 from cpswm.system.evaluation_operations.project_two_dataset_adapters import (
     D0SyntheticOracleReplayAdapter,
-    D1SimulatorAnnotatedReplayAdapter,
+    SuppliedReplayDatasetAdapter,
 )
 from cpswm.system.reproducibility import content_sha256
 
@@ -49,10 +49,11 @@ def build_d1_development_batch(*, max_steps_per_episode: int = 32) -> ProjectTwo
                 "dataset_version": D1_DEVELOPMENT_VERSION,
                 "source_uri": f"d1-fixture://generic-annotated-simulator/{episode.episode_id}",
                 "source_hash": source_hash,
-                "maturity": ProjectTwoDataMaturity.D1_SIMULATOR_ANNOTATED_REPLAY,
+                "maturity": ProjectTwoDataMaturity.D0_DEVELOPMENT_FIXTURE,
+                "source_evidence_maturity": ProjectTwoDataMaturity.D0_SYNTHETIC_ORACLE,
                 "provenance": (
                     "generated:StructureTwoActionScenarioGenerator",
-                    "normalized:D1SimulatorAnnotatedReplayAdapter",
+                    "normalized:SuppliedReplayDatasetAdapter",
                     "source-neutral:generic-annotated-simulator-fixture",
                     "claim:not-external-simulator-data",
                     f"development_seed:{seed}",
@@ -76,7 +77,8 @@ def build_d1_development_batch(*, max_steps_per_episode: int = 32) -> ProjectTwo
             )
         )
         episodes.append(converted)
-    return D1SimulatorAnnotatedReplayAdapter(
+    return SuppliedReplayDatasetAdapter(
+        maturity=ProjectTwoDataMaturity.D0_DEVELOPMENT_FIXTURE,
         dataset_version=D1_DEVELOPMENT_VERSION,
         episodes=tuple(episodes),
         evaluator_store=tuple(envelopes),

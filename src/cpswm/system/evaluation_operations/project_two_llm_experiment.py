@@ -4,8 +4,10 @@ from __future__ import annotations
 
 import hashlib
 import json
+from collections.abc import Mapping, Sequence
 from enum import StrEnum
 from statistics import mean
+from typing import Any
 from uuid import UUID
 
 from pydantic import Field, computed_field, model_validator
@@ -13,18 +15,24 @@ from pydantic import Field, computed_field, model_validator
 from cpswm.contracts import (
     ContractModel,
     EventMechanism,
+    EventMechanismEvidence,
     LLMIntegrationRole,
     LLMInvocationProvenance,
     ProjectTwoDatasetSplit,
+    ProjectTwoReplayEpisode,
     ProjectTwoReplayStep,
+    RoleBindingEvidence,
 )
 from cpswm.system.continual.project_one_regime_loop import PrototypeLoopConfig
 from cpswm.system.llm_evidence import (
+    CandidateProposalBundle,
     DeterministicEvidenceProvider,
     LLMCallAuditReceipt,
     LLMEvidenceAdapter,
     LLMEvidenceCache,
     LLMEvidenceRequest,
+    LLMFusionPermission,
+    LLMProbabilitySemantics,
     LLMProviderIdentity,
 )
 
@@ -44,6 +52,7 @@ from .project_two_action_benchmark import (
     _FullProjectTwoMethod,
     _locations,
     _Prediction,
+    _ReplayMethod,
 )
 from .project_two_dataset import ProjectTwoReplayDataset
 from .project_two_tuning import (
@@ -86,7 +95,7 @@ class ProjectTwoLLMAggregate(ContractModel):
     multiple_comparison_correction: str = "unavailable: valid p-values were not computed"
 
     @model_validator(mode="after")
-    def _honest_holm_status(self):
+    def _honest_holm_status(self) -> ProjectTwoLLMAggregate:
         if self.holm_correction_executed and (
             self.p_value is None or self.holm_adjusted_p_value is None
         ):
@@ -135,7 +144,6 @@ class PoweredMechanismCompletionReceipt(ContractModel):
         return self
 
     @computed_field
-    @property
     def receipt_sha256(self) -> str:
         payload = {
             "stage": self.stage.value,
@@ -171,7 +179,6 @@ class LLMMechanismProgressionGate(ContractModel):
         return self
 
     @computed_field
-    @property
     def d2_allowed(self) -> bool:
         return self.powered_d0_receipt is not None and self.powered_d1_receipt is not None
 
@@ -195,7 +202,12 @@ class ProjectTwoLLMExperimentReport(ContractModel):
 class _DirectLLMDecisionMethod:
     """Isolated baseline: proposals are actions and have no model write access."""
 
-    def __init__(self, episode, adapter, candidate) -> None:
+    def __init__(
+        self,
+        episode: ProjectTwoReplayEpisode,
+        adapter: LLMEvidenceAdapter,
+        candidate: ProjectTwoTuningCandidate,
+    ) -> None:
         self.episode = episode
         self.adapter = adapter
         self.candidate = candidate
@@ -210,7 +222,7 @@ class _DirectLLMDecisionMethod:
         self.provenance: list[LLMInvocationProvenance] = []
         self.call_audits: list[LLMCallAuditReceipt] = []
 
-    def observe(self, step):
+    def observe(self, step: ProjectTwoReplayStep) -> None:
         result = self.adapter.generate(
             _request(
                 self.episode,
@@ -219,35 +231,30 @@ class _DirectLLMDecisionMethod:
                 role=LLMIntegrationRole.LLM_DIRECT_BASELINE,
             )
         )
-        output = result.output
         self.call_audits.append(result.call_audit)
-        self.tokens += output.accounting.input_tokens + output.accounting.output_tokens
-        self.latency_ms += output.accounting.latency_ms
-        self.cost_usd += output.accounting.cost_usd
+        self.tokens += result.accounting.input_tokens + result.accounting.output_tokens
+        self.latency_ms += result.accounting.latency_ms
+        self.cost_usd += result.accounting.cost_usd
         if not result.from_cache:
-            self.provenance.append(output.invocation_provenance)
-        location_prior = {
-            item.value: item.score
-            for item in output.generated_candidates
-            if item.kind.value == "location"
-        }
-        if location_prior:
-            self.last = UUID(
-                max(
-                    location_prior,
-                    key=location_prior.get,
-                )
-            )
-        self.unknown = output.unknown_probability
+            self.provenance.append(result.invocation_provenance)
+        proposal = result.typed_bundle
+        if not isinstance(proposal, CandidateProposalBundle):
+            raise TypeError("LLM direct baseline requires a candidate proposal bundle")
+        proposed_locations = tuple(
+            item.value for item in proposal.candidates if item.kind.value == "location"
+        )
+        if proposed_locations:
+            self.last = UUID(proposed_locations[0])
+        self.unknown = result.unresolved_event_mass
 
-    def predict(self):
+    def predict(self) -> _Prediction:
         return _Prediction(
             self.last,
             (self.last, *tuple(item for item in self.locations if item != self.last)),
             self.unknown,
         )
 
-    def feedback(self, step):
+    def feedback(self, step: ProjectTwoReplayStep) -> None:
         del step
 
 
@@ -258,24 +265,39 @@ _STRUCTURAL_PARAMETERS = set(ProjectTwoTuningCandidate.model_fields) - {
 }
 
 
-def _runtime_parameter_receipt(arm, candidate, state, *, tokens):
+def _runtime_parameter_receipt(
+    arm: str,
+    candidate: ProjectTwoTuningCandidate,
+    state: Any,
+    *,
+    tokens: int,
+) -> RuntimeParameterInjectionReceipt:
     if isinstance(state, _DirectLLMDecisionMethod):
         active = {*_LLM_PARAMETERS, "action_utility_threshold"}
         bindings = {
             "prompt_template_version": (
                 "LLMEvidenceRequest",
                 candidate.prompt_template_version,
-                {"provider_calls": state.adapter.provider.invocation_count, "tokens": tokens},
+                {
+                    "provider_calls": getattr(state.adapter.provider, "invocation_count", 0),
+                    "tokens": tokens,
+                },
             ),
             "temperature": (
                 "LLMEvidenceRequest",
                 candidate.temperature,
-                {"provider_calls": state.adapter.provider.invocation_count, "tokens": tokens},
+                {
+                    "provider_calls": getattr(state.adapter.provider, "invocation_count", 0),
+                    "tokens": tokens,
+                },
             ),
             "candidate_count": (
                 "LLMEvidenceRequest",
                 candidate.candidate_count,
-                {"provider_calls": state.adapter.provider.invocation_count, "tokens": tokens},
+                {
+                    "provider_calls": getattr(state.adapter.provider, "invocation_count", 0),
+                    "tokens": tokens,
+                },
             ),
             "action_utility_threshold": (
                 "DirectLLMActionSelector",
@@ -394,7 +416,7 @@ def _runtime_parameter_receipt(arm, candidate, state, *, tokens):
     )
 
 
-def _runtime_module_trace(arm, state, *, tokens):
+def _runtime_module_trace(arm: str, state: Any | None, *, tokens: int) -> tuple[str, ...]:
     if isinstance(state, _DirectLLMDecisionMethod):
         return (
             "LLM_direct_decision:executed",
@@ -451,12 +473,42 @@ def _runtime_module_trace(arm, state, *, tokens):
 
 
 def _request(
-    episode,
-    step,
-    candidate,
+    episode: ProjectTwoReplayEpisode,
+    step: ProjectTwoReplayStep,
+    candidate: ProjectTwoTuningCandidate,
     *,
-    role=LLMIntegrationRole.STRUCTURE_TWO_EVIDENCE_PROVIDER,
-):
+    role: LLMIntegrationRole = LLMIntegrationRole.STRUCTURE_TWO_EVIDENCE_PROVIDER,
+) -> LLMEvidenceRequest:
+    posterior_mode = role is LLMIntegrationRole.STRUCTURE_TWO_EVIDENCE_PROVIDER
+    known_actors = tuple(actor for actor in episode.resident_actor_keys if actor != "unknown_actor")
+    actor_prior = (
+        dict(step.actor_evidence.reference_actor_prior)
+        if step.actor_evidence
+        else {
+            **{actor: 0.8 / max(len(known_actors), 1) for actor in known_actors},
+            "unknown_actor": 0.2,
+        }
+    )
+    mechanism_prior = (
+        {
+            key.value: value
+            for key, value in step.mechanism_evidence.reference_mechanism_prior.items()
+        }
+        if step.mechanism_evidence
+        else {
+            "direct_relocation": 0.45,
+            "handoff_relocation": 0.35,
+            "unknown_mechanism": 0.2,
+        }
+    )
+    role_prior = (
+        dict(step.ordered_role_evidence.reference_ordered_role_prior)
+        if step.ordered_role_evidence
+        else {
+            f"{known_actors[0]}=>{known_actors[1]}": 0.6,
+            f"{known_actors[1]}=>{known_actors[0]}": 0.4,
+        }
+    )
     return LLMEvidenceRequest.from_replay_step(
         episode=episode,
         step=step,
@@ -468,6 +520,20 @@ def _request(
         prompt_template_version=candidate.prompt_template_version,
         temperature=candidate.temperature,
         candidate_count=candidate.candidate_count,
+        expected_probability_semantics=(
+            LLMProbabilitySemantics.POSTERIOR_RELATIVE_TO_REFERENCE_PRIOR
+            if posterior_mode
+            else LLMProbabilitySemantics.PROPOSAL_ONLY
+        ),
+        authorized_fusion_permission=(
+            LLMFusionPermission.REFERENCE_PRIOR_LIKELIHOOD_RATIO
+            if posterior_mode
+            else LLMFusionPermission.CANDIDATE_GENERATION_ONLY
+        ),
+        reference_actor_prior=actor_prior if posterior_mode else None,
+        reference_mechanism_prior=mechanism_prior if posterior_mode else None,
+        reference_ordered_role_prior=role_prior if posterior_mode else None,
+        reference_prior_snapshot_id=step.step_id if posterior_mode else None,
         role=role,
     )
 
@@ -490,7 +556,7 @@ class ProjectTwoLLMExperimentPilot:
         tuner = ProjectTwoFairTuner(search_budget=self.search_budget)
         validation_runtime_receipts: dict[tuple[str, int], UUID] = {}
 
-        def objective(arm, candidate):
+        def objective(arm: str, candidate: ProjectTwoTuningCandidate) -> tuple[float, float]:
             cases = [self._run_case(dataset, episode, arm, candidate) for episode in validation]
             runtime_receipt = next(
                 (
@@ -628,11 +694,17 @@ class ProjectTwoLLMExperimentPilot:
             ),
         )
 
-    def _run_case(self, dataset, episode, arm, candidate):
+    def _run_case(
+        self,
+        dataset: ProjectTwoReplayDataset,
+        episode: ProjectTwoReplayEpisode,
+        arm: str,
+        candidate: ProjectTwoTuningCandidate,
+    ) -> ProjectTwoLLMCaseMetric:
         adapter = LLMEvidenceAdapter(
             provider=DeterministicEvidenceProvider(), cache=LLMEvidenceCache()
         )
-        state = None
+        state: _ReplayMethod | None = None
         tokens = 0
         latency = cost = 0.0
         provenance: list[LLMInvocationProvenance] = []
@@ -643,16 +715,18 @@ class ProjectTwoLLMExperimentPilot:
             result = adapter.generate(_request(episode, step, candidate))
             call_audits.append(result.call_audit)
             if not result.from_cache:
-                accounting = result.output.accounting
+                accounting = result.accounting
                 tokens += accounting.input_tokens + accounting.output_tokens
                 latency += accounting.latency_ms
                 cost += accounting.cost_usd
-                provenance.append(result.output.invocation_provenance)
+                provenance.append(result.invocation_provenance)
             bundle = result.typed_evidence
             assert bundle is not None
             actor = bundle.actor
-            mechanism = bundle.mechanism
-            role = bundle.role
+            mechanism: EventMechanismEvidence | None = bundle.mechanism
+            role: RoleBindingEvidence | None = bundle.role
+            if mechanism is None or role is None:
+                raise TypeError("typed evidence bundle requires mechanism and role evidence")
             if arm == ProjectTwoAblation.NO_UNKNOWN_ACTOR.value:
                 posterior = {
                     key: value
@@ -695,17 +769,17 @@ class ProjectTwoLLMExperimentPilot:
             )
 
         def llm_prior_transform(
-            step: ProjectTwoReplayStep, prior: dict[str, float]
-        ) -> dict[str, float]:
+            step: ProjectTwoReplayStep, prior: Mapping[str, float]
+        ) -> Mapping[str, float]:
             nonlocal tokens, latency, cost
             result = adapter.generate(_request(episode, step, candidate))
             call_audits.append(result.call_audit)
             if not result.from_cache:
-                accounting = result.output.accounting
+                accounting = result.accounting
                 tokens += accounting.input_tokens + accounting.output_tokens
                 latency += accounting.latency_ms
                 cost += accounting.cost_usd
-                provenance.append(result.output.invocation_provenance)
+                provenance.append(result.invocation_provenance)
             bundle = result.typed_evidence
             assert bundle is not None
             proposed = bundle.actor.actor_posterior
@@ -740,7 +814,7 @@ class ProjectTwoLLMExperimentPilot:
                     dataset, episode, ProjectTwoActionMethod.ORACLE, {}
                 )
             else:
-                message_passing = None
+                message_passing: Any | None = None
                 if arm == ProjectTwoAblation.NO_PCHMP_JOINT_PROPAGATION.value:
                     message_passing = PriorOnlyMessagePassing()
                 elif arm == ProjectTwoAblation.INDEPENDENT_HYPOTHESIS_SCORING.value:
@@ -864,7 +938,9 @@ class ProjectTwoLLMExperimentPilot:
         )
 
     @staticmethod
-    def _aggregate(cases, arms):
+    def _aggregate(
+        cases: Sequence[ProjectTwoLLMCaseMetric], arms: Sequence[str]
+    ) -> tuple[ProjectTwoLLMAggregate, ...]:
         metric_names = (
             "put_back_error_rate",
             "search_success_rate",
@@ -882,7 +958,7 @@ class ProjectTwoLLMExperimentPilot:
             "llm_cost_usd",
         )
 
-        def metric_value(item, metric):
+        def metric_value(item: ProjectTwoLLMCaseMetric, metric: str) -> float:
             if hasattr(item.action, metric):
                 return float(getattr(item.action, metric))
             return float(getattr(item, metric))
@@ -895,7 +971,7 @@ class ProjectTwoLLMExperimentPilot:
             ]
             for metric in metric_names
         }
-        output = []
+        output: list[ProjectTwoLLMAggregate] = []
         for arm in arms:
             for metric in metric_names:
                 values = [metric_value(item, metric) for item in cases if item.arm_id == arm]

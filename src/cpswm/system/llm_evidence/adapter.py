@@ -21,6 +21,7 @@ from cpswm.contracts import (
     EventMechanismEvidence,
     HiddenEventEvidenceTrack,
     LLMIntegrationRole,
+    LLMInvocationProvenance,
     RoleBindingEvidence,
     SourceType,
     ordered_role_key,
@@ -34,6 +35,7 @@ from .contracts import (
     LLMEvidenceRequest,
     LLMGeneratedCandidate,
     LLMInvocationAccounting,
+    LLMProbabilitySemantics,
     enforce_no_prompt_truth,
     enforce_no_truth,
 )
@@ -63,7 +65,14 @@ class LLMHTTPTransport(Protocol):
 class UrllibLLMHTTPTransport:
     """Minimal real HTTP transport; secrets never enter cache/provenance."""
 
-    def complete(self, *, endpoint, api_key, payload, timeout_seconds):
+    def complete(
+        self,
+        *,
+        endpoint: str,
+        api_key: str,
+        payload: dict[str, Any],
+        timeout_seconds: float,
+    ) -> ProviderHTTPResponse:
         if not endpoint.startswith("https://"):
             raise ValueError("real provider endpoint must use HTTPS")
         encoded = json.dumps(payload).encode()
@@ -148,7 +157,14 @@ class OpenAICompatibleEvidenceProvider:
             "candidates": [item.model_dump(mode="json") for item in candidates],
             "confidence": parsed["confidence"],
             "abstain": parsed["abstain"],
-            "unknown_probability": parsed["unknown_probability"],
+            "unknown_actor_mass": parsed["unknown_actor_mass"],
+            "unknown_mechanism_mass": parsed["unknown_mechanism_mass"],
+            "unresolved_event_mass": parsed["unresolved_event_mass"],
+            "abstention_probability": parsed["abstention_probability"],
+            "probability_semantics": request.expected_probability_semantics.value,
+            "reference_actor_prior": request.reference_actor_prior,
+            "reference_mechanism_prior": request.reference_mechanism_prior,
+            "reference_ordered_role_prior": request.reference_ordered_role_prior,
         }
         digest = LLMEvidenceOutput.content_digest(result_payload)
         provenance_id = hashlib.sha256(f"{request.cache_key}|{digest}".encode()).hexdigest()
@@ -165,7 +181,14 @@ class OpenAICompatibleEvidenceProvider:
             generated_candidates=candidates,
             confidence=parsed["confidence"],
             abstain=parsed["abstain"],
-            unknown_probability=parsed["unknown_probability"],
+            unknown_actor_mass=parsed["unknown_actor_mass"],
+            unknown_mechanism_mass=parsed["unknown_mechanism_mass"],
+            unresolved_event_mass=parsed["unresolved_event_mass"],
+            abstention_probability=parsed["abstention_probability"],
+            probability_semantics=request.expected_probability_semantics,
+            reference_actor_prior=request.reference_actor_prior,
+            reference_mechanism_prior=request.reference_mechanism_prior,
+            reference_ordered_role_prior=request.reference_ordered_role_prior,
             content_hash=digest,
             accounting=LLMInvocationAccounting(
                 input_tokens=input_tokens,
@@ -281,7 +304,14 @@ class DeterministicEvidenceProvider:
             "candidates": [item.model_dump(mode="json") for item in selected_candidates],
             "confidence": 1.0 - unknown,
             "abstain": self.force_abstain,
-            "unknown_probability": unknown,
+            "unknown_actor_mass": unknown,
+            "unknown_mechanism_mass": unknown,
+            "unresolved_event_mass": unknown,
+            "abstention_probability": unknown if self.force_abstain else 0.0,
+            "probability_semantics": request.expected_probability_semantics.value,
+            "reference_actor_prior": request.reference_actor_prior,
+            "reference_mechanism_prior": request.reference_mechanism_prior,
+            "reference_ordered_role_prior": request.reference_ordered_role_prior,
         }
         content_hash = LLMEvidenceOutput.content_digest(payload)
         provenance_id = hashlib.sha256(f"{request.cache_key}|{content_hash}".encode()).hexdigest()
@@ -295,7 +325,14 @@ class DeterministicEvidenceProvider:
             generated_candidates=selected_candidates,
             confidence=1.0 - unknown,
             abstain=self.force_abstain,
-            unknown_probability=unknown,
+            unknown_actor_mass=unknown,
+            unknown_mechanism_mass=unknown,
+            unresolved_event_mass=unknown,
+            abstention_probability=unknown if self.force_abstain else 0.0,
+            probability_semantics=request.expected_probability_semantics,
+            reference_actor_prior=request.reference_actor_prior,
+            reference_mechanism_prior=request.reference_mechanism_prior,
+            reference_ordered_role_prior=request.reference_ordered_role_prior,
             content_hash=content_hash,
             accounting=LLMInvocationAccounting(
                 input_tokens=len(str(request.visible_payload).split()),
@@ -324,7 +361,28 @@ class LocalModelEvidenceProvider:
 
 
 @dataclass(frozen=True, slots=True)
-class LLMStructuredEvidenceBundle:
+class CandidateProposalItem:
+    kind: LLMCandidateKind
+    value: str
+    evidence_refs: tuple[UUID, ...]
+
+
+@dataclass(frozen=True, slots=True)
+class CandidateProposalBundle:
+    candidates: tuple[CandidateProposalItem, ...]
+    fusion_permission: str = "candidate_generation_only"
+
+
+@dataclass(frozen=True, slots=True)
+class CalibratedLikelihoodBundle:
+    likelihood_factors: dict[LLMCandidateKind, dict[str, float]]
+    calibration_receipt_id: UUID
+    calibration_domain: str
+    fusion_permission: str = "direct_likelihood_factor"
+
+
+@dataclass(frozen=True, slots=True)
+class ReferencedPosteriorBundle:
     actor: ActorResponsibilityEvidence
     mechanism: EventMechanismEvidence
     role: RoleBindingEvidence
@@ -336,10 +394,19 @@ class LLMStructuredEvidenceBundle:
 
 @dataclass(frozen=True, slots=True)
 class LLMEvidenceAdapterResult:
-    output: LLMEvidenceOutput
-    typed_evidence: LLMStructuredEvidenceBundle | None
+    typed_bundle: CandidateProposalBundle | CalibratedLikelihoodBundle | ReferencedPosteriorBundle
     from_cache: bool
     call_audit: LLMCallAuditReceipt
+    invocation_provenance: LLMInvocationProvenance
+    accounting: LLMInvocationAccounting
+    unresolved_event_mass: float
+    abstention_probability: float
+
+    @property
+    def typed_evidence(self) -> ReferencedPosteriorBundle | None:
+        return (
+            self.typed_bundle if isinstance(self.typed_bundle, ReferencedPosteriorBundle) else None
+        )
 
 
 class LLMEvidenceAdapter:
@@ -372,11 +439,7 @@ class LLMEvidenceAdapter:
             # Cache contents cross the same trust boundary as provider output.
             # This rejects disk/cache poisoning before typed evidence is built.
             self._validate_output(request, output)
-        typed_evidence = (
-            self._to_typed(request, output)
-            if request.role is LLMIntegrationRole.STRUCTURE_TWO_EVIDENCE_PROVIDER
-            else None
-        )
+        typed_bundle = self._to_capability_bundle(request, output)
         call_sequence = len(self._call_audits) + 1
         call_audit = LLMCallAuditReceipt(
             audit_id=uuid5(
@@ -405,7 +468,15 @@ class LLMEvidenceAdapter:
             ),
         )
         self._call_audits.append(call_audit)
-        return LLMEvidenceAdapterResult(output, typed_evidence, from_cache, call_audit)
+        return LLMEvidenceAdapterResult(
+            typed_bundle=typed_bundle,
+            from_cache=from_cache,
+            call_audit=call_audit,
+            invocation_provenance=output.invocation_provenance,
+            accounting=output.accounting,
+            unresolved_event_mass=output.unresolved_event_mass,
+            abstention_probability=output.abstention_probability,
+        )
 
     @staticmethod
     def _validate_output(request: LLMEvidenceRequest, output: LLMEvidenceOutput) -> None:
@@ -422,53 +493,81 @@ class LLMEvidenceAdapter:
             raise ValueError("provider provenance does not match request")
         if output.input_evidence_refs != request.input_evidence_refs:
             raise ValueError("provider changed input evidence references")
+        if output.probability_semantics is not request.expected_probability_semantics:
+            raise ValueError("provider probability semantics exceed request authority")
+        if output.fusion_permission is not request.authorized_fusion_permission:
+            raise ValueError("provider fusion permission exceeds request authority")
+        if (
+            output.reference_actor_prior != request.reference_actor_prior
+            or output.reference_mechanism_prior != request.reference_mechanism_prior
+            or output.reference_ordered_role_prior != request.reference_ordered_role_prior
+        ):
+            raise ValueError("provider changed the caller-frozen reference prior")
         payload = {
             "candidates": [item.model_dump(mode="json") for item in output.generated_candidates],
             "confidence": output.confidence,
             "abstain": output.abstain,
-            "unknown_probability": output.unknown_probability,
+            "unknown_actor_mass": output.unknown_actor_mass,
+            "unknown_mechanism_mass": output.unknown_mechanism_mass,
+            "unresolved_event_mass": output.unresolved_event_mass,
+            "abstention_probability": output.abstention_probability,
+            "probability_semantics": output.probability_semantics.value,
+            "reference_actor_prior": output.reference_actor_prior,
+            "reference_mechanism_prior": output.reference_mechanism_prior,
+            "reference_ordered_role_prior": output.reference_ordered_role_prior,
         }
         if output.content_hash != LLMEvidenceOutput.content_digest(payload):
             raise ValueError("provider content hash does not match typed output")
 
     @staticmethod
+    def _to_capability_bundle(
+        request: LLMEvidenceRequest, output: LLMEvidenceOutput
+    ) -> CandidateProposalBundle | CalibratedLikelihoodBundle | ReferencedPosteriorBundle:
+        if request.expected_probability_semantics is LLMProbabilitySemantics.PROPOSAL_ONLY:
+            return CandidateProposalBundle(
+                candidates=tuple(
+                    CandidateProposalItem(
+                        kind=item.kind,
+                        value=item.value,
+                        evidence_refs=item.evidence_refs,
+                    )
+                    for item in output.generated_candidates
+                )
+            )
+        if request.expected_probability_semantics is LLMProbabilitySemantics.CALIBRATED_LIKELIHOOD:
+            receipt = request.calibration_receipt
+            assert receipt is not None
+            factors = {
+                kind: {
+                    item.value: item.score
+                    for item in output.generated_candidates
+                    if item.kind is kind
+                }
+                for kind in LLMCandidateKind
+            }
+            return CalibratedLikelihoodBundle(
+                likelihood_factors=factors,
+                calibration_receipt_id=receipt.receipt_id,
+                calibration_domain=receipt.calibration_domain,
+            )
+        return LLMEvidenceAdapter._to_typed(request, output)
+
+    @staticmethod
     def _to_typed(
         request: LLMEvidenceRequest, output: LLMEvidenceOutput
-    ) -> LLMStructuredEvidenceBundle:
+    ) -> ReferencedPosteriorBundle:
         by_kind: dict[LLMCandidateKind, list[LLMGeneratedCandidate]] = {
             kind: [] for kind in LLMCandidateKind
         }
         for item in output.generated_candidates:
             by_kind[item.kind].append(item)
 
-        def normalized(items, fallback):
-            values = {item.value: item.score for item in items}
-            if not values:
-                values = fallback
-            total = sum(values.values())
-            return {key: value / total for key, value in values.items()}
-
-        actors = normalized(by_kind[LLMCandidateKind.ACTOR], {"unknown_actor": 1.0})
-        actors.setdefault("unknown_actor", output.unknown_probability)
-        actors = normalized([], actors)
-        mechanisms_raw = normalized(
-            by_kind[LLMCandidateKind.MECHANISM],
-            {
-                EventMechanism.DIRECT_RELOCATION.value: 0.4,
-                EventMechanism.HANDOFF_RELOCATION.value: 0.4,
-                EventMechanism.UNKNOWN_MECHANISM.value: 0.2,
-            },
-        )
+        actors = {item.value: item.score for item in by_kind[LLMCandidateKind.ACTOR]}
+        mechanisms_raw = {item.value: item.score for item in by_kind[LLMCandidateKind.MECHANISM]}
         mechanisms = {EventMechanism(key): value for key, value in mechanisms_raw.items()}
-        roles = normalized(by_kind[LLMCandidateKind.ORDERED_ROLE], {})
-        if len(roles) < 2:
-            known = [key for key in actors if key != "unknown_actor"]
-            if len(known) < 2:
-                known.extend(["actor_a", "actor_b"])
-            roles = {
-                ordered_role_key(known[0], known[1]): 0.5,
-                ordered_role_key(known[1], known[0]): 0.5,
-            }
+        roles = {item.value: item.score for item in by_kind[LLMCandidateKind.ORDERED_ROLE]}
+        if not actors or not mechanisms or not roles:
+            raise ValueError("referenced posterior requires complete actor/mechanism/role axes")
         evidence_time = datetime.fromisoformat(request.visible_payload["timestamp"])
         metadata = BaseRecordMetadata(
             record_id=uuid5(NAMESPACE_URL, f"{output.provenance_id}:metadata"),
@@ -483,9 +582,15 @@ class LLMEvidenceAdapter:
             trace_id=request.trace_id,
         )
         source_detection = request.input_evidence_refs[0]
-        prior_actor = {key: 1.0 / len(actors) for key in actors}
-        prior_mechanism = {key: 1.0 / len(mechanisms) for key in mechanisms}
-        prior_roles = {key: 1.0 / len(roles) for key in roles}
+        if output.reference_actor_prior is None or output.reference_mechanism_prior is None:
+            raise ValueError("posterior projection requires caller-frozen reference priors")
+        prior_actor = output.reference_actor_prior
+        prior_mechanism = {
+            EventMechanism(key): value for key, value in output.reference_mechanism_prior.items()
+        }
+        prior_roles = output.reference_ordered_role_prior
+        if prior_roles is None:
+            raise ValueError("posterior role projection requires a caller-frozen reference prior")
         model_id = (
             f"{output.identity.provider}:{output.identity.model}:{output.identity.version}:"
             f"{output.prompt_template_version}:{output.provenance_id}"
@@ -500,7 +605,7 @@ class LLMEvidenceAdapter:
             actor_posterior=actors,
             reference_actor_prior=prior_actor,
             evidence_cluster_id=uuid5(NAMESPACE_URL, f"{output.provenance_id}:actor-cluster"),
-            evidence_track=ActorEvidenceTrack.CONTROLLED_NOISE,
+            evidence_track=ActorEvidenceTrack.MODEL,
             evidence_model_id=model_id,
         )
         mechanism = EventMechanismEvidence(
@@ -513,7 +618,7 @@ class LLMEvidenceAdapter:
             mechanism_posterior=mechanisms,
             reference_mechanism_prior=prior_mechanism,
             evidence_cluster_id=uuid5(NAMESPACE_URL, f"{output.provenance_id}:mechanism-cluster"),
-            evidence_track=HiddenEventEvidenceTrack.CONTROLLED_NOISE,
+            evidence_track=HiddenEventEvidenceTrack.MODEL,
             evidence_model_id=model_id,
         )
         role = RoleBindingEvidence(
@@ -526,16 +631,14 @@ class LLMEvidenceAdapter:
             ordered_role_posterior=roles,
             reference_ordered_role_prior=prior_roles,
             evidence_cluster_id=uuid5(NAMESPACE_URL, f"{output.provenance_id}:role-cluster"),
-            evidence_track=HiddenEventEvidenceTrack.CONTROLLED_NOISE,
+            evidence_track=HiddenEventEvidenceTrack.MODEL,
             evidence_model_id=model_id,
         )
-        return LLMStructuredEvidenceBundle(
+        return ReferencedPosteriorBundle(
             actor=actor,
             mechanism=mechanism,
             role=role,
             location_prior={item.value: item.score for item in by_kind[LLMCandidateKind.LOCATION]},
             action_proposals=tuple(item.value for item in by_kind[LLMCandidateKind.ACTION]),
-            unresolved_probability=output.unknown_probability
-            if output.abstain
-            else output.unknown_probability * 0.5,
+            unresolved_probability=output.unresolved_event_mass,
         )

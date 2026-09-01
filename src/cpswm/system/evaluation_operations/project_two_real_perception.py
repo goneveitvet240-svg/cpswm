@@ -5,6 +5,7 @@ from __future__ import annotations
 import hashlib
 import json
 from collections import defaultdict
+from collections.abc import Iterable, Mapping
 from datetime import datetime
 from enum import StrEnum
 from math import isclose
@@ -27,11 +28,17 @@ from cpswm.contracts import (
     ProjectTwoEvaluatorStepTruth,
     ProjectTwoEvaluatorTruthEnvelope,
     ProjectTwoReplayEpisode,
+    ProjectTwoReplayStep,
     RoleBindingEvidence,
     SourceType,
     ordered_role_key,
 )
+from cpswm.system.evaluation_operations.project_two_dataset import ProjectTwoReplayDataset
 from cpswm.system.reproducibility import content_sha256
+
+
+def _argmax_label[LabelT](values: Mapping[LabelT, float]) -> LabelT:
+    return max(values, key=values.__getitem__)
 
 
 class AnnotationSourceKind(StrEnum):
@@ -111,8 +118,12 @@ class D2RealPerceptionRawEpisode(ContractModel):
 
     @model_validator(mode="after")
     def _identity_and_maturity(self) -> D2RealPerceptionRawEpisode:
-        if self.episode.maturity is not ProjectTwoDataMaturity.D2_REAL_PERCEPTION_REPLAY:
-            raise ValueError("raw perception episode must declare D2 maturity")
+        if self.episode.maturity not in {
+            ProjectTwoDataMaturity.D0_DEVELOPMENT_FIXTURE,
+            ProjectTwoDataMaturity.D0_5_SEMI_SYNTHETIC,
+            ProjectTwoDataMaturity.D2_REAL_PERCEPTION_REPLAY,
+        }:
+            raise ValueError("raw perception episode must declare its actual source maturity")
         step_ids = {step.step_id for step in self.episode.steps}
         for mapping in (self.frames_by_step, self.tracks_by_step, self.annotations_by_step):
             if set(mapping) - step_ids:
@@ -206,7 +217,7 @@ class D2RealPerceptionConverter:
             actor = "unknown_actor"
             unresolved.add("actor")
         try:
-            mechanism = EventMechanism(submission.mechanism_label)
+            mechanism = EventMechanism(submission.mechanism_label or "")
         except (ValueError, TypeError):
             mechanism = EventMechanism.UNKNOWN_MECHANISM
             unresolved.add("mechanism")
@@ -235,30 +246,81 @@ class D2RealPerceptionConverter:
     def convert_visible(self, raw: D2RealPerceptionRawEpisode) -> ProjectTwoReplayEpisode:
         steps = []
         for step in raw.episode.steps:
-            update = {
+            update: dict[str, object] = {
                 "perception_frames": raw.frames_by_step[step.step_id],
                 "object_tracks": raw.tracks_by_step.get(step.step_id, ()),
             }
             submissions = raw.annotations_by_step.get(step.step_id, ())
-            if submissions:
+            selected = (
+                None
+                if step.unified_evidence is not None
+                else self._select_visible_annotation(raw.episode.maturity, submissions)
+            )
+            if selected is not None:
                 normalized = self.normalize_annotation(
-                    submissions[0], resident_actor_keys=raw.episode.resident_actor_keys
+                    selected, resident_actor_keys=raw.episode.resident_actor_keys
                 )
                 update.update(
                     self._evidence_update(step, normalized, raw.episode.resident_actor_keys)
                 )
             steps.append(step.model_copy(update=update))
-        return raw.episode.model_copy(update={"steps": tuple(steps)})
+        return ProjectTwoReplayEpisode.model_validate(
+            raw.episode.model_copy(update={"steps": tuple(steps)}).model_dump(mode="python")
+        )
+
+    @classmethod
+    def _select_visible_annotation(
+        cls,
+        maturity: ProjectTwoDataMaturity,
+        submissions: tuple[D2AnnotationSubmission, ...],
+    ) -> D2AnnotationSubmission | None:
+        """Keep evaluator-grade human labels out of real model-facing replay."""
+
+        if not submissions:
+            return None
+        real_track = maturity in {
+            ProjectTwoDataMaturity.D2_REAL_PERCEPTION_REPLAY,
+            ProjectTwoDataMaturity.D3_HOUSEHOLD_EXECUTION,
+            ProjectTwoDataMaturity.D4_EMBODIED_ROBOT_EXECUTION,
+        }
+        candidates = tuple(
+            item
+            for item in submissions
+            if not real_track or item.source_kind is AnnotationSourceKind.LLM_CANDIDATE
+        )
+        if not candidates:
+            return None
+        semantic_labels = {
+            (
+                item.actor_label,
+                str(item.mechanism_label),
+                item.role_initiator_label,
+                item.role_recipient_label,
+            )
+            for item in candidates
+        }
+        if len(semantic_labels) != 1:
+            return None
+        return min(candidates, key=lambda item: str(item.annotation_id))
 
     @staticmethod
-    def _evidence_update(step, annotation, actors):
+    def _evidence_update(
+        step: ProjectTwoReplayStep,
+        annotation: D2NormalizedAnnotation,
+        actors: tuple[str, ...],
+    ) -> dict[str, object]:
         detection = step.after or step.before
         if detection is None:
             return {}
+        is_llm = annotation.source.source_kind is AnnotationSourceKind.LLM_CANDIDATE
         anchor = detection.metadata.model_copy(
             update={
                 "record_id": uuid5(annotation.source.annotation_id, "compiled-evidence"),
-                "schema_name": "cpswm.D2HumanAnnotationEvidence",
+                "schema_name": (
+                    "cpswm.D2LLMCandidateEvidence"
+                    if is_llm
+                    else "cpswm.D0FixtureHumanAnnotationEvidence"
+                ),
                 "source_type": SourceType.MODEL,
                 "source_id": f"annotation:{annotation.source.annotator_id}",
                 "recorded_time": annotation.source.recorded_at,
@@ -268,7 +330,7 @@ class D2RealPerceptionConverter:
         actor_posterior = D2RealPerceptionConverter._soft_label(actors, annotation.actor_label)
         mechanisms = tuple(EventMechanism)
         mechanism_prior = {value: 1.0 / len(mechanisms) for value in mechanisms}
-        update = {
+        update: dict[str, object] = {
             "actor_evidence": ActorResponsibilityEvidence(
                 metadata=anchor,
                 source_detection_result_id=detection.metadata.record_id,
@@ -278,7 +340,9 @@ class D2RealPerceptionConverter:
                 reference_actor_prior=actor_prior,
                 evidence_cluster_id=annotation.source.annotation_id,
                 effective_sample_weight=max(annotation.source.confidence, 1e-6),
-                evidence_track=ActorEvidenceTrack.CONTROLLED_NOISE,
+                evidence_track=(
+                    ActorEvidenceTrack.MODEL if is_llm else ActorEvidenceTrack.CONTROLLED_NOISE
+                ),
                 evidence_model_id="d2-human-annotation-compiler@0.1",
             ),
             "mechanism_evidence": EventMechanismEvidence(
@@ -294,7 +358,11 @@ class D2RealPerceptionConverter:
                 reference_mechanism_prior=mechanism_prior,
                 evidence_cluster_id=annotation.source.annotation_id,
                 effective_sample_weight=max(annotation.source.confidence, 1e-6),
-                evidence_track=HiddenEventEvidenceTrack.CONTROLLED_NOISE,
+                evidence_track=(
+                    HiddenEventEvidenceTrack.MODEL
+                    if is_llm
+                    else HiddenEventEvidenceTrack.CONTROLLED_NOISE
+                ),
                 evidence_model_id="d2-human-annotation-compiler@0.1",
             ),
         }
@@ -314,13 +382,17 @@ class D2RealPerceptionConverter:
                 reference_ordered_role_prior={key: 1.0 / len(alternatives) for key in alternatives},
                 evidence_cluster_id=annotation.source.annotation_id,
                 effective_sample_weight=max(annotation.source.confidence, 1e-6),
-                evidence_track=HiddenEventEvidenceTrack.CONTROLLED_NOISE,
+                evidence_track=(
+                    HiddenEventEvidenceTrack.MODEL
+                    if is_llm
+                    else HiddenEventEvidenceTrack.CONTROLLED_NOISE
+                ),
                 evidence_model_id="d2-human-annotation-compiler@0.1",
             )
         return update
 
     @staticmethod
-    def _soft_label(support, selected):
+    def _soft_label[LabelT](support: Iterable[LabelT], selected: LabelT) -> dict[LabelT, float]:
         support = tuple(support)
         if len(support) == 1:
             return {support[0]: 1.0}
@@ -364,12 +436,12 @@ D2_EXAMPLE_VERSION = "project-two-d2-real-perception-example-fixture@0.1"
 
 def build_d2_example_batch(
     *, max_steps_per_episode: int = 12
-) -> tuple[object, tuple[D2AnnotationSubmission, ...]]:
+) -> tuple[ProjectTwoReplayDataset, tuple[D2AnnotationSubmission, ...]]:
     """Build a runnable sensor-shaped fixture; it makes no real-collection claim."""
 
     from cpswm.system.evaluation_operations.project_two_dataset_adapters import (
         D0SyntheticOracleReplayAdapter,
-        D2RealPerceptionReplayAdapter,
+        SuppliedReplayDatasetAdapter,
     )
 
     source = D0SyntheticOracleReplayAdapter(
@@ -399,7 +471,8 @@ def build_d2_example_batch(
                 "dataset_version": D2_EXAMPLE_VERSION,
                 "source_uri": f"d2-fixture://sensor-shaped/{episode.episode_id}",
                 "source_hash": source_hash,
-                "maturity": ProjectTwoDataMaturity.D2_REAL_PERCEPTION_REPLAY,
+                "maturity": ProjectTwoDataMaturity.D0_DEVELOPMENT_FIXTURE,
+                "source_evidence_maturity": ProjectTwoDataMaturity.D0_SYNTHETIC_ORACLE,
                 "provenance": (
                     "fixture:derived-from-visible-controlled-noise",
                     "adapter:D2RealPerceptionReplayAdapter",
@@ -445,26 +518,17 @@ def build_d2_example_batch(
                 ),
             )
             actor_label = (
-                max(
-                    step.actor_evidence.actor_posterior,
-                    key=step.actor_evidence.actor_posterior.get,
-                )
+                _argmax_label(step.actor_evidence.actor_posterior)
                 if step.actor_evidence is not None
                 else "unknown_actor"
             )
             mechanism_label = (
-                max(
-                    step.mechanism_evidence.mechanism_posterior,
-                    key=step.mechanism_evidence.mechanism_posterior.get,
-                ).value
+                _argmax_label(step.mechanism_evidence.mechanism_posterior).value
                 if step.mechanism_evidence is not None
                 else EventMechanism.UNKNOWN_MECHANISM.value
             )
             role_key = (
-                max(
-                    step.ordered_role_evidence.ordered_role_posterior,
-                    key=step.ordered_role_evidence.ordered_role_posterior.get,
-                )
+                _argmax_label(step.ordered_role_evidence.ordered_role_posterior)
                 if step.ordered_role_evidence is not None
                 else None
             )
@@ -515,11 +579,12 @@ def build_d2_example_batch(
                 update={**payload, "evaluator_content_hash": content_sha256(payload)}
             )
         )
-    dataset = D2RealPerceptionReplayAdapter(
+    dataset = SuppliedReplayDatasetAdapter(
         dataset_version=D2_EXAMPLE_VERSION,
         episodes=tuple(episodes),
         evaluator_store=tuple(envelopes),
         adapter_provenance="sensor-shaped example fixture; no real capture claim",
+        maturity=ProjectTwoDataMaturity.D0_DEVELOPMENT_FIXTURE,
     ).build()
     return dataset, tuple(all_submissions)
 

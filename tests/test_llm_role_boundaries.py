@@ -17,12 +17,16 @@ from cpswm.system.evaluation_operations.project_two_dataset_adapters import (
     D0SyntheticOracleReplayAdapter,
 )
 from cpswm.system.llm_evidence import (
+    CandidateProposalBundle,
     DeterministicEvidenceProvider,
     LLMCandidateKind,
     LLMEvidenceAdapter,
     LLMEvidenceCache,
     LLMEvidenceRequest,
+    LLMFusionPermission,
+    LLMProbabilitySemantics,
     LLMProviderIdentity,
+    ReferencedPosteriorBundle,
     TruthLeakageError,
 )
 
@@ -40,6 +44,7 @@ def _episode_and_step():
 
 def _request(role: LLMIntegrationRole, *, episode_and_step=None) -> LLMEvidenceRequest:
     episode, step = episode_and_step or _episode_and_step()
+    posterior = role is LLMIntegrationRole.STRUCTURE_TWO_EVIDENCE_PROVIDER
     return LLMEvidenceRequest.from_replay_step(
         episode=episode,
         step=step,
@@ -47,6 +52,43 @@ def _request(role: LLMIntegrationRole, *, episode_and_step=None) -> LLMEvidenceR
         prompt_template_version="role-boundary@1",
         temperature=0.0,
         candidate_count=8,
+        expected_probability_semantics=(
+            LLMProbabilitySemantics.POSTERIOR_RELATIVE_TO_REFERENCE_PRIOR
+            if posterior
+            else LLMProbabilitySemantics.PROPOSAL_ONLY
+        ),
+        authorized_fusion_permission=(
+            LLMFusionPermission.REFERENCE_PRIOR_LIKELIHOOD_RATIO
+            if posterior
+            else LLMFusionPermission.CANDIDATE_GENERATION_ONLY
+        ),
+        reference_actor_prior=(
+            {
+                episode.resident_actor_keys[0]: 0.45,
+                episode.resident_actor_keys[1]: 0.35,
+                "unknown_actor": 0.2,
+            }
+            if posterior
+            else None
+        ),
+        reference_mechanism_prior=(
+            {
+                "direct_relocation": 0.45,
+                "handoff_relocation": 0.35,
+                "unknown_mechanism": 0.2,
+            }
+            if posterior
+            else None
+        ),
+        reference_ordered_role_prior=(
+            {
+                f"{episode.resident_actor_keys[0]}=>{episode.resident_actor_keys[1]}": 0.6,
+                f"{episode.resident_actor_keys[1]}=>{episode.resident_actor_keys[0]}": 0.4,
+            }
+            if posterior
+            else None
+        ),
+        reference_prior_snapshot_id=step.step_id if posterior else None,
         role=role,
     )
 
@@ -72,32 +114,28 @@ def test_structure_two_evidence_and_llm_direct_have_disjoint_output_authority():
         provider=DeterministicEvidenceProvider(), cache=LLMEvidenceCache()
     ).generate(direct_request)
 
-    assert {item.kind for item in evidence.output.generated_candidates} <= {
-        LLMCandidateKind.ACTOR,
-        LLMCandidateKind.MECHANISM,
-        LLMCandidateKind.ORDERED_ROLE,
-        LLMCandidateKind.LOCATION,
-    }
-    assert {item.kind for item in direct.output.generated_candidates} <= {
+    assert isinstance(evidence.typed_bundle, ReferencedPosteriorBundle)
+    assert evidence.typed_bundle.actor.actor_posterior
+    assert evidence.typed_bundle.mechanism.mechanism_posterior
+    assert evidence.typed_bundle.role.ordered_role_posterior
+    assert isinstance(direct.typed_bundle, CandidateProposalBundle)
+    assert {item.kind for item in direct.typed_bundle.candidates} <= {
         LLMCandidateKind.LOCATION,
         LLMCandidateKind.ACTION,
     }
-    assert evidence.output.invocation_provenance.authority is (
-        LLMOutputAuthority.CANDIDATE_EVIDENCE_ONLY
-    )
-    assert direct.output.invocation_provenance.authority is (
-        LLMOutputAuthority.DIRECT_PREDICTION_ONLY
-    )
+    assert all(not hasattr(item, "score") for item in direct.typed_bundle.candidates)
+    assert evidence.invocation_provenance.authority is (LLMOutputAuthority.CANDIDATE_EVIDENCE_ONLY)
+    assert direct.invocation_provenance.authority is (LLMOutputAuthority.DIRECT_PREDICTION_ONLY)
     assert evidence.typed_evidence is not None
     assert direct.typed_evidence is None
-    for output in (evidence.output, direct.output):
-        provenance = output.invocation_provenance
+    for result in (evidence, direct):
+        provenance = result.invocation_provenance
         assert provenance.model and provenance.version
         assert provenance.prompt_template_version and provenance.prompt_sha256
         assert provenance.input_tokens >= 0 and provenance.output_tokens >= 0
         assert provenance.latency_ms >= 0.0 and provenance.cost_usd >= 0.0
-        assert provenance.cache_key == output.cache_key
-        assert provenance.input_evidence_refs == output.input_evidence_refs
+        assert provenance.cache_key == result.call_audit.cache_key
+        assert provenance.input_evidence_refs == result.call_audit.input_evidence_refs
 
 
 def test_m21_compiler_is_query_only_with_unknown_abstain_and_citations():

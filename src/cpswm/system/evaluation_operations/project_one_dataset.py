@@ -21,6 +21,7 @@ from datetime import datetime
 from enum import StrEnum
 from math import isfinite
 
+from cpswm.contracts import UnifiedEvidenceContract
 from cpswm.system.reproducibility import content_sha256
 
 __all__ = [
@@ -29,8 +30,12 @@ __all__ = [
     "REGIME_CAUSES",
     "UNKNOWN_LOCATION",
     "ChangeCause",
+    "EvidenceDowngradeReceipt",
+    "LegacyBaselineProjection",
     "ProjectOneDatasetManifest",
     "ProjectOneDatasetRecord",
+    "ProjectOneEvidenceDatasetRecord",
+    "ProjectOneEvidenceStream",
     "ProjectOneGroundTruth",
     "ProjectOneStream",
     "ProjectOneTruthSet",
@@ -111,7 +116,7 @@ def _require_aware(value: datetime, name: str) -> None:
 
 @dataclass(frozen=True, slots=True)
 class ProjectOneDatasetRecord:
-    """One robot-visible observation, with no truth attached."""
+    """Legacy baseline input; not the formal structure-one/two data ingress."""
 
     stream_id: str
     event_id: str
@@ -142,6 +147,125 @@ class ProjectOneDatasetRecord:
         _require_unit(self.observation_quality, "observation_quality")
         if not isfinite(self.context_value):
             raise ValueError("context_value must be finite")
+
+
+@dataclass(frozen=True, slots=True)
+class EvidenceDowngradeReceipt:
+    """Audit receipt required whenever a formal record enters a legacy method."""
+
+    formal_evidence_record_id: str
+    legacy_method_id: str
+    selected_actor_key: str
+    selected_location_key: str
+    projection_policy: str
+    formal_evidence_hash: str
+
+
+@dataclass(frozen=True, slots=True)
+class LegacyBaselineProjection:
+    record: ProjectOneDatasetRecord
+    receipt: EvidenceDowngradeReceipt
+
+
+@dataclass(frozen=True, slots=True)
+class ProjectOneEvidenceDatasetRecord:
+    """Formal project-one task fields bound to the shared evidence contract."""
+
+    stream_id: str
+    event_id: str
+    subject_id: str
+    context_key: str
+    context_value: float
+    evidence: UnifiedEvidenceContract
+
+    def __post_init__(self) -> None:
+        for name in ("stream_id", "event_id", "subject_id", "context_key"):
+            if not str(getattr(self, name)).strip():
+                raise ValueError(f"{name} must be a non-empty identifier")
+        if not isfinite(self.context_value):
+            raise ValueError("context_value must be finite")
+
+    @property
+    def household_id(self) -> str:
+        return str(self.evidence.metadata.household_id)
+
+    @property
+    def object_id(self) -> str:
+        return str(self.evidence.object_instance_id)
+
+    @property
+    def timestamp(self) -> datetime:
+        return self.evidence.valid_time.start
+
+    def to_legacy_baseline_input(
+        self,
+        *,
+        actor_id: str,
+        observed_location: str,
+        legacy_method_id: str,
+        projection_policy: str,
+    ) -> LegacyBaselineProjection:
+        """Explicit, receipted downgrade; both posterior collapses are caller-owned."""
+
+        if actor_id not in self.evidence.actor_posterior:
+            raise ValueError("legacy actor_id must be present in the formal actor support")
+        if self.evidence.actor_posterior[actor_id] <= 0.0:
+            raise ValueError("legacy actor_id must have positive posterior support")
+        if observed_location not in self.evidence.location_posterior:
+            raise ValueError("legacy location must be present in the formal location support")
+        if self.evidence.location_posterior[observed_location] <= 0.0:
+            raise ValueError("legacy location must have positive posterior support")
+        if (
+            self.evidence.detected_location_key is not None
+            and observed_location != self.evidence.detected_location_key
+        ):
+            raise ValueError("legacy hard location must match the bound detected location")
+        if not legacy_method_id.strip() or not projection_policy.strip():
+            raise ValueError("legacy downgrade requires method identity and projection policy")
+        record = ProjectOneDatasetRecord(
+            stream_id=self.stream_id,
+            event_id=self.event_id,
+            subject_id=self.subject_id,
+            household_id=self.household_id,
+            object_id=self.object_id,
+            actor_id=actor_id,
+            timestamp=self.timestamp,
+            context_key=self.context_key,
+            context_value=self.context_value,
+            observed_location=observed_location,
+            observation_quality=self.evidence.effective_sample_weight,
+        )
+        receipt = EvidenceDowngradeReceipt(
+            formal_evidence_record_id=str(self.evidence.metadata.record_id),
+            legacy_method_id=legacy_method_id,
+            selected_actor_key=actor_id,
+            selected_location_key=observed_location,
+            projection_policy=projection_policy,
+            formal_evidence_hash=content_sha256(self.evidence),
+        )
+        return LegacyBaselineProjection(record=record, receipt=receipt)
+
+
+@dataclass(frozen=True, slots=True)
+class ProjectOneEvidenceStream:
+    """Formal stream; legacy records are rejected at this boundary."""
+
+    stream_id: str
+    records: tuple[ProjectOneEvidenceDatasetRecord, ...]
+
+    def __post_init__(self) -> None:
+        if not self.records:
+            raise ValueError("a formal evidence stream must contain at least one record")
+        if any(not isinstance(record, ProjectOneEvidenceDatasetRecord) for record in self.records):
+            raise TypeError("formal evidence stream rejects legacy baseline records")
+        if any(record.stream_id != self.stream_id for record in self.records):
+            raise ValueError("formal evidence record stream_id mismatch")
+        if [record.timestamp for record in self.records] != sorted(
+            record.timestamp for record in self.records
+        ):
+            raise ValueError("formal evidence records must be time ordered")
+        if len({record.event_id for record in self.records}) != len(self.records):
+            raise ValueError("formal evidence event ids must be unique")
 
 
 @dataclass(frozen=True, slots=True)

@@ -43,7 +43,7 @@ def _read_payload_rows(path: Path) -> list[dict[str, Any]]:
         rows = [json.loads(line) for line in path.read_text(encoding="utf-8").splitlines() if line]
     elif suffix == ".parquet":
         try:
-            import pandas as pd
+            import pandas as pd  # type: ignore[import-untyped]
         except ImportError as exc:  # pragma: no cover - environment dependent
             raise RuntimeError(
                 "Parquet import requires the optional pandas plus pyarrow/fastparquet runtime"
@@ -122,7 +122,7 @@ class ProjectTwoReplayFileImporter:
             actor = "unknown_actor"
             unresolved.append("actor")
         try:
-            mechanism = EventMechanism(mechanism_label)
+            mechanism = EventMechanism(mechanism_label or "")
         except (TypeError, ValueError):
             mechanism = EventMechanism.UNKNOWN_MECHANISM
             unresolved.append("mechanism")

@@ -61,7 +61,7 @@ class HabitRegimeParameters:
 class ParameterWriteAudit:
     """One persisted write attempt against the long-term habit parameters."""
 
-    proposed_update: Mapping[str, float]
+    proposed_update: Mapping[str, object]
     attributed_cause: ChangeCause | None
     writable_blocks: tuple[ChangeCause, ...]
     applied_weight: float

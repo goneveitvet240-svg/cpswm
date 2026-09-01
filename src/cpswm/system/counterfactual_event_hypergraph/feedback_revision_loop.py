@@ -51,6 +51,7 @@ from dataclasses import dataclass
 from datetime import datetime
 from enum import StrEnum
 from math import isclose, isfinite
+from typing import Any
 from uuid import UUID, uuid4
 
 from cpswm.contracts import (
@@ -69,6 +70,8 @@ from cpswm.contracts import (
 )
 from cpswm.contracts.events import EventType
 from cpswm.system.continual.execution_feedback_projector import (
+    ExecutionFeedbackProjector,
+    ProjectedFeedbackEvidence,
     ProjectionInputConflictError,
 )
 
@@ -302,7 +305,7 @@ class ProjectTwoFeedbackRevisionLoop:
     def __init__(
         self,
         *,
-        projector,
+        projector: ExecutionFeedbackProjector,
         engine: OpenWorldRoleConditionedReversibleEventRevisionEngine | None = None,
         message_passing: ProvenanceConstrainedMessagePassing | None = None,
         retraction_threshold: float = 0.0,
@@ -467,7 +470,12 @@ class ProjectTwoFeedbackRevisionLoop:
         return revised_history, outcome
 
     def _revise_presence(
-        self, history, current, projected, likelihood_model, actor_evidence
+        self,
+        history: EventHypothesisHistory,
+        current: EventHypothesisRevision,
+        projected: ProjectedFeedbackEvidence,
+        likelihood_model: ActionOutcomeLikelihoodModel,
+        actor_evidence: ActorDiscriminationEvidence | None,
     ) -> tuple[
         EventHypothesisHistory,
         EventHypothesisRevision,
@@ -504,7 +512,7 @@ class ProjectTwoFeedbackRevisionLoop:
         self,
         history: EventHypothesisHistory,
         current: EventHypothesisRevision,
-        projected,
+        projected: ProjectedFeedbackEvidence,
         likelihood_model: ActionOutcomeLikelihoodModel,
         feedback: ExecutionFeedbackRecord,
         model: TransitionRevisionModel,
@@ -688,7 +696,7 @@ class ProjectTwoFeedbackRevisionLoop:
                     "feedback window crosses a subsequent move; revise the newer event instead"
                 )
 
-    def _presence_ratio(self, projected) -> float:
+    def _presence_ratio(self, projected: ProjectedFeedbackEvidence) -> float:
         """Presence Bayes factor for a target-presence route (caller guarantees one)."""
 
         update = projected.target_presence_update
@@ -1081,7 +1089,7 @@ def _loop_input_fingerprint(
     return hashlib.sha256(json.dumps(payload, sort_keys=True).encode("utf-8")).hexdigest()
 
 
-def apply_project_one_request(request: ProjectOneStatRequest, loop) -> bool:
+def apply_project_one_request(request: ProjectOneStatRequest, loop: Any) -> bool:
     """Consume a project-two request into a project-one owner-habit loop.
 
     Project one keys its ledger by the CHEH revision id, so the request's

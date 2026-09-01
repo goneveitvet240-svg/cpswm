@@ -1,0 +1,299 @@
+{
+  "protocol": "structure-two-world-generator-validation-gate@0.5",
+  "status": "frozen-before-first-v0.5-validation-run",
+  "evidence_scope": "fresh v0.5 Gate A then Gate B; official-method comparison additionally requires the external fidelity gate",
+  "protocol_reset": {
+    "supersedes_invalid_v0_4_draft": "configs/project_two_experiments/structure_two_world_generator_manifest_v0_4_DRAFT.json",
+    "reason": "the v0.2 holdout seed/salt preimage became candidate-visible",
+    "v0_4_results_inherited": false,
+    "v0_4_commitments_inherited": false,
+    "v0_4_secrets_reused": false
+  },
+  "inheritance": {
+    "generator_implementation_protocol": "structure-two-world-generator@0.2",
+    "train_design": "configs/project_two_experiments/structure_two_world_rolling_train_gate_v0_4.json",
+    "train_artifact": "benchmarks/structure_two/structure_two_world_rolling_train_gate_v0_4.json",
+    "train_artifact_file_sha256": "8db810c5e02e0d4d6098dba957dcfc7568477e7ede2a0d3867ab8bbfad8ad752",
+    "train_artifact_content_sha256": "b231e30fcd6a61e8138fddf834fc94b06bcb205f88562522e5bf361250298470",
+    "train_evidence_confirmatory": false
+  },
+  "world_distribution": {
+    "duration_days_inclusive": [
+      320,
+      380
+    ],
+    "location_count_inclusive": [
+      8,
+      12
+    ],
+    "guest_actor_count_inclusive": [
+      1,
+      3
+    ],
+    "abrupt_fraction": [
+      0.28,
+      0.42
+    ],
+    "recurrence_fraction": [
+      0.68,
+      0.84
+    ],
+    "owner_event_probability": [
+      0.68,
+      0.82
+    ],
+    "unknown_event_probability": [
+      0.05,
+      0.12
+    ],
+    "habit_mode_mass": [
+      0.42,
+      0.58
+    ],
+    "habit_secondary_mass": [
+      0.16,
+      0.28
+    ],
+    "weekend_distinct_mode_probability": 0.7,
+    "base_observation_probability": [
+      0.48,
+      0.78
+    ],
+    "location_visibility_multiplier": [
+      0.6,
+      1.2
+    ],
+    "guest_visibility_multiplier": 0.8,
+    "unknown_visibility_multiplier": 0.65,
+    "weekend_visibility_multiplier": 0.9,
+    "actor_map_accuracy": [
+      0.7,
+      0.9
+    ],
+    "identity_match_accuracy": [
+      0.78,
+      0.94
+    ],
+    "handoff_probability": [
+      0.18,
+      0.38
+    ]
+  },
+  "split_policy": {
+    "unit": "world_seed",
+    "train_world_seeds_spent_for_tuning": [
+      410001,
+      410002,
+      410003,
+      410004,
+      410005,
+      410006,
+      410007,
+      410008,
+      410009,
+      410010,
+      410011,
+      410012,
+      410013,
+      410014,
+      410015,
+      410016,
+      410017,
+      410018,
+      410019,
+      410020,
+      410021,
+      410022,
+      410023,
+      410024
+    ],
+    "prior_validation_world_seeds_spent": [
+      420001,
+      420002,
+      420003,
+      420004,
+      420005,
+      420006,
+      420007,
+      420008,
+      420009,
+      420010,
+      420011,
+      420012,
+      440001,
+      440002,
+      440003,
+      440004,
+      440005,
+      440006,
+      440007,
+      440008,
+      440009,
+      440010,
+      440011,
+      440012
+    ],
+    "v0_5_validation_world_seeds_preregistered_not_generated": [
+      450001,
+      450002,
+      450003,
+      450004,
+      450005,
+      450006,
+      450007,
+      450008,
+      450009,
+      450010,
+      450011,
+      450012
+    ],
+    "validation_trajectory_seeds": [
+      17,
+      31,
+      43
+    ],
+    "validation_observation_seeds": [
+      107,
+      227
+    ],
+    "sealed_holdout_world_count": 24,
+    "sealed_holdout_world_seed_commitments": [
+      "21372857139b752efb580d9bcf6b4e4fe8181fb9cf4b35575f666c96bf0d1821",
+      "7b318d68f6eb3988e61bc22b5ffd56d55475e9c31a056e8b9f64b0b48cc0fdfe",
+      "213d3c39156b2cdb970de1fa9a5b43fb2bad356abde2d7120b1ac93c72cd005c",
+      "fb79296e183c843bd0bb7c32b5162e407e8749ae69bd041f43772efa7d5ea35b",
+      "9f6e39925d17d4d4273e6fbb53f3733ec666b455f5b27c1b69e85dadddff2a32",
+      "26ba6fb775c28807d503d3d72b95903f5cf9d000162c7449d58216e06b697544",
+      "0838b0dd3bb09a80af42d492ad79c3d11cf147bdee558e30566f22a3b5b4ae70",
+      "c069ebd14308bd44617415a764ffdc88e23c33ee57188f610d7fa8ca61de2904",
+      "d97600b535c20290d6244cb06d527cc2d7b5ea39427bb9e2ae47ece266c76bae",
+      "1d8236d9d6fb6f0b01761f6b86a8ef50c40e174d4aa5b70960d264f640075c48",
+      "a06002864c22b16a0d66143edeb0892225c488fc29fb73d2cd16b0bed4940c43",
+      "50bed925daa86ba1d8c72e9f9dbd695f5700d1fe3165c509ca8b8a637269915b",
+      "b2d5794e903d21f0bcaf891fbfe9b177c2a879cf74589a5b8271b5f575626e04",
+      "0eaf9c3d06ecd92a34fa8e3bd1d70fe20765784606b49a8a547558d4c94851bf",
+      "ac957e22cb2a618ecf9d10083840961f9a7cb8521994c24b96ffc6119a1917b5",
+      "4c7c1792f5e3307481915e708915bac8913890ea0c3c756caaa94401eb1794ee",
+      "ee5a749082f3949b0280adf59d81c7ea33bbe8a41dc69ed1e2462df42123fb90",
+      "ba28e9ebee775af1f0eeb2b0256c0be9f9a8c178256b8a224034a17ac475711c",
+      "9cdeb83d1ab43fef5ad6d4d69a232d12a7a39d4bb83728987da357095d9ca6b2",
+      "406788570b743de5101d35fda37ffcd3c832ce8cebefe5779955535523e47418",
+      "b0cdb7a4e177bb802e064c8d4c6dcaedee7f3a29c1cf3edef8a7f00ff2c8d037",
+      "5cccf362cd943083763dbb934917c230dac3355d14c86bfb6cfa184a2e639a7a",
+      "ef6fc68d1dc4c1b7bd0fe0d6b2d5cb6ffb61cb7ece7ed3f46ecc18d16ec79975",
+      "cd2d509f349da340874f91a3b1b0caf54382f06f7108d5b7e97cc993fae2e0ed"
+    ],
+    "commitments_added_only_from_verified_external_attestation": true,
+    "raw_holdout_world_seeds_disclosed": false
+  },
+  "rolling_visible_history_reference": {
+    "window_days": 35,
+    "context_shrinkage_pseudocounts": 0.0,
+    "owner_probability_threshold": 0.5,
+    "selection_evidence": "retrospective exploratory train-only evidence; frozen unchanged for v0.5",
+    "reads_only": [
+      "observed_location",
+      "visible_owner_probability",
+      "calendar context"
+    ],
+    "never_reads": [
+      "latent actor",
+      "true regime",
+      "true change point",
+      "CPSWM state"
+    ]
+  },
+  "gate_a_thresholds": {
+    "minimum_unique_validation_world_fraction": 1.0,
+    "minimum_put_back_sticky_error": 0.2,
+    "minimum_put_back_aggregation_gain": 0.05,
+    "minimum_put_back_aggregation_gain_ci_lower": 0.01,
+    "minimum_put_back_context_gain": 0.015,
+    "minimum_remaining_put_back_error": 0.1,
+    "maximum_on_owner_observed_target_recurrence": 0.85,
+    "minimum_search_last_observed_error": 0.15,
+    "minimum_search_contextual_fallback_gain": 0.02,
+    "minimum_remaining_search_error": 0.1,
+    "minimum_unobserved_location_change_rate": 0.2,
+    "bootstrap_draws": 4000
+  },
+  "custodian_attestation": {
+    "required_artifact": "configs/project_two_experiments/structure_two_world_seed_block_attestation_v0_5.json",
+    "trusted_custodian_key_id": "structure-two-v0.5-independent-custodian-20260831-05",
+    "trusted_custodian_public_key_sha256": "9ef0fc693e3a5ca19b1d702c1916c425c295510727d7bbc43d9836b4e15d0e25",
+    "current_status": "VERIFIED fresh external seed block",
+    "artifact": "configs/project_two_experiments/structure_two_world_seed_block_attestation_v0_5.json",
+    "artifact_file_sha256": "1b609d2b2fcb1e72824ea86dd6d78ed573e669bbc2dd80c0a705597b271a281e",
+    "custodian_run_id": "structure-two-v0.5-fresh-seed-run-01",
+    "verified": true
+  },
+  "freeze_authorization": {
+    "trusted_custodian_key_id": "structure-two-v0.5-independent-custodian-20260831-05",
+    "trusted_custodian_public_key_sha256": "9ef0fc693e3a5ca19b1d702c1916c425c295510727d7bbc43d9836b4e15d0e25",
+    "user_approval_id": "structure-two-v0.5-establishment-approved-by-user-2026-08-31",
+    "configured_before_custodian_seed_generation": true,
+    "user_approval_is_cryptographic_signature": false
+  },
+  "gate_b_contract": {
+    "protocol": "structure-two-world-arm-distinguishability-gate-b@0.5",
+    "expected_arms": [
+      "corrected_amg",
+      "o_star_matched",
+      "sequential_no_consolidation",
+      "active_dreaming_matched",
+      "auto_dreamer_matched",
+      "trustmem_matched",
+      "brainctl_matched",
+      "care_no_action_regret",
+      "care_wm",
+      "full_rerun"
+    ],
+    "arm_adapter_protocol": "structure-two-world-arm-adapter@0.4-reused-with-explicit-proxy-receipts",
+    "trace_envelope_protocol": "structure-two-world-bound-arm-prediction-trace@0.5",
+    "arm_parameters": {
+      "corrected_amg": 0.35,
+      "o_star_matched": 0.75,
+      "sequential_no_consolidation": "responsive",
+      "active_dreaming_matched": 0.6,
+      "auto_dreamer_matched": 0.04,
+      "trustmem_matched": 0.8,
+      "brainctl_matched": 0.75,
+      "care_no_action_regret": 0.85,
+      "care_wm": 1.25,
+      "full_rerun": 0.3
+    },
+    "distinguishability_thresholds": {
+      "min_pairwise_prediction_disagreement_rate": 0.01,
+      "min_episode_fraction_with_multiple_arm_trajectories": 0.2
+    },
+    "requires_verified_gate_a_pass": true,
+    "requires_exact_ordered_rollout_set_from_gate_a": true,
+    "requires_external_custodian_recomputation_and_ed25519_signature": true,
+    "producer_source_bundle_protocol": "structure-two-world-v0.5-source-bundle@0.1",
+    "producer_source_bundle_file_count": 245,
+    "producer_source_bundle_sha256": "a9f7ecba788304aec010380bdb2da1b5e5be75723f24c3caf004ab1db8619c4c",
+    "external_adapter_fidelity_policy": {
+      "protocol": "structure-two-external-adapter-fidelity-gate@0.1",
+      "gate_b_pass_does_not_authorize_external_method_efficacy": true,
+      "method_comparison_requires_independent_external_fidelity_pass": true,
+      "current_external_fidelity_gate_passed": false
+    }
+  },
+  "execution_policy": {
+    "validation_gate_a_allowed": true,
+    "gate_b_allowed": false,
+    "proxy_method_comparison_allowed": false,
+    "official_method_comparison_allowed": false
+  },
+  "disclosure": [
+    "v0.5 is a new protocol reset; no v0.4 validation result or commitment is inherited.",
+    "No v0.5 validation world has been generated and no v0.5 validation metric has been observed.",
+    "External arms remain proxies or unaudited reproductions; Gate B cannot establish official-method fidelity."
+  ],
+  "freeze_record": {
+    "draft_file_sha256": "b65f8cd7a6f62dbe2f300b6ed8ab466885142118a4f98d61e40a26905e395afa",
+    "user_approval_id": "structure-two-v0.5-establishment-approved-by-user-2026-08-31",
+    "validation_metrics_observed_before_freeze": false,
+    "v0_4_commitments_reused": false
+  }
+}

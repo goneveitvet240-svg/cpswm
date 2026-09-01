@@ -1,0 +1,48 @@
+{
+  "schema_version": "0.1.0",
+  "registry_sha256": "2e31d804d76194ca0bf0ebcfc8180241d19029e06cfc5f14f273094c6fc94163",
+  "round_id": "cpswm-method-falsification-round-two@0.1",
+  "bootstrap_samples": 2000,
+  "structure_one": {
+    "validation_seeds": [41001, 41002, 41003, 41004, 41005, 41006, 41007, 41008, 41009, 41010, 41011, 41012, 41013, 41014, 41015, 41016, 41017, 41018, 41019, 41020],
+    "sealed_test_seed_start": 42001,
+    "sealed_test_seed_count": 100,
+    "cluster_axis": "household",
+    "primary_action_metric": "wrong_placement_cost",
+    "scenario_families": ["single_context_repetition", "cross_context_transfer", "household_person_conflict"]
+  },
+  "structure_one_placement": {
+    "validation_seed_start": 42501,
+    "validation_seed_count": 20,
+    "sealed_test_seed_start": 42601,
+    "sealed_test_seed_count": 100,
+    "cluster_axis": "user",
+    "primary_action_metric": "wrong_placement_cost",
+    "mechanism_metric": "semantic_layer_violation",
+    "scenario_families": ["behavior_preference_conflict", "visitor_owner_conflict", "hard_safety_retraction"]
+  },
+  "structure_two_orrer": {
+    "validation_seed_start": 43001,
+    "validation_seed_count": 20,
+    "sealed_test_seed_start": 44001,
+    "sealed_test_seed_count": 100,
+    "cluster_axis": "household",
+    "primary_action_metric": "cumulative_action_regret",
+    "mechanism_metric": "long_horizon_contamination_auc",
+    "scenario_families": ["direct_handoff", "unknown_actor_handoff", "late_independent_correction"]
+  },
+  "structure_three_multi_parse": {
+    "validation_seed_start": 45001,
+    "validation_seed_count": 20,
+    "sealed_test_seed_start": 46001,
+    "sealed_test_seed_count": 100,
+    "cluster_axis": "episode",
+    "primary_action_metric": "embodied_task_utility",
+    "mechanism_metric": "language_parse_coverage",
+    "scenario_families": ["temporal_reference", "person_reference", "functional_and_relational_reference"]
+  },
+  "oam_phm": {
+    "status": "blocked",
+    "reason": "faithful enhanced O-STaR, DynaMem, STaR and independent household clusters are unavailable"
+  }
+}

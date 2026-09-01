@@ -7,10 +7,10 @@ import json
 import sys
 from pathlib import Path
 
-
 REPOSITORY_ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(REPOSITORY_ROOT / "src"))
 
+from cpswm.contracts import ActorEvidenceTrack  # noqa: E402
 from cpswm.system.evaluation_operations import (  # noqa: E402
     D0ShiftScenarioConfig,
     D0ShiftScenarioGenerator,
@@ -19,14 +19,9 @@ from cpswm.system.evaluation_operations import (  # noqa: E402
     ShiftAttributionEvaluator,
     ShiftCause,
 )
-from cpswm.contracts import ActorEvidenceTrack  # noqa: E402
-
 
 DEFAULT_CONFIG = (
-    REPOSITORY_ROOT
-    / "benchmarks"
-    / "d0_shift_attribution"
-    / "d0_scenario_config_v0.1.json"
+    REPOSITORY_ROOT / "benchmarks" / "d0_shift_attribution" / "d0_scenario_config_v0.1.json"
 )
 
 
@@ -83,14 +78,12 @@ def main() -> None:
         )
 
     no_actor_suite = generator.generate(config)
-    cases_by_cause = {
-        case.evaluator_truth.true_cause: case for case in no_actor_suite.cases
-    }
+    cases_by_cause = {case.evaluator_truth.true_cause: case for case in no_actor_suite.cases}
     observational_equivalence = (
-        cases_by_cause[ShiftCause.ACTOR_MIXTURE]
-        .model_input.shifted_run.visible_content_sha256
-        == cases_by_cause[ShiftCause.OWNER_HABIT_REGIME]
-        .model_input.shifted_run.visible_content_sha256
+        cases_by_cause[ShiftCause.ACTOR_MIXTURE].model_input.shifted_run.visible_content_sha256
+        == cases_by_cause[
+            ShiftCause.OWNER_HABIT_REGIME
+        ].model_input.shifted_run.visible_content_sha256
     )
     output = {
         "scenario_config_sha256": no_actor_suite.scenario_config_sha256,

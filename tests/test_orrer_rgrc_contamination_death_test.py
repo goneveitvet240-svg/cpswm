@@ -267,9 +267,7 @@ def test_reversal_revision_must_match_target_and_quarantine_cannot_be_reversed()
 def test_parent_revision_must_exist_and_belong_to_same_event():
     ledger = EventDerivedUpdateLedger()
     with pytest.raises(LedgerIntegrityError, match="parent revision does not exist"):
-        ledger.append_delta(
-            _delta(watermark=0, location=L1, parent=uuid4())
-        )
+        ledger.append_delta(_delta(watermark=0, location=L1, parent=uuid4()))
 
     parent_event, parent_revision = uuid4(), uuid4()
     parent = _delta(
@@ -286,9 +284,7 @@ def test_parent_revision_must_exist_and_belong_to_same_event():
         reversal_ids=[uuid4()],
     )
     with pytest.raises(LedgerIntegrityError, match="belongs to another event"):
-        ledger.append_delta(
-            _delta(watermark=2, location=L2, event=uuid4(), parent=parent_revision)
-        )
+        ledger.append_delta(_delta(watermark=2, location=L2, event=uuid4(), parent=parent_revision))
 
 
 def test_duplicate_promotion_is_rejected_before_it_enters_log():

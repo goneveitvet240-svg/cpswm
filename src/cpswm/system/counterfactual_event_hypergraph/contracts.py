@@ -5,9 +5,10 @@ from __future__ import annotations
 from datetime import datetime
 from enum import StrEnum
 from math import isclose
-from uuid import UUID
+from typing import cast
+from uuid import UUID, uuid4
 
-from pydantic import Field, field_validator, model_validator
+from pydantic import Field, ValidationInfo, field_validator, model_validator
 
 from cpswm.contracts import (
     ActorResponsibilityEvidence,
@@ -16,23 +17,37 @@ from cpswm.contracts import (
     RoleBindingEvidence,
 )
 from cpswm.contracts.base import ContractModel, NonNegativeInt, Probability, require_aware
+from cpswm.system.attestation import Attestation, AttestationAuthority, attested_payload
 from cpswm.system.reproducibility import content_sha256, content_uuid
 
 HiddenEventEvidence = ActorResponsibilityEvidence | EventMechanismEvidence | RoleBindingEvidence
+DOMAIN_EVIDENCE_INDEPENDENCE = "cpswm.cheh.evidence_independence.v1"
 
 
-def hidden_event_evidence_semantic_fingerprint(evidence: HiddenEventEvidence) -> str:
-    """Hash evidence semantics while ignoring caller-controlled wrapper IDs."""
+def canonical_hidden_event_evidence_payload(
+    evidence: HiddenEventEvidence,
+) -> dict[str, object]:
+    """Return the evidence semantics without transport/storage wrapper fields.
+
+    ``evidence_time``, source/model identity, and ``source_record_id`` remain
+    because they distinguish real acquisitions.  Random record/cluster/trace
+    IDs and ingestion time do not.
+    """
 
     payload = evidence.model_dump(mode="python")
     metadata = dict(payload["metadata"])
-    metadata.pop("record_id", None)
+    for field_name in (
+        "record_id",
+        "trace_id",
+        "recorded_time",
+        "schema_name",
+        "schema_version",
+        "privacy_scope",
+    ):
+        metadata.pop(field_name, None)
     payload["metadata"] = metadata
     payload.pop("evidence_cluster_id", None)
-    # EvidenceRef.evidence_id, tuple order, and repeated copies are packaging,
-    # not independent evidence semantics.  Canonicalize as a content set so a
-    # caller cannot evade CHEH de-duplication by duplicating the same ref.
-    semantic_references_by_hash: dict[str, dict] = {}
+    semantic_references_by_hash: dict[str, dict[str, object]] = {}
     for reference in payload["evidence_refs"]:
         semantic_reference = dict(reference)
         semantic_reference.pop("evidence_id", None)
@@ -41,7 +56,93 @@ def hidden_event_evidence_semantic_fingerprint(evidence: HiddenEventEvidence) ->
         semantic_references_by_hash[fingerprint]
         for fingerprint in sorted(semantic_references_by_hash)
     )
-    return content_sha256(payload)
+    return payload
+
+
+def hidden_event_evidence_claim_fingerprint(evidence: HiddenEventEvidence) -> str:
+    """Hash what was measured, excluding source/model-specific score outputs.
+
+    Two models evaluating the same endpoint and acquisition target can produce
+    slightly different posteriors. Those remain correlated statements about
+    one claim and need an independence certificate before both count.
+    """
+
+    canonical = canonical_hidden_event_evidence_payload(evidence)
+    metadata = dict(cast(dict[str, object], canonical["metadata"]))
+    for field_name in ("source_id", "model_version", "source_type"):
+        metadata.pop(field_name, None)
+    claim_payload = {
+        "evidence_contract": evidence.__class__.__name__,
+        "metadata": metadata,
+        "evidence_time": canonical["evidence_time"],
+        "source_detection_result_id": canonical["source_detection_result_id"],
+        "object_instance_id": canonical["object_instance_id"],
+        "evidence_refs": tuple(
+            {
+                "evidence_type": reference["evidence_type"],
+                "locator": reference.get("locator"),
+            }
+            for reference in cast(tuple[dict[str, object], ...], canonical["evidence_refs"])
+        ),
+    }
+    return content_sha256(claim_payload)
+
+
+def hidden_event_evidence_semantic_fingerprint(evidence: HiddenEventEvidence) -> str:
+    """Hash evidence semantics while ignoring caller-controlled wrapper IDs."""
+
+    return content_sha256(canonical_hidden_event_evidence_payload(evidence))
+
+
+class EvidenceIndependenceCertificate(ContractModel):
+    """Authority-attested permission to count two same-claim acquisitions separately."""
+
+    certificate_id: UUID = Field(default_factory=uuid4)
+    semantic_fingerprints: tuple[str, str]
+    acquisition_source_record_ids: tuple[tuple[UUID, ...], tuple[UUID, ...]]
+    independence_basis: str = Field(min_length=1)
+    attestation: Attestation | None = None
+
+    @model_validator(mode="after")
+    def canonical_pair(self) -> EvidenceIndependenceCertificate:
+        if self.semantic_fingerprints[0] >= self.semantic_fingerprints[1]:
+            raise ValueError("independence semantic fingerprints must be sorted and distinct")
+        for source_ids in self.acquisition_source_record_ids:
+            if not source_ids:
+                raise ValueError("each independent acquisition needs a source_record_id")
+            if tuple(sorted(set(source_ids), key=str)) != source_ids:
+                raise ValueError("acquisition source record IDs must be sorted and unique")
+        return self
+
+
+def issue_evidence_independence_certificate(
+    first: HiddenEventEvidence,
+    second: HiddenEventEvidence,
+    *,
+    independence_basis: str,
+    authority: AttestationAuthority,
+) -> EvidenceIndependenceCertificate:
+    acquisitions = sorted(
+        (
+            (
+                hidden_event_evidence_semantic_fingerprint(item),
+                tuple(sorted({ref.source_record_id for ref in item.evidence_refs}, key=str)),
+            )
+            for item in (first, second)
+        ),
+        key=lambda item: item[0],
+    )
+    if any(not source_ids for _fingerprint, source_ids in acquisitions):
+        raise ValueError(
+            "an independence certificate requires source_record_id provenance for both acquisitions"
+        )
+    unsigned = EvidenceIndependenceCertificate(
+        semantic_fingerprints=(acquisitions[0][0], acquisitions[1][0]),
+        acquisition_source_record_ids=(acquisitions[0][1], acquisitions[1][1]),
+        independence_basis=independence_basis,
+    )
+    signature = authority.sign(DOMAIN_EVIDENCE_INDEPENDENCE, attested_payload(unsigned))
+    return unsigned.model_copy(update={"attestation": signature})
 
 
 def actor_evidence_semantic_fingerprint(
@@ -198,6 +299,8 @@ class EventHypothesisRevision(ContractModel):
     revision_evidence_record_ids: tuple[UUID, ...] = Field(min_length=1)
     revision_evidence_cluster_ids: tuple[UUID, ...] = ()
     revision_evidence_semantic_fingerprints: tuple[str, ...] = ()
+    revision_evidence_claim_fingerprints: tuple[str, ...] = ()
+    revision_evidence_independence_certificate_sha256s: tuple[str, ...] = ()
     revision_evidence_source_detection_result_ids: tuple[UUID, ...] = ()
     revision_evidence_endpoint_roles: tuple[ActorEvidenceEndpointRole, ...] = ()
     revision_reason: str = Field(min_length=1)
@@ -205,8 +308,8 @@ class EventHypothesisRevision(ContractModel):
 
     @field_validator("interval_start", "interval_end")
     @classmethod
-    def validate_times(cls, value: datetime, info) -> datetime:
-        return require_aware(value, info.field_name)
+    def validate_times(cls, value: datetime, info: ValidationInfo) -> datetime:
+        return require_aware(value, info.field_name or "datetime")
 
     @model_validator(mode="after")
     def validate_revision(self) -> EventHypothesisRevision:
@@ -264,17 +367,37 @@ class EventHypothesisRevision(ContractModel):
             set(self.revision_evidence_semantic_fingerprints)
         ):
             raise ValueError("CHEH revision evidence semantic fingerprints must be unique")
+        if len(self.revision_evidence_claim_fingerprints) != len(
+            self.revision_evidence_semantic_fingerprints
+        ):
+            raise ValueError("CHEH evidence claim and semantic fingerprints must align")
         if any(
             len(fingerprint) != 64
             or any(character not in "0123456789abcdef" for character in fingerprint)
-            for fingerprint in self.revision_evidence_semantic_fingerprints
+            for fingerprint in (
+                *self.revision_evidence_semantic_fingerprints,
+                *self.revision_evidence_claim_fingerprints,
+            )
         ):
-            raise ValueError("CHEH evidence semantic fingerprints must be SHA-256 hex")
+            raise ValueError("CHEH evidence semantic/claim fingerprints must be SHA-256 hex")
+        certificate_hashes = self.revision_evidence_independence_certificate_sha256s
+        if len(certificate_hashes) != len(set(certificate_hashes)) or any(
+            len(fingerprint) != 64
+            or any(character not in "0123456789abcdef" for character in fingerprint)
+            for fingerprint in certificate_hashes
+        ):
+            raise ValueError(
+                "CHEH evidence independence certificate hashes must be unique SHA-256 hex"
+            )
         if self.revision_no == 0:
             if self.revision_evidence_cluster_ids:
                 raise ValueError("branch revision cannot consume actor evidence clusters")
             if self.revision_evidence_semantic_fingerprints:
                 raise ValueError("branch revision cannot consume actor evidence fingerprints")
+            if self.revision_evidence_claim_fingerprints:
+                raise ValueError("branch revision cannot consume evidence claim fingerprints")
+            if self.revision_evidence_independence_certificate_sha256s:
+                raise ValueError("branch revision cannot consume independence certificates")
             if self.revision_evidence_source_detection_result_ids:
                 raise ValueError("branch revision cannot bind actor evidence endpoints")
             if self.revision_evidence_endpoint_roles:
@@ -283,6 +406,7 @@ class EventHypothesisRevision(ContractModel):
             len(self.revision_evidence_record_ids)
             == len(self.revision_evidence_cluster_ids)
             == len(self.revision_evidence_semantic_fingerprints)
+            == len(self.revision_evidence_claim_fingerprints)
             == len(self.revision_evidence_source_detection_result_ids)
             == len(self.revision_evidence_endpoint_roles)
         ):
@@ -333,7 +457,7 @@ class EventHypothesisRevision(ContractModel):
             raise ValueError("revision_id does not match revision content")
         return self
 
-    def content_payload(self) -> dict:
+    def content_payload(self) -> dict[str, object]:
         return self.model_dump(
             mode="json",
             exclude={"revision_id", "revision_content_sha256"},
@@ -488,6 +612,26 @@ class EventHypothesisHistory(ContractModel):
             fingerprint
             for revision in self.revisions
             for fingerprint in revision.revision_evidence_semantic_fingerprints
+        )
+
+    @property
+    def consumed_evidence_fingerprint_pairs(self) -> tuple[tuple[str, str], ...]:
+        return tuple(
+            (claim, semantic)
+            for revision in self.revisions
+            for claim, semantic in zip(
+                revision.revision_evidence_claim_fingerprints,
+                revision.revision_evidence_semantic_fingerprints,
+                strict=True,
+            )
+        )
+
+    @property
+    def consumed_evidence_independence_certificate_sha256s(self) -> frozenset[str]:
+        return frozenset(
+            fingerprint
+            for revision in self.revisions
+            for fingerprint in revision.revision_evidence_independence_certificate_sha256s
         )
 
     def append(self, revision: EventHypothesisRevision) -> EventHypothesisHistory:

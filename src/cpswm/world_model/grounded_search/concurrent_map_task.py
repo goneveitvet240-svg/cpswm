@@ -76,9 +76,7 @@ class BeliefSnapshot:
         old = self.node_map()
         new = newer.node_map()
         return frozenset(
-            node_id
-            for node_id in old.keys() | new.keys()
-            if old.get(node_id) != new.get(node_id)
+            node_id for node_id in old.keys() | new.keys() if old.get(node_id) != new.get(node_id)
         )
 
     @staticmethod
@@ -371,9 +369,7 @@ class MapTaskCoordinator:
         changed = old_snapshot.changed_nodes(new_snapshot)
         future = tuple(action for action in task.actions if action.order >= current_action_order)
         impacted = tuple(
-            action
-            for action in future
-            if self._is_impacted(action, changed, dependency_bridge)
+            action for action in future if self._is_impacted(action, changed, dependency_bridge)
         )
         if not impacted:
             return VersionSwitchDecision(
@@ -571,10 +567,7 @@ class ConstrainedVOISelector:
         for candidate in ranked:
             assessment = exact_verifier.assess(candidate, belief_snapshot, task_graph)
             net = assessment.risk_reduction - candidate.action_cost
-            if (
-                assessment.hard_safety_violations
-                or net < self.minimum_exact_net_risk_reduction
-            ):
+            if assessment.hard_safety_violations or net < self.minimum_exact_net_risk_reduction:
                 rejected.append(candidate.action_id)
                 continue
             return VerifiedObservationChoice(candidate, assessment, tuple(rejected))

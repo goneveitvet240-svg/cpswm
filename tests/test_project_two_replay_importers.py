@@ -28,6 +28,7 @@ def _typed_d1_fixture():
             update={
                 "dataset_version": version,
                 "maturity": ProjectTwoDataMaturity.D1_SIMULATOR_ANNOTATED_REPLAY,
+                "source_evidence_maturity": ProjectTwoDataMaturity.D1_SIMULATOR_ANNOTATED_REPLAY,
                 "provenance": (*item.provenance, "fixture:annotated-simulator"),
             }
         )

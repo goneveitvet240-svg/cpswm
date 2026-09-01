@@ -8,16 +8,17 @@ paired variance before the TEST seed partition is inspected.
 
 from __future__ import annotations
 
-from collections.abc import Sequence
+from collections.abc import Mapping, Sequence
 from datetime import datetime, timedelta
 from enum import StrEnum
 from math import ceil, exp, log
 from statistics import NormalDist, fmean, stdev
-from typing import Literal
+from typing import Any, Literal
+from uuid import UUID
 
 from pydantic import Field, model_validator
 
-from cpswm.contracts import ObservationOutcome
+from cpswm.contracts import ObservationDetectionResult, ObservationOutcome
 from cpswm.contracts.base import ContractModel, NonNegativeInt, PositiveInt, Probability
 from cpswm.system.reproducibility import content_sha256
 from cpswm.world_model.habits_transitions.cause_factorized_bocpd import (
@@ -47,8 +48,12 @@ from .project_one_shift_gates import _SEARCH_SPACES, SHIFT_THREE_ARMS
 from .shift_attribution import ShiftCause
 from .shift_baselines import OnlineCauseFactorizedBOCPDBaseline
 
-PRIMARY_ENDPOINT_ID = "downstream-action-regret.balanced-habit-vs-nonhabit@1"
-KEY_SECONDARY_ENDPOINT_ID = "corrupted-habit-mass.mean-per-case@1"
+PRIMARY_ENDPOINT_ID: Literal["downstream-action-regret.balanced-habit-vs-nonhabit@1"] = (
+    "downstream-action-regret.balanced-habit-vs-nonhabit@1"
+)
+KEY_SECONDARY_ENDPOINT_ID: Literal["corrupted-habit-mass.mean-per-case@1"] = (
+    "corrupted-habit-mass.mean-per-case@1"
+)
 ALLOWED_CLAIM_IDS = (
     "claim.synthetic-prefix-online-shift-action-death-test-reported@5",
     "claim.shared-policy-track-reported@1",
@@ -330,7 +335,7 @@ class CaseActionOutcome(ContractModel):
         if self.consolidation_issued and not self.reset_issued:
             raise ValueError("consolidation requires a preceding reset")
         if self.consolidation_issued:
-            expected = (
+            expected: tuple[str, ...] = (
                 "RESET_OLD_REGIME",
                 "VERIFY_NEW_EVIDENCE",
                 "CONSOLIDATE_NEW_REGIME",
@@ -369,8 +374,11 @@ class CaseActionOutcome(ContractModel):
             raise ValueError("verification time must equal the predicate satisfaction time")
         if self.consolidation_issued != (self.consolidation_time is not None):
             raise ValueError("consolidation timestamp does not match consolidation state")
-        if self.consolidation_issued and not (
-            self.reset_time < self.verification_time < self.consolidation_time
+        if self.consolidation_issued and (
+            self.reset_time is None
+            or self.verification_time is None
+            or self.consolidation_time is None
+            or not self.reset_time < self.verification_time < self.consolidation_time
         ):
             raise ValueError("consolidation state transitions must cross increasing timesteps")
         return self
@@ -1050,6 +1058,8 @@ class ProjectOneShiftActionDeathTestReport(ContractModel):
         ):
             raise ValueError("underpowered report must not inspect or report TEST")
         if power_pass:
+            if self.test_input_artifact is None:
+                raise ValueError("powered report requires the sealed TEST input artifact")
             self._validate_selected_prediction_replay(
                 self.test_input_artifact,
                 self.test_artifacts,
@@ -1170,7 +1180,10 @@ class ProjectOneShiftActionDeathTestReport(ContractModel):
         self,
         inputs: SplitInputArtifact | None,
         artifacts: dict[ProjectOneAblationArmId, ArmActionArtifact],
-        records: dict,
+        records: Mapping[
+            ProjectOneAblationArmId,
+            ArmActionTuningRecord | ArmRetunedPolicyTuningRecord,
+        ],
         *,
         retuned: bool,
     ) -> None:
@@ -1321,7 +1334,7 @@ def _detector_state_at_prefix(
             )
             for frame in frames
         )
-        result = JointCauseFactorizedBOCPD(
+        joint_result = JointCauseFactorizedBOCPD(
             hazard_probability=hazard,
             beam_width=int(params["beam_width"]),
             maximum_simultaneous_causes=int(params["maximum_simultaneous_causes"]),
@@ -1329,9 +1342,9 @@ def _detector_state_at_prefix(
             model_version=model_version,
         ).run(signals, detection_threshold=threshold, warmup_steps=warmup)
         detected = tuple(
-            item for item in result.detected_change_time_by_cause.values() if item is not None
+            item for item in joint_result.detected_change_time_by_cause.values() if item is not None
         )
-        current = result.snapshots[-1]
+        current = joint_result.snapshots[-1]
         posterior = {
             cause_map[cause]: min(
                 1.0,
@@ -1398,12 +1411,15 @@ def _predict_prefix_online(
         estimate, posterior, model_version = _detector_state_at_prefix(arm, params, prefix)
         evidence_ids = tuple(
             dict.fromkeys(
-                str(item.metadata.record_id)
-                for item in (
-                    *prefix.observation_stream.observation_opportunities,
-                    *prefix.observation_stream.detection_results,
-                    *prefix.actor_evidence,
+                tuple(
+                    str(item.metadata.record_id)
+                    for item in prefix.observation_stream.observation_opportunities
                 )
+                + tuple(
+                    str(item.metadata.record_id)
+                    for item in prefix.observation_stream.detection_results
+                )
+                + tuple(str(item.metadata.record_id) for item in prefix.actor_evidence)
             )
         )
         snapshots.append(
@@ -1429,7 +1445,7 @@ def _verification_evidence(
     policy: FrozenActionPolicy,
 ) -> VerificationEvidence | None:
     actor_by_result = {item.source_detection_result_id: item for item in model_input.actor_evidence}
-    first_by_key = {}
+    first_by_key: dict[tuple[UUID, UUID], tuple[ObservationDetectionResult, float]] = {}
     results = sorted(
         model_input.observation_stream.detection_results,
         key=lambda item: item.metadata.recorded_time,
@@ -1574,11 +1590,17 @@ def _case_outcome(
     if action_mode == "always-reset-verify" and selected is not None:
         posterior_at_decision = calibrated
     habit_probability = float(calibrated.get(ShiftCause.OWNER_HABIT_REGIME, 0.0))
+    if reset and model_input is not None and decision_time is None:
+        raise AssertionError("reset decision must carry its decision time")
     if verification_evidence is None and reset and model_input is not None:
+        if decision_time is None:
+            raise AssertionError("reset decision must carry its decision time")
         verification_evidence = _verification_evidence(
             model_input, after_time=decision_time, policy=policy
         )
     if verification_evidence is None and reset and model_input is not None:
+        if decision_time is None:
+            raise AssertionError("reset decision must carry its decision time")
         verification_evidence = _active_verification_evidence(
             model_input,
             truth,
@@ -1630,7 +1652,7 @@ def _case_outcome(
                 break
     consolidate = consolidation_time is not None
     if consolidate:
-        action_sequence = (
+        action_sequence: tuple[str, ...] = (
             "RESET_OLD_REGIME",
             "VERIFY_NEW_EVIDENCE",
             "CONSOLIDATE_NEW_REGIME",
@@ -1860,12 +1882,15 @@ def _policy_baseline_prediction(model_input: OnlineShiftCaseInput) -> PrefixOnli
                 prefix_input_sha256=content_sha256(prefix),
                 visible_evidence_record_ids=tuple(
                     dict.fromkeys(
-                        str(item.metadata.record_id)
-                        for item in (
-                            *prefix.observation_stream.observation_opportunities,
-                            *prefix.observation_stream.detection_results,
-                            *prefix.actor_evidence,
+                        tuple(
+                            str(item.metadata.record_id)
+                            for item in prefix.observation_stream.observation_opportunities
                         )
+                        + tuple(
+                            str(item.metadata.record_id)
+                            for item in prefix.observation_stream.detection_results
+                        )
+                        + tuple(str(item.metadata.record_id) for item in prefix.actor_evidence)
                     )
                 ),
             )
@@ -1881,10 +1906,17 @@ def _action_policy_baselines(
     cases: Sequence[OnlineShiftGeneratedCase], policy: FrozenActionPolicy
 ) -> dict[ActionPolicyBaselineId, ActionPolicyBaselineArtifact]:
     output = {}
-    for baseline_id, action_mode in (
+    baseline_modes: tuple[
+        tuple[
+            ActionPolicyBaselineId,
+            Literal["never-act", "always-reset-verify"],
+        ],
+        ...,
+    ] = (
         (ActionPolicyBaselineId.NEVER_ACT, "never-act"),
         (ActionPolicyBaselineId.ALWAYS_RESET_VERIFY, "always-reset-verify"),
-    ):
+    )
+    for baseline_id, action_mode in baseline_modes:
         outcomes = tuple(
             _case_outcome(
                 case.evaluator_truth,
@@ -1960,8 +1992,8 @@ def _shared_candidate_ledger(
     ledger: ArmValidationPredictionLedger,
     validation: Sequence[OnlineShiftGeneratedCase],
     policy: FrozenActionPolicy,
-) -> tuple[tuple[dict, ...], int]:
-    items = tuple(
+) -> tuple[tuple[dict[str, Any], ...], int]:
+    items: tuple[dict[str, Any], ...] = tuple(
         {
             "candidate_index": candidate.candidate_index,
             "params_sha256": candidate.params_sha256,
@@ -1989,8 +2021,8 @@ def _retuned_candidate_ledger(
     ledger: ArmValidationPredictionLedger,
     validation: Sequence[OnlineShiftGeneratedCase],
     policy_space: tuple[FrozenActionPolicy, ...],
-) -> tuple[tuple[dict, ...], tuple[int, int]]:
-    items = tuple(
+) -> tuple[tuple[dict[str, Any], ...], tuple[int, int]]:
+    items: tuple[dict[str, Any], ...] = tuple(
         {
             "detector_index": candidate.candidate_index,
             "policy_index": policy_index,
@@ -2012,7 +2044,7 @@ def _retuned_candidate_ledger(
         ),
     )
     selected = items[selected_flat]
-    return items, (selected["detector_index"], selected["policy_index"])
+    return items, (int(selected["detector_index"]), int(selected["policy_index"]))
 
 
 def _seed_metric(
@@ -2214,11 +2246,13 @@ def _utility_sensitivity_results(
         for scenario in config.utility_sensitivity_scenarios:
             scenario_artifacts = {}
             for arm in SHIFT_THREE_ARMS:
-                base_policy = (
-                    config.action_policy
-                    if track == EvaluationTrack.SHARED_POLICY
-                    else records[arm].selected_policy
-                )
+                if track == EvaluationTrack.SHARED_POLICY:
+                    base_policy = config.action_policy
+                else:
+                    retuned_record = records[arm]
+                    if not isinstance(retuned_record, ArmRetunedPolicyTuningRecord):
+                        raise TypeError("retuned track requires retuned policy records")
+                    base_policy = retuned_record.selected_policy
                 scenario_artifacts[arm] = _artifact_from_predictions(
                     arm,
                     records[arm].selected_params,
@@ -2401,7 +2435,7 @@ class ProjectOneShiftActionDeathTestRunner:
                 shuffle_seed=(20260826 if checked.protocol_version.endswith("@6") else 20260822),
             )
         )
-        by_seed = {seed: [] for seed in non_test_seeds}
+        by_seed: dict[int, list[OnlineShiftGeneratedCase]] = {seed: [] for seed in non_test_seeds}
         for case in non_test_suite.cases:
             by_seed[case.evaluator_truth.scenario_seed].append(
                 OnlineShiftGeneratedCase(
@@ -2524,7 +2558,9 @@ class ProjectOneShiftActionDeathTestRunner:
                     ),
                 )
             )
-            test_by_seed = {seed: [] for seed in plan.test_seeds}
+            test_by_seed: dict[int, list[OnlineShiftGeneratedCase]] = {
+                seed: [] for seed in plan.test_seeds
+            }
             for case in test_suite.cases:
                 test_by_seed[case.evaluator_truth.scenario_seed].append(
                     OnlineShiftGeneratedCase(

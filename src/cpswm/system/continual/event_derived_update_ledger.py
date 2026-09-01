@@ -39,7 +39,7 @@ from math import isfinite
 from typing import Annotated
 from uuid import UUID
 
-from pydantic import Field, field_validator
+from pydantic import Field, field_validator, model_validator
 
 from cpswm.contracts.base import ContractModel
 
@@ -129,6 +129,38 @@ class RetractionCost(ContractModel):
 class RebuildCost(ContractModel):
     records_scanned: int
     wall_clock_seconds: float
+
+
+class FullRerunEquivalenceReceipt(ContractModel):
+    """Proof that the incremental RGRC projection equals append-log replay."""
+
+    actor_key: str = Field(min_length=1)
+    object_instance_id: UUID
+    parameter_block: str = Field(min_length=1)
+    cached_projection_sha256: str = Field(pattern=r"^[0-9a-f]{64}$")
+    rebuilt_projection_sha256: str = Field(pattern=r"^[0-9a-f]{64}$")
+    cached_projection: dict[UUID, float]
+    rebuilt_projection: dict[UUID, float]
+    equivalent: bool
+    records_scanned: int = Field(ge=0)
+    rebuild_wall_clock_seconds: float = Field(ge=0.0)
+
+    @model_validator(mode="after")
+    def validate_equivalence(self) -> FullRerunEquivalenceReceipt:
+        if self.cached_projection_sha256 != _projection_sha256(self.cached_projection):
+            raise ValueError("cached projection hash mismatch")
+        if self.rebuilt_projection_sha256 != _projection_sha256(self.rebuilt_projection):
+            raise ValueError("rebuilt projection hash mismatch")
+        if self.equivalent != (self.cached_projection == self.rebuilt_projection):
+            raise ValueError("full-rerun equivalence flag does not match projections")
+        return self
+
+
+def _projection_sha256(projection: Mapping[UUID, float]) -> str:
+    payload = {str(key): repr(projection[key]) for key in sorted(projection, key=str)}
+    return hashlib.sha256(
+        json.dumps(payload, sort_keys=True, separators=(",", ":")).encode()
+    ).hexdigest()
 
 
 class EventDerivedUpdateLedger:
@@ -288,13 +320,48 @@ class EventDerivedUpdateLedger:
                 and delta.parameter_block == parameter_block
             )
             if live and matches:
-                counts[delta.location_id] = (
-                    counts.get(delta.location_id, 0.0) + delta.signed_delta
-                )
+                counts[delta.location_id] = counts.get(delta.location_id, 0.0) + delta.signed_delta
         counts = {location: value for location, value in counts.items() if abs(value) > 1e-12}
         return counts, RebuildCost(
             records_scanned=scanned, wall_clock_seconds=time.perf_counter() - started
         )
+
+    def verify_full_rerun_equivalence(
+        self,
+        *,
+        actor_key: str,
+        object_instance_id: UUID,
+        parameter_block: str,
+    ) -> FullRerunEquivalenceReceipt:
+        """Fail closed unless the online projection exactly equals full replay."""
+
+        cached = self.owner_projection(
+            actor_key=actor_key,
+            object_instance_id=object_instance_id,
+            parameter_block=parameter_block,
+        )
+        rebuilt, cost = self.rebuild_projection_from_log(
+            actor_key=actor_key,
+            object_instance_id=object_instance_id,
+            parameter_block=parameter_block,
+        )
+        receipt = FullRerunEquivalenceReceipt(
+            actor_key=actor_key,
+            object_instance_id=object_instance_id,
+            parameter_block=parameter_block,
+            cached_projection_sha256=_projection_sha256(cached),
+            rebuilt_projection_sha256=_projection_sha256(rebuilt),
+            cached_projection=cached,
+            rebuilt_projection=rebuilt,
+            equivalent=cached == rebuilt,
+            records_scanned=cost.records_scanned,
+            rebuild_wall_clock_seconds=cost.wall_clock_seconds,
+        )
+        if not receipt.equivalent:
+            raise LedgerIntegrityError(
+                "RGRC incremental projection diverged from full append-log replay"
+            )
+        return receipt
 
     def record_count(self) -> int:
         return len(self._log)
@@ -339,11 +406,6 @@ class EventDerivedUpdateLedger:
     @classmethod
     def from_jsonl(cls, text: str) -> EventDerivedUpdateLedger:
         ledger = cls()
-        types = {
-            "EventDerivedDeltaRecord": (EventDerivedDeltaRecord, ledger.append_delta),
-            "EventDerivedDeltaReversal": (EventDerivedDeltaReversal, ledger.append_reversal),
-            "EventDerivedDeltaPromotion": (EventDerivedDeltaPromotion, ledger.append_promotion),
-        }
         for line in text.splitlines():
             if not line.strip():
                 continue
@@ -357,8 +419,16 @@ class EventDerivedUpdateLedger:
             )
             if payload.get("entry_hash") != expected_hash:
                 raise LedgerIntegrityError("JSONL hash chain entry_hash mismatch")
-            model_cls, appender = types[payload["kind"]]
-            appender(model_cls.model_validate(payload["record"]))
+            kind = payload["kind"]
+            record_payload = payload["record"]
+            if kind == "EventDerivedDeltaRecord":
+                ledger.append_delta(EventDerivedDeltaRecord.model_validate(record_payload))
+            elif kind == "EventDerivedDeltaReversal":
+                ledger.append_reversal(EventDerivedDeltaReversal.model_validate(record_payload))
+            elif kind == "EventDerivedDeltaPromotion":
+                ledger.append_promotion(EventDerivedDeltaPromotion.model_validate(record_payload))
+            else:
+                raise LedgerIntegrityError(f"unknown ledger entry kind: {kind!r}")
             if ledger._head_hash != expected_hash:
                 raise LedgerIntegrityError("replayed hash chain diverged")
         return ledger

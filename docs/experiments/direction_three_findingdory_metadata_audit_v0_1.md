@@ -1,5 +1,9 @@
 # 方向结构三 FindingDory Metadata Audit v0.1
 
+> **已撤回并由 v0.2 取代。** 本版错误地把 `task_id` 定义为整数，并过度声明
+> “官方 schema 已核验”；3-row 自造 fixture 不能证明真实数据已经接入。
+> 下文保留的是被撤回的原始记录，仅用于审计，不代表当前证据状态。
+
 日期：2026-08-25
 成熟度：`metadata_adapter_dry_run`
 证据边界：官方 schema 已核验；本轮运行的是仓库内代表性 fixture，不是真实数据成绩

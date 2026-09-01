@@ -8,12 +8,14 @@ from __future__ import annotations
 
 from datetime import datetime
 from enum import StrEnum
+from itertools import combinations
 from typing import Any
 from uuid import UUID
 
 from pydantic import Field, field_validator, model_validator
 
 from .base import ContractModel, Probability, ValidTimeInterval, require_aware
+from .evidence_protocol import UnifiedEvidenceContract
 from .grounded_search import ExecutionFeedbackRecord
 from .habit_learning import (
     ActorResponsibilityEvidence,
@@ -42,13 +44,40 @@ TRUTH_FIELD_ALIASES = frozenset(
 
 class ProjectTwoDataMaturity(StrEnum):
     D0_SYNTHETIC_ORACLE = "d0_synthetic_oracle"
+    D0_DEVELOPMENT_FIXTURE = "d0_development_fixture"
+    D0_5_SEMI_SYNTHETIC = "d0_5_semi_synthetic"
     D1_SIMULATOR_ANNOTATED_REPLAY = "d1_simulator_annotated_replay"
     D2_REAL_PERCEPTION_REPLAY = "d2_real_perception_replay"
     D3_HOUSEHOLD_EXECUTION = "d3_household_execution"
     D4_EMBODIED_ROBOT_EXECUTION = "d4_embodied_robot_execution"
 
 
+class ReplayContractCompatibility(StrEnum):
+    LEGACY_ADAPTED = "legacy_adapted"
+    FULL_REPLAY_CONTRACT = "full_replay_contract"
+
+
+_ALLOWED_MATURITY_TRANSITIONS = {
+    source: frozenset({source, ProjectTwoDataMaturity.D0_DEVELOPMENT_FIXTURE})
+    for source in ProjectTwoDataMaturity
+}
+
+
+def maturity_transition_allowed(
+    source: ProjectTwoDataMaturity, output: ProjectTwoDataMaturity
+) -> bool:
+    """Adapters may preserve evidence kind or explicitly downgrade to a fixture.
+
+    Maturity is a provenance claim, not an ordinal score. In particular a D0
+    development fixture cannot be relabelled as a D0 synthetic oracle merely
+    because both previously occupied rank zero.
+    """
+
+    return output in _ALLOWED_MATURITY_TRANSITIONS[source]
+
+
 class ProjectTwoDatasetSplit(StrEnum):
+    TRAIN = "train"
     VALIDATION = "validation"
     TEST = "test"
 
@@ -128,6 +157,7 @@ class ProjectTwoReplayStep(ContractModel):
     unavailable_fields: tuple[str, ...] = ()
     perception_frames: tuple[PerceptionFrameReference, ...] = ()
     object_tracks: tuple[ObjectTrackObservation, ...] = ()
+    unified_evidence: UnifiedEvidenceContract | None = None
 
     @field_validator("timestamp")
     @classmethod
@@ -159,6 +189,36 @@ class ProjectTwoReplayStep(ContractModel):
             raise ValueError("object track must reference a perception frame")
         if any(track.object_instance_id != self.object_instance_id for track in self.object_tracks):
             raise ValueError("object track instance must match replay step")
+        if self.unified_evidence is not None:
+            evidence = self.unified_evidence
+            if evidence.object_instance_id != self.object_instance_id:
+                raise ValueError("unified evidence object must match replay step")
+            if evidence.valid_time != self.valid_time:
+                raise ValueError("unified evidence valid time must match replay step")
+            if evidence.observation_opportunity != self.observation_opportunity:
+                raise ValueError("unified evidence must bind the replay observation opportunity")
+            if self.after is not None:
+                if evidence.detection_outcome is not self.after.outcome:
+                    raise ValueError("unified evidence outcome must match replay detection")
+                detected_object = (
+                    str(self.after.detected_object_instance_id)
+                    if self.after.detected_object_instance_id is not None
+                    else None
+                )
+                detected_location = (
+                    str(self.after.detected_location_id)
+                    if self.after.detected_location_id is not None
+                    else None
+                )
+                if (
+                    evidence.detected_object_key != detected_object
+                    or evidence.detected_location_key != detected_location
+                ):
+                    raise ValueError("unified evidence hard detection must match replay detection")
+            if self.actor_evidence is not None and (
+                evidence.actor_posterior != self.actor_evidence.actor_posterior
+            ):
+                raise ValueError("unified actor posterior must bind replay actor evidence")
         return self
 
 
@@ -171,17 +231,40 @@ class ProjectTwoReplayEpisode(ContractModel):
     object_family: str = Field(min_length=1)
     owner_actor_key: str = Field(min_length=1)
     resident_actor_keys: tuple[str, ...] = Field(min_length=1)
+    known_location_ids: tuple[UUID, ...] = ()
     dataset_version: str = Field(min_length=1)
     source_uri: str = Field(min_length=1)
     source_hash: str = Field(pattern=r"^[0-9a-f]{64}$")
     provenance: tuple[str, ...] = Field(min_length=1)
     maturity: ProjectTwoDataMaturity
+    source_evidence_maturity: ProjectTwoDataMaturity | None = None
+    contract_compatibility: ReplayContractCompatibility | None = None
     split: ProjectTwoDatasetSplit
     steps: tuple[ProjectTwoReplayStep, ...] = Field(min_length=1)
     field_availability: dict[str, ReplayFieldAvailability] = Field(default_factory=dict)
 
     @model_validator(mode="after")
     def _episode_checks(self) -> ProjectTwoReplayEpisode:
+        if self.source_evidence_maturity is None:
+            object.__setattr__(self, "source_evidence_maturity", self.maturity)
+        assert self.source_evidence_maturity is not None
+        if not maturity_transition_allowed(self.source_evidence_maturity, self.maturity):
+            raise ValueError("output maturity/evidence kind transition is not allowed")
+        derived_compatibility = (
+            ReplayContractCompatibility.FULL_REPLAY_CONTRACT
+            if all(step.unified_evidence is not None for step in self.steps)
+            else ReplayContractCompatibility.LEGACY_ADAPTED
+        )
+        if len(self.known_location_ids) != len(set(self.known_location_ids)):
+            raise ValueError("known location catalogue cannot contain duplicates")
+        if (
+            self.contract_compatibility is not None
+            and self.contract_compatibility is not derived_compatibility
+        ):
+            raise ValueError(
+                "contract compatibility must be derived from unified evidence coverage"
+            )
+        object.__setattr__(self, "contract_compatibility", derived_compatibility)
         if self.owner_actor_key not in self.resident_actor_keys:
             raise ValueError("owner actor must be present in resident_actor_keys")
         if len(set(self.resident_actor_keys)) != len(self.resident_actor_keys):
@@ -196,7 +279,23 @@ class ProjectTwoReplayEpisode(ContractModel):
         if len(feedback_ids) != len(set(feedback_ids)):
             raise ValueError("duplicate execution feedback record id")
         for step in self.steps:
-            for record in (step.before, step.after, *step.execution_feedback):
+            if step.unified_evidence is not None:
+                meta = step.unified_evidence.metadata
+                if (meta.household_id, meta.session_id, meta.trace_id) != (
+                    self.household_id,
+                    self.session_id,
+                    self.trace_id,
+                ):
+                    raise ValueError("unified evidence identity does not match replay episode")
+            for record in (
+                step.observation_opportunity,
+                step.before,
+                step.after,
+                step.actor_evidence,
+                step.mechanism_evidence,
+                step.ordered_role_evidence,
+                *step.execution_feedback,
+            ):
                 if record is None:
                     continue
                 meta = record.metadata
@@ -218,6 +317,29 @@ class ProjectTwoReplayManifestEntry(ContractModel):
     object_family: str
     split: ProjectTwoDatasetSplit
     maturity: ProjectTwoDataMaturity
+    source_evidence_maturity: ProjectTwoDataMaturity | None = None
+    contract_compatibility: ReplayContractCompatibility | None = None
+    unified_evidence_record_ids: tuple[UUID, ...] = ()
+
+    @model_validator(mode="after")
+    def _legacy_maturity_default(self) -> ProjectTwoReplayManifestEntry:
+        if self.source_evidence_maturity is None:
+            object.__setattr__(self, "source_evidence_maturity", self.maturity)
+        assert self.source_evidence_maturity is not None
+        if not maturity_transition_allowed(self.source_evidence_maturity, self.maturity):
+            raise ValueError("manifest maturity/evidence kind transition is not allowed")
+        derived = (
+            ReplayContractCompatibility.FULL_REPLAY_CONTRACT
+            if self.unified_evidence_record_ids
+            else ReplayContractCompatibility.LEGACY_ADAPTED
+        )
+        if self.contract_compatibility is not None and self.contract_compatibility is not derived:
+            raise ValueError("manifest compatibility must be derived from formal evidence ids")
+        object.__setattr__(self, "contract_compatibility", derived)
+        if len(self.unified_evidence_record_ids) != len(set(self.unified_evidence_record_ids)):
+            raise ValueError("manifest unified evidence record ids must be unique")
+        return self
+
     source_hash: str = Field(pattern=r"^[0-9a-f]{64}$")
     visible_content_hash: str = Field(pattern=r"^[0-9a-f]{64}$")
 
@@ -247,16 +369,15 @@ class ProjectTwoReplayDatasetManifest(ContractModel):
             "object_instance_id",
             "object_family",
         ):
-            validation = {
-                getattr(e, field)
-                for e in self.entries
-                if e.split is ProjectTwoDatasetSplit.VALIDATION
+            values_by_split = {
+                split: {getattr(entry, field) for entry in self.entries if entry.split is split}
+                for split in ProjectTwoDatasetSplit
             }
-            test = {
-                getattr(e, field) for e in self.entries if e.split is ProjectTwoDatasetSplit.TEST
-            }
-            if validation & test:
-                raise ValueError(f"cross-split {field} leakage")
+            for left, right in combinations(ProjectTwoDatasetSplit, 2):
+                if values_by_split[left] & values_by_split[right]:
+                    raise ValueError(
+                        f"cross-split {field} leakage between {left.value} and {right.value}"
+                    )
         return self
 
 

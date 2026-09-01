@@ -39,7 +39,7 @@ INFERENCE_CHAIN = [
 ]
 
 
-def _distribution(history) -> dict[str, Any]:
+def _distribution(history: Any) -> dict[str, Any]:
     revision = history.latest
     actor: dict[str, float] = defaultdict(float)
     mechanism: dict[str, float] = defaultdict(float)
@@ -79,6 +79,40 @@ def _bootstrap(values: list[float], samples: int, seed: int) -> dict[str, Any]:
     low = estimates[int(0.025 * (len(estimates) - 1))]
     high = estimates[int(0.975 * (len(estimates) - 1))]
     return {"mean": mean(values), "ci95": [low, high], "n": len(values)}
+
+
+def _cluster_bootstrap(
+    records: Iterable[dict[str, Any]],
+    *,
+    value_key: str,
+    cluster_key: str,
+    samples: int,
+    seed: int,
+) -> dict[str, Any]:
+    """Resample whole clusters, retaining every correlated record within each."""
+
+    grouped: dict[str, list[float]] = defaultdict(list)
+    for record in records:
+        grouped[str(record[cluster_key])].append(float(record[value_key]))
+    if not grouped:
+        return {"mean": None, "ci95": None, "n": 0, "cluster_n": 0}
+    clusters = tuple(grouped)
+    observed = [value for values in grouped.values() for value in values]
+    rng = random.Random(seed)
+    estimates = []
+    for _ in range(max(samples, 1)):
+        sampled_values = [value for _cluster in clusters for value in grouped[rng.choice(clusters)]]
+        estimates.append(mean(sampled_values))
+    estimates.sort()
+    low = estimates[int(0.025 * (len(estimates) - 1))]
+    high = estimates[int(0.975 * (len(estimates) - 1))]
+    return {
+        "mean": mean(observed),
+        "ci95": [low, high],
+        "n": len(observed),
+        "cluster_n": len(clusters),
+        "resampling_unit": cluster_key,
+    }
 
 
 def _summarize_records(records: Iterable[dict[str, Any]]) -> dict[str, Any]:
@@ -181,7 +215,9 @@ def run_project_two_replay_evidence(
             before = raw["posterior_before_feedback"]
             after = raw["posterior_after_feedback"]
 
-            def correct(posterior, evaluator_target=target) -> bool:
+            def correct(
+                posterior: dict[str, dict[str, float]], evaluator_target: Any = target
+            ) -> bool:
                 if not posterior:
                     return False
                 return (
@@ -203,6 +239,9 @@ def run_project_two_replay_evidence(
             )
             record = {
                 **raw,
+                "episode_id": str(episode.episode_id),
+                "household_id": str(episode.household_id),
+                "object_family": episode.object_family,
                 "revision_action_traces": trace_payloads,
                 "evaluator_labels": {
                     "actor_stratum": actor_stratum,
@@ -239,7 +278,7 @@ def run_project_two_replay_evidence(
             }
         )
 
-    strata = {"actor": {}, "mechanism": {}}
+    strata: dict[str, dict[str, Any]] = {"actor": {}, "mechanism": {}}
     for axis, labels in (
         ("actor", ("owner", "guest", "unknown_actor")),
         (
@@ -273,20 +312,26 @@ def run_project_two_replay_evidence(
     }
     aggregate.update(
         {
-            "hidden_event_hypothesis_accuracy": _bootstrap(
-                [float(item["hidden_correct"]) for item in all_steps],
-                bootstrap_samples,
-                7101,
+            "hidden_event_hypothesis_accuracy": _cluster_bootstrap(
+                all_steps,
+                value_key="hidden_correct",
+                cluster_key="episode_id",
+                samples=bootstrap_samples,
+                seed=7101,
             ),
-            "revision_accuracy": _bootstrap(
-                [float(item["revision_correct"]) for item in all_steps],
-                bootstrap_samples,
-                7102,
+            "revision_accuracy": _cluster_bootstrap(
+                all_steps,
+                value_key="revision_correct",
+                cluster_key="episode_id",
+                samples=bootstrap_samples,
+                seed=7102,
             ),
-            "mean_unresolved_mass": _bootstrap(
-                [float(item["unresolved_mass"]) for item in all_steps],
-                bootstrap_samples,
-                7103,
+            "mean_unresolved_mass": _cluster_bootstrap(
+                all_steps,
+                value_key="unresolved_mass",
+                cluster_key="episode_id",
+                samples=bootstrap_samples,
+                seed=7103,
             ),
             "cumulative_utility": _bootstrap(
                 [float(item["cumulative_utility"]) for item in episode_reports],
@@ -295,10 +340,31 @@ def run_project_two_replay_evidence(
             ),
         }
     )
+    aggregate["diagnostic_cluster_sensitivity"] = {
+        axis: {
+            metric: _cluster_bootstrap(
+                all_steps,
+                value_key=value_key,
+                cluster_key=cluster_key,
+                samples=bootstrap_samples,
+                seed=7200 + axis_index * 10 + metric_index,
+            )
+            for metric_index, (metric, value_key) in enumerate(
+                (
+                    ("hidden_event_hypothesis_accuracy", "hidden_correct"),
+                    ("revision_accuracy", "revision_correct"),
+                    ("mean_unresolved_mass", "unresolved_mass"),
+                )
+            )
+        }
+        for axis_index, (axis, cluster_key) in enumerate(
+            (("household", "household_id"), ("object_family", "object_family"))
+        )
+    }
     groups: dict[str, dict[str, Any]] = {"household": {}, "object_family": {}}
     for axis, field in (("household", "household_id"), ("object_family", "object_family")):
-        labels = sorted({item[field] for item in episode_reports})
-        for index, label in enumerate(labels):
+        group_labels = sorted({str(item[field]) for item in episode_reports})
+        for index, label in enumerate(group_labels):
             members = [item for item in episode_reports if item[field] == label]
             groups[axis][label] = {
                 metric: _bootstrap(

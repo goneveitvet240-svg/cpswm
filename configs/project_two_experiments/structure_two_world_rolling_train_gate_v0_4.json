@@ -1,0 +1,73 @@
+{
+  "protocol": "structure-two-world-rolling-train-gate@0.4",
+  "status": "retrospective-train-design-after-exploratory-probes",
+  "evidence_scope": "method-free train-world finite-sample recoverability gate; no validation, holdout, or method arm may be run",
+  "base_manifest": "configs/project_two_experiments/structure_two_world_generator_manifest_v0_2.json",
+  "base_manifest_sha256": "88fbf4a47601401b0b95642c99d2bf0644a8d97ac5ae03171cd60bbfabc62cd4",
+  "world_change_under_test": {
+    "duration_days_inclusive": [320, 380],
+    "all_other_world_distribution_fields": "inherited byte-for-field from the frozen v0.2 manifest"
+  },
+  "train_sampling": {
+    "unit": "world_seed",
+    "world_seeds": [410001, 410002, 410003, 410004, 410005, 410006, 410007, 410008, 410009, 410010, 410011, 410012, 410013, 410014, 410015, 410016, 410017, 410018, 410019, 410020, 410021, 410022, 410023, 410024],
+    "trajectory_seeds": [13, 29, 41],
+    "observation_seeds": [103, 223]
+  },
+  "outer_world_folds": [
+    [410001, 410005, 410009, 410013, 410017, 410021],
+    [410002, 410006, 410010, 410014, 410018, 410022],
+    [410003, 410007, 410011, 410015, 410019, 410023],
+    [410004, 410008, 410012, 410016, 410020, 410024]
+  ],
+  "rolling_estimator_grid": {
+    "window_days": [21, 35, 60, 90, 120],
+    "context_shrinkage_pseudocounts": [0.0, 1.0, 2.0, 4.0],
+    "owner_probability_threshold": [0.5],
+    "cartesian_candidate_count": 20
+  },
+  "outer_cv_selection_rule": {
+    "held_out_fold_is_excluded_from_selection": true,
+    "primary": "maximise the minimum mean search top-1 gain across the remaining world folds",
+    "secondary": "maximise mean search top-1 gain across all remaining worlds",
+    "deterministic_ties": ["smaller window_days", "smaller context_shrinkage_pseudocounts", "smaller owner_probability_threshold"]
+  },
+  "formal_ranking_contract": {
+    "tie_break": "offline evaluator reconstructs robot-visible first encounter order from observed_location over the complete frozen rollout; never-observed candidates append in frozen catalogue order",
+    "causal_scope": "the complete-rollout encounter order is the formal legacy evaluator contract, not a claim that a deployed online method sees future observations",
+    "search_baseline": "current observed location or last observed location pinned first; remaining candidates ranked by cumulative observed counts in encounter order",
+    "same_step_observation_available_before_decision": true,
+    "location_label_or_uuid_is_never_a_tie_break_feature": true
+  },
+  "promotion_requirements": {
+    "minimum_outer_cv_world_weighted_mean_search_top1_gain": 0.02,
+    "minimum_outer_cv_worst_held_out_fold_search_top1_gain": 0.018,
+    "inherit_all_v0_2_gate_a_thresholds": true,
+    "put_back_visible_history_reference": "same executable window+shrinkage estimator, compared with sticky visible-owner history and rolling pooled visible-owner history",
+    "normalised_path_cost_is_report_only": true
+  },
+  "effective_sample_size_reporting": {
+    "contexts": ["weekday", "weekend"],
+    "observed_admissions": "number of visible observations passing the owner-probability threshold",
+    "active_context_samples": "mean count remaining in the matching context cell at unobserved prediction steps",
+    "active_effective_mass": "active context count plus the configured pooled shrinkage pseudocount when pooled history is nonempty"
+  },
+  "downstream_prereservation_not_authorized_for_use": {
+    "validation_world_seed_candidates": [440001, 440002, 440003, 440004, 440005, 440006, 440007, 440008, 440009, 440010, 440011, 440012],
+    "validation_trajectory_seeds": [17, 31, 43],
+    "validation_observation_seeds": [107, 227],
+    "condition": "may be generated only after a formal custodian attests disjointness from all 24 sealed holdout raw world seeds",
+    "gate_b_condition": "may run only after Gate A passes on these newly generated validation worlds",
+    "method_comparison_condition": "may resume only after both Gate A and Gate B pass"
+  },
+  "legacy_detector_status": {
+    "binding": false,
+    "current_development_code_evolved_after_artifact": "src/cpswm/system/evaluation_operations/structure_two_world_gate_v0_3.py",
+    "archived_exact_gate_source": "artifacts/project_two_v04_development/source_snapshots/structure_two_world_gate_v0_3_at_horizon_probe.py",
+    "archived_exact_gate_source_sha256": "8b8b9010ce219b32750446271778a78c0378ca7b930bc389d29418a59d6529f7",
+    "preserved_failed_design": "configs/project_two_experiments/structure_two_world_horizon_probe_v0_3.json",
+    "preserved_failed_artifact": "artifacts/project_two_v04_development/structure_two_world_horizon_probe_v0_3.json",
+    "preserved_failed_artifact_file_sha256": "d62a18086e6ab49a93d9f43c65ab116376960c10aed41d8bf492463686cbd130"
+  },
+  "retrospective_disclosure": "The duration, grid, folds, and result scale had been inspected before this design file was created. The outer-CV result is valid train-only development evidence but is not preregistered or confirmatory evidence."
+}

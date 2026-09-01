@@ -70,7 +70,18 @@ from cpswm.world_model.habits_transitions import (
     HierarchicalDirichletHabitModel,
 )
 
-from .project_one_dataset import UNKNOWN_LOCATION, ProjectOneDatasetRecord
+from .project_one_actor_evidence import (
+    MASKED_ACTOR,
+    UNKNOWN_ACTOR,
+    ActorEvidencePolicy,
+    ProjectOneActorChannel,
+)
+from .project_one_dataset import (
+    UNKNOWN_LOCATION,
+    EvidenceDowngradeReceipt,
+    ProjectOneDatasetRecord,
+    ProjectOneEvidenceDatasetRecord,
+)
 from .project_one_protocol import (
     CategoricalBOCPDConfig,
     ContextFrequencyConfig,
@@ -92,6 +103,8 @@ __all__ = [
     "CategoricalBOCPDMethod",
     "ContextFrequencyMethod",
     "CoreHabitChainMethod",
+    "FormalProjectOneRuntimeAdapter",
+    "FormalProjectOneRuntimeResult",
     "PersistenceMethod",
     "ProjectOneMethod",
     "StepPrediction",
@@ -205,6 +218,41 @@ class ProjectOneMethod(Protocol):
         """Content identity of :meth:`config_payload`."""
 
 
+@dataclass(frozen=True, slots=True)
+class FormalProjectOneRuntimeResult:
+    prediction: StepPrediction
+    downgrade_receipt: EvidenceDowngradeReceipt
+
+
+class FormalProjectOneRuntimeAdapter:
+    """Audited bridge from formal evidence to an existing project-one arm."""
+
+    def __init__(self, method: ProjectOneMethod, *, method_id: str) -> None:
+        if not method_id.strip():
+            raise ValueError("formal runtime adapter requires a method id")
+        self.method = method
+        self.method_id = method_id
+
+    def observe(
+        self,
+        event: ProjectOneEvidenceDatasetRecord,
+        *,
+        actor_id: str,
+        observed_location: str,
+        projection_policy: str,
+    ) -> FormalProjectOneRuntimeResult:
+        projection = event.to_legacy_baseline_input(
+            actor_id=actor_id,
+            observed_location=observed_location,
+            legacy_method_id=self.method_id,
+            projection_policy=projection_policy,
+        )
+        return FormalProjectOneRuntimeResult(
+            prediction=self.method.observe(projection.record),
+            downgrade_receipt=projection.receipt,
+        )
+
+
 class _BaseMethod(ABC):
     """Template method that makes predict-before-learn structural.
 
@@ -219,6 +267,7 @@ class _BaseMethod(ABC):
         locations: Sequence[str],
         *,
         open_set: bool = False,
+        actor_channel: ProjectOneActorChannel | None = None,
     ) -> None:
         unique = tuple(dict.fromkeys(locations))
         if len(unique) < 2:
@@ -228,14 +277,56 @@ class _BaseMethod(ABC):
         self.open_set = open_set
         if self.open_set and OPEN_SET_LOCATION not in self.locations:
             raise ValueError("open_set=True requires OPEN_SET_LOCATION in candidate locations")
+        #: RQ8.  Formal constructors install an ``ABSENT`` channel by default.
+        #: ``None`` survives only when the caller explicitly opts into frozen
+        #: v0.3 legacy reproduction.  Any non-legacy channel makes
+        #: :meth:`observe` mask evaluator-grade actor truth before a subclass
+        #: can see it, so isolation is structural rather than advisory.
+        self._actor_channel = actor_channel
+        self._masked_actor_events = 0
         self._last_location: str | None = None
         self._step_index = 0
         self._open_set_hits = 0
+
+    @property
+    def actor_channel(self) -> ProjectOneActorChannel | None:
+        return self._actor_channel
+
+    @property
+    def actor_evidence_policy(self) -> ActorEvidencePolicy:
+        if self._actor_channel is None:
+            return ActorEvidencePolicy.LEGACY_HARD_ACTOR
+        return self._actor_channel.policy
+
+    def owner_mass(self, event: ProjectOneDatasetRecord) -> float:
+        """Posterior mass that this event belongs to the subject's own habit.
+
+        Under the legacy policy this is the frozen v0.3 expression, which
+        compares hard actor truth against the owner id.  Under every other
+        policy the comparison is impossible -- ``actor_id`` has already been
+        masked -- and the value comes from the robot-visible channel, scaled by
+        observation quality exactly as before so the two paths differ in *what
+        they know*, not in how they weight it.
+        """
+
+        channel = self._actor_channel
+        if channel is None or channel.policy is ActorEvidencePolicy.LEGACY_HARD_ACTOR:
+            owner_id = getattr(self, "owner_id", None)
+            return (
+                event.observation_quality
+                if owner_id is not None and event.actor_id == owner_id
+                else 1.0 - event.observation_quality
+            )
+        posterior = channel.owner_mass(event.event_id)
+        return posterior * event.observation_quality + (1.0 - posterior) * (
+            1.0 - event.observation_quality
+        )
 
     def reset(self) -> None:
         self._last_location = None
         self._step_index = 0
         self._open_set_hits = 0
+        self._masked_actor_events = 0
         self._reset_state()
 
     @abstractmethod
@@ -250,6 +341,12 @@ class _BaseMethod(ABC):
         """Decide and learn.  ``prior`` is what :meth:`_predict` returned."""
 
     def observe(self, event: ProjectOneDatasetRecord) -> StepPrediction:
+        if self._actor_channel is not None and self._actor_channel.masks_actor_identity:
+            # Structural, not advisory: the subclass never receives the true
+            # label, so ``event.actor_id == owner_id`` cannot succeed by
+            # accident in a future edit.
+            event = replace(event, actor_id=MASKED_ACTOR)
+            self._masked_actor_events += 1
         if event.observed_location not in self.locations:
             if not self.open_set:
                 raise ValueError(
@@ -278,6 +375,8 @@ class _BaseMethod(ABC):
             "config_hash": self.config_hash(),
             "open_set": self.open_set,
             "open_set_hits": self._open_set_hits,
+            "actor_evidence_policy": self.actor_evidence_policy.value,
+            "masked_actor_events": self._masked_actor_events,
         }
 
     def prime(self, records: Sequence[ProjectOneDatasetRecord]) -> None:  # noqa: B027
@@ -328,8 +427,24 @@ class CoreHabitChainMethod(_BaseMethod):
         config: ProjectOneProtocolConfig,
         shuffle_lag: int = 3,
         open_set: bool = False,
+        actor_channel: ProjectOneActorChannel | None = None,
+        allow_legacy_hard_actor: bool = False,
     ) -> None:
-        super().__init__(name, locations, open_set=open_set)
+        if actor_channel is None and not allow_legacy_hard_actor:
+            actor_channel = ProjectOneActorChannel(
+                policy=ActorEvidencePolicy.ABSENT,
+                owner_id=owner_id,
+                support=(owner_id, UNKNOWN_ACTOR),
+            )
+        if (
+            actor_channel is not None
+            and actor_channel.policy is ActorEvidencePolicy.LEGACY_HARD_ACTOR
+            and not allow_legacy_hard_actor
+        ):
+            raise ValueError("LEGACY_HARD_ACTOR requires allow_legacy_hard_actor=True")
+        super().__init__(name, locations, open_set=open_set, actor_channel=actor_channel)
+        if actor_channel is not None and actor_channel.owner_id != owner_id:
+            raise ValueError("actor channel owner does not match the arm's subject")
         if shuffle_lag < 1:
             raise ValueError("shuffle_lag must be at least 1")
         self.config = config
@@ -404,6 +519,14 @@ class CoreHabitChainMethod(_BaseMethod):
             "ablation": self.config.ablation.value,
             "decision_chain_ablation": self.config.decision_chain_ablation.value,
             "residual_calibration": self.config.residual_calibration.value,
+            # RQ8: a result is unreadable without knowing how much person
+            # information the arm was given, so the channel travels with the
+            # config hash rather than beside it.
+            "actor_channel": (
+                {"policy": ActorEvidencePolicy.LEGACY_HARD_ACTOR.value}
+                if self._actor_channel is None
+                else self._actor_channel.config_payload()
+            ),
         }
 
     # -- ablation ----------------------------------------------------------
@@ -582,11 +705,7 @@ class CoreHabitChainMethod(_BaseMethod):
             rls_residual_weight=self.config.rls_residual_weight,
         )
 
-        owner_mass = (
-            event.observation_quality
-            if event.actor_id == self.owner_id
-            else 1.0 - event.observation_quality
-        )
+        owner_mass = self.owner_mass(event)
         ambiguity = 1.0 - event.observation_quality
         location_index = self.locations.index(event.observed_location)
         assessment = self._router.observe(
@@ -981,6 +1100,8 @@ def build_first_batch(
     bocpd_config: CategoricalBOCPDConfig | None = None,
     frequency_config: ContextFrequencyConfig | None = None,
     persistence_config: PersistenceConfig | None = None,
+    actor_channel: ProjectOneActorChannel | None = None,
+    allow_legacy_hard_actor: bool = False,
 ) -> tuple[ProjectOneMethod, ...]:
     """Full / No-RLS / Shuffled-RLS / RLS-only, plus three baselines.
 
@@ -989,6 +1110,12 @@ def build_first_batch(
     by construction and each carries a distinct ``config_hash``.  Each baseline
     takes its own config object, so 阶段 7 can tune them independently instead
     of inheriting the chain's thresholds.
+
+    ``actor_channel`` is RQ8's fairness knob.  The default now installs an
+    ``ABSENT`` channel, so actor truth is masked structurally.  Frozen v0.3
+    reproduction remains available only through
+    ``allow_legacy_hard_actor=True``; results from that scope are an
+    unmatched-information comparison, not a method comparison.
     """
 
     base = config or ProjectOneProtocolConfig()
@@ -1007,6 +1134,8 @@ def build_first_batch(
                 household_id=household_id,
                 object_id=object_id,
                 config=replace(base, ablation=ablation),
+                actor_channel=actor_channel,
+                allow_legacy_hard_actor=allow_legacy_hard_actor,
             )
         )
     arms.append(CategoricalBOCPDMethod(locations, bocpd_config))

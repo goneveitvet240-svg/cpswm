@@ -10,7 +10,7 @@ from __future__ import annotations
 
 from collections.abc import Mapping, Sequence
 from datetime import timedelta
-from typing import Any
+from typing import Any, cast
 
 from cpswm.contracts import OcclusionState, ProjectTwoDatasetSplit
 from cpswm.system.reproducibility import content_sha256
@@ -273,7 +273,7 @@ def _project_two_dataset(seed_count: int) -> Any:
         object_family_bucket_count=10,
         sealed_secret="cross-structure-four-strata-project-two-seal@0.1",
     )
-    adapter.generator = _VariableUpperBoundGenerator()
+    cast(Any, adapter).generator = _VariableUpperBoundGenerator()
     return adapter.build()
 
 
@@ -327,7 +327,7 @@ def _run_project_two(seed_count: int) -> dict[str, Any]:
             for episode in transformed
             for method, params in PROJECT_TWO_PARAMS.items()
         )
-        aggregates = benchmark._aggregate(case_metrics)
+        aggregates = benchmark._aggregate(list(case_metrics))
         output[stratum] = {
             "case_count": len(transformed),
             "input_sha256": content_sha256(transformed),
@@ -371,7 +371,9 @@ def _project_two_primary_summary(report: Mapping[str, Any]) -> dict[str, Any]:
     }
 
 
-def _automatic_diagnosis(project_one: Mapping[str, Any], project_two: Mapping[str, Any]) -> dict:
+def _automatic_diagnosis(
+    project_one: Mapping[str, Any], project_two: Mapping[str, Any]
+) -> dict[str, object]:
     p1_s1 = project_one["s1_known_actor_complete_evidence"]
     p1_intervals = [
         item

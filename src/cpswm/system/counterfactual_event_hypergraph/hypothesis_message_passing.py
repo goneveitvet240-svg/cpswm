@@ -42,15 +42,19 @@ from cpswm.contracts import (
     ordered_role_key,
 )
 from cpswm.contracts.base import ContractModel, Probability
+from cpswm.system.attestation import AttestationAuthority, AttestationError, attested_payload
 from cpswm.system.reproducibility import content_sha256, content_uuid
 
 from .contracts import (
+    DOMAIN_EVIDENCE_INDEPENDENCE,
     ActorEvidenceEndpointRole,
     EventChainHypothesis,
     EventHypothesisHistory,
     EventHypothesisRevision,
     EventHypothesisStatus,
     EventHypothesisUpdateKind,
+    EvidenceIndependenceCertificate,
+    hidden_event_evidence_claim_fingerprint,
     hidden_event_evidence_semantic_fingerprint,
 )
 
@@ -203,7 +207,11 @@ def _apply_evidence(
     revision: EventHypothesisRevision,
     consumed_record_ids: frozenset[UUID],
     consumed_cluster_ids: frozenset[UUID],
+    consumed_semantic_fingerprints: frozenset[str],
+    consumed_fingerprint_pairs: Sequence[tuple[str, str]],
     evidence: Sequence[ActorResponsibilityEvidence | EventMechanismEvidence | RoleBindingEvidence],
+    independence_certificates: Sequence[EvidenceIndependenceCertificate],
+    independence_authority: AttestationAuthority | None,
 ) -> tuple[
     dict[UUID, list[_MessageContribution]],
     dict[UUID, float],
@@ -211,6 +219,7 @@ def _apply_evidence(
     list[_MessageContribution],
     float,
     list[_MessageContribution],
+    tuple[str, ...],
 ]:
     """Aggregate firewall-legal evidence messages with scope and dedup checks.
 
@@ -235,6 +244,15 @@ def _apply_evidence(
     unknown_mechanism_messages: list[_MessageContribution] = []
     seen_record_ids: set[UUID] = set(consumed_record_ids)
     seen_cluster_ids: set[UUID] = set(consumed_cluster_ids)
+    seen_semantic_fingerprints: set[str] = set(consumed_semantic_fingerprints)
+    semantics_by_claim: dict[str, set[str]] = {}
+    for claim_fingerprint, semantic_fingerprint in consumed_fingerprint_pairs:
+        semantics_by_claim.setdefault(claim_fingerprint, set()).add(semantic_fingerprint)
+
+    certificates_by_pair = {
+        certificate.semantic_fingerprints: certificate for certificate in independence_certificates
+    }
+    used_independence_certificate_sha256s: set[str] = set()
 
     for item in evidence:
         _validate_evidence_scope(revision, item)
@@ -246,8 +264,39 @@ def _apply_evidence(
             raise EvidenceDuplicateViolation(
                 f"evidence cluster {item.evidence_cluster_id} consumed twice"
             )
+        semantic_fingerprint = hidden_event_evidence_semantic_fingerprint(item)
+        if semantic_fingerprint in seen_semantic_fingerprints:
+            raise EvidenceDuplicateViolation(
+                "semantically identical evidence was repackaged with a new record or cluster ID"
+            )
+        claim_fingerprint = hidden_event_evidence_claim_fingerprint(item)
+        for prior_semantic_fingerprint in semantics_by_claim.get(claim_fingerprint, set()):
+            semantic_pair = (
+                (prior_semantic_fingerprint, semantic_fingerprint)
+                if prior_semantic_fingerprint < semantic_fingerprint
+                else (semantic_fingerprint, prior_semantic_fingerprint)
+            )
+            certificate = certificates_by_pair.get(semantic_pair)
+            if certificate is None or independence_authority is None:
+                raise EvidenceDuplicateViolation(
+                    "same-claim evidence requires an explicit authority-attested "
+                    "independence certificate before it can be counted twice"
+                )
+            try:
+                independence_authority.verify(
+                    DOMAIN_EVIDENCE_INDEPENDENCE,
+                    attested_payload(certificate),
+                    certificate.attestation,
+                )
+            except AttestationError as error:
+                raise EvidenceDuplicateViolation(
+                    "same-claim evidence independence certificate is invalid"
+                ) from error
+            used_independence_certificate_sha256s.add(content_sha256(certificate))
         seen_record_ids.add(item.metadata.record_id)
         seen_cluster_ids.add(item.evidence_cluster_id)
+        seen_semantic_fingerprints.add(semantic_fingerprint)
+        semantics_by_claim.setdefault(claim_fingerprint, set()).add(semantic_fingerprint)
 
         unresolved_log_ratio = _unresolved_log_ratio(item)
         log_unresolved_raw += item.effective_sample_weight * unresolved_log_ratio
@@ -323,6 +372,7 @@ def _apply_evidence(
         unresolved_messages,
         log_unknown_mechanism_raw,
         unknown_mechanism_messages,
+        tuple(sorted(used_independence_certificate_sha256s)),
     )
 
 
@@ -394,6 +444,9 @@ class MessagePassingResult(ContractModel):
     #: Consumption receipt: the evidence records/clusters this pass consumed.
     consumed_evidence_record_ids: tuple[UUID, ...] = ()
     consumed_evidence_cluster_ids: tuple[UUID, ...] = ()
+    consumed_evidence_semantic_fingerprints: tuple[str, ...] = ()
+    consumed_evidence_claim_fingerprints: tuple[str, ...] = ()
+    consumed_independence_certificate_sha256s: tuple[str, ...] = ()
     model_version: str = Field(min_length=1)
 
     @model_validator(mode="after")
@@ -426,6 +479,31 @@ class MessagePassingResult(ContractModel):
             self.posterior_by_hypothesis_id,
             key=lambda key: self.posterior_by_hypothesis_id[key],
         )
+
+
+class LeaveOneClusterOutImpact(ContractModel):
+    """Posterior sensitivity when one evidence cluster is withheld."""
+
+    evidence_cluster_id: UUID
+    omitted_evidence_record_ids: tuple[UUID, ...] = Field(min_length=1)
+    posterior_total_variation: float = Field(ge=0.0, le=1.0)
+    map_hypothesis_changed: bool
+    unresolved_probability_delta: float
+    unknown_mechanism_probability_delta: float
+
+
+class LeaveOneClusterOutAudit(ContractModel):
+    """Leave-one-cluster-out audit for correlated-evidence dependence."""
+
+    full_result_sha256: str = Field(pattern=r"^[0-9a-f]{64}$")
+    impacts: tuple[LeaveOneClusterOutImpact, ...] = Field(min_length=1)
+    influence_threshold: float = Field(gt=0.0, le=1.0)
+    maximum_total_variation: float = Field(ge=0.0, le=1.0)
+    influential_cluster_ids: tuple[UUID, ...]
+
+    @property
+    def stable(self) -> bool:
+        return not self.influential_cluster_ids
 
 
 def permute_actor_keys(
@@ -560,12 +638,21 @@ class ProvenanceConstrainedMessagePassing:
 
     model_version = "pchmp@0.1"
 
+    def __init__(
+        self,
+        *,
+        independence_authority: AttestationAuthority | None = None,
+    ) -> None:
+        self._independence_authority = independence_authority
+
     def infer(
         self,
         history: EventHypothesisHistory,
         evidence: Sequence[
             ActorResponsibilityEvidence | EventMechanismEvidence | RoleBindingEvidence
         ] = (),
+        *,
+        independence_certificates: Sequence[EvidenceIndependenceCertificate] = (),
     ) -> MessagePassingResult:
         """Run one message-passing pass over the latest revision's hypotheses.
 
@@ -590,12 +677,17 @@ class ProvenanceConstrainedMessagePassing:
             unresolved_messages,
             log_unknown_mechanism,
             unknown_mechanism_messages,
+            used_independence_certificate_sha256s,
         ) = _apply_evidence(
             hypotheses,
             revision,
             history.consumed_evidence_record_ids,
             history.consumed_evidence_cluster_ids,
+            history.consumed_evidence_semantic_fingerprints,
+            history.consumed_evidence_fingerprint_pairs,
             evidence,
+            independence_certificates,
+            self._independence_authority,
         )
 
         # Prior: the ORRER posterior over active hypotheses plus its unresolved
@@ -685,7 +777,93 @@ class ProvenanceConstrainedMessagePassing:
             unknown_mechanism_evidence_messages=unknown_mechanism_evidence,
             consumed_evidence_record_ids=tuple(item.metadata.record_id for item in evidence),
             consumed_evidence_cluster_ids=tuple(item.evidence_cluster_id for item in evidence),
+            consumed_evidence_semantic_fingerprints=tuple(
+                hidden_event_evidence_semantic_fingerprint(item) for item in evidence
+            ),
+            consumed_evidence_claim_fingerprints=tuple(
+                hidden_event_evidence_claim_fingerprint(item) for item in evidence
+            ),
+            consumed_independence_certificate_sha256s=(used_independence_certificate_sha256s),
             model_version=self.model_version,
+        )
+
+    def audit_leave_one_cluster_out(
+        self,
+        history: EventHypothesisHistory,
+        evidence: Sequence[
+            ActorResponsibilityEvidence | EventMechanismEvidence | RoleBindingEvidence
+        ],
+        *,
+        influence_threshold: float = 0.25,
+        independence_certificates: Sequence[EvidenceIndependenceCertificate] = (),
+    ) -> LeaveOneClusterOutAudit:
+        """Measure whether one correlated evidence cluster dominates the posterior.
+
+        This is a diagnostic, not another posterior update.  Every cluster is
+        removed in turn and the resulting joint distribution is compared with
+        the full-evidence result by total variation distance.
+        """
+
+        if not 0.0 < influence_threshold <= 1.0:
+            raise ValueError("influence_threshold must lie in (0, 1]")
+        if not evidence:
+            raise ValueError("leave-one-cluster-out requires evidence")
+        full = self.infer(
+            history,
+            evidence,
+            independence_certificates=independence_certificates,
+        )
+        clusters = tuple(dict.fromkeys(item.evidence_cluster_id for item in evidence))
+        impacts: list[LeaveOneClusterOutImpact] = []
+        for cluster_id in clusters:
+            retained = tuple(item for item in evidence if item.evidence_cluster_id != cluster_id)
+            omitted = tuple(
+                item.metadata.record_id
+                for item in evidence
+                if item.evidence_cluster_id == cluster_id
+            )
+            without = self.infer(
+                history,
+                retained,
+                independence_certificates=independence_certificates,
+            )
+            support = set(full.posterior_by_hypothesis_id) | set(without.posterior_by_hypothesis_id)
+            total_variation = 0.5 * (
+                sum(
+                    abs(
+                        full.posterior_by_hypothesis_id.get(hypothesis_id, 0.0)
+                        - without.posterior_by_hypothesis_id.get(hypothesis_id, 0.0)
+                    )
+                    for hypothesis_id in support
+                )
+                + abs(full.unresolved_probability - without.unresolved_probability)
+                + abs(full.unknown_mechanism_probability - without.unknown_mechanism_probability)
+            )
+            impacts.append(
+                LeaveOneClusterOutImpact(
+                    evidence_cluster_id=cluster_id,
+                    omitted_evidence_record_ids=omitted,
+                    posterior_total_variation=total_variation,
+                    map_hypothesis_changed=(full.map_hypothesis_id != without.map_hypothesis_id),
+                    unresolved_probability_delta=(
+                        without.unresolved_probability - full.unresolved_probability
+                    ),
+                    unknown_mechanism_probability_delta=(
+                        without.unknown_mechanism_probability - full.unknown_mechanism_probability
+                    ),
+                )
+            )
+        maximum = max(item.posterior_total_variation for item in impacts)
+        return LeaveOneClusterOutAudit(
+            full_result_sha256=content_sha256(full),
+            impacts=tuple(impacts),
+            influence_threshold=influence_threshold,
+            maximum_total_variation=maximum,
+            influential_cluster_ids=tuple(
+                item.evidence_cluster_id
+                for item in impacts
+                if item.posterior_total_variation >= influence_threshold
+            ),
         )
 
     def consume(
@@ -694,6 +872,8 @@ class ProvenanceConstrainedMessagePassing:
         evidence: Sequence[
             ActorResponsibilityEvidence | EventMechanismEvidence | RoleBindingEvidence
         ] = (),
+        *,
+        independence_certificates: Sequence[EvidenceIndependenceCertificate] = (),
     ) -> tuple[MessagePassingResult, EventHypothesisHistory]:
         """Run one pass and write the consumption receipt back into history.
 
@@ -704,7 +884,11 @@ class ProvenanceConstrainedMessagePassing:
         evidence: exactly-once at the authoritative-history level.
         """
 
-        result = self.infer(history, evidence)
+        result = self.infer(
+            history,
+            evidence,
+            independence_certificates=independence_certificates,
+        )
         receipted = self._record_consumption(history, evidence, result)
         return result, receipted
 
@@ -724,6 +908,9 @@ class ProvenanceConstrainedMessagePassing:
         record_ids = tuple(item.metadata.record_id for item in evidence)
         cluster_ids = tuple(item.evidence_cluster_id for item in evidence)
         fingerprints = tuple(hidden_event_evidence_semantic_fingerprint(item) for item in evidence)
+        claim_fingerprints = tuple(
+            hidden_event_evidence_claim_fingerprint(item) for item in evidence
+        )
         source_detection_ids = tuple(item.source_detection_result_id for item in evidence)
         endpoint_roles = tuple(ActorEvidenceEndpointRole.DESTINATION_STATE for _ in evidence)
         revised_hypotheses = tuple(
@@ -764,6 +951,10 @@ class ProvenanceConstrainedMessagePassing:
             "revision_evidence_record_ids": record_ids,
             "revision_evidence_cluster_ids": cluster_ids,
             "revision_evidence_semantic_fingerprints": fingerprints,
+            "revision_evidence_claim_fingerprints": claim_fingerprints,
+            "revision_evidence_independence_certificate_sha256s": (
+                result.consumed_independence_certificate_sha256s
+            ),
             "revision_evidence_source_detection_result_ids": source_detection_ids,
             "revision_evidence_endpoint_roles": endpoint_roles,
             "revision_reason": revision_reason,
@@ -792,6 +983,10 @@ class ProvenanceConstrainedMessagePassing:
             revision_evidence_record_ids=record_ids,
             revision_evidence_cluster_ids=cluster_ids,
             revision_evidence_semantic_fingerprints=fingerprints,
+            revision_evidence_claim_fingerprints=claim_fingerprints,
+            revision_evidence_independence_certificate_sha256s=(
+                result.consumed_independence_certificate_sha256s
+            ),
             revision_evidence_source_detection_result_ids=source_detection_ids,
             revision_evidence_endpoint_roles=endpoint_roles,
             revision_reason=revision_reason,

@@ -1,0 +1,657 @@
+{
+  "protocol": "structure-two-v0.6-development-readiness@0.2",
+  "evidence_index_sha256": "a4c78233e685308527d4c16a9e2f1686858ca1012e4e52ec6aae7cf4e9b9e40b",
+  "evidence_index_status": "DEVELOPMENT_EVIDENCE_NOT_COMPLETE",
+  "v0_6_manifest_sha256": "e9df3648312abd7cf7e22c6b1d1cdc8a2b70b748c1aed33ddd6de7ff7f17b74c",
+  "v0_6_manifest_status": "DEVELOPMENT_NOT_FROZEN",
+  "external_method_source_register_sha256": "c210ca1dfd74089ff40b94e9b56827139183eb5c380915cd08bdab4ea578ff6d",
+  "external_method_source_register_content_sha256": "88849635f7570276ff11682ab46141b31f34497924ee3f1784e5eef1aeecde96",
+  "external_method_source_identification": [
+    {
+      "arm": "corrected_amg",
+      "checks": {
+        "method_exact": true,
+        "primary_source_url_exact": true,
+        "primary_source_content_hash_present": true,
+        "primary_source_artifact_content_bound": false,
+        "signed_source_acquisition_receipt_verified": false,
+        "evidence_level_present": true,
+        "official_code_url_exact_if_required": true,
+        "official_code_commit_exact_if_required": true
+      },
+      "passed": false,
+      "source_acquisition_validation_error": null,
+      "missing_or_mismatched": [
+        "primary_source_artifact_content_bound",
+        "signed_source_acquisition_receipt_verified"
+      ]
+    },
+    {
+      "arm": "o_star_matched",
+      "checks": {
+        "method_exact": true,
+        "primary_source_url_exact": true,
+        "primary_source_content_hash_present": true,
+        "primary_source_artifact_content_bound": false,
+        "signed_source_acquisition_receipt_verified": false,
+        "evidence_level_present": true,
+        "official_code_url_exact_if_required": true,
+        "official_code_commit_exact_if_required": true
+      },
+      "passed": false,
+      "source_acquisition_validation_error": null,
+      "missing_or_mismatched": [
+        "primary_source_artifact_content_bound",
+        "signed_source_acquisition_receipt_verified"
+      ]
+    },
+    {
+      "arm": "active_dreaming_matched",
+      "checks": {
+        "method_exact": true,
+        "primary_source_url_exact": true,
+        "primary_source_content_hash_present": false,
+        "primary_source_artifact_content_bound": false,
+        "signed_source_acquisition_receipt_verified": false,
+        "evidence_level_present": true,
+        "official_code_url_exact_if_required": true,
+        "official_code_commit_exact_if_required": true
+      },
+      "passed": false,
+      "source_acquisition_validation_error": null,
+      "missing_or_mismatched": [
+        "primary_source_content_hash_present",
+        "primary_source_artifact_content_bound",
+        "signed_source_acquisition_receipt_verified"
+      ]
+    },
+    {
+      "arm": "auto_dreamer_matched",
+      "checks": {
+        "method_exact": true,
+        "primary_source_url_exact": true,
+        "primary_source_content_hash_present": true,
+        "primary_source_artifact_content_bound": false,
+        "signed_source_acquisition_receipt_verified": false,
+        "evidence_level_present": true,
+        "official_code_url_exact_if_required": true,
+        "official_code_commit_exact_if_required": true
+      },
+      "passed": false,
+      "source_acquisition_validation_error": null,
+      "missing_or_mismatched": [
+        "primary_source_artifact_content_bound",
+        "signed_source_acquisition_receipt_verified"
+      ]
+    },
+    {
+      "arm": "trustmem_matched",
+      "checks": {
+        "method_exact": true,
+        "primary_source_url_exact": true,
+        "primary_source_content_hash_present": true,
+        "primary_source_artifact_content_bound": false,
+        "signed_source_acquisition_receipt_verified": false,
+        "evidence_level_present": true,
+        "official_code_url_exact_if_required": true,
+        "official_code_commit_exact_if_required": true
+      },
+      "passed": false,
+      "source_acquisition_validation_error": null,
+      "missing_or_mismatched": [
+        "primary_source_artifact_content_bound",
+        "signed_source_acquisition_receipt_verified"
+      ]
+    },
+    {
+      "arm": "brainctl_matched",
+      "checks": {
+        "method_exact": true,
+        "primary_source_url_exact": true,
+        "primary_source_content_hash_present": false,
+        "primary_source_artifact_content_bound": false,
+        "signed_source_acquisition_receipt_verified": false,
+        "evidence_level_present": true,
+        "official_code_url_exact_if_required": true,
+        "official_code_commit_exact_if_required": true
+      },
+      "passed": false,
+      "source_acquisition_validation_error": null,
+      "missing_or_mismatched": [
+        "primary_source_content_hash_present",
+        "primary_source_artifact_content_bound",
+        "signed_source_acquisition_receipt_verified"
+      ]
+    }
+  ],
+  "external_method_source_identification_complete": false,
+  "external_reference_core_register_sha256": "14b753a92dcff4a501bad64d8988c97fe32b8bc627503c1860d11d7d9b4fcd84",
+  "typed_adaptation_input_schema_source_sha256": "0c33ee2adf842a75fefce55499e3e4e21547ad381e487d75222e7f626295c1fb",
+  "typed_adaptation_input_contract_verified_by_complete_bundle": false,
+  "external_reference_component_core_count": 6,
+  "external_reference_cores_are_native_reproductions": false,
+  "executor_capabilities_verified_by_signed_conformance": false,
+  "executor_conformance_report": null,
+  "executor_conformance_validation_error": null,
+  "bounded_six_arm_execution_runner_implemented": false,
+  "active_dreaming_content_bound_scenario_executor_implemented": false,
+  "active_dreaming_executor_requires_independent_ed25519_receipt": false,
+  "active_dreaming_zero_cluster_fails_closed": false,
+  "active_dreaming_cluster_failure_rule_binding_implemented": false,
+  "active_dreaming_executor_resource_bounds_implemented": false,
+  "active_dreaming_deterministic_failures_are_signed": false,
+  "v0_7_six_arm_reference_execution_run": false,
+  "v0_7_six_arm_reference_execution": null,
+  "v0_7_six_arm_reference_execution_validation_error": null,
+  "bounded_execution_is_native_protocol_reproduction": false,
+  "official_component_parity": {
+    "protocol": "structure-two-official-component-parity@0.6",
+    "active_dreaming_commit": "9c05baf41673d10e92c076ba7db18b1b6553a60d",
+    "brainctl_commit": "c6348087dd07e54583f762e07bf960ac982019e6",
+    "active_dreaming_component_checks": {
+      "official_epsilon_0_3": true,
+      "official_min_pts_2": true,
+      "official_cosine_dbscan": true,
+      "official_execution_before_add_rule": true,
+      "local_selected_dbscan_fixture_matches": true
+    },
+    "brainctl_component_checks": {
+      "official_source_trust_mapping_loaded": true,
+      "amac_pre_gate_matches_official_literals": true,
+      "selected_fixture_novelty_matches": true,
+      "selected_fixture_w_m_score_matches": true,
+      "selected_fixture_acceptance_matches": true,
+      "negative_similarity_fixture_included": true,
+      "current_official_valence_not_applied_to_w_m_score": true
+    },
+    "brainctl_selected_fixture_results": [
+      {
+        "candidate": [
+          1.0,
+          0.0
+        ],
+        "neighbors": [],
+        "category": "decision",
+        "scope": "agent:a",
+        "novelty_matches": true,
+        "score_matches": true,
+        "acceptance_matches": true
+      },
+      {
+        "candidate": [
+          1.0,
+          0.0
+        ],
+        "neighbors": [
+          [
+            -1.0,
+            0.0
+          ]
+        ],
+        "category": "decision",
+        "scope": "agent:a",
+        "novelty_matches": true,
+        "score_matches": true,
+        "acceptance_matches": true
+      },
+      {
+        "candidate": [
+          1.0,
+          0.0
+        ],
+        "neighbors": [
+          [
+            0.8,
+            0.6
+          ]
+        ],
+        "category": "lesson",
+        "scope": "project:p",
+        "novelty_matches": true,
+        "score_matches": true,
+        "acceptance_matches": true
+      },
+      {
+        "candidate": [
+          1.0,
+          0.0
+        ],
+        "neighbors": [
+          [
+            1.0,
+            0.0
+          ]
+        ],
+        "category": "other",
+        "scope": "global",
+        "novelty_matches": true,
+        "score_matches": true,
+        "acceptance_matches": true
+      }
+    ],
+    "selected_fixture_parity_passed": true,
+    "component_parity_passed": false,
+    "native_protocol_reproduction_passed": false,
+    "adaptation_parity_passed": false,
+    "claim_boundary": "Only the explicitly listed fixtures were compared against pinned official code. Passing them is not whole-component parity, native-protocol reproduction, adaptation parity, or efficacy evidence. Active Dreaming scenario execution is outside this selected DBSCAN fixture report.",
+    "content_sha256": "a24c1138e6c3c2296112410b6039f87cc682aa48da65b62c74707f8bea962204"
+  },
+  "historical_v0_5_current_copy_self_consistent": true,
+  "historical_v0_5_inventory_recomputable": false,
+  "historical_v0_5_external_immutability_verified": false,
+  "historical_v0_5_evidence_authenticity_and_integrity_verified": false,
+  "historical_v0_5_gate_b_passed": false,
+  "historical_v0_5_content_sha256": "47c54b04c92981abdfd6a0f18505d52ccc766ea9a25da1b1914c40902c7c4893",
+  "complete_adaptation_input_bundle_valid": false,
+  "adapter_input_coverage": {
+    "protocol": "structure-two-external-adapter-input-coverage@0.6",
+    "method_input_results": [
+      {
+        "arm": "corrected_amg",
+        "method": "Damen-Hogg Activity Manipulation Grammar",
+        "required_adaptation_inputs": [
+          "event detections with source likelihoods",
+          "event hierarchy attributes and cross-event constraints",
+          "actor mechanism and ordered-role evidence"
+        ],
+        "available_adaptation_inputs": [],
+        "missing_adaptation_inputs": [
+          "actor mechanism and ordered-role evidence",
+          "event detections with source likelihoods",
+          "event hierarchy attributes and cross-event constraints"
+        ],
+        "input_bundle_content_bound": false,
+        "passed": false
+      },
+      {
+        "arm": "o_star_matched",
+        "method": "O-STaR",
+        "required_adaptation_inputs": [
+          "3D scene graph with room furniture compartment and object nodes",
+          "geometric object-compartment feasibility",
+          "positive and negative object observations",
+          "navigation and inspection costs",
+          "opportunistic non-target observations"
+        ],
+        "available_adaptation_inputs": [],
+        "missing_adaptation_inputs": [
+          "3D scene graph with room furniture compartment and object nodes",
+          "geometric object-compartment feasibility",
+          "navigation and inspection costs",
+          "opportunistic non-target observations",
+          "positive and negative object observations"
+        ],
+        "input_bundle_content_bound": false,
+        "passed": false
+      },
+      {
+        "arm": "active_dreaming_matched",
+        "method": "Active Dreaming Memory",
+        "required_adaptation_inputs": [
+          "action execution failure episodes",
+          "content embeddings for failure clustering",
+          "executable counterfactual scenario interface",
+          "episodic and semantic memory stores"
+        ],
+        "available_adaptation_inputs": [],
+        "missing_adaptation_inputs": [
+          "action execution failure episodes",
+          "content embeddings for failure clustering",
+          "episodic and semantic memory stores",
+          "executable counterfactual scenario interface"
+        ],
+        "input_bundle_content_bound": false,
+        "passed": false
+      },
+      {
+        "arm": "auto_dreamer_matched",
+        "method": "Auto-Dreamer",
+        "required_adaptation_inputs": [
+          "cross-session typed memory bank",
+          "provenance-linked source trajectories",
+          "offline consolidation boundary",
+          "downstream task reward and counterfactual masking utility"
+        ],
+        "available_adaptation_inputs": [],
+        "missing_adaptation_inputs": [
+          "cross-session typed memory bank",
+          "downstream task reward and counterfactual masking utility",
+          "offline consolidation boundary",
+          "provenance-linked source trajectories"
+        ],
+        "input_bundle_content_bound": false,
+        "passed": false
+      },
+      {
+        "arm": "trustmem_matched",
+        "method": "TRUSTMEM",
+        "required_adaptation_inputs": [
+          "candidate WRITE REVISE and PRUNE memory transitions",
+          "chunk evidence and previous memory state",
+          "downstream retrieval and task outcomes",
+          "coverage preservation and faithfulness verifier judgments"
+        ],
+        "available_adaptation_inputs": [],
+        "missing_adaptation_inputs": [
+          "candidate WRITE REVISE and PRUNE memory transitions",
+          "chunk evidence and previous memory state",
+          "coverage preservation and faithfulness verifier judgments",
+          "downstream retrieval and task outcomes"
+        ],
+        "input_bundle_content_bound": false,
+        "passed": false
+      },
+      {
+        "arm": "brainctl_matched",
+        "method": "brainctl",
+        "required_adaptation_inputs": [
+          "memory content and embedding neighborhood",
+          "source category and trust class",
+          "scope category recall history arousal and valence",
+          "existing memory lifecycle and supersession state"
+        ],
+        "available_adaptation_inputs": [],
+        "missing_adaptation_inputs": [
+          "existing memory lifecycle and supersession state",
+          "memory content and embedding neighborhood",
+          "scope category recall history arousal and valence",
+          "source category and trust class"
+        ],
+        "input_bundle_content_bound": false,
+        "passed": false
+      }
+    ],
+    "adapter_input_coverage_gate_passed": false,
+    "gate_b_trace_production_allowed": false,
+    "claim_boundary": "Input coverage only establishes that an adapter can receive its declared semantics. It does not establish correct implementation, native fidelity, adaptation parity, or efficacy.",
+    "content_sha256": "566b96ec5d0ad2410ee36df4bd4c5009a3a4e67f2583447410e9fe4f81258f9c"
+  },
+  "external_implementation_bundles_content_bound": false,
+  "external_fidelity": {
+    "protocol": "structure-two-external-adapter-fidelity-gate@0.2",
+    "method_results": [
+      {
+        "arm": "corrected_amg",
+        "method": "Damen-Hogg Activity Manipulation Grammar",
+        "native_domain": "video activity explanation",
+        "primary_source_url": "https://doi.org/10.1109/TPAMI.2011.70",
+        "required_native_components": [
+          "activity-event hierarchy and attribute representation",
+          "shared-variable and physical-consistency constraints",
+          "source-likelihood or likelihood-ratio scoring",
+          "global multi-event MAP inference",
+          "published native activity-explanation protocol recheck"
+        ],
+        "verified_native_components": [],
+        "checks": {
+          "primary_source_content_bound": false,
+          "implementation_bundle_content_bound": false,
+          "official_code_identity_bound_if_required": true,
+          "native_component_set_exact_and_parity_tested": false,
+          "native_published_protocol_rechecked": false,
+          "independent_reviewer_attested": false,
+          "adaptation_contract_content_bound": false,
+          "adaptation_parity_tested": false
+        },
+        "native_fidelity_passed": false,
+        "adaptation_fidelity_passed": false,
+        "missing_requirements": [
+          "primary_source_content_bound",
+          "implementation_bundle_content_bound",
+          "native_component_set_exact_and_parity_tested",
+          "native_published_protocol_rechecked",
+          "independent_reviewer_attested",
+          "adaptation_contract_content_bound",
+          "adaptation_parity_tested"
+        ]
+      },
+      {
+        "arm": "o_star_matched",
+        "method": "O-STaR",
+        "native_domain": "embodied open-vocabulary object search",
+        "primary_source_url": "https://www.hrl.uni-bonn.de/publications/2026/menon26grc",
+        "required_native_components": [
+          "open-vocabulary 3D dynamic scene graph",
+          "LLM Day-0 semantic prior",
+          "geometric candidate pruning",
+          "Dirichlet-Categorical hit and miss updates",
+          "Stay+Leak and relaxed transition inference",
+          "cost-aware active search",
+          "opportunistic multi-target perception",
+          "published physical and simulation protocol recheck"
+        ],
+        "verified_native_components": [],
+        "checks": {
+          "primary_source_content_bound": false,
+          "implementation_bundle_content_bound": false,
+          "official_code_identity_bound_if_required": true,
+          "native_component_set_exact_and_parity_tested": false,
+          "native_published_protocol_rechecked": false,
+          "independent_reviewer_attested": false,
+          "adaptation_contract_content_bound": false,
+          "adaptation_parity_tested": false
+        },
+        "native_fidelity_passed": false,
+        "adaptation_fidelity_passed": false,
+        "missing_requirements": [
+          "primary_source_content_bound",
+          "implementation_bundle_content_bound",
+          "native_component_set_exact_and_parity_tested",
+          "native_published_protocol_rechecked",
+          "independent_reviewer_attested",
+          "adaptation_contract_content_bound",
+          "adaptation_parity_tested"
+        ]
+      },
+      {
+        "arm": "active_dreaming_matched",
+        "method": "Active Dreaming Memory",
+        "native_domain": "language-agent episodic-to-semantic memory consolidation",
+        "primary_source_url": "https://engrxiv.org/preprint/view/5919/9826",
+        "required_native_components": [
+          "episodic and semantic dual-store lifecycle",
+          "failure-episode retrieval",
+          "embedding-based DBSCAN failure clustering",
+          "LLM failure-rule abstraction",
+          "LLM counterfactual executable-scenario generation",
+          "actual scenario execution before semantic commit",
+          "published six-domain protocol recheck"
+        ],
+        "verified_native_components": [],
+        "checks": {
+          "primary_source_content_bound": false,
+          "implementation_bundle_content_bound": false,
+          "official_code_identity_bound_if_required": false,
+          "native_component_set_exact_and_parity_tested": false,
+          "native_published_protocol_rechecked": false,
+          "independent_reviewer_attested": false,
+          "adaptation_contract_content_bound": false,
+          "adaptation_parity_tested": false
+        },
+        "native_fidelity_passed": false,
+        "adaptation_fidelity_passed": false,
+        "missing_requirements": [
+          "primary_source_content_bound",
+          "implementation_bundle_content_bound",
+          "official_code_identity_bound_if_required",
+          "native_component_set_exact_and_parity_tested",
+          "native_published_protocol_rechecked",
+          "independent_reviewer_attested",
+          "adaptation_contract_content_bound",
+          "adaptation_parity_tested"
+        ]
+      },
+      {
+        "arm": "auto_dreamer_matched",
+        "method": "Auto-Dreamer",
+        "native_domain": "offline language-agent memory consolidation",
+        "primary_source_url": "https://arxiv.org/abs/2605.20616",
+        "required_native_components": [
+          "fast per-session acquisition and slow offline consolidation",
+          "typed-memory working-region selection",
+          "read-only evidence and provenance-linked trajectory inspection",
+          "bounded consolidator tool use",
+          "fresh replacement-set synthesis and supersession",
+          "GRPO policy trained on downstream agent performance",
+          "published ScienceWorld ALFWorld and WebArena protocol recheck"
+        ],
+        "verified_native_components": [],
+        "checks": {
+          "primary_source_content_bound": false,
+          "implementation_bundle_content_bound": false,
+          "official_code_identity_bound_if_required": true,
+          "native_component_set_exact_and_parity_tested": false,
+          "native_published_protocol_rechecked": false,
+          "independent_reviewer_attested": false,
+          "adaptation_contract_content_bound": false,
+          "adaptation_parity_tested": false
+        },
+        "native_fidelity_passed": false,
+        "adaptation_fidelity_passed": false,
+        "missing_requirements": [
+          "primary_source_content_bound",
+          "implementation_bundle_content_bound",
+          "native_component_set_exact_and_parity_tested",
+          "native_published_protocol_rechecked",
+          "independent_reviewer_attested",
+          "adaptation_contract_content_bound",
+          "adaptation_parity_tested"
+        ]
+      },
+      {
+        "arm": "trustmem_matched",
+        "method": "TRUSTMEM",
+        "native_domain": "trustworthy LLM-agent memory consolidation",
+        "primary_source_url": "https://arxiv.org/abs/2606.25161",
+        "required_native_components": [
+          "WRITE REVISE and PRUNE candidate transitions",
+          "coverage transition verification",
+          "preservation transition verification",
+          "faithfulness transition verification",
+          "same-state candidate preference-pair construction",
+          "preference-guided reinforcement learning of update behavior",
+          "published MemoryAgentBench HaluMem and Mem-alpha protocol recheck"
+        ],
+        "verified_native_components": [],
+        "checks": {
+          "primary_source_content_bound": false,
+          "implementation_bundle_content_bound": false,
+          "official_code_identity_bound_if_required": true,
+          "native_component_set_exact_and_parity_tested": false,
+          "native_published_protocol_rechecked": false,
+          "independent_reviewer_attested": false,
+          "adaptation_contract_content_bound": false,
+          "adaptation_parity_tested": false
+        },
+        "native_fidelity_passed": false,
+        "adaptation_fidelity_passed": false,
+        "missing_requirements": [
+          "primary_source_content_bound",
+          "implementation_bundle_content_bound",
+          "native_component_set_exact_and_parity_tested",
+          "native_published_protocol_rechecked",
+          "independent_reviewer_attested",
+          "adaptation_contract_content_bound",
+          "adaptation_parity_tested"
+        ]
+      },
+      {
+        "arm": "brainctl_matched",
+        "method": "brainctl",
+        "native_domain": "LLM-agent memory admission and lifecycle control",
+        "primary_source_url": "https://www.brainctl.org/whitepaper",
+        "required_native_components": [
+          "source-trust categories and category-specific priors",
+          "embedding-based semantic novelty",
+          "utility confidence novelty recency and type-prior worthiness",
+          "scope recall arousal and valence factors",
+          "two-stage write-decision gate",
+          "memory-tier routing",
+          "Bayesian confidence and merge supersede reject lifecycle",
+          "official repository protocol recheck"
+        ],
+        "verified_native_components": [],
+        "checks": {
+          "primary_source_content_bound": false,
+          "implementation_bundle_content_bound": false,
+          "official_code_identity_bound_if_required": false,
+          "native_component_set_exact_and_parity_tested": false,
+          "native_published_protocol_rechecked": false,
+          "independent_reviewer_attested": false,
+          "adaptation_contract_content_bound": false,
+          "adaptation_parity_tested": false
+        },
+        "native_fidelity_passed": false,
+        "adaptation_fidelity_passed": false,
+        "missing_requirements": [
+          "primary_source_content_bound",
+          "implementation_bundle_content_bound",
+          "official_code_identity_bound_if_required",
+          "native_component_set_exact_and_parity_tested",
+          "native_published_protocol_rechecked",
+          "independent_reviewer_attested",
+          "adaptation_contract_content_bound",
+          "adaptation_parity_tested"
+        ]
+      }
+    ],
+    "native_fidelity_gate_passed": false,
+    "adaptation_fidelity_gate_passed": false,
+    "external_fidelity_gate_passed": false,
+    "fidelity_precondition_for_combined_authorization_passed": false,
+    "external_method_efficacy_comparison_allowed": false,
+    "claim_boundary": "Native reproduction evidence supports claims only in each method's native domain. Cross-domain efficacy claims additionally require a content-bound adaptation contract and executable adaptation-parity evidence. Even complete fidelity evidence is only one precondition for the separate combined efficacy authorization gate.",
+    "content_sha256": "4c52dff8ea7b176540e18cdebe6fe02eb38b42954aac005da3ae77b49ef3ed6f"
+  },
+  "trust_anchor_registry_externally_verified": false,
+  "trust_anchor_registry_validation_error": null,
+  "trust_anchor_role_keys_cryptographically_distinct": false,
+  "role_control_independence_attested": false,
+  "role_control_independence_cryptographically_proven": false,
+  "externally_frozen_manifest_verified": false,
+  "freeze_ordering_attested_by_enrollment_authority": false,
+  "immutable_frozen_manifest_sha256": null,
+  "frozen_manifest_validation_error": null,
+  "gate_a_report_content_bound": false,
+  "gate_a_protocol_exact": false,
+  "gate_a_passed": false,
+  "gate_a_validation_error": null,
+  "signed_gate_b": null,
+  "gate_b_validation_error": null,
+  "v0_6_gate_b_scored": false,
+  "v0_6_gate_b_passed": false,
+  "external_method_efficacy_comparison_allowed": false,
+  "design_evidence_ready_for_external_freeze": false,
+  "ready_for_external_custodian_run": false,
+  "lifecycle_state": "DEVELOPMENT_EVIDENCE_INCOMPLETE",
+  "design_freeze_blockers": [
+    "six canonical primary-source artifacts lack registered-hash acquisition binding",
+    "method-specific adaptation input bundles are incomplete or unbound",
+    "six external implementation bundles are not staged",
+    "reviewer executor and custodian keys lack an externally rooted enrollment receipt"
+  ],
+  "authorization_blockers": [
+    "six external arms lack complete signed native reproduction evidence",
+    "six external arms lack complete signed adaptation parity evidence",
+    "bounded-executor capabilities lack independently signed interpreted tests",
+    "six-arm reference execution lacks verified result and Active Dreaming artifacts",
+    "v0.6 Gate A lacks verified inputs, execution log, or dual signatures",
+    "v0.6 signed mechanism-action traces are missing or invalid",
+    "v0.6 canonical design lacks authority-timestamped triple-signed external freeze"
+  ],
+  "blockers": [
+    "six canonical primary-source artifacts lack registered-hash acquisition binding",
+    "method-specific adaptation input bundles are incomplete or unbound",
+    "six external implementation bundles are not staged",
+    "reviewer executor and custodian keys lack an externally rooted enrollment receipt",
+    "six external arms lack complete signed native reproduction evidence",
+    "six external arms lack complete signed adaptation parity evidence",
+    "bounded-executor capabilities lack independently signed interpreted tests",
+    "six-arm reference execution lacks verified result and Active Dreaming artifacts",
+    "v0.6 Gate A lacks verified inputs, execution log, or dual signatures",
+    "v0.6 signed mechanism-action traces are missing or invalid",
+    "v0.6 canonical design lacks authority-timestamped triple-signed external freeze"
+  ],
+  "claim_boundary": "This preflight accepts role keys only through an out-of-band-rooted enrollment authority, requires registered-hash source acquisition, interpreted signed executor tests and full six-arm result artifacts, and verifies dual-signed Gate A before Gate B scoring. Freeze ordering is an enrollment-authority attestation over a timestamp, ledger sequence, nonce, preregistered producer run, validation seed commitment, and holdout commitment; this repository cannot independently derive external time or human role-control independence. Historical v0.5 evidence remains self-consistent but not externally immutable or fully authenticatable.",
+  "content_sha256": "6cc23bba580376e46073a84ba8170a4185d4ea1f731745b15eabdd9c06ddf88c"
+}

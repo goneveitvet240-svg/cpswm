@@ -337,6 +337,62 @@ class ShiftExperimentAuthority:
         )
         return proof
 
+    def verify_test_unseal_proof(
+        self,
+        proof_input: object,
+        report_input: object,
+        *,
+        experiment_id: str,
+        validation_split_sha256: str,
+        test_split_sha256: str,
+    ) -> bool:
+        """Verify that an unseal proof is the exact committed authority event."""
+
+        try:
+            proof = GateStateCommitProof.model_validate(proof_input)
+            report = (
+                report_input
+                if isinstance(report_input, ShiftATG2Report)
+                else ShiftATG2Report.model_validate(report_input)
+            )
+            if not self.verify_atg2_report(report):
+                return False
+            if (
+                report.experiment_id,
+                report.validation_split_sha256,
+                report.test_split_sha256,
+            ) != (experiment_id, validation_split_sha256, test_split_sha256):
+                return False
+            transactions = self._log.read(
+                after_commit_seq=proof.global_commit_seq - 1,
+                through_commit_seq=proof.global_commit_seq,
+            )
+            if len(transactions) != 1:
+                return False
+            transaction = transactions[0]
+            if (
+                proof.event_type != "TEST_UNSEALED"
+                or transaction.transaction_id != proof.transaction_id
+                or transaction.request_sha256 != proof.request_sha256
+                or self._log.fingerprint(through_commit_seq=proof.global_commit_seq)
+                != proof.log_head_sha256
+            ):
+                return False
+            record = transaction.records[0].envelope.payload
+            payload = record.get("payload") if isinstance(record, dict) else None
+            return bool(
+                isinstance(record, dict)
+                and isinstance(payload, dict)
+                and record.get("event_type") == "TEST_UNSEALED"
+                and record.get("payload_sha256") == proof.event_payload_sha256
+                and content_sha256(payload) == proof.event_payload_sha256
+                and payload.get("authority_receipt_sha256")
+                == report.receipt.authority_receipt_sha256
+                and payload.get("test_split_sha256") == test_split_sha256
+            )
+        except (ValueError, LookupError, KeyError, IndexError, TypeError):
+            return False
+
     def commit_atg3(self, report_input: ShiftATG3Report) -> GateStateCommitProof:
         report = ShiftATG3Report.model_validate(report_input.model_dump(mode="json"))
         transactions = self._log.read(

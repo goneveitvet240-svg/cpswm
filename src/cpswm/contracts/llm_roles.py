@@ -29,6 +29,12 @@ class LLMOutputAuthority(StrEnum):
     DIRECT_PREDICTION_ONLY = "direct_prediction_only"
 
 
+class LLMProviderIdentity(ContractModel):
+    provider: str = Field(min_length=1)
+    model: str = Field(min_length=1)
+    version: str = Field(min_length=1)
+
+
 class LLMInvocationProvenance(ContractModel):
     """Complete, replay-addressable accounting for one model invocation."""
 
@@ -123,6 +129,7 @@ __all__ = [
     "LLMIntegrationRole",
     "LLMInvocationProvenance",
     "LLMOutputAuthority",
+    "LLMProviderIdentity",
     "build_query_compiler_provenance",
     "require_role_authority",
 ]

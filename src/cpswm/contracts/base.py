@@ -7,7 +7,7 @@ from enum import StrEnum
 from typing import Annotated
 from uuid import UUID, uuid4
 
-from pydantic import BaseModel, ConfigDict, Field, field_validator, model_validator
+from pydantic import BaseModel, ConfigDict, Field, ValidationInfo, field_validator, model_validator
 
 Probability = Annotated[float, Field(ge=0.0, le=1.0)]
 NonNegativeInt = Annotated[int, Field(ge=0)]
@@ -93,10 +93,10 @@ class ValidTimeInterval(ContractModel):
 
     @field_validator("start", "end")
     @classmethod
-    def validate_awareness(cls, value: datetime | None, info) -> datetime | None:
+    def validate_awareness(cls, value: datetime | None, info: ValidationInfo) -> datetime | None:
         if value is None:
             return value
-        return require_aware(value, info.field_name)
+        return require_aware(value, info.field_name or "datetime")
 
     @model_validator(mode="after")
     def validate_order(self) -> ValidTimeInterval:

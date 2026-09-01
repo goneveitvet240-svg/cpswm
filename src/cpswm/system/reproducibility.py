@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+from dataclasses import asdict, is_dataclass
 from datetime import UTC, datetime
 from enum import Enum
 from typing import Any
@@ -15,6 +16,8 @@ from pydantic import BaseModel
 def _canonical_value(value: Any) -> Any:
     if isinstance(value, BaseModel):
         return _canonical_value(value.model_dump(mode="python"))
+    if is_dataclass(value) and not isinstance(value, type):
+        return _canonical_value(asdict(value))
     if isinstance(value, datetime):
         return value.astimezone(UTC).isoformat().replace("+00:00", "Z")
     if isinstance(value, UUID):
@@ -27,9 +30,15 @@ def _canonical_value(value: Any) -> Any:
     if isinstance(value, float) and value == 0.0:
         return 0.0
     if isinstance(value, dict):
-        return {
-            str(_canonical_value(key)): _canonical_value(nested) for key, nested in value.items()
-        }
+        normalized: dict[str, Any] = {}
+        for key, nested in value.items():
+            normalized_key = str(_canonical_value(key))
+            if normalized_key in normalized:
+                raise ValueError(
+                    "mapping contains keys that collide after canonical JSON normalization"
+                )
+            normalized[normalized_key] = _canonical_value(nested)
+        return normalized
     if isinstance(value, (list, tuple)):
         return [_canonical_value(item) for item in value]
     return value

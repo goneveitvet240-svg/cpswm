@@ -54,7 +54,10 @@ class MemoryReliabilityProjector:
         if request.superseded_by_record_id is not None:
             status = MemoryReliabilityStatus.SUPERSEDED
             action = MemoryLifecycleAction.FOLLOW_SUPERSEDING_RECORD
-            reasons = ("superseding_record_exists", "original_record_remains_auditable")
+            reasons: tuple[str, ...] = (
+                "superseding_record_exists",
+                "original_record_remains_auditable",
+            )
         elif request.historical_only:
             status = MemoryReliabilityStatus.HISTORICAL
             action = MemoryLifecycleAction.KEEP_AS_HISTORICAL

@@ -21,6 +21,7 @@ from cpswm.contracts import (
     MapConsistencyRevisions,
     RelevantChange,
     ValidTimeInterval,
+    classify_decision_invalidation,
     detect_relevant_change,
 )
 
@@ -237,3 +238,54 @@ def test_unchanged_snapshot_continues():
         )
         is RelevantChange.CONTINUE
     )
+
+
+def test_belief_cache_and_policy_invalidation_are_not_collapsed():
+    context = _context()
+    belief_only = context.revisions.model_copy(
+        update={
+            "belief_snapshot_id": uuid4(),
+            "event_history_revision": context.revisions.event_history_revision + 1,
+        }
+    )
+    trace = classify_decision_invalidation(
+        context,
+        current=belief_only,
+        target_object_moved=False,
+        robot_pose_graph_corrected=False,
+        planned_path_blocked=False,
+        only_irrelevant_updates=True,
+        elapsed_seconds=1.0,
+    )
+    assert trace.belief_invalidated
+    assert not trace.cache_invalidated
+    assert trace.policy_action is RelevantChange.CONTINUE
+
+    cache_only = context.revisions.model_copy(
+        update={"projection_version": context.revisions.projection_version + 1}
+    )
+    trace = classify_decision_invalidation(
+        context,
+        current=cache_only,
+        target_object_moved=False,
+        robot_pose_graph_corrected=False,
+        planned_path_blocked=False,
+        only_irrelevant_updates=True,
+        elapsed_seconds=1.0,
+    )
+    assert not trace.belief_invalidated
+    assert trace.cache_invalidated
+    assert trace.policy_action is RelevantChange.CONTINUE
+
+    policy_only = classify_decision_invalidation(
+        context,
+        current=context.revisions,
+        target_object_moved=False,
+        robot_pose_graph_corrected=False,
+        planned_path_blocked=True,
+        only_irrelevant_updates=False,
+        elapsed_seconds=1.0,
+    )
+    assert not policy_only.belief_invalidated
+    assert not policy_only.cache_invalidated
+    assert policy_only.policy_action is RelevantChange.REPLAN

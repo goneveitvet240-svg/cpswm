@@ -76,13 +76,21 @@ def test_v02_fairness_split_tuning_and_baseline_fidelity():
     methods = {item.method for item in report.case_metrics}
     assert methods == set(ProjectTwoActionMethod)
     fidelity = {(item.method, item.fidelity) for item in report.aggregate_metrics}
-    assert (ProjectTwoActionMethod.AMG_MATCHED, BenchmarkFidelity.FAITHFUL_MATCHED) in fidelity
+    assert (
+        ProjectTwoActionMethod.AMG_MATCHED,
+        BenchmarkFidelity.MATCHED_REPLAY_ADAPTER,
+    ) in fidelity
     assert (ProjectTwoActionMethod.O_STAR, BenchmarkFidelity.MATCHED_REPLAY_ADAPTER) in fidelity
     assert (ProjectTwoActionMethod.DYNAMEM, BenchmarkFidelity.MATCHED_REPLAY_ADAPTER) in fidelity
     assert (ProjectTwoActionMethod.STAR, BenchmarkFidelity.MATCHED_REPLAY_ADAPTER) in fidelity
+    assert any(
+        item.metric == "persistent_owner_mode_error_rate" for item in report.aggregate_metrics
+    )
     assert not report.superiority_supported
     assert report.paper_level_gate_failures
     adapters = {item.method: item for item in report.baseline_fairness}
+    assert adapters[ProjectTwoActionMethod.AMG_MATCHED].missing_faithful_inputs
+    assert not adapters[ProjectTwoActionMethod.AMG_MATCHED].qualifies_for_paper_superiority
     assert adapters[ProjectTwoActionMethod.DYNAMEM].missing_faithful_inputs
     assert not adapters[ProjectTwoActionMethod.DYNAMEM].qualifies_for_paper_superiority
 
@@ -107,6 +115,24 @@ def test_v02_evaluator_truth_never_enters_method_input(monkeypatch):
         validation_seeds=(101,), test_seeds=(211,), max_steps_per_episode=5
     ).build()
     ProjectTwoActionBenchmarkV02().run(dataset)
+
+
+def test_corrected_report_is_byte_stable_with_a_fixed_dataset_seal() -> None:
+    from cpswm.system.evaluation_operations import (
+        D0SyntheticOracleReplayAdapter,
+        ProjectTwoActionBenchmarkV02,
+    )
+
+    def render() -> str:
+        dataset = D0SyntheticOracleReplayAdapter(
+            validation_seeds=(101,),
+            test_seeds=(211,),
+            max_steps_per_episode=8,
+            sealed_secret="project-two-corrected-report-determinism-test",
+        ).build()
+        return ProjectTwoActionBenchmarkV02().run(dataset).model_dump_json(indent=2)
+
+    assert render() == render()
 
 
 def test_v02_success_and_failure_feedback_both_flow_through_full_loop(monkeypatch):

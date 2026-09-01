@@ -65,6 +65,36 @@ class MobilityClass(StrEnum):
     INSUFFICIENT_EVIDENCE = "insufficient_evidence"
 
 
+class MobilityDerivedLabel(StrEnum):
+    """Non-exclusive presentation labels derived from the formal axes."""
+
+    ANCHORED = "anchored"
+    STABLE = "stable"
+    HOME_BASED_MOBILE = "home_based_mobile"
+    MULTIMODAL = "multimodal"
+    ACTIVITY_CARRIED = "activity_carried"
+    WANDERING = "wandering"
+    REGIME_CHANGING = "regime_changing"
+
+
+class RegimeChangeStatus(StrEnum):
+    STABLE = "stable"
+    CHANGING = "changing"
+    UNASSESSED = "unassessed"
+
+
+@dataclass(frozen=True, slots=True)
+class MobilityProfileAxes:
+    """Formal multi-axis profile; labels are downstream, non-exclusive views."""
+
+    stationarity: float | None
+    normalized_entropy: float | None
+    modality_count: int
+    return_propensity: float | None
+    activity_coupling: float | None
+    regime_change_status: RegimeChangeStatus
+
+
 @dataclass(frozen=True, slots=True)
 class MobilityProfile:
     """One object's movement profile within one household."""
@@ -79,6 +109,8 @@ class MobilityProfile:
     normalized_location_entropy: float | None
     recurrence_rate: float | None
     transition_counts: dict[tuple[UUID, UUID], int]
+    axes: MobilityProfileAxes
+    derived_labels: tuple[MobilityDerivedLabel, ...]
     mobility_class: MobilityClass
     model_version: str
 
@@ -122,7 +154,7 @@ def _recurrence_rate(sequence: list[UUID], primary_location_id: UUID) -> float |
 @dataclass
 class _ObjectHistory:
     sequence: list[UUID] = field(default_factory=list)
-    weights: Counter[UUID] = field(default_factory=Counter)
+    weights: dict[UUID, float] = field(default_factory=lambda: defaultdict(float))
     times: list[datetime] = field(default_factory=list)
 
 
@@ -195,6 +227,15 @@ class MobilityProfiler:
                 normalized_location_entropy=None,
                 recurrence_rate=None,
                 transition_counts={},
+                axes=MobilityProfileAxes(
+                    stationarity=None,
+                    normalized_entropy=None,
+                    modality_count=0,
+                    return_propensity=None,
+                    activity_coupling=None,
+                    regime_change_status=RegimeChangeStatus.UNASSESSED,
+                ),
+                derived_labels=(),
                 mobility_class=MobilityClass.INSUFFICIENT_EVIDENCE,
                 model_version=self._model_version,
             )
@@ -224,6 +265,20 @@ class MobilityProfiler:
         transitions = Counter(
             (source, destination) for source, destination in pairwise(history.sequence)
         )
+        legacy_class = self._classify(
+            observation_count=len(history.sequence),
+            distinct_locations=len(distribution),
+            primary_share=primary_share,
+            recurrence_rate=recurrence,
+        )
+        axes = MobilityProfileAxes(
+            stationarity=primary_share,
+            normalized_entropy=entropy,
+            modality_count=len(frequent),
+            return_propensity=recurrence,
+            activity_coupling=None,
+            regime_change_status=RegimeChangeStatus.UNASSESSED,
+        )
 
         return MobilityProfile(
             household_id=household_id,
@@ -236,12 +291,9 @@ class MobilityProfiler:
             normalized_location_entropy=entropy,
             recurrence_rate=recurrence,
             transition_counts=dict(transitions),
-            mobility_class=self._classify(
-                observation_count=len(history.sequence),
-                distinct_locations=len(distribution),
-                primary_share=primary_share,
-                recurrence_rate=recurrence,
-            ),
+            axes=axes,
+            derived_labels=self._derived_labels(legacy_class),
+            mobility_class=legacy_class,
             model_version=self._model_version,
         )
 
@@ -264,6 +316,27 @@ class MobilityProfiler:
         if primary_share >= self._primary_share:
             return MobilityClass.PRIMARY_WITH_EXCEPTIONS
         return MobilityClass.MULTI_LOCATION
+
+    @staticmethod
+    def _derived_labels(legacy_class: MobilityClass) -> tuple[MobilityDerivedLabel, ...]:
+        """Conservative labels supported by currently measured axes only.
+
+        Activity coupling and regime change are not guessed from location
+        counts.  They remain unlabelled until their corresponding axes are
+        supplied by later activity/regime evidence.
+        """
+
+        mapping = {
+            MobilityClass.FIXED: (MobilityDerivedLabel.ANCHORED, MobilityDerivedLabel.STABLE),
+            MobilityClass.PRIMARY_WITH_EXCEPTIONS: (
+                MobilityDerivedLabel.STABLE,
+                MobilityDerivedLabel.HOME_BASED_MOBILE,
+            ),
+            MobilityClass.MULTI_LOCATION: (MobilityDerivedLabel.MULTIMODAL,),
+            MobilityClass.MIGRATORY: (MobilityDerivedLabel.WANDERING,),
+            MobilityClass.INSUFFICIENT_EVIDENCE: (),
+        }
+        return mapping[legacy_class]
 
     def profiled_objects(self) -> tuple[tuple[UUID, UUID], ...]:
         return tuple(sorted(self._histories))

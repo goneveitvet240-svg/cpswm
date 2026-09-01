@@ -148,6 +148,8 @@ class RLSRegimeBank:
                 sequence=sequence,
             )
         if event_id is not None:
+            if event_signature is None:
+                raise AssertionError("event signature must accompany event ID")
             self._validate_regime_switch_identity(
                 stream_key=key,
                 event_id=event_id,
@@ -158,6 +160,8 @@ class RLSRegimeBank:
         if event_time is not None:
             self._last_switch_time[key] = (event_time, sequence)
             if event_id is not None:
+                if event_signature is None:
+                    raise AssertionError("event signature must accompany event ID")
                 self._processed_switch_event_ids.setdefault(key, set()).add(event_id)
                 self._processed_switch_signatures.setdefault(key, set()).add(event_signature)
         return previous
@@ -258,7 +262,7 @@ class RLSRegimeBank:
     def regime_count(self) -> int:
         return len(self._heads)
 
-    def regime_snapshot(self, regime_id: str) -> dict:
+    def regime_snapshot(self, regime_id: str) -> dict[str, object]:
         """Return a copy of one regime's sufficient statistics for audit/reuse."""
 
         if not regime_id.strip():

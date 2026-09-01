@@ -18,7 +18,9 @@ class DirectionThreeMetricCase:
     target_is_unknown: bool
     resolution_status: ResolutionStatus
     expected_resolution_status: ResolutionStatus
+    known_target_out_of_support: bool = False
     selected_target_candidate_id: UUID | None = None
+    picked_object_candidate_id: UUID | None = None
     asked_user: bool = False
     identity_switch_count: int = 0
     task_success: bool = False
@@ -41,15 +43,23 @@ class DirectionThreeMetricCase:
             raise ValueError("metric posterior must sum to one")
         if any(value < 0.0 or value > 1.0 for value in self.posterior_by_candidate_id.values()):
             raise ValueError("metric posterior probabilities must be in [0, 1]")
-        if self.target_is_unknown == (self.true_target_candidate_id is not None):
-            raise ValueError("metric truth must be either one known target or unknown")
-        if (
-            self.true_target_candidate_id is not None
-            and self.true_target_candidate_id not in self.posterior_by_candidate_id
-        ):
-            raise ValueError("known metric target must be in the posterior support")
+        if self.target_is_unknown:
+            if self.true_target_candidate_id is not None or self.known_target_out_of_support:
+                raise ValueError("true unknown cannot also carry a known target")
+        elif self.true_target_candidate_id is None:
+            raise ValueError("known metric truth requires a target id")
+        elif self.known_target_out_of_support:
+            if self.true_target_candidate_id in self.posterior_by_candidate_id:
+                raise ValueError("out-of-support target must not appear in posterior support")
+        elif self.true_target_candidate_id not in self.posterior_by_candidate_id:
+            raise ValueError("known in-support target must appear in posterior support")
         if self.identity_switch_count < 0:
             raise ValueError("identity switch count must be non-negative")
+        if self.picked_object_candidate_id is not None:
+            if self.picked_object_candidate_id == self.unknown_candidate_id:
+                raise ValueError("a physical pickup cannot target the explicit unknown candidate")
+            if self.picked_object_candidate_id not in self.posterior_by_candidate_id:
+                raise ValueError("picked object must be in the candidate support")
         costs = (
             self.motion_cost,
             self.time_cost,
@@ -64,9 +74,22 @@ class DirectionThreeMetricCase:
 
     @property
     def evaluation_target_id(self) -> UUID:
-        return (
+        if self.known_target_out_of_support:
+            raise ValueError("known out-of-support cases have no fusion evaluation target")
+        target = (
             self.unknown_candidate_id if self.target_is_unknown else self.true_target_candidate_id
         )
+        if target is None:
+            raise ValueError("evaluation target ID is required for supported cases")
+        return target
+
+    @property
+    def support_status(self) -> str:
+        if self.target_is_unknown:
+            return "true_unknown"
+        if self.known_target_out_of_support:
+            return "known_out_of_support"
+        return "known_in_support"
 
 
 def _binary_auroc(labels: list[int], scores: list[float]) -> float | None:
@@ -87,7 +110,8 @@ def _binary_auroc(labels: list[int], scores: list[float]) -> float | None:
 
 def _average_precision(labels: list[int], scores: list[float]) -> float | None:
     positives = sum(labels)
-    if positives == 0:
+    negatives = len(labels) - positives
+    if positives == 0 or negatives == 0:
         return None
     ranked = sorted(
         zip(labels, scores, strict=True),
@@ -136,6 +160,11 @@ def evaluate_direction_three_metrics(
     if any(not 0.0 <= threshold <= 1.0 for threshold in selective_thresholds):
         raise ValueError("selective thresholds must be in [0, 1]")
 
+    fusion_cases = tuple(case for case in cases if not case.known_target_out_of_support)
+    if not fusion_cases:
+        raise ValueError(
+            "conditional fusion metrics require at least one in-support or unknown case"
+        )
     ranks: list[int] = []
     confidences: list[float] = []
     correctness: list[bool] = []
@@ -153,33 +182,44 @@ def evaluate_direction_three_metrics(
                 str(candidate),
             ),
         )
-        target = case.evaluation_target_id
-        rank = ranked.index(target) + 1
         prediction = ranked[0]
         confidence = case.posterior_by_candidate_id[prediction]
-        correct = prediction == target
-        target_probability = max(case.posterior_by_candidate_id[target], 1e-12)
-        brier = sum(
-            (probability - (1.0 if candidate == target else 0.0)) ** 2
-            for candidate, probability in case.posterior_by_candidate_id.items()
-        )
-        ranks.append(rank)
-        confidences.append(confidence)
-        correctness.append(correct)
-        nll_values.append(-log(target_probability))
-        brier_values.append(brier)
-        unknown_labels.append(int(case.target_is_unknown))
-        unknown_scores.append(case.posterior_by_candidate_id[case.unknown_candidate_id])
+        if case.known_target_out_of_support:
+            rank = None
+            correct = None
+            target_probability = None
+            brier = None
+        else:
+            target = case.evaluation_target_id
+            rank = ranked.index(target) + 1
+            correct = prediction == target
+            target_probability = max(case.posterior_by_candidate_id[target], 1e-12)
+            brier = sum(
+                (probability - (1.0 if candidate == target else 0.0)) ** 2
+                for candidate, probability in case.posterior_by_candidate_id.items()
+            )
+            ranks.append(rank)
+            confidences.append(confidence)
+            correctness.append(correct)
+            nll_values.append(-log(target_probability))
+            brier_values.append(brier)
+            unknown_labels.append(int(case.target_is_unknown))
+            unknown_scores.append(case.posterior_by_candidate_id[case.unknown_candidate_id])
         per_case.append(
             {
                 "case_id": case.case_id,
+                "support_status": case.support_status,
                 "rank": rank,
                 "top1_correct": correct,
                 "confidence": confidence,
                 "target_probability": target_probability,
-                "wrong_object_pickup": (
-                    case.selected_target_candidate_id is not None
-                    and case.selected_target_candidate_id != target
+                "known_target_misidentification": (
+                    not case.target_is_unknown
+                    and case.picked_object_candidate_id is not None
+                    and case.picked_object_candidate_id != case.true_target_candidate_id
+                ),
+                "unknown_target_false_pick": (
+                    case.target_is_unknown and case.picked_object_candidate_id is not None
                 ),
             }
         )
@@ -189,7 +229,7 @@ def evaluate_direction_three_metrics(
         accepted = [
             index for index, confidence in enumerate(confidences) if confidence >= threshold
         ]
-        coverage = len(accepted) / len(cases)
+        coverage = len(accepted) / len(fusion_cases)
         risk = (
             None
             if not accepted
@@ -200,12 +240,29 @@ def evaluate_direction_three_metrics(
         )
 
     known_cases = [case for case in cases if not case.target_is_unknown]
+    known_in_support_cases = [case for case in known_cases if not case.known_target_out_of_support]
+    unknown_cases = [case for case in cases if case.target_is_unknown]
     recovery_cases = [case for case in cases if case.recovery_required]
+    known_misidentifications = sum(
+        case.picked_object_candidate_id is not None
+        and case.picked_object_candidate_id != case.true_target_candidate_id
+        for case in known_cases
+    )
+    unknown_false_picks = sum(case.picked_object_candidate_id is not None for case in unknown_cases)
+    unsafe_picks = known_misidentifications + unknown_false_picks
     return {
         "schema_name": "cpswm.DirectionThreeMetricReport",
-        "schema_version": "0.1.0",
+        "schema_version": "0.2.0",
         "case_count": len(cases),
         "retrieval": {
+            "known_target_retrieval_recall": len(known_in_support_cases) / max(1, len(known_cases)),
+            "known_target_count": len(known_cases),
+            "known_out_of_support_count": sum(
+                case.known_target_out_of_support for case in known_cases
+            ),
+        },
+        "conditional_fusion": {
+            "case_count": len(fusion_cases),
             "recall_at_1": sum(rank <= 1 for rank in ranks) / len(ranks),
             f"recall_at_{recall_k}": sum(rank <= recall_k for rank in ranks) / len(ranks),
             "mrr": sum(1.0 / rank for rank in ranks) / len(ranks),
@@ -221,16 +278,14 @@ def evaluate_direction_three_metrics(
         },
         "decision": {
             "ambiguous_detection_accuracy": sum(
-                case.resolution_status == case.expected_resolution_status for case in cases
+                case.resolution_status == case.expected_resolution_status for case in fusion_cases
             )
-            / len(cases),
+            / len(fusion_cases),
             "selective_risk_coverage": selective_curve,
-            "wrong_object_pickup_rate": sum(
-                case.selected_target_candidate_id is not None
-                and case.selected_target_candidate_id != case.evaluation_target_id
-                for case in known_cases
-            )
+            "known_target_misidentification_rate": known_misidentifications
             / max(1, len(known_cases)),
+            "unknown_target_false_pick_rate": unknown_false_picks / max(1, len(unknown_cases)),
+            "overall_unsafe_pick_rate": unsafe_picks / len(cases),
             "clarification_rate": sum(case.asked_user for case in cases) / len(cases),
             "unnecessary_clarification_rate": sum(
                 case.asked_user and case.expected_resolution_status == ResolutionStatus.RESOLVED

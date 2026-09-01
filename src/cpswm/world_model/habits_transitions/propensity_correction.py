@@ -25,6 +25,7 @@ from __future__ import annotations
 from collections.abc import Iterable
 from dataclasses import dataclass
 from enum import StrEnum
+from math import isfinite
 from statistics import fmean
 
 from cpswm.contracts.habit_learning import ObservationOpportunityRecord
@@ -43,6 +44,39 @@ class PropensityCorrectionMode(StrEnum):
     INVERSE = "inverse"
     #: ``mean_pi / pi``. Keeps the effective sample size near the raw count.
     STABILIZED = "stabilized"
+
+
+class ObservationIdentifiabilityStatus(StrEnum):
+    """Whether propensity correction identifies the requested observation estimand."""
+
+    IDENTIFIABLE = "identifiable"
+    WEAK_OVERLAP = "weak_overlap"
+    POSITIVITY_FAILURE = "positivity_failure"
+    NON_IDENTIFIABLE = "non_identifiable"
+
+
+@dataclass(frozen=True, slots=True)
+class ObservationSupportDiagnostic:
+    """Support and identification report that must accompany OPCEU weights.
+
+    Propensity weighting can repair selection on recorded variables under
+    positivity.  It cannot identify passive-MNAR missingness driven by an
+    unmeasured state.  The independent flags remain visible even when the
+    primary status is ``NON_IDENTIFIABLE``.
+    """
+
+    status: ObservationIdentifiabilityStatus
+    sample_count: int
+    minimum_propensity: float
+    overlap_threshold: float
+    below_overlap_fraction: float
+    effective_sample_size: float
+    positivity_satisfied: bool
+    overlap_satisfied: bool
+    passive_mnar: bool
+    unmeasured_selection_confounding: bool
+    propensity_correction_identifies_estimand: bool
+    rationale: str
 
 
 @dataclass(frozen=True, slots=True)
@@ -112,6 +146,84 @@ class ObservationPropensityCorrector:
             raise ValueError("observe_propensities requires at least one propensity")
         self._mean_propensity = fmean(values)
         return self._mean_propensity
+
+    def diagnose_support(
+        self,
+        propensities: Iterable[float],
+        *,
+        passive_mnar: bool,
+        unmeasured_selection_confounding: bool,
+        overlap_threshold: float | None = None,
+    ) -> ObservationSupportDiagnostic:
+        """Report positivity, overlap, and passive-MNAR identifiability.
+
+        ``unmeasured_selection_confounding`` means the selection/detection
+        probability still depends on an unrecorded state after conditioning on
+        the logged observation process.  In that case inverse propensity
+        weights may be computable but do not identify the target estimand.
+        """
+
+        values = tuple(self._validate(value) for value in propensities)
+        if not values:
+            raise ValueError("support diagnosis requires at least one propensity")
+        threshold = (
+            self._minimum_propensity
+            if overlap_threshold is None and self._minimum_propensity is not None
+            else 0.05
+            if overlap_threshold is None
+            else float(overlap_threshold)
+        )
+        if not isfinite(threshold) or not 0.0 < threshold <= 1.0:
+            raise ValueError("overlap_threshold must lie in (0, 1]")
+
+        positivity_satisfied = all(value > 0.0 for value in values)
+        below = sum(value < threshold for value in values)
+        overlap_satisfied = positivity_satisfied and below == 0
+        positive_weights = tuple(1.0 / value for value in values if value > 0.0)
+        effective_sample_size = (
+            sum(positive_weights) ** 2 / sum(weight * weight for weight in positive_weights)
+            if positive_weights
+            else 0.0
+        )
+
+        if passive_mnar and unmeasured_selection_confounding:
+            status = ObservationIdentifiabilityStatus.NON_IDENTIFIABLE
+            rationale = (
+                "passive MNAR depends on an unmeasured selection variable; propensity "
+                "correction does not identify the target estimand"
+            )
+        elif not positivity_satisfied:
+            status = ObservationIdentifiabilityStatus.POSITIVITY_FAILURE
+            rationale = (
+                "at least one target stratum has zero observation probability; report "
+                "the unsupported stratum instead of extrapolating"
+            )
+        elif not overlap_satisfied:
+            status = ObservationIdentifiabilityStatus.WEAK_OVERLAP
+            rationale = (
+                "observed support falls below the declared overlap threshold; corrected "
+                "weights are high-variance and not paper-claim eligible"
+            )
+        else:
+            status = ObservationIdentifiabilityStatus.IDENTIFIABLE
+            rationale = "logged-variable positivity and overlap checks passed"
+
+        return ObservationSupportDiagnostic(
+            status=status,
+            sample_count=len(values),
+            minimum_propensity=min(values),
+            overlap_threshold=threshold,
+            below_overlap_fraction=below / len(values),
+            effective_sample_size=effective_sample_size,
+            positivity_satisfied=positivity_satisfied,
+            overlap_satisfied=overlap_satisfied,
+            passive_mnar=passive_mnar,
+            unmeasured_selection_confounding=unmeasured_selection_confounding,
+            propensity_correction_identifies_estimand=(
+                status is ObservationIdentifiabilityStatus.IDENTIFIABLE
+            ),
+            rationale=rationale,
+        )
 
     def weight_for(self, propensity: float) -> PropensityWeight:
         propensity = self._validate(propensity)

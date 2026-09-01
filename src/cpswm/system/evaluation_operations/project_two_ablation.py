@@ -2,11 +2,15 @@
 
 from __future__ import annotations
 
+from collections.abc import Sequence
 from dataclasses import dataclass, replace
 from enum import StrEnum
+from typing import Any, cast
 
 from cpswm.system.counterfactual_event_hypergraph import (
     EventHypothesisHistory,
+    HiddenEventEvidence,
+    MessagePassingResult,
     ProvenanceConstrainedMessagePassing,
 )
 
@@ -89,7 +93,7 @@ class ProjectTwoAblationProtocol:
 
     def topology_for(self, ablation: ProjectTwoAblation) -> ProjectTwoTopology:
         field, value = _CUTS[ablation]
-        return replace(self.full_topology, **{field: value})
+        return replace(self.full_topology, **cast(Any, {field: value}))
 
     def verify_cut(self, ablation: ProjectTwoAblation, topology: ProjectTwoTopology) -> bool:
         field, value = _CUTS[ablation]
@@ -109,7 +113,9 @@ class PriorOnlyMessagePassing:
     def __init__(self) -> None:
         self._delegate = ProvenanceConstrainedMessagePassing()
 
-    def consume(self, history: EventHypothesisHistory, evidence=()):
+    def consume(
+        self, history: EventHypothesisHistory, evidence: Sequence[HiddenEventEvidence] = ()
+    ) -> tuple[MessagePassingResult, EventHypothesisHistory]:
         del evidence
         return self._delegate.infer(history, ()), history
 
@@ -122,7 +128,9 @@ class IndependentEvidenceMessagePassing:
     def __init__(self) -> None:
         self._delegate = ProvenanceConstrainedMessagePassing()
 
-    def consume(self, history: EventHypothesisHistory, evidence=()):
+    def consume(
+        self, history: EventHypothesisHistory, evidence: Sequence[HiddenEventEvidence] = ()
+    ) -> tuple[MessagePassingResult, EventHypothesisHistory]:
         if not evidence:
             return self._delegate.infer(history, ()), history
         current = history
@@ -142,7 +150,9 @@ class EvaluatorNoDedupMessagePassing:
     def __init__(self) -> None:
         self._delegate = ProvenanceConstrainedMessagePassing()
 
-    def consume(self, history: EventHypothesisHistory, evidence=()):
+    def consume(
+        self, history: EventHypothesisHistory, evidence: Sequence[HiddenEventEvidence] = ()
+    ) -> tuple[MessagePassingResult, EventHypothesisHistory]:
         return self._delegate.infer(history, evidence), history
 
 
@@ -155,7 +165,9 @@ class EvaluatorNoProvenanceFirewallMessagePassing:
     def __init__(self) -> None:
         self._delegate = ProvenanceConstrainedMessagePassing()
 
-    def consume(self, history: EventHypothesisHistory, evidence=()):
+    def consume(
+        self, history: EventHypothesisHistory, evidence: Sequence[HiddenEventEvidence] = ()
+    ) -> tuple[MessagePassingResult, EventHypothesisHistory]:
         latest = history.latest
         rewritten = tuple(
             item.model_copy(

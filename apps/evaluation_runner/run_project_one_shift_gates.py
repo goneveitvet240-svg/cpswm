@@ -15,6 +15,7 @@ from pydantic import TypeAdapter
 REPOSITORY_ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(REPOSITORY_ROOT / "src"))
 
+from cpswm.system.attestation import Ed25519AttestationSigner  # noqa: E402
 from cpswm.system.evaluation_operations.online_shift_attribution import (  # noqa: E402
     OnlineShiftGeneratedCase,
     OnlineShiftSplit,
@@ -39,8 +40,10 @@ from cpswm.system.evaluation_operations.report_output import (  # noqa: E402
     write_report_atomic,
 )
 from cpswm.system.evaluation_operations.sealed_test_split import (  # noqa: E402
+    ExternalSealedTestSplit,
+    ExternalTestUnsealGrant,
     SealedSplitMetadata,
-    SealedTestSplit,
+    issue_external_test_unseal_grant,
     split_artifact_manifest_sha256,
 )
 from cpswm.system.reproducibility import content_sha256  # noqa: E402
@@ -270,18 +273,35 @@ def _run_evaluator(args: argparse.Namespace) -> int:
         log_path=event_log_path,
     )
     atg2 = authority.commit_atg2(draft)
-    sealed_test = SealedTestSplit(
+    test_custodian_signer = Ed25519AttestationSigner.generate(
+        key_id=f"{config.authority_key_id}:test-custodian",
+    )
+    sealed_test = ExternalSealedTestSplit(
         test,
         experiment_id=topology.manifest.experiment_id,
         test_split_sha256=content_sha256(test),
         required_validation_split_sha256=content_sha256(validation),
-        required_receipt_scope="project-one-shift-atg3",
+        verifier=test_custodian_signer.verifier(),
     )
+    unseal_grant = issue_external_test_unseal_grant(
+        ExternalTestUnsealGrant(
+            experiment_id=topology.manifest.experiment_id,
+            validation_split_sha256=content_sha256(validation),
+            test_split_sha256=content_sha256(test),
+            authority_receipt_sha256=atg2.receipt.authority_receipt_sha256,
+            custodian_run_id=f"{topology.manifest.experiment_id}:atg3",
+        ),
+        signer=test_custodian_signer,
+    )
+    # From this point until the signed grant is consumed, TEST cases are owned
+    # by the custodian process; the gate runner receives metadata and a verifier.
+    del test
     atg3 = ProjectOneShiftGateRunner().run_atg3(
         topology,
         atg2,
         sealed_test,
         authority=authority,
+        unseal_grant=unseal_grant,
         expected_code_snapshot_sha256=snapshot_hash,
         power_analysis=config.power_analysis,
         bootstrap_samples=config.bootstrap_samples,

@@ -47,7 +47,7 @@ class ProjectOneMethodEvidence:
         return cls(**asdict(record))
 
     def to_dataset_record(self) -> ProjectOneDatasetRecord:
-        return ProjectOneDatasetRecord(**asdict(self))  # type: ignore[arg-type]
+        return ProjectOneDatasetRecord(**asdict(self))
 
     @property
     def content_sha256(self) -> str:

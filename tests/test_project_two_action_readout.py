@@ -11,7 +11,7 @@ machinery produces.
 from __future__ import annotations
 
 from functools import lru_cache
-from uuid import UUID
+from uuid import UUID, uuid4
 
 import pytest
 
@@ -68,6 +68,7 @@ def test_the_default_readout_is_the_frozen_pooled_alpha_boundary() -> None:
         "hybrid_alpha": 1.0,
         "regime_local": 0.0,
         "surviving": 0.0,
+        "fast_action": 0.0,
     }
 
 
@@ -76,10 +77,16 @@ def test_the_default_readout_is_the_frozen_pooled_alpha_boundary() -> None:
     [
         {"owner_mass_floor": 1.5},
         {"owner_mass_floor": -0.1},
+        {"fast_owner_mass_floor": 1.5},
+        {"fast_owner_mass_floor": -0.1},
+        {"fast_confirmation_observations": 0},
+        {"unconfirmed_fast_discount": -0.1},
+        {"unconfirmed_fast_discount": 1.1},
         {"recency_half_life": -1.0},
         {"pending_correction_discount": 1.5},
         {"hybrid_alpha_weight": -1.0},
         {"surviving_revision_weight": -0.5},
+        {"fast_action_weight": -0.5},
     ],
 )
 def test_an_ill_posed_readout_policy_is_rejected_at_construction(kwargs) -> None:
@@ -92,10 +99,27 @@ def test_a_named_readout_resolves_to_exactly_one_component() -> None:
         (ActionReadout.HYBRID_ALPHA, "hybrid_alpha"),
         (ActionReadout.REGIME_LOCAL, "regime_local"),
         (ActionReadout.SURVIVING_OWNER_REVISIONS, "surviving"),
+        (ActionReadout.LATEST_OWNER_EVENT, "fast_action"),
     ):
         weights = ActionReadoutConfig(readout=name).component_weights
         assert weights[key] == 1.0
         assert sum(weights.values()) == 1.0
+
+
+def test_dual_timescale_readout_exposes_explicit_fast_and_slow_weights() -> None:
+    config = ActionReadoutConfig(
+        readout=ActionReadout.DUAL_TIMESCALE_REVERSIBLE,
+        fast_action_weight=0.7,
+        surviving_revision_weight=0.2,
+        regime_local_weight=0.1,
+        hybrid_alpha_weight=0.0,
+    )
+    assert config.component_weights == {
+        "hybrid_alpha": 0.0,
+        "regime_local": 0.1,
+        "surviving": 0.2,
+        "fast_action": 0.7,
+    }
 
 
 # --------------------------------------------------------------------------
@@ -268,6 +292,77 @@ def test_recency_decay_moves_mass_toward_the_most_recent_surviving_evidence() ->
         spine.current_snapshot, readout=decayed
     )
     assert decayed_distribution[newest] >= flat_distribution[newest]
+
+
+def test_latest_owner_readout_is_the_explicit_pchmp_top1_control() -> None:
+    """The strong control reads PCHMP only; it never peeks at evaluator truth."""
+
+    config = ActionReadoutConfig(
+        readout=ActionReadout.LATEST_OWNER_EVENT,
+        fast_owner_mass_floor=0.5,
+    )
+    for episode in _episodes():
+        state = _FullProjectTwoMethod(
+            episode,
+            owner_threshold=0.4,
+            action_readout=config,
+            feedback_mode="none",
+        )
+        last_owner = None
+        for step in episode.steps:
+            state.observe(step)
+            result = state.step_results.get(step.step_id)
+            if result is not None and result.actor_posterior[state.episode.owner_actor_key] >= 0.5:
+                assert step.after is not None
+                last_owner = step.after.detected_location_id
+            prediction = state.predict().put_back
+            if last_owner is not None:
+                assert prediction == last_owner
+            state.feedback(step)
+
+
+def test_orrer_feedback_replaces_the_fast_lineage_head_before_the_next_action() -> None:
+    config = ActionReadoutConfig(readout=ActionReadout.LATEST_OWNER_EVENT)
+    state = _FullProjectTwoMethod(_episodes()[0], owner_threshold=0.4, action_readout=config)
+    for step in state.episode.steps:
+        state.observe(step)
+        state.predict()
+        state.feedback(step)
+        if not state.revision_action_traces:
+            continue
+        trace = state.revision_action_traces[-1]
+        assert trace.superseded_revision_id not in state.spine._fast_action_events
+        assert trace.corrected_revision_id in state.spine._fast_action_events
+        return
+    pytest.fail("validation episode produced no ORRER feedback revision")
+
+
+def test_ciav_verification_updates_only_the_fast_action_ledger() -> None:
+    state = _FullProjectTwoMethod(
+        _episodes()[0],
+        owner_threshold=0.4,
+        action_readout=ActionReadoutConfig(readout=ActionReadout.LATEST_OWNER_EVENT),
+    )
+    step = state.episode.steps[0]
+    state.observe(step)
+    result = state.step_results[step.step_id]
+    assert state.spine.current_cause_snapshot is not None
+    committed_before = dict(state.spine._committed_events)
+    hybrid_before = {location: state.spine.hybrid_alpha(location) for location in state.locations}
+    receipt = state.spine.apply_fast_action_verification(
+        revision_id=result.event_revision_id,
+        verified_owner_probability=0.01,
+        source_record_id=uuid4(),
+    )
+    assert receipt.long_term_write is False
+    assert receipt.owner_mass_after == pytest.approx(0.01)
+    assert state.spine._fast_action_events[result.event_revision_id].owner_mass == pytest.approx(
+        0.01
+    )
+    assert state.spine._committed_events == committed_before
+    assert {location: state.spine.hybrid_alpha(location) for location in state.locations} == (
+        hybrid_before
+    )
 
 
 # --------------------------------------------------------------------------

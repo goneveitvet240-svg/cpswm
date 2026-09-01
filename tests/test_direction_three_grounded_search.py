@@ -305,6 +305,36 @@ def test_multiview_identity_requires_independent_evidence_and_can_recommend_touc
     assert resolved.confirmed_candidate_id == first
 
 
+def test_identity_verifier_preserves_explicit_unknown_as_latent_mass():
+    known, unknown = uuid4(), uuid4()
+    request = IdentityVerificationRequest(
+        candidate_ids=(known, unknown),
+        prior_probabilities={known: 0.2, unknown: 0.8},
+        unknown_candidate_id=unknown,
+        view_evidence=(
+            IdentityViewEvidence(
+                evidence_cluster_id=uuid4(),
+                modality=VerificationModality.RGB,
+                candidate_likelihoods={known: 0.1, unknown: 0.9},
+                quality=1.0,
+            ),
+            IdentityViewEvidence(
+                evidence_cluster_id=uuid4(),
+                modality=VerificationModality.RGBD,
+                candidate_likelihoods={known: 0.1, unknown: 0.9},
+                quality=1.0,
+            ),
+        ),
+        confirmation_threshold=0.8,
+        ambiguity_margin=0.2,
+    )
+    result = MultiViewIdentityVerifier().verify(request)
+    assert result.status is ResolutionStatus.UNKNOWN
+    assert result.unknown_candidate_id == unknown
+    assert result.confirmed_candidate_id is None
+    assert result.posterior_probabilities[unknown] > 0.8
+
+
 def test_tactile_identity_evidence_requires_authorization_and_safety():
     first, second = uuid4(), uuid4()
     tactile = IdentityViewEvidence(
@@ -989,6 +1019,7 @@ def test_s3_1_oracle_loop_uses_not_found_as_uncertain_evidence_and_replans(
         calibration_domain="symbolic-household-v0",
         model_version="oracle-search-outcome@0.1",
     )
+    canonical_log = AppendOnlyTransactionLog()
     trace = DirectionThreePipeline().run_closed_loop(
         request,
         action_provider=OracleObservationActionProvider(()),
@@ -1006,7 +1037,7 @@ def test_s3_1_oracle_loop_uses_not_found_as_uncertain_evidence_and_replans(
         outcome_model_provider=OracleActionOutcomeModelProvider(
             {RobotActionType.SEARCH: search_model}
         ),
-        canonical_log=AppendOnlyTransactionLog(),
+        canonical_log=canonical_log,
     )
 
     assert trace.selected_target_candidate_id == second_id
@@ -1016,6 +1047,13 @@ def test_s3_1_oracle_loop_uses_not_found_as_uncertain_evidence_and_replans(
         {RobotActionOutcome.SUCCESS: 1.0},
     ]
     assert trace.feedback_commit_sequences == (1, 2)
+    assert trace.execution_feedback[0].action_outcome_model_version == search_model.model_version
+    assert (
+        trace.execution_feedback[0].action_outcome_calibration_domain
+        == search_model.calibration_domain
+    )
+    committed_feedback = canonical_log.read()[0].records[-1].envelope.payload
+    assert committed_feedback["action_outcome_model_version"] == search_model.model_version
 
 
 def test_oracle_observation_rejects_planning_update_model_drift(metadata_factory, entity_factory):

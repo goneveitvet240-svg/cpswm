@@ -3,10 +3,12 @@
 from __future__ import annotations
 
 from math import exp, log
+from uuid import UUID
 
 from cpswm.contracts.grounded_search import (
     IdentityVerificationRequest,
     IdentityVerificationResult,
+    IdentityViewEvidence,
     ResolutionStatus,
     VerificationModality,
 )
@@ -17,7 +19,7 @@ class MultiViewIdentityVerifier:
 
     def verify(self, request: IdentityVerificationRequest) -> IdentityVerificationResult:
         request = IdentityVerificationRequest.model_validate(request.model_dump(mode="python"))
-        best_by_cluster = {}
+        best_by_cluster: dict[UUID, IdentityViewEvidence] = {}
         for evidence in request.view_evidence:
             previous = best_by_cluster.get(evidence.evidence_cluster_id)
             if previous is None or evidence.quality > previous.quality:
@@ -52,9 +54,18 @@ class MultiViewIdentityVerifier:
             and best_probability >= request.confirmation_threshold
             and margin >= request.ambiguity_margin
         ):
+            if best_id == request.unknown_candidate_id:
+                return IdentityVerificationResult(
+                    posterior_probabilities=posteriors,
+                    unknown_candidate_id=request.unknown_candidate_id,
+                    independent_view_count=independent_view_count,
+                    status=ResolutionStatus.UNKNOWN,
+                    explanation_codes=("open_set_identity_remains_unknown",),
+                )
             return IdentityVerificationResult(
                 posterior_probabilities=posteriors,
                 confirmed_candidate_id=best_id,
+                unknown_candidate_id=request.unknown_candidate_id,
                 independent_view_count=independent_view_count,
                 status=ResolutionStatus.RESOLVED,
                 explanation_codes=("independent_multiview_confirmation",),
@@ -69,6 +80,7 @@ class MultiViewIdentityVerifier:
             reason = "additional_independent_view_required"
         return IdentityVerificationResult(
             posterior_probabilities=posteriors,
+            unknown_candidate_id=request.unknown_candidate_id,
             independent_view_count=max(1, independent_view_count),
             status=ResolutionStatus.AMBIGUOUS,
             recommended_modality=recommended,

@@ -50,6 +50,21 @@ def test_full_replay_reports_actor_mechanism_strata_and_bootstrap_groups():
         assert key in report["strata"]["mechanism"]
     assert report["groups"]["household"]
     assert report["groups"]["object_family"]
+    for metric in (
+        "hidden_event_hypothesis_accuracy",
+        "revision_accuracy",
+        "mean_unresolved_mass",
+    ):
+        interval = report["aggregate_metrics"][metric]
+        assert interval["resampling_unit"] == "episode_id"
+        assert interval["cluster_n"] == len(dataset.episodes)
+    sensitivity = report["aggregate_metrics"]["diagnostic_cluster_sensitivity"]
+    assert all(
+        item["resampling_unit"] == "household_id" for item in sensitivity["household"].values()
+    )
+    assert all(
+        item["resampling_unit"] == "object_family" for item in sensitivity["object_family"].values()
+    )
     assert report["metric_semantics"]["action_utility_evidence"]
     assert report["metric_semantics"]["diagnostic_only"]
     assert report["metric_semantics"]["operational_not_paper_outcomes"] == [

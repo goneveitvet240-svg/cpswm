@@ -107,6 +107,14 @@ class GroundedTaskExecution(ContractModel):
                 raise ValueError("execution feedback must bind the executed action ID")
             if feedback.action_type != self.executed_action_type:
                 raise ValueError("execution feedback must bind the executed action type")
+            feedback_model_binding = (
+                feedback.action_outcome_model_version,
+                feedback.action_outcome_calibration_domain,
+            )
+            if feedback_model_binding[0] is not None and feedback_model_binding != model_binding:
+                raise ValueError(
+                    "execution feedback outcome-model binding must match the execution"
+                )
             if feedback.target_entity is None:
                 raise ValueError("execution feedback requires the actual target entity")
             if feedback.target_entity != self.target_entity:
@@ -139,10 +147,15 @@ class GroundedTaskExecution(ContractModel):
                 "every execution observation opportunity must be referenced by feedback"
             )
 
-        records = (*opportunities, *self.feedback_records)
-        households = {item.metadata.household_id for item in records}
-        sessions = {item.metadata.session_id for item in records}
-        traces = {item.metadata.trace_id for item in records}
+        households = {item.metadata.household_id for item in opportunities} | {
+            item.metadata.household_id for item in self.feedback_records
+        }
+        sessions = {item.metadata.session_id for item in opportunities} | {
+            item.metadata.session_id for item in self.feedback_records
+        }
+        traces = {item.metadata.trace_id for item in opportunities} | {
+            item.metadata.trace_id for item in self.feedback_records
+        }
         if len(households) != 1:
             raise ValueError("one grounded task execution cannot mix households")
         if len(sessions) != 1:

@@ -16,9 +16,18 @@ from dataclasses import dataclass, replace
 from datetime import datetime
 from enum import StrEnum
 from math import exp, isfinite, log, tanh
+from typing import TYPE_CHECKING
 from uuid import NAMESPACE_URL, UUID, uuid4, uuid5
 
 import numpy as np
+
+if TYPE_CHECKING:
+    from cpswm.system.counterfactual_event_hypergraph.feedback_revision_loop import (
+        EventRevisionOutcome as ProjectTwoEventRevisionOutcome,
+    )
+    from cpswm.system.counterfactual_event_hypergraph.feedback_revision_loop import (
+        ProjectOneStatRequest,
+    )
 
 from cpswm.contracts import (
     ActionOutcomeLikelihoodModel,
@@ -72,6 +81,7 @@ from cpswm.world_model.habits_transitions import (
     HabitPrediction,
     HabitUpdateAudit,
     HierarchicalDirichletHabitModel,
+    JointCauseSnapshot,
     ObservationPropensityCorrector,
     PropensityCorrectionMode,
     PropensityWeight,
@@ -80,7 +90,7 @@ from cpswm.world_model.habits_transitions import (
 StructuredEventEvidence = ActorResponsibilityEvidence | EventMechanismEvidence | RoleBindingEvidence
 
 
-def _project_one_request_fingerprint(request) -> str:
+def _project_one_request_fingerprint(request: ProjectOneStatRequest) -> str:
     payload = {
         "kind": request.kind.value,
         "superseded_revision_id": str(request.superseded_revision_id),
@@ -156,6 +166,25 @@ class PrototypeStepResult:
 
 
 @dataclass(frozen=True, slots=True)
+class FastActionVerificationReceipt:
+    """Auditable CIAV update that is forbidden from touching slow statistics."""
+
+    receipt_id: UUID
+    revision_id: UUID
+    source_record_id: UUID
+    owner_mass_before: float
+    owner_mass_after: float
+    changed: bool
+    long_term_write: bool = False
+
+    def __post_init__(self) -> None:
+        _require_probability(self.owner_mass_before, "owner_mass_before")
+        _require_probability(self.owner_mass_after, "owner_mass_after")
+        if self.long_term_write:
+            raise ValueError("fast action verification cannot authorize a long-term write")
+
+
+@dataclass(frozen=True, slots=True)
 class PrototypeDecisionRecord:
     old_regime: str
     new_regime: str
@@ -219,6 +248,8 @@ class ActionReadout(StrEnum):
     REGIME_LOCAL = "regime_local"
     SURVIVING_OWNER_REVISIONS = "surviving_owner_revisions"
     REVISION_AWARE = "revision_aware"
+    LATEST_OWNER_EVENT = "latest_owner_event"
+    DUAL_TIMESCALE_REVERSIBLE = "dual_timescale_reversible"
 
 
 @dataclass(frozen=True, slots=True)
@@ -240,12 +271,22 @@ class ActionReadoutConfig:
     hybrid_alpha_weight: float = 1.0
     regime_local_weight: float = 0.0
     surviving_revision_weight: float = 0.0
+    fast_action_weight: float = 0.0
+    fast_owner_mass_floor: float = 0.5
+    fast_confirmation_observations: int = 1
+    unconfirmed_fast_discount: float = 1.0
     pending_correction_discount: float = 1.0
     active_regime_only: bool = False
 
     def __post_init__(self) -> None:
         if not 0.0 <= self.owner_mass_floor <= 1.0:
             raise ValueError("owner_mass_floor must be a probability")
+        if not 0.0 <= self.fast_owner_mass_floor <= 1.0:
+            raise ValueError("fast_owner_mass_floor must be a probability")
+        if self.fast_confirmation_observations < 1:
+            raise ValueError("fast_confirmation_observations must be positive")
+        if not 0.0 <= self.unconfirmed_fast_discount <= 1.0:
+            raise ValueError("unconfirmed_fast_discount must be in [0, 1]")
         if self.recency_half_life < 0.0:
             raise ValueError("recency_half_life must be non-negative")
         if not 0.0 <= self.pending_correction_discount <= 1.0:
@@ -254,6 +295,7 @@ class ActionReadoutConfig:
             "hybrid_alpha_weight",
             "regime_local_weight",
             "surviving_revision_weight",
+            "fast_action_weight",
         ):
             if getattr(self, name) < 0.0:
                 raise ValueError(f"{name} must be non-negative")
@@ -263,15 +305,45 @@ class ActionReadoutConfig:
         """Resolve the named readout into explicit component weights."""
 
         if self.readout is ActionReadout.HYBRID_ALPHA:
-            return {"hybrid_alpha": 1.0, "regime_local": 0.0, "surviving": 0.0}
+            return {
+                "hybrid_alpha": 1.0,
+                "regime_local": 0.0,
+                "surviving": 0.0,
+                "fast_action": 0.0,
+            }
         if self.readout is ActionReadout.REGIME_LOCAL:
-            return {"hybrid_alpha": 0.0, "regime_local": 1.0, "surviving": 0.0}
+            return {
+                "hybrid_alpha": 0.0,
+                "regime_local": 1.0,
+                "surviving": 0.0,
+                "fast_action": 0.0,
+            }
         if self.readout is ActionReadout.SURVIVING_OWNER_REVISIONS:
-            return {"hybrid_alpha": 0.0, "regime_local": 0.0, "surviving": 1.0}
+            return {
+                "hybrid_alpha": 0.0,
+                "regime_local": 0.0,
+                "surviving": 1.0,
+                "fast_action": 0.0,
+            }
+        if self.readout is ActionReadout.LATEST_OWNER_EVENT:
+            return {
+                "hybrid_alpha": 0.0,
+                "regime_local": 0.0,
+                "surviving": 0.0,
+                "fast_action": 1.0,
+            }
+        if self.readout is ActionReadout.DUAL_TIMESCALE_REVERSIBLE:
+            return {
+                "hybrid_alpha": self.hybrid_alpha_weight,
+                "regime_local": self.regime_local_weight,
+                "surviving": self.surviving_revision_weight,
+                "fast_action": self.fast_action_weight,
+            }
         return {
             "hybrid_alpha": self.hybrid_alpha_weight,
             "regime_local": self.regime_local_weight,
             "surviving": self.surviving_revision_weight,
+            "fast_action": 0.0,
         }
 
 
@@ -351,6 +423,13 @@ class CorePrototypeSpine:
         self._feedback_policy = DefaultPrototypeFeedbackPolicy(self.loop_config)
         self._committed_events: dict[UUID, _CommittedPrototypeEvent] = {}
         self._observed_events: dict[UUID, _CommittedPrototypeEvent] = {}
+        # Fast action memory is deliberately separate from the committed long-term
+        # stores.  Every PCHMP-attributed observation enters this reversible ledger
+        # immediately, including observations that CF-BOCPD/RGRC quarantine.  A
+        # later ORRER correction replaces the lineage head here even when project
+        # one correctly refuses the corresponding long-term statistic write.
+        self._fast_action_events: dict[UUID, _CommittedPrototypeEvent] = {}
+        self._fast_action_verification_receipts: list[FastActionVerificationReceipt] = []
         self._derived_event_archive: dict[UUID, _CommittedPrototypeEvent] = {}
         self._derived_event_lifecycle: dict[UUID, DerivedEvidenceLifecycle] = {}
         self._revision_feedback_bindings: dict[UUID, tuple[UUID, UUID]] = {}
@@ -360,11 +439,12 @@ class CorePrototypeSpine:
         self._last_household_id: UUID | None = None
         self._last_observed_location: UUID | None = None
         self._last_ccrr_decision = "stay"
+        self._last_cause_snapshot: JointCauseSnapshot | None = None
         # fingerprint -> (request, revision whose promotion unblocks it, mode).
         # ``apply_request`` means the original request has not run; ``promotion_finalizes``
         # means the corrected event is already in the CCRR quarantine and its later
         # ordinary promotion is the exactly-once statistic application.
-        self._deferred_project_one_requests: dict[str, tuple[object, UUID, str]] = {}
+        self._deferred_project_one_requests: dict[str, tuple[ProjectOneStatRequest, UUID, str]] = {}
         self._project_one_application_receipts: dict[
             UUID, list[ProjectOneRequestApplicationReceipt]
         ] = defaultdict(list)
@@ -420,7 +500,17 @@ class CorePrototypeSpine:
     def current_snapshot(self) -> BeliefSnapshot:
         return self._hybrid_loop.current_snapshot()
 
-    def rls_regime_snapshot(self, regime_id: str) -> dict:
+    @property
+    def current_cause_snapshot(self) -> JointCauseSnapshot | None:
+        """Latest CF-BOCPD posterior available to CIAV after a visible observation."""
+
+        return self._last_cause_snapshot
+
+    @property
+    def fast_action_verification_receipts(self) -> tuple[FastActionVerificationReceipt, ...]:
+        return tuple(self._fast_action_verification_receipts)
+
+    def rls_regime_snapshot(self, regime_id: str) -> dict[str, object]:
         return self._regimes.regime_snapshot(regime_id)
 
     def hybrid_alpha(self, location_id: UUID) -> float:
@@ -698,6 +788,7 @@ class CorePrototypeSpine:
             owner_probability=owner_mass,
             evidence_source_record_ids=evidence.source_record_ids,
         )
+        self._last_cause_snapshot = assessment.snapshot
         if assessment.new_regime != self.active_regime:
             self.switch_regime(assessment.new_regime, event_time=transition.after.detection_time)
         self._last_ccrr_decision = (
@@ -737,6 +828,7 @@ class CorePrototypeSpine:
             regime_frame=regime_frame,
         )
         self._observed_events[current_event.revision_id] = current_event
+        self._fast_action_events[current_event.revision_id] = current_event
 
         promoted_audits: dict[UUID, HabitUpdateAudit] = {}
         if assessment.conclusion is HabitStateConclusion.HABIT_CHANGE:
@@ -745,6 +837,12 @@ class CorePrototypeSpine:
                     quarantined,
                     rls_sample=replace(quarantined.rls_sample, regime_id=regime),
                 )
+                # A delayed feedback replay can reclassify a quarantined event
+                # into the committed store before the next online confirmation
+                # closes the old quarantine window.  Promotion is exactly-once:
+                # never apply its sufficient statistics a second time.
+                if promoted.revision_id in self._committed_events:
+                    continue
                 promoted_audits[promoted.revision_id] = self._commit_event(promoted)
             self._quarantined_events.clear()
         elif assessment.conclusion is HabitStateConclusion.SHORT_TERM_DISTURBANCE:
@@ -1082,6 +1180,8 @@ class CorePrototypeSpine:
             "corrector": deepcopy(self._corrector),
             "committed_events": dict(self._committed_events),
             "observed_events": dict(self._observed_events),
+            "fast_action_events": dict(self._fast_action_events),
+            "fast_action_verification_receipts": list(self._fast_action_verification_receipts),
             "derived_event_archive": dict(self._derived_event_archive),
             "derived_event_lifecycle": dict(self._derived_event_lifecycle),
             "feedback_bindings": dict(self._revision_feedback_bindings),
@@ -1092,6 +1192,7 @@ class CorePrototypeSpine:
             "last_household_id": self._last_household_id,
             "switch_sequence": self._switch_sequence,
             "last_ccrr_decision": self._last_ccrr_decision,
+            "last_cause_snapshot": self._last_cause_snapshot,
             "deferred_project_one_requests": dict(self._deferred_project_one_requests),
             "project_one_application_receipts": deepcopy(self._project_one_application_receipts),
             "hybrid_export": self._hybrid_loop.ledger.export_state(),
@@ -1105,6 +1206,8 @@ class CorePrototypeSpine:
         self._corrector = checkpoint["corrector"]  # type: ignore[assignment]
         self._committed_events = checkpoint["committed_events"]  # type: ignore[assignment]
         self._observed_events = checkpoint["observed_events"]  # type: ignore[assignment]
+        self._fast_action_events = checkpoint["fast_action_events"]  # type: ignore[assignment]
+        self._fast_action_verification_receipts = checkpoint["fast_action_verification_receipts"]  # type: ignore[assignment]
         self._derived_event_archive = checkpoint["derived_event_archive"]  # type: ignore[assignment]
         self._derived_event_lifecycle = checkpoint["derived_event_lifecycle"]  # type: ignore[assignment]
         self._revision_feedback_bindings = checkpoint["feedback_bindings"]  # type: ignore[assignment]
@@ -1115,6 +1218,7 @@ class CorePrototypeSpine:
         self._last_household_id = checkpoint["last_household_id"]  # type: ignore[assignment]
         self._switch_sequence = checkpoint["switch_sequence"]  # type: ignore[assignment]
         self._last_ccrr_decision = checkpoint["last_ccrr_decision"]  # type: ignore[assignment]
+        self._last_cause_snapshot = checkpoint["last_cause_snapshot"]  # type: ignore[assignment]
         self._deferred_project_one_requests = checkpoint["deferred_project_one_requests"]  # type: ignore[assignment]
         self._project_one_application_receipts = checkpoint["project_one_application_receipts"]  # type: ignore[assignment]
         self._hybrid_loop._ledger = type(self._hybrid_loop.ledger).restore_from_export(
@@ -1128,7 +1232,9 @@ class CorePrototypeSpine:
         belief_map._snapshot_id = snapshot.snapshot_id
         self._hybrid_loop._map = belief_map
 
-    def apply_project_one_stat_request(self, request) -> ProjectOneRequestApplicationReceipt:
+    def apply_project_one_stat_request(
+        self, request: ProjectOneStatRequest
+    ) -> ProjectOneRequestApplicationReceipt:
         """Apply/defer/reject one request with exactly-once receipt semantics."""
 
         from cpswm.system.counterfactual_event_hypergraph.feedback_revision_loop import (
@@ -1296,7 +1402,7 @@ class CorePrototypeSpine:
     def _record_request_receipt(
         self,
         *,
-        request,
+        request: ProjectOneStatRequest,
         fingerprint: str,
         status: ProjectOneRequestApplicationStatus,
         old_snapshot: BeliefSnapshot,
@@ -1329,7 +1435,9 @@ class CorePrototypeSpine:
         history.append(receipt)
         return receipt
 
-    def _rejected_request(self, request, fingerprint: str, rationale: str):
+    def _rejected_request(
+        self, request: ProjectOneStatRequest, fingerprint: str, rationale: str
+    ) -> ProjectOneRequestApplicationReceipt:
         return self._record_request_receipt(
             request=request,
             fingerprint=fingerprint,
@@ -1366,7 +1474,10 @@ class CorePrototypeSpine:
         self._project_one_application_receipts[applied.source_feedback_record_id].append(receipt)
         return receipt
 
-    def publish_project_two_revision_snapshot(self, outcome) -> BeliefSnapshot:
+    def publish_project_two_revision_snapshot(
+        self, outcome: ProjectTwoEventRevisionOutcome
+    ) -> BeliefSnapshot:
+        self._apply_fast_action_revision(outcome)
         payload = {
             "corrected_revision_id": str(outcome.corrected_revision_id),
             "actor_posterior": sorted(outcome.actor_posterior_after.items()),
@@ -1382,6 +1493,78 @@ class CorePrototypeSpine:
             unresolved_probability=min(
                 1.0, outcome.unresolved_after + outcome.unknown_mechanism_after
             ),
+        )
+
+    def apply_fast_action_verification(
+        self,
+        *,
+        revision_id: UUID,
+        verified_owner_probability: float,
+        source_record_id: UUID,
+    ) -> FastActionVerificationReceipt:
+        """Apply one realized micro-verification only to the reversible fast ledger."""
+
+        _require_probability(verified_owner_probability, "verified_owner_probability")
+        event = self._fast_action_events.get(revision_id)
+        if event is None:
+            raise KeyError(f"unknown fast-action revision {revision_id}")
+        before = event.owner_mass
+        changed = abs(before - verified_owner_probability) > 1e-12
+        if changed:
+            self._fast_action_events[revision_id] = replace(
+                event,
+                owner_mass=verified_owner_probability,
+                statistical_owner_weight=verified_owner_probability,
+                source_record_id=source_record_id,
+            )
+        receipt = FastActionVerificationReceipt(
+            receipt_id=uuid5(
+                NAMESPACE_URL,
+                f"ciav:{revision_id}:{source_record_id}:{verified_owner_probability:.17g}",
+            ),
+            revision_id=revision_id,
+            source_record_id=source_record_id,
+            owner_mass_before=before,
+            owner_mass_after=verified_owner_probability,
+            changed=changed,
+        )
+        self._fast_action_verification_receipts.append(receipt)
+        return receipt
+
+    def _apply_fast_action_revision(self, outcome: ProjectTwoEventRevisionOutcome) -> None:
+        """Replace one fast-action lineage head without authorizing a slow write.
+
+        ORRER owns revision semantics and RGRC owns long-term write permission.
+        The next robot action must not be forced to wait for the latter.  This
+        method therefore updates only the fast ledger consumed by the
+        dual-timescale readout; Dirichlet, RLS, Hybrid, and CCRR state are
+        untouched.
+        """
+
+        original = self._fast_action_events.pop(outcome.superseded_revision_id, None)
+        if original is None:
+            return
+        resolved = {
+            UUID(key): probability
+            for key, probability in outcome.location_posterior_after.items()
+            if key != "unresolved_location" and UUID(key) in self.locations
+        }
+        corrected_location = outcome.corrected_destination_location_id
+        if corrected_location is None and resolved:
+            corrected_location = max(
+                resolved,
+                key=lambda location: (resolved[location], str(location)),
+            )
+        if corrected_location is None:
+            corrected_location = original.location_id
+        self._fast_action_events[outcome.corrected_revision_id] = replace(
+            original,
+            revision_id=outcome.corrected_revision_id,
+            owner_mass=outcome.owner_mass_after,
+            statistical_owner_weight=outcome.owner_mass_after,
+            location_id=corrected_location,
+            source_record_id=outcome.source_feedback_record_id,
+            belief_snapshot_id=None,
         )
 
     def action_location_distribution(
@@ -1411,6 +1594,14 @@ class CorePrototypeSpine:
             components.append(
                 (weights["surviving"], self._surviving_owner_revision_component(config))
             )
+        fast_weight = weights["fast_action"]
+        if (
+            fast_weight > 0.0
+            and self._fast_action_confirmation_count(config) < config.fast_confirmation_observations
+        ):
+            fast_weight *= config.unconfirmed_fast_discount
+        if fast_weight > 0.0:
+            components.append((fast_weight, self._latest_owner_event_component(config)))
         mixed = self._mix_action_components(components)
         return self._apply_pending_correction_discount(mixed, config)
 
@@ -1484,6 +1675,56 @@ class CorePrototypeSpine:
             weights[event.location_id] += max(0.0, event.statistical_owner_weight) * decay
         return weights
 
+    def _latest_owner_event_component(self, config: ActionReadoutConfig) -> dict[UUID, float]:
+        """One-step action belief from the latest still-live owner event.
+
+        This is the explicit strong control suggested by the D0 diagnosis.  It
+        reads PCHMP owner mass, not evaluator truth, and it is reversible because
+        ``_apply_fast_action_revision`` replaces the corresponding ORRER lineage
+        head before the next planner read.  It never grants permission to write
+        the event into long-term habit statistics.
+        """
+
+        eligible = [
+            event
+            for event in self._fast_action_events.values()
+            if event.owner_mass >= config.fast_owner_mass_floor
+            and event.location_id in self.locations
+        ]
+        if not eligible:
+            return dict.fromkeys(self.locations, 0.0)
+        latest = max(
+            eligible,
+            key=lambda event: (event.evidence.event_time, str(event.revision_id)),
+        )
+        return {
+            location: (max(latest.owner_mass, 1e-12) if location == latest.location_id else 0.0)
+            for location in self.locations
+        }
+
+    def _fast_action_confirmation_count(self, config: ActionReadoutConfig) -> int:
+        """Consecutive owner-attributed fast events supporting the latest location."""
+
+        ordered = sorted(
+            (
+                event
+                for event in self._fast_action_events.values()
+                if event.owner_mass >= config.fast_owner_mass_floor
+                and event.location_id in self.locations
+            ),
+            key=lambda event: (event.evidence.event_time, str(event.revision_id)),
+            reverse=True,
+        )
+        if not ordered:
+            return 0
+        location = ordered[0].location_id
+        confirmations = 0
+        for event in ordered:
+            if event.location_id != location:
+                break
+            confirmations += 1
+        return confirmations
+
     def _mix_action_components(
         self, components: Sequence[tuple[float, Mapping[UUID, float]]]
     ) -> dict[UUID, float]:
@@ -1501,7 +1742,10 @@ class CorePrototypeSpine:
         return {location: value / used for location, value in mixed.items()}
 
     def _update_action_scoped_negative(
-        self, request, fingerprint: str, status: ProjectOneRequestApplicationStatus
+        self,
+        request: ProjectOneStatRequest,
+        fingerprint: str,
+        status: ProjectOneRequestApplicationStatus,
     ) -> None:
         """Keep a refused correction's action consequence, never its statistic.
 
@@ -1738,10 +1982,12 @@ class CorePrototypeSpine:
             feedback.target_entity.entity_id != self.object_instance_id
         ):
             raise ValueError("feedback revision object does not match the prototype object")
-        expected_location = event.location_id if event is not None else archived_binding[0]
-        expected_snapshot_id = (
-            event.belief_snapshot_id if event is not None else archived_binding[1]
-        )
+        if event is not None:
+            expected_location = event.location_id
+            expected_snapshot_id = event.belief_snapshot_id
+        else:
+            assert archived_binding is not None
+            expected_location, expected_snapshot_id = archived_binding
         if feedback.attempted_location_id != expected_location:
             raise ValueError("feedback revision location does not match the committed event")
         if expected_snapshot_id is None:
@@ -2015,6 +2261,8 @@ class CorePrototypeSpine:
                 ),
             )
             self._observed_events[event.revision_id] = event
+            if event.regime_frame is None:
+                raise AssertionError("regime frame was just constructed")
             assessment = self._automatic_regimes.observe(
                 frame=event.regime_frame,
                 state_key=f"{event.location_id}|{event.evidence.context_key}",

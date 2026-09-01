@@ -12,13 +12,17 @@ import hashlib
 import json
 from collections import Counter
 from collections.abc import Iterable, Mapping
+from enum import StrEnum
 from pathlib import Path
+from urllib.parse import urlencode
+from urllib.request import urlopen
 
 from pydantic import Field, field_validator, model_validator
 
 from cpswm.contracts import ContractModel
 
-FINDINGDORY_ADAPTER_VERSION = "findingdory-metadata@0.1"
+FINDINGDORY_ADAPTER_VERSION = "findingdory-metadata@0.2"
+FINDINGDORY_DATASET_ID = "yali30/findingdory"
 FINDINGDORY_SCHEMA_FIELDS = frozenset(
     {
         "ep_id",
@@ -51,6 +55,15 @@ FINDINGDORY_PROJECT_URL = "https://findingdorybenchmark.github.io/"
 FINDINGDORY_HABITAT_URL = "https://huggingface.co/datasets/findingdory/findingdory-habitat"
 
 
+class FindingDorySourceKind(StrEnum):
+    UNVERIFIED_ROWS = "unverified_rows"
+    LOCAL_JSONL = "local_jsonl"
+    DATASET_VIEWER_EXPORT = "dataset_viewer_export"
+    DATASET_VIEWER_LIVE = "dataset_viewer_live"
+    PINNED_HUB_ARTIFACT = "pinned_hub_artifact"
+    LOCAL_PARQUET = "local_parquet"
+
+
 class FindingDoryMetadataRow(ContractModel):
     """The exact eight-column public SFT metadata row."""
 
@@ -58,7 +71,7 @@ class FindingDoryMetadataRow(ContractModel):
     video: str = Field(min_length=1)
     question: str = Field(min_length=1)
     answer: tuple[tuple[int, ...], ...] = Field(min_length=1)
-    task_id: int = Field(ge=0)
+    task_id: str = Field(pattern=r"^task_[0-9]+$")
     high_level_category: str = Field(min_length=1)
     low_level_category: str = Field(min_length=1)
     num_interactions: int = Field(ge=0)
@@ -79,6 +92,11 @@ class FindingDoryMetadataRow(ContractModel):
     @field_validator("answer", mode="before")
     @classmethod
     def _normalize_answer(cls, value: object) -> object:
+        if isinstance(value, str):
+            try:
+                value = json.loads(value)
+            except json.JSONDecodeError as exc:
+                raise ValueError("answer string must contain valid JSON frame groups") from exc
         if not isinstance(value, list | tuple) or not value:
             raise ValueError("answer must be a non-empty nested frame-index sequence")
         groups: list[tuple[int, ...]] = []
@@ -113,7 +131,7 @@ class FindingDoryAdaptationRecord(ContractModel):
     metadata: FindingDoryMetadataRow
     answer_frame_groups: tuple[tuple[int, ...], ...]
     target_absent: bool
-    evidence_status: str = "official_metadata_only"
+    evidence_status: str = "official_columns_fixture_validated"
     unavailable_fields: tuple[str, ...] = FINDINGDORY_UNAVAILABLE_FIELDS
     semi_synthetic_fields: tuple[str, ...] = ()
 
@@ -160,6 +178,9 @@ class FindingDoryMetadataAudit(ContractModel):
     field_availability: dict[str, bool]
     readiness: FindingDoryReadiness
     rejections: tuple[FindingDoryRejection, ...]
+    source_kind: FindingDorySourceKind = FindingDorySourceKind.UNVERIFIED_ROWS
+    source_payload_sha256: str | None = Field(default=None, pattern=r"^[0-9a-f]{64}$")
+    real_official_rows_ingested: bool = False
     source_urls: tuple[str, ...] = (
         FINDINGDORY_DATASET_URL,
         FINDINGDORY_PROJECT_URL,
@@ -191,15 +212,28 @@ def _record_id(row: FindingDoryMetadataRow, source_split: str) -> str:
 
 
 def adapt_findingdory_rows(
-    rows: Iterable[Mapping[str, object]], *, source_split: str = "train"
+    rows: Iterable[Mapping[str, object]],
+    *,
+    source_split: str = "train",
+    source_kind: FindingDorySourceKind = FindingDorySourceKind.UNVERIFIED_ROWS,
+    source_payload_sha256: str | None = None,
 ) -> FindingDoryMetadataBatch:
     """Validate public rows and produce a non-fabricating readiness audit."""
 
-    return _adapt_findingdory_numbered_rows(enumerate(rows, start=1), source_split=source_split)
+    return _adapt_findingdory_numbered_rows(
+        enumerate(rows, start=1),
+        source_split=source_split,
+        source_kind=source_kind,
+        source_payload_sha256=source_payload_sha256,
+    )
 
 
 def _adapt_findingdory_numbered_rows(
-    rows: Iterable[tuple[int, Mapping[str, object]]], *, source_split: str
+    rows: Iterable[tuple[int, Mapping[str, object]]],
+    *,
+    source_split: str,
+    source_kind: FindingDorySourceKind = FindingDorySourceKind.UNVERIFIED_ROWS,
+    source_payload_sha256: str | None = None,
 ) -> FindingDoryMetadataBatch:
 
     records: list[FindingDoryAdaptationRecord] = []
@@ -227,6 +261,7 @@ def _adapt_findingdory_numbered_rows(
                     metadata=metadata,
                     answer_frame_groups=metadata.answer,
                     target_absent=metadata.target_absent,
+                    evidence_status=source_kind.value,
                 )
             )
         except ValueError as error:
@@ -261,6 +296,16 @@ def _adapt_findingdory_numbered_rows(
             can_build_full_direction_three_episode=False,
         ),
         rejections=tuple(rejections),
+        source_kind=source_kind,
+        source_payload_sha256=source_payload_sha256,
+        real_official_rows_ingested=(
+            source_kind
+            in {
+                FindingDorySourceKind.DATASET_VIEWER_LIVE,
+                FindingDorySourceKind.PINNED_HUB_ARTIFACT,
+            }
+            and bool(records)
+        ),
     )
     return FindingDoryMetadataBatch(records=tuple(records), audit=audit)
 
@@ -283,7 +328,13 @@ def load_findingdory_jsonl(
                 parse_rejections.append(
                     FindingDoryRejection(row_number=line_number, reason=str(error))
                 )
-    batch = _adapt_findingdory_numbered_rows(rows, source_split=source_split)
+    source_hash = hashlib.sha256(Path(path).read_bytes()).hexdigest()
+    batch = _adapt_findingdory_numbered_rows(
+        rows,
+        source_split=source_split,
+        source_kind=FindingDorySourceKind.LOCAL_JSONL,
+        source_payload_sha256=source_hash,
+    )
     if not parse_rejections:
         return batch
     audit = batch.audit.model_copy(
@@ -294,3 +345,132 @@ def load_findingdory_jsonl(
         }
     )
     return batch.model_copy(update={"audit": audit})
+
+
+def load_findingdory_dataset_viewer_export(path: Path | str) -> FindingDoryMetadataBatch:
+    """Load one saved Hugging Face Dataset Viewer row response.
+
+    The response must self-identify the exact public dataset/config/split and
+    must not contain truncated cells. Saving the HTTP response first keeps the
+    network operation outside the deterministic adapter and gives the audit a
+    content hash that can be archived with the experiment.
+    """
+
+    source = Path(path)
+    raw = source.read_bytes()
+    payload = json.loads(raw)
+    return _adapt_findingdory_dataset_viewer_payload(
+        payload,
+        raw=raw,
+        source_kind=FindingDorySourceKind.DATASET_VIEWER_EXPORT,
+    )
+
+
+def fetch_findingdory_dataset_viewer_rows(
+    *,
+    source_split: str,
+    offset: int = 0,
+    length: int = 100,
+    timeout_seconds: float = 30.0,
+) -> FindingDoryMetadataBatch:
+    """Fetch a row slice from the fixed official Dataset Viewer HTTPS endpoint."""
+
+    if offset < 0 or not 1 <= length <= 100:
+        raise ValueError("Dataset Viewer offset must be non-negative and length in [1, 100]")
+    if timeout_seconds <= 0.0:
+        raise ValueError("Dataset Viewer timeout must be positive")
+    query = urlencode(
+        {
+            "dataset": FINDINGDORY_DATASET_ID,
+            "config": "default",
+            "split": source_split,
+            "offset": offset,
+            "length": length,
+        }
+    )
+    with urlopen(
+        f"https://datasets-server.huggingface.co/rows?{query}",
+        timeout=timeout_seconds,
+    ) as response:
+        raw = response.read()
+    payload = json.loads(raw)
+    if isinstance(payload, dict):
+        payload = {
+            **payload,
+            "dataset": payload.get("dataset", FINDINGDORY_DATASET_ID),
+            "config": payload.get("config", "default"),
+            "split": payload.get("split", source_split),
+        }
+    return _adapt_findingdory_dataset_viewer_payload(
+        payload,
+        raw=raw,
+        source_kind=FindingDorySourceKind.DATASET_VIEWER_LIVE,
+    )
+
+
+def _adapt_findingdory_dataset_viewer_payload(
+    payload: object,
+    *,
+    raw: bytes,
+    source_kind: FindingDorySourceKind,
+) -> FindingDoryMetadataBatch:
+    if not isinstance(payload, dict):
+        raise ValueError("dataset viewer export must be a JSON object")
+    if payload.get("dataset") != FINDINGDORY_DATASET_ID:
+        raise ValueError("dataset viewer export is not yali30/findingdory")
+    if payload.get("config") != "default":
+        raise ValueError("dataset viewer export must use the default config")
+    source_split = payload.get("split")
+    if not isinstance(source_split, str) or not source_split:
+        raise ValueError("dataset viewer export requires a split")
+    exported_rows = payload.get("rows")
+    if not isinstance(exported_rows, list):
+        raise ValueError("dataset viewer export requires a rows list")
+    numbered_rows: list[tuple[int, Mapping[str, object]]] = []
+    for position, exported in enumerate(exported_rows, start=1):
+        if not isinstance(exported, dict):
+            raise ValueError("dataset viewer row envelope must be an object")
+        truncated = exported.get("truncated_cells", [])
+        if truncated:
+            raise ValueError("truncated dataset viewer cells cannot be treated as source rows")
+        row = exported.get("row")
+        if not isinstance(row, dict):
+            raise ValueError("dataset viewer row envelope requires a row object")
+        row_idx = exported.get("row_idx")
+        row_number = row_idx + 1 if isinstance(row_idx, int) and row_idx >= 0 else position
+        numbered_rows.append((row_number, row))
+    return _adapt_findingdory_numbered_rows(
+        numbered_rows,
+        source_split=source_split,
+        source_kind=source_kind,
+        source_payload_sha256=hashlib.sha256(raw).hexdigest(),
+    )
+
+
+def load_findingdory_parquet(path: Path | str, *, source_split: str) -> FindingDoryMetadataBatch:
+    """Read a local FindingDory parquet shard when the optional reader exists.
+
+    Parquet support stays optional so the core CPSWM package does not acquire a
+    heavyweight dataframe dependency. The resulting source is deliberately
+    labelled ``local_parquet``; provenance cannot be upgraded to an official
+    row claim merely because a file has the right columns.
+    """
+
+    try:
+        import pyarrow.parquet as parquet  # type: ignore[import-not-found]
+    except ModuleNotFoundError as exc:  # pragma: no cover - environment dependent
+        raise RuntimeError(
+            "FindingDory parquet input requires the optional pyarrow dependency"
+        ) from exc
+    source = Path(path)
+    table = parquet.read_table(source)
+    if set(table.column_names) != FINDINGDORY_SCHEMA_FIELDS:
+        missing = sorted(FINDINGDORY_SCHEMA_FIELDS - set(table.column_names))
+        extra = sorted(set(table.column_names) - FINDINGDORY_SCHEMA_FIELDS)
+        raise ValueError(f"parquet schema mismatch: missing={missing}, extra={extra}")
+    return adapt_findingdory_rows(
+        table.to_pylist(),
+        source_split=source_split,
+        source_kind=FindingDorySourceKind.LOCAL_PARQUET,
+        source_payload_sha256=hashlib.sha256(source.read_bytes()).hexdigest(),
+    )

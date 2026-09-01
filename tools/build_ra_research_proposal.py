@@ -6,15 +6,13 @@ from __future__ import annotations
 import re
 from pathlib import Path
 
-from PIL import Image, ImageDraw, ImageFont
 from docx import Document
-from docx.enum.section import WD_SECTION
 from docx.enum.table import WD_CELL_VERTICAL_ALIGNMENT, WD_TABLE_ALIGNMENT
 from docx.enum.text import WD_ALIGN_PARAGRAPH
 from docx.oxml import OxmlElement
 from docx.oxml.ns import qn
 from docx.shared import Inches, Pt, RGBColor
-
+from PIL import Image, ImageDraw, ImageFont
 
 ROOT = Path(__file__).resolve().parents[1]
 SOURCE = ROOT / "ra_research_proposal_continual_personalized_world_model.md"
@@ -287,7 +285,9 @@ def configure_document(doc: Document) -> None:
     props.title = "Continual Personalized Semantic World Models for Long-Term Household Robots"
     props.subject = "Research Proposal for a Prospective Remote Research Assistantship"
     props.author = "Pang Wei"
-    props.keywords = "embodied AI, long-term robot memory, semantic world models, continual learning"
+    props.keywords = (
+        "embodied AI, long-term robot memory, semantic world models, continual learning"
+    )
 
 
 def configure_header_footer(doc: Document) -> None:
@@ -360,7 +360,7 @@ def add_cover(doc: Document) -> None:
     set_fixed_table_width(table, 7920)
     set_column_widths(table, [1.35, 4.15])
     set_table_borders(table, WHITE, "0")
-    for row, (label, value) in zip(table.rows, metadata):
+    for row, (label, value) in zip(table.rows, metadata, strict=True):
         row.cells[0].vertical_alignment = WD_CELL_VERTICAL_ALIGNMENT.CENTER
         row.cells[1].vertical_alignment = WD_CELL_VERTICAL_ALIGNMENT.CENTER
         set_cell_margins(row.cells[0], 80, 60, 80, 100)
@@ -413,21 +413,85 @@ def make_architecture_figure(path: Path) -> None:
     def box(x, y, w, h, title, subtitle, fill, edge=BLUE, title_color=WHITE, text_color=DARK_GREY):
         xy = (x * scale, y * scale, (x + w) * scale, (y + h) * scale)
         draw.rounded_rectangle(xy, radius=22, fill=hx(fill), outline=hx(edge), width=3)
-        draw.text(((x + 34) * scale, (y + 22) * scale), title, font=title_font, fill=hx(title_color))
-        draw.multiline_text(((x + 34) * scale, (y + 70) * scale), subtitle, font=text_font, fill=hx(text_color), spacing=8)
+        draw.text(
+            ((x + 34) * scale, (y + 22) * scale), title, font=title_font, fill=hx(title_color)
+        )
+        draw.multiline_text(
+            ((x + 34) * scale, (y + 70) * scale),
+            subtitle,
+            font=text_font,
+            fill=hx(text_color),
+            spacing=8,
+        )
 
-    box(110, 70, 1860, 145, "A  CONTRACTS & RUNTIME  ·  M01–M04", "Ontology · identity/time/coordinates · persistence · orchestration", BLUE, text_color=WHITE)
-    box(110, 265, 1860, 165, "B  EMBODIED OBSERVATION & MAPPING  ·  M05–M12", "Sensors → SLAM / 3D structure → observability → semantics → instance & interaction candidates", LIGHT_BLUE, title_color=DARK_BLUE)
-    box(110, 490, 1860, 205, "C  LONG-TERM WORLD MODEL & REASONING  ·  M13–M19", "Canonical assertions + episodic events + provenance\n→ derived multi-hypothesis belief → habits → hidden events → memory lifecycle", DARK_BLUE, edge=DARK_BLUE, text_color=WHITE)
-    box(110, 760, 870, 175, "D  QUERY & EXPLANATION  ·  M20–M22", "Typed retrieval · language grounding\nevidence-based explanation & correction", LIGHT_GREY, title_color=DARK_BLUE)
-    box(1100, 760, 870, 175, "E  PLANNING & ACTION  ·  M23–M27", "Active sensing · navigation · manipulation\nclosed-loop evidence writeback", LIGHT_GREY, title_color=DARK_BLUE)
-    box(110, 1010, 1860, 145, "F  SIMULATION, BENCHMARK & GOVERNANCE  ·  M28–M32", "Privacy · symbolic / embodied simulation · synthetic routines · benchmark · evaluation", "E7EDF3", title_color=DARK_BLUE)
+    box(
+        110,
+        70,
+        1860,
+        145,
+        "A  CONTRACTS & RUNTIME  ·  M01–M04",
+        "Ontology · identity/time/coordinates · persistence · orchestration",
+        BLUE,
+        text_color=WHITE,
+    )
+    box(
+        110,
+        265,
+        1860,
+        165,
+        "B  EMBODIED OBSERVATION & MAPPING  ·  M05–M12",
+        "Sensors → SLAM / 3D structure → observability → semantics → instance & interaction candidates",
+        LIGHT_BLUE,
+        title_color=DARK_BLUE,
+    )
+    box(
+        110,
+        490,
+        1860,
+        205,
+        "C  LONG-TERM WORLD MODEL & REASONING  ·  M13–M19",
+        "Canonical assertions + episodic events + provenance\n→ derived multi-hypothesis belief → habits → hidden events → memory lifecycle",
+        DARK_BLUE,
+        edge=DARK_BLUE,
+        text_color=WHITE,
+    )
+    box(
+        110,
+        760,
+        870,
+        175,
+        "D  QUERY & EXPLANATION  ·  M20–M22",
+        "Typed retrieval · language grounding\nevidence-based explanation & correction",
+        LIGHT_GREY,
+        title_color=DARK_BLUE,
+    )
+    box(
+        1100,
+        760,
+        870,
+        175,
+        "E  PLANNING & ACTION  ·  M23–M27",
+        "Active sensing · navigation · manipulation\nclosed-loop evidence writeback",
+        LIGHT_GREY,
+        title_color=DARK_BLUE,
+    )
+    box(
+        110,
+        1010,
+        1860,
+        145,
+        "F  SIMULATION, BENCHMARK & GOVERNANCE  ·  M28–M32",
+        "Privacy · symbolic / embodied simulation · synthetic routines · benchmark · evaluation",
+        "E7EDF3",
+        title_color=DARK_BLUE,
+    )
 
     def arrow(start, end, label=None, label_xy=None):
         sx, sy = start[0] * scale, start[1] * scale
         ex, ey = end[0] * scale, end[1] * scale
         draw.line((sx, sy, ex, ey), fill="#6B7C8F", width=5)
         import math
+
         angle = math.atan2(ey - sy, ex - sx)
         length = 22
         spread = 0.55
@@ -435,7 +499,13 @@ def make_architecture_figure(path: Path) -> None:
         p2 = (ex - length * math.cos(angle + spread), ey - length * math.sin(angle + spread))
         draw.polygon([(ex, ey), p1, p2], fill="#6B7C8F")
         if label and label_xy:
-            draw.text((label_xy[0] * scale, label_xy[1] * scale), label, font=label_font, fill="#6B7280", anchor="mm")
+            draw.text(
+                (label_xy[0] * scale, label_xy[1] * scale),
+                label,
+                font=label_font,
+                fill="#6B7280",
+                anchor="mm",
+            )
 
     arrow((1040, 215), (1040, 265))
     arrow((1040, 430), (1040, 490), "structured evidence", (1040, 458))
@@ -469,7 +539,7 @@ def add_table(doc: Document, lines: list[str]) -> None:
         widths = [6.5 / cols] * cols
     set_column_widths(table, widths)
     set_table_borders(table)
-    for r_idx, (word_row, src_row) in enumerate(zip(table.rows, rows)):
+    for r_idx, (word_row, src_row) in enumerate(zip(table.rows, rows, strict=True)):
         prevent_row_split(word_row)
         if r_idx == 0:
             set_repeat_table_header(word_row)
@@ -569,7 +639,9 @@ def parse_markdown_into_doc(doc: Document, source: str) -> None:
                 table_lines.append(lines[i].strip())
                 i += 1
             add_table(doc, table_lines)
-            if not architecture_figure_added and any("Contracts and runtime foundation" in row for row in table_lines):
+            if not architecture_figure_added and any(
+                "Contracts and runtime foundation" in row for row in table_lines
+            ):
                 add_architecture_figure(doc)
                 architecture_figure_added = True
             continue
@@ -631,7 +703,11 @@ def parse_markdown_into_doc(doc: Document, source: str) -> None:
         i += 1
         while i < len(lines) and lines[i].strip():
             nxt = lines[i].strip()
-            if hard_break or nxt.startswith(("## ", "### ", "|", "> ", "- ", "\\[")) or re.match(r"^\d+\.\s+", nxt):
+            if (
+                hard_break
+                or nxt.startswith(("## ", "### ", "|", "> ", "- ", "\\["))
+                or re.match(r"^\d+\.\s+", nxt)
+            ):
                 break
             para_lines.append(nxt)
             hard_break = lines[i].rstrip().endswith("  ")

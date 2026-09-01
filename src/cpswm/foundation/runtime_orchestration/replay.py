@@ -257,4 +257,4 @@ def _values_equal(left: Any, right: Any, tolerance: float) -> bool:
         return len(left) == len(right) and all(
             _values_equal(a, b, tolerance) for a, b in zip(left, right, strict=True)
         )
-    return left == right
+    return bool(left == right)

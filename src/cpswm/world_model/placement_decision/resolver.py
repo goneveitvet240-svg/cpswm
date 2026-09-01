@@ -61,6 +61,9 @@ class PlacementDecisionStatus(StrEnum):
     NORM_VIOLATION = "norm_violation"
     #: SAFETY_CHECK found no violated norm.
     COMPLIANT = "compliant"
+    #: Applicable records disagree at the same decisive authority/priority.
+    #: A versioned resolver may surface this instead of resolving by record ID.
+    CONFLICT_REQUIRES_VERIFICATION = "conflict_requires_verification"
 
 
 @dataclass(frozen=True, slots=True)
@@ -263,6 +266,8 @@ class PlacementDecisionResolver:
                 rationale="no stated preference or forcing norm; observed habit not used",
             )
 
+        if target is None:  # narrowed by the resolved branches above
+            raise AssertionError("resolved placement target unexpectedly missing")
         observed_top = _argmax(distribution)
         disagreement = observed_top is not None and observed_top != target
         return PlacementDecision(

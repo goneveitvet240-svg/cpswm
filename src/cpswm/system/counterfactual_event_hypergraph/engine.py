@@ -32,6 +32,7 @@ from .contracts import (
     HiddenEventEvidence,
     HiddenEventStep,
     actor_evidence_semantic_fingerprint,
+    hidden_event_evidence_claim_fingerprint,
     hidden_event_evidence_semantic_fingerprint,
 )
 
@@ -173,6 +174,7 @@ class CounterfactualEventHypergraphEngine:
             revision_evidence_record_ids=source_ids,
             revision_evidence_cluster_ids=(),
             revision_evidence_semantic_fingerprints=(),
+            revision_evidence_claim_fingerprints=(),
             revision_evidence_source_detection_result_ids=(),
             revision_evidence_endpoint_roles=(),
             revision_reason="initial counterfactual event branching",
@@ -496,6 +498,9 @@ class CounterfactualEventHypergraphEngine:
             revision_evidence_semantic_fingerprints=(
                 hidden_event_evidence_semantic_fingerprint(evidence),
             ),
+            revision_evidence_claim_fingerprints=(
+                hidden_event_evidence_claim_fingerprint(evidence),
+            ),
             revision_evidence_source_detection_result_ids=(evidence.source_detection_result_id,),
             revision_evidence_endpoint_roles=(ActorEvidenceEndpointRole.DESTINATION_STATE,),
             revision_reason=revision_reason,
@@ -687,6 +692,9 @@ class CounterfactualEventHypergraphEngine:
             ),
             revision_evidence_semantic_fingerprints=tuple(
                 actor_evidence_semantic_fingerprint(item) for item in validated_evidence
+            ),
+            revision_evidence_claim_fingerprints=tuple(
+                hidden_event_evidence_claim_fingerprint(item) for item in validated_evidence
             ),
             revision_evidence_source_detection_result_ids=tuple(
                 item.source_detection_result_id for item in validated_evidence
@@ -1071,6 +1079,7 @@ class CounterfactualEventHypergraphEngine:
         revision_evidence_source_detection_result_ids: tuple[UUID, ...],
         revision_evidence_endpoint_roles: tuple[ActorEvidenceEndpointRole, ...],
         revision_reason: str,
+        revision_evidence_claim_fingerprints: tuple[str, ...] | None = None,
     ) -> EventHypothesisRevision:
         return self._make_revision(
             hypothesis_set_id=current.hypothesis_set_id,
@@ -1105,6 +1114,11 @@ class CounterfactualEventHypergraphEngine:
             revision_evidence_record_ids=revision_evidence_record_ids,
             revision_evidence_cluster_ids=revision_evidence_cluster_ids,
             revision_evidence_semantic_fingerprints=(revision_evidence_semantic_fingerprints),
+            revision_evidence_claim_fingerprints=(
+                revision_evidence_semantic_fingerprints
+                if revision_evidence_claim_fingerprints is None
+                else revision_evidence_claim_fingerprints
+            ),
             revision_evidence_source_detection_result_ids=(
                 revision_evidence_source_detection_result_ids
             ),
@@ -1113,6 +1127,7 @@ class CounterfactualEventHypergraphEngine:
         )
 
     def _make_revision(self, **payload: Any) -> EventHypothesisRevision:
+        payload.setdefault("revision_evidence_independence_certificate_sha256s", ())
         complete_payload = {**payload, "engine_version": self.engine_version}
         return EventHypothesisRevision(
             **complete_payload,

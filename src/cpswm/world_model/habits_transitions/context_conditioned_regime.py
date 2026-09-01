@@ -16,11 +16,10 @@ structure-two specification requires:
 
 The reactor manages the regime lifecycle for one ``(object, actor)`` habit
 stream.  It does **not** apply any long-term parameter write itself: it only
-picks a regime decision and emits the posterior.  A downstream RGRC writer
-(e.g. :class:`GatedHabitRegimeWriter`) applies or rejects the corresponding
-parameter update, and a regime router (e.g. ``RLSRegimeBank``) switches the
-active head.  Keeping decision and write separate preserves the CF-BOCPD x
-CCRR x RGRC dependency chain.
+picks a regime-destination proposal and emits the posterior.  RGRC may judge
+evidence admissibility/reversal, while the reversible ledger remains the sole
+final regime/statistic writer.  Keeping proposal, admissibility, and commit
+separate preserves the CF-BOCPD x CCRR x RGRC dependency chain.
 """
 
 from __future__ import annotations
@@ -31,6 +30,7 @@ from copy import deepcopy
 from datetime import datetime
 from enum import StrEnum
 from math import exp, isclose, log, sqrt
+from typing import Literal
 from uuid import UUID
 
 from pydantic import Field, field_validator, model_validator
@@ -162,6 +162,8 @@ class RegimeDecision(ContractModel):
     """
 
     kind: RegimeDecisionKind
+    authority: Literal["ccrr_regime_destination_proposal"] = "ccrr_regime_destination_proposal"
+    parameter_write_authorized: bool = False
     decision_score: dict[RegimeDecisionKind, Probability]
     reactivated_regime_id: str | None = None
     created_regime_id: str | None = None
@@ -200,6 +202,8 @@ class RegimeDecision(ContractModel):
 
     @model_validator(mode="after")
     def validate_decision(self) -> RegimeDecision:
+        if self.parameter_write_authorized:
+            raise ValueError("CCRR cannot authorize an RGRC parameter write")
         expected = set(RegimeDecisionKind)
         if set(self.decision_score) != expected:
             raise ValueError("regime decision score must cover all four kinds")
@@ -304,7 +308,7 @@ class ContextConditionedRegimeReactivator:
         self._pending_tokens: set[str] = set()
         self._lock = threading.RLock()
 
-    def __deepcopy__(self, memo):
+    def __deepcopy__(self, memo: dict[int, object]) -> ContextConditionedRegimeReactivator:
         clone = type(self)(
             change_threshold=self.change_threshold,
             similarity_threshold=self.similarity_threshold,
@@ -756,7 +760,7 @@ class ContextConditionedRegimeReactivator:
         )
 
 
-def _snapshot_payload(snapshot: JointCauseSnapshot) -> dict:
+def _snapshot_payload(snapshot: JointCauseSnapshot) -> dict[str, object]:
     """Serialize a ``JointCauseSnapshot`` into a canonical, hashable payload."""
 
     return {
@@ -805,6 +809,10 @@ def _decisions_equal(left: RegimeDecision, right: RegimeDecision) -> bool:
     """Field-by-field comparison of the scoring-relevant decision outputs."""
 
     if left.kind != right.kind:
+        return False
+    if left.authority != right.authority:
+        return False
+    if left.parameter_write_authorized != right.parameter_write_authorized:
         return False
     if left.reactivated_regime_id != right.reactivated_regime_id:
         return False

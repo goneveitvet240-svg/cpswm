@@ -51,7 +51,7 @@ def build_project_one_runtime_parameter_receipt(
     """Prove every tuned field exists with the configured value at runtime."""
 
     payload = dict(method.config_payload())
-    bindings = []
+    bindings: list[ProjectOneRuntimeParameterBinding] = []
     for name, configured in sorted(declared_parameters.items()):
         matches = _find_key(payload, name)
         exact = [(path, value) for path, value in matches if value == configured]
@@ -71,13 +71,18 @@ def build_project_one_runtime_parameter_receipt(
                 ),
             )
         )
-    base = {
+    frozen_bindings = tuple(bindings)
+    hash_payload = {
         "method": method.name,
         "method_config_hash": method.config_hash(),
-        "bindings": tuple(bindings),
+        "bindings": [asdict(item) for item in frozen_bindings],
     }
-    hash_payload = {**base, "bindings": [asdict(item) for item in bindings]}
-    return ProjectOneRuntimeParameterReceipt(**base, receipt_sha256=content_sha256(hash_payload))
+    return ProjectOneRuntimeParameterReceipt(
+        method=method.name,
+        method_config_hash=method.config_hash(),
+        bindings=frozen_bindings,
+        receipt_sha256=content_sha256(hash_payload),
+    )
 
 
 __all__ = [

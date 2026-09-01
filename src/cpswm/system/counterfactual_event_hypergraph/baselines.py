@@ -74,6 +74,8 @@ class AMGConstrainedMAPPrediction(ContractModel):
     """One globally consistent MAP parse, as in the 2012 AMG comparison target."""
 
     selected_sequence: CompatibleEventSequence
+    maximizing_responsible_actor_keys: tuple[str, ...] = Field(min_length=1)
+    map_tie_count: int = Field(ge=1)
     log_unnormalized_posterior: float
     candidate_count: int = Field(ge=1)
     model_version: str = Field(min_length=1)
@@ -273,8 +275,16 @@ class DamenHogg2012AMGGlobalMAPBaseline:
                 tuple(step.actor_key for step in item[1].steps),
             ),
         )
+        maximizing_sequences = tuple(
+            sequence for value, sequence in scored if isclose(value, best_score, abs_tol=1e-12)
+        )
+        maximizing_actor_keys = tuple(
+            dict.fromkeys(sequence.responsible_actor_key for sequence in maximizing_sequences)
+        )
         return AMGConstrainedMAPPrediction(
             selected_sequence=selected,
+            maximizing_responsible_actor_keys=maximizing_actor_keys,
+            map_tie_count=len(maximizing_sequences),
             log_unnormalized_posterior=best_score,
             candidate_count=len(sequences),
             model_version=self.model_version,

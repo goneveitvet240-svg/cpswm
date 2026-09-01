@@ -1,0 +1,105 @@
+{
+  "protocol": "structure-two-world-generator@0.2",
+  "status": "frozen-before-first-gate-a-run",
+  "evidence_scope": "D0 synthetic target-structure validation only; no method comparison",
+  "randomness_hierarchy": {
+    "world_seed": "samples household parameters, locations, actors, regimes, and habit distributions",
+    "trajectory_seed": "samples latent actor, location, and event trajectories conditional on one world",
+    "observation_seed": "samples MNAR visibility and perception noise conditional on one trajectory"
+  },
+  "split_policy": {
+    "unit": "world_seed",
+    "train_world_seeds": [410001, 410002, 410003, 410004, 410005, 410006, 410007, 410008, 410009, 410010, 410011, 410012, 410013, 410014, 410015, 410016, 410017, 410018, 410019, 410020, 410021, 410022, 410023, 410024],
+    "validation_world_seeds": [420001, 420002, 420003, 420004, 420005, 420006, 420007, 420008, 420009, 420010, 420011, 420012],
+    "sealed_holdout_world_count": 24,
+    "sealed_holdout_world_seed_commitments": [
+      "a039254fe3e28156123c9f9eb8511d61c4b81c657018a9f9a3b2742a81353202",
+      "6bcbff563128bacd7e5c94660f9fd8daadd7727e5e7f5a182a54c2a8f69826c4",
+      "70463458022e8a9e488519b681d8efe31e70ecaab97edb44be23bea05634b39d",
+      "831aeb33da31808af36045948cd386ac06c9d86d18280ec962d7904646e8de80",
+      "5f00f235fbd6f85b4c77ebe369874fcf8a687291d1dd08c1755cd933debae876",
+      "f964ac5424531faea3e2004a7eb4f22cc7c81778dc2fcd8b61aa4a61f26146c7",
+      "4c184081d06359be3b27314fd48eadc5acb194f58eae8c84ee27b644f62643e9",
+      "233d61a324b7df117dc9007555ec28310cf496afb488de28b2ff3b4c91f919b8",
+      "bcdfbdee53cc32aa2855780326cf7df4f2ad3811069987ee25c74801fd5f4fb4",
+      "109e66f8b0931d7d1cd22126d47dba537e9c9811e4db2e52f118129bd88bebf6",
+      "e2cda596636c609476c4f3ab7d5a7dc2ad83300ea4c1e993d490296207c04604",
+      "c3556f44f465729b6cf825bb10923774c4ba92e796725d654ef01890b91a72bf",
+      "847bec866f2ad5f5e420a82807a3011df40de4cf6194ef79ba322f7226c0c234",
+      "5e59546b67cc41b205fe0701271ac6e54aa6575da9cebd17549e49984c4fd64a",
+      "e777448ef55d8881817209b0c6e76bae82b163ee984d18e29e00dc89bb7e47e2",
+      "dea1c09b227a7d867e6204af43f0e3e34c723956c621862de801a96a91d62274",
+      "bd391b42fb31c52e09f855a4984c215de77d7d79bfe83e785cda346afada0833",
+      "f1162c68423ff2713603e2476afe303522ee63017ac982671afecd5ad24aa3bc",
+      "7aff1349e36d8e63f0a6510594a500e2b8a643906b7378a2359c6ccc6ae1ac0e",
+      "0eb19c072219c98b858c45dfd02bf6bf1e9810761038f678fdfb99117e173a06",
+      "39956ae7f3ca69a65f4e24079eca78a0565d6621f80aef888ce7e733a3f11003",
+      "57841b55ed3ba9088c7fc5429d6feeb9e32ae4a58187333b37b3ba5e799994cd",
+      "83ab2df6a7659653b8871ab695395ba08b6bb77bb7119c72f4b335ff78741bb3",
+      "a64f40001a8ba3fa30b57f2bc2246b7d0328fe82cc455c1adf2759dd297ef58d"
+    ],
+    "holdout_commitment_rule": "sha256(protocol + ':' + world_seed + ':' + evaluator_custody_salt)",
+    "holdout_raw_world_seeds_disclosed": false,
+    "trajectory_seeds_per_validation_world": [11, 23, 37],
+    "observation_seeds_per_validation_trajectory": [101, 211]
+  },
+  "world_distribution": {
+    "duration_days_inclusive": [96, 120],
+    "location_count_inclusive": [8, 12],
+    "guest_actor_count_inclusive": [1, 3],
+    "abrupt_fraction": [0.28, 0.42],
+    "recurrence_fraction": [0.68, 0.84],
+    "owner_event_probability": [0.68, 0.82],
+    "unknown_event_probability": [0.05, 0.12],
+    "habit_mode_mass": [0.42, 0.58],
+    "habit_secondary_mass": [0.16, 0.28],
+    "weekend_distinct_mode_probability": 0.70,
+    "base_observation_probability": [0.48, 0.78],
+    "location_visibility_multiplier": [0.60, 1.20],
+    "guest_visibility_multiplier": 0.80,
+    "unknown_visibility_multiplier": 0.65,
+    "weekend_visibility_multiplier": 0.90,
+    "actor_map_accuracy": [0.70, 0.90],
+    "identity_match_accuracy": [0.78, 0.94],
+    "handoff_probability": [0.18, 0.38]
+  },
+  "target_semantics": {
+    "put_back": "mode of the owner habit distribution for the active regime and visible calendar context",
+    "search": "current latent object location sampled from the actor-conditional distribution",
+    "owner_habit_is_distribution_not_pointer": true,
+    "recurrence_reuses_baseline_regime_distribution": true
+  },
+  "gate_a_thresholds": {
+    "minimum_unique_validation_world_fraction": 1.0,
+    "minimum_put_back_sticky_error": 0.20,
+    "minimum_put_back_aggregation_gain": 0.05,
+    "minimum_put_back_aggregation_gain_ci_lower": 0.01,
+    "minimum_put_back_context_gain": 0.015,
+    "minimum_remaining_put_back_error": 0.10,
+    "maximum_on_owner_observed_target_recurrence": 0.85,
+    "minimum_search_last_observed_error": 0.15,
+    "minimum_search_contextual_fallback_gain": 0.02,
+    "minimum_remaining_search_error": 0.10,
+    "minimum_unobserved_location_change_rate": 0.20,
+    "bootstrap_draws": 4000
+  },
+  "gate_a_rules": {
+    "aggregation_window_days": 35,
+    "visible_owner_probability_threshold": 0.5,
+    "put_back_rules": [
+      "sticky_latest_visible_owner_sample",
+      "rolling_visible_owner_mode",
+      "rolling_context_visible_owner_mode"
+    ],
+    "search_rules": [
+      "last_observed_location",
+      "observed_else_rolling_context_owner_mode"
+    ]
+  },
+  "method_comparison_policy": "forbidden unless every frozen Gate A criterion passes on validation worlds",
+  "notes": [
+    "Thresholds and distributions are author-selected D0 design choices without external empirical grounding.",
+    "World-level split isolation is binding; trajectory or observation seeds may never define train/validation/holdout membership.",
+    "This manifest preserves multi-actor, hidden-event, identity, cause, regime, recurrence, selective-observation, and embodied-feedback scope."
+  ]
+}

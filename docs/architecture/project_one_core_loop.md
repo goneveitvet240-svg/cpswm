@@ -17,6 +17,17 @@
   -> 搜索与归位建议
 ```
 
+## Regime 权限冻结
+
+- CF-BOCPD 只输出 change/cause posterior（变化与原因后验）；
+- RGRC 只决定证据能否进入长期统计以及能否撤销；
+- CCRR 只提出 stay/create/reactivate/unresolved 的阶段去向；
+- reversible ledger（可逆账本）是 active regime pointer（当前阶段指针）与长期统计的唯一
+  最终提交/撤销权限。
+
+`RGRC -> CCRR` 与 `CCRR -> RGRC` 两种提议顺序均保留为实验方案，但二者都必须终止于同一
+ledger commit；RGRC 或 CCRR 不能直接取得第二个阶段写入权。
+
 单个异常点返回 `insufficient_evidence` 并执行 `quarantine`，当下不会写入 Dirichlet、
 RLS 或 Hybrid RGRC。候选在配置的确认窗口内持续出现后，CCRR 才能创建新 regime 或
 恢复历史 regime；此前隔离的完整样本会按确认后的 regime 执行 `promote`，不会丢弃。

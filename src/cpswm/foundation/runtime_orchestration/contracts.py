@@ -6,7 +6,7 @@ from datetime import datetime
 from enum import StrEnum
 from uuid import UUID, uuid4
 
-from pydantic import Field, JsonValue, field_validator, model_validator
+from pydantic import Field, JsonValue, ValidationInfo, field_validator, model_validator
 
 from cpswm.contracts.base import (
     BaseRecordMetadata,
@@ -172,8 +172,8 @@ class HandlerExecutionRecord(ContractModel):
 
     @field_validator("started_at", "finished_at")
     @classmethod
-    def validate_times(cls, value: datetime, info) -> datetime:
-        return require_aware(value, info.field_name)
+    def validate_times(cls, value: datetime, info: ValidationInfo) -> datetime:
+        return require_aware(value, info.field_name or "datetime")
 
     @model_validator(mode="after")
     def validate_status(self) -> HandlerExecutionRecord:

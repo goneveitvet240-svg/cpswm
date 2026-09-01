@@ -45,7 +45,8 @@ def _raw_fixture() -> D2RealPerceptionRawEpisode:
         episode=episode.model_copy(
             update={
                 "dataset_version": "d2-real-perception-fixture@0.1",
-                "maturity": ProjectTwoDataMaturity.D2_REAL_PERCEPTION_REPLAY,
+                "maturity": ProjectTwoDataMaturity.D0_DEVELOPMENT_FIXTURE,
+                "source_evidence_maturity": ProjectTwoDataMaturity.D0_SYNTHETIC_ORACLE,
                 "provenance": (*episode.provenance, "fixture:not-real-collection"),
             }
         ),
@@ -55,7 +56,8 @@ def _raw_fixture() -> D2RealPerceptionRawEpisode:
 
 def test_raw_rgbd_record_converts_to_same_project_two_replay_episode_contract():
     converted = D2RealPerceptionConverter().convert_visible(_raw_fixture())
-    assert converted.maturity is ProjectTwoDataMaturity.D2_REAL_PERCEPTION_REPLAY
+    assert converted.maturity is ProjectTwoDataMaturity.D0_DEVELOPMENT_FIXTURE
+    assert converted.source_evidence_maturity is ProjectTwoDataMaturity.D0_SYNTHETIC_ORACLE
     assert all(step.perception_frames[0].depth_uri for step in converted.steps)
     assert all(step.perception_frames[0].rgb_uri for step in converted.steps)
 
@@ -121,6 +123,9 @@ def test_d2_example_batch_is_explicit_fixture_with_split_hash_and_agreement_repo
     assert len(dataset.episodes) >= 4
     assert all(item.perception_frames for episode in dataset.episodes for item in episode.steps)
     assert all("claim:not-real-collection" in item.provenance for item in dataset.episodes)
+    assert all(
+        item.maturity is ProjectTwoDataMaturity.D0_DEVELOPMENT_FIXTURE for item in dataset.episodes
+    )
     report = materialize_d2_example_batch(tmp_path, max_steps_per_episode=4)
     assert report["collection_status"]["actual_collected_episode_count"] == 0
     assert report["collection_status"]["fixture_episode_count"] == len(dataset.episodes)
@@ -129,3 +134,74 @@ def test_d2_example_batch_is_explicit_fixture_with_split_hash_and_agreement_repo
     assert (tmp_path / "raw_perception.jsonl").exists()
     assert (tmp_path / "collection_protocol.json").exists()
     assert submissions
+
+
+def test_real_d2_human_labels_never_become_model_visible_actor_evidence():
+    raw = _raw_fixture()
+    step = raw.episode.steps[0]
+    stripped_step = step.model_copy(update={"actor_evidence": None})
+    real_episode = raw.episode.model_copy(
+        update={
+            "maturity": ProjectTwoDataMaturity.D2_REAL_PERCEPTION_REPLAY,
+            "source_evidence_maturity": ProjectTwoDataMaturity.D2_REAL_PERCEPTION_REPLAY,
+            "steps": (stripped_step, *raw.episode.steps[1:]),
+        }
+    )
+    human = D2AnnotationSubmission(
+        annotation_id=uuid4(),
+        step_id=step.step_id,
+        annotator_id="evaluator-only-human",
+        source_kind=AnnotationSourceKind.HUMAN,
+        recorded_at=step.timestamp,
+        actor_label=real_episode.owner_actor_key,
+        mechanism_label=EventMechanism.DIRECT_RELOCATION,
+        role_initiator_label=None,
+        role_recipient_label=None,
+        confidence=1.0,
+    )
+    converted = D2RealPerceptionConverter().convert_visible(
+        D2RealPerceptionRawEpisode(
+            episode=real_episode,
+            frames_by_step=raw.frames_by_step,
+            annotations_by_step={step.step_id: (human,)},
+        )
+    )
+
+    assert converted.steps[0].actor_evidence is None
+
+
+def test_conflicting_fixture_annotations_are_order_invariant_and_fail_closed():
+    raw = _raw_fixture()
+    step = raw.episode.steps[0]
+    episode = raw.episode.model_copy(
+        update={"steps": (step.model_copy(update={"actor_evidence": None}), *raw.episode.steps[1:])}
+    )
+    common = dict(
+        step_id=step.step_id,
+        recorded_at=step.timestamp,
+        mechanism_label=EventMechanism.DIRECT_RELOCATION,
+        role_initiator_label=None,
+        role_recipient_label=None,
+        confidence=0.8,
+        source_kind=AnnotationSourceKind.HUMAN,
+    )
+    first = D2AnnotationSubmission(
+        annotation_id=uuid4(), annotator_id="a", actor_label="owner", **common
+    )
+    second = D2AnnotationSubmission(
+        annotation_id=uuid4(), annotator_id="b", actor_label="unknown_actor", **common
+    )
+
+    def convert(order):  # type: ignore[no-untyped-def]
+        return D2RealPerceptionConverter().convert_visible(
+            D2RealPerceptionRawEpisode(
+                episode=episode,
+                frames_by_step=raw.frames_by_step,
+                annotations_by_step={step.step_id: order},
+            )
+        )
+
+    forward = convert((first, second))
+    reverse = convert((second, first))
+    assert forward == reverse
+    assert forward.steps[0].actor_evidence is None

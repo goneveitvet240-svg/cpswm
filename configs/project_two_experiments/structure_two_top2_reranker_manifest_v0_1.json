@@ -1,0 +1,34 @@
+{
+  "schema_version": "0.1.0",
+  "protocol": "structure-two-reversible-multiaxis-top2-reranker@0.1",
+  "evidence_status": "development-only visible-feature falsifier",
+  "source_strongest_neighbor_manifest": "configs/project_two_experiments/structure_two_strongest_neighbor_manifest_v0_1.json",
+  "source_strongest_neighbor_manifest_sha256": "a586d352cf307bd8ba10fb1ef58ed4a1f3a60efe738509723158d7b867091126",
+  "training_seeds": [410101, 410102, 410103, 410104, 410105, 410106, 410107, 410108],
+  "calibration_seeds": [410201, 410202, 410203, 410204],
+  "validation_seeds": [310101, 310102, 310103, 310104, 310105, 310106, 310107, 310108],
+  "max_steps": 24,
+  "base_profile": "responsive",
+  "model": {
+    "architecture": "two-head-antisymmetric-linear-pairwise-reranker",
+    "epochs": 320,
+    "learning_rate": 0.08,
+    "l2": 0.001,
+    "counterfactual_horizon": 1,
+    "label_semantics": "training-only immediate action-regret difference between current top two candidates",
+    "forbidden_inference_inputs": [
+      "true_actor",
+      "true_location",
+      "true_owner_habit_location",
+      "evaluator_truth",
+      "oracle_action",
+      "latent_state",
+      "seed_id"
+    ]
+  },
+  "abstention_threshold_candidates": [0.0, 0.05, 0.1, 0.2, 0.35, 0.5, 1.0, 100.0],
+  "selection_rule": "minimum calibration action regret, then minimum intervention count, then larger threshold",
+  "primary_comparison": "reranker_minus_deterministic_transition",
+  "required_external_comparison": "reranker_minus_frozen_brainctl_reference",
+  "sealed_holdout_opened": false
+}

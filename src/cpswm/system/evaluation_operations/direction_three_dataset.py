@@ -26,7 +26,7 @@ from cpswm.contracts import (
 from cpswm.contracts.base import require_aware
 from cpswm.system.reproducibility import content_sha256
 
-DIRECTION_THREE_DATASET_VERSION = "direction-three-episode@0.1"
+DIRECTION_THREE_DATASET_VERSION = "direction-three-episode@0.2"
 
 
 class DirectionThreeDatasetSplit(StrEnum):
@@ -173,14 +173,19 @@ class DirectionThreeEvaluatorTruth(ContractModel):
 
 class DirectionThreeDatasetEntry(ContractModel):
     episode_id: UUID
+    source_name: str = Field(min_length=1)
+    source_version: str = Field(min_length=1)
     split: DirectionThreeDatasetSplit
     split_group_id: str = Field(min_length=1)
     scene_id: str = Field(min_length=1)
     household_id: str = Field(min_length=1)
+    session_id: str = Field(min_length=1)
     trajectory_id: str = Field(min_length=1)
     video_id: str = Field(min_length=1)
     frame_start: int = Field(ge=0)
     frame_end: int = Field(ge=0)
+    object_instance_ids: tuple[str, ...] = Field(min_length=1)
+    source_record_refs: tuple[str, ...] = ()
     source_hash: str = Field(min_length=1)
     visible_content_hash: str = Field(min_length=1)
     evaluator_content_hash: str = Field(min_length=1)
@@ -224,18 +229,27 @@ class DirectionThreeEpisodeDataset(ContractModel):
             if episode.split != entry.split:
                 raise ValueError("manifest split must match the visible episode")
             bound_fields = (
+                "source_name",
+                "source_version",
                 "split_group_id",
                 "scene_id",
                 "household_id",
+                "session_id",
                 "trajectory_id",
                 "video_id",
                 "frame_start",
                 "frame_end",
+                "object_instance_ids",
+                "source_record_refs",
             )
             if any(getattr(episode, field) != getattr(entry, field) for field in bound_fields):
                 raise ValueError("manifest lineage must match the visible episode")
             if evaluator.source_hash != entry.source_hash:
                 raise ValueError("evaluator and manifest source hashes must match")
+            if episode.source_name != self.manifest.source_name:
+                raise ValueError("visible episode source name must match the dataset manifest")
+            if episode.source_version != self.manifest.source_version:
+                raise ValueError("visible episode source version must match the dataset manifest")
             if entry.visible_content_hash != content_sha256(episode):
                 raise ValueError("visible episode content hash mismatch")
             evaluator_payload = evaluator.model_dump(mode="python")
@@ -274,11 +288,26 @@ class DirectionThreeDatasetAudit(ContractModel):
 
 def _reject_split_leakage(manifest: DirectionThreeDatasetManifest) -> None:
     entries = manifest.entries
-    for field in ("household_id", "scene_id", "split_group_id", "trajectory_id"):
+    for field in (
+        "household_id",
+        "scene_id",
+        "split_group_id",
+        "session_id",
+        "trajectory_id",
+    ):
         splits_by_value: dict[str, set[DirectionThreeDatasetSplit]] = {}
         for entry in entries:
             splits_by_value.setdefault(getattr(entry, field), set()).add(entry.split)
         leaked = sorted(value for value, splits in splits_by_value.items() if len(splits) > 1)
+        if leaked:
+            raise ValueError(f"cross-split {field} leakage: {leaked}")
+
+    for field in ("object_instance_ids", "source_record_refs"):
+        multi_splits_by_value: dict[str, set[DirectionThreeDatasetSplit]] = {}
+        for entry in entries:
+            for value in getattr(entry, field):
+                multi_splits_by_value.setdefault(value, set()).add(entry.split)
+        leaked = sorted(value for value, splits in multi_splits_by_value.items() if len(splits) > 1)
         if leaked:
             raise ValueError(f"cross-split {field} leakage: {leaked}")
 
@@ -331,7 +360,10 @@ def audit_direction_three_dataset(
             "manifest_join_coverage",
             "visible_evaluator_truth_isolation",
             "household_scene_time_group_isolation",
+            "session_isolation",
             "trajectory_isolation",
+            "object_instance_isolation",
+            "source_record_isolation",
             "adjacent_video_frame_isolation",
             "six_channel_missingness_explicit",
             "content_integrity",

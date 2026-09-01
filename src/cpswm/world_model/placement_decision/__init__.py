@@ -1,5 +1,27 @@
 """§9 placement-decision routing: find vs. put-back vs. safety-check."""
 
+from .authority_provenance import (
+    AUTHORITY_PROVENANCE_VERSION,
+    AuthorityVerificationStatus,
+    HouseholdTrustStoreSnapshot,
+    PlacementAuthorityAttestation,
+    PlacementAuthorityVerificationReceipt,
+    PlacementAuthorityVerifier,
+    PlacementRetirementAuthorization,
+    ProvenanceBoundPlacementDecisionResolver,
+    ProvenanceBoundPlacementResolution,
+    VerifiedHouseholdTrustStore,
+    VerifiedPlacementPreferences,
+    issue_household_trust_store_snapshot,
+    verify_household_trust_store_snapshot,
+)
+from .authority_scoped_resolver import (
+    AUTHORITY_SCOPED_RESOLVER_VERSION,
+    AuthorityAdjudicationReceipt,
+    AuthorityAdjudicationStatus,
+    AuthorityScopedPlacementDecisionResolver,
+    AuthorityScopedPlacementResolution,
+)
 from .resolver import (
     NormApplication,
     PlacementDecision,
@@ -7,11 +29,43 @@ from .resolver import (
     PlacementDecisionStatus,
     PlacementIntent,
 )
+from .update_policy import (
+    AUTHORITY_RANK,
+    PLACEMENT_UPDATE_POLICY_VERSION,
+    PlacementUpdateDecision,
+    PlacementUpdateOutcome,
+    PlacementUpdatePolicy,
+    UnauthorizedSupersessionError,
+)
 
 __all__ = [
+    "AUTHORITY_PROVENANCE_VERSION",
+    "AUTHORITY_RANK",
+    "AUTHORITY_SCOPED_RESOLVER_VERSION",
+    "PLACEMENT_UPDATE_POLICY_VERSION",
+    "AuthorityAdjudicationReceipt",
+    "AuthorityAdjudicationStatus",
+    "AuthorityScopedPlacementDecisionResolver",
+    "AuthorityScopedPlacementResolution",
+    "AuthorityVerificationStatus",
+    "HouseholdTrustStoreSnapshot",
     "NormApplication",
+    "PlacementAuthorityAttestation",
+    "PlacementAuthorityVerificationReceipt",
+    "PlacementAuthorityVerifier",
     "PlacementDecision",
     "PlacementDecisionResolver",
     "PlacementDecisionStatus",
     "PlacementIntent",
+    "PlacementRetirementAuthorization",
+    "PlacementUpdateDecision",
+    "PlacementUpdateOutcome",
+    "PlacementUpdatePolicy",
+    "ProvenanceBoundPlacementDecisionResolver",
+    "ProvenanceBoundPlacementResolution",
+    "UnauthorizedSupersessionError",
+    "VerifiedHouseholdTrustStore",
+    "VerifiedPlacementPreferences",
+    "issue_household_trust_store_snapshot",
+    "verify_household_trust_store_snapshot",
 ]

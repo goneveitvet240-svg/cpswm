@@ -307,7 +307,7 @@ class BOCPDMSMethod(_BaseMethod):
             CategoricalBOCPDMethod(self.locations, self._model_config(False)),
             CategoricalBOCPDMethod(self.locations, self._model_config(True)),
         )
-        self._model_weights = (0.5, 0.5)
+        self._model_weights: tuple[float, ...] = (0.5, 0.5)
         self._component_priors: tuple[dict[str, float], ...] = ()
 
     def config_payload(self) -> Mapping[str, object]:

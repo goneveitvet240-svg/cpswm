@@ -139,6 +139,7 @@ class InProcessRuntime:
         replay_manifest: ReplayManifest | None = None,
     ) -> RuntimeDispatchResult:
         message = self._revalidate_incoming_message(message)
+        handlers: tuple[_RegisteredHandler, ...]
         if message.kind == MessageKind.COMMAND:
             try:
                 handlers = (self._commands[message.name],)

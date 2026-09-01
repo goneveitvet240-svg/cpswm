@@ -206,12 +206,8 @@ def test_multi_key_evidence_cluster_is_promoted_atomically_and_excluded_as_a_bun
 def test_dirichlet_base_and_rls_contextual_residual_are_fused_and_normalized():
     ledger = HybridStatisticLedger(feature_dim=2, ridge=1.0)
     cluster = uuid4()
-    ledger.append_delta(
-        _delta(x=(1.0, 0.0), y=1.0, alpha=3.0, watermark=0, cluster=cluster)
-    )
-    ledger.append_delta(
-        _delta(x=(1.0, 0.0), y=-1.0, alpha=1.0, watermark=1, key=KEY_2)
-    )
+    ledger.append_delta(_delta(x=(1.0, 0.0), y=1.0, alpha=3.0, watermark=0, cluster=cluster))
+    ledger.append_delta(_delta(x=(1.0, 0.0), y=-1.0, alpha=1.0, watermark=1, key=KEY_2))
     fusion = DirichletRLSFusion()
     prediction = fusion.predict(
         ledger,
@@ -222,8 +218,7 @@ def test_dirichlet_base_and_rls_contextual_residual_are_fused_and_normalized():
     assert prediction[KEY_2.location_id].base_probability == pytest.approx(0.25)
     assert sum(value.fused_probability for value in prediction.values()) == pytest.approx(1.0)
     assert (
-        prediction[KEY.location_id].fused_probability
-        > prediction[KEY.location_id].base_probability
+        prediction[KEY.location_id].fused_probability > prediction[KEY.location_id].base_probability
     )
 
     excluded = fusion.predict(

@@ -90,6 +90,7 @@ class ObservationActionType(StrEnum):
 class ObservationPlannerObjective(StrEnum):
     INFORMATION_GAIN = "information_gain"
     DECISION_UTILITY = "decision_utility"
+    CAUSE_INFORMATION_UTILITY = "cause_information_utility"
 
 
 class ObservationRiskType(StrEnum):
@@ -390,6 +391,7 @@ class IdentityViewEvidence(ContractModel):
 class IdentityVerificationRequest(ContractModel):
     candidate_ids: tuple[UUID, ...] = Field(min_length=2)
     prior_probabilities: dict[UUID, StrictlyPositiveProbability]
+    unknown_candidate_id: UUID | None = None
     view_evidence: tuple[IdentityViewEvidence, ...] = Field(min_length=1)
     required_independent_views: PositiveInt = 2
     confirmation_threshold: Probability = 0.85
@@ -404,6 +406,8 @@ class IdentityVerificationRequest(ContractModel):
             raise ValueError("candidate_ids must be unique")
         if set(self.prior_probabilities) != candidate_set:
             raise ValueError("identity priors must cover every candidate")
+        if self.unknown_candidate_id is not None and self.unknown_candidate_id not in candidate_set:
+            raise ValueError("unknown identity must be an explicit posterior candidate")
         total = sum(self.prior_probabilities.values())
         if not isclose(total, 1.0, rel_tol=0.0, abs_tol=1e-6):
             raise ValueError("identity priors must sum to one")
@@ -423,6 +427,7 @@ class IdentityVerificationRequest(ContractModel):
 class IdentityVerificationResult(ContractModel):
     posterior_probabilities: dict[UUID, Probability]
     confirmed_candidate_id: UUID | None = None
+    unknown_candidate_id: UUID | None = None
     independent_view_count: PositiveInt
     status: ResolutionStatus
     recommended_modality: VerificationModality | None = None
@@ -437,6 +442,18 @@ class IdentityVerificationResult(ContractModel):
             raise ValueError("resolved identity requires a confirmed candidate")
         if self.status != ResolutionStatus.RESOLVED and self.confirmed_candidate_id is not None:
             raise ValueError("unresolved identity cannot confirm a candidate")
+        if (
+            self.unknown_candidate_id is not None
+            and self.unknown_candidate_id not in self.posterior_probabilities
+        ):
+            raise ValueError("unknown identity must remain in the reported posterior")
+        if self.status == ResolutionStatus.UNKNOWN and self.unknown_candidate_id is None:
+            raise ValueError("UNKNOWN identity status requires explicit unknown probability mass")
+        if (
+            self.unknown_candidate_id is not None
+            and self.confirmed_candidate_id == self.unknown_candidate_id
+        ):
+            raise ValueError("unknown identity cannot be converted into a confirmed hard UUID")
         return self
 
 
@@ -562,7 +579,13 @@ class ObservationActionScore(ContractModel):
     baseline_decision_utility: float | None = None
     expected_decision_utility: float | None = None
     expected_utility_gain: float | None = Field(default=None, ge=0.0)
+    expected_cause_information_gain: float | None = Field(default=None, ge=0.0)
+    baseline_consolidation_decision_utility: float | None = None
+    expected_consolidation_decision_utility: float | None = None
+    expected_consolidation_decision_value_gain: float | None = Field(default=None, ge=0.0)
+    privacy_hard_constraint_satisfied: bool = True
     recommended_terminal_decision_by_outcome: dict[str, UUID] = Field(default_factory=dict)
+    recommended_consolidation_decision_by_outcome: dict[str, UUID] = Field(default_factory=dict)
 
 
 class ActiveObservationPlan(ContractModel):
@@ -570,6 +593,7 @@ class ActiveObservationPlan(ContractModel):
     scores: tuple[ObservationActionScore, ...]
     should_act: bool
     stop_reason: str = Field(min_length=1)
+    blocked_action_ids: tuple[UUID, ...] = ()
 
     @model_validator(mode="after")
     def validate_plan(self) -> ActiveObservationPlan:
@@ -577,8 +601,12 @@ class ActiveObservationPlan(ContractModel):
         if self.should_act:
             if self.selected_action_id not in score_ids:
                 raise ValueError("selected action must be present in scores")
+            if self.selected_action_id in self.blocked_action_ids:
+                raise ValueError("a hard-blocked observation action cannot be selected")
         elif self.selected_action_id is not None:
             raise ValueError("stopped plan cannot select an action")
+        if len(self.blocked_action_ids) != len(set(self.blocked_action_ids)):
+            raise ValueError("blocked observation action IDs must be unique")
         return self
 
 
@@ -594,6 +622,8 @@ class ExecutionFeedbackRecord(ContractModel):
     outcome_distribution: dict[RobotActionOutcome, Probability] = Field(min_length=1)
     task_goal_satisfied_probability: Probability = 0.0
     observation_opportunity_id: UUID | None = None
+    action_outcome_model_version: str | None = Field(default=None, min_length=1)
+    action_outcome_calibration_domain: str | None = Field(default=None, min_length=1)
     evidence_refs: tuple[EvidenceRef, ...] = ()
     diagnostics: dict[str, JsonValue] = Field(default_factory=dict)
 
@@ -608,6 +638,14 @@ class ExecutionFeedbackRecord(ContractModel):
             RobotActionOutcome.SUCCESS, 0.0
         ):
             raise ValueError("task goal satisfaction cannot exceed action success probability")
+        model_binding = (
+            self.action_outcome_model_version,
+            self.action_outcome_calibration_domain,
+        )
+        if (model_binding[0] is None) != (model_binding[1] is None):
+            raise ValueError(
+                "action outcome model version and calibration domain must appear together"
+            )
         if self.outcome_distribution.get(RobotActionOutcome.NOT_FOUND, 0.0) > 0.0:
             if self.action_type != RobotActionType.SEARCH:
                 raise ValueError("not_found is only valid for search feedback")

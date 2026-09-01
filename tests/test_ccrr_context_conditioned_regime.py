@@ -12,7 +12,7 @@ These pin the four behaviours the specification requires:
 from __future__ import annotations
 
 from datetime import UTC, datetime, timedelta
-from uuid import uuid4
+from uuid import UUID, uuid4
 
 import pytest
 
@@ -108,6 +108,16 @@ def test_posterior_is_normalized_and_covers_all_kinds():
         now=BASE,
     )
     assert set(decision.decision_score) == set(RegimeDecisionKind)
+    assert decision.authority == "ccrr_regime_destination_proposal"
+    assert not decision.parameter_write_authorized
+
+
+def test_ccrr_cannot_claim_rgrc_parameter_write_authority():
+    decision = _score_stay_decision(ContextConditionedRegimeReactivator(), UUID(int=9201))
+    payload = decision.model_dump(mode="python")
+    payload["authority"] = "final_regime_and_statistic_write"
+    with pytest.raises(ValueError, match="ccrr_regime_destination_proposal"):
+        RegimeDecision.model_validate(payload)
     assert sum(decision.decision_score.values()) == pytest.approx(1.0, abs=1e-9)
 
 

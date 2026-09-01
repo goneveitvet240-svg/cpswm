@@ -52,6 +52,35 @@ class RelevantChange(StrEnum):
     CANCEL = "cancel"
 
 
+class DecisionInvalidationTrace(ContractModel):
+    """Keep belief, cache, and policy invalidation as separate decisions.
+
+    A changed belief does not imply that every materialized cache is stale, and
+    neither necessarily implies that the current action suffix must be
+    replanned.  Recording the three layers prevents a task-aware method from
+    presenting ordinary cache refreshes as policy adaptation.
+    """
+
+    belief_invalidated: bool
+    cache_invalidated: bool
+    policy_action: RelevantChange
+    belief_reasons: tuple[str, ...] = ()
+    cache_reasons: tuple[str, ...] = ()
+    policy_reasons: tuple[str, ...] = ()
+
+    @model_validator(mode="after")
+    def require_layer_reasons(self) -> DecisionInvalidationTrace:
+        if self.belief_invalidated != bool(self.belief_reasons):
+            raise ValueError("belief invalidation and its reasons must agree")
+        if self.cache_invalidated != bool(self.cache_reasons):
+            raise ValueError("cache invalidation and its reasons must agree")
+        if self.policy_action is RelevantChange.CONTINUE and self.policy_reasons:
+            raise ValueError("CONTINUE cannot carry policy invalidation reasons")
+        if self.policy_action is not RelevantChange.CONTINUE and not self.policy_reasons:
+            raise ValueError("REPLAN/CANCEL must explain the policy invalidation")
+        return self
+
+
 class TargetPresenceBeliefRef(ContractModel):
     """A target-presence prior bound to the exact belief node it was read from.
 
@@ -176,7 +205,7 @@ class DecisionContext(ContractModel):
         because they have no defaults.
         """
 
-        return cls(**fields)  # type: ignore[arg-type]
+        return cls.model_validate(fields)
 
 
 class DecisionContextBinding(ContractModel):
@@ -234,3 +263,72 @@ def detect_relevant_change(
     if current.static_map_revision != context.revisions.static_map_revision:
         return RelevantChange.REPLAN
     return RelevantChange.CONTINUE
+
+
+def classify_decision_invalidation(
+    context: DecisionContext,
+    *,
+    current: MapConsistencyRevisions,
+    target_object_moved: bool,
+    robot_pose_graph_corrected: bool,
+    planned_path_blocked: bool,
+    only_irrelevant_updates: bool,
+    elapsed_seconds: float,
+) -> DecisionInvalidationTrace:
+    """Audit belief invalidation, cache invalidation, and policy replanning.
+
+    This intentionally delegates the final action decision to
+    :func:`detect_relevant_change`, while exposing upstream invalidations that
+    may require a belief recomputation or cache refresh without changing the
+    action policy.
+    """
+
+    pinned = context.revisions
+    belief_reasons: list[str] = []
+    if current.belief_snapshot_id != pinned.belief_snapshot_id:
+        belief_reasons.append("belief_snapshot_changed")
+    if current.event_history_revision != pinned.event_history_revision:
+        belief_reasons.append("event_history_revision_changed")
+    if current.input_watermark != pinned.input_watermark:
+        belief_reasons.append("input_watermark_changed")
+
+    cache_reasons: list[str] = []
+    if current.projection_id != pinned.projection_id:
+        cache_reasons.append("projection_identity_changed")
+    if current.projection_version != pinned.projection_version:
+        cache_reasons.append("projection_version_changed")
+    if current.static_map_revision != pinned.static_map_revision:
+        cache_reasons.append("static_map_revision_changed")
+    if current.dynamic_map_revision != pinned.dynamic_map_revision:
+        cache_reasons.append("dynamic_map_revision_changed")
+
+    policy_action = detect_relevant_change(
+        context,
+        current=current,
+        target_object_moved=target_object_moved,
+        robot_pose_graph_corrected=robot_pose_graph_corrected,
+        planned_path_blocked=planned_path_blocked,
+        only_irrelevant_updates=only_irrelevant_updates,
+        elapsed_seconds=elapsed_seconds,
+    )
+    policy_reasons: list[str] = []
+    if policy_action is RelevantChange.CANCEL:
+        policy_reasons.append("staleness_budget_exceeded")
+    elif policy_action is RelevantChange.REPLAN:
+        if target_object_moved:
+            policy_reasons.append("target_object_moved")
+        if robot_pose_graph_corrected:
+            policy_reasons.append("robot_pose_graph_corrected")
+        if planned_path_blocked:
+            policy_reasons.append("planned_path_blocked")
+        if not policy_reasons:
+            policy_reasons.append("relevant_map_revision_changed")
+
+    return DecisionInvalidationTrace(
+        belief_invalidated=bool(belief_reasons),
+        cache_invalidated=bool(cache_reasons),
+        policy_action=policy_action,
+        belief_reasons=tuple(belief_reasons),
+        cache_reasons=tuple(cache_reasons),
+        policy_reasons=tuple(policy_reasons),
+    )

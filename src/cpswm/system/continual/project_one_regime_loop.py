@@ -455,17 +455,17 @@ class AutomaticCFBOCPDCCRRRouter:
 
     @staticmethod
     def _assessment(
-        conclusion,
-        old_regime,
-        new_regime,
-        change_probability,
-        ccrr_decision,
-        evidence_source_record_ids,
-        statistic_operations,
-        snapshot,
-        candidate_change_time,
-        allow_long_term_write,
-        rationale,
+        conclusion: HabitStateConclusion,
+        old_regime: str,
+        new_regime: str,
+        change_probability: float,
+        ccrr_decision: RegimeDecision | None,
+        evidence_source_record_ids: tuple[UUID, ...],
+        statistic_operations: tuple[PrototypeStatisticOperation, ...],
+        snapshot: JointCauseSnapshot,
+        candidate_change_time: datetime | None,
+        allow_long_term_write: bool,
+        rationale: str,
     ) -> AutomaticRegimeAssessment:
         return AutomaticRegimeAssessment(
             conclusion=conclusion,

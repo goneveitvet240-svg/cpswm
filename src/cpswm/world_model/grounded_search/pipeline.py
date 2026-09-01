@@ -8,12 +8,14 @@ from uuid import UUID
 
 from pydantic import BaseModel, ValidationError
 
+from cpswm.contracts import ObservationOpportunityRecord
 from cpswm.contracts.grounded_search import (
     ActionOutcomeLikelihoodModel,
     ActiveObservationPlan,
     CandidateKind,
     ChannelEvidence,
     ExecutionFeedbackRecord,
+    GroundedObjectCandidate,
     GroundedSearchResult,
     JointCandidateEvidence,
     JointPosteriorRequest,
@@ -412,7 +414,12 @@ class DirectionThreePipeline:
     @staticmethod
     def _validate_record_scope(
         request: JointPosteriorRequest,
-        record: VerificationObservation | ExecutionFeedbackRecord,
+        record: (
+            VerificationObservation
+            | ExecutionFeedbackRecord
+            | GroundedSearchResult
+            | ObservationOpportunityRecord
+        ),
         *,
         record_kind: str,
     ) -> None:
@@ -504,7 +511,7 @@ class DirectionThreePipeline:
     def _validate_task_execution(
         cls,
         request: JointPosteriorRequest,
-        target,
+        target: GroundedObjectCandidate,
         execution: GroundedTaskExecution,
     ) -> GroundedTaskExecution:
         cls._reject_model_copy_extras(execution, "grounded task execution")
@@ -512,6 +519,27 @@ class DirectionThreePipeline:
             execution = GroundedTaskExecution.model_validate(execution.model_dump(mode="python"))
         except (AttributeError, ValidationError) as exc:
             raise ValueError(f"invalid grounded task execution: {exc}") from exc
+        if execution.action_outcome_model_version is not None:
+            bound_feedback = tuple(
+                feedback.model_copy(
+                    update={
+                        "action_outcome_model_version": (
+                            feedback.action_outcome_model_version
+                            or execution.action_outcome_model_version
+                        ),
+                        "action_outcome_calibration_domain": (
+                            feedback.action_outcome_calibration_domain
+                            or execution.action_outcome_calibration_domain
+                        ),
+                    }
+                )
+                for feedback in execution.feedback_records
+            )
+            execution = GroundedTaskExecution.model_validate(
+                execution.model_copy(update={"feedback_records": bound_feedback}).model_dump(
+                    mode="python"
+                )
+            )
         if execution.selected_target_candidate_id != target.candidate_id:
             raise ValueError("execution must bind the selected target candidate")
         if target.entity is None or execution.target_entity != target.entity:
@@ -559,6 +587,10 @@ class DirectionThreePipeline:
             raise ValueError("outcome model version must match the executed action")
         if model.calibration_domain != execution.action_outcome_calibration_domain:
             raise ValueError("outcome model calibration domain must match the executed action")
+        if feedback.action_outcome_model_version != model.model_version:
+            raise ValueError("canonical feedback must persist the outcome model version")
+        if feedback.action_outcome_calibration_domain != model.calibration_domain:
+            raise ValueError("canonical feedback must persist the outcome calibration domain")
         if not set(feedback.outcome_distribution).issubset(
             set(model.p_outcome_given_target_present)
         ):
@@ -566,7 +598,10 @@ class DirectionThreePipeline:
         opportunity_by_id = {
             item.metadata.record_id: item for item in execution.observation_opportunities
         }
-        opportunity = opportunity_by_id.get(feedback.observation_opportunity_id)
+        opportunity_id = feedback.observation_opportunity_id
+        if opportunity_id is None:
+            raise ValueError("search feedback requires an observation opportunity ID")
+        opportunity = opportunity_by_id.get(opportunity_id)
         if opportunity is None:
             raise ValueError("search outcome model requires the execution observation opportunity")
         return model

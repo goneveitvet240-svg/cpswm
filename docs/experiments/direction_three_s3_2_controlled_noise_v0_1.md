@@ -1,5 +1,9 @@
 # 方向结构三 S3-2 Controlled-Noise Baseline v0.1
 
+> **已撤回并由 v0.2 取代。** 本版把 retrieval miss 错标为 true unknown，按候选独立
+> 采样通道缺失，并把确定性重复称为多种子实验；其中 retrieval/open-set 与区间结论无效。
+> 下文保留的是被撤回的原始记录，仅用于审计，不代表当前结论。
+
 日期：2026-08-25
 成熟度：`s3-2_controlled_noise_baseline`
 证据级别：确定性合成噪声与 oracle truth（真值）；不是真实感知证据

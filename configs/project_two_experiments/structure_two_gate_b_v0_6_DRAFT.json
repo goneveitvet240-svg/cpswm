@@ -1,0 +1,107 @@
+{
+  "protocol": "structure-two-stratified-mechanism-action-gate-b@0.6",
+  "status": "DEVELOPMENT_NOT_FROZEN",
+  "supersedes_for_future_runs": "structure-two-world-arm-distinguishability-gate-b@0.5",
+  "preserves_v0_5_result": true,
+  "expected_arms": [
+    "corrected_amg",
+    "o_star_matched",
+    "sequential_no_consolidation",
+    "active_dreaming_matched",
+    "auto_dreamer_matched",
+    "trustmem_matched",
+    "brainctl_matched",
+    "care_no_action_regret",
+    "care_wm",
+    "full_rerun"
+  ],
+  "comparison_pairs": [
+    {
+      "comparison_id": "event-inference-adaptation",
+      "domain": "hidden-event and actor-attribution action adaptation",
+      "left_arm": "care_wm",
+      "right_arm": "corrected_amg",
+      "min_action_disagreement_rate": 0.01
+    },
+    {
+      "comparison_id": "object-search-adaptation",
+      "domain": "embodied object-search action adaptation",
+      "left_arm": "care_wm",
+      "right_arm": "o_star_matched",
+      "min_action_disagreement_rate": 0.01
+    },
+    {
+      "comparison_id": "no-consolidation-ablation",
+      "domain": "reversible consolidation ablation",
+      "left_arm": "care_wm",
+      "right_arm": "sequential_no_consolidation",
+      "min_action_disagreement_rate": 0.01
+    },
+    {
+      "comparison_id": "active-dreaming-adaptation",
+      "domain": "failure-driven memory-consolidation adaptation",
+      "left_arm": "care_wm",
+      "right_arm": "active_dreaming_matched",
+      "min_action_disagreement_rate": 0.01
+    },
+    {
+      "comparison_id": "auto-dreamer-adaptation",
+      "domain": "offline memory-consolidation adaptation",
+      "left_arm": "care_wm",
+      "right_arm": "auto_dreamer_matched",
+      "min_action_disagreement_rate": 0.01
+    },
+    {
+      "comparison_id": "trustmem-adaptation",
+      "domain": "verified memory-transition adaptation",
+      "left_arm": "care_wm",
+      "right_arm": "trustmem_matched",
+      "min_action_disagreement_rate": 0.01
+    },
+    {
+      "comparison_id": "brainctl-adaptation",
+      "domain": "memory-admission and lifecycle-control adaptation",
+      "left_arm": "care_wm",
+      "right_arm": "brainctl_matched",
+      "min_action_disagreement_rate": 0.01
+    },
+    {
+      "comparison_id": "action-regret-ablation",
+      "domain": "embodied action-regret decision ablation",
+      "left_arm": "care_wm",
+      "right_arm": "care_no_action_regret",
+      "min_action_disagreement_rate": 0.01
+    },
+    {
+      "comparison_id": "full-rerun-control",
+      "domain": "incremental reversible update versus complete replay",
+      "left_arm": "care_wm",
+      "right_arm": "full_rerun",
+      "min_action_disagreement_rate": 0.01
+    }
+  ],
+  "mechanism_requirements": {
+    "corrected_amg": ["global_multi_event_map_inference"],
+    "o_star_matched": ["dirichlet_hit_or_miss_update", "stay_leak_transition", "cost_aware_search"],
+    "sequential_no_consolidation": ["typed_particle_update_without_consolidation"],
+    "active_dreaming_matched": ["failure_clustered", "counterfactual_scenario_executed_with_attested_receipt", "semantic_rule_committed_after_attested_execution"],
+    "auto_dreamer_matched": ["offline_region_selected", "provenance_trajectory_inspected", "replacement_set_committed"],
+    "trustmem_matched": ["coverage_verified", "preservation_verified", "faithfulness_verified"],
+    "brainctl_matched": ["source_trust_scored", "two_stage_write_gate_executed", "memory_tier_routed"],
+    "care_no_action_regret": ["confidence_only_reversible_escrow"],
+    "care_wm": ["future_action_regret_decision", "reversible_ledger_update"],
+    "full_rerun": ["complete_visible_history_recomputed"]
+  },
+  "mechanism_activation_thresholds": {
+    "min_event_step_fraction": 0.001,
+    "min_event_episode_fraction": 0.05
+  },
+  "external_fidelity_policy": {
+    "protocol": "structure-two-external-adapter-fidelity-gate@0.2",
+    "native_reproduction_required": true,
+    "cross_domain_adaptation_contract_required": true,
+    "independent_reviewer_attestation_required": true,
+    "gate_b_pass_does_not_authorize_external_method_efficacy": true
+  },
+  "claim_boundary": "The complete ten-arm suite is retained. Only preregistered same-question pairs are scored for action distinguishability; every arm must separately activate its declared mechanism. Official external-method efficacy claims additionally require native and adaptation fidelity evidence."
+}

@@ -1,9 +1,12 @@
-"""Project-two action-level matched benchmark v0.2 over replay episodes.
+"""Project-two corrected-interface action benchmark v0.4 over replay episodes.
 
 The full arm composes the existing prototype spine and feedback revision loop;
 it does not reimplement CHEH, ORRER, PCHMP, feedback projection, or project-one
 statistics.  Reference adapters are labelled by fidelity so reduced-skill
 proxies can never be reported as faithful baselines.
+
+The historical ``ProjectTwoActionBenchmarkV02`` class name remains as an API
+compatibility alias; emitted reports carry the v0.4 protocol version.
 """
 
 from __future__ import annotations
@@ -11,7 +14,7 @@ from __future__ import annotations
 import hashlib
 import json
 import random
-from collections import Counter, defaultdict
+from collections import defaultdict
 from collections.abc import Callable, Mapping
 from dataclasses import dataclass
 from datetime import timedelta
@@ -70,10 +73,13 @@ from cpswm.system.prototype_spine import (
     ActionReadout,
     ActionReadoutConfig,
     CorePrototypeSpine,
+    PrototypeStepResult,
     PrototypeTransition,
 )
+from cpswm.system.reproducibility import content_uuid
+from cpswm.world_model.habits_transitions import PropensityCorrectionMode
 
-BENCHMARK_VERSION = "project-two-action-benchmark@0.2"
+BENCHMARK_VERSION = "project-two-action-benchmark@0.4-corrected-interface"
 
 
 class BenchmarkFidelity(StrEnum):
@@ -102,7 +108,9 @@ FIDELITY: dict[ProjectTwoActionMethod, BenchmarkFidelity] = {
     ProjectTwoActionMethod.FREQUENCY: BenchmarkFidelity.FAITHFUL_MATCHED,
     ProjectTwoActionMethod.RECENCY: BenchmarkFidelity.FAITHFUL_MATCHED,
     ProjectTwoActionMethod.MARKOV: BenchmarkFidelity.FAITHFUL_MATCHED,
-    ProjectTwoActionMethod.AMG_MATCHED: BenchmarkFidelity.FAITHFUL_MATCHED,
+    # This is a generous object-relocation adaptation.  It does not reproduce
+    # the source video likelihoods, RJMCMC-SA, or IP solver.
+    ProjectTwoActionMethod.AMG_MATCHED: BenchmarkFidelity.MATCHED_REPLAY_ADAPTER,
     # These three are honest replay adapters to the repository's documented
     # reduced-skill implementations, not claims of external-code fidelity.
     ProjectTwoActionMethod.O_STAR: BenchmarkFidelity.MATCHED_REPLAY_ADAPTER,
@@ -136,6 +144,7 @@ class ActionCaseMetric(ContractModel):
     method: ProjectTwoActionMethod
     step_count: int = Field(ge=0)
     put_back_error_rate: float = Field(ge=0.0, le=1.0)
+    persistent_owner_mode_error_rate: float = Field(ge=0.0, le=1.0)
     cumulative_action_regret: float = Field(ge=0.0)
     owner_habit_contamination: float = Field(ge=0.0)
     incorrect_statistic_recovery_cost: float = Field(ge=0.0)
@@ -229,12 +238,13 @@ class _CountMethod:
         self.mode = mode
         self.parameter = parameter
         self.locations = _locations(episode)
-        self.counts: Counter[UUID] = Counter(
-            {location: parameter for location in self.locations} if mode == "frequency" else {}
+        self.counts: dict[UUID, float] = defaultdict(
+            float,
+            {location: parameter for location in self.locations} if mode == "frequency" else {},
         )
         self.last: UUID | None = None
         self.last_confidence = 0.0
-        self.transitions: dict[UUID, Counter[UUID]] = defaultdict(Counter)
+        self.transitions: dict[UUID, dict[UUID, float]] = defaultdict(lambda: defaultdict(float))
         self.previous: UUID | None = None
         self.log: list[tuple[UUID, float]] = []
         self.revision_calls = self.project_one_requests = self.project_one_applications = 0
@@ -242,7 +252,7 @@ class _CountMethod:
         self.project_one_rejections = 0
 
     def observe(self, step: ProjectTwoReplayStep) -> None:
-        if step.after is None or step.after.detected_location_id is None:
+        if step.before is None or step.after is None or step.after.detected_location_id is None:
             return
         location = step.after.detected_location_id
         if self.mode in {"recency", "o_star", "star"}:
@@ -292,7 +302,7 @@ class _AMGOpenWorldMethod(_CountMethod):
         self.amg_owner_location: UUID | None = None
 
     def observe(self, step: ProjectTwoReplayStep) -> None:
-        if step.after is None or step.after.detected_location_id is None:
+        if step.before is None or step.after is None or step.after.detected_location_id is None:
             return
         location = step.after.detected_location_id
         actors = self.episode.resident_actor_keys
@@ -301,6 +311,20 @@ class _AMGOpenWorldMethod(_CountMethod):
             if step.actor_evidence is not None
             else {actor: 1.0 / len(actors) for actor in actors}
         )
+        actor_priors = (
+            dict(step.actor_evidence.reference_actor_prior)
+            if step.actor_evidence is not None
+            else {actor: 1.0 / len(actors) for actor in actors}
+        )
+        # AMG consumes binary event evidence through log-odds.  A categorical
+        # posterior is therefore first prior-corrected into an evidence ratio,
+        # then mapped to (0, 1); passing the posterior directly double-counts
+        # actor priors and creates a favorable interface for this baseline.
+        actor_likelihoods: dict[str, float] = {}
+        for key, posterior in actor_probabilities.items():
+            prior = max(1e-12, actor_priors.get(key, 1.0 / len(actor_probabilities)))
+            evidence_ratio = max(1e-12, posterior) / prior
+            actor_likelihoods[key] = evidence_ratio / (1.0 + evidence_ratio)
         mechanism_probabilities = (
             dict(step.mechanism_evidence.mechanism_posterior)
             if step.mechanism_evidence is not None
@@ -321,7 +345,7 @@ class _AMGOpenWorldMethod(_CountMethod):
                 after=step.after,
                 actor_event_likelihoods={
                     key: min(1.0 - 1e-6, max(1e-6, value))
-                    for key, value in actor_probabilities.items()
+                    for key, value in actor_likelihoods.items()
                 },
                 mechanism_likelihoods=mechanism_probabilities,
                 handoff_role_likelihoods=roles,
@@ -329,7 +353,9 @@ class _AMGOpenWorldMethod(_CountMethod):
         except ValueError:
             return
         self.last = location
-        if prediction.selected_sequence.responsible_actor_key == self.episode.owner_actor_key:
+        # A label-dependent selected representative is not action evidence when
+        # multiple responsible actors share the exact MAP score.
+        if set(prediction.maximizing_responsible_actor_keys) == {self.episode.owner_actor_key}:
             self.amg_owner_location = location
 
     def predict(self) -> _Prediction:
@@ -392,6 +418,7 @@ class _FullProjectTwoMethod:
         orrer_reactivation_threshold: float = 0.5,
         action_utility_threshold: float = 0.0,
         action_readout: ActionReadoutConfig | None = None,
+        propensity_correction_mode: PropensityCorrectionMode = PropensityCorrectionMode.INVERSE,
     ) -> None:
         self.episode = episode
         self.locations = _locations(episode)
@@ -414,6 +441,7 @@ class _FullProjectTwoMethod:
         self.orrer_reactivation_threshold = orrer_reactivation_threshold
         self.action_utility_threshold = action_utility_threshold
         self.action_readout = action_readout or ActionReadoutConfig()
+        self.propensity_correction_mode = propensity_correction_mode
         self.spine = CorePrototypeSpine(
             owner_key=episode.owner_actor_key,
             object_instance_id=episode.steps[0].object_instance_id,
@@ -423,6 +451,7 @@ class _FullProjectTwoMethod:
             message_passing=message_passing,
             rgrc_gate_enabled=rgrc_gate_enabled,
             action_readout=self.action_readout,
+            correction_mode=propensity_correction_mode,
         )
         self.feedback_loop = ProjectTwoFeedbackRevisionLoop(
             projector=ExecutionFeedbackProjector(),
@@ -448,9 +477,12 @@ class _FullProjectTwoMethod:
         self._pending_trace_indices: list[int] = []
         self._prediction_index = 0
         self._observed_steps: list[ProjectTwoReplayStep] = []
+        self.formal_evidence_records_consumed = 0
 
     def observe(self, step: ProjectTwoReplayStep) -> None:
         step = self.evidence_transform(step)
+        if step.unified_evidence is not None:
+            self.formal_evidence_records_consumed += 1
         if step.before is None or step.after is None or step.observation_opportunity is None:
             return
         evidence = tuple(
@@ -660,7 +692,9 @@ class _FullProjectTwoMethod:
         return tuple(items)
 
     @staticmethod
-    def _weighted_axis_evidence(evidence, weight: float, *, unknown_prior=None):
+    def _weighted_axis_evidence(
+        evidence: Any, weight: float, *, unknown_prior: float | None = None
+    ) -> Any:
         if evidence is None:
             return None
         if weight < 0.0:
@@ -720,6 +754,8 @@ class _FullProjectTwoMethod:
                 loop_config=self.loop_config,
                 message_passing=self.message_passing,
                 rgrc_gate_enabled=self.rgrc_gate_enabled,
+                correction_mode=self.propensity_correction_mode,
+                action_readout=self.action_readout,
             )
             self.histories.clear()
             self.step_results.clear()
@@ -850,7 +886,15 @@ class _FullProjectTwoMethod:
             for key, value in sorted(values.items(), key=lambda item: str(item[0]))
         )
 
-    def _trace(self, *, feedback, outcome, receipt, old_snapshot_id, new_snapshot_id):
+    def _trace(
+        self,
+        *,
+        feedback: Any,
+        outcome: Any,
+        receipt: Any,
+        old_snapshot_id: UUID,
+        new_snapshot_id: UUID,
+    ) -> ProjectTwoRevisionActionTrace:
         request = outcome.project_one_requests[0] if outcome.project_one_requests else None
         request_trace = (
             None
@@ -970,7 +1014,9 @@ class _FullProjectTwoMethod:
         )
 
 
-def _binding(feedback, result, authorization_scope_id: UUID) -> DecisionContextBinding:
+def _binding(
+    feedback: Any, result: PrototypeStepResult, authorization_scope_id: UUID
+) -> DecisionContextBinding:
     revisions = MapConsistencyRevisions(
         belief_snapshot_id=result.belief_snapshot.snapshot_id,
         projection_id=uuid4(),
@@ -1032,7 +1078,9 @@ def _likelihood(
         present = {RobotActionOutcome.SUCCESS: 0.85, RobotActionOutcome.NOT_FOUND: 0.15}
         absent = {RobotActionOutcome.SUCCESS: 0.1, RobotActionOutcome.NOT_FOUND: 0.9}
 
-    def calibrated(values):
+    def calibrated(
+        values: Mapping[RobotActionOutcome, float],
+    ) -> dict[RobotActionOutcome, float]:
         powered = {key: value**calibration for key, value in values.items()}
         total = sum(powered.values())
         return {key: value / total for key, value in powered.items()}
@@ -1101,6 +1149,10 @@ def _normalize(values: Mapping[Any, float]) -> dict[Any, float]:
 
 
 def _locations(episode: ProjectTwoReplayEpisode) -> tuple[UUID, ...]:
+    if episode.known_location_ids:
+        if len(episode.known_location_ids) < 2:
+            raise ValueError("benchmark episode requires at least two known locations")
+        return episode.known_location_ids
     values: list[UUID] = []
     for step in episode.steps:
         values.extend(
@@ -1283,6 +1335,8 @@ class ProjectTwoActionBenchmarkV02:
         )
         paper_gate_failures = [
             "D0 synthetic replay cannot establish real-world external validity",
+            "AMG lacks source video likelihoods and source inference machinery "
+            "for faithful reproduction",
             "O-STaR/DynaMem/STAR lack RGB-D, pose, voxel, caption, and embodied-skill inputs "
             "required for faithful reproduction",
         ]
@@ -1315,6 +1369,11 @@ class ProjectTwoActionBenchmarkV02:
                         ProjectTwoActionMethod.DYNAMEM,
                         ProjectTwoActionMethod.STAR,
                     }
+                    else (
+                        "learned Damen-Hogg source likelihoods",
+                        "source RJMCMC-SA or integer-programming inference",
+                    )
+                    if method is ProjectTwoActionMethod.AMG_MATCHED
                     else ()
                 ),
                 qualifies_for_paper_superiority=(
@@ -1367,6 +1426,7 @@ class ProjectTwoActionBenchmarkV02:
             superiority_supported=superiority,
             limitations=(
                 "D0 synthetic replay pilot only; not real-world external validity",
+                "AMG is a matched object-relocation adapter, not a faithful source reproduction",
                 "O-STaR, DynaMem, and STAR are matched replay adapters, not faithful reproductions",
                 "D1-D4 real perception, household, and robot execution gates remain closed",
             ),
@@ -1390,11 +1450,20 @@ class ProjectTwoActionBenchmarkV02:
             hybrid_alpha_weight=float(params.get("hybrid_alpha_weight", 1.0)),
             regime_local_weight=float(params.get("regime_local_weight", 0.0)),
             surviving_revision_weight=float(params.get("surviving_revision_weight", 0.0)),
+            fast_action_weight=float(params.get("fast_action_weight", 0.0)),
+            fast_owner_mass_floor=float(params.get("fast_owner_mass_floor", 0.5)),
+            fast_confirmation_observations=int(params.get("fast_confirmation_observations", 1)),
+            unconfirmed_fast_discount=float(params.get("unconfirmed_fast_discount", 1.0)),
             pending_correction_discount=float(params.get("pending_correction_discount", 1.0)),
             active_regime_only=bool(params.get("active_regime_only", False)),
         )
 
-    def _method(self, episode, method, params) -> _ReplayMethod:
+    def _method(
+        self,
+        episode: ProjectTwoReplayEpisode,
+        method: ProjectTwoActionMethod,
+        params: Mapping[str, Any],
+    ) -> _ReplayMethod:
         if method is ProjectTwoActionMethod.PROJECT_TWO:
             return _FullProjectTwoMethod(
                 episode,
@@ -1415,7 +1484,13 @@ class ProjectTwoActionBenchmarkV02:
         }
         return _CountMethod(episode, mode=modes[method], parameter=params["parameter"])
 
-    def _evaluate_episode(self, dataset, episode, method, params) -> ActionCaseMetric:
+    def _evaluate_episode(
+        self,
+        dataset: ProjectTwoReplayDataset,
+        episode: ProjectTwoReplayEpisode,
+        method: ProjectTwoActionMethod,
+        params: Mapping[str, Any],
+    ) -> ActionCaseMetric:
         truth = dataset.truth_for(episode.episode_id)
         if method is ProjectTwoActionMethod.ORACLE:
             predictions = []
@@ -1490,18 +1565,52 @@ class ProjectTwoActionBenchmarkV02:
             ),
         )
 
-    def _score_predictions(self, *, dataset, episode, method, predictions, stats):
+    def _score_predictions(
+        self,
+        *,
+        dataset: ProjectTwoReplayDataset,
+        episode: ProjectTwoReplayEpisode,
+        method: ProjectTwoActionMethod,
+        predictions: list[_Prediction],
+        stats: tuple[
+            int,
+            int,
+            int,
+            int,
+            int,
+            int,
+            int,
+            int,
+            tuple[ProjectTwoRevisionActionTrace, ...],
+        ],
+    ) -> ActionCaseMetric:
         """Frozen evaluator shared by built-in and plug-in experiment tracks."""
         visible_hash = _visible_hash(episode)
         truth = dataset.truth_for(episode.episode_id)
-        put_errors = search_errors = search_cost = contamination = unknown_brier = 0.0
+        put_errors = persistent_errors = search_errors = search_cost = 0.0
+        contamination = unknown_brier = 0.0
         incorrect_feedback_cases = 0
         recovery_cost = 0.0
         ordered_truth = [truth.truth_by_step[step.step_id] for step in episode.steps]
+        locations = _locations(episode)
+        # Evaluator truth may name a location that never entered the visible
+        # replay under low observation coverage.  Keep it countable for scoring
+        # without adding it to the model-visible action candidates in
+        # ``locations`` below.
+        persistent_counts: defaultdict[UUID, float] = defaultdict(
+            float,
+            {location: 0.0 for location in locations},
+        )
+        # One explicit pseudo-observation anchors the pre-episode owner habit.
+        persistent_counts[ordered_truth[0].true_owner_habit_location] = 1.0
         for index, (step, prediction, target) in enumerate(
             zip(episode.steps, predictions, ordered_truth, strict=True)
         ):
+            if target.true_actor == episode.owner_actor_key:
+                persistent_counts[target.true_location] += 1.0
+            persistent_target = _argmax(locations, persistent_counts)
             put_errors += prediction.put_back != target.true_owner_habit_location
+            persistent_errors += prediction.put_back != persistent_target
             search_errors += prediction.search_order[0] != target.true_location
             try:
                 search_cost += prediction.search_order.index(target.true_location) + 1
@@ -1527,7 +1636,67 @@ class ProjectTwoActionBenchmarkV02:
                     recovery_cost += latency
         n = len(predictions)
         enriched_traces: list[ProjectTwoRevisionActionTrace] = []
-        for trace in stats[8]:
+        for trace_number, raw_trace in enumerate(stats[8]):
+            identity = {
+                "benchmark_version": BENCHMARK_VERSION,
+                "episode_id": str(episode.episode_id),
+                "feedback_record_id": str(raw_trace.feedback_record_id),
+                "trace_number": trace_number,
+            }
+            corrected_id = (
+                raw_trace.superseded_revision_id
+                if raw_trace.corrected_revision_id == raw_trace.superseded_revision_id
+                else content_uuid("benchmark-corrected-revision", identity)
+            )
+            old_snapshot_id = content_uuid("benchmark-old-belief-snapshot", identity)
+            new_snapshot_id = (
+                old_snapshot_id
+                if raw_trace.new_belief_snapshot_id == raw_trace.old_belief_snapshot_id
+                else content_uuid("benchmark-new-belief-snapshot", identity)
+            )
+            planner_snapshot_id = (
+                None
+                if raw_trace.planner_read_snapshot_id is None
+                else (
+                    new_snapshot_id
+                    if raw_trace.planner_read_snapshot_id == raw_trace.new_belief_snapshot_id
+                    else content_uuid("benchmark-planner-read-snapshot", identity)
+                )
+            )
+            id_replacements = {
+                str(raw_trace.corrected_revision_id): str(corrected_id),
+                str(raw_trace.old_belief_snapshot_id): str(old_snapshot_id),
+                str(raw_trace.new_belief_snapshot_id): str(new_snapshot_id),
+            }
+            if raw_trace.planner_read_snapshot_id is not None and planner_snapshot_id is not None:
+                id_replacements[str(raw_trace.planner_read_snapshot_id)] = str(planner_snapshot_id)
+
+            diagnostics = []
+            for diagnostic in raw_trace.operator_diagnostics:
+                detail = diagnostic.detail
+                for source, replacement in id_replacements.items():
+                    detail = detail.replace(source, replacement)
+                diagnostics.append(diagnostic.model_copy(update={"detail": detail}))
+            request = raw_trace.project_one_request
+            trace = raw_trace.model_copy(
+                update={
+                    "corrected_revision_id": corrected_id,
+                    "project_one_request": (
+                        None
+                        if request is None
+                        else request.model_copy(update={"corrected_revision_id": corrected_id})
+                    ),
+                    "application_receipt_id": (
+                        None
+                        if raw_trace.application_receipt_id is None
+                        else content_uuid("benchmark-application-receipt", identity)
+                    ),
+                    "old_belief_snapshot_id": old_snapshot_id,
+                    "new_belief_snapshot_id": new_snapshot_id,
+                    "planner_read_snapshot_id": planner_snapshot_id,
+                    "operator_diagnostics": tuple(diagnostics),
+                }
+            )
             trace_index = min(trace.planner_prediction_index or 0, n - 1)
             target = ordered_truth[trace_index]
             put_candidates = [
@@ -1574,6 +1743,7 @@ class ProjectTwoActionBenchmarkV02:
             method=method,
             step_count=n,
             put_back_error_rate=put_errors / n,
+            persistent_owner_mode_error_rate=persistent_errors / n,
             cumulative_action_regret=put_errors + search_errors,
             owner_habit_contamination=contamination / n,
             incorrect_statistic_recovery_cost=(
@@ -1604,6 +1774,7 @@ class ProjectTwoActionBenchmarkV02:
     def _aggregate(self, cases: list[ActionCaseMetric]) -> list[AggregateMetric]:
         metrics = (
             "put_back_error_rate",
+            "persistent_owner_mode_error_rate",
             "cumulative_action_regret",
             "owner_habit_contamination",
             "incorrect_statistic_recovery_cost",

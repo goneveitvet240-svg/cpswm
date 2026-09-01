@@ -117,5 +117,5 @@ class BenchmarkManifest(ContractModel):
     def content_sha256(self) -> str:
         return self.manifest_sha256
 
-    def _identity_payload(self) -> dict:
+    def _identity_payload(self) -> dict[str, object]:
         return self.model_dump(mode="json", exclude={"manifest_sha256"})

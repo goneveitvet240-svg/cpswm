@@ -1,0 +1,100 @@
+{
+  "schema_version": "0.1.0",
+  "protocol": "structure-two-consolidation-compatibility-gate@0.1",
+  "freeze_status": "repository_local_before_first_benchmark_run",
+  "validation_seeds": [94101, 94102, 94103, 94104],
+  "sealed_holdout_seed_count": 12,
+  "sealed_holdout_seed_commitments": [
+    "8f1dd72bfb202c43530ef6e6795875b6dd146d076859355a5ee14f005969a3ff",
+    "a66813b29feb00fdf6d461785bab33d6fa790ee595eeb73d34067fabbd0e31b1",
+    "808545c5388c14bad54ff03a992a503dce652473c55d334e0d5f426a30e845f4",
+    "144baaea6c45c49d37590766012f2e887a66317fda9d952ce4624c0ae1b20e73",
+    "2c5bb0b720dbc3b06d91cdd961578e4340e59d7e80e540a57b72260394c50336",
+    "310e34c6dab3a6a518ab995230be78dd55f1fae32b1a8fb05642ec8e27779547",
+    "4b346f4dd831f54296897dc57a903b4992593ddd4205ad1ed6db88e5345b2cf6",
+    "dd5017e733e4c6d99e04a91809a5ffaa408d52493f890b420ad7d0225a1b72e2",
+    "490904b84bd40931eea4a68c1a19e7e081a074668a8a16ebba0b5fcfd2298c1a",
+    "b5b42dbc675fed69597648e61f774149f91a789ea9ebd28f97769a22ac1dba46",
+    "f8fbc7d635162bbc129ae8de820cc67fe7ac6b721f212a509166d5679141713e",
+    "ab6e819c2923431385ec23f604187b2309f0e486a5d201c4c09be9bd5a5549fe"
+  ],
+  "sealed_seed_file_sha256": "cb5f0f9015d94b741cd394032334896ff54f784bd528c1cc03f3fdc031e3c501",
+  "max_steps": 26,
+  "particle_budget": 24,
+  "scenario_families": [
+    {
+      "family_id": "compat_identity_decoy_reentry",
+      "family_role": "required_identity_mitigation",
+      "guest_window": [3, 11],
+      "abrupt_day": 13,
+      "recurrence_day": 22,
+      "observation_coverage": 0.72,
+      "unknown_event_days": [4, 15, 23],
+      "actor_ambiguity_mix": 0.34,
+      "identity_confidence_scale": 0.88,
+      "feedback_flip_rate": 0.18,
+      "decoy_days": [5, 6, 14, 15, 24]
+    },
+    {
+      "family_id": "compat_long_recurrence_conflict",
+      "family_role": "required_recurrence_mitigation",
+      "guest_window": [4, 9],
+      "abrupt_day": 11,
+      "recurrence_day": 24,
+      "observation_coverage": 0.66,
+      "unknown_event_days": [2, 10, 18, 25],
+      "actor_ambiguity_mix": 0.44,
+      "identity_confidence_scale": 0.74,
+      "feedback_flip_rate": 0.38,
+      "decoy_days": []
+    },
+    {
+      "family_id": "compat_role_shift_guardrail",
+      "family_role": "role_guardrail",
+      "guest_window": [2, 8],
+      "abrupt_day": 12,
+      "recurrence_day": 21,
+      "observation_coverage": 0.79,
+      "unknown_event_days": [3, 13, 22],
+      "actor_ambiguity_mix": 0.67,
+      "identity_confidence_scale": 0.81,
+      "feedback_flip_rate": 0.27,
+      "decoy_days": []
+    },
+    {
+      "family_id": "compat_cause_regime_guardrail",
+      "family_role": "cause_guardrail",
+      "guest_window": [1, 6],
+      "abrupt_day": 9,
+      "recurrence_day": 18,
+      "observation_coverage": 0.81,
+      "unknown_event_days": [2, 10, 20],
+      "actor_ambiguity_mix": 0.58,
+      "identity_confidence_scale": 0.70,
+      "feedback_flip_rate": 0.32,
+      "decoy_days": []
+    }
+  ],
+  "search_spaces": {
+    "corrected_amg": [0.20, 0.33, 0.50],
+    "per_step_particle_projection": ["conservative", "balanced", "responsive"],
+    "sequential_particle_no_consolidation": ["conservative", "balanced", "responsive"],
+    "fixed_stale_blend": ["conservative", "balanced", "responsive"],
+    "revision_compatibility_gate": ["conservative", "balanced", "responsive"],
+    "uncertainty_decayed_influence": ["conservative", "balanced", "responsive"],
+    "immediate_conflict_quarantine": ["conservative", "balanced", "responsive"],
+    "adaptive_combined_consolidation": ["conservative", "balanced", "responsive"]
+  },
+  "primary_comparison": "adaptive_combined_minus_fixed_blend",
+  "noninferiority_comparison": "adaptive_combined_minus_per_step",
+  "noninferiority_margin": 0.02,
+  "required_mitigation_families": [
+    "compat_identity_decoy_reentry",
+    "compat_long_recurrence_conflict"
+  ],
+  "guardrail_families": [
+    "compat_role_shift_guardrail",
+    "compat_cause_regime_guardrail"
+  ],
+  "paired_cluster_unit": "holdout_seed_across_scenario_families"
+}

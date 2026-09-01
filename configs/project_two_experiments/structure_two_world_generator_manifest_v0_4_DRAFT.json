@@ -1,0 +1,212 @@
+{
+  "protocol": "structure-two-world-generator-validation-gate@0.4",
+  "status": "DRAFT-invalidated-recovered-custody-material-candidate-visible",
+  "evidence_scope": "new-world D0 Gate A only; Gate B and method comparison remain forbidden",
+  "inheritance": {
+    "generator_implementation_protocol": "structure-two-world-generator@0.2",
+    "base_v0_2_manifest": "configs/project_two_experiments/structure_two_world_generator_manifest_v0_2.json",
+    "base_v0_2_manifest_sha256": "88fbf4a47601401b0b95642c99d2bf0644a8d97ac5ae03171cd60bbfabc62cd4",
+    "only_reopened_world_distribution_field": "duration_days_inclusive",
+    "v0_2_and_v0_3_failures_remain_archived": true
+  },
+  "world_distribution": {
+    "duration_days_inclusive": [320, 380],
+    "location_count_inclusive": [8, 12],
+    "guest_actor_count_inclusive": [1, 3],
+    "abrupt_fraction": [0.28, 0.42],
+    "recurrence_fraction": [0.68, 0.84],
+    "owner_event_probability": [0.68, 0.82],
+    "unknown_event_probability": [0.05, 0.12],
+    "habit_mode_mass": [0.42, 0.58],
+    "habit_secondary_mass": [0.16, 0.28],
+    "weekend_distinct_mode_probability": 0.70,
+    "base_observation_probability": [0.48, 0.78],
+    "location_visibility_multiplier": [0.60, 1.20],
+    "guest_visibility_multiplier": 0.80,
+    "unknown_visibility_multiplier": 0.65,
+    "weekend_visibility_multiplier": 0.90,
+    "actor_map_accuracy": [0.70, 0.90],
+    "identity_match_accuracy": [0.78, 0.94],
+    "handoff_probability": [0.18, 0.38]
+  },
+  "split_policy": {
+    "unit": "world_seed",
+    "train_world_seeds_spent_for_tuning": [410001, 410002, 410003, 410004, 410005, 410006, 410007, 410008, 410009, 410010, 410011, 410012, 410013, 410014, 410015, 410016, 410017, 410018, 410019, 410020, 410021, 410022, 410023, 410024],
+    "v0_2_validation_worlds_spent": [420001, 420002, 420003, 420004, 420005, 420006, 420007, 420008, 420009, 420010, 420011, 420012],
+    "v0_4_validation_world_seeds_preregistered_not_generated": [440001, 440002, 440003, 440004, 440005, 440006, 440007, 440008, 440009, 440010, 440011, 440012],
+    "validation_trajectory_seeds": [17, 31, 43],
+    "validation_observation_seeds": [107, 227],
+    "sealed_holdout_world_count": 24,
+    "sealed_holdout_commitments_inherited_by_base_manifest_hash": true,
+    "raw_holdout_world_seeds_disclosed": false,
+    "custodian_seed_disjointness_attestation": "REQUIRED before status may become frozen-before-first-validation-run"
+  },
+  "rolling_visible_history_reference": {
+    "window_days": 35,
+    "context_shrinkage_pseudocounts": 0.0,
+    "owner_probability_threshold": 0.5,
+    "selection_evidence": "retrospective exploratory four-fold world-level outer CV on the 24 frozen 410xxx train worlds; not preregistered or confirmatory evidence",
+    "interpretation": "the frozen family allowed shrinkage, but outer CV selected alpha=0; the measured gain is attributed to the finite window, not to shrinkage",
+    "reads_only": ["observed_location", "visible_owner_probability", "calendar context"],
+    "never_reads": ["latent actor", "true regime", "true change point", "CPSWM state"]
+  },
+  "formal_ranking_contract": {
+    "tie_break": "offline evaluator reconstructs robot-visible first encounter order from observed_location over the complete frozen rollout; never-observed candidates append in frozen catalogue order",
+    "causal_scope": "formal legacy evaluator convention; it does not grant a deployed online method future observations",
+    "search_baseline": "current observed or last observed location first; pooled cumulative observed-count tail; encounter-order ties",
+    "location_identifier_never_breaks_ties": true
+  },
+  "gate_a_thresholds": {
+    "minimum_unique_validation_world_fraction": 1.0,
+    "minimum_put_back_sticky_error": 0.20,
+    "minimum_put_back_aggregation_gain": 0.05,
+    "minimum_put_back_aggregation_gain_ci_lower": 0.01,
+    "minimum_put_back_context_gain": 0.015,
+    "minimum_remaining_put_back_error": 0.10,
+    "maximum_on_owner_observed_target_recurrence": 0.85,
+    "minimum_search_last_observed_error": 0.15,
+    "minimum_search_contextual_fallback_gain": 0.02,
+    "minimum_remaining_search_error": 0.10,
+    "minimum_unobserved_location_change_rate": 0.20,
+    "bootstrap_draws": 4000
+  },
+  "report_only_fields": [
+    "search normalised path cost using the formal pooled-tail baseline",
+    "world-level analytic observable-parameter error",
+    "weekday/weekend admitted visible-owner counts",
+    "weekday/weekend active context samples on unobserved predictions"
+  ],
+  "train_promotion_evidence": {
+    "evidence_class": "retrospective exploratory train-only development evidence",
+    "design_was_frozen_before_first_outer_cv_run": false,
+    "design": "configs/project_two_experiments/structure_two_world_rolling_train_gate_v0_4.json",
+    "design_file_sha256": "ae538b466102a5b8282c24ab251989bf5f51e16451b1ffc9960736c09233e9f7",
+    "artifact": "benchmarks/structure_two/structure_two_world_rolling_train_gate_v0_4.json",
+    "artifact_file_sha256": "8db810c5e02e0d4d6098dba957dcfc7568477e7ede2a0d3867ab8bbfad8ad752",
+    "artifact_content_sha256": "b231e30fcd6a61e8138fddf834fc94b06bcb205f88562522e5bf361250298470",
+    "outer_cv_mean_search_top1_gain": 0.04522087598641957,
+    "outer_cv_worst_fold_search_top1_gain": 0.03770624346913029,
+    "outer_cv_put_back_visible_history_gain_over_sticky": 0.2651452409801924,
+    "outer_cv_put_back_context_gain_over_pooled": 0.08341821961713758,
+    "train_promotion_gate_passed": true
+  },
+  "legacy_detector_preservation": {
+    "binding": false,
+    "current_development_source_evolved_after_failed_artifact": "src/cpswm/system/evaluation_operations/structure_two_world_gate_v0_3.py",
+    "archived_exact_gate_source": "artifacts/project_two_v04_development/source_snapshots/structure_two_world_gate_v0_3_at_horizon_probe.py",
+    "archived_exact_gate_source_sha256": "8b8b9010ce219b32750446271778a78c0378ca7b930bc389d29418a59d6529f7",
+    "failed_design": "configs/project_two_experiments/structure_two_world_horizon_probe_v0_3.json",
+    "failed_design_sha256": "c5e0754f3d797aa6a62ec4431ea0bf91c5f94cd993fc632002532c9639edb4c3",
+    "failed_artifact": "artifacts/project_two_v04_development/structure_two_world_horizon_probe_v0_3.json",
+    "failed_artifact_sha256": "d62a18086e6ab49a93d9f43c65ab116376960c10aed41d8bf492463686cbd130"
+  },
+  "custodian_attestation": {
+    "required_artifact": "configs/project_two_experiments/structure_two_world_seed_block_attestation_v0_4.json",
+    "trusted_custodian_key_id": "TO BE SET BY USER BEFORE SIGNATURE",
+    "trusted_custodian_public_key_sha256": "TO BE SET BY USER BEFORE SIGNATURE",
+    "current_status": "INVALIDATED - recovered seed/salt preimage is candidate-visible; fail closed"
+  },
+  "freeze_authorization": {
+    "trusted_custodian_key_id": "TO BE SET BY USER BEFORE CUSTODIAN SIGNATURE",
+    "trusted_custodian_public_key_sha256": "TO BE SET BY USER BEFORE CUSTODIAN SIGNATURE",
+    "user_approval_id": "structure-two-v0.4-freeze-approved-by-user-2026-08-31",
+    "configured_before_custodian_signature": false,
+    "user_approval_is_cryptographic_signature": false,
+    "meaning": "The approval id records the user's explicit freeze decision but is not a digital signature. The custodian signature binds the exact SHA-256 of this draft, including this trust anchor and approval record."
+  },
+  "gate_b_contract": {
+    "protocol": "structure-two-world-arm-distinguishability-gate-b@0.4",
+    "expected_arms": ["corrected_amg", "o_star_matched", "sequential_no_consolidation", "active_dreaming_matched", "auto_dreamer_matched", "trustmem_matched", "brainctl_matched", "care_no_action_regret", "care_wm", "full_rerun"],
+    "arm_adapter_protocol": "structure-two-world-arm-adapter@0.4",
+    "legacy_family_visible_transforms_applied": false,
+    "adapter_projection_policy": {
+      "location_catalogue": "the complete frozen world location catalogue is carried by ProjectTwoReplayEpisode.known_location_ids in generator order; location identifiers never break ties",
+      "transition_rule": "a replay transition is emitted only when two successive robot-visible locations differ; the first visible location and repeated same-location observations remain before-only anchors rather than fabricated relocations",
+      "actor_rule": "visible_actor_map and visible_owner_probability are deterministically expanded to a controlled-noise categorical posterior without reading true_actor",
+      "withheld_fields": ["latent state-conditioned observation propensity", "true mechanism as visible evidence", "true roles as visible evidence", "synthetic execution feedback"],
+      "action_trace_rule": "every scored token binds whether a model-selected physical verification was executed plus the put-back location and first search location; internal promote/escrow bookkeeping is not counted as an external action",
+      "known_limit": "snapshot observations that do not establish a visible location change are not consumed as relocation evidence by transition-only method cores; Gate B diagnoses arm distinguishability under this common compatible projection and does not claim method efficacy"
+    },
+    "arm_parameters": {
+      "corrected_amg": 0.35,
+      "o_star_matched": 0.75,
+      "sequential_no_consolidation": "responsive",
+      "active_dreaming_matched": 0.6,
+      "auto_dreamer_matched": 0.04,
+      "trustmem_matched": 0.8,
+      "brainctl_matched": 0.75,
+      "care_no_action_regret": 0.85,
+      "care_wm": 1.25,
+      "full_rerun": 0.3
+    },
+    "diagnostic_cost_configuration": {
+      "family_id": "v0_4_unit_cost_distinguishability",
+      "family_role": "gate_b_distinguishability_only",
+      "guest_window": [0, 0],
+      "abrupt_day": 10000,
+      "recurrence_day": 10001,
+      "observation_coverage": 1.0,
+      "unknown_event_days": [],
+      "actor_ambiguity_mix": 0.0,
+      "identity_confidence_scale": 1.0,
+      "feedback_flip_rate": 0.0,
+      "decoy_days": [],
+      "actual_action_cost": 1.0,
+      "predicted_action_cost": 1.0,
+      "verification_cost": 0.5,
+      "repair_cost": 0.5,
+      "physical_verification_reliability": 0.9
+    },
+    "max_physical_verifications_per_rollout": 4,
+    "excluded_report_only_arm": "full_rerun_oracle",
+    "distinguishability_thresholds": {
+      "min_pairwise_prediction_disagreement_rate": 0.01,
+      "min_episode_fraction_with_multiple_arm_trajectories": 0.2
+    },
+    "distinguishability_threshold_basis": "Author-chosen pre-validation thresholds reused from the corrected-instrument validity audit: every declared pair must disagree on at least 1% of scored predictions, and at least 20% of episodes must contain multiple arm trajectories. These thresholds diagnose material arm separation; they do not establish method efficacy.",
+    "requires_verified_gate_a_pass": true,
+    "requires_exact_ordered_rollout_set_from_gate_a": true,
+    "trace_attestation": "every arm trace must be independently recomputed from the frozen source bundle in the custodian environment, match the supplied trace exactly, and carry an Ed25519 signature from the preregistered custodian key under cpswm.evaluation.structure_two.bound_arm_trace.v0.4",
+    "trace_attestation_tool": "apps/evaluation_runner/attest_structure_two_arm_trace_v0_4.py",
+    "self_rehashed_unsigned_trace_never_authorizes": true,
+    "common_producer_requirement": "all ten signed traces must name the same producer run id and producer source-bundle SHA-256",
+    "producer_source_bundle_protocol": "structure-two-world-arm-producer-source-bundle@0.4",
+    "producer_source_bundle_scope": "all src/cpswm/**/*.py files plus apps/evaluation_runner/run_structure_two_world_arm_traces_v0_4.py and apps/evaluation_runner/attest_structure_two_arm_trace_v0_4.py, sorted by repository-relative path and hashed as path plus file SHA-256 rows",
+    "producer_source_bundle_file_count": 237,
+    "producer_source_bundle_sha256": "1e9d0f39edc712065bf4e898e987fbef7b7137c1905ef2e558e194800080f921",
+    "producer_source_bundle_configured_before_custodian_signature": true,
+    "signature_limit": "the custodian signature proves the trace exactly matches execution of the frozen adapter bundle; it does not prove that matched external-neighbor adapters reproduce official external code or that any arm is effective",
+    "method_comparison_requires_both_gates": true,
+    "external_adapter_fidelity_policy": {
+      "protocol": "structure-two-external-adapter-fidelity-gate@0.1",
+      "gate_b_pass_does_not_authorize_external_method_efficacy": true,
+      "method_comparison_requires_independent_external_fidelity_pass": true,
+      "current_external_fidelity_gate_passed": false,
+      "current_blocking_arms": [
+        "corrected_amg",
+        "o_star_matched",
+        "active_dreaming_matched",
+        "auto_dreamer_matched",
+        "trustmem_matched",
+        "brainctl_matched"
+      ]
+    }
+  },
+  "execution_policy": {
+    "validation_gate_a_allowed": false,
+    "gate_b_allowed": false,
+    "method_comparison_allowed": false,
+    "transition_1": "a preregistered user approval id plus a valid custodian signature over this exact draft hash freezes the manifest and permits one Gate A run",
+    "transition_2": "Gate A pass permits Gate B",
+    "transition_3": "Gate A pass plus Gate B pass plus the independent external-adapter fidelity gate pass permits external-method efficacy comparison"
+  },
+  "disclosure": [
+    "The exact v0.2 commitment preimage was recovered from a candidate-accessible historical Codex session. The seed list and salt are therefore no longer sealed, and v0.4 cannot receive a truthful non-disclosure attestation.",
+    "The duration range changed after v0.2 failed and is therefore a new protocol version, not a correction to the old result.",
+    "The train grid included alpha=0; outer CV selected it. Shrinkage is not claimed as the source of the gain.",
+    "The train horizon, grid, folds, and result scale had been inspected before the v0.4 train design file was created. Train evidence is retrospective development evidence; only the still-unseen validation run can supply the fresh-world gate result.",
+    "No v0.4 validation world has been generated and no validation metric has been observed.",
+    "The encounter-order tie break is reconstructed offline from the complete rollout to match the formal evaluator; it is not causal information available to an online method.",
+    "This file is unsigned and must not be renamed or treated as frozen until its trust anchor and user approval id are fixed, then an external custodian signs this exact draft hash."
+  ]
+}

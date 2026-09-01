@@ -28,6 +28,7 @@ from test_observation_aware_habits import habit_evidence
 from cpswm.contracts import HabitEvidenceSource, SourceType
 from cpswm.world_model.habits_transitions import (
     HierarchicalDirichletHabitModel,
+    ObservationIdentifiabilityStatus,
     ObservationPropensityCorrector,
     PositivityViolation,
     PropensityCorrectionMode,
@@ -252,6 +253,53 @@ def test_a_never_observable_location_is_reported_not_silently_reweighted():
 
     with pytest.raises(PositivityViolation, match="zero observation propensity"):
         corrector.weight_for(0.0)
+
+
+def test_opceu_support_report_separates_positivity_overlap_and_mnar_identification():
+    corrector = ObservationPropensityCorrector(
+        mode=PropensityCorrectionMode.INVERSE,
+        minimum_propensity=0.05,
+    )
+
+    positivity = corrector.diagnose_support(
+        [0.0, 0.5],
+        passive_mnar=False,
+        unmeasured_selection_confounding=False,
+    )
+    assert positivity.status is ObservationIdentifiabilityStatus.POSITIVITY_FAILURE
+    assert not positivity.positivity_satisfied
+    assert not positivity.propensity_correction_identifies_estimand
+
+    weak = corrector.diagnose_support(
+        [0.01, 0.5],
+        passive_mnar=False,
+        unmeasured_selection_confounding=False,
+    )
+    assert weak.status is ObservationIdentifiabilityStatus.WEAK_OVERLAP
+    assert weak.positivity_satisfied and not weak.overlap_satisfied
+    assert weak.below_overlap_fraction == pytest.approx(0.5)
+
+    non_identifiable = corrector.diagnose_support(
+        [0.5, 0.8],
+        passive_mnar=True,
+        unmeasured_selection_confounding=True,
+    )
+    assert non_identifiable.status is ObservationIdentifiabilityStatus.NON_IDENTIFIABLE
+    assert non_identifiable.positivity_satisfied
+    assert non_identifiable.overlap_satisfied
+    assert not non_identifiable.propensity_correction_identifies_estimand
+
+
+def test_opceu_support_report_marks_logged_variable_case_identifiable():
+    report = ObservationPropensityCorrector().diagnose_support(
+        [0.25, 0.5, 1.0],
+        passive_mnar=True,
+        unmeasured_selection_confounding=False,
+        overlap_threshold=0.1,
+    )
+    assert report.status is ObservationIdentifiabilityStatus.IDENTIFIABLE
+    assert report.propensity_correction_identifies_estimand
+    assert 0.0 < report.effective_sample_size <= report.sample_count
 
 
 def test_clipping_is_recorded_rather_than_applied_silently():

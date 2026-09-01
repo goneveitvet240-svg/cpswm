@@ -8,6 +8,7 @@ from pydantic import ValidationError
 
 from cpswm.contracts import (
     ProjectTwoReplayDatasetManifest,
+    ProjectTwoReplayEpisode,
     reject_truth_leakage,
 )
 from cpswm.system.evaluation_operations.project_two_dataset import ProjectTwoReplayDataset
@@ -71,4 +72,28 @@ def test_visible_content_hash_rejects_post_adapter_tampering():
             manifest=dataset.manifest,
             episodes=(changed, *dataset.episodes[1:]),
             evaluator_store=dataset.evaluator_store,
+        )
+
+
+def test_cross_household_structured_evidence_is_rejected_at_episode_boundary():
+    dataset = D0SyntheticOracleReplayAdapter(
+        validation_seeds=(101,), test_seeds=(211,), max_steps_per_episode=8
+    ).build()
+    episode = next(
+        item for item in dataset.episodes if any(step.actor_evidence for step in item.steps)
+    )
+    index = next(i for i, step in enumerate(episode.steps) if step.actor_evidence is not None)
+    step = episode.steps[index]
+    assert step.actor_evidence is not None
+    foreign = step.actor_evidence.model_copy(
+        update={
+            "metadata": step.actor_evidence.metadata.model_copy(update={"household_id": uuid4()})
+        }
+    )
+    steps = list(episode.steps)
+    steps[index] = step.model_copy(update={"actor_evidence": foreign})
+
+    with pytest.raises(ValidationError, match="record identity"):
+        ProjectTwoReplayEpisode.model_validate(
+            episode.model_copy(update={"steps": tuple(steps)}).model_dump(mode="python")
         )

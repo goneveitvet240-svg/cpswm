@@ -3,24 +3,23 @@
 
 from pathlib import Path
 
-from docx import Document
-from docx.enum.text import WD_ALIGN_PARAGRAPH
-from docx.shared import Inches, Pt
-
 from build_ra_research_proposal import (
     BLUE,
     DARK_BLUE,
-    DARK_GREY,
     configure_document,
     configure_header_footer,
     parse_markdown_into_doc,
     rgb,
 )
-
+from docx import Document
+from docx.enum.text import WD_ALIGN_PARAGRAPH
+from docx.shared import Inches, Pt
 
 ROOT = Path(__file__).resolve().parents[1]
 SOURCE = ROOT / "ra_research_proposal_continual_personalized_world_model_4page.md"
-OUTPUT = ROOT / "output" / "docx" / "continual_personalized_world_model_RA_research_proposal_4page.docx"
+OUTPUT = (
+    ROOT / "output" / "docx" / "continual_personalized_world_model_RA_research_proposal_4page.docx"
+)
 
 
 def add_compact_title(doc: Document) -> None:
@@ -30,7 +29,9 @@ def add_compact_title(doc: Document) -> None:
     title.alignment = WD_ALIGN_PARAGRAPH.CENTER
     title.paragraph_format.space_before = Pt(2)
     title.paragraph_format.space_after = Pt(2)
-    run = title.add_run("Continual Personalized Semantic World Models\nfor Long-Term Household Robots")
+    run = title.add_run(
+        "Continual Personalized Semantic World Models\nfor Long-Term Household Robots"
+    )
     run.font.name = "Calibri"
     run.font.size = Pt(17.5)
     run.font.bold = True
@@ -102,7 +103,9 @@ def build() -> Path:
     parse_markdown_into_doc(doc, SOURCE.read_text(encoding="utf-8"))
 
     doc.core_properties.title = "Continual Personalized Semantic World Models for Long-Term Household Robots - Four-Page RA Research Proposal"
-    doc.core_properties.subject = "Four-page research proposal for a prospective remote research assistantship"
+    doc.core_properties.subject = (
+        "Four-page research proposal for a prospective remote research assistantship"
+    )
     doc.save(OUTPUT)
     return OUTPUT
 

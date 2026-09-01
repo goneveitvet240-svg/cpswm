@@ -289,7 +289,7 @@ class SymbolicSimulationResult(ContractModel):
             raise ValueError("observation opportunity must not expose candidate identities")
         return self
 
-    def content_payload(self) -> dict:
+    def content_payload(self) -> dict[str, object]:
         """Return every public run input/output field except the hash itself."""
 
         return self.model_dump(
@@ -324,7 +324,7 @@ class PrivilegedSymbolicSimulationView(ContractModel):
             raise ValueError("privileged simulation ID does not match view content")
         return self
 
-    def content_payload(self) -> dict:
+    def content_payload(self) -> dict[str, object]:
         return self.model_dump(
             mode="json",
             exclude={"privileged_simulation_id", "privileged_content_sha256"},

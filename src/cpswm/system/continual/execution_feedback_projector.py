@@ -39,7 +39,9 @@ from cpswm.contracts import (
     FeedbackBeliefUpdate,
     RobotActionOutcome,
     RobotActionType,
+    TargetPresenceBeliefRef,
 )
+from cpswm.contracts.base import ContractModel
 
 PROJECTOR_VERSION = "execution-feedback-projector@0.2"
 _FEEDBACK_SCHEMA = "cpswm.ExecutionFeedbackRecord"
@@ -116,7 +118,7 @@ class ProjectedFeedbackEvidence:
     rationale: str
 
 
-def _canonical_hash(model) -> str:
+def _canonical_hash(model: ContractModel) -> str:
     return hashlib.sha256(
         json.dumps(model.model_dump(mode="json"), sort_keys=True).encode("utf-8")
     ).hexdigest()
@@ -278,7 +280,9 @@ class ExecutionFeedbackProjector:
         if not (start_ok and end_ok):
             raise ValueError("feedback interval must lie within the decision context valid time")
 
-    def _resolve_prior(self, feedback: ExecutionFeedbackRecord, binding: DecisionContextBinding):
+    def _resolve_prior(
+        self, feedback: ExecutionFeedbackRecord, binding: DecisionContextBinding
+    ) -> TargetPresenceBeliefRef:
         context = binding.decision_context
         belief = context.target_presence_belief
         if belief is None:

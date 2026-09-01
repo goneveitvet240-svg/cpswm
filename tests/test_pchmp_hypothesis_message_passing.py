@@ -2,11 +2,20 @@
 
 from __future__ import annotations
 
+from datetime import timedelta
+from uuid import uuid4
+
 import pytest
 
+from cpswm.contracts import EvidenceRef
+from cpswm.system.attestation import AttestationAuthority
 from cpswm.system.counterfactual_event_hypergraph import (
+    EvidenceDuplicateViolation,
     OpenWorldRoleConditionedReversibleEventRevisionEngine,
     ProvenanceConstrainedMessagePassing,
+    hidden_event_evidence_claim_fingerprint,
+    hidden_event_evidence_semantic_fingerprint,
+    issue_evidence_independence_certificate,
     permute_actor_keys,
 )
 from cpswm.system.evaluation_operations import StructureTwoActionScenarioGenerator
@@ -283,3 +292,143 @@ def test_consumption_receipt_closes_exactly_once():
     # Re-submitting the same evidence against the receipted history must fail.
     with pytest.raises(EvidenceDuplicateViolation):
         engine.infer(receipted, evidence)
+
+
+def test_semantic_duplicate_cannot_evade_single_consumption_with_new_ids():
+    """A repackaged copy is still the same evidence, not a second likelihood."""
+
+    from cpswm.system.counterfactual_event_hypergraph import EvidenceDuplicateViolation
+
+    _case, history, evidence = _observed_case_and_history()
+    original = evidence[0]
+    repackaged = original.model_copy(
+        update={
+            "metadata": original.metadata.model_copy(update={"record_id": uuid4()}),
+            "evidence_cluster_id": uuid4(),
+        }
+    )
+    with pytest.raises(EvidenceDuplicateViolation, match="semantically identical"):
+        ProvenanceConstrainedMessagePassing().infer(
+            history,
+            (original, repackaged),
+        )
+
+
+def test_transport_trace_and_ingestion_time_cannot_evade_semantic_dedup():
+    """Trace and recorded time are wrappers, not independent evidence."""
+
+    _case, history, evidence = _observed_case_and_history()
+    original = evidence[0]
+    repackaged = original.model_copy(
+        update={
+            "metadata": original.metadata.model_copy(
+                update={
+                    "record_id": uuid4(),
+                    "trace_id": uuid4(),
+                    "recorded_time": original.metadata.recorded_time + timedelta(hours=1),
+                }
+            ),
+            "evidence_cluster_id": uuid4(),
+        }
+    )
+    assert hidden_event_evidence_semantic_fingerprint(
+        original
+    ) == hidden_event_evidence_semantic_fingerprint(repackaged)
+    scope_valid_repackaged = repackaged.model_copy(
+        update={
+            "metadata": repackaged.metadata.model_copy(
+                update={"trace_id": original.metadata.trace_id}
+            )
+        }
+    )
+    with pytest.raises(EvidenceDuplicateViolation, match="semantically identical"):
+        ProvenanceConstrainedMessagePassing().infer(
+            history,
+            (original, scope_valid_repackaged),
+        )
+
+
+def test_same_claim_needs_attested_independence_certificate_to_count_twice():
+    """Independent sensors are distinguished by evidence, not caller-chosen IDs."""
+
+    _case, history, evidence = _observed_case_and_history()
+    original = evidence[0].model_copy(
+        update={
+            "evidence_refs": (
+                EvidenceRef(
+                    evidence_type="independent_actor_sensor",
+                    source_record_id=uuid4(),
+                ),
+            )
+        }
+    )
+    independent_acquisition = original.model_copy(
+        update={
+            "metadata": original.metadata.model_copy(
+                update={
+                    "record_id": uuid4(),
+                    "source_id": "independent-sensor-b",
+                    "model_version": "sensor-model-b@1",
+                }
+            ),
+            "evidence_cluster_id": uuid4(),
+            "evidence_refs": (
+                EvidenceRef(
+                    evidence_type="independent_actor_sensor",
+                    source_record_id=uuid4(),
+                ),
+            ),
+        }
+    )
+    assert hidden_event_evidence_semantic_fingerprint(
+        original
+    ) != hidden_event_evidence_semantic_fingerprint(independent_acquisition)
+    assert hidden_event_evidence_claim_fingerprint(
+        original
+    ) == hidden_event_evidence_claim_fingerprint(independent_acquisition)
+    with pytest.raises(EvidenceDuplicateViolation, match="independence certificate"):
+        ProvenanceConstrainedMessagePassing().infer(
+            history,
+            (original, independent_acquisition),
+        )
+
+    authority = AttestationAuthority(
+        key_id="evidence-independence-test",
+        secret=b"evidence-independence-authority-key-0001",
+    )
+    certificate = issue_evidence_independence_certificate(
+        original,
+        independent_acquisition,
+        independence_basis="physically isolated sensors with separately sealed source records",
+        authority=authority,
+    )
+    result, receipted = ProvenanceConstrainedMessagePassing(
+        independence_authority=authority
+    ).consume(
+        history,
+        (original, independent_acquisition),
+        independence_certificates=(certificate,),
+    )
+    assert len(result.consumed_evidence_semantic_fingerprints) == 2
+    assert len(result.consumed_evidence_claim_fingerprints) == 2
+    assert len(result.consumed_independence_certificate_sha256s) == 1
+    assert (
+        receipted.latest.revision_evidence_independence_certificate_sha256s
+        == result.consumed_independence_certificate_sha256s
+    )
+
+
+def test_leave_one_cluster_out_reports_posterior_dependence():
+    _case, history, evidence = _observed_case_and_history()
+    audit = ProvenanceConstrainedMessagePassing().audit_leave_one_cluster_out(
+        history,
+        evidence,
+        influence_threshold=1.0,
+    )
+    assert len(audit.impacts) == len(evidence)
+    assert {item.evidence_cluster_id for item in audit.impacts} == {
+        item.evidence_cluster_id for item in evidence
+    }
+    assert audit.maximum_total_variation >= 0.0
+    assert audit.stable
+    assert len(audit.full_result_sha256) == 64

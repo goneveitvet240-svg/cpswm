@@ -65,6 +65,7 @@ class ActorEvidenceTrack(StrEnum):
 
     CONTROLLED_NOISE = "controlled_noise"
     ORACLE = "oracle"
+    MODEL = "model"
 
 
 class IncidentalObservationContext(ContractModel):
@@ -81,7 +82,7 @@ class IncidentalObservationContext(ContractModel):
     field_of_view_coverage: Probability
     occlusion_state: OcclusionState
     additional_action_cost: float = Field(ge=0.0)
-    selection_probability: StrictlyPositiveProbability
+    selection_probability: Probability
     observation_likelihood_model_id: str = Field(min_length=1)
     observed_time: datetime
 
@@ -103,7 +104,7 @@ class ObservationOpportunityRecord(ContractModel):
     observation_action_id: UUID
     opportunity_time: datetime
     selected: bool
-    selection_probability: StrictlyPositiveProbability
+    selection_probability: Probability
     p_visible_given_state: Probability
     p_detect_given_visible: Probability
     likelihood_model_id: str = Field(min_length=1)
@@ -117,6 +118,8 @@ class ObservationOpportunityRecord(ContractModel):
 
     @model_validator(mode="after")
     def validate_source_and_context(self) -> ObservationOpportunityRecord:
+        if self.selected and self.selection_probability <= 0.0:
+            raise ValueError("a realized selected observation requires positive probability")
         if self.metadata.source_type not in {
             SourceType.SENSOR,
             SourceType.MODEL,

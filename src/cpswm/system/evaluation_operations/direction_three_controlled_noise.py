@@ -2,11 +2,12 @@
 
 from __future__ import annotations
 
-from dataclasses import dataclass
-from math import log
+from collections.abc import Mapping
+from dataclasses import dataclass, replace
+from math import exp, log
 from random import Random
 from statistics import mean, stdev
-from typing import Any
+from typing import Any, cast
 from uuid import UUID
 
 from cpswm.contracts import (
@@ -73,11 +74,17 @@ class ControlledNoiseResult:
     true_target_was_retrieved: bool
 
 
+def _nested_metric(report: Mapping[str, object], section: str, key: str) -> float:
+    values = cast(Mapping[str, object], report[section])
+    return float(cast(float | int, values[key]))
+
+
 @dataclass(frozen=True, slots=True)
 class DirectionThreeNoiseStudyCondition:
     arm_id: str
     severity: float
     seed: int
+    replication_kind: str
     config: DirectionThreeNoiseConfig
 
 
@@ -86,8 +93,8 @@ def _temperature_scale(probability: float, temperature: float) -> float:
     probability = min(max(probability, epsilon), 1.0 - epsilon)
     logit = log(probability / (1.0 - probability)) / temperature
     if logit >= 0.0:
-        return 1.0 / (1.0 + pow(2.718281828459045, -logit))
-    exp_logit = pow(2.718281828459045, logit)
+        return float(1.0 / (1.0 + exp(-logit)))
+    exp_logit = exp(logit)
     return exp_logit / (1.0 + exp_logit)
 
 
@@ -112,6 +119,19 @@ def apply_direction_three_controlled_noise(
         raise ValueError("distractor must be in the clean request")
 
     operations: list[dict[str, Any]] = []
+    missing_channels = {
+        channel
+        for channel, probability in missing.items()
+        if probability > 0.0 and random.random() < probability
+    }
+    operations.extend(
+        {
+            "operation": "channel_missing",
+            "scope": "episode_channel",
+            "channel": channel.value,
+        }
+        for channel in sorted(missing_channels, key=lambda item: item.value)
+    )
     transformed = []
     for candidate in sorted(request.candidates, key=lambda item: str(item.candidate_id)):
         if config.retrieval_miss and candidate.candidate_id == true_target_candidate_id:
@@ -174,16 +194,8 @@ def apply_direction_three_controlled_noise(
                     }
                 )
 
-            probability = missing.get(channel, 0.0)
-            if probability > 0.0 and random.random() < probability:
+            if channel in missing_channels:
                 availability = 0.0
-                operations.append(
-                    {
-                        "operation": "channel_missing",
-                        "channel": channel.value,
-                        "candidate_id": str(candidate.candidate_id),
-                    }
-                )
 
             if channel in {EvidenceChannel.VISUAL, EvidenceChannel.GEOMETRY}:
                 severity = config.occlusion_severity
@@ -271,9 +283,8 @@ def default_controlled_noise_matrix() -> tuple[DirectionThreeNoiseConfig, ...]:
             swap_target_distractor_channels=(EvidenceChannel.HABIT,),
         ),
         DirectionThreeNoiseConfig(
-            "retrieval_miss_open_set",
+            "retrieval_miss_known_out_of_support",
             retrieval_miss=True,
-            unknown_likelihood_scale=10.0,
         ),
         DirectionThreeNoiseConfig("occlusion_distance_proxy", occlusion_severity=0.8),
     )
@@ -282,59 +293,82 @@ def default_controlled_noise_matrix() -> tuple[DirectionThreeNoiseConfig, ...]:
 def default_controlled_noise_study(
     *, seeds: tuple[int, ...] = (11, 29, 47)
 ) -> tuple[DirectionThreeNoiseStudyCondition, ...]:
-    """Frozen severity x seed x combination matrix; no method route is selected."""
+    """Severity scan with seeds only where stochastic missingness is sampled."""
 
     if len(seeds) < 2 or len(seeds) != len(set(seeds)):
         raise ValueError("controlled-noise study requires at least two unique seeds")
     conditions: list[DirectionThreeNoiseStudyCondition] = []
     for severity in (0.25, 0.5, 0.75):
+        deterministic_suffix = f"s{severity:.2f}"
+        deterministic_specs = (
+            (
+                "six_channel_temperature",
+                DirectionThreeNoiseConfig(
+                    f"study-temperature-{deterministic_suffix}",
+                    temperature_by_channel=tuple(
+                        (channel, 1.0 + 3.0 * severity) for channel in EvidenceChannel
+                    ),
+                ),
+            ),
+            (
+                "visual_geometry_dependence",
+                DirectionThreeNoiseConfig(
+                    f"study-dependence-{deterministic_suffix}",
+                    reliability_discount_by_channel=(
+                        (EvidenceChannel.VISUAL, 1.0 - severity),
+                        (EvidenceChannel.GEOMETRY, 1.0 - severity),
+                    ),
+                ),
+            ),
+            (
+                "occlusion_distance_proxy",
+                DirectionThreeNoiseConfig(
+                    f"study-occlusion-{deterministic_suffix}",
+                    occlusion_severity=severity,
+                ),
+            ),
+            (
+                "known_out_of_support_unknown_mass_sensitivity",
+                DirectionThreeNoiseConfig(
+                    f"study-known-out-of-support-{deterministic_suffix}",
+                    retrieval_miss=True,
+                    unknown_likelihood_scale=1.0 + 12.0 * severity,
+                ),
+            ),
+            (
+                "combined_context_noise",
+                DirectionThreeNoiseConfig(
+                    f"study-combined-context-{deterministic_suffix}",
+                    reliability_discount_by_channel=tuple(
+                        (channel, 1.0 - severity)
+                        for channel in (
+                            EvidenceChannel.PERSON,
+                            EvidenceChannel.EVENT,
+                            EvidenceChannel.HABIT,
+                        )
+                    ),
+                ),
+            ),
+        )
+        conditions.extend(
+            DirectionThreeNoiseStudyCondition(
+                arm_id=arm_id,
+                severity=severity,
+                seed=0,
+                replication_kind="deterministic_sensitivity",
+                config=config,
+            )
+            for arm_id, config in deterministic_specs
+        )
         for seed in seeds:
             suffix = f"s{severity:.2f}-seed{seed}"
-            specs = (
+            stochastic_specs = (
                 (
                     "visual_missing",
                     DirectionThreeNoiseConfig(
                         f"study-visual-missing-{suffix}",
                         seed=seed,
                         channel_missing_probability=((EvidenceChannel.VISUAL, severity),),
-                    ),
-                ),
-                (
-                    "six_channel_temperature",
-                    DirectionThreeNoiseConfig(
-                        f"study-temperature-{suffix}",
-                        seed=seed,
-                        temperature_by_channel=tuple(
-                            (channel, 1.0 + 3.0 * severity) for channel in EvidenceChannel
-                        ),
-                    ),
-                ),
-                (
-                    "visual_geometry_dependence",
-                    DirectionThreeNoiseConfig(
-                        f"study-dependence-{suffix}",
-                        seed=seed,
-                        reliability_discount_by_channel=(
-                            (EvidenceChannel.VISUAL, 1.0 - severity),
-                            (EvidenceChannel.GEOMETRY, 1.0 - severity),
-                        ),
-                    ),
-                ),
-                (
-                    "occlusion_distance_proxy",
-                    DirectionThreeNoiseConfig(
-                        f"study-occlusion-{suffix}",
-                        seed=seed,
-                        occlusion_severity=severity,
-                    ),
-                ),
-                (
-                    "retrieval_miss_unknown_scale",
-                    DirectionThreeNoiseConfig(
-                        f"study-retrieval-miss-{suffix}",
-                        seed=seed,
-                        retrieval_miss=True,
-                        unknown_likelihood_scale=1.0 + 12.0 * severity,
                     ),
                 ),
                 (
@@ -354,42 +388,44 @@ def default_controlled_noise_study(
                         occlusion_severity=severity,
                     ),
                 ),
-                (
-                    "combined_context_noise",
-                    DirectionThreeNoiseConfig(
-                        f"study-combined-context-{suffix}",
-                        seed=seed,
-                        reliability_discount_by_channel=tuple(
-                            (channel, 1.0 - severity)
-                            for channel in (
-                                EvidenceChannel.PERSON,
-                                EvidenceChannel.EVENT,
-                                EvidenceChannel.HABIT,
-                            )
-                        ),
-                    ),
-                ),
             )
             conditions.extend(
                 DirectionThreeNoiseStudyCondition(
                     arm_id=arm_id,
                     severity=severity,
                     seed=seed,
+                    replication_kind="stochastic_seed_replicate",
                     config=config,
                 )
-                for arm_id, config in specs
+                for arm_id, config in stochastic_specs
             )
     return tuple(conditions)
 
 
-def _t95_interval(values: list[float]) -> dict[str, float]:
+def _metric_summary(
+    values: list[float], *, lower_bound: float = 0.0, upper_bound: float | None = None
+) -> dict[str, float | str | None]:
     average = mean(values)
     if len(values) < 2:
-        return {"mean": average, "lower": average, "upper": average}
+        return {
+            "mean": average,
+            "interval_type": "not_applicable_deterministic",
+            "lower": None,
+            "upper": None,
+        }
     # Frozen critical values for the small preregistered seed counts used here.
-    critical = {2: 12.706, 3: 4.303, 4: 3.182, 5: 2.776}.get(len(values), 1.96)
+    critical = {2: 12.706, 3: 4.303, 4: 3.182, 5: 2.776, 30: 2.045}.get(len(values), 1.96)
     half_width = critical * stdev(values) / (len(values) ** 0.5)
-    return {"mean": average, "lower": average - half_width, "upper": average + half_width}
+    lower = max(lower_bound, average - half_width)
+    upper = average + half_width
+    if upper_bound is not None:
+        upper = min(upper_bound, upper)
+    return {
+        "mean": average,
+        "interval_type": "student_t_95_over_stochastic_seeds",
+        "lower": lower,
+        "upper": upper,
+    }
 
 
 def run_controlled_noise_study(
@@ -414,13 +450,27 @@ def run_controlled_noise_study(
             {
                 "arm_id": arm_id,
                 "severity": severity,
-                "seed_count": len(members),
-                "seeds": [member.seed for member in members],
-                "top1_accuracy_t95": _t95_interval(
-                    [item["top1_accuracy"] for item in member_summaries]
+                "replication_kind": members[0].replication_kind,
+                "run_count": len(members),
+                "seeds": (
+                    [member.seed for member in members]
+                    if members[0].replication_kind == "stochastic_seed_replicate"
+                    else []
                 ),
-                "mean_nll_t95": _t95_interval([item["mean_nll"] for item in member_summaries]),
-                "mean_brier_t95": _t95_interval([item["mean_brier"] for item in member_summaries]),
+                "top1_accuracy": _metric_summary(
+                    [item["conditional_top1_accuracy"] for item in member_summaries],
+                    upper_bound=1.0,
+                ),
+                "mean_nll": _metric_summary(
+                    [item["conditional_mean_nll"] for item in member_summaries]
+                ),
+                "mean_brier": _metric_summary(
+                    [item["conditional_mean_brier"] for item in member_summaries]
+                ),
+                "known_target_retrieval_recall": _metric_summary(
+                    [item["known_target_retrieval_recall"] for item in member_summaries],
+                    upper_bound=1.0,
+                ),
                 "support_miss_count": sum(item["support_miss_count"] for item in member_summaries),
             }
         )
@@ -431,30 +481,52 @@ def run_controlled_noise_study(
         stratum_groups.setdefault(
             (condition.arm_id, condition.severity, case["scenario_id"]), []
         ).append(case)
-    strata = [
-        {
-            "arm_id": arm_id,
-            "severity": severity,
-            "scenario_id": scenario_id,
-            "case_count": len(cases),
-            "top1_accuracy": mean(case["top1_correct"] for case in cases),
-            "mean_nll": mean(case["nll"] for case in cases),
-            "mean_brier": mean(case["brier"] for case in cases),
-        }
-        for (arm_id, severity, scenario_id), cases in sorted(stratum_groups.items())
-    ]
+    strata = []
+    for (arm_id, severity, scenario_id), cases in sorted(stratum_groups.items()):
+        evaluable = [case for case in cases if case["fusion_evaluable"]]
+        strata.append(
+            {
+                "arm_id": arm_id,
+                "severity": severity,
+                "scenario_id": scenario_id,
+                "case_count": len(cases),
+                "conditional_fusion_case_count": len(evaluable),
+                "top1_accuracy": (
+                    None if not evaluable else mean(case["top1_correct"] for case in evaluable)
+                ),
+                "mean_nll": (None if not evaluable else mean(case["nll"] for case in evaluable)),
+                "mean_brier": (
+                    None if not evaluable else mean(case["brier"] for case in evaluable)
+                ),
+            }
+        )
     return {
         "schema_name": "cpswm.DirectionThreeControlledNoiseStudyReport",
-        "schema_version": "0.1.0",
-        "maturity": "s3-2-controlled-noise-multiseed-grid",
+        "schema_version": "0.2.0",
+        "maturity": "s3-2-controlled-noise-corrected-study",
         "condition_count": len(conditions),
         "case_count": base_report["case_count"],
         "arm_count": len({condition.arm_id for condition in conditions}),
         "severity_levels": sorted({condition.severity for condition in conditions}),
-        "seed_values": sorted({condition.seed for condition in conditions}),
+        "stochastic_seed_values": sorted(
+            {
+                condition.seed
+                for condition in conditions
+                if condition.replication_kind == "stochastic_seed_replicate"
+            }
+        ),
+        "stochastic_configuration_count": sum(
+            condition.replication_kind == "stochastic_seed_replicate" for condition in conditions
+        ),
+        "deterministic_configuration_count": sum(
+            condition.replication_kind == "deterministic_sensitivity" for condition in conditions
+        ),
         "aggregates": aggregated,
         "scenario_strata": strata,
-        "interval_note": "two-sided Student-t 95% interval over frozen seeds; n=3 is diagnostic",
+        "interval_note": (
+            "Student-t 95% intervals are reported only for stochastic missingness arms; "
+            "deterministic sensitivity scans have no uncertainty interval; n=3 is diagnostic"
+        ),
         "decision_gates": base_report["decision_gates"],
     }
 
@@ -492,11 +564,16 @@ def run_controlled_noise_benchmark(
     for config in matrix:
         for scenario in probes:
             request, true_target, target, distractor = build_oracle_request(scenario)
+            effective_config = (
+                replace(config, retrieval_miss=False)
+                if scenario.true_target_is_unknown and config.retrieval_miss
+                else config
+            )
             noisy = apply_direction_three_controlled_noise(
                 request,
                 true_target_candidate_id=target,
                 distractor_candidate_id=distractor,
-                config=config,
+                config=effective_config,
             )
             result = JointPosteriorFusion().fuse(noisy.request)
             unknown_id = next(
@@ -504,18 +581,32 @@ def run_controlled_noise_benchmark(
                 for candidate in noisy.request.candidates
                 if candidate.kind == CandidateKind.UNKNOWN
             )
-            support_miss = true_target not in result.posterior_by_candidate_id
-            evaluation_target = unknown_id if support_miss else true_target
-            top1_correct, nll, brier = _case_metrics(
-                result.posterior_by_candidate_id,
-                evaluation_target=evaluation_target,
+            support_miss = (
+                not scenario.true_target_is_unknown
+                and true_target not in result.posterior_by_candidate_id
             )
+            fusion_evaluable = not support_miss
+            if fusion_evaluable:
+                top1_correct, nll, brier = _case_metrics(
+                    result.posterior_by_candidate_id,
+                    evaluation_target=true_target,
+                )
+            else:
+                top1_correct, nll, brier = None, None, None
             cases.append(
                 {
                     "condition_id": config.condition_id,
                     "scenario_id": scenario.scenario_id,
-                    "true_target_was_retrieved": noisy.true_target_was_retrieved,
-                    "evaluation_target_id": str(evaluation_target),
+                    "support_status": (
+                        "true_unknown"
+                        if scenario.true_target_is_unknown
+                        else "known_out_of_support"
+                        if support_miss
+                        else "known_in_support"
+                    ),
+                    "true_target_was_retrieved": not support_miss,
+                    "true_target_id": str(true_target),
+                    "fusion_evaluable": fusion_evaluable,
                     "top1_correct": top1_correct,
                     "nll": nll,
                     "brier": brier,
@@ -531,13 +622,14 @@ def run_controlled_noise_benchmark(
                     posterior_by_candidate_id=result.posterior_by_candidate_id,
                     unknown_candidate_id=unknown_id,
                     true_target_candidate_id=(
-                        None if support_miss or true_target == unknown_id else true_target
+                        None if scenario.true_target_is_unknown else true_target
                     ),
-                    target_is_unknown=support_miss or true_target == unknown_id,
+                    target_is_unknown=scenario.true_target_is_unknown,
+                    known_target_out_of_support=support_miss,
                     resolution_status=result.resolution_status,
                     expected_resolution_status=(
                         ResolutionStatus.UNKNOWN
-                        if support_miss or true_target == unknown_id
+                        if scenario.true_target_is_unknown
                         else ResolutionStatus.RESOLVED
                     ),
                 )
@@ -549,20 +641,27 @@ def run_controlled_noise_benchmark(
         metric_report = evaluate_direction_three_metrics(
             tuple(metric_cases_by_condition[config.condition_id])
         )
+        fusion_cases = [case for case in condition_cases if case["fusion_evaluable"]]
         summaries.append(
             {
                 "condition_id": config.condition_id,
                 "case_count": len(condition_cases),
-                "top1_accuracy": sum(case["top1_correct"] for case in condition_cases)
-                / len(condition_cases),
-                "mean_nll": sum(case["nll"] for case in condition_cases) / len(condition_cases),
-                "mean_brier": sum(case["brier"] for case in condition_cases) / len(condition_cases),
-                "mean_unknown_probability": sum(
+                "conditional_fusion_case_count": len(fusion_cases),
+                "conditional_top1_accuracy": sum(case["top1_correct"] for case in fusion_cases)
+                / len(fusion_cases),
+                "conditional_mean_nll": sum(case["nll"] for case in fusion_cases)
+                / len(fusion_cases),
+                "conditional_mean_brier": sum(case["brier"] for case in fusion_cases)
+                / len(fusion_cases),
+                "known_target_retrieval_recall": _nested_metric(
+                    metric_report, "retrieval", "known_target_retrieval_recall"
+                ),
+                "mean_unknown_probability_diagnostic": sum(
                     case["unknown_probability"] for case in condition_cases
                 )
                 / len(condition_cases),
                 "support_miss_count": sum(
-                    not case["true_target_was_retrieved"] for case in condition_cases
+                    case["support_status"] == "known_out_of_support" for case in condition_cases
                 ),
                 "unified_metrics": {
                     key: value
@@ -573,8 +672,8 @@ def run_controlled_noise_benchmark(
         )
     return {
         "schema_name": "cpswm.DirectionThreeControlledNoiseReport",
-        "schema_version": "0.1.0",
-        "maturity": "s3-2-controlled-noise-baseline",
+        "schema_version": "0.2.0",
+        "maturity": "s3-2-controlled-noise-semantics-corrected",
         "condition_count": len(matrix),
         "case_count": len(cases),
         "conditions": summaries,

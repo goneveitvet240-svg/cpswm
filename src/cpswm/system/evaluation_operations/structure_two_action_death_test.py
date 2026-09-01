@@ -295,6 +295,7 @@ class StructureTwoActionScenarioGenerator:
         observation_coverage: float = 0.7,
         sealed_secret: str = "structure-two-action-dev-secret-v0.1",
         include_open_world_unknown_events: bool = False,
+        unknown_event_days: tuple[int, ...] = (1,),
     ) -> None:
         if duration_days < 10:
             raise ValueError("duration_days must be at least 10")
@@ -304,6 +305,8 @@ class StructureTwoActionScenarioGenerator:
             raise ValueError("scenario windows must be strictly ordered")
         if not sealed_secret.strip():
             raise ValueError("sealed_secret must be non-empty")
+        if any(day < 0 or day >= duration_days for day in unknown_event_days):
+            raise ValueError("unknown event days must lie inside the scenario")
         self.duration_days = duration_days
         self.guest_window = guest_window
         self.abrupt_day = abrupt_day
@@ -311,6 +314,7 @@ class StructureTwoActionScenarioGenerator:
         self.observation_coverage = observation_coverage
         self.sealed_secret = sealed_secret
         self.include_open_world_unknown_events = include_open_world_unknown_events
+        self.unknown_event_days = frozenset(unknown_event_days)
 
     def generate(self, seed: int) -> ActionGeneratedCase:
         rng = random.Random(f"structure-two-action-{seed}")
@@ -339,7 +343,7 @@ class StructureTwoActionScenarioGenerator:
             # overnight decoy spot to the daytime spot (owner habit location or
             # the guest's location).  This guarantees before != after on every
             # observed day while keeping the owner habit location meaningful.
-            if self.include_open_world_unknown_events and day == 1:
+            if self.include_open_world_unknown_events and day in self.unknown_event_days:
                 true_actor = "unknown_actor"
                 true_location = loc_guest
                 mechanism = EventMechanism.UNKNOWN_MECHANISM
@@ -704,10 +708,11 @@ class _AMGMethod:
         # placement actor.  If the MAP places by the owner, record the location
         # as the (stateless) owner belief; otherwise ignore it.
         if obs.actor_evidence is not None:
-            actor_likelihoods = {
-                actor: posterior / obs.actor_evidence.reference_actor_prior[actor]
-                for actor, posterior in obs.actor_evidence.actor_posterior.items()
-            }
+            actor_likelihoods = {}
+            for actor, posterior in obs.actor_evidence.actor_posterior.items():
+                prior = max(1e-12, obs.actor_evidence.reference_actor_prior[actor])
+                evidence_ratio = max(1e-12, posterior) / prior
+                actor_likelihoods[actor] = evidence_ratio / (1.0 + evidence_ratio)
             mechanism_likelihoods = {
                 EventMechanism.DIRECT_RELOCATION: 0.5,
                 EventMechanism.HANDOFF_RELOCATION: 0.5,
@@ -731,7 +736,7 @@ class _AMGMethod:
                     mechanism_likelihoods=mechanism_likelihoods,
                     handoff_role_likelihoods=role_likelihoods,
                 )
-                if prediction.selected_sequence.responsible_actor_key == self.case.owner_actor:
+                if set(prediction.maximizing_responsible_actor_keys) == {self.case.owner_actor}:
                     self.owner_habit_location = obs.after.detected_location_id
             except ValueError:
                 pass

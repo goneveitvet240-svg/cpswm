@@ -267,7 +267,7 @@ class EvaluationReport(ContractModel):
             raise ValueError("ground-truth leakage flag must match failure reasons")
         return self
 
-    def content_payload(self) -> dict:
+    def content_payload(self) -> dict[str, object]:
         """Return the complete report payload except its self hash."""
 
         return self.model_dump(mode="json", exclude={"evaluation_report_sha256"})
@@ -448,7 +448,9 @@ class EvaluationRunner:
         successful detection outputs and are outside this detector's scope.
         """
 
-        gt_event_ids = {event.gt_event_id for event in (*truth_events, *interaction_events)}
+        gt_event_ids = {event.gt_event_id for event in truth_events} | {
+            event.gt_event_id for event in interaction_events
+        }
         gt_event_tokens = {
             token.casefold() for event_id in gt_event_ids for token in (str(event_id), event_id.hex)
         }

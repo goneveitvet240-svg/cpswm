@@ -5,7 +5,13 @@ from uuid import uuid4
 import pytest
 from pydantic import ValidationError
 
-from cpswm.contracts import ProjectTwoDataMaturity, ProjectTwoDatasetSplit, ProjectTwoReplayStep
+from cpswm.contracts import (
+    ProjectTwoDataMaturity,
+    ProjectTwoDatasetSplit,
+    ProjectTwoReplayEpisode,
+    ProjectTwoReplayStep,
+    ReplayContractCompatibility,
+)
 from cpswm.system.evaluation_operations.project_two_action_benchmark import (
     ProjectTwoActionBenchmarkV02,
     ProjectTwoActionMethod,
@@ -29,6 +35,26 @@ def _dataset():
     ).build()
 
 
+def test_d0_contract_supports_disjoint_train_validation_and_test_splits():
+    dataset = D0SyntheticOracleReplayAdapter(
+        train_seeds=(7,),
+        validation_seeds=(101,),
+        test_seeds=(211,),
+        max_steps_per_episode=2,
+    ).build()
+
+    assert len(dataset.visible_episodes(ProjectTwoDatasetSplit.TRAIN)) == 1
+    assert len(dataset.visible_episodes(ProjectTwoDatasetSplit.VALIDATION)) == 1
+    assert len(dataset.visible_episodes(ProjectTwoDatasetSplit.TEST)) == 1
+
+
+def test_d0_contract_rejects_overlapping_learning_splits():
+    with pytest.raises(ValueError, match="train and validation seeds must be disjoint"):
+        D0SyntheticOracleReplayAdapter(
+            train_seeds=(101,), validation_seeds=(101,), test_seeds=(211,)
+        )
+
+
 def test_d0_contract_keeps_truth_in_separate_store():
     dataset = _dataset()
     episode = dataset.visible_episodes(ProjectTwoDatasetSplit.VALIDATION)[0]
@@ -50,7 +76,14 @@ def test_d0_d1_d2_use_same_replay_contract_evaluator_and_metric_definition():
     for adapter_type, maturity in adapters:
         version = f"typed-fixture-{maturity.value}@0.2"
         episodes = tuple(
-            item.model_copy(update={"maturity": maturity, "dataset_version": version})
+            item.model_copy(
+                update={
+                    "maturity": maturity,
+                    "source_evidence_maturity": maturity,
+                    "contract_compatibility": ReplayContractCompatibility.FULL_REPLAY_CONTRACT,
+                    "dataset_version": version,
+                }
+            )
             for item in d0.episodes
         )
         evaluator_store = []
@@ -77,6 +110,58 @@ def test_d0_d1_d2_use_same_replay_contract_evaluator_and_metric_definition():
     assert len(set(metric_definitions)) == 1
 
 
+def test_contract_compatibility_cannot_promote_d0_source_to_d1_evidence():
+    episode = _dataset().episodes[0]
+    with pytest.raises(ValidationError, match="transition is not allowed"):
+        type(episode).model_validate(
+            {
+                **episode.model_dump(),
+                "maturity": ProjectTwoDataMaturity.D1_SIMULATOR_ANNOTATED_REPLAY,
+                "source_evidence_maturity": ProjectTwoDataMaturity.D0_SYNTHETIC_ORACLE,
+                "contract_compatibility": ReplayContractCompatibility.FULL_REPLAY_CONTRACT,
+            }
+        )
+
+
+def test_d0_development_fixture_cannot_be_relabelled_as_synthetic_oracle():
+    episode = _dataset().episodes[0]
+    with pytest.raises(ValidationError, match="transition is not allowed"):
+        ProjectTwoReplayEpisode.model_validate(
+            {
+                **episode.model_dump(mode="python"),
+                "source_evidence_maturity": ProjectTwoDataMaturity.D0_DEVELOPMENT_FIXTURE,
+                "maturity": ProjectTwoDataMaturity.D0_SYNTHETIC_ORACLE,
+            }
+        )
+
+
+def test_full_contract_compatibility_cannot_be_self_declared_without_unified_evidence():
+    episode = _dataset().episodes[0]
+    legacy_steps = tuple(
+        step.model_copy(update={"unified_evidence": None}) for step in episode.steps
+    )
+    with pytest.raises(ValidationError, match="must be derived"):
+        ProjectTwoReplayEpisode.model_validate(
+            {
+                **episode.model_dump(mode="python"),
+                "steps": legacy_steps,
+                "contract_compatibility": ReplayContractCompatibility.FULL_REPLAY_CONTRACT,
+            }
+        )
+
+
+def test_manifest_full_contract_requires_bound_formal_evidence_ids():
+    entry = _dataset().manifest.entries[0]
+    with pytest.raises(ValidationError, match="derived from formal evidence ids"):
+        type(entry).model_validate(
+            {
+                **entry.model_dump(mode="python"),
+                "unified_evidence_record_ids": (),
+                "contract_compatibility": ReplayContractCompatibility.FULL_REPLAY_CONTRACT,
+            }
+        )
+
+
 def test_attempted_and_observed_destination_are_not_interchangeable():
     step = _dataset().episodes[0].steps[0]
     other = uuid4()
@@ -95,6 +180,8 @@ def test_duplicate_feedback_record_is_rejected():
             "step_id": episode.steps[-1].step_id,
             "timestamp": episode.steps[-1].timestamp,
             "valid_time": episode.steps[-1].valid_time,
+            "unified_evidence": episode.steps[-1].unified_evidence,
+            "observation_opportunity": episode.steps[-1].observation_opportunity,
         }
     )
     with pytest.raises(ValidationError, match="duplicate execution feedback"):

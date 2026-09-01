@@ -5,6 +5,7 @@ from __future__ import annotations
 import hashlib
 import json
 from enum import StrEnum
+from math import isclose
 from typing import Any
 from uuid import UUID
 
@@ -15,6 +16,7 @@ from cpswm.contracts import (
     ContractModel,
     LLMIntegrationRole,
     LLMInvocationProvenance,
+    LLMProviderIdentity,
     ProjectTwoReplayEpisode,
     ProjectTwoReplayStep,
 )
@@ -39,6 +41,35 @@ class LLMCandidateKind(StrEnum):
     ORDERED_ROLE = "ordered_role"
     LOCATION = "location"
     ACTION = "action"
+
+
+class LLMProbabilitySemantics(StrEnum):
+    PROPOSAL_ONLY = "proposal_only"
+    CALIBRATED_LIKELIHOOD = "calibrated_likelihood"
+    POSTERIOR_RELATIVE_TO_REFERENCE_PRIOR = "posterior_relative_to_reference_prior"
+
+
+class LLMFusionPermission(StrEnum):
+    CANDIDATE_GENERATION_ONLY = "candidate_generation_only"
+    DIRECT_LIKELIHOOD_FACTOR = "direct_likelihood_factor"
+    REFERENCE_PRIOR_LIKELIHOOD_RATIO = "reference_prior_likelihood_ratio"
+
+
+SEMANTICS_PERMISSION = {
+    LLMProbabilitySemantics.PROPOSAL_ONLY: LLMFusionPermission.CANDIDATE_GENERATION_ONLY,
+    LLMProbabilitySemantics.CALIBRATED_LIKELIHOOD: LLMFusionPermission.DIRECT_LIKELIHOOD_FACTOR,
+    LLMProbabilitySemantics.POSTERIOR_RELATIVE_TO_REFERENCE_PRIOR: (
+        LLMFusionPermission.REFERENCE_PRIOR_LIKELIHOOD_RATIO
+    ),
+}
+
+
+class LLMCalibrationReceipt(ContractModel):
+    receipt_id: UUID
+    calibration_domain: str = Field(min_length=1)
+    calibration_method: str = Field(min_length=1)
+    calibration_dataset_hash: str = Field(pattern=r"^[0-9a-f]{64}$")
+    provider_identity: LLMProviderIdentity
 
 
 ROLE_CAPABILITIES = {
@@ -81,12 +112,6 @@ ROLE_PROMPTS = {
         "records, and never request or perform a world-model write."
     ),
 }
-
-
-class LLMProviderIdentity(ContractModel):
-    provider: str = Field(min_length=1)
-    model: str = Field(min_length=1)
-    version: str = Field(min_length=1)
 
 
 class LLMGeneratedCandidate(ContractModel):
@@ -168,6 +193,13 @@ class LLMEvidenceRequest(ContractModel):
     temperature: float = Field(ge=0.0, le=2.0)
     candidate_count: int = Field(gt=0)
     capabilities: tuple[LLMEvidenceCapability, ...]
+    expected_probability_semantics: LLMProbabilitySemantics
+    authorized_fusion_permission: LLMFusionPermission
+    reference_actor_prior: dict[str, float] | None = None
+    reference_mechanism_prior: dict[str, float] | None = None
+    reference_ordered_role_prior: dict[str, float] | None = None
+    reference_prior_snapshot_id: UUID | None = None
+    calibration_receipt: LLMCalibrationReceipt | None = None
     input_evidence_refs: tuple[UUID, ...] = Field(min_length=1)
     visible_payload: dict[str, Any]
 
@@ -177,6 +209,37 @@ class LLMEvidenceRequest(ContractModel):
             raise ValueError("M21 query compilation must use CompiledSemanticQuery")
         if set(self.capabilities) != set(ROLE_CAPABILITIES[self.role]):
             raise ValueError("LLM request capabilities do not match its declared role")
+        if (
+            self.authorized_fusion_permission
+            is not SEMANTICS_PERMISSION[self.expected_probability_semantics]
+        ):
+            raise ValueError("fusion permission does not match requested probability semantics")
+        priors = (
+            self.reference_actor_prior,
+            self.reference_mechanism_prior,
+            self.reference_ordered_role_prior,
+        )
+        if self.expected_probability_semantics is LLMProbabilitySemantics.PROPOSAL_ONLY:
+            if any(item is not None for item in priors) or self.calibration_receipt is not None:
+                raise ValueError("proposal requests cannot carry fusion priors or calibration")
+        elif self.expected_probability_semantics is LLMProbabilitySemantics.CALIBRATED_LIKELIHOOD:
+            if self.calibration_receipt is None:
+                raise ValueError("calibrated likelihood requires a caller-authorized receipt")
+            if self.calibration_receipt.provider_identity != self.identity:
+                raise ValueError("calibration receipt provider does not match request")
+            if any(item is not None for item in priors):
+                raise ValueError("calibrated likelihood requests cannot carry reference priors")
+        else:
+            if any(item is None for item in priors):
+                raise ValueError("referenced posterior requires caller-supplied frozen priors")
+            if self.reference_prior_snapshot_id is None:
+                raise ValueError("referenced posterior requires a frozen belief snapshot id")
+            for prior in priors:
+                assert prior is not None
+                if not isclose(sum(prior.values()), 1.0, abs_tol=1e-6):
+                    raise ValueError("each frozen reference prior must sum to one")
+                if any(value <= 0.0 for value in prior.values()):
+                    raise ValueError("frozen reference priors must be strictly positive")
         enforce_no_truth(self.visible_payload)
         enforce_no_prompt_truth(self.prompt)
         return self
@@ -201,6 +264,13 @@ class LLMEvidenceRequest(ContractModel):
         prompt_template_version: str,
         temperature: float,
         candidate_count: int,
+        expected_probability_semantics: LLMProbabilitySemantics,
+        authorized_fusion_permission: LLMFusionPermission,
+        reference_actor_prior: dict[str, float] | None = None,
+        reference_mechanism_prior: dict[str, float] | None = None,
+        reference_ordered_role_prior: dict[str, float] | None = None,
+        reference_prior_snapshot_id: UUID | None = None,
+        calibration_receipt: LLMCalibrationReceipt | None = None,
         role: LLMIntegrationRole = LLMIntegrationRole.STRUCTURE_TWO_EVIDENCE_PROVIDER,
     ) -> LLMEvidenceRequest:
         current_refs = tuple(
@@ -305,6 +375,13 @@ class LLMEvidenceRequest(ContractModel):
             temperature=temperature,
             candidate_count=candidate_count,
             capabilities=ROLE_CAPABILITIES[role],
+            expected_probability_semantics=expected_probability_semantics,
+            authorized_fusion_permission=authorized_fusion_permission,
+            reference_actor_prior=reference_actor_prior,
+            reference_mechanism_prior=reference_mechanism_prior,
+            reference_ordered_role_prior=reference_ordered_role_prior,
+            reference_prior_snapshot_id=reference_prior_snapshot_id,
+            calibration_receipt=calibration_receipt,
             input_evidence_refs=refs or (step.step_id,),
             visible_payload=payload,
         )
@@ -320,11 +397,30 @@ class LLMEvidenceOutput(ContractModel):
     generated_candidates: tuple[LLMGeneratedCandidate, ...]
     confidence: float = Field(ge=0.0, le=1.0)
     abstain: bool
-    unknown_probability: float = Field(ge=0.0, le=1.0)
+    unknown_actor_mass: float = Field(ge=0.0, le=1.0)
+    unknown_mechanism_mass: float = Field(ge=0.0, le=1.0)
+    unresolved_event_mass: float = Field(ge=0.0, le=1.0)
+    abstention_probability: float = Field(ge=0.0, le=1.0)
+    probability_semantics: LLMProbabilitySemantics
+    reference_actor_prior: dict[str, float] | None = None
+    reference_mechanism_prior: dict[str, float] | None = None
+    reference_ordered_role_prior: dict[str, float] | None = None
     content_hash: str = Field(pattern=r"^[0-9a-f]{64}$")
     accounting: LLMInvocationAccounting
     cache_key: str = Field(pattern=r"^[0-9a-f]{64}$")
     provenance_id: str = Field(pattern=r"^[0-9a-f]{64}$")
+
+    @property
+    def fusion_permission(self) -> LLMFusionPermission:
+        return {
+            LLMProbabilitySemantics.PROPOSAL_ONLY: (LLMFusionPermission.CANDIDATE_GENERATION_ONLY),
+            LLMProbabilitySemantics.CALIBRATED_LIKELIHOOD: (
+                LLMFusionPermission.DIRECT_LIKELIHOOD_FACTOR
+            ),
+            LLMProbabilitySemantics.POSTERIOR_RELATIVE_TO_REFERENCE_PRIOR: (
+                LLMFusionPermission.REFERENCE_PRIOR_LIKELIHOOD_RATIO
+            ),
+        }[self.probability_semantics]
 
     @property
     def invocation_provenance(self) -> LLMInvocationProvenance:
@@ -353,12 +449,86 @@ class LLMEvidenceOutput(ContractModel):
     def _open_world(self) -> LLMEvidenceOutput:
         if self.role not in ROLE_CANDIDATE_KINDS:
             raise ValueError("M21 query output cannot use LLMEvidenceOutput")
+        candidate_keys = [(item.kind, item.value) for item in self.generated_candidates]
+        if len(candidate_keys) != len(set(candidate_keys)):
+            raise ValueError("duplicate candidate kind/value pairs are forbidden")
         if any(
             item.kind not in ROLE_CANDIDATE_KINDS[self.role] for item in self.generated_candidates
         ):
             raise ValueError("LLM output candidate kind exceeds declared role authority")
-        if self.abstain and self.unknown_probability <= 0.0:
-            raise ValueError("abstention must retain non-zero unknown probability")
+        if self.abstain and self.abstention_probability <= 0.0:
+            raise ValueError("abstention must retain non-zero abstention probability")
+        priors = (
+            self.reference_actor_prior,
+            self.reference_mechanism_prior,
+            self.reference_ordered_role_prior,
+        )
+        if (
+            self.probability_semantics
+            is LLMProbabilitySemantics.POSTERIOR_RELATIVE_TO_REFERENCE_PRIOR
+        ):
+            if self.reference_actor_prior is None or self.reference_mechanism_prior is None:
+                raise ValueError("posterior semantics require explicit actor and mechanism priors")
+            for prior in (self.reference_actor_prior, self.reference_mechanism_prior):
+                if (
+                    any(value <= 0.0 for value in prior.values())
+                    or not abs(sum(prior.values()) - 1.0) <= 1e-6
+                ):
+                    raise ValueError("reference priors must be positive and normalized")
+            candidate_support = {
+                kind: {item.value for item in self.generated_candidates if item.kind is kind}
+                for kind in (
+                    LLMCandidateKind.ACTOR,
+                    LLMCandidateKind.MECHANISM,
+                    LLMCandidateKind.ORDERED_ROLE,
+                )
+            }
+            if set(self.reference_actor_prior) != candidate_support[LLMCandidateKind.ACTOR]:
+                raise ValueError("reference actor prior must match actor candidate support")
+            if set(self.reference_mechanism_prior) != candidate_support[LLMCandidateKind.MECHANISM]:
+                raise ValueError("reference mechanism prior must match mechanism candidate support")
+            role_support = candidate_support[LLMCandidateKind.ORDERED_ROLE]
+            if role_support and (
+                self.reference_ordered_role_prior is None
+                or set(self.reference_ordered_role_prior) != role_support
+            ):
+                raise ValueError("reference role prior must match ordered-role candidate support")
+            actor_unknown = next(
+                (
+                    item.score
+                    for item in self.generated_candidates
+                    if item.kind is LLMCandidateKind.ACTOR and item.value == "unknown_actor"
+                ),
+                None,
+            )
+            mechanism_unknown = next(
+                (
+                    item.score
+                    for item in self.generated_candidates
+                    if item.kind is LLMCandidateKind.MECHANISM and item.value == "unknown_mechanism"
+                ),
+                None,
+            )
+            if actor_unknown is None or not isclose(
+                actor_unknown, self.unknown_actor_mass, abs_tol=1e-6
+            ):
+                raise ValueError("unknown_actor_mass must match the actor posterior candidate")
+            if mechanism_unknown is None or not isclose(
+                mechanism_unknown, self.unknown_mechanism_mass, abs_tol=1e-6
+            ):
+                raise ValueError(
+                    "unknown_mechanism_mass must match the mechanism posterior candidate"
+                )
+            for kind in (
+                LLMCandidateKind.ACTOR,
+                LLMCandidateKind.MECHANISM,
+                LLMCandidateKind.ORDERED_ROLE,
+            ):
+                axis = [item.score for item in self.generated_candidates if item.kind is kind]
+                if axis and not isclose(sum(axis), 1.0, abs_tol=1e-6):
+                    raise ValueError(f"{kind.value} posterior candidates must sum to one")
+        elif any(prior is not None for prior in priors):
+            raise ValueError("proposal/likelihood outputs cannot carry posterior reference priors")
         return self
 
 

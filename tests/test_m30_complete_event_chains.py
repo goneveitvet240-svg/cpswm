@@ -235,7 +235,19 @@ def test_full_chain_exposes_what_prior_art_covers_and_what_cheh_still_must_prove
         handoff_event_likelihood=0.2,
     )
     assert amg_map.candidate_count == 4
+    assert amg_map.maximizing_responsible_actor_keys
+    assert amg_map.map_tie_count >= 1
     assert _predicted_signature(amg_map.selected_sequence.steps) != truth
+
+    tied_amg_map = DamenHogg2012AMGGlobalMAPBaseline().predict(
+        before=before,
+        after=after,
+        actor_event_likelihoods={str(uid(2)): 0.5, str(uid(3)): 0.5},
+        direct_event_likelihood=0.8,
+        handoff_event_likelihood=0.2,
+    )
+    assert set(tied_amg_map.maximizing_responsible_actor_keys) == set(actor_keys)
+    assert tied_amg_map.map_tie_count == 2
 
     retuned_amg_map = DamenHogg2012AMGGlobalMAPBaseline().predict(
         before=before,

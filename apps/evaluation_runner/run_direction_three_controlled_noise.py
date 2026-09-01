@@ -13,6 +13,7 @@ if str(_SOURCE_ROOT) not in sys.path:
     sys.path.insert(0, str(_SOURCE_ROOT))
 
 from cpswm.system.evaluation_operations.direction_three_controlled_noise import (  # noqa: E402
+    default_controlled_noise_study,
     run_controlled_noise_benchmark,
     run_controlled_noise_study,
 )
@@ -23,15 +24,34 @@ def _parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--output", type=Path)
     parser.add_argument("--expanded-study", action="store_true")
+    parser.add_argument(
+        "--stochastic-seed-count",
+        type=int,
+        default=0,
+        help=(
+            "expanded study only; 0 preserves the frozen three-seed default, "
+            "otherwise use consecutive preregistered seeds starting at 31001"
+        ),
+    )
     parser.add_argument("--force", action="store_true")
     return parser.parse_args()
 
 
 def main() -> None:
     args = _parse_args()
-    report = (
-        run_controlled_noise_study() if args.expanded_study else run_controlled_noise_benchmark()
-    )
+    if args.stochastic_seed_count < 0:
+        raise SystemExit("--stochastic-seed-count must be non-negative")
+    if args.stochastic_seed_count and not args.expanded_study:
+        raise SystemExit("--stochastic-seed-count requires --expanded-study")
+    if args.expanded_study:
+        seeds = (
+            tuple(range(31_001, 31_001 + args.stochastic_seed_count))
+            if args.stochastic_seed_count
+            else (11, 29, 47)
+        )
+        report = run_controlled_noise_study(default_controlled_noise_study(seeds=seeds))
+    else:
+        report = run_controlled_noise_benchmark()
     rendered = json.dumps(report, ensure_ascii=False, indent=2, sort_keys=True)
     if args.output is not None:
         write_report_atomic(

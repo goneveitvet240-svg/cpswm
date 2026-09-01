@@ -41,7 +41,14 @@ from hashlib import sha256
 from math import isfinite
 from typing import Any, Protocol, runtime_checkable
 from urllib.error import URLError
+from uuid import NAMESPACE_URL, UUID, uuid5
 
+from cpswm.contracts import (
+    LLMIntegrationRole,
+    LLMInvocationProvenance,
+    LLMOutputAuthority,
+    LLMProviderIdentity,
+)
 from cpswm.system.llm_evidence.adapter import LLMHTTPTransport, UrllibLLMHTTPTransport
 
 from .project_one_dataset import ProjectOneDatasetRecord
@@ -99,6 +106,18 @@ class LLMRequest:
     temperature: float
     timeout_seconds: float
     candidate_locations: tuple[str, ...]
+    provider: str = "injected"
+    model_version: str | None = None
+    prompt_template_version: str = "project-one-direct@1"
+    input_evidence_refs: tuple[UUID, ...] = ()
+
+    @property
+    def provider_identity(self) -> LLMProviderIdentity:
+        return LLMProviderIdentity(
+            provider=self.provider,
+            model=self.model,
+            version=self.model_version or self.model,
+        )
 
     def identity(self) -> str:
         """Content identity, used as the cache key.
@@ -111,7 +130,10 @@ class LLMRequest:
         return sha256(
             "\x1f".join(
                 (
+                    self.provider,
                     self.model,
+                    self.model_version or self.model,
+                    self.prompt_template_version,
                     f"{self.temperature:.6f}",
                     ",".join(self.candidate_locations),
                     self.prompt,
@@ -186,6 +208,9 @@ class LLMMethodConfig:
     """Everything that changes what the model is asked, or what it costs."""
 
     model: str
+    provider: str = "injected"
+    model_version: str | None = None
+    prompt_template_version: str = "project-one-direct@1"
     timeout_seconds: float = 20.0
     max_attempts: int = 3
     cache: bool = True
@@ -199,6 +224,10 @@ class LLMMethodConfig:
     def __post_init__(self) -> None:
         if not self.model.strip():
             raise ValueError("model must be a non-empty identifier")
+        if not self.provider.strip() or not self.prompt_template_version.strip():
+            raise ValueError("provider and prompt template version must be non-empty")
+        if self.model_version is not None and not self.model_version.strip():
+            raise ValueError("model_version must be non-empty when provided")
         if self.max_attempts < 1:
             raise ValueError("max_attempts must be at least 1")
         if self.history_window < 0:
@@ -210,6 +239,14 @@ class LLMMethodConfig:
 
     def config_hash(self) -> str:
         return config_identity(self)
+
+    @property
+    def provider_identity(self) -> LLMProviderIdentity:
+        return LLMProviderIdentity(
+            provider=self.provider,
+            model=self.model,
+            version=self.model_version or self.model,
+        )
 
 
 @dataclass(frozen=True, slots=True)
@@ -463,14 +500,21 @@ class LLMProjectOneMethod(_BaseMethod):
         self._cache: dict[str, _Reply] = {}
         self._pending: _Reply | None = None
         self._usage = LLMUsage()
+        self._invocation_provenance: list[LLMInvocationProvenance] = []
 
     def usage(self) -> LLMUsage:
         return self._usage
+
+    def invocation_provenance(self) -> tuple[LLMInvocationProvenance, ...]:
+        return tuple(self._invocation_provenance)
 
     def config_payload(self) -> Mapping[str, object]:
         return {
             "kind": "llm_direct",
             "model": self.config.model,
+            "provider": self.config.provider,
+            "model_version": self.config.provider_identity.version,
+            "prompt_template_version": self.config.prompt_template_version,
             "history_window": self.config.history_window,
             "prompt_variant": self.config.prompt_variant.value,
             "max_attempts": self.config.max_attempts,
@@ -626,13 +670,17 @@ class LLMProjectOneMethod(_BaseMethod):
 
     # -- the call ----------------------------------------------------------
 
-    def _ask(self, prompt: str) -> _Reply:
+    def _ask(self, prompt: str, *, input_evidence_refs: tuple[UUID, ...]) -> _Reply:
         request = LLMRequest(
             prompt=prompt,
             model=self.config.model,
             temperature=self.config.temperature,
             timeout_seconds=self.config.timeout_seconds,
             candidate_locations=self.locations,
+            provider=self.config.provider,
+            model_version=self.config.provider_identity.version,
+            prompt_template_version=self.config.prompt_template_version,
+            input_evidence_refs=input_evidence_refs,
         )
         key = request.identity()
         if self.config.cache and key in self._cache:
@@ -655,7 +703,8 @@ class LLMProjectOneMethod(_BaseMethod):
                     ),
                 )
                 continue
-            self._account(completion, time.perf_counter() - started)
+            elapsed = time.perf_counter() - started
+            self._account(completion, elapsed)
             try:
                 reply = self._validate(completion.text)
             except (ValueError, json.JSONDecodeError):
@@ -665,6 +714,29 @@ class LLMProjectOneMethod(_BaseMethod):
                 continue
             if self.config.cache:
                 self._cache[key] = reply
+            self._invocation_provenance.append(
+                LLMInvocationProvenance(
+                    role=LLMIntegrationRole.LLM_DIRECT_BASELINE,
+                    authority=LLMOutputAuthority.DIRECT_PREDICTION_ONLY,
+                    provider=request.provider_identity.provider,
+                    model=request.provider_identity.model,
+                    version=request.provider_identity.version,
+                    temperature=request.temperature,
+                    prompt_template_version=request.prompt_template_version,
+                    prompt_sha256=sha256(prompt.encode("utf-8")).hexdigest(),
+                    input_tokens=completion.prompt_tokens,
+                    output_tokens=completion.completion_tokens,
+                    latency_ms=elapsed * 1000.0,
+                    cost_usd=(
+                        completion.prompt_tokens / 1000.0 * self.config.prompt_cost_per_1k_usd
+                        + completion.completion_tokens
+                        / 1000.0
+                        * self.config.completion_cost_per_1k_usd
+                    ),
+                    cache_key=key,
+                    input_evidence_refs=input_evidence_refs,
+                )
+            )
             return reply
 
         self._usage = replace_usage(self._usage, fallbacks=self._usage.fallbacks + 1)
@@ -688,7 +760,8 @@ class LLMProjectOneMethod(_BaseMethod):
     # -- method surface ----------------------------------------------------
 
     def _predict(self, event: ProjectOneDatasetRecord) -> dict[str, float]:
-        self._pending = self._ask(self._prompt(event))
+        evidence_ref = uuid5(NAMESPACE_URL, f"project-one:{event.stream_id}:{event.event_id}")
+        self._pending = self._ask(self._prompt(event), input_evidence_refs=(evidence_ref,))
         return dict(self._pending.probabilities)
 
     def _step(self, event: ProjectOneDatasetRecord, prior: Mapping[str, float]) -> StepPrediction:

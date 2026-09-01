@@ -1,0 +1,98 @@
+{
+  "schema_version": "0.1.0",
+  "protocol": "structure-two-transition-reactivation-gate@0.1",
+  "freeze_status": "repository_local_before_first_benchmark_run",
+  "validation_seeds": [106101, 106102, 106103, 106104],
+  "sealed_holdout_seed_count": 12,
+  "sealed_holdout_seed_commitments": [
+    "a2dfccb2f1601f2c6aa911f47fa45ab90e5cfff6b81b61d1fd73749e5d688367",
+    "61bfa1c53dd68f3bcf0702bd6dd0520a759a91e4457ad6be12e417373b505cf5",
+    "9ce4cdab6ec65935a021c2150ed1cd247d4b886c6928d303555b72dbd9a7f300",
+    "1e474d021d968b0d0dedfdf3978720efc9ef84a6f39e5cb4dc3b4b6b3b077c37",
+    "08096772367bfc62c87c350b383edff3bc9edad7c8d003d3b3694a4ee4ffbc79",
+    "f5e25be98bf91d3751c63178b1acdc8dd5f77295c01fbbb4c39f6e22194f0759",
+    "05cf30d544124f74469c0f2639347fabed98cc47d6eee8fbd3303f2729637eb2",
+    "10e7242c290b03e3fbadf9c63026e28af01554c968446775267265c15459dbe5",
+    "5a29d04beb1a69fbc957be725562762cd47930ae341572723969262de28ffacb",
+    "511dbe72cc2d83bb4b08434597a0d81dc2332a7f1e690aeaee73d0883f81c590",
+    "cb3aa172ec5e1217f5666d70bf53be659142b412abab92e9012327a7b21f8100",
+    "840365f14d163e79d659cf2ab57d7cdb3b158e4536036856d1bcc1b7f0a23f64"
+  ],
+  "sealed_seed_file_sha256": "e36c0a769b0a07a3380a81c3bbe8a1c51ed782166f138fb914f781f4830b7196",
+  "max_steps": 28,
+  "particle_budget": 24,
+  "scenario_families": [
+    {
+      "family_id": "transition_cause_regime_flip",
+      "family_role": "required_cause_gain",
+      "guest_window": [1, 6],
+      "abrupt_day": 9,
+      "recurrence_day": 20,
+      "observation_coverage": 0.80,
+      "unknown_event_days": [2, 10, 21, 27],
+      "actor_ambiguity_mix": 0.60,
+      "identity_confidence_scale": 0.72,
+      "feedback_flip_rate": 0.36,
+      "decoy_days": []
+    },
+    {
+      "family_id": "transition_long_regime_reactivation",
+      "family_role": "required_reactivation_gain",
+      "guest_window": [4, 11],
+      "abrupt_day": 13,
+      "recurrence_day": 25,
+      "observation_coverage": 0.67,
+      "unknown_event_days": [3, 12, 19, 26],
+      "actor_ambiguity_mix": 0.46,
+      "identity_confidence_scale": 0.76,
+      "feedback_flip_rate": 0.34,
+      "decoy_days": []
+    },
+    {
+      "family_id": "transition_identity_guardrail",
+      "family_role": "identity_guardrail",
+      "guest_window": [3, 9],
+      "abrupt_day": 14,
+      "recurrence_day": 23,
+      "observation_coverage": 0.73,
+      "unknown_event_days": [5, 16, 24],
+      "actor_ambiguity_mix": 0.35,
+      "identity_confidence_scale": 0.86,
+      "feedback_flip_rate": 0.20,
+      "decoy_days": [6, 7, 17, 18]
+    },
+    {
+      "family_id": "transition_role_guardrail",
+      "family_role": "role_guardrail",
+      "guest_window": [2, 8],
+      "abrupt_day": 12,
+      "recurrence_day": 22,
+      "observation_coverage": 0.79,
+      "unknown_event_days": [4, 13, 23],
+      "actor_ambiguity_mix": 0.68,
+      "identity_confidence_scale": 0.82,
+      "feedback_flip_rate": 0.28,
+      "decoy_days": []
+    }
+  ],
+  "search_spaces": {
+    "corrected_amg": [0.20, 0.33, 0.50],
+    "per_step_particle_projection": ["conservative", "balanced", "responsive"],
+    "sequential_particle_no_consolidation": ["conservative", "balanced", "responsive"],
+    "immediate_conflict_quarantine": ["conservative", "balanced", "responsive"],
+    "conflict_aware_transition_no_consolidation": ["conservative", "balanced", "responsive"],
+    "historical_regime_reactivation": ["conservative", "balanced", "responsive"],
+    "joint_transition_reactivation": ["conservative", "balanced", "responsive"]
+  },
+  "primary_comparison": "joint_minus_sequential_no_consolidation",
+  "required_gain_families": [
+    "transition_cause_regime_flip",
+    "transition_long_regime_reactivation"
+  ],
+  "guardrail_families": [
+    "transition_identity_guardrail",
+    "transition_role_guardrail"
+  ],
+  "guardrail_noninferiority_margin": 0.02,
+  "paired_cluster_unit": "holdout_seed_across_scenario_families"
+}

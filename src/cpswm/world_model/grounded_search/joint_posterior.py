@@ -11,6 +11,7 @@ from cpswm.contracts.grounded_search import (
     GroundedObjectCandidate,
     GroundedSearchResult,
     HardConstraintStatus,
+    JointCandidateEvidence,
     JointPosteriorRequest,
     ResolutionStatus,
     ResponsePolicy,
@@ -28,7 +29,7 @@ class JointPosteriorFusion:
 
     def fuse(self, request: JointPosteriorRequest) -> GroundedSearchResult:
         request = JointPosteriorRequest.model_validate(request.model_dump(mode="python"))
-        raw_scores: list[tuple[object, float, tuple[ChannelContribution, ...]]] = []
+        raw_scores: list[tuple[JointCandidateEvidence, float, tuple[ChannelContribution, ...]]] = []
         for candidate in request.candidates:
             if candidate.kind == CandidateKind.OBJECT_INSTANCE and any(
                 evaluation.status == HardConstraintStatus.VIOLATED
@@ -87,7 +88,10 @@ class JointPosteriorFusion:
         ):
             status = ResolutionStatus.UNKNOWN
             policy = request.unknown_policy
-            reasons = ("unknown_mass_high", "no_grounded_instance_is_safe_to_assert")
+            reasons: tuple[str, ...] = (
+                "unknown_mass_high",
+                "no_grounded_instance_is_safe_to_assert",
+            )
         elif (
             best_has_unknown_hard_constraint
             or best_object_probability < request.resolution_threshold

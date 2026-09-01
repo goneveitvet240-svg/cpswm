@@ -39,7 +39,7 @@ from .project_one_ablation_v0_2 import (
     ProjectOneMatchedComparisonId,
     ProjectOneProtocolPilotReportV2,
 )
-from .sealed_test_split import SealedTestSplit
+from .sealed_test_split import ExternalSealedTestSplit, ExternalTestUnsealGrant
 from .shift_baselines import (
     OnlineBOCPDMSBaseline,
     OnlineCauseFactorizedBOCPDBaseline,
@@ -980,9 +980,10 @@ class ProjectOneShiftGateRunner:
         self,
         topology_report: ProjectOneProtocolPilotReportV2,
         atg2_report: ShiftATG2Report,
-        sealed_test: SealedTestSplit[OnlineShiftGeneratedCase],
+        sealed_test: ExternalSealedTestSplit[OnlineShiftGeneratedCase],
         *,
         authority: object,
+        unseal_grant: ExternalTestUnsealGrant,
         expected_code_snapshot_sha256: str,
         power_analysis: ShiftPowerAnalysis,
         bootstrap_samples: int = 500,
@@ -998,13 +999,24 @@ class ProjectOneShiftGateRunner:
             raise ValueError("ATG-3 tuning report is bound to a different topology")
         if receipt.code_snapshot_sha256 != expected_code_snapshot_sha256:
             raise ValueError("ATG-3 code snapshot does not match the tuning receipt")
-        if sealed_test.required_receipt_scope != receipt.receipt_scope:
-            raise ValueError("ATG-3 requires a scope-protected sealed TEST split")
+        if not sealed_test.formal_isolation:
+            raise ValueError("ATG-3 requires external TEST process isolation")
         if sealed_test.test_split_sha256 != topology.manifest.test_split_sha256:
             raise ValueError("ATG-3 sealed TEST hash does not match topology")
-        test_cases = sealed_test.unseal(tuning, authority=authority)
+        if unseal_grant.authority_receipt_sha256 != receipt.authority_receipt_sha256:
+            raise ValueError("external unseal grant does not bind the ATG-2 authority receipt")
+        if not hasattr(authority, "authorize_test_unseal"):
+            raise ValueError("ATG-3 requires an independent gate-state authority")
+        unseal_commit = GateStateCommitProof.model_validate(
+            authority.authorize_test_unseal(
+                tuning,
+                experiment_id=receipt.experiment_id,
+                validation_split_sha256=receipt.validation_split_sha256,
+                test_split_sha256=receipt.test_split_sha256,
+            )
+        )
+        test_cases = sealed_test.unseal(unseal_grant)
         self._test_unsealed = True
-        unseal_commit = GateStateCommitProof.model_validate(sealed_test.unseal_authority_proof)
         if content_sha256(test_cases) != topology.manifest.test_split_sha256:
             raise ValueError("ATG-3 unsealed TEST content hash mismatch")
         ledgers = {item.arm_id: item for item in tuning.ledgers}

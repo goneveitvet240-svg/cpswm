@@ -42,6 +42,19 @@ class ProjectTwoReplayDataset(ContractModel):
             envelope = truth[episode_id]
             if episode.split is not entry.split:
                 raise ValueError("manifest split does not match episode split")
+            if (
+                episode.maturity is not entry.maturity
+                or episode.source_evidence_maturity is not entry.source_evidence_maturity
+                or episode.contract_compatibility is not entry.contract_compatibility
+            ):
+                raise ValueError("manifest evidence maturity/compatibility does not match episode")
+            evidence_ids = tuple(
+                step.unified_evidence.metadata.record_id
+                for step in episode.steps
+                if step.unified_evidence is not None
+            )
+            if entry.unified_evidence_record_ids != evidence_ids:
+                raise ValueError("manifest formal evidence ids do not match episode")
             object_ids = {step.object_instance_id for step in episode.steps}
             if object_ids != {entry.object_instance_id}:
                 raise ValueError("manifest object instance does not match episode")
@@ -203,9 +216,9 @@ def audit_project_two_replay(dataset: ProjectTwoReplayDataset) -> ProjectTwoRepl
         "class_family_balance",
         all(
             any(item.split is split for item in dataset.episodes)
-            for split in ProjectTwoDatasetSplit
+            for split in (ProjectTwoDatasetSplit.VALIDATION, ProjectTwoDatasetSplit.TEST)
         ),
-        "validation/test family coverage missing",
+        "validation/test split coverage missing",
     )
     for episode in dataset.episodes:
         reject_truth_leakage(episode.model_dump(mode="python"))
@@ -263,7 +276,8 @@ def summarize_project_two_evidence_coverage(
     ]
     feedback = [item for step in steps for item in step.execution_feedback]
     dominant_outcomes = Counter(
-        max(item.outcome_distribution, key=item.outcome_distribution.get).value for item in feedback
+        max(item.outcome_distribution, key=lambda outcome: item.outcome_distribution[outcome]).value
+        for item in feedback
     )
     return ProjectTwoEvidenceCoverageReport(
         dataset_version=dataset.manifest.dataset_version,

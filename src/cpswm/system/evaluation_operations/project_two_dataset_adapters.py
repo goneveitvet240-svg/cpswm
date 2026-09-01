@@ -9,15 +9,21 @@ from __future__ import annotations
 from abc import ABC, abstractmethod
 from collections.abc import Sequence
 from datetime import UTC, datetime, timedelta
+from itertools import combinations
+from typing import Any
 from uuid import NAMESPACE_URL, UUID, uuid5
 
 from cpswm.contracts import (
     BaseRecordMetadata,
+    DetectionFailureReason,
     EntityRef,
     EntityType,
+    EvidenceProductionMode,
     ExecutionFeedbackRecord,
     ObservationOpportunityRecord,
+    ObservationOutcome,
     OcclusionState,
+    OpenSetEvidenceSupport,
     ProjectTwoDataMaturity,
     ProjectTwoDatasetSplit,
     ProjectTwoEvaluatorStepTruth,
@@ -26,14 +32,17 @@ from cpswm.contracts import (
     ProjectTwoReplayEpisode,
     ProjectTwoReplayManifestEntry,
     ProjectTwoReplayStep,
+    ReplayContractCompatibility,
     ReplayFieldAvailability,
     RobotActionOutcome,
     RobotActionType,
     SourceType,
+    UnifiedEvidenceContract,
     ValidTimeInterval,
 )
 from cpswm.system.evaluation_operations.project_two_dataset import ProjectTwoReplayDataset
 from cpswm.system.evaluation_operations.structure_two_action_death_test import (
+    ActionDayObservation,
     ActionGeneratedCase,
     StructureTwoActionScenarioGenerator,
     new_sealed_secret,
@@ -78,12 +87,14 @@ class SuppliedReplayDatasetAdapter(ProjectTwoDatasetAdapter):
         adapter_provenance: str,
     ) -> None:
         if maturity not in {
+            ProjectTwoDataMaturity.D0_DEVELOPMENT_FIXTURE,
+            ProjectTwoDataMaturity.D0_5_SEMI_SYNTHETIC,
             ProjectTwoDataMaturity.D1_SIMULATOR_ANNOTATED_REPLAY,
             ProjectTwoDataMaturity.D2_REAL_PERCEPTION_REPLAY,
         }:
-            raise ValueError("supplied replay adapter is restricted to D1/D2")
+            raise ValueError("supplied replay adapter requires D0-development through D2")
         if not episodes or not evaluator_store:
-            raise ValueError("D1/D2 adapter requires visible episodes and separate truth")
+            raise ValueError("supplied adapter requires visible episodes and separate truth")
         if not adapter_provenance.strip():
             raise ValueError("adapter provenance is required")
         self.maturity = maturity
@@ -116,6 +127,12 @@ class SuppliedReplayDatasetAdapter(ProjectTwoDatasetAdapter):
                 object_family=item.object_family,
                 split=item.split,
                 maturity=item.maturity,
+                source_evidence_maturity=item.source_evidence_maturity,
+                unified_evidence_record_ids=tuple(
+                    step.unified_evidence.metadata.record_id
+                    for step in item.steps
+                    if step.unified_evidence is not None
+                ),
                 source_hash=item.source_hash,
                 visible_content_hash=content_sha256(item),
             )
@@ -139,7 +156,7 @@ class SuppliedReplayDatasetAdapter(ProjectTwoDatasetAdapter):
 
 
 class D1SimulatorAnnotatedReplayAdapter(SuppliedReplayDatasetAdapter):
-    def __init__(self, **kwargs) -> None:
+    def __init__(self, **kwargs: Any) -> None:
         super().__init__(
             maturity=ProjectTwoDataMaturity.D1_SIMULATOR_ANNOTATED_REPLAY,
             **kwargs,
@@ -147,7 +164,7 @@ class D1SimulatorAnnotatedReplayAdapter(SuppliedReplayDatasetAdapter):
 
 
 class D2RealPerceptionReplayAdapter(SuppliedReplayDatasetAdapter):
-    def __init__(self, **kwargs) -> None:
+    def __init__(self, **kwargs: Any) -> None:
         super().__init__(
             maturity=ProjectTwoDataMaturity.D2_REAL_PERCEPTION_REPLAY,
             **kwargs,
@@ -160,35 +177,56 @@ class D0SyntheticOracleReplayAdapter(ProjectTwoDatasetAdapter):
     def __init__(
         self,
         *,
+        train_seeds: tuple[int, ...] = (),
         validation_seeds: tuple[int, ...] = (101, 103),
         test_seeds: tuple[int, ...] = (211, 223),
         max_steps_per_episode: int = 32,
         dataset_version: str = "project-two-d0-pilot@0.2",
         object_family_bucket_count: int = 1,
         sealed_secret: str | None = None,
+        scenario_duration_days: int = 32,
+        guest_window: tuple[int, int] = (7, 14),
+        abrupt_day: int = 17,
+        recurrence_day: int = 26,
+        observation_coverage: float = 0.7,
+        unknown_event_days: tuple[int, ...] = (1,),
     ) -> None:
         if not validation_seeds or not test_seeds:
             raise ValueError("validation and test seeds must both be non-empty")
-        if set(validation_seeds) & set(test_seeds):
-            raise ValueError("validation and test seeds must be disjoint")
+        seed_sets = {
+            ProjectTwoDatasetSplit.TRAIN: set(train_seeds),
+            ProjectTwoDatasetSplit.VALIDATION: set(validation_seeds),
+            ProjectTwoDatasetSplit.TEST: set(test_seeds),
+        }
+        for left, right in combinations(ProjectTwoDatasetSplit, 2):
+            if seed_sets[left] & seed_sets[right]:
+                raise ValueError(f"{left.value} and {right.value} seeds must be disjoint")
         if max_steps_per_episode < 1:
             raise ValueError("max_steps_per_episode must be positive")
         if not dataset_version.strip():
             raise ValueError("dataset_version must be non-empty")
         if object_family_bucket_count < 1:
             raise ValueError("object_family_bucket_count must be positive")
+        self.train_seeds = train_seeds
         self.validation_seeds = validation_seeds
         self.test_seeds = test_seeds
         self.max_steps_per_episode = max_steps_per_episode
         self.dataset_version = dataset_version
         self.object_family_bucket_count = object_family_bucket_count
         self.generator = StructureTwoActionScenarioGenerator(
+            duration_days=scenario_duration_days,
+            guest_window=guest_window,
+            abrupt_day=abrupt_day,
+            recurrence_day=recurrence_day,
+            observation_coverage=observation_coverage,
             sealed_secret=sealed_secret or new_sealed_secret(),
             include_open_world_unknown_events=True,
+            unknown_event_days=unknown_event_days,
         )
 
     def build(self) -> ProjectTwoReplayDataset:
         pairs = [
+            *((seed, ProjectTwoDatasetSplit.TRAIN) for seed in self.train_seeds),
             *((seed, ProjectTwoDatasetSplit.VALIDATION) for seed in self.validation_seeds),
             *((seed, ProjectTwoDatasetSplit.TEST) for seed in self.test_seeds),
         ]
@@ -206,6 +244,12 @@ class D0SyntheticOracleReplayAdapter(ProjectTwoDatasetAdapter):
                 object_family=item.object_family,
                 split=item.split,
                 maturity=item.maturity,
+                source_evidence_maturity=item.source_evidence_maturity,
+                unified_evidence_record_ids=tuple(
+                    step.unified_evidence.metadata.record_id
+                    for step in item.steps
+                    if step.unified_evidence is not None
+                ),
                 source_hash=item.source_hash,
                 visible_content_hash=content_sha256(item),
             )
@@ -238,8 +282,14 @@ class D0SyntheticOracleReplayAdapter(ProjectTwoDatasetAdapter):
                 else datetime(2026, 1, 1, tzinfo=UTC) + timedelta(days=obs.day)
             )
             opportunity = self._opportunity(case, obs, timestamp)
+            unified_evidence = self._unified_evidence(
+                case=case,
+                obs=obs,
+                timestamp=timestamp,
+                opportunity=opportunity,
+            )
             attempted = obs.after.detected_location_id if obs.after is not None else None
-            feedback = ()
+            feedback: tuple[ExecutionFeedbackRecord, ...] = ()
             if attempted is not None:
                 success = 0.8 if obs.day % 3 else 0.25
                 feedback = (self._feedback(case, obs.day, timestamp, attempted, success),)
@@ -271,6 +321,7 @@ class D0SyntheticOracleReplayAdapter(ProjectTwoDatasetAdapter):
                     ordered_role_evidence=obs.role_evidence,
                     execution_feedback=feedback,
                     observation_opportunity=opportunity,
+                    unified_evidence=unified_evidence,
                     unavailable_fields=(
                         "real_sensor_calibration",
                         "robot_pose_covariance",
@@ -304,6 +355,8 @@ class D0SyntheticOracleReplayAdapter(ProjectTwoDatasetAdapter):
                 f"family_bucket_count:{self.object_family_bucket_count}",
             ),
             maturity=self.maturity,
+            source_evidence_maturity=self.maturity,
+            contract_compatibility=ReplayContractCompatibility.FULL_REPLAY_CONTRACT,
             split=split,
             steps=tuple(steps),
             field_availability={
@@ -332,7 +385,7 @@ class D0SyntheticOracleReplayAdapter(ProjectTwoDatasetAdapter):
 
     @staticmethod
     def _opportunity(
-        case: ActionGeneratedCase, obs, timestamp: datetime
+        case: ActionGeneratedCase, obs: ActionDayObservation, timestamp: datetime
     ) -> ObservationOpportunityRecord:
         anchor = D0SyntheticOracleReplayAdapter._anchor_metadata(case)
         opportunity_id = (
@@ -355,6 +408,95 @@ class D0SyntheticOracleReplayAdapter(ProjectTwoDatasetAdapter):
             p_visible_given_state=0.85,
             p_detect_given_visible=0.9,
             likelihood_model_id="d0-visible@0.2",
+        )
+
+    @staticmethod
+    def _unified_evidence(
+        *,
+        case: ActionGeneratedCase,
+        obs: ActionDayObservation,
+        timestamp: datetime,
+        opportunity: ObservationOpportunityRecord,
+    ) -> UnifiedEvidenceContract:
+        anchor = D0SyntheticOracleReplayAdapter._anchor_metadata(case)
+        target = str(case.visible.object_instance_id)
+        detected_location = (
+            str(obs.after.detected_location_id)
+            if obs.after is not None and obs.after.detected_location_id is not None
+            else None
+        )
+        known_locations = tuple(
+            dict.fromkeys(
+                str(value)
+                for value in (
+                    obs.before.detected_location_id if obs.before is not None else None,
+                    obs.after.detected_location_id if obs.after is not None else None,
+                )
+                if value is not None
+            )
+        )
+        location_keys = (*known_locations, "unknown_location")
+        location_posterior = {key: 0.0 for key in location_keys}
+        if detected_location is None:
+            location_posterior["unknown_location"] = 1.0
+        else:
+            location_posterior[detected_location] = 0.9
+            location_posterior["unknown_location"] = 0.1
+        actor_posterior = (
+            dict(obs.actor_evidence.actor_posterior)
+            if obs.actor_evidence is not None
+            else {
+                case.visible.owner_actor: 0.0,
+                case.visible.guest_actor: 0.0,
+                "unknown_actor": 1.0,
+            }
+        )
+        actor_posterior.setdefault("unknown_actor", 0.0)
+        return UnifiedEvidenceContract(
+            metadata=anchor.model_copy(
+                update={
+                    "record_id": uuid5(case.visible.case_id, f"unified-evidence:{obs.day}"),
+                    "schema_name": "cpswm.UnifiedEvidenceContract",
+                    "recorded_time": timestamp,
+                    "source_type": SourceType.SIMULATION,
+                    "source_id": "d0-visible-evidence-adapter",
+                }
+            ),
+            valid_time=ValidTimeInterval(start=timestamp, end=timestamp + timedelta(hours=1)),
+            object_instance_id=case.visible.object_instance_id,
+            object_posterior={
+                target: 0.9 if detected_location else 0.2,
+                "unknown_object": 0.1 if detected_location else 0.8,
+            },
+            location_posterior=location_posterior,
+            detected_object_key=target if detected_location else None,
+            detected_location_key=detected_location,
+            actor_posterior=actor_posterior,
+            observation_opportunity=opportunity,
+            selected_for_observation=opportunity.selected,
+            selection_probability=opportunity.selection_probability,
+            field_of_view_coverage=opportunity.p_visible_given_state,
+            occlusion_state=(OcclusionState.CLEAR if detected_location else OcclusionState.UNKNOWN),
+            detection_outcome=(
+                ObservationOutcome.DETECTED
+                if detected_location
+                else ObservationOutcome.NOT_OBSERVED
+            ),
+            detection_failure_reason=(
+                DetectionFailureReason.NOT_APPLICABLE
+                if detected_location
+                else DetectionFailureReason.OUT_OF_VIEW
+            ),
+            production_mode=EvidenceProductionMode.DIRECT,
+            evidence_cluster_id=uuid5(case.visible.case_id, f"unified-cluster:{obs.day}"),
+            correlation_group_id=f"d0-day:{obs.day}",
+            effective_sample_weight=0.8,
+            open_set_support=OpenSetEvidenceSupport(
+                actor_keys=tuple(actor_posterior),
+                object_instance_ids=(case.visible.object_instance_id,),
+                location_keys=location_keys,
+                mechanism_keys=("direct_relocation", "handoff_relocation", "unknown_mechanism"),
+            ),
         )
 
     @staticmethod
@@ -403,6 +545,8 @@ class D0SyntheticOracleReplayAdapter(ProjectTwoDatasetAdapter):
 def adapter_tiers() -> dict[ProjectTwoDataMaturity, type[ProjectTwoDatasetAdapter]]:
     return {
         ProjectTwoDataMaturity.D0_SYNTHETIC_ORACLE: D0SyntheticOracleReplayAdapter,
+        ProjectTwoDataMaturity.D0_DEVELOPMENT_FIXTURE: SuppliedReplayDatasetAdapter,
+        ProjectTwoDataMaturity.D0_5_SEMI_SYNTHETIC: SuppliedReplayDatasetAdapter,
         ProjectTwoDataMaturity.D1_SIMULATOR_ANNOTATED_REPLAY: D1SimulatorAnnotatedReplayAdapter,
         ProjectTwoDataMaturity.D2_REAL_PERCEPTION_REPLAY: D2RealPerceptionReplayAdapter,
         ProjectTwoDataMaturity.D3_HOUSEHOLD_EXECUTION: UnavailableProjectTwoDatasetAdapter,

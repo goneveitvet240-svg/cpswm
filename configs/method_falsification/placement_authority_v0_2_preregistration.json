@@ -1,0 +1,131 @@
+{
+  "schema_name": "cpswm.PlacementAuthorityPreregistration",
+  "schema_version": "0.2.0",
+  "route_id": "s1.four_layer_placement_semantics@0.2",
+  "candidate_version": "authority-scoped-placement-resolver@0.2",
+  "frozen_at": "2026-08-27T00:00:00Z",
+  "parent_failure": {
+    "method_id": "s1.four_layer_placement_semantics",
+    "decision": "falsified",
+    "artifact_path": "output/method_falsification/round_two_structure_one_placement_v0_1.json",
+    "artifact_sha256": "4a4758b3ecc8fd1b409bddef66825259d1a0ed85dcddc5b1a0d94938832b7ef4"
+  },
+  "legacy_reproducibility": {
+    "resolver": "PlacementDecisionResolver",
+    "expected_visitor_owner_failure_preserved": true,
+    "legacy_result_must_not_be_overwritten": true
+  },
+  "authority_topology": {
+    "preference_order": [
+      "system_admin",
+      "household_owner",
+      "authorized_corrector",
+      "authorized_reporter",
+      "unverified_reporter"
+    ],
+    "precedence": [
+      "hard_norm_consistency",
+      "preference_authority",
+      "subject_specificity",
+      "recorded_time",
+      "deterministic_record_id_only_for_identical_location"
+    ],
+    "conflict_action": "verify_or_abstain",
+    "low_authority_instance_may_override_high_authority_class": false,
+    "simultaneous_equal_authority_conflict_may_auto_resolve": false,
+    "hard_norm_conflict_may_auto_resolve": false
+  },
+  "opponents": [
+    {
+      "opponent_id": "collapsed_placement_memory",
+      "fidelity": "independently_tuned_matched",
+      "tuning_grid": [0.0, 0.25, 0.5, 0.75, 1.0]
+    },
+    {
+      "opponent_id": "authority_agnostic_rule_resolver",
+      "fidelity": "independently_tuned_matched",
+      "tuning_grid": ["recency_first", "specificity_then_recency"]
+    }
+  ],
+  "scenario_families": [
+    "behavior_preference_conflict",
+    "visitor_owner_conflict",
+    "authorized_reporter_owner_conflict",
+    "same_authority_recency",
+    "same_authority_simultaneous_conflict",
+    "low_authority_instance_high_authority_class",
+    "hard_must_vs_forbid_conflict",
+    "multiple_hard_required_locations",
+    "hard_safety_retraction",
+    "no_preference_abstention"
+  ],
+  "validation_split": {
+    "seed_start": 51001,
+    "seed_count": 30,
+    "allowed_uses": ["opponent_tuning", "candidate_debugging", "power_reestimation"]
+  },
+  "sealed_test_split": {
+    "seed_start": 52001,
+    "seed_count": 200,
+    "cluster_axis": "household",
+    "execution_status": "not_executed",
+    "unlock_condition": "candidate_code_and_all_tuning_choices_frozen"
+  },
+  "action_budget": {
+    "placement_decisions_per_episode": 1,
+    "verification_actions_per_episode": 1,
+    "all_methods_share_visible_records": true
+  },
+  "endpoints": {
+    "primary": "wrong_placement_cost",
+    "mechanism": "semantic_layer_violation",
+    "guardrails": [
+      "hard_safety_violation_rate",
+      "unauthorized_override_rate",
+      "unnecessary_verification_rate"
+    ],
+    "cost_sensitivity_grid": [
+      {
+        "wrong_placement": 1.0,
+        "hard_safety_violation": 5.0,
+        "verification": 0.1,
+        "unnecessary_abstention": 0.25
+      },
+      {
+        "wrong_placement": 1.0,
+        "hard_safety_violation": 10.0,
+        "verification": 0.25,
+        "unnecessary_abstention": 0.5
+      },
+      {
+        "wrong_placement": 1.0,
+        "hard_safety_violation": 20.0,
+        "verification": 0.5,
+        "unnecessary_abstention": 1.0
+      }
+    ]
+  },
+  "decision_rule": {
+    "confidence_level": 0.95,
+    "bootstrap_samples": 5000,
+    "independent_unit": "household",
+    "action_noninferiority_margin": 0.0,
+    "mechanism_superiority_margin": 0.0,
+    "survival_requires_every_opponent": true,
+    "hard_safety_violation_tolerance": 0.0,
+    "falsified_if_any": [
+      "candidate_is_action_inferior_to_any_required_opponent",
+      "candidate_has_no_positive_mechanism_benefit_against_any_required_opponent",
+      "candidate_executes_an_unauthorized_override",
+      "candidate_auto_resolves_a_frozen_verify_or_abstain_conflict",
+      "candidate_executes_a_hard_safety_violation"
+    ]
+  },
+  "reporting": {
+    "report_all_scenario_families": true,
+    "report_all_cost_sensitivity_points": true,
+    "report_household_cluster_intervals": true,
+    "report_legacy_v0_1_failure_alongside_v0_2": true,
+    "external_validity_required_for_paper_claim": true
+  }
+}

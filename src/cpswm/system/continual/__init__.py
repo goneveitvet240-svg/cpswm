@@ -6,6 +6,7 @@ from .event_derived_update_ledger import (
     EventDerivedDeltaRecord,
     EventDerivedDeltaReversal,
     EventDerivedUpdateLedger,
+    FullRerunEquivalenceReceipt,
     LedgerIntegrityError,
     RebuildCost,
     RetractionCost,
@@ -48,6 +49,13 @@ from .project_one_regime_loop import (
     PrototypeLoopConfig,
     PrototypeStatisticOperation,
 )
+from .regime_authority import (
+    AUTHORITY_OWNER,
+    RegimeAuthority,
+    RegimeAuthorityTopology,
+    RegimeComponent,
+    RegimeProposalOrder,
+)
 from .rls import (
     RecursiveLeastSquares,
     RLSChannelReliabilityCalibrator,
@@ -59,6 +67,7 @@ from .rls import (
 )
 
 __all__ = [
+    "AUTHORITY_OWNER",
     "AutomaticCFBOCPDCCRRRouter",
     "AutomaticRegimeAssessment",
     "ConsolidationRiskCertificate",
@@ -74,6 +83,7 @@ __all__ = [
     "EventRevisionOutcome",
     "ExecutionFeedbackInterpretationPolicy",
     "FeedbackInterpretation",
+    "FullRerunEquivalenceReceipt",
     "FusedLocationBelief",
     "HabitStateConclusion",
     "HybridConsolidationState",
@@ -96,6 +106,10 @@ __all__ = [
     "RLSRegimeSwitchEvent",
     "RebuildCost",
     "RecursiveLeastSquares",
+    "RegimeAuthority",
+    "RegimeAuthorityTopology",
+    "RegimeComponent",
+    "RegimeProposalOrder",
     "RetractionCost",
     "StatisticKey",
     "projection_total_variation",

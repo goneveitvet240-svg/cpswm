@@ -1,0 +1,51 @@
+{
+  "protocol": "structure-two-corrected-evaluation-instrument@0.2",
+  "evidence_status": "post-hoc validation-only instrument correction; no sealed-holdout claim",
+  "source_protocol": "structure-two-strongest-neighbor-gate@0.1",
+  "source_manifest_path": "configs/project_two_experiments/structure_two_strongest_neighbor_manifest_v0_1.json",
+  "source_manifest_file_sha256": "a586d352cf307bd8ba10fb1ef58ed4a1f3a60efe738509723158d7b867091126",
+  "source_report_path": "artifacts/project_two_v04_development/structure_two_strongest_neighbor_gate_v0_1.json",
+  "source_report_file_sha256": "cace31c8f9ac1516f7d267069cf28d02ad922d03099e4c2d796ec99b0160b860",
+  "source_report_content_sha256": "21347c71d3a327641d901f8b98d3385e481e5fe8e180ca98aae4441a95483e49",
+  "source_gate_file_sha256": "68b3775f31d19245a65beacec862bb4c739863c4d3fda37d68a3ea5f102e25de",
+  "validation_seeds": [310101, 310102, 310103, 310104, 310105, 310106, 310107, 310108],
+  "max_steps": 24,
+  "max_physical_verifications_per_episode": 4,
+  "sealed_holdout_opened": false,
+  "reuse_frozen_v0_1_parameters_without_retuning": true,
+  "selected_parameters": {
+    "corrected_amg": 0.35,
+    "o_star_matched": 0.75,
+    "sequential_no_consolidation": "responsive",
+    "active_dreaming_matched": 0.6,
+    "auto_dreamer_matched": 0.04,
+    "trustmem_matched": 0.8,
+    "brainctl_matched": 0.75,
+    "care_no_action_regret": 0.85,
+    "care_wm": 1.25,
+    "full_rerun": 0.3,
+    "full_rerun_oracle": null
+  },
+  "search_readout": "last_observed_location_for_search; owner_habit_posterior_for_put_back",
+  "physical_verification_update": {
+    "rule": "bayesian_categorical_likelihood_update",
+    "prior_floor": 1e-09,
+    "observation_reliability_source": "frozen_family_physical_verification_reliability"
+  },
+  "repair_cost_policy": "charge_only_unique_external_action_execution_receipts_that_require_rollback",
+  "validity_thresholds": {
+    "minimum_mean_published_pairwise_action_disagreement": 0.01,
+    "minimum_differentiated_episode_fraction": 0.2,
+    "maximum_care_full_verification_budget_saturation_rate": 0.95
+  },
+  "eligible_overall_comparators": [
+    "corrected_amg",
+    "o_star_matched",
+    "sequential_no_consolidation",
+    "active_dreaming_matched",
+    "auto_dreamer_matched",
+    "trustmem_matched",
+    "brainctl_matched",
+    "full_rerun"
+  ]
+}

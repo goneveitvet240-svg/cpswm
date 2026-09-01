@@ -1,33 +1,44 @@
 """Public project-two LLM/VLM evidence adapter surface."""
 
+from cpswm.contracts.llm_roles import LLMProviderIdentity
+
 from .adapter import (
+    CalibratedLikelihoodBundle,
+    CandidateProposalBundle,
+    CandidateProposalItem,
     DeterministicEvidenceProvider,
     LLMEvidenceAdapter,
     LLMEvidenceAdapterResult,
     LLMEvidenceCache,
     LLMEvidenceProvider,
-    LLMStructuredEvidenceBundle,
     LocalModelEvidenceProvider,
     OpenAICompatibleEvidenceProvider,
     ProviderHTTPResponse,
+    ReferencedPosteriorBundle,
     UrllibLLMHTTPTransport,
 )
 from .contracts import (
     LLMCacheStatus,
+    LLMCalibrationReceipt,
     LLMCallAuditReceipt,
     LLMCandidateKind,
     LLMEvidenceCapability,
     LLMEvidenceOutput,
     LLMEvidenceRequest,
+    LLMFusionPermission,
     LLMGeneratedCandidate,
     LLMInvocationAccounting,
-    LLMProviderIdentity,
+    LLMProbabilitySemantics,
     TruthLeakageError,
 )
 
 __all__ = [
+    "CalibratedLikelihoodBundle",
+    "CandidateProposalBundle",
+    "CandidateProposalItem",
     "DeterministicEvidenceProvider",
     "LLMCacheStatus",
+    "LLMCalibrationReceipt",
     "LLMCallAuditReceipt",
     "LLMCandidateKind",
     "LLMEvidenceAdapter",
@@ -37,13 +48,15 @@ __all__ = [
     "LLMEvidenceOutput",
     "LLMEvidenceProvider",
     "LLMEvidenceRequest",
+    "LLMFusionPermission",
     "LLMGeneratedCandidate",
     "LLMInvocationAccounting",
+    "LLMProbabilitySemantics",
     "LLMProviderIdentity",
-    "LLMStructuredEvidenceBundle",
     "LocalModelEvidenceProvider",
     "OpenAICompatibleEvidenceProvider",
     "ProviderHTTPResponse",
+    "ReferencedPosteriorBundle",
     "TruthLeakageError",
     "UrllibLLMHTTPTransport",
 ]

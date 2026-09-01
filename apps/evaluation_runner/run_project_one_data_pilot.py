@@ -30,25 +30,29 @@ from __future__ import annotations
 
 import argparse
 import json
+import sys
 from pathlib import Path
 
-from cpswm.system.evaluation_operations.project_one_data_pilot import (
+REPOSITORY_ROOT = Path(__file__).resolve().parents[2]
+sys.path.insert(0, str(REPOSITORY_ROOT / "src"))
+
+from cpswm.system.evaluation_operations.project_one_data_pilot import (  # noqa: E402
     binding_stream,
     run_data_pilot,
     write_pilot_outputs,
 )
-from cpswm.system.evaluation_operations.project_one_household_generator import (
+from cpswm.system.evaluation_operations.project_one_household_generator import (  # noqa: E402
     build_household_log,
 )
-from cpswm.system.evaluation_operations.project_one_semi_synthetic import (
+from cpswm.system.evaluation_operations.project_one_semi_synthetic import (  # noqa: E402
     InjectionKind,
     inject_changes,
 )
-from cpswm.system.evaluation_operations.project_one_stream_binding import (
+from cpswm.system.evaluation_operations.project_one_stream_binding import (  # noqa: E402
     OPEN_SET_LOCATION,
     bind_stream,
 )
-from cpswm.system.evaluation_operations.real_data_adapters import (
+from cpswm.system.evaluation_operations.real_data_adapters import (  # noqa: E402
     JSONLAdapter,
     UnknownLocationPolicy,
 )

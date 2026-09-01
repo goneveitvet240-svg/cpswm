@@ -717,11 +717,15 @@ def _build_executions(
     location_by_id = {
         candidate.candidate_id: candidate.location_id for candidate in request.candidates
     }
+    target_location = location_by_id[target]
+    distractor_location = location_by_id[distractor]
+    if target_location is None or distractor_location is None:
+        raise ValueError("oracle execution candidates require grounded locations")
     if scenario.replan_after_not_found:
         first = _execution(
             scenario,
             candidate_id=distractor,
-            location_id=location_by_id[distractor],
+            location_id=distractor_location,
             action_role="first-not-found",
             action_type=RobotActionType.SEARCH,
             outcome=RobotActionOutcome.NOT_FOUND,
@@ -730,7 +734,7 @@ def _build_executions(
         second = _execution(
             scenario,
             candidate_id=target,
-            location_id=location_by_id[target],
+            location_id=target_location,
             action_role="second-success",
             action_type=RobotActionType.SEARCH,
             outcome=RobotActionOutcome.SUCCESS,
@@ -755,7 +759,7 @@ def _build_executions(
     execution = _execution(
         scenario,
         candidate_id=target,
-        location_id=location_by_id[target],
+        location_id=target_location,
         action_role="terminal",
         action_type=scenario.terminal_action,
         outcome=scenario.terminal_outcome,

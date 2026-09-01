@@ -135,10 +135,13 @@ def test_end_to_end_orrer_rgrc_map_task():
     recovered = loop.owner_projection(object_instance_id=OBJ)
     assert recovered.get(L2, 0.0) < contaminated.owner_mass
     # Ledger stays consistent end to end: cache == full from-log rebuild.
-    rebuilt, _cost = loop.ledger.rebuild_projection_from_log(
+    equivalence = loop.ledger.verify_full_rerun_equivalence(
         actor_key=OWNER, object_instance_id=OBJ, parameter_block="owner_habit_location"
     )
-    assert recovered == rebuilt
+    assert equivalence.equivalent
+    assert recovered == equivalence.rebuilt_projection
+    assert equivalence.cached_projection_sha256 == equivalence.rebuilt_projection_sha256
+    assert equivalence.records_scanned == loop.ledger.record_count()
 
     # The map projection advanced because the belief changed.
     assert loop.revisions.dynamic_map_revision == old_dynamic_revision + 1

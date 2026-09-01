@@ -28,6 +28,7 @@ class HiddenEventEvidenceTrack(StrEnum):
 
     CONTROLLED_NOISE = "controlled_noise"
     ORACLE = "oracle"
+    MODEL = "model"
 
 
 class EventMechanism(StrEnum):

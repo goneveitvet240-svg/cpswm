@@ -3,9 +3,9 @@
 from __future__ import annotations
 
 from collections import Counter, defaultdict
-from datetime import timedelta
+from datetime import datetime, timedelta
 from statistics import fmean
-from typing import ClassVar
+from typing import ClassVar, TypedDict
 
 from cpswm.contracts import ObservationOutcome
 from cpswm.world_model.habits_transitions.cause_factorized_bocpd import (
@@ -21,6 +21,15 @@ from cpswm.world_model.habits_transitions.joint_cause_bocpd import (
 from .d0_shift_scenarios import D0ShiftCaseInput, D0VisibleSimulationRun
 from .online_shift_attribution import OnlineShiftCaseInput, OnlineShiftPrediction
 from .shift_attribution import ShiftCause, ShiftCausePrediction
+
+
+class _DailyMetric(TypedDict):
+    timestamp: datetime
+    observation: float
+    actor: float | None
+    habit: dict[str, float]
+    noise: float
+    evidence_ids: tuple[str, ...]
 
 
 class LoggedPolicyThenLocationBaseline:
@@ -52,10 +61,11 @@ class LoggedPolicyThenLocationBaseline:
 
         evidence_ids = tuple(
             str(item.metadata.record_id)
-            for item in (
-                *model_input.shifted_run.observation_opportunities,
-                *model_input.shifted_run.detection_results,
-            )
+            for item in model_input.shifted_run.observation_opportunities
+            if item.metadata.recorded_time >= model_input.change_time
+        ) + tuple(
+            str(item.metadata.record_id)
+            for item in model_input.shifted_run.detection_results
             if item.metadata.recorded_time >= model_input.change_time
         )
         return ShiftCausePrediction(
@@ -66,7 +76,9 @@ class LoggedPolicyThenLocationBaseline:
         )
 
     @staticmethod
-    def _detected_location_counts(run: D0VisibleSimulationRun, change_time) -> Counter[str]:
+    def _detected_location_counts(
+        run: D0VisibleSimulationRun, change_time: datetime
+    ) -> Counter[str]:
         return Counter(
             str(result.detected_location_id)
             for result in run.detection_results
@@ -98,14 +110,22 @@ class LoggedPolicyActorLocationBaseline(LoggedPolicyThenLocationBaseline):
         else:
             cause = ShiftCause.UNRESOLVED
 
-        evidence_ids = tuple(
-            str(item.metadata.record_id)
-            for item in (
-                *model_input.shifted_run.observation_opportunities,
-                *model_input.shifted_run.detection_results,
-                *model_input.shifted_actor_evidence,
+        evidence_ids = (
+            tuple(
+                str(item.metadata.record_id)
+                for item in model_input.shifted_run.observation_opportunities
+                if item.metadata.recorded_time >= model_input.change_time
             )
-            if item.metadata.recorded_time >= model_input.change_time
+            + tuple(
+                str(item.metadata.record_id)
+                for item in model_input.shifted_run.detection_results
+                if item.metadata.recorded_time >= model_input.change_time
+            )
+            + tuple(
+                str(item.metadata.record_id)
+                for item in model_input.shifted_actor_evidence
+                if item.metadata.recorded_time >= model_input.change_time
+            )
         )
         return ShiftCausePrediction(
             case_id=model_input.case_id,
@@ -194,7 +214,7 @@ class OnlineCauseFactorizedBOCPDBaseline:
         for evidence in model_input.actor_evidence:
             actor_by_detection[evidence.source_detection_result_id].append(evidence)
 
-        daily_metrics: list[dict[str, object]] = []
+        daily_metrics: list[_DailyMetric] = []
         for day_index in range(run.duration_days):
             day_start = run.start_time + timedelta(days=day_index)
             day_end = day_start + timedelta(days=1)
@@ -215,7 +235,7 @@ class OnlineCauseFactorizedBOCPDBaseline:
                 for item in opportunities
             )
             actor_values: list[float] = []
-            location_counts: Counter[str] = Counter()
+            location_counts: dict[str, float] = defaultdict(float)
             for result in results:
                 evidence_items = actor_by_detection.get(result.metadata.record_id, ())
                 owner_mass = 1.0
@@ -246,9 +266,8 @@ class OnlineCauseFactorizedBOCPDBaseline:
                         result.outcome == ObservationOutcome.AMBIGUOUS for result in results
                     )
                     / len(results),
-                    "evidence_ids": tuple(
-                        str(item.metadata.record_id) for item in (*opportunities, *results)
-                    )
+                    "evidence_ids": tuple(str(item.metadata.record_id) for item in opportunities)
+                    + tuple(str(item.metadata.record_id) for item in results)
                     + tuple(
                         str(item.metadata.record_id)
                         for result in results
@@ -264,9 +283,7 @@ class OnlineCauseFactorizedBOCPDBaseline:
         actor_warmup = [float(item["actor"]) for item in warmup if item["actor"] is not None]
         reference_actor = fmean(actor_warmup) if actor_warmup else None
         reference_noise = fmean(float(item["noise"]) for item in warmup)
-        reference_habit = self._mean_distribution(
-            tuple(item["habit"] for item in warmup)  # type: ignore[arg-type]
-        )
+        reference_habit = self._mean_distribution(tuple(item["habit"] for item in warmup))
 
         frames: list[CauseEvidenceFrame] = []
         for index, item in enumerate(daily_metrics):
@@ -287,13 +304,13 @@ class OnlineCauseFactorizedBOCPDBaseline:
                     ),
                     ChangeCause.HABIT: self._total_variation(
                         item["habit"],
-                        reference_habit,  # type: ignore[arg-type]
+                        reference_habit,
                     ),
                     ChangeCause.NOISE: min(1.0, abs(float(item["noise"]) - reference_noise)),
                 }
             frames.append(
                 CauseEvidenceFrame(
-                    timestamp=item["timestamp"],  # type: ignore[arg-type]
+                    timestamp=item["timestamp"],
                     continuation_likelihoods={
                         cause: 0.01 + 0.99 * (1.0 - distance)
                         for cause, distance in distances.items()
@@ -301,7 +318,7 @@ class OnlineCauseFactorizedBOCPDBaseline:
                     changepoint_likelihoods={
                         cause: 0.01 + 0.99 * distance for cause, distance in distances.items()
                     },
-                    evidence_record_ids=tuple(dict.fromkeys(item["evidence_ids"])),  # type: ignore[arg-type]
+                    evidence_record_ids=tuple(dict.fromkeys(item["evidence_ids"])),
                 )
             )
         return tuple(frames)

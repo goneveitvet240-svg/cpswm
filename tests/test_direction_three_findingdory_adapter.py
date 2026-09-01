@@ -5,11 +5,15 @@ from pathlib import Path
 
 import pytest
 
+from cpswm.system.evaluation_operations.real_data_adapters import findingdory as findingdory_module
 from cpswm.system.evaluation_operations.real_data_adapters.findingdory import (
     FINDINGDORY_SCHEMA_FIELDS,
     FINDINGDORY_UNAVAILABLE_FIELDS,
     FindingDoryMetadataRow,
+    FindingDorySourceKind,
     adapt_findingdory_rows,
+    fetch_findingdory_dataset_viewer_rows,
+    load_findingdory_dataset_viewer_export,
     load_findingdory_jsonl,
 )
 
@@ -24,7 +28,7 @@ def _row() -> dict[str, object]:
         "video": "videos/ep-001.mp4",
         "question": "Where is it?",
         "answer": [[1, 2]],
-        "task_id": 1,
+        "task_id": "task_41",
         "high_level_category": "retrieval",
         "low_level_category": "single",
         "num_interactions": 1,
@@ -41,12 +45,36 @@ def test_exact_official_metadata_columns_are_required():
     assert "extra=['actor_id']" in batch.audit.rejections[0].reason
 
 
+def test_official_string_task_id_is_accepted_and_integer_is_rejected():
+    accepted = adapt_findingdory_rows([_row()])
+    integer_row = {**_row(), "task_id": 41}
+    rejected = adapt_findingdory_rows([integer_row])
+
+    assert accepted.records[0].metadata.task_id == "task_41"
+    assert rejected.audit.accepted_rows == 0
+    assert rejected.audit.rejected_rows == 1
+
+
 def test_answer_frame_groups_and_no_answer_marker_are_preserved():
     batch = load_findingdory_jsonl(FIXTURE)
 
     assert batch.records[1].answer_frame_groups == ((8, 9), (42, 43))
     assert batch.records[2].target_absent
     assert batch.audit.target_absent_rows == 1
+
+
+def test_official_string_encoded_answer_is_strictly_parsed():
+    row = _row()
+    row["answer"] = "[[8, 9], [42, 43]]"
+
+    batch = adapt_findingdory_rows([row])
+
+    assert batch.records[0].answer_frame_groups == ((8, 9), (42, 43))
+
+    row["answer"] = "not-json"
+    rejected = adapt_findingdory_rows([row])
+    assert rejected.audit.rejected_rows == 1
+    assert "valid JSON frame groups" in rejected.audit.rejections[0].reason
 
 
 def test_invalid_mixed_no_answer_marker_is_rejected():
@@ -115,3 +143,87 @@ def test_jsonl_loader_preserves_source_line_numbers_after_parse_errors(tmp_path:
     batch = load_findingdory_jsonl(path)
 
     assert {rejection.row_number for rejection in batch.audit.rejections} == {1, 3}
+
+
+def test_saved_dataset_viewer_export_preserves_source_without_claiming_live_retrieval(
+    tmp_path: Path,
+):
+    payload = {
+        "dataset": "yali30/findingdory",
+        "config": "default",
+        "split": "validation",
+        "features": [],
+        "rows": [
+            {"row_idx": 41, "row": _row(), "truncated_cells": []},
+        ],
+    }
+    path = tmp_path / "findingdory-first-rows.json"
+    path.write_text(json.dumps(payload), encoding="utf-8")
+
+    batch = load_findingdory_dataset_viewer_export(path)
+
+    assert batch.audit.source_kind is FindingDorySourceKind.DATASET_VIEWER_EXPORT
+    assert batch.audit.source_split == "validation"
+    assert not batch.audit.real_official_rows_ingested
+    assert batch.audit.source_payload_sha256
+    assert batch.records[0].evidence_status == "dataset_viewer_export"
+    assert not batch.audit.readiness.can_build_full_direction_three_episode
+
+
+def test_fixed_live_dataset_viewer_fetch_can_attest_transport_source(monkeypatch):
+    payload = {
+        "features": [],
+        "rows": [{"row_idx": 0, "row": _row(), "truncated_cells": []}],
+    }
+
+    class Response:
+        def __enter__(self):
+            return self
+
+        def __exit__(self, *_args):
+            return False
+
+        @staticmethod
+        def read():
+            return json.dumps(payload).encode()
+
+    def fake_urlopen(url, *, timeout):
+        assert url.startswith("https://datasets-server.huggingface.co/rows?")
+        assert "dataset=yali30%2Ffindingdory" in url
+        assert timeout == 5.0
+        return Response()
+
+    monkeypatch.setattr(findingdory_module, "urlopen", fake_urlopen)
+    batch = fetch_findingdory_dataset_viewer_rows(source_split="validation", timeout_seconds=5.0)
+
+    assert batch.audit.source_kind is FindingDorySourceKind.DATASET_VIEWER_LIVE
+    assert batch.audit.real_official_rows_ingested
+
+
+def test_dataset_viewer_export_rejects_wrong_dataset_and_truncated_cells(tmp_path: Path):
+    payload = {
+        "dataset": "someone/other-data",
+        "config": "default",
+        "split": "validation",
+        "rows": [],
+    }
+    path = tmp_path / "wrong.json"
+    path.write_text(json.dumps(payload), encoding="utf-8")
+    with pytest.raises(ValueError, match="not yali30/findingdory"):
+        load_findingdory_dataset_viewer_export(path)
+
+    payload["dataset"] = "yali30/findingdory"
+    payload["rows"] = [
+        {"row_idx": 0, "row": _row(), "truncated_cells": ["video"]},
+    ]
+    path.write_text(json.dumps(payload), encoding="utf-8")
+    with pytest.raises(ValueError, match="truncated"):
+        load_findingdory_dataset_viewer_export(path)
+
+
+def test_local_jsonl_never_claims_official_real_row_ingestion():
+    batch = load_findingdory_jsonl(FIXTURE)
+
+    assert batch.audit.source_kind is FindingDorySourceKind.LOCAL_JSONL
+    assert not batch.audit.real_official_rows_ingested
+    assert batch.audit.source_payload_sha256

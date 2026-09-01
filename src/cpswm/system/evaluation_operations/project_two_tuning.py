@@ -76,7 +76,7 @@ class ProjectTwoTuningCandidate(ContractModel):
             candidate_count=5,
         )
         stage = index % 8
-        updates = {
+        stage_updates: dict[int, dict[str, Any]] = {
             1: {"likelihood_calibration": 0.8},
             2: {
                 "actor_evidence_weight": 0.8,
@@ -129,7 +129,8 @@ class ProjectTwoTuningCandidate(ContractModel):
                 "temperature": 0.5,
                 "candidate_count": 3,
             },
-        }.get(stage, {})
+        }
+        updates = stage_updates.get(stage, {})
         values.update(updates)
         return cls(**values)
 
@@ -359,14 +360,20 @@ class SealedHeldOutRunGuard:
         self.test_episode_ids: tuple[str, ...] = ()
 
     @classmethod
-    def freeze(cls, *, receipts, arm_ids, ablations) -> SealedHeldOutRunGuard:
+    def freeze(
+        cls,
+        *,
+        receipts: Sequence[IndependentTuningReceipt],
+        arm_ids: Sequence[str],
+        ablations: Sequence[str],
+    ) -> SealedHeldOutRunGuard:
         receipt_arms = {item.arm_id for item in receipts}
         if receipt_arms != set(arm_ids):
             raise ValueError("all frozen arms require independent tuning receipts")
         payload = {
             "receipts": [item.model_dump(mode="json") for item in receipts],
             "arm_ids": list(arm_ids),
-            "ablations": [item.value for item in ablations],
+            "ablations": list(ablations),
         }
         return cls(
             frozen_hash=hashlib.sha256(json.dumps(payload, sort_keys=True).encode()).hexdigest()

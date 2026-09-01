@@ -157,7 +157,7 @@ class FrameRegistry:
     ) -> FrameTransform:
         if source_frame_id == target_frame_id:
             raise ValueError("identity transforms are implicit and are not returned")
-        queue = deque([(source_frame_id, None)])
+        queue: deque[tuple[str, FrameTransform | None]] = deque([(source_frame_id, None)])
         visited = {source_frame_id}
         while queue:
             frame_id, accumulated = queue.popleft()

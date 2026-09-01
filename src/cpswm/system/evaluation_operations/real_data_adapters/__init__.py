@@ -20,6 +20,14 @@ from .findingdory import (
     adapt_findingdory_rows,
     load_findingdory_jsonl,
 )
+from .findingdory_layered_ingress import (
+    FindingDoryAcquisitionBackend,
+    FindingDoryLayeredIngressManifest,
+    FindingDoryLayeredIngressResult,
+    acquire_findingdory_with_datasets,
+    load_findingdory_layered_artifact,
+    materialize_findingdory_rows,
+)
 from .jsonl_adapter import (
     JSONL_ADAPTER_VERSION,
     REQUIRED_EVENT_FIELDS,
@@ -37,7 +45,10 @@ __all__ = [
     "JSONL_ADAPTER_VERSION",
     "REQUIRED_EVENT_FIELDS",
     "UNKNOWN_LOCATION",
+    "FindingDoryAcquisitionBackend",
     "FindingDoryAdaptationRecord",
+    "FindingDoryLayeredIngressManifest",
+    "FindingDoryLayeredIngressResult",
     "FindingDoryMetadataAudit",
     "FindingDoryMetadataBatch",
     "FindingDoryMetadataRow",
@@ -45,6 +56,9 @@ __all__ = [
     "JSONLLoadReport",
     "JSONLRejection",
     "UnknownLocationPolicy",
+    "acquire_findingdory_with_datasets",
     "adapt_findingdory_rows",
     "load_findingdory_jsonl",
+    "load_findingdory_layered_artifact",
+    "materialize_findingdory_rows",
 ]

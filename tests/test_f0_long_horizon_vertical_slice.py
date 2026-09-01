@@ -540,7 +540,6 @@ def test_controlled_recall_ignores_unrelated_hidden_truth_events():
     base_plan = generator.generate(config)
     expanded_plan = generator.generate(expanded_config)
     policy = build_policy()
-    simulator = SymbolicWorldModelSimulator()
     base_manifest = build_manifest(base_plan, policy)
     expanded_manifest = update_manifest(
         build_manifest(expanded_plan, policy),

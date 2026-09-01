@@ -1,0 +1,92 @@
+{
+  "protocol": "structure-two-official-component-parity@0.6",
+  "active_dreaming_commit": "9c05baf41673d10e92c076ba7db18b1b6553a60d",
+  "brainctl_commit": "c6348087dd07e54583f762e07bf960ac982019e6",
+  "active_dreaming_component_checks": {
+    "official_epsilon_0_3": true,
+    "official_min_pts_2": true,
+    "official_cosine_dbscan": true,
+    "official_execution_before_add_rule": true,
+    "local_selected_dbscan_fixture_matches": true
+  },
+  "brainctl_component_checks": {
+    "official_source_trust_mapping_loaded": true,
+    "amac_pre_gate_matches_official_literals": true,
+    "selected_fixture_novelty_matches": true,
+    "selected_fixture_w_m_score_matches": true,
+    "selected_fixture_acceptance_matches": true,
+    "negative_similarity_fixture_included": true,
+    "current_official_valence_not_applied_to_w_m_score": true
+  },
+  "brainctl_selected_fixture_results": [
+    {
+      "candidate": [
+        1.0,
+        0.0
+      ],
+      "neighbors": [],
+      "category": "decision",
+      "scope": "agent:a",
+      "novelty_matches": true,
+      "score_matches": true,
+      "acceptance_matches": true
+    },
+    {
+      "candidate": [
+        1.0,
+        0.0
+      ],
+      "neighbors": [
+        [
+          -1.0,
+          0.0
+        ]
+      ],
+      "category": "decision",
+      "scope": "agent:a",
+      "novelty_matches": true,
+      "score_matches": true,
+      "acceptance_matches": true
+    },
+    {
+      "candidate": [
+        1.0,
+        0.0
+      ],
+      "neighbors": [
+        [
+          0.8,
+          0.6
+        ]
+      ],
+      "category": "lesson",
+      "scope": "project:p",
+      "novelty_matches": true,
+      "score_matches": true,
+      "acceptance_matches": true
+    },
+    {
+      "candidate": [
+        1.0,
+        0.0
+      ],
+      "neighbors": [
+        [
+          1.0,
+          0.0
+        ]
+      ],
+      "category": "other",
+      "scope": "global",
+      "novelty_matches": true,
+      "score_matches": true,
+      "acceptance_matches": true
+    }
+  ],
+  "selected_fixture_parity_passed": true,
+  "component_parity_passed": false,
+  "native_protocol_reproduction_passed": false,
+  "adaptation_parity_passed": false,
+  "claim_boundary": "Only the explicitly listed fixtures were compared against pinned official code. Passing them is not whole-component parity, native-protocol reproduction, adaptation parity, or efficacy evidence. Active Dreaming scenario execution is outside this selected DBSCAN fixture report.",
+  "content_sha256": "a24c1138e6c3c2296112410b6039f87cc682aa48da65b62c74707f8bea962204"
+}

@@ -37,6 +37,7 @@ def _known_case(case_id: str, *, correct: bool, confidence: float):
         resolution_status=ResolutionStatus.RESOLVED,
         expected_resolution_status=ResolutionStatus.RESOLVED,
         selected_target_candidate_id=(target if correct else distractor),
+        picked_object_candidate_id=(target if correct else distractor),
         task_success=correct,
     )
 
@@ -63,11 +64,14 @@ def test_direction_three_metrics_report_retrieval_open_set_and_action_metrics():
     )
     report = evaluate_direction_three_metrics(cases, recall_k=2)
 
-    assert report["retrieval"]["recall_at_1"] == pytest.approx(2 / 3)
-    assert report["retrieval"]["recall_at_2"] == 1.0
-    assert report["retrieval"]["mrr"] == pytest.approx(5 / 6)
+    assert report["retrieval"]["known_target_retrieval_recall"] == 1.0
+    assert report["conditional_fusion"]["recall_at_1"] == pytest.approx(2 / 3)
+    assert report["conditional_fusion"]["recall_at_2"] == 1.0
+    assert report["conditional_fusion"]["mrr"] == pytest.approx(5 / 6)
     assert report["open_set"] == {"unknown_auroc": 1.0, "unknown_auprc": 1.0}
-    assert report["decision"]["wrong_object_pickup_rate"] == 0.5
+    assert report["decision"]["known_target_misidentification_rate"] == 0.5
+    assert report["decision"]["unknown_target_false_pick_rate"] == 0.0
+    assert report["decision"]["overall_unsafe_pick_rate"] == pytest.approx(1 / 3)
     assert report["task"]["task_success_rate"] == pytest.approx(1 / 3)
 
 
@@ -110,3 +114,59 @@ def test_metric_case_requires_explicit_unknown_support():
             resolution_status=ResolutionStatus.RESOLVED,
             expected_resolution_status=ResolutionStatus.RESOLVED,
         )
+
+
+def test_known_out_of_support_is_retrieval_failure_not_true_unknown():
+    missing_target = uuid4()
+    distractor = uuid4()
+    unknown = uuid4()
+    support_miss = DirectionThreeMetricCase(
+        case_id="support-miss",
+        posterior_by_candidate_id={distractor: 0.2, unknown: 0.8},
+        unknown_candidate_id=unknown,
+        true_target_candidate_id=missing_target,
+        target_is_unknown=False,
+        known_target_out_of_support=True,
+        resolution_status=ResolutionStatus.UNKNOWN,
+        expected_resolution_status=ResolutionStatus.RESOLVED,
+        selected_target_candidate_id=distractor,
+        picked_object_candidate_id=distractor,
+    )
+    report = evaluate_direction_three_metrics((support_miss, _unknown_case()))
+
+    assert report["retrieval"]["known_target_retrieval_recall"] == 0.0
+    assert report["retrieval"]["known_out_of_support_count"] == 1
+    assert report["conditional_fusion"]["case_count"] == 1
+    assert report["open_set"]["unknown_auroc"] is None
+    assert report["cases"][0]["support_status"] == "known_out_of_support"
+    assert report["cases"][0]["top1_correct"] is None
+
+
+def test_unknown_false_pick_and_known_misidentification_are_split():
+    known_wrong = _known_case("known-wrong", correct=False, confidence=0.8)
+    unknown = _unknown_case()
+    known_candidate = next(
+        candidate
+        for candidate in unknown.posterior_by_candidate_id
+        if candidate != unknown.unknown_candidate_id
+    )
+    unknown_false_pick = replace(
+        unknown,
+        selected_target_candidate_id=known_candidate,
+        picked_object_candidate_id=known_candidate,
+    )
+    report = evaluate_direction_three_metrics((known_wrong, unknown_false_pick))
+
+    assert report["decision"]["known_target_misidentification_rate"] == 1.0
+    assert report["decision"]["unknown_target_false_pick_rate"] == 1.0
+    assert report["decision"]["overall_unsafe_pick_rate"] == 1.0
+
+
+def test_selecting_unknown_without_physical_pick_is_not_an_unsafe_pick():
+    unknown = _unknown_case()
+    report = evaluate_direction_three_metrics(
+        (replace(unknown, selected_target_candidate_id=unknown.unknown_candidate_id),)
+    )
+
+    assert report["decision"]["unknown_target_false_pick_rate"] == 0.0
+    assert report["decision"]["overall_unsafe_pick_rate"] == 0.0

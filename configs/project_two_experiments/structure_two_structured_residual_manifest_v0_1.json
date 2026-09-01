@@ -1,0 +1,102 @@
+{
+  "schema_version": "0.1.0",
+  "protocol": "structure-two-structured-residual-transition-gate@0.1",
+  "freeze_status": "repository_local_before_first_training_or_benchmark_run",
+  "training_seeds": [109101, 109102, 109103, 109104, 109105, 109106, 109107, 109108],
+  "validation_seeds": [109201, 109202, 109203, 109204],
+  "sealed_holdout_seed_count": 12,
+  "sealed_holdout_seed_commitments": [
+    "3f647059151e8b7e7aaf1526c665c7b40e526acb695a22e3cd0669517d62c811",
+    "5c1b33c2e41734abf1d2cfc478e787253f9ddd4746a5cefb26c3a2ef2c443e9b",
+    "fde5a1a9dd4e868926f5f431687dbf3e10aacd68d3f3f36cb564d9721aee86c1",
+    "2f43a24618c43280aaa89d5b2c19fcd9dadbbd753c278b6f0586973708f9a2a5",
+    "d383a3a2545953870c8ad03b3045df1852ab45f307b2576f7449f115ba7ee933",
+    "ed83cdecd42e951b57f658b2256fe7bb30b11d848929626d23724f7ab3032c9e",
+    "8f857ebe25dbeb92d64632bc08a021ee83a13ee70e51a212cd46882f9a11da72",
+    "dcf30950d8ec873fffca01a3600c9645332c06c6c862dd256d3bc9374a59b161",
+    "ff5c32715cbd4814f1d599a148683fd791e071224c05661f75159a1d6b96a4d8",
+    "d76dafb2e93e2f47c5b08296d1fc5ae430b17129c469caa03bf483d50e540354",
+    "5818eb8f1bfb3b09b6f3516a52ef7f1af9b08b0624e954e71339413b130ccd18",
+    "e14033306d4524185bec5b14a740fe899d9adc52a84a181d75a22fe9503af44c"
+  ],
+  "sealed_seed_file_sha256": "37e81cf4411143ae5466ee7b89aabff0182e8bbbdb349a8d2fd5cf87d53ac674",
+  "max_steps": 30,
+  "particle_budget": 24,
+  "model": {
+    "architecture": "structured-residual-gate-16x8x1",
+    "hidden_units": 8,
+    "epochs": 180,
+    "learning_rate": 0.08,
+    "l2": 0.0005,
+    "initialization_seed": 109001,
+    "target_semantics": "training-only-episode-action-advantage-of-deterministic-transition-over-sequential",
+    "forbidden_inputs": ["oracle_action_at_inference", "latent_actor", "latent_cause", "latent_regime", "holdout_seed"]
+  },
+  "scenario_families": [
+    {
+      "family_id": "residual_cause_release",
+      "family_role": "required_cause_gain",
+      "guest_window": [3, 8],
+      "abrupt_day": 11,
+      "recurrence_day": 23,
+      "observation_coverage": 0.77,
+      "unknown_event_days": [2, 12, 19, 24, 29],
+      "actor_ambiguity_mix": 0.59,
+      "identity_confidence_scale": 0.73,
+      "feedback_flip_rate": 0.35,
+      "decoy_days": []
+    },
+    {
+      "family_id": "residual_regime_release",
+      "family_role": "required_regime_gain",
+      "guest_window": [6, 13],
+      "abrupt_day": 15,
+      "recurrence_day": 27,
+      "observation_coverage": 0.68,
+      "unknown_event_days": [4, 14, 21, 28],
+      "actor_ambiguity_mix": 0.51,
+      "identity_confidence_scale": 0.78,
+      "feedback_flip_rate": 0.38,
+      "decoy_days": []
+    },
+    {
+      "family_id": "residual_identity_guardrail",
+      "family_role": "identity_guardrail",
+      "guest_window": [4, 11],
+      "abrupt_day": 17,
+      "recurrence_day": 26,
+      "observation_coverage": 0.76,
+      "unknown_event_days": [5, 18, 27],
+      "actor_ambiguity_mix": 0.34,
+      "identity_confidence_scale": 0.87,
+      "feedback_flip_rate": 0.21,
+      "decoy_days": [7, 9, 20, 22]
+    },
+    {
+      "family_id": "residual_actor_role_guardrail",
+      "family_role": "role_guardrail",
+      "guest_window": [2, 10],
+      "abrupt_day": 14,
+      "recurrence_day": 25,
+      "observation_coverage": 0.80,
+      "unknown_event_days": [3, 15, 26, 29],
+      "actor_ambiguity_mix": 0.69,
+      "identity_confidence_scale": 0.82,
+      "feedback_flip_rate": 0.29,
+      "decoy_days": []
+    }
+  ],
+  "search_spaces": {
+    "corrected_amg": [0.20, 0.33, 0.50],
+    "per_step_particle_projection": ["conservative", "balanced", "responsive"],
+    "sequential_particle_no_consolidation": ["conservative", "balanced", "responsive"],
+    "deterministic_transition_no_consolidation": ["conservative", "balanced", "responsive"],
+    "neural_residual_only": ["conservative:0.50", "balanced:0.75", "responsive:1.00"],
+    "deterministic_plus_neural_residual": ["conservative:0.50", "balanced:0.75", "responsive:1.00"],
+    "historical_regime_reactivation": ["conservative", "balanced", "responsive"],
+    "full_residual_reactivation_joint": ["conservative:0.50", "balanced:0.75", "responsive:1.00"]
+  },
+  "primary_comparison": "deterministic_plus_residual_minus_deterministic",
+  "guardrail_noninferiority_margin": 0.02,
+  "paired_cluster_unit": "holdout_seed_across_scenario_families"
+}

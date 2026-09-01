@@ -17,7 +17,12 @@ import pytest
 from test_observation_aware_habits import habit_evidence
 
 from cpswm.contracts import HabitEvidenceSource, SourceType
-from cpswm.world_model.habits_transitions import MobilityClass, MobilityProfiler
+from cpswm.world_model.habits_transitions import (
+    MobilityClass,
+    MobilityDerivedLabel,
+    MobilityProfiler,
+    RegimeChangeStatus,
+)
 
 DESK = UUID(int=601)
 SOFA = UUID(int=602)
@@ -138,6 +143,15 @@ def test_one_dominant_place_with_returning_exceptions(metadata_factory, househol
     assert profile.primary_location_id == DESK
     assert profile.primary_share == pytest.approx(0.75)
     assert profile.recurrence_rate == pytest.approx(1.0)
+    assert profile.axes.stationarity == pytest.approx(0.75)
+    assert profile.axes.return_propensity == pytest.approx(1.0)
+    assert profile.axes.regime_change_status is RegimeChangeStatus.UNASSESSED
+    assert set(profile.derived_labels) == {
+        MobilityDerivedLabel.STABLE,
+        MobilityDerivedLabel.HOME_BASED_MOBILE,
+    }
+    assert MobilityDerivedLabel.ACTIVITY_CARRIED not in profile.derived_labels
+    assert MobilityDerivedLabel.REGIME_CHANGING not in profile.derived_labels
 
 
 def test_fewer_than_two_observations_claims_no_profile(

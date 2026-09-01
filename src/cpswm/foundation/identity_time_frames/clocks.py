@@ -67,7 +67,9 @@ class TimeAlignmentRegistry:
                 alignment_ids=(),
             )
 
-        queue = deque([(source_clock_id, 0.0, 0.0, tuple())])
+        queue: deque[tuple[str, float, float, tuple[UUID, ...]]] = deque(
+            [(source_clock_id, 0.0, 0.0, ())]
+        )
         visited = {source_clock_id}
         while queue:
             current, total_offset, uncertainty, path = queue.popleft()

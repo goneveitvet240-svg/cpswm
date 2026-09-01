@@ -191,6 +191,11 @@ def test_sealed_test_requires_complete_atg2_report_and_authority(completed_gates
         test_split_sha256=content_sha256(test),
         required_validation_split_sha256=content_sha256(validation),
         required_receipt_scope="project-one-shift-atg3",
+        authority=ShiftExperimentAuthority(
+            key=KEY,
+            key_id=report.atg2.receipt.authority_key_id,
+            log_path=_event_log,
+        ),
     )
     with pytest.raises(SealedSplitAccessError, match="authority"):
         sealed.unseal(report.atg2)
@@ -199,7 +204,7 @@ def test_sealed_test_requires_complete_atg2_report_and_authority(completed_gates
         (),
         {"authorize_test_unseal": lambda self, report, **kwargs: None},
     )()
-    with pytest.raises(SealedSplitAccessError, match="complete ATG-2"):
+    with pytest.raises(SealedSplitAccessError, match="authority substitution"):
         sealed.unseal(report.atg2.receipt, authority=fake_authority)
     assert sealed.is_sealed
 
@@ -213,6 +218,7 @@ def test_fresh_authority_can_unlock_once_then_persist_state(completed_gates):
         test_split_sha256=content_sha256(test),
         required_validation_split_sha256=content_sha256(validation),
         required_receipt_scope="project-one-shift-atg3",
+        authority=authority,
     )
     released = sealed.unseal(atg2, authority=authority)
     assert released == test

@@ -1,0 +1,90 @@
+{
+  "protocol_id": "structure-two-relative-probability-joint-coupling@0.3",
+  "status": "FROZEN_FOR_RERUN",
+  "frozen_on": "2026-09-05",
+  "supersedes": "structure-two-relative-probability-joint-coupling@0.2",
+  "interaction": {
+    "partition": "(H+Z,C)",
+    "axes": [
+      "event_chain_plus_regime",
+      "cause"
+    ],
+    "positive_cell": {
+      "cause": "actor",
+      "mechanism": "handoff"
+    },
+    "potential_nats": 1.5,
+    "relative_odds_multiplier": 4.4816890703380645,
+    "changes_support": false
+  },
+  "consequential_endpoint": {
+    "endpoint_id": "joint-cross-safety-policy@0.1",
+    "decision_time": "after registered observations and before evaluator reveals truth",
+    "actions": [
+      "proceed",
+      "verify"
+    ],
+    "cross_cell_severity": {
+      "cause_actor_and_mechanism_handoff_and_z_stay_or_unresolved": 1.0,
+      "cause_habit_and_z_create_or_reactivate": 0.6,
+      "other_resolved_cell": 0.0,
+      "unresolved": 0.8
+    },
+    "policy": "P(verify) is the posterior expected cross-cell severity clipped to [0,1]; P(proceed)=1-P(verify)",
+    "utility": {
+      "verify_cost": 0.12,
+      "proceed_cost_when_truth_has_severity_s": "s",
+      "proceed_cost_when_truth_severity_is_zero": 0.0,
+      "lower_expected_cost_is_better": true
+    },
+    "post_hoc_threshold_changes_allowed": false
+  },
+  "sensitivity_strengths_nats": [
+    0.0,
+    0.5,
+    1.0,
+    1.5
+  ],
+  "negative_control_strength_nats": 0.0,
+  "primary_strength_nats": 1.5,
+  "truth_target_contract": {
+    "same_interaction": true,
+    "same_stochastic_generator_implementation_at_zero_and_positive_strength": true,
+    "common_scenario_seeds": true,
+    "all_previously_legal_cells_keep_positive_support": true
+  },
+  "information_contract": {
+    "action_policy_inputs": [
+      "posterior over frozen (H+Z,C) cells",
+      "frozen unresolved severity"
+    ],
+    "truth_visible_to_action_policy": false,
+    "truth_visible_only_to_post_action_utility_evaluator": true,
+    "future_observations_visible": false
+  },
+  "registered_rerun": {
+    "gaps": 1,
+    "scenario_seeds": [
+      11,
+      23,
+      37,
+      41,
+      53
+    ],
+    "state_budget": 2000000,
+    "event_partition": "H+Z",
+    "factorization_tv_threshold": 0.01,
+    "consequential_action_distribution_tv_threshold": 0.01,
+    "mean_consequential_cost_advantage_threshold": 0.001,
+    "consequential_cost_advantage_definition": "factorized mean expected consequential cost minus joint mean expected consequential cost"
+  },
+  "decision_rule": {
+    "belief_instrument_pass": "primary factorization TV exceeds both 0.01 and the paired zero-strength control by 0.01",
+    "endpoint_consumption_pass": "the action policy is a function of cross-cell mass and an equal-marginal interaction perturbation changes its action distribution",
+    "action_endpoint_pass": "primary mean factorized-vs-joint consequential action-distribution TV is at least 0.01",
+    "directional_utility_benefit_pass": "mean factorized-minus-joint expected consequential cost is at least 0.001",
+    "overall_task_pass": "belief instrument pass AND endpoint consumption pass AND action endpoint pass AND directional utility benefit pass",
+    "distributional_shift_alone_is_not_utility_benefit": true,
+    "seven_operator_ablation_authorized_by_this_protocol_alone": false
+  }
+}

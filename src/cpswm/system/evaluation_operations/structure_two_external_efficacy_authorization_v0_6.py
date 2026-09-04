@@ -2,8 +2,10 @@
 
 from __future__ import annotations
 
+import importlib
 import json
 from collections.abc import Mapping, Sequence
+from datetime import datetime
 from pathlib import Path
 from typing import Any
 
@@ -51,12 +53,10 @@ from cpswm.system.evaluation_operations.structure_two_six_arm_execution_v0_7 imp
 from cpswm.system.evaluation_operations.structure_two_source_acquisition_v0_6 import (
     verify_primary_source_acquisition_receipt_v0_6,
 )
-from cpswm.system.evaluation_operations.structure_two_world_arm_adapter_v0_4 import (
-    compute_producer_source_bundle,
-)
 from cpswm.system.reproducibility import content_sha256
 
 PROTOCOL_ID = "structure-two-external-efficacy-authorization@0.6"
+CURRENT_GATE_B_PROTOCOL_ID = "structure-two-stratified-mechanism-dual-readout-gate-b@0.7"
 
 
 def run_external_efficacy_authorization_v0_6(
@@ -79,8 +79,11 @@ def run_external_efficacy_authorization_v0_6(
     producer_source_bundle_sha256: str,
     expected_arm_implementation_bundles: Mapping[str, str],
     repository_root: Path,
+    authorization_time_utc: datetime,
     executor_conformance_report: Mapping[str, Any] | None = None,
     executor_conformance_test_artifact_path: Path | None = None,
+    executor_conformance_junit_artifact_path: Path | None = None,
+    executor_conformance_pytest_log_path: Path | None = None,
     six_arm_reference_execution_report: Mapping[str, Any] | None = None,
     six_arm_result_artifact_paths_by_arm: Mapping[str, Path] | None = None,
     active_scenario_receipt_paths: Mapping[str, Path] | None = None,
@@ -99,10 +102,19 @@ def run_external_efficacy_authorization_v0_6(
         gate_a_spec=gate_a_spec,
         trust_anchor_registry=registry,
         reviewer=role_verifiers["reviewer"],
+        executor=role_verifiers["executor"],
         custodian=role_verifiers["custodian"],
         enrollment_authority=trusted_enrollment_authority,
     )
-    current_source_bundle = compute_producer_source_bundle(repository_root)
+    if (
+        authorization_time_utc.utcoffset() is None
+        or authorization_time_utc <= frozen_manifest.frozen_at_utc
+    ):
+        raise ValueError("authorization timestamp must follow the external freeze")
+    adapter_module = importlib.import_module(
+        "cpswm.system.evaluation_operations.structure_two_world_arm_adapter_v0_4"
+    )
+    current_source_bundle = adapter_module.compute_producer_source_bundle(repository_root)
     if (
         producer_source_bundle_sha256 != current_source_bundle.content_sha256
         or frozen_manifest.producer_source_bundle_sha256 != current_source_bundle.content_sha256
@@ -112,7 +124,7 @@ def run_external_efficacy_authorization_v0_6(
         frozen_manifest.arm_implementation_bundle_sha256
     ):
         raise ValueError("authorization implementation identities differ from the freeze")
-    verify_gate_a_report_v0_6(
+    gate_a_record = verify_gate_a_report_v0_6(
         gate_a_report,
         gate_a_spec=gate_a_spec,
         frozen_manifest=frozen_manifest,
@@ -123,6 +135,7 @@ def run_external_efficacy_authorization_v0_6(
         executor=role_verifiers["executor"],
         custodian=role_verifiers["custodian"],
     )
+    sealed_gate_b_holdout_verified = bool(gate_a_record.sealed_gate_b_holdout_verified)
     gate_a_content_sha256 = gate_a_report.get("content_sha256")
     assert isinstance(gate_a_content_sha256, str)
     opening = load_frozen_holdout_opening_v0_8(
@@ -184,6 +197,8 @@ def run_external_efficacy_authorization_v0_6(
                     source_register_content_sha256=(frozen_manifest.source_register_content_sha256),
                     trusted_acquirer=role_verifiers["reviewer"],
                     official_checkout=paths.official_code_checkout,
+                    not_before_utc=max(role.enrolled_at_utc for role in registry.role_keys),
+                    not_after_utc=frozen_manifest.frozen_at_utc,
                 )
             except (OSError, ValueError) as exc:
                 source_acquisition_errors[specification.arm] = str(exc)
@@ -194,6 +209,7 @@ def run_external_efficacy_authorization_v0_6(
         input_bundle_paths_by_arm=input_bundle_paths_by_arm,
         input_bundle_sha256_by_arm=input_bundle_sha256_by_arm,
     )
+    fidelity_context_complete = set(input_bundle_sha256_by_arm) == expected_external_arms
     fidelity = run_external_fidelity_gate_v0_2(
         specifications,
         external_evidence_by_arm,
@@ -202,6 +218,18 @@ def run_external_efficacy_authorization_v0_6(
         trusted_reviewer_public_key_sha256=(role_verifiers["reviewer"].public_key_sha256),
         trusted_executor_key_id=role_verifiers["executor"].key_id,
         trusted_executor_public_key_sha256=(role_verifiers["executor"].public_key_sha256),
+        expected_manifest_sha256=frozen_manifest.immutable_manifest_sha256,
+        expected_producer_run_id=frozen_manifest.preregistered_producer_run_id,
+        expected_input_bundle_sha256_by_arm={
+            arm: input_bundle_sha256_by_arm[arm]
+            for arm in expected_external_arms
+            if arm in input_bundle_sha256_by_arm
+        },
+        expected_primary_source_sha256_by_arm={
+            arm: str(source_row_by_arm[arm]["primary_source_sha256"])
+            for arm in expected_external_arms
+        },
+        enforce_canonical_catalog=fidelity_context_complete,
     )
     implementation_identity_aligned = set(
         external_evidence_by_arm
@@ -215,6 +243,8 @@ def run_external_efficacy_authorization_v0_6(
     if (
         executor_conformance_report is not None
         and executor_conformance_test_artifact_path is not None
+        and executor_conformance_junit_artifact_path is not None
+        and executor_conformance_pytest_log_path is not None
     ):
         try:
             verify_executor_conformance_v0_7(
@@ -224,6 +254,8 @@ def run_external_efficacy_authorization_v0_6(
                 producer_source_bundle_sha256=producer_source_bundle_sha256,
                 trusted_tester=role_verifiers["reviewer"],
                 trusted_executor=role_verifiers["executor"],
+                junit_artifact_path=executor_conformance_junit_artifact_path,
+                pytest_log_path=executor_conformance_pytest_log_path,
             )
             conformance_verified = True
         except (OSError, ValueError) as exc:
@@ -271,9 +303,31 @@ def run_external_efficacy_authorization_v0_6(
         }
         for requirement in requirements
     }
+    implementation_action_execution_verified = False
+    implementation_action_execution_validation_error: str | None = None
+    if gate_b_execution_artifact_path is not None:
+        try:
+            raw_action_artifact = json.loads(gate_b_execution_artifact_path.read_bytes())
+            mode = (
+                raw_action_artifact.get("action_execution_mode")
+                if isinstance(raw_action_artifact, dict)
+                else None
+            )
+            if mode != "fidelity_validated_implementation":
+                raise ValueError(
+                    "Gate B action artifact is reduced-proxy diagnostic output, not "
+                    "fidelity-validated implementation execution"
+                )
+            raise ValueError(
+                "no canonical per-episode fidelity implementation executor is registered"
+            )
+        except (OSError, json.JSONDecodeError, ValueError) as exc:
+            implementation_action_execution_validation_error = str(exc)
     gate_b_prerequisites_present = (
         conformance_verified
         and six_arm_execution_verified
+        and implementation_action_execution_verified
+        and sealed_gate_b_holdout_verified
         and gate_b_execution_artifact_path is not None
         and six_arm_reference_execution_report is not None
         and six_arm_result_artifact_paths_by_arm is not None
@@ -324,9 +378,19 @@ def run_external_efficacy_authorization_v0_6(
         )
         gate_b_execution_verified = True
     else:
+        missing_execution_identity = (
+            gate_b_execution_artifact_path is not None
+            and not implementation_action_execution_verified
+        )
         signed_gate_b = {
             "protocol": "structure-two-signed-stratified-gate-b@0.6",
-            "status": "NOT_SCORED_MISSING_EXECUTION_EVIDENCE",
+            "status": (
+                "NOT_SCORED_IMPLEMENTATION_IDENTITY_NOT_EXECUTED"
+                if missing_execution_identity
+                else "NOT_SCORED_SEALED_HOLDOUT_NOT_VERIFIED"
+                if not sealed_gate_b_holdout_verified
+                else "NOT_SCORED_MISSING_EXECUTION_EVIDENCE"
+            ),
             "gate_b_passed": False,
             "external_method_efficacy_comparison_allowed": False,
             "claim_boundary": (
@@ -339,14 +403,20 @@ def run_external_efficacy_authorization_v0_6(
     checks = {
         "trust_anchor_registry_externally_attested": True,
         "role_control_independence_attested": (registry.role_control_independence_attested is True),
-        "externally_frozen_manifest_dual_signature_verified": True,
+        "externally_frozen_manifest_three_role_signatures_verified": True,
         "immutable_frozen_manifest_identifier_verified": True,
         "gate_a_report_content_bound": True,
         "gate_a_protocol_exact": True,
         "gate_a_passed": True,
+        "gate_a_public_preregistered_validation_only": True,
+        "sealed_confirmatory_gate_b_holdout_verified": (sealed_gate_b_holdout_verified),
         "executor_conformance_artifact_verified": conformance_verified,
+        "executor_conformance_verifier_reexecution_passed": conformance_verified,
         "six_arm_reference_execution_artifacts_verified": (six_arm_execution_verified),
         "implementation_identity_chain_aligned": implementation_identity_aligned,
+        "gate_b_actions_from_fidelity_validated_implementation_verified": (
+            implementation_action_execution_verified
+        ),
         "gate_b_execution_artifact_verified": gate_b_execution_verified,
         "canonical_six_arm_input_coverage_passed": input_coverage[
             "adapter_input_coverage_gate_passed"
@@ -354,7 +424,15 @@ def run_external_efficacy_authorization_v0_6(
         is True,
         "six_signed_source_acquisition_receipts_verified": (source_acquisition_verified),
         "canonical_signed_gate_b_passed": signed_gate_b["gate_b_passed"] is True,
+        # The signed score above has v0.6 action-only semantics.  It remains
+        # useful as historical evidence, but cannot stand in for the frozen
+        # v0.7 belief AND action AND mechanism gate.
+        "current_v0_7_dual_gate_receipt_verified": False,
         "canonical_artifact_verified_fidelity_passed": fidelity["external_fidelity_gate_passed"]
+        is True,
+        "isolated_external_execution_environment_verified": fidelity[
+            "isolated_external_execution_environment_verified"
+        ]
         is True,
     }
     allowed = all(checks.values())
@@ -370,9 +448,14 @@ def run_external_efficacy_authorization_v0_6(
         "executor_conformance_validation_error": conformance_validation_error,
         "six_arm_reference_execution_verified": six_arm_execution_verified,
         "six_arm_reference_execution_validation_error": (six_arm_execution_validation_error),
+        "implementation_action_execution_validation_error": (
+            implementation_action_execution_validation_error
+        ),
         "signed_gate_b": signed_gate_b,
         "external_fidelity": fidelity,
         "external_method_efficacy_comparison_allowed": allowed,
+        "current_gate_b_protocol": CURRENT_GATE_B_PROTOCOL_ID,
+        "v0_6_gate_b_historical_only": True,
         "claim_boundary": (
             "Authorization recomputes the exact canonical six-arm input and fidelity gates "
             "and the signed ten-arm Gate B from raw evidence. Gate A is recomputed from "
@@ -380,10 +463,18 @@ def run_external_efficacy_authorization_v0_6(
             "also requires independently tested executor conformance and six real arm-result "
             "artifacts with verified Active Dreaming receipts. Traces must use the producer "
             "run preregistered in the authority-timestamped frozen manifest."
+            " The current code-pinned seeds are public validation data and cannot support "
+            "confirmatory Gate B authorization without a post-freeze custodian opening."
+            " Gate B v0.6 is now historical only and cannot authorize a current comparison; "
+            "a separately verified v0.7 belief AND action AND mechanism receipt is required."
         ),
     }
     report["content_sha256"] = content_sha256(report)
     return report
 
 
-__all__ = ["PROTOCOL_ID", "run_external_efficacy_authorization_v0_6"]
+__all__ = [
+    "CURRENT_GATE_B_PROTOCOL_ID",
+    "PROTOCOL_ID",
+    "run_external_efficacy_authorization_v0_6",
+]

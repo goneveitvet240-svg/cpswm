@@ -6,6 +6,7 @@ from collections.abc import Mapping
 from datetime import datetime
 from pathlib import Path
 from typing import Any
+from urllib.parse import urlsplit
 
 from pydantic import Field
 
@@ -89,6 +90,8 @@ def verify_primary_source_acquisition_receipt_v0_6(
     source_register_content_sha256: str,
     trusted_acquirer: Ed25519AttestationVerifier,
     official_checkout: Path | None,
+    not_before_utc: datetime,
+    not_after_utc: datetime,
 ) -> PrimarySourceAcquisitionReceiptV06:
     unsigned_payload = dict(payload)
     stored = unsigned_payload.pop("content_sha256", None)
@@ -99,6 +102,24 @@ def verify_primary_source_acquisition_receipt_v0_6(
         raise ValueError("source-acquisition receipt arm mismatch")
     if record.registered_source_url != source_row.get("primary_source_url"):
         raise ValueError("source-acquisition receipt URL mismatch")
+    allowed_hosts = source_row.get("allowed_final_url_hosts")
+    final_url = urlsplit(record.http_final_url)
+    if (
+        not isinstance(allowed_hosts, list)
+        or not allowed_hosts
+        or any(not isinstance(host, str) or not host for host in allowed_hosts)
+        or final_url.scheme != "https"
+        or final_url.hostname not in allowed_hosts
+    ):
+        raise ValueError("source-acquisition final URL violates the frozen redirect policy")
+    if (
+        record.acquired_at_utc.utcoffset() is None
+        or not_before_utc.utcoffset() is None
+        or not_after_utc.utcoffset() is None
+        or record.acquired_at_utc <= not_before_utc
+        or record.acquired_at_utc > not_after_utc
+    ):
+        raise ValueError("source-acquisition timestamp is outside the authorized run window")
     if record.source_artifact_sha256 != external_artifact_sha256(source_artifact):
         raise ValueError("source-acquisition receipt artifact hash mismatch")
     registered_source_sha256 = source_row.get("primary_source_sha256")

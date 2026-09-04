@@ -484,7 +484,7 @@ def authority() -> AttestationAuthority:
     )
 
 
-def test_signed_machine_readable_artifacts_pass_both_claim_gates(
+def test_legacy_pairwise_artifacts_cannot_bypass_task9_v1_gate(
     tmp_path: Path,
     authority: AttestationAuthority,
 ):
@@ -498,8 +498,11 @@ def test_signed_machine_readable_artifacts_pass_both_claim_gates(
 
     assert len(verified.baselines) == len(REQUIRED_MATCHED_BASELINES)
     assert verified.factorial.cell_count == 32
-    assert decision.causal_coupling_established
-    assert decision.paper_benefit_claim_allowed
+    assert not decision.causal_coupling_established
+    assert not decision.paper_benefit_claim_allowed
+    assert "task9_v1_semantic_four_cell_verification_receipt" in (
+        decision.missing_causal_requirements
+    )
 
 
 def test_hash_shaped_string_cannot_replace_real_artifact_bytes(
@@ -628,9 +631,9 @@ def test_significant_negative_couplings_establish_causality_not_benefit(
     verified = verifier.verify(declaration)
     decision = StructureTwoClaimGateEvaluator(authority=authority).evaluate(verified)
 
-    assert all(item.causal_coupling_established for item in verified.couplings)
+    assert not any(item.causal_coupling_established for item in verified.couplings)
     assert not any(item.positive_benefit_established for item in verified.couplings)
-    assert decision.causal_coupling_established
+    assert not decision.causal_coupling_established
     assert not decision.paper_benefit_claim_allowed
 
 

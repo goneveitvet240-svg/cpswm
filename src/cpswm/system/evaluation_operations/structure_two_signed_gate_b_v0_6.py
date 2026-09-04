@@ -30,6 +30,7 @@ from cpswm.system.evaluation_operations.structure_two_stratified_gate_b_v0_6 imp
 from cpswm.system.reproducibility import content_sha256
 
 PROTOCOL_ID = "structure-two-signed-stratified-gate-b@0.6"
+DIAGNOSTIC_PROTOCOL_ID = "structure-two-signed-stratified-gate-b-diagnostic@0.6"
 TRACE_PROTOCOL_ID = "structure-two-bound-mechanism-action-trace@0.6"
 TRACE_ATTESTATION_DOMAIN = "cpswm.evaluation.structure_two.bound_trace.v0.6"
 
@@ -186,6 +187,7 @@ def run_signed_stratified_gate_b_v0_6(
     | None = None,
 ) -> dict[str, Any]:
     expected = tuple(expected_arms)
+    canonical_external_logs = expected_external_execution_log_entries_by_arm or {}
     if enforce_canonical_protocol:
         from cpswm.system.evaluation_operations.structure_two_gate_b_protocol_v0_6 import (
             CANONICAL_COMPARISONS,
@@ -235,6 +237,14 @@ def run_signed_stratified_gate_b_v0_6(
         ):
             raise ValueError(
                 "canonical Gate B requires deterministic action and six-arm execution evidence"
+            )
+        if (
+            str(recomputed_holdout.opening.evaluation_set_role)
+            != "custodian_sealed_confirmatory_gate_b"
+        ):
+            raise ValueError(
+                "canonical Gate B rejects public preregistered validation data; "
+                "a post-freeze custodian-sealed confirmatory holdout is required"
             )
         canonical_execution = verify_gate_b_execution_artifact_v0_8(
             canonical_execution_artifact_path,
@@ -303,14 +313,18 @@ def run_signed_stratified_gate_b_v0_6(
         ):
             raise ValueError("v0.6 action, receipt, and execution-log episode order mismatch")
         invocation_ids: set[str] = set()
-        previous_output_sha256: str | None = None
-        expected_sequence_index = 0
         for (_, actions), (_, receipt_steps), (_, execution_log_steps) in zip(
             record.episode_actions,
             record.episode_mechanism_receipts,
             record.episode_execution_log_entries,
             strict=True,
         ):
+            # Every episode is an independent replay from its own frozen input.
+            # Carrying either state or sequence counters across this boundary
+            # rejects valid independent executions and, worse, obscures whether
+            # an entry was moved from one episode to another.
+            previous_output_sha256: str | None = None
+            expected_sequence_index = 0
             if len(actions) != len(receipt_steps) or len(actions) != len(execution_log_steps):
                 raise ValueError("v0.6 action, receipt, and execution-log step count mismatch")
             for receipts, log_entries in zip(
@@ -363,14 +377,14 @@ def run_signed_stratified_gate_b_v0_6(
                     ):
                         raise ValueError("v0.6 mechanism state chain is discontinuous")
                     previous_output_sha256 = receipt.output_state_sha256
-        if enforce_canonical_protocol and arm in expected_external_execution_log_entries_by_arm:
+        if enforce_canonical_protocol and arm in canonical_external_logs:
             flattened = tuple(
                 entry
                 for _, steps in record.episode_execution_log_entries
                 for entries in steps
                 for entry in entries
             )
-            if flattened != tuple(expected_external_execution_log_entries_by_arm[arm]):
+            if flattened != tuple(canonical_external_logs[arm]):
                 raise ValueError("v0.6 external mechanism trace differs from six-arm recomputation")
     traces = tuple(
         StratifiedArmTrace(
@@ -394,10 +408,15 @@ def run_signed_stratified_gate_b_v0_6(
         comparison_pairs=comparison_pairs,
         mechanism_requirements=mechanism_requirements,
     )
+    diagnostic_gate_b_passed = gate["gate_b_passed"]
+    formal_gate = gate if enforce_canonical_protocol else {**gate, "gate_b_passed": False}
     report: dict[str, Any] = {
-        "protocol": PROTOCOL_ID,
-        "gate_b": gate,
-        "gate_b_passed": gate["gate_b_passed"],
+        "protocol": PROTOCOL_ID if enforce_canonical_protocol else DIAGNOSTIC_PROTOCOL_ID,
+        "canonical_protocol_enforced": enforce_canonical_protocol,
+        "gate_b": formal_gate,
+        "diagnostic_gate_b": gate if not enforce_canonical_protocol else None,
+        "diagnostic_gate_b_passed": diagnostic_gate_b_passed,
+        "gate_b_passed": (diagnostic_gate_b_passed if enforce_canonical_protocol else False),
         "producer_run_id": next(iter(producer_runs)),
         "gate_a_content_sha256": gate_a_content_sha256,
         "manifest_sha256": manifest_sha256,
@@ -407,6 +426,9 @@ def run_signed_stratified_gate_b_v0_6(
         "claim_boundary": (
             "A signed Gate B pass does not authorize external-method efficacy claims; "
             "the separately signed native and adaptation fidelity gate must also pass."
+            if enforce_canonical_protocol
+            else "This is a noncanonical diagnostic score. The formal Gate B pass is forced "
+            "false even when the diagnostic thresholds pass."
         ),
     }
     report["content_sha256"] = content_sha256(report)

@@ -52,10 +52,12 @@ REQUIRED_MATCHED_BASELINES = frozenset(MatchedBaselineKind)
 
 
 class CrossModuleCouplingKind(StrEnum):
-    OPCEU_TO_CHEH_PCHMP = "opceu_to_cheh_pchmp"
-    CF_BOCPD_TO_RGRC = "cf_bocpd_to_rgrc"
-    CF_BOCPD_TO_CCRR = "cf_bocpd_to_ccrr"
-    RGRC_CCRR_TO_CIAV = "rgrc_ccrr_to_ciav"
+    """The exact four Task-9 pairs; legacy directional names are not admissible."""
+
+    OPCEU_X_CF_BOCPD = "opceu_x_cf_bocpd"
+    ORRER_CHEH_PCHMP_X_RGRC = "orrer_cheh_pchmp_x_rgrc"
+    CF_BOCPD_X_CCRR = "cf_bocpd_x_ccrr"
+    RGRC_CCRR_X_CIAV = "rgrc_ccrr_x_ciav"
 
 
 class InterventionFactor(StrEnum):

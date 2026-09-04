@@ -1,12 +1,12 @@
 {
-  "generated_for_date": "2026-09-02",
+  "generated_for_date": "2026-09-05",
   "hash_algorithm": "sha256(path\\0file_sha256\\n)",
-  "manifest_sha256": "7e483b35bbec0fdca6c995bfca0ffd17b0a906d003e4375a9e69b6eb85c781ee",
+  "manifest_sha256": "76642184bf8087645ffd39472da10cc7153a8e28abff7c1bb577bbae54503a2e",
   "schema_version": "p0-checkpoint-content-manifest@0.2",
   "scopes": {
     "code": {
-      "content_sha256": "50ed8a9fa4c781f27c02d1d96ed2bab8805f119c3d9fc09150128f41ac6e6bee",
-      "file_count": 340,
+      "content_sha256": "9c4f1a34bd1e22f2506dd766cd64a69c1f79e2b9d3a5a35c01d1b35f0b991047",
+      "file_count": 360,
       "files": [
         {
           "path": "apps/direction_three/replay_execution_feedback.py",
@@ -41,6 +41,10 @@
           "sha256": "5823333ed9b4336eeec3ac661c0d7c0f3fb9826a87db37e2179d5f8b756ba496"
         },
         {
+          "path": "apps/evaluation_runner/diagnose_gate_b_zero_disagreement_2026_09_04.py",
+          "sha256": "aefa37d3516158359dc3e95167657039412bb0bcc8da6747711bf3e3691dac93"
+        },
+        {
           "path": "apps/evaluation_runner/finalize_structure_two_world_manifest_v0_4.py",
           "sha256": "f60f7aa9a763a13adc3b741edbfa0a22453bd6767c83d2838f8b65b22d6b9999"
         },
@@ -54,11 +58,19 @@
         },
         {
           "path": "apps/evaluation_runner/generate_p0_checkpoint_manifest.py",
-          "sha256": "bc30e6dee7393ffa3dbbcb356559ff1d0ef46c91340cbd295ddd1b70f531f0be"
+          "sha256": "ac01befc88a9b3c557b82b2fbf0616e02c267420133bebfa32c919efb1824112"
         },
         {
           "path": "apps/evaluation_runner/generate_project_one_scenarios.py",
           "sha256": "cda13e0c1ec7a8023a844f016533fade89668f83f0b62bd4a10eb027c756785d"
+        },
+        {
+          "path": "apps/evaluation_runner/generate_structure_two_engineering_checkpoint.py",
+          "sha256": "c1df207955e828601fbe4d7a6fe437ce7a261823c554d61d48ba9b20301a7ebe"
+        },
+        {
+          "path": "apps/evaluation_runner/generate_structure_two_engineering_trust_checkpoint.py",
+          "sha256": "6cacd53d72b9bd017242ecf8f68b1305301ea6bf65a2a9a271c14a4f5b1625d2"
         },
         {
           "path": "apps/evaluation_runner/generate_structure_two_fresh_seed_block_v0_5.py",
@@ -70,7 +82,7 @@
         },
         {
           "path": "apps/evaluation_runner/prepare_direction_three_findingdory.py",
-          "sha256": "5e70372192273416779d5c6fcabe9fa5b1f26cacf535c9bbea08114c5bcfe786"
+          "sha256": "38416f5ee9152b0195a261027be1e5f8bbdb10cdda8a030311b42c7b549d8f13"
         },
         {
           "path": "apps/evaluation_runner/prepare_direction_three_findingdory_layered.py",
@@ -205,6 +217,10 @@
           "sha256": "0df64cb98c420d834efd2d5542be49f29da715c9df3ee381d17b8d5cedf3cf67"
         },
         {
+          "path": "apps/evaluation_runner/run_structure_two_backbone_b_repairs.py",
+          "sha256": "1cf5e91ce4a39ec89f1bfe1081ec2e57db33a83ccb1cb651d1ffa98b6dbd58c2"
+        },
+        {
           "path": "apps/evaluation_runner/run_structure_two_consolidation_compatibility.py",
           "sha256": "16a31aa7f6c8217964c0a3fba144d0dab944e05d1ba8f175dec3fa55d37bfd30"
         },
@@ -215,6 +231,10 @@
         {
           "path": "apps/evaluation_runner/run_structure_two_counterfactual_scenario_v0_7.py",
           "sha256": "e91cfd3666afcc0de50b146b8f6a93837c4fe895c1625c6618c08698f106dcc8"
+        },
+        {
+          "path": "apps/evaluation_runner/run_structure_two_d0_evidence_checkpoint.py",
+          "sha256": "19273fbb270d79fdf1634d71acb3fdfd7713c62ca629f41b83707ccb01940f8d"
         },
         {
           "path": "apps/evaluation_runner/run_structure_two_fresh_triarm.py",
@@ -258,7 +278,7 @@
         },
         {
           "path": "apps/evaluation_runner/run_structure_two_v0_6_development_readiness.py",
-          "sha256": "261b7049cdab0c85bdac0e0e75ecf713ded21a74ec427f9dce4a46596ec6ccb3"
+          "sha256": "b34f3bca161f82dae02b4c1795e3134eab2e6bc99ef7ff87f8121797b407cecb"
         },
         {
           "path": "apps/evaluation_runner/run_structure_two_world_arm_traces_v0_4.py",
@@ -306,7 +326,7 @@
         },
         {
           "path": "apps/evaluation_runner/validate_direction_three_comparison.py",
-          "sha256": "9e3110f696896df8a9b6c4be182441ae5547914b87896a2f5c941ac6460dad28"
+          "sha256": "fe417234585d732eb973bb02fd7417cc11f4ba1bf54ce76148507de556b86b66"
         },
         {
           "path": "apps/progress_ledger/sign_run_receipt.py",
@@ -614,7 +634,7 @@
         },
         {
           "path": "src/cpswm/system/evaluation_operations/care_wm_exact_counterfactual.py",
-          "sha256": "f9218277b715c5667dcf243f3a52a5a5bac4a9917c995c189ab60f659db23e14"
+          "sha256": "80562c540ef99644439a1fc716a604050dde55eb7d7638bfe7ed493d0a8d3b72"
         },
         {
           "path": "src/cpswm/system/evaluation_operations/cross_structure_strata_diagnostic.py",
@@ -910,15 +930,31 @@
         },
         {
           "path": "src/cpswm/system/evaluation_operations/structure_two_adapter_input_coverage_v0_6.py",
-          "sha256": "d742a403b0af16b0738b1885dd9506798cb43c82e2885d15618365a8e68f3e49"
+          "sha256": "aa412c8af49735cf1049fac8bb578cc0c5b935adaa9cdb529497ca7a90e16b3e"
         },
         {
           "path": "src/cpswm/system/evaluation_operations/structure_two_artifact_verifier.py",
-          "sha256": "3324d132e485ab492b1e8c276de0d1a4f39c5580627471f858d2af87c4f15d32"
+          "sha256": "ef1d9c78c853b676c9b0aa7263206025d6724deef17d5992dcd1eeb59338a11e"
+        },
+        {
+          "path": "src/cpswm/system/evaluation_operations/structure_two_backbone_falsifier.py",
+          "sha256": "093dc522689bebc522e0c3cb893c352c47d27b43b687e4af6b2caf7393c40bbf"
+        },
+        {
+          "path": "src/cpswm/system/evaluation_operations/structure_two_backbone_open_task_protocols.py",
+          "sha256": "a6cfbaa055044c0cb7cc6295e143fba909b9537ec822ae206adaacc053350e89"
+        },
+        {
+          "path": "src/cpswm/system/evaluation_operations/structure_two_canonical_episode_executor_v0_9.py",
+          "sha256": "db35961b98fe3b8cfee1b2f248fde70ebc263ff21e5129285d71ed4fb28a8432"
         },
         {
           "path": "src/cpswm/system/evaluation_operations/structure_two_combination_a.py",
           "sha256": "f0d2897add595373f1f49c766f0650e037feef76ae5e647215715c87652858c2"
+        },
+        {
+          "path": "src/cpswm/system/evaluation_operations/structure_two_comparator_typed_dual_gate_b_v0_8.py",
+          "sha256": "515a782abd26417c5796bd5f4e01eb1567cdeb8aa1892d19597770749329f214"
         },
         {
           "path": "src/cpswm/system/evaluation_operations/structure_two_consolidation_compatibility.py",
@@ -933,12 +969,16 @@
           "sha256": "e34dff36501917a6723884ea94ce9225b30d3a8e3eb0dd90628e2d1bc2755ae3"
         },
         {
+          "path": "src/cpswm/system/evaluation_operations/structure_two_dual_gate_b_v0_7.py",
+          "sha256": "ab484da3b84492f287961f9866991bc71e7527a4dead7201445a343ac44cfbb7"
+        },
+        {
           "path": "src/cpswm/system/evaluation_operations/structure_two_evidence_artifacts.py",
-          "sha256": "d3d69971c11952f2285a54d674d13bdaf6d60a08db6d60531568b6c5928492e9"
+          "sha256": "e9c419681c145c784127887112dd69b674b90efe588bd3f5abebe6a59955d733"
         },
         {
           "path": "src/cpswm/system/evaluation_operations/structure_two_executor_conformance_v0_7.py",
-          "sha256": "e9183416fd5a5cc2e9fd37d5a98a898c3800a9876b9e0dfe5109073aafbf73da"
+          "sha256": "da23b642bdf72a4b4303e3c274b6635e6612b62805d64a0b206a2b7451f9d719"
         },
         {
           "path": "src/cpswm/system/evaluation_operations/structure_two_external_adapter_fidelity.py",
@@ -946,15 +986,23 @@
         },
         {
           "path": "src/cpswm/system/evaluation_operations/structure_two_external_adapter_fidelity_v0_2.py",
-          "sha256": "54bb63fbd395eccd31d1ac5f5da737edf2ec5db205ebfd540ea347cb0d155efe"
+          "sha256": "afad7f826604e7f8130e9cae34bd3f9ec8154fdf98e4c604693fd13b69b1389d"
+        },
+        {
+          "path": "src/cpswm/system/evaluation_operations/structure_two_external_confirmation_gate_v0_9.py",
+          "sha256": "14bf4cdbb22ae70bde4bd1e9a019fb6ca6a04157547b15686563cbb8bbe8b919"
+        },
+        {
+          "path": "src/cpswm/system/evaluation_operations/structure_two_external_confirmation_gate_v1_0.py",
+          "sha256": "6301c121e2204e67e52caeeceed8b7ef6c110d8e4c74f7786fd126a564f2693f"
         },
         {
           "path": "src/cpswm/system/evaluation_operations/structure_two_external_efficacy_authorization_v0_6.py",
-          "sha256": "fc002d6c47c3df5a36884a65d662c1ca7f1ad6320a9c84855c8c6d6c6fb3ac89"
+          "sha256": "592afce86be2eceab2b56eb1b4619f3fef4885a90b4b30c4fc1c8b87002f0e61"
         },
         {
           "path": "src/cpswm/system/evaluation_operations/structure_two_external_governance_v0_6.py",
-          "sha256": "cd1ae194af83bd196e4a7bcf0b95782e93c527a29b3a7530f5e21cf2544ebddc"
+          "sha256": "5c02f75ab4da59759e3d8dd6efcaac05c0bd918b730e153f7bd2b7b275049d26"
         },
         {
           "path": "src/cpswm/system/evaluation_operations/structure_two_external_inputs_v0_6.py",
@@ -965,16 +1013,32 @@
           "sha256": "b30b5291a8a17341667e75ede4c1a50d932a60383209761d52edffab8b2826d3"
         },
         {
+          "path": "src/cpswm/system/evaluation_operations/structure_two_external_verification_freeze_v1_0.py",
+          "sha256": "d3d73182141fd9a8106d80a041b6cea39bddaf9e31aee85f7a68945a9e29d0ab"
+        },
+        {
           "path": "src/cpswm/system/evaluation_operations/structure_two_fresh_triarm.py",
           "sha256": "d5c0b97b0e940c3970581fd5abff77b8d0c607ab3381d835b19a7d7e0c15c596"
         },
         {
+          "path": "src/cpswm/system/evaluation_operations/structure_two_frozen_run_v0_8.py",
+          "sha256": "f6ae7e02bc6ad27ddc230af67781abfa9288b7862b385e0228b754ff4ed13b0a"
+        },
+        {
           "path": "src/cpswm/system/evaluation_operations/structure_two_gate_a_v0_6.py",
-          "sha256": "c6d4e7be8cd78ad51e063a56dd3bcacd8d5c5d28288cb62763cd748d8dcc8364"
+          "sha256": "9e2be7fa9edcde99c9bbeb1863523ec5f434cca1d3339b31caa90a540dedd022"
         },
         {
           "path": "src/cpswm/system/evaluation_operations/structure_two_gate_b_protocol_v0_6.py",
-          "sha256": "cb06a9c02b3c87ed706a74bae7f7f0648d21a2ec6710afef02222deb6ee69dea"
+          "sha256": "b8527439b1be504eababcd09698b8fa8f1d88b902bd46fd880edf7a271e930eb"
+        },
+        {
+          "path": "src/cpswm/system/evaluation_operations/structure_two_isolated_pytest_v0_8.py",
+          "sha256": "36ab5bea2bd129dc659639f0b6d7baba0a9f4ab9e1bb86cd1e57b6d3a111c9c9"
+        },
+        {
+          "path": "src/cpswm/system/evaluation_operations/structure_two_isolation_v0_9.py",
+          "sha256": "d4a7d43ebf8adc5f7b3bb4e5834915b29396ba0e68fa29347eb5111b2ea94fb7"
         },
         {
           "path": "src/cpswm/system/evaluation_operations/structure_two_neural_amortized.py",
@@ -993,6 +1057,14 @@
           "sha256": "d97c825b6363460456fb4c7d0b9a8f580500418e49b03c63a48be3198f6ecec2"
         },
         {
+          "path": "src/cpswm/system/evaluation_operations/structure_two_sealed_dual_gate_b_v1_0.py",
+          "sha256": "98afd88b0caad158041fa3377dbb26e3666d81ebf2f8652397b3dc467003a8bd"
+        },
+        {
+          "path": "src/cpswm/system/evaluation_operations/structure_two_sealed_gate_b_opening_v0_9.py",
+          "sha256": "1b429c451c56d864f587c65804651daacc3d52c025b71e9c77dbfc7d9df9f3bf"
+        },
+        {
           "path": "src/cpswm/system/evaluation_operations/structure_two_selected_method.py",
           "sha256": "2a4ae8f0c7c99f26fd9aa95e4c17456fdd9c85ca6b886ce3b60e107497fe1efb"
         },
@@ -1002,19 +1074,19 @@
         },
         {
           "path": "src/cpswm/system/evaluation_operations/structure_two_signed_gate_b_v0_6.py",
-          "sha256": "82dcb31f3ab5870007420aed15704a37263df759ece7cc8717eb809d27eff9c5"
+          "sha256": "096c3976119f5eca59af17cbfd2f8b1cfb0c625bec60377414b19e021f7a6f66"
         },
         {
           "path": "src/cpswm/system/evaluation_operations/structure_two_six_arm_execution_v0_7.py",
-          "sha256": "db8ff316e7440cc3c7e1ef07aeb258dd84b98f7650fde2f60421ee0592aa3641"
+          "sha256": "455f3f5c5972c0d86c7c8998dc5b26dc893354be8e9d838776b85140224c6cb7"
         },
         {
           "path": "src/cpswm/system/evaluation_operations/structure_two_source_acquisition_v0_6.py",
-          "sha256": "b45a81d11476e4a59c337317e9ff6a538847395afcf54c701276911adf1a3ea9"
+          "sha256": "1ee77a57c0d614ae19aa056c80a28cdf6afa1fe03f4f66a4352288c6a0bdbd77"
         },
         {
           "path": "src/cpswm/system/evaluation_operations/structure_two_stratified_gate_b_v0_6.py",
-          "sha256": "a311b2149fc821c745c15858d9bc344e6dc96c98318f597cf92ab82715365cbd"
+          "sha256": "264b95d4f41678188fc290e357a88a849ee08c6a138031e8f543666ae6409c8d"
         },
         {
           "path": "src/cpswm/system/evaluation_operations/structure_two_strongest_neighbor_gate.py",
@@ -1025,8 +1097,12 @@
           "sha256": "7979d0cb16656ffd308b5e01cff263dbbba220cb0c32c50cb4d1806bf45d4577"
         },
         {
+          "path": "src/cpswm/system/evaluation_operations/structure_two_task9_protocol.py",
+          "sha256": "d2348fab7f7c8acbe4dcea772ec8b7c95d5a80d454248e79dd5f57c86569013b"
+        },
+        {
           "path": "src/cpswm/system/evaluation_operations/structure_two_technical_route_audit.py",
-          "sha256": "2a194cf5ac54fe6e125d0147f1f0da923277eebeeadc6b25801bc16c977f07db"
+          "sha256": "09e16ec54d525a26cb9850f9f1b875e0ea6333d4eea5f2d4d585dba2fceee558"
         },
         {
           "path": "src/cpswm/system/evaluation_operations/structure_two_top2_reranker.py",
@@ -1037,12 +1113,16 @@
           "sha256": "0e9bc1192f5f35a76a3b68aab97171a650f4ff4737dfebbe5537d6a4d08978e7"
         },
         {
+          "path": "src/cpswm/system/evaluation_operations/structure_two_trusted_ablation_authorization.py",
+          "sha256": "34a3a875fd8351cb1829df51e1a45016e86d445e1c4f5865b47fab401b5fb068"
+        },
+        {
           "path": "src/cpswm/system/evaluation_operations/structure_two_v0_6_readiness.py",
-          "sha256": "97156f19f9f0c9733c8b2ad23b637089fab0e4deaa08e8e5a51fe83c989f732e"
+          "sha256": "3795d6615aa97a2e785169caa3c7ff70c441eec580e305a16b7262232c2bbffe"
         },
         {
           "path": "src/cpswm/system/evaluation_operations/structure_two_world_arm_adapter_v0_4.py",
-          "sha256": "1da2d6f64b880ed576a97dc51ba9b001bd9c125c569af10425aab681248edaa4"
+          "sha256": "1c42a4c56a78d6f99e2b61f1a53d371b379c15f97aee72bc7adc0dcf46b3dce4"
         },
         {
           "path": "src/cpswm/system/evaluation_operations/structure_two_world_gate_b_v0_4.py",
@@ -1078,7 +1158,7 @@
         },
         {
           "path": "src/cpswm/system/evaluation_operations/structure_two_world_seed_attestation_v0_5.py",
-          "sha256": "01ae3447902f205d0b48c6ff591c7d02c8da6696daf780d7c4a1c022ecc2280c"
+          "sha256": "ad933eb58428e8f225e4de2b5cf9ff1d537dd149075e4d3e9d3988cb5c9c3b7a"
         },
         {
           "path": "src/cpswm/system/evaluation_operations/structure_two_world_validation_gate_v0_4.py",
@@ -1094,7 +1174,7 @@
         },
         {
           "path": "src/cpswm/system/evaluation_operations/task_nontriviality_gates.py",
-          "sha256": "ba5a3e7f5787ba71bbe9ea98c6fe2e2f833283037143f5d9c8a680582e4b6605"
+          "sha256": "aee052cffe1896f29997ad88e5ea45d95d2689e4b9be63b1518407b629d1d771"
         },
         {
           "path": "src/cpswm/system/household_memory_benchmark/__init__.py",
@@ -1371,8 +1451,8 @@
       ]
     },
     "config": {
-      "content_sha256": "768052de190afef481e0303fe020eacedb1e8d4ae1181db5dcf269e5af7ae02c",
-      "file_count": 49,
+      "content_sha256": "260e4cb3083ccc62014d04b5d4481ebe749551825387f7324547642861bf5421",
+      "file_count": 60,
       "files": [
         {
           "path": "configs/direction_three/s3_1_oracle_suite_v0_1.json",
@@ -1415,6 +1495,10 @@
           "sha256": "5ebb86a261d1c81da6c4ad217de34e1a15d42f928aa15b73ab6cb5d59bfaf36c"
         },
         {
+          "path": "configs/project_two_experiments/structure_two_backbone_open_tasks_v0_1.json",
+          "sha256": "50ce43117414cb10da300de1a7c605516175057a9a24dfefbb4a674888fb6a2b"
+        },
+        {
           "path": "configs/project_two_experiments/structure_two_combination_a_v0_1.json",
           "sha256": "0f3ec3f43718c3ed748ee9065d1bc65160e1220e19daa4c7aad975258b960fb6"
         },
@@ -1436,11 +1520,11 @@
         },
         {
           "path": "configs/project_two_experiments/structure_two_external_method_sources_v0_2.json",
-          "sha256": "c210ca1dfd74089ff40b94e9b56827139183eb5c380915cd08bdab4ea578ff6d"
+          "sha256": "bcb15d96017bf2ac148a67ebb591daa5f1d734dab2f76ce7c03b759cc9470b37"
         },
         {
           "path": "configs/project_two_experiments/structure_two_external_reference_cores_v0_6.json",
-          "sha256": "14b753a92dcff4a501bad64d8988c97fe32b8bc627503c1860d11d7d9b4fcd84"
+          "sha256": "8629140b532d9cccc906fb65c349fb6f43ba838f373c09f8d6e28257fed1d1a1"
         },
         {
           "path": "configs/project_two_experiments/structure_two_fresh_triarm_manifest_v0_1.json",
@@ -1452,11 +1536,19 @@
         },
         {
           "path": "configs/project_two_experiments/structure_two_gate_a_v0_6_spec.json",
-          "sha256": "5866601e427c7d8a6f94f20045fe4ba969d723e2d3892c9a2be5bfa150004653"
+          "sha256": "b1fd2ce1388a6fa8f8d7759c6874ca6cf020040b91eebb7f1d57490f9b5d37e0"
         },
         {
           "path": "configs/project_two_experiments/structure_two_gate_b_v0_6_DRAFT.json",
           "sha256": "e9df3648312abd7cf7e22c6b1d1cdc8a2b70b748c1aed33ddd6de7ff7f17b74c"
+        },
+        {
+          "path": "configs/project_two_experiments/structure_two_gate_b_v0_7.json",
+          "sha256": "8f12b51ccf316e261ef30bab48b11d5ce451507f8d3d3b39c8630d27463552a5"
+        },
+        {
+          "path": "configs/project_two_experiments/structure_two_gate_b_v0_8.json",
+          "sha256": "7c0261d3b2e8181648f63eb25be217733d3baa845a5bb0250427ed78bff4deda"
         },
         {
           "path": "configs/project_two_experiments/structure_two_neural_amortized_manifest_v0_1.json",
@@ -1495,6 +1587,34 @@
           "sha256": "37e81cf4411143ae5466ee7b89aabff0182e8bbbdb349a8d2fd5cf87d53ac674"
         },
         {
+          "path": "configs/project_two_experiments/structure_two_task10_particle_budget_v0_1.json",
+          "sha256": "331782935673ccd4d9fa8a8cda2015078d828bd64001882e57598d651ee027dc"
+        },
+        {
+          "path": "configs/project_two_experiments/structure_two_task7_windowed_rejuvenation_v0_2.json",
+          "sha256": "24fee273e9f8edbd42e0e395e18883accf3eea0027f427f2d26c946223cf8e5e"
+        },
+        {
+          "path": "configs/project_two_experiments/structure_two_task7_windowed_rejuvenation_v0_3.json",
+          "sha256": "a2fb032a4fc5f67d64f43a3ab946756092b9af3623b89e35ae31f93f9dd2e2dc"
+        },
+        {
+          "path": "configs/project_two_experiments/structure_two_task8_relative_probability_coupling_v0_2.json",
+          "sha256": "b0e8faf22f874eb4e7322af26d57dac106353e227aebdcb74a2568f195d7c7ab"
+        },
+        {
+          "path": "configs/project_two_experiments/structure_two_task8_relative_probability_coupling_v0_3.json",
+          "sha256": "e89f4d8f25080843c20b526b5541d060071d4cd1e2dc227329a799dcfb962772"
+        },
+        {
+          "path": "configs/project_two_experiments/structure_two_task9_four_coupling_protocol_v1_0.json",
+          "sha256": "50b064a3e13bbb7070ddd8b3a69c873b38d2f0e6952dab586c79a98379265bea"
+        },
+        {
+          "path": "configs/project_two_experiments/structure_two_task9_four_coupling_protocol_v1_1.json",
+          "sha256": "bf5008449ac72b12fea12dc9fcf2d91620f55d43584b30ac5c5343b8033ac045"
+        },
+        {
           "path": "configs/project_two_experiments/structure_two_top2_reranker_manifest_v0_1.json",
           "sha256": "d0c4df2ff91ccbbe018653dd3f940f37d1652b367100568a85db70a135ebf5c8"
         },
@@ -1507,8 +1627,12 @@
           "sha256": "e36c0a769b0a07a3380a81c3bbe8a1c51ed782166f138fb914f781f4830b7196"
         },
         {
+          "path": "configs/project_two_experiments/structure_two_trusted_seven_operator_ablation_authorization_v1_0.json",
+          "sha256": "c5a0ff06e346e5c1d68346a3e7db6fc4eb8febd7b37f1d46e89ea8155c72634e"
+        },
+        {
           "path": "configs/project_two_experiments/structure_two_v0_6_evidence_index.json",
-          "sha256": "a4c78233e685308527d4c16a9e2f1686858ca1012e4e52ec6aae7cf4e9b9e40b"
+          "sha256": "f1b1a40f88a820457e5b08e67f66dff53624c53b70e51e5714c6cd2ddd50dddf"
         },
         {
           "path": "configs/project_two_experiments/structure_two_world_generator_manifest_v0_2.json",
@@ -1663,8 +1787,8 @@
       ]
     },
     "split_manifest": {
-      "content_sha256": "f9718082b82cf1ee8f870024fd1adbac6a4317c3e46ba8b64e3d314d035a64ca",
-      "file_count": 21,
+      "content_sha256": "43ce17d16e57946ec3eec976ae561f122db78a702c70172f96629ba2ab831a2d",
+      "file_count": 22,
       "files": [
         {
           "path": "benchmarks/oam_phm_f0/book_on_sofa_manifest_v0.4.json",
@@ -1676,7 +1800,7 @@
         },
         {
           "path": "benchmarks/p0_checkpoint/content_manifest_v0_1_git_baseline_audit.json",
-          "sha256": "b0fb713205e842d3bf8276419261662ec3c189ba68b4b2fe2203828ebc0b48ed"
+          "sha256": "9ba601949b64b43caf991e0ad9d97ae2d758c34fa9cd25f27e7f1ddcffec21aa"
         },
         {
           "path": "benchmarks/project_two_action/replay_evidence_v0_3/d0/dataset/manifest.json",
@@ -1685,6 +1809,10 @@
         {
           "path": "benchmarks/project_two_action/replay_evidence_v0_3/d1/dataset/manifest.json",
           "sha256": "1a0bf0c2ff7d61c942491564189726d35a24f4894e0160f9e6368d302c556f5b"
+        },
+        {
+          "path": "benchmarks/structure_two/d0_engineering_checkpoint_2026_09_04/checkpoint_manifest.json",
+          "sha256": "810b217ceb286586b97098374b29dd7ac242a358ffe303eed0aed237a2b3acde"
         },
         {
           "path": "configs/project_two_experiments/care_wm_exact_counterfactual_manifest_v0_1.json",

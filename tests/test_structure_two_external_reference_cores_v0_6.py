@@ -801,6 +801,9 @@ def test_exact_six_arm_bundle_executes_without_escalating_fidelity(tmp_path: Pat
         source_artifact_sha256_by_arm=source_hashes,
         implementation_bundle_sha256_by_arm=implementation_hashes,
         executor=execution_signer,
+        immutable_manifest_sha256=HASH_A,
+        producer_run_id="six-arm-test-run",
+        producer_source_bundle_sha256=HASH_B,
     )
     assert tuple(row["arm"] for row in report["arm_results"]) == CANONICAL_SIX_ARMS
     assert report["all_six_reference_cores_executed"] is True
@@ -819,6 +822,9 @@ def test_exact_six_arm_bundle_executes_without_escalating_fidelity(tmp_path: Pat
         active_scenario_program_paths={"dream-0": scenario_path},
         trusted_executor=execution_signer.verifier(),
         trusted_scenario_executor=verifier,
+        expected_immutable_manifest_sha256=HASH_A,
+        expected_producer_run_id="six-arm-test-run",
+        expected_producer_source_bundle_sha256=HASH_B,
     )
     assert verified == report
 
@@ -853,6 +859,9 @@ def test_exact_six_arm_bundle_executes_without_escalating_fidelity(tmp_path: Pat
             active_scenario_program_paths={"dream-0": scenario_path},
             trusted_executor=execution_signer.verifier(),
             trusted_scenario_executor=verifier,
+            expected_immutable_manifest_sha256=HASH_A,
+            expected_producer_run_id="six-arm-test-run",
+            expected_producer_source_bundle_sha256=HASH_B,
         )
 
 
@@ -879,4 +888,7 @@ def test_six_arm_reference_execution_rejects_self_hashed_minimal_claim(
             active_scenario_program_paths={},
             trusted_executor=executor.verifier(),
             trusted_scenario_executor=executor.verifier(),
+            expected_immutable_manifest_sha256=HASH_A,
+            expected_producer_run_id="six-arm-test-run",
+            expected_producer_source_bundle_sha256=HASH_B,
         )

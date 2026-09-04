@@ -1,0 +1,536 @@
+{
+  "protocol": "structure-two-comparator-typed-dual-gate-b@0.8",
+  "status": "FROZEN_NOT_EXECUTED",
+  "frozen_on": "2026-09-05",
+  "invalidates": "structure-two-stratified-mechanism-dual-readout-gate-b@0.7",
+  "gate_semantics": {
+    "comparator_typed": true,
+    "same_relation_for_every_comparison_forbidden": true,
+    "action_relation_includes_deterministic_selected_public_action": true,
+    "action_regret_requires": "equivalent predecision belief AND different action AND different utility",
+    "full_rerun_requires": "equivalent belief AND equivalent action",
+    "registered_mechanism_evidence_still_required_for_formal_run": true
+  },
+  "episode_public_ontology": {
+    "schema_id": "structure-two-episode-public-ontology@0.8",
+    "belief_schema_id": "structure-two-episode-public-belief-readout@0.8",
+    "action_schema_id": "structure-two-episode-public-action-readout@0.8",
+    "location_uuid_count_inclusive": [
+      8,
+      12
+    ],
+    "independent_guest_uuid_count_inclusive": [
+      1,
+      3
+    ],
+    "owner_robot_object_location_guest_uuid_disjoint": true,
+    "action_kinds": [
+      "put_back",
+      "search",
+      "deliver",
+      "ask"
+    ],
+    "belief_axes": [
+      "location",
+      "responsible_actor"
+    ],
+    "unresolved_state_required": true,
+    "per_episode_manifest_frozen_before_arm_execution": true
+  },
+  "runtime_action_projection": {
+    "schema_id": "structure-two-runtime-public-action-bijection@0.8",
+    "typed_runtime_command_fields": [
+      "runtime_action_id",
+      "kind",
+      "target_object_uuid",
+      "location_uuid",
+      "guest_actor_uuid"
+    ],
+    "runtime_action_id_derived_from_all_semantic_fields": true,
+    "put_back_search_require_location_only": true,
+    "deliver_ask_require_guest_only": true,
+    "public_label_derived_from_runtime_fields_and_episode_ontology": true,
+    "per_arm_per_episode_exact_public_support": true,
+    "runtime_to_public_injective": true,
+    "public_to_runtime_inverse_required": true,
+    "round_trip_equality_required": true,
+    "unregistered_runtime_fields_forbidden": true
+  },
+  "comparisons": [
+    {
+      "comparison_id": "event-inference-adaptation",
+      "domain": "hidden-event and actor-attribution adaptation",
+      "comparator_type": "causal_dual_difference",
+      "left_arm": "care_wm",
+      "right_arm": "corrected_amg",
+      "belief_relation": {
+        "metric": "total_variation",
+        "relation": "materially_different",
+        "equivalence_bounds_inclusive": [
+          0.0,
+          0.01
+        ],
+        "difference_bounds_inclusive": [
+          0.05,
+          1.0
+        ]
+      },
+      "action_relation": {
+        "metric": "total_variation",
+        "relation": "materially_different",
+        "equivalence_bounds_inclusive": [
+          0.0,
+          0.01
+        ],
+        "difference_bounds_inclusive": [
+          0.05,
+          1.0
+        ]
+      },
+      "utility_relation": {
+        "metric": "absolute_normalized_utility_difference",
+        "relation": "not_scored",
+        "equivalence_bounds_inclusive": [
+          0.0,
+          0.01
+        ],
+        "difference_bounds_inclusive": [
+          0.1,
+          2.0
+        ]
+      },
+      "causal_window": {
+        "window_id": "event-inference-adaptation:shared-pre-action",
+        "readout_stage": "pre_action_pre_evaluator_truth",
+        "max_readout_to_action_events": 1,
+        "utility_start_offset_events": null,
+        "utility_end_offset_events": null,
+        "evaluator_truth_before_action_forbidden": true,
+        "intervening_exogenous_event_forbidden": true
+      }
+    },
+    {
+      "comparison_id": "object-search-adaptation",
+      "domain": "embodied object-search adaptation",
+      "comparator_type": "causal_dual_difference",
+      "left_arm": "care_wm",
+      "right_arm": "o_star_matched",
+      "belief_relation": {
+        "metric": "total_variation",
+        "relation": "materially_different",
+        "equivalence_bounds_inclusive": [
+          0.0,
+          0.01
+        ],
+        "difference_bounds_inclusive": [
+          0.05,
+          1.0
+        ]
+      },
+      "action_relation": {
+        "metric": "total_variation",
+        "relation": "materially_different",
+        "equivalence_bounds_inclusive": [
+          0.0,
+          0.01
+        ],
+        "difference_bounds_inclusive": [
+          0.05,
+          1.0
+        ]
+      },
+      "utility_relation": {
+        "metric": "absolute_normalized_utility_difference",
+        "relation": "not_scored",
+        "equivalence_bounds_inclusive": [
+          0.0,
+          0.01
+        ],
+        "difference_bounds_inclusive": [
+          0.1,
+          2.0
+        ]
+      },
+      "causal_window": {
+        "window_id": "object-search-adaptation:shared-pre-action",
+        "readout_stage": "pre_action_pre_evaluator_truth",
+        "max_readout_to_action_events": 1,
+        "utility_start_offset_events": null,
+        "utility_end_offset_events": null,
+        "evaluator_truth_before_action_forbidden": true,
+        "intervening_exogenous_event_forbidden": true
+      }
+    },
+    {
+      "comparison_id": "no-consolidation-ablation",
+      "domain": "reversible consolidation ablation",
+      "comparator_type": "causal_dual_difference",
+      "left_arm": "care_wm",
+      "right_arm": "sequential_no_consolidation",
+      "belief_relation": {
+        "metric": "total_variation",
+        "relation": "materially_different",
+        "equivalence_bounds_inclusive": [
+          0.0,
+          0.01
+        ],
+        "difference_bounds_inclusive": [
+          0.05,
+          1.0
+        ]
+      },
+      "action_relation": {
+        "metric": "total_variation",
+        "relation": "materially_different",
+        "equivalence_bounds_inclusive": [
+          0.0,
+          0.01
+        ],
+        "difference_bounds_inclusive": [
+          0.05,
+          1.0
+        ]
+      },
+      "utility_relation": {
+        "metric": "absolute_normalized_utility_difference",
+        "relation": "not_scored",
+        "equivalence_bounds_inclusive": [
+          0.0,
+          0.01
+        ],
+        "difference_bounds_inclusive": [
+          0.1,
+          2.0
+        ]
+      },
+      "causal_window": {
+        "window_id": "no-consolidation-ablation:shared-pre-action",
+        "readout_stage": "pre_action_pre_evaluator_truth",
+        "max_readout_to_action_events": 1,
+        "utility_start_offset_events": null,
+        "utility_end_offset_events": null,
+        "evaluator_truth_before_action_forbidden": true,
+        "intervening_exogenous_event_forbidden": true
+      }
+    },
+    {
+      "comparison_id": "active-dreaming-adaptation",
+      "domain": "failure-driven consolidation adaptation",
+      "comparator_type": "causal_dual_difference",
+      "left_arm": "care_wm",
+      "right_arm": "active_dreaming_matched",
+      "belief_relation": {
+        "metric": "total_variation",
+        "relation": "materially_different",
+        "equivalence_bounds_inclusive": [
+          0.0,
+          0.01
+        ],
+        "difference_bounds_inclusive": [
+          0.05,
+          1.0
+        ]
+      },
+      "action_relation": {
+        "metric": "total_variation",
+        "relation": "materially_different",
+        "equivalence_bounds_inclusive": [
+          0.0,
+          0.01
+        ],
+        "difference_bounds_inclusive": [
+          0.05,
+          1.0
+        ]
+      },
+      "utility_relation": {
+        "metric": "absolute_normalized_utility_difference",
+        "relation": "not_scored",
+        "equivalence_bounds_inclusive": [
+          0.0,
+          0.01
+        ],
+        "difference_bounds_inclusive": [
+          0.1,
+          2.0
+        ]
+      },
+      "causal_window": {
+        "window_id": "active-dreaming-adaptation:shared-pre-action",
+        "readout_stage": "pre_action_pre_evaluator_truth",
+        "max_readout_to_action_events": 1,
+        "utility_start_offset_events": null,
+        "utility_end_offset_events": null,
+        "evaluator_truth_before_action_forbidden": true,
+        "intervening_exogenous_event_forbidden": true
+      }
+    },
+    {
+      "comparison_id": "auto-dreamer-adaptation",
+      "domain": "offline consolidation adaptation",
+      "comparator_type": "causal_dual_difference",
+      "left_arm": "care_wm",
+      "right_arm": "auto_dreamer_matched",
+      "belief_relation": {
+        "metric": "total_variation",
+        "relation": "materially_different",
+        "equivalence_bounds_inclusive": [
+          0.0,
+          0.01
+        ],
+        "difference_bounds_inclusive": [
+          0.05,
+          1.0
+        ]
+      },
+      "action_relation": {
+        "metric": "total_variation",
+        "relation": "materially_different",
+        "equivalence_bounds_inclusive": [
+          0.0,
+          0.01
+        ],
+        "difference_bounds_inclusive": [
+          0.05,
+          1.0
+        ]
+      },
+      "utility_relation": {
+        "metric": "absolute_normalized_utility_difference",
+        "relation": "not_scored",
+        "equivalence_bounds_inclusive": [
+          0.0,
+          0.01
+        ],
+        "difference_bounds_inclusive": [
+          0.1,
+          2.0
+        ]
+      },
+      "causal_window": {
+        "window_id": "auto-dreamer-adaptation:shared-pre-action",
+        "readout_stage": "pre_action_pre_evaluator_truth",
+        "max_readout_to_action_events": 1,
+        "utility_start_offset_events": null,
+        "utility_end_offset_events": null,
+        "evaluator_truth_before_action_forbidden": true,
+        "intervening_exogenous_event_forbidden": true
+      }
+    },
+    {
+      "comparison_id": "trustmem-adaptation",
+      "domain": "verified memory-transition adaptation",
+      "comparator_type": "causal_dual_difference",
+      "left_arm": "care_wm",
+      "right_arm": "trustmem_matched",
+      "belief_relation": {
+        "metric": "total_variation",
+        "relation": "materially_different",
+        "equivalence_bounds_inclusive": [
+          0.0,
+          0.01
+        ],
+        "difference_bounds_inclusive": [
+          0.05,
+          1.0
+        ]
+      },
+      "action_relation": {
+        "metric": "total_variation",
+        "relation": "materially_different",
+        "equivalence_bounds_inclusive": [
+          0.0,
+          0.01
+        ],
+        "difference_bounds_inclusive": [
+          0.05,
+          1.0
+        ]
+      },
+      "utility_relation": {
+        "metric": "absolute_normalized_utility_difference",
+        "relation": "not_scored",
+        "equivalence_bounds_inclusive": [
+          0.0,
+          0.01
+        ],
+        "difference_bounds_inclusive": [
+          0.1,
+          2.0
+        ]
+      },
+      "causal_window": {
+        "window_id": "trustmem-adaptation:shared-pre-action",
+        "readout_stage": "pre_action_pre_evaluator_truth",
+        "max_readout_to_action_events": 1,
+        "utility_start_offset_events": null,
+        "utility_end_offset_events": null,
+        "evaluator_truth_before_action_forbidden": true,
+        "intervening_exogenous_event_forbidden": true
+      }
+    },
+    {
+      "comparison_id": "brainctl-adaptation",
+      "domain": "memory-admission and lifecycle-control adaptation",
+      "comparator_type": "causal_dual_difference",
+      "left_arm": "care_wm",
+      "right_arm": "brainctl_matched",
+      "belief_relation": {
+        "metric": "total_variation",
+        "relation": "materially_different",
+        "equivalence_bounds_inclusive": [
+          0.0,
+          0.01
+        ],
+        "difference_bounds_inclusive": [
+          0.05,
+          1.0
+        ]
+      },
+      "action_relation": {
+        "metric": "total_variation",
+        "relation": "materially_different",
+        "equivalence_bounds_inclusive": [
+          0.0,
+          0.01
+        ],
+        "difference_bounds_inclusive": [
+          0.05,
+          1.0
+        ]
+      },
+      "utility_relation": {
+        "metric": "absolute_normalized_utility_difference",
+        "relation": "not_scored",
+        "equivalence_bounds_inclusive": [
+          0.0,
+          0.01
+        ],
+        "difference_bounds_inclusive": [
+          0.1,
+          2.0
+        ]
+      },
+      "causal_window": {
+        "window_id": "brainctl-adaptation:shared-pre-action",
+        "readout_stage": "pre_action_pre_evaluator_truth",
+        "max_readout_to_action_events": 1,
+        "utility_start_offset_events": null,
+        "utility_end_offset_events": null,
+        "evaluator_truth_before_action_forbidden": true,
+        "intervening_exogenous_event_forbidden": true
+      }
+    },
+    {
+      "comparison_id": "action-regret-ablation",
+      "domain": "action-regret effect at equivalent predecision belief",
+      "comparator_type": "action_regret_at_equivalent_predecision_belief",
+      "left_arm": "care_wm",
+      "right_arm": "care_no_action_regret",
+      "belief_relation": {
+        "metric": "total_variation",
+        "relation": "equivalent",
+        "equivalence_bounds_inclusive": [
+          0.0,
+          0.01
+        ],
+        "difference_bounds_inclusive": [
+          0.05,
+          1.0
+        ]
+      },
+      "action_relation": {
+        "metric": "total_variation",
+        "relation": "materially_different",
+        "equivalence_bounds_inclusive": [
+          0.0,
+          0.01
+        ],
+        "difference_bounds_inclusive": [
+          0.05,
+          1.0
+        ]
+      },
+      "utility_relation": {
+        "metric": "absolute_normalized_utility_difference",
+        "relation": "materially_different",
+        "equivalence_bounds_inclusive": [
+          0.0,
+          0.01
+        ],
+        "difference_bounds_inclusive": [
+          0.1,
+          2.0
+        ]
+      },
+      "causal_window": {
+        "window_id": "action-regret-ablation:predecision-through-consequence",
+        "readout_stage": "pre_action_pre_evaluator_truth",
+        "max_readout_to_action_events": 1,
+        "utility_start_offset_events": 0,
+        "utility_end_offset_events": 3,
+        "evaluator_truth_before_action_forbidden": true,
+        "intervening_exogenous_event_forbidden": true
+      }
+    },
+    {
+      "comparison_id": "full-rerun-control",
+      "domain": "incremental reversible update versus complete replay",
+      "comparator_type": "full_rerun_belief_action_equivalence",
+      "left_arm": "care_wm",
+      "right_arm": "full_rerun",
+      "belief_relation": {
+        "metric": "total_variation",
+        "relation": "equivalent",
+        "equivalence_bounds_inclusive": [
+          0.0,
+          0.01
+        ],
+        "difference_bounds_inclusive": [
+          0.05,
+          1.0
+        ]
+      },
+      "action_relation": {
+        "metric": "total_variation",
+        "relation": "equivalent",
+        "equivalence_bounds_inclusive": [
+          0.0,
+          0.01
+        ],
+        "difference_bounds_inclusive": [
+          0.05,
+          1.0
+        ]
+      },
+      "utility_relation": {
+        "metric": "absolute_normalized_utility_difference",
+        "relation": "not_scored",
+        "equivalence_bounds_inclusive": [
+          0.0,
+          0.01
+        ],
+        "difference_bounds_inclusive": [
+          0.1,
+          2.0
+        ]
+      },
+      "causal_window": {
+        "window_id": "full-rerun-control:same-history-pre-action",
+        "readout_stage": "pre_action_pre_evaluator_truth",
+        "max_readout_to_action_events": 1,
+        "utility_start_offset_events": null,
+        "utility_end_offset_events": null,
+        "evaluator_truth_before_action_forbidden": true,
+        "intervening_exogenous_event_forbidden": true
+      }
+    }
+  ],
+  "official_execution": {
+    "formal_run_present": false,
+    "independent_attestation_present": false,
+    "formal_gate_b_passed": false,
+    "seven_operator_ablation_authorized": false
+  },
+  "claim_boundary": "Gate B v0.8 is frozen but not formally run. Local relation diagnostics and runtime-action round trips cannot mint Gate B passage or seven-operator ablation authorization."
+}

@@ -1,47 +1,97 @@
 # Structure Two Gate A、Gate B 与外部复现独立审核门修复（2026-09-02）
 
-## 结论
+## 阶段结论
 
-本轮关闭了审计列出的 Gate A 自报成功、来源产物脱离登记哈希、调用者后补冻结声明、组合授权缺少六臂执行/执行器符合性、跨注册表重放、只签结果哈希以及 readiness（就绪度）语义冲突等已知代码级绕过。
+本轮关闭的是已知 false-positive authorization（假阳性授权）路径，不是完成外部复现。
 
-当前总体状态仍为“不通过、不得冻结、不得授权 external efficacy comparison（外部效能比较）”。原因不是已知绕过仍可用，而是仓库尚未取得真实的外部 enrollment authority（登记权威）、六臂来源获取产物、独立执行产物、原生/适配忠实度证据与正式 Gate B 轨迹。
+当前 `world_arm_adapter_v0_4` 产生的十臂动作已明确降级为 `structure-two-gate-b-proxy-diagnostic@0.8`。它仍可用于 development diagnostic（开发诊断），但 canonical Gate B scorer（规范 Gate B 评分器）、combined authorization（组合授权）和 readiness（就绪度）都会拒绝把它当成 external efficacy（外部效能）证据。
 
-## 已关闭的阻断项
+仓库尚未实现由六个 fidelity-validated implementation bundles（通过忠实度验证的实现包）逐 episode 产生 Gate B 动作的统一执行器。因此当前状态必须继续保持：
 
-1. Gate A 不再接受 `gate_a_passed=true` 加普通自哈希。验证器现在读取内容绑定的 validation input（验证输入）和 deterministic execution log（确定性执行日志），核对冻结清单、registry identifier（注册表标识）、预注册 producer run（生产运行）、ledger（账本）、authority nonce（权威随机挑战）、validation seed（验证种子）与 holdout commitment（留出集承诺）；从逐 rollout 指标重新聚合总指标、按冻结 Gate A spec 重算全部准则，并验证 executor/custodian（执行者/托管者）双签。
-2. source acquisition receipt（来源获取回执）的实际 artifact SHA-256 必须精确等于该 arm 在 source register（来源登记表）中的 `primary_source_sha256`。可信 reviewer 对另一文件签名也不能覆盖该不一致。
-3. frozen manifest（冻结清单）绑定完整 trust-anchor registry（信任锚注册表）标识与 enrollment authority 公钥指纹，并由 reviewer、custodian、enrollment authority 三签。权威签名范围包括 timezone-aware timestamp（带时区时间戳）、ledger identifier/sequence（账本标识/序号）、外部不可预测挑战声明、冻结早于证据生产声明、预注册 run ID、validation-seed commitment 和 holdout commitment。Gate B 轨迹必须使用该预注册 run ID。
-4. standalone efficacy authorization（独立效能授权）现在强制要求解释并验证 executor conformance artifact（执行器符合性产物）与 six-arm reference execution（六臂参考执行）；缺少任一项时最终授权必为 false。
-5. conformance verifier（符合性验证器）读取真实测试产物，要求精确六项 capability（能力）、`uv run pytest` 命令中逐项命名的唯一测试、成功 exit code、逐项 assertion evidence（断言证据）、受限仓库路径的源码哈希清单、独立 tester 签名和 executor 报告签名。任意测试哈希加六个 true 不再可通过。
-6. 六臂验证器读取 typed input bundle、六个完整结果 artifact、Active Dreaming program/receipt 列表和执行参数；随后确定性重跑六个 reference core 并逐臂比较内容哈希。即使可信 executor 对攻击者改写后的结果重新签名，结果仍因与重执行不一致而被拒绝。
-7. 组合授权重新验证规范 source row（来源行）的 method、URL、evidence level、官方代码 URL/commit 与登记 SHA-256，不能仅凭六个 arm 名称冻结任意来源内容。
-8. readiness 删除含混的 `ready_to_freeze` 和硬编码 `typed_adaptation_input_contracts_implemented=true`，改为 `design_evidence_ready_for_external_freeze`、分离的 design/authorization blockers（设计/授权阻断项）以及由真实 input/conformance/reference artifacts 推导的状态。
-
-## 冻结时序的信任边界
-
-仓库能验证的是：一个预先登记、通过 out-of-band（带外）方式信任的 enrollment authority 对冻结时序、账本序号、外部挑战和“冻结先于证据生产”作了 Ed25519 证明，并且后续 Gate A/Gate B 产物绑定该承诺。
-
-仓库不能仅凭本地文件独立推导外部真实时间，也不能证明三种人类角色确由不同自然人控制。正式运行仍必须把 enrollment authority 私钥、账本和挑战生成放在候选方环境之外；否则只能称为本地协议演练，不能称为外部冻结证明。
-
-## 两轮验证
-
-Round 1（完整目标回归）：运行 P0/v0.5 历史边界、Gate B 规范、input coverage、external fidelity、来源获取、executor conformance、六臂 reference core、standalone authorization、signed Gate B 与 readiness 共 103 项测试，全部通过。
-
-Round 2（攻击性筛选）：运行 58 项拒绝/篡改/重放/伪造/越界测试，覆盖最小自哈希 Gate A、逐 rollout 聚合篡改、自选 authority、跨 registry 重放、后补冻结声明、非预注册 run、非规范来源行、可信 reviewer 签错文件、虚构 conformance 哈希、路径穿越、重签伪造六臂结果、零聚类、跨聚类回执重放、状态链断裂及历史清单字段伪造，全部失败关闭。
-
-静态检查：相关文件 Ruff 通过；8 个目标 source file 使用 strict mypy（依赖静默跟随）通过。
-
-## 当前机器状态
-
-- `design_evidence_ready_for_external_freeze=false`
-- `ready_for_external_custodian_run=false`
+- `gate_b_fidelity_implementation_executor_registered=false`
+- `gate_b_actions_from_fidelity_validated_implementation_verified=false`
 - `externally_frozen_manifest_verified=false`
 - `gate_a_passed=false`
-- `v0_7_six_arm_reference_execution_run=false`
 - `v0_6_gate_b_scored=false`
-- `v0_6_gate_b_passed=false`
-- `external_fidelity_gate_passed=false`
+- `external_fidelity.external_fidelity_gate_passed=false`
+- `external_fidelity.isolated_external_execution_environment_verified=false`
+- `sealed_confirmatory_gate_b_holdout_verified=false`
 - `external_method_efficacy_comparison_allowed=false`
 - `lifecycle_state=DEVELOPMENT_EVIDENCE_INCOMPLETE`
 
-因此，本轮结论是“已知协议绕过的代码级修复与回归闭环完成”，不是“外部复现独立审核门已经通过”。
+## 本轮修复
+
+### 1. Implementation identity split（实现身份分裂）
+
+- proxy action artifact（代理动作产物）现在携带 `action_execution_mode=reduced_proxy_diagnostic`、`external_actions_from_fidelity_validated_implementation=false` 和逐臂实际 producer ID。
+- artifact protocol（产物协议）不再叫 canonical execution，而是 `structure-two-gate-b-proxy-diagnostic@0.8`。
+- canonical verifier 会先完整验证该诊断产物，然后明确拒绝用于 Gate B 评分。
+- combined authorization 新增 `gate_b_actions_from_fidelity_validated_implementation_verified` 必要条件；当前没有真实逐 episode implementation executor，因此该条件只能为 false。
+- readiness 将“缺少规范逐 episode 实现执行器”同时列为 design freeze blocker（设计冻结阻断项）和 authorization blocker（授权阻断项）。
+
+这关闭了“六臂哈希 + implementation 标签 + proxy 动作即可授权”的漏洞，但没有虚构尚不存在的真实外部实现执行链。
+
+### 2. External fidelity（外部忠实度）
+
+- test node（测试节点）集合由 method specification（方法规格）固定，不再接受回执中的任意 `::` 字符串。
+- test files（测试文件）必须位于独立、内容哈希固定的 verifier-owned test bundle（验证方测试包），不得位于被测 implementation bundle 内。
+- 正向证据由 `run_fidelity_tests_and_make_receipt_v0_7()` 实际启动固定、无 shell 的 pytest argv，成功后才生成结构化日志和 Ed25519 回执。
+- verifier（验证器）不把签名 JSON 当成执行证明；它会在第三个临时工作目录中再次运行同一冻结 test nodes。解释器以 `-I -S -B` 启动：不处理 `site`、`.pth`、`sitecustomize.py`、`usercustomize.py` 或继承的 Python 路径，并禁止写入 `.pyc`；pytest 先从验证器运行时导入，之后才装入测试所需的可信源码路径。执行还禁用插件自动加载和 `conftest.py`，清空 `PYTEST_ADDOPTS/PYTEST_PLUGINS/PYTHONPATH/PYTHONSTARTUP`，并检查 JUnit test set、失败状态、退出码以及执行前后两个 bundle hash 不变。
+- clean subprocess（清洁子进程）仍不等于隔离容器，所以 `isolated_external_execution_environment_verified=false` 会强制正式 fidelity 结果保持 false。
+- 当前 canonical six-arm specifications（规范六臂规格）尚未登记真实 fidelity test nodes，因此正式 external fidelity 仍必为 false。非规范 unit fixture（单元夹具）的通过只验证协议机制，不代表任何外部方法通过。
+
+### 3. Public preregistered validation（公开预注册验证集）
+
+Gate A spec 与源码同时固定：
+
+- v0.5 world distribution hash；
+- 12 个 validation world seeds；
+- 3 个 trajectory seeds；
+- 2 个 observation seeds；
+- train/prior-validation spent seeds（训练/旧验证已使用种子）互斥集合；
+- `window_days=35`、`context_shrinkage_pseudocounts=0.0`、`owner_probability_threshold=0.5`；
+- `bootstrap_draws=4000`。
+
+验证器还检查分布字段集合、上下界、概率范围、有限数值、abrupt/recurrence 顺序和 habit probability mass（习惯概率质量）约束。即使攻击者先选择 tiny set（微型集合）、重新计算 commitment（承诺）、再改写 Gate A spec，仍会因偏离 code-pinned public validation set（代码固定的公开验证集）而失败。
+
+这些种子在实现冻结前公开，因此不再称为 sealed/canonical holdout（密封/规范留出集）。Gate A 报告固定携带 `evaluation_set_role=public_preregistered_validation`、`sealed_gate_b_holdout_verified=false` 和 `gate_b_allowed=false`；canonical Gate B 也会独立拒绝该 opening。确认性 Gate B 必须等待外部 custodian 在实现哈希冻结后交付新的密封集合。
+
+### 4. Executor conformance（执行器符合性）
+
+- 固定 pytest argv、六个规范 test nodes、源码清单和 assertion digest（断言摘要）。
+- tester/executor 提交的 JUnit、日志与签名仍会被检查，但它们不再是决定性证据。
+- verifier 会从当前已哈希源码独立重跑固定测试，并在完成后再次核对源码哈希；独立重跑失败时，即使提交的 JUnit、日志、六个 `passed=true` 和两方签名全部结构完整，conformance 仍失败。
+- verifier 重跑使用共同的 `-I -S -B` 隔离启动器、禁用插件自动加载、`--noconftest` 和控制变量白名单。仓库源码不会在 Python 启动阶段进入 `sys.path`；pytest 从解释器运行时导入后，才显式加入已哈希的验证方源码。因此本轮实测的 `src/sitecustomize.py -> PYTEST_ADDOPTS -> 恶意插件` 链没有执行，六个 `assert False` 仍被拒绝。
+
+软件无法仅凭文件判断密钥持有者是否曾手工填写 JUnit；本轮采取的是更强的判定方式：不依赖该声明，验证方自己执行。它不是 hardware attestation（硬件证明）。
+
+上述隔离只关闭 Python/pytest startup hook（启动钩子）注入，并不等于容器、虚拟机或操作系统级沙箱；网络、系统调用和被测实现的进程内恶意行为仍由后续外部隔离执行器负责。因此 `isolated_external_execution_environment_verified` 继续为 false。
+
+### 5. Official checkout root（官方检出根目录）
+
+除 commit、tree、dirty/untracked/submodule 检查外，验证器现在要求传入路径精确等于 `git rev-parse --show-toplevel`。干净仓库的任意嵌套子目录不能再冒充官方 checkout root。
+
+对于要求官方代码的 arm，适配合同中的任意 build command（构建命令）不再足够。命令必须来自冻结 method specification，验证器会复制已核验的 clean checkout、使用清洁环境实际执行固定 argv，并要求重建输出与提交的 implementation bundle hash 完全相同。派生 provenance（来源链）绑定 checkout、commit、命令、环境协议和输出哈希；当前仍因不是隔离容器而不能产生正式 fidelity pass。
+
+### 6. Noncanonical diagnostic（非规范诊断）
+
+- `enforce_canonical_protocol=false` 的 Gate B 使用独立 `...-diagnostic@0.6` 协议；顶层和嵌套正式 `gate_b_passed` 均固定为 false，原始结果只在 `diagnostic_gate_b_passed`/`diagnostic_gate_b` 中出现。
+- `enforce_canonical_catalog=false` 的 fidelity 使用独立 `...-diagnostic@0.2` 协议；所有正式 fidelity pass 与组合授权前置条件固定为 false。
+
+## 仍未完成的工作
+
+1. 为六个外部方法建立统一、逐 episode、由冻结 implementation bundle 实际执行的 Gate B action interface（动作接口）。在此之前 Gate B 不得评分。
+2. 为 canonical six-arm catalog（规范六臂目录）登记并外部冻结真实 component parity、native protocol 和 adaptation parity 测试；目前正式 fidelity 仍不得通过。
+3. 将外部测试执行迁移到真正的隔离 executor/container（执行器/容器）。当前是固定 argv、timeout 和独立重跑，不是网络、系统调用和资源完全隔离的沙箱。
+4. 外部 ledger（账本）时序仍是 enrollment authority attestation（登记权威声明），代码没有查询独立账本。
+5. 路径型输入仍有残余 TOCTOU（检查与使用时差）；正式运行应改为一次性摄取的 content-addressed objects（内容寻址对象）。
+
+因此准确表述是：本轮把新增审核发现转化为可执行的失败关闭边界，并补上 verifier-owned tests（验证方测试）、清洁 subprocess、可重建 build provenance、公开验证集降级和 diagnostic protocol 分离；协议仍未冻结、Gate B 未评分、外部忠实度未通过、效能比较未授权。
+
+## 本轮验证结果
+
+- 完整目标回归：`108 passed`。
+- 第一轮 startup-hook（启动钩子）定向攻击：`4 passed`，覆盖 conformance/fidelity 的 `sitecustomize.py`、继承 `PYTHONPATH/PYTHONSTARTUP` 和 bundle `conftest.py`。
+- 第二轮 forged-complete/trust-chain/state-machine（伪完整证据/信任链/状态机）攻击：`12 passed`。
+- 本轮变更 Python 文件：Ruff 通过。
+- 本轮 3 个直接相关源码文件：strict mypy（`follow-imports=silent`）通过；未把仓库其他历史 mypy 问题计作本轮通过。

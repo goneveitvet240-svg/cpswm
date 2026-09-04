@@ -1,0 +1,282 @@
+{
+  "schema_version": "0.1.0",
+  "protocol_pack_id": "structure-two-backbone-open-tasks@0.1",
+  "selected_method_id": "structure-two-nap-rbtpr-rc@0.1",
+  "selected_method_receipt_content_sha256": "a3ccafd6612a6ee57a855e82572524622b6f15f305924b3de99bd3e94e17ed2f",
+  "definition_status": "DEFINED_NOT_RUN",
+  "seven_operator_ablation_authorized": false,
+  "binding_resolution_authority": {
+    "required": true,
+    "authority_role": "independent_binding_resolution_custodian",
+    "attestation_domain": "cpswm.structure_two.backbone_binding_resolution.v1",
+    "trust_anchor_status": "NOT_ENROLLED",
+    "trust_anchor_manifest_sha256": null,
+    "outer_verifier_handle_schema": "UNAVAILABLE_NOT_IMPLEMENTED",
+    "local_verifier_may_issue_formal_resolution": false,
+    "external_freshness_and_replay_registry_required": true
+  },
+  "task_11": {
+    "schema_version": "0.1.0",
+    "task_id": "TASK_11",
+    "protocol_id": "structure-two-backbone-resampling-task-11@0.1",
+    "definition_status": "DEFINED_NOT_RUN",
+    "target_binding": "resampling_policy",
+    "scientific_question": "With all other backbone choices held fixed, which resampling trigger and algorithm gives the best action and belief quality per elementary evaluation without destroying lineage or open-world support?",
+    "primary_estimand": "paired_delta_action_loss_per_elementary_evaluation_with_exact_posterior_fidelity_guardrail",
+    "algorithms": [
+      "no_resampling",
+      "systematic",
+      "stratified",
+      "residual",
+      "multinomial_negative_control"
+    ],
+    "validation_only_ess_thresholds": [
+      0.25,
+      0.5,
+      0.75
+    ],
+    "never_resample_final_step": true,
+    "support_handling": "measure_only_unless_importance_corrected",
+    "evaluation_unit": "scenario_seed_cluster",
+    "nuisance_bindings": {
+      "particle_budget": "task_10_resolution_receipt",
+      "proposal_kernel": "frozen_backbone_proposal_held_constant",
+      "rejuvenation_kernel": "disabled_for_task_11",
+      "differentiability_strategy": "not_applicable_inference_only",
+      "training_schedule": "not_applicable_inference_only"
+    },
+    "selection_rule": {
+      "objective": "minimize_primary_estimand",
+      "max_posterior_total_variation": 0.05,
+      "max_owner_contamination": 0.05,
+      "max_absolute_log_normalizer_bias": 0.05,
+      "tie_tolerance": 1e-12,
+      "negative_control_selectable": false
+    },
+    "required_outputs": [
+      "paired_action_loss_delta_per_elementary_evaluation",
+      "ess_trajectory",
+      "resampling_event_indices",
+      "unique_parent_count",
+      "unique_root_ancestor_count",
+      "unknown_support_before_after",
+      "unresolved_mass_before_after",
+      "log_normalizer_bias",
+      "posterior_total_variation",
+      "action_posterior_distance",
+      "owner_contamination",
+      "elementary_evaluations",
+      "wall_clock_seconds"
+    ],
+    "correctness_gates": [
+      "finite_normalized_weights",
+      "toy_distribution_frequency",
+      "lineage_parent_recorded",
+      "final_step_not_resampled",
+      "unknown_unresolved_support_reported",
+      "runtime_policy_trace_changes",
+      "no_oracle_access"
+    ],
+    "claim_boundary": "Task 11 may locally nominate only a diagnostic resampling_policy candidate; formal resolution requires an enrolled independent outer authority with custody, freshness, and replay verification. It does not validate Gate B, seven-operator benefit, or paper-level superiority."
+  },
+  "task_12": {
+    "schema_version": "0.1.0",
+    "task_id": "TASK_12",
+    "protocol_id": "structure-two-backbone-rejuvenation-task-12@0.1",
+    "definition_status": "DEFINED_NOT_RUN",
+    "target_binding": "rejuvenation_kernel",
+    "scientific_question": "Inside the independently fixed Task 7 correction window, which Markov kernel preserves the conditional full-chain posterior while giving the best mixing and recovery per elementary evaluation?",
+    "primary_estimand": "conditional_window_kernel_effective_sample_size_per_elementary_evaluation_with_invariance_guardrail",
+    "conditional_target": "full_chain_posterior_conditioned_on_outside_window",
+    "candidate_kernels": [
+      "no_rejuvenation",
+      "single_site_typed_metropolis_hastings",
+      "blocked_typed_metropolis_hastings",
+      "exact_conditional_gibbs_evaluator_only"
+    ],
+    "exact_oracle_max_gaps": 2,
+    "task_7_boundary": "task_7_defines_window_checkpoint_outside_window_and_fallback_only",
+    "kernel_selection_authority": "task_12_only",
+    "forbidden_evidence_substitutes": [
+      "task_7_window_semantics",
+      "full_suffix_rerun"
+    ],
+    "nuisance_bindings": {
+      "particle_budget": "task_10_resolution_receipt",
+      "resampling_policy": "task_11_resolution_receipt",
+      "proposal_kernel": "frozen_backbone_proposal_held_constant",
+      "late_correction_window_semantics": "task_7_defines_window_checkpoint_outside_window_and_fallback_only",
+      "differentiability_strategy": "not_applicable_inference_only",
+      "training_schedule": "not_applicable_inference_only"
+    },
+    "selection_rule": {
+      "objective": "maximize_primary_estimand",
+      "max_detailed_balance_error": 1e-9,
+      "max_stationary_distribution_error": 1e-6,
+      "max_full_rerun_actor_marginal_distance": 0.05,
+      "max_owner_contamination": 0.05,
+      "tie_tolerance": 1e-12,
+      "evaluator_oracle_selectable": false
+    },
+    "required_outputs": [
+      "detailed_balance_error",
+      "stationary_distribution_error",
+      "proposal_count",
+      "acceptance_count",
+      "acceptance_rate",
+      "axis_jump_distance_H_R_I_C_Z",
+      "autocorrelation",
+      "effective_sample_size_per_elementary_evaluation",
+      "unique_ancestry",
+      "full_rerun_actor_marginal_distance",
+      "late_correction_recovery",
+      "owner_contamination",
+      "unresolved_mass",
+      "fallback_count_and_reasons",
+      "window_touched_indices"
+    ],
+    "correctness_gates": [
+      "conditional_target_invariance",
+      "forward_reverse_proposal_densities",
+      "state_machine_reachability",
+      "outside_window_byte_equality",
+      "analytic_block_rebuilt",
+      "oracle_confined_to_evaluator",
+      "zero_and_full_accept_paths"
+    ],
+    "claim_boundary": "Task 12 may locally nominate only a diagnostic rejuvenation_kernel candidate; formal resolution requires an enrolled independent outer authority with custody, freshness, and replay verification. Task 7 supplies window, checkpoint, outside-window, and fallback semantics only and cannot select this kernel."
+  },
+  "task_13": {
+    "schema_version": "0.1.0",
+    "task_id": "TASK_13",
+    "protocol_id": "structure-two-backbone-differentiability-task-13@0.1",
+    "definition_status": "DEFINED_NOT_RUN",
+    "target_binding": "differentiability_strategy",
+    "scientific_question": "Holding architecture, schedule, optimizer, inference semantics, and compute fixed, which gradient estimator is valid and improves sealed-holdout proposal, posterior, and action outcomes?",
+    "primary_estimand": "sealed_holdout_action_loss_delta_per_training_compute_with_gradient_validity_guardrail",
+    "strategies": [
+      "stop_gradient_supervised_proposal",
+      "score_function_unbiased_estimator",
+      "relaxed_pathwise_resampling_biased"
+    ],
+    "controlled_variable": "gradient_estimator_only",
+    "explicitly_excluded_bindings": [
+      "training_schedule",
+      "neural_proposer_architecture"
+    ],
+    "nuisance_bindings": {
+      "particle_budget": "task_10_resolution_receipt",
+      "resampling_policy": "task_11_resolution_receipt",
+      "rejuvenation_kernel": "task_12_resolution_receipt",
+      "proposal_architecture": "preregistered_fixed_architecture_receipt",
+      "training_schedule": "fixed_nuisance_not_a_task_13_arm",
+      "optimizer": "fixed_nuisance_not_a_task_13_arm",
+      "training_compute_budget": "equal_across_task_13_arms"
+    },
+    "selection_rule": {
+      "objective": "minimize_primary_estimand",
+      "maximum_primary_estimand_for_improvement": 0.0,
+      "max_finite_difference_gradient_error": 0.05,
+      "max_exact_expectation_gradient_error": 0.05,
+      "max_posterior_total_variation": 0.1,
+      "tie_tolerance": 1e-12
+    },
+    "required_outputs": [
+      "paired_action_loss_delta_per_training_compute",
+      "finite_difference_gradient_error",
+      "exact_expectation_gradient_error",
+      "gradient_bias",
+      "gradient_variance",
+      "gradient_norm",
+      "nonfinite_gradient_count",
+      "hard_constraint_violations",
+      "unknown_support_retention",
+      "unresolved_mass_retention",
+      "inference_target_hash_equality",
+      "learning_curve_per_training_compute",
+      "holdout_truth_compatible_proposal_recall",
+      "posterior_total_variation",
+      "action_loss"
+    ],
+    "correctness_gates": [
+      "tiny_exact_gradient_check",
+      "finite_gradients",
+      "hard_constraints_preserved",
+      "inference_semantics_unchanged",
+      "sealed_holdout_unseen_during_selection",
+      "proposer_has_no_commit_authority",
+      "runtime_strategy_trace_changes"
+    ],
+    "claim_boundary": "Task 13 may locally nominate only a diagnostic differentiability_strategy candidate; formal resolution requires an enrolled independent outer authority with custody, freshness, and replay verification. It cannot resolve training_schedule or proposer architecture, validate Gate B, or authorize paper-level superiority."
+  },
+  "proposal_p5": {
+    "schema_version": "0.1.0",
+    "task_id": "backbone.proposal.P5",
+    "protocol_id": "structure-two-backbone-proposal-headroom-p5@0.1",
+    "definition_status": "DEFINED_NOT_RUN",
+    "authority": "diagnosis_only_no_binding_resolution",
+    "scientific_question": "Under fixed particle, resampling, rejuvenation, weighting, and readout settings, is there attainable proposal headroom and at which pipeline stage is truth-compatible support lost?",
+    "primary_estimand": "oracle_minus_deployable_full_chain_truth_compatible_recall_decomposed_by_pipeline_stage",
+    "arms": [
+      "bootstrap_proposal",
+      "deterministic_adaptive_typed_proposal",
+      "local_conditional_posterior_oracle_evaluator_only",
+      "truth_inclusion_top_k_oracle_evaluator_only"
+    ],
+    "pipeline_stages": [
+      "raw_candidate_generation",
+      "hard_constraint_survival",
+      "weighted_support",
+      "resampling_survival",
+      "final_chain_support"
+    ],
+    "verdict_space": [
+      "NO_PROPOSAL_HEADROOM",
+      "PROPOSAL_BOTTLENECK",
+      "DOWNSTREAM_WEIGHTING_OR_RESAMPLING_BOTTLENECK",
+      "MIXED_PROPOSAL_AND_DOWNSTREAM_BOTTLENECK",
+      "READOUT_INCONCLUSIVE"
+    ],
+    "forbidden_outputs": [
+      "passed",
+      "binding_resolution",
+      "paper_claim_authorization",
+      "architecture_selection"
+    ],
+    "nuisance_bindings": {
+      "particle_budget": "task_10_resolution_receipt",
+      "resampling_policy": "task_11_resolution_receipt",
+      "rejuvenation_kernel": "task_12_resolution_receipt",
+      "structured_weighting": "frozen_identical_across_p5_arms",
+      "action_readout": "frozen_identical_across_p5_arms",
+      "differentiability_strategy": "not_applicable_diagnostic_only",
+      "training_schedule": "not_applicable_diagnostic_only"
+    },
+    "diagnosis_rule": {
+      "recall_headroom_epsilon": 0.01,
+      "action_gain_epsilon": 0.0,
+      "decision_order": [
+        "no_headroom",
+        "readout_inconclusive",
+        "raw_proposal_gap",
+        "downstream_gap"
+      ]
+    },
+    "required_outputs": [
+      "recomputed_stage_headroom",
+      "recomputed_diagnosis",
+      "full_chain_truth_compatible_top_k_recall",
+      "posterior_mass_coverage",
+      "axis_recall_H_R_I_C_Z",
+      "proposal_operation_recall",
+      "unknown_support_retention",
+      "unresolved_mass_retention",
+      "action_consequence",
+      "elementary_evaluations",
+      "truth_read_count",
+      "exact_enumeration_count"
+    ],
+    "oracle_access": "evaluator_only_logged_and_counted",
+    "claim_boundary": "P5 is evaluator-only proposal-headroom diagnosis; it cannot resolve a method binding, select a neural architecture, validate Gate B or seven-operator benefit, or authorize deployable or paper-level claims."
+  }
+}

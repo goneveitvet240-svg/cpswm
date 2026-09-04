@@ -1,0 +1,54 @@
+{
+  "protocol_id": "structure-two-windowed-late-correction@0.2",
+  "status": "FROZEN_FOR_RERUN",
+  "frozen_on": "2026-09-04",
+  "registered_design": {
+    "gaps": 3,
+    "correction_index": 1,
+    "scenario_seeds": [
+      11,
+      23,
+      37,
+      41,
+      53
+    ],
+    "replicate_seeds": [
+      101,
+      202,
+      303
+    ],
+    "arm": "adaptive_typed_rbpf",
+    "particles": 384,
+    "window_length": 1,
+    "rejuvenation_sweeps": 1,
+    "actor_marginal_tv_tolerance": 0.1
+  },
+  "kernel_contract": {
+    "correction_first_uses_likelihood_ratio_reweighting": true,
+    "left_and_right_boundary_checkpoints_required": true,
+    "only_window_gaps_may_be_proposed": true,
+    "window_outside_history_is_byte_invariant": true,
+    "right_boundary_state_must_match": true,
+    "analytic_state_uses_affected_cell_downdate_and_update": true,
+    "full_suffix_replay_inside_local_kernel": false,
+    "unbridgeable_or_nonfinite_path_requires_explicit_full_replay_fallback": true
+  },
+  "cost_contract": {
+    "initial_forward_cost_reported_separately": true,
+    "marginal_correction_cost_reported_separately": true,
+    "checkpoint_bytes_reported": true,
+    "fallback_work_included": true,
+    "untouched_suffix_must_not_be_counted_as_if_evaluated": true
+  },
+  "decision_rule": {
+    "window_implementation_pass": "posterior equivalence AND lower marginal correction cost AND no fallback in the registered run",
+    "overall_task_pass": "window implementation pass AND mean owner contamination does not exceed full rerun",
+    "revision_recovery_must_be_reported_even_when_not_used_as_a_binary_gate": true,
+    "instrument_pass_must_not_be_promoted_to_overall_task_pass": true
+  },
+  "claim_boundary": {
+    "selects_task_12_kernel": false,
+    "establishes_external_validity": false,
+    "authorizes_seven_operator_ablation_alone": false
+  }
+}

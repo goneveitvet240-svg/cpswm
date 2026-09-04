@@ -1,11 +1,11 @@
 {
   "protocol": "structure-two-v0.6-development-readiness@0.2",
-  "evidence_index_sha256": "a4c78233e685308527d4c16a9e2f1686858ca1012e4e52ec6aae7cf4e9b9e40b",
+  "evidence_index_sha256": "f1b1a40f88a820457e5b08e67f66dff53624c53b70e51e5714c6cd2ddd50dddf",
   "evidence_index_status": "DEVELOPMENT_EVIDENCE_NOT_COMPLETE",
   "v0_6_manifest_sha256": "e9df3648312abd7cf7e22c6b1d1cdc8a2b70b748c1aed33ddd6de7ff7f17b74c",
   "v0_6_manifest_status": "DEVELOPMENT_NOT_FROZEN",
-  "external_method_source_register_sha256": "c210ca1dfd74089ff40b94e9b56827139183eb5c380915cd08bdab4ea578ff6d",
-  "external_method_source_register_content_sha256": "88849635f7570276ff11682ab46141b31f34497924ee3f1784e5eef1aeecde96",
+  "external_method_source_register_sha256": "bcb15d96017bf2ac148a67ebb591daa5f1d734dab2f76ce7c03b759cc9470b37",
+  "external_method_source_register_content_sha256": "596d865dcbf7ba8cd8e3e711f844e448faa485e9c10e2e069536ed85670bb237",
   "external_method_source_identification": [
     {
       "arm": "corrected_amg",
@@ -125,12 +125,13 @@
     }
   ],
   "external_method_source_identification_complete": false,
-  "external_reference_core_register_sha256": "14b753a92dcff4a501bad64d8988c97fe32b8bc627503c1860d11d7d9b4fcd84",
+  "external_reference_core_register_sha256": "8629140b532d9cccc906fb65c349fb6f43ba838f373c09f8d6e28257fed1d1a1",
   "typed_adaptation_input_schema_source_sha256": "0c33ee2adf842a75fefce55499e3e4e21547ad381e487d75222e7f626295c1fb",
   "typed_adaptation_input_contract_verified_by_complete_bundle": false,
   "external_reference_component_core_count": 6,
   "external_reference_cores_are_native_reproductions": false,
   "executor_capabilities_verified_by_signed_conformance": false,
+  "executor_conformance_verifier_reexecution_passed": false,
   "executor_conformance_report": null,
   "executor_conformance_validation_error": null,
   "bounded_six_arm_execution_runner_implemented": false,
@@ -260,7 +261,9 @@
           "event detections with source likelihoods",
           "event hierarchy attributes and cross-event constraints"
         ],
+        "unexpected_adaptation_inputs": [],
         "input_bundle_content_bound": false,
+        "typed_six_arm_bundle_validated": false,
         "passed": false
       },
       {
@@ -281,7 +284,9 @@
           "opportunistic non-target observations",
           "positive and negative object observations"
         ],
+        "unexpected_adaptation_inputs": [],
         "input_bundle_content_bound": false,
+        "typed_six_arm_bundle_validated": false,
         "passed": false
       },
       {
@@ -300,7 +305,9 @@
           "episodic and semantic memory stores",
           "executable counterfactual scenario interface"
         ],
+        "unexpected_adaptation_inputs": [],
         "input_bundle_content_bound": false,
+        "typed_six_arm_bundle_validated": false,
         "passed": false
       },
       {
@@ -319,7 +326,9 @@
           "offline consolidation boundary",
           "provenance-linked source trajectories"
         ],
+        "unexpected_adaptation_inputs": [],
         "input_bundle_content_bound": false,
+        "typed_six_arm_bundle_validated": false,
         "passed": false
       },
       {
@@ -338,7 +347,9 @@
           "coverage preservation and faithfulness verifier judgments",
           "downstream retrieval and task outcomes"
         ],
+        "unexpected_adaptation_inputs": [],
         "input_bundle_content_bound": false,
+        "typed_six_arm_bundle_validated": false,
         "passed": false
       },
       {
@@ -357,24 +368,31 @@
           "scope category recall history arousal and valence",
           "source category and trust class"
         ],
+        "unexpected_adaptation_inputs": [],
         "input_bundle_content_bound": false,
+        "typed_six_arm_bundle_validated": false,
         "passed": false
       }
     ],
     "adapter_input_coverage_gate_passed": false,
     "gate_b_trace_production_allowed": false,
     "claim_boundary": "Input coverage only establishes that an adapter can receive its declared semantics. It does not establish correct implementation, native fidelity, adaptation parity, or efficacy.",
-    "content_sha256": "566b96ec5d0ad2410ee36df4bd4c5009a3a4e67f2583447410e9fe4f81258f9c"
+    "content_sha256": "3acd965f6cfdd34e1794f4ffb5e98b3b5c9459f7368c80c580b40aace8d2c35d"
   },
   "external_implementation_bundles_content_bound": false,
+  "canonical_fidelity_test_specs_frozen": false,
+  "canonical_official_build_specs_frozen": false,
+  "gate_b_fidelity_implementation_executor_registered": false,
   "external_fidelity": {
-    "protocol": "structure-two-external-adapter-fidelity-gate@0.2",
+    "protocol": "structure-two-external-adapter-fidelity-diagnostic@0.2",
+    "canonical_protocol_enforced": false,
+    "isolated_external_execution_environment_verified": false,
     "method_results": [
       {
         "arm": "corrected_amg",
         "method": "Damen-Hogg Activity Manipulation Grammar",
         "native_domain": "video activity explanation",
-        "primary_source_url": "https://doi.org/10.1109/TPAMI.2011.70",
+        "primary_source_url": "https://eprints.whiterose.ac.uk/id/eprint/75560/15/hoggdc9.pdf",
         "required_native_components": [
           "activity-event hierarchy and attribute representation",
           "shared-variable and physical-consistency constraints",
@@ -383,27 +401,43 @@
           "published native activity-explanation protocol recheck"
         ],
         "verified_native_components": [],
+        "official_build_provenance": null,
         "checks": {
           "primary_source_content_bound": false,
           "implementation_bundle_content_bound": false,
+          "trusted_fidelity_test_bundle_content_bound": false,
           "official_code_identity_bound_if_required": true,
+          "official_checkout_build_reproduced_if_required": true,
           "native_component_set_exact_and_parity_tested": false,
+          "component_parity_verifier_reexecution_passed": false,
           "native_published_protocol_rechecked": false,
+          "native_protocol_verifier_reexecution_passed": false,
           "independent_reviewer_attested": false,
           "adaptation_contract_content_bound": false,
-          "adaptation_parity_tested": false
+          "adaptation_parity_tested": false,
+          "adaptation_parity_verifier_reexecution_passed": false
         },
         "native_fidelity_passed": false,
         "adaptation_fidelity_passed": false,
         "missing_requirements": [
           "primary_source_content_bound",
           "implementation_bundle_content_bound",
+          "trusted_fidelity_test_bundle_content_bound",
           "native_component_set_exact_and_parity_tested",
+          "component_parity_verifier_reexecution_passed",
           "native_published_protocol_rechecked",
+          "native_protocol_verifier_reexecution_passed",
           "independent_reviewer_attested",
           "adaptation_contract_content_bound",
-          "adaptation_parity_tested"
-        ]
+          "adaptation_parity_tested",
+          "adaptation_parity_verifier_reexecution_passed",
+          "isolated_external_execution_environment"
+        ],
+        "canonical_protocol_enforced": false,
+        "clean_subprocess_native_checks_passed": false,
+        "clean_subprocess_adaptation_checks_passed": false,
+        "diagnostic_native_fidelity_passed": false,
+        "diagnostic_adaptation_fidelity_passed": false
       },
       {
         "arm": "o_star_matched",
@@ -421,27 +455,43 @@
           "published physical and simulation protocol recheck"
         ],
         "verified_native_components": [],
+        "official_build_provenance": null,
         "checks": {
           "primary_source_content_bound": false,
           "implementation_bundle_content_bound": false,
+          "trusted_fidelity_test_bundle_content_bound": false,
           "official_code_identity_bound_if_required": true,
+          "official_checkout_build_reproduced_if_required": true,
           "native_component_set_exact_and_parity_tested": false,
+          "component_parity_verifier_reexecution_passed": false,
           "native_published_protocol_rechecked": false,
+          "native_protocol_verifier_reexecution_passed": false,
           "independent_reviewer_attested": false,
           "adaptation_contract_content_bound": false,
-          "adaptation_parity_tested": false
+          "adaptation_parity_tested": false,
+          "adaptation_parity_verifier_reexecution_passed": false
         },
         "native_fidelity_passed": false,
         "adaptation_fidelity_passed": false,
         "missing_requirements": [
           "primary_source_content_bound",
           "implementation_bundle_content_bound",
+          "trusted_fidelity_test_bundle_content_bound",
           "native_component_set_exact_and_parity_tested",
+          "component_parity_verifier_reexecution_passed",
           "native_published_protocol_rechecked",
+          "native_protocol_verifier_reexecution_passed",
           "independent_reviewer_attested",
           "adaptation_contract_content_bound",
-          "adaptation_parity_tested"
-        ]
+          "adaptation_parity_tested",
+          "adaptation_parity_verifier_reexecution_passed",
+          "isolated_external_execution_environment"
+        ],
+        "canonical_protocol_enforced": false,
+        "clean_subprocess_native_checks_passed": false,
+        "clean_subprocess_adaptation_checks_passed": false,
+        "diagnostic_native_fidelity_passed": false,
+        "diagnostic_adaptation_fidelity_passed": false
       },
       {
         "arm": "active_dreaming_matched",
@@ -458,28 +508,45 @@
           "published six-domain protocol recheck"
         ],
         "verified_native_components": [],
+        "official_build_provenance": null,
         "checks": {
           "primary_source_content_bound": false,
           "implementation_bundle_content_bound": false,
+          "trusted_fidelity_test_bundle_content_bound": false,
           "official_code_identity_bound_if_required": false,
+          "official_checkout_build_reproduced_if_required": false,
           "native_component_set_exact_and_parity_tested": false,
+          "component_parity_verifier_reexecution_passed": false,
           "native_published_protocol_rechecked": false,
+          "native_protocol_verifier_reexecution_passed": false,
           "independent_reviewer_attested": false,
           "adaptation_contract_content_bound": false,
-          "adaptation_parity_tested": false
+          "adaptation_parity_tested": false,
+          "adaptation_parity_verifier_reexecution_passed": false
         },
         "native_fidelity_passed": false,
         "adaptation_fidelity_passed": false,
         "missing_requirements": [
           "primary_source_content_bound",
           "implementation_bundle_content_bound",
+          "trusted_fidelity_test_bundle_content_bound",
           "official_code_identity_bound_if_required",
+          "official_checkout_build_reproduced_if_required",
           "native_component_set_exact_and_parity_tested",
+          "component_parity_verifier_reexecution_passed",
           "native_published_protocol_rechecked",
+          "native_protocol_verifier_reexecution_passed",
           "independent_reviewer_attested",
           "adaptation_contract_content_bound",
-          "adaptation_parity_tested"
-        ]
+          "adaptation_parity_tested",
+          "adaptation_parity_verifier_reexecution_passed",
+          "isolated_external_execution_environment"
+        ],
+        "canonical_protocol_enforced": false,
+        "clean_subprocess_native_checks_passed": false,
+        "clean_subprocess_adaptation_checks_passed": false,
+        "diagnostic_native_fidelity_passed": false,
+        "diagnostic_adaptation_fidelity_passed": false
       },
       {
         "arm": "auto_dreamer_matched",
@@ -496,27 +563,43 @@
           "published ScienceWorld ALFWorld and WebArena protocol recheck"
         ],
         "verified_native_components": [],
+        "official_build_provenance": null,
         "checks": {
           "primary_source_content_bound": false,
           "implementation_bundle_content_bound": false,
+          "trusted_fidelity_test_bundle_content_bound": false,
           "official_code_identity_bound_if_required": true,
+          "official_checkout_build_reproduced_if_required": true,
           "native_component_set_exact_and_parity_tested": false,
+          "component_parity_verifier_reexecution_passed": false,
           "native_published_protocol_rechecked": false,
+          "native_protocol_verifier_reexecution_passed": false,
           "independent_reviewer_attested": false,
           "adaptation_contract_content_bound": false,
-          "adaptation_parity_tested": false
+          "adaptation_parity_tested": false,
+          "adaptation_parity_verifier_reexecution_passed": false
         },
         "native_fidelity_passed": false,
         "adaptation_fidelity_passed": false,
         "missing_requirements": [
           "primary_source_content_bound",
           "implementation_bundle_content_bound",
+          "trusted_fidelity_test_bundle_content_bound",
           "native_component_set_exact_and_parity_tested",
+          "component_parity_verifier_reexecution_passed",
           "native_published_protocol_rechecked",
+          "native_protocol_verifier_reexecution_passed",
           "independent_reviewer_attested",
           "adaptation_contract_content_bound",
-          "adaptation_parity_tested"
-        ]
+          "adaptation_parity_tested",
+          "adaptation_parity_verifier_reexecution_passed",
+          "isolated_external_execution_environment"
+        ],
+        "canonical_protocol_enforced": false,
+        "clean_subprocess_native_checks_passed": false,
+        "clean_subprocess_adaptation_checks_passed": false,
+        "diagnostic_native_fidelity_passed": false,
+        "diagnostic_adaptation_fidelity_passed": false
       },
       {
         "arm": "trustmem_matched",
@@ -533,27 +616,43 @@
           "published MemoryAgentBench HaluMem and Mem-alpha protocol recheck"
         ],
         "verified_native_components": [],
+        "official_build_provenance": null,
         "checks": {
           "primary_source_content_bound": false,
           "implementation_bundle_content_bound": false,
+          "trusted_fidelity_test_bundle_content_bound": false,
           "official_code_identity_bound_if_required": true,
+          "official_checkout_build_reproduced_if_required": true,
           "native_component_set_exact_and_parity_tested": false,
+          "component_parity_verifier_reexecution_passed": false,
           "native_published_protocol_rechecked": false,
+          "native_protocol_verifier_reexecution_passed": false,
           "independent_reviewer_attested": false,
           "adaptation_contract_content_bound": false,
-          "adaptation_parity_tested": false
+          "adaptation_parity_tested": false,
+          "adaptation_parity_verifier_reexecution_passed": false
         },
         "native_fidelity_passed": false,
         "adaptation_fidelity_passed": false,
         "missing_requirements": [
           "primary_source_content_bound",
           "implementation_bundle_content_bound",
+          "trusted_fidelity_test_bundle_content_bound",
           "native_component_set_exact_and_parity_tested",
+          "component_parity_verifier_reexecution_passed",
           "native_published_protocol_rechecked",
+          "native_protocol_verifier_reexecution_passed",
           "independent_reviewer_attested",
           "adaptation_contract_content_bound",
-          "adaptation_parity_tested"
-        ]
+          "adaptation_parity_tested",
+          "adaptation_parity_verifier_reexecution_passed",
+          "isolated_external_execution_environment"
+        ],
+        "canonical_protocol_enforced": false,
+        "clean_subprocess_native_checks_passed": false,
+        "clean_subprocess_adaptation_checks_passed": false,
+        "diagnostic_native_fidelity_passed": false,
+        "diagnostic_adaptation_fidelity_passed": false
       },
       {
         "arm": "brainctl_matched",
@@ -571,37 +670,56 @@
           "official repository protocol recheck"
         ],
         "verified_native_components": [],
+        "official_build_provenance": null,
         "checks": {
           "primary_source_content_bound": false,
           "implementation_bundle_content_bound": false,
+          "trusted_fidelity_test_bundle_content_bound": false,
           "official_code_identity_bound_if_required": false,
+          "official_checkout_build_reproduced_if_required": false,
           "native_component_set_exact_and_parity_tested": false,
+          "component_parity_verifier_reexecution_passed": false,
           "native_published_protocol_rechecked": false,
+          "native_protocol_verifier_reexecution_passed": false,
           "independent_reviewer_attested": false,
           "adaptation_contract_content_bound": false,
-          "adaptation_parity_tested": false
+          "adaptation_parity_tested": false,
+          "adaptation_parity_verifier_reexecution_passed": false
         },
         "native_fidelity_passed": false,
         "adaptation_fidelity_passed": false,
         "missing_requirements": [
           "primary_source_content_bound",
           "implementation_bundle_content_bound",
+          "trusted_fidelity_test_bundle_content_bound",
           "official_code_identity_bound_if_required",
+          "official_checkout_build_reproduced_if_required",
           "native_component_set_exact_and_parity_tested",
+          "component_parity_verifier_reexecution_passed",
           "native_published_protocol_rechecked",
+          "native_protocol_verifier_reexecution_passed",
           "independent_reviewer_attested",
           "adaptation_contract_content_bound",
-          "adaptation_parity_tested"
-        ]
+          "adaptation_parity_tested",
+          "adaptation_parity_verifier_reexecution_passed",
+          "isolated_external_execution_environment"
+        ],
+        "canonical_protocol_enforced": false,
+        "clean_subprocess_native_checks_passed": false,
+        "clean_subprocess_adaptation_checks_passed": false,
+        "diagnostic_native_fidelity_passed": false,
+        "diagnostic_adaptation_fidelity_passed": false
       }
     ],
+    "diagnostic_native_fidelity_passed": false,
+    "diagnostic_adaptation_fidelity_passed": false,
     "native_fidelity_gate_passed": false,
     "adaptation_fidelity_gate_passed": false,
     "external_fidelity_gate_passed": false,
     "fidelity_precondition_for_combined_authorization_passed": false,
     "external_method_efficacy_comparison_allowed": false,
-    "claim_boundary": "Native reproduction evidence supports claims only in each method's native domain. Cross-domain efficacy claims additionally require a content-bound adaptation contract and executable adaptation-parity evidence. Even complete fidelity evidence is only one precondition for the separate combined efficacy authorization gate.",
-    "content_sha256": "4c52dff8ea7b176540e18cdebe6fe02eb38b42954aac005da3ae77b49ef3ed6f"
+    "claim_boundary": "This is a noncanonical diagnostic run. Diagnostic method results may be inspected, but every formal fidelity pass and authorization precondition is forced false.",
+    "content_sha256": "3da925a741e383b363d826fb24eb2dafd7470467bb73560617707859354cf68f"
   },
   "trust_anchor_registry_externally_verified": false,
   "trust_anchor_registry_validation_error": null,
@@ -615,11 +733,20 @@
   "gate_a_report_content_bound": false,
   "gate_a_protocol_exact": false,
   "gate_a_passed": false,
+  "gate_a_public_preregistered_validation_only": false,
+  "sealed_confirmatory_gate_b_holdout_verified": false,
   "gate_a_validation_error": null,
+  "gate_b_actions_from_fidelity_validated_implementation_verified": false,
+  "implementation_action_execution_validation_error": null,
   "signed_gate_b": null,
   "gate_b_validation_error": null,
   "v0_6_gate_b_scored": false,
   "v0_6_gate_b_passed": false,
+  "v0_6_gate_b_historical_only": true,
+  "current_v0_7_dual_gate_receipt_verified": false,
+  "current_gate_b_protocol_id": "structure-two-comparator-typed-dual-gate-b@0.8",
+  "current_gate_b_protocol_status": "FROZEN_NOT_EXECUTED",
+  "current_v0_8_formal_gate_b_receipt_verified": false,
   "external_method_efficacy_comparison_allowed": false,
   "design_evidence_ready_for_external_freeze": false,
   "ready_for_external_custodian_run": false,
@@ -628,6 +755,10 @@
     "six canonical primary-source artifacts lack registered-hash acquisition binding",
     "method-specific adaptation input bundles are incomplete or unbound",
     "six external implementation bundles are not staged",
+    "no canonical per-episode Gate B executor is registered for the frozen implementations",
+    "six canonical external arms lack frozen verifier-owned fidelity test bundles",
+    "official-code arms lack frozen reproducible build commands",
+    "external fidelity and official builds lack a verified isolated container executor",
     "reviewer executor and custodian keys lack an externally rooted enrollment receipt"
   ],
   "authorization_blockers": [
@@ -635,23 +766,33 @@
     "six external arms lack complete signed adaptation parity evidence",
     "bounded-executor capabilities lack independently signed interpreted tests",
     "six-arm reference execution lacks verified result and Active Dreaming artifacts",
+    "Gate B actions were not produced by the fidelity-validated implementation bundles",
     "v0.6 Gate A lacks verified inputs, execution log, or dual signatures",
+    "public preregistered validation seeds are not a custodian-sealed confirmatory Gate B holdout",
     "v0.6 signed mechanism-action traces are missing or invalid",
+    "v0.6 and v0.7 Gate B are historical only; current comparator-typed v0.8 is frozen but lacks an independently verified formal causal receipt",
     "v0.6 canonical design lacks authority-timestamped triple-signed external freeze"
   ],
   "blockers": [
     "six canonical primary-source artifacts lack registered-hash acquisition binding",
     "method-specific adaptation input bundles are incomplete or unbound",
     "six external implementation bundles are not staged",
+    "no canonical per-episode Gate B executor is registered for the frozen implementations",
+    "six canonical external arms lack frozen verifier-owned fidelity test bundles",
+    "official-code arms lack frozen reproducible build commands",
+    "external fidelity and official builds lack a verified isolated container executor",
     "reviewer executor and custodian keys lack an externally rooted enrollment receipt",
     "six external arms lack complete signed native reproduction evidence",
     "six external arms lack complete signed adaptation parity evidence",
     "bounded-executor capabilities lack independently signed interpreted tests",
     "six-arm reference execution lacks verified result and Active Dreaming artifacts",
+    "Gate B actions were not produced by the fidelity-validated implementation bundles",
     "v0.6 Gate A lacks verified inputs, execution log, or dual signatures",
+    "public preregistered validation seeds are not a custodian-sealed confirmatory Gate B holdout",
     "v0.6 signed mechanism-action traces are missing or invalid",
+    "v0.6 and v0.7 Gate B are historical only; current comparator-typed v0.8 is frozen but lacks an independently verified formal causal receipt",
     "v0.6 canonical design lacks authority-timestamped triple-signed external freeze"
   ],
-  "claim_boundary": "This preflight accepts role keys only through an out-of-band-rooted enrollment authority, requires registered-hash source acquisition, interpreted signed executor tests and full six-arm result artifacts, and verifies dual-signed Gate A before Gate B scoring. Freeze ordering is an enrollment-authority attestation over a timestamp, ledger sequence, nonce, preregistered producer run, validation seed commitment, and holdout commitment; this repository cannot independently derive external time or human role-control independence. Historical v0.5 evidence remains self-consistent but not externally immutable or fully authenticatable.",
-  "content_sha256": "6cc23bba580376e46073a84ba8170a4185d4ea1f731745b15eabdd9c06ddf88c"
+  "claim_boundary": "This preflight accepts role keys only through an out-of-band-rooted enrollment authority, requires registered-hash source acquisition, interpreted signed executor tests and full six-arm result artifacts, and verifies dual-signed Gate A before Gate B scoring. Freeze ordering is an enrollment-authority attestation over a timestamp, ledger sequence, nonce, preregistered producer run, validation seed commitment, and holdout commitment; this repository cannot independently derive external time or human role-control independence. Historical v0.5 evidence remains self-consistent but not externally immutable or fully authenticatable. The code-pinned seeds are public preregistered validation data, not a sealed confirmatory Gate B holdout.",
+  "content_sha256": "87556987664849eb64d66770126cb7cf5cf9ed588ab7b44e6749687c1f2f9261"
 }

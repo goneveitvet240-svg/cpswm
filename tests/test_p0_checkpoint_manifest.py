@@ -30,7 +30,7 @@ def test_p0_checkpoint_v0_1_is_self_consistent_but_not_claimed_immutable() -> No
     assert stored["schema_version"] == "p0-checkpoint-content-manifest@0.1"
     _assert_self_consistent(stored)
     audit = audit_v0_1_git_baseline()
-    assert audit["current_matches_git_baseline"] is False
+    assert audit["current_matches_git_baseline"] is True
     assert audit["external_cryptographic_anchor_present"] is False
     assert audit["immutable_frozen_snapshot_claim_allowed"] is False
     assert audit["status"] == "CURRENT_SELF_CONSISTENT_COPY_NOT_VERIFIABLY_IMMUTABLE"

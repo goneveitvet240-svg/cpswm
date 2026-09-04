@@ -24,12 +24,18 @@ SOURCE_REGISTER = json.loads(
 SOURCE_ROW = next(row for row in SOURCE_REGISTER["methods"] if row["arm"] == "corrected_amg")
 
 
-def _receipt(source: Path, acquirer: Ed25519AttestationSigner) -> dict[str, object]:
+def _receipt(
+    source: Path,
+    acquirer: Ed25519AttestationSigner,
+    *,
+    http_final_url: str = ("https://eprints.whiterose.ac.uk/id/eprint/75560/15/hoggdc9.pdf"),
+    acquired_at_utc: datetime = datetime(2026, 9, 2, 0, 30, tzinfo=UTC),
+) -> dict[str, object]:
     return make_primary_source_acquisition_receipt_v0_6(
         arm="corrected_amg",
         registered_source_url=str(SOURCE_ROW["primary_source_url"]),
-        http_final_url="https://doi.org/10.1109/TPAMI.2011.70",
-        acquired_at_utc=datetime(2026, 9, 2, tzinfo=UTC),
+        http_final_url=http_final_url,
+        acquired_at_utc=acquired_at_utc,
         source_artifact=source,
         source_register_content_sha256=str(SOURCE_REGISTER["content_sha256"]),
         acquirer=acquirer,
@@ -57,8 +63,12 @@ def test_signed_source_acquisition_receipt_binds_url_register_and_file(
         source_register_content_sha256=str(SOURCE_REGISTER["content_sha256"]),
         trusted_acquirer=acquirer.verifier(),
         official_checkout=None,
+        not_before_utc=datetime(2026, 9, 2, 0, tzinfo=UTC),
+        not_after_utc=datetime(2026, 9, 2, 1, tzinfo=UTC),
     )
-    assert record.http_final_url == "https://doi.org/10.1109/TPAMI.2011.70"
+    assert record.http_final_url == (
+        "https://eprints.whiterose.ac.uk/id/eprint/75560/15/hoggdc9.pdf"
+    )
 
 
 def test_replacing_source_and_rehashing_register_does_not_replay_old_receipt(
@@ -79,6 +89,8 @@ def test_replacing_source_and_rehashing_register_does_not_replay_old_receipt(
             source_register_content_sha256=str(SOURCE_REGISTER["content_sha256"]),
             trusted_acquirer=acquirer.verifier(),
             official_checkout=None,
+            not_before_utc=datetime(2026, 9, 2, 0, tzinfo=UTC),
+            not_after_utc=datetime(2026, 9, 2, 1, tzinfo=UTC),
         )
 
 
@@ -97,6 +109,8 @@ def test_attacker_signed_source_receipt_is_outside_enrolled_key(tmp_path: Path) 
             source_register_content_sha256=str(SOURCE_REGISTER["content_sha256"]),
             trusted_acquirer=trusted.verifier(),
             official_checkout=None,
+            not_before_utc=datetime(2026, 9, 2, 0, tzinfo=UTC),
+            not_after_utc=datetime(2026, 9, 2, 1, tzinfo=UTC),
         )
 
 
@@ -116,6 +130,8 @@ def test_source_receipt_cannot_be_rebound_to_rehashed_source_register(
             source_register_content_sha256="f" * 64,
             trusted_acquirer=acquirer.verifier(),
             official_checkout=None,
+            not_before_utc=datetime(2026, 9, 2, 0, tzinfo=UTC),
+            not_after_utc=datetime(2026, 9, 2, 1, tzinfo=UTC),
         )
 
 
@@ -137,4 +153,56 @@ def test_trusted_receipt_for_wrong_file_does_not_override_registered_hash(
             source_register_content_sha256=str(SOURCE_REGISTER["content_sha256"]),
             trusted_acquirer=acquirer.verifier(),
             official_checkout=None,
+            not_before_utc=datetime(2026, 9, 2, 0, tzinfo=UTC),
+            not_after_utc=datetime(2026, 9, 2, 1, tzinfo=UTC),
+        )
+
+
+def test_signed_receipt_outside_frozen_acquisition_window_is_rejected(
+    tmp_path: Path,
+) -> None:
+    source = tmp_path / "paper.pdf"
+    source.write_bytes(b"retrieved official paper bytes")
+    acquirer = Ed25519AttestationSigner.generate(key_id="external-source-acquirer")
+    receipt = _receipt(
+        source,
+        acquirer,
+        acquired_at_utc=datetime(2026, 9, 2, 1, 1, tzinfo=UTC),
+    )
+    with pytest.raises(ValueError, match="authorized run window"):
+        verify_primary_source_acquisition_receipt_v0_6(
+            receipt,
+            expected_arm="corrected_amg",
+            source_row=_registered_row(source),
+            source_artifact=source,
+            source_register_content_sha256=str(SOURCE_REGISTER["content_sha256"]),
+            trusted_acquirer=acquirer.verifier(),
+            official_checkout=None,
+            not_before_utc=datetime(2026, 9, 2, 0, tzinfo=UTC),
+            not_after_utc=datetime(2026, 9, 2, 1, tzinfo=UTC),
+        )
+
+
+def test_signed_receipt_redirected_outside_frozen_hosts_is_rejected(
+    tmp_path: Path,
+) -> None:
+    source = tmp_path / "paper.pdf"
+    source.write_bytes(b"retrieved official paper bytes")
+    acquirer = Ed25519AttestationSigner.generate(key_id="external-source-acquirer")
+    receipt = _receipt(
+        source,
+        acquirer,
+        http_final_url="https://attacker.example/replacement.pdf",
+    )
+    with pytest.raises(ValueError, match="frozen redirect policy"):
+        verify_primary_source_acquisition_receipt_v0_6(
+            receipt,
+            expected_arm="corrected_amg",
+            source_row=_registered_row(source),
+            source_artifact=source,
+            source_register_content_sha256=str(SOURCE_REGISTER["content_sha256"]),
+            trusted_acquirer=acquirer.verifier(),
+            official_checkout=None,
+            not_before_utc=datetime(2026, 9, 2, 0, tzinfo=UTC),
+            not_after_utc=datetime(2026, 9, 2, 1, tzinfo=UTC),
         )

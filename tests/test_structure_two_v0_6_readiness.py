@@ -31,8 +31,17 @@ def test_readiness_preserves_v0_5_negative_and_does_not_invent_v0_6_result() -> 
     assert report["historical_v0_5_evidence_authenticity_and_integrity_verified"] is False
     assert report["historical_v0_5_gate_b_passed"] is False
     assert report["v0_6_gate_b_scored"] is False
+    assert report["v0_6_gate_b_historical_only"] is True
+    assert report["current_v0_7_dual_gate_receipt_verified"] is False
+    assert report["current_gate_b_protocol_id"] == "structure-two-comparator-typed-dual-gate-b@0.8"
+    assert report["current_gate_b_protocol_status"] == "FROZEN_NOT_EXECUTED"
+    assert report["current_v0_8_formal_gate_b_receipt_verified"] is False
+    assert report["external_method_efficacy_comparison_allowed"] is False
     assert report["design_evidence_ready_for_external_freeze"] is False
     assert report["external_fidelity"]["external_fidelity_gate_passed"] is False
+    assert report["external_fidelity"]["isolated_external_execution_environment_verified"] is False
+    assert report["canonical_fidelity_test_specs_frozen"] is False
+    assert report["canonical_official_build_specs_frozen"] is False
     assert report["adapter_input_coverage"]["gate_b_trace_production_allowed"] is False
     assert report["external_method_source_identification_complete"] is False
     source_rows = {row["arm"]: row for row in report["external_method_source_identification"]}
@@ -49,6 +58,7 @@ def test_readiness_preserves_v0_5_negative_and_does_not_invent_v0_6_result() -> 
     assert report["external_reference_component_core_count"] == 6
     assert report["external_reference_cores_are_native_reproductions"] is False
     assert report["executor_capabilities_verified_by_signed_conformance"] is False
+    assert report["executor_conformance_verifier_reexecution_passed"] is False
     assert report["bounded_six_arm_execution_runner_implemented"] is False
     assert report["active_dreaming_content_bound_scenario_executor_implemented"] is False
     assert report["active_dreaming_executor_requires_independent_ed25519_receipt"] is False
@@ -64,11 +74,14 @@ def test_readiness_preserves_v0_5_negative_and_does_not_invent_v0_6_result() -> 
     assert report["official_component_parity"]["adaptation_parity_passed"] is False
     assert report["complete_adaptation_input_bundle_valid"] is False
     assert report["external_implementation_bundles_content_bound"] is False
+    assert report["gate_b_fidelity_implementation_executor_registered"] is False
+    assert report["gate_b_actions_from_fidelity_validated_implementation_verified"] is False
     assert report["trust_anchor_registry_externally_verified"] is False
     assert report["role_control_independence_attested"] is False
     assert report["role_control_independence_cryptographically_proven"] is False
     assert report["externally_frozen_manifest_verified"] is False
     assert report["gate_a_report_content_bound"] is False
+    assert report["sealed_confirmatory_gate_b_holdout_verified"] is False
     assert report["lifecycle_state"] == "DEVELOPMENT_EVIDENCE_INCOMPLETE"
 
 
@@ -80,6 +93,60 @@ def _write_index(tmp_path: Path, **updates: object) -> Path:
     path = tmp_path / "evidence-index.json"
     path.write_text(json.dumps(payload), encoding="utf-8")
     return path
+
+
+def _external_artifact_path_row() -> dict[str, object]:
+    return {
+        "primary_source": "evidence/source.pdf",
+        "implementation_bundle": "evidence/implementation",
+        "component_parity_receipt": "evidence/component-receipt.json",
+        "component_parity_execution_log": "evidence/component-log.json",
+        "native_protocol_recheck_receipt": "evidence/native-receipt.json",
+        "native_protocol_execution_log": "evidence/native-log.json",
+        "adaptation_contract": "evidence/adaptation-contract.json",
+        "adaptation_parity_receipt": "evidence/adaptation-receipt.json",
+        "adaptation_parity_execution_log": "evidence/adaptation-log.json",
+    }
+
+
+def test_external_artifact_loader_passes_optional_fidelity_test_bundle(
+    tmp_path: Path,
+) -> None:
+    row = _external_artifact_path_row()
+    row["fidelity_test_bundle"] = "evidence/verifier-owned-fidelity-tests"
+
+    loaded = readiness_module._load_external_artifact_paths(
+        tmp_path,
+        {"corrected_amg": row},
+    )
+
+    assert loaded["corrected_amg"].fidelity_test_bundle == (
+        tmp_path / "evidence/verifier-owned-fidelity-tests"
+    )
+
+
+def test_external_artifact_loader_keeps_missing_fidelity_test_bundle_optional(
+    tmp_path: Path,
+) -> None:
+    loaded = readiness_module._load_external_artifact_paths(
+        tmp_path,
+        {"corrected_amg": _external_artifact_path_row()},
+    )
+
+    assert loaded["corrected_amg"].fidelity_test_bundle is None
+
+
+def test_external_artifact_loader_rejects_malformed_fidelity_test_bundle(
+    tmp_path: Path,
+) -> None:
+    row = _external_artifact_path_row()
+    row["fidelity_test_bundle"] = 7
+
+    with pytest.raises(ValueError, match="fidelity test bundle is malformed"):
+        readiness_module._load_external_artifact_paths(
+            tmp_path,
+            {"corrected_amg": row},
+        )
 
 
 def test_readiness_rejects_caller_supplied_success_fields(tmp_path: Path) -> None:
@@ -213,5 +280,5 @@ def test_duplicate_reference_core_arm_is_rejected(
     path = tmp_path / "duplicate-reference-register.json"
     path.write_text(json.dumps(reference), encoding="utf-8")
     monkeypatch.setattr(readiness_module, "DEFAULT_REFERENCE_CORE_REGISTER", path)
-    with pytest.raises(ValueError, match="arm set mismatch"):
+    with pytest.raises(ValueError, match="content hash mismatch"):
         build_v0_6_development_readiness(ROOT)

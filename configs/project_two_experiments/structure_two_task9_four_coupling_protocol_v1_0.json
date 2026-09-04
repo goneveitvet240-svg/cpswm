@@ -1,0 +1,137 @@
+{
+  "protocol_id": "structure-two-task9-four-coupling-protocol@1.0",
+  "schema_version": "1.0.0",
+  "definition_status": "DEFINED_NOT_RUN",
+  "task9_result_available": false,
+  "seven_operator_ablation_authorized": false,
+  "primary_metric": "cumulative_action_utility",
+  "higher_is_better": true,
+  "interaction_estimand": "U11-U10-U01+U00",
+  "factorial_cells": ["00", "10", "01", "11"],
+  "couplings": [
+    {"coupling": "opceu_x_cf_bocpd", "left_operator_ids": ["OPCEU"], "right_operator_ids": ["CF-BOCPD"]},
+    {"coupling": "cheh_pchmp_x_rgrc", "left_operator_ids": ["CHEH", "PCHMP"], "right_operator_ids": ["RGRC"]},
+    {"coupling": "cf_bocpd_x_ccrr", "left_operator_ids": ["CF-BOCPD"], "right_operator_ids": ["CCRR"]},
+    {"coupling": "rgrc_ccrr_x_ciav", "left_operator_ids": ["RGRC", "CCRR"], "right_operator_ids": ["CIAV"]}
+  ],
+  "binding_policy": {
+    "required_equal_fields": [
+      "visible_input_sha256", "information_policy_sha256", "truth_access_policy_sha256",
+      "compute_budget_sha256", "action_budget_sha256", "verification_budget_sha256",
+      "non_target_modules_sha256", "source_bundle_sha256", "episode_ids"
+    ],
+    "paired_within_independent_unit": true,
+    "semantic_utility_recomputation_required": true,
+    "runtime_receipts_required_per_operator_per_cell": true
+  },
+  "population_commitment": {
+    "manifest_id": "structure-two-task9-population@1.0",
+    "household_ids": [
+      "household-001", "household-002", "household-003", "household-004",
+      "household-005", "household-006", "household-007", "household-008",
+      "household-009", "household-010", "household-011", "household-012",
+      "household-013", "household-014", "household-015", "household-016",
+      "household-017", "household-018", "household-019", "household-020",
+      "household-021", "household-022", "household-023", "household-024",
+      "household-025", "household-026", "household-027", "household-028",
+      "household-029", "household-030", "household-031", "household-032",
+      "household-033", "household-034", "household-035", "household-036",
+      "household-037", "household-038", "household-039", "household-040",
+      "household-041", "household-042", "household-043", "household-044",
+      "household-045", "household-046", "household-047", "household-048"
+    ],
+    "replicate_seeds": [104729, 130363],
+    "validation_household_ids": [
+      "household-001", "household-002", "household-003", "household-004",
+      "household-005", "household-006", "household-007", "household-008"
+    ],
+    "confirmatory_household_ids": [
+      "household-009", "household-010", "household-011", "household-012",
+      "household-013", "household-014", "household-015", "household-016",
+      "household-017", "household-018", "household-019", "household-020",
+      "household-021", "household-022", "household-023", "household-024",
+      "household-025", "household-026", "household-027", "household-028",
+      "household-029", "household-030", "household-031", "household-032",
+      "household-033", "household-034", "household-035", "household-036",
+      "household-037", "household-038", "household-039", "household-040",
+      "household-041", "household-042", "household-043", "household-044",
+      "household-045", "household-046", "household-047", "household-048"
+    ],
+    "confirmatory_cluster_count": 40,
+    "confirmatory_unit_count": 80,
+    "population_manifest_sha256": "5f6772ca3ae3662aef61b6ccc399f004d302299beb4e4c24f9b2704c12f2256f",
+    "seed_manifest_sha256": "7b7610a378afe5f66d2618aebcda1d4eb2fd6790cdac1f963ac1c5cc08c038e3",
+    "split_manifest_sha256": "92005620b9f043dbec759415fc0cc471d57d13685e3f5977525eb9d162708929"
+  },
+  "power_analysis": {
+    "method": "conservative_normal_approximation",
+    "family_correction": "bonferroni_worst_case_for_holm",
+    "familywise_alpha": 0.05,
+    "target_power": 0.8,
+    "minimum_detectable_interaction": 0.25,
+    "minimum_practical_interaction": 0.25,
+    "assumed_cluster_standard_deviation": 0.4,
+    "minimum_powered_clusters": 32,
+    "planned_confirmatory_clusters": 40,
+    "planned_confirmatory_units": 80,
+    "planned_power_at_mde": 0.927,
+    "power_commitment_sha256": "753b2c4b73540e07221fac8fab9144df79f3815c313f37450d2b8e3db28bb7d5"
+  },
+  "utility_policy": {
+    "success_reward": 1.0,
+    "partial_reward": 0.4,
+    "failure_reward": 0.0,
+    "safety_abort_reward": -1.0,
+    "action_cost_per_unit": 0.02,
+    "verification_cost_per_action": 0.05,
+    "owner_contamination_cost_per_event": 0.75,
+    "safety_cost_per_violation": 2.0,
+    "episodes_per_cell": 5
+  },
+  "operator_implementation_manifest": {
+    "manifest_id": "structure-two-task9-operator-implementations@1.0",
+    "enrollment_status": "NOT_ENROLLED",
+    "operator_identities": [
+      {"operator_id": "OPCEU", "enrollment_status": "NOT_ENROLLED", "implementation_sha256": null},
+      {"operator_id": "CF-BOCPD", "enrollment_status": "NOT_ENROLLED", "implementation_sha256": null},
+      {"operator_id": "CHEH", "enrollment_status": "NOT_ENROLLED", "implementation_sha256": null},
+      {"operator_id": "PCHMP", "enrollment_status": "NOT_ENROLLED", "implementation_sha256": null},
+      {"operator_id": "RGRC", "enrollment_status": "NOT_ENROLLED", "implementation_sha256": null},
+      {"operator_id": "CCRR", "enrollment_status": "NOT_ENROLLED", "implementation_sha256": null},
+      {"operator_id": "CIAV", "enrollment_status": "NOT_ENROLLED", "implementation_sha256": null}
+    ],
+    "runtime_hash_consistency_required": true,
+    "source_bundle_binding_required": true,
+    "local_verifier_may_claim_implementation_identity_verified": false,
+    "manifest_sha256": "456f6ab91bd9ccebf5371cac9cd825568e97a44e13ea1df94840ba3d3e757465"
+  },
+  "bootstrap": {
+    "method": "paired_cluster_bootstrap",
+    "independent_unit": "household_seed",
+    "cluster_key": "household_id",
+    "confidence_level": 0.95,
+    "resamples": 2000,
+    "seed": 90409,
+    "minimum_independent_units": 80,
+    "minimum_clusters": 40
+  },
+  "multiplicity": {
+    "method": "holm", "alpha": 0.05, "family_size": 4,
+    "family": ["opceu_x_cf_bocpd", "cheh_pchmp_x_rgrc", "cf_bocpd_x_ccrr", "rgrc_ccrr_x_ciav"]
+  },
+  "omnibus": {
+    "comparison_id": "full_x_b_star", "status": "DEFINED_NOT_RUN",
+    "counted_toward_four_coupling_family": false, "separate_analysis_required": true
+  },
+  "independent_custody": {
+    "required": true,
+    "authority_role": "independent_evidence_custodian",
+    "attestation_domain": "cpswm.structure_two.task9.operator_execution.v1",
+    "trust_anchor_status": "NOT_ENROLLED",
+    "trust_anchor_manifest_sha256": null,
+    "local_arithmetic_verifier_may_open_formal_gate": false,
+    "formal_gate_requires_external_verifier": true,
+    "external_freshness_and_replay_registry_required": true
+  },
+  "claim_boundary": "Definition only: DEFINED_NOT_RUN. All seven operator implementation identities are NOT_ENROLLED. Local checks establish only runtime hash consistency and source-bundle equality, never implementation authenticity. Local structural and arithmetic verification can never set task9_positive_gate_passed=true; formal passage requires an external verifier, enrolled implementation identities, an independently held trust anchor, authenticated runtime receipts, and freshness/replay checks. full_x_b_star remains separate and seven-operator ablation remains unauthorized."
+}

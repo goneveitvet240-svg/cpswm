@@ -1,0 +1,141 @@
+{
+  "protocol": "structure-two-engineering-trust-checkpoint@1.0",
+  "freeze_date": "2026-09-05",
+  "engineering_trust_gate_passed": true,
+  "recomputable_d0_evidence_allowed": true,
+  "recomputable_d0_scope": [
+    "task_7_v0_3",
+    "task_8_v0_3",
+    "task_10_g1_v0_1",
+    "task_10_g2_v0_1"
+  ],
+  "p0_repairs": {
+    "forged_complete_positive_path_closed": true,
+    "authorization_schema_config_custody_drift_closed": true,
+    "manifest_and_current_source_inventory_drift_closed": true
+  },
+  "task_results": [
+    {
+      "result_id": "task_7_v0_3",
+      "path": "benchmarks/structure_two/backbone_b_repairs_2026_09_04/task_7_windowed_rejuvenation_v0_3.json",
+      "file_sha256": "dd842e6c107c20b9834af7845510c30fec22db21b7351907e5deb69ddf97daf2",
+      "content_sha256": "0c5531896bdade5765007f05e793b70a70ace02113604f440d17d52df01156e3",
+      "positive_output_count": 66,
+      "positive_output_trust_chain_complete": true,
+      "fresh_task_specific_recomputation_verified": true,
+      "task_gate_passed": false,
+      "definition_and_rerun_complete": false,
+      "formal_authorization": false
+    },
+    {
+      "result_id": "task_8_v0_3",
+      "path": "benchmarks/structure_two/backbone_b_repairs_2026_09_04/task_8_relative_probability_soft_coupling_v0_3.json",
+      "file_sha256": "2956a687e5020d87d296df473cb124dc0b7abb448a80e8a2b6a603970a530ec9",
+      "content_sha256": "46791b7c59e3851c9acb7bf28416552aed48d81d28b1e6542598270fff7c11a5",
+      "positive_output_count": 341,
+      "positive_output_trust_chain_complete": true,
+      "fresh_task_specific_recomputation_verified": true,
+      "task_gate_passed": true,
+      "definition_and_rerun_complete": true,
+      "formal_authorization": false
+    },
+    {
+      "result_id": "task_10_g1_v0_1",
+      "path": "benchmarks/structure_two/engineering_trust_checkpoint_2026_09_05/task_10_budget_sweep_g1.json",
+      "file_sha256": "388df9cac9198836b1e59b5f92059fa5aefdf11ba112734d7071af356b27010d",
+      "content_sha256": "f8042a97eab1084c0ae3478a1b34b32b37c0799c5ae87a6a3323095fb78d4459",
+      "positive_output_count": 41,
+      "positive_output_trust_chain_complete": true,
+      "fresh_task_specific_recomputation_verified": true,
+      "task_gate_passed": false,
+      "definition_and_rerun_complete": true,
+      "formal_authorization": false
+    },
+    {
+      "result_id": "task_10_g2_v0_1",
+      "path": "benchmarks/structure_two/engineering_trust_checkpoint_2026_09_05/task_10_budget_sweep_g2.json",
+      "file_sha256": "bcfd54451f32534177d0a4d3ff69c14fe1dd71ad3e0b099d31b44f10b2c5ed11",
+      "content_sha256": "6b190e838e48978845575e2ac7e3ac540912af0d97b5952eb874fd8c45504647",
+      "positive_output_count": 9,
+      "positive_output_trust_chain_complete": true,
+      "fresh_task_specific_recomputation_verified": true,
+      "task_gate_passed": false,
+      "definition_and_rerun_complete": true,
+      "formal_authorization": false
+    }
+  ],
+  "p0_content_manifest": {
+    "path": "benchmarks/p0_checkpoint/content_manifest_v0_2.json",
+    "file_sha256": "67a03f1133c0f5995f1c7048b9f923933fc7ba0be793357470020ca6e1bd5b7c",
+    "manifest_sha256": "76642184bf8087645ffd39472da10cc7153a8e28abff7c1bb577bbae54503a2e",
+    "current_and_self_consistent": true
+  },
+  "historical_v0_5_source_bundle_audit": {
+    "path": "benchmarks/structure_two/structure_two_world_source_bundle_v0_5_compatibility_audit.json",
+    "file_sha256": "10de2c67f7a5f3f533dcb36dfd733e14df61faf48d30df0897b6ff249724fca7",
+    "current_file_count": 276,
+    "current_source_bundle_sha256": "3be69ff2a6677844c46a7be3d7fb63ed5abef9f9ff1fae95851517fc70bb249c",
+    "historical_bundle_compatible_with_current_tree": false,
+    "historical_evidence_rewritten": false
+  },
+  "aligned_reports": [
+    {
+      "path": "docs/结构二/方向结构二_当前证据总表_2026-09-02.md",
+      "sha256": "91bfc8030b654cae18e6710a1d2b1f7ad261f7774af135b32edf2bde9b566893"
+    },
+    {
+      "path": "docs/experiments/structure_two_task7_windowed_rejuvenation_result_2026-09-05.md",
+      "sha256": "8ca5167c2c1e94d721fb423dc8089521576ee75712d7a9f17d723c5480da1bbc"
+    },
+    {
+      "path": "docs/experiments/structure_two_task8_relative_probability_coupling_result_2026-09-05.md",
+      "sha256": "ac9032938fb7faae3861e29f8810b0561929d7b482c4c14c1e0427f28f92870d"
+    },
+    {
+      "path": "docs/experiments/structure_two_task10_particle_budget_result_2026-09-05.md",
+      "sha256": "185c861e6babf168ce683d62ac4d3e67934ef968bbabee3344c87145d8983d71"
+    },
+    {
+      "path": "docs/reviews/structure_two_backbone_b_repairs_two_round_adversarial_audit_2026-09-04.md",
+      "sha256": "288642f320b2215ec79bb31b487abfbbaa566cb42e5b655f0ccf0a5d0013abda"
+    },
+    {
+      "path": "docs/reviews/structure_two_external_confirmation_gate_d_closure_2026-09-05.md",
+      "sha256": "896534db42849c5038f22b6daa006c02213284c8bde70a78ec34e7a76d918b04"
+    }
+  ],
+  "external_confirmation": {
+    "native_reproductions": 0,
+    "component_cores": 6,
+    "gate_a_status": "BLOCKED_BEFORE_EXECUTION",
+    "gate_b_protocol": "structure-two-comparator-typed-dual-gate-b@0.8",
+    "gate_b_status": "FROZEN_NOT_EXECUTED/NOT_RUN",
+    "combined_status": "BLOCKED_FAIL_CLOSED",
+    "efficacy_interpretation_allowed": false
+  },
+  "seven_operator_ablation_authorized": false,
+  "external_validity_established": false,
+  "independent_custody_established": false,
+  "claim_boundary": "Only the bound Task 7/8/10 D0 results may be called recomputable D0 evidence. The checkpoint does not establish external validity, formal Task-10 resolution, Gate-B execution, seven-operator efficacy, or external method superiority.",
+  "positive_output_trust_chain": {
+    "/engineering_trust_gate_passed": "checkpoint_content+current_p0_manifest+current_source_inventory+task_artifact_positive_path_map+fresh_task_specific_recomputation+bound_reports",
+    "/recomputable_d0_evidence_allowed": "checkpoint_content+current_p0_manifest+current_source_inventory+task_artifact_positive_path_map+fresh_task_specific_recomputation+bound_reports",
+    "/p0_repairs/forged_complete_positive_path_closed": "checkpoint_content+current_p0_manifest+current_source_inventory+task_artifact_positive_path_map+fresh_task_specific_recomputation+bound_reports",
+    "/p0_repairs/authorization_schema_config_custody_drift_closed": "checkpoint_content+current_p0_manifest+current_source_inventory+task_artifact_positive_path_map+fresh_task_specific_recomputation+bound_reports",
+    "/p0_repairs/manifest_and_current_source_inventory_drift_closed": "checkpoint_content+current_p0_manifest+current_source_inventory+task_artifact_positive_path_map+fresh_task_specific_recomputation+bound_reports",
+    "/task_results/0/positive_output_trust_chain_complete": "checkpoint_content+current_p0_manifest+current_source_inventory+task_artifact_positive_path_map+fresh_task_specific_recomputation+bound_reports",
+    "/task_results/0/fresh_task_specific_recomputation_verified": "checkpoint_content+current_p0_manifest+current_source_inventory+task_artifact_positive_path_map+fresh_task_specific_recomputation+bound_reports",
+    "/task_results/1/positive_output_trust_chain_complete": "checkpoint_content+current_p0_manifest+current_source_inventory+task_artifact_positive_path_map+fresh_task_specific_recomputation+bound_reports",
+    "/task_results/1/fresh_task_specific_recomputation_verified": "checkpoint_content+current_p0_manifest+current_source_inventory+task_artifact_positive_path_map+fresh_task_specific_recomputation+bound_reports",
+    "/task_results/1/task_gate_passed": "checkpoint_content+current_p0_manifest+current_source_inventory+task_artifact_positive_path_map+fresh_task_specific_recomputation+bound_reports",
+    "/task_results/1/definition_and_rerun_complete": "checkpoint_content+current_p0_manifest+current_source_inventory+task_artifact_positive_path_map+fresh_task_specific_recomputation+bound_reports",
+    "/task_results/2/positive_output_trust_chain_complete": "checkpoint_content+current_p0_manifest+current_source_inventory+task_artifact_positive_path_map+fresh_task_specific_recomputation+bound_reports",
+    "/task_results/2/fresh_task_specific_recomputation_verified": "checkpoint_content+current_p0_manifest+current_source_inventory+task_artifact_positive_path_map+fresh_task_specific_recomputation+bound_reports",
+    "/task_results/2/definition_and_rerun_complete": "checkpoint_content+current_p0_manifest+current_source_inventory+task_artifact_positive_path_map+fresh_task_specific_recomputation+bound_reports",
+    "/task_results/3/positive_output_trust_chain_complete": "checkpoint_content+current_p0_manifest+current_source_inventory+task_artifact_positive_path_map+fresh_task_specific_recomputation+bound_reports",
+    "/task_results/3/fresh_task_specific_recomputation_verified": "checkpoint_content+current_p0_manifest+current_source_inventory+task_artifact_positive_path_map+fresh_task_specific_recomputation+bound_reports",
+    "/task_results/3/definition_and_rerun_complete": "checkpoint_content+current_p0_manifest+current_source_inventory+task_artifact_positive_path_map+fresh_task_specific_recomputation+bound_reports",
+    "/p0_content_manifest/current_and_self_consistent": "checkpoint_content+current_p0_manifest+current_source_inventory+task_artifact_positive_path_map+fresh_task_specific_recomputation+bound_reports"
+  },
+  "content_sha256": "00817000048e1126eaeabee38b460bfad3c609ed97d980f2cc490f2ca997ed6f"
+}

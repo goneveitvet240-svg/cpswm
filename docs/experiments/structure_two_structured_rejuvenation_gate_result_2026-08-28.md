@@ -1,5 +1,56 @@
 # 结构二结构化联合复苏阻断门 v0.2：结果
 
+> **证据降级声明（2026-09-02）**
+>
+> 本报告的数值结论已于 2026-09-02 经代码级核验后降级。表中 mean TV `0.08079`、truth support `0.9375`、candidate evaluations `533.938` 及「约为完整重跑 71.77%」不构成方法收益证据。
+> 原文全文保留，不做删改；降级范围与理由见下方「证据降级与仪器局限」一节。
+
+## 证据降级与仪器局限（2026-09-02 追加）
+
+本报告已包含一句正确的部分限定（该指标不含 proposal generation、契约验证或运行时开销）。2026-09-02 的代码核验进一步表明该限定仍然不足：分子与分母都由 `_top_states` 的全状态扫描次数决定（完整重跑 `360×2+24=744`，类型化修订 `360+|pool|`），因此 `71.77%` 度量的是全扫描被调用了几次，与算法效率无关。
+
+### 该实验实际证明了什么
+
+1. **contract conformance（合同一致性）**：`TypedParticleState → NeuralParticleProposal →
+   ParticleRevisionReceipt → normalize_particle_revisions` 这条调用链可以在有限状态下真实执行。
+2. **normalization check（归一化检查）**：$\sum_i w^{(i)}_t + w^{unresolved}_t = 1$ 在含显式
+   未决质量的情况下成立，未决项没有退化为异常出口。
+3. **finite-state truncation behavior（有限状态截断行为）**：在 360 个静态状态上，按结构化
+   邻域保留 24 个候选所损失的后验质量是可测且有界的。
+
+### 该实验不能证明的内容（已从收益证据链中移除）
+
+- ~~typed particle revision 比 exact enumeration（精确枚举）更高效~~；
+- ~~已证明 rejuvenation（回春修订）相对完整重跑的计算优势~~；
+- ~~已支持 Rao–Blackwellization（RB 化）的计算或方差收益~~；
+- ~~已支持 neural amortized proposer（神经摊销提议器）~~。
+
+### 已确认的仪器局限（2026-09-02 代码核验）
+
+1. **静态 360 状态**：`LatentState` 为 mechanism(2) × actor_path(6) × identity(2) ×
+   cause(5) × regime(3)，没有时间下标。
+2. **两帧条件独立**：`_state_log_target` 对固定状态在两帧上求和，帧与帧之间没有转移。
+3. **没有真实转移**：`ParticleRevisionReceipt.transition_log_probability` 恒为 `0.0`。
+4. **没有真实解析状态 $S_t$**：`statistic_state_ref` 是字符串 `f"analytic-state:{state.key}"`，
+   $(\alpha,A,b,\Lambda,\xi)$ 一个都不存在；`run_length` 由 `1 if short_regime else 4` 硬编码。
+5. **提议分布退化**：`proposal_log_probability = -log(len(selected))` 为均匀分布，
+   `_accepted_constraints()` 使全部 $\psi_j$ 通过，因此重要性权重退化为截断支持上的精确贝叶斯。
+6. **Top-K 方法内部先全枚举**：`_beam_result` 与 `_typed_particle_result` 均调用 `_top_states`，
+   而 `_top_states` 对全部 360 个状态计算精确 log target 后排序。所谓"近似"= 精确枚举 + 截断。
+7. **成本口径不统一**：`candidate_evaluations` 对 incremental beam 是 `360+K`、对
+   full-rerun beam 是 `360×2+K`、对类型化修订 v0.1 是 `360+|pool|`（v0.2 复苏门再加一个 K，
+   即 `360+|pool|+K`）、对 bootstrap PF 是 `K×frames`。前三者按构造 ≥360（即 ≥ 精确枚举
+   本身的代价），最后一个是真实采样代价。这些数字不在同一量纲上，不能同列比较，也不能
+   解释为墙钟时间或 FLOPs。
+
+### 结论
+
+本实验保留为 **development evidence（开发证据）**，用于证明合同可执行与归一化正确。
+它 **不再进入论文方法收益证据链**。骨干的近似质量、RB 收益、类型化约束收益和提议器收益
+必须由 `docs/结构二/方向结构二_骨干尺度证伪器协议_v0.1.md` 定义的链式阶梯任务重新测量。
+
+---
+
 日期：2026-08-28  
 协议：`structure-two-structured-rejuvenation-gate@0.2`  
 证据级别：finite synthetic blocking gate（有限合成阻断门），不是论文级证据

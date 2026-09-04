@@ -1,0 +1,56 @@
+{
+  "protocol_id": "structure-two-relative-probability-joint-coupling@0.2",
+  "status": "FROZEN_FOR_RERUN",
+  "frozen_on": "2026-09-04",
+  "interaction": {
+    "axes": [
+      "cause",
+      "mechanism"
+    ],
+    "positive_cell": {
+      "cause": "actor",
+      "mechanism": "handoff"
+    },
+    "potential_nats": 1.5,
+    "relative_odds_multiplier": 4.4816890703380645,
+    "changes_support": false
+  },
+  "sensitivity_strengths_nats": [
+    0.0,
+    0.5,
+    1.0,
+    1.5
+  ],
+  "negative_control_strength_nats": 0.0,
+  "primary_strength_nats": 1.5,
+  "truth_target_contract": {
+    "same_interaction": true,
+    "same_stochastic_generator_implementation_at_zero_and_positive_strength": true,
+    "common_scenario_seeds": true,
+    "all_previously_legal_cells_keep_positive_support": true
+  },
+  "registered_rerun": {
+    "gaps": 1,
+    "scenario_seeds": [
+      11,
+      23,
+      37,
+      41,
+      53
+    ],
+    "event_partition": "H+Z",
+    "factorization_tv_threshold": 0.01,
+    "action_distribution_distance_threshold": 0.01,
+    "mean_downstream_cost_advantage_threshold": 0.001,
+    "downstream_cost_advantage_definition": "factorized mean decision regret + factorized mean consolidation cost - joint mean consolidation cost"
+  },
+  "decision_rule": {
+    "belief_instrument_pass": "primary factorization TV exceeds both 0.01 and the paired zero-strength control by 0.01",
+    "action_endpoint_pass": "primary factorized-vs-joint action posterior distance is at least 0.01",
+    "directional_utility_benefit_pass": "mean factorized excess downstream cost is at least 0.001; positive means joint inference is better",
+    "overall_task_pass": "belief instrument pass AND action endpoint pass AND directional utility benefit pass",
+    "distributional_shift_alone_is_not_utility_benefit": true,
+    "instrument_pass_must_not_authorize_system_efficacy": true,
+    "seven_operator_ablation_authorized_by_this_protocol_alone": false
+  }
+}

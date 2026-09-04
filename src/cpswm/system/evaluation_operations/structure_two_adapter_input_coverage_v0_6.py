@@ -11,6 +11,9 @@ from cpswm.system.evaluation_operations.structure_two_external_adapter_fidelity_
     default_external_method_specifications_v0_2,
     external_artifact_sha256,
 )
+from cpswm.system.evaluation_operations.structure_two_external_inputs_v0_6 import (
+    CompleteExternalAdaptationInputsV06,
+)
 from cpswm.system.reproducibility import content_sha256
 
 PROTOCOL_ID = "structure-two-external-adapter-input-coverage@0.6"
@@ -42,6 +45,22 @@ def run_adapter_input_coverage_gate(
     input_bundle_sha256_by_arm = input_bundle_sha256_by_arm or {}
     if set(input_bundle_paths_by_arm) - expected or set(input_bundle_sha256_by_arm) - expected:
         raise ValueError("input bundle evidence contains an undeclared external arm")
+    typed_bundle_content_bound = not require_content_bound_inputs
+    if require_content_bound_inputs and (
+        set(input_bundle_paths_by_arm) == expected and set(input_bundle_sha256_by_arm) == expected
+    ):
+        unique_paths = {path.resolve() for path in input_bundle_paths_by_arm.values()}
+        unique_hashes = set(input_bundle_sha256_by_arm.values())
+        if len(unique_paths) == 1 and len(unique_hashes) == 1:
+            path = next(iter(unique_paths))
+            expected_sha256 = next(iter(unique_hashes))
+            try:
+                CompleteExternalAdaptationInputsV06.model_validate_json(
+                    path.read_text(encoding="utf-8")
+                )
+                typed_bundle_content_bound = external_artifact_sha256(path) == expected_sha256
+            except (OSError, ValueError):
+                typed_bundle_content_bound = False
     rows: list[dict[str, Any]] = []
     for specification in specifications:
         required = set(specification.required_adaptation_inputs)
@@ -50,15 +69,8 @@ def run_adapter_input_coverage_gate(
         if len(available) != len(available_values):
             raise ValueError(f"arm {specification.arm} declares duplicate available inputs")
         missing = tuple(sorted(required - available))
-        input_bundle_content_bound = not require_content_bound_inputs
-        if require_content_bound_inputs:
-            path = input_bundle_paths_by_arm.get(specification.arm)
-            expected_sha256 = input_bundle_sha256_by_arm.get(specification.arm)
-            if path is not None and expected_sha256 is not None:
-                try:
-                    input_bundle_content_bound = external_artifact_sha256(path) == expected_sha256
-                except (OSError, ValueError):
-                    input_bundle_content_bound = False
+        unexpected = tuple(sorted(available - required))
+        input_bundle_content_bound = typed_bundle_content_bound
         rows.append(
             {
                 "arm": specification.arm,
@@ -66,8 +78,10 @@ def run_adapter_input_coverage_gate(
                 "required_adaptation_inputs": specification.required_adaptation_inputs,
                 "available_adaptation_inputs": tuple(sorted(available)),
                 "missing_adaptation_inputs": missing,
+                "unexpected_adaptation_inputs": unexpected,
                 "input_bundle_content_bound": input_bundle_content_bound,
-                "passed": not missing and input_bundle_content_bound,
+                "typed_six_arm_bundle_validated": typed_bundle_content_bound,
+                "passed": not missing and not unexpected and input_bundle_content_bound,
             }
         )
     passed = all(bool(item["passed"]) for item in rows)

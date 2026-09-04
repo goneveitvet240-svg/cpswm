@@ -1,6 +1,22 @@
 {
   "protocol": "structure-two-world-validation-gate-a-spec@0.6",
   "status": "DEVELOPMENT_SPEC_TO_BE_EXTERNALLY_FROZEN",
+  "public_preregistered_validation": {
+    "evaluation_set_role": "public_preregistered_validation",
+    "confirmatory_gate_b_eligible": false,
+    "source_manifest": "configs/project_two_experiments/structure_two_world_generator_manifest_v0_5.json",
+    "world_distribution_sha256": "3918e06508855014d8884d08410494760ae6d6aabadc45070e23cc790a0674c1",
+    "validation_world_seeds": [450001, 450002, 450003, 450004, 450005, 450006, 450007, 450008, 450009, 450010, 450011, 450012],
+    "trajectory_seeds": [17, 31, 43],
+    "observation_seeds": [107, 227],
+    "excluded_world_seeds": [410001, 410002, 410003, 410004, 410005, 410006, 410007, 410008, 410009, 410010, 410011, 410012, 410013, 410014, 410015, 410016, 410017, 410018, 410019, 410020, 410021, 410022, 410023, 410024, 420001, 420002, 420003, 420004, 420005, 420006, 420007, 420008, 420009, 420010, 420011, 420012, 440001, 440002, 440003, 440004, 440005, 440006, 440007, 440008, 440009, 440010, 440011, 440012],
+    "estimator": {
+      "window_days": 35,
+      "context_shrinkage_pseudocounts": 0.0,
+      "owner_probability_threshold": 0.5
+    },
+    "bootstrap_draws": 4000
+  },
   "criteria": {
     "all_validation_worlds_are_structurally_unique": {"metric": "unique_validation_world_fraction", "operator": "ge", "threshold": 1.0},
     "put_back_sticky_rule_leaves_headroom": {"metric": "put_back_sticky_error", "operator": "ge", "threshold": 0.2},
@@ -21,5 +37,5 @@
   ],
   "required_signatures": ["executor", "custodian"],
   "gate_b_requires_passed_gate_a": true,
-  "content_sha256": "be0b2fadf6e123b70a99e26a166ea0adfbd826f74c6e43ef8ad3aa9c7341933b"
+  "content_sha256": "1255ac6e083114b1511fe2075bfef6d9ab69726137116452939aaee986e6d29d"
 }

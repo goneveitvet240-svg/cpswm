@@ -14,6 +14,12 @@ from cpswm.system.attestation import (
 from cpswm.system.evaluation_operations.structure_two_adapter_input_coverage_v0_6 import (
     run_adapter_input_coverage_gate,
 )
+from cpswm.system.evaluation_operations.structure_two_comparator_typed_dual_gate_b_v0_8 import (
+    PROTOCOL_ID as CURRENT_GATE_B_PROTOCOL_ID,
+)
+from cpswm.system.evaluation_operations.structure_two_comparator_typed_dual_gate_b_v0_8 import (
+    PROTOCOL_STATUS as CURRENT_GATE_B_PROTOCOL_STATUS,
+)
 from cpswm.system.evaluation_operations.structure_two_executor_conformance_v0_7 import (
     verify_executor_conformance_v0_7,
 )
@@ -32,6 +38,14 @@ from cpswm.system.evaluation_operations.structure_two_external_governance_v0_6 i
 )
 from cpswm.system.evaluation_operations.structure_two_external_inputs_v0_6 import (
     CompleteExternalAdaptationInputsV06,
+)
+from cpswm.system.evaluation_operations.structure_two_external_reference_cores_v0_6 import (
+    ReferenceCoreResult,
+    execution_log_entries_from_reference_core,
+)
+from cpswm.system.evaluation_operations.structure_two_frozen_run_v0_8 import (
+    load_frozen_holdout_opening_v0_8,
+    recompute_frozen_holdout_v0_8,
 )
 from cpswm.system.evaluation_operations.structure_two_gate_a_v0_6 import (
     GateAArtifactPathsV06,
@@ -73,11 +87,15 @@ EVIDENCE_INDEX_FIELDS = frozenset(
         "reference_execution_active_program_paths_by_scenario",
         "executor_conformance_report_path",
         "executor_conformance_test_artifact_path",
+        "executor_conformance_junit_artifact_path",
+        "executor_conformance_pytest_log_path",
         "gate_a_report_path",
         "gate_a_validation_input_bundle_path",
         "gate_a_deterministic_execution_log_path",
+        "gate_a_frozen_holdout_opening_path",
         "externally_frozen_manifest_path",
         "signed_gate_b_trace_paths",
+        "gate_b_execution_artifact_path",
         "producer_source_bundle_sha256",
         "expected_arm_implementation_bundles",
         "trust_anchor_registry_path",
@@ -177,9 +195,16 @@ def _load_external_artifact_paths(
         resolved = {key: _resolve_path(repository_root, raw_row.get(key)) for key in required}
         if any(path is None for path in resolved.values()):
             raise ValueError(f"v0.6 external artifact-path row is incomplete: {arm}")
+        raw_fidelity_test_bundle = raw_row.get("fidelity_test_bundle")
+        fidelity_test_bundle = _resolve_path(repository_root, raw_fidelity_test_bundle)
+        if raw_fidelity_test_bundle is not None and fidelity_test_bundle is None:
+            raise ValueError(
+                f"v0.6 external artifact-path fidelity test bundle is malformed: {arm}"
+            )
         official = _resolve_path(repository_root, raw_row.get("official_code_checkout"))
         rows[arm] = ExternalEvidenceArtifactPaths(
             **cast(dict[str, Path], resolved),
+            fidelity_test_bundle=fidelity_test_bundle,
             official_code_checkout=official,
         )
     return rows
@@ -250,10 +275,56 @@ def build_v0_6_development_readiness(
     )
     if source_register.get("protocol") != "structure-two-external-method-source-register@0.2":
         raise ValueError("v0.6 external-method source register protocol mismatch")
+    frozen_manifest_path = _resolve_path(
+        repository_root, evidence_index.get("externally_frozen_manifest_path")
+    )
+    frozen_manifest: FrozenGateBManifestV06 | None = None
+    frozen_manifest_validation_error: str | None = None
+    if frozen_manifest_path is not None:
+        try:
+            if (
+                role_verifiers.get("reviewer") is None
+                or role_verifiers.get("custodian") is None
+                or trust_registry is None
+                or trusted_enrollment_authority is None
+            ):
+                raise ValueError("frozen-manifest trust anchors are not externally enrolled")
+            raw_frozen_manifest = cast(
+                dict[str, Any],
+                json.loads(frozen_manifest_path.read_text(encoding="utf-8")),
+            )
+            frozen_manifest = verify_frozen_gate_b_manifest_v0_6(
+                raw_frozen_manifest,
+                development_draft=draft,
+                source_register=source_register,
+                gate_a_spec=gate_a_spec,
+                trust_anchor_registry=trust_registry,
+                reviewer=role_verifiers["reviewer"],
+                executor=role_verifiers["executor"],
+                custodian=role_verifiers["custodian"],
+                enrollment_authority=trusted_enrollment_authority,
+            )
+        except (OSError, ValueError) as exc:
+            frozen_manifest_validation_error = str(exc)
     source_register_content_sha256 = cast(str, source_register["content_sha256"])
     legacy = _verified_content_payload(legacy_path, label="historical v0.5 result")
     historical_v0_5_audit = audit_v0_5_source_bundle_evidence(repository_root)
     specifications = default_external_method_specifications_v0_2()
+    canonical_fidelity_test_specs_frozen = all(
+        _is_sha256(item.fidelity_test_bundle_sha256)
+        and bool(item.component_parity_test_nodes)
+        and bool(item.native_protocol_test_nodes)
+        and bool(item.adaptation_parity_test_nodes)
+        for item in specifications
+    )
+    canonical_official_build_specs_frozen = all(
+        not item.official_code_required
+        or (
+            bool(item.official_build_command)
+            and item.official_build_command.count("{output_dir}") == 1
+        )
+        for item in specifications
+    )
     expected_external_arms = {item.arm for item in specifications}
     source_rows = source_register.get("methods")
     if (
@@ -298,7 +369,13 @@ def build_v0_6_development_readiness(
         source_acquisition_validation_error: str | None = None
         receipt_path = source_receipt_paths.get(specification.arm)
         reviewer_verifier = role_verifiers.get("reviewer")
-        if source_path is not None and receipt_path is not None and reviewer_verifier:
+        if (
+            source_path is not None
+            and receipt_path is not None
+            and reviewer_verifier
+            and frozen_manifest is not None
+            and trust_registry is not None
+        ):
             try:
                 artifact_paths = external_artifact_paths.get(specification.arm)
                 receipt_payload = cast(
@@ -317,6 +394,8 @@ def build_v0_6_development_readiness(
                         if artifact_paths is not None
                         else None
                     ),
+                    not_before_utc=max(role.enrolled_at_utc for role in trust_registry.role_keys),
+                    not_after_utc=frozen_manifest.frozen_at_utc,
                 )
                 source_acquisition_receipt_verified = True
             except (OSError, ValueError) as exc:
@@ -349,7 +428,9 @@ def build_v0_6_development_readiness(
             }
         )
     source_identification_complete = all(bool(row["passed"]) for row in source_identification_rows)
-    reference_core_register = json.loads(reference_core_register_path.read_text(encoding="utf-8"))
+    reference_core_register = _verified_content_payload(
+        reference_core_register_path, label="v0.6 reference-core register"
+    )
     if (
         reference_core_register.get("protocol")
         != "structure-two-external-reference-core-register@0.6"
@@ -427,6 +508,12 @@ def build_v0_6_development_readiness(
     reviewer_verifier = role_verifiers.get("reviewer")
     executor_verifier = role_verifiers.get("executor")
     custodian_verifier = role_verifiers.get("custodian")
+    fidelity_context_complete = (
+        frozen_manifest is not None
+        and complete_input_bundle_valid
+        and reviewer_verifier is not None
+        and executor_verifier is not None
+    )
     fidelity = run_external_fidelity_gate_v0_2(
         specifications,
         external_evidence,
@@ -439,6 +526,18 @@ def build_v0_6_development_readiness(
         trusted_executor_public_key_sha256=(
             executor_verifier.public_key_sha256 if executor_verifier else None
         ),
+        enforce_canonical_catalog=fidelity_context_complete,
+        expected_manifest_sha256=(
+            frozen_manifest.immutable_manifest_sha256 if frozen_manifest else None
+        ),
+        expected_producer_run_id=(
+            frozen_manifest.preregistered_producer_run_id if frozen_manifest else None
+        ),
+        expected_input_bundle_sha256_by_arm=input_bundle_hashes,
+        expected_primary_source_sha256_by_arm={
+            arm: str(source_row_by_arm[arm].get("primary_source_sha256", ""))
+            for arm in expected_external_arms
+        },
     )
 
     producer_source_bundle_sha256 = evidence_index.get("producer_source_bundle_sha256")
@@ -488,6 +587,8 @@ def build_v0_6_development_readiness(
             if (
                 not complete_input_bundle_valid
                 or executor_verifier is None
+                or frozen_manifest is None
+                or not _is_sha256(producer_source_bundle_sha256)
                 or set(source_artifact_paths) != set(CANONICAL_SIX_ARMS)
                 or not set(CANONICAL_SIX_ARMS) <= set(expected_implementation_bundles)
             ):
@@ -514,6 +615,9 @@ def build_v0_6_development_readiness(
                 active_scenario_program_paths=reference_active_program_paths,
                 trusted_executor=executor_verifier,
                 trusted_scenario_executor=executor_verifier,
+                expected_immutable_manifest_sha256=(frozen_manifest.immutable_manifest_sha256),
+                expected_producer_run_id=(frozen_manifest.preregistered_producer_run_id),
+                expected_producer_source_bundle_sha256=cast(str, producer_source_bundle_sha256),
             )
         except (OSError, ValueError) as exc:
             reference_execution_validation_error = str(exc)
@@ -525,6 +629,14 @@ def build_v0_6_development_readiness(
         repository_root,
         evidence_index.get("executor_conformance_test_artifact_path"),
     )
+    conformance_junit_artifact_path = _resolve_path(
+        repository_root,
+        evidence_index.get("executor_conformance_junit_artifact_path"),
+    )
+    conformance_pytest_log_path = _resolve_path(
+        repository_root,
+        evidence_index.get("executor_conformance_pytest_log_path"),
+    )
     executor_conformance_report: dict[str, Any] | None = None
     executor_conformance_validation_error: str | None = None
     if conformance_path is not None:
@@ -534,6 +646,8 @@ def build_v0_6_development_readiness(
                 or reviewer_verifier is None
                 or not _is_sha256(producer_source_bundle_sha256)
                 or conformance_test_artifact_path is None
+                or conformance_junit_artifact_path is None
+                or conformance_pytest_log_path is None
             ):
                 raise ValueError("executor-conformance prerequisites are incomplete")
             raw_conformance = cast(
@@ -547,6 +661,8 @@ def build_v0_6_development_readiness(
                 producer_source_bundle_sha256=cast(str, producer_source_bundle_sha256),
                 trusted_tester=reviewer_verifier,
                 trusted_executor=executor_verifier,
+                junit_artifact_path=conformance_junit_artifact_path,
+                pytest_log_path=conformance_pytest_log_path,
             )
         except (OSError, ValueError) as exc:
             executor_conformance_validation_error = str(exc)
@@ -556,6 +672,8 @@ def build_v0_6_development_readiness(
     gate_a_report_content_bound = False
     gate_a_protocol_exact = False
     gate_a_passed = False
+    gate_a_public_preregistered_validation_only = False
+    sealed_confirmatory_gate_b_holdout_verified = False
     gate_a_validation_error: str | None = None
     gate_a_input_path = _resolve_path(
         repository_root, evidence_index.get("gate_a_validation_input_bundle_path")
@@ -564,37 +682,10 @@ def build_v0_6_development_readiness(
         repository_root,
         evidence_index.get("gate_a_deterministic_execution_log_path"),
     )
-
-    frozen_manifest_path = _resolve_path(
-        repository_root, evidence_index.get("externally_frozen_manifest_path")
+    gate_a_holdout_opening_path = _resolve_path(
+        repository_root,
+        evidence_index.get("gate_a_frozen_holdout_opening_path"),
     )
-    frozen_manifest: FrozenGateBManifestV06 | None = None
-    frozen_manifest_validation_error: str | None = None
-    if frozen_manifest_path is not None:
-        try:
-            if (
-                reviewer_verifier is None
-                or custodian_verifier is None
-                or trust_registry is None
-                or trusted_enrollment_authority is None
-            ):
-                raise ValueError("frozen-manifest trust anchors are not externally enrolled")
-            raw_frozen_manifest = cast(
-                dict[str, Any],
-                json.loads(frozen_manifest_path.read_text(encoding="utf-8")),
-            )
-            frozen_manifest = verify_frozen_gate_b_manifest_v0_6(
-                raw_frozen_manifest,
-                development_draft=draft,
-                source_register=source_register,
-                gate_a_spec=gate_a_spec,
-                trust_anchor_registry=trust_registry,
-                reviewer=reviewer_verifier,
-                custodian=custodian_verifier,
-                enrollment_authority=trusted_enrollment_authority,
-            )
-        except (OSError, ValueError) as exc:
-            frozen_manifest_validation_error = str(exc)
 
     if gate_a_path is not None:
         try:
@@ -605,6 +696,7 @@ def build_v0_6_development_readiness(
                 or custodian_verifier is None
                 or gate_a_input_path is None
                 or gate_a_log_path is None
+                or gate_a_holdout_opening_path is None
                 or not _is_sha256(producer_source_bundle_sha256)
                 or set(expected_implementation_bundles) != set(draft["expected_arms"])
             ):
@@ -618,6 +710,7 @@ def build_v0_6_development_readiness(
                 artifact_paths=GateAArtifactPathsV06(
                     validation_input_bundle=gate_a_input_path,
                     deterministic_execution_log=gate_a_log_path,
+                    frozen_holdout_opening=gate_a_holdout_opening_path,
                 ),
                 producer_source_bundle_sha256=cast(str, producer_source_bundle_sha256),
                 expected_arm_implementation_bundles=(expected_implementation_bundles),
@@ -628,6 +721,12 @@ def build_v0_6_development_readiness(
             gate_a_report_content_bound = True
             gate_a_protocol_exact = True
             gate_a_passed = gate_a_record.gate_a_passed
+            gate_a_public_preregistered_validation_only = (
+                gate_a_record.evaluation_set_role == "public_preregistered_validation"
+            )
+            sealed_confirmatory_gate_b_holdout_verified = bool(
+                gate_a_record.sealed_gate_b_holdout_verified
+            )
         except (OSError, ValueError) as exc:
             gate_a_validation_error = str(exc)
 
@@ -641,6 +740,27 @@ def build_v0_6_development_readiness(
     )
     if len(trace_paths) != len(raw_trace_paths):
         raise ValueError("v0.6 signed Gate B trace path is malformed")
+    gate_b_execution_artifact_path = _resolve_path(
+        repository_root, evidence_index.get("gate_b_execution_artifact_path")
+    )
+    implementation_action_executor_registered = False
+    implementation_action_execution_verified = False
+    implementation_action_execution_validation_error: str | None = None
+    if gate_b_execution_artifact_path is not None:
+        try:
+            raw_action_artifact = json.loads(gate_b_execution_artifact_path.read_bytes())
+            mode = (
+                raw_action_artifact.get("action_execution_mode")
+                if isinstance(raw_action_artifact, dict)
+                else None
+            )
+            if mode != "fidelity_validated_implementation":
+                raise ValueError("Gate B action artifact is reduced-proxy diagnostic output")
+            raise ValueError(
+                "no canonical per-episode fidelity implementation executor is registered"
+            )
+        except (OSError, json.JSONDecodeError, ValueError) as exc:
+            implementation_action_execution_validation_error = str(exc)
     gate_b_report: dict[str, Any] | None = None
     gate_b_validation_error: str | None = None
     can_attempt_gate_b = all(
@@ -648,17 +768,28 @@ def build_v0_6_development_readiness(
             gate_a_report is not None,
             gate_a_protocol_exact,
             gate_a_passed,
+            sealed_confirmatory_gate_b_holdout_verified,
             frozen_manifest is not None,
             len(trace_paths) == len(draft["expected_arms"]),
             _is_sha256(producer_source_bundle_sha256),
             set(expected_implementation_bundles) == set(draft["expected_arms"]),
             custodian_verifier is not None,
+            executor_verifier is not None,
+            executor_conformance_report is not None,
+            reference_execution is not None,
+            gate_a_holdout_opening_path is not None,
+            gate_b_execution_artifact_path is not None,
+            implementation_action_execution_verified,
         )
     )
     if can_attempt_gate_b:
         assert gate_a_report is not None
         assert frozen_manifest is not None
         assert custodian_verifier is not None
+        assert executor_verifier is not None
+        assert reference_execution is not None
+        assert gate_a_holdout_opening_path is not None
+        assert gate_b_execution_artifact_path is not None
         try:
             trace_payloads = tuple(
                 cast(dict[str, Any], json.loads(path.read_text(encoding="utf-8")))
@@ -671,6 +802,32 @@ def build_v0_6_development_readiness(
                 }
                 for requirement in requirements
             }
+            opening = load_frozen_holdout_opening_v0_8(
+                gate_a_holdout_opening_path,
+                expected_manifest_sha256=frozen_manifest.immutable_manifest_sha256,
+                expected_producer_run_id=(frozen_manifest.preregistered_producer_run_id),
+                expected_validation_seed_commitment_sha256=(
+                    frozen_manifest.validation_seed_commitment_sha256
+                ),
+                expected_holdout_commitment_sha256=(frozen_manifest.holdout_commitment_sha256),
+            )
+            recomputed_holdout = recompute_frozen_holdout_v0_8(opening)
+            expected_external_logs = {}
+            for arm in CANONICAL_SIX_ARMS:
+                result_payload = cast(
+                    dict[str, Any],
+                    json.loads(reference_result_paths[arm].read_text(encoding="utf-8")),
+                )
+                result_payload.pop("content_sha256", None)
+                result = ReferenceCoreResult.model_validate(result_payload)
+                expected_external_logs[arm] = execution_log_entries_from_reference_core(
+                    result,
+                    invocation_prefix=(
+                        f"{frozen_manifest.immutable_manifest_sha256}:"
+                        f"{frozen_manifest.preregistered_producer_run_id}:{arm}"
+                    ),
+                    implementation_bundle_sha256=(expected_implementation_bundles[arm]),
+                )
             gate_b_report = run_signed_stratified_gate_b_v0_6(
                 trace_payloads,
                 expected_arms=tuple(draft["expected_arms"]),
@@ -684,6 +841,16 @@ def build_v0_6_development_readiness(
                 expected_producer_run_id=(frozen_manifest.preregistered_producer_run_id),
                 trusted_custodian_key_id=custodian_verifier.key_id,
                 trusted_custodian_public_key_sha256=(custodian_verifier.public_key_sha256),
+                canonical_execution_artifact_path=gate_b_execution_artifact_path,
+                recomputed_holdout=recomputed_holdout,
+                expected_six_arm_reference_execution_content_sha256=str(
+                    reference_execution["content_sha256"]
+                ),
+                expected_holdout_opening_artifact_file_sha256=(
+                    external_artifact_sha256(gate_a_holdout_opening_path)
+                ),
+                trusted_executor=executor_verifier,
+                expected_external_execution_log_entries_by_arm=(expected_external_logs),
             )
         except (OSError, ValueError) as exc:
             gate_b_validation_error = str(exc)
@@ -695,6 +862,10 @@ def build_v0_6_development_readiness(
             source_identification_complete,
             input_coverage["adapter_input_coverage_gate_passed"] is True,
             implementation_bundles_staged,
+            implementation_action_executor_registered,
+            canonical_fidelity_test_specs_frozen,
+            canonical_official_build_specs_frozen,
+            fidelity["isolated_external_execution_environment_verified"] is True,
             trust_anchors_enrolled,
             role_control_independence_attested,
             draft["status"] == "DEVELOPMENT_NOT_FROZEN",
@@ -703,14 +874,19 @@ def build_v0_6_development_readiness(
     )
     combined_authorization_allowed = all(
         (
+            # v0.6 and v0.7 are historical.  The comparator-typed v0.8
+            # protocol is frozen but has no independently attested formal run.
+            False,
             gate_a_report_content_bound,
             gate_a_protocol_exact,
             gate_a_passed,
+            sealed_confirmatory_gate_b_holdout_verified,
             executor_conformance_report is not None,
             reference_execution is not None,
             source_identification_complete,
             input_coverage["adapter_input_coverage_gate_passed"] is True,
             implementation_bundles_staged,
+            implementation_action_execution_verified,
             gate_b_passed,
             fidelity["external_fidelity_gate_passed"] is True,
             trust_anchors_enrolled,
@@ -730,6 +906,20 @@ def build_v0_6_development_readiness(
         )
     if not implementation_bundles_staged:
         design_freeze_blockers.append("six external implementation bundles are not staged")
+    if not implementation_action_executor_registered:
+        design_freeze_blockers.append(
+            "no canonical per-episode Gate B executor is registered for the frozen implementations"
+        )
+    if not canonical_fidelity_test_specs_frozen:
+        design_freeze_blockers.append(
+            "six canonical external arms lack frozen verifier-owned fidelity test bundles"
+        )
+    if not canonical_official_build_specs_frozen:
+        design_freeze_blockers.append("official-code arms lack frozen reproducible build commands")
+    if fidelity["isolated_external_execution_environment_verified"] is not True:
+        design_freeze_blockers.append(
+            "external fidelity and official builds lack a verified isolated container executor"
+        )
     if fidelity["native_fidelity_gate_passed"] is not True:
         authorization_blockers.append(
             "six external arms lack complete signed native reproduction evidence"
@@ -750,16 +940,29 @@ def build_v0_6_development_readiness(
         authorization_blockers.append(
             "six-arm reference execution lacks verified result and Active Dreaming artifacts"
         )
+    if not implementation_action_execution_verified:
+        authorization_blockers.append(
+            "Gate B actions were not produced by the fidelity-validated implementation bundles"
+        )
     if not gate_a_report_content_bound or not gate_a_protocol_exact:
         authorization_blockers.append(
             "v0.6 Gate A lacks verified inputs, execution log, or dual signatures"
         )
     elif not gate_a_passed:
         authorization_blockers.append("v0.6 Gate A did not pass")
+    if not sealed_confirmatory_gate_b_holdout_verified:
+        authorization_blockers.append(
+            "public preregistered validation seeds are not a custodian-sealed "
+            "confirmatory Gate B holdout"
+        )
     if not gate_b_scored:
         authorization_blockers.append("v0.6 signed mechanism-action traces are missing or invalid")
     elif not gate_b_passed:
         authorization_blockers.append("v0.6 signed Gate B was scored and did not pass")
+    authorization_blockers.append(
+        "v0.6 and v0.7 Gate B are historical only; current comparator-typed v0.8 "
+        "is frozen but lacks an independently verified formal causal receipt"
+    )
     if frozen_manifest is None:
         authorization_blockers.append(
             "v0.6 canonical design lacks authority-timestamped triple-signed external freeze"
@@ -793,6 +996,9 @@ def build_v0_6_development_readiness(
         "external_reference_component_core_count": len(reference_rows),
         "external_reference_cores_are_native_reproductions": False,
         "executor_capabilities_verified_by_signed_conformance": (
+            executor_conformance_report is not None
+        ),
+        "executor_conformance_verifier_reexecution_passed": (
             executor_conformance_report is not None
         ),
         "executor_conformance_report": executor_conformance_report,
@@ -834,6 +1040,11 @@ def build_v0_6_development_readiness(
         "complete_adaptation_input_bundle_valid": complete_input_bundle_valid,
         "adapter_input_coverage": input_coverage,
         "external_implementation_bundles_content_bound": implementation_bundles_staged,
+        "canonical_fidelity_test_specs_frozen": canonical_fidelity_test_specs_frozen,
+        "canonical_official_build_specs_frozen": (canonical_official_build_specs_frozen),
+        "gate_b_fidelity_implementation_executor_registered": (
+            implementation_action_executor_registered
+        ),
         "external_fidelity": fidelity,
         "trust_anchor_registry_externally_verified": trust_anchors_enrolled,
         "trust_anchor_registry_validation_error": trust_registry_validation_error,
@@ -849,18 +1060,37 @@ def build_v0_6_development_readiness(
         "gate_a_report_content_bound": gate_a_report_content_bound,
         "gate_a_protocol_exact": gate_a_protocol_exact,
         "gate_a_passed": gate_a_passed,
+        "gate_a_public_preregistered_validation_only": (
+            gate_a_public_preregistered_validation_only
+        ),
+        "sealed_confirmatory_gate_b_holdout_verified": (
+            sealed_confirmatory_gate_b_holdout_verified
+        ),
         "gate_a_validation_error": gate_a_validation_error,
+        "gate_b_actions_from_fidelity_validated_implementation_verified": (
+            implementation_action_execution_verified
+        ),
+        "implementation_action_execution_validation_error": (
+            implementation_action_execution_validation_error
+        ),
         "signed_gate_b": gate_b_report,
         "gate_b_validation_error": gate_b_validation_error,
         "v0_6_gate_b_scored": gate_b_scored,
         "v0_6_gate_b_passed": gate_b_passed,
+        "v0_6_gate_b_historical_only": True,
+        "current_v0_7_dual_gate_receipt_verified": False,
+        "current_gate_b_protocol_id": CURRENT_GATE_B_PROTOCOL_ID,
+        "current_gate_b_protocol_status": CURRENT_GATE_B_PROTOCOL_STATUS,
+        "current_v0_8_formal_gate_b_receipt_verified": False,
         "external_method_efficacy_comparison_allowed": combined_authorization_allowed,
         "design_evidence_ready_for_external_freeze": (design_evidence_ready_for_external_freeze),
         "ready_for_external_custodian_run": (
             frozen_manifest is not None
             and reference_execution is not None
             and executor_conformance_report is not None
+            and implementation_action_execution_verified
             and gate_a_passed
+            and sealed_confirmatory_gate_b_holdout_verified
             and fidelity["native_fidelity_gate_passed"] is True
             and fidelity["adaptation_fidelity_gate_passed"] is True
         ),
@@ -886,7 +1116,9 @@ def build_v0_6_development_readiness(
             "over a timestamp, ledger sequence, nonce, preregistered producer run, validation "
             "seed commitment, and holdout commitment; this repository cannot independently "
             "derive external time or human role-control independence. Historical v0.5 evidence "
-            "remains self-consistent but not externally immutable or fully authenticatable."
+            "remains self-consistent but not externally immutable or fully authenticatable. "
+            "The code-pinned seeds are public preregistered validation data, not a sealed "
+            "confirmatory Gate B holdout."
         ),
     }
     report["content_sha256"] = content_sha256(report)

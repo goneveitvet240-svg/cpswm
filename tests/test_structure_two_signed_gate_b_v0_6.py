@@ -148,6 +148,40 @@ def _resign(payload: dict[str, object]) -> dict[str, object]:
     return result
 
 
+def _two_episode_payload(arm: str, event: str) -> dict[str, object]:
+    payload = _payload(arm, (f"{arm}-action-1",), event)
+    bundle = HASH_A if arm == "left" else HASH_B
+    initial_state = content_sha256({"arm": arm, "episode": "episode-2", "state": "start"})
+    output_state = content_sha256({"arm": arm, "episode": "episode-2", "previous": initial_state})
+    transition_payload = {"arm": arm, "episode": "episode-2", "core": 0}
+    transition_sha256 = content_sha256(transition_payload)
+    log = MechanismExecutionLogEntry(
+        sequence_index=0,
+        invocation_id=f"{arm}:episode-2:0",
+        event=event,
+        component_id=f"{arm}-component",
+        input_state_sha256=initial_state,
+        output_state_sha256=output_state,
+        implementation_bundle_sha256=bundle,
+        core_transition_sha256=transition_sha256,
+        core_transition_payload=transition_payload,
+    )
+    receipt = MechanismTransitionReceipt(
+        invocation_id=log.invocation_id,
+        event=event,
+        component_id=log.component_id,
+        input_state_sha256=initial_state,
+        output_state_sha256=output_state,
+        implementation_bundle_sha256=bundle,
+        core_transition_sha256=transition_sha256,
+        execution_log_entry_sha256=log.content_sha256,
+    )
+    payload["episode_actions"].append(["episode-2", [f"{arm}-action-2"]])
+    payload["episode_mechanism_receipts"].append(["episode-2", [[receipt.model_dump(mode="json")]]])
+    payload["episode_execution_log_entries"].append(["episode-2", [[log.model_dump(mode="json")]]])
+    return _resign(payload)
+
+
 def test_complete_signed_pair_can_pass_but_not_authorize_external_efficacy() -> None:
     report = _run(
         (
@@ -155,8 +189,23 @@ def test_complete_signed_pair_can_pass_but_not_authorize_external_efficacy() -> 
             _payload("right", ("b", "a", "a", "a"), "right-core"),
         )
     )
-    assert report["gate_b_passed"] is True
+    assert report["protocol"].endswith("-diagnostic@0.6")
+    assert report["canonical_protocol_enforced"] is False
+    assert report["diagnostic_gate_b_passed"] is True
+    assert report["gate_b"]["gate_b_passed"] is False
+    assert report["diagnostic_gate_b"]["gate_b_passed"] is True
+    assert report["gate_b_passed"] is False
     assert report["external_method_efficacy_comparison_allowed"] is False
+
+
+def test_independent_episode_state_and_sequence_restart_is_accepted() -> None:
+    report = _run(
+        (
+            _two_episode_payload("left", "left-core"),
+            _two_episode_payload("right", "right-core"),
+        )
+    )
+    assert report["diagnostic_gate_b_passed"] is True
 
 
 def test_rewriting_mechanism_events_and_content_hash_breaks_signature() -> None:

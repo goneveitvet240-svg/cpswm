@@ -7,7 +7,7 @@ import math
 from collections.abc import Mapping
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any
+from typing import Any, Literal
 
 from pydantic import Field, model_validator
 
@@ -29,6 +29,7 @@ from cpswm.system.evaluation_operations.structure_two_frozen_run_v0_8 import (
     RecomputedFrozenHoldoutV08,
     load_frozen_holdout_opening_v0_8,
     recompute_frozen_holdout_v0_8,
+    validate_canonical_holdout_opening_v0_8,
 )
 from cpswm.system.reproducibility import content_sha256
 
@@ -48,7 +49,9 @@ class GateAArtifactPathsV06:
 
 class GateAReportV06(ContractModel):
     protocol: str = Field(pattern=r"^structure-two-world-validation-gate-a@0\.6$")
-    status: str = Field(pattern=r"^EXECUTED_AFTER_EXTERNAL_FREEZE$")
+    status: str = Field(pattern=r"^EXECUTED_PUBLIC_PREREGISTERED_VALIDATION_AFTER_EXTERNAL_FREEZE$")
+    evaluation_set_role: Literal["public_preregistered_validation"]
+    sealed_gate_b_holdout_verified: Literal[False]
     immutable_manifest_sha256: str = Field(pattern=r"^[0-9a-f]{64}$")
     trust_anchor_registry_identifier: str = Field(pattern=r"^sha256:[0-9a-f]{64}$")
     producer_run_id: str = Field(min_length=1)
@@ -66,7 +69,7 @@ class GateAReportV06(ContractModel):
     criteria: dict[str, bool]
     exit_code: int
     gate_a_passed: bool
-    gate_b_allowed: bool
+    gate_b_allowed: Literal[False]
     executor_key_id: str = Field(min_length=1)
     executor_public_key_base64: str = Field(min_length=1)
     executor_public_key_sha256: str = Field(pattern=r"^[0-9a-f]{64}$")
@@ -80,7 +83,7 @@ class GateAReportV06(ContractModel):
     @model_validator(mode="after")
     def validate_decision_shape(self) -> GateAReportV06:
         expected = self.exit_code == 0 and bool(self.criteria) and all(self.criteria.values())
-        if self.gate_a_passed is not expected or self.gate_b_allowed is not expected:
+        if self.gate_a_passed is not expected:
             raise ValueError("Gate A stored decision does not follow its criteria and exit code")
         if len(set(self.ordered_rollout_ids)) != len(self.ordered_rollout_ids):
             raise ValueError("Gate A rollout IDs must be unique")
@@ -175,6 +178,7 @@ def _validate_input_and_log(
         ),
         expected_holdout_commitment_sha256=(frozen_manifest.holdout_commitment_sha256),
     )
+    validate_canonical_holdout_opening_v0_8(opening, gate_a_spec)
     if input_payload.get("frozen_holdout_opening_artifact_file_sha256") != (
         external_artifact_sha256(paths.frozen_holdout_opening)
     ):
@@ -260,7 +264,9 @@ def make_gate_a_report_v0_6(
     passed = exit_code == 0 and all(criteria.values())
     unsigned = GateAReportV06(
         protocol=PROTOCOL_ID,
-        status="EXECUTED_AFTER_EXTERNAL_FREEZE",
+        status="EXECUTED_PUBLIC_PREREGISTERED_VALIDATION_AFTER_EXTERNAL_FREEZE",
+        evaluation_set_role="public_preregistered_validation",
+        sealed_gate_b_holdout_verified=False,
         immutable_manifest_sha256=frozen_manifest.immutable_manifest_sha256,
         trust_anchor_registry_identifier=trust_anchor_registry.registry_identifier,
         producer_run_id=frozen_manifest.preregistered_producer_run_id,
@@ -284,7 +290,7 @@ def make_gate_a_report_v0_6(
         criteria=criteria,
         exit_code=exit_code,
         gate_a_passed=passed,
-        gate_b_allowed=passed,
+        gate_b_allowed=False,
         executor_key_id=executor_verifier.key_id,
         executor_public_key_base64=executor_verifier.public_key_base64,
         executor_public_key_sha256=executor_verifier.public_key_sha256,
@@ -292,8 +298,9 @@ def make_gate_a_report_v0_6(
         custodian_public_key_base64=custodian_verifier.public_key_base64,
         custodian_public_key_sha256=custodian_verifier.public_key_sha256,
         claim_boundary=(
-            "Gate A establishes only the frozen validation target and execution criteria. "
-            "It does not establish Gate B, external fidelity, or efficacy."
+            "Gate A evaluates a public preregistered validation set. Its seeds are visible "
+            "before implementation freeze, so it does not verify a sealed confirmatory "
+            "holdout and cannot authorize Gate B, external fidelity, or efficacy."
         ),
     )
     signable = _attested_payload(unsigned)
@@ -368,7 +375,7 @@ def verify_gate_a_report_v0_6(
         or record.exit_code != log_payload["exit_code"]
     ):
         raise ValueError("Gate A report differs from deterministic execution artifacts")
-    if record.gate_a_passed is not True or record.gate_b_allowed is not True:
+    if record.gate_a_passed is not True:
         raise ValueError("failed Gate A forbids Gate B scoring")
     if (
         record.executor_key_id != executor.key_id

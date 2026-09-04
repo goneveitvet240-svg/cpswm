@@ -55,7 +55,7 @@ def build_manifest() -> dict[str, object]:
     }
     payload: dict[str, object] = {
         "schema_version": "p0-checkpoint-content-manifest@0.2",
-        "generated_for_date": "2026-09-02",
+        "generated_for_date": "2026-09-05",
         "hash_algorithm": "sha256(path\\0file_sha256\\n)",
         "scopes": {},
     }

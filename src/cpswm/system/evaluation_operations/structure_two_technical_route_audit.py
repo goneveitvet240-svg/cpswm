@@ -29,6 +29,8 @@ from .structure_two_evidence_artifacts import (
     StructureTwoRoute,
 )
 
+REQUIRED_TASK9_COUPLINGS = frozenset(CrossModuleCouplingKind)
+
 
 class RouteEvidenceStatus(StrEnum):
     IMPLEMENTED_CAPABILITY = "implemented_capability"
@@ -101,8 +103,15 @@ class StructureTwoClaimGateEvaluator:
             causal_missing.append("verified_full_rerun_equivalence")
         if not bundle.numerical_downdate_stable:
             causal_missing.append("verified_numerical_downdate_stability")
-        if len(causal_couplings) < 3:
-            causal_missing.append("three_verified_causal_couplings")
+        observed_causal = {item.coupling for item in causal_couplings}
+        causal_missing.extend(
+            f"task9_verified_causal_coupling:{coupling.value}"
+            for coupling in sorted(REQUIRED_TASK9_COUPLINGS - observed_causal, key=str)
+        )
+        # VerifiedStructureTwoEvidenceBundle is the historical pairwise schema.
+        # It has no four-cell semantic traces or Task-9 v1 verification receipt,
+        # so it must never authorize the new interaction claim by itself.
+        causal_missing.append("task9_v1_semantic_four_cell_verification_receipt")
 
         benefit_missing = list(causal_missing)
         failed_baseline_benefits = {
@@ -112,8 +121,11 @@ class StructureTwoClaimGateEvaluator:
             f"baseline_benefit:{baseline.value}"
             for baseline in sorted(failed_baseline_benefits, key=str)
         )
-        if len(benefit_couplings) < 3:
-            benefit_missing.append("three_positive_or_noninferior_utility_couplings")
+        observed_benefit = {item.coupling for item in benefit_couplings}
+        benefit_missing.extend(
+            f"task9_positive_utility_coupling:{coupling.value}"
+            for coupling in sorted(REQUIRED_TASK9_COUPLINGS - observed_benefit, key=str)
+        )
         if not bundle.candidate_on_valid_pareto_frontier:
             benefit_missing.append("candidate_on_verified_contamination_recovery_pareto_frontier")
 

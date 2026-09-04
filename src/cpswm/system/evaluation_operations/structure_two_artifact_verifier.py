@@ -638,18 +638,14 @@ class TrustedStructureTwoArtifactVerifier:
             power,
             primary_metric=result.primary_utility_metric,
         )
-        trace_changed = (
-            result.coupled_action_trace_artifact.sha256
-            != result.decoupled_action_trace_artifact.sha256
-        )
-        causal = trace_changed and (low > 0.0 or high < 0.0)
-        benefit = trace_changed and self._benefit_passed(
-            criterion=result.benefit_criterion,
-            estimate=point,
-            low=low,
-            superiority_margin=result.superiority_margin,
-            non_inferiority_margin=result.non_inferiority_margin,
-        )
+        # This legacy two-trace payload cannot establish a Task-9 interaction.
+        # A byte/hash difference can be caused by metadata alone, and the effect
+        # samples are not derivable from four semantic 00/10/01/11 traces.  Keep
+        # opening and authenticating the historical artifacts, but fail closed
+        # for causal/benefit claims.  The v1 Task-9 verifier recomputes semantic
+        # per-unit DiD and the complete Holm family instead.
+        causal = False
+        benefit = False
         return VerifiedCouplingEvidence(
             coupling=result.coupling,
             power_analysis_artifact_sha256=declaration.power_analysis_artifact.sha256,

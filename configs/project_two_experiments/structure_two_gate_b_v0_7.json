@@ -1,0 +1,469 @@
+{
+  "protocol": "structure-two-stratified-mechanism-dual-readout-gate-b@0.7",
+  "status": "INVALIDATED_SUPERSEDED_FOR_FUTURE",
+  "frozen_on": "2026-09-04",
+  "invalidated_on": "2026-09-05",
+  "superseded_by": "structure-two-comparator-typed-dual-gate-b@0.8",
+  "positive_authorization_paths_disabled": true,
+  "supersedes_for_future_runs": "structure-two-stratified-mechanism-action-gate-b@0.6",
+  "preserves_historical_results": true,
+  "gate_semantics": {
+    "composition": "belief AND action AND mechanism",
+    "belief_cannot_substitute_for_action": true,
+    "action_cannot_substitute_for_belief": true,
+    "mechanism_cannot_substitute_for_either_readout": true
+  },
+  "probability_contract": {
+    "belief_schema_id": "structure-two-common-joint-belief-readout@0.7",
+    "action_schema_id": "structure-two-common-action-policy-readout@0.7",
+    "dense_complete_support_required": true,
+    "finite_nonnegative_probabilities_required": true,
+    "normalization_tolerance": 1e-09,
+    "numerical_noise_floor": 1e-06,
+    "silent_renormalization_forbidden": true
+  },
+  "ontology_contract": {
+    "belief_axes": {
+      "location": [
+        "location_0",
+        "location_1",
+        "location_2",
+        "location_3",
+        "location_4",
+        "location_5"
+      ],
+      "instance_identity": [
+        "target_instance",
+        "decoy_instance",
+        "unknown_instance"
+      ],
+      "object_state": [
+        "stationary",
+        "in_use",
+        "carried",
+        "stored"
+      ],
+      "responsible_actor": [
+        "owner",
+        "family",
+        "guest",
+        "robot",
+        "unknown"
+      ],
+      "event_class": [
+        "direct_observation",
+        "pickup_carry_place",
+        "pickup_carry_handoff_place",
+        "other_hidden_event"
+      ],
+      "regime_state": [
+        "stay",
+        "create",
+        "reactivate"
+      ],
+      "change_cause": [
+        "observation",
+        "actor",
+        "identity",
+        "habit",
+        "noise"
+      ]
+    },
+    "belief_support_size": 21601,
+    "belief_support_manifest_sha256": "ea40b7f59c20d1d3229a02ed27d5d446ecb40993a34ea2cb951c19879e139265",
+    "action_categories": {
+      "put_back_location": [
+        "put_back:location_0:responsible_owner",
+        "put_back:location_0:responsible_family",
+        "put_back:location_0:responsible_guest",
+        "put_back:location_0:responsible_robot",
+        "put_back:location_0:responsible_unknown",
+        "put_back:location_1:responsible_owner",
+        "put_back:location_1:responsible_family",
+        "put_back:location_1:responsible_guest",
+        "put_back:location_1:responsible_robot",
+        "put_back:location_1:responsible_unknown",
+        "put_back:location_2:responsible_owner",
+        "put_back:location_2:responsible_family",
+        "put_back:location_2:responsible_guest",
+        "put_back:location_2:responsible_robot",
+        "put_back:location_2:responsible_unknown",
+        "put_back:location_3:responsible_owner",
+        "put_back:location_3:responsible_family",
+        "put_back:location_3:responsible_guest",
+        "put_back:location_3:responsible_robot",
+        "put_back:location_3:responsible_unknown",
+        "put_back:location_4:responsible_owner",
+        "put_back:location_4:responsible_family",
+        "put_back:location_4:responsible_guest",
+        "put_back:location_4:responsible_robot",
+        "put_back:location_4:responsible_unknown",
+        "put_back:location_5:responsible_owner",
+        "put_back:location_5:responsible_family",
+        "put_back:location_5:responsible_guest",
+        "put_back:location_5:responsible_robot",
+        "put_back:location_5:responsible_unknown"
+      ],
+      "search_location": [
+        "search:location_0",
+        "search:location_1",
+        "search:location_2",
+        "search:location_3",
+        "search:location_4",
+        "search:location_5"
+      ],
+      "verification_or_abstention": [
+        "verify:physical",
+        "ask:user",
+        "hold:unresolved"
+      ]
+    },
+    "action_support_size": 39,
+    "action_support_manifest_sha256": "ac47bc0707b938c239b111c3b934eeb62fe9a11d9425f6b4d95ce6370e05a43d",
+    "exact_frozen_support_required": true
+  },
+  "action_selection_contract": {
+    "rule": "deterministic_argmax_lexical_tie_break",
+    "tie_break": "lexicographically_smallest_action_label",
+    "stochastic_action_draws_forbidden": true,
+    "caller_selected_rng_forbidden": true,
+    "selected_disagreement_requires_material_action_tv_same_step": true
+  },
+  "alignment_contract": {
+    "same_episode_and_step_order_required": true,
+    "same_information_set_required": true,
+    "same_budget_envelope_required": true,
+    "same_probability_support_required": true,
+    "scoreable_readout_stage": "pre_action_pre_evaluator_truth",
+    "evaluator_truth_access_forbidden": true
+  },
+  "metadata_policy": {
+    "metadata_excluded_from_semantic_metrics": true,
+    "file_hash_difference_is_not_semantic_difference": true,
+    "renaming_cannot_satisfy_either_readout_gate": true
+  },
+  "expected_arms": [
+    "corrected_amg",
+    "o_star_matched",
+    "sequential_no_consolidation",
+    "active_dreaming_matched",
+    "auto_dreamer_matched",
+    "trustmem_matched",
+    "brainctl_matched",
+    "care_no_action_regret",
+    "care_wm",
+    "full_rerun"
+  ],
+  "comparison_pairs": [
+    {
+      "comparison_id": "event-inference-adaptation",
+      "domain": "hidden-event and actor-attribution dual-readout adaptation",
+      "left_arm": "care_wm",
+      "right_arm": "corrected_amg",
+      "belief_thresholds": {
+        "min_step_total_variation": 0.01,
+        "min_mean_total_variation": 0.01,
+        "min_material_step_fraction": 0.05
+      },
+      "action_thresholds": {
+        "min_step_total_variation": 0.01,
+        "min_mean_total_variation": 0.01,
+        "min_material_step_fraction": 0.01,
+        "min_selected_action_disagreement_rate": 0.01
+      }
+    },
+    {
+      "comparison_id": "object-search-adaptation",
+      "domain": "embodied object-search dual-readout adaptation",
+      "left_arm": "care_wm",
+      "right_arm": "o_star_matched",
+      "belief_thresholds": {
+        "min_step_total_variation": 0.01,
+        "min_mean_total_variation": 0.01,
+        "min_material_step_fraction": 0.05
+      },
+      "action_thresholds": {
+        "min_step_total_variation": 0.01,
+        "min_mean_total_variation": 0.01,
+        "min_material_step_fraction": 0.01,
+        "min_selected_action_disagreement_rate": 0.01
+      }
+    },
+    {
+      "comparison_id": "no-consolidation-ablation",
+      "domain": "reversible consolidation dual-readout ablation",
+      "left_arm": "care_wm",
+      "right_arm": "sequential_no_consolidation",
+      "belief_thresholds": {
+        "min_step_total_variation": 0.01,
+        "min_mean_total_variation": 0.01,
+        "min_material_step_fraction": 0.05
+      },
+      "action_thresholds": {
+        "min_step_total_variation": 0.01,
+        "min_mean_total_variation": 0.01,
+        "min_material_step_fraction": 0.01,
+        "min_selected_action_disagreement_rate": 0.01
+      }
+    },
+    {
+      "comparison_id": "active-dreaming-adaptation",
+      "domain": "failure-driven memory-consolidation dual-readout adaptation",
+      "left_arm": "care_wm",
+      "right_arm": "active_dreaming_matched",
+      "belief_thresholds": {
+        "min_step_total_variation": 0.01,
+        "min_mean_total_variation": 0.01,
+        "min_material_step_fraction": 0.05
+      },
+      "action_thresholds": {
+        "min_step_total_variation": 0.01,
+        "min_mean_total_variation": 0.01,
+        "min_material_step_fraction": 0.01,
+        "min_selected_action_disagreement_rate": 0.01
+      }
+    },
+    {
+      "comparison_id": "auto-dreamer-adaptation",
+      "domain": "offline memory-consolidation dual-readout adaptation",
+      "left_arm": "care_wm",
+      "right_arm": "auto_dreamer_matched",
+      "belief_thresholds": {
+        "min_step_total_variation": 0.01,
+        "min_mean_total_variation": 0.01,
+        "min_material_step_fraction": 0.05
+      },
+      "action_thresholds": {
+        "min_step_total_variation": 0.01,
+        "min_mean_total_variation": 0.01,
+        "min_material_step_fraction": 0.01,
+        "min_selected_action_disagreement_rate": 0.01
+      }
+    },
+    {
+      "comparison_id": "trustmem-adaptation",
+      "domain": "verified memory-transition dual-readout adaptation",
+      "left_arm": "care_wm",
+      "right_arm": "trustmem_matched",
+      "belief_thresholds": {
+        "min_step_total_variation": 0.01,
+        "min_mean_total_variation": 0.01,
+        "min_material_step_fraction": 0.05
+      },
+      "action_thresholds": {
+        "min_step_total_variation": 0.01,
+        "min_mean_total_variation": 0.01,
+        "min_material_step_fraction": 0.01,
+        "min_selected_action_disagreement_rate": 0.01
+      }
+    },
+    {
+      "comparison_id": "brainctl-adaptation",
+      "domain": "memory-admission and lifecycle-control dual-readout adaptation",
+      "left_arm": "care_wm",
+      "right_arm": "brainctl_matched",
+      "belief_thresholds": {
+        "min_step_total_variation": 0.01,
+        "min_mean_total_variation": 0.01,
+        "min_material_step_fraction": 0.05
+      },
+      "action_thresholds": {
+        "min_step_total_variation": 0.01,
+        "min_mean_total_variation": 0.01,
+        "min_material_step_fraction": 0.01,
+        "min_selected_action_disagreement_rate": 0.01
+      }
+    },
+    {
+      "comparison_id": "action-regret-ablation",
+      "domain": "embodied action-regret decision dual-readout ablation",
+      "left_arm": "care_wm",
+      "right_arm": "care_no_action_regret",
+      "belief_thresholds": {
+        "min_step_total_variation": 0.01,
+        "min_mean_total_variation": 0.01,
+        "min_material_step_fraction": 0.05
+      },
+      "action_thresholds": {
+        "min_step_total_variation": 0.01,
+        "min_mean_total_variation": 0.01,
+        "min_material_step_fraction": 0.01,
+        "min_selected_action_disagreement_rate": 0.01
+      }
+    },
+    {
+      "comparison_id": "full-rerun-control",
+      "domain": "incremental reversible update versus complete replay",
+      "left_arm": "care_wm",
+      "right_arm": "full_rerun",
+      "belief_thresholds": {
+        "min_step_total_variation": 0.01,
+        "min_mean_total_variation": 0.01,
+        "min_material_step_fraction": 0.05
+      },
+      "action_thresholds": {
+        "min_step_total_variation": 0.01,
+        "min_mean_total_variation": 0.01,
+        "min_material_step_fraction": 0.01,
+        "min_selected_action_disagreement_rate": 0.01
+      }
+    }
+  ],
+  "mechanism_requirements": {
+    "corrected_amg": {
+      "required_event_components": [
+        {
+          "event": "global_multi_event_map_inference",
+          "component_id": "corrected_amg:reference-core@0.7"
+        }
+      ],
+      "min_step_fraction": 0.001,
+      "min_episode_fraction": 0.05
+    },
+    "o_star_matched": {
+      "required_event_components": [
+        {
+          "event": "dirichlet_hit_or_miss_update",
+          "component_id": "o_star_matched:reference-core@0.7"
+        },
+        {
+          "event": "stay_leak_transition",
+          "component_id": "o_star_matched:reference-core@0.7"
+        },
+        {
+          "event": "cost_aware_search",
+          "component_id": "o_star_matched:reference-core@0.7"
+        }
+      ],
+      "min_step_fraction": 0.001,
+      "min_episode_fraction": 0.05
+    },
+    "sequential_no_consolidation": {
+      "required_event_components": [
+        {
+          "event": "typed_particle_update_without_consolidation",
+          "component_id": "sequential_no_consolidation:core@0.7"
+        }
+      ],
+      "min_step_fraction": 0.001,
+      "min_episode_fraction": 0.05
+    },
+    "active_dreaming_matched": {
+      "required_event_components": [
+        {
+          "event": "failure_clustered",
+          "component_id": "active_dreaming_matched:reference-core@0.7"
+        },
+        {
+          "event": "counterfactual_scenario_executed_with_attested_receipt",
+          "component_id": "active_dreaming_matched:reference-core@0.7"
+        },
+        {
+          "event": "semantic_rule_committed_after_attested_execution",
+          "component_id": "active_dreaming_matched:reference-core@0.7"
+        }
+      ],
+      "min_step_fraction": 0.001,
+      "min_episode_fraction": 0.05
+    },
+    "auto_dreamer_matched": {
+      "required_event_components": [
+        {
+          "event": "offline_region_selected",
+          "component_id": "auto_dreamer_matched:reference-core@0.7"
+        },
+        {
+          "event": "provenance_trajectory_inspected",
+          "component_id": "auto_dreamer_matched:reference-core@0.7"
+        },
+        {
+          "event": "replacement_set_committed",
+          "component_id": "auto_dreamer_matched:reference-core@0.7"
+        }
+      ],
+      "min_step_fraction": 0.001,
+      "min_episode_fraction": 0.05
+    },
+    "trustmem_matched": {
+      "required_event_components": [
+        {
+          "event": "coverage_verified",
+          "component_id": "trustmem_matched:reference-core@0.7"
+        },
+        {
+          "event": "preservation_verified",
+          "component_id": "trustmem_matched:reference-core@0.7"
+        },
+        {
+          "event": "faithfulness_verified",
+          "component_id": "trustmem_matched:reference-core@0.7"
+        }
+      ],
+      "min_step_fraction": 0.001,
+      "min_episode_fraction": 0.05
+    },
+    "brainctl_matched": {
+      "required_event_components": [
+        {
+          "event": "source_trust_scored",
+          "component_id": "brainctl_matched:reference-core@0.7"
+        },
+        {
+          "event": "two_stage_write_gate_executed",
+          "component_id": "brainctl_matched:reference-core@0.7"
+        },
+        {
+          "event": "memory_tier_routed",
+          "component_id": "brainctl_matched:reference-core@0.7"
+        }
+      ],
+      "min_step_fraction": 0.001,
+      "min_episode_fraction": 0.05
+    },
+    "care_no_action_regret": {
+      "required_event_components": [
+        {
+          "event": "confidence_only_reversible_escrow",
+          "component_id": "care_no_action_regret:core@0.7"
+        }
+      ],
+      "min_step_fraction": 0.001,
+      "min_episode_fraction": 0.05
+    },
+    "care_wm": {
+      "required_event_components": [
+        {
+          "event": "future_action_regret_decision",
+          "component_id": "care_wm:core@0.7"
+        },
+        {
+          "event": "reversible_ledger_update",
+          "component_id": "care_wm:core@0.7"
+        }
+      ],
+      "min_step_fraction": 0.001,
+      "min_episode_fraction": 0.05
+    },
+    "full_rerun": {
+      "required_event_components": [
+        {
+          "event": "complete_visible_history_recomputed",
+          "component_id": "full_rerun:core@0.7"
+        }
+      ],
+      "min_step_fraction": 0.001,
+      "min_episode_fraction": 0.05
+    }
+  },
+  "official_execution": {
+    "new_trace_set_present": false,
+    "independent_attestation_present": false,
+    "formal_gate_b_passed": false,
+    "seven_operator_ablation_authorized": false
+  },
+  "external_fidelity_policy": {
+    "separate_external_fidelity_gate_required": true,
+    "gate_b_pass_does_not_establish_efficacy_superiority": true
+  },
+  "claim_boundary": "Gate B v0.7 is invalidated and superseded for every future run. Diagnostic satisfaction is historical information only and cannot be reported as a formal Gate B pass or as authorization for seven-operator ablation."
+}

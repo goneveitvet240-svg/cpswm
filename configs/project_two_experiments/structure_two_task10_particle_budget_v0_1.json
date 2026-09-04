@@ -1,0 +1,36 @@
+{
+  "schema_version": "0.1.0",
+  "protocol_id": "structure-two-backbone-particle-budget-task-10@0.1",
+  "status": "FROZEN_FOR_D0_RECOMPUTATION",
+  "evidence_level": "D0_SYNTHETIC_DEVELOPMENT",
+  "designs": {
+    "g1": {
+      "gaps": 1,
+      "scenario_seeds": [11, 23, 37, 41, 53],
+      "budgets": [8, 16, 24, 48, 96, 384, 1536],
+      "replicate_seeds": [101, 202, 303],
+      "state_budget": 2000000
+    },
+    "g2": {
+      "gaps": 2,
+      "scenario_seeds": [11],
+      "budgets": [24, 96, 384],
+      "replicate_seeds": [101, 202, 303],
+      "state_budget": 2000000
+    }
+  },
+  "registered_outputs": [
+    "posterior_total_variation",
+    "truth_coverage",
+    "owner_calibration_error",
+    "action_posterior_distance",
+    "decision_regret",
+    "effective_sample_size",
+    "elementary_evaluations",
+    "wall_clock_seconds"
+  ],
+  "selection_authority": "NONE_DIAGNOSTIC_CURVE_ONLY",
+  "formal_task_10_passed": false,
+  "seven_operator_efficacy_authorized": false,
+  "claim_boundary": "Fresh deterministic recomputation establishes a D0 particle-budget curve only. It does not select a formal particle budget, establish external validity, or authorize seven-operator efficacy."
+}

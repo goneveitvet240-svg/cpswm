@@ -1,0 +1,179 @@
+{
+  "schema_version": "1.0.0",
+  "protocol_id": "structure-two-trusted-seven-operator-ablation-authorization@1.0",
+  "seven_operator_identity": "ORRER_CHEH",
+  "seven_operator_component_identities": [
+    "OPCEU",
+    "ORRER_CHEH",
+    "PCHMP",
+    "CF-BOCPD",
+    "RGRC",
+    "CCRR",
+    "CIAV"
+  ],
+  "authenticated_enabled_noop_allowed": true,
+  "dependency_order": [
+    "GATE_B_V0_8",
+    "TASK_7",
+    "TASK_8",
+    "TASK_9",
+    "TASK_10",
+    "TASK_11",
+    "TASK_12",
+    "TASK_13",
+    "PROPOSAL_P5",
+    "AUDIT_ROUND_1",
+    "AUDIT_ROUND_2"
+  ],
+  "dependency_bindings": [
+    {
+      "receipt_kind": "GATE_B_V0_8",
+      "protocol_id": "structure-two-comparator-typed-dual-gate-b@0.8",
+      "required_parent_kinds": [],
+      "freshness_window_seconds": 3600,
+      "config_spec_commitment_status": "NOT_ENROLLED",
+      "expected_config_content_sha256": null,
+      "expected_spec_content_sha256": null
+    },
+    {
+      "receipt_kind": "TASK_7",
+      "protocol_id": "structure-two-windowed-late-correction@0.3",
+      "required_parent_kinds": [],
+      "freshness_window_seconds": 3600,
+      "config_spec_commitment_status": "NOT_ENROLLED",
+      "expected_config_content_sha256": null,
+      "expected_spec_content_sha256": null
+    },
+    {
+      "receipt_kind": "TASK_8",
+      "protocol_id": "structure-two-relative-probability-joint-coupling@0.3",
+      "required_parent_kinds": [],
+      "freshness_window_seconds": 3600,
+      "config_spec_commitment_status": "NOT_ENROLLED",
+      "expected_config_content_sha256": null,
+      "expected_spec_content_sha256": null
+    },
+    {
+      "receipt_kind": "TASK_9",
+      "protocol_id": "structure-two-task9-four-coupling-protocol@1.1",
+      "required_parent_kinds": [],
+      "freshness_window_seconds": 3600,
+      "config_spec_commitment_status": "NOT_ENROLLED",
+      "expected_config_content_sha256": null,
+      "expected_spec_content_sha256": null
+    },
+    {
+      "receipt_kind": "TASK_10",
+      "protocol_id": "structure-two-backbone-particle-budget-task-10@0.1",
+      "required_parent_kinds": [],
+      "freshness_window_seconds": 3600,
+      "config_spec_commitment_status": "NOT_ENROLLED",
+      "expected_config_content_sha256": null,
+      "expected_spec_content_sha256": null
+    },
+    {
+      "receipt_kind": "TASK_11",
+      "protocol_id": "structure-two-backbone-resampling-task-11@0.1",
+      "required_parent_kinds": ["TASK_10"],
+      "freshness_window_seconds": 3600,
+      "config_spec_commitment_status": "NOT_ENROLLED",
+      "expected_config_content_sha256": null,
+      "expected_spec_content_sha256": null
+    },
+    {
+      "receipt_kind": "TASK_12",
+      "protocol_id": "structure-two-backbone-rejuvenation-task-12@0.2",
+      "required_parent_kinds": ["TASK_10", "TASK_11"],
+      "freshness_window_seconds": 3600,
+      "config_spec_commitment_status": "NOT_ENROLLED",
+      "expected_config_content_sha256": null,
+      "expected_spec_content_sha256": null
+    },
+    {
+      "receipt_kind": "TASK_13",
+      "protocol_id": "structure-two-backbone-differentiability-task-13@0.1",
+      "required_parent_kinds": ["TASK_10", "TASK_11", "TASK_12"],
+      "freshness_window_seconds": 3600,
+      "config_spec_commitment_status": "NOT_ENROLLED",
+      "expected_config_content_sha256": null,
+      "expected_spec_content_sha256": null
+    },
+    {
+      "receipt_kind": "PROPOSAL_P5",
+      "protocol_id": "structure-two-backbone-proposal-headroom-p5@0.2",
+      "required_parent_kinds": ["TASK_10", "TASK_11", "TASK_12"],
+      "freshness_window_seconds": 3600,
+      "config_spec_commitment_status": "NOT_ENROLLED",
+      "expected_config_content_sha256": null,
+      "expected_spec_content_sha256": null
+    },
+    {
+      "receipt_kind": "AUDIT_ROUND_1",
+      "protocol_id": "structure-two-backbone-p0-adversarial-audit-round-1@1.0",
+      "required_parent_kinds": [
+        "GATE_B_V0_8",
+        "TASK_7",
+        "TASK_8",
+        "TASK_9",
+        "TASK_10",
+        "TASK_11",
+        "TASK_12",
+        "TASK_13",
+        "PROPOSAL_P5"
+      ],
+      "freshness_window_seconds": 3600,
+      "config_spec_commitment_status": "NOT_ENROLLED",
+      "expected_config_content_sha256": null,
+      "expected_spec_content_sha256": null
+    },
+    {
+      "receipt_kind": "AUDIT_ROUND_2",
+      "protocol_id": "structure-two-backbone-p0-adversarial-audit-round-2@1.0",
+      "required_parent_kinds": [
+        "GATE_B_V0_8",
+        "TASK_7",
+        "TASK_8",
+        "TASK_9",
+        "TASK_10",
+        "TASK_11",
+        "TASK_12",
+        "TASK_13",
+        "PROPOSAL_P5",
+        "AUDIT_ROUND_1"
+      ],
+      "freshness_window_seconds": 3600,
+      "config_spec_commitment_status": "NOT_ENROLLED",
+      "expected_config_content_sha256": null,
+      "expected_spec_content_sha256": null
+    },
+    {
+      "receipt_kind": "TRUSTED_SEVEN_OPERATOR_ABLATION_AUTHORIZATION",
+      "protocol_id": "structure-two-trusted-seven-operator-ablation-authorization@1.0",
+      "required_parent_kinds": [
+        "GATE_B_V0_8",
+        "TASK_7",
+        "TASK_8",
+        "TASK_9",
+        "TASK_10",
+        "TASK_11",
+        "TASK_12",
+        "TASK_13",
+        "PROPOSAL_P5",
+        "AUDIT_ROUND_1",
+        "AUDIT_ROUND_2"
+      ],
+      "freshness_window_seconds": 900,
+      "config_spec_commitment_status": "POLICY_CONTENT_HASH_BOUND",
+      "expected_config_content_sha256": null,
+      "expected_spec_content_sha256": null
+    }
+  ],
+  "trust_anchor_status": "NOT_ENROLLED",
+  "trust_anchor_manifest_sha256": null,
+  "replay_registry_status": "NOT_ENROLLED",
+  "replay_registry_id": null,
+  "replay_registry_enrollment_sha256": null,
+  "custody_attestation_status": "NOT_ENROLLED",
+  "current_authorization": false,
+  "claim_boundary": "No seven-operator ablation may run until every typed dependency and both adversarial-audit rounds verify in one fresh receipt DAG."
+}

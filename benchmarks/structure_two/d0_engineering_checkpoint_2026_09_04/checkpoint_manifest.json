@@ -1,0 +1,96 @@
+{
+  "protocol": "structure-two-engineering-trust-checkpoint-revocation@0.2",
+  "freeze_date": "2026-09-04",
+  "status": "REVOKED_SUPERSEDED_BY_BACKBONE_B_REPAIRS",
+  "recomputable_d0_evidence_allowed": false,
+  "external_validity_established": false,
+  "method_superiority_established": false,
+  "external_immutable_anchor_present": false,
+  "historical_v0_5_source_bundle_compatible_with_current_tree": false,
+  "claim_boundary": "The five legacy Task 7/8/10 slots are not a trusted checkpoint: their old verifier checked only self-consistency and one slot was never produced. Task 7/8 replacement artifacts require fresh task-specific recomputation; Task 10 remains outside this repair and no seven-operator claim is authorized.",
+  "results": [
+    {
+      "path": "benchmarks/structure_two/d0_engineering_checkpoint_2026_09_04/task_7_late_correction.json",
+      "present": true,
+      "trust_chain_complete": false,
+      "revocation_reason": "legacy verifier accepted forged-but-complete self-consistent envelopes",
+      "file_sha256": "4bb11318949e89f38f71beee33d7959017006104278663ab096a32e4a58cdd16",
+      "legacy_content_sha256": "9325b5c46428b01e8b5de2df2259f1a2cda57bb29188b59cf5e92df224c21b33",
+      "legacy_deterministic_result_sha256": "92c0d5cf1bdd4aa1ba7eea767e121d741a063843ba6090e5745ed0875537635f"
+    },
+    {
+      "path": "benchmarks/structure_two/d0_engineering_checkpoint_2026_09_04/task_8_joint_coupling_g1.json",
+      "present": true,
+      "trust_chain_complete": false,
+      "revocation_reason": "legacy verifier accepted forged-but-complete self-consistent envelopes",
+      "file_sha256": "9aeb110df2693fa2b5a5610787baf865e6e7eb9c5558d48817b7930198d32c32",
+      "legacy_content_sha256": "284e1cacca506e8542fcb10d39f66be9111d4279a2a00dd2d8e8922e821b42b4",
+      "legacy_deterministic_result_sha256": "e10fb15bde9e4e59e7e4588dda7a037234ff37f3f5ff774351b83b26f384e267"
+    },
+    {
+      "path": "benchmarks/structure_two/d0_engineering_checkpoint_2026_09_04/task_8_joint_coupling_g2.json",
+      "present": false,
+      "trust_chain_complete": false,
+      "revocation_reason": "legacy verifier accepted forged-but-complete self-consistent envelopes"
+    },
+    {
+      "path": "benchmarks/structure_two/d0_engineering_checkpoint_2026_09_04/task_10_budget_sweep_g1.json",
+      "present": true,
+      "trust_chain_complete": false,
+      "revocation_reason": "legacy verifier accepted forged-but-complete self-consistent envelopes",
+      "file_sha256": "201134193ec800edf86a7f716e6639c71ab0b25ca352a2fe9f4ac49b9387e18b",
+      "legacy_content_sha256": "a0384e63fa07ba2225b922a5b2fcc5f706cd3e8740046445dbdb4ef86e461c81",
+      "legacy_deterministic_result_sha256": "1355352a89880abb57bcbc6367ed109ade98e3feb24c8b756997ef730d0c2302"
+    },
+    {
+      "path": "benchmarks/structure_two/d0_engineering_checkpoint_2026_09_04/task_10_budget_sweep_g2.json",
+      "present": true,
+      "trust_chain_complete": false,
+      "revocation_reason": "legacy verifier accepted forged-but-complete self-consistent envelopes",
+      "file_sha256": "33422c63b3038b10693762efef40c35f7339612ef2dbd47d0ce5856d7b707228",
+      "legacy_content_sha256": "53d8f150b758c7b1bee026a5dd8fb797d715c482d19612189c2a09dd3339dfd2",
+      "legacy_deterministic_result_sha256": "0c5e5ddf437197bd8fd9d75f8ab8bb5aa35a1ff1254a87ee6117a68cde376eba"
+    }
+  ],
+  "replacement_results": [
+    {
+      "path": "benchmarks/structure_two/backbone_b_repairs_2026_09_04/task_7_windowed_rejuvenation_v0_2.json",
+      "file_sha256": "c098376b64519ec22edf82b97bd2b6b248ea1e9e01943ea82537e9851b78d6bf",
+      "fresh_task_specific_recomputation_required": true,
+      "seven_operator_efficacy_authorized": false
+    },
+    {
+      "path": "benchmarks/structure_two/backbone_b_repairs_2026_09_04/task_8_relative_probability_soft_coupling_v0_2.json",
+      "file_sha256": "d550ec54283bcf659849c584a84d16ecfa046c9777bfda45f045f2872061f10e",
+      "fresh_task_specific_recomputation_required": true,
+      "seven_operator_efficacy_authorized": false
+    }
+  ],
+  "bound_files": [
+    {
+      "path": "apps/evaluation_runner/run_structure_two_d0_evidence_checkpoint.py",
+      "sha256": "19273fbb270d79fdf1634d71acb3fdfd7713c62ca629f41b83707ccb01940f8d"
+    },
+    {
+      "path": "apps/evaluation_runner/run_structure_two_backbone_b_repairs.py",
+      "sha256": "1cf5e91ce4a39ec89f1bfe1081ec2e57db33a83ccb1cb651d1ffa98b6dbd58c2"
+    },
+    {
+      "path": "src/cpswm/system/evaluation_operations/structure_two_backbone_falsifier.py",
+      "sha256": "093dc522689bebc522e0c3cb893c352c47d27b43b687e4af6b2caf7393c40bbf"
+    },
+    {
+      "path": "tests/test_structure_two_backbone_falsifier.py",
+      "sha256": "33a70e040b99e09fe44455b346d3ff5c9ce031dd8773e5fb6d88fc9dc7ca254a"
+    },
+    {
+      "path": "tests/test_structure_two_d0_evidence_checkpoint.py",
+      "sha256": "ffb73bb2a97463a3fffebe4459074ebabbd0c7604baf32e41bdbce92c197844b"
+    },
+    {
+      "path": "tests/test_structure_two_backbone_b_repairs.py",
+      "sha256": "b0c4f4d3cce19bd2209eb1e4ee4c707cbd0d2c0b875b657d435ed2103a94d6c1"
+    }
+  ],
+  "content_sha256": "e6ddb76b7d8dcc2a924fa34ec091c995e7f5c687ca51fb84633d53bc224e069d"
+}

@@ -1,0 +1,51 @@
+{
+  "schema_version": "0.1.0",
+  "protocol_id": "structure-two-exact-enumeration-falsifier-resolution@0.1",
+  "binding": "exact_enumeration_falsifier",
+  "estimand": "The validation-selected exact-enumeration engine's confirmatory state-coverage, cross-engine posterior agreement, and consequential-action agreement on tractable complete typed worlds.",
+  "arms": [
+    {
+      "arm_id": "direct_cartesian_exact_enumerator",
+      "role": "eligible",
+      "implementation_contract": "Enumerates the complete finite H,R,I,C,Z state product, normalizes exact target mass, and emits an auditable state table."
+    },
+    {
+      "arm_id": "factorized_dynamic_program_exact_enumerator",
+      "role": "eligible",
+      "implementation_contract": "Computes the same complete finite target through exact factorized elimination and emits the reconstructed state table."
+    },
+    {
+      "arm_id": "verified_branch_and_bound_exact_enumerator",
+      "role": "eligible",
+      "implementation_contract": "Uses certified zero-mass pruning only, emits certificates for every removed branch, and reconstructs the complete nonzero state table."
+    }
+  ],
+  "validation_metric_id": "enumeration_wall_clock_seconds",
+  "validation_direction": "minimize",
+  "minimum_validation_units": 3,
+  "minimum_confirmatory_units": 5,
+  "selection_rule": "validation_mean_then_arm_order_tiebreak_confirmatory_hidden_until_selection",
+  "confirmatory_gates": [
+    {
+      "metric_id": "complete_state_mass_coverage",
+      "direction": "maximize",
+      "threshold": 1.0,
+      "aggregation": "mean_over_independent_confirmatory_units"
+    },
+    {
+      "metric_id": "posterior_l1_difference_vs_consensus",
+      "direction": "minimize",
+      "threshold": 1e-10,
+      "aggregation": "mean_over_independent_confirmatory_units"
+    },
+    {
+      "metric_id": "action_utility_difference_vs_consensus",
+      "direction": "minimize",
+      "threshold": 1e-10,
+      "aggregation": "mean_over_independent_confirmatory_units"
+    }
+  ],
+  "information_contract": "Every engine receives the identical fully specified finite typed world, factor values, action utility table, numerical precision, and canonical state ordering.",
+  "budget_contract": "Every engine receives the same memory ceiling, numerical precision, timeout rule, and validation-search opportunities; timeout or omitted mass is a failed row, not an excluded unit.",
+  "claim_boundary": "Resolves only the exact_enumeration_falsifier implementation for tractable worlds; it cannot establish deployment scalability, resolve another binding, validate Gate B, or authorize a seven-operator ablation."
+}

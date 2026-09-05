@@ -1,0 +1,43 @@
+{
+  "protocol": "structure-two-gate-b-v0.8-raw-formal-chain-policy@1.0",
+  "gate_b_protocol": "structure-two-comparator-typed-dual-gate-b@0.8",
+  "gate_b_protocol_status": "FROZEN_NOT_EXECUTED",
+  "gate_b_protocol_content_sha256": "bab4b9f18521e9b675475345f77b70b9f50312599089873c4df23d8b8ee279a6",
+  "raw_execution_protocol": "structure-two-gate-b-v0.8-raw-formal-execution-chain@1.0",
+  "canonical_executor_protocol": "structure-two-canonical-per-episode-executor@0.9",
+  "exact_arms": [
+    "corrected_amg",
+    "o_star_matched",
+    "sequential_no_consolidation",
+    "active_dreaming_matched",
+    "auto_dreamer_matched",
+    "trustmem_matched",
+    "brainctl_matched",
+    "care_no_action_regret",
+    "care_wm",
+    "full_rerun"
+  ],
+  "required_roles": [
+    "canonical_execution_verifier",
+    "runtime_readout_executor",
+    "causal_broker",
+    "preregistration_custodian",
+    "ingest_custodian",
+    "archive_custodian",
+    "independent_reviewer"
+  ],
+  "trust_anchor_status": "NOT_ENROLLED",
+  "trust_manifest_content_sha256": null,
+  "trust_manifest_root_key_id": null,
+  "trust_manifest_root_public_key_base64": null,
+  "trust_manifest_root_public_key_sha256": null,
+  "replay_registry_status": "NOT_ENROLLED",
+  "replay_registry_id": null,
+  "replay_registry_enrollment_sha256": null,
+  "replay_registry_storage_identity_sha256": null,
+  "execution_status": "REGISTERED_NOT_EXECUTED",
+  "formal_execution_content_sha256": null,
+  "current_formal_gate_b_passed": false,
+  "seven_operator_ablation_authorized": false,
+  "claim_boundary": "Registration defines evidence requirements only. Until independent trust anchors, persistent replay custody, and a complete fresh execution are enrolled, Gate B and trusted seven-operator ablation authorization remain false."
+}

@@ -805,6 +805,7 @@ def test_incomplete_or_forged_chain_returns_machine_readable_false_blocker(
         source_register={},
         trust_anchor_registry={},
         trusted_enrollment_authority=AUTHORITY.verifier(),
+        verification_time_utc=CONSUMED_AT + timedelta(minutes=1),
         gate_a_report={"gate_a_passed": True},
         gate_a_artifact_paths=GateAArtifactPathsV06(
             validation_input_bundle=missing,

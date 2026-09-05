@@ -2703,6 +2703,7 @@ def _verify_external_confirmation_chain_impl_v0_9(
     source_register: Mapping[str, Any],
     trust_anchor_registry: Mapping[str, Any],
     trusted_enrollment_authority: Ed25519AttestationVerifier,
+    verification_time_utc: datetime,
     gate_a_report: Mapping[str, Any],
     gate_a_artifact_paths: GateAArtifactPathsV06,
     producer_source_bundle_sha256: str,
@@ -2766,6 +2767,7 @@ def _verify_external_confirmation_chain_impl_v0_9(
         expected_freeze_completed_at_utc=frozen_manifest.frozen_at_utc,
         trusted_custodian=role_verifiers["custodian"],
         trusted_enrollment_authority=trusted_enrollment_authority,
+        verification_time_utc=verification_time_utc,
     )
     verified_gate_a_lifecycle = verify_gate_a_lifecycle_completion_record_v0_9(
         gate_a_lifecycle_payload,
@@ -2905,6 +2907,7 @@ class ExternalConfirmationVerificationInputsV09:
     source_register: Mapping[str, Any]
     trust_anchor_registry: Mapping[str, Any]
     trusted_enrollment_authority: Ed25519AttestationVerifier
+    verification_time_utc: datetime
     gate_a_report: Mapping[str, Any]
     gate_a_artifact_paths: GateAArtifactPathsV06
     producer_source_bundle_sha256: str
@@ -2948,6 +2951,7 @@ def verify_external_confirmation_chain_v0_9(
             source_register=inputs.source_register,
             trust_anchor_registry=inputs.trust_anchor_registry,
             trusted_enrollment_authority=inputs.trusted_enrollment_authority,
+            verification_time_utc=inputs.verification_time_utc,
             gate_a_report=inputs.gate_a_report,
             gate_a_artifact_paths=inputs.gate_a_artifact_paths,
             producer_source_bundle_sha256=inputs.producer_source_bundle_sha256,

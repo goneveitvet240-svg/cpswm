@@ -22,11 +22,11 @@ RESULT_NAMES: Final = (
 REPLACEMENT_RESULT_PATHS: Final = (
     Path(
         "benchmarks/structure_two/backbone_b_repairs_2026_09_04/"
-        "task_7_windowed_rejuvenation_v0_2.json"
+        "task_7_windowed_rejuvenation_v0_4.json"
     ),
     Path(
         "benchmarks/structure_two/backbone_b_repairs_2026_09_04/"
-        "task_8_relative_probability_soft_coupling_v0_2.json"
+        "task_8_matched_three_arm_confirmatory_v0_4.json"
     ),
 )
 BOUND_PATHS: Final = (

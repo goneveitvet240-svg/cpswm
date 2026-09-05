@@ -555,6 +555,7 @@ def finalize_sealed_gate_b_commitment_record_v0_9(
     enrollment_authority_attestation: Attestation | None,
     trusted_custodian: Ed25519AttestationVerifier,
     trusted_enrollment_authority: Ed25519AttestationVerifier,
+    verification_time_utc: datetime,
 ) -> dict[str, Any]:
     """Finalize detached signatures using verification-only capabilities."""
 
@@ -581,6 +582,7 @@ def finalize_sealed_gate_b_commitment_record_v0_9(
         expected_freeze_completed_at_utc=prepared.freeze_completed_at_utc,
         trusted_custodian=trusted_custodian,
         trusted_enrollment_authority=trusted_enrollment_authority,
+        verification_time_utc=verification_time_utc,
     )
     return payload
 
@@ -599,6 +601,7 @@ def make_sealed_gate_b_commitment_record_v0_9(
     committed_at_utc: datetime,
     custodian: Ed25519AttestationSigner,
     enrollment_authority: Ed25519AttestationSigner,
+    verification_time_utc: datetime,
 ) -> dict[str, Any]:
     """Create the independently dual-signed pre-Gate-A commitment record."""
 
@@ -625,6 +628,7 @@ def make_sealed_gate_b_commitment_record_v0_9(
         ),
         trusted_custodian=custodian.verifier(),
         trusted_enrollment_authority=enrollment_authority.verifier(),
+        verification_time_utc=verification_time_utc,
     )
 
 
@@ -639,9 +643,11 @@ def verify_sealed_gate_b_commitment_record_v0_9(
     expected_freeze_completed_at_utc: datetime,
     trusted_custodian: Ed25519AttestationVerifier,
     trusted_enrollment_authority: Ed25519AttestationVerifier,
+    verification_time_utc: datetime,
 ) -> VerifiedSealedGateBCommitmentV09:
     """Verify content, freeze binding, distinct roles, and both signatures."""
 
+    _validate_utc(verification_time_utc, label="commitment verification time")
     unsigned_payload = dict(payload)
     stored = unsigned_payload.pop("content_sha256", None)
     if not isinstance(stored, str) or content_sha256(unsigned_payload) != stored:
@@ -663,6 +669,8 @@ def verify_sealed_gate_b_commitment_record_v0_9(
     dumped = record.model_dump(mode="python")
     if any(dumped[name] != value for name, value in expected.items()):
         raise ValueError("sealed Gate-B commitment differs from verified freeze context")
+    if record.committed_at_utc > verification_time_utc:
+        raise ValueError("sealed Gate-B commitment is in the verifier's future")
     if (
         record.custodian_key_id != trusted_custodian.key_id
         or record.custodian_public_key_base64 != trusted_custodian.public_key_base64
@@ -1217,6 +1225,7 @@ def verify_and_build_sealed_gate_b_opening_context_v0_9(
     expected_freeze_completed_at_utc: datetime,
     trusted_custodian: Ed25519AttestationVerifier,
     trusted_enrollment_authority: Ed25519AttestationVerifier,
+    verification_time_utc: datetime,
     trusted_executor: Ed25519AttestationVerifier,
     expected_verified_gate_a_report_content_sha256: str,
     expected_forbidden_seed_namespaces: ForbiddenSeedNamespacesV09,
@@ -1235,6 +1244,7 @@ def verify_and_build_sealed_gate_b_opening_context_v0_9(
         expected_freeze_completed_at_utc=expected_freeze_completed_at_utc,
         trusted_custodian=trusted_custodian,
         trusted_enrollment_authority=trusted_enrollment_authority,
+        verification_time_utc=verification_time_utc,
     )
     verified_gate_a_lifecycle = verify_gate_a_lifecycle_completion_record_v0_9(
         gate_a_lifecycle_payload,

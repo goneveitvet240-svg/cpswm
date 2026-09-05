@@ -17,14 +17,14 @@ from enum import StrEnum
 from itertools import product
 from statistics import mean
 from typing import Any
+from uuid import UUID
 
 from cpswm.contracts import ProjectTwoDatasetSplit, ProjectTwoReplayStep, RobotActionOutcome
+from cpswm.system.attestation import Ed25519AttestationVerifier
 from cpswm.system.continual.project_one_regime_loop import PrototypeLoopConfig
 from cpswm.system.evaluation_operations.project_two_ablation import PriorOnlyMessagePassing
 from cpswm.system.evaluation_operations.project_two_action_benchmark import (
     ActionCaseMetric,
-    ActionReadout,
-    ActionReadoutConfig,
     ProjectTwoActionBenchmarkV02,
     _AMGOpenWorldMethod,
     _FullProjectTwoMethod,
@@ -44,10 +44,22 @@ from cpswm.system.evaluation_operations.project_two_dataset_adapters import (
 from cpswm.system.evaluation_operations.project_two_dual_timescale_development import (
     _TransformedState,
 )
+from cpswm.system.evaluation_operations.structure_two_trusted_ablation_authorization import (
+    ReceiptReplayRegistry,
+    ReceiptTrustAnchorManifest,
+    TrustedAblationAuthorizationPolicy,
+    TrustedSevenOperatorAblationAuthorization,
+    verify_trusted_seven_operator_ablation_authorization,
+)
+from cpswm.system.prototype_spine import ActionReadout, ActionReadoutConfig
 from cpswm.world_model.grounded_search import StructureTwoCauseBelief
 from cpswm.world_model.habits_transitions import PropensityCorrectionMode
 
 PROTOCOL_VERSION = "project-two-seven-operator-factorial@0.1"
+
+
+class TrustedSevenOperatorAuthorizationRequired(RuntimeError):
+    """Raised before workload construction when no verified authorization exists."""
 
 
 class Factor(StrEnum):
@@ -489,7 +501,45 @@ def run_project_two_factorial_benchmark(
     validation_seeds: tuple[int, ...],
     holdout_seeds: tuple[int, ...],
     max_steps: int = 16,
+    authorization: TrustedSevenOperatorAblationAuthorization | None = None,
+    authorization_policy: TrustedAblationAuthorizationPolicy | None = None,
+    trust_anchor_manifest: ReceiptTrustAnchorManifest | None = None,
+    authorization_registry_authority: Ed25519AttestationVerifier | None = None,
+    expected_run_id: UUID | None = None,
+    authorization_replay_registry: ReceiptReplayRegistry | None = None,
 ) -> dict[str, object]:
+    authorization_inputs = (
+        authorization,
+        authorization_policy,
+        trust_anchor_manifest,
+        authorization_registry_authority,
+        expected_run_id,
+        authorization_replay_registry,
+    )
+    if any(item is None for item in authorization_inputs):
+        raise TrustedSevenOperatorAuthorizationRequired(
+            "trusted seven-operator ablation authorization is missing; workload was not created"
+        )
+    assert authorization is not None
+    assert authorization_policy is not None
+    assert trust_anchor_manifest is not None
+    assert authorization_registry_authority is not None
+    assert expected_run_id is not None
+    assert authorization_replay_registry is not None
+    try:
+        verify_trusted_seven_operator_ablation_authorization(
+            authorization,
+            policy=authorization_policy,
+            manifest=trust_anchor_manifest,
+            registry_authority=authorization_registry_authority,
+            expected_run_id=expected_run_id,
+            replay_registry=authorization_replay_registry,
+        )
+    except (TypeError, ValueError) as exc:
+        raise TrustedSevenOperatorAuthorizationRequired(
+            "trusted seven-operator ablation authorization failed verification; "
+            "workload was not created"
+        ) from exc
     if not validation_seeds or not holdout_seeds:
         raise ValueError("factorial validation and holdout splits must be non-empty")
     if set(validation_seeds) & set(holdout_seeds):
@@ -587,8 +637,12 @@ def run_project_two_factorial_benchmark(
 
         def average(keys: list[str], path: str) -> float:
             if path == "full_minus_amg":
-                return mean(cell_reports[key]["full_minus_amg_net_action_loss"] for key in keys)
-            return mean(cell_reports[key]["operator_net_loss_contribution"][path] for key in keys)
+                return float(
+                    mean(cell_reports[key]["full_minus_amg_net_action_loss"] for key in keys)
+                )
+            return float(
+                mean(cell_reports[key]["operator_net_loss_contribution"][path] for key in keys)
+            )
 
         main_effects[factor.value] = {
             "full_minus_amg_high": average(high_cells, "full_minus_amg"),

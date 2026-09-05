@@ -1162,7 +1162,9 @@ def verify_freeze_commitment_link_v1_0(
     verified_commitment: VerifiedSealedGateBCommitmentV09,
     trusted_custodian: Ed25519AttestationVerifier,
     trusted_enrollment_authority: Ed25519AttestationVerifier,
+    verification_time_utc: datetime,
 ) -> FreezeCommitmentLinkV10:
+    _validate_utc(verification_time_utc, label="freeze-commitment verification time")
     raw = dict(payload)
     stored = raw.pop("content_sha256", None)
     if not isinstance(stored, str) or content_sha256(raw) != stored:
@@ -1170,6 +1172,8 @@ def verify_freeze_commitment_link_v1_0(
     record = FreezeCommitmentLinkV10.model_validate(raw)
     if raw != record.model_dump(mode="json"):
         raise ValueError("freeze-commitment link encoding is noncanonical")
+    if record.committed_at_utc > verification_time_utc:
+        raise ValueError("freeze-commitment link is in the verifier's future")
     expected = prepare_freeze_commitment_link_v1_0(
         external_verification_freeze=external_verification_freeze,
         external_verification_freeze_content_sha256=(external_verification_freeze_content_sha256),
@@ -1209,6 +1213,7 @@ def finalize_freeze_commitment_link_v1_0(
     authority_attestation: Attestation,
     trusted_custodian: Ed25519AttestationVerifier,
     trusted_enrollment_authority: Ed25519AttestationVerifier,
+    verification_time_utc: datetime,
 ) -> dict[str, Any]:
     if prepared.custodian_attestation is not None or prepared.authority_attestation is not None:
         raise ValueError("freeze-commitment finalization requires the unsigned record")
@@ -1226,6 +1231,7 @@ def finalize_freeze_commitment_link_v1_0(
         verified_commitment=verified_commitment,
         trusted_custodian=trusted_custodian,
         trusted_enrollment_authority=trusted_enrollment_authority,
+        verification_time_utc=verification_time_utc,
     )
     return payload
 
@@ -1418,6 +1424,7 @@ def _verify_external_confirmation_chain_impl_v1_0(
         expected_freeze_completed_at_utc=freeze.body.frozen_at_utc,
         trusted_custodian=role_verifiers["custodian"],
         trusted_enrollment_authority=inputs.trusted_enrollment_authority,
+        verification_time_utc=inputs.verification_time_utc,
     )
     if commitment.record.commitment_ledger_sequence != freeze.body.freeze_ledger_sequence + 1:
         raise ValueError("sealed commitment must immediately follow the v1.0 freeze")
@@ -1428,6 +1435,7 @@ def _verify_external_confirmation_chain_impl_v1_0(
         verified_commitment=commitment,
         trusted_custodian=role_verifiers["custodian"],
         trusted_enrollment_authority=inputs.trusted_enrollment_authority,
+        verification_time_utc=inputs.verification_time_utc,
     )
     freeze_commitment_link_hash = _payload_content_hash(
         inputs.freeze_commitment_link_payload,

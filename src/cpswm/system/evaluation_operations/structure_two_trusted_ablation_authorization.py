@@ -45,10 +45,25 @@ from cpswm.system.attestation import (
     Ed25519AttestationVerifier,
     attested_payload,
 )
+from cpswm.system.evaluation_operations.structure_two_binding_resolution_protocols import (
+    BindingResolutionExecutionTrace,
+    BindingResolutionProtocol,
+    BindingResolutionResult,
+    CiavActionBudgetProtocol,
+    ConsolidationThresholdsProtocol,
+    ExactEnumerationFalsifierProtocol,
+    NeuralProposerArchitectureProtocol,
+    OpenBinding,
+    TrainingScheduleProtocol,
+    recompute_binding_resolution,
+)
+from cpswm.system.evaluation_operations.structure_two_selected_method import (
+    UnresolvedMethodBinding,
+)
 from cpswm.system.reproducibility import content_sha256
 
 SCHEMA_VERSION = "1.0.0"
-AUTHORIZATION_PROTOCOL_ID = "structure-two-trusted-seven-operator-ablation-authorization@1.0"
+AUTHORIZATION_PROTOCOL_ID = "structure-two-trusted-seven-operator-ablation-authorization@1.1"
 TRUST_ANCHOR_MANIFEST_PROTOCOL_ID = "structure-two-receipt-trust-anchor-manifest@1.0"
 TRUST_ANCHOR_MANIFEST_DOMAIN = "cpswm.structure_two.receipt_trust_anchor_manifest.v1"
 FORMAL_RECEIPT_DOMAIN_PREFIX = "cpswm.structure_two.formal_receipt.v1"
@@ -66,7 +81,7 @@ SEVEN_OPERATOR_COMPONENT_IDENTITIES = (
 )
 DEFAULT_POLICY_PATH = (
     Path(__file__).resolve().parents[4] / "configs/project_two_experiments/"
-    "structure_two_trusted_seven_operator_ablation_authorization_v1_0.json"
+    "structure_two_trusted_seven_operator_ablation_authorization_v1_1.json"
 )
 
 Sha256 = Annotated[str, Field(pattern=r"^[0-9a-f]{64}$")]
@@ -83,6 +98,11 @@ class ReceiptKind(StrEnum):
     TASK_12 = "TASK_12"
     TASK_13 = "TASK_13"
     PROPOSAL_P5 = "PROPOSAL_P5"
+    NEURAL_PROPOSER_ARCHITECTURE = "NEURAL_PROPOSER_ARCHITECTURE"
+    TRAINING_SCHEDULE = "TRAINING_SCHEDULE"
+    CONSOLIDATION_THRESHOLDS = "CONSOLIDATION_THRESHOLDS"
+    CIAV_ACTION_BUDGET = "CIAV_ACTION_BUDGET"
+    EXACT_ENUMERATION_FALSIFIER = "EXACT_ENUMERATION_FALSIFIER"
     AUDIT_ROUND_1 = "AUDIT_ROUND_1"
     AUDIT_ROUND_2 = "AUDIT_ROUND_2"
     AUTHORIZATION = "TRUSTED_SEVEN_OPERATOR_ABLATION_AUTHORIZATION"
@@ -104,22 +124,36 @@ DEPENDENCY_ORDER = (
     ReceiptKind.TASK_12,
     ReceiptKind.TASK_13,
     ReceiptKind.PROPOSAL_P5,
+    ReceiptKind.NEURAL_PROPOSER_ARCHITECTURE,
+    ReceiptKind.TRAINING_SCHEDULE,
+    ReceiptKind.CONSOLIDATION_THRESHOLDS,
+    ReceiptKind.CIAV_ACTION_BUDGET,
+    ReceiptKind.EXACT_ENUMERATION_FALSIFIER,
     ReceiptKind.AUDIT_ROUND_1,
     ReceiptKind.AUDIT_ROUND_2,
 )
 
 EXPECTED_PROTOCOL_IDS: dict[ReceiptKind, str] = {
     ReceiptKind.GATE_B_V0_8: "structure-two-comparator-typed-dual-gate-b@0.8",
-    ReceiptKind.TASK_7: "structure-two-windowed-late-correction@0.3",
-    ReceiptKind.TASK_8: "structure-two-relative-probability-joint-coupling@0.3",
+    ReceiptKind.TASK_7: "structure-two-windowed-late-correction@0.4",
+    ReceiptKind.TASK_8: "structure-two-relative-probability-joint-coupling@0.4",
     ReceiptKind.TASK_9: "structure-two-task9-four-coupling-protocol@1.1",
     ReceiptKind.TASK_10: "structure-two-backbone-particle-budget-task-10@0.1",
     ReceiptKind.TASK_11: "structure-two-backbone-resampling-task-11@0.1",
     ReceiptKind.TASK_12: "structure-two-backbone-rejuvenation-task-12@0.2",
     ReceiptKind.TASK_13: "structure-two-backbone-differentiability-task-13@0.1",
     ReceiptKind.PROPOSAL_P5: "structure-two-backbone-proposal-headroom-p5@0.2",
-    ReceiptKind.AUDIT_ROUND_1: "structure-two-backbone-p0-adversarial-audit-round-1@1.0",
-    ReceiptKind.AUDIT_ROUND_2: "structure-two-backbone-p0-adversarial-audit-round-2@1.0",
+    ReceiptKind.NEURAL_PROPOSER_ARCHITECTURE: (
+        "structure-two-neural-proposer-architecture-resolution@0.1"
+    ),
+    ReceiptKind.TRAINING_SCHEDULE: "structure-two-training-schedule-resolution@0.1",
+    ReceiptKind.CONSOLIDATION_THRESHOLDS: ("structure-two-consolidation-thresholds-resolution@0.1"),
+    ReceiptKind.CIAV_ACTION_BUDGET: "structure-two-ciav-action-budget-resolution@0.1",
+    ReceiptKind.EXACT_ENUMERATION_FALSIFIER: (
+        "structure-two-exact-enumeration-falsifier-resolution@0.1"
+    ),
+    ReceiptKind.AUDIT_ROUND_1: "structure-two-backbone-p0-adversarial-audit-round-1@1.1",
+    ReceiptKind.AUDIT_ROUND_2: "structure-two-backbone-p0-adversarial-audit-round-2@1.1",
     ReceiptKind.AUTHORIZATION: AUTHORIZATION_PROTOCOL_ID,
 }
 
@@ -141,15 +175,86 @@ EXPECTED_PARENTS: dict[ReceiptKind, tuple[ReceiptKind, ...]] = {
         ReceiptKind.TASK_11,
         ReceiptKind.TASK_12,
     ),
-    ReceiptKind.AUDIT_ROUND_1: DEPENDENCY_ORDER[:9],
-    ReceiptKind.AUDIT_ROUND_2: (*DEPENDENCY_ORDER[:9], ReceiptKind.AUDIT_ROUND_1),
+    ReceiptKind.NEURAL_PROPOSER_ARCHITECTURE: (
+        ReceiptKind.TASK_9,
+        ReceiptKind.TASK_10,
+        ReceiptKind.TASK_11,
+        ReceiptKind.TASK_12,
+        ReceiptKind.TASK_13,
+        ReceiptKind.PROPOSAL_P5,
+    ),
+    ReceiptKind.TRAINING_SCHEDULE: (
+        ReceiptKind.TASK_9,
+        ReceiptKind.TASK_10,
+        ReceiptKind.TASK_11,
+        ReceiptKind.TASK_12,
+        ReceiptKind.TASK_13,
+        ReceiptKind.NEURAL_PROPOSER_ARCHITECTURE,
+    ),
+    ReceiptKind.CONSOLIDATION_THRESHOLDS: (
+        ReceiptKind.TASK_9,
+        ReceiptKind.TASK_10,
+        ReceiptKind.TASK_11,
+        ReceiptKind.TASK_12,
+        ReceiptKind.TASK_13,
+        ReceiptKind.TRAINING_SCHEDULE,
+    ),
+    ReceiptKind.CIAV_ACTION_BUDGET: (
+        ReceiptKind.GATE_B_V0_8,
+        ReceiptKind.TASK_8,
+        ReceiptKind.TASK_9,
+        ReceiptKind.NEURAL_PROPOSER_ARCHITECTURE,
+        ReceiptKind.TRAINING_SCHEDULE,
+    ),
+    ReceiptKind.EXACT_ENUMERATION_FALSIFIER: (
+        ReceiptKind.TASK_9,
+        ReceiptKind.TASK_10,
+        ReceiptKind.TASK_12,
+        ReceiptKind.PROPOSAL_P5,
+        ReceiptKind.NEURAL_PROPOSER_ARCHITECTURE,
+    ),
+    ReceiptKind.AUDIT_ROUND_1: DEPENDENCY_ORDER[:14],
+    ReceiptKind.AUDIT_ROUND_2: (*DEPENDENCY_ORDER[:14], ReceiptKind.AUDIT_ROUND_1),
 }
+
+ROUND2_POSITIVE_CONSEQUENTIAL_SURFACES = (
+    "gate_b_v0_8_comparator_diagnostic",
+    "gate_b_v0_8_raw_chain_candidate",
+    "gate_b_v0_8_current_formal_status",
+    "gate_b_v0_8_authorization_dependency_receipt",
+    "task_7_v0_4_registered_evidence",
+    "task_7_v0_4_authorization_dependency_receipt",
+    "task_8_v0_4_registered_evidence",
+    "task_8_v0_4_authorization_dependency_receipt",
+    "task_9_v1_1_formal_receipt",
+    "task_10_formal_receipt",
+    "task_11_formal_receipt",
+    "task_12_formal_receipt",
+    "task_13_formal_receipt",
+    "proposal_p5_formal_receipt",
+    "neural_proposer_architecture_resolution_receipt",
+    "training_schedule_resolution_receipt",
+    "consolidation_thresholds_resolution_receipt",
+    "ciav_action_budget_resolution_receipt",
+    "exact_enumeration_falsifier_resolution_receipt",
+    "audit_round_1_receipt",
+    "audit_round_2_receipt",
+    "trusted_seven_operator_authorization_decision",
+    "seven_operator_factorial_core_runner",
+    "seven_operator_factorial_cli_runner",
+)
 
 
 def _require_utc(value: datetime, *, label: str) -> datetime:
     if value.tzinfo is None or value.utcoffset() is None:
         raise ValueError(f"{label} must be timezone-aware")
     return value.astimezone(UTC)
+
+
+def _verifier_utc_now() -> datetime:
+    """Read time inside the trusted verifier process, never from runner input."""
+
+    return datetime.now(UTC)
 
 
 def _reject_duplicate_json_keys(pairs: list[tuple[str, object]]) -> dict[str, object]:
@@ -211,7 +316,7 @@ class DependencyProtocolBinding(ContractModel):
 
 class TrustedAblationAuthorizationPolicy(ContractModel):
     schema_version: Literal["1.0.0"]
-    protocol_id: Literal["structure-two-trusted-seven-operator-ablation-authorization@1.0"]
+    protocol_id: Literal["structure-two-trusted-seven-operator-ablation-authorization@1.1"]
     seven_operator_identity: Literal["ORRER_CHEH"]
     seven_operator_component_identities: tuple[
         Literal["OPCEU"],
@@ -265,8 +370,11 @@ class TrustedAblationAuthorizationPolicy(ContractModel):
         if self.replay_registry_status is ReplayRegistryStatus.NOT_ENROLLED:
             if replay_registration != (None, None):
                 raise ValueError("a non-enrolled replay registry cannot carry registration data")
-        elif any(item is None for item in replay_registration):
-            raise ValueError("a persistent replay registry requires frozen enrollment data")
+        else:
+            raise ValueError(
+                "authorization v1.1 has no formal monotonic/WORM replay backend; "
+                "positive enrollment requires a new protocol revision"
+            )
         return self
 
     @classmethod
@@ -617,32 +725,237 @@ class FormalReceiptBase(ContractModel):
 class GateBV08Receipt(FormalReceiptBase):
     receipt_kind: Literal[ReceiptKind.GATE_B_V0_8]
     protocol_id: Literal["structure-two-comparator-typed-dual-gate-b@0.8"]
+    raw_execution_protocol_id: Literal["structure-two-gate-b-v0.8-raw-formal-execution-chain@1.0"]
+    raw_execution_policy_content_sha256: Sha256
+    raw_execution_content_sha256: Sha256
+    canonical_execution_verification_content_sha256: Sha256
+    runtime_readout_bundle_content_sha256: Sha256
+    causal_broker_bundle_content_sha256: Sha256
+    independent_custody_bundle_content_sha256: Sha256
+    replay_consumption_receipt_content_sha256: Sha256
+    independent_review_receipt_content_sha256: Sha256
+    exact_arm_episode_coverage_content_sha256: Sha256
     comparator_count: PositiveInt
     comparator_relations_frozen: Literal[True]
     causal_windows_frozen: Literal[True]
+    exact_arm_episode_coverage_verified: Literal[True]
+    canonical_runtime_action_projection_verified: Literal[True]
+    predecision_belief_readout_verified: Literal[True]
+    stepwise_causal_broker_verified: Literal[True]
+    independent_custody_verified: Literal[True]
+    freshness_and_replay_verified: Literal[True]
+    independent_review_verified: Literal[True]
+    raw_formal_execution_verified: Literal[True]
     formal_gate_b_passed: Literal[True]
+
+    @model_validator(mode="after")
+    def _bind_raw_formal_chain(self) -> GateBV08Receipt:
+        expected = content_sha256(
+            {
+                "raw_execution_protocol_id": self.raw_execution_protocol_id,
+                "raw_execution_policy_content_sha256": (self.raw_execution_policy_content_sha256),
+                "raw_execution_content_sha256": self.raw_execution_content_sha256,
+                "canonical_execution_verification_content_sha256": (
+                    self.canonical_execution_verification_content_sha256
+                ),
+                "runtime_readout_bundle_content_sha256": (
+                    self.runtime_readout_bundle_content_sha256
+                ),
+                "causal_broker_bundle_content_sha256": (self.causal_broker_bundle_content_sha256),
+                "independent_custody_bundle_content_sha256": (
+                    self.independent_custody_bundle_content_sha256
+                ),
+                "replay_consumption_receipt_content_sha256": (
+                    self.replay_consumption_receipt_content_sha256
+                ),
+                "independent_review_receipt_content_sha256": (
+                    self.independent_review_receipt_content_sha256
+                ),
+                "exact_arm_episode_coverage_content_sha256": (
+                    self.exact_arm_episode_coverage_content_sha256
+                ),
+                "comparator_count": self.comparator_count,
+                "comparator_relations_frozen": self.comparator_relations_frozen,
+                "causal_windows_frozen": self.causal_windows_frozen,
+                "exact_arm_episode_coverage_verified": (self.exact_arm_episode_coverage_verified),
+                "canonical_runtime_action_projection_verified": (
+                    self.canonical_runtime_action_projection_verified
+                ),
+                "predecision_belief_readout_verified": (self.predecision_belief_readout_verified),
+                "stepwise_causal_broker_verified": self.stepwise_causal_broker_verified,
+                "independent_custody_verified": self.independent_custody_verified,
+                "freshness_and_replay_verified": self.freshness_and_replay_verified,
+                "independent_review_verified": self.independent_review_verified,
+                "raw_formal_execution_verified": self.raw_formal_execution_verified,
+            }
+        )
+        if self.result_content_sha256 != expected:
+            raise ValueError("Gate B result hash does not bind the raw formal execution chain")
+        return self
 
 
 class Task7Receipt(FormalReceiptBase):
     receipt_kind: Literal[ReceiptKind.TASK_7]
-    protocol_id: Literal["structure-two-windowed-late-correction@0.3"]
+    protocol_id: Literal["structure-two-windowed-late-correction@0.4"]
+    registered_execution_content_sha256: Sha256
+    conditional_target_validation_content_sha256: Sha256
+    exact_scenario_factor_matrix_content_sha256: Sha256
+    exact_scenario_factor_cell_count: Literal[16]
+    same_conditional_target_absolute_tolerance: float = Field(
+        ge=1e-10, le=1e-10, allow_inf_nan=False
+    )
+    belief_axis_tv_threshold: float = Field(ge=0.1, le=0.1, allow_inf_nan=False)
+    action_distribution_tv_threshold: float = Field(ge=0.1, le=0.1, allow_inf_nan=False)
+    selected_action_must_match: Literal[True]
+    same_conditional_target_verified: Literal[True]
     strict_o_window_verified: Literal[True]
     multi_axis_equivalence_verified: Literal[True]
     action_equivalence_verified: Literal[True]
     non_self_move_verified: Literal[True]
     multi_sweep_verified: Literal[True]
     long_suffix_cost_verified: Literal[True]
+    adaptive_window_expansion_or_full_replay_fallback_implemented: Literal[True]
+    fallback_path_verified_separately: Literal[True]
+    registered_execution_used_fallback: Literal[False]
+    terminal_responsible_actor_cached: Literal[True]
+    contamination_gate_retained: Literal[True]
+    contamination_not_expanded: Literal[True]
+    threshold_relaxation_allowed: Literal[False]
+    failed_execution_reports_fail: Literal[True]
     formal_task_7_passed: Literal[True]
+
+    @model_validator(mode="after")
+    def _bind_v04_window_contract(self) -> Task7Receipt:
+        if (
+            self.same_conditional_target_absolute_tolerance,
+            self.belief_axis_tv_threshold,
+            self.action_distribution_tv_threshold,
+        ) != (1e-10, 0.1, 0.1):
+            raise ValueError("Task 7 v0.4 tolerances are frozen")
+        expected = content_sha256(
+            {
+                "registered_execution_content_sha256": (self.registered_execution_content_sha256),
+                "conditional_target_validation_content_sha256": (
+                    self.conditional_target_validation_content_sha256
+                ),
+                "exact_scenario_factor_matrix_content_sha256": (
+                    self.exact_scenario_factor_matrix_content_sha256
+                ),
+                "exact_scenario_factor_cell_count": self.exact_scenario_factor_cell_count,
+                "same_conditional_target_absolute_tolerance": (
+                    self.same_conditional_target_absolute_tolerance
+                ),
+                "belief_axis_tv_threshold": self.belief_axis_tv_threshold,
+                "action_distribution_tv_threshold": self.action_distribution_tv_threshold,
+                "selected_action_must_match": self.selected_action_must_match,
+                "same_conditional_target_verified": self.same_conditional_target_verified,
+                "strict_o_window_verified": self.strict_o_window_verified,
+                "multi_axis_equivalence_verified": self.multi_axis_equivalence_verified,
+                "action_equivalence_verified": self.action_equivalence_verified,
+                "non_self_move_verified": self.non_self_move_verified,
+                "multi_sweep_verified": self.multi_sweep_verified,
+                "long_suffix_cost_verified": self.long_suffix_cost_verified,
+                "adaptive_window_expansion_or_full_replay_fallback_implemented": (
+                    self.adaptive_window_expansion_or_full_replay_fallback_implemented
+                ),
+                "fallback_path_verified_separately": self.fallback_path_verified_separately,
+                "registered_execution_used_fallback": self.registered_execution_used_fallback,
+                "terminal_responsible_actor_cached": self.terminal_responsible_actor_cached,
+                "contamination_gate_retained": self.contamination_gate_retained,
+                "contamination_not_expanded": self.contamination_not_expanded,
+                "threshold_relaxation_allowed": self.threshold_relaxation_allowed,
+                "failed_execution_reports_fail": self.failed_execution_reports_fail,
+            }
+        )
+        if self.result_content_sha256 != expected:
+            raise ValueError("Task 7 result hash does not bind the complete v0.4 contract")
+        return self
 
 
 class Task8Receipt(FormalReceiptBase):
     receipt_kind: Literal[ReceiptKind.TASK_8]
-    protocol_id: Literal["structure-two-relative-probability-joint-coupling@0.3"]
+    protocol_id: Literal["structure-two-relative-probability-joint-coupling@0.4"]
+    historical_v0_3_status: Literal["FAILED_FOR_CURRENT_MATCHED_THREE_ARM_CLAIM"]
+    exact_arm_order: tuple[Literal["joint"], Literal["factorized"], Literal["matched_two_stage"]]
+    validation_selection_receipt_content_sha256: Sha256
+    confirmatory_execution_content_sha256: Sha256
+    exact_confirmatory_coverage_content_sha256: Sha256
+    same_information_per_unit_verified: Literal[True]
+    same_budget_per_arm_per_unit_verified: Literal[True]
+    validation_only_independent_tuning_verified: Literal[True]
+    selection_frozen_before_confirmatory_verified: Literal[True]
+    validation_confirmatory_units_disjoint: Literal[True]
+    exact_confirmatory_arm_by_unit_coverage_verified: Literal[True]
+    confirmatory_unit_count: Literal[40]
+    paired_estimand: Literal["matched_two_stage_cost - joint_cost"]
+    paired_confidence_interval_method: Literal[
+        "paired deterministic percentile bootstrap over seed-cluster means"
+    ]
+    paired_confidence: float = Field(ge=0.95, le=0.95, allow_inf_nan=False)
+    paired_bootstrap_replicates: Literal[10000]
+    paired_bootstrap_seed: Literal["task8-v0.4-ci-20260905"]
+    strict_lower_bound_threshold: float = Field(ge=0.001, le=0.001, allow_inf_nan=False)
+    paired_lower_confidence_bound: float = Field(allow_inf_nan=False)
     endpoint_preregistered_before_run: Literal[True]
     endpoint_consumes_h_plus_z_cross_c: Literal[True]
     thresholds_unchanged_after_run: Literal[True]
     action_and_utility_gate_passed: Literal[True]
     formal_task_8_passed: Literal[True]
+
+    @model_validator(mode="after")
+    def _bind_v04_matched_confirmatory_contract(self) -> Task8Receipt:
+        if self.exact_arm_order != ("joint", "factorized", "matched_two_stage"):
+            raise ValueError("Task 8 must retain the exact three-arm order")
+        if (self.paired_confidence, self.strict_lower_bound_threshold) != (0.95, 0.001):
+            raise ValueError("Task 8 confirmatory confidence and threshold are frozen")
+        if self.paired_lower_confidence_bound <= self.strict_lower_bound_threshold:
+            raise ValueError("Task 8 paired lower confidence bound misses its strict threshold")
+        expected = content_sha256(
+            {
+                "historical_v0_3_status": self.historical_v0_3_status,
+                "exact_arm_order": self.exact_arm_order,
+                "validation_selection_receipt_content_sha256": (
+                    self.validation_selection_receipt_content_sha256
+                ),
+                "confirmatory_execution_content_sha256": (
+                    self.confirmatory_execution_content_sha256
+                ),
+                "exact_confirmatory_coverage_content_sha256": (
+                    self.exact_confirmatory_coverage_content_sha256
+                ),
+                "same_information_per_unit_verified": (self.same_information_per_unit_verified),
+                "same_budget_per_arm_per_unit_verified": (
+                    self.same_budget_per_arm_per_unit_verified
+                ),
+                "validation_only_independent_tuning_verified": (
+                    self.validation_only_independent_tuning_verified
+                ),
+                "selection_frozen_before_confirmatory_verified": (
+                    self.selection_frozen_before_confirmatory_verified
+                ),
+                "validation_confirmatory_units_disjoint": (
+                    self.validation_confirmatory_units_disjoint
+                ),
+                "exact_confirmatory_arm_by_unit_coverage_verified": (
+                    self.exact_confirmatory_arm_by_unit_coverage_verified
+                ),
+                "confirmatory_unit_count": self.confirmatory_unit_count,
+                "paired_estimand": self.paired_estimand,
+                "paired_confidence_interval_method": self.paired_confidence_interval_method,
+                "paired_confidence": self.paired_confidence,
+                "paired_bootstrap_replicates": self.paired_bootstrap_replicates,
+                "paired_bootstrap_seed": self.paired_bootstrap_seed,
+                "strict_lower_bound_threshold": self.strict_lower_bound_threshold,
+                "paired_lower_confidence_bound": self.paired_lower_confidence_bound,
+                "endpoint_preregistered_before_run": self.endpoint_preregistered_before_run,
+                "endpoint_consumes_h_plus_z_cross_c": (self.endpoint_consumes_h_plus_z_cross_c),
+                "thresholds_unchanged_after_run": self.thresholds_unchanged_after_run,
+                "action_and_utility_gate_passed": self.action_and_utility_gate_passed,
+            }
+        )
+        if self.result_content_sha256 != expected:
+            raise ValueError("Task 8 result hash does not bind the complete v0.4 contract")
+        return self
 
 
 class Task9Receipt(FormalReceiptBase):
@@ -661,16 +974,55 @@ class Task9Receipt(FormalReceiptBase):
     ]
     implementation_manifest_id: Literal["structure-two-task9-operator-implementations@1.1"]
     implementation_manifest_content_sha256: Sha256
+    formal_execution_content_sha256: Sha256
+    operator_execution_receipts_content_sha256: Sha256
+    exact_factorial_coverage_content_sha256: Sha256
+    independent_review_receipt_content_sha256: Sha256
     exact_four_couplings_verified: Literal[True]
     selected_method_receipt_verified: Literal[True]
     authenticated_enabled_noop_allowed: Literal[True]
     authenticated_enabled_noop_receipts_verified: Literal[True]
+    freshness_replay_and_custody_verified: Literal[True]
     formal_task_9_passed: Literal[True]
 
     @model_validator(mode="after")
     def _frozen_operator_identities(self) -> Task9Receipt:
         if self.operator_identity_order != SEVEN_OPERATOR_COMPONENT_IDENTITIES:
             raise ValueError("Task 9 seven-operator identity/order is frozen")
+        expected = content_sha256(
+            {
+                "selected_method_identity": self.selected_method_identity,
+                "selected_method_receipt_content_sha256": (
+                    self.selected_method_receipt_content_sha256
+                ),
+                "operator_identity_order": self.operator_identity_order,
+                "implementation_manifest_id": self.implementation_manifest_id,
+                "implementation_manifest_content_sha256": (
+                    self.implementation_manifest_content_sha256
+                ),
+                "formal_execution_content_sha256": self.formal_execution_content_sha256,
+                "operator_execution_receipts_content_sha256": (
+                    self.operator_execution_receipts_content_sha256
+                ),
+                "exact_factorial_coverage_content_sha256": (
+                    self.exact_factorial_coverage_content_sha256
+                ),
+                "independent_review_receipt_content_sha256": (
+                    self.independent_review_receipt_content_sha256
+                ),
+                "exact_four_couplings_verified": self.exact_four_couplings_verified,
+                "selected_method_receipt_verified": self.selected_method_receipt_verified,
+                "authenticated_enabled_noop_allowed": (self.authenticated_enabled_noop_allowed),
+                "authenticated_enabled_noop_receipts_verified": (
+                    self.authenticated_enabled_noop_receipts_verified
+                ),
+                "freshness_replay_and_custody_verified": (
+                    self.freshness_replay_and_custody_verified
+                ),
+            }
+        )
+        if self.result_content_sha256 != expected:
+            raise ValueError("Task 9 result hash does not bind its formal execution chain")
         return self
 
 
@@ -685,9 +1037,33 @@ class Task10Receipt(FormalReceiptBase):
 class Task11Receipt(FormalReceiptBase):
     receipt_kind: Literal[ReceiptKind.TASK_11]
     protocol_id: Literal["structure-two-backbone-resampling-task-11@0.1"]
+    independent_definition_protocol_id: Literal["structure-two-backbone-resampling-task-11@0.1"]
+    independent_definition_spec_content_sha256: Sha256
+    raw_arm_matrix_content_sha256: Sha256
+    selection_receipt_content_sha256: Sha256
     selected_resampling_policy: str = Field(min_length=1)
+    exact_arm_by_unit_coverage_verified: Literal[True]
+    validation_only_selection_verified: Literal[True]
     raw_arm_matrix_recomputed: Literal[True]
     formal_task_11_passed: Literal[True]
+
+    @model_validator(mode="after")
+    def _bind_formal_task11_execution(self) -> Task11Receipt:
+        if self.independent_definition_spec_content_sha256 != self.spec_content_sha256:
+            raise ValueError("Task 11 receipt must bind its independent definition spec")
+        expected = content_sha256(
+            {
+                "raw_arm_matrix_content_sha256": self.raw_arm_matrix_content_sha256,
+                "selection_receipt_content_sha256": self.selection_receipt_content_sha256,
+                "selected_resampling_policy": self.selected_resampling_policy,
+                "exact_arm_by_unit_coverage_verified": (self.exact_arm_by_unit_coverage_verified),
+                "validation_only_selection_verified": self.validation_only_selection_verified,
+                "raw_arm_matrix_recomputed": self.raw_arm_matrix_recomputed,
+            }
+        )
+        if self.result_content_sha256 != expected:
+            raise ValueError("Task 11 result hash does not bind its formal execution chain")
+        return self
 
 
 class Task12State(ContractModel):
@@ -1061,9 +1437,37 @@ class Task12Receipt(FormalReceiptBase):
 class Task13Receipt(FormalReceiptBase):
     receipt_kind: Literal[ReceiptKind.TASK_13]
     protocol_id: Literal["structure-two-backbone-differentiability-task-13@0.1"]
+    independent_definition_protocol_id: Literal[
+        "structure-two-backbone-differentiability-task-13@0.1"
+    ]
+    independent_definition_spec_content_sha256: Sha256
+    raw_gradient_arm_matrix_content_sha256: Sha256
+    selection_receipt_content_sha256: Sha256
     selected_differentiability_strategy: str = Field(min_length=1)
+    exact_arm_by_unit_coverage_verified: Literal[True]
+    validation_only_selection_verified: Literal[True]
     raw_gradient_checks_recomputed: Literal[True]
     formal_task_13_passed: Literal[True]
+
+    @model_validator(mode="after")
+    def _bind_formal_task13_execution(self) -> Task13Receipt:
+        if self.independent_definition_spec_content_sha256 != self.spec_content_sha256:
+            raise ValueError("Task 13 receipt must bind its independent definition spec")
+        expected = content_sha256(
+            {
+                "raw_gradient_arm_matrix_content_sha256": (
+                    self.raw_gradient_arm_matrix_content_sha256
+                ),
+                "selection_receipt_content_sha256": self.selection_receipt_content_sha256,
+                "selected_differentiability_strategy": (self.selected_differentiability_strategy),
+                "exact_arm_by_unit_coverage_verified": (self.exact_arm_by_unit_coverage_verified),
+                "validation_only_selection_verified": self.validation_only_selection_verified,
+                "raw_gradient_checks_recomputed": self.raw_gradient_checks_recomputed,
+            }
+        )
+        if self.result_content_sha256 != expected:
+            raise ValueError("Task 13 result hash does not bind its formal execution chain")
+        return self
 
 
 class P5PipelineStage(StrEnum):
@@ -1141,6 +1545,8 @@ class ProposalP5Receipt(FormalReceiptBase):
     protocol_id: Literal["structure-two-backbone-proposal-headroom-p5@0.2"]
     independent_definition_protocol_id: Literal["structure-two-backbone-proposal-headroom-p5@0.1"]
     independent_definition_spec_content_sha256: Sha256
+    raw_arm_unit_stage_trace_content_sha256: Sha256
+    exact_arm_unit_stage_coverage_verified: Literal[True]
     stage_decomposition: tuple[P5StageDecomposition, ...]
     oracle_action_gain: float = Field(allow_inf_nan=False)
     recall_headroom_epsilon: FiniteNonNegativeFloat
@@ -1185,6 +1591,12 @@ class ProposalP5Receipt(FormalReceiptBase):
             raise ValueError("P5 diagnosis was not derived from the stage decomposition")
         expected_result = content_sha256(
             {
+                "raw_arm_unit_stage_trace_content_sha256": (
+                    self.raw_arm_unit_stage_trace_content_sha256
+                ),
+                "exact_arm_unit_stage_coverage_verified": (
+                    self.exact_arm_unit_stage_coverage_verified
+                ),
                 "stage_decomposition": self.stage_decomposition,
                 "oracle_action_gain": self.oracle_action_gain,
                 "diagnosis": self.diagnosis,
@@ -1195,25 +1607,237 @@ class ProposalP5Receipt(FormalReceiptBase):
         return self
 
 
+class BindingResolutionReceiptBase(FormalReceiptBase):
+    """Shared signed envelope; concrete subclasses keep the binding type distinct."""
+
+    selected_method_receipt_content_sha256: Sha256
+    unresolved_bindings_at_protocol_freeze: tuple[UnresolvedMethodBinding, ...]
+    resolution_protocol_content_sha256: Sha256
+    raw_execution_trace: BindingResolutionExecutionTrace
+    raw_execution_trace_sha256: Sha256
+    recomputed_resolution: BindingResolutionResult
+    formal_binding_resolved: Literal[True]
+
+    def _verify_resolution_payload(
+        self,
+        protocol: BindingResolutionProtocol,
+        *,
+        expected_binding: OpenBinding,
+    ) -> None:
+        if self.unresolved_bindings_at_protocol_freeze != tuple(UnresolvedMethodBinding):
+            raise ValueError(
+                "binding receipt must retain the complete original unresolved-binding set"
+            )
+        if protocol.binding is not expected_binding:
+            raise ValueError("binding receipt carries the wrong independently typed protocol")
+        protocol_hash = content_sha256(protocol)
+        if self.resolution_protocol_content_sha256 != protocol_hash:
+            raise ValueError("binding receipt protocol content hash mismatch")
+        if self.spec_content_sha256 != protocol_hash:
+            raise ValueError("binding receipt spec hash must bind the independent protocol")
+        if self.raw_execution_trace_sha256 != content_sha256(self.raw_execution_trace):
+            raise ValueError("binding receipt raw execution trace hash mismatch")
+        recomputed = recompute_binding_resolution(protocol, self.raw_execution_trace)
+        if self.recomputed_resolution != recomputed:
+            raise ValueError("binding resolution was not recomputed from the raw arm x unit trace")
+        if not recomputed.all_confirmatory_gates_passed:
+            raise ValueError("binding confirmatory gates did not all pass")
+        expected_result = content_sha256(
+            {
+                "binding": expected_binding,
+                "selected_method_receipt_content_sha256": (
+                    self.selected_method_receipt_content_sha256
+                ),
+                "unresolved_bindings_at_protocol_freeze": (
+                    self.unresolved_bindings_at_protocol_freeze
+                ),
+                "resolution_protocol_content_sha256": protocol_hash,
+                "raw_execution_trace_sha256": self.raw_execution_trace_sha256,
+                "recomputed_resolution": recomputed,
+            }
+        )
+        if self.result_content_sha256 != expected_result:
+            raise ValueError("binding result hash does not bind the recomputed resolution")
+
+
+class NeuralProposerArchitectureReceipt(BindingResolutionReceiptBase):
+    receipt_kind: Literal[ReceiptKind.NEURAL_PROPOSER_ARCHITECTURE]
+    protocol_id: Literal["structure-two-neural-proposer-architecture-resolution@0.1"]
+    resolution_protocol: NeuralProposerArchitectureProtocol
+
+    @model_validator(mode="after")
+    def _typed_resolution(self) -> NeuralProposerArchitectureReceipt:
+        self._verify_resolution_payload(
+            self.resolution_protocol,
+            expected_binding=OpenBinding.NEURAL_PROPOSER_ARCHITECTURE,
+        )
+        return self
+
+
+class TrainingScheduleReceipt(BindingResolutionReceiptBase):
+    receipt_kind: Literal[ReceiptKind.TRAINING_SCHEDULE]
+    protocol_id: Literal["structure-two-training-schedule-resolution@0.1"]
+    resolution_protocol: TrainingScheduleProtocol
+
+    @model_validator(mode="after")
+    def _typed_resolution(self) -> TrainingScheduleReceipt:
+        self._verify_resolution_payload(
+            self.resolution_protocol,
+            expected_binding=OpenBinding.TRAINING_SCHEDULE,
+        )
+        return self
+
+
+class ConsolidationThresholdsReceipt(BindingResolutionReceiptBase):
+    receipt_kind: Literal[ReceiptKind.CONSOLIDATION_THRESHOLDS]
+    protocol_id: Literal["structure-two-consolidation-thresholds-resolution@0.1"]
+    resolution_protocol: ConsolidationThresholdsProtocol
+
+    @model_validator(mode="after")
+    def _typed_resolution(self) -> ConsolidationThresholdsReceipt:
+        self._verify_resolution_payload(
+            self.resolution_protocol,
+            expected_binding=OpenBinding.CONSOLIDATION_THRESHOLDS,
+        )
+        return self
+
+
+class CiavActionBudgetReceipt(BindingResolutionReceiptBase):
+    receipt_kind: Literal[ReceiptKind.CIAV_ACTION_BUDGET]
+    protocol_id: Literal["structure-two-ciav-action-budget-resolution@0.1"]
+    resolution_protocol: CiavActionBudgetProtocol
+
+    @model_validator(mode="after")
+    def _typed_resolution(self) -> CiavActionBudgetReceipt:
+        self._verify_resolution_payload(
+            self.resolution_protocol,
+            expected_binding=OpenBinding.CIAV_ACTION_BUDGET,
+        )
+        return self
+
+
+class ExactEnumerationFalsifierReceipt(BindingResolutionReceiptBase):
+    receipt_kind: Literal[ReceiptKind.EXACT_ENUMERATION_FALSIFIER]
+    protocol_id: Literal["structure-two-exact-enumeration-falsifier-resolution@0.1"]
+    resolution_protocol: ExactEnumerationFalsifierProtocol
+
+    @model_validator(mode="after")
+    def _typed_resolution(self) -> ExactEnumerationFalsifierReceipt:
+        self._verify_resolution_payload(
+            self.resolution_protocol,
+            expected_binding=OpenBinding.EXACT_ENUMERATION_FALSIFIER,
+        )
+        return self
+
+
 class AuditRound1Receipt(FormalReceiptBase):
     receipt_kind: Literal[ReceiptKind.AUDIT_ROUND_1]
-    protocol_id: Literal["structure-two-backbone-p0-adversarial-audit-round-1@1.0"]
+    protocol_id: Literal["structure-two-backbone-p0-adversarial-audit-round-1@1.1"]
     audit_round: Literal[1]
-    forged_complete_attack_passed: Literal[True]
-    stale_replay_substitution_attacks_passed: Literal[True]
-    caller_selected_pass_attack_passed: Literal[True]
+    scientific_counterexample_matrix_content_sha256: Sha256
+    positive_consequential_output_inventory_content_sha256: Sha256
+    scientific_counterexample_matrix_complete: Literal[True]
+    every_positive_consequential_output_trust_chain_covered: Literal[True]
+    every_positive_output_has_independent_falsifier: Literal[True]
     all_p0_surfaces_covered: Literal[True]
+
+    @model_validator(mode="after")
+    def _bind_round_one_semantics(self) -> AuditRound1Receipt:
+        expected = content_sha256(
+            {
+                "audit_round": self.audit_round,
+                "scientific_counterexample_matrix_content_sha256": (
+                    self.scientific_counterexample_matrix_content_sha256
+                ),
+                "positive_consequential_output_inventory_content_sha256": (
+                    self.positive_consequential_output_inventory_content_sha256
+                ),
+                "scientific_counterexample_matrix_complete": (
+                    self.scientific_counterexample_matrix_complete
+                ),
+                "every_positive_consequential_output_trust_chain_covered": (
+                    self.every_positive_consequential_output_trust_chain_covered
+                ),
+                "every_positive_output_has_independent_falsifier": (
+                    self.every_positive_output_has_independent_falsifier
+                ),
+                "all_p0_surfaces_covered": self.all_p0_surfaces_covered,
+            }
+        )
+        if self.result_content_sha256 != expected:
+            raise ValueError("round-one result hash does not bind scientific/positive coverage")
+        return self
 
 
 class AuditRound2Receipt(FormalReceiptBase):
     receipt_kind: Literal[ReceiptKind.AUDIT_ROUND_2]
-    protocol_id: Literal["structure-two-backbone-p0-adversarial-audit-round-2@1.0"]
+    protocol_id: Literal["structure-two-backbone-p0-adversarial-audit-round-2@1.1"]
     audit_round: Literal[2]
     independent_reviewer: Literal[True]
-    forged_complete_attack_passed: Literal[True]
-    stale_replay_substitution_attacks_passed: Literal[True]
-    caller_selected_pass_attack_passed: Literal[True]
+    attack_transcript_content_sha256: Sha256
+    positive_consequential_surface_inventory_content_sha256: Sha256
+    covered_positive_consequential_surface_ids: tuple[str, ...] = Field(min_length=1)
+    forged_but_complete_rejected: Literal[True]
+    cross_version_substitution_rejected: Literal[True]
+    replay_rejected: Literal[True]
+    missing_dependency_rejected: Literal[True]
+    direct_runner_bypass_rejected_before_workload: Literal[True]
+    trust_manifest_bound_to_checked_in_policy: Literal[True]
+    trust_manifest_root_signature_verified: Literal[True]
+    caller_backdated_verification_time_rejected: Literal[True]
+    replay_registry_identity_replacement_rejected: Literal[True]
+    same_inode_or_snapshot_rollback_not_claimed: Literal[True]
+    monotonic_or_worm_formal_replay_backend_required: Literal[True]
     all_p0_surfaces_covered: Literal[True]
+
+    @model_validator(mode="after")
+    def _bind_round_two_semantics(self) -> AuditRound2Receipt:
+        if self.covered_positive_consequential_surface_ids != (
+            ROUND2_POSITIVE_CONSEQUENTIAL_SURFACES
+        ):
+            raise ValueError("round-two coverage does not enumerate every positive surface")
+        expected = content_sha256(
+            {
+                "audit_round": self.audit_round,
+                "independent_reviewer": self.independent_reviewer,
+                "attack_transcript_content_sha256": self.attack_transcript_content_sha256,
+                "positive_consequential_surface_inventory_content_sha256": (
+                    self.positive_consequential_surface_inventory_content_sha256
+                ),
+                "covered_positive_consequential_surface_ids": (
+                    self.covered_positive_consequential_surface_ids
+                ),
+                "forged_but_complete_rejected": self.forged_but_complete_rejected,
+                "cross_version_substitution_rejected": (self.cross_version_substitution_rejected),
+                "replay_rejected": self.replay_rejected,
+                "missing_dependency_rejected": self.missing_dependency_rejected,
+                "direct_runner_bypass_rejected_before_workload": (
+                    self.direct_runner_bypass_rejected_before_workload
+                ),
+                "trust_manifest_bound_to_checked_in_policy": (
+                    self.trust_manifest_bound_to_checked_in_policy
+                ),
+                "trust_manifest_root_signature_verified": (
+                    self.trust_manifest_root_signature_verified
+                ),
+                "caller_backdated_verification_time_rejected": (
+                    self.caller_backdated_verification_time_rejected
+                ),
+                "replay_registry_identity_replacement_rejected": (
+                    self.replay_registry_identity_replacement_rejected
+                ),
+                "same_inode_or_snapshot_rollback_not_claimed": (
+                    self.same_inode_or_snapshot_rollback_not_claimed
+                ),
+                "monotonic_or_worm_formal_replay_backend_required": (
+                    self.monotonic_or_worm_formal_replay_backend_required
+                ),
+                "all_p0_surfaces_covered": self.all_p0_surfaces_covered,
+            }
+        )
+        if self.result_content_sha256 != expected:
+            raise ValueError("round-two result hash does not bind the required attack classes")
+        return self
 
 
 type FormalDependencyReceipt = (
@@ -1226,6 +1850,11 @@ type FormalDependencyReceipt = (
     | Task12Receipt
     | Task13Receipt
     | ProposalP5Receipt
+    | NeuralProposerArchitectureReceipt
+    | TrainingScheduleReceipt
+    | ConsolidationThresholdsReceipt
+    | CiavActionBudgetReceipt
+    | ExactEnumerationFalsifierReceipt
     | AuditRound1Receipt
     | AuditRound2Receipt
 )
@@ -1240,6 +1869,11 @@ RECEIPT_TYPE_BY_KIND: dict[ReceiptKind, type[FormalReceiptBase]] = {
     ReceiptKind.TASK_12: Task12Receipt,
     ReceiptKind.TASK_13: Task13Receipt,
     ReceiptKind.PROPOSAL_P5: ProposalP5Receipt,
+    ReceiptKind.NEURAL_PROPOSER_ARCHITECTURE: NeuralProposerArchitectureReceipt,
+    ReceiptKind.TRAINING_SCHEDULE: TrainingScheduleReceipt,
+    ReceiptKind.CONSOLIDATION_THRESHOLDS: ConsolidationThresholdsReceipt,
+    ReceiptKind.CIAV_ACTION_BUDGET: CiavActionBudgetReceipt,
+    ReceiptKind.EXACT_ENUMERATION_FALSIFIER: ExactEnumerationFalsifierReceipt,
     ReceiptKind.AUDIT_ROUND_1: AuditRound1Receipt,
     ReceiptKind.AUDIT_ROUND_2: AuditRound2Receipt,
 }
@@ -1429,6 +2063,15 @@ def verify_formal_receipt(
             raise ValueError("parent receipt id/content hash mismatch")
         if parent.verified_at_utc > receipt.issued_at_utc:
             raise ValueError("child receipt predates verification of its parent")
+    if isinstance(receipt, BindingResolutionReceiptBase):
+        task9_parent = verified_parents.get(ReceiptKind.TASK_9)
+        if not isinstance(task9_parent, Task9Receipt):
+            raise ValueError("binding resolution receipt lacks its typed Task 9 parent")
+        if (
+            receipt.selected_method_receipt_content_sha256
+            != task9_parent.selected_method_receipt_content_sha256
+        ):
+            raise ValueError("binding receipt substitutes a different selected-method receipt")
 
     anchor = _entry_by_kind(manifest, raw_kind)
     if (
@@ -1476,7 +2119,7 @@ class TrustedSevenOperatorAblationAuthorization(ContractModel):
     """The single aggregate authorization object for seven-operator ablation."""
 
     schema_version: Literal["1.0.0"]
-    protocol_id: Literal["structure-two-trusted-seven-operator-ablation-authorization@1.0"]
+    protocol_id: Literal["structure-two-trusted-seven-operator-ablation-authorization@1.1"]
     decision_id: UUID
     run_id: UUID
     seven_operator_identity: Literal["ORRER_CHEH"]
@@ -1549,7 +2192,6 @@ def evaluate_trusted_seven_operator_ablation_authorization(
     policy: TrustedAblationAuthorizationPolicy,
     run_id: UUID,
     receipts: Mapping[ReceiptKind, FormalDependencyReceipt],
-    verification_time_utc: datetime,
     replay_registry: ReceiptReplayRegistry,
     decision_id: UUID,
     authorization_nonce: UUID | None = None,
@@ -1570,7 +2212,7 @@ def evaluate_trusted_seven_operator_ablation_authorization(
     frozen_policy = TrustedAblationAuthorizationPolicy.load(DEFAULT_POLICY_PATH)
     policy_matches_frozen = content_sha256(supplied_policy) == content_sha256(frozen_policy)
     policy = frozen_policy
-    now = _require_utc(verification_time_utc, label="authorization evaluation time")
+    now = _require_utc(_verifier_utc_now(), label="authorization evaluation time")
     assessments: list[DependencyAssessment] = []
     verified: dict[ReceiptKind, FormalDependencyReceipt] = {}
     verified_receipt_ids: set[UUID] = set()
@@ -1580,14 +2222,7 @@ def evaluate_trusted_seven_operator_ablation_authorization(
     if not policy_matches_frozen:
         blockers.append("caller_policy_differs_from_checked_in_frozen_policy")
     replay_registry_error: str | None = None
-    if policy.replay_registry_status is not ReplayRegistryStatus.VERIFIER_OWNED_PERSISTENT:
-        replay_registry_error = "persistent_replay_registry_not_enrolled"
-    elif (
-        replay_registry.registry_id != policy.replay_registry_id
-        or not replay_registry.formal_grade
-        or replay_registry.enrollment_receipt_sha256 != policy.replay_registry_enrollment_sha256
-    ):
-        replay_registry_error = "persistent_replay_registry_identity_or_enrollment_invalid"
+    replay_registry_error = "formal_monotonic_or_worm_replay_backend_not_implemented_or_enrolled"
     if replay_registry_error is not None:
         blockers.append(replay_registry_error)
     bindings_by_kind = {item.receipt_kind: item for item in policy.dependency_bindings}
@@ -1817,8 +2452,8 @@ def verify_trusted_seven_operator_ablation_authorization(
     *,
     policy: TrustedAblationAuthorizationPolicy,
     manifest: ReceiptTrustAnchorManifest,
+    registry_authority: Ed25519AttestationVerifier,
     expected_run_id: UUID,
-    verification_time_utc: datetime,
     replay_registry: ReceiptReplayRegistry,
 ) -> None:
     """Verify a positive authorization; denied decisions are never executable tokens."""
@@ -1831,11 +2466,11 @@ def verify_trusted_seven_operator_ablation_authorization(
     if content_sha256(policy) != content_sha256(frozen_policy):
         raise ValueError("authorization policy is not the checked-in frozen policy")
     policy = frozen_policy
+    now = _require_utc(_verifier_utc_now(), label="authorization verification time")
     if not decision.authorized:
         raise ValueError("seven-operator ablation is not authorized")
     if decision.run_id != expected_run_id:
         raise ValueError("authorization belongs to a different run")
-    now = _require_utc(verification_time_utc, label="authorization verification time")
     if now < decision.evaluated_at_utc:
         raise ValueError("authorization is from the executor's future")
     if now > decision.expires_at_utc:
@@ -1849,19 +2484,26 @@ def verify_trusted_seven_operator_ablation_authorization(
         raise ValueError("authorization freshness window differs from frozen policy")
     if decision.policy_content_sha256 != content_sha256(policy):
         raise ValueError("authorization policy hash mismatch")
-    if decision.replay_registry_id != replay_registry.registry_id:
-        raise ValueError("authorization names the wrong replay registry")
     if (
-        policy.replay_registry_status is not ReplayRegistryStatus.VERIFIER_OWNED_PERSISTENT
-        or replay_registry.registry_id != policy.replay_registry_id
-        or not replay_registry.formal_grade
-        or replay_registry.enrollment_receipt_sha256 != policy.replay_registry_enrollment_sha256
+        policy.trust_anchor_status is not TrustAnchorStatus.ENROLLED
+        or policy.trust_anchor_manifest_sha256 is None
     ):
-        raise ValueError("formal persistent replay registry is not enrolled")
+        raise ValueError("trust-anchor manifest is not enrolled by the checked-in policy")
+    manifest = verify_trust_anchor_manifest(
+        manifest,
+        registry_authority=registry_authority,
+        expected_manifest_sha256=policy.trust_anchor_manifest_sha256,
+        verification_time_utc=now,
+    )
+    manifest_hash = trust_anchor_manifest_content_sha256(manifest)
+    if decision.trust_anchor_manifest_sha256 != manifest_hash:
+        raise ValueError("authorization trust-anchor manifest mismatch")
     if policy.custody_attestation_status is not CustodyAttestationStatus.PER_HOP_INDEPENDENT:
         raise ValueError("per-hop independent custody attestation is not enrolled")
-    if decision.trust_anchor_manifest_sha256 != trust_anchor_manifest_content_sha256(manifest):
-        raise ValueError("authorization trust-anchor manifest mismatch")
+    if decision.replay_registry_id != replay_registry.registry_id:
+        raise ValueError("authorization names the wrong replay registry")
+    if manifest.registry_id != replay_registry.registry_id:
+        raise ValueError("trust-anchor manifest names a different replay registry")
     anchor = _entry_by_kind(manifest, ReceiptKind.AUTHORIZATION)
     if (
         decision.authorization_signer_key_id,
@@ -1872,13 +2514,9 @@ def verify_trusted_seven_operator_ablation_authorization(
         key_id=anchor.key_id, public_key_base64=anchor.public_key_base64
     )
     verifier.verify(AUTHORIZATION_DOMAIN, _authorization_payload(decision), decision.attestation)
-    assert decision.authorization_nonce is not None
-    if replay_registry.contains(ReceiptKind.AUTHORIZATION, decision.authorization_nonce):
-        raise ValueError("authorization nonce was replayed")
-    replay_registry.consume(
-        ReceiptKind.AUTHORIZATION,
-        decision.authorization_nonce,
-        content_sha256(_authorization_payload(decision)),
+    raise ValueError(
+        "authorization v1.1 leaves the formal monotonic/WORM replay backend unresolved; "
+        "positive verification requires a new protocol revision"
     )
 
 
@@ -1888,12 +2526,16 @@ __all__ = [
     "DEPENDENCY_ORDER",
     "EXPECTED_PARENTS",
     "EXPECTED_PROTOCOL_IDS",
+    "ROUND2_POSITIVE_CONSEQUENTIAL_SURFACES",
     "SEVEN_OPERATOR_COMPONENT_IDENTITIES",
     "SEVEN_OPERATOR_IDENTITY",
     "ActionProbability",
     "AuditRound1Receipt",
     "AuditRound2Receipt",
     "AuthorizationDecisionStatus",
+    "BindingResolutionReceiptBase",
+    "CiavActionBudgetReceipt",
+    "ConsolidationThresholdsReceipt",
     "CustodyAttestationStatus",
     "CustodyHop",
     "CustodyRole",
@@ -1902,9 +2544,11 @@ __all__ = [
     "DependencyCommitmentStatus",
     "DependencyProtocolBinding",
     "DependencyState",
+    "ExactEnumerationFalsifierReceipt",
     "FormalDependencyReceipt",
     "FormalReceiptBase",
     "GateBV08Receipt",
+    "NeuralProposerArchitectureReceipt",
     "P5BottleneckDiagnosis",
     "P5PipelineStage",
     "P5StageDecomposition",
@@ -1928,6 +2572,7 @@ __all__ = [
     "Task12RecomputedGateResult",
     "Task12State",
     "Task13Receipt",
+    "TrainingScheduleReceipt",
     "TrustAnchorEntry",
     "TrustAnchorStatus",
     "TrustedAblationAuthorizationPolicy",

@@ -1,0 +1,56 @@
+{
+  "schema_version": "0.1.0",
+  "protocol_id": "structure-two-neural-proposer-architecture-resolution@0.1",
+  "binding": "neural_proposer_architecture",
+  "estimand": "Among full-scope typed proposers, the validation-selected architecture's confirmatory proposal quality, exact-action equivalence, and runtime cost under the frozen downstream particle system.",
+  "arms": [
+    {
+      "arm_id": "typed_factor_graph_transformer",
+      "role": "eligible",
+      "implementation_contract": "Emits normalized scores for every frozen branch/revise/retract/reactivate/rejuvenate/preserve_unresolved operation and every H,R,I,C,Z typed field."
+    },
+    {
+      "arm_id": "slot_conditioned_perceiver",
+      "role": "eligible",
+      "implementation_contract": "Uses typed latent slots while retaining the identical proposal support, structured factors, and unresolved-mass output surface."
+    },
+    {
+      "arm_id": "autoregressive_typed_graph_policy",
+      "role": "eligible",
+      "implementation_contract": "Autoregressively emits all typed particle fields with an exact joint log-probability and the complete frozen proposal-operation support."
+    },
+    {
+      "arm_id": "non_neural_structured_proposal_control",
+      "role": "diagnostic_control",
+      "implementation_contract": "Diagnostic structured non-neural control with the same candidate support, information view, and budget; it cannot be selected as the neural architecture."
+    }
+  ],
+  "validation_metric_id": "proposal_negative_log_likelihood",
+  "validation_direction": "minimize",
+  "minimum_validation_units": 3,
+  "minimum_confirmatory_units": 5,
+  "selection_rule": "validation_mean_then_arm_order_tiebreak_confirmatory_hidden_until_selection",
+  "confirmatory_gates": [
+    {
+      "metric_id": "full_chain_truth_compatible_recall",
+      "direction": "maximize",
+      "threshold": 0.8,
+      "aggregation": "mean_over_independent_confirmatory_units"
+    },
+    {
+      "metric_id": "action_total_variation_vs_exact",
+      "direction": "minimize",
+      "threshold": 0.1,
+      "aggregation": "mean_over_independent_confirmatory_units"
+    },
+    {
+      "metric_id": "milliseconds_per_episode",
+      "direction": "minimize",
+      "threshold": 250.0,
+      "aggregation": "mean_over_independent_confirmatory_units"
+    }
+  ],
+  "information_contract": "All arms receive the same observation, action, ontology, typed-state, and causal-history view per unit; no arm may read latent truth before action selection.",
+  "budget_contract": "All arms receive the same candidate count, parameter-search count, accelerator allowance, wall-clock accounting rule, and downstream particle budget per unit.",
+  "claim_boundary": "Resolves only neural_proposer_architecture after a fresh independently verified run; it cannot resolve another method binding, validate Gate B, or authorize a seven-operator ablation."
+}

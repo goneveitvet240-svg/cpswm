@@ -947,7 +947,7 @@ def test_fixed_window_kernel_work_does_not_scale_with_the_untouched_suffix() -> 
             seed=5,
         )
         assert local.cost["full_suffix_replayed_by_local_kernel"] is False
-        assert int(local.cost["marginal_window_gap_target_evaluations"]) <= 128
+        assert int(local.cost["marginal_window_gap_target_evaluations"]) <= 4 * 64
         marginal_work[gaps] = int(local.cost["marginal_elementary_likelihood_evaluations"])
         full_work[gaps] = int(full.cost["marginal_elementary_likelihood_evaluations"])
     assert marginal_work[10] - marginal_work[3] <= 100
@@ -1003,6 +1003,8 @@ def test_window_hot_path_cannot_read_copy_or_rehash_a_poisoned_long_suffix() -> 
     particle.gaps = poisoned_gaps
     particle.timeline = poisoned_timeline
     particle.runs = poisoned_runs
+    cached_action = backbone._particle_embodied_action(particle)
+    assert cached_action.responsible_actor is particle.terminal_responsible_actor
     meter = CostMeter(arm=ArmName.RBPF, particle_count=1)
     receipt = _window_rejuvenate(
         particles,
@@ -1042,6 +1044,51 @@ def test_wider_than_one_window_and_long_suffix_probe_are_constant_space_and_work
         rows[-1]["base_checkpoint_bytes_prepared_before_correction"]
         > rows[0]["base_checkpoint_bytes_prepared_before_correction"]
     )
+
+
+def test_task7_local_delta_matches_same_full_conditional_target() -> None:
+    report = backbone.validate_task7_conditional_target_contract()
+    assert report["passed"] is True
+    assert report["production_meter_contaminated_by_full_reference"] is False
+    assert report["covers_later_window_regime_or_cell_change"] is True
+    assert {row["case_id"] for row in report["rows"]} == {
+        "one_gap_cell_change",
+        "internal_regime_and_cell_change",
+    }
+
+
+def test_task7_conditional_target_mismatch_executes_full_replay_fallback(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    scenario = build_scenario(
+        gaps=5,
+        seed=11,
+        high_attribution_ambiguity=True,
+        adverse_delayed_feedback=True,
+        open_world_actor=False,
+        short_regime=True,
+        corrupt_index=1,
+    )
+    original = backbone._window_conditional_target_delta
+
+    def mismatched_target(*args: object, **kwargs: object) -> tuple[float, float, object]:
+        total, analytic, changed = original(*args, **kwargs)
+        return total + 1.0, analytic, changed
+
+    monkeypatch.setattr(backbone, "_window_conditional_target_delta", mismatched_target)
+    repaired = run_late_correction(
+        scenario,
+        treatment=CorrectionTreatment.LOCAL_REJUVENATION,
+        correction_index=1,
+        arm=ArmName.RBPF,
+        budget=16,
+        seed=5,
+        rejuvenation_window_length=2,
+    )
+    assert repaired.cost["repair_mode"] == "replay_fallback"
+    assert repaired.cost["fallback_required"] is True
+    assert "conditional_target_mismatch" in repaired.cost["fallback_reasons"]
+    assert int(repaired.cost["marginal_conditional_target_mismatches"]) == 1
 
 
 def test_task7_multi_axis_and_action_equivalence_are_explicit() -> None:

@@ -11,6 +11,7 @@ ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / "src"))
 
 from cpswm.system.evaluation_operations.project_two_factorial_benchmark import (  # noqa: E402
+    TrustedSevenOperatorAuthorizationRequired,
     run_project_two_factorial_benchmark,
 )
 
@@ -30,19 +31,19 @@ def main() -> None:
     args = parser.parse_args()
     if args.validation_count < 1 or args.holdout_count < 1:
         parser.error("split counts must be positive")
-    report = run_project_two_factorial_benchmark(
-        validation_seeds=tuple(
-            range(args.validation_start, args.validation_start + args.validation_count)
-        ),
-        holdout_seeds=tuple(range(args.holdout_start, args.holdout_start + args.holdout_count)),
-        max_steps=args.max_steps,
-    )
+    try:
+        report = run_project_two_factorial_benchmark(
+            validation_seeds=tuple(
+                range(args.validation_start, args.validation_start + args.validation_count)
+            ),
+            holdout_seeds=tuple(range(args.holdout_start, args.holdout_start + args.holdout_count)),
+            max_steps=args.max_steps,
+        )
+    except TrustedSevenOperatorAuthorizationRequired as exc:
+        parser.error(str(exc))
     args.output.parent.mkdir(parents=True, exist_ok=True)
     args.output.write_text(json.dumps(report, indent=2, sort_keys=True) + "\n")
-    print(
-        f"cells={report['design']['cell_count']} arms={len(report['arms'])} "
-        f"holdout={args.holdout_count} wrote={args.output}"
-    )
+    print(f"authorized factorial report wrote={args.output}")
 
 
 if __name__ == "__main__":

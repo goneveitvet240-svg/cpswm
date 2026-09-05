@@ -24,18 +24,18 @@ V05_AUDIT: Final = Path(
 READINESS: Final = Path("benchmarks/structure_two/structure_two_v0_6_development_readiness.json")
 RESULTS: Final = (
     (
-        "task_7_v0_3",
+        "task_7_v0_4",
         Path(
             "benchmarks/structure_two/backbone_b_repairs_2026_09_04/"
-            "task_7_windowed_rejuvenation_v0_3.json"
+            "task_7_windowed_rejuvenation_v0_4.json"
         ),
         "b",
     ),
     (
-        "task_8_v0_3",
+        "task_8_v0_4",
         Path(
             "benchmarks/structure_two/backbone_b_repairs_2026_09_04/"
-            "task_8_relative_probability_soft_coupling_v0_3.json"
+            "task_8_matched_three_arm_confirmatory_v0_4.json"
         ),
         "b",
     ),
@@ -58,10 +58,15 @@ RESULTS: Final = (
 )
 BOUND_REPORTS: Final = (
     Path("docs/结构二/方向结构二_当前证据总表_2026-09-02.md"),
-    Path("docs/experiments/structure_two_task7_windowed_rejuvenation_result_2026-09-05.md"),
-    Path("docs/experiments/structure_two_task8_relative_probability_coupling_result_2026-09-05.md"),
+    Path("docs/experiments/structure_two_task7_windowed_rejuvenation_result_v0_4_2026-09-05.md"),
+    Path(
+        "docs/experiments/structure_two_task8_matched_three_arm_confirmatory_result_v0_4_2026-09-05.md"
+    ),
     Path("docs/experiments/structure_two_task10_particle_budget_result_2026-09-05.md"),
-    Path("docs/reviews/structure_two_backbone_b_repairs_two_round_adversarial_audit_2026-09-04.md"),
+    Path("docs/reviews/结构二_B_vNext第一轮科学反例与正向输出审计_2026-09-05.md"),
+    Path("docs/reviews/结构二_B_vNext第二轮协议完整性证伪审计_2026-09-05.md"),
+    Path("docs/结构二/方向结构二_Gate_B_v0.8_raw正式执行链协议_v1.0.md"),
+    Path("docs/结构二/方向结构二_五项未决绑定解析与唯一授权DAG协议_v1.1.md"),
     Path("docs/reviews/structure_two_external_confirmation_gate_d_closure_2026-09-05.md"),
 )
 
@@ -204,6 +209,10 @@ def build_checkpoint(*, fresh_recomputation: bool = True) -> dict[str, object]:
             "forged_complete_positive_path_closed": True,
             "authorization_schema_config_custody_drift_closed": True,
             "manifest_and_current_source_inventory_drift_closed": True,
+            "formal_runtime_engine_and_trace_digest_frozen": True,
+            "registry_identity_replacement_and_clone_closed": True,
+            "final_authorization_binds_policy_and_root_signature": True,
+            "caller_backdated_freshness_closed": True,
         },
         "task_results": result_rows,
         "p0_content_manifest": {
@@ -227,6 +236,7 @@ def build_checkpoint(*, fresh_recomputation: bool = True) -> dict[str, object]:
             "gate_a_status": "BLOCKED_BEFORE_EXECUTION",
             "gate_b_protocol": "structure-two-comparator-typed-dual-gate-b@0.8",
             "gate_b_status": "FROZEN_NOT_EXECUTED/NOT_RUN",
+            "raw_formal_execution_chain_status": "REGISTERED_NOT_EXECUTED/NOT_ENROLLED",
             "combined_status": "BLOCKED_FAIL_CLOSED",
             "efficacy_interpretation_allowed": False,
         },
@@ -234,7 +244,8 @@ def build_checkpoint(*, fresh_recomputation: bool = True) -> dict[str, object]:
         "external_validity_established": False,
         "independent_custody_established": False,
         "claim_boundary": (
-            "Only the bound Task 7/8/10 D0 results may be called recomputable D0 evidence. "
+            "Only the bound Task 7 v0.4, Task 8 v0.4, and Task 10 D0 results may be "
+            "called recomputable D0 evidence. Task 7 and Task 8 both retain FAIL. "
             "The checkpoint does not establish external validity, formal Task-10 resolution, "
             "Gate-B execution, seven-operator efficacy, or external method superiority."
         ),

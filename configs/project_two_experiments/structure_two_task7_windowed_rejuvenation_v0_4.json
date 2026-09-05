@@ -1,0 +1,105 @@
+{
+  "protocol_id": "structure-two-windowed-late-correction@0.4",
+  "status": "FROZEN_BEFORE_EXECUTION",
+  "frozen_on": "2026-09-05",
+  "supersedes": "structure-two-windowed-late-correction@0.3",
+  "historical_result_policy": "v0.3 remains an immutable failed historical execution and is not overwritten",
+  "registered_design": {
+    "gaps": 12,
+    "correction_index": 2,
+    "scenario_seeds": [11],
+    "replicate_seeds": [101],
+    "arm": "adaptive_typed_rbpf",
+    "particles": 384,
+    "window_length": 3,
+    "rejuvenation_sweeps": 2,
+    "belief_axis_tv_tolerance": 0.1,
+    "action_distribution_tv_tolerance": 0.1,
+    "selected_action_must_match": true,
+    "complexity_probe_suffix_lengths": [8, 64, 256],
+    "scenario_factor_matrix": [
+      {"seed": 11, "high_attribution_ambiguity": false, "adverse_delayed_feedback": false, "open_world_actor": false, "short_regime": false},
+      {"seed": 11, "high_attribution_ambiguity": false, "adverse_delayed_feedback": false, "open_world_actor": false, "short_regime": true},
+      {"seed": 11, "high_attribution_ambiguity": false, "adverse_delayed_feedback": false, "open_world_actor": true, "short_regime": false},
+      {"seed": 11, "high_attribution_ambiguity": false, "adverse_delayed_feedback": false, "open_world_actor": true, "short_regime": true},
+      {"seed": 11, "high_attribution_ambiguity": false, "adverse_delayed_feedback": true, "open_world_actor": false, "short_regime": false},
+      {"seed": 11, "high_attribution_ambiguity": false, "adverse_delayed_feedback": true, "open_world_actor": false, "short_regime": true},
+      {"seed": 11, "high_attribution_ambiguity": false, "adverse_delayed_feedback": true, "open_world_actor": true, "short_regime": false},
+      {"seed": 11, "high_attribution_ambiguity": false, "adverse_delayed_feedback": true, "open_world_actor": true, "short_regime": true},
+      {"seed": 11, "high_attribution_ambiguity": true, "adverse_delayed_feedback": false, "open_world_actor": false, "short_regime": false},
+      {"seed": 11, "high_attribution_ambiguity": true, "adverse_delayed_feedback": false, "open_world_actor": false, "short_regime": true},
+      {"seed": 11, "high_attribution_ambiguity": true, "adverse_delayed_feedback": false, "open_world_actor": true, "short_regime": false},
+      {"seed": 11, "high_attribution_ambiguity": true, "adverse_delayed_feedback": false, "open_world_actor": true, "short_regime": true},
+      {"seed": 11, "high_attribution_ambiguity": true, "adverse_delayed_feedback": true, "open_world_actor": false, "short_regime": false},
+      {"seed": 11, "high_attribution_ambiguity": true, "adverse_delayed_feedback": true, "open_world_actor": false, "short_regime": true},
+      {"seed": 11, "high_attribution_ambiguity": true, "adverse_delayed_feedback": true, "open_world_actor": true, "short_regime": false},
+      {"seed": 11, "high_attribution_ambiguity": true, "adverse_delayed_feedback": true, "open_world_actor": true, "short_regime": true}
+    ]
+  },
+  "belief_axes": [
+    "mechanism",
+    "giver",
+    "receiver",
+    "instance",
+    "cause",
+    "regime_move",
+    "regime_target",
+    "regime_state",
+    "run_length"
+  ],
+  "conditional_target_contract": {
+    "validation_id": "task-7-same-conditional-target@0.1",
+    "target": "full chain_log_target conditioned on identical outside chain and left/right latent boundaries",
+    "reference_uses_same_corrected_observations": true,
+    "reference_meter_is_separate_from_production_meter": true,
+    "registered_cases": ["one_gap_cell_change", "internal_regime_and_cell_change"],
+    "absolute_tolerance": 1e-10
+  },
+  "action_endpoint": {
+    "type": "terminal_embodied_action_distribution",
+    "action": "placement_bin x responsible_actor",
+    "loss": "registered graded location and asymmetric actor cost",
+    "readout_uses_cached_terminal_sufficient_state": true,
+    "terminal_responsible_actor_cached": true,
+    "untouched_suffix_scan_allowed": false
+  },
+  "kernel_contract": {
+    "correction_first_uses_likelihood_ratio_reweighting": true,
+    "left_and_right_boundary_checkpoints_required": true,
+    "only_window_gaps_may_be_proposed": true,
+    "proposal_must_be_non_self": true,
+    "window_length_must_exceed_one": true,
+    "persistent_window_overlays_required": true,
+    "long_suffix_copy_scan_or_rehash_during_repair": false,
+    "right_boundary_state_must_match": true,
+    "analytic_state_uses_affected_cell_downdate_and_update": true,
+    "local_acceptance_uses_same_conditional_target_as_full_rerun": true,
+    "unbridgeable_nonfinite_or_target_mismatch_requires_explicit_full_replay_fallback": true
+  },
+  "cost_contract": {
+    "initial_forward_and_checkpoint_cost_reported_separately": true,
+    "marginal_correction_cost_reported_separately": true,
+    "marginal_suffix_items_read_must_equal": 0,
+    "marginal_suffix_items_copied_must_equal": 0,
+    "marginal_suffix_items_rehashed_must_equal": 0,
+    "persistent_overlay_live_items_must_not_increase_with_suffix_length": true,
+    "window_target_work_must_not_increase_with_suffix_length": true,
+    "fallback_work_included": true
+  },
+  "decision_rule": {
+    "belief_equivalence_pass": "every registered local-vs-full marginal TV on every frozen belief axis is at most 0.1",
+    "action_equivalence_pass": "every registered local-vs-full action-distribution TV is at most 0.1 and every selected Bayes action is identical",
+    "conditional_target_pass": "registered exact-reference cases pass and every production conditional-target check has zero mismatch",
+    "strict_window_complexity_pass": "registered rows and long-suffix probes perform zero suffix reads, copies and rehashes during local repair",
+    "window_implementation_pass": "belief equivalence AND action equivalence AND conditional target AND strict window complexity AND non-self proposals AND lower marginal correction cost AND no fallback",
+    "contamination_gate": "mean owner contamination of local rejuvenation must not exceed full rerun",
+    "overall_task_pass": "window implementation pass AND contamination gate",
+    "failure_verdict_must_equal": "FAIL",
+    "threshold_relaxation_allowed": false
+  },
+  "claim_boundary": {
+    "selects_task_12_kernel": false,
+    "establishes_external_validity": false,
+    "authorizes_seven_operator_ablation_alone": false
+  }
+}

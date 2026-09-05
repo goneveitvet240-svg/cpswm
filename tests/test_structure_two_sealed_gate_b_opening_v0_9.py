@@ -130,11 +130,14 @@ def _commitment_payload(
         committed_at_utc=committed_at_utc,
         custodian=custodian,
         enrollment_authority=enrollment_authority,
+        verification_time_utc=OPENED_AT,
     )
 
 
 def _verified_commitment(
     payload: dict[str, Any] | None = None,
+    *,
+    verification_time_utc: datetime = OPENED_AT,
 ):
     return verify_sealed_gate_b_commitment_record_v0_9(
         payload or _commitment_payload(),
@@ -146,6 +149,7 @@ def _verified_commitment(
         expected_freeze_completed_at_utc=FREEZE_AT,
         trusted_custodian=CUSTODIAN.verifier(),
         trusted_enrollment_authority=ENROLLMENT_AUTHORITY.verifier(),
+        verification_time_utc=verification_time_utc,
     )
 
 
@@ -206,6 +210,7 @@ def _context(**updates: Any) -> SealedGateBOpeningVerificationContextV09:
         expected_freeze_completed_at_utc=FREEZE_AT,
         trusted_custodian=CUSTODIAN.verifier(),
         trusted_enrollment_authority=ENROLLMENT_AUTHORITY.verifier(),
+        verification_time_utc=OPENED_AT,
         trusted_executor=EXECUTOR.verifier(),
         expected_verified_gate_a_report_content_sha256=GATE_A_REPORT_SHA256,
         expected_forbidden_seed_namespaces=FORBIDDEN_NAMESPACES,
@@ -291,6 +296,7 @@ def test_detached_commitment_finalizer_rejects_missing_and_cross_domain_signatur
             enrollment_authority_attestation=None,
             trusted_custodian=CUSTODIAN.verifier(),
             trusted_enrollment_authority=ENROLLMENT_AUTHORITY.verifier(),
+            verification_time_utc=OPENED_AT,
         )
     cross_domain = ENROLLMENT_AUTHORITY.sign(
         requests["custodian"].domain,
@@ -303,6 +309,7 @@ def test_detached_commitment_finalizer_rejects_missing_and_cross_domain_signatur
             enrollment_authority_attestation=cross_domain,
             trusted_custodian=CUSTODIAN.verifier(),
             trusted_enrollment_authority=ENROLLMENT_AUTHORITY.verifier(),
+            verification_time_utc=OPENED_AT,
         )
 
 
@@ -312,6 +319,13 @@ def test_forged_complete_commitment_record_fails_dual_signature() -> None:
     _rehash(forged)
     with pytest.raises(AttestationError, match="signature does not match"):
         _verified_commitment(forged)
+
+
+def test_commitment_verifier_rejects_future_commitment_timestamp() -> None:
+    with pytest.raises(ValueError, match="commitment is in the verifier's future"):
+        _verified_commitment(
+            verification_time_utc=COMMITTED_AT - timedelta(microseconds=1),
+        )
 
 
 @pytest.mark.parametrize("attacker_role", ("custodian", "authority"))

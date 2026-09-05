@@ -46,8 +46,8 @@ regret（决策遗憾）、ESS、elementary evaluations（基础评估数）及�
 
 | 工件 | file SHA-256 | content SHA-256 | 正向路径数 |
 |---|---|---|---:|
-| `task_10_budget_sweep_g1.json` | `388df9cac9198836b1e59b5f92059fa5aefdf11ba112734d7071af356b27010d` | `f8042a97eab1084c0ae3478a1b34b32b37c0799c5ae87a6a3323095fb78d4459` | 41 |
-| `task_10_budget_sweep_g2.json` | `bcfd54451f32534177d0a4d3ff69c14fe1dd71ad3e0b099d31b44f10b2c5ed11` | `6b190e838e48978845575e2ac7e3ac540912af0d97b5952eb874fd8c45504647` | 9 |
+| `task_10_budget_sweep_g1.json` | `7944d3f1c7ce9e535d76d525f4c0ec89705fa97bc6a6752fa1101ef8d311389e` | `e8361e2ab44ae4fd3c41170ffd540012ea0ff1952e289e9bb99740b9f28504be` | 41 |
+| `task_10_budget_sweep_g2.json` | `48c0eedb3f24d8d5dae489b55be27a26546f633a18c45224f859acd7716cb46b` | `07f24e5631e2a25b02526105170748fe1e47266c7a3a7b2cd1841940297b822a` | 9 |
 
 每个正向布尔输出都逐路径绑定 artifact content、Task 10 冻结配置、协议文档、producer source
 bundle 与 fresh task-specific recomputation。自洽重哈希、改阈值、换配置或换任务命令均不能通过

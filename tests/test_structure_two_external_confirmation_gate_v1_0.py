@@ -342,6 +342,7 @@ def _link_fixture(
         committed_at_utc=freeze.body.frozen_at_utc + timedelta(minutes=1),
         custodian=ceremony.custodian,
         enrollment_authority=ceremony.authority,
+        verification_time_utc=freeze.body.frozen_at_utc + timedelta(minutes=2),
     )
     commitment = verify_sealed_gate_b_commitment_record_v0_9(
         commitment_payload,
@@ -353,6 +354,7 @@ def _link_fixture(
         expected_freeze_completed_at_utc=freeze.body.frozen_at_utc,
         trusted_custodian=ceremony.custodian.verifier(),
         trusted_enrollment_authority=ceremony.authority.verifier(),
+        verification_time_utc=freeze.body.frozen_at_utc + timedelta(minutes=2),
     )
     return ceremony, freeze_payload, freeze, commitment_payload, commitment
 
@@ -390,6 +392,7 @@ def _signed_link(
         ),
         trusted_custodian=ceremony.custodian.verifier(),
         trusted_enrollment_authority=ceremony.authority.verifier(),
+        verification_time_utc=commitment.record.committed_at_utc + timedelta(seconds=1),
     )
 
 
@@ -478,12 +481,73 @@ def test_freeze_commitment_link_positive_and_authority_after_custodian(
         verified_commitment=commitment,
         trusted_custodian=ceremony.custodian.verifier(),
         trusted_enrollment_authority=ceremony.authority.verifier(),
+        verification_time_utc=commitment.record.committed_at_utc + timedelta(seconds=1),
     )
     assert isinstance(verified, FreezeCommitmentLinkV10)
     assert verified.external_verification_freeze_ledger_head_sha256 == (
         freeze.freeze_ledger_head_sha256
     )
     assert verified.sealed_commitment_content_sha256 == commitment.content_sha256
+
+
+def test_raw_freeze_to_commitment_link_chain_without_monkeypatch(
+    tmp_path: Path,
+) -> None:
+    ceremony, freeze_payload, freeze, commitment_payload, commitment = _link_fixture(tmp_path)
+    verification_time = commitment.record.committed_at_utc + timedelta(seconds=1)
+    rebuilt_commitment = verify_sealed_gate_b_commitment_record_v0_9(
+        commitment_payload,
+        expected_immutable_manifest_sha256=commitment.record.immutable_manifest_sha256,
+        expected_producer_run_id=commitment.record.producer_run_id,
+        expected_arm_implementation_bundle_sha256=(
+            commitment.record.arm_implementation_bundle_sha256
+        ),
+        expected_ledger_identifier=commitment.record.ledger_identifier,
+        expected_freeze_ledger_sequence=commitment.record.freeze_ledger_sequence,
+        expected_freeze_completed_at_utc=commitment.record.freeze_completed_at_utc,
+        trusted_custodian=ceremony.custodian.verifier(),
+        trusted_enrollment_authority=ceremony.authority.verifier(),
+        verification_time_utc=verification_time,
+    )
+    link_payload = _signed_link(
+        ceremony=ceremony,
+        freeze_payload=freeze_payload,
+        freeze=freeze,
+        commitment=rebuilt_commitment,
+    )
+    rebuilt_link = verify_freeze_commitment_link_v1_0(
+        link_payload,
+        external_verification_freeze=freeze,
+        external_verification_freeze_content_sha256=str(freeze_payload["content_sha256"]),
+        verified_commitment=rebuilt_commitment,
+        trusted_custodian=ceremony.custodian.verifier(),
+        trusted_enrollment_authority=ceremony.authority.verifier(),
+        verification_time_utc=verification_time,
+    )
+    assert rebuilt_link.sealed_commitment_content_sha256 == (rebuilt_commitment.content_sha256)
+    assert rebuilt_link.commitment_ledger_sequence == (rebuilt_link.freeze_ledger_sequence + 1)
+
+
+def test_freeze_commitment_link_rejects_future_commitment_timestamp(
+    tmp_path: Path,
+) -> None:
+    ceremony, freeze_payload, freeze, _, commitment = _link_fixture(tmp_path)
+    payload = _signed_link(
+        ceremony=ceremony,
+        freeze_payload=freeze_payload,
+        freeze=freeze,
+        commitment=commitment,
+    )
+    with pytest.raises(ValueError, match="link is in the verifier's future"):
+        verify_freeze_commitment_link_v1_0(
+            payload,
+            external_verification_freeze=freeze,
+            external_verification_freeze_content_sha256=str(freeze_payload["content_sha256"]),
+            verified_commitment=commitment,
+            trusted_custodian=ceremony.custodian.verifier(),
+            trusted_enrollment_authority=ceremony.authority.verifier(),
+            verification_time_utc=commitment.record.committed_at_utc - timedelta(microseconds=1),
+        )
 
 
 def test_fully_signed_link_rejects_same_ledger_freeze_fork(tmp_path: Path) -> None:
@@ -507,6 +571,7 @@ def test_fully_signed_link_rejects_same_ledger_freeze_fork(tmp_path: Path) -> No
             verified_commitment=commitment,
             trusted_custodian=ceremony.custodian.verifier(),
             trusted_enrollment_authority=ceremony.authority.verifier(),
+            verification_time_utc=commitment.record.committed_at_utc + timedelta(seconds=1),
         )
 
 
@@ -533,6 +598,7 @@ def test_fully_signed_link_rejects_same_context_commitment_substitution(
         committed_at_utc=commitment.record.committed_at_utc,
         custodian=ceremony.custodian,
         enrollment_authority=ceremony.authority,
+        verification_time_utc=commitment.record.committed_at_utc + timedelta(seconds=1),
     )
     substituted = verify_sealed_gate_b_commitment_record_v0_9(
         substituted_payload,
@@ -546,6 +612,7 @@ def test_fully_signed_link_rejects_same_context_commitment_substitution(
         expected_freeze_completed_at_utc=commitment.record.freeze_completed_at_utc,
         trusted_custodian=ceremony.custodian.verifier(),
         trusted_enrollment_authority=ceremony.authority.verifier(),
+        verification_time_utc=commitment.record.committed_at_utc + timedelta(seconds=1),
     )
     assert substituted_payload["content_sha256"] != commitment_payload["content_sha256"]
     with pytest.raises(ValueError, match="substituted one side"):
@@ -556,6 +623,7 @@ def test_fully_signed_link_rejects_same_context_commitment_substitution(
             verified_commitment=substituted,
             trusted_custodian=ceremony.custodian.verifier(),
             trusted_enrollment_authority=ceremony.authority.verifier(),
+            verification_time_utc=commitment.record.committed_at_utc + timedelta(seconds=1),
         )
 
 

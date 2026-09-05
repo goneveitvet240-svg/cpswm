@@ -46,8 +46,8 @@ def test_checkpoint_rejects_forged_but_fully_rehashed_positive_scope() -> None:
 
 def test_checkpoint_scope_contains_only_current_task_versions() -> None:
     assert _stored()["recomputable_d0_scope"] == [
-        "task_7_v0_3",
-        "task_8_v0_3",
+        "task_7_v0_4",
+        "task_8_v0_4",
         "task_10_g1_v0_1",
         "task_10_g2_v0_1",
     ]

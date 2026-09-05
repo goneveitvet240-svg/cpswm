@@ -3,9 +3,18 @@ from __future__ import annotations
 import copy
 import importlib.util
 import json
+from functools import lru_cache
 from pathlib import Path
 
 import pytest
+
+from cpswm.system.evaluation_operations import structure_two_task8_matched_confirmatory as task8
+from cpswm.system.evaluation_operations.structure_two_backbone_falsifier import (
+    ArmName,
+    CostMeter,
+    _coupling_table,
+    registered_scenarios,
+)
 
 ROOT = Path(__file__).resolve().parents[1]
 SCRIPT = ROOT / "apps/evaluation_runner/run_structure_two_backbone_b_repairs.py"
@@ -15,76 +24,17 @@ MODULE = importlib.util.module_from_spec(SPEC)
 SPEC.loader.exec_module(MODULE)
 
 
+@lru_cache(maxsize=2)
+def _registered_result(task: str) -> dict[str, object]:
+    return MODULE.run_registered_task(task)
+
+
 def _task7_result() -> dict[str, object]:
-    local_row = {
-        "treatment": "local_rejuvenation",
-        "belief_axis_distances_to_full_rerun": {axis: 0.0 for axis in MODULE.TASK7_BELIEF_AXES},
-        "action_distribution_distance_to_full_rerun": 0.0,
-        "selected_action_matches_full_rerun": True,
-        "cost": {
-            "marginal_rejuvenation_proposals": 1,
-            "marginal_nonself_rejuvenation_proposals": 1,
-            "marginal_untouched_suffix_items_read": 0,
-            "marginal_untouched_suffix_items_copied": 0,
-            "marginal_untouched_suffix_items_rehashed": 0,
-        },
-    }
-    complexity_row = {
-        "marginal_window_gap_target_evaluations": 4,
-        "marginal_max_repair_live_window_items": 25,
-        "reachable_persistent_overlay_bytes": 300,
-        "marginal_untouched_suffix_items_read": 0,
-        "marginal_untouched_suffix_items_copied": 0,
-        "marginal_untouched_suffix_items_rehashed": 0,
-        "fallback_required": False,
-    }
-    return {
-        "protocol_id": MODULE.TASK7_PROTOCOL_ID,
-        "seven_operator_efficacy_authorized": False,
-        "belief_equivalence_passed": True,
-        "action_equivalence_passed": True,
-        "equivalence_passed": True,
-        "local_cost_passed": True,
-        "no_fallbacks_in_registered_run": True,
-        "nonself_move_passed": True,
-        "strict_window_complexity_passed": True,
-        "window_implementation_passed": True,
-        "task_7_instrument_passed": True,
-        "contamination_not_expanded": True,
-        "task_7_passed": True,
-        "window_contract": {
-            "full_suffix_replayed_by_local_kernel": False,
-            "untouched_suffix_copy_scan_or_rehash": False,
-            "proposal_window_length": 3,
-        },
-        "complexity_probe": {
-            "window_target_work_invariant_to_suffix_length": True,
-            "persistent_live_items_invariant_to_suffix_length": True,
-            "reachable_overlay_bytes_invariant_to_suffix_length": True,
-            "zero_untouched_suffix_operations": True,
-            "passed": True,
-            "rows": [complexity_row],
-        },
-        "rows": [local_row],
-    }
+    return copy.deepcopy(_registered_result("7"))
 
 
 def _task8_result() -> dict[str, object]:
-    return {
-        "protocol_id": MODULE.TASK8_PROTOCOL_ID,
-        "seven_operator_efficacy_authorized": False,
-        "belief_coupling_instrument_passed": True,
-        "consequential_endpoint_id": "joint-cross-safety-policy@0.1",
-        "endpoint_consumes_interaction": True,
-        "consequential_action_distribution_distance_primary": 0.02,
-        "min_measurable_consequential_action_distribution_distance": 0.01,
-        "consequential_action_endpoint_passed": True,
-        "mean_factorized_excess_consequential_cost": 0.0,
-        "min_measurable_mean_consequential_cost_advantage": 0.001,
-        "consequential_utility_benefit_passed": False,
-        "joint_action_utility_passed": False,
-        "task_8_passed": False,
-    }
+    return copy.deepcopy(_registered_result("8"))
 
 
 def _rehash(payload: dict[str, object]) -> None:
@@ -113,7 +63,7 @@ def test_missing_positive_output_binding_is_rejected() -> None:
     payload = MODULE.make_artifact("8", result)
     trust_chain = payload["positive_output_trust_chain"]
     assert isinstance(trust_chain, dict)
-    trust_chain.pop("/belief_coupling_instrument_passed")
+    trust_chain.pop("/validation_only_independent_tuning_passed")
     _rehash(payload)
     with pytest.raises(ValueError, match="positive-output trust chain"):
         MODULE.verify_artifact(payload, task_runner=lambda task: copy.deepcopy(result))
@@ -124,10 +74,7 @@ def test_forged_but_complete_positive_path_fails_fresh_recomputation() -> None:
     payload = MODULE.make_artifact("8", copy.deepcopy(original))
     forged = payload["result"]
     assert isinstance(forged, dict)
-    forged["mean_factorized_excess_consequential_cost"] = 0.002
-    forged["consequential_utility_benefit_passed"] = True
-    forged["joint_action_utility_passed"] = True
-    forged["task_8_passed"] = True
+    forged["forged_but_complete_positive_marker"] = True
     payload["positive_output_trust_chain"] = {
         path: (
             "artifact_content+task_specific_source_bundle+frozen_config+"
@@ -143,36 +90,37 @@ def test_forged_but_complete_positive_path_fails_fresh_recomputation() -> None:
 def test_instrument_pass_cannot_be_promoted_to_task8_overall_pass() -> None:
     result = _task8_result()
     result["task_8_passed"] = True
-    with pytest.raises(ValueError, match="instrument-only"):
+    with pytest.raises(ValueError, match="paired failure"):
         MODULE.make_artifact("8", result)
 
 
 def test_action_distribution_shift_without_directional_utility_benefit_is_not_a_pass() -> None:
     result = _task8_result()
     payload = MODULE.make_artifact("8", result)
-    assert payload["result"]["consequential_utility_benefit_passed"] is False
+    paired = payload["result"]["paired_inference"]
+    assert paired["strict_lower_bound_gate_passed"] is False
     assert payload["result"]["task_8_passed"] is False
 
 
 def test_task8_endpoint_consumption_is_recomputed_not_caller_asserted() -> None:
     result = _task8_result()
-    result["endpoint_consumes_interaction"] = False
-    with pytest.raises(ValueError, match="cross-term consumption"):
+    result["endpoint"]["consumes_interaction"] = False
+    with pytest.raises(ValueError, match="does not consume"):
         MODULE.make_artifact("8", result)
 
 
 def test_task8_result_cannot_lower_the_frozen_action_threshold() -> None:
     result = _task8_result()
-    result["min_measurable_consequential_action_distribution_distance"] = 0.0
-    with pytest.raises(ValueError, match="thresholds differ"):
+    result["paired_inference"]["preregistered_strict_lower_bound_threshold"] = 0.0
+    with pytest.raises(ValueError, match="preregistered paired threshold"):
         MODULE.make_artifact("8", result)
 
 
 def test_window_instrument_cannot_hide_task7_contamination_failure() -> None:
     result = _task7_result()
-    result["contamination_not_expanded"] = False
+    result["contamination_not_expanded"] = not bool(result["contamination_not_expanded"])
     result["task_7_passed"] = True
-    with pytest.raises(ValueError, match="instrument-only"):
+    with pytest.raises(ValueError, match="contamination gate"):
         MODULE.make_artifact("7", result)
 
 
@@ -191,7 +139,8 @@ def test_task7_nonself_claim_is_derived_from_raw_proposal_counters() -> None:
     result = _task7_result()
     rows = result["rows"]
     assert isinstance(rows, list)
-    rows[0]["cost"]["marginal_nonself_rejuvenation_proposals"] = 0
+    local = next(row for row in rows if row["treatment"] == "local_rejuvenation")
+    local["cost"]["marginal_nonself_rejuvenation_proposals"] = 0
     with pytest.raises(ValueError, match="non-self state"):
         MODULE.make_artifact("7", result)
 
@@ -241,6 +190,76 @@ def test_registered_runner_rejects_config_drift_before_execution(
 def test_registered_runner_rejects_code_config_threshold_mismatch(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
-    monkeypatch.setattr(MODULE, "MIN_MEASURABLE_CONSEQUENTIAL_ACTION_DISTANCE", 999.0)
-    with pytest.raises(ValueError, match="executable thresholds disagree"):
+    monkeypatch.setattr(MODULE, "TASK8_PAIRED_COST_CI_THRESHOLD", 999.0)
+    with pytest.raises(ValueError, match="confirmatory contract disagree"):
         MODULE.run_registered_task("8")
+
+
+def test_task7_v04_caller_selected_incomplete_matrix_cannot_claim_formal_protocol() -> None:
+    with pytest.raises(ValueError, match="exact registered 2x2x2x2"):
+        MODULE.run_late_correction_study(
+            gaps=3,
+            correction_index=1,
+            scenario_seeds=(11,),
+            budget=8,
+            replicate_seeds=(101,),
+            rejuvenation_window_length=2,
+            protocol_id=MODULE.TASK7_CONDITIONAL_PROTOCOL_ID,
+        )
+
+
+def test_task8_one_seed_caller_design_cannot_claim_formal_v04() -> None:
+    with pytest.raises(ValueError, match="only the frozen registered design"):
+        MODULE.run_task8_matched_confirmatory_study(
+            gaps=1,
+            validation_seeds=(101,),
+            confirmatory_seeds=(211,),
+            state_budget=2_000_000,
+        )
+
+
+def test_task8_confirmatory_ci_clusters_the_eight_factor_cells_by_seed() -> None:
+    result = _task8_result()
+    assert result["task_8_verdict"] == "FAIL"
+    assert len(result["paired_rows"]) == 40
+    clusters = result["paired_seed_cluster_rows"]
+    assert len(clusters) == 5
+    assert {row["factor_cells"] for row in clusters} == {8}
+    paired = result["paired_inference"]
+    assert "seed cluster" in paired["independent_unit"]
+    assert paired["paired_lower_confidence_bound"] <= 0.001
+
+
+def test_task8_identity_matched_two_stage_algebraically_reconstructs_joint() -> None:
+    scenario = registered_scenarios(
+        1,
+        (101,),
+        relative_probability_coupling_nats=task8.TASK8_MATCHED_COUPLING_NATS,
+        relative_probability_truth_model=True,
+    )[0]
+    exact, rows = _coupling_table(
+        scenario,
+        CostMeter(arm=ArmName.EXACT_ORACLE),
+        2_000_000,
+        include_regime=True,
+    )
+    matched = task8._matched_two_stage_belief(
+        exact,
+        rows,
+        cause_temperature=1.0,
+        conditional_temperature=1.0,
+    )
+    assert matched == pytest.approx(exact)
+
+
+def test_task7_registered_rows_cover_every_factor_cell_and_treatment() -> None:
+    result = _task7_result()
+    assert result["complete_2x2x2x2_scenario_factor_matrix"] is True
+    rows = result["rows"]
+    assert len(rows) == 16 * 4
+    assert {row["treatment"] for row in rows} == {
+        "full_rerun",
+        "local_rejuvenation",
+        "reweight_only",
+        "append_only",
+    }

@@ -1,0 +1,56 @@
+{
+  "schema_version": "0.1.0",
+  "protocol_id": "structure-two-ciav-action-budget-resolution@0.1",
+  "binding": "ciav_action_budget",
+  "estimand": "The validation-selected nonzero CIAV verification budget's confirmatory utility gain, budget compliance, and action-regret behavior under identical predecision information.",
+  "arms": [
+    {
+      "arm_id": "zero_verification_diagnostic_control",
+      "role": "diagnostic_control",
+      "implementation_contract": "No-verification diagnostic control used only for paired utility contrasts; it cannot resolve the active-verification budget."
+    },
+    {
+      "arm_id": "one_verification_per_episode",
+      "role": "eligible",
+      "implementation_contract": "At most one causally available verification action per episode with truth revealed only after the action endpoint."
+    },
+    {
+      "arm_id": "two_verifications_per_episode",
+      "role": "eligible",
+      "implementation_contract": "At most two causally available verification actions per episode under the identical action and observation ontology."
+    },
+    {
+      "arm_id": "four_verifications_per_episode",
+      "role": "eligible",
+      "implementation_contract": "At most four causally available verification actions per episode with every query and cost recorded."
+    }
+  ],
+  "validation_metric_id": "net_action_loss_including_verification_cost",
+  "validation_direction": "minimize",
+  "minimum_validation_units": 3,
+  "minimum_confirmatory_units": 5,
+  "selection_rule": "validation_mean_then_arm_order_tiebreak_confirmatory_hidden_until_selection",
+  "confirmatory_gates": [
+    {
+      "metric_id": "paired_utility_gain_vs_zero_verification",
+      "direction": "maximize",
+      "threshold": 0.0,
+      "aggregation": "mean_over_independent_confirmatory_units"
+    },
+    {
+      "metric_id": "budget_violation_rate",
+      "direction": "minimize",
+      "threshold": 0.0,
+      "aggregation": "mean_over_independent_confirmatory_units"
+    },
+    {
+      "metric_id": "action_regret",
+      "direction": "minimize",
+      "threshold": 0.1,
+      "aggregation": "mean_over_independent_confirmatory_units"
+    }
+  ],
+  "information_contract": "All budgets receive identical predecision beliefs, available verification actions, public ontology, outcome models, and post-action truth timing per unit.",
+  "budget_contract": "Non-query compute, model parameters, validation-search trials, and episode count are identical; the only arm difference is the preregistered maximum verification count and incurred cost.",
+  "claim_boundary": "Resolves only ciav_action_budget and cannot prove CIAV efficacy, resolve another binding, validate Gate B, or authorize a seven-operator ablation."
+}

@@ -36,6 +36,7 @@ from typing import Any, Final, overload
 
 PROTOCOL_ID: Final = "structure-two-backbone-falsifier@0.1"
 TASK7_PROTOCOL_ID: Final = "structure-two-windowed-late-correction@0.3"
+TASK7_CONDITIONAL_PROTOCOL_ID: Final = "structure-two-windowed-late-correction@0.4"
 TASK8_PROTOCOL_ID: Final = "structure-two-relative-probability-joint-coupling@0.3"
 TASK7_CHECKPOINT_FORMAT_ID: Final = "structure-two-window-checkpoint@0.2"
 UNRESOLVED_KEY: Final = "__unresolved__"
@@ -196,6 +197,8 @@ class CostMeter:
     untouched_suffix_items_read: int = 0
     untouched_suffix_items_copied: int = 0
     untouched_suffix_items_rehashed: int = 0
+    conditional_target_checks: int = 0
+    conditional_target_mismatches: int = 0
     wall_clock_seconds: float = 0.0
     peak_tracked_objects: int = 0
     _scored_keys: set[str] = field(default_factory=set)
@@ -265,6 +268,8 @@ class CostMeter:
             "untouched_suffix_items_read": self.untouched_suffix_items_read,
             "untouched_suffix_items_copied": self.untouched_suffix_items_copied,
             "untouched_suffix_items_rehashed": self.untouched_suffix_items_rehashed,
+            "conditional_target_checks": self.conditional_target_checks,
+            "conditional_target_mismatches": self.conditional_target_mismatches,
             "invalid_bridge_proposals": self.invalid_bridge_proposals,
             "window_gap_target_evaluations": self.window_gap_target_evaluations,
             "checkpoint_boundary_reads": self.checkpoint_boundary_reads,
@@ -1232,6 +1237,7 @@ class Particle:
     checkpoint: WindowCheckpoint | None = None
     persistent_chain_key: str | None = None
     repair_lineage: tuple[str, ...] = ()
+    terminal_responsible_actor: Actor | None = None
 
     def chain(self) -> ChainHypothesis:
         return ChainHypothesis(gaps=self.gaps, regime_timeline=self.timeline, run_lengths=self.runs)
@@ -1252,6 +1258,7 @@ class Particle:
             checkpoint=self.checkpoint,
             persistent_chain_key=self.persistent_chain_key,
             repair_lineage=self.repair_lineage,
+            terminal_responsible_actor=self.terminal_responsible_actor,
         )
 
     def clone_sharing_history(self) -> Particle:
@@ -1272,6 +1279,7 @@ class Particle:
             checkpoint=self.checkpoint,
             persistent_chain_key=self.persistent_chain_key,
             repair_lineage=self.repair_lineage,
+            terminal_responsible_actor=self.terminal_responsible_actor,
         )
 
 
@@ -1800,6 +1808,7 @@ def _step_particles(
         particle.current = regime
         particle.retired = retired
         particle.created = created
+        particle.terminal_responsible_actor = gap.receiver
         particle.boundary_states = (
             *particle.boundary_states,
             LatentBoundary(
@@ -2845,6 +2854,9 @@ def _seal_window_checkpoint(
 
     if len(particle.boundary_states) != len(particle.gaps) + 1:
         raise CheckpointIntegrityError("checkpoint must contain one boundary per gap plus root")
+    expected_terminal_actor = particle.gaps[-1].receiver if particle.gaps else None
+    if particle.terminal_responsible_actor is not expected_terminal_actor:
+        raise CheckpointIntegrityError("terminal responsible-actor cache disagrees with history")
     source_chain_sha256 = _sha256_json(
         {
             "key": particle.chain().key,
@@ -3341,6 +3353,52 @@ def _window_analytic_delta(
     return after - before, changed
 
 
+def _window_conditional_target_delta(
+    current: ChainHypothesis,
+    proposed: ChainHypothesis,
+    observations: Sequence[GapObservation],
+    blocks: Mapping[tuple[str, str], AnalyticBlock],
+    *,
+    window_start: int,
+    window_stop: int,
+    meter: CostMeter,
+    relative_probability_coupling_nats: float = 0.0,
+) -> tuple[float, float, dict[tuple[str, str], AnalyticBlock]]:
+    """Exact conditional-target change with the outside chain held fixed.
+
+    The local kernel and the full rerun target must not differ by an implicit
+    objective.  Boundary preservation fixes the prefix and suffix; this routine
+    therefore evaluates every discrete and analytic term whose value may change
+    inside the declared window.  Its work is strictly ``O(window)`` and never
+    reads an untouched suffix item.
+    """
+
+    analytic_delta, changed = _window_analytic_delta(
+        current,
+        proposed,
+        observations,
+        blocks,
+        window_start=window_start,
+        window_stop=window_stop,
+        meter=meter,
+    )
+    discrete_delta = 0.0
+    for index in range(window_start, window_stop):
+        before = current.gaps[index]
+        after = proposed.gaps[index]
+        discrete_delta += gap_log_prior(
+            after,
+            relative_probability_coupling_nats=relative_probability_coupling_nats,
+        ) - gap_log_prior(
+            before,
+            relative_probability_coupling_nats=relative_probability_coupling_nats,
+        )
+        discrete_delta += gap_log_likelihood(after, observations[index], meter)
+        discrete_delta -= gap_log_likelihood(before, observations[index], meter)
+        meter.window_gap_target_evaluations += 1
+    return discrete_delta + analytic_delta, analytic_delta, changed
+
+
 def _commit_changed_blocks(
     blocks: Mapping[tuple[str, str], AnalyticBlock],
     changed: Mapping[tuple[str, str], AnalyticBlock],
@@ -3466,7 +3524,11 @@ def _window_rejuvenate(
                     window_stop=window_stop,
                     meter=meter,
                 )
-                analytic_delta, proposed_blocks = _window_analytic_delta(
+                (
+                    conditional_target_delta,
+                    analytic_delta,
+                    proposed_blocks,
+                ) = _window_conditional_target_delta(
                     current,
                     proposed,
                     observations,
@@ -3474,8 +3536,9 @@ def _window_rejuvenate(
                     window_start=window_start,
                     window_stop=window_stop,
                     meter=meter,
+                    relative_probability_coupling_nats=(relative_probability_coupling_nats),
                 )
-                log_target_ratio = (
+                optimized_single_gap_delta = (
                     gap_log_prior(
                         proposed_gap,
                         relative_probability_coupling_nats=(relative_probability_coupling_nats),
@@ -3488,6 +3551,23 @@ def _window_rejuvenate(
                     - gap_log_likelihood(current_gap, observations[gap_index], meter)
                     + analytic_delta
                 )
+                meter.conditional_target_checks += 1
+                if not math.isclose(
+                    conditional_target_delta,
+                    optimized_single_gap_delta,
+                    rel_tol=1e-12,
+                    abs_tol=1e-12,
+                ):
+                    meter.conditional_target_mismatches += 1
+                    fallback_reasons.add("conditional_target_mismatch")
+                    return WindowRejuvenationReceipt(
+                        window_start=window_start,
+                        window_stop=window_stop,
+                        valid_bridge_proposals=valid_bridge_proposals,
+                        fallback_required=True,
+                        fallback_reasons=tuple(sorted(fallback_reasons)),
+                    )
+                log_target_ratio = conditional_target_delta
                 log_acceptance = log_target_ratio + reverse_log_q - forward_log_q
                 if not math.isfinite(log_acceptance):
                     fallback_reasons.add("nonfinite_local_acceptance_ratio")
@@ -3516,6 +3596,8 @@ def _window_rejuvenate(
         current_window_gaps = tuple(
             current.gaps[index] for index in range(window_start, window_stop)
         )
+        if window_stop == len(current.gaps):
+            particle.terminal_responsible_actor = current_window_gaps[-1].receiver
         particle.persistent_chain_key = (
             f"position-xor-v1:{len(current.gaps):016x}:"
             + _updated_position_xor_sha256(
@@ -3564,6 +3646,8 @@ _ADDITIVE_COST_FIELDS: Final = (
     "untouched_suffix_items_read",
     "untouched_suffix_items_copied",
     "untouched_suffix_items_rehashed",
+    "conditional_target_checks",
+    "conditional_target_mismatches",
 )
 
 
@@ -4072,6 +4156,7 @@ def run_task7_window_complexity_probe(
             thetas={},
             ancestry=("probe-root",),
             boundary_states=boundaries,
+            terminal_responsible_actor=gaps[-1].receiver,
         )
         checkpoint = _seal_window_checkpoint(particle, observations)
         _verify_window_checkpoint(particle, observations)
@@ -4141,6 +4226,199 @@ def run_task7_window_complexity_probe(
     }
 
 
+TASK7_SCENARIO_FACTOR_NAMES: Final = (
+    "high_attribution_ambiguity",
+    "adverse_delayed_feedback",
+    "open_world_actor",
+    "short_regime",
+)
+
+
+def complete_task7_scenario_factor_matrix(seed: int = 11) -> tuple[dict[str, bool | int], ...]:
+    """Return every cell of the registered 2x2x2x2 Task-7 factor design."""
+
+    return tuple(
+        {
+            "seed": seed,
+            "high_attribution_ambiguity": ambiguity,
+            "adverse_delayed_feedback": delayed,
+            "open_world_actor": open_world,
+            "short_regime": short_regime,
+        }
+        for ambiguity in (False, True)
+        for delayed in (False, True)
+        for open_world in (False, True)
+        for short_regime in (False, True)
+    )
+
+
+def _task7_validation_gap(
+    *,
+    actor: Actor,
+    cause: Cause,
+    move: RegimeMove,
+    target: str | None,
+) -> GapHypothesis:
+    return GapHypothesis(
+        mechanism=Mechanism.HANDOFF if actor is Actor.GUEST else Mechanism.DIRECT,
+        giver=Actor.OWNER if actor is Actor.GUEST else actor,
+        receiver=actor,
+        instance=Instance.TARGET,
+        cause=cause,
+        regime_move=move,
+        regime_target=target,
+    )
+
+
+def validate_task7_conditional_target_contract() -> dict[str, Any]:
+    """Compare the local objective with the full target on frozen small chains.
+
+    This validation deliberately uses a separate exact-oracle meter and is not
+    included in the production repair meter.  The second case changes internal
+    regime states and analytic cells while rejoining the same right boundary,
+    so a single-gap-only pseudo-target cannot pass by coincidence.
+    """
+
+    stay_owner = _task7_validation_gap(
+        actor=Actor.OWNER,
+        cause=Cause.OBSERVATION,
+        move=RegimeMove.STAY,
+        target="R0",
+    )
+    stay_guest = _task7_validation_gap(
+        actor=Actor.GUEST,
+        cause=Cause.ACTOR,
+        move=RegimeMove.STAY,
+        target="R0",
+    )
+    create_r1 = _task7_validation_gap(
+        actor=Actor.OWNER,
+        cause=Cause.HABIT,
+        move=RegimeMove.CREATE,
+        target="R1",
+    )
+    reactivate_r0 = _task7_validation_gap(
+        actor=Actor.GUEST,
+        cause=Cause.HABIT,
+        move=RegimeMove.REACTIVATE,
+        target="R0",
+    )
+    reactivate_r1 = _task7_validation_gap(
+        actor=Actor.GUEST,
+        cause=Cause.HABIT,
+        move=RegimeMove.REACTIVATE,
+        target="R1",
+    )
+    stay_r1 = _task7_validation_gap(
+        actor=Actor.FAMILY,
+        cause=Cause.OBSERVATION,
+        move=RegimeMove.STAY,
+        target="R1",
+    )
+
+    raw_cases = (
+        (
+            "one_gap_cell_change",
+            (stay_owner, stay_owner, stay_owner),
+            (stay_owner, stay_guest, stay_owner),
+            1,
+            2,
+        ),
+        (
+            "internal_regime_and_cell_change",
+            (
+                stay_owner,
+                create_r1,
+                reactivate_r0,
+                stay_owner,
+                reactivate_r1,
+                stay_r1,
+            ),
+            (
+                stay_owner,
+                stay_owner,
+                create_r1,
+                reactivate_r0,
+                reactivate_r1,
+                stay_r1,
+            ),
+            1,
+            5,
+        ),
+    )
+    rows: list[dict[str, Any]] = []
+    for case_id, current_gaps, proposed_gaps, window_start, window_stop in raw_cases:
+        current_state = _replay_gap_sequence(current_gaps)
+        proposed_state = _replay_gap_sequence(proposed_gaps)
+        if current_state is None or proposed_state is None:
+            raise AssertionError("registered Task-7 conditional validation chain is invalid")
+        current = current_state.chain
+        proposed = proposed_state.chain
+        root = LatentBoundary(current="R0", retired=(), created=0, run_length=0)
+        current_replay = _replay_window_from_boundary(current.gaps, root)
+        proposed_replay = _replay_window_from_boundary(proposed.gaps, root)
+        if current_replay is None or proposed_replay is None:
+            raise AssertionError("conditional validation boundary replay failed")
+        current_boundaries = current_replay.boundaries
+        proposed_boundaries = proposed_replay.boundaries
+        if current_boundaries[window_start] != proposed_boundaries[window_start]:
+            raise AssertionError("conditional validation left boundaries differ")
+        if current_boundaries[window_stop] != proposed_boundaries[window_stop]:
+            raise AssertionError("conditional validation right boundaries differ")
+        observations = tuple(
+            _task7_probe_observation(gap, index) for index, gap in enumerate(current_gaps)
+        )
+        blocks = analytic_blocks_for(current, observations, CostMeter(arm=ArmName.EXACT_ORACLE))
+        local_meter = CostMeter(arm=ArmName.RBPF)
+        local_delta, _analytic_delta, _changed = _window_conditional_target_delta(
+            current,
+            proposed,
+            observations,
+            blocks,
+            window_start=window_start,
+            window_stop=window_stop,
+            meter=local_meter,
+        )
+        reference_meter = CostMeter(arm=ArmName.EXACT_ORACLE)
+        reference_delta = chain_log_target(proposed, observations, reference_meter) - (
+            chain_log_target(current, observations, reference_meter)
+        )
+        absolute_error = abs(local_delta - reference_delta)
+        rows.append(
+            {
+                "case_id": case_id,
+                "window_start": window_start,
+                "window_stop": window_stop,
+                "same_outside_chain": (
+                    current.gaps[:window_start] == proposed.gaps[:window_start]
+                    and current.gaps[window_stop:] == proposed.gaps[window_stop:]
+                ),
+                "same_left_boundary": True,
+                "same_right_boundary": True,
+                "later_window_regime_or_cell_changed": any(
+                    current.regime_timeline[index] != proposed.regime_timeline[index]
+                    or current.cell_of(index) != proposed.cell_of(index)
+                    for index in range(window_start + 1, window_stop)
+                ),
+                "local_conditional_target_delta": local_delta,
+                "full_target_delta": reference_delta,
+                "absolute_error": absolute_error,
+                "passed": absolute_error <= 1e-10,
+            }
+        )
+    return {
+        "validation_id": "task-7-same-conditional-target@0.1",
+        "production_meter_contaminated_by_full_reference": False,
+        "absolute_tolerance": 1e-10,
+        "covers_one_gap_cell_change": True,
+        "covers_later_window_regime_or_cell_change": any(
+            row["later_window_regime_or_cell_changed"] for row in rows
+        ),
+        "passed": all(row["passed"] for row in rows),
+        "rows": rows,
+    }
+
+
 def run_late_correction_study(
     *,
     gaps: int,
@@ -4152,17 +4430,67 @@ def run_late_correction_study(
     rejuvenation_window_length: int = 1,
     rejuvenation_sweeps: int = 1,
     complexity_probe_suffix_lengths: Sequence[int] = (8, 64, 256),
+    scenario_factor_matrix: Sequence[Mapping[str, bool | int]] | None = None,
+    protocol_id: str = TASK7_PROTOCOL_ID,
 ) -> dict[str, Any]:
+    if protocol_id not in {TASK7_PROTOCOL_ID, TASK7_CONDITIONAL_PROTOCOL_ID}:
+        raise ValueError("unknown Task-7 protocol ID")
+    if protocol_id == TASK7_CONDITIONAL_PROTOCOL_ID and scenario_factor_matrix is None:
+        raise ValueError("Task-7 v0.4 requires the exact registered 2x2x2x2 factor matrix")
     rows: list[dict[str, Any]] = []
     window_stop = min(gaps, correction_index + rejuvenation_window_length)
-    for scenario_seed in scenario_seeds:
+    if scenario_factor_matrix is None:
+        factor_cells: tuple[dict[str, bool | int], ...] = tuple(
+            {
+                "seed": int(scenario_seed),
+                "high_attribution_ambiguity": True,
+                "adverse_delayed_feedback": True,
+                "open_world_actor": scenario_seed % 2 == 1,
+                "short_regime": True,
+            }
+            for scenario_seed in scenario_seeds
+        )
+        complete_factor_matrix = False
+    else:
+        factor_cells = tuple(
+            {str(key): value for key, value in cell.items()} for cell in scenario_factor_matrix
+        )
+        expected_combinations = {
+            (ambiguity, delayed, open_world, short_regime)
+            for ambiguity in (False, True)
+            for delayed in (False, True)
+            for open_world in (False, True)
+            for short_regime in (False, True)
+        }
+        actual_combinations: set[tuple[bool, bool, bool, bool]] = set()
+        for cell in factor_cells:
+            if set(cell) != {"seed", *TASK7_SCENARIO_FACTOR_NAMES}:
+                raise ValueError("Task-7 factor cell has missing or unknown fields")
+            if isinstance(cell["seed"], bool) or not isinstance(cell["seed"], int):
+                raise ValueError("Task-7 factor-cell seed must be an integer")
+            factor_values = tuple(cell[name] for name in TASK7_SCENARIO_FACTOR_NAMES)
+            if not all(isinstance(value, bool) for value in factor_values):
+                raise ValueError("Task-7 scenario factors must be booleans")
+            actual_combinations.add(
+                (
+                    bool(factor_values[0]),
+                    bool(factor_values[1]),
+                    bool(factor_values[2]),
+                    bool(factor_values[3]),
+                )
+            )
+        if actual_combinations != expected_combinations or len(factor_cells) != 16:
+            raise ValueError("Task-7 registered design must cover the exact 2x2x2x2 factor matrix")
+        complete_factor_matrix = True
+
+    for factor_cell in factor_cells:
         scenario = build_scenario(
             gaps=gaps,
-            seed=scenario_seed,
-            high_attribution_ambiguity=True,
-            adverse_delayed_feedback=True,
-            open_world_actor=scenario_seed % 2 == 1,
-            short_regime=True,
+            seed=int(factor_cell["seed"]),
+            high_attribution_ambiguity=bool(factor_cell["high_attribution_ambiguity"]),
+            adverse_delayed_feedback=bool(factor_cell["adverse_delayed_feedback"]),
+            open_world_actor=bool(factor_cell["open_world_actor"]),
+            short_regime=bool(factor_cell["short_regime"]),
             corrupt_index=correction_index,
         )
         for seed in replicate_seeds:
@@ -4207,6 +4535,9 @@ def run_late_correction_study(
                 rows.append(
                     {
                         "scenario_id": scenario.scenario_id,
+                        "scenario_factors": {
+                            name: bool(factor_cell[name]) for name in TASK7_SCENARIO_FACTOR_NAMES
+                        },
                         "replicate_seed": seed,
                         "treatment": treatment.value,
                         "belief_axis_distances_to_full_rerun": belief_distances,
@@ -4320,6 +4651,11 @@ def run_late_correction_study(
         for row in local_rows
     )
     no_fallbacks = all(row["cost"].get("fallback_required") is False for row in local_rows)
+    conditional_target_runtime_passed = all(
+        int(row["cost"].get("marginal_conditional_target_checks", 0)) > 0
+        and int(row["cost"].get("marginal_conditional_target_mismatches", 0)) == 0
+        for row in local_rows
+    )
     nonself_move_passed = all(
         int(row["cost"]["marginal_rejuvenation_proposals"]) > 0
         and int(row["cost"]["marginal_nonself_rejuvenation_proposals"])
@@ -4343,6 +4679,7 @@ def run_late_correction_study(
     strict_window_complexity_passed = bool(complexity_probe["passed"]) and (
         local_suffix_operations_zero
     )
+    conditional_target_validation = validate_task7_conditional_target_contract()
     window_implementation_passed = (
         belief_equivalence_passed
         and action_equivalence_passed
@@ -4351,6 +4688,9 @@ def run_late_correction_study(
         and nonself_move_passed
         and rejuvenation_window_length > 1
         and strict_window_complexity_passed
+        and conditional_target_runtime_passed
+        and bool(conditional_target_validation["passed"])
+        and (complete_factor_matrix or protocol_id == TASK7_PROTOCOL_ID)
     )
     local_contamination = summary[CorrectionTreatment.LOCAL_REJUVENATION.value][
         "mean_owner_contamination_given_resolved"
@@ -4363,7 +4703,7 @@ def run_late_correction_study(
     full_recovery = summary[CorrectionTreatment.FULL_RERUN.value]["revision_recovery_rate"]
     task_7_passed = window_implementation_passed and contamination_not_expanded
     return {
-        "protocol_id": TASK7_PROTOCOL_ID,
+        "protocol_id": protocol_id,
         "backbone_protocol_id": PROTOCOL_ID,
         "task": "task-7-late-correction",
         "evidence_status": "D0 synthetic window-kernel validation; no external benefit is claimed",
@@ -4372,6 +4712,9 @@ def run_late_correction_study(
         "arm": arm.value,
         "budget": budget,
         "scenario_seeds": list(scenario_seeds),
+        "scenario_factor_matrix": [dict(cell) for cell in factor_cells],
+        "scenario_factor_names": list(TASK7_SCENARIO_FACTOR_NAMES),
+        "complete_2x2x2x2_scenario_factor_matrix": complete_factor_matrix,
         "replicate_seeds": list(replicate_seeds),
         "window_contract": {
             "checkpoint_format_id": TASK7_CHECKPOINT_FORMAT_ID,
@@ -4387,12 +4730,18 @@ def run_late_correction_study(
             "belief_axis_tv_tolerance": TASK7_BELIEF_AXIS_TV_TOLERANCE,
             "action_distribution_tv_tolerance": (TASK7_ACTION_DISTRIBUTION_TV_TOLERANCE),
             "selected_bayes_action_must_match": True,
+            "conditional_target_id": "task-7-same-conditional-target@0.1",
+            "terminal_responsible_actor_cached": True,
+            "fallback_policy": "explicit_full_replay",
         },
         "belief_equivalence_passed": belief_equivalence_passed,
         "action_equivalence_passed": action_equivalence_passed,
         "equivalence_passed": equivalence_passed,
         "local_cost_passed": local_cost_passed,
         "no_fallbacks_in_registered_run": no_fallbacks,
+        "conditional_target_runtime_passed": conditional_target_runtime_passed,
+        "conditional_target_validation": conditional_target_validation,
+        "explicit_full_replay_fallback_implemented": True,
         "nonself_move_passed": nonself_move_passed,
         "strict_window_complexity_passed": strict_window_complexity_passed,
         "complexity_probe": complexity_probe,
@@ -4402,11 +4751,12 @@ def run_late_correction_study(
         "local_minus_full_owner_contamination": local_contamination - full_contamination,
         "local_minus_full_revision_recovery_rate": local_recovery - full_recovery,
         "task_7_passed": task_7_passed,
-        "task_7_verdict": (
-            "PASS"
+        "task_7_verdict": "PASS" if task_7_passed else "FAIL",
+        "task_7_failure_reason": (
+            None
             if task_7_passed
             else (
-                "WINDOW_IMPLEMENTATION_PASS_CONTAMINATION_NONINFERIORITY_FAILED"
+                "CONTAMINATION_NONINFERIORITY_FAILED"
                 if window_implementation_passed
                 else "WINDOW_IMPLEMENTATION_FAILED"
             )
@@ -4502,7 +4852,11 @@ def _particle_embodied_action(particle: Particle) -> EmbodiedAction:
 
     if not particle.gaps:
         return EmbodiedAction(location_bin=0, responsible_actor=Actor.UNKNOWN)
-    actor = particle.gaps[-1].receiver
+    actor = particle.terminal_responsible_actor
+    if actor is None:
+        raise CheckpointIntegrityError(
+            "terminal responsible actor is absent from the Task-7 sufficient-state cache"
+        )
     cell = (actor.value, particle.current or "unresolved_regime")
     block = particle.blocks.get(cell, AnalyticBlock())
     scores = block.action_log_scores(ACTION_QUERY_FEATURES)

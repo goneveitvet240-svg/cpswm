@@ -1,0 +1,56 @@
+{
+  "schema_version": "0.1.0",
+  "protocol_id": "structure-two-consolidation-thresholds-resolution@0.1",
+  "binding": "consolidation_thresholds",
+  "estimand": "The validation-selected reversible RGRC threshold policy's confirmatory false-commit, retained-recall, and recovery-cost behavior under the frozen trained system.",
+  "arms": [
+    {
+      "arm_id": "precision_favoring_frozen_grid_point",
+      "role": "eligible",
+      "implementation_contract": "A preregistered high-evidence RGRC commit/retract/reactivate threshold tuple retaining reversible attribution and explicit unresolved mass."
+    },
+    {
+      "arm_id": "balanced_frozen_grid_point",
+      "role": "eligible",
+      "implementation_contract": "A preregistered middle RGRC commit/retract/reactivate threshold tuple retaining the same ledger operations and evidence fields."
+    },
+    {
+      "arm_id": "recall_favoring_frozen_grid_point",
+      "role": "eligible",
+      "implementation_contract": "A preregistered lower-evidence RGRC threshold tuple retaining contamination, rollback, and unresolved safeguards."
+    },
+    {
+      "arm_id": "no_long_term_commit_diagnostic_control",
+      "role": "diagnostic_control",
+      "implementation_contract": "Diagnostic no-commit control used only to measure headroom; it cannot be selected because it removes the frozen reversible-commit capability."
+    }
+  ],
+  "validation_metric_id": "validation_commit_recovery_loss",
+  "validation_direction": "minimize",
+  "minimum_validation_units": 3,
+  "minimum_confirmatory_units": 5,
+  "selection_rule": "validation_mean_then_arm_order_tiebreak_confirmatory_hidden_until_selection",
+  "confirmatory_gates": [
+    {
+      "metric_id": "false_irreversible_commit_rate",
+      "direction": "minimize",
+      "threshold": 0.0,
+      "aggregation": "mean_over_independent_confirmatory_units"
+    },
+    {
+      "metric_id": "post_correction_retained_recall",
+      "direction": "maximize",
+      "threshold": 0.9,
+      "aggregation": "mean_over_independent_confirmatory_units"
+    },
+    {
+      "metric_id": "incorrect_statistic_recovery_cost",
+      "direction": "minimize",
+      "threshold": 0.1,
+      "aggregation": "mean_over_independent_confirmatory_units"
+    }
+  ],
+  "information_contract": "Every threshold arm receives the identical signed evidence stream, correction timing, actor/object ontology, and ledger ancestry; confirmatory labels remain hidden.",
+  "budget_contract": "Every arm receives the same threshold-search count on validation, ledger storage, replay opportunities, and correction-processing budget.",
+  "claim_boundary": "Resolves only consolidation_thresholds while retaining reversible RGRC authority; it cannot resolve other bindings, validate Gate B, or authorize a seven-operator ablation."
+}

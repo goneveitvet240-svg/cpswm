@@ -10,24 +10,48 @@ import pytest
 from pydantic import ValidationError
 
 from cpswm.system.attestation import Ed25519AttestationSigner, attested_payload
+from cpswm.system.evaluation_operations import (
+    structure_two_trusted_ablation_authorization as authorization_module,
+)
+from cpswm.system.evaluation_operations.structure_two_binding_resolution_protocols import (
+    ArmRole,
+    BindingArmUnitResult,
+    BindingResolutionExecutionTrace,
+    MetricDirection,
+    MetricObservation,
+    OpenBinding,
+    ResolutionSplit,
+    load_binding_resolution_protocol,
+    recompute_binding_resolution,
+)
+from cpswm.system.evaluation_operations.structure_two_selected_method import (
+    UnresolvedMethodBinding,
+)
 from cpswm.system.evaluation_operations.structure_two_trusted_ablation_authorization import (
+    AUTHORIZATION_DOMAIN,
     DEPENDENCY_ORDER,
     EXPECTED_PARENTS,
     EXPECTED_PROTOCOL_IDS,
     FORMAL_RECEIPT_DOMAIN_PREFIX,
+    ROUND2_POSITIVE_CONSEQUENTIAL_SURFACES,
     ActionProbability,
     AuditRound1Receipt,
     AuditRound2Receipt,
     AuthorizationDecisionStatus,
+    CiavActionBudgetReceipt,
+    ConsolidationThresholdsReceipt,
     CustodyAttestationStatus,
     CustodyHop,
     CustodyRole,
     CustodyTrustAnchorEntry,
+    DependencyAssessment,
     DependencyCommitmentStatus,
     DependencyState,
+    ExactEnumerationFalsifierReceipt,
     FormalDependencyReceipt,
     FormalReceiptBase,
     GateBV08Receipt,
+    NeuralProposerArchitectureReceipt,
     P5BottleneckDiagnosis,
     P5PipelineStage,
     P5StageDecomposition,
@@ -49,6 +73,7 @@ from cpswm.system.evaluation_operations.structure_two_trusted_ablation_authoriza
     Task12Receipt,
     Task12State,
     Task13Receipt,
+    TrainingScheduleReceipt,
     TrustAnchorEntry,
     TrustAnchorStatus,
     TrustedAblationAuthorizationPolicy,
@@ -69,10 +94,26 @@ from cpswm.system.reproducibility import content_sha256
 ROOT = Path(__file__).resolve().parents[1]
 POLICY_PATH = (
     ROOT / "configs/project_two_experiments/"
-    "structure_two_trusted_seven_operator_ablation_authorization_v1_0.json"
+    "structure_two_trusted_seven_operator_ablation_authorization_v1_1.json"
 )
 BASE_TIME = datetime(2026, 9, 5, 12, 0, tzinfo=UTC)
 NAMESPACE = UUID("44a27df3-943c-41ee-bbcd-b3d58ad2af93")
+BINDING_BY_RECEIPT_KIND = {
+    ReceiptKind.NEURAL_PROPOSER_ARCHITECTURE: OpenBinding.NEURAL_PROPOSER_ARCHITECTURE,
+    ReceiptKind.TRAINING_SCHEDULE: OpenBinding.TRAINING_SCHEDULE,
+    ReceiptKind.CONSOLIDATION_THRESHOLDS: OpenBinding.CONSOLIDATION_THRESHOLDS,
+    ReceiptKind.CIAV_ACTION_BUDGET: OpenBinding.CIAV_ACTION_BUDGET,
+    ReceiptKind.EXACT_ENUMERATION_FALSIFIER: OpenBinding.EXACT_ENUMERATION_FALSIFIER,
+}
+
+
+@pytest.fixture(autouse=True)
+def _fixed_authorization_verifier_clock(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setattr(
+        authorization_module,
+        "_verifier_utc_now",
+        lambda: BASE_TIME + timedelta(minutes=30),
+    )
 
 
 def _hash(label: str) -> str:
@@ -85,6 +126,76 @@ def _uuid(label: str) -> UUID:
 
 def _current_policy() -> TrustedAblationAuthorizationPolicy:
     return TrustedAblationAuthorizationPolicy.load(POLICY_PATH)
+
+
+def _policy_with_enrolled_manifest(
+    manifest: ReceiptTrustAnchorManifest,
+) -> TrustedAblationAuthorizationPolicy:
+    payload = _current_policy().model_dump(mode="python")
+    payload.update(
+        trust_anchor_status=TrustAnchorStatus.ENROLLED,
+        trust_anchor_manifest_sha256=trust_anchor_manifest_content_sha256(manifest),
+    )
+    return TrustedAblationAuthorizationPolicy.model_validate(payload)
+
+
+def _signed_authorization_decision(
+    *,
+    policy: TrustedAblationAuthorizationPolicy,
+    manifest: ReceiptTrustAnchorManifest,
+    signer: Ed25519AttestationSigner,
+    evaluated_at_utc: datetime,
+) -> authorization_module.TrustedSevenOperatorAblationAuthorization:
+    assessments = tuple(
+        DependencyAssessment(
+            receipt_kind=kind,
+            state=DependencyState.VERIFIED,
+            receipt_content_sha256=_hash(f"authorized-assessment:{kind.value}"),
+            blockers=(),
+        )
+        for kind in DEPENDENCY_ORDER
+    )
+    refs = tuple(
+        ParentReceiptRef(
+            receipt_kind=kind,
+            receipt_id=_uuid(f"authorized-receipt:{kind.value}"),
+            receipt_content_sha256=_hash(f"authorized-assessment:{kind.value}"),
+        )
+        for kind in DEPENDENCY_ORDER
+    )
+    verifier = signer.verifier()
+    payload: dict[str, Any] = {
+        "schema_version": "1.0.0",
+        "protocol_id": authorization_module.AUTHORIZATION_PROTOCOL_ID,
+        "decision_id": _uuid("signed-authorization-decision"),
+        "run_id": _uuid("signed-authorization-run"),
+        "seven_operator_identity": "ORRER_CHEH",
+        "authenticated_enabled_noop_allowed": True,
+        "evaluated_at_utc": evaluated_at_utc,
+        "freshness_window_seconds": 900,
+        "expires_at_utc": evaluated_at_utc + timedelta(seconds=900),
+        "replay_registry_id": manifest.registry_id,
+        "policy_content_sha256": content_sha256(policy),
+        "dependency_assessments": assessments,
+        "dependency_receipt_hashes": refs,
+        "blockers": (),
+        "decision_status": AuthorizationDecisionStatus.AUTHORIZED,
+        "authorized": True,
+        "authorization_nonce": _uuid("signed-authorization-nonce"),
+        "trust_anchor_manifest_sha256": trust_anchor_manifest_content_sha256(manifest),
+        "authorization_signer_key_id": verifier.key_id,
+        "authorization_signer_public_key_sha256": verifier.public_key_sha256,
+    }
+    unsigned = authorization_module.TrustedSevenOperatorAblationAuthorization.model_construct(
+        **payload,
+        attestation=None,
+    )
+    return authorization_module.TrustedSevenOperatorAblationAuthorization.model_validate(
+        {
+            **payload,
+            "attestation": signer.sign(AUTHORIZATION_DOMAIN, attested_payload(unsigned)),
+        }
+    )
 
 
 def _trust_context() -> tuple[
@@ -161,7 +272,15 @@ def _trust_context() -> tuple[
                 update={
                     "config_spec_commitment_status": DependencyCommitmentStatus.ENROLLED,
                     "expected_config_content_sha256": _hash(f"config:{binding.receipt_kind.value}"),
-                    "expected_spec_content_sha256": _hash(f"spec:{binding.receipt_kind.value}"),
+                    "expected_spec_content_sha256": (
+                        content_sha256(
+                            load_binding_resolution_protocol(
+                                BINDING_BY_RECEIPT_KIND[binding.receipt_kind]
+                            )
+                        )
+                        if binding.receipt_kind in BINDING_BY_RECEIPT_KIND
+                        else _hash(f"spec:{binding.receipt_kind.value}")
+                    ),
                 }
             )
             if binding.receipt_kind is not ReceiptKind.AUTHORIZATION
@@ -268,6 +387,7 @@ def _common(
     signer: Ed25519AttestationSigner,
     custody_signers: dict[tuple[ReceiptKind, CustodyRole], Ed25519AttestationSigner],
     result_hash: str,
+    spec_hash: str | None = None,
 ) -> dict[str, Any]:
     issued = BASE_TIME + timedelta(minutes=minute)
     source_hash = _hash("formal-source-bundle")
@@ -283,7 +403,7 @@ def _common(
         "parent_receipts": _parents(kind, receipts),
         "source_bundle_sha256": source_hash,
         "config_content_sha256": _hash(f"config:{kind.value}"),
-        "spec_content_sha256": _hash(f"spec:{kind.value}"),
+        "spec_content_sha256": spec_hash or _hash(f"spec:{kind.value}"),
         "result_content_sha256": result_hash,
         "producer_id": f"{CustodyRole.PRODUCER.value}-{kind.value.lower()}",
         "independent_verifier_id": f"authority-{kind.value.lower()}",
@@ -409,6 +529,63 @@ def _p5_stages() -> tuple[P5StageDecomposition, ...]:
     return tuple(output)
 
 
+def _binding_trace(binding: OpenBinding) -> BindingResolutionExecutionTrace:
+    protocol = load_binding_resolution_protocol(binding)
+    validation_units = tuple(_uuid(f"{binding}:validation:{index}") for index in range(3))
+    confirmatory_units = tuple(_uuid(f"{binding}:confirmatory:{index}") for index in range(5))
+    rows: list[BindingArmUnitResult] = []
+    for split, units in (
+        (ResolutionSplit.VALIDATION, validation_units),
+        (ResolutionSplit.CONFIRMATORY, confirmatory_units),
+    ):
+        for unit_index, unit in enumerate(units):
+            for arm_index, arm in enumerate(protocol.arms):
+                if split is ResolutionSplit.VALIDATION:
+                    score = float(arm_index)
+                    if arm.role is ArmRole.DIAGNOSTIC_CONTROL:
+                        score = -100.0
+                    metrics = (
+                        MetricObservation(metric_id=protocol.validation_metric_id, value=score),
+                    )
+                else:
+                    metrics = tuple(
+                        MetricObservation(
+                            metric_id=gate.metric_id,
+                            value=(
+                                gate.threshold - 0.01
+                                if gate.direction is MetricDirection.MINIMIZE
+                                else gate.threshold + 0.01
+                            ),
+                        )
+                        for gate in protocol.confirmatory_gates
+                    )
+                rows.append(
+                    BindingArmUnitResult(
+                        split=split,
+                        independent_unit_id=unit,
+                        arm_id=arm.arm_id,
+                        information_view_sha256=_hash(
+                            f"information:{binding}:{split}:{unit_index}"
+                        ),
+                        runtime_trace_sha256=_hash(
+                            f"runtime:{binding}:{split}:{unit_index}:{arm.arm_id}"
+                        ),
+                        budget_units=100,
+                        metrics=metrics,
+                    )
+                )
+    return BindingResolutionExecutionTrace(
+        trace_id=_uuid(f"binding-trace:{binding}"),
+        binding=binding,
+        protocol_id=protocol.protocol_id,
+        protocol_content_sha256=content_sha256(protocol),
+        frozen_at_utc=BASE_TIME - timedelta(minutes=30),
+        execution_started_at_utc=BASE_TIME - timedelta(minutes=29),
+        execution_completed_at_utc=BASE_TIME - timedelta(minutes=20),
+        rows=tuple(rows),
+    )
+
+
 def _build_receipts(
     manifest: ReceiptTrustAnchorManifest,
     signers: dict[ReceiptKind, Ed25519AttestationSigner],
@@ -426,12 +603,18 @@ def _build_receipts(
         ReceiptKind.TASK_12: 7,
         ReceiptKind.TASK_13: 10,
         ReceiptKind.PROPOSAL_P5: 10,
-        ReceiptKind.AUDIT_ROUND_1: 13,
-        ReceiptKind.AUDIT_ROUND_2: 16,
+        ReceiptKind.NEURAL_PROPOSER_ARCHITECTURE: 13,
+        ReceiptKind.TRAINING_SCHEDULE: 16,
+        ReceiptKind.CONSOLIDATION_THRESHOLDS: 19,
+        ReceiptKind.CIAV_ACTION_BUDGET: 19,
+        ReceiptKind.EXACT_ENUMERATION_FALSIFIER: 19,
+        ReceiptKind.AUDIT_ROUND_1: 22,
+        ReceiptKind.AUDIT_ROUND_2: 25,
     }
     for kind in DEPENDENCY_ORDER:
         signer = signers[kind]
         extra: dict[str, Any]
+        spec_hash: str | None = None
         if kind is ReceiptKind.TASK_12:
             trace = _task12_trace()
             metrics = recompute_task12_gate_result(trace, _thresholds())
@@ -458,8 +641,11 @@ def _build_receipts(
         elif kind is ReceiptKind.PROPOSAL_P5:
             stages = _p5_stages()
             diagnosis = diagnose_p5_bottleneck(stages, oracle_action_gain=0.2)
+            raw_p5_trace_hash = _hash("p5-raw-arm-unit-stage-trace")
             result_hash = content_sha256(
                 {
+                    "raw_arm_unit_stage_trace_content_sha256": raw_p5_trace_hash,
+                    "exact_arm_unit_stage_coverage_verified": True,
                     "stage_decomposition": stages,
                     "oracle_action_gain": 0.2,
                     "diagnosis": diagnosis,
@@ -470,6 +656,8 @@ def _build_receipts(
                     "structure-two-backbone-proposal-headroom-p5@0.1"
                 ),
                 "independent_definition_spec_content_sha256": _hash(f"spec:{kind.value}"),
+                "raw_arm_unit_stage_trace_content_sha256": raw_p5_trace_hash,
+                "exact_arm_unit_stage_coverage_verified": True,
                 "stage_decomposition": stages,
                 "oracle_action_gain": 0.2,
                 "recall_headroom_epsilon": 0.01,
@@ -478,33 +666,139 @@ def _build_receipts(
                 "completed_diagnostic": True,
             }
             receipt_type = ProposalP5Receipt
+        elif kind in BINDING_BY_RECEIPT_KIND:
+            binding = BINDING_BY_RECEIPT_KIND[kind]
+            protocol = load_binding_resolution_protocol(binding)
+            trace = _binding_trace(binding)
+            resolution = recompute_binding_resolution(protocol, trace)
+            spec_hash = content_sha256(protocol)
+            trace_hash = content_sha256(trace)
+            selected_method_hash = _hash("selected-method")
+            unresolved_bindings = tuple(UnresolvedMethodBinding)
+            result_hash = content_sha256(
+                {
+                    "binding": binding,
+                    "selected_method_receipt_content_sha256": selected_method_hash,
+                    "unresolved_bindings_at_protocol_freeze": unresolved_bindings,
+                    "resolution_protocol_content_sha256": spec_hash,
+                    "raw_execution_trace_sha256": trace_hash,
+                    "recomputed_resolution": resolution,
+                }
+            )
+            extra = {
+                "selected_method_receipt_content_sha256": selected_method_hash,
+                "unresolved_bindings_at_protocol_freeze": unresolved_bindings,
+                "resolution_protocol": protocol,
+                "resolution_protocol_content_sha256": spec_hash,
+                "raw_execution_trace": trace,
+                "raw_execution_trace_sha256": trace_hash,
+                "recomputed_resolution": resolution,
+                "formal_binding_resolved": True,
+            }
+            receipt_type = {
+                ReceiptKind.NEURAL_PROPOSER_ARCHITECTURE: (NeuralProposerArchitectureReceipt),
+                ReceiptKind.TRAINING_SCHEDULE: TrainingScheduleReceipt,
+                ReceiptKind.CONSOLIDATION_THRESHOLDS: ConsolidationThresholdsReceipt,
+                ReceiptKind.CIAV_ACTION_BUDGET: CiavActionBudgetReceipt,
+                ReceiptKind.EXACT_ENUMERATION_FALSIFIER: ExactEnumerationFalsifierReceipt,
+            }[kind]
         else:
             result_hash = _hash(f"result:{kind.value}")
             receipt_type, extra = {
                 ReceiptKind.GATE_B_V0_8: (
                     GateBV08Receipt,
                     {
+                        "raw_execution_protocol_id": (
+                            "structure-two-gate-b-v0.8-raw-formal-execution-chain@1.0"
+                        ),
+                        "raw_execution_policy_content_sha256": _hash("gate-b-raw-policy"),
+                        "raw_execution_content_sha256": _hash("gate-b-raw-chain"),
+                        "canonical_execution_verification_content_sha256": _hash(
+                            "gate-b-canonical"
+                        ),
+                        "runtime_readout_bundle_content_sha256": _hash("gate-b-runtime"),
+                        "causal_broker_bundle_content_sha256": _hash("gate-b-broker"),
+                        "independent_custody_bundle_content_sha256": _hash("gate-b-custody"),
+                        "replay_consumption_receipt_content_sha256": _hash("gate-b-replay"),
+                        "independent_review_receipt_content_sha256": _hash("gate-b-review"),
+                        "exact_arm_episode_coverage_content_sha256": _hash(
+                            "gate-b-arm-episode-coverage"
+                        ),
                         "comparator_count": 8,
                         "comparator_relations_frozen": True,
                         "causal_windows_frozen": True,
+                        "exact_arm_episode_coverage_verified": True,
+                        "canonical_runtime_action_projection_verified": True,
+                        "predecision_belief_readout_verified": True,
+                        "stepwise_causal_broker_verified": True,
+                        "independent_custody_verified": True,
+                        "freshness_and_replay_verified": True,
+                        "independent_review_verified": True,
+                        "raw_formal_execution_verified": True,
                         "formal_gate_b_passed": True,
                     },
                 ),
                 ReceiptKind.TASK_7: (
                     Task7Receipt,
                     {
+                        "registered_execution_content_sha256": _hash("task7-execution"),
+                        "conditional_target_validation_content_sha256": _hash(
+                            "task7-conditional-target"
+                        ),
+                        "exact_scenario_factor_matrix_content_sha256": _hash("task7-factor-matrix"),
+                        "exact_scenario_factor_cell_count": 16,
+                        "same_conditional_target_absolute_tolerance": 1e-10,
+                        "belief_axis_tv_threshold": 0.1,
+                        "action_distribution_tv_threshold": 0.1,
+                        "selected_action_must_match": True,
+                        "same_conditional_target_verified": True,
                         "strict_o_window_verified": True,
                         "multi_axis_equivalence_verified": True,
                         "action_equivalence_verified": True,
                         "non_self_move_verified": True,
                         "multi_sweep_verified": True,
                         "long_suffix_cost_verified": True,
+                        "adaptive_window_expansion_or_full_replay_fallback_implemented": True,
+                        "fallback_path_verified_separately": True,
+                        "registered_execution_used_fallback": False,
+                        "terminal_responsible_actor_cached": True,
+                        "contamination_gate_retained": True,
+                        "contamination_not_expanded": True,
+                        "threshold_relaxation_allowed": False,
+                        "failed_execution_reports_fail": True,
                         "formal_task_7_passed": True,
                     },
                 ),
                 ReceiptKind.TASK_8: (
                     Task8Receipt,
                     {
+                        "historical_v0_3_status": ("FAILED_FOR_CURRENT_MATCHED_THREE_ARM_CLAIM"),
+                        "exact_arm_order": ("joint", "factorized", "matched_two_stage"),
+                        "validation_selection_receipt_content_sha256": _hash(
+                            "task8-validation-selection"
+                        ),
+                        "confirmatory_execution_content_sha256": _hash(
+                            "task8-confirmatory-execution"
+                        ),
+                        "exact_confirmatory_coverage_content_sha256": _hash(
+                            "task8-confirmatory-coverage"
+                        ),
+                        "same_information_per_unit_verified": True,
+                        "same_budget_per_arm_per_unit_verified": True,
+                        "validation_only_independent_tuning_verified": True,
+                        "selection_frozen_before_confirmatory_verified": True,
+                        "validation_confirmatory_units_disjoint": True,
+                        "exact_confirmatory_arm_by_unit_coverage_verified": True,
+                        "confirmatory_unit_count": 40,
+                        "paired_estimand": "matched_two_stage_cost - joint_cost",
+                        "paired_confidence_interval_method": (
+                            "paired deterministic percentile bootstrap over seed-cluster means"
+                        ),
+                        "paired_confidence": 0.95,
+                        "paired_bootstrap_replicates": 10000,
+                        "paired_bootstrap_seed": "task8-v0.4-ci-20260905",
+                        "strict_lower_bound_threshold": 0.001,
+                        "paired_lower_confidence_bound": 0.01,
                         "endpoint_preregistered_before_run": True,
                         "endpoint_consumes_h_plus_z_cross_c": True,
                         "thresholds_unchanged_after_run": True,
@@ -532,10 +826,21 @@ def _build_receipts(
                         "implementation_manifest_content_sha256": _hash(
                             "task9-implementation-manifest"
                         ),
+                        "formal_execution_content_sha256": _hash("task9-formal-execution"),
+                        "operator_execution_receipts_content_sha256": _hash(
+                            "task9-operator-receipts"
+                        ),
+                        "exact_factorial_coverage_content_sha256": _hash(
+                            "task9-factorial-coverage"
+                        ),
+                        "independent_review_receipt_content_sha256": _hash(
+                            "task9-independent-review"
+                        ),
                         "exact_four_couplings_verified": True,
                         "selected_method_receipt_verified": True,
                         "authenticated_enabled_noop_allowed": True,
                         "authenticated_enabled_noop_receipts_verified": True,
+                        "freshness_replay_and_custody_verified": True,
                         "formal_task_9_passed": True,
                     },
                 ),
@@ -550,7 +855,15 @@ def _build_receipts(
                 ReceiptKind.TASK_11: (
                     Task11Receipt,
                     {
+                        "independent_definition_protocol_id": (
+                            "structure-two-backbone-resampling-task-11@0.1"
+                        ),
+                        "independent_definition_spec_content_sha256": _hash(f"spec:{kind.value}"),
+                        "raw_arm_matrix_content_sha256": _hash("task11-raw-arm-matrix"),
+                        "selection_receipt_content_sha256": _hash("task11-selection"),
                         "selected_resampling_policy": "systematic@ess=0.5",
+                        "exact_arm_by_unit_coverage_verified": True,
+                        "validation_only_selection_verified": True,
                         "raw_arm_matrix_recomputed": True,
                         "formal_task_11_passed": True,
                     },
@@ -558,9 +871,19 @@ def _build_receipts(
                 ReceiptKind.TASK_13: (
                     Task13Receipt,
                     {
+                        "independent_definition_protocol_id": (
+                            "structure-two-backbone-differentiability-task-13@0.1"
+                        ),
+                        "independent_definition_spec_content_sha256": _hash(f"spec:{kind.value}"),
+                        "raw_gradient_arm_matrix_content_sha256": _hash(
+                            "task13-raw-gradient-arm-matrix"
+                        ),
+                        "selection_receipt_content_sha256": _hash("task13-selection"),
                         "selected_differentiability_strategy": (
                             "score_function_unbiased_estimator"
                         ),
+                        "exact_arm_by_unit_coverage_verified": True,
+                        "validation_only_selection_verified": True,
                         "raw_gradient_checks_recomputed": True,
                         "formal_task_13_passed": True,
                     },
@@ -569,9 +892,15 @@ def _build_receipts(
                     AuditRound1Receipt,
                     {
                         "audit_round": 1,
-                        "forged_complete_attack_passed": True,
-                        "stale_replay_substitution_attacks_passed": True,
-                        "caller_selected_pass_attack_passed": True,
+                        "scientific_counterexample_matrix_content_sha256": _hash(
+                            "round1-counterexamples"
+                        ),
+                        "positive_consequential_output_inventory_content_sha256": _hash(
+                            "round1-positive-inventory"
+                        ),
+                        "scientific_counterexample_matrix_complete": True,
+                        "every_positive_consequential_output_trust_chain_covered": True,
+                        "every_positive_output_has_independent_falsifier": True,
                         "all_p0_surfaces_covered": True,
                     },
                 ),
@@ -580,13 +909,171 @@ def _build_receipts(
                     {
                         "audit_round": 2,
                         "independent_reviewer": True,
-                        "forged_complete_attack_passed": True,
-                        "stale_replay_substitution_attacks_passed": True,
-                        "caller_selected_pass_attack_passed": True,
+                        "attack_transcript_content_sha256": _hash("round2-transcript"),
+                        "positive_consequential_surface_inventory_content_sha256": _hash(
+                            "round2-positive-surface-inventory"
+                        ),
+                        "covered_positive_consequential_surface_ids": (
+                            ROUND2_POSITIVE_CONSEQUENTIAL_SURFACES
+                        ),
+                        "forged_but_complete_rejected": True,
+                        "cross_version_substitution_rejected": True,
+                        "replay_rejected": True,
+                        "missing_dependency_rejected": True,
+                        "direct_runner_bypass_rejected_before_workload": True,
+                        "trust_manifest_bound_to_checked_in_policy": True,
+                        "trust_manifest_root_signature_verified": True,
+                        "caller_backdated_verification_time_rejected": True,
+                        "replay_registry_identity_replacement_rejected": True,
+                        "same_inode_or_snapshot_rollback_not_claimed": True,
+                        "monotonic_or_worm_formal_replay_backend_required": True,
                         "all_p0_surfaces_covered": True,
                     },
                 ),
             }[kind]
+            if kind is ReceiptKind.GATE_B_V0_8:
+                result_hash = content_sha256(
+                    {
+                        key: extra[key]
+                        for key in (
+                            "raw_execution_protocol_id",
+                            "raw_execution_policy_content_sha256",
+                            "raw_execution_content_sha256",
+                            "canonical_execution_verification_content_sha256",
+                            "runtime_readout_bundle_content_sha256",
+                            "causal_broker_bundle_content_sha256",
+                            "independent_custody_bundle_content_sha256",
+                            "replay_consumption_receipt_content_sha256",
+                            "independent_review_receipt_content_sha256",
+                            "exact_arm_episode_coverage_content_sha256",
+                            "comparator_count",
+                            "comparator_relations_frozen",
+                            "causal_windows_frozen",
+                            "exact_arm_episode_coverage_verified",
+                            "canonical_runtime_action_projection_verified",
+                            "predecision_belief_readout_verified",
+                            "stepwise_causal_broker_verified",
+                            "independent_custody_verified",
+                            "freshness_and_replay_verified",
+                            "independent_review_verified",
+                            "raw_formal_execution_verified",
+                        )
+                    }
+                )
+            elif kind is ReceiptKind.TASK_7:
+                result_hash = content_sha256(
+                    {
+                        key: extra[key]
+                        for key in (
+                            "registered_execution_content_sha256",
+                            "conditional_target_validation_content_sha256",
+                            "exact_scenario_factor_matrix_content_sha256",
+                            "exact_scenario_factor_cell_count",
+                            "same_conditional_target_absolute_tolerance",
+                            "belief_axis_tv_threshold",
+                            "action_distribution_tv_threshold",
+                            "selected_action_must_match",
+                            "same_conditional_target_verified",
+                            "strict_o_window_verified",
+                            "multi_axis_equivalence_verified",
+                            "action_equivalence_verified",
+                            "non_self_move_verified",
+                            "multi_sweep_verified",
+                            "long_suffix_cost_verified",
+                            "adaptive_window_expansion_or_full_replay_fallback_implemented",
+                            "fallback_path_verified_separately",
+                            "registered_execution_used_fallback",
+                            "terminal_responsible_actor_cached",
+                            "contamination_gate_retained",
+                            "contamination_not_expanded",
+                            "threshold_relaxation_allowed",
+                            "failed_execution_reports_fail",
+                        )
+                    }
+                )
+            elif kind is ReceiptKind.TASK_8:
+                result_hash = content_sha256(
+                    {
+                        key: extra[key]
+                        for key in (
+                            "historical_v0_3_status",
+                            "exact_arm_order",
+                            "validation_selection_receipt_content_sha256",
+                            "confirmatory_execution_content_sha256",
+                            "exact_confirmatory_coverage_content_sha256",
+                            "same_information_per_unit_verified",
+                            "same_budget_per_arm_per_unit_verified",
+                            "validation_only_independent_tuning_verified",
+                            "selection_frozen_before_confirmatory_verified",
+                            "validation_confirmatory_units_disjoint",
+                            "exact_confirmatory_arm_by_unit_coverage_verified",
+                            "confirmatory_unit_count",
+                            "paired_estimand",
+                            "paired_confidence_interval_method",
+                            "paired_confidence",
+                            "paired_bootstrap_replicates",
+                            "paired_bootstrap_seed",
+                            "strict_lower_bound_threshold",
+                            "paired_lower_confidence_bound",
+                            "endpoint_preregistered_before_run",
+                            "endpoint_consumes_h_plus_z_cross_c",
+                            "thresholds_unchanged_after_run",
+                            "action_and_utility_gate_passed",
+                        )
+                    }
+                )
+            elif kind is ReceiptKind.TASK_9:
+                result_hash = content_sha256(
+                    {
+                        key: extra[key]
+                        for key in (
+                            "selected_method_identity",
+                            "selected_method_receipt_content_sha256",
+                            "operator_identity_order",
+                            "implementation_manifest_id",
+                            "implementation_manifest_content_sha256",
+                            "formal_execution_content_sha256",
+                            "operator_execution_receipts_content_sha256",
+                            "exact_factorial_coverage_content_sha256",
+                            "independent_review_receipt_content_sha256",
+                            "exact_four_couplings_verified",
+                            "selected_method_receipt_verified",
+                            "authenticated_enabled_noop_allowed",
+                            "authenticated_enabled_noop_receipts_verified",
+                            "freshness_replay_and_custody_verified",
+                        )
+                    }
+                )
+            elif kind is ReceiptKind.TASK_11:
+                result_hash = content_sha256(
+                    {
+                        key: extra[key]
+                        for key in (
+                            "raw_arm_matrix_content_sha256",
+                            "selection_receipt_content_sha256",
+                            "selected_resampling_policy",
+                            "exact_arm_by_unit_coverage_verified",
+                            "validation_only_selection_verified",
+                            "raw_arm_matrix_recomputed",
+                        )
+                    }
+                )
+            elif kind is ReceiptKind.TASK_13:
+                result_hash = content_sha256(
+                    {
+                        key: extra[key]
+                        for key in (
+                            "raw_gradient_arm_matrix_content_sha256",
+                            "selection_receipt_content_sha256",
+                            "selected_differentiability_strategy",
+                            "exact_arm_by_unit_coverage_verified",
+                            "validation_only_selection_verified",
+                            "raw_gradient_checks_recomputed",
+                        )
+                    }
+                )
+            elif kind is ReceiptKind.AUDIT_ROUND_1 or kind is ReceiptKind.AUDIT_ROUND_2:
+                result_hash = content_sha256(extra)
         common = _common(
             kind,
             minute=minutes[kind],
@@ -596,6 +1083,7 @@ def _build_receipts(
             signer=signer,
             custody_signers=custody_signers,
             result_hash=result_hash,
+            spec_hash=spec_hash,
         )
         unsigned = receipt_type.model_validate({**common, **extra})
         receipts[kind] = cast(
@@ -614,13 +1102,11 @@ def _evaluate(
     run_id: UUID,
     receipts: dict[ReceiptKind, FormalDependencyReceipt],
     registry: ReceiptReplayRegistry | None = None,
-    now: datetime = BASE_TIME + timedelta(minutes=20),
 ):
     return evaluate_trusted_seven_operator_ablation_authorization(
         policy=policy,
         run_id=run_id,
         receipts=receipts,
-        verification_time_utc=now,
         replay_registry=registry or ReceiptReplayRegistry(registry_id=manifest.registry_id),
         decision_id=_uuid("decision"),
         authorization_nonce=_uuid("authorization-nonce"),
@@ -638,7 +1124,7 @@ def _diagnose_receipt_dag(
     run_id: UUID,
     receipts: dict[ReceiptKind, FormalDependencyReceipt],
     registry: ReceiptReplayRegistry | None = None,
-    now: datetime = BASE_TIME + timedelta(minutes=20),
+    now: datetime = BASE_TIME + timedelta(minutes=30),
 ) -> tuple[dict[ReceiptKind, DependencyState], tuple[str, ...]]:
     """Exercise the typed verifier without creating an authorization surface."""
 
@@ -658,7 +1144,11 @@ def _diagnose_receipt_dag(
             states[kind] = DependencyState.BLOCKED_BY_PARENT
             blockers.append(f"{kind.value}:parent_not_verified")
             continue
-        receipt = receipts[kind]
+        receipt = receipts.get(kind)
+        if receipt is None:
+            states[kind] = DependencyState.MISSING
+            blockers.append(f"{kind.value}:formal_receipt_missing")
+            continue
         if receipt.receipt_kind is not kind:
             states[kind] = DependencyState.INVALID
             blockers.append(f"{kind.value}:cross-task receipt substitution")
@@ -687,7 +1177,6 @@ def test_checked_in_policy_is_fail_closed_and_names_only_orrer_cheh() -> None:
         policy=policy,
         run_id=_uuid("missing-run"),
         receipts={},
-        verification_time_utc=BASE_TIME,
         replay_registry=ReceiptReplayRegistry(registry_id=_uuid("empty-registry")),
         decision_id=_uuid("missing-decision"),
     )
@@ -698,6 +1187,187 @@ def test_checked_in_policy_is_fail_closed_and_names_only_orrer_cheh() -> None:
     assert decision.decision_status is AuthorizationDecisionStatus.NOT_AUTHORIZED
     assert "trust_anchor_manifest_not_enrolled" in decision.blockers
     assert tuple(item.receipt_kind for item in decision.dependency_assessments) == DEPENDENCY_ORDER
+
+
+def test_v11_dag_registers_all_five_independent_binding_receipt_types() -> None:
+    policy, manifest, _, signers, custody_signers = _trust_context()
+    del policy
+    _, receipts = _build_receipts(manifest, signers, custody_signers)
+    expected_types = {
+        ReceiptKind.NEURAL_PROPOSER_ARCHITECTURE: NeuralProposerArchitectureReceipt,
+        ReceiptKind.TRAINING_SCHEDULE: TrainingScheduleReceipt,
+        ReceiptKind.CONSOLIDATION_THRESHOLDS: ConsolidationThresholdsReceipt,
+        ReceiptKind.CIAV_ACTION_BUDGET: CiavActionBudgetReceipt,
+        ReceiptKind.EXACT_ENUMERATION_FALSIFIER: ExactEnumerationFalsifierReceipt,
+    }
+    for kind, receipt_type in expected_types.items():
+        receipt = receipts[kind]
+        assert type(receipt) is receipt_type
+        assert receipt.recomputed_resolution.all_confirmatory_gates_passed is True  # type: ignore[union-attr]
+        assert EXPECTED_PARENTS[kind]
+
+
+def test_missing_binding_receipt_invalidates_every_dependent_descendant() -> None:
+    policy, manifest, registry_authority, signers, custody_signers = _trust_context()
+    run_id, receipts = _build_receipts(manifest, signers, custody_signers)
+    receipts.pop(ReceiptKind.NEURAL_PROPOSER_ARCHITECTURE)
+    states, _ = _diagnose_receipt_dag(
+        policy=policy,
+        manifest=manifest,
+        registry_authority=registry_authority,
+        run_id=run_id,
+        receipts=receipts,
+    )
+    assert states[ReceiptKind.NEURAL_PROPOSER_ARCHITECTURE] is DependencyState.MISSING
+    for kind in (
+        ReceiptKind.TRAINING_SCHEDULE,
+        ReceiptKind.CIAV_ACTION_BUDGET,
+        ReceiptKind.EXACT_ENUMERATION_FALSIFIER,
+        ReceiptKind.AUDIT_ROUND_1,
+        ReceiptKind.AUDIT_ROUND_2,
+    ):
+        assert states[kind] is DependencyState.BLOCKED_BY_PARENT
+
+
+def test_binding_receipt_rejects_cross_type_and_cross_version_substitution() -> None:
+    _, manifest, _, signers, custody_signers = _trust_context()
+    _, receipts = _build_receipts(manifest, signers, custody_signers)
+    neural = cast(
+        NeuralProposerArchitectureReceipt,
+        receipts[ReceiptKind.NEURAL_PROPOSER_ARCHITECTURE],
+    )
+    with pytest.raises(ValidationError):
+        TrainingScheduleReceipt.model_validate(neural.model_dump(mode="python"))
+    payload = neural.model_dump(mode="python")
+    payload["protocol_id"] = "structure-two-neural-proposer-architecture-resolution@0.0"
+    with pytest.raises(ValidationError):
+        NeuralProposerArchitectureReceipt.model_validate(payload)
+
+
+def test_binding_receipt_cannot_drop_other_unresolved_bindings() -> None:
+    _, manifest, _, signers, custody_signers = _trust_context()
+    _, receipts = _build_receipts(manifest, signers, custody_signers)
+    neural = cast(
+        NeuralProposerArchitectureReceipt,
+        receipts[ReceiptKind.NEURAL_PROPOSER_ARCHITECTURE],
+    )
+    payload = neural.model_dump(mode="python")
+    payload["unresolved_bindings_at_protocol_freeze"] = tuple(UnresolvedMethodBinding)[:-1]
+    with pytest.raises(ValidationError, match="complete original unresolved-binding set"):
+        NeuralProposerArchitectureReceipt.model_validate(payload)
+
+
+def test_fully_resigned_binding_cannot_substitute_selected_method_parent() -> None:
+    policy, manifest, registry_authority, signers, custody_signers = _trust_context()
+    run_id, receipts = _build_receipts(manifest, signers, custody_signers)
+    kind = ReceiptKind.NEURAL_PROPOSER_ARCHITECTURE
+    original = cast(NeuralProposerArchitectureReceipt, receipts[kind])
+    replacement_selected_method_hash = "c" * 64
+    replacement_result = content_sha256(
+        {
+            "binding": OpenBinding.NEURAL_PROPOSER_ARCHITECTURE,
+            "selected_method_receipt_content_sha256": replacement_selected_method_hash,
+            "unresolved_bindings_at_protocol_freeze": tuple(UnresolvedMethodBinding),
+            "resolution_protocol_content_sha256": (original.resolution_protocol_content_sha256),
+            "raw_execution_trace_sha256": original.raw_execution_trace_sha256,
+            "recomputed_resolution": original.recomputed_resolution,
+        }
+    )
+    forged_custody = _custody(
+        kind,
+        receipt_id=original.receipt_id,
+        run_id=run_id,
+        nonce=original.nonce,
+        issued_at=original.issued_at_utc,
+        source_hash=original.source_bundle_sha256,
+        result_hash=replacement_result,
+        custody_signers=custody_signers,
+    )
+    unsigned = NeuralProposerArchitectureReceipt.model_validate(
+        {
+            **original.model_dump(mode="python"),
+            "selected_method_receipt_content_sha256": replacement_selected_method_hash,
+            "result_content_sha256": replacement_result,
+            "custody_chain": forged_custody,
+            "attestation": None,
+        }
+    )
+    receipts[kind] = issue_formal_receipt(unsigned, independent_verifier=signers[kind])
+    states, blockers = _diagnose_receipt_dag(
+        policy=policy,
+        manifest=manifest,
+        registry_authority=registry_authority,
+        run_id=run_id,
+        receipts=receipts,
+    )
+    assert states[kind] is DependencyState.INVALID
+    assert any("different selected-method receipt" in blocker for blocker in blockers)
+
+
+def test_gate_b_task7_task8_and_audits_reject_old_shaped_or_weakened_receipts() -> None:
+    _, manifest, _, signers, custody_signers = _trust_context()
+    _, receipts = _build_receipts(manifest, signers, custody_signers)
+
+    gate_b = receipts[ReceiptKind.GATE_B_V0_8].model_dump(mode="python")
+    gate_b.pop("raw_execution_content_sha256")
+    with pytest.raises(ValidationError):
+        GateBV08Receipt.model_validate(gate_b)
+
+    task7 = receipts[ReceiptKind.TASK_7].model_dump(mode="python")
+    task7["belief_axis_tv_threshold"] = 0.100001
+    with pytest.raises(ValidationError):
+        Task7Receipt.model_validate(task7)
+    task7 = receipts[ReceiptKind.TASK_7].model_dump(mode="python")
+    task7["contamination_not_expanded"] = False
+    with pytest.raises(ValidationError):
+        Task7Receipt.model_validate(task7)
+
+    task8 = receipts[ReceiptKind.TASK_8].model_dump(mode="python")
+    task8["paired_lower_confidence_bound"] = 0.001
+    with pytest.raises(ValidationError, match="strict threshold"):
+        Task8Receipt.model_validate(task8)
+    task8 = receipts[ReceiptKind.TASK_8].model_dump(mode="python")
+    task8["protocol_id"] = "structure-two-relative-probability-joint-coupling@0.3"
+    with pytest.raises(ValidationError):
+        Task8Receipt.model_validate(task8)
+
+    task9 = receipts[ReceiptKind.TASK_9].model_dump(mode="python")
+    task9.pop("formal_execution_content_sha256")
+    with pytest.raises(ValidationError):
+        Task9Receipt.model_validate(task9)
+    task11 = receipts[ReceiptKind.TASK_11].model_dump(mode="python")
+    task11.pop("raw_arm_matrix_content_sha256")
+    with pytest.raises(ValidationError):
+        Task11Receipt.model_validate(task11)
+    task13 = receipts[ReceiptKind.TASK_13].model_dump(mode="python")
+    task13.pop("raw_gradient_arm_matrix_content_sha256")
+    with pytest.raises(ValidationError):
+        Task13Receipt.model_validate(task13)
+    p5 = receipts[ReceiptKind.PROPOSAL_P5].model_dump(mode="python")
+    p5.pop("raw_arm_unit_stage_trace_content_sha256")
+    with pytest.raises(ValidationError):
+        ProposalP5Receipt.model_validate(p5)
+
+    round_one = receipts[ReceiptKind.AUDIT_ROUND_1].model_dump(mode="python")
+    round_one.pop("scientific_counterexample_matrix_content_sha256")
+    round_one["forged_complete_attack_passed"] = True
+    with pytest.raises(ValidationError):
+        AuditRound1Receipt.model_validate(round_one)
+    round_two = receipts[ReceiptKind.AUDIT_ROUND_2].model_dump(mode="python")
+    round_two.pop("direct_runner_bypass_rejected_before_workload")
+    with pytest.raises(ValidationError):
+        AuditRound2Receipt.model_validate(round_two)
+
+
+def test_round_two_receipt_cannot_omit_a_positive_consequential_surface() -> None:
+    _, manifest, _, signers, custody_signers = _trust_context()
+    _, receipts = _build_receipts(manifest, signers, custody_signers)
+    payload = receipts[ReceiptKind.AUDIT_ROUND_2].model_dump(mode="python")
+    payload["covered_positive_consequential_surface_ids"] = ROUND2_POSITIVE_CONSEQUENTIAL_SURFACES[
+        :-1
+    ]
+    with pytest.raises(ValidationError, match="every positive surface"):
+        AuditRound2Receipt.model_validate(payload)
 
 
 def test_policy_loader_rejects_duplicate_json_keys(tmp_path: Path) -> None:
@@ -820,7 +1490,6 @@ def test_checked_in_not_enrolled_policy_rejects_a_complete_self_signed_positive_
         policy=_current_policy(),
         run_id=run_id,
         receipts=receipts,
-        verification_time_utc=BASE_TIME + timedelta(minutes=20),
         replay_registry=ReceiptReplayRegistry(registry_id=manifest.registry_id),
         decision_id=_uuid("forged-current-policy-decision"),
         authorization_nonce=_uuid("forged-current-policy-authorization-nonce"),
@@ -833,6 +1502,17 @@ def test_checked_in_not_enrolled_policy_rejects_a_complete_self_signed_positive_
     assert all(
         item.state is not DependencyState.VERIFIED for item in decision.dependency_assessments
     )
+
+
+def test_v11_rejects_caller_claimed_formal_replay_enrollment() -> None:
+    payload = _current_policy().model_dump(mode="python")
+    payload.update(
+        replay_registry_status="VERIFIER_OWNED_PERSISTENT",
+        replay_registry_id=_uuid("caller-replay-registry"),
+        replay_registry_enrollment_sha256=_hash("caller-replay-enrollment"),
+    )
+    with pytest.raises(ValidationError, match="no formal monotonic/WORM replay backend"):
+        TrustedAblationAuthorizationPolicy.model_validate(payload)
 
 
 def test_complete_typed_receipt_dag_verifies_but_cannot_override_frozen_policy() -> None:
@@ -857,7 +1537,9 @@ def test_complete_typed_receipt_dag_verifies_but_cannot_override_frozen_policy()
     )
     assert decision.authorized is False
     assert "caller_policy_differs_from_checked_in_frozen_policy" in decision.blockers
-    assert "persistent_replay_registry_not_enrolled" in decision.blockers
+    assert (
+        "formal_monotonic_or_worm_replay_backend_not_implemented_or_enrolled" in decision.blockers
+    )
     assert "per_hop_independent_custody_attestation_not_enrolled" in decision.blockers
 
 
@@ -1030,7 +1712,7 @@ def test_source_config_spec_result_substitution_breaks_signature() -> None:
 
 
 def test_enrolled_signers_cannot_change_spec_and_result_then_resign() -> None:
-    policy, manifest, registry_authority, signers, custody_signers = _trust_context()
+    _, manifest, _, signers, custody_signers = _trust_context()
     run_id, receipts = _build_receipts(manifest, signers, custody_signers)
     original = cast(Task8Receipt, receipts[ReceiptKind.TASK_8])
     replacement_result = "b" * 64
@@ -1062,19 +1744,8 @@ def test_enrolled_signers_cannot_change_spec_and_result_then_resign() -> None:
             "attestation": None,
         }
     )
-    receipts[ReceiptKind.TASK_8] = cast(
-        FormalDependencyReceipt,
-        issue_formal_receipt(forged, independent_verifier=signers[ReceiptKind.TASK_8]),
-    )
-    states, blockers = _diagnose_receipt_dag(
-        policy=policy,
-        manifest=manifest,
-        registry_authority=registry_authority,
-        run_id=run_id,
-        receipts=receipts,
-    )
-    assert states[ReceiptKind.TASK_8] is DependencyState.INVALID
-    assert any("preregistered commitments" in item for item in blockers)
+    with pytest.raises(ValidationError, match=r"complete v0\.4 contract"):
+        issue_formal_receipt(forged, independent_verifier=signers[ReceiptKind.TASK_8])
 
 
 def test_custody_chain_tamper_is_rejected_before_signature_check() -> None:
@@ -1161,7 +1832,6 @@ def test_model_copy_cannot_turn_denied_decision_into_authorization() -> None:
         policy=policy,
         run_id=_uuid("denied-run"),
         receipts={},
-        verification_time_utc=BASE_TIME,
         replay_registry=ReceiptReplayRegistry(registry_id=_uuid("denied-registry")),
         decision_id=_uuid("denied-decision"),
     )
@@ -1177,9 +1847,103 @@ def test_model_copy_cannot_turn_denied_decision_into_authorization() -> None:
             forged,
             policy=policy,
             manifest=ReceiptTrustAnchorManifest.model_construct(),
+            registry_authority=Ed25519AttestationSigner.generate(key_id="unused-root").verifier(),
             expected_run_id=decision.run_id,
-            verification_time_utc=BASE_TIME,
             replay_registry=ReceiptReplayRegistry(registry_id=decision.replay_registry_id),
+        )
+
+
+def test_final_verifier_rejects_manifest_outside_checked_in_policy_commitment(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    _, enrolled_manifest, _, _, _ = _trust_context()
+    policy = _policy_with_enrolled_manifest(enrolled_manifest)
+    frozen_path = tmp_path / "enrolled-policy.json"
+    frozen_path.write_text(policy.model_dump_json(indent=2), encoding="utf-8")
+    monkeypatch.setattr(authorization_module, "DEFAULT_POLICY_PATH", frozen_path)
+
+    _, attacker_manifest, attacker_root, attacker_signers, _ = _trust_context()
+    decision = _signed_authorization_decision(
+        policy=policy,
+        manifest=attacker_manifest,
+        signer=attacker_signers[ReceiptKind.AUTHORIZATION],
+        evaluated_at_utc=BASE_TIME + timedelta(minutes=25),
+    )
+    with pytest.raises(ValueError, match="preregistered hash"):
+        verify_trusted_seven_operator_ablation_authorization(
+            decision,
+            policy=policy,
+            manifest=attacker_manifest,
+            registry_authority=attacker_root.verifier(),
+            expected_run_id=decision.run_id,
+            replay_registry=ReceiptReplayRegistry(registry_id=attacker_manifest.registry_id),
+        )
+
+
+def test_final_verifier_rejects_manifest_root_signature_tamper(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    _, manifest, registry_root, signers, _ = _trust_context()
+    policy = _policy_with_enrolled_manifest(manifest)
+    frozen_path = tmp_path / "enrolled-policy.json"
+    frozen_path.write_text(policy.model_dump_json(indent=2), encoding="utf-8")
+    monkeypatch.setattr(authorization_module, "DEFAULT_POLICY_PATH", frozen_path)
+    decision = _signed_authorization_decision(
+        policy=policy,
+        manifest=manifest,
+        signer=signers[ReceiptKind.AUTHORIZATION],
+        evaluated_at_utc=BASE_TIME + timedelta(minutes=25),
+    )
+    attacker = Ed25519AttestationSigner.generate(key_id=manifest.registry_authority_key_id)
+    tampered = manifest.model_copy(
+        update={
+            "attestation": attacker.sign(
+                authorization_module.TRUST_ANCHOR_MANIFEST_DOMAIN,
+                attested_payload(manifest),
+            )
+        }
+    )
+    with pytest.raises(authorization_module.AttestationError, match="signature does not match"):
+        verify_trusted_seven_operator_ablation_authorization(
+            decision,
+            policy=policy,
+            manifest=tampered,
+            registry_authority=registry_root.verifier(),
+            expected_run_id=decision.run_id,
+            replay_registry=ReceiptReplayRegistry(registry_id=manifest.registry_id),
+        )
+
+
+def test_final_verifier_uses_internal_clock_and_rejects_expired_token(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    _, manifest, registry_root, signers, _ = _trust_context()
+    policy = _policy_with_enrolled_manifest(manifest)
+    frozen_path = tmp_path / "enrolled-policy.json"
+    frozen_path.write_text(policy.model_dump_json(indent=2), encoding="utf-8")
+    monkeypatch.setattr(authorization_module, "DEFAULT_POLICY_PATH", frozen_path)
+    monkeypatch.setattr(
+        authorization_module,
+        "_verifier_utc_now",
+        lambda: BASE_TIME + timedelta(minutes=30),
+    )
+    decision = _signed_authorization_decision(
+        policy=policy,
+        manifest=manifest,
+        signer=signers[ReceiptKind.AUTHORIZATION],
+        evaluated_at_utc=BASE_TIME,
+    )
+    with pytest.raises(ValueError, match="authorization is stale"):
+        verify_trusted_seven_operator_ablation_authorization(
+            decision,
+            policy=policy,
+            manifest=manifest,
+            registry_authority=registry_root.verifier(),
+            expected_run_id=decision.run_id,
+            replay_registry=ReceiptReplayRegistry(registry_id=manifest.registry_id),
         )
 
 
@@ -1213,4 +1977,9 @@ def test_policy_json_is_valid_and_has_no_generic_gate_b_v07_dependency() -> None
     serialized = json.dumps(payload, sort_keys=True)
     assert "GATE_B_V0_8" in serialized
     assert "GATE_B_V0_7" not in serialized
+    assert payload["protocol_id"].endswith("@1.1")
+    assert "structure-two-windowed-late-correction@0.4" in serialized
+    assert "structure-two-relative-probability-joint-coupling@0.4" in serialized
+    for kind in BINDING_BY_RECEIPT_KIND:
+        assert kind.value in payload["dependency_order"]
     assert payload["current_authorization"] is False

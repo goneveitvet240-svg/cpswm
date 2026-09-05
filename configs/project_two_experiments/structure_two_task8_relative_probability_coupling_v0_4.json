@@ -1,0 +1,83 @@
+{
+  "protocol_id": "structure-two-relative-probability-joint-coupling@0.4",
+  "status": "FROZEN_BEFORE_EXECUTION",
+  "frozen_on": "2026-09-05",
+  "supersedes_for_current_claim": "structure-two-relative-probability-joint-coupling@0.3",
+  "historical_v0_3_policy": {
+    "files_are_immutable": true,
+    "status_for_current_question": "FAILED_FOR_CURRENT_MATCHED_THREE_ARM_CLAIM",
+    "reason": "v0.3 omitted an independently tuned matched two-stage comparator and a paired confirmatory confidence-bound gate"
+  },
+  "interaction": {
+    "partition": "(H+Z,C)",
+    "axes": ["event_chain_plus_regime", "cause"],
+    "potential_nats": 1.5,
+    "changes_support": false
+  },
+  "arms": {
+    "joint": {
+      "definition": "full posterior over (H+Z,C)",
+      "validation_hyperparameter": "resolved posterior temperature"
+    },
+    "factorized": {
+      "definition": "support-preserving I-projection with H+Z and C marginals retained",
+      "validation_hyperparameter": "resolved posterior temperature"
+    },
+    "matched_two_stage": {
+      "definition": "p(C) followed by p(H+Z|C), both obtained from the same full posterior table",
+      "validation_hyperparameter": "shared cause and conditional temperature",
+      "identity_temperature_reconstructs_joint": true,
+      "claim_boundary": "this algebraically matched decomposition is an intentionally strongest falsifier, not evidence that an empirical learned pipeline has joint-model performance",
+      "hard_argmax_collapse_forbidden": true
+    }
+  },
+  "information_and_budget_contract": {
+    "same_observations": true,
+    "same_full_posterior_table_visible_to_each_arm": true,
+    "same_state_budget_per_arm_per_unit": 2000000,
+    "same_validation_candidate_count_per_arm": 3,
+    "same_confirmatory_selected_config_count_per_arm": 1,
+    "truth_visible_to_arm": false,
+    "future_observations_visible": false
+  },
+  "validation_only_tuning": {
+    "validation_seeds": [101, 103, 107],
+    "candidate_temperatures_for_each_arm": [0.75, 1.0, 1.25],
+    "selection_rule": "minimum validation mean consequential cost; ties prefer temperature nearest 1 then lower",
+    "each_arm_selected_independently": true,
+    "selection_frozen_before_confirmatory_execution": true,
+    "confirmatory_units_may_not_change_selection": true
+  },
+  "confirmatory_execution": {
+    "gaps": 1,
+    "confirmatory_seeds": [211, 223, 227, 229, 233],
+    "factor_matrix_per_seed": "2x2x2 ambiguity x delayed-feedback x open-world actor",
+    "paired_estimand": "matched_two_stage_cost - joint_cost",
+    "paired_confidence_interval": {
+      "independent_unit": "confirmatory RNG seed cluster; average its eight factor cells before resampling",
+      "method": "paired deterministic percentile bootstrap over seed-cluster means",
+      "confidence": 0.95,
+      "bootstrap_replicates": 10000,
+      "bootstrap_seed": "task8-v0.4-ci-20260905",
+      "strict_lower_bound_threshold": 0.001,
+      "pass_operator": ">"
+    }
+  },
+  "consequential_endpoint": {
+    "endpoint_id": "joint-cross-safety-policy@0.1",
+    "decision_time": "after registered observations and before evaluator reveals truth",
+    "actions": ["proceed", "verify"],
+    "verify_cost": 0.12,
+    "unresolved_severity": 0.8,
+    "handoff_actor_severity": 1.0,
+    "regime_habit_severity": 0.6,
+    "post_hoc_threshold_changes_allowed": false
+  },
+  "decision_rule": {
+    "primary_gate": "paired lower confidence bound of matched_two_stage_cost - joint_cost is strictly greater than 0.001",
+    "all_three_arms_require_exact_confirmatory_unit_coverage": true,
+    "validation_confirmatory_overlap_forbidden": true,
+    "failure_verdict": "FAIL",
+    "seven_operator_ablation_authorized_by_this_protocol_alone": false
+  }
+}

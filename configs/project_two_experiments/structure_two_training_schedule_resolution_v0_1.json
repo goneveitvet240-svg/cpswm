@@ -1,0 +1,51 @@
+{
+  "schema_version": "0.1.0",
+  "protocol_id": "structure-two-training-schedule-resolution@0.1",
+  "binding": "training_schedule",
+  "estimand": "The validation-selected full-scope schedule's confirmatory retention, exact-action agreement, and optimization stability under the independently resolved architecture and frozen inference protocol.",
+  "arms": [
+    {
+      "arm_id": "joint_end_to_end",
+      "role": "eligible",
+      "implementation_contract": "Jointly trains proposal and differentiable inference objectives while retaining every structured constraint and reversible authority boundary."
+    },
+    {
+      "arm_id": "staged_then_joint",
+      "role": "eligible",
+      "implementation_contract": "Pretrains typed proposal heads, then performs a frozen-length joint phase without suppressing any operator or unresolved output."
+    },
+    {
+      "arm_id": "alternating_structured_neural",
+      "role": "eligible",
+      "implementation_contract": "Alternates proposer and structured-inference updates on a frozen cadence while retaining identical data and total optimizer-step budgets."
+    }
+  ],
+  "validation_metric_id": "heldout_joint_negative_log_likelihood",
+  "validation_direction": "minimize",
+  "minimum_validation_units": 3,
+  "minimum_confirmatory_units": 5,
+  "selection_rule": "validation_mean_then_arm_order_tiebreak_confirmatory_hidden_until_selection",
+  "confirmatory_gates": [
+    {
+      "metric_id": "continual_retention_ratio",
+      "direction": "maximize",
+      "threshold": 0.9,
+      "aggregation": "mean_over_independent_confirmatory_units"
+    },
+    {
+      "metric_id": "action_total_variation_vs_exact",
+      "direction": "minimize",
+      "threshold": 0.1,
+      "aggregation": "mean_over_independent_confirmatory_units"
+    },
+    {
+      "metric_id": "nonfinite_or_divergent_run_rate",
+      "direction": "minimize",
+      "threshold": 0.0,
+      "aggregation": "mean_over_independent_confirmatory_units"
+    }
+  ],
+  "information_contract": "Every schedule receives identical ordered training streams, validation visibility, confirmatory concealment, ontology, supervision, and replay content.",
+  "budget_contract": "Every schedule receives identical total optimizer steps, examples, parameter-search trials, accelerator allowance, and checkpoint-selection opportunities.",
+  "claim_boundary": "Resolves only training_schedule for the already resolved architecture; it cannot alter consolidation, CIAV, or enumeration bindings, validate Gate B, or authorize a seven-operator ablation."
+}

@@ -1,0 +1,209 @@
+{
+  "schema_version": "1.0.0",
+  "protocol_id": "structure-two-final-utility-guardrail-external-validation@0.1",
+  "decision_date": "2026-09-06",
+  "status": "FROZEN_NOT_RUN",
+  "applies_only_to_future_unopened_confirmation_data": true,
+  "retrospective_authorization_for_v0_6_development_holdout": false,
+  "primary_utility": {
+    "metric": "penalized_completion_time",
+    "unit": "equivalent_seconds",
+    "successful_episode_value": "completion_time",
+    "failed_or_timed_out_episode_value": "preregistered_T_max",
+    "T_max_rule_per_task_family": "ceil_to_next_5_seconds(max(2*matched_baseline_successful_completion_time_median,matched_baseline_successful_completion_time_p95))",
+    "d1_time_source": "D2_pilot_calibrated_action_duration_table",
+    "d2_time_source": "measured_elapsed_time",
+    "required_secondary_outputs": [
+      "task_success_rate",
+      "raw_completion_time",
+      "inspected_container_count",
+      "wrong_action_count",
+      "VLM_call_count",
+      "VLM_latency",
+      "online_compute"
+    ]
+  },
+  "superiority": {
+    "relative_point_improvement_minimum": 0.1,
+    "absolute_point_improvement_minimum": "tau_verify",
+    "tau_verify_rule": "max(5_seconds,D2_pilot_median_standard_verification_action_duration)",
+    "paired_one_sided_95_percent_lower_bound_must_exceed": 0.0,
+    "task_success_rate_noninferiority_margin_absolute": 0.02,
+    "cluster_unit": "household_or_scene_and_schedule_block",
+    "all_hard_guardrails_must_pass": true
+  },
+  "contamination_guardrails": {
+    "denominator": "eligible_long_term_memory_update_opportunities",
+    "C0": {
+      "definition": "temporary_posterior_fluctuation_not_committed_and_not_action_affecting",
+      "binary_gate": false
+    },
+    "C1": {
+      "definition": "short_recoverable_contamination_without_wrong_action",
+      "point_rate_maximum": 0.01,
+      "one_sided_95_percent_upper_bound_maximum": 0.02
+    },
+    "C2": {
+      "definition": "recoverable_contamination_that_caused_a_wrong_action",
+      "point_rate_maximum": 0.005,
+      "one_sided_95_percent_upper_bound_maximum": 0.01
+    },
+    "C3": {
+      "definition": "wrong_actor_binding_cross_session_persistence_or_long_term_actor_memory_contamination",
+      "unrecovered_count_maximum": 0,
+      "incidence_one_sided_95_percent_upper_bound_maximum": 0.005,
+      "minimum_effectively_independent_high_risk_opportunities": 600
+    }
+  },
+  "recovery_guardrails": {
+    "clock_origin": "first_decisive_corrective_evidence",
+    "primary_metric": "p95_effective_correction_opportunities",
+    "p95_effective_correction_opportunities_maximum": 3,
+    "p95_embodied_action_steps_maximum": 10,
+    "d2_p95_active_seconds_maximum": 60,
+    "C1_C2_unrecovered_point_fraction_maximum": 0.01,
+    "C1_C2_unrecovered_one_sided_95_percent_upper_bound_maximum": 0.02,
+    "C3_unrecovered_count_maximum": 0,
+    "right_censor_when_no_corrective_opportunity_before_episode_end": true,
+    "required_reports": [
+      "median",
+      "p95",
+      "maximum",
+      "unrecovered_fraction",
+      "recovery_curve",
+      "all_C3_case_timelines"
+    ]
+  },
+  "safety_privacy_guardrails": {
+    "severe_safety_event_maximum": 0,
+    "unauthorized_identity_disclosure_maximum": 0,
+    "raw_person_data_unauthorized_egress_maximum": 0,
+    "raw_household_person_images_may_be_sent_to_hosted_models": false
+  },
+  "full_rerun_equivalence": {
+    "all_layers_must_pass": true,
+    "belief": {
+      "critical_axis_total_variation_p95_maximum": 0.05,
+      "critical_axis_total_variation_maximum": 0.1
+    },
+    "action": {
+      "top1_agreement_minimum": 0.99,
+      "action_distribution_total_variation_p95_maximum": 0.05,
+      "consequential_action_exact_agreement_required": true
+    },
+    "utility": {
+      "test": "TOST",
+      "confidence_interval": 0.9,
+      "relative_equivalence_margin": 0.02,
+      "absolute_equivalence_margin": "0.2*tau_verify",
+      "both_margins_must_pass": true
+    },
+    "exact_discrete_state_fields": [
+      "actor_identity",
+      "commit_retract_state",
+      "authority_transition",
+      "safety_state",
+      "privacy_state"
+    ]
+  },
+  "pareto_reporting": {
+    "required": true,
+    "primary_frontier": [
+      "penalized_completion_time",
+      "online_compute"
+    ],
+    "secondary_axes": [
+      "memory",
+      "VLM_call_count",
+      "C1_C2_contamination_rate",
+      "p95_recovery_latency"
+    ],
+    "hard_guardrail_violations_excluded_from_acceptable_frontier": true,
+    "failed_points_must_remain_visible": true
+  },
+  "d1_procthor": {
+    "platform": "ProcTHOR_plus_AI2_THOR",
+    "custom_actor_event_scheduler_required": true,
+    "actors_per_schedule": "3_to_5",
+    "simulated_days_per_schedule": "7_to_14",
+    "planned_scale": {
+      "development": "100_houses_x_10_schedules",
+      "validation": "200_houses_x_5_schedules",
+      "sealed_confirmation": "1000_houses_x_5_schedules",
+      "throughput_only_pilot_may_increase_but_not_decrease_scale": true
+    },
+    "required_events": [
+      "direct_move",
+      "ordered_handoff",
+      "unknown_actor",
+      "habit_drift",
+      "late_correction",
+      "no_move_observation_policy_change"
+    ],
+    "split_unit": "house_and_schedule_block",
+    "random_frame_split_forbidden": true
+  },
+  "d2_real_perception": {
+    "setting": "controlled_apartment_like_lab",
+    "method_visible_views": 1,
+    "evaluator_only_truth_views": 2,
+    "default_audio_collection": false,
+    "pseudonymous_actor_ids": true,
+    "method_truth_stream_separation_required": true,
+    "pilot": {
+      "environments": 1,
+      "participants": 6,
+      "duration_weeks": "3_to_4",
+      "sessions": "80_to_120"
+    },
+    "paper_grade_confirmation": {
+      "environments": 3,
+      "participants": "12_to_16",
+      "duration_weeks": 6,
+      "sessions": "240_to_360",
+      "split_by_actor_and_environment": true
+    }
+  },
+  "llm_vlm": {
+    "primary_candidate": "Qwen3_VL_8B_Instruct_local_quantized_frozen_revision",
+    "scientific_primary_baseline": "no_VLM_structural_system",
+    "model_role": "evidence_candidate_proposer_only",
+    "long_term_memory_commit_authority": false,
+    "initial_inference_contract": {
+      "decoding": "greedy",
+      "maximum_calls_per_ambiguous_event": 1,
+      "maximum_input_frames_per_call": 4,
+      "maximum_output_tokens": 512,
+      "maximum_structured_candidates": 3,
+      "unknown_required": true,
+      "abstain_required": true
+    },
+    "required_arms": [
+      "no_VLM_structural",
+      "VLM_prior_only",
+      "VLM_evidence_proposal",
+      "VLM_direct_decision_negative_control",
+      "evaluator_only_oracle"
+    ],
+    "all_call_latency_GPU_time_frames_and_retries_count_toward_online_compute": true,
+    "hosted_model_allowed_inputs": [
+      "deidentified_object_crop",
+      "anonymous_structured_event",
+      "identity_free_scene_information"
+    ],
+    "hosted_model_forbidden_inputs": [
+      "raw_household_person_image",
+      "real_identity_mapping"
+    ]
+  },
+  "pilot_derived_values_not_yet_numeric": [
+    "tau_verify",
+    "T_max",
+    "D1_episode_throughput",
+    "D1_parallelism",
+    "D2_occlusion_rate",
+    "D2_sensor_synchronization_error",
+    "D2_annotation_hours"
+  ],
+  "claim_boundary": "Frozen protocol only. It does not authorize retrospective v0.6 success, Task 7 or Task 8 pass, Gate B pass, external validity, or paper-level superiority."
+}

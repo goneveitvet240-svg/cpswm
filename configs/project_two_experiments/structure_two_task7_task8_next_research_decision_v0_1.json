@@ -2,7 +2,7 @@
   "schema_version": "1.0.0",
   "decision_id": "structure-two-task7-task8-next-research-decision@0.1",
   "decision_date": "2026-09-06",
-  "decision_status": "USER_SELECTED_DIRECTION_NOT_YET_IMPLEMENTED_OR_RUN",
+  "decision_status": "USER_DIRECTED_FINAL_PROTOCOL_FROZEN_NOT_RUN",
   "frozen_predecessor_checkpoint": {
     "git_commit": "b9b915b",
     "checkpoint_id": "structure-two-action-readout@0.6-development"
@@ -63,8 +63,9 @@
     "independent_custody_strategy": "second_machine_under_a_distinct_control_process"
   },
   "utility_and_guardrail_direction": {
-    "primary_utility_family": "elapsed_time_or_task_loss_pending_calibration",
-    "superiority_requirement": "absolute_and_relative_margins_must_both_pass",
+    "final_protocol_path": "configs/project_two_experiments/structure_two_final_utility_guardrail_external_validation_protocol_v0_1.json",
+    "primary_utility_family": "penalized_completion_time_in_equivalent_seconds",
+    "superiority_requirement": "point_estimate_absolute_and_relative_margins_plus_positive_one_sided_95_percent_lower_bound_and_all_guardrails",
     "hard_guardrails": [
       "owner_contamination",
       "recovery",
@@ -79,12 +80,18 @@
       "action",
       "utility"
     ],
-    "numeric_thresholds_status": "RECOMMENDATIONS_PENDING_USER_CONFIRMATION"
+    "numeric_thresholds_status": "FROZEN_FOR_FUTURE_UNOPENED_CONFIRMATION_DATA"
   },
   "open_user_decisions": [
-    "paper_grade_cost_and_guardrail_numeric_thresholds",
-    "D1_resource_budget_and_execution_scale",
-    "D2_real_perception_collection_design",
-    "hosted_or_local_LLM_VLM_policy"
+    "whether_to_purchase_or_rent_D1_D2_compute_and_capture_hardware",
+    "participant_compensation_budget",
+    "institutional_human_subject_review_process"
+  ],
+  "pilot_derived_values_not_subjective_posthoc_choices": [
+    "tau_verify",
+    "T_max",
+    "D1_episode_throughput",
+    "D2_occlusion_and_synchronization_statistics",
+    "D2_annotation_hours"
   ]
 }

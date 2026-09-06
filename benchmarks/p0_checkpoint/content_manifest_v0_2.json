@@ -1,12 +1,12 @@
 {
   "generated_for_date": "2026-09-06",
   "hash_algorithm": "sha256(path\\0file_sha256\\n)",
-  "manifest_sha256": "cc16444dfb62666e00d63460b6f6f1a85a67d3bb429234fad88e6396b3b3e7f1",
+  "manifest_sha256": "c30df4f16acd5ee271c968b0f24e5f39805e5aad93503b60df863d6d69589733",
   "schema_version": "p0-checkpoint-content-manifest@0.2",
   "scopes": {
     "code": {
-      "content_sha256": "cca29a8677a0b1673530de784755de8bebf598ab3c35d08688439225e0fc25e8",
-      "file_count": 366,
+      "content_sha256": "0bac20a7f29625bfc1885805ce880eae547659a4dd652b8526dbe9bed0b53262",
+      "file_count": 368,
       "files": [
         {
           "path": "apps/direction_three/replay_execution_feedback.py",
@@ -210,7 +210,7 @@
         },
         {
           "path": "apps/evaluation_runner/run_structure_two_action_death_test.py",
-          "sha256": "f9b0756f19e8dcf2ead9e23f2dee3f403195224cb0c10f99cbca66c134f2af44"
+          "sha256": "cb292fa6729ca10450543b4fcfaa65797fcf63478201afe9016c5c47727d2770"
         },
         {
           "path": "apps/evaluation_runner/run_structure_two_action_information_upper_bound.py",
@@ -227,6 +227,10 @@
         {
           "path": "apps/evaluation_runner/run_structure_two_corrected_instrument.py",
           "sha256": "aeead167fe0155d718e29f685b71ce364dd814ab9a769061a28036e2fff139af"
+        },
+        {
+          "path": "apps/evaluation_runner/run_structure_two_cost_guardrail_calibration.py",
+          "sha256": "3b03247eb8a3866e6cb76e848ce08dd2dde1439ff307f6b72f0ef4d26117029d"
         },
         {
           "path": "apps/evaluation_runner/run_structure_two_counterfactual_scenario_v0_7.py",
@@ -566,11 +570,11 @@
         },
         {
           "path": "src/cpswm/system/continual/hybrid_event_to_task_loop.py",
-          "sha256": "56e7e3fa08f235687de700202a4c560d01d9fc0cac706a500330e9ea3ca29a73"
+          "sha256": "7364e23cbb6f087aeaa6fbd52f179e6d7b63f40a990cca5d5ba0c957efb357d5"
         },
         {
           "path": "src/cpswm/system/continual/hybrid_statistics.py",
-          "sha256": "90dc821f3f01fea3bd1b231d1424c5aab7a2563338b4c7ddb7fd47776342ab76"
+          "sha256": "e30b4e0ecd8b72b0fa56d794c3674f2d6f607610c096bd94317ff0ad7717fe0a"
         },
         {
           "path": "src/cpswm/system/continual/operator_authority.py",
@@ -634,7 +638,7 @@
         },
         {
           "path": "src/cpswm/system/evaluation_operations/__init__.py",
-          "sha256": "3faf00fecf2ba862fe1f74e9ee8488e4814ad4326ad6a25af6362df1f616fbd8"
+          "sha256": "c011fec8482cf2e3b4a4a60dffad0793d1d747077ae11fb80aa3a182afa6b15b"
         },
         {
           "path": "src/cpswm/system/evaluation_operations/care_wm_exact_counterfactual.py",
@@ -826,7 +830,7 @@
         },
         {
           "path": "src/cpswm/system/evaluation_operations/project_two_action_benchmark.py",
-          "sha256": "7ea2a40d667ad58d35ea6dcf83720129bc4510290d89014c9ea96b1b2b65ab19"
+          "sha256": "284cb808ef06bfe420f13fa535a9bf5e7ae5d4a13fca49d29fb37651383fecf9"
         },
         {
           "path": "src/cpswm/system/evaluation_operations/project_two_amg_interface_audit.py",
@@ -973,6 +977,10 @@
           "sha256": "f5e66277dc43cd81bdd876d6e8ef16fdfa5e58cba8b29f53da59b015710fc67d"
         },
         {
+          "path": "src/cpswm/system/evaluation_operations/structure_two_cost_guardrail_calibration.py",
+          "sha256": "c1a47f76f38a0e8685378611bd48a58413ca40523ee7f012fe9c189e56edf39d"
+        },
+        {
           "path": "src/cpswm/system/evaluation_operations/structure_two_counterfactual_executor_v0_7.py",
           "sha256": "e34dff36501917a6723884ea94ce9225b30d3a8e3eb0dd90628e2d1bc2755ae3"
         },
@@ -1078,7 +1086,7 @@
         },
         {
           "path": "src/cpswm/system/evaluation_operations/structure_two_search_utility.py",
-          "sha256": "56cff2783a635e23047263637347f798910448b78dd7a966e867f14e29e8cee9"
+          "sha256": "b7897b0bef6f6519419bf6a2befb419a300296d91878c043719db7430a15b3ec"
         },
         {
           "path": "src/cpswm/system/evaluation_operations/structure_two_selected_method.py",
@@ -1258,7 +1266,7 @@
         },
         {
           "path": "src/cpswm/system/prototype_spine.py",
-          "sha256": "9fe3aa774650d95c5435b4c00735c859848680306640ac5bd9730e761b92ca3c"
+          "sha256": "f63c6bc349fd19ff067621e9a80e59cc3f622a3e3f35b0970126d263d61a1f4a"
         },
         {
           "path": "src/cpswm/system/reproducibility.py",
@@ -1475,8 +1483,8 @@
       ]
     },
     "config": {
-      "content_sha256": "1f6cc5491d4669b8e56f61f00ce519a09311ebaa7da638fde94e4a0396eec1fa",
-      "file_count": 72,
+      "content_sha256": "9e666a4e4e9de91874bf3ba3db0f9cf2c209a03174d8513f9096f55b4b2e8f9d",
+      "file_count": 76,
       "files": [
         {
           "path": "configs/direction_three/s3_1_oracle_suite_v0_1.json",
@@ -1511,6 +1519,10 @@
           "sha256": "327794c8fb98c7257f09d20ec188ec91cb9913054c7ba82265d72191d2cdea86"
         },
         {
+          "path": "configs/project_two_datasets/d0_multiseed_readout_v0_5.json",
+          "sha256": "c2ce79d46ef9aa1335b092ca06dde0ce170e8c766dce68db63b7b04dde716cb8"
+        },
+        {
           "path": "configs/project_two_datasets/d0_pilot_v0_2.json",
           "sha256": "90ff5be654ffebce96f44dc6878497b51de86f213c879bd8d26b15bd01a8f4b4"
         },
@@ -1521,6 +1533,10 @@
         {
           "path": "configs/project_two_experiments/care_wm_exact_counterfactual_sealed_seeds_v0_1.json",
           "sha256": "5ebb86a261d1c81da6c4ad217de34e1a15d42f928aa15b73ab6cb5d59bfaf36c"
+        },
+        {
+          "path": "configs/project_two_experiments/structure_two_action_readout_v0_6_preregistration.json",
+          "sha256": "bb274d3822d30c06a1571d2b1951e575576e81ae5b22dc6de9a4d1e47e1ac63c"
         },
         {
           "path": "configs/project_two_experiments/structure_two_backbone_open_tasks_v0_1.json",
@@ -1565,6 +1581,10 @@
         {
           "path": "configs/project_two_experiments/structure_two_external_reference_cores_v0_6.json",
           "sha256": "8629140b532d9cccc906fb65c349fb6f43ba838f373c09f8d6e28257fed1d1a1"
+        },
+        {
+          "path": "configs/project_two_experiments/structure_two_final_utility_guardrail_external_validation_protocol_v0_1.json",
+          "sha256": "a2acec8e7b9ceaefb12117bfcc87035b1337c7c3321e817ead25123d178697ae"
         },
         {
           "path": "configs/project_two_experiments/structure_two_fresh_triarm_manifest_v0_1.json",
@@ -1645,6 +1665,10 @@
         {
           "path": "configs/project_two_experiments/structure_two_task7_task8_failure_restructure_v0_1.json",
           "sha256": "61d2cecd50dcf7c0516875263dde6c54be847fb7156bdc7f1209afeb84fb175a"
+        },
+        {
+          "path": "configs/project_two_experiments/structure_two_task7_task8_next_research_decision_v0_1.json",
+          "sha256": "262b4c9c0c8344562773a9b3fd2548f8daac3573267d4507059a7981cb700b0d"
         },
         {
           "path": "configs/project_two_experiments/structure_two_task7_windowed_rejuvenation_v0_2.json",
@@ -1859,8 +1883,8 @@
       ]
     },
     "split_manifest": {
-      "content_sha256": "30500d36d183b4f1009cf936e95110cd81c538b8fa8be41fe0322f9cbe43a9b8",
-      "file_count": 23,
+      "content_sha256": "d0da2722cbcf9aea7db8e682fc144462a4af06d2b66ba74d796b3f0e0e7db3af",
+      "file_count": 25,
       "files": [
         {
           "path": "benchmarks/oam_phm_f0/book_on_sofa_manifest_v0.4.json",
@@ -1883,8 +1907,16 @@
           "sha256": "1a0bf0c2ff7d61c942491564189726d35a24f4894e0160f9e6368d302c556f5b"
         },
         {
+          "path": "benchmarks/structure_two/action_readout_checkpoint_2026_09_06/checkpoint_manifest.json",
+          "sha256": "8fc7b417b3f675d09636502d12c57d58a3c5bd3e9c2e253b24bef14ea949182c"
+        },
+        {
           "path": "benchmarks/structure_two/action_utility_checkpoint_2026_09_06/checkpoint_manifest.json",
           "sha256": "f3ebabab5fa7aa360f21271d65e26c5ff462682f3dd06952b71dc4d6c56cf118"
+        },
+        {
+          "path": "benchmarks/structure_two/cost_guardrail_checkpoint_2026_09_06/checkpoint_manifest.json",
+          "sha256": "57047e92a3bcf66e3e92d3238163b1ab447af764a94dd9031783cd84a3d8023b"
         },
         {
           "path": "benchmarks/structure_two/d0_engineering_checkpoint_2026_09_04/checkpoint_manifest.json",

@@ -50,12 +50,40 @@
     "claim_boundary": "The historical claim that joint representation is intrinsically superior to an information-complete exact two-stage factorization remains rejected."
   },
   "external_validation": {
+    "selected_d1_simulator": "procthor_plus_ai2thor",
+    "d1_required_capabilities": [
+      "multiple_residents",
+      "ordered_handoff",
+      "unknown_actor",
+      "longitudinal_repeated_schedules",
+      "custom_annotation",
+      "custom_environment_instrumentation"
+    ],
     "baseline_reproduction_strategy": "faithfully_reproduce_strongest_two_or_three_then_expand",
     "independent_custody_strategy": "second_machine_under_a_distinct_control_process"
   },
+  "utility_and_guardrail_direction": {
+    "primary_utility_family": "elapsed_time_or_task_loss_pending_calibration",
+    "superiority_requirement": "absolute_and_relative_margins_must_both_pass",
+    "hard_guardrails": [
+      "owner_contamination",
+      "recovery",
+      "safety",
+      "privacy"
+    ],
+    "pareto_frontier_required": true,
+    "contamination_severity_tiers_required": true,
+    "short_recoverable_and_long_lived_actor_identity_contamination_must_be_distinguished": true,
+    "full_rerun_equivalence_required_layers": [
+      "belief",
+      "action",
+      "utility"
+    ],
+    "numeric_thresholds_status": "RECOMMENDATIONS_PENDING_USER_CONFIRMATION"
+  },
   "open_user_decisions": [
-    "paper_grade_cost_and_guardrail_calibration",
-    "D1_simulator_selection_and_resource_budget",
+    "paper_grade_cost_and_guardrail_numeric_thresholds",
+    "D1_resource_budget_and_execution_scale",
     "D2_real_perception_collection_design",
     "hosted_or_local_LLM_VLM_policy"
   ]

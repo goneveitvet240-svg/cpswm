@@ -111,3 +111,55 @@ Validation seeds = {101, 103}；sealed test seeds = {211, 223}。四个 episode 
 - 没有真实机器人 search/place/transfer 时间、路径、能耗、失败模式与隐私成本。
 
 运行入口：`apps/evaluation_runner/run_structure_two_action_death_test.py`。旧 `StructureTwoActionDeathTest` 仅保留为 v0.1 regression proxy（回归代理），不再代表完整项目二 benchmark。
+
+---
+
+## 更正声明（append-only，2026-09-05）
+
+本节为事后追加，**不修改**上文任何历史数值。完整更正见
+`docs/experiments/structure_two_search_utility_correction_2026-09-05.md`。
+
+1. 上文 §3 的 primary/secondary 数值**不受**结构二 search-utility bug 影响：v0.2/v0.4 的
+   `search_error_rate` 与 `mean_search_path_cost` 都从同一个 `_Prediction.search_order`
+   读出，从未按方法类别猜测搜索策略。
+2. 但 §3 Secondary metrics 表中的两个量依赖**未注册常数**，引用时必须一并说明：
+   - `mean search time` = `5.0 秒 × 路径长度`，该常数没有任何冻结协议来源；
+   - 真值位置不在搜索计划内时，路径代价按 `len(known_locations)` 计入，该失败惩罚同样未注册；
+   - `mean search path length`、`normalized cost` 与 `mean_search_cost` 是同一个量
+     （每步平均检查容器数）的三个名字，不是三次独立测量。
+   这三条现在由报告字段 `unregistered_search_metric_assumptions` 显式输出。
+3. 冻结的组合 A 路线只指定 primary utility 为 cumulative action regret，**未**冻结它的组成项
+   权重、单位、搜索路径代价项与失败惩罚。因此报告新增
+   `route_a_primary_utility_evaluated=false` 与 `unresolved_utility_contract_fields`，
+   `superiority_supported` 失败关闭。§4「不满足论文级 superiority」的判决**不变**，
+   但其依据现在由结构化的 `scientific_verdict` 给出，而不是散落的字符串。
+4. 文末提到的旧 `StructureTwoActionDeathTest` v0.1 regression proxy：它的
+   `search_cost` / `mean_search_cost` **全部撤销**，现由
+   `structure-two-action-death-test@0.2-search-utility-corrected` 取代；旧协议标识保留，
+   旧计价函数以 `withdrawn_v0_1_search_cost` 保留但永不参与评分。
+
+---
+
+## v0.5 后续取代声明（append-only，2026-09-06）
+
+v0.4 的数值不删除，但其“最佳参考方法”比较集合与 validation selection objective（验证选择目标）
+已被 v0.5 取代：
+
+- v0.4 只让 `faithful_matched` 与 `full_rerun_control` 进入 route-A verdict，错误漏掉了 matched AMG
+  及三个匹配适配器；
+- v0.4 的参数选择只最小化 put-back error，与它报告的 primary utility 不一致；
+- v0.5 将所有 non-oracle 方法纳入否证，并按同一个开发版 cumulative action regret 选择参数与评分；
+- v0.5 仍保留 `route_a_primary_utility_evaluated=false`，因为开发合同不替代论文级真实成本与护栏。
+
+新结果见
+`docs/experiments/structure_two_route_a_development_utility_v0_5_2026-09-06.md`。
+
+---
+
+## v0.6 后续取代声明（append-only，2026-09-06）
+
+v0.5 的失败结果继续保留。v0.6 只在 TRAIN 上诊断行动读出机制，冻结三个等预算快／慢可逆读出
+候选，在 validation 选择后使用全新的 `6001--6060` development holdout。完整系统取得
+`3.455556` 对 matched AMG `3.933333` 的开发累计行动遗憾优势，但污染护栏、真实成本、外部
+原声复现和独立托管仍关闭。详见
+`docs/experiments/structure_two_action_readout_v0_6_2026-09-06.md`。

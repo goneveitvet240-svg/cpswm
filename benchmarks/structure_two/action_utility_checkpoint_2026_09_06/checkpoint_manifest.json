@@ -1,0 +1,70 @@
+{
+  "schema_version": "1.0.0",
+  "checkpoint_id": "structure-two-action-utility-repair@0.5-development",
+  "checkpoint_date": "2026-09-06",
+  "predecessor_git_commit": "ae27b85",
+  "status": "NOT_SUPPORTED",
+  "scope": "D0 development metric and comparison repair",
+  "development_primary_utility_evaluated": true,
+  "route_a_paper_primary_utility_evaluated": false,
+  "superiority_supported": false,
+  "registered_inputs": {
+    "dataset_config": {
+      "path": "configs/project_two_datasets/d0_multiseed_development_v0_4.json",
+      "sha256": "994ec34f42e9fc36af164372811dd0941cc9807d5a5351450a0081a04c984631"
+    },
+    "development_utility_contract": {
+      "path": "configs/project_two_experiments/structure_two_route_a_utility_contract_v0_1.json",
+      "sha256": "da2856c351f7249352a546dda82daa8dfb633de5d5ed169c61f8a67fcc00e292",
+      "paper_claim_allowed": false
+    }
+  },
+  "generated_artifact": {
+    "path": "artifacts/project_two_v04_development/structure_two_action_benchmark_v0_5_development_utility_2026_09_06.json",
+    "sha256": "a82603f05ca314b54cf0112702033b7e990fddaa1a8eed8c20f14846818e49b1",
+    "tracked_by_git": false,
+    "independent_custody_verified": false
+  },
+  "split_counts": {
+    "train": 20,
+    "validation": 20,
+    "sealed_test": 60
+  },
+  "primary_comparison": {
+    "candidate_method": "project_two_full_feedback_loop",
+    "candidate_cumulative_action_regret": 6.205555555555556,
+    "best_reference_method": "damen_hogg_amg_matched_open_world",
+    "best_reference_cumulative_action_regret": 3.388888888888889,
+    "decision": "PRIMARY_UTILITY_WORSE"
+  },
+  "supersession": {
+    "supersedes_protocol": "project-two-action-benchmark@0.4-corrected-interface",
+    "reason": "v0.4 selected parameters on put-back error and omitted matched replay adapters from its best-reference verdict",
+    "historical_artifacts_deleted": false
+  },
+  "validation": {
+    "targeted_tests": "234 passed",
+    "targeted_test_files": 10,
+    "ruff": "passed for 16 touched source, runner and test files",
+    "targeted_mypy": "passed for 6 touched source files",
+    "repository_wide_mypy": "not clean: 62 errors in 18 pre-existing out-of-scope files",
+    "diff_check": "passed"
+  },
+  "remaining_blockers": [
+    "real task-cost calibration",
+    "superiority margin",
+    "owner contamination threshold",
+    "recovery latency threshold",
+    "full-rerun equivalence measurement",
+    "D1-D4 external validity",
+    "six faithful native external reproductions",
+    "independent custody"
+  ],
+  "retained_capabilities": [
+    "hidden_event_inference",
+    "multi_actor_reasoning",
+    "open_world_unknowns",
+    "reversible_attribution",
+    "embodied_execution_feedback"
+  ]
+}

@@ -193,3 +193,77 @@ def test_reversible_commit_protocol_keeps_ledger_as_unique_writer() -> None:
 
     assert protocol.commit_authority is CommitAuthority.REVERSIBLE_RGRC_LEDGER_ONLY
     assert protocol.requires_full_rerun_equivalence
+
+
+# --- stage-local forgetting factor: a frozen design, not an open knob ----------
+
+
+def test_stage_local_forgetting_factor_rejects_every_value_but_one() -> None:
+    """The frozen method fixes within-regime forgetting at 1.0.
+
+    The RLS runtime itself admits ``(0, 1]``.  Widening this receipt field to
+    that range would silently reopen a frozen design decision -- stage change is
+    handled by explicit regime competition, not by unsourced exponential decay.
+    """
+
+    from cpswm.system.evaluation_operations.structure_two_selected_method import (
+        FROZEN_STAGE_LOCAL_FORGETTING_FACTOR,
+    )
+
+    payload = StructureTwoSelectedMethod.load(CONFIG).model_dump(mode="python")
+    assert FROZEN_STAGE_LOCAL_FORGETTING_FACTOR == 1.0
+    assert payload["stage_local_forgetting_factor"] == FROZEN_STAGE_LOCAL_FORGETTING_FACTOR
+
+    # Values the RLS runtime would happily accept are still refused here.
+    for rejected in (0.0, 0.5, 0.9, 0.99, 0.999, 1.0001, 2.0):
+        with pytest.raises(ValidationError, match="stage_local_forgetting_factor"):
+            StructureTwoSelectedMethod.model_validate(
+                {**payload, "stage_local_forgetting_factor": rejected}
+            )
+
+
+def test_stage_local_forgetting_factor_is_bound_to_the_runtime_defaults() -> None:
+    """The receipt field is enforced, not decorative JSON.
+
+    Before this binding the value appeared only in the selection contract and
+    the config file; nothing downstream read it, so the runtime could have
+    drifted to any admissible forgetting factor without a single test failing.
+    """
+
+    from cpswm.system.evaluation_operations.structure_two_selected_method import (
+        STAGE_LOCAL_FORGETTING_RUNTIME_BINDINGS,
+        verify_stage_local_forgetting_runtime_binding,
+    )
+
+    selection = StructureTwoSelectedMethod.load(CONFIG)
+    assert selection.stage_local_forgetting_runtime_bindings == (
+        STAGE_LOCAL_FORGETTING_RUNTIME_BINDINGS
+    )
+    assert verify_stage_local_forgetting_runtime_binding() == (
+        STAGE_LOCAL_FORGETTING_RUNTIME_BINDINGS
+    )
+
+
+def test_clarifying_the_forgetting_contract_did_not_move_the_receipt_hashes() -> None:
+    """Retuning would need a new receipt version, never a rehash of this one.
+
+    Task 9, the authorization DAG and the backbone open-task protocol pin both
+    the receipt's file hash and its content hash.  Making the contract more
+    explicit must leave both untouched; a changed value would have to arrive as
+    a new receipt version with its own binding-resolution protocol.
+    """
+
+    import hashlib
+
+    from cpswm.system.evaluation_operations.structure_two_backbone_open_task_protocols import (
+        SELECTED_METHOD_RECEIPT_CONTENT_SHA256 as BACKBONE_CONTENT_SHA256,
+    )
+    from cpswm.system.evaluation_operations.structure_two_task9_protocol import (
+        SELECTED_METHOD_RECEIPT_CONTENT_SHA256,
+        SELECTED_METHOD_RECEIPT_FILE_SHA256,
+    )
+
+    selection = StructureTwoSelectedMethod.load(CONFIG)
+    assert selection.content_sha256 == SELECTED_METHOD_RECEIPT_CONTENT_SHA256
+    assert selection.content_sha256 == BACKBONE_CONTENT_SHA256
+    assert hashlib.sha256(CONFIG.read_bytes()).hexdigest() == SELECTED_METHOD_RECEIPT_FILE_SHA256

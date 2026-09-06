@@ -1,0 +1,46 @@
+{
+  "protocol_id": "structure-two-task7-task8-failure-restructure@0.1-development",
+  "status": "FROZEN_BEFORE_HOLDOUT_EXECUTION",
+  "frozen_on": "2026-09-05",
+  "historical_results": {
+    "task_7_v0_4": "IMMUTABLE_FAIL",
+    "task_8_v0_4": "IMMUTABLE_FAIL"
+  },
+  "task_7": {
+    "method": "support-aware reversible correction router",
+    "diagnosis_source": "Task-7 v0.4 development result",
+    "gaps": 12,
+    "correction_index": 2,
+    "scenario_seeds": [307],
+    "replicate_seeds": [419],
+    "factor_matrix_per_seed": "2x2x2x2 ambiguity x delayed-feedback x open-world actor x short-regime",
+    "particle_budget": 384,
+    "pre_rejuvenation_ess_ratio_threshold": 0.3,
+    "route_when_at_or_above_threshold": "exact likelihood-ratio reweighting",
+    "route_when_below_threshold": "explicit fully-costed full replay",
+    "belief_axis_tv_tolerance": 0.1,
+    "action_distribution_tv_tolerance": 0.1,
+    "selected_action_must_match": true,
+    "contamination_non_expansion_required": true,
+    "both_routes_must_execute": true,
+    "mean_marginal_work_must_be_below_full_replay": true
+  },
+  "task_8": {
+    "method": "matched-representation identifiability audit",
+    "seeds": [307, 311],
+    "factor_matrix_per_seed": "2x2x2 ambiguity x delayed-feedback x open-world actor",
+    "identity_temperature": 1.0,
+    "numeric_equivalence_tolerance": 1e-12,
+    "decision_rule": "if exact matched two-stage reconstructs the joint posterior, representation superiority is not identified",
+    "post_hoc_temperature_or_endpoint_changes_allowed": false,
+    "next_method_axis_requires_project_owner_choice": true
+  },
+  "claim_boundary": {
+    "development_only": true,
+    "independent_custody": false,
+    "external_validity": false,
+    "replaces_task_7_v0_4": false,
+    "replaces_task_8_v0_4": false,
+    "authorizes_seven_operator_ablation": false
+  }
+}

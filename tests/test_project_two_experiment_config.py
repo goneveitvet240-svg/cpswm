@@ -12,6 +12,8 @@ from cpswm.system.evaluation_operations.project_two_experiment_config import (
 
 ROOT = Path(__file__).resolve().parents[1]
 CONFIG = ROOT / "configs/project_two_datasets/d0_multiseed_evidence_v0_3.json"
+TRAIN_CONFIG = ROOT / "configs/project_two_datasets/d0_multiseed_development_v0_4.json"
+READOUT_CONFIG = ROOT / "configs/project_two_datasets/d0_multiseed_readout_v0_5.json"
 
 
 def test_registered_multiseed_config_binds_the_declared_20_60_design():
@@ -21,6 +23,30 @@ def test_registered_multiseed_config_binds_the_declared_20_60_design():
     assert len(config.test_seeds) == 60
     assert set(config.validation_seeds).isdisjoint(config.test_seeds)
     assert config.steps_per_episode == 32
+    assert not config.confirmatory
+
+
+def test_v04_development_config_adds_a_disjoint_train_split_without_claiming_confirmation():
+    config = D0SyntheticReplayExperimentConfig.load(TRAIN_CONFIG)
+    assert len(config.train_seeds) == 20
+    assert len(config.validation_seeds) == 20
+    assert len(config.test_seeds) == 60
+    assert set(config.train_seeds).isdisjoint(config.validation_seeds)
+    assert set(config.train_seeds).isdisjoint(config.test_seeds)
+    assert set(config.validation_seeds).isdisjoint(config.test_seeds)
+    assert config.evidence_stage == "development_train_validation_sealed_test"
+    assert not config.confirmatory
+
+
+def test_v05_readout_config_reserves_a_fresh_development_holdout():
+    config = D0SyntheticReplayExperimentConfig.load(READOUT_CONFIG)
+    assert config.train_seeds == tuple(range(1, 21))
+    assert config.validation_seeds == tuple(range(1001, 1021))
+    assert config.test_seeds == tuple(range(6001, 6061))
+    assert set(config.train_seeds).isdisjoint(config.validation_seeds)
+    assert set(config.train_seeds).isdisjoint(config.test_seeds)
+    assert set(config.validation_seeds).isdisjoint(config.test_seeds)
+    assert config.evidence_stage == "post_train_diagnostic_development_holdout"
     assert not config.confirmatory
 
 

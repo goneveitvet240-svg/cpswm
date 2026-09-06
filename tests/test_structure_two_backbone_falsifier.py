@@ -717,6 +717,86 @@ def test_local_rejuvenation_reproduces_full_rerun_at_lower_cost() -> None:
     )
 
 
+def test_support_guard_falls_back_before_local_mh_when_reweight_support_collapses() -> None:
+    scenario = build_scenario(
+        gaps=6,
+        seed=11,
+        high_attribution_ambiguity=True,
+        adverse_delayed_feedback=True,
+        open_world_actor=True,
+        short_regime=True,
+        corrupt_index=1,
+    )
+    full = run_late_correction(
+        scenario,
+        treatment=CorrectionTreatment.FULL_RERUN,
+        correction_index=1,
+        arm=ArmName.RBPF,
+        budget=64,
+        seed=5,
+    )
+    guarded = run_late_correction(
+        scenario,
+        treatment=CorrectionTreatment.LOCAL_REJUVENATION,
+        correction_index=1,
+        arm=ArmName.RBPF,
+        budget=64,
+        seed=5,
+        guarded_reweight_ess_ratio=1.0,
+    )
+    assert guarded.cost["repair_mode"] == "guarded_full_replay"
+    assert guarded.cost["fallback_required"] is True
+    assert guarded.cost["fallback_reasons"] == "reweight_support_collapse"
+    assert int(guarded.cost["marginal_rejuvenation_proposals"]) == 0
+    assert guarded.posterior == full.posterior
+
+
+def test_support_guard_keeps_exact_reweight_when_support_is_adequate() -> None:
+    scenario = build_scenario(
+        gaps=3,
+        seed=11,
+        high_attribution_ambiguity=False,
+        adverse_delayed_feedback=False,
+        open_world_actor=False,
+        short_regime=False,
+        corrupt_index=1,
+    )
+    guarded = run_late_correction(
+        scenario,
+        treatment=CorrectionTreatment.LOCAL_REJUVENATION,
+        correction_index=1,
+        arm=ArmName.RBPF,
+        budget=64,
+        seed=5,
+        guarded_reweight_ess_ratio=1e-9,
+    )
+    assert guarded.cost["repair_mode"] == "guarded_reweight"
+    assert guarded.cost["fallback_required"] is False
+    assert int(guarded.cost["marginal_rejuvenation_proposals"]) == 0
+    assert 0.0 < float(guarded.cost["pre_rejuvenation_ess_ratio"]) <= 1.0
+
+
+def test_support_guard_rejects_invalid_ess_threshold() -> None:
+    scenario = build_scenario(
+        gaps=1,
+        seed=11,
+        high_attribution_ambiguity=False,
+        adverse_delayed_feedback=False,
+        open_world_actor=False,
+        short_regime=False,
+    )
+    with pytest.raises(ValueError, match="ESS ratio"):
+        run_late_correction(
+            scenario,
+            treatment=CorrectionTreatment.LOCAL_REJUVENATION,
+            correction_index=0,
+            arm=ArmName.RBPF,
+            budget=8,
+            seed=5,
+            guarded_reweight_ess_ratio=0.0,
+        )
+
+
 def test_window_rejuvenation_never_reproposes_outside_the_window() -> None:
     scenario = build_scenario(
         gaps=5,

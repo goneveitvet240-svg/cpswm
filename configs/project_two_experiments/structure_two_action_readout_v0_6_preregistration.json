@@ -1,0 +1,62 @@
+{
+  "schema_version": "0.6.0",
+  "protocol": "project-two-action-benchmark@0.6-dual-timescale-readout",
+  "created_before_development_holdout_open": true,
+  "confirmatory": false,
+  "independent_custody": false,
+  "predecessor_git_commit": "ae27b85",
+  "dataset_config": {
+    "path": "configs/project_two_datasets/d0_multiseed_readout_v0_5.json",
+    "sha256": "c2ce79d46ef9aa1335b092ca06dde0ce170e8c766dce68db63b7b04dde716cb8"
+  },
+  "evaluator_source": {
+    "path": "src/cpswm/system/evaluation_operations/project_two_action_benchmark.py",
+    "sha256": "c0ad6c01cd4a4361949bb3d31161a29e0a48f7bffa3dc3bc287401aea72524f2"
+  },
+  "development_utility_contract": {
+    "path": "configs/project_two_experiments/structure_two_route_a_utility_contract_v0_1.json",
+    "sha256": "da2856c351f7249352a546dda82daa8dfb633de5d5ed169c61f8a67fcc00e292"
+  },
+  "search_budget": 3,
+  "selection_metric": "cumulative_action_regret",
+  "selection_direction": "minimize",
+  "train_diagnostic": {
+    "seeds": "1-20",
+    "best_project_two_candidate": "dual_timescale_fast_0.7_surviving_0.2_regime_0.1",
+    "best_project_two_mean_cumulative_action_regret": 3.2666666666666666,
+    "matched_amg_mean_cumulative_action_regret": 3.95,
+    "holdout_accessed": false
+  },
+  "validation_selection": {
+    "seeds": "1001-1020",
+    "candidate_mean_cumulative_action_regret": [
+      {
+        "readout": "latest_owner_event",
+        "value": 3.4
+      },
+      {
+        "readout": "dual_timescale_fast_0.8_surviving_0.2_regime_0.0",
+        "value": 3.2666666666666666
+      },
+      {
+        "readout": "dual_timescale_fast_0.7_surviving_0.2_regime_0.1",
+        "value": 3.05
+      }
+    ],
+    "selected_readout": "dual_timescale_fast_0.7_surviving_0.2_regime_0.1",
+    "selected_validation_contamination": 0.00625,
+    "holdout_accessed": false
+  },
+  "development_holdout": {
+    "seeds": "6001-6060",
+    "open_once_after_selection": true,
+    "raw_seeds_hidden_from_candidate_environment": false
+  },
+  "retained_capabilities": [
+    "hidden_event_inference",
+    "multi_actor_reasoning",
+    "open_world_unknowns",
+    "reversible_attribution",
+    "embodied_execution_feedback"
+  ]
+}

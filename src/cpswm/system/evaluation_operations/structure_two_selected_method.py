@@ -18,7 +18,7 @@ import json
 from enum import StrEnum
 from math import exp, isfinite
 from pathlib import Path
-from typing import Literal, Self
+from typing import Annotated, Final, Literal, Self
 from uuid import UUID
 
 from pydantic import Field, model_validator
@@ -27,6 +27,48 @@ from cpswm.contracts.base import ContractModel, NonNegativeInt, Probability
 from cpswm.system.reproducibility import content_sha256
 
 SELECTED_METHOD_ID = "structure-two-nap-rbtpr-rc@0.1"
+
+#: The frozen within-stage forgetting factor.
+#:
+#: ``docs/结构二/方向结构二_神经摊销类型化粒子修订与可逆巩固方法冻结_v1.0.md`` §2 states it
+#: verbatim: within-regime forgetting is fixed at 1, and distribution change is
+#: handled by explicit stage competition rather than by unsourced exponential
+#: forgetting.
+#: -- inside one regime nothing is forgotten, and distribution change is handled
+#: by CF-BOCPD/CCRR stage competition rather than by an exponential decay with
+#: no registered source.  This is therefore a *design decision*, not an
+#: unfilled hyperparameter: the receipt pins it, and widening the field to the
+#: RLS runtime's admissible ``(0, 1]`` would silently reopen a frozen choice.
+#:
+#: Retuning it is a real option, but it needs its own binding-resolution
+#: protocol and a *new* receipt version.  Editing this receipt and rehashing it
+#: would pass the new value off as the original frozen design.
+FROZEN_STAGE_LOCAL_FORGETTING_FACTOR: Final = 1.0
+
+#: Runtime configuration defaults that must equal the frozen receipt value, so
+#: the receipt field is an enforced binding rather than decorative JSON.  The
+#: RLS runtime itself accepts ``(0, 1]``; these defaults are where the frozen
+#: choice actually lands.
+STAGE_LOCAL_FORGETTING_RUNTIME_BINDINGS: Final = (
+    "cpswm.system.continual.rls.core.RLSConfig.forgetting_factor",
+    "cpswm.system.continual.rls.habit_head.RLSHabitScoreHead.__init__.forgetting_factor",
+    "cpswm.system.continual.project_one_regime_loop.PrototypeLoopConfig.forgetting_factor",
+    "cpswm.system.evaluation_operations.project_one_protocol."
+    "ProjectOneProtocolConfig.forgetting_factor",
+)
+
+#: A within-stage forgetting factor.  The frozen route admits exactly one value.
+StageLocalForgettingFactor = Annotated[
+    float,
+    Field(
+        ge=FROZEN_STAGE_LOCAL_FORGETTING_FACTOR,
+        le=FROZEN_STAGE_LOCAL_FORGETTING_FACTOR,
+        description=(
+            "frozen at 1.0: no within-regime forgetting; stage change is handled by explicit "
+            "regime competition, never by unsourced exponential decay"
+        ),
+    ),
+]
 
 
 class MethodBackbone(StrEnum):
@@ -156,7 +198,7 @@ class StructureTwoSelectedMethod(ContractModel):
     proposal_operations: tuple[ParticleProposalOperation, ...]
     structured_weight_factors: tuple[StructuredWeightFactor, ...]
     explicit_unresolved_mass: Literal[True]
-    stage_local_forgetting_factor: float = Field(ge=1.0, le=1.0)
+    stage_local_forgetting_factor: StageLocalForgettingFactor
     unresolved_method_bindings: tuple[UnresolvedMethodBinding, ...]
 
     @model_validator(mode="after")
@@ -183,7 +225,21 @@ class StructureTwoSelectedMethod(ContractModel):
             raise ValueError("particle weights must apply every frozen structured factor")
         if set(self.unresolved_method_bindings) != REQUIRED_UNRESOLVED_BINDINGS:
             raise ValueError("the selection receipt must expose every unresolved method binding")
+        if self.stage_local_forgetting_factor != FROZEN_STAGE_LOCAL_FORGETTING_FACTOR:
+            raise ValueError(
+                "stage_local_forgetting_factor is frozen at "
+                f"{FROZEN_STAGE_LOCAL_FORGETTING_FACTOR}: within-regime forgetting is disabled by "
+                "design and stage change is handled by explicit regime competition; retuning it "
+                "requires a new selected-method receipt version and its own binding-resolution "
+                "protocol, not an edit to this receipt"
+            )
         return self
+
+    @property
+    def stage_local_forgetting_runtime_bindings(self) -> tuple[str, ...]:
+        """Runtime defaults this receipt's forgetting factor is bound to."""
+
+        return STAGE_LOCAL_FORGETTING_RUNTIME_BINDINGS
 
     @classmethod
     def load(cls, path: Path) -> Self:
@@ -434,8 +490,57 @@ class ReversibleCommitProtocol(ContractModel):
         return self
 
 
+def verify_stage_local_forgetting_runtime_binding() -> tuple[str, ...]:
+    """Check that the runtime actually runs at the receipt's frozen value.
+
+    Without this the receipt field is decorative: it appears in the selection
+    contract and the JSON, and nothing downstream reads it.  This walks the
+    runtime configuration defaults named in
+    :data:`STAGE_LOCAL_FORGETTING_RUNTIME_BINDINGS` and fails loudly if any of
+    them has drifted away from the frozen value.  It changes no value.
+    """
+
+    from inspect import signature
+
+    from cpswm.system.continual.project_one_regime_loop import PrototypeLoopConfig
+    from cpswm.system.continual.rls.core import RLSConfig
+    from cpswm.system.continual.rls.habit_head import RLSHabitScoreHead
+    from cpswm.system.evaluation_operations.project_one_protocol import ProjectOneProtocolConfig
+
+    observed: dict[str, float] = {
+        "cpswm.system.continual.rls.core.RLSConfig.forgetting_factor": (
+            RLSConfig(feature_dim=1).forgetting_factor
+        ),
+        "cpswm.system.continual.rls.habit_head.RLSHabitScoreHead.__init__.forgetting_factor": (
+            float(signature(RLSHabitScoreHead.__init__).parameters["forgetting_factor"].default)
+        ),
+        "cpswm.system.continual.project_one_regime_loop.PrototypeLoopConfig.forgetting_factor": (
+            PrototypeLoopConfig().forgetting_factor
+        ),
+        "cpswm.system.evaluation_operations.project_one_protocol."
+        "ProjectOneProtocolConfig.forgetting_factor": (
+            ProjectOneProtocolConfig().forgetting_factor
+        ),
+    }
+    if set(observed) != set(STAGE_LOCAL_FORGETTING_RUNTIME_BINDINGS):
+        raise ValueError("stage-local forgetting binding registry and probe disagree")
+    drifted = tuple(
+        f"{name}={value!r}"
+        for name, value in sorted(observed.items())
+        if value != FROZEN_STAGE_LOCAL_FORGETTING_FACTOR
+    )
+    if drifted:
+        raise ValueError(
+            "runtime stage-local forgetting drifted from the frozen receipt value "
+            f"{FROZEN_STAGE_LOCAL_FORGETTING_FACTOR}: " + ", ".join(drifted)
+        )
+    return STAGE_LOCAL_FORGETTING_RUNTIME_BINDINGS
+
+
 __all__ = [
+    "FROZEN_STAGE_LOCAL_FORGETTING_FACTOR",
     "SELECTED_METHOD_ID",
+    "STAGE_LOCAL_FORGETTING_RUNTIME_BINDINGS",
     "CommitAuthority",
     "MethodBackbone",
     "NeuralParticleProposal",
@@ -452,6 +557,7 @@ __all__ = [
     "RetainedCapability",
     "ReversibleCommitProtocol",
     "RevisionAuthority",
+    "StageLocalForgettingFactor",
     "StructureTwoOperator",
     "StructureTwoSelectedMethod",
     "StructuredConstraint",
@@ -459,4 +565,5 @@ __all__ = [
     "TypedParticleState",
     "UnresolvedMethodBinding",
     "normalize_particle_revisions",
+    "verify_stage_local_forgetting_runtime_binding",
 ]

@@ -1,0 +1,105 @@
+{
+  "schema_version": "1.0.0",
+  "checkpoint_id": "structure-two-cost-guardrail-calibration@0.1-development",
+  "checkpoint_date": "2026-09-06",
+  "predecessor_checkpoint_id": "structure-two-action-readout@0.6-development",
+  "status": "DEVELOPMENT_COST_ENVELOPE_DERIVED_PARTIAL_RERUN_GUARDRAIL_MEASURED",
+  "paper_claim_allowed": false,
+  "confirmatory": false,
+  "independent_custody_verified": false,
+  "holdout_rerun_performed": false,
+  "post_completion_adversarial_audit": {
+    "round_one": {
+      "focus": "forged_positive_and_dependency_trust_chain",
+      "accepted_bypasses_closed": 4,
+      "coverage_claim": "enumerated attack matrix only; not exhaustive"
+    },
+    "round_two": {
+      "focus": "boundary_replay_state_and_metric_semantics",
+      "accepted_bypasses_closed": 5,
+      "coverage_claim": "enumerated attack matrix only; not exhaustive"
+    }
+  },
+  "registered_inputs": {
+    "source_action_artifact": {
+      "path": "artifacts/project_two_v04_development/structure_two_action_benchmark_v0_6_dual_timescale_2026_09_06.json",
+      "sha256": "2887a0281535b8eca0301e3ce5b3fecd1af194319b3afffcf455c26cbd2ba289"
+    },
+    "dataset_config": {
+      "path": "configs/project_two_datasets/d0_multiseed_readout_v0_5.json",
+      "sha256": "c2ce79d46ef9aa1335b092ca06dde0ce170e8c766dce68db63b7b04dde716cb8"
+    }
+  },
+  "generated_artifact": {
+    "path": "artifacts/project_two_v04_development/structure_two_cost_guardrail_calibration_v0_1_2026_09_06.json",
+    "sha256": "2481ff2cd745c0b3678da3f2ccf0dc70c88b4d889310ad817617af510afe5d9b",
+    "tracked_by_git": false
+  },
+  "paired_development_holdout": {
+    "episode_count": 60,
+    "search_strictly_better": 36,
+    "search_equal": 24,
+    "search_worse": 0,
+    "mean_normalized_search_regret_advantage": 0.47777777777777775,
+    "normalized_search_regret_advantage_confidence_interval_95": [
+      0.3333333333333333,
+      0.6277777777777778
+    ],
+    "mean_inspected_container_advantage": 1.4333333333333333,
+    "inspected_container_advantage_confidence_interval_95": [
+      1.0,
+      1.8833333333333333
+    ],
+    "mean_contamination_excess_events": 0.23333333333333334,
+    "contamination_excess_confidence_interval_95": [
+      0.13333333333333333,
+      0.35
+    ],
+    "mean_break_even_contamination_cost_in_normalized_search_regret_units": 2.0476190476190474,
+    "mean_break_even_contamination_cost_in_inspection_units": 6.142857142857143,
+    "bootstrap_inspection_cost_break_even_ratio_confidence_interval_95": [
+      4.0,
+      10.5
+    ],
+    "conservative_inspection_cost_ratio_from_marginal_intervals": 2.857142857142857,
+    "conservative_ratio_is_simultaneous_confidence_bound": false
+  },
+  "development_train_full_rerun": {
+    "scope": "hybrid_rgrc_cached_sufficient_statistics_vs_append_log_replay",
+    "episode_count": 20,
+    "absolute_tolerance": 1e-10,
+    "all_equivalent": true,
+    "maximum_absolute_difference": 7.105427357601002e-15,
+    "status": "development_train_only_not_confirmatory"
+  },
+  "unresolved_paper_bindings": [
+    "real_robot_put_back_failure_cost",
+    "real_robot_container_inspection_cost",
+    "real_robot_unfound_target_cost",
+    "real_robot_time_energy_safety_privacy_costs",
+    "primary_superiority_margin",
+    "owner_contamination_upper_bound",
+    "recovery_latency_upper_bound",
+    "confirmatory_full_rerun_tolerance",
+    "independent_custody",
+    "faithful_external_baseline_reproduction"
+  ],
+  "validation": {
+    "directly_related_test_files": 22,
+    "tests": "312 passed",
+    "new_cost_guardrail_tests": "13 passed",
+    "dependency_recomputation": "passed: 60 paired holdout rows and 20 TRAIN replay receipts",
+    "two_process_byte_reproducibility": "passed",
+    "ruff_and_format": "passed for 8 touched code files",
+    "strict_mypy": "passed for 6 core source files",
+    "checkpoint_json_parse": "passed",
+    "diff_check": "passed"
+  },
+  "retained_capabilities": [
+    "hidden_event_inference",
+    "multi_actor_reasoning",
+    "open_world_unknowns",
+    "reversible_attribution",
+    "embodied_execution_feedback"
+  ]
+}

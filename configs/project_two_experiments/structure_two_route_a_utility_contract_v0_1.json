@@ -1,0 +1,31 @@
+{
+  "schema_version": "0.1.0",
+  "contract_id": "structure-two-route-a-development-utility@0.1",
+  "scope": "d0_development_only",
+  "primary_utility_metric": "cumulative_action_regret",
+  "optimization_direction": "minimize",
+  "put_back_regret_rule": "binary_wrong_put_back",
+  "search_regret_rule": "normalized_extra_inspections",
+  "put_back_weight": 1.0,
+  "search_weight": 1.0,
+  "selection_metric": "cumulative_action_regret",
+  "reference_scope": "all_registered_non_oracle_arms",
+  "search_time_role": "secondary_unpriced_diagnostic",
+  "paper_claim_allowed": false,
+  "unresolved_paper_bindings": [
+    "real_task_cost_calibration",
+    "superiority_margin",
+    "owner_contamination_threshold",
+    "recovery_latency_threshold",
+    "full_rerun_equivalence_measurement",
+    "independent_custody",
+    "faithful_external_baseline_reproduction"
+  ],
+  "retained_capabilities": [
+    "hidden_event_inference",
+    "multi_actor_reasoning",
+    "open_world_unknowns",
+    "reversible_attribution",
+    "embodied_execution_feedback"
+  ]
+}

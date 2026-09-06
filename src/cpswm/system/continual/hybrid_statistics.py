@@ -1398,10 +1398,16 @@ class HybridStatisticLedger:
                         if delta.revision_id == record.supersedes_revision_id
                     )
             mutable = self._prior_projection()
-            for record_id in promoted - reversed_ids:
-                delta = deltas[record_id]
-                if delta.key == key:
-                    self._apply_to(mutable, delta, +1.0)
+            live_record_ids = promoted - reversed_ids
+            # Preserve append-log order. Iterating the UUID set directly makes
+            # floating-point accumulation depend on hash order across processes.
+            for record in self._log:
+                if (
+                    isinstance(record, HybridStatisticDelta)
+                    and record.record_id in live_record_ids
+                    and record.key == key
+                ):
+                    self._apply_to(mutable, record, +1.0)
             return self._freeze(mutable)
 
     def projection_with_replay_fallback(

@@ -1,8 +1,8 @@
-"""Run project-two corrected action-level matched benchmark v0.4.
+"""Run project-two action-level matched benchmark v0.6.
 
 Validation and sealed test episodes are household/scene/object-family disjoint.
 The old v0.1 reduced-skill death test remains importable for regression only;
-this CLI now emits the corrected-interface v0.4 report.  Historical v0.2
+this CLI now emits the dual-timescale-readout v0.6 report.  Historical v0.2/v0.4/v0.5
 artifacts remain immutable evidence of the earlier protocol.
 
 ``--seeds`` controls how many episodes each split gets.  The default of ``0``
@@ -47,7 +47,7 @@ _VALIDATION_BASE = 1000
 _TEST_BASE = 5000
 
 DEFAULT_MULTISEED_CONFIG = (
-    REPOSITORY_ROOT / "configs/project_two_datasets/d0_multiseed_evidence_v0_3.json"
+    REPOSITORY_ROOT / "configs/project_two_datasets/d0_multiseed_readout_v0_5.json"
 )
 
 

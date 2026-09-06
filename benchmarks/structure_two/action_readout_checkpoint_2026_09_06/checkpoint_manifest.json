@@ -1,0 +1,115 @@
+{
+  "schema_version": "1.0.0",
+  "checkpoint_id": "structure-two-action-readout@0.6-development",
+  "checkpoint_date": "2026-09-06",
+  "predecessor_git_commit": "ae27b85",
+  "status": "DEVELOPMENT_ENGINEERING_ADVANTAGE_GUARDRAILS_OPEN",
+  "paper_claim_allowed": false,
+  "confirmatory": false,
+  "independent_custody_verified": false,
+  "two_round_adversarial_audit": {
+    "round_one_accepted_bypasses_closed": 6,
+    "round_two_accepted_bypasses_closed": 10,
+    "round_two_failure_path_normalized": 1,
+    "coverage_claim": "enumerated attack matrix only; not exhaustive"
+  },
+  "registered_inputs": {
+    "preregistration": {
+      "path": "configs/project_two_experiments/structure_two_action_readout_v0_6_preregistration.json",
+      "sha256": "bb274d3822d30c06a1571d2b1951e575576e81ae5b22dc6de9a4d1e47e1ac63c"
+    },
+    "dataset_config": {
+      "path": "configs/project_two_datasets/d0_multiseed_readout_v0_5.json",
+      "sha256": "c2ce79d46ef9aa1335b092ca06dde0ce170e8c766dce68db63b7b04dde716cb8"
+    },
+    "development_utility_contract": {
+      "path": "configs/project_two_experiments/structure_two_route_a_utility_contract_v0_1.json",
+      "sha256": "da2856c351f7249352a546dda82daa8dfb633de5d5ed169c61f8a67fcc00e292"
+    },
+    "evaluated_source": {
+      "path": "src/cpswm/system/evaluation_operations/project_two_action_benchmark.py",
+      "sha256_at_first_holdout_run": "c0ad6c01cd4a4361949bb3d31161a29e0a48f7bffa3dc3bc287401aea72524f2",
+      "sha256_after_type_only_variable_rename": "9267432af7b4798a038445dc93503471d21cbf57ae54c7007fdd825458ae434f",
+      "holdout_rerun_after_type_cleanup": false
+    }
+  },
+  "generated_artifact": {
+    "path": "artifacts/project_two_v04_development/structure_two_action_benchmark_v0_6_dual_timescale_2026_09_06.json",
+    "sha256": "2887a0281535b8eca0301e3ce5b3fecd1af194319b3afffcf455c26cbd2ba289",
+    "tracked_by_git": false
+  },
+  "split_counts": {
+    "train": 20,
+    "validation": 20,
+    "development_holdout": 60
+  },
+  "selected_project_two_readout": {
+    "readout": "dual_timescale_reversible",
+    "owner_threshold": 0.4,
+    "fast_action_weight": 0.7,
+    "surviving_revision_weight": 0.2,
+    "regime_local_weight": 0.1,
+    "fast_owner_mass_floor": 0.5,
+    "owner_mass_floor": 0.5,
+    "recency_half_life": 1.0
+  },
+  "primary_comparison": {
+    "candidate_method": "project_two_full_feedback_loop",
+    "candidate_cumulative_action_regret": 3.4555555555555553,
+    "best_reference_method": "damen_hogg_amg_matched_open_world",
+    "reference_cumulative_action_regret": 3.933333333333333,
+    "paired_reference_minus_candidate": 0.47777777777777775,
+    "paired_confidence_interval_95": [
+      0.3388888888888889,
+      0.6333333333333333
+    ],
+    "decision": "DEVELOPMENT_PRIMARY_UTILITY_BETTER"
+  },
+  "component_comparison": {
+    "put_back_regret": {
+      "candidate": 1.7166666666666666,
+      "reference": 1.7166666666666666,
+      "decision": "TIE"
+    },
+    "search_regret": {
+      "candidate": 1.7388888888888887,
+      "reference": 2.2166666666666663,
+      "decision": "CANDIDATE_BETTER"
+    },
+    "owner_habit_contamination": {
+      "candidate": 0.007291666666666667,
+      "reference": 0.0,
+      "decision": "CANDIDATE_WORSE_THRESHOLD_UNREGISTERED"
+    },
+    "incorrect_statistic_recovery_cost": {
+      "candidate": 0.0,
+      "reference": 0.0,
+      "decision": "TIE"
+    }
+  },
+  "validation": {
+    "targeted_tests": "156 passed",
+    "targeted_test_files": 10,
+    "artifact_typed_reload": "passed: 60 test episodes, 600 case rows, 170 aggregate rows",
+    "ruff": "passed for touched source, runner and tests",
+    "targeted_mypy": "passed for 3 core source files",
+    "diff_check": "passed"
+  },
+  "remaining_blockers": [
+    "real task-cost calibration",
+    "superiority margin",
+    "owner contamination threshold",
+    "recovery latency threshold",
+    "full-rerun equivalence measurement",
+    "D1-D4 external validity",
+    "six faithful native external reproductions",
+    "independent custody"
+  ],
+  "retained_capabilities": [
+    "hidden_event_inference",
+    "multi_actor_reasoning",
+    "open_world_unknowns",
+    "reversible_attribution",
+    "embodied_execution_feedback"
+  ]
+}

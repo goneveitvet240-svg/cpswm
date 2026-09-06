@@ -47,6 +47,7 @@ from cpswm.contracts import (
 )
 from cpswm.system.continual.hybrid_event_to_task_loop import (
     HybridEventToTaskCoordinatorLoop,
+    HybridFullRerunEquivalenceReceipt,
     OwnerPlacementInput,
 )
 from cpswm.system.continual.project_one_feedback import (
@@ -516,6 +517,16 @@ class CorePrototypeSpine:
     def hybrid_alpha(self, location_id: UUID) -> float:
         key = self._hybrid_loop._key(location_id)
         return self._hybrid_loop.ledger.projection(key).alpha
+
+    def verify_hybrid_full_rerun_equivalence(
+        self, *, absolute_tolerance: float = 1e-10
+    ) -> HybridFullRerunEquivalenceReceipt:
+        """Verify cached Hybrid RGRC state against its append-only replay."""
+
+        return self._hybrid_loop.verify_full_rerun_equivalence(
+            location_ids=self.locations,
+            absolute_tolerance=absolute_tolerance,
+        )
 
     def is_committed_revision(self, revision_id: UUID) -> bool:
         return revision_id in self._committed_events

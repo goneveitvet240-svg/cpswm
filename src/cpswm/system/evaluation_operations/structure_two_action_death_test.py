@@ -1,8 +1,30 @@
-"""Legacy structure-two action-level proxy death test (v0.1).
+"""Structure-two action-level proxy death test.
 
-The authoritative v0.2 matched benchmark is implemented by
+Protocol versions
+-----------------
+``structure-two-action-death-test@0.1`` is **withdrawn** for everything it said
+about search.  Its evaluator asked each method one question -- "which container
+do you open?" -- and then scored a completely different itinerary, guessed from
+the method's Python class and, for anything it did not recognise, from the raw
+order of the ``locations`` tuple.  Permuting that tuple moved AMG's and
+DynaMem's per-day search cost while their prediction stayed identical, and on
+seed 1 the scored itinerary's first container disagreed with the method's own
+answer on 13-19 of 32 days for all five arms.  Every ``mean_search_cost`` and
+every ``search_cost`` emitted under ``@0.1`` is therefore withdrawn.  The
+withdrawn computation itself is kept, unexecuted, as
+:func:`withdrawn_v0_1_search_cost` so the defect stays pinned by a test.
+
+``structure-two-action-death-test@0.2-search-utility-corrected`` is the
+corrected protocol implemented here.  Every method registers an explicit
+:class:`~cpswm.system.evaluation_operations.structure_two_search_utility.SearchPlan`,
+and search correctness, inspected-container count, path length, cost and time
+are all read off that single plan.  Search *cost* is reported only when the
+caller supplies a registered price; otherwise the report carries
+``SEARCH_UTILITY_CONTRACT_UNRESOLVED`` and no number.
+
+The authoritative matched benchmark is implemented by
 ``ProjectTwoActionBenchmarkV02`` and is the target of the application runner.
-This module's original runner is retained only for regression compatibility.
+This module's runner is retained only for regression compatibility.
 
 Structure-two action-level matched death test: PCHMP x CCRR x RGRC vs
 four reference baselines (AMG / O-STaR / DynaMem / STAR).
@@ -19,7 +41,10 @@ No baseline sees ground truth. The legacy new-method arm below contains a
 stand-in owner-attribution write gate and is therefore classified as a
 ``reduced-skill proxy`` by v0.2, never as the full project-two arm. Claims from
 this legacy class are limited to what this action-level,
-single-household scenario can support.
+single-household scenario can support.  The put-back comparison this module
+emits is a ``legacy_put_back_only_diagnostic``: it ranks methods on put-back
+error alone, which is one unweighted term of the frozen route's unresolved
+cumulative action regret, so it can never read as a scientific win.
 
 Equivariance scope (honest boundary): every method is invariant to the *order*
 of the ``locations`` tuple (tuple-order invariance, tested).  The baselines are
@@ -67,6 +92,18 @@ from cpswm.system.counterfactual_event_hypergraph import (
     OpenWorldRoleConditionedReversibleEventRevisionEngine,
     ProvenanceConstrainedMessagePassing,
 )
+from cpswm.system.evaluation_operations.structure_two_search_utility import (
+    ROUTE_A_PRIMARY_UTILITY_METRIC,
+    ROUTE_A_UNRESOLVED_UTILITY_FIELDS,
+    LegacyPutBackOnlyDiagnostic,
+    SearchPlan,
+    SearchPlanKind,
+    SearchScore,
+    SearchUtilityContract,
+    SearchUtilityStatus,
+    aggregate_search_scores,
+    score_search_plan,
+)
 from cpswm.system.reproducibility import content_sha256
 from cpswm.world_model.habits_transitions import (
     CauseSignalFrame,
@@ -78,7 +115,26 @@ from cpswm.world_model.habits_transitions import (
 )
 
 SCHEMA_VERSION = "0.1.0"
+
+#: Stamped into generated records.  It identifies the *scenario generator*,
+#: which this correction does not change, so it stays at ``@0.1``; regenerating
+#: a sealed case must keep producing byte-identical historical artifacts.
 MODEL_VERSION = "structure-two-action-death-test@0.1"
+
+#: The protocol every report emitted by this module now carries.
+PROTOCOL_VERSION = "structure-two-action-death-test@0.2-search-utility-corrected"
+
+#: Retained as a historical regression proxy.  Its search numbers are withdrawn.
+SUPERSEDED_PROTOCOL_VERSION = "structure-two-action-death-test@0.1"
+
+ACTION_SCENARIO_GENERATOR_VERSION = "structure-two-action-scenario@0.1"
+
+#: Report fields that record how the input happened to be ordered rather than
+#: what was measured.  A location permutation may change these and nothing else.
+NON_SEMANTIC_REPORT_FIELDS: tuple[str, ...] = (
+    "location_tuple_inputs",
+    "location_tuple_digest",
+)
 
 
 def _public_deterministic_uuid(seed: int, *parts: object) -> UUID:
@@ -236,12 +292,61 @@ class ActionMethodPrediction(ContractModel):
 
 
 class ActionDayResult(ContractModel):
+    """One scored day.
+
+    ``search_correct``, ``inspected_container_count``, ``search_path_length``,
+    ``search_cost`` and ``search_time_seconds`` are all read off the single
+    :class:`SearchPlan` the method registered for that day.  ``search_cost`` is
+    ``None`` -- never a flat ``1`` -- whenever the price of an inspection or of
+    a failed search is not registered.
+    """
+
     case_id: UUID
     method: ActionBaselineMethod
     day: int = Field(ge=0)
+    guest_move_day: bool
     put_back_correct: bool
+    search_plan: SearchPlan
+    search_target: UUID
     search_correct: bool
-    search_cost: int = Field(ge=1)
+    search_plan_kind: SearchPlanKind
+    search_plan_length: int = Field(ge=1)
+    registered_location_count: int = Field(ge=1)
+    inspected_container_count: int = Field(ge=1)
+    search_path_length: int = Field(ge=1)
+    search_target_found: bool
+    search_utility_status: SearchUtilityStatus
+    search_utility_contract_id: str | None = None
+    search_cost: float | None = None
+    search_time_seconds: float | None = None
+    search_unresolved_fields: tuple[str, ...] = ()
+
+    @model_validator(mode="after")
+    def _bind_to_raw_search_inputs(self) -> ActionDayResult:
+        if self.search_plan.method_id != self.method.value:
+            raise ValueError("day result method does not own its recorded search plan")
+        expected = score_search_plan(self.search_plan, self.search_target)
+        structural = (
+            (self.search_plan_kind, expected.plan_kind, "plan kind"),
+            (self.search_plan_length, expected.plan_length, "plan length"),
+            (
+                self.registered_location_count,
+                expected.registered_location_count,
+                "registered location count",
+            ),
+            (
+                self.inspected_container_count,
+                expected.inspected_container_count,
+                "inspected container count",
+            ),
+            (self.search_path_length, expected.search_path_length, "search path length"),
+            (self.search_target_found, expected.target_found_in_plan, "target-found flag"),
+            (self.search_correct, expected.first_choice_correct, "first-choice correctness"),
+        )
+        for observed, derived, label in structural:
+            if observed != derived:
+                raise ValueError(f"day result {label} is not derived from its search plan")
+        return self
 
 
 class ActionMethodReport(ContractModel):
@@ -249,17 +354,208 @@ class ActionMethodReport(ContractModel):
     case_count: int = Field(ge=0)
     put_back_error_rate: float = Field(ge=0.0, le=1.0)
     search_error_rate: float = Field(ge=0.0, le=1.0)
-    mean_search_cost: float = Field(ge=0.0)
+    search_target_not_found_rate: float = Field(ge=0.0, le=1.0)
+    mean_inspected_container_count: float = Field(ge=0.0)
+    mean_search_path_length: float = Field(ge=0.0)
+    mean_search_cost: float | None = None
+    mean_search_time_seconds: float | None = None
+    search_utility_status: SearchUtilityStatus
+    search_unresolved_fields: tuple[str, ...] = ()
     guest_day_put_back_error_days: int = Field(ge=0)
     total_put_back_errors: int = Field(ge=0)
     total_search_errors: int = Field(ge=0)
 
 
+class ActionLocationTupleInput(ContractModel):
+    """Raw registry order retained solely to make its audit digest recomputable."""
+
+    case_id: UUID
+    locations: tuple[UUID, ...] = Field(min_length=2)
+
+    @model_validator(mode="after")
+    def _require_unique_locations(self) -> ActionLocationTupleInput:
+        if len(set(self.locations)) != len(self.locations):
+            raise ValueError("raw location tuple inputs must contain unique locations")
+        return self
+
+
 class StructureTwoActionDeathTestReport(ContractModel):
+    """A report whose only scientific claim is an explicitly labelled diagnostic."""
+
+    protocol_version: str = Field(min_length=1)
+    superseded_protocol_version: str = Field(min_length=1)
     generator_version: str = Field(min_length=1)
+    location_tuple_inputs: tuple[ActionLocationTupleInput, ...] = Field(min_length=1)
+    location_tuple_digest: str = Field(pattern=r"^[0-9a-f]{64}$")
+    search_utility_contract: SearchUtilityContract | None = None
+    search_utility_contract_id: str | None = None
+    search_utility_status: SearchUtilityStatus
     method_reports: tuple[ActionMethodReport, ...]
     case_results: tuple[ActionDayResult, ...]
+    legacy_diagnostic: LegacyPutBackOnlyDiagnostic
     scientific_status: str
+
+    @model_validator(mode="after")
+    def _reject_protocol_substitution(self) -> StructureTwoActionDeathTestReport:
+        """A corrected report cannot be relabelled as the withdrawn protocol, or vice versa.
+
+        Both directions matter.  Stamping ``@0.1`` on these numbers would let a
+        withdrawn ``mean_search_cost`` be quietly reinstated; stamping ``@0.2``
+        on an old artifact would upgrade withdrawn numbers into corrected ones.
+        """
+
+        if self.protocol_version != PROTOCOL_VERSION:
+            raise ValueError(
+                f"this contract emits {PROTOCOL_VERSION!r}; it cannot carry "
+                f"{self.protocol_version!r}"
+            )
+        if self.generator_version != ACTION_SCENARIO_GENERATOR_VERSION:
+            raise ValueError("action scenario generator protocol substitution")
+        if self.superseded_protocol_version != SUPERSEDED_PROTOCOL_VERSION:
+            raise ValueError(f"the superseded protocol is fixed at {SUPERSEDED_PROTOCOL_VERSION!r}")
+        if self.protocol_version == self.superseded_protocol_version:
+            raise ValueError("a protocol cannot supersede itself")
+        if self.legacy_diagnostic.superseded_protocol_version != SUPERSEDED_PROTOCOL_VERSION:
+            raise ValueError("the legacy diagnostic must name the protocol it supersedes")
+        if self.scientific_status != self.legacy_diagnostic.scientific_status:
+            raise ValueError("scientific status must be derived from the legacy diagnostic")
+        if self.legacy_diagnostic.primary_utility_metric != ROUTE_A_PRIMARY_UTILITY_METRIC:
+            raise ValueError("legacy diagnostic must name route A's primary utility")
+        if self.legacy_diagnostic.unresolved_contract_fields != (ROUTE_A_UNRESOLVED_UTILITY_FIELDS):
+            raise ValueError("legacy diagnostic must preserve every unresolved utility field")
+        if (self.search_utility_status is SearchUtilityStatus.RESOLVED) != (
+            self.search_utility_contract_id is not None
+        ):
+            raise ValueError("a resolved search utility must name the contract that priced it")
+        if (self.search_utility_contract is None) != (self.search_utility_contract_id is None):
+            raise ValueError("the report must retain the pricing contract used for recomputation")
+        if (
+            self.search_utility_contract is not None
+            and self.search_utility_contract.contract_id != self.search_utility_contract_id
+        ):
+            raise ValueError("search utility contract id does not match the retained contract")
+
+        tuple_inputs = {item.case_id: item.locations for item in self.location_tuple_inputs}
+        if len(tuple_inputs) != len(self.location_tuple_inputs):
+            raise ValueError("raw location tuple inputs must have unique case identities")
+        expected_tuple_digest = content_sha256(
+            [[str(location) for location in item.locations] for item in self.location_tuple_inputs]
+        )
+        if self.location_tuple_digest != expected_tuple_digest:
+            raise ValueError("location tuple digest is not derived from retained raw inputs")
+
+        seen: set[tuple[ActionBaselineMethod, UUID, int]] = set()
+        grouped: dict[ActionBaselineMethod, list[ActionDayResult]] = {}
+        for result in self.case_results:
+            key = (result.method, result.case_id, result.day)
+            if key in seen:
+                raise ValueError("duplicate method/case/day result")
+            seen.add(key)
+            grouped.setdefault(result.method, []).append(result)
+            raw_locations = tuple_inputs.get(result.case_id)
+            if raw_locations is None or set(result.search_plan.registered_locations) != set(
+                raw_locations
+            ):
+                raise ValueError("day result search registry is not bound to raw tuple inputs")
+            expected = score_search_plan(
+                result.search_plan,
+                result.search_target,
+                self.search_utility_contract,
+            )
+            observed_score = (
+                result.search_utility_status,
+                result.search_utility_contract_id,
+                result.search_cost,
+                result.search_time_seconds,
+                result.search_unresolved_fields,
+            )
+            expected_score = (
+                expected.status,
+                expected.contract_id,
+                expected.search_cost,
+                expected.search_time_seconds,
+                expected.unresolved_fields,
+            )
+            if observed_score != expected_score:
+                raise ValueError("day result pricing fields fail deterministic recomputation")
+
+        reports = {report.method: report for report in self.method_reports}
+        if len(reports) != len(self.method_reports):
+            raise ValueError("method reports must have unique identities")
+        if set(reports) != set(grouped):
+            raise ValueError("method reports must cover exactly the recorded day results")
+        expected_case_ids = set(tuple_inputs)
+        coordinate_sets = [
+            {(result.case_id, result.day) for result in results} for results in grouped.values()
+        ]
+        if any(
+            {result.case_id for result in results} != expected_case_ids
+            for results in grouped.values()
+        ):
+            raise ValueError("every method must cover every retained action case")
+        if coordinate_sets and any(
+            coordinates != coordinate_sets[0] for coordinates in coordinate_sets[1:]
+        ):
+            raise ValueError("every method must cover the same case/day evaluation units")
+        for method, results in grouped.items():
+            report = reports[method]
+            scores = tuple(
+                score_search_plan(
+                    result.search_plan,
+                    result.search_target,
+                    self.search_utility_contract,
+                )
+                for result in results
+            )
+            aggregate = aggregate_search_scores(method.value, scores)
+            total = len(results)
+            put_errors = sum(not result.put_back_correct for result in results)
+            search_errors = sum(not result.search_correct for result in results)
+            guest_errors = sum(
+                result.guest_move_day and not result.put_back_correct for result in results
+            )
+            expected_report = {
+                "case_count": len({result.case_id for result in results}),
+                "put_back_error_rate": put_errors / total,
+                "search_error_rate": aggregate.first_choice_error_rate,
+                "search_target_not_found_rate": aggregate.target_not_found_rate,
+                "mean_inspected_container_count": aggregate.mean_inspected_container_count,
+                "mean_search_path_length": aggregate.mean_search_path_length,
+                "mean_search_cost": aggregate.mean_search_cost,
+                "mean_search_time_seconds": aggregate.mean_search_time_seconds,
+                "search_utility_status": aggregate.status,
+                "search_unresolved_fields": aggregate.unresolved_fields,
+                "guest_day_put_back_error_days": guest_errors,
+                "total_put_back_errors": put_errors,
+                "total_search_errors": search_errors,
+            }
+            for field_name, expected_value in expected_report.items():
+                if getattr(report, field_name) != expected_value:
+                    raise ValueError(
+                        f"method report {field_name} fails deterministic recomputation"
+                    )
+
+        new = reports.get(ActionBaselineMethod.PCHMP_CCRR_RGRC)
+        baselines = [
+            report
+            for method, report in reports.items()
+            if method is not ActionBaselineMethod.PCHMP_CCRR_RGRC
+        ]
+        if new is None:
+            expected_comparison = "new method not run"
+        elif not baselines:
+            expected_comparison = "no baselines run"
+        else:
+            best = min(report.put_back_error_rate for report in baselines)
+            if new.put_back_error_rate < best - 1e-9:
+                expected_comparison = "new method lower put-back error than every baseline"
+            elif isclose(new.put_back_error_rate, best, rel_tol=0.0, abs_tol=1e-9):
+                expected_comparison = "new method ties the best baseline on put-back error"
+            else:
+                expected_comparison = "new method higher put-back error than the best baseline"
+        if self.legacy_diagnostic.put_back_comparison != expected_comparison:
+            raise ValueError("legacy diagnostic fails deterministic recomputation")
+        return self
 
 
 # --- scenario generation -----------------------------------------------------
@@ -283,7 +579,7 @@ class StructureTwoActionScenarioGenerator:
     to the generating seed (see :func:`adversarial_seed_oracle`).
     """
 
-    generator_version = "structure-two-action-scenario@0.1"
+    generator_version = ACTION_SCENARIO_GENERATOR_VERSION
 
     def __init__(
         self,
@@ -640,6 +936,26 @@ def _fallback_location(locations: tuple[UUID, ...]) -> UUID:
     return min(locations, key=str)
 
 
+def _single_candidate_plan(
+    method: ActionBaselineMethod, locations: tuple[UUID, ...], candidate: UUID
+) -> SearchPlan:
+    """Register the one container a single-point search method actually opens.
+
+    Every method in this module answers the search task with one location, so
+    every plan here is a ``single_candidate`` plan.  The withdrawn v0.1 cost
+    model quietly handed O-STaR, STAR and the new method a free multi-container
+    belief ranking their action interface never emitted, and handed AMG and
+    DynaMem the raw ``locations`` tuple order.  Neither was a plan any method
+    had registered.
+    """
+
+    return SearchPlan.build(
+        method_id=method.value,
+        registered_locations=locations,
+        visit_order=(candidate,),
+    )
+
+
 @dataclass(slots=True)
 class _OwnerHabitState:
     """Per-regime owner-habit soft counts (CCRR stage memory).
@@ -741,11 +1057,13 @@ class _AMGMethod:
             except ValueError:
                 pass
 
+    def search_plan(self) -> SearchPlan:
+        candidate = self.last_location or _fallback_location(self.case.locations)
+        return _single_candidate_plan(self.name, self.case.locations, candidate)
+
     def predict(self, task: ActionTaskType) -> UUID:
         if task == ActionTaskType.SEARCH:
-            if self.last_location is not None:
-                return self.last_location
-            return _fallback_location(self.case.locations)
+            return self.search_plan().first_choice
         if self.owner_habit_location is not None:
             return self.owner_habit_location
         return _fallback_location(self.case.locations)
@@ -769,11 +1087,13 @@ class _OStarMethod:
             self.last_location = location
             self.counts[location] += 1.0
 
+    def search_plan(self) -> SearchPlan:
+        candidate = self.last_location or _fallback_location(self.case.locations)
+        return _single_candidate_plan(self.name, self.case.locations, candidate)
+
     def predict(self, task: ActionTaskType) -> UUID:
         if task == ActionTaskType.SEARCH:
-            if self.last_location is not None:
-                return self.last_location
-            return _fallback_location(self.case.locations)
+            return self.search_plan().first_choice
         return max(
             self.counts,
             key=lambda location: (self.counts[location], str(location)),
@@ -793,11 +1113,13 @@ class _DynaMemMethod:
         if obs.after is not None:
             self.last_location = obs.after.detected_location_id
 
+    def search_plan(self) -> SearchPlan:
+        candidate = self.last_location or _fallback_location(self.case.locations)
+        return _single_candidate_plan(self.name, self.case.locations, candidate)
+
     def predict(self, task: ActionTaskType) -> UUID:
         del task
-        if self.last_location is not None:
-            return self.last_location
-        return _fallback_location(self.case.locations)
+        return self.search_plan().first_choice
 
 
 class _STARMethod:
@@ -818,11 +1140,13 @@ class _STARMethod:
             self.last_location = location
             self.counts[location] += 1.0
 
+    def search_plan(self) -> SearchPlan:
+        candidate = self.last_location or _fallback_location(self.case.locations)
+        return _single_candidate_plan(self.name, self.case.locations, candidate)
+
     def predict(self, task: ActionTaskType) -> UUID:
         if task == ActionTaskType.SEARCH:
-            if self.last_location is not None:
-                return self.last_location
-            return _fallback_location(self.case.locations)
+            return self.search_plan().first_choice
         if sum(self.counts.values()) <= 0.0:
             return _fallback_location(self.case.locations)
         return max(
@@ -975,20 +1299,29 @@ class _PchmpCcrrRgrcMethod:
             self.state.guest_recent_location = location
             self.state.last_location = location
 
+    def search_plan(self) -> SearchPlan:
+        candidate = self.state.last_location or self.state.argmax_owner()
+        return _single_candidate_plan(self.name, self.case.locations, candidate)
+
     def predict(self, task: ActionTaskType) -> UUID:
         if task == ActionTaskType.SEARCH:
-            if self.state.last_location is not None:
-                return self.state.last_location
-            return self.state.argmax_owner()
+            return self.search_plan().first_choice
         return self.state.argmax_owner()
 
 
 class _ActionMethod(Protocol):
-    """Uniform observe/predict surface shared by every method implementation."""
+    """Uniform observe/predict/plan surface shared by every method implementation.
+
+    ``search_plan`` is a *required* output contract: the evaluator has no way to
+    guess a method's search strategy and is forbidden from inferring one from
+    the class or from the ``locations`` tuple.
+    """
 
     def observe(self, obs: ActionDayObservation) -> None: ...
 
     def predict(self, task: ActionTaskType) -> UUID: ...
+
+    def search_plan(self) -> SearchPlan: ...
 
 
 _METHOD_FACTORIES: dict[ActionBaselineMethod, Callable[[VisibleActionCase], _ActionMethod]] = {
@@ -1000,11 +1333,40 @@ _METHOD_FACTORIES: dict[ActionBaselineMethod, Callable[[VisibleActionCase], _Act
 }
 
 
+#: Every arm the death test runs by default.
+DEFAULT_METHODS: tuple[ActionBaselineMethod, ...] = (
+    ActionBaselineMethod.AMG_2012,
+    ActionBaselineMethod.O_STAR,
+    ActionBaselineMethod.DYNAMEM,
+    ActionBaselineMethod.STAR,
+    ActionBaselineMethod.PCHMP_CCRR_RGRC,
+)
+
+
+def _location_tuple_digest(cases: tuple[ActionGeneratedCase, ...]) -> str:
+    """Record how the input registry happened to be ordered.
+
+    This is the one report field a location permutation is allowed to move.  It
+    is registered in :data:`NON_SEMANTIC_REPORT_FIELDS` precisely so a
+    permutation test can assert that *nothing else* moved.
+    """
+
+    return content_sha256(
+        [[str(location) for location in case.visible.locations] for case in cases]
+    )
+
+
 # --- evaluation ---------------------------------------------------------------
 
 
 class StructureTwoActionDeathTest:
-    """Run the action-level matched death test over generated cases."""
+    """Run the action-level matched death test over generated cases.
+
+    Search is scored through exactly one object per method per day: the
+    :class:`SearchPlan` that method registered.  Pass ``search_utility_contract``
+    to price inspections and failed searches; without one the report stays
+    fail-closed at ``SEARCH_UTILITY_CONTRACT_UNRESOLVED`` and emits no cost.
+    """
 
     def __init__(
         self,
@@ -1016,24 +1378,35 @@ class StructureTwoActionDeathTest:
         self,
         seeds: tuple[int, ...],
         *,
-        methods: tuple[ActionBaselineMethod, ...] = (
-            ActionBaselineMethod.AMG_2012,
-            ActionBaselineMethod.O_STAR,
-            ActionBaselineMethod.DYNAMEM,
-            ActionBaselineMethod.STAR,
-            ActionBaselineMethod.PCHMP_CCRR_RGRC,
-        ),
+        methods: tuple[ActionBaselineMethod, ...] = DEFAULT_METHODS,
+        search_utility_contract: SearchUtilityContract | None = None,
     ) -> StructureTwoActionDeathTestReport:
         cases = tuple(self.generator.generate(seed) for seed in seeds)
+        return self.run_cases(
+            cases,
+            methods=methods,
+            search_utility_contract=search_utility_contract,
+        )
+
+    def run_cases(
+        self,
+        cases: tuple[ActionGeneratedCase, ...],
+        *,
+        methods: tuple[ActionBaselineMethod, ...] = DEFAULT_METHODS,
+        search_utility_contract: SearchUtilityContract | None = None,
+    ) -> StructureTwoActionDeathTestReport:
+        """Score already-generated cases, so a caller can permute or relabel them."""
+
+        if not cases:
+            raise ValueError("at least one case is required")
         day_results: list[ActionDayResult] = []
         method_reports: list[ActionMethodReport] = []
 
         for method in methods:
             case_results: list[ActionDayResult] = []
+            scores: list[SearchScore] = []
             per_case_error: Counter[UUID] = Counter()
             per_case_search_error: Counter[UUID] = Counter()
-            search_cost_total = 0.0
-            search_days = 0
             guest_day_put_back_error_days = 0
             for case in cases:
                 state = _METHOD_FACTORIES[method](case.visible)
@@ -1041,18 +1414,17 @@ class StructureTwoActionDeathTest:
                     state.observe(obs)
                     truth = case.truth_by_day[obs.day]
                     put_back = state.predict(ActionTaskType.PUT_BACK)
-                    search = state.predict(ActionTaskType.SEARCH)
-                    put_back_correct = put_back == truth.true_owner_habit_location
-                    search_correct = search == truth.true_location_after
-                    # Search cost: visit locations in belief order until found.
-                    search_cost = self._search_cost(
-                        state, truth.true_location_after, case.visible.locations
+                    # One plan, then everything about search is read off it.
+                    plan = state.search_plan()
+                    self._verify_plan(plan, method, case.visible)
+                    score = score_search_plan(
+                        plan, truth.true_location_after, search_utility_contract
                     )
-                    search_days += 1
-                    search_cost_total += search_cost
+                    scores.append(score)
+                    put_back_correct = put_back == truth.true_owner_habit_location
                     if not put_back_correct:
                         per_case_error[case.visible.case_id] += 1
-                    if not search_correct:
+                    if not score.first_choice_correct:
                         per_case_search_error[case.visible.case_id] += 1
                     # Guest-day put-back error: a day the guest actually moved
                     # the object and this method's put-back missed the owner
@@ -1063,75 +1435,170 @@ class StructureTwoActionDeathTest:
                         case_id=case.visible.case_id,
                         method=method,
                         day=obs.day,
+                        guest_move_day=(truth.true_actor == case.visible.guest_actor),
                         put_back_correct=put_back_correct,
-                        search_correct=search_correct,
-                        search_cost=search_cost,
+                        search_plan=plan,
+                        search_target=truth.true_location_after,
+                        search_correct=score.first_choice_correct,
+                        search_plan_kind=score.plan_kind,
+                        search_plan_length=score.plan_length,
+                        registered_location_count=score.registered_location_count,
+                        inspected_container_count=score.inspected_container_count,
+                        search_path_length=score.search_path_length,
+                        search_target_found=score.target_found_in_plan,
+                        search_utility_status=score.status,
+                        search_utility_contract_id=score.contract_id,
+                        search_cost=score.search_cost,
+                        search_time_seconds=score.search_time_seconds,
+                        search_unresolved_fields=score.unresolved_fields,
                     )
                     case_results.append(result)
                     day_results.append(result)
             total_days = len(case_results)
             total_put_back_errors = sum(per_case_error.values())
             total_search_errors = sum(per_case_search_error.values())
+            aggregate = aggregate_search_scores(method.value, tuple(scores))
             method_reports.append(
                 ActionMethodReport(
                     method=method,
                     case_count=len(cases),
                     put_back_error_rate=(total_put_back_errors / total_days if total_days else 0.0),
-                    search_error_rate=(total_search_errors / total_days if total_days else 0.0),
-                    mean_search_cost=search_cost_total / search_days if search_days else 0.0,
+                    search_error_rate=aggregate.first_choice_error_rate,
+                    search_target_not_found_rate=aggregate.target_not_found_rate,
+                    mean_inspected_container_count=aggregate.mean_inspected_container_count,
+                    mean_search_path_length=aggregate.mean_search_path_length,
+                    mean_search_cost=aggregate.mean_search_cost,
+                    mean_search_time_seconds=aggregate.mean_search_time_seconds,
+                    search_utility_status=aggregate.status,
+                    search_unresolved_fields=aggregate.unresolved_fields,
                     guest_day_put_back_error_days=guest_day_put_back_error_days,
                     total_put_back_errors=total_put_back_errors,
                     total_search_errors=total_search_errors,
                 )
             )
+        status = (
+            SearchUtilityStatus.RESOLVED
+            if method_reports
+            and all(
+                report.search_utility_status is SearchUtilityStatus.RESOLVED
+                for report in method_reports
+            )
+            else SearchUtilityStatus.UNRESOLVED
+        )
+        diagnostic = self._legacy_diagnostic(method_reports)
         return StructureTwoActionDeathTestReport(
+            protocol_version=PROTOCOL_VERSION,
+            superseded_protocol_version=SUPERSEDED_PROTOCOL_VERSION,
             generator_version=self.generator.generator_version,
+            location_tuple_inputs=tuple(
+                ActionLocationTupleInput(
+                    case_id=case.visible.case_id,
+                    locations=case.visible.locations,
+                )
+                for case in cases
+            ),
+            location_tuple_digest=_location_tuple_digest(cases),
+            search_utility_contract=search_utility_contract,
+            search_utility_contract_id=(
+                None if search_utility_contract is None else search_utility_contract.contract_id
+            ),
+            search_utility_status=status,
             method_reports=tuple(method_reports),
             case_results=tuple(day_results),
-            scientific_status=self._scientific_status(method_reports),
+            legacy_diagnostic=diagnostic,
+            scientific_status=diagnostic.scientific_status,
         )
 
     @staticmethod
-    def _search_cost(state: object, target: UUID, locations: tuple[UUID, ...]) -> int:
-        """Cost: number of locations visited before finding the target.
+    def _verify_plan(
+        plan: SearchPlan, method: ActionBaselineMethod, visible: VisibleActionCase
+    ) -> None:
+        """Reject a plan that does not belong to the method or the case.
 
-        Baselines that only track the last location visit exactly one location;
-        belief-based methods visit in descending belief order.
+        A method cannot rename itself into another arm's identity, and cannot
+        register containers this household never had.
         """
 
-        belief_order = list(locations)
-        if isinstance(state, _PchmpCcrrRgrcMethod):
-            posterior = state.state.owner_posterior()
-            belief_order = sorted(
-                locations,
-                key=lambda location: (-posterior.get(location, 0.0), str(location)),
+        if plan.method_id != method.value:
+            raise ValueError(
+                f"search plan claims method {plan.method_id!r} but was produced by {method.value!r}"
             )
-        elif isinstance(state, (_OStarMethod, _STARMethod)):
-            belief_order = sorted(
-                locations,
-                key=lambda location: (-state.counts.get(location, 0.0), str(location)),
-            )
-        for index, location in enumerate(belief_order, start=1):
-            if location == target:
-                return index
-        return len(locations)
+        if set(plan.registered_locations) != set(visible.locations):
+            raise ValueError("search plan registers a different location set than the case")
 
     @staticmethod
-    def _scientific_status(reports: list[ActionMethodReport]) -> str:
+    def _legacy_diagnostic(reports: list[ActionMethodReport]) -> LegacyPutBackOnlyDiagnostic:
+        """Compare put-back error only, and say so in the type.
+
+        This is deliberately *not* a scientific verdict.  The frozen route makes
+        cumulative action regret primary, and neither its component weights nor
+        the price of a search action are registered, so nothing here is allowed
+        to read as a win.
+        """
+
+        note = (
+            "put-back error is one unweighted term of the frozen route's cumulative action "
+            "regret; search cost is unpriced and search was not scored into this comparison, "
+            "so this diagnostic cannot support a scientific or paper-level claim"
+        )
         new = next(
             (report for report in reports if report.method == ActionBaselineMethod.PCHMP_CCRR_RGRC),
             None,
         )
-        if new is None:
-            return "new method not run"
         baselines = [
             report for report in reports if report.method != ActionBaselineMethod.PCHMP_CCRR_RGRC
         ]
-        if not baselines:
-            return "no baselines run"
-        best_baseline_put_back = min(report.put_back_error_rate for report in baselines)
-        if new.put_back_error_rate < best_baseline_put_back - 1e-9:
-            return "new method strictly better on put-back error"
-        if isclose(new.put_back_error_rate, best_baseline_put_back, rel_tol=0.0, abs_tol=1e-9):
-            return "new method ties the best baseline on put-back error"
-        return "new method worse than the best baseline on put-back error"
+        if new is None:
+            comparison = "new method not run"
+        elif not baselines:
+            comparison = "no baselines run"
+        else:
+            best_baseline_put_back = min(report.put_back_error_rate for report in baselines)
+            if new.put_back_error_rate < best_baseline_put_back - 1e-9:
+                comparison = "new method lower put-back error than every baseline"
+            elif isclose(
+                new.put_back_error_rate, best_baseline_put_back, rel_tol=0.0, abs_tol=1e-9
+            ):
+                comparison = "new method ties the best baseline on put-back error"
+            else:
+                comparison = "new method higher put-back error than the best baseline"
+        return LegacyPutBackOnlyDiagnostic(
+            superseded_protocol_version=SUPERSEDED_PROTOCOL_VERSION,
+            put_back_comparison=comparison,
+            primary_utility_metric=ROUTE_A_PRIMARY_UTILITY_METRIC,
+            unresolved_contract_fields=ROUTE_A_UNRESOLVED_UTILITY_FIELDS,
+            note=note,
+        )
+
+
+def withdrawn_v0_1_search_cost(state: object, target: UUID, locations: tuple[UUID, ...]) -> int:
+    """The withdrawn ``@0.1`` cost model, kept only so a test can pin the defect.
+
+    It is never called by the evaluator.  Two things are wrong with it and both
+    are load-bearing for the regression test:
+
+    #. it guesses a method's search strategy with ``isinstance`` and falls back
+       to ``list(locations)`` -- the raw tuple order -- for anything it does not
+       recognise, so AMG's and DynaMem's cost moves when the tuple is permuted
+       while their prediction does not;
+    #. the ranking it scores is not the ranking any method emitted, so a wrong
+       single-location search was charged a flat ``1`` and a failed search was
+       never charged a failure penalty at all.
+    """
+
+    belief_order = list(locations)
+    if isinstance(state, _PchmpCcrrRgrcMethod):
+        posterior = state.state.owner_posterior()
+        belief_order = sorted(
+            locations,
+            key=lambda location: (-posterior.get(location, 0.0), str(location)),
+        )
+    elif isinstance(state, (_OStarMethod, _STARMethod)):
+        belief_order = sorted(
+            locations,
+            key=lambda location: (-state.counts.get(location, 0.0), str(location)),
+        )
+    for index, location in enumerate(belief_order, start=1):
+        if location == target:
+            return index
+    return len(locations)

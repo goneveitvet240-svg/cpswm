@@ -26,13 +26,18 @@ from __future__ import annotations
 import hashlib
 import json
 from dataclasses import dataclass
+from math import isclose
 from uuid import UUID, uuid4
+
+import numpy as np
+from pydantic import Field, StrictBool, StrictFloat, StrictInt, model_validator
 
 from cpswm.contracts import (
     ActionOutcomeLikelihoodModel,
     DecisionContextBinding,
     ExecutionFeedbackRecord,
 )
+from cpswm.contracts.base import ContractModel
 from cpswm.world_model.grounded_search.concurrent_map_task import (
     BeliefSnapshot,
     ConstrainedDependencyBridge,
@@ -47,6 +52,7 @@ from .execution_feedback_projector import ExecutionFeedbackProjector, ProjectedF
 from .hybrid_statistics import (
     ConsolidationRiskCertificate,
     DirichletRLSFusion,
+    HybridProjection,
     HybridPromotion,
     HybridStatisticDelta,
     HybridStatisticLedger,
@@ -54,6 +60,74 @@ from .hybrid_statistics import (
 )
 
 _UNBOUNDED_RISK = 1.0e9
+
+
+class HybridLocationFullRerunCheck(ContractModel):
+    """One location's cached sufficient statistics versus append-log replay."""
+
+    location_id: UUID
+    cached_projection_sha256: str = Field(pattern=r"^[0-9a-f]{64}$")
+    rebuilt_projection_sha256: str = Field(pattern=r"^[0-9a-f]{64}$")
+    max_absolute_difference: StrictFloat = Field(ge=0.0, allow_inf_nan=False)
+    equivalent_within_tolerance: StrictBool
+
+
+class HybridFullRerunEquivalenceReceipt(ContractModel):
+    """Derived receipt over every registered owner-habit location block."""
+
+    absolute_tolerance: StrictFloat = Field(gt=0.0, allow_inf_nan=False)
+    ledger_version: StrictInt = Field(ge=0)
+    location_checks: tuple[HybridLocationFullRerunCheck, ...] = Field(min_length=1)
+    max_absolute_difference: StrictFloat = Field(ge=0.0, allow_inf_nan=False)
+    equivalent: StrictBool
+
+    @model_validator(mode="after")
+    def _derive_summary(self) -> HybridFullRerunEquivalenceReceipt:
+        if len({item.location_id for item in self.location_checks}) != len(self.location_checks):
+            raise ValueError("full-rerun receipt repeats a location")
+        expected_max = max(item.max_absolute_difference for item in self.location_checks)
+        if not isclose(self.max_absolute_difference, expected_max, rel_tol=0.0, abs_tol=1e-15):
+            raise ValueError("full-rerun maximum is not derived from location checks")
+        expected_equivalent = all(
+            item.max_absolute_difference <= self.absolute_tolerance
+            and item.equivalent_within_tolerance
+            for item in self.location_checks
+        )
+        if self.equivalent != expected_equivalent:
+            raise ValueError("full-rerun equivalence is not derived from location checks")
+        return self
+
+
+def _hybrid_projection_payload(projection: HybridProjection) -> dict[str, object]:
+    return {
+        "a": np.asarray(projection.a, dtype=float).tolist(),
+        "b": np.asarray(projection.b, dtype=float).tolist(),
+        "alpha": repr(float(projection.alpha)),
+        "information": np.asarray(projection.information, dtype=float).tolist(),
+        "information_vector": np.asarray(projection.information_vector, dtype=float).tolist(),
+    }
+
+
+def _hybrid_projection_sha256(projection: HybridProjection) -> str:
+    return hashlib.sha256(
+        json.dumps(
+            _hybrid_projection_payload(projection),
+            sort_keys=True,
+            separators=(",", ":"),
+        ).encode()
+    ).hexdigest()
+
+
+def _hybrid_projection_max_difference(left: HybridProjection, right: HybridProjection) -> float:
+    differences = [abs(float(left.alpha) - float(right.alpha))]
+    for name in ("a", "b", "information", "information_vector"):
+        left_array = np.asarray(getattr(left, name), dtype=float)
+        right_array = np.asarray(getattr(right, name), dtype=float)
+        if left_array.shape != right_array.shape:
+            raise ValueError(f"hybrid projection {name} shapes differ")
+        if left_array.size:
+            differences.append(float(np.max(np.abs(left_array - right_array))))
+    return max(differences)
 
 
 @dataclass(frozen=True, slots=True)
@@ -328,6 +402,49 @@ class HybridEventToTaskCoordinatorLoop:
 
     def current_snapshot(self) -> BeliefSnapshot:
         return self._map.snapshot()
+
+    def verify_full_rerun_equivalence(
+        self,
+        *,
+        location_ids: tuple[UUID, ...],
+        absolute_tolerance: float = 1e-10,
+    ) -> HybridFullRerunEquivalenceReceipt:
+        """Compare every cached hybrid statistic with append-log replay.
+
+        This is an internal-consistency receipt, not independent custody.  The
+        receipt deliberately includes per-location hashes and numerical gaps so
+        a downstream report cannot turn a single unchecked Boolean into a hard
+        guardrail result.
+        """
+
+        if absolute_tolerance <= 0.0:
+            raise ValueError("full-rerun absolute tolerance must be positive")
+        canonical_locations = tuple(sorted(location_ids, key=str))
+        if not canonical_locations or len(set(canonical_locations)) != len(canonical_locations):
+            raise ValueError("full-rerun check requires unique registered locations")
+        checks = []
+        for location_id in canonical_locations:
+            key = self._key(location_id)
+            cached = self._ledger.projection(key)
+            rebuilt = self._ledger.rebuild_projection(key)
+            difference = _hybrid_projection_max_difference(cached, rebuilt)
+            checks.append(
+                HybridLocationFullRerunCheck(
+                    location_id=location_id,
+                    cached_projection_sha256=_hybrid_projection_sha256(cached),
+                    rebuilt_projection_sha256=_hybrid_projection_sha256(rebuilt),
+                    max_absolute_difference=difference,
+                    equivalent_within_tolerance=difference <= absolute_tolerance,
+                )
+            )
+        maximum = max(item.max_absolute_difference for item in checks)
+        return HybridFullRerunEquivalenceReceipt(
+            absolute_tolerance=absolute_tolerance,
+            ledger_version=self._ledger.version,
+            location_checks=tuple(checks),
+            max_absolute_difference=maximum,
+            equivalent=all(item.equivalent_within_tolerance for item in checks),
+        )
 
     def evaluate_task(
         self,

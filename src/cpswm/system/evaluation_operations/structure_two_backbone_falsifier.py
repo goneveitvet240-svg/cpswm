@@ -3744,6 +3744,7 @@ def run_late_correction(
     seed: int,
     rejuvenation_window_length: int = 1,
     rejuvenation_sweeps: int = 1,
+    guarded_reweight_ess_ratio: float | None = None,
 ) -> ArmResult:
     """Protocol task 7.
 
@@ -3763,6 +3764,8 @@ def run_late_correction(
         raise ValueError("rejuvenation window length must be positive")
     if rejuvenation_sweeps <= 0:
         raise ValueError("rejuvenation sweeps must be positive")
+    if guarded_reweight_ess_ratio is not None and not (0.0 < guarded_reweight_ess_ratio <= 1.0):
+        raise ValueError("guarded reweight ESS ratio must lie in (0, 1]")
     corrected = repair_observation(scenario, correction_index)
     original_stream = scenario.observations
     corrected_stream = corrected.observations
@@ -3818,6 +3821,74 @@ def run_late_correction(
         repair_meter.fixed_gap_reweight_evaluations += budget
         corrected_evidence = evidence + _logsumexp(corrected_log_weights) - math.log(len(particles))
         masses = _normalized_masses(corrected_log_weights)
+        pre_rejuvenation_ess = _effective_sample_size(masses)
+        pre_rejuvenation_ess_ratio = pre_rejuvenation_ess / budget
+        if guarded_reweight_ess_ratio is not None:
+            if pre_rejuvenation_ess_ratio < guarded_reweight_ess_ratio:
+                # A local Markov kernel cannot recreate prefix/suffix support
+                # that earlier resampling has already deleted.  Fail over
+                # before the window kernel is run instead of reporting a
+                # well-mixed conditional window as a repaired global posterior.
+                repair_meter.replay_fallbacks += 1
+                repair_meter.stop()
+                fallback_particles, fallback_evidence, _rng, fallback_meter = _run_stream(
+                    scenario, corrected_stream, arm=arm, budget=budget, seed=seed
+                )
+                fallback = _finalize(
+                    fallback_particles, fallback_evidence, corrected_stream, fallback_meter
+                )
+                combined_meter = _combine_cost_meters(repair_meter, fallback_meter)
+                guarded_fallback = _with_lifecycle_cost(
+                    fallback,
+                    initial_meter=initial_meter,
+                    repair_meter=combined_meter,
+                    ancestry_window_length=len(corrected_stream),
+                )
+                guarded_fallback.cost.update(
+                    {
+                        "repair_mode": "guarded_full_replay",
+                        "fallback_required": True,
+                        "fallback_reasons": "reweight_support_collapse",
+                        "pre_rejuvenation_effective_sample_size": pre_rejuvenation_ess,
+                        "pre_rejuvenation_ess_ratio": pre_rejuvenation_ess_ratio,
+                        "guarded_reweight_ess_ratio": guarded_reweight_ess_ratio,
+                        "proposal_window_length": 0,
+                        "full_suffix_replayed_by_local_kernel": False,
+                    }
+                )
+                return guarded_fallback
+
+            # When importance support remains adequate, the exact observation
+            # likelihood-ratio update is the least invasive reversible repair.
+            # Skipping MH also avoids injecting Monte-Carlo actor contamination
+            # merely to prove that a window proposal ran.
+            repair_meter.track_live(len(particles))
+            guarded = _finalize(
+                particles,
+                corrected_evidence,
+                corrected_stream,
+                repair_meter,
+                unresolved_log_weight=corrected_unresolved_log_weight,
+            )
+            guarded_repair = _with_lifecycle_cost(
+                guarded,
+                initial_meter=initial_meter,
+                repair_meter=repair_meter,
+                ancestry_window_length=0,
+            )
+            guarded_repair.cost.update(
+                {
+                    "repair_mode": "guarded_reweight",
+                    "fallback_required": False,
+                    "fallback_reasons": "",
+                    "pre_rejuvenation_effective_sample_size": pre_rejuvenation_ess,
+                    "pre_rejuvenation_ess_ratio": pre_rejuvenation_ess_ratio,
+                    "guarded_reweight_ess_ratio": guarded_reweight_ess_ratio,
+                    "proposal_window_length": 0,
+                    "full_suffix_replayed_by_local_kernel": False,
+                }
+            )
+            return guarded_repair
         particles = _systematic_resample(particles, masses, rng, share_history=True)
         repair_meter.resample()
         config = ArmConfiguration.of(arm)
@@ -3857,6 +3928,8 @@ def run_late_correction(
                     "fallback_reasons": ",".join(receipt.fallback_reasons),
                     "proposal_window_length": window_stop - window_start,
                     "full_suffix_replayed_by_local_kernel": False,
+                    "pre_rejuvenation_effective_sample_size": pre_rejuvenation_ess,
+                    "pre_rejuvenation_ess_ratio": pre_rejuvenation_ess_ratio,
                 }
             )
             return repaired
@@ -3880,6 +3953,8 @@ def run_late_correction(
                 "fallback_required": False,
                 "fallback_reasons": "",
                 "proposal_window_length": window_stop - window_start,
+                "pre_rejuvenation_effective_sample_size": pre_rejuvenation_ess,
+                "pre_rejuvenation_ess_ratio": pre_rejuvenation_ess_ratio,
                 "max_history_transitions_read_per_local_proposal": (window_stop - window_start),
                 "full_suffix_replayed_by_local_kernel": False,
                 "checkpoint_format_id": TASK7_CHECKPOINT_FORMAT_ID,

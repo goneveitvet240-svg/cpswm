@@ -1,4 +1,4 @@
-"""Project-two corrected-interface action benchmark v0.4 over replay episodes.
+"""Project-two action benchmark v0.6 over replay episodes.
 
 The full arm composes the existing prototype spine and feedback revision loop;
 it does not reimplement CHEH, ORRER, PCHMP, feedback projection, or project-one
@@ -6,7 +6,7 @@ statistics.  Reference adapters are labelled by fidelity so reduced-skill
 proxies can never be reported as faithful baselines.
 
 The historical ``ProjectTwoActionBenchmarkV02`` class name remains as an API
-compatibility alias; emitted reports carry the v0.4 protocol version.
+compatibility alias; emitted reports carry the v0.6 protocol version.
 """
 
 from __future__ import annotations
@@ -20,8 +20,9 @@ from dataclasses import dataclass
 from datetime import timedelta
 from enum import StrEnum
 from itertools import permutations
+from math import isclose
 from statistics import mean
-from typing import Any, Protocol
+from typing import Any, Literal, Protocol
 from uuid import UUID, uuid4
 
 from pydantic import Field, model_validator
@@ -69,6 +70,24 @@ from cpswm.system.evaluation_operations.project_two_dataset import (
     ProjectTwoReplayDataset,
     enforce_project_two_replay_gate,
 )
+from cpswm.system.evaluation_operations.structure_two_search_utility import (
+    ROUTE_A_DEVELOPMENT_UTILITY_CONTRACT_REFERENCE,
+    ROUTE_A_FROZEN_ROUTE_REFERENCE,
+    ROUTE_A_HARD_GUARDRAILS,
+    ROUTE_A_OPTIMIZATION_DIRECTION,
+    ROUTE_A_PRIMARY_UTILITY_CONTRACT_UNRESOLVED,
+    ROUTE_A_PRIMARY_UTILITY_METRIC,
+    ROUTE_A_UNRESOLVED_UTILITY_FIELDS,
+    GuardrailObservation,
+    MethodUtilityObservation,
+    RouteADevelopmentUtilityContract,
+    RouteAPrimaryUtilityDefinition,
+    ScientificVerdict,
+    SecondaryMetricObservation,
+    current_route_a_development_utility_contract,
+    evaluate_route_a_superiority,
+    normalized_extra_inspection_regret,
+)
 from cpswm.system.prototype_spine import (
     ActionReadout,
     ActionReadoutConfig,
@@ -79,7 +98,39 @@ from cpswm.system.prototype_spine import (
 from cpswm.system.reproducibility import content_uuid
 from cpswm.world_model.habits_transitions import PropensityCorrectionMode
 
-BENCHMARK_VERSION = "project-two-action-benchmark@0.4-corrected-interface"
+BENCHMARK_VERSION = "project-two-action-benchmark@0.6-dual-timescale-readout"
+
+#: What ``cumulative_action_regret`` is *actually* computed from today, stated
+#: term by term so no reader has to infer it from the code.  Both terms are
+#: dimensionless task regret in [0, 1] per step.  This development formula is
+#: not a substitute for measured robot time, energy or monetary cost.
+IMPLEMENTED_REGRET_COMPONENT_TERMS: tuple[str, ...] = (
+    "put_back_error_count (0/1 per step, weight 1)",
+    "normalized_extra_inspection_regret (0..1 per step, weight 1)",
+)
+IMPLEMENTED_REGRET_UNIT = "dimensionless task-regret units per episode (D0 development only)"
+
+#: Search metrics this report emits that rest on constants no frozen protocol
+#: registers.  Their numbers are preserved for historical reproducibility and
+#: reported as unresolved rather than silently repriced.
+UNREGISTERED_SEARCH_METRIC_ASSUMPTIONS: tuple[str, ...] = (
+    "mean_search_time_seconds assumes 5.0 s per inspected container "
+    "(constant not registered by any frozen protocol)",
+    "mean search path records emitted-plan inspections only; it is a count, not a registered "
+    "real-world cost",
+    "mean_search_path_cost, mean_search_path_length and mean_search_cost are three names for "
+    "one quantity: mean inspected containers per step",
+)
+
+PAPER_LEVEL_GATE_FAILURES: tuple[str, ...] = (
+    f"{ROUTE_A_PRIMARY_UTILITY_CONTRACT_UNRESOLVED}: the D0 development formula is "
+    "registered, but real task-cost calibration, the superiority margin and hard-guardrail "
+    "thresholds remain unregistered for paper-level use",
+    "D0 synthetic replay cannot establish real-world external validity",
+    "AMG lacks source video likelihoods and source inference machinery for faithful reproduction",
+    "O-STaR/DynaMem/STAR lack RGB-D, pose, voxel, caption, and embodied-skill inputs required "
+    "for faithful reproduction",
+)
 
 
 class BenchmarkFidelity(StrEnum):
@@ -122,11 +173,30 @@ FIDELITY: dict[ProjectTwoActionMethod, BenchmarkFidelity] = {
 }
 
 
+class ValidationTuningTrial(ContractModel):
+    parameters: dict[str, float | str]
+    primary_utility_by_validation_episode: tuple[float, ...] = Field(min_length=1)
+    mean_primary_utility: float = Field(ge=0.0)
+
+    @model_validator(mode="after")
+    def _mean_is_derived(self) -> ValidationTuningTrial:
+        if not isclose(
+            self.mean_primary_utility,
+            mean(self.primary_utility_by_validation_episode),
+            rel_tol=0.0,
+            abs_tol=1e-9,
+        ):
+            raise ValueError("validation tuning mean is not derived from its episode values")
+        return self
+
+
 class MethodTuningSelection(ContractModel):
     method: ProjectTwoActionMethod
+    selection_metric: Literal["cumulative_action_regret"] = ROUTE_A_PRIMARY_UTILITY_METRIC
     parameter_space: tuple[dict[str, float | str], ...]
     selected_parameters: dict[str, float | str]
     validation_episode_ids: tuple[UUID, ...]
+    validation_trials: tuple[ValidationTuningTrial, ...] = Field(min_length=1)
     test_episode_ids_seen: tuple[UUID, ...] = ()
     search_budget: int = Field(gt=0)
 
@@ -136,6 +206,22 @@ class MethodTuningSelection(ContractModel):
             raise ValueError("test episodes cannot participate in tuning")
         if len(self.parameter_space) != self.search_budget:
             raise ValueError("tuning search budget must equal parameter-space size")
+        if tuple(item.parameters for item in self.validation_trials) != self.parameter_space:
+            raise ValueError("validation trials must cover the exact ordered parameter space")
+        if any(
+            len(item.primary_utility_by_validation_episode) != len(self.validation_episode_ids)
+            for item in self.validation_trials
+        ):
+            raise ValueError("every tuning trial must cover every validation episode exactly once")
+        selected = min(
+            self.validation_trials,
+            key=lambda item: (
+                item.mean_primary_utility,
+                json.dumps(item.parameters, sort_keys=True),
+            ),
+        ).parameters
+        if self.selected_parameters != selected:
+            raise ValueError("selected parameters are not the validation primary-utility optimum")
         return self
 
 
@@ -145,6 +231,8 @@ class ActionCaseMetric(ContractModel):
     step_count: int = Field(ge=0)
     put_back_error_rate: float = Field(ge=0.0, le=1.0)
     persistent_owner_mode_error_rate: float = Field(ge=0.0, le=1.0)
+    cumulative_put_back_regret: float = Field(ge=0.0)
+    cumulative_search_regret: float = Field(ge=0.0)
     cumulative_action_regret: float = Field(ge=0.0)
     owner_habit_contamination: float = Field(ge=0.0)
     incorrect_statistic_recovery_cost: float = Field(ge=0.0)
@@ -182,8 +270,11 @@ class AggregateMetric(ContractModel):
 
 
 class ProjectTwoActionBenchmarkReport(ContractModel):
-    benchmark_version: str = BENCHMARK_VERSION
+    benchmark_version: Literal["project-two-action-benchmark@0.6-dual-timescale-readout"] = (
+        "project-two-action-benchmark@0.6-dual-timescale-readout"
+    )
     dataset_version: str
+    train_episode_ids: tuple[UUID, ...]
     validation_episode_ids: tuple[UUID, ...]
     sealed_test_episode_ids: tuple[UUID, ...]
     action_budget_per_episode: int
@@ -198,6 +289,198 @@ class ProjectTwoActionBenchmarkReport(ContractModel):
     limitations: tuple[str, ...]
     baseline_fairness: tuple[BaselineFairnessRecord, ...]
     paper_level_gate_failures: tuple[str, ...]
+    development_utility_contract: RouteADevelopmentUtilityContract
+    primary_utility_definition: RouteAPrimaryUtilityDefinition
+    scientific_verdict: ScientificVerdict
+    development_primary_utility_evaluated: Literal[True] = True
+    route_a_primary_utility_evaluated: bool
+    unresolved_utility_contract_fields: tuple[str, ...]
+    unregistered_search_metric_assumptions: tuple[str, ...]
+
+    @model_validator(mode="after")
+    def _verdict_is_the_only_authority(self) -> ProjectTwoActionBenchmarkReport:
+        split_sets = tuple(
+            set(items)
+            for items in (
+                self.train_episode_ids,
+                self.validation_episode_ids,
+                self.sealed_test_episode_ids,
+            )
+        )
+        if any(
+            split_sets[left] & split_sets[right]
+            for left in range(len(split_sets))
+            for right in range(left + 1, len(split_sets))
+        ):
+            raise ValueError("train, validation and sealed-test episodes must be disjoint")
+        evaluated_episode_ids = (*self.validation_episode_ids, *self.sealed_test_episode_ids)
+        expected_hash_keys = set(evaluated_episode_ids)
+        if set(self.fairness_visible_hashes) != expected_hash_keys:
+            raise ValueError("fairness visible hashes must cover validation and test exactly")
+        if set(self.observation_coverage_by_episode) != expected_hash_keys:
+            raise ValueError("observation coverage must cover validation and test exactly")
+        if any(
+            len(value) != 64 or any(character not in "0123456789abcdef" for character in value)
+            for value in self.fairness_visible_hashes.values()
+        ):
+            raise ValueError("fairness visible hash is not a lowercase SHA-256 digest")
+        if any(
+            isinstance(value, bool) or not 0.0 <= value <= 1.0
+            for value in self.observation_coverage_by_episode.values()
+        ):
+            raise ValueError("observation coverage must be numeric and lie in [0, 1]")
+        expected_tuning_methods = tuple(
+            method
+            for method in ProjectTwoActionMethod
+            if method is not ProjectTwoActionMethod.ORACLE
+        )
+        if tuple(tuning_item.method for tuning_item in self.tuning) != expected_tuning_methods:
+            raise ValueError("tuning records must cover every non-oracle method exactly once")
+        for tuning_item in self.tuning:
+            if tuning_item.validation_episode_ids != self.validation_episode_ids:
+                raise ValueError("tuning record substituted the registered validation episodes")
+            if tuning_item.parameter_space != PARAMETER_SPACE[tuning_item.method]:
+                raise ValueError("tuning record substituted the registered parameter space")
+        expected_case_keys = tuple(
+            (episode_id, method)
+            for episode_id in self.sealed_test_episode_ids
+            for method in ProjectTwoActionMethod
+        )
+        case_keys = tuple(
+            (case_item.episode_id, case_item.method) for case_item in self.case_metrics
+        )
+        if case_keys != expected_case_keys:
+            raise ValueError("case rows must cover sealed episode x method exactly once in order")
+        if any(
+            case_item.visible_input_hash != self.fairness_visible_hashes[case_item.episode_id]
+            for case_item in self.case_metrics
+        ):
+            raise ValueError("case row visible hash disagrees with the fairness registry")
+        if self.development_utility_contract.paper_claim_allowed:
+            raise ValueError("the D0 development utility contract cannot authorize a paper claim")
+        if self.development_utility_contract != current_route_a_development_utility_contract():
+            raise ValueError("the report's development utility contract is not the registered one")
+        if (
+            self.primary_utility_definition.development_contract_id
+            != self.development_utility_contract.contract_id
+        ):
+            raise ValueError("primary utility definition is not bound to its development contract")
+        if self.development_primary_utility_evaluated is not True:
+            raise ValueError("the v0.6 benchmark must evaluate its registered development utility")
+        for case_item in self.case_metrics:
+            if not isclose(
+                case_item.cumulative_action_regret,
+                case_item.cumulative_put_back_regret + case_item.cumulative_search_regret,
+                rel_tol=0.0,
+                abs_tol=1e-9,
+            ):
+                raise ValueError("case action regret does not equal its registered components")
+        aggregate_keys = [(item.method, item.metric) for item in self.aggregate_metrics]
+        if len(aggregate_keys) != len(set(aggregate_keys)):
+            raise ValueError("aggregate metric identities must be unique")
+        expected_aggregates = tuple(
+            ProjectTwoActionBenchmarkV02()._aggregate(list(self.case_metrics))
+        )
+        if self.aggregate_metrics != expected_aggregates:
+            raise ValueError("aggregate metrics are not fully derived from the sealed case rows")
+        expected_references = tuple(
+            method.value
+            for method in ProjectTwoActionMethod
+            if method not in {ProjectTwoActionMethod.PROJECT_TWO, ProjectTwoActionMethod.ORACLE}
+        )
+        if self.scientific_verdict.reference_methods != expected_references:
+            raise ValueError("scientific verdict omits or substitutes a registered reference arm")
+        aggregate_primary = {
+            item.method: item.value
+            for item in self.aggregate_metrics
+            if item.metric == ROUTE_A_PRIMARY_UTILITY_METRIC
+        }
+        if set(aggregate_primary) != set(ProjectTwoActionMethod):
+            raise ValueError("aggregate primary utility does not cover every registered method")
+        for method in ProjectTwoActionMethod:
+            case_values = [
+                item.cumulative_action_regret for item in self.case_metrics if item.method is method
+            ]
+            if not case_values or not isclose(
+                aggregate_primary[method], mean(case_values), rel_tol=0.0, abs_tol=1e-9
+            ):
+                raise ValueError("aggregate primary utility is not derived from case metrics")
+        best_method = min(
+            (
+                method
+                for method in ProjectTwoActionMethod
+                if method not in {ProjectTwoActionMethod.PROJECT_TWO, ProjectTwoActionMethod.ORACLE}
+            ),
+            key=lambda method: (aggregate_primary[method], method.value),
+        )
+        if best_method.value not in self.scientific_verdict.primary_utility_comparison:
+            raise ValueError("scientific verdict does not name the actual best reference arm")
+        if self.superiority_supported and not self.scientific_verdict.superiority_authorized:
+            raise ValueError(
+                "superiority cannot be reported while the route-A verdict withholds it"
+            )
+        if self.route_a_primary_utility_evaluated != (not self.unresolved_utility_contract_fields):
+            raise ValueError("route-A evaluation status must match the unresolved contract fields")
+        if (
+            self.unresolved_utility_contract_fields
+            != self.primary_utility_definition.unresolved_contract_fields
+        ):
+            raise ValueError("report and primary definition disagree on unresolved utility fields")
+        if self.superiority_supported and self.unresolved_utility_contract_fields:
+            raise ValueError("superiority cannot be reported while the utility contract is open")
+        if self.primary_utility_definition.primary_utility_metric != ROUTE_A_PRIMARY_UTILITY_METRIC:
+            raise ValueError(
+                "the frozen route's primary utility is "
+                f"{ROUTE_A_PRIMARY_UTILITY_METRIC!r}; a secondary metric cannot be promoted "
+                "into its place"
+            )
+        if (
+            self.scientific_verdict.primary_utility_metric
+            != self.primary_utility_definition.primary_utility_metric
+        ):
+            raise ValueError("the verdict must be decided on the declared primary utility")
+        if self.primary_utility_definition.optimization_direction != (
+            ROUTE_A_OPTIMIZATION_DIRECTION
+        ):
+            raise ValueError("the frozen route minimizes its primary utility")
+        expected_definition = ProjectTwoActionBenchmarkV02._primary_utility_definition(
+            list(self.aggregate_metrics), self.development_utility_contract
+        )
+        if self.primary_utility_definition != expected_definition:
+            raise ValueError(
+                "primary utility definition is not derived from the registered contract"
+            )
+        if self.paper_level_gate_failures != PAPER_LEVEL_GATE_FAILURES:
+            raise ValueError("paper-level gates were erased, substituted or reordered")
+        if self.unregistered_search_metric_assumptions != UNREGISTERED_SEARCH_METRIC_ASSUMPTIONS:
+            raise ValueError("unregistered search assumptions were erased or substituted")
+        if self.baseline_fairness != _expected_baseline_fairness():
+            raise ValueError("baseline fairness identities or fidelity declarations were altered")
+        engineering_superiority = _development_engineering_superiority(self.aggregate_metrics)
+        expected_verdict = ProjectTwoActionBenchmarkV02._route_a_verdict(
+            list(self.aggregate_metrics),
+            definition=expected_definition,
+            paper_gate_failures=PAPER_LEVEL_GATE_FAILURES,
+            engineering_superiority=engineering_superiority,
+        )
+        if self.scientific_verdict != expected_verdict:
+            raise ValueError("scientific verdict is not derived from report metrics and gates")
+        expected_superiority = (
+            engineering_superiority
+            and not PAPER_LEVEL_GATE_FAILURES
+            and expected_verdict.superiority_authorized
+            and expected_definition.route_a_primary_utility_evaluated
+        )
+        if self.superiority_supported != expected_superiority:
+            raise ValueError("superiority output is not derived from the registered verdict")
+        expected_status = (
+            "paper-level superiority supported"
+            if expected_superiority
+            else "paper-level superiority NOT supported; " + expected_verdict.summary
+        )
+        if self.scientific_status != expected_status:
+            raise ValueError("scientific status is not derived from the registered verdict")
+        return self
 
 
 class BaselineFairnessRecord(ContractModel):
@@ -210,6 +493,82 @@ class BaselineFairnessRecord(ContractModel):
     same_action_budget: bool
     missing_faithful_inputs: tuple[str, ...] = ()
     qualifies_for_paper_superiority: bool
+
+
+def _development_engineering_superiority(
+    aggregates: tuple[AggregateMetric, ...] | list[AggregateMetric],
+) -> bool:
+    """Check the D0 primary metric against every registered non-oracle arm."""
+
+    candidate = next(
+        item
+        for item in aggregates
+        if item.method is ProjectTwoActionMethod.PROJECT_TWO
+        and item.metric == ROUTE_A_PRIMARY_UTILITY_METRIC
+    )
+    references = [
+        item
+        for item in aggregates
+        if item.method not in {ProjectTwoActionMethod.PROJECT_TWO, ProjectTwoActionMethod.ORACLE}
+        and item.metric == ROUTE_A_PRIMARY_UTILITY_METRIC
+    ]
+    if not references:
+        return False
+    best = min(references, key=lambda item: (item.value, item.method.value))
+    return bool(
+        candidate.value < best.value
+        and best.paired_difference_vs_project_two is not None
+        and best.paired_difference_vs_project_two > 0
+        and best.confidence_interval_95 is not None
+        and best.confidence_interval_95[0] > 0
+    )
+
+
+def _missing_faithful_inputs(method: ProjectTwoActionMethod) -> tuple[str, ...]:
+    if method in {
+        ProjectTwoActionMethod.O_STAR,
+        ProjectTwoActionMethod.DYNAMEM,
+        ProjectTwoActionMethod.STAR,
+    }:
+        return (
+            "RGB-D frames",
+            "camera/robot poses",
+            "3D voxel memory",
+            "language captions/queries",
+            "navigation/manipulation skill observations",
+        )
+    if method is ProjectTwoActionMethod.AMG_MATCHED:
+        return (
+            "learned Damen-Hogg source likelihoods",
+            "source RJMCMC-SA or integer-programming inference",
+        )
+    return ()
+
+
+def _expected_baseline_fairness() -> tuple[BaselineFairnessRecord, ...]:
+    common_budget = len(next(iter(PARAMETER_SPACE.values())))
+    paper_fidelities = {
+        BenchmarkFidelity.FAITHFUL_MATCHED,
+        BenchmarkFidelity.FULL_RERUN_CONTROL,
+    }
+    return tuple(
+        BaselineFairnessRecord(
+            method=method,
+            fidelity=FIDELITY[method],
+            independently_tuned=(method is not ProjectTwoActionMethod.ORACLE),
+            tuning_budget=(
+                common_budget
+                if method is ProjectTwoActionMethod.ORACLE
+                else len(PARAMETER_SPACE[method])
+            ),
+            same_visible_stream=True,
+            same_feedback_stream=True,
+            same_action_budget=True,
+            missing_faithful_inputs=_missing_faithful_inputs(method),
+            qualifies_for_paper_superiority=FIDELITY[method] in paper_fidelities,
+        )
+        for method in ProjectTwoActionMethod
+    )
 
 
 @dataclass(slots=True)
@@ -1214,40 +1573,41 @@ PARAMETER_SPACE: dict[ProjectTwoActionMethod, tuple[dict[str, float | str], ...]
     ProjectTwoActionMethod.DYNAMEM: ({"parameter": 0.5}, {"parameter": 0.8}, {"parameter": 0.95}),
     ProjectTwoActionMethod.STAR: ({"parameter": 0.8}, {"parameter": 0.9}, {"parameter": 1.0}),
     ProjectTwoActionMethod.FULL_RERUN: ({"parameter": 0.0}, {"parameter": 0.5}, {"parameter": 1.0}),
-    # v0.3 search space.  Budget is unchanged at three points, so tuning parity
-    # with every baseline holds.  What changed is *where* the three points sit:
-    # v0.2 searched three owner thresholds that all produced the identical
-    # validation reading (0.3281), i.e. it searched a dimension with no variance
-    # while the planner read boundary -- the thing the reversible machinery
-    # actually moves -- was frozen at the pooled hybrid alpha.  The frozen
-    # pooled-alpha point is retained as the third candidate so the selector must
-    # *win* the new readout on validation rather than have it imposed.
-    #
-    # ``pending_correction_discount`` stays inert (1.0) on purpose: the frozen
-    # validation split produces zero deferred requests, so it cannot be tuned
-    # there, and an untunable knob must not silently influence a sealed reading.
-    # Its semantics are unit-tested and measured in a separate diagnostic arm.
+    # v0.6 readout search space.  The three mechanism-level candidates were
+    # frozen after inspecting TRAIN seeds 1--20 only.  The superseded v0.5
+    # slow/revision-aware/pooled points remain in its immutable report; they are
+    # not silently relabelled.  Budget stays at three points, matching every
+    # reference arm.  All three candidates retain the complete seven-operator
+    # system and differ only in the planner read boundary: pure reversible fast
+    # evidence, fast+surviving evidence, or fast+surviving+regime-local evidence.
+    # No evaluator truth enters any readout.
     ProjectTwoActionMethod.PROJECT_TWO: (
         {
             "owner_threshold": 0.4,
-            "readout": ActionReadout.SURVIVING_OWNER_REVISIONS.value,
-            "owner_mass_floor": 0.5,
-            "recency_half_life": 1.0,
-            "pending_correction_discount": 1.0,
+            "readout": ActionReadout.LATEST_OWNER_EVENT.value,
+            "fast_owner_mass_floor": 0.5,
         },
         {
-            "owner_threshold": 0.5,
-            "readout": ActionReadout.REVISION_AWARE.value,
-            "hybrid_alpha_weight": 0.2,
-            "regime_local_weight": 0.3,
-            "surviving_revision_weight": 0.5,
+            "owner_threshold": 0.4,
+            "readout": ActionReadout.DUAL_TIMESCALE_REVERSIBLE.value,
+            "hybrid_alpha_weight": 0.0,
+            "fast_action_weight": 0.8,
+            "surviving_revision_weight": 0.2,
+            "regime_local_weight": 0.0,
+            "fast_owner_mass_floor": 0.5,
             "owner_mass_floor": 0.5,
             "recency_half_life": 1.0,
-            "pending_correction_discount": 1.0,
         },
         {
-            "owner_threshold": 0.6,
-            "readout": ActionReadout.HYBRID_ALPHA.value,
+            "owner_threshold": 0.4,
+            "readout": ActionReadout.DUAL_TIMESCALE_REVERSIBLE.value,
+            "hybrid_alpha_weight": 0.0,
+            "fast_action_weight": 0.7,
+            "surviving_revision_weight": 0.2,
+            "regime_local_weight": 0.1,
+            "fast_owner_mass_floor": 0.5,
+            "owner_mass_floor": 0.5,
+            "recency_half_life": 1.0,
         },
     ),
 }
@@ -1263,6 +1623,7 @@ class ProjectTwoActionBenchmarkV02:
 
     def run(self, dataset: ProjectTwoReplayDataset) -> ProjectTwoActionBenchmarkReport:
         enforce_project_two_replay_gate(dataset)
+        train = dataset.visible_episodes(ProjectTwoDatasetSplit.TRAIN)
         validation = dataset.visible_episodes(ProjectTwoDatasetSplit.VALIDATION)
         test = dataset.visible_episodes(ProjectTwoDatasetSplit.TEST)
         if not validation or not test:
@@ -1274,17 +1635,26 @@ class ProjectTwoActionBenchmarkV02:
         )
         selections: list[MethodTuningSelection] = []
         chosen: dict[ProjectTwoActionMethod, dict[str, float | str]] = {}
+        development_contract = current_route_a_development_utility_contract()
         for method in methods:
             space = PARAMETER_SPACE[method]
             scores = []
+            trials: list[ValidationTuningTrial] = []
             for params in space:
                 cases = [
                     self._evaluate_episode(dataset, episode, method, params)
                     for episode in validation
                 ]
+                case_values = tuple(item.cumulative_action_regret for item in cases)
+                trial = ValidationTuningTrial(
+                    parameters=params,
+                    primary_utility_by_validation_episode=case_values,
+                    mean_primary_utility=mean(case_values),
+                )
+                trials.append(trial)
                 scores.append(
                     (
-                        mean(item.put_back_error_rate for item in cases),
+                        trial.mean_primary_utility,
                         json.dumps(params, sort_keys=True),
                         params,
                     )
@@ -1294,9 +1664,11 @@ class ProjectTwoActionBenchmarkV02:
             selections.append(
                 MethodTuningSelection(
                     method=method,
+                    selection_metric=development_contract.selection_metric,
                     parameter_space=space,
                     selected_parameters=selected,
                     validation_episode_ids=tuple(item.episode_id for item in validation),
+                    validation_trials=tuple(trials),
                     search_budget=len(space),
                 )
             )
@@ -1310,84 +1682,24 @@ class ProjectTwoActionBenchmarkV02:
                 self._evaluate_episode(dataset, episode, ProjectTwoActionMethod.ORACLE, {})
             )
         aggregates = self._aggregate(case_metrics)
-        full = [item for item in aggregates if item.method is ProjectTwoActionMethod.PROJECT_TWO]
-        primary_full = [item for item in full if item.metric in self.primary_metrics]
-        faithful = [
-            item
-            for item in aggregates
-            if item.fidelity
-            in {BenchmarkFidelity.FAITHFUL_MATCHED, BenchmarkFidelity.FULL_RERUN_CONTROL}
-            and item.metric in self.primary_metrics
-        ]
-        engineering_superiority = bool(primary_full) and all(
-            full_metric.value
-            < min(item.value for item in faithful if item.metric == full_metric.metric)
-            and any(
-                item.method is not ProjectTwoActionMethod.PROJECT_TWO
-                and item.paired_difference_vs_project_two is not None
-                and item.paired_difference_vs_project_two > 0
-                and item.confidence_interval_95 is not None
-                and item.confidence_interval_95[0] > 0
-                for item in faithful
-                if item.metric == full_metric.metric
-            )
-            for full_metric in primary_full
+        engineering_superiority = _development_engineering_superiority(aggregates)
+        definition = self._primary_utility_definition(aggregates, development_contract)
+        verdict = self._route_a_verdict(
+            aggregates,
+            definition=definition,
+            paper_gate_failures=PAPER_LEVEL_GATE_FAILURES,
+            engineering_superiority=engineering_superiority,
         )
-        paper_gate_failures = [
-            "D0 synthetic replay cannot establish real-world external validity",
-            "AMG lacks source video likelihoods and source inference machinery "
-            "for faithful reproduction",
-            "O-STaR/DynaMem/STAR lack RGB-D, pose, voxel, caption, and embodied-skill inputs "
-            "required for faithful reproduction",
-        ]
-        superiority = engineering_superiority and not paper_gate_failures
-        common_budget = len(next(iter(PARAMETER_SPACE.values())))
-        baseline_fairness = tuple(
-            BaselineFairnessRecord(
-                method=method,
-                fidelity=FIDELITY[method],
-                independently_tuned=(method is not ProjectTwoActionMethod.ORACLE),
-                tuning_budget=(
-                    common_budget
-                    if method is ProjectTwoActionMethod.ORACLE
-                    else len(PARAMETER_SPACE[method])
-                ),
-                same_visible_stream=True,
-                same_feedback_stream=True,
-                same_action_budget=True,
-                missing_faithful_inputs=(
-                    (
-                        "RGB-D frames",
-                        "camera/robot poses",
-                        "3D voxel memory",
-                        "language captions/queries",
-                        "navigation/manipulation skill observations",
-                    )
-                    if method
-                    in {
-                        ProjectTwoActionMethod.O_STAR,
-                        ProjectTwoActionMethod.DYNAMEM,
-                        ProjectTwoActionMethod.STAR,
-                    }
-                    else (
-                        "learned Damen-Hogg source likelihoods",
-                        "source RJMCMC-SA or integer-programming inference",
-                    )
-                    if method is ProjectTwoActionMethod.AMG_MATCHED
-                    else ()
-                ),
-                qualifies_for_paper_superiority=(
-                    FIDELITY[method]
-                    in {
-                        BenchmarkFidelity.FAITHFUL_MATCHED,
-                        BenchmarkFidelity.FULL_RERUN_CONTROL,
-                    }
-                ),
-            )
-            for method in ProjectTwoActionMethod
+        superiority = (
+            engineering_superiority
+            and not PAPER_LEVEL_GATE_FAILURES
+            and verdict.superiority_authorized
+            and definition.route_a_primary_utility_evaluated
         )
+        baseline_fairness = _expected_baseline_fairness()
         return ProjectTwoActionBenchmarkReport(
             dataset_version=dataset.manifest.dataset_version,
+            train_episode_ids=tuple(item.episode_id for item in train),
             validation_episode_ids=tuple(item.episode_id for item in validation),
             sealed_test_episode_ids=tuple(item.episode_id for item in test),
             action_budget_per_episode=max(len(item.steps) for item in test),
@@ -1421,7 +1733,7 @@ class ProjectTwoActionBenchmarkV02:
             scientific_status=(
                 "paper-level superiority supported"
                 if superiority
-                else "paper-level superiority NOT supported; hard gates remain"
+                else "paper-level superiority NOT supported; " + verdict.summary
             ),
             superiority_supported=superiority,
             limitations=(
@@ -1431,11 +1743,135 @@ class ProjectTwoActionBenchmarkV02:
                 "D1-D4 real perception, household, and robot execution gates remain closed",
             ),
             baseline_fairness=baseline_fairness,
-            paper_level_gate_failures=tuple(paper_gate_failures),
+            paper_level_gate_failures=PAPER_LEVEL_GATE_FAILURES,
+            development_utility_contract=development_contract,
+            primary_utility_definition=definition,
+            scientific_verdict=verdict,
+            development_primary_utility_evaluated=(
+                definition.development_primary_utility_evaluated
+            ),
+            route_a_primary_utility_evaluated=definition.route_a_primary_utility_evaluated,
+            unresolved_utility_contract_fields=definition.unresolved_contract_fields,
+            unregistered_search_metric_assumptions=UNREGISTERED_SEARCH_METRIC_ASSUMPTIONS,
         )
 
     @staticmethod
-    def _readout_from_params(params: Mapping[str, float]) -> ActionReadoutConfig:
+    def _primary_utility_definition(
+        aggregates: list[AggregateMetric],
+        development_contract: RouteADevelopmentUtilityContract,
+    ) -> RouteAPrimaryUtilityDefinition:
+        """State what this run computes for the frozen primary utility, and what it assumes.
+
+        The frozen combination-A route pins *which* quantity is primary and
+        which guardrails sit outside any weighted score.  It does not pin how a
+        put-back error, a search path and a failed search convert into that
+        quantity, so those weights stay unresolved here rather than being
+        chosen by the evaluator.
+        """
+
+        oracle = next(
+            (
+                item.value
+                for item in aggregates
+                if item.method is ProjectTwoActionMethod.ORACLE
+                and item.metric == ROUTE_A_PRIMARY_UTILITY_METRIC
+            ),
+            None,
+        )
+        return RouteAPrimaryUtilityDefinition(
+            primary_utility_metric=ROUTE_A_PRIMARY_UTILITY_METRIC,
+            optimization_direction=ROUTE_A_OPTIMIZATION_DIRECTION,
+            frozen_route_reference=ROUTE_A_FROZEN_ROUTE_REFERENCE,
+            implemented_component_terms=IMPLEMENTED_REGRET_COMPONENT_TERMS,
+            implemented_unit=IMPLEMENTED_REGRET_UNIT,
+            oracle_reference_method=ProjectTwoActionMethod.ORACLE.value,
+            oracle_reference_value=oracle,
+            development_contract_id=development_contract.contract_id,
+            development_contract_reference=ROUTE_A_DEVELOPMENT_UTILITY_CONTRACT_REFERENCE,
+            development_primary_utility_evaluated=True,
+            unresolved_contract_fields=ROUTE_A_UNRESOLVED_UTILITY_FIELDS,
+        )
+
+    @staticmethod
+    def _route_a_verdict(
+        aggregates: list[AggregateMetric],
+        *,
+        definition: RouteAPrimaryUtilityDefinition,
+        paper_gate_failures: tuple[str, ...],
+        engineering_superiority: bool,
+    ) -> ScientificVerdict:
+        """Decide superiority from the frozen primary utility and the hard guardrails.
+
+        Secondary search metrics enter as regressions only: they can withhold a
+        verdict but can never supply one, so a run that improves only
+        ``mean_search_path_cost`` cannot promote its scientific status.
+        """
+
+        def value(method: ProjectTwoActionMethod, metric: str) -> float | None:
+            return next(
+                (
+                    item.value
+                    for item in aggregates
+                    if item.method is method and item.metric == metric
+                ),
+                None,
+            )
+
+        secondary_metrics = (
+            ("search_error_rate", True),
+            ("mean_search_path_cost", True),
+            ("mean_search_path_length", True),
+            ("mean_search_time_seconds", True),
+        )
+
+        def observation(method: ProjectTwoActionMethod) -> MethodUtilityObservation:
+            return MethodUtilityObservation(
+                method=method.value,
+                primary_utility=value(method, ROUTE_A_PRIMARY_UTILITY_METRIC),
+                secondary_metrics=tuple(
+                    SecondaryMetricObservation(
+                        metric=metric,
+                        value=observed,
+                        lower_is_better=lower_is_better,
+                    )
+                    for metric, lower_is_better in secondary_metrics
+                    if (observed := value(method, metric)) is not None
+                ),
+                guardrails=(
+                    # Guardrail thresholds are themselves unresolved, so every
+                    # hard guardrail reports "not measured" and fails closed.
+                    # They can never be averaged against the primary utility.
+                    GuardrailObservation(
+                        guardrail=guardrail,
+                        passed=None,
+                        detail="no frozen numeric threshold is registered for this guardrail",
+                    )
+                    for guardrail in ROUTE_A_HARD_GUARDRAILS
+                ),
+            )
+
+        # Development falsification is deliberately stricter than paper-level
+        # fidelity admission: every registered non-oracle arm can defeat the
+        # candidate, even when that arm is only a matched replay adapter.  Its
+        # fidelity label remains separate and can never be upgraded by winning.
+        references = tuple(
+            observation(method)
+            for method in ProjectTwoActionMethod
+            if method not in {ProjectTwoActionMethod.PROJECT_TWO, ProjectTwoActionMethod.ORACLE}
+        )
+        blocking = tuple(f"PAPER_LEVEL_GATE: {item}" for item in paper_gate_failures)
+        if not engineering_superiority:
+            blocking = (*blocking, "ENGINEERING_SUPERIORITY_NOT_ESTABLISHED")
+        return evaluate_route_a_superiority(
+            definition=definition,
+            candidate=observation(ProjectTwoActionMethod.PROJECT_TWO),
+            references=references,
+            additional_blocking_reasons=blocking,
+            verdict_id=f"{BENCHMARK_VERSION}:route-a-superiority",
+        )
+
+    @staticmethod
+    def _readout_from_params(params: Mapping[str, Any]) -> ActionReadoutConfig:
         """Build the planner read policy from one tuning point.
 
         Absent keys reproduce the frozen v0.2 pooled-alpha readout exactly, so an
@@ -1588,11 +2024,30 @@ class ProjectTwoActionBenchmarkV02:
         visible_hash = _visible_hash(episode)
         truth = dataset.truth_for(episode.episode_id)
         put_errors = persistent_errors = search_errors = search_cost = 0.0
+        cumulative_search_regret = 0.0
         contamination = unknown_brier = 0.0
         incorrect_feedback_cases = 0
         recovery_cost = 0.0
         ordered_truth = [truth.truth_by_step[step.step_id] for step in episode.steps]
         locations = _locations(episode)
+        registered_locations = set(locations)
+        for prediction in predictions:
+            if not isinstance(prediction, _Prediction):
+                raise TypeError("method prediction must use the registered _Prediction contract")
+            if prediction.put_back not in registered_locations:
+                raise ValueError("put-back action names an unregistered location")
+            if not prediction.search_order:
+                raise ValueError("search plan must contain at least one registered location")
+            if len(set(prediction.search_order)) != len(prediction.search_order):
+                raise ValueError("search plan cannot inspect the same location twice")
+            if not set(prediction.search_order) <= registered_locations:
+                raise ValueError("search plan names an unregistered location")
+            if isinstance(prediction.unknown_probability, bool) or not isinstance(
+                prediction.unknown_probability, (float, int)
+            ):
+                raise TypeError("unknown probability must be a real number, not bool")
+            if not 0.0 <= prediction.unknown_probability <= 1.0:
+                raise ValueError("unknown probability must be in [0, 1]")
         # Evaluator truth may name a location that never entered the visible
         # replay under low observation coverage.  Keep it countable for scoring
         # without adding it to the model-visible action candidates in
@@ -1613,9 +2068,17 @@ class ProjectTwoActionBenchmarkV02:
             persistent_errors += prediction.put_back != persistent_target
             search_errors += prediction.search_order[0] != target.true_location
             try:
-                search_cost += prediction.search_order.index(target.true_location) + 1
+                inspected = prediction.search_order.index(target.true_location) + 1
+                target_found = True
             except ValueError:
-                search_cost += len(_locations(episode))
+                inspected = len(prediction.search_order)
+                target_found = False
+            search_cost += inspected
+            cumulative_search_regret += normalized_extra_inspection_regret(
+                inspected_container_count=inspected,
+                registered_location_count=len(locations),
+                target_found_in_plan=target_found,
+            )
             if target.true_actor != episode.owner_actor_key:
                 contamination += prediction.put_back == target.true_location
             unknown_brier += (
@@ -1710,14 +2173,26 @@ class ProjectTwoActionBenchmarkV02:
                 if put_candidates
                 else None
             )
-            selected_search = (
-                max(search_candidates, key=lambda item: item.probability).location_id
-                if search_candidates
-                else None
+            ranked_search_locations = tuple(
+                item.location_id
+                for item in sorted(
+                    search_candidates,
+                    key=lambda item: (-item.probability, str(item.location_id)),
+                )
+                if item.location_id is not None
             )
-            regret = float(selected_put != target.true_owner_habit_location) + float(
-                selected_search != target.true_location
+            try:
+                trace_inspected = ranked_search_locations.index(target.true_location) + 1
+                trace_target_found = True
+            except ValueError:
+                trace_inspected = len(ranked_search_locations) or len(locations)
+                trace_target_found = False
+            trace_search_regret = normalized_extra_inspection_regret(
+                inspected_container_count=trace_inspected,
+                registered_location_count=len(locations),
+                target_found_in_plan=trace_target_found,
             )
+            regret = float(selected_put != target.true_owner_habit_location) + trace_search_regret
             enriched_traces.append(
                 trace.model_copy(
                     update={
@@ -1731,7 +2206,8 @@ class ProjectTwoActionBenchmarkV02:
                                 changed_state=False,
                                 detail=(
                                     f"frozen evaluator scored planner index {trace_index}: "
-                                    f"utility={2.0 - regret}, regret={regret}"
+                                    f"utility={2.0 - regret}, regret={regret}, "
+                                    f"search_regret={trace_search_regret}"
                                 ),
                             ),
                         ),
@@ -1744,7 +2220,9 @@ class ProjectTwoActionBenchmarkV02:
             step_count=n,
             put_back_error_rate=put_errors / n,
             persistent_owner_mode_error_rate=persistent_errors / n,
-            cumulative_action_regret=put_errors + search_errors,
+            cumulative_put_back_regret=put_errors,
+            cumulative_search_regret=cumulative_search_regret,
+            cumulative_action_regret=put_errors + cumulative_search_regret,
             owner_habit_contamination=contamination / n,
             incorrect_statistic_recovery_cost=(
                 recovery_cost / incorrect_feedback_cases if incorrect_feedback_cases else 0.0
@@ -1775,6 +2253,8 @@ class ProjectTwoActionBenchmarkV02:
         metrics = (
             "put_back_error_rate",
             "persistent_owner_mode_error_rate",
+            "cumulative_put_back_regret",
+            "cumulative_search_regret",
             "cumulative_action_regret",
             "owner_habit_contamination",
             "incorrect_statistic_recovery_cost",
@@ -1852,4 +2332,5 @@ __all__ = [
     "ProjectTwoActionBenchmarkReport",
     "ProjectTwoActionBenchmarkV02",
     "ProjectTwoActionMethod",
+    "ValidationTuningTrial",
 ]

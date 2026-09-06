@@ -1,0 +1,62 @@
+{
+  "schema_version": "1.0.0",
+  "decision_id": "structure-two-task7-task8-next-research-decision@0.1",
+  "decision_date": "2026-09-06",
+  "decision_status": "USER_SELECTED_DIRECTION_NOT_YET_IMPLEMENTED_OR_RUN",
+  "frozen_predecessor_checkpoint": {
+    "git_commit": "b9b915b",
+    "checkpoint_id": "structure-two-action-readout@0.6-development"
+  },
+  "scope_policy": {
+    "unified_seven_operator_framework_retained": true,
+    "hidden_event_inference_retained": true,
+    "multi_actor_reasoning_retained": true,
+    "open_world_unknowns_retained": true,
+    "reversible_attribution_retained": true,
+    "embodied_feedback_loop_retained": true
+  },
+  "task_7": {
+    "scientific_problem": "late correction after forward resampling has removed historically relevant support",
+    "selected_direction": "combined_correction_ready_ancestry_reservoir_and_backward_message_checkpoint",
+    "required_components": [
+      "correction_ready_ancestry_reservoir",
+      "backward_message_checkpoint"
+    ],
+    "required_attribution_arms": [
+      "reservoir_only",
+      "backward_message_only",
+      "combined",
+      "full_rerun_reference",
+      "current_task_7_v0_4_failure_control"
+    ],
+    "claim_boundary": "This records a user-selected redesign direction only. It is not an implementation, protocol pass, binding resolution, Gate B result, or paper claim."
+  },
+  "task_8": {
+    "retained_axes": [
+      "online_compute",
+      "distribution_shift",
+      "information_restriction"
+    ],
+    "primary_axis": "online_compute",
+    "secondary_axes": [
+      "distribution_shift",
+      "information_restriction"
+    ],
+    "primary_question": "Under equal data, parameter, latency, state-access, training-compute, and inference-compute budgets, does learned joint inference improve the action-quality versus compute frontier relative to a learned matched two-stage system?",
+    "secondary_question_boundaries": {
+      "distribution_shift": "Tests robustness under frozen cross-cell shift and cannot replace the primary equal-compute comparison.",
+      "information_restriction": "Tests interaction necessity when a comparator cannot access cross-cell information and cannot establish superiority over an information-complete exact two-stage factorization."
+    },
+    "claim_boundary": "The historical claim that joint representation is intrinsically superior to an information-complete exact two-stage factorization remains rejected."
+  },
+  "external_validation": {
+    "baseline_reproduction_strategy": "faithfully_reproduce_strongest_two_or_three_then_expand",
+    "independent_custody_strategy": "second_machine_under_a_distinct_control_process"
+  },
+  "open_user_decisions": [
+    "paper_grade_cost_and_guardrail_calibration",
+    "D1_simulator_selection_and_resource_budget",
+    "D2_real_perception_collection_design",
+    "hosted_or_local_LLM_VLM_policy"
+  ]
+}

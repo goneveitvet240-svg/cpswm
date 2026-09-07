@@ -232,7 +232,7 @@ def _hard_conflict(left: str, right: str) -> bool:
     return left_actor != right_actor or left_cause != right_cause or left_regime != right_regime
 
 
-class AdaptiveParticleConsolidationLedger(ReversibleParticleConsolidationLedger):  # type: ignore[misc]
+class AdaptiveParticleConsolidationLedger(ReversibleParticleConsolidationLedger):
     """The same reversible ledger with strategy-specific action influence gates."""
 
     def __init__(self, *, strategy: ConsolidationStrategy) -> None:
@@ -336,7 +336,7 @@ class AdaptiveParticleConsolidationLedger(ReversibleParticleConsolidationLedger)
         }
 
 
-class _AdaptiveSequentialState(_SequentialMultiAxisActionState):  # type: ignore[misc]
+class _AdaptiveSequentialState(_SequentialMultiAxisActionState):
     def __init__(
         self,
         state: _FullProjectTwoMethod,
@@ -351,11 +351,12 @@ class _AdaptiveSequentialState(_SequentialMultiAxisActionState):  # type: ignore
             profile=profile,
             consolidation=False,
         )
-        self._particle_ledger = AdaptiveParticleConsolidationLedger(strategy=strategy)
+        self._adaptive_particle_ledger = AdaptiveParticleConsolidationLedger(strategy=strategy)
+        self._particle_ledger = self._adaptive_particle_ledger
 
     @property
     def consolidation_strategy_receipt(self) -> dict[str, Any]:
-        return self._particle_ledger.strategy_receipt
+        return self._adaptive_particle_ledger.strategy_receipt
 
 
 STRATEGY_BY_ARM = {

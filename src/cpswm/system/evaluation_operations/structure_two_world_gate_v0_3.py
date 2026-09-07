@@ -40,7 +40,7 @@ Three references and one executable estimator:
 
 from __future__ import annotations
 
-from collections import Counter, deque
+from collections import Counter, defaultdict, deque
 from dataclasses import dataclass
 
 from .structure_two_world_generator_v0_2 import (
@@ -482,8 +482,8 @@ class _WitnessEstimator(_CountingEstimator):
         if windows is None:
             return 0.0
         reference_rows, recent_rows = windows
-        reference_by_context = {item: Counter() for item in CONTEXTS}
-        recent_by_context = {item: Counter() for item in CONTEXTS}
+        reference_by_context: dict[str, Counter[str]] = {item: Counter() for item in CONTEXTS}
+        recent_by_context: dict[str, Counter[str]] = {item: Counter() for item in CONTEXTS}
         for _day, context, location in reference_rows:
             reference_by_context[context][location] += 1
         for _day, context, location in recent_rows:
@@ -573,7 +573,7 @@ def evaluate_rollout_v0_3(
     last_observed = fallback
     last_observed_tail_counts: Counter[str] = Counter()
     errors: Counter[str] = Counter()
-    path: Counter[str] = Counter()
+    path: defaultdict[str, float] = defaultdict(float)
     witness_admissions: Counter[str] = Counter()
     unobserved = 0
     cache: dict[tuple[str, str], dict[str, float]] = {}

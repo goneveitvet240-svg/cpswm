@@ -11,6 +11,13 @@ from .cause_gated_consolidation import (
     CauseGatedHabitConsolidation,
     HabitWriteDecision,
 )
+from .cause_regime_semantics import (
+    SEMANTICS_VERSION,
+    CauseRunDestinationMass,
+    JointCauseRegimeTransition,
+    UnifiedChangeCause,
+    compose_joint_cause_regime_transition,
+)
 from .context_conditioned_regime import (
     ContextConditionedRegimeReactivator,
     ForgedDecisionError,
@@ -41,6 +48,7 @@ from .joint_cause_bocpd import (
     JointCauseFactorizedBOCPD,
     JointCauseFactorizedResult,
     JointCauseSnapshot,
+    RunLengthClock,
 )
 from .layered_habit_posterior import (
     LAYERED_POSTERIOR_VERSION,
@@ -84,6 +92,7 @@ __all__ = [
     "DEFAULT_RESET_MATRIX",
     "LAYERED_POSTERIOR_VERSION",
     "MOBILITY_AXES_VERSION",
+    "SEMANTICS_VERSION",
     "CanonicalLogEntry",
     "CanonicalWriteLog",
     "CauseEvidenceFrame",
@@ -91,6 +100,7 @@ __all__ = [
     "CauseFactorizedBOCPDResult",
     "CauseGatedHabitConsolidation",
     "CauseResetMatrix",
+    "CauseRunDestinationMass",
     "CauseRunLengthSnapshot",
     "CauseSignalFrame",
     "ChangeCause",
@@ -109,6 +119,7 @@ __all__ = [
     "HierarchicalDirichletHabitModel",
     "JointCauseFactorizedBOCPD",
     "JointCauseFactorizedResult",
+    "JointCauseRegimeTransition",
     "JointCauseSnapshot",
     "LayerConcentration",
     "LayeredHabitPosterior",
@@ -137,7 +148,10 @@ __all__ = [
     "RegimeLibraryEntry",
     "RegimeLibraryView",
     "RegimeScoringEnvelope",
+    "RunLengthClock",
     "StaleLibraryError",
+    "UnifiedChangeCause",
+    "compose_joint_cause_regime_transition",
     "measure_evidence_multiplicity",
     "propensity_from_opportunity",
 ]

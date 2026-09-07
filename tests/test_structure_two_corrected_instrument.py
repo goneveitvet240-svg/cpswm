@@ -43,13 +43,13 @@ def test_corrected_v0_3_binds_current_source_and_blocks_false_legacy_claim() -> 
         310107,
         310108,
     )
-    legacy = json.loads(
+    rebound = json.loads(
         (
             ROOT / "artifacts/project_two_v04_development/"
-            "structure_two_strongest_neighbor_gate_v0_1.json"
+            "structure_two_strongest_neighbor_gate_current_source_v0_3.json"
         ).read_text(encoding="utf-8")
     )
-    assert legacy["content_sha256"] == design.source_report_content_sha256
+    assert rebound["content_sha256"] == design.source_report_content_sha256
 
     report = verify_structure_two_corrected_instrument_report(
         ROOT / "artifacts/project_two_v04_development/structure_two_corrected_instrument_v0_3.json",

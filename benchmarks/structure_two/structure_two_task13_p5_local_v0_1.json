@@ -1,0 +1,388 @@
+{
+  "protocol": "structure-two-task13-p5-local-evidence@0.2",
+  "evidence_status": "LOCAL_DIAGNOSTIC_ONLY",
+  "upstream_task12_manifest": {
+    "path": "benchmarks/structure_two/task12_rejuvenation_diagnostic_2026_09_06/TASK12_EVIDENCE_MANIFEST.json",
+    "file_sha256": "fa536404604c3fd3a4a61d15d84383629be3db16cf26998f144e5ecf43d23f22",
+    "content_sha256": "9d242a5621a13a5b846d5482eb9c67915b32dd7d3d7b1c5eaf6c3c871f8f943c",
+    "formal_task_12_passed": false,
+    "task_13_unlocked": false
+  },
+  "source_hashes": {
+    "src/cpswm/system/evaluation_operations/structure_two_task13_p5_diagnostic.py": "ee8c8c036115bcfedb23675214666267c1364bd4713fa6f02b98160e7677d57e",
+    "apps/evaluation_runner/run_structure_two_task13_p5_diagnostic.py": "ad26214fff20d69757df84c0bebde67e9b32a4d1c25008823ed74e80b2620379",
+    "tests/test_structure_two_task13_p5_diagnostic.py": "2330f305283dc3bf2e80e4c0ff1b4790464857af0fd95ea4d255a2849b5b09f7"
+  },
+  "task_13": {
+    "status": "COMPLETED_LOCAL_DIAGNOSTIC_FORMAL_BLOCKED",
+    "arms": [
+      {
+        "strategy": "stop_gradient_supervised_proposal",
+        "elementary_gradient_evaluations": 3,
+        "estimated_gradient": [
+          0.3906938332698157,
+          -0.7105668896057353,
+          0.3198730563359197
+        ],
+        "exact_action_expectation_gradient": [
+          0.042853352717162126,
+          -0.1419133217263847,
+          0.09905996900922247
+        ],
+        "finite_difference_gradient": [
+          0.042853352755223284,
+          -0.14191332176061167,
+          0.09905996906089953
+        ],
+        "max_finite_difference_error": 0.5686535678451237,
+        "max_exact_expectation_error": 0.5686535678793506,
+        "gradient_bias_l2": 0.7022238245087985,
+        "gradient_variance": 0.0,
+        "nonfinite_gradient_count": 0,
+        "hard_constraint_violations": 0,
+        "runtime_trace_sha256": "f927dec270807bb228e61096363c8de0923ea5779d844a92520114f91d9af29a"
+      },
+      {
+        "strategy": "score_function_unbiased_estimator",
+        "elementary_gradient_evaluations": 3,
+        "estimated_gradient": [
+          0.04285335271716214,
+          -0.14191332172638468,
+          0.09905996900922247
+        ],
+        "exact_action_expectation_gradient": [
+          0.042853352717162126,
+          -0.1419133217263847,
+          0.09905996900922247
+        ],
+        "finite_difference_gradient": [
+          0.042853352755223284,
+          -0.14191332176061167,
+          0.09905996906089953
+        ],
+        "max_finite_difference_error": 5.167706540465389e-11,
+        "max_exact_expectation_error": 2.7755575615628914e-17,
+        "gradient_bias_l2": 3.1031676915590914e-17,
+        "gradient_variance": 0.33995590471476994,
+        "nonfinite_gradient_count": 0,
+        "hard_constraint_violations": 0,
+        "runtime_trace_sha256": "49dda3f3d1ffd68917cac436902c6a5b3a470815aad549ddba70262e546584a7"
+      },
+      {
+        "strategy": "relaxed_pathwise_resampling_biased",
+        "elementary_gradient_evaluations": 3,
+        "estimated_gradient": [
+          0.0595199378384328,
+          -0.193600825163261,
+          0.13408088732482823
+        ],
+        "exact_action_expectation_gradient": [
+          0.042853352717162126,
+          -0.1419133217263847,
+          0.09905996900922247
+        ],
+        "finite_difference_gradient": [
+          0.042853352755223284,
+          -0.14191332176061167,
+          0.09905996906089953
+        ],
+        "max_finite_difference_error": 0.051687503402649326,
+        "max_exact_expectation_error": 0.05168750343687628,
+        "gradient_bias_l2": 0.06462072261132638,
+        "gradient_variance": 0.0,
+        "nonfinite_gradient_count": 0,
+        "hard_constraint_violations": 0,
+        "runtime_trace_sha256": "bf6943464b6318bac4c72dfd6b639a4aeb2ad1c1a2d1dfc81824d8f7e9098075"
+      }
+    ],
+    "equal_compute_budget": true,
+    "runtime_strategy_trace_changes": true,
+    "sealed_holdout_available": false,
+    "formal_upstream_receipts_available": false,
+    "formal_binding_resolved": false,
+    "selected_strategy": null,
+    "deterministic_sha256": "89dd948752c0fe49e559a69d5aff56a0a7a08786e0b0099e1055bdc705105606",
+    "blockers": [
+      "Task 10, Task 11, and Task 12 have no independently issued resolution receipts.",
+      "No custodian-sealed holdout exists for Task 13 selection."
+    ]
+  },
+  "proposal_p5": {
+    "status": "COMPLETED_LOCAL_DIAGNOSTIC_FORMAL_BLOCKED",
+    "arm_results": [
+      {
+        "arm": "bootstrap_proposal",
+        "stage_recall": [
+          {
+            "stage": "raw_candidate_generation",
+            "full_chain_truth_compatible_recall": 0.6666666666666666
+          },
+          {
+            "stage": "hard_constraint_survival",
+            "full_chain_truth_compatible_recall": 0.6666666666666666
+          },
+          {
+            "stage": "weighted_support",
+            "full_chain_truth_compatible_recall": 0.5
+          },
+          {
+            "stage": "resampling_survival",
+            "full_chain_truth_compatible_recall": 0.3333333333333333
+          },
+          {
+            "stage": "final_chain_support",
+            "full_chain_truth_compatible_recall": 0.16666666666666666
+          }
+        ],
+        "posterior_mass_coverage": 0.16666666666666666,
+        "axis_recall": {
+          "H": 0.16666666666666666,
+          "R": 0.16666666666666666,
+          "I": 0.16666666666666666,
+          "C": 0.16666666666666666,
+          "Z": 0.16666666666666666
+        },
+        "operation_recall": {
+          "branch": 0.16666666666666666,
+          "revise": 0.16666666666666666,
+          "retract": 0.16666666666666666,
+          "reactivate": 0.16666666666666666,
+          "rejuvenate": 0.16666666666666666,
+          "preserve_unresolved": 0.16666666666666666
+        },
+        "unknown_support_retention": 1.0,
+        "unresolved_mass_retention": 1.0,
+        "action_loss": 0.8333333333333334,
+        "elementary_evaluations": 72,
+        "truth_read_count": 0,
+        "exact_enumeration_count": 0,
+        "oracle_used": false,
+        "wall_clock_seconds": 0.0,
+        "gates": {
+          "same_visible_input": true,
+          "fixed_nuisance_bindings": true,
+          "stage_accounting_complete": true,
+          "oracle_access_role_enforced": true,
+          "truth_reads_logged": true
+        }
+      },
+      {
+        "arm": "deterministic_adaptive_typed_proposal",
+        "stage_recall": [
+          {
+            "stage": "raw_candidate_generation",
+            "full_chain_truth_compatible_recall": 0.8333333333333334
+          },
+          {
+            "stage": "hard_constraint_survival",
+            "full_chain_truth_compatible_recall": 0.8333333333333334
+          },
+          {
+            "stage": "weighted_support",
+            "full_chain_truth_compatible_recall": 0.6666666666666666
+          },
+          {
+            "stage": "resampling_survival",
+            "full_chain_truth_compatible_recall": 0.5
+          },
+          {
+            "stage": "final_chain_support",
+            "full_chain_truth_compatible_recall": 0.0
+          }
+        ],
+        "posterior_mass_coverage": 0.0,
+        "axis_recall": {
+          "H": 0.0,
+          "R": 0.0,
+          "I": 0.0,
+          "C": 0.0,
+          "Z": 0.0
+        },
+        "operation_recall": {
+          "branch": 0.0,
+          "revise": 0.0,
+          "retract": 0.0,
+          "reactivate": 0.0,
+          "rejuvenate": 0.0,
+          "preserve_unresolved": 0.0
+        },
+        "unknown_support_retention": 1.0,
+        "unresolved_mass_retention": 1.0,
+        "action_loss": 1.0,
+        "elementary_evaluations": 72,
+        "truth_read_count": 0,
+        "exact_enumeration_count": 0,
+        "oracle_used": false,
+        "wall_clock_seconds": 0.0,
+        "gates": {
+          "same_visible_input": true,
+          "fixed_nuisance_bindings": true,
+          "stage_accounting_complete": true,
+          "oracle_access_role_enforced": true,
+          "truth_reads_logged": true
+        }
+      },
+      {
+        "arm": "local_conditional_posterior_oracle_evaluator_only",
+        "stage_recall": [
+          {
+            "stage": "raw_candidate_generation",
+            "full_chain_truth_compatible_recall": 1.0
+          },
+          {
+            "stage": "hard_constraint_survival",
+            "full_chain_truth_compatible_recall": 1.0
+          },
+          {
+            "stage": "weighted_support",
+            "full_chain_truth_compatible_recall": 1.0
+          },
+          {
+            "stage": "resampling_survival",
+            "full_chain_truth_compatible_recall": 1.0
+          },
+          {
+            "stage": "final_chain_support",
+            "full_chain_truth_compatible_recall": 1.0
+          }
+        ],
+        "posterior_mass_coverage": 1.0,
+        "axis_recall": {
+          "H": 1.0,
+          "R": 1.0,
+          "I": 1.0,
+          "C": 1.0,
+          "Z": 1.0
+        },
+        "operation_recall": {
+          "branch": 1.0,
+          "revise": 1.0,
+          "retract": 1.0,
+          "reactivate": 1.0,
+          "rejuvenate": 1.0,
+          "preserve_unresolved": 1.0
+        },
+        "unknown_support_retention": 1.0,
+        "unresolved_mass_retention": 1.0,
+        "action_loss": 0.0,
+        "elementary_evaluations": 72,
+        "truth_read_count": 12,
+        "exact_enumeration_count": 12,
+        "oracle_used": true,
+        "wall_clock_seconds": 0.0,
+        "gates": {
+          "same_visible_input": true,
+          "fixed_nuisance_bindings": true,
+          "stage_accounting_complete": true,
+          "oracle_access_role_enforced": true,
+          "truth_reads_logged": true
+        }
+      },
+      {
+        "arm": "truth_inclusion_top_k_oracle_evaluator_only",
+        "stage_recall": [
+          {
+            "stage": "raw_candidate_generation",
+            "full_chain_truth_compatible_recall": 1.0
+          },
+          {
+            "stage": "hard_constraint_survival",
+            "full_chain_truth_compatible_recall": 1.0
+          },
+          {
+            "stage": "weighted_support",
+            "full_chain_truth_compatible_recall": 1.0
+          },
+          {
+            "stage": "resampling_survival",
+            "full_chain_truth_compatible_recall": 1.0
+          },
+          {
+            "stage": "final_chain_support",
+            "full_chain_truth_compatible_recall": 1.0
+          }
+        ],
+        "posterior_mass_coverage": 1.0,
+        "axis_recall": {
+          "H": 1.0,
+          "R": 1.0,
+          "I": 1.0,
+          "C": 1.0,
+          "Z": 1.0
+        },
+        "operation_recall": {
+          "branch": 1.0,
+          "revise": 1.0,
+          "retract": 1.0,
+          "reactivate": 1.0,
+          "rejuvenate": 1.0,
+          "preserve_unresolved": 1.0
+        },
+        "unknown_support_retention": 1.0,
+        "unresolved_mass_retention": 1.0,
+        "action_loss": 0.0,
+        "elementary_evaluations": 72,
+        "truth_read_count": 12,
+        "exact_enumeration_count": 12,
+        "oracle_used": true,
+        "wall_clock_seconds": 0.0,
+        "gates": {
+          "same_visible_input": true,
+          "fixed_nuisance_bindings": true,
+          "stage_accounting_complete": true,
+          "oracle_access_role_enforced": true,
+          "truth_reads_logged": true
+        }
+      }
+    ],
+    "stage_headroom": [
+      {
+        "stage": "raw_candidate_generation",
+        "best_deployable_recall": 0.8333333333333334,
+        "best_oracle_recall": 1.0,
+        "headroom": 0.16666666666666663
+      },
+      {
+        "stage": "hard_constraint_survival",
+        "best_deployable_recall": 0.8333333333333334,
+        "best_oracle_recall": 1.0,
+        "headroom": 0.16666666666666663
+      },
+      {
+        "stage": "weighted_support",
+        "best_deployable_recall": 0.6666666666666666,
+        "best_oracle_recall": 1.0,
+        "headroom": 0.33333333333333337
+      },
+      {
+        "stage": "resampling_survival",
+        "best_deployable_recall": 0.5,
+        "best_oracle_recall": 1.0,
+        "headroom": 0.5
+      },
+      {
+        "stage": "final_chain_support",
+        "best_deployable_recall": 0.16666666666666666,
+        "best_oracle_recall": 1.0,
+        "headroom": 0.8333333333333334
+      }
+    ],
+    "primary_estimand_value": 0.8333333333333334,
+    "oracle_action_gain": 0.8333333333333334,
+    "diagnosis": "MIXED_PROPOSAL_AND_DOWNSTREAM_BOTTLENECK",
+    "formal_upstream_receipts_available": false,
+    "binding_resolution_authorized": false,
+    "seven_operator_ablation_authorized": false,
+    "deterministic_sha256": "1a450a07f22da761c5b9be3129cb059ee3db83f017e6a8bd6277859c21f2e83f",
+    "blockers": [
+      "Task 10 through Task 12 formal resolution receipts are absent.",
+      "The local categorical fixture is not a custodian-sealed confirmatory workload."
+    ]
+  },
+  "formal_task_13_passed": false,
+  "proposal_p5_unlocked": false,
+  "seven_operator_ablation_authorized": false,
+  "independent_custody_established": false,
+  "claim_boundary": "Task 13 and P5 algorithms were exercised locally, but Task 12 is formally false, no sealed holdout or independent custody exists, and no downstream selection or seven-operator superiority claim is authorized.",
+  "content_sha256": "4c02deda4fc3c8cf74bc21d194d83ee114d0b8164d05d9574312428050a521dc"
+}

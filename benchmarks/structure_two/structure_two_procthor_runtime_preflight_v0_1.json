@@ -1,0 +1,37 @@
+{
+  "protocol": "structure-two-procthor-runtime-preflight@0.1",
+  "host_platform": "macOS-26.4-arm64-arm-64bit",
+  "ai2thor_version": "5.0.0",
+  "procthor_version": "0.0.1.dev2",
+  "prior_version": "1.0.3",
+  "procthor_dataset_revision": "439193522244720b86d8c81cde2e51e3a4d150cf",
+  "ai2thor_build_commit_id": "f0825767cd50d69f666c7f282e54abfe58f1e917",
+  "split_counts": {
+    "train": 10000,
+    "val": 1000,
+    "test": 1000
+  },
+  "scene_receipts": [
+    {
+      "split": "val",
+      "index": 0,
+      "house_content_sha256": "7dfcea0ce717b9caf49d1c4aa30fb981e296d451eb92b444a7e15ad903fa1cab",
+      "reachable_position_count": 1083,
+      "object_metadata_count": 236,
+      "action_success": true
+    },
+    {
+      "split": "test",
+      "index": 0,
+      "house_content_sha256": "aaef883c85d8077bd23245da8e1316a91ed3af30ac6a5ec52d69e219028e6240",
+      "reachable_position_count": 601,
+      "object_metadata_count": 125,
+      "action_success": true
+    }
+  ],
+  "runtime_preflight_passed": true,
+  "d1_replay_collection_completed": false,
+  "external_validity_established": false,
+  "claim_boundary": "This receipt establishes pinned dataset loading and simulator action/metadata availability only. It is not a collected D1 replay, a method result, or an external-validity authorization.",
+  "content_sha256": "8c73c2b58975c0b1ca83f736e8e41ec858a42d5432a98b8baf7698b3a329a77f"
+}

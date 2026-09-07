@@ -19,7 +19,13 @@ from statistics import mean
 from typing import Any
 from uuid import UUID
 
-from cpswm.contracts import ProjectTwoDatasetSplit, ProjectTwoReplayStep, RobotActionOutcome
+from cpswm.contracts import (
+    EvidenceFactorConsumptionTrace,
+    ObservationOutcome,
+    ProjectTwoDatasetSplit,
+    ProjectTwoReplayStep,
+    RobotActionOutcome,
+)
 from cpswm.system.attestation import Ed25519AttestationVerifier
 from cpswm.system.continual.project_one_regime_loop import PrototypeLoopConfig
 from cpswm.system.evaluation_operations.project_two_ablation import PriorOnlyMessagePassing
@@ -33,7 +39,6 @@ from cpswm.system.evaluation_operations.project_two_ciav_interactive_development
     _OUTCOME_MODELS,
     InteractiveVerificationPolicy,
     _actions,
-    _owner_posterior_after_verification,
     _potential_outcome,
     _select_action,
 )
@@ -52,7 +57,12 @@ from cpswm.system.evaluation_operations.structure_two_trusted_ablation_authoriza
     verify_trusted_seven_operator_ablation_authorization,
 )
 from cpswm.system.prototype_spine import ActionReadout, ActionReadoutConfig
-from cpswm.world_model.grounded_search import StructureTwoCauseBelief
+from cpswm.world_model.grounded_search import (
+    CIAVOPCEUObservationLoop,
+    CIAVOPCEUReceipt,
+    RealizedCIAVObservation,
+    StructureTwoCauseBelief,
+)
 from cpswm.world_model.habits_transitions import PropensityCorrectionMode
 
 PROTOCOL_VERSION = "project-two-seven-operator-factorial@0.1"
@@ -270,6 +280,34 @@ class _CIAVState:
         self.verification_count = 0
         self.verification_cost = 0.0
         self._privacy_cost = 0.0
+        self.evidence_factor_trace = getattr(
+            state,
+            "evidence_factor_trace",
+            EvidenceFactorConsumptionTrace(),
+        )
+        self._opceu_loop = CIAVOPCEUObservationLoop(self.evidence_factor_trace)
+        self.ciav_opceu_receipts: list[CIAVOPCEUReceipt] = []
+
+    def _actor_posterior_after_verification(
+        self,
+        prior: Mapping[str, float],
+        owner_probability: float,
+    ) -> dict[str, float]:
+        actors = tuple(dict.fromkeys((*self._episode.resident_actor_keys, "unknown_actor")))
+        owner = self._episode.owner_actor_key
+        other_prior = sum(prior.get(actor, 0.0) for actor in actors if actor != owner)
+        remainder = 1.0 - owner_probability
+        if other_prior <= 0.0:
+            share = remainder / max(1, len(actors) - 1)
+            return {actor: owner_probability if actor == owner else share for actor in actors}
+        return {
+            actor: (
+                owner_probability
+                if actor == owner
+                else remainder * prior.get(actor, 0.0) / other_prior
+            )
+            for actor in actors
+        }
 
     def observe(self, step: ProjectTwoReplayStep) -> None:
         self._state.observe(step)
@@ -284,7 +322,7 @@ class _CIAVState:
             identity_switch_probability=0.0,
         )
         owner_prior = result.actor_posterior.get(self._episode.owner_actor_key, 0.0)
-        action_id, verification_prior = _select_action(
+        action_id, _verification_prior = _select_action(
             InteractiveVerificationPolicy.CIAV,
             belief,
             self._actions,
@@ -301,26 +339,74 @@ class _CIAVState:
         )
         if action_id is None:
             return
-        # Evaluator truth is read only after a visible action has been selected.
-        target = self._dataset.truth_for(self._episode.episode_id).truth_by_step[step.step_id]
-        outcome, source_record_id = _potential_outcome(
-            episode_id=self._episode.episode_id,
-            step_id=step.step_id,
-            action_id=action_id,
-            true_owner=target.true_actor == self._episode.owner_actor_key,
-            model=_OUTCOME_MODELS[action_id],
+        action = self._by_id[action_id]
+        if step.after is None or step.after.detected_location_id is None:
+            raise ValueError("CIAV owner check requires a robot-visible object location")
+        visible_location = step.after.detected_location_id
+        model = _OUTCOME_MODELS[action_id]
+        actors = tuple(dict.fromkeys((*self._episode.resident_actor_keys, "unknown_actor")))
+        actor_likelihoods_by_outcome = {
+            outcome_label: {
+                actor: (
+                    model.sensitivity
+                    if outcome_label == "owner_supported"
+                    else 1.0 - model.sensitivity
+                )
+                if actor == self._episode.owner_actor_key
+                else (
+                    1.0 - model.specificity
+                    if outcome_label == "owner_supported"
+                    else model.specificity
+                )
+                for actor in actors
+            }
+            for outcome_label in action.outcome_likelihoods
+        }
+
+        def realize(_opportunity: Any) -> RealizedCIAVObservation:
+            # Evaluator truth is read only inside the post-selection realizer.
+            target = self._dataset.truth_for(self._episode.episode_id).truth_by_step[step.step_id]
+            outcome, _ = _potential_outcome(
+                episode_id=self._episode.episode_id,
+                step_id=step.step_id,
+                action_id=action_id,
+                true_owner=target.true_actor == self._episode.owner_actor_key,
+                model=_OUTCOME_MODELS[action_id],
+            )
+            return RealizedCIAVObservation(
+                outcome_label=outcome,
+                likelihood_model_id=action.observation_likelihood_model_id,
+                detection_outcome=ObservationOutcome.DETECTED,
+            )
+
+        receipt = self._opceu_loop.execute_selected_action(
+            action=action,
+            update_id=result.event_revision_id,
+            household_id=self._episode.household_id,
+            session_id=self._episode.session_id,
+            trace_id=self._episode.trace_id,
+            opportunity_time=step.timestamp,
+            object_instance_id=step.object_instance_id,
+            actor_keys=self._episode.resident_actor_keys,
+            actor_prior=result.actor_posterior,
+            actor_likelihoods_by_outcome=actor_likelihoods_by_outcome,
+            location_keys=tuple(
+                str(item)
+                for item in getattr(self._state, "locations", self._episode.known_location_ids)
+            ),
+            expected_detected_location_id=visible_location,
+            selection_probability=1.0,
+            p_visible_given_state=1.0,
+            p_detect_given_visible=1.0,
+            realizer=realize,
         )
-        owner_after = _owner_posterior_after_verification(
-            verification_prior,
-            outcome=outcome,
-            model=_OUTCOME_MODELS[action_id],
-        )
+        owner_after = receipt.evidence.actor_posterior[self._episode.owner_actor_key]
         self._state.spine.apply_fast_action_verification(
             revision_id=result.event_revision_id,
             verified_owner_probability=owner_after,
-            source_record_id=source_record_id,
+            source_record_id=receipt.evidence.metadata.record_id,
         )
-        action = self._by_id[action_id]
+        self.ciav_opceu_receipts.append(receipt)
         cost = (
             action.motion_cost
             + action.time_cost

@@ -294,7 +294,7 @@ def run_structure_two_world_validation_gate_a_v0_5(*, repository_root: Path) -> 
 def verify_validation_gate_report_v0_5(
     report_path: Path, *, repository_root: Path, recompute: bool = True
 ) -> dict[str, Any]:
-    report = json.loads(report_path.read_text(encoding="utf-8"))
+    report: dict[str, Any] = json.loads(report_path.read_text(encoding="utf-8"))
     stored = report.get("content_sha256")
     unsigned = dict(report)
     unsigned.pop("content_sha256", None)

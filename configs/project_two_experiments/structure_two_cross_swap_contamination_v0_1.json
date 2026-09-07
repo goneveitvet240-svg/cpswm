@@ -1,0 +1,47 @@
+{
+  "protocol": "structure-two-belief-readout-cross-swap-contamination@0.2",
+  "evidence_stage": "post_v0_6_development_diagnostic",
+  "confirmatory": false,
+  "dataset_config": "configs/project_two_datasets/d0_multiseed_readout_v0_5.json",
+  "dataset_split": "test",
+  "episode_count": 60,
+  "steps_per_episode": 32,
+  "project_two_readout": {
+    "readout": "dual_timescale_reversible",
+    "owner_threshold": 0.4,
+    "fast_action_weight": 0.7,
+    "surviving_revision_weight": 0.2,
+    "regime_local_weight": 0.1,
+    "fast_owner_mass_floor": 0.5,
+    "owner_mass_floor": 0.5,
+    "recency_half_life": 1.0
+  },
+  "amg_parameter": 0.2,
+  "arms": [
+    "project_two_v0_6_belief+project_two_v0_6_readout",
+    "project_two_v0_6_belief+amg_matched_readout",
+    "amg_matched_belief+project_two_v0_6_readout",
+    "amg_matched_belief+amg_matched_readout"
+  ],
+  "common_boundary": {
+    "fields": [
+      "normalized_location_distribution",
+      "pre-readout component distributions",
+      "latest unique-owner event",
+      "last_robot_visible_location",
+      "unknown_probability"
+    ],
+    "native_diagonal_equivalence_required": true,
+    "truth_access": "lookup_after_all_four_actions_are_emitted",
+    "put_back_readout_disagreement_required": true,
+    "causal_first_fault_claim_allowed": false
+  },
+  "first_fault_order": [
+    "pchmp_owner_attribution",
+    "fast_action_ledger",
+    "rgrc_slow_commit",
+    "cold_start_prior_tie",
+    "action_readout_mix"
+  ],
+  "paper_claim_allowed": false
+}

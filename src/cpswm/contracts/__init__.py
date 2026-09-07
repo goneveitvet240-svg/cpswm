@@ -54,6 +54,15 @@ from .events import (
     EventRecord,
     EventType,
 )
+from .evidence_factor_trace import (
+    TRACE_PROTOCOL_ID,
+    EvidenceFactorConsumptionTrace,
+    EvidenceFactorKind,
+    EvidenceFactorOperation,
+    EvidenceFactorOperator,
+    EvidenceFactorReceipt,
+    EvidenceFactorSourceSemantics,
+)
 from .evidence_protocol import (
     DetectionFailureReason,
     EvidenceProductionMode,
@@ -170,6 +179,7 @@ from .project_two_replay import (
     reject_truth_leakage,
 )
 from .project_two_revision_action import (
+    ActionKind,
     ActionProbability,
     OperatorDiagnostic,
     ProbabilityMass,
@@ -205,6 +215,8 @@ __all__ = [
     "NORM_CLASSES",
     "OBSERVATION_MECHANISM_VERSION",
     "PROJECT_TWO_REPLAY_SCHEMA_VERSION",
+    "TRACE_PROTOCOL_ID",
+    "ActionKind",
     "ActionOutcomeLikelihoodModel",
     "ActionProbability",
     "ActiveObservationPlan",
@@ -246,6 +258,12 @@ __all__ = [
     "EventRecord",
     "EventType",
     "EvidenceChannel",
+    "EvidenceFactorConsumptionTrace",
+    "EvidenceFactorKind",
+    "EvidenceFactorOperation",
+    "EvidenceFactorOperator",
+    "EvidenceFactorReceipt",
+    "EvidenceFactorSourceSemantics",
     "EvidencePathEdge",
     "EvidencePathNode",
     "EvidencePathNodeKind",

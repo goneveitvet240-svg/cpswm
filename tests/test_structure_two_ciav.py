@@ -2,17 +2,27 @@
 
 from __future__ import annotations
 
+from dataclasses import fields
 from datetime import UTC, datetime, timedelta
 from uuid import UUID, uuid4
 
 import pytest
 
-from cpswm.contracts import ObservationActionCandidate, ObservationActionType
+from cpswm.contracts import (
+    EvidenceFactorKind,
+    EvidenceFactorOperation,
+    EvidenceFactorOperator,
+    ObservationActionCandidate,
+    ObservationActionType,
+    ObservationOutcome,
+)
 from cpswm.world_model.grounded_search import (
     CauseInformationActiveVerificationPlanner,
+    CIAVOPCEUObservationLoop,
     OffPolicyOverlapStatus,
     OffPolicyVerificationEvaluator,
     OffPolicyVerificationSample,
+    RealizedCIAVObservation,
     StructureTwoCauseBelief,
     VerificationBaselinePolicy,
     VerificationCause,
@@ -74,6 +84,18 @@ def _action(*, informative: bool, privacy_cost: float = 0.0) -> ObservationActio
         privacy_cost=privacy_cost,
         safety_cost=0.0,
     )
+
+
+def _actor_likelihood_table(
+    action: ObservationActionCandidate,
+    *,
+    owner: float = 0.8,
+    other: float = 0.2,
+) -> dict[str, dict[str, float]]:
+    return {
+        outcome: {"owner": owner, "guest": other, "unknown_actor": other}
+        for outcome in action.outcome_likelihoods
+    }
 
 
 def _terminal_utilities() -> dict[UUID, dict[UUID, float]]:
@@ -235,3 +257,152 @@ def test_ciav_off_policy_evaluation_reports_overlap_and_non_identification():
     assert missing.status is OffPolicyOverlapStatus.NON_IDENTIFIABLE
     assert missing.ips_utility is None
     assert missing.self_normalized_ips_utility is None
+
+
+def test_ciav_selected_action_enters_real_opceu_loop_before_truth_realization():
+    action = _action(informative=True)
+    household_id, session_id, trace_id, update_id = (uuid4() for _ in range(4))
+    object_id, location_id = uuid4(), uuid4()
+    callback_observed_opportunity = []
+
+    def realize(opportunity):
+        callback_observed_opportunity.append(opportunity)
+        assert opportunity.selected
+        assert opportunity.observation_action_id == action.action_id
+        assert opportunity.likelihood_model_id == action.observation_likelihood_model_id
+        return RealizedCIAVObservation(
+            outcome_label=next(iter(action.outcome_likelihoods)),
+            likelihood_model_id=action.observation_likelihood_model_id,
+            detection_outcome=ObservationOutcome.DETECTED,
+        )
+
+    runtime = CIAVOPCEUObservationLoop()
+    receipt = runtime.execute_selected_action(
+        action=action,
+        update_id=update_id,
+        household_id=household_id,
+        session_id=session_id,
+        trace_id=trace_id,
+        opportunity_time=datetime(2026, 9, 6, tzinfo=UTC),
+        object_instance_id=object_id,
+        actor_keys=("owner", "guest"),
+        actor_prior={"owner": 0.5, "guest": 0.3, "unknown_actor": 0.2},
+        actor_likelihoods_by_outcome=_actor_likelihood_table(action),
+        location_keys=(str(location_id),),
+        expected_detected_location_id=location_id,
+        selection_probability=1.0,
+        p_visible_given_state=1.0,
+        p_detect_given_visible=1.0,
+        realizer=realize,
+    )
+
+    assert callback_observed_opportunity == [receipt.opportunity]
+    assert receipt.detection.observation_opportunity_id == receipt.opportunity.metadata.record_id
+    assert receipt.evidence.observation_opportunity == receipt.opportunity
+    assert receipt.evidence.actor_posterior == pytest.approx(
+        {"owner": 0.8, "guest": 0.12, "unknown_actor": 0.08}
+    )
+    assert receipt.mechanism.detection == receipt.detection
+    assert receipt.produced_factor.operator is EvidenceFactorOperator.OPCEU
+    assert receipt.produced_factor.factor_kind is EvidenceFactorKind.OBSERVATION_LIKELIHOOD
+    assert receipt.consumed_factor.operator is EvidenceFactorOperator.CIAV
+    assert receipt.consumed_factor.operation is EvidenceFactorOperation.CONSUME
+    assert receipt.consumed_factor.consumed_as_likelihood
+    assert receipt.posterior_summary.factor_kind is EvidenceFactorKind.POSTERIOR_SUMMARY
+    assert all(
+        item.likelihood_model_id == action.observation_likelihood_model_id
+        for item in runtime.trace.receipts
+    )
+    assert runtime.trace.verify_chain()
+
+
+@pytest.mark.parametrize(
+    ("outcome_label", "model_id", "message"),
+    (
+        ("unregistered-but-complete", "ciav-factorial-outcome@0.1", "unregistered outcome"),
+        (VerificationCause.HABIT.value, "swapped-model@9", "different likelihood model"),
+    ),
+)
+def test_ciav_rejects_forged_complete_realizations(
+    outcome_label: str,
+    model_id: str,
+    message: str,
+) -> None:
+    action = _action(informative=True)
+    object_id, location_id = uuid4(), uuid4()
+
+    def forged(_opportunity):
+        return RealizedCIAVObservation(
+            outcome_label=outcome_label,
+            likelihood_model_id=model_id,
+            detection_outcome=ObservationOutcome.DETECTED,
+        )
+
+    runtime = CIAVOPCEUObservationLoop()
+    with pytest.raises(ValueError, match=message):
+        runtime.execute_selected_action(
+            action=action,
+            update_id=uuid4(),
+            household_id=uuid4(),
+            session_id=uuid4(),
+            trace_id=uuid4(),
+            opportunity_time=datetime(2026, 9, 6, tzinfo=UTC),
+            object_instance_id=object_id,
+            actor_keys=("owner", "guest"),
+            actor_prior={"owner": 0.5, "guest": 0.3, "unknown_actor": 0.2},
+            actor_likelihoods_by_outcome=_actor_likelihood_table(action),
+            location_keys=(str(location_id),),
+            expected_detected_location_id=location_id,
+            selection_probability=1.0,
+            p_visible_given_state=1.0,
+            p_detect_given_visible=1.0,
+            realizer=forged,
+        )
+    assert runtime.trace.receipts == ()
+
+
+def test_ciav_realizer_contract_cannot_author_a_posterior_or_location() -> None:
+    field_names = {item.name for item in fields(RealizedCIAVObservation)}
+    assert "actor_posterior" not in field_names
+    assert "object_posterior" not in field_names
+    assert "location_posterior" not in field_names
+    assert "detected_location_id" not in field_names
+    assert "actor_likelihoods" not in field_names
+
+
+def test_ciav_rejects_zero_support_actor_likelihood_before_producing_evidence() -> None:
+    action = _action(informative=True)
+    object_id, location_id = uuid4(), uuid4()
+
+    def impossible(_opportunity):
+        return RealizedCIAVObservation(
+            outcome_label=next(iter(action.outcome_likelihoods)),
+            likelihood_model_id=action.observation_likelihood_model_id,
+            detection_outcome=ObservationOutcome.DETECTED,
+        )
+
+    runtime = CIAVOPCEUObservationLoop()
+    with pytest.raises(ValueError, match="zero probability"):
+        runtime.execute_selected_action(
+            action=action,
+            update_id=uuid4(),
+            household_id=uuid4(),
+            session_id=uuid4(),
+            trace_id=uuid4(),
+            opportunity_time=datetime(2026, 9, 6, tzinfo=UTC),
+            object_instance_id=object_id,
+            actor_keys=("owner", "guest"),
+            actor_prior={"owner": 0.5, "guest": 0.3, "unknown_actor": 0.2},
+            actor_likelihoods_by_outcome=_actor_likelihood_table(
+                action,
+                owner=0.0,
+                other=0.0,
+            ),
+            location_keys=(str(location_id),),
+            expected_detected_location_id=location_id,
+            selection_probability=1.0,
+            p_visible_given_state=1.0,
+            p_detect_given_visible=1.0,
+            realizer=impossible,
+        )
+    assert runtime.trace.receipts == ()

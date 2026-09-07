@@ -12,7 +12,7 @@ import hashlib
 import itertools
 import json
 import random
-from collections import Counter
+from collections import Counter, defaultdict
 from collections.abc import Mapping, Sequence
 from dataclasses import dataclass, replace
 from pathlib import Path
@@ -208,7 +208,7 @@ def _score_witness_rollout(
     last_observed = fallback
     cumulative_observed_counts: Counter[str] = Counter()
     errors: Counter[str] = Counter()
-    path: Counter[str] = Counter()
+    path: defaultdict[str, float] = defaultdict(float)
     admitted: Counter[str] = Counter()
     for step in rollout.steps:
         visible_now = step.observed and step.observed_location is not None

@@ -1,7 +1,11 @@
 from __future__ import annotations
 
+import math
 from pathlib import Path
 
+import pytest
+
+from cpswm.contracts import EvidenceFactorKind, EvidenceFactorOperator
 from cpswm.system.evaluation_operations.structure_two_fresh_triarm import MultiAxisBelief
 from cpswm.system.evaluation_operations.structure_two_neural_amortized import (
     DEFAULT_MANIFEST,
@@ -81,6 +85,104 @@ def test_trained_mlp_is_deterministic_and_emits_neural_receipt() -> None:
     runtime.revise(_belief(ChangeCause.ACTOR, 0.10))
     assert runtime.neural_proposal_receipts
     assert runtime.ancestry_trace
+    assert len(runtime.importance_revision_receipts) == 2
+    assert all(len(batch) == 24 for batch in runtime.importance_revision_receipts)
+    assert runtime.revision_batches[-1].unresolved_probability > 0.0
+    assert sum(item.posterior_probability for item in runtime.particles) + (
+        runtime.unresolved_probability
+    ) == pytest.approx(1.0)
+    q_receipts = [
+        item
+        for item in runtime.evidence_factor_trace.receipts
+        if item.operator is EvidenceFactorOperator.NEURAL_PROPOSER
+    ]
+    assert q_receipts
+    assert all(item.factor_kind is EvidenceFactorKind.PROPOSAL_DISTRIBUTION for item in q_receipts)
+    likelihood_consumptions = [
+        item for item in runtime.evidence_factor_trace.receipts if item.consumed_as_likelihood
+    ]
+    assert not likelihood_consumptions
+    projection_reads = [
+        item
+        for item in runtime.evidence_factor_trace.receipts
+        if any(
+            source.startswith("visible-posterior-projection:") for source in item.source_factor_ids
+        )
+    ]
+    assert projection_reads
+    assert not any(
+        item.consumed_as_likelihood
+        and any(source.startswith("neural-q:") for source in item.source_factor_ids)
+        for item in runtime.evidence_factor_trace.receipts
+    )
+    assert runtime.evidence_factor_trace.verify_chain()
+
+
+def test_neural_score_is_only_q_and_every_runtime_weight_subtracts_log_q() -> None:
+    design = load_frozen_neural_design(ROOT / DEFAULT_MANIFEST)
+    model = _train_model(
+        tuple(_example(index % 4, float(index % 2)) for index in range(16)), design.model
+    )
+    runtime = NeuralAmortizedParticleRuntime(profile="balanced", model=model, mix=0.9)
+    belief = _belief(ChangeCause.HABIT, 0.8)
+
+    runtime.revise(belief)
+
+    receipts = runtime.importance_revision_receipts[-1]
+    assert receipts
+    for receipt in receipts:
+        target_without_q = (
+            receipt.prior_log_weight
+            + receipt.transition_log_probability
+            + receipt.observation_log_likelihood
+            + receipt.posterior_projection_log_factor
+            + sum(item.log_potential for item in receipt.constraints)
+        )
+        assert receipt.unnormalized_log_weight == pytest.approx(
+            target_without_q - receipt.proposal.proposal_log_probability
+        )
+        assert receipt.proposal.proposal_log_probability <= 0.0
+        assert math.isfinite(receipt.proposal.proposal_log_probability)
+        assert receipt.evidence_semantics == "posterior_projection_not_likelihood"
+        assert receipt.observation_log_likelihood == 0.0
+
+
+def test_same_visible_posterior_snapshot_cannot_be_replayed_as_new_evidence() -> None:
+    design = load_frozen_neural_design(ROOT / DEFAULT_MANIFEST)
+    model = _train_model(
+        tuple(_example(index % 4, float(index % 2)) for index in range(16)), design.model
+    )
+    runtime = NeuralAmortizedParticleRuntime(profile="balanced", model=model, mix=0.7)
+    belief = _belief(ChangeCause.HABIT, 0.8)
+
+    runtime.revise(belief)
+    receipt_count = len(runtime.evidence_factor_trace.receipts)
+    with pytest.raises(ValueError, match="already consumed"):
+        runtime.revise(belief)
+
+    assert len(runtime.evidence_factor_trace.receipts) == receipt_count
+    assert runtime.evidence_factor_trace.verify_chain()
+
+
+def test_systematic_proposal_is_reproducible_but_not_deterministic_top_k() -> None:
+    design = load_frozen_neural_design(ROOT / DEFAULT_MANIFEST)
+    model = _train_model(
+        tuple(_example(index % 4, float(index % 2)) for index in range(16)), design.model
+    )
+    first = NeuralAmortizedParticleRuntime(profile="balanced", model=model, mix=0.8)
+    second = NeuralAmortizedParticleRuntime(profile="balanced", model=model, mix=0.8)
+    belief = _belief(ChangeCause.ACTOR, 0.2)
+
+    first.revise(belief)
+    second.revise(belief)
+
+    assert first.neural_proposal_receipts == second.neural_proposal_receipts
+    assert [item.hypothesis.key for item in first.particles] == [
+        item.hypothesis.key for item in second.particles
+    ]
+    # Systematic sampling may retain repeated high-q hypotheses; each draw is a
+    # proposal sample with an auditable q, not a unique deterministic Top-K row.
+    assert len({item.hypothesis.key for item in first.particles}) < len(first.particles)
 
 
 def test_model_payload_declares_trained_mlp_not_deterministic_heuristic() -> None:

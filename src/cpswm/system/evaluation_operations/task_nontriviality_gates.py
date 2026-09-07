@@ -324,6 +324,7 @@ def _conditional_law_recurrence(streams: Sequence[TargetStream]) -> dict[str, An
     for stream in streams:
         previous: str | None = None
         for step in stream.steps:
+            expected: str | None
             if step.true_trigger and step.observed_value is not None:
                 key, expected = "on_trigger_observed", step.observed_value
             elif step.true_trigger:

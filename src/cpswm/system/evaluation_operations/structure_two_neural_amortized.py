@@ -7,13 +7,21 @@ import json
 import math
 import random
 from collections.abc import Mapping, Sequence
-from dataclasses import asdict, dataclass, replace
+from dataclasses import asdict, dataclass
 from enum import StrEnum
+from itertools import product
 from pathlib import Path
 from statistics import mean
 from typing import Any
+from uuid import UUID
 
-from cpswm.contracts import ProjectTwoDatasetSplit
+from cpswm.contracts import (
+    EvidenceFactorConsumptionTrace,
+    EvidenceFactorKind,
+    EvidenceFactorOperator,
+    EvidenceFactorSourceSemantics,
+    ProjectTwoDatasetSplit,
+)
 from cpswm.system.evaluation_operations.project_two_action_benchmark import (
     ProjectTwoActionBenchmarkV02,
     _FullProjectTwoMethod,
@@ -24,21 +32,37 @@ from cpswm.system.evaluation_operations.project_two_dataset_adapters import (
 )
 from cpswm.system.evaluation_operations.project_two_factorial_benchmark import _CIAVState
 from cpswm.system.evaluation_operations.structure_two_fresh_triarm import (
+    PROFILE_SCALE,
     MultiAxisBelief,
     _action_readout,
+    _ActionParticle,
     _FamilyFeedbackState,
     _file_sha256,
+    _joint_penalties,
     _normalize,
+    _particle_prior_log_weight,
     _VisibleTransformState,
 )
 from cpswm.system.evaluation_operations.structure_two_rejuvenation_gate import (
     FROZEN_PARTICLE_BUDGET,
+)
+from cpswm.system.evaluation_operations.structure_two_selected_method import (
+    NeuralParticleProposal,
+    OrderedActorRole,
+    ParticleChangeCause,
+    ParticleProposalOperation,
+    ParticleRegimeDecision,
+    ParticleRevisionBatch,
+    ParticleRevisionReceipt,
+    TypedParticleState,
+    normalize_particle_revisions,
 )
 from cpswm.system.evaluation_operations.structure_two_sequential_gate import (
     PersistentParticle,
     SequentialGateFamily,
     SequentialParticleRuntime,
     _TargetObjectRoutingState,
+    _transition_log_weight,
     _visible_transform,
 )
 from cpswm.system.evaluation_operations.structure_two_transition_reactivation import (
@@ -49,7 +73,7 @@ from cpswm.system.evaluation_operations.structure_two_transition_reactivation im
 from cpswm.system.evaluation_operations.structure_two_transition_reactivation import (
     _evaluate as _transition_evaluate,
 )
-from cpswm.system.reproducibility import content_sha256
+from cpswm.system.reproducibility import content_sha256, content_uuid
 from cpswm.world_model.habits_transitions import ChangeCause
 
 PROTOCOL_ID = "structure-two-neural-amortized-proposal-gate@0.1"
@@ -314,7 +338,7 @@ def _feature_vector(
     )
 
 
-class _TrainingRecorderRuntime(SequentialParticleRuntime):  # type: ignore[misc]
+class _TrainingRecorderRuntime(SequentialParticleRuntime):
     def __init__(self) -> None:
         super().__init__(profile="balanced")
         self.examples: list[TrainingExample] = []
@@ -445,8 +469,14 @@ def _train_model(
     )
 
 
-class NeuralAmortizedParticleRuntime(SequentialParticleRuntime):  # type: ignore[misc]
-    """A trained visible-belief MLP proposes cause/regime transitions."""
+class NeuralAmortizedParticleRuntime(SequentialParticleRuntime):
+    """Importance-corrected neural proposal over parent/child particle pairs.
+
+    The MLP owns only the proposal distribution ``q``.  Target terms are
+    recomputed from the frozen structured model and normalized through
+    :class:`ParticleRevisionReceipt`; the neural score is never copied into the
+    belief or reused as an observation likelihood.
+    """
 
     def __init__(self, *, profile: str, model: NeuralProposalModel, mix: float) -> None:
         super().__init__(profile=profile)
@@ -457,58 +487,423 @@ class NeuralAmortizedParticleRuntime(SequentialParticleRuntime):  # type: ignore
         self.model = model
         self.mix = mix
         self.neural_proposal_receipts: list[str] = []
+        self.importance_revision_receipts: list[tuple[ParticleRevisionReceipt, ...]] = []
+        self.revision_batches: list[ParticleRevisionBatch] = []
+        self.unresolved_probability = 0.0
+        self.evidence_factor_trace = EvidenceFactorConsumptionTrace()
+        self._consumed_source_updates: set[UUID] = set()
 
-    def revise(self, belief: MultiAxisBelief) -> tuple[PersistentParticle, ...]:
-        parent = (
-            None
-            if not self.particles
-            else max(self.particles, key=lambda item: (item.posterior_probability, item.signature))
-        )
-        predicted_cause, predicted_regime = self.model.predict(_feature_vector(belief, parent))
-        proposal_belief = belief
-        if parent is not None:
-            modal = max(CAUSES, key=lambda cause: (predicted_cause[cause], cause.value))
-            regime_change = predicted_regime >= 0.5
-            cause_conflict = parent.hypothesis.cause is not modal and predicted_cause[modal] >= 0.35
-            regime_conflict = (
-                parent.hypothesis.regime_change != regime_change
-                and abs(predicted_regime - 0.5) >= 0.10
+    @staticmethod
+    def _logsumexp(values: Sequence[float]) -> float:
+        maximum = max(values)
+        return maximum + math.log(sum(math.exp(value - maximum) for value in values))
+
+    @staticmethod
+    def _systematic_draw_indices(
+        probabilities: Sequence[float],
+        *,
+        count: int,
+        seed_material: object,
+    ) -> tuple[int, ...]:
+        """Draw deterministic, reproducible systematic samples with marginal ``q``."""
+
+        digest = content_sha256(seed_material)
+        unit = int(digest[:16], 16) / float(16**16)
+        offset = unit / count
+        cumulative: list[float] = []
+        running = 0.0
+        for probability in probabilities:
+            running += probability
+            cumulative.append(running)
+        cumulative[-1] = 1.0
+        result: list[int] = []
+        cursor = 0
+        for draw_index in range(count):
+            point = offset + draw_index / count
+            while point > cumulative[cursor]:
+                cursor += 1
+            result.append(cursor)
+        return tuple(result)
+
+    def _proposal_distribution(
+        self,
+        belief: MultiAxisBelief,
+        hypotheses: Sequence[_ActionParticle],
+        parents: Sequence[PersistentParticle | None],
+    ) -> tuple[tuple[float, PersistentParticle | None, _ActionParticle], ...]:
+        entries: list[tuple[float, PersistentParticle | None, _ActionParticle]] = []
+        for parent in parents:
+            parent_mass = 1.0 if parent is None else parent.posterior_probability
+            predicted_cause, predicted_regime = self.model.predict(_feature_vector(belief, parent))
+            cause_q = _normalize(
+                {
+                    cause: (1.0 - self.mix) * belief.cause_posterior[cause]
+                    + self.mix * predicted_cause[cause]
+                    for cause in CAUSES
+                }
             )
-            if cause_conflict or regime_conflict:
-                cause = _normalize(
-                    {
-                        item: (1.0 - self.mix) * belief.cause_posterior[item]
-                        + self.mix * predicted_cause[item]
-                        for item in CAUSES
-                    }
+            regime_q = (
+                1.0 - self.mix
+            ) * belief.regime_change_probability + self.mix * predicted_regime
+            for hypothesis in hypotheses:
+                actor_q = max(1e-12, belief.actor_posterior[hypothesis.actor_key])
+                identity_q = max(
+                    1e-12,
+                    belief.identity_target_probability
+                    if hypothesis.identity_target
+                    else 1.0 - belief.identity_target_probability,
                 )
-                proposal_belief = replace(
-                    belief,
-                    cause_posterior=cause,
-                    regime_change_probability=(
-                        (1.0 - self.mix) * belief.regime_change_probability
-                        + self.mix * predicted_regime
-                    ),
-                )
-                uniform = 1.0 / len(self.particles)
-                self.particles = tuple(
-                    replace(particle, posterior_probability=uniform) for particle in self.particles
-                )
-                self.neural_proposal_receipts.append(
-                    content_sha256(
-                        {
-                            "model_hash": self.model.model_hash,
-                            "step_index": self.step_index + 1,
-                            "parent_signature": parent.signature,
-                            "predicted_cause": sorted(
-                                (cause.value, value) for cause, value in predicted_cause.items()
-                            ),
-                            "predicted_regime": predicted_regime,
-                            "mix": self.mix,
-                        }
+                child_q = (
+                    actor_q
+                    * identity_q
+                    * max(1e-12, cause_q[hypothesis.cause])
+                    * max(
+                        1e-12,
+                        regime_q if hypothesis.regime_change else 1.0 - regime_q,
                     )
                 )
-        return tuple(super().revise(proposal_belief))
+                entries.append((parent_mass * child_q, parent, hypothesis))
+        total = sum(item[0] for item in entries)
+        if total <= 0.0 or not math.isfinite(total):
+            raise ValueError("neural proposal distribution has no finite mass")
+        return tuple((mass / total, parent, child) for mass, parent, child in entries)
+
+    def _target_terms(
+        self,
+        belief: MultiAxisBelief,
+        parent: PersistentParticle | None,
+        hypothesis: _ActionParticle,
+    ) -> tuple[float, float, float]:
+        prior_log_weight = (
+            0.0 if parent is None else math.log(max(parent.posterior_probability, 1e-12))
+        )
+        hypotheses = tuple(
+            _ActionParticle(*values)
+            for values in product(
+                tuple(sorted(belief.actor_posterior)),
+                (False, True),
+                tuple(ChangeCause),
+                (False, True),
+            )
+        )
+        if parent is None:
+            transition_log_probability = -math.log(len(hypotheses))
+        else:
+            persistence = {
+                "conservative": 1.30,
+                "balanced": 0.90,
+                "responsive": 0.55,
+            }[self.profile]
+            logits = [
+                _transition_log_weight(parent, child, belief, persistence=persistence)
+                for child in hypotheses
+            ]
+            transition_log_probability = _transition_log_weight(
+                parent, hypothesis, belief, persistence=persistence
+            ) - self._logsumexp(logits)
+        observation_log_likelihood = _particle_prior_log_weight(belief, hypothesis)
+        return prior_log_weight, transition_log_probability, observation_log_likelihood
+
+    def revise(self, belief: MultiAxisBelief) -> tuple[PersistentParticle, ...]:
+        source_update_id = belief.source_update_id or content_uuid(
+            "multi-axis-belief-source", asdict(belief)
+        )
+        if source_update_id in self._consumed_source_updates:
+            raise ValueError("multi-axis posterior snapshot was already consumed")
+        self._consumed_source_updates.add(source_update_id)
+        self.step_index += 1
+        scale = PROFILE_SCALE[self.profile]
+        hypotheses = tuple(
+            _ActionParticle(*values)
+            for values in product(
+                tuple(sorted(belief.actor_posterior)),
+                (False, True),
+                tuple(ChangeCause),
+                (False, True),
+            )
+        )
+        parents: tuple[PersistentParticle | None, ...] = (
+            (None,) if not self.particles else tuple(self.particles)
+        )
+        proposal_entries = self._proposal_distribution(belief, hypotheses, parents)
+        draw_indices = self._systematic_draw_indices(
+            [item[0] for item in proposal_entries],
+            count=self.particle_budget,
+            seed_material={
+                "protocol": PROTOCOL_ID,
+                "model_hash": self.model.model_hash,
+                "step_index": self.step_index,
+                "belief": asdict(belief),
+                "parents": [None if p is None else str(p.particle_id) for p in parents],
+            },
+        )
+        snapshot_id = content_uuid("neural-amortized-snapshot", source_update_id)
+        cluster_id = content_uuid("neural-amortized-evidence-cluster", source_update_id)
+        proposal_factor_id = f"neural-q:{snapshot_id}"
+        proposal_record_id = content_uuid("neural-q-record", snapshot_id)
+        self.evidence_factor_trace.produce_factor(
+            update_id=snapshot_id,
+            evidence_cluster_id=cluster_id,
+            evidence_record_ids=(proposal_record_id,),
+            operator=EvidenceFactorOperator.NEURAL_PROPOSER,
+            factor_id=proposal_factor_id,
+            factor_kind=EvidenceFactorKind.PROPOSAL_DISTRIBUTION,
+            source_semantics=EvidenceFactorSourceSemantics.NEURAL_PROPOSAL,
+            source_record_payloads={
+                proposal_record_id: {
+                    "source_update_id": source_update_id,
+                    "model_hash": self.model.model_hash,
+                    "proposal_probabilities": [item[0] for item in proposal_entries],
+                }
+            },
+            idempotency_key=f"produce:{proposal_factor_id}",
+        )
+        transition_factor_id = f"structured-transition-prior:{snapshot_id}"
+        posterior_projection_factor_id = f"visible-posterior-projection:{snapshot_id}"
+        constraint_factor_id = f"structured-constraints:{snapshot_id}"
+        transition_record_id = content_uuid("structured-transition-record", snapshot_id)
+        constraint_record_id = content_uuid("structured-constraint-record", snapshot_id)
+        for factor_id, kind, model_id, source_semantics, factor_record_id in (
+            (
+                transition_factor_id,
+                EvidenceFactorKind.TRANSITION_PRIOR,
+                None,
+                EvidenceFactorSourceSemantics.STRUCTURED_MODEL,
+                transition_record_id,
+            ),
+            (
+                posterior_projection_factor_id,
+                EvidenceFactorKind.POSTERIOR_SUMMARY,
+                "multi-axis-visible-posterior-projection@0.2",
+                EvidenceFactorSourceSemantics.POSTERIOR_SNAPSHOT,
+                source_update_id,
+            ),
+            (
+                constraint_factor_id,
+                EvidenceFactorKind.STRUCTURAL_CONSTRAINT,
+                None,
+                EvidenceFactorSourceSemantics.STRUCTURED_MODEL,
+                constraint_record_id,
+            ),
+        ):
+            payload = (
+                asdict(belief)
+                if kind is EvidenceFactorKind.POSTERIOR_SUMMARY
+                else {
+                    "profile": self.profile,
+                    "model_hash": self.model.model_hash,
+                    "factor_kind": kind.value,
+                }
+            )
+            self.evidence_factor_trace.produce_factor(
+                update_id=snapshot_id,
+                evidence_cluster_id=cluster_id,
+                evidence_record_ids=(factor_record_id,),
+                operator=EvidenceFactorOperator.PARTICLE_REVISION,
+                factor_id=factor_id,
+                factor_kind=kind,
+                source_semantics=source_semantics,
+                source_record_payloads={factor_record_id: payload},
+                likelihood_model_id=model_id,
+                idempotency_key=f"produce:{factor_id}",
+            )
+        receipts: list[ParticleRevisionReceipt] = []
+        selected: list[tuple[PersistentParticle | None, _ActionParticle]] = []
+        exhaustive_target_logs: list[float] = []
+        for _q, candidate_parent, candidate in proposal_entries:
+            prior, transition, observation = self._target_terms(belief, candidate_parent, candidate)
+            exhaustive_target_logs.append(
+                prior
+                + transition
+                + observation
+                + sum(
+                    constraint.log_potential
+                    for constraint in _joint_penalties(belief, candidate, strength=scale)
+                )
+            )
+        for draw_index, entry_index in enumerate(draw_indices):
+            proposal_probability, candidate_parent, hypothesis = proposal_entries[entry_index]
+            particle_id = content_uuid(
+                "neural-amortized-particle",
+                (
+                    snapshot_id,
+                    draw_index,
+                    hypothesis.key,
+                    None if candidate_parent is None else candidate_parent.particle_id,
+                ),
+            )
+            revision_id = content_uuid(
+                "neural-amortized-revision", (snapshot_id, draw_index, hypothesis.key)
+            )
+            habit_change = hypothesis.cause is ChangeCause.HABIT and hypothesis.regime_change
+            typed_state = TypedParticleState(
+                particle_id=particle_id,
+                parent_particle_id=(
+                    None if candidate_parent is None else candidate_parent.particle_id
+                ),
+                source_snapshot_id=snapshot_id,
+                event_hypothesis_id=content_uuid(
+                    "neural-amortized-event", (snapshot_id, draw_index, hypothesis.key)
+                ),
+                revision_id=revision_id,
+                parent_revision_id=(
+                    None if candidate_parent is None else candidate_parent.revision_id
+                ),
+                ordered_actor_roles=(
+                    OrderedActorRole(role="responsible_actor", actor_key=hypothesis.actor_key),
+                ),
+                instance_association_key=(
+                    "target_instance" if hypothesis.identity_target else "identity_mismatch"
+                ),
+                change_cause=ParticleChangeCause(hypothesis.cause.value),
+                regime_decision=(
+                    ParticleRegimeDecision.CREATE if habit_change else ParticleRegimeDecision.STAY
+                ),
+                regime_id=(
+                    f"{belief.active_regime}:change"
+                    if habit_change
+                    else f"{belief.active_regime}:stay"
+                ),
+                run_length=(
+                    0
+                    if candidate_parent is None or candidate_parent.hypothesis.key != hypothesis.key
+                    else candidate_parent.run_length + 1
+                ),
+                statistic_state_ref=f"rao-blackwellized-location:{belief.active_regime}",
+                ledger_lineage_ref=f"action-only:{snapshot_id}",
+            )
+            proposal = NeuralParticleProposal(
+                proposal_id=content_uuid("neural-amortized-proposal", (snapshot_id, draw_index)),
+                evidence_cluster_id=cluster_id,
+                operation=ParticleProposalOperation.REVISE,
+                source_particle_id=(
+                    None if candidate_parent is None else candidate_parent.particle_id
+                ),
+                source_snapshot_id=snapshot_id,
+                proposed_state=typed_state,
+                proposal_log_probability=math.log(max(proposal_probability, 1e-300)),
+                proposer_model_version=self.model.model_hash,
+                proposer_code_version=PROTOCOL_ID,
+            )
+            prior, transition, observation = self._target_terms(
+                belief, candidate_parent, hypothesis
+            )
+            receipts.append(
+                ParticleRevisionReceipt(
+                    proposal=proposal,
+                    prior_log_weight=prior,
+                    transition_log_probability=transition,
+                    posterior_projection_log_factor=observation,
+                    evidence_semantics="posterior_projection_not_likelihood",
+                    source_posterior_snapshot_id=source_update_id,
+                    observation_log_likelihood=0.0,
+                    constraints=_joint_penalties(belief, hypothesis, strength=scale),
+                )
+            )
+            selected.append((candidate_parent, hypothesis))
+
+        target_log_normalizer = self._logsumexp(exhaustive_target_logs)
+        unresolved_target_log_weight = math.log(0.02) + target_log_normalizer
+        batch = normalize_particle_revisions(
+            tuple(receipts),
+            unresolved_log_weight=(unresolved_target_log_weight + math.log(self.particle_budget)),
+        )
+        revised: list[PersistentParticle] = []
+        for (candidate_parent, hypothesis), receipt, normalized in zip(
+            selected, receipts, batch.particle_weights, strict=True
+        ):
+            state = receipt.proposal.proposed_state
+            revised.append(
+                PersistentParticle(
+                    hypothesis=hypothesis,
+                    particle_id=state.particle_id,
+                    parent_particle_id=state.parent_particle_id,
+                    revision_id=state.revision_id,
+                    posterior_probability=normalized.posterior_probability,
+                    run_length=state.run_length,
+                )
+            )
+            if candidate_parent is not None:
+                self.ancestry_trace.append((candidate_parent.particle_id, state.particle_id))
+        self.particles = tuple(revised)
+        self.unresolved_probability = batch.unresolved_probability
+        self.importance_revision_receipts.append(tuple(receipts))
+        self.revision_batches.append(batch)
+        target_distribution = f"importance-particle-posterior:{snapshot_id}"
+        self.evidence_factor_trace.consume_factor(
+            update_id=snapshot_id,
+            evidence_cluster_id=cluster_id,
+            evidence_record_ids=(proposal_record_id,),
+            operator=EvidenceFactorOperator.PARTICLE_REVISION,
+            factor_id=f"consume:{proposal_factor_id}:{target_distribution}",
+            factor_kind=EvidenceFactorKind.PROPOSAL_DISTRIBUTION,
+            source_factor_ids=(proposal_factor_id,),
+            target_distribution_id=target_distribution,
+            consumed_as_likelihood=False,
+            idempotency_key=f"consume:{proposal_factor_id}:{target_distribution}",
+        )
+        self.evidence_factor_trace.consume_factor(
+            update_id=snapshot_id,
+            evidence_cluster_id=cluster_id,
+            evidence_record_ids=(source_update_id,),
+            operator=EvidenceFactorOperator.PARTICLE_REVISION,
+            factor_id=f"consume:{posterior_projection_factor_id}:{target_distribution}",
+            factor_kind=EvidenceFactorKind.POSTERIOR_SUMMARY,
+            source_factor_ids=(posterior_projection_factor_id,),
+            target_distribution_id=target_distribution,
+            likelihood_model_id="multi-axis-visible-posterior-projection@0.2",
+            consumed_as_likelihood=False,
+            idempotency_key=f"consume:{posterior_projection_factor_id}:{target_distribution}",
+        )
+        self.evidence_factor_trace.consume_factor(
+            update_id=snapshot_id,
+            evidence_cluster_id=cluster_id,
+            evidence_record_ids=(transition_record_id, constraint_record_id),
+            operator=EvidenceFactorOperator.PARTICLE_REVISION,
+            factor_id=f"consume:structured-target:{target_distribution}",
+            factor_kind=EvidenceFactorKind.STRUCTURAL_CONSTRAINT,
+            source_factor_ids=(transition_factor_id, constraint_factor_id),
+            target_distribution_id=target_distribution,
+            consumed_as_likelihood=False,
+            idempotency_key=f"consume:structured-target:{target_distribution}",
+        )
+        self.evidence_factor_trace.derive_factor(
+            update_id=snapshot_id,
+            evidence_cluster_id=cluster_id,
+            evidence_record_ids=(
+                proposal_record_id,
+                transition_record_id,
+                source_update_id,
+                constraint_record_id,
+            ),
+            operator=EvidenceFactorOperator.PARTICLE_REVISION,
+            factor_id=f"posterior:{target_distribution}",
+            factor_kind=EvidenceFactorKind.POSTERIOR_SUMMARY,
+            source_factor_ids=(
+                proposal_factor_id,
+                transition_factor_id,
+                posterior_projection_factor_id,
+                constraint_factor_id,
+            ),
+            target_distribution_id=target_distribution,
+            likelihood_model_id="multi-axis-visible-posterior-projection@0.2",
+            idempotency_key=f"derive:posterior:{target_distribution}",
+        )
+        receipt_hash = content_sha256(
+            {
+                "model_hash": self.model.model_hash,
+                "step_index": self.step_index,
+                "proposal_ids": [str(item.proposal.proposal_id) for item in receipts],
+                "proposal_log_probabilities": [
+                    item.proposal.proposal_log_probability for item in receipts
+                ],
+                "unnormalized_log_weights": [item.unnormalized_log_weight for item in receipts],
+                "unresolved_probability": batch.unresolved_probability,
+            }
+        )
+        self.neural_proposal_receipts.append(receipt_hash)
+        self.resampling_receipts.append(receipt_hash)
+        return self.particles
 
 
 def _parse_neural_parameter(parameter: Any) -> tuple[str, float]:

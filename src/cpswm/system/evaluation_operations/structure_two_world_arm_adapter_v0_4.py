@@ -48,6 +48,8 @@ from cpswm.system.evaluation_operations.project_two_action_benchmark import (
     _FullRerunMethod,
 )
 from cpswm.system.evaluation_operations.project_two_dataset import ProjectTwoReplayDataset
+from cpswm.system.evaluation_operations.project_two_factorial_benchmark import _CIAVState
+from cpswm.system.evaluation_operations.structure_two_fresh_triarm import _action_readout
 from cpswm.system.evaluation_operations.structure_two_world_generator_v0_2 import (
     StructureTwoWorld,
     StructureTwoWorldRollout,
@@ -501,7 +503,7 @@ def make_world_arm_state(
         base = _FullProjectTwoMethod(
             episode,
             owner_threshold=0.4,
-            action_readout=sequential._action_readout(),
+            action_readout=_action_readout(),
         )
         state = sequential._SequentialMultiAxisActionState(
             base,
@@ -509,7 +511,7 @@ def make_world_arm_state(
             profile=str(parameter),
             consolidation=False,
         )
-        state = sequential._CIAVState(
+        state = _CIAVState(
             state,
             dataset,
             episode,
@@ -532,7 +534,7 @@ def make_world_arm_state(
     base = _FullProjectTwoMethod(
         episode,
         owner_threshold=0.4,
-        action_readout=sequential._action_readout(),
+        action_readout=_action_readout(),
     )
     state = neighbor._NeighborMemoryState(
         base,

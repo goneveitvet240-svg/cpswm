@@ -139,9 +139,15 @@ def evaluate_rollout_gate_a(
     last_observed = fallback
     global_rows: deque[tuple[int, str]] = deque()
     global_counts: Counter[str] = Counter()
-    context_rows = {"weekday": deque(), "weekend": deque()}
-    context_counts = {"weekday": Counter(), "weekend": Counter()}
-    errors = Counter()
+    context_rows: dict[str, deque[tuple[int, str]]] = {
+        "weekday": deque(),
+        "weekend": deque(),
+    }
+    context_counts: dict[str, Counter[str]] = {
+        "weekday": Counter(),
+        "weekend": Counter(),
+    }
+    errors: Counter[str] = Counter()
     observed_owner_matches = observed_owner_total = 0
     unobserved_changes = unobserved_total = 0
     previous_true_location: str | None = None

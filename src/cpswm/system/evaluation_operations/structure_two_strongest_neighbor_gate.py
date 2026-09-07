@@ -47,6 +47,7 @@ from cpswm.system.evaluation_operations.project_two_replay_importer import (
 )
 from cpswm.system.evaluation_operations.structure_two_fresh_triarm import (
     MultiAxisBelief,
+    _action_readout,
     _argmax_distribution,
     _FamilyFeedbackState,
     _file_sha256,
@@ -62,7 +63,6 @@ from cpswm.system.evaluation_operations.structure_two_sequential_gate import (
     ReversibleParticleConsolidationLedger,
     SequentialGateArm,
     SequentialGateFamily,
-    _action_readout,
     _SequentialMultiAxisActionState,
     _TargetObjectRoutingState,
     _visible_transform,
@@ -571,7 +571,7 @@ def choose_neighbor_decision(
     )
 
 
-class AttributedPolicyLedger(ReversibleParticleConsolidationLedger):  # type: ignore[misc]
+class AttributedPolicyLedger(ReversibleParticleConsolidationLedger):
     """Hash-chained sufficient-statistic ledger controlled by a write policy."""
 
     def __init__(self) -> None:
@@ -691,7 +691,7 @@ ADAPTER_RECEIPTS: dict[NeighborArm, dict[str, Any]] = {
 }
 
 
-class _NeighborMemoryState(_SequentialMultiAxisActionState):  # type: ignore[misc]
+class _NeighborMemoryState(_SequentialMultiAxisActionState):
     def __init__(
         self,
         state: _FullProjectTwoMethod,
@@ -728,6 +728,13 @@ class _NeighborMemoryState(_SequentialMultiAxisActionState):  # type: ignore[mis
     ) -> dict[UUID, float]:
         truth = self._dataset.truth_for(self._episode.episode_id).truth_by_step[step.step_id]
         target = truth.true_owner_habit_location
+        # A physical verification may confirm one of the arm's registered
+        # candidates, but it must not turn evaluator-only truth into a new
+        # learned-arm action candidate.  An out-of-support target is therefore
+        # represented as an inconclusive verification rather than injected
+        # into the action distribution.
+        if target not in distribution:
+            return {key: float(value) for key, value in _normalize(distribution).items()}
         ranked = _rank_distribution(distribution)
         alternatives = tuple(location for location in ranked if location != target)
         token = f"{PROTOCOL_ID}:{self._episode.episode_id}:{step.step_id}:physical-verify"
@@ -948,7 +955,7 @@ def _state_for_arm(
 ) -> Any:
     sequential_family = family.sequential_family()
     if arm is NeighborArm.CORRECTED_AMG:
-        state = _AMGOpenWorldMethod(episode, mode="amg", parameter=float(parameter))
+        state: Any = _AMGOpenWorldMethod(episode, mode="amg", parameter=float(parameter))
         state.adapter_receipt = {
             "source": "Damen-Hogg AMG",
             "semantic_core": "corrected open-world matched evidence",
@@ -1022,7 +1029,14 @@ def _evaluate(
         parameter,
         max_physical_verifications=max_physical_verifications,
     )
-    metric = evaluator.evaluate_custom_state(dataset, episode, state)
+    metric = evaluator.evaluate_custom_state(
+        dataset,
+        episode,
+        state,
+        prediction_location_scope=(
+            "oracle_evaluator_truth" if arm is NeighborArm.ORACLE else "model_visible"
+        ),
+    )
     operation_counts = dict(getattr(state, "ledger_operation_counts", {}))
     repair_count = operation_counts.get("retract", 0) + operation_counts.get(
         "corrected_revision", 0
@@ -1133,6 +1147,79 @@ def _load_external_dataset(
 ) -> ProjectTwoReplayDataset:
     root = repository_root / "artifacts/project_two_data" / directory
     manifest = json.loads((root / "manifest.json").read_text(encoding="utf-8"))
+    receipt_path = root / "collection_receipt.json"
+    if not receipt_path.is_file():
+        raise ValueError(f"external collection receipt is missing: {receipt_path}")
+    receipt = json.loads(receipt_path.read_text(encoding="utf-8"))
+    unsigned_receipt = dict(receipt)
+    stored_receipt_hash = unsigned_receipt.pop("content_sha256", None)
+    if stored_receipt_hash != content_sha256(unsigned_receipt):
+        raise ValueError("external collection receipt content hash mismatch")
+    expected_protocol = {
+        ProjectTwoDataMaturity.D1_SIMULATOR_ANNOTATED_REPLAY: (
+            "structure-two-procthor-d1-collection-receipt@0.1"
+        ),
+        ProjectTwoDataMaturity.D2_REAL_PERCEPTION_REPLAY: (
+            "structure-two-real-perception-collection-receipt@0.1"
+        ),
+    }[maturity]
+    if receipt.get("protocol") != expected_protocol:
+        raise ValueError("external collection receipt protocol mismatch")
+    if receipt.get("collection_completed") is not True:
+        raise ValueError("external collection receipt does not attest completed collection")
+    if receipt.get("maturity") != maturity.value:
+        raise ValueError("external collection receipt maturity mismatch")
+    if receipt.get("dataset_version") != manifest.get("dataset_version"):
+        raise ValueError("external collection receipt dataset version mismatch")
+    bound_files = {
+        "manifest_file_sha256": root / "manifest.json",
+        "visible_replay_file_sha256": root / "visible_replay.jsonl",
+        "evaluator_truth_file_sha256": root / "evaluator_truth.jsonl",
+    }
+    for field, path in bound_files.items():
+        if receipt.get(field) != _file_sha256(path):
+            raise ValueError(f"external collection receipt {field} mismatch")
+    entry_count = len(manifest.get("entries", ()))
+    if receipt.get("collected_episode_count") != entry_count or entry_count < 1:
+        raise ValueError("external collection receipt episode count mismatch")
+    entries = [
+        json.loads(line)
+        for line in (root / "visible_replay.jsonl").read_text(encoding="utf-8").splitlines()
+        if line
+    ]
+    provenance = {marker for episode in entries for marker in episode.get("provenance", ())}
+    forbidden = {
+        "claim:not-external-simulator-data",
+        "claim:not-real-collection",
+        "generated:StructureTwoActionScenarioGenerator",
+    }
+    if provenance & forbidden:
+        raise ValueError("external dataset provenance contains a development-fixture marker")
+    if maturity is ProjectTwoDataMaturity.D1_SIMULATOR_ANNOTATED_REPLAY:
+        if receipt.get("collection_source") != "ProcTHOR":
+            raise ValueError("D1 collection receipt must identify ProcTHOR as its source")
+        runtime_path = (
+            repository_root
+            / "benchmarks/structure_two/structure_two_procthor_runtime_preflight_v0_1.json"
+        )
+        runtime = json.loads(runtime_path.read_text(encoding="utf-8"))
+        runtime_hash = runtime.get("content_sha256")
+        unsigned_runtime = dict(runtime)
+        unsigned_runtime.pop("content_sha256", None)
+        if runtime_hash != content_sha256(unsigned_runtime):
+            raise ValueError("ProcTHOR runtime receipt content hash mismatch")
+        if receipt.get("runtime_receipt_file_sha256") != _file_sha256(runtime_path):
+            raise ValueError("D1 collection receipt is not bound to the ProcTHOR runtime receipt")
+        for field in (
+            "ai2thor_version",
+            "procthor_version",
+            "procthor_dataset_revision",
+            "ai2thor_build_commit_id",
+        ):
+            if receipt.get(field) != runtime.get(field):
+                raise ValueError(f"D1 collection runtime field mismatch: {field}")
+        if runtime.get("runtime_preflight_passed") is not True:
+            raise ValueError("ProcTHOR runtime preflight did not pass")
     return ProjectTwoReplayFileImporter(
         maturity=maturity,
         dataset_version=str(manifest["dataset_version"]),
@@ -1161,11 +1248,43 @@ def _external_audit(
     )
     report: dict[str, Any] = {}
     for label, directory, maturity in specifications:
-        dataset = _load_external_dataset(
-            repository_root,
-            directory=directory,
-            maturity=maturity,
-        )
+        try:
+            dataset = _load_external_dataset(
+                repository_root,
+                directory=directory,
+                maturity=maturity,
+            )
+        except (FileNotFoundError, KeyError, TypeError, ValueError) as error:
+            visible_path = (
+                repository_root / "artifacts/project_two_data" / directory / "visible_replay.jsonl"
+            )
+            observed_maturities = sorted(
+                {
+                    str(json.loads(line).get("maturity"))
+                    for line in visible_path.read_text(encoding="utf-8").splitlines()
+                    if line
+                }
+            )
+            report[label] = {
+                "status": "UNAVAILABLE_EXTERNAL_COLLECTION_EVIDENCE",
+                "required_maturity": maturity.value,
+                "observed_maturities": observed_maturities,
+                "test_episode_count": 0,
+                "parameters_transferred_without_retuning": False,
+                "correlated_evidence_quarantine_count": 0,
+                "summaries": {},
+                "care_minus_selected_strongest_neighbor_mean": None,
+                "selected_strongest_neighbor": strongest_neighbor.value,
+                "confirmatory": False,
+                "collection_receipt_verified": False,
+                "rejection": str(error),
+                "claim_boundary": (
+                    "Maturity labels alone cannot establish D1/D2 eligibility. A qualifying "
+                    "collection receipt, bound dataset bytes, runtime identity, and eligible "
+                    "provenance are all required."
+                ),
+            }
+            continue
         family = _external_family(label)
         episodes = dataset.visible_episodes(ProjectTwoDatasetSplit.TEST)
         readings = {
@@ -1190,6 +1309,7 @@ def _external_audit(
             for left, right in zip(care, neighbor, strict=True)
         ]
         report[label] = {
+            "status": "AVAILABLE",
             "maturity": maturity.value,
             "test_episode_count": len(episodes),
             "parameters_transferred_without_retuning": True,
@@ -1202,6 +1322,7 @@ def _external_audit(
             "care_minus_selected_strongest_neighbor_mean": mean(differences),
             "selected_strongest_neighbor": strongest_neighbor.value,
             "confirmatory": label == "d1_simulator_annotated_replay",
+            "collection_receipt_verified": True,
         }
     return report
 
@@ -1473,10 +1594,19 @@ def run_structure_two_strongest_neighbor_gate(
                 "corrected_revision",
             )
         ),
-        "d1_transfer_noninferior": external["d1_simulator_annotated_replay"][
-            "care_minus_selected_strongest_neighbor_mean"
-        ]
-        <= 0.05,
+        "d1_transfer_noninferior": (
+            external["d1_simulator_annotated_replay"].get("status") == "AVAILABLE"
+            and external["d1_simulator_annotated_replay"].get(
+                "care_minus_selected_strongest_neighbor_mean"
+            )
+            is not None
+            and float(
+                external["d1_simulator_annotated_replay"][
+                    "care_minus_selected_strongest_neighbor_mean"
+                ]
+            )
+            <= 0.05
+        ),
     }
     provenance_paths = {
         "gate_source_sha256": Path(__file__).resolve(),
@@ -1500,8 +1630,9 @@ def run_structure_two_strongest_neighbor_gate(
     report: dict[str, Any] = {
         "protocol": PROTOCOL_ID,
         "evidence_status": (
-            "D0 fresh-seed strongest-neighbor matched mechanism evidence plus D1/D2 "
-            "transfer audit; not official-code reproduction or robot evidence"
+            "D0 fresh-seed strongest-neighbor matched mechanism evidence; D1/D2 "
+            "transfer is rejected unless a qualifying collection receipt binds dataset bytes, "
+            "runtime identity, maturity, and eligible provenance"
         ),
         "complete_project_two_scope_preserved": True,
         "selected_strongest_published_neighbor": strongest_neighbor.value,
@@ -1537,10 +1668,11 @@ def run_structure_two_strongest_neighbor_gate(
         "limitations": [
             "external neighbors are semantic-faithful matched adapters, not official code",
             "D0 is synthetic and repository-local sealing is not independent custody",
-            "D1 is simulator-annotated development replay rather than physical execution",
-            "D2 contains only three test episodes and is directional",
-            "D2 shared-cluster annotations are quarantined to one visible "
-            "information-gain representative per cluster for CHEH exactly-once compliance",
+            "current D1 source-neutral episodes carry development-fixture provenance and no "
+            "qualifying ProcTHOR collection receipt, so they are rejected",
+            "current D2 example episodes declare D0 development maturity, carry fixture "
+            "provenance, and have no qualifying collection receipt, so they are rejected",
+            "D2 shared-cluster quarantine remains implemented but awaits real D2 replay",
             "O-STaR adapter lacks source RGB-D and voxel inputs",
             "no D3 household longitudinal deployment or D4 robot execution",
         ],

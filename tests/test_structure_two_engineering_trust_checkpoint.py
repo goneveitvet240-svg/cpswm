@@ -34,7 +34,8 @@ def test_checkpoint_rejects_forged_but_fully_rehashed_positive_scope() -> None:
     stored = _stored()
     stored["seven_operator_ablation_authorized"] = True
     stored["positive_output_trust_chain"]["/seven_operator_ablation_authorized"] = (
-        "checkpoint_content+current_p0_manifest+current_source_inventory+"
+        "checkpoint_content+source_bound_command_receipt+current_p0_manifest+"
+        "current_source_inventory+"
         "task_artifact_positive_path_map+fresh_task_specific_recomputation+bound_reports"
     )
     unsigned = dict(stored)
@@ -42,6 +43,24 @@ def test_checkpoint_rejects_forged_but_fully_rehashed_positive_scope() -> None:
     stored["content_sha256"] = MODULE._canonical_sha256(unsigned)
     with pytest.raises(ValueError, match="drift or forged"):
         MODULE.verify_checkpoint(stored, fresh_recomputation=False)
+
+
+def test_audit_receipt_rejects_rehashed_success_with_a_failed_command(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    receipt = json.loads((ROOT / MODULE.AUDIT_RECEIPT).read_text(encoding="utf-8"))
+    receipt["command_runs"][0]["exit_code"] = 1
+    # The attacker retains the positive aggregate and repairs the unkeyed content hash.
+    unsigned = dict(receipt)
+    unsigned.pop("content_sha256")
+    receipt["content_sha256"] = MODULE._canonical_sha256(unsigned)
+    forged = tmp_path / "forged-engineering-audit-receipt.json"
+    forged.write_text(json.dumps(receipt), encoding="utf-8")
+    monkeypatch.setattr(MODULE, "AUDIT_RECEIPT", forged)
+    p0 = json.loads((ROOT / MODULE.P0_MANIFEST).read_text(encoding="utf-8"))
+    with pytest.raises(ValueError, match="aggregate disagrees"):
+        MODULE._verify_audit_receipt(p0)
 
 
 def test_checkpoint_scope_contains_only_current_task_versions() -> None:

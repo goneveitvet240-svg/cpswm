@@ -24,6 +24,11 @@ from .adapters import (
     SemanticQueryCompiler,
     VerificationObservationProvider,
 )
+from .ciav_opceu_loop import (
+    CIAVOPCEUObservationLoop,
+    CIAVOPCEUReceipt,
+    RealizedCIAVObservation,
+)
 from .concurrent_map_task import (
     BayesianRisk,
     BeliefNode,
@@ -119,6 +124,8 @@ __all__ = [
     "BoundActionOutcomeModelRegistry",
     "BridgeSupervision",
     "BridgeSupervisionSource",
+    "CIAVOPCEUObservationLoop",
+    "CIAVOPCEUReceipt",
     "CanonicalExecutionFeedbackReplayer",
     "CauseInformationActiveVerificationPlanner",
     "ConstrainedDependencyBridge",
@@ -181,6 +188,7 @@ __all__ = [
     "ProbabilisticDynamicInstanceGraph",
     "ProbabilisticInstanceGraphUpdate",
     "QueryParseHypothesis",
+    "RealizedCIAVObservation",
     "RevisionAwareEvidenceGraph",
     "SemanticQueryCompiler",
     "StructureTwoCauseBelief",

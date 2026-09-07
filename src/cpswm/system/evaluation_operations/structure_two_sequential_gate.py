@@ -253,21 +253,23 @@ def _visible_transform(
     def transform(step: ProjectTwoReplayStep) -> ProjectTwoReplayStep:
         update: dict[str, Any] = {}
         if step.actor_evidence is not None:
-            evidence = step.actor_evidence
+            actor_evidence = step.actor_evidence
             posterior = {
                 actor: (1.0 - family.actor_ambiguity_mix) * probability
-                + family.actor_ambiguity_mix * evidence.reference_actor_prior[actor]
-                for actor, probability in evidence.actor_posterior.items()
+                + family.actor_ambiguity_mix * actor_evidence.reference_actor_prior[actor]
+                for actor, probability in actor_evidence.actor_posterior.items()
             }
-            update["actor_evidence"] = evidence.model_copy(update={"actor_posterior": posterior})
+            update["actor_evidence"] = actor_evidence.model_copy(
+                update={"actor_posterior": posterior}
+            )
         if step.ordered_role_evidence is not None:
-            evidence = step.ordered_role_evidence
+            role_evidence = step.ordered_role_evidence
             posterior = {
                 role: (1.0 - family.actor_ambiguity_mix) * probability
-                + family.actor_ambiguity_mix * evidence.reference_ordered_role_prior[role]
-                for role, probability in evidence.ordered_role_posterior.items()
+                + family.actor_ambiguity_mix * role_evidence.reference_ordered_role_prior[role]
+                for role, probability in role_evidence.ordered_role_posterior.items()
             }
-            update["ordered_role_evidence"] = evidence.model_copy(
+            update["ordered_role_evidence"] = role_evidence.model_copy(
                 update={"ordered_role_posterior": posterior}
             )
         if step.detection_confidence is not None:
@@ -557,7 +559,7 @@ class ReversibleParticleConsolidationLedger:
         }
 
 
-class _DecoyAwareMultiAxisActionState(_MultiAxisActionState):  # type: ignore[misc]
+class _DecoyAwareMultiAxisActionState(_MultiAxisActionState):
     """Route decoys to the target spine while retaining raw identity evidence."""
 
     def __init__(self, *args: Any, **kwargs: Any) -> None:

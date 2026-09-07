@@ -5,7 +5,7 @@ These pin the four behaviours the specification requires:
 * a normalized ``stay / create / reactivate / unresolved`` posterior;
 * observation-policy recurrence is ruled out (stay, not reactivate);
 * guest recurrence reactivates the guest stage without touching the owner habit;
-* identity switching vetoes a reactivation / create;
+* identity switching is partitioned into an explicit cause exactly once;
 * an old habit recurrence reactivates the matching archived stage.
 """
 
@@ -176,7 +176,7 @@ def test_observation_change_stays_and_rules_out_policy_recurrence():
     assert "observation_policy_recurrence" in decision.alternative_causes_ruled_out
 
 
-def test_identity_switch_vetoes_reactivation():
+def test_identity_switch_is_partitioned_from_non_identity_reactivation():
     reactor = ContextConditionedRegimeReactivator()
     obj = uuid4()
     reactor.add_regime(
@@ -199,7 +199,7 @@ def test_identity_switch_vetoes_reactivation():
         now=BASE,
     )
     assert decision.kind != RegimeDecisionKind.REACTIVATE
-    assert "identity_switch" in decision.alternative_causes_ruled_out
+    assert "identity_switch_partitioned_as_explicit_cause" in decision.alternative_causes_ruled_out
 
 
 def test_guest_recurrence_reactivates_guest_stage_on_guest_stream():
@@ -275,8 +275,6 @@ def test_score_decision_is_pure_and_does_not_mutate_library():
 
 
 def test_apply_decision_rejects_stale_library_version():
-    from cpswm.world_model.habits_transitions import StaleLibraryError
-
     reactor = ContextConditionedRegimeReactivator()
     obj = uuid4()
     view = reactor.view(object_instance_id=obj, actor_id=OWNER)
@@ -412,8 +410,6 @@ def test_decision_cannot_be_replayed_onto_a_different_stream():
     """P0-1: a decision scored for object A / owner must not apply to
     object B / guest even when the per-stream versions collide."""
 
-    from cpswm.world_model.habits_transitions import StaleLibraryError
-
     reactor = ContextConditionedRegimeReactivator()
     obj_a = uuid4()
     obj_b = uuid4()
@@ -452,7 +448,7 @@ def test_decision_cannot_be_replayed_onto_a_different_stream():
     # Re-point the decision at the other stream: same per-stream version (1),
     # but a different live content hash, so it must be rejected.
     tampered = decision.model_copy(update={"object_instance_id": obj_b, "actor_id": GUEST})
-    with pytest.raises(StaleLibraryError):
+    with pytest.raises(ForgedDecisionError):
         reactor.apply_decision(tampered)
 
 
@@ -572,6 +568,8 @@ def test_forged_stay_to_create_is_rejected():
     )
     with pytest.raises(ForgedDecisionError):
         reactor.apply_decision(forged)
+    # A failed forged attempt must not burn the authentic single-use token.
+    assert reactor.apply_decision(decision) == 1
 
 
 def test_forged_habit_to_actor_cause_is_rejected():

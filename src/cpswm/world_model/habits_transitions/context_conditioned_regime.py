@@ -26,6 +26,7 @@ from __future__ import annotations
 
 import secrets
 import threading
+from collections.abc import Mapping
 from copy import deepcopy
 from datetime import datetime
 from enum import StrEnum
@@ -39,7 +40,7 @@ from cpswm.contracts.base import ContractModel, Probability, require_aware
 from cpswm.system.reproducibility import content_sha256
 
 from .cause_factorized_bocpd import ChangeCause
-from .joint_cause_bocpd import JointCauseSnapshot
+from .joint_cause_bocpd import JointCauseSnapshot, RunLengthClock
 
 #: How an (actor, regime) library entry was originally created.
 _CAUSE_OF_CREATION: tuple[ChangeCause, ...] = (
@@ -117,6 +118,8 @@ class RegimeScoringEnvelope(ContractModel):
     #: SHA-256 of the full upstream snapshot (audit binding, not re-scored).
     snapshot_hash: str = Field(pattern=r"^[0-9a-f]{64}$")
     snapshot_timestamp: datetime
+    run_length_clock: RunLengthClock
+    opportunity_index: int = Field(ge=0)
     decision_time: datetime
     library_content_hash: str = Field(pattern=r"^[0-9a-f]{64}$")
     library_version: int = Field(ge=0)
@@ -138,8 +141,8 @@ class RegimeLibraryView(ContractModel):
 
     object_instance_id: UUID
     actor_id: str = Field(min_length=1)
-    entries: tuple[RegimeLibraryEntry, ...]
     active_regime_id: str = Field(min_length=1)
+    entries: tuple[RegimeLibraryEntry, ...]
     library_version: int = Field(ge=0)
     content_hash: str = Field(pattern=r"^[0-9a-f]{64}$")
 
@@ -152,10 +155,13 @@ class RegimeLibraryView(ContractModel):
 
 
 class RegimeDecision(ContractModel):
-    """A normalized stay/create/reactivate/unresolved decision score.
+    """A verified aggregate regime proposal plus its non-identity component.
 
-    The four values are a deterministic heuristic score normalized by softmax,
-    not a calibrated posterior.  A decision is bound to the exact
+    ``decision_score`` is the aggregate destination marginal used for the
+    lifecycle proposal. ``non_identity_decision_score`` is the base component
+    from which the canonical composer derives ``p(Z | C,r,context,library)``.
+    These are model-defined transition probabilities, not observation
+    likelihoods or claims of empirical calibration. A decision is bound to the exact
     ``(object, actor)`` stream, the library content hash, the context hash, and
     the model version it was scored against, so it cannot be replayed onto a
     different stream or under a swapped context.
@@ -164,7 +170,11 @@ class RegimeDecision(ContractModel):
     kind: RegimeDecisionKind
     authority: Literal["ccrr_regime_destination_proposal"] = "ccrr_regime_destination_proposal"
     parameter_write_authorized: bool = False
+    distribution_semantics: Literal[
+        "conditional_regime_transition_probability_not_observation_likelihood"
+    ] = "conditional_regime_transition_probability_not_observation_likelihood"
     decision_score: dict[RegimeDecisionKind, Probability]
+    non_identity_decision_score: dict[RegimeDecisionKind, Probability]
     reactivated_regime_id: str | None = None
     created_regime_id: str | None = None
     decision_time: datetime
@@ -172,6 +182,9 @@ class RegimeDecision(ContractModel):
     #: never caller-supplied identities).
     object_instance_id: UUID
     actor_id: str = Field(min_length=1)
+    #: The concrete regime active when this decision was scored.  STAY maps to
+    #: this identifier; it is never represented by a synthetic ``"current"``.
+    active_regime_id: str = Field(min_length=1)
     #: Reactor-private, single-use token; only the issuing reactor accepts it.
     decision_token: str = Field(min_length=1)
     #: Per-stream library version at scoring time.
@@ -207,8 +220,14 @@ class RegimeDecision(ContractModel):
         expected = set(RegimeDecisionKind)
         if set(self.decision_score) != expected:
             raise ValueError("regime decision score must cover all four kinds")
+        if set(self.non_identity_decision_score) != expected:
+            raise ValueError("non-identity decision score must cover all four kinds")
         if not isclose(sum(self.decision_score.values()), 1.0, rel_tol=0.0, abs_tol=1e-6):
             raise ValueError("regime decision score must sum to one")
+        if not isclose(
+            sum(self.non_identity_decision_score.values()), 1.0, rel_tol=0.0, abs_tol=1e-6
+        ):
+            raise ValueError("non-identity decision score must sum to one")
         if self.context_hash != content_sha256(list(self.context_features)):
             raise ValueError("regime decision context hash does not match")
         if self.scoring_envelope.context_features != self.context_features:
@@ -266,7 +285,7 @@ class ContextConditionedRegimeReactivator:
         attribution_margin: float = 0.15,
         identity_switch_threshold: float = 0.5,
         default_regime_id: str = "stable",
-        model_version: str = "ccrr@0.1",
+        model_version: str = "ccrr@0.2",
         allow_reactivation: bool = True,
     ) -> None:
         if not 0.0 < change_threshold <= 1.0:
@@ -305,7 +324,10 @@ class ContextConditionedRegimeReactivator:
         # Global mutation counter, exposed via ``library_version`` for tests.
         self._version = 0
         # Reactor-private, single-use decision tokens.
-        self._pending_tokens: set[str] = set()
+        # A token is bound to the complete immutable decision payload.  A bare
+        # membership set would let a caller reuse an authentic token in a
+        # forged-but-internally-consistent decision for another empty stream.
+        self._pending_tokens: dict[str, str] = {}
         self._lock = threading.RLock()
 
     def __deepcopy__(self, memo: dict[int, object]) -> ContextConditionedRegimeReactivator:
@@ -323,7 +345,7 @@ class ContextConditionedRegimeReactivator:
         clone._current_regime = dict(self._current_regime)
         clone._stream_versions = dict(self._stream_versions)
         clone._version = self._version
-        clone._pending_tokens = set(self._pending_tokens)
+        clone._pending_tokens = dict(self._pending_tokens)
         return clone
 
     # --- library management --------------------------------------------------
@@ -432,14 +454,17 @@ class ContextConditionedRegimeReactivator:
             segment_cause_posterior=dict(snapshot.segment_cause_posterior),
             snapshot_hash=content_sha256(_snapshot_payload(snapshot)),
             snapshot_timestamp=snapshot.timestamp,
+            run_length_clock=snapshot.run_length_clock,
+            opportunity_index=snapshot.opportunity_index,
             decision_time=now,
             library_content_hash=view.content_hash,
             library_version=view.library_version,
         )
         token = secrets.token_hex(16)
+        decision = self._score_from_envelope(envelope, view, token)
         with self._lock:
-            self._pending_tokens.add(token)
-        return self._score_from_envelope(envelope, view, token)
+            self._pending_tokens[token] = content_sha256(decision.model_dump(mode="python"))
+        return decision
 
     def _score_from_envelope(
         self,
@@ -479,9 +504,11 @@ class ContextConditionedRegimeReactivator:
         observation_mass = p_change * p_observation
         if p_change >= self.change_threshold and p_observation > p_habit:
             ruled_out.append("observation_policy_recurrence")
-        identity_veto = identity_switch_probability >= self.identity_switch_threshold
-        if identity_veto:
-            ruled_out.append("identity_switch")
+        # Identity is partitioned into C=identity by the canonical composer. It
+        # must not also veto or reshape the non-identity CCRR score here.
+        identity_veto = False
+        if identity_switch_probability >= self.identity_switch_threshold:
+            ruled_out.append("identity_switch_partitioned_as_explicit_cause")
 
         is_owner_stream = owner_actor_id is None or actor_id == owner_actor_id
         if p_change >= self.change_threshold and p_actor > p_habit and not is_owner_stream:
@@ -514,8 +541,6 @@ class ContextConditionedRegimeReactivator:
 
         # Habit-change mass that survives the alternative-cause exclusions.
         genuine_habit = p_change * p_habit
-        if identity_veto:
-            genuine_habit = 0.0
 
         # Ambiguity: a real change whose cause is not separable.
         ranked = sorted(cause_posterior.values(), reverse=True) if cause_posterior else [0.0]
@@ -529,37 +554,30 @@ class ContextConditionedRegimeReactivator:
             + 2.0 * p_noise
             + observation_mass
             + (0.0 if not is_owner_stream else p_change * p_actor)
-            + (1.0 if identity_veto else 0.0)
         )
         reactivate_logit = 0.0
-        if (
-            not identity_veto
-            and best_match is not None
-            and best_similarity >= self.similarity_threshold
-        ):
+        if best_match is not None and best_similarity >= self.similarity_threshold:
             reactivate_logit += genuine_habit * best_similarity
             if not is_owner_stream and p_change * p_actor > 0.0:
                 reactivate_logit += p_change * p_actor * best_similarity
         create_logit = 0.0
-        if not identity_veto:
-            has_compatible_match = (
-                best_match is not None and best_similarity >= self.similarity_threshold
-            )
-            if genuine_habit > 0.0 and not has_compatible_match:
-                create_logit += genuine_habit
-            if genuine_habit > 0.0 and not entries and p_change >= self.change_threshold:
-                create_logit += genuine_habit
-            # A guest stream's actor-mixture change may create the *first*
-            # ACTOR-origin stage for that stream (so CCRR can later reactivate
-            # it without an external module pre-seeding the library).
-            genuine_actor = p_change * p_actor
-            if not is_owner_stream and genuine_actor > 0.0 and not has_compatible_match:
-                create_logit += genuine_actor
+        has_compatible_match = (
+            best_match is not None and best_similarity >= self.similarity_threshold
+        )
+        if genuine_habit > 0.0 and not has_compatible_match:
+            create_logit += genuine_habit
+        if genuine_habit > 0.0 and not entries and p_change >= self.change_threshold:
+            create_logit += genuine_habit
+        # A guest stream's actor-mixture change may create the *first*
+        # ACTOR-origin stage for that stream.
+        genuine_actor = p_change * p_actor
+        if not is_owner_stream and genuine_actor > 0.0 and not has_compatible_match:
+            create_logit += genuine_actor
         unresolved_logit = (1.0 if ambiguous_change else 0.0) + (
             p_change * max(0.0, 1.0 - top_margin) if cause_posterior else 0.0
         )
 
-        decision_score = _softmax(
+        non_identity_decision_score = _softmax(
             {
                 RegimeDecisionKind.STAY: stay_logit,
                 RegimeDecisionKind.CREATE: create_logit,
@@ -567,6 +585,12 @@ class ContextConditionedRegimeReactivator:
                 RegimeDecisionKind.UNRESOLVED: unresolved_logit,
             }
         )
+        identity_score = _exclude_memory_transition(non_identity_decision_score)
+        decision_score = {
+            key: (1.0 - identity_switch_probability) * non_identity_decision_score[key]
+            + identity_switch_probability * identity_score[key]
+            for key in RegimeDecisionKind
+        }
         kind = max(decision_score, key=lambda key: decision_score[key])
 
         reactivated_regime_id: str | None = None
@@ -602,11 +626,13 @@ class ContextConditionedRegimeReactivator:
         return RegimeDecision(
             kind=kind,
             decision_score=decision_score,
+            non_identity_decision_score=non_identity_decision_score,
             reactivated_regime_id=reactivated_regime_id,
             created_regime_id=created_regime_id,
             decision_time=now,
             object_instance_id=object_instance_id,
             actor_id=actor_id,
+            active_regime_id=current_regime_id,
             decision_token=decision_token,
             scored_library_version=view.library_version,
             library_content_hash=view.content_hash,
@@ -635,37 +661,10 @@ class ContextConditionedRegimeReactivator:
 
         key = (decision.object_instance_id, decision.actor_id)
         with self._lock:
-            if decision.model_config_hash != self.model_config_hash:
-                raise StaleLibraryError(
-                    "model/config moved since the decision was scored "
-                    "(thresholds, default stage, or model version changed)"
-                )
-            if decision.decision_token not in self._pending_tokens:
-                raise ForgedDecisionError("invalid or already-consumed decision token")
-            self._pending_tokens.remove(decision.decision_token)
-            if decision.scored_library_version != self._stream_version(key):
-                raise StaleLibraryError(
-                    f"stream version moved (scored against "
-                    f"{decision.scored_library_version}, actual "
-                    f"{self._stream_version(key)})"
-                )
-            live_view = self.view(
-                object_instance_id=decision.object_instance_id,
-                actor_id=decision.actor_id,
-            )
-            if live_view.content_hash != decision.library_content_hash:
-                raise StaleLibraryError("library contents changed since the decision was scored")
-            if content_sha256(list(decision.context_features)) != decision.context_hash:
-                raise StaleLibraryError("decision context hash is inconsistent")
-
-            # Re-score from the envelope against the live view and compare every
-            # scoring-relevant field, so a tampered decision (kind / score /
-            # reactivated / created / cause origin) is rejected.
-            recomputed = self._score_from_envelope(
-                decision.scoring_envelope, live_view, decision.decision_token
-            )
-            if not _decisions_equal(decision, recomputed):
-                raise ForgedDecisionError("decision does not match its scoring envelope (forged)")
+            self._verify_decision_locked(decision)
+            # Consume only after successful verification. A forged attempt must
+            # not invalidate the authentic pending decision.
+            self._pending_tokens.pop(decision.decision_token)
 
             if decision.kind == RegimeDecisionKind.REACTIVATE:
                 assert decision.reactivated_regime_id is not None
@@ -697,6 +696,37 @@ class ContextConditionedRegimeReactivator:
             self._stream_versions[key] = self._stream_version(key) + 1
             self._version += 1
             return self._stream_version(key)
+
+    def verify_decision(self, decision: RegimeDecision) -> None:
+        """Verify a pending decision for read-only composition without consuming it."""
+
+        with self._lock:
+            self._verify_decision_locked(decision)
+
+    def _verify_decision_locked(self, decision: RegimeDecision) -> None:
+        key = (decision.object_instance_id, decision.actor_id)
+        if decision.model_config_hash != self.model_config_hash:
+            raise StaleLibraryError("model/config moved since the decision was scored")
+        expected_decision_hash = self._pending_tokens.get(decision.decision_token)
+        if expected_decision_hash is None:
+            raise ForgedDecisionError("invalid or already-consumed decision token")
+        if expected_decision_hash != content_sha256(decision.model_dump(mode="python")):
+            raise ForgedDecisionError("decision token is bound to different decision content")
+        if decision.scored_library_version != self._stream_version(key):
+            raise StaleLibraryError("stream version moved since the decision was scored")
+        live_view = self.view(
+            object_instance_id=decision.object_instance_id,
+            actor_id=decision.actor_id,
+        )
+        if live_view.content_hash != decision.library_content_hash:
+            raise StaleLibraryError("library contents changed since the decision was scored")
+        if content_sha256(list(decision.context_features)) != decision.context_hash:
+            raise StaleLibraryError("decision context hash is inconsistent")
+        recomputed = self._score_from_envelope(
+            decision.scoring_envelope, live_view, decision.decision_token
+        )
+        if not _decisions_equal(decision, recomputed):
+            raise ForgedDecisionError("decision does not match its scoring envelope (forged)")
 
     def decide(
         self,
@@ -802,6 +832,9 @@ def _snapshot_payload(snapshot: JointCauseSnapshot) -> dict[str, object]:
             cause.value: value for cause, value in snapshot.block_reference.items()
         },
         "beam_size": snapshot.beam_size,
+        "run_length_clock": snapshot.run_length_clock.value,
+        "opportunity_index": snapshot.opportunity_index,
+        "elapsed_seconds": snapshot.elapsed_seconds,
     }
 
 
@@ -814,17 +847,31 @@ def _decisions_equal(left: RegimeDecision, right: RegimeDecision) -> bool:
         return False
     if left.parameter_write_authorized != right.parameter_write_authorized:
         return False
+    if left.distribution_semantics != right.distribution_semantics:
+        return False
     if left.reactivated_regime_id != right.reactivated_regime_id:
         return False
     if left.created_regime_id != right.created_regime_id:
         return False
     if left.created_cause_origin != right.created_cause_origin:
         return False
+    if left.active_regime_id != right.active_regime_id:
+        return False
     if set(left.decision_score) != set(right.decision_score):
+        return False
+    if set(left.non_identity_decision_score) != set(right.non_identity_decision_score):
         return False
     return all(
         isclose(left.decision_score[kind], right.decision_score[kind], rel_tol=0.0, abs_tol=1e-9)
         for kind in left.decision_score
+    ) and all(
+        isclose(
+            left.non_identity_decision_score[kind],
+            right.non_identity_decision_score[kind],
+            rel_tol=0.0,
+            abs_tol=1e-9,
+        )
+        for kind in left.non_identity_decision_score
     )
 
 
@@ -832,6 +879,20 @@ def _softmax(logits: dict[RegimeDecisionKind, float]) -> dict[RegimeDecisionKind
     peak = max(logits.values())
     total = sum(exp(value - peak) for value in logits.values())
     return {kind: exp(value - peak) / total for kind, value in logits.items()}
+
+
+def _exclude_memory_transition(
+    probabilities: Mapping[RegimeDecisionKind, float],
+) -> dict[RegimeDecisionKind, float]:
+    displaced = (
+        probabilities[RegimeDecisionKind.CREATE] + probabilities[RegimeDecisionKind.REACTIVATE]
+    )
+    return {
+        RegimeDecisionKind.STAY: probabilities[RegimeDecisionKind.STAY],
+        RegimeDecisionKind.CREATE: 0.0,
+        RegimeDecisionKind.REACTIVATE: 0.0,
+        RegimeDecisionKind.UNRESOLVED: (probabilities[RegimeDecisionKind.UNRESOLVED] + displaced),
+    }
 
 
 def _cause_is_compatible(entry_origin: ChangeCause, dominant_cause: ChangeCause | None) -> bool:

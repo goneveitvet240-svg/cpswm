@@ -263,7 +263,7 @@ def _dataset(
     ).build()
 
 
-class _ConflictFeatureRecorder(ConflictAwareSequentialParticleRuntime):  # type: ignore[misc]
+class _ConflictFeatureRecorder(ConflictAwareSequentialParticleRuntime):
     def __init__(self, *, profile: str) -> None:
         super().__init__(profile=profile)
         self.conflict_features: list[tuple[float, ...]] = []
@@ -423,7 +423,7 @@ def _conflict_target(belief: MultiAxisBelief, parent: PersistentParticle) -> tup
     return cause_conflict or regime_conflict, modal, regime_change
 
 
-class StructuredResidualParticleRuntime(SequentialParticleRuntime):  # type: ignore[misc]
+class StructuredResidualParticleRuntime(SequentialParticleRuntime):
     def __init__(
         self,
         *,

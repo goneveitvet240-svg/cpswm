@@ -3,9 +3,15 @@
 from __future__ import annotations
 
 import argparse
+import sys
 from pathlib import Path
 
-from cpswm.system.evaluation_operations.structure_two_corrected_instrument import (
+REPOSITORY_ROOT = Path(__file__).resolve().parents[2]
+SOURCE_ROOT = REPOSITORY_ROOT / "src"
+if str(SOURCE_ROOT) not in sys.path:
+    sys.path.insert(0, str(SOURCE_ROOT))
+
+from cpswm.system.evaluation_operations.structure_two_corrected_instrument import (  # noqa: E402
     DEFAULT_OUTPUT,
     run_structure_two_corrected_instrument,
     verify_structure_two_corrected_instrument_report,

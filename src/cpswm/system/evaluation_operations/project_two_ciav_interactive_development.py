@@ -70,6 +70,8 @@ SEARCH_SPACE[InteractiveVerificationPolicy.CIAV] = (
 
 @dataclass(frozen=True, slots=True)
 class _OutcomeModel:
+    model_id: str
+    calibration_id: str
     sensitivity: float
     specificity: float
 
@@ -90,8 +92,18 @@ class InteractiveVerificationCase:
 _QUICK_ACTION_ID = uuid5(NAMESPACE_URL, "cpswm-ciav-quick-owner-check@0.1")
 _IDENTITY_ACTION_ID = uuid5(NAMESPACE_URL, "cpswm-ciav-identity-owner-check@0.1")
 _OUTCOME_MODELS = {
-    _QUICK_ACTION_ID: _OutcomeModel(sensitivity=0.80, specificity=0.80),
-    _IDENTITY_ACTION_ID: _OutcomeModel(sensitivity=0.92, specificity=0.92),
+    _QUICK_ACTION_ID: _OutcomeModel(
+        model_id="quick-owner-check-composite-likelihood@0.2",
+        calibration_id="D0-ciav-owner-check-development@2026-09-07",
+        sensitivity=0.80,
+        specificity=0.80,
+    ),
+    _IDENTITY_ACTION_ID: _OutcomeModel(
+        model_id="identity-owner-check-composite-likelihood@0.2",
+        calibration_id="D0-ciav-owner-check-development@2026-09-07",
+        sensitivity=0.92,
+        specificity=0.92,
+    ),
 }
 
 
@@ -111,8 +123,8 @@ def _actions(*, cost_multiplier: float = 1.0) -> tuple[ObservationActionCandidat
             action_id=action_id,
             action_type=ObservationActionType.MICRO_VERIFY,
             label=label,
-            observation_likelihood_model_id=f"{label.replace(' ', '-')}@0.1",
-            calibration_domain="D0-interactive-verification-development",
+            observation_likelihood_model_id=_OUTCOME_MODELS[action_id].model_id,
+            calibration_domain=_OUTCOME_MODELS[action_id].calibration_id,
             outcome_likelihoods={
                 "owner_supported": {
                     hypothesis_ids[cause]: probability
@@ -242,7 +254,9 @@ def _select_action(
                 outcome_models[action.action_id],
             )
             action_net = (
-                decision_value + 0.1 * score.expected_cause_information_gain - score.total_cost
+                decision_value
+                + 0.1 * (score.expected_cause_information_gain or 0.0)
+                - score.total_cost
             )
             candidates.append((action_net, str(action.action_id), action.action_id))
         if not candidates:
@@ -359,10 +373,14 @@ def _evaluate_case(
     actions = _actions(cost_multiplier=cost_multiplier)
     outcome_models = {
         _QUICK_ACTION_ID: _OutcomeModel(
+            model_id=_OUTCOME_MODELS[_QUICK_ACTION_ID].model_id,
+            calibration_id=_OUTCOME_MODELS[_QUICK_ACTION_ID].calibration_id,
             sensitivity=quick_sensitivity,
             specificity=quick_specificity,
         ),
         _IDENTITY_ACTION_ID: _OutcomeModel(
+            model_id=_OUTCOME_MODELS[_IDENTITY_ACTION_ID].model_id,
+            calibration_id=_OUTCOME_MODELS[_IDENTITY_ACTION_ID].calibration_id,
             sensitivity=identity_sensitivity,
             specificity=identity_specificity,
         ),
@@ -443,6 +461,7 @@ def _evaluate_case(
         episode=episode,
         method=ProjectTwoActionMethod.PROJECT_TWO,
         predictions=predictions,
+        prediction_location_scope="model_visible",
         stats=(
             state.revision_calls,
             state.project_one_requests,

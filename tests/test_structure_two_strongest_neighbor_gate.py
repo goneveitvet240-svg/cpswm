@@ -1,11 +1,16 @@
 from __future__ import annotations
 
+import json
+import shutil
 from pathlib import Path
 from uuid import UUID
+
+import pytest
 
 from cpswm.contracts import ProjectTwoDataMaturity, ProjectTwoDatasetSplit
 from cpswm.system.evaluation_operations.project_two_action_benchmark import (
     ProjectTwoActionBenchmarkV02,
+    _locations,
 )
 from cpswm.system.evaluation_operations.structure_two_fresh_triarm import (
     _ActionParticle,
@@ -24,13 +29,13 @@ from cpswm.system.evaluation_operations.structure_two_strongest_neighbor_gate im
     NeighborVisibleDecisionState,
     _dataset,
     _evaluate,
-    _external_family,
+    _file_sha256,
     _load_and_verify_holdout_seeds,
     _load_external_dataset,
-    _quarantine_correlated_evidence,
     choose_neighbor_decision,
     load_frozen_neighbor_design,
 )
+from cpswm.system.reproducibility import content_sha256
 from cpswm.world_model.habits_transitions import ChangeCause
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -167,38 +172,80 @@ def test_all_arms_execute_on_the_same_visible_validation_episode() -> None:
     assert all(reading.metric.step_count == design.max_steps for reading in readings.values())
 
 
-def test_all_arms_quarantine_d2_shared_clusters_on_the_same_visible_stream() -> None:
+def test_oracle_uses_evaluator_truth_scope_without_relaxing_learned_arm_registry() -> None:
     design = load_frozen_neighbor_design(ROOT / DEFAULT_MANIFEST)
-    dataset = _load_external_dataset(
-        ROOT,
-        directory="d2_real_perception_example_v0_1",
-        maturity=ProjectTwoDataMaturity.D2_REAL_PERCEPTION_REPLAY,
+    family = design.families[0]
+    dataset = _dataset(
+        family,
+        validation_seeds=design.validation_seeds,
+        test_seeds=(519991,),
+        max_steps=design.max_steps,
+        split_label="unit-oracle-location-scope",
     )
-    family = _external_family("d2-unit-smoke")
-    episode = dataset.visible_episodes(ProjectTwoDatasetSplit.TEST)[0]
-    evaluator = ProjectTwoActionBenchmarkV02()
-    quarantine_count = sum(_quarantine_correlated_evidence(step)[1] for step in episode.steps)
-
-    readings = {
-        arm: _evaluate(
-            evaluator,
-            dataset,
-            episode,
-            family,
-            arm,
-            design.search_spaces[arm.value][0],
-            max_physical_verifications=design.max_physical_verifications_per_episode,
+    episode = next(
+        candidate
+        for candidate in dataset.visible_episodes(ProjectTwoDatasetSplit.VALIDATION)
+        if any(
+            dataset.truth_for(candidate.episode_id).truth_by_step[step.step_id].true_location
+            not in set(_locations(candidate))
+            for step in candidate.steps
         )
-        for arm in NeighborArm
-    }
-
-    assert quarantine_count > 0
-    assert len({reading.consumed_visible_stream_hash for reading in readings.values()}) == 1
-    assert all(
-        reading.decision_truth_isolation
-        for arm, reading in readings.items()
-        if arm is not NeighborArm.ORACLE
     )
+
+    reading = _evaluate(
+        ProjectTwoActionBenchmarkV02(),
+        dataset,
+        episode,
+        family,
+        NeighborArm.ORACLE,
+        design.search_spaces[NeighborArm.ORACLE.value][0],
+        max_physical_verifications=design.max_physical_verifications_per_episode,
+    )
+
+    assert reading.metric.step_count == design.max_steps
+    assert reading.adapter_receipt["fidelity"] == "oracle_only"
+
+
+def test_d0_sensor_shaped_fixture_cannot_be_relabelled_as_d2_transfer_evidence() -> None:
+    with pytest.raises(ValueError, match="external collection receipt"):
+        _load_external_dataset(
+            ROOT,
+            directory="d2_real_perception_example_v0_1",
+            maturity=ProjectTwoDataMaturity.D2_REAL_PERCEPTION_REPLAY,
+        )
+
+
+def test_maturity_string_and_self_consistent_receipt_cannot_upgrade_d1_fixture(
+    tmp_path: Path,
+) -> None:
+    source = ROOT / "artifacts/project_two_data/d1_generic_development_v0_1"
+    target = tmp_path / "artifacts/project_two_data/d1_generic_development_v0_1"
+    target.mkdir(parents=True)
+    for name in ("manifest.json", "visible_replay.jsonl", "evaluator_truth.jsonl"):
+        shutil.copyfile(source / name, target / name)
+
+    receipt = {
+        "protocol": "structure-two-procthor-d1-collection-receipt@0.1",
+        "collection_completed": True,
+        "collection_source": "ProcTHOR",
+        "maturity": ProjectTwoDataMaturity.D1_SIMULATOR_ANNOTATED_REPLAY.value,
+        "dataset_version": json.loads((target / "manifest.json").read_text())["dataset_version"],
+        "collected_episode_count": len(
+            json.loads((target / "manifest.json").read_text())["entries"]
+        ),
+        "manifest_file_sha256": _file_sha256(target / "manifest.json"),
+        "visible_replay_file_sha256": _file_sha256(target / "visible_replay.jsonl"),
+        "evaluator_truth_file_sha256": _file_sha256(target / "evaluator_truth.jsonl"),
+    }
+    receipt["content_sha256"] = content_sha256(receipt)
+    (target / "collection_receipt.json").write_text(json.dumps(receipt), encoding="utf-8")
+
+    with pytest.raises(ValueError, match="development-fixture marker"):
+        _load_external_dataset(
+            tmp_path,
+            directory="d1_generic_development_v0_1",
+            maturity=ProjectTwoDataMaturity.D1_SIMULATOR_ANNOTATED_REPLAY,
+        )
 
 
 def test_attributed_ledger_hash_chain_replays_exactly_after_correction() -> None:

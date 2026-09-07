@@ -1,0 +1,40 @@
+{
+  "protocol_id": "structure-two-task7-history-support-five-arm@0.2-development",
+  "status": "AUDIT_REPAIRED_BEFORE_V0_2_EXECUTION",
+  "frozen_on": "2026-09-06",
+  "decision_source": "configs/project_two_experiments/structure_two_task7_task8_next_research_decision_v0_1.json",
+  "scenario_seeds": [307],
+  "replicate_seeds": [419],
+  "factor_matrix": "2x2x2x2 attribution-ambiguity x adverse-delayed-feedback x open-world-actor x short-regime",
+  "gaps": 12,
+  "correction_index": 2,
+  "particle_budget": 384,
+  "reservoir_budget": 384,
+  "backward_message_descendants_per_reservoir_entry": 1,
+  "v0_4_failure_control": {
+    "window_length": 3,
+    "rejuvenation_sweeps": 2
+  },
+  "required_arms": [
+    "reservoir_only",
+    "backward_message_only",
+    "combined",
+    "full_rerun_reference",
+    "current_task_7_v0_4_failure_control"
+  ],
+  "registered_endpoints": [
+    "belief_axis_tv_to_full_rerun",
+    "action_distribution_tv_to_full_rerun",
+    "selected_action_match",
+    "owner_contamination",
+    "unresolved_probability",
+    "support_size",
+    "initial_and_marginal_elementary_likelihood_evaluations"
+  ],
+  "equivalence_gate": {
+    "maximum_mean_belief_axis_tv": 0.05,
+    "maximum_mean_action_distribution_tv": 0.05,
+    "minimum_selected_action_match_rate": 0.95
+  },
+  "claim_boundary": "D0 development attribution only; the result cannot rewrite Task-7 v0.4, establish external validity, or authorize a paper claim."
+}

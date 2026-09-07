@@ -488,7 +488,14 @@ def _evaluate(
         max_physical_verifications=design.max_physical_verifications_per_episode,
         prior_floor=design.prior_floor,
     )
-    metric = evaluator.evaluate_custom_state(dataset, episode, state)
+    metric = evaluator.evaluate_custom_state(
+        dataset,
+        episode,
+        state,
+        prediction_location_scope=(
+            "oracle_evaluator_truth" if arm is NeighborArm.ORACLE else "model_visible"
+        ),
+    )
     pricing = price_external_repairs(
         cast(Iterable[Mapping[str, Any]], getattr(state, "external_action_execution_receipts", ())),
         repair_cost=family.repair_cost,

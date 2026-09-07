@@ -21,7 +21,8 @@ def main() -> None:
         "--output",
         type=Path,
         default=Path(
-            "artifacts/project_two_v04_development/structure_two_strongest_neighbor_gate_v0_1.json"
+            "artifacts/project_two_v04_development/"
+            "structure_two_strongest_neighbor_gate_current_source_v0_3.json"
         ),
     )
     args = parser.parse_args()

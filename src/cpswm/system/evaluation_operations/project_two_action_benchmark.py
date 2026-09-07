@@ -28,6 +28,7 @@ from uuid import UUID, uuid4
 from pydantic import Field, model_validator
 
 from cpswm.contracts import (
+    ActionKind,
     ActionOutcomeLikelihoodModel,
     ActionProbability,
     AttributedCause,
@@ -36,6 +37,10 @@ from cpswm.contracts import (
     DecisionContextBinding,
     DecisionSurface,
     EventMechanism,
+    EvidenceFactorConsumptionTrace,
+    EvidenceFactorKind,
+    EvidenceFactorOperator,
+    EvidenceFactorSourceSemantics,
     MapConsistencyRevisions,
     OperatorDiagnostic,
     ProbabilityMass,
@@ -837,9 +842,21 @@ class _FullProjectTwoMethod:
         self._prediction_index = 0
         self._observed_steps: list[ProjectTwoReplayStep] = []
         self.formal_evidence_records_consumed = 0
+        self.evidence_factor_trace = EvidenceFactorConsumptionTrace()
+        self._evidence_factor_by_step: dict[UUID, dict[str, Any]] = {}
+        self._last_evidence_factor_step_id: UUID | None = None
 
-    def observe(self, step: ProjectTwoReplayStep) -> None:
-        step = self.evidence_transform(step)
+    def observe(
+        self,
+        step: ProjectTwoReplayStep,
+        *,
+        _evidence_already_transformed: bool = False,
+    ) -> None:
+        # Full-rerun feedback replays the exact visible records retained in
+        # ``_observed_steps``. Applying a stochastic/stress transform twice
+        # would mutate payload content while retaining the same record IDs.
+        if not _evidence_already_transformed:
+            step = self.evidence_transform(step)
         if step.unified_evidence is not None:
             self.formal_evidence_records_consumed += 1
         if step.before is None or step.after is None or step.observation_opportunity is None:
@@ -902,6 +919,7 @@ class _FullProjectTwoMethod:
         self.last_location = step.after.detected_location_id or self.last_location
         self.unknown_probability = result.actor_posterior.get("unknown_actor", 0.0)
         self._observed_steps.append(step)
+        self._trace_visible_update(step, result)
         # A transition may promote a corrected event that CCRR had quarantined.
         # Refresh its originating trace before the next real planner call.
         self._refresh_application_receipts()
@@ -911,31 +929,45 @@ class _FullProjectTwoMethod:
         distribution = self.spine.action_location_distribution(
             snapshot, readout=self.action_readout
         )
-        action_distribution = self._next_action_distribution(distribution)
-        for index in self._pending_trace_indices:
-            self.revision_action_traces[index] = self.revision_action_traces[index].model_copy(
-                update={
-                    "planner_read_snapshot_id": snapshot.snapshot_id,
-                    "planner_prediction_index": self._prediction_index,
-                    "next_action_distribution": action_distribution,
-                    "operator_diagnostics": (
-                        *self.revision_action_traces[index].operator_diagnostics,
-                        OperatorDiagnostic(
-                            operator=RevisionActionOperator.PLANNER_BELIEF_READ,
-                            executed=True,
-                            changed_state=False,
-                            detail=f"planner consumed snapshot {snapshot.snapshot_id}",
-                        ),
-                    ),
-                }
-            )
-        self._pending_trace_indices.clear()
-        self._prediction_index += 1
-        return _Prediction(
+        prediction = _Prediction(
             put_back=_argmax(self.locations, distribution),
             search_order=tuple(_rank(self.locations, distribution, first=self.last_location)),
             unknown_probability=self.unknown_probability,
         )
+        action_distribution = self._next_action_distribution(prediction)
+        for index in self._pending_trace_indices:
+            self.revision_action_traces[index] = self.revision_action_traces[
+                index
+            ].validated_update(
+                new_belief_snapshot_id=snapshot.snapshot_id,
+                planner_read_snapshot_id=snapshot.snapshot_id,
+                planner_prediction_index=self._prediction_index,
+                planner_prediction_count=self._prediction_index + 1,
+                next_action_distribution=action_distribution,
+                operator_diagnostics=(
+                    *self.revision_action_traces[index].operator_diagnostics,
+                    OperatorDiagnostic(
+                        operator=RevisionActionOperator.PLANNER_BELIEF_READ,
+                        executed=True,
+                        changed_state=False,
+                        detail="planner consumed the structured corrected snapshot id",
+                    ),
+                ),
+            )
+        self._pending_trace_indices.clear()
+        self._trace_action_readout()
+        self._prediction_index += 1
+        return prediction
+
+    def bind_prediction_trace(self, prediction: _Prediction, prediction_index: int) -> None:
+        """Bind the final wrapper-visible prediction to its causal trace."""
+
+        action_distribution = self._next_action_distribution(prediction)
+        for index, trace in enumerate(self.revision_action_traces):
+            if trace.planner_prediction_index == prediction_index:
+                self.revision_action_traces[index] = trace.validated_update(
+                    next_action_distribution=action_distribution
+                )
 
     def _refresh_application_receipts(self) -> None:
         """Project deferred receipts into their final exactly-once trace state."""
@@ -1000,12 +1032,18 @@ class _FullProjectTwoMethod:
                         "new_belief_snapshot_id": snapshot.snapshot_id,
                         "planner_read_snapshot_id": None,
                         "planner_prediction_index": None,
+                        "planner_prediction_count": None,
                         "next_action_distribution": (),
+                        "operator_diagnostics": tuple(
+                            diagnostic
+                            for diagnostic in update["operator_diagnostics"]
+                            if diagnostic.operator is not RevisionActionOperator.PLANNER_BELIEF_READ
+                        ),
                     }
                 )
                 if index not in self._pending_trace_indices:
                     self._pending_trace_indices.append(index)
-            self.revision_action_traces[index] = trace.model_copy(update=update)
+            self.revision_action_traces[index] = trace.validated_update(**update)
 
         request_traces = [
             item for item in self.revision_action_traces if item.project_one_request is not None
@@ -1029,25 +1067,44 @@ class _FullProjectTwoMethod:
             for item in request_traces
         )
 
-    def _next_action_distribution(
-        self, location_distribution: Mapping[UUID, float]
-    ) -> tuple[ActionProbability, ...]:
-        confidence = max(location_distribution.values(), default=0.0)
-        threshold_gap = max(0.0, self.action_utility_threshold - confidence)
-        ask_mass = min(0.5, 0.25 * self.unknown_probability + threshold_gap)
+    def _next_action_distribution(self, prediction: _Prediction) -> tuple[ActionProbability, ...]:
+        ask_mass = min(0.5, 0.25 * prediction.unknown_probability)
         remaining = 1.0 - ask_mass
-        action_weights = {"put_back": 0.45, "search": 0.40, "deliver": 0.15}
+        if prediction.put_back not in self.locations:
+            raise ValueError("put-back action is outside registered locations")
+        if set(prediction.search_order) != set(self.locations) or len(
+            prediction.search_order
+        ) != len(self.locations):
+            raise ValueError(
+                "search order must be an exhaustive permutation of registered locations"
+            )
+        rank_total = len(prediction.search_order) * (len(prediction.search_order) + 1) / 2
+        search_probabilities = {
+            location: (len(prediction.search_order) - rank) / rank_total
+            for rank, location in enumerate(prediction.search_order)
+        }
         items = [
             ActionProbability(
-                action=action,
-                location_id=location,
-                probability=remaining * action_weight * probability,
-            )
-            for action, action_weight in action_weights.items()
-            for location, probability in location_distribution.items()
+                action=ActionKind.PUT_BACK,
+                location_id=prediction.put_back,
+                probability=remaining * 0.45,
+            ),
+            *(
+                ActionProbability(
+                    action=ActionKind.SEARCH,
+                    location_id=location,
+                    probability=remaining * 0.40 * search_probabilities[location],
+                )
+                for location in prediction.search_order
+            ),
+            ActionProbability(
+                action=ActionKind.DELIVER,
+                location_id=prediction.put_back,
+                probability=remaining * 0.15,
+            ),
         ]
         if ask_mass > 0.0:
-            items.append(ActionProbability(action="ask", probability=ask_mass))
+            items.append(ActionProbability(action=ActionKind.ASK, probability=ask_mass))
         return tuple(items)
 
     @staticmethod
@@ -1094,6 +1151,204 @@ class _FullProjectTwoMethod:
             }
         )
 
+    def _trace_visible_update(self, step: ProjectTwoReplayStep, result: Any) -> None:
+        """Bind OPCEU through RGRC without re-consuming posterior summaries."""
+
+        opportunity = step.observation_opportunity
+        if opportunity is None:
+            return
+        update_id = result.event_revision_id
+        unified = step.unified_evidence
+        cluster_id = (
+            unified.evidence_cluster_id
+            if unified is not None
+            else (
+                step.actor_evidence.evidence_cluster_id
+                if step.actor_evidence is not None
+                else content_uuid("runtime-evidence-cluster", {"step_id": step.step_id})
+            )
+        )
+        source_records = tuple(
+            record
+            for record in (
+                opportunity,
+                step.after,
+                unified,
+                step.actor_evidence,
+                step.mechanism_evidence,
+                step.ordered_role_evidence,
+            )
+            if record is not None
+        )
+        record_ids = tuple(dict.fromkeys(record.metadata.record_id for record in source_records))
+        source_payloads = {
+            record.metadata.record_id: record.model_dump(mode="python") for record in source_records
+        }
+        model_id = opportunity.likelihood_model_id
+        observation_factor = f"opceu:{opportunity.metadata.record_id}"
+        target = f"joint-event-posterior:{update_id}"
+        self.evidence_factor_trace.produce_factor(
+            update_id=update_id,
+            evidence_cluster_id=cluster_id,
+            evidence_record_ids=record_ids,
+            operator=EvidenceFactorOperator.OPCEU,
+            factor_id=observation_factor,
+            factor_kind=EvidenceFactorKind.OBSERVATION_LIKELIHOOD,
+            source_semantics=EvidenceFactorSourceSemantics.RAW_OBSERVATION_EVIDENCE,
+            source_record_payloads=source_payloads,
+            likelihood_model_id=model_id,
+            idempotency_key=f"produce:{observation_factor}",
+        )
+        self.evidence_factor_trace.consume_factor(
+            update_id=update_id,
+            evidence_cluster_id=cluster_id,
+            evidence_record_ids=record_ids,
+            operator=EvidenceFactorOperator.PCHMP,
+            factor_id=f"consume:{observation_factor}:{target}",
+            factor_kind=EvidenceFactorKind.OBSERVATION_LIKELIHOOD,
+            source_factor_ids=(observation_factor,),
+            target_distribution_id=target,
+            likelihood_model_id=model_id,
+            consumed_as_likelihood=True,
+            idempotency_key=f"consume:{observation_factor}:{target}",
+        )
+        posterior_factor = f"pchmp:{update_id}"
+        self.evidence_factor_trace.derive_factor(
+            update_id=update_id,
+            evidence_cluster_id=cluster_id,
+            evidence_record_ids=record_ids,
+            operator=EvidenceFactorOperator.PCHMP,
+            factor_id=posterior_factor,
+            factor_kind=EvidenceFactorKind.POSTERIOR_SUMMARY,
+            source_factor_ids=(observation_factor,),
+            target_distribution_id=target,
+            likelihood_model_id=model_id,
+            idempotency_key=f"derive:{posterior_factor}",
+        )
+        cause_factor = f"cf-bocpd:{update_id}"
+        self.evidence_factor_trace.derive_factor(
+            update_id=update_id,
+            evidence_cluster_id=cluster_id,
+            evidence_record_ids=record_ids,
+            operator=EvidenceFactorOperator.CF_BOCPD,
+            factor_id=cause_factor,
+            factor_kind=EvidenceFactorKind.REGIME_TRANSITION,
+            source_factor_ids=(posterior_factor,),
+            target_distribution_id=f"cause-run-length:{update_id}",
+            likelihood_model_id=model_id,
+            idempotency_key=f"derive:{cause_factor}",
+        )
+        regime_factor = f"ccrr:{update_id}"
+        self.evidence_factor_trace.derive_factor(
+            update_id=update_id,
+            evidence_cluster_id=cluster_id,
+            evidence_record_ids=record_ids,
+            operator=EvidenceFactorOperator.CCRR,
+            factor_id=regime_factor,
+            factor_kind=EvidenceFactorKind.REGIME_TRANSITION,
+            source_factor_ids=(cause_factor,),
+            target_distribution_id=f"conditional-regime-transition:{update_id}",
+            likelihood_model_id=model_id,
+            idempotency_key=f"derive:{regime_factor}",
+        )
+        committed = self.spine.is_committed_revision(update_id)
+        rgrc_kwargs = {
+            "update_id": update_id,
+            "evidence_cluster_id": cluster_id,
+            "evidence_record_ids": record_ids,
+            "operator": EvidenceFactorOperator.RGRC,
+            "factor_id": f"rgrc:{update_id}",
+            "factor_kind": (
+                EvidenceFactorKind.COMMIT_DELTA
+                if committed
+                else EvidenceFactorKind.ADMISSION_DECISION
+            ),
+            "source_factor_ids": (regime_factor,),
+            "target_distribution_id": f"slow-habit-ledger:{self.episode.episode_id}",
+            "likelihood_model_id": model_id,
+            "idempotency_key": f"rgrc:{update_id}",
+        }
+        if committed:
+            self.evidence_factor_trace.commit_factor(**rgrc_kwargs)
+        else:
+            self.evidence_factor_trace.derive_factor(**rgrc_kwargs)
+        self._evidence_factor_by_step[step.step_id] = {
+            "update_id": update_id,
+            "cluster_id": cluster_id,
+            "record_ids": record_ids,
+            "model_id": model_id,
+            "posterior_factor": posterior_factor,
+            "regime_factor": regime_factor,
+            "rgrc_factor": f"rgrc:{update_id}",
+        }
+        self._last_evidence_factor_step_id = step.step_id
+
+    def _trace_action_readout(self) -> None:
+        step_id = self._last_evidence_factor_step_id
+        if step_id is None:
+            return
+        binding = self._evidence_factor_by_step[step_id]
+        factor_id = f"action-readout:{binding['update_id']}:{self._prediction_index}"
+        self.evidence_factor_trace.derive_factor(
+            update_id=binding["update_id"],
+            evidence_cluster_id=binding["cluster_id"],
+            evidence_record_ids=binding["record_ids"],
+            operator=EvidenceFactorOperator.ACTION_READOUT,
+            factor_id=factor_id,
+            factor_kind=EvidenceFactorKind.ACTION_OUTCOME,
+            source_factor_ids=(binding["posterior_factor"], binding["rgrc_factor"]),
+            target_distribution_id=f"planner-action:{self.episode.episode_id}",
+            likelihood_model_id=binding["model_id"],
+            idempotency_key=f"derive:{factor_id}",
+        )
+
+    def _trace_feedback_factor(self, feedback: Any, outcome: Any) -> None:
+        cluster_id = content_uuid(
+            "action-feedback-evidence-cluster",
+            {"feedback_record_id": feedback.metadata.record_id},
+        )
+        factor_id = f"action-feedback:{feedback.metadata.record_id}"
+        self.evidence_factor_trace.produce_factor(
+            update_id=outcome.corrected_revision_id,
+            evidence_cluster_id=cluster_id,
+            evidence_record_ids=(feedback.metadata.record_id,),
+            operator=EvidenceFactorOperator.EXECUTION_FEEDBACK,
+            factor_id=factor_id,
+            factor_kind=EvidenceFactorKind.ACTION_LIKELIHOOD,
+            source_semantics=EvidenceFactorSourceSemantics.ACTION_EXECUTION_FEEDBACK,
+            source_record_payloads={
+                feedback.metadata.record_id: feedback.model_dump(mode="python")
+            },
+            likelihood_model_id=feedback.metadata.model_version or "execution-feedback@0.1",
+            idempotency_key=f"produce:{factor_id}",
+        )
+        target = f"revision-posterior:{outcome.superseded_revision_id}"
+        self.evidence_factor_trace.consume_factor(
+            update_id=outcome.corrected_revision_id,
+            evidence_cluster_id=cluster_id,
+            evidence_record_ids=(feedback.metadata.record_id,),
+            operator=EvidenceFactorOperator.ORRER_CHEH,
+            factor_id=f"consume:{factor_id}:{target}",
+            factor_kind=EvidenceFactorKind.ACTION_LIKELIHOOD,
+            source_factor_ids=(factor_id,),
+            target_distribution_id=target,
+            likelihood_model_id=feedback.metadata.model_version or "execution-feedback@0.1",
+            consumed_as_likelihood=True,
+            idempotency_key=f"consume:{factor_id}:{target}",
+        )
+        posterior = f"orrer-cheh:{outcome.corrected_revision_id}:{feedback.metadata.record_id}"
+        self.evidence_factor_trace.derive_factor(
+            update_id=outcome.corrected_revision_id,
+            evidence_cluster_id=cluster_id,
+            evidence_record_ids=(feedback.metadata.record_id,),
+            operator=EvidenceFactorOperator.ORRER_CHEH,
+            factor_id=posterior,
+            factor_kind=EvidenceFactorKind.POSTERIOR_SUMMARY,
+            source_factor_ids=(factor_id,),
+            target_distribution_id=target,
+            idempotency_key=f"derive:{posterior}",
+        )
+
     def feedback(self, step: ProjectTwoReplayStep) -> None:
         step = self.evidence_transform(step)
         history = self.histories.get(step.step_id)
@@ -1121,7 +1376,7 @@ class _FullProjectTwoMethod:
             replay = tuple(self._observed_steps)
             self._observed_steps.clear()
             for observed in replay:
-                self.observe(observed)
+                self.observe(observed, _evidence_already_transformed=True)
             return
         for feedback in step.execution_feedback:
             success = feedback.outcome_distribution.get(RobotActionOutcome.SUCCESS, 0.0)
@@ -1185,13 +1440,14 @@ class _FullProjectTwoMethod:
                 else:
                     self.project_one_rejections += 1
             new_snapshot = self.spine.publish_project_two_revision_snapshot(outcome)
+            self._trace_feedback_factor(feedback, outcome)
             # Multiple feedback records can arrive before one planner tick. Every
             # record in that causal batch points to the final corrected snapshot
             # that the next planner will actually consume.
             for index in self._pending_trace_indices:
-                self.revision_action_traces[index] = self.revision_action_traces[index].model_copy(
-                    update={"new_belief_snapshot_id": new_snapshot.snapshot_id}
-                )
+                self.revision_action_traces[index] = self.revision_action_traces[
+                    index
+                ].validated_update(new_belief_snapshot_id=new_snapshot.snapshot_id)
             trace = self._trace(
                 feedback=feedback,
                 outcome=outcome,
@@ -1201,35 +1457,6 @@ class _FullProjectTwoMethod:
             )
             self.revision_action_traces.append(trace)
             self._pending_trace_indices.append(len(self.revision_action_traces) - 1)
-
-        # Close the feedback -> corrected snapshot -> planner edge immediately.
-        # A later robot observation may legitimately create yet another snapshot,
-        # but cannot be used as a substitute for proving this feedback was read.
-        if self._pending_trace_indices:
-            snapshot = self.spine.current_snapshot
-            distribution = self.spine.action_location_distribution(snapshot)
-            action_distribution = self._next_action_distribution(distribution)
-            for index in self._pending_trace_indices:
-                self.revision_action_traces[index] = self.revision_action_traces[index].model_copy(
-                    update={
-                        "new_belief_snapshot_id": snapshot.snapshot_id,
-                        "planner_read_snapshot_id": snapshot.snapshot_id,
-                        "planner_prediction_index": self._prediction_index,
-                        "next_action_distribution": action_distribution,
-                        "operator_diagnostics": (
-                            *self.revision_action_traces[index].operator_diagnostics,
-                            OperatorDiagnostic(
-                                operator=RevisionActionOperator.PLANNER_BELIEF_READ,
-                                executed=True,
-                                changed_state=False,
-                                detail=(
-                                    f"planner consumed corrected snapshot {snapshot.snapshot_id}"
-                                ),
-                            ),
-                        ),
-                    }
-                )
-            self._pending_trace_indices.clear()
 
     @staticmethod
     def _mass(values: Mapping[str, float]) -> tuple[ProbabilityMass, ...]:
@@ -1355,6 +1582,7 @@ class _FullProjectTwoMethod:
             unknown_mechanism_actor_mass_after=self._mass(
                 outcome.unknown_mechanism_actor_mass_after
             ),
+            owner_key=self.episode.owner_actor_key,
             owner_mass_before=outcome.owner_mass_before,
             owner_mass_after=outcome.owner_mass_after,
             project_one_request=request_trace,
@@ -1945,7 +2173,11 @@ class ProjectTwoActionBenchmarkV02:
             predictions = []
             for step in episode.steps:
                 state.observe(step)
-                predictions.append(state.predict())
+                prediction = state.predict()
+                binder = getattr(state, "bind_prediction_trace", None)
+                if binder is not None:
+                    binder(prediction, len(predictions))
+                predictions.append(prediction)
                 state.feedback(step)
             stats = (
                 state.revision_calls,
@@ -1964,6 +2196,11 @@ class ProjectTwoActionBenchmarkV02:
             method=method,
             predictions=predictions,
             stats=stats,
+            prediction_location_scope=(
+                "oracle_evaluator_truth"
+                if method is ProjectTwoActionMethod.ORACLE
+                else "model_visible"
+            ),
         )
 
     def evaluate_custom_state(
@@ -1971,6 +2208,10 @@ class ProjectTwoActionBenchmarkV02:
         dataset: ProjectTwoReplayDataset,
         episode: ProjectTwoReplayEpisode,
         state: _ReplayMethod,
+        *,
+        prediction_location_scope: Literal[
+            "model_visible", "oracle_evaluator_truth"
+        ] = "model_visible",
     ) -> ActionCaseMetric:
         """Score a plug-in method through the frozen v0.2 action evaluator.
 
@@ -1978,16 +2219,21 @@ class ProjectTwoActionBenchmarkV02:
         own track/ablation label. This avoids copying metric or truth handling.
         """
 
-        predictions = []
+        predictions: list[_Prediction] = []
         for step in episode.steps:
             state.observe(step)
-            predictions.append(state.predict())
+            prediction = state.predict()
+            binder = getattr(state, "bind_prediction_trace", None)
+            if binder is not None:
+                binder(prediction, len(predictions))
+            predictions.append(prediction)
             state.feedback(step)
         return self._score_predictions(
             dataset=dataset,
             episode=episode,
             method=ProjectTwoActionMethod.PROJECT_TWO,
             predictions=predictions,
+            prediction_location_scope=prediction_location_scope,
             stats=(
                 state.revision_calls,
                 state.project_one_requests,
@@ -2008,6 +2254,7 @@ class ProjectTwoActionBenchmarkV02:
         episode: ProjectTwoReplayEpisode,
         method: ProjectTwoActionMethod,
         predictions: list[_Prediction],
+        prediction_location_scope: Literal["model_visible", "oracle_evaluator_truth"],
         stats: tuple[
             int,
             int,
@@ -2031,16 +2278,26 @@ class ProjectTwoActionBenchmarkV02:
         ordered_truth = [truth.truth_by_step[step.step_id] for step in episode.steps]
         locations = _locations(episode)
         registered_locations = set(locations)
+        evaluator_locations = registered_locations | {
+            location
+            for target in ordered_truth
+            for location in (target.true_location, target.true_owner_habit_location)
+        }
+        permitted_prediction_locations = (
+            evaluator_locations
+            if prediction_location_scope == "oracle_evaluator_truth"
+            else registered_locations
+        )
         for prediction in predictions:
             if not isinstance(prediction, _Prediction):
                 raise TypeError("method prediction must use the registered _Prediction contract")
-            if prediction.put_back not in registered_locations:
+            if prediction.put_back not in permitted_prediction_locations:
                 raise ValueError("put-back action names an unregistered location")
             if not prediction.search_order:
                 raise ValueError("search plan must contain at least one registered location")
             if len(set(prediction.search_order)) != len(prediction.search_order):
                 raise ValueError("search plan cannot inspect the same location twice")
-            if not set(prediction.search_order) <= registered_locations:
+            if not set(prediction.search_order) <= permitted_prediction_locations:
                 raise ValueError("search plan names an unregistered location")
             if isinstance(prediction.unknown_probability, bool) or not isinstance(
                 prediction.unknown_probability, (float, int)
@@ -2049,9 +2306,9 @@ class ProjectTwoActionBenchmarkV02:
             if not 0.0 <= prediction.unknown_probability <= 1.0:
                 raise ValueError("unknown probability must be in [0, 1]")
         # Evaluator truth may name a location that never entered the visible
-        # replay under low observation coverage.  Keep it countable for scoring
-        # without adding it to the model-visible action candidates in
-        # ``locations`` below.
+        # replay under low observation coverage.  Only the explicitly labelled
+        # oracle arm may emit that evaluator-only location.  It remains absent
+        # from every learned/ablated arm's registered action candidates.
         persistent_counts: defaultdict[UUID, float] = defaultdict(
             float,
             {location: 0.0 for location in locations},
@@ -2141,46 +2398,63 @@ class ProjectTwoActionBenchmarkV02:
                     detail = detail.replace(source, replacement)
                 diagnostics.append(diagnostic.model_copy(update={"detail": detail}))
             request = raw_trace.project_one_request
-            trace = raw_trace.model_copy(
-                update={
-                    "corrected_revision_id": corrected_id,
-                    "project_one_request": (
-                        None
-                        if request is None
-                        else request.model_copy(update={"corrected_revision_id": corrected_id})
-                    ),
-                    "application_receipt_id": (
-                        None
-                        if raw_trace.application_receipt_id is None
-                        else content_uuid("benchmark-application-receipt", identity)
-                    ),
-                    "old_belief_snapshot_id": old_snapshot_id,
-                    "new_belief_snapshot_id": new_snapshot_id,
-                    "planner_read_snapshot_id": planner_snapshot_id,
-                    "operator_diagnostics": tuple(diagnostics),
-                }
+            trace = raw_trace.validated_update(
+                corrected_revision_id=corrected_id,
+                project_one_request=(
+                    None
+                    if request is None
+                    else request.model_copy(update={"corrected_revision_id": corrected_id})
+                ),
+                application_receipt_id=(
+                    None
+                    if raw_trace.application_receipt_id is None
+                    else content_uuid("benchmark-application-receipt", identity)
+                ),
+                old_belief_snapshot_id=old_snapshot_id,
+                new_belief_snapshot_id=new_snapshot_id,
+                planner_read_snapshot_id=planner_snapshot_id,
+                operator_diagnostics=tuple(diagnostics),
             )
-            trace_index = min(trace.planner_prediction_index or 0, n - 1)
+            if trace.evaluator_utility is not None or trace.evaluator_regret is not None:
+                raise ValueError("raw revision trace cannot arrive pre-scored by the evaluator")
+            if trace.planner_prediction_index is None:
+                enriched_traces.append(trace)
+                continue
+            if trace.planner_prediction_count is None:
+                raise ValueError("planner trace is missing its emitted prediction count")
+            trace_index = trace.planner_prediction_index
+            if trace_index >= n or trace.planner_prediction_count > n:
+                raise ValueError("planner prediction index exceeds the actual prediction sequence")
             target = ordered_truth[trace_index]
             put_candidates = [
-                item for item in trace.next_action_distribution if item.action == "put_back"
+                item
+                for item in trace.next_action_distribution
+                if item.action is ActionKind.PUT_BACK
             ]
             search_candidates = [
-                item for item in trace.next_action_distribution if item.action == "search"
+                item for item in trace.next_action_distribution if item.action is ActionKind.SEARCH
             ]
             selected_put = (
-                max(put_candidates, key=lambda item: item.probability).location_id
+                max(
+                    enumerate(put_candidates),
+                    key=lambda pair: (pair[1].probability, -pair[0]),
+                )[1].location_id
                 if put_candidates
                 else None
             )
             ranked_search_locations = tuple(
                 item.location_id
-                for item in sorted(
-                    search_candidates,
-                    key=lambda item: (-item.probability, str(item.location_id)),
+                for _, item in sorted(
+                    enumerate(search_candidates),
+                    key=lambda pair: (-pair[1].probability, pair[0]),
                 )
                 if item.location_id is not None
             )
+            actual_prediction = predictions[trace_index]
+            if selected_put != actual_prediction.put_back:
+                raise ValueError("trace put-back distribution disagrees with the actual prediction")
+            if ranked_search_locations != actual_prediction.search_order:
+                raise ValueError("trace search distribution disagrees with the actual prediction")
             try:
                 trace_inspected = ranked_search_locations.index(target.true_location) + 1
                 trace_target_found = True
@@ -2194,24 +2468,26 @@ class ProjectTwoActionBenchmarkV02:
             )
             regret = float(selected_put != target.true_owner_habit_location) + trace_search_regret
             enriched_traces.append(
-                trace.model_copy(
-                    update={
-                        "evaluator_utility": 2.0 - regret,
-                        "evaluator_regret": regret,
-                        "operator_diagnostics": (
-                            *trace.operator_diagnostics,
-                            OperatorDiagnostic(
-                                operator=RevisionActionOperator.UTILITY_ACTION_SELECTION,
-                                executed=True,
-                                changed_state=False,
-                                detail=(
-                                    f"frozen evaluator scored planner index {trace_index}: "
-                                    f"utility={2.0 - regret}, regret={regret}, "
-                                    f"search_regret={trace_search_regret}"
-                                ),
+                trace.validated_update(
+                    evaluator_utility=2.0 - regret,
+                    evaluator_regret=regret,
+                    evaluator_prediction_count=n,
+                    evaluator_true_location_id=target.true_location,
+                    evaluator_true_owner_habit_location_id=(target.true_owner_habit_location),
+                    evaluator_registered_location_count=len(locations),
+                    operator_diagnostics=(
+                        *trace.operator_diagnostics,
+                        OperatorDiagnostic(
+                            operator=RevisionActionOperator.UTILITY_ACTION_SELECTION,
+                            executed=True,
+                            changed_state=False,
+                            detail=(
+                                f"frozen evaluator scored planner index {trace_index}: "
+                                f"utility={2.0 - regret}, regret={regret}, "
+                                f"search_regret={trace_search_regret}"
                             ),
                         ),
-                    }
+                    ),
                 )
             )
         return ActionCaseMetric(
@@ -2326,6 +2602,8 @@ __all__ = [
     "FIDELITY",
     "PARAMETER_SPACE",
     "ActionCaseMetric",
+    "ActionReadout",
+    "ActionReadoutConfig",
     "AggregateMetric",
     "BenchmarkFidelity",
     "MethodTuningSelection",

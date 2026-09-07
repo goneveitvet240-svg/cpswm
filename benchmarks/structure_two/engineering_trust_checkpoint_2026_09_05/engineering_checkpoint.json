@@ -18,6 +18,22 @@
     "final_authorization_binds_policy_and_root_signature": true,
     "caller_backdated_freshness_closed": true
   },
+  "audit_execution_receipt": {
+    "path": "benchmarks/structure_two/engineering_trust_checkpoint_2026_09_05/engineering_audit_receipt.json",
+    "file_sha256": "00c865262c9c332ee128a6a40e692184dd3f67854f4454e3ac52793a10b92811",
+    "content_sha256": "562240665957fd7231b0cdfc2c5231139e31bd363bd36876e3fc3642d4054d46",
+    "source_manifest_sha256": "d6c772c82ff1c677c856cbbc4de03c2b74074778c1368d7dc99d708eca315fbb",
+    "command_passes": {
+      "p0_adversarial_tests": true,
+      "core_pytest": true,
+      "mypy_src": true,
+      "ruff_lint": true,
+      "ruff_format": true,
+      "compileall": true,
+      "git_diff_check": true
+    },
+    "all_commands_passed": true
+  },
   "task_results": [
     {
       "result_id": "task_7_v0_4",
@@ -70,15 +86,15 @@
   ],
   "p0_content_manifest": {
     "path": "benchmarks/p0_checkpoint/content_manifest_v0_2.json",
-    "file_sha256": "cfdda2a32eb19f9cf51ed7d8170b6f38cc0a1fc576d943c42f67f52adafceda2",
-    "manifest_sha256": "c30df4f16acd5ee271c968b0f24e5f39805e5aad93503b60df863d6d69589733",
+    "file_sha256": "405d991ed99e718517777f4384d55337400f9cda18fb57629902e6a84b0e921e",
+    "manifest_sha256": "d6c772c82ff1c677c856cbbc4de03c2b74074778c1368d7dc99d708eca315fbb",
     "current_and_self_consistent": true
   },
   "historical_v0_5_source_bundle_audit": {
     "path": "benchmarks/structure_two/structure_two_world_source_bundle_v0_5_compatibility_audit.json",
-    "file_sha256": "9fb12bf915017c217af5f1193283b84cffa8c189b1cee4e1e988ec36a2fb1065",
-    "current_file_count": 282,
-    "current_source_bundle_sha256": "d88db93a8477cc87c4798888a2f3c57b116588e34c7a0806329beaab5a14eb48",
+    "file_sha256": "df1d67e9826e8a3363058c7ae6f9a4d8c77b734b7770e193ec1f3dafb1c21098",
+    "current_file_count": 292,
+    "current_source_bundle_sha256": "bc73861f15bbaac3fc1c29a0a3f7ee73eb459b733526cb1895579720fbb8a4ed",
     "historical_bundle_compatible_with_current_tree": false,
     "historical_evidence_rewritten": false
   },
@@ -133,28 +149,36 @@
   "seven_operator_ablation_authorized": false,
   "external_validity_established": false,
   "independent_custody_established": false,
-  "claim_boundary": "Only the bound Task 7 v0.4, Task 8 v0.4, and Task 10 D0 results may be called recomputable D0 evidence. Task 7 and Task 8 both retain FAIL. The checkpoint does not establish external validity, formal Task-10 resolution, Gate-B execution, seven-operator efficacy, or external method superiority.",
+  "claim_boundary": "Only after the source-bound local command receipt passes may the bound Task 7 v0.4, Task 8 v0.4, and Task 10 D0 results be called recomputable D0 evidence. Task 7 and Task 8 both retain FAIL. The checkpoint does not establish external validity, formal Task-10 resolution, Gate-B execution, seven-operator efficacy, or external method superiority.",
   "positive_output_trust_chain": {
-    "/engineering_trust_gate_passed": "checkpoint_content+current_p0_manifest+current_source_inventory+task_artifact_positive_path_map+fresh_task_specific_recomputation+bound_reports",
-    "/recomputable_d0_evidence_allowed": "checkpoint_content+current_p0_manifest+current_source_inventory+task_artifact_positive_path_map+fresh_task_specific_recomputation+bound_reports",
-    "/p0_repairs/forged_complete_positive_path_closed": "checkpoint_content+current_p0_manifest+current_source_inventory+task_artifact_positive_path_map+fresh_task_specific_recomputation+bound_reports",
-    "/p0_repairs/authorization_schema_config_custody_drift_closed": "checkpoint_content+current_p0_manifest+current_source_inventory+task_artifact_positive_path_map+fresh_task_specific_recomputation+bound_reports",
-    "/p0_repairs/manifest_and_current_source_inventory_drift_closed": "checkpoint_content+current_p0_manifest+current_source_inventory+task_artifact_positive_path_map+fresh_task_specific_recomputation+bound_reports",
-    "/p0_repairs/formal_runtime_engine_and_trace_digest_frozen": "checkpoint_content+current_p0_manifest+current_source_inventory+task_artifact_positive_path_map+fresh_task_specific_recomputation+bound_reports",
-    "/p0_repairs/registry_identity_replacement_and_clone_closed": "checkpoint_content+current_p0_manifest+current_source_inventory+task_artifact_positive_path_map+fresh_task_specific_recomputation+bound_reports",
-    "/p0_repairs/final_authorization_binds_policy_and_root_signature": "checkpoint_content+current_p0_manifest+current_source_inventory+task_artifact_positive_path_map+fresh_task_specific_recomputation+bound_reports",
-    "/p0_repairs/caller_backdated_freshness_closed": "checkpoint_content+current_p0_manifest+current_source_inventory+task_artifact_positive_path_map+fresh_task_specific_recomputation+bound_reports",
-    "/task_results/0/positive_output_trust_chain_complete": "checkpoint_content+current_p0_manifest+current_source_inventory+task_artifact_positive_path_map+fresh_task_specific_recomputation+bound_reports",
-    "/task_results/0/fresh_task_specific_recomputation_verified": "checkpoint_content+current_p0_manifest+current_source_inventory+task_artifact_positive_path_map+fresh_task_specific_recomputation+bound_reports",
-    "/task_results/1/positive_output_trust_chain_complete": "checkpoint_content+current_p0_manifest+current_source_inventory+task_artifact_positive_path_map+fresh_task_specific_recomputation+bound_reports",
-    "/task_results/1/fresh_task_specific_recomputation_verified": "checkpoint_content+current_p0_manifest+current_source_inventory+task_artifact_positive_path_map+fresh_task_specific_recomputation+bound_reports",
-    "/task_results/2/positive_output_trust_chain_complete": "checkpoint_content+current_p0_manifest+current_source_inventory+task_artifact_positive_path_map+fresh_task_specific_recomputation+bound_reports",
-    "/task_results/2/fresh_task_specific_recomputation_verified": "checkpoint_content+current_p0_manifest+current_source_inventory+task_artifact_positive_path_map+fresh_task_specific_recomputation+bound_reports",
-    "/task_results/2/definition_and_rerun_complete": "checkpoint_content+current_p0_manifest+current_source_inventory+task_artifact_positive_path_map+fresh_task_specific_recomputation+bound_reports",
-    "/task_results/3/positive_output_trust_chain_complete": "checkpoint_content+current_p0_manifest+current_source_inventory+task_artifact_positive_path_map+fresh_task_specific_recomputation+bound_reports",
-    "/task_results/3/fresh_task_specific_recomputation_verified": "checkpoint_content+current_p0_manifest+current_source_inventory+task_artifact_positive_path_map+fresh_task_specific_recomputation+bound_reports",
-    "/task_results/3/definition_and_rerun_complete": "checkpoint_content+current_p0_manifest+current_source_inventory+task_artifact_positive_path_map+fresh_task_specific_recomputation+bound_reports",
-    "/p0_content_manifest/current_and_self_consistent": "checkpoint_content+current_p0_manifest+current_source_inventory+task_artifact_positive_path_map+fresh_task_specific_recomputation+bound_reports"
+    "/engineering_trust_gate_passed": "checkpoint_content+source_bound_command_receipt+current_p0_manifest+current_source_inventory+task_artifact_positive_path_map+fresh_task_specific_recomputation+bound_reports",
+    "/recomputable_d0_evidence_allowed": "checkpoint_content+source_bound_command_receipt+current_p0_manifest+current_source_inventory+task_artifact_positive_path_map+fresh_task_specific_recomputation+bound_reports",
+    "/p0_repairs/forged_complete_positive_path_closed": "checkpoint_content+source_bound_command_receipt+current_p0_manifest+current_source_inventory+task_artifact_positive_path_map+fresh_task_specific_recomputation+bound_reports",
+    "/p0_repairs/authorization_schema_config_custody_drift_closed": "checkpoint_content+source_bound_command_receipt+current_p0_manifest+current_source_inventory+task_artifact_positive_path_map+fresh_task_specific_recomputation+bound_reports",
+    "/p0_repairs/manifest_and_current_source_inventory_drift_closed": "checkpoint_content+source_bound_command_receipt+current_p0_manifest+current_source_inventory+task_artifact_positive_path_map+fresh_task_specific_recomputation+bound_reports",
+    "/p0_repairs/formal_runtime_engine_and_trace_digest_frozen": "checkpoint_content+source_bound_command_receipt+current_p0_manifest+current_source_inventory+task_artifact_positive_path_map+fresh_task_specific_recomputation+bound_reports",
+    "/p0_repairs/registry_identity_replacement_and_clone_closed": "checkpoint_content+source_bound_command_receipt+current_p0_manifest+current_source_inventory+task_artifact_positive_path_map+fresh_task_specific_recomputation+bound_reports",
+    "/p0_repairs/final_authorization_binds_policy_and_root_signature": "checkpoint_content+source_bound_command_receipt+current_p0_manifest+current_source_inventory+task_artifact_positive_path_map+fresh_task_specific_recomputation+bound_reports",
+    "/p0_repairs/caller_backdated_freshness_closed": "checkpoint_content+source_bound_command_receipt+current_p0_manifest+current_source_inventory+task_artifact_positive_path_map+fresh_task_specific_recomputation+bound_reports",
+    "/audit_execution_receipt/command_passes/p0_adversarial_tests": "checkpoint_content+source_bound_command_receipt+current_p0_manifest+current_source_inventory+task_artifact_positive_path_map+fresh_task_specific_recomputation+bound_reports",
+    "/audit_execution_receipt/command_passes/core_pytest": "checkpoint_content+source_bound_command_receipt+current_p0_manifest+current_source_inventory+task_artifact_positive_path_map+fresh_task_specific_recomputation+bound_reports",
+    "/audit_execution_receipt/command_passes/mypy_src": "checkpoint_content+source_bound_command_receipt+current_p0_manifest+current_source_inventory+task_artifact_positive_path_map+fresh_task_specific_recomputation+bound_reports",
+    "/audit_execution_receipt/command_passes/ruff_lint": "checkpoint_content+source_bound_command_receipt+current_p0_manifest+current_source_inventory+task_artifact_positive_path_map+fresh_task_specific_recomputation+bound_reports",
+    "/audit_execution_receipt/command_passes/ruff_format": "checkpoint_content+source_bound_command_receipt+current_p0_manifest+current_source_inventory+task_artifact_positive_path_map+fresh_task_specific_recomputation+bound_reports",
+    "/audit_execution_receipt/command_passes/compileall": "checkpoint_content+source_bound_command_receipt+current_p0_manifest+current_source_inventory+task_artifact_positive_path_map+fresh_task_specific_recomputation+bound_reports",
+    "/audit_execution_receipt/command_passes/git_diff_check": "checkpoint_content+source_bound_command_receipt+current_p0_manifest+current_source_inventory+task_artifact_positive_path_map+fresh_task_specific_recomputation+bound_reports",
+    "/audit_execution_receipt/all_commands_passed": "checkpoint_content+source_bound_command_receipt+current_p0_manifest+current_source_inventory+task_artifact_positive_path_map+fresh_task_specific_recomputation+bound_reports",
+    "/task_results/0/positive_output_trust_chain_complete": "checkpoint_content+source_bound_command_receipt+current_p0_manifest+current_source_inventory+task_artifact_positive_path_map+fresh_task_specific_recomputation+bound_reports",
+    "/task_results/0/fresh_task_specific_recomputation_verified": "checkpoint_content+source_bound_command_receipt+current_p0_manifest+current_source_inventory+task_artifact_positive_path_map+fresh_task_specific_recomputation+bound_reports",
+    "/task_results/1/positive_output_trust_chain_complete": "checkpoint_content+source_bound_command_receipt+current_p0_manifest+current_source_inventory+task_artifact_positive_path_map+fresh_task_specific_recomputation+bound_reports",
+    "/task_results/1/fresh_task_specific_recomputation_verified": "checkpoint_content+source_bound_command_receipt+current_p0_manifest+current_source_inventory+task_artifact_positive_path_map+fresh_task_specific_recomputation+bound_reports",
+    "/task_results/2/positive_output_trust_chain_complete": "checkpoint_content+source_bound_command_receipt+current_p0_manifest+current_source_inventory+task_artifact_positive_path_map+fresh_task_specific_recomputation+bound_reports",
+    "/task_results/2/fresh_task_specific_recomputation_verified": "checkpoint_content+source_bound_command_receipt+current_p0_manifest+current_source_inventory+task_artifact_positive_path_map+fresh_task_specific_recomputation+bound_reports",
+    "/task_results/2/definition_and_rerun_complete": "checkpoint_content+source_bound_command_receipt+current_p0_manifest+current_source_inventory+task_artifact_positive_path_map+fresh_task_specific_recomputation+bound_reports",
+    "/task_results/3/positive_output_trust_chain_complete": "checkpoint_content+source_bound_command_receipt+current_p0_manifest+current_source_inventory+task_artifact_positive_path_map+fresh_task_specific_recomputation+bound_reports",
+    "/task_results/3/fresh_task_specific_recomputation_verified": "checkpoint_content+source_bound_command_receipt+current_p0_manifest+current_source_inventory+task_artifact_positive_path_map+fresh_task_specific_recomputation+bound_reports",
+    "/task_results/3/definition_and_rerun_complete": "checkpoint_content+source_bound_command_receipt+current_p0_manifest+current_source_inventory+task_artifact_positive_path_map+fresh_task_specific_recomputation+bound_reports",
+    "/p0_content_manifest/current_and_self_consistent": "checkpoint_content+source_bound_command_receipt+current_p0_manifest+current_source_inventory+task_artifact_positive_path_map+fresh_task_specific_recomputation+bound_reports"
   },
-  "content_sha256": "f3050082d0dc2ccfdcff3fe8ddabac422e02a8217d06ef0412b7a018b64d512c"
+  "content_sha256": "83d1ecaba03e23f5916322e7a8aed05c3a30bbaca9941b5c8af2cefca851ec9b"
 }

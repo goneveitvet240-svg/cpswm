@@ -205,6 +205,7 @@ def run_project_two_replay_evidence(
             episode=episode,
             method=ProjectTwoActionMethod.PROJECT_TWO,
             predictions=predictions,
+            prediction_location_scope="model_visible",
             stats=stats,
         )
         truth = dataset.truth_for(episode.episode_id)

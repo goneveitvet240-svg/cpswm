@@ -1,0 +1,129 @@
+{
+  "protocol": "structure-two-engineering-audit-receipt@1.0",
+  "authority": "LOCAL_EXECUTION_ONLY",
+  "source_manifest_path": "benchmarks/p0_checkpoint/content_manifest_v0_2.json",
+  "source_manifest_file_sha256": "405d991ed99e718517777f4384d55337400f9cda18fb57629902e6a84b0e921e",
+  "source_manifest_sha256": "d6c772c82ff1c677c856cbbc4de03c2b74074778c1368d7dc99d708eca315fbb",
+  "command_runs": [
+    {
+      "command_id": "p0_adversarial_tests",
+      "argv": [
+        ".venv/bin/pytest",
+        "-q",
+        "tests/test_structure_two_trusted_ablation_authorization.py",
+        "tests/test_structure_two_gate_b_v0_8_raw_formal_execution.py",
+        "tests/test_structure_two_comparator_typed_dual_gate_b_v0_8.py"
+      ],
+      "start_timestamp": "2026-09-06T19:36:54.581216+00:00",
+      "end_timestamp": "2026-09-06T19:36:59.058416+00:00",
+      "exit_code": 0,
+      "stdout_path": "benchmarks/structure_two/engineering_trust_checkpoint_2026_09_05/engineering_audit_logs/p0_adversarial_tests.stdout.log",
+      "stdout_sha256": "3465dfdabcd2a6655674fd82ca948c9c444aa28eae2b9f9be50a59480d529f2f",
+      "stderr_path": "benchmarks/structure_two/engineering_trust_checkpoint_2026_09_05/engineering_audit_logs/p0_adversarial_tests.stderr.log",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "command_id": "core_pytest",
+      "argv": [
+        ".venv/bin/pytest",
+        "-n",
+        "auto",
+        "-q",
+        "--ignore=tests/test_structure_two_engineering_trust_checkpoint.py"
+      ],
+      "start_timestamp": "2026-09-06T19:36:59.058820+00:00",
+      "end_timestamp": "2026-09-06T19:52:34.859571+00:00",
+      "exit_code": 0,
+      "stdout_path": "benchmarks/structure_two/engineering_trust_checkpoint_2026_09_05/engineering_audit_logs/core_pytest.stdout.log",
+      "stdout_sha256": "2b5c06fb395c42bcf2c24b6c357961cd4236355ec9429f8a4c83af78a2adf1b8",
+      "stderr_path": "benchmarks/structure_two/engineering_trust_checkpoint_2026_09_05/engineering_audit_logs/core_pytest.stderr.log",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "command_id": "mypy_src",
+      "argv": [
+        ".venv/bin/mypy",
+        "src"
+      ],
+      "start_timestamp": "2026-09-06T19:52:34.860220+00:00",
+      "end_timestamp": "2026-09-06T19:52:35.066707+00:00",
+      "exit_code": 0,
+      "stdout_path": "benchmarks/structure_two/engineering_trust_checkpoint_2026_09_05/engineering_audit_logs/mypy_src.stdout.log",
+      "stdout_sha256": "d949b987631f913b338b28e86dff11742b230f2daf30dff31fa370daf3de2951",
+      "stderr_path": "benchmarks/structure_two/engineering_trust_checkpoint_2026_09_05/engineering_audit_logs/mypy_src.stderr.log",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "command_id": "ruff_lint",
+      "argv": [
+        ".venv/bin/ruff",
+        "check",
+        "src",
+        "tests",
+        "apps"
+      ],
+      "start_timestamp": "2026-09-06T19:52:35.067100+00:00",
+      "end_timestamp": "2026-09-06T19:52:35.102947+00:00",
+      "exit_code": 0,
+      "stdout_path": "benchmarks/structure_two/engineering_trust_checkpoint_2026_09_05/engineering_audit_logs/ruff_lint.stdout.log",
+      "stdout_sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+      "stderr_path": "benchmarks/structure_two/engineering_trust_checkpoint_2026_09_05/engineering_audit_logs/ruff_lint.stderr.log",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "command_id": "ruff_format",
+      "argv": [
+        ".venv/bin/ruff",
+        "format",
+        "--check",
+        "src",
+        "tests",
+        "apps"
+      ],
+      "start_timestamp": "2026-09-06T19:52:35.103259+00:00",
+      "end_timestamp": "2026-09-06T19:52:35.114629+00:00",
+      "exit_code": 0,
+      "stdout_path": "benchmarks/structure_two/engineering_trust_checkpoint_2026_09_05/engineering_audit_logs/ruff_format.stdout.log",
+      "stdout_sha256": "3e0e2e4b468f1a4577c8fc56c1eafe0cbd9b87918aab4744b1aa7f4c6591bf64",
+      "stderr_path": "benchmarks/structure_two/engineering_trust_checkpoint_2026_09_05/engineering_audit_logs/ruff_format.stderr.log",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "command_id": "compileall",
+      "argv": [
+        ".venv/bin/python",
+        "-m",
+        "compileall",
+        "-q",
+        "src",
+        "apps",
+        "tests"
+      ],
+      "start_timestamp": "2026-09-06T19:52:35.114923+00:00",
+      "end_timestamp": "2026-09-06T19:52:35.181136+00:00",
+      "exit_code": 0,
+      "stdout_path": "benchmarks/structure_two/engineering_trust_checkpoint_2026_09_05/engineering_audit_logs/compileall.stdout.log",
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr_path": "benchmarks/structure_two/engineering_trust_checkpoint_2026_09_05/engineering_audit_logs/compileall.stderr.log",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "command_id": "git_diff_check",
+      "argv": [
+        "git",
+        "diff",
+        "--check"
+      ],
+      "start_timestamp": "2026-09-06T19:52:35.183050+00:00",
+      "end_timestamp": "2026-09-06T19:52:35.205057+00:00",
+      "exit_code": 0,
+      "stdout_path": "benchmarks/structure_two/engineering_trust_checkpoint_2026_09_05/engineering_audit_logs/git_diff_check.stdout.log",
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr_path": "benchmarks/structure_two/engineering_trust_checkpoint_2026_09_05/engineering_audit_logs/git_diff_check.stderr.log",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "all_commands_passed": true,
+  "claim_boundary": "This receipt binds local command outputs to the current source manifest. It does not establish independent custody, historical authenticity, or external validity.",
+  "content_sha256": "562240665957fd7231b0cdfc2c5231139e31bd363bd36876e3fc3642d4054d46"
+}

@@ -43,12 +43,28 @@ from __future__ import annotations
 from collections.abc import Mapping, Sequence
 from dataclasses import dataclass, replace
 from datetime import datetime
+from enum import StrEnum
 from itertools import combinations
 from math import exp, isfinite, log, pi
 
 from .cause_factorized_bocpd import ChangeCause
 
 _LOG_2PI = log(2.0 * pi)
+
+
+class RunLengthClock(StrEnum):
+    """The unit advanced by one CF-BOCPD update.
+
+    An effective opportunity is an OPCEU-authorized chance to observe the
+    tracked stream, including a miss or occlusion.  A CIAV verification record
+    linked to the current effective opportunity does not create an extra tick;
+    its separately model-bound evidence factor updates the same inference step.
+    Wall-clock duration remains a covariate and never silently changes the
+    discrete run length.
+    """
+
+    EFFECTIVE_OBSERVATION_OPPORTUNITY = "effective_observation_opportunity"
+
 
 #: Causes that own a resettable long-term segment (noise does not).
 SUBSTANTIVE_CAUSES: tuple[ChangeCause, ...] = tuple(
@@ -148,12 +164,20 @@ class CauseSignalFrame:
 
     timestamp: datetime
     signals: Mapping[ChangeCause, float]
+    opportunity_index: int | None = None
+    elapsed_seconds: float | None = None
 
     def __post_init__(self) -> None:
         if set(self.signals) != set(ChangeCause):
             raise ValueError("signal frame must provide a level for every change cause")
         if any(not isfinite(level) or not 0.0 <= level <= 1.0 for level in self.signals.values()):
             raise ValueError("signal levels must be finite and in [0, 1]")
+        if self.opportunity_index is not None and self.opportunity_index < 0:
+            raise ValueError("opportunity_index must be non-negative")
+        if self.elapsed_seconds is not None and (
+            not isfinite(self.elapsed_seconds) or self.elapsed_seconds < 0.0
+        ):
+            raise ValueError("elapsed_seconds must be finite and non-negative")
 
 
 @dataclass(frozen=True, slots=True)
@@ -194,6 +218,12 @@ class JointCauseSnapshot:
     block_reference: Mapping[ChangeCause, float]
     #: Number of hypotheses retained after pruning (persistent state size).
     beam_size: int
+    #: Run length advances once per effective OPCEU observation opportunity.
+    run_length_clock: RunLengthClock = RunLengthClock.EFFECTIVE_OBSERVATION_OPPORTUNITY
+    #: Monotone opportunity index used for this update (auto-assigned for legacy callers).
+    opportunity_index: int = 0
+    #: Physical time is metadata/covariate, not the run-length unit.
+    elapsed_seconds: float | None = None
 
     def __post_init__(self) -> None:
         scalar_probabilities = {
@@ -220,6 +250,12 @@ class JointCauseSnapshot:
                 for probability in probabilities
             ):
                 raise ValueError(f"{name} values must lie in [0, 1]")
+        if self.opportunity_index < 0:
+            raise ValueError("opportunity_index must be non-negative")
+        if self.elapsed_seconds is not None and (
+            not isfinite(self.elapsed_seconds) or self.elapsed_seconds < 0.0
+        ):
+            raise ValueError("elapsed_seconds must be finite and non-negative")
 
     def marginal_cause_posterior(self) -> dict[ChangeCause, float]:
         marginal: dict[ChangeCause, float] = dict.fromkeys(ChangeCause, 0.0)
@@ -346,6 +382,7 @@ class JointCauseFactorizedBOCPD:
         self._maximum_run_length = maximum_run_length
         self._reset_matrix = reset_matrix or CauseResetMatrix()
         self._model_version = model_version
+        self._run_length_clock = RunLengthClock.EFFECTIVE_OBSERVATION_OPPORTUNITY
         self.reset_online()
 
     @staticmethod
@@ -364,6 +401,7 @@ class JointCauseFactorizedBOCPD:
 
         self._online_beam = self._fresh_beam()
         self._online_last_timestamp: datetime | None = None
+        self._online_last_opportunity_index: int | None = None
 
     def observe_online(self, frame: CauseSignalFrame) -> JointCauseSnapshot:
         """Advance exactly one posterior step for a new chronological frame."""
@@ -373,8 +411,22 @@ class JointCauseFactorizedBOCPD:
             and frame.timestamp <= self._online_last_timestamp
         ):
             raise ValueError("online frames must have unique increasing timestamps")
-        self._online_beam, snapshot = self._step(self._online_beam, frame)
+        opportunity_index = (
+            0
+            if self._online_last_opportunity_index is None
+            else self._online_last_opportunity_index + 1
+        )
+        if frame.opportunity_index is not None:
+            if (
+                self._online_last_opportunity_index is not None
+                and frame.opportunity_index <= self._online_last_opportunity_index
+            ):
+                raise ValueError("opportunity indices must be unique and increasing")
+            opportunity_index = frame.opportunity_index
+        resolved_frame = replace(frame, opportunity_index=opportunity_index)
+        self._online_beam, snapshot = self._step(self._online_beam, resolved_frame)
         self._online_last_timestamp = frame.timestamp
+        self._online_last_opportunity_index = opportunity_index
         return snapshot
 
     def run(
@@ -396,9 +448,16 @@ class JointCauseFactorizedBOCPD:
 
         beam = self._fresh_beam()
         snapshots: list[JointCauseSnapshot] = []
-        for frame in frames:
-            beam, snapshot = self._step(beam, frame)
+        last_opportunity_index: int | None = None
+        for sequential_index, frame in enumerate(frames):
+            opportunity_index = (
+                sequential_index if frame.opportunity_index is None else frame.opportunity_index
+            )
+            if last_opportunity_index is not None and opportunity_index <= last_opportunity_index:
+                raise ValueError("opportunity indices must be unique and increasing")
+            beam, snapshot = self._step(beam, replace(frame, opportunity_index=opportunity_index))
             snapshots.append(snapshot)
+            last_opportunity_index = opportunity_index
 
         eligible = snapshots[warmup_steps:]
         detected: dict[ChangeCause, datetime | None] = {}
@@ -421,8 +480,13 @@ class JointCauseFactorizedBOCPD:
         )
 
     def _step(
-        self, beam: list[_Hypothesis], frame: CauseSignalFrame
+        self,
+        beam: list[_Hypothesis],
+        frame: CauseSignalFrame,
     ) -> tuple[list[_Hypothesis], JointCauseSnapshot]:
+        if frame.opportunity_index is None:
+            raise ValueError("CF-BOCPD step requires a resolved opportunity index")
+        opportunity_index = frame.opportunity_index
         cfg = self._config
         signals = frame.signals
         noise_level = signals[ChangeCause.NOISE]
@@ -503,7 +567,12 @@ class JointCauseFactorizedBOCPD:
         # block references now come from exactly the same distribution.
         children.sort(key=lambda item: item[1].log_weight, reverse=True)
         survivors = _renormalize_pairs(children[: self._beam_width])
-        snapshot = self._snapshot(survivors, frame.timestamp)
+        snapshot = self._snapshot(
+            survivors,
+            frame.timestamp,
+            opportunity_index=opportunity_index,
+            elapsed_seconds=frame.elapsed_seconds,
+        )
         beam = [hypothesis for _event, hypothesis in survivors]
         return beam, snapshot
 
@@ -511,6 +580,9 @@ class JointCauseFactorizedBOCPD:
         self,
         survivors: list[tuple[frozenset[ChangeCause] | ChangeCause | None, _Hypothesis]],
         timestamp: datetime,
+        *,
+        opportunity_index: int,
+        elapsed_seconds: float | None,
     ) -> JointCauseSnapshot:
         cfg = self._config
         joint: dict[tuple[int, ChangeCause], float] = {}
@@ -618,4 +690,7 @@ class JointCauseFactorizedBOCPD:
             transient_noise_probability=noise_mass,
             block_reference=block_reference,
             beam_size=len(survivors),
+            run_length_clock=self._run_length_clock,
+            opportunity_index=opportunity_index,
+            elapsed_seconds=elapsed_seconds,
         )

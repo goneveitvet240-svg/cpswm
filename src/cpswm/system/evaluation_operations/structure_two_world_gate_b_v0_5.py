@@ -218,7 +218,7 @@ def run_structure_two_world_gate_b_v0_5(
 def verify_gate_b_report_v0_5(
     report_path: Path, *, repository_root: Path, recompute: bool = True
 ) -> dict[str, Any]:
-    report = json.loads(report_path.read_text(encoding="utf-8"))
+    report: dict[str, Any] = json.loads(report_path.read_text(encoding="utf-8"))
     unsigned = dict(report)
     stored = unsigned.pop("content_sha256", None)
     if not isinstance(stored, str) or content_sha256(unsigned) != stored:

@@ -353,6 +353,11 @@ class ParticleRevisionReceipt(ContractModel):
     prior_log_weight: float
     transition_log_probability: float = Field(le=0.0)
     observation_log_likelihood: float
+    posterior_projection_log_factor: float = 0.0
+    evidence_semantics: Literal[
+        "raw_observation_likelihood", "posterior_projection_not_likelihood"
+    ] = "raw_observation_likelihood"
+    source_posterior_snapshot_id: UUID | None = None
     constraints: tuple[StructuredConstraint, ...]
 
     @model_validator(mode="after")
@@ -361,9 +366,19 @@ class ParticleRevisionReceipt(ContractModel):
             self.prior_log_weight,
             self.transition_log_probability,
             self.observation_log_likelihood,
+            self.posterior_projection_log_factor,
         )
         if not all(isfinite(value) for value in numeric_terms):
             raise ValueError("particle weight terms must be finite")
+        if self.evidence_semantics == "posterior_projection_not_likelihood":
+            if self.observation_log_likelihood != 0.0:
+                raise ValueError(
+                    "a posterior projection cannot also claim an observation likelihood"
+                )
+            if self.source_posterior_snapshot_id is None:
+                raise ValueError("a posterior projection requires its source snapshot identity")
+        elif self.posterior_projection_log_factor != 0.0:
+            raise ValueError("raw-likelihood revisions cannot carry a posterior projection factor")
         constraint_factors = tuple(constraint.factor for constraint in self.constraints)
         if len(constraint_factors) != len(set(constraint_factors)):
             raise ValueError("a structured weight factor may appear only once per particle")
@@ -386,6 +401,7 @@ class ParticleRevisionReceipt(ContractModel):
             self.prior_log_weight
             + self.transition_log_probability
             + self.observation_log_likelihood
+            + self.posterior_projection_log_factor
             + sum(constraint.log_potential for constraint in self.constraints)
             - self.proposal.proposal_log_probability
         )

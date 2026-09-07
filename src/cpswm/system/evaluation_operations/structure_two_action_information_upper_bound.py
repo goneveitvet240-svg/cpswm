@@ -152,7 +152,7 @@ class _PredictionTraceState:
         del step
 
 
-class _TrueActorTransitionState(_TransitionReactivationState):  # type: ignore[misc]
+class _TrueActorTransitionState(_TransitionReactivationState):
     """Inject only evaluator true actor before the particle proposal is revised."""
 
     def __init__(
@@ -274,7 +274,7 @@ def _top2_readout_oracle(
 ) -> tuple[tuple[_Prediction, ...], int, dict[str, int]]:
     predictions: list[_Prediction] = []
     interventions = 0
-    support = Counter()
+    support: Counter[str] = Counter()
     for prediction, truth in zip(base, truths, strict=True):
         top2 = tuple(dict.fromkeys((prediction.put_back, *prediction.search_order[:2])))
         put_back = prediction.put_back
@@ -364,7 +364,7 @@ def _operator_selector_oracle(
     if tuple(traces) != FIXED_OPERATOR_ARMS:
         raise ValueError("operator selector requires the frozen tie-priority arm order")
     predictions: list[_Prediction] = []
-    selected = Counter()
+    selected: Counter[str] = Counter()
     interventions = 0
     for index, truth in enumerate(truths):
         winner = min(
@@ -824,7 +824,7 @@ def verify_action_information_upper_bound(
     repository_root: Path,
     recompute: bool = False,
 ) -> dict[str, Any]:
-    payload = json.loads(artifact_path.read_text(encoding="utf-8"))
+    payload: dict[str, Any] = json.loads(artifact_path.read_text(encoding="utf-8"))
     claimed = payload.pop("content_sha256")
     if claimed != content_sha256(payload):
         raise ValueError("action-information artifact content hash mismatch")

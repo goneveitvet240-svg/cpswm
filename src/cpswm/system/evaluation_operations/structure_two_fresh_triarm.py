@@ -17,7 +17,7 @@ from enum import StrEnum
 from itertools import product
 from pathlib import Path
 from statistics import mean
-from typing import Any
+from typing import Any, Protocol
 from uuid import UUID
 
 from cpswm.contracts import ProjectTwoDatasetSplit, ProjectTwoReplayStep, RobotActionOutcome
@@ -103,6 +103,7 @@ class MultiAxisBelief:
     active_regime: str
     observed_location_id: UUID
     base_location_distribution: Mapping[UUID, float]
+    source_update_id: UUID | None = None
 
 
 @dataclass(frozen=True, slots=True)
@@ -290,8 +291,13 @@ def _visible_transform(
     return transform
 
 
+class _FeedbackFamily(Protocol):
+    @property
+    def feedback_flip_rate(self) -> float: ...
+
+
 class _FamilyFeedbackState:
-    def __init__(self, state: Any, family: FreshScenarioFamily, episode: Any) -> None:
+    def __init__(self, state: Any, family: _FeedbackFamily, episode: Any) -> None:
         self._state = state
         self._family = family
         self._episode = episode
@@ -629,6 +635,7 @@ class _MultiAxisActionState:
             active_regime=result.active_regime,
             observed_location_id=observed,
             base_location_distribution=base,
+            source_update_id=result.event_revision_id,
         )
 
     def predict(self) -> _Prediction:

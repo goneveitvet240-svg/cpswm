@@ -204,7 +204,7 @@ def _dataset(
     ).build()
 
 
-class ConflictAwareSequentialParticleRuntime(SequentialParticleRuntime):  # type: ignore[misc]
+class ConflictAwareSequentialParticleRuntime(SequentialParticleRuntime):
     """Use a sharpened proposal only when current cause/regime conflicts with ancestry."""
 
     def __init__(self, *, profile: str) -> None:
@@ -262,7 +262,7 @@ class ConflictAwareSequentialParticleRuntime(SequentialParticleRuntime):  # type
         return tuple(super().revise(proposal_belief))
 
 
-class ReactivatingParticleLedger(AdaptiveParticleConsolidationLedger):  # type: ignore[misc]
+class ReactivatingParticleLedger(AdaptiveParticleConsolidationLedger):
     """Immediate quarantine plus reversible reuse of a previously promoted regime."""
 
     def __init__(self) -> None:
@@ -319,7 +319,7 @@ class ReactivatingParticleLedger(AdaptiveParticleConsolidationLedger):  # type: 
         return {**super().operation_counts, "reactivate": self.reactivation_count}
 
 
-class _TransitionReactivationState(_SequentialMultiAxisActionState):  # type: ignore[misc]
+class _TransitionReactivationState(_SequentialMultiAxisActionState):
     def __init__(
         self,
         state: _FullProjectTwoMethod,

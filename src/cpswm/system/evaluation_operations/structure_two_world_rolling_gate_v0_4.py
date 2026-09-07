@@ -19,7 +19,7 @@ import hashlib
 import itertools
 import json
 import random
-from collections import Counter
+from collections import Counter, defaultdict
 from collections.abc import Mapping, Sequence
 from dataclasses import asdict, dataclass, replace
 from pathlib import Path
@@ -246,11 +246,11 @@ def evaluate_rolling_rollout(
     last_observed = fallback
     cumulative_observed_counts: Counter[str] = Counter()
     errors: Counter[str] = Counter()
-    path: Counter[str] = Counter()
+    path: defaultdict[str, float] = defaultdict(float)
     admitted: Counter[str] = Counter()
     unobserved_predictions: Counter[str] = Counter()
     active_samples: Counter[str] = Counter()
-    active_mass: Counter[str] = Counter()
+    active_mass: defaultdict[str, float] = defaultdict(float)
     owner_observed_matches = owner_observed_total = 0
     unobserved_changes = unobserved_total = 0
     previous_true_location: str | None = None
@@ -268,7 +268,7 @@ def evaluate_rolling_rollout(
                 admitted[step.context] += 1
                 rolling.observe(step, step.observed_location)
         if tie_break_scope == "causal_prefix":
-            positions = encounter_order(locations, causal_encounters)
+            positions = encounter_order(locations, tuple(causal_encounters))
 
         pooled_scores = (
             {item: float(count) for item, count in rolling.pooled.items()}

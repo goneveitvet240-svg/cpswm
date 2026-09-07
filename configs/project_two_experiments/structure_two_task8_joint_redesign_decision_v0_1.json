@@ -1,0 +1,56 @@
+{
+  "schema_version": "1.0.0",
+  "decision_id": "structure-two-task8-joint-redesign-decision@0.1",
+  "created_on": "2026-09-07",
+  "status": "AWAITING_PROJECT_OWNER_SELECTION",
+  "trigger": {
+    "artifact": "benchmarks/structure_two/structure_two_task8_online_compute_v0_1.json",
+    "any_strict_development_signal": false,
+    "next_disposition": "DEFAULT_METHOD_REDESIGN_BEFORE_EXPENSIVE_EXTERNAL_SCALEUP"
+  },
+  "selected_option": null,
+  "options": [
+    {
+      "id": "A_structured_joint_log_linear",
+      "mechanism": "shared main effects plus a low-rank cause-event interaction tensor",
+      "plain_language": "保留一个联合分布，但把容易学的主效应和真正需要联合建模的交互项拆开，避免 9 类直接分类把样本效率浪费掉。",
+      "advantage": "最接近现有联合主张，参数和计算容易与 two-stage 严格配平。",
+      "risk": "如果低秩交互仍学不到稳定收益，说明问题可能不在参数化而在状态或监督信号。"
+    },
+    {
+      "id": "B_shared_trunk_interaction_residual",
+      "mechanism": "shared encoder with cause and event heads plus an explicit zero-centered interaction residual head",
+      "plain_language": "先让模型学会各自判断原因和事件，再单独学习两者之间多出来的那一点关联；残差设为零就是清楚的因式分解对照。",
+      "advantage": "最容易做机制归因，能直接判断收益是不是来自交互残差。",
+      "risk": "结构看起来像 two-stage，需要清楚说明残差怎样形成统一联合后验，避免创新边界含糊。"
+    },
+    {
+      "id": "C_stateful_joint_inference",
+      "mechanism": "recurrent or filtering state that updates the joint event-cause belief over time",
+      "plain_language": "不只看一次观测做九分类，而是让联合信念随着历史逐步更新，更贴近持续世界模型。",
+      "advantage": "最贴合持续学习、隐藏事件和延迟纠正的完整研究问题。",
+      "risk": "会同时改变状态访问、延迟和训练难度，公平对照最贵，也最容易把多个因素混在一起。"
+    }
+  ],
+  "required_v0_2_controls": [
+    "same_training_data",
+    "same_robot_visible_input",
+    "same_state_access_or_explicit_state_access_frontier",
+    "same_active_parameter_budget",
+    "same_training_compute_budget",
+    "same_inference_compute_budget",
+    "measured_p50_and_p95_latency_under_frozen_hardware",
+    "explicit_distribution_shift_intervention",
+    "grouped_proxy_and_full_state_readouts",
+    "validation_only_selection_before_confirmatory_opening"
+  ],
+  "scope_policy": {
+    "unified_seven_operator_framework_retained": true,
+    "hidden_event_inference_retained": true,
+    "multi_actor_reasoning_retained": true,
+    "open_world_unknowns_retained": true,
+    "reversible_attribution_retained": true,
+    "embodied_feedback_loop_retained": true
+  },
+  "claim_boundary": "This docket exposes redesign choices and controls. It does not select a route, implement a new method, pass Task 8, or authorize external scale-up."
+}

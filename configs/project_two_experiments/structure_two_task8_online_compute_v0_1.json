@@ -1,0 +1,59 @@
+{
+  "schema_version": "1.0.0",
+  "protocol_id": "structure-two-task8-learned-online-compute@0.1-development",
+  "status": "FROZEN_BEFORE_FIRST_EXECUTION",
+  "frozen_on": "2026-09-07",
+  "historical_task8_v0_4_status": "IMMUTABLE_FAIL",
+  "gaps": 1,
+  "training_seeds": [
+    1101, 1102, 1103, 1104, 1105, 1106, 1107, 1108,
+    1109, 1110, 1111, 1112, 1113, 1114, 1115, 1116,
+    1117, 1118, 1119, 1120, 1121, 1122, 1123, 1124,
+    1125, 1126, 1127, 1128, 1129, 1130, 1131, 1132,
+    1133, 1134, 1135, 1136, 1137, 1138, 1139, 1140,
+    1141, 1142, 1143, 1144, 1145, 1146, 1147, 1148,
+    1149, 1150, 1151, 1152, 1153, 1154, 1155, 1156,
+    1157, 1158, 1159, 1160, 1161, 1162, 1163, 1164
+  ],
+  "validation_seeds": [
+    2101, 2102, 2103, 2104, 2105, 2106, 2107, 2108,
+    2109, 2110, 2111, 2112, 2113, 2114, 2115, 2116
+  ],
+  "confirmatory_seeds": [
+    3101, 3102, 3103, 3104, 3105, 3106, 3107, 3108,
+    3109, 3110, 3111, 3112, 3113, 3114, 3115, 3116,
+    3117, 3118, 3119, 3120, 3121, 3122, 3123, 3124,
+    3125, 3126, 3127, 3128, 3129, 3130, 3131, 3132
+  ],
+  "base_widths": [8, 16, 32],
+  "learning_rates": [0.05, 0.1],
+  "l2_values": [0.0, 0.001],
+  "minimum_relative_improvement": 0.1,
+  "familywise_alpha": 0.05,
+  "primary_axis": "online_compute",
+  "secondary_axes": [
+    "distribution_shift",
+    "information_restriction"
+  ],
+  "budget_matching": {
+    "same_training_data": true,
+    "same_robot_visible_input": true,
+    "same_active_parameter_count": true,
+    "same_training_multiply_adds": true,
+    "same_inference_multiply_adds": true,
+    "same_action_readout": true,
+    "truth_visible_to_arm": false
+  },
+  "scope_policy": {
+    "unified_seven_operator_framework_retained": true,
+    "hidden_event_inference_retained": true,
+    "multi_actor_reasoning_retained": true,
+    "open_world_unknowns_retained": true,
+    "reversible_attribution_retained": true,
+    "embodied_feedback_loop_retained": true
+  },
+  "positive_signal_rule": "At any frozen compute point, the Bonferroni-adjusted one-sided paired-cluster bootstrap lower bound for matched_two_stage_minus_joint cost must be above zero and the mean relative improvement must be at least 10 percent.",
+  "negative_disposition": "DEFAULT_METHOD_REDESIGN_BEFORE_EXPENSIVE_EXTERNAL_SCALEUP",
+  "positive_disposition": "PROCEED_TO_FULL_SYSTEM_GUARDRAIL_INTEGRATION_BEFORE_EXTERNAL_SCALEUP",
+  "claim_boundary": "This is a D0 development pre-death test. A positive signal does not pass Task 8, authorize seven-operator ablation, establish external validity, or replace the required full-system owner-contamination, recovery, safety, privacy, D1, D2, native-baseline, and independent-custody gates. A negative result supports method redesign without deleting any retained Structure-Two capability."
+}

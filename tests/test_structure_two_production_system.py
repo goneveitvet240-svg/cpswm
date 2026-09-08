@@ -95,8 +95,30 @@ def test_production_assembly_manifest_recomputes_every_source_binding() -> None:
     manifest = build_production_assembly_manifest(ROOT)
     verify_production_assembly_manifest(manifest, ROOT)
 
+    assert manifest["runtime_assembly_verified"] is True
     assert [row["operator"] for row in manifest["operators"]] == list(PRODUCTION_OPERATOR_ORDER)
     assert len(manifest["forward_edges"]) == len(PRODUCTION_OPERATOR_ORDER) - 1
+
+
+def test_manifest_cannot_claim_runtime_assembly_without_live_instances(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.setattr(
+        StructureTwoProductionSystem,
+        "runtime_operator_instances",
+        lambda self: {"opceu": (self.core._corrector,)},
+    )
+
+    with pytest.raises(ValueError, match="runtime operator order drifted"):
+        build_production_assembly_manifest(ROOT)
+
+
+def test_declared_override_must_implement_the_operator_contract() -> None:
+    system, _ = _system_and_transition()
+    system.core._message_passing = object()  # type: ignore[assignment]
+
+    with pytest.raises(ValueError, match="override type is not registered"):
+        system.verify_runtime_assembly(allowed_operator_overrides=frozenset({"pchmp"}))
 
 
 def test_forged_but_complete_production_manifest_is_rejected() -> None:

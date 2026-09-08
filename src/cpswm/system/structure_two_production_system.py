@@ -50,6 +50,16 @@ PRODUCTION_OPERATOR_ORDER: Final = (
     "ciav",
 )
 PRODUCTION_FEEDBACK_EDGE: Final = "ciav->opceu->orrer_cheh->pchmp->cf_bocpd->ccrr->rgrc"
+REGISTERED_OPERATOR_OVERRIDE_TYPES: Final = {
+    "pchmp": frozenset(
+        {
+            "cpswm.system.evaluation_operations.project_two_ablation.PriorOnlyMessagePassing",
+            "cpswm.system.evaluation_operations.project_two_ablation.IndependentEvidenceMessagePassing",
+            "cpswm.system.evaluation_operations.project_two_ablation.EvaluatorNoDedupMessagePassing",
+            "cpswm.system.evaluation_operations.project_two_ablation.EvaluatorNoProvenanceFirewallMessagePassing",
+        }
+    )
+}
 
 
 @dataclass(frozen=True, slots=True)
@@ -153,22 +163,38 @@ def _resolve_symbol(qualified_name: str) -> type[Any]:
 
 
 def build_production_assembly_manifest(repository_root: Path) -> dict[str, Any]:
-    """Bind the complete operator graph to importable classes and source bytes."""
+    """Bind the complete operator graph to live instances and source bytes."""
 
     root = repository_root.resolve()
+    runtime = StructureTwoProductionSystem(
+        owner_key="production-manifest-owner",
+        object_instance_id=UUID("00000000-0000-4000-8000-000000000201"),
+        locations=(
+            UUID("00000000-0000-4000-8000-000000000211"),
+            UUID("00000000-0000-4000-8000-000000000212"),
+            UUID("00000000-0000-4000-8000-000000000213"),
+        ),
+        authorization_scope_id=UUID("00000000-0000-4000-8000-000000000221"),
+    )
+    runtime.verify_runtime_assembly()
+    runtime_instances = runtime.runtime_operator_instances()
     rows: list[dict[str, Any]] = []
     for binding in PRODUCTION_OPERATOR_BINDINGS:
         if len(binding.implementation_symbols) != len(binding.source_paths):
             raise ValueError(f"production binding arity mismatch: {binding.operator}")
         sources = []
-        runtime_types = []
+        runtime_types = [
+            f"{type(item).__module__}.{type(item).__qualname__}"
+            for item in runtime_instances[binding.operator]
+        ]
         for qualified_name, source_path_text in zip(
             binding.implementation_symbols,
             binding.source_paths,
             strict=True,
         ):
             symbol = _resolve_symbol(qualified_name)
-            runtime_types.append(f"{symbol.__module__}.{symbol.__qualname__}")
+            if f"{symbol.__module__}.{symbol.__qualname__}" not in runtime_types:
+                raise ValueError(f"production runtime does not own bound symbol: {qualified_name}")
             source_path = Path(source_path_text)
             resolved = (root / source_path).resolve()
             if (
@@ -204,6 +230,7 @@ def build_production_assembly_manifest(repository_root: Path) -> dict[str, Any]:
         ],
         "feedback_edge": PRODUCTION_FEEDBACK_EDGE,
         "single_runtime_object_owns_all_operator_instances": True,
+        "runtime_assembly_verified": True,
         "backbone_sources": [
             {"path": path, "sha256": _file_sha256(root / path)} for path in backbone_paths
         ],
@@ -287,18 +314,28 @@ class StructureTwoProductionSystem:
     def verify_runtime_assembly(
         self, *, allowed_operator_overrides: frozenset[str] = frozenset()
     ) -> None:
-        unknown_overrides = allowed_operator_overrides - set(PRODUCTION_OPERATOR_ORDER)
+        unknown_overrides = allowed_operator_overrides - set(REGISTERED_OPERATOR_OVERRIDE_TYPES)
         if unknown_overrides:
-            raise ValueError("Structure-Two runtime declared an unknown operator override")
+            raise ValueError("Structure-Two runtime declared an unregistered operator override")
         instances = self.runtime_operator_instances()
         if tuple(instances) != PRODUCTION_OPERATOR_ORDER:
             raise ValueError("Structure-Two runtime operator order drifted")
         for binding in PRODUCTION_OPERATOR_BINDINGS:
             if binding.operator in allowed_operator_overrides:
-                if not instances[binding.operator]:
+                if len(instances[binding.operator]) != len(binding.implementation_symbols):
                     raise ValueError(
-                        f"Structure-Two runtime override removed operator: {binding.operator}"
+                        f"Structure-Two runtime override changed operator arity: {binding.operator}"
                     )
+                actual_override_types = {
+                    f"{type(item).__module__}.{type(item).__qualname__}"
+                    for item in instances[binding.operator]
+                }
+                if not actual_override_types.issubset(
+                    REGISTERED_OPERATOR_OVERRIDE_TYPES[binding.operator]
+                ) or not all(
+                    callable(getattr(item, "consume", None)) for item in instances[binding.operator]
+                ):
+                    raise ValueError("Structure-Two operator override type is not registered")
                 continue
             actual = tuple(
                 f"{type(item).__module__}.{type(item).__qualname__}"

@@ -58,9 +58,11 @@ from cpswm.system.structure_two_production_system import (
 )
 
 PROTOCOL_ID: Final = "structure-two-full-scientific-loop@0.2-development"
+ARTIFACT_SCHEMA_VERSION: Final = "0.2.0"
 DEFAULT_CONFIG: Final = Path(
     "configs/project_two_experiments/structure_two_full_scientific_loop_v0_2.json"
 )
+DEFAULT_RUNNER: Final = Path("apps/evaluation_runner/run_structure_two_full_scientific_loop.py")
 INTERACTION_FEATURE_NAMES: Final = (
     "actor_cause_x_handoff",
     "identity_cause_x_instance_mismatch",
@@ -128,6 +130,69 @@ def _strict_int(value: Any, name: str) -> int:
     if type(value) is not int:
         raise ValueError(f"{name} must be a JSON integer, not a coercible value")
     return value
+
+
+def _positive_boolean_paths(value: Any, path: str = "") -> tuple[str, ...]:
+    """Enumerate every asserted JSON boolean so none can bypass the trust map."""
+
+    paths: list[str] = []
+    if value is True:
+        paths.append(path or "/")
+    elif isinstance(value, Mapping):
+        for key, item in value.items():
+            token = str(key).replace("~", "~0").replace("/", "~1")
+            paths.extend(_positive_boolean_paths(item, f"{path}/{token}"))
+    elif isinstance(value, Sequence) and not isinstance(value, (str, bytes, bytearray)):
+        for index, item in enumerate(value):
+            paths.extend(_positive_boolean_paths(item, f"{path}/{index}"))
+    return tuple(paths)
+
+
+def _trust_chain_description(path: str) -> str:
+    descriptions = (
+        (
+            "/production_system_assembly/",
+            "live_runtime_construction+exact_instance_types+source_hashes+wiring_recomputation",
+        ),
+        (
+            "/split_contract/",
+            "exact_config_schema+set_disjointness+fresh_recomputation",
+        ),
+        (
+            "/learned_cross_axis_interaction/",
+            "train_only_fit+validation_only_selection+source_regenerated_examples+model_hash",
+        ),
+        (
+            "/action_responsive_environment/",
+            "per_step_potential_outcomes+post_action_observations+feedback_chain_recomputation",
+        ),
+        (
+            "/matched_closed_loop_fairness/",
+            "paired_schedule_hashes+shared_initial_state+shared_randomness+matched_compute_contract",
+        ),
+        (
+            "/closed_loop_runs/",
+            "raw_trace_schema+hash_chains+operator_receipts+state_machine_recomputation",
+        ),
+        (
+            "/rgrc_activation_suite/",
+            "ledger_transition_replay+positive_reachability+negative_case_rejection",
+        ),
+        (
+            "/seven_operator_neutralization/",
+            "single_operator_mask+retention_receipts+other_operator_execution+paired_runs",
+        ),
+    )
+    if path == "/rgrc_positive_and_negative_activation_passed":
+        return "rgrc_positive_and_negative_aggregates+ledger_recomputation"
+    for prefix, description in descriptions:
+        if path.startswith(prefix):
+            return description
+    raise ValueError(f"positive output has no registered trust dependency: {path}")
+
+
+def _build_positive_output_trust_chain(value: Mapping[str, Any]) -> dict[str, str]:
+    return {path: _trust_chain_description(path) for path in _positive_boolean_paths(value)}
 
 
 def _strict_number(value: Any, name: str) -> float:
@@ -1544,6 +1609,7 @@ def run_full_scientific_loop_development(*, repository_root: Path) -> dict[str, 
         for row in ablation_summary.values()
     )
     result: dict[str, Any] = {
+        "schema_version": ARTIFACT_SCHEMA_VERSION,
         "protocol_id": PROTOCOL_ID,
         "selected_route": "C_stateful_joint_inference",
         "evidence_status": "D0_ACTION_RESPONSIVE_DEVELOPMENT_ONLY",
@@ -1563,6 +1629,10 @@ def run_full_scientific_loop_development(*, repository_root: Path) -> dict[str, 
             "implementation": {
                 "path": str(Path(__file__).resolve().relative_to(repository_root)),
                 "sha256": _file_sha256(Path(__file__).resolve()),
+            },
+            "runner": {
+                "path": str(DEFAULT_RUNNER),
+                "sha256": _file_sha256(repository_root / DEFAULT_RUNNER),
             },
             "base_route_implementation": {
                 "path": str(
@@ -1649,34 +1719,8 @@ def run_full_scientific_loop_development(*, repository_root: Path) -> dict[str, 
         "independent_custody_established": False,
         "task_8_formal_passed": False,
         "claim_boundary": CLAIM_BOUNDARY,
-        "positive_output_trust_chain": {
-            "/split_contract/all_splits_disjoint": (
-                "exact_config_schema+set_disjointness+fresh_recomputation"
-            ),
-            "/learned_cross_axis_interaction/frozen_before_evaluation": (
-                "train_only_fit+validation_only_selection+evaluation_seed_firewall+model_hash"
-            ),
-            "/production_system_assembly/single_runtime_object_owns_all_operator_instances": (
-                "public_production_runtime+seven_importable_operator_classes+checked_out_source_hashes+"
-                "forward_and_feedback_edges"
-            ),
-            "/action_responsive_environment/environment_trajectory_responds_to_route_action": (
-                "per_step_factual_and_counterfactual_transitions+shared_outcome_uniforms+"
-                "post_action_observations+fresh_recomputation"
-            ),
-            "/matched_closed_loop_fairness/passed": (
-                "paired_schedule_hashes+shared_initial_state+shared_potential_outcomes+"
-                "matched_compute_contract"
-            ),
-            "/rgrc_positive_and_negative_activation_passed": (
-                "ledger_transition_sequence+four_rejection_cases+ledger_chain_verification"
-            ),
-            "/seven_operator_neutralization/all_seven_neutralizations_completed": (
-                "seven_exact_single_operator_masks+retention_receipts+other_operator_execution+"
-                "paired_seed_runs"
-            ),
-        },
     }
+    result["positive_output_trust_chain"] = _build_positive_output_trust_chain(result)
     result["deterministic_replay_sha256"] = content_sha256(_deterministic_payload(result))
     result["content_sha256"] = content_sha256(result)
     return result
@@ -1690,6 +1734,7 @@ def _verify_source_binding(result: Mapping[str, Any], repository_root: Path) -> 
         "configuration": DEFAULT_CONFIG,
         "base_route_configuration": BASE_ROUTE_CONFIG,
         "implementation": Path(__file__).resolve().relative_to(repository_root),
+        "runner": DEFAULT_RUNNER,
         "base_route_implementation": Path(
             "src/cpswm/system/evaluation_operations/structure_two_stateful_full_joint.py"
         ),
@@ -2415,6 +2460,7 @@ def verify_full_scientific_loop_result(
     fresh_replay: bool = False,
 ) -> None:
     expected_keys = {
+        "schema_version",
         "protocol_id",
         "selected_route",
         "evidence_status",
@@ -2446,6 +2492,8 @@ def verify_full_scientific_loop_result(
     }
     _require_exact_keys(result, expected_keys, "full scientific loop result")
     _reject_nonfinite(result)
+    if result["schema_version"] != ARTIFACT_SCHEMA_VERSION:
+        raise ValueError("full scientific loop result schema version mismatch")
     if result["protocol_id"] != PROTOCOL_ID or result["selected_route"] != (
         "C_stateful_joint_inference"
     ):
@@ -2844,17 +2892,11 @@ def verify_full_scientific_loop_result(
         )
     ):
         raise ValueError("development result promoted a paper-level or external claim")
-    expected_trust_paths = {
-        "/split_contract/all_splits_disjoint",
-        "/learned_cross_axis_interaction/frozen_before_evaluation",
-        "/production_system_assembly/single_runtime_object_owns_all_operator_instances",
-        "/action_responsive_environment/environment_trajectory_responds_to_route_action",
-        "/matched_closed_loop_fairness/passed",
-        "/rgrc_positive_and_negative_activation_passed",
-        "/seven_operator_neutralization/all_seven_neutralizations_completed",
-    }
     trust = result["positive_output_trust_chain"]
-    if not isinstance(trust, Mapping) or set(trust) != expected_trust_paths:
+    expected_trust = _build_positive_output_trust_chain(
+        {key: value for key, value in result.items() if key != "positive_output_trust_chain"}
+    )
+    if not isinstance(trust, Mapping) or dict(trust) != expected_trust:
         raise ValueError("full scientific loop positive-output trust map is incomplete")
     if fresh_replay:
         fresh = run_full_scientific_loop_development(repository_root=root)

@@ -258,3 +258,28 @@ def test_new_round_two_rehashed_production_source_substitution_is_rejected(
 
     with pytest.raises(ValueError, match="production assembly manifest mismatch"):
         verify_full_scientific_loop_result(forged, repository_root=ROOT)
+
+
+def test_new_round_two_rehashed_runner_substitution_is_rejected(
+    artifact: dict[str, object],
+) -> None:
+    forged = copy.deepcopy(artifact)
+    forged["source_binding"]["runner"]["sha256"] = "0" * 64  # type: ignore[index]
+    _resign(forged)
+
+    with pytest.raises(ValueError, match="source binding mismatch: runner"):
+        verify_full_scientific_loop_result(forged, repository_root=ROOT)
+
+
+def test_new_round_two_rejects_an_incomplete_positive_output_trust_map(
+    artifact: dict[str, object],
+) -> None:
+    forged = copy.deepcopy(artifact)
+    trust = forged["positive_output_trust_chain"]
+    assert isinstance(trust, dict)
+    removed_path = next(path for path in trust if path.startswith("/closed_loop_runs/"))
+    trust.pop(removed_path)
+    _resign(forged)
+
+    with pytest.raises(ValueError, match="positive-output trust map is incomplete"):
+        verify_full_scientific_loop_result(forged, repository_root=ROOT)

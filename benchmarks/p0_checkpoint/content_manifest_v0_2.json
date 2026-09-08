@@ -1,12 +1,12 @@
 {
   "generated_for_date": "2026-09-06",
   "hash_algorithm": "sha256(path\\0file_sha256\\n)",
-  "manifest_sha256": "d6c772c82ff1c677c856cbbc4de03c2b74074778c1368d7dc99d708eca315fbb",
+  "manifest_sha256": "d00eb557ae1835617e9cd9b55c8ee3f4679f18310076b6503739e4b1f20f4054",
   "schema_version": "p0-checkpoint-content-manifest@0.2",
   "scopes": {
     "code": {
-      "content_sha256": "5a268bf1d912314f46045d0ab1fbaf3afa194d35d339b93e0c1a85a68ed4b4ec",
-      "file_count": 389,
+      "content_sha256": "b724b35c813ea8c44250006f94bee0b4850534067a9777d2b1ac36a40037338f",
+      "file_count": 395,
       "files": [
         {
           "path": "apps/direction_three/replay_execution_feedback.py",
@@ -265,6 +265,10 @@
           "sha256": "8ca331ec2809433b3ac04daac174117759567203c1a2fc1b2603c1b5d70d8ce7"
         },
         {
+          "path": "apps/evaluation_runner/run_structure_two_full_scientific_loop.py",
+          "sha256": "b525012910737f89aa878ba8f50eb74137aa0442722d161fe0c074caa91cbae0"
+        },
+        {
           "path": "apps/evaluation_runner/run_structure_two_neural_amortized.py",
           "sha256": "0769a8eedec654a189eb6d2ce0a9a30b91895c333cdbae8ef5f6d80d7800b6c6"
         },
@@ -293,6 +297,10 @@
           "sha256": "daf799165d99a5dec890154cca8e018c82d43f9f332a08a27cf67477bee94256"
         },
         {
+          "path": "apps/evaluation_runner/run_structure_two_stateful_full_joint.py",
+          "sha256": "9715df2ce64cd1c2da5f2d67b1fd803da8af084167f821c24ad8251ad98ae6a3"
+        },
+        {
           "path": "apps/evaluation_runner/run_structure_two_strongest_neighbor_gate.py",
           "sha256": "002153f47e6938d200524bf38322a209df93ba36b1092f4dd870a608dcd714d4"
         },
@@ -319,6 +327,10 @@
         {
           "path": "apps/evaluation_runner/run_structure_two_task7_task8_failure_restructure.py",
           "sha256": "670ac2c2460a8091a5d68e0ba7b1f63cdae89fa3398e2ed800aa9a410a5e5622"
+        },
+        {
+          "path": "apps/evaluation_runner/run_structure_two_task8_online_compute.py",
+          "sha256": "91dad8556baf1c02a6f0ea4a9d8d5defd95f2ec4ee16125ed1692fa53f2d314e"
         },
         {
           "path": "apps/evaluation_runner/run_structure_two_top2_reranker.py",
@@ -1093,6 +1105,10 @@
           "sha256": "f6ae7e02bc6ad27ddc230af67781abfa9288b7862b385e0228b754ff4ed13b0a"
         },
         {
+          "path": "src/cpswm/system/evaluation_operations/structure_two_full_scientific_loop.py",
+          "sha256": "2bac92ad27b4b0b3bf1499dd7a0814501625894856c9700faf05f1d6e18edd5b"
+        },
+        {
           "path": "src/cpswm/system/evaluation_operations/structure_two_gate_a_v0_6.py",
           "sha256": "9e2be7fa9edcde99c9bbeb1863523ec5f434cca1d3339b31caa90a540dedd022"
         },
@@ -1165,6 +1181,10 @@
           "sha256": "1ee77a57c0d614ae19aa056c80a28cdf6afa1fe03f4f66a4352288c6a0bdbd77"
         },
         {
+          "path": "src/cpswm/system/evaluation_operations/structure_two_stateful_full_joint.py",
+          "sha256": "fe32501bbcc9dfd2d16dbc13bac024c036d8fa113435fa934bbce15b62a1bb27"
+        },
+        {
           "path": "src/cpswm/system/evaluation_operations/structure_two_stratified_gate_b_v0_6.py",
           "sha256": "264b95d4f41678188fc290e357a88a849ee08c6a138031e8f543666ae6409c8d"
         },
@@ -1203,6 +1223,10 @@
         {
           "path": "src/cpswm/system/evaluation_operations/structure_two_task8_matched_confirmatory.py",
           "sha256": "6331d32cf3da3822bb068209168a0273730b5b6e042f585a57b4b89d17c50252"
+        },
+        {
+          "path": "src/cpswm/system/evaluation_operations/structure_two_task8_online_compute.py",
+          "sha256": "5105d64006d73801f61c83190120d2113beb70284ec79177f486c80f15c1daee"
         },
         {
           "path": "src/cpswm/system/evaluation_operations/structure_two_task9_protocol.py",
@@ -1567,8 +1591,8 @@
       ]
     },
     "config": {
-      "content_sha256": "8b95de925e6467b173583cb3e021c6f7f136922eca8b778eef4df1325d4eeb48",
-      "file_count": 78,
+      "content_sha256": "e407cb04ab23d360946a066f7272f4742d32247de374117f1746b7b25caa2c0b",
+      "file_count": 82,
       "files": [
         {
           "path": "configs/direction_three/s3_1_oracle_suite_v0_1.json",
@@ -1683,6 +1707,10 @@
           "sha256": "33326c76c63cf8cac671b8e1ee8918564e77773bd0acdf69737d0da636cce3a7"
         },
         {
+          "path": "configs/project_two_experiments/structure_two_full_scientific_loop_v0_2.json",
+          "sha256": "385e2928bd4c0f361a988a4a05a795007cab2e24800c4e6edf6b89462c485b05"
+        },
+        {
           "path": "configs/project_two_experiments/structure_two_gate_a_v0_6_spec.json",
           "sha256": "b1fd2ce1388a6fa8f8d7759c6874ca6cf020040b91eebb7f1d57490f9b5d37e0"
         },
@@ -1731,6 +1759,10 @@
           "sha256": "d2b30b5c4a10b69cf5ae9f33f2f17b1be9f5da442b7bcfebd92394f7b6e6c37a"
         },
         {
+          "path": "configs/project_two_experiments/structure_two_stateful_full_joint_v0_1.json",
+          "sha256": "cce07302db4b73720701fe026fa29310ac068e45ad0e5f817bab7b660f4c0469"
+        },
+        {
           "path": "configs/project_two_experiments/structure_two_strongest_neighbor_manifest_v0_1.json",
           "sha256": "a586d352cf307bd8ba10fb1ef58ed4a1f3a60efe738509723158d7b867091126"
         },
@@ -1773,6 +1805,14 @@
         {
           "path": "configs/project_two_experiments/structure_two_task7_windowed_rejuvenation_v0_4.json",
           "sha256": "b3d2e5b6cb0e531b2b918ac51958834a2dd0805727132794356e785449b94159"
+        },
+        {
+          "path": "configs/project_two_experiments/structure_two_task8_joint_redesign_decision_v0_1.json",
+          "sha256": "28699192f5f605a5c5962f0558a15023db9d4023fc9de84b9269f51d7577c4b2"
+        },
+        {
+          "path": "configs/project_two_experiments/structure_two_task8_online_compute_v0_1.json",
+          "sha256": "3c8e75c5dbde75c0c3f61927f7e104d1761c57b5e68aef306f1d4f4996d5d06f"
         },
         {
           "path": "configs/project_two_experiments/structure_two_task8_relative_probability_coupling_v0_2.json",

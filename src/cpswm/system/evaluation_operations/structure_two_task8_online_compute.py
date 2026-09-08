@@ -31,7 +31,7 @@ import math
 import random
 from collections.abc import Mapping, Sequence
 from dataclasses import dataclass
-from typing import Any, Final
+from typing import Any, Final, cast
 
 import numpy as np
 import numpy.typing as npt
@@ -281,8 +281,11 @@ class _LearnedModel:
         if self.arm == ARM_FACTORIZED:
             cause_probability = _softmax_reference(features @ self.weights[0])
             event_probability = _softmax_reference(features @ self.weights[1])
-            return np.einsum("ni,nj->nij", cause_probability, event_probability).reshape(
-                features.shape[0], JOINT_CLASS_COUNT
+            return cast(
+                FloatArray,
+                np.einsum("ni,nj->nij", cause_probability, event_probability).reshape(
+                    features.shape[0], JOINT_CLASS_COUNT
+                ),
             )
         raise ValueError(f"unknown Task-8 arm {self.arm}")
 
@@ -303,6 +306,7 @@ def _fit_arm(
     projection = _Projection.fit(raw, projection_width)
     features = projection.transform(raw)
     joint_labels = cause_labels * len(EVENT_GROUPS) + event_labels
+    weights: tuple[FloatArray, ...]
     if arm == ARM_JOINT:
         weights = (
             _fit_multinomial(

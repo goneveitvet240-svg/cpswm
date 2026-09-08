@@ -1,0 +1,95 @@
+{
+  "schema_version": "0.2.0",
+  "protocol_id": "structure-two-full-scientific-loop@0.2-development",
+  "base_route_config": "configs/project_two_experiments/structure_two_stateful_full_joint_v0_1.json",
+  "selected_route": "C_stateful_joint_inference",
+  "evidence_status": "D0_ACTION_RESPONSIVE_DEVELOPMENT_NOT_PAPER_EVIDENCE",
+  "interaction_training": {
+    "feature_names": [
+      "actor_cause_x_handoff",
+      "identity_cause_x_instance_mismatch",
+      "habit_cause_x_regime_change",
+      "handoff_x_receiver_binding",
+      "owner_x_target_x_habit",
+      "unknown_actor_x_regime_change"
+    ],
+    "train_seeds": [811, 821, 823],
+    "validation_seeds": [827, 829],
+    "l2_candidates": [0.0, 0.01, 0.1],
+    "epochs": 80,
+    "learning_rate": 0.08,
+    "gradient_clip": 4.0,
+    "maximum_absolute_weight": 3.0,
+    "training_action_policy": "deterministic_coverage_cycle_without_truth",
+    "label_semantics": "evaluator_only_complete_candidate_consistency",
+    "test_truth_seen_during_training": false
+  },
+  "action_responsive_environment": {
+    "evaluation_seeds": [839, 853, 857],
+    "horizon": 9,
+    "action_success_probability": 0.85,
+    "regime_change_step": 3,
+    "regime_recurrence_step": 6,
+    "guest_event_steps": [2, 7],
+    "unknown_event_steps": [5],
+    "identity_mismatch_steps": [4],
+    "ciav_steps": [4, 5],
+    "location_count": 3,
+    "seed_conditioned_observation_strength": true,
+    "shared_potential_outcome_randomness": true,
+    "post_action_observation_available": true
+  },
+  "rgrc_activation_suite": {
+    "positive_stability_steps": 2,
+    "required_positive_transitions": ["quarantine", "promote", "retract"],
+    "required_negative_cases": [
+      "guest_actor_rejected",
+      "unknown_actor_rejected",
+      "identity_mismatch_rejected",
+      "unstable_owner_rejected"
+    ]
+  },
+  "neutralization_ablation": {
+    "policy": "retain_operator_and_replace_only_its_effect_with_neutral_element",
+    "operators": [
+      "opceu",
+      "orrer_cheh",
+      "pchmp",
+      "cf_bocpd",
+      "rgrc",
+      "ccrr",
+      "ciav"
+    ],
+    "same_initial_hidden_state": true,
+    "same_exogenous_events": true,
+    "same_potential_outcome_randomness": true,
+    "same_particle_budget": true,
+    "same_complete_state_access": true,
+    "same_learned_interaction_model": true,
+    "all_other_operators_retained": true
+  },
+  "complete_state_axes": [
+    "event_chain",
+    "ordered_actor_roles",
+    "instance_association",
+    "change_cause",
+    "habit_regime",
+    "run_length",
+    "revision_lineage"
+  ],
+  "rao_blackwellized_blocks": [
+    "dirichlet_location",
+    "ridge_rls_natural_statistics",
+    "information_form_belief"
+  ],
+  "retained_operators": [
+    "opceu",
+    "orrer_cheh",
+    "pchmp",
+    "cf_bocpd",
+    "rgrc",
+    "ccrr",
+    "ciav"
+  ],
+  "claim_boundary": "This development protocol establishes an action-responsive synthetic environment, a train-validation-frozen learned cross-axis potential, explicit RGRC positive and negative activation cases, and complete-framework seven-operator neutralization runs. It does not establish real-robot external validity, independent custody, paper-level superiority, or causal necessity of every operator."
+}

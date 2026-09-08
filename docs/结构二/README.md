@@ -1,7 +1,7 @@
 # 结构二文档入口
 
-最后更新：2026-09-07
-当前结论：**框架和大量工程合同已实现；Task 8 learned equal-compute（学习式等算力）预死亡测试没有联合模型优势信号，当前最紧要的是重做联合机制。论文级优越性、外部有效性和七算子联合收益均未授权。**
+最后更新：2026-09-08
+当前结论：**项目所有者已选择 Route C；完整 H/R/I/C/Z/r/V、三个 RB blocks 和七算子现已进入 action-responsive（动作响应）闭环。跨轴交互已由 train/validation 学习并冻结，RGRC 正反例与撤销路径已激活，七个算子均完成“保留算子、仅中和作用”的消融。工程缺口已补齐，但 joint 与 matched factorized 行动遗憾仍打平，27 步中 0 步改变最终动作，owner contamination 均为 0.333333；论文级优越性、强外部基线胜利、外部有效性和七算子行动贡献仍未成立。**
 
 这里是方向结构二的规范阅读入口。仓库保留了大量按日期冻结的协议、实验和审计文件；那些文件是
 证据档案，不应让第一次接触项目的人逐个猜阅读顺序。
@@ -26,6 +26,11 @@
 - [Task 8 在线算力流程复核](../reviews/structure_two_priority_sequence_audit_2026-09-07.md)
 - [Task 8 learned online-compute v0.1 结果](../experiments/structure_two_task8_online_compute_result_v0_1_2026-09-07.md)
 - [Task 8 v0.1 运行后范围复核](../reviews/structure_two_task8_online_compute_postrun_audit_2026-09-07.md)
+- [Route C 完整联合状态回放反馈环 v0.1](../experiments/structure_two_stateful_full_joint_result_v0_1_2026-09-07.md)
+- [Route C 两轮对抗审核](../experiments/structure_two_stateful_full_joint_two_round_adversarial_audit_2026-09-07.md)
+- [Route C 动作响应完整科学闭环 v0.2](../experiments/structure_two_full_scientific_loop_result_v0_2_2026-09-08.md)
+- [Route C v0.2 两轮对抗审核](../experiments/structure_two_full_scientific_loop_two_round_adversarial_audit_2026-09-08.md)
+- [Route C v0.2 第二次两轮对抗审核](../experiments/structure_two_full_scientific_loop_second_two_round_adversarial_audit_2026-09-08.md)
 
 ## 如何理解旧文件
 
@@ -39,5 +44,5 @@
 
 > 结构二研究一个长期家庭机器人怎样在选择性观察、隐藏事件、多人共享、未知人物和习惯变化下，
 > 维护可撤销、可追溯的个体化世界模型，并用主动验证改善搜索、放回、交接与协助；当前已建立完整
-> 七算子框架和可执行开发基准，但仍需通过迟到纠正、联合推断、外部强基线、ProcTHOR、真实 RGB-D
+> 七算子动作响应开发闭环和可执行中和消融，但仍需通过联合行动收益、外部强基线、ProcTHOR、真实 RGB-D
 > 和独立托管确认门。

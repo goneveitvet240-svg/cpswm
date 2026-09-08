@@ -1,0 +1,69 @@
+{
+  "schema_version": "0.1.0",
+  "protocol_id": "structure-two-stateful-full-joint@0.1-development",
+  "decision_source": "configs/project_two_experiments/structure_two_task8_joint_redesign_decision_v0_1.json",
+  "selected_route": "C_stateful_joint_inference",
+  "evidence_status": "DEVELOPMENT_IMPLEMENTATION_NOT_PAPER_EVIDENCE",
+  "particle_budget": 24,
+  "proposal_support_policy": "enumerate_all_positive_support",
+  "maximum_retired_regimes": 15,
+  "neural_proposal_model": "artifacts/project_two_v04_development/structure_two_neural_amortized_model_v0_1.json",
+  "neural_proposal_mix": 0.7,
+  "unresolved_prior": 0.05,
+  "rgrc_owner_target_admission_floor": 0.5,
+  "rgrc_stability_steps": 2,
+  "joint_interaction_strength": 1.0,
+  "development_evaluation": {
+    "validation_seeds": [701, 709],
+    "development_holdout_seeds": [719, 727, 733, 739],
+    "max_steps_per_episode": 16,
+    "scenario_duration_days": 16,
+    "guest_window": [3, 6],
+    "abrupt_day": 8,
+    "recurrence_day": 13,
+    "unknown_event_days": [1, 5, 11],
+    "amg_parameter_space": [0.2, 0.33, 0.5]
+  },
+  "arms": [
+    "stateful_full_joint",
+    "matched_full_state_factorized"
+  ],
+  "complete_state_axes": [
+    "event_chain",
+    "ordered_actor_roles",
+    "instance_association",
+    "change_cause",
+    "habit_regime",
+    "run_length",
+    "revision_lineage"
+  ],
+  "rao_blackwellized_blocks": [
+    "dirichlet_location",
+    "ridge_rls_natural_statistics",
+    "information_form_belief"
+  ],
+  "retained_operators": [
+    "opceu",
+    "orrer_cheh",
+    "pchmp",
+    "cf_bocpd",
+    "rgrc",
+    "ccrr",
+    "ciav"
+  ],
+  "fairness_contract": {
+    "same_robot_visible_input": true,
+    "same_complete_state_access": true,
+    "same_neural_proposal": true,
+    "same_particle_budget": true,
+    "same_complete_proposal_support": true,
+    "same_fixed_target_score_count": true,
+    "shared_common_random_numbers": true,
+    "same_resampling_draws": true,
+    "same_score_operation_schedule": true,
+    "same_action_readout": true,
+    "same_feedback_stream": true,
+    "same_rgrc_policy": true
+  },
+  "claim_boundary": "This configuration implements the selected stateful full-joint development loop. Passing unit or D0 integration tests proves executable completeness and matched-arm fairness only; scientific superiority, external validity, Task 8 formal passage, and seven-operator ablation remain unauthorized."
+}

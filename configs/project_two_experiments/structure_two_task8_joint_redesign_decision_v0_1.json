@@ -2,13 +2,15 @@
   "schema_version": "1.0.0",
   "decision_id": "structure-two-task8-joint-redesign-decision@0.1",
   "created_on": "2026-09-07",
-  "status": "AWAITING_PROJECT_OWNER_SELECTION",
+  "status": "PROJECT_OWNER_SELECTED",
+  "selected_on": "2026-09-07",
+  "selection_source": "project_owner_explicit_instruction",
   "trigger": {
     "artifact": "benchmarks/structure_two/structure_two_task8_online_compute_v0_1.json",
     "any_strict_development_signal": false,
     "next_disposition": "DEFAULT_METHOD_REDESIGN_BEFORE_EXPENSIVE_EXTERNAL_SCALEUP"
   },
-  "selected_option": null,
+  "selected_option": "C_stateful_joint_inference",
   "options": [
     {
       "id": "A_structured_joint_log_linear",
@@ -52,5 +54,5 @@
     "reversible_attribution_retained": true,
     "embodied_feedback_loop_retained": true
   },
-  "claim_boundary": "This docket exposes redesign choices and controls. It does not select a route, implement a new method, pass Task 8, or authorize external scale-up."
+  "claim_boundary": "The project owner selected C_stateful_joint_inference on 2026-09-07. This authorizes implementation of the complete stateful joint development loop while retaining all seven operators and capabilities; it does not itself pass Task 8, establish superiority, authorize seven-operator ablation, or authorize external scale-up."
 }

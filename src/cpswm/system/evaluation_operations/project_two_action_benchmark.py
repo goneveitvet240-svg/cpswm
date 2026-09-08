@@ -59,11 +59,9 @@ from cpswm.contracts import (
     ordered_role_key,
     reject_truth_leakage,
 )
-from cpswm.system.continual.execution_feedback_projector import ExecutionFeedbackProjector
 from cpswm.system.continual.project_one_regime_loop import PrototypeLoopConfig
 from cpswm.system.counterfactual_event_hypergraph import (
     DamenHogg2012AMGMatchedEvidenceBaseline,
-    ProjectTwoFeedbackRevisionLoop,
 )
 from cpswm.system.counterfactual_event_hypergraph.feedback_revision_loop import (
     ActorDiscriminationEvidence,
@@ -96,11 +94,11 @@ from cpswm.system.evaluation_operations.structure_two_search_utility import (
 from cpswm.system.prototype_spine import (
     ActionReadout,
     ActionReadoutConfig,
-    CorePrototypeSpine,
     PrototypeStepResult,
     PrototypeTransition,
 )
 from cpswm.system.reproducibility import content_uuid
+from cpswm.system.structure_two_production_system import StructureTwoProductionSystem
 from cpswm.world_model.habits_transitions import PropensityCorrectionMode
 
 BENCHMARK_VERSION = "project-two-action-benchmark@0.6-dual-timescale-readout"
@@ -806,7 +804,7 @@ class _FullProjectTwoMethod:
         self.action_utility_threshold = action_utility_threshold
         self.action_readout = action_readout or ActionReadoutConfig()
         self.propensity_correction_mode = propensity_correction_mode
-        self.spine = CorePrototypeSpine(
+        self.spine = StructureTwoProductionSystem(
             owner_key=episode.owner_actor_key,
             object_instance_id=episode.steps[0].object_instance_id,
             locations=self.locations,
@@ -816,12 +814,15 @@ class _FullProjectTwoMethod:
             rgrc_gate_enabled=rgrc_gate_enabled,
             action_readout=self.action_readout,
             correction_mode=propensity_correction_mode,
+            feedback_retraction_threshold=orrer_retraction_threshold,
+            feedback_reactivation_threshold=orrer_reactivation_threshold,
         )
-        self.feedback_loop = ProjectTwoFeedbackRevisionLoop(
-            projector=ExecutionFeedbackProjector(),
-            retraction_threshold=orrer_retraction_threshold,
-            reactivation_threshold=orrer_reactivation_threshold,
+        self.spine.verify_runtime_assembly(
+            allowed_operator_overrides=(
+                frozenset({"pchmp"}) if message_passing is not None else frozenset()
+            )
         )
+        self.feedback_loop = self.spine.feedback_revision_loop
         self.evidence_transform = evidence_transform or (lambda step: step)
         self.actor_prior_transform = actor_prior_transform
         self.feedback_mode = feedback_mode
@@ -1360,7 +1361,7 @@ class _FullProjectTwoMethod:
             return
         if self.revision_strategy == "full_rerun" and step.execution_feedback:
             self.revision_calls += len(step.execution_feedback)
-            self.spine = CorePrototypeSpine(
+            self.spine = StructureTwoProductionSystem(
                 owner_key=self.episode.owner_actor_key,
                 object_instance_id=self.episode.steps[0].object_instance_id,
                 locations=self.locations,
@@ -1370,7 +1371,15 @@ class _FullProjectTwoMethod:
                 rgrc_gate_enabled=self.rgrc_gate_enabled,
                 correction_mode=self.propensity_correction_mode,
                 action_readout=self.action_readout,
+                feedback_retraction_threshold=self.orrer_retraction_threshold,
+                feedback_reactivation_threshold=self.orrer_reactivation_threshold,
             )
+            self.spine.verify_runtime_assembly(
+                allowed_operator_overrides=(
+                    frozenset({"pchmp"}) if self.message_passing is not None else frozenset()
+                )
+            )
+            self.feedback_loop = self.spine.feedback_revision_loop
             self.histories.clear()
             self.step_results.clear()
             replay = tuple(self._observed_steps)

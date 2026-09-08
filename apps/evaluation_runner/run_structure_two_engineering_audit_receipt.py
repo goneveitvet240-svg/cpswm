@@ -36,7 +36,19 @@ COMMANDS: Final = {
     "ruff_lint": (".venv/bin/ruff", "check", "src", "tests", "apps"),
     "ruff_format": (".venv/bin/ruff", "format", "--check", "src", "tests", "apps"),
     "compileall": (".venv/bin/python", "-m", "compileall", "-q", "src", "apps", "tests"),
-    "git_diff_check": ("git", "diff", "--check"),
+    # Generated audit logs are outputs of this very command matrix.  Excluding
+    # them prevents an old failing ``git_diff_check.stdout.log`` from reporting
+    # its own quoted whitespace diagnostics forever.  Source, tests, configs,
+    # docs, manifests, receipts, and checkpoints remain inside the check.
+    "git_diff_check": (
+        "git",
+        "diff",
+        "--check",
+        "--",
+        ".",
+        ":(exclude)benchmarks/structure_two/engineering_trust_checkpoint_2026_09_05/"
+        "engineering_audit_logs/*.log",
+    ),
 }
 
 

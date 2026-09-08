@@ -220,9 +220,10 @@ def _select_action(
     minimum_attribution_shift: float,
     privacy_budget: float,
     random_seed: int,
+    planner: CauseInformationActiveVerificationPlanner | None = None,
 ) -> tuple[UUID | None, float]:
     if policy is InteractiveVerificationPolicy.CIAV:
-        plan = CauseInformationActiveVerificationPlanner().select(
+        plan = (planner or CauseInformationActiveVerificationPlanner()).select(
             belief,
             actions,
             consolidation_decision_utilities=_consolidation_utilities(),

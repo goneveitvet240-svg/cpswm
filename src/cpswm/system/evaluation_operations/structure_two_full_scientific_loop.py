@@ -49,6 +49,13 @@ from cpswm.system.evaluation_operations.structure_two_stateful_full_joint import
     DEFAULT_CONFIG as BASE_ROUTE_CONFIG,
 )
 from cpswm.system.reproducibility import content_sha256, content_uuid
+from cpswm.system.structure_two_production_system import (
+    PRODUCTION_FEEDBACK_EDGE,
+    PRODUCTION_OPERATOR_ORDER,
+    PRODUCTION_SYSTEM_VERSION,
+    build_production_assembly_manifest,
+    verify_production_assembly_manifest,
+)
 
 PROTOCOL_ID: Final = "structure-two-full-scientific-loop@0.2-development"
 DEFAULT_CONFIG: Final = Path(
@@ -62,12 +69,23 @@ INTERACTION_FEATURE_NAMES: Final = (
     "owner_x_target_x_habit",
     "unknown_actor_x_regime_change",
 )
+TRAINING_ACTION_POLICY: Final = "deterministic_coverage_cycle_without_truth"
+TRAINING_EVIDENCE_FIELDS: Final = frozenset(
+    {
+        "training_action_policy",
+        "seed_conditioned_observation_strength",
+        "train_examples_sha256",
+        "validation_examples_sha256",
+        "train_validation_examples_distinct",
+    }
+)
 CLAIM_BOUNDARY: Final = (
     "This development protocol establishes an action-responsive synthetic environment, "
     "a train-validation-frozen learned cross-axis potential, explicit RGRC positive and "
-    "negative activation cases, and complete-framework seven-operator neutralization runs. "
-    "It does not establish real-robot external validity, independent custody, paper-level "
-    "superiority, or causal necessity of every operator."
+    "negative activation cases, a source-bound seven-production-operator system assembly, "
+    "and complete-framework seven-operator neutralization runs. It does not establish "
+    "real-robot external validity, independent custody, paper-level superiority, or causal "
+    "necessity of every operator."
 )
 NEUTRALIZATION_DETAILS: Final = {
     StructureTwoOperator.OPCEU: "operator retained with a neutral statistic update",
@@ -167,6 +185,7 @@ def load_full_scientific_loop_config(
             "action_responsive_environment",
             "rgrc_activation_suite",
             "neutralization_ablation",
+            "production_system",
             "complete_state_axes",
             "rao_blackwellized_blocks",
             "retained_operators",
@@ -203,8 +222,19 @@ def load_full_scientific_loop_config(
     environment = payload["action_responsive_environment"]
     rgrc = payload["rgrc_activation_suite"]
     ablation = payload["neutralization_ablation"]
-    if not all(isinstance(item, Mapping) for item in (training, environment, rgrc, ablation)):
+    production = payload["production_system"]
+    if not all(
+        isinstance(item, Mapping) for item in (training, environment, rgrc, ablation, production)
+    ):
         raise ValueError("full scientific loop nested configuration is malformed")
+    if production != {
+        "system_version": PRODUCTION_SYSTEM_VERSION,
+        "operator_order": list(PRODUCTION_OPERATOR_ORDER),
+        "feedback_edge": PRODUCTION_FEEDBACK_EDGE,
+        "require_all_module_source_bindings": True,
+        "require_single_runtime_object": True,
+    }:
+        raise ValueError("Structure-Two production-system configuration drifted")
     _require_exact_keys(
         training,
         {
@@ -269,7 +299,7 @@ def load_full_scientific_loop_config(
         raise ValueError("learned interaction feature contract drifted")
     if training["label_semantics"] != "evaluator_only_complete_candidate_consistency":
         raise ValueError("learned interaction label semantics drifted")
-    if training["training_action_policy"] != "deterministic_coverage_cycle_without_truth":
+    if training["training_action_policy"] != TRAINING_ACTION_POLICY:
         raise ValueError("interaction training action policy uses truth or drifted")
     if training["test_truth_seen_during_training"] is not False:
         raise ValueError("evaluation truth cannot enter interaction training")
@@ -679,6 +709,23 @@ def _candidate_matches_truth(candidate: FullJointCandidate, truth: ClosedLoopTru
 TrainingExample = tuple[tuple[float, ...], float, float]
 
 
+def _build_training_evidence(
+    train_examples: Sequence[TrainingExample],
+    validation_examples: Sequence[TrainingExample],
+) -> dict[str, Any]:
+    """Canonical producer/verifier schema for the learned interaction data."""
+
+    train_hash = content_sha256(train_examples)
+    validation_hash = content_sha256(validation_examples)
+    return {
+        "training_action_policy": TRAINING_ACTION_POLICY,
+        "seed_conditioned_observation_strength": True,
+        "train_examples_sha256": train_hash,
+        "validation_examples_sha256": validation_hash,
+        "train_validation_examples_distinct": train_hash != validation_hash,
+    }
+
+
 def _interaction_examples(
     *,
     seeds: Sequence[int],
@@ -821,15 +868,7 @@ def train_cross_axis_interactions(
         validation_seeds=config.validation_seeds,
         optimizer_epochs=config.epochs,
     )
-    training_evidence = {
-        "training_action_policy": "deterministic_coverage_cycle_without_truth",
-        "seed_conditioned_observation_strength": True,
-        "train_examples_sha256": content_sha256(train_examples),
-        "validation_examples_sha256": content_sha256(validation_examples),
-        "train_validation_examples_distinct": (
-            content_sha256(train_examples) != content_sha256(validation_examples)
-        ),
-    }
+    training_evidence = _build_training_evidence(train_examples, validation_examples)
     return model, selection_rows, training_evidence
 
 
@@ -1483,6 +1522,7 @@ def run_full_scientific_loop_development(*, repository_root: Path) -> dict[str, 
         interaction_model=interaction_model,
     )
     interaction_diagnostic = _paired_action_diagnostic(full_rows, factorized_rows)
+    production_assembly = build_production_assembly_manifest(repository_root)
     all_closed_loops_respond = all(
         row["environment_trajectory_responds_to_route_action"]
         and row["post_action_observation_coverage"] == 1.0
@@ -1510,6 +1550,7 @@ def run_full_scientific_loop_development(*, repository_root: Path) -> dict[str, 
         "complete_state_axes": list(COMPLETE_STATE_AXES),
         "rao_blackwellized_blocks": list(RB_BLOCKS),
         "retained_operators": sorted(operator.value for operator in StructureTwoOperator),
+        "production_system_assembly": production_assembly,
         "source_binding": {
             "configuration": {
                 "path": str(DEFAULT_CONFIG),
@@ -1614,6 +1655,10 @@ def run_full_scientific_loop_development(*, repository_root: Path) -> dict[str, 
             ),
             "/learned_cross_axis_interaction/frozen_before_evaluation": (
                 "train_only_fit+validation_only_selection+evaluation_seed_firewall+model_hash"
+            ),
+            "/production_system_assembly/single_runtime_object_owns_all_operator_instances": (
+                "public_production_runtime+seven_importable_operator_classes+checked_out_source_hashes+"
+                "forward_and_feedback_edges"
             ),
             "/action_responsive_environment/environment_trajectory_responds_to_route_action": (
                 "per_step_factual_and_counterfactual_transitions+shared_outcome_uniforms+"
@@ -2376,6 +2421,7 @@ def verify_full_scientific_loop_result(
         "complete_state_axes",
         "rao_blackwellized_blocks",
         "retained_operators",
+        "production_system_assembly",
         "source_binding",
         "split_contract",
         "learned_cross_axis_interaction",
@@ -2424,6 +2470,10 @@ def verify_full_scientific_loop_result(
     root = repository_root or Path(__file__).resolve().parents[4]
     _verify_source_binding(result, root)
     config = load_full_scientific_loop_config(root)
+    production_assembly = result["production_system_assembly"]
+    if not isinstance(production_assembly, Mapping):
+        raise ValueError("Structure-Two production assembly is missing")
+    verify_production_assembly_manifest(production_assembly, root)
     split = result["split_contract"]
     if not isinstance(split, Mapping) or (
         tuple(split.get("train_seeds", ())) != config.train_seeds
@@ -2529,16 +2579,21 @@ def verify_full_scientific_loop_result(
     ):
         raise ValueError("learned interaction hyperparameter selection is not validation-derived")
     training_evidence = interaction["training_evidence"]
-    if not isinstance(training_evidence, Mapping) or training_evidence != {
-        "training_action_policy": "deterministic_coverage_cycle_without_truth",
-        "seed_conditioned_observation_strength": True,
-        "train_examples_sha256": training_evidence.get("train_examples_sha256"),
-        "validation_examples_sha256": training_evidence.get("validation_examples_sha256"),
-        "train_validation_examples_distinct": True,
-    }:
+    if (
+        not isinstance(training_evidence, Mapping)
+        or set(training_evidence) != TRAINING_EVIDENCE_FIELDS
+        or training_evidence.get("training_action_policy") != TRAINING_ACTION_POLICY
+        or training_evidence.get("seed_conditioned_observation_strength") is not True
+        or training_evidence.get("train_validation_examples_distinct") is not True
+    ):
         raise ValueError("learned interaction training evidence is incomplete")
     for field in ("train_examples_sha256", "validation_examples_sha256"):
-        if not isinstance(training_evidence[field], str) or len(training_evidence[field]) != 64:
+        value = training_evidence[field]
+        if (
+            not isinstance(value, str)
+            or len(value) != 64
+            or any(character not in "0123456789abcdef" for character in value)
+        ):
             raise ValueError("learned interaction example hash is malformed")
     if (
         training_evidence["train_examples_sha256"]
@@ -2562,10 +2617,12 @@ def verify_full_scientific_loop_result(
         config=config,
         runtime=proposal_runtime,
     )
+    expected_training_evidence = _build_training_evidence(
+        expected_train_examples,
+        expected_validation_examples,
+    )
     if (
-        training_evidence["train_examples_sha256"] != content_sha256(expected_train_examples)
-        or training_evidence["validation_examples_sha256"]
-        != content_sha256(expected_validation_examples)
+        dict(training_evidence) != expected_training_evidence
         or model.train_example_count != len(expected_train_examples)
         or model.validation_example_count != len(expected_validation_examples)
     ):
@@ -2790,6 +2847,7 @@ def verify_full_scientific_loop_result(
     expected_trust_paths = {
         "/split_contract/all_splits_disjoint",
         "/learned_cross_axis_interaction/frozen_before_evaluation",
+        "/production_system_assembly/single_runtime_object_owns_all_operator_instances",
         "/action_responsive_environment/environment_trajectory_responds_to_route_action",
         "/matched_closed_loop_fairness/passed",
         "/rgrc_positive_and_negative_activation_passed",

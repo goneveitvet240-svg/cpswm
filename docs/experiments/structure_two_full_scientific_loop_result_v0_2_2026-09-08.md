@@ -6,12 +6,13 @@
 
 ## 结论先行
 
-本轮在没有删除任何结构二能力的前提下，补齐了四个工程缺口：
+本轮在没有删除任何结构二能力的前提下，补齐了五个工程缺口：
 
 1. action-responsive environment（动作响应环境）：执行的 location action（位置动作）会改变环境隐藏状态，下一步观测来自改变后的状态；每一步同时保留共享随机数下的 factual/counterfactual potential outcome（事实/反事实潜在结果）。
 2. learned cross-axis interaction（可学习跨轴交互）：六个交叉特征在 train seeds（训练种子）上学习，L2 只在 validation seeds（验证种子）上选择，随后冻结并在未见过的 development evaluation seeds（开发评估种子）上运行。
 3. RGRC 正反例激活：正例真实走过 `quarantine → promote → retract → corrected_revision → retract`，负例覆盖 guest、unknown、identity mismatch 和不稳定 owner。
 4. seven-operator neutralization ablation（七算子中和消融）：每次仍实例化并执行完整框架，只把一个算子的作用替换为注册的 neutral element（中性元）；其余六个算子、七轴状态、三个 RB blocks、神经提议、粒子预算、种子和潜在结果随机数全部保留。
+5. production-system assembly（生产系统装配）：`StructureTwoProductionSystem@0.2` 在同一个公开运行时对象中持有 OPCEU、ORRER/CHEH、PCHMP、CF-BOCPD、CCRR、RGRC 和 CIAV 的真实实现；完整评估臂已切换到它，Route C v0.2 工件绑定每个实现符号、源码路径与哈希、六条前向边和 `CIAV → OPCEU` 反馈边。验证器从当前 checkout 重建清单，不能用调用方重算的自洽哈希冒充真实装配。
 
 工程闭环已经成立；科学优势仍未成立。joint（联合臂）和 matched full-state factorized（匹配的完整状态因子化臂）在 3 个新评估种子、27 步上的 action regret（行动遗憾）均为 `0.555556/step`，owner-habit contamination（主人习惯污染）均为 `0.333333`。学习式联合项在 `27/27` 步改变动作后验，但平均 TV（总变差距离）只有 `0.00001273`、最大 `0.00026848`，没有改变任何一步最终动作。
 
@@ -121,7 +122,7 @@ quarantine, quarantine, promote, quarantine, retract, corrected_revision, retrac
 
 第二轮针对 forged-but-complete（伪造但字段完整）的正路径：重签顶层哈希后篡改环境 transition、算子回执、RGRC 账本、指标、消融总结和论文级正声明，均被本地验证器拒绝；另构造调用方自洽但替换了 common-random-number receipt（共同随机数回执）的样本，本地验证仍允许、fresh-source replay（新鲜源码重放）会拒绝。这明确保留了 self-consistency（自一致性）与 independent custody（独立托管）的边界。
 
-用户要求的第二次两轮对抗又覆盖了中和语义冒充、纠正状态链伪造、RGRC 原始负例账本、非有限数、布尔值冒充整数、训练/验证样本同构与伪造但不同的样本哈希。发现项均已修复，详见 `structure_two_full_scientific_loop_second_two_round_adversarial_audit_2026-09-08.md`。定向回归现为 v0.2 `29 passed`，与 v0.1 Route C 回归合并为 `54 passed`；P0 对抗和全仓 pytest/mypy/ruff/compileall/git-diff 审计全部退出码 0。最新 checkpoint 已 fresh-verify，content hash 为 `37074fdd82a747493c5fe8cd10913db5dfcc6f72ece536eff75acb633fbfcfae`；`seven_operator_ablation_authorized=false` 不变。
+用户要求的第二次两轮对抗又覆盖了中和语义冒充、纠正状态链伪造、RGRC 原始负例账本、非有限数、布尔值冒充整数、训练/验证样本同构与伪造但不同的样本哈希。本轮继续加入 `training_evidence` 额外字段漂移和生产源码绑定被替换后重算所有自哈希两类攻击，均被拒绝。定向回归现为 v0.2/生产装配 `34 passed`，与 v0.1 Route C 回归合并为 `59 passed`，完整行动/CIAV/析因链另有 `117 passed`；P0 对抗和全仓 pytest/mypy/ruff/compileall/git-diff 审计全部退出码 0，全仓共收集 `3572` 项（`3570 passed, 1 skipped, 1 xfailed`）。最新 engineering checkpoint 由 fresh recomputation 生成并再次结构验证，content hash 为 `19583fac4bc2c659ccf87d29780441d1f5df67ab23ed6794ef9f7f8bd449caf9`；`seven_operator_ablation_authorized=false` 不变。
 
 ## 8. 当前允许与不允许的结论
 

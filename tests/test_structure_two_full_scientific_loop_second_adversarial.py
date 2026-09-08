@@ -232,3 +232,29 @@ def test_new_round_two_rehashed_distinct_training_hash_substitution_is_rejected(
 
     with pytest.raises(ValueError, match="example evidence is not source-regenerated"):
         verify_full_scientific_loop_result(forged, repository_root=ROOT)
+
+
+def test_new_round_two_training_evidence_extra_claim_is_rejected(
+    artifact: dict[str, object],
+) -> None:
+    forged = copy.deepcopy(artifact)
+    evidence = forged["learned_cross_axis_interaction"]["training_evidence"]  # type: ignore[index]
+    evidence["unregistered_training_claim"] = True
+    _resign(forged)
+
+    with pytest.raises(ValueError, match="training evidence is incomplete"):
+        verify_full_scientific_loop_result(forged, repository_root=ROOT)
+
+
+def test_new_round_two_rehashed_production_source_substitution_is_rejected(
+    artifact: dict[str, object],
+) -> None:
+    forged = copy.deepcopy(artifact)
+    assembly = forged["production_system_assembly"]  # type: ignore[index]
+    assembly["operators"][0]["sources"][0]["sha256"] = "0" * 64
+    assembly.pop("content_sha256")
+    assembly["content_sha256"] = content_sha256(assembly)
+    _resign(forged)
+
+    with pytest.raises(ValueError, match="production assembly manifest mismatch"):
+        verify_full_scientific_loop_result(forged, repository_root=ROOT)

@@ -20,9 +20,9 @@
   },
   "audit_execution_receipt": {
     "path": "benchmarks/structure_two/engineering_trust_checkpoint_2026_09_05/engineering_audit_receipt.json",
-    "file_sha256": "efb8c6bec03b4c459f77c213fcf65fad0b3fd285a08225cf63879edc1e4a6510",
-    "content_sha256": "93727f0fe7e4045c7c06a8a2236d343bf907e632803c2f85490b51bad253fb4b",
-    "source_manifest_sha256": "d00eb557ae1835617e9cd9b55c8ee3f4679f18310076b6503739e4b1f20f4054",
+    "file_sha256": "2784903af693935f92165341aaeb1729d9a4925c9cfd5da4b737532b22c40249",
+    "content_sha256": "b5f89e3184a7c51e629752f7c1dfc149cace2525f52ae3831a79a7ee08edaf98",
+    "source_manifest_sha256": "43b7067a85293a48bac1df7dbcc4290b1f8072cb6a2247b5150b4d9134bb38f1",
     "command_passes": {
       "p0_adversarial_tests": true,
       "core_pytest": true,
@@ -86,22 +86,22 @@
   ],
   "p0_content_manifest": {
     "path": "benchmarks/p0_checkpoint/content_manifest_v0_2.json",
-    "file_sha256": "9730ce59fd27d49ac46cbe3fb0874ed6d82d448218cb15534763ca3324ab16b9",
-    "manifest_sha256": "d00eb557ae1835617e9cd9b55c8ee3f4679f18310076b6503739e4b1f20f4054",
+    "file_sha256": "3deab0093b2d5dc50b22f8fde76078c729be380874d09f74bafc7cbf90649765",
+    "manifest_sha256": "43b7067a85293a48bac1df7dbcc4290b1f8072cb6a2247b5150b4d9134bb38f1",
     "current_and_self_consistent": true
   },
   "historical_v0_5_source_bundle_audit": {
     "path": "benchmarks/structure_two/structure_two_world_source_bundle_v0_5_compatibility_audit.json",
-    "file_sha256": "e342c0eee6c6ebc562a2c74bdf468c47e5e67a703132891e46ee1599eeee8c94",
-    "current_file_count": 295,
-    "current_source_bundle_sha256": "230bad62ed63d9d8b2faf1cb0685bf3719a5df9e8eeeda135ef5a29d117f8f1e",
+    "file_sha256": "55a61394d2cbeca2e3d6ea18686bbeb949b82b9908bc4704cc55ed1a62205d80",
+    "current_file_count": 296,
+    "current_source_bundle_sha256": "3dedba99133e333211daa5022272b4547b403cf0bf583a86d433e6c18c9dad9a",
     "historical_bundle_compatible_with_current_tree": false,
     "historical_evidence_rewritten": false
   },
   "aligned_reports": [
     {
       "path": "docs/结构二/方向结构二_当前证据总表_2026-09-02.md",
-      "sha256": "76b8a6101c5badcb41623f0d69eb39ac4855c4408497b2bff837b254890972fd"
+      "sha256": "b104c3d675bff9c283a107c04ea999255ae2e975b87be121ac484585861cd0c0"
     },
     {
       "path": "docs/experiments/structure_two_task7_windowed_rejuvenation_result_v0_4_2026-09-05.md",
@@ -180,5 +180,5 @@
     "/task_results/3/definition_and_rerun_complete": "checkpoint_content+source_bound_command_receipt+current_p0_manifest+current_source_inventory+task_artifact_positive_path_map+fresh_task_specific_recomputation+bound_reports",
     "/p0_content_manifest/current_and_self_consistent": "checkpoint_content+source_bound_command_receipt+current_p0_manifest+current_source_inventory+task_artifact_positive_path_map+fresh_task_specific_recomputation+bound_reports"
   },
-  "content_sha256": "37074fdd82a747493c5fe8cd10913db5dfcc6f72ece536eff75acb633fbfcfae"
+  "content_sha256": "19583fac4bc2c659ccf87d29780441d1f5df67ab23ed6794ef9f7f8bd449caf9"
 }

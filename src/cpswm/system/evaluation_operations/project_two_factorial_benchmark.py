@@ -58,7 +58,6 @@ from cpswm.system.evaluation_operations.structure_two_trusted_ablation_authoriza
 )
 from cpswm.system.prototype_spine import ActionReadout, ActionReadoutConfig
 from cpswm.world_model.grounded_search import (
-    CIAVOPCEUObservationLoop,
     CIAVOPCEUReceipt,
     RealizedCIAVObservation,
     StructureTwoCauseBelief,
@@ -285,7 +284,10 @@ class _CIAVState:
             "evidence_factor_trace",
             EvidenceFactorConsumptionTrace(),
         )
-        self._opceu_loop = CIAVOPCEUObservationLoop(self.evidence_factor_trace)
+        self._state.spine.bind_evidence_factor_trace(self.evidence_factor_trace)
+        # CIAV and the CIAV->OPCEU evidence loop are owned by the same public
+        # production-system object as the six memory/revision operators.
+        self._opceu_loop = self._state.spine.ciav_opceu_loop
         self.ciav_opceu_receipts: list[CIAVOPCEUReceipt] = []
 
     def _actor_posterior_after_verification(
@@ -336,6 +338,7 @@ class _CIAVState:
                 ).digest()[:8],
                 "big",
             ),
+            planner=self._state.spine.cause_information_planner,
         )
         if action_id is None:
             return

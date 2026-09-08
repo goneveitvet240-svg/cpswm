@@ -10,7 +10,7 @@
     "shared_potential_outcome_randomness": true
   },
   "all_seven_operator_contributions_established": false,
-  "claim_boundary": "This development protocol establishes an action-responsive synthetic environment, a train-validation-frozen learned cross-axis potential, explicit RGRC positive and negative activation cases, and complete-framework seven-operator neutralization runs. It does not establish real-robot external validity, independent custody, paper-level superiority, or causal necessity of every operator.",
+  "claim_boundary": "This development protocol establishes an action-responsive synthetic environment, a train-validation-frozen learned cross-axis potential, explicit RGRC positive and negative activation cases, a source-bound seven-production-operator system assembly, and complete-framework seven-operator neutralization runs. It does not establish real-robot external validity, independent custody, paper-level superiority, or causal necessity of every operator.",
   "closed_loop_runs": {
     "matched_full_state_factorized": [
       {
@@ -12150,8 +12150,8 @@
     "run_length",
     "revision_lineage"
   ],
-  "content_sha256": "7f29156f4887d26fc2427bde9b27f93c3f301009637ca42e1d61d3b4f4219bf8",
-  "deterministic_replay_sha256": "5fea48badfc24f6995f6442623e123b074a4e9428778b5d2467e73cbc3be2289",
+  "content_sha256": "339dc5dad1a3edd64fe25b5380754154c35b6dd033f165735813fb38b607f5fc",
+  "deterministic_replay_sha256": "055328ccd979f8fe2dc4abf2e62d368430832943bcf0aefd757347aa7dafe0fa",
   "evidence_status": "D0_ACTION_RESPONSIVE_DEVELOPMENT_ONLY",
   "independent_custody_established": false,
   "joint_minus_factorized_lower_is_better": {
@@ -12241,9 +12241,195 @@
     "/action_responsive_environment/environment_trajectory_responds_to_route_action": "per_step_factual_and_counterfactual_transitions+shared_outcome_uniforms+post_action_observations+fresh_recomputation",
     "/learned_cross_axis_interaction/frozen_before_evaluation": "train_only_fit+validation_only_selection+evaluation_seed_firewall+model_hash",
     "/matched_closed_loop_fairness/passed": "paired_schedule_hashes+shared_initial_state+shared_potential_outcomes+matched_compute_contract",
+    "/production_system_assembly/single_runtime_object_owns_all_operator_instances": "public_production_runtime+seven_importable_operator_classes+checked_out_source_hashes+forward_and_feedback_edges",
     "/rgrc_positive_and_negative_activation_passed": "ledger_transition_sequence+four_rejection_cases+ledger_chain_verification",
     "/seven_operator_neutralization/all_seven_neutralizations_completed": "seven_exact_single_operator_masks+retention_receipts+other_operator_execution+paired_seed_runs",
     "/split_contract/all_splits_disjoint": "exact_config_schema+set_disjointness+fresh_recomputation"
+  },
+  "production_system_assembly": {
+    "assembly_class": "cpswm.system.structure_two_production_system.StructureTwoProductionSystem",
+    "backbone_sources": [
+      {
+        "path": "src/cpswm/system/structure_two_production_system.py",
+        "sha256": "3bc8dd674bb2863668fd360b33c3404fbc24def88a06897892b2b2fc13e1f3af"
+      },
+      {
+        "path": "src/cpswm/system/prototype_spine.py",
+        "sha256": "f63c6bc349fd19ff067621e9a80e59cc3f622a3e3f35b0970126d263d61a1f4a"
+      }
+    ],
+    "content_sha256": "34cda6421e1235442980b1933574ee63ca4d60d55b17100891c4bcf53962107d",
+    "feedback_edge": "ciav->opceu->orrer_cheh->pchmp->cf_bocpd->ccrr->rgrc",
+    "forward_edges": [
+      "opceu->orrer_cheh",
+      "orrer_cheh->pchmp",
+      "pchmp->cf_bocpd",
+      "cf_bocpd->ccrr",
+      "ccrr->rgrc",
+      "rgrc->ciav"
+    ],
+    "operator_order": [
+      "opceu",
+      "orrer_cheh",
+      "pchmp",
+      "cf_bocpd",
+      "ccrr",
+      "rgrc",
+      "ciav"
+    ],
+    "operators": [
+      {
+        "consumes": [
+          "observation_opportunity",
+          "visibility_and_detection_propensity"
+        ],
+        "operator": "opceu",
+        "produces": [
+          "propensity_weight",
+          "negative_evidence_strength"
+        ],
+        "runtime_types": [
+          "cpswm.world_model.habits_transitions.propensity_correction.ObservationPropensityCorrector"
+        ],
+        "sources": [
+          {
+            "path": "src/cpswm/world_model/habits_transitions/propensity_correction.py",
+            "sha256": "713a6615d8998757c863abd06b9814adee9b5a7b4c1b7ae635a60888340c6bf8"
+          }
+        ]
+      },
+      {
+        "consumes": [
+          "before_after_observation",
+          "execution_feedback"
+        ],
+        "operator": "orrer_cheh",
+        "produces": [
+          "reversible_event_hypotheses",
+          "revision_lineage"
+        ],
+        "runtime_types": [
+          "cpswm.system.counterfactual_event_hypergraph.engine.OpenWorldRoleConditionedReversibleEventRevisionEngine",
+          "cpswm.system.counterfactual_event_hypergraph.feedback_revision_loop.ProjectTwoFeedbackRevisionLoop"
+        ],
+        "sources": [
+          {
+            "path": "src/cpswm/system/counterfactual_event_hypergraph/engine.py",
+            "sha256": "38df426c30a59fcdc614e11afefdb118f41a55376f62fcc86b1bc0c3e38160b2"
+          },
+          {
+            "path": "src/cpswm/system/counterfactual_event_hypergraph/feedback_revision_loop.py",
+            "sha256": "498a631f6cdd874885d0a8b7d8b2861a6544649a0516e03f307cbf0aee2c4890"
+          }
+        ]
+      },
+      {
+        "consumes": [
+          "event_hypothesis_set",
+          "provenance_scoped_evidence"
+        ],
+        "operator": "pchmp",
+        "produces": [
+          "event_posterior",
+          "actor_role_posterior"
+        ],
+        "runtime_types": [
+          "cpswm.system.counterfactual_event_hypergraph.hypothesis_message_passing.ProvenanceConstrainedMessagePassing"
+        ],
+        "sources": [
+          {
+            "path": "src/cpswm/system/counterfactual_event_hypergraph/hypothesis_message_passing.py",
+            "sha256": "1f18d326813a4e061ccea273c110ad7e0724fd1c184f84e47ff31ac3c5e665a3"
+          }
+        ]
+      },
+      {
+        "consumes": [
+          "cause_signal_frame",
+          "prefix_online_history"
+        ],
+        "operator": "cf_bocpd",
+        "produces": [
+          "joint_cause_run_length_posterior"
+        ],
+        "runtime_types": [
+          "cpswm.world_model.habits_transitions.joint_cause_bocpd.JointCauseFactorizedBOCPD"
+        ],
+        "sources": [
+          {
+            "path": "src/cpswm/world_model/habits_transitions/joint_cause_bocpd.py",
+            "sha256": "dd20b88a30d12ea2cef4d98409bf35677706e07238431887fe52597773294ba7"
+          }
+        ]
+      },
+      {
+        "consumes": [
+          "cause_run_length_posterior",
+          "context_fingerprint"
+        ],
+        "operator": "ccrr",
+        "produces": [
+          "stay_create_reactivate_or_unresolved_decision"
+        ],
+        "runtime_types": [
+          "cpswm.world_model.habits_transitions.context_conditioned_regime.ContextConditionedRegimeReactivator"
+        ],
+        "sources": [
+          {
+            "path": "src/cpswm/world_model/habits_transitions/context_conditioned_regime.py",
+            "sha256": "ecce932f1754044c5ef2cbfcb1bf65fda722443c1db7f74dc571b8bc07532b53"
+          }
+        ]
+      },
+      {
+        "consumes": [
+          "authorized_evidence_cluster_statistic_bundle",
+          "regime_decision"
+        ],
+        "operator": "rgrc",
+        "produces": [
+          "quarantine_promote_retract_replay_ledger",
+          "belief_snapshot"
+        ],
+        "runtime_types": [
+          "cpswm.system.continual.hybrid_statistics.HybridStatisticLedger"
+        ],
+        "sources": [
+          {
+            "path": "src/cpswm/system/continual/hybrid_statistics.py",
+            "sha256": "e30b4e0ecd8b72b0fa56d794c3674f2d6f607610c096bd94317ff0ad7717fe0a"
+          }
+        ]
+      },
+      {
+        "consumes": [
+          "cause_belief",
+          "task_utility",
+          "privacy_and_action_costs"
+        ],
+        "operator": "ciav",
+        "produces": [
+          "verification_plan",
+          "robot_visible_observation_evidence"
+        ],
+        "runtime_types": [
+          "cpswm.world_model.grounded_search.active_verification.CauseInformationActiveVerificationPlanner",
+          "cpswm.world_model.grounded_search.ciav_opceu_loop.CIAVOPCEUObservationLoop"
+        ],
+        "sources": [
+          {
+            "path": "src/cpswm/world_model/grounded_search/active_verification.py",
+            "sha256": "cbf17bcd30fd06e65b6800bc2c3d5e7f35f398e53ee56d65ab733f040d3a8498"
+          },
+          {
+            "path": "src/cpswm/world_model/grounded_search/ciav_opceu_loop.py",
+            "sha256": "7b8c4422dc16518bdc6808090f6785bffe88eb5e62c21bbda05d767de1a589a8"
+          }
+        ]
+      }
+    ],
+    "single_runtime_object_owns_all_operator_instances": true,
+    "system_version": "structure-two-production-system@0.2"
   },
   "protocol_id": "structure-two-full-scientific-loop@0.2-development",
   "rao_blackwellized_blocks": [
@@ -54727,11 +54913,11 @@
     },
     "configuration": {
       "path": "configs/project_two_experiments/structure_two_full_scientific_loop_v0_2.json",
-      "sha256": "385e2928bd4c0f361a988a4a05a795007cab2e24800c4e6edf6b89462c485b05"
+      "sha256": "606f873153cebad2ec4632a0b57de9860ceeed9c7ccddd000f9168c6e176a52d"
     },
     "implementation": {
       "path": "src/cpswm/system/evaluation_operations/structure_two_full_scientific_loop.py",
-      "sha256": "2bac92ad27b4b0b3bf1499dd7a0814501625894856c9700faf05f1d6e18edd5b"
+      "sha256": "8a05221efff5bc0d00696378e056f97449f3a4426eb3cf70600c7ccc6ba455a3"
     },
     "neural_proposal_artifact": {
       "path": "artifacts/project_two_v04_development/structure_two_neural_amortized_model_v0_1.json",

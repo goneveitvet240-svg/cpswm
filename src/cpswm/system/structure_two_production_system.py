@@ -55,6 +55,7 @@ from cpswm.system.structure_two_adaptive_runtime import (
     AdaptiveRouterFeatures,
     AdaptiveStepResult,
     select_adaptive_path,
+    select_evaluation_direct_p5,
 )
 from cpswm.system.structure_two_execution import (
     STRUCTURE_TWO_OPERATOR_ORDER,
@@ -638,6 +639,46 @@ class StructureTwoProductionSystem:
             raise RuntimeError("adaptive production execution returned a legacy result")
         return result
 
+    def process_evaluation_direct_p5_transition(
+        self,
+        transition: PrototypeTransition,
+        *,
+        context: AdaptiveExecutionContext,
+        trace_sink: TraceSink,
+    ) -> AdaptiveStepResult:
+        """Run P5 directly as an evaluation-only upper-bound probe.
+
+        This entrypoint deliberately does not alter or impersonate the normal
+        adaptive router.  It requires a fresh, debt-free, fully authorized
+        context with CIAV input, emits a distinct evaluation-only selection
+        receipt, and then executes the same production P5 plan and operator
+        instances used by debt replay.
+        """
+
+        context = _snapshot_adaptive_context(context)
+        current_state_sha256 = self.adaptive_router_state_sha256()
+        if context.router_features.source_state_sha256 != current_state_sha256:
+            raise ValueError("evaluation-only P5 feature snapshot is stale or foreign")
+        if self.pending_adaptive_debts():
+            raise RuntimeError(
+                "evaluation-only direct P5 cannot run while adaptive debt is pending"
+            )
+        selection = select_evaluation_direct_p5(
+            context.router_features,
+            ciav_runtime_input_available=context.ciav_input is not None,
+        )
+        result = self.process_transition(
+            transition,
+            execution_plan=registered_adaptive_execution_plan("P5_FULL_EAGER"),
+            trace_sink=trace_sink,
+            adaptive_context=context,
+            adaptive_selection=selection,
+            _evaluation_direct_p5=True,
+        )
+        if not isinstance(result, AdaptiveStepResult):
+            raise RuntimeError("evaluation-only P5 execution returned a legacy result")
+        return result
+
     def replay_adaptive_debt(
         self,
         debt_id: UUID,
@@ -765,6 +806,7 @@ class StructureTwoProductionSystem:
         trace_sink: None = None,
         adaptive_context: None = None,
         adaptive_selection: None = None,
+        _evaluation_direct_p5: bool = False,
     ) -> PrototypeStepResult: ...
 
     @overload
@@ -776,6 +818,7 @@ class StructureTwoProductionSystem:
         trace_sink: TraceSink,
         adaptive_context: None = None,
         adaptive_selection: None = None,
+        _evaluation_direct_p5: bool = False,
     ) -> PrototypeStepResult: ...
 
     @overload
@@ -787,6 +830,7 @@ class StructureTwoProductionSystem:
         trace_sink: TraceSink,
         adaptive_context: AdaptiveExecutionContext,
         adaptive_selection: AdaptivePathSelectionReceipt,
+        _evaluation_direct_p5: bool = False,
     ) -> AdaptiveStepResult: ...
 
     @overload
@@ -798,6 +842,7 @@ class StructureTwoProductionSystem:
         trace_sink: TraceSink | None = None,
         adaptive_context: AdaptiveExecutionContext | None = None,
         adaptive_selection: AdaptivePathSelectionReceipt | None = None,
+        _evaluation_direct_p5: bool = False,
     ) -> PrototypeStepResult | AdaptiveStepResult: ...
 
     def process_transition(
@@ -808,6 +853,7 @@ class StructureTwoProductionSystem:
         trace_sink: TraceSink | None = None,
         adaptive_context: AdaptiveExecutionContext | None = None,
         adaptive_selection: AdaptivePathSelectionReceipt | None = None,
+        _evaluation_direct_p5: bool = False,
     ) -> PrototypeStepResult | AdaptiveStepResult:
         """Run one transition through the selected Architecture-A interface.
 
@@ -822,6 +868,8 @@ class StructureTwoProductionSystem:
         adaptive = bool(
             execution_plan is not None and execution_plan.lane == "registered_adaptive_path"
         )
+        if _evaluation_direct_p5 and not adaptive:
+            raise ValueError("evaluation-only P5 authorization requires an adaptive P5 plan")
         if adaptive:
             assert execution_plan is not None
             if adaptive_context is None or adaptive_selection is None:
@@ -899,6 +947,7 @@ class StructureTwoProductionSystem:
                                 AdaptivePathSelectionReceipt,
                                 adaptive_selection,
                             ),
+                            evaluation_direct_p5=_evaluation_direct_p5,
                         )
                     )
                     if adaptive
@@ -945,6 +994,7 @@ class StructureTwoProductionSystem:
         recorder: _TransitionTraceRecorder,
         context: AdaptiveExecutionContext,
         selection: AdaptivePathSelectionReceipt,
+        evaluation_direct_p5: bool = False,
     ) -> AdaptiveStepResult:
         features = context.router_features
         step_index = context.step_index
@@ -995,13 +1045,25 @@ class StructureTwoProductionSystem:
         ciav_input_sha256 = (
             context.ciav_input.content_sha256 if context.ciav_input is not None else None
         )
-        expected_selection = select_adaptive_path(
-            features,
-            ciav_runtime_input_available=ciav_input is not None,
-            debt_expiry_steps=debt_expiry_steps,
+        expected_selection = (
+            select_evaluation_direct_p5(
+                features,
+                ciav_runtime_input_available=ciav_input is not None,
+            )
+            if evaluation_direct_p5
+            else select_adaptive_path(
+                features,
+                ciav_runtime_input_available=ciav_input is not None,
+                debt_expiry_steps=debt_expiry_steps,
+            )
         )
         if selection != expected_selection:
-            raise ValueError("adaptive selection differs from a fresh deterministic routing pass")
+            expected_kind = (
+                "evaluation-only direct P5 authorization"
+                if evaluation_direct_p5
+                else "fresh deterministic routing pass"
+            )
+            raise ValueError(f"adaptive selection differs from {expected_kind}")
         path_id = recorder.plan.plan_id
         if path_id != selection.selected_path_id:
             raise ValueError("adaptive recorder plan differs from router selection")

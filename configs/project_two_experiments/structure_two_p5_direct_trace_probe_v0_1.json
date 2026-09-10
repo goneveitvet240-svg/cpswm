@@ -1,0 +1,20 @@
+{
+  "schema_version": "0.1.0",
+  "protocol_id": "structure-two-p5-direct-trace-probe@0.1",
+  "status": "D0_ENGINEERING_BRINGUP_ONLY",
+  "seed": 3,
+  "direct_path_id": "P5_FULL_EAGER",
+  "required_typed_actions": [
+    "SEARCH",
+    "PUT_BACK"
+  ],
+  "require_full_feedback_closure": true,
+  "normal_router_must_remain_p0_for_probe_features": true,
+  "ciav_matching_policy": {
+    "comparison_arms_must_share_registered_action_candidates": true,
+    "comparison_arms_must_share_observation_outcome_and_visibility_costs": true,
+    "comparison_arms_must_share_privacy_budget": true,
+    "single_arm_probe_establishes_cross_arm_matching": false
+  },
+  "claim_boundary": "This D0 engineering probe establishes an isolated evaluation-only call into the real production P5 path, a validated seven-operator invocation and consumption trace, and one shared typed SEARCH/PUT_BACK decoder call. It does not establish cross-arm CIAV matching, action benefit, scientific superiority, Task 7/8/9 success, or production router policy quality."
+}

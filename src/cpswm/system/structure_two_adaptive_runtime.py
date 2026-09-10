@@ -46,6 +46,8 @@ AdaptivePathId = Literal[
     "P5_FULL_EAGER",
 ]
 
+EVALUATION_DIRECT_P5_REASON = "evaluation_only_direct_p5_ceiling_override"
+
 
 class AdaptiveAuthorizationPolicy(ContractModel):
     """Runtime-owned local authorization policy for the adaptive lane.
@@ -239,6 +241,46 @@ def select_adaptive_path(
     )
 
 
+def select_evaluation_direct_p5(
+    features: AdaptiveRouterFeatures,
+    *,
+    ciav_runtime_input_available: bool,
+) -> AdaptivePathSelectionReceipt:
+    """Authorize an isolated evaluation-only P5 ceiling run.
+
+    This is intentionally separate from :func:`select_adaptive_path`: it does
+    not change production routing policy and it refuses to bypass debt,
+    staleness, authorization, privacy, or safety preconditions.  Its receipt
+    carries an explicit evaluation-only reason so a production-selected P5 and
+    a ceiling probe cannot be confused in downstream evidence.
+    """
+
+    if not ciav_runtime_input_available:
+        raise ValueError("evaluation-only direct P5 requires CIAV runtime input")
+    if not (
+        features.memory_transition_authorized
+        and features.privacy_policy_satisfied
+        and features.safety_context_authorized
+    ):
+        raise PermissionError(
+            "evaluation-only direct P5 is denied by safety, privacy, or authorization policy"
+        )
+    if (
+        features.outstanding_debt_count != 0
+        or features.oldest_debt_age != 0
+        or features.pending_long_term_commit
+    ):
+        raise RuntimeError("evaluation-only direct P5 cannot bypass pending adaptive debt")
+    if features.state_staleness != 0:
+        raise ValueError("evaluation-only direct P5 requires a fresh router feature snapshot")
+    return _selection_receipt(
+        features,
+        selected_path_id="P5_FULL_EAGER",
+        reasons=(EVALUATION_DIRECT_P5_REASON,),
+        ciav_available=True,
+    )
+
+
 def _callable_source_binding(callback: Callable[..., object]) -> dict[str, object]:
     target = getattr(callback, "__func__", callback)
     module = getattr(target, "__module__", None)
@@ -408,6 +450,7 @@ class AdaptiveStepResult:
 
 
 __all__ = [
+    "EVALUATION_DIRECT_P5_REASON",
     "AdaptiveAuthorizationPolicy",
     "AdaptiveCIAVRuntimeInput",
     "AdaptiveDebtStatus",
@@ -417,4 +460,5 @@ __all__ = [
     "AdaptiveRouterFeatures",
     "AdaptiveStepResult",
     "select_adaptive_path",
+    "select_evaluation_direct_p5",
 ]

@@ -1,0 +1,799 @@
+{
+  "action_benefit_established": false,
+  "ciav_input_sha256": "e45f4ce56268824a05fc2518b6fae4d3c5000f43aed04ed323491406761fefac",
+  "ciav_matching_status": {
+    "cross_arm_matching_established": false,
+    "policy_frozen": {
+      "comparison_arms_must_share_observation_outcome_and_visibility_costs": true,
+      "comparison_arms_must_share_privacy_budget": true,
+      "comparison_arms_must_share_registered_action_candidates": true,
+      "single_arm_probe_establishes_cross_arm_matching": false
+    },
+    "reason": "single-arm bring-up cannot prove cross-arm information/cost equality"
+  },
+  "claim_boundary": "This D0 engineering probe establishes an isolated evaluation-only call into the real production P5 path, a validated seven-operator invocation and consumption trace, and one shared typed SEARCH/PUT_BACK decoder call. It does not establish cross-arm CIAV matching, action benefit, scientific superiority, Task 7/8/9 success, or production router policy quality.",
+  "content_sha256": "025670c35ac74918e2955817ac4d388c24fbc0a4d3772b6113734587d7d0a351",
+  "cross_arm_ciav_matching_established": false,
+  "direct_p5_selection": {
+    "ciav_runtime_input_available": true,
+    "feature_sha256": "bb8ba40fd447884bcd9c44ac9f6ebd06043c4f3b81d7f4a466150fd2ba01fbd3",
+    "reasons": [
+      "evaluation_only_direct_p5_ceiling_override"
+    ],
+    "receipt_sha256": "34fd4c9b30e243d71104f6e4389e9243104796484932ad295f50749f8e251aa6",
+    "safe_abstain": false,
+    "selected_path_id": "P5_FULL_EAGER"
+  },
+  "engineering_bringup_passed": true,
+  "execution_trace": {
+    "adaptive_authorization_policy_sha256": "0fe6129619313a20f2efff16b2b6be838cf2da938fdb65b6ebede408a33363fb",
+    "adaptive_ciav_input_sha256": "e45f4ce56268824a05fc2518b6fae4d3c5000f43aed04ed323491406761fefac",
+    "adaptive_debt_expiry_steps": 20,
+    "adaptive_legal_path_executed": true,
+    "adaptive_path_selection_receipt_sha256": "34fd4c9b30e243d71104f6e4389e9243104796484932ad295f50749f8e251aa6",
+    "adaptive_router_feature_sha256": "bb8ba40fd447884bcd9c44ac9f6ebd06043c4f3b81d7f4a466150fd2ba01fbd3",
+    "adaptive_router_source_state_sha256": "16df969a34097f9289ce4ab6edc02434ed7f2887394e9d7167934c059c505425",
+    "adaptive_step_index": 0,
+    "all_seven_operators_invoked": true,
+    "ciav_invoked": true,
+    "claim_boundary": "Source-bound D0 engineering trace for one registered adaptive production path. It establishes the recorded live calls, safe deferrals, optional CIAV feedback closure, and local rollback boundary only. It does not establish path benefit, recovery equivalence, external validity, independent custody, or durable cross-system trace/state atomicity.",
+    "contract_version": "structure-two-execution-contract@0.1",
+    "cross_system_trace_state_atomicity_established": false,
+    "debt_certificates": [],
+    "feedback_closure_kind": "full_transition",
+    "feedback_observation_acquired": true,
+    "final_output_sha256": "5c5d87f45c584cf845b5c09a12daffc5e2025bd655b0690b270cd7494cdb432b",
+    "final_state_sha256": "12f08b2339de780af02da82d473660e4158e1531478e3592e517d215937b465b",
+    "initial_state_sha256": "89bc5bc4786c70e721bcebf5a29ef5ef685a86fb6633b1258b0081ee4b539869",
+    "plan": {
+      "adaptive_path_id": "P5_FULL_EAGER",
+      "contract_version": "structure-two-execution-contract@0.1",
+      "lane": "registered_adaptive_path",
+      "operator_directives": [
+        {
+          "contract_guard_active": true,
+          "mode": "refinement_executed",
+          "operator": "opceu"
+        },
+        {
+          "contract_guard_active": true,
+          "mode": "refinement_executed",
+          "operator": "orrer_cheh"
+        },
+        {
+          "contract_guard_active": true,
+          "mode": "refinement_executed",
+          "operator": "pchmp"
+        },
+        {
+          "contract_guard_active": true,
+          "mode": "refinement_executed",
+          "operator": "cf_bocpd"
+        },
+        {
+          "contract_guard_active": true,
+          "mode": "refinement_executed",
+          "operator": "ccrr"
+        },
+        {
+          "contract_guard_active": true,
+          "mode": "refinement_executed",
+          "operator": "rgrc"
+        },
+        {
+          "contract_guard_active": true,
+          "mode": "refinement_executed",
+          "operator": "ciav"
+        }
+      ],
+      "plan_id": "P5_FULL_EAGER",
+      "schema_version": "0.1.0",
+      "scientific_evidence_authorized": false
+    },
+    "plan_sha256": "647ca20f454bf277eea0cc418f3ba6a902f56b361ea7fcc178ce4273ed2f5210",
+    "receipts": [
+      {
+        "binding_kind": "direct_operator_callable",
+        "binding_slot": 0,
+        "callable_symbol": "cpswm.world_model.habits_transitions.propensity_correction.ObservationPropensityCorrector.weight_for_opportunity",
+        "consumed_output_ids": [],
+        "debt_certificate_sha256": null,
+        "elapsed_ns": 4917,
+        "implementation_source_sha256": "713a6615d8998757c863abd06b9814adee9b5a7b4c1b7ae635a60888340c6bf8",
+        "implementation_symbol": "cpswm.world_model.habits_transitions.propensity_correction.ObservationPropensityCorrector",
+        "input_payload_sha256": "8ffff0b9b7bd21c83947bd7668e72ebd24c2dfd5c4b2c6a71566c8e8712a43d3",
+        "invocation_id": "7fc1b50793ef495222f5c10fe01e119967c1810e6c0243d18e637055b9c40da4",
+        "loaded_callable_code_sha256": "87b28b6b2a84e59e9290588ad504c981cc32a11574f359481a6596b5bc68d7a9",
+        "mode": "refinement_executed",
+        "operator": "opceu",
+        "operator_instance_id": "52343c3148fe32cd0cb00d70e40e074daa6f673ccf7d51ce7e6d31a9c700428a",
+        "output_id": "1e921222c8366a540b8176346beda4cc327a06e6640ffdf4ee0f661d6e57b8a2",
+        "output_payload_sha256": "81e5013a23d564c0d9694b9d98f9694364ef2173bc13e126dcb14d56cbcb9d0d",
+        "phase": "selected_path",
+        "plan_id": "P5_FULL_EAGER",
+        "plan_sha256": "647ca20f454bf277eea0cc418f3ba6a902f56b361ea7fcc178ce4273ed2f5210",
+        "previous_receipt_sha256": "GENESIS",
+        "raw_input_sha256": "f426272c8f09b8aabdff8c8c619f689ef44b0b7cd3079ac994f7841a8cfaf11c",
+        "receipt_sha256": "dd52b1a6b2054bc06b69509a2e1c34750f6f9a02d2aa3c8a7c23e7a9e21432d4",
+        "recomputed_reason": null,
+        "runtime_execution_id": "86d74680-d3d5-4a5b-9783-a72a6c6d2eeb",
+        "sequence": 0,
+        "status": "executed"
+      },
+      {
+        "binding_kind": "direct_operator_callable",
+        "binding_slot": 0,
+        "callable_symbol": "cpswm.system.counterfactual_event_hypergraph.engine.OpenWorldRoleConditionedReversibleEventRevisionEngine.branch",
+        "consumed_output_ids": [],
+        "debt_certificate_sha256": null,
+        "elapsed_ns": 2975334,
+        "implementation_source_sha256": "38df426c30a59fcdc614e11afefdb118f41a55376f62fcc86b1bc0c3e38160b2",
+        "implementation_symbol": "cpswm.system.counterfactual_event_hypergraph.engine.OpenWorldRoleConditionedReversibleEventRevisionEngine",
+        "input_payload_sha256": "d3e2ee8a6f6f171c772762625c95607ac613f915f76038bead5228aeb41d2fd2",
+        "invocation_id": "79ff2f6a282dafffe975f5588ec2df69a71e0a7d2d38b309fc4ec9c9a3a802be",
+        "loaded_callable_code_sha256": "66b1383659ee08956f8cfaa6befdb6d41f70255e3643e615c2eea6714c48e0ae",
+        "mode": "refinement_executed",
+        "operator": "orrer_cheh",
+        "operator_instance_id": "5abe6f2c6ebe039fd7a275097600660bdefd475ded4d48aced3122a28896e77b",
+        "output_id": "263af6dab61a7e07e766d9dde02102639f1dc130212e1d560f71a8d620eb1c16",
+        "output_payload_sha256": "8a698d3aa94b8de9f1287cb192a1915bfd33bd43f7eca9501f4ba5fa9f779a4c",
+        "phase": "selected_path",
+        "plan_id": "P5_FULL_EAGER",
+        "plan_sha256": "647ca20f454bf277eea0cc418f3ba6a902f56b361ea7fcc178ce4273ed2f5210",
+        "previous_receipt_sha256": "dd52b1a6b2054bc06b69509a2e1c34750f6f9a02d2aa3c8a7c23e7a9e21432d4",
+        "raw_input_sha256": "8c5ab492312927a02f96779fcf847523641e8c8eff5d07cf4ea3ff544127944c",
+        "receipt_sha256": "19ff1fd406fc9d9b529fdd92ec29912fa5353b5e8ed04bc1bac3a8ce7602d85b",
+        "recomputed_reason": null,
+        "runtime_execution_id": "86d74680-d3d5-4a5b-9783-a72a6c6d2eeb",
+        "sequence": 1,
+        "status": "executed"
+      },
+      {
+        "binding_kind": "direct_operator_callable",
+        "binding_slot": 0,
+        "callable_symbol": "cpswm.system.counterfactual_event_hypergraph.hypothesis_message_passing.ProvenanceConstrainedMessagePassing.consume",
+        "consumed_output_ids": [
+          "263af6dab61a7e07e766d9dde02102639f1dc130212e1d560f71a8d620eb1c16"
+        ],
+        "debt_certificate_sha256": null,
+        "elapsed_ns": 2807416,
+        "implementation_source_sha256": "1f18d326813a4e061ccea273c110ad7e0724fd1c184f84e47ff31ac3c5e665a3",
+        "implementation_symbol": "cpswm.system.counterfactual_event_hypergraph.hypothesis_message_passing.ProvenanceConstrainedMessagePassing",
+        "input_payload_sha256": "9242dd65dcfc92dd928dd6889fb3fef87f72e78e462fa3e65a11dbe607b32a1c",
+        "invocation_id": "37b4736f7b3015a5551abea946598746802c64524ae3a9a347b1f38ab5d46a20",
+        "loaded_callable_code_sha256": "cb73f0b9eb40f8d1a4983495f11057604f36ad309321cbd8c908402777810676",
+        "mode": "refinement_executed",
+        "operator": "pchmp",
+        "operator_instance_id": "22ba5dee221ef3bc326b48655ba8cc6af620cea3246a1c017021abbfe326c34d",
+        "output_id": "4e08c70471cc73a96ca996f588b04c76064a7c0d60649aa26f280b7c2b00dec5",
+        "output_payload_sha256": "90ab27434a1f7a97194b325c2c9eb4ada931b421de3701fd1f2c16693cd3c31d",
+        "phase": "selected_path",
+        "plan_id": "P5_FULL_EAGER",
+        "plan_sha256": "647ca20f454bf277eea0cc418f3ba6a902f56b361ea7fcc178ce4273ed2f5210",
+        "previous_receipt_sha256": "19ff1fd406fc9d9b529fdd92ec29912fa5353b5e8ed04bc1bac3a8ce7602d85b",
+        "raw_input_sha256": "ba8e78bd65c18920a3b70b9c37397b8dea38d7319b632a998e4449e8a1255593",
+        "receipt_sha256": "3aa6e46ee1c4aff15a8725ab3b349fbc9a8e2d924ff4c510ea93dc7571050cfb",
+        "recomputed_reason": null,
+        "runtime_execution_id": "86d74680-d3d5-4a5b-9783-a72a6c6d2eeb",
+        "sequence": 2,
+        "status": "executed"
+      },
+      {
+        "binding_kind": "direct_operator_callable",
+        "binding_slot": 0,
+        "callable_symbol": "cpswm.world_model.habits_transitions.joint_cause_bocpd.JointCauseFactorizedBOCPD.observe_online",
+        "consumed_output_ids": [
+          "4e08c70471cc73a96ca996f588b04c76064a7c0d60649aa26f280b7c2b00dec5"
+        ],
+        "debt_certificate_sha256": null,
+        "elapsed_ns": 80125,
+        "implementation_source_sha256": "dd20b88a30d12ea2cef4d98409bf35677706e07238431887fe52597773294ba7",
+        "implementation_symbol": "cpswm.world_model.habits_transitions.joint_cause_bocpd.JointCauseFactorizedBOCPD",
+        "input_payload_sha256": "4697a79b766d06b30bff17100481178067ffb3dd03b21c9e628426baced50b14",
+        "invocation_id": "72c22d82592b0c64bc590691f672ff21558dfd8b03e4b6545320f8a288eb30d5",
+        "loaded_callable_code_sha256": "8d23caad15a849097974ac3112b5a0363c9ccc76327f63c8774b3750583d24f4",
+        "mode": "refinement_executed",
+        "operator": "cf_bocpd",
+        "operator_instance_id": "4edf5216d9a0175042b854d3b9de6fccf259ebfc0a54e139fc1661bd920bff7e",
+        "output_id": "487679375743d5b4fdbd567e837a8584af51d9b1955ede8db35d185d42e9975e",
+        "output_payload_sha256": "5e34a14ab15aa5b61fcd70a1aabae7e90fb45a799dae1a78258e40d1b8ef51ca",
+        "phase": "selected_path",
+        "plan_id": "P5_FULL_EAGER",
+        "plan_sha256": "647ca20f454bf277eea0cc418f3ba6a902f56b361ea7fcc178ce4273ed2f5210",
+        "previous_receipt_sha256": "3aa6e46ee1c4aff15a8725ab3b349fbc9a8e2d924ff4c510ea93dc7571050cfb",
+        "raw_input_sha256": "eacb682c4c9fe83e4142ebae3c8a4f491db0eee70b1eadba3a282458900606e6",
+        "receipt_sha256": "10d32d7e1e67e19a4517b8defbd692b7dbda20b1747e687ff3d73e627c8d83c3",
+        "recomputed_reason": null,
+        "runtime_execution_id": "86d74680-d3d5-4a5b-9783-a72a6c6d2eeb",
+        "sequence": 3,
+        "status": "executed"
+      },
+      {
+        "binding_kind": "composite_operator_stage",
+        "binding_slot": 0,
+        "callable_symbol": "cpswm.system.continual.project_one_regime_loop.AutomaticCFBOCPDCCRRRouter.observe",
+        "consumed_output_ids": [
+          "4e08c70471cc73a96ca996f588b04c76064a7c0d60649aa26f280b7c2b00dec5",
+          "487679375743d5b4fdbd567e837a8584af51d9b1955ede8db35d185d42e9975e"
+        ],
+        "debt_certificate_sha256": null,
+        "elapsed_ns": 276958,
+        "implementation_source_sha256": "a76cfcb7f6ac665aa78ceaca0298d3e5ebcfb84ac71ebb8a7bb570d0096987de",
+        "implementation_symbol": "cpswm.system.continual.project_one_regime_loop.AutomaticCFBOCPDCCRRRouter",
+        "input_payload_sha256": "7029dbc7512d8629d691ae8f4b08e73837bb2d9fadfb9bd074801b198baab42d",
+        "invocation_id": "f61e9a647a271692fffd0b2c081ac772e469262918fc7ab7e03df38e872970af",
+        "loaded_callable_code_sha256": "30761b1d4a83ac8cba4925bae9f4a5547dc599d3021a8fcd2107480068192fb8",
+        "mode": "refinement_executed",
+        "operator": "ccrr",
+        "operator_instance_id": "92a193f77d765e5fc3be67f3a0c1f6de082f40932667671b67fce62c8c28dc69",
+        "output_id": "0a28e2d5fac94ebf1e0bbc15b7c129c5b23860562bad2d8a5eb93846750111bb",
+        "output_payload_sha256": "69a330a106af0ff28a0c1b99e2568040af18834cb71f685451f0a4ed5a6820d4",
+        "phase": "selected_path",
+        "plan_id": "P5_FULL_EAGER",
+        "plan_sha256": "647ca20f454bf277eea0cc418f3ba6a902f56b361ea7fcc178ce4273ed2f5210",
+        "previous_receipt_sha256": "10d32d7e1e67e19a4517b8defbd692b7dbda20b1747e687ff3d73e627c8d83c3",
+        "raw_input_sha256": "13de9d03400cb3869932eba694224ef233badf0e245b569031ae4aa6f8aaaf3a",
+        "receipt_sha256": "868c1688d48d1b4e08768f4838b2109407864c32dc2d845800d6a6b078ff9aac",
+        "recomputed_reason": null,
+        "runtime_execution_id": "86d74680-d3d5-4a5b-9783-a72a6c6d2eeb",
+        "sequence": 4,
+        "status": "executed"
+      },
+      {
+        "binding_kind": "enclosing_runtime_stage",
+        "binding_slot": 0,
+        "callable_symbol": "cpswm.system.prototype_spine.CorePrototypeSpine._process_transition",
+        "consumed_output_ids": [
+          "1e921222c8366a540b8176346beda4cc327a06e6640ffdf4ee0f661d6e57b8a2",
+          "4e08c70471cc73a96ca996f588b04c76064a7c0d60649aa26f280b7c2b00dec5",
+          "0a28e2d5fac94ebf1e0bbc15b7c129c5b23860562bad2d8a5eb93846750111bb"
+        ],
+        "debt_certificate_sha256": null,
+        "elapsed_ns": 42292,
+        "implementation_source_sha256": "369dc7b5ab087b6c80c5ec6fe3ca1929fd92f366781db11dbb8240732e83a26e",
+        "implementation_symbol": "cpswm.system.prototype_spine.CorePrototypeSpine",
+        "input_payload_sha256": "2f3b910449f14bded9c24e9dbec511599f47de7003c7b851bf6b12914df29c01",
+        "invocation_id": "74b0db30ea05a426527026d96c7cdb19381ecd4514904a9c0245c42fdce9f248",
+        "loaded_callable_code_sha256": "0d0262ce76cf751d0124e37f8babe66b8b83cc3b0917b7c1566fd88d1ddbfdf0",
+        "mode": "refinement_executed",
+        "operator": "rgrc",
+        "operator_instance_id": "d4d31c2f21e9edbd28882047dc91ccd08f1a28263f8b24c35d8f4151dfa829c9",
+        "output_id": "2a8a09e8ef5919d7c69a8e4f16df047806fed75e8d192e932bbbb6eeb2fc2a40",
+        "output_payload_sha256": "1105006619f517590d88cdeb11d68af323fe52ffae7e9e2181d5d30492a60b50",
+        "phase": "selected_path",
+        "plan_id": "P5_FULL_EAGER",
+        "plan_sha256": "647ca20f454bf277eea0cc418f3ba6a902f56b361ea7fcc178ce4273ed2f5210",
+        "previous_receipt_sha256": "868c1688d48d1b4e08768f4838b2109407864c32dc2d845800d6a6b078ff9aac",
+        "raw_input_sha256": "6c164526de9c4df5276a9937bf877417f1f447e4e88055b26c4fa4fbb8d9ad42",
+        "receipt_sha256": "5ef07e52decb00ac825be8f3244980dc8373e06913dd4cf0e950c0abc527df43",
+        "recomputed_reason": null,
+        "runtime_execution_id": "86d74680-d3d5-4a5b-9783-a72a6c6d2eeb",
+        "sequence": 5,
+        "status": "executed"
+      },
+      {
+        "binding_kind": "adaptive_composite_stage",
+        "binding_slot": 0,
+        "callable_symbol": "cpswm.system.structure_two_production_system.StructureTwoProductionSystem._execute_ciav_operator",
+        "consumed_output_ids": [
+          "0a28e2d5fac94ebf1e0bbc15b7c129c5b23860562bad2d8a5eb93846750111bb",
+          "2a8a09e8ef5919d7c69a8e4f16df047806fed75e8d192e932bbbb6eeb2fc2a40"
+        ],
+        "debt_certificate_sha256": null,
+        "elapsed_ns": 1752167,
+        "implementation_source_sha256": "73485a03a94f1f81c3d8b5d37a67117e51e34dcf8f9eb50f7bd55f8b1721b2b7",
+        "implementation_symbol": "cpswm.system.structure_two_production_system.StructureTwoProductionSystem",
+        "input_payload_sha256": "3f4f5d3d038c017dc8b1881c9e9fa4a5ffad9b944356792056e74b31c63739f2",
+        "invocation_id": "a55fafd39296ea69236db6febd1b0ed102a5f0c07258bef555a6f16c193d6fa9",
+        "loaded_callable_code_sha256": "a3d3961a405a60ce39f4c0baa23d53d046b68b9193f271ed1d3d179f91318044",
+        "mode": "refinement_executed",
+        "operator": "ciav",
+        "operator_instance_id": "20aec653b413a2fdae48f4f49d2c6aca522478a76be119c14558e5d70a52d1e5",
+        "output_id": "debf52bcc6d862c80b86df3ff148cf76ae830c09a02d41788bd30751d4be164a",
+        "output_payload_sha256": "e45488786a9bddee07380d015a6f2c6c9e92c89d1ac1c58e831ac0168aa14bcb",
+        "phase": "selected_path",
+        "plan_id": "P5_FULL_EAGER",
+        "plan_sha256": "647ca20f454bf277eea0cc418f3ba6a902f56b361ea7fcc178ce4273ed2f5210",
+        "previous_receipt_sha256": "5ef07e52decb00ac825be8f3244980dc8373e06913dd4cf0e950c0abc527df43",
+        "raw_input_sha256": "e6ef3a11eb236c989e27329083fcf232e8d2e3efbd262f1e6b953e837b61b4ef",
+        "receipt_sha256": "d7ec10185b817e5241b4c1ae3e92d92db200dbcfc3f2e6c82e528795cdfac36c",
+        "recomputed_reason": null,
+        "runtime_execution_id": "86d74680-d3d5-4a5b-9783-a72a6c6d2eeb",
+        "sequence": 6,
+        "status": "executed"
+      },
+      {
+        "binding_kind": "direct_operator_callable",
+        "binding_slot": 0,
+        "callable_symbol": "cpswm.world_model.habits_transitions.propensity_correction.ObservationPropensityCorrector.weight_for_opportunity",
+        "consumed_output_ids": [
+          "debf52bcc6d862c80b86df3ff148cf76ae830c09a02d41788bd30751d4be164a"
+        ],
+        "debt_certificate_sha256": null,
+        "elapsed_ns": 6000,
+        "implementation_source_sha256": "713a6615d8998757c863abd06b9814adee9b5a7b4c1b7ae635a60888340c6bf8",
+        "implementation_symbol": "cpswm.world_model.habits_transitions.propensity_correction.ObservationPropensityCorrector",
+        "input_payload_sha256": "17983f7b055bfa661fa4f5455e0c35ca2e3b1e205f03706c611ee34ed3ad3b39",
+        "invocation_id": "f002ecbbb1143a39eb5a1f12fb65db8813c3026283e2a3aab83f6b95560cdb6d",
+        "loaded_callable_code_sha256": "87b28b6b2a84e59e9290588ad504c981cc32a11574f359481a6596b5bc68d7a9",
+        "mode": "refinement_executed",
+        "operator": "opceu",
+        "operator_instance_id": "52343c3148fe32cd0cb00d70e40e074daa6f673ccf7d51ce7e6d31a9c700428a",
+        "output_id": "4fdb391141dd9bc07a4933eec16e152469dce0594903e6d7fd0a43a55a9fad86",
+        "output_payload_sha256": "e30dbfcafa1f83b61af4d084d1113201531837062576e2c25c5b5725c5dc58cc",
+        "phase": "feedback_closure",
+        "plan_id": "P5_FULL_EAGER",
+        "plan_sha256": "647ca20f454bf277eea0cc418f3ba6a902f56b361ea7fcc178ce4273ed2f5210",
+        "previous_receipt_sha256": "d7ec10185b817e5241b4c1ae3e92d92db200dbcfc3f2e6c82e528795cdfac36c",
+        "raw_input_sha256": "187cd130fb3a5cb2036e81384acb0b58403474ee1ca8dcac0a4a884b54a31b15",
+        "receipt_sha256": "a2730ded4c724268d199e5285097d9edce539454d585a9f14aa31c86f1b15efc",
+        "recomputed_reason": null,
+        "runtime_execution_id": "86d74680-d3d5-4a5b-9783-a72a6c6d2eeb",
+        "sequence": 7,
+        "status": "executed"
+      },
+      {
+        "binding_kind": "direct_operator_callable",
+        "binding_slot": 0,
+        "callable_symbol": "cpswm.system.counterfactual_event_hypergraph.engine.OpenWorldRoleConditionedReversibleEventRevisionEngine.branch",
+        "consumed_output_ids": [
+          "debf52bcc6d862c80b86df3ff148cf76ae830c09a02d41788bd30751d4be164a"
+        ],
+        "debt_certificate_sha256": null,
+        "elapsed_ns": 2641083,
+        "implementation_source_sha256": "38df426c30a59fcdc614e11afefdb118f41a55376f62fcc86b1bc0c3e38160b2",
+        "implementation_symbol": "cpswm.system.counterfactual_event_hypergraph.engine.OpenWorldRoleConditionedReversibleEventRevisionEngine",
+        "input_payload_sha256": "2c62ac48ff915b28bd94a0be083d45e80266a2b7ecf8b8f2b349708f7935d413",
+        "invocation_id": "9aaa3a8e6826bfd58300dd3b50d04db570b262e00d752e3e953ec4ae7034d1f8",
+        "loaded_callable_code_sha256": "66b1383659ee08956f8cfaa6befdb6d41f70255e3643e615c2eea6714c48e0ae",
+        "mode": "refinement_executed",
+        "operator": "orrer_cheh",
+        "operator_instance_id": "5abe6f2c6ebe039fd7a275097600660bdefd475ded4d48aced3122a28896e77b",
+        "output_id": "25783690b75279df72efaf06c02c838388b8c15bbe4790a02078e212923eb83d",
+        "output_payload_sha256": "b7e3937e92d59132271fadd3c19518f4b6a181ce470c81d124ff34181b9e8379",
+        "phase": "feedback_closure",
+        "plan_id": "P5_FULL_EAGER",
+        "plan_sha256": "647ca20f454bf277eea0cc418f3ba6a902f56b361ea7fcc178ce4273ed2f5210",
+        "previous_receipt_sha256": "a2730ded4c724268d199e5285097d9edce539454d585a9f14aa31c86f1b15efc",
+        "raw_input_sha256": "4a0df69651460b288bdea0f9d50dc51e67e4afb1ed9f1d58c15fff8773b5738a",
+        "receipt_sha256": "6bdffad1542718bbb6a6ca49c4071f1fdd4d5f2b467647fa72f05aef7c8d89a6",
+        "recomputed_reason": null,
+        "runtime_execution_id": "86d74680-d3d5-4a5b-9783-a72a6c6d2eeb",
+        "sequence": 8,
+        "status": "executed"
+      },
+      {
+        "binding_kind": "direct_operator_callable",
+        "binding_slot": 0,
+        "callable_symbol": "cpswm.system.counterfactual_event_hypergraph.hypothesis_message_passing.ProvenanceConstrainedMessagePassing.consume",
+        "consumed_output_ids": [
+          "25783690b75279df72efaf06c02c838388b8c15bbe4790a02078e212923eb83d"
+        ],
+        "debt_certificate_sha256": null,
+        "elapsed_ns": 3103334,
+        "implementation_source_sha256": "1f18d326813a4e061ccea273c110ad7e0724fd1c184f84e47ff31ac3c5e665a3",
+        "implementation_symbol": "cpswm.system.counterfactual_event_hypergraph.hypothesis_message_passing.ProvenanceConstrainedMessagePassing",
+        "input_payload_sha256": "7c2eb8a92fc263b79e847b23067dfbd8a31446c30fcfd47636288c7bff017519",
+        "invocation_id": "be5b48c8a5fbc5b1af67e568572b9aa33511607ba6a639722d6c91626ed1b45d",
+        "loaded_callable_code_sha256": "cb73f0b9eb40f8d1a4983495f11057604f36ad309321cbd8c908402777810676",
+        "mode": "refinement_executed",
+        "operator": "pchmp",
+        "operator_instance_id": "22ba5dee221ef3bc326b48655ba8cc6af620cea3246a1c017021abbfe326c34d",
+        "output_id": "f5a5435515dc0a1d8eafb5dcf8b2afacf34b0a80d6239c61e35b285506e528e5",
+        "output_payload_sha256": "2800e640b048490a184fb5195064927659123620a44996969ea4db82dfb3dde0",
+        "phase": "feedback_closure",
+        "plan_id": "P5_FULL_EAGER",
+        "plan_sha256": "647ca20f454bf277eea0cc418f3ba6a902f56b361ea7fcc178ce4273ed2f5210",
+        "previous_receipt_sha256": "6bdffad1542718bbb6a6ca49c4071f1fdd4d5f2b467647fa72f05aef7c8d89a6",
+        "raw_input_sha256": "bb562c3f675c69ec306c57abdf190ae1e0312735e5631d3559c4e39a896f4b7d",
+        "receipt_sha256": "b6d3147e2af6f4263d4cb24ecfa6c6326166036af89733fa3a0b2b39c4863be5",
+        "recomputed_reason": null,
+        "runtime_execution_id": "86d74680-d3d5-4a5b-9783-a72a6c6d2eeb",
+        "sequence": 9,
+        "status": "executed"
+      },
+      {
+        "binding_kind": "direct_operator_callable",
+        "binding_slot": 0,
+        "callable_symbol": "cpswm.world_model.habits_transitions.joint_cause_bocpd.JointCauseFactorizedBOCPD.observe_online",
+        "consumed_output_ids": [
+          "f5a5435515dc0a1d8eafb5dcf8b2afacf34b0a80d6239c61e35b285506e528e5"
+        ],
+        "debt_certificate_sha256": null,
+        "elapsed_ns": 181333,
+        "implementation_source_sha256": "dd20b88a30d12ea2cef4d98409bf35677706e07238431887fe52597773294ba7",
+        "implementation_symbol": "cpswm.world_model.habits_transitions.joint_cause_bocpd.JointCauseFactorizedBOCPD",
+        "input_payload_sha256": "1067c20cfe0925ead0f2d5b0091e65d60500798411dc3dde65cf795fa23c59c2",
+        "invocation_id": "e9ddae9fdf487147f8e3d17c3898f5458a0679b30ee1c596df7d20092e512b45",
+        "loaded_callable_code_sha256": "8d23caad15a849097974ac3112b5a0363c9ccc76327f63c8774b3750583d24f4",
+        "mode": "refinement_executed",
+        "operator": "cf_bocpd",
+        "operator_instance_id": "4edf5216d9a0175042b854d3b9de6fccf259ebfc0a54e139fc1661bd920bff7e",
+        "output_id": "29a01a442a2387048811579fcaea98b0a17af3281e79454627f6ffe910aa5ee7",
+        "output_payload_sha256": "4e9f1a733a834b28924e599e6bc99ab3e1587a221943813e65f28672452a9896",
+        "phase": "feedback_closure",
+        "plan_id": "P5_FULL_EAGER",
+        "plan_sha256": "647ca20f454bf277eea0cc418f3ba6a902f56b361ea7fcc178ce4273ed2f5210",
+        "previous_receipt_sha256": "b6d3147e2af6f4263d4cb24ecfa6c6326166036af89733fa3a0b2b39c4863be5",
+        "raw_input_sha256": "e7d8c4c532aa521c7f2e3cead07fcf242eb6ec5cebfbc60ef71a25d05cba6771",
+        "receipt_sha256": "a563dbea25c2fe799d1a6ed824ccbf5542df8af695f9cee2386d49a8fb34d677",
+        "recomputed_reason": null,
+        "runtime_execution_id": "86d74680-d3d5-4a5b-9783-a72a6c6d2eeb",
+        "sequence": 10,
+        "status": "executed"
+      },
+      {
+        "binding_kind": "composite_operator_stage",
+        "binding_slot": 0,
+        "callable_symbol": "cpswm.system.continual.project_one_regime_loop.AutomaticCFBOCPDCCRRRouter.observe",
+        "consumed_output_ids": [
+          "f5a5435515dc0a1d8eafb5dcf8b2afacf34b0a80d6239c61e35b285506e528e5",
+          "29a01a442a2387048811579fcaea98b0a17af3281e79454627f6ffe910aa5ee7"
+        ],
+        "debt_certificate_sha256": null,
+        "elapsed_ns": 233875,
+        "implementation_source_sha256": "a76cfcb7f6ac665aa78ceaca0298d3e5ebcfb84ac71ebb8a7bb570d0096987de",
+        "implementation_symbol": "cpswm.system.continual.project_one_regime_loop.AutomaticCFBOCPDCCRRRouter",
+        "input_payload_sha256": "af122e2739ca4e76ba3458e3157e6070c4b46408676fce8457d24d3a282b15a8",
+        "invocation_id": "0aebd11fc4e505ddeeefd6866ae60a1ad4a95e25da7415075b8c21a97c943afa",
+        "loaded_callable_code_sha256": "30761b1d4a83ac8cba4925bae9f4a5547dc599d3021a8fcd2107480068192fb8",
+        "mode": "refinement_executed",
+        "operator": "ccrr",
+        "operator_instance_id": "92a193f77d765e5fc3be67f3a0c1f6de082f40932667671b67fce62c8c28dc69",
+        "output_id": "00b36f2f7b5ace727b174a1d707b3c5aba98208de09478e6a61e63561d08791c",
+        "output_payload_sha256": "539f5560c804ed702c32e7008ebbf8fdca41d278100fdde8c8060bfb16fbc167",
+        "phase": "feedback_closure",
+        "plan_id": "P5_FULL_EAGER",
+        "plan_sha256": "647ca20f454bf277eea0cc418f3ba6a902f56b361ea7fcc178ce4273ed2f5210",
+        "previous_receipt_sha256": "a563dbea25c2fe799d1a6ed824ccbf5542df8af695f9cee2386d49a8fb34d677",
+        "raw_input_sha256": "1e2069ad0e5da01d508109b4dcd04061b7ef76af63966dedca8b12a1d55de19f",
+        "receipt_sha256": "d431fee96b2682378e2f96fc7ba4f9dfbd36231940b30b28b3ba9c51965000f7",
+        "recomputed_reason": null,
+        "runtime_execution_id": "86d74680-d3d5-4a5b-9783-a72a6c6d2eeb",
+        "sequence": 11,
+        "status": "executed"
+      },
+      {
+        "binding_kind": "enclosing_runtime_stage",
+        "binding_slot": 0,
+        "callable_symbol": "cpswm.system.prototype_spine.CorePrototypeSpine._process_transition",
+        "consumed_output_ids": [
+          "4fdb391141dd9bc07a4933eec16e152469dce0594903e6d7fd0a43a55a9fad86",
+          "f5a5435515dc0a1d8eafb5dcf8b2afacf34b0a80d6239c61e35b285506e528e5",
+          "00b36f2f7b5ace727b174a1d707b3c5aba98208de09478e6a61e63561d08791c"
+        ],
+        "debt_certificate_sha256": null,
+        "elapsed_ns": 729666,
+        "implementation_source_sha256": "369dc7b5ab087b6c80c5ec6fe3ca1929fd92f366781db11dbb8240732e83a26e",
+        "implementation_symbol": "cpswm.system.prototype_spine.CorePrototypeSpine",
+        "input_payload_sha256": "ccb14057f2adc39897b1094e49ff3bfa04e656484b1f4145d25f2fdcbc4a28b0",
+        "invocation_id": "f7da9a05e37e7b469aaad8d14b767a4f7e2eb14dd2fc5c8c690dc5f3bff7930a",
+        "loaded_callable_code_sha256": "0d0262ce76cf751d0124e37f8babe66b8b83cc3b0917b7c1566fd88d1ddbfdf0",
+        "mode": "refinement_executed",
+        "operator": "rgrc",
+        "operator_instance_id": "d4d31c2f21e9edbd28882047dc91ccd08f1a28263f8b24c35d8f4151dfa829c9",
+        "output_id": "67e0c4f1e5f4a6295f2fc69a84eaee509cc462c15d10ca6ff516496eb70ca866",
+        "output_payload_sha256": "8ec56e96f03ffcb081dc17820111f692864e5a41d71211278d47b5f7de149400",
+        "phase": "feedback_closure",
+        "plan_id": "P5_FULL_EAGER",
+        "plan_sha256": "647ca20f454bf277eea0cc418f3ba6a902f56b361ea7fcc178ce4273ed2f5210",
+        "previous_receipt_sha256": "d431fee96b2682378e2f96fc7ba4f9dfbd36231940b30b28b3ba9c51965000f7",
+        "raw_input_sha256": "56da1f40af4c363389aa192cdd48a4dcc482339d63b78eaa153e81ba6679f3b7",
+        "receipt_sha256": "1153b98c8fa84edbec0612646627caca97e05f8f29df8277cb1c97ce473a4a9c",
+        "recomputed_reason": null,
+        "runtime_execution_id": "86d74680-d3d5-4a5b-9783-a72a6c6d2eeb",
+        "sequence": 12,
+        "status": "executed"
+      }
+    ],
+    "replayed_debt_certificates": [],
+    "runtime_execution_id": "86d74680-d3d5-4a5b-9783-a72a6c6d2eeb",
+    "runtime_symbol": "cpswm.system.structure_two_production_system.StructureTwoProductionSystem",
+    "schema_version": "0.1.0",
+    "scientific_evidence_authorized": false,
+    "system_version": "structure-two-production-system@0.2",
+    "trace_sha256": "cacde50643870182104c351074525783c914c8aad9fb33d828a734c339732623",
+    "transition_sha256": "6c164526de9c4df5276a9937bf877417f1f447e4e88055b26c4fa4fbb8d9ad42"
+  },
+  "gate_checks": {
+    "all_seven_primary_operators_invoked": true,
+    "ciav_invoked": true,
+    "direct_receipt_is_explicitly_evaluation_only": true,
+    "full_feedback_closure_executed": true,
+    "normal_router_unchanged_and_selects_p0": true,
+    "primary_operator_order_exact": true,
+    "real_production_p5_plan_executed": true,
+    "shared_decoder_emitted_put_back": true,
+    "shared_decoder_emitted_search": true
+  },
+  "normal_router_selection": {
+    "ciav_runtime_input_available": true,
+    "feature_sha256": "bb8ba40fd447884bcd9c44ac9f6ebd06043c4f3b81d7f4a466150fd2ba01fbd3",
+    "reasons": [
+      "low_visible_risk_safe_deferral"
+    ],
+    "receipt_sha256": "528e3ea807e6f1751c4ba39132a08f65139b0a95b156e3688120364c18b7d6c7",
+    "safe_abstain": false,
+    "selected_path_id": "P0_SAFE_DEFERRED"
+  },
+  "operator_call_consumption_trace": [
+    {
+      "callable_symbol": "cpswm.world_model.habits_transitions.propensity_correction.ObservationPropensityCorrector.weight_for_opportunity",
+      "consumes": [],
+      "input_payload_sha256": "8ffff0b9b7bd21c83947bd7668e72ebd24c2dfd5c4b2c6a71566c8e8712a43d3",
+      "invocation_id": "7fc1b50793ef495222f5c10fe01e119967c1810e6c0243d18e637055b9c40da4",
+      "operator": "opceu",
+      "operator_instance_id": "52343c3148fe32cd0cb00d70e40e074daa6f673ccf7d51ce7e6d31a9c700428a",
+      "output_payload_sha256": "81e5013a23d564c0d9694b9d98f9694364ef2173bc13e126dcb14d56cbcb9d0d",
+      "phase": "selected_path",
+      "sequence": 0,
+      "status": "executed"
+    },
+    {
+      "callable_symbol": "cpswm.system.counterfactual_event_hypergraph.engine.OpenWorldRoleConditionedReversibleEventRevisionEngine.branch",
+      "consumes": [],
+      "input_payload_sha256": "d3e2ee8a6f6f171c772762625c95607ac613f915f76038bead5228aeb41d2fd2",
+      "invocation_id": "79ff2f6a282dafffe975f5588ec2df69a71e0a7d2d38b309fc4ec9c9a3a802be",
+      "operator": "orrer_cheh",
+      "operator_instance_id": "5abe6f2c6ebe039fd7a275097600660bdefd475ded4d48aced3122a28896e77b",
+      "output_payload_sha256": "8a698d3aa94b8de9f1287cb192a1915bfd33bd43f7eca9501f4ba5fa9f779a4c",
+      "phase": "selected_path",
+      "sequence": 1,
+      "status": "executed"
+    },
+    {
+      "callable_symbol": "cpswm.system.counterfactual_event_hypergraph.hypothesis_message_passing.ProvenanceConstrainedMessagePassing.consume",
+      "consumes": [
+        "1:selected_path:orrer_cheh"
+      ],
+      "input_payload_sha256": "9242dd65dcfc92dd928dd6889fb3fef87f72e78e462fa3e65a11dbe607b32a1c",
+      "invocation_id": "37b4736f7b3015a5551abea946598746802c64524ae3a9a347b1f38ab5d46a20",
+      "operator": "pchmp",
+      "operator_instance_id": "22ba5dee221ef3bc326b48655ba8cc6af620cea3246a1c017021abbfe326c34d",
+      "output_payload_sha256": "90ab27434a1f7a97194b325c2c9eb4ada931b421de3701fd1f2c16693cd3c31d",
+      "phase": "selected_path",
+      "sequence": 2,
+      "status": "executed"
+    },
+    {
+      "callable_symbol": "cpswm.world_model.habits_transitions.joint_cause_bocpd.JointCauseFactorizedBOCPD.observe_online",
+      "consumes": [
+        "2:selected_path:pchmp"
+      ],
+      "input_payload_sha256": "4697a79b766d06b30bff17100481178067ffb3dd03b21c9e628426baced50b14",
+      "invocation_id": "72c22d82592b0c64bc590691f672ff21558dfd8b03e4b6545320f8a288eb30d5",
+      "operator": "cf_bocpd",
+      "operator_instance_id": "4edf5216d9a0175042b854d3b9de6fccf259ebfc0a54e139fc1661bd920bff7e",
+      "output_payload_sha256": "5e34a14ab15aa5b61fcd70a1aabae7e90fb45a799dae1a78258e40d1b8ef51ca",
+      "phase": "selected_path",
+      "sequence": 3,
+      "status": "executed"
+    },
+    {
+      "callable_symbol": "cpswm.system.continual.project_one_regime_loop.AutomaticCFBOCPDCCRRRouter.observe",
+      "consumes": [
+        "2:selected_path:pchmp",
+        "3:selected_path:cf_bocpd"
+      ],
+      "input_payload_sha256": "7029dbc7512d8629d691ae8f4b08e73837bb2d9fadfb9bd074801b198baab42d",
+      "invocation_id": "f61e9a647a271692fffd0b2c081ac772e469262918fc7ab7e03df38e872970af",
+      "operator": "ccrr",
+      "operator_instance_id": "92a193f77d765e5fc3be67f3a0c1f6de082f40932667671b67fce62c8c28dc69",
+      "output_payload_sha256": "69a330a106af0ff28a0c1b99e2568040af18834cb71f685451f0a4ed5a6820d4",
+      "phase": "selected_path",
+      "sequence": 4,
+      "status": "executed"
+    },
+    {
+      "callable_symbol": "cpswm.system.prototype_spine.CorePrototypeSpine._process_transition",
+      "consumes": [
+        "0:selected_path:opceu",
+        "2:selected_path:pchmp",
+        "4:selected_path:ccrr"
+      ],
+      "input_payload_sha256": "2f3b910449f14bded9c24e9dbec511599f47de7003c7b851bf6b12914df29c01",
+      "invocation_id": "74b0db30ea05a426527026d96c7cdb19381ecd4514904a9c0245c42fdce9f248",
+      "operator": "rgrc",
+      "operator_instance_id": "d4d31c2f21e9edbd28882047dc91ccd08f1a28263f8b24c35d8f4151dfa829c9",
+      "output_payload_sha256": "1105006619f517590d88cdeb11d68af323fe52ffae7e9e2181d5d30492a60b50",
+      "phase": "selected_path",
+      "sequence": 5,
+      "status": "executed"
+    },
+    {
+      "callable_symbol": "cpswm.system.structure_two_production_system.StructureTwoProductionSystem._execute_ciav_operator",
+      "consumes": [
+        "4:selected_path:ccrr",
+        "5:selected_path:rgrc"
+      ],
+      "input_payload_sha256": "3f4f5d3d038c017dc8b1881c9e9fa4a5ffad9b944356792056e74b31c63739f2",
+      "invocation_id": "a55fafd39296ea69236db6febd1b0ed102a5f0c07258bef555a6f16c193d6fa9",
+      "operator": "ciav",
+      "operator_instance_id": "20aec653b413a2fdae48f4f49d2c6aca522478a76be119c14558e5d70a52d1e5",
+      "output_payload_sha256": "e45488786a9bddee07380d015a6f2c6c9e92c89d1ac1c58e831ac0168aa14bcb",
+      "phase": "selected_path",
+      "sequence": 6,
+      "status": "executed"
+    },
+    {
+      "callable_symbol": "cpswm.world_model.habits_transitions.propensity_correction.ObservationPropensityCorrector.weight_for_opportunity",
+      "consumes": [
+        "6:selected_path:ciav"
+      ],
+      "input_payload_sha256": "17983f7b055bfa661fa4f5455e0c35ca2e3b1e205f03706c611ee34ed3ad3b39",
+      "invocation_id": "f002ecbbb1143a39eb5a1f12fb65db8813c3026283e2a3aab83f6b95560cdb6d",
+      "operator": "opceu",
+      "operator_instance_id": "52343c3148fe32cd0cb00d70e40e074daa6f673ccf7d51ce7e6d31a9c700428a",
+      "output_payload_sha256": "e30dbfcafa1f83b61af4d084d1113201531837062576e2c25c5b5725c5dc58cc",
+      "phase": "feedback_closure",
+      "sequence": 7,
+      "status": "executed"
+    },
+    {
+      "callable_symbol": "cpswm.system.counterfactual_event_hypergraph.engine.OpenWorldRoleConditionedReversibleEventRevisionEngine.branch",
+      "consumes": [
+        "6:selected_path:ciav"
+      ],
+      "input_payload_sha256": "2c62ac48ff915b28bd94a0be083d45e80266a2b7ecf8b8f2b349708f7935d413",
+      "invocation_id": "9aaa3a8e6826bfd58300dd3b50d04db570b262e00d752e3e953ec4ae7034d1f8",
+      "operator": "orrer_cheh",
+      "operator_instance_id": "5abe6f2c6ebe039fd7a275097600660bdefd475ded4d48aced3122a28896e77b",
+      "output_payload_sha256": "b7e3937e92d59132271fadd3c19518f4b6a181ce470c81d124ff34181b9e8379",
+      "phase": "feedback_closure",
+      "sequence": 8,
+      "status": "executed"
+    },
+    {
+      "callable_symbol": "cpswm.system.counterfactual_event_hypergraph.hypothesis_message_passing.ProvenanceConstrainedMessagePassing.consume",
+      "consumes": [
+        "8:feedback_closure:orrer_cheh"
+      ],
+      "input_payload_sha256": "7c2eb8a92fc263b79e847b23067dfbd8a31446c30fcfd47636288c7bff017519",
+      "invocation_id": "be5b48c8a5fbc5b1af67e568572b9aa33511607ba6a639722d6c91626ed1b45d",
+      "operator": "pchmp",
+      "operator_instance_id": "22ba5dee221ef3bc326b48655ba8cc6af620cea3246a1c017021abbfe326c34d",
+      "output_payload_sha256": "2800e640b048490a184fb5195064927659123620a44996969ea4db82dfb3dde0",
+      "phase": "feedback_closure",
+      "sequence": 9,
+      "status": "executed"
+    },
+    {
+      "callable_symbol": "cpswm.world_model.habits_transitions.joint_cause_bocpd.JointCauseFactorizedBOCPD.observe_online",
+      "consumes": [
+        "9:feedback_closure:pchmp"
+      ],
+      "input_payload_sha256": "1067c20cfe0925ead0f2d5b0091e65d60500798411dc3dde65cf795fa23c59c2",
+      "invocation_id": "e9ddae9fdf487147f8e3d17c3898f5458a0679b30ee1c596df7d20092e512b45",
+      "operator": "cf_bocpd",
+      "operator_instance_id": "4edf5216d9a0175042b854d3b9de6fccf259ebfc0a54e139fc1661bd920bff7e",
+      "output_payload_sha256": "4e9f1a733a834b28924e599e6bc99ab3e1587a221943813e65f28672452a9896",
+      "phase": "feedback_closure",
+      "sequence": 10,
+      "status": "executed"
+    },
+    {
+      "callable_symbol": "cpswm.system.continual.project_one_regime_loop.AutomaticCFBOCPDCCRRRouter.observe",
+      "consumes": [
+        "9:feedback_closure:pchmp",
+        "10:feedback_closure:cf_bocpd"
+      ],
+      "input_payload_sha256": "af122e2739ca4e76ba3458e3157e6070c4b46408676fce8457d24d3a282b15a8",
+      "invocation_id": "0aebd11fc4e505ddeeefd6866ae60a1ad4a95e25da7415075b8c21a97c943afa",
+      "operator": "ccrr",
+      "operator_instance_id": "92a193f77d765e5fc3be67f3a0c1f6de082f40932667671b67fce62c8c28dc69",
+      "output_payload_sha256": "539f5560c804ed702c32e7008ebbf8fdca41d278100fdde8c8060bfb16fbc167",
+      "phase": "feedback_closure",
+      "sequence": 11,
+      "status": "executed"
+    },
+    {
+      "callable_symbol": "cpswm.system.prototype_spine.CorePrototypeSpine._process_transition",
+      "consumes": [
+        "7:feedback_closure:opceu",
+        "9:feedback_closure:pchmp",
+        "11:feedback_closure:ccrr"
+      ],
+      "input_payload_sha256": "ccb14057f2adc39897b1094e49ff3bfa04e656484b1f4145d25f2fdcbc4a28b0",
+      "invocation_id": "f7da9a05e37e7b469aaad8d14b767a4f7e2eb14dd2fc5c8c690dc5f3bff7930a",
+      "operator": "rgrc",
+      "operator_instance_id": "d4d31c2f21e9edbd28882047dc91ccd08f1a28263f8b24c35d8f4151dfa829c9",
+      "output_payload_sha256": "8ec56e96f03ffcb081dc17820111f692864e5a41d71211278d47b5f7de149400",
+      "phase": "feedback_closure",
+      "sequence": 12,
+      "status": "executed"
+    }
+  ],
+  "protocol_id": "structure-two-p5-direct-trace-probe@0.1",
+  "schema_version": "0.1.0",
+  "scientific_superiority_established": false,
+  "source_binding": {
+    "adaptive_runtime_module_path": "src/cpswm/system/structure_two_adaptive_runtime.py",
+    "adaptive_runtime_module_sha256": "50512e47e2fe316009b65865596f5b7a4176a59863e161bc67ec3a2217bc7abd",
+    "configuration_path": "configs/project_two_experiments/structure_two_p5_direct_trace_probe_v0_1.json",
+    "configuration_sha256": "8ad4cbe9dbbf24742b4c1e61a26b5a4132012d420f0ae2258c1ec4475f66ca4e",
+    "decision_record_path": "configs/project_two_experiments/structure_two_p5_first_decision_v0_1.json",
+    "decision_record_sha256": "85f727dc4555dd4bb40c3c7acf1e9d20535ef75eeaed41c2852ab156ba1e817c",
+    "decoder_module_path": "src/cpswm/system/evaluation_operations/structure_two_action_utility_construct_gate.py",
+    "decoder_module_sha256": "e25129e5289cdbcf170e9023e284332e9e24eed803fb0e33f7ebc61de7838a30",
+    "probe_module_sha256": "14039591b61c156a3f4b3cf770146019d75705ed509e1eee3d284d73ddc358c5",
+    "production_system_module_path": "src/cpswm/system/structure_two_production_system.py",
+    "production_system_module_sha256": "73485a03a94f1f81c3d8b5d37a67117e51e34dcf8f9eb50f7bd55f8b1721b2b7"
+  },
+  "status": "D0_ENGINEERING_BRINGUP_ONLY",
+  "task_7_8_9_passed": false,
+  "typed_decoder": {
+    "callable_symbol": "cpswm.system.evaluation_operations.structure_two_action_utility_construct_gate.decode_task_separated_actions",
+    "shared_across_future_comparison_arms": true
+  },
+  "typed_readout": {
+    "belief_state_sha256": "c2205afa7cfedbc46df78d60e7bb0c323b91bb1889d6eda05e1c5550dededc84",
+    "information_set_sha256": "8586adc614d23a33e61b2ff7f921f20375a9a7a89ca54867338edc73681357fa",
+    "observation_commitment_sha256": "8c42fd5694e9a772e4e4682c1c6ea81767c1c97ae8b483e9cacf7429d361d62b",
+    "put_back_distribution": {
+      "4fb289ea-35b2-2274-e6c7-c66f55c475b5": 0.0,
+      "733eec65-d8d3-ca8f-1dcf-4d95a40defb8": 0.0,
+      "b2f89c1e-1f89-06c3-63f8-13a618d5e7f7": 0.0,
+      "c644e041-cd31-e911-3d83-721a216d0c60": 1.0
+    },
+    "run_execution_id": "e10eb3cf-8b86-52e7-8256-b9770505eb19",
+    "search_distribution": {
+      "4fb289ea-35b2-2274-e6c7-c66f55c475b5": 0.0,
+      "733eec65-d8d3-ca8f-1dcf-4d95a40defb8": 0.0,
+      "b2f89c1e-1f89-06c3-63f8-13a618d5e7f7": 1.0,
+      "c644e041-cd31-e911-3d83-721a216d0c60": 0.0
+    },
+    "search_plan": [
+      {
+        "action_id": "aa319caa-9b27-5ab4-9f83-4e9dbac291db",
+        "decision_id": "59bd0cb1-73e9-5a98-b082-b0e7e42c654a",
+        "information_set_sha256": "8586adc614d23a33e61b2ff7f921f20375a9a7a89ca54867338edc73681357fa",
+        "kind": "search",
+        "location_id": "b2f89c1e-1f89-06c3-63f8-13a618d5e7f7",
+        "target_object_id": "512e62ac-6c35-130d-dc6f-918a745afcd0"
+      },
+      {
+        "action_id": "d4f85fcc-8e33-53a6-8bcd-015a1ac03eac",
+        "decision_id": "59bd0cb1-73e9-5a98-b082-b0e7e42c654a",
+        "information_set_sha256": "8586adc614d23a33e61b2ff7f921f20375a9a7a89ca54867338edc73681357fa",
+        "kind": "search",
+        "location_id": "4fb289ea-35b2-2274-e6c7-c66f55c475b5",
+        "target_object_id": "512e62ac-6c35-130d-dc6f-918a745afcd0"
+      },
+      {
+        "action_id": "a7569251-89ed-55fb-bd89-ae98df39d945",
+        "decision_id": "59bd0cb1-73e9-5a98-b082-b0e7e42c654a",
+        "information_set_sha256": "8586adc614d23a33e61b2ff7f921f20375a9a7a89ca54867338edc73681357fa",
+        "kind": "search",
+        "location_id": "733eec65-d8d3-ca8f-1dcf-4d95a40defb8",
+        "target_object_id": "512e62ac-6c35-130d-dc6f-918a745afcd0"
+      },
+      {
+        "action_id": "1d2ba237-cde1-5531-a94e-beb0dce5d894",
+        "decision_id": "59bd0cb1-73e9-5a98-b082-b0e7e42c654a",
+        "information_set_sha256": "8586adc614d23a33e61b2ff7f921f20375a9a7a89ca54867338edc73681357fa",
+        "kind": "search",
+        "location_id": "c644e041-cd31-e911-3d83-721a216d0c60",
+        "target_object_id": "512e62ac-6c35-130d-dc6f-918a745afcd0"
+      }
+    ],
+    "selected_put_back_action": {
+      "action_id": "1303afdb-b56a-5cd4-9fc8-45b64f7ac29c",
+      "decision_id": "db9f5470-8f49-5e84-960b-1180d2a9030b",
+      "information_set_sha256": "8586adc614d23a33e61b2ff7f921f20375a9a7a89ca54867338edc73681357fa",
+      "kind": "put_back",
+      "location_id": "c644e041-cd31-e911-3d83-721a216d0c60",
+      "target_object_id": "512e62ac-6c35-130d-dc6f-918a745afcd0"
+    },
+    "selected_search_action": {
+      "action_id": "aa319caa-9b27-5ab4-9f83-4e9dbac291db",
+      "decision_id": "59bd0cb1-73e9-5a98-b082-b0e7e42c654a",
+      "information_set_sha256": "8586adc614d23a33e61b2ff7f921f20375a9a7a89ca54867338edc73681357fa",
+      "kind": "search",
+      "location_id": "b2f89c1e-1f89-06c3-63f8-13a618d5e7f7",
+      "target_object_id": "512e62ac-6c35-130d-dc6f-918a745afcd0"
+    },
+    "source_update_id": "3edff42a-7fea-9f75-7609-5074ed6743a0",
+    "step_index": 0,
+    "truth_accessed_before_action_commit": false
+  }
+}

@@ -573,6 +573,86 @@ class TaskSeparatedActionReadout:
         }
 
 
+def decode_task_separated_actions(
+    *,
+    target_object_id: UUID,
+    step_index: int,
+    run_execution_id: UUID,
+    source_update_id: UUID,
+    visible_observation: Mapping[str, Any],
+    belief_state_sha256: str,
+    search_distribution: Mapping[UUID, float],
+    put_back_distribution: Mapping[UUID, float],
+) -> TaskSeparatedActionReadout:
+    """Shared deterministic SEARCH/PUT_BACK decoder for every comparison arm.
+
+    Arms may produce different robot-visible distributions, but they must enter
+    through this one decoder so action typing, tie-breaking, support checks,
+    information-set binding, and decision identities are identical.
+    """
+
+    search = _normalize(search_distribution)
+    put_back = _normalize(put_back_distribution)
+    if set(search) != set(put_back):
+        raise ValueError("shared typed decoder requires identical location support")
+    observation_commitment = _observation_commitment_sha256(
+        run_execution_id=run_execution_id,
+        step_index=step_index,
+        source_update_id=source_update_id,
+        visible_observation=visible_observation,
+    )
+    information_set_sha256 = _information_set_sha256(
+        run_execution_id=run_execution_id,
+        step_index=step_index,
+        source_update_id=source_update_id,
+        observation_commitment_sha256=observation_commitment,
+        belief_state_sha256=belief_state_sha256,
+    )
+    search_decision = _task_head_decision_id(
+        kind=ConstructActionKind.SEARCH,
+        run_execution_id=run_execution_id,
+        step_index=step_index,
+        source_update_id=source_update_id,
+        information_set_sha256=information_set_sha256,
+    )
+    put_back_decision = _task_head_decision_id(
+        kind=ConstructActionKind.PUT_BACK,
+        run_execution_id=run_execution_id,
+        step_index=step_index,
+        source_update_id=source_update_id,
+        information_set_sha256=information_set_sha256,
+    )
+    search_plan = tuple(
+        TypedRouteCAction.build(
+            kind=ConstructActionKind.SEARCH,
+            target_object_id=target_object_id,
+            location_id=location,
+            decision_id=search_decision,
+            information_set_sha256=information_set_sha256,
+        )
+        for location in _rank(search)
+    )
+    put_back_action = TypedRouteCAction.build(
+        kind=ConstructActionKind.PUT_BACK,
+        target_object_id=target_object_id,
+        location_id=_rank(put_back)[0],
+        decision_id=put_back_decision,
+        information_set_sha256=information_set_sha256,
+    )
+    return TaskSeparatedActionReadout(
+        step_index=step_index,
+        run_execution_id=run_execution_id,
+        source_update_id=source_update_id,
+        observation_commitment_sha256=observation_commitment,
+        belief_state_sha256=belief_state_sha256,
+        information_set_sha256=information_set_sha256,
+        search_distribution=_probability_items(search),
+        put_back_distribution=_probability_items(put_back),
+        search_plan=search_plan,
+        put_back_action=put_back_action,
+    )
+
+
 def _visible_observation_payload(observation: FullJointObservation) -> dict[str, Any]:
     return {
         "source_update_id": str(observation.source_update_id),
@@ -613,20 +693,7 @@ class TaskSeparatedLearnedInteractionRuntime(LearnedInteractionRuntime):
             raise ValueError("external and runtime step indices disagree")
 
         visible_observation = _visible_observation_payload(observation)
-        observation_commitment = _observation_commitment_sha256(
-            run_execution_id=run_execution_id,
-            step_index=external_step_index,
-            source_update_id=observation.source_update_id,
-            visible_observation=visible_observation,
-        )
         belief_state_sha256 = self._state_sha256()
-        information_set_sha256 = _information_set_sha256(
-            run_execution_id=run_execution_id,
-            step_index=external_step_index,
-            source_update_id=observation.source_update_id,
-            observation_commitment_sha256=observation_commitment,
-            belief_state_sha256=belief_state_sha256,
-        )
         search = _normalize(observation.base_location_distribution)
         uniform = dict.fromkeys(
             observation.known_location_ids,
@@ -640,48 +707,15 @@ class TaskSeparatedLearnedInteractionRuntime(LearnedInteractionRuntime):
             habit_only_observation,
             include_ledger=True,
         )
-        search_decision = _task_head_decision_id(
-            kind=ConstructActionKind.SEARCH,
-            run_execution_id=run_execution_id,
-            step_index=external_step_index,
-            source_update_id=observation.source_update_id,
-            information_set_sha256=information_set_sha256,
-        )
-        put_back_decision = _task_head_decision_id(
-            kind=ConstructActionKind.PUT_BACK,
-            run_execution_id=run_execution_id,
-            step_index=external_step_index,
-            source_update_id=observation.source_update_id,
-            information_set_sha256=information_set_sha256,
-        )
-        search_plan = tuple(
-            TypedRouteCAction.build(
-                kind=ConstructActionKind.SEARCH,
-                target_object_id=target_object_id,
-                location_id=location,
-                decision_id=search_decision,
-                information_set_sha256=information_set_sha256,
-            )
-            for location in _rank(search)
-        )
-        put_back_action = TypedRouteCAction.build(
-            kind=ConstructActionKind.PUT_BACK,
+        return decode_task_separated_actions(
             target_object_id=target_object_id,
-            location_id=_rank(put_back)[0],
-            decision_id=put_back_decision,
-            information_set_sha256=information_set_sha256,
-        )
-        return TaskSeparatedActionReadout(
             step_index=external_step_index,
             run_execution_id=run_execution_id,
             source_update_id=observation.source_update_id,
-            observation_commitment_sha256=observation_commitment,
+            visible_observation=visible_observation,
             belief_state_sha256=belief_state_sha256,
-            information_set_sha256=information_set_sha256,
-            search_distribution=_probability_items(search),
-            put_back_distribution=_probability_items(put_back),
-            search_plan=search_plan,
-            put_back_action=put_back_action,
+            search_distribution=search,
+            put_back_distribution=put_back,
         )
 
 
@@ -2639,6 +2673,7 @@ __all__ = [
     "TaskSeparatedActionReadout",
     "TaskSeparatedLearnedInteractionRuntime",
     "TypedRouteCAction",
+    "decode_task_separated_actions",
     "load_action_utility_construct_gate_config",
     "run_action_utility_construct_gate",
     "verify_action_utility_construct_gate",

@@ -26,6 +26,28 @@
     "does_not_remove_adaptive_paths": true,
     "does_not_authorize_scientific_superiority": true
   },
+  "p5_execution_sequence": {
+    "first": "EVALUATION_ONLY_DIRECT_P5_UPPER_BOUND",
+    "second": "PRODUCTION_DEBT_REPLAY_CONFIRMATION",
+    "direct_run_may_replace_replay_confirmation": false,
+    "production_router_must_remain_unchanged_during_direct_evaluation": true
+  },
+  "ciav_comparison_fairness": {
+    "selected": "MATCH_INFORMATION_AND_COST_ACROSS_ARMS",
+    "shared_registered_action_candidates_required": true,
+    "shared_observation_outcome_and_visibility_costs_required": true,
+    "shared_privacy_budget_required": true,
+    "arm_specific_extra_information_forbidden": true
+  },
+  "typed_action_decoder": {
+    "selected": "ONE_SHARED_DETERMINISTIC_DECODER_ACROSS_ARMS",
+    "action_types": [
+      "SEARCH",
+      "PUT_BACK"
+    ],
+    "arm_specific_tie_breaking_forbidden": true,
+    "arm_specific_action_semantics_forbidden": true
+  },
   "typed_action_stage": {
     "initial_action_types": [
       "SEARCH",

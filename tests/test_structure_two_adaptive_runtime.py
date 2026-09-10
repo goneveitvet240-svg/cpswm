@@ -14,6 +14,7 @@ from cpswm.contracts import (
     ObservationOutcome,
 )
 from cpswm.system.structure_two_adaptive_runtime import (
+    EVALUATION_DIRECT_P5_REASON,
     AdaptiveAuthorizationPolicy,
     AdaptiveCIAVRuntimeInput,
     AdaptiveExecutionContext,
@@ -282,6 +283,97 @@ def test_expired_p0_debt_forces_p5_and_settles_the_exact_deferred_transition() -
     assert debt_ledger[pending[0].debt_id] is debt_entry
     assert system._execution_lock is execution_lock
     assert debt_entry.origin_core_checkpoint["execution_lock"] is origin_execution_lock
+
+
+def test_evaluation_only_direct_p5_runs_the_real_full_eager_path_without_router_drift() -> None:
+    routed_system, routed_transition = _adaptive_system_and_transition()
+    routed_context = AdaptiveExecutionContext(
+        router_features=_features(routed_system, step=0, route="P0_SAFE_DEFERRED"),
+        step_index=0,
+        ciav_input=_ciav_input(routed_transition),
+    )
+    routed_result = routed_system.process_adaptive_transition(
+        routed_transition,
+        context=routed_context,
+        trace_sink=RecordingSink(),
+    )
+    assert routed_result.path_selection.selected_path_id == "P0_SAFE_DEFERRED"
+
+    system, transition = _adaptive_system_and_transition()
+    context = AdaptiveExecutionContext(
+        router_features=_features(system, step=0, route="P0_SAFE_DEFERRED"),
+        step_index=0,
+        ciav_input=_ciav_input(transition),
+    )
+    sink = RecordingSink()
+
+    result = system.process_evaluation_direct_p5_transition(
+        transition,
+        context=context,
+        trace_sink=sink,
+    )
+
+    assert result.path_selection.selected_path_id == "P5_FULL_EAGER"
+    assert result.path_selection.reasons == (EVALUATION_DIRECT_P5_REASON,)
+    assert result.debt_certificates == ()
+    assert result.executed_operator_count == 13
+    assert len(sink.traces) == 1
+    trace = sink.traces[0]
+    verify_execution_trace(trace)
+    assert trace.plan.plan_id == "P5_FULL_EAGER"
+    assert trace.all_seven_operators_invoked is True
+    assert trace.ciav_invoked is True
+    assert trace.feedback_observation_acquired is True
+    assert trace.feedback_closure_kind == "full_transition"
+    assert len(trace.receipts) == 13
+    assert tuple(receipt.operator for receipt in trace.receipts[:7]) == (
+        "opceu",
+        "orrer_cheh",
+        "pchmp",
+        "cf_bocpd",
+        "ccrr",
+        "rgrc",
+        "ciav",
+    )
+
+
+def test_evaluation_only_direct_p5_fails_closed_without_ciav_or_with_debt() -> None:
+    system, transition = _adaptive_system_and_transition()
+    no_ciav = AdaptiveExecutionContext(
+        router_features=_features(system, step=0, route="P0_SAFE_DEFERRED"),
+        step_index=0,
+    )
+    with pytest.raises(ValueError, match="requires CIAV runtime input"):
+        system.process_evaluation_direct_p5_transition(
+            transition,
+            context=no_ciav,
+            trace_sink=RecordingSink(),
+        )
+
+    system.process_adaptive_transition(
+        transition,
+        context=no_ciav,
+        trace_sink=RecordingSink(),
+    )
+    pending = system.pending_adaptive_debts()
+    assert len(pending) == 1
+    debt_context = AdaptiveExecutionContext(
+        router_features=_features(
+            system,
+            step=1,
+            route="P5_FULL_EAGER",
+            pending_count=1,
+            oldest_age=1,
+        ),
+        step_index=1,
+        ciav_input=_ciav_input(transition),
+    )
+    with pytest.raises(RuntimeError, match="while adaptive debt is pending"):
+        system.process_evaluation_direct_p5_transition(
+            transition,
+            context=debt_context,
+            trace_sink=RecordingSink(),
+        )
 
 
 def test_failed_expired_p0_debt_replay_restores_entry_and_lock_identity() -> None:

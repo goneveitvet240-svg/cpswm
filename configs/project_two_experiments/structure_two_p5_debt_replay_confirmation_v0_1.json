@@ -1,0 +1,66 @@
+{
+  "schema_version": "0.1.0",
+  "protocol_id": "structure-two-p5-debt-replay-confirmation@0.1-development",
+  "status": "FROZEN_BEFORE_EXECUTION",
+  "trigger": {
+    "posthoc_result_path": "benchmarks/structure_two/structure_two_p5_readout_posthoc_diagnostic_v0_1.json",
+    "posthoc_result_file_sha256": "6ad677dee1086182af261cecd292e0ed82971ab4a6d1f31a256378cc9dc20f49",
+    "posthoc_result_content_sha256": "d96bd7ed2c47c3b3130adbabff329ab2bb1a569975a46ef4f60b499c2e2c6fc9",
+    "posthoc_result_status": "POSTHOC_READOUT_DEGENERACY_REMOVED",
+    "reason": "Confirm that the normal production P0 debt path replays the exact deferred transition through P5 and preserves the corrected PCHMP-to-CIAV sequential actor posterior and v0.6 action readout semantics."
+  },
+  "execution": {
+    "dataset": "project-two-d0-multiseed-readout@0.5",
+    "split": "test",
+    "test_split_previously_opened": true,
+    "episode_policy": "all_test_episodes",
+    "transition_policy": "all_positive_detected_transitions_in_original_episode_order",
+    "negative_observation_policy": "excluded_because_no_PrototypeTransition_or_adaptive_debt_is_fabricated",
+    "direct_path": "evaluation_only_P5_FULL_EAGER",
+    "production_path": ["P0_SAFE_DEFERRED", "expired_debt_replay_P5_FULL_EAGER"],
+    "debt_expiry_steps": 1,
+    "p0_step_index": "2_times_original_step_index",
+    "replay_step_index": "2_times_original_step_index_plus_1",
+    "ciav_feedback_closure": "same_location_fast_verification_from_the_same_A1_packet",
+    "action_readout": "dual_timescale_reversible_fast_0.7_surviving_0.2_regime_local_0.1",
+    "numeric_absolute_tolerance": 1e-12,
+    "evaluator_truth_accessed": false
+  },
+  "required_equivalence_checks": [
+    "normal_router_selects_P0_SAFE_DEFERRED",
+    "exactly_one_bound_debt_is_created_and_pending",
+    "expired_debt_replay_selects_P5_FULL_EAGER",
+    "replay_trace_consumes_the_exact_debt_certificate",
+    "replay_trace_invokes_all_seven_primary_operators",
+    "replay_settles_the_debt_without_pending_remainder",
+    "direct_and_replay_primary_PCHMP_actor_posteriors_match",
+    "direct_and_replay_CIAV_actor_posteriors_match",
+    "direct_and_replay_owner_habit_location_distributions_match",
+    "direct_and_replay_typed_PUT_BACK_locations_match",
+    "direct_and_replay_consume_the_same_A1_action_outcome_and_location",
+    "direct_and_replay_use_same_location_fast_verification"
+  ],
+  "coverage_limits": {
+    "negative_observation_replay_covered": false,
+    "different_location_full_feedback_transition_replay_covered": false,
+    "concurrent_multiple_debt_replay_covered": false,
+    "post_debt_long_horizon_router_utility_covered": false,
+    "search_or_put_back_scientific_signal_retested": false
+  },
+  "test_reuse_disclosure": {
+    "engineering_confirmation_only": true,
+    "confirmatory": false,
+    "fresh_preregistered_death_test": false,
+    "may_issue_positive_scientific_receipt": false
+  },
+  "scope_policy": {
+    "unified_seven_operator_framework_retained": true,
+    "hidden_event_inference_retained": true,
+    "multi_actor_reasoning_retained": true,
+    "open_world_unknowns_retained": true,
+    "reversible_attribution_retained": true,
+    "embodied_feedback_loop_retained": true,
+    "scope_reduction_authorized": false
+  },
+  "claim_boundary": "This test-opened-split engineering confirmation can establish semantic equivalence between evaluation-only direct P5 and the isolated production P0-to-expired-debt-replay-P5 path for positive same-location A1 observations. It cannot retest or establish a SEARCH or PUT_BACK scientific signal, overwrite the retained v0.1 failure, validate router calibration or utility, cover negative observations, different-location feedback, concurrent debts, or long-horizon recovery, pass Task 7/8/9, establish external validity, authorize ablation, aggregate tasks, or narrow Structure Two."
+}

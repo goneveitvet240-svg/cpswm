@@ -1,7 +1,7 @@
 # 结构二文档入口
 
-最后更新：2026-09-10
-当前结论：**项目所有者已选择 Route C、Architecture A 和 `P5_FIRST`，完整 H/R/I/C/Z/r/V、三个 RB blocks 和七算子范围保持不变。历史 v0.2 的轨迹仍由 evaluator-local（评估器局部）`LearnedInteractionRuntime` 生成，故历史 runtime identity gate（运行时身份门）仍为 false；真实 `StructureTwoProductionSystem/CorePrototypeSpine` 的 legacy ordinary transition（历史普通转移）已绑定不可变 `execution_plan + trace_sink`。P0–P5 当前完成的是深层只读计划/依赖注册表、P0 债务路径、异位置检测的完整 P3/P5 CIAV 闭环、同位置快速验证、隔离重放入口、已执行算子耗时和本地回滚；但四项完整 adaptive 工程门均为 false，共 12 blockers。下一步先在完整七算子 P5 full-eager 上运行 typed SEARCH/PUT_BACK 死亡测试，完整动作族继续保留；只有 P5 出现可重复行动信号后，才进入 validation-only calibration 和 P1/P2/P4 完整实现，固定解析阈值作为基线。组合效用、长期人物记忆污染、Task 8 正式通过、联合行动收益、外部强基线胜利、外部有效性和七算子行动贡献均未成立。**
+最后更新：2026-09-11
+当前结论：**项目所有者已选择 Route C、Architecture A、`P5_FIRST` 以及三臂方法定义 `A1 + B1`，完整 H/R/I/C/Z/r/V、三个 RB blocks 和七算子范围保持不变。首轮 matched direct `P5_FULL_EAGER` typed SEARCH/PUT_BACK 死亡测试已完成：1,920 个 matched steps，1,243 次真实七算子正路径和 677 次不伪造转移的负观测闭环；SEARCH 三臂打平，P5 的 PUT_BACK error 为 0.6849，差于 learned two-stage 的 0.2740 和 AMG 的 0.0536，注册行动信号为 false。运行后发现 v0.1 P5 adapter 使用默认 `HYBRID_ALPHA`，同时长期写入被评估入口阻断，导致 owner-habit location posterior 恒定均匀；因此本结果必须保留为失败，但“完整模型无行动信息”的解释仍被 readout confound 阻断。下一步只做显式 post-hoc 的 v0.6 dual-timescale readout 接线诊断，再用 production debt replay 确认生产路径；已打开的 test split 不得伪装成新预注册结果。validation-only calibration 与固定解析阈值基线均保留但尚未执行。组合效用、长期人物记忆污染、Task 8 正式通过、联合行动收益、外部强基线胜利、外部有效性和七算子行动贡献均未成立。**
 
 这里是方向结构二的规范阅读入口。仓库保留了大量按日期冻结的协议、实验和审计文件；那些文件是
 证据档案，不应让第一次接触项目的人逐个猜阅读顺序。
@@ -24,6 +24,7 @@
 - [选定推断主干与权限合同](方向结构二_神经摊销类型化粒子修订与可逆巩固方法冻结_v1.0.md)
 - [Task 7、Task 8 与外部验证最终决定](方向结构二_Task7_Task8与外部验证用户决策记录_2026-09-06.md)
 - [P5 优先与路由校准用户决策](结构二_P5优先与路由校准用户决策记录_2026-09-10.md)
+- [adaptive-path P5 三臂行动死亡测试 v0.1 结果](../experiments/structure_two_p5_three_arm_death_test_result_v0_1_2026-09-11.md)
 - [Task 8 在线算力流程复核](../reviews/structure_two_priority_sequence_audit_2026-09-07.md)
 - [Task 8 learned online-compute v0.1 结果](../experiments/structure_two_task8_online_compute_result_v0_1_2026-09-07.md)
 - [Task 8 v0.1 运行后范围复核](../reviews/structure_two_task8_online_compute_postrun_audit_2026-09-07.md)

@@ -1,0 +1,82 @@
+{
+  "schema_version": "0.1.0",
+  "protocol_id": "structure-two-p5-matched-three-arm@0.1-development",
+  "status": "INTERFACE_FREEZE_IN_PROGRESS_EXECUTION_BLOCKED",
+  "decision_source": "configs/project_two_experiments/structure_two_p5_first_decision_v0_1.json",
+  "dataset_source": "configs/project_two_datasets/d0_multiseed_readout_v0_5.json",
+  "evidence_level": "D0_DEVELOPMENT_DEATH_TEST",
+  "arms": [
+    "direct_p5_full_eager",
+    "learned_matched_two_stage",
+    "independently_tuned_amg"
+  ],
+  "evaluation_splits": {
+    "tuning": "validation",
+    "death_test": "test",
+    "confirmatory": false
+  },
+  "typed_action_contract": {
+    "shared_decoder": "cpswm.system.evaluation_operations.structure_two_action_utility_construct_gate.decode_task_separated_actions",
+    "search_target": "current_object_location",
+    "put_back_target": "owner_habit_location",
+    "same_location_support_required": true,
+    "arm_specific_tie_breaking_forbidden": true,
+    "combined_utility": "UNRESOLVED_NOT_AGGREGATED"
+  },
+  "ciav_matching_contract": {
+    "required_receipt_fields": [
+      "shared_ciav_packet_sha256",
+      "candidate_set_sha256",
+      "selected_action_id",
+      "realized_observation_sha256",
+      "motion_cost",
+      "time_cost",
+      "interruption_cost",
+      "privacy_cost",
+      "safety_cost",
+      "privacy_budget_before",
+      "privacy_budget_after",
+      "release_phase"
+    ],
+    "exact_equality_across_arms_required": true,
+    "release_phase": "after_typed_actions_committed",
+    "truth_visible_before_action_commit": false
+  },
+  "unresolved_owner_choices": {
+    "shared_ciav_scheduler": {
+      "selected": null,
+      "options": [
+        "exogenous_precommitted_schedule",
+        "p5_teacher_schedule_shared_to_all_arms"
+      ]
+    },
+    "learned_two_stage_location_head": {
+      "selected": null,
+      "options": [
+        "shared_conditional_location_head_given_cause_event",
+        "direct_current_and_habit_location_heads",
+        "algebraic_two_stage_from_common_full_posterior"
+      ]
+    }
+  },
+  "current_known_blockers": [
+    "shared_ciav_scheduler_not_selected",
+    "learned_two_stage_location_head_not_selected_or_implemented",
+    "amg_distribution_adapter_not_implemented",
+    "direct_p5_typed_location_adapter_not_implemented",
+    "direct_p5_shared_ciav_packet_adapter_not_implemented",
+    "learned_two_stage_ciav_consumer_not_implemented",
+    "amg_ciav_consumer_not_implemented",
+    "negative_observation_p5_closure_not_implemented"
+  ],
+  "scope_policy": {
+    "unified_seven_operator_framework_retained": true,
+    "hidden_event_inference_retained": true,
+    "multi_actor_reasoning_retained": true,
+    "open_world_unknowns_retained": true,
+    "reversible_attribution_retained": true,
+    "embodied_feedback_loop_retained": true,
+    "scope_reduction_authorized": false
+  },
+  "claim_boundary": "This readiness record freezes the common three-arm typed-location and CIAV receipt surfaces while leaving two consequential method choices explicitly unresolved. It does not authorize an arm-specific decoder, claim cross-arm CIAV matching before three valid receipts exist, open confirmatory data, establish action benefit, pass Task 7/8/9, or narrow Structure Two."
+}

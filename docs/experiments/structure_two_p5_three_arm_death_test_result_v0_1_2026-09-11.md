@@ -18,11 +18,11 @@ confound（适配器/读出混杂）：v0.1 direct P5 adapter 没有显式传入
 选出的 dual-timescale reversible readout（双时间尺度可逆读出），因而使用默认
 `HYBRID_ALPHA`；与此同时 direct P5 的评估路径将 long-term write（长期写入）强制阻断。结果是 P5
 在全部检查步骤中输出恒定均匀的 owner-habit location distribution（主人习惯位置分布），共享
-PUT_BACK 解码器只能反复选择 support（支持集）的第一个位置。
+PUT_BACK 解码器只能反复选择 support（支持集）中 UUID 字符串字典序最小的位置。
 
-所以 v0.1 是一个真实、必须保留的协议失败结果，但其科学解释是：**当前 direct P5 评估接线没有
-读到 P5 已产生的 fast/surviving/regime-local（快速/存活修订/局部状态）统计；尚不能据此断言这些
-统计本身没有行动信息。**
+所以 v0.1 是一个真实、必须保留的协议失败结果，但其科学解释是：**当前 direct P5 既没有接入已有
+可逆动作读出，又在 PCHMP→CIAV 接口抹掉了刚形成的人物后验；尚不能据此断言七算子内部统计本身
+没有行动信息。**
 
 ## 2. 数据、选择和三臂
 
@@ -80,7 +80,7 @@ PUT_BACK 解码器只能反复选择 support（支持集）的第一个位置。
 1. `current_location_distribution` 在 detected step 退化为检测位置的 one-hot；negative step 沿用上一
    状态。因此 SEARCH 主要由共享外生观测决定，三臂自然完全相同。
 2. `owner_habit_location_distribution` 在整条 episode 上恒为均匀分布。共享 PUT_BACK 解码器的固定
-   tie-break（平局规则）于是总选 support index 0。
+   tie-break（平局规则）于是总选 UUID 字符串字典序最小的位置。
 3. `DirectP5LocationAdapter` 构造 `StructureTwoProductionSystem` 时未传 `ActionReadoutConfig`，使用默认
    `HYBRID_ALPHA`。
 4. direct P5 评估入口对 core transition 设置 `force_long_term_write_blocked=True`；因此默认 pooled
@@ -88,14 +88,23 @@ PUT_BACK 解码器只能反复选择 support（支持集）的第一个位置。
 5. 仓库已有冻结的 v0.6 validation-selected readout：
    `DUAL_TIMESCALE_REVERSIBLE`，权重为 fast `0.7`、surviving `0.2`、regime-local `0.1`。v0.1 没有
    消费这一配置。
+6. 只接入 v0.6 readout 的单 episode preflight（预检）仍有 0/32 个非均匀步骤，说明 readout 漏接
+   不是唯一根因。
+7. 更深追踪显示：primary PCHMP 先把示例 owner mass 从均匀先验的 `0.3333` 更新为 `0.7614`；随后
+   同位置 CIAV fast-verification（快速验证）将中性 actor likelihood 错误地施加在原始均匀 prior，
+   又把 fast owner mass 重置成 `0.3333`。
+8. 正确 sequential Bayes（序贯贝叶斯）语义是：CIAV 必须以 primary PCHMP actor posterior 为 prior；
+   中性新人物证据应保持已有后验。该 production handoff（生产交接）已经单独修复并加入同位置与
+   异位置回归，但完整 post-hoc 三臂结果尚未在本文中宣称。
 
 这是一项在 test split 打开后发现的实现解释，不得回写或覆盖 v0.1。
 
 ## 6. 下一项受约束诊断
 
-下一项只能标为 post-hoc readout diagnostic（事后读出诊断）：保持 A1、B1、数据、三臂匹配、共享
-解码器和已冻结 v0.6 readout 不变，仅检查把 P5 adapter 接到该读出后，owner-habit posterior 是否
-不再恒定均匀，以及 SEARCH/PUT_BACK 结果怎样变化。
+下一项只能标为 post-hoc diagnostic（事后诊断）：保持 A1、B1、数据、三臂匹配与共享解码器不变，
+显式披露并同时检查两个修复——接入已冻结的 v0.6 readout，以及修复 primary PCHMP posterior 到
+CIAV prior 的序贯交接——之后 owner-habit posterior 是否不再恒定均匀，以及 SEARCH/PUT_BACK 结果
+怎样变化。
 
 由于 v0.1 test split 已被打开，修正版即使变好也不是新的 preregistered death test（预注册死亡测试），
 不能签发 confirmatory（确认性）结果。若要重新做无污染死亡测试，必须先冻结修正版，再使用未见过的

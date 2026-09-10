@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from dataclasses import replace
 from datetime import timedelta
 from uuid import UUID
 
@@ -313,6 +314,18 @@ def test_evaluation_only_direct_p5_runs_the_real_full_eager_path_without_router_
         trace_sink=sink,
     )
 
+    assert result.primary_result is not None
+    assert result.ciav_receipt is not None
+    assert context.ciav_input is not None
+    likelihoods = context.ciav_input.actor_likelihoods_by_outcome[result.ciav_receipt.outcome_label]
+    unnormalized = {
+        actor: probability * likelihoods[actor]
+        for actor, probability in result.primary_result.actor_posterior.items()
+    }
+    total = sum(unnormalized.values())
+    assert result.ciav_receipt.evidence.actor_posterior == pytest.approx(
+        {actor: value / total for actor, value in unnormalized.items()}
+    )
     assert result.path_selection.selected_path_id == "P5_FULL_EAGER"
     assert result.path_selection.reasons == (EVALUATION_DIRECT_P5_REASON,)
     assert result.debt_certificates == ()
@@ -335,6 +348,45 @@ def test_evaluation_only_direct_p5_runs_the_real_full_eager_path_without_router_
         "rgrc",
         "ciav",
     )
+
+
+def test_neutral_ciav_actor_likelihood_preserves_primary_pchmp_posterior() -> None:
+    system, transition = _adaptive_system_and_transition()
+    ciav_input = _ciav_input(transition)
+    neutral = replace(
+        ciav_input,
+        actor_likelihoods_by_outcome={
+            outcome: dict.fromkeys(transition.actor_prior, 1.0)
+            for outcome in ciav_input.actor_likelihoods_by_outcome
+        },
+        expected_detected_location_id=transition.after.detected_location_id,
+    )
+    context = AdaptiveExecutionContext(
+        router_features=_features(system, step=0, route="P0_SAFE_DEFERRED"),
+        step_index=0,
+        ciav_input=neutral,
+    )
+
+    result = system.process_evaluation_direct_p5_transition(
+        transition,
+        context=context,
+        trace_sink=RecordingSink(),
+    )
+
+    assert result.primary_result is not None
+    assert result.ciav_receipt is not None
+    assert result.fast_verification_receipt is not None
+    assert result.feedback_result is None
+    assert result.ciav_receipt.evidence.actor_posterior == pytest.approx(
+        result.primary_result.actor_posterior
+    )
+    assert result.fast_verification_receipt.owner_mass_before == pytest.approx(
+        result.primary_result.actor_posterior[system.core.owner_key]
+    )
+    assert result.fast_verification_receipt.owner_mass_after == pytest.approx(
+        result.primary_result.actor_posterior[system.core.owner_key]
+    )
+    assert result.fast_verification_receipt.changed is False
 
 
 def test_evaluation_only_direct_p5_fails_closed_without_ciav_or_with_debt() -> None:

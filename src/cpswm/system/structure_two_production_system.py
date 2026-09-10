@@ -1150,6 +1150,7 @@ class StructureTwoProductionSystem:
                 raw_input={
                     "ciav_input_sha256": ciav_input.content_sha256,
                     "primary_revision_id": str(primary_result.event_revision_id),
+                    "primary_actor_posterior": dict(primary_result.actor_posterior),
                     "cause_snapshot_sha256": content_sha256(self.core.current_cause_snapshot),
                 },
                 output={"plan": ciav_plan, "receipt": ciav_receipt},
@@ -1201,6 +1202,7 @@ class StructureTwoProductionSystem:
                     feedback_transition = self._ciav_feedback_transition(
                         transition,
                         ciav_receipt=ciav_receipt,
+                        primary_actor_posterior=primary_result.actor_posterior,
                     )
                     feedback_result = self.core._process_transition(
                         feedback_transition,
@@ -1394,6 +1396,9 @@ class StructureTwoProductionSystem:
         )
         if selected is None:
             raise RuntimeError("CIAV planner selected an action outside the frozen candidate set")
+        primary_actor_prior = dict(primary_result.actor_posterior)
+        if set(primary_actor_prior) != set(transition.actor_prior):
+            raise RuntimeError("primary PCHMP actor posterior support drifted before CIAV")
         receipt = self.ciav_opceu_loop.execute_selected_action(
             action=selected,
             update_id=primary_result.event_revision_id,
@@ -1403,7 +1408,10 @@ class StructureTwoProductionSystem:
             opportunity_time=ciav_input.opportunity_time,
             object_instance_id=self.core.object_instance_id,
             actor_keys=tuple(actor for actor in transition.actor_prior if actor != "unknown_actor"),
-            actor_prior=dict(transition.actor_prior),
+            # CIAV is a sequential observation after the primary PCHMP pass.
+            # A neutral new actor likelihood must preserve that pass's posterior
+            # instead of resetting the revision to the pre-evidence prior.
+            actor_prior=primary_actor_prior,
             actor_likelihoods_by_outcome={
                 outcome: dict(values)
                 for outcome, values in ciav_input.actor_likelihoods_by_outcome.items()
@@ -1422,6 +1430,7 @@ class StructureTwoProductionSystem:
         transition: PrototypeTransition,
         *,
         ciav_receipt: CIAVOPCEUReceipt,
+        primary_actor_posterior: Mapping[str, float],
     ) -> PrototypeTransition:
         detection = ciav_receipt.detection
         if detection.outcome is not ObservationOutcome.DETECTED or detection.detection_time is None:
@@ -1448,8 +1457,11 @@ class StructureTwoProductionSystem:
             ).model_dump(mode="python", round_trip=True, warnings=False)
         )
         actor_posterior = dict(ciav_receipt.evidence.actor_posterior)
-        if set(actor_posterior) != set(transition.actor_prior):
-            raise ValueError("CIAV actor posterior support differs from the primary actor prior")
+        sequential_prior = dict(primary_actor_posterior)
+        if set(sequential_prior) != set(transition.actor_prior) or set(actor_posterior) != set(
+            sequential_prior
+        ):
+            raise ValueError("CIAV actor posterior support differs from its sequential prior")
         evidence_id = content_uuid(
             "adaptive-ciav-actor-evidence",
             {
@@ -1474,7 +1486,7 @@ class StructureTwoProductionSystem:
             object_instance_id=self.core.object_instance_id,
             evidence_time=canonical_detection.detection_time,
             actor_posterior=actor_posterior,
-            reference_actor_prior=dict(transition.actor_prior),
+            reference_actor_prior=sequential_prior,
             evidence_cluster_id=uuid5(NAMESPACE_URL, str(evidence_id)),
             effective_sample_weight=1.0,
             evidence_track=ActorEvidenceTrack.MODEL,
@@ -1484,7 +1496,7 @@ class StructureTwoProductionSystem:
             opportunity=ciav_receipt.opportunity,
             before=transition.after,
             after=canonical_detection,
-            actor_prior=dict(transition.actor_prior),
+            actor_prior=sequential_prior,
             evidence=(actor_evidence,),
             context_key=transition.context_key,
             context_value=transition.context_value,

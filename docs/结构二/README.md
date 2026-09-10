@@ -1,7 +1,7 @@
 # 结构二文档入口
 
 最后更新：2026-09-11
-当前结论：**项目所有者已选择 Route C、Architecture A、`P5_FIRST` 以及三臂方法定义 `A1 + B1`，完整 H/R/I/C/Z/r/V、三个 RB blocks 和七算子范围保持不变。首轮 matched direct `P5_FULL_EAGER` typed SEARCH/PUT_BACK 死亡测试已完成：1,920 个 matched steps，1,243 次真实七算子正路径和 677 次不伪造转移的负观测闭环；SEARCH 三臂打平，P5 的 PUT_BACK error 为 0.6849，差于 learned two-stage 的 0.2740 和 AMG 的 0.0536，注册行动信号为 false。运行后发现 v0.1 P5 adapter 使用默认 `HYBRID_ALPHA`，同时长期写入被评估入口阻断，导致 owner-habit location posterior 恒定均匀；因此本结果必须保留为失败，但“完整模型无行动信息”的解释仍被 readout confound 阻断。下一步只做显式 post-hoc 的 v0.6 dual-timescale readout 接线诊断，再用 production debt replay 确认生产路径；已打开的 test split 不得伪装成新预注册结果。validation-only calibration 与固定解析阈值基线均保留但尚未执行。组合效用、长期人物记忆污染、Task 8 正式通过、联合行动收益、外部强基线胜利、外部有效性和七算子行动贡献均未成立。**
+当前结论：**项目所有者已选择 Route C、Architecture A、`P5_FIRST` 以及三臂方法定义 `A1 + B1`，完整 H/R/I/C/Z/r/V、三个 RB blocks 和七算子范围保持不变。首轮 matched direct `P5_FULL_EAGER` typed SEARCH/PUT_BACK 死亡测试已完成：1,920 个 matched steps，1,243 次真实七算子正路径和 677 次不伪造转移的负观测闭环；SEARCH 三臂打平，P5 的 PUT_BACK error 为 0.6849，差于 learned two-stage 的 0.2740 和 AMG 的 0.0536，注册行动信号为 false。失败后定位到两个接线问题：v0.1 P5 adapter 未接入已冻结的 v0.6 dual-timescale readout；且 PCHMP 已形成的人物后验被 CIAV 用原始均匀 prior 重算并抹掉。后者已按 sequential Bayes 修复并通过 production/adaptive/P5 定向回归；单 episode 修复后 posterior 已非均匀，但完整 60-episode 运行尚未完成。因此 v0.1 必须保留为失败，修正版只能标为 post-hoc，已打开的 test split 不得伪装成新预注册结果。下一步先冻结修复实现，再运行完整 post-hoc 三臂诊断和 production debt replay。validation-only calibration 与固定解析阈值基线均保留但尚未执行。组合效用、长期人物记忆污染、Task 8 正式通过、联合行动收益、外部强基线胜利、外部有效性和七算子行动贡献均未成立。**
 
 这里是方向结构二的规范阅读入口。仓库保留了大量按日期冻结的协议、实验和审计文件；那些文件是
 证据档案，不应让第一次接触项目的人逐个猜阅读顺序。

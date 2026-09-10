@@ -1,0 +1,86 @@
+{
+  "schema_version": "0.1.0",
+  "protocol_id": "structure-two-p5-readout-posthoc-diagnostic@0.1-development",
+  "status": "FROZEN_AFTER_TWO_PREFLIGHT_DIAGNOSES_BEFORE_FULL_POSTHOC_EXECUTION",
+  "trigger": {
+    "retained_failed_result_path": "benchmarks/structure_two/structure_two_p5_three_arm_death_test_v0_1.json",
+    "retained_failed_result_file_sha256": "ca30ac7db2ff26476a17fa9ca9d19760763508010a312acd8b18d4ba194dca94",
+    "retained_failed_result_content_sha256": "df44a16e4b450fc77239d0e3e3bbcf9f3fbb3fbbcca9a2db6a0844ce8a6267b5",
+    "retained_failed_result_status": "P5_ACTION_SIGNAL_NOT_DETECTED",
+    "discovered_after_test_open": true,
+    "diagnosed_confound": "The v0.1 direct-P5 adapter used the default HYBRID_ALPHA readout while direct-P5 execution blocked long-term writes. A one-episode readout-only preflight remained uniform because neutral CIAV actor likelihoods were applied to the original transition prior and reset the primary PCHMP actor posterior."
+  },
+  "preflight_diagnoses": {
+    "readout_only_episode_count": 1,
+    "readout_only_step_count": 32,
+    "readout_only_nonuniform_owner_habit_posterior_step_count": 0,
+    "primary_pchmp_owner_mass_example": 0.7613843351548268,
+    "post_ciav_fast_owner_mass_example": 0.3333333333333333,
+    "interpretation": "The readout configuration alone is insufficient because the same-location CIAV fast-verification closure overwrites the primary PCHMP owner mass with a posterior recomputed from the original uniform actor prior."
+  },
+  "posthoc_corrections": {
+    "action_readout": {
+      "component": "direct_p5_action_readout",
+      "from": "implicit_default_hybrid_alpha",
+      "to": "dual_timescale_fast_0.7_surviving_0.2_regime_0.1",
+      "readout_preregistration_path": "configs/project_two_experiments/structure_two_action_readout_v0_6_preregistration.json",
+      "readout_preregistration_file_sha256": "bb274d3822d30c06a1571d2b1951e575576e81ae5b22dc6de9a4d1e47e1ac63c",
+      "readout": "dual_timescale_reversible",
+      "hybrid_alpha_weight": 0.0,
+      "fast_action_weight": 0.7,
+      "surviving_revision_weight": 0.2,
+      "regime_local_weight": 0.1,
+      "fast_owner_mass_floor": 0.5,
+      "owner_mass_floor": 0.5,
+      "recency_half_life": 1.0
+    },
+    "sequential_actor_prior_handoff": {
+      "component": "primary_pchmp_to_ciav_actor_prior",
+      "from": "original_transition_actor_prior",
+      "to": "primary_pchmp_actor_posterior",
+      "invariant": "A neutral CIAV actor likelihood preserves the primary PCHMP actor posterior.",
+      "applies_to": ["same_location_fast_verification", "different_location_full_transition"]
+    }
+  },
+  "held_fixed": {
+    "method_decision": "A1+B1",
+    "dataset": "project-two-d0-multiseed-readout@0.5",
+    "splits": "same train_validation_test as retained v0.1",
+    "shared_ciav_scheduler": "exogenous_precommitted_schedule",
+    "learned_two_stage_location_head": "shared_conditional_location_head_given_cause_event",
+    "learned_and_amg_parameters": "recomputed by the unchanged validation-only selector and required to match retained v0.1",
+    "shared_typed_decoder": "unchanged",
+    "negative_observation_policy": "unchanged",
+    "signal_rule": "descriptively_reapplied_only_not_preregistered_for_posthoc_run",
+    "combined_utility": "UNRESOLVED_NOT_AGGREGATED"
+  },
+  "test_reuse_disclosure": {
+    "same_test_split_reused": true,
+    "test_split_previously_opened": true,
+    "confirmatory": false,
+    "fresh_preregistered_death_test": false,
+    "may_issue_positive_scientific_receipt": false
+  },
+  "required_diagnostics": [
+    "owner_habit_posterior_nonuniform_step_count",
+    "owner_habit_top1_not_uniform_tie_location_step_count",
+    "owner_habit_unique_distribution_count",
+    "put_back_choice_changed_from_retained_v0_1_uniform_lexicographic_tie_behavior",
+    "neutral_ciav_preserves_primary_pchmp_actor_posterior",
+    "search_and_put_back_reported_separately",
+    "exact_three_arm_ciav_receipt_matching",
+    "seven_operator_positive_path_and_negative_observation_closure_counts"
+  ],
+  "next_if_readout_changes_actions": "Confirm the same readout and state consumption through production debt replay, then freeze a corrected protocol before using an unseen holdout.",
+  "next_if_readout_remains_degenerate": "Localize which fast, surviving-revision, or regime-local component lacks owner-conditioned information before any router calibration.",
+  "scope_policy": {
+    "unified_seven_operator_framework_retained": true,
+    "hidden_event_inference_retained": true,
+    "multi_actor_reasoning_retained": true,
+    "open_world_unknowns_retained": true,
+    "reversible_attribution_retained": true,
+    "embodied_feedback_loop_retained": true,
+    "scope_reduction_authorized": false
+  },
+  "claim_boundary": "This test-opened-split post-hoc diagnostic can determine whether wiring the previously validation-selected v0.6 action readout and repairing the sequential PCHMP-to-CIAV actor-prior handoff removes the v0.1 uniform owner-habit posterior and changes typed actions. It cannot overwrite v0.1, constitute a fresh preregistered death test, issue a positive scientific receipt, pass Task 7/8/9, validate adaptive routing, establish external validity, authorize ablation, aggregate SEARCH and PUT_BACK, or narrow Structure Two."
+}

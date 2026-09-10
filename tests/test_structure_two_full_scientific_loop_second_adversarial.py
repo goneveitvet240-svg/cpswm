@@ -17,6 +17,7 @@ from cpswm.system.evaluation_operations.structure_two_selected_method import (
     StructureTwoOperator,
 )
 from cpswm.system.reproducibility import content_sha256
+from cpswm.system.structure_two_production_system import build_production_assembly_manifest
 
 ROOT = Path(__file__).resolve().parents[1]
 ARTIFACT = ROOT / "benchmarks/structure_two/structure_two_full_scientific_loop_v0_2.json"
@@ -32,6 +33,12 @@ def _resign(payload: dict[str, object]) -> None:
     payload.pop("deterministic_replay_sha256", None)
     payload["deterministic_replay_sha256"] = content_sha256(_deterministic_payload(payload))
     payload["content_sha256"] = content_sha256(payload)
+
+
+def _bind_current_production_manifest(payload: dict[str, object]) -> None:
+    """Reach semantic checks without rewriting or promoting the historical artifact."""
+
+    payload["production_system_assembly"] = build_production_assembly_manifest(ROOT)
 
 
 def _rehash_operator_receipts(run: dict[str, object]) -> None:
@@ -113,6 +120,7 @@ def test_new_round_one_rehashed_corrected_state_chain_forgery_is_rejected(
     run = forged["closed_loop_runs"]["stateful_full_joint"][0]  # type: ignore[index]
     run["traces"][1]["pre_observation_state_sha256"] = "0" * 64
     run["environment_trace_sha256"] = content_sha256(run["traces"])
+    _bind_current_production_manifest(forged)
     _resign(forged)
 
     with pytest.raises(ValueError, match="corrected-state consumption"):
@@ -133,6 +141,7 @@ def test_new_round_one_rehashed_neutralization_semantic_forgery_is_rejected(
     )
     receipt["detail"] = "RGRC happened to leave state unchanged"
     _rehash_operator_receipts(run)
+    _bind_current_production_manifest(forged)
     _resign(forged)
 
     with pytest.raises(ValueError, match="registered neutralization semantics failed"):
@@ -150,6 +159,7 @@ def test_new_round_one_rehashed_negative_ledger_evidence_removal_is_rejected(
     evidence["record_count"] = 0
     evidence["operations"] = []
     evidence["ledger_head_sha256"] = "GENESIS"
+    _bind_current_production_manifest(forged)
     _resign(forged)
 
     with pytest.raises(ValueError, match="negative activation claim is false"):
@@ -173,6 +183,7 @@ def test_new_round_two_rehashed_boolean_step_index_is_rejected(
     run = forged["closed_loop_runs"]["stateful_full_joint"][0]  # type: ignore[index]
     run["traces"][0]["step_index"] = False
     run["environment_trace_sha256"] = content_sha256(run["traces"])
+    _bind_current_production_manifest(forged)
     _resign(forged)
 
     with pytest.raises(ValueError, match="trace index or state hash is malformed"):
@@ -185,6 +196,7 @@ def test_new_round_two_rehashed_boolean_fairness_integer_is_rejected(
     forged = copy.deepcopy(artifact)
     run = forged["closed_loop_runs"]["stateful_full_joint"][0]  # type: ignore[index]
     run["fairness_receipts"][0]["step_index"] = True
+    _bind_current_production_manifest(forged)
     _resign(forged)
 
     with pytest.raises(ValueError, match="fairness receipt is invalid"):
@@ -203,6 +215,7 @@ def test_new_round_two_rehashed_rgrc_location_support_substitution_is_rejected(
         original_location
     )
     suite["ledger_head_sha256"] = _rehash_ledger(records)
+    _bind_current_production_manifest(forged)
     _resign(forged)
 
     with pytest.raises(ValueError, match="distribution support was substituted"):
@@ -215,6 +228,7 @@ def test_new_round_two_rehashed_degenerate_split_evidence_is_rejected(
     forged = copy.deepcopy(artifact)
     evidence = forged["learned_cross_axis_interaction"]["training_evidence"]  # type: ignore[index]
     evidence["validation_examples_sha256"] = evidence["train_examples_sha256"]
+    _bind_current_production_manifest(forged)
     _resign(forged)
 
     with pytest.raises(ValueError, match="train/validation examples are degenerate copies"):
@@ -228,6 +242,7 @@ def test_new_round_two_rehashed_distinct_training_hash_substitution_is_rejected(
     evidence = forged["learned_cross_axis_interaction"]["training_evidence"]  # type: ignore[index]
     evidence["train_examples_sha256"] = "1" * 64
     evidence["validation_examples_sha256"] = "2" * 64
+    _bind_current_production_manifest(forged)
     _resign(forged)
 
     with pytest.raises(ValueError, match="example evidence is not source-regenerated"):
@@ -240,6 +255,7 @@ def test_new_round_two_training_evidence_extra_claim_is_rejected(
     forged = copy.deepcopy(artifact)
     evidence = forged["learned_cross_axis_interaction"]["training_evidence"]  # type: ignore[index]
     evidence["unregistered_training_claim"] = True
+    _bind_current_production_manifest(forged)
     _resign(forged)
 
     with pytest.raises(ValueError, match="training evidence is incomplete"):
@@ -250,6 +266,7 @@ def test_new_round_two_rehashed_production_source_substitution_is_rejected(
     artifact: dict[str, object],
 ) -> None:
     forged = copy.deepcopy(artifact)
+    _bind_current_production_manifest(forged)
     assembly = forged["production_system_assembly"]  # type: ignore[index]
     assembly["operators"][0]["sources"][0]["sha256"] = "0" * 64
     assembly.pop("content_sha256")
@@ -263,7 +280,12 @@ def test_new_round_two_rehashed_production_source_substitution_is_rejected(
 def test_new_round_two_rehashed_runner_substitution_is_rejected(
     artifact: dict[str, object],
 ) -> None:
-    forged = copy.deepcopy(artifact)
+    clean_rebound = copy.deepcopy(artifact)
+    _bind_current_production_manifest(clean_rebound)
+    _resign(clean_rebound)
+    verify_full_scientific_loop_result(clean_rebound, repository_root=ROOT)
+
+    forged = copy.deepcopy(clean_rebound)
     forged["source_binding"]["runner"]["sha256"] = "0" * 64  # type: ignore[index]
     _resign(forged)
 
@@ -279,6 +301,7 @@ def test_new_round_two_rejects_an_incomplete_positive_output_trust_map(
     assert isinstance(trust, dict)
     removed_path = next(path for path in trust if path.startswith("/closed_loop_runs/"))
     trust.pop(removed_path)
+    _bind_current_production_manifest(forged)
     _resign(forged)
 
     with pytest.raises(ValueError, match="positive-output trust map is incomplete"):

@@ -24,6 +24,7 @@ from cpswm.system.evaluation_operations.structure_two_stateful_full_joint import
     FullJointArm,
 )
 from cpswm.system.reproducibility import content_sha256
+from cpswm.system.structure_two_production_system import build_production_assembly_manifest
 
 ROOT = Path(__file__).resolve().parents[1]
 ARTIFACT = ROOT / "benchmarks/structure_two/structure_two_full_scientific_loop_v0_2.json"
@@ -39,6 +40,18 @@ def _resign(payload: dict[str, object]) -> None:
     payload.pop("deterministic_replay_sha256", None)
     payload["deterministic_replay_sha256"] = content_sha256(_deterministic_payload(payload))
     payload["content_sha256"] = content_sha256(payload)
+
+
+def _bind_current_production_manifest(payload: dict[str, object]) -> None:
+    """Keep semantic-forgery tests behind current source binding.
+
+    The checked-in v0.2 artifact is intentionally immutable and its historical
+    production sidecar predates Architecture A.  Tests that target deeper
+    semantic checks replace only that sidecar in memory; the historical file is
+    never rewritten or promoted to current runtime evidence.
+    """
+
+    payload["production_system_assembly"] = build_production_assembly_manifest(ROOT)
 
 
 def test_protocol_keeps_the_complete_route_c_scope_and_disjoint_splits() -> None:
@@ -90,10 +103,11 @@ def test_action_responsive_environment_changes_the_next_observation() -> None:
     assert left_next.observed_location_id != right_next.observed_location_id
 
 
-def test_checked_in_full_loop_artifact_is_locally_verifiable(
+def test_checked_in_full_loop_artifact_is_historical_and_source_stale(
     artifact: dict[str, object],
 ) -> None:
-    verify_full_scientific_loop_result(artifact, repository_root=ROOT)
+    with pytest.raises(ValueError, match="production assembly manifest mismatch"):
+        verify_full_scientific_loop_result(artifact, repository_root=ROOT)
 
     assert artifact["matched_closed_loop_fairness"]["passed"] is True  # type: ignore[index]
     assert (
@@ -175,6 +189,7 @@ def test_rehashed_environment_transition_forgery_is_rejected(
         "traces"
     ][0]
     trace["transition"]["action_success"] = not trace["transition"]["action_success"]
+    _bind_current_production_manifest(forged)
     _resign(forged)
 
     with pytest.raises(ValueError, match="transition is not environment-derived"):
@@ -189,6 +204,7 @@ def test_rehashed_operator_receipt_forgery_is_rejected(
         StructureTwoOperator.OPCEU.value
     ][0]["operator_flow_receipts"][0]
     receipt["detail"] = "forged-but-complete"
+    _bind_current_production_manifest(forged)
     _resign(forged)
 
     with pytest.raises(ValueError, match="receipt content hash mismatch"):
@@ -202,6 +218,7 @@ def test_rehashed_ablation_summary_forgery_is_rejected(
     forged["seven_operator_neutralization"]["summaries"][  # type: ignore[index]
         StructureTwoOperator.RGRC.value
     ]["decision_effect_observed"] = False
+    _bind_current_production_manifest(forged)
     _resign(forged)
 
     with pytest.raises(ValueError, match="neutralization summary is not run-derived"):

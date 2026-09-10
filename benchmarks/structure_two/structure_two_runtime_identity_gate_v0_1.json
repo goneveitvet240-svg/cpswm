@@ -1,0 +1,92 @@
+{
+  "architecture_selection_status": "A_SELECTED_STRUCTURE_TWO_PRODUCTION_SYSTEM",
+  "blocking_reasons": [
+    "route_trace_has_no_runtime_execution_binding",
+    "operator_receipts_have_no_live_operator_instance_identity",
+    "operator_receipts_have_no_bound_callable_invocation_identity",
+    "operator_outputs_have_no_downstream_consumption_dependencies",
+    "production_manifest_was_built_from_a_distinct_post_run_runtime",
+    "historical_source_binding_not_currently_fresh"
+  ],
+  "claim_boundary": "This local gate audits whether a Route-C trajectory is bound to the runtime and operator instances that produced it. Architecture A now binds legacy ordinary transitions to StructureTwoProductionSystem and hosts the current partial P0-P5 control-flow lane. This historical gate does not establish that lane's production-state-derived path choice, distinct path kernels, fallback state machine, or full consequential identity; retroactively establish historical Route-C equivalence; provide independent custody; or promote development evidence.",
+  "content_sha256": "dd28f001b2c479209f91da528c7966dbafab16d47204c65225b9775ec3d170b1",
+  "evidence_status": "MISSING_LIVE_RUNTIME_OPERATOR_CALL_CONSUMPTION_BINDING",
+  "global_architecture_selected": true,
+  "historical_artifact_integrity": {
+    "content_sha256_verified": true,
+    "embedded_production_manifest_content_sha256_verified": true
+  },
+  "historical_source_binding_check": {
+    "failure_code": "PRODUCTION_ASSEMBLY_CURRENT_SOURCE_BINDING_MISMATCH",
+    "scope": "CURRENT_CHECKOUT_SOURCE_AND_PRODUCTION_MANIFEST",
+    "status": "HISTORICAL_SNAPSHOT_STALE_AGAINST_CURRENT_CHECKOUT"
+  },
+  "historical_source_binding_currently_fresh": false,
+  "independent_custody_established": false,
+  "observed_route_runtime": {
+    "constructor_line": 1022,
+    "produces_closed_loop_rows": true,
+    "run_count": 27,
+    "symbol": "cpswm.system.evaluation_operations.structure_two_full_scientific_loop.LearnedInteractionRuntime"
+  },
+  "production_runtime_equivalence_established": false,
+  "protocol_id": "structure-two-runtime-identity-gate@0.1",
+  "runtime_identity_gate_passed": false,
+  "schema_version": "0.1.0",
+  "selected_global_runtime": "cpswm.system.structure_two_production_system.StructureTwoProductionSystem",
+  "sidecar_production_manifest": {
+    "assembly_class": "cpswm.system.structure_two_production_system.StructureTwoProductionSystem",
+    "builder_constructs_a_distinct_runtime": true,
+    "built_after_all_registered_route_calls": true,
+    "manifest_content_sha256": "57db4a991b9dbbf30e4420a1ab2143a810c8bfcf4b45c4556f1c31ab9ffd3d04",
+    "role": "POST_RUN_STATIC_SIDECAR_NOT_TRAJECTORY_RUNTIME_EVIDENCE",
+    "trajectory_runtime_bound": false
+  },
+  "source_binding": {
+    "configuration": {
+      "path": "configs/project_two_experiments/structure_two_runtime_identity_gate_v0_1.json",
+      "sha256": "ce2f9e0818514179767adf780208cc44824abb8dbae398b0b9ddcf3b329e3e34"
+    },
+    "full_loop_implementation": {
+      "path": "src/cpswm/system/evaluation_operations/structure_two_full_scientific_loop.py",
+      "sha256": "0b76c42a6ebe1d2bccc99d4905898a2f3217d1e31640c1420960800b338e1f52"
+    },
+    "gate_implementation": {
+      "path": "src/cpswm/system/evaluation_operations/structure_two_runtime_identity_gate.py",
+      "sha256": "7625ee302ec46ce54217296a8864e3ab8c8343054fe2d74bc3e15fa1bb960c0a"
+    },
+    "gate_runner": {
+      "path": "apps/evaluation_runner/run_structure_two_runtime_identity_gate.py",
+      "sha256": "29a9283993467c089a29e8aa9e0eaa2532c7346cd63bbd81b69ef926f972983c"
+    },
+    "production_system_implementation": {
+      "path": "src/cpswm/system/structure_two_production_system.py",
+      "sha256": "f1b737363e75c484b6133a6d05cd3afddd9ea54646e28529aa87589249bf2dc9"
+    },
+    "source_artifact": {
+      "content_sha256": "623189f2807efa0a633f46d9664f7a57f3dcb4a54e4d2c2e11242973f5d9ae41",
+      "path": "benchmarks/structure_two/structure_two_full_scientific_loop_v0_2.json",
+      "sha256": "de7f023f2a7be44cdc13aac65335cea3890d57e6a913bc44e77d88fba3632adc"
+    },
+    "stateful_runtime_implementation": {
+      "path": "src/cpswm/system/evaluation_operations/structure_two_stateful_full_joint.py",
+      "sha256": "fe32501bbcc9dfd2d16dbc13bac024c036d8fa113435fa934bbce15b62a1bb27"
+    }
+  },
+  "trace_binding_audit": {
+    "all_required_receipt_fields_present": false,
+    "audited_operator_receipt_count": 1998,
+    "audited_run_count": 27,
+    "call_consumption_binding_present": false,
+    "callable_invocation_binding_present": false,
+    "operator_instance_binding_present": false,
+    "per_run_runtime_execution_binding_present": false,
+    "required_receipt_fields": [
+      "runtime_execution_id",
+      "operator_instance_id",
+      "callable_symbol",
+      "invocation_id",
+      "consumed_output_ids"
+    ]
+  }
+}

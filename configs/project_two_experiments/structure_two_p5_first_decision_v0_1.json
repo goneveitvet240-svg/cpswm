@@ -1,0 +1,70 @@
+{
+  "schema_version": "0.1.0",
+  "decision_id": "structure-two-p5-first-sequence-decision@0.1",
+  "decision_date": "2026-09-10",
+  "status": "PROJECT_OWNER_SELECTED",
+  "scope_policy": {
+    "unified_seven_operator_framework_retained": true,
+    "hidden_event_inference_retained": true,
+    "multi_actor_reasoning_retained": true,
+    "open_world_unknowns_retained": true,
+    "reversible_attribution_retained": true,
+    "embodied_feedback_loop_retained": true,
+    "scope_reduction_authorized": false
+  },
+  "execution_order": [
+    "CREATE_CURRENT_STRUCTURE_TWO_CHECKPOINT",
+    "RUN_P5_FULL_EAGER_TYPED_SEARCH_PUT_BACK_DEATH_TEST",
+    "REVIEW_P5_ACTION_SIGNAL_GATE",
+    "FREEZE_AND_IMPLEMENT_ADAPTIVE_ROUTER_ONLY_AFTER_REVIEW"
+  ],
+  "p5_first": {
+    "selected": true,
+    "path_id": "P5_FULL_EAGER",
+    "purpose": "Test the action-utility ceiling of the complete seven-operator path before investing in all adaptive routing kernels.",
+    "evidence_level": "D0_DEVELOPMENT_DEATH_TEST",
+    "does_not_remove_adaptive_paths": true,
+    "does_not_authorize_scientific_superiority": true
+  },
+  "typed_action_stage": {
+    "initial_action_types": [
+      "SEARCH",
+      "PUT_BACK"
+    ],
+    "retained_later_action_types": [
+      "HANDOFF",
+      "DELIVERY",
+      "REMIND",
+      "ASSIST"
+    ],
+    "scope_reduction": false,
+    "initial_stage_claim_boundary": "A SEARCH/PUT_BACK death test is a staged falsifier, not the final full-action evaluation."
+  },
+  "adaptive_router_calibration": {
+    "selected_strategy": "VALIDATION_ONLY_CALIBRATION",
+    "confirmatory_data_may_select_features_or_thresholds": false,
+    "fixed_analytic_threshold_baseline_retained": true,
+    "current_fixed_threshold_baseline_candidates": {
+      "maximum_debt_flip_bound": 0.25,
+      "joint_event_actor_pressure": 0.45,
+      "joint_regime_hazard": 0.45,
+      "active_verify_action_margin": 0.2,
+      "active_verify_actor_or_unknown_ambiguity": 0.3,
+      "event_actor_or_provenance_pressure": 0.45,
+      "regime_recovery_hazard": 0.35
+    },
+    "current_thresholds_are_final_policy": false,
+    "required_future_freeze": [
+      "observable_feature_definitions",
+      "feature_calibration_split",
+      "candidate_threshold_grid",
+      "selection_rule",
+      "frozen_threshold_receipt"
+    ]
+  },
+  "checkpoint_policy": {
+    "checkpoint_before_new_p5_implementation": true,
+    "structure_one_changes_must_not_be_silently_included": true
+  },
+  "claim_boundary": "This record freezes project-owner sequencing and calibration-family choices only. It does not establish a P5 action benefit, select final router features or thresholds, complete the adaptive executor, authorize a confirmatory opening, or narrow the unified Structure-Two scope."
+}

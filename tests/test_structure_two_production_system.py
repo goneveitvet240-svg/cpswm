@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import copy
 from pathlib import Path
+from typing import Any
 from uuid import uuid4
 
 import pytest
@@ -20,7 +21,9 @@ from cpswm.system.structure_two_production_system import (
 ROOT = Path(__file__).resolve().parents[1]
 
 
-def _system_and_transition() -> tuple[StructureTwoProductionSystem, PrototypeTransition]:
+def _system_and_transition(
+    *, message_passing: Any | None = None
+) -> tuple[StructureTwoProductionSystem, PrototypeTransition]:
     case = StructureTwoActionScenarioGenerator().generate(3).visible
     observation = next(
         item for item in case.days if item.before is not None and item.after is not None
@@ -57,6 +60,7 @@ def _system_and_transition() -> tuple[StructureTwoProductionSystem, PrototypeTra
         object_instance_id=case.object_instance_id,
         locations=case.locations,
         authorization_scope_id=uuid4(),
+        message_passing=message_passing,
     )
     transition = PrototypeTransition(
         opportunity=opportunity,

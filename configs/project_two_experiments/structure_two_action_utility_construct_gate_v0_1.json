@@ -1,0 +1,38 @@
+{
+  "schema_version": "0.1.0",
+  "protocol_id": "structure-two-action-utility-construct-gate@0.1-development",
+  "status": "D0_DIAGNOSTIC_ONLY",
+  "base_full_loop_config": "configs/project_two_experiments/structure_two_full_scientific_loop_v0_2.json",
+  "probe": {
+    "seed": 853,
+    "step_count": 3,
+    "expected_non_owner_step_index": 2,
+    "sensitivity_control_step_index": 2,
+    "minimum_selected_location_disagreement_steps": 1,
+    "minimum_successful_non_noop_put_back_transitions": 1
+  },
+  "action_semantics": {
+    "decision_protocol": "two_task_heads_precommitted_from_same_predecision_snapshot",
+    "search_target_semantics": "current_object_location",
+    "search_readout_source": "robot_visible_current_location_posterior",
+    "search_environment_effect": "inspection_only_object_location_immutable",
+    "search_metric": "normalized_extra_inspection_regret",
+    "put_back_target_semantics": "owner_habit_location",
+    "put_back_readout_source": "owner_target_active_regime_rb_with_uniform_instantaneous_base_and_rgrc",
+    "put_back_environment_effect": "relocate_object_on_success",
+    "put_back_metric": "zero_one_owner_habit_error",
+    "contamination_metric": "non_owner_copy_putback_proxy_only",
+    "combined_utility_status": "UNRESOLVED_NOT_AGGREGATED",
+    "truth_release_policy": "after_both_typed_action_commits_and_consequence_before_utility",
+    "phase_control_claim": "source_recomputed_phase_guarded_call_order_not_independent_custody",
+    "runtime_freshness_claim": "instance_local_single_use_capability_not_serialized_or_independent_custody",
+    "sensitivity_control_protocol": "paired_same_seed_same_history_single_head_rank_intervention",
+    "long_term_product_action_semantics_selected": false
+  },
+  "legacy_v0_2_compatibility": {
+    "old_module_mutation_forbidden": true,
+    "old_config_mutation_forbidden": true,
+    "old_artifact_mutation_forbidden": true
+  },
+  "claim_boundary": "This three-step D0 diagnostic establishes typed and task-separated SEARCH and PUT_BACK execution, trace-derived separate metrics, at least one successful non-noop state transition, phase-guarded call order, runtime-local command freshness, and source-recomputed single-head sensitivity controls. The controls establish metric wiring responsiveness, not learned-policy non-degeneracy or task quality. It does not establish append-only or independently custodied history, select long-term product action semantics, establish production-runtime identity, measure a combined action utility, establish long-term memory contamination, or support scientific superiority."
+}

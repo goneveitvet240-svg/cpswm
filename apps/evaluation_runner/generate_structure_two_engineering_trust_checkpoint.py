@@ -18,11 +18,12 @@ OUTPUT: Final = (
     ROOT
     / "benchmarks/structure_two/engineering_trust_checkpoint_2026_09_05/engineering_checkpoint.json"
 )
-P0_MANIFEST: Final = Path("benchmarks/p0_checkpoint/content_manifest_v0_2.json")
+P0_MANIFEST: Final = Path("benchmarks/p0_checkpoint/content_manifest_v0_3.json")
 AUDIT_RECEIPT: Final = Path(
     "benchmarks/structure_two/engineering_trust_checkpoint_2026_09_05/"
     "engineering_audit_receipt.json"
 )
+AUDIT_LOG_DIRECTORY: Final = AUDIT_RECEIPT.parent / "engineering_audit_logs"
 V05_AUDIT: Final = Path(
     "benchmarks/structure_two/structure_two_world_source_bundle_v0_5_compatibility_audit.json"
 )
@@ -133,16 +134,49 @@ def _verify_audit_receipt(p0_manifest: Mapping[str, Any]) -> tuple[dict[str, Any
     if stored_hash != _canonical_sha256(unsigned):
         raise ValueError("engineering audit receipt content hash mismatch")
     if (
-        receipt.get("protocol") != "structure-two-engineering-audit-receipt@1.0"
-        or receipt.get("authority") != "LOCAL_EXECUTION_ONLY"
+        receipt.get("protocol") != "structure-two-engineering-audit-receipt@1.1"
+        or receipt.get("authority") != "CURRENT_LOCAL_TOOLCHAIN_STATE_ONLY"
     ):
         raise ValueError("engineering audit receipt protocol/authority mismatch")
-    if (
-        receipt.get("source_manifest_path") != P0_MANIFEST.as_posix()
-        or receipt.get("source_manifest_file_sha256") != _sha256(ROOT / P0_MANIFEST)
-        or receipt.get("source_manifest_sha256") != p0_manifest.get("manifest_sha256")
+    if any(
+        receipt.get(field) is not False
+        for field in (
+            "recorded_execution_authenticity_established",
+            "hermetic_toolchain_established",
+            "independent_custody_established",
+        )
+    ):
+        raise ValueError("engineering audit receipt overclaims its local recorded authority")
+    manifest_file_hash = _sha256(ROOT / P0_MANIFEST)
+    manifest_hash = p0_manifest.get("manifest_sha256")
+    if not isinstance(manifest_hash, str):
+        raise ValueError("current P0 manifest hash is missing")
+    manifest_binding_fields = {
+        "source_manifest_file_sha256": manifest_file_hash,
+        "source_manifest_sha256": manifest_hash,
+        "pre_execution_source_manifest_file_sha256": manifest_file_hash,
+        "pre_execution_source_manifest_sha256": manifest_hash,
+        "post_execution_source_manifest_file_sha256": manifest_file_hash,
+        "post_execution_source_manifest_sha256": manifest_hash,
+    }
+    if receipt.get("source_manifest_path") != P0_MANIFEST.as_posix() or any(
+        receipt.get(field) != value for field, value in manifest_binding_fields.items()
     ):
         raise ValueError("engineering audit receipt is stale for the current source manifest")
+    environment_pre = receipt.get("pre_execution_environment")
+    environment_post = receipt.get("post_execution_environment")
+    if not isinstance(environment_pre, Mapping) or not isinstance(environment_post, Mapping):
+        raise ValueError("engineering audit execution environment fingerprint is missing")
+    if environment_pre != environment_post:
+        raise ValueError("engineering audit pre/post execution environments disagree")
+    audit_runner.verify_execution_environment_fingerprint(
+        environment_pre,
+        p0_manifest,
+        repository_root=ROOT,
+    )
+    environment_hash = environment_pre.get("content_sha256")
+    if not isinstance(environment_hash, str):
+        raise ValueError("engineering audit execution environment hash is missing")
     raw_runs = receipt.get("command_runs")
     if not isinstance(raw_runs, list):
         raise ValueError("engineering audit receipt command runs missing")
@@ -158,6 +192,20 @@ def _verify_audit_receipt(p0_manifest: Mapping[str, Any]) -> tuple[dict[str, Any
         expected = audit_runner.COMMANDS.get(command_id)
         if expected is None or raw.get("argv") != list(expected):
             raise ValueError(f"engineering audit command substitution: {command_id}")
+        expected_executable = audit_runner.command_executable_identity(
+            expected, repository_root=ROOT
+        )
+        if (
+            raw.get("source_manifest_sha256") != manifest_hash
+            or raw.get("source_manifest_file_sha256") != manifest_file_hash
+            or raw.get("execution_environment_sha256") != environment_hash
+            or raw.get("environment_overrides")
+            != audit_runner.command_environment_binding(command_id)
+            or raw.get("cwd") != str(ROOT.resolve())
+            or raw.get("resolved_executable") != expected_executable["resolved_executable"]
+            or raw.get("executable_sha256") != expected_executable["executable_sha256"]
+        ):
+            raise ValueError(f"engineering audit command binding mismatch: {command_id}")
         try:
             started = datetime.fromisoformat(str(raw["start_timestamp"]))
             ended = datetime.fromisoformat(str(raw["end_timestamp"]))
@@ -169,12 +217,19 @@ def _verify_audit_receipt(p0_manifest: Mapping[str, Any]) -> tuple[dict[str, Any
             relative = raw.get(f"{stream}_path")
             if not isinstance(relative, str):
                 raise ValueError(f"engineering audit {stream} path missing")
-            path = (ROOT / relative).resolve()
-            if not path.is_relative_to(ROOT) or not path.is_file() or path.is_symlink():
+            expected_relative = (AUDIT_LOG_DIRECTORY / f"{command_id}.{stream}.log").as_posix()
+            if relative != expected_relative:
+                raise ValueError(f"engineering audit {stream} path substitution")
+            unresolved_path = ROOT / relative
+            path = unresolved_path.resolve()
+            if unresolved_path.is_symlink() or not path.is_relative_to(ROOT) or not path.is_file():
                 raise ValueError(f"engineering audit {stream} artifact invalid")
             if raw.get(f"{stream}_sha256") != _sha256(path):
                 raise ValueError(f"engineering audit {stream} hash mismatch")
-        runs[command_id] = raw.get("exit_code") == 0
+        exit_code = raw.get("exit_code")
+        if isinstance(exit_code, bool) or not isinstance(exit_code, int):
+            raise ValueError(f"engineering audit exit code malformed: {command_id}")
+        runs[command_id] = exit_code == 0
     if seen != set(audit_runner.COMMANDS):
         raise ValueError("engineering audit command coverage incomplete")
     all_passed = all(runs.values())
@@ -247,6 +302,20 @@ def _verify_inputs(*, fresh_recomputation: bool) -> tuple[list[dict[str, object]
     if stored_p0 != p0_module.build_manifest():
         raise ValueError("P0 content manifest is not current")
     p0_module.verify_manifest_snapshot(stored_p0)
+    scopes = stored_p0.get("scopes")
+    if (
+        stored_p0.get("schema_version") != "p0-checkpoint-content-manifest@0.3"
+        or not isinstance(scopes, Mapping)
+        or set(scopes) != set(p0_module.REQUIRED_SCOPE_NAMES)
+        or stored_p0.get("scope_contract") != p0_module.build_manifest_scope_contract()
+    ):
+        raise ValueError("P0 v0.3 fixture/test/toolchain scope contract is incomplete")
+    for scope_name in ("test_contract", "test_fixture_contract", "toolchain_contract"):
+        scope = scopes.get(scope_name)
+        if not isinstance(scope, Mapping) or not isinstance(scope.get("file_count"), int):
+            raise ValueError(f"P0 required scope is malformed: {scope_name}")
+        if scope["file_count"] <= 0:
+            raise ValueError(f"P0 required scope is empty: {scope_name}")
     return rows, stored_p0
 
 
@@ -266,11 +335,41 @@ def build_checkpoint(*, fresh_recomputation: bool = True) -> dict[str, object]:
     if readiness.get("current_v0_8_formal_gate_b_receipt_verified") is not False:
         raise ValueError("readiness cannot claim an unexecuted Gate-B receipt")
     reports = [{"path": path.as_posix(), "sha256": _sha256(ROOT / path)} for path in BOUND_REPORTS]
-    engineering_passed = all(audit_runs.values())
+    required_manifest_scopes = {
+        "code",
+        "config",
+        "data_schema",
+        "split_manifest",
+        "test_contract",
+        "test_fixture_contract",
+        "toolchain_contract",
+    }
+    manifest_scopes = p0_manifest["scopes"]
+    fixture_test_and_toolchain_contracts_passed = (
+        isinstance(manifest_scopes, Mapping)
+        and set(manifest_scopes) == required_manifest_scopes
+        and all(
+            isinstance(manifest_scopes[name], Mapping)
+            and int(manifest_scopes[name]["file_count"]) > 0
+            for name in ("test_contract", "test_fixture_contract", "toolchain_contract")
+        )
+    )
+    receipt_environment = audit_receipt["pre_execution_environment"]
+    environment_fresh_verified = isinstance(receipt_environment, Mapping) and isinstance(
+        receipt_environment.get("content_sha256"), str
+    )
+    engineering_passed = (
+        all(audit_runs.values())
+        and fixture_test_and_toolchain_contracts_passed
+        and environment_fresh_verified
+    )
     p0_adversarial_passed = audit_runs["p0_adversarial_tests"]
     payload: dict[str, object] = {
-        "protocol": "structure-two-engineering-trust-checkpoint@1.0",
-        "freeze_date": "2026-09-05",
+        "protocol": "structure-two-engineering-trust-checkpoint@1.1",
+        "freeze_date": "2026-09-10",
+        "authority": "CURRENT_LOCAL_TOOLCHAIN_STATE_ONLY",
+        "engineering_trust_gate_definition": "CURRENT_LOCAL_RECORDED_AUDIT_ONLY",
+        "current_local_recorded_audit_gate_passed": engineering_passed,
         "engineering_trust_gate_passed": engineering_passed,
         "recomputable_d0_evidence_allowed": engineering_passed,
         "recomputable_d0_scope": [row["result_id"] for row in result_rows],
@@ -282,12 +381,31 @@ def build_checkpoint(*, fresh_recomputation: bool = True) -> dict[str, object]:
             "registry_identity_replacement_and_clone_closed": p0_adversarial_passed,
             "final_authorization_binds_policy_and_root_signature": p0_adversarial_passed,
             "caller_backdated_freshness_closed": p0_adversarial_passed,
+            "test_contract_inventory_and_symlink_policy_verified": (
+                fixture_test_and_toolchain_contracts_passed
+            ),
+            "benchmark_test_fixture_inventory_and_symlink_policy_verified": (
+                fixture_test_and_toolchain_contracts_passed
+            ),
+            "toolchain_contract_inventory_verified": (fixture_test_and_toolchain_contracts_passed),
+            "pre_post_manifest_identity_verified": True,
+            "fresh_local_execution_environment_verified": environment_fresh_verified,
         },
         "audit_execution_receipt": {
             "path": AUDIT_RECEIPT.as_posix(),
             "file_sha256": _sha256(ROOT / AUDIT_RECEIPT),
             "content_sha256": audit_receipt["content_sha256"],
             "source_manifest_sha256": audit_receipt["source_manifest_sha256"],
+            "pre_execution_source_manifest_sha256": audit_receipt[
+                "pre_execution_source_manifest_sha256"
+            ],
+            "post_execution_source_manifest_sha256": audit_receipt[
+                "post_execution_source_manifest_sha256"
+            ],
+            "execution_environment_sha256": receipt_environment["content_sha256"],
+            "execution_environment_fresh_verified": environment_fresh_verified,
+            "recorded_execution_authenticity_established": False,
+            "hermetic_toolchain_established": False,
             "command_passes": audit_runs,
             "all_commands_passed": engineering_passed,
         },
@@ -296,6 +414,15 @@ def build_checkpoint(*, fresh_recomputation: bool = True) -> dict[str, object]:
             "path": P0_MANIFEST.as_posix(),
             "file_sha256": _sha256(ROOT / P0_MANIFEST),
             "manifest_sha256": p0_manifest["manifest_sha256"],
+            "required_scopes": sorted(required_manifest_scopes),
+            "test_contract_sha256": manifest_scopes["test_contract"]["content_sha256"],
+            "test_fixture_contract_sha256": manifest_scopes["test_fixture_contract"][
+                "content_sha256"
+            ],
+            "toolchain_contract_sha256": manifest_scopes["toolchain_contract"]["content_sha256"],
+            "fixture_test_and_toolchain_contracts_verified": (
+                fixture_test_and_toolchain_contracts_passed
+            ),
             "current_and_self_consistent": True,
         },
         "historical_v0_5_source_bundle_audit": {
@@ -319,11 +446,20 @@ def build_checkpoint(*, fresh_recomputation: bool = True) -> dict[str, object]:
         },
         "seven_operator_ablation_authorized": False,
         "external_validity_established": False,
+        "recorded_execution_authenticity_established": False,
+        "hermetic_toolchain_established": False,
         "independent_custody_established": False,
         "claim_boundary": (
-            "Only after the source-bound local command receipt passes may the bound Task 7 v0.4, "
-            "Task 8 v0.4, and Task 10 D0 results be "
+            "Only after the local command receipt is freshly matched to the current code, config, "
+            "data/schema, split-manifest, test source, benchmark test-fixture, toolchain, "
+            "interpreter, executable, installed-distribution, and allowlisted-environment state "
+            "may the "
+            "bound Task 7 v0.4, Task 8 v0.4, and Task 10 D0 results be "
             "called recomputable D0 evidence. Task 7 and Task 8 both retain FAIL. "
+            "The true gate means only that a current-local recorded audit is internally "
+            "consistent; "
+            "unkeyed caller-held records do not establish execution authenticity. This is not a "
+            "hermetic build or independently held custody. "
             "The checkpoint does not establish external validity, formal Task-10 resolution, "
             "Gate-B execution, seven-operator efficacy, or external method superiority."
         ),
@@ -331,7 +467,9 @@ def build_checkpoint(*, fresh_recomputation: bool = True) -> dict[str, object]:
     payload["positive_output_trust_chain"] = {
         path: (
             "checkpoint_content+source_bound_command_receipt+current_p0_manifest+"
-            "current_source_inventory+"
+            "current_source_inventory+current_test_contract+current_test_fixture_contract+"
+            "current_toolchain_contract+fresh_local_execution_environment+"
+            "critical_tool_module_bytes+"
             "task_artifact_positive_path_map+fresh_task_specific_recomputation+bound_reports"
         )
         for path in _positive_boolean_paths(payload)

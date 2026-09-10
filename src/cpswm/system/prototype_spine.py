@@ -9,14 +9,18 @@ from __future__ import annotations
 
 import hashlib
 import json
+import marshal
 from collections import defaultdict
-from collections.abc import Mapping, Sequence
+from collections.abc import Callable, Mapping, Sequence
 from copy import deepcopy
-from dataclasses import dataclass, replace
+from dataclasses import dataclass, fields, is_dataclass, replace
 from datetime import datetime
 from enum import StrEnum
+from functools import wraps
 from math import exp, isfinite, log, tanh
-from typing import TYPE_CHECKING
+from threading import RLock, get_ident
+from time import perf_counter_ns
+from typing import TYPE_CHECKING, Any, Concatenate, cast
 from uuid import NAMESPACE_URL, UUID, uuid4, uuid5
 
 import numpy as np
@@ -62,6 +66,7 @@ from cpswm.system.continual.project_one_regime_loop import (
     HabitStateConclusion,
     PrototypeLoopConfig,
     PrototypeStatisticOperation,
+    RegimeStage,
 )
 from cpswm.system.continual.rls import (
     RLSHabitSample,
@@ -74,6 +79,38 @@ from cpswm.system.counterfactual_event_hypergraph import (
     MessagePassingResult,
     OpenWorldRoleConditionedReversibleEventRevisionEngine,
     ProvenanceConstrainedMessagePassing,
+)
+from cpswm.system.reproducibility import content_sha256
+from cpswm.system.structure_two_execution import (
+    GENESIS_RECEIPT_SHA256,
+    LEGACY_CIAV_NOT_APPLICABLE_REASON,
+    STRUCTURE_TWO_OPERATOR_ORDER,
+    AdaptiveInferenceDebtCertificate,
+    ExecutionModeName,
+    FeedbackClosureKind,
+    OperatorExecutionDirective,
+    OperatorInvocationReceipt,
+    RuntimeCallableBinding,
+    RuntimeOperatorName,
+    StructureTwoExecutionPlan,
+    StructureTwoExecutionTrace,
+    TraceAbortAck,
+    TraceCommitAck,
+    TraceCompensationError,
+    TracePhaseName,
+    TraceSink,
+    UnsupportedStructureTwoExecutionPlan,
+    _restore_runtime_rlock_depth,
+    _runtime_rlock_depth,
+    bind_runtime_callable,
+    seal_execution_trace,
+    seal_operator_receipt,
+    verify_execution_trace,
+    verify_trace_abort_ack,
+    verify_trace_commit_ack,
+)
+from cpswm.system.structure_two_execution import (
+    canonical_legacy_ordinary_transition_plan as canonical_legacy_ordinary_transition_plan,
 )
 from cpswm.world_model.grounded_search.concurrent_map_task import BeliefSnapshot, VersionedBeliefMap
 from cpswm.world_model.habits_transitions import (
@@ -89,6 +126,222 @@ from cpswm.world_model.habits_transitions import (
 )
 
 StructuredEventEvidence = ActorResponsibilityEvidence | EventMechanismEvidence | RoleBindingEvidence
+
+
+def _runtime_type_symbol(value: object) -> str:
+    value_type = type(value)
+    return f"{value_type.__module__}.{value_type.__qualname__}"
+
+
+def _authority_descriptor(authority: object | None) -> dict[str, object] | None:
+    """Describe verifier identity/configuration without exposing key material."""
+
+    if authority is None:
+        return None
+    primitive_state: dict[str, object] = {}
+    for name, value in vars(authority).items():
+        if isinstance(value, bytes):
+            primitive_state[name] = hashlib.sha256(value).hexdigest()
+        elif isinstance(value, (str, int, float, bool, UUID)) or value is None:
+            primitive_state[name] = value
+        else:
+            primitive_state[name] = {"type": _runtime_type_symbol(value)}
+    return {
+        "type": _runtime_type_symbol(authority),
+        "key_id": getattr(authority, "key_id", None),
+        "formal_grade": getattr(authority, "formal_grade", None),
+        "public_key_sha256": getattr(authority, "public_key_sha256", None),
+        "state": primitive_state,
+    }
+
+
+def _message_passing_nested_components(message_passing: object) -> dict[str, object]:
+    """Return optional nested PCHMP objects whose identity must survive rollback."""
+
+    components: dict[str, object] = {}
+    direct_authority = getattr(message_passing, "_independence_authority", None)
+    if direct_authority is not None:
+        components["message_passing_direct_independence_authority"] = direct_authority
+    delegate = getattr(message_passing, "_delegate", None)
+    if delegate is not None:
+        components["message_passing_delegate"] = delegate
+        delegate_authority = getattr(delegate, "_independence_authority", None)
+        if delegate_authority is not None:
+            components["message_passing_delegate_independence_authority"] = delegate_authority
+    return components
+
+
+def _message_passing_state_descriptor(message_passing: object) -> dict[str, object]:
+    """Describe both native and registered evaluator PCHMP implementations."""
+
+    def component_descriptor(component: object) -> dict[str, object]:
+        return {
+            "type": _runtime_type_symbol(component),
+            "model_version": getattr(component, "model_version", None),
+            "attribute_names": (sorted(vars(component)) if hasattr(component, "__dict__") else []),
+            "deduplication_enabled": getattr(component, "deduplication_enabled", None),
+            "provenance_firewall_enabled": getattr(component, "provenance_firewall_enabled", None),
+            "independence_authority": _authority_descriptor(
+                getattr(component, "_independence_authority", None)
+            ),
+        }
+
+    descriptor = component_descriptor(message_passing)
+    delegate = getattr(message_passing, "_delegate", None)
+    descriptor["delegate"] = component_descriptor(delegate) if delegate is not None else None
+    return descriptor
+
+
+def _auditable_attribute(value: object) -> object:
+    if callable(value):
+        target = getattr(value, "__func__", value)
+        module = getattr(target, "__module__", type(target).__module__)
+        qualname = getattr(target, "__qualname__", type(target).__qualname__)
+        return {"callable_symbol": f"{module}.{qualname}"}
+    return value
+
+
+def _callable_runtime_state(value: object | None) -> dict[str, object] | None:
+    """Describe callable behavior, including code/default/closure configuration."""
+
+    if value is None:
+        return None
+    target = getattr(value, "__func__", value)
+    module = getattr(target, "__module__", type(target).__module__)
+    qualname = getattr(target, "__qualname__", type(target).__qualname__)
+    code = getattr(target, "__code__", None)
+    closure = getattr(target, "__closure__", None)
+    freevars = tuple(getattr(code, "co_freevars", ()))
+    closure_state: list[dict[str, object]] = []
+    for index, cell in enumerate(closure or ()):
+        name = freevars[index] if index < len(freevars) else f"cell_{index}"
+        try:
+            cell_value = cell.cell_contents
+        except ValueError:
+            cell_state: object = {"empty": True}
+        else:
+            if isinstance(cell_value, (str, int, float, bool, UUID)) or cell_value is None:
+                cell_state = cell_value
+            elif is_dataclass(cell_value) and not isinstance(cell_value, type):
+                cell_state = {
+                    field.name: _auditable_attribute(getattr(cell_value, field.name))
+                    for field in fields(cell_value)
+                }
+            else:
+                cell_state = {"type": _runtime_type_symbol(cell_value)}
+        closure_state.append({"name": name, "value": cell_state})
+    configuration: dict[str, object] | None = None
+    if is_dataclass(value) and not isinstance(value, type):
+        configuration = {
+            field.name: _auditable_attribute(getattr(value, field.name)) for field in fields(value)
+        }
+    return {
+        "type": _runtime_type_symbol(value),
+        "callable_symbol": f"{module}.{qualname}",
+        "code_sha256": (
+            hashlib.sha256(marshal.dumps(code)).hexdigest() if code is not None else None
+        ),
+        "defaults": repr(getattr(target, "__defaults__", None)),
+        "kwdefaults": repr(getattr(target, "__kwdefaults__", None)),
+        "closure": closure_state,
+        "configuration": configuration,
+    }
+
+
+@dataclass(frozen=True, slots=True)
+class _RLSHeadFactory:
+    """Explicit immutable replacement for the former mutable closure factory."""
+
+    context_feature_dim: int
+    location_embedding_dim: int
+    forgetting_factor: float
+    ridge: float = 1e-6
+    prior_scale: float = 1e4
+    model_version: str = "rls-habit-head@0.1"
+
+    def __call__(self) -> RLSHabitScoreHead:
+        return RLSHabitScoreHead(
+            context_feature_dim=self.context_feature_dim,
+            location_embedding_dim=self.location_embedding_dim,
+            forgetting_factor=self.forgetting_factor,
+            ridge=self.ridge,
+            prior_scale=self.prior_scale,
+            model_version=self.model_version,
+        )
+
+
+def _restore_reference_state(
+    original: object,
+    snapshot: object,
+    *,
+    preserve_attributes: frozenset[str] = frozenset(),
+) -> None:
+    """Restore mutable contents while retaining an externally visible object identity."""
+
+    if type(original) is not type(snapshot):
+        raise TypeError("runtime checkpoint type drifted")
+    if isinstance(original, defaultdict) and isinstance(snapshot, defaultdict):
+        original.clear()
+        original.update(deepcopy(snapshot))
+        original.default_factory = snapshot.default_factory
+        return
+    if isinstance(original, dict) and isinstance(snapshot, dict):
+        original.clear()
+        original.update(deepcopy(snapshot))
+        return
+    if isinstance(original, list) and isinstance(snapshot, list):
+        original[:] = deepcopy(snapshot)
+        return
+    if isinstance(original, set) and isinstance(snapshot, set):
+        original.clear()
+        original.update(deepcopy(snapshot))
+        return
+    if isinstance(original, np.ndarray) and isinstance(snapshot, np.ndarray):
+        if original.shape != snapshot.shape or original.dtype != snapshot.dtype:
+            raise TypeError("runtime array checkpoint shape or dtype drifted")
+        np.copyto(original, snapshot)
+        return
+    if is_dataclass(original) and is_dataclass(snapshot):
+        for field in fields(original):
+            object.__setattr__(original, field.name, deepcopy(getattr(snapshot, field.name)))
+        return
+    if hasattr(original, "__dict__") and hasattr(snapshot, "__dict__"):
+        original_fields = vars(original)
+        snapshot_fields = vars(snapshot)
+        for name in tuple(original_fields):
+            if name not in preserve_attributes and name not in snapshot_fields:
+                delattr(original, name)
+        for name, value in snapshot_fields.items():
+            if name in preserve_attributes:
+                continue
+            setattr(original, name, deepcopy(value))
+        return
+
+
+def _serialized_core_mutation[**P, R](
+    method: Callable[Concatenate[CorePrototypeSpine, P], R],
+) -> Callable[Concatenate[CorePrototypeSpine, P], R]:
+    """Serialize public writes with Architecture-A transition transactions."""
+
+    @wraps(method)
+    def wrapped(
+        self: CorePrototypeSpine,
+        /,
+        *args: P.args,
+        **kwargs: P.kwargs,
+    ) -> R:
+        self._require_external_mutation_permission()
+        if self._mutation_is_forbidden_during_sink_commit():
+            raise RuntimeError("runtime mutation is forbidden during trace sink commit")
+        with self._execution_lock:
+            # Recheck after taking the core lock.  A production wrapper may
+            # have issued adaptive inference debt while this caller waited.
+            self._require_external_mutation_permission()
+            if self._mutation_is_forbidden_during_sink_commit():
+                raise RuntimeError("runtime mutation is forbidden during trace sink commit")
+            return method(self, *args, **kwargs)
+
+    return wrapped
 
 
 def _project_one_request_fingerprint(request: ProjectOneStatRequest) -> str:
@@ -164,6 +417,248 @@ class PrototypeStepResult:
     def __post_init__(self) -> None:
         for actor, probability in self.actor_posterior.items():
             _require_probability(probability, f"actor_posterior[{actor!r}]")
+
+
+@dataclass(slots=True)
+class _TransitionTraceRecorder:
+    """Transaction-local receipt buffer; it never writes to the external sink."""
+
+    runtime_execution_id: UUID
+    plan: StructureTwoExecutionPlan
+    bindings: dict[str, RuntimeCallableBinding]
+    receipts: list[OperatorInvocationReceipt]
+    outputs_by_phase_operator: dict[tuple[str, str], OperatorInvocationReceipt]
+    debt_certificates: list[AdaptiveInferenceDebtCertificate]
+    replayed_debt_certificates: list[AdaptiveInferenceDebtCertificate]
+    feedback_observation_acquired: bool = False
+    feedback_closure_kind: FeedbackClosureKind = "none"
+    adaptive_router_feature_sha256: str | None = None
+    adaptive_router_source_state_sha256: str | None = None
+    adaptive_authorization_policy_sha256: str | None = None
+    adaptive_path_selection_receipt_sha256: str | None = None
+    adaptive_ciav_input_sha256: str | None = None
+    adaptive_step_index: int | None = None
+    adaptive_debt_expiry_steps: int | None = None
+
+    @classmethod
+    def create(
+        cls,
+        *,
+        runtime_execution_id: UUID,
+        plan: StructureTwoExecutionPlan,
+        bindings: Mapping[str, RuntimeCallableBinding],
+    ) -> _TransitionTraceRecorder:
+        return cls(
+            runtime_execution_id=runtime_execution_id,
+            plan=plan,
+            bindings=dict(bindings),
+            receipts=[],
+            outputs_by_phase_operator={},
+            debt_certificates=[],
+            replayed_debt_certificates=[],
+        )
+
+    def _primary_phase(self) -> TracePhaseName:
+        return (
+            "ordinary_transition"
+            if self.plan.lane == "legacy_ordinary_transition"
+            else "selected_path"
+        )
+
+    def _directive(self, operator: str) -> OperatorExecutionDirective:
+        try:
+            index = STRUCTURE_TWO_OPERATOR_ORDER.index(operator)
+        except ValueError as error:
+            raise RuntimeError(f"unknown Structure-Two operator: {operator}") from error
+        directive = self.plan.operator_directives[index]
+        if directive.operator != operator:
+            raise RuntimeError("runtime operator order drifted from the immutable plan")
+        return directive
+
+    def mode_for(
+        self,
+        operator: str,
+        *,
+        phase: TracePhaseName | None = None,
+    ) -> ExecutionModeName:
+        resolved_phase = phase or self._primary_phase()
+        if resolved_phase == "feedback_closure":
+            return "refinement_executed"
+        return self._directive(operator).mode
+
+    def bind_operator(self, operator: str, binding: RuntimeCallableBinding) -> None:
+        if binding.runtime_execution_id != self.runtime_execution_id:
+            raise ValueError("adaptive binding runtime identity mismatch")
+        if binding.operator != operator:
+            raise ValueError("adaptive binding operator mismatch")
+        self.bindings[operator] = binding
+
+    def bind_adaptive_route(
+        self,
+        *,
+        router_feature_sha256: str,
+        router_source_state_sha256: str,
+        authorization_policy_sha256: str,
+        path_selection_receipt_sha256: str,
+        ciav_input_sha256: str | None,
+        step_index: int,
+        debt_expiry_steps: int,
+    ) -> None:
+        if self.plan.lane != "registered_adaptive_path":
+            raise RuntimeError("legacy trace cannot bind adaptive routing evidence")
+        if self.adaptive_router_feature_sha256 is not None:
+            raise RuntimeError("adaptive routing evidence is already bound")
+        self.adaptive_router_feature_sha256 = router_feature_sha256
+        self.adaptive_router_source_state_sha256 = router_source_state_sha256
+        self.adaptive_authorization_policy_sha256 = authorization_policy_sha256
+        self.adaptive_path_selection_receipt_sha256 = path_selection_receipt_sha256
+        self.adaptive_ciav_input_sha256 = ciav_input_sha256
+        self.adaptive_step_index = step_index
+        self.adaptive_debt_expiry_steps = debt_expiry_steps
+
+    def _consumed_output_ids(
+        self,
+        operators: tuple[str, ...],
+        *,
+        phase: TracePhaseName,
+    ) -> tuple[str, ...]:
+        try:
+            values: list[str] = []
+            for name in operators:
+                receipt = self.outputs_by_phase_operator.get((phase, name))
+                if receipt is None and phase == "feedback_closure":
+                    receipt = self.outputs_by_phase_operator.get(("selected_path", name))
+                if receipt is None:
+                    receipt = self.outputs_by_phase_operator.get(("ordinary_transition", name))
+                if receipt is None:
+                    raise KeyError(name)
+                values.append(receipt.output_id)
+            return tuple(values)
+        except KeyError as error:
+            raise RuntimeError(
+                "operator consumed an output that was not produced in this run"
+            ) from error
+
+    def record_executed(
+        self,
+        operator: str,
+        *,
+        raw_input: object,
+        output: object,
+        consumes: tuple[str, ...] = (),
+        phase: TracePhaseName | None = None,
+        elapsed_ns: int = 0,
+    ) -> OperatorInvocationReceipt:
+        resolved_phase = phase or self._primary_phase()
+        mode = self.mode_for(operator, phase=resolved_phase)
+        if mode not in {
+            "legacy_default_executed",
+            "mandatory_maintenance_executed",
+            "refinement_executed",
+        }:
+            raise RuntimeError("runtime executed an operator marked as deferred or not applicable")
+        binding = self.bindings.get(operator)
+        if binding is None:
+            raise RuntimeError(f"runtime callable binding is missing: {operator}")
+        if (
+            resolved_phase == "feedback_closure"
+            and not consumes
+            and operator
+            in {
+                "opceu",
+                "orrer_cheh",
+            }
+        ):
+            consumes = ("ciav",)
+        previous = self.receipts[-1].receipt_sha256 if self.receipts else GENESIS_RECEIPT_SHA256
+        receipt = seal_operator_receipt(
+            runtime_execution_id=self.runtime_execution_id,
+            sequence=len(self.receipts),
+            plan=self.plan,
+            operator=cast(RuntimeOperatorName, operator),
+            mode=mode,
+            status="executed",
+            raw_input=raw_input,
+            output=output,
+            consumed_output_ids=self._consumed_output_ids(consumes, phase=resolved_phase),
+            previous_receipt_sha256=previous,
+            phase=resolved_phase,
+            elapsed_ns=elapsed_ns,
+            binding=binding,
+        )
+        self.receipts.append(receipt)
+        self.outputs_by_phase_operator[(resolved_phase, operator)] = receipt
+        return receipt
+
+    def record_deferred(
+        self,
+        operator: str,
+        *,
+        raw_input: object,
+        debt_certificate: AdaptiveInferenceDebtCertificate,
+    ) -> OperatorInvocationReceipt:
+        phase = self._primary_phase()
+        if phase != "selected_path":
+            raise RuntimeError("legacy execution cannot issue adaptive inference debt")
+        mode = self.mode_for(operator, phase=phase)
+        if mode != "deferred_with_valid_debt_certificate":
+            raise RuntimeError("operator is not marked for debt-backed deferral")
+        if operator not in debt_certificate.deferred_operators:
+            raise RuntimeError("debt certificate does not cover the deferred operator")
+        previous = self.receipts[-1].receipt_sha256 if self.receipts else GENESIS_RECEIPT_SHA256
+        output = {
+            "debt_id": str(debt_certificate.debt_id),
+            "certificate_sha256": debt_certificate.certificate_sha256,
+            "skipped_as_negative": False,
+        }
+        receipt = seal_operator_receipt(
+            runtime_execution_id=self.runtime_execution_id,
+            sequence=len(self.receipts),
+            plan=self.plan,
+            operator=operator,
+            mode=mode,
+            status="deferred",
+            raw_input=raw_input,
+            output=output,
+            consumed_output_ids=(),
+            previous_receipt_sha256=previous,
+            phase="selected_path",
+            debt_certificate_sha256=debt_certificate.certificate_sha256,
+        )
+        self.receipts.append(receipt)
+        self.outputs_by_phase_operator[(phase, operator)] = receipt
+        if debt_certificate not in self.debt_certificates:
+            self.debt_certificates.append(debt_certificate)
+        return receipt
+
+    def record_ciav_not_applicable(self, transition: PrototypeTransition) -> None:
+        operator = "ciav"
+        directive = self._directive(operator)
+        mode = directive.mode
+        if mode != "not_applicable_with_recomputed_reason":
+            raise RuntimeError("ordinary transition cannot satisfy the requested CIAV mode")
+        previous = self.receipts[-1].receipt_sha256
+        receipt = seal_operator_receipt(
+            runtime_execution_id=self.runtime_execution_id,
+            sequence=len(self.receipts),
+            plan=self.plan,
+            operator="ciav",
+            mode=mode,
+            status="not_applicable",
+            raw_input={
+                "entrypoint": "CorePrototypeSpine.process_transition",
+                "transition_contract": (
+                    f"{type(transition).__module__}.{type(transition).__qualname__}"
+                ),
+            },
+            output={"recomputed_reason": LEGACY_CIAV_NOT_APPLICABLE_REASON},
+            consumed_output_ids=(),
+            previous_receipt_sha256=previous,
+            phase="ordinary_transition",
+            recomputed_reason=LEGACY_CIAV_NOT_APPLICABLE_REASON,
+        )
+        self.receipts.append(receipt)
+        self.outputs_by_phase_operator[("ordinary_transition", operator)] = receipt
 
 
 @dataclass(frozen=True, slots=True)
@@ -448,7 +943,7 @@ class CorePrototypeSpine:
         self._deferred_project_one_requests: dict[str, tuple[ProjectOneStatRequest, UUID, str]] = {}
         self._project_one_application_receipts: dict[
             UUID, list[ProjectOneRequestApplicationReceipt]
-        ] = defaultdict(list)
+        ] = {}
         # Frozen default: the planner reads the pooled hybrid alpha, exactly as
         # the 2026-08-24 D0 report did.  Callers opt into a revision-aware
         # readout explicitly; nothing changes implicitly.
@@ -461,6 +956,20 @@ class CorePrototypeSpine:
         # failed.  This ledger keeps that action consequence alive without ever
         # touching Dirichlet/RLS/Hybrid.  fingerprint -> (location, owner-mass delta).
         self._action_scoped_negatives: dict[str, tuple[UUID, float]] = {}
+        # Prevent a trace sink from re-entering the same mutable runtime while
+        # an outer transition is awaiting its typed commit acknowledgement.
+        self._execution_lock = RLock()
+        self._execution_contract_active = False
+        self._execution_contract_phase = "idle"
+        self._execution_owner_thread_id: int | None = None
+        # A production owner may install a fail-closed guard here.  Standalone
+        # CorePrototypeSpine instances retain their historical behavior.
+        self._external_mutation_guard: Callable[[], None] | None = None
+
+    def _require_external_mutation_permission(self) -> None:
+        guard = self._external_mutation_guard
+        if guard is not None:
+            guard()
 
     def _new_habit_model(self) -> HierarchicalDirichletHabitModel:
         return HierarchicalDirichletHabitModel(
@@ -471,7 +980,7 @@ class CorePrototypeSpine:
     def _new_regime_bank(self, embedding_dim: int | None = None) -> RLSRegimeBank:
         dimension = embedding_dim or len(self.locations)
         return RLSRegimeBank(
-            head_factory=lambda: RLSHabitScoreHead(
+            head_factory=_RLSHeadFactory(
                 context_feature_dim=1,
                 location_embedding_dim=dimension,
                 forgetting_factor=self.loop_config.forgetting_factor,
@@ -507,6 +1016,55 @@ class CorePrototypeSpine:
 
         return self._last_cause_snapshot
 
+    def _adaptive_pchmp_safety_maintenance(
+        self, transition: PrototypeTransition
+    ) -> dict[str, object]:
+        """Preserve raw evidence/provenance without inventing a deferred posterior."""
+
+        self._validate_transition(transition)
+        return {
+            "evidence_content_sha256s": tuple(content_sha256(item) for item in transition.evidence),
+            "unexecuted_inference_encoded_as_negative": False,
+            "message_passing_runtime_type": _runtime_type_symbol(self._message_passing),
+        }
+
+    def _adaptive_cf_bocpd_safety_maintenance(self) -> dict[str, object]:
+        """Expose the unchanged online filter head for a safe deferred path."""
+
+        snapshot = self.current_cause_snapshot
+        return {
+            "observation_count": self.observation_count,
+            "current_snapshot_sha256": content_sha256(snapshot) if snapshot else None,
+            "posterior_advanced": False,
+        }
+
+    def _adaptive_ccrr_safety_maintenance(self) -> dict[str, object]:
+        """Verify the current regime head without permitting a transition."""
+
+        return {
+            "active_regime": self.active_regime,
+            "pending_candidate_sha256": content_sha256(self._automatic_regimes._pending),
+            "regime_transition_applied": False,
+        }
+
+    def _adaptive_rgrc_debt_guard(self) -> dict[str, object]:
+        """Return a source-bound denial of long-term writes while debt is pending."""
+
+        return {
+            "belief_snapshot_id": str(self.current_snapshot.snapshot_id),
+            "committed_revision_count": len(self._committed_events),
+            "quarantined_revision_count": len(self._quarantined_events),
+            "long_term_write_authorized": False,
+        }
+
+    def _mutation_is_forbidden_during_sink_commit(self) -> bool:
+        if not self._execution_contract_active:
+            return False
+        return bool(
+            self._execution_contract_phase != "operators"
+            or self._execution_owner_thread_id != get_ident()
+        )
+
     @property
     def fast_action_verification_receipts(self) -> tuple[FastActionVerificationReceipt, ...]:
         return tuple(self._fast_action_verification_receipts)
@@ -539,6 +1097,7 @@ class CorePrototypeSpine:
     ) -> tuple[ProjectOneRequestApplicationReceipt, ...]:
         return tuple(self._project_one_application_receipts.get(feedback_record_id, ()))
 
+    @_serialized_core_mutation
     def retry_deferred_project_one_requests(
         self, revision_id: UUID
     ) -> tuple[ProjectOneRequestApplicationReceipt, ...]:
@@ -673,6 +1232,7 @@ class CorePrototypeSpine:
     def derived_revision_lifecycle(self, revision_id: UUID) -> str:
         return self._derived_event_lifecycle[revision_id].value
 
+    @_serialized_core_mutation
     def switch_regime(self, to_regime_id: str, *, event_time: datetime) -> str:
         """Explicit prototype adapter for a later CF-BOCPD/CCRR decision."""
 
@@ -691,29 +1251,973 @@ class CorePrototypeSpine:
             )
         )
 
-    def process_transition(self, transition: PrototypeTransition) -> PrototypeStepResult:
-        """Commit one ordinary transition as an all-or-nothing model transaction."""
+    def process_transition(
+        self,
+        transition: PrototypeTransition,
+        *,
+        execution_plan: StructureTwoExecutionPlan | None = None,
+        trace_sink: TraceSink | None = None,
+    ) -> PrototypeStepResult:
+        """Commit one transition, optionally through the immutable Architecture-A seam.
 
-        checkpoint = self._capture_revision_transaction()
+        Supplying neither new argument preserves the historical untraced behavior.
+        Audited execution is deliberately rollback-guarded: a plan and sink must
+        be supplied together, and a missing or mismatched sink acknowledgement
+        restores the audited core-state envelope.  This is not a cross-system
+        durable transaction guarantee.
+        """
+
+        if self._execution_contract_active:
+            raise RuntimeError("reentrant or concurrent transition execution is forbidden")
+        return cast(
+            PrototypeStepResult,
+            self._process_transition_with_runtime_binding(
+                transition,
+                execution_plan=execution_plan,
+                trace_sink=trace_sink,
+                runtime_symbol=f"{type(self).__module__}.{type(self).__qualname__}",
+                system_version=self.model_version,
+                runtime_operator_instances_provider=None,
+                runtime_guard_components_provider=None,
+                runtime_guard_state_provider=None,
+                runtime_lock_components_provider=None,
+            ),
+        )
+
+    def _process_transition_with_runtime_binding(
+        self,
+        transition: PrototypeTransition,
+        *,
+        execution_plan: StructureTwoExecutionPlan | None,
+        trace_sink: TraceSink | None,
+        runtime_symbol: str,
+        system_version: str,
+        runtime_operator_instances_provider: (Callable[[], Mapping[str, Sequence[object]]] | None),
+        runtime_guard_components_provider: Callable[[], Mapping[str, object]] | None,
+        runtime_guard_state_provider: Callable[[], str] | None,
+        runtime_lock_components_provider: Callable[[], Mapping[str, object]] | None,
+        adaptive_executor: (
+            Callable[[PrototypeTransition, _TransitionTraceRecorder], object] | None
+        ) = None,
+        allow_runtime_state_change_during_operators: bool = False,
+    ) -> object:
+        if self._execution_contract_active:
+            raise RuntimeError("reentrant or concurrent transition execution is forbidden")
+        # A per-runtime lock closes the stale-checkpoint race between concurrent
+        # traced and legacy transitions.  RLock keeps the explicit reentrancy
+        # error below observable when a sink calls back on the same thread.
+        execution_lock = self._execution_lock
+        pre_acquire_depth = _runtime_rlock_depth(execution_lock)
+        acquire = getattr(execution_lock, "acquire", None)
+        if not callable(acquire) or acquire() is not True:
+            raise RuntimeError("core execution lock could not be acquired")
+        execution_lock_depth = _runtime_rlock_depth(execution_lock)
         try:
-            return self._process_transition(transition)
-        except Exception:
-            self._restore_revision_transaction(checkpoint)
+            result = self._process_transition_with_runtime_binding_locked(
+                transition,
+                execution_plan=execution_plan,
+                trace_sink=trace_sink,
+                runtime_symbol=runtime_symbol,
+                system_version=system_version,
+                runtime_operator_instances_provider=runtime_operator_instances_provider,
+                runtime_guard_components_provider=runtime_guard_components_provider,
+                runtime_guard_state_provider=runtime_guard_state_provider,
+                runtime_lock_components_provider=runtime_lock_components_provider,
+                adaptive_executor=adaptive_executor,
+                allow_runtime_state_change_during_operators=(
+                    allow_runtime_state_change_during_operators
+                ),
+                execution_lock=execution_lock,
+                execution_lock_depth=execution_lock_depth,
+            )
+        except BaseException as execution_error:
+            try:
+                _restore_runtime_rlock_depth(
+                    execution_lock,
+                    pre_acquire_depth,
+                    verify_unowned_available=False,
+                )
+            except RuntimeError as recovery_error:
+                recovery_error.add_note(
+                    f"original execution failure: {type(execution_error).__qualname__}"
+                )
+                raise RuntimeError(
+                    "core execution lock ownership could not be restored"
+                ) from recovery_error
             raise
+        try:
+            _restore_runtime_rlock_depth(
+                execution_lock,
+                pre_acquire_depth,
+                verify_unowned_available=False,
+            )
+        except RuntimeError as recovery_error:
+            raise RuntimeError(
+                "core execution lock ownership could not be restored"
+            ) from recovery_error
+        return result
 
-    def _process_transition(self, transition: PrototypeTransition) -> PrototypeStepResult:
+    def _process_transition_with_runtime_binding_locked(
+        self,
+        transition: PrototypeTransition,
+        *,
+        execution_plan: StructureTwoExecutionPlan | None,
+        trace_sink: TraceSink | None,
+        runtime_symbol: str,
+        system_version: str,
+        runtime_operator_instances_provider: (Callable[[], Mapping[str, Sequence[object]]] | None),
+        runtime_guard_components_provider: Callable[[], Mapping[str, object]] | None,
+        runtime_guard_state_provider: Callable[[], str] | None,
+        runtime_lock_components_provider: Callable[[], Mapping[str, object]] | None,
+        adaptive_executor: (
+            Callable[[PrototypeTransition, _TransitionTraceRecorder], object] | None
+        ),
+        allow_runtime_state_change_during_operators: bool,
+        execution_lock: object,
+        execution_lock_depth: int,
+    ) -> object:
+        if self._execution_contract_active:
+            raise RuntimeError("reentrant or concurrent transition execution is forbidden")
+
+        if adaptive_executor is None:
+            # Direct CorePrototypeSpine calls and both legacy Architecture-A
+            # lanes must honor any production-owned inference-debt barrier.
+            self._require_external_mutation_permission()
+
+        # Preserve the legacy call path without trace allocation, source hashing,
+        # or an extra UUID draw.  This is compatibility behavior, not implicit P5.
+        if execution_plan is None and trace_sink is None:
+            checkpoint = self._capture_revision_transaction(include_operator_state=True)
+            try:
+                return self._process_transition(transition)
+            except BaseException:
+                self._restore_revision_transaction(checkpoint)
+                raise
+        if execution_plan is None or trace_sink is None:
+            raise ValueError("execution_plan and trace_sink must be supplied together")
+        if not isinstance(execution_plan, StructureTwoExecutionPlan):
+            raise TypeError("execution_plan must satisfy StructureTwoExecutionPlan")
+        checked_plan = StructureTwoExecutionPlan.model_validate(
+            execution_plan.model_dump(mode="json")
+        )
+        adaptive = checked_plan.lane == "registered_adaptive_path"
+        if adaptive and adaptive_executor is None:
+            raise UnsupportedStructureTwoExecutionPlan(
+                "adaptive P0-P5 plans require the production adaptive executor"
+            )
+        if not isinstance(trace_sink, TraceSink):
+            raise TypeError(
+                "trace_sink must implement commit(trace) and compensating abort(trace, reason=...)"
+            )
+        if (
+            not self.loop_config.cause_factorized_bocpd_enabled
+            or not self.loop_config.ccrr_enabled
+            or not self._rgrc_gate_enabled
+        ):
+            raise UnsupportedStructureTwoExecutionPlan(
+                "traced execution requires CF-BOCPD, CCRR, and RGRC gates to be enabled"
+            )
+
+        # All contract and source validation happens before the first mutable
+        # operator call.  Unsupported plans cannot leave partial model state.
         self._validate_transition(transition)
+        runtime_operator_instances = (
+            runtime_operator_instances_provider()
+            if runtime_operator_instances_provider is not None
+            else None
+        )
+        runtime_execution_id = uuid4()
+        bindings = self._execution_callable_bindings(
+            runtime_execution_id=runtime_execution_id,
+            runtime_operator_instances=runtime_operator_instances,
+        )
+        recorder = _TransitionTraceRecorder.create(
+            runtime_execution_id=runtime_execution_id,
+            plan=checked_plan,
+            bindings=bindings,
+        )
+        transition_sha256 = content_sha256(transition)
+        initial_state_sha256 = self._execution_observable_state_sha256()
+        runtime_identity_guard = self._execution_runtime_identity_guard(
+            runtime_operator_instances,
+            extra_components=(
+                runtime_guard_components_provider()
+                if runtime_guard_components_provider is not None
+                else None
+            ),
+        )
+        external_runtime_state_guard = (
+            runtime_guard_state_provider() if runtime_guard_state_provider is not None else None
+        )
+        runtime_lock_guard = self._execution_runtime_lock_guard(
+            execution_lock=execution_lock,
+            execution_lock_depth=execution_lock_depth,
+            extra_locks=(
+                runtime_lock_components_provider()
+                if runtime_lock_components_provider is not None
+                else None
+            ),
+        )
+        checkpoint = self._capture_revision_transaction(include_operator_state=True)
+        self._execution_contract_active = True
+        self._execution_contract_phase = "operators"
+        self._execution_owner_thread_id = get_ident()
+        trace: StructureTwoExecutionTrace | None = None
+        try:
+            try:
+                if adaptive:
+                    assert adaptive_executor is not None
+                    result = adaptive_executor(transition, recorder)
+                else:
+                    result = self._process_transition(transition, trace_recorder=recorder)
+                    recorder.record_ciav_not_applicable(transition)
+                trace = seal_execution_trace(
+                    runtime_execution_id=runtime_execution_id,
+                    runtime_symbol=runtime_symbol,
+                    system_version=system_version,
+                    plan=checked_plan,
+                    transition_sha256=transition_sha256,
+                    initial_state_sha256=initial_state_sha256,
+                    final_state_sha256=self._execution_observable_state_sha256(),
+                    final_output_sha256=content_sha256(result),
+                    receipts=tuple(recorder.receipts),
+                    adaptive_router_feature_sha256=(recorder.adaptive_router_feature_sha256),
+                    adaptive_router_source_state_sha256=(
+                        recorder.adaptive_router_source_state_sha256
+                    ),
+                    adaptive_authorization_policy_sha256=(
+                        recorder.adaptive_authorization_policy_sha256
+                    ),
+                    adaptive_path_selection_receipt_sha256=(
+                        recorder.adaptive_path_selection_receipt_sha256
+                    ),
+                    adaptive_ciav_input_sha256=recorder.adaptive_ciav_input_sha256,
+                    adaptive_step_index=recorder.adaptive_step_index,
+                    adaptive_debt_expiry_steps=recorder.adaptive_debt_expiry_steps,
+                    debt_certificates=tuple(recorder.debt_certificates),
+                    replayed_debt_certificates=tuple(recorder.replayed_debt_certificates),
+                    feedback_observation_acquired=recorder.feedback_observation_acquired,
+                    feedback_closure_kind=recorder.feedback_closure_kind,
+                )
+                verify_execution_trace(trace)
+                operator_lock_mutations = self._restore_execution_runtime_lock_guard(
+                    runtime_lock_guard
+                )
+                if operator_lock_mutations:
+                    raise RuntimeError(
+                        "operator execution mutated runtime-lock ownership: "
+                        + ",".join(operator_lock_mutations)
+                    )
+                if (
+                    self._execution_runtime_identity_guard(
+                        (
+                            runtime_operator_instances_provider()
+                            if runtime_operator_instances_provider is not None
+                            else runtime_operator_instances
+                        ),
+                        extra_components=(
+                            runtime_guard_components_provider()
+                            if runtime_guard_components_provider is not None
+                            else None
+                        ),
+                    )
+                    != runtime_identity_guard
+                ):
+                    raise RuntimeError("operator execution replaced an audited runtime component")
+                external_runtime_post_operator_state_guard = (
+                    runtime_guard_state_provider()
+                    if runtime_guard_state_provider is not None
+                    else None
+                )
+                if (
+                    runtime_guard_state_provider is not None
+                    and not allow_runtime_state_change_during_operators
+                    and external_runtime_post_operator_state_guard != external_runtime_state_guard
+                ):
+                    raise RuntimeError(
+                        "operator execution mutated audited production-wrapper state"
+                    )
+            except BaseException:
+                self._restore_revision_transaction(checkpoint)
+                raise
+
+            sink_runtime_identity_guard = self._execution_runtime_identity_guard(
+                (
+                    runtime_operator_instances_provider()
+                    if runtime_operator_instances_provider is not None
+                    else runtime_operator_instances
+                ),
+                extra_components=(
+                    runtime_guard_components_provider()
+                    if runtime_guard_components_provider is not None
+                    else None
+                ),
+                include_dynamic_operator_state=True,
+            )
+            trace_snapshot = StructureTwoExecutionTrace.model_validate(
+                trace.model_dump(mode="json")
+            )
+            self._execution_contract_phase = "sink_commit"
+            try:
+                acknowledgement = trace_sink.commit(trace)
+                sink_lock_mutations = self._restore_execution_runtime_lock_guard(runtime_lock_guard)
+                if sink_lock_mutations:
+                    raise RuntimeError(
+                        "trace sink mutated runtime-lock ownership: "
+                        + ",".join(sink_lock_mutations)
+                    )
+                if trace != trace_snapshot:
+                    raise RuntimeError("trace sink mutated the sealed execution trace")
+                verify_execution_trace(trace)
+                if not isinstance(acknowledgement, TraceCommitAck):
+                    raise TypeError("trace sink returned no typed commit acknowledgement")
+                verify_trace_commit_ack(acknowledgement, trace=trace_snapshot)
+                if self._execution_observable_state_sha256() != trace.final_state_sha256:
+                    raise RuntimeError("trace sink mutated audited core state during commit")
+                if (
+                    self._execution_runtime_identity_guard(
+                        (
+                            runtime_operator_instances_provider()
+                            if runtime_operator_instances_provider is not None
+                            else runtime_operator_instances
+                        ),
+                        extra_components=(
+                            runtime_guard_components_provider()
+                            if runtime_guard_components_provider is not None
+                            else None
+                        ),
+                        include_dynamic_operator_state=True,
+                    )
+                    != sink_runtime_identity_guard
+                ):
+                    raise RuntimeError("trace sink replaced an audited runtime component")
+                if (
+                    runtime_guard_state_provider is not None
+                    and runtime_guard_state_provider() != external_runtime_post_operator_state_guard
+                ):
+                    raise RuntimeError("trace sink mutated audited production-wrapper state")
+            except BaseException as commit_error:
+                pre_abort_lock_mutations = self._restore_execution_runtime_lock_guard(
+                    runtime_lock_guard
+                )
+                reason = f"{type(commit_error).__module__}.{type(commit_error).__qualname__}"
+                abort_error: BaseException | None = None
+                try:
+                    abort_trace = StructureTwoExecutionTrace.model_validate(
+                        trace_snapshot.model_dump(mode="json")
+                    )
+                    abort_ack = trace_sink.abort(abort_trace, reason=reason)
+                    if abort_trace != trace_snapshot:
+                        raise RuntimeError("trace sink mutated the compensating abort trace")
+                    verify_execution_trace(abort_trace)
+                    if not isinstance(abort_ack, TraceAbortAck):
+                        raise TypeError("trace sink returned no typed abort acknowledgement")
+                    verify_trace_abort_ack(abort_ack, trace=trace_snapshot, reason=reason)
+                except BaseException as error:
+                    abort_error = error
+                abort_lock_mutations = self._restore_execution_runtime_lock_guard(
+                    runtime_lock_guard
+                )
+                all_abort_lock_mutations = tuple(
+                    dict.fromkeys((*pre_abort_lock_mutations, *abort_lock_mutations))
+                )
+                if all_abort_lock_mutations:
+                    abort_error = abort_error or RuntimeError(
+                        "trace sink abort mutated runtime-lock ownership: "
+                        + ",".join(all_abort_lock_mutations)
+                    )
+                if abort_error is not None:
+                    self._restore_revision_transaction(checkpoint)
+                    raise TraceCompensationError(
+                        "model state rolled back but trace tombstone acknowledgement or "
+                        "runtime-lock restoration could not be verified"
+                    ) from abort_error
+                self._restore_revision_transaction(checkpoint)
+                raise
+            return result
+        finally:
+            self._restore_execution_runtime_lock_guard(runtime_lock_guard)
+            self._execution_contract_active = False
+            self._execution_contract_phase = "idle"
+            self._execution_owner_thread_id = None
+
+    def _execution_callable_bindings(
+        self,
+        *,
+        runtime_execution_id: UUID,
+        runtime_operator_instances: Mapping[str, Sequence[object]] | None,
+    ) -> dict[str, RuntimeCallableBinding]:
+        router = self._automatic_regimes
+        local_instances: dict[str, Sequence[object]] = {
+            "opceu": (self._corrector,),
+            "orrer_cheh": (self._event_engine,),
+            "pchmp": (self._message_passing,),
+            "cf_bocpd": (router.bocpd,),
+            "ccrr": (router,),
+        }
+        selected_instances = runtime_operator_instances or local_instances
+        if runtime_operator_instances is not None:
+            if tuple(runtime_operator_instances) != STRUCTURE_TWO_OPERATOR_ORDER:
+                raise ValueError("production runtime operator mapping order drifted")
+            expected_bound_instances = {
+                "opceu": (self._corrector,),
+                "orrer_cheh": (self._event_engine,),
+                "pchmp": (self._message_passing,),
+                "cf_bocpd": (router.bocpd,),
+                "ccrr": (router, router.ccrr),
+                "rgrc": (self, self._hybrid_loop.ledger),
+            }
+            for operator, expected_instances in expected_bound_instances.items():
+                supplied_instances = tuple(runtime_operator_instances.get(operator, ()))
+                if len(supplied_instances) < len(expected_instances) or any(
+                    supplied is not expected
+                    for supplied, expected in zip(
+                        supplied_instances,
+                        expected_instances,
+                        strict=False,
+                    )
+                ):
+                    raise ValueError(
+                        f"production runtime mapping is not bound to the called {operator} object"
+                    )
+
+        def instance(operator: str) -> object:
+            values = selected_instances.get(operator)
+            if not values:
+                raise ValueError(f"runtime operator instance is missing: {operator}")
+            return values[0]
+
+        specifications = (
+            ("opceu", instance("opceu"), "weight_for_opportunity", "direct_operator_callable"),
+            ("orrer_cheh", instance("orrer_cheh"), "branch", "direct_operator_callable"),
+            ("pchmp", instance("pchmp"), "consume", "direct_operator_callable"),
+            (
+                "cf_bocpd",
+                instance("cf_bocpd"),
+                "observe_online",
+                "direct_operator_callable",
+            ),
+            # The automatic router is the one callable that realizes the
+            # complete CCRR stage and returns AutomaticRegimeAssessment.
+            ("ccrr", instance("ccrr"), "observe", "composite_operator_stage"),
+            # Ordinary RGRC spans quarantine, promotion, commit, RLS and map
+            # publication inside this enclosing runtime call.
+            ("rgrc", self, "_process_transition", "enclosing_runtime_stage"),
+        )
+        return {
+            operator: bind_runtime_callable(
+                runtime_execution_id=runtime_execution_id,
+                operator=operator,  # type: ignore[arg-type]
+                binding_slot=0,
+                binding_kind=binding_kind,  # type: ignore[arg-type]
+                instance=bound_instance,
+                callable_name=callable_name,
+            )
+            for operator, bound_instance, callable_name, binding_kind in specifications
+        }
+
+    def _execution_runtime_identity_guard(
+        self,
+        runtime_operator_instances: Mapping[str, Sequence[object]] | None,
+        *,
+        extra_components: Mapping[str, object] | None = None,
+        include_dynamic_operator_state: bool = False,
+    ) -> tuple[tuple[str, int, str], ...]:
+        """Capture process-local object/callable identities around sink commit."""
+
+        router = self._automatic_regimes
+        components: dict[str, object] = {
+            "core": self,
+            "execution_lock": self._execution_lock,
+            "loop_config": self.loop_config,
+            "event_engine": self._event_engine,
+            "message_passing": self._message_passing,
+            "propensity_corrector": self._corrector,
+            "habit_model": self._habit,
+            "embeddings": self._embeddings,
+            "regime_bank": self._regimes,
+            "regime_head_factory": self._regimes._head_factory,
+            "regime_heads": self._regimes._heads,
+            "hybrid_loop": self._hybrid_loop,
+            "hybrid_ledger": self._hybrid_loop.ledger,
+            "hybrid_map": self._hybrid_loop._map,
+            "hybrid_coordinator": self._hybrid_loop._coordinator,
+            "hybrid_feedback_projector": self._hybrid_loop._feedback_projector,
+            "hybrid_fusion": self._hybrid_loop._fusion,
+            "automatic_router": router,
+            "bocpd": router.bocpd,
+            "bocpd_reset_matrix": router.bocpd._reset_matrix,
+            "ccrr": router.ccrr,
+            "ccrr_lock": router.ccrr._lock,
+            "feedback_policy": self._feedback_policy,
+            "action_readout": self._action_readout,
+            "hybrid_ledger_lock": self._hybrid_loop.ledger._lock,
+            "hybrid_map_lock": self._hybrid_loop._map._lock,
+            "project_one_application_receipts": self._project_one_application_receipts,
+        }
+        for table_name in (
+            "_household_counts",
+            "_person_counts",
+            "_context_counts",
+            "_isolated_nonresident_counts",
+        ):
+            table = getattr(self._habit, table_name)
+            components[f"habit.{table_name}"] = table
+        if include_dynamic_operator_state:
+            components.update(self._execution_dynamic_operator_components())
+        components.update(_message_passing_nested_components(self._message_passing))
+        if runtime_operator_instances is not None:
+            for operator, instances in runtime_operator_instances.items():
+                for index, instance in enumerate(instances):
+                    components[f"production.{operator}.{index}"] = instance
+        if extra_components is not None:
+            for name, component in extra_components.items():
+                components[f"runtime.{name}"] = component
+
+        for label, instance, callable_name in (
+            ("call.opceu", self._corrector, "weight_for_opportunity"),
+            ("call.orrer_cheh", self._event_engine, "branch"),
+            ("call.pchmp", self._message_passing, "consume"),
+            ("call.cf_bocpd", router.bocpd, "observe_online"),
+            ("call.ccrr", router, "observe"),
+            ("call.rgrc", self, "_process_transition"),
+        ):
+            method = getattr(instance, callable_name)
+            components[label] = getattr(method, "__func__", method)
+        return tuple(
+            (label, id(component), _runtime_type_symbol(component))
+            for label, component in sorted(components.items())
+        )
+
+    def _execution_dynamic_operator_components(self) -> dict[str, object]:
+        """Enumerate mutable nested objects that exist after operator execution."""
+
+        components: dict[str, object] = {}
+        for table_name in (
+            "_household_counts",
+            "_person_counts",
+            "_context_counts",
+            "_isolated_nonresident_counts",
+        ):
+            table = getattr(self._habit, table_name)
+            for key, row in sorted(table.items(), key=lambda item: repr(item[0])):
+                row_label = content_sha256((table_name, key))
+                components[f"habit.{table_name}.row.{row_label}"] = row
+        for regime_id, head in sorted(self._regimes._heads.items()):
+            head_label = content_sha256(regime_id)
+            components[f"rls.head.{head_label}"] = head
+            components[f"rls.head.{head_label}.models"] = head._models
+            for key, wrapper in sorted(head._models.items(), key=lambda item: repr(item[0])):
+                model_label = content_sha256(key)
+                model = wrapper.model
+                prefix = f"rls.head.{head_label}.model.{model_label}"
+                components[f"{prefix}.wrapper"] = wrapper
+                components[f"{prefix}.core"] = model
+                components[f"{prefix}.config"] = model.config
+                components[f"{prefix}.theta"] = model.theta
+                components[f"{prefix}.covariance"] = model.covariance
+        for key, receipts in sorted(
+            self._project_one_application_receipts.items(), key=lambda item: str(item[0])
+        ):
+            components[f"project_one_application_receipts.row.{key}"] = receipts
+        return components
+
+    def _execution_runtime_lock_guard(
+        self,
+        *,
+        execution_lock: object,
+        execution_lock_depth: int,
+        extra_locks: Mapping[str, object] | None = None,
+    ) -> tuple[tuple[str, object, int], ...]:
+        router = self._automatic_regimes
+        guard = [
+            ("core_execution", execution_lock, execution_lock_depth),
+            ("ccrr", router.ccrr._lock, _runtime_rlock_depth(router.ccrr._lock)),
+            (
+                "hybrid_ledger",
+                self._hybrid_loop.ledger._lock,
+                _runtime_rlock_depth(self._hybrid_loop.ledger._lock),
+            ),
+            (
+                "hybrid_map",
+                self._hybrid_loop._map._lock,
+                _runtime_rlock_depth(self._hybrid_loop._map._lock),
+            ),
+        ]
+        if extra_locks is not None:
+            guard.extend(
+                (
+                    f"runtime.{label}",
+                    lock,
+                    _runtime_rlock_depth(lock),
+                )
+                for label, lock in sorted(extra_locks.items())
+            )
+        return tuple(guard)
+
+    @staticmethod
+    def _restore_execution_runtime_lock_guard(
+        guard: tuple[tuple[str, object, int], ...],
+    ) -> tuple[str, ...]:
+        mutations: list[str] = []
+        for label, lock, expected_depth in guard:
+            try:
+                if _restore_runtime_rlock_depth(lock, expected_depth):
+                    mutations.append(label)
+            except RuntimeError:
+                mutations.append(f"{label}:ownership_unrecoverable")
+        return tuple(mutations)
+
+    def _execution_observable_state_sha256(self) -> str:
+        """Hash the auditable state envelope without claiming full state custody."""
+
+        router = self._automatic_regimes
+
+        def event_rows(
+            values: Mapping[UUID, _CommittedPrototypeEvent],
+        ) -> list[tuple[str, str]]:
+            return [
+                (str(key), repr(value))
+                for key, value in sorted(values.items(), key=lambda item: str(item[0]))
+            ]
+
+        def count_table_configuration(table: dict[Any, Any]) -> dict[str, object]:
+            return {
+                "type": _runtime_type_symbol(table),
+                "rows": [
+                    {
+                        "key": key,
+                        "type": _runtime_type_symbol(row),
+                    }
+                    for key, row in sorted(table.items(), key=lambda item: repr(item[0]))
+                ],
+            }
+
+        def rls_runtime_configuration() -> dict[str, object]:
+            heads: list[dict[str, object]] = []
+            for regime_id, head in sorted(self._regimes._heads.items()):
+                models: list[dict[str, object]] = []
+                for key, wrapper in sorted(head._models.items(), key=lambda item: repr(item[0])):
+                    model = wrapper.model
+                    models.append(
+                        {
+                            "key": key,
+                            "wrapper_attribute_names": sorted(vars(wrapper)),
+                            "model_attribute_names": sorted(vars(model)),
+                            "model_config": model.config,
+                        }
+                    )
+                heads.append(
+                    {
+                        "regime_id": regime_id,
+                        "attribute_names": sorted(vars(head)),
+                        "context_feature_dim": head.context_feature_dim,
+                        "location_embedding_dim": head.location_embedding_dim,
+                        "model_version": head.model_version,
+                        "forgetting_factor": head.forgetting_factor,
+                        "ridge": head.ridge,
+                        "prior_scale": head.prior_scale,
+                        "models": models,
+                    }
+                )
+            return {
+                "attribute_names": sorted(vars(self._regimes)),
+                "head_factory": _callable_runtime_state(self._regimes._head_factory),
+                "heads": heads,
+            }
+
+        return content_sha256(
+            {
+                "runtime_configuration": {
+                    "core_attribute_names": sorted(
+                        name
+                        for name in self.__dict__
+                        if name
+                        not in {
+                            "_execution_contract_active",
+                            "_execution_owner_thread_id",
+                            "_execution_contract_phase",
+                            "_execution_lock",
+                        }
+                    ),
+                    "model_version": self.model_version,
+                    "owner_key": self.owner_key,
+                    "object_instance_id": self.object_instance_id,
+                    "authorization_scope_id": self.authorization_scope_id,
+                    "locations": self.locations,
+                    "loop_config": self.loop_config,
+                    "action_readout": self._action_readout,
+                    "rgrc_gate_enabled": self._rgrc_gate_enabled,
+                    "embeddings": sorted(
+                        (str(location), embedding.tolist())
+                        for location, embedding in self._embeddings.items()
+                    ),
+                    "event_engine": {
+                        "type": _runtime_type_symbol(self._event_engine),
+                        "engine_version": self._event_engine.engine_version,
+                        "schema_version": self._event_engine.schema_version,
+                    },
+                    "message_passing": _message_passing_state_descriptor(self._message_passing),
+                    "propensity_corrector": {
+                        "type": _runtime_type_symbol(self._corrector),
+                        "state": {
+                            name: _auditable_attribute(value)
+                            for name, value in vars(self._corrector).items()
+                        },
+                    },
+                    "feedback_policy": {
+                        "type": _runtime_type_symbol(self._feedback_policy),
+                        "config": getattr(self._feedback_policy, "config", None),
+                    },
+                    "regime_bank": {
+                        "type": _runtime_type_symbol(self._regimes),
+                        "default_regime": self._regimes._default_regime,
+                        "runtime_configuration": rls_runtime_configuration(),
+                    },
+                    "automatic_router": {
+                        "type": _runtime_type_symbol(router),
+                        "object_instance_id": router.object_instance_id,
+                        "actor_id": router.actor_id,
+                        "owner_actor_id": router.owner_actor_id,
+                        "config": router.config,
+                        "bocpd_type": _runtime_type_symbol(router.bocpd),
+                        "bocpd_model_version": router.bocpd._model_version,
+                        "bocpd_hazards": router.bocpd._hazards,
+                        "bocpd_event_hazards": sorted(
+                            (
+                                tuple(sorted(cause.value for cause in causes)),
+                                probability,
+                            )
+                            for causes, probability in router.bocpd._event_hazards.items()
+                        ),
+                        "bocpd_config": router.bocpd._config,
+                        "bocpd_beam_width": router.bocpd._beam_width,
+                        "bocpd_maximum_run_length": router.bocpd._maximum_run_length,
+                        "bocpd_run_length_clock": router.bocpd._run_length_clock,
+                        "bocpd_attribute_names": sorted(vars(router.bocpd)),
+                        "bocpd_reset_matrix": {
+                            cause.value: sorted(block.value for block in blocks)
+                            for cause, blocks in sorted(
+                                router.bocpd._reset_matrix._matrix.items(),
+                                key=lambda item: item[0].value,
+                            )
+                        },
+                        "ccrr_type": _runtime_type_symbol(router.ccrr),
+                        "ccrr_model_config_hash": router.ccrr.model_config_hash,
+                        "ccrr_attribute_names": sorted(vars(router.ccrr)),
+                        "ccrr_actual_configuration": {
+                            "change_threshold": router.ccrr.change_threshold,
+                            "similarity_threshold": router.ccrr.similarity_threshold,
+                            "attribution_margin": router.ccrr.attribution_margin,
+                            "identity_switch_threshold": router.ccrr.identity_switch_threshold,
+                            "default_regime_id": router.ccrr.default_regime_id,
+                            "model_version": router.ccrr.model_version,
+                            "allow_reactivation": router.ccrr.allow_reactivation,
+                        },
+                    },
+                    "hybrid_loop": {
+                        "type": _runtime_type_symbol(self._hybrid_loop),
+                        "attribute_names": sorted(vars(self._hybrid_loop)),
+                        "owner": self._hybrid_loop._owner,
+                        "object": self._hybrid_loop._object,
+                        "authorization_scope": self._hybrid_loop._auth,
+                        "model_version": self._hybrid_loop._model_version,
+                        "code_version": self._hybrid_loop._code_version,
+                        "regime": self._hybrid_loop._regime,
+                        "parameter_block": self._hybrid_loop._block,
+                        "coordinator": {
+                            "type": _runtime_type_symbol(self._hybrid_loop._coordinator),
+                            "soft_relevance_threshold": (
+                                self._hybrid_loop._coordinator.soft_relevance_threshold
+                            ),
+                            "risk_increase_threshold": (
+                                self._hybrid_loop._coordinator.risk_increase_threshold
+                            ),
+                            "maximum_allowed_risk": repr(
+                                self._hybrid_loop._coordinator.maximum_allowed_risk
+                            ),
+                        },
+                        "feedback_projector": {
+                            "type": _runtime_type_symbol(self._hybrid_loop._feedback_projector),
+                            "seen": sorted(
+                                (str(key), value)
+                                for key, value in (
+                                    self._hybrid_loop._feedback_projector._seen.items()
+                                )
+                            ),
+                        },
+                        "fusion": {
+                            "type": _runtime_type_symbol(self._hybrid_loop._fusion),
+                            "probability_floor": (self._hybrid_loop._fusion.probability_floor),
+                        },
+                    },
+                },
+                "habit_state_sha256": self._habit.canonical_state_hash(),
+                "habit_configuration": {
+                    "attribute_names": sorted(vars(self._habit)),
+                    "locations": self._habit._locations,
+                    "common_prior": sorted(
+                        (str(location), probability)
+                        for location, probability in self._habit._common_prior.items()
+                    ),
+                    "common_prior_strength": self._habit._common_prior_strength,
+                    "household_weight": self._habit._household_weight,
+                    "person_weight": self._habit._person_weight,
+                    "context_weight": self._habit._context_weight,
+                    "resident_actor_keys": sorted(self._habit._resident_actor_keys or ()),
+                    "actor_residual_weight": self._habit._actor_residual_weight,
+                    "model_version": self._habit._model_version,
+                    "count_tables": {
+                        name: count_table_configuration(getattr(self._habit, name))
+                        for name in (
+                            "_household_counts",
+                            "_person_counts",
+                            "_context_counts",
+                            "_isolated_nonresident_counts",
+                        )
+                    },
+                },
+                "rls_regimes": {
+                    regime_id: self._regimes.regime_snapshot(regime_id)
+                    for regime_id in sorted(self._regimes._heads)
+                },
+                "rls_active_regime": sorted(
+                    (str(key), value) for key, value in self._regimes._active_regime.items()
+                ),
+                "rls_last_switch": sorted(
+                    (str(key), value) for key, value in self._regimes._last_switch_time.items()
+                ),
+                "rls_processed_switch_event_ids": sorted(
+                    (str(key), sorted(str(item) for item in value))
+                    for key, value in self._regimes._processed_switch_event_ids.items()
+                ),
+                "rls_processed_switch_signatures": sorted(
+                    (str(key), sorted(value))
+                    for key, value in self._regimes._processed_switch_signatures.items()
+                ),
+                "hybrid_ledger_sha256": content_sha256(self._hybrid_loop.ledger.export_state()),
+                "belief_snapshot": self.current_snapshot,
+                "active_regime": self.active_regime,
+                "observation_count": self.observation_count,
+                "last_cause_snapshot": self._last_cause_snapshot,
+                "automatic_router": {
+                    "last_observation_time": router._last_observation_time,
+                    "pending": repr(router._pending),
+                    "seeded": router._seeded,
+                    "bocpd_online_beam": repr(router.bocpd._online_beam),
+                    "bocpd_last_timestamp": router.bocpd._online_last_timestamp,
+                    "bocpd_last_opportunity_index": router.bocpd._online_last_opportunity_index,
+                    "ccrr_view": router.ccrr.view(
+                        object_instance_id=self.object_instance_id,
+                        actor_id=self.owner_key,
+                    ),
+                    "ccrr_library": repr(router.ccrr._library),
+                    "ccrr_current_regime": sorted(router.ccrr._current_regime.items()),
+                    "ccrr_stream_versions": sorted(router.ccrr._stream_versions.items()),
+                    "ccrr_version": router.ccrr._version,
+                    "ccrr_pending_tokens": sorted(router.ccrr._pending_tokens.items()),
+                },
+                "committed_events": event_rows(self._committed_events),
+                "observed_events": event_rows(self._observed_events),
+                "fast_action_events": event_rows(self._fast_action_events),
+                "fast_action_verification_receipts": self._fast_action_verification_receipts,
+                "quarantined_events": sorted(
+                    (str(item.revision_id), repr(item)) for item in self._quarantined_events
+                ),
+                "derived_event_archive": event_rows(self._derived_event_archive),
+                "derived_event_lifecycle": sorted(
+                    (str(key), value.value) for key, value in self._derived_event_lifecycle.items()
+                ),
+                "revision_feedback_bindings": sorted(
+                    (str(key), tuple(str(item) for item in value))
+                    for key, value in self._revision_feedback_bindings.items()
+                ),
+                "deferred_project_one_requests": sorted(
+                    (key, repr(value)) for key, value in self._deferred_project_one_requests.items()
+                ),
+                "project_one_application_receipts": sorted(
+                    (str(key), tuple(repr(item) for item in value))
+                    for key, value in self._project_one_application_receipts.items()
+                ),
+                "project_one_application_receipts_storage_type": _runtime_type_symbol(
+                    self._project_one_application_receipts
+                ),
+                "action_scoped_negatives": sorted(
+                    (key, (str(value[0]), value[1]))
+                    for key, value in self._action_scoped_negatives.items()
+                ),
+                "last_observed_location": self._last_observed_location,
+                "last_context_key": self._last_context_key,
+                "last_context_value": self._last_context_value,
+                "last_household_id": self._last_household_id,
+                "switch_sequence": self._switch_sequence,
+                "last_ccrr_decision": self._last_ccrr_decision,
+            }
+        )
+
+    def _process_transition(
+        self,
+        transition: PrototypeTransition,
+        *,
+        trace_recorder: _TransitionTraceRecorder | None = None,
+        trace_phase: TracePhaseName | None = None,
+        force_long_term_write_blocked: bool = False,
+    ) -> PrototypeStepResult:
+        self._validate_transition(transition)
+        started_ns = perf_counter_ns()
         propensity = self._corrector.weight_for_opportunity(transition.opportunity)
+        if trace_recorder is not None:
+            trace_recorder.record_executed(
+                "opceu",
+                raw_input=transition.opportunity,
+                output=propensity,
+                phase=trace_phase,
+                elapsed_ns=perf_counter_ns() - started_ns,
+            )
+        started_ns = perf_counter_ns()
         history = self._event_engine.branch(
             before=transition.before,
             after=transition.after,
             actor_prior=dict(transition.actor_prior),
             unresolved_probability=transition.unresolved_probability,
+            allow_unknown_handoff_roles=True,
         )
+        if trace_recorder is not None:
+            trace_recorder.record_executed(
+                "orrer_cheh",
+                raw_input={
+                    "before": transition.before,
+                    "after": transition.after,
+                    "actor_prior": dict(transition.actor_prior),
+                    "unresolved_probability": transition.unresolved_probability,
+                    "allow_unknown_handoff_roles": True,
+                },
+                output=history,
+                phase=trace_phase,
+                elapsed_ns=perf_counter_ns() - started_ns,
+            )
+        started_ns = perf_counter_ns()
         event_posterior, receipted_history = self._message_passing.consume(
             history, transition.evidence
         )
+        if (
+            trace_recorder is not None
+            and transition.evidence
+            and trace_recorder.mode_for("pchmp", phase=trace_phase) == "refinement_executed"
+        ):
+            audit = getattr(self._message_passing, "audit_leave_one_cluster_out", None)
+            if callable(audit):
+                audit(history, transition.evidence)
         actor_posterior = self._actor_posterior(receipted_history, event_posterior)
+        if trace_recorder is not None:
+            trace_recorder.record_executed(
+                "pchmp",
+                raw_input={"event_history": history, "evidence": transition.evidence},
+                output=(event_posterior, receipted_history),
+                consumes=("orrer_cheh",),
+                phase=trace_phase,
+                elapsed_ns=perf_counter_ns() - started_ns,
+            )
 
         assert transition.after.detected_location_id is not None
         assert transition.after.detection_time is not None
@@ -789,16 +2293,62 @@ class CorePrototypeSpine:
                 ),
             },
         )
+
+        regime_observe_started_ns = 0
+        cf_finished_ns = 0
+
+        def observe_regime_stage(stage: RegimeStage, payload: object) -> None:
+            nonlocal cf_finished_ns
+            if trace_recorder is None:
+                return
+            if stage is RegimeStage.CF_BOCPD_SNAPSHOT:
+                cf_finished_ns = perf_counter_ns()
+                trace_recorder.record_executed(
+                    "cf_bocpd",
+                    raw_input=regime_frame,
+                    output=payload,
+                    consumes=("pchmp",),
+                    phase=trace_phase,
+                    elapsed_ns=cf_finished_ns - regime_observe_started_ns,
+                )
+                return
+            if stage is RegimeStage.CCRR_ASSESSMENT:
+                # The complete router invocation is receipted immediately
+                # after ``observe`` returns, so its input/output hashes match
+                # the actual composite stage boundary.
+                return
+            raise RuntimeError(f"unknown automatic regime trace stage: {stage}")
+
+        regime_context_features = (
+            *(1.0 if index == location_index else 0.0 for index in range(len(self.locations))),
+            tanh(transition.context_value),
+        )
+        regime_observe_started_ns = perf_counter_ns()
         assessment = self._automatic_regimes.observe(
             frame=regime_frame,
             state_key=f"{location_id}|{transition.context_key}",
-            context_features=(
-                *(1.0 if index == location_index else 0.0 for index in range(len(self.locations))),
-                tanh(transition.context_value),
-            ),
+            context_features=regime_context_features,
             owner_probability=owner_mass,
             evidence_source_record_ids=evidence.source_record_ids,
+            stage_observer=observe_regime_stage if trace_recorder is not None else None,
         )
+        if trace_recorder is not None:
+            trace_recorder.record_executed(
+                "ccrr",
+                raw_input={
+                    "frame": regime_frame,
+                    "state_key": f"{location_id}|{transition.context_key}",
+                    "context_features": regime_context_features,
+                    "owner_probability": owner_mass,
+                    "evidence_source_record_ids": evidence.source_record_ids,
+                    "identity_switch_probability": 0.0,
+                },
+                output=assessment,
+                consumes=("pchmp", "cf_bocpd"),
+                phase=trace_phase,
+                elapsed_ns=perf_counter_ns() - (cf_finished_ns or regime_observe_started_ns),
+            )
+        started_ns = perf_counter_ns()
         self._last_cause_snapshot = assessment.snapshot
         if assessment.new_regime != self.active_regime:
             self.switch_regime(assessment.new_regime, event_time=transition.after.detection_time)
@@ -842,7 +2392,9 @@ class CorePrototypeSpine:
         self._fast_action_events[current_event.revision_id] = current_event
 
         promoted_audits: dict[UUID, HabitUpdateAudit] = {}
-        if assessment.conclusion is HabitStateConclusion.HABIT_CHANGE:
+        if force_long_term_write_blocked:
+            self._quarantined_events.append(current_event)
+        elif assessment.conclusion is HabitStateConclusion.HABIT_CHANGE:
             for quarantined in self._quarantined_events:
                 promoted = replace(
                     quarantined,
@@ -875,7 +2427,9 @@ class CorePrototypeSpine:
                 )
                 self._quarantined_events.clear()
 
-        if assessment.allow_long_term_write or not self._rgrc_gate_enabled:
+        if (
+            assessment.allow_long_term_write or not self._rgrc_gate_enabled
+        ) and not force_long_term_write_blocked:
             if current_event.revision_id in self._committed_events:
                 habit_update = promoted_audits.get(current_event.revision_id)
                 if habit_update is None:
@@ -946,7 +2500,7 @@ class CorePrototypeSpine:
             snapshot_id=belief_snapshot.snapshot_id,
             rationale=assessment.rationale,
         )
-        return PrototypeStepResult(
+        result = PrototypeStepResult(
             propensity=propensity,
             event_history=receipted_history,
             event_posterior=event_posterior,
@@ -960,6 +2514,16 @@ class CorePrototypeSpine:
             event_revision_id=receipted_history.latest.revision_id,
             decision=decision,
         )
+        if trace_recorder is not None:
+            trace_recorder.record_executed(
+                "rgrc",
+                raw_input=transition,
+                output=result,
+                consumes=("opceu", "pchmp", "ccrr"),
+                phase=trace_phase,
+                elapsed_ns=perf_counter_ns() - started_ns,
+            )
+        return result
 
     def _commit_event(self, event: _CommittedPrototypeEvent) -> HabitUpdateAudit:
         """Promote one accepted/quarantined event into all three model stores."""
@@ -1033,6 +2597,7 @@ class CorePrototypeSpine:
     def _transition_fault_hook(self, stage: str) -> None:
         """No-op fault-injection seam for ordinary-transition rollback tests."""
 
+    @_serialized_core_mutation
     def apply_event_revision_outcome(
         self, outcome: EventRevisionOutcome
     ) -> PrototypeRevisionResult:
@@ -1183,8 +2748,10 @@ class CorePrototypeSpine:
     def _revision_fault_hook(self, stage: str) -> None:
         """No-op fault-injection seam used to verify transaction rollback."""
 
-    def _capture_revision_transaction(self) -> dict[str, object]:
-        return {
+    def _capture_revision_transaction(
+        self, *, include_operator_state: bool = False
+    ) -> dict[str, object]:
+        checkpoint: dict[str, object] = {
             "habit": deepcopy(self._habit),
             "regimes": deepcopy(self._regimes),
             "automatic_regimes": deepcopy(self._automatic_regimes),
@@ -1206,9 +2773,113 @@ class CorePrototypeSpine:
             "last_cause_snapshot": self._last_cause_snapshot,
             "deferred_project_one_requests": dict(self._deferred_project_one_requests),
             "project_one_application_receipts": deepcopy(self._project_one_application_receipts),
+            "action_scoped_negatives": dict(self._action_scoped_negatives),
             "hybrid_export": self._hybrid_loop.ledger.export_state(),
             "belief_snapshot": self.current_snapshot,
         }
+        if include_operator_state:
+            excluded = {
+                "_execution_contract_active",
+                "_execution_owner_thread_id",
+                "_execution_contract_phase",
+                "_execution_lock",
+                "_external_mutation_guard",
+                "_hybrid_loop",
+            }
+            runtime_refs = {
+                name: value for name, value in self.__dict__.items() if name not in excluded
+            }
+            nested_component_refs: dict[str, object] = {
+                "automatic_bocpd": self._automatic_regimes.bocpd,
+                "bocpd_reset_matrix": self._automatic_regimes.bocpd._reset_matrix,
+                "automatic_ccrr": self._automatic_regimes.ccrr,
+                "regime_head_factory": self._regimes._head_factory,
+                "hybrid_coordinator": self._hybrid_loop._coordinator,
+                "hybrid_feedback_projector": self._hybrid_loop._feedback_projector,
+                "hybrid_fusion": self._hybrid_loop._fusion,
+            }
+            nested_component_refs.update(_message_passing_nested_components(self._message_passing))
+            checkpoint["execution_core_attribute_names"] = frozenset(self.__dict__)
+            checkpoint["execution_lock"] = self._execution_lock
+            checkpoint["execution_runtime_refs"] = runtime_refs
+            checkpoint["execution_runtime_fields"] = deepcopy(runtime_refs)
+            checkpoint["execution_nested_component_refs"] = nested_component_refs
+            checkpoint["execution_nested_component_snapshots"] = {
+                name: deepcopy(component) for name, component in nested_component_refs.items()
+            }
+            habit_table_names = (
+                "_household_counts",
+                "_person_counts",
+                "_context_counts",
+                "_isolated_nonresident_counts",
+            )
+            habit_table_refs = {name: getattr(self._habit, name) for name in habit_table_names}
+            checkpoint["execution_habit_table_refs"] = habit_table_refs
+            checkpoint["execution_habit_table_snapshots"] = deepcopy(habit_table_refs)
+            checkpoint["execution_habit_row_refs"] = {
+                (name, key): row
+                for name, table in habit_table_refs.items()
+                for key, row in table.items()
+            }
+            checkpoint["execution_rls_heads_ref"] = self._regimes._heads
+            checkpoint["execution_rls_head_refs"] = dict(self._regimes._heads)
+            checkpoint["execution_rls_head_snapshots"] = deepcopy(self._regimes._heads)
+            checkpoint["execution_rls_model_map_refs"] = {
+                regime_id: head._models for regime_id, head in self._regimes._heads.items()
+            }
+            checkpoint["execution_rls_wrapper_refs"] = {
+                (regime_id, key): wrapper
+                for regime_id, head in self._regimes._heads.items()
+                for key, wrapper in head._models.items()
+            }
+            checkpoint["execution_rls_core_refs"] = {
+                compound_key: wrapper.model
+                for compound_key, wrapper in cast(
+                    dict[object, Any], checkpoint["execution_rls_wrapper_refs"]
+                ).items()
+            }
+            checkpoint["execution_rls_config_refs"] = {
+                compound_key: model.config
+                for compound_key, model in cast(
+                    dict[object, Any], checkpoint["execution_rls_core_refs"]
+                ).items()
+            }
+            checkpoint["execution_rls_theta_refs"] = {
+                compound_key: model.theta
+                for compound_key, model in cast(
+                    dict[object, Any], checkpoint["execution_rls_core_refs"]
+                ).items()
+            }
+            checkpoint["execution_rls_covariance_refs"] = {
+                compound_key: model.covariance
+                for compound_key, model in cast(
+                    dict[object, Any], checkpoint["execution_rls_core_refs"]
+                ).items()
+            }
+            checkpoint["execution_project_receipt_table_ref"] = (
+                self._project_one_application_receipts
+            )
+            checkpoint["execution_project_receipt_table_snapshot"] = deepcopy(
+                self._project_one_application_receipts
+            )
+            checkpoint["execution_project_receipt_row_refs"] = dict(
+                self._project_one_application_receipts
+            )
+            checkpoint["automatic_ccrr_lock"] = self._automatic_regimes.ccrr._lock
+            checkpoint["hybrid_loop"] = self._hybrid_loop
+            checkpoint["hybrid_ledger"] = self._hybrid_loop.ledger
+            checkpoint["hybrid_ledger_lock"] = self._hybrid_loop.ledger._lock
+            checkpoint["hybrid_map"] = self._hybrid_loop._map
+            checkpoint["hybrid_map_lock"] = self._hybrid_loop._map._lock
+            checkpoint["hybrid_loop_attribute_names"] = frozenset(vars(self._hybrid_loop))
+            checkpoint["hybrid_loop_fields"] = deepcopy(
+                {
+                    name: value
+                    for name, value in vars(self._hybrid_loop).items()
+                    if name not in {"_ledger", "_map"}
+                }
+            )
+        return checkpoint
 
     def _restore_revision_transaction(self, checkpoint: Mapping[str, object]) -> None:
         self._habit = checkpoint["habit"]  # type: ignore[assignment]
@@ -1232,17 +2903,241 @@ class CorePrototypeSpine:
         self._last_cause_snapshot = checkpoint["last_cause_snapshot"]  # type: ignore[assignment]
         self._deferred_project_one_requests = checkpoint["deferred_project_one_requests"]  # type: ignore[assignment]
         self._project_one_application_receipts = checkpoint["project_one_application_receipts"]  # type: ignore[assignment]
-        self._hybrid_loop._ledger = type(self._hybrid_loop.ledger).restore_from_export(
-            checkpoint["hybrid_export"]  # type: ignore[arg-type]
-        )
-        snapshot = checkpoint["belief_snapshot"]
-        assert isinstance(snapshot, BeliefSnapshot)
-        belief_map = VersionedBeliefMap(map_id=snapshot.map_id)
-        belief_map._nodes = snapshot.node_map()
-        belief_map._version = snapshot.map_version
-        belief_map._snapshot_id = snapshot.snapshot_id
-        self._hybrid_loop._map = belief_map
+        self._action_scoped_negatives = checkpoint["action_scoped_negatives"]  # type: ignore[assignment]
+        if "execution_runtime_fields" in checkpoint:
+            original_names = checkpoint["execution_core_attribute_names"]
+            assert isinstance(original_names, frozenset)
+            for name in tuple(self.__dict__):
+                if name not in original_names:
+                    delattr(self, name)
+            runtime_fields = checkpoint["execution_runtime_fields"]
+            runtime_refs = checkpoint["execution_runtime_refs"]
+            assert isinstance(runtime_fields, dict)
+            assert isinstance(runtime_refs, dict)
+            for name, snapshot_value in runtime_fields.items():
+                original_value = runtime_refs[name]
+                preserve_attributes: frozenset[str] = frozenset()
+                if name == "_habit":
+                    preserve_attributes = frozenset(
+                        {
+                            "_household_counts",
+                            "_person_counts",
+                            "_context_counts",
+                            "_isolated_nonresident_counts",
+                        }
+                    )
+                elif name == "_regimes":
+                    preserve_attributes = frozenset({"_head_factory", "_heads"})
+                _restore_reference_state(
+                    original_value,
+                    snapshot_value,
+                    preserve_attributes=preserve_attributes,
+                )
+                setattr(self, name, original_value)
+            self._execution_lock = checkpoint["execution_lock"]  # type: ignore[assignment]
+            self._hybrid_loop = checkpoint["hybrid_loop"]  # type: ignore[assignment]
+            hybrid_loop_attribute_names = checkpoint["hybrid_loop_attribute_names"]
+            assert isinstance(hybrid_loop_attribute_names, frozenset)
+            for name in tuple(vars(self._hybrid_loop)):
+                if name not in hybrid_loop_attribute_names:
+                    delattr(self._hybrid_loop, name)
+            hybrid_loop_fields = checkpoint["hybrid_loop_fields"]
+            assert isinstance(hybrid_loop_fields, dict)
+            for name, value in hybrid_loop_fields.items():
+                setattr(self._hybrid_loop, name, deepcopy(value))
 
+            nested_refs = checkpoint["execution_nested_component_refs"]
+            nested_snapshots = checkpoint["execution_nested_component_snapshots"]
+            assert isinstance(nested_refs, dict)
+            assert isinstance(nested_snapshots, dict)
+            for name, component in nested_refs.items():
+                _restore_reference_state(
+                    component,
+                    nested_snapshots[name],
+                    preserve_attributes=(
+                        frozenset({"_lock"}) if name == "automatic_ccrr" else frozenset()
+                    ),
+                )
+
+            habit_table_refs = cast(
+                dict[str, dict[Any, Any]], checkpoint["execution_habit_table_refs"]
+            )
+            habit_table_snapshots = cast(
+                dict[str, dict[Any, Any]],
+                checkpoint["execution_habit_table_snapshots"],
+            )
+            habit_row_refs = cast(
+                dict[tuple[str, object], dict[Any, Any]],
+                checkpoint["execution_habit_row_refs"],
+            )
+            for table_name, table_ref in habit_table_refs.items():
+                table_snapshot = habit_table_snapshots[table_name]
+                table_ref.clear()
+                for key, row_snapshot in table_snapshot.items():
+                    row_ref = habit_row_refs[(table_name, key)]
+                    _restore_reference_state(row_ref, row_snapshot)
+                    table_ref[key] = row_ref
+                setattr(self._habit, table_name, table_ref)
+
+            rls_heads_ref = cast(
+                dict[str, RLSHabitScoreHead], checkpoint["execution_rls_heads_ref"]
+            )
+            rls_head_refs = cast(
+                dict[str, RLSHabitScoreHead], checkpoint["execution_rls_head_refs"]
+            )
+            rls_head_snapshots = cast(
+                dict[str, RLSHabitScoreHead], checkpoint["execution_rls_head_snapshots"]
+            )
+            rls_model_map_refs = cast(
+                dict[str, dict[tuple[UUID, str, str, UUID], Any]],
+                checkpoint["execution_rls_model_map_refs"],
+            )
+            rls_wrapper_refs = cast(
+                dict[tuple[str, tuple[UUID, str, str, UUID]], Any],
+                checkpoint["execution_rls_wrapper_refs"],
+            )
+            rls_core_refs = cast(
+                dict[tuple[str, tuple[UUID, str, str, UUID]], Any],
+                checkpoint["execution_rls_core_refs"],
+            )
+            rls_config_refs = cast(
+                dict[tuple[str, tuple[UUID, str, str, UUID]], object],
+                checkpoint["execution_rls_config_refs"],
+            )
+            rls_theta_refs = cast(
+                dict[tuple[str, tuple[UUID, str, str, UUID]], np.ndarray],
+                checkpoint["execution_rls_theta_refs"],
+            )
+            rls_covariance_refs = cast(
+                dict[tuple[str, tuple[UUID, str, str, UUID]], np.ndarray],
+                checkpoint["execution_rls_covariance_refs"],
+            )
+            rls_heads_ref.clear()
+            for regime_id, head_ref in rls_head_refs.items():
+                head_snapshot = rls_head_snapshots[regime_id]
+                _restore_reference_state(
+                    head_ref,
+                    head_snapshot,
+                    preserve_attributes=frozenset({"_models"}),
+                )
+                model_map_ref = rls_model_map_refs[regime_id]
+                model_map_ref.clear()
+                for key, wrapper_snapshot in head_snapshot._models.items():
+                    compound_key = (regime_id, key)
+                    wrapper_ref = rls_wrapper_refs[compound_key]
+                    _restore_reference_state(
+                        wrapper_ref,
+                        wrapper_snapshot,
+                        preserve_attributes=frozenset({"model"}),
+                    )
+                    model_ref = rls_core_refs[compound_key]
+                    model_snapshot = wrapper_snapshot.model
+                    _restore_reference_state(
+                        model_ref,
+                        model_snapshot,
+                        preserve_attributes=frozenset({"_config", "theta", "covariance"}),
+                    )
+                    config_ref = rls_config_refs[compound_key]
+                    _restore_reference_state(config_ref, model_snapshot.config)
+                    theta_ref = rls_theta_refs[compound_key]
+                    covariance_ref = rls_covariance_refs[compound_key]
+                    _restore_reference_state(theta_ref, model_snapshot.theta)
+                    _restore_reference_state(covariance_ref, model_snapshot.covariance)
+                    model_ref._config = config_ref
+                    model_ref.theta = theta_ref
+                    model_ref.covariance = covariance_ref
+                    wrapper_ref.model = model_ref
+                    model_map_ref[key] = wrapper_ref
+                head_ref._models = model_map_ref
+                rls_heads_ref[regime_id] = head_ref
+            self._regimes._head_factory = cast(
+                Callable[[], RLSHabitScoreHead], nested_refs["regime_head_factory"]
+            )
+            self._regimes._heads = rls_heads_ref
+
+            project_receipt_table_ref = cast(
+                dict[UUID, list[ProjectOneRequestApplicationReceipt]],
+                checkpoint["execution_project_receipt_table_ref"],
+            )
+            project_receipt_table_snapshot = cast(
+                dict[UUID, list[ProjectOneRequestApplicationReceipt]],
+                checkpoint["execution_project_receipt_table_snapshot"],
+            )
+            project_receipt_row_refs = cast(
+                dict[UUID, list[ProjectOneRequestApplicationReceipt]],
+                checkpoint["execution_project_receipt_row_refs"],
+            )
+            project_receipt_table_ref.clear()
+            for key, row_snapshot in project_receipt_table_snapshot.items():
+                receipt_row_ref = project_receipt_row_refs[key]
+                _restore_reference_state(receipt_row_ref, row_snapshot)
+                project_receipt_table_ref[key] = receipt_row_ref
+            self._project_one_application_receipts = project_receipt_table_ref
+
+            automatic_bocpd = nested_refs["automatic_bocpd"]
+            automatic_bocpd._reset_matrix = nested_refs["bocpd_reset_matrix"]
+            automatic_ccrr = nested_refs["automatic_ccrr"]
+            automatic_ccrr._lock = checkpoint["automatic_ccrr_lock"]
+            self._automatic_regimes.bocpd = automatic_bocpd
+            self._automatic_regimes.ccrr = automatic_ccrr
+            self._automatic_regimes.config = self.loop_config
+            if "message_passing_delegate" in nested_refs:
+                cast(Any, self._message_passing)._delegate = nested_refs["message_passing_delegate"]
+            if "message_passing_direct_independence_authority" in nested_refs:
+                self._message_passing._independence_authority = nested_refs[
+                    "message_passing_direct_independence_authority"
+                ]
+            if "message_passing_delegate_independence_authority" in nested_refs:
+                cast(
+                    Any, nested_refs["message_passing_delegate"]
+                )._independence_authority = nested_refs[
+                    "message_passing_delegate_independence_authority"
+                ]
+            self._feedback_policy.config = self.loop_config
+
+            self._hybrid_loop._coordinator = nested_refs["hybrid_coordinator"]
+            self._hybrid_loop._feedback_projector = nested_refs["hybrid_feedback_projector"]
+            self._hybrid_loop._fusion = nested_refs["hybrid_fusion"]
+
+            original_ledger = checkpoint["hybrid_ledger"]
+            restored_ledger = type(original_ledger).restore_from_export(  # type: ignore[attr-defined]
+                checkpoint["hybrid_export"]
+            )
+            _restore_reference_state(
+                original_ledger,
+                restored_ledger,
+                preserve_attributes=frozenset({"_lock"}),
+            )
+            original_ledger._lock = checkpoint["hybrid_ledger_lock"]  # type: ignore[attr-defined]
+            self._hybrid_loop._ledger = original_ledger  # type: ignore[assignment]
+
+            snapshot = checkpoint["belief_snapshot"]
+            assert isinstance(snapshot, BeliefSnapshot)
+            restored_map = VersionedBeliefMap(map_id=snapshot.map_id)
+            restored_map._nodes = snapshot.node_map()
+            restored_map._version = snapshot.map_version
+            restored_map._snapshot_id = snapshot.snapshot_id
+            original_map = checkpoint["hybrid_map"]
+            _restore_reference_state(
+                original_map,
+                restored_map,
+                preserve_attributes=frozenset({"_lock"}),
+            )
+            original_map._lock = checkpoint["hybrid_map_lock"]  # type: ignore[attr-defined]
+            self._hybrid_loop._map = original_map  # type: ignore[assignment]
+        else:
+            self._hybrid_loop._ledger = type(self._hybrid_loop.ledger).restore_from_export(
+                checkpoint["hybrid_export"]  # type: ignore[arg-type]
+            )
+            snapshot = checkpoint["belief_snapshot"]
+            assert isinstance(snapshot, BeliefSnapshot)
+            belief_map = VersionedBeliefMap(map_id=snapshot.map_id)
+            belief_map._nodes = snapshot.node_map()
+            belief_map._version = snapshot.map_version
+            belief_map._snapshot_id = snapshot.snapshot_id
+            self._hybrid_loop._map = belief_map
+
+    @_serialized_core_mutation
     def apply_project_one_stat_request(
         self, request: ProjectOneStatRequest
     ) -> ProjectOneRequestApplicationReceipt:
@@ -1425,7 +3320,9 @@ class CorePrototypeSpine:
         hybrid: tuple[StatisticDelta, ...] = (),
     ) -> ProjectOneRequestApplicationReceipt:
         self._update_action_scoped_negative(request, fingerprint, status)
-        history = self._project_one_application_receipts[request.source_feedback_record_id]
+        history = self._project_one_application_receipts.setdefault(
+            request.source_feedback_record_id, []
+        )
         receipt = ProjectOneRequestApplicationReceipt(
             receipt_id=uuid5(NAMESPACE_URL, f"{fingerprint}:{len(history) + 1}:{status.value}"),
             request_fingerprint=fingerprint,
@@ -1462,6 +3359,9 @@ class CorePrototypeSpine:
     def _replay_receipt(
         self, applied: ProjectOneRequestApplicationReceipt
     ) -> ProjectOneRequestApplicationReceipt:
+        history = self._project_one_application_receipts.setdefault(
+            applied.source_feedback_record_id, []
+        )
         receipt = ProjectOneRequestApplicationReceipt(
             receipt_id=uuid5(
                 NAMESPACE_URL,
@@ -1473,18 +3373,16 @@ class CorePrototypeSpine:
             corrected_revision_id=applied.corrected_revision_id,
             source_feedback_record_id=applied.source_feedback_record_id,
             evidence_source_record_ids=applied.evidence_source_record_ids,
-            attempt_number=len(
-                self._project_one_application_receipts[applied.source_feedback_record_id]
-            )
-            + 1,
+            attempt_number=len(history) + 1,
             old_belief_snapshot_id=self.current_snapshot.snapshot_id,
             new_belief_snapshot_id=self.current_snapshot.snapshot_id,
             ccrr_decision="replay_noop",
             rationale="request fingerprint was already applied exactly once",
         )
-        self._project_one_application_receipts[applied.source_feedback_record_id].append(receipt)
+        history.append(receipt)
         return receipt
 
+    @_serialized_core_mutation
     def publish_project_two_revision_snapshot(
         self, outcome: ProjectTwoEventRevisionOutcome
     ) -> BeliefSnapshot:
@@ -1506,6 +3404,7 @@ class CorePrototypeSpine:
             ),
         )
 
+    @_serialized_core_mutation
     def apply_fast_action_verification(
         self,
         *,
@@ -1880,6 +3779,7 @@ class CorePrototypeSpine:
             corrected[HierarchicalDirichletHabitModel.UNKNOWN_ACTOR] = remaining_mass
         return corrected
 
+    @_serialized_core_mutation
     def process_execution_feedback(
         self,
         *,

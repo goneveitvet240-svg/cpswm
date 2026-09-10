@@ -1,0 +1,31 @@
+{
+  "schema_version": "0.1.0",
+  "protocol_id": "structure-two-runtime-identity-gate@0.1",
+  "source_artifact": "benchmarks/structure_two/structure_two_full_scientific_loop_v0_2.json",
+  "full_loop_implementation": "src/cpswm/system/evaluation_operations/structure_two_full_scientific_loop.py",
+  "stateful_runtime_implementation": "src/cpswm/system/evaluation_operations/structure_two_stateful_full_joint.py",
+  "production_system_implementation": "src/cpswm/system/structure_two_production_system.py",
+  "expected_observed_route_runtime": "cpswm.system.evaluation_operations.structure_two_full_scientific_loop.LearnedInteractionRuntime",
+  "expected_sidecar_runtime": "cpswm.system.structure_two_production_system.StructureTwoProductionSystem",
+  "route_run_function": "_run_closed_loop_arm",
+  "top_level_run_function": "run_full_scientific_loop_development",
+  "sidecar_builder_function": "build_production_assembly_manifest",
+  "required_operators": [
+    "opceu",
+    "orrer_cheh",
+    "pchmp",
+    "cf_bocpd",
+    "ccrr",
+    "rgrc",
+    "ciav"
+  ],
+  "required_trace_binding_fields": [
+    "runtime_execution_id",
+    "operator_instance_id",
+    "callable_symbol",
+    "invocation_id",
+    "consumed_output_ids"
+  ],
+  "architecture_selection_status": "A_SELECTED_STRUCTURE_TWO_PRODUCTION_SYSTEM",
+  "claim_boundary": "This local gate audits whether a Route-C trajectory is bound to the runtime and operator instances that produced it. Architecture A now binds legacy ordinary transitions to StructureTwoProductionSystem and hosts the current partial P0-P5 control-flow lane. This historical gate does not establish that lane's production-state-derived path choice, distinct path kernels, fallback state machine, or full consequential identity; retroactively establish historical Route-C equivalence; provide independent custody; or promote development evidence."
+}

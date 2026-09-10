@@ -1,7 +1,7 @@
 # 结构二文档入口
 
 最后更新：2026-09-11
-当前结论：**项目所有者已选择 Route C、Architecture A、`P5_FIRST` 以及三臂方法定义 `A1 + B1`，完整 H/R/I/C/Z/r/V、三个 RB blocks 和七算子范围保持不变。首轮 matched direct `P5_FULL_EAGER` typed SEARCH/PUT_BACK 死亡测试已完成：1,920 个 matched steps，1,243 次真实七算子正路径和 677 次不伪造转移的负观测闭环；SEARCH 三臂打平，P5 的 PUT_BACK error 为 0.6849，差于 learned two-stage 的 0.2740 和 AMG 的 0.0536，注册行动信号为 false。失败后定位到两个接线问题：v0.1 P5 adapter 未接入已冻结的 v0.6 dual-timescale readout；且 PCHMP 已形成的人物后验被 CIAV 用原始均匀 prior 重算并抹掉。后者已按 sequential Bayes 修复并通过 production/adaptive/P5 定向回归；单 episode 修复后 posterior 已非均匀，但完整 60-episode 运行尚未完成。因此 v0.1 必须保留为失败，修正版只能标为 post-hoc，已打开的 test split 不得伪装成新预注册结果。下一步先冻结修复实现，再运行完整 post-hoc 三臂诊断和 production debt replay。validation-only calibration 与固定解析阈值基线均保留但尚未执行。组合效用、长期人物记忆污染、Task 8 正式通过、联合行动收益、外部强基线胜利、外部有效性和七算子行动贡献均未成立。**
+当前结论：**项目所有者已选择 Route C、Architecture A、`P5_FIRST` 以及三臂方法定义 `A1 + B1`，完整 H/R/I/C/Z/r/V、三个 RB blocks 和七算子范围保持不变。首轮 v0.1 匹配死亡测试无信号；随后定位并修复 readout 漏接与 PCHMP→CIAV sequential actor-prior reset 两个问题。完整 60-episode post-hoc 重算中，P5 owner-habit posterior 在 1,870/1,920 步非均匀，PUT_BACK error 从 0.6849 降到 0.0401，优于 learned two-stage 的 0.2740 和 AMG 的 0.0536；但相对 AMG 的绝对改善仅 0.01354，低于冻结门槛 0.02，所以严格 P5 action signal 仍为 false。fresh recomputation 逐字段一致；v0.1 保持不覆盖，当前结果因 test split 已打开只能是事后诊断。下一步做 production debt replay 路径确认；在新的未见 holdout 复现信号前，不启动 validation-only router calibration，固定解析阈值继续保留为基线。组合效用、长期人物记忆污染、Task 8 正式通过、联合行动收益、外部强基线胜利、外部有效性和七算子行动贡献均未成立。**
 
 这里是方向结构二的规范阅读入口。仓库保留了大量按日期冻结的协议、实验和审计文件；那些文件是
 证据档案，不应让第一次接触项目的人逐个猜阅读顺序。
@@ -25,6 +25,7 @@
 - [Task 7、Task 8 与外部验证最终决定](方向结构二_Task7_Task8与外部验证用户决策记录_2026-09-06.md)
 - [P5 优先与路由校准用户决策](结构二_P5优先与路由校准用户决策记录_2026-09-10.md)
 - [adaptive-path P5 三臂行动死亡测试 v0.1 结果](../experiments/structure_two_p5_three_arm_death_test_result_v0_1_2026-09-11.md)
+- [P5 readout + sequential-prior post-hoc 诊断结果](../experiments/structure_two_p5_readout_posthoc_diagnostic_result_v0_1_2026-09-11.md)
 - [Task 8 在线算力流程复核](../reviews/structure_two_priority_sequence_audit_2026-09-07.md)
 - [Task 8 learned online-compute v0.1 结果](../experiments/structure_two_task8_online_compute_result_v0_1_2026-09-07.md)
 - [Task 8 v0.1 运行后范围复核](../reviews/structure_two_task8_online_compute_postrun_audit_2026-09-07.md)

@@ -1,0 +1,86 @@
+{
+  "schema_version": "0.1.0",
+  "protocol_id": "structure-two-p5-matched-three-arm-death-test@0.1-development",
+  "status": "FROZEN_BEFORE_FIRST_EXECUTION",
+  "decision_source": "configs/project_two_experiments/structure_two_p5_first_decision_v0_1.json",
+  "method_decision_source": "configs/project_two_experiments/structure_two_p5_three_arm_method_decision_v0_1.json",
+  "dataset_source": "configs/project_two_datasets/d0_multiseed_readout_v0_5.json",
+  "arms": [
+    "direct_p5_full_eager",
+    "learned_matched_two_stage",
+    "independently_tuned_amg"
+  ],
+  "split_policy": {
+    "model_fit": "train",
+    "hyperparameter_selection": "validation",
+    "death_test": "test",
+    "confirmatory": false
+  },
+  "shared_ciav": {
+    "scheduler": "exogenous_precommitted_schedule",
+    "candidate_action_type": "micro_verify",
+    "candidate_count_per_step": 1,
+    "schedule_committed_before_episode_execution": true,
+    "observation_release_phase": "before_typed_actions_committed",
+    "evaluator_truth_release_phase": "after_typed_actions_committed",
+    "motion_cost": 0.0,
+    "time_cost": 0.0,
+    "interruption_cost": 0.0,
+    "privacy_cost": 0.0,
+    "safety_cost": 0.0,
+    "privacy_budget": 1.0,
+    "zero_cost_rationale": "The first P5 information/action ceiling isolates inference and task readout. It does not estimate net CIAV utility or select production cost weights."
+  },
+  "learned_two_stage": {
+    "location_head": "shared_conditional_location_head_given_cause_event",
+    "base_widths": [8, 16, 32],
+    "learning_rates": [0.05, 0.1],
+    "l2_values": [0.0, 0.001],
+    "location_smoothing_values": [0.25, 1.0],
+    "selection_metric": "validation_put_back_error_rate",
+    "cause_labels": ["actor", "habit", "other"],
+    "event_labels": ["handoff_stay", "regime_change", "other"],
+    "truth_derivation": "Training-only cause/event labels are derived from evaluator true_actor, true_mechanism, and changes in true_owner_habit_location; validation/test truth is scoring-only."
+  },
+  "amg": {
+    "parameter_values": [0.2, 0.33, 0.5],
+    "selection_metric": "validation_put_back_error_rate"
+  },
+  "typed_actions": {
+    "decoder": "cpswm.system.evaluation_operations.structure_two_action_utility_construct_gate.decode_task_separated_actions",
+    "search_target": "current_object_location",
+    "put_back_target": "owner_habit_location",
+    "arm_specific_tie_breaking_forbidden": true,
+    "combined_utility": "UNRESOLVED_NOT_AGGREGATED"
+  },
+  "negative_observation_policy": {
+    "consume_ciav_opceu_negative_evidence": true,
+    "fabricate_before_after_transition": false,
+    "transition_dependent_operators": "explicit_no_new_transition",
+    "carry_forward_prior_state": true
+  },
+  "signal_rule": {
+    "bootstrap_unit": "episode",
+    "bootstrap_replicates": 3000,
+    "confidence": 0.95,
+    "minimum_absolute_error_rate_improvement": 0.02,
+    "minimum_relative_error_rate_improvement": 0.1,
+    "per_task_rule": "P5 must beat both learned two-stage and independently tuned AMG with a positive paired-episode 95 percent bootstrap lower bound and both registered effect-size minima.",
+    "overall_rule": "At least one of SEARCH or PUT_BACK satisfies the per-task rule; the two tasks remain separately reported and are not aggregated."
+  },
+  "adaptive_router_policy": {
+    "validation_only_calibration_retained": true,
+    "fixed_analytic_threshold_baseline_retained": true,
+    "adaptive_router_calibration_executed_in_this_test": false
+  },
+  "scope_policy": {
+    "unified_seven_operator_framework_retained": true,
+    "hidden_event_inference_retained": true,
+    "multi_actor_reasoning_retained": true,
+    "open_world_unknowns_retained": true,
+    "reversible_attribution_retained": true,
+    "embodied_feedback_loop_retained": true,
+    "scope_reduction_authorized": false
+  },
+  "claim_boundary": "This frozen D0 development death test can locate a SEARCH or PUT_BACK action signal for direct P5 under matched precommitted observation information and cost. It cannot aggregate the two tasks, estimate production CIAV net utility, pass Task 7/8/9, validate adaptive routing, authorize scientific superiority, establish external validity, or narrow Structure Two."
+}

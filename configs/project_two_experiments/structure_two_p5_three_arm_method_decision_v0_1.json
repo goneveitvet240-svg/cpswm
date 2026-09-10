@@ -1,0 +1,29 @@
+{
+  "schema_version": "0.1.0",
+  "decision_id": "structure-two-p5-three-arm-method-decision@0.1",
+  "decision_date": "2026-09-10",
+  "status": "PROJECT_OWNER_SELECTED",
+  "shared_ciav_scheduler": {
+    "selected": "exogenous_precommitted_schedule",
+    "selection_label": "A1",
+    "schedule_committed_before_episode_execution": true,
+    "same_candidate_action_outcome_and_cost_for_all_arms": true,
+    "arm_may_change_schedule": false
+  },
+  "learned_two_stage_location_head": {
+    "selected": "shared_conditional_location_head_given_cause_event",
+    "selection_label": "B1",
+    "factorization": "p(cause|x) * p(event|cause,x) * p(owner_habit_matches_current|cause,event,history)",
+    "absolute_cross_episode_location_ids_are_model_features": false
+  },
+  "scope_policy": {
+    "unified_seven_operator_framework_retained": true,
+    "hidden_event_inference_retained": true,
+    "multi_actor_reasoning_retained": true,
+    "open_world_unknowns_retained": true,
+    "reversible_attribution_retained": true,
+    "embodied_feedback_loop_retained": true,
+    "scope_reduction_authorized": false
+  },
+  "claim_boundary": "This record freezes the project owner's A1 and B1 choices. It does not establish implementation completeness, matched consumption, action benefit, Task 7/8/9 success, scientific superiority, external validity, or permission to narrow Structure Two."
+}

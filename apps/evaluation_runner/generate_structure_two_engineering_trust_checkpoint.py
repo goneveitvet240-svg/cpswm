@@ -63,6 +63,7 @@ RESULTS: Final = (
     ),
 )
 BOUND_REPORTS: Final = (
+    Path("docs/reviews/structure_two_evidence_repair_window1_2026-09-11.md"),
     Path("docs/结构二/方向结构二_当前证据总表_2026-09-02.md"),
     Path("docs/experiments/structure_two_task7_windowed_rejuvenation_result_v0_4_2026-09-05.md"),
     Path(
@@ -334,6 +335,11 @@ def build_checkpoint(*, fresh_recomputation: bool = True) -> dict[str, object]:
         raise ValueError("readiness current Gate-B status drift")
     if readiness.get("current_v0_8_formal_gate_b_receipt_verified") is not False:
         raise ValueError("readiness cannot claim an unexecuted Gate-B receipt")
+    p5_runner = _load(
+        "structure_two_evidence_repair_runner",
+        "apps/evaluation_runner/run_structure_two_evidence_repair.py",
+    )
+    p5_inventory = p5_runner.current_evidence_inventory()
     reports = [{"path": path.as_posix(), "sha256": _sha256(ROOT / path)} for path in BOUND_REPORTS]
     required_manifest_scopes = {
         "code",
@@ -366,7 +372,9 @@ def build_checkpoint(*, fresh_recomputation: bool = True) -> dict[str, object]:
     p0_adversarial_passed = audit_runs["p0_adversarial_tests"]
     payload: dict[str, object] = {
         "protocol": "structure-two-engineering-trust-checkpoint@1.1",
-        "freeze_date": "2026-09-10",
+        "freeze_date": "2026-09-11",
+        "p5_current_evidence": p5_inventory,
+        "integration_requires_new_checkpoint": True,
         "authority": "CURRENT_LOCAL_TOOLCHAIN_STATE_ONLY",
         "engineering_trust_gate_definition": "CURRENT_LOCAL_RECORDED_AUDIT_ONLY",
         "current_local_recorded_audit_gate_passed": engineering_passed,

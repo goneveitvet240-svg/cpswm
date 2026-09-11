@@ -51,6 +51,11 @@ from cpswm.system.evaluation_operations.project_two_dataset import (
 from cpswm.system.evaluation_operations.project_two_experiment_config import (
     D0SyntheticReplayExperimentConfig,
 )
+from cpswm.system.evaluation_operations.structure_two_evidence_versions import (
+    current_evidence_context,
+    require_execution_source,
+    require_frozen_p5_inputs,
+)
 from cpswm.system.evaluation_operations.structure_two_p5_direct_trace_probe import (
     _ProbeTraceSink,
     _router_features,
@@ -91,7 +96,8 @@ DEFAULT_CONFIG: Final = Path(
     "configs/project_two_experiments/structure_two_p5_three_arm_death_test_v0_1.json"
 )
 DEFAULT_OUTPUT: Final = Path(
-    "benchmarks/structure_two/structure_two_p5_three_arm_death_test_v0_1.json"
+    "benchmarks/structure_two/evidence_repair_2026_09_11/current/"
+    "structure_two_p5_three_arm_death_test_v0_2.json"
 )
 EXPECTED_SCHEDULER: Final = "exogenous_precommitted_schedule"
 EXPECTED_LOCATION_HEAD: Final = "shared_conditional_location_head_given_cause_event"
@@ -1487,6 +1493,8 @@ def _load_config(root: Path) -> dict[str, Any]:
 
 
 def _source_binding(root: Path, config: Mapping[str, Any]) -> dict[str, Any]:
+    require_execution_source(root)
+    require_frozen_p5_inputs(root)
     paths = {
         "configuration": DEFAULT_CONFIG,
         "p5_first_decision": Path(str(config["decision_source"])),
@@ -1518,6 +1526,8 @@ def _source_binding(root: Path, config: Mapping[str, Any]) -> dict[str, Any]:
 
 def run_p5_three_arm_death_test(*, repository_root: Path) -> dict[str, Any]:
     root = repository_root.resolve()
+    require_execution_source(root)
+    require_frozen_p5_inputs(root)
     config = _load_config(root)
     dataset_config = D0SyntheticReplayExperimentConfig.load(
         root / Path(str(config["dataset_source"]))
@@ -1557,6 +1567,7 @@ def run_p5_three_arm_death_test(*, repository_root: Path) -> dict[str, Any]:
     )
     payload: dict[str, Any] = {
         "schema_version": SCHEMA_VERSION,
+        "evidence_context": current_evidence_context(),
         "protocol_id": PROTOCOL_ID,
         "status": status,
         "source_binding": _source_binding(root, config),
@@ -1615,6 +1626,8 @@ def verify_p5_three_arm_death_test(
     repository_root: Path,
     fresh_recompute: bool = True,
 ) -> None:
+    if payload.get("evidence_context") != current_evidence_context() and fresh_recompute:
+        raise ValueError("current evidence lifecycle/version mismatch; use historical audit")
     if not fresh_recompute:
         raise ValueError("P5 three-arm artifact verification requires fresh recomputation")
     if payload.get("schema_version") != SCHEMA_VERSION or payload.get("protocol_id") != PROTOCOL_ID:

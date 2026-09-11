@@ -160,6 +160,7 @@ def test_different_location_feedback_has_representable_time_and_replays() -> Non
 def test_artifact_numeric_forgery_fails_fresh_recomputation(monkeypatch) -> None:
     retained = {
         "schema_version": replay_module.SCHEMA_VERSION,
+        "evidence_context": replay_module.current_evidence_context(),
         "protocol_id": PROTOCOL_ID,
         "status": "PRODUCTION_DEBT_REPLAY_SEMANTIC_EQUIVALENCE_CONFIRMED",
         "claim_boundary": CLAIM_BOUNDARY,

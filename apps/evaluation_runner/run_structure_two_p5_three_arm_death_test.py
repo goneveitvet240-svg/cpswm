@@ -7,6 +7,9 @@ import argparse
 import json
 from pathlib import Path
 
+from cpswm.system.evaluation_operations.structure_two_evidence_versions import (
+    require_current_output,
+)
 from cpswm.system.evaluation_operations.structure_two_p5_three_arm_death_test import (
     DEFAULT_OUTPUT,
     run_p5_three_arm_death_test,
@@ -46,6 +49,7 @@ def main() -> None:
             )
         )
         return
+    require_current_output(root, args.output)
     payload = run_p5_three_arm_death_test(repository_root=root)
     verify_p5_three_arm_death_test(
         payload,

@@ -323,3 +323,28 @@ def test_checkpoint_cannot_be_generated_with_fresh_recomputation_disabled(
     monkeypatch.setattr(sys, "argv", [str(SCRIPT), "--no-fresh-recomputation"])
     with pytest.raises(ValueError, match="generation always requires"):
         MODULE.main()
+
+
+def test_checkpoint_binds_all_current_p5_replays_without_promoting_history() -> None:
+    stored = _stored()
+    rows = stored["p5_current_evidence"]
+    assert {row["experiment"] for row in rows} == {
+        "three_arm_death_test",
+        "readout_posthoc_diagnostic",
+        "debt_replay_confirmation",
+        "readout_prior_factorial",
+        "unseen_d0_holdout",
+    }
+    assert stored["integration_requires_new_checkpoint"] is True
+    for row in rows:
+        assert row["verification_command_id"] == "p5_evidence_current"
+        assert row["evidence_context"]["lifecycle"] == "POST_OPEN_CURRENT_SOURCE_REPLAY"
+        assert row["evidence_context"]["first_execution_established"] is False
+        assert row["evidence_context"]["previously_unseen_established"] is False
+        assert row["evidence_context"]["confirmatory"] is False
+        assert len(row["file_sha256"]) == len(row["content_sha256"]) == 64
+    assert AUDIT_MODULE.COMMANDS["p5_evidence_current"] == (
+        ".venv/bin/python",
+        "apps/evaluation_runner/run_structure_two_evidence_repair.py",
+        "--verify-current",
+    )

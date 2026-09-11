@@ -7,6 +7,9 @@ import argparse
 import json
 from pathlib import Path
 
+from cpswm.system.evaluation_operations.structure_two_evidence_versions import (
+    require_current_output,
+)
 from cpswm.system.evaluation_operations.structure_two_p5_readout_prior_factorial import (
     DEFAULT_OUTPUT,
     run_p5_readout_prior_factorial,
@@ -27,6 +30,7 @@ def main() -> None:
         verify_p5_readout_prior_factorial(payload, repository_root=root)
         print(json.dumps({"verified": str(retained), "status": payload["status"]}))
         return
+    require_current_output(root, args.output)
     payload = run_p5_readout_prior_factorial(repository_root=root)
     output = args.output if args.output.is_absolute() else root / args.output
     output.parent.mkdir(parents=True, exist_ok=True)

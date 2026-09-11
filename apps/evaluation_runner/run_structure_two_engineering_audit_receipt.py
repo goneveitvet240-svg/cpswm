@@ -27,6 +27,11 @@ DEFAULT_OUTPUT: Final = (
 )
 P0_MANIFEST: Final = ROOT / "benchmarks/p0_checkpoint/content_manifest_v0_3.json"
 COMMANDS: Final = {
+    "p5_evidence_current": (
+        ".venv/bin/python",
+        "apps/evaluation_runner/run_structure_two_evidence_repair.py",
+        "--verify-current",
+    ),
     "p0_adversarial_tests": (
         ".venv/bin/pytest",
         "-q",
@@ -86,6 +91,11 @@ COMMAND_ENVIRONMENT_OVERRIDES: Final = {
     "core_pytest": PYTEST_ENVIRONMENT_OVERRIDES,
 }
 TOOL_VERSION_COMMANDS: Final = {
+    "p5_evidence_current": (
+        ".venv/bin/python",
+        "apps/evaluation_runner/run_structure_two_evidence_repair.py",
+        "--verify-current",
+    ),
     "pytest": (".venv/bin/pytest", "--version"),
     "mypy": (".venv/bin/mypy", "--version"),
     "ruff": (".venv/bin/ruff", "--version"),

@@ -7,6 +7,9 @@ import argparse
 import json
 from pathlib import Path
 
+from cpswm.system.evaluation_operations.structure_two_evidence_versions import (
+    require_current_output,
+)
 from cpswm.system.evaluation_operations.structure_two_p5_readout_posthoc_diagnostic import (
     DEFAULT_OUTPUT,
     run_p5_readout_posthoc_diagnostic,
@@ -45,6 +48,7 @@ def main() -> None:
             )
         )
         return
+    require_current_output(root, args.output)
     payload = run_p5_readout_posthoc_diagnostic(repository_root=root)
     verify_p5_readout_posthoc_diagnostic(payload, repository_root=root)
     output = args.output if args.output.is_absolute() else root / args.output

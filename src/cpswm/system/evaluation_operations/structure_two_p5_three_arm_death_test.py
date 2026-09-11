@@ -1044,6 +1044,46 @@ def _decode_and_score(
     )
 
 
+def _semantic_action_chain_sha256(rows: Sequence[Mapping[str, Any]]) -> str:
+    """Hash the consequential typed choices, not run-local provenance UUIDs."""
+
+    return content_sha256(
+        [
+            {
+                "search_location_id": row["search_location_id"],
+                "put_back_location_id": row["put_back_location_id"],
+            }
+            for row in rows
+        ]
+    )
+
+
+def _semantic_ciav_receipt_chain_sha256(rows: Sequence[Mapping[str, Any]]) -> str:
+    """Hash shared CIAV semantics while excluding run-local consumer-state IDs."""
+
+    semantic_fields = (
+        "arm",
+        "episode_id",
+        "step_id",
+        "packet_sha256",
+        "schedule_commitment_sha256",
+        "candidate_set_sha256",
+        "selected_action_id",
+        "realized_observation_sha256",
+        "motion_cost",
+        "time_cost",
+        "interruption_cost",
+        "privacy_cost",
+        "safety_cost",
+        "privacy_budget_before",
+        "privacy_budget_after",
+        "observation_release_phase",
+        "evaluator_truth_release_phase",
+        "closure_kind",
+    )
+    return content_sha256([{field: row[field] for field in semantic_fields} for row in rows])
+
+
 def _evaluate_single_state(
     dataset: ProjectTwoReplayDataset,
     episode: ProjectTwoReplayEpisode,
@@ -1083,8 +1123,8 @@ def _evaluate_single_state(
         search_errors=search_errors,
         put_back_errors=put_errors,
         normalized_search_regret=search_regret / len(episode.steps),
-        typed_action_chain_sha256=content_sha256(actions),
-        ciav_receipt_chain_sha256=content_sha256(receipts),
+        typed_action_chain_sha256=_semantic_action_chain_sha256(actions),
+        ciav_receipt_chain_sha256=_semantic_ciav_receipt_chain_sha256(receipts),
         schedule_commitment_sha256=schedule,
     )
 
@@ -1274,8 +1314,10 @@ def _evaluate_matched_test_episode(
                 search_errors=int(values["search"]),
                 put_back_errors=int(values["put_back"]),
                 normalized_search_regret=float(values["regret"]) / len(episode.steps),
-                typed_action_chain_sha256=content_sha256(action_rows[state.arm]),
-                ciav_receipt_chain_sha256=content_sha256(receipt_rows[state.arm]),
+                typed_action_chain_sha256=_semantic_action_chain_sha256(action_rows[state.arm]),
+                ciav_receipt_chain_sha256=_semantic_ciav_receipt_chain_sha256(
+                    receipt_rows[state.arm]
+                ),
                 schedule_commitment_sha256=schedule,
                 full_p5_transition_count=(
                     direct.full_p5_transition_count if state.arm is P5ComparisonArm.DIRECT_P5 else 0

@@ -26,6 +26,8 @@ from cpswm.system.evaluation_operations.structure_two_p5_three_arm_death_test im
     _decode_and_score,
     _episode_schedule_commitment,
     _packet_for_step,
+    _semantic_action_chain_sha256,
+    _semantic_ciav_receipt_chain_sha256,
 )
 from cpswm.system.prototype_spine import PrototypeStepResult, PrototypeTransition
 from cpswm.system.reproducibility import content_sha256, content_uuid
@@ -189,9 +191,9 @@ def _evaluate_cell_episode(
         "put_back_error_rate": put_back_errors / step_count,
         "normalized_search_regret": search_regret / step_count,
         "owner_habit_posterior_nonuniform_step_count": nonuniform,
-        "typed_action_chain_sha256": content_sha256(actions),
+        "typed_action_chain_sha256": _semantic_action_chain_sha256(actions),
         "ciav_packet_chain_sha256": content_sha256(packet_commitments),
-        "ciav_receipt_chain_sha256": content_sha256(receipts),
+        "ciav_receipt_chain_sha256": _semantic_ciav_receipt_chain_sha256(receipts),
         "schedule_commitment_sha256": schedule,
         "full_p5_transition_count": state.full_p5_transition_count,
         "negative_ciav_opceu_closure_count": state.negative_ciav_opceu_closure_count,

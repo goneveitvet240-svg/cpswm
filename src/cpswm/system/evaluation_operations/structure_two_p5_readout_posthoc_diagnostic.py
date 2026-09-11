@@ -41,6 +41,8 @@ from cpswm.system.evaluation_operations.structure_two_p5_three_arm_death_test im
     _learned_training_material,
     _packet_for_step,
     _pairwise_signal,
+    _semantic_action_chain_sha256,
+    _semantic_ciav_receipt_chain_sha256,
     _summaries,
     _validation_selection,
     verify_matched_consumption,
@@ -253,8 +255,8 @@ def _evaluate_posthoc_episode(
                 search_errors=int(values["search"]),
                 put_back_errors=int(values["put_back"]),
                 normalized_search_regret=float(values["regret"]) / len(episode.steps),
-                typed_action_chain_sha256=content_sha256(actions[state.arm]),
-                ciav_receipt_chain_sha256=content_sha256(receipts[state.arm]),
+                typed_action_chain_sha256=_semantic_action_chain_sha256(actions[state.arm]),
+                ciav_receipt_chain_sha256=_semantic_ciav_receipt_chain_sha256(receipts[state.arm]),
                 schedule_commitment_sha256=schedule,
                 full_p5_transition_count=(
                     corrected.full_p5_transition_count

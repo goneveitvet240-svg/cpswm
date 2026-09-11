@@ -199,29 +199,7 @@ Ruff check/format、compileall、冻结离线环境核验和 Git 差异检查均
 xfail 原因仍是 shipped wiring 将残差压缩到 [0.269, 0.5] 后，打乱残差信号不能造成预期
 判别损失；没有改科学阈值、断言或 xfail 标记。这一科学不足并未被工程绿色消除。
 
-首轮候选随后于 14:58:09–15:07:17 UTC 完成强制 fresh checkpoint（exit 0），当前性检查
-也通过；但 15:07:36–15:22:37 UTC 的完整定向后检得到 **221 passed、1 failed、0 skipped、
-0 xfailed**。唯一失败是旧测试用 `[1:3]` 固定位置检查 xdist；本轮命令前面增加了
-`-o addopts=`，实际显式加载 xdist 的约束仍成立。单独真实 pytest 复现为 7 passed、1 failed。
-这次失败不能记作最终后检通过。
-
-补修仅将 `test_audit_matrix_contains_frozen_offline_uv_environment_check` 加强为匹配完整
-`core_pytest` 命令元组，同时固定统计覆盖、显式插件、调度和测试范围；没有放松断言、
-改变执行命令或跳过测试。单项修复后真实 pytest 为 1 passed。测试契约补修提交为 `2c2def2f4bcbba855b57cb05f87b731f145ae30a`。运行源码、apps、配置和环境锁
-与 `3dce0485234f941fc9520e52b1fe9d8f14ded892` 相同，五类 v0.3 的执行来源和数值不因这一
-测试契约修复变化。测试文件属于 P0 输入，故必须重新生成 P0、重新执行十条真实工程命令，
-然后重新 fresh checkpoint 和完整定向后检；不得沿用上文首轮回执和候选检查点。
-
-上文首轮 P0/回执/检查点及其原生日志的原始路径和字节完整封存在
-`validation_logs/preseal_command_contract_candidate.tar.gz`（补修目录内），24 个文件均在归档时
-逐字节复核；清单为同名 `.sha256.txt`。它是后检尚未闭合的候选历史，不是已交付的封存版本。
-同一候选还完整保留在补修目录 `candidate_before_command_contract_fix/`，含匹配的旧 P0 和绑定报告。
-首轮 checkpoint content SHA 为 `3d44165604898780e606987d412c55142160524b3bdf00bcb73b41662a4d677f`。
-最终回执和检查点使用本轮原定路径重新生成，候选原字节可从该归档恢复；旧 91dbdc 已封存版本
-及五类 v0.2/v0.3 均不覆盖。以上首轮成功数量和失败记录均保留，最终哈希、第二轮命令统计及
-后检结果见 closure 输出报告与 `commands.jsonl`，不将不同轮次拼成通过。
-
-本报告到此作为最终 checkpoint 的固定输入。强制 fresh checkpoint 生成、随后当前性检查、
+本报告到此作为 checkpoint 的固定输入。强制 fresh checkpoint 生成、随后当前性检查、
 原 169 项对应套件加 53 项补修测试的最终整体运行，以及提交后检查，以各自完成后的原始日志
 和 `structure_two_evidence_repair_window1_supplement_closure_2026-09-11.md` 作为输出记录。
 后检记录不反写本报告或其他已绑定输入，避免用新报告搭配旧 checkpoint；只有这些实际命令

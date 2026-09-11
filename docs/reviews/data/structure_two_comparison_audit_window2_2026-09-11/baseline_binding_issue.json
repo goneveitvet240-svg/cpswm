@@ -1,0 +1,28 @@
+{
+  "bindings": {
+    "benchmarks/structure_two/structure_two_p5_three_arm_death_test_v0_1.json": {
+      "equals_common_start": true,
+      "sha256": "a25b8619fd0270b863bfd0aa8e91767a0cd6274d164f3529424175fe7218bfcf"
+    },
+    "configs/project_two_experiments/structure_two_p5_readout_posthoc_diagnostic_v0_1.json": {
+      "equals_common_start": true,
+      "sha256": "b8bd3a960e04db041bb71a0ca81a05022a25e094745ca40755d35cebe753744e"
+    }
+  },
+  "error": "ValueError: retained v0.1 result file hash drifted",
+  "expected_sha256": "1a617567a224d11eca20f589a9aa84ddc2195494263bc58f2c4fb21030643c04",
+  "failing_test": "tests/test_structure_two_p5_readout_posthoc_diagnostic.py::test_posthoc_config_discloses_opened_test_and_forbids_positive_receipt",
+  "issue": "historical posthoc artifact binding mismatch at common start",
+  "regression_run": {
+    "failed": 1,
+    "passed": 15,
+    "seconds": 93.07,
+    "test_files": [
+      "tests/test_structure_two_p5_three_arm_death_test.py",
+      "tests/test_structure_two_p5_unseen_d0_holdout.py",
+      "tests/test_structure_two_p5_readout_posthoc_diagnostic.py",
+      "tests/test_structure_two_p5_three_arm_contract.py"
+    ]
+  },
+  "resolution": "No historical file changed. Trace exact historical bytes and issue a new versioned provenance correction; do not replace the expected hash merely to pass."
+}

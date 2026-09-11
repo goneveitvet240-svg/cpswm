@@ -1304,13 +1304,26 @@ class StructureTwoProductionSystem:
             },
             debt_certificate=certificate,
         )
-        maintenance_calls = (
+        # The frozen P0 consumption graph is
+        # ``ccrr <- cf_bocpd`` and ``rgrc <- (pchmp, ccrr)``.  Those declared edges are
+        # satisfied by passing the produced upstream payloads into the downstream
+        # maintenance callables, so the receipted DAG is a real data dependency rather
+        # than a caller-side annotation.
+        maintenance_outputs: dict[str, Mapping[str, object]] = {}
+        maintenance_calls: tuple[
+            tuple[str, str, tuple[object, ...] | None, tuple[RuntimeOperatorName, ...]], ...
+        ] = (
             ("pchmp", "_adaptive_pchmp_safety_maintenance", (transition,), ()),
             ("cf_bocpd", "_adaptive_cf_bocpd_safety_maintenance", (), ()),
-            ("ccrr", "_adaptive_ccrr_safety_maintenance", (), ("cf_bocpd",)),
-            ("rgrc", "_adaptive_rgrc_debt_guard", (), ("pchmp", "ccrr")),
+            ("ccrr", "_adaptive_ccrr_safety_maintenance", None, ("cf_bocpd",)),
+            ("rgrc", "_adaptive_rgrc_debt_guard", None, ("pchmp", "ccrr")),
         )
-        for operator, callable_name, args, consumes in maintenance_calls:
+        for operator, callable_name, fixed_args, consumes in maintenance_calls:
+            args = (
+                fixed_args
+                if fixed_args is not None
+                else tuple(maintenance_outputs[name] for name in consumes)
+            )
             recorder.bind_operator(
                 operator,
                 bind_runtime_callable(
@@ -1324,11 +1337,15 @@ class StructureTwoProductionSystem:
             )
             started_ns = perf_counter_ns()
             output = getattr(self.core, callable_name)(*args)
+            maintenance_outputs[operator] = output
             recorder.record_executed(
                 operator,
                 raw_input={
                     "origin_transition_sha256": certificate.origin_transition_sha256,
                     "debt_certificate_sha256": certificate.certificate_sha256,
+                    "consumed_operator_output_sha256s": {
+                        name: content_sha256(maintenance_outputs[name]) for name in consumes
+                    },
                 },
                 output=output,
                 consumes=consumes,

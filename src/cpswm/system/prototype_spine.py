@@ -1038,23 +1038,42 @@ class CorePrototypeSpine:
             "posterior_advanced": False,
         }
 
-    def _adaptive_ccrr_safety_maintenance(self) -> dict[str, object]:
-        """Verify the current regime head without permitting a transition."""
+    def _adaptive_ccrr_safety_maintenance(
+        self, cf_bocpd_maintenance: Mapping[str, object]
+    ) -> dict[str, object]:
+        """Verify the current regime head without permitting a transition.
+
+        ``ADAPTIVE_PRIMARY_CONSUMPTION_GRAPHS["P0_SAFE_DEFERRED"]`` declares
+        ``ccrr <- cf_bocpd``.  The frozen edge is only real if this callable actually
+        receives the upstream maintenance payload and its own output depends on it,
+        so the consumed payload is bound into the returned receipt body.
+        """
 
         return {
             "active_regime": self.active_regime,
             "pending_candidate_sha256": content_sha256(self._automatic_regimes._pending),
             "regime_transition_applied": False,
+            "consumed_cf_bocpd_maintenance_sha256": content_sha256(cf_bocpd_maintenance),
         }
 
-    def _adaptive_rgrc_debt_guard(self) -> dict[str, object]:
-        """Return a source-bound denial of long-term writes while debt is pending."""
+    def _adaptive_rgrc_debt_guard(
+        self,
+        pchmp_maintenance: Mapping[str, object],
+        ccrr_maintenance: Mapping[str, object],
+    ) -> dict[str, object]:
+        """Return a source-bound denial of long-term writes while debt is pending.
+
+        The frozen P0 graph declares ``rgrc <- (pchmp, ccrr)``; both upstream payloads
+        are therefore consumed here and bound into the returned receipt body.
+        """
 
         return {
             "belief_snapshot_id": str(self.current_snapshot.snapshot_id),
             "committed_revision_count": len(self._committed_events),
             "quarantined_revision_count": len(self._quarantined_events),
             "long_term_write_authorized": False,
+            "consumed_pchmp_maintenance_sha256": content_sha256(pchmp_maintenance),
+            "consumed_ccrr_maintenance_sha256": content_sha256(ccrr_maintenance),
         }
 
     def _mutation_is_forbidden_during_sink_commit(self) -> bool:

@@ -1,0 +1,44 @@
+{
+  "semantic_steps_equal": true,
+  "summary_equal": true,
+  "semantic_steps_sha256": "d32b9d7bd2ff4963d8a71939fe752b260806e8775b692d602ac4588205f70c76",
+  "steps": 1920,
+  "episodes": 60,
+  "errors": {
+    "direct_p5_full_eager": 85,
+    "independently_tuned_amg": 102,
+    "learned_matched_two_stage": 533
+  },
+  "categories": {
+    "both_correct": 1818,
+    "both_wrong": 85,
+    "p5_loses": 0,
+    "p5_wins": 17
+  },
+  "cold_control": {
+    "development_only": true,
+    "original_amg_errors": 53,
+    "steps": 53,
+    "trigger": "fresh AMG replay amg_owner_location is None; no P5 or truth-based selection",
+    "uniform_amg_equals_p5_steps": 53,
+    "uniform_amg_errors": 36
+  },
+  "amg_whole_errors_after_cold_control": 85,
+  "committed_histogram": {
+    "0": 1920
+  },
+  "p5_fast_action_disagreements": 0,
+  "search_equal_steps": 1920,
+  "historical_action_checks": {
+    "passed": 180,
+    "total": 180
+  },
+  "changed_payload_fields": [
+    "source_bindings",
+    "verification_schema_version"
+  ],
+  "changed_attribution_fields": [
+    "script_sha256"
+  ],
+  "formal_scientific_verification": false
+}

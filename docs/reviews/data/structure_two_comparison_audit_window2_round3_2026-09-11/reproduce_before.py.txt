@@ -1,0 +1,28 @@
+import hashlib,json,os,shutil,subprocess
+from pathlib import Path
+A=Path('/private/tmp/s2-comparison-audit-window2-20260911')
+B=Path('/private/tmp/s2-w2-round3-cross-source-B')
+E=A/'docs/reviews/data/structure_two_comparison_audit_window2_round3_2026-09-11/evidence'
+py='/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/.venv/bin/python'
+shutil.copytree(A/'src',B/'src',ignore=shutil.ignore_patterns('__pycache__'))
+rel=Path('src/cpswm/system/evaluation_operations/structure_two_comparison_audit.py')
+p=B/rel;s=p.read_text();old='name: len(getattr(core, name))';assert s.count(old)==1
+p.write_text(s.replace(old,"name: 999 if name == '_committed_events' else len(getattr(core, name))"))
+env={**os.environ,'PYTHONPATH':str(B/'src')}
+bundles=[A/'docs/reviews/data/structure_two_comparison_audit_window2_r1_2026-09-11'/x for x in ('bundle_v2','counterexamples/r1_current_source')]
+def digests():return {str(p):hashlib.sha256(p.read_bytes()).hexdigest() for b in bundles for p in b.iterdir() if p.is_file()}
+probe=[py,'-c','import json; from cpswm.system.evaluation_operations import structure_two_comparison_audit as m; print(json.dumps({"loaded_module":m.__file__,"code_filename":m._p5_readouts.__code__.co_filename}))']
+identity=subprocess.check_output(probe,cwd=A,env=env,text=True)
+cmd=[py,str(A/'apps/evaluation_runner/summarize_structure_two_comparison_audit.py')]
+for b in bundles:cmd.extend(['--bundle',str(b)])
+cmd.append('--verify')
+record={'command':cmd,'probe_command':probe,'PYTHONPATH':env['PYTHONPATH'],'declared_root':str(A),'actual_load_probe':json.loads(identity),'declared_source_sha256':hashlib.sha256((A/rel).read_bytes()).hexdigest(),'loaded_source_sha256':hashlib.sha256(p.read_bytes()).hexdigest(),'before_bundle_hashes':digests()}
+(E/'cross_source_before_identity.json').write_text(json.dumps(record,indent=2)+'\n')
+with (E/'cross_source_before.log').open('w') as log:
+    result=subprocess.run(cmd,cwd=A,env=env,stdout=log,stderr=subprocess.STDOUT)
+record.update(exit_code=result.returncode,after_bundle_hashes=digests())
+record['response']=json.loads((E/'cross_source_before.log').read_text().splitlines()[-1])
+assert record['before_bundle_hashes']==record['after_bundle_hashes']
+assert record['response']['results'][1]['status']=='CURRENT_SOURCE_FRESH_REPLAY_MATCH'
+(E/'cross_source_before_result.json').write_text(json.dumps(record,indent=2)+'\n')
+print('REPRODUCED: forged package positively certified; batch exit',result.returncode)

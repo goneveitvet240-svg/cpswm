@@ -406,6 +406,16 @@ cryptography 46 的 `Ed25519PublicKey` 不可 `deepcopy`（4 项）；
 全量套件在本容器内未跑完（2 核 + 语法降级夹具下推进到 56% 时被主动终止，以把 CPU 让给上面的差分回归）。
 因此全量结果标记为 `not_covered`。
 
+## 9.2 本窗口提交
+
+| 项 | 值 |
+|---|---|
+| 分支 | `codex/s2-backbone-operators-w3` |
+| 起点 | `09eb4d48e1c11082e90ca18332d04333e6b5b47a` |
+| 提交 | `5c45005ca0d37c666cd796bbb11ba1edcc3624d8` |
+| 变更文件 | `src/cpswm/system/prototype_spine.py`（+27/-6）、`src/cpswm/system/structure_two_production_system.py`（+25/-2）、`tests/structure_two_backbone_wiring_probe.py`（新增）、`tests/test_structure_two_backbone_operator_wiring.py`（新增）、本报告（新增） |
+| 工作方式 | 独立 git worktree，原工作区未改动（`git status` 仅保留其既有的 `?? .claude/`） |
+
 ## 10. 本报告不授权的事项
 
 * 不签发 `TrustedSevenOperatorAblationAuthorization`，不运行七算子消融，不运行路由器训练；

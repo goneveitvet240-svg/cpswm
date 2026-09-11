@@ -525,6 +525,19 @@ $V docs/reviews/data/structure_two_windows2_3_adversarial_review_2026-09-11/coun
 - 旧产物的真实失败状态原样保留，本轮没有覆盖任何历史产物；
 - 待窗口一完成、最终源码版本确定后，由证据链工作在同一版本上统一重算并重新签发。
 
+## 10.4 本轮提交
+
+| 项 | 值 |
+|---|---|
+| 分支 | `codex/s2-backbone-operators-w3` |
+| 本轮提交 | `77724e81fb58d72ae6b009c4958948bc7fe87096` |
+| 本轮起点 | `d6db421d33b6499ca7dfbead3d4ecb543a371970` |
+| 共同起点 | `09eb4d48e1c11082e90ca18332d04333e6b5b47a` |
+| 变更规模 | 11 个文件，+2540 / -46 |
+| 生产源码变更 | `prototype_spine.py`、`structure_two_execution.py`、`ciav_opceu_loop.py`（`structure_two_production_system.py` 为第一轮变更，本轮未再改） |
+| 新增测试 | 4 个文件，64 项 |
+| 工作方式 | macOS 原生独立 worktree `/private/tmp/s2-w3-native`；用户主工作区未改动 |
+
 ## 11. 本报告不授权的事项
 
 - 不签发 `TrustedSevenOperatorAblationAuthorization`，不运行七算子消融，不训练路由器；

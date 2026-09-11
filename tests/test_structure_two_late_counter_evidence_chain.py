@@ -158,6 +158,9 @@ def test_formal_counter_evidence_removes_exactly_one_lineage_and_reconciles() ->
     before_alpha.update({item: core.hybrid_alpha(item) for item in probe.case.locations})
     before_committed = set(core._committed_events)
     before_map = core.current_snapshot.map_version
+    # Journal the expected answer BEFORE the mutation, from the pre-retraction
+    # state, so the assertion below never reads the system's own final set.
+    assert core._quarantined_events == [], "legacy history must start with no quarantine"
 
     revision_id, result, event_weight = _retract_one_at(probe, target_location)
 
@@ -165,7 +168,10 @@ def test_formal_counter_evidence_removes_exactly_one_lineage_and_reconciles() ->
     assert revision_id not in core._committed_events
     assert revision_id not in core._observed_events
     assert core._hybrid_loop.ledger.live_promoted_records_for_revision(revision_id) == ()
-    assert set(core._committed_events) <= before_committed | set(core._committed_events)
+    # Round two asserted ``A <= B | A`` here, which is a tautology.  With nothing
+    # quarantined beforehand there is nothing a rebuild could legitimately promote,
+    # so the surviving set is exactly the journalled set minus the retracted one.
+    assert set(core._committed_events) == before_committed - {revision_id}
     assert core.hybrid_alpha(target_location) == pytest.approx(
         before_alpha[target_location] - event_weight, abs=1e-6
     )
@@ -420,31 +426,43 @@ def test_counter_evidence_on_an_adaptively_committed_event_removes_its_lineage()
     _assert_reconciled(probe)
 
 
-def test_one_formal_revision_promotes_every_write_blocked_quarantined_observation() -> None:
-    """Characterization of an unresolved production breakpoint -- not an approval.
+def test_one_formal_revision_never_promotes_a_write_blocked_quarantined_observation() -> None:
+    """Round two pinned this as an open breakpoint; round three repairs it.
 
     Every adaptive primary pass runs with ``force_long_term_write_blocked=True`` and
-    the P0 RGRC guard reports ``long_term_write_authorized: False``.  A single formal
-    revision nevertheless triggers ``_rebuild_personalized_models``, whose
-    ``_recompute_active_regime`` replay reclassifies the whole observation log and
-    commits the previously quarantined observations.
+    the P0 RGRC guard reports ``long_term_write_authorized: False``.  Before the
+    repair, one formal revision triggered ``_rebuild_personalized_models`` whose
+    replay reclassified the whole observation log and committed those blocked
+    observations -- an unauthorized long-term commit under
+    ``maximum_unauthorized_long_term_commits == 0``.
 
-    Whether a rebuild may promote observations that the adaptive lane blocked is a
-    long-term-commit criterion, so it is pinned here and escalated as a decision item
-    rather than changed unilaterally.
+    The repair records each observation's origin write eligibility and refuses to
+    let a rebuild promote a blocked one without a recorded authorization.  The
+    detailed reproduction of both retraction targets, the lineage journal and the
+    legacy-lane control live in
+    ``tests/test_structure_two_formal_revision_lineage.py``.
     """
 
     probe = _adaptive_history()
     core = probe.system.core
     committed_before = set(core._committed_events)
+    blocked_before = {
+        revision_id
+        for revision_id in core._observed_events
+        if core.observation_write_eligibility(revision_id)["origin_write_blocked"]
+    }
     quarantined_before = {event.revision_id for event in core._quarantined_events}
     assert quarantined_before
+    assert blocked_before & quarantined_before
 
     target_location = max(probe.case.locations, key=core.hybrid_alpha)
     _retract_one_at(probe, target_location)
 
     newly_committed = set(core._committed_events) - committed_before
-    assert newly_committed
     assert newly_committed <= quarantined_before
-    assert core._quarantined_events == []
+    assert newly_committed & blocked_before == set()
+    assert set(core._committed_events) & blocked_before == set()
+    # The blocked observations keep their quarantine: withheld, never deleted.
+    surviving_blocked = blocked_before & set(core._observed_events)
+    assert surviving_blocked <= {event.revision_id for event in core._quarantined_events}
     _assert_reconciled(probe)

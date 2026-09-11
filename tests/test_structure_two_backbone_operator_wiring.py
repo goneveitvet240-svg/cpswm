@@ -13,7 +13,6 @@ import inspect
 from uuid import uuid4
 
 import pytest
-
 from structure_two_backbone_wiring_probe import (
     STRUCTURE_TWO_OPERATOR_ORDER,
     BackboneWiringProbe,
@@ -339,10 +338,8 @@ def test_retracting_a_promoted_revision_removes_its_contribution_exactly_once() 
 def test_p0_defers_orrer_and_ciav_behind_exactly_one_bound_debt_certificate() -> None:
     probe = BackboneWiringProbe.build(seed=7)
     transition = probe.transition_for(probe.observed_days()[0])
-    result, sink = probe.run_adaptive(
-        transition, features=_p0_features(probe), debt_expiry_steps=1
-    )
-    trace, rows = verify_and_flatten(sink)
+    result, sink = probe.run_adaptive(transition, features=_p0_features(probe), debt_expiry_steps=1)
+    _, rows = verify_and_flatten(sink)
 
     assert result.path_selection.selected_path_id == "P0_SAFE_DEFERRED"
     assert primary_operator_sequence(rows) == STRUCTURE_TWO_OPERATOR_ORDER
@@ -373,7 +370,7 @@ def test_expired_debt_replay_runs_p5_settles_once_and_refuses_a_repeat() -> None
     debt = deferred.debt_certificates[0]
 
     replayed, sink = probe.replay_debt(debt.debt_id, ciav_input=ciav_input)
-    trace, rows = verify_and_flatten(sink)
+    trace, _ = verify_and_flatten(sink)
 
     assert replayed.path_selection.selected_path_id == "P5_FULL_EAGER"
     assert trace.replayed_debt_certificates == (debt,)
@@ -442,9 +439,7 @@ def test_direct_p5_and_debt_replay_agree_on_every_semantic_quantity() -> None:
             features=_p0_features(probe),
             debt_expiry_steps=1,
         )
-        result, _ = probe.replay_debt(
-            deferred.debt_certificates[0].debt_id, ciav_input=ciav_input
-        )
+        result, _ = probe.replay_debt(deferred.debt_certificates[0].debt_id, ciav_input=ciav_input)
         return probe, result
 
     direct_probe, direct_result = direct()
@@ -514,9 +509,7 @@ def test_p5_declared_consumption_matches_the_frozen_graph_on_both_phases() -> No
     primary_graph = ADAPTIVE_PRIMARY_CONSUMPTION_GRAPHS["P5_FULL_EAGER"]
     for row in rows:
         if row.phase == "selected_path":
-            expected = tuple(
-                f"selected_path:{name}" for name in primary_graph[row.operator]
-            )
+            expected = tuple(f"selected_path:{name}" for name in primary_graph[row.operator])
         else:
             expected = tuple(
                 ("selected_path:ciav" if name == "ciav" else f"feedback_closure:{name}")
@@ -539,60 +532,110 @@ def test_p0_downstream_maintenance_checks_its_declared_upstream_dependency() -> 
     probe = BackboneWiringProbe.build(seed=7)
     core = probe.system.core
 
-    ccrr_parameters = list(
-        inspect.signature(core._adaptive_ccrr_safety_maintenance).parameters
-    )
+    ccrr_parameters = list(inspect.signature(core._adaptive_ccrr_safety_maintenance).parameters)
     rgrc_parameters = list(inspect.signature(core._adaptive_rgrc_debt_guard).parameters)
     assert ccrr_parameters == ["cf_bocpd_maintenance"]
     assert rgrc_parameters == ["pchmp_maintenance", "ccrr_maintenance"]
 
-    clean = core._adaptive_cf_bocpd_safety_maintenance()
-    assert core._adaptive_ccrr_safety_maintenance(clean)["maintenance_kind"] == (
-        "ccrr_safety_maintenance"
-    )
-    with pytest.raises(AdaptiveMaintenanceContractError):
-        core._adaptive_ccrr_safety_maintenance({**clean, "posterior_advanced": True})
-
     transition = probe.transition_for(probe.observed_days()[0])
-    pchmp = core._adaptive_pchmp_safety_maintenance(transition)
-    ccrr = core._adaptive_ccrr_safety_maintenance(clean)
-    assert core._adaptive_rgrc_debt_guard(pchmp, ccrr)["long_term_write_authorized"] is False
-    with pytest.raises(AdaptiveMaintenanceContractError):
-        core._adaptive_rgrc_debt_guard(
-            {**pchmp, "unexecuted_inference_encoded_as_negative": True}, ccrr
+
+    # Outside a runtime-owned execution context every maintenance node fails closed:
+    # there is no trusted record to check a declared dependency against.
+    for call in (
+        lambda: core._adaptive_cf_bocpd_safety_maintenance(),
+        lambda: core._adaptive_pchmp_safety_maintenance(transition),
+    ):
+        with pytest.raises(
+            AdaptiveMaintenanceContractError,
+            match="outside a bound adaptive execution context",
+        ):
+            call()
+
+    with probe.maintenance_context(transition):
+        clean = core._adaptive_cf_bocpd_safety_maintenance()
+        assert core._adaptive_ccrr_safety_maintenance(clean)["maintenance_kind"] == (
+            "ccrr_safety_maintenance"
         )
+        with pytest.raises(AdaptiveMaintenanceContractError):
+            core._adaptive_ccrr_safety_maintenance({**clean, "posterior_advanced": True})
+
+        pchmp = core._adaptive_pchmp_safety_maintenance(transition)
+        ccrr = core._adaptive_ccrr_safety_maintenance(clean)
+        assert core._adaptive_rgrc_debt_guard(pchmp, ccrr)["long_term_write_authorized"] is False
+        with pytest.raises(AdaptiveMaintenanceContractError):
+            core._adaptive_rgrc_debt_guard(
+                {**pchmp, "unexecuted_inference_encoded_as_negative": True}, ccrr
+            )
 
 
 def test_p0_receipts_are_reproducible_from_the_checked_dependency_chain() -> None:
     """Each P0 maintenance receipt must be recomputable from its declared upstream.
 
-    This is the end-to-end form: replay the chain
-    ``cf_bocpd -> ccrr`` and ``(pchmp, ccrr) -> rgrc`` against the same runtime and
-    check every recomputed body reproduces the sealed ``output_payload_sha256``.
+    Round two recomputed the four bodies out of band and compared their hashes to
+    the sealed receipts.  That is no longer the right property, and the round-2
+    review was right that it was weak: the maintenance payloads are now stamped
+    with the runtime's own execution identity and epoch, so an out-of-band rerun
+    *must* produce different hashes -- that is the R2 fix, not a regression.
+
+    The surviving reproduction property is over the sealed chain itself: every
+    downstream receipt's recorded ``raw_input`` must name the upstream receipt's
+    own sealed ``output_payload_sha256`` and the real debt certificate, so the
+    recorded DAG can be recomputed from the trace without trusting any payload's
+    self-report.  Cross-execution substitution is then asserted to fail.
     """
 
     probe = BackboneWiringProbe.build(seed=7)
     transition = probe.transition_for(probe.observed_days()[0])
-    _, sink = probe.run_adaptive(
-        transition, features=_p0_features(probe), debt_expiry_steps=1
-    )
+    result, sink = probe.run_adaptive(transition, features=_p0_features(probe), debt_expiry_steps=1)
     _, rows = verify_and_flatten(sink)
     by_operator = {row.operator: row for row in rows}
+    assert len(result.debt_certificates) == 1
+    certificate = result.debt_certificates[0]
 
+    expected_consumption: dict[str, tuple[str, ...]] = {
+        "pchmp": (),
+        "cf_bocpd": (),
+        "ccrr": ("cf_bocpd",),
+        "rgrc": ("pchmp", "ccrr"),
+    }
+    for operator, consumes in expected_consumption.items():
+        recomputed = content_sha256(
+            {
+                "origin_transition_sha256": certificate.origin_transition_sha256,
+                "debt_certificate_sha256": certificate.certificate_sha256,
+                "consumed_operator_output_sha256s": {
+                    name: by_operator[name].output_payload_sha256 for name in consumes
+                },
+            }
+        )
+        assert recomputed == by_operator[operator].raw_input_sha256, operator
+        assert by_operator[operator].consumed_producers == tuple(
+            f"selected_path:{name}" for name in consumes
+        )
+
+    # The same chain, replayed against the same runtime in a *different* trusted
+    # context, no longer reproduces the sealed receipts: each body carries the
+    # execution identity and epoch it was actually produced under.
     core = probe.system.core
-    cf_bocpd_output = core._adaptive_cf_bocpd_safety_maintenance()
-    pchmp_output = core._adaptive_pchmp_safety_maintenance(transition)
-    ccrr_output = core._adaptive_ccrr_safety_maintenance(cf_bocpd_output)
-    rgrc_output = core._adaptive_rgrc_debt_guard(pchmp_output, ccrr_output)
+    with probe.maintenance_context(transition):
+        cf_bocpd_output = core._adaptive_cf_bocpd_safety_maintenance()
+        pchmp_output = core._adaptive_pchmp_safety_maintenance(transition)
+        ccrr_output = core._adaptive_ccrr_safety_maintenance(cf_bocpd_output)
+        rgrc_output = core._adaptive_rgrc_debt_guard(pchmp_output, ccrr_output)
 
-    assert content_sha256(cf_bocpd_output) == by_operator["cf_bocpd"].output_payload_sha256
-    assert content_sha256(pchmp_output) == by_operator["pchmp"].output_payload_sha256
-    assert content_sha256(ccrr_output) == by_operator["ccrr"].output_payload_sha256
-    assert content_sha256(rgrc_output) == by_operator["rgrc"].output_payload_sha256
+    replayed = {
+        "cf_bocpd": cf_bocpd_output,
+        "pchmp": pchmp_output,
+        "ccrr": ccrr_output,
+        "rgrc": rgrc_output,
+    }
+    for operator, body in replayed.items():
+        assert content_sha256(body) != by_operator[operator].output_payload_sha256, operator
 
-    # The recorded raw_input must name the same upstream hashes the chain produced.
+    # Within one execution the internal chain declarations still hold exactly.
     assert ccrr_output["consumed_cf_bocpd_maintenance_sha256"] == content_sha256(cf_bocpd_output)
     assert rgrc_output["consumed_ccrr_maintenance_sha256"] == content_sha256(ccrr_output)
+    assert rgrc_output["consumed_pchmp_maintenance_sha256"] == content_sha256(pchmp_output)
 
 
 # ---------------------------------------------------------------------------
@@ -649,9 +692,7 @@ def test_only_the_first_declared_instance_of_each_operator_is_identity_checked()
     symbols = {
         row.operator: row.implementation_symbol for row in rows if row.phase == "selected_path"
     }
-    assert symbols["orrer_cheh"].endswith(
-        "OpenWorldRoleConditionedReversibleEventRevisionEngine"
-    )
+    assert symbols["orrer_cheh"].endswith("OpenWorldRoleConditionedReversibleEventRevisionEngine")
     instances = probe.system.runtime_operator_instances()
     assert len(instances["orrer_cheh"]) == 2
 
@@ -705,9 +746,7 @@ def test_long_term_consolidation_on_the_adaptive_lane_needs_a_different_location
     probe = BackboneWiringProbe.build(seed=7)
     for observation in probe.observed_days()[:14]:
         transition = probe.transition_for(observation)
-        probe.run_direct_p5(
-            transition, ciav_input=probe.ciav_input(transition, outcome=outcome)
-        )
+        probe.run_direct_p5(transition, ciav_input=probe.ciav_input(transition, outcome=outcome))
 
     committed = len(probe.committed_revision_ids())
     quarantined = len(probe.quarantined_revision_ids())

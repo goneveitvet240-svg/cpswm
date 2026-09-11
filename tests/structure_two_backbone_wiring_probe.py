@@ -39,7 +39,9 @@ gate result.
 
 from __future__ import annotations
 
-from collections.abc import Mapping, Sequence
+import sys
+from collections.abc import Iterator, Mapping, Sequence
+from contextlib import contextmanager
 from dataclasses import dataclass, field
 from datetime import datetime, timedelta
 from enum import StrEnum
@@ -164,6 +166,85 @@ class FailingTraceSink(ProbeTraceSink):
         raise RuntimeError("probe trace sink refused the commit")
 
 
+class RuntimeCallRecorder:
+    """Count real operator calls and capture their real arguments, non-invasively.
+
+    Nothing is replaced: the recorder installs a profile hook and reads the live
+    frames, so every runtime identity guard, source binding and receipt is produced
+    by exactly the same objects the untraced run would use.  Replacing the planner
+    or the CIAV loop to observe them would change what the run is evidence *of*.
+
+    ``calls`` is the real per-seam call count -- the number the round-2 review used
+    to show that the legacy entrypoint never calls CIAV at all.
+    """
+
+    def __init__(self, system: StructureTwoProductionSystem) -> None:
+        self._codes = {
+            system.cause_information_planner.select.__func__.__code__: "ciav_planner",
+            system.ciav_opceu_loop.execute_selected_action.__func__.__code__: "ciav_executor",
+            type(system)._execute_ciav_operator.__code__: "ciav_operator",
+            type(system.core)._process_transition.__code__: "core_process_transition",
+        }
+        self.calls: dict[str, int] = dict.fromkeys(self._codes.values(), 0)
+        self.captured: dict[str, Any] = {}
+        self._previous: Any = None
+
+    def _profile(self, frame: Any, event: str, _arg: Any) -> None:
+        name = self._codes.get(frame.f_code)
+        if name is None:
+            return
+        if event == "call":
+            self.calls[name] += 1
+            if name == "ciav_executor":
+                locals_ = dict(frame.f_locals)
+                self.captured["ciav_executor_arguments"] = {
+                    key: value for key, value in locals_.items() if key not in {"self", "realizer"}
+                }
+                # The algorithmic subset: everything the CIAV posterior and the
+                # OPCEU propensity are computed from, with the per-run identifiers
+                # (update id, trace/session ids, opportunity time) left out.  Those
+                # identifiers are freshly generated per run -- the still-open
+                # ``_execution_observable_state_sha256`` reproducibility gap -- so
+                # including them would make every comparison trivially "changed".
+                self.captured["ciav_executor_algorithmic_input"] = {
+                    key: locals_.get(key)
+                    for key in (
+                        "actor_prior",
+                        "actor_likelihoods_by_outcome",
+                        "selection_probability",
+                        "p_visible_given_state",
+                        "p_detect_given_visible",
+                        "expected_detected_location_id",
+                        "actor_keys",
+                        "location_keys",
+                    )
+                }
+        elif event == "return" and name == "ciav_operator":
+            locals_ = dict(frame.f_locals)
+            for key in ("snapshot", "belief", "plan", "primary_actor_prior"):
+                if key in locals_:
+                    self.captured[f"ciav_operator_{key}"] = locals_[key]
+            owner = locals_.get("self")
+            if owner is not None:
+                # The runtime's live cause snapshot at the moment CIAV finished,
+                # before the feedback closure advances it.  Captured here so the
+                # CF -> CIAV link can be checked by object identity and not only
+                # by content.
+                live = owner.core.current_cause_snapshot
+                self.captured["runtime_cause_snapshot"] = live
+                self.captured["runtime_cause_snapshot_is_ciav_input"] = live is locals_.get(
+                    "snapshot"
+                )
+
+    def __enter__(self) -> RuntimeCallRecorder:
+        self._previous = sys.getprofile()
+        sys.setprofile(self._profile)
+        return self
+
+    def __exit__(self, *_exc: object) -> None:
+        sys.setprofile(self._previous)
+
+
 @dataclass(frozen=True, slots=True)
 class OperatorCallRow:
     """One receipted operator disposition, flattened for assertions."""
@@ -178,6 +259,7 @@ class OperatorCallRow:
     implementation_symbol: str | None
     operator_instance_id: str | None
     consumed_producers: tuple[str, ...]
+    raw_input_sha256: str
     input_payload_sha256: str
     output_payload_sha256: str
 
@@ -188,9 +270,7 @@ def trace_rows(trace: StructureTwoExecutionTrace) -> tuple[OperatorCallRow, ...]
     producer_by_output: dict[str, str] = {}
     rows: list[OperatorCallRow] = []
     for receipt in trace.receipts:
-        consumed = tuple(
-            producer_by_output[output_id] for output_id in receipt.consumed_output_ids
-        )
+        consumed = tuple(producer_by_output[output_id] for output_id in receipt.consumed_output_ids)
         rows.append(
             OperatorCallRow(
                 sequence=receipt.sequence,
@@ -203,6 +283,7 @@ def trace_rows(trace: StructureTwoExecutionTrace) -> tuple[OperatorCallRow, ...]
                 implementation_symbol=receipt.implementation_symbol,
                 operator_instance_id=receipt.operator_instance_id,
                 consumed_producers=consumed,
+                raw_input_sha256=receipt.raw_input_sha256,
                 input_payload_sha256=receipt.input_payload_sha256,
                 output_payload_sha256=receipt.output_payload_sha256,
             )
@@ -219,9 +300,7 @@ def receipt_output_sha256_by_operator(
     """Output payload hash per operator for one trace phase."""
 
     return {
-        row.operator: row.output_payload_sha256
-        for row in trace_rows(trace)
-        if row.phase == phase
+        row.operator: row.output_payload_sha256 for row in trace_rows(trace) if row.phase == phase
     }
 
 
@@ -538,6 +617,43 @@ class BackboneWiringProbe:
         )
         self.step_index += 1
         return result, sink
+
+    # ------------------------------------------------------------------
+    # deferred-path maintenance context
+    # ------------------------------------------------------------------
+
+    @contextmanager
+    def maintenance_context(
+        self,
+        transition: PrototypeTransition,
+        *,
+        runtime_execution_id: UUID | None = None,
+        debt_certificate_sha256: str | None = None,
+        origin_transition_sha256: str | None = None,
+    ) -> Iterator[Any]:
+        """Open the same trusted context the formal P0 entry opens.
+
+        The four ``_adaptive_*`` maintenance nodes fail closed outside a bound
+        context, because the runtime -- not the payload -- must own the transition,
+        debt and execution identity they are checked against.  A unit-level probe
+        therefore has to act as the runtime owner, exactly as
+        ``StructureTwoProductionSystem._execute_p0_safe_deferred`` does.  This is a
+        development probe over a real production seam, not a substitute runtime: the
+        end-to-end behaviour is covered separately through ``run_adaptive``.
+        """
+
+        core = self.system.core
+        context = core.bind_adaptive_maintenance_context(
+            runtime_execution_id=runtime_execution_id or uuid4(),
+            transition=transition,
+            debt_certificate_sha256=debt_certificate_sha256
+            or content_sha256({"probe_debt_certificate": content_sha256(transition)}),
+            origin_transition_sha256=origin_transition_sha256 or content_sha256(transition),
+        )
+        try:
+            yield context
+        finally:
+            core.clear_adaptive_maintenance_context()
 
     # ------------------------------------------------------------------
     # observable state

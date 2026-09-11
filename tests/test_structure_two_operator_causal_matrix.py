@@ -102,9 +102,7 @@ def test_opceu_visibility_intervention_reaches_the_numeric_state_and_the_decisio
     probe, core, result = _legacy_run(DECODED_FLIP_DAYS, p_visible_given_state=0.35)
 
     # handoff: OPCEU's own output moved
-    assert result.propensity.applied_weight != pytest.approx(
-        base_result.propensity.applied_weight
-    )
+    assert result.propensity.applied_weight != pytest.approx(base_result.propensity.applied_weight)
     # numeric state: the Hybrid mass RGRC owns moved
     majority = max(base_probe.case.locations, key=base_core.hybrid_alpha)
     assert core.hybrid_alpha(majority) != pytest.approx(base_core.hybrid_alpha(majority))
@@ -119,9 +117,7 @@ def test_opceu_null_control_a_field_it_never_reads_changes_nothing() -> None:
     base_probe, _, base_result = _legacy_run(DECODED_FLIP_DAYS)
     probe, _, result = _legacy_run(DECODED_FLIP_DAYS, context_key="weekend|away")
 
-    assert result.propensity.applied_weight == pytest.approx(
-        base_result.propensity.applied_weight
-    )
+    assert result.propensity.applied_weight == pytest.approx(base_result.propensity.applied_weight)
     assert _readout(probe) == _readout(base_probe)
 
 
@@ -149,7 +145,7 @@ def test_orrer_unresolved_mass_intervention_moves_the_posterior_and_the_numeric_
 def test_orrer_preserves_open_actor_and_unresolved_support_as_an_invariant() -> None:
     """``unknown_actor_support_must_be_preserved`` in the frozen hard-safety kernel."""
 
-    probe, _, result = _legacy_run(6, unresolved_probability=0.4)
+    _, _, result = _legacy_run(6, unresolved_probability=0.4)
     assert "unknown_actor" in result.actor_posterior
     assert result.actor_posterior["unknown_actor"] > 0.0
     assert sum(result.actor_posterior.values()) == pytest.approx(1.0)
@@ -186,9 +182,7 @@ def test_pchmp_evidence_intervention_reaches_the_numeric_state_and_the_decision(
     assert _readout(probe)[0] != _readout(base_probe)[0]
     assert _readout(probe)[1] != _readout(base_probe)[1]
     # and OPCEU's output did not move, because PCHMP does not feed it
-    assert result.propensity.applied_weight == pytest.approx(
-        base_result.propensity.applied_weight
-    )
+    assert result.propensity.applied_weight == pytest.approx(base_result.propensity.applied_weight)
 
 
 def test_pchmp_posterior_is_normalized_and_keeps_the_frozen_actor_support() -> None:
@@ -257,15 +251,16 @@ def test_cf_bocpd_change_probability_responds_to_a_real_signal_shift() -> None:
     shifted = JointCauseFactorizedBOCPD(hazard_probability=0.05)
     steady_snapshot = None
     shifted_snapshot = None
-    for index, frame in enumerate(_frames([calm] * 6)):
+    for frame in _frames([calm] * 6):
         steady_snapshot = steady.observe_online(frame)
-    for index, frame in enumerate(_frames([calm] * 3 + [shift] * 3)):
+    for frame in _frames([calm] * 3 + [shift] * 3):
         shifted_snapshot = shifted.observe_online(frame)
 
     assert steady_snapshot is not None and shifted_snapshot is not None
     assert shifted_snapshot.segment_change_probability > steady_snapshot.segment_change_probability
-    assert shifted_snapshot.segment_cause_posterior[ChangeCause.HABIT] > (
-        steady_snapshot.segment_cause_posterior[ChangeCause.HABIT]
+    assert (
+        shifted_snapshot.segment_cause_posterior[ChangeCause.HABIT]
+        > (steady_snapshot.segment_cause_posterior[ChangeCause.HABIT])
     )
     assert sum(shifted_snapshot.segment_cause_posterior.values()) == pytest.approx(1.0)
     assert 0.0 <= shifted_snapshot.segment_change_probability <= 1.0
@@ -343,12 +338,12 @@ def test_ccrr_null_control_the_same_window_reproduces_the_same_classification() 
 def test_ccrr_only_promotes_after_the_confirmation_window_is_satisfied() -> None:
     """Algorithmic invariant: a candidate must persist before it can create a regime."""
 
-    probe, core, _ = _legacy_run(
+    _, core, _ = _legacy_run(
         CCRR_DIVERGENCE_DAYS, loop_config=PrototypeLoopConfig(confirmation_window=4)
     )
     assert core.active_regime is not None
     # A wider window cannot produce *more* confirmed regime changes than a narrow one.
-    narrow_probe, narrow_core, _ = _legacy_run(
+    _, narrow_core, _ = _legacy_run(
         CCRR_DIVERGENCE_DAYS, loop_config=PrototypeLoopConfig(confirmation_window=2)
     )
     assert len(core._quarantined_events) >= len(narrow_core._quarantined_events)
@@ -401,9 +396,7 @@ def test_ciav_owner_likelihood_intervention_moves_the_decoded_choice() -> None:
     )
 
     def run(owner_likelihood: float | None) -> tuple[str, UUID]:
-        probe = BackboneWiringProbe.build(
-            seed=SEED, action_readout=selected_v0_6_action_readout()
-        )
+        probe = BackboneWiringProbe.build(seed=SEED, action_readout=selected_v0_6_action_readout())
         days = probe.observed_days()
         for observation in days[:4]:
             warm = probe.transition_for(observation)
@@ -472,9 +465,7 @@ def test_binding_kind_is_reported_separately_from_algorithmic_equivalence() -> N
     transition = probe.transition_for(probe.observed_days()[0])
     _, sink = probe.run_direct_p5(transition)
     _, rows = verify_and_flatten(sink)
-    binding = {
-        row.operator: row.binding_kind for row in rows if row.phase == "selected_path"
-    }
+    binding = {row.operator: row.binding_kind for row in rows if row.phase == "selected_path"}
     assert binding == {
         "opceu": "direct_operator_callable",
         "orrer_cheh": "direct_operator_callable",

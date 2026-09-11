@@ -1318,39 +1318,57 @@ class StructureTwoProductionSystem:
             ("ccrr", "_adaptive_ccrr_safety_maintenance", None, ("cf_bocpd",)),
             ("rgrc", "_adaptive_rgrc_debt_guard", None, ("pchmp", "ccrr")),
         )
-        for operator, callable_name, fixed_args, consumes in maintenance_calls:
-            args = (
-                fixed_args
-                if fixed_args is not None
-                else tuple(maintenance_outputs[name] for name in consumes)
-            )
-            recorder.bind_operator(
-                operator,
-                bind_runtime_callable(
-                    runtime_execution_id=recorder.runtime_execution_id,
-                    operator=operator,  # type: ignore[arg-type]
-                    binding_slot=0,
-                    binding_kind="adaptive_safety_maintenance",
-                    instance=self.core,
-                    callable_name=callable_name,
-                ),
-            )
-            started_ns = perf_counter_ns()
-            output = getattr(self.core, callable_name)(*args)
-            maintenance_outputs[operator] = output
-            recorder.record_executed(
-                operator,
-                raw_input={
-                    "origin_transition_sha256": certificate.origin_transition_sha256,
-                    "debt_certificate_sha256": certificate.certificate_sha256,
-                    "consumed_operator_output_sha256s": {
-                        name: content_sha256(maintenance_outputs[name]) for name in consumes
+        # The runtime -- not the payloads -- owns the transition, debt and execution
+        # identity the maintenance nodes are checked against.  Opening the context
+        # here is what makes ``provenance_and_dependency_checks_always_executed``
+        # a real check instead of a self-consistent hash comparison.
+        self.core.bind_adaptive_maintenance_context(
+            runtime_execution_id=recorder.runtime_execution_id,
+            transition=transition,
+            debt_certificate_sha256=certificate.certificate_sha256,
+            origin_transition_sha256=certificate.origin_transition_sha256,
+        )
+        try:
+            for operator, callable_name, fixed_args, consumes in maintenance_calls:
+                args = (
+                    fixed_args
+                    if fixed_args is not None
+                    else tuple(maintenance_outputs[name] for name in consumes)
+                )
+                recorder.bind_operator(
+                    operator,
+                    bind_runtime_callable(
+                        runtime_execution_id=recorder.runtime_execution_id,
+                        operator=operator,  # type: ignore[arg-type]
+                        binding_slot=0,
+                        binding_kind="adaptive_safety_maintenance",
+                        instance=self.core,
+                        callable_name=callable_name,
+                        # These four nodes carry the whole write-safety argument of
+                        # the deferred path, so the bound callable must be the
+                        # core's own declared member, not merely a function that
+                        # matches whatever source file it happens to live in.
+                        require_declared_member=True,
+                    ),
+                )
+                started_ns = perf_counter_ns()
+                output = getattr(self.core, callable_name)(*args)
+                maintenance_outputs[operator] = output
+                recorder.record_executed(
+                    operator,
+                    raw_input={
+                        "origin_transition_sha256": certificate.origin_transition_sha256,
+                        "debt_certificate_sha256": certificate.certificate_sha256,
+                        "consumed_operator_output_sha256s": {
+                            name: content_sha256(maintenance_outputs[name]) for name in consumes
+                        },
                     },
-                },
-                output=output,
-                consumes=consumes,
-                elapsed_ns=perf_counter_ns() - started_ns,
-            )
+                    output=output,
+                    consumes=consumes,
+                    elapsed_ns=perf_counter_ns() - started_ns,
+                )
+        finally:
+            self.core.clear_adaptive_maintenance_context()
         recorder.record_deferred(
             "ciav",
             raw_input={"ciav_runtime_input_available": context.ciav_input is not None},

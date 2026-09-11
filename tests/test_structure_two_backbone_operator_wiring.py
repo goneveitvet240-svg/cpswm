@@ -31,6 +31,7 @@ from cpswm.system.reproducibility import content_sha256
 from cpswm.system.structure_two_execution import (
     ADAPTIVE_FEEDBACK_CONSUMPTION_GRAPH,
     ADAPTIVE_PRIMARY_CONSUMPTION_GRAPHS,
+    AdaptiveMaintenanceContractError,
 )
 
 P0_ROUTER_FEATURES = {"action_margin": 0.9, "regime_hazard": 0.0}
@@ -524,12 +525,15 @@ def test_p5_declared_consumption_matches_the_frozen_graph_on_both_phases() -> No
         assert row.consumed_producers == expected
 
 
-def test_p0_downstream_maintenance_really_consumes_its_declared_upstream_output() -> None:
-    """The frozen P0 graph declares ``ccrr<-cf_bocpd`` and ``rgrc<-(pchmp, ccrr)``.
+def test_p0_downstream_maintenance_checks_its_declared_upstream_dependency() -> None:
+    """The frozen P0 graph declares ``ccrr <- cf_bocpd`` and ``rgrc <- (pchmp, ccrr)``.
 
-    A declared edge is only real if the bound callable receives the upstream payload
-    and its own output depends on it.  Two different upstream payloads must therefore
-    produce two different downstream outputs.
+    Round one asserted the wrong property here: that a *different* upstream payload
+    produces a different downstream body.  The frozen
+    ``hard_safety_kernel.provenance_and_dependency_checks_always_executed`` clause
+    requires a *check*, so a payload that disagrees with live runtime state must be
+    refused rather than silently reshaping the receipt.  The full rejection matrix
+    lives in ``tests/test_structure_two_backbone_counterexample_regressions.py``.
     """
 
     probe = BackboneWiringProbe.build(seed=7)
@@ -542,20 +546,30 @@ def test_p0_downstream_maintenance_really_consumes_its_declared_upstream_output(
     assert ccrr_parameters == ["cf_bocpd_maintenance"]
     assert rgrc_parameters == ["pchmp_maintenance", "ccrr_maintenance"]
 
-    upstream_a = {"observation_count": 1, "posterior_advanced": False}
-    upstream_b = {"observation_count": 2, "posterior_advanced": False}
-    assert core._adaptive_ccrr_safety_maintenance(
-        upstream_a
-    ) != core._adaptive_ccrr_safety_maintenance(upstream_b)
+    clean = core._adaptive_cf_bocpd_safety_maintenance()
+    assert core._adaptive_ccrr_safety_maintenance(clean)["maintenance_kind"] == (
+        "ccrr_safety_maintenance"
+    )
+    with pytest.raises(AdaptiveMaintenanceContractError):
+        core._adaptive_ccrr_safety_maintenance({**clean, "posterior_advanced": True})
 
-    pchmp_payload = {"evidence_content_sha256s": ()}
-    assert core._adaptive_rgrc_debt_guard(
-        pchmp_payload, upstream_a
-    ) != core._adaptive_rgrc_debt_guard(pchmp_payload, upstream_b)
+    transition = probe.transition_for(probe.observed_days()[0])
+    pchmp = core._adaptive_pchmp_safety_maintenance(transition)
+    ccrr = core._adaptive_ccrr_safety_maintenance(clean)
+    assert core._adaptive_rgrc_debt_guard(pchmp, ccrr)["long_term_write_authorized"] is False
+    with pytest.raises(AdaptiveMaintenanceContractError):
+        core._adaptive_rgrc_debt_guard(
+            {**pchmp, "unexecuted_inference_encoded_as_negative": True}, ccrr
+        )
 
 
-def test_p0_trace_output_hashes_change_when_the_declared_upstream_output_changes() -> None:
-    """End-to-end form of the same property, measured through the sealed receipts."""
+def test_p0_receipts_are_reproducible_from_the_checked_dependency_chain() -> None:
+    """Each P0 maintenance receipt must be recomputable from its declared upstream.
+
+    This is the end-to-end form: replay the chain
+    ``cf_bocpd -> ccrr`` and ``(pchmp, ccrr) -> rgrc`` against the same runtime and
+    check every recomputed body reproduces the sealed ``output_payload_sha256``.
+    """
 
     probe = BackboneWiringProbe.build(seed=7)
     transition = probe.transition_for(probe.observed_days()[0])
@@ -568,19 +582,17 @@ def test_p0_trace_output_hashes_change_when_the_declared_upstream_output_changes
     core = probe.system.core
     cf_bocpd_output = core._adaptive_cf_bocpd_safety_maintenance()
     pchmp_output = core._adaptive_pchmp_safety_maintenance(transition)
+    ccrr_output = core._adaptive_ccrr_safety_maintenance(cf_bocpd_output)
+    rgrc_output = core._adaptive_rgrc_debt_guard(pchmp_output, ccrr_output)
+
     assert content_sha256(cf_bocpd_output) == by_operator["cf_bocpd"].output_payload_sha256
     assert content_sha256(pchmp_output) == by_operator["pchmp"].output_payload_sha256
-
-    ccrr_output = core._adaptive_ccrr_safety_maintenance(cf_bocpd_output)
     assert content_sha256(ccrr_output) == by_operator["ccrr"].output_payload_sha256
+    assert content_sha256(rgrc_output) == by_operator["rgrc"].output_payload_sha256
 
-    perturbed = dict(cf_bocpd_output)
-    observed = perturbed["observation_count"]
-    assert isinstance(observed, int)
-    perturbed["observation_count"] = observed + 1
-    assert content_sha256(core._adaptive_ccrr_safety_maintenance(perturbed)) != content_sha256(
-        ccrr_output
-    )
+    # The recorded raw_input must name the same upstream hashes the chain produced.
+    assert ccrr_output["consumed_cf_bocpd_maintenance_sha256"] == content_sha256(cf_bocpd_output)
+    assert rgrc_output["consumed_ccrr_maintenance_sha256"] == content_sha256(ccrr_output)
 
 
 # ---------------------------------------------------------------------------

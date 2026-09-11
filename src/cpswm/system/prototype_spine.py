@@ -86,6 +86,7 @@ from cpswm.system.structure_two_execution import (
     LEGACY_CIAV_NOT_APPLICABLE_REASON,
     STRUCTURE_TWO_OPERATOR_ORDER,
     AdaptiveInferenceDebtCertificate,
+    AdaptiveMaintenanceContractError,
     ExecutionModeName,
     FeedbackClosureKind,
     OperatorExecutionDirective,
@@ -1016,6 +1017,37 @@ class CorePrototypeSpine:
 
         return self._last_cause_snapshot
 
+    def _require_maintenance_payload(
+        self,
+        payload: object,
+        *,
+        operator: str,
+        kind: str,
+        required_fields: tuple[str, ...],
+    ) -> Mapping[str, object]:
+        """Validate one declared upstream maintenance dependency, without mutating state.
+
+        ``hard_safety_kernel.provenance_and_dependency_checks_always_executed`` is
+        ``true`` for every legal path, so a declared edge in
+        ``ADAPTIVE_PRIMARY_CONSUMPTION_GRAPHS`` has to be *checked* here, not merely
+        received and hashed.  Absent, malformed, or cross-node payloads fail closed.
+        """
+
+        if not isinstance(payload, Mapping):
+            raise AdaptiveMaintenanceContractError(
+                f"{operator} maintenance dependency is not a payload mapping"
+            )
+        if payload.get("maintenance_kind") != kind:
+            raise AdaptiveMaintenanceContractError(
+                f"{operator} maintenance dependency is not a {kind} payload"
+            )
+        expected = {"maintenance_kind", *required_fields}
+        if set(payload) != expected:
+            raise AdaptiveMaintenanceContractError(
+                f"{operator} maintenance dependency field set drifted from the frozen shape"
+            )
+        return payload
+
     def _adaptive_pchmp_safety_maintenance(
         self, transition: PrototypeTransition
     ) -> dict[str, object]:
@@ -1023,6 +1055,7 @@ class CorePrototypeSpine:
 
         self._validate_transition(transition)
         return {
+            "maintenance_kind": "pchmp_safety_maintenance",
             "evidence_content_sha256s": tuple(content_sha256(item) for item in transition.evidence),
             "unexecuted_inference_encoded_as_negative": False,
             "message_passing_runtime_type": _runtime_type_symbol(self._message_passing),
@@ -1033,6 +1066,7 @@ class CorePrototypeSpine:
 
         snapshot = self.current_cause_snapshot
         return {
+            "maintenance_kind": "cf_bocpd_safety_maintenance",
             "observation_count": self.observation_count,
             "current_snapshot_sha256": content_sha256(snapshot) if snapshot else None,
             "posterior_advanced": False,
@@ -1041,15 +1075,56 @@ class CorePrototypeSpine:
     def _adaptive_ccrr_safety_maintenance(
         self, cf_bocpd_maintenance: Mapping[str, object]
     ) -> dict[str, object]:
-        """Verify the current regime head without permitting a transition.
+        """Check the CF-BOCPD dependency, then report the unchanged regime head.
 
         ``ADAPTIVE_PRIMARY_CONSUMPTION_GRAPHS["P0_SAFE_DEFERRED"]`` declares
-        ``ccrr <- cf_bocpd``.  The frozen edge is only real if this callable actually
-        receives the upstream maintenance payload and its own output depends on it,
-        so the consumed payload is bound into the returned receipt body.
+        ``ccrr <- cf_bocpd``, and the frozen ``hard_safety_kernel`` requires the
+        dependency check to run on every path.  Three properties are therefore
+        verified against live runtime state before anything is reported:
+
+        * ``observation_count`` still equals this runtime's own count -- a stale,
+          foreign, or cross-execution payload cannot pass;
+        * ``current_snapshot_sha256`` still equals this runtime's current cause
+          snapshot -- a cross-snapshot payload cannot pass;
+        * ``posterior_advanced`` is ``False`` -- a deferred path that claims an
+          advanced CF-BOCPD posterior contradicts ``P0_SAFE_DEFERRED``'s frozen
+          ``semantic_purpose`` ("deferring expensive refinement") and its
+          ``mandatory_maintenance_executed`` mode.
+
+        This method reads state and raises; it never writes.
         """
 
+        payload = self._require_maintenance_payload(
+            cf_bocpd_maintenance,
+            operator="ccrr",
+            kind="cf_bocpd_safety_maintenance",
+            required_fields=(
+                "observation_count",
+                "current_snapshot_sha256",
+                "posterior_advanced",
+            ),
+        )
+        observed = payload["observation_count"]
+        if isinstance(observed, bool) or not isinstance(observed, int):
+            raise AdaptiveMaintenanceContractError(
+                "ccrr maintenance dependency carries a non-integer observation count"
+            )
+        if observed != self.observation_count:
+            raise AdaptiveMaintenanceContractError(
+                "ccrr maintenance dependency observation count differs from this runtime"
+            )
+        snapshot = self.current_cause_snapshot
+        expected_snapshot_sha256 = content_sha256(snapshot) if snapshot else None
+        if payload["current_snapshot_sha256"] != expected_snapshot_sha256:
+            raise AdaptiveMaintenanceContractError(
+                "ccrr maintenance dependency binds a foreign or stale cause snapshot"
+            )
+        if payload["posterior_advanced"] is not False:
+            raise AdaptiveMaintenanceContractError(
+                "a deferred path cannot report an advanced CF-BOCPD posterior"
+            )
         return {
+            "maintenance_kind": "ccrr_safety_maintenance",
             "active_regime": self.active_regime,
             "pending_candidate_sha256": content_sha256(self._automatic_regimes._pending),
             "regime_transition_applied": False,
@@ -1061,13 +1136,66 @@ class CorePrototypeSpine:
         pchmp_maintenance: Mapping[str, object],
         ccrr_maintenance: Mapping[str, object],
     ) -> dict[str, object]:
-        """Return a source-bound denial of long-term writes while debt is pending.
+        """Check both declared dependencies, then deny the long-term write.
 
-        The frozen P0 graph declares ``rgrc <- (pchmp, ccrr)``; both upstream payloads
-        are therefore consumed here and bound into the returned receipt body.
+        The frozen P0 graph declares ``rgrc <- (pchmp, ccrr)``.  Two hard-safety
+        clauses are enforced here before the denial is reported:
+
+        * ``unexecuted_inference_may_not_be_encoded_as_negative_evidence`` --
+          a PCHMP payload claiming the deferred inference was encoded as negative
+          evidence is rejected (``maximum_unresolved_as_negative_events`` is 0);
+        * ``rgrc_is_only_long_term_write_retract_authority`` together with
+          ``P0_SAFE_DEFERRED``'s deferral semantics -- a CCRR payload claiming an
+          applied regime transition, or one whose regime head no longer matches the
+          live runtime, is rejected.
+
+        This method reads state and raises; it never writes, and it never returns
+        ``long_term_write_authorized`` other than ``False``.
         """
 
+        pchmp = self._require_maintenance_payload(
+            pchmp_maintenance,
+            operator="rgrc",
+            kind="pchmp_safety_maintenance",
+            required_fields=(
+                "evidence_content_sha256s",
+                "unexecuted_inference_encoded_as_negative",
+                "message_passing_runtime_type",
+            ),
+        )
+        if pchmp["unexecuted_inference_encoded_as_negative"] is not False:
+            raise AdaptiveMaintenanceContractError(
+                "unexecuted inference cannot be encoded as negative evidence"
+            )
+        if pchmp["message_passing_runtime_type"] != _runtime_type_symbol(self._message_passing):
+            raise AdaptiveMaintenanceContractError(
+                "rgrc maintenance dependency binds a foreign message-passing runtime"
+            )
+        ccrr = self._require_maintenance_payload(
+            ccrr_maintenance,
+            operator="rgrc",
+            kind="ccrr_safety_maintenance",
+            required_fields=(
+                "active_regime",
+                "pending_candidate_sha256",
+                "regime_transition_applied",
+                "consumed_cf_bocpd_maintenance_sha256",
+            ),
+        )
+        if ccrr["regime_transition_applied"] is not False:
+            raise AdaptiveMaintenanceContractError(
+                "a deferred path cannot report an applied regime transition"
+            )
+        if ccrr["active_regime"] != self.active_regime:
+            raise AdaptiveMaintenanceContractError(
+                "rgrc maintenance dependency binds a foreign or stale active regime"
+            )
+        if ccrr["pending_candidate_sha256"] != content_sha256(self._automatic_regimes._pending):
+            raise AdaptiveMaintenanceContractError(
+                "rgrc maintenance dependency binds a stale CCRR pending candidate"
+            )
         return {
+            "maintenance_kind": "rgrc_debt_guard",
             "belief_snapshot_id": str(self.current_snapshot.snapshot_id),
             "committed_revision_count": len(self._committed_events),
             "quarantined_revision_count": len(self._quarantined_events),
@@ -4081,15 +4209,21 @@ class CorePrototypeSpine:
             key=lambda event: (event.evidence.event_time, str(event.revision_id)),
         )
         snapshot = self._hybrid_loop.publish_snapshot()
-        for revision_id in restored_derived_ids:
-            restored = replace(
-                self._committed_events[revision_id],
-                belief_snapshot_id=snapshot.snapshot_id,
-            )
-            self._committed_events[revision_id] = restored
-            self._derived_event_archive[revision_id] = restored
+        # Every committed revision must stay addressable by execution feedback.
+        # ``_process_transition`` establishes that invariant after each transition and
+        # ``_validate_feedback_revision_binding`` depends on it, but this rebuild
+        # reconstructs ``_committed_events`` from ``_observed_events``, whose entries
+        # never carry a snapshot id.  Re-bind here so one revision does not make every
+        # surviving revision unreachable for later late counter-evidence.
+        for revision_id, rebuilt in tuple(self._committed_events.items()):
+            if rebuilt.belief_snapshot_id is not None and revision_id not in restored_derived_ids:
+                continue
+            rebound = replace(rebuilt, belief_snapshot_id=snapshot.snapshot_id)
+            self._committed_events[revision_id] = rebound
+            if revision_id in self._derived_event_archive:
+                self._derived_event_archive[revision_id] = rebound
             self._revision_feedback_bindings[revision_id] = (
-                restored.location_id,
+                rebound.location_id,
                 snapshot.snapshot_id,
             )
         self._revision_fault_hook("hybrid")

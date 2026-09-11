@@ -41,17 +41,35 @@ from __future__ import annotations
 
 from collections.abc import Mapping, Sequence
 from dataclasses import dataclass, field
-from datetime import timedelta
+from datetime import datetime, timedelta
 from enum import StrEnum
 from typing import Any, Final
-from uuid import UUID
+from uuid import UUID, uuid4
 
 from cpswm.contracts import (
+    ActionOutcomeLikelihoodModel,
+    DecisionContextBinding,
+    DecisionSurface,
     DetectionFailureReason,
+    EntityRef,
+    EntityType,
+    ExecutionFeedbackRecord,
+    MapConsistencyRevisions,
     ObservationActionCandidate,
     ObservationActionType,
     ObservationOpportunityRecord,
     ObservationOutcome,
+    RobotActionOutcome,
+    RobotActionType,
+    SourceType,
+    TargetPresenceBeliefRef,
+)
+from cpswm.contracts.base import ValidTimeInterval
+from cpswm.contracts.decision_context import DecisionContext
+from cpswm.system.continual.project_one_feedback import FeedbackInterpretation
+from cpswm.system.continual.project_one_regime_loop import (
+    PrototypeLoopConfig,
+    PrototypeStatisticOperation,
 )
 from cpswm.system.evaluation_operations.structure_two_action_death_test import (
     ActionDayObservation,
@@ -237,6 +255,7 @@ class BackboneWiringProbe:
         duration_days: int = 32,
         observation_coverage: float = 1.0,
         action_readout: ActionReadoutConfig | None = None,
+        loop_config: PrototypeLoopConfig | None = None,
     ) -> BackboneWiringProbe:
         generator = StructureTwoActionScenarioGenerator(
             duration_days=duration_days,
@@ -257,6 +276,7 @@ class BackboneWiringProbe:
             locations=case.locations,
             authorization_scope_id=content_uuid(PROBE_ID, {"seed": seed, "kind": "scope"}),
             action_readout=action_readout,
+            loop_config=loop_config,
             adaptive_authorization_policy=policy,
         )
         return cls(case=case, system=system)
@@ -277,6 +297,9 @@ class BackboneWiringProbe:
         actor_prior: Mapping[str, float] | None = None,
         evidence_filter: Sequence[str] = ("actor", "mechanism", "role"),
         context_key: str = "weekday|home",
+        unresolved_probability: float = 0.0,
+        p_visible_given_state: float = 0.9,
+        p_detect_given_visible: float = 0.9,
     ) -> PrototypeTransition:
         assert observation.before is not None
         assert observation.after is not None
@@ -297,13 +320,18 @@ class BackboneWiringProbe:
             }
         )
         return PrototypeTransition(
-            opportunity=self._opportunity(observation),
+            opportunity=self._opportunity(
+                observation,
+                p_visible_given_state=p_visible_given_state,
+                p_detect_given_visible=p_detect_given_visible,
+            ),
             before=observation.before,
             after=observation.after,
             actor_prior=prior,
             evidence=evidence,  # type: ignore[arg-type]
             context_key=context_key,
             context_value=float(observation.day),
+            unresolved_probability=unresolved_probability,
         )
 
     def _opportunity(
@@ -340,6 +368,8 @@ class BackboneWiringProbe:
         outcome: CIAVOutcomeKind = CIAVOutcomeKind.DETECTED_DIFFERENT_LOCATION,
         owner_likelihood: float = 0.8,
         realized_cause: VerificationCause = VerificationCause.OBSERVATION,
+        privacy_cost: float = 0.0,
+        privacy_budget: float = 1.0,
     ) -> AdaptiveCIAVRuntimeInput:
         outcome_likelihoods = _verification_outcome_likelihoods()
         action = ObservationActionCandidate(
@@ -351,7 +381,7 @@ class BackboneWiringProbe:
             motion_cost=0.0,
             time_cost=0.0,
             interruption_cost=0.0,
-            privacy_cost=0.0,
+            privacy_cost=privacy_cost,
             safety_cost=0.0,
         )
         detected_location = transition.after.detected_location_id
@@ -387,7 +417,7 @@ class BackboneWiringProbe:
             actions=(action,),
             consolidation_decision_utilities=self._utilities(),
             terminal_decision_utilities=self._utilities(),
-            privacy_budget=1.0,
+            privacy_budget=privacy_budget,
             opportunity_time=detection_time + timedelta(minutes=1),
             actor_likelihoods_by_outcome={
                 label: {owner: owner_likelihood, guest: remainder, "unknown_actor": remainder}
@@ -531,6 +561,181 @@ class BackboneWiringProbe:
         return tuple(event.revision_id for event in self.system.core._quarantined_events)
 
 
+class CalibratedRetractionPolicy:
+    """A caller-supplied calibrated feedback policy.
+
+    ``DefaultPrototypeFeedbackPolicy`` deliberately quarantines negative evidence and
+    documents that "a caller may plug in a calibrated policy that emits RETRACT or
+    CORRECT".  ``CorePrototypeSpine.process_execution_feedback`` takes that policy as
+    a named argument, so this class exercises the documented production seam rather
+    than bypassing it.  It owns no statistics and no write authority: it only maps a
+    projected presence delta onto one of the three frozen statistic operations.
+    """
+
+    def __init__(
+        self,
+        *,
+        retraction_delta: float = -0.2,
+        corrected_location_id: UUID | None = None,
+        corrected_owner_mass: float | None = None,
+    ) -> None:
+        self.retraction_delta = retraction_delta
+        self.corrected_location_id = corrected_location_id
+        self.corrected_owner_mass = corrected_owner_mass
+
+    def interpret(self, *, feedback, projected):  # type: ignore[no-untyped-def]
+        raw = feedback.diagnostics.get("source_revision_id")
+        target = UUID(raw) if isinstance(raw, str) else None
+        update = projected.target_presence_update
+        if update is None or target is None:
+            return FeedbackInterpretation(
+                operation=PrototypeStatisticOperation.QUARANTINE,
+                evidence_strength=0.0,
+                rationale="probe policy: no citable revision or presence likelihood",
+            )
+        delta = update.posterior_target_present - update.prior_target_present
+        if delta > self.retraction_delta:
+            return FeedbackInterpretation(
+                operation=PrototypeStatisticOperation.QUARANTINE,
+                evidence_strength=abs(delta),
+                target_revision_id=target,
+                rationale="probe policy: evidence below the calibrated retraction margin",
+            )
+        if self.corrected_location_id is not None:
+            return FeedbackInterpretation(
+                operation=PrototypeStatisticOperation.CORRECT,
+                evidence_strength=abs(delta),
+                target_revision_id=target,
+                corrected_location_id=self.corrected_location_id,
+                rationale="probe policy: calibrated correction of the cited revision",
+            )
+        return FeedbackInterpretation(
+            operation=PrototypeStatisticOperation.RETRACT,
+            evidence_strength=abs(delta),
+            target_revision_id=target,
+            rationale="probe policy: calibrated retraction of the cited revision",
+        )
+
+
+def build_execution_feedback_bundle(
+    probe: BackboneWiringProbe,
+    *,
+    revision_id: UUID,
+    location_id: UUID,
+    belief_snapshot_id: UUID,
+    when: datetime,
+    outcome_distribution: Mapping[RobotActionOutcome, float],
+    present_likelihood: Mapping[RobotActionOutcome, float],
+    absent_likelihood: Mapping[RobotActionOutcome, float],
+    opportunity_id: UUID,
+    prior_probability: float = 0.8,
+    action_id: UUID | None = None,
+    feedback_record_id: UUID | None = None,
+    staleness_budget_seconds: float = 300.0,
+) -> tuple[ExecutionFeedbackRecord, DecisionContextBinding, ActionOutcomeLikelihoodModel]:
+    """Build one formal execution-feedback bundle for the production entrypoint."""
+
+    system = probe.system
+    template = probe.case.days[0].after
+    assert template is not None
+    metadata = template.metadata.model_copy(
+        update={
+            "record_id": feedback_record_id or uuid4(),
+            "schema_name": "cpswm.ExecutionFeedbackRecord",
+            "source_type": SourceType.ACTION,
+            "recorded_time": when,
+        }
+    )
+    feedback = ExecutionFeedbackRecord(
+        metadata=metadata,
+        action_id=action_id or uuid4(),
+        action_type=RobotActionType.SEARCH,
+        target_entity=EntityRef(
+            entity_id=probe.case.object_instance_id,
+            entity_type=EntityType.OBJECT_INSTANCE,
+        ),
+        attempted_location_id=location_id,
+        valid_time=ValidTimeInterval(start=when, end=when + timedelta(minutes=1)),
+        outcome_distribution=dict(outcome_distribution),
+        observation_opportunity_id=opportunity_id,
+        diagnostics={"source_revision_id": str(revision_id)},
+    )
+    revisions = MapConsistencyRevisions(
+        belief_snapshot_id=belief_snapshot_id,
+        projection_id=uuid4(),
+        projection_version=1,
+        static_map_revision=1,
+        dynamic_map_revision=1,
+        event_history_revision=1,
+        input_watermark=1,
+    )
+    context = DecisionContext.create(
+        decision_id=uuid4(),
+        decision_time=when,
+        valid_time=ValidTimeInterval(start=when, end=when + timedelta(minutes=5)),
+        staleness_budget_seconds=staleness_budget_seconds,
+        revisions=revisions,
+        target_presence_belief=TargetPresenceBeliefRef(
+            object_instance_id=probe.case.object_instance_id,
+            location_id=location_id,
+            belief_node_id="structure-two-backbone-probe-presence",
+            belief_snapshot_id=revisions.belief_snapshot_id,
+            node_content_hash="a" * 64,
+            prior_probability=prior_probability,
+        ),
+        authorization_scope_id=system.core.authorization_scope_id,
+        habit_regime_model_version=system.core.model_version,
+        model_versions=(("prototype", system.core.model_version),),
+        code_version="structure-two-backbone-probe",
+        rationale="bind late counter-evidence to the exact committed revision",
+    )
+    binding = DecisionContextBinding(
+        metadata=metadata.model_copy(
+            update={"record_id": uuid4(), "schema_name": "cpswm.DecisionContextBinding"}
+        ),
+        surface=DecisionSurface.EXECUTION_FEEDBACK,
+        subject_record_id=feedback.metadata.record_id,
+        subject_household_id=metadata.household_id,
+        subject_session_id=metadata.session_id,
+        subject_trace_id=metadata.trace_id,
+        decision_context=context,
+    )
+    likelihood = ActionOutcomeLikelihoodModel(
+        action_type=RobotActionType.SEARCH,
+        p_outcome_given_target_present=dict(present_likelihood),
+        p_outcome_given_target_absent=dict(absent_likelihood),
+        calibration_domain="structure-two-backbone-probe-search",
+        model_version="structure-two-backbone-probe-search@0.1",
+    )
+    return feedback, binding, likelihood
+
+
+NEGATIVE_SEARCH_OUTCOME: Final = {
+    RobotActionOutcome.NOT_FOUND: 0.98,
+    RobotActionOutcome.UNKNOWN: 0.02,
+}
+NEGATIVE_PRESENT_LIKELIHOOD: Final = {
+    RobotActionOutcome.NOT_FOUND: 0.02,
+    RobotActionOutcome.UNKNOWN: 0.98,
+}
+NEGATIVE_ABSENT_LIKELIHOOD: Final = {
+    RobotActionOutcome.NOT_FOUND: 0.98,
+    RobotActionOutcome.UNKNOWN: 0.02,
+}
+POSITIVE_SEARCH_OUTCOME: Final = {
+    RobotActionOutcome.SUCCESS: 0.95,
+    RobotActionOutcome.UNKNOWN: 0.05,
+}
+POSITIVE_PRESENT_LIKELIHOOD: Final = {
+    RobotActionOutcome.SUCCESS: 0.99,
+    RobotActionOutcome.UNKNOWN: 0.01,
+}
+POSITIVE_ABSENT_LIKELIHOOD: Final = {
+    RobotActionOutcome.SUCCESS: 0.01,
+    RobotActionOutcome.UNKNOWN: 0.99,
+}
+
+
 @dataclass(frozen=True, slots=True)
 class ScenarioOutcome:
     """One scenario row of the mechanism matrix."""
@@ -575,17 +780,25 @@ def closure_operator_sequence(rows: Sequence[OperatorCallRow]) -> tuple[str, ...
 
 __all__ = [
     "CLAIM_BOUNDARY",
+    "NEGATIVE_ABSENT_LIKELIHOOD",
+    "NEGATIVE_PRESENT_LIKELIHOOD",
+    "NEGATIVE_SEARCH_OUTCOME",
+    "POSITIVE_ABSENT_LIKELIHOOD",
+    "POSITIVE_PRESENT_LIKELIHOOD",
+    "POSITIVE_SEARCH_OUTCOME",
     "PROBE_ID",
     "STATUS",
     "STRUCTURE_TWO_OPERATOR_ORDER",
     "BackboneWiringProbe",
     "CIAVOutcomeKind",
+    "CalibratedRetractionPolicy",
     "EvidenceClass",
     "EvidenceVerdict",
     "FailingTraceSink",
     "OperatorCallRow",
     "ProbeTraceSink",
     "ScenarioOutcome",
+    "build_execution_feedback_bundle",
     "closure_operator_sequence",
     "primary_operator_sequence",
     "receipt_output_sha256_by_operator",

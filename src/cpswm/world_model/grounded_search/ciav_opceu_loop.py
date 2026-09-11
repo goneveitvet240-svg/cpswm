@@ -297,7 +297,16 @@ class CIAVOPCEUObservationLoop:
             likelihood_model_id=action.observation_likelihood_model_id,
             idempotency_key=f"produce:{factor_id}",
         )
-        target = f"fast-action-owner-posterior:{update_id}"
+        # The likelihood this loop consumes is consumed into its *own* local actor
+        # posterior, which is what ``CIAVOPCEUReceipt.evidence.actor_posterior``
+        # carries.  Whether that local posterior ever reaches the fast-action owner
+        # posterior depends on the caller's closure branch: only a same-location
+        # detected observation runs ``apply_fast_action_verification``.  The frozen
+        # pre-death protocol records that "a negative CIAV observation does not yet
+        # enter a complete downstream closure", so the target distribution is named
+        # for the distribution this loop actually writes, not for a downstream store
+        # it does not own.
+        target = f"ciav-local-actor-posterior:{update_id}"
         consumed = self.trace.consume_factor(
             update_id=update_id,
             evidence_cluster_id=evidence_cluster_id,

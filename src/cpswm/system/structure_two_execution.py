@@ -1236,8 +1236,22 @@ class TraceCompensationError(RuntimeError):
     """Raised when rollback succeeds but sink/lock compensation is not verifiable."""
 
 
+class AdaptiveMaintenanceContractError(ValueError):
+    """Raised, before any state mutation, by a deferred path's maintenance checks.
+
+    The frozen pre-death protocol's ``hard_safety_kernel`` requires
+    ``provenance_and_dependency_checks_always_executed`` and caps
+    ``maximum_safety_violations`` / ``maximum_provenance_violations`` /
+    ``maximum_unresolved_as_negative_events`` at zero.  A deferred path whose
+    declared upstream dependency arrives absent, malformed, stale, foreign, or
+    self-contradicting has failed that kernel, so the transaction fails closed
+    instead of emitting a receipt that claims a check which did not happen.
+    """
+
+
 __all__ = [
     "ADAPTIVE_FEEDBACK_CLOSURE_PATHS",
+    "AdaptiveMaintenanceContractError",
     "ADAPTIVE_TRACE_CLAIM_BOUNDARY",
     "EXECUTION_CONTRACT_VERSION",
     "GENESIS_RECEIPT_SHA256",

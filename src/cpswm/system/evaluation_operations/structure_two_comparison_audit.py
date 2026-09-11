@@ -559,6 +559,7 @@ def source_bindings(root: Path) -> dict[str, str]:
         DATA_CONFIG,
         base.DEFAULT_CONFIG,
         Path("apps/evaluation_runner/run_structure_two_comparison_audit.py"),
+        Path("apps/evaluation_runner/_structure_two_audit_source.py"),
         Path("apps/evaluation_runner/summarize_structure_two_comparison_audit.py"),
     }
     for directory, pattern in (("src", "*.py"), ("configs", "*.json")):
@@ -671,7 +672,7 @@ def run_audit(
         raise ValueError("SOURCE_CHANGED_DURING_REPLAY")
     payload = {
         "audit_id": AUDIT_ID,
-        "verification_schema_version": 2,
+        "verification_schema_version": 3,
         "base_commit": BASE_COMMIT,
         "data_status": "already_opened_development_only",
         "source_bindings": bindings,

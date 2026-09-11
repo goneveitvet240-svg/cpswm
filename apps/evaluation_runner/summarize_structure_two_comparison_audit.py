@@ -10,11 +10,29 @@ from collections import Counter
 from pathlib import Path
 from uuid import UUID
 
-import numpy as np
+# Bootstrap from this CLI's sibling source bytes before ANY project import.
+# Importing the module for descriptive analysis does not authorize verification.
+_EXECUTION_SOURCE = None
+if __name__ == "__main__":
+    import sys
 
-from cpswm.contracts import ProjectTwoDatasetSplit
-from cpswm.system.evaluation_operations import structure_two_comparison_audit as audit
-from cpswm.system.reproducibility import content_sha256, content_uuid
+    _guard_path = Path(__file__).resolve().with_name("_structure_two_audit_source.py")
+    _guard_bytes = _guard_path.read_bytes()
+    _guard_namespace = {"__file__": str(_guard_path), "__name__": "_audit_cli_source_guard"}
+    try:
+        exec(compile(_guard_bytes, str(_guard_path), "exec", dont_inherit=True), _guard_namespace)
+        _EXECUTION_SOURCE = _guard_namespace["bootstrap"](
+            __file__, sys._getframe().f_code, _guard_bytes
+        )
+    except Exception as error:
+        print(json.dumps({"status": "EXECUTION_SOURCE_REJECTED", "error": str(error)}))
+        raise SystemExit(1) from error
+
+import numpy as np  # noqa: E402
+
+from cpswm.contracts import ProjectTwoDatasetSplit  # noqa: E402
+from cpswm.system.evaluation_operations import structure_two_comparison_audit as audit  # noqa: E402
+from cpswm.system.reproducibility import content_sha256, content_uuid  # noqa: E402
 
 
 def analyze(bundle: Path, root: Path) -> dict:
@@ -197,12 +215,17 @@ def verify_bundles(bundles: list[Path], root: Path) -> tuple[list[dict], bool]:
     All inputs are snapshotted before replay; invalid bundles cannot poison the
     reference or turn another bundle green. No expected-result parameter exists.
     """
+    if _EXECUTION_SOURCE is None:
+        raise RuntimeError("TRUSTED_CLI_BOOTSTRAP_REQUIRED")
+    _EXECUTION_SOURCE.require_root(root)
+    _EXECUTION_SOURCE.checkpoint()
     snapshots = {}
     results = {}
     for index, bundle in enumerate(bundles):
         try:
             snapshot = audit.load_bundle(bundle, with_attribution=True)
             audit.check_source_binding(snapshot, root)
+            _EXECUTION_SOURCE.checkpoint()
             snapshots[index] = snapshot
         except (ValueError, OSError, KeyError, TypeError) as error:
             results[index] = {
@@ -216,6 +239,7 @@ def verify_bundles(bundles: list[Path], root: Path) -> tuple[list[dict], bool]:
         # Full train + validation selection + all configured episodes + three arms.
         # Timing is not an attribution dependency; one fixed timing sample suffices here.
         payload, rows, _timing = audit.run_audit(root, timing_repeats=1, timing_episodes=1)
+        _EXECUTION_SOURCE.require_bindings(payload["source_bindings"])
         expected = analyze_snapshot(audit.BundleSnapshot(payload, rows), root)
         if audit.source_bindings(root) != before:
             raise ValueError("SOURCE_CHANGED_DURING_VERIFICATION")
@@ -250,11 +274,14 @@ def verify_bundles(bundles: list[Path], root: Path) -> tuple[list[dict], bool]:
                     "stage": "fresh_replay_comparison",
                     "error": str(error),
                 }
+    _EXECUTION_SOURCE.checkpoint()
     ordered = [results[index] for index in range(len(bundles))]
     return ordered, bool(snapshots)
 
 
 def main() -> None:
+    if _EXECUTION_SOURCE is None:
+        raise RuntimeError("TRUSTED_CLI_BOOTSTRAP_REQUIRED")
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument(
         "--bundle",
@@ -295,6 +322,7 @@ def main() -> None:
             json.dumps(
                 {
                     "verification_mode": "CURRENT_SOURCE_FRESH_REPLAY",
+                    "execution_source": _EXECUTION_SOURCE.identity(),
                     "fresh_replay_performed": replayed,
                     "results": results,
                 },
@@ -334,4 +362,8 @@ def main() -> None:
 
 
 if __name__ == "__main__":
-    main()
+    try:
+        main()
+    except _guard_namespace["ExecutionSourceError"] as error:
+        print(json.dumps({"status": "EXECUTION_SOURCE_REJECTED", "error": str(error)}))
+        raise SystemExit(1) from error

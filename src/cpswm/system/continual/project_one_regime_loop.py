@@ -8,6 +8,7 @@ switch the long-term state by itself.
 
 from __future__ import annotations
 
+from collections.abc import Callable
 from dataclasses import dataclass
 from datetime import datetime
 from enum import StrEnum
@@ -43,6 +44,13 @@ class PrototypeStatisticOperation(StrEnum):
 class DerivedEvidenceReactivationPolicy(StrEnum):
     REQUIRE_FRESH_FEEDBACK = "require_fresh_feedback"
     RESTORE_PRIOR_DERIVED = "restore_prior_derived"
+
+
+class RegimeStage(StrEnum):
+    """Production-neutral observation points within one automatic regime update."""
+
+    CF_BOCPD_SNAPSHOT = "cf_bocpd_snapshot"
+    CCRR_ASSESSMENT = "ccrr_assessment"
 
 
 @dataclass(frozen=True, slots=True)
@@ -123,6 +131,10 @@ class AutomaticRegimeAssessment:
             raise ValueError("change_probability must lie in [0, 1]")
 
 
+type RegimeStagePayload = JointCauseSnapshot | AutomaticRegimeAssessment
+type RegimeStageObserver = Callable[[RegimeStage, RegimeStagePayload], None]
+
+
 @dataclass(slots=True)
 class _PendingCandidate:
     state_key: str
@@ -176,6 +188,7 @@ class AutomaticCFBOCPDCCRRRouter:
         owner_probability: float,
         evidence_source_record_ids: tuple[UUID, ...],
         identity_switch_probability: float = 0.0,
+        stage_observer: RegimeStageObserver | None = None,
     ) -> AutomaticRegimeAssessment:
         if not state_key.strip():
             raise ValueError("state_key must be non-empty")
@@ -197,6 +210,16 @@ class AutomaticCFBOCPDCCRRRouter:
             if self.config.cause_factorized_bocpd_enabled
             else self._direct_signal_snapshot(frame)
         )
+        if stage_observer is not None:
+            stage_observer(RegimeStage.CF_BOCPD_SNAPSHOT, snapshot)
+
+        def finish_assessment(
+            assessment: AutomaticRegimeAssessment,
+        ) -> AutomaticRegimeAssessment:
+            if stage_observer is not None:
+                stage_observer(RegimeStage.CCRR_ASSESSMENT, assessment)
+            return assessment
+
         old_regime = self.ccrr.active_regime(
             object_instance_id=self.object_instance_id,
             actor_id=self.actor_id,
@@ -228,18 +251,20 @@ class AutomaticCFBOCPDCCRRRouter:
             max(0.0, snapshot.transient_noise_probability),
         )
         if self._observation_count <= self.config.minimum_baseline_observations:
-            return self._assessment(
-                HabitStateConclusion.STABLE,
-                old_regime,
-                old_regime,
-                habit_probability,
-                None,
-                evidence_source_record_ids,
-                (PrototypeStatisticOperation.REINFORCE,),
-                snapshot,
-                None,
-                True,
-                "collecting the configured baseline prefix",
+            return finish_assessment(
+                self._assessment(
+                    HabitStateConclusion.STABLE,
+                    old_regime,
+                    old_regime,
+                    habit_probability,
+                    None,
+                    evidence_source_record_ids,
+                    (PrototypeStatisticOperation.REINFORCE,),
+                    snapshot,
+                    None,
+                    True,
+                    "collecting the configured baseline prefix",
+                )
             )
 
         if self._pending is not None:
@@ -256,37 +281,41 @@ class AutomaticCFBOCPDCCRRRouter:
                 allow_current = (
                     noise_probability < self.config.transient_disturbance_probability_threshold
                 )
-                return self._assessment(
-                    HabitStateConclusion.SHORT_TERM_DISTURBANCE,
-                    old_regime,
-                    old_regime,
-                    max(candidate.snapshot.transient_noise_probability, habit_probability),
-                    None,
-                    candidate.evidence_source_record_ids + evidence_source_record_ids,
-                    (
-                        PrototypeStatisticOperation.REINFORCE
-                        if allow_current
-                        else PrototypeStatisticOperation.QUARANTINE,
-                    ),
-                    snapshot,
-                    candidate.snapshot.timestamp,
-                    allow_current,
-                    "candidate did not persist through the confirmation window",
+                return finish_assessment(
+                    self._assessment(
+                        HabitStateConclusion.SHORT_TERM_DISTURBANCE,
+                        old_regime,
+                        old_regime,
+                        max(candidate.snapshot.transient_noise_probability, habit_probability),
+                        None,
+                        candidate.evidence_source_record_ids + evidence_source_record_ids,
+                        (
+                            PrototypeStatisticOperation.REINFORCE
+                            if allow_current
+                            else PrototypeStatisticOperation.QUARANTINE,
+                        ),
+                        snapshot,
+                        candidate.snapshot.timestamp,
+                        allow_current,
+                        "candidate did not persist through the confirmation window",
+                    )
                 )
             candidate.confirmations += 1
             if candidate.confirmations < self.config.confirmation_window:
-                return self._assessment(
-                    HabitStateConclusion.INSUFFICIENT_EVIDENCE,
-                    old_regime,
-                    old_regime,
-                    habit_probability,
-                    None,
-                    candidate.evidence_source_record_ids + evidence_source_record_ids,
-                    (PrototypeStatisticOperation.QUARANTINE,),
-                    snapshot,
-                    candidate.snapshot.timestamp,
-                    False,
-                    "candidate is still inside the confirmation window",
+                return finish_assessment(
+                    self._assessment(
+                        HabitStateConclusion.INSUFFICIENT_EVIDENCE,
+                        old_regime,
+                        old_regime,
+                        habit_probability,
+                        None,
+                        candidate.evidence_source_record_ids + evidence_source_record_ids,
+                        (PrototypeStatisticOperation.QUARANTINE,),
+                        snapshot,
+                        candidate.snapshot.timestamp,
+                        False,
+                        "candidate is still inside the confirmation window",
+                    )
                 )
             decision = None
             if self.config.ccrr_enabled:
@@ -323,60 +352,66 @@ class AutomaticCFBOCPDCCRRRouter:
                 RegimeDecisionKind.CREATE,
                 RegimeDecisionKind.REACTIVATE,
             }:
-                return self._assessment(
-                    HabitStateConclusion.HABIT_CHANGE,
-                    old_regime,
-                    new_regime,
-                    min(
-                        1.0,
-                        max(
-                            0.0,
-                            candidate.snapshot.segment_change_probability
-                            * candidate.snapshot.segment_cause_posterior.get(
-                                ChangeCause.HABIT,
+                return finish_assessment(
+                    self._assessment(
+                        HabitStateConclusion.HABIT_CHANGE,
+                        old_regime,
+                        new_regime,
+                        min(
+                            1.0,
+                            max(
                                 0.0,
+                                candidate.snapshot.segment_change_probability
+                                * candidate.snapshot.segment_cause_posterior.get(
+                                    ChangeCause.HABIT,
+                                    0.0,
+                                ),
                             ),
                         ),
-                    ),
+                        decision,
+                        candidate.evidence_source_record_ids + evidence_source_record_ids,
+                        (PrototypeStatisticOperation.REINFORCE,),
+                        snapshot,
+                        candidate.snapshot.timestamp,
+                        True,
+                        (
+                            "persistent candidate created a fresh regime without CCRR"
+                            if decision is None
+                            else "CCRR confirmed a persistent candidate"
+                        ),
+                    )
+                )
+            return finish_assessment(
+                self._assessment(
+                    HabitStateConclusion.INSUFFICIENT_EVIDENCE,
+                    old_regime,
+                    old_regime,
+                    habit_probability,
                     decision,
                     candidate.evidence_source_record_ids + evidence_source_record_ids,
-                    (PrototypeStatisticOperation.REINFORCE,),
+                    (PrototypeStatisticOperation.QUARANTINE,),
                     snapshot,
                     candidate.snapshot.timestamp,
-                    True,
-                    (
-                        "persistent candidate created a fresh regime without CCRR"
-                        if decision is None
-                        else "CCRR confirmed a persistent candidate"
-                    ),
+                    False,
+                    "CCRR refused to change the active regime",
                 )
-            return self._assessment(
-                HabitStateConclusion.INSUFFICIENT_EVIDENCE,
-                old_regime,
-                old_regime,
-                habit_probability,
-                decision,
-                candidate.evidence_source_record_ids + evidence_source_record_ids,
-                (PrototypeStatisticOperation.QUARANTINE,),
-                snapshot,
-                candidate.snapshot.timestamp,
-                False,
-                "CCRR refused to change the active regime",
             )
 
         if noise_probability >= self.config.transient_disturbance_probability_threshold:
-            return self._assessment(
-                HabitStateConclusion.SHORT_TERM_DISTURBANCE,
-                old_regime,
-                old_regime,
-                noise_probability,
-                None,
-                evidence_source_record_ids,
-                (PrototypeStatisticOperation.QUARANTINE,),
-                snapshot,
-                frame.timestamp,
-                False,
-                "CF-BOCPD transient-noise state dominated",
+            return finish_assessment(
+                self._assessment(
+                    HabitStateConclusion.SHORT_TERM_DISTURBANCE,
+                    old_regime,
+                    old_regime,
+                    noise_probability,
+                    None,
+                    evidence_source_record_ids,
+                    (PrototypeStatisticOperation.QUARANTINE,),
+                    snapshot,
+                    frame.timestamp,
+                    False,
+                    "CF-BOCPD transient-noise state dominated",
+                )
             )
         if (
             owner_probability >= self.config.owner_evidence_threshold
@@ -388,31 +423,35 @@ class AutomaticCFBOCPDCCRRRouter:
                 snapshot=snapshot,
                 evidence_source_record_ids=evidence_source_record_ids,
             )
-            return self._assessment(
-                HabitStateConclusion.INSUFFICIENT_EVIDENCE,
+            return finish_assessment(
+                self._assessment(
+                    HabitStateConclusion.INSUFFICIENT_EVIDENCE,
+                    old_regime,
+                    old_regime,
+                    habit_probability,
+                    None,
+                    evidence_source_record_ids,
+                    (PrototypeStatisticOperation.QUARANTINE,),
+                    snapshot,
+                    frame.timestamp,
+                    False,
+                    "CF-BOCPD proposed a candidate; CCRR awaits persistence evidence",
+                )
+            )
+        return finish_assessment(
+            self._assessment(
+                HabitStateConclusion.STABLE,
                 old_regime,
                 old_regime,
                 habit_probability,
                 None,
                 evidence_source_record_ids,
-                (PrototypeStatisticOperation.QUARANTINE,),
+                (PrototypeStatisticOperation.REINFORCE,),
                 snapshot,
-                frame.timestamp,
-                False,
-                "CF-BOCPD proposed a candidate; CCRR awaits persistence evidence",
+                None,
+                True,
+                "no candidate crossed the configured gate",
             )
-        return self._assessment(
-            HabitStateConclusion.STABLE,
-            old_regime,
-            old_regime,
-            habit_probability,
-            None,
-            evidence_source_record_ids,
-            (PrototypeStatisticOperation.REINFORCE,),
-            snapshot,
-            None,
-            True,
-            "no candidate crossed the configured gate",
         )
 
     @staticmethod

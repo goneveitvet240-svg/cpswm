@@ -9,7 +9,6 @@ from __future__ import annotations
 
 import hashlib
 import json
-from collections import defaultdict
 from collections.abc import Mapping, Sequence
 from dataclasses import dataclass, field
 from math import isclose, isfinite
@@ -108,18 +107,10 @@ class HierarchicalDirichletHabitModel:
             raise ValueError("unknown_actor cannot be declared as a resident")
         self._actor_residual_weight = actor_residual_weight
         self._model_version = model_version
-        self._household_counts: dict[CountKey, dict[UUID, float]] = defaultdict(
-            lambda: defaultdict(float)
-        )
-        self._person_counts: dict[CountKey, dict[UUID, float]] = defaultdict(
-            lambda: defaultdict(float)
-        )
-        self._context_counts: dict[CountKey, dict[UUID, float]] = defaultdict(
-            lambda: defaultdict(float)
-        )
-        self._isolated_nonresident_counts: dict[CountKey, dict[UUID, float]] = defaultdict(
-            lambda: defaultdict(float)
-        )
+        self._household_counts: dict[CountKey, dict[UUID, float]] = {}
+        self._person_counts: dict[CountKey, dict[UUID, float]] = {}
+        self._context_counts: dict[CountKey, dict[UUID, float]] = {}
+        self._isolated_nonresident_counts: dict[CountKey, dict[UUID, float]] = {}
 
     def _normalize_prior(self, common_prior: Mapping[UUID, float] | None) -> dict[UUID, float]:
         if common_prior is None:
@@ -192,24 +183,32 @@ class HierarchicalDirichletHabitModel:
         household_id = evidence.metadata.household_id
         object_id = evidence.object_instance_id
         if household_weight > 0.0:
-            self._household_counts[(household_id, object_id)][evidence.location_id] += (
-                household_weight
+            household_counts = self._household_counts.setdefault((household_id, object_id), {})
+            household_counts[evidence.location_id] = (
+                household_counts.get(evidence.location_id, 0.0) + household_weight
             )
         if isolated_mass > 0.0:
-            self._isolated_nonresident_counts[(household_id, object_id)][evidence.location_id] += (
-                weight * isolated_mass
+            isolated_counts = self._isolated_nonresident_counts.setdefault(
+                (household_id, object_id), {}
+            )
+            isolated_counts[evidence.location_id] = (
+                isolated_counts.get(evidence.location_id, 0.0) + weight * isolated_mass
             )
 
         for actor, probability in evidence.actor_posterior.items():
             if actor == self.UNKNOWN_ACTOR or probability <= 0.0:
                 continue
             actor_weight = weight * probability
-            self._person_counts[(household_id, actor, object_id)][evidence.location_id] += (
-                actor_weight
+            person_counts = self._person_counts.setdefault((household_id, actor, object_id), {})
+            person_counts[evidence.location_id] = (
+                person_counts.get(evidence.location_id, 0.0) + actor_weight
             )
-            self._context_counts[(household_id, actor, object_id, evidence.context_key)][
-                evidence.location_id
-            ] += actor_weight
+            context_counts = self._context_counts.setdefault(
+                (household_id, actor, object_id, evidence.context_key), {}
+            )
+            context_counts[evidence.location_id] = (
+                context_counts.get(evidence.location_id, 0.0) + actor_weight
+            )
         return HabitUpdateAudit(
             applied=True,
             base_training_weight=base_weight,
@@ -263,17 +262,19 @@ class HierarchicalDirichletHabitModel:
         context_key: str,
     ) -> HabitPrediction:
         actor = str(person_id)
-        household = self._household_counts[(household_id, object_instance_id)]
-        person = self._person_counts[(household_id, actor, object_instance_id)]
-        context = self._context_counts[(household_id, actor, object_instance_id, context_key)]
+        household = self._household_counts.get((household_id, object_instance_id), {})
+        person = self._person_counts.get((household_id, actor, object_instance_id), {})
+        context = self._context_counts.get(
+            (household_id, actor, object_instance_id, context_key), {}
+        )
 
         scores: dict[UUID, float] = {}
         for location in self._locations:
             scores[location] = (
                 self._common_prior_strength * self._common_prior[location]
-                + self._household_weight * household[location]
-                + self._person_weight * person[location]
-                + self._context_weight * context[location]
+                + self._household_weight * household.get(location, 0.0)
+                + self._person_weight * person.get(location, 0.0)
+                + self._context_weight * context.get(location, 0.0)
             )
         probabilities = self._normalize_scores(scores)
         component_probabilities: dict[str, Mapping[UUID, float]] = {}
@@ -282,7 +283,7 @@ class HierarchicalDirichletHabitModel:
             household_scores = {
                 location: (
                     self._common_prior_strength * self._common_prior[location]
-                    + self._household_weight * household[location]
+                    + self._household_weight * household.get(location, 0.0)
                 )
                 for location in self._locations
             }
@@ -290,8 +291,8 @@ class HierarchicalDirichletHabitModel:
             actor_scores = {
                 location: (
                     self._common_prior_strength * self._common_prior[location]
-                    + self._person_weight * person[location]
-                    + self._context_weight * context[location]
+                    + self._person_weight * person.get(location, 0.0)
+                    + self._context_weight * context.get(location, 0.0)
                 )
                 for location in self._locations
             }
@@ -342,7 +343,9 @@ class HierarchicalDirichletHabitModel:
     ) -> float:
         """Expose quarantined visitor/unknown mass without mixing it into residents."""
 
-        return self._isolated_nonresident_counts[(household_id, object_instance_id)][location_id]
+        return self._isolated_nonresident_counts.get((household_id, object_instance_id), {}).get(
+            location_id, 0.0
+        )
 
     def _resident_mass(self, actor_posterior: Mapping[str, float]) -> float:
         if self._resident_actor_keys is None:
@@ -372,7 +375,9 @@ class HierarchicalDirichletHabitModel:
     ) -> float:
         """Expose one statistic for evaluation without leaking mutable state."""
 
-        return self._person_counts[(household_id, str(person_id), object_instance_id)][location_id]
+        return self._person_counts.get((household_id, str(person_id), object_instance_id), {}).get(
+            location_id, 0.0
+        )
 
     def canonical_state_hash(self) -> str:
         """Deterministic hash of the full learned parameter state.
@@ -380,8 +385,8 @@ class HierarchicalDirichletHabitModel:
         Covers every non-zero household, person, context, and isolated
         non-resident count, so it changes if and only if a real parameter
         changes -- unlike a probe-grid hash, which only sees probed locations.
-        Zero entries (including empty rows created by ``defaultdict`` reads) are
-        excluded so accessor side effects cannot alter the hash.
+        Zero entries are excluded; accessors use ``dict.get`` and cannot create
+        empty rows as a read side effect.
         """
 
         def table(counts: dict[CountKey, dict[UUID, float]]) -> list[list[object]]:

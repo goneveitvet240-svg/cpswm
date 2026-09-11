@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from dataclasses import replace
-from datetime import timedelta
+from datetime import UTC, datetime, timedelta
 from uuid import UUID, uuid4
 
 import pytest
@@ -27,6 +27,12 @@ from cpswm.system.continual.execution_feedback_projector import (
     TransitionCandidate,
 )
 from cpswm.system.continual.project_one_feedback import FeedbackInterpretation
+from cpswm.system.continual.project_one_regime_loop import (
+    AutomaticCFBOCPDCCRRRouter,
+    AutomaticRegimeAssessment,
+    RegimeStage,
+    RegimeStagePayload,
+)
 from cpswm.system.counterfactual_event_hypergraph.feedback_revision_loop import (
     ProjectOneRequestKind,
     ProjectOneStatRequest,
@@ -44,7 +50,7 @@ from cpswm.system.prototype_spine import (
     PrototypeTransition,
     _normalized_predictive_surprise,
 )
-from cpswm.world_model.habits_transitions import ChangeCause
+from cpswm.world_model.habits_transitions import CauseSignalFrame, ChangeCause, JointCauseSnapshot
 
 
 @pytest.fixture
@@ -134,6 +140,103 @@ def _observe(spine, case, locations):
         spine.process_transition(_transition(case, location=location, index=start + index))
         for index, location in enumerate(locations)
     ]
+
+
+def _regime_router_for_stage_observer() -> AutomaticCFBOCPDCCRRRouter:
+    return AutomaticCFBOCPDCCRRRouter(
+        object_instance_id=UUID("00000000-0000-0000-0000-000000000101"),
+        actor_id="owner",
+        owner_actor_id="owner",
+        config=PrototypeLoopConfig(
+            minimum_baseline_observations=1,
+            confirmation_window=2,
+            cause_factorized_bocpd_enabled=False,
+        ),
+    )
+
+
+def _regime_stage_frame(index: int) -> CauseSignalFrame:
+    return CauseSignalFrame(
+        timestamp=datetime(2026, 9, 9, tzinfo=UTC) + timedelta(seconds=index),
+        opportunity_index=index,
+        signals={
+            ChangeCause.OBSERVATION: 0.0,
+            ChangeCause.ACTOR: 0.0,
+            ChangeCause.HABIT: 1.0,
+            ChangeCause.NOISE: 0.0,
+        },
+    )
+
+
+def test_stage_observer_reports_snapshot_then_final_assessment_once_per_return_path():
+    router = _regime_router_for_stage_observer()
+    observed: list[tuple[RegimeStage, RegimeStagePayload]] = []
+
+    baseline = router.observe(
+        frame=_regime_stage_frame(0),
+        state_key="stable",
+        context_features=(0.0,),
+        owner_probability=1.0,
+        evidence_source_record_ids=(UUID("00000000-0000-0000-0000-000000000201"),),
+        stage_observer=lambda stage, payload: observed.append((stage, payload)),
+    )
+
+    assert [stage for stage, _ in observed] == [
+        RegimeStage.CF_BOCPD_SNAPSHOT,
+        RegimeStage.CCRR_ASSESSMENT,
+    ]
+    assert isinstance(observed[0][1], JointCauseSnapshot)
+    assert observed[0][1] is baseline.snapshot
+    assert isinstance(observed[1][1], AutomaticRegimeAssessment)
+    assert observed[1][1] is baseline
+
+    observed.clear()
+    pending = router.observe(
+        frame=_regime_stage_frame(1),
+        state_key="changed",
+        context_features=(1.0,),
+        owner_probability=1.0,
+        evidence_source_record_ids=(UUID("00000000-0000-0000-0000-000000000202"),),
+        stage_observer=lambda stage, payload: observed.append((stage, payload)),
+    )
+
+    assert pending.conclusion is HabitStateConclusion.INSUFFICIENT_EVIDENCE
+    assert [stage for stage, _ in observed] == [
+        RegimeStage.CF_BOCPD_SNAPSHOT,
+        RegimeStage.CCRR_ASSESSMENT,
+    ]
+    assert observed[0][1] is pending.snapshot
+    assert observed[1][1] is pending
+
+
+@pytest.mark.parametrize(
+    "failing_stage",
+    [RegimeStage.CF_BOCPD_SNAPSHOT, RegimeStage.CCRR_ASSESSMENT],
+)
+def test_stage_observer_exception_propagates(failing_stage: RegimeStage):
+    router = _regime_router_for_stage_observer()
+    observed: list[RegimeStage] = []
+
+    def fail_at_selected_stage(stage: RegimeStage, payload: RegimeStagePayload) -> None:
+        del payload
+        observed.append(stage)
+        if stage is failing_stage:
+            raise RuntimeError(f"observer failed at {stage}")
+
+    with pytest.raises(RuntimeError, match=f"observer failed at {failing_stage}"):
+        router.observe(
+            frame=_regime_stage_frame(0),
+            state_key="stable",
+            context_features=(0.0,),
+            owner_probability=1.0,
+            evidence_source_record_ids=(UUID("00000000-0000-0000-0000-000000000203"),),
+            stage_observer=fail_at_selected_stage,
+        )
+
+    expected = [RegimeStage.CF_BOCPD_SNAPSHOT]
+    if failing_stage is RegimeStage.CCRR_ASSESSMENT:
+        expected.append(RegimeStage.CCRR_ASSESSMENT)
+    assert observed == expected
 
 
 def _reinforce_once(*, case, spine, transition, source_result):

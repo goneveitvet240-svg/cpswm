@@ -524,3 +524,26 @@ PYTHONPATH=src:tests $V \
 - 不改动科学阈值、比较数据或预算；
 - 不把本轮任何工程通过写成科学门通过；
 - 不宣称审计穷尽——本轮是**部分审计**，覆盖边界在 §3.2、§4.2 与 §7 明确写出。
+
+---
+
+## 9. 本轮提交
+
+| 项 | 值 |
+|---|---|
+| 分支 | `codex/s2-backbone-operators-w3` |
+| 本轮代码/测试提交 | `abd6201252ec94ddac9e83c8c2b8e4e6e1516733` |
+| 本轮起点 | `d17e88af2c625a62cea95a86482d6dbffdbfff03` |
+| 共同起点 | `09eb4d48e1c11082e90ca18332d04333e6b5b47a` |
+| 变更规模 | 14 个文件，+3951 / −176（提交前经仓库 pre-commit 的 `ruff format` 归一化） |
+| 生产源码变更 | `prototype_spine.py`、`structure_two_execution.py`、`structure_two_production_system.py` |
+| 新增测试 | 3 个文件，38 项 |
+| 工作方式 | macOS 原生独立 worktree `/private/tmp/s2-w3-native`；用户主工作区未改动；**未推送** |
+
+提交后在最终源码上复核：
+
+- `ruff check src tests docs` → All checks passed；仓库 pre-commit 的 `ruff (legacy alias)` 与 `ruff format` 均 Passed；
+- 指定集合 + 本轮新增 → **252 passed**（格式归一化之后重跑，结果不变）；
+- `round3_evidence.py` 重新生成的 JSON 与提交进仓库的 `w3_round3_results.json` **逐字节相同**；
+- 源码绑定门差分（起点 vs 本轮 HEAD）→ 两侧均 `4 failed, 59 passed, 9 errors`，
+  失败/错误 id 集合完全相同，**新增回归为空**。

@@ -6,7 +6,7 @@
   },
   "claim_boundary": "This previously opened D0 development result evaluates separate SEARCH and PUT_BACK signals for evaluation-only direct P5 under an exactly matched exogenous CIAV stream. It does not aggregate the tasks, estimate production CIAV net utility, pass Task 7/8/9, validate adaptive routing, authorize scientific superiority, establish external validity, or narrow Structure Two.",
   "combined_utility_evaluated": false,
-  "content_sha256": "072241d76d60d3d1572a444da55b1edb2807251631b8b06ee30d4c768906de55",
+  "content_sha256": "1f5361fd927da88a45e2b0ebdf1641ad9db6887a8e7e5bbe2352b97c2e14371c",
   "data_scope": {
     "confirmatory": false,
     "dataset_version": "project-two-d0-multiseed-readout@0.5",
@@ -53,24 +53,24 @@
     },
     {
       "comparison": "learned_matched_two_stage_minus_direct_p5_full_eager",
-      "mean_error_rate_improvement": -0.4109375,
+      "mean_error_rate_improvement": 0.23385416666666667,
       "paired_episode_confidence_interval_95": [
-        -0.48854166666666665,
-        -0.328125
+        0.221875,
+        0.2453125
       ],
-      "registered_signal_supported": false,
-      "relative_error_rate_improvement": -1.5,
+      "registered_signal_supported": true,
+      "relative_error_rate_improvement": 0.8536121673003801,
       "task": "put_back"
     },
     {
       "comparison": "independently_tuned_amg_minus_direct_p5_full_eager",
-      "mean_error_rate_improvement": -0.63125,
+      "mean_error_rate_improvement": 0.013541666666666667,
       "paired_episode_confidence_interval_95": [
-        -0.715625,
-        -0.5427083333333333
+        0.00625,
+        0.022916666666666665
       ],
       "registered_signal_supported": false,
-      "relative_error_rate_improvement": -11.766990291262136,
+      "relative_error_rate_improvement": 0.2524271844660194,
       "task": "put_back"
     }
   ],
@@ -106,13 +106,13 @@
     },
     "execution_module": {
       "path": "src/cpswm/system/evaluation_operations/structure_two_p5_three_arm_death_test.py",
-      "sha256": "107dabd7666a3048a8d80a670074ce75bcbe6d1a7242d947e00b6446e04b6e36"
+      "sha256": "77a84be6ad745cd2208c1a1f845a1ef740b36427dbfb88e7ed9af92a05695e7d"
     },
     "p5_first_decision": {
       "path": "configs/project_two_experiments/structure_two_p5_first_decision_v0_1.json",
       "sha256": "85f727dc4555dd4bb40c3c7acf1e9d20535ef75eeaed41c2852ab156ba1e817c"
     },
-    "production_assembly_manifest_sha256": "39bb159b02a6040ee6ecd4215b222b4a9ef2a603461d2b57b2ddf15615a60bec",
+    "production_assembly_manifest_sha256": "d6a166dd9717a64f32669cc6b10f5a48690c296d1ddbe85dadb7b168c279714b",
     "production_system": {
       "path": "src/cpswm/system/structure_two_production_system.py",
       "sha256": "306b72ae2223b03bcc609691afa67aa5fd284f728c49cade1e292b6491ba22c5"
@@ -136,7 +136,7 @@
     "direct_p5_full_eager": {
       "episode_count": 60,
       "normalized_search_regret": 0.06163194444444444,
-      "put_back_error_rate": 0.6848958333333334,
+      "put_back_error_rate": 0.04010416666666667,
       "search_error_rate": 0.0890625,
       "step_count": 1920
     },
@@ -164,14 +164,14 @@
       "full_p5_transition_count": 20,
       "negative_ciav_opceu_closure_count": 12,
       "normalized_search_regret": 0.05208333333333333,
-      "put_back_error_rate": 0.28125,
-      "put_back_errors": 9,
+      "put_back_error_rate": 0.0625,
+      "put_back_errors": 2,
       "schedule_commitment_sha256": "d08e028c61b16bd0713cca488d85f40d1fae6149e919f0554251ebe01ba48a81",
       "search_error_rate": 0.09375,
       "search_errors": 3,
       "step_count": 32,
       "transition_dependent_no_new_transition_count": 12,
-      "typed_action_chain_sha256": "19cf64a4677c87613c2dd199bd1819712273737d40af071470bb53d5819175f6"
+      "typed_action_chain_sha256": "35c65f490554ac488eec3a15768609207b83711c35918a6dda218434c931295c"
     },
     {
       "all_seven_primary_trace_count": 0,
@@ -215,14 +215,14 @@
       "full_p5_transition_count": 22,
       "negative_ciav_opceu_closure_count": 10,
       "normalized_search_regret": 0.09375,
-      "put_back_error_rate": 0.71875,
-      "put_back_errors": 23,
+      "put_back_error_rate": 0.125,
+      "put_back_errors": 4,
       "schedule_commitment_sha256": "1d551bd9028b3ca167d571308fb1f7662bf26bea816b8df6b5bbf7891aea5eb5",
       "search_error_rate": 0.1875,
       "search_errors": 6,
       "step_count": 32,
       "transition_dependent_no_new_transition_count": 10,
-      "typed_action_chain_sha256": "4f92839102d5b72422bc648fc98a81261a22de921d381115ff78bb97656bf3f0"
+      "typed_action_chain_sha256": "4515ce6a586451e2fe105e31c66275262a6b84b4aa49b45c7d1200b6285c9188"
     },
     {
       "all_seven_primary_trace_count": 0,
@@ -266,14 +266,14 @@
       "full_p5_transition_count": 24,
       "negative_ciav_opceu_closure_count": 8,
       "normalized_search_regret": 0.041666666666666664,
-      "put_back_error_rate": 1.0,
-      "put_back_errors": 32,
+      "put_back_error_rate": 0.0625,
+      "put_back_errors": 2,
       "schedule_commitment_sha256": "5ab386ce67965b81c8c0f100fa45ed4e28a652e6d282847838cda80f7928a017",
       "search_error_rate": 0.0625,
       "search_errors": 2,
       "step_count": 32,
       "transition_dependent_no_new_transition_count": 8,
-      "typed_action_chain_sha256": "5ab46761f5d0818bf47a2464f1741b146c28068f68ee3b05eb2ea4ef09dd14ce"
+      "typed_action_chain_sha256": "413441a0c6e1e7825c34085556ec3245f33fd3753432727c4414fe58aac7d31f"
     },
     {
       "all_seven_primary_trace_count": 0,
@@ -317,14 +317,14 @@
       "full_p5_transition_count": 18,
       "negative_ciav_opceu_closure_count": 14,
       "normalized_search_regret": 0.010416666666666666,
-      "put_back_error_rate": 0.28125,
-      "put_back_errors": 9,
+      "put_back_error_rate": 0.0,
+      "put_back_errors": 0,
       "schedule_commitment_sha256": "20234706bbed27ae54a5406be818a8ab59029f4039cbe3c7c9f8e403d4117275",
       "search_error_rate": 0.03125,
       "search_errors": 1,
       "step_count": 32,
       "transition_dependent_no_new_transition_count": 14,
-      "typed_action_chain_sha256": "e95bf3eaf41a04a556b7a0880e9629d9885997efac1394a49a8b82e908d575f2"
+      "typed_action_chain_sha256": "bd0a777b5d63110a1cf69b6bc7c24374c46f41d8eed93b7a83bafbe455930f56"
     },
     {
       "all_seven_primary_trace_count": 0,
@@ -368,14 +368,14 @@
       "full_p5_transition_count": 21,
       "negative_ciav_opceu_closure_count": 11,
       "normalized_search_regret": 0.03125,
-      "put_back_error_rate": 0.71875,
-      "put_back_errors": 23,
+      "put_back_error_rate": 0.03125,
+      "put_back_errors": 1,
       "schedule_commitment_sha256": "83ab588507601547fd5c5205e65c6d000f0bb304f3aa232942a66f7bbc7e821b",
       "search_error_rate": 0.0625,
       "search_errors": 2,
       "step_count": 32,
       "transition_dependent_no_new_transition_count": 11,
-      "typed_action_chain_sha256": "b7abc3db4f2fa306ce2b1ca8b4d46e4ec16e0741ad9f6e67801db0360cbc2042"
+      "typed_action_chain_sha256": "87984219c2d2ae70a880f289fcd78c51f633d80389bd533227473a0210f6db77"
     },
     {
       "all_seven_primary_trace_count": 0,
@@ -419,14 +419,14 @@
       "full_p5_transition_count": 18,
       "negative_ciav_opceu_closure_count": 14,
       "normalized_search_regret": 0.05208333333333333,
-      "put_back_error_rate": 1.0,
-      "put_back_errors": 32,
+      "put_back_error_rate": 0.0,
+      "put_back_errors": 0,
       "schedule_commitment_sha256": "2c073f92149cb12aae59132f6d4026ffe183f4b77a689cececaa77e8017d0182",
       "search_error_rate": 0.0625,
       "search_errors": 2,
       "step_count": 32,
       "transition_dependent_no_new_transition_count": 14,
-      "typed_action_chain_sha256": "92961172d8f44815604149e95e611c017cd261822b88e418383395ec17de6cfa"
+      "typed_action_chain_sha256": "ec5015c9029f2b3098e2da2a2c156b9f95a4f7c0e7d249fdbb9000dca84b1c12"
     },
     {
       "all_seven_primary_trace_count": 0,
@@ -470,14 +470,14 @@
       "full_p5_transition_count": 16,
       "negative_ciav_opceu_closure_count": 16,
       "normalized_search_regret": 0.05208333333333333,
-      "put_back_error_rate": 0.28125,
-      "put_back_errors": 9,
+      "put_back_error_rate": 0.03125,
+      "put_back_errors": 1,
       "schedule_commitment_sha256": "815d1b365166d4d0d6eb3c92a5de201bf9ad4d38604da064ef8ce2df7618b301",
       "search_error_rate": 0.09375,
       "search_errors": 3,
       "step_count": 32,
       "transition_dependent_no_new_transition_count": 16,
-      "typed_action_chain_sha256": "aae9ab70dd75d77d384d33472dea165fd2f64bbeed7758b713af75c898c0951e"
+      "typed_action_chain_sha256": "4270611f3aad78faf773133cbd6fc66d38f1543bb56a1d4c5dbda624f5d8e5e9"
     },
     {
       "all_seven_primary_trace_count": 0,
@@ -521,14 +521,14 @@
       "full_p5_transition_count": 16,
       "negative_ciav_opceu_closure_count": 16,
       "normalized_search_regret": 0.041666666666666664,
-      "put_back_error_rate": 0.28125,
-      "put_back_errors": 9,
+      "put_back_error_rate": 0.03125,
+      "put_back_errors": 1,
       "schedule_commitment_sha256": "80cf683713a53861bc972db5a496e7321c282edb8923f50c64540b98fab2eeb6",
       "search_error_rate": 0.09375,
       "search_errors": 3,
       "step_count": 32,
       "transition_dependent_no_new_transition_count": 16,
-      "typed_action_chain_sha256": "ae434b738396ce443b724466e543f9edb5e9a9909ffd144fd86d64038f4a1f6a"
+      "typed_action_chain_sha256": "e81464c0de39a8b5cac5b94c425da71ab775ebe3fb84f29fe2c6c75f1e049b54"
     },
     {
       "all_seven_primary_trace_count": 0,
@@ -572,14 +572,14 @@
       "full_p5_transition_count": 18,
       "negative_ciav_opceu_closure_count": 14,
       "normalized_search_regret": 0.041666666666666664,
-      "put_back_error_rate": 0.28125,
-      "put_back_errors": 9,
+      "put_back_error_rate": 0.0,
+      "put_back_errors": 0,
       "schedule_commitment_sha256": "08021b9fad837d134735cb1b9328ef02e83e326e1714079483717a2dbe5e35af",
       "search_error_rate": 0.0625,
       "search_errors": 2,
       "step_count": 32,
       "transition_dependent_no_new_transition_count": 14,
-      "typed_action_chain_sha256": "9386de2982e70e6a9ec2ab020ba4cf415d927b3db1fe05a5160e805215af3688"
+      "typed_action_chain_sha256": "8753d6b3cde5d4ea2ae3a29a57558f1c64bb27d3981828b7e02c44512c560903"
     },
     {
       "all_seven_primary_trace_count": 0,
@@ -623,14 +623,14 @@
       "full_p5_transition_count": 23,
       "negative_ciav_opceu_closure_count": 9,
       "normalized_search_regret": 0.0625,
-      "put_back_error_rate": 0.71875,
-      "put_back_errors": 23,
+      "put_back_error_rate": 0.0,
+      "put_back_errors": 0,
       "schedule_commitment_sha256": "f2c8126113f83f4a01a44fbc8df564bbeb26a218bd2125e9fdc4f444acdc3857",
       "search_error_rate": 0.0625,
       "search_errors": 2,
       "step_count": 32,
       "transition_dependent_no_new_transition_count": 9,
-      "typed_action_chain_sha256": "ec2de4eb0fb96995c808369cc0333adbeb5408374f3cdf48166634fc30de375d"
+      "typed_action_chain_sha256": "40bd6cd2617dbac5bb8ee1cd854a9fddce0e4924972fb706a24339cd80f95dc0"
     },
     {
       "all_seven_primary_trace_count": 0,
@@ -674,14 +674,14 @@
       "full_p5_transition_count": 16,
       "negative_ciav_opceu_closure_count": 16,
       "normalized_search_regret": 0.12499999999999999,
-      "put_back_error_rate": 1.0,
-      "put_back_errors": 32,
+      "put_back_error_rate": 0.0625,
+      "put_back_errors": 2,
       "schedule_commitment_sha256": "4899ded5c87fe6fa53849c0d4ee772ccb14b77351d46721207810e259477d7ce",
       "search_error_rate": 0.15625,
       "search_errors": 5,
       "step_count": 32,
       "transition_dependent_no_new_transition_count": 16,
-      "typed_action_chain_sha256": "7af70937d7cfaef6ea5cf16d75fadf0536b696a6f90d6e95f743c6b5726a46a0"
+      "typed_action_chain_sha256": "f60214b465cfda3cd7b7cb748f225a0e032aad54ebf5df85446e79095a7936bc"
     },
     {
       "all_seven_primary_trace_count": 0,
@@ -725,14 +725,14 @@
       "full_p5_transition_count": 22,
       "negative_ciav_opceu_closure_count": 10,
       "normalized_search_regret": 0.0625,
-      "put_back_error_rate": 0.28125,
-      "put_back_errors": 9,
+      "put_back_error_rate": 0.0,
+      "put_back_errors": 0,
       "schedule_commitment_sha256": "ba2ef5a6bdc9ec7a6be24f6e0930fe3d9b018c7e06ba7b0e1bc5d9613e2149da",
       "search_error_rate": 0.0625,
       "search_errors": 2,
       "step_count": 32,
       "transition_dependent_no_new_transition_count": 10,
-      "typed_action_chain_sha256": "320f6f15606967da02a0e186ea53a2285be4f0bc3c496ac12772da0b01428b1f"
+      "typed_action_chain_sha256": "214f5eff4f0d42bfda8ebfcde5744099f4b759ac215322a1c0b0c07fe54ed85f"
     },
     {
       "all_seven_primary_trace_count": 0,
@@ -776,14 +776,14 @@
       "full_p5_transition_count": 19,
       "negative_ciav_opceu_closure_count": 13,
       "normalized_search_regret": 0.03125,
-      "put_back_error_rate": 1.0,
-      "put_back_errors": 32,
+      "put_back_error_rate": 0.0625,
+      "put_back_errors": 2,
       "schedule_commitment_sha256": "f9a0c23e3f8c43cacce0870b778587bcb2484bcce5171a4a39fbefeec7264043",
       "search_error_rate": 0.0625,
       "search_errors": 2,
       "step_count": 32,
       "transition_dependent_no_new_transition_count": 13,
-      "typed_action_chain_sha256": "b67afd18fb2103217ff2b1de0dfa81f8455e9e70380b898f7f4a1b7240a6d809"
+      "typed_action_chain_sha256": "d43fd11b8b99528e63aa2cf24042c5f92958f140466e98060a5f045501270552"
     },
     {
       "all_seven_primary_trace_count": 0,
@@ -827,14 +827,14 @@
       "full_p5_transition_count": 20,
       "negative_ciav_opceu_closure_count": 12,
       "normalized_search_regret": 0.09374999999999999,
-      "put_back_error_rate": 0.71875,
-      "put_back_errors": 23,
+      "put_back_error_rate": 0.09375,
+      "put_back_errors": 3,
       "schedule_commitment_sha256": "70eb4e055b952fab17ef4c8bf1dd2f0076f115029ea85a4226620192803a6ccd",
       "search_error_rate": 0.15625,
       "search_errors": 5,
       "step_count": 32,
       "transition_dependent_no_new_transition_count": 12,
-      "typed_action_chain_sha256": "4d6b8397be0272408cfc33904fc7e70b8cfa985f379f688f86907273d9671574"
+      "typed_action_chain_sha256": "b8a6481b0b14cf279932fa81f50f6d24204efc88aa36af2ad5cc2d83deffa93b"
     },
     {
       "all_seven_primary_trace_count": 0,
@@ -878,14 +878,14 @@
       "full_p5_transition_count": 19,
       "negative_ciav_opceu_closure_count": 13,
       "normalized_search_regret": 0.15624999999999997,
-      "put_back_error_rate": 0.28125,
-      "put_back_errors": 9,
+      "put_back_error_rate": 0.15625,
+      "put_back_errors": 5,
       "schedule_commitment_sha256": "3dcc78504741f5996b25b01998c4a905d17236ee57e61c2c542840e55d475e3c",
       "search_error_rate": 0.21875,
       "search_errors": 7,
       "step_count": 32,
       "transition_dependent_no_new_transition_count": 13,
-      "typed_action_chain_sha256": "c72d51d162201db0a915d31bb5b2bb9938ed0d29aed5b0238bee242bfb69ccdc"
+      "typed_action_chain_sha256": "e67288903bc7088dd87fd477ef60f70cb2f296f8955fde437943141d48465b3c"
     },
     {
       "all_seven_primary_trace_count": 0,
@@ -929,14 +929,14 @@
       "full_p5_transition_count": 21,
       "negative_ciav_opceu_closure_count": 11,
       "normalized_search_regret": 0.041666666666666664,
-      "put_back_error_rate": 0.28125,
-      "put_back_errors": 9,
+      "put_back_error_rate": 0.03125,
+      "put_back_errors": 1,
       "schedule_commitment_sha256": "494ae4ef1e2b67960f21bf78223e04b64217303d07289a2fc15db6e0898c45d1",
       "search_error_rate": 0.09375,
       "search_errors": 3,
       "step_count": 32,
       "transition_dependent_no_new_transition_count": 11,
-      "typed_action_chain_sha256": "227211107f9b1f39a306efba624320d1e8833d39638eb79e5a049397f46646b5"
+      "typed_action_chain_sha256": "2e336e9fb20b0d6d57951f2a96cabafff7f5df822ed3405bb511a5c8df184277"
     },
     {
       "all_seven_primary_trace_count": 0,
@@ -980,14 +980,14 @@
       "full_p5_transition_count": 18,
       "negative_ciav_opceu_closure_count": 14,
       "normalized_search_regret": 0.16666666666666666,
-      "put_back_error_rate": 1.0,
-      "put_back_errors": 32,
+      "put_back_error_rate": 0.09375,
+      "put_back_errors": 3,
       "schedule_commitment_sha256": "75881d0920da02ce704309a607299bfc11702a656beacdcdb9238a1c9eb52f5a",
       "search_error_rate": 0.1875,
       "search_errors": 6,
       "step_count": 32,
       "transition_dependent_no_new_transition_count": 14,
-      "typed_action_chain_sha256": "f3c283c603e22ec8ce64c7b6f7da36e4ef51197829b00d74225d3bd3164068f8"
+      "typed_action_chain_sha256": "449959bddac71c5cc4c125ea61d9f24288573c72adc2d9b0a172dc5d3af9bdf0"
     },
     {
       "all_seven_primary_trace_count": 0,
@@ -1031,14 +1031,14 @@
       "full_p5_transition_count": 26,
       "negative_ciav_opceu_closure_count": 6,
       "normalized_search_regret": 0.03125,
-      "put_back_error_rate": 0.28125,
-      "put_back_errors": 9,
+      "put_back_error_rate": 0.0,
+      "put_back_errors": 0,
       "schedule_commitment_sha256": "b390011568523a8702b629bd10d8e51fb1918a3fc0cc06cffb96c13cf7087e40",
       "search_error_rate": 0.0625,
       "search_errors": 2,
       "step_count": 32,
       "transition_dependent_no_new_transition_count": 6,
-      "typed_action_chain_sha256": "6962986c2d58f3f3aa7166cec844faddf3fe0efa00a6930d58522faaddffb5bd"
+      "typed_action_chain_sha256": "7aa028c21a16ada01ed341f48e5d21c267495711e487481eaee28088145038a1"
     },
     {
       "all_seven_primary_trace_count": 0,
@@ -1082,14 +1082,14 @@
       "full_p5_transition_count": 25,
       "negative_ciav_opceu_closure_count": 7,
       "normalized_search_regret": 0.0,
-      "put_back_error_rate": 0.28125,
-      "put_back_errors": 9,
+      "put_back_error_rate": 0.0,
+      "put_back_errors": 0,
       "schedule_commitment_sha256": "26d7bbcf2fb902c55571c25f57891bbf60eccb6edd997a5e704bf061223d5ffb",
       "search_error_rate": 0.0,
       "search_errors": 0,
       "step_count": 32,
       "transition_dependent_no_new_transition_count": 7,
-      "typed_action_chain_sha256": "f4860636100a0c830cde827d601fc13c1ecd191b1170105ef6433f6611401778"
+      "typed_action_chain_sha256": "47c60443bd87cf6b6e6d35c80d56591a92e7845c80e657e753480db8fe262d19"
     },
     {
       "all_seven_primary_trace_count": 0,
@@ -1133,14 +1133,14 @@
       "full_p5_transition_count": 17,
       "negative_ciav_opceu_closure_count": 15,
       "normalized_search_regret": 0.19791666666666666,
-      "put_back_error_rate": 1.0,
-      "put_back_errors": 32,
+      "put_back_error_rate": 0.15625,
+      "put_back_errors": 5,
       "schedule_commitment_sha256": "307e1598c5ea898362dba772c06b679b405e2c1cb5361f193822b0152416b6be",
       "search_error_rate": 0.25,
       "search_errors": 8,
       "step_count": 32,
       "transition_dependent_no_new_transition_count": 15,
-      "typed_action_chain_sha256": "d6772613f73f97d95d018f7f10c5f494e33ee8e1e2f61c24d8aa24e59faab0b3"
+      "typed_action_chain_sha256": "3f643995018af07485c5ca51e48bfb0e4a9a119893f426c861325970f3945b9b"
     },
     {
       "all_seven_primary_trace_count": 0,
@@ -1184,14 +1184,14 @@
       "full_p5_transition_count": 23,
       "negative_ciav_opceu_closure_count": 9,
       "normalized_search_regret": 0.0625,
-      "put_back_error_rate": 1.0,
-      "put_back_errors": 32,
+      "put_back_error_rate": 0.0,
+      "put_back_errors": 0,
       "schedule_commitment_sha256": "77c383c4de0369ac92972b94bd9ec05ccc2936a8d91ebab1d5a1758f5cb599ab",
       "search_error_rate": 0.0625,
       "search_errors": 2,
       "step_count": 32,
       "transition_dependent_no_new_transition_count": 9,
-      "typed_action_chain_sha256": "fe660d90fe6012effb430934b0ade6bcfaaed3e71daedce384a61126ecd73a61"
+      "typed_action_chain_sha256": "14fd770527385ac62bf7579397d3e686873deb50d7bc111d1049a71b24a1a6aa"
     },
     {
       "all_seven_primary_trace_count": 0,
@@ -1235,14 +1235,14 @@
       "full_p5_transition_count": 22,
       "negative_ciav_opceu_closure_count": 10,
       "normalized_search_regret": 0.0,
-      "put_back_error_rate": 1.0,
-      "put_back_errors": 32,
+      "put_back_error_rate": 0.0,
+      "put_back_errors": 0,
       "schedule_commitment_sha256": "1bfebb5490ecf076fd708e361374323406ff9abe6d7ed150d95ea22494532d19",
       "search_error_rate": 0.0,
       "search_errors": 0,
       "step_count": 32,
       "transition_dependent_no_new_transition_count": 10,
-      "typed_action_chain_sha256": "8015e22811409fc56e22a27e17f134a08f98d3efa500571588dd87391ab334be"
+      "typed_action_chain_sha256": "0e9a7eb417f66e4c1e8ce9db6efa433a7ea6258139a981301b7232d8f4f34301"
     },
     {
       "all_seven_primary_trace_count": 0,
@@ -1286,14 +1286,14 @@
       "full_p5_transition_count": 22,
       "negative_ciav_opceu_closure_count": 10,
       "normalized_search_regret": 0.06249999999999999,
-      "put_back_error_rate": 0.28125,
-      "put_back_errors": 9,
+      "put_back_error_rate": 0.09375,
+      "put_back_errors": 3,
       "schedule_commitment_sha256": "23471bce747914f4f2a9e8a55fdd058674cc3bf60d650e0cafbcbd2208c507ce",
       "search_error_rate": 0.125,
       "search_errors": 4,
       "step_count": 32,
       "transition_dependent_no_new_transition_count": 10,
-      "typed_action_chain_sha256": "eca2386ad580281352e49825233cf9e13a583509dbce3d8a0deeb7459c3b0bba"
+      "typed_action_chain_sha256": "e68059e77c99eb8bcbc27f293521002b150a8b886dda4937bd4c930acb4c1710"
     },
     {
       "all_seven_primary_trace_count": 0,
@@ -1337,14 +1337,14 @@
       "full_p5_transition_count": 21,
       "negative_ciav_opceu_closure_count": 11,
       "normalized_search_regret": 0.15625,
-      "put_back_error_rate": 1.0,
-      "put_back_errors": 32,
+      "put_back_error_rate": 0.1875,
+      "put_back_errors": 6,
       "schedule_commitment_sha256": "b0c8f5523b6c0653e92ce9fcca4f105b893bdf7e4271205d12ea61abbe958bfe",
       "search_error_rate": 0.21875,
       "search_errors": 7,
       "step_count": 32,
       "transition_dependent_no_new_transition_count": 11,
-      "typed_action_chain_sha256": "79b0bb4ba82544bbb4ee16f155564631ebd22139bb3054fd96ffe7f919ec8ce2"
+      "typed_action_chain_sha256": "9ae894ba1da5fa5b392e8bbea3b2dce54e6e36c868154d008869487dfe17af81"
     },
     {
       "all_seven_primary_trace_count": 0,
@@ -1388,14 +1388,14 @@
       "full_p5_transition_count": 24,
       "negative_ciav_opceu_closure_count": 8,
       "normalized_search_regret": 0.03125,
-      "put_back_error_rate": 1.0,
-      "put_back_errors": 32,
+      "put_back_error_rate": 0.03125,
+      "put_back_errors": 1,
       "schedule_commitment_sha256": "54e7fa316269ee85b140f6d114c5458cd6e0787d1c4ddf3e344f1453a46f7feb",
       "search_error_rate": 0.03125,
       "search_errors": 1,
       "step_count": 32,
       "transition_dependent_no_new_transition_count": 8,
-      "typed_action_chain_sha256": "f408c1c2fc6f5fbc9e2b25e4f99683e9721ada5d81f70df92235512e2a9fee6d"
+      "typed_action_chain_sha256": "94606d63c2f204232c48e282170c954cb6f599c867d5cd31a43865fed91bc9f2"
     },
     {
       "all_seven_primary_trace_count": 0,
@@ -1439,14 +1439,14 @@
       "full_p5_transition_count": 25,
       "negative_ciav_opceu_closure_count": 7,
       "normalized_search_regret": 0.0,
-      "put_back_error_rate": 0.28125,
-      "put_back_errors": 9,
+      "put_back_error_rate": 0.0,
+      "put_back_errors": 0,
       "schedule_commitment_sha256": "8de48f24548e1c4cc091437c8c549dc2bf41d7ec64a2efb194cc49f4181fbe76",
       "search_error_rate": 0.0,
       "search_errors": 0,
       "step_count": 32,
       "transition_dependent_no_new_transition_count": 7,
-      "typed_action_chain_sha256": "150f25262346993041bf630f2018a9d05de2536ed249e123ee21ea1061757594"
+      "typed_action_chain_sha256": "acc068ae2324b585e128d67230bc55db6f304ebf6b9b27ab62266591d17847c0"
     },
     {
       "all_seven_primary_trace_count": 0,
@@ -1490,14 +1490,14 @@
       "full_p5_transition_count": 17,
       "negative_ciav_opceu_closure_count": 15,
       "normalized_search_regret": 0.0,
-      "put_back_error_rate": 1.0,
-      "put_back_errors": 32,
+      "put_back_error_rate": 0.0,
+      "put_back_errors": 0,
       "schedule_commitment_sha256": "442bed55781518ee3b6a7d59dac1cb5c6a0a70c089be2487e30b8e5d71695573",
       "search_error_rate": 0.0,
       "search_errors": 0,
       "step_count": 32,
       "transition_dependent_no_new_transition_count": 15,
-      "typed_action_chain_sha256": "215b73892572d8bb50e11e092d1402c3a33d2ae7dba0af4b86f12c69289c0ea6"
+      "typed_action_chain_sha256": "7f3e6a4e66be771fc17b16038407f35b46ea4b076f087f662e0bcb0c456c5732"
     },
     {
       "all_seven_primary_trace_count": 0,
@@ -1541,14 +1541,14 @@
       "full_p5_transition_count": 21,
       "negative_ciav_opceu_closure_count": 11,
       "normalized_search_regret": 0.03125,
-      "put_back_error_rate": 1.0,
-      "put_back_errors": 32,
+      "put_back_error_rate": 0.0,
+      "put_back_errors": 0,
       "schedule_commitment_sha256": "cced849300e08927e0cb14a5a2347ec2066a2cf175e808af406e1e53aa17cd33",
       "search_error_rate": 0.09375,
       "search_errors": 3,
       "step_count": 32,
       "transition_dependent_no_new_transition_count": 11,
-      "typed_action_chain_sha256": "4ea6581cbd996eed3ad45e12a01fe948cc167c9c945a590e8f26a6125e01eb62"
+      "typed_action_chain_sha256": "c7ff505921b7d135145cd2d7b557a958b7bc6f7ddee6c56f014e9f9da4229d3c"
     },
     {
       "all_seven_primary_trace_count": 0,
@@ -1592,14 +1592,14 @@
       "full_p5_transition_count": 22,
       "negative_ciav_opceu_closure_count": 10,
       "normalized_search_regret": 0.020833333333333332,
-      "put_back_error_rate": 0.28125,
-      "put_back_errors": 9,
+      "put_back_error_rate": 0.03125,
+      "put_back_errors": 1,
       "schedule_commitment_sha256": "a5b0ea8cf7af3fc68bf18418d6a856bfe58941320677c0c2907b8904babef6a9",
       "search_error_rate": 0.03125,
       "search_errors": 1,
       "step_count": 32,
       "transition_dependent_no_new_transition_count": 10,
-      "typed_action_chain_sha256": "dd16cd668366e8155e7488d79d534f428fea4ac3c6fb156a54e01d64348589b8"
+      "typed_action_chain_sha256": "f6fce7757ea048f07e2c287b98d34668ec879dc370b7e8fbb977e1a9b66c9dfe"
     },
     {
       "all_seven_primary_trace_count": 0,
@@ -1643,14 +1643,14 @@
       "full_p5_transition_count": 19,
       "negative_ciav_opceu_closure_count": 13,
       "normalized_search_regret": 0.041666666666666664,
-      "put_back_error_rate": 0.28125,
-      "put_back_errors": 9,
+      "put_back_error_rate": 0.0,
+      "put_back_errors": 0,
       "schedule_commitment_sha256": "0a256e4a7e0b073fb942464c62ef99e8b7cfefaa825956889240c3180fb53309",
       "search_error_rate": 0.0625,
       "search_errors": 2,
       "step_count": 32,
       "transition_dependent_no_new_transition_count": 13,
-      "typed_action_chain_sha256": "dfc980f099320681a6ea83720ad42a7f39d0a8963e249c6c7b782ad8f28d1261"
+      "typed_action_chain_sha256": "f5805b2917828796b517a96110cbdc8947882c5cc934f9e2a722ba9285093295"
     },
     {
       "all_seven_primary_trace_count": 0,
@@ -1694,14 +1694,14 @@
       "full_p5_transition_count": 22,
       "negative_ciav_opceu_closure_count": 10,
       "normalized_search_regret": 0.041666666666666664,
-      "put_back_error_rate": 1.0,
-      "put_back_errors": 32,
+      "put_back_error_rate": 0.0,
+      "put_back_errors": 0,
       "schedule_commitment_sha256": "a6874ca811a14ef76102655f6e65fd30c6256b598939bb58e4b122f59ece61aa",
       "search_error_rate": 0.0625,
       "search_errors": 2,
       "step_count": 32,
       "transition_dependent_no_new_transition_count": 10,
-      "typed_action_chain_sha256": "08ab47493a06f4809136dbe01c340b6c8e613352cf4d848a2973f9e5b7dadf05"
+      "typed_action_chain_sha256": "9f7ed8b2e80df120ced06a355e19ed8b191e09463170f79d5a79f3ca95e4b2b2"
     },
     {
       "all_seven_primary_trace_count": 0,
@@ -1745,14 +1745,14 @@
       "full_p5_transition_count": 20,
       "negative_ciav_opceu_closure_count": 12,
       "normalized_search_regret": 0.0625,
-      "put_back_error_rate": 1.0,
-      "put_back_errors": 32,
+      "put_back_error_rate": 0.0,
+      "put_back_errors": 0,
       "schedule_commitment_sha256": "f4201d8094ac39ba0344d7654a6cd9e04335512e168f6c214a3ff4c14152e6db",
       "search_error_rate": 0.0625,
       "search_errors": 2,
       "step_count": 32,
       "transition_dependent_no_new_transition_count": 12,
-      "typed_action_chain_sha256": "069be52e78eff5f5538110d4582eac4b712a4aa414dc0f738c3a7c764a5aa737"
+      "typed_action_chain_sha256": "2d49d24a693d13896305139fa5f6279b5cf725063eb7a4d991d6ed388d67d18e"
     },
     {
       "all_seven_primary_trace_count": 0,
@@ -1796,14 +1796,14 @@
       "full_p5_transition_count": 16,
       "negative_ciav_opceu_closure_count": 16,
       "normalized_search_regret": 0.10416666666666669,
-      "put_back_error_rate": 1.0,
-      "put_back_errors": 32,
+      "put_back_error_rate": 0.1875,
+      "put_back_errors": 6,
       "schedule_commitment_sha256": "a450ae1e2e800ea8fa23b0a6fe5ec3d85afa04943d887c35ac23e836d5ba5bc8",
       "search_error_rate": 0.21875,
       "search_errors": 7,
       "step_count": 32,
       "transition_dependent_no_new_transition_count": 16,
-      "typed_action_chain_sha256": "480ac3840f648264107d54f30443485f6e25f331cc1826d3d2d145a68db17aba"
+      "typed_action_chain_sha256": "6cb4fc9ee90ac1e2bfed88b691d129336548a53ca4d4b2d86bea9af0cafa0e36"
     },
     {
       "all_seven_primary_trace_count": 0,
@@ -1847,14 +1847,14 @@
       "full_p5_transition_count": 20,
       "negative_ciav_opceu_closure_count": 12,
       "normalized_search_regret": 0.0625,
-      "put_back_error_rate": 0.71875,
-      "put_back_errors": 23,
+      "put_back_error_rate": 0.0,
+      "put_back_errors": 0,
       "schedule_commitment_sha256": "dc7fcfaf6ddc8bd4717e818375d4355bbae74e27a2f447f35215032f109ba2bc",
       "search_error_rate": 0.0625,
       "search_errors": 2,
       "step_count": 32,
       "transition_dependent_no_new_transition_count": 12,
-      "typed_action_chain_sha256": "08fd9cf7544e886d65c162e3c553fef0f50810c14dd4cdc2a64eb60d7eb5e93b"
+      "typed_action_chain_sha256": "44071e7dc9aa3c2fa4c03ab3bc412de62a6302016578fd9c92fec80dec57d072"
     },
     {
       "all_seven_primary_trace_count": 0,
@@ -1898,14 +1898,14 @@
       "full_p5_transition_count": 25,
       "negative_ciav_opceu_closure_count": 7,
       "normalized_search_regret": 0.0,
-      "put_back_error_rate": 1.0,
-      "put_back_errors": 32,
+      "put_back_error_rate": 0.0,
+      "put_back_errors": 0,
       "schedule_commitment_sha256": "33e4551efc52c7aa9c5b1d20ee04ec673f03b38097f6a75cdfeb523842d35d7d",
       "search_error_rate": 0.0,
       "search_errors": 0,
       "step_count": 32,
       "transition_dependent_no_new_transition_count": 7,
-      "typed_action_chain_sha256": "57360b01080da173f3813679b8ad706aa5cfce75a948af79846f60d10efe9b37"
+      "typed_action_chain_sha256": "db381e552ac210cc94d4d96654700de6993352ce6a5ccd296511da9c84387a4c"
     },
     {
       "all_seven_primary_trace_count": 0,
@@ -1949,14 +1949,14 @@
       "full_p5_transition_count": 22,
       "negative_ciav_opceu_closure_count": 10,
       "normalized_search_regret": 0.041666666666666664,
-      "put_back_error_rate": 1.0,
-      "put_back_errors": 32,
+      "put_back_error_rate": 0.09375,
+      "put_back_errors": 3,
       "schedule_commitment_sha256": "dfe649a8b5f2fd7981ee93d792ed5c3ed86f9beab8c1ab40ef61eaee725f2b23",
       "search_error_rate": 0.0625,
       "search_errors": 2,
       "step_count": 32,
       "transition_dependent_no_new_transition_count": 10,
-      "typed_action_chain_sha256": "bfb5e86c397a13e73f6070391113a6d89269badb9d68ac3c1944601c24fe3243"
+      "typed_action_chain_sha256": "2dfabe386e79921d0c28e4692b119499760a3bbe759d93386dba189c8717bfca"
     },
     {
       "all_seven_primary_trace_count": 0,
@@ -2000,14 +2000,14 @@
       "full_p5_transition_count": 22,
       "negative_ciav_opceu_closure_count": 10,
       "normalized_search_regret": 0.0,
-      "put_back_error_rate": 1.0,
-      "put_back_errors": 32,
+      "put_back_error_rate": 0.0,
+      "put_back_errors": 0,
       "schedule_commitment_sha256": "f126fd9284195059b025e7362f657125cccdaeca85682667d7dbe0fa699b460b",
       "search_error_rate": 0.0,
       "search_errors": 0,
       "step_count": 32,
       "transition_dependent_no_new_transition_count": 10,
-      "typed_action_chain_sha256": "7673bb08060fb0eb7817955b01886d75a4171437aa0def9eb84fd72954ce1cfa"
+      "typed_action_chain_sha256": "fe932b03ddd69486ea1e715fa159f39dd11f96ea25e9e0d9397d065a3c794a55"
     },
     {
       "all_seven_primary_trace_count": 0,
@@ -2051,14 +2051,14 @@
       "full_p5_transition_count": 21,
       "negative_ciav_opceu_closure_count": 11,
       "normalized_search_regret": 0.03125,
-      "put_back_error_rate": 1.0,
-      "put_back_errors": 32,
+      "put_back_error_rate": 0.03125,
+      "put_back_errors": 1,
       "schedule_commitment_sha256": "1c0b255f90ed437a4ba3eba4f827af88bef27ee8e8a8ab4083c4fb5dfb992419",
       "search_error_rate": 0.03125,
       "search_errors": 1,
       "step_count": 32,
       "transition_dependent_no_new_transition_count": 11,
-      "typed_action_chain_sha256": "506fff2258a6667af6f65a3e513d52533065d957dd87ae98ab69fa702b488805"
+      "typed_action_chain_sha256": "fe02d1d78ffa3443bfc8c93803b1a83f6abc680d386c092c601319c8a6acb365"
     },
     {
       "all_seven_primary_trace_count": 0,
@@ -2102,14 +2102,14 @@
       "full_p5_transition_count": 15,
       "negative_ciav_opceu_closure_count": 17,
       "normalized_search_regret": 0.06249999999999999,
-      "put_back_error_rate": 0.28125,
-      "put_back_errors": 9,
+      "put_back_error_rate": 0.03125,
+      "put_back_errors": 1,
       "schedule_commitment_sha256": "b5545a99627c2b7e14738abe8cfaf24bbc4471102b92d4d3b4b89df1fda98d39",
       "search_error_rate": 0.125,
       "search_errors": 4,
       "step_count": 32,
       "transition_dependent_no_new_transition_count": 17,
-      "typed_action_chain_sha256": "0f052f147764751bc12a00053db91036bf7007ebf13dd7bb97fd9bf85c6dfab3"
+      "typed_action_chain_sha256": "27ea2f3fd55a9dc83abd65fc2b056245871562ed9eb0d7fda42dd872a783615e"
     },
     {
       "all_seven_primary_trace_count": 0,
@@ -2153,14 +2153,14 @@
       "full_p5_transition_count": 21,
       "negative_ciav_opceu_closure_count": 11,
       "normalized_search_regret": 0.010416666666666666,
-      "put_back_error_rate": 1.0,
-      "put_back_errors": 32,
+      "put_back_error_rate": 0.0,
+      "put_back_errors": 0,
       "schedule_commitment_sha256": "802c11bb76e583be59ee18b3ed546052ac85a9a5696977f9a3ba7cd15ab05e79",
       "search_error_rate": 0.03125,
       "search_errors": 1,
       "step_count": 32,
       "transition_dependent_no_new_transition_count": 11,
-      "typed_action_chain_sha256": "15d06af4d2c00947b91e8b9482454c69c9054af5be556a2e0f56898b591949d6"
+      "typed_action_chain_sha256": "369a5c0f4ce2b7e7be8cfa352b11cc1046888eccc6aa460b4b6c199961531639"
     },
     {
       "all_seven_primary_trace_count": 0,
@@ -2204,14 +2204,14 @@
       "full_p5_transition_count": 28,
       "negative_ciav_opceu_closure_count": 4,
       "normalized_search_regret": 0.0625,
-      "put_back_error_rate": 0.71875,
-      "put_back_errors": 23,
+      "put_back_error_rate": 0.0,
+      "put_back_errors": 0,
       "schedule_commitment_sha256": "49fb1f3dc7a7132d463952b7a9c2fe8f5bd25e50653e0dccd6c8213ad66e36e0",
       "search_error_rate": 0.0625,
       "search_errors": 2,
       "step_count": 32,
       "transition_dependent_no_new_transition_count": 4,
-      "typed_action_chain_sha256": "c1b6b656d9b8c993ced6f781010f423cb84c54935ce18ef8e8efe15839a2b3c0"
+      "typed_action_chain_sha256": "0ee94dfbdbef8731fb0cf1a0a365c9e9d6a1ce6a8d04a0ac21b22748ccbd420f"
     },
     {
       "all_seven_primary_trace_count": 0,
@@ -2255,14 +2255,14 @@
       "full_p5_transition_count": 19,
       "negative_ciav_opceu_closure_count": 13,
       "normalized_search_regret": 0.0,
-      "put_back_error_rate": 0.28125,
-      "put_back_errors": 9,
+      "put_back_error_rate": 0.0,
+      "put_back_errors": 0,
       "schedule_commitment_sha256": "8eca351ec1a2283b00bb689e133c72025751258c85d4895fe4672f22c0ca23e4",
       "search_error_rate": 0.0,
       "search_errors": 0,
       "step_count": 32,
       "transition_dependent_no_new_transition_count": 13,
-      "typed_action_chain_sha256": "373db26057805caf6f6bb69b4aeb0bfa0f51a36fa9f9109237c9ee8720c45968"
+      "typed_action_chain_sha256": "a54ff72fbf6cb49ecc6feaead2d5673f3b1128d6d7bb2fd17bdad03612e445c1"
     },
     {
       "all_seven_primary_trace_count": 0,
@@ -2306,14 +2306,14 @@
       "full_p5_transition_count": 21,
       "negative_ciav_opceu_closure_count": 11,
       "normalized_search_regret": 0.041666666666666664,
-      "put_back_error_rate": 0.71875,
-      "put_back_errors": 23,
+      "put_back_error_rate": 0.0625,
+      "put_back_errors": 2,
       "schedule_commitment_sha256": "05921dafd33f33161b03ad09722ce0333ca697b38517d839d7b7af174217890a",
       "search_error_rate": 0.09375,
       "search_errors": 3,
       "step_count": 32,
       "transition_dependent_no_new_transition_count": 11,
-      "typed_action_chain_sha256": "fb7a6a1e4260e2d4a9d47de12495ca2396e449c0a3b0ecdf24453af71987506a"
+      "typed_action_chain_sha256": "a16a26ce09780614f7e79f95dc84291cc7ad46800a65bbd578fa1bdfff51ba9a"
     },
     {
       "all_seven_primary_trace_count": 0,
@@ -2357,14 +2357,14 @@
       "full_p5_transition_count": 22,
       "negative_ciav_opceu_closure_count": 10,
       "normalized_search_regret": 0.08333333333333333,
-      "put_back_error_rate": 0.71875,
-      "put_back_errors": 23,
+      "put_back_error_rate": 0.0625,
+      "put_back_errors": 2,
       "schedule_commitment_sha256": "d336da3f99782824d68c674641fa6a3ec27ae800c624b21a9372ed0f8ee3a6e9",
       "search_error_rate": 0.09375,
       "search_errors": 3,
       "step_count": 32,
       "transition_dependent_no_new_transition_count": 10,
-      "typed_action_chain_sha256": "247d1cf39cd9740a855d8672de0f6e08e7e0999ff57a9defa686c9d4fea357bd"
+      "typed_action_chain_sha256": "d302c46892f950c1cb717e0602be97d8c6b691bba393bc7623cd29c99960dfee"
     },
     {
       "all_seven_primary_trace_count": 0,
@@ -2408,14 +2408,14 @@
       "full_p5_transition_count": 22,
       "negative_ciav_opceu_closure_count": 10,
       "normalized_search_regret": 0.010416666666666666,
-      "put_back_error_rate": 0.28125,
-      "put_back_errors": 9,
+      "put_back_error_rate": 0.0,
+      "put_back_errors": 0,
       "schedule_commitment_sha256": "796a9a345e8793648e1a6fb0911bef6f2fbfb4cb18c72faccee79cbf3afac864",
       "search_error_rate": 0.03125,
       "search_errors": 1,
       "step_count": 32,
       "transition_dependent_no_new_transition_count": 10,
-      "typed_action_chain_sha256": "bc556de237175031558bde5d570586808e5870e59d5628fff98230da3201d9fb"
+      "typed_action_chain_sha256": "daac28e6fd4afcd92b47ace559ac5bb024db94532902f27a835736ba49214aa9"
     },
     {
       "all_seven_primary_trace_count": 0,
@@ -2459,14 +2459,14 @@
       "full_p5_transition_count": 22,
       "negative_ciav_opceu_closure_count": 10,
       "normalized_search_regret": 0.125,
-      "put_back_error_rate": 0.28125,
-      "put_back_errors": 9,
+      "put_back_error_rate": 0.125,
+      "put_back_errors": 4,
       "schedule_commitment_sha256": "4c6c0d63ec47515c699b6aca25b3014c93193d0c7afca5101378d2c65dac04af",
       "search_error_rate": 0.125,
       "search_errors": 4,
       "step_count": 32,
       "transition_dependent_no_new_transition_count": 10,
-      "typed_action_chain_sha256": "ea0ca23048c59a90b5e5dbb463481871c0bbeccc3ac425bdba4a8bf636e939f0"
+      "typed_action_chain_sha256": "2b4d9c43f7bca2ae1d3e06f5c3197b3d6565bc4267c56506bdece5e7c95a4edf"
     },
     {
       "all_seven_primary_trace_count": 0,
@@ -2510,14 +2510,14 @@
       "full_p5_transition_count": 19,
       "negative_ciav_opceu_closure_count": 13,
       "normalized_search_regret": 0.09375,
-      "put_back_error_rate": 0.71875,
-      "put_back_errors": 23,
+      "put_back_error_rate": 0.0,
+      "put_back_errors": 0,
       "schedule_commitment_sha256": "fe4916e293101d42f3d0ca3f36ed707e879d43250f7d4e7627721b0b5725c25d",
       "search_error_rate": 0.09375,
       "search_errors": 3,
       "step_count": 32,
       "transition_dependent_no_new_transition_count": 13,
-      "typed_action_chain_sha256": "5ea207a5ffd0c79223baf9e62f741c669513774466821a164e34d1873f32d642"
+      "typed_action_chain_sha256": "76edb3b064533f95363b777744ec94201a5a4186e5eb17ad2e0231fce528ed4e"
     },
     {
       "all_seven_primary_trace_count": 0,
@@ -2561,14 +2561,14 @@
       "full_p5_transition_count": 16,
       "negative_ciav_opceu_closure_count": 16,
       "normalized_search_regret": 0.16666666666666666,
-      "put_back_error_rate": 0.28125,
-      "put_back_errors": 9,
+      "put_back_error_rate": 0.03125,
+      "put_back_errors": 1,
       "schedule_commitment_sha256": "53ad2a9067e7f35b81cdc57168910397b5d42556996371a8f36ed09fe9851f65",
       "search_error_rate": 0.25,
       "search_errors": 8,
       "step_count": 32,
       "transition_dependent_no_new_transition_count": 16,
-      "typed_action_chain_sha256": "e3327c3abc5e3f811605656833136c4b2a020fad2155dcaf5764b8a96ab7496d"
+      "typed_action_chain_sha256": "ab2a4e051862a4bfc8cf6e40632971f7e5a9b5c45bf7e2fd7872421c5ac11a9e"
     },
     {
       "all_seven_primary_trace_count": 0,
@@ -2612,14 +2612,14 @@
       "full_p5_transition_count": 22,
       "negative_ciav_opceu_closure_count": 10,
       "normalized_search_regret": 0.14583333333333331,
-      "put_back_error_rate": 0.71875,
-      "put_back_errors": 23,
+      "put_back_error_rate": 0.03125,
+      "put_back_errors": 1,
       "schedule_commitment_sha256": "5200849ae32cab032e0efe869b0545bab22e6ce88cf02455ccf68707ac83d150",
       "search_error_rate": 0.21875,
       "search_errors": 7,
       "step_count": 32,
       "transition_dependent_no_new_transition_count": 10,
-      "typed_action_chain_sha256": "75799854aea56096f1d068060a8a8c772c8dd4ad57134f386e54cf8ea401fbd9"
+      "typed_action_chain_sha256": "fd8e7fb7a36466d0445a3e4fe538af8a212e3b137994e4f50e5ad1f0994d33ef"
     },
     {
       "all_seven_primary_trace_count": 0,
@@ -2663,14 +2663,14 @@
       "full_p5_transition_count": 17,
       "negative_ciav_opceu_closure_count": 15,
       "normalized_search_regret": 0.08333333333333333,
-      "put_back_error_rate": 0.28125,
-      "put_back_errors": 9,
+      "put_back_error_rate": 0.0,
+      "put_back_errors": 0,
       "schedule_commitment_sha256": "090a5eeb81677ded6e554d3fef35ddc1f01e49f0c1186454bf536e0ff447e755",
       "search_error_rate": 0.125,
       "search_errors": 4,
       "step_count": 32,
       "transition_dependent_no_new_transition_count": 15,
-      "typed_action_chain_sha256": "8aa855dcd3dbf36015f142c782326773a60ed3b1c130021daacbd327441b3851"
+      "typed_action_chain_sha256": "9a1379ab389a292ebec6bdcc5f5fefd2e412eb423897066d0d491d1d2c7f5832"
     },
     {
       "all_seven_primary_trace_count": 0,
@@ -2714,14 +2714,14 @@
       "full_p5_transition_count": 17,
       "negative_ciav_opceu_closure_count": 15,
       "normalized_search_regret": 0.125,
-      "put_back_error_rate": 1.0,
-      "put_back_errors": 32,
+      "put_back_error_rate": 0.125,
+      "put_back_errors": 4,
       "schedule_commitment_sha256": "2c455eaa446f2757f3d492995592efc5306b5daf2df1b5fdb7480d6bab4beefa",
       "search_error_rate": 0.125,
       "search_errors": 4,
       "step_count": 32,
       "transition_dependent_no_new_transition_count": 15,
-      "typed_action_chain_sha256": "c0b641d270fd898ec06dc4f4d3f609140b700d2399b16090f8820cdbbf908e12"
+      "typed_action_chain_sha256": "9a15b57a02744b2ed3fd0d0f11518f9d85c0dbc95e1f01dac08888d0e6353cf4"
     },
     {
       "all_seven_primary_trace_count": 0,
@@ -2765,14 +2765,14 @@
       "full_p5_transition_count": 19,
       "negative_ciav_opceu_closure_count": 13,
       "normalized_search_regret": 0.14583333333333331,
-      "put_back_error_rate": 0.71875,
-      "put_back_errors": 23,
+      "put_back_error_rate": 0.09375,
+      "put_back_errors": 3,
       "schedule_commitment_sha256": "4ff8c2a77b0748407ca9a6ce1b41beb8d55ec3e2ff83dcf5c8e37fae6a1cb5c9",
       "search_error_rate": 0.21875,
       "search_errors": 7,
       "step_count": 32,
       "transition_dependent_no_new_transition_count": 13,
-      "typed_action_chain_sha256": "bbf8c5cb95b0070b52b256153553b88d1653e4832ba0c0249a13c234cc1b6395"
+      "typed_action_chain_sha256": "474bad059268104b867cccb2518f6020b95109108e341ae124e0ad23502f9d34"
     },
     {
       "all_seven_primary_trace_count": 0,
@@ -2816,14 +2816,14 @@
       "full_p5_transition_count": 21,
       "negative_ciav_opceu_closure_count": 11,
       "normalized_search_regret": 0.010416666666666666,
-      "put_back_error_rate": 0.28125,
-      "put_back_errors": 9,
+      "put_back_error_rate": 0.0,
+      "put_back_errors": 0,
       "schedule_commitment_sha256": "c007e22cbce08d3fbbbb9851a272d0d7987f0d44ccecaf53218d8ce31d734f71",
       "search_error_rate": 0.03125,
       "search_errors": 1,
       "step_count": 32,
       "transition_dependent_no_new_transition_count": 11,
-      "typed_action_chain_sha256": "2c7efe090a7f32aeb424fd230b5fe3602ad339a24655f1285e3c942359a4e6e2"
+      "typed_action_chain_sha256": "2b2826acc9714ae31d62c3a781502e4c9fe087d4eb9e78038167d8d9605a27a9"
     },
     {
       "all_seven_primary_trace_count": 0,
@@ -2867,14 +2867,14 @@
       "full_p5_transition_count": 20,
       "negative_ciav_opceu_closure_count": 12,
       "normalized_search_regret": 0.041666666666666664,
-      "put_back_error_rate": 1.0,
-      "put_back_errors": 32,
+      "put_back_error_rate": 0.0625,
+      "put_back_errors": 2,
       "schedule_commitment_sha256": "f6ae3e249cbae60b80974a803039f7fb299571441af6263884c3fe2f2a64ce42",
       "search_error_rate": 0.0625,
       "search_errors": 2,
       "step_count": 32,
       "transition_dependent_no_new_transition_count": 12,
-      "typed_action_chain_sha256": "43dccfaf9c448d7096be6757a3bf9dee10e18eb4378220a8013be65f5c79360b"
+      "typed_action_chain_sha256": "52023aafcd433d626fa645a4d209c50f747b0140c44d1f69cd59f82b774e8cb3"
     },
     {
       "all_seven_primary_trace_count": 0,
@@ -2918,14 +2918,14 @@
       "full_p5_transition_count": 24,
       "negative_ciav_opceu_closure_count": 8,
       "normalized_search_regret": 0.03125,
-      "put_back_error_rate": 1.0,
-      "put_back_errors": 32,
+      "put_back_error_rate": 0.03125,
+      "put_back_errors": 1,
       "schedule_commitment_sha256": "302200a41019f673ab7dd943ea86678157bff0a52c73a43150dadf79a58d43bc",
       "search_error_rate": 0.03125,
       "search_errors": 1,
       "step_count": 32,
       "transition_dependent_no_new_transition_count": 8,
-      "typed_action_chain_sha256": "ad56fcadf7229af1a9a5be3c06b93f363ee72e617e6621f2e210efb8df5e737a"
+      "typed_action_chain_sha256": "551da9822122884529baaa897aacc8cf4707f80b812b1685e5dad5e2ad2939fb"
     },
     {
       "all_seven_primary_trace_count": 0,
@@ -2969,14 +2969,14 @@
       "full_p5_transition_count": 23,
       "negative_ciav_opceu_closure_count": 9,
       "normalized_search_regret": 0.03125,
-      "put_back_error_rate": 1.0,
-      "put_back_errors": 32,
+      "put_back_error_rate": 0.0,
+      "put_back_errors": 0,
       "schedule_commitment_sha256": "f200da38c895ad037c6e10374680ece3f1eced8f600cedf82b59630b0527e8ff",
       "search_error_rate": 0.03125,
       "search_errors": 1,
       "step_count": 32,
       "transition_dependent_no_new_transition_count": 9,
-      "typed_action_chain_sha256": "848316c736f56f11ed11bb7a6f122a9d110b3a8482e1f4ef182014939b2c859d"
+      "typed_action_chain_sha256": "15c06870c523fd7d6a5feb8f51bc9e6541e71f68b3a03ae14057186af20d3786"
     },
     {
       "all_seven_primary_trace_count": 0,
@@ -3020,14 +3020,14 @@
       "full_p5_transition_count": 26,
       "negative_ciav_opceu_closure_count": 6,
       "normalized_search_regret": 0.05208333333333333,
-      "put_back_error_rate": 0.28125,
-      "put_back_errors": 9,
+      "put_back_error_rate": 0.03125,
+      "put_back_errors": 1,
       "schedule_commitment_sha256": "6856a2fd337b46f9706bf6ca9db7a6dee077dcecde4960c20fc205d1dbde2194",
       "search_error_rate": 0.0625,
       "search_errors": 2,
       "step_count": 32,
       "transition_dependent_no_new_transition_count": 6,
-      "typed_action_chain_sha256": "8d200a25d8bebd3c356d3f02900b5bca363938278b76b7a216b572e03079785a"
+      "typed_action_chain_sha256": "8103006dc55f4ca730cf15975293a7948eb62170e81263402e7d4ed1c6dc3ec8"
     },
     {
       "all_seven_primary_trace_count": 0,
@@ -3071,14 +3071,14 @@
       "full_p5_transition_count": 24,
       "negative_ciav_opceu_closure_count": 8,
       "normalized_search_regret": 0.06249999999999999,
-      "put_back_error_rate": 1.0,
-      "put_back_errors": 32,
+      "put_back_error_rate": 0.0,
+      "put_back_errors": 0,
       "schedule_commitment_sha256": "1faf471792bbff3e1bb56c8c357395d27b823f0292341863d9ed56538483156c",
       "search_error_rate": 0.125,
       "search_errors": 4,
       "step_count": 32,
       "transition_dependent_no_new_transition_count": 8,
-      "typed_action_chain_sha256": "61b004143e2a1615adffab6c456b0f944c91a7aec97cf6600529c22a356aa744"
+      "typed_action_chain_sha256": "35c242bafeeab2eb99eb21ae6d087d90a36ec381e411560f36320e1bffdaf361"
     },
     {
       "all_seven_primary_trace_count": 0,
@@ -3122,14 +3122,14 @@
       "full_p5_transition_count": 20,
       "negative_ciav_opceu_closure_count": 12,
       "normalized_search_regret": 0.09374999999999999,
-      "put_back_error_rate": 1.0,
-      "put_back_errors": 32,
+      "put_back_error_rate": 0.03125,
+      "put_back_errors": 1,
       "schedule_commitment_sha256": "b8b5da9fd5f459c7796fcf664148613fccb5e3c096eb619729be64da619f5759",
       "search_error_rate": 0.125,
       "search_errors": 4,
       "step_count": 32,
       "transition_dependent_no_new_transition_count": 12,
-      "typed_action_chain_sha256": "c54502ba4caa0a7802fd5d17abd7686427a42c3209bc55e4a5125ee6c6faaecc"
+      "typed_action_chain_sha256": "67b9dad182c65ca794ce2102e80fe672d65b91e9533c4955485286e30b56ac86"
     },
     {
       "all_seven_primary_trace_count": 0,
@@ -3173,14 +3173,14 @@
       "full_p5_transition_count": 22,
       "negative_ciav_opceu_closure_count": 10,
       "normalized_search_regret": 0.08333333333333333,
-      "put_back_error_rate": 1.0,
-      "put_back_errors": 32,
+      "put_back_error_rate": 0.03125,
+      "put_back_errors": 1,
       "schedule_commitment_sha256": "17d42f389c771a80c795579f76913acee7ea1a5d2adaeca7d61dad6c761bd3dc",
       "search_error_rate": 0.09375,
       "search_errors": 3,
       "step_count": 32,
       "transition_dependent_no_new_transition_count": 10,
-      "typed_action_chain_sha256": "836d1a0c3eb709c6b17ee2726a725bf9688426131c58531e0f5f892b5b3b0459"
+      "typed_action_chain_sha256": "6d69b43c1a787f184e627f3bb2b89cc3da43eddbdb7172ae77f005253b9cc771"
     },
     {
       "all_seven_primary_trace_count": 0,

@@ -67,7 +67,7 @@ from cpswm.system.evaluation_operations.structure_two_task8_online_compute impor
     _fit_arm,
     _LearnedModel,
 )
-from cpswm.system.prototype_spine import PrototypeTransition
+from cpswm.system.prototype_spine import ActionReadout, ActionReadoutConfig, PrototypeTransition
 from cpswm.system.reproducibility import content_sha256, content_uuid
 from cpswm.system.structure_two_adaptive_runtime import (
     AdaptiveAuthorizationPolicy,
@@ -466,6 +466,21 @@ def _ciav_input(
     )
 
 
+def _selected_v0_6_action_readout() -> ActionReadoutConfig:
+    """Return the validation-selected v0.6 action readout for direct P5 in this scope."""
+
+    return ActionReadoutConfig(
+        readout=ActionReadout.DUAL_TIMESCALE_REVERSIBLE,
+        hybrid_alpha_weight=0.0,
+        fast_action_weight=0.7,
+        surviving_revision_weight=0.2,
+        regime_local_weight=0.1,
+        fast_owner_mass_floor=0.5,
+        owner_mass_floor=0.5,
+        recency_half_life=1.0,
+    )
+
+
 def _transition(
     episode: ProjectTwoReplayEpisode,
     step: ProjectTwoReplayStep,
@@ -474,11 +489,21 @@ def _transition(
     if step.before is None or step.after is None or step.observation_opportunity is None:
         raise ValueError("positive direct P5 transition requires before, after, and opportunity")
     actors = tuple(dict.fromkeys((*episode.resident_actor_keys, "unknown_actor")))
+    actor_prior = {actor: 1.0 / len(actors) for actor in actors}
+    if step.actor_evidence is not None:
+        reference_prior = {
+            actor: float(value)
+            for actor, value in step.actor_evidence.reference_actor_prior.items()
+        }
+        aligned_prior = {actor: reference_prior.get(actor, 0.0) for actor in actors}
+        prior_total = sum(aligned_prior.values())
+        if prior_total > 0.0:
+            actor_prior = {actor: value / prior_total for actor, value in aligned_prior.items()}
     return PrototypeTransition(
         opportunity=step.observation_opportunity,
         before=step.before,
         after=step.after,
-        actor_prior={actor: 1.0 / len(actors) for actor in actors},
+        actor_prior=actor_prior,
         evidence=tuple(
             item
             for item in (
@@ -508,6 +533,7 @@ class DirectP5LocationAdapter:
             authorization_scope_id=content_uuid(
                 PROTOCOL_ID, {"episode_id": str(episode.episode_id), "scope": "direct-P5"}
             ),
+            action_readout=_selected_v0_6_action_readout(),
             adaptive_authorization_policy=AdaptiveAuthorizationPolicy(
                 policy_id="structure-two-p5-death-test-evaluation-only",
                 memory_transition_authorized=True,

@@ -4,6 +4,8 @@
 独立工作树：`/private/tmp/s2-comparison-audit-window2-20260911`。
 分支：`codex/s2-comparison-audit-window2-20260911`。
 
+**本轮 R1 更正：** 旧独立归因 `--verify` 的 `attribution verified` 仅证明文件自洽，不能认证 P5 留存状态；完整同步伪造可通过该旧入口。主审计原有的新鲜重放未被该反例推翻。修复后的入口、原反例复现、对抗矩阵、新版本重放与窗口一交接见 [R1 修复报告](structure_two_comparison_audit_window2_r1_fix_2026-09-11.md)。以下原实验结果与历史运行记录保留，不将旧成功声明升级为正式科学验证。
+
 **证据用途：已经打开的 D0 开发诊断，非新的未见确认。** 使用固定 train 1–20、validation 1001–1020、opened test 12001–12060，每条 32 步。本文不降低 0.02 绝对门槛，不选新种子，不启动 router calibration（路由器校准），不更新历史工件、全局 manifest（清单）、工程 checkpoint（检查点）或生产算子。完整七算子框架及隐藏事件、多人物、开放世界、可逆归因、具身反馈范围保留。功能执行与研究创新、调用次数与任务贡献分别判断。
 
 ## 1. 结论与证据边界
@@ -232,7 +234,7 @@ export AUDIT_BUNDLE=docs/reviews/data/structure_two_comparison_audit_window2_202
 "$AUDIT_PY" -m pytest tests/test_structure_two_comparison_audit.py
 ```
 
-主入口完整重做既有训练/验证选择及固定 60 条 opened D0 轨迹；默认为 3 次×2 条固定 episode 的成本复测。归因入口只重建同一公开配置、读取已打开的逐步结果并执行开发反事实；不重选模型。默认对文件采用拒绝覆盖；主入口 `--verify` 复算来源、选择、逐步语义哈希、汇总和历史分数对齐，归因 `--verify` 逐字 JSON 语义比较。
+以上是原版本运行命令。旧归因入口只重建同一公开配置、读取已打开的逐步结果并执行开发反事实，旧 `--verify` 只比较派生 JSON，存在 R1 依赖缺口。修复后主入口与独立归因 `--verify` 都完整重做既有训练/验证选择及固定 60 条 opened D0 三臂轨迹；快速自洽检查另名为 `--check-file-consistency`。旧 bundle 在新源码下按设计过期，实际新目录和最终命令见 R1 报告，不能照抄旧目录后修改绑定使其通过。
 
 `audit.json` 绑定所有 `src/**/*.py` 及当前数据/方法配置和历史对照文件。整合其他源修改后 verify 会有意报 source binding 不同，需要新输出目录重跑，不能改旧哈希。运行局部 provenance 中的随机状态/动作身份与计时不是可重复性的判断依据：逐步 semantic hash 明确排除每臂 `provenance` 字段，但保留后验、动作、错误、内部可读状态和分组。它证明可重复计算，不证明历史发生时间或独立托管。
 
@@ -241,7 +243,7 @@ export AUDIT_BUNDLE=docs/reviews/data/structure_two_comparison_audit_window2_202
 - 主诊断：60 episode / 1920 step，历史分数差异 0；归因核对 180/180 条历史动作链一致。
 - 第二次完整 `--verify`：重做 train/validation 选择及全部 60 条轨迹，全部报告字段与逐步语义相等。为了只核验语义，第二次计时使用 1 次×1 条 episode，不与首个正式诊断的 3 次×2 条计时混合。
 - 逐步语义 SHA-256：`d32b9d7bd2ff4963d8a71939fe752b260806e8775b692d602ac4588205f70c76`。
-- 归因 `--verify`：重新生成同一 D0、独立重放 AMG 冷启动状态、复算开发读出并全量比较，输出 `attribution verified`。
+- 旧归因 `--verify` 曾输出 `attribution verified`；经独立复核该证据只支持文件自洽，不能证明留存的 P5 状态真实性。现已由 R1 修复报告的完整新鲜重放验证取代。
 - 新增测试：**20 passed in 28.79s**。覆盖合法后验动作敏感性、原生 AMG 搜索头丢弃、learned 状态和条件头、角色特征缺失、未来支持、train-only truth、提交屏障正例/负例/重复/错 step、无长期提交复现、硬件不可用降级、工件篡改与伪造 positive gate（通过声明）拒绝。
 - 原有相邻回归：**15 passed / 1 failed**，失败为本报告第 6 节的既有 post-hoc 文件哈希断裂；未修改历史工件消除该失败。机器证据在 `baseline_binding_issue.json`，包含两个文件与共同起点字节相等的检查。
 - 新增四个 Python 文件 `ruff check`、`ruff format --check` 通过；新增源模块 `mypy --follow-imports=silent` 通过；`git diff --check` 通过；建议 truth barrier patch 的 `git apply --check` 通过，未应用。

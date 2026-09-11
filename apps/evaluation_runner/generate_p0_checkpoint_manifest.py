@@ -50,6 +50,63 @@ LEGACY_TEST_FIXTURE_HASHES: Final = {
     Path(
         "output/method_falsification/round_two_structure_one_placement_v0_1.json"
     ): "4a4758b3ecc8fd1b409bddef66825259d1a0ed85dcddc5b1a0d94938832b7ef4",
+    Path(
+        "artifacts/project_two_data/d1_generic_development_v0_1/coverage_report.json"
+    ): "14e7d7c68261c281ad0466989c2905b82b5b6cf28256717f89567cf5794c1787",
+    Path(
+        "artifacts/project_two_data/d1_generic_development_v0_1/evaluator_truth.jsonl"
+    ): "5ae16eb4721f30141a55d662c7371acb19d048c50e12c0db4932b4c47905601a",
+    Path(
+        "artifacts/project_two_data/d1_generic_development_v0_1/manifest.json"
+    ): "1a0bf0c2ff7d61c942491564189726d35a24f4894e0160f9e6368d302c556f5b",
+    Path(
+        "artifacts/project_two_data/d1_generic_development_v0_1/visible_replay.jsonl"
+    ): "2ab7b70035f565129c68683f129e4bc6b7c65796229a21b1613192c57150d5b6",
+    Path(
+        "artifacts/project_two_data/d2_real_perception_example_v0_1/annotation_agreement.json"
+    ): "774b01e71faa8e6f47d8f5df5818e59c5d04f118dffa23bc1b7238f530588338",
+    Path(
+        "artifacts/project_two_data/d2_real_perception_example_v0_1/annotations.jsonl"
+    ): "135099c90c5541d9a9f0f91cb01ab61aa073001f02d47c74e5a72a5a0bd386ea",
+    Path(
+        "artifacts/project_two_data/d2_real_perception_example_v0_1/collection_protocol.json"
+    ): "6be87f5acaa348a0145bd0c91c1c88907e55368e0f2f1c8d8895cdb59f20b29c",
+    Path(
+        "artifacts/project_two_data/d2_real_perception_example_v0_1/coverage_report.json"
+    ): "4734847797ea49c0b6fd275835398fc787b46b27066067eb954898f77b86e504",
+    Path(
+        "artifacts/project_two_data/d2_real_perception_example_v0_1/d2_evidence_report.json"
+    ): "7a1f2ad2b33de8f4bb0b7b1b6dfae7165438256789c26780c06e2d647f46e702",
+    Path(
+        "artifacts/project_two_data/d2_real_perception_example_v0_1/evaluator_truth.jsonl"
+    ): "4416a2ea9b1f589efa35e5167a05d41212df442910ad5e3eb08b8ceb66795e06",
+    Path(
+        "artifacts/project_two_data/d2_real_perception_example_v0_1/manifest.json"
+    ): "b8554cbf73952697c8ea711b67ca47180cdaa3c440e957f6d5f1976d1ebd6703",
+    Path(
+        "artifacts/project_two_data/d2_real_perception_example_v0_1/raw_perception.jsonl"
+    ): "668217ea6aafd6f8e1e9bedd690a64ab07c41ae82cccc83505ded1f7ff26581c",
+    Path(
+        "artifacts/project_two_data/d2_real_perception_example_v0_1/split_manifest.json"
+    ): "859594b6ada441f7073f5d54d5f364508fb8b1e1cbcb4488f6dfe2209fed9e40",
+    Path(
+        "artifacts/project_two_data/d2_real_perception_example_v0_1/visible_replay.jsonl"
+    ): "c80718b229298dbe12cc2b9eeedafe31e2a67d27aa2856708fd5a36f2b4f2f2f",
+    Path(
+        "artifacts/project_two_v04_development/source_snapshots/structure_two_world_gate_v0_3_at_horizon_probe.py"
+    ): "8b8b9010ce219b32750446271778a78c0378ca7b930bc389d29418a59d6529f7",
+    Path(
+        "artifacts/project_two_v04_development/structure_two_corrected_instrument_v0_3.json"
+    ): "0a316e7ba5bee093e51848b0a097e5ee03521449a2952fef3b9c5eca00929dcf",
+    Path(
+        "artifacts/project_two_v04_development/structure_two_strongest_neighbor_gate_current_source_v0_3.json"
+    ): "95a80dcfb033db84e5b1820ad5c3476c00bf656fe99e179c2920842eebacd9f7",
+    Path(
+        "artifacts/project_two_v04_development/structure_two_strongest_neighbor_gate_v0_1.json"
+    ): "cace31c8f9ac1516f7d267069cf28d02ad922d03099e4c2d796ec99b0160b860",
+    Path(
+        "artifacts/project_two_v04_development/structure_two_world_horizon_probe_v0_3.json"
+    ): "d62a18086e6ab49a93d9f43c65ab116376960c10aed41d8bf492463686cbd130",
 }
 LEGACY_TEST_FIXTURE_PATHS: Final = tuple(LEGACY_TEST_FIXTURE_HASHES)
 TEST_FIXTURE_EXCLUDED_DIRECTORIES: Final = frozenset({"engineering_audit_logs"})
@@ -342,13 +399,18 @@ def verify_manifest_snapshot(payload: dict[str, object]) -> None:
                         relative_path.parts[0] != "benchmarks"
                         and Path(relative) not in LEGACY_TEST_FIXTURE_PATHS
                     )
-                    or relative_path.suffix.casefold() != ".json"
+                    or (
+                        Path(relative) not in LEGACY_TEST_FIXTURE_PATHS
+                        and (
+                            relative_path.suffix.casefold() != ".json"
+                            or "manifest" in relative_path.name.casefold()
+                            or "split" in relative_path.name.casefold()
+                        )
+                    )
                     or any(
                         part in TEST_FIXTURE_EXCLUDED_DIRECTORIES for part in relative_path.parts
                     )
                     or Path(relative) in TEST_FIXTURE_EXCLUDED_PATHS
-                    or "manifest" in relative_path.name.casefold()
-                    or "split" in relative_path.name.casefold()
                 ):
                     raise ValueError(
                         "P0 v0.3 test fixture contract entry violates its declared scope"

@@ -348,3 +348,24 @@ def test_checkpoint_binds_all_current_p5_replays_without_promoting_history() -> 
         "apps/evaluation_runner/run_structure_two_evidence_repair.py",
         "--verify-current",
     )
+
+
+def test_audit_preserves_venv_invocation_while_hashing_resolved_python() -> None:
+    import subprocess
+
+    identity = AUDIT_MODULE.command_executable_identity((".venv/bin/python",))
+    assert identity["invocation_executable"] == str(ROOT / ".venv/bin/python")
+    assert Path(identity["resolved_executable"]) == (ROOT / ".venv/bin/python").resolve()
+    completed = subprocess.run(
+        [
+            identity["invocation_executable"],
+            "-c",
+            "import sys,cpswm; print(sys.prefix)",
+        ],
+        check=True,
+        capture_output=True,
+        text=True,
+        cwd=ROOT,
+    )
+    assert Path(completed.stdout.strip()) == ROOT / ".venv"
+    assert all(argv[-1] == "--version" for argv in AUDIT_MODULE.TOOL_VERSION_COMMANDS.values())

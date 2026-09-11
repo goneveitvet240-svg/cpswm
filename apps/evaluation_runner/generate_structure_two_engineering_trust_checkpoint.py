@@ -203,6 +203,7 @@ def _verify_audit_receipt(p0_manifest: Mapping[str, Any]) -> tuple[dict[str, Any
             or raw.get("environment_overrides")
             != audit_runner.command_environment_binding(command_id)
             or raw.get("cwd") != str(ROOT.resolve())
+            or raw.get("invocation_executable") != expected_executable["invocation_executable"]
             or raw.get("resolved_executable") != expected_executable["resolved_executable"]
             or raw.get("executable_sha256") != expected_executable["executable_sha256"]
         ):

@@ -26,7 +26,7 @@ post-hoc 配置引用的是 `4103bea` 的失败重放，文件 SHA-256 为
 `a25b8619fd0270b863bfd0aa8e91767a0cd6274d164f3529424175fe7218bfcf`，旧期望哈希因而失效。
 二者 signal gate（信号门）均为失败，但数值和实现版本不同，不能互换。
 
-更早的真实首次失败记录在 `557ff9c`，文件 SHA-256 为
+Git 中更早的首次失败标签记录在 `557ff9c`，文件 SHA-256 为
 `ca30ac7db2ff26476a17fa9ca9d19760763508010a312acd8b18d4ba194dca94`，
 content SHA-256 为 `df44a16e4b450fc77239d0e3e3bbcf9f3fbb3fbbcca9a2db6a0844ce8a6267b5`。
 它与 `4103bea` 失败重放不是同一份原始工件。`4103bea` 还改变了来源绑定、历史措辞和两条链哈希。
@@ -55,6 +55,24 @@ P0 清单和工程检查点是上一个源码/配置/测试/工件状态的快�
 被消费的旧路径，并检查必需覆盖、固定哈希和符号链接；缺失或重新哈希替换都不能通过。
 相关 fixture/preregistration（测试工件/预注册）定向回归已得到 28 passed（排除尚待最终生成的当前清单测试）。
 这说明仅覆盖 `benchmarks/**/*.json` 的旧清单不足以让全套测试在干净工作树中复现。
+
+### 完整回归补充发现与恢复
+
+第一次正式全套审计还发现 12 failed、5 errors：其中 11 项失败及 5 项初始化错误来自其他缺失旧依赖；
+另 1 项失败是 v0.5 当前兼容性审计仍写旧源码数量 301，当前实际为 310。失败回执和压缩原始日志保存在
+`benchmarks/structure_two/evidence_repair_2026_09_11/failed_full_audit_attempt/`，不作为最终通过回执。
+
+额外恢复 19 份文件，逐项 SHA-256、共同起点引用和来源等级见 `additional_fixture_restoration.json`：
+D1 的四份样例与共同起点已跟踪的 benchmark 文件逐字节相同；horizon probe 失败结果、其源码快照、
+两个 strongest-neighbor 结果匹配共同起点配置固定哈希。corrected-instrument v0.3 结果及十份 D2
+样例未找到共同起点文件哈希锚点，因此只记录为现有本地开发测试工件，不能声称已恢复可信历史执行。
+D2 名称不赋予真实感知数据成熟度；反例测试确认它仍不能通过外部采集回执要求。没有执行新数据采集或
+打开新确认集。上述恢复只补齐已有测试依赖，所有旧科学配置保持不变。
+
+P0 明确固定全部恢复文件的哈希，包括 JSONL 数据和历史 Python 源码快照；限定路径可以进入测试工件
+范围，其他路径仍必须满足原 benchmark JSON 规则。所有固定条目必须存在且精确匹配，不能删除后重哈希。
+关联测试 38 passed，扩展 P0 测试 23 passed。v0.5 兼容性报告由现有审计脚本重新生成；历史冻结数量
+245、历史摘要、签名和不兼容/真实性未证实边界不变，没有重写旧冻结来源以匹配当前源码。
 
 ## 2. 可追溯时间线与历史声明边界
 
@@ -100,7 +118,7 @@ P0 清单和工程检查点是上一个源码/配置/测试/工件状态的快�
 
 ## 3. 修复和版本规则
 
-1. 将 `557ff9c` 的真正首次失败保存为
+1. 将 `557ff9c` 中最早记录的失败保存为
    `history/three_arm_first_failure.json`；将 `4103bea` 的被引用失败重放逐字节恢复到旧 v0.1 路径。
    **旧 v0.1 路径现在是历史兼容引用，不代表最早失败，也不代表当前结果。**
    post-hoc 期望哈希没有改动。所有原配置及阈值也没有改动。
@@ -146,11 +164,70 @@ CIAV packet/outcome/cost/closure 语义字段构造可重复链；本窗口保�
 
 测试覆盖上述窗口内输出和攻击类别；不声称对完整 CPSWM 所有正向授权状态机完成穷尽安全审计。
 
+审计器还区分 invocation executable（调用入口）与 resolved executable（解析后二进制）。
+原来直接用解析后的系统 Python 路径启动命令，会丢失 `.venv` 上下文。现在保留 `.venv/bin/python`
+启动入口，同时记录实际二进制路径与 SHA-256，检查点核验两者，测试确认实际 `sys.prefix` 是本工作树
+的虚拟环境。版本探测只运行 `--version`，实验校验只出现在正式命令回执中。
+当前与历史 P5 校验是两个只读、互不依赖的作业，并行执行；每条命令在实际执行线程内记录开始/结束
+时间，回执仍按固定命令清单记录。其余审计命令保持原有顺序，清单的执行前后核验均保留。
+
 ## 5. 验证记录
 
-最终验证结果在完成审计矩阵和检查点核验后填入本节。当前中间产物不应作为最终通过声明。
+最终本地工程审计的 **10 条命令全部退出 0**：当前五组 P5 全量重算、历史源码与失败重放核验、
+P0 对抗测试、完整核心 pytest、mypy、Ruff lint/format、compileall、冻结离线环境检查和 Git 差异检查。
+核心套件实际执行 **3857 项：3855 passed、1 skipped、1 xfailed，0 failed、0 errors**。
+P0 对抗矩阵 121 项全部通过；mypy 覆盖 309 个源码文件，Ruff format 覆盖 659 个文件。
+审计执行前后的清单摘要相同，执行环境指纹相同。
 
-## 6. 复现和整合顺序
+- 最终 P0 manifest SHA-256：`12cd9f51373c4303b25f3f3e79a7c1a16399d97ef1901a808055a88708da3952`。
+- 最终审计回执 content SHA-256：`1222e737f4f37dae6a8da40480cd7309221b1613e3e2a22ba49664ee0596b6ae`。
+- 回执、10 条命令的原始日志和最终 `engineering_checkpoint.json` 位于
+  `benchmarks/structure_two/engineering_trust_checkpoint_2026_09_05/`。
+
+最终检查点绑定本报告与上述清单/回执，并由生成器强制重新执行 Task 7/8/10 重算。
+随后进行当前性核验和 15 项检查点定向测试；相应原始输出随封存提交保存为该目录下
+`engineering_audit_logs/checkpoint_generation.stdout.log`、`checkpoint_verification.stdout.log`、
+`checkpoint_tests.stdout.log`。这些后续检查不回填为先前审计矩阵的执行记录。
+当前性核验使用 `--no-fresh-recomputation`，只避免重复刚由生成器强制完成的昂贵计算；
+生成器本身仍禁止关闭 fresh recomputation（重新计算），检查点数值验证没有放宽。
+
+
+已完成的定向验证：新增证据测试 26 passed；动作效用构造门与 readiness（就绪性）测试
+75 passed；P0 清单测试 21 passed；缺失旧工件修复关联的 P0/placement 测试 28 passed
+（其中 1 项当时未执行的当前清单测试已在上述 21 项中验证）。
+
+当前与历史 P5 正式审计均已退出 0，其中历史失败重放整个工件相等，当前五类结果均通过完整重算。
+另逐字段对比共同起点保存的五份开发结果：排除来源绑定、版本元数据和外层内容哈希后，
+四份完全相同；D0 仅有 `previously_unused_test_seed_range` 与 `claim_boundary` 两处声明降级。
+所有实验数值和语义结果保持一致。
+科学与工程状态分别保留如下，不将工程通过改写为信号通过：
+
+| 当前 v0.2 工件 | 保留状态 |
+|---|---|
+| 三臂 | `P5_ACTION_SIGNAL_NOT_DETECTED` |
+| post-hoc | `POSTHOC_READOUT_DEGENERACY_REMOVED` |
+| debt replay | `PRODUCTION_DEBT_REPLAY_SEMANTIC_EQUIVALENCE_CONFIRMED`，仅工程语义等价 |
+| 析因 | `DEVELOPMENT_FACTORIAL_COMPLETE` |
+| D0 | `INTERNAL_UNSEEN_D0_SIGNAL_NOT_DETECTED` 为兼容旧标识；生命周期明确为开启后重放 |
+
+检查点输入也完成一次 `fresh_recomputation=True` 的完整预检查：Task 7 v0.4、Task 8 v0.4、
+Task 10 G1/G2 四份工件均匹配，P0 清单当前。Task 7/8 的失败、Task 10 的非正式授权边界均未改变。
+该预检查不代替最终审计回执之后的检查点生成。
+
+测试边界保留：已有一项 `xfail(strict=True)` 是 Structure One 同上下文 RLS 的压缩残差信号限制，
+本窗口没有修改它；另有一项 macOS 隔离测试因外层环境禁止嵌套 `sandbox-exec` 而跳过，已用 `-rs`
+单独确认原因。不能把这项未执行的隔离探针表述为已验证通过。
+
+五类结果均全量生成。三臂、post-hoc 和 D0 还完成了生成器内的第二次完整验证；待所有 JSON
+生成后结束生成器剩余的重复校验计算，统一由正式审计的 `p5_evidence_current` 对全部五类结果
+重新执行完整验证。这不绕过任何当前验证器，也不将生成器的中断退出当作通过回执。
+
+## 6. 提交、复现和整合顺序
+
+- `7d66258818bdde2ee57efdf44f084e778ca01427`：历史/当前版本隔离、验证器、对抗测试。
+- `505e723170c29f8707ee19d113a5b8646680c5f6`：固定旧依赖恢复、当前五组结果、历史源码审计。
+- 最终审计、检查点和本报告由后续封存提交共同提交；其完整哈希见交付回复及本分支 `git log`。
+  检查点绑定内容清单及本工作树路径/环境，不依靠在自身内容中嵌入封存提交哈希。
 
 在此分支工作树、匹配的 `.venv` 中运行；历史快照需要保留共同起点的 Git 历史，不能仅复制源码目录。
 
@@ -160,6 +237,7 @@ CIAV packet/outcome/cost/closure 语义字段构造可重复链；本窗口保�
   --output benchmarks/structure_two/evidence_repair_2026_09_11/historical_source_audit.json
 .venv/bin/python apps/evaluation_runner/run_structure_two_evidence_repair.py --generate-current
 .venv/bin/python apps/evaluation_runner/run_structure_two_evidence_repair.py --verify-history
+.venv/bin/python apps/evaluation_runner/audit_structure_two_world_source_bundle_v0_5.py
 .venv/bin/python apps/evaluation_runner/generate_p0_checkpoint_manifest.py
 .venv/bin/python apps/evaluation_runner/run_structure_two_engineering_audit_receipt.py
 .venv/bin/python apps/evaluation_runner/generate_structure_two_engineering_trust_checkpoint.py

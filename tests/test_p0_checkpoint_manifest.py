@@ -301,7 +301,10 @@ def test_git_baseline_audit_detects_forged_numstat_fields() -> None:
     assert forged != live
 
 
-def test_required_legacy_fixtures_are_pinned_and_cannot_be_missing(tmp_path: Path) -> None:
+@pytest.mark.parametrize("fixture_index", [0, 5, 16])
+def test_required_legacy_fixtures_are_pinned_and_cannot_be_missing(
+    tmp_path: Path, fixture_index: int
+) -> None:
     root = _minimal_repository(tmp_path)
     payload = build_manifest(root)
     verify_manifest_snapshot(payload)
@@ -310,7 +313,7 @@ def test_required_legacy_fixtures_are_pinned_and_cannot_be_missing(tmp_path: Pat
     }
     for path, digest in MODULE.LEGACY_TEST_FIXTURE_HASHES.items():
         assert included[path.as_posix()] == digest
-    path = root / MODULE.LEGACY_TEST_FIXTURE_PATHS[0]
+    path = root / MODULE.LEGACY_TEST_FIXTURE_PATHS[fixture_index]
     path.write_text("{}\n")
     with pytest.raises(ValueError, match="differs from historical pinned"):
         build_manifest(root)

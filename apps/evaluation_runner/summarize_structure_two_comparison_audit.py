@@ -111,12 +111,18 @@ def analyze_snapshot(snapshot: audit.BundleSnapshot, root: Path) -> dict:
             source_visible_step_sha256=row["visible_step_sha256"],
             belief_state_sha256=content_sha256({"development_uniform": True}),
             location_support=support,
-            current_location_distribution=uniform,
+            current_location_distribution={
+                UUID(k): v for k, v in row["arms"][audit.AMG]["current"].items()
+            },
             owner_habit_location_distribution=uniform,
         )
         committed = audit.decode(
             posterior, step, row["step_index"], content_uuid(audit.AUDIT_ID, "initial-ignorance")
         )
+        if [str(a.location_id) for a in committed.search_plan] != row["arms"][audit.AMG][
+            "search_order"
+        ]:
+            raise ValueError("COLD_CONTROL_CHANGED_SEARCH")
         # The alternative action exists before scoring against the opened row's truth.
         truth = row["truth"]
         choice = str(committed.put_back_action.location_id)
@@ -128,6 +134,7 @@ def analyze_snapshot(snapshot: audit.BundleSnapshot, root: Path) -> dict:
                 "before_first_detection": row["observation_age"] is None,
                 "original_amg": row["arms"][audit.AMG]["put_back"],
                 "uniform_amg": choice,
+                "search_order_unchanged": True,
                 "p5": row["arms"][audit.P5]["put_back"],
                 "uniform_amg_error": int(choice != truth["true_owner_habit_location"]),
                 "original_amg_error": row["arms"][audit.AMG]["put_back_error"],

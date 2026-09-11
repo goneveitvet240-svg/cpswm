@@ -132,6 +132,8 @@ def build_attack(source: Path, target: Path, case: str, root: Path):
         payload["verification_schema_version"] = 999
     elif case != "attribution_only":
         raise ValueError(case)
+    if "fairness" in payload:
+        payload["fairness"] = audit.fairness.findings(rows)
     payload["summary"] = audit.aggregate(rows)
     payload["semantic_steps_sha256"] = content_sha256(audit._semantic_rows(rows))
     if "content_sha256" in payload["selection"]:

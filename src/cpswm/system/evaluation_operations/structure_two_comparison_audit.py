@@ -14,14 +14,16 @@ import platform
 import subprocess
 import time
 from collections import Counter, defaultdict
+from contextlib import nullcontext
 from dataclasses import dataclass, replace
 from pathlib import Path
 from statistics import mean, median
-from typing import Any
+from typing import Any, cast
 
 import numpy as np
 
 from cpswm.contracts import ProjectTwoDatasetSplit, reject_truth_leakage
+from cpswm.system.evaluation_operations import structure_two_comparison_fairness as fairness
 from cpswm.system.evaluation_operations import structure_two_p5_three_arm_death_test as base
 from cpswm.system.evaluation_operations.project_two_dataset import enforce_project_two_replay_gate
 from cpswm.system.evaluation_operations.project_two_experiment_config import (
@@ -212,6 +214,7 @@ def evaluate_episode(
         for state, receipt in zip(states, receipts, strict=True):
             posterior = state.predict_location_posteriors(packet)
             action = decode(posterior, step, index, run_id)
+            fairness.check_decoded(posterior, action, step)
             barrier.commit(posterior, action)
             arm = state.arm.value
             posteriors[arm] = posterior
@@ -230,6 +233,7 @@ def evaluate_episode(
                     "action": content_sha256(action),
                 },
             }
+        fairness.check_step(packet, step, list(posteriors.values()), receipts)
         raw = _p5_readouts(states[0])
         # Pure alternative reads use the same actual P5 state, never feed back into it.
         alternatives = {
@@ -322,6 +326,27 @@ def evaluate_episode(
                 "observation_age": index - last_seen_index if last_seen_index is not None else None,
                 "arms": outputs,
                 "category": category(outputs[P5]["put_back_error"], outputs[AMG]["put_back_error"]),
+                "fairness_step": {
+                    "amg_owner_missing": states[2].state.amg_owner_location is None,
+                    "costs": {
+                        r.arm.value: {
+                            k: getattr(r, k)
+                            for k in (
+                                "motion_cost",
+                                "time_cost",
+                                "interruption_cost",
+                                "privacy_cost",
+                                "safety_cost",
+                                "privacy_budget_before",
+                                "privacy_budget_after",
+                            )
+                        }
+                        for r in receipts
+                    },
+                    "support_by_arm": {
+                        p.arm.value: list(map(str, p.location_support)) for p in posteriors.values()
+                    },
+                },
                 "raw_state": {
                     "p5_readouts": raw,
                     "learned_joint": states[1].last_joint.tolist(),
@@ -489,6 +514,9 @@ def resource_diagnostic(
     hardware = hardware_info()
     return {
         "development_only": True,
+        "performance_superiority_claim_allowed": False,
+        "host_exclusive": False,
+        "contention_boundary": "Other processes are not controlled; wall time cannot rank methods.",
         "hardware": hardware,
         "repeats": repeats,
         "episode_count": len(episodes),
@@ -634,16 +662,21 @@ def run_audit(
     if any(sets[a] & sets[b] for a in sets for b in sets if a != b):
         raise AssertionError("split episode overlap")
     training_start = time.perf_counter()
-    material = base._learned_training_material(dataset)
-    selection, model, smoothing, parameter = base._validation_selection(dataset, config, material)
+    train_access = fairness.SplitAccess(dataset, ProjectTwoDatasetSplit.TRAIN)
+    material = base._learned_training_material(cast(Any, train_access))
+    selection, model, smoothing, parameter, selection_evidence = fairness.validation_selection(
+        dataset, config, material
+    )
     training_elapsed = time.perf_counter() - training_start
     rows: list[dict[str, Any]] = []
     probes: list[dict[str, Any]] = []
     test = split_episodes[ProjectTwoDatasetSplit.TEST.value]
+    consumer_probe = fairness.ConsumerProbe()
     for ordinal, episode in enumerate(test):
-        part, examples = evaluate_episode(
-            dataset, episode, make_states(episode, model, material, smoothing, parameter)
-        )
+        with consumer_probe if ordinal == 0 else nullcontext():
+            part, examples = evaluate_episode(
+                dataset, episode, make_states(episode, model, material, smoothing, parameter)
+            )
         rows.extend(part)
         if not probes:
             probes = examples
@@ -672,11 +705,17 @@ def run_audit(
         raise ValueError("SOURCE_CHANGED_DURING_REPLAY")
     payload = {
         "audit_id": AUDIT_ID,
-        "verification_schema_version": 3,
+        "verification_schema_version": 4,
         "base_commit": BASE_COMMIT,
         "data_status": "already_opened_development_only",
         "source_bindings": bindings,
         "selection": selection,
+        "fairness": fairness.findings(rows),
+        "fairness_execution": {
+            "train_access": train_access.events,
+            "selection": selection_evidence,
+            "consumer_probe": consumer_probe.result(),
+        },
         "summary": summary,
         "search_sensitivity_counterexamples": probes,
         "retained_score_mismatches": parity,

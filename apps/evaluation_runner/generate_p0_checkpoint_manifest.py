@@ -43,6 +43,15 @@ OPTIONAL_TOOLCHAIN_FILES: Final = (
     "setup.py",
     ".coveragerc",
 )
+LEGACY_TEST_FIXTURE_HASHES: Final = {
+    Path(
+        "artifacts/project_two_v04_development/structure_two_neural_amortized_model_v0_1.json"
+    ): "5be8a0c5c87b2272049ed6e283e63feab12bcaa97b1f7b91ecaec69ad8986478",
+    Path(
+        "output/method_falsification/round_two_structure_one_placement_v0_1.json"
+    ): "4a4758b3ecc8fd1b409bddef66825259d1a0ed85dcddc5b1a0d94938832b7ef4",
+}
+LEGACY_TEST_FIXTURE_PATHS: Final = tuple(LEGACY_TEST_FIXTURE_HASHES)
 TEST_FIXTURE_EXCLUDED_DIRECTORIES: Final = frozenset({"engineering_audit_logs"})
 TEST_FIXTURE_EXCLUDED_PATHS: Final = frozenset(
     {
@@ -158,6 +167,17 @@ def _test_fixture_contract_files(
         if relative in TEST_FIXTURE_EXCLUDED_PATHS or path in split_paths:
             continue
         paths.append(path)
+    for relative in LEGACY_TEST_FIXTURE_PATHS:
+        path = root / relative
+        if any(p.is_symlink() for p in (path, *path.parents) if p.is_relative_to(root)):
+            raise ValueError(f"legacy test fixture contract refuses symlink: {relative}")
+        if not path.is_file():
+            raise ValueError(f"required legacy test fixture is missing: {relative}")
+        if hashlib.sha256(path.read_bytes()).hexdigest() != LEGACY_TEST_FIXTURE_HASHES[relative]:
+            raise ValueError(
+                f"legacy test fixture differs from historical pinned bytes: {relative}"
+            )
+        paths.append(path)
     return tuple(sorted(paths, key=lambda item: item.relative_to(root).as_posix()))
 
 
@@ -186,7 +206,13 @@ def build_manifest_scope_contract() -> dict[str, object]:
         },
         "test_fixture_contract": {
             "root": "benchmarks",
-            "included": ("all regular benchmark JSON not already covered by split_manifest"),
+            "included": (
+                "all regular benchmark JSON not already covered by split_manifest; "
+                "plus explicitly required legacy model/failure fixtures"
+            ),
+            "required_legacy_files": {
+                path.as_posix(): digest for path, digest in LEGACY_TEST_FIXTURE_HASHES.items()
+            },
             "excluded_directories": sorted(TEST_FIXTURE_EXCLUDED_DIRECTORIES),
             "excluded_circular_paths": sorted(
                 path.as_posix() for path in TEST_FIXTURE_EXCLUDED_PATHS
@@ -231,7 +257,7 @@ def build_manifest(repository_root: Path | None = None) -> dict[str, object]:
     }
     payload: dict[str, object] = {
         "schema_version": SCHEMA_VERSION,
-        "generated_for_date": "2026-09-10",
+        "generated_for_date": "2026-09-11",
         "hash_algorithm": "sha256(path\\0file_sha256\\n)",
         "scope_contract": build_manifest_scope_contract(),
         "scopes": {},
@@ -312,7 +338,10 @@ def verify_manifest_snapshot(payload: dict[str, object]) -> None:
                 relative_path = PurePosixPath(relative)
                 if (
                     not relative_path.parts
-                    or relative_path.parts[0] != "benchmarks"
+                    or (
+                        relative_path.parts[0] != "benchmarks"
+                        and Path(relative) not in LEGACY_TEST_FIXTURE_PATHS
+                    )
                     or relative_path.suffix.casefold() != ".json"
                     or any(
                         part in TEST_FIXTURE_EXCLUDED_DIRECTORIES for part in relative_path.parts
@@ -336,6 +365,13 @@ def verify_manifest_snapshot(payload: dict[str, object]) -> None:
             raise ValueError(f"P0 manifest file count mismatch: {name}")
         if raw_scope.get("content_sha256") != aggregate.hexdigest():
             raise ValueError(f"P0 manifest scope hash mismatch: {name}")
+        if schema_version == SCHEMA_VERSION and name == "test_fixture_contract":
+            included_hashes = {entry["path"]: entry["sha256"] for entry in files}
+            if any(
+                included_hashes.get(path.as_posix()) != digest
+                for path, digest in LEGACY_TEST_FIXTURE_HASHES.items()
+            ):
+                raise ValueError("P0 required legacy test fixture hash/coverage mismatch")
         if schema_version == SCHEMA_VERSION and name == "toolchain_contract":
             included = {entry["path"] for entry in files}
             if not set(REQUIRED_TOOLCHAIN_FILES).issubset(included):

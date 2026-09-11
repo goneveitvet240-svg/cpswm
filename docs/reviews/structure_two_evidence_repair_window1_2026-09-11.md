@@ -35,6 +35,27 @@ content SHA-256 为 `df44a16e4b450fc77239d0e3e3bbcf9f3fbb3fbbcca9a2db6a0844ce8a6
 P0 清单和工程检查点是上一个源码/配置/测试/工件状态的快照。后续源码、配置、工件变化之后，
 它们原有的本地通过记录仍有历史意义，却不能证明共同起点当前通过。
 
+### 独立工作树暴露的两个未跟踪依赖
+
+扩大回归的预检查在中断时记录 12 failed、23 errors、2300 passed、1 xfailed。
+失败/初始化错误均指向两个被 `.gitignore` 忽略的文件：
+
+- `artifacts/project_two_v04_development/structure_two_neural_amortized_model_v0_1.json`，
+  SHA-256 `5be8a0c5c87b2272049ed6e283e63feab12bcaa97b1f7b91ecaec69ad8986478`；
+  共同起点的 `benchmarks/structure_two/structure_two_action_utility_construct_gate_v0_1.json`
+  已在 `source_binding` 固定此哈希。
+- `output/method_falsification/round_two_structure_one_placement_v0_1.json`，
+  SHA-256 `4a4758b3ecc8fd1b409bddef66825259d1a0ed85dcddc5b1a0d94938832b7ef4`；
+  共同起点的 `configs/method_falsification/placement_authority_v0_2_preregistration.json`
+  已固定它为必须保留的历史失败。
+
+两者不在 Git blob 中，因此不能声称从 Git 恢复文件本身。本窗口只读原目录，先与上述 Git 中
+已有的固定哈希逐字节核验，再复制到自己的工作树并显式加入版本控制；没有复制其他窗口源码或分支，
+没有重新训练模型，也没有用新结果代替旧失败。P0 `test_fixture_contract` 扩展为包含这两个实际
+被消费的旧路径，并检查必需覆盖、固定哈希和符号链接；缺失或重新哈希替换都不能通过。
+相关 fixture/preregistration（测试工件/预注册）定向回归已得到 28 passed（排除尚待最终生成的当前清单测试）。
+这说明仅覆盖 `benchmarks/**/*.json` 的旧清单不足以让全套测试在干净工作树中复现。
+
 ## 2. 可追溯时间线与历史声明边界
 
 以下时间均为 Git 提交记录的 +08:00 时间；不是独立可信时钟，也不能证明文件第一次执行或首次访问。
@@ -64,7 +85,8 @@ P0 清单和工程检查点是上一个源码/配置/测试/工件状态的快�
   本窗口尝试历史重算并记录该失败；没有借用后来的依赖假装原版已经可重算。
   这些工件的字节、内容一致性和直接声明绑定可查，但完整历史执行环境无法由这些提交恢复。
 - `4103bea` 的失败重放、post-hoc 重放、debt-replay 重放、析因工件，直接绑定与该提交装配清单匹配。
-  本次历史模式核验其来源快照，未把“来源匹配”冒充“本次已全量重跑历史数值”。
+  其中被 post-hoc 引用的三臂失败重放已使用 `4103bea` 完整源码全量重算，整个工件逐字段相等；
+  其余三份此次只核验来源快照，不把来源匹配冒充历史数值重算。
 - D0 `initial_open` 工件原字节保留，content SHA 为
   `9320c4388aa1435284e9163a6d8dfebab72d1a61147c541b5be659e90c88963b`。
   它的 `posthoc_adapter` 和装配哈希与记录提交 `4103bea` 不一致；本地冻结记录和种子区间不重合
@@ -134,7 +156,7 @@ CIAV packet/outcome/cost/closure 语义字段构造可重复链；本窗口保�
 
 ```bash
 .venv/bin/python apps/evaluation_runner/audit_structure_two_evidence_history.py \
-  --recompute-first-failure \
+  --recompute-first-failure --recompute-failed-replay \
   --output benchmarks/structure_two/evidence_repair_2026_09_11/historical_source_audit.json
 .venv/bin/python apps/evaluation_runner/run_structure_two_evidence_repair.py --generate-current
 .venv/bin/python apps/evaluation_runner/run_structure_two_evidence_repair.py --verify-history
@@ -146,7 +168,8 @@ CIAV packet/outcome/cost/closure 语义字段构造可重复链；本窗口保�
 .venv/bin/pytest tests/test_structure_two_engineering_trust_checkpoint.py
 ```
 
-审计矩阵新增 `p5_evidence_current`，实际在五个独立进程中完整重新核验五类结果；检查点绑定这些结果
+审计矩阵新增 `p5_evidence_history`（重建历史源码核验并重算可恢复失败重放，逐字段核对历史审核报告）
+和 `p5_evidence_current`，实际在五个独立进程中完整重新核验五类结果；检查点绑定这些结果
 的路径、文件哈希、内容哈希、状态和生命周期，且保留原 Task 7/8/10 验证链。
 更新顺序必须为：最终源码/测试/配置 → 当前实验工件 → P0 manifest（内容清单）→ 真实审计回执 →
 工程检查点 → 检查点定向验证。不能只改 `passed`，也不能用旧回执搭配新清单。

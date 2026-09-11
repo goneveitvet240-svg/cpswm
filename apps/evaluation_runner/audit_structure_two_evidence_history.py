@@ -12,6 +12,7 @@ import hashlib
 import io
 import json
 import os
+import re
 import subprocess
 import sys
 import tarfile
@@ -75,12 +76,31 @@ def legacy_projection(payload: dict) -> dict:
     return value
 
 
+def verify_history_report(stored: dict, expected: dict) -> None:
+    def normalise(value: dict) -> str:
+        # Temporary extraction directory names are execution-local diagnostics,
+        # not source or scientific identity. All verdicts and metrics remain bound.
+        return re.sub(
+            r"/[^\"\\]*?/\.checkout/evidence-history/[0-9a-f]{40}(?:-[^/\"\\]+)?/",
+            "<historical-snapshot>/",
+            json.dumps(value, sort_keys=True),
+        )
+
+    if normalise(stored) != normalise(expected):
+        raise ValueError("historical source audit differs from fresh snapshot/replay checks")
+
+
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--recompute-first-failure", action="store_true")
     parser.add_argument("--recompute-failed-replay", action="store_true")
-    parser.add_argument("--output", type=Path, required=True)
+    output_mode = parser.add_mutually_exclusive_group(required=True)
+    output_mode.add_argument("--output", type=Path)
+    output_mode.add_argument("--verify", type=Path)
     args = parser.parse_args()
+    if args.verify:
+        args.recompute_first_failure = True
+        args.recompute_failed_replay = True
     rows = []
     assemblies = {}
     for entry in historical_entries(ROOT):
@@ -159,8 +179,12 @@ def main() -> None:
         "independent_custody_established": False,
         "records": rows,
     }
-    args.output.parent.mkdir(parents=True, exist_ok=True)
-    args.output.write_text(json.dumps(report, indent=2, sort_keys=True) + "\n")
+    if args.verify:
+        verify_history_report(json.loads(args.verify.read_text()), report)
+        print("historical source audit and recoverable failed replay verified", flush=True)
+    else:
+        args.output.parent.mkdir(parents=True, exist_ok=True)
+        args.output.write_text(json.dumps(report, indent=2, sort_keys=True) + "\n")
 
 
 if __name__ == "__main__":

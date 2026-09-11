@@ -221,3 +221,41 @@ def test_frozen_inputs_reject_joint_payload_and_expected_hash_rewrite(
         config.write_text(json.dumps(declaration))
     with pytest.raises(ValueError, match="frozen P5 input differs"):
         versions.require_frozen_p5_inputs(tmp_path)
+
+
+def test_historical_audit_cannot_promote_unrecoverable_source_or_skip_replay() -> None:
+    import importlib.util
+
+    spec = importlib.util.spec_from_file_location(
+        "history_audit_test",
+        ROOT / "apps/evaluation_runner/audit_structure_two_evidence_history.py",
+    )
+    assert spec is not None and spec.loader is not None
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    expected = {
+        "records": [
+            {
+                "source_version_recoverable_at_record_commit": False,
+                "numerical_recomputation_performed": False,
+                "source_import_error": (
+                    f"/private/tmp/work/.checkout/evidence-history/{'a' * 40}-one/"
+                    "src/missing.py: missing symbol"
+                ),
+            }
+        ]
+    }
+    relocated = copy.deepcopy(expected)
+    relocated["records"][0]["source_import_error"] = (
+        f"/private/tmp/work/.checkout/evidence-history/{'a' * 40}-two/"
+        "src/missing.py: missing symbol"
+    )
+    module.verify_history_report(relocated, expected)
+    for field in (
+        "source_version_recoverable_at_record_commit",
+        "numerical_recomputation_performed",
+    ):
+        forged = copy.deepcopy(relocated)
+        forged["records"][0][field] = True
+        with pytest.raises(ValueError, match="differs from fresh snapshot/replay"):
+            module.verify_history_report(forged, expected)

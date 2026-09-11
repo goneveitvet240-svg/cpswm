@@ -32,6 +32,12 @@ COMMANDS: Final = {
         "apps/evaluation_runner/run_structure_two_evidence_repair.py",
         "--verify-current",
     ),
+    "p5_evidence_history": (
+        ".venv/bin/python",
+        "apps/evaluation_runner/audit_structure_two_evidence_history.py",
+        "--verify",
+        "benchmarks/structure_two/evidence_repair_2026_09_11/historical_source_audit.json",
+    ),
     "p0_adversarial_tests": (
         ".venv/bin/pytest",
         "-q",

@@ -120,3 +120,15 @@ def test_semantic_chains_exclude_run_local_ids_but_bind_consequential_fields() -
     assert _semantic_action_chain_sha256([first_action]) != _semantic_action_chain_sha256(
         [{**first_action, "put_back_location_id": "other"}]
     )
+    for field in (
+        "packet_sha256",
+        "selected_action_id",
+        "realized_observation_sha256",
+        "time_cost",
+        "privacy_budget_after",
+        "closure_kind",
+    ):
+        changed = {**receipt, field: 0.25 if isinstance(receipt[field], float) else "substituted"}
+        assert _semantic_ciav_receipt_chain_sha256([receipt]) != (
+            _semantic_ciav_receipt_chain_sha256([changed])
+        )

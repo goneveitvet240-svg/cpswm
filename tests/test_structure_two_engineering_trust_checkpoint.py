@@ -178,7 +178,21 @@ def test_audit_matrix_contains_frozen_offline_uv_environment_check() -> None:
             "PYTHONHASHSEED",
             "PYTHONPATH",
         }
-    assert AUDIT_MODULE.COMMANDS["core_pytest"][1:3] == ("-p", "xdist.plugin")
+    # Freeze the complete command, including explicit plugin loading and the
+    # reporting override; a positional slice missed the rest of this contract.
+    assert AUDIT_MODULE.COMMANDS["core_pytest"] == (
+        ".venv/bin/pytest",
+        "-o",
+        "addopts=",
+        "-p",
+        "xdist.plugin",
+        "-n",
+        "auto",
+        "--dist=worksteal",
+        "-q",
+        "--confcutdir=.",
+        "--ignore=tests/test_structure_two_engineering_trust_checkpoint.py",
+    )
 
 
 def test_receipt_rows_bind_manifest_cwd_executable_and_controlled_pytest_env() -> None:

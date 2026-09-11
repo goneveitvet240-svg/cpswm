@@ -1,0 +1,57 @@
+{
+  "schema_version": "0.1.0",
+  "protocol_id": "structure-two-p5-readout-prior-factorial@0.1-development",
+  "status": "FROZEN_BEFORE_EXECUTION",
+  "dataset_source": "configs/project_two_datasets/d0_multiseed_readout_v0_5.json",
+  "data_status": "previously_opened_development_split",
+  "factors": {
+    "action_readout": [
+      "old_default_hybrid_alpha",
+      "new_validation_selected_dual_timescale_reversible"
+    ],
+    "sequential_actor_prior": [
+      "old_original_transition_actor_prior",
+      "new_primary_pchmp_actor_posterior"
+    ]
+  },
+  "cells": [
+    "old_readout__old_prior",
+    "new_readout__old_prior",
+    "old_readout__new_prior",
+    "new_readout__new_prior"
+  ],
+  "held_fixed": {
+    "execution_path": "evaluation_only_direct_P5_FULL_EAGER",
+    "ciav_scheduler": "exogenous_precommitted_schedule",
+    "ciav_action_outcome_and_cost": "identical_within_episode_step_across_all_four_cells",
+    "typed_action_decoder": "shared_task_separated_decoder",
+    "negative_observation_policy": "explicit_no_new_transition",
+    "search_and_put_back": "reported_separately_not_aggregated"
+  },
+  "analysis": {
+    "unit": "episode",
+    "metrics": [
+      "search_error_rate",
+      "put_back_error_rate",
+      "normalized_search_regret"
+    ],
+    "effect_direction": "positive_means_the_named_fix_reduced_error_or_regret",
+    "interaction": "combined_improvement_minus_sum_of_each_fix_alone"
+  },
+  "test_reuse_disclosure": {
+    "same_test_split_as_v0_1": true,
+    "test_split_previously_opened": true,
+    "confirmatory": false,
+    "may_issue_positive_scientific_receipt": false
+  },
+  "scope_policy": {
+    "unified_seven_operator_framework_retained": true,
+    "hidden_event_inference_retained": true,
+    "multi_actor_reasoning_retained": true,
+    "open_world_unknowns_retained": true,
+    "reversible_attribution_retained": true,
+    "embodied_feedback_loop_retained": true,
+    "scope_reduction_authorized": false
+  },
+  "claim_boundary": "This 2x2 factorial uses the previously opened D0 development split to separate the action-readout repair from the sequential actor-prior repair under direct P5. It is diagnostic only and cannot issue a fresh or confirmatory scientific claim, aggregate SEARCH and PUT_BACK, pass Task 7/8/9, validate adaptive routing, establish external validity, authorize ablation, or narrow Structure Two."
+}

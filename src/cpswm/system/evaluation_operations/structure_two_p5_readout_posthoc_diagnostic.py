@@ -517,8 +517,10 @@ def verify_p5_readout_posthoc_diagnostic(
     payload: Mapping[str, Any],
     *,
     repository_root: Path,
-    fresh_recompute: bool = False,
+    fresh_recompute: bool = True,
 ) -> None:
+    if not fresh_recompute:
+        raise ValueError("P5 post-hoc artifact verification requires fresh recomputation")
     root = repository_root.resolve()
     config = _load_posthoc_config(root)
     if (
@@ -578,10 +580,9 @@ def verify_p5_readout_posthoc_diagnostic(
     )
     if payload.get("status") != expected_status:
         raise ValueError("P5 post-hoc status differs from retained diagnostics")
-    if fresh_recompute:
-        expected = run_p5_readout_posthoc_diagnostic(repository_root=root)
-        if dict(payload) != expected:
-            raise ValueError("fresh P5 post-hoc readout recomputation disagrees")
+    expected = run_p5_readout_posthoc_diagnostic(repository_root=root)
+    if dict(payload) != expected:
+        raise ValueError("fresh P5 post-hoc readout recomputation disagrees")
 
 
 __all__ = [

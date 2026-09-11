@@ -6,7 +6,7 @@ from collections import Counter
 from typing import Protocol
 from uuid import UUID
 
-from pydantic import Field, model_validator
+from pydantic import Field, ValidationError, model_validator
 
 from cpswm.contracts import (
     ContractModel,
@@ -129,6 +129,13 @@ class ProjectTwoReplayGateError(ValueError):
 
 def audit_project_two_replay(dataset: ProjectTwoReplayDataset) -> ProjectTwoReplayQualityReport:
     """Run schema, ordering, coverage, balance, delay, and leakage checks."""
+
+    # ``model_copy(update=...)`` deliberately skips Pydantic validation.  Rebuild the
+    # complete object graph at the trust boundary so a caller cannot smuggle a forged
+    # manifest, visible-content hash, evaluator hash, or split binding into the audit.
+    dataset = ProjectTwoReplayDataset.model_validate(
+        dataset.model_dump(mode="python", round_trip=True)
+    )
 
     steps = [step for episode in dataset.episodes for step in episode.steps]
     feedback = [item for step in steps for item in step.execution_feedback]
@@ -259,7 +266,10 @@ def audit_project_two_replay(dataset: ProjectTwoReplayDataset) -> ProjectTwoRepl
 def enforce_project_two_replay_gate(
     dataset: ProjectTwoReplayDataset,
 ) -> ProjectTwoReplayQualityReport:
-    report = audit_project_two_replay(dataset)
+    try:
+        report = audit_project_two_replay(dataset)
+    except (ValidationError, ValueError) as error:
+        raise ProjectTwoReplayGateError(f"dataset contract revalidation failed: {error}") from error
     if report.failures:
         raise ProjectTwoReplayGateError("; ".join(report.failures))
     return report

@@ -1,0 +1,54 @@
+{
+  "schema_version": "0.1.0",
+  "protocol_id": "structure-two-p5-unseen-d0-holdout@0.1-internal",
+  "status": "FROZEN_BEFORE_HOLDOUT_OPEN",
+  "choice": "unseen_D0_holdout",
+  "choice_rationale": "No independent custodian or access-controlled split service exists in the repository. A repository-frozen, unused D0 seed range is therefore the strongest executable option; it remains internal synthetic evidence and is not relabelled as independent confirmation.",
+  "dataset_source": "configs/project_two_datasets/d0_unseen_p5_holdout_v0_6.json",
+  "method_source": "configs/project_two_experiments/structure_two_p5_three_arm_death_test_v0_1.json",
+  "method_source_file_sha256": "4c9f146d42660d144c2f97f7f8af17fad9a1a38ca32260dfc55c39706268bfc8",
+  "corrected_components": {
+    "action_readout": "validation_selected_v0_6_dual_timescale_reversible",
+    "action_readout_source": "configs/project_two_experiments/structure_two_action_readout_v0_6_preregistration.json",
+    "action_readout_source_file_sha256": "bb274d3822d30c06a1571d2b1951e575576e81ae5b22dc6de9a4d1e47e1ac63c",
+    "sequential_actor_prior": "primary_pchmp_actor_posterior",
+    "debt_ciav_binding": "exact_deferred_ciav_input_sha256",
+    "different_location_feedback_time_resolution": "one_millisecond_after_primary_detection"
+  },
+  "holdout_custody": {
+    "kind": "repository_frozen_seed_range",
+    "test_seed_start": 12001,
+    "test_seed_count": 60,
+    "prior_registered_seed_ranges_checked": [
+      "1-20",
+      "1001-1020",
+      "2001-2060",
+      "6001-6060"
+    ],
+    "independent_custodian": false,
+    "confirmatory": false,
+    "truth_store": "separate_evaluator_envelope",
+    "test_truth_use": "scoring_only_after_typed_action_commit"
+  },
+  "frozen_analysis": {
+    "arms": [
+      "corrected_direct_p5_full_eager",
+      "learned_matched_two_stage",
+      "independently_tuned_amg"
+    ],
+    "train_and_validation_selection": "unchanged_v0_1_validation_only_selector",
+    "shared_ciav_scheduler": "exogenous_precommitted_schedule",
+    "search_and_put_back": "reported_separately_not_aggregated",
+    "signal_rule": "unchanged_v0_1_per_task_paired_episode_bootstrap_rule"
+  },
+  "scope_policy": {
+    "unified_seven_operator_framework_retained": true,
+    "hidden_event_inference_retained": true,
+    "multi_actor_reasoning_retained": true,
+    "open_world_unknowns_retained": true,
+    "reversible_attribution_retained": true,
+    "embodied_feedback_loop_retained": true,
+    "scope_reduction_authorized": false
+  },
+  "claim_boundary": "This repository-frozen, previously unused D0 test-seed range can internally check whether the jointly repaired direct-P5 path generalizes beyond the opened development split under the frozen v0.1 matched three-arm rule. It is synthetic and not independently custodied; it cannot establish external validity, independent confirmation, scientific superiority, combined SEARCH/PUT_BACK utility, Task 7/8/9 completion, adaptive-router validity, or permission to narrow Structure Two."
+}

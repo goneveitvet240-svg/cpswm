@@ -222,5 +222,24 @@ def test_quality_gate_is_not_a_cosmetic_list_of_check_names():
     episode = dataset.episodes[0]
     broken = episode.model_copy(update={"field_availability": {}})
     tampered = dataset.model_copy(update={"episodes": (broken, *dataset.episodes[1:])})
-    with pytest.raises(ProjectTwoReplayGateError, match="missingness declaration"):
+    with pytest.raises(
+        ProjectTwoReplayGateError,
+        match=r"visible replay content hash mismatch|missingness declaration",
+    ):
         enforce_project_two_replay_gate(tampered)
+
+
+def test_dataset_gate_revalidates_model_copy_forgery() -> None:
+    dataset = _dataset()
+    entry = dataset.manifest.entries[0]
+    forged_entry = entry.model_copy(update={"visible_content_hash": "0" * 64})
+    forged_manifest = dataset.manifest.model_copy(
+        update={"entries": (forged_entry, *dataset.manifest.entries[1:])}
+    )
+    forged = dataset.model_copy(update={"manifest": forged_manifest})
+
+    with pytest.raises(
+        ProjectTwoReplayGateError,
+        match="visible replay content hash mismatch",
+    ):
+        enforce_project_two_replay_gate(forged)

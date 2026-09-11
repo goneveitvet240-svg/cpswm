@@ -278,6 +278,7 @@ def compare_positive_transition(
             router_features=_router_features(replay_system),
             step_index=2 * original_step_index,
             debt_expiry_steps=1,
+            ciav_input=ciav_input,
         ),
         trace_sink=p0_sink,
     )
@@ -527,8 +528,10 @@ def verify_p5_debt_replay_confirmation(
     payload: Mapping[str, Any],
     *,
     repository_root: Path,
-    fresh_recompute: bool = False,
+    fresh_recompute: bool = True,
 ) -> None:
+    if not fresh_recompute:
+        raise ValueError("P5 debt-replay artifact verification requires fresh recomputation")
     root = repository_root.resolve()
     config = _load_config(root)
     if (
@@ -564,10 +567,9 @@ def verify_p5_debt_replay_confirmation(
         or (all_passed and audit.get("failed_transition_count") != 0)
     ):
         raise ValueError("P5 debt-replay result contains an unsupported equivalence claim")
-    if fresh_recompute:
-        expected = run_p5_debt_replay_confirmation(repository_root=root)
-        if dict(payload) != expected:
-            raise ValueError("fresh P5 debt-replay recomputation disagrees")
+    expected = run_p5_debt_replay_confirmation(repository_root=root)
+    if dict(payload) != expected:
+        raise ValueError("fresh P5 debt-replay recomputation disagrees")
 
 
 __all__ = [

@@ -98,7 +98,8 @@ EXPECTED_LOCATION_HEAD: Final = "shared_conditional_location_head_given_cause_ev
 OBSERVATION_RELEASE_PHASE: Final = "before_typed_actions_committed"
 EVALUATOR_TRUTH_RELEASE_PHASE: Final = "after_typed_actions_committed"
 CLAIM_BOUNDARY: Final = (
-    "This fresh D0 development result evaluates separate SEARCH and PUT_BACK signals for "
+    "This previously opened D0 development result evaluates separate SEARCH and PUT_BACK "
+    "signals for "
     "evaluation-only direct P5 under an exactly matched exogenous CIAV stream. It does not "
     "aggregate the tasks, estimate production CIAV net utility, pass Task 7/8/9, validate "
     "adaptive routing, authorize scientific superiority, establish external validity, or "
@@ -448,7 +449,11 @@ def _ciav_input(
         consolidation_decision_utilities=_utilities(),
         terminal_decision_utilities=_utilities(),
         privacy_budget=packet.privacy_budget_before,
-        opportunity_time=step.timestamp + timedelta(microseconds=1),
+        # Python ``datetime`` has microsecond resolution while CHEH may place
+        # several hidden-event steps strictly inside this interval.  One
+        # millisecond leaves enough representable instants for the longest
+        # registered handoff chain and preserves the causal ordering.
+        opportunity_time=step.timestamp + timedelta(milliseconds=1),
         actor_likelihoods_by_outcome={
             outcome: dict.fromkeys(actors, 1.0) for outcome in packet.candidate.outcome_likelihoods
         },
@@ -1540,8 +1545,10 @@ def verify_p5_three_arm_death_test(
     payload: Mapping[str, Any],
     *,
     repository_root: Path,
-    fresh_recompute: bool = False,
+    fresh_recompute: bool = True,
 ) -> None:
+    if not fresh_recompute:
+        raise ValueError("P5 three-arm artifact verification requires fresh recomputation")
     if payload.get("schema_version") != SCHEMA_VERSION or payload.get("protocol_id") != PROTOCOL_ID:
         raise ValueError("P5 three-arm result identity drifted")
     if payload.get("status") not in {
@@ -1581,10 +1588,9 @@ def verify_p5_three_arm_death_test(
         != execution.get("direct_p5_all_seven_primary_trace_count")
     ):
         raise ValueError("P5 execution audit contains an unsupported positive claim")
-    if fresh_recompute:
-        expected = run_p5_three_arm_death_test(repository_root=repository_root)
-        if dict(payload) != expected:
-            raise ValueError("fresh P5 three-arm recomputation disagrees")
+    expected = run_p5_three_arm_death_test(repository_root=repository_root)
+    if dict(payload) != expected:
+        raise ValueError("fresh P5 three-arm recomputation disagrees")
 
 
 __all__ = [

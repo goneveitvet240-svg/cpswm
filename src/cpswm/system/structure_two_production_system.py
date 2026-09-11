@@ -107,6 +107,7 @@ class _AdaptiveDebtEntry:
     certificate: AdaptiveInferenceDebtCertificate
     transition: PrototypeTransition
     primary_result: PrototypeStepResult | None
+    deferred_ciav_input: AdaptiveCIAVRuntimeInput
     origin_core_checkpoint: Mapping[str, object]
     post_origin_core_state_sha256: str | None = None
     status: AdaptiveDebtStatus = AdaptiveDebtStatus.PENDING
@@ -121,6 +122,7 @@ class _AdaptiveDebtEntrySnapshot:
     certificate: AdaptiveInferenceDebtCertificate
     transition: PrototypeTransition
     primary_result: PrototypeStepResult | None
+    deferred_ciav_input: AdaptiveCIAVRuntimeInput
     origin_core_checkpoint: Mapping[str, object]
     post_origin_core_state_sha256: str | None
     status: AdaptiveDebtStatus
@@ -334,7 +336,7 @@ def _resolve_symbol(qualified_name: str) -> type[Any]:
 
 
 def build_production_assembly_manifest(repository_root: Path) -> dict[str, Any]:
-    """Bind the complete operator graph to live instances and source bytes."""
+    """Bind the complete operator graph, transitive sources, and environment lock."""
 
     root = repository_root.resolve()
     runtime = StructureTwoProductionSystem(
@@ -391,6 +393,18 @@ def build_production_assembly_manifest(repository_root: Path) -> dict[str, Any]:
         "src/cpswm/system/prototype_spine.py",
         "src/cpswm/system/continual/project_one_regime_loop.py",
     )
+    transitive_source_paths = tuple(
+        path.relative_to(root).as_posix() for path in sorted((root / "src/cpswm").rglob("*.py"))
+    )
+    transitive_source_rows = [
+        {"path": path, "sha256": _file_sha256(root / path)} for path in transitive_source_paths
+    ]
+    environment_lock_paths = ("pyproject.toml", "uv.lock")
+    if any(not (root / path).is_file() for path in environment_lock_paths):
+        raise FileNotFoundError("production environment lock source is missing")
+    environment_lock_rows = [
+        {"path": path, "sha256": _file_sha256(root / path)} for path in environment_lock_paths
+    ]
     manifest: dict[str, Any] = {
         "system_version": PRODUCTION_SYSTEM_VERSION,
         "assembly_class": (
@@ -407,6 +421,19 @@ def build_production_assembly_manifest(repository_root: Path) -> dict[str, Any]:
         "backbone_sources": [
             {"path": path, "sha256": _file_sha256(root / path)} for path in backbone_paths
         ],
+        # Freezing the entire package is intentionally stricter than a hand-maintained
+        # direct-import list: Structure One and other transitive method dependencies
+        # cannot change while leaving the Structure Two assembly identity unchanged.
+        "transitive_source_bundle": {
+            "scope": "all_repository_cpswm_python_sources",
+            "files": transitive_source_rows,
+            "content_sha256": content_sha256(transitive_source_rows),
+        },
+        "environment_lock_bundle": {
+            "scope": "project_and_resolved_python_dependency_lock",
+            "files": environment_lock_rows,
+            "content_sha256": content_sha256(environment_lock_rows),
+        },
     }
     manifest["content_sha256"] = content_sha256(manifest)
     return manifest
@@ -706,6 +733,12 @@ class StructureTwoProductionSystem:
                 raise KeyError(f"unknown adaptive debt: {debt_id}")
             if entry.status is not AdaptiveDebtStatus.PENDING:
                 raise ValueError("adaptive debt is not pending")
+            if (
+                ciav_input.content_sha256 != entry.certificate.deferred_ciav_input_sha256
+                or entry.deferred_ciav_input.content_sha256
+                != entry.certificate.deferred_ciav_input_sha256
+            ):
+                raise ValueError("adaptive debt CIAV input commitment mismatch")
             other_pending = tuple(
                 candidate_id
                 for candidate_id, candidate in self._adaptive_debt_ledger.items()
@@ -773,7 +806,7 @@ class StructureTwoProductionSystem:
                         entry.certificate.expiry_step - entry.certificate.created_step,
                         1,
                     ),
-                    ciav_input=ciav_input,
+                    ciav_input=entry.deferred_ciav_input,
                 )
                 selection = select_adaptive_path(
                     features,
@@ -1330,6 +1363,9 @@ class StructureTwoProductionSystem:
         path_id: str,
         origin_core_checkpoint: Mapping[str, object],
     ) -> AdaptiveInferenceDebtCertificate:
+        if context.ciav_input is None:
+            raise ValueError("adaptive CIAV deferral requires an exact runtime-input commitment")
+        deferred_ciav_input = _snapshot_adaptive_ciav_input(context.ciav_input)
         certificate = seal_adaptive_inference_debt(
             origin_path_id=path_id,
             origin_transition_sha256=content_sha256(transition),
@@ -1337,6 +1373,7 @@ class StructureTwoProductionSystem:
             created_step=context.step_index,
             expiry_step=context.step_index + context.debt_expiry_steps,
             deferred_operators=deferred_operators,
+            deferred_ciav_input_sha256=deferred_ciav_input.content_sha256,
             raw_evidence_content_sha256s=tuple(
                 content_sha256(item)
                 for item in (
@@ -1353,6 +1390,7 @@ class StructureTwoProductionSystem:
             certificate=certificate,
             transition=deepcopy(transition),
             primary_result=deepcopy(primary_result),
+            deferred_ciav_input=deferred_ciav_input,
             origin_core_checkpoint=origin_core_checkpoint,
             post_origin_core_state_sha256=self.core._execution_observable_state_sha256(),
         )
@@ -1760,6 +1798,7 @@ class StructureTwoProductionSystem:
                 certificate=entry.certificate,
                 transition=entry.transition,
                 primary_result=entry.primary_result,
+                deferred_ciav_input=entry.deferred_ciav_input,
                 origin_core_checkpoint=entry.origin_core_checkpoint,
                 post_origin_core_state_sha256=entry.post_origin_core_state_sha256,
                 status=entry.status,
@@ -1783,6 +1822,7 @@ class StructureTwoProductionSystem:
             entry.certificate = value.certificate
             entry.transition = value.transition
             entry.primary_result = value.primary_result
+            entry.deferred_ciav_input = value.deferred_ciav_input
             entry.origin_core_checkpoint = value.origin_core_checkpoint
             entry.post_origin_core_state_sha256 = value.post_origin_core_state_sha256
             entry.status = value.status

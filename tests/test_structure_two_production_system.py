@@ -102,6 +102,12 @@ def test_production_assembly_manifest_recomputes_every_source_binding() -> None:
     assert manifest["runtime_assembly_verified"] is True
     assert [row["operator"] for row in manifest["operators"]] == list(PRODUCTION_OPERATOR_ORDER)
     assert len(manifest["forward_edges"]) == len(PRODUCTION_OPERATOR_ORDER) - 1
+    transitive_paths = {row["path"] for row in manifest["transitive_source_bundle"]["files"]}
+    assert "src/cpswm/world_model/habits_transitions/hierarchical_dirichlet.py" in transitive_paths
+    assert {row["path"] for row in manifest["environment_lock_bundle"]["files"]} == {
+        "pyproject.toml",
+        "uv.lock",
+    }
 
 
 def test_manifest_cannot_claim_runtime_assembly_without_live_instances(

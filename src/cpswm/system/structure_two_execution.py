@@ -344,7 +344,7 @@ def registered_adaptive_execution_plan(path_id: str) -> StructureTwoExecutionPla
 class AdaptiveInferenceDebtCertificate(ContractModel):
     """Immutable evidence needed to revisit a production-safe deferral."""
 
-    schema_version: Literal["0.1.0"] = "0.1.0"
+    schema_version: Literal["0.2.0"] = "0.2.0"
     debt_id: UUID
     origin_path_id: str = Field(min_length=1)
     origin_transition_sha256: SHA256
@@ -352,6 +352,7 @@ class AdaptiveInferenceDebtCertificate(ContractModel):
     created_step: NonNegativeInt
     expiry_step: NonNegativeInt
     deferred_operators: tuple[RuntimeOperatorName, ...] = Field(min_length=1)
+    deferred_ciav_input_sha256: SHA256
     raw_evidence_content_sha256s: tuple[SHA256, ...]
     skipped_as_negative: Literal[False] = False
     long_term_write_blocked: Literal[True] = True
@@ -377,6 +378,7 @@ class AdaptiveInferenceDebtCertificate(ContractModel):
                     "origin_state_sha256": self.origin_state_sha256,
                     "created_step": self.created_step,
                     "deferred_operators": self.deferred_operators,
+                    "deferred_ciav_input_sha256": self.deferred_ciav_input_sha256,
                 }
             ),
         )
@@ -396,6 +398,7 @@ def seal_adaptive_inference_debt(
     created_step: int,
     expiry_step: int,
     deferred_operators: tuple[RuntimeOperatorName, ...],
+    deferred_ciav_input_sha256: str,
     raw_evidence_content_sha256s: tuple[str, ...],
 ) -> AdaptiveInferenceDebtCertificate:
     identity_payload = {
@@ -404,10 +407,11 @@ def seal_adaptive_inference_debt(
         "origin_state_sha256": origin_state_sha256,
         "created_step": created_step,
         "deferred_operators": deferred_operators,
+        "deferred_ciav_input_sha256": deferred_ciav_input_sha256,
     }
     debt_id = uuid5(NAMESPACE_URL, content_sha256(identity_payload))
     payload = {
-        "schema_version": "0.1.0",
+        "schema_version": "0.2.0",
         "debt_id": debt_id,
         **identity_payload,
         "expiry_step": expiry_step,

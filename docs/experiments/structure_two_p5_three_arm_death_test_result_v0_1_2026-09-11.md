@@ -119,7 +119,8 @@ production debt replay（生产债务重放）仍排在 direct P5 接线诊断�
 `benchmarks/structure_two/structure_two_p5_three_arm_death_test_v0_1.json`，content SHA-256：
 `df44a16e4b450fc77239d0e3e3bbcf9f3fbb3fbbcca9a2db6a0844ce8a6267b5`。
 
-本次 fresh run 在当前工作树执行，工件额外绑定
+本次是在 previously opened development split（此前已打开的开发划分）上的重新执行，
+不再标记为 `fresh`。工件额外绑定
 `production_assembly_manifest_sha256=c726da73267fd7c7a453026950d06d1689b95bcbe49b05d2ddabc90b80eea201`。
 尝试在干净 `0e9373e` worktree 复现时，导入阶段因
 `prototype_spine.py` 引用的 `RegimeStage` 只存在于未提交的结构一工作树改动而失败。因此：

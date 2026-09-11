@@ -19,7 +19,11 @@ def main() -> None:
     parser.add_argument("--repository-root", type=Path, default=Path.cwd())
     parser.add_argument("--output", type=Path, default=DEFAULT_OUTPUT)
     parser.add_argument("--verify", type=Path)
-    parser.add_argument("--fresh-verify", action="store_true")
+    parser.add_argument(
+        "--fresh-verify",
+        action="store_true",
+        help="deprecated: stored artifacts are always freshly recomputed",
+    )
     args = parser.parse_args()
     root = args.repository_root.resolve()
     if args.verify is not None:
@@ -28,7 +32,7 @@ def main() -> None:
         verify_p5_readout_posthoc_diagnostic(
             payload,
             repository_root=root,
-            fresh_recompute=args.fresh_verify,
+            fresh_recompute=True,
         )
         print(
             json.dumps(

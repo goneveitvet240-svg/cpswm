@@ -184,7 +184,7 @@ def test_state_dependent_router_executes_each_non_escalation_path(path_id: str) 
     context = AdaptiveExecutionContext(
         router_features=_features(system, step=0, route=path_id),
         step_index=0,
-        ciav_input=_ciav_input(transition) if path_id == "P3_ACTIVE_VERIFY" else None,
+        ciav_input=_ciav_input(transition),
     )
     sink = RecordingSink()
 
@@ -254,9 +254,11 @@ def test_state_dependent_router_executes_each_non_escalation_path(path_id: str) 
 
 def test_expired_p0_debt_forces_p5_and_settles_the_exact_deferred_transition() -> None:
     system, transition = _adaptive_system_and_transition()
+    ciav_input = _ciav_input(transition)
     first = AdaptiveExecutionContext(
         router_features=_features(system, step=0, route="P0_SAFE_DEFERRED"),
         step_index=0,
+        ciav_input=ciav_input,
     )
     system.process_adaptive_transition(transition, context=first, trace_sink=RecordingSink())
     pending = system.pending_adaptive_debts()
@@ -270,7 +272,7 @@ def test_expired_p0_debt_forces_p5_and_settles_the_exact_deferred_transition() -
     result = system.replay_adaptive_debt(
         pending[0].debt_id,
         step_index=20,
-        ciav_input=_ciav_input(transition),
+        ciav_input=ciav_input,
         trace_sink=sink,
     )
 
@@ -404,7 +406,11 @@ def test_evaluation_only_direct_p5_fails_closed_without_ciav_or_with_debt() -> N
 
     system.process_adaptive_transition(
         transition,
-        context=no_ciav,
+        context=AdaptiveExecutionContext(
+            router_features=no_ciav.router_features,
+            step_index=no_ciav.step_index,
+            ciav_input=_ciav_input(transition),
+        ),
         trace_sink=RecordingSink(),
     )
     pending = system.pending_adaptive_debts()
@@ -430,9 +436,11 @@ def test_evaluation_only_direct_p5_fails_closed_without_ciav_or_with_debt() -> N
 
 def test_failed_expired_p0_debt_replay_restores_entry_and_lock_identity() -> None:
     system, transition = _adaptive_system_and_transition()
+    ciav_input = _ciav_input(transition)
     first = AdaptiveExecutionContext(
         router_features=_features(system, step=0, route="P0_SAFE_DEFERRED"),
         step_index=0,
+        ciav_input=ciav_input,
     )
     system.process_adaptive_transition(transition, context=first, trace_sink=RecordingSink())
     pending = system.pending_adaptive_debts()
@@ -451,7 +459,7 @@ def test_failed_expired_p0_debt_replay_restores_entry_and_lock_identity() -> Non
         system.replay_adaptive_debt(
             debt_id,
             step_index=20,
-            ciav_input=_ciav_input(transition),
+            ciav_input=ciav_input,
             trace_sink=sink,
         )
 

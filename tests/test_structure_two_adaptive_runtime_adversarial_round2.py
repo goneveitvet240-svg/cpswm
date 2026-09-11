@@ -153,6 +153,7 @@ def test_round2_pending_debt_cannot_be_spliced_into_direct_p5_execution() -> Non
         context=AdaptiveExecutionContext(
             router_features=_features(system, step=0, route="P0_SAFE_DEFERRED"),
             step_index=0,
+            ciav_input=_ciav_input(transition),
         ),
         trace_sink=RecordingSink(),
     )
@@ -370,6 +371,7 @@ def test_round2_sink_cannot_mutate_debt_or_replay_guard_state() -> None:
             context=AdaptiveExecutionContext(
                 router_features=_features(system, step=0, route="P0_SAFE_DEFERRED"),
                 step_index=0,
+                ciav_input=_ciav_input(transition),
             ),
             trace_sink=sink,
         )
@@ -390,6 +392,7 @@ def test_round2_fully_rehashed_but_wrong_adaptive_dag_is_rejected() -> None:
         context=AdaptiveExecutionContext(
             router_features=_features(system, step=0, route="P0_SAFE_DEFERRED"),
             step_index=0,
+            ciav_input=_ciav_input(transition),
         ),
         trace_sink=sink,
     )
@@ -452,6 +455,7 @@ def test_round2_sink_cannot_zero_measured_resource_receipts() -> None:
             context=AdaptiveExecutionContext(
                 router_features=_features(system, step=0, route="P1_EVENT_ACTOR_LOCAL"),
                 step_index=0,
+                ciav_input=_ciav_input(transition),
             ),
             trace_sink=sink,
         )

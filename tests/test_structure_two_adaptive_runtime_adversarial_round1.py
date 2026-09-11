@@ -22,6 +22,7 @@ def test_round1_pending_debt_cannot_accumulate_behind_a_new_transition() -> None
         context=AdaptiveExecutionContext(
             router_features=_features(system, step=0, route="P0_SAFE_DEFERRED"),
             step_index=0,
+            ciav_input=_ciav_input(transition),
         ),
         trace_sink=RecordingSink(),
     )
@@ -53,11 +54,13 @@ def test_round1_pending_debt_cannot_accumulate_behind_a_new_transition() -> None
 
 def test_round1_pending_debt_blocks_legacy_and_direct_core_branch_evolution() -> None:
     system, transition = _adaptive_system_and_transition()
+    ciav_input = _ciav_input(transition)
     system.process_adaptive_transition(
         transition,
         context=AdaptiveExecutionContext(
             router_features=_features(system, step=0, route="P0_SAFE_DEFERRED"),
             step_index=0,
+            ciav_input=ciav_input,
         ),
         trace_sink=RecordingSink(),
     )
@@ -89,7 +92,7 @@ def test_round1_pending_debt_blocks_legacy_and_direct_core_branch_evolution() ->
     system.replay_adaptive_debt(
         debt.debt_id,
         step_index=20,
-        ciav_input=_ciav_input(transition),
+        ciav_input=ciav_input,
         trace_sink=RecordingSink(),
     )
     assert system.pending_adaptive_debts() == ()
@@ -97,11 +100,13 @@ def test_round1_pending_debt_blocks_legacy_and_direct_core_branch_evolution() ->
 
 def test_round1_replayed_debt_is_exactly_once() -> None:
     system, transition = _adaptive_system_and_transition()
+    ciav_input = _ciav_input(transition)
     system.process_adaptive_transition(
         transition,
         context=AdaptiveExecutionContext(
             router_features=_features(system, step=0, route="P0_SAFE_DEFERRED"),
             step_index=0,
+            ciav_input=ciav_input,
         ),
         trace_sink=RecordingSink(),
     )
@@ -109,7 +114,7 @@ def test_round1_replayed_debt_is_exactly_once() -> None:
     system.replay_adaptive_debt(
         debt.debt_id,
         step_index=20,
-        ciav_input=_ciav_input(transition),
+        ciav_input=ciav_input,
         trace_sink=RecordingSink(),
     )
     before = _state_fingerprint(system)
@@ -118,12 +123,49 @@ def test_round1_replayed_debt_is_exactly_once() -> None:
         system.replay_adaptive_debt(
             debt.debt_id,
             step_index=21,
-            ciav_input=_ciav_input(transition),
+            ciav_input=ciav_input,
             trace_sink=RecordingSink(),
         )
 
     assert _state_fingerprint(system) == before
     assert system.pending_adaptive_debts() == ()
+
+
+def test_round1_debt_replay_rejects_substituted_ciav_input() -> None:
+    system, transition = _adaptive_system_and_transition()
+    committed = _ciav_input(transition)
+    system.process_adaptive_transition(
+        transition,
+        context=AdaptiveExecutionContext(
+            router_features=_features(system, step=0, route="P0_SAFE_DEFERRED"),
+            step_index=0,
+            ciav_input=committed,
+        ),
+        trace_sink=RecordingSink(),
+    )
+    debt = system.pending_adaptive_debts()[0]
+    before = _state_fingerprint(system)
+    substituted = replace(
+        committed,
+        actor_likelihoods_by_outcome={
+            outcome: {
+                actor: (0.01 if actor == system.core.owner_key else 1.0) for actor in likelihoods
+            }
+            for outcome, likelihoods in committed.actor_likelihoods_by_outcome.items()
+        },
+    )
+
+    assert substituted.content_sha256 != debt.deferred_ciav_input_sha256
+    with pytest.raises(ValueError, match="CIAV input commitment mismatch"):
+        system.replay_adaptive_debt(
+            debt.debt_id,
+            step_index=20,
+            ciav_input=substituted,
+            trace_sink=RecordingSink(),
+        )
+
+    assert system.pending_adaptive_debts() == (debt,)
+    assert _state_fingerprint(system) == before
 
 
 def test_round1_adaptive_step_index_is_strictly_monotone() -> None:

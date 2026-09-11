@@ -23,7 +23,7 @@ from typing import Any, Final
 
 ROOT: Final = Path(__file__).resolve().parents[2]
 DEFAULT_OUTPUT: Final = (
-    ROOT / "benchmarks/structure_two/engineering_trust_checkpoint_2026_09_11_v0_2/"
+    ROOT / "benchmarks/structure_two/engineering_trust_checkpoint_2026_09_12_v0_3/"
     "engineering_audit_receipt.json"
 )
 P0_MANIFEST: Final = ROOT / "benchmarks/p0_checkpoint/content_manifest_v0_3.json"
@@ -37,7 +37,7 @@ COMMANDS: Final = {
         ".venv/bin/python",
         "apps/evaluation_runner/audit_structure_two_evidence_history.py",
         "--verify",
-        "benchmarks/structure_two/evidence_repair_supplement_2026_09_11/historical_source_audit_v0_2.json",
+        "benchmarks/structure_two/evidence_entry_portability_2026_09_12/historical_source_audit_v0_3.json",
     ),
     "p0_adversarial_tests": (
         ".venv/bin/pytest",
@@ -87,7 +87,7 @@ COMMANDS: Final = {
         "--check",
         "--",
         ".",
-        ":(exclude)benchmarks/structure_two/engineering_trust_checkpoint_2026_09_11_v0_2/"
+        ":(exclude)benchmarks/structure_two/engineering_trust_checkpoint_2026_09_12_v0_3/"
         "engineering_audit_logs/*.log",
     ),
 }

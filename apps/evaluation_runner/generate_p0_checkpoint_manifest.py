@@ -114,6 +114,12 @@ TEST_FIXTURE_EXCLUDED_PATHS: Final = frozenset(
     {
         DEFAULT_OUTPUT_RELATIVE,
         Path(
+            "benchmarks/structure_two/engineering_trust_checkpoint_2026_09_12_v0_3/engineering_audit_receipt.json"
+        ),
+        Path(
+            "benchmarks/structure_two/engineering_trust_checkpoint_2026_09_12_v0_3/engineering_checkpoint.json"
+        ),
+        Path(
             "benchmarks/structure_two/engineering_trust_checkpoint_2026_09_11_v0_2/engineering_audit_receipt.json"
         ),
         Path(

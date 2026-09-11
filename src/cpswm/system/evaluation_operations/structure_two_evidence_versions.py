@@ -19,7 +19,7 @@ HISTORY_CONFIG: Final = Path(
     "configs/project_two_experiments/structure_two_evidence_history_v0_1.json"
 )
 CURRENT_DIRECTORY: Final = Path(
-    "benchmarks/structure_two/evidence_repair_supplement_2026_09_11/current_v0_3"
+    "benchmarks/structure_two/evidence_entry_portability_2026_09_12/current_v0_4"
 )
 COMMON_BASE: Final = "09eb4d48e1c11082e90ca18332d04333e6b5b47a"
 
@@ -36,8 +36,8 @@ def require_execution_source(root: Path) -> dict[str, str]:
 
 def current_evidence_context() -> dict[str, Any]:
     return {
-        "artifact_version": "0.3",
-        "execution_source_policy": "frozen-source-compile-no-pyc@1",
+        "artifact_version": "0.4",
+        "execution_source_policy": "frozen-source-and-entry-compile@2",
         "lifecycle": "POST_OPEN_CURRENT_SOURCE_REPLAY",
         "first_execution_established": False,
         "previously_unseen_established": False,

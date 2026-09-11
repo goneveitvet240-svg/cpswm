@@ -157,13 +157,11 @@ def test_imported_runtime_cannot_rebind_itself_to_replaced_source(tmp_path: Path
     shutil.copytree(ROOT / "apps", tmp_path / "apps", ignore=shutil.ignore_patterns("__pycache__"))
     code = """
 from pathlib import Path
-import sys, types
+import runpy
+from pathlib import Path
 root = Path.cwd()
-p = root / 'apps/evaluation_runner/structure_two_source_bootstrap.py'
-boot = types.ModuleType('_cpswm_source_bootstrap')
-sys.modules[boot.__name__] = boot
-exec(compile(p.read_bytes(), str(p), 'exec'), boot.__dict__)
-boot.establish(root)
+runpy.run_path(str(root / 'apps/evaluation_runner/probe_structure_two_execution_source.py'),
+               run_name='_verified_test_entry')
 from cpswm.system.evaluation_operations.structure_two_evidence_versions import (
     require_execution_source,
 )
@@ -246,18 +244,18 @@ def test_historical_audit_cannot_promote_unrecoverable_source_or_skip_replay() -
                 "source_version_recoverable_at_record_commit": False,
                 "numerical_recomputation_performed": False,
                 "source_import_error": (
-                    f"/private/tmp/work/.checkout/evidence-history/{'a' * 40}-one/"
-                    "src/missing.py: missing symbol"
+                    "ImportError: missing symbol (<historical-source:aaa>/src/missing.py)"
                 ),
             }
         ]
     }
     relocated = copy.deepcopy(expected)
-    relocated["records"][0]["source_import_error"] = (
-        f"/private/tmp/work/.checkout/evidence-history/{'a' * 40}-two/"
-        "src/missing.py: missing symbol"
-    )
     module.verify_history_report(relocated, expected)
+    # Unknown/caller-written paths are no longer broadly normalised at verification.
+    forged_path = copy.deepcopy(expected)
+    forged_path["records"][0]["source_import_error"] += " /unrelated/root"
+    with pytest.raises(ValueError, match="differs from fresh snapshot/replay"):
+        module.verify_history_report(forged_path, expected)
     for field in (
         "source_version_recoverable_at_record_commit",
         "numerical_recomputation_performed",

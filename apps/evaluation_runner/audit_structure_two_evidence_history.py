@@ -75,18 +75,50 @@ def child(directory: Path, code: str) -> dict:
         "boot = types.ModuleType('_cpswm_source_bootstrap')\n"
         "sys.modules[boot.__name__] = boot\n"
         f"exec(compile({bootstrap.read_bytes()!r}, {str(bootstrap)!r}, 'exec'), boot.__dict__)\n"
-        "boot.establish(Path.cwd())\n"
+        "sys.meta_path.insert(0, boot.FrozenSourceLoader(Path.cwd()))\n"
     )
     code = prelude + code
-    return json.loads(
-        subprocess.check_output(
+    try:
+        output = subprocess.check_output(
             [sys.executable, "-c", code],
             cwd=directory,
             env=environment,
             text=True,
             stderr=subprocess.PIPE,
         )
+    except subprocess.CalledProcessError as error:
+        error.stderr = normalise_import_diagnostic(error.stderr, directory, bootstrap)
+        raise
+    return json.loads(output)
+
+
+def normalise_import_diagnostic(stderr: str, directory: Path, bootstrap: Path) -> str:
+    """Canonicalise only known Python diagnostic paths, never the error message.
+
+    Snapshot commit and relative filename survive. The audit source inventory
+    separately binds the launcher bytes. Unknown paths and all error content,
+    traceback lines, positions and exception types remain exact.
+    """
+    commit = directory.name[:40]
+    paths = {
+        str(path): f"<historical-source:{commit}>/{path.relative_to(directory).as_posix()}"
+        for path in (directory / "src/cpswm").rglob("*.py")
+    }
+    paths[str(bootstrap)] = (
+        "<audit-source>/apps/evaluation_runner/structure_two_source_bootstrap.py"
     )
+    lines = []
+    for line in stderr.splitlines(keepends=True):
+        frame = re.match(r'^(  File ")([^"]+)(", line [0-9]+, in .*)$', line.rstrip("\n"))
+        origin = re.match(
+            r"^(ImportError: cannot import name '[^']+' from '[^']+' \()([^\n]+)(\))$",
+            line.rstrip("\n"),
+        )
+        match = frame or origin
+        if match and match[2] in paths:
+            line = match[1] + paths[match[2]] + match[3] + ("\n" if line.endswith("\n") else "")
+        lines.append(line)
+    return "".join(lines)
 
 
 def legacy_projection(payload: dict) -> dict:
@@ -99,16 +131,11 @@ def legacy_projection(payload: dict) -> dict:
 
 
 def verify_history_report(stored: dict, expected: dict) -> None:
-    def normalise(value: dict) -> str:
-        # Temporary extraction directory names are execution-local diagnostics,
-        # not source or scientific identity. All verdicts and metrics remain bound.
-        return re.sub(
-            r"/[^\"\\]*?/\.checkout/evidence-history/[0-9a-f]{40}(?:-[^/\"\\]+)?/",
-            "<historical-snapshot>/",
-            json.dumps(value, sort_keys=True),
-        )
-
-    if normalise(stored) != normalise(expected):
+    # Reports are canonicalised at capture, using known execution paths. Never
+    # rewrite caller-provided error text while verifying a sealed report.
+    if json.dumps(stored, sort_keys=True, allow_nan=False) != json.dumps(
+        expected, sort_keys=True, allow_nan=False
+    ):
         raise ValueError("historical source audit differs from fresh snapshot/replay checks")
 
 
@@ -142,6 +169,7 @@ def require_completed_replay(report: dict) -> None:
 
 
 def build_history_report(*, recompute_first_failure: bool, recompute_failed_replay: bool) -> dict:
+    execution_source = sys.modules["_cpswm_source_bootstrap"].guard.require(ROOT)
     rows = []
     assemblies = {}
     for entry in historical_entries(ROOT):
@@ -217,7 +245,8 @@ def build_history_report(*, recompute_first_failure: bool, recompute_failed_repl
         rows.append(record)
         print(json.dumps(record), flush=True)
     report = {
-        "protocol": "structure-two-historical-local-git-audit@0.2",
+        "protocol": "structure-two-historical-local-git-audit@0.3",
+        "audit_execution_source": execution_source,
         "authority": "LOCAL_GIT_AND_EXPLICIT_RECOMPUTATION_ONLY",
         "first_use_or_unseen_status_established": False,
         "independent_custody_established": False,
@@ -235,6 +264,7 @@ def build_history_report(*, recompute_first_failure: bool, recompute_failed_repl
     }
     if recompute_failed_replay:
         require_completed_replay(report)
+    sys.modules["_cpswm_source_bootstrap"].guard.require(ROOT)
     return report
 
 

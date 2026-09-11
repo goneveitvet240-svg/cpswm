@@ -1,4 +1,7 @@
-"""Establish source loading before tests/conftest imports project dependencies."""
+"""Establish source loading before tests/conftest imports project dependencies.
+
+PYTEST_DONT_REWRITE: this startup module must execute its exact source code.
+"""
 
 # Establish execution provenance before importing project dependencies.
 import sys

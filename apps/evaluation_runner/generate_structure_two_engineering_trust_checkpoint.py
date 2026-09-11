@@ -29,12 +29,12 @@ sys.modules["_cpswm_source_bootstrap"].establish(Path(__file__).resolve().parent
 
 ROOT: Final = Path(__file__).resolve().parents[2]
 OUTPUT: Final = (
-    ROOT / "benchmarks/structure_two/engineering_trust_checkpoint_2026_09_11_v0_2/"
+    ROOT / "benchmarks/structure_two/engineering_trust_checkpoint_2026_09_12_v0_3/"
     "engineering_checkpoint.json"
 )
 P0_MANIFEST: Final = Path("benchmarks/p0_checkpoint/content_manifest_v0_3.json")
 AUDIT_RECEIPT: Final = Path(
-    "benchmarks/structure_two/engineering_trust_checkpoint_2026_09_11_v0_2/"
+    "benchmarks/structure_two/engineering_trust_checkpoint_2026_09_12_v0_3/"
     "engineering_audit_receipt.json"
 )
 AUDIT_LOG_DIRECTORY: Final = AUDIT_RECEIPT.parent / "engineering_audit_logs"
@@ -77,6 +77,7 @@ RESULTS: Final = (
     ),
 )
 BOUND_REPORTS: Final = (
+    Path("docs/reviews/structure_two_evidence_entry_portability_window1_2026-09-12.md"),
     Path("docs/reviews/structure_two_evidence_repair_window1_supplement_2026-09-11.md"),
     Path("docs/reviews/structure_two_evidence_repair_window1_2026-09-11.md"),
     Path("docs/结构二/方向结构二_当前证据总表_2026-09-02.md"),

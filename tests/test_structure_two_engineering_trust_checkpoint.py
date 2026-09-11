@@ -294,7 +294,7 @@ def test_test_and_manifest_resign_rejects_old_receipt_and_old_checkpoint(
 
     resigned_receipt = json.loads(
         (
-            ROOT / "benchmarks/structure_two/engineering_trust_checkpoint_2026_09_11_v0_2/"
+            ROOT / "benchmarks/structure_two/engineering_trust_checkpoint_2026_09_12_v0_3/"
             "engineering_audit_receipt.json"
         ).read_text(encoding="utf-8")
     )

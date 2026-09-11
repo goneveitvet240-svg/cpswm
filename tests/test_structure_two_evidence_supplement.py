@@ -20,17 +20,16 @@ EXPERIMENTS = (
     "readout_prior_factorial",
     "unseen_d0_holdout",
 )
-RELATIVE_CURRENT = "benchmarks/structure_two/evidence_repair_supplement_2026_09_11/current_v0_3"
+RELATIVE_CURRENT = "benchmarks/structure_two/evidence_entry_portability_2026_09_12/current_v0_4"
 HISTORY = "benchmarks/structure_two/evidence_repair_2026_09_11/history/three_arm_first_failure.json"
 BOOT = """
-import sys, types
+import runpy
 from pathlib import Path
 root = Path.cwd()
-p = root / 'apps/evaluation_runner/structure_two_source_bootstrap.py'
-boot = types.ModuleType('_cpswm_source_bootstrap')
-sys.modules[boot.__name__] = boot
-exec(compile(p.read_bytes(), str(p), 'exec'), boot.__dict__)
-boot.establish(root)
+runpy.run_path(str(root / 'apps/evaluation_runner/probe_structure_two_execution_source.py'),
+               run_name='_verified_test_entry')
+import sys
+boot = sys.modules['_cpswm_source_bootstrap']
 """
 
 
@@ -144,7 +143,8 @@ def test_formal_entry_uses_actual_frozen_semantics_despite_bytecode_cache(copied
     payload = json.loads(result.stdout)
     assert payload["loaded_owner_evidence_threshold"] == expected
     assert (
-        payload["source_binding"]["execution_source"]["policy"] == "frozen-source-compile-no-pyc@1"
+        payload["source_binding"]["execution_source"]["policy"]
+        == "frozen-source-and-entry-compile@2"
     )
 
 
@@ -305,7 +305,7 @@ def test_real_generation_entries_refuse_existing_hardlinked_outputs(copied, name
     parent = root / RELATIVE_CURRENT
     parent.mkdir(parents=True)
     for experiment in EXPERIMENTS:
-        os.link(history, parent / f"structure_two_p5_{experiment}_v0_3.json")
+        os.link(history, parent / f"structure_two_p5_{experiment}_v0_4.json")
     args = (
         ["apps/evaluation_runner/run_structure_two_evidence_repair.py", "--generate-current"]
         if name == "aggregate"

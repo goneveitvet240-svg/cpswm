@@ -1,13 +1,17 @@
 #!/usr/bin/env python3
-"""Run the previously opened A1+B1 direct-P5 matched development death test."""
+"""Exercise supported local source-entry loading; no scientific experiment is run."""
 
 from __future__ import annotations
 
+import argparse
 import json
+import os
 
 # Establish execution provenance before importing project dependencies.
 import sys
 import types
+from concurrent.futures import ProcessPoolExecutor
+from multiprocessing import get_context
 from pathlib import Path
 
 _bootstrap_path = (
@@ -26,16 +30,26 @@ from cpswm.system.evaluation_operations.structure_two_p5_three_arm_death_test im
     _source_binding,
 )
 
-if __name__ == "__main__":
+
+def probe() -> dict:
     root = Path(__file__).resolve().parents[2]
     binding = _source_binding(root, _load_config(root))
-    print(
-        json.dumps(
-            {
-                "loaded_owner_evidence_threshold": PrototypeLoopConfig().owner_evidence_threshold,
-                "source_binding": binding,
-                "diagnostic_only": True,
-            },
-            sort_keys=True,
-        )
-    )
+    return {
+        "loaded_owner_evidence_threshold": PrototypeLoopConfig().owner_evidence_threshold,
+        "source_binding": binding,
+        "diagnostic_only": True,
+        "pid": os.getpid(),
+    }
+
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--spawn", action="store_true")
+    args = parser.parse_args()
+    if args.spawn:
+        with ProcessPoolExecutor(max_workers=1, mp_context=get_context("spawn")) as pool:
+            result = pool.submit(probe).result()
+        result["parent_pid"] = os.getpid()
+    else:
+        result = probe()
+    print(json.dumps(result, sort_keys=True))

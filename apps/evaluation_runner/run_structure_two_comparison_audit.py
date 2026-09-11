@@ -8,9 +8,11 @@ import json
 from pathlib import Path
 
 from cpswm.system.evaluation_operations.structure_two_comparison_audit import (
+    check_source_binding,
+    compare_snapshot,
+    load_bundle,
     run_audit,
     save,
-    verify,
 )
 
 
@@ -34,11 +36,15 @@ def main() -> None:
         (output / name).exists() for name in ("audit.json", "steps.jsonl.gz", "timing.json")
     ):
         parser.error("output already exists; choose --verify or a new directory")
+    snapshot = load_bundle(output) if args.verify else None
+    if snapshot is not None:
+        check_source_binding(snapshot, root)
     payload, rows, timing = run_audit(
         root, timing_repeats=args.timing_repeats, timing_episodes=args.timing_episodes
     )
     if args.verify:
-        verify(output, payload, rows)
+        assert snapshot is not None
+        compare_snapshot(snapshot, payload, rows)
     else:
         save(output, payload, rows, timing)
     print(

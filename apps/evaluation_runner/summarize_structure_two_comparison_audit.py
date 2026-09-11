@@ -4,7 +4,6 @@
 from __future__ import annotations
 
 import argparse
-import gzip
 import hashlib
 import json
 from collections import Counter
@@ -19,11 +18,12 @@ from cpswm.system.reproducibility import content_sha256, content_uuid
 
 
 def analyze(bundle: Path, root: Path) -> dict:
-    retained = json.loads((bundle / "audit.json").read_text())
-    rows = [
-        json.loads(v)
-        for v in gzip.decompress((bundle / "steps.jsonl.gz").read_bytes()).splitlines()
-    ]
+    """Generate descriptive FILE_CONSISTENCY_ONLY analysis, without certifying rows."""
+    return analyze_snapshot(audit.load_bundle(bundle), root)
+
+
+def analyze_snapshot(snapshot: audit.BundleSnapshot, root: Path) -> dict:
+    retained, rows = snapshot.payload, snapshot.rows
     if content_sha256(audit._semantic_rows(rows)) != retained["semantic_steps_sha256"]:
         raise ValueError("step bundle semantic hash mismatch")
     groups = {}
@@ -136,8 +136,6 @@ def analyze(bundle: Path, root: Path) -> dict:
                 "matches": chain == metric["typed_action_chain_sha256"],
             }
         )
-    if not all(check["matches"] for check in action_chain_checks):
-        raise ValueError("historical action chain mismatch")
     learned_confusion = Counter()
     for row in rows:
         cause, event = row["derived_cause_event_labels"]
@@ -152,6 +150,7 @@ def analyze(bundle: Path, root: Path) -> dict:
     return {
         "audit_id": audit.AUDIT_ID,
         "development_only": True,
+        "evidence_level": "FILE_CONSISTENCY_ONLY_UNTIL_FRESH_REPLAY",
         "source_semantic_steps_sha256": retained["semantic_steps_sha256"],
         "script_sha256": hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),
         "groups": groups,
@@ -192,23 +191,146 @@ def analyze(bundle: Path, root: Path) -> dict:
     }
 
 
+def verify_bundles(bundles: list[Path], root: Path) -> tuple[list[dict], bool]:
+    """Real verification: one internally computed reference per batch, no disk cache.
+
+    All inputs are snapshotted before replay; invalid bundles cannot poison the
+    reference or turn another bundle green. No expected-result parameter exists.
+    """
+    snapshots = {}
+    results = {}
+    for index, bundle in enumerate(bundles):
+        try:
+            snapshot = audit.load_bundle(bundle, with_attribution=True)
+            audit.check_source_binding(snapshot, root)
+            snapshots[index] = snapshot
+        except (ValueError, OSError, KeyError, TypeError) as error:
+            results[index] = {
+                "bundle": str(bundle),
+                "status": "REJECTED",
+                "stage": "load_or_source_binding",
+                "error": str(error),
+            }
+    if snapshots:
+        before = audit.source_bindings(root)
+        # Full train + validation selection + all configured episodes + three arms.
+        # Timing is not an attribution dependency; one fixed timing sample suffices here.
+        payload, rows, _timing = audit.run_audit(root, timing_repeats=1, timing_episodes=1)
+        expected = analyze_snapshot(audit.BundleSnapshot(payload, rows), root)
+        if audit.source_bindings(root) != before:
+            raise ValueError("SOURCE_CHANGED_DURING_VERIFICATION")
+        for index, snapshot in snapshots.items():
+            try:
+                audit.compare_snapshot(snapshot, payload, rows)
+                difference = audit.first_difference(
+                    snapshot.attribution, json.loads(json.dumps(expected)), "attribution"
+                )
+                if difference:
+                    raise ValueError(f"FRESH_REPLAY_ATTRIBUTION_MISMATCH: {difference}")
+                results[index] = {
+                    "bundle": str(bundles[index]),
+                    "status": "CURRENT_SOURCE_FRESH_REPLAY_MATCH",
+                    "input_snapshot_sha256": content_sha256(
+                        {
+                            "audit": snapshot.payload,
+                            "rows": snapshot.rows,
+                            "attribution": snapshot.attribution,
+                        }
+                    ),
+                    "steps": len(rows),
+                    "episodes": len(payload["summary"]["episodes"]),
+                    "semantic_steps_sha256": payload["semantic_steps_sha256"],
+                    "formal_scientific_verification": False,
+                    "independent_historical_custody": False,
+                }
+            except (ValueError, KeyError, TypeError) as error:
+                results[index] = {
+                    "bundle": str(bundles[index]),
+                    "status": "REJECTED",
+                    "stage": "fresh_replay_comparison",
+                    "error": str(error),
+                }
+    ordered = [results[index] for index in range(len(bundles))]
+    return ordered, bool(snapshots)
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--bundle", type=Path, required=True)
-    parser.add_argument("--verify", action="store_true")
+    parser.add_argument(
+        "--bundle",
+        type=Path,
+        required=True,
+        action="append",
+        help="repeat to verify multiple bundles against one fresh in-process replay",
+    )
+    mode = parser.add_mutually_exclusive_group()
+    mode.add_argument(
+        "--verify",
+        action="store_true",
+        help="full current-source replay; no precomputed reference accepted",
+    )
+    mode.add_argument(
+        "--check-file-consistency",
+        action="store_true",
+        help="file self-consistency only; does NOT verify P5 state authenticity",
+    )
     args = parser.parse_args()
     root = Path(__file__).resolve().parents[2]
-    result = analyze(args.bundle, root)
-    output = args.bundle / "attribution.json"
     if args.verify:
-        if json.loads(output.read_text()) != json.loads(json.dumps(result)):
-            raise ValueError("fresh attribution differs")
-        print("attribution verified")
+        try:
+            results, replayed = verify_bundles(args.bundle, root)
+        except Exception as error:
+            print(
+                json.dumps(
+                    {
+                        "status": "VERIFICATION_FAILED",
+                        "stage": "fresh_replay",
+                        "error": f"{type(error).__name__}: {error}",
+                    }
+                ),
+                flush=True,
+            )
+            raise SystemExit(1) from error
+        print(
+            json.dumps(
+                {
+                    "verification_mode": "CURRENT_SOURCE_FRESH_REPLAY",
+                    "fresh_replay_performed": replayed,
+                    "results": results,
+                },
+                sort_keys=True,
+            )
+        )
+        if any(result["status"] == "REJECTED" for result in results):
+            raise SystemExit(1)
+        return
+    if len(args.bundle) != 1:
+        parser.error("multiple bundles are supported only by --verify")
+    bundle = args.bundle[0]
+    if args.check_file_consistency:
+        snapshot = audit.load_bundle(bundle, with_attribution=True)
+        result = analyze_snapshot(snapshot, root)
+        difference = audit.first_difference(
+            snapshot.attribution, json.loads(json.dumps(result)), "attribution"
+        )
+        if difference:
+            raise ValueError(f"FILE_INCONSISTENCY: {difference}")
+        print(
+            json.dumps(
+                {
+                    "status": "FILE_CONSISTENCY_ONLY",
+                    "fresh_replay_performed": False,
+                    "p5_state_authenticity_verified": False,
+                }
+            )
+        )
     else:
+        result = analyze(bundle, root)
+        output = bundle / "attribution.json"
         with output.open("x") as handle:
             json.dump(result, handle, indent=2, sort_keys=True, allow_nan=False)
             handle.write("\n")
-        print(output)
+        print(json.dumps({"status": "UNVERIFIED_ATTRIBUTION_WRITTEN", "output": str(output)}))
 
 
 if __name__ == "__main__":

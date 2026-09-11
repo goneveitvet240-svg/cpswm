@@ -14,7 +14,7 @@ import platform
 import subprocess
 import time
 from collections import Counter, defaultdict
-from dataclasses import replace
+from dataclasses import dataclass, replace
 from pathlib import Path
 from statistics import mean, median
 from typing import Any
@@ -511,9 +511,119 @@ def resource_diagnostic(
     }
 
 
+@dataclass(frozen=True)
+class BundleSnapshot:
+    """Read once before replay; conclusions never reopen mutable bundle files."""
+
+    payload: dict[str, Any]
+    rows: list[dict[str, Any]]
+    attribution: dict[str, Any] | None = None
+
+
+def strict_json(raw: str | bytes) -> Any:
+    def pairs(items: list[tuple[str, Any]]) -> dict[str, Any]:
+        result: dict[str, Any] = {}
+        for key, value in items:
+            if key in result:
+                raise ValueError(f"DUPLICATE_JSON_KEY: {key}")
+            result[key] = value
+        return result
+
+    def invalid(value: str) -> Any:
+        raise ValueError(f"NONFINITE_JSON_NUMBER: {value}")
+
+    return json.loads(raw, object_pairs_hook=pairs, parse_constant=invalid)
+
+
+def load_bundle(output: Path, *, with_attribution: bool = False) -> BundleSnapshot:
+    payload = strict_json((output / "audit.json").read_bytes())
+    rows = [
+        strict_json(line)
+        for line in gzip.decompress((output / "steps.jsonl.gz").read_bytes()).splitlines()
+    ]
+    attribution = (
+        strict_json((output / "attribution.json").read_bytes()) if with_attribution else None
+    )
+    if not isinstance(payload, dict) or any(not isinstance(row, dict) for row in rows):
+        raise ValueError("INVALID_BUNDLE_SHAPE: audit object and step objects required")
+    if with_attribution and not isinstance(attribution, dict):
+        raise ValueError("INVALID_ATTRIBUTION_SHAPE: object required")
+    return BundleSnapshot(payload, rows, attribution)
+
+
+def source_bindings(root: Path) -> dict[str, str]:
+    # Bind the real CLI as well as every local source/config dependency. This is
+    # a drift check, never a substitute for running those sources.
+    paths = {
+        HISTORY,
+        DATA_CONFIG,
+        base.DEFAULT_CONFIG,
+        Path("apps/evaluation_runner/run_structure_two_comparison_audit.py"),
+        Path("apps/evaluation_runner/summarize_structure_two_comparison_audit.py"),
+    }
+    for directory, pattern in (("src", "*.py"), ("configs", "*.json")):
+        paths.update(p.relative_to(root) for p in (root / directory).rglob(pattern))
+    return {
+        p.as_posix(): hashlib.sha256((root / p).read_bytes()).hexdigest() for p in sorted(paths)
+    }
+
+
+def first_difference(actual: Any, expected: Any, path: str = "$") -> str | None:
+    """Return a precise path, preserving sequence order, multiplicity and types."""
+    if type(actual) is not type(expected):
+        return f"{path} (type)"
+    if isinstance(expected, dict):
+        if set(actual) != set(expected):
+            return f"{path} (keys: {sorted(set(actual) ^ set(expected))[:5]})"
+        for key in sorted(expected):
+            difference = first_difference(actual[key], expected[key], f"{path}.{key}")
+            if difference:
+                return difference
+    elif isinstance(expected, list):
+        if len(actual) != len(expected):
+            return f"{path}.length ({len(actual)} != {len(expected)})"
+        for index, (left, right) in enumerate(zip(actual, expected, strict=True)):
+            difference = first_difference(left, right, f"{path}[{index}]")
+            if difference:
+                return difference
+    elif actual != expected:
+        return path
+    return None
+
+
+def check_source_binding(snapshot: BundleSnapshot, root: Path) -> None:
+    difference = first_difference(
+        snapshot.payload.get("source_bindings"), source_bindings(root), "audit.source_bindings"
+    )
+    if difference:
+        raise ValueError(f"SOURCE_BINDING_MISMATCH: {difference}")
+
+
+def compare_snapshot(
+    snapshot: BundleSnapshot, payload: dict[str, Any], rows: list[dict[str, Any]]
+) -> None:
+    """Low-level comparison, NOT proof if a caller supplies its own reference.
+
+    Official CLI verification obtains the reference by run_audit in the same
+    process. It exposes no cached-reference or expected-payload argument.
+    """
+    actual_rows = _semantic_rows(snapshot.rows)
+    if content_sha256(actual_rows) != snapshot.payload["semantic_steps_sha256"]:
+        raise ValueError("retained step bundle differs from its semantic commitment")
+    difference = first_difference(actual_rows, _semantic_rows(rows), "steps")
+    if difference:
+        raise ValueError(f"FRESH_REPLAY_STEP_MISMATCH: {difference}")
+    difference = first_difference(snapshot.payload, payload, "audit")
+    if difference:
+        raise ValueError(f"fresh diagnostic differs at {difference}")
+    if content_sha256(_semantic_rows(rows)) != payload["semantic_steps_sha256"]:
+        raise ValueError("fresh step bundle differs from its commitment")
+
+
 def run_audit(
     root: Path, *, timing_repeats: int = 3, timing_episodes: int = 2
 ) -> tuple[dict[str, Any], list[dict[str, Any]], dict[str, Any]]:
+    bindings = source_bindings(root)
     config = base._load_config(root)
     dataset_config = D0SyntheticReplayExperimentConfig.load(root / DATA_CONFIG)
     dataset = dataset_config.build_adapter().build()
@@ -557,13 +667,11 @@ def run_audit(
                         "retained": [old["search_errors"], old["put_back_errors"]],
                     }
                 )
-    source_paths = [DATA_CONFIG, HISTORY, base.DEFAULT_CONFIG]
-    source_paths.extend(sorted(p.relative_to(root) for p in (root / "src").rglob("*.py")))
-    bindings = {
-        p.as_posix(): hashlib.sha256((root / p).read_bytes()).hexdigest() for p in source_paths
-    }
+    if source_bindings(root) != bindings:
+        raise ValueError("SOURCE_CHANGED_DURING_REPLAY")
     payload = {
         "audit_id": AUDIT_ID,
+        "verification_schema_version": 2,
         "base_commit": BASE_COMMIT,
         "data_status": "already_opened_development_only",
         "source_bindings": bindings,
@@ -603,6 +711,8 @@ def run_audit(
         test[:timing_episodes], model, material, smoothing, parameter, timing_repeats
     )
     timing["training_and_validation_seconds_single_run"] = training_elapsed
+    if source_bindings(root) != bindings:
+        raise ValueError("SOURCE_CHANGED_DURING_REPLAY")
     return payload, rows, timing
 
 
@@ -625,17 +735,5 @@ def save(
 
 
 def verify(output: Path, payload: dict[str, Any], rows: list[dict[str, Any]]) -> None:
-    old = json.loads((output / "audit.json").read_text())
-    old_rows = [
-        json.loads(line)
-        for line in gzip.decompress((output / "steps.jsonl.gz").read_bytes()).splitlines()
-    ]
-    if content_sha256(_semantic_rows(old_rows)) != old["semantic_steps_sha256"]:
-        raise ValueError("retained step bundle differs from its semantic commitment")
-    # Compare every consequential field, including gate declarations and probes.
-    # Only explicitly excluded row provenance and nondeterministic timing are outside scope.
-    for key in sorted(set(payload) | set(old)):
-        if key not in payload or key not in old or payload[key] != old[key]:
-            raise ValueError(f"fresh diagnostic differs at {key}")
-    if content_sha256(_semantic_rows(rows)) != payload["semantic_steps_sha256"]:
-        raise ValueError("fresh step bundle differs from its commitment")
+    """Compatibility comparator for unit tests; not an independent verification entrypoint."""
+    compare_snapshot(load_bundle(output), payload, rows)

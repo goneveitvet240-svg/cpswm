@@ -1,0 +1,105 @@
+{
+  "status": "DESCRIPTIVE_EXPORT_NOT_AN_AUTHENTICITY_CERTIFICATE",
+  "source_semantic_steps_sha256": "a14419c97cc848dfb60610d1df88fd4f7bdc3a87146c396c1741104752756d4e",
+  "bound_audit_fairness": {
+    "checks": [
+      "three distinct arms",
+      "actual packet and visible hash",
+      "same support/order",
+      "shared decoder ranking and ties",
+      "test truth after three commits"
+    ],
+    "comparison_fairness": "NOT_ESTABLISHED",
+    "development_only": true,
+    "observations": {
+      "amg_missing_owner_steps": 53,
+      "full_fast_different_steps": 0,
+      "future_support_steps": 1040,
+      "p5_commit_counts": {
+        "0": 1920
+      },
+      "p5_minus_amg_errors": -17,
+      "search_equal_steps": 1920
+    },
+    "pending_user_decisions": [
+      "public map vs causal prefix support permission",
+      "common missing-owner prior",
+      "native SEARCH head and search budget",
+      "evidence feature entitlement vs identical feature consumption",
+      "capacity/training/inference budgets",
+      "long-memory and feedback challenge distribution"
+    ],
+    "scientific_validity": "NOT_ESTABLISHED",
+    "steps_checked": 1920
+  },
+  "arms": [
+    "direct_p5_full_eager",
+    "learned_matched_two_stage",
+    "independently_tuned_amg"
+  ],
+  "dimensions": [
+    {
+      "dimension": "packet/support/cost/action",
+      "source": "steps[*].fairness_step and arms",
+      "rule": "frozen common consumer boundary enforced; see check_step/check_receipt/check_decoded",
+      "comparison_fairness": "NOT_ESTABLISHED"
+    },
+    {
+      "dimension": "training and selection",
+      "source": "audit.fairness_execution.train_access,selection",
+      "actual_fit_count": 12,
+      "actual_validation_scoring_calls": 17280,
+      "equal_training_budget": false
+    },
+    {
+      "dimension": "consumed evidence",
+      "source": "audit.fairness_execution.consumer_probe",
+      "return_sample_counts": {
+        "_locations": 4,
+        "_transition": 22,
+        "_feature_row": 32,
+        "_AMGOpenWorldMethod.observe": 32
+      },
+      "equal_consumption": false
+    },
+    {
+      "dimension": "future support",
+      "source": "steps[*].future_support_count,support_by_arm",
+      "affected_steps": 1040,
+      "permission": "USER_DECISION_REQUIRED"
+    },
+    {
+      "dimension": "cold default",
+      "source": "attribution.common_uniform_when_amg_has_no_owner_estimate",
+      "affected_steps": 53,
+      "formal_rule": "USER_DECISION_REQUIRED"
+    },
+    {
+      "dimension": "SEARCH",
+      "source": "steps[*].arms.current and sensitivity counterexamples",
+      "equal_steps": 1920,
+      "native_readout_budget": "USER_DECISION_REQUIRED"
+    },
+    {
+      "dimension": "long memory",
+      "source": "steps[*].raw_state.p5_readouts.state_counts and alternative_readouts_development_only",
+      "observed_commit_histogram": {
+        "0": 1920
+      },
+      "capability": "UNMEASURED_LEGAL_UNBLOCK_AND_LONG_MEMORY_BENEFIT"
+    },
+    {
+      "dimension": "compute",
+      "source": "bundle_v4/timing.json and selection.model_fits",
+      "same_order_control": "fresh episode states, three rotating repetitions, fixed two episodes",
+      "host_exclusive": false,
+      "performance_superiority_established": false
+    },
+    {
+      "dimension": "scientific validity",
+      "source": "audit.signal_gate_retained_not_reselected",
+      "passed": false,
+      "new_confirmatory_experiment": false
+    }
+  ]
+}

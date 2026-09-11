@@ -1,0 +1,10 @@
+Traceback (most recent call last):
+  File "/private/tmp/s2-comparison-audit-window2-20260911/apps/evaluation_runner/run_structure_two_comparison_audit.py", line 99, in <module>
+    main()
+    ~~~~^^
+  File "/private/tmp/s2-comparison-audit-window2-20260911/apps/evaluation_runner/run_structure_two_comparison_audit.py", line 71, in main
+    check_source_binding(snapshot, root)
+    ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^
+  File "/private/tmp/s2-comparison-audit-window2-20260911/src/cpswm/system/evaluation_operations/structure_two_comparison_audit.py", line 628, in check_source_binding
+    raise ValueError(f"SOURCE_BINDING_MISMATCH: {difference}")
+ValueError: SOURCE_BINDING_MISMATCH: audit.source_bindings (keys: ['src/cpswm/system/evaluation_operations/structure_two_comparison_fairness.py'])

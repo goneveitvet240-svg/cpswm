@@ -1,0 +1,24 @@
+{
+  "command": [
+    "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/.venv/bin/python",
+    "-c",
+    "\nimport json, pathlib, runpy, sys\nroot = pathlib.Path(sys.argv[1]).resolve().parents[2]\ndef drift(frame, event, arg):\n    if event == \"return\" and frame.f_code.co_name == \"check_source_binding\":\n        sys.setprofile(None)\n        path = root / \"src/cpswm/system/reproducibility.py\"\n        path.write_text(path.read_text() + \"\\n# controlled in-flight source drift\\n\")\n        print(json.dumps({\"drift_after_real_binding_check\": str(path)}))\nsys.setprofile(drift)\nsys.argv = sys.argv[1:]\nrunpy.run_path(sys.argv[0], run_name=\"__main__\")\n",
+    "/private/var/folders/x2/000r8p0n6s393lj2sg8wk5f40000gn/T/pytest-of-pangwei/pytest-1639/popen-gw0/test_source_drift_after_input_1/A/apps/evaluation_runner/summarize_structure_two_comparison_audit.py",
+    "--bundle",
+    "/private/tmp/s2-comparison-audit-window2-20260911/docs/reviews/data/structure_two_comparison_audit_window2_fairness_2026-09-12/bundle_v4",
+    "--verify"
+  ],
+  "cwd": "/private/var/folders/x2/000r8p0n6s393lj2sg8wk5f40000gn/T/pytest-of-pangwei/pytest-1639/popen-gw0/test_source_drift_after_input_1/A",
+  "PYTHONPATH": "/private/var/folders/x2/000r8p0n6s393lj2sg8wk5f40000gn/T/pytest-of-pangwei/pytest-1639/popen-gw0/test_source_drift_after_input_1/A/src",
+  "exit_code": 1,
+  "stdout_json": [
+    {
+      "drift_after_real_binding_check": "/private/var/folders/x2/000r8p0n6s393lj2sg8wk5f40000gn/T/pytest-of-pangwei/pytest-1639/popen-gw0/test_source_drift_after_input_1/A/src/cpswm/system/reproducibility.py"
+    },
+    {
+      "status": "VERIFICATION_FAILED",
+      "stage": "fresh_replay",
+      "error": "ExecutionSourceError: EXECUTION_SOURCE_DRIFT: [PosixPath('/private/var/folders/x2/000r8p0n6s393lj2sg8wk5f40000gn/T/pytest-of-pangwei/pytest-1639/popen-gw0/test_source_drift_after_input_1/A/src/cpswm/system/reproducibility.py')]"
+    }
+  ]
+}

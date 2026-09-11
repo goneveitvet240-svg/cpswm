@@ -1,0 +1,97 @@
+{
+  "status": "FILE_COMPARISON_ONLY_USE_CLI_LOGS_FOR_FRESH_REPLAY",
+  "old_source_schema": 3,
+  "new_source_schema": 4,
+  "source_binding_count": 400,
+  "old_semantic_sha256": "d32b9d7bd2ff4963d8a71939fe752b260806e8775b692d602ac4588205f70c76",
+  "new_semantic_sha256": "a14419c97cc848dfb60610d1df88fd4f7bdc3a87146c396c1741104752756d4e",
+  "new_rows_without_added_fairness_equal_old": true,
+  "selection_equal": true,
+  "all_summary_fields_equal": true,
+  "retained_score_mismatches": [],
+  "common_prior_old_new_put_back_examples_equal": true,
+  "common_prior_search_unchanged_all": true,
+  "controlled_total_amg_errors": 85,
+  "cold_control": {
+    "development_only": true,
+    "original_amg_errors": 53,
+    "steps": 53,
+    "trigger": "fresh AMG replay amg_owner_location is None; no P5 or truth-based selection",
+    "uniform_amg_equals_p5_steps": 53,
+    "uniform_amg_errors": 36
+  },
+  "p5_closures": {
+    "full_p5:same_location_fast_verification": 1276,
+    "negative_ciav_opceu_explicit_no_new_transition": 644
+  },
+  "consumer_return_sample_counts": {
+    "_locations": 4,
+    "_transition": 22,
+    "_feature_row": 32,
+    "_AMGOpenWorldMethod.observe": 32
+  },
+  "fit_count": 12,
+  "total_fit_multiply_adds_head_only": 68812800,
+  "training_access_kinds": {
+    "visible": 1,
+    "training_truth": 20
+  },
+  "validation_access_kinds": {
+    "visible": 1,
+    "score_after_commit": 17280
+  },
+  "training": {
+    "active_logit_parameters": 64,
+    "conditional_location_cells": 9,
+    "inference_multiply_adds_head_only": 64,
+    "location_successes": [
+      [
+        0.0,
+        0.0,
+        0.0
+      ],
+      [
+        0.0,
+        29.0,
+        0.0
+      ],
+      [
+        0.0,
+        0.0,
+        281.0
+      ]
+    ],
+    "location_totals": [
+      [
+        37.0,
+        0.0,
+        60.0
+      ],
+      [
+        0.0,
+        29.0,
+        0.0
+      ],
+      [
+        0.0,
+        0.0,
+        281.0
+      ]
+    ],
+    "projection_width": 8,
+    "raw_features": 12,
+    "rows": 640,
+    "selected_model_training_multiply_adds_head_only": 2457600
+  },
+  "observations": {
+    "amg_missing_owner_steps": 53,
+    "full_fast_different_steps": 0,
+    "future_support_steps": 1040,
+    "p5_commit_counts": {
+      "0": 1920
+    },
+    "p5_minus_amg_errors": -17,
+    "search_equal_steps": 1920
+  },
+  "historical_action_chain_matches": 180
+}

@@ -23,7 +23,7 @@ from typing import Any, Final
 
 ROOT: Final = Path(__file__).resolve().parents[2]
 DEFAULT_OUTPUT: Final = (
-    ROOT / "benchmarks/structure_two/engineering_trust_checkpoint_2026_09_05/"
+    ROOT / "benchmarks/structure_two/engineering_trust_checkpoint_2026_09_11_v0_2/"
     "engineering_audit_receipt.json"
 )
 P0_MANIFEST: Final = ROOT / "benchmarks/p0_checkpoint/content_manifest_v0_3.json"
@@ -37,10 +37,12 @@ COMMANDS: Final = {
         ".venv/bin/python",
         "apps/evaluation_runner/audit_structure_two_evidence_history.py",
         "--verify",
-        "benchmarks/structure_two/evidence_repair_2026_09_11/historical_source_audit.json",
+        "benchmarks/structure_two/evidence_repair_supplement_2026_09_11/historical_source_audit_v0_2.json",
     ),
     "p0_adversarial_tests": (
         ".venv/bin/pytest",
+        "-o",
+        "addopts=",
         "-q",
         "--confcutdir=.",
         "tests/test_structure_two_trusted_ablation_authorization.py",
@@ -50,10 +52,13 @@ COMMANDS: Final = {
     ),
     "core_pytest": (
         ".venv/bin/pytest",
+        "-o",
+        "addopts=",
         "-p",
         "xdist.plugin",
         "-n",
         "auto",
+        "--dist=worksteal",
         "-q",
         "--confcutdir=.",
         "--ignore=tests/test_structure_two_engineering_trust_checkpoint.py",
@@ -82,7 +87,7 @@ COMMANDS: Final = {
         "--check",
         "--",
         ".",
-        ":(exclude)benchmarks/structure_two/engineering_trust_checkpoint_2026_09_05/"
+        ":(exclude)benchmarks/structure_two/engineering_trust_checkpoint_2026_09_11_v0_2/"
         "engineering_audit_logs/*.log",
     ),
 }

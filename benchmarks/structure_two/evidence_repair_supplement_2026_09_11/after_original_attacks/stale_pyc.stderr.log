@@ -1,0 +1,9 @@
+Traceback (most recent call last):
+  File "<string>", line 7, in <module>
+    binding = _source_binding(root, _load_config(root))
+  File "/private/tmp/s2-w1-counterexample-stveh5rt/src/cpswm/system/evaluation_operations/structure_two_p5_three_arm_death_test.py", line 1496, in _source_binding
+    require_execution_source(root)
+    ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "/private/tmp/s2-w1-counterexample-stveh5rt/src/cpswm/system/evaluation_operations/structure_two_evidence_versions.py", line 32, in require_execution_source
+    raise ValueError("formal source bootstrap required before project imports")
+ValueError: formal source bootstrap required before project imports

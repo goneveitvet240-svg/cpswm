@@ -7,20 +7,34 @@ import argparse
 import hashlib
 import importlib.util
 import json
+
+# Establish execution provenance before importing project dependencies.
+import sys
+import types
 from collections.abc import Mapping, Sequence
 from datetime import datetime
 from pathlib import Path
 from types import ModuleType
 from typing import Any, Final
 
+_bootstrap_path = (
+    Path(__file__).resolve().parents[2] / "apps/evaluation_runner/structure_two_source_bootstrap.py"
+)
+if "_cpswm_source_bootstrap" not in sys.modules:
+    _bootstrap = types.ModuleType("_cpswm_source_bootstrap")
+    _bootstrap.__file__ = str(_bootstrap_path)
+    sys.modules[_bootstrap.__name__] = _bootstrap
+    exec(compile(_bootstrap_path.read_bytes(), str(_bootstrap_path), "exec"), _bootstrap.__dict__)
+sys.modules["_cpswm_source_bootstrap"].establish(Path(__file__).resolve().parents[2])
+
 ROOT: Final = Path(__file__).resolve().parents[2]
 OUTPUT: Final = (
-    ROOT
-    / "benchmarks/structure_two/engineering_trust_checkpoint_2026_09_05/engineering_checkpoint.json"
+    ROOT / "benchmarks/structure_two/engineering_trust_checkpoint_2026_09_11_v0_2/"
+    "engineering_checkpoint.json"
 )
 P0_MANIFEST: Final = Path("benchmarks/p0_checkpoint/content_manifest_v0_3.json")
 AUDIT_RECEIPT: Final = Path(
-    "benchmarks/structure_two/engineering_trust_checkpoint_2026_09_05/"
+    "benchmarks/structure_two/engineering_trust_checkpoint_2026_09_11_v0_2/"
     "engineering_audit_receipt.json"
 )
 AUDIT_LOG_DIRECTORY: Final = AUDIT_RECEIPT.parent / "engineering_audit_logs"
@@ -63,6 +77,7 @@ RESULTS: Final = (
     ),
 )
 BOUND_REPORTS: Final = (
+    Path("docs/reviews/structure_two_evidence_repair_window1_supplement_2026-09-11.md"),
     Path("docs/reviews/structure_two_evidence_repair_window1_2026-09-11.md"),
     Path("docs/结构二/方向结构二_当前证据总表_2026-09-02.md"),
     Path("docs/experiments/structure_two_task7_windowed_rejuvenation_result_v0_4_2026-09-05.md"),
@@ -83,7 +98,7 @@ def _load(name: str, relative_path: str) -> ModuleType:
     if spec is None or spec.loader is None:
         raise RuntimeError(f"cannot load checkpoint dependency: {relative_path}")
     module = importlib.util.module_from_spec(spec)
-    spec.loader.exec_module(module)
+    sys.modules["_cpswm_source_bootstrap"].guard.execute_application(module, ROOT / relative_path)
     return module
 
 

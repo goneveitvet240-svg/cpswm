@@ -96,8 +96,8 @@ DEFAULT_CONFIG: Final = Path(
     "configs/project_two_experiments/structure_two_p5_three_arm_death_test_v0_1.json"
 )
 DEFAULT_OUTPUT: Final = Path(
-    "benchmarks/structure_two/evidence_repair_2026_09_11/current/"
-    "structure_two_p5_three_arm_death_test_v0_2.json"
+    "benchmarks/structure_two/evidence_repair_supplement_2026_09_11/current_v0_3/"
+    "structure_two_p5_three_arm_death_test_v0_3.json"
 )
 EXPECTED_SCHEDULER: Final = "exogenous_precommitted_schedule"
 EXPECTED_LOCATION_HEAD: Final = "shared_conditional_location_head_given_cause_event"
@@ -1521,6 +1521,7 @@ def _source_binding(root: Path, config: Mapping[str, Any]) -> dict[str, Any]:
     }
     assembly = build_production_assembly_manifest(root)
     binding["production_assembly_manifest_sha256"] = assembly["content_sha256"]
+    binding["execution_source"] = require_execution_source(root)
     return binding
 
 

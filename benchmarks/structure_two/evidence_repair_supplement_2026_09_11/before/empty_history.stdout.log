@@ -1,0 +1,19 @@
+{
+  "command": [
+    "/private/tmp/s2-w1-counterexample-e8wa6a4w/apps/evaluation_runner/run_structure_two_evidence_repair.py",
+    "--verify-history"
+  ],
+  "exit_code": 0,
+  "stdout": "{\"historical_local_git_audit\": []}\n",
+  "stderr": ""
+}
+{
+  "command": [
+    "/private/tmp/s2-w1-counterexample-e8wa6a4w/apps/evaluation_runner/audit_structure_two_evidence_history.py",
+    "--verify",
+    "/private/tmp/s2-w1-counterexample-e8wa6a4w/empty-history.json"
+  ],
+  "exit_code": 0,
+  "stdout": "historical source audit and recoverable failed replay verified\n",
+  "stderr": ""
+}

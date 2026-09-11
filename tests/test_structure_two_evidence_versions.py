@@ -87,7 +87,7 @@ def test_rehashed_complete_numeric_forgery_reaches_and_fails_recomputation(
     name: str, monkeypatch: pytest.MonkeyPatch
 ) -> None:
     module = importlib.import_module(f"cpswm.system.evaluation_operations.structure_two_p5_{name}")
-    genuine = json.loads((ROOT / module.DEFAULT_OUTPUT).read_text())
+    genuine = getattr(module, f"run_p5_{name}")(repository_root=ROOT)
     forged = copy.deepcopy(genuine)
     scope = forged["data_scope"]
     key = next(k for k, v in scope.items() if type(v) is int and v > 0)
@@ -154,19 +154,26 @@ def test_imported_runtime_cannot_rebind_itself_to_replaced_source(tmp_path: Path
     shutil.copytree(ROOT / "configs", tmp_path / "configs")
     for name in ("pyproject.toml", "uv.lock"):
         shutil.copy2(ROOT / name, tmp_path / name)
+    shutil.copytree(ROOT / "apps", tmp_path / "apps", ignore=shutil.ignore_patterns("__pycache__"))
     code = """
 from pathlib import Path
+import sys, types
+root = Path.cwd()
+p = root / 'apps/evaluation_runner/structure_two_source_bootstrap.py'
+boot = types.ModuleType('_cpswm_source_bootstrap')
+sys.modules[boot.__name__] = boot
+exec(compile(p.read_bytes(), str(p), 'exec'), boot.__dict__)
+boot.establish(root)
 from cpswm.system.evaluation_operations.structure_two_evidence_versions import (
     require_execution_source,
 )
-root = Path.cwd()
 require_execution_source(root)
 p = root / 'src/cpswm/system/continual/project_one_regime_loop.py'
 p.write_text(p.read_text() + '\\n# replaced after import\\n')
 try:
     require_execution_source(root)
 except ValueError as error:
-    assert 'changed since process import' in str(error)
+    assert 'changed since formal bootstrap' in str(error)
 else:
     raise AssertionError('cached runtime silently rebound to changed source')
 """

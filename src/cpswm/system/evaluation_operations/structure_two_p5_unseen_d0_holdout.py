@@ -41,8 +41,8 @@ DEFAULT_CONFIG: Final = Path(
     "configs/project_two_experiments/structure_two_p5_unseen_d0_holdout_v0_1.json"
 )
 DEFAULT_OUTPUT: Final = Path(
-    "benchmarks/structure_two/evidence_repair_2026_09_11/current/"
-    "structure_two_p5_unseen_d0_holdout_v0_2.json"
+    "benchmarks/structure_two/evidence_repair_supplement_2026_09_11/current_v0_3/"
+    "structure_two_p5_unseen_d0_holdout_v0_3.json"
 )
 CLAIM_BOUNDARY: Final = (
     "This repository-frozen, previously unused D0 test-seed range can internally check "
@@ -119,6 +119,7 @@ def _source_binding(root: Path, config: Mapping[str, Any]) -> dict[str, Any]:
     binding["production_assembly_manifest_sha256"] = build_production_assembly_manifest(root)[
         "content_sha256"
     ]
+    binding["execution_source"] = require_execution_source(root)
     return binding
 
 

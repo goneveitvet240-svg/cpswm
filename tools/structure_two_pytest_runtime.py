@@ -11,6 +11,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import marshal
 import os
 import sys
 from pathlib import Path
@@ -28,15 +29,96 @@ def file_sha(path):
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
+class ExecutedSourceGuard:
+    """Compare each local module's executed code to freshly compiled frozen source.
+
+    An audit hook runs before exec (including timestamp/unchecked/rewrite pyc).
+    It is process-local: subprocess attack mirrors keep their real cache behavior.
+    Existing assertion rewriting stays enabled. No cache is deleted or disabled.
+    """
+
+    def __init__(self, config, contract_path):
+        self.config = config
+        self.path = Path(contract_path)
+        self.contract = json.loads(self.path.read_bytes())
+        self.root = Path(self.contract["root"])
+        self.sources = self.contract["local_sources"]
+        self.compiled = {}
+        self.observed = {}
+        self.failed = None
+        expected_entry = self.root / "tools/structure_two_pytest_runtime.py"
+        if (
+            compile(expected_entry.read_bytes(), str(expected_entry), "exec", dont_inherit=True)
+            != _ENTRY
+        ):
+            self.reject("ACTUAL_TEST_PLUGIN_CODE_MISMATCH")
+        # No local dependency may execute before this protection is installed.
+        for name, module in tuple(sys.modules.items()):
+            filename = getattr(module, "__file__", None)
+            if (
+                filename
+                and str(Path(filename).absolute()) in self.sources
+                and module is not sys.modules[__name__]
+            ):
+                self.reject("LOCAL_MODULE_EXECUTED_BEFORE_GUARD: " + name)
+        sys.addaudithook(self.audit)
+
+    def reject(self, reason):
+        self.failed = reason
+        destination = self.path.parent / (str(os.getpid()) + ".code.reject.json")
+        if not destination.exists():
+            with destination.open("x") as stream:
+                json.dump({"pid": os.getpid(), "error": reason}, stream)
+        raise pytest.UsageError(reason)
+
+    def audit(self, event, args):
+        if event != "exec":
+            return
+        code = args[0]
+        filename = code.co_filename
+        if filename.startswith("<"):
+            return  # Generated interpreter/test machinery has no local source identity.
+        path = Path(filename).absolute()
+        if not path.is_relative_to(self.root) or path.is_relative_to(self.root / ".venv"):
+            return  # External mirrors and trusted installed dependencies are separate boundaries.
+        key = str(path)
+        if key not in self.sources:
+            self.reject("UNBOUND_LOCAL_EXECUTION: " + key)
+        if path.resolve() != path or file_sha(path) != self.sources[key]:
+            self.reject("LOCAL_EXECUTION_SOURCE_CHANGED: " + key)
+        if key not in self.compiled:
+            plain = compile(path.read_bytes(), filename, "exec", dont_inherit=True)
+            # pytest's real AST rewrite, compiled directly from current bytes;
+            # never read a pyc to establish the expected executed code.
+            from _pytest.assertion.rewrite import _rewrite_test
+
+            rewritten = _rewrite_test(path, self.config)[1]
+            self.compiled[key] = (plain, rewritten)
+        plain, rewritten = self.compiled[key]
+        if code != plain and code != rewritten:
+            self.reject("EXECUTED_LOCAL_CODE_MISMATCH: " + key)
+        self.observed[key] = {
+            "source_sha256": self.sources[key],
+            "code_sha256": hashlib.sha256(marshal.dumps(code)).hexdigest(),
+            "mode": "pytest_rewrite" if code == rewritten else "python_compile",
+        }
+
+
+@pytest.hookimpl(tryfirst=True)
+def pytest_load_initial_conftests(early_config):
+    path = early_config.known_args_namespace.s2_runtime_contract
+    early_config._s2_code_guard = ExecutedSourceGuard(early_config, path)
+
+
 class Runtime:
     def __init__(self, config):
         self.config = config
+        self.code_guard = config._s2_code_guard
         for key in (
             "PYTEST_ADDOPTS",
             "PYTEST_PLUGINS",
             "PYTHONPATH",
             "PYTHONOPTIMIZE",
-            "PYTEST_DISABLE_PLUGIN_AUTOLOAD",
         ):
             if os.environ.get(key):
                 raise pytest.UsageError("UNSAFE_ACTUAL_TEST_ENVIRONMENT: " + key)
@@ -49,6 +131,13 @@ class Runtime:
         self.contract_path = Path(config.getoption("--s2-runtime-contract"))
         self.raw = self.contract_path.read_bytes()
         self.contract = json.loads(self.raw)
+        if os.environ.get("PYTEST_DISABLE_PLUGIN_AUTOLOAD") and not (
+            os.environ.get("PYTEST_DISABLE_PLUGIN_AUTOLOAD") == "1"
+            and self.contract.get("native_pytest_plugin_policy") == "explicit_plugins_only"
+        ):
+            raise pytest.UsageError(
+                "UNSAFE_ACTUAL_TEST_ENVIRONMENT: PYTEST_DISABLE_PLUGIN_AUTOLOAD"
+            )
         self.root = Path(self.contract["root"])
         self.modules = {}
         self.worker = getattr(config, "workerinput", {}).get("workerid", "controller")
@@ -70,11 +159,14 @@ class Runtime:
 
     def write(self, suffix):
         self.value["modules"] = self.modules
+        self.value["executed_local_sources"] = self.code_guard.observed
         with self.destination.with_suffix("." + suffix + ".json").open("x") as stream:
             json.dump(self.value, stream, indent=2)
             stream.write("\n")
 
     def check(self):
+        if self.code_guard.failed:
+            raise pytest.UsageError(self.code_guard.failed)
         env = self.contract["environment"]
         if sys.executable != str(self.root / ".venv/bin/python") or sys.prefix != env["prefix"]:
             raise pytest.UsageError("ACTUAL_TEST_INTERPRETER_MISMATCH")
@@ -92,6 +184,14 @@ class Runtime:
         ):
             raise pytest.UsageError("ACTUAL_TEST_PLUGIN_CODE_MISMATCH")
         expected = {**env["pytest_sources"], **self.contract["project_sources"]}
+        for name, module in tuple(sys.modules.items()):
+            filename = getattr(module, "__file__", None)
+            if (
+                filename in self.code_guard.sources
+                and module is not sys.modules[__name__]
+                and filename not in self.code_guard.observed
+            ):
+                self.code_guard.reject("LOCAL_MODULE_WITHOUT_EXECUTION_OBSERVATION: " + name)
         for name, module in tuple(sys.modules.items()):
             if module is None or not any(
                 name == n or name.startswith(n + ".") for n in ("pytest", "_pytest", "cpswm")
@@ -138,7 +238,12 @@ def pytest_configure(config):
 
 
 def pytest_collection_finish(session):
-    session.config._s2_runtime.collection([item.nodeid for item in session.items])
+    runtime = session.config._s2_runtime
+    for item in session.items:
+        filename = str(item.path)
+        if filename not in runtime.code_guard.observed:
+            runtime.code_guard.reject("TEST_WITHOUT_CURRENT_EXECUTION_OBSERVATION: " + filename)
+    runtime.collection([item.nodeid for item in session.items])
 
 
 @pytest.hookimpl(hookwrapper=True, tryfirst=True)

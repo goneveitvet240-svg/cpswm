@@ -12,6 +12,7 @@ import argparse
 import hashlib
 import json
 import os
+import runpy
 import signal
 import subprocess
 import sys
@@ -266,6 +267,7 @@ class Stage:
     required_artifacts: tuple[str, ...] = ()
     new_outputs: tuple[str, ...] = ()
     test_nodes: tuple[str, ...] = ()
+    native_plugin_policy: bool = False
 
 
 class Journal:
@@ -305,9 +307,20 @@ class Journal:
 
 
 def stop_process(proc):
+    # Reap an exited leader before signaling its process group (Darwin can
+    # report EPERM for an unreaped, exiting group). Descendants still get killed.
+    proc.poll()
     # An ignored-TERM descendant can outlive an already-exited leader.
     try:
         os.killpg(proc.pid, signal.SIGTERM)
+    except PermissionError:
+        # Retry only after actually observing/reaping the leader's exit. A live
+        # process or a still-inaccessible group remains a hard cleanup failure.
+        proc.wait(timeout=1)
+        try:
+            os.killpg(proc.pid, signal.SIGTERM)
+        except ProcessLookupError:
+            return
     except ProcessLookupError:
         proc.wait()
         return
@@ -461,6 +474,12 @@ def prepare_test_runtime(root, journal, stage, frozen, environment):
         "nonce": uuid.uuid4().hex,
         "environment": environment,
         "test_nodes": stage.test_nodes,
+        "native_pytest_plugin_policy": (
+            "explicit_plugins_only" if stage.native_plugin_policy else None
+        ),
+        "local_sources": {
+            str(root / p): sha for p, sha in frozen["files"].items() if p.endswith(".py")
+        },
         "project_sources": {
             str(root / p): sha
             for p, sha in frozen["files"].items()
@@ -568,6 +587,11 @@ def run_stages(root, journal, stages, frozen, excluded, *, environment=None, bef
                                 row["runtime_rejections"] = [
                                     json.loads(p.read_text()) for p in rejections
                                 ]
+                                # Most rejecting pytest processes exit immediately. Let
+                                # them flush real diagnostics; early worker failures may
+                                # instead wait for xdist, so bound this grace period.
+                                with suppress(subprocess.TimeoutExpired):
+                                    proc.wait(timeout=1)
                                 raise ValueError("ACTUAL_TEST_RUNTIME_REJECTED: " + stage.name)
                             time.sleep(0.05)
                     row["exit_code"] = proc.wait()
@@ -746,6 +770,66 @@ def interrupted(_signum, _frame):
     raise InterruptedError("coordinator interrupted; a new full run is required")
 
 
+def native_audit_pytest(command_id):
+    """Native receipt test commands use the same observed real pytest engine."""
+    root = LOCAL_ROOT
+    journal = Journal(root / RUN_AREA / ("native_" + command_id + "_" + uuid.uuid4().hex))
+    signal.signal(signal.SIGTERM, interrupted)
+    signal.signal(signal.SIGINT, interrupted)
+    try:
+        namespace = runpy.run_path(
+            str(root / "apps/evaluation_runner/run_structure_two_engineering_audit_receipt.py")
+        )
+        arguments = namespace["NATIVE_PYTEST_ARGUMENTS"][command_id]
+        expected_env = namespace["PYTEST_ENVIRONMENT_OVERRIDES"]
+        if any(os.environ.get(k) != v for k, v in expected_env.items()):
+            raise ValueError("native audit test environment differs from frozen command policy")
+        paths = (
+            tuple(a for a in arguments if a.startswith("tests/"))
+            if command_id == "p0_adversarial_tests"
+            else tuple(
+                p.relative_to(root).as_posix()
+                for p in sorted((root / "tests").rglob("test_*.py"))
+                if p.name != "test_structure_two_engineering_trust_checkpoint.py"
+            )
+        )
+        stage = replace(matrix_stage(root, journal, command_id, paths), native_plugin_policy=True)
+        # Preserve the complete frozen native selection/scheduling arguments.
+        # matrix_stage contributes only the explicit runtime/JUnit observation flags.
+        stage = replace(
+            stage,
+            argv=(
+                str(root / ".venv/bin/python"),
+                "-m",
+                "pytest",
+                "-p",
+                "tools.structure_two_pytest_runtime",
+                *(a for a in stage.argv if a.startswith(("--junitxml=", "--s2-runtime-contract="))),
+                *arguments,
+            ),
+        )
+        frozen = source_snapshot(root)
+        environment = execution_environment(root)
+
+        run_stages(root, journal, [stage], frozen, (), environment=environment)
+        print((journal.path / (command_id + ".stdout.log")).read_text(), end="")
+        print(
+            json.dumps(
+                {"native_test_journal": str(journal.path), "status": journal.value["status"]}
+            )
+        )
+        return 0
+    except BaseException as error:
+        if journal.value["status"] not in {"FAILED", "INTERRUPTED"}:
+            journal.value.update(status="FAILED", error=str(error))
+            journal.save()
+        print(
+            json.dumps({"native_test_journal": str(journal.path), "error": str(error)}),
+            file=sys.stderr,
+        )
+        return 130 if isinstance(error, KeyboardInterrupt) else 1
+
+
 def main():
     check_entry()
     parser = argparse.ArgumentParser(description=__doc__)
@@ -754,8 +838,13 @@ def main():
     parser.add_argument("--expected-head")
     parser.add_argument("--expected-input-sha256")
     parser.add_argument("--execute", action="store_true")
+    parser.add_argument("--native-audit-command", choices=("p0_adversarial_tests", "core_pytest"))
     parser.add_argument("--inspect-run", type=Path)
     args = parser.parse_args()
+    if args.native_audit_command:
+        if args.execute or args.unified_root or args.run_dir or args.inspect_run:
+            parser.error("native audit tests cannot designate unified acceptance")
+        return native_audit_pytest(args.native_audit_command)
     if args.inspect_run:
         state = json.loads((args.inspect_run / "state.json").read_text())
         # A journal is diagnostic data, never imported to authorize/resume execution.

@@ -169,7 +169,13 @@ def test_audit_matrix_contains_frozen_offline_uv_environment_check() -> None:
         "--no-cache",
     )
     for command_id in ("p0_adversarial_tests", "core_pytest"):
-        assert "--confcutdir=." in AUDIT_MODULE.COMMANDS[command_id]
+        assert "--confcutdir=." in AUDIT_MODULE.NATIVE_PYTEST_ARGUMENTS[command_id]
+        assert AUDIT_MODULE.COMMANDS[command_id] == (
+            ".venv/bin/python",
+            "tools/structure_two_unified_acceptance.py",
+            "--native-audit-command",
+            command_id,
+        )
         binding = AUDIT_MODULE.command_environment_binding(command_id)
         assert set(binding) == {
             "PYTEST_ADDOPTS",
@@ -180,8 +186,7 @@ def test_audit_matrix_contains_frozen_offline_uv_environment_check() -> None:
         }
     # Freeze the complete command, including explicit plugin loading and the
     # reporting override; a positional slice missed the rest of this contract.
-    assert AUDIT_MODULE.COMMANDS["core_pytest"] == (
-        ".venv/bin/pytest",
+    assert AUDIT_MODULE.NATIVE_PYTEST_ARGUMENTS["core_pytest"] == (
         "-o",
         "addopts=",
         "-p",

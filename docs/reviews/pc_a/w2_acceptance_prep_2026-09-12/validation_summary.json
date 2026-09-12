@@ -1,0 +1,75 @@
+{
+  "scope": "macOS local independent review; PARTIAL; not B0/B1 or scientific acceptance",
+  "tool_code_sha": "8bdd5b2a7d045865d3a72b83a97d34ef822a3760",
+  "counts": {
+    "checker_tests_final": {
+      "tests": 71,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "w3_model_before": {
+      "tests": 50,
+      "failures": 7,
+      "errors": 10,
+      "skipped": 0
+    },
+    "w3_model_restored": {
+      "tests": 50,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    }
+  },
+  "archived_nonempty_attack_witnesses": 31,
+  "new_comparison_bundles": 0,
+  "old_77_rerun_this_round": false,
+  "old_77_tests_modified": false,
+  "target_bytes_unchanged_after_runs": true,
+  "original_w2_preserved_files": 889,
+  "correction_cases": [
+    {
+      "case": "legal_same",
+      "operations": [
+        "correct"
+      ],
+      "error": null,
+      "requested_mass": 0.19836201405759452,
+      "action_distribution_changed": false,
+      "top1_changed": false
+    },
+    {
+      "case": "legal_different",
+      "operations": [
+        "correct"
+      ],
+      "error": null,
+      "requested_mass": 0.19836201405759452,
+      "action_distribution_changed": true,
+      "top1_changed": false
+    },
+    {
+      "case": "ineligible_different",
+      "operations": [],
+      "error": "CORRECT not admitted by CCRR; transaction rolled back",
+      "requested_mass": 0.8196639844033716,
+      "action_distribution_changed": false,
+      "top1_changed": false
+    }
+  ],
+  "w1_cache_gap_reproduced_at": "b6202bec015679461b06056571bd47a5446045b8",
+  "w3_model_recovery_accepted_locally_at": "8607a751cc482661baefa127968b4bc0758ec1d8",
+  "formal_comparison": "BLOCKED",
+  "failures_preserved": [
+    "w1_environment exit2 uv cache permission",
+    "w3_correction_final exit1 diagnostic ndarray JSON export",
+    "w3_model_before exit1 missing model dependency",
+    "W1 clean negative and no-cache same failing assertion exit1 controls"
+  ],
+  "tool_files_sha256": {
+    "tools/pc_a_w2_acceptance/run_recorded.py": "a3324526cf00779ddbac68bd508a98d9bdfbcc9b3a2f3a0a9085f23389dc75b2",
+    "tools/pc_a_w2_acceptance/probe_correction.py": "bb41d15af96e51daf64490d6050ef60872cfb740eb2d6b05c4c893084e993dd0",
+    "tools/pc_a_w2_acceptance/inspect_archived_mutations.py": "4978aa1860d30a7db04895c989a7c03a27679ca657c642033f206a3b8eacd4de",
+    "tests/pc_a_w2_acceptance/test_mutation_witness.py": "b0be543b14d047276a4c1ab325cdebc4eaa7412a799ffea6963482f00ec51cf1"
+  }
+}

@@ -1,0 +1,31 @@
+{
+  "command": [
+    "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/.venv/bin/python",
+    "-m",
+    "pytest",
+    "-q",
+    "-o",
+    "addopts=",
+    "-p",
+    "no:cacheprovider",
+    "--basetemp=/private/tmp/cpswm-w2-w3_model_restored-pytest",
+    "--junitxml=/private/tmp/cpswm-pc-a-w2-acceptance-prep-20260912/docs/reviews/pc_a/w2_acceptance_prep_2026-09-12/w3_model_restored.xml",
+    "tests/test_structure_two_selected_method.py",
+    "tests/test_structure_two_particle_falsifier.py",
+    "tests/test_structure_two_neural_amortized.py",
+    "tests/test_structure_two_stateful_full_joint.py",
+    "tests/test_structure_two_stateful_full_joint_adversarial.py",
+    "tests/test_structure_two_task7_support_recovery.py"
+  ],
+  "cwd": "/private/tmp/cpswm-pc-a-w2-review-target-w3-r7-20260912",
+  "environment_overrides": {
+    "PYTHONPATH": "/private/tmp/cpswm-pc-a-w2-review-target-w3-r7-20260912/src",
+    "PYTHONPYCACHEPREFIX": "/private/tmp/cpswm-w2-w3_model_restored-fresh-cache",
+    "OMP_NUM_THREADS": "1",
+    "OPENBLAS_NUM_THREADS": "1",
+    "VECLIB_MAXIMUM_THREADS": "1"
+  },
+  "started_utc": "2026-09-12T11:26:44.269621+00:00",
+  "exit_code": 0,
+  "ended_utc": "2026-09-12T11:27:15.673267+00:00"
+}

@@ -1,0 +1,22 @@
+{
+  "command": [
+    "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/.venv/bin/python",
+    "-m",
+    "pytest",
+    "-q",
+    "-o",
+    "addopts=",
+    "-p",
+    "no:cacheprovider",
+    "--basetemp=/private/tmp/cpswm-pc-a-w2-checker-final-temp",
+    "--junitxml=docs/reviews/pc_a/w2_acceptance_prep_2026-09-12/checker_tests_final.xml",
+    "tests/pc_a_w2_acceptance/test_mutation_witness.py"
+  ],
+  "cwd": "/private/tmp/cpswm-pc-a-w2-acceptance-prep-20260912",
+  "environment_overrides": {
+    "PYTHONPYCACHEPREFIX": "/private/tmp/cpswm-w2-checker-final-fresh-cache"
+  },
+  "started_utc": "2026-09-12T11:31:07.583309+00:00",
+  "exit_code": 0,
+  "ended_utc": "2026-09-12T11:31:09.197538+00:00"
+}

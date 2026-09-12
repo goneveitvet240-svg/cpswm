@@ -209,3 +209,46 @@ def test_new_dynamic_dependency_forgeries_real_cli(tmp_path):
     for record in output["results"][1:]:
         assert record["status"] == "REJECTED"
         assert "fresh diagnostic differs at audit." in record["error"]
+
+
+def test_fresh_identifier_out_of_order_is_not_just_duplicate_rejection(inputs, tmp_path):
+    """Separate chronology from duplicate IDs; public production calls only."""
+    template = inputs[0]
+    episode = dynamic.fixture(template, dynamic.PLANS[0])
+    late = dynamic.fixture(template, dict(dynamic.PLANS[0], id="first-arrival-old-time"))
+    seen = {step.after.metadata.record_id for step in episode.steps}
+    assert late.steps[0].after.metadata.record_id not in seen
+    assert late.steps[0].timestamp < episode.steps[-1].timestamp
+    system = dynamic.StructureTwoProductionSystem(
+        owner_key=episode.owner_actor_key,
+        object_instance_id=episode.steps[0].object_instance_id,
+        locations=episode.known_location_ids,
+        authorization_scope_id=content_uuid(dynamic.ID, "first-arrival-old-time-scope"),
+        action_readout=dynamic.selected_v0_6_action_readout(),
+    )
+    for index, step in enumerate(episode.steps):
+        system.process_transition(audit.base._transition(episode, step, index))
+    before = dynamic.state_readout(system)
+    assert before["committed"] > 0
+    with pytest.raises(ValueError, match="strictly chronological") as error:
+        system.process_transition(audit.base._transition(late, late.steps[0], 0))
+    after = dynamic.state_readout(system)
+    assert before == after
+    evidence = Path(os.environ.get("S2_DYNAMIC_EVIDENCE_DIR", str(tmp_path / "evidence")))
+    evidence.mkdir(parents=True, exist_ok=True)
+    (evidence / "fresh_identifier_late_input.json").write_text(
+        json.dumps(
+            {
+                "scope": "supplemental real production test; not a CLI replay certificate",
+                "source_bindings": audit.source_bindings(ROOT),
+                "root": str(ROOT),
+                "history_last_step": episode.steps[-1].model_dump(mode="json"),
+                "first_arrival_old_step": late.steps[0].model_dump(mode="json"),
+                "record_previously_seen": False,
+                "error": str(error.value),
+                "before": before,
+                "after": after,
+            },
+            indent=2,
+        )
+    )

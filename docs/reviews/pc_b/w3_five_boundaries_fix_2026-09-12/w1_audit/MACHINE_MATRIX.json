@@ -1,0 +1,801 @@
+{
+  "schema": "cpswm.pc-b.w1-independent-audit-matrix@1",
+  "audit_date": "2026-09-12",
+  "scope": "W1 read-only audit and platform-limited independent reproduction; no W1 production changes",
+  "version_binding": {
+    "delivery_sha": "21870b0bcd6c23d43518a27fcc1c4b538b3912b7",
+    "delivery_tree": "69535bc83081bae01d0698f8278cae696adda7de",
+    "production_sha": "6fcff45c71eff3f3457d0b6eac6cd872102db89d",
+    "production_is_direct_parent_of_delivery": true,
+    "delivery_vs_production_changed_paths": 509,
+    "all_changed_paths_under_docs": true,
+    "production_like_diff_empty": true
+  },
+  "checkouts": {
+    "windows_crlf": {
+      "root": "F:/庞惟/codex/cpswm-w1-audit-20260912",
+      "git_eol": "i/lf w/crlf",
+      "head": "21870b0bcd6c23d43518a27fcc1c4b538b3912b7",
+      "clean": true
+    },
+    "windows_lf": {
+      "root": "F:/庞惟/codex/cpswm-w1-audit-lf-20260912",
+      "git_eol": "i/lf w/lf",
+      "head": "21870b0bcd6c23d43518a27fcc1c4b538b3912b7",
+      "clean": true
+    }
+  },
+  "platform": {
+    "os": "Windows-11-10.0.22631-SP0",
+    "python": "CPython 3.13.5 MSC v.1944 64 bit (AMD64)",
+    "executable": "F:/庞惟/codex/cpswm-w1-audit-20260912/.venv/Scripts/python.exe",
+    "executable_sha256": "6dc19cff73c8d7d162cd72bdcebd1ecfbe93a7086520e2503c5a68ea64fb8cbe",
+    "pytest": "9.1.1",
+    "pytest_xdist": "3.8.0",
+    "uv_available": false,
+    "pip_check_exit_code": 0,
+    "dependency_parity_with_historical_environment": false
+  },
+  "fairness_guards": {
+    "used_dash_B": false,
+    "set_PYTHONDONTWRITEBYTECODE": false,
+    "disabled_pytest_cacheprovider": false,
+    "cleared_caches_before_runs": false,
+    "changed_assertions": false,
+    "PYTHONUTF8_effect": "encoding-only adjustment for Chinese Windows paths",
+    "note": "All current tests used ordinary Python/pytest cache behavior."
+  },
+  "run_matrix": [
+    {
+      "run_id": "wsl_status",
+      "entry": [
+        "wsl.exe",
+        "--status"
+      ],
+      "precondition": "A usable WSL/Linux runtime must report status.",
+      "expected": "WSL status and a usable Linux execution surface.",
+      "actual_exit_code": 50,
+      "actual": "no stdout and no stderr",
+      "state_consequence": "Linux W1 replay unavailable",
+      "classification": "PLATFORM_BLOCKED",
+      "evidence": [
+        "raw/wsl_status.command.json",
+        "raw/wsl_status.stdout.log",
+        "raw/wsl_status.stderr.log"
+      ]
+    },
+    {
+      "run_id": "wsl_list_verbose",
+      "entry": [
+        "wsl.exe",
+        "--list",
+        "--verbose"
+      ],
+      "precondition": "At least one usable distribution should be listed for Linux replay.",
+      "expected": "distribution name, state, and WSL version",
+      "actual_exit_code": 1,
+      "actual": "only WSL usage help returned; no distribution list or runtime state",
+      "state_consequence": "Linux W1 replay unavailable",
+      "classification": "PLATFORM_BLOCKED",
+      "evidence": [
+        "raw/wsl_list_verbose.command.json",
+        "raw/wsl_list_verbose.stdout.log",
+        "raw/wsl_list_verbose.stderr.log"
+      ]
+    },
+    {
+      "run_id": "windows_crlf_original_subset",
+      "entry": "pytest 12 selected test functions expanding to 25 cases",
+      "precondition": "default checkout with core.autocrlf=true and i/lf w/crlf",
+      "expected": "diagnostic comparison; preserve failures caused by byte/EOL and path encoding assumptions",
+      "actual_exit_code": 1,
+      "actual_counts": {
+        "tests": 25,
+        "passed": 12,
+        "failures": 13,
+        "errors": 0,
+        "skipped": 0
+      },
+      "state_consequence": "CRLF failures retained; result not used as a production defect claim",
+      "classification": "PLATFORM_EOL_DIAGNOSTIC",
+      "evidence": {
+        "command_record": "raw/windows_w1_fair_subset.command.json",
+        "stdout": "raw/windows_w1_fair_subset.stdout.log",
+        "stderr": "raw/windows_w1_fair_subset.stderr.log",
+        "junit": "windows_w1_fair_subset.junit.xml",
+        "junit_sha256": "bfe7c7eba4852ac6b6efa5956dacdb09d3b72379bf87a991ab545d47ab496444"
+      }
+    },
+    {
+      "run_id": "windows_lf_original_subset",
+      "entry": "same pytest selection as CRLF diagnostic",
+      "precondition": "LF checkout; PYTHONPATH bound to LF src; default Windows code page",
+      "expected": "remove only checkout EOL variance without suppressing cache behavior",
+      "actual_exit_code": 1,
+      "actual_counts": {
+        "tests": 25,
+        "passed": 21,
+        "failures": 4,
+        "errors": 0,
+        "skipped": 0
+      },
+      "state_consequence": "three formal-entry and one sources-only test remained blocked by Chinese path decoding",
+      "classification": "PLATFORM_ENCODING_DIAGNOSTIC",
+      "evidence": {
+        "command_record": "raw/windows_lf_w1_fair_subset.command.json",
+        "stdout": "raw/windows_lf_w1_fair_subset.stdout.log",
+        "stderr": "raw/windows_lf_w1_fair_subset.stderr.log",
+        "junit": "windows_lf_w1_fair_subset.junit.xml",
+        "junit_sha256": "402610955e9c5cc5846d7b9854dda7ff07f6e472cc7774603f8a2a111ccb2156"
+      }
+    },
+    {
+      "run_id": "windows_lf_utf8_platform_diagnostic",
+      "entry": "two legal formal-entry cache cases, one same-size stale fixture, one sources-only history fixture",
+      "precondition": "LF checkout; PYTHONPATH bound to LF src; PYTHONUTF8=1",
+      "expected": "separate encoding from Windows newline and long-path constraints",
+      "actual_exit_code": 1,
+      "actual_counts": {
+        "tests": 4,
+        "passed": 2,
+        "failures": 2,
+        "errors": 0,
+        "skipped": 0
+      },
+      "actual": [
+        "absent legal cache PASS",
+        "valid legal cache PASS",
+        "same-size stale fixture failed before W1 logic because text write converted LF to CRLF and changed 20752 bytes to 21274",
+        "sources-only history failed during tar extraction with Windows long-path FileNotFoundError"
+      ],
+      "state_consequence": "two invalid platform preconditions remain excluded from the compatible subset and preserved as failures",
+      "classification": "PLATFORM_PRECONDITION_DIAGNOSTIC",
+      "evidence": {
+        "command_record": "raw/windows_lf_utf8_platform_diagnostic.command.json",
+        "stdout": "raw/windows_lf_utf8_platform_diagnostic.stdout.log",
+        "stderr": "raw/windows_lf_utf8_platform_diagnostic.stderr.log",
+        "junit": "windows_lf_utf8_platform_diagnostic.junit.xml",
+        "junit_sha256": "de2f39f899bd053ceb5c2744ca2fe7c8d35104d2062b1abe3e981117b47d07b9"
+      }
+    },
+    {
+      "run_id": "windows_lf_utf8_compatible_subset",
+      "entry": "Windows-compatible subset of the 25-case selection, excluding only two invalid platform-precondition nodes",
+      "precondition": "LF checkout; PYTHONPATH bound to LF src; PYTHONUTF8=1",
+      "expected": "all retained cases pass without cache suppression",
+      "actual_exit_code": 0,
+      "actual_counts": {
+        "tests": 23,
+        "passed": 23,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      "state_consequence": "limited Windows-compatible diagnostic passed; no unified or Linux authorization",
+      "classification": "WINDOWS_COMPATIBLE_DIAGNOSTIC_PASSED",
+      "evidence": {
+        "command_record": "raw/windows_lf_utf8_fair_compatible_subset.command.json",
+        "stdout": "raw/windows_lf_utf8_fair_compatible_subset.stdout.log",
+        "stderr": "raw/windows_lf_utf8_fair_compatible_subset.stderr.log",
+        "junit": "windows_lf_utf8_fair_compatible_subset.junit.xml",
+        "junit_sha256": "9527ca6e2ca772b1cccf26a1f228572414990788574862fb6bfa98620762eeda"
+      }
+    },
+    {
+      "run_id": "windows_lf_utf8_entry_cache_matrix",
+      "entry": "actual production probe entry via file/module/runpy/spawn_file/spawn_module",
+      "precondition": "LF checkout; PYTHONPATH bound to LF src; PYTHONUTF8=1; real pyc caches retained",
+      "expected": "15 legal positives accepted and 6 stale/foreign cache negatives rejected without output side effects",
+      "actual_exit_code": 0,
+      "actual_counts": {
+        "tests": 21,
+        "passed": 21,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      "state_consequence": "portable production entry cache boundary passed; not controller/xdist proof",
+      "classification": "WINDOWS_ENTRY_CACHE_MATRIX_PASSED",
+      "evidence": {
+        "command_record": "raw/windows_lf_utf8_entry_cache_matrix.command.json",
+        "stdout": "raw/windows_lf_utf8_entry_cache_matrix.stdout.log",
+        "stderr": "raw/windows_lf_utf8_entry_cache_matrix.stderr.log",
+        "junit": "windows_lf_utf8_entry_cache_matrix.junit.xml",
+        "junit_sha256": "d94511764c67fb59a6ced6fe533ee1211ac8b1e425765250b251a298d129e773"
+      }
+    }
+  ],
+  "cache_case_matrix": [
+    {
+      "case_id": "entry_positive_absent_file",
+      "pytest_node": "tests/test_structure_two_entry_portability.py::test_real_supported_entries_and_spawn_keep_loaded_semantics[absent-file]",
+      "category": "legal_positive",
+      "public_interface": true,
+      "direct_internal_state_mutation": false,
+      "entry_file": "apps/evaluation_runner/probe_structure_two_execution_source.py",
+      "entry_module": "apps.evaluation_runner.probe_structure_two_execution_source",
+      "launch": "file",
+      "cache": "absent",
+      "trust_assumption": "trusted frozen source and Git identity; no pre-existing entry pyc",
+      "expected": "exit 0; loaded_owner_evidence_threshold=0.5; execution_source.policy=frozen-source-and-entry-compile@2; no stale_entry_executed marker",
+      "actual": "PASS; exit 0; expected current semantics and policy observed",
+      "state_consequence": "source binding emitted; no source or cache mutation required",
+      "status": "PASS",
+      "evidence": {
+        "junit": "windows_lf_utf8_entry_cache_matrix.junit.xml",
+        "junit_sha256": "d94511764c67fb59a6ced6fe533ee1211ac8b1e425765250b251a298d129e773",
+        "command_record": "raw/windows_lf_utf8_entry_cache_matrix.command.json",
+        "stdout": "raw/windows_lf_utf8_entry_cache_matrix.stdout.log",
+        "stderr": "raw/windows_lf_utf8_entry_cache_matrix.stderr.log"
+      }
+    },
+    {
+      "case_id": "entry_positive_absent_module",
+      "pytest_node": "tests/test_structure_two_entry_portability.py::test_real_supported_entries_and_spawn_keep_loaded_semantics[absent-module]",
+      "category": "legal_positive",
+      "public_interface": true,
+      "direct_internal_state_mutation": false,
+      "entry_file": "apps/evaluation_runner/probe_structure_two_execution_source.py",
+      "entry_module": "apps.evaluation_runner.probe_structure_two_execution_source",
+      "launch": "module",
+      "cache": "absent",
+      "trust_assumption": "trusted frozen source and Git identity; no pre-existing entry pyc",
+      "expected": "exit 0; loaded_owner_evidence_threshold=0.5; execution_source.policy=frozen-source-and-entry-compile@2; no stale_entry_executed marker",
+      "actual": "PASS; exit 0; expected current semantics and policy observed",
+      "state_consequence": "source binding emitted; no source or cache mutation required",
+      "status": "PASS",
+      "evidence": {
+        "junit": "windows_lf_utf8_entry_cache_matrix.junit.xml",
+        "junit_sha256": "d94511764c67fb59a6ced6fe533ee1211ac8b1e425765250b251a298d129e773",
+        "command_record": "raw/windows_lf_utf8_entry_cache_matrix.command.json",
+        "stdout": "raw/windows_lf_utf8_entry_cache_matrix.stdout.log",
+        "stderr": "raw/windows_lf_utf8_entry_cache_matrix.stderr.log"
+      }
+    },
+    {
+      "case_id": "entry_positive_absent_runpy",
+      "pytest_node": "tests/test_structure_two_entry_portability.py::test_real_supported_entries_and_spawn_keep_loaded_semantics[absent-runpy]",
+      "category": "legal_positive",
+      "public_interface": true,
+      "direct_internal_state_mutation": false,
+      "entry_file": "apps/evaluation_runner/probe_structure_two_execution_source.py",
+      "entry_module": "apps.evaluation_runner.probe_structure_two_execution_source",
+      "launch": "runpy",
+      "cache": "absent",
+      "trust_assumption": "trusted frozen source and Git identity; no pre-existing entry pyc",
+      "expected": "exit 0; loaded_owner_evidence_threshold=0.5; execution_source.policy=frozen-source-and-entry-compile@2; no stale_entry_executed marker",
+      "actual": "PASS; exit 0; expected current semantics and policy observed",
+      "state_consequence": "source binding emitted; no source or cache mutation required",
+      "status": "PASS",
+      "evidence": {
+        "junit": "windows_lf_utf8_entry_cache_matrix.junit.xml",
+        "junit_sha256": "d94511764c67fb59a6ced6fe533ee1211ac8b1e425765250b251a298d129e773",
+        "command_record": "raw/windows_lf_utf8_entry_cache_matrix.command.json",
+        "stdout": "raw/windows_lf_utf8_entry_cache_matrix.stdout.log",
+        "stderr": "raw/windows_lf_utf8_entry_cache_matrix.stderr.log"
+      }
+    },
+    {
+      "case_id": "entry_positive_absent_spawn_file",
+      "pytest_node": "tests/test_structure_two_entry_portability.py::test_real_supported_entries_and_spawn_keep_loaded_semantics[absent-spawn_file]",
+      "category": "legal_positive",
+      "public_interface": true,
+      "direct_internal_state_mutation": false,
+      "entry_file": "apps/evaluation_runner/probe_structure_two_execution_source.py",
+      "entry_module": "apps.evaluation_runner.probe_structure_two_execution_source",
+      "launch": "spawn_file",
+      "cache": "absent",
+      "trust_assumption": "trusted frozen source and Git identity; no pre-existing entry pyc",
+      "expected": "exit 0; loaded_owner_evidence_threshold=0.5; execution_source.policy=frozen-source-and-entry-compile@2; no stale_entry_executed marker",
+      "actual": "PASS; exit 0; expected current semantics and policy observed; child pid differs from parent pid",
+      "state_consequence": "source binding emitted; no source or cache mutation required",
+      "status": "PASS",
+      "evidence": {
+        "junit": "windows_lf_utf8_entry_cache_matrix.junit.xml",
+        "junit_sha256": "d94511764c67fb59a6ced6fe533ee1211ac8b1e425765250b251a298d129e773",
+        "command_record": "raw/windows_lf_utf8_entry_cache_matrix.command.json",
+        "stdout": "raw/windows_lf_utf8_entry_cache_matrix.stdout.log",
+        "stderr": "raw/windows_lf_utf8_entry_cache_matrix.stderr.log"
+      }
+    },
+    {
+      "case_id": "entry_positive_absent_spawn_module",
+      "pytest_node": "tests/test_structure_two_entry_portability.py::test_real_supported_entries_and_spawn_keep_loaded_semantics[absent-spawn_module]",
+      "category": "legal_positive",
+      "public_interface": true,
+      "direct_internal_state_mutation": false,
+      "entry_file": "apps/evaluation_runner/probe_structure_two_execution_source.py",
+      "entry_module": "apps.evaluation_runner.probe_structure_two_execution_source",
+      "launch": "spawn_module",
+      "cache": "absent",
+      "trust_assumption": "trusted frozen source and Git identity; no pre-existing entry pyc",
+      "expected": "exit 0; loaded_owner_evidence_threshold=0.5; execution_source.policy=frozen-source-and-entry-compile@2; no stale_entry_executed marker",
+      "actual": "PASS; exit 0; expected current semantics and policy observed; child pid differs from parent pid",
+      "state_consequence": "source binding emitted; no source or cache mutation required",
+      "status": "PASS",
+      "evidence": {
+        "junit": "windows_lf_utf8_entry_cache_matrix.junit.xml",
+        "junit_sha256": "d94511764c67fb59a6ced6fe533ee1211ac8b1e425765250b251a298d129e773",
+        "command_record": "raw/windows_lf_utf8_entry_cache_matrix.command.json",
+        "stdout": "raw/windows_lf_utf8_entry_cache_matrix.stdout.log",
+        "stderr": "raw/windows_lf_utf8_entry_cache_matrix.stderr.log"
+      }
+    },
+    {
+      "case_id": "entry_positive_valid_timestamp_file",
+      "pytest_node": "tests/test_structure_two_entry_portability.py::test_real_supported_entries_and_spawn_keep_loaded_semantics[valid_timestamp-file]",
+      "category": "legal_positive",
+      "public_interface": true,
+      "direct_internal_state_mutation": false,
+      "entry_file": "apps/evaluation_runner/probe_structure_two_execution_source.py",
+      "entry_module": "apps.evaluation_runner.probe_structure_two_execution_source",
+      "launch": "file",
+      "cache": "valid_timestamp",
+      "trust_assumption": "trusted frozen source and Git identity; pre-existing pyc is semantically identical to current source",
+      "expected": "exit 0; loaded_owner_evidence_threshold=0.5; execution_source.policy=frozen-source-and-entry-compile@2; no stale_entry_executed marker",
+      "actual": "PASS; exit 0; expected current semantics and policy observed",
+      "state_consequence": "source binding emitted; no source or cache mutation required",
+      "status": "PASS",
+      "evidence": {
+        "junit": "windows_lf_utf8_entry_cache_matrix.junit.xml",
+        "junit_sha256": "d94511764c67fb59a6ced6fe533ee1211ac8b1e425765250b251a298d129e773",
+        "command_record": "raw/windows_lf_utf8_entry_cache_matrix.command.json",
+        "stdout": "raw/windows_lf_utf8_entry_cache_matrix.stdout.log",
+        "stderr": "raw/windows_lf_utf8_entry_cache_matrix.stderr.log"
+      }
+    },
+    {
+      "case_id": "entry_positive_valid_timestamp_module",
+      "pytest_node": "tests/test_structure_two_entry_portability.py::test_real_supported_entries_and_spawn_keep_loaded_semantics[valid_timestamp-module]",
+      "category": "legal_positive",
+      "public_interface": true,
+      "direct_internal_state_mutation": false,
+      "entry_file": "apps/evaluation_runner/probe_structure_two_execution_source.py",
+      "entry_module": "apps.evaluation_runner.probe_structure_two_execution_source",
+      "launch": "module",
+      "cache": "valid_timestamp",
+      "trust_assumption": "trusted frozen source and Git identity; pre-existing pyc is semantically identical to current source",
+      "expected": "exit 0; loaded_owner_evidence_threshold=0.5; execution_source.policy=frozen-source-and-entry-compile@2; no stale_entry_executed marker",
+      "actual": "PASS; exit 0; expected current semantics and policy observed",
+      "state_consequence": "source binding emitted; no source or cache mutation required",
+      "status": "PASS",
+      "evidence": {
+        "junit": "windows_lf_utf8_entry_cache_matrix.junit.xml",
+        "junit_sha256": "d94511764c67fb59a6ced6fe533ee1211ac8b1e425765250b251a298d129e773",
+        "command_record": "raw/windows_lf_utf8_entry_cache_matrix.command.json",
+        "stdout": "raw/windows_lf_utf8_entry_cache_matrix.stdout.log",
+        "stderr": "raw/windows_lf_utf8_entry_cache_matrix.stderr.log"
+      }
+    },
+    {
+      "case_id": "entry_positive_valid_timestamp_runpy",
+      "pytest_node": "tests/test_structure_two_entry_portability.py::test_real_supported_entries_and_spawn_keep_loaded_semantics[valid_timestamp-runpy]",
+      "category": "legal_positive",
+      "public_interface": true,
+      "direct_internal_state_mutation": false,
+      "entry_file": "apps/evaluation_runner/probe_structure_two_execution_source.py",
+      "entry_module": "apps.evaluation_runner.probe_structure_two_execution_source",
+      "launch": "runpy",
+      "cache": "valid_timestamp",
+      "trust_assumption": "trusted frozen source and Git identity; pre-existing pyc is semantically identical to current source",
+      "expected": "exit 0; loaded_owner_evidence_threshold=0.5; execution_source.policy=frozen-source-and-entry-compile@2; no stale_entry_executed marker",
+      "actual": "PASS; exit 0; expected current semantics and policy observed",
+      "state_consequence": "source binding emitted; no source or cache mutation required",
+      "status": "PASS",
+      "evidence": {
+        "junit": "windows_lf_utf8_entry_cache_matrix.junit.xml",
+        "junit_sha256": "d94511764c67fb59a6ced6fe533ee1211ac8b1e425765250b251a298d129e773",
+        "command_record": "raw/windows_lf_utf8_entry_cache_matrix.command.json",
+        "stdout": "raw/windows_lf_utf8_entry_cache_matrix.stdout.log",
+        "stderr": "raw/windows_lf_utf8_entry_cache_matrix.stderr.log"
+      }
+    },
+    {
+      "case_id": "entry_positive_valid_timestamp_spawn_file",
+      "pytest_node": "tests/test_structure_two_entry_portability.py::test_real_supported_entries_and_spawn_keep_loaded_semantics[valid_timestamp-spawn_file]",
+      "category": "legal_positive",
+      "public_interface": true,
+      "direct_internal_state_mutation": false,
+      "entry_file": "apps/evaluation_runner/probe_structure_two_execution_source.py",
+      "entry_module": "apps.evaluation_runner.probe_structure_two_execution_source",
+      "launch": "spawn_file",
+      "cache": "valid_timestamp",
+      "trust_assumption": "trusted frozen source and Git identity; pre-existing pyc is semantically identical to current source",
+      "expected": "exit 0; loaded_owner_evidence_threshold=0.5; execution_source.policy=frozen-source-and-entry-compile@2; no stale_entry_executed marker",
+      "actual": "PASS; exit 0; expected current semantics and policy observed; child pid differs from parent pid",
+      "state_consequence": "source binding emitted; no source or cache mutation required",
+      "status": "PASS",
+      "evidence": {
+        "junit": "windows_lf_utf8_entry_cache_matrix.junit.xml",
+        "junit_sha256": "d94511764c67fb59a6ced6fe533ee1211ac8b1e425765250b251a298d129e773",
+        "command_record": "raw/windows_lf_utf8_entry_cache_matrix.command.json",
+        "stdout": "raw/windows_lf_utf8_entry_cache_matrix.stdout.log",
+        "stderr": "raw/windows_lf_utf8_entry_cache_matrix.stderr.log"
+      }
+    },
+    {
+      "case_id": "entry_positive_valid_timestamp_spawn_module",
+      "pytest_node": "tests/test_structure_two_entry_portability.py::test_real_supported_entries_and_spawn_keep_loaded_semantics[valid_timestamp-spawn_module]",
+      "category": "legal_positive",
+      "public_interface": true,
+      "direct_internal_state_mutation": false,
+      "entry_file": "apps/evaluation_runner/probe_structure_two_execution_source.py",
+      "entry_module": "apps.evaluation_runner.probe_structure_two_execution_source",
+      "launch": "spawn_module",
+      "cache": "valid_timestamp",
+      "trust_assumption": "trusted frozen source and Git identity; pre-existing pyc is semantically identical to current source",
+      "expected": "exit 0; loaded_owner_evidence_threshold=0.5; execution_source.policy=frozen-source-and-entry-compile@2; no stale_entry_executed marker",
+      "actual": "PASS; exit 0; expected current semantics and policy observed; child pid differs from parent pid",
+      "state_consequence": "source binding emitted; no source or cache mutation required",
+      "status": "PASS",
+      "evidence": {
+        "junit": "windows_lf_utf8_entry_cache_matrix.junit.xml",
+        "junit_sha256": "d94511764c67fb59a6ced6fe533ee1211ac8b1e425765250b251a298d129e773",
+        "command_record": "raw/windows_lf_utf8_entry_cache_matrix.command.json",
+        "stdout": "raw/windows_lf_utf8_entry_cache_matrix.stdout.log",
+        "stderr": "raw/windows_lf_utf8_entry_cache_matrix.stderr.log"
+      }
+    },
+    {
+      "case_id": "entry_positive_valid_unchecked_file",
+      "pytest_node": "tests/test_structure_two_entry_portability.py::test_real_supported_entries_and_spawn_keep_loaded_semantics[valid_unchecked-file]",
+      "category": "legal_positive",
+      "public_interface": true,
+      "direct_internal_state_mutation": false,
+      "entry_file": "apps/evaluation_runner/probe_structure_two_execution_source.py",
+      "entry_module": "apps.evaluation_runner.probe_structure_two_execution_source",
+      "launch": "file",
+      "cache": "valid_unchecked",
+      "trust_assumption": "trusted frozen source and Git identity; pre-existing pyc is semantically identical to current source",
+      "expected": "exit 0; loaded_owner_evidence_threshold=0.5; execution_source.policy=frozen-source-and-entry-compile@2; no stale_entry_executed marker",
+      "actual": "PASS; exit 0; expected current semantics and policy observed",
+      "state_consequence": "source binding emitted; no source or cache mutation required",
+      "status": "PASS",
+      "evidence": {
+        "junit": "windows_lf_utf8_entry_cache_matrix.junit.xml",
+        "junit_sha256": "d94511764c67fb59a6ced6fe533ee1211ac8b1e425765250b251a298d129e773",
+        "command_record": "raw/windows_lf_utf8_entry_cache_matrix.command.json",
+        "stdout": "raw/windows_lf_utf8_entry_cache_matrix.stdout.log",
+        "stderr": "raw/windows_lf_utf8_entry_cache_matrix.stderr.log"
+      }
+    },
+    {
+      "case_id": "entry_positive_valid_unchecked_module",
+      "pytest_node": "tests/test_structure_two_entry_portability.py::test_real_supported_entries_and_spawn_keep_loaded_semantics[valid_unchecked-module]",
+      "category": "legal_positive",
+      "public_interface": true,
+      "direct_internal_state_mutation": false,
+      "entry_file": "apps/evaluation_runner/probe_structure_two_execution_source.py",
+      "entry_module": "apps.evaluation_runner.probe_structure_two_execution_source",
+      "launch": "module",
+      "cache": "valid_unchecked",
+      "trust_assumption": "trusted frozen source and Git identity; pre-existing pyc is semantically identical to current source",
+      "expected": "exit 0; loaded_owner_evidence_threshold=0.5; execution_source.policy=frozen-source-and-entry-compile@2; no stale_entry_executed marker",
+      "actual": "PASS; exit 0; expected current semantics and policy observed",
+      "state_consequence": "source binding emitted; no source or cache mutation required",
+      "status": "PASS",
+      "evidence": {
+        "junit": "windows_lf_utf8_entry_cache_matrix.junit.xml",
+        "junit_sha256": "d94511764c67fb59a6ced6fe533ee1211ac8b1e425765250b251a298d129e773",
+        "command_record": "raw/windows_lf_utf8_entry_cache_matrix.command.json",
+        "stdout": "raw/windows_lf_utf8_entry_cache_matrix.stdout.log",
+        "stderr": "raw/windows_lf_utf8_entry_cache_matrix.stderr.log"
+      }
+    },
+    {
+      "case_id": "entry_positive_valid_unchecked_runpy",
+      "pytest_node": "tests/test_structure_two_entry_portability.py::test_real_supported_entries_and_spawn_keep_loaded_semantics[valid_unchecked-runpy]",
+      "category": "legal_positive",
+      "public_interface": true,
+      "direct_internal_state_mutation": false,
+      "entry_file": "apps/evaluation_runner/probe_structure_two_execution_source.py",
+      "entry_module": "apps.evaluation_runner.probe_structure_two_execution_source",
+      "launch": "runpy",
+      "cache": "valid_unchecked",
+      "trust_assumption": "trusted frozen source and Git identity; pre-existing pyc is semantically identical to current source",
+      "expected": "exit 0; loaded_owner_evidence_threshold=0.5; execution_source.policy=frozen-source-and-entry-compile@2; no stale_entry_executed marker",
+      "actual": "PASS; exit 0; expected current semantics and policy observed",
+      "state_consequence": "source binding emitted; no source or cache mutation required",
+      "status": "PASS",
+      "evidence": {
+        "junit": "windows_lf_utf8_entry_cache_matrix.junit.xml",
+        "junit_sha256": "d94511764c67fb59a6ced6fe533ee1211ac8b1e425765250b251a298d129e773",
+        "command_record": "raw/windows_lf_utf8_entry_cache_matrix.command.json",
+        "stdout": "raw/windows_lf_utf8_entry_cache_matrix.stdout.log",
+        "stderr": "raw/windows_lf_utf8_entry_cache_matrix.stderr.log"
+      }
+    },
+    {
+      "case_id": "entry_positive_valid_unchecked_spawn_file",
+      "pytest_node": "tests/test_structure_two_entry_portability.py::test_real_supported_entries_and_spawn_keep_loaded_semantics[valid_unchecked-spawn_file]",
+      "category": "legal_positive",
+      "public_interface": true,
+      "direct_internal_state_mutation": false,
+      "entry_file": "apps/evaluation_runner/probe_structure_two_execution_source.py",
+      "entry_module": "apps.evaluation_runner.probe_structure_two_execution_source",
+      "launch": "spawn_file",
+      "cache": "valid_unchecked",
+      "trust_assumption": "trusted frozen source and Git identity; pre-existing pyc is semantically identical to current source",
+      "expected": "exit 0; loaded_owner_evidence_threshold=0.5; execution_source.policy=frozen-source-and-entry-compile@2; no stale_entry_executed marker",
+      "actual": "PASS; exit 0; expected current semantics and policy observed; child pid differs from parent pid",
+      "state_consequence": "source binding emitted; no source or cache mutation required",
+      "status": "PASS",
+      "evidence": {
+        "junit": "windows_lf_utf8_entry_cache_matrix.junit.xml",
+        "junit_sha256": "d94511764c67fb59a6ced6fe533ee1211ac8b1e425765250b251a298d129e773",
+        "command_record": "raw/windows_lf_utf8_entry_cache_matrix.command.json",
+        "stdout": "raw/windows_lf_utf8_entry_cache_matrix.stdout.log",
+        "stderr": "raw/windows_lf_utf8_entry_cache_matrix.stderr.log"
+      }
+    },
+    {
+      "case_id": "entry_positive_valid_unchecked_spawn_module",
+      "pytest_node": "tests/test_structure_two_entry_portability.py::test_real_supported_entries_and_spawn_keep_loaded_semantics[valid_unchecked-spawn_module]",
+      "category": "legal_positive",
+      "public_interface": true,
+      "direct_internal_state_mutation": false,
+      "entry_file": "apps/evaluation_runner/probe_structure_two_execution_source.py",
+      "entry_module": "apps.evaluation_runner.probe_structure_two_execution_source",
+      "launch": "spawn_module",
+      "cache": "valid_unchecked",
+      "trust_assumption": "trusted frozen source and Git identity; pre-existing pyc is semantically identical to current source",
+      "expected": "exit 0; loaded_owner_evidence_threshold=0.5; execution_source.policy=frozen-source-and-entry-compile@2; no stale_entry_executed marker",
+      "actual": "PASS; exit 0; expected current semantics and policy observed; child pid differs from parent pid",
+      "state_consequence": "source binding emitted; no source or cache mutation required",
+      "status": "PASS",
+      "evidence": {
+        "junit": "windows_lf_utf8_entry_cache_matrix.junit.xml",
+        "junit_sha256": "d94511764c67fb59a6ced6fe533ee1211ac8b1e425765250b251a298d129e773",
+        "command_record": "raw/windows_lf_utf8_entry_cache_matrix.command.json",
+        "stdout": "raw/windows_lf_utf8_entry_cache_matrix.stdout.log",
+        "stderr": "raw/windows_lf_utf8_entry_cache_matrix.stderr.log"
+      }
+    },
+    {
+      "case_id": "entry_negative_unchecked_module",
+      "pytest_node": "tests/test_structure_two_entry_portability.py::test_module_entry_rejects_actual_old_or_foreign_code_before_source_claim[False-unchecked]",
+      "category": "stale_cache_negative",
+      "public_interface": true,
+      "direct_internal_state_mutation": false,
+      "entry_file": "apps/evaluation_runner/probe_structure_two_execution_source.py",
+      "entry_module": "apps.evaluation_runner.probe_structure_two_execution_source",
+      "launch": "module",
+      "cache": "unchecked",
+      "trust_assumption": "trusted restored source and Git identity; attacker controls a pre-existing pyc containing old entry semantics",
+      "expected": "formal bootstrap rejects before source claim; nonzero attacked process; no source_binding; no current_v0_4 output; source and pyc bytes unchanged; legal file entry succeeds with the same bad pyc still present",
+      "actual": "PASS; all expected rejection, no-output, byte-preservation, and subsequent legal-positive assertions held",
+      "state_consequence": "no current evidence artifact created; source and hostile cache preserved; subsequent file-entry positive returned current diagnostic_only=true",
+      "status": "PASS",
+      "evidence": {
+        "junit": "windows_lf_utf8_entry_cache_matrix.junit.xml",
+        "junit_sha256": "d94511764c67fb59a6ced6fe533ee1211ac8b1e425765250b251a298d129e773",
+        "command_record": "raw/windows_lf_utf8_entry_cache_matrix.command.json",
+        "stdout": "raw/windows_lf_utf8_entry_cache_matrix.stdout.log",
+        "stderr": "raw/windows_lf_utf8_entry_cache_matrix.stderr.log"
+      }
+    },
+    {
+      "case_id": "entry_negative_same_size_mtime_module",
+      "pytest_node": "tests/test_structure_two_entry_portability.py::test_module_entry_rejects_actual_old_or_foreign_code_before_source_claim[False-same_size_mtime]",
+      "category": "stale_cache_negative",
+      "public_interface": true,
+      "direct_internal_state_mutation": false,
+      "entry_file": "apps/evaluation_runner/probe_structure_two_execution_source.py",
+      "entry_module": "apps.evaluation_runner.probe_structure_two_execution_source",
+      "launch": "module",
+      "cache": "same_size_mtime",
+      "trust_assumption": "trusted restored source and Git identity; attacker controls a pre-existing pyc containing old entry semantics",
+      "expected": "formal bootstrap rejects before source claim; nonzero attacked process; no source_binding; no current_v0_4 output; source and pyc bytes unchanged; legal file entry succeeds with the same bad pyc still present",
+      "actual": "PASS; all expected rejection, no-output, byte-preservation, and subsequent legal-positive assertions held",
+      "state_consequence": "no current evidence artifact created; source and hostile cache preserved; subsequent file-entry positive returned current diagnostic_only=true",
+      "status": "PASS",
+      "evidence": {
+        "junit": "windows_lf_utf8_entry_cache_matrix.junit.xml",
+        "junit_sha256": "d94511764c67fb59a6ced6fe533ee1211ac8b1e425765250b251a298d129e773",
+        "command_record": "raw/windows_lf_utf8_entry_cache_matrix.command.json",
+        "stdout": "raw/windows_lf_utf8_entry_cache_matrix.stdout.log",
+        "stderr": "raw/windows_lf_utf8_entry_cache_matrix.stderr.log"
+      }
+    },
+    {
+      "case_id": "entry_negative_foreign_filename_module",
+      "pytest_node": "tests/test_structure_two_entry_portability.py::test_module_entry_rejects_actual_old_or_foreign_code_before_source_claim[False-foreign_filename]",
+      "category": "foreign_cache_negative",
+      "public_interface": true,
+      "direct_internal_state_mutation": false,
+      "entry_file": "apps/evaluation_runner/probe_structure_two_execution_source.py",
+      "entry_module": "apps.evaluation_runner.probe_structure_two_execution_source",
+      "launch": "module",
+      "cache": "foreign_filename",
+      "trust_assumption": "trusted restored source and Git identity; attacker controls a pre-existing unchecked pyc carrying a foreign co_filename",
+      "expected": "formal bootstrap rejects before source claim; nonzero attacked process; no source_binding; no current_v0_4 output; source and pyc bytes unchanged; legal file entry succeeds with the same bad pyc still present",
+      "actual": "PASS; all expected rejection, no-output, byte-preservation, and subsequent legal-positive assertions held",
+      "state_consequence": "no current evidence artifact created; source and hostile cache preserved; subsequent file-entry positive returned current diagnostic_only=true",
+      "status": "PASS",
+      "evidence": {
+        "junit": "windows_lf_utf8_entry_cache_matrix.junit.xml",
+        "junit_sha256": "d94511764c67fb59a6ced6fe533ee1211ac8b1e425765250b251a298d129e773",
+        "command_record": "raw/windows_lf_utf8_entry_cache_matrix.command.json",
+        "stdout": "raw/windows_lf_utf8_entry_cache_matrix.stdout.log",
+        "stderr": "raw/windows_lf_utf8_entry_cache_matrix.stderr.log"
+      }
+    },
+    {
+      "case_id": "entry_negative_unchecked_spawn_module",
+      "pytest_node": "tests/test_structure_two_entry_portability.py::test_module_entry_rejects_actual_old_or_foreign_code_before_source_claim[True-unchecked]",
+      "category": "stale_cache_negative",
+      "public_interface": true,
+      "direct_internal_state_mutation": false,
+      "entry_file": "apps/evaluation_runner/probe_structure_two_execution_source.py",
+      "entry_module": "apps.evaluation_runner.probe_structure_two_execution_source",
+      "launch": "spawn_module",
+      "cache": "unchecked",
+      "trust_assumption": "trusted restored source and Git identity; attacker controls a pre-existing pyc containing old entry semantics",
+      "expected": "formal bootstrap rejects before source claim; nonzero attacked process; no source_binding; no current_v0_4 output; source and pyc bytes unchanged; legal file entry succeeds with the same bad pyc still present",
+      "actual": "PASS; all expected rejection, no-output, byte-preservation, and subsequent legal-positive assertions held",
+      "state_consequence": "no current evidence artifact created; source and hostile cache preserved; subsequent file-entry positive returned current diagnostic_only=true",
+      "status": "PASS",
+      "evidence": {
+        "junit": "windows_lf_utf8_entry_cache_matrix.junit.xml",
+        "junit_sha256": "d94511764c67fb59a6ced6fe533ee1211ac8b1e425765250b251a298d129e773",
+        "command_record": "raw/windows_lf_utf8_entry_cache_matrix.command.json",
+        "stdout": "raw/windows_lf_utf8_entry_cache_matrix.stdout.log",
+        "stderr": "raw/windows_lf_utf8_entry_cache_matrix.stderr.log"
+      }
+    },
+    {
+      "case_id": "entry_negative_same_size_mtime_spawn_module",
+      "pytest_node": "tests/test_structure_two_entry_portability.py::test_module_entry_rejects_actual_old_or_foreign_code_before_source_claim[True-same_size_mtime]",
+      "category": "stale_cache_negative",
+      "public_interface": true,
+      "direct_internal_state_mutation": false,
+      "entry_file": "apps/evaluation_runner/probe_structure_two_execution_source.py",
+      "entry_module": "apps.evaluation_runner.probe_structure_two_execution_source",
+      "launch": "spawn_module",
+      "cache": "same_size_mtime",
+      "trust_assumption": "trusted restored source and Git identity; attacker controls a pre-existing pyc containing old entry semantics",
+      "expected": "formal bootstrap rejects before source claim; nonzero attacked process; no source_binding; no current_v0_4 output; source and pyc bytes unchanged; legal file entry succeeds with the same bad pyc still present",
+      "actual": "PASS; all expected rejection, no-output, byte-preservation, and subsequent legal-positive assertions held",
+      "state_consequence": "no current evidence artifact created; source and hostile cache preserved; subsequent file-entry positive returned current diagnostic_only=true",
+      "status": "PASS",
+      "evidence": {
+        "junit": "windows_lf_utf8_entry_cache_matrix.junit.xml",
+        "junit_sha256": "d94511764c67fb59a6ced6fe533ee1211ac8b1e425765250b251a298d129e773",
+        "command_record": "raw/windows_lf_utf8_entry_cache_matrix.command.json",
+        "stdout": "raw/windows_lf_utf8_entry_cache_matrix.stdout.log",
+        "stderr": "raw/windows_lf_utf8_entry_cache_matrix.stderr.log"
+      }
+    },
+    {
+      "case_id": "entry_negative_foreign_filename_spawn_module",
+      "pytest_node": "tests/test_structure_two_entry_portability.py::test_module_entry_rejects_actual_old_or_foreign_code_before_source_claim[True-foreign_filename]",
+      "category": "foreign_cache_negative",
+      "public_interface": true,
+      "direct_internal_state_mutation": false,
+      "entry_file": "apps/evaluation_runner/probe_structure_two_execution_source.py",
+      "entry_module": "apps.evaluation_runner.probe_structure_two_execution_source",
+      "launch": "spawn_module",
+      "cache": "foreign_filename",
+      "trust_assumption": "trusted restored source and Git identity; attacker controls a pre-existing unchecked pyc carrying a foreign co_filename",
+      "expected": "formal bootstrap rejects before source claim; nonzero attacked process; no source_binding; no current_v0_4 output; source and pyc bytes unchanged; legal file entry succeeds with the same bad pyc still present",
+      "actual": "PASS; all expected rejection, no-output, byte-preservation, and subsequent legal-positive assertions held",
+      "state_consequence": "no current evidence artifact created; source and hostile cache preserved; subsequent file-entry positive returned current diagnostic_only=true",
+      "status": "PASS",
+      "evidence": {
+        "junit": "windows_lf_utf8_entry_cache_matrix.junit.xml",
+        "junit_sha256": "d94511764c67fb59a6ced6fe533ee1211ac8b1e425765250b251a298d129e773",
+        "command_record": "raw/windows_lf_utf8_entry_cache_matrix.command.json",
+        "stdout": "raw/windows_lf_utf8_entry_cache_matrix.stdout.log",
+        "stderr": "raw/windows_lf_utf8_entry_cache_matrix.stderr.log"
+      }
+    }
+  ],
+  "historical_static_evidence": [
+    {
+      "id": "runtime86_protected",
+      "source_head": "6fcff45c71eff3f3457d0b6eac6cd872102db89d",
+      "status": "STAGES_COMPLETED_NOT_AUTHORIZATION",
+      "counts": {
+        "tests": 86,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      "junit_sha256": "f9c2060051bab584b1d48ccc604411e594c2bca4552581f670d712eb9204670d",
+      "independent_dynamic_replay_on_pc_b": false
+    },
+    {
+      "id": "native115",
+      "source_head": "6fcff45c71eff3f3457d0b6eac6cd872102db89d",
+      "status": "STAGES_COMPLETED_NOT_AUTHORIZATION",
+      "counts": {
+        "tests": 115,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      "junit_sha256": "213d045377f9d022b292ffef4b9a74da24a29e9aeaeedfe1d064973519ce5e73",
+      "independent_dynamic_replay_on_pc_b": false
+    },
+    {
+      "id": "history_trace",
+      "source_head": "6fcff45c71eff3f3457d0b6eac6cd872102db89d",
+      "status": "STAGES_COMPLETED_NOT_AUTHORIZATION",
+      "counts": {
+        "tests": 1,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      "junit_sha256": "7bfc56e2542b474e2055b48b98cfd8a61ae155bfacae51626f7e1e6437044f7",
+      "independent_dynamic_replay_on_pc_b": false
+    },
+    {
+      "id": "isolated_five_stage_comparison",
+      "source_head": "07fc56983ae93d2d3abd63736abd78201b9c34fa",
+      "status": "STAGES_COMPLETED_NOT_AUTHORIZATION",
+      "stage_exit_codes": [
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "consumer_counts": {
+        "tests": 77,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      "junit_sha256": "cf1ea12d56cc0ac43a60ff9fc53d77d2e1526fdd28c66443b6532d8e27cdbb3c",
+      "independent_dynamic_replay_on_pc_b": false,
+      "limitation": "isolated composite source, not a unified W1/W2/W3 frozen checkout"
+    }
+  ],
+  "unreproduced_requirements": [
+    {
+      "requirement": "pytest stale assertion-rewrite cache",
+      "status": "BLOCKED",
+      "reason": "formal runtime fixture and coordinator are POSIX-bound; only historical delivery evidence was statically authenticated"
+    },
+    {
+      "requirement": "actual controller identity",
+      "status": "BLOCKED",
+      "reason": "formal coordinator requires .venv/bin/python and POSIX process-group semantics"
+    },
+    {
+      "requirement": "actual xdist worker identity",
+      "status": "BLOCKED",
+      "reason": "no usable Linux/WSL execution surface; spawn entry tests are not xdist workers"
+    },
+    {
+      "requirement": "nested p0_adversarial_tests/core_pytest entry identity",
+      "status": "BLOCKED",
+      "reason": "nested fixture and receipt commands require POSIX .venv/bin/python"
+    },
+    {
+      "requirement": "full 86/115/history/five-stage dynamic replay",
+      "status": "BLOCKED",
+      "reason": "WSL/Linux unavailable and current pip environment is not exact historical lock parity"
+    }
+  ],
+  "artifact_inventory_verification": {
+    "inventory_git_blob_sha256": "f70492348d0ec5c7a8cb51305efadd90462d0a6928fe60fd63b4291783c2fdda",
+    "expected_files": 524,
+    "matched_files": 524,
+    "missing": 0,
+    "mismatched": 0
+  },
+  "authoritative_metadata": {
+    "path": "raw/collect_w1_metadata_authoritative_final_utf8.stdout.log",
+    "sha256": "88434fd56aa9f9988eb16e37c41631ccc36dda12529166ffda221e407087e6f6"
+  },
+  "final_status": [
+    "STATIC_DELIVERY_INTEGRITY_VERIFIED",
+    "WINDOWS_COMPATIBLE_DIAGNOSTIC_PASSED",
+    "LINUX_W1_INDEPENDENT_REPRODUCTION_BLOCKED",
+    "UNIFIED_ACCEPTANCE_NOT_SIGNED",
+    "SCIENTIFIC_GATE_NOT_PASSED"
+  ]
+}
+

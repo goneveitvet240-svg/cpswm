@@ -1,0 +1,101 @@
+..FF                                                                     [100%]
+================================== FAILURES ===================================
+_ test_formal_entry_uses_actual_frozen_semantics_despite_bytecode_cache[stale_same_size_mtime] _
+
+copied = (WindowsPath('C:/Users/刘承祥/AppData/Local/Temp/pytest-of-刘承祥/pytest-3/test_formal_entry_uses_actual_2'), {'ALLUSERSPROF...DEX_APP_TOOLS_PIPE_PATH': '\\\\.\\pipe\\codex-browser-use-d62e7b9f-e0c4-4a7a-b5d9-57163ac078d5', 'CODEX_CI': '1', ...})
+cache = 'stale_same_size_mtime'
+
+    @pytest.mark.parametrize("cache", ["absent", "valid", "stale_same_size_mtime"])
+    def test_formal_entry_uses_actual_frozen_semantics_despite_bytecode_cache(copied, cache):
+        root, _ = copied
+        source = root / "src/cpswm/system/continual/project_one_regime_loop.py"
+        if cache != "absent":
+            result = command(
+                copied,
+                "-c",
+                "from cpswm.system.continual.project_one_regime_loop import PrototypeLoopConfig; "
+                "print(PrototypeLoopConfig().owner_evidence_threshold)",
+            )
+            assert result.returncode == 0 and result.stdout.strip() == "0.5"
+        expected = 0.5
+        if cache == "stale_same_size_mtime":
+            old = source.stat()
+            source.write_text(
+                source.read_text().replace(
+                    "owner_evidence_threshold: float = 0.5", "owner_evidence_threshold: float = 0.9", 1
+                )
+            )
+            os.utime(source, ns=(old.st_atime_ns, old.st_mtime_ns))
+>           assert source.stat().st_size == old.st_size
+E           AssertionError: assert 21274 == 20752
+E            +  where 21274 = os.stat_result(st_mode=33206, st_ino=281474977285165, st_dev=3634740844935092, st_nlink=1, st_uid=0, st_gid=0, st_size=21274, st_atime=1789225407, st_mtime=1789225164, st_ctime=1789225406).st_size
+E            +    where os.stat_result(st_mode=33206, st_ino=281474977285165, st_dev=3634740844935092, st_nlink=1, st_uid=0, st_gid=0, st_size=21274, st_atime=1789225407, st_mtime=1789225164, st_ctime=1789225406) = stat()
+E            +      where stat = WindowsPath('C:/Users/刘承祥/AppData/Local/Temp/pytest-of-刘承祥/pytest-3/test_formal_entry_uses_actual_2/src/cpswm/system/continual/project_one_regime_loop.py').stat
+E            +  and   20752 = os.stat_result(st_mode=33206, st_ino=281474977285165, st_dev=3634740844935092, st_nlink=1, st_uid=0, st_gid=0, st_size=20752, st_atime=1789225407, st_mtime=1789225164, st_ctime=1789225406).st_size
+
+tests\test_structure_two_evidence_supplement.py:130: AssertionError
+_____ test_sources_only_history_report_honestly_records_no_recomputation ______
+
+copied = (WindowsPath('C:/Users/刘承祥/AppData/Local/Temp/pytest-of-刘承祥/pytest-3/test_sources_only_history_repo0'), {'ALLUSERSPROF...DEX_APP_TOOLS_PIPE_PATH': '\\\\.\\pipe\\codex-browser-use-d62e7b9f-e0c4-4a7a-b5d9-57163ac078d5', 'CODEX_CI': '1', ...})
+
+    def test_sources_only_history_report_honestly_records_no_recomputation(copied):
+        root, _ = copied
+        result = command(
+            copied,
+            "apps/evaluation_runner/audit_structure_two_evidence_history.py",
+            "--output",
+            "sources-only.json",
+        )
+>       assert result.returncode == 0, result.stderr
+E       AssertionError: Traceback (most recent call last):
+E           File "C:\Users\刘承祥\AppData\Local\Temp\pytest-of-刘承祥\pytest-3\test_sources_only_history_repo0\apps\evaluation_runner\audit_structure_two_evidence_history.py", line 299, in <module>
+E             main()
+E             ~~~~^^
+E           File "C:\Users\刘承祥\AppData\Local\Temp\pytest-of-刘承祥\pytest-3\test_sources_only_history_repo0\apps\evaluation_runner\audit_structure_two_evidence_history.py", line 279, in main
+E             report = build_history_report(
+E                 recompute_first_failure=bool(args.verify) or args.recompute_first_failure,
+E                 recompute_failed_replay=bool(args.verify) or args.recompute_failed_replay,
+E             )
+E           File "C:\Users\刘承祥\AppData\Local\Temp\pytest-of-刘承祥\pytest-3\test_sources_only_history_repo0\apps\evaluation_runner\audit_structure_two_evidence_history.py", line 181, in build_history_report
+E             assemblies[commit] = child(snapshot(commit), PROBE)
+E                                        ~~~~~~~~^^^^^^^^
+E           File "C:\Users\刘承祥\AppData\Local\Temp\pytest-of-刘承祥\pytest-3\test_sources_only_history_repo0\apps\evaluation_runner\audit_structure_two_evidence_history.py", line 66, in snapshot
+E             archive.extractall(directory, filter="data")
+E             ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+E           File "F:\庞惟\codex\runtimes\uv-python\cpython-3.13.5-windows-x86_64-none\Lib\tarfile.py", line 2352, in extractall
+E             self._extract_one(tarinfo, path, set_attrs=not tarinfo.isdir(),
+E             ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E                               numeric_owner=numeric_owner,
+E                               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E                               filter_function=filter_function)
+E                               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E           File "F:\庞惟\codex\runtimes\uv-python\cpython-3.13.5-windows-x86_64-none\Lib\tarfile.py", line 2461, in _extract_one
+E             self._handle_fatal_error(e)
+E             ~~~~~~~~~~~~~~~~~~~~~~~~^^^
+E           File "F:\庞惟\codex\runtimes\uv-python\cpython-3.13.5-windows-x86_64-none\Lib\tarfile.py", line 2455, in _extract_one
+E             self._extract_member(tarinfo, os.path.join(path, tarinfo.name),
+E             ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E                                  set_attrs=set_attrs,
+E                                  ^^^^^^^^^^^^^^^^^^^^
+E                                  numeric_owner=numeric_owner,
+E                                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E                                  filter_function=filter_function,
+E                                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E                                  extraction_root=path)
+E                                  ^^^^^^^^^^^^^^^^^^^^^
+E           File "F:\庞惟\codex\runtimes\uv-python\cpython-3.13.5-windows-x86_64-none\Lib\tarfile.py", line 2544, in _extract_member
+E             self.makefile(tarinfo, targetpath)
+E             ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^
+E           File "F:\庞惟\codex\runtimes\uv-python\cpython-3.13.5-windows-x86_64-none\Lib\tarfile.py", line 2593, in makefile
+E             with bltn_open(targetpath, "wb") as target:
+E                  ~~~~~~~~~^^^^^^^^^^^^^^^^^^
+E         FileNotFoundError: [Errno 2] No such file or directory: 'C:\\Users\\刘承祥\\AppData\\Local\\Temp\\pytest-of-刘承祥\\pytest-3\\test_sources_only_history_repo0\\.checkout\\evidence-history\\557ff9ceec267e1f37ebbdc3a27a9364b8b482b8-_7lcg7c2\\configs\\project_two_experiments\\structure_two_consolidation_compatibility_sealed_seeds_v0_1.json'
+E         
+E       assert 1 == 0
+E        +  where 1 = CompletedProcess(args=['F:\\庞惟\\codex\\cpswm-w1-audit-20260912\\.venv\\Scripts\\python.exe', 'apps/evaluation_runner/a...7lcg7c2\\\\configs\\\\project_two_experiments\\\\structure_two_consolidation_compatibility_sealed_seeds_v0_1.json\'\n').returncode
+
+tests\test_structure_two_evidence_supplement.py:367: AssertionError
+=========================== short test summary info ===========================
+FAILED tests/test_structure_two_evidence_supplement.py::test_formal_entry_uses_actual_frozen_semantics_despite_bytecode_cache[stale_same_size_mtime]
+FAILED tests/test_structure_two_evidence_supplement.py::test_sources_only_history_report_honestly_records_no_recomputation
+2 failed, 2 passed in 31.42s

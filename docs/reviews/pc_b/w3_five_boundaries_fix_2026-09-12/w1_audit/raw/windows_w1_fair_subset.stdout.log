@@ -1,0 +1,529 @@
+F.FF.FFFF.FFFF.....FF....                                                [100%]
+================================== FAILURES ===================================
+______________ test_all_archives_match_their_pinned_git_records _______________
+
+    def test_all_archives_match_their_pinned_git_records() -> None:
+        entries = historical_entries(ROOT)
+        assert len(entries) == 11
+        for entry in entries:
+>           result = verify_historical_record(ROOT, entry)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests\test_structure_two_evidence_versions.py:44: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+root = WindowsPath('F:/ΕΣΞ©/codex/cpswm-w1-audit-20260912')
+entry = {'id': 'three_arm_first_failure', 'record_commit': '557ff9ceec267e1f37ebbdc3a27a9364b8b482b8', 'git_path': 'benchmarks...st_v0_1.json', 'path': 'benchmarks/structure_two/evidence_repair_2026_09_11/history/three_arm_first_failure.json', ...}
+
+    def verify_historical_record(root: Path, entry: Mapping[str, str]) -> dict[str, Any]:
+        """Check exact Git bytes and self-consistency, without granting currentness."""
+        path = root / entry["path"]
+        if path.is_symlink() or not path.resolve().is_relative_to(root.resolve()):
+            raise ValueError("historical artifact path is not local")
+        expected = git_bytes(root, entry["record_commit"], entry["git_path"])
+        if path.read_bytes() != expected:
+>           raise ValueError("historical artifact differs from pinned Git record")
+E           ValueError: historical artifact differs from pinned Git record
+
+src\cpswm\system\evaluation_operations\structure_two_evidence_versions.py:109: ValueError
+__ test_historical_artifact_cannot_impersonate_current[three_arm_death_test] __
+
+name = 'three_arm_death_test'
+
+    @pytest.mark.parametrize("name", NAMES)
+    def test_historical_artifact_cannot_impersonate_current(name: str) -> None:
+        module = importlib.import_module(f"cpswm.system.evaluation_operations.structure_two_p5_{name}")
+        payload = json.loads(
+            (ROOT / f"benchmarks/structure_two/structure_two_p5_{name}_v0_1.json").read_text()
+        )
+        with pytest.raises(ValueError, match="lifecycle/version mismatch"):
+            getattr(module, f"verify_p5_{name}")(payload, repository_root=ROOT)
+        # Relabelling and rehashing cannot repair its old source binding.
+        payload["evidence_context"] = current_evidence_context()
+        _rehash(payload)
+>       with pytest.raises(ValueError, match=r"binding|identity"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AssertionError: Regex pattern did not match.
+E         Expected regex: 'binding|identity'
+E         Actual message: 'frozen P5 input differs from common-base Git record: configs/project_two_experiments/structure_two_p5_debt_replay_confirmation_v0_1.json'
+
+tests\test_structure_two_evidence_versions.py:81: AssertionError
+_ test_historical_artifact_cannot_impersonate_current[readout_posthoc_diagnostic] _
+
+name = 'readout_posthoc_diagnostic'
+
+    @pytest.mark.parametrize("name", NAMES)
+    def test_historical_artifact_cannot_impersonate_current(name: str) -> None:
+        module = importlib.import_module(f"cpswm.system.evaluation_operations.structure_two_p5_{name}")
+        payload = json.loads(
+            (ROOT / f"benchmarks/structure_two/structure_two_p5_{name}_v0_1.json").read_text()
+        )
+        with pytest.raises(ValueError, match="lifecycle/version mismatch"):
+            getattr(module, f"verify_p5_{name}")(payload, repository_root=ROOT)
+        # Relabelling and rehashing cannot repair its old source binding.
+        payload["evidence_context"] = current_evidence_context()
+        _rehash(payload)
+>       with pytest.raises(ValueError, match=r"binding|identity"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AssertionError: Regex pattern did not match.
+E         Expected regex: 'binding|identity'
+E         Actual message: 'retained v0.1 result file hash drifted'
+
+tests\test_structure_two_evidence_versions.py:81: AssertionError
+_ test_historical_artifact_cannot_impersonate_current[readout_prior_factorial] _
+
+name = 'readout_prior_factorial'
+
+    @pytest.mark.parametrize("name", NAMES)
+    def test_historical_artifact_cannot_impersonate_current(name: str) -> None:
+        module = importlib.import_module(f"cpswm.system.evaluation_operations.structure_two_p5_{name}")
+        payload = json.loads(
+            (ROOT / f"benchmarks/structure_two/structure_two_p5_{name}_v0_1.json").read_text()
+        )
+        with pytest.raises(ValueError, match="lifecycle/version mismatch"):
+            getattr(module, f"verify_p5_{name}")(payload, repository_root=ROOT)
+        # Relabelling and rehashing cannot repair its old source binding.
+        payload["evidence_context"] = current_evidence_context()
+        _rehash(payload)
+>       with pytest.raises(ValueError, match=r"binding|identity"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AssertionError: Regex pattern did not match.
+E         Expected regex: 'binding|identity'
+E         Actual message: 'frozen P5 input differs from common-base Git record: configs/project_two_experiments/structure_two_p5_debt_replay_confirmation_v0_1.json'
+
+tests\test_structure_two_evidence_versions.py:81: AssertionError
+___ test_historical_artifact_cannot_impersonate_current[unseen_d0_holdout] ____
+
+name = 'unseen_d0_holdout'
+
+    @pytest.mark.parametrize("name", NAMES)
+    def test_historical_artifact_cannot_impersonate_current(name: str) -> None:
+        module = importlib.import_module(f"cpswm.system.evaluation_operations.structure_two_p5_{name}")
+        payload = json.loads(
+            (ROOT / f"benchmarks/structure_two/structure_two_p5_{name}_v0_1.json").read_text()
+        )
+        with pytest.raises(ValueError, match="lifecycle/version mismatch"):
+            getattr(module, f"verify_p5_{name}")(payload, repository_root=ROOT)
+        # Relabelling and rehashing cannot repair its old source binding.
+        payload["evidence_context"] = current_evidence_context()
+        _rehash(payload)
+>       with pytest.raises(ValueError, match=r"binding|identity"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AssertionError: Regex pattern did not match.
+E         Expected regex: 'binding|identity'
+E         Actual message: 'holdout method source drifted after freeze'
+
+tests\test_structure_two_evidence_versions.py:81: AssertionError
+_ test_frozen_inputs_reject_joint_payload_and_expected_hash_rewrite[dataset] __
+
+tmp_path = WindowsPath('C:/Users/Αυ³ΠΟι/AppData/Local/Temp/pytest-of-Αυ³ΠΟι/pytest-1/test_frozen_inputs_reject_join0')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x00000259B8E3E8B0>
+target = 'dataset'
+
+    @pytest.mark.parametrize("target", ["dataset", "failure_and_expected_hash"])
+    def test_frozen_inputs_reject_joint_payload_and_expected_hash_rewrite(
+        tmp_path: Path, monkeypatch: pytest.MonkeyPatch, target: str
+    ) -> None:
+        from cpswm.system.evaluation_operations import structure_two_evidence_versions as versions
+    
+        shutil.copytree(ROOT / "configs", tmp_path / "configs")
+        benchmark = tmp_path / "benchmarks/structure_two"
+        benchmark.mkdir(parents=True)
+        for name in ("three_arm_death_test", "readout_posthoc_diagnostic"):
+            filename = f"structure_two_p5_{name}_v0_1.json"
+            shutil.copy2(ROOT / "benchmarks/structure_two" / filename, benchmark / filename)
+        real_git_bytes = versions.git_bytes
+        monkeypatch.setattr(
+            versions, "git_bytes", lambda root, commit, path: real_git_bytes(ROOT, commit, path)
+        )
+>       versions.require_frozen_p5_inputs(tmp_path)
+
+tests\test_structure_two_evidence_versions.py:203: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+root = WindowsPath('C:/Users/Αυ³ΠΟι/AppData/Local/Temp/pytest-of-Αυ³ΠΟι/pytest-1/test_frozen_inputs_reject_join0')
+
+    def require_frozen_p5_inputs(root: Path) -> None:
+        """Do not let rewriting a trigger and its expected hash replace old evidence."""
+        paths = sorted(root.glob("configs/project_two_experiments/structure_two_p5*_v0_1.json"))
+        paths.extend(
+            root / path
+            for path in (
+                "configs/project_two_datasets/d0_multiseed_readout_v0_5.json",
+                "configs/project_two_datasets/d0_unseen_p5_holdout_v0_6.json",
+                "configs/project_two_experiments/structure_two_action_readout_v0_6_preregistration.json",
+                "benchmarks/structure_two/structure_two_p5_readout_posthoc_diagnostic_v0_1.json",
+            )
+        )
+        for path in paths:
+            relative = path.relative_to(root).as_posix()
+            if path.read_bytes() != git_bytes(root, COMMON_BASE, relative):
+>               raise ValueError(f"frozen P5 input differs from common-base Git record: {relative}")
+E               ValueError: frozen P5 input differs from common-base Git record: configs/project_two_experiments/structure_two_p5_debt_replay_confirmation_v0_1.json
+
+src\cpswm\system\evaluation_operations\structure_two_evidence_versions.py:141: ValueError
+_ test_frozen_inputs_reject_joint_payload_and_expected_hash_rewrite[failure_and_expected_hash] _
+
+tmp_path = WindowsPath('C:/Users/Αυ³ΠΟι/AppData/Local/Temp/pytest-of-Αυ³ΠΟι/pytest-1/test_frozen_inputs_reject_join1')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x00000259B8E3F360>
+target = 'failure_and_expected_hash'
+
+    @pytest.mark.parametrize("target", ["dataset", "failure_and_expected_hash"])
+    def test_frozen_inputs_reject_joint_payload_and_expected_hash_rewrite(
+        tmp_path: Path, monkeypatch: pytest.MonkeyPatch, target: str
+    ) -> None:
+        from cpswm.system.evaluation_operations import structure_two_evidence_versions as versions
+    
+        shutil.copytree(ROOT / "configs", tmp_path / "configs")
+        benchmark = tmp_path / "benchmarks/structure_two"
+        benchmark.mkdir(parents=True)
+        for name in ("three_arm_death_test", "readout_posthoc_diagnostic"):
+            filename = f"structure_two_p5_{name}_v0_1.json"
+            shutil.copy2(ROOT / "benchmarks/structure_two" / filename, benchmark / filename)
+        real_git_bytes = versions.git_bytes
+        monkeypatch.setattr(
+            versions, "git_bytes", lambda root, commit, path: real_git_bytes(ROOT, commit, path)
+        )
+>       versions.require_frozen_p5_inputs(tmp_path)
+
+tests\test_structure_two_evidence_versions.py:203: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+root = WindowsPath('C:/Users/Αυ³ΠΟι/AppData/Local/Temp/pytest-of-Αυ³ΠΟι/pytest-1/test_frozen_inputs_reject_join1')
+
+    def require_frozen_p5_inputs(root: Path) -> None:
+        """Do not let rewriting a trigger and its expected hash replace old evidence."""
+        paths = sorted(root.glob("configs/project_two_experiments/structure_two_p5*_v0_1.json"))
+        paths.extend(
+            root / path
+            for path in (
+                "configs/project_two_datasets/d0_multiseed_readout_v0_5.json",
+                "configs/project_two_datasets/d0_unseen_p5_holdout_v0_6.json",
+                "configs/project_two_experiments/structure_two_action_readout_v0_6_preregistration.json",
+                "benchmarks/structure_two/structure_two_p5_readout_posthoc_diagnostic_v0_1.json",
+            )
+        )
+        for path in paths:
+            relative = path.relative_to(root).as_posix()
+            if path.read_bytes() != git_bytes(root, COMMON_BASE, relative):
+>               raise ValueError(f"frozen P5 input differs from common-base Git record: {relative}")
+E               ValueError: frozen P5 input differs from common-base Git record: configs/project_two_experiments/structure_two_p5_debt_replay_confirmation_v0_1.json
+
+src\cpswm\system\evaluation_operations\structure_two_evidence_versions.py:141: ValueError
+_ test_formal_entry_uses_actual_frozen_semantics_despite_bytecode_cache[absent] _
+
+copied = (WindowsPath('C:/Users/Αυ³ΠΟι/AppData/Local/Temp/pytest-of-Αυ³ΠΟι/pytest-1/test_formal_entry_uses_actual_0'), {'ALLUSERSPROF...DEX_APP_TOOLS_PIPE_PATH': '\\\\.\\pipe\\codex-browser-use-d62e7b9f-e0c4-4a7a-b5d9-57163ac078d5', 'CODEX_CI': '1', ...})
+cache = 'absent'
+
+    @pytest.mark.parametrize("cache", ["absent", "valid", "stale_same_size_mtime"])
+    def test_formal_entry_uses_actual_frozen_semantics_despite_bytecode_cache(copied, cache):
+        root, _ = copied
+        source = root / "src/cpswm/system/continual/project_one_regime_loop.py"
+        if cache != "absent":
+            result = command(
+                copied,
+                "-c",
+                "from cpswm.system.continual.project_one_regime_loop import PrototypeLoopConfig; "
+                "print(PrototypeLoopConfig().owner_evidence_threshold)",
+            )
+            assert result.returncode == 0 and result.stdout.strip() == "0.5"
+        expected = 0.5
+        if cache == "stale_same_size_mtime":
+            old = source.stat()
+            source.write_text(
+                source.read_text().replace(
+                    "owner_evidence_threshold: float = 0.5", "owner_evidence_threshold: float = 0.9", 1
+                )
+            )
+            os.utime(source, ns=(old.st_atime_ns, old.st_mtime_ns))
+            assert source.stat().st_size == old.st_size
+            stale = command(
+                copied,
+                "-c",
+                "from cpswm.system.continual.project_one_regime_loop import PrototypeLoopConfig; "
+                "print(PrototypeLoopConfig().owner_evidence_threshold)",
+            )
+            assert (
+                stale.stdout.strip() == "0.5"
+            )  # The independent counterexample still really triggers.
+            expected = 0.9
+        result = command(copied, "apps/evaluation_runner/probe_structure_two_execution_source.py")
+>       assert result.returncode == 0, result.stderr
+E       AssertionError: fatal: not a git repository: 'F:\ζ΄η‚΄ε„«\codex\cpswm\.git'
+E         Traceback (most recent call last):
+E           File "C:\Users\Αυ³ΠΟι\AppData\Local\Temp\pytest-of-Αυ³ΠΟι\pytest-1\test_formal_entry_uses_actual_0\apps\evaluation_runner\probe_structure_two_execution_source.py", line 54, in <module>
+E             result = probe()
+E           File "C:\Users\Αυ³ΠΟι\AppData\Local\Temp\pytest-of-Αυ³ΠΟι\pytest-1\test_formal_entry_uses_actual_0\apps\evaluation_runner\probe_structure_two_execution_source.py", line 36, in probe
+E             binding = _source_binding(root, _load_config(root))
+E           File "C:\Users\Αυ³ΠΟι\AppData\Local\Temp\pytest-of-Αυ³ΠΟι\pytest-1\test_formal_entry_uses_actual_0\src\cpswm\system\evaluation_operations\structure_two_p5_three_arm_death_test.py", line 1497, in _source_binding
+E             require_frozen_p5_inputs(root)
+E             ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^
+E           File "C:\Users\Αυ³ΠΟι\AppData\Local\Temp\pytest-of-Αυ³ΠΟι\pytest-1\test_formal_entry_uses_actual_0\src\cpswm\system\evaluation_operations\structure_two_evidence_versions.py", line 140, in require_frozen_p5_inputs
+E             if path.read_bytes() != git_bytes(root, COMMON_BASE, relative):
+E                                     ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E           File "C:\Users\Αυ³ΠΟι\AppData\Local\Temp\pytest-of-Αυ³ΠΟι\pytest-1\test_formal_entry_uses_actual_0\src\cpswm\system\evaluation_operations\structure_two_evidence_versions.py", line 96, in git_bytes
+E             subprocess.run(
+E             ~~~~~~~~~~~~~~^
+E                 ["git", "merge-base", "--is-ancestor", commit, COMMON_BASE], cwd=root, check=True
+E                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E             )
+E             ^
+E           File "F:\ΕΣΞ©\codex\runtimes\uv-python\cpython-3.13.5-windows-x86_64-none\Lib\subprocess.py", line 577, in run
+E             raise CalledProcessError(retcode, process.args,
+E                                      output=stdout, stderr=stderr)
+E         subprocess.CalledProcessError: Command '['git', 'merge-base', '--is-ancestor', '09eb4d48e1c11082e90ca18332d04333e6b5b47a', '09eb4d48e1c11082e90ca18332d04333e6b5b47a']' returned non-zero exit status 128.
+E         
+E       assert 1 == 0
+E        +  where 1 = CompletedProcess(args=['F:\\ΕΣΞ©\\codex\\cpswm-w1-audit-20260912\\.venv\\Scripts\\python.exe', 'apps/evaluation_runner/p...11082e90ca18332d04333e6b5b47a\', \'09eb4d48e1c11082e90ca18332d04333e6b5b47a\']\' returned non-zero exit status 128.\n').returncode
+
+tests\test_structure_two_evidence_supplement.py:142: AssertionError
+_ test_formal_entry_uses_actual_frozen_semantics_despite_bytecode_cache[valid] _
+
+copied = (WindowsPath('C:/Users/Αυ³ΠΟι/AppData/Local/Temp/pytest-of-Αυ³ΠΟι/pytest-1/test_formal_entry_uses_actual_1'), {'ALLUSERSPROF...DEX_APP_TOOLS_PIPE_PATH': '\\\\.\\pipe\\codex-browser-use-d62e7b9f-e0c4-4a7a-b5d9-57163ac078d5', 'CODEX_CI': '1', ...})
+cache = 'valid'
+
+    @pytest.mark.parametrize("cache", ["absent", "valid", "stale_same_size_mtime"])
+    def test_formal_entry_uses_actual_frozen_semantics_despite_bytecode_cache(copied, cache):
+        root, _ = copied
+        source = root / "src/cpswm/system/continual/project_one_regime_loop.py"
+        if cache != "absent":
+            result = command(
+                copied,
+                "-c",
+                "from cpswm.system.continual.project_one_regime_loop import PrototypeLoopConfig; "
+                "print(PrototypeLoopConfig().owner_evidence_threshold)",
+            )
+            assert result.returncode == 0 and result.stdout.strip() == "0.5"
+        expected = 0.5
+        if cache == "stale_same_size_mtime":
+            old = source.stat()
+            source.write_text(
+                source.read_text().replace(
+                    "owner_evidence_threshold: float = 0.5", "owner_evidence_threshold: float = 0.9", 1
+                )
+            )
+            os.utime(source, ns=(old.st_atime_ns, old.st_mtime_ns))
+            assert source.stat().st_size == old.st_size
+            stale = command(
+                copied,
+                "-c",
+                "from cpswm.system.continual.project_one_regime_loop import PrototypeLoopConfig; "
+                "print(PrototypeLoopConfig().owner_evidence_threshold)",
+            )
+            assert (
+                stale.stdout.strip() == "0.5"
+            )  # The independent counterexample still really triggers.
+            expected = 0.9
+        result = command(copied, "apps/evaluation_runner/probe_structure_two_execution_source.py")
+>       assert result.returncode == 0, result.stderr
+E       AssertionError: fatal: not a git repository: 'F:\ζ΄η‚΄ε„«\codex\cpswm\.git'
+E         Traceback (most recent call last):
+E           File "C:\Users\Αυ³ΠΟι\AppData\Local\Temp\pytest-of-Αυ³ΠΟι\pytest-1\test_formal_entry_uses_actual_1\apps\evaluation_runner\probe_structure_two_execution_source.py", line 54, in <module>
+E             result = probe()
+E           File "C:\Users\Αυ³ΠΟι\AppData\Local\Temp\pytest-of-Αυ³ΠΟι\pytest-1\test_formal_entry_uses_actual_1\apps\evaluation_runner\probe_structure_two_execution_source.py", line 36, in probe
+E             binding = _source_binding(root, _load_config(root))
+E           File "C:\Users\Αυ³ΠΟι\AppData\Local\Temp\pytest-of-Αυ³ΠΟι\pytest-1\test_formal_entry_uses_actual_1\src\cpswm\system\evaluation_operations\structure_two_p5_three_arm_death_test.py", line 1497, in _source_binding
+E             require_frozen_p5_inputs(root)
+E             ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^
+E           File "C:\Users\Αυ³ΠΟι\AppData\Local\Temp\pytest-of-Αυ³ΠΟι\pytest-1\test_formal_entry_uses_actual_1\src\cpswm\system\evaluation_operations\structure_two_evidence_versions.py", line 140, in require_frozen_p5_inputs
+E             if path.read_bytes() != git_bytes(root, COMMON_BASE, relative):
+E                                     ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E           File "C:\Users\Αυ³ΠΟι\AppData\Local\Temp\pytest-of-Αυ³ΠΟι\pytest-1\test_formal_entry_uses_actual_1\src\cpswm\system\evaluation_operations\structure_two_evidence_versions.py", line 96, in git_bytes
+E             subprocess.run(
+E             ~~~~~~~~~~~~~~^
+E                 ["git", "merge-base", "--is-ancestor", commit, COMMON_BASE], cwd=root, check=True
+E                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E             )
+E             ^
+E           File "F:\ΕΣΞ©\codex\runtimes\uv-python\cpython-3.13.5-windows-x86_64-none\Lib\subprocess.py", line 577, in run
+E             raise CalledProcessError(retcode, process.args,
+E                                      output=stdout, stderr=stderr)
+E         subprocess.CalledProcessError: Command '['git', 'merge-base', '--is-ancestor', '09eb4d48e1c11082e90ca18332d04333e6b5b47a', '09eb4d48e1c11082e90ca18332d04333e6b5b47a']' returned non-zero exit status 128.
+E         
+E       assert 1 == 0
+E        +  where 1 = CompletedProcess(args=['F:\\ΕΣΞ©\\codex\\cpswm-w1-audit-20260912\\.venv\\Scripts\\python.exe', 'apps/evaluation_runner/p...11082e90ca18332d04333e6b5b47a\', \'09eb4d48e1c11082e90ca18332d04333e6b5b47a\']\' returned non-zero exit status 128.\n').returncode
+
+tests\test_structure_two_evidence_supplement.py:142: AssertionError
+_ test_formal_entry_uses_actual_frozen_semantics_despite_bytecode_cache[stale_same_size_mtime] _
+
+copied = (WindowsPath('C:/Users/Αυ³ΠΟι/AppData/Local/Temp/pytest-of-Αυ³ΠΟι/pytest-1/test_formal_entry_uses_actual_2'), {'ALLUSERSPROF...DEX_APP_TOOLS_PIPE_PATH': '\\\\.\\pipe\\codex-browser-use-d62e7b9f-e0c4-4a7a-b5d9-57163ac078d5', 'CODEX_CI': '1', ...})
+cache = 'stale_same_size_mtime'
+
+    @pytest.mark.parametrize("cache", ["absent", "valid", "stale_same_size_mtime"])
+    def test_formal_entry_uses_actual_frozen_semantics_despite_bytecode_cache(copied, cache):
+        root, _ = copied
+        source = root / "src/cpswm/system/continual/project_one_regime_loop.py"
+        if cache != "absent":
+            result = command(
+                copied,
+                "-c",
+                "from cpswm.system.continual.project_one_regime_loop import PrototypeLoopConfig; "
+                "print(PrototypeLoopConfig().owner_evidence_threshold)",
+            )
+            assert result.returncode == 0 and result.stdout.strip() == "0.5"
+        expected = 0.5
+        if cache == "stale_same_size_mtime":
+            old = source.stat()
+            source.write_text(
+                source.read_text().replace(
+                    "owner_evidence_threshold: float = 0.5", "owner_evidence_threshold: float = 0.9", 1
+                )
+            )
+            os.utime(source, ns=(old.st_atime_ns, old.st_mtime_ns))
+            assert source.stat().st_size == old.st_size
+            stale = command(
+                copied,
+                "-c",
+                "from cpswm.system.continual.project_one_regime_loop import PrototypeLoopConfig; "
+                "print(PrototypeLoopConfig().owner_evidence_threshold)",
+            )
+            assert (
+                stale.stdout.strip() == "0.5"
+            )  # The independent counterexample still really triggers.
+            expected = 0.9
+        result = command(copied, "apps/evaluation_runner/probe_structure_two_execution_source.py")
+>       assert result.returncode == 0, result.stderr
+E       AssertionError: fatal: not a git repository: 'F:\ζ΄η‚΄ε„«\codex\cpswm\.git'
+E         Traceback (most recent call last):
+E           File "C:\Users\Αυ³ΠΟι\AppData\Local\Temp\pytest-of-Αυ³ΠΟι\pytest-1\test_formal_entry_uses_actual_2\apps\evaluation_runner\probe_structure_two_execution_source.py", line 54, in <module>
+E             result = probe()
+E           File "C:\Users\Αυ³ΠΟι\AppData\Local\Temp\pytest-of-Αυ³ΠΟι\pytest-1\test_formal_entry_uses_actual_2\apps\evaluation_runner\probe_structure_two_execution_source.py", line 36, in probe
+E             binding = _source_binding(root, _load_config(root))
+E           File "C:\Users\Αυ³ΠΟι\AppData\Local\Temp\pytest-of-Αυ³ΠΟι\pytest-1\test_formal_entry_uses_actual_2\src\cpswm\system\evaluation_operations\structure_two_p5_three_arm_death_test.py", line 1497, in _source_binding
+E             require_frozen_p5_inputs(root)
+E             ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^
+E           File "C:\Users\Αυ³ΠΟι\AppData\Local\Temp\pytest-of-Αυ³ΠΟι\pytest-1\test_formal_entry_uses_actual_2\src\cpswm\system\evaluation_operations\structure_two_evidence_versions.py", line 140, in require_frozen_p5_inputs
+E             if path.read_bytes() != git_bytes(root, COMMON_BASE, relative):
+E                                     ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E           File "C:\Users\Αυ³ΠΟι\AppData\Local\Temp\pytest-of-Αυ³ΠΟι\pytest-1\test_formal_entry_uses_actual_2\src\cpswm\system\evaluation_operations\structure_two_evidence_versions.py", line 96, in git_bytes
+E             subprocess.run(
+E             ~~~~~~~~~~~~~~^
+E                 ["git", "merge-base", "--is-ancestor", commit, COMMON_BASE], cwd=root, check=True
+E                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E             )
+E             ^
+E           File "F:\ΕΣΞ©\codex\runtimes\uv-python\cpython-3.13.5-windows-x86_64-none\Lib\subprocess.py", line 577, in run
+E             raise CalledProcessError(retcode, process.args,
+E                                      output=stdout, stderr=stderr)
+E         subprocess.CalledProcessError: Command '['git', 'merge-base', '--is-ancestor', '09eb4d48e1c11082e90ca18332d04333e6b5b47a', '09eb4d48e1c11082e90ca18332d04333e6b5b47a']' returned non-zero exit status 128.
+E         
+E       assert 1 == 0
+E        +  where 1 = CompletedProcess(args=['F:\\ΕΣΞ©\\codex\\cpswm-w1-audit-20260912\\.venv\\Scripts\\python.exe', 'apps/evaluation_runner/p...11082e90ca18332d04333e6b5b47a\', \'09eb4d48e1c11082e90ca18332d04333e6b5b47a\']\' returned non-zero exit status 128.\n').returncode
+
+tests\test_structure_two_evidence_supplement.py:142: AssertionError
+________ test_reviewed_v0_2_and_eleven_archives_remain_exact_git_bytes ________
+
+    def test_reviewed_v0_2_and_eleven_archives_remain_exact_git_bytes():
+        config = json.loads(
+            (
+                ROOT / "configs/project_two_experiments/structure_two_evidence_history_v0_1.json"
+            ).read_text()
+        )
+        paths = [entry["path"] for entry in config["entries"]]
+        paths.extend(
+            p.relative_to(ROOT).as_posix()
+            for p in (ROOT / "benchmarks/structure_two/evidence_repair_2026_09_11/current").glob(
+                "*.json"
+            )
+        )
+        assert len(paths) == 16
+        for relative in paths:
+            original = subprocess.check_output(
+                ["git", "show", "91dbdc57968071be29976d1a7b99de51d9288cdd:" + relative], cwd=ROOT
+            )
+>           assert (ROOT / relative).read_bytes() == original
+E           assert b'{\r\n  "ada...n  }\r\n}\r\n' == b'{\n  "adapt...  ]\n  }\n}\n'
+E             
+E             At index 1 diff: b'\r' != b'\n'
+E             Use -v to get more diff
+
+tests\test_structure_two_evidence_supplement.py:342: AssertionError
+_____ test_sources_only_history_report_honestly_records_no_recomputation ______
+
+copied = (WindowsPath('C:/Users/Αυ³ΠΟι/AppData/Local/Temp/pytest-of-Αυ³ΠΟι/pytest-1/test_sources_only_history_repo0'), {'ALLUSERSPROF...DEX_APP_TOOLS_PIPE_PATH': '\\\\.\\pipe\\codex-browser-use-d62e7b9f-e0c4-4a7a-b5d9-57163ac078d5', 'CODEX_CI': '1', ...})
+
+    def test_sources_only_history_report_honestly_records_no_recomputation(copied):
+        root, _ = copied
+        result = command(
+            copied,
+            "apps/evaluation_runner/audit_structure_two_evidence_history.py",
+            "--output",
+            "sources-only.json",
+        )
+>       assert result.returncode == 0, result.stderr
+E       AssertionError: fatal: not a git repository: 'F:\ζ΄η‚΄ε„«\codex\cpswm\.git'
+E         Traceback (most recent call last):
+E           File "C:\Users\Αυ³ΠΟι\AppData\Local\Temp\pytest-of-Αυ³ΠΟι\pytest-1\test_sources_only_history_repo0\apps\evaluation_runner\audit_structure_two_evidence_history.py", line 299, in <module>
+E             main()
+E             ~~~~^^
+E           File "C:\Users\Αυ³ΠΟι\AppData\Local\Temp\pytest-of-Αυ³ΠΟι\pytest-1\test_sources_only_history_repo0\apps\evaluation_runner\audit_structure_two_evidence_history.py", line 279, in main
+E             report = build_history_report(
+E                 recompute_first_failure=bool(args.verify) or args.recompute_first_failure,
+E                 recompute_failed_replay=bool(args.verify) or args.recompute_failed_replay,
+E             )
+E           File "C:\Users\Αυ³ΠΟι\AppData\Local\Temp\pytest-of-Αυ³ΠΟι\pytest-1\test_sources_only_history_repo0\apps\evaluation_runner\audit_structure_two_evidence_history.py", line 175, in build_history_report
+E             for entry in historical_entries(ROOT):
+E                          ~~~~~~~~~~~~~~~~~~^^^^^^
+E           File "C:\Users\Αυ³ΠΟι\AppData\Local\Temp\pytest-of-Αυ³ΠΟι\pytest-1\test_sources_only_history_repo0\src\cpswm\system\evaluation_operations\structure_two_evidence_versions.py", line 73, in historical_entries
+E             subprocess.check_output(
+E             ~~~~~~~~~~~~~~~~~~~~~~~^
+E                 [
+E                 ^
+E             ...<4 lines>...
+E                 cwd=root,
+E                 ^^^^^^^^^
+E             )
+E             ^
+E           File "F:\ΕΣΞ©\codex\runtimes\uv-python\cpython-3.13.5-windows-x86_64-none\Lib\subprocess.py", line 472, in check_output
+E             return run(*popenargs, stdout=PIPE, timeout=timeout, check=True,
+E                    ~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E                        **kwargs).stdout
+E                        ^^^^^^^^^
+E           File "F:\ΕΣΞ©\codex\runtimes\uv-python\cpython-3.13.5-windows-x86_64-none\Lib\subprocess.py", line 577, in run
+E             raise CalledProcessError(retcode, process.args,
+E                                      output=stdout, stderr=stderr)
+E         subprocess.CalledProcessError: Command '['git', 'show', '91dbdc57968071be29976d1a7b99de51d9288cdd:configs/project_two_experiments/structure_two_evidence_history_v0_1.json']' returned non-zero exit status 128.
+E         
+E       assert 1 == 0
+E        +  where 1 = CompletedProcess(args=['F:\\ΕΣΞ©\\codex\\cpswm-w1-audit-20260912\\.venv\\Scripts\\python.exe', 'apps/evaluation_runner/a...dd:configs/project_two_experiments/structure_two_evidence_history_v0_1.json\']\' returned non-zero exit status 128.\n').returncode
+
+tests\test_structure_two_evidence_supplement.py:367: AssertionError
+________ test_reviewed_v0_3_outputs_remain_exact_and_cannot_be_current ________
+
+    def test_reviewed_v0_3_outputs_remain_exact_and_cannot_be_current():
+        import importlib
+    
+        directory = ROOT / "benchmarks/structure_two/evidence_repair_supplement_2026_09_11/current_v0_3"
+        paths = list(directory.glob("*.json"))
+        assert len(paths) == 5
+        for path in paths:
+            old = subprocess.check_output(
+                [
+                    "git",
+                    "show",
+                    "816a88b242c24b9c6ace6021bba23e4b5b8b526e:" + path.relative_to(ROOT).as_posix(),
+                ],
+                cwd=ROOT,
+            )
+>           assert path.read_bytes() == old
+E           assert b'{\r\n  "ada...n  }\r\n}\r\n' == b'{\n  "adapt...lse\n  }\n}\n'
+E             
+E             At index 1 diff: b'\r' != b'\n'
+E             Use -v to get more diff
+
+tests\test_structure_two_entry_portability.py:304: AssertionError
+=========================== short test summary info ===========================
+FAILED tests/test_structure_two_evidence_versions.py::test_all_archives_match_their_pinned_git_records
+FAILED tests/test_structure_two_evidence_versions.py::test_historical_artifact_cannot_impersonate_current[three_arm_death_test]
+FAILED tests/test_structure_two_evidence_versions.py::test_historical_artifact_cannot_impersonate_current[readout_posthoc_diagnostic]
+FAILED tests/test_structure_two_evidence_versions.py::test_historical_artifact_cannot_impersonate_current[readout_prior_factorial]
+FAILED tests/test_structure_two_evidence_versions.py::test_historical_artifact_cannot_impersonate_current[unseen_d0_holdout]
+FAILED tests/test_structure_two_evidence_versions.py::test_frozen_inputs_reject_joint_payload_and_expected_hash_rewrite[dataset]
+FAILED tests/test_structure_two_evidence_versions.py::test_frozen_inputs_reject_joint_payload_and_expected_hash_rewrite[failure_and_expected_hash]
+FAILED tests/test_structure_two_evidence_supplement.py::test_formal_entry_uses_actual_frozen_semantics_despite_bytecode_cache[absent]
+FAILED tests/test_structure_two_evidence_supplement.py::test_formal_entry_uses_actual_frozen_semantics_despite_bytecode_cache[valid]
+FAILED tests/test_structure_two_evidence_supplement.py::test_formal_entry_uses_actual_frozen_semantics_despite_bytecode_cache[stale_same_size_mtime]
+FAILED tests/test_structure_two_evidence_supplement.py::test_reviewed_v0_2_and_eleven_archives_remain_exact_git_bytes
+FAILED tests/test_structure_two_evidence_supplement.py::test_sources_only_history_report_honestly_records_no_recomputation
+FAILED tests/test_structure_two_entry_portability.py::test_reviewed_v0_3_outputs_remain_exact_and_cannot_be_current
+13 failed, 12 passed in 61.06s (0:01:01)

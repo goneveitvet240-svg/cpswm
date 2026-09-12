@@ -1,0 +1,226 @@
+..........FFF......F.....                                                [100%]
+================================== FAILURES ===================================
+_ test_formal_entry_uses_actual_frozen_semantics_despite_bytecode_cache[absent] _
+
+copied = (WindowsPath('C:/Users/Αυ³ΠΟι/AppData/Local/Temp/pytest-of-Αυ³ΠΟι/pytest-2/test_formal_entry_uses_actual_0'), {'ALLUSERSPROF...DEX_APP_TOOLS_PIPE_PATH': '\\\\.\\pipe\\codex-browser-use-d62e7b9f-e0c4-4a7a-b5d9-57163ac078d5', 'CODEX_CI': '1', ...})
+cache = 'absent'
+
+    @pytest.mark.parametrize("cache", ["absent", "valid", "stale_same_size_mtime"])
+    def test_formal_entry_uses_actual_frozen_semantics_despite_bytecode_cache(copied, cache):
+        root, _ = copied
+        source = root / "src/cpswm/system/continual/project_one_regime_loop.py"
+        if cache != "absent":
+            result = command(
+                copied,
+                "-c",
+                "from cpswm.system.continual.project_one_regime_loop import PrototypeLoopConfig; "
+                "print(PrototypeLoopConfig().owner_evidence_threshold)",
+            )
+            assert result.returncode == 0 and result.stdout.strip() == "0.5"
+        expected = 0.5
+        if cache == "stale_same_size_mtime":
+            old = source.stat()
+            source.write_text(
+                source.read_text().replace(
+                    "owner_evidence_threshold: float = 0.5", "owner_evidence_threshold: float = 0.9", 1
+                )
+            )
+            os.utime(source, ns=(old.st_atime_ns, old.st_mtime_ns))
+            assert source.stat().st_size == old.st_size
+            stale = command(
+                copied,
+                "-c",
+                "from cpswm.system.continual.project_one_regime_loop import PrototypeLoopConfig; "
+                "print(PrototypeLoopConfig().owner_evidence_threshold)",
+            )
+            assert (
+                stale.stdout.strip() == "0.5"
+            )  # The independent counterexample still really triggers.
+            expected = 0.9
+        result = command(copied, "apps/evaluation_runner/probe_structure_two_execution_source.py")
+>       assert result.returncode == 0, result.stderr
+E       AssertionError: fatal: not a git repository: 'F:\ζ΄η‚΄ε„«\codex\cpswm\.git'
+E         Traceback (most recent call last):
+E           File "C:\Users\Αυ³ΠΟι\AppData\Local\Temp\pytest-of-Αυ³ΠΟι\pytest-2\test_formal_entry_uses_actual_0\apps\evaluation_runner\probe_structure_two_execution_source.py", line 54, in <module>
+E             result = probe()
+E           File "C:\Users\Αυ³ΠΟι\AppData\Local\Temp\pytest-of-Αυ³ΠΟι\pytest-2\test_formal_entry_uses_actual_0\apps\evaluation_runner\probe_structure_two_execution_source.py", line 36, in probe
+E             binding = _source_binding(root, _load_config(root))
+E           File "C:\Users\Αυ³ΠΟι\AppData\Local\Temp\pytest-of-Αυ³ΠΟι\pytest-2\test_formal_entry_uses_actual_0\src\cpswm\system\evaluation_operations\structure_two_p5_three_arm_death_test.py", line 1497, in _source_binding
+E             require_frozen_p5_inputs(root)
+E             ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^
+E           File "C:\Users\Αυ³ΠΟι\AppData\Local\Temp\pytest-of-Αυ³ΠΟι\pytest-2\test_formal_entry_uses_actual_0\src\cpswm\system\evaluation_operations\structure_two_evidence_versions.py", line 140, in require_frozen_p5_inputs
+E             if path.read_bytes() != git_bytes(root, COMMON_BASE, relative):
+E                                     ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E           File "C:\Users\Αυ³ΠΟι\AppData\Local\Temp\pytest-of-Αυ³ΠΟι\pytest-2\test_formal_entry_uses_actual_0\src\cpswm\system\evaluation_operations\structure_two_evidence_versions.py", line 96, in git_bytes
+E             subprocess.run(
+E             ~~~~~~~~~~~~~~^
+E                 ["git", "merge-base", "--is-ancestor", commit, COMMON_BASE], cwd=root, check=True
+E                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E             )
+E             ^
+E           File "F:\ΕΣΞ©\codex\runtimes\uv-python\cpython-3.13.5-windows-x86_64-none\Lib\subprocess.py", line 577, in run
+E             raise CalledProcessError(retcode, process.args,
+E                                      output=stdout, stderr=stderr)
+E         subprocess.CalledProcessError: Command '['git', 'merge-base', '--is-ancestor', '09eb4d48e1c11082e90ca18332d04333e6b5b47a', '09eb4d48e1c11082e90ca18332d04333e6b5b47a']' returned non-zero exit status 128.
+E         
+E       assert 1 == 0
+E        +  where 1 = CompletedProcess(args=['F:\\ΕΣΞ©\\codex\\cpswm-w1-audit-20260912\\.venv\\Scripts\\python.exe', 'apps/evaluation_runner/p...11082e90ca18332d04333e6b5b47a\', \'09eb4d48e1c11082e90ca18332d04333e6b5b47a\']\' returned non-zero exit status 128.\n').returncode
+
+tests\test_structure_two_evidence_supplement.py:142: AssertionError
+_ test_formal_entry_uses_actual_frozen_semantics_despite_bytecode_cache[valid] _
+
+copied = (WindowsPath('C:/Users/Αυ³ΠΟι/AppData/Local/Temp/pytest-of-Αυ³ΠΟι/pytest-2/test_formal_entry_uses_actual_1'), {'ALLUSERSPROF...DEX_APP_TOOLS_PIPE_PATH': '\\\\.\\pipe\\codex-browser-use-d62e7b9f-e0c4-4a7a-b5d9-57163ac078d5', 'CODEX_CI': '1', ...})
+cache = 'valid'
+
+    @pytest.mark.parametrize("cache", ["absent", "valid", "stale_same_size_mtime"])
+    def test_formal_entry_uses_actual_frozen_semantics_despite_bytecode_cache(copied, cache):
+        root, _ = copied
+        source = root / "src/cpswm/system/continual/project_one_regime_loop.py"
+        if cache != "absent":
+            result = command(
+                copied,
+                "-c",
+                "from cpswm.system.continual.project_one_regime_loop import PrototypeLoopConfig; "
+                "print(PrototypeLoopConfig().owner_evidence_threshold)",
+            )
+            assert result.returncode == 0 and result.stdout.strip() == "0.5"
+        expected = 0.5
+        if cache == "stale_same_size_mtime":
+            old = source.stat()
+            source.write_text(
+                source.read_text().replace(
+                    "owner_evidence_threshold: float = 0.5", "owner_evidence_threshold: float = 0.9", 1
+                )
+            )
+            os.utime(source, ns=(old.st_atime_ns, old.st_mtime_ns))
+            assert source.stat().st_size == old.st_size
+            stale = command(
+                copied,
+                "-c",
+                "from cpswm.system.continual.project_one_regime_loop import PrototypeLoopConfig; "
+                "print(PrototypeLoopConfig().owner_evidence_threshold)",
+            )
+            assert (
+                stale.stdout.strip() == "0.5"
+            )  # The independent counterexample still really triggers.
+            expected = 0.9
+        result = command(copied, "apps/evaluation_runner/probe_structure_two_execution_source.py")
+>       assert result.returncode == 0, result.stderr
+E       AssertionError: fatal: not a git repository: 'F:\ζ΄η‚΄ε„«\codex\cpswm\.git'
+E         Traceback (most recent call last):
+E           File "C:\Users\Αυ³ΠΟι\AppData\Local\Temp\pytest-of-Αυ³ΠΟι\pytest-2\test_formal_entry_uses_actual_1\apps\evaluation_runner\probe_structure_two_execution_source.py", line 54, in <module>
+E             result = probe()
+E           File "C:\Users\Αυ³ΠΟι\AppData\Local\Temp\pytest-of-Αυ³ΠΟι\pytest-2\test_formal_entry_uses_actual_1\apps\evaluation_runner\probe_structure_two_execution_source.py", line 36, in probe
+E             binding = _source_binding(root, _load_config(root))
+E           File "C:\Users\Αυ³ΠΟι\AppData\Local\Temp\pytest-of-Αυ³ΠΟι\pytest-2\test_formal_entry_uses_actual_1\src\cpswm\system\evaluation_operations\structure_two_p5_three_arm_death_test.py", line 1497, in _source_binding
+E             require_frozen_p5_inputs(root)
+E             ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^
+E           File "C:\Users\Αυ³ΠΟι\AppData\Local\Temp\pytest-of-Αυ³ΠΟι\pytest-2\test_formal_entry_uses_actual_1\src\cpswm\system\evaluation_operations\structure_two_evidence_versions.py", line 140, in require_frozen_p5_inputs
+E             if path.read_bytes() != git_bytes(root, COMMON_BASE, relative):
+E                                     ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E           File "C:\Users\Αυ³ΠΟι\AppData\Local\Temp\pytest-of-Αυ³ΠΟι\pytest-2\test_formal_entry_uses_actual_1\src\cpswm\system\evaluation_operations\structure_two_evidence_versions.py", line 96, in git_bytes
+E             subprocess.run(
+E             ~~~~~~~~~~~~~~^
+E                 ["git", "merge-base", "--is-ancestor", commit, COMMON_BASE], cwd=root, check=True
+E                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E             )
+E             ^
+E           File "F:\ΕΣΞ©\codex\runtimes\uv-python\cpython-3.13.5-windows-x86_64-none\Lib\subprocess.py", line 577, in run
+E             raise CalledProcessError(retcode, process.args,
+E                                      output=stdout, stderr=stderr)
+E         subprocess.CalledProcessError: Command '['git', 'merge-base', '--is-ancestor', '09eb4d48e1c11082e90ca18332d04333e6b5b47a', '09eb4d48e1c11082e90ca18332d04333e6b5b47a']' returned non-zero exit status 128.
+E         
+E       assert 1 == 0
+E        +  where 1 = CompletedProcess(args=['F:\\ΕΣΞ©\\codex\\cpswm-w1-audit-20260912\\.venv\\Scripts\\python.exe', 'apps/evaluation_runner/p...11082e90ca18332d04333e6b5b47a\', \'09eb4d48e1c11082e90ca18332d04333e6b5b47a\']\' returned non-zero exit status 128.\n').returncode
+
+tests\test_structure_two_evidence_supplement.py:142: AssertionError
+_ test_formal_entry_uses_actual_frozen_semantics_despite_bytecode_cache[stale_same_size_mtime] _
+
+copied = (WindowsPath('C:/Users/Αυ³ΠΟι/AppData/Local/Temp/pytest-of-Αυ³ΠΟι/pytest-2/test_formal_entry_uses_actual_2'), {'ALLUSERSPROF...DEX_APP_TOOLS_PIPE_PATH': '\\\\.\\pipe\\codex-browser-use-d62e7b9f-e0c4-4a7a-b5d9-57163ac078d5', 'CODEX_CI': '1', ...})
+cache = 'stale_same_size_mtime'
+
+    @pytest.mark.parametrize("cache", ["absent", "valid", "stale_same_size_mtime"])
+    def test_formal_entry_uses_actual_frozen_semantics_despite_bytecode_cache(copied, cache):
+        root, _ = copied
+        source = root / "src/cpswm/system/continual/project_one_regime_loop.py"
+        if cache != "absent":
+            result = command(
+                copied,
+                "-c",
+                "from cpswm.system.continual.project_one_regime_loop import PrototypeLoopConfig; "
+                "print(PrototypeLoopConfig().owner_evidence_threshold)",
+            )
+            assert result.returncode == 0 and result.stdout.strip() == "0.5"
+        expected = 0.5
+        if cache == "stale_same_size_mtime":
+            old = source.stat()
+            source.write_text(
+                source.read_text().replace(
+                    "owner_evidence_threshold: float = 0.5", "owner_evidence_threshold: float = 0.9", 1
+                )
+            )
+            os.utime(source, ns=(old.st_atime_ns, old.st_mtime_ns))
+>           assert source.stat().st_size == old.st_size
+E           AssertionError: assert 21274 == 20752
+E            +  where 21274 = os.stat_result(st_mode=33206, st_ino=281474977280335, st_dev=3634740844935092, st_nlink=1, st_uid=0, st_gid=0, st_size=21274, st_atime=1789225237, st_mtime=1789225164, st_ctime=1789225235).st_size
+E            +    where os.stat_result(st_mode=33206, st_ino=281474977280335, st_dev=3634740844935092, st_nlink=1, st_uid=0, st_gid=0, st_size=21274, st_atime=1789225237, st_mtime=1789225164, st_ctime=1789225235) = stat()
+E            +      where stat = WindowsPath('C:/Users/Αυ³ΠΟι/AppData/Local/Temp/pytest-of-Αυ³ΠΟι/pytest-2/test_formal_entry_uses_actual_2/src/cpswm/system/continual/project_one_regime_loop.py').stat
+E            +  and   20752 = os.stat_result(st_mode=33206, st_ino=281474977280335, st_dev=3634740844935092, st_nlink=1, st_uid=0, st_gid=0, st_size=20752, st_atime=1789225237, st_mtime=1789225164, st_ctime=1789225235).st_size
+
+tests\test_structure_two_evidence_supplement.py:130: AssertionError
+_____ test_sources_only_history_report_honestly_records_no_recomputation ______
+
+copied = (WindowsPath('C:/Users/Αυ³ΠΟι/AppData/Local/Temp/pytest-of-Αυ³ΠΟι/pytest-2/test_sources_only_history_repo0'), {'ALLUSERSPROF...DEX_APP_TOOLS_PIPE_PATH': '\\\\.\\pipe\\codex-browser-use-d62e7b9f-e0c4-4a7a-b5d9-57163ac078d5', 'CODEX_CI': '1', ...})
+
+    def test_sources_only_history_report_honestly_records_no_recomputation(copied):
+        root, _ = copied
+        result = command(
+            copied,
+            "apps/evaluation_runner/audit_structure_two_evidence_history.py",
+            "--output",
+            "sources-only.json",
+        )
+>       assert result.returncode == 0, result.stderr
+E       AssertionError: fatal: not a git repository: 'F:\ζ΄η‚΄ε„«\codex\cpswm\.git'
+E         Traceback (most recent call last):
+E           File "C:\Users\Αυ³ΠΟι\AppData\Local\Temp\pytest-of-Αυ³ΠΟι\pytest-2\test_sources_only_history_repo0\apps\evaluation_runner\audit_structure_two_evidence_history.py", line 299, in <module>
+E             main()
+E             ~~~~^^
+E           File "C:\Users\Αυ³ΠΟι\AppData\Local\Temp\pytest-of-Αυ³ΠΟι\pytest-2\test_sources_only_history_repo0\apps\evaluation_runner\audit_structure_two_evidence_history.py", line 279, in main
+E             report = build_history_report(
+E                 recompute_first_failure=bool(args.verify) or args.recompute_first_failure,
+E                 recompute_failed_replay=bool(args.verify) or args.recompute_failed_replay,
+E             )
+E           File "C:\Users\Αυ³ΠΟι\AppData\Local\Temp\pytest-of-Αυ³ΠΟι\pytest-2\test_sources_only_history_repo0\apps\evaluation_runner\audit_structure_two_evidence_history.py", line 175, in build_history_report
+E             for entry in historical_entries(ROOT):
+E                          ~~~~~~~~~~~~~~~~~~^^^^^^
+E           File "C:\Users\Αυ³ΠΟι\AppData\Local\Temp\pytest-of-Αυ³ΠΟι\pytest-2\test_sources_only_history_repo0\src\cpswm\system\evaluation_operations\structure_two_evidence_versions.py", line 73, in historical_entries
+E             subprocess.check_output(
+E             ~~~~~~~~~~~~~~~~~~~~~~~^
+E                 [
+E                 ^
+E             ...<4 lines>...
+E                 cwd=root,
+E                 ^^^^^^^^^
+E             )
+E             ^
+E           File "F:\ΕΣΞ©\codex\runtimes\uv-python\cpython-3.13.5-windows-x86_64-none\Lib\subprocess.py", line 472, in check_output
+E             return run(*popenargs, stdout=PIPE, timeout=timeout, check=True,
+E                    ~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E                        **kwargs).stdout
+E                        ^^^^^^^^^
+E           File "F:\ΕΣΞ©\codex\runtimes\uv-python\cpython-3.13.5-windows-x86_64-none\Lib\subprocess.py", line 577, in run
+E             raise CalledProcessError(retcode, process.args,
+E                                      output=stdout, stderr=stderr)
+E         subprocess.CalledProcessError: Command '['git', 'show', '91dbdc57968071be29976d1a7b99de51d9288cdd:configs/project_two_experiments/structure_two_evidence_history_v0_1.json']' returned non-zero exit status 128.
+E         
+E       assert 1 == 0
+E        +  where 1 = CompletedProcess(args=['F:\\ΕΣΞ©\\codex\\cpswm-w1-audit-20260912\\.venv\\Scripts\\python.exe', 'apps/evaluation_runner/a...dd:configs/project_two_experiments/structure_two_evidence_history_v0_1.json\']\' returned non-zero exit status 128.\n').returncode
+
+tests\test_structure_two_evidence_supplement.py:367: AssertionError
+=========================== short test summary info ===========================
+FAILED tests/test_structure_two_evidence_supplement.py::test_formal_entry_uses_actual_frozen_semantics_despite_bytecode_cache[absent]
+FAILED tests/test_structure_two_evidence_supplement.py::test_formal_entry_uses_actual_frozen_semantics_despite_bytecode_cache[valid]
+FAILED tests/test_structure_two_evidence_supplement.py::test_formal_entry_uses_actual_frozen_semantics_despite_bytecode_cache[stale_same_size_mtime]
+FAILED tests/test_structure_two_evidence_supplement.py::test_sources_only_history_report_honestly_records_no_recomputation
+4 failed, 21 passed in 64.98s (0:01:04)

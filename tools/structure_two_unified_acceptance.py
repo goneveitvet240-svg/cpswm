@@ -19,7 +19,7 @@ import time
 import uuid
 import xml.etree.ElementTree as ET
 from contextlib import suppress
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 from pathlib import Path
 
 ENTRY_CODE = sys._getframe().f_code
@@ -45,6 +45,7 @@ W2_TESTS = tuple(
         "test_structure_two_comparison_audit_verification",
         "test_structure_two_comparison_audit_execution_source",
         "test_structure_two_comparison_fairness",
+        "test_structure_two_comparison_dynamic",
     )
 )
 W3_TESTS = tuple(
@@ -75,6 +76,10 @@ W3_TESTS = tuple(
         "test_ccrr_context_conditioned_regime",
         "test_hybrid_ledger_durable_log",
         "test_project_one_automatic_regime_loop",
+        "test_structure_two_w3_round5_boundaries",
+        "test_structure_two_w3_native_particles",
+        "test_structure_two_w3_native_bundle",
+        "test_project_two_action_readout",
     )
 )
 CLOSURE_ROLES = (
@@ -82,10 +87,20 @@ CLOSURE_ROLES = (
     "refreeze_corrected_history",
     "corrected_semantic_identity",
 )
-# These are deliberately unset: Window 3 must supply reviewed new node IDs,
-# committed with the unified source before its digest is pinned. A caller JSON
-# map or three old positive tests must never be accepted as closure evidence.
-CLOSURE_TESTS = {role: () for role in CLOSURE_ROLES}
+# Round-5 independent review closes these three OLD boundaries. These real
+# parametrized nodes do not close the newly found prepared-particle defects.
+CLOSURE_TESTS = {
+    "public_revision_atomicity": (
+        "tests/test_structure_two_w3_round5_boundaries.py"
+        "::test_correction_postconditions_every_public_entry",
+    ),
+    "refreeze_corrected_history": (
+        "tests/test_structure_two_w3_round5_boundaries.py::test_refreeze_after_existing_generations",
+    ),
+    "corrected_semantic_identity": (
+        "tests/test_structure_two_w3_round5_boundaries.py::test_revision_semantics_reproduce_across_runs",
+    ),
+}
 
 NATIVE_LAYOUT_CODE = r"""
 import importlib, json, pathlib, runpy, sys
@@ -149,6 +164,17 @@ def execution_environment(root):
     if not value["version"].startswith("3.13."):
         raise ValueError("native Python 3.13 required")
     value["interpreter_sha256"] = hashlib.sha256(python.resolve().read_bytes()).hexdigest()
+    site = root / ".venv/lib/python3.13/site-packages"
+    value["pytest_sources"] = {
+        str(p): hashlib.sha256(p.read_bytes()).hexdigest()
+        for package in ("pytest", "_pytest")
+        for p in sorted((site / package).rglob("*.py"))
+        if not p.is_symlink()
+    }
+    if not all(
+        str(site / n / "__init__.py") in value["pytest_sources"] for n in ("pytest", "_pytest")
+    ):
+        raise ValueError("native pytest source absent")
     value["environment_hashes"] = {
         name: hashlib.sha256(os.environ[name].encode()).hexdigest() if name in os.environ else None
         for name in (
@@ -235,6 +261,11 @@ class Stage:
     argv: tuple[str, ...]
     junit: str | None = None
     freeze_outputs: tuple[str, ...] = ()
+    environment: tuple[tuple[str, str], ...] = ()
+    requires: tuple[str, ...] = ()
+    required_artifacts: tuple[str, ...] = ()
+    new_outputs: tuple[str, ...] = ()
+    test_nodes: tuple[str, ...] = ()
 
 
 class Journal:
@@ -322,6 +353,157 @@ def require_artifacts(root, locked):
             raise ValueError("VERIFIED_ARTIFACT_CHANGED: cannot splice downstream green results")
 
 
+def matrix_stage(
+    root,
+    journal,
+    name,
+    paths,
+    *,
+    required_nodes=(),
+    environment=(),
+    requires=(),
+    required_artifacts=(),
+):
+    if not paths:
+        raise ValueError("empty required matrix")
+    for node in (*paths, *required_nodes):
+        path = root / node.split("::")[0]
+        if path.resolve() != path or not path.is_file():
+            raise ValueError("required test missing or noncanonical: " + node)
+    xml = name + ".xml"
+    return Stage(
+        name,
+        (
+            str(root / ".venv/bin/python"),
+            "-m",
+            "pytest",
+            "-p",
+            "tools.structure_two_pytest_runtime",
+            "-o",
+            "addopts=",
+            "-q",
+            "--confcutdir=.",
+            "--junitxml=" + str(journal.path / xml),
+            "--s2-runtime-contract=" + str(journal.path / (name + "_runtime") / "contract.json"),
+            *paths,
+        ),
+        xml,
+        environment=tuple(environment),
+        requires=tuple(requires),
+        required_artifacts=tuple(required_artifacts),
+        test_nodes=tuple((*paths, *required_nodes)),
+    )
+
+
+def comparison_plan(root, journal):
+    """Real Window-2 producers and their actual consumer matrix, also used in fixtures."""
+    comparison = str(journal.path / "comparison")
+    python = str(root / ".venv/bin/python")
+    main = "apps/evaluation_runner/run_structure_two_comparison_audit.py"
+    attribution = "apps/evaluation_runner/summarize_structure_two_comparison_audit.py"
+    files = tuple(
+        str(Path(comparison) / n) for n in ("audit.json", "steps.jsonl.gz", "timing.json")
+    )
+    generated = Stage(
+        "comparison_generate",
+        (python, main, "--repository-root", str(root), "--output", comparison),
+        freeze_outputs=files,
+        new_outputs=(comparison,),
+    )
+    replay = Stage(
+        "comparison_recompute",
+        (*generated.argv, "--verify"),
+        requires=(generated.name,),
+        required_artifacts=files,
+    )
+    summarized = Stage(
+        "attribution_generate",
+        (python, attribution, "--bundle", comparison),
+        freeze_outputs=(str(Path(comparison) / "attribution.json"),),
+        requires=(replay.name,),
+        required_artifacts=files,
+    )
+    verified = Stage(
+        "attribution_recompute",
+        (*summarized.argv, "--verify"),
+        freeze_outputs=(comparison,),
+        requires=(summarized.name,),
+    )
+    environment = {"S2_AUDIT_BUNDLE": comparison}
+    for key, directory in (
+        ("S2_AUDIT_EVIDENCE_DIR", "forgery"),
+        ("S2_SOURCE_EVIDENCE_DIR", "source"),
+        ("S2_FAIRNESS_EVIDENCE_DIR", "fairness"),
+        ("S2_DYNAMIC_EVIDENCE_DIR", "dynamic"),
+    ):
+        environment[key] = str(journal.path / "window2_evidence" / directory)
+    consumer = matrix_stage(
+        root,
+        journal,
+        "window2_comparison_and_forgery",
+        W2_TESTS,
+        environment=tuple(environment.items()),
+        requires=(replay.name, verified.name),
+        required_artifacts=(comparison,),
+    )
+    return [generated, replay, summarized, verified, consumer]
+
+
+def prepare_test_runtime(root, journal, stage, frozen, environment):
+    if environment is None:
+        raise ValueError("matrix requires verified native execution environment")
+    if stage.argv[:3] != (str(root / ".venv/bin/python"), "-m", "pytest"):
+        raise ValueError("matrix must use verified python -m pytest")
+    path = journal.path / (stage.name + "_runtime")
+    path.mkdir()
+    contract = {
+        "root": str(root),
+        "nonce": uuid.uuid4().hex,
+        "environment": environment,
+        "test_nodes": stage.test_nodes,
+        "project_sources": {
+            str(root / p): sha
+            for p, sha in frozen["files"].items()
+            if p.startswith("src/cpswm/") and p.endswith(".py")
+        },
+    }
+    with (path / "contract.json").open("x") as stream:
+        stream.write(json.dumps(contract, indent=2) + "\n")
+    return path, contract
+
+
+def verify_test_runtime(path, contract, pid):
+    records = [json.loads(p.read_text()) for p in sorted(path.glob("*.finish.json"))]
+    masters = [r for r in records if r["worker"] == "controller"]
+    if len(masters) != 1 or masters[0]["pid"] != pid:
+        raise ValueError("actual pytest controller observation absent or mismatched")
+    master = masters[0]
+    if len(records) != 1 + len(master["workers"]) or {r["worker"] for r in records} != {
+        "controller",
+        *master["workers"],
+    }:
+        raise ValueError("actual pytest worker observations incomplete")
+    reports = []
+    for r in records:
+        if r["nonce"] != contract["nonce"] or r["status"] != "FINISHED" or r["exit_code"] != 0:
+            raise ValueError("actual pytest process did not complete successfully")
+        if (
+            r["executable"] != str(Path(contract["root"]) / ".venv/bin/python")
+            or r["prefix"] != contract["environment"]["prefix"]
+        ):
+            raise ValueError("actual pytest process interpreter differs")
+        if not r["collected"] or r["collected"] != master["collected"]:
+            raise ValueError("actual pytest collection missing or inconsistent")
+        reports.extend(r["reports"])
+    if any(r["outcome"] != "passed" or r["wasxfail"] for r in reports):
+        raise ValueError("actual pytest failed/skipped/xfail cannot complete matrix")
+    for phase in ("setup", "call", "teardown"):
+        ids = [r["nodeid"] for r in reports if r["when"] == phase]
+        if sorted(ids) != sorted(master["collected"]):
+            raise ValueError("actual pytest required tests not fully executed: " + phase)
+    return {"processes": records, "contract_sha256": digest(contract)}
+
+
 def run_stages(root, journal, stages, frozen, excluded, *, environment=None, before_stage=None):
     """Shared execution engine. No loaded journal can skip a stage or grant success."""
     journal.value.update(
@@ -329,8 +511,18 @@ def run_stages(root, journal, stages, frozen, excluded, *, environment=None, bef
     )
     journal.save()
     locked = []
+    completed = set()
     try:
         for stage in stages:
+            if not set(stage.requires).issubset(completed):
+                raise ValueError("REQUIRED_PRODUCER_NOT_COMPLETED: " + stage.name)
+            frozen_paths = {p for paths, _ in locked for p in paths}
+            if not set(stage.required_artifacts).issubset(frozen_paths):
+                raise ValueError("REQUIRED_VERIFIED_ARTIFACT_ABSENT: " + stage.name)
+            for name in stage.new_outputs:
+                path = root / name
+                if path.exists() or path.is_symlink():
+                    raise ValueError("generation requires new output: " + name)
             require_artifacts(root, locked)
             require_snapshot(root, frozen, excluded)
             if environment is not None and execution_environment(root) != environment:
@@ -344,6 +536,7 @@ def run_stages(root, journal, stages, frozen, excluded, *, environment=None, bef
                 "argv": list(stage.argv),
                 "cwd": str(root),
                 "status": "RUNNING",
+                "environment_overrides": dict(stage.environment),
                 "started_unix": time.time(),
             }
             journal.value["stages"].append(row)
@@ -351,13 +544,32 @@ def run_stages(root, journal, stages, frozen, excluded, *, environment=None, bef
             output = journal.path / (stage.name + ".stdout.log")
             error = journal.path / (stage.name + ".stderr.log")
             proc = None
+            runtime = None
+            if stage.test_nodes:
+                runtime = prepare_test_runtime(root, journal, stage, frozen, environment)
+            elif stage.junit and environment is not None:
+                raise ValueError("native test matrix requires actual runtime observations")
             try:
                 with output.open("xb") as stdout, error.open("xb") as stderr:
                     proc = subprocess.Popen(
-                        stage.argv, cwd=root, stdout=stdout, stderr=stderr, start_new_session=True
+                        stage.argv,
+                        cwd=root,
+                        stdout=stdout,
+                        stderr=stderr,
+                        start_new_session=True,
+                        env={**os.environ, **dict(stage.environment)},
                     )
                     row["pid"] = proc.pid
                     journal.save()
+                    if runtime is not None:
+                        while proc.poll() is None:
+                            rejections = list(runtime[0].glob("*.reject.json"))
+                            if rejections:
+                                row["runtime_rejections"] = [
+                                    json.loads(p.read_text()) for p in rejections
+                                ]
+                                raise ValueError("ACTUAL_TEST_RUNTIME_REJECTED: " + stage.name)
+                            time.sleep(0.05)
                     row["exit_code"] = proc.wait()
             finally:
                 if proc is not None:
@@ -377,6 +589,8 @@ def run_stages(root, journal, stages, frozen, excluded, *, environment=None, bef
                 raise ValueError("execution environment changed during stage")
             if row["exit_code"] != 0:
                 raise ValueError(f"STAGE_FAILED: {stage.name} exit {row['exit_code']}")
+            if runtime is not None:
+                row["test_runtime"] = verify_test_runtime(*runtime, row["pid"])
             if stage.junit:
                 cases = ET.parse(journal.path / stage.junit).findall(".//testcase")
                 counts = {
@@ -391,6 +605,7 @@ def run_stages(root, journal, stages, frozen, excluded, *, environment=None, bef
                 locked.append((stage.freeze_outputs, captured))
                 row["frozen_outputs"] = captured
             row["status"] = "COMPLETED"
+            completed.add(stage.name)
             journal.save()
         require_artifacts(root, locked)
         journal.value["locked_artifacts"] = locked
@@ -450,7 +665,6 @@ def relative_outputs(root, layout):
 
 def build_plan(root, journal, layout, closure):
     python = str(root / ".venv/bin/python")
-    pytest = str(root / ".venv/bin/pytest")
     stages = []
 
     def cli(name, script, *args, freeze=()):
@@ -462,28 +676,8 @@ def build_plan(root, journal, layout, closure):
             )
         )
 
-    def matrix(name, paths):
-        if not paths:
-            raise ValueError("empty required matrix")
-        for node in paths:
-            if not (root / node.split("::")[0]).is_file():
-                raise ValueError("required test missing: " + node)
-        xml = name + ".xml"
-        stages.append(
-            Stage(
-                name,
-                (
-                    pytest,
-                    "-o",
-                    "addopts=",
-                    "-q",
-                    "--confcutdir=.",
-                    "--junitxml=" + str(journal.path / xml),
-                    *paths,
-                ),
-                xml,
-            )
-        )
+    def matrix(name, paths, **kwargs):
+        stages.append(matrix_stage(root, journal, name, paths, **kwargs))
 
     if set(closure) != set(CLOSURE_ROLES) or any(
         not isinstance(v, (list, tuple)) or not v for v in closure.values()
@@ -501,42 +695,9 @@ def build_plan(root, journal, layout, closure):
     ):
         raise ValueError("closure mappings must name source-bound test node IDs")
     matrix("window1_protection", W1_TESTS)
-    matrix("window2_comparison_and_forgery", W2_TESTS)
-    matrix("window3_revision_and_backbone", (*W3_TESTS, *closure_nodes))
-    comparison = str(journal.path / "comparison")
-    comparison_files = tuple(
-        str(Path(comparison) / n) for n in ("audit.json", "steps.jsonl.gz", "timing.json")
-    )
-    cli(
-        "comparison_generate",
-        "run_structure_two_comparison_audit.py",
-        "--repository-root",
-        root,
-        "--output",
-        comparison,
-    )
-    cli(
-        "comparison_recompute",
-        "run_structure_two_comparison_audit.py",
-        "--repository-root",
-        root,
-        "--output",
-        comparison,
-        "--verify",
-    )
-    cli(
-        "attribution_generate",
-        "summarize_structure_two_comparison_audit.py",
-        "--bundle",
-        comparison,
-    )
-    cli(
-        "attribution_recompute",
-        "summarize_structure_two_comparison_audit.py",
-        "--bundle",
-        comparison,
-        "--verify",
-    )
+    stages.extend(comparison_plan(root, journal))
+    # Full files already cover the reviewed nodes; do not execute them twice.
+    matrix("window3_revision_and_backbone", W3_TESTS, required_nodes=tuple(closure_nodes))
     cli("five_generate", "run_structure_two_evidence_repair.py", "--generate-current")
     cli("five_recompute", "run_structure_two_evidence_repair.py", "--verify-current")
     cli(
@@ -566,9 +727,6 @@ def build_plan(root, journal, layout, closure):
     )
     matrix("checkpoint_adversarial", ("tests/test_structure_two_engineering_trust_checkpoint.py",))
     freeze_by_stage = {
-        "comparison_generate": comparison_files,
-        "attribution_generate": (str(Path(comparison) / "attribution.json"),),
-        "attribution_recompute": (comparison,),
         "five_generate": tuple(layout["p5"].values()),
         "history_generate": (layout["history"],),
         "v05_compatibility": (layout["v05"],),
@@ -579,7 +737,9 @@ def build_plan(root, journal, layout, closure):
         ),
         "checkpoint_generate_fresh": (layout["checkpoint"],),
     }
-    return [Stage(s.name, s.argv, s.junit, freeze_by_stage.get(s.name, ())) for s in stages]
+    return [
+        replace(s, freeze_outputs=freeze_by_stage.get(s.name, s.freeze_outputs)) for s in stages
+    ]
 
 
 def interrupted(_signum, _frame):

@@ -9,6 +9,7 @@ Python, pytest, the OS and process integrity remain trusted.
 
 from __future__ import annotations
 
+import ast
 import hashlib
 import json
 import marshal
@@ -84,15 +85,18 @@ class ExecutedSourceGuard:
         key = str(path)
         if key not in self.sources:
             self.reject("UNBOUND_LOCAL_EXECUTION: " + key)
-        if path.resolve() != path or file_sha(path) != self.sources[key]:
+        source = path.read_bytes()
+        if path.resolve() != path or hashlib.sha256(source).hexdigest() != self.sources[key]:
             self.reject("LOCAL_EXECUTION_SOURCE_CHANGED: " + key)
         if key not in self.compiled:
-            plain = compile(path.read_bytes(), filename, "exec", dont_inherit=True)
+            plain = compile(source, filename, "exec", dont_inherit=True)
             # pytest's real AST rewrite, compiled directly from current bytes;
             # never read a pyc to establish the expected executed code.
-            from _pytest.assertion.rewrite import _rewrite_test
+            from _pytest.assertion.rewrite import rewrite_asserts
 
-            rewritten = _rewrite_test(path, self.config)[1]
+            tree = ast.parse(source, filename=filename)
+            rewrite_asserts(tree, source, filename, self.config)
+            rewritten = compile(tree, filename, "exec", dont_inherit=True)
             self.compiled[key] = (plain, rewritten)
         plain, rewritten = self.compiled[key]
         if code != plain and code != rewritten:

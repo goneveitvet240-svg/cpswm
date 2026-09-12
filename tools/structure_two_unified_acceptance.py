@@ -12,7 +12,6 @@ import argparse
 import hashlib
 import json
 import os
-import runpy
 import signal
 import subprocess
 import sys
@@ -777,9 +776,15 @@ def native_audit_pytest(command_id):
     signal.signal(signal.SIGTERM, interrupted)
     signal.signal(signal.SIGINT, interrupted)
     try:
-        namespace = runpy.run_path(
-            str(root / "apps/evaluation_runner/run_structure_two_engineering_audit_receipt.py")
-        )
+        frozen = source_snapshot(root)
+        config_relative = "apps/evaluation_runner/run_structure_two_engineering_audit_receipt.py"
+        config_path = root / config_relative
+        config_source = config_path.read_bytes()
+        if hashlib.sha256(config_source).hexdigest() != frozen["files"][config_relative]:
+            raise ValueError("native audit configuration changed before loading")
+        namespace = {"__file__": str(config_path), "__name__": "_native_audit_configuration"}
+        exec(compile(config_source, str(config_path), "exec", dont_inherit=True), namespace)
+        require_snapshot(root, frozen, ())
         arguments = namespace["NATIVE_PYTEST_ARGUMENTS"][command_id]
         expected_env = namespace["PYTEST_ENVIRONMENT_OVERRIDES"]
         if any(os.environ.get(k) != v for k, v in expected_env.items()):
@@ -808,9 +813,7 @@ def native_audit_pytest(command_id):
                 *arguments,
             ),
         )
-        frozen = source_snapshot(root)
         environment = execution_environment(root)
-
         run_stages(root, journal, [stage], frozen, (), environment=environment)
         print((journal.path / (command_id + ".stdout.log")).read_text(), end="")
         print(

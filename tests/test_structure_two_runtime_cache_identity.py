@@ -266,3 +266,34 @@ def test_bad_cache_in_background_thread_cannot_be_hidden(runtime_tree):
     with pytest.raises(ValueError):
         execute(root, journal, stage)
     assert list(journal.path.rglob("*.code.reject.json"))
+
+
+def test_code_expectation_uses_exact_bytes_that_were_hashed(runtime_tree):
+    """Deterministic read-race injection; actual stale pyc and real subprocess."""
+    root = runtime_tree
+    path = root / "src/cpswm/read_race.py"
+    seed_cache(path, "VALUE = 1\n", "VALUE = 9\n", py_compile.PycInvalidationMode.UNCHECKED_HASH)
+    conftest = root / "tests/conftest.py"
+    conftest.write_text("""from pathlib import Path
+original_read = Path.read_bytes
+reads = 0
+def racing_read(self):
+ global reads
+ if self.name == 'read_race.py':
+  reads += 1
+  if reads == 2:
+   return b'VALUE = 9\\n'
+ return original_read(self)
+Path.read_bytes = racing_read
+""")
+    try:
+        journal, stage = prepare(
+            root, "def test_live():\n from cpswm import read_race\n assert read_race.VALUE == 9\n"
+        )
+        with pytest.raises(ValueError):
+            execute(root, journal, stage)
+        assert "EXECUTED_LOCAL_CODE_MISMATCH" in "".join(
+            p.read_text() for p in journal.path.rglob("*.code.reject.json")
+        )
+    finally:
+        conftest.unlink()

@@ -242,6 +242,8 @@ class Journal:
 
     def __init__(self, path):
         self.path = path.absolute()
+        if self.path != self.path.resolve():
+            raise ValueError("run directory must be a canonical path without escape aliases")
         if any(p.is_symlink() for p in [self.path, *self.path.parents]):
             raise ValueError("run directory symlink refused")
         self.path.parent.mkdir(parents=True, exist_ok=True)
@@ -296,6 +298,8 @@ def artifact_snapshot(root, paths):
     result = {}
     for name in paths:
         path = root / name
+        if path.resolve() != path or not path.is_relative_to(root):
+            raise ValueError("generated artifact path escapes canonical checkout")
         path.relative_to(root)
         if not path.exists():
             raise ValueError("required generated artifact absent: " + name)

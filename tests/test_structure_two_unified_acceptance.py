@@ -640,3 +640,18 @@ def test_real_native_probe_requires_exactly_five_experiments(tmp_path):
     assert negative.returncode != 0
     assert "native output/consumer contract mismatch" in negative.stderr
     assert '"p5"' not in negative.stdout
+
+
+def test_run_directory_dotdot_escape_is_rejected_before_creation(tree):
+    target = tree / "runs" / ".." / "escaped"
+    with pytest.raises(ValueError, match="canonical path"):
+        coordinator.Journal(target)
+    assert not (tree / "escaped").exists()
+
+
+def test_artifact_freezing_cannot_read_outside_checkout_by_dotdot(tree):
+    foreign = tree.parent / "foreign.json"
+    foreign.write_text('{"passed": true}')
+    with pytest.raises(ValueError, match="escapes canonical checkout"):
+        coordinator.artifact_snapshot(tree, ("../foreign.json",))
+    assert foreign.read_text() == '{"passed": true}'

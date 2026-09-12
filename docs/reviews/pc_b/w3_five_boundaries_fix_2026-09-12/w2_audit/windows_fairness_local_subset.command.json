@@ -1,0 +1,41 @@
+{
+  "command": [
+    "F:\\\u5e9e\u60df\\codex\\cpswm-w3-five-boundaries-fix-20260912\\.venv\\Scripts\\python.exe",
+    "-m",
+    "pytest",
+    "-q",
+    "-o",
+    "addopts=",
+    "-p",
+    "no:cacheprovider",
+    "--basetemp=F:\\\u5e9e\u60df\\codex\\_cpswm_test_scratch\\w2-fairness-subset-temp",
+    "--junitxml=F:\\\u5e9e\u60df\\codex\\cpswm-w3-five-boundaries-fix-20260912\\docs\\reviews\\pc_b\\w3_five_boundaries_fix_2026-09-12\\w2_audit\\windows_fairness_local_subset.junit.xml",
+    "tests\\test_structure_two_comparison_fairness.py::test_actual_boundaries_accept_legitimate_inputs_and_decodes",
+    "tests\\test_structure_two_comparison_fairness.py::test_real_split_access_positive_and_foreign_truth_rejection",
+    "tests\\test_structure_two_comparison_fairness.py::test_old_validation_consumer_rejected_new_consumer_matches_real_scores",
+    "tests\\test_structure_two_comparison_fairness.py::test_safe_selection_preserves_frozen_grid_and_results",
+    "tests\\test_structure_two_comparison_fairness.py::test_consumer_probe_records_actual_values_and_restores_tracer",
+    "tests\\test_structure_two_comparison_audit.py::test_real_observation_fixed_legal_search_posterior_changes_action",
+    "tests\\test_structure_two_comparison_audit.py::test_amg_native_search_order_is_discarded_by_adapter",
+    "tests\\test_structure_two_comparison_audit.py::test_learned_joint_changes_do_not_route_into_search_but_habit_head_is_live",
+    "tests\\test_structure_two_comparison_audit.py::test_feature_bottleneck_ignores_ordered_role_evidence",
+    "tests\\test_structure_two_comparison_audit.py::test_full_episode_support_contains_future_visible_locations",
+    "tests\\test_structure_two_comparison_audit.py::test_training_material_reads_only_training_truth",
+    "tests\\test_structure_two_comparison_audit.py::test_truth_barrier_rejects_early_duplicate_and_wrong_step",
+    "tests\\test_structure_two_comparison_audit.py::test_episode_diagnostic_partition_and_search_equality",
+    "tests\\test_structure_two_comparison_audit.py::test_initial_amg_fallback_encodes_ignorance_as_a_different_point_mass",
+    "tests\\test_structure_two_comparison_audit.py::test_same_location_full_p5_observes_but_does_not_commit_long_term"
+  ],
+  "cwd": "F:\\\u5e9e\u60df\\codex\\cpswm-w2-audit-original-20260912",
+  "environment_overrides": {
+    "PYTHONPATH": "F:\\\u5e9e\u60df\\codex\\cpswm-w2-audit-original-20260912\\src",
+    "PYTEST_DISABLE_PLUGIN_AUTOLOAD": "1",
+    "PYTHONPYCACHEPREFIX": "F:\\\u5e9e\u60df\\codex\\_cpswm_test_scratch\\w2-fairness-pycache",
+    "OMP_NUM_THREADS": "1",
+    "OPENBLAS_NUM_THREADS": "1",
+    "VECLIB_MAXIMUM_THREADS": "1"
+  },
+  "started_utc": "2026-09-12T15:05:23.827191+00:00",
+  "exit_code": 0,
+  "ended_utc": "2026-09-12T15:06:40.347500+00:00"
+}

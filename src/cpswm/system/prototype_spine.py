@@ -19,8 +19,10 @@ from datetime import datetime
 from enum import StrEnum
 from functools import wraps
 from math import exp, isfinite, log, tanh
+from pathlib import Path
 from threading import RLock, get_ident
 from time import perf_counter_ns
+from types import CodeType
 from typing import TYPE_CHECKING, Any, Concatenate, Final, cast
 from uuid import NAMESPACE_URL, UUID, uuid4, uuid5
 
@@ -106,6 +108,7 @@ from cpswm.system.structure_two_execution import (
     TracePhaseName,
     TraceSink,
     UnsupportedStructureTwoExecutionPlan,
+    _code_object_sha256,
     _restore_runtime_rlock_depth,
     _runtime_rlock_depth,
     bind_runtime_callable,
@@ -139,6 +142,71 @@ from cpswm.world_model.habits_transitions import (
 )
 
 StructuredEventEvidence = ActorResponsibilityEvidence | EventMechanismEvidence | RoleBindingEvidence
+
+
+_PARTICLE_WORKSPACE_BOUND_METHOD_NAMES: Final = (
+    "advance",
+    "location_marginal",
+    "invalidate_revisions",
+    "publish_posterior",
+    "state_payload",
+    "validate_world_support",
+    "_validate_persisted_state",
+    "_validate_current_batch",
+    "_validated_input_body",
+    "_validate_record_binding",
+)
+
+
+def _bootstrap_particle_workspace_bindings() -> tuple[
+    Path,
+    str,
+    tuple[tuple[str, object, str], ...],
+]:
+    """Fully bind workspace code once, then retain immutable hot-path anchors.
+
+    ``bind_runtime_callable`` recompiles the complete source file for every
+    method. Doing that ten times on each of the several identity-guard passes
+    in one transaction can delay lock-tamper rollback past its one-second
+    fail-closed deadline. The loaded-code/source comparison is invariant for
+    the process, so perform the complete comparison once at import. Runtime
+    checks still compare every live method object and code fingerprint, and the
+    whole source-file digest, on every guard pass.
+    """
+
+    workspace = NativeParticleWorkspace()
+    bootstrap_id = UUID("00000000-0000-4000-8000-00000000b003")
+    anchors: list[tuple[str, object, str]] = []
+    source_paths: set[Path] = set()
+    source_digests: set[str] = set()
+    for slot, method_name in enumerate(_PARTICLE_WORKSPACE_BOUND_METHOD_NAMES, start=2):
+        binding = bind_runtime_callable(
+            runtime_execution_id=bootstrap_id,
+            operator="orrer_cheh",
+            binding_slot=slot,
+            binding_kind="direct_operator_callable",
+            instance=workspace,
+            callable_name=method_name,
+            require_declared_member=True,
+        )
+        declared = vars(NativeParticleWorkspace)[method_name]
+        target = declared.__func__ if isinstance(declared, staticmethod | classmethod) else declared
+        code = getattr(target, "__code__", None)
+        if not isinstance(code, CodeType):
+            raise RuntimeError(f"native particle workspace method has no code: {method_name}")
+        source_paths.add(Path(code.co_filename).resolve())
+        source_digests.add(binding.implementation_source_sha256)
+        anchors.append((method_name, target, binding.loaded_callable_code_sha256))
+    if len(source_paths) != 1 or len(source_digests) != 1:
+        raise RuntimeError("native particle workspace methods do not share one bound source")
+    return source_paths.pop(), source_digests.pop(), tuple(anchors)
+
+
+(
+    _PARTICLE_WORKSPACE_SOURCE_PATH,
+    _PARTICLE_WORKSPACE_SOURCE_SHA256,
+    _PARTICLE_WORKSPACE_METHOD_ANCHORS,
+) = _bootstrap_particle_workspace_bindings()
 
 
 def _runtime_type_symbol(value: object) -> str:
@@ -2877,30 +2945,37 @@ class CorePrototypeSpine:
             or type(self._particle_workspace) is not NativeParticleWorkspace
         ):
             raise ValueError("native particle workspace identity was replaced")
-        for slot, method in enumerate(
-            (
-                "advance",
-                "location_marginal",
-                "invalidate_revisions",
-                "publish_posterior",
-                "state_payload",
-                "validate_world_support",
-                "_validate_persisted_state",
-                "_validate_current_batch",
-                "_validated_input_body",
-                "_validate_record_binding",
-            ),
-            start=2,
-        ):
-            bind_runtime_callable(
-                runtime_execution_id=self.authorization_scope_id,
-                operator="orrer_cheh",
-                binding_slot=slot,
-                binding_kind="direct_operator_callable",
-                instance=self._particle_workspace,
-                callable_name=method,
-                require_declared_member=True,
-            )
+        instance_attributes = vars(self._particle_workspace)
+        for (
+            method_name,
+            expected_target,
+            expected_code_sha256,
+        ) in _PARTICLE_WORKSPACE_METHOD_ANCHORS:
+            if method_name in instance_attributes:
+                raise ValueError(
+                    "native particle workspace callable is shadowed by an instance attribute: "
+                    + method_name
+                )
+            declared = vars(NativeParticleWorkspace).get(method_name)
+            if isinstance(declared, staticmethod | classmethod):
+                declared = declared.__func__
+            method = getattr(self._particle_workspace, method_name, None)
+            target = getattr(method, "__func__", method)
+            code = getattr(target, "__code__", None)
+            if declared is not expected_target or target is not expected_target:
+                raise ValueError(
+                    "native particle workspace callable binding was replaced: " + method_name
+                )
+            if not isinstance(code, CodeType) or _code_object_sha256(code) != expected_code_sha256:
+                raise ValueError(
+                    "native particle workspace loaded callable code changed: " + method_name
+                )
+        try:
+            source_sha256 = hashlib.sha256(_PARTICLE_WORKSPACE_SOURCE_PATH.read_bytes()).hexdigest()
+        except OSError as error:
+            raise ValueError("native particle workspace source is unavailable") from error
+        if source_sha256 != _PARTICLE_WORKSPACE_SOURCE_SHA256:
+            raise ValueError("native particle workspace source changed after binding")
         if self.locations != self._registered_particle_locations:
             raise ValueError("runtime world location support was rebound after construction")
         self._particle_workspace.validate_world_support(self._registered_particle_locations)

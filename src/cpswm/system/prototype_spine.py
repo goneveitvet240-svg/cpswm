@@ -1069,6 +1069,10 @@ class CorePrototypeSpine:
         self.locations = tuple(dict.fromkeys(locations))
         if not owner_key.strip() or len(self.locations) < 2:
             raise ValueError("prototype requires an owner and at least two locations")
+        # Prepared-particle authority is the construction-time world, not a
+        # subsequently rebound public attribute. Legitimate analytic ordering is
+        # still handled inside the native workspace with paired alpha entries.
+        self._registered_particle_locations = self.locations
 
         self.loop_config = loop_config or PrototypeLoopConfig()
         self._event_engine = event_engine or OpenWorldRoleConditionedReversibleEventRevisionEngine()
@@ -1119,7 +1123,9 @@ class CorePrototypeSpine:
         ] = {}
         self._revision_parent_events: dict[UUID, _CommittedPrototypeEvent] = {}
         self._hybrid_reinstatement_lineage: dict[UUID, tuple[UUID, UUID | None]] = {}
-        self._particle_workspace = NativeParticleWorkspace()
+        self._particle_workspace = NativeParticleWorkspace(
+            registered_locations=self._registered_particle_locations
+        )
         self._particle_workspace_anchor = self._particle_workspace
         self._event_histories: dict[UUID, EventHypothesisHistory] = {}
         self._production_operator_contract: Callable[[], Mapping[str, Sequence[object]]] | None = (
@@ -2731,6 +2737,7 @@ class CorePrototypeSpine:
         from cpswm.system.structure_two_semantic_identity import semantic_memory_identity
 
         with self._execution_lock:
+            self._check_particle_workspace_binding()
             return semantic_memory_identity(self)
 
     @_serialized_core_mutation
@@ -2797,7 +2804,7 @@ class CorePrototypeSpine:
                 statistics=statistics,
                 chains=chains,
                 snapshot_id=self.current_snapshot.snapshot_id,
-                allowed_locations=self.locations,
+                allowed_locations=self._registered_particle_locations,
                 source_frame=(frames, self.current_cause_snapshot),
                 ledger_head_sha256=self._hybrid_loop.ledger.export_state().manifest.head_hash,
                 unresolved_log_weight=unresolved_log_weight,
@@ -2825,7 +2832,7 @@ class CorePrototypeSpine:
         if (
             source.runtime_id != self._particle_workspace.runtime_id
             or source.object_instance_id != self.object_instance_id
-            or source.locations != self.locations
+            or source.locations != self._registered_particle_locations
             or source.snapshot_id != self.current_snapshot.snapshot_id
             or event is None
             or content_sha256(self._event_histories.get(revision))
@@ -2871,7 +2878,19 @@ class CorePrototypeSpine:
         ):
             raise ValueError("native particle workspace identity was replaced")
         for slot, method in enumerate(
-            ("advance", "location_marginal", "invalidate_revisions", "publish_posterior"), start=2
+            (
+                "advance",
+                "location_marginal",
+                "invalidate_revisions",
+                "publish_posterior",
+                "state_payload",
+                "validate_world_support",
+                "_validate_persisted_state",
+                "_validate_current_batch",
+                "_validated_input_body",
+                "_validate_record_binding",
+            ),
+            start=2,
         ):
             bind_runtime_callable(
                 runtime_execution_id=self.authorization_scope_id,
@@ -2882,6 +2901,9 @@ class CorePrototypeSpine:
                 callable_name=method,
                 require_declared_member=True,
             )
+        if self.locations != self._registered_particle_locations:
+            raise ValueError("runtime world location support was rebound after construction")
+        self._particle_workspace.validate_world_support(self._registered_particle_locations)
 
     def _process_transition(
         self,
@@ -3341,7 +3363,7 @@ class CorePrototypeSpine:
         self._particle_workspace.publish_posterior(
             object_instance_id=self.object_instance_id,
             snapshot_id=belief_snapshot.snapshot_id,
-            locations=self.locations,
+            locations=self._registered_particle_locations,
             history_before=history,
             history_after=receipted_history,
             posterior=event_posterior,

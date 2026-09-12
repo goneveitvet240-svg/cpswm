@@ -30,6 +30,7 @@ _UUID = re.compile(r"[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12
 
 def semantic_memory_state(core: Any) -> dict[str, Any]:
     """Return inspectable semantic content; all runtime binding checks stay active."""
+    core._check_particle_workspace_binding()
     aliases: dict[str, str] = {}
 
     def bind(value: Any, label: str) -> None:
@@ -365,11 +366,18 @@ def semantic_memory_state(core: Any) -> dict[str, Any]:
         )
     if set(workspace.input_journal) != set(workspace.input_bodies):
         raise ValueError("missing raw prepared input journal body")
+    semantic_input_digests: dict[UUID, str] = {}
     for cluster, digest in workspace.input_journal.items():
         body = workspace.input_bodies[cluster]
         if digest != native_content_sha256(body):
             raise ValueError("invalid raw prepared input digest")
-        particle_payload["input_journal"][str(canonical(cluster))] = content_sha256(prepared(body))
+        semantic_digest = content_sha256(prepared(body))
+        semantic_input_digests[cluster] = semantic_digest
+        particle_payload["input_journal"][str(canonical(cluster))] = semantic_digest
+    for pid, particle in workspace.records.items():
+        particle_payload["records"][str(canonical(pid))]["input_fingerprint_sha256"] = (
+            semantic_input_digests[particle.evidence_cluster_id]
+        )
 
     def cancellation_semantics(c: Any) -> dict[str, Any]:
         row: dict[str, Any] = canonical(c)

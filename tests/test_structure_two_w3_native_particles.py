@@ -33,8 +33,17 @@ def candidates(core, step=0, q=0.25):
         for actor in ("owner", "unknown_actor")
     ]
     receipts, statistics = [], {}
+    cluster_id = UUID(int=3000 + step)
     for index, chain in enumerate(chains):
         pid = UUID(int=1000 + step * 10 + index)
+        parent = None if step == 0 else core._particle_workspace.batch.particle_weights[index]
+        parent_clusters = (
+            ()
+            if parent is None
+            else core._particle_workspace.records[
+                parent.particle_id
+            ].statistics.evidence_cluster_ids
+        )
         analytic = ConditionalAnalyticState(
             core.locations,
             (4.0, 1.0, 1.0, 1.0),
@@ -42,10 +51,9 @@ def candidates(core, step=0, q=0.25):
             (1.0, 2.0),
             ((3.0, 0.0), (0.0, 3.0)),
             (2.0, 1.0),
-            (UUID(int=3000 + step),),
+            (*parent_clusters, cluster_id),
         )
         statistics[pid] = analytic
-        parent = None if step == 0 else core._particle_workspace.batch.particle_weights[index]
         typed = TypedParticleState(
             particle_id=pid,
             parent_particle_id=None if parent is None else parent.particle_id,
@@ -72,7 +80,7 @@ def candidates(core, step=0, q=0.25):
         )
         proposal = NeuralParticleProposal(
             proposal_id=UUID(int=2000 + step * 10 + index),
-            evidence_cluster_id=UUID(int=3000 + step),
+            evidence_cluster_id=cluster_id,
             operation="preserve_unresolved" if step == 0 else "branch",
             source_particle_id=typed.parent_particle_id,
             source_snapshot_id=typed.source_snapshot_id,

@@ -720,7 +720,9 @@ class CalibratedRetractionPolicy:
         if self.corrected_location_id is not None:
             return FeedbackInterpretation(
                 operation=PrototypeStatisticOperation.CORRECT,
-                evidence_strength=abs(delta),
+                evidence_strength=(
+                    abs(delta) if self.corrected_owner_mass is None else self.corrected_owner_mass
+                ),
                 target_revision_id=target,
                 corrected_location_id=self.corrected_location_id,
                 rationale="probe policy: calibrated correction of the cited revision",

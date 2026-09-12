@@ -81,6 +81,10 @@ from cpswm.system.counterfactual_event_hypergraph import (
     OpenWorldRoleConditionedReversibleEventRevisionEngine,
     ProvenanceConstrainedMessagePassing,
 )
+from cpswm.system.evaluation_operations.structure_two_selected_method import (
+    ParticleRevisionBatch,
+    ParticleRevisionReceipt,
+)
 from cpswm.system.reproducibility import content_sha256
 from cpswm.system.structure_two_execution import (
     GENESIS_RECEIPT_SHA256,
@@ -113,6 +117,10 @@ from cpswm.system.structure_two_execution import (
 )
 from cpswm.system.structure_two_execution import (
     canonical_legacy_ordinary_transition_plan as canonical_legacy_ordinary_transition_plan,
+)
+from cpswm.system.structure_two_particle_workspace import (
+    ConditionalAnalyticState,
+    NativeParticleWorkspace,
 )
 from cpswm.world_model.grounded_search.concurrent_map_task import BeliefSnapshot, VersionedBeliefMap
 from cpswm.world_model.habits_transitions import (
@@ -400,6 +408,7 @@ class _WriteAuthorization:
     granting_revision_id: UUID | None
     granted_at_observation_count: int
     basis_sha256: str
+    basis_json: str = "{}"
 
 
 @dataclass(frozen=True, slots=True)
@@ -411,6 +420,10 @@ class _ObservationWriteEligibility:
     origin_path: str
     quarantine_reason: str | None = None
     authorizations: tuple[_WriteAuthorization, ...] = ()
+    parent_revision_id: UUID | None = None
+    correction_evidence_source_record_ids: tuple[UUID, ...] = ()
+    parent_eligibility_sha256: str | None = None
+    correction_outcome_sha256: str | None = None
 
     @property
     def write_eligible(self) -> bool:
@@ -498,11 +511,13 @@ class PrototypeTransition:
     context_key: str = "default"
     context_value: float = 0.0
     unresolved_probability: float = 0.1
+    identity_switch_probability: float = 0.0
 
     def __post_init__(self) -> None:
         for actor, probability in self.actor_prior.items():
             _require_probability(probability, f"actor_prior[{actor!r}]")
         _require_probability(self.unresolved_probability, "unresolved_probability")
+        _require_probability(self.identity_switch_probability, "identity_switch_probability")
 
 
 @dataclass(frozen=True, slots=True)
@@ -969,6 +984,7 @@ class _CommittedPrototypeEvent:
     hybrid_parent_revision_id: UUID | None = None
     derived_from_revision_id: UUID | None = None
     belief_snapshot_id: UUID | None = None
+    identity_switch_probability: float = 0.0
 
 
 class CorePrototypeSpine:
@@ -1045,6 +1061,14 @@ class CorePrototypeSpine:
         # Origin write eligibility, quarantine reason and subsequent authorizations
         # per observation.  A rebuild is not a write authority; it reads this.
         self._write_eligibility: dict[UUID, _ObservationWriteEligibility] = {}
+        self._revision_transactions: tuple[EventRevisionOutcome, ...] = ()
+        self._revision_parent_events: dict[UUID, _CommittedPrototypeEvent] = {}
+        self._particle_workspace = NativeParticleWorkspace()
+        self._particle_workspace_anchor = self._particle_workspace
+        self._event_histories: dict[UUID, EventHypothesisHistory] = {}
+        self._production_operator_contract: Callable[[], Mapping[str, Sequence[object]]] | None = (
+            None
+        )
         self._quarantined_events: list[_CommittedPrototypeEvent] = []
         self._last_context_key = "default"
         self._last_context_value = 0.0
@@ -1523,6 +1547,19 @@ class CorePrototypeSpine:
     ) -> tuple[ProjectOneRequestApplicationReceipt, ...]:
         """Retry every request waiting on one newly promoted event exactly once."""
 
+        if self._production_operator_contract is not None:
+            self._production_operator_contract()
+        checkpoint = self._capture_revision_transaction(include_operator_state=True)
+        try:
+            return self._retry_deferred_project_one_requests(revision_id)
+        except BaseException:
+            self._restore_revision_transaction(checkpoint)
+            raise
+
+    def _retry_deferred_project_one_requests(
+        self, revision_id: UUID
+    ) -> tuple[ProjectOneRequestApplicationReceipt, ...]:
+
         pending = [
             (fingerprint, request, mode)
             for fingerprint, (
@@ -1807,6 +1844,8 @@ class CorePrototypeSpine:
         # Preserve the legacy call path without trace allocation, source hashing,
         # or an extra UUID draw.  This is compatibility behavior, not implicit P5.
         if execution_plan is None and trace_sink is None:
+            if self._production_operator_contract is not None:
+                self._production_operator_contract()
             checkpoint = self._capture_revision_transaction(include_operator_state=True)
             try:
                 return self._process_transition(transition)
@@ -2079,7 +2118,7 @@ class CorePrototypeSpine:
         if runtime_operator_instances is not None:
             if tuple(runtime_operator_instances) != STRUCTURE_TWO_OPERATOR_ORDER:
                 raise ValueError("production runtime operator mapping order drifted")
-            expected_bound_instances = {
+            expected_bound_instances: dict[str, Sequence[object]] = {
                 "opceu": (self._corrector,),
                 "orrer_cheh": (self._event_engine,),
                 "pchmp": (self._message_passing,),
@@ -2087,9 +2126,11 @@ class CorePrototypeSpine:
                 "ccrr": (router, router.ccrr),
                 "rgrc": (self, self._hybrid_loop.ledger),
             }
+            if self._production_operator_contract is not None:
+                expected_bound_instances = dict(self._production_operator_contract())
             for operator, expected_instances in expected_bound_instances.items():
                 supplied_instances = tuple(runtime_operator_instances.get(operator, ()))
-                if len(supplied_instances) < len(expected_instances) or any(
+                if len(supplied_instances) != len(expected_instances) or any(
                     supplied is not expected
                     for supplied, expected in zip(
                         supplied_instances,
@@ -2132,6 +2173,7 @@ class CorePrototypeSpine:
                 binding_kind=binding_kind,  # type: ignore[arg-type]
                 instance=bound_instance,
                 callable_name=callable_name,
+                require_declared_member=True,
             )
             for operator, bound_instance, callable_name, binding_kind in specifications
         }
@@ -2538,6 +2580,11 @@ class CorePrototypeSpine:
                     "ccrr_pending_tokens": sorted(router.ccrr._pending_tokens.items()),
                 },
                 "committed_events": event_rows(self._committed_events),
+                "write_eligibility": self._write_eligibility,
+                "revision_transactions": self._revision_transactions,
+                "revision_parent_events": event_rows(self._revision_parent_events),
+                "prepared_particle_workspace": self._particle_workspace.state_payload(),
+                "event_histories": self._event_histories,
                 "observed_events": event_rows(self._observed_events),
                 "fast_action_events": event_rows(self._fast_action_events),
                 "fast_action_verification_receipts": self._fast_action_verification_receipts,
@@ -2575,6 +2622,94 @@ class CorePrototypeSpine:
             }
         )
 
+    def semantic_memory_identity(self) -> Mapping[str, str]:
+        """Expose a semantic digest alongside the unchanged execution binding."""
+        from cpswm.system.structure_two_semantic_identity import semantic_memory_identity
+
+        with self._execution_lock:
+            return semantic_memory_identity(self)
+
+    @_serialized_core_mutation
+    def stage_prepared_particle_candidates(
+        self,
+        *,
+        receipts: tuple[ParticleRevisionReceipt, ...],
+        statistics: dict[UUID, ConditionalAnalyticState],
+        unresolved_log_weight: float,
+    ) -> ParticleRevisionBatch:
+        """Consume explicit prepared candidates against this runtime's real evidence.
+
+        This native engineering seam does not generate neural proposals, certify
+        caller probabilities/conditional models, commit statistics or replace the
+        default CIAV/action policy. Those scientific/assembly bindings stay open.
+        """
+        if self._production_operator_contract is not None:
+            self._production_operator_contract()
+        chains = {}
+        self._check_particle_workspace_binding()
+        frames = {}
+        for receipt in receipts:
+            rid = receipt.proposal.proposed_state.revision_id
+            history = self._event_histories.get(rid)
+            event = self._observed_events.get(rid)
+            if history is None or event is None:
+                raise ValueError("prepared particle has no live production evidence history")
+            if receipt.proposal.proposed_state.event_hypothesis_id not in {
+                h.hypothesis_id for h in history.latest.hypotheses
+            }:
+                raise ValueError("candidate chain belongs to another revision")
+            chains.update({h.hypothesis_id: h for h in history.latest.hypotheses})
+            frames[rid] = (
+                history,
+                event.evidence,
+                event.propensity_weight,
+                event.regime_frame,
+                event.identity_switch_probability,
+            )
+        checkpoint = self._capture_revision_transaction(include_operator_state=True)
+        try:
+            return self._particle_workspace.advance(
+                receipts=receipts,
+                statistics=statistics,
+                chains=chains,
+                snapshot_id=self.current_snapshot.snapshot_id,
+                allowed_locations=self.locations,
+                source_frame=(frames, self.current_cause_snapshot),
+                ledger_head_sha256=self._hybrid_loop.ledger.export_state().manifest.head_hash,
+                unresolved_log_weight=unresolved_log_weight,
+            )
+        except BaseException:
+            self._restore_revision_transaction(checkpoint)
+            raise
+
+    def prepared_particle_location_marginal(self) -> tuple[dict[UUID, float], float]:
+        """Read the explicit candidate posterior, keeping unknown mass separate."""
+        with self._execution_lock:
+            self._check_particle_workspace_binding()
+            batch = self._particle_workspace.batch
+            if batch is None or batch.snapshot_id != self.current_snapshot.snapshot_id:
+                raise ValueError("prepared particle source snapshot is stale or missing")
+            return self._particle_workspace.location_marginal()
+
+    def _check_particle_workspace_binding(self) -> None:
+        if (
+            self._particle_workspace is not self._particle_workspace_anchor
+            or type(self._particle_workspace) is not NativeParticleWorkspace
+        ):
+            raise ValueError("native particle workspace identity was replaced")
+        for slot, method in enumerate(
+            ("advance", "location_marginal", "invalidate_revisions"), start=2
+        ):
+            bind_runtime_callable(
+                runtime_execution_id=self.authorization_scope_id,
+                operator="orrer_cheh",
+                binding_slot=slot,
+                binding_kind="direct_operator_callable",
+                instance=self._particle_workspace,
+                callable_name=method,
+                require_declared_member=True,
+            )
+
     def _process_transition(
         self,
         transition: PrototypeTransition,
@@ -2582,8 +2717,15 @@ class CorePrototypeSpine:
         trace_recorder: _TransitionTraceRecorder | None = None,
         trace_phase: TracePhaseName | None = None,
         force_long_term_write_blocked: bool = False,
+        identity_switch_probability: float | None = None,
     ) -> PrototypeStepResult:
         self._validate_transition(transition)
+        identity_switch_probability = (
+            transition.identity_switch_probability
+            if identity_switch_probability is None
+            else identity_switch_probability
+        )
+        _require_probability(identity_switch_probability, "identity_switch_probability")
         started_ns = perf_counter_ns()
         propensity = self._corrector.weight_for_opportunity(transition.opportunity)
         if trace_recorder is not None:
@@ -2629,6 +2771,7 @@ class CorePrototypeSpine:
             if callable(audit):
                 audit(history, transition.evidence)
         actor_posterior = self._actor_posterior(receipted_history, event_posterior)
+        self._event_histories[receipted_history.latest.revision_id] = deepcopy(receipted_history)
         if trace_recorder is not None:
             trace_recorder.record_executed(
                 "pchmp",
@@ -2750,6 +2893,7 @@ class CorePrototypeSpine:
             context_features=regime_context_features,
             owner_probability=owner_mass,
             evidence_source_record_ids=evidence.source_record_ids,
+            identity_switch_probability=identity_switch_probability,
             stage_observer=observe_regime_stage if trace_recorder is not None else None,
         )
         if trace_recorder is not None:
@@ -2761,7 +2905,7 @@ class CorePrototypeSpine:
                     "context_features": regime_context_features,
                     "owner_probability": owner_mass,
                     "evidence_source_record_ids": evidence.source_record_ids,
-                    "identity_switch_probability": 0.0,
+                    "identity_switch_probability": identity_switch_probability,
                 },
                 output=assessment,
                 consumes=("pchmp", "cf_bocpd"),
@@ -2807,6 +2951,7 @@ class CorePrototypeSpine:
             dirichlet_predictive_surprise=dirichlet_predictive_surprise,
             rls_residual=rls_residual,
             regime_frame=regime_frame,
+            identity_switch_probability=identity_switch_probability,
         )
         self._observed_events[current_event.revision_id] = current_event
         self._fast_action_events[current_event.revision_id] = current_event
@@ -2996,6 +3141,10 @@ class CorePrototypeSpine:
 
         if event.revision_id in self._committed_events:
             raise ValueError("prototype event revision is already committed")
+        if event.regime_frame is not None and not self._observation_write_eligible(
+            event.revision_id
+        ):
+            raise ValueError("observation commit requires valid write eligibility")
         audit = self._habit.update_audited(
             event.evidence,
             weight_multiplier=event.propensity_weight,
@@ -3069,10 +3218,18 @@ class CorePrototypeSpine:
     ) -> PrototypeRevisionResult:
         """Apply one all-or-nothing revision across Hybrid, Dirichlet, and RLS."""
 
-        checkpoint = self._capture_revision_transaction()
+        if self._production_operator_contract is not None:
+            self._production_operator_contract()
+        checkpoint = self._capture_revision_transaction(include_operator_state=True)
         try:
-            return self._apply_event_revision_outcome(outcome)
-        except Exception:
+            result = self._apply_event_revision_outcome(outcome)
+            if (
+                outcome.kind is EventRevisionKind.CORRECT
+                and outcome.corrected_revision_id not in self._committed_events
+            ):
+                raise ValueError("CORRECT not admitted by CCRR; transaction rolled back")
+            return result
+        except BaseException:
             self._restore_revision_transaction(checkpoint)
             raise
 
@@ -3084,6 +3241,19 @@ class CorePrototypeSpine:
         original = self._committed_events.get(outcome.superseded_revision_id)
         if original is None:
             raise KeyError("superseded revision is not a committed prototype event")
+        if outcome.kind is EventRevisionKind.CORRECT:
+            if outcome.corrected_revision_id in self._write_eligibility or (
+                outcome.corrected_revision_id in self._committed_events
+            ):
+                raise ValueError("corrected revision identity has already been used")
+            if outcome.corrected_location_id not in self.locations:
+                raise ValueError("corrected location is outside the prototype candidate set")
+            if original.regime_frame is not None and not self._observation_write_eligible(
+                original.revision_id
+            ):
+                raise ValueError("correction parent has no valid write eligibility")
+        self._revision_parent_events.setdefault(original.revision_id, original)
+        self._particle_workspace.invalidate_revisions({original.revision_id})
         old_regime = self.active_regime
         dependent_revision_ids = self._descendant_revision_ids(outcome.superseded_revision_id)
         if outcome.kind is EventRevisionKind.RETRACT:
@@ -3102,6 +3272,7 @@ class CorePrototypeSpine:
                 self._retract_event_hybrid(self._committed_events[revision_id])
                 del self._committed_events[revision_id]
                 self._observed_events.pop(revision_id, None)
+                self._fast_action_events.pop(revision_id, None)
             snapshot = self._hybrid_loop.publish_snapshot()
             operations = (PrototypeStatisticOperation.RETRACT,)
         else:
@@ -3176,6 +3347,29 @@ class CorePrototypeSpine:
                 hybrid_parent_revision_id=hybrid_parent_revision_id,
                 belief_snapshot_id=None,
             )
+            if original.regime_frame is not None:
+                parent = self._write_eligibility[original.revision_id]
+                # This is a replacement of an already accepted contribution,
+                # with explicit evidence, not a new authority over quarantine.
+                self._write_eligibility[outcome.corrected_revision_id] = (
+                    _ObservationWriteEligibility(
+                        revision_id=outcome.corrected_revision_id,
+                        origin_write_blocked=True,
+                        origin_path="formal_correction_transaction",
+                        parent_revision_id=original.revision_id,
+                        correction_evidence_source_record_ids=outcome.evidence_source_record_ids,
+                        parent_eligibility_sha256=content_sha256(parent),
+                        correction_outcome_sha256=content_sha256(outcome),
+                        authorizations=(
+                            _WriteAuthorization(
+                                authority="formal_correction_transaction",
+                                granting_revision_id=original.revision_id,
+                                granted_at_observation_count=self.observation_count,
+                                basis_sha256=content_sha256(outcome),
+                            ),
+                        ),
+                    )
+                )
             if original.derived_from_revision_id is not None:
                 corrected_derived = self._committed_events[outcome.corrected_revision_id]
                 self._derived_event_archive[outcome.corrected_revision_id] = corrected_derived
@@ -3183,6 +3377,10 @@ class CorePrototypeSpine:
                     DerivedEvidenceLifecycle.ACTIVE
                 )
             self._observed_events.pop(outcome.superseded_revision_id, None)
+            if self._fast_action_events.pop(outcome.superseded_revision_id, None) is not None:
+                self._fast_action_events[outcome.corrected_revision_id] = self._committed_events[
+                    outcome.corrected_revision_id
+                ]
             if original.regime_frame is not None:
                 self._observed_events[outcome.corrected_revision_id] = self._committed_events[
                     outcome.corrected_revision_id
@@ -3191,6 +3389,7 @@ class CorePrototypeSpine:
                 self._retract_event_hybrid(self._committed_events[revision_id])
                 del self._committed_events[revision_id]
                 self._observed_events.pop(revision_id, None)
+                self._fast_action_events.pop(revision_id, None)
             snapshot = self._hybrid_loop.publish_snapshot()
             corrected_event = self._committed_events[outcome.corrected_revision_id]
             self._committed_events[outcome.corrected_revision_id] = replace(
@@ -3203,6 +3402,7 @@ class CorePrototypeSpine:
                 snapshot=snapshot,
             )
             operations = (PrototypeStatisticOperation.CORRECT,)
+        self._revision_transactions = (*self._revision_transactions, outcome)
         snapshot = self._rebuild_personalized_models()
         return self._revision_result(
             operations=operations,
@@ -3233,6 +3433,12 @@ class CorePrototypeSpine:
             "revision_binding_history": dict(self._revision_binding_history),
             "late_feedback_relocations": list(self._late_feedback_relocations),
             "write_eligibility": dict(self._write_eligibility),
+            "revision_transactions": self._revision_transactions,
+            "revision_parent_events": dict(self._revision_parent_events),
+            "particle_workspace": self._particle_workspace,
+            "particle_workspace_state": deepcopy(self._particle_workspace),
+            "event_histories": dict(self._event_histories),
+            "production_operator_contract": self._production_operator_contract,
             "quarantined_events": list(self._quarantined_events),
             "last_observed_location": self._last_observed_location,
             "last_context_key": self._last_context_key,
@@ -3254,6 +3460,7 @@ class CorePrototypeSpine:
                 "_execution_contract_phase",
                 "_execution_lock",
                 "_external_mutation_guard",
+                "_production_operator_contract",
                 "_hybrid_loop",
             }
             runtime_refs = {
@@ -3272,7 +3479,10 @@ class CorePrototypeSpine:
             checkpoint["execution_core_attribute_names"] = frozenset(self.__dict__)
             checkpoint["execution_lock"] = self._execution_lock
             checkpoint["execution_runtime_refs"] = runtime_refs
-            checkpoint["execution_runtime_fields"] = deepcopy(runtime_refs)
+            # An instrumentation/fault hook may be bound to this very core.
+            # Preserve that owner identity rather than recursively copying locks
+            # and the enclosing production assembly through a bound method.
+            checkpoint["execution_runtime_fields"] = deepcopy(runtime_refs, {id(self): self})
             checkpoint["execution_nested_component_refs"] = nested_component_refs
             checkpoint["execution_nested_component_snapshots"] = {
                 name: deepcopy(component) for name, component in nested_component_refs.items()
@@ -3366,6 +3576,13 @@ class CorePrototypeSpine:
         self._revision_binding_history = checkpoint["revision_binding_history"]  # type: ignore[assignment]
         self._late_feedback_relocations = checkpoint["late_feedback_relocations"]  # type: ignore[assignment]
         self._write_eligibility = checkpoint["write_eligibility"]  # type: ignore[assignment]
+        self._revision_transactions = checkpoint["revision_transactions"]  # type: ignore[assignment]
+        self._revision_parent_events = checkpoint["revision_parent_events"]  # type: ignore[assignment]
+        workspace = checkpoint["particle_workspace"]
+        _restore_reference_state(workspace, checkpoint["particle_workspace_state"])
+        self._particle_workspace = workspace  # type: ignore[assignment]
+        self._event_histories = checkpoint["event_histories"]  # type: ignore[assignment]
+        self._production_operator_contract = checkpoint["production_operator_contract"]  # type: ignore[assignment]
         self._quarantined_events = checkpoint["quarantined_events"]  # type: ignore[assignment]
         self._last_observed_location = checkpoint["last_observed_location"]  # type: ignore[assignment]
         self._last_context_key = checkpoint["last_context_key"]  # type: ignore[assignment]
@@ -3616,6 +3833,19 @@ class CorePrototypeSpine:
     ) -> ProjectOneRequestApplicationReceipt:
         """Apply/defer/reject one request with exactly-once receipt semantics."""
 
+        if self._production_operator_contract is not None:
+            self._production_operator_contract()
+        checkpoint = self._capture_revision_transaction(include_operator_state=True)
+        try:
+            return self._apply_project_one_stat_request(request)
+        except BaseException:
+            self._restore_revision_transaction(checkpoint)
+            raise
+
+    def _apply_project_one_stat_request(
+        self, request: ProjectOneStatRequest
+    ) -> ProjectOneRequestApplicationReceipt:
+
         from cpswm.system.counterfactual_event_hypergraph.feedback_revision_loop import (
             ProjectOneStatRequest,
         )
@@ -3645,6 +3875,23 @@ class CorePrototypeSpine:
             )
             return self._replay_receipt(previous)
         original = self._committed_events.get(request.superseded_revision_id)
+        if request.owner_key != self.owner_key:
+            return self._rejected_request(request, fingerprint, "request owner mismatch")
+        if request.object_instance_id != self.object_instance_id:
+            return self._rejected_request(request, fingerprint, "request object mismatch")
+        if request.location_id not in self.locations:
+            return self._rejected_request(request, fingerprint, "request location mismatch")
+        source = original or self._observed_events.get(request.superseded_revision_id)
+        if source is not None:
+            if request.event_hypothesis_id != source.event_hypothesis_id:
+                return self._rejected_request(request, fingerprint, "event hypothesis mismatch")
+            if abs(request.owner_mass_before - source.owner_mass) > 1e-9:
+                return self._rejected_request(request, fingerprint, "owner_mass_before mismatch")
+        if (
+            abs(request.owner_mass_delta - (request.owner_mass_after - request.owner_mass_before))
+            > 1e-9
+        ):
+            return self._rejected_request(request, fingerprint, "owner mass delta mismatch")
         if original is None:
             if self.is_quarantined_revision(request.superseded_revision_id):
                 self._deferred_project_one_requests[fingerprint] = (
@@ -3693,11 +3940,13 @@ class CorePrototypeSpine:
         # the corrected event after the revision itself succeeded. Preserve a
         # checkpoint so that this becomes an explicit rejected receipt without
         # leaving a half-applied Dirichlet/RLS/Hybrid mutation.
-        request_checkpoint = self._capture_revision_transaction()
+        request_checkpoint = self._capture_revision_transaction(include_operator_state=True)
         old_snapshot = self.current_snapshot
         before = self.committed_weight_semantics(request.superseded_revision_id)
         hybrid_before = self.hybrid_alpha(request.location_id)
-        result = self.apply_event_revision_outcome(
+        # Only this transaction owns a durable, typed defer/reject outbox.
+        # The public synchronous outcome entry promises an applied revision.
+        result = self._apply_event_revision_outcome(
             EventRevisionOutcome(
                 kind=EventRevisionKind.CORRECT,
                 superseded_revision_id=request.superseded_revision_id,
@@ -4130,23 +4379,17 @@ class CorePrototypeSpine:
         fingerprint: str,
         status: ProjectOneRequestApplicationStatus,
     ) -> None:
-        """Keep a refused correction's action consequence, never its statistic.
+        """Release legacy action entries without granting rejected requests effects.
 
-        Applied requests release their entry: the long-term statistic now carries
-        the correction, and counting it twice would let one piece of evidence move
-        the planner twice.
+        A rejected request may be foreign or fail admission and must not alter
+        the next action. A deferred request is already represented exactly once
+        by the durable outbox in pending_correction_mass. Explicitly accepted
+        feedback/verification uses its own existing fast-memory entry points.
         """
 
         if status is ProjectOneRequestApplicationStatus.APPLIED:
             self._action_scoped_negatives.pop(fingerprint, None)
             return
-        if status is ProjectOneRequestApplicationStatus.REPLAY_NOOP:
-            return
-        location_id = getattr(request, "location_id", None)
-        delta = float(getattr(request, "owner_mass_delta", 0.0))
-        if location_id is None or delta >= 0.0:
-            return
-        self._action_scoped_negatives[fingerprint] = (location_id, delta)
 
     def action_scoped_negative_ledger(self) -> dict[str, tuple[UUID, float]]:
         """Audit view: every refused correction still influencing the next action."""
@@ -4160,8 +4403,10 @@ class CorePrototypeSpine:
 
         * deferred requests -- the revision was accepted and only its statistic
           write waits on CCRR promotion;
-        * action-scoped negatives -- CCRR refused the statistic write outright,
-          but the execution failure that produced the request still happened.
+        * historical action-scoped entries retained from earlier runtime state.
+
+        New rejected requests cannot create action entries. New deferred requests
+        live only in the outbox, preventing double counting of the same delta.
 
         Neither ever mutates Dirichlet/RLS/Hybrid.  Exposing them lets the planner
         act on a correction while the long-term ledger stays exactly as strict.
@@ -4261,6 +4506,30 @@ class CorePrototypeSpine:
         likelihood_model: ActionOutcomeLikelihoodModel,
         policy: ExecutionFeedbackInterpretationPolicy | None = None,
     ) -> PrototypeRevisionResult:
+        """Include feedback deduplication and publication in the revision transaction."""
+
+        if self._production_operator_contract is not None:
+            self._production_operator_contract()
+        checkpoint = self._capture_revision_transaction(include_operator_state=True)
+        try:
+            return self._process_execution_feedback(
+                feedback=feedback,
+                binding=binding,
+                likelihood_model=likelihood_model,
+                policy=policy,
+            )
+        except BaseException:
+            self._restore_revision_transaction(checkpoint)
+            raise
+
+    def _process_execution_feedback(
+        self,
+        *,
+        feedback: ExecutionFeedbackRecord,
+        binding: DecisionContextBinding,
+        likelihood_model: ActionOutcomeLikelihoodModel,
+        policy: ExecutionFeedbackInterpretationPolicy | None = None,
+    ) -> PrototypeRevisionResult:
         """Project likelihood evidence and apply a pluggable statistic policy."""
 
         bound_revision_id, relocation = self._resolve_feedback_binding(
@@ -4311,11 +4580,12 @@ class CorePrototypeSpine:
                 or interpretation.corrected_location_id is None
             ):
                 raise ValueError("correct feedback requires revision and corrected location")
+            corrected_revision_id = uuid4()
             result = self.apply_event_revision_outcome(
                 EventRevisionOutcome(
                     kind=EventRevisionKind.CORRECT,
                     superseded_revision_id=interpretation.target_revision_id,
-                    corrected_revision_id=uuid4(),
+                    corrected_revision_id=corrected_revision_id,
                     corrected_location_id=interpretation.corrected_location_id,
                     corrected_owner_mass=interpretation.evidence_strength,
                     evidence_source_record_ids=(feedback.metadata.record_id,),
@@ -4570,13 +4840,31 @@ class CorePrototypeSpine:
 
         record = self._write_eligibility.get(revision_id)
         if record is None:
-            return
+            raise ValueError("write authorization has no observation origin")
+        if record.origin_write_blocked:
+            grantor = (
+                self._write_eligibility.get(granting_revision_id)
+                if granting_revision_id is not None
+                else None
+            )
+            if (
+                authority != "ccrr_habit_change_promotion"
+                or grantor is None
+                or grantor.origin_write_blocked
+                or granting_revision_id not in self._observed_events
+                or basis.get("conclusion") != HabitStateConclusion.HABIT_CHANGE.value
+            ):
+                raise ValueError("blocked observation requires a live unblocked CCRR authority")
+        basis_json = json.dumps(basis, sort_keys=True)
         grant = _WriteAuthorization(
             authority=authority,
             granting_revision_id=granting_revision_id,
             granted_at_observation_count=self.observation_count,
             basis_sha256=content_sha256(basis),
+            basis_json=basis_json,
         )
+        if grant in record.authorizations:
+            return
         self._write_eligibility[revision_id] = replace(
             record, authorizations=(*record.authorizations, grant)
         )
@@ -4585,7 +4873,54 @@ class CorePrototypeSpine:
         """Fail closed: an observation with no origin record may not be committed."""
 
         record = self._write_eligibility.get(revision_id)
-        return record is not None and record.write_eligible
+        if record is None or not record.write_eligible:
+            return False
+        if record.parent_revision_id is not None:
+            parent = self._write_eligibility.get(record.parent_revision_id)
+            return (
+                parent is not None
+                and self._observation_write_eligible(parent.revision_id)
+                and content_sha256(parent) == record.parent_eligibility_sha256
+                and any(
+                    grant.authority == "formal_correction_transaction"
+                    and grant.granting_revision_id == record.parent_revision_id
+                    and grant.basis_sha256 == record.correction_outcome_sha256
+                    for grant in record.authorizations
+                )
+                and any(
+                    outcome.corrected_revision_id == revision_id
+                    and outcome.superseded_revision_id == record.parent_revision_id
+                    and outcome.evidence_source_record_ids
+                    == record.correction_evidence_source_record_ids
+                    and content_sha256(outcome) == record.correction_outcome_sha256
+                    for outcome in self._revision_transactions
+                )
+            )
+        if not record.origin_write_blocked:
+            return True
+        for grant in record.authorizations:
+            grantor = (
+                self._write_eligibility.get(grant.granting_revision_id)
+                if grant.granting_revision_id is not None
+                else None
+            )
+            basis = json.loads(grant.basis_json)
+            if (
+                grant.authority == "ccrr_habit_change_promotion"
+                and grantor is not None
+                and not grantor.origin_write_blocked
+                and grant.granting_revision_id in self._observed_events
+                and basis.get("conclusion") == HabitStateConclusion.HABIT_CHANGE.value
+                and content_sha256(basis) == grant.basis_sha256
+            ):
+                return True
+        return False
+
+    @property
+    def revision_transactions(self) -> tuple[EventRevisionOutcome, ...]:
+        """Committed operations only; rolled-back attempts leave no audit record."""
+
+        return self._revision_transactions
 
     def observation_write_eligibility(self, revision_id: UUID) -> Mapping[str, object] | None:
         """Read-only audit view of one observation's write lineage."""
@@ -4598,7 +4933,20 @@ class CorePrototypeSpine:
             "origin_write_blocked": record.origin_write_blocked,
             "origin_path": record.origin_path,
             "quarantine_reason": record.quarantine_reason,
-            "write_eligible": record.write_eligible,
+            "write_eligible": (
+                revision_id in self._observed_events
+                and self._observation_write_eligible(revision_id)
+            ),
+            "historical_write_eligible": self._observation_write_eligible(revision_id),
+            "parent_revision_id": (
+                str(record.parent_revision_id) if record.parent_revision_id is not None else None
+            ),
+            "parent_eligibility_sha256": record.parent_eligibility_sha256,
+            "correction_evidence_source_record_ids": tuple(
+                str(item) for item in record.correction_evidence_source_record_ids
+            ),
+            "correction_outcome_sha256": record.correction_outcome_sha256,
+            "active": revision_id in self._observed_events,
             "authorizations": tuple(
                 {
                     "authority": grant.authority,
@@ -4609,6 +4957,7 @@ class CorePrototypeSpine:
                     ),
                     "granted_at_observation_count": grant.granted_at_observation_count,
                     "basis_sha256": grant.basis_sha256,
+                    "basis": json.loads(grant.basis_json),
                 }
                 for grant in record.authorizations
             ),
@@ -4731,6 +5080,16 @@ class CorePrototypeSpine:
                 basis={
                     "recomputed_active_regime": recomputed_active_regime,
                     "replayed_regime": replayed_regimes.get(revision_id),
+                    "observation_log_revision_ids": tuple(
+                        str(item)
+                        for item in sorted(
+                            self._observed_events,
+                            key=lambda key: (
+                                self._observed_events[key].evidence.event_time,
+                                str(key),
+                            ),
+                        )
+                    ),
                     "observation_log_sha256": content_sha256(
                         tuple(
                             str(item)
@@ -4905,6 +5264,7 @@ class CorePrototypeSpine:
                 ),
                 owner_probability=event.owner_mass,
                 evidence_source_record_ids=event.evidence.source_record_ids,
+                identity_switch_probability=event.identity_switch_probability,
             )
             self._last_ccrr_decision = (
                 assessment.ccrr_decision.kind.value

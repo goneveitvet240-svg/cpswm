@@ -24,10 +24,10 @@ Frozen basis (``structure_two_adaptive_compute_predeath_v0_1.json``):
   lane's CCRR-deferred observations stay promotable and are not banned here;
 * ``hard_safety_kernel.rgrc_is_only_long_term_write_retract_authority == true``.
 
-What is NOT claimed: the committed set after a rebuild is a function of a CCRR
-replay, and this file does not reimplement CCRR, so it does not predict *which*
-eligible observations a rebuild promotes.  It asserts the properties that are
-independently derivable from the pre-saved journal, and says so where it stops.
+The reference freezes the observation stream and validates each submitted operation
+against a separate feedback projection before replaying storage rules. It shares
+leaf CCRR, Dirichlet and RLS implementations, so it is not an independent proof of
+those mathematical models or of the authenticity of the pre-freeze history.
 The retraction policy is still supplied by the caller through the documented
 ``policy=`` seam; nothing here claims autonomous calibrated retraction.
 """
@@ -50,12 +50,14 @@ from structure_two_backbone_wiring_probe import (
     CIAVOutcomeKind,
     build_execution_feedback_bundle,
 )
+from structure_two_revision_oracle import FrozenRevisionOracle
 
 from cpswm.system.continual.project_one_regime_loop import PrototypeStatisticOperation
 from cpswm.system.reproducibility import content_sha256
 
 RETRACTION_POLICY = CalibratedRetractionPolicy(retraction_delta=-0.2)
 TOLERANCE = 1e-9
+_ORACLES: dict[int, FrozenRevisionOracle] = {}
 PREDEATH_CONFIG = Path(
     "configs/project_two_experiments/structure_two_adaptive_compute_predeath_v0_1.json"
 )
@@ -112,17 +114,25 @@ class _JournalEntry:
     quarantined: bool
 
 
+class _FrozenJournal(dict):
+    """Carry the exact frozen reference with the journal supplied to the checker."""
+
+    oracle: FrozenRevisionOracle
+
+
 def _journal(probe: BackboneWiringProbe) -> dict[UUID, _JournalEntry]:
     """Save the original inputs, authorizations and classification, up front.
 
-    This is the independent reference.  It is read once, before the system under
-    test mutates, and never refreshed from the system's post-revision state.
+    The immutable inputs initialize a separate operation/replay reference.
+    Final system values never fill gaps in that reference.
     """
 
     core = probe.system.core
+    _ORACLES[id(core)] = FrozenRevisionOracle(probe)
     committed = set(core._committed_events)
     quarantined = {event.revision_id for event in core._quarantined_events}
-    entries: dict[UUID, _JournalEntry] = {}
+    entries = _FrozenJournal()
+    entries.oracle = _ORACLES[id(core)]
     for revision_id, event in core._observed_events.items():
         record = core.observation_write_eligibility(revision_id)
         assert record is not None, "every observation must carry an origin record"
@@ -149,11 +159,10 @@ def _alpha_from_journal(
     """Expected Hybrid mass, using the *pre-saved* weights, not current ones."""
 
     totals = dict.fromkeys(probe.case.locations, 0.0)
-    core = probe.system.core
-    for revision_id, event in core._committed_events.items():
-        entry = journal.get(revision_id)
-        weight = entry.statistical_owner_weight if entry else event.statistical_owner_weight
-        location = entry.location_id if entry else event.location_id
+    expected, _, _ = journal.oracle.reference()
+    for event in expected.values():
+        weight = event.statistical_owner_weight
+        location = event.location_id
         if location in totals:
             totals[location] += weight
     return totals
@@ -163,6 +172,7 @@ def _assert_reconciled_against_journal(
     probe: BackboneWiringProbe, journal: dict[UUID, _JournalEntry]
 ) -> None:
     core = probe.system.core
+    journal.oracle.check(probe)
     for location, expected in _alpha_from_journal(probe, journal).items():
         assert core.hybrid_alpha(location) == pytest.approx(expected, abs=TOLERANCE)
     assert core.verify_hybrid_full_rerun_equivalence().equivalent is True
@@ -186,9 +196,14 @@ def _feedback(probe: BackboneWiringProbe, revision_id: UUID, **overrides: Any):
 
 def _apply(probe: BackboneWiringProbe, bundle: Any, *, policy: Any = RETRACTION_POLICY):
     feedback, binding, likelihood = bundle
-    return probe.system.process_execution_feedback(
+    oracle = _ORACLES.get(id(probe.system.core))
+    prepared = oracle.prepare(bundle, policy) if oracle is not None else None
+    result = probe.system.process_execution_feedback(
         feedback=feedback, binding=binding, likelihood_model=likelihood, policy=policy
     )
+    if oracle is not None:
+        oracle.accept(probe.system.core, prepared)
+    return result
 
 
 def _decoded_action(probe: BackboneWiringProbe) -> UUID:
@@ -375,34 +390,18 @@ def test_the_legacy_lane_promotion_path_is_not_banned() -> None:
 
 
 def test_a_write_blocked_observation_is_promotable_once_it_is_authorized() -> None:
-    """Not a permanent ban: the authorized path still promotes.
+    """A nonempty blocked -> public CCRR authorization -> commit path."""
+    from test_structure_two_w3_revision_acceptance import public_grant_prefix
 
-    The different-location CIAV closure runs with the write unblocked, and when its
-    CCRR conclusion is ``HABIT_CHANGE`` it promotes the quarantined set.  Those
-    promotions are recorded as ``ccrr_habit_change_promotion`` grants, which is what
-    later makes the observation rebuild-promotable.
-    """
-
-    probe = _adaptive_history()
+    probe, target, transition = public_grant_prefix()
     core = probe.system.core
-    granted = {
-        revision_id: core.observation_write_eligibility(revision_id)
-        for revision_id in core._observed_events
-    }
-    authorities = {
-        grant["authority"] for record in granted.values() for grant in record["authorizations"]
-    }
-    # The closure lane commits through ``unblocked_transition_commit``; a blocked
-    # observation would need ``ccrr_habit_change_promotion``.  Record which of
-    # these the 10-day history actually exercises rather than asserting a wish.
-    assert "unblocked_transition_commit" in authorities
-    blocked_with_grant = [
-        revision_id
-        for revision_id, record in granted.items()
-        if record["origin_write_blocked"] and record["authorizations"]
-    ]
-    for revision_id in blocked_with_grant:
-        assert granted[revision_id]["write_eligible"] is True
+    assert not core.observation_write_eligibility(target)["write_eligible"]
+    core.process_transition(transition)
+    granted = core.observation_write_eligibility(target)
+    assert granted["origin_write_blocked"] and granted["write_eligible"]
+    assert target in core._committed_events
+    assert len(granted["authorizations"]) == 1
+    assert granted["authorizations"][0]["authority"] == "ccrr_habit_change_promotion"
 
 
 def test_the_pending_debt_write_block_still_refuses_the_feedback_entrypoint() -> None:

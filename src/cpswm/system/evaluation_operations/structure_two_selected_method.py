@@ -16,7 +16,8 @@ from __future__ import annotations
 
 import json
 from enum import StrEnum
-from math import exp, isfinite
+from fractions import Fraction
+from math import exp, fsum, isfinite
 from pathlib import Path
 from typing import Annotated, Final, Literal, Self
 from uuid import UUID
@@ -397,14 +398,28 @@ class ParticleRevisionReceipt(ContractModel):
     def unnormalized_log_weight(self) -> float:
         if not self.accepted:
             return float("-inf")
-        return (
-            self.prior_log_weight
-            + self.transition_log_probability
-            + self.observation_log_likelihood
-            + self.posterior_projection_log_factor
-            + sum(constraint.log_potential for constraint in self.constraints)
-            - self.proposal.proposal_log_probability
+        try:
+            value = float(self.exact_log_weight)
+        except OverflowError as error:
+            raise ValueError("derived particle log weight exceeds finite range") from error
+        if not isfinite(value):
+            raise ValueError("nonfinite derived particle log weight")
+        return value
+
+    @property
+    def exact_log_weight(self) -> Fraction:
+        """Exact sum of finite binary inputs, before rounding or cancellation."""
+        terms = (
+            self.prior_log_weight,
+            self.transition_log_probability,
+            self.observation_log_likelihood,
+            self.posterior_projection_log_factor,
+            *(constraint.log_potential for constraint in self.constraints),
+            -self.proposal.proposal_log_probability,
         )
+        if not all(isfinite(term) for term in terms):
+            raise ValueError("nonfinite particle weight operand")
+        return sum((Fraction(term) for term in terms), Fraction())
 
 
 class NormalizedParticleWeight(ContractModel):
@@ -441,6 +456,7 @@ def normalize_particle_revisions(
 
     if not receipts:
         raise ValueError("at least one particle revision receipt is required")
+    receipts = tuple(ParticleRevisionReceipt.model_validate(r.model_dump()) for r in receipts)
     if not isfinite(unresolved_log_weight):
         raise ValueError("unresolved_log_weight must be finite")
     snapshot_ids = {receipt.proposal.source_snapshot_id for receipt in receipts}
@@ -452,14 +468,33 @@ def normalize_particle_revisions(
     if len(proposal_ids) != len(receipts) or len(particle_ids) != len(receipts):
         raise ValueError("proposal and particle identifiers must be unique in a batch")
 
-    log_weights = tuple(receipt.unnormalized_log_weight for receipt in receipts)
-    finite_candidates = [value for value in log_weights if isfinite(value)]
-    maximum = max([unresolved_log_weight, *finite_candidates])
-    unresolved_mass = exp(unresolved_log_weight - maximum)
+    # Enforce the finite derived-weight contract separately from structural
+    # rejection. Never convert an accepted arithmetic fault to zero mass.
+    for receipt in receipts:
+        _ = receipt.unnormalized_log_weight
+    exact_weights = tuple(r.exact_log_weight if r.accepted else None for r in receipts)
+    unresolved_exact = Fraction(unresolved_log_weight)
+    maximum = max([unresolved_exact, *(v for v in exact_weights if v is not None)])
+
+    def shifted_mass(value: Fraction) -> float:
+        difference = value - maximum
+        try:
+            high = float(difference)
+        except OverflowError:
+            # Both inputs were checked finite and value <= maximum. This is
+            # negative exponential underflow, not an accepted +inf log weight.
+            return 0.0
+        mass = exp(high)
+        if mass == 0.0:
+            return 0.0
+        low = float(difference - Fraction(high))
+        return mass * exp(low)
+
+    unresolved_mass = shifted_mass(unresolved_exact)
     particle_masses = tuple(
-        exp(value - maximum) if isfinite(value) else 0.0 for value in log_weights
+        shifted_mass(value) if value is not None else 0.0 for value in exact_weights
     )
-    denominator = unresolved_mass + sum(particle_masses)
+    denominator = fsum((unresolved_mass, *particle_masses))
     if denominator <= 0.0 or not isfinite(denominator):
         raise ValueError("revision normalization has no finite probability mass")
 

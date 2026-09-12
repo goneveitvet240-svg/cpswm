@@ -43,6 +43,7 @@ from cpswm.system.prototype_spine import (
     FastActionVerificationReceipt,
     PrototypeStepResult,
     PrototypeTransition,
+    _message_passing_state_descriptor,
     _TransitionTraceRecorder,
 )
 from cpswm.system.reproducibility import content_sha256, content_uuid
@@ -493,11 +494,23 @@ class StructureTwoProductionSystem:
         self.core._external_mutation_guard = self._require_core_public_mutation_permission
         self.feedback_revision_loop = ProjectTwoFeedbackRevisionLoop(
             projector=ExecutionFeedbackProjector(),
+            engine=self.core._event_engine,
+            message_passing=self.core._message_passing,
             retraction_threshold=feedback_retraction_threshold,
             reactivation_threshold=feedback_reactivation_threshold,
         )
         self.cause_information_planner = CauseInformationActiveVerificationPlanner()
         self.ciav_opceu_loop = CIAVOPCEUObservationLoop(evidence_factor_trace)
+        self._assembly_components = (
+            self.core,
+            self.core._event_engine,
+            self.core._message_passing,
+            self.feedback_revision_loop,
+            self.cause_information_planner,
+            self.ciav_opceu_loop,
+        )
+        self.core._production_operator_contract = self._runtime_operator_instances_for_execution
+        self._feedback_input_journal: dict[UUID, str] = {}
 
     def _require_core_public_mutation_permission(self) -> None:
         """Block public core writes while production inference debt is pending."""
@@ -521,6 +534,90 @@ class StructureTwoProductionSystem:
             "pending adaptive debt blocks legacy and direct-core mutation; "
             "resolve it through replay_adaptive_debt"
         )
+
+    def process_project_two_feedback(
+        self,
+        *,
+        history: Any,
+        feedback: Any,
+        binding: Any,
+        likelihood_model: Any,
+        **revision_options: Any,
+    ) -> tuple[Any, Any, tuple[Any, ...]]:
+        """Atomically consume the existing CHEH feedback and project-one contracts.
+
+        The supplied history must be bound to a currently published core revision.
+        This explicit multi-axis route does not replace the caller-policy route or
+        reinterpret an uncalibrated negative observation as a retraction.
+        """
+
+        with self._execution_lock, self.core._execution_lock:
+            self._require_core_public_mutation_permission()
+            if self._execution_contract_active:
+                raise RuntimeError("feedback cannot reenter an active production transaction")
+            self._runtime_operator_instances_for_execution()
+            input_hash = content_sha256(
+                (history, feedback, binding, likelihood_model, revision_options)
+            )
+            previous_input = self._feedback_input_journal.get(feedback.metadata.record_id)
+            if previous_input is not None and previous_input != input_hash:
+                raise ValueError("replayed multi-axis feedback input content differs")
+            revision_id = history.latest.revision_id
+            actual_history = self.core._event_histories.get(revision_id)
+            if actual_history is None or content_sha256(actual_history) != content_sha256(history):
+                raise ValueError("feedback history content was not produced by this runtime")
+            if (
+                previous_input is None
+                and revision_id
+                != self.core._validate_feedback_revision_binding(
+                    feedback=feedback,
+                    binding=binding,
+                )
+            ):
+                raise ValueError("feedback history does not match the bound core revision")
+            for instance, method in (
+                (self.core._message_passing, "infer"),
+                (self.core._event_engine, "revise_actor_responsibility"),
+                (self.core._event_engine, "reactivate_with_evidence"),
+                (self.core._event_engine, "revise_event_mechanism"),
+                (self.core._event_engine, "revise_role_binding"),
+                (self.core._event_engine, "revise_destination_location"),
+            ):
+                bind_runtime_callable(
+                    runtime_execution_id=self.core.authorization_scope_id,
+                    operator="orrer_cheh",
+                    binding_slot=1,
+                    binding_kind="direct_operator_callable",
+                    instance=instance,
+                    callable_name=method,
+                    require_declared_member=True,
+                )
+            core_checkpoint = self.core._capture_revision_transaction(include_operator_state=True)
+            wrapper_checkpoint = self._capture_execution_wrapper_state()
+            try:
+                revised, outcome = self.feedback_revision_loop.ingest_feedback(
+                    history=history,
+                    feedback=feedback,
+                    binding=binding,
+                    likelihood_model=likelihood_model,
+                    owner_key=self.core.owner_key,
+                    **revision_options,
+                )
+                receipts = tuple(
+                    self.core.apply_project_one_stat_request(request)
+                    for request in outcome.project_one_requests
+                )
+                if any(receipt.status.value == "rejected" for receipt in receipts):
+                    raise ValueError(
+                        "multi-axis statistic revision rejected; transaction rolled back"
+                    )
+                self.core._event_histories[revised.latest.revision_id] = deepcopy(revised)
+                self._feedback_input_journal[feedback.metadata.record_id] = input_hash
+                return revised, outcome, receipts
+            except BaseException:
+                self.core._restore_revision_transaction(core_checkpoint)
+                self._restore_execution_wrapper_state(wrapper_checkpoint)
+                raise
 
     def _adaptive_router_state_sha256_unlocked(self) -> str:
         debts = tuple(
@@ -728,6 +825,9 @@ class StructureTwoProductionSystem:
         with self._execution_lock:
             if self._execution_contract_active:
                 raise RuntimeError("adaptive debt replay is forbidden during execution")
+            # Validate before restoring the historical branch.  Restoring must
+            # not silently erase an injected callable and launder the attempt.
+            self._runtime_operator_instances_for_execution()
             entry = self._adaptive_debt_ledger.get(debt_id)
             if entry is None:
                 raise KeyError(f"unknown adaptive debt: {debt_id}")
@@ -1134,6 +1234,11 @@ class StructureTwoProductionSystem:
             transition,
             trace_recorder=recorder,
             force_long_term_write_blocked=True,
+            identity_switch_probability=(
+                ciav_input.identity_switch_probability
+                if ciav_input is not None
+                else transition.identity_switch_probability
+            ),
         )
         ciav_plan = None
         ciav_receipt = None
@@ -1168,6 +1273,7 @@ class StructureTwoProductionSystem:
                     binding_kind="adaptive_composite_stage",
                     instance=self,
                     callable_name="_execute_ciav_operator",
+                    require_declared_member=True,
                 ),
             )
             started_ns = perf_counter_ns()
@@ -1209,6 +1315,7 @@ class StructureTwoProductionSystem:
                             binding_kind="adaptive_composite_stage",
                             instance=self.core,
                             callable_name="apply_fast_action_verification",
+                            require_declared_member=True,
                         ),
                     )
                     started_ns = perf_counter_ns()
@@ -1241,6 +1348,7 @@ class StructureTwoProductionSystem:
                         feedback_transition,
                         trace_recorder=recorder,
                         trace_phase="feedback_closure",
+                        identity_switch_probability=ciav_input.identity_switch_probability,
                     )
 
         if path_id == "P5_FULL_EAGER":
@@ -1620,7 +1728,7 @@ class StructureTwoProductionSystem:
             "ciav_opceu_loop": self.ciav_opceu_loop,
             "evidence_factor_trace": self.ciav_opceu_loop.trace,
         }
-        authority = feedback_message_passing._independence_authority
+        authority = getattr(feedback_message_passing, "_independence_authority", None)
         if authority is not None:
             components["feedback_independence_authority"] = authority
         return components
@@ -1628,7 +1736,7 @@ class StructureTwoProductionSystem:
     def _execution_guard_state_sha256(self) -> str:
         feedback_loop = self.feedback_revision_loop
         feedback_message_passing = feedback_loop._message_passing
-        authority = feedback_message_passing._independence_authority
+        authority = getattr(feedback_message_passing, "_independence_authority", None)
         return content_sha256(
             {
                 "attribute_names": sorted(
@@ -1638,6 +1746,7 @@ class StructureTwoProductionSystem:
                 ),
                 "system_version": self.system_version,
                 "execution_contract_active": self._execution_contract_active,
+                "feedback_input_journal": dict(self._feedback_input_journal),
                 "execution_lock": {
                     "type": _runtime_type_symbol(self._execution_lock),
                     "recursion_depth": _runtime_rlock_depth(self._execution_lock),
@@ -1681,7 +1790,9 @@ class StructureTwoProductionSystem:
                     "engine_schema_version": feedback_loop._engine.schema_version,
                     "message_passing_type": _runtime_type_symbol(feedback_message_passing),
                     "message_passing_attribute_names": sorted(vars(feedback_message_passing)),
-                    "message_passing_model_version": feedback_message_passing.model_version,
+                    "message_passing_state": _message_passing_state_descriptor(
+                        feedback_message_passing
+                    ),
                     "message_passing_authority": _authority_descriptor(authority),
                     "retraction_threshold": feedback_loop._retraction_threshold,
                     "reactivation_threshold": feedback_loop._reactivation_threshold,
@@ -1713,6 +1824,12 @@ class StructureTwoProductionSystem:
                 "fields": deepcopy(dict(vars(component))),
             }
             for label, component in component_refs.items()
+            if label
+            not in {
+                "feedback_engine",
+                "feedback_message_passing",
+                "feedback_independence_authority",
+            }
         }
         excluded = {
             "core",
@@ -1723,10 +1840,12 @@ class StructureTwoProductionSystem:
             "_execution_lock",
             "_adaptive_debt_ledger",
             "_adaptive_replay_authorized_debt_ids",
+            "_assembly_components",
         }
         return {
             "attribute_names": frozenset(self.__dict__),
             "execution_lock": self._execution_lock,
+            "assembly_components": self._assembly_components,
             "core": self.core,
             "adaptive_debt_ledger": self._adaptive_debt_ledger,
             "adaptive_debt_ledger_state": self._snapshot_adaptive_debt_ledger(
@@ -1757,8 +1876,8 @@ class StructureTwoProductionSystem:
         component_states = checkpoint["component_states"]
         assert isinstance(component_refs, dict)
         assert isinstance(component_states, dict)
-        for label, component in component_refs.items():
-            state = component_states[label]
+        for label, state in component_states.items():
+            component = component_refs[label]
             assert isinstance(state, dict)
             attribute_names = state["attribute_names"]
             component_fields = state["fields"]
@@ -1798,6 +1917,7 @@ class StructureTwoProductionSystem:
         )
 
         self._execution_lock = checkpoint["execution_lock"]  # type: ignore[assignment]
+        self._assembly_components = checkpoint["assembly_components"]  # type: ignore[assignment]
         self.core = checkpoint["core"]  # type: ignore[assignment]
         adaptive_debt_ledger = checkpoint["adaptive_debt_ledger"]
         adaptive_debt_ledger_state = checkpoint["adaptive_debt_ledger_state"]
@@ -1867,8 +1987,31 @@ class StructureTwoProductionSystem:
         ledger.update(restored)
 
     def _runtime_operator_instances_for_execution(self) -> dict[str, tuple[object, ...]]:
+        self.core._check_particle_workspace_binding()
+        actual = (
+            self.core,
+            self.core._event_engine,
+            self.core._message_passing,
+            self.feedback_revision_loop,
+            self.cause_information_planner,
+            self.ciav_opceu_loop,
+        )
+        if any(
+            left is not right for left, right in zip(actual, self._assembly_components, strict=True)
+        ):
+            if self._assembly_components[0]._execution_contract_phase == "sink_commit":
+                raise RuntimeError("trace sink replaced an audited runtime component")
+            raise ValueError(
+                "production assembly component identity was replaced; "
+                "override type is not registered or bound"
+            )
+        if (
+            self.feedback_revision_loop._engine is not self.core._event_engine
+            or self.feedback_revision_loop._message_passing is not self.core._message_passing
+        ):
+            raise ValueError("feedback loop engine/message passing must share the production core")
         router = self.core._automatic_regimes
-        return {
+        instances: dict[str, tuple[object, ...]] = {
             "opceu": (self.core._corrector,),
             "orrer_cheh": (self.core._event_engine, self.feedback_revision_loop),
             "pchmp": (self.core._message_passing,),
@@ -1877,6 +2020,31 @@ class StructureTwoProductionSystem:
             "rgrc": (self.core, self.core._hybrid_loop.ledger),
             "ciav": (self.cause_information_planner, self.ciav_opceu_loop),
         }
+        # Verify the additional declared implementations too.  A binding is not
+        # an execution receipt; uncalled nodes remain unexecuted in the trace.
+        for operator, instance, method in (
+            ("opceu", self.core._corrector, "weight_for_opportunity"),
+            ("orrer_cheh", self.core._event_engine, "branch"),
+            ("pchmp", self.core._message_passing, "consume"),
+            ("cf_bocpd", router.bocpd, "observe_online"),
+            ("ccrr", router, "observe"),
+            ("rgrc", self.core, "_process_transition"),
+            ("orrer_cheh", self.feedback_revision_loop, "ingest_feedback"),
+            ("ccrr", router.ccrr, "decide"),
+            ("rgrc", self.core._hybrid_loop.ledger, "live_promoted_records_for_revision"),
+            ("ciav", self.cause_information_planner, "select"),
+            ("ciav", self.ciav_opceu_loop, "execute_selected_action"),
+        ):
+            bind_runtime_callable(
+                runtime_execution_id=self.core.authorization_scope_id,
+                operator=cast(RuntimeOperatorName, operator),
+                binding_slot=1,
+                binding_kind="direct_operator_callable",
+                instance=instance,
+                callable_name=method,
+                require_declared_member=True,
+            )
+        return instances
 
     def runtime_operator_instances(self) -> dict[str, tuple[object, ...]]:
         """Audit view proving the seven names resolve to live objects in this runtime."""
@@ -1892,6 +2060,7 @@ class StructureTwoProductionSystem:
             if self._execution_contract_active:
                 raise RuntimeError("runtime mutation is forbidden during production execution")
             self.ciav_opceu_loop = CIAVOPCEUObservationLoop(trace)
+            self._assembly_components = (*self._assembly_components[:-1], self.ciav_opceu_loop)
 
     def verify_runtime_assembly(
         self, *, allowed_operator_overrides: frozenset[str] = frozenset()

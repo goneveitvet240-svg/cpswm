@@ -668,8 +668,8 @@ def test_every_production_entrypoint_leaves_the_feedback_revision_loop_uninvoked
     assert loop._projector._seen == {}
 
 
-def test_the_declared_orrer_cheh_instances_are_two_distinct_revision_engines() -> None:
-    """The declared ORRER_CHEH instance tuple does not have a single engine identity."""
+def test_the_declared_orrer_cheh_instances_share_the_actual_core_engine() -> None:
+    """R4 repairs the independently reproduced split; both members stay declared."""
 
     probe = BackboneWiringProbe.build(seed=7)
     instances = probe.system.runtime_operator_instances()
@@ -677,8 +677,8 @@ def test_the_declared_orrer_cheh_instances_are_two_distinct_revision_engines() -
 
     assert engine is probe.system.core._event_engine
     assert feedback_loop is probe.system.feedback_revision_loop
-    assert feedback_loop._engine is not probe.system.core._event_engine
-    assert feedback_loop._message_passing is not probe.system.core._message_passing
+    assert feedback_loop._engine is probe.system.core._event_engine
+    assert feedback_loop._message_passing is probe.system.core._message_passing
 
 
 def test_only_the_first_declared_instance_of_each_operator_is_identity_checked() -> None:

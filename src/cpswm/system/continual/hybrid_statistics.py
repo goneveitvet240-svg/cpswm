@@ -17,6 +17,7 @@ from __future__ import annotations
 import hashlib
 import json
 import threading
+from copy import deepcopy
 from dataclasses import dataclass, field
 from enum import StrEnum
 from math import isfinite
@@ -1032,6 +1033,44 @@ class HybridStatisticLedger:
             for promotion in promotions:
                 self._commit_promotion(promotion, self._deltas[promotion.promotes_record_id])
 
+    def apply_statistic_bundle(
+        self,
+        *,
+        deltas: tuple[HybridStatisticDelta, ...],
+        promotions: tuple[HybridPromotion, ...],
+    ) -> tuple[HybridProjection, ...]:
+        """Append and promote one complete cluster in this sole authoritative ledger.
+
+        This consumes existing RGRC certificates; it does not select a posterior
+        aggregation rule or manufacture authority. Every alpha/A/b/Lambda/xi key
+        is restored in place if validation, execution or publication is interrupted.
+        """
+        if not deltas:
+            raise HybridLedgerError("a statistic bundle must be nonempty")
+        clusters = {delta.evidence_cluster_id for delta in deltas}
+        if len(clusters) != 1:
+            raise HybridLedgerError("a statistic bundle cannot mix evidence clusters")
+        if any(delta.initial_state is not HybridConsolidationState.QUARANTINED for delta in deltas):
+            raise HybridLedgerError("bundle deltas require explicit RGRC promotion")
+        with self._lock:
+            checkpoint = {
+                key: deepcopy(value) for key, value in vars(self).items() if key != "_lock"
+            }
+            try:
+                for delta in deltas:
+                    self.append_delta(delta)
+                self.promote_cluster(
+                    evidence_cluster_id=next(iter(clusters)), promotions=promotions
+                )
+                return tuple(self.projection(delta.key) for delta in deltas)
+            except BaseException:
+                for key in tuple(vars(self)):
+                    if key != "_lock" and key not in checkpoint:
+                        delattr(self, key)
+                for key, value in checkpoint.items():
+                    setattr(self, key, value)
+                raise
+
     def retract(self, reversal: HybridReversal) -> None:
         with self._lock:
             self._check_header(reversal.record_id, reversal.input_watermark)
@@ -1446,6 +1485,46 @@ class HybridStatisticLedger:
                 raise HybridLedgerError(f"cached {name} differs from replay")
         if abs(cached.alpha - rebuilt.alpha) > atol:
             raise HybridLedgerError("cached alpha differs from replay")
+
+    def ensure_replay_equivalence(self, keys: tuple[StatisticKey, ...]) -> bool:
+        """Repair local numeric state from the complete log before downstream use.
+
+        Uses the existing cache-equivalence criterion without changing its
+        tolerance. The return value records whether a full replay was used.
+        This is analytic-cache recovery, not a particle-suffix equivalence claim.
+        """
+        with self._lock:
+            try:
+                for key in keys:
+                    self.assert_cache_matches_replay(key)
+                    if self.projection(key).replay_required:
+                        raise HybridLedgerError("local projection requires replay")
+                return False
+            except HybridLedgerError:
+                restored = type(self).restore_from_export(self.export_state())
+                for key in keys:
+                    projection = restored.rebuild_projection(key)
+                    if projection.replay_required:
+                        raise HybridLedgerError(
+                            "full replay cannot produce reliable analytic state"
+                        ) from None
+                    # Replay the live log in order; replaying all transient
+                    # additions and downdates would repeat the same cancellation.
+                    mutable = self._prior_projection()
+                    live = restored._promoted - restored._reversed
+                    for record in restored._log:
+                        if (
+                            isinstance(record, HybridStatisticDelta)
+                            and record.record_id in live
+                            and record.key == key
+                        ):
+                            self._apply_to(mutable, record, +1.0)
+                    restored._projection[key] = mutable
+                replacement = dict(self._projection)
+                for key in keys:
+                    replacement[key] = deepcopy(restored._projection[key])
+                self._projection = replacement
+                return True
 
     def _validate_revision(self, delta: HybridStatisticDelta) -> None:
         known_event = self._revision_event.get(delta.revision_id)

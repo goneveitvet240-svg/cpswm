@@ -2,6 +2,8 @@
 
 ## A 多 agent 入口修复与两轮复核交付 2026-09-13（能力仍部分完成）
 
+- 已公开推送并 ls-remote 核验交付证据 SHA `bd9e0f238d2afc2d7dbba7bcc1e3eddd66d76c38`；草稿 PR https://github.com/goneveitvet240-svg/cpswm/pull/13 。118 个本批归档工件摘要再次一致。本行状态登记不改变冻结代码和证据；尚未自动合并，待 B 独立复核。
+
 - base `6a008aedd9c588a7716206eba60b3a57f9fc94d4`；入口/测试冻结 `0b46b7de077c6b25e675648deb8b5026c901c9eb`，原始 Unity 包记录器冻结 `14708f93aa006b465ddfb7a9e8823e0fb2311dee`。独立分支 `codex/pc-a-multiagent-lifecycle-20260913`，不改共享集成/B 主干。
 - 真实四格对照：普通场景 1/2 agent 成功且独立转向；ProcTHOR 单 agent 成功；双 agent 原始 Initialize 包只有 1。修后在 Initialize 阶段明确拒绝，不继续 CreateHouse/Pass；不是多人能力通过。
 - 实际 `AI2-THOR-Base.dll` IL 确认 Procedural guard 和初始化替换 primary / 外层旧 controller 错误回执链；高置信机制定位，尚未内部动态打点或修后 Unity 构建验证。不是源码目录名/启动程序哈希自行证明。

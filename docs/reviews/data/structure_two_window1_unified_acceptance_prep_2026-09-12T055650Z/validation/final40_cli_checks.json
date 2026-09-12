@@ -1,0 +1,55 @@
+[
+  {
+    "name": "prepare_final40_waiting",
+    "argv": [
+      ".venv/bin/python",
+      "tools/structure_two_unified_acceptance.py",
+      "--run-dir",
+      "/private/tmp/cpswm-s2-evidence-repair-window1/docs/reviews/data/structure_two_unified_acceptance_runs/prepare_final40_20260912T065300Z"
+    ],
+    "cwd": "/private/tmp/cpswm-s2-evidence-repair-window1",
+    "started_utc": "2026-09-12T06:53:52.552360+00:00",
+    "ended_utc": "2026-09-12T06:53:55.845497+00:00",
+    "seconds": 3.2930908328853548,
+    "exit_code": 0,
+    "expected_exit_code": 0,
+    "stdout": {
+      "path": "docs/reviews/data/structure_two_window1_unified_acceptance_prep_2026-09-12T055650Z/validation/prepare_final40_waiting.stdout.log",
+      "sha256": "5b54da66e3076140fa676b8c1f0e817ccd85bbd8bf2c14fc63e4a44297c85acb"
+    },
+    "stderr": {
+      "path": "docs/reviews/data/structure_two_window1_unified_acceptance_prep_2026-09-12T055650Z/validation/prepare_final40_waiting.stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  },
+  {
+    "name": "reject_sealed_outputs_final40",
+    "argv": [
+      ".venv/bin/python",
+      "tools/structure_two_unified_acceptance.py",
+      "--run-dir",
+      "/private/tmp/cpswm-s2-evidence-repair-window1/docs/reviews/data/structure_two_unified_acceptance_runs/negative_sealed_outputs_final40_20260912T065300Z",
+      "--unified-root",
+      "/private/tmp/cpswm-s2-evidence-repair-window1",
+      "--expected-head",
+      "ba816cb7c2a885f743069f6b091962b295249cb9",
+      "--expected-input-sha256",
+      "3b3ecacb849be546f9bab6666ef7fcabdec38dc1a5aa4102f1ae8706ccc28dc1",
+      "--execute"
+    ],
+    "cwd": "/private/tmp/cpswm-s2-evidence-repair-window1",
+    "started_utc": "2026-09-12T06:53:55.845731+00:00",
+    "ended_utc": "2026-09-12T06:53:58.600063+00:00",
+    "seconds": 2.7543529579415917,
+    "exit_code": 1,
+    "expected_exit_code": 1,
+    "stdout": {
+      "path": "docs/reviews/data/structure_two_window1_unified_acceptance_prep_2026-09-12T055650Z/validation/reject_sealed_outputs_final40.stdout.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "stderr": {
+      "path": "docs/reviews/data/structure_two_window1_unified_acceptance_prep_2026-09-12T055650Z/validation/reject_sealed_outputs_final40.stderr.log",
+      "sha256": "527400a55eb7a466b3a8697049ecf7f8338ce6328e2995be0164bffe1922ee7d"
+    }
+  }
+]

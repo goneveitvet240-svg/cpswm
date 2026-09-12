@@ -1,0 +1,175 @@
+[
+  {
+    "name": "prepare_waiting",
+    "argv": [
+      ".venv/bin/python",
+      "tools/structure_two_unified_acceptance.py",
+      "--run-dir",
+      "/private/tmp/cpswm-s2-evidence-repair-window1/docs/reviews/data/structure_two_unified_acceptance_runs/prepare_20260912T062000Z"
+    ],
+    "cwd": "/private/tmp/cpswm-s2-evidence-repair-window1",
+    "started_utc": "2026-09-12T06:22:11.328913+00:00",
+    "ended_utc": "2026-09-12T06:22:12.991789+00:00",
+    "seconds": 1.6627897920552641,
+    "exit_code": 0,
+    "expected_exit_code": 0,
+    "stdout": {
+      "path": "docs/reviews/data/structure_two_window1_unified_acceptance_prep_2026-09-12T055650Z/validation/prepare_waiting.stdout.log",
+      "sha256": "d841c04124db1b278df71c2751b150d827aadca5bec27cfe1eae43bc9200b76f"
+    },
+    "stderr": {
+      "path": "docs/reviews/data/structure_two_window1_unified_acceptance_prep_2026-09-12T055650Z/validation/prepare_waiting.stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  },
+  {
+    "name": "reject_sealed_branch_outputs",
+    "argv": [
+      ".venv/bin/python",
+      "tools/structure_two_unified_acceptance.py",
+      "--run-dir",
+      "/private/tmp/cpswm-s2-evidence-repair-window1/docs/reviews/data/structure_two_unified_acceptance_runs/negative_sealed_outputs_20260912T062000Z",
+      "--unified-root",
+      "/private/tmp/cpswm-s2-evidence-repair-window1",
+      "--expected-head",
+      "6ae8dc2f06ba4a8e16fbac9b6cfe2e6b05fee604",
+      "--expected-input-sha256",
+      "1783cdfa808d803dfeafd0d5ff73bdc79a98a7179bb091e657f11ea662928e11",
+      "--execute"
+    ],
+    "cwd": "/private/tmp/cpswm-s2-evidence-repair-window1",
+    "started_utc": "2026-09-12T06:22:12.992055+00:00",
+    "ended_utc": "2026-09-12T06:22:16.427447+00:00",
+    "seconds": 3.435274167219177,
+    "exit_code": 1,
+    "expected_exit_code": 1,
+    "stdout": {
+      "path": "docs/reviews/data/structure_two_window1_unified_acceptance_prep_2026-09-12T055650Z/validation/reject_sealed_branch_outputs.stdout.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "stderr": {
+      "path": "docs/reviews/data/structure_two_window1_unified_acceptance_prep_2026-09-12T055650Z/validation/reject_sealed_branch_outputs.stderr.log",
+      "sha256": "527400a55eb7a466b3a8697049ecf7f8338ce6328e2995be0164bffe1922ee7d"
+    }
+  },
+  {
+    "name": "preserved_checkpoint_not_current_after_new_test_contract",
+    "argv": [
+      ".venv/bin/python",
+      "apps/evaluation_runner/generate_structure_two_engineering_trust_checkpoint.py",
+      "--verify",
+      "benchmarks/structure_two/engineering_trust_checkpoint_2026_09_12_v0_3/engineering_checkpoint.json",
+      "--no-fresh-recomputation"
+    ],
+    "cwd": "/private/tmp/cpswm-s2-evidence-repair-window1",
+    "started_utc": "2026-09-12T06:22:16.428470+00:00",
+    "ended_utc": "2026-09-12T06:22:17.847047+00:00",
+    "seconds": 1.4185597081668675,
+    "exit_code": 1,
+    "expected_exit_code": 1,
+    "stdout": {
+      "path": "docs/reviews/data/structure_two_window1_unified_acceptance_prep_2026-09-12T055650Z/validation/preserved_checkpoint_not_current_after_new_test_contract.stdout.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "stderr": {
+      "path": "docs/reviews/data/structure_two_window1_unified_acceptance_prep_2026-09-12T055650Z/validation/preserved_checkpoint_not_current_after_new_test_contract.stderr.log",
+      "sha256": "2332f348cf0513a0a9f5744b79c11a7609b14522f5dc1faf8d3e2db12efff991"
+    }
+  },
+  {
+    "name": "lint_preparation",
+    "argv": [
+      ".venv/bin/ruff",
+      "check",
+      "tools/structure_two_unified_acceptance.py",
+      "tests/test_structure_two_unified_acceptance.py"
+    ],
+    "cwd": "/private/tmp/cpswm-s2-evidence-repair-window1",
+    "started_utc": "2026-09-12T06:22:17.847115+00:00",
+    "ended_utc": "2026-09-12T06:22:17.891630+00:00",
+    "seconds": 0.04454954178072512,
+    "exit_code": 0,
+    "expected_exit_code": 0,
+    "stdout": {
+      "path": "docs/reviews/data/structure_two_window1_unified_acceptance_prep_2026-09-12T055650Z/validation/lint_preparation.stdout.log",
+      "sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18"
+    },
+    "stderr": {
+      "path": "docs/reviews/data/structure_two_window1_unified_acceptance_prep_2026-09-12T055650Z/validation/lint_preparation.stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  },
+  {
+    "name": "format_preparation",
+    "argv": [
+      ".venv/bin/ruff",
+      "format",
+      "--check",
+      "tools/structure_two_unified_acceptance.py",
+      "tests/test_structure_two_unified_acceptance.py"
+    ],
+    "cwd": "/private/tmp/cpswm-s2-evidence-repair-window1",
+    "started_utc": "2026-09-12T06:22:17.891698+00:00",
+    "ended_utc": "2026-09-12T06:22:17.904371+00:00",
+    "seconds": 0.012692667078226805,
+    "exit_code": 0,
+    "expected_exit_code": 0,
+    "stdout": {
+      "path": "docs/reviews/data/structure_two_window1_unified_acceptance_prep_2026-09-12T055650Z/validation/format_preparation.stdout.log",
+      "sha256": "3bc53bf3e981a98a34a852e175bf9b77af841edea74fca595d9aedcbaf9a4938"
+    },
+    "stderr": {
+      "path": "docs/reviews/data/structure_two_window1_unified_acceptance_prep_2026-09-12T055650Z/validation/format_preparation.stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  },
+  {
+    "name": "native_offline_environment_check",
+    "argv": [
+      "uv",
+      "sync",
+      "--frozen",
+      "--offline",
+      "--check",
+      "--extra",
+      "dev",
+      "--no-cache"
+    ],
+    "cwd": "/private/tmp/cpswm-s2-evidence-repair-window1",
+    "started_utc": "2026-09-12T06:22:17.904419+00:00",
+    "ended_utc": "2026-09-12T06:22:18.020591+00:00",
+    "seconds": 0.11620387504808605,
+    "exit_code": 0,
+    "expected_exit_code": 0,
+    "stdout": {
+      "path": "docs/reviews/data/structure_two_window1_unified_acceptance_prep_2026-09-12T055650Z/validation/native_offline_environment_check.stdout.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "stderr": {
+      "path": "docs/reviews/data/structure_two_window1_unified_acceptance_prep_2026-09-12T055650Z/validation/native_offline_environment_check.stderr.log",
+      "sha256": "3338222768f5671b81a1921e4d177b768e2e0add8850607f47a53896e11d8e5e"
+    }
+  },
+  {
+    "name": "diff_check",
+    "argv": [
+      "git",
+      "diff",
+      "--check"
+    ],
+    "cwd": "/private/tmp/cpswm-s2-evidence-repair-window1",
+    "started_utc": "2026-09-12T06:22:18.020658+00:00",
+    "ended_utc": "2026-09-12T06:22:18.036685+00:00",
+    "seconds": 0.01604966609738767,
+    "exit_code": 0,
+    "expected_exit_code": 0,
+    "stdout": {
+      "path": "docs/reviews/data/structure_two_window1_unified_acceptance_prep_2026-09-12T055650Z/validation/diff_check.stdout.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "stderr": {
+      "path": "docs/reviews/data/structure_two_window1_unified_acceptance_prep_2026-09-12T055650Z/validation/diff_check.stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  }
+]

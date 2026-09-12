@@ -6,6 +6,7 @@ import argparse
 import copy
 import hashlib
 import json
+import struct
 import subprocess
 import sys
 import time
@@ -53,6 +54,7 @@ def main():
     import ai2thor.controller
     import ai2thor.fifo_server
     import ai2thor.server
+    import msgpack
 
     sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
     from cpswm.data_preflight.agent_roster import VerifiedAgentSession, require_agent_roster
@@ -67,6 +69,32 @@ def main():
         trace.append(entry)
 
     class RecordingServer(ai2thor.fifo_server.FifoServer):
+        _pending_field = None
+
+        def _read_with_timeout(self, *read_args, **read_kwargs):
+            data = super()._read_with_timeout(*read_args, **read_kwargs)
+            if self._pending_field is None:
+                if len(data) == self.header_size:
+                    field, length = struct.unpack(self.header_format, data)
+                    record({"kind": "wire_header", "field": field, "bytes": length})
+                    if field != ai2thor.fifo_server.FieldType.END_OF_MESSAGE:
+                        self._pending_field = field
+            else:
+                field, self._pending_field = self._pending_field, None
+                entry = {
+                    "kind": "wire_payload",
+                    "field": field,
+                    "bytes": len(data),
+                    "sha256": hashlib.sha256(data).hexdigest(),
+                }
+                if field in (
+                    ai2thor.fifo_server.FieldType.METADATA,
+                    ai2thor.fifo_server.FieldType.METADATA_PATCH,
+                ):
+                    entry["metadata"] = msgpack.loads(data, raw=False, strict_map_key=False)
+                record(entry)
+            return data
+
         def _send_message(self, field_type, payload):
             # Captures the serialized transport payload, not caller intent.
             record({"kind": "send", "payload": json.loads(payload)})

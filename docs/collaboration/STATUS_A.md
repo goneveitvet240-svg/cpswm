@@ -1,5 +1,14 @@
 # 电脑 A 状态
 
+## A 数据覆盖、可见前缀与仿真采集预检开工 2026-09-13
+
+- 用户授权：先审核三项建议，可靠部分直接推进；不启动模型训练，不选择网络参数、连续状态或付费算力。
+- 分支 `codex/pc-a-data-preflight-20260913`，工作目录 `/private/tmp/cpswm-pc-a-data-preflight.8orI6t`，base SHA `2a7a547fba30412d9349605aff3a7df7c60d6b3a`。fetch 成功，B 最新 `c4eb20b045edb9dc34937f2b9d1038475a02e74a`；保持其五项边界/W1/W2 文件不变。
+- 独占新文件 `src/cpswm/data_preflight/`、`tools/structure_two_data_preflight.py`、专属测试和 `docs/reviews/pc_a/data_preflight_2026-09-13/`。不改主干、B 生产修复、现有冻结科学配置和封存集。
+- 建议审核：训练世界协议有 method-free 限制，因此只运行允许的训练世界覆盖盘点，不适配到方法或训练模型。可见导出基于既有 ObservationOpportunityRecord/ObservationDetectionResult；加入发生时间与接收时间双重前缀，不把全历史摘要、种子、真值送入方法。
+- 本机 Darwin arm64，项目解释器未安装 ai2thor/prior/torch；采集接口与环境预检可做，真实 Unity 运行尚未验证，不能用替身样例宣称真实采集。
+- 测试尚未执行；本条推送后是已共享开工登记。
+
 ## A1 联合消费者/解析更新组件交付（非默认闭环）
 
 - 实际交付代码 SHA：`1d24099a025c9d7c00a59e4c78c593703924b0eb`；提交后再次核对运行 manifest 全部源码摘要，差异为 0。后续本状态登记提交只更新文档，不改变被测生产源码。

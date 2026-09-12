@@ -1,0 +1,16 @@
+audited 10/60 episodes
+audited 20/60 episodes
+audited 30/60 episodes
+audited 40/60 episodes
+audited 50/60 episodes
+audited 60/60 episodes
+Traceback (most recent call last):
+  File "/private/tmp/s2-comparison-audit-window2-20260911/apps/evaluation_runner/run_structure_two_comparison_audit.py", line 99, in <module>
+    main()
+    ~~~~^^
+  File "/private/tmp/s2-comparison-audit-window2-20260911/apps/evaluation_runner/run_structure_two_comparison_audit.py", line 80, in main
+    compare_snapshot(snapshot, payload, rows)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/private/tmp/s2-comparison-audit-window2-20260911/src/cpswm/system/evaluation_operations/structure_two_comparison_audit.py", line 648, in compare_snapshot
+    raise ValueError(f"fresh diagnostic differs at {difference}")
+ValueError: fresh diagnostic differs at audit.dynamic_development.ciav_interface_probes.different.detection_outcome (type)

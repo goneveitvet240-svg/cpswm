@@ -1,0 +1,8 @@
+Traceback (most recent call last):
+  File "<stdin>", line 7, in <module>
+  File "/private/tmp/s2-comparison-audit-window2-20260911/src/cpswm/system/evaluation_operations/structure_two_comparison_dynamic.py", line 253, in boundary_probes
+    before = state_readout(system)
+  File "/private/tmp/s2-comparison-audit-window2-20260911/src/cpswm/system/evaluation_operations/structure_two_comparison_dynamic.py", line 129, in state_readout
+    "statistical_weight": event.statistical_weight}
+                          ^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: '_CommittedPrototypeEvent' object has no attribute 'statistical_weight'. Did you mean: 'statistical_owner_weight'?

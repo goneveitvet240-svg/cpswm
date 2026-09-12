@@ -1,0 +1,25 @@
+Traceback (most recent call last):
+  File "<stdin>", line 6, in <module>
+  File "/private/tmp/s2-comparison-audit-window2-20260911/src/cpswm/system/evaluation_operations/structure_two_comparison_dynamic.py", line 108, in fixture
+    steps.append(type(seed_step).model_validate(data))
+                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/.venv/lib/python3.13/site-packages/pydantic/main.py", line 732, in model_validate
+    return cls.__pydantic_validator__.validate_python(
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        obj,
+        ^^^^
+    ...<5 lines>...
+        by_name=by_name,
+        ^^^^^^^^^^^^^^^^
+    )
+    ^
+pydantic_core._pydantic_core.ValidationError: 3 validation errors for ProjectTwoReplayStep
+before.metadata.valid_time
+  Extra inputs are not permitted [type=extra_forbidden, input_value={'start': datetime.dateti...=datetime.timezone.utc)}, input_type=dict]
+    For further information visit https://errors.pydantic.dev/2.13/v/extra_forbidden
+after.metadata.valid_time
+  Extra inputs are not permitted [type=extra_forbidden, input_value={'start': datetime.dateti...=datetime.timezone.utc)}, input_type=dict]
+    For further information visit https://errors.pydantic.dev/2.13/v/extra_forbidden
+actor_evidence.evidence_cluster_id
+  Input should be a valid UUID, invalid character: found `s` at 1 [type=uuid_parsing, input_value='stable_owner:0', input_type=str]
+    For further information visit https://errors.pydantic.dev/2.13/v/uuid_parsing

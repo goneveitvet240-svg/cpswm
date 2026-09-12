@@ -1,0 +1,21 @@
+Traceback (most recent call last):
+  File "<stdin>", line 9, in <module>
+  File "/private/tmp/s2-comparison-audit-window2-20260911/src/cpswm/system/evaluation_operations/structure_two_comparison_dynamic.py", line 153, in run_scenes
+    episode = fixture(template, plan)
+  File "/private/tmp/s2-comparison-audit-window2-20260911/src/cpswm/system/evaluation_operations/structure_two_comparison_dynamic.py", line 107, in fixture
+    steps.append(type(seed_step).model_validate(data))
+                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/.venv/lib/python3.13/site-packages/pydantic/main.py", line 732, in model_validate
+    return cls.__pydantic_validator__.validate_python(
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        obj,
+        ^^^^
+    ...<5 lines>...
+        by_name=by_name,
+        ^^^^^^^^^^^^^^^^
+    )
+    ^
+pydantic_core._pydantic_core.ValidationError: 1 validation error for ProjectTwoReplayStep
+after
+  Value error, non-detected result cannot carry object identity, location, or time [type=value_error, input_value={'metadata': {'record_id'....8, 'evidence_refs': ()}, input_type=dict]
+    For further information visit https://errors.pydantic.dev/2.13/v/value_error

@@ -1,5 +1,15 @@
 # 电脑 A 状态
 
+## A1 默认完整联合主干：非冲突消费者与条件统计批次开工
+
+- 任务目标：继续闭合默认完整联合主干及同一连续历史闭环，不以手工 prepared 注入、占位模型或模拟执行成功宣称完成。
+- 本批分支：`codex/pc-a-native-joint-consumers-20260912`；base/开工源码 `62870a3a38fce882b25d8d77f1d0526cca6fbc14`；工作目录 `/private/tmp/cpswm-pc-a-native-joint.Ct7tPQ`。
+- 本次 fetch 成功；B 最新 `23506024213d517ba4bab65d4318663163b00913`，PR #7 正在五项边界修复/证据运行器，唯一占用 `prototype_spine.py`、`structure_two_particle_workspace.py` 及直接必要类型。本批不写这两文件，不改 B 审核或比较工具。
+- 本批 A 独占新增 `src/cpswm/system/structure_two_joint_consumption.py`、`src/cpswm/system/structure_two_conditional_updates.py`，必要时扩展 grounded_search/active_verification.py 的联合后验消费；专属新测试/工具/报告；不改科学配置。
+- 本批落实：完整粒子相关性的期望效用/CIAV 消费及三个解析块的显式条件增量、累计与撤销。数学正例会明确标单元/组件验证，不冒充默认生产路径。
+- 待接入依赖：B 边界修复经审查后接入当前工作区；真实全轴模型/选择回执、真实连续测量与噪声模型尚未见共享交付，已向用户询问；不把原因/阶段 MLP 更名为全轴模型。默认候选生成/完整 log-q、主干默认接入、动作执行反馈及完整连续验收均保留为未完成目标。
+- 本批开工尚未测试；证据计划 `docs/reviews/pc_a/native_joint_consumers_2026-09-12/`。与 B 通过 GitHub 本状态/PR 公示分界，不自动合并共享集成分支。
+
 ## A1 窗口三完整主干工程 R7 — 进行中
 
 - 分支：`codex/pc-a-w3-backbone-r7-20260912`。

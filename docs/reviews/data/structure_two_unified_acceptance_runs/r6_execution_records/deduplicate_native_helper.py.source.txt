@@ -1,0 +1,25 @@
+import hashlib, io, json, tarfile
+from pathlib import Path
+root=Path('/private/tmp/cpswm-r6_native115_accepted')
+out=Path('/private/tmp/cpswm-pc-a-w1-cache-runtime-r6/docs/reviews/data/structure_two_unified_acceptance_runs/r6_execution_records/native115_fixture_archives')
+local=Path('/private/tmp/cpswm-r6-native115-original-archives')
+local.mkdir()
+d=json.loads((out/'inventory.json').read_text())
+seen=set()
+archive=out/'unique_original_bytes.tar.gz'
+with tarfile.open(archive,'x:gz') as t:
+    for rec in d['records']:
+        for name,v in rec.get('files',{}).items():
+            h=v.get('sha256')
+            if not h or h in seen: continue
+            data=(root/name).read_bytes()
+            assert hashlib.sha256(data).hexdigest()==h
+            info=tarfile.TarInfo('sha256/'+h);info.size=len(data)
+            t.addfile(info,io.BytesIO(data));seen.add(h)
+locations={}
+for rec in d['records']:
+    if 'archive' not in rec:continue
+    path=out/rec['archive'];assert hashlib.sha256(path.read_bytes()).hexdigest()==rec['sha256']
+    dest=local/path.name;assert not dest.exists();path.rename(dest);locations[path.name]=str(dest)
+(out/'storage.json').write_text(json.dumps({'scope':'Lossless content deduplication for transport; no certification or regenerated test result','portable_archive':archive.name,'sha256':hashlib.sha256(archive.read_bytes()).hexdigest(),'unique_files':len(seen),'reconstruction':'inventory.json records.files map every original relative path to sha256/<hash> content or explicit symlink target','full_case_archives_preserved_locally':locations},indent=2)+'\n')
+print(json.dumps({'unique_files':len(seen),'archive_bytes':archive.stat().st_size,'original_archives_preserved':len(locations)}))

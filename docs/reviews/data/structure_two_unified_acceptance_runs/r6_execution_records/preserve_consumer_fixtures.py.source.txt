@@ -1,0 +1,58 @@
+import hashlib
+import json
+import tarfile
+import time
+from pathlib import Path
+
+root = Path('/private/tmp/cpswm-pc-a-w1-r6-isolated-comparison')
+run = root / 'docs/reviews/data/structure_two_unified_acceptance_runs/r6_comparison_accepted'
+out = Path('/private/tmp/cpswm-pc-a-w1-cache-runtime-r6/docs/reviews/data/structure_two_unified_acceptance_runs/r6_execution_records/consumer_fixture_archives')
+out.mkdir()
+seen = set()
+records = []
+
+def strings(value):
+    if isinstance(value, str):
+        yield value
+    elif isinstance(value, dict):
+        for v in value.values():
+            yield from strings(v)
+    elif isinstance(value, list):
+        for v in value:
+            yield from strings(v)
+
+while True:
+    for evidence in (run / 'window2_evidence').rglob('*.json'):
+        try:
+            data = json.loads(evidence.read_text())
+        except (ValueError, FileNotFoundError):
+            continue
+        for value in strings(data):
+            if not value.startswith('/') or '/pytest-of-pangwei/pytest-' not in value:
+                continue
+            p = Path(value)
+            parts = p.parts
+            index = next((i for i, n in enumerate(parts) if n == 'pytest-of-pangwei'), None)
+            if index is None or len(parts) <= index + 2:
+                continue
+            # Only the case directory specifically named by this run's completed evidence.
+            target = Path(*parts[:index + 3])
+            if str(target) in seen or not target.is_dir():
+                continue
+            key = hashlib.sha256(str(target).encode()).hexdigest()[:16]
+            archive = out / (key + '.tar.gz')
+            try:
+                with tarfile.open(archive, 'x:gz') as t:
+                    t.add(target, arcname=target.name)
+            except (FileNotFoundError, OSError) as exc:
+                records.append({'source': str(target), 'error': repr(exc), 'complete': False})
+                seen.add(str(target))
+                continue
+            records.append({'source': str(target), 'evidence': str(evidence), 'archive': archive.name, 'sha256': hashlib.sha256(archive.read_bytes()).hexdigest(), 'bytes': archive.stat().st_size, 'complete': True})
+            seen.add(str(target))
+    state = json.loads((run / 'state.json').read_text())
+    if state['status'] != 'RUNNING':
+        break
+    time.sleep(2)
+(out / 'inventory.json').write_text(json.dumps({'scope': 'Read-only copies of case directories named by this run evidence; no source/cache removal', 'final_engine_status': state['status'], 'records': records}, indent=2) + '\n')
+print(json.dumps({'state': state['status'], 'preserved_cases': len(records)}))

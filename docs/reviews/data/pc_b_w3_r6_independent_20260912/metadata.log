@@ -1,0 +1,240 @@
+
+=== R6 Git identity ===
+command: git rev-parse HEAD
+1bd513f51ab7e54a7290870a5f34b524254d55c6
+command: git rev-parse 'HEAD^{tree}'
+0050c04511be8f2268ad80678ee180d06095cea0
+command: git show -s --format=fuller 1bd513f51ab7e54a7290870a5f34b524254d55c6
+commit 1bd513f51ab7e54a7290870a5f34b524254d55c6
+Author:     CPSWM collaboration <noreply@users.noreply.github.com>
+AuthorDate: Sat Sep 12 17:14:02 2026 +0800
+Commit:     CPSWM collaboration <noreply@users.noreply.github.com>
+CommitDate: Sat Sep 12 17:14:02 2026 +0800
+
+    chore: preserve w3 actual worktree snapshot for dual-PC review
+command: git diff --name-status 281e88894fca527df1d54018b5053469e8c422d5 1bd513f51ab7e54a7290870a5f34b524254d55c6
+A	AGENTS.md
+A	docs/collaboration/SNAPSHOT_SCOPE.json
+A	docs/reviews/structure_two_window3_round4_repairs_2026-09-12.md
+A	docs/reviews/structure_two_window3_round5_repairs_2026-09-12.md
+A	docs/reviews/structure_two_window3_round6_repairs_2026-09-12.md
+M	src/cpswm/system/continual/hybrid_event_to_task_loop.py
+M	src/cpswm/system/continual/hybrid_statistics.py
+M	src/cpswm/system/evaluation_operations/structure_two_selected_method.py
+M	src/cpswm/system/prototype_spine.py
+A	src/cpswm/system/structure_two_particle_workspace.py
+M	src/cpswm/system/structure_two_production_system.py
+A	src/cpswm/system/structure_two_semantic_identity.py
+M	tests/structure_two_backbone_wiring_probe.py
+A	tests/structure_two_revision_oracle.py
+M	tests/test_project_two_revision_action_trace.py
+M	tests/test_structure_two_backbone_operator_wiring.py
+M	tests/test_structure_two_execution_interface.py
+M	tests/test_structure_two_formal_revision_lineage.py
+A	tests/test_structure_two_w3_native_bundle.py
+A	tests/test_structure_two_w3_native_particles.py
+A	tests/test_structure_two_w3_operator_acceptance.py
+A	tests/test_structure_two_w3_revision_acceptance.py
+A	tests/test_structure_two_w3_round5_boundaries.py
+A	tests/test_structure_two_w3_round6_prepared_boundary.py
+A	tests/test_structure_two_w3_supplement.py
+
+=== Runtime interpreter and imports ===
+command: git --version
+git version 2.53.0.windows.3
+command: .venv\\Scripts\\python.exe -VV
+Python 3.13.5 (main, Jul 23 2025, 00:30:06) [MSC v.1944 64 bit (AMD64)]
+command: .venv\\Scripts\\python.exe -m pytest --version
+pytest 9.1.1
+command: Python platform/import probe
+{
+  "executable": "F:\\��Ω\\codex\\cpswm-w3-r6-review\\.venv\\Scripts\\python.exe",
+  "version": "3.13.5 (main, Jul 23 2025, 00:30:06) [MSC v.1944 64 bit (AMD64)]",
+  "platform": "Windows-11-10.0.22631-SP0",
+  "pytest": "9.1.1",
+  "cpswm": "F:\\��Ω\\codex\\cpswm-w3-r6-review\\src\\cpswm\\__init__.py"
+}
+command: SHA-256 of interpreter, pyproject.toml and uv.lock
+6DC19CFF73C8D7D162CD72BDCEBD1ECFBE93A7086520E2503C5A68EA64FB8CBE  F:\庞惟\codex\cpswm-w3-r6-review\.venv\Scripts\python.exe
+1B6DBBBBDE35CE3C79D7E4D0A042610A830226ECE7CFD9C67211F61EACE0689F  F:\庞惟\codex\cpswm-w3-r6-review\pyproject.toml
+A8442B7089AFC720288845244A8259A964BD5A93FEFB00A82C1EFE7960F9835A  F:\庞惟\codex\cpswm-w3-r6-review\uv.lock
+
+=== Installed distributions ===
+command: importlib.metadata distributions
+PyYAML==6.0.3
+Pygments==2.20.0
+annotated-types==0.8.0
+antlr4-python3-runtime==4.9.3
+ast_serialize==0.8.0
+cffi==2.1.1
+cfgv==3.5.0
+colorama==0.4.6
+contourpy==1.3.3
+coverage==7.15.4
+cpswm==0.1.0
+cpswm==0.1.0
+cryptography==47.0.0
+cycler==0.12.1
+distlib==0.4.3
+execnet==2.1.2
+filelock==3.32.3
+fonttools==4.63.0
+hydra-core==1.3.5
+hypothesis==6.165.10
+identify==2.6.19
+iniconfig==2.3.0
+joblib==1.5.3
+kiwisolver==1.5.0
+librt==0.15.0
+matplotlib==3.11.1
+mypy==2.3.1
+mypy_extensions==1.1.0
+narwhals==2.24.0
+networkx==3.6.1
+nodeenv==1.10.0
+numpy==2.5.2
+omegaconf==2.3.1
+packaging==26.3
+pathspec==1.1.1
+pillow==12.3.0
+platformdirs==4.11.3
+pluggy==1.6.0
+pre_commit==4.6.2
+pycparser==3.0
+pydantic==2.13.4
+pydantic_core==2.46.4
+pyparsing==3.3.2
+pytest-cov==7.1.0
+pytest-xdist==3.8.0
+pytest==9.1.1
+python-dateutil==2.9.0.post0
+python-discovery==1.5.2
+ruff==0.16.3
+scikit-learn==1.9.0
+scipy==1.18.0
+six==1.17.0
+sortedcontainers==2.4.0
+threadpoolctl==3.6.0
+typing-inspection==0.4.4
+typing_extensions==4.16.0
+virtualenv==21.7.4
+
+=== Git EOL configuration ===
+command: git config --list --show-origin | Select-String core.autocrlf/core.eol/safecrlf
+file:"C:/Users/\345\210\230\346\211\277\347\245\245/.cache/codex-runtimes/codex-primary-runtime/dependencies/native/git/etc/gitconfig"	core.autocrlf=true
+repository .gitattributes exists: False
+command: git check-attr text eol -- key files
+src/cpswm/system/prototype_spine.py: text: unspecified
+src/cpswm/system/prototype_spine.py: eol: unspecified
+src/cpswm/system/structure_two_particle_workspace.py: text: unspecified
+src/cpswm/system/structure_two_particle_workspace.py: eol: unspecified
+src/cpswm/system/evaluation_operations/structure_two_selected_method.py: text: unspecified
+src/cpswm/system/evaluation_operations/structure_two_selected_method.py: eol: unspecified
+src/cpswm/system/structure_two_semantic_identity.py: text: unspecified
+src/cpswm/system/structure_two_semantic_identity.py: eol: unspecified
+tests/test_structure_two_formal_revision_lineage.py: text: unspecified
+tests/test_structure_two_formal_revision_lineage.py: eol: unspecified
+tests/test_structure_two_w3_native_particles.py: text: unspecified
+tests/test_structure_two_w3_native_particles.py: eol: unspecified
+tests/test_structure_two_w3_round6_prepared_boundary.py: text: unspecified
+tests/test_structure_two_w3_round6_prepared_boundary.py: eol: unspecified
+
+=== Windows checkout EOL and actual byte SHA-256 ===
+i/lf    w/crlf  attr/                 	src/cpswm/system/evaluation_operations/structure_two_selected_method.py
+i/lf    w/crlf  attr/                 	src/cpswm/system/prototype_spine.py
+i/lf    w/crlf  attr/                 	src/cpswm/system/structure_two_particle_workspace.py
+i/lf    w/crlf  attr/                 	src/cpswm/system/structure_two_semantic_identity.py
+i/lf    w/crlf  attr/                 	tests/test_structure_two_formal_revision_lineage.py
+i/lf    w/crlf  attr/                 	tests/test_structure_two_w3_native_particles.py
+i/lf    w/crlf  attr/                 	tests/test_structure_two_w3_round6_prepared_boundary.py
+EDF3B7778674DD7E708EED1EC16464A30FFB745E4690384525981C97A3444804  F:\庞惟\codex\cpswm-w3-r6-review\src\cpswm\system\prototype_spine.py
+319C5F0C32B894AC96E07137D8F183EEFE61787124919387D3932BA9944E1F1A  F:\庞惟\codex\cpswm-w3-r6-review\src\cpswm\system\structure_two_particle_workspace.py
+499D32384B1261052DBB35966E5127516E62996072B2F6A6E433E807301C4D85  F:\庞惟\codex\cpswm-w3-r6-review\src\cpswm\system\evaluation_operations\structure_two_selected_method.py
+BE3F5FAD6599026768AC86248FA34CE934843AFC523C0390D1C512F854F469A0  F:\庞惟\codex\cpswm-w3-r6-review\src\cpswm\system\structure_two_semantic_identity.py
+13568B04F0E3AE7CCE24184D65320FA43187CA6600AA9B62F2E66A4E0CBD8F01  F:\庞惟\codex\cpswm-w3-r6-review\tests\test_structure_two_formal_revision_lineage.py
+7B9D1523525C0F6815ADA3FB427B8CE4D536A4A037A438DB5619D564CDAADB95  F:\庞惟\codex\cpswm-w3-r6-review\tests\test_structure_two_w3_native_particles.py
+4F5D388FD46F56B2F8836F76E52B2D1E062F1C46045A7FCCB75FA36682C8AB45  F:\庞惟\codex\cpswm-w3-r6-review\tests\test_structure_two_w3_round6_prepared_boundary.py
+
+=== Git-normalized SHA-256 recorded by snapshot manifest ===
+5097842888750f60fe1e991329dda78cf933311a0b5192291482b444d60bebc6  src/cpswm/system/prototype_spine.py
+ff1237b3b2aada4de3ce9a98db8c9de2023b50002d19ac39fc5eee7ce5855ed8  src/cpswm/system/structure_two_particle_workspace.py
+d4ed00618d14fdf09714c290b0735dca5953fbb73fd5c84e486eb19c660bc6b0  src/cpswm/system/evaluation_operations/structure_two_selected_method.py
+274d6b83ba99cf83fa7819e39b9c794abc945d83a3b70a5fa7d6f111934de28c  src/cpswm/system/structure_two_semantic_identity.py
+ebdb27a9d61ac3b52219d62a55faf85e38b4995d65f01a26e357e6a531783965  tests/test_structure_two_formal_revision_lineage.py
+d663604c80aae3a3c057aa3b13f073676ced35ff5f983dfd192f00408b1c3b51  tests/test_structure_two_w3_native_particles.py
+502b293c51e0a3296a5064ff29bb8e34dc0d41d332891075dc8e1f1271e9fe4e  tests/test_structure_two_w3_round6_prepared_boundary.py
+
+=== LF control checkout EOL and actual byte SHA-256 ===
+LF checkout root: F:\庞惟\codex\cpswm-w3-r6-lf-control
+LF checkout HEAD: 1bd513f51ab7e54a7290870a5f34b524254d55c6
+file:"C:/Users/\345\210\230\346\211\277\347\245\245/.cache/codex-runtimes/codex-primary-runtime/dependencies/native/git/etc/gitconfig"	core.autocrlf=true
+i/lf    w/lf    attr/                 	src/cpswm/system/evaluation_operations/structure_two_selected_method.py
+i/lf    w/lf    attr/                 	src/cpswm/system/prototype_spine.py
+i/lf    w/lf    attr/                 	src/cpswm/system/structure_two_particle_workspace.py
+i/lf    w/lf    attr/                 	src/cpswm/system/structure_two_semantic_identity.py
+i/lf    w/lf    attr/                 	tests/test_structure_two_formal_revision_lineage.py
+i/lf    w/lf    attr/                 	tests/test_structure_two_w3_native_particles.py
+i/lf    w/lf    attr/                 	tests/test_structure_two_w3_round6_prepared_boundary.py
+5097842888750F60FE1E991329DDA78CF933311A0B5192291482B444D60BEBC6  F:\庞惟\codex\cpswm-w3-r6-lf-control\src\cpswm\system\prototype_spine.py
+FF1237B3B2AADA4DE3CE9A98DB8C9DE2023B50002D19AC39FC5EEE7CE5855ED8  F:\庞惟\codex\cpswm-w3-r6-lf-control\src\cpswm\system\structure_two_particle_workspace.py
+D4ED00618D14FDF09714C290B0735DCA5953FBB73FD5C84E486EB19C660BC6B0  F:\庞惟\codex\cpswm-w3-r6-lf-control\src\cpswm\system\evaluation_operations\structure_two_selected_method.py
+274D6B83BA99CF83FA7819E39B9C794ABC945D83A3B70A5FA7D6F111934DE28C  F:\庞惟\codex\cpswm-w3-r6-lf-control\src\cpswm\system\structure_two_semantic_identity.py
+EBDB27A9D61AC3B52219D62A55FAF85E38B4995D65F01A26E357E6A531783965  F:\庞惟\codex\cpswm-w3-r6-lf-control\tests\test_structure_two_formal_revision_lineage.py
+D663604C80AAE3A3C057AA3B13F073676CED35FF5F983DFD192F00408B1C3B51  F:\庞惟\codex\cpswm-w3-r6-lf-control\tests\test_structure_two_w3_native_particles.py
+502B293C51E0A3296A5064FF29BB8E34DC0D41D332891075DC8E1F1271E9FE4E  F:\庞惟\codex\cpswm-w3-r6-lf-control\tests\test_structure_two_w3_round6_prepared_boundary.py
+
+=== W1 Git-object static audit ===
+command: git show -s --format=fuller b6202bec015679461b06056571bd47a5446045b8
+commit b6202bec015679461b06056571bd47a5446045b8
+Author:     CPSWM collaboration <noreply@users.noreply.github.com>
+AuthorDate: Sat Sep 12 17:13:57 2026 +0800
+Commit:     CPSWM collaboration <noreply@users.noreply.github.com>
+CommitDate: Sat Sep 12 17:13:57 2026 +0800
+
+    chore: preserve w1 actual worktree snapshot for dual-PC review
+W1 tree: 1a1d384fbf1ddf7380dc80b8f1b388b355511337
+command: git diff --name-status f5089d94ba217b377f88067bc36fdb976e12a4cf b6202bec015679461b06056571bd47a5446045b8
+A	AGENTS.md
+A	docs/collaboration/SNAPSHOT_SCOPE.json
+A	tests/test_structure_two_unified_dependencies.py
+A	tools/structure_two_pytest_runtime.py
+M	tools/structure_two_unified_acceptance.py
+command: git diff --check f5089d94ba217b377f88067bc36fdb976e12a4cf b6202bec015679461b06056571bd47a5446045b8
+command: parse the three W1 Python deltas directly from Git objects
+AST_OK tests/test_structure_two_unified_dependencies.py
+AST_OK tools/structure_two_pytest_runtime.py
+AST_OK tools/structure_two_unified_acceptance.py
+W1 five changed-file Git-object SHA-256:
+aa6b2fca7fd6ad3c1ab06ea0ec0aa93045a197cb84f2eaaca304fdffca1726ae  AGENTS.md
+2564b774a9b2eefd23200ac5a693e2000cbb38067f9bd84d0dc24b955b658182  docs/collaboration/SNAPSHOT_SCOPE.json
+b2aed0837d499e1086e55ad9141c67a379c3b302b9ccb2808379b62a531eb6c8  tests/test_structure_two_unified_dependencies.py
+876b54448c8fa39dd5fd526dbc1ac06882cfa8297dbcc0d34b6ca741f8030cdb  tools/structure_two_pytest_runtime.py
+0e38a3e85a3300b7db18e2780c648034307f8491a7030dba487a7f3c497a8fae  tools/structure_two_unified_acceptance.py
+W1 uv.lock Git-object SHA-256: 8ff0275d2b10eef8c258f14c82a050358ceee6443a5d0fa4c9ddfcc3832291b1
+Trust boundary: Git-object/read-only static inspection only; no W1 runtime execution and no internal state mutation.
+
+=== W1 missing declared unified closure ===
+W2 tests missing 5/5:
+tests/test_structure_two_comparison_audit.py
+tests/test_structure_two_comparison_audit_verification.py
+tests/test_structure_two_comparison_execution_source.py
+tests/test_structure_two_comparison_fairness.py
+tests/test_structure_two_comparison_dynamic.py
+W2 producer/summary entry points missing 2/2:
+apps/evaluation_runner/run_structure_two_comparison_audit.py
+apps/evaluation_runner/summarize_structure_two_comparison_audit.py
+W3 tests missing 14/29:
+tests/test_structure_two_backbone_operator_wiring.py
+tests/test_structure_two_backbone_counterexample_regressions.py
+tests/test_structure_two_late_counter_evidence_chain.py
+tests/test_structure_two_operator_causal_matrix.py
+tests/test_structure_two_ciav_negative_observation_layers.py
+tests/test_structure_two_p0_maintenance_fault_injection.py
+tests/test_structure_two_formal_revision_lineage.py
+tests/test_structure_two_operator_coverage_matrix.py
+tests/test_structure_two_w3_revision_acceptance.py
+tests/test_structure_two_w3_operator_acceptance.py
+tests/test_structure_two_w3_supplement.py
+tests/test_structure_two_w3_round5_boundaries.py
+tests/test_structure_two_w3_native_particles.py
+tests/test_structure_two_w3_native_bundle.py

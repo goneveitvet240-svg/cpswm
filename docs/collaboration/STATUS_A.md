@@ -1,5 +1,13 @@
 # 电脑 A 状态
 
+## A Unity 工具链已安装，基线构建等待系统授权 2026-09-13
+
+- 本分支 `codex/pc-a-procthor-unity-build-20260913`；Unity Hub 3.21.2 和 Unity Editor 2020.3.25f1 已安装成功。Hub UI 已核验登录及 Personal 许可激活；没有记录或公开账号、凭据、许可文件。
+- 冻结 AI2-THOR `f0825767cd50d69f666c7f282e54abfe58f1e917` 完整源码/资源下载成功。独立本地源码分支增加严格构建入口，提交 `dc44ce2139cd026622fa3613421b6ed724850861`，未修改运行时算法、未推送 AllenAI 上游。
+- 已实际启动基线构建；旧编辑器连接其许可客户端成功，但系统 `/Library/Application Support/Unity` 不存在，官方辅助进程弹出管理员授权。等待用户在 macOS 窗口操作，不读取凭据、不绕过保护。尚无构建成功回执、无新 DLL、多 agent 后端修复未实施。
+- 构建入口和有界运行器属于未编译准备代码，Ruff format/check 已通过；两轮后端对抗审核尚未开始，旧版 53 项测试不能验收本轮。私有构建日志仅保留 `/private/tmp/cpswm-unity-baseline-build-20260913-01/`，不公开原始许可日志或二进制。
+- 下一步：系统授权后完成基线构建和实机正负对照，再实施 post-house 生成并执行两轮真实对抗审核；不训练、不合并共享分支。详见 `docs/reviews/pc_a/procthor_unity_build_2026-09-13/REPORT.md`。
+
 ## A Unity 安装与独立构建开工 2026-09-13
 
 - 用户已授权安装和构建；账号登录、许可确认仍由用户操作。分支 `codex/pc-a-procthor-unity-build-20260913`，base `ec2215ac7138c2b359d77219519e5628669c8b82`，独立工作目录 `/private/tmp/cpswm-pc-a-procthor-unity-build-20260913`。

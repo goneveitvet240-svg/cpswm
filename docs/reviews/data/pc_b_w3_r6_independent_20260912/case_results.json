@@ -1,0 +1,85 @@
+{
+  "schema_version": "pc-b-w3-independent-cases-v1",
+  "tested_sha": "1bd513f51ab7e54a7290870a5f34b524254d55c6",
+  "historical_result_immutable": true,
+  "legal_control": {
+    "test": "test_legal_prepared_input_control_is_preserved",
+    "entry": "PrototypeSystemCore.stage_prepared_particle_candidates -> prepared_particle_location_marginal",
+    "precondition": "fresh _legacy_history(1) runtime and unmodified candidates(core)",
+    "expected": "public stage succeeds; registered support is unchanged; marginal plus unresolved mass equals 1",
+    "r6_actual": "PASS after the explicit control was added for handoff",
+    "claim_boundary": "establishes only that the legal prepared-input path remains available"
+  },
+  "adversarial_cases": [
+    {
+      "id": "W3-PCB-01",
+      "test": "test_prepared_support_is_bound_to_the_constructed_world",
+      "entry": "PrototypeSystemCore.stage_prepared_particle_candidates",
+      "setup": "replace one member of core.locations with a foreign UUID, then build ordinary candidates(core)",
+      "direct_runtime_state_change": true,
+      "private_state_write": false,
+      "trust_assumption": "same-process caller/plugin holds the core instance; direct public-field rebinding is possible, but no sanctioned world-registration API is used",
+      "expected": "ValueError mentioning support/location/binding; no particle/input/semantic state admission",
+      "r6_actual": "no exception; foreign location received approximately 0.0902255639 posterior mass",
+      "state_consequence": "prepared workspace/input state is admitted while habit and embedding supports still describe the original world, splitting runtime authority",
+      "pytest_outcome": "FAILED: DID NOT RAISE ValueError",
+      "finding_status": "CONFIRMED_OPEN"
+    },
+    {
+      "id": "W3-PCB-02",
+      "test": "test_prepared_readout_rejects_a_rebound_world_support",
+      "entry": "PrototypeSystemCore.prepared_particle_location_marginal",
+      "setup": "legally stage candidates first, then replace all core.locations with foreign UUIDs before readout",
+      "direct_runtime_state_change": true,
+      "private_state_write": false,
+      "trust_assumption": "same-process caller/plugin can rebind the public field between stage and readout",
+      "expected": "stale/support binding rejection",
+      "r6_actual": "no exception; readout returned the previously staged marginal whose support is disjoint from current core.locations",
+      "state_consequence": "no additional write is required; stale semantic state is exposed as current output without support revalidation",
+      "pytest_outcome": "FAILED: DID NOT RAISE ValueError",
+      "finding_status": "CONFIRMED_OPEN"
+    },
+    {
+      "id": "W3-PCB-03",
+      "test": "test_particle_parent_and_child_cannot_switch_world_support",
+      "entry": "PrototypeSystemCore.stage_prepared_particle_candidates",
+      "setup": "legally stage step 0, process the next transition, replace all core.locations, then stage step 1",
+      "direct_runtime_state_change": true,
+      "private_state_write": false,
+      "trust_assumption": "same-process caller/plugin can rebind the public field across parent-child generations",
+      "expected": "support/parent lineage rejection and atomic preservation of the prior generation",
+      "r6_actual": "no exception; the child generation was accepted on an all-foreign support",
+      "state_consequence": "parent and child records can belong to different world supports and the foreign child is persisted/readable",
+      "pytest_outcome": "FAILED: DID NOT RAISE ValueError",
+      "finding_status": "CONFIRMED_OPEN"
+    },
+    {
+      "id": "W3-PCB-04",
+      "test": "test_conditional_statistics_are_bound_to_the_receipt_cluster",
+      "entry": "PrototypeSystemCore.stage_prepared_particle_candidates",
+      "setup": "alter a caller-owned ConditionalAnalyticState.evidence_cluster_ids to a foreign UUID and recompute the referenced statistic state",
+      "direct_runtime_state_change": false,
+      "private_state_write": false,
+      "trust_assumption": "untrusted or faulty prepared-input producer can submit schema-valid DTOs and self-consistent hashes",
+      "expected": "cluster/statistic/lineage rejection with no persistence",
+      "r6_actual": "no exception; receipt/statistic cluster mismatch was accepted",
+      "state_consequence": "the mismatched statistic lineage is persisted in the prepared input/record state",
+      "pytest_outcome": "FAILED: DID NOT RAISE ValueError",
+      "finding_status": "CONFIRMED_OPEN"
+    },
+    {
+      "id": "W3-PCB-05",
+      "test": "test_unreferenced_statistics_cannot_enter_the_persisted_input_body",
+      "entry": "PrototypeSystemCore.stage_prepared_particle_candidates",
+      "setup": "add a schema-valid statistic keyed by an extra particle UUID that no receipt references",
+      "direct_runtime_state_change": false,
+      "private_state_write": false,
+      "trust_assumption": "untrusted or faulty prepared-input producer can append unused but valid mapping entries",
+      "expected": "unreferenced statistic rejection with no input-body or semantic-memory change",
+      "r6_actual": "no exception; the extra statistic was accepted",
+      "state_consequence": "the entry does not become a particle record, but it enters input_bodies and contributes to semantic identity/replay fingerprint",
+      "pytest_outcome": "FAILED: DID NOT RAISE ValueError",
+      "finding_status": "CONFIRMED_OPEN"
+    }
+  ]
+}

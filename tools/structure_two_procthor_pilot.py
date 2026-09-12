@@ -19,6 +19,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "src"))
 
+from cpswm.data_preflight.agent_roster import require_agent_roster  # noqa: E402
 from cpswm.data_preflight.procthor_execution import execute_schedule, write_json  # noqa: E402
 from cpswm.data_preflight.procthor_schedule import build_schedule  # noqa: E402
 
@@ -105,6 +106,7 @@ def main() -> None:
         write_json(output / "initial_metadata.json", initial)
         if initial.get("lastActionSuccess") is not True:
             raise RuntimeError("ProcTHOR house load failed")
+        require_agent_roster(controller.last_event, count=1, action="CreateHouse", active_id=0)
         receipt["real_procthor_loaded"] = True
         groups = defaultdict(list)
         for obj in initial["objects"]:

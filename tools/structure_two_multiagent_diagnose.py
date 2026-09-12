@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import argparse
+import copy
 import hashlib
 import json
 import subprocess
@@ -24,8 +25,15 @@ def summarize(metadata):
     return {
         key: metadata.get(key)
         for key in (
-            "agentId", "agent", "sceneName", "lastAction", "lastActionSuccess",
-            "errorCode", "errorMessage", "actionReturn", "inventoryObjects",
+            "agentId",
+            "agent",
+            "sceneName",
+            "lastAction",
+            "lastActionSuccess",
+            "errorCode",
+            "errorMessage",
+            "actionReturn",
+            "inventoryObjects",
         )
     }
 
@@ -38,12 +46,16 @@ def main():
     parser.add_argument("--scene", choices=("ordinary", "procedural"), required=True)
     parser.add_argument("--count", type=int, choices=(1, 2), required=True)
     parser.add_argument("--post-initialize", action="store_true")
+    parser.add_argument("--guarded", action="store_true")
     args = parser.parse_args()
     args.output.mkdir(parents=True, exist_ok=False)
     import ai2thor
     import ai2thor.controller
     import ai2thor.fifo_server
     import ai2thor.server
+
+    sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
+    from cpswm.data_preflight.agent_roster import VerifiedAgentSession, require_agent_roster
 
     trace = []
     trace_stream = (args.output / "transport.jsonl").open("x")
@@ -63,20 +75,42 @@ def main():
         def create_event(self, metadata, files):
             record({"kind": "receive", "metadata": metadata})
             event = super().create_event(metadata, files)
-            record({
-                "kind": "decoded", "type": type(event).__name__,
-                "events": [summarize(e.metadata) for e in event.events],
-            })
+            record(
+                {
+                    "kind": "decoded",
+                    "type": type(event).__name__,
+                    "events": [summarize(e.metadata) for e in event.events],
+                    "frame_sha256": [
+                        hashlib.sha256(e.frame.tobytes()).hexdigest()
+                        if e.frame is not None
+                        else None
+                        for e in event.events
+                    ],
+                }
+            )
             return event
 
     class LocalController(ai2thor.controller.Controller):
+        def step(self, action=None, **kwargs):
+            event = super().step(action, **kwargs)
+            name = action.get("action") if isinstance(action, dict) else action
+            params = {**(action if isinstance(action, dict) else {}), **kwargs}
+            if args.guarded and name == "Initialize":
+                require_agent_roster(
+                    event, count=params.get("agentCount", 1), action="Initialize", active_id=0
+                )
+            return event
+
         def _build_server(self, host, port, width, height):
             # SDK 5.0 compares server classes by identity; explicitly construct
             # this instrumentation subclass without patching the installed SDK.
             if self.server is None:
                 self.server = RecordingServer(
-                    width=width, height=height, timeout=self.server_timeout,
-                    depth_format=self.depth_format, add_depth_noise=self.add_depth_noise,
+                    width=width,
+                    height=height,
+                    timeout=self.server_timeout,
+                    depth_format=self.depth_format,
+                    add_depth_noise=self.add_depth_noise,
                 )
 
         @property
@@ -84,33 +118,103 @@ def main():
             return str(args.output / "unity_logs")
 
     assembly = args.binary.parent.parent / "Resources/Data/Managed/Assembly-CSharp.dll"
-    bound = [Path(__file__), args.binary, assembly, args.house,
-             Path(ai2thor.controller.__file__), Path(ai2thor.server.__file__),
-             Path(ai2thor.fifo_server.__file__)]
+    runtime_assembly = assembly.with_name("AI2-THOR-Base.dll")
+    bound = [
+        Path(__file__),
+        args.binary,
+        assembly,
+        runtime_assembly,
+        args.house,
+        Path(__file__).resolve().parents[1] / "src/cpswm/data_preflight/agent_roster.py",
+        Path(ai2thor.controller.__file__),
+        Path(ai2thor.server.__file__),
+        Path(ai2thor.fifo_server.__file__),
+    ]
     before = {str(p.resolve()): sha(p) for p in bound}
     receipt = {
         "scope": "actual Unity multi-agent diagnosis; NOT human execution or training",
-        "sdk": ai2thor.__version__, "python": sys.version,
-        "executable": sys.executable, "argv": sys.argv,
+        "sdk": ai2thor.__version__,
+        "python": sys.version,
+        "executable": sys.executable,
+        "argv": sys.argv,
         "git_head": subprocess.check_output(["git", "rev-parse", "HEAD"], text=True).strip(),
-        "files_before": before, "scene_kind": args.scene, "requested_count": args.count,
+        "files_before": before,
+        "scene_kind": args.scene,
+        "requested_count": args.count,
         "post_initialize": args.post_initialize,
-        "human_execution_verified": False, "training_started": False,
+        "guarded": args.guarded,
+        "human_execution_verified": False,
+        "training_started": False,
     }
     controller = None
     started = time.monotonic()
     try:
         scene = json.loads(args.house.read_text()) if args.scene == "procedural" else "FloorPlan1"
-        controller = LocalController(
-            local_executable_path=str(args.binary), scene=scene,
-            server_class=RecordingServer, width=96, height=96,
-            renderDepthImage=True, agentCount=1 if args.post_initialize else args.count,
-            makeAgentsVisible=True, server_timeout=8.0, server_start_timeout=20.0,
+        # Retain the instance even if __init__ fails, to stop its real Unity process.
+        controller = LocalController.__new__(LocalController)
+        controller.__init__(
+            local_executable_path=str(args.binary),
+            scene=scene,
+            server_class=RecordingServer,
+            width=96,
+            height=96,
+            renderDepthImage=True,
+            agentCount=1 if args.post_initialize else args.count,
+            makeAgentsVisible=True,
+            server_timeout=8.0,
+            server_start_timeout=20.0,
         )
         if args.post_initialize:
             controller.step(action="Initialize", agentCount=args.count, makeAgentsVisible=True)
         receipt["initialized"] = [summarize(e.metadata) for e in controller.last_event.events]
-        event = controller.step(action="Pass", agentId=args.count - 1)
+        if args.guarded:
+            session = VerifiedAgentSession(
+                controller,
+                count=args.count,
+                initial_action=controller.last_event.metadata["lastAction"],
+            )
+            event = session.step(action="Pass", agentId=args.count - 1)
+            receipt["rotation_checks"] = []
+            for identity in range(args.count):
+                for turn, delta in (("RotateRight", 90), ("RotateLeft", -90)):
+                    before_poses = {
+                        e.metadata["agentId"]: copy.deepcopy(e.metadata["agent"])
+                        for e in controller.last_event.events
+                    }
+                    event = session.step(action=turn, agentId=identity, degrees=90)
+                    after_poses = {
+                        e.metadata["agentId"]: copy.deepcopy(e.metadata["agent"])
+                        for e in event.events
+                    }
+                    ok = True
+                    for i, previous in before_poses.items():
+                        following = after_poses[i]
+                        ok &= all(
+                            abs(previous["position"][k] - following["position"][k]) < 0.002
+                            for k in ("x", "y", "z")
+                        )
+                        expected = (
+                            previous["rotation"]["y"] + (delta if i == identity else 0)
+                        ) % 360
+                        error = (following["rotation"]["y"] - expected + 180) % 360 - 180
+                        ok &= abs(error) < 0.01
+                        ok &= all(
+                            abs(previous["rotation"][k] - following["rotation"][k]) < 0.01
+                            for k in ("x", "z")
+                        )
+                    receipt["rotation_checks"].append(
+                        {
+                            "agentId": identity,
+                            "action": turn,
+                            "before": before_poses,
+                            "after": after_poses,
+                            "passed": bool(ok),
+                        }
+                    )
+                    if not ok:
+                        raise RuntimeError("rotation did not isolate the addressed agent")
+        else:
+            event = controller.step(action="Pass", agentId=args.count - 1)
         receipt["address_probe"] = [summarize(e.metadata) for e in event.events]
         receipt["observed_count"] = len(event.events)
     except Exception as error:
@@ -127,21 +231,50 @@ def main():
         receipt["files_unchanged"] = before == receipt["files_after"]
         receipt["trace_sha256"] = sha(args.output / "transport.jsonl")
         save(args.output / "receipt.json", receipt)
-        save(args.output / "trace_summary.json", [
-            ({"index": r["index"], "kind": "receive", "sequenceId": r["metadata"].get("sequenceId"),
-              "activeAgentId": r["metadata"].get("activeAgentId"),
-              "agents": [summarize(a) for a in r["metadata"]["agents"]]}
-             if r["kind"] == "receive" else
-             {**r, "payload": {k: ("<bound house>" if k == "house" else v)
-                               for k, v in r["payload"].items()}}
-             if r["kind"] == "send" else r)
-            for r in trace
-        ])
-    print(json.dumps({k: receipt.get(k) for k in (
-        "scene_kind", "requested_count", "post_initialize", "observed_count",
-        "exception", "seconds", "files_unchanged",
-    )}), flush=True)
+        save(
+            args.output / "trace_summary.json",
+            [
+                (
+                    {
+                        "index": r["index"],
+                        "kind": "receive",
+                        "sequenceId": r["metadata"].get("sequenceId"),
+                        "activeAgentId": r["metadata"].get("activeAgentId"),
+                        "agents": [summarize(a) for a in r["metadata"]["agents"]],
+                    }
+                    if r["kind"] == "receive"
+                    else {
+                        **r,
+                        "payload": {
+                            k: ("<bound house>" if k == "house" else v)
+                            for k, v in r["payload"].items()
+                        },
+                    }
+                    if r["kind"] == "send"
+                    else r
+                )
+                for r in trace
+            ],
+        )
+    print(
+        json.dumps(
+            {
+                k: receipt.get(k)
+                for k in (
+                    "scene_kind",
+                    "requested_count",
+                    "post_initialize",
+                    "observed_count",
+                    "exception",
+                    "seconds",
+                    "files_unchanged",
+                )
+            }
+        ),
+        flush=True,
+    )
+    return int("exception" in receipt or not receipt["files_unchanged"])
 
 
 if __name__ == "__main__":
-    main()
+    raise SystemExit(main())

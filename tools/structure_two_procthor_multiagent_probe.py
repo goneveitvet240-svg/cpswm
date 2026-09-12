@@ -10,6 +10,9 @@ import ai2thor
 from ai2thor.controller import Controller
 
 ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT / "src"))
+from cpswm.data_preflight.agent_roster import require_agent_roster  # noqa: E402
+
 OUT = ROOT / "docs/reviews/pc_a/proposal_g1_fix_2026-09-13" / sys.argv[1]
 OUT.mkdir(parents=True, exist_ok=False)
 binary = Path(sys.argv[2])
@@ -60,6 +63,7 @@ try:
     )
     receipt["response"] = event.metadata
     receipt["agent_events"] = len(getattr(event, "events", []))
+    require_agent_roster(event, count=2, action="CreateHouse", active_id=0)
     receipt["multiple_agents_verified"] = (
         event.metadata["lastActionSuccess"] and receipt["agent_events"] >= 2
     )

@@ -1,0 +1,1489 @@
+bringing up nodes...
+bringing up nodes...
+
+FFFFFFFFFFFFFFFFFF                                                       [100%]
+=================================== FAILURES ===================================
+_ test_public_cancellation_restores_full_nonempty_parent_and_preserves_new_observation[core-0] _
+[gw0] darwin -- Python 3.13.5 /Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/.venv/bin/python
+
+generations = 0, entry = 'core'
+
+    @pytest.mark.parametrize("generations", [0, 1, 2])
+    @pytest.mark.parametrize("entry", ["core", "production_wrapper"])
+    def test_public_cancellation_restores_full_nonempty_parent_and_preserves_new_observation(
+        generations, entry
+    ):
+        args = pending(generations)
+        probe = args[0]
+        owner = probe.system.core if entry == "core" else probe.system
+        result = owner.process_transition(probe.transition_for(probe.observed_days()[12]))
+        assert result.event_revision_id in probe.system.core._observed_events
+>       verify_cancelled(*args)
+
+tests/test_structure_two_w3_deferred_cancellation.py:88: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_structure_two_w3_deferred_cancellation.py:73: in verify_cancelled
+    before = snapshot(probe)
+             ^^^^^^^^^^^^^^^
+tests/test_structure_two_w3_round6_prepared_boundary.py:54: in snapshot
+    state(core),
+    ^^^^^^^^^^^
+tests/test_structure_two_w3_round5_boundaries.py:24: in state
+    return core._execution_observable_state_sha256()
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/cpswm/system/prototype_spine.py:2438: in _execution_observable_state_sha256
+    return content_sha256(
+src/cpswm/system/reproducibility.py:60: in content_sha256
+    return hashlib.sha256(canonical_json(value).encode("utf-8")).hexdigest()
+                          ^^^^^^^^^^^^^^^^^^^^^
+src/cpswm/system/reproducibility.py:50: in canonical_json
+    return json.dumps(
+/Users/pangwei/.local/share/uv/python/cpython-3.13.5-macos-aarch64-none/lib/python3.13/json/__init__.py:238: in dumps
+    **kw).encode(obj)
+          ^^^^^^^^^^^
+/Users/pangwei/.local/share/uv/python/cpython-3.13.5-macos-aarch64-none/lib/python3.13/json/encoder.py:200: in encode
+    chunks = self.iterencode(o, _one_shot=True)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/Users/pangwei/.local/share/uv/python/cpython-3.13.5-macos-aarch64-none/lib/python3.13/json/encoder.py:261: in iterencode
+    return _iterencode(o, 0)
+           ^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <json.encoder.JSONEncoder object at 0x10b48e4e0>, o = array([12.])
+
+    def default(self, o):
+        """Implement this method in a subclass such that it returns
+        a serializable object for ``o``, or calls the base implementation
+        (to raise a ``TypeError``).
+    
+        For example, to support arbitrary iterators, you could
+        implement default like this::
+    
+            def default(self, o):
+                try:
+                    iterable = iter(o)
+                except TypeError:
+                    pass
+                else:
+                    return list(iterable)
+                # Let the base class default method raise the TypeError
+                return super().default(o)
+    
+        """
+>       raise TypeError(f'Object of type {o.__class__.__name__} '
+                        f'is not JSON serializable')
+E       TypeError: Object of type ndarray is not JSON serializable
+
+/Users/pangwei/.local/share/uv/python/cpython-3.13.5-macos-aarch64-none/lib/python3.13/json/encoder.py:180: TypeError
+_ test_public_cancellation_restores_full_nonempty_parent_and_preserves_new_observation[production_wrapper-1] _
+[gw2] darwin -- Python 3.13.5 /Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/.venv/bin/python
+
+generations = 1, entry = 'production_wrapper'
+
+    @pytest.mark.parametrize("generations", [0, 1, 2])
+    @pytest.mark.parametrize("entry", ["core", "production_wrapper"])
+    def test_public_cancellation_restores_full_nonempty_parent_and_preserves_new_observation(
+        generations, entry
+    ):
+        args = pending(generations)
+        probe = args[0]
+        owner = probe.system.core if entry == "core" else probe.system
+        result = owner.process_transition(probe.transition_for(probe.observed_days()[12]))
+        assert result.event_revision_id in probe.system.core._observed_events
+>       verify_cancelled(*args)
+
+tests/test_structure_two_w3_deferred_cancellation.py:88: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_structure_two_w3_deferred_cancellation.py:73: in verify_cancelled
+    before = snapshot(probe)
+             ^^^^^^^^^^^^^^^
+tests/test_structure_two_w3_round6_prepared_boundary.py:54: in snapshot
+    state(core),
+    ^^^^^^^^^^^
+tests/test_structure_two_w3_round5_boundaries.py:24: in state
+    return core._execution_observable_state_sha256()
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/cpswm/system/prototype_spine.py:2438: in _execution_observable_state_sha256
+    return content_sha256(
+src/cpswm/system/reproducibility.py:60: in content_sha256
+    return hashlib.sha256(canonical_json(value).encode("utf-8")).hexdigest()
+                          ^^^^^^^^^^^^^^^^^^^^^
+src/cpswm/system/reproducibility.py:50: in canonical_json
+    return json.dumps(
+/Users/pangwei/.local/share/uv/python/cpython-3.13.5-macos-aarch64-none/lib/python3.13/json/__init__.py:238: in dumps
+    **kw).encode(obj)
+          ^^^^^^^^^^^
+/Users/pangwei/.local/share/uv/python/cpython-3.13.5-macos-aarch64-none/lib/python3.13/json/encoder.py:200: in encode
+    chunks = self.iterencode(o, _one_shot=True)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/Users/pangwei/.local/share/uv/python/cpython-3.13.5-macos-aarch64-none/lib/python3.13/json/encoder.py:261: in iterencode
+    return _iterencode(o, 0)
+           ^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <json.encoder.JSONEncoder object at 0x10b5150a0>, o = array([12.])
+
+    def default(self, o):
+        """Implement this method in a subclass such that it returns
+        a serializable object for ``o``, or calls the base implementation
+        (to raise a ``TypeError``).
+    
+        For example, to support arbitrary iterators, you could
+        implement default like this::
+    
+            def default(self, o):
+                try:
+                    iterable = iter(o)
+                except TypeError:
+                    pass
+                else:
+                    return list(iterable)
+                # Let the base class default method raise the TypeError
+                return super().default(o)
+    
+        """
+>       raise TypeError(f'Object of type {o.__class__.__name__} '
+                        f'is not JSON serializable')
+E       TypeError: Object of type ndarray is not JSON serializable
+
+/Users/pangwei/.local/share/uv/python/cpython-3.13.5-macos-aarch64-none/lib/python3.13/json/encoder.py:180: TypeError
+_ test_public_cancellation_restores_full_nonempty_parent_and_preserves_new_observation[core-2] _
+[gw1] darwin -- Python 3.13.5 /Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/.venv/bin/python
+
+generations = 2, entry = 'core'
+
+    @pytest.mark.parametrize("generations", [0, 1, 2])
+    @pytest.mark.parametrize("entry", ["core", "production_wrapper"])
+    def test_public_cancellation_restores_full_nonempty_parent_and_preserves_new_observation(
+        generations, entry
+    ):
+        args = pending(generations)
+        probe = args[0]
+        owner = probe.system.core if entry == "core" else probe.system
+        result = owner.process_transition(probe.transition_for(probe.observed_days()[12]))
+        assert result.event_revision_id in probe.system.core._observed_events
+>       verify_cancelled(*args)
+
+tests/test_structure_two_w3_deferred_cancellation.py:88: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_structure_two_w3_deferred_cancellation.py:73: in verify_cancelled
+    before = snapshot(probe)
+             ^^^^^^^^^^^^^^^
+tests/test_structure_two_w3_round6_prepared_boundary.py:54: in snapshot
+    state(core),
+    ^^^^^^^^^^^
+tests/test_structure_two_w3_round5_boundaries.py:24: in state
+    return core._execution_observable_state_sha256()
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/cpswm/system/prototype_spine.py:2438: in _execution_observable_state_sha256
+    return content_sha256(
+src/cpswm/system/reproducibility.py:60: in content_sha256
+    return hashlib.sha256(canonical_json(value).encode("utf-8")).hexdigest()
+                          ^^^^^^^^^^^^^^^^^^^^^
+src/cpswm/system/reproducibility.py:50: in canonical_json
+    return json.dumps(
+/Users/pangwei/.local/share/uv/python/cpython-3.13.5-macos-aarch64-none/lib/python3.13/json/__init__.py:238: in dumps
+    **kw).encode(obj)
+          ^^^^^^^^^^^
+/Users/pangwei/.local/share/uv/python/cpython-3.13.5-macos-aarch64-none/lib/python3.13/json/encoder.py:200: in encode
+    chunks = self.iterencode(o, _one_shot=True)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/Users/pangwei/.local/share/uv/python/cpython-3.13.5-macos-aarch64-none/lib/python3.13/json/encoder.py:261: in iterencode
+    return _iterencode(o, 0)
+           ^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <json.encoder.JSONEncoder object at 0x10d2f63c0>, o = array([12.])
+
+    def default(self, o):
+        """Implement this method in a subclass such that it returns
+        a serializable object for ``o``, or calls the base implementation
+        (to raise a ``TypeError``).
+    
+        For example, to support arbitrary iterators, you could
+        implement default like this::
+    
+            def default(self, o):
+                try:
+                    iterable = iter(o)
+                except TypeError:
+                    pass
+                else:
+                    return list(iterable)
+                # Let the base class default method raise the TypeError
+                return super().default(o)
+    
+        """
+>       raise TypeError(f'Object of type {o.__class__.__name__} '
+                        f'is not JSON serializable')
+E       TypeError: Object of type ndarray is not JSON serializable
+
+/Users/pangwei/.local/share/uv/python/cpython-3.13.5-macos-aarch64-none/lib/python3.13/json/encoder.py:180: TypeError
+_ test_real_cancellation_interruption_restores_pending_transaction_and_can_retry[RuntimeError-cancellation_lineage] _
+[gw3] darwin -- Python 3.13.5 /Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/.venv/bin/python
+
+stage = 'cancellation_lineage', exception = <class 'RuntimeError'>
+
+    @pytest.mark.parametrize(
+        "stage", ["cancellation_lineage", "hybrid", "dirichlet", "rls", "cancellation_replay"]
+    )
+    @pytest.mark.parametrize("exception", [RuntimeError, KeyboardInterrupt])
+    def test_real_cancellation_interruption_restores_pending_transaction_and_can_retry(
+        stage, exception
+    ):
+        args = pending()
+        probe, core = args[0], args[0].system.core
+        before = snapshot(probe)
+        method = core._revision_fault_hook.__func__.__code__
+        original_profiler = sys.getprofile()
+        hits = []
+    
+        def interrupt(frame, event, value):
+            if frame.f_code is method and event == "call" and frame.f_locals["stage"] == stage:
+                hits.append(stage)
+                raise exception(stage)
+    
+        try:
+            sys.setprofile(interrupt)
+            with pytest.raises(exception, match=stage):
+                probe.system.process_transition(probe.transition_for(probe.observed_days()[12]))
+        finally:
+            sys.setprofile(original_profiler)
+        assert hits == [stage]
+        assert snapshot(probe) == before
+        probe.system.process_transition(probe.transition_for(probe.observed_days()[12]))
+>       verify_cancelled(*args)
+
+tests/test_structure_two_w3_deferred_cancellation.py:119: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_structure_two_w3_deferred_cancellation.py:73: in verify_cancelled
+    before = snapshot(probe)
+             ^^^^^^^^^^^^^^^
+tests/test_structure_two_w3_round6_prepared_boundary.py:54: in snapshot
+    state(core),
+    ^^^^^^^^^^^
+tests/test_structure_two_w3_round5_boundaries.py:24: in state
+    return core._execution_observable_state_sha256()
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/cpswm/system/prototype_spine.py:2438: in _execution_observable_state_sha256
+    return content_sha256(
+src/cpswm/system/reproducibility.py:60: in content_sha256
+    return hashlib.sha256(canonical_json(value).encode("utf-8")).hexdigest()
+                          ^^^^^^^^^^^^^^^^^^^^^
+src/cpswm/system/reproducibility.py:50: in canonical_json
+    return json.dumps(
+/Users/pangwei/.local/share/uv/python/cpython-3.13.5-macos-aarch64-none/lib/python3.13/json/__init__.py:238: in dumps
+    **kw).encode(obj)
+          ^^^^^^^^^^^
+/Users/pangwei/.local/share/uv/python/cpython-3.13.5-macos-aarch64-none/lib/python3.13/json/encoder.py:200: in encode
+    chunks = self.iterencode(o, _one_shot=True)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/Users/pangwei/.local/share/uv/python/cpython-3.13.5-macos-aarch64-none/lib/python3.13/json/encoder.py:261: in iterencode
+    return _iterencode(o, 0)
+           ^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <json.encoder.JSONEncoder object at 0x10dd8e8d0>, o = array([12.])
+
+    def default(self, o):
+        """Implement this method in a subclass such that it returns
+        a serializable object for ``o``, or calls the base implementation
+        (to raise a ``TypeError``).
+    
+        For example, to support arbitrary iterators, you could
+        implement default like this::
+    
+            def default(self, o):
+                try:
+                    iterable = iter(o)
+                except TypeError:
+                    pass
+                else:
+                    return list(iterable)
+                # Let the base class default method raise the TypeError
+                return super().default(o)
+    
+        """
+>       raise TypeError(f'Object of type {o.__class__.__name__} '
+                        f'is not JSON serializable')
+E       TypeError: Object of type ndarray is not JSON serializable
+
+/Users/pangwei/.local/share/uv/python/cpython-3.13.5-macos-aarch64-none/lib/python3.13/json/encoder.py:180: TypeError
+_ test_public_cancellation_restores_full_nonempty_parent_and_preserves_new_observation[core-1] _
+[gw0] darwin -- Python 3.13.5 /Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/.venv/bin/python
+
+generations = 1, entry = 'core'
+
+    @pytest.mark.parametrize("generations", [0, 1, 2])
+    @pytest.mark.parametrize("entry", ["core", "production_wrapper"])
+    def test_public_cancellation_restores_full_nonempty_parent_and_preserves_new_observation(
+        generations, entry
+    ):
+        args = pending(generations)
+        probe = args[0]
+        owner = probe.system.core if entry == "core" else probe.system
+        result = owner.process_transition(probe.transition_for(probe.observed_days()[12]))
+        assert result.event_revision_id in probe.system.core._observed_events
+>       verify_cancelled(*args)
+
+tests/test_structure_two_w3_deferred_cancellation.py:88: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_structure_two_w3_deferred_cancellation.py:73: in verify_cancelled
+    before = snapshot(probe)
+             ^^^^^^^^^^^^^^^
+tests/test_structure_two_w3_round6_prepared_boundary.py:54: in snapshot
+    state(core),
+    ^^^^^^^^^^^
+tests/test_structure_two_w3_round5_boundaries.py:24: in state
+    return core._execution_observable_state_sha256()
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/cpswm/system/prototype_spine.py:2438: in _execution_observable_state_sha256
+    return content_sha256(
+src/cpswm/system/reproducibility.py:60: in content_sha256
+    return hashlib.sha256(canonical_json(value).encode("utf-8")).hexdigest()
+                          ^^^^^^^^^^^^^^^^^^^^^
+src/cpswm/system/reproducibility.py:50: in canonical_json
+    return json.dumps(
+/Users/pangwei/.local/share/uv/python/cpython-3.13.5-macos-aarch64-none/lib/python3.13/json/__init__.py:238: in dumps
+    **kw).encode(obj)
+          ^^^^^^^^^^^
+/Users/pangwei/.local/share/uv/python/cpython-3.13.5-macos-aarch64-none/lib/python3.13/json/encoder.py:200: in encode
+    chunks = self.iterencode(o, _one_shot=True)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/Users/pangwei/.local/share/uv/python/cpython-3.13.5-macos-aarch64-none/lib/python3.13/json/encoder.py:261: in iterencode
+    return _iterencode(o, 0)
+           ^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <json.encoder.JSONEncoder object at 0x10ba605f0>, o = array([12.])
+
+    def default(self, o):
+        """Implement this method in a subclass such that it returns
+        a serializable object for ``o``, or calls the base implementation
+        (to raise a ``TypeError``).
+    
+        For example, to support arbitrary iterators, you could
+        implement default like this::
+    
+            def default(self, o):
+                try:
+                    iterable = iter(o)
+                except TypeError:
+                    pass
+                else:
+                    return list(iterable)
+                # Let the base class default method raise the TypeError
+                return super().default(o)
+    
+        """
+>       raise TypeError(f'Object of type {o.__class__.__name__} '
+                        f'is not JSON serializable')
+E       TypeError: Object of type ndarray is not JSON serializable
+
+/Users/pangwei/.local/share/uv/python/cpython-3.13.5-macos-aarch64-none/lib/python3.13/json/encoder.py:180: TypeError
+_ test_public_cancellation_restores_full_nonempty_parent_and_preserves_new_observation[production_wrapper-0] _
+[gw1] darwin -- Python 3.13.5 /Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/.venv/bin/python
+
+generations = 0, entry = 'production_wrapper'
+
+    @pytest.mark.parametrize("generations", [0, 1, 2])
+    @pytest.mark.parametrize("entry", ["core", "production_wrapper"])
+    def test_public_cancellation_restores_full_nonempty_parent_and_preserves_new_observation(
+        generations, entry
+    ):
+        args = pending(generations)
+        probe = args[0]
+        owner = probe.system.core if entry == "core" else probe.system
+        result = owner.process_transition(probe.transition_for(probe.observed_days()[12]))
+        assert result.event_revision_id in probe.system.core._observed_events
+>       verify_cancelled(*args)
+
+tests/test_structure_two_w3_deferred_cancellation.py:88: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_structure_two_w3_deferred_cancellation.py:73: in verify_cancelled
+    before = snapshot(probe)
+             ^^^^^^^^^^^^^^^
+tests/test_structure_two_w3_round6_prepared_boundary.py:54: in snapshot
+    state(core),
+    ^^^^^^^^^^^
+tests/test_structure_two_w3_round5_boundaries.py:24: in state
+    return core._execution_observable_state_sha256()
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/cpswm/system/prototype_spine.py:2438: in _execution_observable_state_sha256
+    return content_sha256(
+src/cpswm/system/reproducibility.py:60: in content_sha256
+    return hashlib.sha256(canonical_json(value).encode("utf-8")).hexdigest()
+                          ^^^^^^^^^^^^^^^^^^^^^
+src/cpswm/system/reproducibility.py:50: in canonical_json
+    return json.dumps(
+/Users/pangwei/.local/share/uv/python/cpython-3.13.5-macos-aarch64-none/lib/python3.13/json/__init__.py:238: in dumps
+    **kw).encode(obj)
+          ^^^^^^^^^^^
+/Users/pangwei/.local/share/uv/python/cpython-3.13.5-macos-aarch64-none/lib/python3.13/json/encoder.py:200: in encode
+    chunks = self.iterencode(o, _one_shot=True)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/Users/pangwei/.local/share/uv/python/cpython-3.13.5-macos-aarch64-none/lib/python3.13/json/encoder.py:261: in iterencode
+    return _iterencode(o, 0)
+           ^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <json.encoder.JSONEncoder object at 0x10d70dbe0>, o = array([12.])
+
+    def default(self, o):
+        """Implement this method in a subclass such that it returns
+        a serializable object for ``o``, or calls the base implementation
+        (to raise a ``TypeError``).
+    
+        For example, to support arbitrary iterators, you could
+        implement default like this::
+    
+            def default(self, o):
+                try:
+                    iterable = iter(o)
+                except TypeError:
+                    pass
+                else:
+                    return list(iterable)
+                # Let the base class default method raise the TypeError
+                return super().default(o)
+    
+        """
+>       raise TypeError(f'Object of type {o.__class__.__name__} '
+                        f'is not JSON serializable')
+E       TypeError: Object of type ndarray is not JSON serializable
+
+/Users/pangwei/.local/share/uv/python/cpython-3.13.5-macos-aarch64-none/lib/python3.13/json/encoder.py:180: TypeError
+_ test_public_cancellation_restores_full_nonempty_parent_and_preserves_new_observation[production_wrapper-2] _
+[gw2] darwin -- Python 3.13.5 /Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/.venv/bin/python
+
+generations = 2, entry = 'production_wrapper'
+
+    @pytest.mark.parametrize("generations", [0, 1, 2])
+    @pytest.mark.parametrize("entry", ["core", "production_wrapper"])
+    def test_public_cancellation_restores_full_nonempty_parent_and_preserves_new_observation(
+        generations, entry
+    ):
+        args = pending(generations)
+        probe = args[0]
+        owner = probe.system.core if entry == "core" else probe.system
+        result = owner.process_transition(probe.transition_for(probe.observed_days()[12]))
+        assert result.event_revision_id in probe.system.core._observed_events
+>       verify_cancelled(*args)
+
+tests/test_structure_two_w3_deferred_cancellation.py:88: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_structure_two_w3_deferred_cancellation.py:73: in verify_cancelled
+    before = snapshot(probe)
+             ^^^^^^^^^^^^^^^
+tests/test_structure_two_w3_round6_prepared_boundary.py:54: in snapshot
+    state(core),
+    ^^^^^^^^^^^
+tests/test_structure_two_w3_round5_boundaries.py:24: in state
+    return core._execution_observable_state_sha256()
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/cpswm/system/prototype_spine.py:2438: in _execution_observable_state_sha256
+    return content_sha256(
+src/cpswm/system/reproducibility.py:60: in content_sha256
+    return hashlib.sha256(canonical_json(value).encode("utf-8")).hexdigest()
+                          ^^^^^^^^^^^^^^^^^^^^^
+src/cpswm/system/reproducibility.py:50: in canonical_json
+    return json.dumps(
+/Users/pangwei/.local/share/uv/python/cpython-3.13.5-macos-aarch64-none/lib/python3.13/json/__init__.py:238: in dumps
+    **kw).encode(obj)
+          ^^^^^^^^^^^
+/Users/pangwei/.local/share/uv/python/cpython-3.13.5-macos-aarch64-none/lib/python3.13/json/encoder.py:200: in encode
+    chunks = self.iterencode(o, _one_shot=True)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/Users/pangwei/.local/share/uv/python/cpython-3.13.5-macos-aarch64-none/lib/python3.13/json/encoder.py:261: in iterencode
+    return _iterencode(o, 0)
+           ^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <json.encoder.JSONEncoder object at 0x10b902de0>, o = array([12.])
+
+    def default(self, o):
+        """Implement this method in a subclass such that it returns
+        a serializable object for ``o``, or calls the base implementation
+        (to raise a ``TypeError``).
+    
+        For example, to support arbitrary iterators, you could
+        implement default like this::
+    
+            def default(self, o):
+                try:
+                    iterable = iter(o)
+                except TypeError:
+                    pass
+                else:
+                    return list(iterable)
+                # Let the base class default method raise the TypeError
+                return super().default(o)
+    
+        """
+>       raise TypeError(f'Object of type {o.__class__.__name__} '
+                        f'is not JSON serializable')
+E       TypeError: Object of type ndarray is not JSON serializable
+
+/Users/pangwei/.local/share/uv/python/cpython-3.13.5-macos-aarch64-none/lib/python3.13/json/encoder.py:180: TypeError
+_ test_real_cancellation_interruption_restores_pending_transaction_and_can_retry[RuntimeError-hybrid] _
+[gw3] darwin -- Python 3.13.5 /Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/.venv/bin/python
+
+stage = 'hybrid', exception = <class 'RuntimeError'>
+
+    @pytest.mark.parametrize(
+        "stage", ["cancellation_lineage", "hybrid", "dirichlet", "rls", "cancellation_replay"]
+    )
+    @pytest.mark.parametrize("exception", [RuntimeError, KeyboardInterrupt])
+    def test_real_cancellation_interruption_restores_pending_transaction_and_can_retry(
+        stage, exception
+    ):
+        args = pending()
+        probe, core = args[0], args[0].system.core
+        before = snapshot(probe)
+        method = core._revision_fault_hook.__func__.__code__
+        original_profiler = sys.getprofile()
+        hits = []
+    
+        def interrupt(frame, event, value):
+            if frame.f_code is method and event == "call" and frame.f_locals["stage"] == stage:
+                hits.append(stage)
+                raise exception(stage)
+    
+        try:
+            sys.setprofile(interrupt)
+            with pytest.raises(exception, match=stage):
+                probe.system.process_transition(probe.transition_for(probe.observed_days()[12]))
+        finally:
+            sys.setprofile(original_profiler)
+        assert hits == [stage]
+        assert snapshot(probe) == before
+        probe.system.process_transition(probe.transition_for(probe.observed_days()[12]))
+>       verify_cancelled(*args)
+
+tests/test_structure_two_w3_deferred_cancellation.py:119: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_structure_two_w3_deferred_cancellation.py:73: in verify_cancelled
+    before = snapshot(probe)
+             ^^^^^^^^^^^^^^^
+tests/test_structure_two_w3_round6_prepared_boundary.py:54: in snapshot
+    state(core),
+    ^^^^^^^^^^^
+tests/test_structure_two_w3_round5_boundaries.py:24: in state
+    return core._execution_observable_state_sha256()
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/cpswm/system/prototype_spine.py:2438: in _execution_observable_state_sha256
+    return content_sha256(
+src/cpswm/system/reproducibility.py:60: in content_sha256
+    return hashlib.sha256(canonical_json(value).encode("utf-8")).hexdigest()
+                          ^^^^^^^^^^^^^^^^^^^^^
+src/cpswm/system/reproducibility.py:50: in canonical_json
+    return json.dumps(
+/Users/pangwei/.local/share/uv/python/cpython-3.13.5-macos-aarch64-none/lib/python3.13/json/__init__.py:238: in dumps
+    **kw).encode(obj)
+          ^^^^^^^^^^^
+/Users/pangwei/.local/share/uv/python/cpython-3.13.5-macos-aarch64-none/lib/python3.13/json/encoder.py:200: in encode
+    chunks = self.iterencode(o, _one_shot=True)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/Users/pangwei/.local/share/uv/python/cpython-3.13.5-macos-aarch64-none/lib/python3.13/json/encoder.py:261: in iterencode
+    return _iterencode(o, 0)
+           ^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <json.encoder.JSONEncoder object at 0x10d87fad0>, o = array([12.])
+
+    def default(self, o):
+        """Implement this method in a subclass such that it returns
+        a serializable object for ``o``, or calls the base implementation
+        (to raise a ``TypeError``).
+    
+        For example, to support arbitrary iterators, you could
+        implement default like this::
+    
+            def default(self, o):
+                try:
+                    iterable = iter(o)
+                except TypeError:
+                    pass
+                else:
+                    return list(iterable)
+                # Let the base class default method raise the TypeError
+                return super().default(o)
+    
+        """
+>       raise TypeError(f'Object of type {o.__class__.__name__} '
+                        f'is not JSON serializable')
+E       TypeError: Object of type ndarray is not JSON serializable
+
+/Users/pangwei/.local/share/uv/python/cpython-3.13.5-macos-aarch64-none/lib/python3.13/json/encoder.py:180: TypeError
+_ test_real_cancellation_interruption_restores_pending_transaction_and_can_retry[RuntimeError-dirichlet] _
+[gw0] darwin -- Python 3.13.5 /Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/.venv/bin/python
+
+stage = 'dirichlet', exception = <class 'RuntimeError'>
+
+    @pytest.mark.parametrize(
+        "stage", ["cancellation_lineage", "hybrid", "dirichlet", "rls", "cancellation_replay"]
+    )
+    @pytest.mark.parametrize("exception", [RuntimeError, KeyboardInterrupt])
+    def test_real_cancellation_interruption_restores_pending_transaction_and_can_retry(
+        stage, exception
+    ):
+        args = pending()
+        probe, core = args[0], args[0].system.core
+        before = snapshot(probe)
+        method = core._revision_fault_hook.__func__.__code__
+        original_profiler = sys.getprofile()
+        hits = []
+    
+        def interrupt(frame, event, value):
+            if frame.f_code is method and event == "call" and frame.f_locals["stage"] == stage:
+                hits.append(stage)
+                raise exception(stage)
+    
+        try:
+            sys.setprofile(interrupt)
+            with pytest.raises(exception, match=stage):
+                probe.system.process_transition(probe.transition_for(probe.observed_days()[12]))
+        finally:
+            sys.setprofile(original_profiler)
+        assert hits == [stage]
+        assert snapshot(probe) == before
+        probe.system.process_transition(probe.transition_for(probe.observed_days()[12]))
+>       verify_cancelled(*args)
+
+tests/test_structure_two_w3_deferred_cancellation.py:119: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_structure_two_w3_deferred_cancellation.py:73: in verify_cancelled
+    before = snapshot(probe)
+             ^^^^^^^^^^^^^^^
+tests/test_structure_two_w3_round6_prepared_boundary.py:54: in snapshot
+    state(core),
+    ^^^^^^^^^^^
+tests/test_structure_two_w3_round5_boundaries.py:24: in state
+    return core._execution_observable_state_sha256()
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/cpswm/system/prototype_spine.py:2438: in _execution_observable_state_sha256
+    return content_sha256(
+src/cpswm/system/reproducibility.py:60: in content_sha256
+    return hashlib.sha256(canonical_json(value).encode("utf-8")).hexdigest()
+                          ^^^^^^^^^^^^^^^^^^^^^
+src/cpswm/system/reproducibility.py:50: in canonical_json
+    return json.dumps(
+/Users/pangwei/.local/share/uv/python/cpython-3.13.5-macos-aarch64-none/lib/python3.13/json/__init__.py:238: in dumps
+    **kw).encode(obj)
+          ^^^^^^^^^^^
+/Users/pangwei/.local/share/uv/python/cpython-3.13.5-macos-aarch64-none/lib/python3.13/json/encoder.py:200: in encode
+    chunks = self.iterencode(o, _one_shot=True)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/Users/pangwei/.local/share/uv/python/cpython-3.13.5-macos-aarch64-none/lib/python3.13/json/encoder.py:261: in iterencode
+    return _iterencode(o, 0)
+           ^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <json.encoder.JSONEncoder object at 0x10c0fb2f0>, o = array([12.])
+
+    def default(self, o):
+        """Implement this method in a subclass such that it returns
+        a serializable object for ``o``, or calls the base implementation
+        (to raise a ``TypeError``).
+    
+        For example, to support arbitrary iterators, you could
+        implement default like this::
+    
+            def default(self, o):
+                try:
+                    iterable = iter(o)
+                except TypeError:
+                    pass
+                else:
+                    return list(iterable)
+                # Let the base class default method raise the TypeError
+                return super().default(o)
+    
+        """
+>       raise TypeError(f'Object of type {o.__class__.__name__} '
+                        f'is not JSON serializable')
+E       TypeError: Object of type ndarray is not JSON serializable
+
+/Users/pangwei/.local/share/uv/python/cpython-3.13.5-macos-aarch64-none/lib/python3.13/json/encoder.py:180: TypeError
+_ test_real_cancellation_interruption_restores_pending_transaction_and_can_retry[RuntimeError-cancellation_replay] _
+[gw1] darwin -- Python 3.13.5 /Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/.venv/bin/python
+
+stage = 'cancellation_replay', exception = <class 'RuntimeError'>
+
+    @pytest.mark.parametrize(
+        "stage", ["cancellation_lineage", "hybrid", "dirichlet", "rls", "cancellation_replay"]
+    )
+    @pytest.mark.parametrize("exception", [RuntimeError, KeyboardInterrupt])
+    def test_real_cancellation_interruption_restores_pending_transaction_and_can_retry(
+        stage, exception
+    ):
+        args = pending()
+        probe, core = args[0], args[0].system.core
+        before = snapshot(probe)
+        method = core._revision_fault_hook.__func__.__code__
+        original_profiler = sys.getprofile()
+        hits = []
+    
+        def interrupt(frame, event, value):
+            if frame.f_code is method and event == "call" and frame.f_locals["stage"] == stage:
+                hits.append(stage)
+                raise exception(stage)
+    
+        try:
+            sys.setprofile(interrupt)
+            with pytest.raises(exception, match=stage):
+                probe.system.process_transition(probe.transition_for(probe.observed_days()[12]))
+        finally:
+            sys.setprofile(original_profiler)
+        assert hits == [stage]
+        assert snapshot(probe) == before
+        probe.system.process_transition(probe.transition_for(probe.observed_days()[12]))
+>       verify_cancelled(*args)
+
+tests/test_structure_two_w3_deferred_cancellation.py:119: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_structure_two_w3_deferred_cancellation.py:73: in verify_cancelled
+    before = snapshot(probe)
+             ^^^^^^^^^^^^^^^
+tests/test_structure_two_w3_round6_prepared_boundary.py:54: in snapshot
+    state(core),
+    ^^^^^^^^^^^
+tests/test_structure_two_w3_round5_boundaries.py:24: in state
+    return core._execution_observable_state_sha256()
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/cpswm/system/prototype_spine.py:2438: in _execution_observable_state_sha256
+    return content_sha256(
+src/cpswm/system/reproducibility.py:60: in content_sha256
+    return hashlib.sha256(canonical_json(value).encode("utf-8")).hexdigest()
+                          ^^^^^^^^^^^^^^^^^^^^^
+src/cpswm/system/reproducibility.py:50: in canonical_json
+    return json.dumps(
+/Users/pangwei/.local/share/uv/python/cpython-3.13.5-macos-aarch64-none/lib/python3.13/json/__init__.py:238: in dumps
+    **kw).encode(obj)
+          ^^^^^^^^^^^
+/Users/pangwei/.local/share/uv/python/cpython-3.13.5-macos-aarch64-none/lib/python3.13/json/encoder.py:200: in encode
+    chunks = self.iterencode(o, _one_shot=True)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/Users/pangwei/.local/share/uv/python/cpython-3.13.5-macos-aarch64-none/lib/python3.13/json/encoder.py:261: in iterencode
+    return _iterencode(o, 0)
+           ^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <json.encoder.JSONEncoder object at 0x10d9bc320>, o = array([12.])
+
+    def default(self, o):
+        """Implement this method in a subclass such that it returns
+        a serializable object for ``o``, or calls the base implementation
+        (to raise a ``TypeError``).
+    
+        For example, to support arbitrary iterators, you could
+        implement default like this::
+    
+            def default(self, o):
+                try:
+                    iterable = iter(o)
+                except TypeError:
+                    pass
+                else:
+                    return list(iterable)
+                # Let the base class default method raise the TypeError
+                return super().default(o)
+    
+        """
+>       raise TypeError(f'Object of type {o.__class__.__name__} '
+                        f'is not JSON serializable')
+E       TypeError: Object of type ndarray is not JSON serializable
+
+/Users/pangwei/.local/share/uv/python/cpython-3.13.5-macos-aarch64-none/lib/python3.13/json/encoder.py:180: TypeError
+_ test_real_cancellation_interruption_restores_pending_transaction_and_can_retry[RuntimeError-rls] _
+[gw2] darwin -- Python 3.13.5 /Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/.venv/bin/python
+
+stage = 'rls', exception = <class 'RuntimeError'>
+
+    @pytest.mark.parametrize(
+        "stage", ["cancellation_lineage", "hybrid", "dirichlet", "rls", "cancellation_replay"]
+    )
+    @pytest.mark.parametrize("exception", [RuntimeError, KeyboardInterrupt])
+    def test_real_cancellation_interruption_restores_pending_transaction_and_can_retry(
+        stage, exception
+    ):
+        args = pending()
+        probe, core = args[0], args[0].system.core
+        before = snapshot(probe)
+        method = core._revision_fault_hook.__func__.__code__
+        original_profiler = sys.getprofile()
+        hits = []
+    
+        def interrupt(frame, event, value):
+            if frame.f_code is method and event == "call" and frame.f_locals["stage"] == stage:
+                hits.append(stage)
+                raise exception(stage)
+    
+        try:
+            sys.setprofile(interrupt)
+            with pytest.raises(exception, match=stage):
+                probe.system.process_transition(probe.transition_for(probe.observed_days()[12]))
+        finally:
+            sys.setprofile(original_profiler)
+        assert hits == [stage]
+        assert snapshot(probe) == before
+        probe.system.process_transition(probe.transition_for(probe.observed_days()[12]))
+>       verify_cancelled(*args)
+
+tests/test_structure_two_w3_deferred_cancellation.py:119: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_structure_two_w3_deferred_cancellation.py:73: in verify_cancelled
+    before = snapshot(probe)
+             ^^^^^^^^^^^^^^^
+tests/test_structure_two_w3_round6_prepared_boundary.py:54: in snapshot
+    state(core),
+    ^^^^^^^^^^^
+tests/test_structure_two_w3_round5_boundaries.py:24: in state
+    return core._execution_observable_state_sha256()
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/cpswm/system/prototype_spine.py:2438: in _execution_observable_state_sha256
+    return content_sha256(
+src/cpswm/system/reproducibility.py:60: in content_sha256
+    return hashlib.sha256(canonical_json(value).encode("utf-8")).hexdigest()
+                          ^^^^^^^^^^^^^^^^^^^^^
+src/cpswm/system/reproducibility.py:50: in canonical_json
+    return json.dumps(
+/Users/pangwei/.local/share/uv/python/cpython-3.13.5-macos-aarch64-none/lib/python3.13/json/__init__.py:238: in dumps
+    **kw).encode(obj)
+          ^^^^^^^^^^^
+/Users/pangwei/.local/share/uv/python/cpython-3.13.5-macos-aarch64-none/lib/python3.13/json/encoder.py:200: in encode
+    chunks = self.iterencode(o, _one_shot=True)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/Users/pangwei/.local/share/uv/python/cpython-3.13.5-macos-aarch64-none/lib/python3.13/json/encoder.py:261: in iterencode
+    return _iterencode(o, 0)
+           ^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <json.encoder.JSONEncoder object at 0x10b365520>, o = array([12.])
+
+    def default(self, o):
+        """Implement this method in a subclass such that it returns
+        a serializable object for ``o``, or calls the base implementation
+        (to raise a ``TypeError``).
+    
+        For example, to support arbitrary iterators, you could
+        implement default like this::
+    
+            def default(self, o):
+                try:
+                    iterable = iter(o)
+                except TypeError:
+                    pass
+                else:
+                    return list(iterable)
+                # Let the base class default method raise the TypeError
+                return super().default(o)
+    
+        """
+>       raise TypeError(f'Object of type {o.__class__.__name__} '
+                        f'is not JSON serializable')
+E       TypeError: Object of type ndarray is not JSON serializable
+
+/Users/pangwei/.local/share/uv/python/cpython-3.13.5-macos-aarch64-none/lib/python3.13/json/encoder.py:180: TypeError
+_ test_real_cancellation_interruption_restores_pending_transaction_and_can_retry[KeyboardInterrupt-cancellation_lineage] _
+[gw3] darwin -- Python 3.13.5 /Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/.venv/bin/python
+
+stage = 'cancellation_lineage', exception = <class 'KeyboardInterrupt'>
+
+    @pytest.mark.parametrize(
+        "stage", ["cancellation_lineage", "hybrid", "dirichlet", "rls", "cancellation_replay"]
+    )
+    @pytest.mark.parametrize("exception", [RuntimeError, KeyboardInterrupt])
+    def test_real_cancellation_interruption_restores_pending_transaction_and_can_retry(
+        stage, exception
+    ):
+        args = pending()
+        probe, core = args[0], args[0].system.core
+        before = snapshot(probe)
+        method = core._revision_fault_hook.__func__.__code__
+        original_profiler = sys.getprofile()
+        hits = []
+    
+        def interrupt(frame, event, value):
+            if frame.f_code is method and event == "call" and frame.f_locals["stage"] == stage:
+                hits.append(stage)
+                raise exception(stage)
+    
+        try:
+            sys.setprofile(interrupt)
+            with pytest.raises(exception, match=stage):
+                probe.system.process_transition(probe.transition_for(probe.observed_days()[12]))
+        finally:
+            sys.setprofile(original_profiler)
+        assert hits == [stage]
+        assert snapshot(probe) == before
+        probe.system.process_transition(probe.transition_for(probe.observed_days()[12]))
+>       verify_cancelled(*args)
+
+tests/test_structure_two_w3_deferred_cancellation.py:119: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_structure_two_w3_deferred_cancellation.py:73: in verify_cancelled
+    before = snapshot(probe)
+             ^^^^^^^^^^^^^^^
+tests/test_structure_two_w3_round6_prepared_boundary.py:54: in snapshot
+    state(core),
+    ^^^^^^^^^^^
+tests/test_structure_two_w3_round5_boundaries.py:24: in state
+    return core._execution_observable_state_sha256()
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/cpswm/system/prototype_spine.py:2438: in _execution_observable_state_sha256
+    return content_sha256(
+src/cpswm/system/reproducibility.py:60: in content_sha256
+    return hashlib.sha256(canonical_json(value).encode("utf-8")).hexdigest()
+                          ^^^^^^^^^^^^^^^^^^^^^
+src/cpswm/system/reproducibility.py:50: in canonical_json
+    return json.dumps(
+/Users/pangwei/.local/share/uv/python/cpython-3.13.5-macos-aarch64-none/lib/python3.13/json/__init__.py:238: in dumps
+    **kw).encode(obj)
+          ^^^^^^^^^^^
+/Users/pangwei/.local/share/uv/python/cpython-3.13.5-macos-aarch64-none/lib/python3.13/json/encoder.py:200: in encode
+    chunks = self.iterencode(o, _one_shot=True)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/Users/pangwei/.local/share/uv/python/cpython-3.13.5-macos-aarch64-none/lib/python3.13/json/encoder.py:261: in iterencode
+    return _iterencode(o, 0)
+           ^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <json.encoder.JSONEncoder object at 0x10ddda330>, o = array([12.])
+
+    def default(self, o):
+        """Implement this method in a subclass such that it returns
+        a serializable object for ``o``, or calls the base implementation
+        (to raise a ``TypeError``).
+    
+        For example, to support arbitrary iterators, you could
+        implement default like this::
+    
+            def default(self, o):
+                try:
+                    iterable = iter(o)
+                except TypeError:
+                    pass
+                else:
+                    return list(iterable)
+                # Let the base class default method raise the TypeError
+                return super().default(o)
+    
+        """
+>       raise TypeError(f'Object of type {o.__class__.__name__} '
+                        f'is not JSON serializable')
+E       TypeError: Object of type ndarray is not JSON serializable
+
+/Users/pangwei/.local/share/uv/python/cpython-3.13.5-macos-aarch64-none/lib/python3.13/json/encoder.py:180: TypeError
+_ test_real_cancellation_interruption_restores_pending_transaction_and_can_retry[KeyboardInterrupt-hybrid] _
+[gw0] darwin -- Python 3.13.5 /Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/.venv/bin/python
+
+stage = 'hybrid', exception = <class 'KeyboardInterrupt'>
+
+    @pytest.mark.parametrize(
+        "stage", ["cancellation_lineage", "hybrid", "dirichlet", "rls", "cancellation_replay"]
+    )
+    @pytest.mark.parametrize("exception", [RuntimeError, KeyboardInterrupt])
+    def test_real_cancellation_interruption_restores_pending_transaction_and_can_retry(
+        stage, exception
+    ):
+        args = pending()
+        probe, core = args[0], args[0].system.core
+        before = snapshot(probe)
+        method = core._revision_fault_hook.__func__.__code__
+        original_profiler = sys.getprofile()
+        hits = []
+    
+        def interrupt(frame, event, value):
+            if frame.f_code is method and event == "call" and frame.f_locals["stage"] == stage:
+                hits.append(stage)
+                raise exception(stage)
+    
+        try:
+            sys.setprofile(interrupt)
+            with pytest.raises(exception, match=stage):
+                probe.system.process_transition(probe.transition_for(probe.observed_days()[12]))
+        finally:
+            sys.setprofile(original_profiler)
+        assert hits == [stage]
+        assert snapshot(probe) == before
+        probe.system.process_transition(probe.transition_for(probe.observed_days()[12]))
+>       verify_cancelled(*args)
+
+tests/test_structure_two_w3_deferred_cancellation.py:119: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_structure_two_w3_deferred_cancellation.py:73: in verify_cancelled
+    before = snapshot(probe)
+             ^^^^^^^^^^^^^^^
+tests/test_structure_two_w3_round6_prepared_boundary.py:54: in snapshot
+    state(core),
+    ^^^^^^^^^^^
+tests/test_structure_two_w3_round5_boundaries.py:24: in state
+    return core._execution_observable_state_sha256()
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/cpswm/system/prototype_spine.py:2438: in _execution_observable_state_sha256
+    return content_sha256(
+src/cpswm/system/reproducibility.py:60: in content_sha256
+    return hashlib.sha256(canonical_json(value).encode("utf-8")).hexdigest()
+                          ^^^^^^^^^^^^^^^^^^^^^
+src/cpswm/system/reproducibility.py:50: in canonical_json
+    return json.dumps(
+/Users/pangwei/.local/share/uv/python/cpython-3.13.5-macos-aarch64-none/lib/python3.13/json/__init__.py:238: in dumps
+    **kw).encode(obj)
+          ^^^^^^^^^^^
+/Users/pangwei/.local/share/uv/python/cpython-3.13.5-macos-aarch64-none/lib/python3.13/json/encoder.py:200: in encode
+    chunks = self.iterencode(o, _one_shot=True)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/Users/pangwei/.local/share/uv/python/cpython-3.13.5-macos-aarch64-none/lib/python3.13/json/encoder.py:261: in iterencode
+    return _iterencode(o, 0)
+           ^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <json.encoder.JSONEncoder object at 0x10bce3920>, o = array([12.])
+
+    def default(self, o):
+        """Implement this method in a subclass such that it returns
+        a serializable object for ``o``, or calls the base implementation
+        (to raise a ``TypeError``).
+    
+        For example, to support arbitrary iterators, you could
+        implement default like this::
+    
+            def default(self, o):
+                try:
+                    iterable = iter(o)
+                except TypeError:
+                    pass
+                else:
+                    return list(iterable)
+                # Let the base class default method raise the TypeError
+                return super().default(o)
+    
+        """
+>       raise TypeError(f'Object of type {o.__class__.__name__} '
+                        f'is not JSON serializable')
+E       TypeError: Object of type ndarray is not JSON serializable
+
+/Users/pangwei/.local/share/uv/python/cpython-3.13.5-macos-aarch64-none/lib/python3.13/json/encoder.py:180: TypeError
+_ test_real_cancellation_interruption_restores_pending_transaction_and_can_retry[KeyboardInterrupt-dirichlet] _
+[gw1] darwin -- Python 3.13.5 /Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/.venv/bin/python
+
+stage = 'dirichlet', exception = <class 'KeyboardInterrupt'>
+
+    @pytest.mark.parametrize(
+        "stage", ["cancellation_lineage", "hybrid", "dirichlet", "rls", "cancellation_replay"]
+    )
+    @pytest.mark.parametrize("exception", [RuntimeError, KeyboardInterrupt])
+    def test_real_cancellation_interruption_restores_pending_transaction_and_can_retry(
+        stage, exception
+    ):
+        args = pending()
+        probe, core = args[0], args[0].system.core
+        before = snapshot(probe)
+        method = core._revision_fault_hook.__func__.__code__
+        original_profiler = sys.getprofile()
+        hits = []
+    
+        def interrupt(frame, event, value):
+            if frame.f_code is method and event == "call" and frame.f_locals["stage"] == stage:
+                hits.append(stage)
+                raise exception(stage)
+    
+        try:
+            sys.setprofile(interrupt)
+            with pytest.raises(exception, match=stage):
+                probe.system.process_transition(probe.transition_for(probe.observed_days()[12]))
+        finally:
+            sys.setprofile(original_profiler)
+        assert hits == [stage]
+        assert snapshot(probe) == before
+        probe.system.process_transition(probe.transition_for(probe.observed_days()[12]))
+>       verify_cancelled(*args)
+
+tests/test_structure_two_w3_deferred_cancellation.py:119: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_structure_two_w3_deferred_cancellation.py:73: in verify_cancelled
+    before = snapshot(probe)
+             ^^^^^^^^^^^^^^^
+tests/test_structure_two_w3_round6_prepared_boundary.py:54: in snapshot
+    state(core),
+    ^^^^^^^^^^^
+tests/test_structure_two_w3_round5_boundaries.py:24: in state
+    return core._execution_observable_state_sha256()
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/cpswm/system/prototype_spine.py:2438: in _execution_observable_state_sha256
+    return content_sha256(
+src/cpswm/system/reproducibility.py:60: in content_sha256
+    return hashlib.sha256(canonical_json(value).encode("utf-8")).hexdigest()
+                          ^^^^^^^^^^^^^^^^^^^^^
+src/cpswm/system/reproducibility.py:50: in canonical_json
+    return json.dumps(
+/Users/pangwei/.local/share/uv/python/cpython-3.13.5-macos-aarch64-none/lib/python3.13/json/__init__.py:238: in dumps
+    **kw).encode(obj)
+          ^^^^^^^^^^^
+/Users/pangwei/.local/share/uv/python/cpython-3.13.5-macos-aarch64-none/lib/python3.13/json/encoder.py:200: in encode
+    chunks = self.iterencode(o, _one_shot=True)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/Users/pangwei/.local/share/uv/python/cpython-3.13.5-macos-aarch64-none/lib/python3.13/json/encoder.py:261: in iterencode
+    return _iterencode(o, 0)
+           ^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <json.encoder.JSONEncoder object at 0x10d616180>, o = array([12.])
+
+    def default(self, o):
+        """Implement this method in a subclass such that it returns
+        a serializable object for ``o``, or calls the base implementation
+        (to raise a ``TypeError``).
+    
+        For example, to support arbitrary iterators, you could
+        implement default like this::
+    
+            def default(self, o):
+                try:
+                    iterable = iter(o)
+                except TypeError:
+                    pass
+                else:
+                    return list(iterable)
+                # Let the base class default method raise the TypeError
+                return super().default(o)
+    
+        """
+>       raise TypeError(f'Object of type {o.__class__.__name__} '
+                        f'is not JSON serializable')
+E       TypeError: Object of type ndarray is not JSON serializable
+
+/Users/pangwei/.local/share/uv/python/cpython-3.13.5-macos-aarch64-none/lib/python3.13/json/encoder.py:180: TypeError
+_ test_real_cancellation_interruption_restores_pending_transaction_and_can_retry[KeyboardInterrupt-rls] _
+[gw2] darwin -- Python 3.13.5 /Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/.venv/bin/python
+
+stage = 'rls', exception = <class 'KeyboardInterrupt'>
+
+    @pytest.mark.parametrize(
+        "stage", ["cancellation_lineage", "hybrid", "dirichlet", "rls", "cancellation_replay"]
+    )
+    @pytest.mark.parametrize("exception", [RuntimeError, KeyboardInterrupt])
+    def test_real_cancellation_interruption_restores_pending_transaction_and_can_retry(
+        stage, exception
+    ):
+        args = pending()
+        probe, core = args[0], args[0].system.core
+        before = snapshot(probe)
+        method = core._revision_fault_hook.__func__.__code__
+        original_profiler = sys.getprofile()
+        hits = []
+    
+        def interrupt(frame, event, value):
+            if frame.f_code is method and event == "call" and frame.f_locals["stage"] == stage:
+                hits.append(stage)
+                raise exception(stage)
+    
+        try:
+            sys.setprofile(interrupt)
+            with pytest.raises(exception, match=stage):
+                probe.system.process_transition(probe.transition_for(probe.observed_days()[12]))
+        finally:
+            sys.setprofile(original_profiler)
+        assert hits == [stage]
+        assert snapshot(probe) == before
+        probe.system.process_transition(probe.transition_for(probe.observed_days()[12]))
+>       verify_cancelled(*args)
+
+tests/test_structure_two_w3_deferred_cancellation.py:119: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_structure_two_w3_deferred_cancellation.py:73: in verify_cancelled
+    before = snapshot(probe)
+             ^^^^^^^^^^^^^^^
+tests/test_structure_two_w3_round6_prepared_boundary.py:54: in snapshot
+    state(core),
+    ^^^^^^^^^^^
+tests/test_structure_two_w3_round5_boundaries.py:24: in state
+    return core._execution_observable_state_sha256()
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/cpswm/system/prototype_spine.py:2438: in _execution_observable_state_sha256
+    return content_sha256(
+src/cpswm/system/reproducibility.py:60: in content_sha256
+    return hashlib.sha256(canonical_json(value).encode("utf-8")).hexdigest()
+                          ^^^^^^^^^^^^^^^^^^^^^
+src/cpswm/system/reproducibility.py:50: in canonical_json
+    return json.dumps(
+/Users/pangwei/.local/share/uv/python/cpython-3.13.5-macos-aarch64-none/lib/python3.13/json/__init__.py:238: in dumps
+    **kw).encode(obj)
+          ^^^^^^^^^^^
+/Users/pangwei/.local/share/uv/python/cpython-3.13.5-macos-aarch64-none/lib/python3.13/json/encoder.py:200: in encode
+    chunks = self.iterencode(o, _one_shot=True)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/Users/pangwei/.local/share/uv/python/cpython-3.13.5-macos-aarch64-none/lib/python3.13/json/encoder.py:261: in iterencode
+    return _iterencode(o, 0)
+           ^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <json.encoder.JSONEncoder object at 0x10b901a30>, o = array([12.])
+
+    def default(self, o):
+        """Implement this method in a subclass such that it returns
+        a serializable object for ``o``, or calls the base implementation
+        (to raise a ``TypeError``).
+    
+        For example, to support arbitrary iterators, you could
+        implement default like this::
+    
+            def default(self, o):
+                try:
+                    iterable = iter(o)
+                except TypeError:
+                    pass
+                else:
+                    return list(iterable)
+                # Let the base class default method raise the TypeError
+                return super().default(o)
+    
+        """
+>       raise TypeError(f'Object of type {o.__class__.__name__} '
+                        f'is not JSON serializable')
+E       TypeError: Object of type ndarray is not JSON serializable
+
+/Users/pangwei/.local/share/uv/python/cpython-3.13.5-macos-aarch64-none/lib/python3.13/json/encoder.py:180: TypeError
+_ test_real_cancellation_interruption_restores_pending_transaction_and_can_retry[KeyboardInterrupt-cancellation_replay] _
+[gw3] darwin -- Python 3.13.5 /Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/.venv/bin/python
+
+stage = 'cancellation_replay', exception = <class 'KeyboardInterrupt'>
+
+    @pytest.mark.parametrize(
+        "stage", ["cancellation_lineage", "hybrid", "dirichlet", "rls", "cancellation_replay"]
+    )
+    @pytest.mark.parametrize("exception", [RuntimeError, KeyboardInterrupt])
+    def test_real_cancellation_interruption_restores_pending_transaction_and_can_retry(
+        stage, exception
+    ):
+        args = pending()
+        probe, core = args[0], args[0].system.core
+        before = snapshot(probe)
+        method = core._revision_fault_hook.__func__.__code__
+        original_profiler = sys.getprofile()
+        hits = []
+    
+        def interrupt(frame, event, value):
+            if frame.f_code is method and event == "call" and frame.f_locals["stage"] == stage:
+                hits.append(stage)
+                raise exception(stage)
+    
+        try:
+            sys.setprofile(interrupt)
+            with pytest.raises(exception, match=stage):
+                probe.system.process_transition(probe.transition_for(probe.observed_days()[12]))
+        finally:
+            sys.setprofile(original_profiler)
+        assert hits == [stage]
+        assert snapshot(probe) == before
+        probe.system.process_transition(probe.transition_for(probe.observed_days()[12]))
+>       verify_cancelled(*args)
+
+tests/test_structure_two_w3_deferred_cancellation.py:119: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_structure_two_w3_deferred_cancellation.py:73: in verify_cancelled
+    before = snapshot(probe)
+             ^^^^^^^^^^^^^^^
+tests/test_structure_two_w3_round6_prepared_boundary.py:54: in snapshot
+    state(core),
+    ^^^^^^^^^^^
+tests/test_structure_two_w3_round5_boundaries.py:24: in state
+    return core._execution_observable_state_sha256()
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/cpswm/system/prototype_spine.py:2438: in _execution_observable_state_sha256
+    return content_sha256(
+src/cpswm/system/reproducibility.py:60: in content_sha256
+    return hashlib.sha256(canonical_json(value).encode("utf-8")).hexdigest()
+                          ^^^^^^^^^^^^^^^^^^^^^
+src/cpswm/system/reproducibility.py:50: in canonical_json
+    return json.dumps(
+/Users/pangwei/.local/share/uv/python/cpython-3.13.5-macos-aarch64-none/lib/python3.13/json/__init__.py:238: in dumps
+    **kw).encode(obj)
+          ^^^^^^^^^^^
+/Users/pangwei/.local/share/uv/python/cpython-3.13.5-macos-aarch64-none/lib/python3.13/json/encoder.py:200: in encode
+    chunks = self.iterencode(o, _one_shot=True)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/Users/pangwei/.local/share/uv/python/cpython-3.13.5-macos-aarch64-none/lib/python3.13/json/encoder.py:261: in iterencode
+    return _iterencode(o, 0)
+           ^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <json.encoder.JSONEncoder object at 0x10e432060>, o = array([12.])
+
+    def default(self, o):
+        """Implement this method in a subclass such that it returns
+        a serializable object for ``o``, or calls the base implementation
+        (to raise a ``TypeError``).
+    
+        For example, to support arbitrary iterators, you could
+        implement default like this::
+    
+            def default(self, o):
+                try:
+                    iterable = iter(o)
+                except TypeError:
+                    pass
+                else:
+                    return list(iterable)
+                # Let the base class default method raise the TypeError
+                return super().default(o)
+    
+        """
+>       raise TypeError(f'Object of type {o.__class__.__name__} '
+                        f'is not JSON serializable')
+E       TypeError: Object of type ndarray is not JSON serializable
+
+/Users/pangwei/.local/share/uv/python/cpython-3.13.5-macos-aarch64-none/lib/python3.13/json/encoder.py:180: TypeError
+_ test_restored_parent_can_be_corrected_again_then_retracted_without_resurrection _
+[gw0] darwin -- Python 3.13.5 /Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/.venv/bin/python
+
+    def test_restored_parent_can_be_corrected_again_then_retracted_without_resurrection():
+        args = pending()
+        probe, target, *_ = args
+        core = probe.system.core
+        core.process_transition(probe.transition_for(probe.observed_days()[12]))
+>       verify_cancelled(*args)
+
+tests/test_structure_two_w3_deferred_cancellation.py:127: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_structure_two_w3_deferred_cancellation.py:73: in verify_cancelled
+    before = snapshot(probe)
+             ^^^^^^^^^^^^^^^
+tests/test_structure_two_w3_round6_prepared_boundary.py:54: in snapshot
+    state(core),
+    ^^^^^^^^^^^
+tests/test_structure_two_w3_round5_boundaries.py:24: in state
+    return core._execution_observable_state_sha256()
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/cpswm/system/prototype_spine.py:2438: in _execution_observable_state_sha256
+    return content_sha256(
+src/cpswm/system/reproducibility.py:60: in content_sha256
+    return hashlib.sha256(canonical_json(value).encode("utf-8")).hexdigest()
+                          ^^^^^^^^^^^^^^^^^^^^^
+src/cpswm/system/reproducibility.py:50: in canonical_json
+    return json.dumps(
+/Users/pangwei/.local/share/uv/python/cpython-3.13.5-macos-aarch64-none/lib/python3.13/json/__init__.py:238: in dumps
+    **kw).encode(obj)
+          ^^^^^^^^^^^
+/Users/pangwei/.local/share/uv/python/cpython-3.13.5-macos-aarch64-none/lib/python3.13/json/encoder.py:200: in encode
+    chunks = self.iterencode(o, _one_shot=True)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/Users/pangwei/.local/share/uv/python/cpython-3.13.5-macos-aarch64-none/lib/python3.13/json/encoder.py:261: in iterencode
+    return _iterencode(o, 0)
+           ^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <json.encoder.JSONEncoder object at 0x10b7f2210>, o = array([12.])
+
+    def default(self, o):
+        """Implement this method in a subclass such that it returns
+        a serializable object for ``o``, or calls the base implementation
+        (to raise a ``TypeError``).
+    
+        For example, to support arbitrary iterators, you could
+        implement default like this::
+    
+            def default(self, o):
+                try:
+                    iterable = iter(o)
+                except TypeError:
+                    pass
+                else:
+                    return list(iterable)
+                # Let the base class default method raise the TypeError
+                return super().default(o)
+    
+        """
+>       raise TypeError(f'Object of type {o.__class__.__name__} '
+                        f'is not JSON serializable')
+E       TypeError: Object of type ndarray is not JSON serializable
+
+/Users/pangwei/.local/share/uv/python/cpython-3.13.5-macos-aarch64-none/lib/python3.13/json/encoder.py:180: TypeError
+____ test_cancellation_semantics_reproduce_with_distinct_execution_lineage _____
+[gw1] darwin -- Python 3.13.5 /Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/.venv/bin/python
+
+    def test_cancellation_semantics_reproduce_with_distinct_execution_lineage():
+        semantic, execution = [], []
+        feedback = uuid4()
+        for _ in range(2):
+            args = pending(feedback_id=feedback)
+            probe = args[0]
+            probe.system.process_transition(probe.transition_for(probe.observed_days()[12]))
+>           verify_cancelled(*args)
+
+tests/test_structure_two_w3_deferred_cancellation.py:155: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_structure_two_w3_deferred_cancellation.py:73: in verify_cancelled
+    before = snapshot(probe)
+             ^^^^^^^^^^^^^^^
+tests/test_structure_two_w3_round6_prepared_boundary.py:54: in snapshot
+    state(core),
+    ^^^^^^^^^^^
+tests/test_structure_two_w3_round5_boundaries.py:24: in state
+    return core._execution_observable_state_sha256()
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/cpswm/system/prototype_spine.py:2438: in _execution_observable_state_sha256
+    return content_sha256(
+src/cpswm/system/reproducibility.py:60: in content_sha256
+    return hashlib.sha256(canonical_json(value).encode("utf-8")).hexdigest()
+                          ^^^^^^^^^^^^^^^^^^^^^
+src/cpswm/system/reproducibility.py:50: in canonical_json
+    return json.dumps(
+/Users/pangwei/.local/share/uv/python/cpython-3.13.5-macos-aarch64-none/lib/python3.13/json/__init__.py:238: in dumps
+    **kw).encode(obj)
+          ^^^^^^^^^^^
+/Users/pangwei/.local/share/uv/python/cpython-3.13.5-macos-aarch64-none/lib/python3.13/json/encoder.py:200: in encode
+    chunks = self.iterencode(o, _one_shot=True)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/Users/pangwei/.local/share/uv/python/cpython-3.13.5-macos-aarch64-none/lib/python3.13/json/encoder.py:261: in iterencode
+    return _iterencode(o, 0)
+           ^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <json.encoder.JSONEncoder object at 0x10d849a30>, o = array([12.])
+
+    def default(self, o):
+        """Implement this method in a subclass such that it returns
+        a serializable object for ``o``, or calls the base implementation
+        (to raise a ``TypeError``).
+    
+        For example, to support arbitrary iterators, you could
+        implement default like this::
+    
+            def default(self, o):
+                try:
+                    iterable = iter(o)
+                except TypeError:
+                    pass
+                else:
+                    return list(iterable)
+                # Let the base class default method raise the TypeError
+                return super().default(o)
+    
+        """
+>       raise TypeError(f'Object of type {o.__class__.__name__} '
+                        f'is not JSON serializable')
+E       TypeError: Object of type ndarray is not JSON serializable
+
+/Users/pangwei/.local/share/uv/python/cpython-3.13.5-macos-aarch64-none/lib/python3.13/json/encoder.py:180: TypeError
+=========================== short test summary info ============================
+FAILED tests/test_structure_two_w3_deferred_cancellation.py::test_public_cancellation_restores_full_nonempty_parent_and_preserves_new_observation[core-0]
+FAILED tests/test_structure_two_w3_deferred_cancellation.py::test_public_cancellation_restores_full_nonempty_parent_and_preserves_new_observation[production_wrapper-1]
+FAILED tests/test_structure_two_w3_deferred_cancellation.py::test_public_cancellation_restores_full_nonempty_parent_and_preserves_new_observation[core-2]
+FAILED tests/test_structure_two_w3_deferred_cancellation.py::test_real_cancellation_interruption_restores_pending_transaction_and_can_retry[RuntimeError-cancellation_lineage]
+FAILED tests/test_structure_two_w3_deferred_cancellation.py::test_public_cancellation_restores_full_nonempty_parent_and_preserves_new_observation[core-1]
+FAILED tests/test_structure_two_w3_deferred_cancellation.py::test_public_cancellation_restores_full_nonempty_parent_and_preserves_new_observation[production_wrapper-0]
+FAILED tests/test_structure_two_w3_deferred_cancellation.py::test_public_cancellation_restores_full_nonempty_parent_and_preserves_new_observation[production_wrapper-2]
+FAILED tests/test_structure_two_w3_deferred_cancellation.py::test_real_cancellation_interruption_restores_pending_transaction_and_can_retry[RuntimeError-hybrid]
+FAILED tests/test_structure_two_w3_deferred_cancellation.py::test_real_cancellation_interruption_restores_pending_transaction_and_can_retry[RuntimeError-dirichlet]
+FAILED tests/test_structure_two_w3_deferred_cancellation.py::test_real_cancellation_interruption_restores_pending_transaction_and_can_retry[RuntimeError-cancellation_replay]
+FAILED tests/test_structure_two_w3_deferred_cancellation.py::test_real_cancellation_interruption_restores_pending_transaction_and_can_retry[RuntimeError-rls]
+FAILED tests/test_structure_two_w3_deferred_cancellation.py::test_real_cancellation_interruption_restores_pending_transaction_and_can_retry[KeyboardInterrupt-cancellation_lineage]
+FAILED tests/test_structure_two_w3_deferred_cancellation.py::test_real_cancellation_interruption_restores_pending_transaction_and_can_retry[KeyboardInterrupt-hybrid]
+FAILED tests/test_structure_two_w3_deferred_cancellation.py::test_real_cancellation_interruption_restores_pending_transaction_and_can_retry[KeyboardInterrupt-dirichlet]
+FAILED tests/test_structure_two_w3_deferred_cancellation.py::test_real_cancellation_interruption_restores_pending_transaction_and_can_retry[KeyboardInterrupt-rls]
+FAILED tests/test_structure_two_w3_deferred_cancellation.py::test_real_cancellation_interruption_restores_pending_transaction_and_can_retry[KeyboardInterrupt-cancellation_replay]
+FAILED tests/test_structure_two_w3_deferred_cancellation.py::test_restored_parent_can_be_corrected_again_then_retracted_without_resurrection
+FAILED tests/test_structure_two_w3_deferred_cancellation.py::test_cancellation_semantics_reproduce_with_distinct_execution_lineage
+18 failed in 88.70s (0:01:28)

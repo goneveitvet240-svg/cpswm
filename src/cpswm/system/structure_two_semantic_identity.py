@@ -39,6 +39,10 @@ def semantic_memory_state(core: Any) -> dict[str, Any]:
     # The operation order, not a random UUID sort, defines replacement identities.
     for index, operation in enumerate(core.revision_transactions):
         bind(operation.corrected_revision_id, f"correction:{index}")
+    for index, (request, _waiting, _mode) in enumerate(
+        core._deferred_project_one_requests.values()
+    ):
+        bind(request.corrected_revision_id, f"pending_correction:{index}")
     for index, event in enumerate(core._observed_events.values()):
         bind(event.evidence.metadata.record_id, f"evidence:{index}")
     for index, event in enumerate(core._revision_parent_events.values()):
@@ -53,6 +57,17 @@ def semantic_memory_state(core: Any) -> dict[str, Any]:
         bind(source.source_id, f"native_posterior:{index}")
         bind(source.snapshot_id, f"native_posterior_snapshot:{index}")
 
+    for index, (physical, (logical, parent)) in enumerate(
+        core._hybrid_reinstatement_lineage.items()
+    ):
+        ledger = core._hybrid_loop.ledger
+        if physical not in ledger._revision_event or ledger._revision_parent[physical] != parent:
+            raise ValueError("invalid raw reinstatement ledger lineage")
+        bind(physical, f"restored_hybrid:{index}:" + aliases.get(str(logical), str(logical)))
+    for cancellation in core._correction_cancellations:
+        cancellation.validate_content()
+        if cancellation.after_operation_count > len(core.revision_transactions):
+            raise ValueError("cancellation references an absent operation")
     history_hashes: dict[str, str] = {}
     revisions_to_normalize = {}
     for history in core._event_histories.values():
@@ -153,7 +168,7 @@ def semantic_memory_state(core: Any) -> dict[str, Any]:
     # their live eligibility is computed separately by the original guard.
     operations = {}
     consumed = set()
-    for operation in core.revision_transactions:
+    for operation_index, operation in enumerate(core.revision_transactions, 1):
         if operation.superseded_revision_id in consumed:
             raise ValueError("duplicate revision transaction parent")
         consumed.add(operation.superseded_revision_id)
@@ -163,6 +178,24 @@ def semantic_memory_state(core: Any) -> dict[str, Any]:
             if operation.corrected_revision_id in operations:
                 raise ValueError("duplicate corrected revision identity")
             operations[operation.corrected_revision_id] = operation
+        for cancellation in core._correction_cancellations:
+            if cancellation.after_operation_count != operation_index:
+                continue
+            request = cancellation.request
+            correction = operations.get(request.corrected_revision_id)
+            if (
+                correction is None
+                or correction.superseded_revision_id != request.superseded_revision_id
+                or correction.corrected_owner_mass != request.owner_mass_after
+                or correction.corrected_location_id != request.location_id
+                or cancellation.parent_event
+                != core._revision_parent_events.get(request.superseded_revision_id)
+                or cancellation.corrected_event.revision_id != request.corrected_revision_id
+                or cancellation.trigger_revision_id
+                not in (core._observed_events.keys() | core._revision_parent_events.keys())
+            ):
+                raise ValueError("invalid correction cancellation lineage")
+            consumed.remove(request.superseded_revision_id)
 
     semantic_records: dict[UUID, dict[str, Any]] = {}
     visiting = set()
@@ -337,6 +370,22 @@ def semantic_memory_state(core: Any) -> dict[str, Any]:
         if digest != native_content_sha256(body):
             raise ValueError("invalid raw prepared input digest")
         particle_payload["input_journal"][str(canonical(cluster))] = content_sha256(prepared(body))
+
+    def cancellation_semantics(c: Any) -> dict[str, Any]:
+        row: dict[str, Any] = canonical(c)
+        request_digest = content_sha256(canonical(c.request))
+        body = canonical(c.body())
+        body[0] = request_digest
+        row["request_fingerprint"] = request_digest
+        row["body_sha256"] = content_sha256(body)
+        return row
+
+    deferred_restore = {}
+    for fingerprint, values in core._deferred_correction_restore.items():
+        pending = core._deferred_project_one_requests.get(fingerprint)
+        if pending is None or pending[2] != "promotion_finalizes":
+            raise ValueError("orphaned deferred correction restoration input")
+        deferred_restore[content_sha256(canonical(pending[0]))] = canonical(values)
     return {
         "schema": "structure-two-semantic-memory@1",
         "configuration": canonical(
@@ -355,7 +404,12 @@ def semantic_memory_state(core: Any) -> dict[str, Any]:
         "fast_action": canonical(core._fast_action_events),
         "qualifications": qualifications,
         "operations": canonical(core.revision_transactions),
+        "correction_cancellations": [
+            cancellation_semantics(c) for c in core._correction_cancellations
+        ],
         "revision_parent_events": canonical(core._revision_parent_events),
+        "hybrid_reinstatement_lineage": canonical(core._hybrid_reinstatement_lineage),
+        "deferred_correction_restore": deferred_restore,
         "prepared_particle_workspace": particle_payload,
         "event_histories": canonical(core._event_histories),
         "bindings": canonical(core._revision_binding_history),

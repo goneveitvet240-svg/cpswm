@@ -48,12 +48,20 @@ def native_content_payload(value: Any) -> Any:
             return tuple(key(x) for x in item)
         return item
 
+    if isinstance(value, np.ndarray):
+        return value.tolist()
     if is_dataclass(value) and not isinstance(value, type):
         return {f.name: native_content_payload(getattr(value, f.name)) for f in fields(value)}
     if hasattr(value, "model_dump"):
         return native_content_payload(value.model_dump(mode="python"))
     if isinstance(value, Mapping):
-        return {key(k): native_content_payload(v) for k, v in value.items()}
+        normalized = {}
+        for k, v in value.items():
+            normalized_key = key(k)
+            if normalized_key in normalized:
+                raise ValueError("native content keys collide after typed normalization")
+            normalized[normalized_key] = native_content_payload(v)
+        return normalized
     if isinstance(value, (set, frozenset)):
         return {
             "native:unordered_members": sorted((native_content_payload(x) for x in value), key=str)

@@ -1,0 +1,29 @@
+{
+  "oracle_refreeze": {
+    "oracle_accepts_unchanged_corrected_state": true,
+    "production_state_unchanged": true,
+    "actual_committed": 2,
+    "reference_committed": 2
+  },
+  "semantic_correction": {
+    "before_semantic_equal": true,
+    "after_semantic_equal": true,
+    "feedback_record_and_action_ids_identical": true,
+    "returned_operations": [
+      [
+        "correct"
+      ],
+      [
+        "correct"
+      ]
+    ],
+    "difference_paths": [],
+    "semantic_hashes": [
+      "1116a8b9c499d6bc62597b63396a77169d5ecbfeb335a15633a257f7435d9634",
+      "1116a8b9c499d6bc62597b63396a77169d5ecbfeb335a15633a257f7435d9634"
+    ]
+  },
+  "direct_revision": {
+    "unexpected_error": "ValueError: CORRECT not admitted by CCRR; transaction rolled back"
+  }
+}

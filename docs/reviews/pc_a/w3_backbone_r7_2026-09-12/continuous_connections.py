@@ -1,0 +1,220 @@
+"""Public continuous engineering run; diagnostic evidence, not full-joint acceptance."""
+
+from __future__ import annotations
+
+import hashlib
+import importlib
+import json
+import sys
+import time
+import traceback
+from dataclasses import fields, is_dataclass, replace
+from enum import Enum
+from pathlib import Path
+from uuid import UUID
+
+import numpy as np
+
+root = Path(__file__).resolve().parents[4]
+sys.path[:0] = [str(root / "src"), str(root / "tests")]
+old = importlib.import_module("test_structure_two_formal_revision_lineage")
+BackboneWiringProbe = importlib.import_module(
+    "structure_two_backbone_wiring_probe"
+).BackboneWiringProbe
+CIAVOutcomeKind = importlib.import_module("structure_two_backbone_wiring_probe").CIAVOutcomeKind
+
+native_content_payload = importlib.import_module(
+    "cpswm.system.structure_two_particle_workspace"
+).native_content_payload
+
+
+def clean(v):
+    if v is None or isinstance(v, (bool, int, float, str)):
+        return v
+    if isinstance(v, (UUID, Enum)):
+        return str(v.value if isinstance(v, Enum) else v)
+    if isinstance(v, np.ndarray):
+        return v.tolist()
+    if is_dataclass(v) and not isinstance(v, type):
+        return {f.name: clean(getattr(v, f.name)) for f in fields(v)}
+    if hasattr(v, "model_dump"):
+        return clean(v.model_dump(mode="python"))
+    if isinstance(v, dict):
+        return {str(k): clean(x) for k, x in native_content_payload(v).items()}
+    if isinstance(v, (list, tuple, set, frozenset)):
+        return [clean(x) for x in v]
+    if hasattr(v, "isoformat"):
+        return v.isoformat()
+    return {
+        "type": type(v).__module__ + "." + type(v).__qualname__,
+        "callable": getattr(v, "__qualname__", None),
+    }
+
+
+def source_hashes():
+    return {
+        str(p.relative_to(root)): hashlib.sha256(p.read_bytes()).hexdigest()
+        for p in sorted((root / "src").rglob("*.py"))
+    }
+
+
+def run(variant):
+    probe = BackboneWiringProbe.build(seed=7)
+    core = probe.system.core
+    records = []
+    steps = []
+    phase = "initial"
+    operators = {
+        "opceu": core._corrector.weight_for_opportunity,
+        "orrer": core._event_engine.branch,
+        "pchmp": core._message_passing.consume,
+        "cf_bocpd": core._automatic_regimes.bocpd.observe_online,
+        "ccrr": core._automatic_regimes.ccrr.decide,
+        "cause_router": core._automatic_regimes.observe,
+        "rgrc": core._hybrid_loop.ledger.apply_statistic_bundle,
+        "replay_equivalence": core._hybrid_loop.ledger.ensure_replay_equivalence,
+        "ciav": probe.system.cause_information_planner.select,
+        "verification": probe.system.ciav_opceu_loop.execute_selected_action,
+        "feedback_revision": probe.system.feedback_revision_loop.ingest_feedback,
+    }
+    codes = {getattr(m, "__func__", m).__code__: name for name, m in operators.items()}
+    stack = {}
+
+    def profile(frame, event, value):
+        name = codes.get(frame.f_code)
+        if name is None:
+            return
+        if event == "call":
+            keys = frame.f_code.co_varnames[
+                : frame.f_code.co_argcount + frame.f_code.co_kwonlyargcount
+            ]
+            inputs = {
+                k: clean(frame.f_locals[k]) for k in keys if k != "self" and k in frame.f_locals
+            }
+            path = Path(frame.f_code.co_filename)
+            stack[id(frame)] = {
+                "operator": name,
+                "phase": phase,
+                "instance_id": id(frame.f_locals.get("self")),
+                "implementation": str(path.relative_to(root))
+                + ":"
+                + str(frame.f_code.co_firstlineno),
+                "source_sha256": hashlib.sha256(path.read_bytes()).hexdigest(),
+                "input": inputs,
+            }
+        elif event == "return" and id(frame) in stack:
+            row = stack.pop(id(frame))
+            row["output"] = clean(value)
+            records.append(row)
+
+    def observe(label):
+        live = tuple(core._committed_events.values())
+        steps.append(
+            {
+                "phase": label,
+                "observations": core.observation_count,
+                "committed": len(live),
+                "quarantined": len(core._quarantined_events),
+                "owner_mass": {
+                    str(location): core.hybrid_alpha(location) for location in core.locations
+                },
+                "action": clean(probe.action_distribution()),
+                "active_regime": core.active_regime,
+                "cause": clean(core.current_cause_snapshot),
+                "native_posterior_sources": len(core._particle_workspace.posterior_sources),
+                "default_joint_particles": len(core._particle_workspace.records),
+                "ledger_entries": len(core._hybrid_loop.ledger.export_state().entries),
+            }
+        )
+
+    previous = sys.getprofile()
+    sys.setprofile(profile)
+    try:
+        for i, day in enumerate(probe.observed_days()[:24]):
+            phase = f"learning:{i}"
+            kwargs = {}
+            if variant == "opceu":
+                kwargs["p_visible_given_state"] = 0.35
+            if variant == "orrer":
+                kwargs["unresolved_probability"] = 0.4
+            if variant == "pchmp":
+                kwargs["evidence_filter"] = ("actor", "role")
+            if variant == "null":
+                kwargs["evidence_filter"] = ("role", "mechanism", "actor")
+            transition = probe.transition_for(day, **kwargs)
+            if variant == "identity":
+                transition = replace(transition, identity_switch_probability=0.95)
+            _result = probe.system.process_transition(transition)
+            observe(phase)
+        assert core._committed_events, "continuous learning produced no committed example"
+        phase = "active_verification"
+        transition = probe.transition_for(probe.observed_days()[24])
+        kind = (
+            CIAVOutcomeKind.DETECTED_SAME_LOCATION
+            if variant == "ciav"
+            else CIAVOutcomeKind.DETECTED_DIFFERENT_LOCATION
+        )
+        _adaptive, _sink = probe.run_direct_p5(
+            transition, ciav_input=probe.ciav_input(transition, outcome=kind)
+        )
+        observe(phase)
+        phase = "late_feedback_correction"
+        target = next(iter(core._committed_events))
+        feedback, binding, likelihood = old._feedback(probe, target)
+        _revised, outcome, receipts = probe.system.process_project_two_feedback(
+            history=core._event_histories[target],
+            feedback=feedback,
+            binding=binding,
+            likelihood_model=likelihood,
+        )
+        observe(phase)
+        assert receipts and any(r.status.value == "applied" for r in receipts), (
+            "late correction has no applied statistic"
+        )
+        assert (
+            target not in core._committed_events
+            and outcome.corrected_revision_id in core._committed_events
+        )
+        phase = "subsequent_action"
+        _result = probe.system.process_transition(probe.transition_for(probe.observed_days()[25]))
+        observe(phase)
+        return {
+            "completed": True,
+            "steps": steps,
+            "calls": records,
+            "feedback_receipts": clean(receipts),
+            "limitation": (
+                "Native sequential seven-operator cooperation; "
+                "default full-joint particle count is reported literally, "
+                "never inferred from receipts."
+            ),
+        }
+    except BaseException:
+        return {
+            "completed": False,
+            "steps": steps,
+            "calls": records,
+            "failure": traceback.format_exc(),
+        }
+    finally:
+        sys.setprofile(previous)
+
+
+if __name__ == "__main__":
+    variant = sys.argv[1]
+    output = Path(sys.argv[2])
+    before = source_hashes()
+    started = time.time()
+    result = run(variant)
+    result.update(
+        variant=variant,
+        seconds=time.time() - started,
+        source_before=before,
+        source_after=source_hashes(),
+        command=[sys.executable, *sys.argv],
+        script_sha256=hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),
+    )
+    with output.open("x") as f:
+        json.dump(result, f, ensure_ascii=False, indent=2, allow_nan=False)
+    print(variant, "completed" if result["completed"] else "FAILED", flush=True)
+    sys.exit(0 if result["completed"] else 1)

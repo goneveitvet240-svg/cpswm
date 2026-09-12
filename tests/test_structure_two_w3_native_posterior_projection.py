@@ -224,3 +224,9 @@ assert batch.particle_weights[0].posterior_probability > 0
         timeout=60,
     )
     assert result.returncode == 0, result.stdout + result.stderr
+
+
+def test_native_source_encoding_rejects_complete_typed_key_collision():
+    source = {frozenset({"habit", "actor"}): 0.25, ("native:frozenset", ("actor", "habit")): 0.75}
+    with pytest.raises(ValueError, match="collide"):
+        native_content_sha256(source)

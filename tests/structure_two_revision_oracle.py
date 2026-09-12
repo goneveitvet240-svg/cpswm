@@ -6,6 +6,7 @@ This detects integration, membership and accounting errors, not errors common to
 those leaf models, perception, or historical custody before the journal freeze.
 """
 
+import hashlib
 import json
 from copy import deepcopy
 from dataclasses import replace
@@ -22,6 +23,7 @@ from cpswm.system.continual.project_one_regime_loop import (
 )
 from cpswm.system.continual.rls import RLSHabitScoreHead, RLSRegimeBank
 from cpswm.system.reproducibility import content_sha256
+from cpswm.system.structure_two_particle_workspace import native_content_sha256
 from cpswm.world_model.habits_transitions import (
     CauseSignalFrame,
     ChangeCause,
@@ -37,6 +39,7 @@ class FrozenRevisionOracle:
         self.parent_events = deepcopy(core._revision_parent_events)
         self.raw_eligibility = deepcopy(core._write_eligibility)
         self.baseline_operations = tuple(core.revision_transactions)
+        self.cancellations = deepcopy(core._correction_cancellations)
         corrected_ids = {op.corrected_revision_id for op in self.baseline_operations}
         # Recover original inputs from the retained pre-revision records. Never
         # infer missing parents from the system's final membership or statistics.
@@ -61,7 +64,7 @@ class FrozenRevisionOracle:
     def _validate_frozen_lineage(self):
         operations = {}
         consumed = set()
-        for op in self.baseline_operations:
+        for op_index, op in enumerate(self.baseline_operations, 1):
             assert op.superseded_revision_id not in consumed, "duplicate historical operation"
             consumed.add(op.superseded_revision_id)
             assert op.superseded_revision_id in self.parent_events, "missing original parent input"
@@ -69,6 +72,62 @@ class FrozenRevisionOracle:
             if op.kind.value == "correct":
                 assert op.corrected_revision_id not in operations, "duplicate corrected identity"
                 operations[op.corrected_revision_id] = op
+            for cancellation in self.cancellations:
+                if cancellation.after_operation_count != op_index:
+                    continue
+                request = cancellation.request
+                request_body = {
+                    "kind": request.kind.value,
+                    "superseded_revision_id": str(request.superseded_revision_id),
+                    "corrected_revision_id": str(request.corrected_revision_id),
+                    "event_hypothesis_id": str(request.event_hypothesis_id),
+                    "owner_key": request.owner_key,
+                    "object_instance_id": str(request.object_instance_id),
+                    "location_id": str(request.location_id),
+                    "owner_mass_before": repr(float(request.owner_mass_before)),
+                    "owner_mass_after": repr(float(request.owner_mass_after)),
+                    "owner_mass_delta": repr(float(request.owner_mass_delta)),
+                    "source_feedback_record_id": str(request.source_feedback_record_id),
+                }
+                assert (
+                    cancellation.request_fingerprint
+                    == hashlib.sha256(json.dumps(request_body, sort_keys=True).encode()).hexdigest()
+                )
+                assert cancellation.body_sha256 == native_content_sha256(
+                    (
+                        cancellation.request_fingerprint,
+                        request,
+                        cancellation.parent_event,
+                        cancellation.corrected_event,
+                        cancellation.after_operation_count,
+                        cancellation.trigger_revision_id,
+                        cancellation.rationale,
+                        cancellation.restore_events,
+                        cancellation.restore_fast_events,
+                    )
+                ), "invalid cancellation body"
+                rid = request.corrected_revision_id
+                assert rid in operations, "cancellation without correction"
+                correction = operations[rid]
+                assert correction.superseded_revision_id == request.superseded_revision_id
+                assert (
+                    cancellation.parent_event == self.parent_events[request.superseded_revision_id]
+                )
+                assert cancellation.corrected_event.revision_id == rid
+                assert correction.corrected_location_id == request.location_id
+                assert correction.corrected_owner_mass == request.owner_mass_after
+                assert correction.evidence_source_record_ids == (request.source_feedback_record_id,)
+                assert cancellation.trigger_revision_id in (
+                    self.frozen_current_events.keys() | self.parent_events.keys()
+                ), "cancellation without trigger"
+                assert request.superseded_revision_id in consumed
+                consumed.remove(request.superseded_revision_id)
+        assert all(
+            0 < c.after_operation_count <= len(self.baseline_operations) for c in self.cancellations
+        )
+        assert len({c.corrected_event.revision_id for c in self.cancellations}) == len(
+            self.cancellations
+        )
         visiting, checked = set(), set()
 
         def visit(rid):
@@ -183,7 +242,9 @@ class FrozenRevisionOracle:
         events = deepcopy(self.events)
         eligibility = deepcopy(self.eligibility)
         self._validate_frozen_lineage()
-        for operation in (*self.baseline_operations, *self.operations):
+        for operation_index, operation in enumerate(
+            (*self.baseline_operations, *self.operations), 1
+        ):
             assert operation.superseded_revision_id in events, "operation outside frozen journal"
             parent = events.pop(operation.superseded_revision_id)
             if operation.kind.value == "correct":
@@ -226,6 +287,19 @@ class FrozenRevisionOracle:
                     ),
                 )
                 eligibility[rid] = deepcopy(eligibility[parent.revision_id])
+            for cancellation in self.cancellations:
+                if cancellation.after_operation_count != operation_index:
+                    continue
+                request = cancellation.request
+                assert request.corrected_revision_id in events, (
+                    "cancelled child absent from journal"
+                )
+                events.pop(request.corrected_revision_id)
+                # The frozen pre-correction input is the reference, never the
+                # system's final observed/committed event or model value.
+                events[request.superseded_revision_id] = deepcopy(
+                    self.parent_events[request.superseded_revision_id]
+                )
 
         def eligible(rid):
             row = eligibility[rid]
@@ -354,6 +428,9 @@ class FrozenRevisionOracle:
 
     def check(self, probe):
         core = probe.system.core
+        assert core._correction_cancellations == self.cancellations, (
+            "cancellation log changed after freeze"
+        )
         assert tuple(core.revision_transactions) == (*self.baseline_operations, *self.operations), (
             "unvalidated or missing operation log"
         )

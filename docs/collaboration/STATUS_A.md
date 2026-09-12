@@ -1,5 +1,14 @@
 # 电脑 A 状态
 
+## A 数据预检交付 2026-09-13（组件及真实采集连通性，非完整训练/闭环）
+
+- 分支 `codex/pc-a-data-preflight-20260913`，base `2a7a547fba30412d9349605aff3a7df7c60d6b3a`；实际源码逐文件摘要见 `docs/reviews/pc_a/data_preflight_2026-09-13/run_03/manifest.json`。
+- method-free 训练世界盘点完成：24 世界、144 轨迹、49,428 步；完整 H/R/I/C/Z/r/V 和六操作监督不齐，不能直接训练全轴模型。未运行方法臂、未生成验证/确认世界。
+- 新增可见记录前缀导出和 CLI，分开事件/到达时间，保留人物后验/reference prior，拒绝 oracle/未来记录/额外真值。开发示例已执行真实 CLI，仍明确是符号组件样例。
+- 新增原始 SDK 采集接口；43 项回归、Ruff、4 新源文件 mypy 通过。真实采集使用已有 `.venv-ai2thor` Python 3.11.16/SDK 5.0.0 和本地 arm64 Unity，在同一 controller 执行 3 步并保存 RGB-D/实际执行结果，最终绑定证据 `real_simulator_02/result.json`。
+- 主 Python 3.13 缺 SDK 的初检 exit 2 与第一次 fixture 失败保留；没有把不同环境混为同一结果。真实 iTHOR 单场景 smoke 不等于 ProcTHOR 日程、完整联合主干或科学收益。
+- 未修改 B 的三个生产文件、W1/W2/科学配置。没有训练、采购、付费算力、自动集成。报告与来源/证据/可复跑命令在本批 `REPORT.md`。
+
 ## A 数据覆盖、可见前缀与仿真采集预检开工 2026-09-13
 
 - 用户授权：先审核三项建议，可靠部分直接推进；不启动模型训练，不选择网络参数、连续状态或付费算力。

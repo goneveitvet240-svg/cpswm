@@ -1,0 +1,379 @@
+EEEEEEEEEEEEEEE......................                                    [100%]
+==================================== ERRORS ====================================
+_ ERROR at setup of test_visible_prefix_preserves_legal_fields_and_no_global_truth _
+
+    @pytest.fixture(scope="module")
+    def sample():
+        # Existing component-development fixture, NOT the reserved world confirmation set.
+        case = (
+            D0ShiftScenarioGenerator()
+            .generate(actor_evidence_track=ActorEvidenceTrack.CONTROLLED_NOISE)
+            .cases[0]
+            .model_input
+        )
+        run = case.control_run
+        op = run.observation_opportunities[0]
+        det = next(
+            x for x in run.detection_results if x.observation_opportunity_id == op.metadata.record_id
+        )
+>       actor = next(
+            x
+            for x in case.control_actor_evidence
+            if x.source_detection_result_id == det.metadata.record_id
+        )
+E       StopIteration
+
+tests/test_structure_two_data_preflight.py:33: StopIteration
+______ ERROR at setup of test_late_detection_is_pending_until_it_arrives _______
+
+    @pytest.fixture(scope="module")
+    def sample():
+        # Existing component-development fixture, NOT the reserved world confirmation set.
+        case = (
+            D0ShiftScenarioGenerator()
+            .generate(actor_evidence_track=ActorEvidenceTrack.CONTROLLED_NOISE)
+            .cases[0]
+            .model_input
+        )
+        run = case.control_run
+        op = run.observation_opportunities[0]
+        det = next(
+            x for x in run.detection_results if x.observation_opportunity_id == op.metadata.record_id
+        )
+>       actor = next(
+            x
+            for x in case.control_actor_evidence
+            if x.source_detection_result_id == det.metadata.record_id
+        )
+E       StopIteration
+
+tests/test_structure_two_data_preflight.py:33: StopIteration
+_ ERROR at setup of test_late_actor_evidence_waits_for_both_arrival_and_parent _
+
+    @pytest.fixture(scope="module")
+    def sample():
+        # Existing component-development fixture, NOT the reserved world confirmation set.
+        case = (
+            D0ShiftScenarioGenerator()
+            .generate(actor_evidence_track=ActorEvidenceTrack.CONTROLLED_NOISE)
+            .cases[0]
+            .model_input
+        )
+        run = case.control_run
+        op = run.observation_opportunities[0]
+        det = next(
+            x for x in run.detection_results if x.observation_opportunity_id == op.metadata.record_id
+        )
+>       actor = next(
+            x
+            for x in case.control_actor_evidence
+            if x.source_detection_result_id == det.metadata.record_id
+        )
+E       StopIteration
+
+tests/test_structure_two_data_preflight.py:33: StopIteration
+_ ERROR at setup of test_no_future_opportunity_or_support_changes_earlier_features _
+
+    @pytest.fixture(scope="module")
+    def sample():
+        # Existing component-development fixture, NOT the reserved world confirmation set.
+        case = (
+            D0ShiftScenarioGenerator()
+            .generate(actor_evidence_track=ActorEvidenceTrack.CONTROLLED_NOISE)
+            .cases[0]
+            .model_input
+        )
+        run = case.control_run
+        op = run.observation_opportunities[0]
+        det = next(
+            x for x in run.detection_results if x.observation_opportunity_id == op.metadata.record_id
+        )
+>       actor = next(
+            x
+            for x in case.control_actor_evidence
+            if x.source_detection_result_id == det.metadata.record_id
+        )
+E       StopIteration
+
+tests/test_structure_two_data_preflight.py:33: StopIteration
+_ ERROR at setup of test_missingness_is_not_fabricated_negative_evidence[not_observed-0.0] _
+
+    @pytest.fixture(scope="module")
+    def sample():
+        # Existing component-development fixture, NOT the reserved world confirmation set.
+        case = (
+            D0ShiftScenarioGenerator()
+            .generate(actor_evidence_track=ActorEvidenceTrack.CONTROLLED_NOISE)
+            .cases[0]
+            .model_input
+        )
+        run = case.control_run
+        op = run.observation_opportunities[0]
+        det = next(
+            x for x in run.detection_results if x.observation_opportunity_id == op.metadata.record_id
+        )
+>       actor = next(
+            x
+            for x in case.control_actor_evidence
+            if x.source_detection_result_id == det.metadata.record_id
+        )
+E       StopIteration
+
+tests/test_structure_two_data_preflight.py:33: StopIteration
+_ ERROR at setup of test_missingness_is_not_fabricated_negative_evidence[ambiguous-0.0] _
+
+    @pytest.fixture(scope="module")
+    def sample():
+        # Existing component-development fixture, NOT the reserved world confirmation set.
+        case = (
+            D0ShiftScenarioGenerator()
+            .generate(actor_evidence_track=ActorEvidenceTrack.CONTROLLED_NOISE)
+            .cases[0]
+            .model_input
+        )
+        run = case.control_run
+        op = run.observation_opportunities[0]
+        det = next(
+            x for x in run.detection_results if x.observation_opportunity_id == op.metadata.record_id
+        )
+>       actor = next(
+            x
+            for x in case.control_actor_evidence
+            if x.source_detection_result_id == det.metadata.record_id
+        )
+E       StopIteration
+
+tests/test_structure_two_data_preflight.py:33: StopIteration
+_ ERROR at setup of test_missingness_is_not_fabricated_negative_evidence[verified_absence-0.7] _
+
+    @pytest.fixture(scope="module")
+    def sample():
+        # Existing component-development fixture, NOT the reserved world confirmation set.
+        case = (
+            D0ShiftScenarioGenerator()
+            .generate(actor_evidence_track=ActorEvidenceTrack.CONTROLLED_NOISE)
+            .cases[0]
+            .model_input
+        )
+        run = case.control_run
+        op = run.observation_opportunities[0]
+        det = next(
+            x for x in run.detection_results if x.observation_opportunity_id == op.metadata.record_id
+        )
+>       actor = next(
+            x
+            for x in case.control_actor_evidence
+            if x.source_detection_result_id == det.metadata.record_id
+        )
+E       StopIteration
+
+tests/test_structure_two_data_preflight.py:33: StopIteration
+_ ERROR at setup of test_visible_input_boundary_rejects_invalid_paths[duplicate] _
+
+    @pytest.fixture(scope="module")
+    def sample():
+        # Existing component-development fixture, NOT the reserved world confirmation set.
+        case = (
+            D0ShiftScenarioGenerator()
+            .generate(actor_evidence_track=ActorEvidenceTrack.CONTROLLED_NOISE)
+            .cases[0]
+            .model_input
+        )
+        run = case.control_run
+        op = run.observation_opportunities[0]
+        det = next(
+            x for x in run.detection_results if x.observation_opportunity_id == op.metadata.record_id
+        )
+>       actor = next(
+            x
+            for x in case.control_actor_evidence
+            if x.source_detection_result_id == det.metadata.record_id
+        )
+E       StopIteration
+
+tests/test_structure_two_data_preflight.py:33: StopIteration
+_ ERROR at setup of test_visible_input_boundary_rejects_invalid_paths[orphan] __
+
+    @pytest.fixture(scope="module")
+    def sample():
+        # Existing component-development fixture, NOT the reserved world confirmation set.
+        case = (
+            D0ShiftScenarioGenerator()
+            .generate(actor_evidence_track=ActorEvidenceTrack.CONTROLLED_NOISE)
+            .cases[0]
+            .model_input
+        )
+        run = case.control_run
+        op = run.observation_opportunities[0]
+        det = next(
+            x for x in run.detection_results if x.observation_opportunity_id == op.metadata.record_id
+        )
+>       actor = next(
+            x
+            for x in case.control_actor_evidence
+            if x.source_detection_result_id == det.metadata.record_id
+        )
+E       StopIteration
+
+tests/test_structure_two_data_preflight.py:33: StopIteration
+_ ERROR at setup of test_visible_input_boundary_rejects_invalid_paths[arrival_missing] _
+
+    @pytest.fixture(scope="module")
+    def sample():
+        # Existing component-development fixture, NOT the reserved world confirmation set.
+        case = (
+            D0ShiftScenarioGenerator()
+            .generate(actor_evidence_track=ActorEvidenceTrack.CONTROLLED_NOISE)
+            .cases[0]
+            .model_input
+        )
+        run = case.control_run
+        op = run.observation_opportunities[0]
+        det = next(
+            x for x in run.detection_results if x.observation_opportunity_id == op.metadata.record_id
+        )
+>       actor = next(
+            x
+            for x in case.control_actor_evidence
+            if x.source_detection_result_id == det.metadata.record_id
+        )
+E       StopIteration
+
+tests/test_structure_two_data_preflight.py:33: StopIteration
+_ ERROR at setup of test_visible_input_boundary_rejects_invalid_paths[arrival_early] _
+
+    @pytest.fixture(scope="module")
+    def sample():
+        # Existing component-development fixture, NOT the reserved world confirmation set.
+        case = (
+            D0ShiftScenarioGenerator()
+            .generate(actor_evidence_track=ActorEvidenceTrack.CONTROLLED_NOISE)
+            .cases[0]
+            .model_input
+        )
+        run = case.control_run
+        op = run.observation_opportunities[0]
+        det = next(
+            x for x in run.detection_results if x.observation_opportunity_id == op.metadata.record_id
+        )
+>       actor = next(
+            x
+            for x in case.control_actor_evidence
+            if x.source_detection_result_id == det.metadata.record_id
+        )
+E       StopIteration
+
+tests/test_structure_two_data_preflight.py:33: StopIteration
+_ ERROR at setup of test_visible_input_boundary_rejects_invalid_paths[session] _
+
+    @pytest.fixture(scope="module")
+    def sample():
+        # Existing component-development fixture, NOT the reserved world confirmation set.
+        case = (
+            D0ShiftScenarioGenerator()
+            .generate(actor_evidence_track=ActorEvidenceTrack.CONTROLLED_NOISE)
+            .cases[0]
+            .model_input
+        )
+        run = case.control_run
+        op = run.observation_opportunities[0]
+        det = next(
+            x for x in run.detection_results if x.observation_opportunity_id == op.metadata.record_id
+        )
+>       actor = next(
+            x
+            for x in case.control_actor_evidence
+            if x.source_detection_result_id == det.metadata.record_id
+        )
+E       StopIteration
+
+tests/test_structure_two_data_preflight.py:33: StopIteration
+_ ERROR at setup of test_visible_input_boundary_rejects_invalid_paths[unselected] _
+
+    @pytest.fixture(scope="module")
+    def sample():
+        # Existing component-development fixture, NOT the reserved world confirmation set.
+        case = (
+            D0ShiftScenarioGenerator()
+            .generate(actor_evidence_track=ActorEvidenceTrack.CONTROLLED_NOISE)
+            .cases[0]
+            .model_input
+        )
+        run = case.control_run
+        op = run.observation_opportunities[0]
+        det = next(
+            x for x in run.detection_results if x.observation_opportunity_id == op.metadata.record_id
+        )
+>       actor = next(
+            x
+            for x in case.control_actor_evidence
+            if x.source_detection_result_id == det.metadata.record_id
+        )
+E       StopIteration
+
+tests/test_structure_two_data_preflight.py:33: StopIteration
+_ ERROR at setup of test_visible_input_boundary_rejects_invalid_paths[mutated_result] _
+
+    @pytest.fixture(scope="module")
+    def sample():
+        # Existing component-development fixture, NOT the reserved world confirmation set.
+        case = (
+            D0ShiftScenarioGenerator()
+            .generate(actor_evidence_track=ActorEvidenceTrack.CONTROLLED_NOISE)
+            .cases[0]
+            .model_input
+        )
+        run = case.control_run
+        op = run.observation_opportunities[0]
+        det = next(
+            x for x in run.detection_results if x.observation_opportunity_id == op.metadata.record_id
+        )
+>       actor = next(
+            x
+            for x in case.control_actor_evidence
+            if x.source_detection_result_id == det.metadata.record_id
+        )
+E       StopIteration
+
+tests/test_structure_two_data_preflight.py:33: StopIteration
+_ ERROR at setup of test_visible_input_boundary_rejects_invalid_paths[oracle_actor] _
+
+    @pytest.fixture(scope="module")
+    def sample():
+        # Existing component-development fixture, NOT the reserved world confirmation set.
+        case = (
+            D0ShiftScenarioGenerator()
+            .generate(actor_evidence_track=ActorEvidenceTrack.CONTROLLED_NOISE)
+            .cases[0]
+            .model_input
+        )
+        run = case.control_run
+        op = run.observation_opportunities[0]
+        det = next(
+            x for x in run.detection_results if x.observation_opportunity_id == op.metadata.record_id
+        )
+>       actor = next(
+            x
+            for x in case.control_actor_evidence
+            if x.source_detection_result_id == det.metadata.record_id
+        )
+E       StopIteration
+
+tests/test_structure_two_data_preflight.py:33: StopIteration
+=========================== short test summary info ============================
+ERROR tests/test_structure_two_data_preflight.py::test_visible_prefix_preserves_legal_fields_and_no_global_truth
+ERROR tests/test_structure_two_data_preflight.py::test_late_detection_is_pending_until_it_arrives
+ERROR tests/test_structure_two_data_preflight.py::test_late_actor_evidence_waits_for_both_arrival_and_parent
+ERROR tests/test_structure_two_data_preflight.py::test_no_future_opportunity_or_support_changes_earlier_features
+ERROR tests/test_structure_two_data_preflight.py::test_missingness_is_not_fabricated_negative_evidence[not_observed-0.0]
+ERROR tests/test_structure_two_data_preflight.py::test_missingness_is_not_fabricated_negative_evidence[ambiguous-0.0]
+ERROR tests/test_structure_two_data_preflight.py::test_missingness_is_not_fabricated_negative_evidence[verified_absence-0.7]
+ERROR tests/test_structure_two_data_preflight.py::test_visible_input_boundary_rejects_invalid_paths[duplicate]
+ERROR tests/test_structure_two_data_preflight.py::test_visible_input_boundary_rejects_invalid_paths[orphan]
+ERROR tests/test_structure_two_data_preflight.py::test_visible_input_boundary_rejects_invalid_paths[arrival_missing]
+ERROR tests/test_structure_two_data_preflight.py::test_visible_input_boundary_rejects_invalid_paths[arrival_early]
+ERROR tests/test_structure_two_data_preflight.py::test_visible_input_boundary_rejects_invalid_paths[session]
+ERROR tests/test_structure_two_data_preflight.py::test_visible_input_boundary_rejects_invalid_paths[unselected]
+ERROR tests/test_structure_two_data_preflight.py::test_visible_input_boundary_rejects_invalid_paths[mutated_result]
+ERROR tests/test_structure_two_data_preflight.py::test_visible_input_boundary_rejects_invalid_paths[oracle_actor]
+22 passed, 15 errors in 1.22s

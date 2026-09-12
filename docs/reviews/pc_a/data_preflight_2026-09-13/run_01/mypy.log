@@ -1,0 +1,7 @@
+src/cpswm/data_preflight/visible_prefix.py:57: error: "ContractModel" has no attribute "metadata"  [attr-defined]
+src/cpswm/data_preflight/visible_prefix.py:64: error: "ContractModel" has no attribute "metadata"  [attr-defined]
+src/cpswm/data_preflight/visible_prefix.py:84: error: Incompatible types in assignment (expression has type "ObservationDetectionResult | None", variable has type "ObservationDetectionResult")  [assignment]
+src/cpswm/data_preflight/visible_prefix.py:106: error: Need type annotation for "provenance" (hint: "provenance: list[<type>] = ...")  [var-annotated]
+src/cpswm/data_preflight/visible_prefix.py:110: error: Incompatible types in assignment (expression has type "ObservationDetectionResult | None", variable has type "ObservationDetectionResult")  [assignment]
+src/cpswm/data_preflight/simulator_capture.py:131: error: Argument 2 to "savez" has incompatible type "**dict[str, ndarray[tuple[Any, ...], dtype[Any]]]"; expected "bool"  [arg-type]
+Found 6 errors in 2 files (checked 4 source files)

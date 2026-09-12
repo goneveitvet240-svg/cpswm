@@ -1,0 +1,57 @@
+{
+  "scope": "real iTHOR transport smoke, NOT ProcTHOR multi-actor D1 or model closed loop",
+  "python": "3.11.16 (main, Aug 14 2026, 15:24:25) [Clang 22.1.3 ]",
+  "executable": "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/.venv-ai2thor/bin/python",
+  "platform": "macOS-26.4-arm64-arm-64bit",
+  "sdk_version": "5.0.0",
+  "sdk_path": "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/.venv-ai2thor/lib/python3.11/site-packages/ai2thor/__init__.py",
+  "unity_binary": "/Users/pangwei/.ai2thor/releases/thor-OSXIntel64-f0825767cd50d69f666c7f282e54abfe58f1e917/thor-OSXIntel64-f0825767cd50d69f666c7f282e54abfe58f1e917.app/Contents/MacOS/AI2-THOR",
+  "binary_sha256": "d8bbfbee47581f4aa4f5df71e095f0a1c00888bed7b493eaffcc0f37d6364df3",
+  "source_sha256": "bda9b46c35d0bb65a6c97187b8625a3d8dfa9fbf9214ad4d434dc9f8416aaed1",
+  "real_simulator_run_verified": true,
+  "steps": [
+    {
+      "run_id": "pc-a-ithor-transport-smoke-20260913",
+      "step_index": 0,
+      "request": {
+        "action": "Pass"
+      },
+      "request_time": "2026-09-12T17:11:18.050185+00:00",
+      "received_at": "2026-09-12T17:11:18.057901+00:00",
+      "last_action_success": true,
+      "sensor_file": "000000.npz",
+      "sensor_sha256": "26f84b80b461ac4c66bf3ee49f6aee56dc5915176603752c35ba1152deedc59b",
+      "depth_unit": "m",
+      "status": "RAW_OBSERVATION_CANDIDATE_NOT_METHOD_AUTHORIZATION"
+    },
+    {
+      "run_id": "pc-a-ithor-transport-smoke-20260913",
+      "step_index": 1,
+      "request": {
+        "action": "RotateRight"
+      },
+      "request_time": "2026-09-12T17:11:18.064811+00:00",
+      "received_at": "2026-09-12T17:11:18.086003+00:00",
+      "last_action_success": true,
+      "sensor_file": "000001.npz",
+      "sensor_sha256": "4cf8fd89b8f4596bb6d6590b3ecda4d2f41e6b8e6de5a418f3c9cf3fd1c49ac8",
+      "depth_unit": "m",
+      "status": "RAW_OBSERVATION_CANDIDATE_NOT_METHOD_AUTHORIZATION"
+    },
+    {
+      "run_id": "pc-a-ithor-transport-smoke-20260913",
+      "step_index": 2,
+      "request": {
+        "action": "MoveAhead"
+      },
+      "request_time": "2026-09-12T17:11:18.092590+00:00",
+      "received_at": "2026-09-12T17:11:18.101020+00:00",
+      "last_action_success": true,
+      "sensor_file": "000002.npz",
+      "sensor_sha256": "213195451e0deb38cd9e18b91f0c6e46d596a6e37b9097918b9abafac43549e5",
+      "depth_unit": "m",
+      "status": "RAW_OBSERVATION_CANDIDATE_NOT_METHOD_AUTHORIZATION"
+    }
+  ],
+  "seconds": 5.098137855529785
+}

@@ -1,0 +1,68 @@
+{
+  "axes": {
+    "C": "partial: generator causes, not the frozen six-way cause support",
+    "H": "partial: constant pick_up/carry/place chain, not full hidden-event revision support",
+    "I": "missing: no competing instance IDs or unknown_instance; match truth is constant",
+    "R": "missing: one true_actor and handoff label, no ordered role assignment chain",
+    "V": "missing: no event/particle/ledger revision lineage",
+    "Z": "partial: regime labels, not stay/create/reactivate/unresolved decisions",
+    "r": "missing: no explicit particle-conditioned run length field"
+  },
+  "causes": {
+    "guest_relocation": 8316,
+    "open_world_hidden_event": 4176,
+    "owner_habit_sample": 36936
+  },
+  "contexts": {
+    "weekday": 35382,
+    "weekend": 14046
+  },
+  "counts": {
+    "not_observed": 22916,
+    "observed": 26512,
+    "perceived_location_mismatch": 3505,
+    "steps": 49428,
+    "true_identity_match_false": 0,
+    "unknown_actor_truth": 4176
+  },
+  "event_chains": {
+    "pick_up->carry->place": 49428
+  },
+  "full_scope_training_ready": false,
+  "grain": "world_seed / trajectory_seed / observation_seed / day",
+  "mechanisms": {
+    "direct": 43034,
+    "handoff": 2218,
+    "unknown": 4176
+  },
+  "not_observed_is_not_verified_absence": true,
+  "not_represented": [
+    "verified_absence",
+    "unknown_location",
+    "late_arrival_time",
+    "execution_feedback",
+    "continuous_measurement_and_noise_model"
+  ],
+  "proposal_operation_labels": {
+    "branch": 0,
+    "preserve_unresolved": 0,
+    "reactivate": 0,
+    "rejuvenate": 0,
+    "retract": 0,
+    "revise": 0
+  },
+  "regimes": {
+    "baseline": 17478,
+    "recurrent": 11664,
+    "shifted": 20286
+  },
+  "rollout_count": 144,
+  "scope": "method-free spent train worlds; NOT training authorization or confirmation",
+  "sources": {
+    "configs/project_two_experiments/structure_two_world_generator_manifest_v0_2.json": "88fbf4a47601401b0b95642c99d2bf0644a8d97ac5ae03171cd60bbfabc62cd4",
+    "configs/project_two_experiments/structure_two_world_rolling_train_gate_v0_4.json": "ae538b466102a5b8282c24ab251989bf5f51e16451b1ffc9960736c09233e9f7",
+    "src/cpswm/data_preflight/train_coverage.py": "e3a31618dc107e0a9c216e8a391930198e75bd3ffad9f983f627049924f9b19d",
+    "src/cpswm/system/evaluation_operations/structure_two_world_generator_v0_2.py": "fa57fd4739faa843568bded0e07ba56efcc161872c5f519523ffcc6ee6dc7501"
+  },
+  "world_count": 24
+}

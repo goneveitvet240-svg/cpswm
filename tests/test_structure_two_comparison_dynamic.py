@@ -167,6 +167,11 @@ def test_frozen_final_pct_is_not_reopened():
     assert not result["scientific_fairness_established"]
 
 
+def test_dynamic_actual_output_survives_strict_json_retention(results):
+    retained = json.loads(json.dumps(results))
+    assert audit.first_difference(retained, results) is None
+
+
 def test_dynamic_fresh_semantic_replay_matches(inputs, results):
     second = dynamic.run_scenes(*inputs)
     assert audit.first_difference(results, second) is None

@@ -7,9 +7,10 @@ All readouts below use the already selected readout and unchanged typed decoder.
 
 from __future__ import annotations
 
+import json
 from dataclasses import asdict, replace
 from datetime import timedelta
-from typing import Any
+from typing import Any, cast
 
 from cpswm.contracts import ObservationOutcome, ProjectTwoDatasetSplit
 from cpswm.system.continual.project_one_feedback import EventRevisionKind, EventRevisionOutcome
@@ -361,7 +362,7 @@ def run_scenes(
                 ),
             }
         )
-    return {
+    diagnostic = {
         "development_only": True,
         "id": ID,
         "plans_sha256": content_sha256(PLANS),
@@ -386,6 +387,10 @@ def run_scenes(
         },
         "scientific_acceptance": False,
     }
+
+    # JSON is the retained schema: materialize enums/tuples before strict replay
+    # comparison, without changing the verifier or dropping any semantic field.
+    return cast(dict[str, Any], json.loads(json.dumps(diagnostic)))
 
 
 def boundary_probes(template: Any) -> dict[str, Any]:

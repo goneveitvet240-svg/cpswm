@@ -1,0 +1,6316 @@
+{
+  "assembly_sha256": "431c291648600927a524b48173a343e43dd3bf55bc383dd8d16f77a19c5eb984",
+  "assembly": "/Users/pangwei/.ai2thor/releases/thor-OSXIntel64-f0825767cd50d69f666c7f282e54abfe58f1e917/thor-OSXIntel64-f0825767cd50d69f666c7f282e54abfe58f1e917.app/Contents/Resources/Data/Managed/AI2-THOR-Base.dll",
+  "inspection_only": true,
+  "script_sha256": "b22b2b30ff168f1d4f4cd19b49cd78c5332ccec35dbbac89d1d53bcd6e3d9da9",
+  "methods": [
+    {
+      "type": "AgentManager",
+      "method": "Initialize",
+      "rva": 11152,
+      "il_sha256": "5e140b839214dd3ba95f42e4bcb3c224b2219ff8b78d87668b3a75c8ffb58bb6",
+      "instructions": [
+        {
+          "offset": 12,
+          "opcode": "ldarg.0",
+          "operand": "None"
+        },
+        {
+          "offset": 13,
+          "opcode": "ldarg.1",
+          "operand": "None"
+        },
+        {
+          "offset": 14,
+          "opcode": "ldfld",
+          "operand": ".agentMode"
+        },
+        {
+          "offset": 19,
+          "opcode": "callvirt",
+          "operand": ".ToLower"
+        },
+        {
+          "offset": 24,
+          "opcode": "stfld",
+          "operand": ".agentMode"
+        },
+        {
+          "offset": 29,
+          "opcode": "ldarg.1",
+          "operand": "None"
+        },
+        {
+          "offset": 30,
+          "opcode": "ldfld",
+          "operand": ".agentMode"
+        },
+        {
+          "offset": 35,
+          "opcode": "callvirt",
+          "operand": ".ToLower"
+        },
+        {
+          "offset": 40,
+          "opcode": "ldstr",
+          "operand": "default"
+        },
+        {
+          "offset": 45,
+          "opcode": "call",
+          "operand": ".op_Equality"
+        },
+        {
+          "offset": 50,
+          "opcode": "brfalse.s",
+          "operand": "63"
+        },
+        {
+          "offset": 52,
+          "opcode": "ldarg.0",
+          "operand": "None"
+        },
+        {
+          "offset": 53,
+          "opcode": "call",
+          "operand": "AgentManager.SetUpPhysicsController"
+        },
+        {
+          "offset": 58,
+          "opcode": "br",
+          "operand": "303"
+        },
+        {
+          "offset": 63,
+          "opcode": "ldarg.1",
+          "operand": "None"
+        },
+        {
+          "offset": 64,
+          "opcode": "ldfld",
+          "operand": ".agentMode"
+        },
+        {
+          "offset": 69,
+          "opcode": "callvirt",
+          "operand": ".ToLower"
+        },
+        {
+          "offset": 74,
+          "opcode": "ldstr",
+          "operand": "locobot"
+        },
+        {
+          "offset": 79,
+          "opcode": "call",
+          "operand": ".op_Equality"
+        },
+        {
+          "offset": 84,
+          "opcode": "brfalse.s",
+          "operand": "98"
+        },
+        {
+          "offset": 86,
+          "opcode": "ldarg.0",
+          "operand": "None"
+        },
+        {
+          "offset": 87,
+          "opcode": "ldarg.1",
+          "operand": "None"
+        },
+        {
+          "offset": 88,
+          "opcode": "call",
+          "operand": "AgentManager.SetUpLocobotController"
+        },
+        {
+          "offset": 93,
+          "opcode": "br",
+          "operand": "303"
+        },
+        {
+          "offset": 98,
+          "opcode": "ldarg.1",
+          "operand": "None"
+        },
+        {
+          "offset": 99,
+          "opcode": "ldfld",
+          "operand": ".agentMode"
+        },
+        {
+          "offset": 104,
+          "opcode": "callvirt",
+          "operand": ".ToLower"
+        },
+        {
+          "offset": 109,
+          "opcode": "ldstr",
+          "operand": "drone"
+        },
+        {
+          "offset": 114,
+          "opcode": "call",
+          "operand": ".op_Equality"
+        },
+        {
+          "offset": 119,
+          "opcode": "brfalse.s",
+          "operand": "133"
+        },
+        {
+          "offset": 121,
+          "opcode": "ldarg.0",
+          "operand": "None"
+        },
+        {
+          "offset": 122,
+          "opcode": "ldarg.1",
+          "operand": "None"
+        },
+        {
+          "offset": 123,
+          "opcode": "call",
+          "operand": "AgentManager.SetUpDroneController"
+        },
+        {
+          "offset": 128,
+          "opcode": "br",
+          "operand": "303"
+        },
+        {
+          "offset": 133,
+          "opcode": "ldarg.0",
+          "operand": "None"
+        },
+        {
+          "offset": 134,
+          "opcode": "ldfld",
+          "operand": ".agentMode"
+        },
+        {
+          "offset": 139,
+          "opcode": "ldstr",
+          "operand": "stretch"
+        },
+        {
+          "offset": 144,
+          "opcode": "call",
+          "operand": ".op_Equality"
+        },
+        {
+          "offset": 149,
+          "opcode": "brtrue.s",
+          "operand": "169"
+        },
+        {
+          "offset": 151,
+          "opcode": "ldarg.0",
+          "operand": "None"
+        },
+        {
+          "offset": 152,
+          "opcode": "ldfld",
+          "operand": ".agentMode"
+        },
+        {
+          "offset": 157,
+          "opcode": "ldstr",
+          "operand": "arm"
+        },
+        {
+          "offset": 162,
+          "opcode": "call",
+          "operand": ".op_Equality"
+        },
+        {
+          "offset": 167,
+          "opcode": "brfalse.s",
+          "operand": "265"
+        },
+        {
+          "offset": 169,
+          "opcode": "ldarg.0",
+          "operand": "None"
+        },
+        {
+          "offset": 170,
+          "opcode": "ldfld",
+          "operand": ".agentMode"
+        },
+        {
+          "offset": 175,
+          "opcode": "ldstr",
+          "operand": "stretch"
+        },
+        {
+          "offset": 180,
+          "opcode": "call",
+          "operand": ".op_Equality"
+        },
+        {
+          "offset": 185,
+          "opcode": "brfalse.s",
+          "operand": "196"
+        },
+        {
+          "offset": 187,
+          "opcode": "ldarg.0",
+          "operand": "None"
+        },
+        {
+          "offset": 188,
+          "opcode": "ldarg.1",
+          "operand": "None"
+        },
+        {
+          "offset": 189,
+          "opcode": "call",
+          "operand": "AgentManager.SetUpStretchController"
+        },
+        {
+          "offset": 194,
+          "opcode": "br.s",
+          "operand": "245"
+        },
+        {
+          "offset": 196,
+          "opcode": "ldarg.0",
+          "operand": "None"
+        },
+        {
+          "offset": 197,
+          "opcode": "ldfld",
+          "operand": ".agentMode"
+        },
+        {
+          "offset": 202,
+          "opcode": "ldstr",
+          "operand": "arm"
+        },
+        {
+          "offset": 207,
+          "opcode": "call",
+          "operand": ".op_Equality"
+        },
+        {
+          "offset": 212,
+          "opcode": "brfalse.s",
+          "operand": "223"
+        },
+        {
+          "offset": 214,
+          "opcode": "ldarg.0",
+          "operand": "None"
+        },
+        {
+          "offset": 215,
+          "opcode": "ldc.i4.1",
+          "operand": "None"
+        },
+        {
+          "offset": 216,
+          "opcode": "call",
+          "operand": "AgentManager.SetUpArmController"
+        },
+        {
+          "offset": 221,
+          "opcode": "br.s",
+          "operand": "245"
+        },
+        {
+          "offset": 223,
+          "opcode": "ldstr",
+          "operand": "Invalid agentMode "
+        },
+        {
+          "offset": 228,
+          "opcode": "ldarg.1",
+          "operand": "None"
+        },
+        {
+          "offset": 229,
+          "opcode": "ldfld",
+          "operand": ".agentMode"
+        },
+        {
+          "offset": 234,
+          "opcode": "call",
+          "operand": ".Concat"
+        },
+        {
+          "offset": 239,
+          "opcode": "newobj",
+          "operand": "..ctor"
+        },
+        {
+          "offset": 244,
+          "opcode": "throw",
+          "operand": "None"
+        },
+        {
+          "offset": 245,
+          "opcode": "ldarg.1",
+          "operand": "None"
+        },
+        {
+          "offset": 246,
+          "opcode": "ldc.i4.0",
+          "operand": "None"
+        },
+        {
+          "offset": 247,
+          "opcode": "stfld",
+          "operand": ".autoSimulation"
+        },
+        {
+          "offset": 252,
+          "opcode": "ldarg.0",
+          "operand": "None"
+        },
+        {
+          "offset": 253,
+          "opcode": "ldfld",
+          "operand": ".physicsSceneManager"
+        },
+        {
+          "offset": 258,
+          "opcode": "callvirt",
+          "operand": "PhysicsSceneManager.MakeAllObjectsMoveable"
+        },
+        {
+          "offset": 263,
+          "opcode": "br.s",
+          "operand": "303"
+        },
+        {
+          "offset": 265,
+          "opcode": "ldstr",
+          "operand": "Invalid agentMode "
+        },
+        {
+          "offset": 270,
+          "opcode": "ldarg.1",
+          "operand": "None"
+        },
+        {
+          "offset": 271,
+          "opcode": "ldfld",
+          "operand": ".agentMode"
+        },
+        {
+          "offset": 276,
+          "opcode": "call",
+          "operand": ".Concat"
+        },
+        {
+          "offset": 281,
+          "opcode": "stloc.0",
+          "operand": "None"
+        },
+        {
+          "offset": 282,
+          "opcode": "ldloc.0",
+          "operand": "None"
+        },
+        {
+          "offset": 283,
+          "opcode": "call",
+          "operand": ".Log"
+        },
+        {
+          "offset": 288,
+          "opcode": "ldarg.0",
+          "operand": "None"
+        },
+        {
+          "offset": 289,
+          "opcode": "ldfld",
+          "operand": ".primaryAgent"
+        },
+        {
+          "offset": 294,
+          "opcode": "ldc.i4.0",
+          "operand": "None"
+        },
+        {
+          "offset": 295,
+          "opcode": "ldnull",
+          "operand": "None"
+        },
+        {
+          "offset": 296,
+          "opcode": "ldloc.0",
+          "operand": "None"
+        },
+        {
+          "offset": 297,
+          "opcode": "callvirt",
+          "operand": "BaseFPSAgentController.actionFinished"
+        },
+        {
+          "offset": 302,
+          "opcode": "ret",
+          "operand": "None"
+        },
+        {
+          "offset": 303,
+          "opcode": "ldarg.1",
+          "operand": "None"
+        },
+        {
+          "offset": 304,
+          "opcode": "ldflda",
+          "operand": ".massThreshold"
+        },
+        {
+          "offset": 309,
+          "opcode": "call",
+          "operand": ".get_HasValue"
+        },
+        {
+          "offset": 314,
+          "opcode": "brfalse.s",
+          "operand": "406"
+        },
+        {
+          "offset": 316,
+          "opcode": "ldarg.1",
+          "operand": "None"
+        },
+        {
+          "offset": 317,
+          "opcode": "ldflda",
+          "operand": ".massThreshold"
+        },
+        {
+          "offset": 322,
+          "opcode": "call",
+          "operand": ".get_Value"
+        },
+        {
+          "offset": 327,
+          "opcode": "conv.r8",
+          "operand": "None"
+        },
+        {
+          "offset": 328,
+          "opcode": "ldc.r8",
+          "operand": "0.0"
+        },
+        {
+          "offset": 337,
+          "opcode": "ble.un.s",
+          "operand": "358"
+        },
+        {
+          "offset": 339,
+          "opcode": "ldarg.0",
+          "operand": "None"
+        },
+        {
+          "offset": 340,
+          "opcode": "ldarg.1",
+          "operand": "None"
+        },
+        {
+          "offset": 341,
+          "opcode": "ldflda",
+          "operand": ".massThreshold"
+        },
+        {
+          "offset": 346,
+          "opcode": "call",
+          "operand": ".get_Value"
+        },
+        {
+          "offset": 351,
+          "opcode": "call",
+          "operand": "AgentManager.SetUpMassThreshold"
+        },
+        {
+          "offset": 356,
+          "opcode": "br.s",
+          "operand": "406"
+        },
+        {
+          "offset": 358,
+          "opcode": "ldstr",
+          "operand": "massThreshold must have nonzero value - invalid value: {0}"
+        },
+        {
+          "offset": 363,
+          "opcode": "ldarg.1",
+          "operand": "None"
+        },
+        {
+          "offset": 364,
+          "opcode": "ldflda",
+          "operand": ".massThreshold"
+        },
+        {
+          "offset": 369,
+          "opcode": "call",
+          "operand": ".get_Value"
+        },
+        {
+          "offset": 374,
+          "opcode": "box",
+          "operand": ".Single"
+        },
+        {
+          "offset": 379,
+          "opcode": "call",
+          "operand": ".Format"
+        },
+        {
+          "offset": 384,
+          "opcode": "stloc.1",
+          "operand": "None"
+        },
+        {
+          "offset": 385,
+          "opcode": "ldloc.1",
+          "operand": "None"
+        },
+        {
+          "offset": 386,
+          "opcode": "call",
+          "operand": ".Log"
+        },
+        {
+          "offset": 391,
+          "opcode": "ldarg.0",
+          "operand": "None"
+        },
+        {
+          "offset": 392,
+          "opcode": "ldfld",
+          "operand": ".primaryAgent"
+        },
+        {
+          "offset": 397,
+          "opcode": "ldc.i4.0",
+          "operand": "None"
+        },
+        {
+          "offset": 398,
+          "opcode": "ldloc.1",
+          "operand": "None"
+        },
+        {
+          "offset": 399,
+          "opcode": "ldnull",
+          "operand": "None"
+        },
+        {
+          "offset": 400,
+          "opcode": "callvirt",
+          "operand": "BaseFPSAgentController.actionFinished"
+        },
+        {
+          "offset": 405,
+          "opcode": "ret",
+          "operand": "None"
+        },
+        {
+          "offset": 406,
+          "opcode": "ldarg.0",
+          "operand": "None"
+        },
+        {
+          "offset": 407,
+          "opcode": "ldfld",
+          "operand": ".primaryAgent"
+        },
+        {
+          "offset": 412,
+          "opcode": "ldarg.1",
+          "operand": "None"
+        },
+        {
+          "offset": 413,
+          "opcode": "ldfld",
+          "operand": ".dynamicServerAction"
+        },
+        {
+          "offset": 418,
+          "opcode": "callvirt",
+          "operand": "BaseFPSAgentController.ProcessControlCommand"
+        },
+        {
+          "offset": 423,
+          "opcode": "ldarg.1",
+          "operand": "None"
+        },
+        {
+          "offset": 424,
+          "opcode": "ldflda",
+          "operand": ".fixedDeltaTime"
+        },
+        {
+          "offset": 429,
+          "opcode": "call",
+          "operand": ".get_fixedDeltaTime"
+        },
+        {
+          "offset": 434,
+          "opcode": "call",
+          "operand": ".GetValueOrDefault"
+        },
+        {
+          "offset": 439,
+          "opcode": "call",
+          "operand": ".set_fixedDeltaTime"
+        },
+        {
+          "offset": 444,
+          "opcode": "ldarg.1",
+          "operand": "None"
+        },
+        {
+          "offset": 445,
+          "opcode": "ldfld",
+          "operand": ".targetFrameRate"
+        },
+        {
+          "offset": 450,
+          "opcode": "ldc.i4.0",
+          "operand": "None"
+        },
+        {
+          "offset": 451,
+          "opcode": "ble.s",
+          "operand": "464"
+        },
+        {
+          "offset": 453,
+          "opcode": "ldarg.1",
+          "operand": "None"
+        },
+        {
+          "offset": 454,
+          "opcode": "ldfld",
+          "operand": ".targetFrameRate"
+        },
+        {
+          "offset": 459,
+          "opcode": "call",
+          "operand": ".set_targetFrameRate"
+        },
+        {
+          "offset": 464,
+          "opcode": "ldarg.0",
+          "operand": "None"
+        },
+        {
+          "offset": 465,
+          "opcode": "ldfld",
+          "operand": ".primaryAgent"
+        },
+        {
+          "offset": 470,
+          "opcode": "ldarg.1",
+          "operand": "None"
+        },
+        {
+          "offset": 471,
+          "opcode": "ldfld",
+          "operand": ".makeAgentsVisible"
+        },
+        {
+          "offset": 476,
+          "opcode": "callvirt",
+          "operand": "BaseFPSAgentController.set_IsVisible"
+        },
+        {
+          "offset": 481,
+          "opcode": "ldarg.0",
+          "operand": "None"
+        },
+        {
+          "offset": 482,
+          "opcode": "ldarg.1",
+          "operand": "None"
+        },
+        {
+          "offset": 483,
+          "opcode": "ldfld",
+          "operand": ".renderSemanticSegmentation"
+        },
+        {
+          "offset": 488,
+          "opcode": "stfld",
+          "operand": ".renderSemanticSegmentation"
+        },
+        {
+          "offset": 493,
+          "opcode": "ldarg.0",
+          "operand": "None"
+        },
+        {
+          "offset": 494,
+          "opcode": "ldarg.1",
+          "operand": "None"
+        },
+        {
+          "offset": 495,
+          "opcode": "ldfld",
+          "operand": ".renderDepthImage"
+        },
+        {
+          "offset": 500,
+          "opcode": "stfld",
+          "operand": ".renderDepthImage"
+        },
+        {
+          "offset": 505,
+          "opcode": "ldarg.0",
+          "operand": "None"
+        },
+        {
+          "offset": 506,
+          "opcode": "ldarg.1",
+          "operand": "None"
+        },
+        {
+          "offset": 507,
+          "opcode": "ldfld",
+          "operand": ".renderNormalsImage"
+        },
+        {
+          "offset": 512,
+          "opcode": "stfld",
+          "operand": ".renderNormalsImage"
+        },
+        {
+          "offset": 517,
+          "opcode": "ldarg.0",
+          "operand": "None"
+        },
+        {
+          "offset": 518,
+          "opcode": "ldarg.0",
+          "operand": "None"
+        },
+        {
+          "offset": 519,
+          "opcode": "ldarg.1",
+          "operand": "None"
+        },
+        {
+          "offset": 520,
+          "opcode": "ldfld",
+          "operand": ".renderInstanceSegmentation"
+        },
+        {
+          "offset": 525,
+          "opcode": "dup",
+          "operand": "None"
+        },
+        {
+          "offset": 526,
+          "opcode": "stloc.2",
+          "operand": "None"
+        },
+        {
+          "offset": 527,
+          "opcode": "stfld",
+          "operand": ".initializedInstanceSeg"
+        },
+        {
+          "offset": 532,
+          "opcode": "ldloc.2",
+          "operand": "None"
+        },
+        {
+          "offset": 533,
+          "opcode": "stfld",
+          "operand": ".renderInstanceSegmentation"
+        },
+        {
+          "offset": 538,
+          "opcode": "ldarg.0",
+          "operand": "None"
+        },
+        {
+          "offset": 539,
+          "opcode": "ldarg.1",
+          "operand": "None"
+        },
+        {
+          "offset": 540,
+          "opcode": "ldfld",
+          "operand": ".renderFlowImage"
+        },
+        {
+          "offset": 545,
+          "opcode": "stfld",
+          "operand": ".renderFlowImage"
+        },
+        {
+          "offset": 550,
+          "opcode": "ldarg.0",
+          "operand": "None"
+        },
+        {
+          "offset": 551,
+          "opcode": "ldarg.1",
+          "operand": "None"
+        },
+        {
+          "offset": 552,
+          "opcode": "ldfld",
+          "operand": ".fastActionEmit"
+        },
+        {
+          "offset": 557,
+          "opcode": "stfld",
+          "operand": ".fastActionEmit"
+        },
+        {
+          "offset": 562,
+          "opcode": "ldarg.1",
+          "operand": "None"
+        },
+        {
+          "offset": 563,
+          "opcode": "ldfld",
+          "operand": ".autoSimulation"
+        },
+        {
+          "offset": 568,
+          "opcode": "call",
+          "operand": ".set_autoSimulation"
+        },
+        {
+          "offset": 573,
+          "opcode": "call",
+          "operand": ".get_autoSimulation"
+        },
+        {
+          "offset": 578,
+          "opcode": "call",
+          "operand": ".set_autoSyncTransforms"
+        },
+        {
+          "offset": 583,
+          "opcode": "ldarg.1",
+          "operand": "None"
+        },
+        {
+          "offset": 584,
+          "opcode": "ldfld",
+          "operand": ".alwaysReturnVisibleRange"
+        },
+        {
+          "offset": 589,
+          "opcode": "brfalse.s",
+          "operand": "613"
+        },
+        {
+          "offset": 591,
+          "opcode": "ldarg.0",
+          "operand": "None"
+        },
+        {
+          "offset": 592,
+          "opcode": "ldfld",
+          "operand": ".primaryAgent"
+        },
+        {
+          "offset": 597,
+          "opcode": "castclass",
+          "operand": ".PhysicsRemoteFPSAgentController"
+        },
+        {
+          "offset": 602,
+          "opcode": "ldarg.1",
+          "operand": "None"
+        },
+        {
+          "offset": 603,
+          "opcode": "ldfld",
+          "operand": ".alwaysReturnVisibleRange"
+        },
+        {
+          "offset": 608,
+          "opcode": "stfld",
+          "operand": ".alwaysReturnVisibleRange"
+        },
+        {
+          "offset": 613,
+          "opcode": "ldarg.0",
+          "operand": "None"
+        },
+        {
+          "offset": 614,
+          "opcode": "ldarg.1",
+          "operand": "None"
+        },
+        {
+          "offset": 615,
+          "opcode": "call",
+          "operand": "AgentManager.addAgents"
+        },
+        {
+          "offset": 620,
+          "opcode": "ldarg.0",
+          "operand": "None"
+        },
+        {
+          "offset": 621,
+          "opcode": "ldfld",
+          "operand": ".agents"
+        },
+        {
+          "offset": 626,
+          "opcode": "ldc.i4.0",
+          "operand": "None"
+        },
+        {
+          "offset": 627,
+          "opcode": "callvirt",
+          "operand": ".get_Item"
+        },
+        {
+          "offset": 632,
+          "opcode": "ldfld",
+          "operand": ".m_Camera"
+        },
+        {
+          "offset": 637,
+          "opcode": "ldc.r4",
+          "operand": "9999.0"
+        },
+        {
+          "offset": 642,
+          "opcode": "callvirt",
+          "operand": ".set_depth"
+        },
+        {
+          "offset": 647,
+          "opcode": "ldarg.1",
+          "operand": "None"
+        },
+        {
+          "offset": 648,
+          "opcode": "ldfld",
+          "operand": ".startAgentsRotatedBy"
+        },
+        {
+          "offset": 653,
+          "opcode": "ldc.r4",
+          "operand": "0.0"
+        },
+        {
+          "offset": 658,
+          "opcode": "beq.s",
+          "operand": "674"
+        },
+        {
+          "offset": 660,
+          "opcode": "ldarg.0",
+          "operand": "None"
+        },
+        {
+          "offset": 661,
+          "opcode": "ldarg.1",
+          "operand": "None"
+        },
+        {
+          "offset": 662,
+          "opcode": "ldfld",
+          "operand": ".startAgentsRotatedBy"
+        },
+        {
+          "offset": 667,
+          "opcode": "call",
+          "operand": "AgentManager.RotateAgentsByRotatingUniverse"
+        },
+        {
+          "offset": 672,
+          "opcode": "br.s",
+          "operand": "680"
+        },
+        {
+          "offset": 674,
+          "opcode": "ldarg.0",
+          "operand": "None"
+        },
+        {
+          "offset": 675,
+          "opcode": "call",
+          "operand": "AgentManager.ResetSceneBounds"
+        },
+        {
+          "offset": 680,
+          "opcode": "ldarg.0",
+          "operand": "None"
+        },
+        {
+          "offset": 681,
+          "opcode": "ldc.i4.1",
+          "operand": "None"
+        },
+        {
+          "offset": 682,
+          "opcode": "stfld",
+          "operand": ".agentManagerState"
+        },
+        {
+          "offset": 687,
+          "opcode": "ret",
+          "operand": "None"
+        }
+      ],
+      "exception_handlers": []
+    },
+    {
+      "type": "AgentManager",
+      "method": "SetUpPhysicsController",
+      "rva": 12020,
+      "il_sha256": "999173a8d9bce8fed6b59b102020a8a7a80f017c2471923b13694ae9d139bd25",
+      "instructions": [
+        {
+          "offset": 12,
+          "opcode": "ldarg.0",
+          "operand": "None"
+        },
+        {
+          "offset": 13,
+          "opcode": "ldfld",
+          "operand": ".agents"
+        },
+        {
+          "offset": 18,
+          "opcode": "callvirt",
+          "operand": ".Clear"
+        },
+        {
+          "offset": 23,
+          "opcode": "call",
+          "operand": ".MethodSpecRow"
+        },
+        {
+          "offset": 28,
+          "opcode": "stloc.0",
+          "operand": "None"
+        },
+        {
+          "offset": 29,
+          "opcode": "ldarg.0",
+          "operand": "None"
+        },
+        {
+          "offset": 30,
+          "opcode": "ldarg.0",
+          "operand": "None"
+        },
+        {
+          "offset": 31,
+          "opcode": "ldtoken",
+          "operand": ".PhysicsRemoteFPSAgentController"
+        },
+        {
+          "offset": 36,
+          "opcode": "call",
+          "operand": ".GetTypeFromHandle"
+        },
+        {
+          "offset": 41,
+          "opcode": "ldloc.0",
+          "operand": "None"
+        },
+        {
+          "offset": 42,
+          "opcode": "call",
+          "operand": "AgentManager.createAgentType"
+        },
+        {
+          "offset": 47,
+          "opcode": "stfld",
+          "operand": ".primaryAgent"
+        },
+        {
+          "offset": 52,
+          "opcode": "ret",
+          "operand": "None"
+        }
+      ],
+      "exception_handlers": []
+    },
+    {
+      "type": "AgentManager",
+      "method": "createAgentType",
+      "rva": 12076,
+      "il_sha256": "3010ae00dddbef42a6d5b96fccf85842d7cc678f934af59f619512811ffaf1ea",
+      "instructions": [
+        {
+          "offset": 12,
+          "opcode": "ldarg.1",
+          "operand": "None"
+        },
+        {
+          "offset": 13,
+          "opcode": "ldc.i4.2",
+          "operand": "None"
+        },
+        {
+          "offset": 14,
+          "opcode": "newarr",
+          "operand": ".Object"
+        },
+        {
+          "offset": 19,
+          "opcode": "dup",
+          "operand": "None"
+        },
+        {
+          "offset": 20,
+          "opcode": "ldc.i4.0",
+          "operand": "None"
+        },
+        {
+          "offset": 21,
+          "opcode": "ldarg.2",
+          "operand": "None"
+        },
+        {
+          "offset": 22,
+          "opcode": "stelem.ref",
+          "operand": "None"
+        },
+        {
+          "offset": 23,
+          "opcode": "dup",
+          "operand": "None"
+        },
+        {
+          "offset": 24,
+          "opcode": "ldc.i4.1",
+          "operand": "None"
+        },
+        {
+          "offset": 25,
+          "opcode": "ldarg.0",
+          "operand": "None"
+        },
+        {
+          "offset": 26,
+          "opcode": "stelem.ref",
+          "operand": "None"
+        },
+        {
+          "offset": 27,
+          "opcode": "call",
+          "operand": ".CreateInstance"
+        },
+        {
+          "offset": 32,
+          "opcode": "isinst",
+          "operand": ".BaseFPSAgentController"
+        },
+        {
+          "offset": 37,
+          "opcode": "stloc.0",
+          "operand": "None"
+        },
+        {
+          "offset": 38,
+          "opcode": "ldarg.0",
+          "operand": "None"
+        },
+        {
+          "offset": 39,
+          "opcode": "ldfld",
+          "operand": ".agents"
+        },
+        {
+          "offset": 44,
+          "opcode": "ldloc.0",
+          "operand": "None"
+        },
+        {
+          "offset": 45,
+          "opcode": "callvirt",
+          "operand": ".Add"
+        },
+        {
+          "offset": 50,
+          "opcode": "ldloc.0",
+          "operand": "None"
+        },
+        {
+          "offset": 51,
+          "opcode": "ret",
+          "operand": "None"
+        }
+      ],
+      "exception_handlers": []
+    },
+    {
+      "type": "AgentManager",
+      "method": "addAgents",
+      "rva": 12272,
+      "il_sha256": "89fbe84c5f95d3b550312246c1e1310caf3389f87d078f68784732e9addd40f1",
+      "instructions": [
+        {
+          "offset": 12,
+          "opcode": "ldarg.1",
+          "operand": "None"
+        },
+        {
+          "offset": 13,
+          "opcode": "ldfld",
+          "operand": ".agentCount"
+        },
+        {
+          "offset": 18,
+          "opcode": "ldc.i4.1",
+          "operand": "None"
+        },
+        {
+          "offset": 19,
+          "opcode": "ble",
+          "operand": "294"
+        },
+        {
+          "offset": 24,
+          "opcode": "call",
+          "operand": ".GetActiveScene"
+        },
+        {
+          "offset": 29,
+          "opcode": "stloc.1",
+          "operand": "None"
+        },
+        {
+          "offset": 30,
+          "opcode": "ldloca.s",
+          "operand": "local(0x0001)"
+        },
+        {
+          "offset": 32,
+          "opcode": "call",
+          "operand": ".get_name"
+        },
+        {
+          "offset": 37,
+          "opcode": "ldstr",
+          "operand": "Procedural"
+        },
+        {
+          "offset": 42,
+          "opcode": "callvirt",
+          "operand": ".StartsWith"
+        },
+        {
+          "offset": 47,
+          "opcode": "brfalse.s",
+          "operand": "60"
+        },
+        {
+          "offset": 49,
+          "opcode": "ldstr",
+          "operand": "Procedural scenes only support a single agent currently."
+        },
+        {
+          "offset": 54,
+          "opcode": "newobj",
+          "operand": "..ctor"
+        },
+        {
+          "offset": 59,
+          "opcode": "throw",
+          "operand": "None"
+        },
+        {
+          "offset": 60,
+          "opcode": "call",
+          "operand": ".SyncTransforms"
+        },
+        {
+          "offset": 65,
+          "opcode": "ldarg.0",
+          "operand": "None"
+        },
+        {
+          "offset": 66,
+          "opcode": "ldfld",
+          "operand": ".primaryAgent"
+        },
+        {
+          "offset": 71,
+          "opcode": "ldc.r4",
+          "operand": "2.0"
+        },
+        {
+          "offset": 76,
+          "opcode": "ldc.i4",
+          "operand": "10000"
+        },
+        {
+          "offset": 81,
+          "opcode": "ldc.i4.0",
+          "operand": "None"
+        },
+        {
+          "offset": 82,
+          "opcode": "ldloca.s",
+          "operand": "local(0x0002)"
+        },
+        {
+          "offset": 84,
+          "opcode": "initobj",
+          "operand": ".TypeSpecRow"
+        },
+        {
+          "offset": 90,
+          "opcode": "ldloc.2",
+          "operand": "None"
+        },
+        {
+          "offset": 91,
+          "opcode": "ldc.r4",
+          "operand": "0.04500000178813934"
+        },
+        {
+          "offset": 96,
+          "opcode": "ldc.i4.0",
+          "operand": "None"
+        },
+        {
+          "offset": 97,
+          "opcode": "ldloca.s",
+          "operand": "local(0x0003)"
+        },
+        {
+          "offset": 99,
+          "opcode": "initobj",
+          "operand": ".TypeSpecRow"
+        },
+        {
+          "offset": 105,
+          "opcode": "ldloc.3",
+          "operand": "None"
+        },
+        {
+          "offset": 106,
+          "opcode": "callvirt",
+          "operand": "BaseFPSAgentController.getReachablePositions"
+        },
+        {
+          "offset": 111,
+          "opcode": "stloc.0",
+          "operand": "None"
+        },
+        {
+          "offset": 112,
+          "opcode": "ldc.i4.1",
+          "operand": "None"
+        },
+        {
+          "offset": 113,
+          "opcode": "stloc.s",
+          "operand": "local(0x0004)"
+        },
+        {
+          "offset": 115,
+          "opcode": "br.s",
+          "operand": "198"
+        },
+        {
+          "offset": 117,
+          "opcode": "ldarg.1",
+          "operand": "None"
+        },
+        {
+          "offset": 118,
+          "opcode": "ldloc.0",
+          "operand": "None"
+        },
+        {
+          "offset": 119,
+          "opcode": "ldloc.s",
+          "operand": "local(0x0004)"
+        },
+        {
+          "offset": 121,
+          "opcode": "ldc.i4.4",
+          "operand": "None"
+        },
+        {
+          "offset": 122,
+          "opcode": "add",
+          "operand": "None"
+        },
+        {
+          "offset": 123,
+          "opcode": "ldelema",
+          "operand": ".Vector3"
+        },
+        {
+          "offset": 128,
+          "opcode": "ldfld",
+          "operand": ".x"
+        },
+        {
+          "offset": 133,
+          "opcode": "stfld",
+          "operand": ".x"
+        },
+        {
+          "offset": 138,
+          "opcode": "ldarg.1",
+          "operand": "None"
+        },
+        {
+          "offset": 139,
+          "opcode": "ldloc.0",
+          "operand": "None"
+        },
+        {
+          "offset": 140,
+          "opcode": "ldloc.s",
+          "operand": "local(0x0004)"
+        },
+        {
+          "offset": 142,
+          "opcode": "ldc.i4.4",
+          "operand": "None"
+        },
+        {
+          "offset": 143,
+          "opcode": "add",
+          "operand": "None"
+        },
+        {
+          "offset": 144,
+          "opcode": "ldelema",
+          "operand": ".Vector3"
+        },
+        {
+          "offset": 149,
+          "opcode": "ldfld",
+          "operand": ".y"
+        },
+        {
+          "offset": 154,
+          "opcode": "stfld",
+          "operand": ".y"
+        },
+        {
+          "offset": 159,
+          "opcode": "ldarg.1",
+          "operand": "None"
+        },
+        {
+          "offset": 160,
+          "opcode": "ldloc.0",
+          "operand": "None"
+        },
+        {
+          "offset": 161,
+          "opcode": "ldloc.s",
+          "operand": "local(0x0004)"
+        },
+        {
+          "offset": 163,
+          "opcode": "ldc.i4.4",
+          "operand": "None"
+        },
+        {
+          "offset": 164,
+          "opcode": "add",
+          "operand": "None"
+        },
+        {
+          "offset": 165,
+          "opcode": "ldelema",
+          "operand": ".Vector3"
+        },
+        {
+          "offset": 170,
+          "opcode": "ldfld",
+          "operand": ".z"
+        },
+        {
+          "offset": 175,
+          "opcode": "stfld",
+          "operand": ".z"
+        },
+        {
+          "offset": 180,
+          "opcode": "ldarg.0",
+          "operand": "None"
+        },
+        {
+          "offset": 181,
+          "opcode": "ldarg.1",
+          "operand": "None"
+        },
+        {
+          "offset": 182,
+          "opcode": "call",
+          "operand": "AgentManager.addAgent"
+        },
+        {
+          "offset": 187,
+          "opcode": "call",
+          "operand": ".SyncTransforms"
+        },
+        {
+          "offset": 192,
+          "opcode": "ldloc.s",
+          "operand": "local(0x0004)"
+        },
+        {
+          "offset": 194,
+          "opcode": "ldc.i4.1",
+          "operand": "None"
+        },
+        {
+          "offset": 195,
+          "opcode": "add",
+          "operand": "None"
+        },
+        {
+          "offset": 196,
+          "opcode": "stloc.s",
+          "operand": "local(0x0004)"
+        },
+        {
+          "offset": 198,
+          "opcode": "ldloc.s",
+          "operand": "local(0x0004)"
+        },
+        {
+          "offset": 200,
+          "opcode": "ldarg.1",
+          "operand": "None"
+        },
+        {
+          "offset": 201,
+          "opcode": "ldfld",
+          "operand": ".agentCount"
+        },
+        {
+          "offset": 206,
+          "opcode": "bge.s",
+          "operand": "240"
+        },
+        {
+          "offset": 208,
+          "opcode": "ldarg.0",
+          "operand": "None"
+        },
+        {
+          "offset": 209,
+          "opcode": "ldfld",
+          "operand": ".agents"
+        },
+        {
+          "offset": 214,
+          "opcode": "callvirt",
+          "operand": ".get_Count"
+        },
+        {
+          "offset": 219,
+          "opcode": "ldarg.0",
+          "operand": "None"
+        },
+        {
+          "offset": 220,
+          "opcode": "ldfld",
+          "operand": ".agentColors"
+        },
+        {
+          "offset": 225,
+          "opcode": "ldlen",
+          "operand": "None"
+        },
+        {
+          "offset": 226,
+          "opcode": "conv.i4",
+          "operand": "None"
+        },
+        {
+          "offset": 227,
+          "opcode": "ldarg.1",
+          "operand": "None"
+        },
+        {
+          "offset": 228,
+          "opcode": "ldfld",
+          "operand": ".agentCount"
+        },
+        {
+          "offset": 233,
+          "opcode": "call",
+          "operand": ".Min"
+        },
+        {
+          "offset": 238,
+          "opcode": "blt.s",
+          "operand": "117"
+        },
+        {
+          "offset": 240,
+          "opcode": "ldc.i4.1",
+          "operand": "None"
+        },
+        {
+          "offset": 241,
+          "opcode": "stloc.s",
+          "operand": "local(0x0005)"
+        },
+        {
+          "offset": 243,
+          "opcode": "br.s",
+          "operand": "279"
+        },
+        {
+          "offset": 245,
+          "opcode": "ldarg.0",
+          "operand": "None"
+        },
+        {
+          "offset": 246,
+          "opcode": "ldfld",
+          "operand": ".agents"
+        },
+        {
+          "offset": 251,
+          "opcode": "ldloc.s",
+          "operand": "local(0x0005)"
+        },
+        {
+          "offset": 253,
+          "opcode": "callvirt",
+          "operand": ".get_Item"
+        },
+        {
+          "offset": 258,
+          "opcode": "ldfld",
+          "operand": ".m_Camera"
+        },
+        {
+          "offset": 263,
+          "opcode": "ldc.r4",
+          "operand": "1.0"
+        },
+        {
+          "offset": 268,
+          "opcode": "callvirt",
+          "operand": ".set_depth"
+        },
+        {
+          "offset": 273,
+          "opcode": "ldloc.s",
+          "operand": "local(0x0005)"
+        },
+        {
+          "offset": 275,
+          "opcode": "ldc.i4.1",
+          "operand": "None"
+        },
+        {
+          "offset": 276,
+          "opcode": "add",
+          "operand": "None"
+        },
+        {
+          "offset": 277,
+          "opcode": "stloc.s",
+          "operand": "local(0x0005)"
+        },
+        {
+          "offset": 279,
+          "opcode": "ldloc.s",
+          "operand": "local(0x0005)"
+        },
+        {
+          "offset": 281,
+          "opcode": "ldarg.0",
+          "operand": "None"
+        },
+        {
+          "offset": 282,
+          "opcode": "ldfld",
+          "operand": ".agents"
+        },
+        {
+          "offset": 287,
+          "opcode": "callvirt",
+          "operand": ".get_Count"
+        },
+        {
+          "offset": 292,
+          "opcode": "blt.s",
+          "operand": "245"
+        },
+        {
+          "offset": 294,
+          "opcode": "ret",
+          "operand": "None"
+        }
+      ],
+      "exception_handlers": []
+    },
+    {
+      "type": "AgentManager",
+      "method": "ProcessControlCommand",
+      "rva": 17116,
+      "il_sha256": "fe540f49246b866635710f5a5498e80a5e6e4f9becff6d56c7823a33a8dd9544",
+      "instructions": [
+        {
+          "offset": 12,
+          "opcode": "ldarg.0",
+          "operand": "None"
+        },
+        {
+          "offset": 13,
+          "opcode": "ldarg.0",
+          "operand": "None"
+        },
+        {
+          "offset": 14,
+          "opcode": "ldfld",
+          "operand": ".initializedInstanceSeg"
+        },
+        {
+          "offset": 19,
+          "opcode": "stfld",
+          "operand": ".renderInstanceSegmentation"
+        },
+        {
+          "offset": 24,
+          "opcode": "ldarg.0",
+          "operand": "None"
+        },
+        {
+          "offset": 25,
+          "opcode": "ldarg.1",
+          "operand": "None"
+        },
+        {
+          "offset": 26,
+          "opcode": "callvirt",
+          "operand": "DynamicServerAction.get_sequenceId"
+        },
+        {
+          "offset": 31,
+          "opcode": "stfld",
+          "operand": ".currentSequenceId"
+        },
+        {
+          "offset": 36,
+          "opcode": "ldarg.0",
+          "operand": "None"
+        },
+        {
+          "offset": 37,
+          "opcode": "ldarg.1",
+          "operand": "None"
+        },
+        {
+          "offset": 38,
+          "opcode": "callvirt",
+          "operand": "DynamicServerAction.get_renderImage"
+        },
+        {
+          "offset": 43,
+          "opcode": "stfld",
+          "operand": ".renderImage"
+        },
+        {
+          "offset": 48,
+          "opcode": "ldarg.0",
+          "operand": "None"
+        },
+        {
+          "offset": 49,
+          "opcode": "ldarg.1",
+          "operand": "None"
+        },
+        {
+          "offset": 50,
+          "opcode": "callvirt",
+          "operand": "DynamicServerAction.get_agentId"
+        },
+        {
+          "offset": 55,
+          "opcode": "stfld",
+          "operand": ".activeAgentId"
+        },
+        {
+          "offset": 60,
+          "opcode": "ldarg.0",
+          "operand": "None"
+        },
+        {
+          "offset": 61,
+          "opcode": "ldfld",
+          "operand": ".agentManagerActions"
+        },
+        {
+          "offset": 66,
+          "opcode": "ldarg.1",
+          "operand": "None"
+        },
+        {
+          "offset": 67,
+          "opcode": "callvirt",
+          "operand": "DynamicServerAction.get_action"
+        },
+        {
+          "offset": 72,
+          "opcode": "callvirt",
+          "operand": ".Contains"
+        },
+        {
+          "offset": 77,
+          "opcode": "brfalse.s",
+          "operand": "93"
+        },
+        {
+          "offset": 79,
+          "opcode": "ldarg.0",
+          "operand": "None"
+        },
+        {
+          "offset": 80,
+          "opcode": "call",
+          "operand": "AgentManager.activeAgent"
+        },
+        {
+          "offset": 85,
+          "opcode": "ldarg.1",
+          "operand": "None"
+        },
+        {
+          "offset": 86,
+          "opcode": "ldarg.0",
+          "operand": "None"
+        },
+        {
+          "offset": 87,
+          "opcode": "callvirt",
+          "operand": "BaseFPSAgentController.ProcessControlCommand"
+        },
+        {
+          "offset": 92,
+          "opcode": "ret",
+          "operand": "None"
+        },
+        {
+          "offset": 93,
+          "opcode": "ldarg.1",
+          "operand": "None"
+        },
+        {
+          "offset": 94,
+          "opcode": "callvirt",
+          "operand": "DynamicServerAction.get_renderInstanceSegmentation"
+        },
+        {
+          "offset": 99,
+          "opcode": "brfalse.s",
+          "operand": "108"
+        },
+        {
+          "offset": 101,
+          "opcode": "ldarg.0",
+          "operand": "None"
+        },
+        {
+          "offset": 102,
+          "opcode": "ldc.i4.1",
+          "operand": "None"
+        },
+        {
+          "offset": 103,
+          "opcode": "stfld",
+          "operand": ".renderInstanceSegmentation"
+        },
+        {
+          "offset": 108,
+          "opcode": "ldarg.0",
+          "operand": "None"
+        },
+        {
+          "offset": 109,
+          "opcode": "ldfld",
+          "operand": ".renderDepthImage"
+        },
+        {
+          "offset": 114,
+          "opcode": "brtrue.s",
+          "operand": "140"
+        },
+        {
+          "offset": 116,
+          "opcode": "ldarg.0",
+          "operand": "None"
+        },
+        {
+          "offset": 117,
+          "opcode": "ldfld",
+          "operand": ".renderSemanticSegmentation"
+        },
+        {
+          "offset": 122,
+          "opcode": "brtrue.s",
+          "operand": "140"
+        },
+        {
+          "offset": 124,
+          "opcode": "ldarg.0",
+          "operand": "None"
+        },
+        {
+          "offset": 125,
+          "opcode": "ldfld",
+          "operand": ".renderInstanceSegmentation"
+        },
+        {
+          "offset": 130,
+          "opcode": "brtrue.s",
+          "operand": "140"
+        },
+        {
+          "offset": 132,
+          "opcode": "ldarg.0",
+          "operand": "None"
+        },
+        {
+          "offset": 133,
+          "opcode": "ldfld",
+          "operand": ".renderNormalsImage"
+        },
+        {
+          "offset": 138,
+          "opcode": "brfalse.s",
+          "operand": "154"
+        },
+        {
+          "offset": 140,
+          "opcode": "ldarg.0",
+          "operand": "None"
+        },
+        {
+          "offset": 141,
+          "opcode": "ldc.i4.1",
+          "operand": "None"
+        },
+        {
+          "offset": 142,
+          "opcode": "call",
+          "operand": "AgentManager.updateImageSynthesis"
+        },
+        {
+          "offset": 147,
+          "opcode": "ldarg.0",
+          "operand": "None"
+        },
+        {
+          "offset": 148,
+          "opcode": "ldc.i4.1",
+          "operand": "None"
+        },
+        {
+          "offset": 149,
+          "opcode": "call",
+          "operand": "AgentManager.updateThirdPartyCameraImageSynthesis"
+        },
+        {
+          "offset": 154,
+          "opcode": "ldarg.0",
+          "operand": "None"
+        },
+        {
+          "offset": 155,
+          "opcode": "call",
+          "operand": "AgentManager.activeAgent"
+        },
+        {
+          "offset": 160,
+          "opcode": "ldarg.1",
+          "operand": "None"
+        },
+        {
+          "offset": 161,
+          "opcode": "callvirt",
+          "operand": "BaseFPSAgentController.ProcessControlCommand"
+        },
+        {
+          "offset": 166,
+          "opcode": "ret",
+          "operand": "None"
+        }
+      ],
+      "exception_handlers": []
+    },
+    {
+      "type": "AgentManager",
+      "method": "ProcessControlCommand",
+      "rva": 17448,
+      "il_sha256": "b8d88c9d2657505ad5d7b4a99906f54720092774a45f340184f26db09fbb9a8f",
+      "instructions": [
+        {
+          "offset": 12,
+          "opcode": "ldarg.1",
+          "operand": "None"
+        },
+        {
+          "offset": 13,
+          "opcode": "newobj",
+          "operand": "DynamicServerAction..ctor"
+        },
+        {
+          "offset": 18,
+          "opcode": "stloc.0",
+          "operand": "None"
+        },
+        {
+          "offset": 19,
+          "opcode": "ldarg.0",
+          "operand": "None"
+        },
+        {
+          "offset": 20,
+          "opcode": "ldloc.0",
+          "operand": "None"
+        },
+        {
+          "offset": 21,
+          "opcode": "call",
+          "operand": "AgentManager.ProcessControlCommand"
+        },
+        {
+          "offset": 26,
+          "opcode": "ret",
+          "operand": "None"
+        }
+      ],
+      "exception_handlers": []
+    },
+    {
+      "type": "BaseFPSAgentController",
+      "method": "actionFinished",
+      "rva": 142460,
+      "il_sha256": "7f7ef4513bd7c45c3af539cb0a45111139dbb2924591ba0aa110cb3d7c753b70",
+      "instructions": [
+        {
+          "offset": 12,
+          "opcode": "ldarg.0",
+          "operand": "None"
+        },
+        {
+          "offset": 13,
+          "opcode": "call",
+          "operand": "BaseFPSAgentController.get_IsProcessing"
+        },
+        {
+          "offset": 18,
+          "opcode": "brtrue.s",
+          "operand": "30"
+        },
+        {
+          "offset": 20,
+          "opcode": "ldstr",
+          "operand": "ActionFinished called with agentState not in processing "
+        },
+        {
+          "offset": 25,
+          "opcode": "call",
+          "operand": ".LogError"
+        },
+        {
+          "offset": 30,
+          "opcode": "call",
+          "operand": ".get_autoSyncTransforms"
+        },
+        {
+          "offset": 35,
+          "opcode": "brtrue.s",
+          "operand": "55"
+        },
+        {
+          "offset": 37,
+          "opcode": "ldarg.0",
+          "operand": "None"
+        },
+        {
+          "offset": 38,
+          "opcode": "ldfld",
+          "operand": ".lastActionInitialPhysicsSimulateCount"
+        },
+        {
+          "offset": 43,
+          "opcode": "ldsfld",
+          "operand": ".PhysicsSimulateCallCount"
+        },
+        {
+          "offset": 48,
+          "opcode": "bne.un.s",
+          "operand": "55"
+        },
+        {
+          "offset": 50,
+          "opcode": "call",
+          "operand": ".SyncTransforms"
+        },
+        {
+          "offset": 55,
+          "opcode": "ldarg.0",
+          "operand": "None"
+        },
+        {
+          "offset": 56,
+          "opcode": "ldarg.1",
+          "operand": "None"
+        },
+        {
+          "offset": 57,
+          "opcode": "call",
+          "operand": "BaseFPSAgentController.set_lastActionSuccess"
+        },
+        {
+          "offset": 62,
+          "opcode": "ldarg.0",
+          "operand": "None"
+        },
+        {
+          "offset": 63,
+          "opcode": "ldarg.2",
+          "operand": "None"
+        },
+        {
+          "offset": 64,
+          "opcode": "stfld",
+          "operand": ".agentState"
+        },
+        {
+          "offset": 69,
+          "opcode": "ldarg.0",
+          "operand": "None"
+        },
+        {
+          "offset": 70,
+          "opcode": "ldarg.3",
+          "operand": "None"
+        },
+        {
+          "offset": 71,
+          "opcode": "stfld",
+          "operand": ".actionReturn"
+        },
+        {
+          "offset": 76,
+          "opcode": "ldarg.0",
+          "operand": "None"
+        },
+        {
+          "offset": 77,
+          "opcode": "ldc.i4.0",
+          "operand": "None"
+        },
+        {
+          "offset": 78,
+          "opcode": "stfld",
+          "operand": ".actionCounter"
+        },
+        {
+          "offset": 83,
+          "opcode": "ldarg.0",
+          "operand": "None"
+        },
+        {
+          "offset": 84,
+          "opcode": "call",
+          "operand": ".get_zero"
+        },
+        {
+          "offset": 89,
+          "opcode": "stfld",
+          "operand": ".targetTeleport"
+        },
+        {
+          "offset": 94,
+          "opcode": "ret",
+          "operand": "None"
+        }
+      ],
+      "exception_handlers": []
+    },
+    {
+      "type": "BaseFPSAgentController",
+      "method": "actionFinished",
+      "rva": 142555,
+      "il_sha256": "590bb524fc2a785dcaec3875351d6308d0ce72bfd2341e095abfd06290c91e04",
+      "instructions": [
+        {
+          "offset": 1,
+          "opcode": "ldarg.3",
+          "operand": "None"
+        },
+        {
+          "offset": 2,
+          "opcode": "brfalse.s",
+          "operand": "11"
+        },
+        {
+          "offset": 4,
+          "opcode": "ldarg.0",
+          "operand": "None"
+        },
+        {
+          "offset": 5,
+          "opcode": "ldarg.3",
+          "operand": "None"
+        },
+        {
+          "offset": 6,
+          "opcode": "stfld",
+          "operand": ".errorMessage"
+        },
+        {
+          "offset": 11,
+          "opcode": "ldarg.0",
+          "operand": "None"
+        },
+        {
+          "offset": 12,
+          "opcode": "ldarg.1",
+          "operand": "None"
+        },
+        {
+          "offset": 13,
+          "opcode": "ldc.i4.1",
+          "operand": "None"
+        },
+        {
+          "offset": 14,
+          "opcode": "ldarg.2",
+          "operand": "None"
+        },
+        {
+          "offset": 15,
+          "opcode": "callvirt",
+          "operand": "BaseFPSAgentController.actionFinished"
+        },
+        {
+          "offset": 20,
+          "opcode": "ldarg.0",
+          "operand": "None"
+        },
+        {
+          "offset": 21,
+          "opcode": "callvirt",
+          "operand": "BaseFPSAgentController.resumePhysics"
+        },
+        {
+          "offset": 26,
+          "opcode": "ret",
+          "operand": "None"
+        }
+      ],
+      "exception_handlers": []
+    },
+    {
+      "type": "BaseFPSAgentController",
+      "method": "Initialize",
+      "rva": 143908,
+      "il_sha256": "b9b582ede23bba7f44fd74bcb17222057d82cc0c32684355a952088cf0401201",
+      "instructions": [
+        {
+          "offset": 12,
+          "opcode": "ldarg.0",
+          "operand": "None"
+        },
+        {
+          "offset": 13,
+          "opcode": "callvirt",
+          "operand": "BaseFPSAgentController.InitializeBody"
+        },
+        {
+          "offset": 18,
+          "opcode": "ldarg.0",
+          "operand": "None"
+        },
+        {
+          "offset": 19,
+          "opcode": "ldfld",
+          "operand": ".m_Camera"
+        },
+        {
+          "offset": 24,
+          "opcode": "callvirt",
+          "operand": ".MethodSpecRow"
+        },
+        {
+          "offset": 29,
+          "opcode": "ldarg.0",
+          "operand": "None"
+        },
+        {
+          "offset": 30,
+          "opcode": "call",
+          "operand": "BaseFPSAgentController.get_VisibilityCapsule"
+        },
+        {
+          "offset": 35,
+          "opcode": "callvirt",
+          "operand": "FirstPersonCharacterCull.SwitchRenderersToHide"
+        },
+        {
+          "offset": 40,
+          "opcode": "ldarg.1",
+          "operand": "None"
+        },
+        {
+          "offset": 41,
+          "opcode": "ldfld",
+          "operand": ".gridSize"
+        },
+        {
+          "offset": 46,
+          "opcode": "ldc.r4",
+          "operand": "0.0"
+        },
+        {
+          "offset": 51,
+          "opcode": "bne.un.s",
+          "operand": "64"
+        },
+        {
+          "offset": 53,
+          "opcode": "ldarg.1",
+          "operand": "None"
+        },
+        {
+          "offset": 54,
+          "opcode": "ldc.r4",
+          "operand": "0.25"
+        },
+        {
+          "offset": 59,
+          "opcode": "stfld",
+          "operand": ".gridSize"
+        },
+        {
+          "offset": 64,
+          "opcode": "ldarg.1",
+          "operand": "None"
+        },
+        {
+          "offset": 65,
+          "opcode": "ldfld",
+          "operand": ".fieldOfView"
+        },
+        {
+          "offset": 70,
+          "opcode": "ldc.r4",
+          "operand": "0.0"
+        },
+        {
+          "offset": 75,
+          "opcode": "ble.un.s",
+          "operand": "109"
+        },
+        {
+          "offset": 77,
+          "opcode": "ldarg.1",
+          "operand": "None"
+        },
+        {
+          "offset": 78,
+          "opcode": "ldfld",
+          "operand": ".fieldOfView"
+        },
+        {
+          "offset": 83,
+          "opcode": "ldc.r4",
+          "operand": "180.0"
+        },
+        {
+          "offset": 88,
+          "opcode": "bge.un.s",
+          "operand": "109"
+        },
+        {
+          "offset": 90,
+          "opcode": "ldarg.0",
+          "operand": "None"
+        },
+        {
+          "offset": 91,
+          "opcode": "ldfld",
+          "operand": ".m_Camera"
+        },
+        {
+          "offset": 96,
+          "opcode": "ldarg.1",
+          "operand": "None"
+        },
+        {
+          "offset": 97,
+          "opcode": "ldfld",
+          "operand": ".fieldOfView"
+        },
+        {
+          "offset": 102,
+          "opcode": "callvirt",
+          "operand": ".set_fieldOfView"
+        },
+        {
+          "offset": 107,
+          "opcode": "br.s",
+          "operand": "167"
+        },
+        {
+          "offset": 109,
+          "opcode": "ldarg.1",
+          "operand": "None"
+        },
+        {
+          "offset": 110,
+          "opcode": "ldfld",
+          "operand": ".fieldOfView"
+        },
+        {
+          "offset": 115,
+          "opcode": "ldc.r4",
+          "operand": "0.0"
+        },
+        {
+          "offset": 120,
+          "opcode": "blt.s",
+          "operand": "135"
+        },
+        {
+          "offset": 122,
+          "opcode": "ldarg.1",
+          "operand": "None"
+        },
+        {
+          "offset": 123,
+          "opcode": "ldfld",
+          "operand": ".fieldOfView"
+        },
+        {
+          "offset": 128,
+          "opcode": "ldc.r4",
+          "operand": "180.0"
+        },
+        {
+          "offset": 133,
+          "opcode": "blt.un.s",
+          "operand": "167"
+        },
+        {
+          "offset": 135,
+          "opcode": "ldarg.0",
+          "operand": "None"
+        },
+        {
+          "offset": 136,
+          "opcode": "ldstr",
+          "operand": "fov must be set to (0, 180) noninclusive."
+        },
+        {
+          "offset": 141,
+          "opcode": "stfld",
+          "operand": ".errorMessage"
+        },
+        {
+          "offset": 146,
+          "opcode": "ldarg.0",
+          "operand": "None"
+        },
+        {
+          "offset": 147,
+          "opcode": "ldfld",
+          "operand": ".errorMessage"
+        },
+        {
+          "offset": 152,
+          "opcode": "call",
+          "operand": ".Log"
+        },
+        {
+          "offset": 157,
+          "opcode": "ldarg.0",
+          "operand": "None"
+        },
+        {
+          "offset": 158,
+          "opcode": "ldc.i4.0",
+          "operand": "None"
+        },
+        {
+          "offset": 159,
+          "opcode": "ldnull",
+          "operand": "None"
+        },
+        {
+          "offset": 160,
+          "opcode": "ldnull",
+          "operand": "None"
+        },
+        {
+          "offset": 161,
+          "opcode": "callvirt",
+          "operand": "BaseFPSAgentController.actionFinished"
+        },
+        {
+          "offset": 166,
+          "opcode": "ret",
+          "operand": "None"
+        },
+        {
+          "offset": 167,
+          "opcode": "ldarg.1",
+          "operand": "None"
+        },
+        {
+          "offset": 168,
+          "opcode": "ldfld",
+          "operand": ".cameraNearPlane"
+        },
+        {
+          "offset": 173,
+          "opcode": "ldc.r4",
+          "operand": "0.0"
+        },
+        {
+          "offset": 178,
+          "opcode": "ble.un.s",
+          "operand": "197"
+        },
+        {
+          "offset": 180,
+          "opcode": "ldarg.0",
+          "operand": "None"
+        },
+        {
+          "offset": 181,
+          "opcode": "ldfld",
+          "operand": ".m_Camera"
+        },
+        {
+          "offset": 186,
+          "opcode": "ldarg.1",
+          "operand": "None"
+        },
+        {
+          "offset": 187,
+          "opcode": "ldfld",
+          "operand": ".cameraNearPlane"
+        },
+        {
+          "offset": 192,
+          "opcode": "callvirt",
+          "operand": ".set_nearClipPlane"
+        },
+        {
+          "offset": 197,
+          "opcode": "ldarg.1",
+          "operand": "None"
+        },
+        {
+          "offset": 198,
+          "opcode": "ldfld",
+          "operand": ".cameraFarPlane"
+        },
+        {
+          "offset": 203,
+          "opcode": "ldc.r4",
+          "operand": "0.0"
+        },
+        {
+          "offset": 208,
+          "opcode": "ble.un.s",
+          "operand": "227"
+        },
+        {
+          "offset": 210,
+          "opcode": "ldarg.0",
+          "operand": "None"
+        },
+        {
+          "offset": 211,
+          "opcode": "ldfld",
+          "operand": ".m_Camera"
+        },
+        {
+          "offset": 216,
+          "opcode": "ldarg.1",
+          "operand": "None"
+        },
+        {
+          "offset": 217,
+          "opcode": "ldfld",
+          "operand": ".cameraFarPlane"
+        },
+        {
+          "offset": 222,
+          "opcode": "callvirt",
+          "operand": ".set_farClipPlane"
+        },
+        {
+          "offset": 227,
+          "opcode": "ldarg.1",
+          "operand": "None"
+        },
+        {
+          "offset": 228,
+          "opcode": "ldfld",
+          "operand": ".timeScale"
+        },
+        {
+          "offset": 233,
+          "opcode": "ldc.r4",
+          "operand": "0.0"
+        },
+        {
+          "offset": 238,
+          "opcode": "ble.un.s",
+          "operand": "266"
+        },
+        {
+          "offset": 240,
+          "opcode": "call",
+          "operand": ".get_timeScale"
+        },
+        {
+          "offset": 245,
+          "opcode": "ldarg.1",
+          "operand": "None"
+        },
+        {
+          "offset": 246,
+          "opcode": "ldfld",
+          "operand": ".timeScale"
+        },
+        {
+          "offset": 251,
+          "opcode": "beq.s",
+          "operand": "298"
+        },
+        {
+          "offset": 253,
+          "opcode": "ldarg.1",
+          "operand": "None"
+        },
+        {
+          "offset": 254,
+          "opcode": "ldfld",
+          "operand": ".timeScale"
+        },
+        {
+          "offset": 259,
+          "opcode": "call",
+          "operand": ".set_timeScale"
+        },
+        {
+          "offset": 264,
+          "opcode": "br.s",
+          "operand": "298"
+        },
+        {
+          "offset": 266,
+          "opcode": "ldarg.0",
+          "operand": "None"
+        },
+        {
+          "offset": 267,
+          "opcode": "ldstr",
+          "operand": "Time scale must be > 0"
+        },
+        {
+          "offset": 272,
+          "opcode": "stfld",
+          "operand": ".errorMessage"
+        },
+        {
+          "offset": 277,
+          "opcode": "ldarg.0",
+          "operand": "None"
+        },
+        {
+          "offset": 278,
+          "opcode": "ldfld",
+          "operand": ".errorMessage"
+        },
+        {
+          "offset": 283,
+          "opcode": "call",
+          "operand": ".Log"
+        },
+        {
+          "offset": 288,
+          "opcode": "ldarg.0",
+          "operand": "None"
+        },
+        {
+          "offset": 289,
+          "opcode": "ldc.i4.0",
+          "operand": "None"
+        },
+        {
+          "offset": 290,
+          "opcode": "ldnull",
+          "operand": "None"
+        },
+        {
+          "offset": 291,
+          "opcode": "ldnull",
+          "operand": "None"
+        },
+        {
+          "offset": 292,
+          "opcode": "callvirt",
+          "operand": "BaseFPSAgentController.actionFinished"
+        },
+        {
+          "offset": 297,
+          "opcode": "ret",
+          "operand": "None"
+        },
+        {
+          "offset": 298,
+          "opcode": "ldarg.1",
+          "operand": "None"
+        },
+        {
+          "offset": 299,
+          "opcode": "ldfld",
+          "operand": ".rotateStepDegrees"
+        },
+        {
+          "offset": 304,
+          "opcode": "conv.r8",
+          "operand": "None"
+        },
+        {
+          "offset": 305,
+          "opcode": "ldc.r8",
+          "operand": "0.0"
+        },
+        {
+          "offset": 314,
+          "opcode": "bgt.un.s",
+          "operand": "348"
+        },
+        {
+          "offset": 316,
+          "opcode": "ldarg.0",
+          "operand": "None"
+        },
+        {
+          "offset": 317,
+          "opcode": "ldstr",
+          "operand": "rotateStepDegrees must be a non-zero, non-negative float"
+        },
+        {
+          "offset": 322,
+          "opcode": "stfld",
+          "operand": ".errorMessage"
+        },
+        {
+          "offset": 327,
+          "opcode": "ldarg.0",
+          "operand": "None"
+        },
+        {
+          "offset": 328,
+          "opcode": "ldfld",
+          "operand": ".errorMessage"
+        },
+        {
+          "offset": 333,
+          "opcode": "call",
+          "operand": ".Log"
+        },
+        {
+          "offset": 338,
+          "opcode": "ldarg.0",
+          "operand": "None"
+        },
+        {
+          "offset": 339,
+          "opcode": "ldc.i4.0",
+          "operand": "None"
+        },
+        {
+          "offset": 340,
+          "opcode": "ldnull",
+          "operand": "None"
+        },
+        {
+          "offset": 341,
+          "opcode": "ldnull",
+          "operand": "None"
+        },
+        {
+          "offset": 342,
+          "opcode": "callvirt",
+          "operand": "BaseFPSAgentController.actionFinished"
+        },
+        {
+          "offset": 347,
+          "opcode": "ret",
+          "operand": "None"
+        },
+        {
+          "offset": 348,
+          "opcode": "ldarg.1",
+          "operand": "None"
+        },
+        {
+          "offset": 349,
+          "opcode": "ldfld",
+          "operand": ".rotateStepDegrees"
+        },
+        {
+          "offset": 354,
+          "opcode": "conv.r8",
+          "operand": "None"
+        },
+        {
+          "offset": 355,
+          "opcode": "ldc.r8",
+          "operand": "0.0"
+        },
+        {
+          "offset": 364,
+          "opcode": "ble.un.s",
+          "operand": "378"
+        },
+        {
+          "offset": 366,
+          "opcode": "ldarg.0",
+          "operand": "None"
+        },
+        {
+          "offset": 367,
+          "opcode": "ldarg.1",
+          "operand": "None"
+        },
+        {
+          "offset": 368,
+          "opcode": "ldfld",
+          "operand": ".rotateStepDegrees"
+        },
+        {
+          "offset": 373,
+          "opcode": "stfld",
+          "operand": ".rotateStepDegrees"
+        },
+        {
+          "offset": 378,
+          "opcode": "ldarg.1",
+          "operand": "None"
+        },
+        {
+          "offset": 379,
+          "opcode": "ldfld",
+          "operand": ".snapToGrid"
+        },
+        {
+          "offset": 384,
+          "opcode": "brfalse.s",
+          "operand": "459"
+        },
+        {
+          "offset": 386,
+          "opcode": "ldarg.0",
+          "operand": "None"
+        },
+        {
+          "offset": 387,
+          "opcode": "ldarg.1",
+          "operand": "None"
+        },
+        {
+          "offset": 388,
+          "opcode": "ldfld",
+          "operand": ".rotateStepDegrees"
+        },
+        {
+          "offset": 393,
+          "opcode": "call",
+          "operand": "BaseFPSAgentController.ValidRotateStepDegreesWithSnapToGrid"
+        },
+        {
+          "offset": 398,
+          "opcode": "brtrue.s",
+          "operand": "459"
+        },
+        {
+          "offset": 400,
+          "opcode": "ldarg.0",
+          "operand": "None"
+        },
+        {
+          "offset": 401,
+          "opcode": "ldstr",
+          "operand": "Invalid values 'rotateStepDegrees': ${0} and 'snapToGrid':${1}. 'snapToGrid': 'True' is not supported when 'rotateStepDegrees' is different from grid rotation steps of 0, 90, 180, 270 or 360."
+        },
+        {
+          "offset": 406,
+          "opcode": "ldarg.1",
+          "operand": "None"
+        },
+        {
+          "offset": 407,
+          "opcode": "ldfld",
+          "operand": ".rotateStepDegrees"
+        },
+        {
+          "offset": 412,
+          "opcode": "box",
+          "operand": ".Single"
+        },
+        {
+          "offset": 417,
+          "opcode": "ldarg.1",
+          "operand": "None"
+        },
+        {
+          "offset": 418,
+          "opcode": "ldfld",
+          "operand": ".snapToGrid"
+        },
+        {
+          "offset": 423,
+          "opcode": "box",
+          "operand": ".Boolean"
+        },
+        {
+          "offset": 428,
+          "opcode": "call",
+          "operand": ".Format"
+        },
+        {
+          "offset": 433,
+          "opcode": "stfld",
+          "operand": ".errorMessage"
+        },
+        {
+          "offset": 438,
+          "opcode": "ldarg.0",
+          "operand": "None"
+        },
+        {
+          "offset": 439,
+          "opcode": "ldfld",
+          "operand": ".errorMessage"
+        },
+        {
+          "offset": 444,
+          "opcode": "call",
+          "operand": ".Log"
+        },
+        {
+          "offset": 449,
+          "opcode": "ldarg.0",
+          "operand": "None"
+        },
+        {
+          "offset": 450,
+          "opcode": "ldc.i4.0",
+          "operand": "None"
+        },
+        {
+          "offset": 451,
+          "opcode": "ldnull",
+          "operand": "None"
+        },
+        {
+          "offset": 452,
+          "opcode": "ldnull",
+          "operand": "None"
+        },
+        {
+          "offset": 453,
+          "opcode": "callvirt",
+          "operand": "BaseFPSAgentController.actionFinished"
+        },
+        {
+          "offset": 458,
+          "opcode": "ret",
+          "operand": "None"
+        },
+        {
+          "offset": 459,
+          "opcode": "ldarg.0",
+          "operand": "None"
+        },
+        {
+          "offset": 460,
+          "opcode": "ldarg.1",
+          "operand": "None"
+        },
+        {
+          "offset": 461,
+          "opcode": "ldfld",
+          "operand": ".snapToGrid"
+        },
+        {
+          "offset": 466,
+          "opcode": "stfld",
+          "operand": ".snapToGrid"
+        },
+        {
+          "offset": 471,
+          "opcode": "ldarg.1",
+          "operand": "None"
+        },
+        {
+          "offset": 472,
+          "opcode": "ldfld",
+          "operand": ".renderDepthImage"
+        },
+        {
+          "offset": 477,
+          "opcode": "brtrue.s",
+          "operand": "503"
+        },
+        {
+          "offset": 479,
+          "opcode": "ldarg.1",
+          "operand": "None"
+        },
+        {
+          "offset": 480,
+          "opcode": "ldfld",
+          "operand": ".renderSemanticSegmentation"
+        },
+        {
+          "offset": 485,
+          "opcode": "brtrue.s",
+          "operand": "503"
+        },
+        {
+          "offset": 487,
+          "opcode": "ldarg.1",
+          "operand": "None"
+        },
+        {
+          "offset": 488,
+          "opcode": "ldfld",
+          "operand": ".renderInstanceSegmentation"
+        },
+        {
+          "offset": 493,
+          "opcode": "brtrue.s",
+          "operand": "503"
+        },
+        {
+          "offset": 495,
+          "opcode": "ldarg.1",
+          "operand": "None"
+        },
+        {
+          "offset": 496,
+          "opcode": "ldfld",
+          "operand": ".renderNormalsImage"
+        },
+        {
+          "offset": 501,
+          "opcode": "brfalse.s",
+          "operand": "510"
+        },
+        {
+          "offset": 503,
+          "opcode": "ldarg.0",
+          "operand": "None"
+        },
+        {
+          "offset": 504,
+          "opcode": "ldc.i4.1",
+          "operand": "None"
+        },
+        {
+          "offset": 505,
+          "opcode": "callvirt",
+          "operand": "BaseFPSAgentController.updateImageSynthesis"
+        },
+        {
+          "offset": 510,
+          "opcode": "ldarg.1",
+          "operand": "None"
+        },
+        {
+          "offset": 511,
+          "opcode": "ldfld",
+          "operand": ".visibilityDistance"
+        },
+        {
+          "offset": 516,
+          "opcode": "ldc.r4",
+          "operand": "0.0"
+        },
+        {
+          "offset": 521,
+          "opcode": "ble.un.s",
+          "operand": "535"
+        },
+        {
+          "offset": 523,
+          "opcode": "ldarg.0",
+          "operand": "None"
+        },
+        {
+          "offset": 524,
+          "opcode": "ldarg.1",
+          "operand": "None"
+        },
+        {
+          "offset": 525,
+          "opcode": "ldfld",
+          "operand": ".visibilityDistance"
+        },
+        {
+          "offset": 530,
+          "opcode": "stfld",
+          "operand": ".maxVisibleDistance"
+        },
+        {
+          "offset": 535,
+          "opcode": "ldarg.0",
+          "operand": "None"
+        },
+        {
+          "offset": 536,
+          "opcode": "call",
+          "operand": ".MethodSpecRow"
+        },
+        {
+          "offset": 541,
+          "opcode": "stloc.0",
+          "operand": "None"
+        },
+        {
+          "offset": 542,
+          "opcode": "ldarg.0",
+          "operand": "None"
+        },
+        {
+          "offset": 543,
+          "opcode": "call",
+          "operand": ".MethodSpecRow"
+        },
+        {
+          "offset": 548,
+          "opcode": "stloc.1",
+          "operand": "None"
+        },
+        {
+          "offset": 549,
+          "opcode": "ldloc.1",
+          "operand": "None"
+        },
+        {
+          "offset": 550,
+          "opcode": "ldnull",
+          "operand": "None"
+        },
+        {
+          "offset": 551,
+          "opcode": "call",
+          "operand": ".op_Inequality"
+        },
+        {
+          "offset": 556,
+          "opcode": "brfalse.s",
+          "operand": "650"
+        },
+        {
+          "offset": 558,
+          "opcode": "ldloc.0",
+          "operand": "None"
+        },
+        {
+          "offset": 559,
+          "opcode": "ldnull",
+          "operand": "None"
+        },
+        {
+          "offset": 560,
+          "opcode": "call",
+          "operand": ".op_Inequality"
+        },
+        {
+          "offset": 565,
+          "opcode": "brfalse.s",
+          "operand": "650"
+        },
+        {
+          "offset": 567,
+          "opcode": "ldloc.0",
+          "operand": "None"
+        },
+        {
+          "offset": 568,
+          "opcode": "ldloc.1",
+          "operand": "None"
+        },
+        {
+          "offset": 569,
+          "opcode": "callvirt",
+          "operand": ".get_radius"
+        },
+        {
+          "offset": 574,
+          "opcode": "callvirt",
+          "operand": ".set_radius"
+        },
+        {
+          "offset": 579,
+          "opcode": "ldloc.0",
+          "operand": "None"
+        },
+        {
+          "offset": 580,
+          "opcode": "ldloc.1",
+          "operand": "None"
+        },
+        {
+          "offset": 581,
+          "opcode": "callvirt",
+          "operand": ".get_height"
+        },
+        {
+          "offset": 586,
+          "opcode": "callvirt",
+          "operand": ".set_height"
+        },
+        {
+          "offset": 591,
+          "opcode": "ldloc.0",
+          "operand": "None"
+        },
+        {
+          "offset": 592,
+          "opcode": "callvirt",
+          "operand": ".get_transform"
+        },
+        {
+          "offset": 597,
+          "opcode": "ldloc.0",
+          "operand": "None"
+        },
+        {
+          "offset": 598,
+          "opcode": "callvirt",
+          "operand": ".get_transform"
+        },
+        {
+          "offset": 603,
+          "opcode": "callvirt",
+          "operand": ".get_localPosition"
+        },
+        {
+          "offset": 608,
+          "opcode": "ldfld",
+          "operand": ".x"
+        },
+        {
+          "offset": 613,
+          "opcode": "ldloc.0",
+          "operand": "None"
+        },
+        {
+          "offset": 614,
+          "opcode": "callvirt",
+          "operand": ".get_transform"
+        },
+        {
+          "offset": 619,
+          "opcode": "callvirt",
+          "operand": ".get_localPosition"
+        },
+        {
+          "offset": 624,
+          "opcode": "ldfld",
+          "operand": ".y"
+        },
+        {
+          "offset": 629,
+          "opcode": "ldloc.1",
+          "operand": "None"
+        },
+        {
+          "offset": 630,
+          "opcode": "callvirt",
+          "operand": ".get_center"
+        },
+        {
+          "offset": 635,
+          "opcode": "ldfld",
+          "operand": ".z"
+        },
+        {
+          "offset": 640,
+          "opcode": "newobj",
+          "operand": "..ctor"
+        },
+        {
+          "offset": 645,
+          "opcode": "callvirt",
+          "operand": ".set_localPosition"
+        },
+        {
+          "offset": 650,
+          "opcode": "ldarg.1",
+          "operand": "None"
+        },
+        {
+          "offset": 651,
+          "opcode": "ldfld",
+          "operand": ".gridSize"
+        },
+        {
+          "offset": 656,
+          "opcode": "ldc.r4",
+          "operand": "0.0"
+        },
+        {
+          "offset": 661,
+          "opcode": "ble.s",
+          "operand": "676"
+        },
+        {
+          "offset": 663,
+          "opcode": "ldarg.1",
+          "operand": "None"
+        },
+        {
+          "offset": 664,
+          "opcode": "ldfld",
+          "operand": ".gridSize"
+        },
+        {
+          "offset": 669,
+          "opcode": "ldc.r4",
+          "operand": "5.0"
+        },
+        {
+          "offset": 674,
+          "opcode": "ble.un.s",
+          "operand": "708"
+        },
+        {
+          "offset": 676,
+          "opcode": "ldarg.0",
+          "operand": "None"
+        },
+        {
+          "offset": 677,
+          "opcode": "ldstr",
+          "operand": "grid size must be in the range (0,5]"
+        },
+        {
+          "offset": 682,
+          "opcode": "stfld",
+          "operand": ".errorMessage"
+        },
+        {
+          "offset": 687,
+          "opcode": "ldarg.0",
+          "operand": "None"
+        },
+        {
+          "offset": 688,
+          "opcode": "ldfld",
+          "operand": ".errorMessage"
+        },
+        {
+          "offset": 693,
+          "opcode": "call",
+          "operand": ".Log"
+        },
+        {
+          "offset": 698,
+          "opcode": "ldarg.0",
+          "operand": "None"
+        },
+        {
+          "offset": 699,
+          "opcode": "ldc.i4.0",
+          "operand": "None"
+        },
+        {
+          "offset": 700,
+          "opcode": "ldnull",
+          "operand": "None"
+        },
+        {
+          "offset": 701,
+          "opcode": "ldnull",
+          "operand": "None"
+        },
+        {
+          "offset": 702,
+          "opcode": "callvirt",
+          "operand": "BaseFPSAgentController.actionFinished"
+        },
+        {
+          "offset": 707,
+          "opcode": "ret",
+          "operand": "None"
+        },
+        {
+          "offset": 708,
+          "opcode": "ldarg.1",
+          "operand": "None"
+        },
+        {
+          "offset": 709,
+          "opcode": "ldfld",
+          "operand": ".gridSize"
+        },
+        {
+          "offset": 714,
+          "opcode": "stsfld",
+          "operand": ".gridSize"
+        },
+        {
+          "offset": 719,
+          "opcode": "ldarg.0",
+          "operand": "None"
+        },
+        {
+          "offset": 720,
+          "opcode": "ldarg.0",
+          "operand": "None"
+        },
+        {
+          "offset": 721,
+          "opcode": "call",
+          "operand": "BaseFPSAgentController.checkInitializeAgentLocationAction"
+        },
+        {
+          "offset": 726,
+          "opcode": "call",
+          "operand": "BaseFPSAgentController.StartCoroutine"
+        },
+        {
+          "offset": 731,
+          "opcode": "ldarg.0",
+          "operand": "None"
+        },
+        {
+          "offset": 732,
+          "opcode": "ldarg.1",
+          "operand": "None"
+        },
+        {
+          "offset": 733,
+          "opcode": "ldfld",
+          "operand": ".TimeToWaitForObjectsToComeToRest"
+        },
+        {
+          "offset": 738,
+          "opcode": "stfld",
+          "operand": ".TimeToWaitForObjectsToComeToRest"
+        },
+        {
+          "offset": 743,
+          "opcode": "ldarg.1",
+          "operand": "None"
+        },
+        {
+          "offset": 744,
+          "opcode": "ldfld",
+          "operand": ".controllerInitialization"
+        },
+        {
+          "offset": 749,
+          "opcode": "brfalse",
+          "operand": "905"
+        },
+        {
+          "offset": 754,
+          "opcode": "ldarg.1",
+          "operand": "None"
+        },
+        {
+          "offset": 755,
+          "opcode": "ldfld",
+          "operand": ".controllerInitialization"
+        },
+        {
+          "offset": 760,
+          "opcode": "ldfld",
+          "operand": ".variableInitializations"
+        },
+        {
+          "offset": 765,
+          "opcode": "brfalse",
+          "operand": "905"
+        },
+        {
+          "offset": 770,
+          "opcode": "ldarg.1",
+          "operand": "None"
+        },
+        {
+          "offset": 771,
+          "opcode": "ldfld",
+          "operand": ".controllerInitialization"
+        },
+        {
+          "offset": 776,
+          "opcode": "ldfld",
+          "operand": ".variableInitializations"
+        },
+        {
+          "offset": 781,
+          "opcode": "callvirt",
+          "operand": ".GetEnumerator"
+        },
+        {
+          "offset": 786,
+          "opcode": "stloc.2",
+          "operand": "None"
+        },
+        {
+          "offset": 787,
+          "opcode": "br.s",
+          "operand": "880"
+        },
+        {
+          "offset": 789,
+          "opcode": "ldloca.s",
+          "operand": "local(0x0002)"
+        },
+        {
+          "offset": 791,
+          "opcode": "call",
+          "operand": ".get_Current"
+        },
+        {
+          "offset": 796,
+          "opcode": "stloc.3",
+          "operand": "None"
+        },
+        {
+          "offset": 797,
+          "opcode": "ldstr",
+          "operand": " Key "
+        },
+        {
+          "offset": 802,
+          "opcode": "ldloca.s",
+          "operand": "local(0x0003)"
+        },
+        {
+          "offset": 804,
+          "opcode": "call",
+          "operand": ".get_Value"
+        },
+        {
+          "offset": 809,
+          "opcode": "ldfld",
+          "operand": ".type"
+        },
+        {
+          "offset": 814,
+          "opcode": "ldstr",
+          "operand": " field "
+        },
+        {
+          "offset": 819,
+          "opcode": "ldloca.s",
+          "operand": "local(0x0003)"
+        },
+        {
+          "offset": 821,
+          "opcode": "call",
+          "operand": ".get_Key"
+        },
+        {
+          "offset": 826,
+          "opcode": "call",
+          "operand": ".Concat"
+        },
+        {
+          "offset": 831,
+          "opcode": "call",
+          "operand": ".Log"
+        },
+        {
+          "offset": 836,
+          "opcode": "ldloca.s",
+          "operand": "local(0x0003)"
+        },
+        {
+          "offset": 838,
+          "opcode": "call",
+          "operand": ".get_Value"
+        },
+        {
+          "offset": 843,
+          "opcode": "ldfld",
+          "operand": ".type"
+        },
+        {
+          "offset": 848,
+          "opcode": "call",
+          "operand": ".GetType"
+        },
+        {
+          "offset": 853,
+          "opcode": "ldloca.s",
+          "operand": "local(0x0003)"
+        },
+        {
+          "offset": 855,
+          "opcode": "call",
+          "operand": ".get_Key"
+        },
+        {
+          "offset": 860,
+          "opcode": "ldc.i4.s",
+          "operand": "20"
+        },
+        {
+          "offset": 862,
+          "opcode": "callvirt",
+          "operand": ".GetField"
+        },
+        {
+          "offset": 867,
+          "opcode": "ldarg.0",
+          "operand": "None"
+        },
+        {
+          "offset": 868,
+          "opcode": "ldloca.s",
+          "operand": "local(0x0003)"
+        },
+        {
+          "offset": 870,
+          "opcode": "call",
+          "operand": ".get_Value"
+        },
+        {
+          "offset": 875,
+          "opcode": "callvirt",
+          "operand": ".SetValue"
+        },
+        {
+          "offset": 880,
+          "opcode": "ldloca.s",
+          "operand": "local(0x0002)"
+        },
+        {
+          "offset": 882,
+          "opcode": "call",
+          "operand": ".MoveNext"
+        },
+        {
+          "offset": 887,
+          "opcode": "brtrue.s",
+          "operand": "789"
+        },
+        {
+          "offset": 889,
+          "opcode": "leave.s",
+          "operand": "905"
+        },
+        {
+          "offset": 891,
+          "opcode": "ldloca.s",
+          "operand": "local(0x0002)"
+        },
+        {
+          "offset": 893,
+          "opcode": "constrained.",
+          "operand": ".TypeSpecRow"
+        },
+        {
+          "offset": 899,
+          "opcode": "callvirt",
+          "operand": ".Dispose"
+        },
+        {
+          "offset": 904,
+          "opcode": "endfinally",
+          "operand": "None"
+        },
+        {
+          "offset": 905,
+          "opcode": "ldarg.0",
+          "operand": "None"
+        },
+        {
+          "offset": 906,
+          "opcode": "ldarg.1",
+          "operand": "None"
+        },
+        {
+          "offset": 907,
+          "opcode": "callvirt",
+          "operand": "ServerAction.GetVisibilityScheme"
+        },
+        {
+          "offset": 912,
+          "opcode": "stfld",
+          "operand": ".visibilityScheme"
+        },
+        {
+          "offset": 917,
+          "opcode": "ldarg.0",
+          "operand": "None"
+        },
+        {
+          "offset": 918,
+          "opcode": "ldnull",
+          "operand": "None"
+        },
+        {
+          "offset": 919,
+          "opcode": "stfld",
+          "operand": ".originalLightingValues"
+        },
+        {
+          "offset": 924,
+          "opcode": "ret",
+          "operand": "None"
+        }
+      ],
+      "exception_handlers": [
+        {
+          "try_start": 775,
+          "try_end": 879,
+          "handler_start": 879,
+          "handler_end": 893,
+          "catch_type": "None"
+        }
+      ]
+    },
+    {
+      "type": "BaseFPSAgentController",
+      "method": "ProcessControlCommand",
+      "rva": 153360,
+      "il_sha256": "9c7c9ff4df608fe53c0b4d2398ec593cadb145d31e482b8e82c70814b1f1cbe1",
+      "instructions": [
+        {
+          "offset": 12,
+          "opcode": "ldarg.0",
+          "operand": "None"
+        },
+        {
+          "offset": 13,
+          "opcode": "ldsfld",
+          "operand": ".PhysicsSimulateCallCount"
+        },
+        {
+          "offset": 18,
+          "opcode": "stfld",
+          "operand": ".lastActionInitialPhysicsSimulateCount"
+        },
+        {
+          "offset": 23,
+          "opcode": "ldarg.0",
+          "operand": "None"
+        },
+        {
+          "offset": 24,
+          "opcode": "ldstr",
+          "operand": ""
+        },
+        {
+          "offset": 29,
+          "opcode": "stfld",
+          "operand": ".errorMessage"
+        },
+        {
+          "offset": 34,
+          "opcode": "ldarg.0",
+          "operand": "None"
+        },
+        {
+          "offset": 35,
+          "opcode": "ldc.i4.0",
+          "operand": "None"
+        },
+        {
+          "offset": 36,
+          "opcode": "stfld",
+          "operand": ".errorCode"
+        },
+        {
+          "offset": 41,
+          "opcode": "ldarg.0",
+          "operand": "None"
+        },
+        {
+          "offset": 42,
+          "opcode": "newobj",
+          "operand": "..ctor"
+        },
+        {
+          "offset": 47,
+          "opcode": "stfld",
+          "operand": ".collisionsInAction"
+        },
+        {
+          "offset": 52,
+          "opcode": "ldarg.0",
+          "operand": "None"
+        },
+        {
+          "offset": 53,
+          "opcode": "ldarg.1",
+          "operand": "None"
+        },
+        {
+          "offset": 54,
+          "opcode": "ldfld",
+          "operand": ".action"
+        },
+        {
+          "offset": 59,
+          "opcode": "stfld",
+          "operand": ".lastAction"
+        },
+        {
+          "offset": 64,
+          "opcode": "ldarg.0",
+          "operand": "None"
+        },
+        {
+          "offset": 65,
+          "opcode": "ldc.i4.0",
+          "operand": "None"
+        },
+        {
+          "offset": 66,
+          "opcode": "call",
+          "operand": "BaseFPSAgentController.set_lastActionSuccess"
+        },
+        {
+          "offset": 71,
+          "opcode": "ldarg.0",
+          "operand": "None"
+        },
+        {
+          "offset": 72,
+          "opcode": "ldarg.0",
+          "operand": "None"
+        },
+        {
+          "offset": 73,
+          "opcode": "call",
+          "operand": "BaseFPSAgentController.get_transform"
+        },
+        {
+          "offset": 78,
+          "opcode": "callvirt",
+          "operand": ".get_position"
+        },
+        {
+          "offset": 83,
+          "opcode": "ldfld",
+          "operand": ".x"
+        },
+        {
+          "offset": 88,
+          "opcode": "ldarg.0",
+          "operand": "None"
+        },
+        {
+          "offset": 89,
+          "opcode": "call",
+          "operand": "BaseFPSAgentController.get_transform"
+        },
+        {
+          "offset": 94,
+          "opcode": "callvirt",
+          "operand": ".get_position"
+        },
+        {
+          "offset": 99,
+          "opcode": "ldfld",
+          "operand": ".y"
+        },
+        {
+          "offset": 104,
+          "opcode": "ldarg.0",
+          "operand": "None"
+        },
+        {
+          "offset": 105,
+          "opcode": "call",
+          "operand": "BaseFPSAgentController.get_transform"
+        },
+        {
+          "offset": 110,
+          "opcode": "callvirt",
+          "operand": ".get_position"
+        },
+        {
+          "offset": 115,
+          "opcode": "ldfld",
+          "operand": ".z"
+        },
+        {
+          "offset": 120,
+          "opcode": "newobj",
+          "operand": "..ctor"
+        },
+        {
+          "offset": 125,
+          "opcode": "stfld",
+          "operand": ".lastPosition"
+        },
+        {
+          "offset": 130,
+          "opcode": "ldarg.0",
+          "operand": "None"
+        },
+        {
+          "offset": 131,
+          "opcode": "call",
+          "operand": ".GetType"
+        },
+        {
+          "offset": 136,
+          "opcode": "ldarg.1",
+          "operand": "None"
+        },
+        {
+          "offset": 137,
+          "opcode": "ldfld",
+          "operand": ".action"
+        },
+        {
+          "offset": 142,
+          "opcode": "callvirt",
+          "operand": ".GetMethod"
+        },
+        {
+          "offset": 147,
+          "opcode": "stloc.0",
+          "operand": "None"
+        },
+        {
+          "offset": 148,
+          "opcode": "ldarg.0",
+          "operand": "None"
+        },
+        {
+          "offset": 149,
+          "opcode": "ldc.i4.0",
+          "operand": "None"
+        },
+        {
+          "offset": 150,
+          "opcode": "stfld",
+          "operand": ".agentState"
+        },
+        {
+          "offset": 155,
+          "opcode": "ldloc.0",
+          "operand": "None"
+        },
+        {
+          "offset": 156,
+          "opcode": "ldnull",
+          "operand": "None"
+        },
+        {
+          "offset": 157,
+          "opcode": "call",
+          "operand": ".op_Equality"
+        },
+        {
+          "offset": 162,
+          "opcode": "brfalse.s",
+          "operand": "216"
+        },
+        {
+          "offset": 164,
+          "opcode": "ldarg.0",
+          "operand": "None"
+        },
+        {
+          "offset": 165,
+          "opcode": "ldstr",
+          "operand": "Invalid action: "
+        },
+        {
+          "offset": 170,
+          "opcode": "ldarg.1",
+          "operand": "None"
+        },
+        {
+          "offset": 171,
+          "opcode": "ldfld",
+          "operand": ".action"
+        },
+        {
+          "offset": 176,
+          "opcode": "call",
+          "operand": ".Concat"
+        },
+        {
+          "offset": 181,
+          "opcode": "stfld",
+          "operand": ".errorMessage"
+        },
+        {
+          "offset": 186,
+          "opcode": "ldarg.0",
+          "operand": "None"
+        },
+        {
+          "offset": 187,
+          "opcode": "ldc.i4.s",
+          "operand": "12"
+        },
+        {
+          "offset": 189,
+          "opcode": "stfld",
+          "operand": ".errorCode"
+        },
+        {
+          "offset": 194,
+          "opcode": "ldarg.0",
+          "operand": "None"
+        },
+        {
+          "offset": 195,
+          "opcode": "ldfld",
+          "operand": ".errorMessage"
+        },
+        {
+          "offset": 200,
+          "opcode": "call",
+          "operand": ".LogError"
+        },
+        {
+          "offset": 205,
+          "opcode": "ldarg.0",
+          "operand": "None"
+        },
+        {
+          "offset": 206,
+          "opcode": "ldc.i4.0",
+          "operand": "None"
+        },
+        {
+          "offset": 207,
+          "opcode": "ldnull",
+          "operand": "None"
+        },
+        {
+          "offset": 208,
+          "opcode": "ldnull",
+          "operand": "None"
+        },
+        {
+          "offset": 209,
+          "opcode": "callvirt",
+          "operand": "BaseFPSAgentController.actionFinished"
+        },
+        {
+          "offset": 214,
+          "opcode": "br.s",
+          "operand": "234"
+        },
+        {
+          "offset": 216,
+          "opcode": "ldloc.0",
+          "operand": "None"
+        },
+        {
+          "offset": 217,
+          "opcode": "ldarg.0",
+          "operand": "None"
+        },
+        {
+          "offset": 218,
+          "opcode": "ldc.i4.1",
+          "operand": "None"
+        },
+        {
+          "offset": 219,
+          "opcode": "newarr",
+          "operand": ".Object"
+        },
+        {
+          "offset": 224,
+          "opcode": "dup",
+          "operand": "None"
+        },
+        {
+          "offset": 225,
+          "opcode": "ldc.i4.0",
+          "operand": "None"
+        },
+        {
+          "offset": 226,
+          "opcode": "ldarg.1",
+          "operand": "None"
+        },
+        {
+          "offset": 227,
+          "opcode": "stelem.ref",
+          "operand": "None"
+        },
+        {
+          "offset": 228,
+          "opcode": "callvirt",
+          "operand": ".Invoke"
+        },
+        {
+          "offset": 233,
+          "opcode": "pop",
+          "operand": "None"
+        },
+        {
+          "offset": 234,
+          "opcode": "leave.s",
+          "operand": "319"
+        },
+        {
+          "offset": 236,
+          "opcode": "stloc.1",
+          "operand": "None"
+        },
+        {
+          "offset": 237,
+          "opcode": "ldstr",
+          "operand": "Caught error with invoke for action: "
+        },
+        {
+          "offset": 242,
+          "opcode": "ldarg.1",
+          "operand": "None"
+        },
+        {
+          "offset": 243,
+          "opcode": "ldfld",
+          "operand": ".action"
+        },
+        {
+          "offset": 248,
+          "opcode": "call",
+          "operand": ".Concat"
+        },
+        {
+          "offset": 253,
+          "opcode": "call",
+          "operand": ".LogError"
+        },
+        {
+          "offset": 258,
+          "opcode": "ldstr",
+          "operand": "Action error message: "
+        },
+        {
+          "offset": 263,
+          "opcode": "ldarg.0",
+          "operand": "None"
+        },
+        {
+          "offset": 264,
+          "opcode": "ldfld",
+          "operand": ".errorMessage"
+        },
+        {
+          "offset": 269,
+          "opcode": "call",
+          "operand": ".Concat"
+        },
+        {
+          "offset": 274,
+          "opcode": "call",
+          "operand": ".LogError"
+        },
+        {
+          "offset": 279,
+          "opcode": "ldloc.1",
+          "operand": "None"
+        },
+        {
+          "offset": 280,
+          "opcode": "call",
+          "operand": ".LogError"
+        },
+        {
+          "offset": 285,
+          "opcode": "ldarg.0",
+          "operand": "None"
+        },
+        {
+          "offset": 286,
+          "opcode": "ldarg.0",
+          "operand": "None"
+        },
+        {
+          "offset": 287,
+          "opcode": "ldfld",
+          "operand": ".errorMessage"
+        },
+        {
+          "offset": 292,
+          "opcode": "ldloc.1",
+          "operand": "None"
+        },
+        {
+          "offset": 293,
+          "opcode": "callvirt",
+          "operand": ".ToString"
+        },
+        {
+          "offset": 298,
+          "opcode": "call",
+          "operand": ".Concat"
+        },
+        {
+          "offset": 303,
+          "opcode": "stfld",
+          "operand": ".errorMessage"
+        },
+        {
+          "offset": 308,
+          "opcode": "ldarg.0",
+          "operand": "None"
+        },
+        {
+          "offset": 309,
+          "opcode": "ldc.i4.0",
+          "operand": "None"
+        },
+        {
+          "offset": 310,
+          "opcode": "ldnull",
+          "operand": "None"
+        },
+        {
+          "offset": 311,
+          "opcode": "ldnull",
+          "operand": "None"
+        },
+        {
+          "offset": 312,
+          "opcode": "callvirt",
+          "operand": "BaseFPSAgentController.actionFinished"
+        },
+        {
+          "offset": 317,
+          "opcode": "leave.s",
+          "operand": "319"
+        },
+        {
+          "offset": 319,
+          "opcode": "ret",
+          "operand": "None"
+        }
+      ],
+      "exception_handlers": [
+        {
+          "try_start": 143,
+          "try_end": 224,
+          "handler_start": 224,
+          "handler_end": 307,
+          "catch_type": ".Exception"
+        }
+      ]
+    },
+    {
+      "type": "BaseFPSAgentController",
+      "method": "ProcessControlCommand",
+      "rva": 153696,
+      "il_sha256": "8a8a1f315364e1c8ec47d9e669fe97594c324b8e71603df772b7de57adb4743c",
+      "instructions": [
+        {
+          "offset": 1,
+          "opcode": "ldarg.0",
+          "operand": "None"
+        },
+        {
+          "offset": 2,
+          "opcode": "ldarg.1",
+          "operand": "None"
+        },
+        {
+          "offset": 3,
+          "opcode": "newobj",
+          "operand": "DynamicServerAction..ctor"
+        },
+        {
+          "offset": 8,
+          "opcode": "call",
+          "operand": "BaseFPSAgentController.ProcessControlCommand"
+        },
+        {
+          "offset": 13,
+          "opcode": "ret",
+          "operand": "None"
+        }
+      ],
+      "exception_handlers": []
+    },
+    {
+      "type": "BaseFPSAgentController",
+      "method": "ProcessControlCommand",
+      "rva": 153710,
+      "il_sha256": "317d3f544654f9e8223bdef196866bddadeab5721b5b04e2a9d16cb69da24f78",
+      "instructions": [
+        {
+          "offset": 1,
+          "opcode": "ldarg.0",
+          "operand": "None"
+        },
+        {
+          "offset": 2,
+          "opcode": "ldarg.1",
+          "operand": "None"
+        },
+        {
+          "offset": 3,
+          "opcode": "ldarg.0",
+          "operand": "None"
+        },
+        {
+          "offset": 4,
+          "opcode": "call",
+          "operand": "BaseFPSAgentController.ProcessControlCommand"
+        },
+        {
+          "offset": 9,
+          "opcode": "ret",
+          "operand": "None"
+        }
+      ],
+      "exception_handlers": []
+    },
+    {
+      "type": "BaseFPSAgentController",
+      "method": "ProcessControlCommand",
+      "rva": 153720,
+      "il_sha256": "7b6a007acf3b6073cfce0fe922c7c9ce0bb416152e38e3839673847b5904c2f9",
+      "instructions": [
+        {
+          "offset": 12,
+          "opcode": "ldarg.0",
+          "operand": "None"
+        },
+        {
+          "offset": 13,
+          "opcode": "ldsfld",
+          "operand": ".PhysicsSimulateCallCount"
+        },
+        {
+          "offset": 18,
+          "opcode": "stfld",
+          "operand": ".lastActionInitialPhysicsSimulateCount"
+        },
+        {
+          "offset": 23,
+          "opcode": "ldarg.0",
+          "operand": "None"
+        },
+        {
+          "offset": 24,
+          "opcode": "ldstr",
+          "operand": ""
+        },
+        {
+          "offset": 29,
+          "opcode": "stfld",
+          "operand": ".errorMessage"
+        },
+        {
+          "offset": 34,
+          "opcode": "ldarg.0",
+          "operand": "None"
+        },
+        {
+          "offset": 35,
+          "opcode": "ldc.i4.0",
+          "operand": "None"
+        },
+        {
+          "offset": 36,
+          "opcode": "stfld",
+          "operand": ".errorCode"
+        },
+        {
+          "offset": 41,
+          "opcode": "ldarg.0",
+          "operand": "None"
+        },
+        {
+          "offset": 42,
+          "opcode": "newobj",
+          "operand": "..ctor"
+        },
+        {
+          "offset": 47,
+          "opcode": "stfld",
+          "operand": ".collisionsInAction"
+        },
+        {
+          "offset": 52,
+          "opcode": "ldarg.0",
+          "operand": "None"
+        },
+        {
+          "offset": 53,
+          "opcode": "ldarg.1",
+          "operand": "None"
+        },
+        {
+          "offset": 54,
+          "opcode": "callvirt",
+          "operand": "DynamicServerAction.get_action"
+        },
+        {
+          "offset": 59,
+          "opcode": "stfld",
+          "operand": ".lastAction"
+        },
+        {
+          "offset": 64,
+          "opcode": "ldarg.0",
+          "operand": "None"
+        },
+        {
+          "offset": 65,
+          "opcode": "ldc.i4.0",
+          "operand": "None"
+        },
+        {
+          "offset": 66,
+          "opcode": "call",
+          "operand": "BaseFPSAgentController.set_lastActionSuccess"
+        },
+        {
+          "offset": 71,
+          "opcode": "ldarg.0",
+          "operand": "None"
+        },
+        {
+          "offset": 72,
+          "opcode": "ldarg.0",
+          "operand": "None"
+        },
+        {
+          "offset": 73,
+          "opcode": "call",
+          "operand": "BaseFPSAgentController.get_transform"
+        },
+        {
+          "offset": 78,
+          "opcode": "callvirt",
+          "operand": ".get_position"
+        },
+        {
+          "offset": 83,
+          "opcode": "ldfld",
+          "operand": ".x"
+        },
+        {
+          "offset": 88,
+          "opcode": "ldarg.0",
+          "operand": "None"
+        },
+        {
+          "offset": 89,
+          "opcode": "call",
+          "operand": "BaseFPSAgentController.get_transform"
+        },
+        {
+          "offset": 94,
+          "opcode": "callvirt",
+          "operand": ".get_position"
+        },
+        {
+          "offset": 99,
+          "opcode": "ldfld",
+          "operand": ".y"
+        },
+        {
+          "offset": 104,
+          "opcode": "ldarg.0",
+          "operand": "None"
+        },
+        {
+          "offset": 105,
+          "opcode": "call",
+          "operand": "BaseFPSAgentController.get_transform"
+        },
+        {
+          "offset": 110,
+          "opcode": "callvirt",
+          "operand": ".get_position"
+        },
+        {
+          "offset": 115,
+          "opcode": "ldfld",
+          "operand": ".z"
+        },
+        {
+          "offset": 120,
+          "opcode": "newobj",
+          "operand": "..ctor"
+        },
+        {
+          "offset": 125,
+          "opcode": "stfld",
+          "operand": ".lastPosition"
+        },
+        {
+          "offset": 130,
+          "opcode": "ldarg.0",
+          "operand": "None"
+        },
+        {
+          "offset": 131,
+          "opcode": "ldc.i4.0",
+          "operand": "None"
+        },
+        {
+          "offset": 132,
+          "opcode": "stfld",
+          "operand": ".agentState"
+        },
+        {
+          "offset": 137,
+          "opcode": "ldarg.2",
+          "operand": "None"
+        },
+        {
+          "offset": 138,
+          "opcode": "ldarg.1",
+          "operand": "None"
+        },
+        {
+          "offset": 139,
+          "opcode": "call",
+          "operand": "ActionDispatcher.Dispatch"
+        },
+        {
+          "offset": 144,
+          "opcode": "leave",
+          "operand": "1063"
+        },
+        {
+          "offset": 149,
+          "opcode": "stloc.0",
+          "operand": "None"
+        },
+        {
+          "offset": 150,
+          "opcode": "ldarg.0",
+          "operand": "None"
+        },
+        {
+          "offset": 151,
+          "opcode": "ldc.i4.s",
+          "operand": "14"
+        },
+        {
+          "offset": 153,
+          "opcode": "newarr",
+          "operand": ".String"
+        },
+        {
+          "offset": 158,
+          "opcode": "dup",
+          "operand": "None"
+        },
+        {
+          "offset": 159,
+          "opcode": "ldc.i4.0",
+          "operand": "None"
+        },
+        {
+          "offset": 160,
+          "opcode": "ldstr",
+          "operand": "\n\tAction: \""
+        },
+        {
+          "offset": 165,
+          "opcode": "stelem.ref",
+          "operand": "None"
+        },
+        {
+          "offset": 166,
+          "opcode": "dup",
+          "operand": "None"
+        },
+        {
+          "offset": 167,
+          "opcode": "ldc.i4.1",
+          "operand": "None"
+        },
+        {
+          "offset": 168,
+          "opcode": "ldarg.1",
+          "operand": "None"
+        },
+        {
+          "offset": 169,
+          "opcode": "callvirt",
+          "operand": "DynamicServerAction.get_action"
+        },
+        {
+          "offset": 174,
+          "opcode": "stelem.ref",
+          "operand": "None"
+        },
+        {
+          "offset": 175,
+          "opcode": "dup",
+          "operand": "None"
+        },
+        {
+          "offset": 176,
+          "opcode": "ldc.i4.2",
+          "operand": "None"
+        },
+        {
+          "offset": 177,
+          "opcode": "ldstr",
+          "operand": "\" called with invalid argument"
+        },
+        {
+          "offset": 182,
+          "opcode": "stelem.ref",
+          "operand": "None"
+        },
+        {
+          "offset": 183,
+          "opcode": "dup",
+          "operand": "None"
+        },
+        {
+          "offset": 184,
+          "opcode": "ldc.i4.3",
+          "operand": "None"
+        },
+        {
+          "offset": 185,
+          "opcode": "ldloc.0",
+          "operand": "None"
+        },
+        {
+          "offset": 186,
+          "opcode": "ldfld",
+          "operand": ".InvalidArgumentNames"
+        },
+        {
+          "offset": 191,
+          "opcode": "call",
+          "operand": ".MethodSpecRow"
+        },
+        {
+          "offset": 196,
+          "opcode": "ldc.i4.1",
+          "operand": "None"
+        },
+        {
+          "offset": 197,
+          "opcode": "bgt.s",
+          "operand": "206"
+        },
+        {
+          "offset": 199,
+          "opcode": "ldstr",
+          "operand": ""
+        },
+        {
+          "offset": 204,
+          "opcode": "br.s",
+          "operand": "211"
+        },
+        {
+          "offset": 206,
+          "opcode": "ldstr",
+          "operand": "s"
+        },
+        {
+          "offset": 211,
+          "opcode": "stelem.ref",
+          "operand": "None"
+        },
+        {
+          "offset": 212,
+          "opcode": "dup",
+          "operand": "None"
+        },
+        {
+          "offset": 213,
+          "opcode": "ldc.i4.4",
+          "operand": "None"
+        },
+        {
+          "offset": 214,
+          "opcode": "ldstr",
+          "operand": ": "
+        },
+        {
+          "offset": 219,
+          "opcode": "stelem.ref",
+          "operand": "None"
+        },
+        {
+          "offset": 220,
+          "opcode": "dup",
+          "operand": "None"
+        },
+        {
+          "offset": 221,
+          "opcode": "ldc.i4.5",
+          "operand": "None"
+        },
+        {
+          "offset": 222,
+          "opcode": "ldstr",
+          "operand": ", "
+        },
+        {
+          "offset": 227,
+          "opcode": "ldloc.0",
+          "operand": "None"
+        },
+        {
+          "offset": 228,
+          "opcode": "ldfld",
+          "operand": ".InvalidArgumentNames"
+        },
+        {
+          "offset": 233,
+          "opcode": "ldsfld",
+          "operand": ".<>9__192_0"
+        },
+        {
+          "offset": 238,
+          "opcode": "dup",
+          "operand": "None"
+        },
+        {
+          "offset": 239,
+          "opcode": "brtrue.s",
+          "operand": "264"
+        },
+        {
+          "offset": 241,
+          "opcode": "pop",
+          "operand": "None"
+        },
+        {
+          "offset": 242,
+          "opcode": "ldsfld",
+          "operand": ".<>9"
+        },
+        {
+          "offset": 247,
+          "opcode": "ldftn",
+          "operand": "<>c.<ProcessControlCommand>b__192_0"
+        },
+        {
+          "offset": 253,
+          "opcode": "newobj",
+          "operand": "..ctor"
+        },
+        {
+          "offset": 258,
+          "opcode": "dup",
+          "operand": "None"
+        },
+        {
+          "offset": 259,
+          "opcode": "stsfld",
+          "operand": ".<>9__192_0"
+        },
+        {
+          "offset": 264,
+          "opcode": "call",
+          "operand": ".MethodSpecRow"
+        },
+        {
+          "offset": 269,
+          "opcode": "call",
+          "operand": ".MethodSpecRow"
+        },
+        {
+          "offset": 274,
+          "opcode": "call",
+          "operand": ".Join"
+        },
+        {
+          "offset": 279,
+          "opcode": "stelem.ref",
+          "operand": "None"
+        },
+        {
+          "offset": 280,
+          "opcode": "dup",
+          "operand": "None"
+        },
+        {
+          "offset": 281,
+          "opcode": "ldc.i4.6",
+          "operand": "None"
+        },
+        {
+          "offset": 282,
+          "opcode": "ldstr",
+          "operand": "\n\tExpected arguments: "
+        },
+        {
+          "offset": 287,
+          "opcode": "stelem.ref",
+          "operand": "None"
+        },
+        {
+          "offset": 288,
+          "opcode": "dup",
+          "operand": "None"
+        },
+        {
+          "offset": 289,
+          "opcode": "ldc.i4.7",
+          "operand": "None"
+        },
+        {
+          "offset": 290,
+          "opcode": "ldstr",
+          "operand": ", "
+        },
+        {
+          "offset": 295,
+          "opcode": "ldloc.0",
+          "operand": "None"
+        },
+        {
+          "offset": 296,
+          "opcode": "ldfld",
+          "operand": ".ParameterNames"
+        },
+        {
+          "offset": 301,
+          "opcode": "call",
+          "operand": ".Join"
+        },
+        {
+          "offset": 306,
+          "opcode": "stelem.ref",
+          "operand": "None"
+        },
+        {
+          "offset": 307,
+          "opcode": "dup",
+          "operand": "None"
+        },
+        {
+          "offset": 308,
+          "opcode": "ldc.i4.8",
+          "operand": "None"
+        },
+        {
+          "offset": 309,
+          "opcode": "ldstr",
+          "operand": "\n\tYour arguments: "
+        },
+        {
+          "offset": 314,
+          "opcode": "stelem.ref",
+          "operand": "None"
+        },
+        {
+          "offset": 315,
+          "opcode": "dup",
+          "operand": "None"
+        },
+        {
+          "offset": 316,
+          "opcode": "ldc.i4.s",
+          "operand": "9"
+        },
+        {
+          "offset": 318,
+          "opcode": "ldstr",
+          "operand": ", "
+        },
+        {
+          "offset": 323,
+          "opcode": "ldloc.0",
+          "operand": "None"
+        },
+        {
+          "offset": 324,
+          "opcode": "ldfld",
+          "operand": ".ArgumentNames"
+        },
+        {
+          "offset": 329,
+          "opcode": "ldsfld",
+          "operand": ".<>9__192_1"
+        },
+        {
+          "offset": 334,
+          "opcode": "dup",
+          "operand": "None"
+        },
+        {
+          "offset": 335,
+          "opcode": "brtrue.s",
+          "operand": "360"
+        },
+        {
+          "offset": 337,
+          "opcode": "pop",
+          "operand": "None"
+        },
+        {
+          "offset": 338,
+          "opcode": "ldsfld",
+          "operand": ".<>9"
+        },
+        {
+          "offset": 343,
+          "opcode": "ldftn",
+          "operand": "<>c.<ProcessControlCommand>b__192_1"
+        },
+        {
+          "offset": 349,
+          "opcode": "newobj",
+          "operand": "..ctor"
+        },
+        {
+          "offset": 354,
+          "opcode": "dup",
+          "operand": "None"
+        },
+        {
+          "offset": 355,
+          "opcode": "stsfld",
+          "operand": ".<>9__192_1"
+        },
+        {
+          "offset": 360,
+          "opcode": "call",
+          "operand": ".MethodSpecRow"
+        },
+        {
+          "offset": 365,
+          "opcode": "call",
+          "operand": ".Join"
+        },
+        {
+          "offset": 370,
+          "opcode": "stelem.ref",
+          "operand": "None"
+        },
+        {
+          "offset": 371,
+          "opcode": "dup",
+          "operand": "None"
+        },
+        {
+          "offset": 372,
+          "opcode": "ldc.i4.s",
+          "operand": "10"
+        },
+        {
+          "offset": 374,
+          "opcode": "ldstr",
+          "operand": "\n\tValid ways to call \""
+        },
+        {
+          "offset": 379,
+          "opcode": "stelem.ref",
+          "operand": "None"
+        },
+        {
+          "offset": 380,
+          "opcode": "dup",
+          "operand": "None"
+        },
+        {
+          "offset": 381,
+          "opcode": "ldc.i4.s",
+          "operand": "11"
+        },
+        {
+          "offset": 383,
+          "opcode": "ldarg.1",
+          "operand": "None"
+        },
+        {
+          "offset": 384,
+          "opcode": "callvirt",
+          "operand": "DynamicServerAction.get_action"
+        },
+        {
+          "offset": 389,
+          "opcode": "stelem.ref",
+          "operand": "None"
+        },
+        {
+          "offset": 390,
+          "opcode": "dup",
+          "operand": "None"
+        },
+        {
+          "offset": 391,
+          "opcode": "ldc.i4.s",
+          "operand": "12"
+        },
+        {
+          "offset": 393,
+          "opcode": "ldstr",
+          "operand": "\" action:\n\t\t"
+        },
+        {
+          "offset": 398,
+          "opcode": "stelem.ref",
+          "operand": "None"
+        },
+        {
+          "offset": 399,
+          "opcode": "dup",
+          "operand": "None"
+        },
+        {
+          "offset": 400,
+          "opcode": "ldc.i4.s",
+          "operand": "13"
+        },
+        {
+          "offset": 402,
+          "opcode": "ldstr",
+          "operand": "\n\t\t"
+        },
+        {
+          "offset": 407,
+          "opcode": "ldloc.0",
+          "operand": "None"
+        },
+        {
+          "offset": 408,
+          "opcode": "ldfld",
+          "operand": ".PossibleOverwrites"
+        },
+        {
+          "offset": 413,
+          "opcode": "call",
+          "operand": ".Join"
+        },
+        {
+          "offset": 418,
+          "opcode": "stelem.ref",
+          "operand": "None"
+        },
+        {
+          "offset": 419,
+          "opcode": "call",
+          "operand": ".Concat"
+        },
+        {
+          "offset": 424,
+          "opcode": "stfld",
+          "operand": ".errorMessage"
+        },
+        {
+          "offset": 429,
+          "opcode": "ldarg.0",
+          "operand": "None"
+        },
+        {
+          "offset": 430,
+          "opcode": "ldc.i4.s",
+          "operand": "15"
+        },
+        {
+          "offset": 432,
+          "opcode": "stfld",
+          "operand": ".errorCode"
+        },
+        {
+          "offset": 437,
+          "opcode": "ldarg.2",
+          "operand": "None"
+        },
+        {
+          "offset": 438,
+          "opcode": "callvirt",
+          "operand": ".GetType"
+        },
+        {
+          "offset": 443,
+          "opcode": "ldarg.1",
+          "operand": "None"
+        },
+        {
+          "offset": 444,
+          "opcode": "call",
+          "operand": "ActionDispatcher.getMatchingMethodOverwrites"
+        },
+        {
+          "offset": 449,
+          "opcode": "pop",
+          "operand": "None"
+        },
+        {
+          "offset": 450,
+          "opcode": "ldarg.0",
+          "operand": "None"
+        },
+        {
+          "offset": 451,
+          "opcode": "ldc.i4.0",
+          "operand": "None"
+        },
+        {
+          "offset": 452,
+          "opcode": "ldnull",
+          "operand": "None"
+        },
+        {
+          "offset": 453,
+          "opcode": "ldnull",
+          "operand": "None"
+        },
+        {
+          "offset": 454,
+          "opcode": "callvirt",
+          "operand": "BaseFPSAgentController.actionFinished"
+        },
+        {
+          "offset": 459,
+          "opcode": "leave",
+          "operand": "1063"
+        },
+        {
+          "offset": 464,
+          "opcode": "stloc.1",
+          "operand": "None"
+        },
+        {
+          "offset": 465,
+          "opcode": "newobj",
+          "operand": "..ctor"
+        },
+        {
+          "offset": 470,
+          "opcode": "dup",
+          "operand": "None"
+        },
+        {
+          "offset": 471,
+          "opcode": "ldstr",
+          "operand": "Single"
+        },
+        {
+          "offset": 476,
+          "opcode": "ldstr",
+          "operand": "float"
+        },
+        {
+          "offset": 481,
+          "opcode": "callvirt",
+          "operand": ".Add"
+        },
+        {
+          "offset": 486,
+          "opcode": "dup",
+          "operand": "None"
+        },
+        {
+          "offset": 487,
+          "opcode": "ldstr",
+          "operand": "Double"
+        },
+        {
+          "offset": 492,
+          "opcode": "ldstr",
+          "operand": "float"
+        },
+        {
+          "offset": 497,
+          "opcode": "callvirt",
+          "operand": ".Add"
+        },
+        {
+          "offset": 502,
+          "opcode": "dup",
+          "operand": "None"
+        },
+        {
+          "offset": 503,
+          "opcode": "ldstr",
+          "operand": "Int16"
+        },
+        {
+          "offset": 508,
+          "opcode": "ldstr",
+          "operand": "int"
+        },
+        {
+          "offset": 513,
+          "opcode": "callvirt",
+          "operand": ".Add"
+        },
+        {
+          "offset": 518,
+          "opcode": "dup",
+          "operand": "None"
+        },
+        {
+          "offset": 519,
+          "opcode": "ldstr",
+          "operand": "Int32"
+        },
+        {
+          "offset": 524,
+          "opcode": "ldstr",
+          "operand": "int"
+        },
+        {
+          "offset": 529,
+          "opcode": "callvirt",
+          "operand": ".Add"
+        },
+        {
+          "offset": 534,
+          "opcode": "dup",
+          "operand": "None"
+        },
+        {
+          "offset": 535,
+          "opcode": "ldstr",
+          "operand": "Int64"
+        },
+        {
+          "offset": 540,
+          "opcode": "ldstr",
+          "operand": "int"
+        },
+        {
+          "offset": 545,
+          "opcode": "callvirt",
+          "operand": ".Add"
+        },
+        {
+          "offset": 550,
+          "opcode": "stloc.2",
+          "operand": "None"
+        },
+        {
+          "offset": 551,
+          "opcode": "ldloc.1",
+          "operand": "None"
+        },
+        {
+          "offset": 552,
+          "opcode": "ldfld",
+          "operand": ".parameterType"
+        },
+        {
+          "offset": 557,
+          "opcode": "call",
+          "operand": ".GetUnderlyingType"
+        },
+        {
+          "offset": 562,
+          "opcode": "stloc.3",
+          "operand": "None"
+        },
+        {
+          "offset": 563,
+          "opcode": "ldloc.3",
+          "operand": "None"
+        },
+        {
+          "offset": 564,
+          "opcode": "ldnull",
+          "operand": "None"
+        },
+        {
+          "offset": 565,
+          "opcode": "call",
+          "operand": ".op_Equality"
+        },
+        {
+          "offset": 570,
+          "opcode": "brtrue.s",
+          "operand": "580"
+        },
+        {
+          "offset": 572,
+          "opcode": "ldloc.3",
+          "operand": "None"
+        },
+        {
+          "offset": 573,
+          "opcode": "callvirt",
+          "operand": ".get_Name"
+        },
+        {
+          "offset": 578,
+          "opcode": "br.s",
+          "operand": "591"
+        },
+        {
+          "offset": 580,
+          "opcode": "ldloc.1",
+          "operand": "None"
+        },
+        {
+          "offset": 581,
+          "opcode": "ldfld",
+          "operand": ".parameterType"
+        },
+        {
+          "offset": 586,
+          "opcode": "callvirt",
+          "operand": ".get_Name"
+        },
+        {
+          "offset": 591,
+          "opcode": "stloc.s",
+          "operand": "local(0x0004)"
+        },
+        {
+          "offset": 593,
+          "opcode": "ldloc.2",
+          "operand": "None"
+        },
+        {
+          "offset": 594,
+          "opcode": "ldloc.s",
+          "operand": "local(0x0004)"
+        },
+        {
+          "offset": 596,
+          "opcode": "callvirt",
+          "operand": ".ContainsKey"
+        },
+        {
+          "offset": 601,
+          "opcode": "brfalse.s",
+          "operand": "613"
+        },
+        {
+          "offset": 603,
+          "opcode": "ldloc.2",
+          "operand": "None"
+        },
+        {
+          "offset": 604,
+          "opcode": "ldloc.s",
+          "operand": "local(0x0004)"
+        },
+        {
+          "offset": 606,
+          "opcode": "callvirt",
+          "operand": ".get_Item"
+        },
+        {
+          "offset": 611,
+          "opcode": "stloc.s",
+          "operand": "local(0x0004)"
+        },
+        {
+          "offset": 613,
+          "opcode": "ldarg.0",
+          "operand": "None"
+        },
+        {
+          "offset": 614,
+          "opcode": "ldc.i4.8",
+          "operand": "None"
+        },
+        {
+          "offset": 615,
+          "opcode": "newarr",
+          "operand": ".String"
+        },
+        {
+          "offset": 620,
+          "opcode": "dup",
+          "operand": "None"
+        },
+        {
+          "offset": 621,
+          "opcode": "ldc.i4.0",
+          "operand": "None"
+        },
+        {
+          "offset": 622,
+          "opcode": "ldstr",
+          "operand": "action: "
+        },
+        {
+          "offset": 627,
+          "opcode": "stelem.ref",
+          "operand": "None"
+        },
+        {
+          "offset": 628,
+          "opcode": "dup",
+          "operand": "None"
+        },
+        {
+          "offset": 629,
+          "opcode": "ldc.i4.1",
+          "operand": "None"
+        },
+        {
+          "offset": 630,
+          "opcode": "ldarg.1",
+          "operand": "None"
+        },
+        {
+          "offset": 631,
+          "opcode": "callvirt",
+          "operand": "DynamicServerAction.get_action"
+        },
+        {
+          "offset": 636,
+          "opcode": "stelem.ref",
+          "operand": "None"
+        },
+        {
+          "offset": 637,
+          "opcode": "dup",
+          "operand": "None"
+        },
+        {
+          "offset": 638,
+          "opcode": "ldc.i4.2",
+          "operand": "None"
+        },
+        {
+          "offset": 639,
+          "opcode": "ldstr",
+          "operand": " has an invalid argument: "
+        },
+        {
+          "offset": 644,
+          "opcode": "stelem.ref",
+          "operand": "None"
+        },
+        {
+          "offset": 645,
+          "opcode": "dup",
+          "operand": "None"
+        },
+        {
+          "offset": 646,
+          "opcode": "ldc.i4.3",
+          "operand": "None"
+        },
+        {
+          "offset": 647,
+          "opcode": "ldloc.1",
+          "operand": "None"
+        },
+        {
+          "offset": 648,
+          "opcode": "ldfld",
+          "operand": ".parameterName"
+        },
+        {
+          "offset": 653,
+          "opcode": "stelem.ref",
+          "operand": "None"
+        },
+        {
+          "offset": 654,
+          "opcode": "dup",
+          "operand": "None"
+        },
+        {
+          "offset": 655,
+          "opcode": "ldc.i4.4",
+          "operand": "None"
+        },
+        {
+          "offset": 656,
+          "opcode": "ldstr",
+          "operand": " (=="
+        },
+        {
+          "offset": 661,
+          "opcode": "stelem.ref",
+          "operand": "None"
+        },
+        {
+          "offset": 662,
+          "opcode": "dup",
+          "operand": "None"
+        },
+        {
+          "offset": 663,
+          "opcode": "ldc.i4.5",
+          "operand": "None"
+        },
+        {
+          "offset": 664,
+          "opcode": "ldloc.1",
+          "operand": "None"
+        },
+        {
+          "offset": 665,
+          "opcode": "ldfld",
+          "operand": ".parameterValueAsStr"
+        },
+        {
+          "offset": 670,
+          "opcode": "stelem.ref",
+          "operand": "None"
+        },
+        {
+          "offset": 671,
+          "opcode": "dup",
+          "operand": "None"
+        },
+        {
+          "offset": 672,
+          "opcode": "ldc.i4.6",
+          "operand": "None"
+        },
+        {
+          "offset": 673,
+          "opcode": "ldstr",
+          "operand": "). Cannot convert to: "
+        },
+        {
+          "offset": 678,
+          "opcode": "stelem.ref",
+          "operand": "None"
+        },
+        {
+          "offset": 679,
+          "opcode": "dup",
+          "operand": "None"
+        },
+        {
+          "offset": 680,
+          "opcode": "ldc.i4.7",
+          "operand": "None"
+        },
+        {
+          "offset": 681,
+          "opcode": "ldloc.s",
+          "operand": "local(0x0004)"
+        },
+        {
+          "offset": 683,
+          "opcode": "stelem.ref",
+          "operand": "None"
+        },
+        {
+          "offset": 684,
+          "opcode": "call",
+          "operand": ".Concat"
+        },
+        {
+          "offset": 689,
+          "opcode": "stfld",
+          "operand": ".errorMessage"
+        },
+        {
+          "offset": 694,
+          "opcode": "ldarg.0",
+          "operand": "None"
+        },
+        {
+          "offset": 695,
+          "opcode": "ldc.i4.s",
+          "operand": "15"
+        },
+        {
+          "offset": 697,
+          "opcode": "stfld",
+          "operand": ".errorCode"
+        },
+        {
+          "offset": 702,
+          "opcode": "ldarg.0",
+          "operand": "None"
+        },
+        {
+          "offset": 703,
+          "opcode": "ldc.i4.0",
+          "operand": "None"
+        },
+        {
+          "offset": 704,
+          "opcode": "ldnull",
+          "operand": "None"
+        },
+        {
+          "offset": 705,
+          "opcode": "ldnull",
+          "operand": "None"
+        },
+        {
+          "offset": 706,
+          "opcode": "callvirt",
+          "operand": "BaseFPSAgentController.actionFinished"
+        },
+        {
+          "offset": 711,
+          "opcode": "leave",
+          "operand": "1063"
+        },
+        {
+          "offset": 716,
+          "opcode": "stloc.s",
+          "operand": "local(0x0005)"
+        },
+        {
+          "offset": 718,
+          "opcode": "ldarg.0",
+          "operand": "None"
+        },
+        {
+          "offset": 719,
+          "opcode": "ldstr",
+          "operand": "action: "
+        },
+        {
+          "offset": 724,
+          "opcode": "ldarg.1",
+          "operand": "None"
+        },
+        {
+          "offset": 725,
+          "opcode": "callvirt",
+          "operand": "DynamicServerAction.get_action"
+        },
+        {
+          "offset": 730,
+          "opcode": "ldstr",
+          "operand": " is missing the following arguments: "
+        },
+        {
+          "offset": 735,
+          "opcode": "ldstr",
+          "operand": ","
+        },
+        {
+          "offset": 740,
+          "opcode": "ldloc.s",
+          "operand": "local(0x0005)"
+        },
+        {
+          "offset": 742,
+          "opcode": "ldfld",
+          "operand": ".ArgumentNames"
+        },
+        {
+          "offset": 747,
+          "opcode": "callvirt",
+          "operand": ".ToArray"
+        },
+        {
+          "offset": 752,
+          "opcode": "call",
+          "operand": ".Join"
+        },
+        {
+          "offset": 757,
+          "opcode": "call",
+          "operand": ".Concat"
+        },
+        {
+          "offset": 762,
+          "opcode": "stfld",
+          "operand": ".errorMessage"
+        },
+        {
+          "offset": 767,
+          "opcode": "ldarg.0",
+          "operand": "None"
+        },
+        {
+          "offset": 768,
+          "opcode": "ldc.i4.s",
+          "operand": "13"
+        },
+        {
+          "offset": 770,
+          "opcode": "stfld",
+          "operand": ".errorCode"
+        },
+        {
+          "offset": 775,
+          "opcode": "ldarg.0",
+          "operand": "None"
+        },
+        {
+          "offset": 776,
+          "opcode": "ldc.i4.0",
+          "operand": "None"
+        },
+        {
+          "offset": 777,
+          "opcode": "ldnull",
+          "operand": "None"
+        },
+        {
+          "offset": 778,
+          "opcode": "ldnull",
+          "operand": "None"
+        },
+        {
+          "offset": 779,
+          "opcode": "callvirt",
+          "operand": "BaseFPSAgentController.actionFinished"
+        },
+        {
+          "offset": 784,
+          "opcode": "leave",
+          "operand": "1063"
+        },
+        {
+          "offset": 789,
+          "opcode": "stloc.s",
+          "operand": "local(0x0006)"
+        },
+        {
+          "offset": 791,
+          "opcode": "ldarg.0",
+          "operand": "None"
+        },
+        {
+          "offset": 792,
+          "opcode": "ldstr",
+          "operand": "Ambiguous action: "
+        },
+        {
+          "offset": 797,
+          "opcode": "ldarg.1",
+          "operand": "None"
+        },
+        {
+          "offset": 798,
+          "opcode": "callvirt",
+          "operand": "DynamicServerAction.get_action"
+        },
+        {
+          "offset": 803,
+          "opcode": "ldstr",
+          "operand": " "
+        },
+        {
+          "offset": 808,
+          "opcode": "ldloc.s",
+          "operand": "local(0x0006)"
+        },
+        {
+          "offset": 810,
+          "opcode": "callvirt",
+          "operand": ".get_Message"
+        },
+        {
+          "offset": 815,
+          "opcode": "call",
+          "operand": ".Concat"
+        },
+        {
+          "offset": 820,
+          "opcode": "stfld",
+          "operand": ".errorMessage"
+        },
+        {
+          "offset": 825,
+          "opcode": "ldarg.0",
+          "operand": "None"
+        },
+        {
+          "offset": 826,
+          "opcode": "ldc.i4.s",
+          "operand": "14"
+        },
+        {
+          "offset": 828,
+          "opcode": "stfld",
+          "operand": ".errorCode"
+        },
+        {
+          "offset": 833,
+          "opcode": "ldarg.0",
+          "operand": "None"
+        },
+        {
+          "offset": 834,
+          "opcode": "ldc.i4.0",
+          "operand": "None"
+        },
+        {
+          "offset": 835,
+          "opcode": "ldnull",
+          "operand": "None"
+        },
+        {
+          "offset": 836,
+          "opcode": "ldnull",
+          "operand": "None"
+        },
+        {
+          "offset": 837,
+          "opcode": "callvirt",
+          "operand": "BaseFPSAgentController.actionFinished"
+        },
+        {
+          "offset": 842,
+          "opcode": "leave",
+          "operand": "1063"
+        },
+        {
+          "offset": 847,
+          "opcode": "pop",
+          "operand": "None"
+        },
+        {
+          "offset": 848,
+          "opcode": "ldarg.0",
+          "operand": "None"
+        },
+        {
+          "offset": 849,
+          "opcode": "ldc.i4.s",
+          "operand": "12"
+        },
+        {
+          "offset": 851,
+          "opcode": "stfld",
+          "operand": ".errorCode"
+        },
+        {
+          "offset": 856,
+          "opcode": "ldarg.0",
+          "operand": "None"
+        },
+        {
+          "offset": 857,
+          "opcode": "ldc.i4.0",
+          "operand": "None"
+        },
+        {
+          "offset": 858,
+          "opcode": "ldnull",
+          "operand": "None"
+        },
+        {
+          "offset": 859,
+          "opcode": "ldstr",
+          "operand": "Invalid action: "
+        },
+        {
+          "offset": 864,
+          "opcode": "ldarg.1",
+          "operand": "None"
+        },
+        {
+          "offset": 865,
+          "opcode": "callvirt",
+          "operand": "DynamicServerAction.get_action"
+        },
+        {
+          "offset": 870,
+          "opcode": "call",
+          "operand": ".Concat"
+        },
+        {
+          "offset": 875,
+          "opcode": "callvirt",
+          "operand": "BaseFPSAgentController.actionFinished"
+        },
+        {
+          "offset": 880,
+          "opcode": "leave",
+          "operand": "1063"
+        },
+        {
+          "offset": 885,
+          "opcode": "stloc.s",
+          "operand": "local(0x0007)"
+        },
+        {
+          "offset": 887,
+          "opcode": "ldarg.0",
+          "operand": "None"
+        },
+        {
+          "offset": 888,
+          "opcode": "ldc.i4.0",
+          "operand": "None"
+        },
+        {
+          "offset": 889,
+          "opcode": "ldnull",
+          "operand": "None"
+        },
+        {
+          "offset": 890,
+          "opcode": "ldc.i4.5",
+          "operand": "None"
+        },
+        {
+          "offset": 891,
+          "opcode": "newarr",
+          "operand": ".String"
+        },
+        {
+          "offset": 896,
+          "opcode": "dup",
+          "operand": "None"
+        },
+        {
+          "offset": 897,
+          "opcode": "ldc.i4.0",
+          "operand": "None"
+        },
+        {
+          "offset": 898,
+          "opcode": "ldloc.s",
+          "operand": "local(0x0007)"
+        },
+        {
+          "offset": 900,
+          "opcode": "callvirt",
+          "operand": ".get_InnerException"
+        },
+        {
+          "offset": 905,
+          "opcode": "callvirt",
+          "operand": ".GetType"
+        },
+        {
+          "offset": 910,
+          "opcode": "callvirt",
+          "operand": ".get_Name"
+        },
+        {
+          "offset": 915,
+          "opcode": "stelem.ref",
+          "operand": "None"
+        },
+        {
+          "offset": 916,
+          "opcode": "dup",
+          "operand": "None"
+        },
+        {
+          "offset": 917,
+          "opcode": "ldc.i4.1",
+          "operand": "None"
+        },
+        {
+          "offset": 918,
+          "opcode": "ldstr",
+          "operand": ": "
+        },
+        {
+          "offset": 923,
+          "opcode": "stelem.ref",
+          "operand": "None"
+        },
+        {
+          "offset": 924,
+          "opcode": "dup",
+          "operand": "None"
+        },
+        {
+          "offset": 925,
+          "opcode": "ldc.i4.2",
+          "operand": "None"
+        },
+        {
+          "offset": 926,
+          "opcode": "ldloc.s",
+          "operand": "local(0x0007)"
+        },
+        {
+          "offset": 928,
+          "opcode": "callvirt",
+          "operand": ".get_InnerException"
+        },
+        {
+          "offset": 933,
+          "opcode": "callvirt",
+          "operand": ".get_Message"
+        },
+        {
+          "offset": 938,
+          "opcode": "stelem.ref",
+          "operand": "None"
+        },
+        {
+          "offset": 939,
+          "opcode": "dup",
+          "operand": "None"
+        },
+        {
+          "offset": 940,
+          "opcode": "ldc.i4.3",
+          "operand": "None"
+        },
+        {
+          "offset": 941,
+          "opcode": "ldstr",
+          "operand": ". trace: "
+        },
+        {
+          "offset": 946,
+          "opcode": "stelem.ref",
+          "operand": "None"
+        },
+        {
+          "offset": 947,
+          "opcode": "dup",
+          "operand": "None"
+        },
+        {
+          "offset": 948,
+          "opcode": "ldc.i4.4",
+          "operand": "None"
+        },
+        {
+          "offset": 949,
+          "opcode": "ldloc.s",
+          "operand": "local(0x0007)"
+        },
+        {
+          "offset": 951,
+          "opcode": "callvirt",
+          "operand": ".get_InnerException"
+        },
+        {
+          "offset": 956,
+          "opcode": "callvirt",
+          "operand": ".get_StackTrace"
+        },
+        {
+          "offset": 961,
+          "opcode": "callvirt",
+          "operand": ".ToString"
+        },
+        {
+          "offset": 966,
+          "opcode": "stelem.ref",
+          "operand": "None"
+        },
+        {
+          "offset": 967,
+          "opcode": "call",
+          "operand": ".Concat"
+        },
+        {
+          "offset": 972,
+          "opcode": "callvirt",
+          "operand": "BaseFPSAgentController.actionFinished"
+        },
+        {
+          "offset": 977,
+          "opcode": "leave.s",
+          "operand": "1063"
+        },
+        {
+          "offset": 979,
+          "opcode": "stloc.s",
+          "operand": "local(0x0008)"
+        },
+        {
+          "offset": 981,
+          "opcode": "ldstr",
+          "operand": "Caught error with invoke for action: "
+        },
+        {
+          "offset": 986,
+          "opcode": "ldarg.1",
+          "operand": "None"
+        },
+        {
+          "offset": 987,
+          "opcode": "callvirt",
+          "operand": "DynamicServerAction.get_action"
+        },
+        {
+          "offset": 992,
+          "opcode": "call",
+          "operand": ".Concat"
+        },
+        {
+          "offset": 997,
+          "opcode": "call",
+          "operand": ".LogError"
+        },
+        {
+          "offset": 1002,
+          "opcode": "ldstr",
+          "operand": "Action error message: "
+        },
+        {
+          "offset": 1007,
+          "opcode": "ldarg.0",
+          "operand": "None"
+        },
+        {
+          "offset": 1008,
+          "opcode": "ldfld",
+          "operand": ".errorMessage"
+        },
+        {
+          "offset": 1013,
+          "opcode": "call",
+          "operand": ".Concat"
+        },
+        {
+          "offset": 1018,
+          "opcode": "call",
+          "operand": ".LogError"
+        },
+        {
+          "offset": 1023,
+          "opcode": "ldarg.0",
+          "operand": "None"
+        },
+        {
+          "offset": 1024,
+          "opcode": "ldarg.0",
+          "operand": "None"
+        },
+        {
+          "offset": 1025,
+          "opcode": "ldfld",
+          "operand": ".errorMessage"
+        },
+        {
+          "offset": 1030,
+          "opcode": "ldloc.s",
+          "operand": "local(0x0008)"
+        },
+        {
+          "offset": 1032,
+          "opcode": "callvirt",
+          "operand": ".ToString"
+        },
+        {
+          "offset": 1037,
+          "opcode": "call",
+          "operand": ".Concat"
+        },
+        {
+          "offset": 1042,
+          "opcode": "stfld",
+          "operand": ".errorMessage"
+        },
+        {
+          "offset": 1047,
+          "opcode": "ldarg.0",
+          "operand": "None"
+        },
+        {
+          "offset": 1048,
+          "opcode": "ldc.i4.0",
+          "operand": "None"
+        },
+        {
+          "offset": 1049,
+          "opcode": "ldnull",
+          "operand": "None"
+        },
+        {
+          "offset": 1050,
+          "opcode": "ldarg.0",
+          "operand": "None"
+        },
+        {
+          "offset": 1051,
+          "opcode": "ldfld",
+          "operand": ".errorMessage"
+        },
+        {
+          "offset": 1056,
+          "opcode": "callvirt",
+          "operand": "BaseFPSAgentController.actionFinished"
+        },
+        {
+          "offset": 1061,
+          "opcode": "leave.s",
+          "operand": "1063"
+        },
+        {
+          "offset": 1063,
+          "opcode": "ret",
+          "operand": "None"
+        }
+      ],
+      "exception_handlers": [
+        {
+          "try_start": 125,
+          "try_end": 137,
+          "handler_start": 137,
+          "handler_end": 452,
+          "catch_type": ".InvalidArgumentsException"
+        },
+        {
+          "try_start": 125,
+          "try_end": 137,
+          "handler_start": 452,
+          "handler_end": 704,
+          "catch_type": ".ToObjectArgumentActionException"
+        },
+        {
+          "try_start": 125,
+          "try_end": 137,
+          "handler_start": 704,
+          "handler_end": 777,
+          "catch_type": ".MissingArgumentsActionException"
+        },
+        {
+          "try_start": 125,
+          "try_end": 137,
+          "handler_start": 777,
+          "handler_end": 835,
+          "catch_type": ".AmbiguousActionException"
+        },
+        {
+          "try_start": 125,
+          "try_end": 137,
+          "handler_start": 835,
+          "handler_end": 873,
+          "catch_type": ".InvalidActionException"
+        },
+        {
+          "try_start": 125,
+          "try_end": 137,
+          "handler_start": 873,
+          "handler_end": 967,
+          "catch_type": ".TargetInvocationException"
+        },
+        {
+          "try_start": 125,
+          "try_end": 137,
+          "handler_start": 967,
+          "handler_end": 1051,
+          "catch_type": ".Exception"
+        }
+      ]
+    }
+  ]
+}

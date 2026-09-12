@@ -1,0 +1,106 @@
+{
+  "address_probe": [
+    {
+      "actionReturn": null,
+      "agent": {
+        "cameraHorizon": 0.0,
+        "inHighFrictionArea": false,
+        "isStanding": true,
+        "name": "agent",
+        "position": {
+          "x": -1.0,
+          "y": 0.900999128818512,
+          "z": 1.0
+        },
+        "rotation": {
+          "x": -0.0,
+          "y": 270.0,
+          "z": 0.0
+        }
+      },
+      "agentId": 0,
+      "errorCode": null,
+      "errorMessage": "",
+      "inventoryObjects": [],
+      "lastAction": "Pass",
+      "lastActionSuccess": true,
+      "sceneName": "FloorPlan1_physics"
+    }
+  ],
+  "argv": [
+    "tools/structure_two_multiagent_diagnose.py",
+    "--binary",
+    "/Users/pangwei/.ai2thor/releases/thor-OSXIntel64-f0825767cd50d69f666c7f282e54abfe58f1e917/thor-OSXIntel64-f0825767cd50d69f666c7f282e54abfe58f1e917.app/Contents/MacOS/AI2-THOR",
+    "--house",
+    "docs/reviews/pc_a/proposal_scheduler_2026-09-13/procthor_run_07/train_house.json",
+    "--output",
+    "docs/reviews/pc_a/multiagent_lifecycle_2026-09-13/ordinary_1_r2",
+    "--scene",
+    "ordinary",
+    "--count",
+    "1"
+  ],
+  "executable": "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/.venv-ai2thor/bin/python",
+  "files_after": {
+    "/Users/pangwei/.ai2thor/releases/thor-OSXIntel64-f0825767cd50d69f666c7f282e54abfe58f1e917/thor-OSXIntel64-f0825767cd50d69f666c7f282e54abfe58f1e917.app/Contents/MacOS/AI2-THOR": "d8bbfbee47581f4aa4f5df71e095f0a1c00888bed7b493eaffcc0f37d6364df3",
+    "/Users/pangwei/.ai2thor/releases/thor-OSXIntel64-f0825767cd50d69f666c7f282e54abfe58f1e917/thor-OSXIntel64-f0825767cd50d69f666c7f282e54abfe58f1e917.app/Contents/Resources/Data/Managed/Assembly-CSharp.dll": "09588f28c9691dcddff0e44729b485e8d5349f1fc950944ccb47f47f6cb987a5",
+    "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/.venv-ai2thor/lib/python3.11/site-packages/ai2thor/controller.py": "568c1bd1f74b7577b00a667e87ab90c93e0de740489d143bc0fff5b771c29e48",
+    "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/.venv-ai2thor/lib/python3.11/site-packages/ai2thor/fifo_server.py": "434d4eac1647c2acb32542c7c513a66fca40022fcdc1d23d119f2fd4ffa6ecc3",
+    "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/.venv-ai2thor/lib/python3.11/site-packages/ai2thor/server.py": "934f8b3b3911a4a61dd9d076614e43d944544fba9fc98aa15806deb666f6e377",
+    "/private/tmp/cpswm-pc-a-multiagent-lifecycle-20260913/docs/reviews/pc_a/proposal_scheduler_2026-09-13/procthor_run_07/train_house.json": "43be9379e7f44cfbffb4f8f5e7a616836ac1063951775895c571e5f9eeb504cb",
+    "/private/tmp/cpswm-pc-a-multiagent-lifecycle-20260913/tools/structure_two_multiagent_diagnose.py": "93f9db33d645b6a07cd89b2c7094f3d22847b188c263f3dc6dd2ef86b6167419"
+  },
+  "files_before": {
+    "/Users/pangwei/.ai2thor/releases/thor-OSXIntel64-f0825767cd50d69f666c7f282e54abfe58f1e917/thor-OSXIntel64-f0825767cd50d69f666c7f282e54abfe58f1e917.app/Contents/MacOS/AI2-THOR": "d8bbfbee47581f4aa4f5df71e095f0a1c00888bed7b493eaffcc0f37d6364df3",
+    "/Users/pangwei/.ai2thor/releases/thor-OSXIntel64-f0825767cd50d69f666c7f282e54abfe58f1e917/thor-OSXIntel64-f0825767cd50d69f666c7f282e54abfe58f1e917.app/Contents/Resources/Data/Managed/Assembly-CSharp.dll": "09588f28c9691dcddff0e44729b485e8d5349f1fc950944ccb47f47f6cb987a5",
+    "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/.venv-ai2thor/lib/python3.11/site-packages/ai2thor/controller.py": "568c1bd1f74b7577b00a667e87ab90c93e0de740489d143bc0fff5b771c29e48",
+    "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/.venv-ai2thor/lib/python3.11/site-packages/ai2thor/fifo_server.py": "434d4eac1647c2acb32542c7c513a66fca40022fcdc1d23d119f2fd4ffa6ecc3",
+    "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/.venv-ai2thor/lib/python3.11/site-packages/ai2thor/server.py": "934f8b3b3911a4a61dd9d076614e43d944544fba9fc98aa15806deb666f6e377",
+    "/private/tmp/cpswm-pc-a-multiagent-lifecycle-20260913/docs/reviews/pc_a/proposal_scheduler_2026-09-13/procthor_run_07/train_house.json": "43be9379e7f44cfbffb4f8f5e7a616836ac1063951775895c571e5f9eeb504cb",
+    "/private/tmp/cpswm-pc-a-multiagent-lifecycle-20260913/tools/structure_two_multiagent_diagnose.py": "93f9db33d645b6a07cd89b2c7094f3d22847b188c263f3dc6dd2ef86b6167419"
+  },
+  "files_unchanged": true,
+  "git_head": "2e6a6387a928d4d32f0578fe4bedeaaee2d4af22",
+  "human_execution_verified": false,
+  "initialized": [
+    {
+      "actionReturn": {
+        "cameraFarPlane": 20.0,
+        "cameraNearPlane": 0.009999999776482582
+      },
+      "agent": {
+        "cameraHorizon": 0.0,
+        "inHighFrictionArea": false,
+        "isStanding": true,
+        "name": "agent",
+        "position": {
+          "x": -1.0,
+          "y": 0.900999128818512,
+          "z": 1.0
+        },
+        "rotation": {
+          "x": -0.0,
+          "y": 270.0,
+          "z": 0.0
+        }
+      },
+      "agentId": 0,
+      "errorCode": null,
+      "errorMessage": "",
+      "inventoryObjects": [],
+      "lastAction": "Initialize",
+      "lastActionSuccess": true,
+      "sceneName": "FloorPlan1_physics"
+    }
+  ],
+  "observed_count": 1,
+  "post_initialize": false,
+  "python": "3.11.16 (main, Aug 14 2026, 15:24:25) [Clang 22.1.3 ]",
+  "requested_count": 1,
+  "scene_kind": "ordinary",
+  "scope": "actual Unity multi-agent diagnosis; NOT human execution or training",
+  "sdk": "5.0.0",
+  "seconds": 2.7832750000525266,
+  "trace_sha256": "8c7b949c49f792bdfcfb9f4c1426c467b42bad6665c15a97a05b661f3e1d336b",
+  "training_started": false
+}

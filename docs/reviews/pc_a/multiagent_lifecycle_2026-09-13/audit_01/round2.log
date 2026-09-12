@@ -1,0 +1,61 @@
+..........FFF.F                                                          [100%]
+=================================== FAILURES ===================================
+__________ test_uncertain_or_forged_complete_response_poisoned[stale] __________
+
+mode = 'stale'
+
+    @pytest.mark.parametrize("mode", ["timeout", "dropped", "stale", "raw_foreign", "raw_dropped"])
+    def test_uncertain_or_forged_complete_response_poisoned(mode):
+        controller = FixtureController()
+        checked = session(controller)
+        controller.mode = mode
+>       with pytest.raises((AgentRosterError, TimeoutError)):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE any of (AgentRosterError, TimeoutError)
+
+tests/test_structure_two_agent_roster_round2.py:79: Failed
+_______ test_uncertain_or_forged_complete_response_poisoned[raw_foreign] _______
+
+mode = 'raw_foreign'
+
+    @pytest.mark.parametrize("mode", ["timeout", "dropped", "stale", "raw_foreign", "raw_dropped"])
+    def test_uncertain_or_forged_complete_response_poisoned(mode):
+        controller = FixtureController()
+        checked = session(controller)
+        controller.mode = mode
+>       with pytest.raises((AgentRosterError, TimeoutError)):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE any of (AgentRosterError, TimeoutError)
+
+tests/test_structure_two_agent_roster_round2.py:79: Failed
+_______ test_uncertain_or_forged_complete_response_poisoned[raw_dropped] _______
+
+mode = 'raw_dropped'
+
+    @pytest.mark.parametrize("mode", ["timeout", "dropped", "stale", "raw_foreign", "raw_dropped"])
+    def test_uncertain_or_forged_complete_response_poisoned(mode):
+        controller = FixtureController()
+        checked = session(controller)
+        controller.mode = mode
+>       with pytest.raises((AgentRosterError, TimeoutError)):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE any of (AgentRosterError, TimeoutError)
+
+tests/test_structure_two_agent_roster_round2.py:79: Failed
+____________ test_replayed_complete_external_state_before_dispatch _____________
+
+    def test_replayed_complete_external_state_before_dispatch():
+        controller = FixtureController()
+        checked = session(controller)
+        controller.sync(11)
+>       with pytest.raises(AgentRosterError):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE AgentRosterError
+
+tests/test_structure_two_agent_roster_round2.py:101: Failed
+=========================== short test summary info ============================
+FAILED tests/test_structure_two_agent_roster_round2.py::test_uncertain_or_forged_complete_response_poisoned[stale]
+FAILED tests/test_structure_two_agent_roster_round2.py::test_uncertain_or_forged_complete_response_poisoned[raw_foreign]
+FAILED tests/test_structure_two_agent_roster_round2.py::test_uncertain_or_forged_complete_response_poisoned[raw_dropped]
+FAILED tests/test_structure_two_agent_roster_round2.py::test_replayed_complete_external_state_before_dispatch
+4 failed, 11 passed in 0.07s

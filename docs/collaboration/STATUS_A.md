@@ -1,5 +1,14 @@
 # 电脑 A 状态
 
+## A 多 agent 入口修复与两轮复核交付 2026-09-13（能力仍部分完成）
+
+- base `6a008aedd9c588a7716206eba60b3a57f9fc94d4`；入口/测试冻结 `0b46b7de077c6b25e675648deb8b5026c901c9eb`，原始 Unity 包记录器冻结 `14708f93aa006b465ddfb7a9e8823e0fb2311dee`。独立分支 `codex/pc-a-multiagent-lifecycle-20260913`，不改共享集成/B 主干。
+- 真实四格对照：普通场景 1/2 agent 成功且独立转向；ProcTHOR 单 agent 成功；双 agent 原始 Initialize 包只有 1。修后在 Initialize 阶段明确拒绝，不继续 CreateHouse/Pass；不是多人能力通过。
+- 实际 `AI2-THOR-Base.dll` IL 确认 Procedural guard 和初始化替换 primary / 外层旧 controller 错误回执链；高置信机制定位，尚未内部动态打点或修后 Unity 构建验证。不是源码目录名/启动程序哈希自行证明。
+- 两轮作者对抗审核最终 31+22=53 passed；扩展过程中 4+2 个失败断言及源码快照保留。相邻 G1 177 passed，合计 230 项；不是电脑 B 独立验收或完整闭环。
+- 交付入口人数/ID/状态/位姿校验与原始传输/序号绑定，会话不确定后停止；旧几何/多人 CLI 增加校验。没有修改 Unity DLL、伪造多人、训练或更换科学环境。
+- 报告与证据：`docs/reviews/pc_a/multiagent_lifecycle_2026-09-13/REPORT.md`；后端构建清单 `NEXT_BUILD.md`。真正 post-house 多人生成未实施；常规安装位置无 Unity Editor/Hub，已询问安装授权/许可，尚待用户选择。G2/G3/G4 不签收。
+
 ## A 多人初始化因果诊断与修复开工 2026-09-13
 
 - 分支 `codex/pc-a-multiagent-lifecycle-20260913`，base `6a008aedd9c588a7716206eba60b3a57f9fc94d4`；独立工作目录 `/private/tmp/cpswm-pc-a-multiagent-lifecycle-20260913`。

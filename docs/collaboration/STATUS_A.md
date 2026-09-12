@@ -2,6 +2,8 @@
 
 ## A1 联合消费者/解析更新组件交付（非默认闭环）
 
+- 实际交付代码 SHA：`1d24099a025c9d7c00a59e4c78c593703924b0eb`；提交后再次核对运行 manifest 全部源码摘要，差异为 0。后续本状态登记提交只更新文档，不改变被测生产源码。
+
 - 分支 `codex/pc-a-native-joint-consumers-20260912`，生产 base `62870a3a38fce882b25d8d77f1d0526cca6fbc14`；实际执行源逐文件 SHA-256 在 `docs/reviews/pc_a/native_joint_consumers_2026-09-12/run_01/manifest.json`，交付代码提交由该分支确定。
 - 新增全粒子决策视图、三解析块纯计算；扩展 CIAV 完整粒子期望效用，仍以原因边缘计算原因信息增益。不写 B 独占两个核心文件，不改科学配置。
 - 命令：主仓库 `.venv/bin/python docs/reviews/pc_a/native_joint_consumers_2026-09-12/run_checks.py run_01`。85 passed / exit 0；Ruff、三个源文件 mypy 通过；源码前后摘要相同。不是 812 项全回归或 Windows 复现。

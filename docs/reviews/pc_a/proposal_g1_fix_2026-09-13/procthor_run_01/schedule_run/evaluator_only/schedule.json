@@ -1,0 +1,708 @@
+{
+  "actors": [
+    "actor_0",
+    "actor_1",
+    "actor_2"
+  ],
+  "days": 7,
+  "events": [
+    {
+      "actors": [
+        "actor_0"
+      ],
+      "correction_of": null,
+      "day": 0,
+      "destination_location": "location_0",
+      "event_id": "dev-house-0-seed-13:0",
+      "instance_key": "instance_0",
+      "kind": "habit_drift",
+      "observation_selected": true,
+      "phase": "baseline",
+      "release_tick": 0,
+      "source_location": "location_0",
+      "tick": 0
+    },
+    {
+      "actors": [
+        "actor_1"
+      ],
+      "correction_of": null,
+      "day": 0,
+      "destination_location": "location_2",
+      "event_id": "dev-house-0-seed-13:10",
+      "instance_key": "instance_1",
+      "kind": "direct_move",
+      "observation_selected": true,
+      "phase": "baseline",
+      "release_tick": 10,
+      "source_location": "location_1",
+      "tick": 10
+    },
+    {
+      "actors": [
+        "actor_2",
+        "actor_0"
+      ],
+      "correction_of": null,
+      "day": 0,
+      "destination_location": "location_1",
+      "event_id": "dev-house-0-seed-13:20",
+      "instance_key": "instance_0",
+      "kind": "ordered_handoff",
+      "observation_selected": true,
+      "phase": "baseline",
+      "release_tick": 20,
+      "source_location": "location_0",
+      "tick": 20
+    },
+    {
+      "actors": [
+        "actor_0"
+      ],
+      "correction_of": null,
+      "day": 0,
+      "destination_location": "location_2",
+      "event_id": "dev-house-0-seed-13:30",
+      "instance_key": "instance_1",
+      "kind": "no_move_observation_policy_change",
+      "observation_selected": true,
+      "phase": "baseline",
+      "release_tick": 30,
+      "source_location": "location_2",
+      "tick": 30
+    },
+    {
+      "actors": [
+        "actor_1"
+      ],
+      "correction_of": null,
+      "day": 0,
+      "destination_location": "location_0",
+      "event_id": "dev-house-0-seed-13:40",
+      "instance_key": "instance_0",
+      "kind": "unknown_actor",
+      "observation_selected": true,
+      "phase": "baseline",
+      "release_tick": 40,
+      "source_location": "location_1",
+      "tick": 40
+    },
+    {
+      "actors": [
+        "actor_2"
+      ],
+      "correction_of": "dev-house-0-seed-13:40",
+      "day": 0,
+      "destination_location": "location_0",
+      "event_id": "dev-house-0-seed-13:50",
+      "instance_key": "instance_0",
+      "kind": "late_correction",
+      "observation_selected": true,
+      "phase": "baseline",
+      "release_tick": 175,
+      "source_location": "location_0",
+      "tick": 50
+    },
+    {
+      "actors": [
+        "actor_1"
+      ],
+      "correction_of": "dev-house-0-seed-13:40",
+      "day": 1,
+      "destination_location": "location_0",
+      "event_id": "dev-house-0-seed-13:100",
+      "instance_key": "instance_0",
+      "kind": "late_correction",
+      "observation_selected": true,
+      "phase": "baseline",
+      "release_tick": 225,
+      "source_location": "location_0",
+      "tick": 100
+    },
+    {
+      "actors": [
+        "actor_0"
+      ],
+      "correction_of": null,
+      "day": 1,
+      "destination_location": "location_0",
+      "event_id": "dev-house-0-seed-13:110",
+      "instance_key": "instance_0",
+      "kind": "habit_drift",
+      "observation_selected": true,
+      "phase": "baseline",
+      "release_tick": 110,
+      "source_location": "location_0",
+      "tick": 110
+    },
+    {
+      "actors": [
+        "actor_0"
+      ],
+      "correction_of": null,
+      "day": 1,
+      "destination_location": "location_1",
+      "event_id": "dev-house-0-seed-13:120",
+      "instance_key": "instance_1",
+      "kind": "unknown_actor",
+      "observation_selected": false,
+      "phase": "baseline",
+      "release_tick": 120,
+      "source_location": "location_2",
+      "tick": 120
+    },
+    {
+      "actors": [
+        "actor_1"
+      ],
+      "correction_of": null,
+      "day": 1,
+      "destination_location": "location_0",
+      "event_id": "dev-house-0-seed-13:130",
+      "instance_key": "instance_0",
+      "kind": "no_move_observation_policy_change",
+      "observation_selected": false,
+      "phase": "baseline",
+      "release_tick": 130,
+      "source_location": "location_0",
+      "tick": 130
+    },
+    {
+      "actors": [
+        "actor_2"
+      ],
+      "correction_of": null,
+      "day": 1,
+      "destination_location": "location_2",
+      "event_id": "dev-house-0-seed-13:140",
+      "instance_key": "instance_1",
+      "kind": "direct_move",
+      "observation_selected": true,
+      "phase": "baseline",
+      "release_tick": 140,
+      "source_location": "location_1",
+      "tick": 140
+    },
+    {
+      "actors": [
+        "actor_0",
+        "actor_1",
+        "actor_2"
+      ],
+      "correction_of": null,
+      "day": 1,
+      "destination_location": "location_1",
+      "event_id": "dev-house-0-seed-13:150",
+      "instance_key": "instance_0",
+      "kind": "ordered_handoff",
+      "observation_selected": true,
+      "phase": "baseline",
+      "release_tick": 150,
+      "source_location": "location_0",
+      "tick": 150
+    },
+    {
+      "actors": [
+        "actor_0"
+      ],
+      "correction_of": null,
+      "day": 2,
+      "destination_location": "location_1",
+      "event_id": "dev-house-0-seed-13:200",
+      "instance_key": "instance_0",
+      "kind": "habit_drift",
+      "observation_selected": true,
+      "phase": "shifted",
+      "release_tick": 200,
+      "source_location": "location_1",
+      "tick": 200
+    },
+    {
+      "actors": [
+        "actor_0"
+      ],
+      "correction_of": null,
+      "day": 2,
+      "destination_location": "location_2",
+      "event_id": "dev-house-0-seed-13:210",
+      "instance_key": "instance_1",
+      "kind": "no_move_observation_policy_change",
+      "observation_selected": true,
+      "phase": "shifted",
+      "release_tick": 210,
+      "source_location": "location_2",
+      "tick": 210
+    },
+    {
+      "actors": [
+        "actor_1"
+      ],
+      "correction_of": "dev-house-0-seed-13:140",
+      "day": 2,
+      "destination_location": "location_2",
+      "event_id": "dev-house-0-seed-13:220",
+      "instance_key": "instance_1",
+      "kind": "late_correction",
+      "observation_selected": true,
+      "phase": "shifted",
+      "release_tick": 345,
+      "source_location": "location_2",
+      "tick": 220
+    },
+    {
+      "actors": [
+        "actor_2"
+      ],
+      "correction_of": null,
+      "day": 2,
+      "destination_location": "location_0",
+      "event_id": "dev-house-0-seed-13:230",
+      "instance_key": "instance_1",
+      "kind": "direct_move",
+      "observation_selected": true,
+      "phase": "shifted",
+      "release_tick": 230,
+      "source_location": "location_2",
+      "tick": 230
+    },
+    {
+      "actors": [
+        "actor_0",
+        "actor_2"
+      ],
+      "correction_of": null,
+      "day": 2,
+      "destination_location": "location_2",
+      "event_id": "dev-house-0-seed-13:240",
+      "instance_key": "instance_0",
+      "kind": "ordered_handoff",
+      "observation_selected": true,
+      "phase": "shifted",
+      "release_tick": 240,
+      "source_location": "location_1",
+      "tick": 240
+    },
+    {
+      "actors": [
+        "actor_1"
+      ],
+      "correction_of": null,
+      "day": 2,
+      "destination_location": "location_1",
+      "event_id": "dev-house-0-seed-13:250",
+      "instance_key": "instance_1",
+      "kind": "unknown_actor",
+      "observation_selected": true,
+      "phase": "shifted",
+      "release_tick": 250,
+      "source_location": "location_0",
+      "tick": 250
+    },
+    {
+      "actors": [
+        "actor_0"
+      ],
+      "correction_of": null,
+      "day": 3,
+      "destination_location": "location_0",
+      "event_id": "dev-house-0-seed-13:300",
+      "instance_key": "instance_1",
+      "kind": "direct_move",
+      "observation_selected": true,
+      "phase": "shifted",
+      "release_tick": 300,
+      "source_location": "location_1",
+      "tick": 300
+    },
+    {
+      "actors": [
+        "actor_1"
+      ],
+      "correction_of": "dev-house-0-seed-13:300",
+      "day": 3,
+      "destination_location": "location_0",
+      "event_id": "dev-house-0-seed-13:310",
+      "instance_key": "instance_1",
+      "kind": "late_correction",
+      "observation_selected": true,
+      "phase": "shifted",
+      "release_tick": 435,
+      "source_location": "location_0",
+      "tick": 310
+    },
+    {
+      "actors": [
+        "actor_2"
+      ],
+      "correction_of": null,
+      "day": 3,
+      "destination_location": "location_0",
+      "event_id": "dev-house-0-seed-13:320",
+      "instance_key": "instance_1",
+      "kind": "no_move_observation_policy_change",
+      "observation_selected": false,
+      "phase": "shifted",
+      "release_tick": 320,
+      "source_location": "location_0",
+      "tick": 320
+    },
+    {
+      "actors": [
+        "actor_0"
+      ],
+      "correction_of": null,
+      "day": 3,
+      "destination_location": "location_1",
+      "event_id": "dev-house-0-seed-13:330",
+      "instance_key": "instance_0",
+      "kind": "habit_drift",
+      "observation_selected": true,
+      "phase": "shifted",
+      "release_tick": 330,
+      "source_location": "location_2",
+      "tick": 330
+    },
+    {
+      "actors": [
+        "actor_1",
+        "actor_2",
+        "actor_0"
+      ],
+      "correction_of": null,
+      "day": 3,
+      "destination_location": "location_1",
+      "event_id": "dev-house-0-seed-13:340",
+      "instance_key": "instance_1",
+      "kind": "ordered_handoff",
+      "observation_selected": true,
+      "phase": "shifted",
+      "release_tick": 340,
+      "source_location": "location_0",
+      "tick": 340
+    },
+    {
+      "actors": [
+        "actor_2"
+      ],
+      "correction_of": null,
+      "day": 3,
+      "destination_location": "location_2",
+      "event_id": "dev-house-0-seed-13:350",
+      "instance_key": "instance_0",
+      "kind": "unknown_actor",
+      "observation_selected": false,
+      "phase": "shifted",
+      "release_tick": 350,
+      "source_location": "location_1",
+      "tick": 350
+    },
+    {
+      "actors": [
+        "actor_1"
+      ],
+      "correction_of": null,
+      "day": 4,
+      "destination_location": "location_0",
+      "event_id": "dev-house-0-seed-13:400",
+      "instance_key": "instance_0",
+      "kind": "direct_move",
+      "observation_selected": true,
+      "phase": "recurrent",
+      "release_tick": 400,
+      "source_location": "location_2",
+      "tick": 400
+    },
+    {
+      "actors": [
+        "actor_2",
+        "actor_1"
+      ],
+      "correction_of": null,
+      "day": 4,
+      "destination_location": "location_2",
+      "event_id": "dev-house-0-seed-13:410",
+      "instance_key": "instance_1",
+      "kind": "ordered_handoff",
+      "observation_selected": true,
+      "phase": "recurrent",
+      "release_tick": 410,
+      "source_location": "location_1",
+      "tick": 410
+    },
+    {
+      "actors": [
+        "actor_0"
+      ],
+      "correction_of": null,
+      "day": 4,
+      "destination_location": "location_0",
+      "event_id": "dev-house-0-seed-13:420",
+      "instance_key": "instance_0",
+      "kind": "habit_drift",
+      "observation_selected": true,
+      "phase": "recurrent",
+      "release_tick": 420,
+      "source_location": "location_0",
+      "tick": 420
+    },
+    {
+      "actors": [
+        "actor_1"
+      ],
+      "correction_of": null,
+      "day": 4,
+      "destination_location": "location_2",
+      "event_id": "dev-house-0-seed-13:430",
+      "instance_key": "instance_1",
+      "kind": "no_move_observation_policy_change",
+      "observation_selected": true,
+      "phase": "recurrent",
+      "release_tick": 430,
+      "source_location": "location_2",
+      "tick": 430
+    },
+    {
+      "actors": [
+        "actor_2"
+      ],
+      "correction_of": "dev-house-0-seed-13:410",
+      "day": 4,
+      "destination_location": "location_2",
+      "event_id": "dev-house-0-seed-13:440",
+      "instance_key": "instance_1",
+      "kind": "late_correction",
+      "observation_selected": true,
+      "phase": "recurrent",
+      "release_tick": 565,
+      "source_location": "location_2",
+      "tick": 440
+    },
+    {
+      "actors": [
+        "actor_0"
+      ],
+      "correction_of": null,
+      "day": 4,
+      "destination_location": "location_1",
+      "event_id": "dev-house-0-seed-13:450",
+      "instance_key": "instance_1",
+      "kind": "unknown_actor",
+      "observation_selected": true,
+      "phase": "recurrent",
+      "release_tick": 450,
+      "source_location": "location_2",
+      "tick": 450
+    },
+    {
+      "actors": [
+        "actor_2"
+      ],
+      "correction_of": null,
+      "day": 5,
+      "destination_location": "location_1",
+      "event_id": "dev-house-0-seed-13:500",
+      "instance_key": "instance_1",
+      "kind": "no_move_observation_policy_change",
+      "observation_selected": false,
+      "phase": "recurrent",
+      "release_tick": 500,
+      "source_location": "location_1",
+      "tick": 500
+    },
+    {
+      "actors": [
+        "actor_0"
+      ],
+      "correction_of": null,
+      "day": 5,
+      "destination_location": "location_0",
+      "event_id": "dev-house-0-seed-13:510",
+      "instance_key": "instance_0",
+      "kind": "habit_drift",
+      "observation_selected": true,
+      "phase": "recurrent",
+      "release_tick": 510,
+      "source_location": "location_0",
+      "tick": 510
+    },
+    {
+      "actors": [
+        "actor_1"
+      ],
+      "correction_of": null,
+      "day": 5,
+      "destination_location": "location_2",
+      "event_id": "dev-house-0-seed-13:520",
+      "instance_key": "instance_1",
+      "kind": "direct_move",
+      "observation_selected": true,
+      "phase": "recurrent",
+      "release_tick": 520,
+      "source_location": "location_1",
+      "tick": 520
+    },
+    {
+      "actors": [
+        "actor_2"
+      ],
+      "correction_of": null,
+      "day": 5,
+      "destination_location": "location_1",
+      "event_id": "dev-house-0-seed-13:530",
+      "instance_key": "instance_0",
+      "kind": "unknown_actor",
+      "observation_selected": false,
+      "phase": "recurrent",
+      "release_tick": 530,
+      "source_location": "location_0",
+      "tick": 530
+    },
+    {
+      "actors": [
+        "actor_0",
+        "actor_2",
+        "actor_1"
+      ],
+      "correction_of": null,
+      "day": 5,
+      "destination_location": "location_1",
+      "event_id": "dev-house-0-seed-13:540",
+      "instance_key": "instance_1",
+      "kind": "ordered_handoff",
+      "observation_selected": true,
+      "phase": "recurrent",
+      "release_tick": 540,
+      "source_location": "location_2",
+      "tick": 540
+    },
+    {
+      "actors": [
+        "actor_1"
+      ],
+      "correction_of": "dev-house-0-seed-13:540",
+      "day": 5,
+      "destination_location": "location_1",
+      "event_id": "dev-house-0-seed-13:550",
+      "instance_key": "instance_1",
+      "kind": "late_correction",
+      "observation_selected": true,
+      "phase": "recurrent",
+      "release_tick": 675,
+      "source_location": "location_1",
+      "tick": 550
+    },
+    {
+      "actors": [
+        "actor_0"
+      ],
+      "correction_of": null,
+      "day": 6,
+      "destination_location": "location_0",
+      "event_id": "dev-house-0-seed-13:600",
+      "instance_key": "instance_0",
+      "kind": "habit_drift",
+      "observation_selected": true,
+      "phase": "recurrent",
+      "release_tick": 600,
+      "source_location": "location_1",
+      "tick": 600
+    },
+    {
+      "actors": [
+        "actor_1"
+      ],
+      "correction_of": null,
+      "day": 6,
+      "destination_location": "location_2",
+      "event_id": "dev-house-0-seed-13:610",
+      "instance_key": "instance_1",
+      "kind": "direct_move",
+      "observation_selected": true,
+      "phase": "recurrent",
+      "release_tick": 610,
+      "source_location": "location_1",
+      "tick": 610
+    },
+    {
+      "actors": [
+        "actor_2",
+        "actor_0",
+        "actor_1"
+      ],
+      "correction_of": null,
+      "day": 6,
+      "destination_location": "location_1",
+      "event_id": "dev-house-0-seed-13:620",
+      "instance_key": "instance_0",
+      "kind": "ordered_handoff",
+      "observation_selected": true,
+      "phase": "recurrent",
+      "release_tick": 620,
+      "source_location": "location_0",
+      "tick": 620
+    },
+    {
+      "actors": [
+        "actor_0"
+      ],
+      "correction_of": null,
+      "day": 6,
+      "destination_location": "location_2",
+      "event_id": "dev-house-0-seed-13:630",
+      "instance_key": "instance_1",
+      "kind": "no_move_observation_policy_change",
+      "observation_selected": true,
+      "phase": "recurrent",
+      "release_tick": 630,
+      "source_location": "location_2",
+      "tick": 630
+    },
+    {
+      "actors": [
+        "actor_1"
+      ],
+      "correction_of": "dev-house-0-seed-13:620",
+      "day": 6,
+      "destination_location": "location_1",
+      "event_id": "dev-house-0-seed-13:640",
+      "instance_key": "instance_0",
+      "kind": "late_correction",
+      "observation_selected": true,
+      "phase": "recurrent",
+      "release_tick": 765,
+      "source_location": "location_1",
+      "tick": 640
+    },
+    {
+      "actors": [
+        "actor_2"
+      ],
+      "correction_of": null,
+      "day": 6,
+      "destination_location": "location_1",
+      "event_id": "dev-house-0-seed-13:650",
+      "instance_key": "instance_1",
+      "kind": "unknown_actor",
+      "observation_selected": true,
+      "phase": "recurrent",
+      "release_tick": 650,
+      "source_location": "location_2",
+      "tick": 650
+    }
+  ],
+  "house_id": "procthor-10k:439193522244720b86d8c81cde2e51e3a4d150cf:train:0",
+  "house_sha256": "43be9379e7f44cfbffb4f8f5e7a616836ac1063951775895c571e5f9eeb504cb",
+  "instance_keys": [
+    "instance_0",
+    "instance_1"
+  ],
+  "location_keys": [
+    "location_0",
+    "location_1",
+    "location_2"
+  ],
+  "partition": "development",
+  "schedule_block_id": "dev-house-0-seed-13",
+  "schema": "procthor-exogenous-schedule@1",
+  "seed": 13
+}

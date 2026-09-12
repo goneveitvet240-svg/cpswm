@@ -1,5 +1,15 @@
 # 电脑 A 状态
 
+## A G1 修复与修后两轮审核交付 2026-09-13
+
+- 证据提交的自动格式化钩子曾触碰 run_01 两份历史源码快照，提交中止；已恢复原字节并核对全目录 manifest。仅此归档提交跳过变更文件的自动格式化钩子，实际生产代码 Ruff/mypy 及最终两轮测试已单独通过，日志均在 verification 中。未以格式化覆盖失败时源码。
+- 分支 `codex/pc-a-proposal-g1-fix-20260913`；base `f95086718ad2d7d6f0707bcae1dc6758d3417233`；实际代码/测试冻结 `2ebd815543a9e51948c0eba237aacff8629b51ed`。A1–A7、分区隔离、样本 ID/pair 连接、@2 地点来源及快照目录交叉绑定已实现；`src/cpswm/system` 改动 0，不写 B 生产边界。
+- 最终 `python tools/structure_two_proposal_g1_checks.py run_03`：125 原回归通过、第一轮 30 通过、第二轮 22 通过，既有坏枚举 warning 保留；Ruff/五模块 mypy 通过。第一次修后审核发现地点实体替换漏检，已修复，run_01 失败及源码快照保留。只迁移旧正例的合同字段/分区路径，不删旧攻击。
+- 实际 `procthor_run_01`：42 几何事件、36 传感帧完成，source_unchanged=true；新读取器另校验全部 36 帧及原采集摘要。几何运行不是人物/完整 D1 通过。
+- 两次真实多人后端探测均仅返回 1 个 agent event，`multiple_agents_verified=false`；接口成功不等于多人成功。对应版本源码含 Procedural 多 agent 限制，但本轮未观察到直接抛该异常，源码限制与实际响应分别记录。
+- G1 仅作者工程复核完成，独立验收交 B。G2 人物后端选择/可行性、合法感知证据、G3 原生监督生产链、G4 网络/连续状态/预算仍未关闭；training_ready=false、training_started=false。地点目录/标注及外部保留摘要的真实性不由 schema 自证。
+- 完整报告、两轮日志、源码/工件摘要、真实采集及探测：`docs/reviews/pc_a/proposal_g1_fix_2026-09-13/REPORT.md`。本分支公开交接，不自动合并共享集成分支。
+
 ## A G1 修复与两轮修后审核开工 2026-09-13
 
 - 分支 `codex/pc-a-proposal-g1-fix-20260913`，base `f95086718ad2d7d6f0707bcae1dc6758d3417233`；独立工作目录 `/private/tmp/cpswm-pc-a-proposal-g1-fix-20260913`。fetch 已核验 B `c366cad0a92593bb2c4c44db7e8d3408a2b5cc9c`、集成 `bdec3ee21b7db361e390496d97ff2eb30390dc6c`。

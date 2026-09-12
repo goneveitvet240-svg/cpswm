@@ -23,6 +23,7 @@ from typing import Any, cast
 import numpy as np
 
 from cpswm.contracts import ProjectTwoDatasetSplit, reject_truth_leakage
+from cpswm.system.evaluation_operations import structure_two_comparison_dynamic as dynamic
 from cpswm.system.evaluation_operations import structure_two_comparison_fairness as fairness
 from cpswm.system.evaluation_operations import structure_two_p5_three_arm_death_test as base
 from cpswm.system.evaluation_operations.project_two_dataset import enforce_project_two_replay_gate
@@ -703,7 +704,10 @@ def run_audit(
                 )
     if source_bindings(root) != bindings:
         raise ValueError("SOURCE_CHANGED_DURING_REPLAY")
+    dynamic_result = dynamic.run_scenes(test[0], model, material, smoothing, parameter)
     payload = {
+        "dynamic_development": dynamic_result,
+        "comparison_contract": dynamic.contract_matrix(root),
         "audit_id": AUDIT_ID,
         "verification_schema_version": 4,
         "base_commit": BASE_COMMIT,
@@ -737,7 +741,8 @@ def run_audit(
         "paired_episode_results_retained": history["paired_episode_results"],
         "semantic_steps_sha256": content_sha256(_semantic_rows(rows)),
         "coverage_limits": [
-            "No new seeds or tests opened",
+            "Opened-D0 uses existing seeds; separate scripted development challenges "
+            "are not confirmation",
             "No external custody proof",
             "No true delayed counterevidence challenge",
             "No action-contingent environment",

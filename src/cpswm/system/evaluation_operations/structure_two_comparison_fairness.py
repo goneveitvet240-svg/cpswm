@@ -83,6 +83,11 @@ def check_decoded(posterior: Any, action: Any, step: Any) -> None:
         or action.belief_state_sha256 != posterior.belief_state_sha256
     ):
         raise ValueError("FAIRNESS_COMMIT_IDENTITY: step/input/state mismatch")
+    if posterior.target_object_id != step.object_instance_id or any(
+        a.target_object_id != step.object_instance_id
+        for a in (*action.search_plan, action.put_back_action)
+    ):
+        raise ValueError("FAIRNESS_TARGET_INSTANCE: decoded target differs from visible object")
     search = sorted(
         posterior.current_location_distribution, key=lambda x: (-x.probability, str(x.location_id))
     )
@@ -112,6 +117,8 @@ def check_step(packet: Any, step: Any, posteriors: list[Any], receipts: list[Any
     """Strict common input/support checks at the consumer boundary, before truth."""
     if len(posteriors) != 3 or {p.arm for p in posteriors} != set(P5ComparisonArm):
         raise ValueError("FAIRNESS_ARMS: exactly one posterior for each registered arm required")
+    if any(p.target_object_id != step.object_instance_id for p in posteriors):
+        raise ValueError("FAIRNESS_TARGET_INSTANCE: posterior targets another object instance")
     base.verify_matched_consumption(receipts)
     for receipt in receipts:
         check_receipt(packet, receipt)

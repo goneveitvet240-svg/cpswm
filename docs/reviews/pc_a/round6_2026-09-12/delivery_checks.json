@@ -1,0 +1,125 @@
+{
+  "w2_preservation": {
+    "files": 889,
+    "mismatches": []
+  },
+  "w2_source_bindings": {
+    "files": 401,
+    "mismatches": []
+  },
+  "w2_bundle": {
+    "files": 4,
+    "mismatches": []
+  },
+  "w3_final_source": {
+    "files": 774,
+    "mismatches": []
+  },
+  "w3_r5_baseline_source": {
+    "files": 773,
+    "mismatches": []
+  },
+  "w3_affected50": {
+    "failures": [
+      "ERROR tests/test_structure_two_stateful_full_joint.py::test_feedback_reweights_full_state_and_extends_revision_lineage",
+      "ERROR tests/test_structure_two_stateful_full_joint.py::test_joint_and_factorized_arms_are_compute_matched_but_not_the_same_model",
+      "ERROR tests/test_structure_two_stateful_full_joint.py::test_low_owner_unknown_event_cannot_enter_joint_rgrc",
+      "ERROR tests/test_structure_two_stateful_full_joint.py::test_route_c_particles_carry_all_seven_axes_across_time",
+      "ERROR tests/test_structure_two_stateful_full_joint_adversarial.py::test_round_one_complete_positive_support_is_not_top_k_truncated",
+      "ERROR tests/test_structure_two_stateful_full_joint_adversarial.py::test_round_one_feedback_replay_and_substitution_are_rejected_atomically",
+      "ERROR tests/test_structure_two_stateful_full_joint_adversarial.py::test_round_one_mutated_observation_is_revalidated_at_use_boundary",
+      "ERROR tests/test_structure_two_stateful_full_joint_adversarial.py::test_round_one_operator_chain_tampering_is_detected",
+      "ERROR tests/test_structure_two_stateful_full_joint_adversarial.py::test_round_one_revision_failure_rolls_back_all_mutable_state",
+      "ERROR tests/test_structure_two_stateful_full_joint_adversarial.py::test_round_one_rgrc_requires_consecutive_stability_and_retracts_old_subject",
+      "FAILED tests/test_structure_two_stateful_full_joint.py::test_checked_in_route_c_artifact_is_honest_and_verifiable",
+      "FAILED tests/test_structure_two_stateful_full_joint.py::test_full_d0_episode_executes_all_seven_operators_in_one_closed_loop",
+      "FAILED tests/test_structure_two_stateful_full_joint_adversarial.py::test_round_one_matched_arms_keep_pre_treatment_fairness_after_feedback",
+      "FAILED tests/test_structure_two_stateful_full_joint_adversarial.py::test_round_two_claim_boundary_and_source_substitution_are_rejected",
+      "FAILED tests/test_structure_two_stateful_full_joint_adversarial.py::test_round_two_embedded_receipt_forgery_is_rejected",
+      "FAILED tests/test_structure_two_stateful_full_joint_adversarial.py::test_round_two_fresh_replay_detects_forged_but_self_consistent_provenance",
+      "FAILED tests/test_structure_two_stateful_full_joint_adversarial.py::test_round_two_paired_action_deletion_is_rejected_even_when_rehashed"
+    ],
+    "summary": "7 failed, 33 passed, 10 errors in 8.94s",
+    "missing_model": true,
+    "exception_types": [
+      "AssertionError",
+      "FileNotFoundError",
+      "ValueError"
+    ]
+  },
+  "w3_baseline50": {
+    "failures": [
+      "ERROR tests/test_structure_two_stateful_full_joint.py::test_feedback_reweights_full_state_and_extends_revision_lineage",
+      "ERROR tests/test_structure_two_stateful_full_joint.py::test_joint_and_factorized_arms_are_compute_matched_but_not_the_same_model",
+      "ERROR tests/test_structure_two_stateful_full_joint.py::test_low_owner_unknown_event_cannot_enter_joint_rgrc",
+      "ERROR tests/test_structure_two_stateful_full_joint.py::test_route_c_particles_carry_all_seven_axes_across_time",
+      "ERROR tests/test_structure_two_stateful_full_joint_adversarial.py::test_round_one_complete_positive_support_is_not_top_k_truncated",
+      "ERROR tests/test_structure_two_stateful_full_joint_adversarial.py::test_round_one_feedback_replay_and_substitution_are_rejected_atomically",
+      "ERROR tests/test_structure_two_stateful_full_joint_adversarial.py::test_round_one_mutated_observation_is_revalidated_at_use_boundary",
+      "ERROR tests/test_structure_two_stateful_full_joint_adversarial.py::test_round_one_operator_chain_tampering_is_detected",
+      "ERROR tests/test_structure_two_stateful_full_joint_adversarial.py::test_round_one_revision_failure_rolls_back_all_mutable_state",
+      "ERROR tests/test_structure_two_stateful_full_joint_adversarial.py::test_round_one_rgrc_requires_consecutive_stability_and_retracts_old_subject",
+      "FAILED tests/test_structure_two_stateful_full_joint.py::test_checked_in_route_c_artifact_is_honest_and_verifiable",
+      "FAILED tests/test_structure_two_stateful_full_joint.py::test_full_d0_episode_executes_all_seven_operators_in_one_closed_loop",
+      "FAILED tests/test_structure_two_stateful_full_joint_adversarial.py::test_round_one_matched_arms_keep_pre_treatment_fairness_after_feedback",
+      "FAILED tests/test_structure_two_stateful_full_joint_adversarial.py::test_round_two_claim_boundary_and_source_substitution_are_rejected",
+      "FAILED tests/test_structure_two_stateful_full_joint_adversarial.py::test_round_two_embedded_receipt_forgery_is_rejected",
+      "FAILED tests/test_structure_two_stateful_full_joint_adversarial.py::test_round_two_fresh_replay_detects_forged_but_self_consistent_provenance",
+      "FAILED tests/test_structure_two_stateful_full_joint_adversarial.py::test_round_two_paired_action_deletion_is_rejected_even_when_rehashed"
+    ],
+    "summary": "7 failed, 33 passed, 10 errors in 5.38s",
+    "missing_model": true,
+    "exception_types": [
+      "AssertionError",
+      "FileNotFoundError",
+      "ValueError"
+    ]
+  },
+  "affected_failure_cases_equal": true,
+  "w1_worker_chain_read_only": {
+    "run": "/private/tmp/s2-w1-r5-local-integration-20260912T084136Z/docs/reviews/data/structure_two_unified_acceptance_runs/real_comparison_chain_accepted",
+    "not_reexecuted_this_review": true,
+    "state_sha256": "92481487aa05e3c15c41ee257c0418fc7856a47e590ede7dcd3f1dd95103c49a",
+    "status": "STAGES_COMPLETED_NOT_AUTHORIZATION",
+    "scientific_gate": "NOT_PASSED",
+    "stages": [
+      {
+        "name": "comparison_generate",
+        "exit_code": 0,
+        "status": "COMPLETED",
+        "pytest_counts": null
+      },
+      {
+        "name": "comparison_recompute",
+        "exit_code": 0,
+        "status": "COMPLETED",
+        "pytest_counts": null
+      },
+      {
+        "name": "attribution_generate",
+        "exit_code": 0,
+        "status": "COMPLETED",
+        "pytest_counts": null
+      },
+      {
+        "name": "attribution_recompute",
+        "exit_code": 0,
+        "status": "COMPLETED",
+        "pytest_counts": null
+      },
+      {
+        "name": "window2_comparison_and_forgery",
+        "exit_code": 0,
+        "status": "COMPLETED",
+        "pytest_counts": {
+          "total": 77,
+          "failure": 0,
+          "error": 0,
+          "skipped": 0
+        }
+      }
+    ],
+    "testcases": 77,
+    "bad_testcases": 0
+  }
+}

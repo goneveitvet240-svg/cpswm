@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="1" skipped="0" tests="1" time="0.047" timestamp="2026-09-12T18:30:20.469798+08:00" hostname="MacBook-Air-2.local"><testcase classname="tests.test_rewritten_cache" name="test_live" time="0.009"><failure message="AssertionError: assert '0.1.0' == '9.9.9'&#10;  &#10;  - 9.9.9&#10;  + 0.1.0">def test_live():
+     import cpswm
+&gt;    assert cpswm.__version__ == "9.9.9"
+E    AssertionError: assert '0.1.0' == '9.9.9'
+E      
+E      - 9.9.9
+E      + 0.1.0
+
+tests/test_rewritten_cache.py:3: AssertionError</failure></testcase></testsuite></testsuites>

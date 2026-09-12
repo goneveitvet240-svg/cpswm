@@ -2,6 +2,8 @@
 
 ## A 完整提议合同/ProcTHOR 调度交付 2026-09-13
 
+- **当前仅本地交付**：实际代码提交 `dbc7ec9c9b61ca2a029c3bd59ffbce136c4f7afe`；提交后 run_05 所有被测源码摘要差异 0。2026-09-13 推送被安全审核拒绝；只读核验远端仓库 `visibility=PUBLIC`，本批约 61MB 证据含本机绝对路径、环境元数据和公开仿真房屋记录，待用户针对性确认公开发布。远端仅有此前开工登记，不得称本批代码已在 GitHub 交付；没有创建空内容 PR 或绕过拒绝。
+
 - 可见分母补充：评测侧 2/42 中一次为未选观测；真正释放候选只有 1/36 目标可见。最新分层摘要 `final_inventory_04/summary.json`，不能把 2/42 当成 2 个可训练观测。
 
 - 分支 `codex/pc-a-proposal-scheduler-20260913`，base `6e07ab682a9ec15e959e1a50001e237877bc4773`；实际代码 SHA 将由紧随交付的状态登记绑定，源文件摘要已记录于 `proposal_scheduler_2026-09-13/run_05/manifest.json` 和真实 run_07 receipt。本批尚未集成，等待 B 独立复核。

@@ -1,5 +1,12 @@
 # 电脑 A 状态
 
+## A Unity 安装与独立构建开工 2026-09-13
+
+- 用户已授权安装和构建；账号登录、许可确认仍由用户操作。分支 `codex/pc-a-procthor-unity-build-20260913`，base `ec2215ac7138c2b359d77219519e5628669c8b82`，独立工作目录 `/private/tmp/cpswm-pc-a-procthor-unity-build-20260913`。
+- fetch 成功，B `c366cad0a92593bb2c4c44db7e8d3408a2b5cc9c`、集成 `bdec3ee21b7db361e390496d97ff2eb30390dc6c` 未变。保留官方 Unity release，不覆盖已有程序/证据，不写 B 文件或共享集成分支，不训练。
+- 先核验冻结 AI2-THOR 源码的 Unity 版本/依赖，安装匹配工具链，记录实际构建与正负对照；真实 post-house 角色生成及两轮审核以真实构建结果为准。未构建之前不宣称 backend 完成。
+- 本机 arm64，开工可用磁盘约 155 GiB，未发现已安装 Unity Hub/Editor。下载/构建产物不提交 Git；源码补丁、命令、摘要和报告通过本分支公开交接。
+
 ## A 多 agent 入口修复与两轮复核交付 2026-09-13（能力仍部分完成）
 
 - 已公开推送并 ls-remote 核验交付证据 SHA `bd9e0f238d2afc2d7dbba7bcc1e3eddd66d76c38`；草稿 PR https://github.com/goneveitvet240-svg/cpswm/pull/13 。118 个本批归档工件摘要再次一致。本行状态登记不改变冻结代码和证据；尚未自动合并，待 B 独立复核。

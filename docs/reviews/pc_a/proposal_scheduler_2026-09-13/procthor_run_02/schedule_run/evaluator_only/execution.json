@@ -1,0 +1,144 @@
+[
+  {
+    "actor_role_execution_verified": false,
+    "actual_after": {
+      "instance_0": {
+        "x": 2.5,
+        "y": 0.019379273056983948,
+        "z": 3.0
+      },
+      "instance_1": {
+        "x": 0.486970454454422,
+        "y": 0.9418456554412842,
+        "z": 2.440995216369629
+      }
+    },
+    "actual_before": {
+      "instance_0": {
+        "x": 0.4102098345756531,
+        "y": 0.9418456554412842,
+        "z": 3.051038980484009
+      },
+      "instance_1": {
+        "x": 0.4869704246520996,
+        "y": 0.9418456554412842,
+        "z": 2.440995216369629
+      }
+    },
+    "actual_steps": [
+      1
+    ],
+    "chain_plan": [
+      {
+        "actor": "actor_0",
+        "kind": "pick_up",
+        "location": "location_0"
+      },
+      {
+        "actor": "actor_0",
+        "kind": "carry",
+        "location": "location_0"
+      },
+      {
+        "actor": "actor_0",
+        "kind": "place",
+        "location": "location_1"
+      }
+    ],
+    "event_id": "dev-house-0-seed-13:0",
+    "geometry_verified": true
+  },
+  {
+    "actor_role_execution_verified": false,
+    "actual_after": {
+      "instance_0": {
+        "x": 2.5,
+        "y": 0.019379273056983948,
+        "z": 3.0
+      },
+      "instance_1": {
+        "x": 6.75,
+        "y": 0.019379273056983948,
+        "z": 5.0
+      }
+    },
+    "actual_before": {
+      "instance_0": {
+        "x": 2.5,
+        "y": 0.019379273056983948,
+        "z": 3.0
+      },
+      "instance_1": {
+        "x": 0.486970454454422,
+        "y": 0.9418456554412842,
+        "z": 2.440995216369629
+      }
+    },
+    "actual_steps": [
+      2
+    ],
+    "chain_plan": [
+      {
+        "actor": "actor_1",
+        "kind": "pick_up",
+        "location": "location_1"
+      },
+      {
+        "actor": "actor_1",
+        "kind": "carry",
+        "location": "location_1"
+      },
+      {
+        "actor": "actor_1",
+        "kind": "place",
+        "location": "location_2"
+      }
+    ],
+    "event_id": "dev-house-0-seed-13:10",
+    "geometry_verified": true
+  },
+  {
+    "actual_before": {
+      "instance_0": {
+        "x": 2.5,
+        "y": 0.019379273056983948,
+        "z": 3.0
+      },
+      "instance_1": {
+        "x": 6.75,
+        "y": 0.019379273056983948,
+        "z": 5.0
+      }
+    },
+    "actual_steps": [],
+    "chain_plan": [
+      {
+        "actor": "actor_2",
+        "kind": "pick_up",
+        "location": "location_1"
+      },
+      {
+        "actor": "actor_2",
+        "kind": "carry",
+        "location": "location_1"
+      },
+      {
+        "actor": "actor_2",
+        "kind": "handoff",
+        "location": "location_0",
+        "receiver": "actor_0"
+      },
+      {
+        "actor": "actor_0",
+        "kind": "carry",
+        "location": "location_0"
+      },
+      {
+        "actor": "actor_0",
+        "kind": "place",
+        "location": "location_0"
+      }
+    ],
+    "event_id": "dev-house-0-seed-13:20"
+  }
+]

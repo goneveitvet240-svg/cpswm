@@ -1,5 +1,17 @@
 # 电脑 A 状态
 
+## A 完整提议合同/ProcTHOR 调度交付 2026-09-13
+
+- 可见分母补充：评测侧 2/42 中一次为未选观测；真正释放候选只有 1/36 目标可见。最新分层摘要 `final_inventory_04/summary.json`，不能把 2/42 当成 2 个可训练观测。
+
+- 分支 `codex/pc-a-proposal-scheduler-20260913`，base `6e07ab682a9ec15e959e1a50001e237877bc4773`；实际代码 SHA 将由紧随交付的状态登记绑定，源文件摘要已记录于 `proposal_scheduler_2026-09-13/run_05/manifest.json` 和真实 run_07 receipt。本批尚未集成，等待 B 独立复核。
+- 新增完整 H/R/I/C/Z/r/V 样本合同、多跳有序角色与竞争实例、六操作/修订祖先检查、完整条件概率回执合同、特征/标签隔离导出、ProcTHOR 日程/真实执行与因果图片读取。旧数据不改写，不给物理事件直接补推断操作标签。
+- 最终 CPU 命令 `python docs/reviews/pc_a/proposal_scheduler_2026-09-13/run_checks.py run_05`：125 passed / 1 个既有故意坏枚举 warning，Ruff 通过，四个源文件 mypy 通过，前后源码一致。范围是新组件与相邻 D0/预检，不是完整 812 或独立验收。
+- 真实 `procthor_run_07`：已校验官方 train 压缩包与训练房屋 0；已有 SDK5/Python3.11/Unity；3 个调度身份、7 个模拟日、2 个同类真实对象、42/42 几何事件、36 个 RGB-D 候选、7 次迟到释放。碰撞检查开启，预初始化 2.5cm 间隙明确记录。源前后相同。
+- 严格未关闭：目标可见仅 2/42，人物角色实际执行 0；迟到释放未等于错误解释→新反证→正确修订；尚无原生六操作标签/真实角色证据/完整主干模型。training_ready=false，未训练/采购/读取封存集/改科研配置；固定日程不是完整 D1 规模或 7 自然日运行。
+- 失败保留：真实 run_01/02 对象接触碰撞、run_03 运行中格式化来源不一致、run_04/05 静态视野 0 可见、run_06 观察点碰撞。run_07 为改进后的开发几何试运行，不覆盖上述历史。
+- 交付说明/复跑/下一门：`docs/reviews/pc_a/proposal_scheduler_2026-09-13/REPORT.md`；机器 schema 和实际覆盖 `final_inventory_03/`。没有动 B/W1/W2 生产文件。需继续有效可见覆盖、人物证据与真实纠正链，再审查样本来源/全轴覆盖后才训练。
+
 ## A 完整提议样本合同与 ProcTHOR 调度开工 2026-09-13
 
 - 分支 `codex/pc-a-proposal-scheduler-20260913`，base `6e07ab682a9ec15e959e1a50001e237877bc4773`。fetch 已成功，B 仍为 `c4eb20b045edb9dc34937f2b9d1038475a02e74a`；不写 B 五项边界及 W1/W2 专属文件，不自动集成。

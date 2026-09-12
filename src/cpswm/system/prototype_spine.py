@@ -121,6 +121,7 @@ from cpswm.system.structure_two_execution import (
 from cpswm.system.structure_two_particle_workspace import (
     ConditionalAnalyticState,
     NativeParticleWorkspace,
+    NativePosteriorSource,
 )
 from cpswm.world_model.grounded_search.concurrent_map_task import BeliefSnapshot, VersionedBeliefMap
 from cpswm.world_model.habits_transitions import (
@@ -2668,6 +2669,26 @@ class CorePrototypeSpine:
             )
         checkpoint = self._capture_revision_transaction(include_operator_state=True)
         try:
+            projections = {}
+            for receipt in receipts:
+                if receipt.evidence_semantics == "posterior_projection_not_likelihood":
+                    source_id = receipt.source_posterior_snapshot_id
+                    source = (
+                        self._particle_workspace.posterior_sources.get(source_id)
+                        if source_id is not None
+                        else None
+                    )
+                    if source is None:
+                        raise ValueError(
+                            "posterior projection consumption is not bound in native runtime"
+                        )
+                    self._validate_native_posterior_source(source)
+                    if (
+                        receipt.proposal.proposed_state.revision_id
+                        != source.history_after.latest.revision_id
+                    ):
+                        raise ValueError("posterior projection belongs to another event revision")
+                    projections[receipt.proposal.proposed_state.particle_id] = source
             return self._particle_workspace.advance(
                 receipts=receipts,
                 statistics=statistics,
@@ -2677,10 +2698,59 @@ class CorePrototypeSpine:
                 source_frame=(frames, self.current_cause_snapshot),
                 ledger_head_sha256=self._hybrid_loop.ledger.export_state().manifest.head_hash,
                 unresolved_log_weight=unresolved_log_weight,
+                validated_projections=projections,
             )
         except BaseException:
             self._restore_revision_transaction(checkpoint)
             raise
+
+    def current_posterior_projection_source(self) -> NativePosteriorSource:
+        """Inspect the actual current producer output; this call creates no authority."""
+        with self._execution_lock:
+            self._check_particle_workspace_binding()
+            sources = tuple(self._particle_workspace.posterior_sources.values())
+            if not sources:
+                raise ValueError("no production posterior source")
+            source = sources[-1]
+            self._validate_native_posterior_source(source)
+            return deepcopy(source)
+
+    def _validate_native_posterior_source(self, source: NativePosteriorSource) -> None:
+        source.validate_content()
+        revision = source.history_after.latest.revision_id
+        event = self._observed_events.get(revision)
+        if (
+            source.runtime_id != self._particle_workspace.runtime_id
+            or source.object_instance_id != self.object_instance_id
+            or source.locations != self.locations
+            or source.snapshot_id != self.current_snapshot.snapshot_id
+            or event is None
+            or content_sha256(self._event_histories.get(revision))
+            != content_sha256(source.history_after)
+            or source.transition.after.metadata.record_id != event.source_record_id
+            or source.transition.after.detected_location_id != event.location_id
+            or source.producer_context[0].applied_weight != event.propensity_weight
+            # Cause sets are frozenset mapping keys. Generic repr hashing is
+            # order-sensitive across deepcopy/hash seeds; exact typed equality
+            # compares every set, posterior value and reference instead. The
+            # complete stored source body hash is still verified above.
+            or source.producer_context[1].snapshot != self.current_cause_snapshot
+        ):
+            raise ValueError("posterior source is stale, revoked, or outside runtime dependencies")
+        # Verify the full producer chain against runtime-owned history and actual
+        # inputs. A resealed receipt or current UUID alone cannot satisfy this.
+        branch = self._event_engine.branch(
+            before=source.transition.before,
+            after=source.transition.after,
+            actor_prior=dict(source.transition.actor_prior),
+            unresolved_probability=source.transition.unresolved_probability,
+            allow_unknown_handoff_roles=True,
+        )
+        if content_sha256(branch) != content_sha256(source.history_before):
+            raise ValueError("posterior source has a false ORRER parent")
+        posterior = self._message_passing.infer(branch, source.transition.evidence)
+        if content_sha256(posterior) != content_sha256(source.posterior):
+            raise ValueError("posterior source does not match its evidence computation")
 
     def prepared_particle_location_marginal(self) -> tuple[dict[UUID, float], float]:
         """Read the explicit candidate posterior, keeping unknown mass separate."""
@@ -2698,7 +2768,7 @@ class CorePrototypeSpine:
         ):
             raise ValueError("native particle workspace identity was replaced")
         for slot, method in enumerate(
-            ("advance", "location_marginal", "invalidate_revisions"), start=2
+            ("advance", "location_marginal", "invalidate_revisions", "publish_posterior"), start=2
         ):
             bind_runtime_callable(
                 runtime_execution_id=self.authorization_scope_id,
@@ -3124,6 +3194,16 @@ class CorePrototypeSpine:
             suggested_location_id=suggested,
             event_revision_id=receipted_history.latest.revision_id,
             decision=decision,
+        )
+        self._particle_workspace.publish_posterior(
+            object_instance_id=self.object_instance_id,
+            snapshot_id=belief_snapshot.snapshot_id,
+            locations=self.locations,
+            history_before=history,
+            history_after=receipted_history,
+            posterior=event_posterior,
+            transition=transition,
+            producer_context=(propensity, assessment),
         )
         if trace_recorder is not None:
             trace_recorder.record_executed(

@@ -18,3 +18,11 @@
 - 实际被测生产代码仍为 `1bd513f51ab7e54a7290870a5f34b524254d55c6`；新增工件绑定历史提交 `505e723170c29f8707ee19d113a5b8646680c5f6`，精确字节/源码哈希见 model_recovery 和 model_restored_50.command.json。报告提交不自引用。
 - 命令：主仓库 Python 3.13 运行 `docs/reviews/pc_a/w3_backbone_r7_2026-09-12/run_checked.py model_restored_50`，结果 50 passed / exit 0；恢复前 exit 1 的 17 项失败/错误保留。
 - 下一步：真实生产后验绑定与消费、默认联合主干和延期取消恢复仍在进行；完整能力与科学收益未验收。
+
+## 批次二交付：真实 PCHMP 生产来源与投影消费
+
+- 生产者、消费者、证据和语义身份绑定已实现，合法非空正例和完整重封负例见 POSTERIOR_PROJECTION.md。
+- 原 714 项回归通过（exit 0，868.63 秒）；107 项预检通过；Optional 类型守卫修改后的 85 项定向回归及 mypy 日志单独保存。
+- 精确被测源码绑定：projection_regression_714.command.json、projection_typed_final.command.json；本批提交可由 GitHub 分支查看，不把旧代码测试冒作当前结果。
+- 下一步：延期取消后的父贡献恢复，以及默认完整联合主干连接。安全拒绝与模型工件恢复均不等于完整能力完成。
+- 后续定向复测检出 Python 原因集合键的顺序问题，85 项曾出现 3 失败、扩展后 87 项曾出现 2 失败，均保留原日志；最终109项通过。使用 native 局部确定序列化，未改共享旧散列格式。前述714通过是较早绑定，最终集成版本仍需重跑。

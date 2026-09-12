@@ -7,15 +7,22 @@ statistics are supplied through a typed boundary, not inferred from marginal cau
 
 from __future__ import annotations
 
+from collections.abc import Mapping
 from copy import deepcopy
-from dataclasses import asdict, dataclass
+from dataclasses import asdict, dataclass, fields, is_dataclass
 from math import fsum, isclose, isfinite, log
-from typing import Any
-from uuid import UUID
+from typing import Any, cast
+from uuid import UUID, uuid4
 
 import numpy as np
 
-from cpswm.system.counterfactual_event_hypergraph.contracts import EventChainHypothesis
+from cpswm.system.counterfactual_event_hypergraph.contracts import (
+    EventChainHypothesis,
+    EventHypothesisHistory,
+)
+from cpswm.system.counterfactual_event_hypergraph.hypothesis_message_passing import (
+    MessagePassingResult,
+)
 from cpswm.system.evaluation_operations.structure_two_selected_method import (
     ParticleProposalOperation,
     ParticleRevisionBatch,
@@ -23,7 +30,41 @@ from cpswm.system.evaluation_operations.structure_two_selected_method import (
     TypedParticleState,
     normalize_particle_revisions,
 )
-from cpswm.system.reproducibility import content_sha256
+from cpswm.system.reproducibility import content_sha256, content_uuid
+
+
+def native_content_payload(value: Any) -> Any:
+    """Canonicalize full typed cause-set keys without discarding any source field.
+
+    The shared legacy hash encodes frozenset mapping keys with repr; deepcopy
+    can reorder them even within one process. Keep this correction local to the
+    new native workspace format so old W1/W2 artifacts retain their bindings.
+    """
+
+    def key(item: Any) -> Any:
+        if isinstance(item, frozenset):
+            return ("native:frozenset", tuple(sorted((key(x) for x in item), key=str)))
+        if isinstance(item, tuple):
+            return tuple(key(x) for x in item)
+        return item
+
+    if is_dataclass(value) and not isinstance(value, type):
+        return {f.name: native_content_payload(getattr(value, f.name)) for f in fields(value)}
+    if hasattr(value, "model_dump"):
+        return native_content_payload(value.model_dump(mode="python"))
+    if isinstance(value, Mapping):
+        return {key(k): native_content_payload(v) for k, v in value.items()}
+    if isinstance(value, (set, frozenset)):
+        return {
+            "native:unordered_members": sorted((native_content_payload(x) for x in value), key=str)
+        }
+    if isinstance(value, (tuple, list)):
+        return tuple(native_content_payload(x) for x in value)
+    return value
+
+
+def native_content_sha256(value: Any) -> str:
+    return content_sha256(native_content_payload(value))
 
 
 @dataclass(frozen=True)
@@ -84,10 +125,63 @@ class NativeParticleRecord:
     ledger_head_sha256: str
 
 
+@dataclass(frozen=True)
+class NativePosteriorSource:
+    """Actual PCHMP output and its complete producer inputs, not a write grant."""
+
+    source_id: UUID
+    runtime_id: UUID
+    object_instance_id: UUID
+    snapshot_id: UUID
+    locations: tuple[UUID, ...]
+    history_before: EventHypothesisHistory
+    history_after: EventHypothesisHistory
+    posterior: MessagePassingResult
+    transition: Any
+    producer_context: Any
+    body_sha256: str
+
+    def body(self) -> tuple[Any, ...]:
+        return (
+            self.runtime_id,
+            self.object_instance_id,
+            self.snapshot_id,
+            self.locations,
+            self.history_before,
+            self.history_after,
+            self.posterior,
+            self.transition,
+            self.producer_context,
+        )
+
+    def validate_content(self) -> None:
+        if self.source_id != content_uuid(
+            "native-pchmp-source", (self.runtime_id, self.history_after.latest.revision_id)
+        ):
+            raise ValueError("posterior source identity does not bind its producer revision")
+        if native_content_sha256(self.body()) != self.body_sha256:
+            raise ValueError("native posterior source content changed")
+        EventHypothesisHistory.model_validate(self.history_before.model_dump())
+        EventHypothesisHistory.model_validate(self.history_after.model_dump())
+        MessagePassingResult.model_validate(self.posterior.model_dump())
+
+    def log_factor(self, receipt: ParticleRevisionReceipt) -> float:
+        state = receipt.proposal.proposed_state
+        if state.instance_association_key != str(self.object_instance_id):
+            raise ValueError("PCHMP projection cannot invent instance-association evidence")
+        probability = self.posterior.posterior_by_hypothesis_id.get(state.event_hypothesis_id, 0.0)
+        if probability <= 0.0:
+            raise ValueError("posterior source has no positive support for this candidate")
+        return log(probability)
+
+
 class NativeParticleWorkspace:
     """Persistent native candidate state with explicit, noncommitting entry semantics."""
 
     def __init__(self) -> None:
+        self.runtime_id = uuid4()
+        self.posterior_sources: dict[UUID, NativePosteriorSource] = {}
+        self.consumed_posterior_sources: dict[UUID, UUID] = {}
         self.records: dict[UUID, NativeParticleRecord] = {}
         self.batch: ParticleRevisionBatch | None = None
         self.receipts: tuple[ParticleRevisionReceipt, ...] = ()
@@ -96,15 +190,62 @@ class NativeParticleWorkspace:
         self.invalidated_revisions: set[UUID] = set()
 
     def state_payload(self) -> dict[str, Any]:
-        return {
-            "records": self.records,
-            "batch": self.batch,
-            "receipts": self.receipts,
-            "input_journal": self.input_journal,
-            "input_bodies": self.input_bodies,
-            "invalidated_revisions": tuple(sorted(self.invalidated_revisions, key=str)),
-            "input_status": "explicit_prepared_inputs_not_calibrated",
-        }
+        return cast(
+            dict[str, Any],
+            native_content_payload(
+                {
+                    "runtime_id": self.runtime_id,
+                    "posterior_sources": self.posterior_sources,
+                    "consumed_posterior_sources": self.consumed_posterior_sources,
+                    "records": self.records,
+                    "batch": self.batch,
+                    "receipts": self.receipts,
+                    "input_journal": self.input_journal,
+                    "input_bodies": self.input_bodies,
+                    "invalidated_revisions": tuple(sorted(self.invalidated_revisions, key=str)),
+                    "input_status": "explicit_prepared_inputs_not_calibrated",
+                }
+            ),
+        )
+
+    def publish_posterior(
+        self,
+        *,
+        object_instance_id: UUID,
+        snapshot_id: UUID,
+        locations: tuple[UUID, ...],
+        history_before: EventHypothesisHistory,
+        history_after: EventHypothesisHistory,
+        posterior: MessagePassingResult,
+        transition: Any,
+        producer_context: Any,
+    ) -> NativePosteriorSource:
+        body = deepcopy(
+            (
+                self.runtime_id,
+                object_instance_id,
+                snapshot_id,
+                locations,
+                history_before,
+                history_after,
+                posterior,
+                transition,
+                producer_context,
+            )
+        )
+        source = NativePosteriorSource(
+            content_uuid(
+                "native-pchmp-source", (self.runtime_id, history_after.latest.revision_id)
+            ),
+            *body,
+            native_content_sha256(body),
+        )
+        source.validate_content()
+        previous = self.posterior_sources.get(source.source_id)
+        if previous is not None and previous != source:
+            raise ValueError("conflicting posterior publication for one producer revision")
+        self.posterior_sources[source.source_id] = source
+        return source
 
     def invalidate_revisions(self, revision_ids: set[UUID]) -> None:
         self.invalidated_revisions.update(
@@ -122,6 +263,7 @@ class NativeParticleWorkspace:
         source_frame: Any,
         ledger_head_sha256: str,
         unresolved_log_weight: float,
+        validated_projections: dict[UUID, NativePosteriorSource] | None = None,
     ) -> ParticleRevisionBatch:
         if not receipts:
             raise ValueError("prepared candidate batch must be nonempty")
@@ -135,7 +277,8 @@ class NativeParticleWorkspace:
         allowed_locations = tuple(allowed_locations)
         if not allowed_locations or len(set(allowed_locations)) != len(allowed_locations):
             raise ValueError("invalid runtime world location support")
-        source_frame_sha256 = content_sha256(source_frame)
+        source_frame_sha256 = native_content_sha256(source_frame)
+        validated_projections = validated_projections or {}
         body = (
             receipts,
             statistics,
@@ -144,8 +287,9 @@ class NativeParticleWorkspace:
             ledger_head_sha256,
             unresolved_log_weight,
             allowed_locations,
+            validated_projections,
         )
-        fingerprint = content_sha256(body)
+        fingerprint = native_content_sha256(body)
         cluster = receipts[0].proposal.evidence_cluster_id
         if cluster in self.input_journal:
             if self.input_journal[cluster] != fingerprint:
@@ -161,12 +305,22 @@ class NativeParticleWorkspace:
         records = dict(self.records)
         for receipt in receipts:
             proposal, state = receipt.proposal, receipt.proposal.proposed_state
-            # A current snapshot UUID is not a posterior-consumption authority.
-            # No projection resolver/permission binding exists on this native
-            # entry yet; evaluator-local projection paths are not that binding.
             if receipt.evidence_semantics != "raw_observation_likelihood":
-                raise ValueError("posterior projection consumption is not bound in native runtime")
-            if receipt.source_posterior_snapshot_id is not None:
+                source = validated_projections.get(state.particle_id)
+                if source is None or self.posterior_sources.get(source.source_id) is not source:
+                    raise ValueError(
+                        "posterior projection consumption is not bound in native runtime"
+                    )
+                source.validate_content()
+                if source.source_id in self.consumed_posterior_sources:
+                    raise ValueError("posterior evidence was already consumed by a previous batch")
+                if (
+                    source.runtime_id != self.runtime_id
+                    or receipt.source_posterior_snapshot_id != source.source_id
+                    or receipt.posterior_projection_log_factor != source.log_factor(receipt)
+                ):
+                    raise ValueError("posterior factor or runtime source mismatch")
+            elif receipt.source_posterior_snapshot_id is not None:
                 raise ValueError("raw likelihood cannot claim a posterior source")
             if proposal.proposer_model_version != "explicit-prepared-candidates@1":
                 raise ValueError("neural/model proposal requires a valid selected artifact binding")
@@ -260,6 +414,9 @@ class NativeParticleWorkspace:
             receipts,
             {**self.input_journal, cluster: fingerprint},
             {**self.input_bodies, cluster: body},
+        )
+        self.consumed_posterior_sources.update(
+            {source.source_id: cluster for source in validated_projections.values()}
         )
         return batch
 

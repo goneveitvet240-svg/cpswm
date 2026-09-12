@@ -23,6 +23,7 @@ import numpy as np
 
 from cpswm.system.continual.hybrid_statistics import HybridStatisticLedger
 from cpswm.system.reproducibility import content_sha256
+from cpswm.system.structure_two_particle_workspace import native_content_sha256
 
 _UUID = re.compile(r"[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}")
 
@@ -46,6 +47,11 @@ def semantic_memory_state(core: Any) -> dict[str, Any]:
         for version, binding in enumerate(history):
             bind(binding.snapshot_id, f"published:{index}:{version}")
     bind(core.current_snapshot.snapshot_id, "current_snapshot")
+    bind(core._particle_workspace.runtime_id, "native_particle_runtime")
+    for index, source in enumerate(core._particle_workspace.posterior_sources.values()):
+        source.validate_content()
+        bind(source.source_id, f"native_posterior:{index}")
+        bind(source.snapshot_id, f"native_posterior_snapshot:{index}")
 
     history_hashes: dict[str, str] = {}
     revisions_to_normalize = {}
@@ -278,7 +284,25 @@ def semantic_memory_state(core: Any) -> dict[str, Any]:
         """Translate verified ledger-prefix references, retaining full bodies."""
         value = canonical(value)
         if isinstance(value, dict):
-            return {key: prepared(item) for key, item in value.items()}
+            normalized = {key: prepared(item) for key, item in value.items()}
+            if {"body_sha256", "history_before", "posterior", "producer_context"} <= value.keys():
+                normalized["body_sha256"] = content_sha256(
+                    tuple(
+                        normalized[key]
+                        for key in (
+                            "runtime_id",
+                            "object_instance_id",
+                            "snapshot_id",
+                            "locations",
+                            "history_before",
+                            "history_after",
+                            "posterior",
+                            "transition",
+                            "producer_context",
+                        )
+                    )
+                )
+            return normalized
         if isinstance(value, list):
             return [prepared(item) for item in value]
         if isinstance(value, str):
@@ -293,7 +317,7 @@ def semantic_memory_state(core: Any) -> dict[str, Any]:
     particle_payload = prepared(workspace.state_payload())
     for pid, particle in workspace.records.items():
         if (
-            particle.source_frame_sha256 != content_sha256(particle.source_frame)
+            particle.source_frame_sha256 != native_content_sha256(particle.source_frame)
             or particle.ledger_head_sha256 not in ledger_hashes
             or particle.state.statistic_state_ref != particle.statistics.reference
             or particle.state.ledger_lineage_ref != "hybrid-ledger:" + particle.ledger_head_sha256
@@ -310,7 +334,7 @@ def semantic_memory_state(core: Any) -> dict[str, Any]:
         raise ValueError("missing raw prepared input journal body")
     for cluster, digest in workspace.input_journal.items():
         body = workspace.input_bodies[cluster]
-        if digest != content_sha256(body):
+        if digest != native_content_sha256(body):
             raise ValueError("invalid raw prepared input digest")
         particle_payload["input_journal"][str(canonical(cluster))] = content_sha256(prepared(body))
     return {

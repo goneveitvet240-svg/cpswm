@@ -2,6 +2,7 @@
 
 ## A 两轮对抗审核交付 2026-09-13：CHANGES_REQUIRED
 
+- 远端审核证据提交 `becefb3db648db454fb752e2d84f0d24d0378e94` 已推送并 ls-remote 核验一致。实现草稿 PR https://github.com/goneveitvet240-svg/cpswm/pull/10 ；审核草稿 PR https://github.com/goneveitvet240-svg/cpswm/pull/11 。本行之后的状态登记提交不改变审核脚本/生产源码或已封存证据。
 - 上一批完整实现和约 61MB 历史证据已获用户公开授权、推送并核验：`codex/pc-a-proposal-scheduler-20260913` = `5ec6204dfecc9137523b6c0e5dfb66658e574d41`，实际生产代码 `dbc7ec9c9b61ca2a029c3bd59ffbce136c4f7afe`。下文“推送受阻”保留为历史。
 - 审核分支 `codex/pc-a-proposal-two-round-audit-20260913`，base 即上述 `5ec6204d...`；审核脚本冻结 `29076b65e7168218b885c890119757caed42f1c8`。生产算法改动 0；不是电脑 B 独立验收，不自动合并共享分支。
 - 最终 `python tools/structure_two_proposal_audit_runner.py run_03`：原 125 passed / 1 warning；第一轮 1 passed / 6 failed；第二轮 1 passed / 7 failed。13 个 OPEN 断言归并为 7 类缺陷：完整提议后果绑定、三时钟、传感字段/数组真值夹带、释放时钟、重复帧引用、数值坐标别名、公共可变日程。修复尚未实施。

@@ -1,5 +1,11 @@
 # 电脑 A 状态
 
+## A G1 修复与两轮修后审核开工 2026-09-13
+
+- 分支 `codex/pc-a-proposal-g1-fix-20260913`，base `f95086718ad2d7d6f0707bcae1dc6758d3417233`；独立工作目录 `/private/tmp/cpswm-pc-a-proposal-g1-fix-20260913`。fetch 已核验 B `c366cad0a92593bb2c4c44db7e8d3408a2b5cc9c`、集成 `bdec3ee21b7db361e390496d97ff2eb30390dc6c`。
+- 实施 A1–A7、分区隔离/稳定样本连接/地点来源合同；随后两轮修后对抗审核。只改 data_preflight 及专属工具/测试，不接管 B 主干边界、不自动合并、不启动训练。
+- 继续检查真实观测/人物事件和原生监督接入条件。人物后端、感知校准、网络参数、连续状态和预算尚未明确，不使用组件或手填标签替代真实生产者。完成度按工程修复、独立复核、原生链和科学验收分别报告。
+
 ## A 两轮对抗审核交付 2026-09-13：CHANGES_REQUIRED
 
 - 远端审核证据提交 `becefb3db648db454fb752e2d84f0d24d0378e94` 已推送并 ls-remote 核验一致。实现草稿 PR https://github.com/goneveitvet240-svg/cpswm/pull/10 ；审核草稿 PR https://github.com/goneveitvet240-svg/cpswm/pull/11 。本行之后的状态登记提交不改变审核脚本/生产源码或已封存证据。

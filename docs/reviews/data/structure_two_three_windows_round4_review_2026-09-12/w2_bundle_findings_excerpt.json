@@ -1,0 +1,35 @@
+{
+  "comparison_fairness": "NOT_ESTABLISHED",
+  "scientific_validity": "NOT_ESTABLISHED",
+  "observations": {
+    "amg_missing_owner_steps": 53,
+    "full_fast_different_steps": 0,
+    "future_support_steps": 1040,
+    "p5_commit_counts": {
+      "0": 1920
+    },
+    "p5_minus_amg_errors": -17,
+    "search_equal_steps": 1920
+  },
+  "overall": {
+    "categories": {
+      "both_correct": 1818,
+      "both_wrong": 85,
+      "p5_loses": 0,
+      "p5_wins": 17
+    },
+    "episodes": 60,
+    "errors": {
+      "direct_p5_full_eager": 85,
+      "independently_tuned_amg": 102,
+      "learned_matched_two_stage": 533
+    },
+    "p5_minus_amg_error": -0.008854166666666666,
+    "steps": 1920
+  },
+  "selection_truth_access_count": 17280,
+  "training_truth_count": 20,
+  "model_fits": 12,
+  "learned_candidates": 24,
+  "amg_candidates": 3
+}

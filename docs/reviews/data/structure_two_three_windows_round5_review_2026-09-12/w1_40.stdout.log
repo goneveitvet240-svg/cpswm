@@ -1,0 +1,19 @@
+........................F...............                                 [100%]
+=================================== FAILURES ===================================
+__________ test_real_cli_without_unified_root_can_only_record_waiting __________
+
+    def test_real_cli_without_unified_root_can_only_record_waiting():
+        run = ROOT / RUN_AREA / ("fixture_waiting_" + uuid.uuid4().hex)
+        result = command([sys.executable, str(TOOL), "--run-dir", str(run)], cwd=ROOT, timeout=90)
+>       assert result.returncode == 0, result.stderr
+E       AssertionError: {"status": "FAILED", "error": "unsafe test/import environment: PYTHONPATH"}
+E         
+E       assert 1 == 0
+E        +  where 1 = CompletedProcess(args=['/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/.venv/bin/python', '/p...55f'], returncode=1, stdout='', stderr='{"status": "FAILED", "error": "unsafe test/import environment: PYTHONPATH"}\n').returncode
+
+tests/test_structure_two_unified_acceptance.py:471: AssertionError
+----------------------------- Captured stdout call -----------------------------
+{"argv": ["/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/.venv/bin/python", "/private/tmp/s2-review5-w1.boRzcK/tools/structure_two_unified_acceptance.py", "--run-dir", "/private/tmp/s2-review5-w1.boRzcK/docs/reviews/data/structure_two_unified_acceptance_runs/fixture_waiting_3404b2bd55e345948662475433fe055f"], "cwd": "/private/tmp/s2-review5-w1.boRzcK", "exit_code": 1, "stdout": "", "stderr": "{\"status\": \"FAILED\", \"error\": \"unsafe test/import environment: PYTHONPATH\"}\n"}
+=========================== short test summary info ============================
+FAILED tests/test_structure_two_unified_acceptance.py::test_real_cli_without_unified_root_can_only_record_waiting
+1 failed, 39 passed in 29.34s

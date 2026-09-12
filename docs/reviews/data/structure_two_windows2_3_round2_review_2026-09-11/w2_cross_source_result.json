@@ -1,0 +1,34 @@
+{
+  "audit_type": "independent_real_cli_cross_worktree_source_substitution",
+  "declared_cli_root": "/private/tmp/s2-review2-w2.7Ri3Jk",
+  "loaded_pythonpath_root": "/private/tmp/s2-review2-w2-source-root.YhHH9K",
+  "declared_diagnostic_source_sha256": "83e02ea5ae86bf1244312d654ce73df7b88f65c4bf242d63c82a7f8128b438f3",
+  "loaded_diagnostic_source_sha256": "86be7f7fbded88b9dba98ae234b995526cf8a24246e01812b274a717aa666f96",
+  "isolated_source_change": "_p5_readouts state_counts: name: 999 if name == '_committed_events' else len(getattr(core, name))",
+  "original_bundles_modified": false,
+  "interpreter_or_third_party_libraries_modified": false,
+  "precomputed_reference_injected": false,
+  "batch_exit_code": 1,
+  "cli_response": {
+    "fresh_replay_performed": true,
+    "results": [
+      {
+        "bundle": "/private/tmp/s2-review2-w2.7Ri3Jk/docs/reviews/data/structure_two_comparison_audit_window2_r1_2026-09-11/bundle_v2",
+        "error": "FRESH_REPLAY_STEP_MISMATCH: steps[0].raw_state.p5_readouts.state_counts._committed_events",
+        "stage": "fresh_replay_comparison",
+        "status": "REJECTED"
+      },
+      {
+        "bundle": "/private/tmp/s2-review2-w2.7Ri3Jk/docs/reviews/data/structure_two_comparison_audit_window2_r1_2026-09-11/counterexamples/r1_current_source",
+        "episodes": 60,
+        "formal_scientific_verification": false,
+        "independent_historical_custody": false,
+        "input_snapshot_sha256": "1f1c1171def35041145179165f69b653882fe0787d60617fff7d7b874288f5f9",
+        "semantic_steps_sha256": "bcdf5bd0f833d91fca497f9d1f7b8d6103fb213ef9f100d7ff8b636eaed989c1",
+        "status": "CURRENT_SOURCE_FRESH_REPLAY_MATCH",
+        "steps": 1920
+      }
+    ],
+    "verification_mode": "CURRENT_SOURCE_FRESH_REPLAY"
+  }
+}

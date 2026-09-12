@@ -1,0 +1,39 @@
+{
+  "oracle_refreeze": {
+    "oracle_accepts_unchanged_corrected_state": false,
+    "error": "live revision membership mismatch",
+    "production_state_unchanged": true,
+    "actual_committed": 2,
+    "reference_committed": 1
+  },
+  "semantic_correction": {
+    "before_semantic_equal": true,
+    "after_semantic_equal": false,
+    "feedback_record_and_action_ids_identical": true,
+    "returned_operations": [
+      [
+        "correct"
+      ],
+      [
+        "correct"
+      ]
+    ],
+    "difference_paths": [
+      ".qualifications.correction:0.authorizations[0].basis_sha256"
+    ],
+    "semantic_hashes": [
+      "f4adeac19f28aa8e8f9b83423a3e6fcb1ea9ddd60049fc79bbd21211005db226",
+      "7a77f70e31ada4609a42efe22f39ea4d10158d93fa42a7c5b555bc92ac4766c8"
+    ]
+  },
+  "direct_revision": {
+    "public_entry": "core.apply_event_revision_outcome",
+    "returned_operations": [
+      "correct"
+    ],
+    "old_still_committed": false,
+    "new_committed": false,
+    "new_quarantined": false,
+    "ccrr_conclusion": "stay"
+  }
+}

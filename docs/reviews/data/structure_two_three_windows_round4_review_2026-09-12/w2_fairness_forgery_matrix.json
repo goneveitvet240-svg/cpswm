@@ -1,0 +1,71 @@
+{
+  "cases": [
+    "future_support",
+    "missing_owner",
+    "costs",
+    "selection_access",
+    "consumer_features",
+    "fairness_claim"
+  ],
+  "exit_code": 1,
+  "result": {
+    "fresh_replay_performed": true,
+    "results": [
+      {
+        "bundle": "/private/tmp/s2-review4-w2.pdinJv/docs/reviews/data/structure_two_comparison_audit_window2_fairness_2026-09-12/bundle_v4",
+        "episodes": 60,
+        "formal_scientific_verification": false,
+        "independent_historical_custody": false,
+        "input_snapshot_sha256": "67f29fd3ee676d492b536a746dc698c6d6b0cbdeb4317c930e54b4efde65ec12",
+        "semantic_steps_sha256": "a14419c97cc848dfb60610d1df88fd4f7bdc3a87146c396c1741104752756d4e",
+        "status": "CURRENT_SOURCE_FRESH_REPLAY_MATCH",
+        "steps": 1920
+      },
+      {
+        "bundle": "/private/var/folders/x2/000r8p0n6s393lj2sg8wk5f40000gn/T/pytest-of-pangwei/pytest-1663/popen-gw3/test_complete_fairness_forgeri0/future_support",
+        "error": "FRESH_REPLAY_STEP_MISMATCH: steps[0].future_support_count",
+        "stage": "fresh_replay_comparison",
+        "status": "REJECTED"
+      },
+      {
+        "bundle": "/private/var/folders/x2/000r8p0n6s393lj2sg8wk5f40000gn/T/pytest-of-pangwei/pytest-1663/popen-gw3/test_complete_fairness_forgeri0/missing_owner",
+        "error": "FRESH_REPLAY_STEP_MISMATCH: steps[128].fairness_step.amg_owner_missing",
+        "stage": "fresh_replay_comparison",
+        "status": "REJECTED"
+      },
+      {
+        "bundle": "/private/var/folders/x2/000r8p0n6s393lj2sg8wk5f40000gn/T/pytest-of-pangwei/pytest-1663/popen-gw3/test_complete_fairness_forgeri0/costs",
+        "error": "FRESH_REPLAY_STEP_MISMATCH: steps[0].fairness_step.costs.direct_p5_full_eager.time_cost",
+        "stage": "fresh_replay_comparison",
+        "status": "REJECTED"
+      },
+      {
+        "bundle": "/private/var/folders/x2/000r8p0n6s393lj2sg8wk5f40000gn/T/pytest-of-pangwei/pytest-1663/popen-gw3/test_complete_fairness_forgeri0/selection_access",
+        "error": "fresh diagnostic differs at audit.fairness_execution.selection.access_events.length (0 != 17281)",
+        "stage": "fresh_replay_comparison",
+        "status": "REJECTED"
+      },
+      {
+        "bundle": "/private/var/folders/x2/000r8p0n6s393lj2sg8wk5f40000gn/T/pytest-of-pangwei/pytest-1663/popen-gw3/test_complete_fairness_forgeri0/consumer_features",
+        "error": "fresh diagnostic differs at audit.fairness_execution.consumer_probe.returns[5].feature_values[0]",
+        "stage": "fresh_replay_comparison",
+        "status": "REJECTED"
+      },
+      {
+        "bundle": "/private/var/folders/x2/000r8p0n6s393lj2sg8wk5f40000gn/T/pytest-of-pangwei/pytest-1663/popen-gw3/test_complete_fairness_forgeri0/fairness_claim",
+        "error": "fresh diagnostic differs at audit.fairness.comparison_fairness",
+        "stage": "fresh_replay_comparison",
+        "status": "REJECTED"
+      }
+    ],
+    "execution_source": {
+      "declared_root": "/private/tmp/s2-review4-w2.pdinJv",
+      "cli": "/private/tmp/s2-review4-w2.pdinJv/apps/evaluation_runner/summarize_structure_two_comparison_audit.py",
+      "cli_sha256": "574c686e4835e32784c36e9aedb9c69efe2e4ba53afe1695f82dc6666158ba11",
+      "guard_sha256": "001bb84ca09378f9535d099e6de75a0e97b1dc64d03a88725a6aa483c0a0fc6c",
+      "loaded_module_count": 162
+    }
+  },
+  "original_full_artifact": "/private/var/folders/x2/000r8p0n6s393lj2sg8wk5f40000gn/T/pytest-of-pangwei/pytest-1663/popen-gw3/test_complete_fairness_forgeri0/evidence/fairness_forgery_matrix.json",
+  "scope": "Compact extraction; full loaded-module map omitted. Original retained at path above."
+}

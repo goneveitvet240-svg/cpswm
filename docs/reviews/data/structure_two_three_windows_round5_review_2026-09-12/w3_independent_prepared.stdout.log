@@ -1,0 +1,126 @@
+{
+  "direct_rollback": {
+    "status": "CORRECT not admitted by CCRR; transaction rolled back",
+    "complete_observable_unchanged": true,
+    "operator_instances_unchanged": true,
+    "old_still_committed": true,
+    "new_absent": true
+  },
+  "prepared": [
+    {
+      "case": "control",
+      "source": "/private/tmp/s2-review5-w3.o33e1p/src/cpswm/system/prototype_spine.py",
+      "status": "RETURNED",
+      "weights": [
+        0.631578947368421,
+        0.2105263157894737
+      ],
+      "probabilities": {
+        "44b33099-dee8-2a8b-cc46-e34a555d6659": 0.3609022556390977,
+        "23a2ff08-fd31-2108-19c8-56bbe1bdd947": 0.09022556390977443,
+        "a5a97d44-a72a-f6e7-3ef1-72fba6bb29d3": 0.09022556390977443,
+        "b4634a80-b40c-5fe8-e981-d10b5cfd9d0d": 0.09022556390977443
+      },
+      "unresolved": 0.368421052631579,
+      "total": 1.0,
+      "outside_support": [],
+      "claimed_posterior_source": "None",
+      "current_snapshot": "ce0cb635-e246-4f1a-a423-fd67b8f41f03",
+      "ledger_unchanged": true,
+      "default_action_unchanged": true
+    },
+    {
+      "case": "foreign_location",
+      "source": "/private/tmp/s2-review5-w3.o33e1p/src/cpswm/system/prototype_spine.py",
+      "status": "RETURNED",
+      "weights": [
+        0.631578947368421,
+        0.2105263157894737
+      ],
+      "probabilities": {
+        "00000000-0000-0000-0000-000000015f90": 0.3609022556390977,
+        "00000000-0000-0000-0000-000000015f91": 0.09022556390977443,
+        "00000000-0000-0000-0000-000000015f92": 0.09022556390977443,
+        "00000000-0000-0000-0000-000000015f93": 0.09022556390977443
+      },
+      "unresolved": 0.368421052631579,
+      "total": 1.0,
+      "outside_support": [
+        "00000000-0000-0000-0000-000000015f90",
+        "00000000-0000-0000-0000-000000015f91",
+        "00000000-0000-0000-0000-000000015f92",
+        "00000000-0000-0000-0000-000000015f93"
+      ],
+      "claimed_posterior_source": "None",
+      "current_snapshot": "5752d338-5189-4240-8367-80aef7d97005",
+      "ledger_unchanged": true,
+      "default_action_unchanged": true
+    },
+    {
+      "case": "alpha_overflow",
+      "source": "/private/tmp/s2-review5-w3.o33e1p/src/cpswm/system/prototype_spine.py",
+      "status": "RETURNED",
+      "weights": [
+        0.631578947368421,
+        0.2105263157894737
+      ],
+      "probabilities": {
+        "44b33099-dee8-2a8b-cc46-e34a555d6659": 0.0,
+        "23a2ff08-fd31-2108-19c8-56bbe1bdd947": 0.0,
+        "a5a97d44-a72a-f6e7-3ef1-72fba6bb29d3": 0.0,
+        "b4634a80-b40c-5fe8-e981-d10b5cfd9d0d": 0.0
+      },
+      "unresolved": 0.368421052631579,
+      "total": 0.368421052631579,
+      "outside_support": [],
+      "claimed_posterior_source": "None",
+      "current_snapshot": "98893ca3-10aa-4f5e-9371-f22ade1a08db",
+      "ledger_unchanged": true,
+      "default_action_unchanged": true
+    },
+    {
+      "case": "foreign_posterior",
+      "source": "/private/tmp/s2-review5-w3.o33e1p/src/cpswm/system/prototype_spine.py",
+      "status": "RETURNED",
+      "weights": [
+        0.9999735174089849,
+        1.5132909151570956e-05
+      ],
+      "probabilities": {
+        "44b33099-dee8-2a8b-cc46-e34a555d6659": 0.57141343851942,
+        "23a2ff08-fd31-2108-19c8-56bbe1bdd947": 0.142853359629855,
+        "a5a97d44-a72a-f6e7-3ef1-72fba6bb29d3": 0.142853359629855,
+        "b4634a80-b40c-5fe8-e981-d10b5cfd9d0d": 0.142853359629855
+      },
+      "unresolved": 2.648259101524916e-05,
+      "total": 1.0000000000000002,
+      "outside_support": [],
+      "claimed_posterior_source": "eecf1320-a8ef-4e2f-a05d-cfc10c82b754",
+      "current_snapshot": "9263c6e0-be4a-4469-8112-af8bcfadeed3",
+      "ledger_unchanged": true,
+      "default_action_unchanged": true
+    },
+    {
+      "case": "weight_overflow",
+      "source": "/private/tmp/s2-review5-w3.o33e1p/src/cpswm/system/prototype_spine.py",
+      "status": "RETURNED",
+      "weights": [
+        0.0,
+        0.5714285714285714
+      ],
+      "probabilities": {
+        "44b33099-dee8-2a8b-cc46-e34a555d6659": 0.0,
+        "23a2ff08-fd31-2108-19c8-56bbe1bdd947": 0.0,
+        "a5a97d44-a72a-f6e7-3ef1-72fba6bb29d3": 0.0,
+        "b4634a80-b40c-5fe8-e981-d10b5cfd9d0d": 0.0
+      },
+      "unresolved": 1.0,
+      "total": 1.0,
+      "outside_support": [],
+      "claimed_posterior_source": "None",
+      "current_snapshot": "262fd26d-54a2-484a-9370-0a54667c48ef",
+      "ledger_unchanged": true,
+      "default_action_unchanged": true
+    }
+  ]
+}

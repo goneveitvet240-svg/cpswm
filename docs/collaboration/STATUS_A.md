@@ -1,5 +1,12 @@
 # 电脑 A 状态
 
+## A 多人初始化因果诊断与修复开工 2026-09-13
+
+- 分支 `codex/pc-a-multiagent-lifecycle-20260913`，base `6a008aedd9c588a7716206eba60b3a57f9fc94d4`；独立工作目录 `/private/tmp/cpswm-pc-a-multiagent-lifecycle-20260913`。
+- 本轮 fetch 成功：B `c366cad0a92593bb2c4c44db7e8d3408a2b5cc9c`，集成 `bdec3ee21b7db361e390496d97ff2eb30390dc6c`，均未变化。只写本批仿真工具、专属测试/报告；不写 B 主干修复，不自动合并，不训练。
+- 先做同运行程序普通场景/固定 ProcTHOR 房屋 × 1/2 agent 对照，逐步记录实际请求及响应、原始 agent 集合、动作寻址和程序集来源；随后根据实测修复并执行两轮作者对抗审核。
+- 开工未测。多人底层能力、人物执行、真实监督、完整联合闭环分别验收；未安装 Unity Editor，若需定制构建将先验证工具链，不把未编译补丁作为已修复交付。
+
 ## A G1 修复与修后两轮审核交付 2026-09-13
 
 - 公开证据提交 `975ca330da8e84fd545454e8b14b046b8fd36584` 已 push / ls-remote 核验一致；修复草稿 PR https://github.com/goneveitvet240-svg/cpswm/pull/12 。393 个归档工件与留存 manifest 逐项一致，工作树无生产路径未提交修改；后续状态登记不改变冻结代码/证据。

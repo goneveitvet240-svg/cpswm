@@ -1,0 +1,519 @@
+{
+  "schema_version": "pc-b-w3-windows-lf-comparison-v1",
+  "generated_at": "2026-09-12T16:04:46.2413023Z",
+  "scope": "Read-only triage of the first exact-R7-812 post-fix run, its LF control, and low-load lock comparison; no production source or original evidence was modified.",
+  "tested_commit": {
+    "sha": "23506024213d517ba4bab65d4318663163b00913",
+    "tree": "c433367468e5cae4d76a454c1b7946b9931d605c"
+  },
+  "worktrees": {
+    "windows_crlf": {
+      "path": "F:\\庞惟\\codex\\cpswm-w3-validation-2350602",
+      "head": "23506024213d517ba4bab65d4318663163b00913",
+      "tree": "c433367468e5cae4d76a454c1b7946b9931d605c",
+      "git_status_porcelain_v2": "",
+      "effective_core_autocrlf": "true",
+      "core_eol": "unset",
+      "repository_gitattributes": "absent",
+      "observed_index_and_worktree_eol": "i/lf w/crlf"
+    },
+    "lf_control": {
+      "path": "F:\\庞惟\\codex\\cpswm-w3-validation-lf-2350602",
+      "head": "23506024213d517ba4bab65d4318663163b00913",
+      "tree": "c433367468e5cae4d76a454c1b7946b9931d605c",
+      "git_status_porcelain_v2": "",
+      "effective_core_autocrlf": "true",
+      "core_eol": "unset",
+      "repository_gitattributes": "absent",
+      "observed_index_and_worktree_eol": "i/lf w/lf"
+    }
+  },
+  "comparison_method": {
+    "byte_sha": "SHA-256 over the exact working-tree bytes",
+    "git_blob": "HEAD:<path> object id plus git hash-object --no-filters over working-tree bytes",
+    "line_endings": "Counts of CRLF pairs, LF bytes, bare LF, CR bytes, and bare CR from raw bytes",
+    "normalization_probe": "Replace every CRLF byte pair with LF and SHA-256 the resulting bytes",
+    "fixed_expectation_sources": [
+      "configs/project_two_experiments/structure_two_p5_debt_replay_confirmation_v0_1.json#/trigger/posthoc_result_file_sha256",
+      "src/cpswm/system/evaluation_operations/structure_two_task9_protocol.py:44-46",
+      "configs/project_two_experiments/structure_two_neural_amortized_manifest_v0_1.json#/sealed_seed_file_sha256",
+      "benchmarks/structure_two/structure_two_stateful_full_joint_v0_1.json#/source_binding/config/sha256"
+    ]
+  },
+  "files": [
+    {
+      "id": "p5_posthoc",
+      "path": "benchmarks/structure_two/structure_two_p5_readout_posthoc_diagnostic_v0_1.json",
+      "failure_count": 2,
+      "fixed_expected_sha256": "98dcb3c35b15f41a523645ef3b9d3415e682882ec980539a337110bdc267658c",
+      "fixed_expectation_source": "configs/project_two_experiments/structure_two_p5_debt_replay_confirmation_v0_1.json#/trigger/posthoc_result_file_sha256",
+      "head_blob_oid_sha1": "5bb3cc23c133acfb912c39dcb0f45df43452b71e",
+      "head_blob_size_bytes": 148547,
+      "windows_crlf": {
+        "size_bytes": 152253,
+        "sha256": "29c2cec22689e0a0bad8980560cd5f4abfe535556dc315c8a3b27710b00284ec",
+        "raw_git_oid_sha1": "69b4ffe90ee78ec754a0e6f6568b9e314027000e",
+        "crlf_count": 3706,
+        "lf_byte_count": 3706,
+        "bare_lf_count": 0,
+        "cr_byte_count": 3706,
+        "bare_cr_count": 0,
+        "logical_line_count": 3706,
+        "ends_with_lf": true,
+        "crlf_to_lf_sha256": "98dcb3c35b15f41a523645ef3b9d3415e682882ec980539a337110bdc267658c",
+        "ls_files_eol": "i/lf w/crlf attr/"
+      },
+      "lf_control": {
+        "size_bytes": 148547,
+        "sha256": "98dcb3c35b15f41a523645ef3b9d3415e682882ec980539a337110bdc267658c",
+        "raw_git_oid_sha1": "5bb3cc23c133acfb912c39dcb0f45df43452b71e",
+        "crlf_count": 0,
+        "lf_byte_count": 3706,
+        "bare_lf_count": 3706,
+        "cr_byte_count": 0,
+        "bare_cr_count": 0,
+        "logical_line_count": 3706,
+        "ends_with_lf": true,
+        "ls_files_eol": "i/lf w/lf attr/"
+      },
+      "checks": {
+        "windows_crlf_matches_expected": false,
+        "lf_control_matches_expected": true,
+        "windows_crlf_normalizes_to_lf_control": true,
+        "lf_control_raw_blob_matches_head_blob": true,
+        "size_delta_equals_crlf_count": true
+      }
+    },
+    {
+      "id": "selected_method",
+      "path": "configs/project_two_experiments/structure_two_selected_method_v0_1.json",
+      "failure_count": 1,
+      "fixed_expected_sha256": "eff5e472346209053fe867e2ab53fdc455861e1e20125f192e6993e33bb33951",
+      "fixed_expectation_source": "src/cpswm/system/evaluation_operations/structure_two_task9_protocol.py:44-46",
+      "head_blob_oid_sha1": "a97e97ef4da9de3cdafcd9e21045f9ffb8ed243c",
+      "head_blob_size_bytes": 1822,
+      "windows_crlf": {
+        "size_bytes": 1893,
+        "sha256": "f842fe192d691356cb32fc76fde7695744e58ddf34ff6d6a00633529622fa982",
+        "raw_git_oid_sha1": "1547b8b11d472a416027d0f67f8a87f26539eb54",
+        "crlf_count": 71,
+        "lf_byte_count": 71,
+        "bare_lf_count": 0,
+        "cr_byte_count": 71,
+        "bare_cr_count": 0,
+        "logical_line_count": 71,
+        "ends_with_lf": true,
+        "crlf_to_lf_sha256": "eff5e472346209053fe867e2ab53fdc455861e1e20125f192e6993e33bb33951",
+        "ls_files_eol": "i/lf w/crlf attr/"
+      },
+      "lf_control": {
+        "size_bytes": 1822,
+        "sha256": "eff5e472346209053fe867e2ab53fdc455861e1e20125f192e6993e33bb33951",
+        "raw_git_oid_sha1": "a97e97ef4da9de3cdafcd9e21045f9ffb8ed243c",
+        "crlf_count": 0,
+        "lf_byte_count": 71,
+        "bare_lf_count": 71,
+        "cr_byte_count": 0,
+        "bare_cr_count": 0,
+        "logical_line_count": 71,
+        "ends_with_lf": true,
+        "ls_files_eol": "i/lf w/lf attr/"
+      },
+      "checks": {
+        "windows_crlf_matches_expected": false,
+        "lf_control_matches_expected": true,
+        "windows_crlf_normalizes_to_lf_control": true,
+        "lf_control_raw_blob_matches_head_blob": true,
+        "size_delta_equals_crlf_count": true
+      }
+    },
+    {
+      "id": "neural_sealed_seeds",
+      "path": "configs/project_two_experiments/structure_two_neural_amortized_sealed_seeds_v0_1.json",
+      "failure_count": 1,
+      "fixed_expected_sha256": "c55e8cc470c08bfdb252fc24b825ff16e2bd55f71b82f9068cbfa2aa14b7dcf9",
+      "fixed_expectation_source": "configs/project_two_experiments/structure_two_neural_amortized_manifest_v0_1.json#/sealed_seed_file_sha256",
+      "head_blob_oid_sha1": "4b09749b67cb0f525acf289c9c44a00f7840f0bd",
+      "head_blob_size_bytes": 277,
+      "windows_crlf": {
+        "size_bytes": 283,
+        "sha256": "ff73dbedd4264952de984a12a39ad24776e5b4cc3d3221fc04bbedb8d9c0a8ca",
+        "raw_git_oid_sha1": "174b782241f95b43b2ff7dc8da59e98273b85aa7",
+        "crlf_count": 6,
+        "lf_byte_count": 6,
+        "bare_lf_count": 0,
+        "cr_byte_count": 6,
+        "bare_cr_count": 0,
+        "logical_line_count": 6,
+        "ends_with_lf": true,
+        "crlf_to_lf_sha256": "c55e8cc470c08bfdb252fc24b825ff16e2bd55f71b82f9068cbfa2aa14b7dcf9",
+        "ls_files_eol": "i/lf w/crlf attr/"
+      },
+      "lf_control": {
+        "size_bytes": 277,
+        "sha256": "c55e8cc470c08bfdb252fc24b825ff16e2bd55f71b82f9068cbfa2aa14b7dcf9",
+        "raw_git_oid_sha1": "4b09749b67cb0f525acf289c9c44a00f7840f0bd",
+        "crlf_count": 0,
+        "lf_byte_count": 6,
+        "bare_lf_count": 6,
+        "cr_byte_count": 0,
+        "bare_cr_count": 0,
+        "logical_line_count": 6,
+        "ends_with_lf": true,
+        "ls_files_eol": "i/lf w/lf attr/"
+      },
+      "checks": {
+        "windows_crlf_matches_expected": false,
+        "lf_control_matches_expected": true,
+        "windows_crlf_normalizes_to_lf_control": true,
+        "lf_control_raw_blob_matches_head_blob": true,
+        "size_delta_equals_crlf_count": true
+      }
+    },
+    {
+      "id": "stateful_config",
+      "path": "configs/project_two_experiments/structure_two_stateful_full_joint_v0_1.json",
+      "failure_count": 5,
+      "fixed_expected_sha256": "cce07302db4b73720701fe026fa29310ac068e45ad0e5f817bab7b660f4c0469",
+      "fixed_expectation_source": "benchmarks/structure_two/structure_two_stateful_full_joint_v0_1.json#/source_binding/config/sha256",
+      "head_blob_oid_sha1": "2931d590d809dccb259e1f6d9d49685fdae69aea",
+      "head_blob_size_bytes": 2405,
+      "windows_crlf": {
+        "size_bytes": 2474,
+        "sha256": "5ab102ef39b3eec371d4fbe645afbd9d486ee741d5d48cee6402b2f6e145e73d",
+        "raw_git_oid_sha1": "4493fcd81d473a576dbe31700dab9028b0209e12",
+        "crlf_count": 69,
+        "lf_byte_count": 69,
+        "bare_lf_count": 0,
+        "cr_byte_count": 69,
+        "bare_cr_count": 0,
+        "logical_line_count": 69,
+        "ends_with_lf": true,
+        "crlf_to_lf_sha256": "cce07302db4b73720701fe026fa29310ac068e45ad0e5f817bab7b660f4c0469",
+        "ls_files_eol": "i/lf w/crlf attr/"
+      },
+      "lf_control": {
+        "size_bytes": 2405,
+        "sha256": "cce07302db4b73720701fe026fa29310ac068e45ad0e5f817bab7b660f4c0469",
+        "raw_git_oid_sha1": "2931d590d809dccb259e1f6d9d49685fdae69aea",
+        "crlf_count": 0,
+        "lf_byte_count": 69,
+        "bare_lf_count": 69,
+        "cr_byte_count": 0,
+        "bare_cr_count": 0,
+        "logical_line_count": 69,
+        "ends_with_lf": true,
+        "ls_files_eol": "i/lf w/lf attr/"
+      },
+      "checks": {
+        "windows_crlf_matches_expected": false,
+        "lf_control_matches_expected": true,
+        "windows_crlf_normalizes_to_lf_control": true,
+        "lf_control_raw_blob_matches_head_blob": true,
+        "size_delta_equals_crlf_count": true
+      }
+    }
+  ],
+  "first_exact_812_run": {
+    "name": "r7_exact_812_postfix_seed0",
+    "working_tree_mode": "Windows CRLF",
+    "started_at": "2026-09-12T23:02:09.093161+08:00",
+    "finished_at": "2026-09-12T23:25:09.588201+08:00",
+    "runner_duration_seconds": 1380.495022,
+    "junit_duration_seconds": 1376.768,
+    "exit_code": 1,
+    "counts": {
+      "tests": 812,
+      "passed": 800,
+      "failed": 12,
+      "errors": 0,
+      "skipped": 0,
+      "xfailed": 0
+    },
+    "classification": {
+      "confirmed_repair_sha_deadline_regression": 3,
+      "immediate_crlf_raw_byte_identity_failure": 9,
+      "resource_contention_only": 0
+    },
+    "artifacts": {
+      "stdout": {
+        "file": "r7_exact_812_postfix_seed0.stdout.log",
+        "size_bytes": 40949,
+        "sha256": "e52a868cb8d441cf5c3a09e612d5eb9285f5a5af5ddef65899e262a1f04fd2e9"
+      },
+      "stderr": {
+        "file": "r7_exact_812_postfix_seed0.stderr.log",
+        "size_bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "junit": {
+        "file": "r7_exact_812_postfix_seed0.junit.xml",
+        "size_bytes": 168047,
+        "sha256": "30825bb4c219d940740d91914b6a249a6f472a9c0685a19151a4dbb9fb2a78d4"
+      },
+      "result": {
+        "file": "r7_exact_812_postfix_seed0.result.json",
+        "size_bytes": 30858,
+        "sha256": "7a3ef81ef9ee9bdb7a5ad81d62291af0ad5250b7f3efadf5ab6df36eb3da12a3"
+      }
+    },
+    "preservation": "Permanent failed-run evidence; later controls must not overwrite or relabel it."
+  },
+  "lf_exact_812_control": {
+    "name": "r7_exact_812_postfix_lf_seed0",
+    "working_tree": "F:\\庞惟\\codex\\cpswm-w3-validation-lf-2350602",
+    "started_at": "2026-09-12T23:36:56.469185+08:00",
+    "finished_at": "2026-09-13T00:00:03.037018+08:00",
+    "runner_duration_seconds": 1386.567813,
+    "junit_duration_seconds": 1382.517,
+    "exit_code": 1,
+    "counts": {
+      "tests": 812,
+      "passed": 804,
+      "failed": 8,
+      "errors": 0,
+      "skipped": 0,
+      "xfailed": 0
+    },
+    "failures": [
+      {
+        "node": "tests/test_structure_two_execution_interface.py::test_cross_thread_lock_handoff_fails_without_waiting_for_foreign_release[core]",
+        "time_seconds": 1.583,
+        "category": "repair_sha_deadline_regression"
+      },
+      {
+        "node": "tests/test_structure_two_execution_interface.py::test_cross_thread_lock_handoff_fails_without_waiting_for_foreign_release[wrapper]",
+        "time_seconds": 1.388,
+        "category": "repair_sha_deadline_regression"
+      },
+      {
+        "node": "tests/test_structure_two_execution_interface.py::test_cross_thread_lock_handoff_fails_without_waiting_for_foreign_release[ccrr]",
+        "time_seconds": 1.659,
+        "category": "repair_sha_deadline_regression"
+      },
+      {
+        "node": "tests/test_structure_two_stateful_full_joint.py::test_checked_in_route_c_artifact_is_honest_and_verifiable",
+        "time_seconds": 0.161,
+        "category": "windows_path_separator_portability"
+      },
+      {
+        "node": "tests/test_structure_two_stateful_full_joint_adversarial.py::test_round_two_embedded_receipt_forgery_is_rejected",
+        "time_seconds": 0.456,
+        "category": "windows_path_separator_portability_shadows_expected_assertion"
+      },
+      {
+        "node": "tests/test_structure_two_stateful_full_joint_adversarial.py::test_round_two_paired_action_deletion_is_rejected_even_when_rehashed",
+        "time_seconds": 0.419,
+        "category": "windows_path_separator_portability_shadows_expected_assertion"
+      },
+      {
+        "node": "tests/test_structure_two_stateful_full_joint_adversarial.py::test_round_two_claim_boundary_and_source_substitution_are_rejected",
+        "time_seconds": 0.414,
+        "category": "windows_path_separator_portability_shadows_expected_assertion"
+      },
+      {
+        "node": "tests/test_structure_two_stateful_full_joint_adversarial.py::test_round_two_fresh_replay_detects_forged_but_self_consistent_provenance",
+        "time_seconds": 0.448,
+        "category": "windows_path_separator_portability"
+      }
+    ],
+    "delta_from_crlf_run": {
+      "additional_passes": 4,
+      "removed_failures": [
+        "tests/test_structure_two_p5_debt_replay_confirmation.py::test_replay_config_is_engineering_only_and_keeps_coverage_limits_explicit",
+        "tests/test_structure_two_p5_debt_replay_confirmation.py::test_artifact_numeric_forgery_fails_fresh_recomputation",
+        "tests/test_structure_two_selected_method.py::test_clarifying_the_forgetting_contract_did_not_move_the_receipt_hashes",
+        "tests/test_structure_two_neural_amortized.py::test_design_freezes_disjoint_train_validation_and_holdout"
+      ],
+      "same_failed_nodes_with_changed_immediate_error": 5,
+      "changed_error_from": "stateful full-joint source binding mismatch for config",
+      "changed_error_to": "stateful full-joint source path substitution for implementation"
+    },
+    "artifacts": {
+      "stdout": {
+        "file": "r7_exact_812_postfix_lf_seed0.stdout.log",
+        "size_bytes": 29919,
+        "sha256": "3fc494cffd11c38da07010d675d36854fb43a2bf6a50738bdd0569a5b0dc1e60"
+      },
+      "stderr": {
+        "file": "r7_exact_812_postfix_lf_seed0.stderr.log",
+        "size_bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "junit": {
+        "file": "r7_exact_812_postfix_lf_seed0.junit.xml",
+        "size_bytes": 157731,
+        "sha256": "a712ed07dc636ba6c5728f628b2af064b9c1c38ccf40c0010224e5166ed504b1"
+      },
+      "result": {
+        "file": "r7_exact_812_postfix_lf_seed0.result.json",
+        "size_bytes": 30905,
+        "sha256": "9354869035fe1099c2dcdedda8040bd56848e4e8cc7f73489ec43728ec0c14f0"
+      }
+    }
+  },
+  "lf_runtime_path_probe": {
+    "python_executable": "F:\\庞惟\\codex\\cpswm-w3-five-boundaries-fix-20260912\\.venv\\Scripts\\python.exe",
+    "pythonpath": "F:\\庞惟\\codex\\cpswm-w3-validation-lf-2350602\\src",
+    "module_file": "F:\\庞惟\\codex\\cpswm-w3-validation-lf-2350602\\src\\cpswm\\system\\evaluation_operations\\structure_two_stateful_full_joint.py",
+    "relative_path_via_str_path": "src\\cpswm\\system\\evaluation_operations\\structure_two_stateful_full_joint.py",
+    "relative_path_via_as_posix": "src/cpswm/system/evaluation_operations/structure_two_stateful_full_joint.py",
+    "stored_source_binding_path": "src/cpswm/system/evaluation_operations/structure_two_stateful_full_joint.py",
+    "source_was_loaded_from_lf_worktree": true,
+    "main_crlf_editable_source_was_reused": false,
+    "root_cause": "Windows str(Path) emits backslashes while the frozen source-binding path is POSIX-form; the verifier compares the strings directly."
+  },
+  "standalone_lock_comparison": {
+    "shared_conditions": {
+      "platform": "Windows 11 10.0.22631",
+      "python": "CPython 3.13.5",
+      "python_executable": "F:\\庞惟\\codex\\cpswm-w3-five-boundaries-fix-20260912\\.venv\\Scripts\\python.exe",
+      "working_tree_eol": "CRLF",
+      "pytest_workers": 0,
+      "pytest_cache_provider": "disabled",
+      "python_hash_seed": "0",
+      "openblas_threads": "1",
+      "omp_threads": "1",
+      "mkl_threads": "1",
+      "selection": "tests/test_structure_two_execution_interface.py -k test_cross_thread_lock_handoff_fails_without_waiting_for_foreign_release"
+    },
+    "r7_baseline": {
+      "commit": "62870a3a38fce882b25d8d77f1d0526cca6fbc14",
+      "tree": "78b4d384901a654f787212d50b2ef64fa04e0df2",
+      "working_tree": "F:\\庞惟\\codex\\cpswm-w3-lock-r7-62870a3",
+      "git_status_porcelain_v2_before_and_after": "",
+      "started_at_utc": "2026-09-12T16:01:54.4127936Z",
+      "finished_at_utc": "2026-09-12T16:02:03.5910789Z",
+      "process_duration_seconds": 9.1711387,
+      "exit_code": 0,
+      "counts": {
+        "tests": 3,
+        "passed": 3,
+        "failed": 0
+      },
+      "case_seconds": {
+        "core": 0.869,
+        "wrapper": 0.931,
+        "ccrr": 0.9
+      },
+      "command": [
+        "F:\\庞惟\\codex\\cpswm-w3-five-boundaries-fix-20260912\\.venv\\Scripts\\python.exe",
+        "-m",
+        "pytest",
+        "-o",
+        "addopts=",
+        "-q",
+        "-ra",
+        "-p",
+        "no:cacheprovider",
+        "--basetemp=F:\\庞惟\\codex\\_cpswm_test_scratch\\lock_standalone_r7_62870a3_seed0\\basetemp",
+        "--junitxml=F:\\庞惟\\codex\\cpswm-w3-five-boundaries-fix-20260912\\docs\\reviews\\pc_b\\w3_five_boundaries_fix_2026-09-12\\post_fix\\lock_standalone_r7_62870a3_seed0.junit.xml",
+        "-k",
+        "test_cross_thread_lock_handoff_fails_without_waiting_for_foreign_release",
+        "tests/test_structure_two_execution_interface.py"
+      ],
+      "artifacts": {
+        "stdout": {
+          "file": "lock_standalone_r7_62870a3_seed0.stdout.log",
+          "size_bytes": 115,
+          "sha256": "666c7443e3cf22eb559c3732b3cdd8652847f6346f3c43826d051e790f5e3875"
+        },
+        "stderr": {
+          "file": "lock_standalone_r7_62870a3_seed0.stderr.log",
+          "size_bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "junit": {
+          "file": "lock_standalone_r7_62870a3_seed0.junit.xml",
+          "size_bytes": 752,
+          "sha256": "afc9f5d6b9c5777d4ae82ba9b2c7009deddf732e43ac51bfecc12978a05a1950"
+        }
+      }
+    },
+    "repair": {
+      "commit": "23506024213d517ba4bab65d4318663163b00913",
+      "tree": "c433367468e5cae4d76a454c1b7946b9931d605c",
+      "working_tree": "F:\\庞惟\\codex\\cpswm-w3-validation-2350602",
+      "git_status_porcelain_v2_before_and_after": "",
+      "started_at_utc": "2026-09-12T16:02:22.3613146Z",
+      "finished_at_utc": "2026-09-12T16:02:33.3283693Z",
+      "process_duration_seconds": 10.9589158,
+      "exit_code": 1,
+      "counts": {
+        "tests": 3,
+        "passed": 0,
+        "failed": 3
+      },
+      "case_seconds": {
+        "core": 1.186,
+        "wrapper": 1.207,
+        "ccrr": 1.442
+      },
+      "command": [
+        "F:\\庞惟\\codex\\cpswm-w3-five-boundaries-fix-20260912\\.venv\\Scripts\\python.exe",
+        "-m",
+        "pytest",
+        "-o",
+        "addopts=",
+        "-q",
+        "-ra",
+        "-p",
+        "no:cacheprovider",
+        "--basetemp=F:\\庞惟\\codex\\_cpswm_test_scratch\\lock_standalone_fix_2350602_seed0\\basetemp",
+        "--junitxml=F:\\庞惟\\codex\\cpswm-w3-five-boundaries-fix-20260912\\docs\\reviews\\pc_b\\w3_five_boundaries_fix_2026-09-12\\post_fix\\lock_standalone_fix_2350602_seed0.junit.xml",
+        "-k",
+        "test_cross_thread_lock_handoff_fails_without_waiting_for_foreign_release",
+        "tests/test_structure_two_execution_interface.py"
+      ],
+      "artifacts": {
+        "stdout": {
+          "file": "lock_standalone_fix_2350602_seed0.stdout.log",
+          "size_bytes": 8143,
+          "sha256": "46df00490ab8e8c7f7c59dc85f92c85a1d143939b76268d238246995c5997443"
+        },
+        "stderr": {
+          "file": "lock_standalone_fix_2350602_seed0.stderr.log",
+          "size_bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "junit": {
+          "file": "lock_standalone_fix_2350602_seed0.junit.xml",
+          "size_bytes": 8729,
+          "sha256": "55904240a658d65d004d01c7fc854010424b06bbb1297c6e1e27b30f033cafe6"
+        }
+      }
+    },
+    "unchanged_direct_lock_files": {
+      "tests/test_structure_two_execution_interface.py": "8dd2d5aba12ed11389b3164a08b94d2f8a5bb630",
+      "src/cpswm/system/structure_two_execution.py": "5721b095882a6fde92109686c964dff0e7ded301",
+      "src/cpswm/system/structure_two_production_system.py": "d55751731825a8ed420c744b81aa87fba72c4da2",
+      "src/cpswm/system/structure_two_adaptive_runtime.py": "bb555fe01e9155eb464a5b40ef004f01512bbb56"
+    },
+    "shared_core_changed": {
+      "path": "src/cpswm/system/prototype_spine.py",
+      "r7_blob": "f7a330de1227f50b10742e68ac368a0ec25b643e",
+      "repair_blob": "d9c1faf58022315c4141aded549b54bd5e355aa4"
+    },
+    "conclusion": {
+      "resource_contention_only_rejected": true,
+      "repair_sha_deadline_regression_confirmed": true,
+      "actual_foreign_lock_wait_proven": false,
+      "reason_for_limit": "The assertion applies a one-second total caller deadline, so it cannot distinguish delayed arrival at the handoff from a true wait on the foreign-owned lock."
+    }
+  },
+  "aggregate_checks": {
+    "same_head_and_tree": true,
+    "both_git_status_clean": true,
+    "all_index_blobs_lf": true,
+    "all_lf_control_bytes_match_fixed_expectations": true,
+    "all_lf_control_raw_blobs_match_head_blobs": true,
+    "all_windows_crlf_bytes_miss_fixed_expectations": true,
+    "all_windows_crlf_bytes_normalize_exactly_to_fixed_lf_bytes": true,
+    "hash_related_failures_explained": 9,
+    "distinct_affected_files": 4,
+    "initial_hash_failure_root_cause": "Checkout-time CRLF expansion under core.autocrlf=true changes raw-byte SHA-256 identities for LF-sealed artifacts; no repository .gitattributes pins these files to LF.",
+    "lf_control_revealed_additional_windows_path_bug": true,
+    "standalone_lock_result": "R7 3/3 passed; repair 0/3 passed",
+    "final_classification": "The first run contains nine immediate CRLF raw-byte identity failures and three confirmed repair-SHA deadline regressions. LF removes four failures outright and exposes a separate Windows path-separator portability failure behind the other five."
+  }
+}

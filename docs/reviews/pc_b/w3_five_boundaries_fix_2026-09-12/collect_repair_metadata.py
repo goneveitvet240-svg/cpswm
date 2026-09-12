@@ -26,8 +26,10 @@ from typing import Any, Iterable, Sequence
 
 DEFAULT_MODULES = (
     "cpswm",
+    "cpswm.system.structure_two_production_system",
     "cpswm.system.prototype_spine",
     "cpswm.system.structure_two_particle_workspace",
+    "cpswm.system.structure_two_semantic_identity",
     "pytest",
 )
 
@@ -392,10 +394,22 @@ def parse_args() -> argparse.Namespace:
         dest="extra_modules",
         help="Additional import to resolve and summarize (repeatable).",
     )
+    parser.add_argument(
+        "--preload-module",
+        action="append",
+        default=[],
+        dest="preload_modules",
+        help=(
+            "Import a recorded harness/entry module before the production probes "
+            "(repeatable); every preload result is retained in the output."
+        ),
+    )
     return parser.parse_args()
 
 
 def main() -> int:
+    started_at_utc = datetime.now(timezone.utc)
+    started_perf = time.perf_counter()
     args = parse_args()
     repo_root, discovery = discover_repository_root(args.repo_root)
 
@@ -413,9 +427,18 @@ def main() -> int:
             pass
 
     collector_payload = Path(__file__).resolve().read_bytes()
+    preload_imports = [
+        import_summary(module_name)
+        for module_name in dict.fromkeys(args.preload_modules)
+    ]
     metadata: dict[str, Any] = {
         "schema_version": "pc-b-w3-repair-metadata-v1",
-        "collected_at_utc": datetime.now(timezone.utc).isoformat(),
+        "collected_at_utc": started_at_utc.isoformat(),
+        "invocation": {
+            "argv": [sys.executable, *sys.argv],
+            "cwd": str(Path.cwd().resolve()),
+            "started_at_utc": started_at_utc.isoformat(),
+        },
         "collector": {
             "path": str(Path(__file__).resolve()),
             "sha256": sha256_bytes(collector_payload),
@@ -456,6 +479,11 @@ def main() -> int:
                 if key in os.environ
             },
         },
+        "preload_imports": preload_imports,
+        "preload_policy": (
+            "Optional preloads identify the exact test or application harness used "
+            "to establish the production import graph; they are evidence, not hidden setup."
+        ),
         "imports": [
             import_summary(module_name)
             for module_name in dict.fromkeys((*DEFAULT_MODULES, *args.extra_modules))
@@ -464,6 +492,13 @@ def main() -> int:
         "files": [file_summary(path, repo_root=repo_root) for path in paths],
         "git": git_metadata(repo_root, tuple(dict.fromkeys(relative_files))),
     }
+    metadata["invocation"].update(
+        {
+            "completed_at_utc": datetime.now(timezone.utc).isoformat(),
+            "duration_seconds": round(time.perf_counter() - started_perf, 6),
+            "expected_exit_code": 0,
+        }
+    )
 
     output_path = args.output.resolve()
     output_path.parent.mkdir(parents=True, exist_ok=True)

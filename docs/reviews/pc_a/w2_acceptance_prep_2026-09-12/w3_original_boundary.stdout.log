@@ -1,0 +1,82 @@
+{
+  "direct_rollback": {
+    "status": "CORRECT not admitted by CCRR; transaction rolled back",
+    "complete_observable_unchanged": true,
+    "operator_instances_unchanged": true,
+    "old_still_committed": true,
+    "new_absent": true
+  },
+  "prepared": [
+    {
+      "case": "control",
+      "source": "/private/tmp/cpswm-pc-a-w2-review-target-w3-20260912/src/cpswm/system/prototype_spine.py",
+      "status": "RETURNED",
+      "weights": [
+        0.6315789473684211,
+        0.21052631578947367
+      ],
+      "probabilities": {
+        "44b33099-dee8-2a8b-cc46-e34a555d6659": 0.3609022556390978,
+        "23a2ff08-fd31-2108-19c8-56bbe1bdd947": 0.09022556390977444,
+        "a5a97d44-a72a-f6e7-3ef1-72fba6bb29d3": 0.09022556390977444,
+        "b4634a80-b40c-5fe8-e981-d10b5cfd9d0d": 0.09022556390977444
+      },
+      "unresolved": 0.368421052631579,
+      "total": 1.0,
+      "outside_support": [],
+      "claimed_posterior_source": "None",
+      "current_snapshot": "16e89d5f-1bb1-4fd3-9d55-8ce14b354738",
+      "ledger_unchanged": true,
+      "default_action_unchanged": true
+    },
+    {
+      "case": "foreign_location",
+      "source": "/private/tmp/cpswm-pc-a-w2-review-target-w3-20260912/src/cpswm/system/prototype_spine.py",
+      "status": "REJECTED",
+      "error": "ValueError: conditional locations differ from registered world support",
+      "state_unchanged": true,
+      "ledger_unchanged": true,
+      "default_action_unchanged": true
+    },
+    {
+      "case": "alpha_overflow",
+      "source": "/private/tmp/cpswm-pc-a-w2-review-target-w3-20260912/src/cpswm/system/prototype_spine.py",
+      "status": "RETURNED",
+      "weights": [
+        0.6315789473684211,
+        0.21052631578947367
+      ],
+      "probabilities": {
+        "44b33099-dee8-2a8b-cc46-e34a555d6659": 0.15789473684210528,
+        "23a2ff08-fd31-2108-19c8-56bbe1bdd947": 0.15789473684210528,
+        "a5a97d44-a72a-f6e7-3ef1-72fba6bb29d3": 0.15789473684210528,
+        "b4634a80-b40c-5fe8-e981-d10b5cfd9d0d": 0.15789473684210528
+      },
+      "unresolved": 0.368421052631579,
+      "total": 1.0,
+      "outside_support": [],
+      "claimed_posterior_source": "None",
+      "current_snapshot": "92055db1-db49-477e-bf6d-bbe3cd0bc8e7",
+      "ledger_unchanged": true,
+      "default_action_unchanged": true
+    },
+    {
+      "case": "foreign_posterior",
+      "source": "/private/tmp/cpswm-pc-a-w2-review-target-w3-20260912/src/cpswm/system/prototype_spine.py",
+      "status": "REJECTED",
+      "error": "ValueError: posterior projection consumption is not bound in native runtime",
+      "state_unchanged": true,
+      "ledger_unchanged": true,
+      "default_action_unchanged": true
+    },
+    {
+      "case": "weight_overflow",
+      "source": "/private/tmp/cpswm-pc-a-w2-review-target-w3-20260912/src/cpswm/system/prototype_spine.py",
+      "status": "REJECTED",
+      "error": "ValueError: derived particle log weight exceeds finite range",
+      "state_unchanged": true,
+      "ledger_unchanged": true,
+      "default_action_unchanged": true
+    }
+  ]
+}

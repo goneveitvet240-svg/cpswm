@@ -1,0 +1,16 @@
+F                                                                        [100%]
+=================================== FAILURES ===================================
+__________________________________ test_live ___________________________________
+
+    def test_live():
+     import cpswm
+>    assert cpswm.__version__ == "9.9.9"
+E    AssertionError: assert '0.1.0' == '9.9.9'
+E      
+E      - 9.9.9
+E      + 0.1.0
+
+tests/test_rewritten_cache.py:3: AssertionError
+=========================== short test summary info ============================
+FAILED tests/test_rewritten_cache.py::test_live - AssertionError: assert '0.1...
+1 failed in 0.20s

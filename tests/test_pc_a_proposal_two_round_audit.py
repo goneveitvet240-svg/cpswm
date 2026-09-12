@@ -78,7 +78,12 @@ def probability(sample, target):
         )
         prefix.append((axis, selected))
     return JointProposalProbability.model_validate(
-        dict(root_context_sha256=root, factors=factors, joint_log_probability=0.0)
+        dict(
+            root_context_sha256=root,
+            proposal_sha256=content_sha256(target.model_dump(mode="json")),
+            factors=factors,
+            joint_log_probability=0.0,
+        )
     )
 
 

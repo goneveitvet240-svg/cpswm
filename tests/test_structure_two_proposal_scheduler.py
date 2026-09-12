@@ -212,6 +212,18 @@ def sample_payload():
         "revisions": revisions,
         "instance_support": ["instance_a", "instance_b", "unknown_instance"],
         "actor_support": ["actor_a", "actor_b", "actor_c", "unknown_actor"],
+        "location_support": [
+            {
+                "location_key": "location_a",
+                "origin": "snapshot",
+                "source_snapshot_id": uid("snapshot"),
+                "location_entity_id": uid("location-a"),
+            },
+            {"location_key": "unknown_location", "origin": "unknown"},
+        ],
+        "snapshot_location_catalog": [
+            {"location_key": "location_a", "location_entity_id": uid("location-a")}
+        ],
         "compatible_targets": targets,
     }
 
@@ -688,7 +700,7 @@ def test_preparation_cli_separates_targets_refuses_training_and_overwrite(tmp_pa
     assert result.returncode == 0, result.stderr
     ready = json.loads((tmp_path / "prepared/readiness.json").read_text())
     assert not ready["training_ready"] and not ready["training_started"]
-    features = (tmp_path / "prepared/features.jsonl").read_text()
+    features = (tmp_path / "prepared/development/features.jsonl").read_text()
     assert "compatible_targets" not in features and "annotation_kind" not in features
     assert subprocess.run(command, env=env, capture_output=True).returncode != 0
 

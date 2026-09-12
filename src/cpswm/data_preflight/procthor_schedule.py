@@ -12,7 +12,7 @@ import json
 import math
 import random
 from collections import Counter
-from dataclasses import asdict, dataclass
+from dataclasses import asdict, dataclass, replace
 from typing import Any
 
 REQUIRED_EVENTS = (
@@ -60,6 +60,16 @@ class Schedule:
     location_keys: tuple[str, ...]
     events: tuple[ScheduledEvent, ...]
 
+    def __post_init__(self) -> None:
+        # Normalize into detached immutable containers, including caller-owned lists.
+        for key in ("actors", "instance_keys", "location_keys"):
+            object.__setattr__(self, key, tuple(getattr(self, key)))
+        if any(type(event) is not ScheduledEvent for event in self.events):
+            raise ValueError("schedule requires typed events")
+        object.__setattr__(
+            self, "events", tuple(replace(e, actors=tuple(e.actors)) for e in self.events)
+        )
+
     def payload(self) -> dict[str, Any]:
         return asdict(self)
 
@@ -89,6 +99,8 @@ class Schedule:
         previous_tick = -1
         counts: Counter[str] = Counter()
         for event in self.events:
+            for tick in (event.day, event.tick, event.release_tick):
+                validate_tick(tick)
             if event.kind not in REQUIRED_EVENTS or event.event_id in known:
                 raise ValueError("unknown event type or duplicate event identity")
             if (
@@ -276,14 +288,30 @@ class ReleaseQueue:
         self._pending: dict[str, tuple[int, dict[str, Any]]] = {}
         self._seen: set[str] = set()
         self._clock = -1
+        self._captures: set[str] = set()
+        self._finished = False
 
     def enqueue(self, event: ScheduledEvent, capture_ref: str) -> None:
-        if not capture_ref or event.event_id in self._seen or event.tick < self._clock:
+        if self._finished:
+            raise ValueError("finished delivery history cannot accept new events")
+        validate_tick(event.tick)
+        validate_tick(event.release_tick)
+        if type(event.observation_selected) is not bool:
+            raise ValueError("observation selection must be boolean")
+        if (
+            not isinstance(capture_ref, str)
+            or not capture_ref
+            or event.event_id in self._seen
+            or event.tick < self._clock
+        ):
             raise ValueError("missing capture, repeated event, or backdated enqueue")
         if event.release_tick < event.tick:
             raise ValueError("release before occurrence")
+        if event.observation_selected and capture_ref in self._captures:
+            raise ValueError("capture already registered as evidence")
         self._seen.add(event.event_id)
         if event.observation_selected:
+            self._captures.add(capture_ref)
             # No event type, latent actor, phase, seeds or source truth in delivery.
             self._pending[event.event_id] = (
                 event.release_tick,
@@ -295,6 +323,9 @@ class ReleaseQueue:
             )
 
     def release(self, tick: int) -> tuple[dict[str, Any], ...]:
+        if self._finished:
+            raise ValueError("finished delivery history cannot be replayed")
+        validate_tick(tick)
         if tick < self._clock:
             raise ValueError("release clock cannot move backwards")
         self._clock = tick
@@ -304,6 +335,21 @@ class ReleaseQueue:
         for _, key, _ in due:
             del self._pending[key]
         return tuple(dict(value) for _, _, value in due)
+
+    def finish(self, tick: int) -> tuple[dict[str, Any], ...]:
+        validate_tick(tick)
+        if any(when > tick for when, _ in self._pending.values()):
+            raise ValueError("cannot finish with undelivered captures")
+        result = self.release(tick)
+        if self._pending:
+            raise ValueError("capture delivery conservation failed")
+        self._finished = True
+        return result
+
+
+def validate_tick(value: int) -> None:
+    if type(value) is not int or value < 0:
+        raise ValueError("nonnegative finite integer clock required")
 
 
 def validate_position(value: dict[str, float]) -> dict[str, float]:

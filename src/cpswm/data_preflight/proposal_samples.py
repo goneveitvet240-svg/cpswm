@@ -159,8 +159,39 @@ class ProposalTarget(ContractModel):
     replay_required: bool = False
 
 
+class SnapshotLocation(ContractModel):
+    location_key: str = Field(min_length=1)
+    location_entity_id: UUID
+
+
+class LocationBinding(ContractModel):
+    """A name's declared source, not authentication of a snapshot/annotator."""
+
+    location_key: str = Field(min_length=1)
+    origin: Literal["snapshot", "visible_evidence", "unknown"]
+    source_snapshot_id: UUID | None = None
+    source_record_id: UUID | None = None
+    location_entity_id: UUID | None = None
+
+    @model_validator(mode="after")
+    def validate_origin(self) -> Self:
+        if self.origin == "unknown":
+            if self.location_key != "unknown_location" or any(
+                (self.source_snapshot_id, self.source_record_id, self.location_entity_id)
+            ):
+                raise ValueError("unknown location cannot pretend to have a resolved source")
+        elif self.location_key == "unknown_location" or self.location_entity_id is None:
+            raise ValueError("resolved location requires an entity identity")
+        elif self.origin == "snapshot":
+            if self.source_snapshot_id is None or self.source_record_id is not None:
+                raise ValueError("snapshot location must name exactly its snapshot source")
+        elif self.source_record_id is None or self.source_snapshot_id is not None:
+            raise ValueError("discovered location must name exactly its visible record")
+        return self
+
+
 class ProposalSample(ContractModel):
-    schema_version: Literal["full-proposal-sample@1"] = "full-proposal-sample@1"
+    schema_version: Literal["full-proposal-sample@2"] = "full-proposal-sample@2"
     sample_id: UUID
     partition: Literal["train", "development"]
     house_id: str = Field(min_length=1)
@@ -174,12 +205,50 @@ class ProposalSample(ContractModel):
     revisions: tuple[RevisionRecord, ...]
     instance_support: tuple[str, ...]
     actor_support: tuple[str, ...]
+    location_support: tuple[LocationBinding, ...] = Field(min_length=1)
+    snapshot_location_catalog: tuple[SnapshotLocation, ...] = ()
     compatible_targets: tuple[ProposalTarget, ...] = Field(min_length=1)
 
     @model_validator(mode="after")
     def validate_sample(self) -> Self:
         self.visible.prefix()  # validates missing/negative/arrival/source distinctions
         require_aware(self.visible.cutoff, "cutoff")
+        locations = {x.location_key: x for x in self.location_support}
+        if len(locations) != len(self.location_support) or "unknown_location" not in locations:
+            raise ValueError("unique location support and explicit unknown required")
+        visible_ids = {
+            UUID(x["record_id"])
+            for x in json.loads(self.visible.prefix().provenance_json)["included_records"]
+        }
+        detections = {x.metadata.record_id: x for x in self.visible.detections}
+        catalog = {x.location_key: x.location_entity_id for x in self.snapshot_location_catalog}
+        if (
+            len(catalog) != len(self.snapshot_location_catalog)
+            or len(set(catalog.values())) != len(catalog)
+            or "unknown_location" in catalog
+        ):
+            raise ValueError("snapshot location catalog must contain distinct resolved entities")
+        entities = set()
+        for binding in self.location_support:
+            if binding.location_entity_id is not None:
+                if binding.location_entity_id in entities:
+                    raise ValueError("resolved location entity has multiple aliases")
+                entities.add(binding.location_entity_id)
+            if binding.origin == "snapshot" and (
+                binding.source_snapshot_id != self.source_snapshot_id
+                or catalog.get(binding.location_key) != binding.location_entity_id
+            ):
+                raise ValueError("location does not resolve in the frozen snapshot catalog")
+            if binding.origin == "visible_evidence":
+                record = (
+                    detections.get(binding.source_record_id) if binding.source_record_id else None
+                )
+                if (
+                    binding.source_record_id not in visible_ids
+                    or record is None
+                    or record.detected_location_id != binding.location_entity_id
+                ):
+                    raise ValueError("location discovery must resolve to an arrived detection")
         if (
             "unknown_instance" not in self.instance_support
             or "unknown_actor" not in self.actor_support
@@ -328,7 +397,17 @@ class ProposalSample(ContractModel):
         )
         for record in records:
             if record.metadata.record_id == record_id:
-                return record.metadata.recorded_time
+                if isinstance(record, ObservationOpportunityRecord):
+                    return record.opportunity_time
+                if isinstance(record, ActorResponsibilityEvidence):
+                    return record.evidence_time
+                if record.detection_time is not None:
+                    return record.detection_time
+                return next(
+                    op.opportunity_time
+                    for op in self.visible.opportunities
+                    if op.metadata.record_id == record.observation_opportunity_id
+                )
         raise ValueError("missing evidence")
 
     def _check_hypothesis(self, hypothesis: FullHypothesis) -> None:
@@ -338,6 +417,8 @@ class ProposalSample(ContractModel):
         if state.instance_association_key not in self.instance_support:
             raise ValueError("instance outside declared support")
         for event in hypothesis.events:
+            if event.location_key not in {x.location_key for x in self.location_support}:
+                raise ValueError("event location outside declared sourced support")
             if event.time > self.visible.cutoff:
                 raise ValueError("future event in an online hypothesis")
             if event.actor_key not in self.actor_support or (
@@ -369,6 +450,11 @@ def export_sample(sample: ProposalSample) -> dict[str, Any]:
             "revision_context": [x.model_dump(mode="json") for x in sample.revisions],
             "instance_support": sample.instance_support,
             "actor_support": sample.actor_support,
+            "location_support": [x.location_key for x in sample.location_support],
+            "location_entities": {
+                x.location_key: str(x.location_entity_id) if x.location_entity_id else None
+                for x in sample.location_support
+            },
         },
         "training_targets": [x.model_dump(mode="json") for x in sample.compatible_targets],
         "audit_only": {
@@ -379,6 +465,10 @@ def export_sample(sample: ProposalSample) -> dict[str, Any]:
             "schedule_block_id": sample.schedule_block_id,
             "annotation_kind": sample.annotation_kind,
             "annotation_ref": sample.annotation_ref,
+            "location_provenance": [x.model_dump(mode="json") for x in sample.location_support],
+            "snapshot_location_catalog": [
+                x.model_dump(mode="json") for x in sample.snapshot_location_catalog
+            ],
             "source_authentication_verified": False,
             "ledger_write_authority": False,
         },
@@ -460,6 +550,8 @@ class JointProposalProbability(ContractModel):
     """
 
     root_context_sha256: str = Field(pattern=r"^[0-9a-f]{64}$")
+    # Legacy unbound math traces remain inspectable, but cannot bind a proposal.
+    proposal_sha256: str | None = Field(default=None, pattern=r"^[0-9a-f]{64}$")
     factors: tuple[ConditionalFactor, ...]
     joint_log_probability: float
 
@@ -500,9 +592,12 @@ def bind_probability(
 
     Does not authenticate a model file or prove support was enumerated completely.
     """
+    sample = ProposalSample.model_validate(sample.model_dump(mode="json"))
     projection = export_sample(sample)
     trace = JointProposalProbability.model_validate(trace.model_dump(mode="json"))
     target = ProposalTarget.model_validate(target.model_dump(mode="json"))
+    if trace.proposal_sha256 != content_sha256(target.model_dump(mode="json")):
+        raise ValueError("probability trace does not bind the full proposal and replay effects")
     if target not in sample.compatible_targets:
         raise ValueError("target does not belong to the sample")
     if trace.root_context_sha256 != content_sha256(projection["model_input"]):

@@ -9,6 +9,8 @@ from __future__ import annotations
 
 import json
 import math
+from dataclasses import replace
+from itertools import combinations
 from pathlib import Path
 from typing import Any
 
@@ -44,6 +46,8 @@ def execute_schedule(
     This function cannot authenticate an arbitrary controller supplied by a caller.
     All raw intervention requests and metadata remain in evaluator_only.
     """
+    # Detach even object.__setattr__ bypasses before any controller callback.
+    schedule = replace(schedule, events=tuple(replace(event) for event in schedule.events))
     schedule.validate()
     route = json.loads(json.dumps(observer_route, allow_nan=False))
     for view in route:
@@ -74,9 +78,9 @@ def execute_schedule(
         for point in points.values():
             validate_position(point)
     for instance in object_ids:
-        position_hashes = [digest(points[instance]) for points in anchors.values()]
-        if len(set(position_hashes)) != len(position_hashes):
-            raise ValueError("different destinations cannot alias one physical pose")
+        for first, second in combinations((points[instance] for points in anchors.values()), 2):
+            if all(math.isclose(first[k], second[k], abs_tol=0.002, rel_tol=0) for k in first):
+                raise ValueError("different destinations cannot alias one physical pose")
     output.mkdir(parents=True, exist_ok=False)
     private = output / "evaluator_only"
     private.mkdir()
@@ -216,7 +220,9 @@ def execute_schedule(
             queue.enqueue(event, f"{receipt['step_index']:06d}.json")
             deliveries.extend(queue.release(event.tick))
             status["completed_events"] += 1
-        deliveries.extend(queue.release(max(x.release_tick for x in schedule.events)))
+        deliveries.extend(queue.finish(max(x.release_tick for x in schedule.events)))
+        if len(deliveries) != sum(e.observation_selected for e in schedule.events):
+            raise ValueError("selected captures and deliveries disagree")
         status["complete"] = True
     except BaseException as error:
         status["error_type"] = type(error).__name__

@@ -1,0 +1,11 @@
+command: .\.venv\Scripts\python.exe docs\reviews\pc_b\w3_five_boundaries_fix_2026-09-12\seven_operator\operator_metrics.py
+cwd: F:\庞惟\codex\cpswm-w3-five-boundaries-fix-20260912
+exit_code: 1
+stderr:
+Traceback (most recent call last):
+  File "...\seven_operator\operator_metrics.py", line 19, in <module>
+    from structure_two_backbone_wiring_probe import BackboneWiringProbe, CIAVOutcomeKind
+ModuleNotFoundError: No module named 'structure_two_backbone_wiring_probe'
+
+cause: audit script computed repository root one parent too shallow.
+repair: corrected only the audit script's root calculation; no production source changed.

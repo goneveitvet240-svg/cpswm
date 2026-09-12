@@ -1,0 +1,2096 @@
+{
+  "classification": "engineering causal diagnostic; not scientific acceptance",
+  "git_head": "23506024213d517ba4bab65d4318663163b00913",
+  "last_commit_touching_src": "17220e6e22de81508a2e4e34dce81b8dccc9e44f",
+  "source_unchanged": true,
+  "continuous_variants": {
+    "base": {
+      "completed": true,
+      "call_counts": {
+        "opceu": 27,
+        "orrer": 27,
+        "pchmp": 27,
+        "cf_bocpd": 53,
+        "cause_router": 53,
+        "rgrc": 27,
+        "replay_equivalence": 30,
+        "ccrr": 5,
+        "ciav": 1,
+        "verification": 1,
+        "feedback_revision": 1
+      },
+      "actual_content_handoffs": {
+        "orrer_output_to_pchmp_input": 27,
+        "cf_output_to_cause_router_snapshot": 53,
+        "ccrr_output_to_cause_router_decision": 5,
+        "ciav_selected_action_to_executor": 1,
+        "verified_detection_to_orrer_closure": 1
+      },
+      "max_action_distribution_tv_vs_base": 0.0,
+      "final_action_tv_vs_base": 0.0,
+      "final_top1": "44b33099-dee8-2a8b-cc46-e34a555d6659",
+      "final_top1_changed_vs_base": false,
+      "top1_changed_step_count_vs_base": 0,
+      "max_hybrid_alpha_absolute_change_vs_base": 0.0,
+      "final_committed": 27,
+      "changed_count_or_regime_steps": 0,
+      "ccrr_decision_kinds": [
+        "unresolved",
+        "create",
+        "unresolved",
+        "create",
+        "reactivate"
+      ],
+      "rb_blocks": {
+        "dirichlet_delta_alpha_nonzero": true,
+        "rls_delta_A_or_b_nonzero": true,
+        "information_delta_lambda_or_xi_nonzero": false
+      },
+      "default_joint_particle_counts": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    "null": {
+      "completed": true,
+      "call_counts": {
+        "opceu": 27,
+        "orrer": 27,
+        "pchmp": 27,
+        "cf_bocpd": 53,
+        "cause_router": 53,
+        "rgrc": 27,
+        "replay_equivalence": 30,
+        "ccrr": 5,
+        "ciav": 1,
+        "verification": 1,
+        "feedback_revision": 1
+      },
+      "actual_content_handoffs": {
+        "orrer_output_to_pchmp_input": 27,
+        "cf_output_to_cause_router_snapshot": 53,
+        "ccrr_output_to_cause_router_decision": 5,
+        "ciav_selected_action_to_executor": 1,
+        "verified_detection_to_orrer_closure": 1
+      },
+      "max_action_distribution_tv_vs_base": 0.0,
+      "final_action_tv_vs_base": 0.0,
+      "final_top1": "44b33099-dee8-2a8b-cc46-e34a555d6659",
+      "final_top1_changed_vs_base": false,
+      "top1_changed_step_count_vs_base": 0,
+      "max_hybrid_alpha_absolute_change_vs_base": 0.0,
+      "final_committed": 27,
+      "changed_count_or_regime_steps": 0,
+      "ccrr_decision_kinds": [
+        "unresolved",
+        "create",
+        "unresolved",
+        "create",
+        "reactivate"
+      ],
+      "rb_blocks": {
+        "dirichlet_delta_alpha_nonzero": true,
+        "rls_delta_A_or_b_nonzero": true,
+        "information_delta_lambda_or_xi_nonzero": false
+      },
+      "default_joint_particle_counts": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    "opceu": {
+      "completed": true,
+      "call_counts": {
+        "opceu": 26,
+        "orrer": 26,
+        "pchmp": 26,
+        "cf_bocpd": 51,
+        "cause_router": 51,
+        "rgrc": 4,
+        "replay_equivalence": 29,
+        "ciav": 1,
+        "feedback_revision": 1
+      },
+      "actual_content_handoffs": {
+        "orrer_output_to_pchmp_input": 26,
+        "cf_output_to_cause_router_snapshot": 51,
+        "ccrr_output_to_cause_router_decision": 0,
+        "ciav_selected_action_to_executor": 0,
+        "verified_detection_to_orrer_closure": 0
+      },
+      "max_action_distribution_tv_vs_base": 0.5794101199686134,
+      "final_action_tv_vs_base": 0.508691866021552,
+      "final_top1": "44b33099-dee8-2a8b-cc46-e34a555d6659",
+      "final_top1_changed_vs_base": false,
+      "top1_changed_step_count_vs_base": 3,
+      "max_hybrid_alpha_absolute_change_vs_base": 11.384222005602382,
+      "final_committed": 4,
+      "changed_count_or_regime_steps": 24,
+      "ccrr_decision_kinds": [],
+      "rb_blocks": {
+        "dirichlet_delta_alpha_nonzero": true,
+        "rls_delta_A_or_b_nonzero": true,
+        "information_delta_lambda_or_xi_nonzero": false
+      },
+      "default_joint_particle_counts": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    "orrer": {
+      "completed": true,
+      "call_counts": {
+        "opceu": 27,
+        "orrer": 27,
+        "pchmp": 27,
+        "cf_bocpd": 53,
+        "cause_router": 53,
+        "rgrc": 27,
+        "replay_equivalence": 30,
+        "ccrr": 5,
+        "ciav": 1,
+        "verification": 1,
+        "feedback_revision": 1
+      },
+      "actual_content_handoffs": {
+        "orrer_output_to_pchmp_input": 27,
+        "cf_output_to_cause_router_snapshot": 53,
+        "ccrr_output_to_cause_router_decision": 5,
+        "ciav_selected_action_to_executor": 1,
+        "verified_detection_to_orrer_closure": 1
+      },
+      "max_action_distribution_tv_vs_base": 0.008033750659650743,
+      "final_action_tv_vs_base": 0.004648508325038651,
+      "final_top1": "44b33099-dee8-2a8b-cc46-e34a555d6659",
+      "final_top1_changed_vs_base": false,
+      "top1_changed_step_count_vs_base": 0,
+      "max_hybrid_alpha_absolute_change_vs_base": 1.2919402524961612,
+      "final_committed": 27,
+      "changed_count_or_regime_steps": 0,
+      "ccrr_decision_kinds": [
+        "unresolved",
+        "create",
+        "unresolved",
+        "create",
+        "reactivate"
+      ],
+      "rb_blocks": {
+        "dirichlet_delta_alpha_nonzero": true,
+        "rls_delta_A_or_b_nonzero": true,
+        "information_delta_lambda_or_xi_nonzero": false
+      },
+      "default_joint_particle_counts": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    "pchmp": {
+      "completed": true,
+      "call_counts": {
+        "opceu": 27,
+        "orrer": 27,
+        "pchmp": 27,
+        "cf_bocpd": 53,
+        "cause_router": 53,
+        "rgrc": 27,
+        "replay_equivalence": 30,
+        "ccrr": 5,
+        "ciav": 1,
+        "verification": 1,
+        "feedback_revision": 1
+      },
+      "actual_content_handoffs": {
+        "orrer_output_to_pchmp_input": 27,
+        "cf_output_to_cause_router_snapshot": 53,
+        "ccrr_output_to_cause_router_decision": 5,
+        "ciav_selected_action_to_executor": 1,
+        "verified_detection_to_orrer_closure": 1
+      },
+      "max_action_distribution_tv_vs_base": 0.00371155723763876,
+      "final_action_tv_vs_base": 0.0015587086369002398,
+      "final_top1": "44b33099-dee8-2a8b-cc46-e34a555d6659",
+      "final_top1_changed_vs_base": false,
+      "top1_changed_step_count_vs_base": 0,
+      "max_hybrid_alpha_absolute_change_vs_base": 0.0448441653169207,
+      "final_committed": 27,
+      "changed_count_or_regime_steps": 0,
+      "ccrr_decision_kinds": [
+        "unresolved",
+        "create",
+        "unresolved",
+        "create",
+        "reactivate"
+      ],
+      "rb_blocks": {
+        "dirichlet_delta_alpha_nonzero": true,
+        "rls_delta_A_or_b_nonzero": true,
+        "information_delta_lambda_or_xi_nonzero": false
+      },
+      "default_joint_particle_counts": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    "identity": {
+      "completed": true,
+      "call_counts": {
+        "opceu": 27,
+        "orrer": 27,
+        "pchmp": 27,
+        "cf_bocpd": 53,
+        "cause_router": 53,
+        "rgrc": 23,
+        "replay_equivalence": 30,
+        "ccrr": 5,
+        "ciav": 1,
+        "verification": 1,
+        "feedback_revision": 1
+      },
+      "actual_content_handoffs": {
+        "orrer_output_to_pchmp_input": 27,
+        "cf_output_to_cause_router_snapshot": 53,
+        "ccrr_output_to_cause_router_decision": 5,
+        "ciav_selected_action_to_executor": 1,
+        "verified_detection_to_orrer_closure": 1
+      },
+      "max_action_distribution_tv_vs_base": 0.18791179297964677,
+      "final_action_tv_vs_base": 0.01856434128048489,
+      "final_top1": "44b33099-dee8-2a8b-cc46-e34a555d6659",
+      "final_top1_changed_vs_base": false,
+      "top1_changed_step_count_vs_base": 3,
+      "max_hybrid_alpha_absolute_change_vs_base": 2.5298271123560854,
+      "final_committed": 23,
+      "changed_count_or_regime_steps": 10,
+      "ccrr_decision_kinds": [
+        "unresolved",
+        "unresolved",
+        "unresolved",
+        "unresolved",
+        "create"
+      ],
+      "rb_blocks": {
+        "dirichlet_delta_alpha_nonzero": true,
+        "rls_delta_A_or_b_nonzero": true,
+        "information_delta_lambda_or_xi_nonzero": false
+      },
+      "default_joint_particle_counts": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    "ciav": {
+      "completed": true,
+      "call_counts": {
+        "opceu": 26,
+        "orrer": 26,
+        "pchmp": 26,
+        "cf_bocpd": 51,
+        "cause_router": 51,
+        "rgrc": 24,
+        "replay_equivalence": 29,
+        "ccrr": 4,
+        "ciav": 1,
+        "verification": 1,
+        "feedback_revision": 1
+      },
+      "actual_content_handoffs": {
+        "orrer_output_to_pchmp_input": 26,
+        "cf_output_to_cause_router_snapshot": 51,
+        "ccrr_output_to_cause_router_decision": 4,
+        "ciav_selected_action_to_executor": 1,
+        "verified_detection_to_orrer_closure": 0
+      },
+      "max_action_distribution_tv_vs_base": 0.022238793056297952,
+      "final_action_tv_vs_base": 0.022238793056297952,
+      "final_top1": "44b33099-dee8-2a8b-cc46-e34a555d6659",
+      "final_top1_changed_vs_base": false,
+      "top1_changed_step_count_vs_base": 0,
+      "max_hybrid_alpha_absolute_change_vs_base": 2.226082659565339,
+      "final_committed": 24,
+      "changed_count_or_regime_steps": 1,
+      "ccrr_decision_kinds": [
+        "unresolved",
+        "create",
+        "unresolved",
+        "create"
+      ],
+      "rb_blocks": {
+        "dirichlet_delta_alpha_nonzero": true,
+        "rls_delta_A_or_b_nonzero": true,
+        "information_delta_lambda_or_xi_nonzero": false
+      },
+      "default_joint_particle_counts": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    "openworld": {
+      "completed": true,
+      "call_counts": {
+        "opceu": 27,
+        "orrer": 27,
+        "pchmp": 27,
+        "cf_bocpd": 53,
+        "cause_router": 53,
+        "rgrc": 23,
+        "replay_equivalence": 30,
+        "core_transition": 27,
+        "ccrr": 6,
+        "ciav": 1,
+        "verification": 1,
+        "feedback_revision": 1
+      },
+      "actual_content_handoffs": {
+        "orrer_output_to_pchmp_input": 27,
+        "cf_output_to_cause_router_snapshot": 53,
+        "ccrr_output_to_cause_router_decision": 6,
+        "ciav_selected_action_to_executor": 1,
+        "verified_detection_to_orrer_closure": 1
+      },
+      "max_action_distribution_tv_vs_base": 0.20509927807041245,
+      "final_action_tv_vs_base": 0.11203433716546823,
+      "final_top1": "23a2ff08-fd31-2108-19c8-56bbe1bdd947",
+      "final_top1_changed_vs_base": true,
+      "top1_changed_step_count_vs_base": 3,
+      "max_hybrid_alpha_absolute_change_vs_base": 6.324567780890211,
+      "final_committed": 23,
+      "changed_count_or_regime_steps": 24,
+      "ccrr_decision_kinds": [
+        "create",
+        "unresolved",
+        "create",
+        "create",
+        "unresolved",
+        "create"
+      ],
+      "rb_blocks": {
+        "dirichlet_delta_alpha_nonzero": true,
+        "rls_delta_A_or_b_nonzero": true,
+        "information_delta_lambda_or_xi_nonzero": false
+      },
+      "default_joint_particle_counts": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    }
+  },
+  "operator_matrix": {
+    "OPCEU": {
+      "acceptance_class": "engineering causal diagnostic only",
+      "scientific_benefit": false,
+      "instance_id": 2120444050944,
+      "unique_instance_count_in_base_trace": 1,
+      "phases_by_process_local_instance_id": {
+        "2120444050944": [
+          "active_verification",
+          "learning:0",
+          "learning:1",
+          "learning:10",
+          "learning:11",
+          "learning:12",
+          "learning:13",
+          "learning:14",
+          "learning:15",
+          "learning:16",
+          "learning:17",
+          "learning:18",
+          "learning:19",
+          "learning:2",
+          "learning:20",
+          "learning:21",
+          "learning:22",
+          "learning:23",
+          "learning:3",
+          "learning:4",
+          "learning:5",
+          "learning:6",
+          "learning:7",
+          "learning:8",
+          "learning:9",
+          "subsequent_action"
+        ]
+      },
+      "implementation": "src\\cpswm\\world_model\\habits_transitions\\propensity_correction.py:262",
+      "source_sha256": "f6299a52ceccdd93fbceb4b36d544449e2ae1bff661cf8d3c9dfe53db578ad31",
+      "real_input_keys": [
+        "record"
+      ],
+      "real_output_keys": [
+        "applied_weight",
+        "clipped",
+        "raw_propensity"
+      ],
+      "binding_kind": "direct_operator_callable",
+      "output_and_consumer": "propensity correction -> event/statistic weight -> RGRC alpha/ledger -> action readout",
+      "legal_control": "context key not read by OPCEU; causal-matrix null test requires unchanged readout",
+      "public_intervention": "p_visible_given_state=0.35",
+      "numeric_consequence": {
+        "completed": true,
+        "call_counts": {
+          "opceu": 26,
+          "orrer": 26,
+          "pchmp": 26,
+          "cf_bocpd": 51,
+          "cause_router": 51,
+          "rgrc": 4,
+          "replay_equivalence": 29,
+          "ciav": 1,
+          "feedback_revision": 1
+        },
+        "actual_content_handoffs": {
+          "orrer_output_to_pchmp_input": 26,
+          "cf_output_to_cause_router_snapshot": 51,
+          "ccrr_output_to_cause_router_decision": 0,
+          "ciav_selected_action_to_executor": 0,
+          "verified_detection_to_orrer_closure": 0
+        },
+        "max_action_distribution_tv_vs_base": 0.5794101199686134,
+        "final_action_tv_vs_base": 0.508691866021552,
+        "final_top1": "44b33099-dee8-2a8b-cc46-e34a555d6659",
+        "final_top1_changed_vs_base": false,
+        "top1_changed_step_count_vs_base": 3,
+        "max_hybrid_alpha_absolute_change_vs_base": 11.384222005602382,
+        "final_committed": 4,
+        "changed_count_or_regime_steps": 24,
+        "ccrr_decision_kinds": [],
+        "rb_blocks": {
+          "dirichlet_delta_alpha_nonzero": true,
+          "rls_delta_A_or_b_nonzero": true,
+          "information_delta_lambda_or_xi_nonzero": false
+        },
+        "default_joint_particle_counts": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      }
+    },
+    "ORRER_CHEH": {
+      "acceptance_class": "engineering causal diagnostic only",
+      "scientific_benefit": false,
+      "instance_id": 2120444050608,
+      "unique_instance_count_in_base_trace": 1,
+      "phases_by_process_local_instance_id": {
+        "2120444050608": [
+          "active_verification",
+          "learning:0",
+          "learning:1",
+          "learning:10",
+          "learning:11",
+          "learning:12",
+          "learning:13",
+          "learning:14",
+          "learning:15",
+          "learning:16",
+          "learning:17",
+          "learning:18",
+          "learning:19",
+          "learning:2",
+          "learning:20",
+          "learning:21",
+          "learning:22",
+          "learning:23",
+          "learning:3",
+          "learning:4",
+          "learning:5",
+          "learning:6",
+          "learning:7",
+          "learning:8",
+          "learning:9",
+          "subsequent_action"
+        ]
+      },
+      "implementation": "src\\cpswm\\system\\counterfactual_event_hypergraph\\engine.py:1144",
+      "source_sha256": "976b5998fcb15e3730201c442805fdaed9869cfaf125f399cd74d459733aa5ae",
+      "real_input_keys": [
+        "actor_prior",
+        "after",
+        "allow_unknown_handoff_roles",
+        "before",
+        "handoff_fraction",
+        "unknown_mechanism_probability",
+        "unresolved_probability"
+      ],
+      "real_output_keys": [
+        "hypothesis_set_id",
+        "revisions"
+      ],
+      "binding_kind": "direct_operator_callable",
+      "output_and_consumer": "event history -> exact content consumed by PCHMP",
+      "legal_control": "same inputs reproduce the same semantic hypothesis set",
+      "public_intervention": "unresolved_probability=0.4",
+      "numeric_consequence": {
+        "completed": true,
+        "call_counts": {
+          "opceu": 27,
+          "orrer": 27,
+          "pchmp": 27,
+          "cf_bocpd": 53,
+          "cause_router": 53,
+          "rgrc": 27,
+          "replay_equivalence": 30,
+          "ccrr": 5,
+          "ciav": 1,
+          "verification": 1,
+          "feedback_revision": 1
+        },
+        "actual_content_handoffs": {
+          "orrer_output_to_pchmp_input": 27,
+          "cf_output_to_cause_router_snapshot": 53,
+          "ccrr_output_to_cause_router_decision": 5,
+          "ciav_selected_action_to_executor": 1,
+          "verified_detection_to_orrer_closure": 1
+        },
+        "max_action_distribution_tv_vs_base": 0.008033750659650743,
+        "final_action_tv_vs_base": 0.004648508325038651,
+        "final_top1": "44b33099-dee8-2a8b-cc46-e34a555d6659",
+        "final_top1_changed_vs_base": false,
+        "top1_changed_step_count_vs_base": 0,
+        "max_hybrid_alpha_absolute_change_vs_base": 1.2919402524961612,
+        "final_committed": 27,
+        "changed_count_or_regime_steps": 0,
+        "ccrr_decision_kinds": [
+          "unresolved",
+          "create",
+          "unresolved",
+          "create",
+          "reactivate"
+        ],
+        "rb_blocks": {
+          "dirichlet_delta_alpha_nonzero": true,
+          "rls_delta_A_or_b_nonzero": true,
+          "information_delta_lambda_or_xi_nonzero": false
+        },
+        "default_joint_particle_counts": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      }
+    },
+    "PCHMP": {
+      "acceptance_class": "engineering causal diagnostic only",
+      "scientific_benefit": false,
+      "instance_id": 2120444050272,
+      "unique_instance_count_in_base_trace": 1,
+      "phases_by_process_local_instance_id": {
+        "2120444050272": [
+          "active_verification",
+          "learning:0",
+          "learning:1",
+          "learning:10",
+          "learning:11",
+          "learning:12",
+          "learning:13",
+          "learning:14",
+          "learning:15",
+          "learning:16",
+          "learning:17",
+          "learning:18",
+          "learning:19",
+          "learning:2",
+          "learning:20",
+          "learning:21",
+          "learning:22",
+          "learning:23",
+          "learning:3",
+          "learning:4",
+          "learning:5",
+          "learning:6",
+          "learning:7",
+          "learning:8",
+          "learning:9",
+          "subsequent_action"
+        ]
+      },
+      "implementation": "src\\cpswm\\system\\counterfactual_event_hypergraph\\hypothesis_message_passing.py:869",
+      "source_sha256": "3f8a99fc3134e44950a4c60ee40bca620e88c9c7fd2853dd6b020385241368f3",
+      "real_input_keys": [
+        "evidence",
+        "history",
+        "independence_certificates"
+      ],
+      "real_output_keys": [],
+      "binding_kind": "direct_operator_callable",
+      "output_and_consumer": "actor posterior + native source -> primary statistic/readout; explicit native projection exists, but default workspace creates no joint particles",
+      "legal_control": "same evidence reordered; semantic values equal within 1e-9",
+      "public_intervention": "evidence_filter removes mechanism evidence",
+      "numeric_consequence": {
+        "completed": true,
+        "call_counts": {
+          "opceu": 27,
+          "orrer": 27,
+          "pchmp": 27,
+          "cf_bocpd": 53,
+          "cause_router": 53,
+          "rgrc": 27,
+          "replay_equivalence": 30,
+          "ccrr": 5,
+          "ciav": 1,
+          "verification": 1,
+          "feedback_revision": 1
+        },
+        "actual_content_handoffs": {
+          "orrer_output_to_pchmp_input": 27,
+          "cf_output_to_cause_router_snapshot": 53,
+          "ccrr_output_to_cause_router_decision": 5,
+          "ciav_selected_action_to_executor": 1,
+          "verified_detection_to_orrer_closure": 1
+        },
+        "max_action_distribution_tv_vs_base": 0.00371155723763876,
+        "final_action_tv_vs_base": 0.0015587086369002398,
+        "final_top1": "44b33099-dee8-2a8b-cc46-e34a555d6659",
+        "final_top1_changed_vs_base": false,
+        "top1_changed_step_count_vs_base": 0,
+        "max_hybrid_alpha_absolute_change_vs_base": 0.0448441653169207,
+        "final_committed": 27,
+        "changed_count_or_regime_steps": 0,
+        "ccrr_decision_kinds": [
+          "unresolved",
+          "create",
+          "unresolved",
+          "create",
+          "reactivate"
+        ],
+        "rb_blocks": {
+          "dirichlet_delta_alpha_nonzero": true,
+          "rls_delta_A_or_b_nonzero": true,
+          "information_delta_lambda_or_xi_nonzero": false
+        },
+        "default_joint_particle_counts": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      }
+    },
+    "CF_BOCPD": {
+      "acceptance_class": "engineering causal diagnostic only",
+      "scientific_benefit": false,
+      "instance_id": 2120464305184,
+      "unique_instance_count_in_base_trace": 2,
+      "phases_by_process_local_instance_id": {
+        "2120464305184": [
+          "active_verification",
+          "learning:0",
+          "learning:1",
+          "learning:10",
+          "learning:11",
+          "learning:12",
+          "learning:13",
+          "learning:14",
+          "learning:15",
+          "learning:16",
+          "learning:17",
+          "learning:18",
+          "learning:19",
+          "learning:2",
+          "learning:20",
+          "learning:21",
+          "learning:22",
+          "learning:23",
+          "learning:3",
+          "learning:4",
+          "learning:5",
+          "learning:6",
+          "learning:7",
+          "learning:8",
+          "learning:9"
+        ],
+        "2120513483216": [
+          "late_feedback_correction",
+          "subsequent_action"
+        ]
+      },
+      "implementation": "src\\cpswm\\world_model\\habits_transitions\\joint_cause_bocpd.py:406",
+      "source_sha256": "f35bf213f8b533a5be9878b27ac4537af9bf0467b8361aedec2349d2485da528",
+      "real_input_keys": [
+        "frame"
+      ],
+      "real_output_keys": [
+        "active_regime_cause_posterior",
+        "active_regime_cause_set_posterior",
+        "beam_size",
+        "block_reference",
+        "continue_probability",
+        "elapsed_seconds",
+        "joint_run_length_cause_posterior",
+        "joint_run_length_cause_set_posterior",
+        "opportunity_index",
+        "run_length_clock",
+        "segment_cause_posterior",
+        "segment_cause_set_posterior",
+        "segment_change_probability",
+        "timestamp",
+        "transient_noise_probability"
+      ],
+      "binding_kind": "direct_operator_callable",
+      "output_and_consumer": "cause snapshot -> actual cause router -> CCRR; CIAV later reads current cause belief",
+      "legal_control_and_public_intervention": {
+        "scope": "real production CF-BOCPD class isolated input intervention; the separate wiring test proves its output is the runtime snapshot later read by CIAV",
+        "legal_control": {
+          "signals": "six identical calm frames",
+          "segment_change_probability": 0.000521120728497867,
+          "habit_cause_probability": 0.3193717277486911
+        },
+        "public_input_intervention": {
+          "signals": "three calm then three habit=0.95 frames",
+          "segment_change_probability": 0.001086796505952068,
+          "habit_cause_probability": 0.6942720810087197
+        },
+        "change_probability_delta": 0.0005656757774542009,
+        "habit_probability_delta": 0.37490035326002863,
+        "action_effect": "not isolated by this implementation-level intervention"
+      },
+      "continuous_history_observation": {
+        "base_ccrr_decisions": [
+          "unresolved",
+          "create",
+          "unresolved",
+          "create",
+          "reactivate"
+        ]
+      }
+    },
+    "CCRR": {
+      "acceptance_class": "engineering causal diagnostic only",
+      "scientific_benefit": false,
+      "instance_id": 2120464305856,
+      "unique_instance_count_in_base_trace": 2,
+      "phases_by_process_local_instance_id": {
+        "2120464305856": [
+          "learning:15",
+          "learning:17"
+        ],
+        "2120505900880": [
+          "late_feedback_correction",
+          "subsequent_action"
+        ]
+      },
+      "implementation": "src\\cpswm\\world_model\\habits_transitions\\context_conditioned_regime.py:731",
+      "source_sha256": "0c95612f1dc58279eb93ef16976a88411f00c31f4258d7b0cdf5e04ecffbfc5e",
+      "real_input_keys": [
+        "actor_id",
+        "context_features",
+        "identity_switch_probability",
+        "now",
+        "object_instance_id",
+        "owner_actor_id",
+        "snapshot"
+      ],
+      "real_output_keys": [
+        "active_regime_id",
+        "actor_id",
+        "alternative_causes_ruled_out",
+        "authority",
+        "context_features",
+        "context_hash",
+        "created_cause_origin",
+        "created_regime_id",
+        "decision_score",
+        "decision_time",
+        "decision_token",
+        "distribution_semantics",
+        "kind",
+        "library_content_hash",
+        "model_config_hash",
+        "model_version",
+        "non_identity_decision_score",
+        "object_instance_id",
+        "parameter_write_authorized",
+        "rationale",
+        "reactivated_regime_id",
+        "scored_library_version",
+        "scoring_envelope"
+      ],
+      "binding_kind": "composite_operator_stage",
+      "output_and_consumer": "stay/create/reactivate/unresolved decision -> quarantine/promotion routing -> RGRC",
+      "legal_control_and_public_intervention": {
+        "scope": "same public default history; only the declared CCRR confirmation window differs",
+        "legal_control": "the causal-matrix test repeats window=3 and requires identical classification",
+        "window_2": {
+          "committed": 16,
+          "quarantined": 0,
+          "action": {
+            "44b33099-dee8-2a8b-cc46-e34a555d6659": 0.6576912754287639,
+            "23a2ff08-fd31-2108-19c8-56bbe1bdd947": 0.18791179297964683,
+            "a5a97d44-a72a-f6e7-3ef1-72fba6bb29d3": 0.15439693159158924,
+            "b4634a80-b40c-5fe8-e981-d10b5cfd9d0d": 0.0
+          },
+          "top1": "44b33099-dee8-2a8b-cc46-e34a555d6659"
+        },
+        "window_3": {
+          "committed": 15,
+          "quarantined": 1,
+          "action": {
+            "44b33099-dee8-2a8b-cc46-e34a555d6659": 0.7258932240502979,
+            "23a2ff08-fd31-2108-19c8-56bbe1bdd947": 0.1036990320071854,
+            "a5a97d44-a72a-f6e7-3ef1-72fba6bb29d3": 0.17040774394251668,
+            "b4634a80-b40c-5fe8-e981-d10b5cfd9d0d": 0.0
+          },
+          "top1": "44b33099-dee8-2a8b-cc46-e34a555d6659"
+        },
+        "action_tv": 0.08421276097246141,
+        "top1_changed": false,
+        "hybrid_alpha_window2_minus_window3": {
+          "44b33099-dee8-2a8b-cc46-e34a555d6659": 0.0,
+          "23a2ff08-fd31-2108-19c8-56bbe1bdd947": 1.2649135561780425,
+          "a5a97d44-a72a-f6e7-3ef1-72fba6bb29d3": 0.0,
+          "b4634a80-b40c-5fe8-e981-d10b5cfd9d0d": 0.0
+        },
+        "max_hybrid_alpha_absolute_delta": 1.2649135561780425
+      }
+    },
+    "RGRC": {
+      "acceptance_class": "engineering causal diagnostic only",
+      "scientific_benefit": false,
+      "instance_id": 2120464303168,
+      "unique_instance_count_in_base_trace": 1,
+      "phases_by_process_local_instance_id": {
+        "2120464303168": [
+          "late_feedback_correction",
+          "learning:0",
+          "learning:1",
+          "learning:10",
+          "learning:11",
+          "learning:12",
+          "learning:13",
+          "learning:17",
+          "learning:18",
+          "learning:19",
+          "learning:2",
+          "learning:20",
+          "learning:21",
+          "learning:22",
+          "learning:23",
+          "learning:3",
+          "learning:4",
+          "learning:5",
+          "learning:6",
+          "learning:7",
+          "learning:8",
+          "learning:9",
+          "subsequent_action"
+        ]
+      },
+      "implementation": "src\\cpswm\\system\\continual\\hybrid_statistics.py:1036",
+      "source_sha256": "47cfe3b84178e19a308c58e9261b05f4462cc6f922b69e254c0844e140a71310",
+      "real_input_keys": [
+        "deltas",
+        "promotions"
+      ],
+      "real_output_keys": [],
+      "binding_kind": "enclosing_runtime_stage",
+      "output_and_consumer": "single HybridStatisticLedger -> Dirichlet/RLS/information projections -> action readout; feedback revision retracts/replaces on the same ledger",
+      "legal_control_and_public_intervention": {
+        "scope": "same public transition; CIAV realized outcome controls whether feedback reaches RGRC",
+        "runs": {
+          "legal_negative_no_closure": {
+            "committed": 0,
+            "quarantined": 1,
+            "ledger_entries": 0,
+            "hybrid_alpha": {
+              "44b33099-dee8-2a8b-cc46-e34a555d6659": 0.0,
+              "23a2ff08-fd31-2108-19c8-56bbe1bdd947": 0.0,
+              "a5a97d44-a72a-f6e7-3ef1-72fba6bb29d3": 0.0,
+              "b4634a80-b40c-5fe8-e981-d10b5cfd9d0d": 0.0
+            },
+            "action": {
+              "44b33099-dee8-2a8b-cc46-e34a555d6659": 0.25,
+              "23a2ff08-fd31-2108-19c8-56bbe1bdd947": 0.25,
+              "a5a97d44-a72a-f6e7-3ef1-72fba6bb29d3": 0.25,
+              "b4634a80-b40c-5fe8-e981-d10b5cfd9d0d": 0.25
+            },
+            "top1": "23a2ff08-fd31-2108-19c8-56bbe1bdd947",
+            "feedback_closure": false
+          },
+          "public_different_location_feedback": {
+            "committed": 1,
+            "quarantined": 1,
+            "ledger_entries": 2,
+            "hybrid_alpha": {
+              "44b33099-dee8-2a8b-cc46-e34a555d6659": 0.0,
+              "23a2ff08-fd31-2108-19c8-56bbe1bdd947": 0.9611691033872968,
+              "a5a97d44-a72a-f6e7-3ef1-72fba6bb29d3": 0.0,
+              "b4634a80-b40c-5fe8-e981-d10b5cfd9d0d": 0.0
+            },
+            "action": {
+              "44b33099-dee8-2a8b-cc46-e34a555d6659": 0.0,
+              "23a2ff08-fd31-2108-19c8-56bbe1bdd947": 1.0,
+              "a5a97d44-a72a-f6e7-3ef1-72fba6bb29d3": 0.0,
+              "b4634a80-b40c-5fe8-e981-d10b5cfd9d0d": 0.0
+            },
+            "top1": "23a2ff08-fd31-2108-19c8-56bbe1bdd947",
+            "feedback_closure": true
+          }
+        },
+        "action_tv": 0.75,
+        "top1_changed": false,
+        "ordinary_information_delta_note": "continuous raw trace checks ΔΛ/Δξ; it remains identically zero"
+      },
+      "observed_rb_blocks": {
+        "dirichlet_delta_alpha_nonzero": true,
+        "rls_delta_A_or_b_nonzero": true,
+        "information_delta_lambda_or_xi_nonzero": false
+      }
+    },
+    "CIAV": {
+      "acceptance_class": "engineering causal diagnostic only",
+      "scientific_benefit": false,
+      "instance_id": 2120464307200,
+      "unique_instance_count_in_base_trace": 1,
+      "phases_by_process_local_instance_id": {
+        "2120464307200": [
+          "active_verification"
+        ]
+      },
+      "implementation": "src\\cpswm\\world_model\\grounded_search\\active_verification.py:438",
+      "source_sha256": "c15262bf103d0fbc56181075ffad6583bf9f2b255c63505f2007598e9ef92dbd",
+      "real_input_keys": [
+        "actions",
+        "belief",
+        "consolidation_decision_utilities",
+        "minimum_net_value",
+        "privacy_budget",
+        "terminal_decision_utilities"
+      ],
+      "real_output_keys": [
+        "blocked_action_ids",
+        "scores",
+        "selected_action_id",
+        "should_act",
+        "stop_reason"
+      ],
+      "binding_kind": "adaptive_composite_stage",
+      "output_and_consumer": "selected action -> actual executor -> verified detection -> ORRER/PCHMP closure -> feedback revision -> RGRC -> subsequent action",
+      "legal_control": "privacy-blocked action is a legal no-op; negative detection has no feedback closure",
+      "public_intervention": "same-location actor likelihood 0.95 vs 0.05",
+      "numeric_consequence": {
+        "scope": "public CIAV input and real executor; no manual prepared state",
+        "runs": {
+          "negative_control": {
+            "action": {
+              "44b33099-dee8-2a8b-cc46-e34a555d6659": 0.7,
+              "23a2ff08-fd31-2108-19c8-56bbe1bdd947": 0.30000000000000004,
+              "a5a97d44-a72a-f6e7-3ef1-72fba6bb29d3": 0.0,
+              "b4634a80-b40c-5fe8-e981-d10b5cfd9d0d": 0.0
+            },
+            "top1": "44b33099-dee8-2a8b-cc46-e34a555d6659",
+            "ciav_executed": true,
+            "fast_verification_changed": null
+          },
+          "same_location_owner_0_95": {
+            "action": {
+              "44b33099-dee8-2a8b-cc46-e34a555d6659": 0.7,
+              "23a2ff08-fd31-2108-19c8-56bbe1bdd947": 0.30000000000000004,
+              "a5a97d44-a72a-f6e7-3ef1-72fba6bb29d3": 0.0,
+              "b4634a80-b40c-5fe8-e981-d10b5cfd9d0d": 0.0
+            },
+            "top1": "44b33099-dee8-2a8b-cc46-e34a555d6659",
+            "ciav_executed": true,
+            "fast_verification_changed": true
+          },
+          "same_location_owner_0_05": {
+            "action": {
+              "44b33099-dee8-2a8b-cc46-e34a555d6659": 0.0,
+              "23a2ff08-fd31-2108-19c8-56bbe1bdd947": 1.0,
+              "a5a97d44-a72a-f6e7-3ef1-72fba6bb29d3": 0.0,
+              "b4634a80-b40c-5fe8-e981-d10b5cfd9d0d": 0.0
+            },
+            "top1": "23a2ff08-fd31-2108-19c8-56bbe1bdd947",
+            "ciav_executed": true,
+            "fast_verification_changed": true
+          }
+        },
+        "owner_0_95_vs_control_tv": 0.0,
+        "owner_0_05_vs_control_tv": 0.7,
+        "owner_0_95_top1_changed": false,
+        "owner_0_05_top1_changed": true
+      },
+      "critical_gap": "real input is StructureTwoCauseBelief, not full particle posterior"
+    }
+  },
+  "scenario_matrix": {
+    "stable_habit": {
+      "status": "EXECUTED",
+      "evidence": [
+        "continuous base stable prefix",
+        "CF-BOCPD null control"
+      ]
+    },
+    "habit_change_and_reactivation": {
+      "status": "EXECUTED",
+      "evidence": [
+        "unresolved",
+        "create",
+        "unresolved",
+        "create",
+        "reactivate"
+      ]
+    },
+    "multi_person_handoff": {
+      "status": "PARTIAL_EXECUTED",
+      "evidence": "owner/guest/unknown prior and ORRER handoff role enumeration/revival tests; no claim that every continuous event's hidden truth is a handoff"
+    },
+    "similar_physical_instances": {
+      "status": "MISSING_FROM_DEFAULT_HISTORY",
+      "evidence": "Direction-Three oracle contract test is reference-only; current BackboneWiringProbe owns one object_instance_id and cannot establish default-path discrimination"
+    },
+    "unknown_person": {
+      "status": "EXECUTED",
+      "evidence": "open-world trace plus unknown actor support tests"
+    },
+    "unknown_location": {
+      "status": "MISSING_FROM_DEFAULT_ACTION_SUPPORT",
+      "evidence": "default action support contains registered UUID locations; no explicit unknown-location candidate is consumed by the default joint path"
+    },
+    "negative_observation": {
+      "status": "EXECUTED_CORRECT_NO_OP_WITH_OPEN_CONSUMER_GAP",
+      "evidence": "seven primary receipts, no closure/commit; CIAV actor posterior differs but is discarded"
+    },
+    "late_correction": {
+      "status": "EXECUTED",
+      "evidence": "continuous late_feedback_correction plus real feedback loop test"
+    },
+    "defer_and_debt_recovery": {
+      "status": "EXECUTED",
+      "evidence": "public P0 deferral, expired debt replay, exactly-once refusal"
+    },
+    "cancel_and_recovery": {
+      "status": "EXECUTED_PROCESS_LOCAL",
+      "evidence": "public cancellation and injected interruption/retry; not cross-process power-loss recovery"
+    },
+    "one_runtime_covers_every_required_scenario": {
+      "status": "NOT_ESTABLISHED",
+      "evidence": "continuous history covers stable/change/open-world/late correction; negative, debt, cancellation and similar-instance cases remain separate scenario runs"
+    }
+  },
+  "junit": {
+    "pytest_deferred_cancel_recovery": {
+      "artifact": "pytest_deferred_cancel_recovery.xml",
+      "sha256": "9ea2f0e1e3fd61cd3ea8fa27a5e98e47f4036ea731dfca4d7cf08dc4557b7c41",
+      "tests": 27,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "passed": 27,
+      "all_green": true,
+      "testcases": [
+        {
+          "classname": "tests.test_structure_two_w3_deferred_cancellation",
+          "name": "test_public_cancellation_restores_full_nonempty_parent_and_preserves_new_observation[core-0]",
+          "status": "passed"
+        },
+        {
+          "classname": "tests.test_structure_two_w3_deferred_cancellation",
+          "name": "test_public_cancellation_restores_full_nonempty_parent_and_preserves_new_observation[core-1]",
+          "status": "passed"
+        },
+        {
+          "classname": "tests.test_structure_two_w3_deferred_cancellation",
+          "name": "test_public_cancellation_restores_full_nonempty_parent_and_preserves_new_observation[core-2]",
+          "status": "passed"
+        },
+        {
+          "classname": "tests.test_structure_two_w3_deferred_cancellation",
+          "name": "test_public_cancellation_restores_full_nonempty_parent_and_preserves_new_observation[production_wrapper-0]",
+          "status": "passed"
+        },
+        {
+          "classname": "tests.test_structure_two_w3_deferred_cancellation",
+          "name": "test_public_cancellation_restores_full_nonempty_parent_and_preserves_new_observation[production_wrapper-1]",
+          "status": "passed"
+        },
+        {
+          "classname": "tests.test_structure_two_w3_deferred_cancellation",
+          "name": "test_public_cancellation_restores_full_nonempty_parent_and_preserves_new_observation[production_wrapper-2]",
+          "status": "passed"
+        },
+        {
+          "classname": "tests.test_structure_two_w3_deferred_cancellation",
+          "name": "test_real_cancellation_interruption_restores_pending_transaction_and_can_retry[RuntimeError-cancellation_lineage]",
+          "status": "passed"
+        },
+        {
+          "classname": "tests.test_structure_two_w3_deferred_cancellation",
+          "name": "test_real_cancellation_interruption_restores_pending_transaction_and_can_retry[RuntimeError-hybrid]",
+          "status": "passed"
+        },
+        {
+          "classname": "tests.test_structure_two_w3_deferred_cancellation",
+          "name": "test_real_cancellation_interruption_restores_pending_transaction_and_can_retry[RuntimeError-dirichlet]",
+          "status": "passed"
+        },
+        {
+          "classname": "tests.test_structure_two_w3_deferred_cancellation",
+          "name": "test_real_cancellation_interruption_restores_pending_transaction_and_can_retry[RuntimeError-rls]",
+          "status": "passed"
+        },
+        {
+          "classname": "tests.test_structure_two_w3_deferred_cancellation",
+          "name": "test_real_cancellation_interruption_restores_pending_transaction_and_can_retry[RuntimeError-cancellation_replay]",
+          "status": "passed"
+        },
+        {
+          "classname": "tests.test_structure_two_w3_deferred_cancellation",
+          "name": "test_real_cancellation_interruption_restores_pending_transaction_and_can_retry[KeyboardInterrupt-cancellation_lineage]",
+          "status": "passed"
+        },
+        {
+          "classname": "tests.test_structure_two_w3_deferred_cancellation",
+          "name": "test_real_cancellation_interruption_restores_pending_transaction_and_can_retry[KeyboardInterrupt-hybrid]",
+          "status": "passed"
+        },
+        {
+          "classname": "tests.test_structure_two_w3_deferred_cancellation",
+          "name": "test_real_cancellation_interruption_restores_pending_transaction_and_can_retry[KeyboardInterrupt-dirichlet]",
+          "status": "passed"
+        },
+        {
+          "classname": "tests.test_structure_two_w3_deferred_cancellation",
+          "name": "test_real_cancellation_interruption_restores_pending_transaction_and_can_retry[KeyboardInterrupt-rls]",
+          "status": "passed"
+        },
+        {
+          "classname": "tests.test_structure_two_w3_deferred_cancellation",
+          "name": "test_real_cancellation_interruption_restores_pending_transaction_and_can_retry[KeyboardInterrupt-cancellation_replay]",
+          "status": "passed"
+        },
+        {
+          "classname": "tests.test_structure_two_w3_deferred_cancellation",
+          "name": "test_restored_parent_can_be_corrected_again_then_retracted_without_resurrection",
+          "status": "passed"
+        },
+        {
+          "classname": "tests.test_structure_two_w3_deferred_cancellation",
+          "name": "test_cancellation_semantics_reproduce_with_distinct_execution_lineage[cancel]",
+          "status": "passed"
+        },
+        {
+          "classname": "tests.test_structure_two_w3_deferred_cancellation",
+          "name": "test_cancellation_semantics_reproduce_with_distinct_execution_lineage[correct]",
+          "status": "passed"
+        },
+        {
+          "classname": "tests.test_structure_two_w3_deferred_cancellation",
+          "name": "test_cancellation_semantics_reproduce_with_distinct_execution_lineage[retract]",
+          "status": "passed"
+        },
+        {
+          "classname": "tests.test_structure_two_w3_deferred_cancellation",
+          "name": "test_frozen_cancellation_oracle_rejects_corrupted_and_resealed_operations[digest]",
+          "status": "passed"
+        },
+        {
+          "classname": "tests.test_structure_two_w3_deferred_cancellation",
+          "name": "test_frozen_cancellation_oracle_rejects_corrupted_and_resealed_operations[request]",
+          "status": "passed"
+        },
+        {
+          "classname": "tests.test_structure_two_w3_deferred_cancellation",
+          "name": "test_frozen_cancellation_oracle_rejects_corrupted_and_resealed_operations[parent]",
+          "status": "passed"
+        },
+        {
+          "classname": "tests.test_structure_two_w3_deferred_cancellation",
+          "name": "test_frozen_cancellation_oracle_rejects_corrupted_and_resealed_operations[trigger]",
+          "status": "passed"
+        },
+        {
+          "classname": "tests.test_structure_two_w3_deferred_cancellation",
+          "name": "test_frozen_cancellation_oracle_rejects_corrupted_and_resealed_operations[sequence]",
+          "status": "passed"
+        },
+        {
+          "classname": "tests.test_structure_two_w3_deferred_cancellation",
+          "name": "test_frozen_cancellation_oracle_rejects_corrupted_and_resealed_operations[missing]",
+          "status": "passed"
+        },
+        {
+          "classname": "tests.test_structure_two_w3_deferred_cancellation",
+          "name": "test_cancellation_restores_original_nonempty_derived_bundle_without_fresh_authority",
+          "status": "passed"
+        }
+      ]
+    },
+    "pytest_history_scenarios": {
+      "artifact": "pytest_history_scenarios.xml",
+      "sha256": "5aab5363d68d9243ea32ccbc9a0e7b51cb970d6504d1db8e469da74955945104",
+      "tests": 14,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "passed": 14,
+      "all_green": true,
+      "testcases": [
+        {
+          "classname": "tests.test_structure_two_backbone_operator_wiring",
+          "name": "test_positive_observation_different_location_runs_the_full_thirteen_call_closure",
+          "status": "passed"
+        },
+        {
+          "classname": "tests.test_structure_two_backbone_operator_wiring",
+          "name": "test_negative_observation_stops_at_seven_receipts_and_leaves_no_partial_closure",
+          "status": "passed"
+        },
+        {
+          "classname": "tests.test_structure_two_backbone_operator_wiring",
+          "name": "test_open_actor_support_is_preserved_end_to_end_and_support_drift_is_refused",
+          "status": "passed"
+        },
+        {
+          "classname": "tests.test_structure_two_backbone_operator_wiring",
+          "name": "test_unknown_actor_mass_survives_a_full_open_world_timeline",
+          "status": "passed"
+        },
+        {
+          "classname": "tests.test_structure_two_backbone_operator_wiring",
+          "name": "test_regime_creation_and_reactivation_happen_on_the_production_direct_p5_path",
+          "status": "passed"
+        },
+        {
+          "classname": "tests.test_structure_two_backbone_operator_wiring",
+          "name": "test_p0_defers_orrer_and_ciav_behind_exactly_one_bound_debt_certificate",
+          "status": "passed"
+        },
+        {
+          "classname": "tests.test_structure_two_backbone_operator_wiring",
+          "name": "test_expired_debt_replay_runs_p5_settles_once_and_refuses_a_repeat",
+          "status": "passed"
+        },
+        {
+          "classname": "tests.test_structure_two_backbone_operator_wiring",
+          "name": "test_direct_p5_and_debt_replay_agree_on_every_semantic_quantity",
+          "status": "passed"
+        },
+        {
+          "classname": "tests.test_orrer_event_revision",
+          "name": "test_orrer_enumerates_unknown_actor_in_both_handoff_roles",
+          "status": "passed"
+        },
+        {
+          "classname": "tests.test_orrer_event_revision",
+          "name": "test_orrer_reactivates_a_true_handoff_after_wrong_mechanism_pruning",
+          "status": "passed"
+        },
+        {
+          "classname": "tests.test_structure_two_w3_operator_acceptance",
+          "name": "test_real_feedback_loop_engine_message_passing_and_statistic_application",
+          "status": "passed"
+        },
+        {
+          "classname": "tests.test_structure_two_w3_operator_acceptance",
+          "name": "test_same_class_foreign_extra_instance_is_refused[feedback_revision_loop]",
+          "status": "passed"
+        },
+        {
+          "classname": "tests.test_structure_two_w3_operator_acceptance",
+          "name": "test_same_class_foreign_extra_instance_is_refused[cause_information_planner]",
+          "status": "passed"
+        },
+        {
+          "classname": "tests.test_structure_two_w3_operator_acceptance",
+          "name": "test_same_class_foreign_extra_instance_is_refused[ciav_opceu_loop]",
+          "status": "passed"
+        }
+      ]
+    },
+    "pytest_negative_observation": {
+      "artifact": "pytest_negative_observation.xml",
+      "sha256": "d1a9635e563e1a4e07ee154eddfa7aae25f8b6a2f1dab093b2da7cd1d7b0cfc6",
+      "tests": 12,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "passed": 12,
+      "all_green": true,
+      "testcases": [
+        {
+          "classname": "tests.test_structure_two_ciav_negative_observation_layers",
+          "name": "test_layer_one_the_local_actor_posterior_is_an_exact_bayes_update[detected_same_location]",
+          "status": "passed"
+        },
+        {
+          "classname": "tests.test_structure_two_ciav_negative_observation_layers",
+          "name": "test_layer_one_the_local_actor_posterior_is_an_exact_bayes_update[detected_different_location]",
+          "status": "passed"
+        },
+        {
+          "classname": "tests.test_structure_two_ciav_negative_observation_layers",
+          "name": "test_layer_one_the_local_actor_posterior_is_an_exact_bayes_update[not_detected]",
+          "status": "passed"
+        },
+        {
+          "classname": "tests.test_structure_two_ciav_negative_observation_layers",
+          "name": "test_layer_two_the_consumption_target_is_the_loop_s_own_local_posterior[detected_same_location]",
+          "status": "passed"
+        },
+        {
+          "classname": "tests.test_structure_two_ciav_negative_observation_layers",
+          "name": "test_layer_two_the_consumption_target_is_the_loop_s_own_local_posterior[detected_different_location]",
+          "status": "passed"
+        },
+        {
+          "classname": "tests.test_structure_two_ciav_negative_observation_layers",
+          "name": "test_layer_two_the_consumption_target_is_the_loop_s_own_local_posterior[not_detected]",
+          "status": "passed"
+        },
+        {
+          "classname": "tests.test_structure_two_ciav_negative_observation_layers",
+          "name": "test_layer_three_only_the_same_location_branch_writes_the_fast_ledger",
+          "status": "passed"
+        },
+        {
+          "classname": "tests.test_structure_two_ciav_negative_observation_layers",
+          "name": "test_layer_four_a_negative_observation_leaves_the_decoded_action_unchanged",
+          "status": "passed"
+        },
+        {
+          "classname": "tests.test_structure_two_ciav_negative_observation_layers",
+          "name": "test_an_unexecuted_action_is_not_encoded_as_a_negative_observation",
+          "status": "passed"
+        },
+        {
+          "classname": "tests.test_structure_two_ciav_negative_observation_layers",
+          "name": "test_a_negative_observation_is_never_upgraded_to_a_positive_event",
+          "status": "passed"
+        },
+        {
+          "classname": "tests.test_structure_two_ciav_negative_observation_layers",
+          "name": "test_one_realized_ciav_observation_is_counted_once_across_direct_and_replay",
+          "status": "passed"
+        },
+        {
+          "classname": "tests.test_structure_two_ciav_negative_observation_layers",
+          "name": "test_repeating_the_identical_ciav_execution_produces_no_second_factor",
+          "status": "passed"
+        }
+      ]
+    },
+    "pytest_operator_causal_matrix": {
+      "artifact": "pytest_operator_causal_matrix.xml",
+      "sha256": "f0f7f1845af1f58dfa6684cb2c963ad92de23f308cbd70cff5fa4cf333ba2034",
+      "tests": 20,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "passed": 20,
+      "all_green": true,
+      "testcases": [
+        {
+          "classname": "tests.test_structure_two_operator_causal_matrix",
+          "name": "test_opceu_applied_weight_matches_the_frozen_inverse_propensity_formula",
+          "status": "passed"
+        },
+        {
+          "classname": "tests.test_structure_two_operator_causal_matrix",
+          "name": "test_opceu_visibility_intervention_reaches_the_numeric_state_and_the_decision",
+          "status": "passed"
+        },
+        {
+          "classname": "tests.test_structure_two_operator_causal_matrix",
+          "name": "test_opceu_null_control_a_field_it_never_reads_changes_nothing",
+          "status": "passed"
+        },
+        {
+          "classname": "tests.test_structure_two_operator_causal_matrix",
+          "name": "test_orrer_unresolved_mass_intervention_moves_the_posterior_and_the_numeric_state",
+          "status": "passed"
+        },
+        {
+          "classname": "tests.test_structure_two_operator_causal_matrix",
+          "name": "test_orrer_preserves_open_actor_and_unresolved_support_as_an_invariant",
+          "status": "passed"
+        },
+        {
+          "classname": "tests.test_structure_two_operator_causal_matrix",
+          "name": "test_orrer_null_control_the_same_inputs_reproduce_the_same_hypothesis_set",
+          "status": "passed"
+        },
+        {
+          "classname": "tests.test_structure_two_operator_causal_matrix",
+          "name": "test_pchmp_evidence_intervention_reaches_the_numeric_state_and_the_decision",
+          "status": "passed"
+        },
+        {
+          "classname": "tests.test_structure_two_operator_causal_matrix",
+          "name": "test_pchmp_posterior_is_normalized_and_keeps_the_frozen_actor_support",
+          "status": "passed"
+        },
+        {
+          "classname": "tests.test_structure_two_operator_causal_matrix",
+          "name": "test_pchmp_null_control_reordering_the_same_evidence_is_semantically_invariant",
+          "status": "passed"
+        },
+        {
+          "classname": "tests.test_structure_two_operator_causal_matrix",
+          "name": "test_cf_bocpd_change_probability_responds_to_a_real_signal_shift",
+          "status": "passed"
+        },
+        {
+          "classname": "tests.test_structure_two_operator_causal_matrix",
+          "name": "test_cf_bocpd_null_control_a_constant_sequence_keeps_the_change_probability_low",
+          "status": "passed"
+        },
+        {
+          "classname": "tests.test_structure_two_operator_causal_matrix",
+          "name": "test_cf_bocpd_output_is_the_snapshot_ciav_later_reads",
+          "status": "passed"
+        },
+        {
+          "classname": "tests.test_structure_two_operator_causal_matrix",
+          "name": "test_ccrr_confirmation_window_intervention_changes_the_committed_classification",
+          "status": "passed"
+        },
+        {
+          "classname": "tests.test_structure_two_operator_causal_matrix",
+          "name": "test_ccrr_null_control_the_same_window_reproduces_the_same_classification",
+          "status": "passed"
+        },
+        {
+          "classname": "tests.test_structure_two_operator_causal_matrix",
+          "name": "test_ccrr_only_promotes_after_the_confirmation_window_is_satisfied",
+          "status": "passed"
+        },
+        {
+          "classname": "tests.test_structure_two_operator_causal_matrix",
+          "name": "test_rgrc_hybrid_mass_reconciles_with_the_surviving_committed_events",
+          "status": "passed"
+        },
+        {
+          "classname": "tests.test_structure_two_operator_causal_matrix",
+          "name": "test_rgrc_quarantine_gate_keeps_the_adaptive_primary_pass_out_of_long_term_memory",
+          "status": "passed"
+        },
+        {
+          "classname": "tests.test_structure_two_operator_causal_matrix",
+          "name": "test_ciav_owner_likelihood_intervention_moves_the_decoded_choice",
+          "status": "passed"
+        },
+        {
+          "classname": "tests.test_structure_two_operator_causal_matrix",
+          "name": "test_ciav_null_control_a_privacy_blocked_action_changes_no_state",
+          "status": "passed"
+        },
+        {
+          "classname": "tests.test_structure_two_operator_causal_matrix",
+          "name": "test_binding_kind_is_reported_separately_from_algorithmic_equivalence",
+          "status": "passed"
+        }
+      ]
+    },
+    "pytest_reference_only_similar_instance_contract": {
+      "artifact": "pytest_reference_only_similar_instance_contract.xml",
+      "sha256": "0ce61b5bee6c6e46e2783db9c05371335a8c58b8ffda1352e6545af9aba77dae",
+      "tests": 1,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "passed": 1,
+      "all_green": true,
+      "testcases": [
+        {
+          "classname": "tests.test_direction_three_oracle_suite",
+          "name": "test_oracle_suite_covers_complete_s3_1_scenario_semantics",
+          "status": "passed"
+        }
+      ]
+    }
+  },
+  "capability_gaps": {
+    "classification": "engineering capability gap probe; not scientific acceptance",
+    "source_trace": "continuous_current_base.json.gz",
+    "checks": {
+      "default_joint_particles_nonempty": {
+        "required_for_full_capability": true,
+        "observed_counts": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "observed": false,
+        "status": "MISSING"
+      },
+      "ordinary_information_rb_increment_nonzero": {
+        "required_for_full_capability": true,
+        "observed_delta_information": [
+          [
+            [
+              0.0
+            ]
+          ],
+          [
+            [
+              0.0
+            ]
+          ],
+          [
+            [
+              0.0
+            ]
+          ],
+          [
+            [
+              0.0
+            ]
+          ],
+          [
+            [
+              0.0
+            ]
+          ],
+          [
+            [
+              0.0
+            ]
+          ],
+          [
+            [
+              0.0
+            ]
+          ],
+          [
+            [
+              0.0
+            ]
+          ],
+          [
+            [
+              0.0
+            ]
+          ],
+          [
+            [
+              0.0
+            ]
+          ],
+          [
+            [
+              0.0
+            ]
+          ],
+          [
+            [
+              0.0
+            ]
+          ],
+          [
+            [
+              0.0
+            ]
+          ],
+          [
+            [
+              0.0
+            ]
+          ],
+          [
+            [
+              0.0
+            ]
+          ],
+          [
+            [
+              0.0
+            ]
+          ],
+          [
+            [
+              0.0
+            ]
+          ],
+          [
+            [
+              0.0
+            ]
+          ],
+          [
+            [
+              0.0
+            ]
+          ],
+          [
+            [
+              0.0
+            ]
+          ],
+          [
+            [
+              0.0
+            ]
+          ],
+          [
+            [
+              0.0
+            ]
+          ],
+          [
+            [
+              0.0
+            ]
+          ],
+          [
+            [
+              0.0
+            ]
+          ],
+          [
+            [
+              0.0
+            ]
+          ],
+          [
+            [
+              0.0
+            ]
+          ],
+          [
+            [
+              0.0
+            ]
+          ]
+        ],
+        "observed_delta_information_vector": [
+          [
+            0.0
+          ],
+          [
+            0.0
+          ],
+          [
+            0.0
+          ],
+          [
+            0.0
+          ],
+          [
+            0.0
+          ],
+          [
+            0.0
+          ],
+          [
+            0.0
+          ],
+          [
+            0.0
+          ],
+          [
+            0.0
+          ],
+          [
+            0.0
+          ],
+          [
+            0.0
+          ],
+          [
+            0.0
+          ],
+          [
+            0.0
+          ],
+          [
+            0.0
+          ],
+          [
+            0.0
+          ],
+          [
+            0.0
+          ],
+          [
+            0.0
+          ],
+          [
+            0.0
+          ],
+          [
+            0.0
+          ],
+          [
+            0.0
+          ],
+          [
+            0.0
+          ],
+          [
+            0.0
+          ],
+          [
+            0.0
+          ],
+          [
+            0.0
+          ],
+          [
+            0.0
+          ],
+          [
+            0.0
+          ],
+          [
+            0.0
+          ]
+        ],
+        "observed": false,
+        "status": "MISSING"
+      },
+      "ciav_consumes_full_particle_posterior": {
+        "required_for_full_capability": true,
+        "ciav_input_keys": [
+          "actions",
+          "belief",
+          "consolidation_decision_utilities",
+          "minimum_net_value",
+          "privacy_budget",
+          "terminal_decision_utilities"
+        ],
+        "particle_token_observed_in_ciav_input": false,
+        "observed": false,
+        "observed_input_kind": "StructureTwoCauseBelief / snapshot, not full particles",
+        "status": "MISSING"
+      }
+    },
+    "all_required_capabilities_present": false,
+    "expected_exit_code_when_known_gaps_remain": 2
+  },
+  "commands_all_as_expected": true,
+  "claims": {
+    "seven_operators_executed_on_native_sequential_path": true,
+    "default_full_joint_backbone_operational": false,
+    "full_joint_causal_collaboration_verified": false,
+    "scientific_benefit_verified": false,
+    "real_robot_execution_verified": false
+  },
+  "raw_artifacts": {
+    "base": {
+      "path": "continuous_current_base.json.gz",
+      "sha256": "52c79ffcd90a9b6275f4338e8209004a89963bc9f231840e76ef5bebecc65f71"
+    },
+    "null": {
+      "path": "continuous_current_null.json.gz",
+      "sha256": "98e03db4adedf3fcbb50c345be804187f4691b8f50a8f4b3c296274815136732"
+    },
+    "opceu": {
+      "path": "continuous_current_opceu.json.gz",
+      "sha256": "73037b88cdd85e2f3638845b0b12455694971751434f562fad14c5c89139be21"
+    },
+    "orrer": {
+      "path": "continuous_current_orrer.json.gz",
+      "sha256": "efc45061c2adc81539fe036a2ed8afa515e6517fe0d0afb829720d6accfeb975"
+    },
+    "pchmp": {
+      "path": "continuous_current_pchmp.json.gz",
+      "sha256": "a5dd572a13ec999a3ec6feab1c3ecc901909752a15e9dbbaccf712a951051c9c"
+    },
+    "identity": {
+      "path": "continuous_current_identity.json.gz",
+      "sha256": "56f1de0e413921de743b79393d8b9f646e97ae6a4f9d3f9d9e0c110a960373e7"
+    },
+    "ciav": {
+      "path": "continuous_current_ciav.json.gz",
+      "sha256": "224851b6c0ce1b9cce79d1a30fe474faac6562a12ca8b1cab161acc9b75aab03"
+    },
+    "openworld": {
+      "path": "continuous_current_openworld.json.gz",
+      "sha256": "83559e3b771f887e5825872339d870f22ece960310723cbb2f3dcf3819b02d30"
+    }
+  }
+}

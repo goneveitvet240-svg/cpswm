@@ -2,6 +2,7 @@
 
 ## A G1 修复与修后两轮审核交付 2026-09-13
 
+- 公开证据提交 `975ca330da8e84fd545454e8b14b046b8fd36584` 已 push / ls-remote 核验一致；修复草稿 PR https://github.com/goneveitvet240-svg/cpswm/pull/12 。393 个归档工件与留存 manifest 逐项一致，工作树无生产路径未提交修改；后续状态登记不改变冻结代码/证据。
 - 证据提交的自动格式化钩子曾触碰 run_01 两份历史源码快照，提交中止；已恢复原字节并核对全目录 manifest。仅此归档提交跳过变更文件的自动格式化钩子，实际生产代码 Ruff/mypy 及最终两轮测试已单独通过，日志均在 verification 中。未以格式化覆盖失败时源码。
 - 分支 `codex/pc-a-proposal-g1-fix-20260913`；base `f95086718ad2d7d6f0707bcae1dc6758d3417233`；实际代码/测试冻结 `2ebd815543a9e51948c0eba237aacff8629b51ed`。A1–A7、分区隔离、样本 ID/pair 连接、@2 地点来源及快照目录交叉绑定已实现；`src/cpswm/system` 改动 0，不写 B 生产边界。
 - 最终 `python tools/structure_two_proposal_g1_checks.py run_03`：125 原回归通过、第一轮 30 通过、第二轮 22 通过，既有坏枚举 warning 保留；Ruff/五模块 mypy 通过。第一次修后审核发现地点实体替换漏检，已修复，run_01 失败及源码快照保留。只迁移旧正例的合同字段/分区路径，不删旧攻击。

@@ -1,5 +1,18 @@
 # 电脑 A 状态
 
+## PC-B R6/R7 五反例交叉复核：交付
+
+- 分支：`codex/pc-a-crosscheck-pcb-r6-r7-20260912`；base `bdec3ee21b7db361e390496d97ff2eb30390dc6c`。
+- B 原件 `9195dd4b3872cbf770bd73ad4c84cca007137c3d`：21 个审核文件、0 个生产路径改动；manifest 20 个载荷 SHA-256 校验一致。
+- 实际被测源码：R6 `1bd513f51ab7e54a7290870a5f34b524254d55c6`；R7 候选 `62870a3a38fce882b25d8d77f1d0526cca6fbc14`，独立目录、同一 macOS Python/依赖、B 原始测试/采集器字节不变、执行前后源码不变。
+- 命令：本次证据目录的 `run_crosscheck.py r6` / `r7`，随后 `summarize.py`；完整 pytest、环境、实际导入身份及退出码见各版 command.json。
+- 结果：两版均 `1 passed, 5 failed`（pytest exit 1；五项均 DID NOT RAISE），观察采集均 exit 0。五项 OPEN，CHANGES_REQUIRED。
+- 证据：`docs/reviews/pc_a/pcb_crosscheck_20260912/REPORT.md` 及同目录逐项 JSON、JUnit、原始日志、源码/环境摘要。
+- 实际后果：外来位置有概率、过期读出、跨代支持切换、证据簇错配、孤儿统计进入保存输入体；所有采集账本哈希未变，不外推为已发生长期账本或动作污染。
+- 边界：前三项公开 core.locations 重绑定；后两项只改调用方类型化输入。macOS 复现非 Windows 复现；候选预检非正式 R7 完整验收。先前旧四探针关闭不能覆盖本次五项。
+- 下一步：A 在修复分支闭合支持生命周期、统计来源谱系和输入闭包，保留合法多代/未知支持，提交明确不可变候选由 B 复测；本次未改生产、未合并或推进共享集成。
+- 交付提交 SHA / PR 以本分支 Git 历史为准；推送完成前仅本地交付草稿。
+
 ## PC-B R6/R7 五反例交叉复核：开工
 
 - 任务：在 macOS 原样复跑 B 正式交接的合法正例和五项反例，只审查不修复。

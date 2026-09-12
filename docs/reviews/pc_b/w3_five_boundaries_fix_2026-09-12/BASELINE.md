@@ -41,3 +41,9 @@ $env:MKL_NUM_THREADS='1'
 - `W3-PCB-05` receipts/statistics input closure: `FAIL (accepted)`
 
 The complete console output and machine-readable test cases are in `baseline_r7_five_seed0.log` and `baseline_r7_five_seed0.junit.xml`. This directory is only for the R7 repair campaign. The historical R6 artifacts remain unchanged under `docs/reviews/data/pc_b_w3_r6_independent_20260912/`.
+
+## Historical observer replay on R7
+
+The original observer was also executed unchanged from a separate detached worktree whose externally verified `HEAD` was `62870a3a38fce882b25d8d77f1d0526cca6fbc14`. Its raw output is `baseline_r7_historical_observer_seed0.json` (SHA-256 `6BD6594144FEA8AFE9C5DF133FB6116F047498E8A3A889BCB9B88EC8A5725FF4`), and all five adversarial calls were returned/accepted while the legal control was accepted.
+
+The observer's embedded `tested_sha` remains the hard-coded R6 value `1bd513f51ab7e54a7290870a5f34b524254d55c6`; it is preserved as historical script behavior and is **not** the binding authority for this R7 replay. The detached-worktree `git rev-parse HEAD`, the outer command, later dynamic metadata, and loaded-source hashes provide the actual R7 binding.

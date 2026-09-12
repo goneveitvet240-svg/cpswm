@@ -1,0 +1,57 @@
+{
+  "chain_patterns": [
+    [
+      "pick_up",
+      "carry",
+      "handoff",
+      "carry",
+      "handoff",
+      "carry",
+      "place"
+    ],
+    [
+      "pick_up",
+      "carry",
+      "place"
+    ],
+    [
+      "unresolved"
+    ]
+  ],
+  "counts": {
+    "annotation:component_fixture": 2,
+    "cause:actor": 2,
+    "cause:habit": 4,
+    "cause:identity": 2,
+    "cause:noise": 2,
+    "cause:observation": 2,
+    "cause:unresolved": 2,
+    "operation:branch": 4,
+    "operation:preserve_unresolved": 2,
+    "operation:reactivate": 2,
+    "operation:rejuvenate": 2,
+    "operation:retract": 2,
+    "operation:revise": 2,
+    "regime:create": 2,
+    "regime:reactivate": 2,
+    "regime:stay": 8,
+    "regime:unresolved": 2
+  },
+  "files_sha256": {
+    "audit.jsonl": "f735c1a15244453af90d1e8429c2018f934fc20f0325f2ab513aa1fc6cae8011",
+    "features.jsonl": "e815797aa5247bb90569287ec9973b7ee5581d402435697b32a095dddd2c188e",
+    "targets.jsonl": "508799f913a2c70555920a96db5aa5d64235eea88c20a072d121caec31d23f9b"
+  },
+  "generated_model_artifact": false,
+  "input_sha256": "385f627d2bb0e337ac8d9542294895a71b67f545b514f9e85a8073d5fd662ad7",
+  "missing_operations": [],
+  "remaining_gates": [
+    "independent label and visible-input provenance review",
+    "native trace coverage and full operation reachability",
+    "model parameters, continuous semantics and compute approval"
+  ],
+  "samples": 2,
+  "schema_coverage_only": true,
+  "training_ready": false,
+  "training_started": false
+}

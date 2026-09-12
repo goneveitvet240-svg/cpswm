@@ -1,0 +1,40 @@
+.FFFFFF                                                                  [100%]
+=================================== FAILURES ===================================
+_______________ test_round1_probability_must_bind_replay_suffix ________________
+tests/test_pc_a_proposal_two_round_audit.py:67: in test_round1_probability_must_bind_replay_suffix
+    with pytest.raises(ValueError):
+         ^^^^^^^^^^^^^^^^^^^^^^^^^
+E   Failed: DID NOT RAISE ValueError
+________________ test_round1_probability_must_bind_evidence_set ________________
+tests/test_pc_a_proposal_two_round_audit.py:76: in test_round1_probability_must_bind_evidence_set
+    with pytest.raises(ValueError):
+         ^^^^^^^^^^^^^^^^^^^^^^^^^
+E   Failed: DID NOT RAISE ValueError
+___________ test_round1_legal_delayed_detection_recorded_on_receipt ____________
+tests/test_pc_a_proposal_two_round_audit.py:83: in test_round1_legal_delayed_detection_recorded_on_receipt
+    ProposalSample.model_validate(payload)
+E   pydantic_core._pydantic_core.ValidationError: 1 validation error for ProposalSample
+E     Value error, suffix rejuvenation target requires actually delayed evidence [type=value_error, input_value={'sample_id': 'd2b30d7d-4...play_required': False}]}, input_type=dict]
+E       For further information visit https://errors.pydantic.dev/2.13/v/value_error
+__________ test_round1_nested_oracle_in_sensor_field_rejected[status] __________
+tests/test_pc_a_proposal_two_round_audit.py:95: in test_round1_nested_oracle_in_sensor_field_rejected
+    with pytest.raises(ValueError):
+         ^^^^^^^^^^^^^^^^^^^^^^^^^
+E   Failed: DID NOT RAISE ValueError
+________ test_round1_nested_oracle_in_sensor_field_rejected[depth_unit] ________
+tests/test_pc_a_proposal_two_round_audit.py:95: in test_round1_nested_oracle_in_sensor_field_rejected
+    with pytest.raises(ValueError):
+         ^^^^^^^^^^^^^^^^^^^^^^^^^
+E   Failed: DID NOT RAISE ValueError
+___________ test_round1_oracle_array_with_valid_sensor_hash_rejected ___________
+tests/test_pc_a_proposal_two_round_audit.py:111: in test_round1_oracle_array_with_valid_sensor_hash_rejected
+    with pytest.raises(ValueError):
+         ^^^^^^^^^^^^^^^^^^^^^^^^^
+E   Failed: DID NOT RAISE ValueError
+=========================== short test summary info ============================
+FAILED tests/test_pc_a_proposal_two_round_audit.py::test_round1_probability_must_bind_replay_suffix
+FAILED tests/test_pc_a_proposal_two_round_audit.py::test_round1_probability_must_bind_evidence_set
+FAILED tests/test_pc_a_proposal_two_round_audit.py::test_round1_legal_delayed_detection_recorded_on_receipt
+FAILED tests/test_pc_a_proposal_two_round_audit.py::test_round1_nested_oracle_in_sensor_field_rejected[status]
+FAILED tests/test_pc_a_proposal_two_round_audit.py::test_round1_nested_oracle_in_sensor_field_rejected[depth_unit]
+FAILED tests/test_pc_a_proposal_two_round_audit.py::test_round1_oracle_array_with_valid_sensor_hash_rejected

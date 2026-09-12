@@ -1,5 +1,14 @@
 # 电脑 A 状态
 
+## A 两轮对抗审核交付 2026-09-13：CHANGES_REQUIRED
+
+- 上一批完整实现和约 61MB 历史证据已获用户公开授权、推送并核验：`codex/pc-a-proposal-scheduler-20260913` = `5ec6204dfecc9137523b6c0e5dfb66658e574d41`，实际生产代码 `dbc7ec9c9b61ca2a029c3bd59ffbce136c4f7afe`。下文“推送受阻”保留为历史。
+- 审核分支 `codex/pc-a-proposal-two-round-audit-20260913`，base 即上述 `5ec6204d...`；审核脚本冻结 `29076b65e7168218b885c890119757caed42f1c8`。生产算法改动 0；不是电脑 B 独立验收，不自动合并共享分支。
+- 最终 `python tools/structure_two_proposal_audit_runner.py run_03`：原 125 passed / 1 warning；第一轮 1 passed / 6 failed；第二轮 1 passed / 7 failed。13 个 OPEN 断言归并为 7 类缺陷：完整提议后果绑定、三时钟、传感字段/数组真值夹带、释放时钟、重复帧引用、数值坐标别名、公共可变日程。修复尚未实施。
+- 真实 Unity `unity_replay_02`：原 79 次请求成功重放；对象/相机位置 ≤2mm、视角 ≤0.01°。更正旧可见率含义：1/36 是 SDK 距离门限可见，实际目标像素非空 9/36，其中 8 帧 SDK visible=false，目标 4–46 像素。不据此生成负观测或训练标签。
+- `gaps_02`：角色置换/7 次纠正引用改写不影响组件请求及输出；实际角色行为、解释→反证→修订生产者、原生六操作标签及 RGB-D→合法证据桥接仍缺。混合分区导出和地点来源合同另记准备风险；`training_ready=false`。
+- 报告/根因/修复门/复跑入口：`docs/reviews/pc_a/proposal_two_round_audit_2026-09-13/REPORT.md`。run_01/02、gaps_01、首次真实复放完整保留。公开审查交接仅通过本审核分支/PR；B 后续应绑定修复后的新生产 SHA 复测，不能套用本次作者审核。
+
 ## A 提议合同与 ProcTHOR 两轮对抗审核开工 2026-09-13
 
 - 用户本轮明确允许公开推送上一批完整证据；已成功推送并 ls-remote 核验 `codex/pc-a-proposal-scheduler-20260913` = `5ec6204dfecc9137523b6c0e5dfb66658e574d41`，实际生产代码提交 `dbc7ec9c9b61ca2a029c3bd59ffbce136c4f7afe`。下文“推送受阻”是上次历史，不再是当前发布状态。

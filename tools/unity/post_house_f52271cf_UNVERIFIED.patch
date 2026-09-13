@@ -1,0 +1,450 @@
+diff --git a/unity/Assets/Editor/CpswmBuild.cs b/unity/Assets/Editor/CpswmBuild.cs
+new file mode 100644
+index 00000000..2ee051fd
+--- /dev/null
++++ b/unity/Assets/Editor/CpswmBuild.cs
+@@ -0,0 +1,96 @@
++// Development-only source build: real public scenes, no runtime substitutions.
++using System;
++using System.IO;
++using UnityEditor;
++using UnityEditor.Build.Reporting;
++using UnityEngine;
++
++public static class CpswmBuild {
++    // Hub owns the authenticated launch. Do not copy its session credentials into a script.
++    [MenuItem("CPSWM/Build Frozen Mac Development")]
++    public static void MacDevelopmentFromHub() {
++        string project = Directory.GetParent(Application.dataPath).FullName;
++        string revision;
++        var start = new System.Diagnostics.ProcessStartInfo("/usr/bin/git", "rev-parse HEAD") {
++            WorkingDirectory = project,
++            UseShellExecute = false,
++            RedirectStandardOutput = true,
++            RedirectStandardError = true
++        };
++        using (var process = System.Diagnostics.Process.Start(start)) {
++            revision = process.StandardOutput.ReadToEnd().Trim();
++            if (!process.WaitForExit(10000) || process.ExitCode != 0
++                || !System.Text.RegularExpressions.Regex.IsMatch(revision, "\\A[0-9a-f]{40}\\z")) {
++                throw new InvalidOperationException("Cannot bind the local source revision.");
++            }
++        }
++        string directory = Path.Combine(Path.GetTempPath(), "cpswm-unity-gui-build-" + Guid.NewGuid().ToString("N"));
++        Directory.CreateDirectory(directory);
++        Debug.Log("CPSWM_BUILD_OUTPUT " + directory);
++        BuildAt(Path.Combine(directory, "cpswm-development.app"),
++            Path.Combine(directory, "unity-result.json"), revision);
++    }
++
++    [Serializable]
++    private class Receipt {
++        public string schema = "cpswm-unity-build@1";
++        public string editorVersion;
++        public string result;
++        public string outputPath;
++        public string sourceRevision;
++        public int errors;
++        public int warnings;
++        public bool humanExecutionVerified = false;
++    }
++
++    public static void MacDevelopment() {
++        string destination = Environment.GetEnvironmentVariable("CPSWM_UNITY_OUTPUT");
++        string receiptPath = Environment.GetEnvironmentVariable("CPSWM_UNITY_RECEIPT");
++        string sourceRevision = Environment.GetEnvironmentVariable("CPSWM_UNITY_SOURCE_REVISION");
++        BuildAt(destination, receiptPath, sourceRevision);
++    }
++
++    private static void BuildAt(string destination, string receiptPath, string sourceRevision) {
++        if (String.IsNullOrWhiteSpace(destination) || !Path.IsPathRooted(destination)
++            || !destination.EndsWith(".app", StringComparison.Ordinal)
++            || Directory.Exists(destination) || File.Exists(destination)) {
++            throw new InvalidOperationException("A new absolute .app output path is required.");
++        }
++        if (String.IsNullOrWhiteSpace(receiptPath) || !Path.IsPathRooted(receiptPath)
++            || File.Exists(receiptPath) || String.IsNullOrWhiteSpace(sourceRevision)) {
++            throw new InvalidOperationException("A fresh receipt path and source revision are required.");
++        }
++        if (Application.unityVersion != "2020.3.25f1") {
++            throw new InvalidOperationException("Editor version differs from the frozen source project.");
++        }
++        // Same resource catalog producer as the upstream Build entry point.
++        new ResourceAssetManager().BuildCatalog();
++        var scenes = new[] {
++            "Assets/Scenes/FloorPlan1_physics.unity",
++            "Assets/Scenes/Procedural/Procedural.unity"
++        };
++        foreach (string scene in scenes) {
++            if (!File.Exists(scene)) throw new FileNotFoundException("Real scene missing", scene);
++        }
++        var options = new BuildPlayerOptions {
++            scenes = scenes,
++            locationPathName = destination,
++            target = BuildTarget.StandaloneOSX,
++            options = BuildOptions.StrictMode | BuildOptions.Development | BuildOptions.CompressWithLz4
++        };
++        var report = BuildPipeline.BuildPlayer(options);
++        var receipt = new Receipt {
++            editorVersion = Application.unityVersion,
++            result = report.summary.result.ToString(),
++            outputPath = report.summary.outputPath,
++            sourceRevision = sourceRevision,
++            errors = (int)report.summary.totalErrors,
++            warnings = (int)report.summary.totalWarnings
++        };
++        File.WriteAllText(receiptPath, JsonUtility.ToJson(receipt, true));
++        // Upstream Build reads the summary but does not enforce Succeeded.
++        if (report.summary.result != BuildResult.Succeeded || report.summary.totalErrors != 0) {
++            throw new InvalidOperationException("Actual Unity build failed; inspect the receipt and log.");
++        }
++    }
++}
+diff --git a/unity/Assets/Editor/CpswmBuild.cs.meta b/unity/Assets/Editor/CpswmBuild.cs.meta
+new file mode 100644
+index 00000000..2c01c2bc
+--- /dev/null
++++ b/unity/Assets/Editor/CpswmBuild.cs.meta
+@@ -0,0 +1,11 @@
++fileFormatVersion: 2
++guid: c5118e78186b4b47a2bd4182e75e9043
++MonoImporter:
++  externalObjects: {}
++  serializedVersion: 2
++  defaultReferences: []
++  executionOrder: 0
++  icon: {instanceID: 0}
++  userData:
++  assetBundleName:
++  assetBundleVariant:
+diff --git a/unity/Assets/Scripts/AgentManager.cs b/unity/Assets/Scripts/AgentManager.cs
+index 0704ed6c..406f3c70 100644
+--- a/unity/Assets/Scripts/AgentManager.cs
++++ b/unity/Assets/Scripts/AgentManager.cs
+@@ -160,6 +160,12 @@ public class AgentManager : MonoBehaviour {
+     }
+ 
+     public void Initialize(ServerAction action) {
++        var lifecycle = CpswmPostHouseLifecycle.For(this);
++        string lifecycleError = lifecycle.ValidateInitialize(action);
++        if (lifecycleError != null) {
++            activeAgent().actionFinished(false, errorMessage: lifecycleError);
++            return;
++        }
+         this.agentMode = action.agentMode.ToLower();
+         // first parse agentMode and agentControllerType
+         //"default" agentMode can use either default or "stochastic" agentControllerType
+@@ -235,6 +241,7 @@ public class AgentManager : MonoBehaviour {
+             ResetSceneBounds();
+         }
+         this.agentManagerState = AgentState.ActionComplete;
++        lifecycle.RememberInitialize(action);
+     }
+ 
+     private void SetUpLocobotController(ServerAction action) {
+@@ -1164,6 +1171,17 @@ public class AgentManager : MonoBehaviour {
+ 
+     // Uniform entry point for both the test runner and the python server for step dispatch calls
+     public void ProcessControlCommand(DynamicServerAction controlCommand) {
++        var lifecycle = CpswmPostHouseLifecycle.For(this);
++        lifecycle.ObservePreviousOutcome();
++        if (lifecycle.Poisoned && controlCommand.action != "Reset") {
++            this.currentSequenceId = controlCommand.sequenceId;
++            this.activeAgentId = 0;
++            primaryAgent.agentState = AgentState.Processing;
++            primaryAgent.lastAction = controlCommand.action;
++            primaryAgent.actionFinished(false, errorMessage: "Episode discarded after physical initialization failure; Reset required.");
++            this.agentManagerState = AgentState.ActionComplete;
++            return;
++        }
+         this.renderInstanceSegmentation = this.initializedInstanceSeg;
+ 
+         this.currentSequenceId = controlCommand.sequenceId;
+diff --git a/unity/Assets/Scripts/BaseFPSAgentController.cs b/unity/Assets/Scripts/BaseFPSAgentController.cs
+index bd88ec55..3b6454d2 100644
+--- a/unity/Assets/Scripts/BaseFPSAgentController.cs
++++ b/unity/Assets/Scripts/BaseFPSAgentController.cs
+@@ -5427,7 +5427,18 @@ namespace UnityStandardAssets.Characters.FirstPerson {
+             actionFinished(success: true);
+         }
+ 
++        public void CpswmHouseContext() {
++            actionFinished(true, actionReturn: CpswmPostHouseLifecycle.For(agentManager).Context());
++        }
++
++        public void CpswmSpawnAgents(ServerAction action) {
++            CpswmPostHouseLifecycle.For(agentManager).Spawn(this, action.dynamicServerAction.jObject);
++        }
++
+         public void CreateHouse(ProceduralHouse house) {
++            var lifecycle = CpswmPostHouseLifecycle.For(agentManager);
++            string lifecycleError = lifecycle.BeginHouse(this);
++            if (lifecycleError != null) { actionFinished(false, errorMessage: lifecycleError); return; }
+             var rooms = house.rooms.SelectMany(room => house.rooms);
+ 
+             var materials = ProceduralTools.GetMaterials();
+@@ -5443,6 +5454,7 @@ namespace UnityStandardAssets.Characters.FirstPerson {
+             );
+             var missingIds = materialIds.Where(id => id != null && !materials.ContainsKey(id));
+             if (missingIds.Count() > 0) {
++                lifecycle.CompleteHouse(false);
+                 actionFinished(
+                     success: false,
+                     errorMessage: (
+@@ -5452,16 +5464,20 @@ namespace UnityStandardAssets.Characters.FirstPerson {
+                 );
+             }
+ 
++            if (missingIds.Count() > 0) return;
++
+             try {
+                 ProceduralTools.CreateHouse(house: house, materialDb: materials);
+             } 
+             catch (Exception e) {
++                lifecycle.CompleteHouse(false);
+                 Debug.Log(e);
+                 var msg = $"Exception creating house.\n'{e.Message}'\n'{e.InnerException}'";
+                 Debug.Log(msg);
+                 actionFinished(false, actionReturn: null, errorMessage: msg);
+                 return;
+             }
++            lifecycle.CompleteHouse(true);
+             actionFinished(true);
+         }
+ 
+diff --git a/unity/Assets/Scripts/CpswmPostHouseLifecycle.cs b/unity/Assets/Scripts/CpswmPostHouseLifecycle.cs
+new file mode 100644
+index 00000000..27e08e4f
+--- /dev/null
++++ b/unity/Assets/Scripts/CpswmPostHouseLifecycle.cs
+@@ -0,0 +1,190 @@
++// Development backend: physical robot agents, NOT human-role observations.
++using System;
++using System.Collections;
++using System.Collections.Generic;
++using System.Linq;
++using Newtonsoft.Json.Linq;
++using UnityEngine;
++using UnityStandardAssets.Characters.FirstPerson;
++
++public sealed class CpswmPostHouseLifecycle : MonoBehaviour {
++    private AgentManager manager;
++    private readonly string generation = Guid.NewGuid().ToString("N");
++    private JObject initialization;
++    private BaseFPSAgentController initializedPrimary;
++    private bool initializationSucceeded;
++    private bool houseAttempted;
++    private bool houseReady;
++    private bool spawning;
++    private string committedRequest;
++    private int committedCount;
++    public bool Poisoned { get; private set; }
++
++    public static CpswmPostHouseLifecycle For(AgentManager manager) {
++        var state = manager.GetComponent<CpswmPostHouseLifecycle>();
++        if (state == null) state = manager.gameObject.AddComponent<CpswmPostHouseLifecycle>();
++        state.manager = manager;
++        return state;
++    }
++
++    public void ObservePreviousOutcome() {
++        if (initializedPrimary != null && manager.primaryAgent == initializedPrimary
++            && initializedPrimary.lastAction == "Initialize" && !initializedPrimary.IsProcessing) {
++            initializationSucceeded = initializedPrimary.lastActionSuccess;
++        }
++    }
++
++    public string ValidateInitialize(ServerAction action) {
++        if (manager.GetActiveAgentId() != 0) return "Only primary agent 0 may initialize.";
++        var count = action.dynamicServerAction.jObject["agentCount"];
++        if (count != null && count.Type != JTokenType.Integer) return "agentCount must be an integer.";
++        if (action.agentCount < 1 || action.agentCount > 6) return "agentCount must be 1..6.";
++        if (houseAttempted || manager.agents.Count > 1) return "Reset before reinitializing an existing house or roster.";
++        if (UnityEngine.SceneManagement.SceneManager.GetActiveScene().name.StartsWith("Procedural")
++            && action.agentCount > 1) {
++            return "Procedural initialization requires agentCount=1; create the house, teleport, then use CpswmSpawnAgents.";
++        }
++        return null;
++    }
++
++    public void RememberInitialize(ServerAction action) {
++        initialization = (JObject)action.dynamicServerAction.jObject.DeepClone();
++        initializedPrimary = manager.primaryAgent;
++        initializationSucceeded = false;
++    }
++
++    public string BeginHouse(BaseFPSAgentController caller) {
++        if (caller != manager.primaryAgent || manager.agents.Count != 1) return "Only the sole primary may create a house.";
++        if (Poisoned || houseAttempted || !initializationSucceeded) return "Fresh successful initialization is required; otherwise Reset.";
++        houseAttempted = true;
++        houseReady = false;
++        return null;
++    }
++
++    public void CompleteHouse(bool success) {
++        houseReady = success;
++        // CreateHouse may have partially changed physical state. Never advertise rollback.
++        if (!success) Poisoned = true;
++    }
++
++    public object Context() {
++        return new { generation, houseReady, spawning, poisoned = Poisoned,
++            agentCount = manager.agents.Count, robotAgentsOnly = true };
++    }
++
++    private static bool Finite(float value) { return !float.IsNaN(value) && !float.IsInfinity(value); }
++    private static bool Finite(Vector3 value) { return Finite(value.x) && Finite(value.y) && Finite(value.z); }
++
++    public void Spawn(BaseFPSAgentController caller, JObject request) {
++        string error = null;
++        var allowed = new HashSet<string>(DynamicServerAction.AllowedExtraneousParameters) {
++            "agentCount", "generation", "requestId"
++        };
++        if (request.Properties().Any(p => !allowed.Contains(p.Name))) error = "Unknown spawn parameter.";
++        if (caller != manager.primaryAgent || manager.GetActiveAgentId() != 0) error = "Only primary agent 0 may spawn.";
++        if (!houseReady || Poisoned || initialization == null || spawning) error = "House is not ready or episode is unusable.";
++        if (request["generation"] == null || request["generation"].Type != JTokenType.String
++            || (string)request["generation"] != generation) error = "Stale or invalid house generation.";
++        var idToken = request["requestId"];
++        if (idToken == null || idToken.Type != JTokenType.String || String.IsNullOrWhiteSpace((string)idToken)
++            || ((string)idToken).Length > 128) error = "A nonempty requestId of at most 128 characters is required.";
++        var countToken = request["agentCount"];
++        int count = 0;
++        if (countToken == null || countToken.Type != JTokenType.Integer
++            || !Int32.TryParse(countToken.ToString(), out count) || count < 1 || count > 6) error = "agentCount must be an integer in 1..6.";
++        if (error != null) { caller.actionFinished(false, errorMessage: error); return; }
++        string requestId = (string)idToken;
++        if (committedRequest != null) {
++            bool exact = committedRequest == requestId && committedCount == count && manager.agents.Count == count;
++            caller.actionFinished(exact, actionReturn: exact ? Context() : null,
++                errorMessage: exact ? null : "Roster already committed; Reset before changing the spawn request.");
++            return;
++        }
++        if (manager.agents.Count != 1 || manager.agentMode != "default" || caller.ItemInHand != null
++            || caller.gameObject.GetComponentsInChildren<SimObjPhysics>(true).Length != 0) {
++            caller.actionFinished(false, errorMessage: "Spawn requires one empty-handed default robot agent."); return;
++        }
++        List<Vector3> positions;
++        try {
++            var origin = caller.transform.position;
++            float clearance = 2f * caller.m_CharacterController.radius + 0.05f;
++            positions = new List<Vector3> { origin };
++            if (!Finite(origin)) throw new InvalidOperationException("Primary pose is nonfinite.");
++            Physics.SyncTransforms();
++            foreach (var candidate in caller.getReachablePositions(2f)
++                .OrderBy(p => (p - origin).sqrMagnitude).ThenBy(p => p.x).ThenBy(p => p.z)) {
++                if (positions.Count == count) break;
++                if (Finite(candidate) && Math.Abs(candidate.y - origin.y) < 0.05f
++                    && positions.All(p => Vector3.Distance(p, candidate) >= clearance)) positions.Add(candidate);
++            }
++            if (positions.Count != count) throw new InvalidOperationException("Insufficient distinct reachable spawn positions.");
++        } catch (Exception failure) {
++            caller.actionFinished(false, errorMessage: failure.Message); return;
++        }
++        spawning = true;
++        StartCoroutine(SpawnTransaction(caller, positions, requestId));
++    }
++
++    private IEnumerator SpawnTransaction(BaseFPSAgentController caller, List<Vector3> positions, string requestId) {
++        var staged = new List<BaseFPSAgentController>();
++        var components = new List<BaseAgentComponent>();
++        string failure = null;
++        for (int i = 1; i < positions.Count; i++) {
++            BaseFPSAgentController child = null;
++            try {
++                var component = UnityEngine.Object.Instantiate(caller.baseAgentComponent);
++                components.Add(component);
++                component.transform.position = positions[i];
++                child = (BaseFPSAgentController)Activator.CreateInstance(caller.GetType(), new object[] { component, manager });
++                staged.Add(child);
++                child.actionDuration = manager.actionDuration;
++                child.IsVisible = true;
++                child.m_Camera.depth = 1;
++                var init = (JObject)initialization.DeepClone();
++                init["action"] = "Initialize";
++                init["agentCount"] = 1;
++                init["agentId"] = i;
++                init["makeAgentsVisible"] = true;
++                child.ProcessControlCommand(new DynamicServerAction(init));
++                Physics.SyncTransforms();
++            } catch (Exception error) { failure = "Child construction failed: " + error.Message; }
++            if (failure != null) break;
++            int frames = 0;
++            while (child.IsProcessing && frames++ < 300) yield return null;
++            if (child.IsProcessing || !child.lastActionSuccess || !Finite(child.transform.position)
++                || Vector3.Distance(child.transform.position, positions[i]) > 0.06f) {
++                failure = "Child initialization timed out, failed, or displaced its spawn pose."; break;
++            }
++        }
++        if (failure == null) {
++            float clearance = 2f * caller.m_CharacterController.radius + 0.025f;
++            var actual = new List<Vector3> { caller.transform.position };
++            foreach (var child in staged) {
++                if (actual.Any(p => Vector3.Distance(p, child.transform.position) < clearance)) {
++                    failure = "Initialized agent bodies overlap."; break;
++                }
++                actual.Add(child.transform.position);
++            }
++        }
++        if (failure != null) {
++            foreach (var component in components) {
++                component.StopAllCoroutines();
++                component.gameObject.SetActive(false);
++                UnityEngine.Object.Destroy(component.gameObject);
++            }
++            Poisoned = true;
++            spawning = false;
++            caller.actionFinished(false, errorMessage: failure + " Episode discarded; Reset required.");
++            yield break;
++        }
++        // No response can emit while the primary caller is Processing. Publish only the complete set.
++        manager.agents.AddRange(staged);
++        caller.IsVisible = true;
++        caller.m_Camera.depth = 9999;
++        committedRequest = requestId;
++        committedCount = positions.Count;
++        spawning = false;
++        Physics.SyncTransforms();
++        caller.actionFinished(true, actionReturn: Context());
++    }
++}
+diff --git a/unity/Assets/Scripts/CpswmPostHouseLifecycle.cs.meta b/unity/Assets/Scripts/CpswmPostHouseLifecycle.cs.meta
+new file mode 100644
+index 00000000..f3a8741f
+--- /dev/null
++++ b/unity/Assets/Scripts/CpswmPostHouseLifecycle.cs.meta
+@@ -0,0 +1,11 @@
++fileFormatVersion: 2
++guid: a049d279c915424590633c83185a412f
++MonoImporter:
++  externalObjects: {}
++  serializedVersion: 2
++  defaultReferences: []
++  executionOrder: 0
++  icon: {instanceID: 0}
++  userData:
++  assetBundleName:
++  assetBundleVariant:
+diff --git a/unity/Assets/Scripts/ProceduralTools.cs b/unity/Assets/Scripts/ProceduralTools.cs
+index 94a1f7e7..be0ff1eb 100644
+--- a/unity/Assets/Scripts/ProceduralTools.cs
++++ b/unity/Assets/Scripts/ProceduralTools.cs
+@@ -1652,8 +1652,9 @@ namespace Thor.Procedural {
+                 );
+             } else {
+ 
+-                Debug.LogError("Asset not in Database " + ho.assetId);
+-                return null;
++                // A missing requested object must fail the house transaction, not silently
++                // create a different world and let CreateHouse report success.
++                throw new ArgumentException("Asset not in Database " + ho.assetId);
+             }
+         }
+ 
+@@ -2051,4 +2052,4 @@ namespace Thor.Procedural {
+         }
+     }
+ 
+-}
+\ No newline at end of file
++}

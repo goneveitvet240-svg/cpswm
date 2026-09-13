@@ -6,6 +6,31 @@ using UnityEditor.Build.Reporting;
 using UnityEngine;
 
 public static class CpswmBuild {
+    // Hub owns the authenticated launch. Do not copy its session credentials into a script.
+    [MenuItem("CPSWM/Build Frozen Mac Development")]
+    public static void MacDevelopmentFromHub() {
+        string project = Directory.GetParent(Application.dataPath).FullName;
+        string revision;
+        var start = new System.Diagnostics.ProcessStartInfo("/usr/bin/git", "rev-parse HEAD") {
+            WorkingDirectory = project,
+            UseShellExecute = false,
+            RedirectStandardOutput = true,
+            RedirectStandardError = true
+        };
+        using (var process = System.Diagnostics.Process.Start(start)) {
+            revision = process.StandardOutput.ReadToEnd().Trim();
+            if (!process.WaitForExit(10000) || process.ExitCode != 0
+                || !System.Text.RegularExpressions.Regex.IsMatch(revision, "\\A[0-9a-f]{40}\\z")) {
+                throw new InvalidOperationException("Cannot bind the local source revision.");
+            }
+        }
+        string directory = Path.Combine(Path.GetTempPath(), "cpswm-unity-gui-build-" + Guid.NewGuid().ToString("N"));
+        Directory.CreateDirectory(directory);
+        Debug.Log("CPSWM_BUILD_OUTPUT " + directory);
+        BuildAt(Path.Combine(directory, "cpswm-development.app"),
+            Path.Combine(directory, "unity-result.json"), revision);
+    }
+
     [Serializable]
     private class Receipt {
         public string schema = "cpswm-unity-build@1";
@@ -22,6 +47,10 @@ public static class CpswmBuild {
         string destination = Environment.GetEnvironmentVariable("CPSWM_UNITY_OUTPUT");
         string receiptPath = Environment.GetEnvironmentVariable("CPSWM_UNITY_RECEIPT");
         string sourceRevision = Environment.GetEnvironmentVariable("CPSWM_UNITY_SOURCE_REVISION");
+        BuildAt(destination, receiptPath, sourceRevision);
+    }
+
+    private static void BuildAt(string destination, string receiptPath, string sourceRevision) {
         if (String.IsNullOrWhiteSpace(destination) || !Path.IsPathRooted(destination)
             || !destination.EndsWith(".app", StringComparison.Ordinal)
             || Directory.Exists(destination) || File.Exists(destination)) {

@@ -1,0 +1,59 @@
+FFF..                                                                    [100%]
+=================================== FAILURES ===================================
+_________ test_invalid_visual_time_rejected_before_association[naive] __________
+
+attack = 'naive'
+
+    @pytest.mark.parametrize('attack',['naive','dst'])
+    def test_invalid_visual_time_rejected_before_association(attack):
+        f=frame();t=CausalInstanceAssociator()
+        if attack=='naive':
+            when=datetime(2026,1,1)
+            bad=replace(f,capture_time=when,arrival_time=when,inference_cutoff=when)
+        else:
+            zone=ZoneInfo('America/New_York')
+            capture=datetime(2026,11,1,1,30,tzinfo=zone,fold=1)
+            arrival=datetime(2026,11,1,1,30,tzinfo=zone,fold=0)
+            assert capture.astimezone(UTC)>arrival.astimezone(UTC)
+            bad=replace(f,capture_time=capture,arrival_time=arrival,inference_cutoff=capture+timedelta(hours=2))
+>       with pytest.raises(ValueError):t.update(bad,sequence_id='review',media_time=0)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE ValueError
+
+../cpswm-person-review2/test_independent.py:20: Failed
+__________ test_invalid_visual_time_rejected_before_association[dst] ___________
+
+attack = 'dst'
+
+    @pytest.mark.parametrize('attack',['naive','dst'])
+    def test_invalid_visual_time_rejected_before_association(attack):
+        f=frame();t=CausalInstanceAssociator()
+        if attack=='naive':
+            when=datetime(2026,1,1)
+            bad=replace(f,capture_time=when,arrival_time=when,inference_cutoff=when)
+        else:
+            zone=ZoneInfo('America/New_York')
+            capture=datetime(2026,11,1,1,30,tzinfo=zone,fold=1)
+            arrival=datetime(2026,11,1,1,30,tzinfo=zone,fold=0)
+            assert capture.astimezone(UTC)>arrival.astimezone(UTC)
+            bad=replace(f,capture_time=capture,arrival_time=arrival,inference_cutoff=capture+timedelta(hours=2))
+>       with pytest.raises(ValueError):t.update(bad,sequence_id='review',media_time=0)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE ValueError
+
+../cpswm-person-review2/test_independent.py:20: Failed
+______________ test_forged_calibration_source_revalidated_at_fit _______________
+
+    def test_forged_calibration_source_revalidated_at_fit():
+        rows=examples()
+        for row in rows:object.__setattr__(row,'annotation_source','prediction')
+>       with pytest.raises(ValueError):fit_calibration(rows)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE ValueError
+
+../cpswm-person-review2/test_independent.py:26: Failed
+=========================== short test summary info ============================
+FAILED ../cpswm-person-review2/test_independent.py::test_invalid_visual_time_rejected_before_association[naive]
+FAILED ../cpswm-person-review2/test_independent.py::test_invalid_visual_time_rejected_before_association[dst]
+FAILED ../cpswm-person-review2/test_independent.py::test_forged_calibration_source_revalidated_at_fit
+3 failed, 2 passed in 0.41s

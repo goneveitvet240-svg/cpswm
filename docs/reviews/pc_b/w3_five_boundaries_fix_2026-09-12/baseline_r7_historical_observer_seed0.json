@@ -1,0 +1,1019 @@
+{
+  "cases": [
+    {
+      "after": {
+        "core_locations": [
+          "44b33099-dee8-2a8b-cc46-e34a555d6659",
+          "23a2ff08-fd31-2108-19c8-56bbe1bdd947",
+          "a5a97d44-a72a-f6e7-3ef1-72fba6bb29d3",
+          "b4634a80-b40c-5fe8-e981-d10b5cfd9d0d"
+        ],
+        "embedding_locations": [
+          "23a2ff08-fd31-2108-19c8-56bbe1bdd947",
+          "44b33099-dee8-2a8b-cc46-e34a555d6659",
+          "a5a97d44-a72a-f6e7-3ef1-72fba6bb29d3",
+          "b4634a80-b40c-5fe8-e981-d10b5cfd9d0d"
+        ],
+        "habit_locations": [
+          "23a2ff08-fd31-2108-19c8-56bbe1bdd947",
+          "44b33099-dee8-2a8b-cc46-e34a555d6659",
+          "a5a97d44-a72a-f6e7-3ef1-72fba6bb29d3",
+          "b4634a80-b40c-5fe8-e981-d10b5cfd9d0d"
+        ],
+        "input_bodies": {
+          "00000000-0000-0000-0000-000000000bb8": {
+            "receipt_particle_ids": [
+              "00000000-0000-0000-0000-0000000003e8",
+              "00000000-0000-0000-0000-0000000003e9"
+            ],
+            "statistic_cluster_ids": {
+              "00000000-0000-0000-0000-0000000003e8": [
+                "00000000-0000-0000-0000-000000000bb8"
+              ],
+              "00000000-0000-0000-0000-0000000003e9": [
+                "00000000-0000-0000-0000-000000000bb8"
+              ]
+            },
+            "statistic_particle_ids": [
+              "00000000-0000-0000-0000-0000000003e8",
+              "00000000-0000-0000-0000-0000000003e9"
+            ]
+          }
+        },
+        "input_journal": {
+          "00000000-0000-0000-0000-000000000bb8": "f381d223b01468c11f6c06ab049068ec3d513f4113e00c4517a6c7227de62e14"
+        },
+        "ledger_head_sha256": "a916e770579757ce020fb1c38db0bb93c9297557f2b2774432259d3008854b74",
+        "marginal": {
+          "probabilities": {
+            "23a2ff08-fd31-2108-19c8-56bbe1bdd947": 0.09022556390977444,
+            "44b33099-dee8-2a8b-cc46-e34a555d6659": 0.3609022556390978,
+            "a5a97d44-a72a-f6e7-3ef1-72fba6bb29d3": 0.09022556390977444,
+            "b4634a80-b40c-5fe8-e981-d10b5cfd9d0d": 0.09022556390977444
+          },
+          "status": "RETURNED",
+          "total": 1.0,
+          "unresolved": 0.368421052631579
+        },
+        "record_particle_ids": [
+          "00000000-0000-0000-0000-0000000003e8",
+          "00000000-0000-0000-0000-0000000003e9"
+        ],
+        "record_statistic_clusters": {
+          "00000000-0000-0000-0000-0000000003e8": [
+            "00000000-0000-0000-0000-000000000bb8"
+          ],
+          "00000000-0000-0000-0000-0000000003e9": [
+            "00000000-0000-0000-0000-000000000bb8"
+          ]
+        },
+        "semantic_identity": {
+          "execution_state_sha256": "2da280de10c787d48c001a9a22a70e0c6a9f4b7f45cb5ce5b4e8287d11afe05c",
+          "semantic_state_sha256": "3f2602dbbb96b0fb5c73281029fbff25e8a37c512d821d4985ae49d8d3c3ffae",
+          "source_bound_semantic_sha256": "d2c71b3a0bda71decdb79eb86e39b9ed0fa26b6756145e73af48dc6897d233b1",
+          "source_sha256": "7e15070d3b0e33b7315ddff40fe9e9842d0c8a6efdd7b89ac05e0701c24cd74a"
+        }
+      },
+      "call": {
+        "result_type": "ParticleRevisionBatch",
+        "status": "ACCEPTED_OR_RETURNED"
+      },
+      "id": "LEGAL-CONTROL",
+      "initial": {
+        "core_locations": [
+          "44b33099-dee8-2a8b-cc46-e34a555d6659",
+          "23a2ff08-fd31-2108-19c8-56bbe1bdd947",
+          "a5a97d44-a72a-f6e7-3ef1-72fba6bb29d3",
+          "b4634a80-b40c-5fe8-e981-d10b5cfd9d0d"
+        ],
+        "embedding_locations": [
+          "23a2ff08-fd31-2108-19c8-56bbe1bdd947",
+          "44b33099-dee8-2a8b-cc46-e34a555d6659",
+          "a5a97d44-a72a-f6e7-3ef1-72fba6bb29d3",
+          "b4634a80-b40c-5fe8-e981-d10b5cfd9d0d"
+        ],
+        "habit_locations": [
+          "23a2ff08-fd31-2108-19c8-56bbe1bdd947",
+          "44b33099-dee8-2a8b-cc46-e34a555d6659",
+          "a5a97d44-a72a-f6e7-3ef1-72fba6bb29d3",
+          "b4634a80-b40c-5fe8-e981-d10b5cfd9d0d"
+        ],
+        "input_bodies": {},
+        "input_journal": {},
+        "ledger_head_sha256": "a916e770579757ce020fb1c38db0bb93c9297557f2b2774432259d3008854b74",
+        "marginal": {
+          "error": "ValueError: prepared particle source snapshot is stale or missing",
+          "status": "REJECTED"
+        },
+        "record_particle_ids": [],
+        "record_statistic_clusters": {},
+        "semantic_identity": {
+          "execution_state_sha256": "c9d2235d85ae260232945aa18f00b45a41e5f8c68b6c412d88cbc4e544db2921",
+          "semantic_state_sha256": "5941b810449ada2f62e11d04ba17c6553681df0bfcd22adc7f011345e23f9b3a",
+          "source_bound_semantic_sha256": "ec40a360bb2cc4e69c5b45933d4a59b4b8a531ae0e55e8a86ccbbe58a0168af3",
+          "source_sha256": "7e15070d3b0e33b7315ddff40fe9e9842d0c8a6efdd7b89ac05e0701c24cd74a"
+        }
+      },
+      "ledger_head_unchanged_during_public_call": true,
+      "pre_attack": {
+        "core_locations": [
+          "44b33099-dee8-2a8b-cc46-e34a555d6659",
+          "23a2ff08-fd31-2108-19c8-56bbe1bdd947",
+          "a5a97d44-a72a-f6e7-3ef1-72fba6bb29d3",
+          "b4634a80-b40c-5fe8-e981-d10b5cfd9d0d"
+        ],
+        "embedding_locations": [
+          "23a2ff08-fd31-2108-19c8-56bbe1bdd947",
+          "44b33099-dee8-2a8b-cc46-e34a555d6659",
+          "a5a97d44-a72a-f6e7-3ef1-72fba6bb29d3",
+          "b4634a80-b40c-5fe8-e981-d10b5cfd9d0d"
+        ],
+        "habit_locations": [
+          "23a2ff08-fd31-2108-19c8-56bbe1bdd947",
+          "44b33099-dee8-2a8b-cc46-e34a555d6659",
+          "a5a97d44-a72a-f6e7-3ef1-72fba6bb29d3",
+          "b4634a80-b40c-5fe8-e981-d10b5cfd9d0d"
+        ],
+        "input_bodies": {},
+        "input_journal": {},
+        "ledger_head_sha256": "a916e770579757ce020fb1c38db0bb93c9297557f2b2774432259d3008854b74",
+        "marginal": {
+          "error": "ValueError: prepared particle source snapshot is stale or missing",
+          "status": "REJECTED"
+        },
+        "record_particle_ids": [],
+        "record_statistic_clusters": {},
+        "semantic_identity": {
+          "execution_state_sha256": "c9d2235d85ae260232945aa18f00b45a41e5f8c68b6c412d88cbc4e544db2921",
+          "semantic_state_sha256": "5941b810449ada2f62e11d04ba17c6553681df0bfcd22adc7f011345e23f9b3a",
+          "source_bound_semantic_sha256": "ec40a360bb2cc4e69c5b45933d4a59b4b8a531ae0e55e8a86ccbbe58a0168af3",
+          "source_sha256": "7e15070d3b0e33b7315ddff40fe9e9842d0c8a6efdd7b89ac05e0701c24cd74a"
+        }
+      },
+      "semantic_identity_changed_during_public_call": true
+    },
+    {
+      "after": {
+        "core_locations": [
+          "44b33099-dee8-2a8b-cc46-e34a555d6659",
+          "23a2ff08-fd31-2108-19c8-56bbe1bdd947",
+          "a5a97d44-a72a-f6e7-3ef1-72fba6bb29d3",
+          "aaaaaaaa-0000-4000-8000-000000000001"
+        ],
+        "embedding_locations": [
+          "23a2ff08-fd31-2108-19c8-56bbe1bdd947",
+          "44b33099-dee8-2a8b-cc46-e34a555d6659",
+          "a5a97d44-a72a-f6e7-3ef1-72fba6bb29d3",
+          "b4634a80-b40c-5fe8-e981-d10b5cfd9d0d"
+        ],
+        "habit_locations": [
+          "23a2ff08-fd31-2108-19c8-56bbe1bdd947",
+          "44b33099-dee8-2a8b-cc46-e34a555d6659",
+          "a5a97d44-a72a-f6e7-3ef1-72fba6bb29d3",
+          "b4634a80-b40c-5fe8-e981-d10b5cfd9d0d"
+        ],
+        "input_bodies": {
+          "00000000-0000-0000-0000-000000000bb8": {
+            "receipt_particle_ids": [
+              "00000000-0000-0000-0000-0000000003e8",
+              "00000000-0000-0000-0000-0000000003e9"
+            ],
+            "statistic_cluster_ids": {
+              "00000000-0000-0000-0000-0000000003e8": [
+                "00000000-0000-0000-0000-000000000bb8"
+              ],
+              "00000000-0000-0000-0000-0000000003e9": [
+                "00000000-0000-0000-0000-000000000bb8"
+              ]
+            },
+            "statistic_particle_ids": [
+              "00000000-0000-0000-0000-0000000003e8",
+              "00000000-0000-0000-0000-0000000003e9"
+            ]
+          }
+        },
+        "input_journal": {
+          "00000000-0000-0000-0000-000000000bb8": "2fff456cf7a0e26c327ca4dee21ece17d793a919f2591c4eb6c19c1a6feaefac"
+        },
+        "ledger_head_sha256": "13c08dc3e5cc4f742fdabf71fd480475342bdb8f20efa4a2bc574e4011b70863",
+        "marginal": {
+          "probabilities": {
+            "23a2ff08-fd31-2108-19c8-56bbe1bdd947": 0.09022556390977444,
+            "44b33099-dee8-2a8b-cc46-e34a555d6659": 0.3609022556390978,
+            "a5a97d44-a72a-f6e7-3ef1-72fba6bb29d3": 0.09022556390977444,
+            "aaaaaaaa-0000-4000-8000-000000000001": 0.09022556390977444
+          },
+          "status": "RETURNED",
+          "total": 1.0,
+          "unresolved": 0.368421052631579
+        },
+        "record_particle_ids": [
+          "00000000-0000-0000-0000-0000000003e8",
+          "00000000-0000-0000-0000-0000000003e9"
+        ],
+        "record_statistic_clusters": {
+          "00000000-0000-0000-0000-0000000003e8": [
+            "00000000-0000-0000-0000-000000000bb8"
+          ],
+          "00000000-0000-0000-0000-0000000003e9": [
+            "00000000-0000-0000-0000-000000000bb8"
+          ]
+        },
+        "semantic_identity": {
+          "execution_state_sha256": "12b111f9dced66398141ae6f444d4a6bb3e068b48d0a41de90f63076f08d58ef",
+          "semantic_state_sha256": "69dc720ddaf84a00dae2a7aace007ff085762f1edda1bf404fe17c5cf64026d3",
+          "source_bound_semantic_sha256": "c237342648ac46fcd2d7ae6536c307e5c793a631597c590b8f3a3e62a332f9ba",
+          "source_sha256": "7e15070d3b0e33b7315ddff40fe9e9842d0c8a6efdd7b89ac05e0701c24cd74a"
+        }
+      },
+      "call": {
+        "result_type": "ParticleRevisionBatch",
+        "status": "ACCEPTED_OR_RETURNED"
+      },
+      "id": "W3-PCB-01",
+      "initial": {
+        "core_locations": [
+          "44b33099-dee8-2a8b-cc46-e34a555d6659",
+          "23a2ff08-fd31-2108-19c8-56bbe1bdd947",
+          "a5a97d44-a72a-f6e7-3ef1-72fba6bb29d3",
+          "b4634a80-b40c-5fe8-e981-d10b5cfd9d0d"
+        ],
+        "embedding_locations": [
+          "23a2ff08-fd31-2108-19c8-56bbe1bdd947",
+          "44b33099-dee8-2a8b-cc46-e34a555d6659",
+          "a5a97d44-a72a-f6e7-3ef1-72fba6bb29d3",
+          "b4634a80-b40c-5fe8-e981-d10b5cfd9d0d"
+        ],
+        "habit_locations": [
+          "23a2ff08-fd31-2108-19c8-56bbe1bdd947",
+          "44b33099-dee8-2a8b-cc46-e34a555d6659",
+          "a5a97d44-a72a-f6e7-3ef1-72fba6bb29d3",
+          "b4634a80-b40c-5fe8-e981-d10b5cfd9d0d"
+        ],
+        "input_bodies": {},
+        "input_journal": {},
+        "ledger_head_sha256": "13c08dc3e5cc4f742fdabf71fd480475342bdb8f20efa4a2bc574e4011b70863",
+        "marginal": {
+          "error": "ValueError: prepared particle source snapshot is stale or missing",
+          "status": "REJECTED"
+        },
+        "record_particle_ids": [],
+        "record_statistic_clusters": {},
+        "semantic_identity": {
+          "execution_state_sha256": "cfc3a33a80000f57443bf7bde4631d28a71af5ffc3eab8a4ece9a8e14fa81ae3",
+          "semantic_state_sha256": "5941b810449ada2f62e11d04ba17c6553681df0bfcd22adc7f011345e23f9b3a",
+          "source_bound_semantic_sha256": "ec40a360bb2cc4e69c5b45933d4a59b4b8a531ae0e55e8a86ccbbe58a0168af3",
+          "source_sha256": "7e15070d3b0e33b7315ddff40fe9e9842d0c8a6efdd7b89ac05e0701c24cd74a"
+        }
+      },
+      "ledger_head_unchanged_during_public_call": true,
+      "pre_attack": {
+        "core_locations": [
+          "44b33099-dee8-2a8b-cc46-e34a555d6659",
+          "23a2ff08-fd31-2108-19c8-56bbe1bdd947",
+          "a5a97d44-a72a-f6e7-3ef1-72fba6bb29d3",
+          "aaaaaaaa-0000-4000-8000-000000000001"
+        ],
+        "embedding_locations": [
+          "23a2ff08-fd31-2108-19c8-56bbe1bdd947",
+          "44b33099-dee8-2a8b-cc46-e34a555d6659",
+          "a5a97d44-a72a-f6e7-3ef1-72fba6bb29d3",
+          "b4634a80-b40c-5fe8-e981-d10b5cfd9d0d"
+        ],
+        "habit_locations": [
+          "23a2ff08-fd31-2108-19c8-56bbe1bdd947",
+          "44b33099-dee8-2a8b-cc46-e34a555d6659",
+          "a5a97d44-a72a-f6e7-3ef1-72fba6bb29d3",
+          "b4634a80-b40c-5fe8-e981-d10b5cfd9d0d"
+        ],
+        "input_bodies": {},
+        "input_journal": {},
+        "ledger_head_sha256": "13c08dc3e5cc4f742fdabf71fd480475342bdb8f20efa4a2bc574e4011b70863",
+        "marginal": {
+          "error": "ValueError: prepared particle source snapshot is stale or missing",
+          "status": "REJECTED"
+        },
+        "record_particle_ids": [],
+        "record_statistic_clusters": {},
+        "semantic_identity": {
+          "execution_state_sha256": "a3fe051e2494c1a8769055f21c21fc0fca071bf39b5d2bfe1dd145ce02260452",
+          "semantic_state_sha256": "acf1137fa51a1fa458eeaabf21601d3d133839941f5e06fc5250ac25f3aa05fb",
+          "source_bound_semantic_sha256": "7298faceb3a9adc412b17be192c5115968a043e659e41a1ab894083d34e2fbfa",
+          "source_sha256": "7e15070d3b0e33b7315ddff40fe9e9842d0c8a6efdd7b89ac05e0701c24cd74a"
+        }
+      },
+      "semantic_identity_changed_during_public_call": true
+    },
+    {
+      "after": {
+        "core_locations": [
+          "aaaaaaaa-0000-4000-8000-000000000001",
+          "aaaaaaaa-0000-4000-8000-000000000002",
+          "aaaaaaaa-0000-4000-8000-000000000003",
+          "aaaaaaaa-0000-4000-8000-000000000004"
+        ],
+        "embedding_locations": [
+          "23a2ff08-fd31-2108-19c8-56bbe1bdd947",
+          "44b33099-dee8-2a8b-cc46-e34a555d6659",
+          "a5a97d44-a72a-f6e7-3ef1-72fba6bb29d3",
+          "b4634a80-b40c-5fe8-e981-d10b5cfd9d0d"
+        ],
+        "habit_locations": [
+          "23a2ff08-fd31-2108-19c8-56bbe1bdd947",
+          "44b33099-dee8-2a8b-cc46-e34a555d6659",
+          "a5a97d44-a72a-f6e7-3ef1-72fba6bb29d3",
+          "b4634a80-b40c-5fe8-e981-d10b5cfd9d0d"
+        ],
+        "input_bodies": {
+          "00000000-0000-0000-0000-000000000bb8": {
+            "receipt_particle_ids": [
+              "00000000-0000-0000-0000-0000000003e8",
+              "00000000-0000-0000-0000-0000000003e9"
+            ],
+            "statistic_cluster_ids": {
+              "00000000-0000-0000-0000-0000000003e8": [
+                "00000000-0000-0000-0000-000000000bb8"
+              ],
+              "00000000-0000-0000-0000-0000000003e9": [
+                "00000000-0000-0000-0000-000000000bb8"
+              ]
+            },
+            "statistic_particle_ids": [
+              "00000000-0000-0000-0000-0000000003e8",
+              "00000000-0000-0000-0000-0000000003e9"
+            ]
+          }
+        },
+        "input_journal": {
+          "00000000-0000-0000-0000-000000000bb8": "6e9b55a24e211021b4500bc077303eb3879980a2a21bd07beac145b2b7d3ffa0"
+        },
+        "ledger_head_sha256": "467d51dad0ec9daf08e0a8b8fd3097ec914169a3edcf505d13df7dd7900a7d5d",
+        "marginal": {
+          "probabilities": {
+            "23a2ff08-fd31-2108-19c8-56bbe1bdd947": 0.09022556390977444,
+            "44b33099-dee8-2a8b-cc46-e34a555d6659": 0.3609022556390978,
+            "a5a97d44-a72a-f6e7-3ef1-72fba6bb29d3": 0.09022556390977444,
+            "b4634a80-b40c-5fe8-e981-d10b5cfd9d0d": 0.09022556390977444
+          },
+          "status": "RETURNED",
+          "total": 1.0,
+          "unresolved": 0.368421052631579
+        },
+        "record_particle_ids": [
+          "00000000-0000-0000-0000-0000000003e8",
+          "00000000-0000-0000-0000-0000000003e9"
+        ],
+        "record_statistic_clusters": {
+          "00000000-0000-0000-0000-0000000003e8": [
+            "00000000-0000-0000-0000-000000000bb8"
+          ],
+          "00000000-0000-0000-0000-0000000003e9": [
+            "00000000-0000-0000-0000-000000000bb8"
+          ]
+        },
+        "semantic_identity": {
+          "execution_state_sha256": "fd5a86c52097b7397157b60b86ab695ad4ba3b6b26edf359b997c2762a105186",
+          "semantic_state_sha256": "1a2ca15a04ece0035e8855fa69ac804fefbb94cb4f013353475fe5c8ea44cc84",
+          "source_bound_semantic_sha256": "f5fb0ca6d71e85f522fb0bd5871f315e261c25af4298cccb2de8aababc720c4f",
+          "source_sha256": "7e15070d3b0e33b7315ddff40fe9e9842d0c8a6efdd7b89ac05e0701c24cd74a"
+        }
+      },
+      "call": {
+        "result_type": "tuple",
+        "status": "ACCEPTED_OR_RETURNED"
+      },
+      "id": "W3-PCB-02",
+      "initial": {
+        "core_locations": [
+          "44b33099-dee8-2a8b-cc46-e34a555d6659",
+          "23a2ff08-fd31-2108-19c8-56bbe1bdd947",
+          "a5a97d44-a72a-f6e7-3ef1-72fba6bb29d3",
+          "b4634a80-b40c-5fe8-e981-d10b5cfd9d0d"
+        ],
+        "embedding_locations": [
+          "23a2ff08-fd31-2108-19c8-56bbe1bdd947",
+          "44b33099-dee8-2a8b-cc46-e34a555d6659",
+          "a5a97d44-a72a-f6e7-3ef1-72fba6bb29d3",
+          "b4634a80-b40c-5fe8-e981-d10b5cfd9d0d"
+        ],
+        "habit_locations": [
+          "23a2ff08-fd31-2108-19c8-56bbe1bdd947",
+          "44b33099-dee8-2a8b-cc46-e34a555d6659",
+          "a5a97d44-a72a-f6e7-3ef1-72fba6bb29d3",
+          "b4634a80-b40c-5fe8-e981-d10b5cfd9d0d"
+        ],
+        "input_bodies": {},
+        "input_journal": {},
+        "ledger_head_sha256": "467d51dad0ec9daf08e0a8b8fd3097ec914169a3edcf505d13df7dd7900a7d5d",
+        "marginal": {
+          "error": "ValueError: prepared particle source snapshot is stale or missing",
+          "status": "REJECTED"
+        },
+        "record_particle_ids": [],
+        "record_statistic_clusters": {},
+        "semantic_identity": {
+          "execution_state_sha256": "2dfcb7dc1dbfa12a942a4493ca8c0fbf480e852a258f02c06607ad608185102a",
+          "semantic_state_sha256": "5941b810449ada2f62e11d04ba17c6553681df0bfcd22adc7f011345e23f9b3a",
+          "source_bound_semantic_sha256": "ec40a360bb2cc4e69c5b45933d4a59b4b8a531ae0e55e8a86ccbbe58a0168af3",
+          "source_sha256": "7e15070d3b0e33b7315ddff40fe9e9842d0c8a6efdd7b89ac05e0701c24cd74a"
+        }
+      },
+      "ledger_head_unchanged_during_public_call": true,
+      "pre_attack": {
+        "core_locations": [
+          "aaaaaaaa-0000-4000-8000-000000000001",
+          "aaaaaaaa-0000-4000-8000-000000000002",
+          "aaaaaaaa-0000-4000-8000-000000000003",
+          "aaaaaaaa-0000-4000-8000-000000000004"
+        ],
+        "embedding_locations": [
+          "23a2ff08-fd31-2108-19c8-56bbe1bdd947",
+          "44b33099-dee8-2a8b-cc46-e34a555d6659",
+          "a5a97d44-a72a-f6e7-3ef1-72fba6bb29d3",
+          "b4634a80-b40c-5fe8-e981-d10b5cfd9d0d"
+        ],
+        "habit_locations": [
+          "23a2ff08-fd31-2108-19c8-56bbe1bdd947",
+          "44b33099-dee8-2a8b-cc46-e34a555d6659",
+          "a5a97d44-a72a-f6e7-3ef1-72fba6bb29d3",
+          "b4634a80-b40c-5fe8-e981-d10b5cfd9d0d"
+        ],
+        "input_bodies": {
+          "00000000-0000-0000-0000-000000000bb8": {
+            "receipt_particle_ids": [
+              "00000000-0000-0000-0000-0000000003e8",
+              "00000000-0000-0000-0000-0000000003e9"
+            ],
+            "statistic_cluster_ids": {
+              "00000000-0000-0000-0000-0000000003e8": [
+                "00000000-0000-0000-0000-000000000bb8"
+              ],
+              "00000000-0000-0000-0000-0000000003e9": [
+                "00000000-0000-0000-0000-000000000bb8"
+              ]
+            },
+            "statistic_particle_ids": [
+              "00000000-0000-0000-0000-0000000003e8",
+              "00000000-0000-0000-0000-0000000003e9"
+            ]
+          }
+        },
+        "input_journal": {
+          "00000000-0000-0000-0000-000000000bb8": "6e9b55a24e211021b4500bc077303eb3879980a2a21bd07beac145b2b7d3ffa0"
+        },
+        "ledger_head_sha256": "467d51dad0ec9daf08e0a8b8fd3097ec914169a3edcf505d13df7dd7900a7d5d",
+        "marginal": {
+          "probabilities": {
+            "23a2ff08-fd31-2108-19c8-56bbe1bdd947": 0.09022556390977444,
+            "44b33099-dee8-2a8b-cc46-e34a555d6659": 0.3609022556390978,
+            "a5a97d44-a72a-f6e7-3ef1-72fba6bb29d3": 0.09022556390977444,
+            "b4634a80-b40c-5fe8-e981-d10b5cfd9d0d": 0.09022556390977444
+          },
+          "status": "RETURNED",
+          "total": 1.0,
+          "unresolved": 0.368421052631579
+        },
+        "record_particle_ids": [
+          "00000000-0000-0000-0000-0000000003e8",
+          "00000000-0000-0000-0000-0000000003e9"
+        ],
+        "record_statistic_clusters": {
+          "00000000-0000-0000-0000-0000000003e8": [
+            "00000000-0000-0000-0000-000000000bb8"
+          ],
+          "00000000-0000-0000-0000-0000000003e9": [
+            "00000000-0000-0000-0000-000000000bb8"
+          ]
+        },
+        "semantic_identity": {
+          "execution_state_sha256": "fd5a86c52097b7397157b60b86ab695ad4ba3b6b26edf359b997c2762a105186",
+          "semantic_state_sha256": "1a2ca15a04ece0035e8855fa69ac804fefbb94cb4f013353475fe5c8ea44cc84",
+          "source_bound_semantic_sha256": "f5fb0ca6d71e85f522fb0bd5871f315e261c25af4298cccb2de8aababc720c4f",
+          "source_sha256": "7e15070d3b0e33b7315ddff40fe9e9842d0c8a6efdd7b89ac05e0701c24cd74a"
+        }
+      },
+      "semantic_identity_changed_during_public_call": false
+    },
+    {
+      "after": {
+        "core_locations": [
+          "aaaaaaaa-0000-4000-8000-000000000001",
+          "aaaaaaaa-0000-4000-8000-000000000002",
+          "aaaaaaaa-0000-4000-8000-000000000003",
+          "aaaaaaaa-0000-4000-8000-000000000004"
+        ],
+        "embedding_locations": [
+          "23a2ff08-fd31-2108-19c8-56bbe1bdd947",
+          "44b33099-dee8-2a8b-cc46-e34a555d6659",
+          "a5a97d44-a72a-f6e7-3ef1-72fba6bb29d3",
+          "b4634a80-b40c-5fe8-e981-d10b5cfd9d0d"
+        ],
+        "habit_locations": [
+          "23a2ff08-fd31-2108-19c8-56bbe1bdd947",
+          "44b33099-dee8-2a8b-cc46-e34a555d6659",
+          "a5a97d44-a72a-f6e7-3ef1-72fba6bb29d3",
+          "b4634a80-b40c-5fe8-e981-d10b5cfd9d0d"
+        ],
+        "input_bodies": {
+          "00000000-0000-0000-0000-000000000bb8": {
+            "receipt_particle_ids": [
+              "00000000-0000-0000-0000-0000000003e8",
+              "00000000-0000-0000-0000-0000000003e9"
+            ],
+            "statistic_cluster_ids": {
+              "00000000-0000-0000-0000-0000000003e8": [
+                "00000000-0000-0000-0000-000000000bb8"
+              ],
+              "00000000-0000-0000-0000-0000000003e9": [
+                "00000000-0000-0000-0000-000000000bb8"
+              ]
+            },
+            "statistic_particle_ids": [
+              "00000000-0000-0000-0000-0000000003e8",
+              "00000000-0000-0000-0000-0000000003e9"
+            ]
+          },
+          "00000000-0000-0000-0000-000000000bb9": {
+            "receipt_particle_ids": [
+              "00000000-0000-0000-0000-0000000003f2",
+              "00000000-0000-0000-0000-0000000003f3"
+            ],
+            "statistic_cluster_ids": {
+              "00000000-0000-0000-0000-0000000003f2": [
+                "00000000-0000-0000-0000-000000000bb9"
+              ],
+              "00000000-0000-0000-0000-0000000003f3": [
+                "00000000-0000-0000-0000-000000000bb9"
+              ]
+            },
+            "statistic_particle_ids": [
+              "00000000-0000-0000-0000-0000000003f2",
+              "00000000-0000-0000-0000-0000000003f3"
+            ]
+          }
+        },
+        "input_journal": {
+          "00000000-0000-0000-0000-000000000bb8": "310ee9b793f3e106af7efeba7c1a299d3c8bd424b23bb087f75505d9c9c5ada1",
+          "00000000-0000-0000-0000-000000000bb9": "8cfd92c5825983d2e9af57d0bea32593512d741b0f1bb757ad73026f01370b93"
+        },
+        "ledger_head_sha256": "6bae861ecfb657c5a76f2959cf9e05f45df05676377ebfad9b4109ee6dbb2c73",
+        "marginal": {
+          "probabilities": {
+            "aaaaaaaa-0000-4000-8000-000000000001": 0.3791968400263331,
+            "aaaaaaaa-0000-4000-8000-000000000002": 0.09479921000658327,
+            "aaaaaaaa-0000-4000-8000-000000000003": 0.09479921000658327,
+            "aaaaaaaa-0000-4000-8000-000000000004": 0.09479921000658327
+          },
+          "status": "RETURNED",
+          "total": 0.9999999999999999,
+          "unresolved": 0.33640552995391704
+        },
+        "record_particle_ids": [
+          "00000000-0000-0000-0000-0000000003e8",
+          "00000000-0000-0000-0000-0000000003e9",
+          "00000000-0000-0000-0000-0000000003f2",
+          "00000000-0000-0000-0000-0000000003f3"
+        ],
+        "record_statistic_clusters": {
+          "00000000-0000-0000-0000-0000000003e8": [
+            "00000000-0000-0000-0000-000000000bb8"
+          ],
+          "00000000-0000-0000-0000-0000000003e9": [
+            "00000000-0000-0000-0000-000000000bb8"
+          ],
+          "00000000-0000-0000-0000-0000000003f2": [
+            "00000000-0000-0000-0000-000000000bb9"
+          ],
+          "00000000-0000-0000-0000-0000000003f3": [
+            "00000000-0000-0000-0000-000000000bb9"
+          ]
+        },
+        "semantic_identity": {
+          "execution_state_sha256": "d26821a63d4e226ebad929539efcc32dccf1ce71246d3b5848113239d32c52c9",
+          "semantic_state_sha256": "d1d8cf01538e922bcf1af291036ad0a32cdbed222654e6b838e08a44436044d7",
+          "source_bound_semantic_sha256": "aebaa4f08e30dbef63d749b55083d4a0bc358beab1cdb646010e19af92a0c5d2",
+          "source_sha256": "7e15070d3b0e33b7315ddff40fe9e9842d0c8a6efdd7b89ac05e0701c24cd74a"
+        }
+      },
+      "call": {
+        "result_type": "ParticleRevisionBatch",
+        "status": "ACCEPTED_OR_RETURNED"
+      },
+      "id": "W3-PCB-03",
+      "initial": {
+        "core_locations": [
+          "44b33099-dee8-2a8b-cc46-e34a555d6659",
+          "23a2ff08-fd31-2108-19c8-56bbe1bdd947",
+          "a5a97d44-a72a-f6e7-3ef1-72fba6bb29d3",
+          "b4634a80-b40c-5fe8-e981-d10b5cfd9d0d"
+        ],
+        "embedding_locations": [
+          "23a2ff08-fd31-2108-19c8-56bbe1bdd947",
+          "44b33099-dee8-2a8b-cc46-e34a555d6659",
+          "a5a97d44-a72a-f6e7-3ef1-72fba6bb29d3",
+          "b4634a80-b40c-5fe8-e981-d10b5cfd9d0d"
+        ],
+        "habit_locations": [
+          "23a2ff08-fd31-2108-19c8-56bbe1bdd947",
+          "44b33099-dee8-2a8b-cc46-e34a555d6659",
+          "a5a97d44-a72a-f6e7-3ef1-72fba6bb29d3",
+          "b4634a80-b40c-5fe8-e981-d10b5cfd9d0d"
+        ],
+        "input_bodies": {},
+        "input_journal": {},
+        "ledger_head_sha256": "8808895cf43395719ed4997260411bfe85b51586a7b9da688a8f42a77be7c140",
+        "marginal": {
+          "error": "ValueError: prepared particle source snapshot is stale or missing",
+          "status": "REJECTED"
+        },
+        "record_particle_ids": [],
+        "record_statistic_clusters": {},
+        "semantic_identity": {
+          "execution_state_sha256": "3fdf29f34cce0f5b8fdd8e31495279234d690aaab4646e432de23fc6caa993c3",
+          "semantic_state_sha256": "5941b810449ada2f62e11d04ba17c6553681df0bfcd22adc7f011345e23f9b3a",
+          "source_bound_semantic_sha256": "ec40a360bb2cc4e69c5b45933d4a59b4b8a531ae0e55e8a86ccbbe58a0168af3",
+          "source_sha256": "7e15070d3b0e33b7315ddff40fe9e9842d0c8a6efdd7b89ac05e0701c24cd74a"
+        }
+      },
+      "ledger_head_unchanged_during_public_call": true,
+      "pre_attack": {
+        "core_locations": [
+          "aaaaaaaa-0000-4000-8000-000000000001",
+          "aaaaaaaa-0000-4000-8000-000000000002",
+          "aaaaaaaa-0000-4000-8000-000000000003",
+          "aaaaaaaa-0000-4000-8000-000000000004"
+        ],
+        "embedding_locations": [
+          "23a2ff08-fd31-2108-19c8-56bbe1bdd947",
+          "44b33099-dee8-2a8b-cc46-e34a555d6659",
+          "a5a97d44-a72a-f6e7-3ef1-72fba6bb29d3",
+          "b4634a80-b40c-5fe8-e981-d10b5cfd9d0d"
+        ],
+        "habit_locations": [
+          "23a2ff08-fd31-2108-19c8-56bbe1bdd947",
+          "44b33099-dee8-2a8b-cc46-e34a555d6659",
+          "a5a97d44-a72a-f6e7-3ef1-72fba6bb29d3",
+          "b4634a80-b40c-5fe8-e981-d10b5cfd9d0d"
+        ],
+        "input_bodies": {
+          "00000000-0000-0000-0000-000000000bb8": {
+            "receipt_particle_ids": [
+              "00000000-0000-0000-0000-0000000003e8",
+              "00000000-0000-0000-0000-0000000003e9"
+            ],
+            "statistic_cluster_ids": {
+              "00000000-0000-0000-0000-0000000003e8": [
+                "00000000-0000-0000-0000-000000000bb8"
+              ],
+              "00000000-0000-0000-0000-0000000003e9": [
+                "00000000-0000-0000-0000-000000000bb8"
+              ]
+            },
+            "statistic_particle_ids": [
+              "00000000-0000-0000-0000-0000000003e8",
+              "00000000-0000-0000-0000-0000000003e9"
+            ]
+          }
+        },
+        "input_journal": {
+          "00000000-0000-0000-0000-000000000bb8": "310ee9b793f3e106af7efeba7c1a299d3c8bd424b23bb087f75505d9c9c5ada1"
+        },
+        "ledger_head_sha256": "6bae861ecfb657c5a76f2959cf9e05f45df05676377ebfad9b4109ee6dbb2c73",
+        "marginal": {
+          "error": "ValueError: prepared particle source snapshot is stale or missing",
+          "status": "REJECTED"
+        },
+        "record_particle_ids": [
+          "00000000-0000-0000-0000-0000000003e8",
+          "00000000-0000-0000-0000-0000000003e9"
+        ],
+        "record_statistic_clusters": {
+          "00000000-0000-0000-0000-0000000003e8": [
+            "00000000-0000-0000-0000-000000000bb8"
+          ],
+          "00000000-0000-0000-0000-0000000003e9": [
+            "00000000-0000-0000-0000-000000000bb8"
+          ]
+        },
+        "semantic_identity": {
+          "execution_state_sha256": "80e81e9eefbf00db7cc0f7a72ef3492d4e7f602d0d718701e7a1022187b3cba5",
+          "semantic_state_sha256": "058b2eb5ab6bab8e60f687d719565b8ccbae111fc5925e57eb741e0429863ef0",
+          "source_bound_semantic_sha256": "17636c40c4ec871e2c7e9f56f252c3fbb116e0fea60b814c3dd0b135e6e6f0da",
+          "source_sha256": "7e15070d3b0e33b7315ddff40fe9e9842d0c8a6efdd7b89ac05e0701c24cd74a"
+        }
+      },
+      "semantic_identity_changed_during_public_call": true
+    },
+    {
+      "after": {
+        "core_locations": [
+          "44b33099-dee8-2a8b-cc46-e34a555d6659",
+          "23a2ff08-fd31-2108-19c8-56bbe1bdd947",
+          "a5a97d44-a72a-f6e7-3ef1-72fba6bb29d3",
+          "b4634a80-b40c-5fe8-e981-d10b5cfd9d0d"
+        ],
+        "embedding_locations": [
+          "23a2ff08-fd31-2108-19c8-56bbe1bdd947",
+          "44b33099-dee8-2a8b-cc46-e34a555d6659",
+          "a5a97d44-a72a-f6e7-3ef1-72fba6bb29d3",
+          "b4634a80-b40c-5fe8-e981-d10b5cfd9d0d"
+        ],
+        "habit_locations": [
+          "23a2ff08-fd31-2108-19c8-56bbe1bdd947",
+          "44b33099-dee8-2a8b-cc46-e34a555d6659",
+          "a5a97d44-a72a-f6e7-3ef1-72fba6bb29d3",
+          "b4634a80-b40c-5fe8-e981-d10b5cfd9d0d"
+        ],
+        "input_bodies": {
+          "00000000-0000-0000-0000-000000000bb8": {
+            "receipt_particle_ids": [
+              "00000000-0000-0000-0000-0000000003e8",
+              "00000000-0000-0000-0000-0000000003e9"
+            ],
+            "statistic_cluster_ids": {
+              "00000000-0000-0000-0000-0000000003e8": [
+                "aaaaaaaa-0000-4000-8000-000000000001"
+              ],
+              "00000000-0000-0000-0000-0000000003e9": [
+                "00000000-0000-0000-0000-000000000bb8"
+              ]
+            },
+            "statistic_particle_ids": [
+              "00000000-0000-0000-0000-0000000003e8",
+              "00000000-0000-0000-0000-0000000003e9"
+            ]
+          }
+        },
+        "input_journal": {
+          "00000000-0000-0000-0000-000000000bb8": "c6dfcf5c576f88d78810e77f0ece0099dd78ecb13e5c88e232b8a4b9c4a1c06e"
+        },
+        "ledger_head_sha256": "878e7e600821bc726fb0e56ea31e06d6301589e951f77440babaa3d832b547ce",
+        "marginal": {
+          "probabilities": {
+            "23a2ff08-fd31-2108-19c8-56bbe1bdd947": 0.09022556390977444,
+            "44b33099-dee8-2a8b-cc46-e34a555d6659": 0.3609022556390978,
+            "a5a97d44-a72a-f6e7-3ef1-72fba6bb29d3": 0.09022556390977444,
+            "b4634a80-b40c-5fe8-e981-d10b5cfd9d0d": 0.09022556390977444
+          },
+          "status": "RETURNED",
+          "total": 1.0,
+          "unresolved": 0.368421052631579
+        },
+        "record_particle_ids": [
+          "00000000-0000-0000-0000-0000000003e8",
+          "00000000-0000-0000-0000-0000000003e9"
+        ],
+        "record_statistic_clusters": {
+          "00000000-0000-0000-0000-0000000003e8": [
+            "aaaaaaaa-0000-4000-8000-000000000001"
+          ],
+          "00000000-0000-0000-0000-0000000003e9": [
+            "00000000-0000-0000-0000-000000000bb8"
+          ]
+        },
+        "semantic_identity": {
+          "execution_state_sha256": "f149a2c66b05e266dbff8968ead38b2dbccf40ecbf7affe7f8ff286cd7bccb0d",
+          "semantic_state_sha256": "dc22c1ba761dbcc13f26bd8c6419accf260e0f5b33dbd4de6b1b8b74fa6f5a99",
+          "source_bound_semantic_sha256": "2934d4ad506c0f3f748f230ca18dedb68b0142e33fe569840feb0663c3ace1ad",
+          "source_sha256": "7e15070d3b0e33b7315ddff40fe9e9842d0c8a6efdd7b89ac05e0701c24cd74a"
+        }
+      },
+      "call": {
+        "result_type": "ParticleRevisionBatch",
+        "status": "ACCEPTED_OR_RETURNED"
+      },
+      "id": "W3-PCB-04",
+      "initial": {
+        "core_locations": [
+          "44b33099-dee8-2a8b-cc46-e34a555d6659",
+          "23a2ff08-fd31-2108-19c8-56bbe1bdd947",
+          "a5a97d44-a72a-f6e7-3ef1-72fba6bb29d3",
+          "b4634a80-b40c-5fe8-e981-d10b5cfd9d0d"
+        ],
+        "embedding_locations": [
+          "23a2ff08-fd31-2108-19c8-56bbe1bdd947",
+          "44b33099-dee8-2a8b-cc46-e34a555d6659",
+          "a5a97d44-a72a-f6e7-3ef1-72fba6bb29d3",
+          "b4634a80-b40c-5fe8-e981-d10b5cfd9d0d"
+        ],
+        "habit_locations": [
+          "23a2ff08-fd31-2108-19c8-56bbe1bdd947",
+          "44b33099-dee8-2a8b-cc46-e34a555d6659",
+          "a5a97d44-a72a-f6e7-3ef1-72fba6bb29d3",
+          "b4634a80-b40c-5fe8-e981-d10b5cfd9d0d"
+        ],
+        "input_bodies": {},
+        "input_journal": {},
+        "ledger_head_sha256": "878e7e600821bc726fb0e56ea31e06d6301589e951f77440babaa3d832b547ce",
+        "marginal": {
+          "error": "ValueError: prepared particle source snapshot is stale or missing",
+          "status": "REJECTED"
+        },
+        "record_particle_ids": [],
+        "record_statistic_clusters": {},
+        "semantic_identity": {
+          "execution_state_sha256": "5eebec3d1cba40cb59582528ea11b9ad0de3fdaf1dd82bdb192cd8b17e8a3946",
+          "semantic_state_sha256": "5941b810449ada2f62e11d04ba17c6553681df0bfcd22adc7f011345e23f9b3a",
+          "source_bound_semantic_sha256": "ec40a360bb2cc4e69c5b45933d4a59b4b8a531ae0e55e8a86ccbbe58a0168af3",
+          "source_sha256": "7e15070d3b0e33b7315ddff40fe9e9842d0c8a6efdd7b89ac05e0701c24cd74a"
+        }
+      },
+      "ledger_head_unchanged_during_public_call": true,
+      "pre_attack": {
+        "core_locations": [
+          "44b33099-dee8-2a8b-cc46-e34a555d6659",
+          "23a2ff08-fd31-2108-19c8-56bbe1bdd947",
+          "a5a97d44-a72a-f6e7-3ef1-72fba6bb29d3",
+          "b4634a80-b40c-5fe8-e981-d10b5cfd9d0d"
+        ],
+        "embedding_locations": [
+          "23a2ff08-fd31-2108-19c8-56bbe1bdd947",
+          "44b33099-dee8-2a8b-cc46-e34a555d6659",
+          "a5a97d44-a72a-f6e7-3ef1-72fba6bb29d3",
+          "b4634a80-b40c-5fe8-e981-d10b5cfd9d0d"
+        ],
+        "habit_locations": [
+          "23a2ff08-fd31-2108-19c8-56bbe1bdd947",
+          "44b33099-dee8-2a8b-cc46-e34a555d6659",
+          "a5a97d44-a72a-f6e7-3ef1-72fba6bb29d3",
+          "b4634a80-b40c-5fe8-e981-d10b5cfd9d0d"
+        ],
+        "input_bodies": {},
+        "input_journal": {},
+        "ledger_head_sha256": "878e7e600821bc726fb0e56ea31e06d6301589e951f77440babaa3d832b547ce",
+        "marginal": {
+          "error": "ValueError: prepared particle source snapshot is stale or missing",
+          "status": "REJECTED"
+        },
+        "record_particle_ids": [],
+        "record_statistic_clusters": {},
+        "semantic_identity": {
+          "execution_state_sha256": "5eebec3d1cba40cb59582528ea11b9ad0de3fdaf1dd82bdb192cd8b17e8a3946",
+          "semantic_state_sha256": "5941b810449ada2f62e11d04ba17c6553681df0bfcd22adc7f011345e23f9b3a",
+          "source_bound_semantic_sha256": "ec40a360bb2cc4e69c5b45933d4a59b4b8a531ae0e55e8a86ccbbe58a0168af3",
+          "source_sha256": "7e15070d3b0e33b7315ddff40fe9e9842d0c8a6efdd7b89ac05e0701c24cd74a"
+        }
+      },
+      "semantic_identity_changed_during_public_call": true
+    },
+    {
+      "after": {
+        "core_locations": [
+          "44b33099-dee8-2a8b-cc46-e34a555d6659",
+          "23a2ff08-fd31-2108-19c8-56bbe1bdd947",
+          "a5a97d44-a72a-f6e7-3ef1-72fba6bb29d3",
+          "b4634a80-b40c-5fe8-e981-d10b5cfd9d0d"
+        ],
+        "embedding_locations": [
+          "23a2ff08-fd31-2108-19c8-56bbe1bdd947",
+          "44b33099-dee8-2a8b-cc46-e34a555d6659",
+          "a5a97d44-a72a-f6e7-3ef1-72fba6bb29d3",
+          "b4634a80-b40c-5fe8-e981-d10b5cfd9d0d"
+        ],
+        "habit_locations": [
+          "23a2ff08-fd31-2108-19c8-56bbe1bdd947",
+          "44b33099-dee8-2a8b-cc46-e34a555d6659",
+          "a5a97d44-a72a-f6e7-3ef1-72fba6bb29d3",
+          "b4634a80-b40c-5fe8-e981-d10b5cfd9d0d"
+        ],
+        "input_bodies": {
+          "00000000-0000-0000-0000-000000000bb8": {
+            "receipt_particle_ids": [
+              "00000000-0000-0000-0000-0000000003e8",
+              "00000000-0000-0000-0000-0000000003e9"
+            ],
+            "statistic_cluster_ids": {
+              "00000000-0000-0000-0000-0000000003e8": [
+                "00000000-0000-0000-0000-000000000bb8"
+              ],
+              "00000000-0000-0000-0000-0000000003e9": [
+                "00000000-0000-0000-0000-000000000bb8"
+              ],
+              "aaaaaaaa-0000-4000-8000-000000000001": [
+                "aaaaaaaa-0000-4000-8000-000000000002"
+              ]
+            },
+            "statistic_particle_ids": [
+              "00000000-0000-0000-0000-0000000003e8",
+              "00000000-0000-0000-0000-0000000003e9",
+              "aaaaaaaa-0000-4000-8000-000000000001"
+            ]
+          }
+        },
+        "input_journal": {
+          "00000000-0000-0000-0000-000000000bb8": "d9ea119d6bc96235e588315da2d06c2c38290480aed36f0bad14ca416eeba310"
+        },
+        "ledger_head_sha256": "e43ea0ce03c12b57e9e559db2168c4884758573d22eb3c571c84fdec489d91cd",
+        "marginal": {
+          "probabilities": {
+            "23a2ff08-fd31-2108-19c8-56bbe1bdd947": 0.09022556390977444,
+            "44b33099-dee8-2a8b-cc46-e34a555d6659": 0.3609022556390978,
+            "a5a97d44-a72a-f6e7-3ef1-72fba6bb29d3": 0.09022556390977444,
+            "b4634a80-b40c-5fe8-e981-d10b5cfd9d0d": 0.09022556390977444
+          },
+          "status": "RETURNED",
+          "total": 1.0,
+          "unresolved": 0.368421052631579
+        },
+        "record_particle_ids": [
+          "00000000-0000-0000-0000-0000000003e8",
+          "00000000-0000-0000-0000-0000000003e9"
+        ],
+        "record_statistic_clusters": {
+          "00000000-0000-0000-0000-0000000003e8": [
+            "00000000-0000-0000-0000-000000000bb8"
+          ],
+          "00000000-0000-0000-0000-0000000003e9": [
+            "00000000-0000-0000-0000-000000000bb8"
+          ]
+        },
+        "semantic_identity": {
+          "execution_state_sha256": "8b368c6aea9b206164c1063300d552d24e56981349fc944dd02bc89777a2e8a5",
+          "semantic_state_sha256": "3903078d66b4b1378932009e6000b066b0f00cdbb9bee80f9174fd933f4e9f95",
+          "source_bound_semantic_sha256": "6af86e168572be9a8cba3ddcdca67d97a1c4c6ab4ad3aac24aaa17a9257cf0f1",
+          "source_sha256": "7e15070d3b0e33b7315ddff40fe9e9842d0c8a6efdd7b89ac05e0701c24cd74a"
+        }
+      },
+      "call": {
+        "result_type": "ParticleRevisionBatch",
+        "status": "ACCEPTED_OR_RETURNED"
+      },
+      "id": "W3-PCB-05",
+      "initial": {
+        "core_locations": [
+          "44b33099-dee8-2a8b-cc46-e34a555d6659",
+          "23a2ff08-fd31-2108-19c8-56bbe1bdd947",
+          "a5a97d44-a72a-f6e7-3ef1-72fba6bb29d3",
+          "b4634a80-b40c-5fe8-e981-d10b5cfd9d0d"
+        ],
+        "embedding_locations": [
+          "23a2ff08-fd31-2108-19c8-56bbe1bdd947",
+          "44b33099-dee8-2a8b-cc46-e34a555d6659",
+          "a5a97d44-a72a-f6e7-3ef1-72fba6bb29d3",
+          "b4634a80-b40c-5fe8-e981-d10b5cfd9d0d"
+        ],
+        "habit_locations": [
+          "23a2ff08-fd31-2108-19c8-56bbe1bdd947",
+          "44b33099-dee8-2a8b-cc46-e34a555d6659",
+          "a5a97d44-a72a-f6e7-3ef1-72fba6bb29d3",
+          "b4634a80-b40c-5fe8-e981-d10b5cfd9d0d"
+        ],
+        "input_bodies": {},
+        "input_journal": {},
+        "ledger_head_sha256": "e43ea0ce03c12b57e9e559db2168c4884758573d22eb3c571c84fdec489d91cd",
+        "marginal": {
+          "error": "ValueError: prepared particle source snapshot is stale or missing",
+          "status": "REJECTED"
+        },
+        "record_particle_ids": [],
+        "record_statistic_clusters": {},
+        "semantic_identity": {
+          "execution_state_sha256": "3a6c80e5c0df353fa2369b680b3fd634d03df30983bd01fa70483fc83bff2b99",
+          "semantic_state_sha256": "5941b810449ada2f62e11d04ba17c6553681df0bfcd22adc7f011345e23f9b3a",
+          "source_bound_semantic_sha256": "ec40a360bb2cc4e69c5b45933d4a59b4b8a531ae0e55e8a86ccbbe58a0168af3",
+          "source_sha256": "7e15070d3b0e33b7315ddff40fe9e9842d0c8a6efdd7b89ac05e0701c24cd74a"
+        }
+      },
+      "ledger_head_unchanged_during_public_call": true,
+      "pre_attack": {
+        "core_locations": [
+          "44b33099-dee8-2a8b-cc46-e34a555d6659",
+          "23a2ff08-fd31-2108-19c8-56bbe1bdd947",
+          "a5a97d44-a72a-f6e7-3ef1-72fba6bb29d3",
+          "b4634a80-b40c-5fe8-e981-d10b5cfd9d0d"
+        ],
+        "embedding_locations": [
+          "23a2ff08-fd31-2108-19c8-56bbe1bdd947",
+          "44b33099-dee8-2a8b-cc46-e34a555d6659",
+          "a5a97d44-a72a-f6e7-3ef1-72fba6bb29d3",
+          "b4634a80-b40c-5fe8-e981-d10b5cfd9d0d"
+        ],
+        "habit_locations": [
+          "23a2ff08-fd31-2108-19c8-56bbe1bdd947",
+          "44b33099-dee8-2a8b-cc46-e34a555d6659",
+          "a5a97d44-a72a-f6e7-3ef1-72fba6bb29d3",
+          "b4634a80-b40c-5fe8-e981-d10b5cfd9d0d"
+        ],
+        "input_bodies": {},
+        "input_journal": {},
+        "ledger_head_sha256": "e43ea0ce03c12b57e9e559db2168c4884758573d22eb3c571c84fdec489d91cd",
+        "marginal": {
+          "error": "ValueError: prepared particle source snapshot is stale or missing",
+          "status": "REJECTED"
+        },
+        "record_particle_ids": [],
+        "record_statistic_clusters": {},
+        "semantic_identity": {
+          "execution_state_sha256": "3a6c80e5c0df353fa2369b680b3fd634d03df30983bd01fa70483fc83bff2b99",
+          "semantic_state_sha256": "5941b810449ada2f62e11d04ba17c6553681df0bfcd22adc7f011345e23f9b3a",
+          "source_bound_semantic_sha256": "ec40a360bb2cc4e69c5b45933d4a59b4b8a531ae0e55e8a86ccbbe58a0168af3",
+          "source_sha256": "7e15070d3b0e33b7315ddff40fe9e9842d0c8a6efdd7b89ac05e0701c24cd74a"
+        }
+      },
+      "semantic_identity_changed_during_public_call": true
+    }
+  ],
+  "interpretation": "A diagnostic exit code of zero means capture completed, not that the adversarial boundary passed. Inspect each call.status and state delta.",
+  "schema_version": "pc-b-w3-r6-observations-v1",
+  "tested_sha": "1bd513f51ab7e54a7290870a5f34b524254d55c6"
+}

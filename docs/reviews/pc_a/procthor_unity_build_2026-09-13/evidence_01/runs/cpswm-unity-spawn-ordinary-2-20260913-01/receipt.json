@@ -1,0 +1,461 @@
+{
+  "address_probe": [
+    {
+      "actionReturn": null,
+      "agent": {
+        "cameraHorizon": 0.0,
+        "inHighFrictionArea": false,
+        "isStanding": true,
+        "name": "agent",
+        "position": {
+          "x": -1.0,
+          "y": 0.900999128818512,
+          "z": 1.0
+        },
+        "rotation": {
+          "x": -0.0,
+          "y": 270.0,
+          "z": 0.0
+        }
+      },
+      "agentId": 0,
+      "errorCode": null,
+      "errorMessage": "",
+      "inventoryObjects": [],
+      "lastAction": "RotateLeft",
+      "lastActionSuccess": true,
+      "sceneName": "FloorPlan1_physics"
+    },
+    {
+      "actionReturn": null,
+      "agent": {
+        "cameraHorizon": 0.0,
+        "inHighFrictionArea": false,
+        "isStanding": true,
+        "name": "agent",
+        "position": {
+          "x": -1.0,
+          "y": 0.900999128818512,
+          "z": 0.0
+        },
+        "rotation": {
+          "x": -0.0,
+          "y": 270.0,
+          "z": 0.0
+        }
+      },
+      "agentId": 1,
+      "errorCode": null,
+      "errorMessage": "",
+      "inventoryObjects": [],
+      "lastAction": "RotateLeft",
+      "lastActionSuccess": true,
+      "sceneName": "FloorPlan1_physics"
+    }
+  ],
+  "argv": [
+    "tools/structure_two_multiagent_diagnose.py",
+    "--binary",
+    "/private/var/folders/x2/000r8p0n6s393lj2sg8wk5f40000gn/T/cpswm-unity-gui-build-4997134908644652993e7c86270a30e4/cpswm-development.app/Contents/MacOS/AI2-THOR",
+    "--house",
+    "docs/reviews/pc_a/proposal_scheduler_2026-09-13/procthor_run_07/train_house.json",
+    "--output",
+    "/private/tmp/cpswm-unity-spawn-ordinary-2-20260913-01",
+    "--scene",
+    "ordinary",
+    "--count",
+    "2",
+    "--guarded"
+  ],
+  "executable": "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/.venv-ai2thor/bin/python",
+  "files_after": {
+    "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/.venv-ai2thor/lib/python3.11/site-packages/ai2thor/controller.py": "568c1bd1f74b7577b00a667e87ab90c93e0de740489d143bc0fff5b771c29e48",
+    "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/.venv-ai2thor/lib/python3.11/site-packages/ai2thor/fifo_server.py": "434d4eac1647c2acb32542c7c513a66fca40022fcdc1d23d119f2fd4ffa6ecc3",
+    "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/.venv-ai2thor/lib/python3.11/site-packages/ai2thor/server.py": "934f8b3b3911a4a61dd9d076614e43d944544fba9fc98aa15806deb666f6e377",
+    "/private/tmp/cpswm-pc-a-procthor-unity-build-20260913/docs/reviews/pc_a/proposal_scheduler_2026-09-13/procthor_run_07/train_house.json": "43be9379e7f44cfbffb4f8f5e7a616836ac1063951775895c571e5f9eeb504cb",
+    "/private/tmp/cpswm-pc-a-procthor-unity-build-20260913/src/cpswm/data_preflight/agent_roster.py": "a9d5048a77250d73d2fb0e9c5ce100a55b5ca1aaeaab169c59a2c092121117a4",
+    "/private/tmp/cpswm-pc-a-procthor-unity-build-20260913/tools/structure_two_multiagent_diagnose.py": "70077e7b8a682d2096c9d51688e89360d091fc7a880ccbd175a189746360a9a9",
+    "/private/var/folders/x2/000r8p0n6s393lj2sg8wk5f40000gn/T/cpswm-unity-gui-build-4997134908644652993e7c86270a30e4/cpswm-development.app/Contents/MacOS/AI2-THOR": "27c2dbdece04273c1e2ee7a0e8d6ad45c68393379e00d094923be96941af4dc1",
+    "/private/var/folders/x2/000r8p0n6s393lj2sg8wk5f40000gn/T/cpswm-unity-gui-build-4997134908644652993e7c86270a30e4/cpswm-development.app/Contents/Resources/Data/Managed/AI2-THOR-Base.dll": "7a431e29073711526e9ef86c3a4fbaee3512f7b9c12792f0359b932200913713",
+    "/private/var/folders/x2/000r8p0n6s393lj2sg8wk5f40000gn/T/cpswm-unity-gui-build-4997134908644652993e7c86270a30e4/cpswm-development.app/Contents/Resources/Data/Managed/Assembly-CSharp.dll": "4f328355bae77c02a1dfb439578aee85d49453c13494df881b765f4232cfaf00"
+  },
+  "files_before": {
+    "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/.venv-ai2thor/lib/python3.11/site-packages/ai2thor/controller.py": "568c1bd1f74b7577b00a667e87ab90c93e0de740489d143bc0fff5b771c29e48",
+    "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/.venv-ai2thor/lib/python3.11/site-packages/ai2thor/fifo_server.py": "434d4eac1647c2acb32542c7c513a66fca40022fcdc1d23d119f2fd4ffa6ecc3",
+    "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/.venv-ai2thor/lib/python3.11/site-packages/ai2thor/server.py": "934f8b3b3911a4a61dd9d076614e43d944544fba9fc98aa15806deb666f6e377",
+    "/private/tmp/cpswm-pc-a-procthor-unity-build-20260913/docs/reviews/pc_a/proposal_scheduler_2026-09-13/procthor_run_07/train_house.json": "43be9379e7f44cfbffb4f8f5e7a616836ac1063951775895c571e5f9eeb504cb",
+    "/private/tmp/cpswm-pc-a-procthor-unity-build-20260913/src/cpswm/data_preflight/agent_roster.py": "a9d5048a77250d73d2fb0e9c5ce100a55b5ca1aaeaab169c59a2c092121117a4",
+    "/private/tmp/cpswm-pc-a-procthor-unity-build-20260913/tools/structure_two_multiagent_diagnose.py": "70077e7b8a682d2096c9d51688e89360d091fc7a880ccbd175a189746360a9a9",
+    "/private/var/folders/x2/000r8p0n6s393lj2sg8wk5f40000gn/T/cpswm-unity-gui-build-4997134908644652993e7c86270a30e4/cpswm-development.app/Contents/MacOS/AI2-THOR": "27c2dbdece04273c1e2ee7a0e8d6ad45c68393379e00d094923be96941af4dc1",
+    "/private/var/folders/x2/000r8p0n6s393lj2sg8wk5f40000gn/T/cpswm-unity-gui-build-4997134908644652993e7c86270a30e4/cpswm-development.app/Contents/Resources/Data/Managed/AI2-THOR-Base.dll": "7a431e29073711526e9ef86c3a4fbaee3512f7b9c12792f0359b932200913713",
+    "/private/var/folders/x2/000r8p0n6s393lj2sg8wk5f40000gn/T/cpswm-unity-gui-build-4997134908644652993e7c86270a30e4/cpswm-development.app/Contents/Resources/Data/Managed/Assembly-CSharp.dll": "4f328355bae77c02a1dfb439578aee85d49453c13494df881b765f4232cfaf00"
+  },
+  "files_unchanged": true,
+  "git_head": "130375c217aeefb9927296b2271c5ea039295f20",
+  "guarded": true,
+  "human_execution_verified": false,
+  "initialized": [
+    {
+      "actionReturn": {
+        "cameraFarPlane": 20.0,
+        "cameraNearPlane": 0.009999999776482582
+      },
+      "agent": {
+        "cameraHorizon": 0.0,
+        "inHighFrictionArea": false,
+        "isStanding": true,
+        "name": "agent",
+        "position": {
+          "x": -1.0,
+          "y": 0.900999128818512,
+          "z": 1.0
+        },
+        "rotation": {
+          "x": -0.0,
+          "y": 270.0,
+          "z": 0.0
+        }
+      },
+      "agentId": 0,
+      "errorCode": null,
+      "errorMessage": "",
+      "inventoryObjects": [],
+      "lastAction": "Initialize",
+      "lastActionSuccess": true,
+      "sceneName": "FloorPlan1_physics"
+    },
+    {
+      "actionReturn": {
+        "cameraFarPlane": 20.0,
+        "cameraNearPlane": 0.009999999776482582
+      },
+      "agent": {
+        "cameraHorizon": 0.0,
+        "inHighFrictionArea": false,
+        "isStanding": true,
+        "name": "agent",
+        "position": {
+          "x": -1.0,
+          "y": 0.900999128818512,
+          "z": 0.0
+        },
+        "rotation": {
+          "x": -0.0,
+          "y": 270.0,
+          "z": 0.0
+        }
+      },
+      "agentId": 1,
+      "errorCode": null,
+      "errorMessage": "",
+      "inventoryObjects": [],
+      "lastAction": "Initialize",
+      "lastActionSuccess": true,
+      "sceneName": "FloorPlan1_physics"
+    }
+  ],
+  "observed_count": 2,
+  "post_initialize": false,
+  "python": "3.11.16 (main, Aug 14 2026, 15:24:25) [Clang 22.1.3 ]",
+  "requested_count": 2,
+  "rotation_checks": [
+    {
+      "action": "RotateRight",
+      "after": {
+        "0": {
+          "cameraHorizon": -0.0,
+          "inHighFrictionArea": false,
+          "isStanding": true,
+          "name": "agent",
+          "position": {
+            "x": -1.0,
+            "y": 0.900999128818512,
+            "z": 1.0
+          },
+          "rotation": {
+            "x": -0.0,
+            "y": 0.0,
+            "z": 0.0
+          }
+        },
+        "1": {
+          "cameraHorizon": 0.0,
+          "inHighFrictionArea": false,
+          "isStanding": true,
+          "name": "agent",
+          "position": {
+            "x": -1.0,
+            "y": 0.900999128818512,
+            "z": 0.0
+          },
+          "rotation": {
+            "x": -0.0,
+            "y": 270.0,
+            "z": 0.0
+          }
+        }
+      },
+      "agentId": 0,
+      "before": {
+        "0": {
+          "cameraHorizon": 0.0,
+          "inHighFrictionArea": false,
+          "isStanding": true,
+          "name": "agent",
+          "position": {
+            "x": -1.0,
+            "y": 0.900999128818512,
+            "z": 1.0
+          },
+          "rotation": {
+            "x": -0.0,
+            "y": 270.0,
+            "z": 0.0
+          }
+        },
+        "1": {
+          "cameraHorizon": 0.0,
+          "inHighFrictionArea": false,
+          "isStanding": true,
+          "name": "agent",
+          "position": {
+            "x": -1.0,
+            "y": 0.900999128818512,
+            "z": 0.0
+          },
+          "rotation": {
+            "x": -0.0,
+            "y": 270.0,
+            "z": 0.0
+          }
+        }
+      },
+      "passed": true
+    },
+    {
+      "action": "RotateLeft",
+      "after": {
+        "0": {
+          "cameraHorizon": 0.0,
+          "inHighFrictionArea": false,
+          "isStanding": true,
+          "name": "agent",
+          "position": {
+            "x": -1.0,
+            "y": 0.900999128818512,
+            "z": 1.0
+          },
+          "rotation": {
+            "x": -0.0,
+            "y": 270.0,
+            "z": 0.0
+          }
+        },
+        "1": {
+          "cameraHorizon": 0.0,
+          "inHighFrictionArea": false,
+          "isStanding": true,
+          "name": "agent",
+          "position": {
+            "x": -1.0,
+            "y": 0.900999128818512,
+            "z": 0.0
+          },
+          "rotation": {
+            "x": -0.0,
+            "y": 270.0,
+            "z": 0.0
+          }
+        }
+      },
+      "agentId": 0,
+      "before": {
+        "0": {
+          "cameraHorizon": -0.0,
+          "inHighFrictionArea": false,
+          "isStanding": true,
+          "name": "agent",
+          "position": {
+            "x": -1.0,
+            "y": 0.900999128818512,
+            "z": 1.0
+          },
+          "rotation": {
+            "x": -0.0,
+            "y": 0.0,
+            "z": 0.0
+          }
+        },
+        "1": {
+          "cameraHorizon": 0.0,
+          "inHighFrictionArea": false,
+          "isStanding": true,
+          "name": "agent",
+          "position": {
+            "x": -1.0,
+            "y": 0.900999128818512,
+            "z": 0.0
+          },
+          "rotation": {
+            "x": -0.0,
+            "y": 270.0,
+            "z": 0.0
+          }
+        }
+      },
+      "passed": true
+    },
+    {
+      "action": "RotateRight",
+      "after": {
+        "0": {
+          "cameraHorizon": 0.0,
+          "inHighFrictionArea": false,
+          "isStanding": true,
+          "name": "agent",
+          "position": {
+            "x": -1.0,
+            "y": 0.900999128818512,
+            "z": 1.0
+          },
+          "rotation": {
+            "x": -0.0,
+            "y": 270.0,
+            "z": 0.0
+          }
+        },
+        "1": {
+          "cameraHorizon": -0.0,
+          "inHighFrictionArea": false,
+          "isStanding": true,
+          "name": "agent",
+          "position": {
+            "x": -1.0,
+            "y": 0.900999128818512,
+            "z": 0.0
+          },
+          "rotation": {
+            "x": -0.0,
+            "y": 0.0,
+            "z": 0.0
+          }
+        }
+      },
+      "agentId": 1,
+      "before": {
+        "0": {
+          "cameraHorizon": 0.0,
+          "inHighFrictionArea": false,
+          "isStanding": true,
+          "name": "agent",
+          "position": {
+            "x": -1.0,
+            "y": 0.900999128818512,
+            "z": 1.0
+          },
+          "rotation": {
+            "x": -0.0,
+            "y": 270.0,
+            "z": 0.0
+          }
+        },
+        "1": {
+          "cameraHorizon": 0.0,
+          "inHighFrictionArea": false,
+          "isStanding": true,
+          "name": "agent",
+          "position": {
+            "x": -1.0,
+            "y": 0.900999128818512,
+            "z": 0.0
+          },
+          "rotation": {
+            "x": -0.0,
+            "y": 270.0,
+            "z": 0.0
+          }
+        }
+      },
+      "passed": true
+    },
+    {
+      "action": "RotateLeft",
+      "after": {
+        "0": {
+          "cameraHorizon": 0.0,
+          "inHighFrictionArea": false,
+          "isStanding": true,
+          "name": "agent",
+          "position": {
+            "x": -1.0,
+            "y": 0.900999128818512,
+            "z": 1.0
+          },
+          "rotation": {
+            "x": -0.0,
+            "y": 270.0,
+            "z": 0.0
+          }
+        },
+        "1": {
+          "cameraHorizon": 0.0,
+          "inHighFrictionArea": false,
+          "isStanding": true,
+          "name": "agent",
+          "position": {
+            "x": -1.0,
+            "y": 0.900999128818512,
+            "z": 0.0
+          },
+          "rotation": {
+            "x": -0.0,
+            "y": 270.0,
+            "z": 0.0
+          }
+        }
+      },
+      "agentId": 1,
+      "before": {
+        "0": {
+          "cameraHorizon": 0.0,
+          "inHighFrictionArea": false,
+          "isStanding": true,
+          "name": "agent",
+          "position": {
+            "x": -1.0,
+            "y": 0.900999128818512,
+            "z": 1.0
+          },
+          "rotation": {
+            "x": -0.0,
+            "y": 270.0,
+            "z": 0.0
+          }
+        },
+        "1": {
+          "cameraHorizon": -0.0,
+          "inHighFrictionArea": false,
+          "isStanding": true,
+          "name": "agent",
+          "position": {
+            "x": -1.0,
+            "y": 0.900999128818512,
+            "z": 0.0
+          },
+          "rotation": {
+            "x": -0.0,
+            "y": 0.0,
+            "z": 0.0
+          }
+        }
+      },
+      "passed": true
+    }
+  ],
+  "scene_kind": "ordinary",
+  "scope": "actual Unity multi-agent diagnosis; NOT human execution or training",
+  "sdk": "5.0.0",
+  "seconds": 3.011763125192374,
+  "trace_sha256": "472ff00422db417220434e1a1c600494f84c11d0be468de4a49f2e306fcfca82",
+  "training_started": false
+}

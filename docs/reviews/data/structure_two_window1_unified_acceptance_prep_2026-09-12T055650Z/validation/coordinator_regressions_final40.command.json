@@ -1,0 +1,34 @@
+{
+  "name": "coordinator_regressions_final40",
+  "argv": [
+    ".venv/bin/pytest",
+    "-o",
+    "addopts=",
+    "-q",
+    "-s",
+    "--confcutdir=.",
+    "tests/test_structure_two_unified_acceptance.py"
+  ],
+  "cwd": "/private/tmp/cpswm-s2-evidence-repair-window1",
+  "head": "ba816cb7c2a885f743069f6b091962b295249cb9",
+  "started_utc": "2026-09-12T06:52:15.377217+00:00",
+  "inputs_before": {
+    "tools/structure_two_unified_acceptance.py": "cf003e23d7984ba9f616854b146ed9c942fa404e00c36432b8ba27fdb38e8e95",
+    "tests/test_structure_two_unified_acceptance.py": "7c7f1126151ae81c68670a903b82e48870dbce1197345b04e2a9a0149429077c"
+  },
+  "exit_code": 0,
+  "ended_utc": "2026-09-12T06:52:52.191392+00:00",
+  "seconds": 36.813299583038315,
+  "inputs_after": {
+    "tools/structure_two_unified_acceptance.py": "cf003e23d7984ba9f616854b146ed9c942fa404e00c36432b8ba27fdb38e8e95",
+    "tests/test_structure_two_unified_acceptance.py": "7c7f1126151ae81c68670a903b82e48870dbce1197345b04e2a9a0149429077c"
+  },
+  "stdout": {
+    "path": "docs/reviews/data/structure_two_window1_unified_acceptance_prep_2026-09-12T055650Z/validation/coordinator_regressions_final40.stdout.log",
+    "sha256": "2cb6051d45ed6b0af6a64b6c947001575cb8ac3838cf3701f4bc6c480b6a5709"
+  },
+  "stderr": {
+    "path": "docs/reviews/data/structure_two_window1_unified_acceptance_prep_2026-09-12T055650Z/validation/coordinator_regressions_final40.stderr.log",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  }
+}

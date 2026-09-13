@@ -1,0 +1,68 @@
+{
+  "frozen_code_sha": "2ebd815543a9e51948c0eba237aacff8629b51ed",
+  "cpu_and_actual_source_verified": true,
+  "tests": {
+    "baseline": {
+      "tests": 125,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "round1": {
+      "tests": 30,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "round2": {
+      "tests": 22,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    }
+  },
+  "real_events": 42,
+  "real_captures_validated": 36,
+  "commands": [
+    {
+      "command": [
+        "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/.venv/bin/python",
+        "-m",
+        "ruff",
+        "check",
+        "src/cpswm/data_preflight",
+        "tests/test_structure_two_proposal_g1_repair.py",
+        "tests/test_pc_a_proposal_two_round_audit.py",
+        "tests/test_structure_two_proposal_scheduler.py",
+        "tools/structure_two_prepare_proposals.py",
+        "tools/structure_two_proposal_g1_checks.py",
+        "tools/structure_two_procthor_multiagent_probe.py",
+        "tools/structure_two_proposal_g1_verify.py"
+      ],
+      "exit_code": 0
+    },
+    {
+      "command": [
+        "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/.venv/bin/python",
+        "-m",
+        "mypy",
+        "src/cpswm/data_preflight/capture_prefix.py",
+        "src/cpswm/data_preflight/prepared_samples.py",
+        "src/cpswm/data_preflight/proposal_samples.py",
+        "src/cpswm/data_preflight/procthor_schedule.py",
+        "src/cpswm/data_preflight/procthor_execution.py"
+      ],
+      "exit_code": 0
+    }
+  ],
+  "training_started": false,
+  "training_ready": false,
+  "independent_acceptance": false,
+  "dependencies": {
+    "pytest": "9.1.1",
+    "pydantic": "2.13.4",
+    "numpy": "2.5.2",
+    "ruff": "0.16.3",
+    "mypy": "2.3.1"
+  }
+}

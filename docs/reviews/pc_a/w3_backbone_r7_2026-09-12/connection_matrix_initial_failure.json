@@ -1,0 +1,6 @@
+{
+  "exit_code": 1,
+  "script_sha256": "3ac23ca1388fae19161b83ab010ac691cb6701282cc54df043b933ff2b3ed170",
+  "assertion": "matched_plan == counts[verification] == 1",
+  "reason": "An input intervention may legally make CIAV choose no action; the base positive path must remain nonempty, while the control must retain its actual zero execution."
+}

@@ -1,0 +1,28 @@
+F                                                                        [100%]
+================================== FAILURES ===================================
+___________ test_prepared_support_is_bound_to_the_constructed_world ___________
+
+    def test_prepared_support_is_bound_to_the_constructed_world() -> None:
+        """A reassigned public tuple must not become registered world authority."""
+    
+        probe = old._legacy_history(1)
+        core = probe.system.core
+        original_locations = core.locations
+        foreign_location = uuid4()
+    
+        assert foreign_location not in core._habit._locations
+        assert foreign_location not in core._embeddings
+    
+        # The W3 R6 public entry currently forwards this mutable attribute as the
+        # authority set, although the rest of the runtime still has the original
+        # construction-time world support.
+        core.locations = (*original_locations[:-1], foreign_location)
+    
+>       with pytest.raises(ValueError, match="support|location|binding"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE ValueError
+
+tests\test_structure_two_w3_r6_pc_b_review.py:26: Failed
+=========================== short test summary info ===========================
+FAILED tests/test_structure_two_w3_r6_pc_b_review.py::test_prepared_support_is_bound_to_the_constructed_world
+1 failed in 2.21s

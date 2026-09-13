@@ -1,0 +1,24 @@
+{
+  "command": [
+    "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/.venv/bin/python",
+    "/private/tmp/s2-comparison-audit-window2-20260911/apps/evaluation_runner/run_structure_two_comparison_audit.py",
+    "--output",
+    "/private/tmp/s2-comparison-audit-window2-20260911/docs/reviews/data/structure_two_comparison_dynamic_window2_2026-09-12T1500/bundle_v5",
+    "--verify",
+    "--timing-repeats",
+    "1",
+    "--timing-episodes",
+    "1",
+    "--repository-root",
+    "/private/var/folders/x2/000r8p0n6s393lj2sg8wk5f40000gn/T/pytest-of-pangwei/pytest-1682/popen-gw1/test_repository_root_cannot_de0/B"
+  ],
+  "cwd": "/private/tmp/s2-comparison-audit-window2-20260911",
+  "PYTHONPATH": "/private/tmp/s2-comparison-audit-window2-20260911/src",
+  "exit_code": 1,
+  "stdout_json": [
+    {
+      "status": "EXECUTION_SOURCE_REJECTED",
+      "error": "REPOSITORY_ROOT_MISMATCH: declared=/private/var/folders/x2/000r8p0n6s393lj2sg8wk5f40000gn/T/pytest-of-pangwei/pytest-1682/popen-gw1/test_repository_root_cannot_de0/B executing=/private/tmp/s2-comparison-audit-window2-20260911"
+    }
+  ]
+}

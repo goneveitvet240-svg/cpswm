@@ -1,0 +1,62 @@
+{
+  "recovery": "exact historical Git blob; no training or hash changes",
+  "source_commit": "505e723170c29f8707ee19d113a5b8646680c5f6",
+  "source_blob": "caf5d1006996e8d5aa01e11285d833933a7c4bd8",
+  "path": "artifacts/project_two_v04_development/structure_two_neural_amortized_model_v0_1.json",
+  "file_sha256": "5be8a0c5c87b2272049ed6e283e63feab12bcaa97b1f7b91ecaec69ad8986478",
+  "model_hash": "a35f06274ac702e7173b1135ffdb784a9dfdb5a1369917240e59af637f08b2bf",
+  "training_example_count": 960,
+  "training_data_boundary": "training_seeds_visible_beliefs_only",
+  "training_seeds": [
+    108101,
+    108102,
+    108103,
+    108104,
+    108105,
+    108106,
+    108107,
+    108108
+  ],
+  "validation_seeds": [
+    108201,
+    108202,
+    108203,
+    108204
+  ],
+  "sealed_seed_commitments": [
+    "8f7471c1c88b87661034d26b6908a0771e6715e32fb1694299a299f78f40a46e",
+    "50f7597c098f6ca26f0830f8dacfc3f1a76d08ea908b67d5dfc3b0cd00745d5e",
+    "702b23e4c0cc623229ed6f2dae4a76fe729ea21b8a0d46794263baf30a50f854",
+    "9de8326dd0e7fd066b0a77382b0aa905ad61b9fcc2c143bce143af696b6ffbb4",
+    "1033727f38889963324a5fb49502b3efac2a1c7382ccdcccd89ee5eed99ff93f",
+    "92737ab12e3875aa288a8b771e9182dca65e56b48d6c6f3cf739461befd4bdb6",
+    "ea677600fee69274a580ea4d533cbfe809eacf79188a083d9fc0a0e657313d47",
+    "c4701aeaafdee6282bb29814c214d4efbfe96817d710110f260100db366a245c",
+    "0732f3c08a95cc3d4f91f91e9574faea4be52663d89c2de306b78fdce4f957a9",
+    "3d8d6d4ab9fcb3db7a526eb276df3275d96cd67a5eb2df579b812a3911b5e942",
+    "5a4f8d64e8deb34521ddafb929f354eeece13adc9c549829f6a36383cdf47fcc",
+    "bfe1b4c60757cbc5fbd473f701a79d0225713fdf47c8cc3a08d55ea9bef108dd"
+  ],
+  "manifest_sha256": "fca5100cb01c96ab421e31ccdf2e9247458701b49ab7b285c30fc67da5811e97",
+  "config": {
+    "architecture": "visible-belief-mlp-16x8x5",
+    "hidden_units": 8,
+    "epochs": 180,
+    "learning_rate": 0.08,
+    "l2": 0.0005,
+    "initialization_seed": 108001,
+    "target_semantics": "current-visible-belief-modal-cause-and-regime-only",
+    "forbidden_inputs": [
+      "oracle_action",
+      "latent_actor",
+      "latent_cause",
+      "latent_regime",
+      "holdout_seed"
+    ]
+  },
+  "limitations": [
+    "historical development 16x8x5 model; not full typed architecture selection",
+    "Git and matching pre-existing benchmark bind bytes, not independent training custody",
+    "no new confirmatory split opened"
+  ]
+}

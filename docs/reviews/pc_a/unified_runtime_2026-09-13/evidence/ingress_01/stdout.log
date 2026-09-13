@@ -1,0 +1,50 @@
+F................                                                        [100%]
+=================================== FAILURES ===================================
+________ test_arrays_clocks_identity_and_mutable_consumer_are_separated ________
+
+    def test_arrays_clocks_identity_and_mutable_consumer_are_separated():
+        rows = call()
+        assert len(rows) == 2
+        assert [r.envelope().sensor.modality for r in rows] == ["rgb", "depth"]
+        for row in rows:
+            env = row.envelope()
+            assert env.capture_time == NOW + timedelta(seconds=1)
+            assert env.arrival_time == NOW + timedelta(seconds=3)
+            assert not env.oracle_channel and env.oracle_payload is None
+            assert "request" not in row.envelope_json
+            assert env.payload.payload_uri is None
+>           env.sensor.sensor_id = "mutated"
+            ^^^^^^^^^^^^^^^^^^^^
+
+tests/test_structure_two_raw_rgbd_ingress.py:72: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/.venv/lib/python3.13/site-packages/pydantic/main.py:1048: in __setattr__
+    elif (setattr_handler := self._setattr_handler(name, value)) is not None:
+                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/.venv/lib/python3.13/site-packages/pydantic/main.py:1084: in _setattr_handler
+    _check_frozen(cls, name, value)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+model_cls = <class 'cpswm.perception_mapping.adapters.contracts.SensorRef'>
+name = 'sensor_id', value = 'mutated'
+
+    def _check_frozen(model_cls: type[BaseModel], name: str, value: Any) -> None:
+        if model_cls.model_config.get('frozen'):
+            error_type = 'frozen_instance'
+        elif getattr(model_cls.__pydantic_fields__.get(name), 'frozen', False):
+            error_type = 'frozen_field'
+        else:
+            return
+    
+>       raise ValidationError.from_exception_data(
+            model_cls.__name__, [{'type': error_type, 'loc': (name,), 'input': value}]
+        )
+E       pydantic_core._pydantic_core.ValidationError: 1 validation error for SensorRef
+E       sensor_id
+E         Instance is frozen [type=frozen_instance, input_value='mutated', input_type=str]
+E           For further information visit https://errors.pydantic.dev/2.13/v/frozen_instance
+
+/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/.venv/lib/python3.13/site-packages/pydantic/main.py:90: ValidationError
+=========================== short test summary info ============================
+FAILED tests/test_structure_two_raw_rgbd_ingress.py::test_arrays_clocks_identity_and_mutable_consumer_are_separated
+1 failed, 16 passed in 0.29s

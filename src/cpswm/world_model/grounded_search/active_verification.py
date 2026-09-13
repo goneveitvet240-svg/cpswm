@@ -399,6 +399,36 @@ class StructureTwoCauseBelief(ContractModel):
         }
 
 
+class JointParticleVerificationBelief(ContractModel):
+    """Full particle atoms for EVSI; cause entropy remains a cause marginal.
+
+    Atom IDs name complete joint states, not independent marginal combinations.
+    The snapshot digest is a content binding, not a producer/commit authority.
+    Callers must bind outcome/utility tables to this exact snapshot before use.
+    """
+
+    posterior: dict[UUID, Probability]
+    cause_by_atom: dict[UUID, VerificationCause]
+    source_snapshot_sha256: str = Field(pattern=r"^[0-9a-f]{64}$")
+
+    @model_validator(mode="after")
+    def validate_joint(self) -> JointParticleVerificationBelief:
+        if not self.posterior or set(self.posterior) != set(self.cause_by_atom):
+            raise ValueError("joint CIAV requires one cause label per complete particle atom")
+        if not isclose(sum(self.posterior.values()), 1.0, rel_tol=0.0, abs_tol=1e-6):
+            raise ValueError("joint CIAV probabilities must sum to one")
+        return self
+
+    def as_uuid_prior(self) -> dict[UUID, float]:
+        return dict(self.posterior)
+
+    def cause_marginal(self, posterior: dict[UUID, float]) -> dict[VerificationCause, float]:
+        result = dict.fromkeys(VerificationCause, 0.0)
+        for atom, probability in posterior.items():
+            result[self.cause_by_atom[atom]] += probability
+        return result
+
+
 class CauseInformationActiveVerificationPlanner:
     """CIAV: couple cause information, reversible memory change, and task utility."""
 
@@ -437,7 +467,7 @@ class CauseInformationActiveVerificationPlanner:
 
     def select(
         self,
-        belief: StructureTwoCauseBelief,
+        belief: StructureTwoCauseBelief | JointParticleVerificationBelief,
         actions: tuple[ObservationActionCandidate, ...],
         *,
         consolidation_decision_utilities: dict[UUID, dict[UUID, float]],
@@ -447,6 +477,40 @@ class CauseInformationActiveVerificationPlanner:
     ) -> ActiveObservationPlan:
         if not isfinite(privacy_budget) or privacy_budget < 0.0:
             raise ValueError("privacy_budget must be finite and non-negative")
+        if isinstance(belief, JointParticleVerificationBelief):
+            # Frozen Pydantic models can still contain caller-mutated dicts.
+            belief = JointParticleVerificationBelief.model_validate(belief.model_dump())
+            actions = tuple(
+                ObservationActionCandidate.model_validate(a.model_dump()) for a in actions
+            )
+            if len({a.action_id for a in actions}) != len(actions):
+                raise ValueError("joint CIAV action IDs must be unique")
+            if not isfinite(minimum_net_value):
+                raise ValueError("joint CIAV minimum net value must be finite")
+            objective_weights = (
+                self.cause_information_weight,
+                self.consolidation_change_weight,
+                self.task_utility_weight,
+                self.motion_cost_weight,
+                self.time_cost_weight,
+                self.interruption_cost_weight,
+                self.privacy_cost_weight,
+                self.safety_cost_weight,
+            )
+            if any(not isfinite(w) or w < 0.0 for w in objective_weights):
+                raise ValueError("joint CIAV weights must be finite and non-negative")
+            if any(
+                not isfinite(cost)
+                for action in actions
+                for cost in (
+                    action.motion_cost,
+                    action.time_cost,
+                    action.interruption_cost,
+                    action.privacy_cost,
+                    action.safety_cost,
+                )
+            ):
+                raise ValueError("joint CIAV action costs must be finite")
         prior = belief.as_uuid_prior()
         if not terminal_decision_utilities or any(
             set(row) != set(prior) for row in terminal_decision_utilities.values()
@@ -481,7 +545,11 @@ class CauseInformationActiveVerificationPlanner:
                 blocked_action_ids=blocked,
             )
 
-        prior_entropy = _entropy(list(prior.values()))
+        prior_entropy = _entropy(
+            list(belief.cause_marginal(prior).values())
+            if isinstance(belief, JointParticleVerificationBelief)
+            else list(prior.values())
+        )
         _baseline_decision, baseline_utility = ActionUtilityPlanner._best_terminal_decision(
             prior, terminal_decision_utilities
         )
@@ -515,7 +583,11 @@ class CauseInformationActiveVerificationPlanner:
                     hypothesis_id: prior[hypothesis_id] * likelihood / p_outcome
                     for hypothesis_id, likelihood in likelihoods.items()
                 }
-                expected_entropy += p_outcome * _entropy(list(posterior.values()))
+                expected_entropy += p_outcome * _entropy(
+                    list(belief.cause_marginal(posterior).values())
+                    if isinstance(belief, JointParticleVerificationBelief)
+                    else list(posterior.values())
+                )
                 decision_id, utility = ActionUtilityPlanner._best_terminal_decision(
                     posterior, terminal_decision_utilities
                 )

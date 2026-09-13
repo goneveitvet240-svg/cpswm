@@ -1,0 +1,141 @@
+{
+  "collapsed_tuning_trials": [
+    {
+      "weight": 0.25,
+      "wrong_placement_cost": 0.3333333333333333
+    },
+    {
+      "weight": 0.5,
+      "wrong_placement_cost": 0.3333333333333333
+    },
+    {
+      "weight": 0.75,
+      "wrong_placement_cost": 0.6666666666666666
+    }
+  ],
+  "comparisons": [
+    {
+      "fidelity": "independently_tuned_matched",
+      "independently_tuned": true,
+      "mechanism_effect": {
+        "confidence_interval_high": -0.28,
+        "confidence_interval_low": -0.38666666666666666,
+        "confidence_level": 0.95,
+        "estimate": -0.3333333333333333
+      },
+      "opponent_id": "collapsed_placement_memory",
+      "primary_action_effect": {
+        "confidence_interval_high": 0.0,
+        "confidence_interval_low": 0.0,
+        "confidence_level": 0.95,
+        "estimate": 0.0
+      },
+      "same_action_budget": true,
+      "same_visible_input": true
+    },
+    {
+      "fidelity": "independently_tuned_matched",
+      "independently_tuned": true,
+      "mechanism_effect": {
+        "confidence_interval_high": 0.0,
+        "confidence_interval_low": 0.0,
+        "confidence_level": 0.95,
+        "estimate": 0.0
+      },
+      "opponent_id": "authority_agnostic_rule_resolver",
+      "primary_action_effect": {
+        "confidence_interval_high": 0.0,
+        "confidence_interval_low": 0.0,
+        "confidence_level": 0.95,
+        "estimate": 0.0
+      },
+      "same_action_budget": true,
+      "same_visible_input": true
+    }
+  ],
+  "episode_count": 300,
+  "formal_result": {
+    "blockers": [],
+    "decision": "falsified",
+    "failed_opponents": [
+      "collapsed_placement_memory",
+      "authority_agnostic_rule_resolver"
+    ],
+    "inconclusive_opponents": [],
+    "method_id": "s1.four_layer_placement_semantics",
+    "paper_claim_allowed": false,
+    "preregistration_sha256": "3156cae6c8d611839c8cf14dd8d702803cb8fd82b00d986003efc0219a4392e2",
+    "survived_opponents": []
+  },
+  "known_candidate_issue": "PlacementDecisionResolver selects the most recent preference without checking authority_level, so a newer unverified visitor can beat an owner.",
+  "mean_semantic_layer_violation": {
+    "authority_agnostic_rule_resolver": 0.3333333333333333,
+    "collapsed_placement_memory": 0.0,
+    "four_layer_placement_semantics": 0.3333333333333333
+  },
+  "mean_wrong_placement_cost": {
+    "authority_agnostic_rule_resolver": 0.3333333333333333,
+    "collapsed_placement_memory": 0.3333333333333333,
+    "four_layer_placement_semantics": 0.3333333333333333
+  },
+  "schema_name": "cpswm.StructureOnePlacementRoundTwoReport",
+  "schema_version": "0.1.0",
+  "selected_collapsed_weight": 0.25,
+  "submission": {
+    "cluster_axis": "user",
+    "comparisons": [
+      {
+        "fidelity": "independently_tuned_matched",
+        "independently_tuned": true,
+        "mechanism_effect": {
+          "confidence_interval_high": -0.28,
+          "confidence_interval_low": -0.38666666666666666,
+          "confidence_level": 0.95,
+          "estimate": -0.3333333333333333
+        },
+        "opponent_id": "collapsed_placement_memory",
+        "primary_action_effect": {
+          "confidence_interval_high": 0.0,
+          "confidence_interval_low": 0.0,
+          "confidence_level": 0.95,
+          "estimate": 0.0
+        },
+        "same_action_budget": true,
+        "same_visible_input": true
+      },
+      {
+        "fidelity": "independently_tuned_matched",
+        "independently_tuned": true,
+        "mechanism_effect": {
+          "confidence_interval_high": 0.0,
+          "confidence_interval_low": 0.0,
+          "confidence_level": 0.95,
+          "estimate": 0.0
+        },
+        "opponent_id": "authority_agnostic_rule_resolver",
+        "primary_action_effect": {
+          "confidence_interval_high": 0.0,
+          "confidence_interval_low": 0.0,
+          "confidence_level": 0.95,
+          "estimate": 0.0
+        },
+        "same_action_budget": true,
+        "same_visible_input": true
+      }
+    ],
+    "covered_scenario_families": [
+      "behavior_preference_conflict",
+      "visitor_owner_conflict",
+      "hard_safety_retraction"
+    ],
+    "external_validity_artifact_sha256": null,
+    "independent_unit_count": 300,
+    "method_id": "s1.four_layer_placement_semantics",
+    "power_analysis_sha256": "296f493282fe6479333544849579a76cbc4b5a2b814044442b96aca6dca6d1c8",
+    "preregistration_sha256": "3156cae6c8d611839c8cf14dd8d702803cb8fd82b00d986003efc0219a4392e2",
+    "sealed_test_split_sha256": "812857c3fa0bc7eea18486a9e8babbfc36e85d3eb72a4fbcfc4fd5b5d3faf852",
+    "shared_action_budget_sha256": "eac9d214f0e876aa027fcc8000d580a7f1b6d8f203b8d0d85db49f9633b4a741",
+    "shared_visible_input_sha256": "546e83e11e51ba62af7301c3b603d82e474505d15981d7908412aeda3f08e137",
+    "validation_split_sha256": "3153b7da9d563886b2a9409ef1293aa40b540f1f10da64ab043b8dd4a449b985"
+  }
+}

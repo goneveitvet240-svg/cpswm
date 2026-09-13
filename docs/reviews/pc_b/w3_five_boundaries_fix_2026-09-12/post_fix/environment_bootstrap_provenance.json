@@ -1,0 +1,37 @@
+{
+  "schema": "cpswm.pc-b.environment-bootstrap-provenance@1",
+  "scope": "initial Windows repair virtual environment used by the W3 repair and regression runs",
+  "worktree": "F:/庞惟/codex/cpswm-w3-five-boundaries-fix-20260912",
+  "venv": {
+    "path": "F:/庞惟/codex/cpswm-w3-five-boundaries-fix-20260912/.venv",
+    "creation_command_source": ".venv/pyvenv.cfg",
+    "creation_command": [
+      "F:/庞惟/codex/runtimes/uv-python/cpython-3.13.5-windows-x86_64-none/python.exe",
+      "-m",
+      "venv",
+      "F:/庞惟/codex/cpswm-w3-five-boundaries-fix-20260912/.venv"
+    ],
+    "python_version": "3.13.5",
+    "include_system_site_packages": false,
+    "python_executable_sha256": "6dc19cff73c8d7d162cd72bdcebd1ecfbe93a7086520e2503c5a68ea64fb8cbe",
+    "python_executable_bytes": 238080
+  },
+  "dependency_install": {
+    "observed_operation": "editable installation of the current worktree with the dev extra",
+    "original_exact_argv": null,
+    "original_exit_code": null,
+    "capture_status": "INCOMPLETE_ORIGINAL_COMMAND_CAPTURE",
+    "reason": "The original installer stream was retained, but its outer argv, start time and explicit exit-code record were not captured at process launch. They are not reconstructed or fabricated after the fact.",
+    "stdout_log": "docs/reviews/pc_b/w3_five_boundaries_fix_2026-09-12/environment_install.log",
+    "stdout_log_sha256": "383964a9e29653edf8bdba2251e2f8dc699da9c568953b85aa93729bf2650e81",
+    "stdout_log_bytes": 15698,
+    "stdout_log_created_local": "2026-09-12T22:03:40.3431235+08:00",
+    "stdout_log_modified_local": "2026-09-12T22:06:35.9548037+08:00",
+    "observed_terminal_record": "Successfully installed cpswm-0.1.0 and its resolved dev dependencies",
+    "current_environment_inventory": [
+      "repair_environment_metadata_crlf_2350602_test_harness.json",
+      "repair_environment_metadata_lf_2350602_test_harness.json"
+    ]
+  },
+  "interpretation": "All formal pytest evidence records retain their exact argv, exit code, timing, environment allowlist and source identity. This disclosure prevents the incomplete original bootstrap wrapper record from being mistaken for a complete command record."
+}

@@ -1,0 +1,6 @@
+command: .\.venv\Scripts\python.exe docs\reviews\pc_b\w3_five_boundaries_fix_2026-09-12\seven_operator\summarize_diagnostic.py
+cwd: F:\庞惟\codex\cpswm-w3-five-boundaries-fix-20260912
+exit_code: 1
+failure: KeyError: 'delta_A' while reading the traced HybridStatisticDelta payload.
+observed_schema: the runtime serializer emits `delta_a` (lowercase), `delta_b`, `delta_alpha`, `delta_information`, and `delta_information_vector`.
+repair: corrected the audit-only field spelling to `delta_a`; raw traces and production source were untouched.

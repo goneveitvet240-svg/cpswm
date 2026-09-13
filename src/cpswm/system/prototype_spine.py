@@ -10,17 +10,20 @@ from __future__ import annotations
 import hashlib
 import json
 import marshal
+import re
 from collections import defaultdict
 from collections.abc import Callable, Mapping, Sequence
 from copy import deepcopy
-from dataclasses import dataclass, fields, is_dataclass, replace
+from dataclasses import dataclass, field, fields, is_dataclass, replace
 from datetime import datetime
 from enum import StrEnum
 from functools import wraps
 from math import exp, isfinite, log, tanh
+from pathlib import Path
 from threading import RLock, get_ident
 from time import perf_counter_ns
-from typing import TYPE_CHECKING, Any, Concatenate, cast
+from types import CodeType
+from typing import TYPE_CHECKING, Any, Concatenate, Final, cast
 from uuid import NAMESPACE_URL, UUID, uuid4, uuid5
 
 import numpy as np
@@ -80,12 +83,17 @@ from cpswm.system.counterfactual_event_hypergraph import (
     OpenWorldRoleConditionedReversibleEventRevisionEngine,
     ProvenanceConstrainedMessagePassing,
 )
+from cpswm.system.evaluation_operations.structure_two_selected_method import (
+    ParticleRevisionBatch,
+    ParticleRevisionReceipt,
+)
 from cpswm.system.reproducibility import content_sha256
 from cpswm.system.structure_two_execution import (
     GENESIS_RECEIPT_SHA256,
     LEGACY_CIAV_NOT_APPLICABLE_REASON,
     STRUCTURE_TWO_OPERATOR_ORDER,
     AdaptiveInferenceDebtCertificate,
+    AdaptiveMaintenanceContractError,
     ExecutionModeName,
     FeedbackClosureKind,
     OperatorExecutionDirective,
@@ -100,6 +108,7 @@ from cpswm.system.structure_two_execution import (
     TracePhaseName,
     TraceSink,
     UnsupportedStructureTwoExecutionPlan,
+    _code_object_sha256,
     _restore_runtime_rlock_depth,
     _runtime_rlock_depth,
     bind_runtime_callable,
@@ -111,6 +120,13 @@ from cpswm.system.structure_two_execution import (
 )
 from cpswm.system.structure_two_execution import (
     canonical_legacy_ordinary_transition_plan as canonical_legacy_ordinary_transition_plan,
+)
+from cpswm.system.structure_two_particle_workspace import (
+    ConditionalAnalyticState,
+    NativeParticleWorkspace,
+    NativePosteriorSource,
+    native_content_payload,
+    native_content_sha256,
 )
 from cpswm.world_model.grounded_search.concurrent_map_task import BeliefSnapshot, VersionedBeliefMap
 from cpswm.world_model.habits_transitions import (
@@ -126,6 +142,71 @@ from cpswm.world_model.habits_transitions import (
 )
 
 StructuredEventEvidence = ActorResponsibilityEvidence | EventMechanismEvidence | RoleBindingEvidence
+
+
+_PARTICLE_WORKSPACE_BOUND_METHOD_NAMES: Final = (
+    "advance",
+    "location_marginal",
+    "invalidate_revisions",
+    "publish_posterior",
+    "state_payload",
+    "validate_world_support",
+    "_validate_persisted_state",
+    "_validate_current_batch",
+    "_validated_input_body",
+    "_validate_record_binding",
+)
+
+
+def _bootstrap_particle_workspace_bindings() -> tuple[
+    Path,
+    str,
+    tuple[tuple[str, object, str], ...],
+]:
+    """Fully bind workspace code once, then retain immutable hot-path anchors.
+
+    ``bind_runtime_callable`` recompiles the complete source file for every
+    method. Doing that ten times on each of the several identity-guard passes
+    in one transaction can delay lock-tamper rollback past its one-second
+    fail-closed deadline. The loaded-code/source comparison is invariant for
+    the process, so perform the complete comparison once at import. Runtime
+    checks still compare every live method object and code fingerprint, and the
+    whole source-file digest, on every guard pass.
+    """
+
+    workspace = NativeParticleWorkspace()
+    bootstrap_id = UUID("00000000-0000-4000-8000-00000000b003")
+    anchors: list[tuple[str, object, str]] = []
+    source_paths: set[Path] = set()
+    source_digests: set[str] = set()
+    for slot, method_name in enumerate(_PARTICLE_WORKSPACE_BOUND_METHOD_NAMES, start=2):
+        binding = bind_runtime_callable(
+            runtime_execution_id=bootstrap_id,
+            operator="orrer_cheh",
+            binding_slot=slot,
+            binding_kind="direct_operator_callable",
+            instance=workspace,
+            callable_name=method_name,
+            require_declared_member=True,
+        )
+        declared = vars(NativeParticleWorkspace)[method_name]
+        target = declared.__func__ if isinstance(declared, staticmethod | classmethod) else declared
+        code = getattr(target, "__code__", None)
+        if not isinstance(code, CodeType):
+            raise RuntimeError(f"native particle workspace method has no code: {method_name}")
+        source_paths.add(Path(code.co_filename).resolve())
+        source_digests.add(binding.implementation_source_sha256)
+        anchors.append((method_name, target, binding.loaded_callable_code_sha256))
+    if len(source_paths) != 1 or len(source_digests) != 1:
+        raise RuntimeError("native particle workspace methods do not share one bound source")
+    return source_paths.pop(), source_digests.pop(), tuple(anchors)
+
+
+(
+    _PARTICLE_WORKSPACE_SOURCE_PATH,
+    _PARTICLE_WORKSPACE_SOURCE_SHA256,
+    _PARTICLE_WORKSPACE_METHOD_ANCHORS,
+) = _bootstrap_particle_workspace_bindings()
 
 
 def _runtime_type_symbol(value: object) -> str:
@@ -378,6 +459,117 @@ def _normalized_predictive_surprise(probability: float, class_count: int) -> flo
     return 1.0 - exp(-excess_information)
 
 
+_SHA256_PATTERN: Final = re.compile(r"^[0-9a-f]{64}$")
+
+
+@dataclass(frozen=True, slots=True)
+class _WriteAuthorization:
+    """One traceable grant of long-term write eligibility for an observation.
+
+    ``hard_safety_kernel.router_may_grant_long_term_write`` is ``false`` and
+    ``maximum_unauthorized_long_term_commits`` is ``0``.  An observation whose
+    origin pass had the long-term write administratively blocked therefore needs a
+    recorded, verifiable grant from an execution that *was* permitted to write,
+    before any later replay may commit it.  The grant names the authority, the
+    execution that issued it, and a content hash of its basis, so the promotion can
+    be audited afterwards rather than inferred from the fact that a rebuild agreed.
+    """
+
+    authority: str
+    granting_revision_id: UUID | None
+    granted_at_observation_count: int
+    basis_sha256: str
+    basis_json: str = "{}"
+
+
+@dataclass(frozen=True, slots=True)
+class _ObservationWriteEligibility:
+    """Per-observation origin write eligibility, quarantine reason and lineage."""
+
+    revision_id: UUID
+    origin_write_blocked: bool
+    origin_path: str
+    quarantine_reason: str | None = None
+    authorizations: tuple[_WriteAuthorization, ...] = ()
+    parent_revision_id: UUID | None = None
+    correction_evidence_source_record_ids: tuple[UUID, ...] = ()
+    parent_eligibility_sha256: str | None = None
+    correction_outcome_sha256: str | None = None
+
+    @property
+    def write_eligible(self) -> bool:
+        """Eligible when the origin was never blocked, or a grant was recorded."""
+
+        return not self.origin_write_blocked or bool(self.authorizations)
+
+
+@dataclass(frozen=True, slots=True)
+class _PublishedRevisionBinding:
+    """One feedback binding this runtime really published for a revision.
+
+    Kept as an append-only history so that a feedback bound to a *superseded but
+    genuinely published* snapshot can still be verified, instead of being rejected
+    merely because an unrelated revision forced a rebuild in the meantime.
+    """
+
+    location_id: UUID
+    snapshot_id: UUID
+    map_version: int
+    observation_count: int
+
+
+@dataclass(frozen=True, slots=True)
+class _LateFeedbackRelocation:
+    """Audit row for a feedback accepted against a superseded published binding."""
+
+    revision_id: UUID
+    feedback_record_id: UUID
+    presented_snapshot_id: UUID
+    presented_map_version: int
+    current_snapshot_id: UUID
+    current_map_version: int
+    location_id: UUID
+
+
+@dataclass(frozen=True, slots=True)
+class _AdaptiveMaintenanceContext:
+    """The runtime's own record of one deferred-path execution.
+
+    Every field is produced by the runtime from the real transition, debt
+    certificate and execution identity.  Maintenance payloads are validated
+    *against* this record, never against their own self-reported values.
+    """
+
+    runtime_execution_id: UUID
+    epoch: int
+    origin_transition_sha256: str
+    evidence_content_sha256s: tuple[str, ...]
+    debt_certificate_sha256: str
+    message_passing_runtime_type: str
+    produced_outputs: dict[str, str] = field(default_factory=dict)
+
+    def record_output(self, operator: str, payload: Mapping[str, object]) -> str:
+        """Record what this execution's own upstream node actually produced."""
+
+        digest = content_sha256(payload)
+        self.produced_outputs[operator] = digest
+        return digest
+
+    def require_produced(self, operator: str, digest: object, *, consumer: str) -> None:
+        """Check a declared consumption against this execution's real upstream output."""
+
+        produced = self.produced_outputs.get(operator)
+        if produced is None:
+            raise AdaptiveMaintenanceContractError(
+                f"{consumer} declared consumption of {operator} before it ran in this execution"
+            )
+        if digest != produced:
+            raise AdaptiveMaintenanceContractError(
+                f"{consumer} declared consumption of a {operator} output "
+                f"this execution never produced"
+            )
+
+
 @dataclass(frozen=True, slots=True)
 class PrototypeTransition:
     """One robot-visible transition accepted by the prototype spine."""
@@ -390,11 +582,13 @@ class PrototypeTransition:
     context_key: str = "default"
     context_value: float = 0.0
     unresolved_probability: float = 0.1
+    identity_switch_probability: float = 0.0
 
     def __post_init__(self) -> None:
         for actor, probability in self.actor_prior.items():
             _require_probability(probability, f"actor_prior[{actor!r}]")
         _require_probability(self.unresolved_probability, "unresolved_probability")
+        _require_probability(self.identity_switch_probability, "identity_switch_probability")
 
 
 @dataclass(frozen=True, slots=True)
@@ -861,6 +1055,55 @@ class _CommittedPrototypeEvent:
     hybrid_parent_revision_id: UUID | None = None
     derived_from_revision_id: UUID | None = None
     belief_snapshot_id: UUID | None = None
+    identity_switch_probability: float = 0.0
+
+
+@dataclass(frozen=True, slots=True)
+class DeferredCorrectionCancellation:
+    """Compensating transaction: retain the failed child and its original parent."""
+
+    request_fingerprint: str
+    request: ProjectOneStatRequest
+    parent_event: _CommittedPrototypeEvent
+    corrected_event: _CommittedPrototypeEvent
+    after_operation_count: int
+    trigger_revision_id: UUID
+    rationale: str
+    restore_events: tuple[_CommittedPrototypeEvent, ...]
+    restore_fast_events: tuple[_CommittedPrototypeEvent, ...]
+    body_sha256: str = ""
+
+    def body(self) -> tuple[Any, ...]:
+        return (
+            self.request_fingerprint,
+            self.request,
+            self.parent_event,
+            self.corrected_event,
+            self.after_operation_count,
+            self.trigger_revision_id,
+            self.rationale,
+            self.restore_events,
+            self.restore_fast_events,
+        )
+
+    def validate_content(self) -> None:
+        request, parent, child = self.request, self.parent_event, self.corrected_event
+        if (
+            self.body_sha256 != native_content_sha256(self.body())
+            or self.request_fingerprint != _project_one_request_fingerprint(request)
+            or request.superseded_revision_id != parent.revision_id
+            or request.corrected_revision_id != child.revision_id
+            or request.event_hypothesis_id != parent.event_hypothesis_id
+            or child.event_hypothesis_id != parent.event_hypothesis_id
+            or request.owner_mass_before != parent.owner_mass
+            or request.owner_mass_after != child.owner_mass
+            or request.location_id != child.location_id
+            or child.source_record_id != request.source_feedback_record_id
+            or self.after_operation_count < 1
+            or not self.restore_events
+            or self.restore_events[0].revision_id != parent.revision_id
+        ):
+            raise ValueError("invalid deferred cancellation content or request binding")
 
 
 class CorePrototypeSpine:
@@ -894,6 +1137,10 @@ class CorePrototypeSpine:
         self.locations = tuple(dict.fromkeys(locations))
         if not owner_key.strip() or len(self.locations) < 2:
             raise ValueError("prototype requires an owner and at least two locations")
+        # Prepared-particle authority is the construction-time world, not a
+        # subsequently rebound public attribute. Legitimate analytic ordering is
+        # still handled inside the native workspace with paired alpha entries.
+        self._registered_particle_locations = self.locations
 
         self.loop_config = loop_config or PrototypeLoopConfig()
         self._event_engine = event_engine or OpenWorldRoleConditionedReversibleEventRevisionEngine()
@@ -929,6 +1176,29 @@ class CorePrototypeSpine:
         self._derived_event_archive: dict[UUID, _CommittedPrototypeEvent] = {}
         self._derived_event_lifecycle: dict[UUID, DerivedEvidenceLifecycle] = {}
         self._revision_feedback_bindings: dict[UUID, tuple[UUID, UUID]] = {}
+        # Append-only history of every binding this runtime published per revision,
+        # so a genuinely late feedback bound to a superseded snapshot stays
+        # verifiable without weakening snapshot validation.
+        self._revision_binding_history: dict[UUID, tuple[_PublishedRevisionBinding, ...]] = {}
+        self._late_feedback_relocations: list[_LateFeedbackRelocation] = []
+        # Origin write eligibility, quarantine reason and subsequent authorizations
+        # per observation.  A rebuild is not a write authority; it reads this.
+        self._write_eligibility: dict[UUID, _ObservationWriteEligibility] = {}
+        self._revision_transactions: tuple[EventRevisionOutcome, ...] = ()
+        self._correction_cancellations: tuple[DeferredCorrectionCancellation, ...] = ()
+        self._deferred_correction_restore: dict[
+            str, tuple[tuple[_CommittedPrototypeEvent, ...], tuple[_CommittedPrototypeEvent, ...]]
+        ] = {}
+        self._revision_parent_events: dict[UUID, _CommittedPrototypeEvent] = {}
+        self._hybrid_reinstatement_lineage: dict[UUID, tuple[UUID, UUID | None]] = {}
+        self._particle_workspace = NativeParticleWorkspace(
+            registered_locations=self._registered_particle_locations
+        )
+        self._particle_workspace_anchor = self._particle_workspace
+        self._event_histories: dict[UUID, EventHypothesisHistory] = {}
+        self._production_operator_contract: Callable[[], Mapping[str, Sequence[object]]] | None = (
+            None
+        )
         self._quarantined_events: list[_CommittedPrototypeEvent] = []
         self._last_context_key = "default"
         self._last_context_value = 0.0
@@ -965,6 +1235,11 @@ class CorePrototypeSpine:
         # A production owner may install a fail-closed guard here.  Standalone
         # CorePrototypeSpine instances retain their historical behavior.
         self._external_mutation_guard: Callable[[], None] | None = None
+        # Trusted, execution-scoped record for deferred-path safety maintenance.
+        # Maintenance nodes validate their declared dependencies against this
+        # record rather than against the payloads' own self-report.
+        self._adaptive_maintenance_context: _AdaptiveMaintenanceContext | None = None
+        self._adaptive_maintenance_epoch = 0
 
     def _require_external_mutation_permission(self) -> None:
         guard = self._external_mutation_guard
@@ -1016,46 +1291,345 @@ class CorePrototypeSpine:
 
         return self._last_cause_snapshot
 
+    def bind_adaptive_maintenance_context(
+        self,
+        *,
+        runtime_execution_id: UUID,
+        transition: PrototypeTransition,
+        debt_certificate_sha256: str,
+        origin_transition_sha256: str,
+    ) -> _AdaptiveMaintenanceContext:
+        """Open one trusted, execution-scoped context for a deferred path's maintenance.
+
+        ``hard_safety_kernel.provenance_and_dependency_checks_always_executed`` is
+        ``true`` for every legal path.  A dependency check is only real if the values
+        it compares against come from the runtime, never from the payload's own
+        self-report.  This context is the runtime's own record of the transition,
+        evidence, debt and execution identity for one deferred path execution; every
+        maintenance node validates against it and stamps its output with it.
+
+        The epoch makes a payload produced by a *different* execution of the same
+        runtime, or by another runtime that happens to share the same head state,
+        detectable even when every other field agrees.
+        """
+
+        self._adaptive_maintenance_epoch += 1
+        context = _AdaptiveMaintenanceContext(
+            runtime_execution_id=runtime_execution_id,
+            epoch=self._adaptive_maintenance_epoch,
+            origin_transition_sha256=origin_transition_sha256,
+            evidence_content_sha256s=tuple(content_sha256(item) for item in transition.evidence),
+            debt_certificate_sha256=debt_certificate_sha256,
+            message_passing_runtime_type=_runtime_type_symbol(self._message_passing),
+        )
+        self._adaptive_maintenance_context = context
+        return context
+
+    def clear_adaptive_maintenance_context(self) -> None:
+        """Close the trusted context.  Maintenance outside a context fails closed."""
+
+        self._adaptive_maintenance_context = None
+
+    def _active_maintenance_context(self, operator: str) -> _AdaptiveMaintenanceContext:
+        context = self._adaptive_maintenance_context
+        if context is None:
+            raise AdaptiveMaintenanceContractError(
+                f"{operator} maintenance ran outside a bound adaptive execution context"
+            )
+        return context
+
+    def _require_maintenance_payload(
+        self,
+        payload: object,
+        *,
+        operator: str,
+        kind: str,
+        required_fields: tuple[str, ...],
+        context: _AdaptiveMaintenanceContext,
+    ) -> Mapping[str, object]:
+        """Validate the shape and node kind of one declared upstream dependency.
+
+        This is the first of three layers.  It only makes the payload safe to read:
+        the semantic value checks and then the execution-identity checks
+        (:meth:`_require_maintenance_stamp` and
+        :meth:`_AdaptiveMaintenanceContext.require_produced`) run afterwards, in
+        that order, so a payload that contradicts live runtime state is still
+        reported as a semantic contract violation rather than being masked by the
+        provenance check.  This method never mutates state.
+        """
+
+        if not isinstance(payload, Mapping):
+            raise AdaptiveMaintenanceContractError(
+                f"{operator} maintenance dependency is not a payload mapping"
+            )
+        if payload.get("maintenance_kind") != kind:
+            raise AdaptiveMaintenanceContractError(
+                f"{operator} maintenance dependency is not a {kind} payload"
+            )
+        expected = {
+            "maintenance_kind",
+            "runtime_execution_id",
+            "maintenance_epoch",
+            *required_fields,
+        }
+        if set(payload) != expected:
+            raise AdaptiveMaintenanceContractError(
+                f"{operator} maintenance dependency field set drifted from the frozen shape"
+            )
+        return payload
+
+    @staticmethod
+    def _require_maintenance_stamp(
+        payload: Mapping[str, object],
+        *,
+        operator: str,
+        context: _AdaptiveMaintenanceContext,
+    ) -> None:
+        """Check that the dependency was produced by *this* execution.
+
+        A payload whose runtime execution id or epoch differs cannot be substituted
+        even when every semantic field agrees -- the round-2 review's
+        ``different_runtime_same_head_accepted`` counterexample.
+        """
+
+        if payload["runtime_execution_id"] != str(context.runtime_execution_id):
+            raise AdaptiveMaintenanceContractError(
+                f"{operator} maintenance dependency came from a foreign runtime execution"
+            )
+        if payload["maintenance_epoch"] != context.epoch:
+            raise AdaptiveMaintenanceContractError(
+                f"{operator} maintenance dependency came from a different execution epoch"
+            )
+
+    @staticmethod
+    def _require_sha256_tuple(value: object, *, operator: str, field: str) -> tuple[str, ...]:
+        """Reject a dependency field that is not a tuple of content hashes."""
+
+        if not isinstance(value, tuple) or any(
+            not isinstance(item, str) or not _SHA256_PATTERN.fullmatch(item) for item in value
+        ):
+            raise AdaptiveMaintenanceContractError(
+                f"{operator} maintenance dependency field {field} is not a content-hash tuple"
+            )
+        return value
+
+    @staticmethod
+    def _require_sha256(value: object, *, operator: str, field: str) -> str:
+        if not isinstance(value, str) or not _SHA256_PATTERN.fullmatch(value):
+            raise AdaptiveMaintenanceContractError(
+                f"{operator} maintenance dependency field {field} is not a content hash"
+            )
+        return value
+
     def _adaptive_pchmp_safety_maintenance(
         self, transition: PrototypeTransition
     ) -> dict[str, object]:
-        """Preserve raw evidence/provenance without inventing a deferred posterior."""
+        """Preserve raw evidence/provenance without inventing a deferred posterior.
 
+        The evidence hashes are recomputed here from the transition the runtime is
+        actually executing, and checked against the trusted context's own record, so
+        a caller cannot present a different transition's evidence.
+        """
+
+        context = self._active_maintenance_context("pchmp")
         self._validate_transition(transition)
-        return {
-            "evidence_content_sha256s": tuple(content_sha256(item) for item in transition.evidence),
+        evidence_hashes = tuple(content_sha256(item) for item in transition.evidence)
+        if evidence_hashes != context.evidence_content_sha256s:
+            raise AdaptiveMaintenanceContractError(
+                "pchmp maintenance ran on a transition other than this execution's"
+            )
+        payload: dict[str, object] = {
+            "maintenance_kind": "pchmp_safety_maintenance",
+            "runtime_execution_id": str(context.runtime_execution_id),
+            "maintenance_epoch": context.epoch,
+            "evidence_content_sha256s": evidence_hashes,
             "unexecuted_inference_encoded_as_negative": False,
             "message_passing_runtime_type": _runtime_type_symbol(self._message_passing),
         }
+        context.record_output("pchmp", payload)
+        return payload
 
     def _adaptive_cf_bocpd_safety_maintenance(self) -> dict[str, object]:
         """Expose the unchanged online filter head for a safe deferred path."""
 
+        context = self._active_maintenance_context("cf_bocpd")
         snapshot = self.current_cause_snapshot
-        return {
+        payload: dict[str, object] = {
+            "maintenance_kind": "cf_bocpd_safety_maintenance",
+            "runtime_execution_id": str(context.runtime_execution_id),
+            "maintenance_epoch": context.epoch,
             "observation_count": self.observation_count,
             "current_snapshot_sha256": content_sha256(snapshot) if snapshot else None,
             "posterior_advanced": False,
         }
+        context.record_output("cf_bocpd", payload)
+        return payload
 
-    def _adaptive_ccrr_safety_maintenance(self) -> dict[str, object]:
-        """Verify the current regime head without permitting a transition."""
+    def _adaptive_ccrr_safety_maintenance(
+        self, cf_bocpd_maintenance: Mapping[str, object]
+    ) -> dict[str, object]:
+        """Check the CF-BOCPD dependency, then report the unchanged regime head.
 
-        return {
+        ``ADAPTIVE_PRIMARY_CONSUMPTION_GRAPHS["P0_SAFE_DEFERRED"]`` declares
+        ``ccrr <- cf_bocpd``.  The dependency is verified three ways: the payload must
+        carry this execution's identity and epoch; its content must equal the CF
+        output this execution actually produced; and its values must still agree with
+        live runtime state.  A deferred path that claims an advanced CF-BOCPD
+        posterior contradicts ``P0_SAFE_DEFERRED``'s frozen ``semantic_purpose``.
+
+        This method reads state and raises; it never writes.
+        """
+
+        context = self._active_maintenance_context("ccrr")
+        payload = self._require_maintenance_payload(
+            cf_bocpd_maintenance,
+            operator="ccrr",
+            kind="cf_bocpd_safety_maintenance",
+            required_fields=(
+                "observation_count",
+                "current_snapshot_sha256",
+                "posterior_advanced",
+            ),
+            context=context,
+        )
+        observed = payload["observation_count"]
+        if isinstance(observed, bool) or not isinstance(observed, int):
+            raise AdaptiveMaintenanceContractError(
+                "ccrr maintenance dependency carries a non-integer observation count"
+            )
+        if observed != self.observation_count:
+            raise AdaptiveMaintenanceContractError(
+                "ccrr maintenance dependency observation count differs from this runtime"
+            )
+        snapshot = self.current_cause_snapshot
+        expected_snapshot_sha256 = content_sha256(snapshot) if snapshot else None
+        recorded_snapshot = payload["current_snapshot_sha256"]
+        if recorded_snapshot is not None:
+            self._require_sha256(
+                recorded_snapshot, operator="ccrr", field="current_snapshot_sha256"
+            )
+        if recorded_snapshot != expected_snapshot_sha256:
+            raise AdaptiveMaintenanceContractError(
+                "ccrr maintenance dependency binds a foreign or stale cause snapshot"
+            )
+        if payload["posterior_advanced"] is not False:
+            raise AdaptiveMaintenanceContractError(
+                "a deferred path cannot report an advanced CF-BOCPD posterior"
+            )
+        self._require_maintenance_stamp(payload, operator="ccrr", context=context)
+        context.require_produced("cf_bocpd", content_sha256(payload), consumer="ccrr")
+        body: dict[str, object] = {
+            "maintenance_kind": "ccrr_safety_maintenance",
+            "runtime_execution_id": str(context.runtime_execution_id),
+            "maintenance_epoch": context.epoch,
             "active_regime": self.active_regime,
             "pending_candidate_sha256": content_sha256(self._automatic_regimes._pending),
             "regime_transition_applied": False,
+            "consumed_cf_bocpd_maintenance_sha256": content_sha256(cf_bocpd_maintenance),
         }
+        context.record_output("ccrr", body)
+        return body
 
-    def _adaptive_rgrc_debt_guard(self) -> dict[str, object]:
-        """Return a source-bound denial of long-term writes while debt is pending."""
+    def _adaptive_rgrc_debt_guard(
+        self,
+        pchmp_maintenance: Mapping[str, object],
+        ccrr_maintenance: Mapping[str, object],
+    ) -> dict[str, object]:
+        """Check both declared dependencies, then deny the long-term write.
 
-        return {
+        The frozen P0 graph declares ``rgrc <- (pchmp, ccrr)``.  Each dependency is
+        checked for execution identity, for equality with the output this execution
+        actually produced, for field types, and against the trusted context:
+
+        * PCHMP's evidence hashes must equal the evidence of *this* transition --
+          a well-formed but foreign or malformed hash set is refused;
+        * ``unexecuted_inference_encoded_as_negative`` must be ``False``
+          (``maximum_unresolved_as_negative_events`` is 0);
+        * CCRR's declared CF consumption must name the CF output this execution
+          produced, and its regime head must still match the live runtime.
+
+        This method reads state and raises; it never writes, and it never returns
+        ``long_term_write_authorized`` other than ``False``.
+        """
+
+        context = self._active_maintenance_context("rgrc")
+        pchmp = self._require_maintenance_payload(
+            pchmp_maintenance,
+            operator="rgrc",
+            kind="pchmp_safety_maintenance",
+            required_fields=(
+                "evidence_content_sha256s",
+                "unexecuted_inference_encoded_as_negative",
+                "message_passing_runtime_type",
+            ),
+            context=context,
+        )
+        evidence_hashes = self._require_sha256_tuple(
+            pchmp["evidence_content_sha256s"],
+            operator="rgrc",
+            field="evidence_content_sha256s",
+        )
+        if evidence_hashes != context.evidence_content_sha256s:
+            raise AdaptiveMaintenanceContractError(
+                "rgrc maintenance dependency binds evidence from another transition"
+            )
+        if pchmp["unexecuted_inference_encoded_as_negative"] is not False:
+            raise AdaptiveMaintenanceContractError(
+                "unexecuted inference cannot be encoded as negative evidence"
+            )
+        if pchmp["message_passing_runtime_type"] != context.message_passing_runtime_type:
+            raise AdaptiveMaintenanceContractError(
+                "rgrc maintenance dependency binds a foreign message-passing runtime"
+            )
+        self._require_maintenance_stamp(pchmp, operator="rgrc", context=context)
+        context.require_produced("pchmp", content_sha256(pchmp), consumer="rgrc")
+        ccrr = self._require_maintenance_payload(
+            ccrr_maintenance,
+            operator="rgrc",
+            kind="ccrr_safety_maintenance",
+            required_fields=(
+                "active_regime",
+                "pending_candidate_sha256",
+                "regime_transition_applied",
+                "consumed_cf_bocpd_maintenance_sha256",
+            ),
+            context=context,
+        )
+        consumed_cf = self._require_sha256(
+            ccrr["consumed_cf_bocpd_maintenance_sha256"],
+            operator="rgrc",
+            field="consumed_cf_bocpd_maintenance_sha256",
+        )
+        if ccrr["regime_transition_applied"] is not False:
+            raise AdaptiveMaintenanceContractError(
+                "a deferred path cannot report an applied regime transition"
+            )
+        if ccrr["active_regime"] != self.active_regime:
+            raise AdaptiveMaintenanceContractError(
+                "rgrc maintenance dependency binds a foreign or stale active regime"
+            )
+        if ccrr["pending_candidate_sha256"] != content_sha256(self._automatic_regimes._pending):
+            raise AdaptiveMaintenanceContractError(
+                "rgrc maintenance dependency binds a stale CCRR pending candidate"
+            )
+        self._require_maintenance_stamp(ccrr, operator="rgrc", context=context)
+        context.require_produced("ccrr", content_sha256(ccrr), consumer="rgrc")
+        context.require_produced("cf_bocpd", consumed_cf, consumer="rgrc")
+        body: dict[str, object] = {
+            "maintenance_kind": "rgrc_debt_guard",
+            "runtime_execution_id": str(context.runtime_execution_id),
+            "maintenance_epoch": context.epoch,
             "belief_snapshot_id": str(self.current_snapshot.snapshot_id),
             "committed_revision_count": len(self._committed_events),
             "quarantined_revision_count": len(self._quarantined_events),
             "long_term_write_authorized": False,
+            "origin_transition_sha256": context.origin_transition_sha256,
+            "debt_certificate_sha256": context.debt_certificate_sha256,
+            "consumed_pchmp_maintenance_sha256": content_sha256(pchmp_maintenance),
+            "consumed_ccrr_maintenance_sha256": content_sha256(ccrr_maintenance),
         }
+        context.record_output("rgrc", body)
+        return body
 
     def _mutation_is_forbidden_during_sink_commit(self) -> bool:
         if not self._execution_contract_active:
@@ -1102,6 +1676,19 @@ class CorePrototypeSpine:
         self, revision_id: UUID
     ) -> tuple[ProjectOneRequestApplicationReceipt, ...]:
         """Retry every request waiting on one newly promoted event exactly once."""
+
+        if self._production_operator_contract is not None:
+            self._production_operator_contract()
+        checkpoint = self._capture_revision_transaction(include_operator_state=True)
+        try:
+            return self._retry_deferred_project_one_requests(revision_id)
+        except BaseException:
+            self._restore_revision_transaction(checkpoint)
+            raise
+
+    def _retry_deferred_project_one_requests(
+        self, revision_id: UUID
+    ) -> tuple[ProjectOneRequestApplicationReceipt, ...]:
 
         pending = [
             (fingerprint, request, mode)
@@ -1160,6 +1747,7 @@ class CorePrototypeSpine:
                     rationale="CCRR promotion finalized the deferred corrected statistic",
                 )
                 self._deferred_project_one_requests.pop(fingerprint, None)
+                self._deferred_correction_restore.pop(fingerprint, None)
                 receipts.append(receipt)
             return tuple(receipts)
         # A manual or duplicate promotion notification is an auditable replay noop.
@@ -1173,21 +1761,62 @@ class CorePrototypeSpine:
         return tuple(self._replay_receipt(receipt) for receipt in previous[-1:])
 
     def _reject_deferred_project_one_requests(
-        self, revision_ids: set[UUID], *, rationale: str
+        self, revision_ids: set[UUID], *, rationale: str, trigger_revision_id: UUID
     ) -> tuple[ProjectOneRequestApplicationReceipt, ...]:
         """Close deferred requests when CCRR explicitly discards quarantine."""
 
         pending = [
-            (fingerprint, request)
+            (fingerprint, request, waiting_revision_id, mode)
             for fingerprint, (
                 request,
                 waiting_revision_id,
-                _mode,
+                mode,
             ) in self._deferred_project_one_requests.items()
             if waiting_revision_id in revision_ids
         ]
         receipts = []
-        for fingerprint, request in pending:
+        for fingerprint, request, child_id, mode in pending:
+            if mode == "promotion_finalizes":
+                parent = self._revision_parent_events.get(request.superseded_revision_id)
+                child = self._observed_events.get(child_id)
+                if (
+                    parent is None
+                    or child is None
+                    or child_id != request.corrected_revision_id
+                    or child_id in self._committed_events
+                    or not self._observation_write_eligible(parent.revision_id)
+                    or any(
+                        c.corrected_event.revision_id == child_id
+                        for c in self._correction_cancellations
+                    )
+                ):
+                    raise ValueError("deferred correction cancellation has no restorable lineage")
+                restoration = self._deferred_correction_restore.get(fingerprint)
+                if restoration is None or restoration[0][0].revision_id != parent.revision_id:
+                    raise ValueError("missing original deferred correction contribution snapshot")
+                cancellation = DeferredCorrectionCancellation(
+                    fingerprint,
+                    request,
+                    parent,
+                    child,
+                    len(self._revision_transactions),
+                    trigger_revision_id,
+                    rationale,
+                    *restoration,
+                )
+                cancellation = replace(
+                    cancellation, body_sha256=native_content_sha256(cancellation.body())
+                )
+                cancellation.validate_content()
+                self._correction_cancellations = (*self._correction_cancellations, cancellation)
+                self._observed_events.pop(child_id)
+                self._fast_action_events.pop(child_id, None)
+                self._particle_workspace.invalidate_revisions({child_id})
+                restored = replace(restoration[0][0], belief_snapshot_id=None)
+                self._observed_events[parent.revision_id] = restored
+                for fast in restoration[1]:
+                    self._fast_action_events[fast.revision_id] = fast
+                self._revision_fault_hook("cancellation_lineage")
             receipts.append(
                 self._record_request_receipt(
                     request=request,
@@ -1200,6 +1829,7 @@ class CorePrototypeSpine:
                 )
             )
             self._deferred_project_one_requests.pop(fingerprint, None)
+            self._deferred_correction_restore.pop(fingerprint, None)
         return tuple(receipts)
 
     @property
@@ -1387,6 +2017,8 @@ class CorePrototypeSpine:
         # Preserve the legacy call path without trace allocation, source hashing,
         # or an extra UUID draw.  This is compatibility behavior, not implicit P5.
         if execution_plan is None and trace_sink is None:
+            if self._production_operator_contract is not None:
+                self._production_operator_contract()
             checkpoint = self._capture_revision_transaction(include_operator_state=True)
             try:
                 return self._process_transition(transition)
@@ -1659,7 +2291,7 @@ class CorePrototypeSpine:
         if runtime_operator_instances is not None:
             if tuple(runtime_operator_instances) != STRUCTURE_TWO_OPERATOR_ORDER:
                 raise ValueError("production runtime operator mapping order drifted")
-            expected_bound_instances = {
+            expected_bound_instances: dict[str, Sequence[object]] = {
                 "opceu": (self._corrector,),
                 "orrer_cheh": (self._event_engine,),
                 "pchmp": (self._message_passing,),
@@ -1667,9 +2299,11 @@ class CorePrototypeSpine:
                 "ccrr": (router, router.ccrr),
                 "rgrc": (self, self._hybrid_loop.ledger),
             }
+            if self._production_operator_contract is not None:
+                expected_bound_instances = dict(self._production_operator_contract())
             for operator, expected_instances in expected_bound_instances.items():
                 supplied_instances = tuple(runtime_operator_instances.get(operator, ()))
-                if len(supplied_instances) < len(expected_instances) or any(
+                if len(supplied_instances) != len(expected_instances) or any(
                     supplied is not expected
                     for supplied, expected in zip(
                         supplied_instances,
@@ -1712,6 +2346,7 @@ class CorePrototypeSpine:
                 binding_kind=binding_kind,  # type: ignore[arg-type]
                 instance=bound_instance,
                 callable_name=callable_name,
+                require_declared_member=True,
             )
             for operator, bound_instance, callable_name, binding_kind in specifications
         }
@@ -2118,6 +2753,16 @@ class CorePrototypeSpine:
                     "ccrr_pending_tokens": sorted(router.ccrr._pending_tokens.items()),
                 },
                 "committed_events": event_rows(self._committed_events),
+                "write_eligibility": self._write_eligibility,
+                "revision_transactions": self._revision_transactions,
+                "hybrid_reinstatement_lineage": dict(self._hybrid_reinstatement_lineage),
+                "correction_cancellations": native_content_payload(self._correction_cancellations),
+                "deferred_correction_restore": native_content_payload(
+                    self._deferred_correction_restore
+                ),
+                "revision_parent_events": event_rows(self._revision_parent_events),
+                "prepared_particle_workspace": self._particle_workspace.state_payload(),
+                "event_histories": self._event_histories,
                 "observed_events": event_rows(self._observed_events),
                 "fast_action_events": event_rows(self._fast_action_events),
                 "fast_action_verification_receipts": self._fast_action_verification_receipts,
@@ -2155,6 +2800,186 @@ class CorePrototypeSpine:
             }
         )
 
+    def semantic_memory_identity(self) -> Mapping[str, str]:
+        """Expose a semantic digest alongside the unchanged execution binding."""
+        from cpswm.system.structure_two_semantic_identity import semantic_memory_identity
+
+        with self._execution_lock:
+            self._check_particle_workspace_binding()
+            return semantic_memory_identity(self)
+
+    @_serialized_core_mutation
+    def stage_prepared_particle_candidates(
+        self,
+        *,
+        receipts: tuple[ParticleRevisionReceipt, ...],
+        statistics: dict[UUID, ConditionalAnalyticState],
+        unresolved_log_weight: float,
+    ) -> ParticleRevisionBatch:
+        """Consume explicit prepared candidates against this runtime's real evidence.
+
+        This native engineering seam does not generate neural proposals, certify
+        caller probabilities/conditional models, commit statistics or replace the
+        default CIAV/action policy. Those scientific/assembly bindings stay open.
+        """
+        if self._production_operator_contract is not None:
+            self._production_operator_contract()
+        chains = {}
+        self._check_particle_workspace_binding()
+        frames = {}
+        for receipt in receipts:
+            rid = receipt.proposal.proposed_state.revision_id
+            history = self._event_histories.get(rid)
+            event = self._observed_events.get(rid)
+            if history is None or event is None:
+                raise ValueError("prepared particle has no live production evidence history")
+            if receipt.proposal.proposed_state.event_hypothesis_id not in {
+                h.hypothesis_id for h in history.latest.hypotheses
+            }:
+                raise ValueError("candidate chain belongs to another revision")
+            chains.update({h.hypothesis_id: h for h in history.latest.hypotheses})
+            frames[rid] = (
+                history,
+                event.evidence,
+                event.propensity_weight,
+                event.regime_frame,
+                event.identity_switch_probability,
+            )
+        checkpoint = self._capture_revision_transaction(include_operator_state=True)
+        try:
+            projections = {}
+            for receipt in receipts:
+                if receipt.evidence_semantics == "posterior_projection_not_likelihood":
+                    source_id = receipt.source_posterior_snapshot_id
+                    source = (
+                        self._particle_workspace.posterior_sources.get(source_id)
+                        if source_id is not None
+                        else None
+                    )
+                    if source is None:
+                        raise ValueError(
+                            "posterior projection consumption is not bound in native runtime"
+                        )
+                    self._validate_native_posterior_source(source)
+                    if (
+                        receipt.proposal.proposed_state.revision_id
+                        != source.history_after.latest.revision_id
+                    ):
+                        raise ValueError("posterior projection belongs to another event revision")
+                    projections[receipt.proposal.proposed_state.particle_id] = source
+            return self._particle_workspace.advance(
+                receipts=receipts,
+                statistics=statistics,
+                chains=chains,
+                snapshot_id=self.current_snapshot.snapshot_id,
+                allowed_locations=self._registered_particle_locations,
+                source_frame=(frames, self.current_cause_snapshot),
+                ledger_head_sha256=self._hybrid_loop.ledger.export_state().manifest.head_hash,
+                unresolved_log_weight=unresolved_log_weight,
+                validated_projections=projections,
+            )
+        except BaseException:
+            self._restore_revision_transaction(checkpoint)
+            raise
+
+    def current_posterior_projection_source(self) -> NativePosteriorSource:
+        """Inspect the actual current producer output; this call creates no authority."""
+        with self._execution_lock:
+            self._check_particle_workspace_binding()
+            sources = tuple(self._particle_workspace.posterior_sources.values())
+            if not sources:
+                raise ValueError("no production posterior source")
+            source = sources[-1]
+            self._validate_native_posterior_source(source)
+            return deepcopy(source)
+
+    def _validate_native_posterior_source(self, source: NativePosteriorSource) -> None:
+        source.validate_content()
+        revision = source.history_after.latest.revision_id
+        event = self._observed_events.get(revision)
+        if (
+            source.runtime_id != self._particle_workspace.runtime_id
+            or source.object_instance_id != self.object_instance_id
+            or source.locations != self._registered_particle_locations
+            or source.snapshot_id != self.current_snapshot.snapshot_id
+            or event is None
+            or content_sha256(self._event_histories.get(revision))
+            != content_sha256(source.history_after)
+            or source.transition.after.metadata.record_id != event.source_record_id
+            or source.transition.after.detected_location_id != event.location_id
+            or source.producer_context[0].applied_weight != event.propensity_weight
+            # Cause sets are frozenset mapping keys. Generic repr hashing is
+            # order-sensitive across deepcopy/hash seeds; exact typed equality
+            # compares every set, posterior value and reference instead. The
+            # complete stored source body hash is still verified above.
+            or source.producer_context[1].snapshot != self.current_cause_snapshot
+        ):
+            raise ValueError("posterior source is stale, revoked, or outside runtime dependencies")
+        # Verify the full producer chain against runtime-owned history and actual
+        # inputs. A resealed receipt or current UUID alone cannot satisfy this.
+        branch = self._event_engine.branch(
+            before=source.transition.before,
+            after=source.transition.after,
+            actor_prior=dict(source.transition.actor_prior),
+            unresolved_probability=source.transition.unresolved_probability,
+            allow_unknown_handoff_roles=True,
+        )
+        if content_sha256(branch) != content_sha256(source.history_before):
+            raise ValueError("posterior source has a false ORRER parent")
+        posterior = self._message_passing.infer(branch, source.transition.evidence)
+        if content_sha256(posterior) != content_sha256(source.posterior):
+            raise ValueError("posterior source does not match its evidence computation")
+
+    def prepared_particle_location_marginal(self) -> tuple[dict[UUID, float], float]:
+        """Read the explicit candidate posterior, keeping unknown mass separate."""
+        with self._execution_lock:
+            self._check_particle_workspace_binding()
+            batch = self._particle_workspace.batch
+            if batch is None or batch.snapshot_id != self.current_snapshot.snapshot_id:
+                raise ValueError("prepared particle source snapshot is stale or missing")
+            return self._particle_workspace.location_marginal()
+
+    def _check_particle_workspace_binding(self) -> None:
+        if (
+            self._particle_workspace is not self._particle_workspace_anchor
+            or type(self._particle_workspace) is not NativeParticleWorkspace
+        ):
+            raise ValueError("native particle workspace identity was replaced")
+        instance_attributes = vars(self._particle_workspace)
+        for (
+            method_name,
+            expected_target,
+            expected_code_sha256,
+        ) in _PARTICLE_WORKSPACE_METHOD_ANCHORS:
+            if method_name in instance_attributes:
+                raise ValueError(
+                    "native particle workspace callable is shadowed by an instance attribute: "
+                    + method_name
+                )
+            declared = vars(NativeParticleWorkspace).get(method_name)
+            if isinstance(declared, staticmethod | classmethod):
+                declared = declared.__func__
+            method = getattr(self._particle_workspace, method_name, None)
+            target = getattr(method, "__func__", method)
+            code = getattr(target, "__code__", None)
+            if declared is not expected_target or target is not expected_target:
+                raise ValueError(
+                    "native particle workspace callable binding was replaced: " + method_name
+                )
+            if not isinstance(code, CodeType) or _code_object_sha256(code) != expected_code_sha256:
+                raise ValueError(
+                    "native particle workspace loaded callable code changed: " + method_name
+                )
+        try:
+            source_sha256 = hashlib.sha256(_PARTICLE_WORKSPACE_SOURCE_PATH.read_bytes()).hexdigest()
+        except OSError as error:
+            raise ValueError("native particle workspace source is unavailable") from error
+        if source_sha256 != _PARTICLE_WORKSPACE_SOURCE_SHA256:
+            raise ValueError("native particle workspace source changed after binding")
+        if self.locations != self._registered_particle_locations:
+            raise ValueError("runtime world location support was rebound after construction")
+        self._particle_workspace.validate_world_support(self._registered_particle_locations)
+
     def _process_transition(
         self,
         transition: PrototypeTransition,
@@ -2162,8 +2987,15 @@ class CorePrototypeSpine:
         trace_recorder: _TransitionTraceRecorder | None = None,
         trace_phase: TracePhaseName | None = None,
         force_long_term_write_blocked: bool = False,
+        identity_switch_probability: float | None = None,
     ) -> PrototypeStepResult:
         self._validate_transition(transition)
+        identity_switch_probability = (
+            transition.identity_switch_probability
+            if identity_switch_probability is None
+            else identity_switch_probability
+        )
+        _require_probability(identity_switch_probability, "identity_switch_probability")
         started_ns = perf_counter_ns()
         propensity = self._corrector.weight_for_opportunity(transition.opportunity)
         if trace_recorder is not None:
@@ -2209,6 +3041,7 @@ class CorePrototypeSpine:
             if callable(audit):
                 audit(history, transition.evidence)
         actor_posterior = self._actor_posterior(receipted_history, event_posterior)
+        self._event_histories[receipted_history.latest.revision_id] = deepcopy(receipted_history)
         if trace_recorder is not None:
             trace_recorder.record_executed(
                 "pchmp",
@@ -2330,6 +3163,7 @@ class CorePrototypeSpine:
             context_features=regime_context_features,
             owner_probability=owner_mass,
             evidence_source_record_ids=evidence.source_record_ids,
+            identity_switch_probability=identity_switch_probability,
             stage_observer=observe_regime_stage if trace_recorder is not None else None,
         )
         if trace_recorder is not None:
@@ -2341,7 +3175,7 @@ class CorePrototypeSpine:
                     "context_features": regime_context_features,
                     "owner_probability": owner_mass,
                     "evidence_source_record_ids": evidence.source_record_ids,
-                    "identity_switch_probability": 0.0,
+                    "identity_switch_probability": identity_switch_probability,
                 },
                 output=assessment,
                 consumes=("pchmp", "cf_bocpd"),
@@ -2387,13 +3221,30 @@ class CorePrototypeSpine:
             dirichlet_predictive_surprise=dirichlet_predictive_surprise,
             rls_residual=rls_residual,
             regime_frame=regime_frame,
+            identity_switch_probability=identity_switch_probability,
         )
         self._observed_events[current_event.revision_id] = current_event
         self._fast_action_events[current_event.revision_id] = current_event
+        # Record the origin write eligibility before any classification.  An
+        # administratively blocked write is a different fact from CCRR deferring
+        # for want of evidence, and only the runtime knows which one happened.
+        self._record_observation_origin(
+            current_event,
+            write_blocked=force_long_term_write_blocked,
+            origin_path=(
+                "write_blocked_primary_pass"
+                if force_long_term_write_blocked
+                else "unblocked_transition"
+            ),
+        )
 
+        cancellation_count = len(self._correction_cancellations)
         promoted_audits: dict[UUID, HabitUpdateAudit] = {}
         if force_long_term_write_blocked:
             self._quarantined_events.append(current_event)
+            self._record_quarantine_reason(
+                current_event.revision_id, "long_term_write_administratively_blocked"
+            )
         elif assessment.conclusion is HabitStateConclusion.HABIT_CHANGE:
             for quarantined in self._quarantined_events:
                 promoted = replace(
@@ -2406,12 +3257,29 @@ class CorePrototypeSpine:
                 # never apply its sufficient statistics a second time.
                 if promoted.revision_id in self._committed_events:
                     continue
+                # This branch only runs when the write was *not* blocked, so this
+                # execution is permitted to grant eligibility.  The grant is
+                # recorded before the commit, with the CCRR basis it rests on.
+                self._grant_write_authorization(
+                    promoted.revision_id,
+                    authority="ccrr_habit_change_promotion",
+                    granting_revision_id=current_event.revision_id,
+                    basis={
+                        "conclusion": assessment.conclusion.value,
+                        "regime": regime,
+                        "ccrr_decision": self._last_ccrr_decision,
+                        "granting_source_record_ids": tuple(
+                            str(item) for item in evidence.source_record_ids
+                        ),
+                    },
+                )
                 promoted_audits[promoted.revision_id] = self._commit_event(promoted)
             self._quarantined_events.clear()
         elif assessment.conclusion is HabitStateConclusion.SHORT_TERM_DISTURBANCE:
             self._reject_deferred_project_one_requests(
                 {item.revision_id for item in self._quarantined_events},
                 rationale="CCRR classified the quarantined event as a short-term disturbance",
+                trigger_revision_id=current_event.revision_id,
             )
             self._quarantined_events.clear()
         elif (
@@ -2420,10 +3288,14 @@ class CorePrototypeSpine:
         ):
             if assessment.ccrr_decision is None:
                 self._quarantined_events.append(current_event)
+                self._record_quarantine_reason(
+                    current_event.revision_id, "ccrr_insufficient_evidence_deferred"
+                )
             else:
                 self._reject_deferred_project_one_requests(
                     {item.revision_id for item in self._quarantined_events},
                     rationale="CCRR closed quarantine without promoting the corrected event",
+                    trigger_revision_id=current_event.revision_id,
                 )
                 self._quarantined_events.clear()
 
@@ -2435,9 +3307,57 @@ class CorePrototypeSpine:
                 if habit_update is None:
                     habit_update = self._habit.update_audited(evidence, weight_multiplier=0.0)
             else:
+                self._grant_write_authorization(
+                    current_event.revision_id,
+                    authority="unblocked_transition_commit",
+                    granting_revision_id=current_event.revision_id,
+                    basis={
+                        "conclusion": assessment.conclusion.value,
+                        "allow_long_term_write": assessment.allow_long_term_write,
+                        "rgrc_gate_enabled": self._rgrc_gate_enabled,
+                        "regime": regime,
+                    },
+                )
                 habit_update = self._commit_event(current_event)
         else:
             habit_update = self._habit.update_audited(evidence, weight_multiplier=0.0)
+        if len(self._correction_cancellations) != cancellation_count:
+            replay_assessments: list[Any] = []
+            restored_snapshot = self._rebuild_personalized_models(
+                replay_assessments=replay_assessments
+            )
+            # Reverse only the descendants captured by the original request.
+            # Later observations are retained and decide whether the parent is
+            # live; cancellation creates no fresh-feedback/CCRR authority.
+            for cancellation in self._correction_cancellations[cancellation_count:]:
+                remaining = {e.revision_id: e for e in cancellation.restore_events[1:]}
+                while remaining:
+                    ready = [
+                        e
+                        for e in remaining.values()
+                        if e.derived_from_revision_id in self._committed_events
+                    ]
+                    if not ready:
+                        for rid in remaining:
+                            self._derived_event_lifecycle[rid] = (
+                                DerivedEvidenceLifecycle.SUSPENDED_PARENT_QUARANTINED
+                            )
+                        break
+                    for event in ready:
+                        self._commit_event(replace(event, belief_snapshot_id=None))
+                        remaining.pop(event.revision_id)
+            restored_snapshot = self._hybrid_loop.publish_snapshot()
+            assessment = replay_assessments[-1]
+            self._last_cause_snapshot = assessment.snapshot
+            regime = self.active_regime
+            for cancellation in self._correction_cancellations[cancellation_count:]:
+                rows = self._project_one_application_receipts[
+                    cancellation.request.source_feedback_record_id
+                ]
+                rows[-1] = rows[-1].model_copy(
+                    update={"new_belief_snapshot_id": restored_snapshot.snapshot_id}
+                )
+            self._revision_fault_hook("cancellation_replay")
         rls_scores = self._regimes.score_candidates(
             object_instance_id=self.object_instance_id,
             actor_id=self.owner_key,
@@ -2454,9 +3374,10 @@ class CorePrototypeSpine:
                     event,
                     belief_snapshot_id=belief_snapshot.snapshot_id,
                 )
-                self._revision_feedback_bindings[revision_id] = (
-                    event.location_id,
-                    belief_snapshot.snapshot_id,
+                self._publish_revision_binding(
+                    revision_id,
+                    location_id=event.location_id,
+                    snapshot=belief_snapshot,
                 )
         habit_prediction = self._habit.predict(
             household_id=transition.after.metadata.household_id,
@@ -2514,6 +3435,16 @@ class CorePrototypeSpine:
             event_revision_id=receipted_history.latest.revision_id,
             decision=decision,
         )
+        self._particle_workspace.publish_posterior(
+            object_instance_id=self.object_instance_id,
+            snapshot_id=belief_snapshot.snapshot_id,
+            locations=self._registered_particle_locations,
+            history_before=history,
+            history_after=receipted_history,
+            posterior=event_posterior,
+            transition=transition,
+            producer_context=(propensity, assessment),
+        )
         if trace_recorder is not None:
             trace_recorder.record_executed(
                 "rgrc",
@@ -2530,6 +3461,10 @@ class CorePrototypeSpine:
 
         if event.revision_id in self._committed_events:
             raise ValueError("prototype event revision is already committed")
+        if event.regime_frame is not None and not self._observation_write_eligible(
+            event.revision_id
+        ):
+            raise ValueError("observation commit requires valid write eligibility")
         audit = self._habit.update_audited(
             event.evidence,
             weight_multiplier=event.propensity_weight,
@@ -2585,6 +3520,11 @@ class CorePrototypeSpine:
                 source_record_id=event.source_record_id,
             )
         )
+        if hybrid_revision_id != event.revision_id:
+            self._hybrid_reinstatement_lineage[hybrid_revision_id] = (
+                event.revision_id,
+                parent_revision_id,
+            )
         return replace(
             event,
             hybrid_revision_id=hybrid_revision_id,
@@ -2603,10 +3543,18 @@ class CorePrototypeSpine:
     ) -> PrototypeRevisionResult:
         """Apply one all-or-nothing revision across Hybrid, Dirichlet, and RLS."""
 
-        checkpoint = self._capture_revision_transaction()
+        if self._production_operator_contract is not None:
+            self._production_operator_contract()
+        checkpoint = self._capture_revision_transaction(include_operator_state=True)
         try:
-            return self._apply_event_revision_outcome(outcome)
-        except Exception:
+            result = self._apply_event_revision_outcome(outcome)
+            if (
+                outcome.kind is EventRevisionKind.CORRECT
+                and outcome.corrected_revision_id not in self._committed_events
+            ):
+                raise ValueError("CORRECT not admitted by CCRR; transaction rolled back")
+            return result
+        except BaseException:
             self._restore_revision_transaction(checkpoint)
             raise
 
@@ -2618,6 +3566,19 @@ class CorePrototypeSpine:
         original = self._committed_events.get(outcome.superseded_revision_id)
         if original is None:
             raise KeyError("superseded revision is not a committed prototype event")
+        if outcome.kind is EventRevisionKind.CORRECT:
+            if outcome.corrected_revision_id in self._write_eligibility or (
+                outcome.corrected_revision_id in self._committed_events
+            ):
+                raise ValueError("corrected revision identity has already been used")
+            if outcome.corrected_location_id not in self.locations:
+                raise ValueError("corrected location is outside the prototype candidate set")
+            if original.regime_frame is not None and not self._observation_write_eligible(
+                original.revision_id
+            ):
+                raise ValueError("correction parent has no valid write eligibility")
+        self._revision_parent_events.setdefault(original.revision_id, original)
+        self._particle_workspace.invalidate_revisions({original.revision_id})
         old_regime = self.active_regime
         dependent_revision_ids = self._descendant_revision_ids(outcome.superseded_revision_id)
         if outcome.kind is EventRevisionKind.RETRACT:
@@ -2636,6 +3597,7 @@ class CorePrototypeSpine:
                 self._retract_event_hybrid(self._committed_events[revision_id])
                 del self._committed_events[revision_id]
                 self._observed_events.pop(revision_id, None)
+                self._fast_action_events.pop(revision_id, None)
             snapshot = self._hybrid_loop.publish_snapshot()
             operations = (PrototypeStatisticOperation.RETRACT,)
         else:
@@ -2710,6 +3672,29 @@ class CorePrototypeSpine:
                 hybrid_parent_revision_id=hybrid_parent_revision_id,
                 belief_snapshot_id=None,
             )
+            if original.regime_frame is not None:
+                parent = self._write_eligibility[original.revision_id]
+                # This is a replacement of an already accepted contribution,
+                # with explicit evidence, not a new authority over quarantine.
+                self._write_eligibility[outcome.corrected_revision_id] = (
+                    _ObservationWriteEligibility(
+                        revision_id=outcome.corrected_revision_id,
+                        origin_write_blocked=True,
+                        origin_path="formal_correction_transaction",
+                        parent_revision_id=original.revision_id,
+                        correction_evidence_source_record_ids=outcome.evidence_source_record_ids,
+                        parent_eligibility_sha256=content_sha256(parent),
+                        correction_outcome_sha256=content_sha256(outcome),
+                        authorizations=(
+                            _WriteAuthorization(
+                                authority="formal_correction_transaction",
+                                granting_revision_id=original.revision_id,
+                                granted_at_observation_count=self.observation_count,
+                                basis_sha256=content_sha256(outcome),
+                            ),
+                        ),
+                    )
+                )
             if original.derived_from_revision_id is not None:
                 corrected_derived = self._committed_events[outcome.corrected_revision_id]
                 self._derived_event_archive[outcome.corrected_revision_id] = corrected_derived
@@ -2717,6 +3702,10 @@ class CorePrototypeSpine:
                     DerivedEvidenceLifecycle.ACTIVE
                 )
             self._observed_events.pop(outcome.superseded_revision_id, None)
+            if self._fast_action_events.pop(outcome.superseded_revision_id, None) is not None:
+                self._fast_action_events[outcome.corrected_revision_id] = self._committed_events[
+                    outcome.corrected_revision_id
+                ]
             if original.regime_frame is not None:
                 self._observed_events[outcome.corrected_revision_id] = self._committed_events[
                     outcome.corrected_revision_id
@@ -2725,17 +3714,20 @@ class CorePrototypeSpine:
                 self._retract_event_hybrid(self._committed_events[revision_id])
                 del self._committed_events[revision_id]
                 self._observed_events.pop(revision_id, None)
+                self._fast_action_events.pop(revision_id, None)
             snapshot = self._hybrid_loop.publish_snapshot()
             corrected_event = self._committed_events[outcome.corrected_revision_id]
             self._committed_events[outcome.corrected_revision_id] = replace(
                 corrected_event,
                 belief_snapshot_id=snapshot.snapshot_id,
             )
-            self._revision_feedback_bindings[outcome.corrected_revision_id] = (
-                corrected_event.location_id,
-                snapshot.snapshot_id,
+            self._publish_revision_binding(
+                outcome.corrected_revision_id,
+                location_id=corrected_event.location_id,
+                snapshot=snapshot,
             )
             operations = (PrototypeStatisticOperation.CORRECT,)
+        self._revision_transactions = (*self._revision_transactions, outcome)
         snapshot = self._rebuild_personalized_models()
         return self._revision_result(
             operations=operations,
@@ -2763,6 +3755,18 @@ class CorePrototypeSpine:
             "derived_event_archive": dict(self._derived_event_archive),
             "derived_event_lifecycle": dict(self._derived_event_lifecycle),
             "feedback_bindings": dict(self._revision_feedback_bindings),
+            "revision_binding_history": dict(self._revision_binding_history),
+            "late_feedback_relocations": list(self._late_feedback_relocations),
+            "write_eligibility": dict(self._write_eligibility),
+            "revision_transactions": self._revision_transactions,
+            "hybrid_reinstatement_lineage": dict(self._hybrid_reinstatement_lineage),
+            "correction_cancellations": self._correction_cancellations,
+            "deferred_correction_restore": dict(self._deferred_correction_restore),
+            "revision_parent_events": dict(self._revision_parent_events),
+            "particle_workspace": self._particle_workspace,
+            "particle_workspace_state": deepcopy(self._particle_workspace),
+            "event_histories": dict(self._event_histories),
+            "production_operator_contract": self._production_operator_contract,
             "quarantined_events": list(self._quarantined_events),
             "last_observed_location": self._last_observed_location,
             "last_context_key": self._last_context_key,
@@ -2784,6 +3788,7 @@ class CorePrototypeSpine:
                 "_execution_contract_phase",
                 "_execution_lock",
                 "_external_mutation_guard",
+                "_production_operator_contract",
                 "_hybrid_loop",
             }
             runtime_refs = {
@@ -2802,7 +3807,10 @@ class CorePrototypeSpine:
             checkpoint["execution_core_attribute_names"] = frozenset(self.__dict__)
             checkpoint["execution_lock"] = self._execution_lock
             checkpoint["execution_runtime_refs"] = runtime_refs
-            checkpoint["execution_runtime_fields"] = deepcopy(runtime_refs)
+            # An instrumentation/fault hook may be bound to this very core.
+            # Preserve that owner identity rather than recursively copying locks
+            # and the enclosing production assembly through a bound method.
+            checkpoint["execution_runtime_fields"] = deepcopy(runtime_refs, {id(self): self})
             checkpoint["execution_nested_component_refs"] = nested_component_refs
             checkpoint["execution_nested_component_snapshots"] = {
                 name: deepcopy(component) for name, component in nested_component_refs.items()
@@ -2893,6 +3901,19 @@ class CorePrototypeSpine:
         self._derived_event_archive = checkpoint["derived_event_archive"]  # type: ignore[assignment]
         self._derived_event_lifecycle = checkpoint["derived_event_lifecycle"]  # type: ignore[assignment]
         self._revision_feedback_bindings = checkpoint["feedback_bindings"]  # type: ignore[assignment]
+        self._revision_binding_history = checkpoint["revision_binding_history"]  # type: ignore[assignment]
+        self._late_feedback_relocations = checkpoint["late_feedback_relocations"]  # type: ignore[assignment]
+        self._write_eligibility = checkpoint["write_eligibility"]  # type: ignore[assignment]
+        self._revision_transactions = checkpoint["revision_transactions"]  # type: ignore[assignment]
+        self._hybrid_reinstatement_lineage = checkpoint["hybrid_reinstatement_lineage"]  # type: ignore[assignment]
+        self._correction_cancellations = checkpoint["correction_cancellations"]  # type: ignore[assignment]
+        self._revision_parent_events = checkpoint["revision_parent_events"]  # type: ignore[assignment]
+        self._deferred_correction_restore = checkpoint["deferred_correction_restore"]  # type: ignore[assignment]
+        workspace = checkpoint["particle_workspace"]
+        _restore_reference_state(workspace, checkpoint["particle_workspace_state"])
+        self._particle_workspace = workspace  # type: ignore[assignment]
+        self._event_histories = checkpoint["event_histories"]  # type: ignore[assignment]
+        self._production_operator_contract = checkpoint["production_operator_contract"]  # type: ignore[assignment]
         self._quarantined_events = checkpoint["quarantined_events"]  # type: ignore[assignment]
         self._last_observed_location = checkpoint["last_observed_location"]  # type: ignore[assignment]
         self._last_context_key = checkpoint["last_context_key"]  # type: ignore[assignment]
@@ -3143,6 +4164,19 @@ class CorePrototypeSpine:
     ) -> ProjectOneRequestApplicationReceipt:
         """Apply/defer/reject one request with exactly-once receipt semantics."""
 
+        if self._production_operator_contract is not None:
+            self._production_operator_contract()
+        checkpoint = self._capture_revision_transaction(include_operator_state=True)
+        try:
+            return self._apply_project_one_stat_request(request)
+        except BaseException:
+            self._restore_revision_transaction(checkpoint)
+            raise
+
+    def _apply_project_one_stat_request(
+        self, request: ProjectOneStatRequest
+    ) -> ProjectOneRequestApplicationReceipt:
+
         from cpswm.system.counterfactual_event_hypergraph.feedback_revision_loop import (
             ProjectOneStatRequest,
         )
@@ -3158,7 +4192,11 @@ class CorePrototypeSpine:
                 receipt
                 for receipt in prior_receipts
                 if receipt.request_fingerprint == fingerprint
-                and receipt.status is ProjectOneRequestApplicationStatus.APPLIED
+                and receipt.status
+                in {
+                    ProjectOneRequestApplicationStatus.APPLIED,
+                    ProjectOneRequestApplicationStatus.REJECTED,
+                }
             ),
             None,
         )
@@ -3172,6 +4210,23 @@ class CorePrototypeSpine:
             )
             return self._replay_receipt(previous)
         original = self._committed_events.get(request.superseded_revision_id)
+        if request.owner_key != self.owner_key:
+            return self._rejected_request(request, fingerprint, "request owner mismatch")
+        if request.object_instance_id != self.object_instance_id:
+            return self._rejected_request(request, fingerprint, "request object mismatch")
+        if request.location_id not in self.locations:
+            return self._rejected_request(request, fingerprint, "request location mismatch")
+        source = original or self._observed_events.get(request.superseded_revision_id)
+        if source is not None:
+            if request.event_hypothesis_id != source.event_hypothesis_id:
+                return self._rejected_request(request, fingerprint, "event hypothesis mismatch")
+            if abs(request.owner_mass_before - source.owner_mass) > 1e-9:
+                return self._rejected_request(request, fingerprint, "owner_mass_before mismatch")
+        if (
+            abs(request.owner_mass_delta - (request.owner_mass_after - request.owner_mass_before))
+            > 1e-9
+        ):
+            return self._rejected_request(request, fingerprint, "owner mass delta mismatch")
         if original is None:
             if self.is_quarantined_revision(request.superseded_revision_id):
                 self._deferred_project_one_requests[fingerprint] = (
@@ -3220,11 +4275,25 @@ class CorePrototypeSpine:
         # the corrected event after the revision itself succeeded. Preserve a
         # checkpoint so that this becomes an explicit rejected receipt without
         # leaving a half-applied Dirichlet/RLS/Hybrid mutation.
-        request_checkpoint = self._capture_revision_transaction()
+        request_checkpoint = self._capture_revision_transaction(include_operator_state=True)
+        restore_events = tuple(
+            self._committed_events[rid]
+            for rid in (
+                request.superseded_revision_id,
+                *self._descendant_revision_ids(request.superseded_revision_id),
+            )
+        )
+        restore_fast = tuple(
+            self._fast_action_events[e.revision_id]
+            for e in restore_events
+            if e.revision_id in self._fast_action_events
+        )
         old_snapshot = self.current_snapshot
         before = self.committed_weight_semantics(request.superseded_revision_id)
         hybrid_before = self.hybrid_alpha(request.location_id)
-        result = self.apply_event_revision_outcome(
+        # Only this transaction owns a durable, typed defer/reject outbox.
+        # The public synchronous outcome entry promises an applied revision.
+        result = self._apply_event_revision_outcome(
             EventRevisionOutcome(
                 kind=EventRevisionKind.CORRECT,
                 superseded_revision_id=request.superseded_revision_id,
@@ -3256,6 +4325,7 @@ class CorePrototypeSpine:
                 request.corrected_revision_id,
                 "promotion_finalizes",
             )
+            self._deferred_correction_restore[fingerprint] = (restore_events, restore_fast)
             return self._record_request_receipt(
                 request=request,
                 fingerprint=fingerprint,
@@ -3657,23 +4727,17 @@ class CorePrototypeSpine:
         fingerprint: str,
         status: ProjectOneRequestApplicationStatus,
     ) -> None:
-        """Keep a refused correction's action consequence, never its statistic.
+        """Release legacy action entries without granting rejected requests effects.
 
-        Applied requests release their entry: the long-term statistic now carries
-        the correction, and counting it twice would let one piece of evidence move
-        the planner twice.
+        A rejected request may be foreign or fail admission and must not alter
+        the next action. A deferred request is already represented exactly once
+        by the durable outbox in pending_correction_mass. Explicitly accepted
+        feedback/verification uses its own existing fast-memory entry points.
         """
 
         if status is ProjectOneRequestApplicationStatus.APPLIED:
             self._action_scoped_negatives.pop(fingerprint, None)
             return
-        if status is ProjectOneRequestApplicationStatus.REPLAY_NOOP:
-            return
-        location_id = getattr(request, "location_id", None)
-        delta = float(getattr(request, "owner_mass_delta", 0.0))
-        if location_id is None or delta >= 0.0:
-            return
-        self._action_scoped_negatives[fingerprint] = (location_id, delta)
 
     def action_scoped_negative_ledger(self) -> dict[str, tuple[UUID, float]]:
         """Audit view: every refused correction still influencing the next action."""
@@ -3687,8 +4751,10 @@ class CorePrototypeSpine:
 
         * deferred requests -- the revision was accepted and only its statistic
           write waits on CCRR promotion;
-        * action-scoped negatives -- CCRR refused the statistic write outright,
-          but the execution failure that produced the request still happened.
+        * historical action-scoped entries retained from earlier runtime state.
+
+        New rejected requests cannot create action entries. New deferred requests
+        live only in the outbox, preventing double counting of the same delta.
 
         Neither ever mutates Dirichlet/RLS/Hybrid.  Exposing them lets the planner
         act on a correction while the long-term ledger stays exactly as strict.
@@ -3788,12 +4854,37 @@ class CorePrototypeSpine:
         likelihood_model: ActionOutcomeLikelihoodModel,
         policy: ExecutionFeedbackInterpretationPolicy | None = None,
     ) -> PrototypeRevisionResult:
+        """Include feedback deduplication and publication in the revision transaction."""
+
+        if self._production_operator_contract is not None:
+            self._production_operator_contract()
+        checkpoint = self._capture_revision_transaction(include_operator_state=True)
+        try:
+            return self._process_execution_feedback(
+                feedback=feedback,
+                binding=binding,
+                likelihood_model=likelihood_model,
+                policy=policy,
+            )
+        except BaseException:
+            self._restore_revision_transaction(checkpoint)
+            raise
+
+    def _process_execution_feedback(
+        self,
+        *,
+        feedback: ExecutionFeedbackRecord,
+        binding: DecisionContextBinding,
+        likelihood_model: ActionOutcomeLikelihoodModel,
+        policy: ExecutionFeedbackInterpretationPolicy | None = None,
+    ) -> PrototypeRevisionResult:
         """Project likelihood evidence and apply a pluggable statistic policy."""
 
-        bound_revision_id = self._validate_feedback_revision_binding(
+        bound_revision_id, relocation = self._resolve_feedback_binding(
             feedback=feedback,
             binding=binding,
         )
+
         projected = self._hybrid_loop.prepare_execution_feedback(
             feedback=feedback,
             binding=binding,
@@ -3837,11 +4928,12 @@ class CorePrototypeSpine:
                 or interpretation.corrected_location_id is None
             ):
                 raise ValueError("correct feedback requires revision and corrected location")
+            corrected_revision_id = uuid4()
             result = self.apply_event_revision_outcome(
                 EventRevisionOutcome(
                     kind=EventRevisionKind.CORRECT,
                     superseded_revision_id=interpretation.target_revision_id,
-                    corrected_revision_id=uuid4(),
+                    corrected_revision_id=corrected_revision_id,
                     corrected_location_id=interpretation.corrected_location_id,
                     corrected_owner_mass=interpretation.evidence_strength,
                     evidence_source_record_ids=(feedback.metadata.record_id,),
@@ -3869,6 +4961,12 @@ class CorePrototypeSpine:
                     else None
                 ),
             )
+        if relocation is not None:
+            # Audited, not silent: a later reader can see exactly which feedback was
+            # accepted against which superseded-but-published binding.  Appended only
+            # after the statistic transaction succeeded, so a rolled-back revision
+            # leaves no relocation row behind.
+            self._late_feedback_relocations.append(relocation)
         self._hybrid_loop.commit_execution_feedback(projected)
         return result
 
@@ -3878,6 +4976,33 @@ class CorePrototypeSpine:
         feedback: ExecutionFeedbackRecord,
         binding: DecisionContextBinding,
     ) -> UUID:
+        """Compatibility wrapper: resolve the bound revision, discard the audit row."""
+
+        revision_id, _ = self._resolve_feedback_binding(feedback=feedback, binding=binding)
+        return revision_id
+
+    def _resolve_feedback_binding(
+        self,
+        *,
+        feedback: ExecutionFeedbackRecord,
+        binding: DecisionContextBinding,
+    ) -> tuple[UUID, _LateFeedbackRelocation | None]:
+        """Resolve the bound revision, accepting a verifiably published older binding.
+
+        Snapshot validation is not relaxed.  A feedback still has to present a
+        binding this runtime really published for *this* revision at *this*
+        location; the only change is that the accepted set is the revision's
+        published binding history rather than only its newest entry.  An unrelated
+        revision's retraction republishes every surviving revision's binding, so
+        without this a feedback that was legal when it was issued becomes
+        permanently unusable through no fault of its own.
+
+        What is deliberately *not* done: the feedback's own action context is never
+        rewritten, an unpublished or foreign snapshot is never accepted, and a
+        revision that has itself been retracted is refused with a distinct,
+        recoverable error rather than silently relocated.
+        """
+
         raw_revision_id = feedback.diagnostics.get("source_revision_id")
         if not isinstance(raw_revision_id, str):
             raise ValueError("feedback must bind source_revision_id")
@@ -3903,9 +5028,57 @@ class CorePrototypeSpine:
             raise ValueError("feedback revision location does not match the committed event")
         if expected_snapshot_id is None:
             raise ValueError("feedback revision has no committed snapshot binding")
-        if binding.decision_context.revisions.belief_snapshot_id != expected_snapshot_id:
+        presented_snapshot_id = binding.decision_context.revisions.belief_snapshot_id
+        if presented_snapshot_id == expected_snapshot_id:
+            return revision_id, None
+        superseded = self._match_published_binding(
+            revision_id,
+            presented_snapshot_id=presented_snapshot_id,
+            expected_location=expected_location,
+        )
+        if superseded is None:
             raise ValueError("feedback revision snapshot does not match the committed event")
-        return revision_id
+        current = self.current_snapshot
+        if superseded.map_version >= current.map_version:
+            raise ValueError("feedback revision snapshot does not match the committed event")
+        if event is None:
+            # The revision was retracted after this binding was published.  The
+            # binding is genuine, so it is accepted here and the ordinary
+            # replay / dead-target handling downstream decides the outcome; there
+            # is nothing to relocate onto a revision that no longer exists.
+            return revision_id, None
+        relocation = _LateFeedbackRelocation(
+            revision_id=revision_id,
+            feedback_record_id=feedback.metadata.record_id,
+            presented_snapshot_id=presented_snapshot_id,
+            presented_map_version=superseded.map_version,
+            current_snapshot_id=current.snapshot_id,
+            current_map_version=current.map_version,
+            location_id=expected_location,
+        )
+        return revision_id, relocation
+
+    def _match_published_binding(
+        self,
+        revision_id: UUID,
+        *,
+        presented_snapshot_id: UUID,
+        expected_location: UUID,
+    ) -> _PublishedRevisionBinding | None:
+        """Find a binding this runtime really published for this revision.
+
+        The presented snapshot must appear in the revision's own append-only
+        publication history *and* have been published for the same location, so a
+        snapshot borrowed from another revision or another location is refused.
+        """
+
+        for published in self._revision_binding_history.get(revision_id, ()):
+            if (
+                published.snapshot_id == presented_snapshot_id
+                and published.location_id == expected_location
+            ):
+                return published
+        return None
 
     def _reinforce_revision(
         self,
@@ -3963,20 +5136,225 @@ class CorePrototypeSpine:
             reinforced,
             belief_snapshot_id=snapshot.snapshot_id,
         )
-        self._revision_feedback_bindings[reinforced_revision] = (
-            reinforced.location_id,
-            snapshot.snapshot_id,
+        self._publish_revision_binding(
+            reinforced_revision,
+            location_id=reinforced.location_id,
+            snapshot=snapshot,
         )
         return snapshot
 
-    def _rebuild_personalized_models(self) -> BeliefSnapshot:
+    # ------------------------------------------------------------------
+    # Write eligibility: origin, quarantine reason, subsequent authorization
+    # ------------------------------------------------------------------
+
+    def _record_observation_origin(
+        self,
+        event: _CommittedPrototypeEvent,
+        *,
+        write_blocked: bool,
+        origin_path: str,
+    ) -> None:
+        """Record how an observation entered the runtime, once, at creation."""
+
+        existing = self._write_eligibility.get(event.revision_id)
+        if existing is not None:
+            return
+        self._write_eligibility[event.revision_id] = _ObservationWriteEligibility(
+            revision_id=event.revision_id,
+            origin_write_blocked=write_blocked,
+            origin_path=origin_path,
+        )
+
+    def _record_quarantine_reason(self, revision_id: UUID, reason: str) -> None:
+        record = self._write_eligibility.get(revision_id)
+        if record is None or record.quarantine_reason is not None:
+            return
+        self._write_eligibility[revision_id] = replace(record, quarantine_reason=reason)
+
+    def _grant_write_authorization(
+        self,
+        revision_id: UUID,
+        *,
+        authority: str,
+        granting_revision_id: UUID | None,
+        basis: Mapping[str, object],
+    ) -> None:
+        """Record a verifiable grant from an execution permitted to write.
+
+        Only callers that are themselves running with the long-term write unblocked
+        may grant.  The basis hash lets a later audit recompute what the grant was
+        made on, instead of trusting that a rebuild agreed with it.
+        """
+
+        record = self._write_eligibility.get(revision_id)
+        if record is None:
+            raise ValueError("write authorization has no observation origin")
+        if record.origin_write_blocked:
+            grantor = (
+                self._write_eligibility.get(granting_revision_id)
+                if granting_revision_id is not None
+                else None
+            )
+            if (
+                authority != "ccrr_habit_change_promotion"
+                or grantor is None
+                or grantor.origin_write_blocked
+                or granting_revision_id not in self._observed_events
+                or basis.get("conclusion") != HabitStateConclusion.HABIT_CHANGE.value
+            ):
+                raise ValueError("blocked observation requires a live unblocked CCRR authority")
+        basis_json = json.dumps(basis, sort_keys=True)
+        grant = _WriteAuthorization(
+            authority=authority,
+            granting_revision_id=granting_revision_id,
+            granted_at_observation_count=self.observation_count,
+            basis_sha256=content_sha256(basis),
+            basis_json=basis_json,
+        )
+        if grant in record.authorizations:
+            return
+        self._write_eligibility[revision_id] = replace(
+            record, authorizations=(*record.authorizations, grant)
+        )
+
+    def _observation_write_eligible(self, revision_id: UUID) -> bool:
+        """Fail closed: an observation with no origin record may not be committed."""
+
+        if any(
+            c.corrected_event.revision_id == revision_id for c in self._correction_cancellations
+        ):
+            return False
+        record = self._write_eligibility.get(revision_id)
+        if record is None or not record.write_eligible:
+            return False
+        if record.parent_revision_id is not None:
+            parent = self._write_eligibility.get(record.parent_revision_id)
+            return (
+                parent is not None
+                and self._observation_write_eligible(parent.revision_id)
+                and content_sha256(parent) == record.parent_eligibility_sha256
+                and any(
+                    grant.authority == "formal_correction_transaction"
+                    and grant.granting_revision_id == record.parent_revision_id
+                    and grant.basis_sha256 == record.correction_outcome_sha256
+                    for grant in record.authorizations
+                )
+                and any(
+                    outcome.corrected_revision_id == revision_id
+                    and outcome.superseded_revision_id == record.parent_revision_id
+                    and outcome.evidence_source_record_ids
+                    == record.correction_evidence_source_record_ids
+                    and content_sha256(outcome) == record.correction_outcome_sha256
+                    for outcome in self._revision_transactions
+                )
+            )
+        if not record.origin_write_blocked:
+            return True
+        for grant in record.authorizations:
+            grantor = (
+                self._write_eligibility.get(grant.granting_revision_id)
+                if grant.granting_revision_id is not None
+                else None
+            )
+            basis = json.loads(grant.basis_json)
+            if (
+                grant.authority == "ccrr_habit_change_promotion"
+                and grantor is not None
+                and not grantor.origin_write_blocked
+                and grant.granting_revision_id in self._observed_events
+                and basis.get("conclusion") == HabitStateConclusion.HABIT_CHANGE.value
+                and content_sha256(basis) == grant.basis_sha256
+            ):
+                return True
+        return False
+
+    @property
+    def revision_transactions(self) -> tuple[EventRevisionOutcome, ...]:
+        """Committed operations only; rolled-back attempts leave no audit record."""
+
+        return self._revision_transactions
+
+    def observation_write_eligibility(self, revision_id: UUID) -> Mapping[str, object] | None:
+        """Read-only audit view of one observation's write lineage."""
+
+        record = self._write_eligibility.get(revision_id)
+        if record is None:
+            return None
+        return {
+            "revision_id": str(record.revision_id),
+            "origin_write_blocked": record.origin_write_blocked,
+            "origin_path": record.origin_path,
+            "quarantine_reason": record.quarantine_reason,
+            "write_eligible": (
+                revision_id in self._observed_events
+                and self._observation_write_eligible(revision_id)
+            ),
+            "historical_write_eligible": self._observation_write_eligible(revision_id),
+            "parent_revision_id": (
+                str(record.parent_revision_id) if record.parent_revision_id is not None else None
+            ),
+            "parent_eligibility_sha256": record.parent_eligibility_sha256,
+            "correction_evidence_source_record_ids": tuple(
+                str(item) for item in record.correction_evidence_source_record_ids
+            ),
+            "correction_outcome_sha256": record.correction_outcome_sha256,
+            "active": revision_id in self._observed_events,
+            "authorizations": tuple(
+                {
+                    "authority": grant.authority,
+                    "granting_revision_id": (
+                        str(grant.granting_revision_id)
+                        if grant.granting_revision_id is not None
+                        else None
+                    ),
+                    "granted_at_observation_count": grant.granted_at_observation_count,
+                    "basis_sha256": grant.basis_sha256,
+                    "basis": json.loads(grant.basis_json),
+                }
+                for grant in record.authorizations
+            ),
+        }
+
+    @property
+    def late_feedback_relocations(self) -> tuple[_LateFeedbackRelocation, ...]:
+        """Every feedback accepted against a superseded but published binding."""
+
+        return tuple(self._late_feedback_relocations)
+
+    def published_revision_bindings(
+        self, revision_id: UUID
+    ) -> tuple[_PublishedRevisionBinding, ...]:
+        """Every binding this runtime published for ``revision_id``, in order."""
+
+        return self._revision_binding_history.get(revision_id, ())
+
+    def _publish_revision_binding(
+        self, revision_id: UUID, *, location_id: UUID, snapshot: BeliefSnapshot
+    ) -> None:
+        """Publish one binding and append it to the revision's verifiable history."""
+
+        self._revision_feedback_bindings[revision_id] = (location_id, snapshot.snapshot_id)
+        history = self._revision_binding_history.get(revision_id, ())
+        published = _PublishedRevisionBinding(
+            location_id=location_id,
+            snapshot_id=snapshot.snapshot_id,
+            map_version=snapshot.map_version,
+            observation_count=self.observation_count,
+        )
+        if history and history[-1] == published:
+            return
+        self._revision_binding_history[revision_id] = (*history, published)
+
+    def _rebuild_personalized_models(
+        self, *, replay_assessments: list[Any] | None = None
+    ) -> BeliefSnapshot:
         previous_committed = dict(self._committed_events)
         (
             recomputed_active_regime,
             replayed_regimes,
             committed_observation_ids,
             quarantined_observation_ids,
-        ) = self._recompute_active_regime()
+        ) = self._recompute_active_regime(replay_assessments=replay_assessments)
         desired_observations = {
             revision_id: self._observed_events[revision_id]
             for revision_id in committed_observation_ids
@@ -4043,6 +5421,49 @@ class CorePrototypeSpine:
                     available_parents.add(revision_id)
                     del pending_restore[revision_id]
                     restored_one = True
+        for revision_id in desired_observations:
+            # Cancellation restores a previously authorized contribution. Keep
+            # its original qualification immutable for historical child hashes.
+            if any(
+                c.parent_event.revision_id == revision_id for c in self._correction_cancellations
+            ):
+                continue
+            if revision_id in previous_committed:
+                continue
+            # A rebuild may promote an observation only if it was already write
+            # eligible -- ``_recompute_active_regime`` withholds the rest.  Record
+            # the promotion basis anyway, so no promotion is unaudited.
+            self._grant_write_authorization(
+                revision_id,
+                authority="ccrr_rebuild_replay_promotion",
+                granting_revision_id=None,
+                basis={
+                    "recomputed_active_regime": recomputed_active_regime,
+                    "replayed_regime": replayed_regimes.get(revision_id),
+                    "observation_log_revision_ids": tuple(
+                        str(item)
+                        for item in sorted(
+                            self._observed_events,
+                            key=lambda key: (
+                                self._observed_events[key].evidence.event_time,
+                                str(key),
+                            ),
+                        )
+                    ),
+                    "observation_log_sha256": content_sha256(
+                        tuple(
+                            str(item)
+                            for item in sorted(
+                                self._observed_events,
+                                key=lambda key: (
+                                    self._observed_events[key].evidence.event_time,
+                                    str(key),
+                                ),
+                            )
+                        )
+                    ),
+                },
+            )
         self._committed_events = {**desired_observations, **retained_derived}
         self._quarantined_events = [
             self._observed_events[revision_id] for revision_id in quarantined_observation_ids
@@ -4062,16 +5483,23 @@ class CorePrototypeSpine:
             key=lambda event: (event.evidence.event_time, str(event.revision_id)),
         )
         snapshot = self._hybrid_loop.publish_snapshot()
-        for revision_id in restored_derived_ids:
-            restored = replace(
-                self._committed_events[revision_id],
-                belief_snapshot_id=snapshot.snapshot_id,
-            )
-            self._committed_events[revision_id] = restored
-            self._derived_event_archive[revision_id] = restored
-            self._revision_feedback_bindings[revision_id] = (
-                restored.location_id,
-                snapshot.snapshot_id,
+        # Every committed revision must stay addressable by execution feedback.
+        # ``_process_transition`` establishes that invariant after each transition and
+        # ``_validate_feedback_revision_binding`` depends on it, but this rebuild
+        # reconstructs ``_committed_events`` from ``_observed_events``, whose entries
+        # never carry a snapshot id.  Re-bind here so one revision does not make every
+        # surviving revision unreachable for later late counter-evidence.
+        for revision_id, rebuilt in tuple(self._committed_events.items()):
+            if rebuilt.belief_snapshot_id is not None and revision_id not in restored_derived_ids:
+                continue
+            rebound = replace(rebuilt, belief_snapshot_id=snapshot.snapshot_id)
+            self._committed_events[revision_id] = rebound
+            if revision_id in self._derived_event_archive:
+                self._derived_event_archive[revision_id] = rebound
+            self._publish_revision_binding(
+                revision_id,
+                location_id=rebound.location_id,
+                snapshot=snapshot,
             )
         self._revision_fault_hook("hybrid")
         habit = self._new_habit_model()
@@ -4093,6 +5521,8 @@ class CorePrototypeSpine:
 
     def _recompute_active_regime(
         self,
+        *,
+        replay_assessments: list[Any] | None = None,
     ) -> tuple[str, dict[UUID, str], set[UUID], list[UUID]]:
         """Fresh replay the observation log into regime and storage classifications."""
 
@@ -4103,6 +5533,7 @@ class CorePrototypeSpine:
         replayed_regimes: dict[UUID, str] = {}
         committed_revision_ids: set[UUID] = set()
         pending_events: list[_CommittedPrototypeEvent] = []
+        withheld_revision_ids: list[UUID] = []
         ordered = sorted(
             self._observed_events.values(),
             key=lambda event: (event.evidence.event_time, str(event.revision_id)),
@@ -4114,6 +5545,15 @@ class CorePrototypeSpine:
                 rls_sample=replace(event.rls_sample, regime_id=regime_id),
             )
             replayed_regimes[event.revision_id] = regime_id
+            if not self._observation_write_eligible(event.revision_id):
+                # The origin pass had the long-term write administratively blocked
+                # and no verified subsequent authorization has been recorded, so a
+                # rebuild may not commit it.  ``router_may_grant_long_term_write``
+                # is false and ``maximum_unauthorized_long_term_commits`` is 0; a
+                # replay agreeing with itself is not an authorization.  The event
+                # keeps its quarantine -- it is withheld, never dropped.
+                withheld_revision_ids.append(event.revision_id)
+                return
             committed_revision_ids.add(event.revision_id)
             replay_habit.update_audited(
                 assigned.evidence,
@@ -4186,7 +5626,10 @@ class CorePrototypeSpine:
                 ),
                 owner_probability=event.owner_mass,
                 evidence_source_record_ids=event.evidence.source_record_ids,
+                identity_switch_probability=event.identity_switch_probability,
             )
+            if replay_assessments is not None:
+                replay_assessments.append(assessment)
             self._last_ccrr_decision = (
                 assessment.ccrr_decision.kind.value
                 if assessment.ccrr_decision is not None
@@ -4217,6 +5660,20 @@ class CorePrototypeSpine:
                     commit_for_replay(event, active)
             previous_location = event.location_id
         self._last_observed_location = previous_location
+        quarantined_revision_ids = [
+            *withheld_revision_ids,
+            *(
+                event.revision_id
+                for event in pending_events
+                if event.revision_id not in withheld_revision_ids
+            ),
+        ]
+        quarantined_revision_ids.sort(
+            key=lambda revision_id: (
+                self._observed_events[revision_id].evidence.event_time,
+                str(revision_id),
+            )
+        )
         return (
             self._automatic_regimes.ccrr.active_regime(
                 object_instance_id=self.object_instance_id,
@@ -4224,7 +5681,7 @@ class CorePrototypeSpine:
             ),
             replayed_regimes,
             committed_revision_ids,
-            [event.revision_id for event in pending_events],
+            quarantined_revision_ids,
         )
 
     def _revision_result(

@@ -1,0 +1,102 @@
+bringing up nodes...
+bringing up nodes...
+
+...............F...F.................................................... [ 82%]
+...............                                                          [100%]
+=================================== FAILURES ===================================
+_____ test_real_projection_consumes_under_independent_python_hash_seeds[5] _____
+[gw3] darwin -- Python 3.13.5 /Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/.venv/bin/python
+
+hash_seed = '5'
+
+    @pytest.mark.parametrize("hash_seed", ["5", "11"])
+    def test_real_projection_consumes_under_independent_python_hash_seeds(hash_seed):
+        import os
+        import subprocess
+        from pathlib import Path
+    
+        root = Path(__file__).resolve().parents[1]
+        script = """
+    import test_structure_two_formal_revision_lineage as old
+    from test_structure_two_w3_native_posterior_projection import projected
+    core = old._legacy_history(1).system.core
+    source = core.current_posterior_projection_source()
+    source.validate_content()
+    batch = core.stage_prepared_particle_candidates(**projected(core))
+    assert batch.particle_weights[0].posterior_probability > 0
+    """
+        result = subprocess.run(
+            [sys.executable, "-c", script],
+            cwd=root,
+            env={
+                **os.environ,
+                "PYTHONHASHSEED": hash_seed,
+                "PYTHONPATH": os.pathsep.join((str(root / "src"), str(root / "tests"))),
+            },
+            text=True,
+            capture_output=True,
+            timeout=60,
+        )
+>       assert result.returncode == 0, result.stdout + result.stderr
+E       AssertionError: Traceback (most recent call last):
+E           File "<string>", line 6, in <module>
+E             source.validate_content()
+E             ~~~~~~~~~~~~~~~~~~~~~~~^^
+E           File "/private/tmp/cpswm-pc-a-w3-backbone-r7-20260912/src/cpswm/system/structure_two_particle_workspace.py", line 128, in validate_content
+E             raise ValueError("native posterior source content changed")
+E         ValueError: native posterior source content changed
+E         
+E       assert 1 == 0
+E        +  where 1 = CompletedProcess(args=['/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/.venv/bin/python', '-c...   raise ValueError("native posterior source content changed")\nValueError: native posterior source content changed\n').returncode
+
+tests/test_structure_two_w3_native_posterior_projection.py:225: AssertionError
+____ test_real_projection_consumes_under_independent_python_hash_seeds[11] _____
+[gw3] darwin -- Python 3.13.5 /Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/.venv/bin/python
+
+hash_seed = '11'
+
+    @pytest.mark.parametrize("hash_seed", ["5", "11"])
+    def test_real_projection_consumes_under_independent_python_hash_seeds(hash_seed):
+        import os
+        import subprocess
+        from pathlib import Path
+    
+        root = Path(__file__).resolve().parents[1]
+        script = """
+    import test_structure_two_formal_revision_lineage as old
+    from test_structure_two_w3_native_posterior_projection import projected
+    core = old._legacy_history(1).system.core
+    source = core.current_posterior_projection_source()
+    source.validate_content()
+    batch = core.stage_prepared_particle_candidates(**projected(core))
+    assert batch.particle_weights[0].posterior_probability > 0
+    """
+        result = subprocess.run(
+            [sys.executable, "-c", script],
+            cwd=root,
+            env={
+                **os.environ,
+                "PYTHONHASHSEED": hash_seed,
+                "PYTHONPATH": os.pathsep.join((str(root / "src"), str(root / "tests"))),
+            },
+            text=True,
+            capture_output=True,
+            timeout=60,
+        )
+>       assert result.returncode == 0, result.stdout + result.stderr
+E       AssertionError: Traceback (most recent call last):
+E           File "<string>", line 6, in <module>
+E             source.validate_content()
+E             ~~~~~~~~~~~~~~~~~~~~~~~^^
+E           File "/private/tmp/cpswm-pc-a-w3-backbone-r7-20260912/src/cpswm/system/structure_two_particle_workspace.py", line 128, in validate_content
+E             raise ValueError("native posterior source content changed")
+E         ValueError: native posterior source content changed
+E         
+E       assert 1 == 0
+E        +  where 1 = CompletedProcess(args=['/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/.venv/bin/python', '-c...   raise ValueError("native posterior source content changed")\nValueError: native posterior source content changed\n').returncode
+
+tests/test_structure_two_w3_native_posterior_projection.py:225: AssertionError
+=========================== short test summary info ============================
+FAILED tests/test_structure_two_w3_native_posterior_projection.py::test_real_projection_consumes_under_independent_python_hash_seeds[5]
+FAILED tests/test_structure_two_w3_native_posterior_projection.py::test_real_projection_consumes_under_independent_python_hash_seeds[11]
+2 failed, 85 passed in 38.45s

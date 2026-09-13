@@ -1,0 +1,673 @@
+{
+  "development_only": true,
+  "rows": [
+    {
+      "scenario": {
+        "actors": [
+          "owner",
+          "owner",
+          "owner",
+          "owner",
+          "owner",
+          "owner",
+          "owner",
+          "owner",
+          "owner",
+          "owner",
+          "owner",
+          "owner",
+          "owner",
+          "owner"
+        ],
+        "change": "nonempty committed statistics",
+        "id": "stable_owner",
+        "invariant": "object, owner and public map",
+        "locations": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "necessary": "direct P5 committed events > 0",
+        "path": "stable owner evidence -> lawful long-term commit -> surviving contribution"
+      },
+      "inputs": 14,
+      "arms": {
+        "direct_p5_full_eager": {
+          "valid_outputs": 14,
+          "rejected_outputs": 0,
+          "search_top1_correct": 14,
+          "search_evaluable": 14,
+          "put_back_command_correct": 14,
+          "executed_actions": null,
+          "environment_state_changes": null
+        },
+        "independently_tuned_amg": {
+          "valid_outputs": 14,
+          "rejected_outputs": 0,
+          "search_top1_correct": 14,
+          "search_evaluable": 14,
+          "put_back_command_correct": 14,
+          "executed_actions": null,
+          "environment_state_changes": null
+        },
+        "learned_matched_two_stage": {
+          "valid_outputs": 14,
+          "rejected_outputs": 0,
+          "search_top1_correct": 14,
+          "search_evaluable": 14,
+          "put_back_command_correct": 14,
+          "executed_actions": null,
+          "environment_state_changes": null
+        }
+      },
+      "direct_p5_max_committed": 0,
+      "full_fast_action_differences": 0,
+      "ordinary_max_committed": 14,
+      "ordinary_regime_sequence": [
+        "stable",
+        "stable",
+        "stable",
+        "stable",
+        "stable",
+        "stable",
+        "stable",
+        "stable",
+        "stable",
+        "stable",
+        "stable",
+        "stable",
+        "stable",
+        "stable"
+      ],
+      "ordinary_nonhabit_long_mass": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "complete_mechanism": "MISSING_PRODUCTION_CAPABILITY",
+      "invalid_comparison_steps": []
+    },
+    {
+      "scenario": {
+        "actors": [
+          "owner",
+          "owner",
+          "owner",
+          "owner",
+          "owner",
+          "owner",
+          "owner",
+          "owner",
+          "owner",
+          "owner",
+          "owner",
+          "owner",
+          "owner",
+          "owner"
+        ],
+        "change": "negative evidence affects a later belief or action",
+        "id": "negative_verification",
+        "invariant": "no invented positive transition from a negative detection",
+        "locations": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          null,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "necessary": "nonempty negative closure and posterior consequence",
+        "path": "positive -> negative CIAV -> positive"
+      },
+      "inputs": 14,
+      "arms": {
+        "direct_p5_full_eager": {
+          "valid_outputs": 14,
+          "rejected_outputs": 0,
+          "search_top1_correct": 13,
+          "search_evaluable": 13,
+          "put_back_command_correct": 14,
+          "executed_actions": null,
+          "environment_state_changes": null
+        },
+        "independently_tuned_amg": {
+          "valid_outputs": 14,
+          "rejected_outputs": 0,
+          "search_top1_correct": 13,
+          "search_evaluable": 13,
+          "put_back_command_correct": 14,
+          "executed_actions": null,
+          "environment_state_changes": null
+        },
+        "learned_matched_two_stage": {
+          "valid_outputs": 14,
+          "rejected_outputs": 0,
+          "search_top1_correct": 13,
+          "search_evaluable": 13,
+          "put_back_command_correct": 14,
+          "executed_actions": null,
+          "environment_state_changes": null
+        }
+      },
+      "direct_p5_max_committed": 0,
+      "full_fast_action_differences": 0,
+      "ordinary_max_committed": 13,
+      "ordinary_regime_sequence": [
+        "stable",
+        "stable",
+        "stable",
+        "stable",
+        "stable",
+        "stable",
+        "stable",
+        "stable",
+        "stable",
+        "stable",
+        "stable",
+        "stable",
+        "stable",
+        "stable"
+      ],
+      "ordinary_nonhabit_long_mass": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "complete_mechanism": "MISSING_PRODUCTION_CAPABILITY",
+      "invalid_comparison_steps": []
+    },
+    {
+      "scenario": {
+        "actors": [
+          "owner",
+          "owner",
+          "owner",
+          "owner",
+          "owner",
+          "owner",
+          "guest",
+          "guest",
+          "guest",
+          "guest",
+          "owner",
+          "owner",
+          "owner",
+          "owner"
+        ],
+        "change": "actor responsibility and current location",
+        "id": "guest_handoff",
+        "invariant": "owner habit",
+        "locations": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          1,
+          1,
+          1,
+          1,
+          0,
+          0,
+          0,
+          0
+        ],
+        "necessary": "owner/guest paired posterior contrast",
+        "path": "other actor displacement without owner habit change"
+      },
+      "inputs": 14,
+      "arms": {
+        "direct_p5_full_eager": {
+          "valid_outputs": 14,
+          "rejected_outputs": 0,
+          "search_top1_correct": 14,
+          "search_evaluable": 14,
+          "put_back_command_correct": 14,
+          "executed_actions": null,
+          "environment_state_changes": null
+        },
+        "independently_tuned_amg": {
+          "valid_outputs": 14,
+          "rejected_outputs": 0,
+          "search_top1_correct": 14,
+          "search_evaluable": 14,
+          "put_back_command_correct": 14,
+          "executed_actions": null,
+          "environment_state_changes": null
+        },
+        "learned_matched_two_stage": {
+          "valid_outputs": 14,
+          "rejected_outputs": 0,
+          "search_top1_correct": 14,
+          "search_evaluable": 14,
+          "put_back_command_correct": 14,
+          "executed_actions": null,
+          "environment_state_changes": null
+        }
+      },
+      "direct_p5_max_committed": 0,
+      "full_fast_action_differences": 0,
+      "ordinary_max_committed": 12,
+      "ordinary_regime_sequence": [
+        "stable",
+        "stable",
+        "stable",
+        "stable",
+        "stable",
+        "stable",
+        "stable",
+        "stable",
+        "stable",
+        "stable",
+        "stable",
+        "stable",
+        "stable",
+        "stable"
+      ],
+      "ordinary_nonhabit_long_mass": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0.08622355752336774,
+        0.1724471150467355,
+        0.25867067257010323,
+        0.344894230093471,
+        0.344894230093471,
+        0.344894230093471,
+        0.344894230093471,
+        0.344894230093471
+      ],
+      "complete_mechanism": "MISSING_PRODUCTION_CAPABILITY",
+      "invalid_comparison_steps": []
+    },
+    {
+      "scenario": {
+        "actors": [
+          "owner",
+          "owner",
+          "owner",
+          "owner",
+          "owner",
+          "owner",
+          "unknown_actor",
+          "unknown_actor",
+          "unknown_actor",
+          "unknown_actor",
+          "owner",
+          "owner",
+          "owner",
+          "owner"
+        ],
+        "change": "unknown actor responsibility",
+        "id": "unknown_actor",
+        "invariant": "owner identity and object",
+        "locations": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          1,
+          1,
+          1,
+          1,
+          0,
+          0,
+          0,
+          0
+        ],
+        "necessary": "unknown evidence consumed; no silent known-actor substitution",
+        "path": "open-set actor evidence -> uncertainty without owner habit rewrite"
+      },
+      "inputs": 14,
+      "arms": {
+        "direct_p5_full_eager": {
+          "valid_outputs": 14,
+          "rejected_outputs": 0,
+          "search_top1_correct": 14,
+          "search_evaluable": 14,
+          "put_back_command_correct": 14,
+          "executed_actions": null,
+          "environment_state_changes": null
+        },
+        "independently_tuned_amg": {
+          "valid_outputs": 14,
+          "rejected_outputs": 0,
+          "search_top1_correct": 14,
+          "search_evaluable": 14,
+          "put_back_command_correct": 14,
+          "executed_actions": null,
+          "environment_state_changes": null
+        },
+        "learned_matched_two_stage": {
+          "valid_outputs": 14,
+          "rejected_outputs": 0,
+          "search_top1_correct": 14,
+          "search_evaluable": 14,
+          "put_back_command_correct": 14,
+          "executed_actions": null,
+          "environment_state_changes": null
+        }
+      },
+      "direct_p5_max_committed": 0,
+      "full_fast_action_differences": 0,
+      "ordinary_max_committed": 12,
+      "ordinary_regime_sequence": [
+        "stable",
+        "stable",
+        "stable",
+        "stable",
+        "stable",
+        "stable",
+        "stable",
+        "stable",
+        "stable",
+        "stable",
+        "stable",
+        "stable",
+        "stable",
+        "stable"
+      ],
+      "ordinary_nonhabit_long_mass": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0.08622355752336777,
+        0.17244711504673554,
+        0.25867067257010334,
+        0.3448942300934711,
+        0.3448942300934711,
+        0.3448942300934711,
+        0.3448942300934711,
+        0.3448942300934711
+      ],
+      "complete_mechanism": "MISSING_PRODUCTION_CAPABILITY",
+      "invalid_comparison_steps": []
+    },
+    {
+      "scenario": {
+        "actors": [
+          "owner",
+          "owner",
+          "owner",
+          "owner",
+          "owner",
+          "owner",
+          "owner",
+          "owner",
+          "owner",
+          "owner",
+          "owner",
+          "owner",
+          "owner",
+          "owner"
+        ],
+        "change": "regime and surviving statistics",
+        "id": "habit_change_return",
+        "invariant": "actor and object identity",
+        "locations": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          1,
+          1,
+          1,
+          1,
+          0,
+          0,
+          0,
+          0
+        ],
+        "necessary": "nonempty regime creation and reactivation",
+        "path": "stable -> new regime -> old regime reactivation"
+      },
+      "inputs": 14,
+      "arms": {
+        "direct_p5_full_eager": {
+          "valid_outputs": 14,
+          "rejected_outputs": 0,
+          "search_top1_correct": 14,
+          "search_evaluable": 14,
+          "put_back_command_correct": 14,
+          "executed_actions": null,
+          "environment_state_changes": null
+        },
+        "independently_tuned_amg": {
+          "valid_outputs": 14,
+          "rejected_outputs": 0,
+          "search_top1_correct": 14,
+          "search_evaluable": 14,
+          "put_back_command_correct": 10,
+          "executed_actions": null,
+          "environment_state_changes": null
+        },
+        "learned_matched_two_stage": {
+          "valid_outputs": 14,
+          "rejected_outputs": 0,
+          "search_top1_correct": 14,
+          "search_evaluable": 14,
+          "put_back_command_correct": 10,
+          "executed_actions": null,
+          "environment_state_changes": null
+        }
+      },
+      "direct_p5_max_committed": 0,
+      "full_fast_action_differences": 0,
+      "ordinary_max_committed": 14,
+      "ordinary_regime_sequence": [
+        "stable",
+        "stable",
+        "stable",
+        "stable",
+        "stable",
+        "stable",
+        "stable",
+        "owner@2026-01-08T08:10:00+00:00@a456ebc7",
+        "owner@2026-01-08T08:10:00+00:00@a456ebc7",
+        "owner@2026-01-08T08:10:00+00:00@a456ebc7",
+        "owner@2026-01-08T08:10:00+00:00@a456ebc7",
+        "stable",
+        "stable",
+        "stable"
+      ],
+      "ordinary_nonhabit_long_mass": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        7.78884672148429,
+        7.78884672148429,
+        7.78884672148429,
+        7.78884672148429,
+        5.192564480989526,
+        5.192564480989526,
+        5.192564480989526,
+        5.192564480989526
+      ],
+      "complete_mechanism": "MISSING_PRODUCTION_CAPABILITY",
+      "invalid_comparison_steps": []
+    },
+    {
+      "scenario": {
+        "actors": [
+          "owner",
+          "owner",
+          "owner",
+          "owner",
+          "owner",
+          "owner",
+          "owner",
+          "owner",
+          "owner",
+          "owner",
+          "owner",
+          "owner",
+          "owner",
+          "owner"
+        ],
+        "change": "instance association or explicit rejection",
+        "id": "similar_instance",
+        "invariant": "original instance memory must not absorb another instance",
+        "locations": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          1
+        ],
+        "necessary": "instance-specific boundary observed",
+        "path": "same-category different object instance at last input"
+      },
+      "inputs": 14,
+      "arms": {
+        "direct_p5_full_eager": {
+          "valid_outputs": 13,
+          "rejected_outputs": 1,
+          "search_top1_correct": 13,
+          "search_evaluable": 13,
+          "put_back_command_correct": 13,
+          "executed_actions": null,
+          "environment_state_changes": null
+        },
+        "independently_tuned_amg": {
+          "valid_outputs": 13,
+          "rejected_outputs": 1,
+          "search_top1_correct": 13,
+          "search_evaluable": 13,
+          "put_back_command_correct": 13,
+          "executed_actions": null,
+          "environment_state_changes": null
+        },
+        "learned_matched_two_stage": {
+          "valid_outputs": 13,
+          "rejected_outputs": 1,
+          "search_top1_correct": 13,
+          "search_evaluable": 13,
+          "put_back_command_correct": 13,
+          "executed_actions": null,
+          "environment_state_changes": null
+        }
+      },
+      "direct_p5_max_committed": 0,
+      "full_fast_action_differences": 0,
+      "ordinary_max_committed": 13,
+      "ordinary_regime_sequence": [
+        "stable",
+        "stable",
+        "stable",
+        "stable",
+        "stable",
+        "stable",
+        "stable",
+        "stable",
+        "stable",
+        "stable",
+        "stable",
+        "stable",
+        "stable",
+        "stable"
+      ],
+      "ordinary_nonhabit_long_mass": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "complete_mechanism": "MISSING_PRODUCTION_CAPABILITY",
+      "invalid_comparison_steps": [
+        13
+      ]
+    }
+  ],
+  "ciav": {
+    "different": {
+      "closure": "full_transition",
+      "outcome": "detected"
+    },
+    "negative": {
+      "closure": "none",
+      "outcome": "not_observed"
+    },
+    "same": {
+      "closure": "same_location_fast_verification",
+      "outcome": "detected"
+    }
+  },
+  "full_execution": {
+    "reason": "TaskSeparatedActionEnvironment.issue_runtime_readout requires its own learned runtime; no three-arm command adapter",
+    "status": "MISSING_PRODUCTION_CAPABILITY"
+  }
+}

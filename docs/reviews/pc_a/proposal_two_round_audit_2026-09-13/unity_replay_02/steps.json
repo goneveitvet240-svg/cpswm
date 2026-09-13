@@ -1,0 +1,2984 @@
+[
+  {
+    "step": 0,
+    "request": {
+      "action": "Pass"
+    },
+    "success": true,
+    "pose_max_error_m": {
+      "instance_0": 0.0,
+      "instance_1": 0.0
+    },
+    "camera_position_error_m": 0.0,
+    "view_angle_error_degrees": 0.0,
+    "objects": {
+      "instance_0": {
+        "metadata_visible": false,
+        "distance_m": 3.2643258571624756,
+        "mask_pixels": 0
+      },
+      "instance_1": {
+        "metadata_visible": false,
+        "distance_m": 3.0458431243896484,
+        "mask_pixels": 0
+      }
+    }
+  },
+  {
+    "step": 1,
+    "request": {
+      "action": "Pass"
+    },
+    "success": true,
+    "pose_max_error_m": {
+      "instance_0": 0.0,
+      "instance_1": 0.0
+    },
+    "camera_position_error_m": 0.0,
+    "view_angle_error_degrees": 0.0,
+    "objects": {
+      "instance_0": {
+        "metadata_visible": false,
+        "distance_m": 3.2643258571624756,
+        "mask_pixels": 0
+      },
+      "instance_1": {
+        "metadata_visible": false,
+        "distance_m": 3.0458431243896484,
+        "mask_pixels": 0
+      }
+    }
+  },
+  {
+    "step": 2,
+    "request": {
+      "action": "TeleportFull",
+      "forceAction": false,
+      "horizon": 45.0,
+      "position": {
+        "x": 0.25,
+        "y": 0.9009997844696045,
+        "z": 0.25
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "standing": true
+    },
+    "success": true,
+    "pose_max_error_m": {
+      "instance_0": 0.0,
+      "instance_1": 0.0
+    },
+    "camera_position_error_m": 0.0,
+    "view_angle_error_degrees": 0.0,
+    "objects": {
+      "instance_0": {
+        "metadata_visible": false,
+        "distance_m": 2.806389570236206,
+        "mask_pixels": 9
+      },
+      "instance_1": {
+        "metadata_visible": false,
+        "distance_m": 2.204756736755371,
+        "mask_pixels": 17
+      }
+    },
+    "event_tick": 0,
+    "selected": true,
+    "target": "instance_0",
+    "kind": "habit_drift",
+    "evaluator_sensor_file": "evaluator_pixels_000002.npz",
+    "evaluator_sensor_sha256": "c477bdf1ab8e4a212d9becb877702aacc666e27554b817ce4a90a64bc577de41"
+  },
+  {
+    "step": 3,
+    "request": {
+      "action": "TeleportObject",
+      "forceAction": false,
+      "forceKinematic": true,
+      "objectId": "Kettle|surface|2|6",
+      "position": {
+        "x": 6.75,
+        "y": 0.01937915325164795,
+        "z": 5.0
+      },
+      "rotation": {
+        "x": -4.9145048251375556e-05,
+        "y": 89.99909210205078,
+        "z": -0.0001149480594904162
+      }
+    },
+    "success": true,
+    "pose_max_error_m": {
+      "instance_0": 0.0,
+      "instance_1": 0.0
+    },
+    "camera_position_error_m": 0.0,
+    "view_angle_error_degrees": 0.0,
+    "objects": {
+      "instance_0": {
+        "metadata_visible": false,
+        "distance_m": 2.806389570236206,
+        "mask_pixels": 9
+      },
+      "instance_1": {
+        "metadata_visible": false,
+        "distance_m": 8.098750114440918,
+        "mask_pixels": 0
+      }
+    }
+  },
+  {
+    "step": 4,
+    "request": {
+      "action": "TeleportFull",
+      "forceAction": false,
+      "horizon": 45.0,
+      "position": {
+        "x": 1.5,
+        "y": 0.9009997844696045,
+        "z": 1.75
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "standing": true
+    },
+    "success": true,
+    "pose_max_error_m": {
+      "instance_0": 0.0,
+      "instance_1": 0.0
+    },
+    "camera_position_error_m": 0.0,
+    "view_angle_error_degrees": 0.0,
+    "objects": {
+      "instance_0": {
+        "metadata_visible": false,
+        "distance_m": 1.698434829711914,
+        "mask_pixels": 49
+      },
+      "instance_1": {
+        "metadata_visible": false,
+        "distance_m": 6.2371673583984375,
+        "mask_pixels": 0
+      }
+    },
+    "event_tick": 10,
+    "selected": true,
+    "target": "instance_1",
+    "kind": "direct_move",
+    "evaluator_sensor_file": "evaluator_pixels_000004.npz",
+    "evaluator_sensor_sha256": "414df9d1ea156058c691bd740e7b4fc494cb9d2e2252fafb34f2fdf8eb6bc37d"
+  },
+  {
+    "step": 5,
+    "request": {
+      "action": "TeleportObject",
+      "forceAction": false,
+      "forceKinematic": true,
+      "objectId": "Kettle|surface|2|5",
+      "position": {
+        "x": 2.5,
+        "y": 0.01937939167022705,
+        "z": 3.0
+      },
+      "rotation": {
+        "x": -4.517797788139433e-05,
+        "y": 89.99913787841797,
+        "z": -0.00014780709170736372
+      }
+    },
+    "success": true,
+    "pose_max_error_m": {
+      "instance_0": 0.0,
+      "instance_1": 0.0
+    },
+    "camera_position_error_m": 0.0,
+    "view_angle_error_degrees": 0.0,
+    "objects": {
+      "instance_0": {
+        "metadata_visible": false,
+        "distance_m": 1.8274993896484375,
+        "mask_pixels": 23
+      },
+      "instance_1": {
+        "metadata_visible": false,
+        "distance_m": 6.2371673583984375,
+        "mask_pixels": 0
+      }
+    }
+  },
+  {
+    "step": 6,
+    "request": {
+      "action": "TeleportFull",
+      "forceAction": false,
+      "horizon": 45.0,
+      "position": {
+        "x": 3.0,
+        "y": 0.9009997844696045,
+        "z": 0.25
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "standing": true
+    },
+    "success": true,
+    "pose_max_error_m": {
+      "instance_0": 0.0,
+      "instance_1": 0.0
+    },
+    "camera_position_error_m": 0.0,
+    "view_angle_error_degrees": 0.0,
+    "objects": {
+      "instance_0": {
+        "metadata_visible": false,
+        "distance_m": 2.930828094482422,
+        "mask_pixels": 7
+      },
+      "instance_1": {
+        "metadata_visible": false,
+        "distance_m": 6.115738391876221,
+        "mask_pixels": 2
+      }
+    },
+    "event_tick": 20,
+    "selected": true,
+    "target": "instance_0",
+    "kind": "ordered_handoff",
+    "evaluator_sensor_file": "evaluator_pixels_000006.npz",
+    "evaluator_sensor_sha256": "aac0abcb50857d346f157bfb7d64d3dcb945e894151c65ce62f5b988b552bdc8"
+  },
+  {
+    "step": 7,
+    "request": {
+      "action": "Pass"
+    },
+    "success": true,
+    "pose_max_error_m": {
+      "instance_0": 0.0,
+      "instance_1": 0.0
+    },
+    "camera_position_error_m": 0.0,
+    "view_angle_error_degrees": 0.0,
+    "objects": {
+      "instance_0": {
+        "metadata_visible": false,
+        "distance_m": 2.930828094482422,
+        "mask_pixels": 7
+      },
+      "instance_1": {
+        "metadata_visible": false,
+        "distance_m": 6.115738391876221,
+        "mask_pixels": 2
+      }
+    }
+  },
+  {
+    "step": 8,
+    "request": {
+      "action": "TeleportFull",
+      "forceAction": false,
+      "horizon": 45.0,
+      "position": {
+        "x": 4.5,
+        "y": 0.9009997844696045,
+        "z": 1.25
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "standing": true
+    },
+    "success": true,
+    "pose_max_error_m": {
+      "instance_0": 0.0,
+      "instance_1": 0.0
+    },
+    "camera_position_error_m": 0.0,
+    "view_angle_error_degrees": 0.0,
+    "objects": {
+      "instance_0": {
+        "metadata_visible": false,
+        "distance_m": 2.7999560832977295,
+        "mask_pixels": 18
+      },
+      "instance_1": {
+        "metadata_visible": false,
+        "distance_m": 4.461194038391113,
+        "mask_pixels": 4
+      }
+    },
+    "event_tick": 30,
+    "selected": true,
+    "target": "instance_1",
+    "kind": "no_move_observation_policy_change",
+    "evaluator_sensor_file": "evaluator_pixels_000008.npz",
+    "evaluator_sensor_sha256": "d53768a2b164bcf75f377783c3ca0c8116ca8d48b79d271efad27398ce0e53be"
+  },
+  {
+    "step": 9,
+    "request": {
+      "action": "TeleportObject",
+      "forceAction": false,
+      "forceKinematic": true,
+      "objectId": "Kettle|surface|2|5",
+      "position": {
+        "x": 0.4102097749710083,
+        "y": 0.9668458700180054,
+        "z": 3.051038980484009
+      },
+      "rotation": {
+        "x": -4.517797788139433e-05,
+        "y": 89.99913787841797,
+        "z": -0.00014780709170736372
+      }
+    },
+    "success": true,
+    "pose_max_error_m": {
+      "instance_0": 0.0,
+      "instance_1": 0.0
+    },
+    "camera_position_error_m": 0.0,
+    "view_angle_error_degrees": 0.0,
+    "objects": {
+      "instance_0": {
+        "metadata_visible": false,
+        "distance_m": 4.469279766082764,
+        "mask_pixels": 0
+      },
+      "instance_1": {
+        "metadata_visible": false,
+        "distance_m": 4.461194038391113,
+        "mask_pixels": 4
+      }
+    }
+  },
+  {
+    "step": 10,
+    "request": {
+      "action": "TeleportFull",
+      "forceAction": false,
+      "horizon": 45.0,
+      "position": {
+        "x": 5.5,
+        "y": 0.9009997844696045,
+        "z": 3.75
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "standing": true
+    },
+    "success": true,
+    "pose_max_error_m": {
+      "instance_0": 0.0,
+      "instance_1": 0.0
+    },
+    "camera_position_error_m": 0.0,
+    "view_angle_error_degrees": 0.0,
+    "objects": {
+      "instance_0": {
+        "metadata_visible": false,
+        "distance_m": 5.137980937957764,
+        "mask_pixels": 0
+      },
+      "instance_1": {
+        "metadata_visible": false,
+        "distance_m": 1.975412368774414,
+        "mask_pixels": 0
+      }
+    },
+    "event_tick": 40,
+    "selected": true,
+    "target": "instance_0",
+    "kind": "unknown_actor",
+    "evaluator_sensor_file": "evaluator_pixels_000010.npz",
+    "evaluator_sensor_sha256": "8db113f4fbd4cb75386669f813117546fbd5442229b72d8c23933dacb105dc5e"
+  },
+  {
+    "step": 11,
+    "request": {
+      "action": "Pass"
+    },
+    "success": true,
+    "pose_max_error_m": {
+      "instance_0": 0.0,
+      "instance_1": 0.0
+    },
+    "camera_position_error_m": 0.0,
+    "view_angle_error_degrees": 0.0,
+    "objects": {
+      "instance_0": {
+        "metadata_visible": false,
+        "distance_m": 5.137980937957764,
+        "mask_pixels": 0
+      },
+      "instance_1": {
+        "metadata_visible": false,
+        "distance_m": 1.975412368774414,
+        "mask_pixels": 0
+      }
+    }
+  },
+  {
+    "step": 12,
+    "request": {
+      "action": "TeleportFull",
+      "forceAction": false,
+      "horizon": 45.0,
+      "position": {
+        "x": 7.0,
+        "y": 0.9009997844696045,
+        "z": 2.25
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "standing": true
+    },
+    "success": true,
+    "pose_max_error_m": {
+      "instance_0": 0.0,
+      "instance_1": 0.0
+    },
+    "camera_position_error_m": 0.0,
+    "view_angle_error_degrees": 0.0,
+    "objects": {
+      "instance_0": {
+        "metadata_visible": false,
+        "distance_m": 6.638624668121338,
+        "mask_pixels": 0
+      },
+      "instance_1": {
+        "metadata_visible": false,
+        "distance_m": 2.8986642360687256,
+        "mask_pixels": 8
+      }
+    },
+    "event_tick": 50,
+    "selected": true,
+    "target": "instance_0",
+    "kind": "late_correction",
+    "evaluator_sensor_file": "evaluator_pixels_000012.npz",
+    "evaluator_sensor_sha256": "0bb64d6d96b8c6a0110bf6f1ba56257beb0319de78ae02253d6b8fe257999895"
+  },
+  {
+    "step": 13,
+    "request": {
+      "action": "Pass"
+    },
+    "success": true,
+    "pose_max_error_m": {
+      "instance_0": 0.0,
+      "instance_1": 0.0
+    },
+    "camera_position_error_m": 0.0,
+    "view_angle_error_degrees": 0.0,
+    "objects": {
+      "instance_0": {
+        "metadata_visible": false,
+        "distance_m": 6.638624668121338,
+        "mask_pixels": 0
+      },
+      "instance_1": {
+        "metadata_visible": false,
+        "distance_m": 2.8986642360687256,
+        "mask_pixels": 8
+      }
+    }
+  },
+  {
+    "step": 14,
+    "request": {
+      "action": "TeleportFull",
+      "forceAction": false,
+      "horizon": 45.0,
+      "position": {
+        "x": 0.25,
+        "y": 0.9009997844696045,
+        "z": 0.25
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 90.0,
+        "z": 0.0
+      },
+      "standing": true
+    },
+    "success": true,
+    "pose_max_error_m": {
+      "instance_0": 0.0,
+      "instance_1": 0.0
+    },
+    "camera_position_error_m": 0.0,
+    "view_angle_error_degrees": 0.0,
+    "objects": {
+      "instance_0": {
+        "metadata_visible": false,
+        "distance_m": 2.806389570236206,
+        "mask_pixels": 0
+      },
+      "instance_1": {
+        "metadata_visible": false,
+        "distance_m": 8.098750114440918,
+        "mask_pixels": 0
+      }
+    },
+    "event_tick": 100,
+    "selected": true,
+    "target": "instance_0",
+    "kind": "late_correction",
+    "evaluator_sensor_file": "evaluator_pixels_000014.npz",
+    "evaluator_sensor_sha256": "e1f7ef8bd0b9fa7d45e6e0e7998ffff6145ff88e2ceda4a060137b5728893257"
+  },
+  {
+    "step": 15,
+    "request": {
+      "action": "Pass"
+    },
+    "success": true,
+    "pose_max_error_m": {
+      "instance_0": 0.0,
+      "instance_1": 0.0
+    },
+    "camera_position_error_m": 0.0,
+    "view_angle_error_degrees": 0.0,
+    "objects": {
+      "instance_0": {
+        "metadata_visible": false,
+        "distance_m": 2.806389570236206,
+        "mask_pixels": 0
+      },
+      "instance_1": {
+        "metadata_visible": false,
+        "distance_m": 8.098750114440918,
+        "mask_pixels": 0
+      }
+    }
+  },
+  {
+    "step": 16,
+    "request": {
+      "action": "TeleportFull",
+      "forceAction": false,
+      "horizon": 45.0,
+      "position": {
+        "x": 1.5,
+        "y": 0.9009997844696045,
+        "z": 1.75
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 90.0,
+        "z": 0.0
+      },
+      "standing": true
+    },
+    "success": true,
+    "pose_max_error_m": {
+      "instance_0": 0.0,
+      "instance_1": 0.0
+    },
+    "camera_position_error_m": 0.0,
+    "view_angle_error_degrees": 0.0,
+    "objects": {
+      "instance_0": {
+        "metadata_visible": false,
+        "distance_m": 1.698434829711914,
+        "mask_pixels": 0
+      },
+      "instance_1": {
+        "metadata_visible": false,
+        "distance_m": 6.2371673583984375,
+        "mask_pixels": 0
+      }
+    },
+    "event_tick": 110,
+    "selected": true,
+    "target": "instance_0",
+    "kind": "habit_drift",
+    "evaluator_sensor_file": "evaluator_pixels_000016.npz",
+    "evaluator_sensor_sha256": "9af8731027df3b5848fff2aa72f3027bbba6a031f6ea11ffb39a0456273edbe9"
+  },
+  {
+    "step": 17,
+    "request": {
+      "action": "TeleportObject",
+      "forceAction": false,
+      "forceKinematic": true,
+      "objectId": "Kettle|surface|2|6",
+      "position": {
+        "x": 0.4869704246520996,
+        "y": 0.9668458700180054,
+        "z": 2.440995454788208
+      },
+      "rotation": {
+        "x": -4.9145048251375556e-05,
+        "y": 89.99909210205078,
+        "z": -0.0001149480594904162
+      }
+    },
+    "success": true,
+    "pose_max_error_m": {
+      "instance_0": 0.0,
+      "instance_1": 0.0
+    },
+    "camera_position_error_m": 0.0,
+    "view_angle_error_degrees": 0.0,
+    "objects": {
+      "instance_0": {
+        "metadata_visible": false,
+        "distance_m": 1.698434829711914,
+        "mask_pixels": 0
+      },
+      "instance_1": {
+        "metadata_visible": false,
+        "distance_m": 1.228022575378418,
+        "mask_pixels": 0
+      }
+    },
+    "event_tick": 120,
+    "selected": false,
+    "target": "instance_1",
+    "kind": "unknown_actor"
+  },
+  {
+    "step": 18,
+    "request": {
+      "action": "Pass"
+    },
+    "success": true,
+    "pose_max_error_m": {
+      "instance_0": 0.0,
+      "instance_1": 0.0
+    },
+    "camera_position_error_m": 0.0,
+    "view_angle_error_degrees": 0.0,
+    "objects": {
+      "instance_0": {
+        "metadata_visible": false,
+        "distance_m": 1.698434829711914,
+        "mask_pixels": 0
+      },
+      "instance_1": {
+        "metadata_visible": false,
+        "distance_m": 1.228022575378418,
+        "mask_pixels": 0
+      }
+    },
+    "event_tick": 130,
+    "selected": false,
+    "target": "instance_0",
+    "kind": "no_move_observation_policy_change"
+  },
+  {
+    "step": 19,
+    "request": {
+      "action": "TeleportObject",
+      "forceAction": false,
+      "forceKinematic": true,
+      "objectId": "Kettle|surface|2|6",
+      "position": {
+        "x": 6.75,
+        "y": 0.01937915325164795,
+        "z": 5.0
+      },
+      "rotation": {
+        "x": -4.9145048251375556e-05,
+        "y": 89.99909210205078,
+        "z": -0.0001149480594904162
+      }
+    },
+    "success": true,
+    "pose_max_error_m": {
+      "instance_0": 0.0,
+      "instance_1": 0.0
+    },
+    "camera_position_error_m": 0.0,
+    "view_angle_error_degrees": 0.0,
+    "objects": {
+      "instance_0": {
+        "metadata_visible": false,
+        "distance_m": 1.698434829711914,
+        "mask_pixels": 0
+      },
+      "instance_1": {
+        "metadata_visible": false,
+        "distance_m": 6.2371673583984375,
+        "mask_pixels": 0
+      }
+    }
+  },
+  {
+    "step": 20,
+    "request": {
+      "action": "TeleportFull",
+      "forceAction": false,
+      "horizon": 45.0,
+      "position": {
+        "x": 5.5,
+        "y": 0.9009997844696045,
+        "z": 3.75
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 90.0,
+        "z": 0.0
+      },
+      "standing": true
+    },
+    "success": true,
+    "pose_max_error_m": {
+      "instance_0": 0.0,
+      "instance_1": 0.0
+    },
+    "camera_position_error_m": 0.0,
+    "view_angle_error_degrees": 0.0,
+    "objects": {
+      "instance_0": {
+        "metadata_visible": false,
+        "distance_m": 5.137980937957764,
+        "mask_pixels": 0
+      },
+      "instance_1": {
+        "metadata_visible": false,
+        "distance_m": 1.975412368774414,
+        "mask_pixels": 0
+      }
+    },
+    "event_tick": 140,
+    "selected": true,
+    "target": "instance_1",
+    "kind": "direct_move",
+    "evaluator_sensor_file": "evaluator_pixels_000020.npz",
+    "evaluator_sensor_sha256": "b60861fc92921b4167f748b027a8b4ec63d801c2276085c0d145eedf08a5e9f8"
+  },
+  {
+    "step": 21,
+    "request": {
+      "action": "TeleportObject",
+      "forceAction": false,
+      "forceKinematic": true,
+      "objectId": "Kettle|surface|2|5",
+      "position": {
+        "x": 2.5,
+        "y": 0.01937939167022705,
+        "z": 3.0
+      },
+      "rotation": {
+        "x": -4.517797788139433e-05,
+        "y": 89.99913787841797,
+        "z": -0.00014780709170736372
+      }
+    },
+    "success": true,
+    "pose_max_error_m": {
+      "instance_0": 0.0,
+      "instance_1": 0.0
+    },
+    "camera_position_error_m": 0.0,
+    "view_angle_error_degrees": 0.0,
+    "objects": {
+      "instance_0": {
+        "metadata_visible": false,
+        "distance_m": 3.2155487537384033,
+        "mask_pixels": 0
+      },
+      "instance_1": {
+        "metadata_visible": false,
+        "distance_m": 1.975412368774414,
+        "mask_pixels": 0
+      }
+    }
+  },
+  {
+    "step": 22,
+    "request": {
+      "action": "TeleportFull",
+      "forceAction": false,
+      "horizon": 45.0,
+      "position": {
+        "x": 7.0,
+        "y": 0.9009997844696045,
+        "z": 2.25
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 90.0,
+        "z": 0.0
+      },
+      "standing": true
+    },
+    "success": true,
+    "pose_max_error_m": {
+      "instance_0": 0.0,
+      "instance_1": 0.0
+    },
+    "camera_position_error_m": 0.0,
+    "view_angle_error_degrees": 0.0,
+    "objects": {
+      "instance_0": {
+        "metadata_visible": false,
+        "distance_m": 4.646477699279785,
+        "mask_pixels": 0
+      },
+      "instance_1": {
+        "metadata_visible": false,
+        "distance_m": 2.8986642360687256,
+        "mask_pixels": 0
+      }
+    },
+    "event_tick": 150,
+    "selected": true,
+    "target": "instance_0",
+    "kind": "ordered_handoff",
+    "evaluator_sensor_file": "evaluator_pixels_000022.npz",
+    "evaluator_sensor_sha256": "065e16aa02da6a4b655c095717575e88eb09e9a870c49477bd153ab355a2eaa5"
+  },
+  {
+    "step": 23,
+    "request": {
+      "action": "Pass"
+    },
+    "success": true,
+    "pose_max_error_m": {
+      "instance_0": 0.0,
+      "instance_1": 0.0
+    },
+    "camera_position_error_m": 0.0,
+    "view_angle_error_degrees": 0.0,
+    "objects": {
+      "instance_0": {
+        "metadata_visible": false,
+        "distance_m": 4.646477699279785,
+        "mask_pixels": 0
+      },
+      "instance_1": {
+        "metadata_visible": false,
+        "distance_m": 2.8986642360687256,
+        "mask_pixels": 0
+      }
+    }
+  },
+  {
+    "step": 24,
+    "request": {
+      "action": "TeleportFull",
+      "forceAction": false,
+      "horizon": 45.0,
+      "position": {
+        "x": 0.25,
+        "y": 0.9009997844696045,
+        "z": 0.25
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 180.0,
+        "z": 0.0
+      },
+      "standing": true
+    },
+    "success": true,
+    "pose_max_error_m": {
+      "instance_0": 0.0,
+      "instance_1": 0.0
+    },
+    "camera_position_error_m": 0.0,
+    "view_angle_error_degrees": 0.0,
+    "objects": {
+      "instance_0": {
+        "metadata_visible": false,
+        "distance_m": 3.6609089374542236,
+        "mask_pixels": 0
+      },
+      "instance_1": {
+        "metadata_visible": false,
+        "distance_m": 8.098750114440918,
+        "mask_pixels": 0
+      }
+    },
+    "event_tick": 200,
+    "selected": true,
+    "target": "instance_0",
+    "kind": "habit_drift",
+    "evaluator_sensor_file": "evaluator_pixels_000024.npz",
+    "evaluator_sensor_sha256": "2f8804a88c6eecd0ef740d6622c6ccfd466250215bb9029ae70ca5bc2730d214"
+  },
+  {
+    "step": 25,
+    "request": {
+      "action": "Pass"
+    },
+    "success": true,
+    "pose_max_error_m": {
+      "instance_0": 0.0,
+      "instance_1": 0.0
+    },
+    "camera_position_error_m": 0.0,
+    "view_angle_error_degrees": 0.0,
+    "objects": {
+      "instance_0": {
+        "metadata_visible": false,
+        "distance_m": 3.6609089374542236,
+        "mask_pixels": 0
+      },
+      "instance_1": {
+        "metadata_visible": false,
+        "distance_m": 8.098750114440918,
+        "mask_pixels": 0
+      }
+    }
+  },
+  {
+    "step": 26,
+    "request": {
+      "action": "TeleportFull",
+      "forceAction": false,
+      "horizon": 45.0,
+      "position": {
+        "x": 1.5,
+        "y": 0.9009997844696045,
+        "z": 1.75
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 180.0,
+        "z": 0.0
+      },
+      "standing": true
+    },
+    "success": true,
+    "pose_max_error_m": {
+      "instance_0": 0.0,
+      "instance_1": 0.0
+    },
+    "camera_position_error_m": 0.0,
+    "view_angle_error_degrees": 0.0,
+    "objects": {
+      "instance_0": {
+        "metadata_visible": false,
+        "distance_m": 1.8274993896484375,
+        "mask_pixels": 0
+      },
+      "instance_1": {
+        "metadata_visible": false,
+        "distance_m": 6.2371673583984375,
+        "mask_pixels": 0
+      }
+    },
+    "event_tick": 210,
+    "selected": true,
+    "target": "instance_1",
+    "kind": "no_move_observation_policy_change",
+    "evaluator_sensor_file": "evaluator_pixels_000026.npz",
+    "evaluator_sensor_sha256": "418c53b8776f60876619c0ca582548542155dd647e7ea06147e2286bcae89803"
+  },
+  {
+    "step": 27,
+    "request": {
+      "action": "Pass"
+    },
+    "success": true,
+    "pose_max_error_m": {
+      "instance_0": 0.0,
+      "instance_1": 0.0
+    },
+    "camera_position_error_m": 0.0,
+    "view_angle_error_degrees": 0.0,
+    "objects": {
+      "instance_0": {
+        "metadata_visible": false,
+        "distance_m": 1.8274993896484375,
+        "mask_pixels": 0
+      },
+      "instance_1": {
+        "metadata_visible": false,
+        "distance_m": 6.2371673583984375,
+        "mask_pixels": 0
+      }
+    }
+  },
+  {
+    "step": 28,
+    "request": {
+      "action": "TeleportFull",
+      "forceAction": false,
+      "horizon": 45.0,
+      "position": {
+        "x": 3.0,
+        "y": 0.9009997844696045,
+        "z": 0.25
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 180.0,
+        "z": 0.0
+      },
+      "standing": true
+    },
+    "success": true,
+    "pose_max_error_m": {
+      "instance_0": 0.0,
+      "instance_1": 0.0
+    },
+    "camera_position_error_m": 0.0,
+    "view_angle_error_degrees": 0.0,
+    "objects": {
+      "instance_0": {
+        "metadata_visible": false,
+        "distance_m": 2.930828094482422,
+        "mask_pixels": 0
+      },
+      "instance_1": {
+        "metadata_visible": false,
+        "distance_m": 6.115738391876221,
+        "mask_pixels": 0
+      }
+    },
+    "event_tick": 220,
+    "selected": true,
+    "target": "instance_1",
+    "kind": "late_correction",
+    "evaluator_sensor_file": "evaluator_pixels_000028.npz",
+    "evaluator_sensor_sha256": "fae0b1fbb95d9326e6c7357096d620b2cc21d5db4d7b244e5e28b1fe43fcd9f4"
+  },
+  {
+    "step": 29,
+    "request": {
+      "action": "TeleportObject",
+      "forceAction": false,
+      "forceKinematic": true,
+      "objectId": "Kettle|surface|2|6",
+      "position": {
+        "x": 1.5,
+        "y": 0.01937915325164795,
+        "z": 2.75
+      },
+      "rotation": {
+        "x": -4.9145048251375556e-05,
+        "y": 89.99909210205078,
+        "z": -0.0001149480594904162
+      }
+    },
+    "success": true,
+    "pose_max_error_m": {
+      "instance_0": 0.0,
+      "instance_1": 0.0
+    },
+    "camera_position_error_m": 0.0,
+    "view_angle_error_degrees": 0.0,
+    "objects": {
+      "instance_0": {
+        "metadata_visible": false,
+        "distance_m": 2.930828094482422,
+        "mask_pixels": 0
+      },
+      "instance_1": {
+        "metadata_visible": false,
+        "distance_m": 3.04585862159729,
+        "mask_pixels": 0
+      }
+    }
+  },
+  {
+    "step": 30,
+    "request": {
+      "action": "TeleportFull",
+      "forceAction": false,
+      "horizon": 45.0,
+      "position": {
+        "x": 4.5,
+        "y": 0.9009997844696045,
+        "z": 1.25
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 180.0,
+        "z": 0.0
+      },
+      "standing": true
+    },
+    "success": true,
+    "pose_max_error_m": {
+      "instance_0": 0.0,
+      "instance_1": 0.0
+    },
+    "camera_position_error_m": 0.0,
+    "view_angle_error_degrees": 0.0,
+    "objects": {
+      "instance_0": {
+        "metadata_visible": false,
+        "distance_m": 2.7999560832977295,
+        "mask_pixels": 0
+      },
+      "instance_1": {
+        "metadata_visible": false,
+        "distance_m": 3.4680330753326416,
+        "mask_pixels": 0
+      }
+    },
+    "event_tick": 230,
+    "selected": true,
+    "target": "instance_1",
+    "kind": "direct_move",
+    "evaluator_sensor_file": "evaluator_pixels_000030.npz",
+    "evaluator_sensor_sha256": "fe0aba4c64e9a01c5b03fe435b12dff8fda27086a4d81b1d34e36a1d3b8e67a7"
+  },
+  {
+    "step": 31,
+    "request": {
+      "action": "TeleportObject",
+      "forceAction": false,
+      "forceKinematic": true,
+      "objectId": "Kettle|surface|2|5",
+      "position": {
+        "x": 5.75,
+        "y": 0.01937939167022705,
+        "z": 1.75
+      },
+      "rotation": {
+        "x": -4.517797788139433e-05,
+        "y": 89.99913787841797,
+        "z": -0.00014780709170736372
+      }
+    },
+    "success": true,
+    "pose_max_error_m": {
+      "instance_0": 0.0,
+      "instance_1": 0.0
+    },
+    "camera_position_error_m": 0.0,
+    "view_angle_error_degrees": 0.0,
+    "objects": {
+      "instance_0": {
+        "metadata_visible": false,
+        "distance_m": 1.6092711687088013,
+        "mask_pixels": 0
+      },
+      "instance_1": {
+        "metadata_visible": false,
+        "distance_m": 3.4680330753326416,
+        "mask_pixels": 0
+      }
+    }
+  },
+  {
+    "step": 32,
+    "request": {
+      "action": "TeleportFull",
+      "forceAction": false,
+      "horizon": 45.0,
+      "position": {
+        "x": 5.5,
+        "y": 0.9009997844696045,
+        "z": 3.75
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 180.0,
+        "z": 0.0
+      },
+      "standing": true
+    },
+    "success": true,
+    "pose_max_error_m": {
+      "instance_0": 0.0,
+      "instance_1": 0.0
+    },
+    "camera_position_error_m": 0.0,
+    "view_angle_error_degrees": 0.0,
+    "objects": {
+      "instance_0": {
+        "metadata_visible": false,
+        "distance_m": 2.199944019317627,
+        "mask_pixels": 14
+      },
+      "instance_1": {
+        "metadata_visible": false,
+        "distance_m": 4.216308116912842,
+        "mask_pixels": 0
+      }
+    },
+    "event_tick": 240,
+    "selected": true,
+    "target": "instance_0",
+    "kind": "ordered_handoff",
+    "evaluator_sensor_file": "evaluator_pixels_000032.npz",
+    "evaluator_sensor_sha256": "76b7c427446018f50d8e024361c2c854da39ceb452114e64b7071793ed330412"
+  },
+  {
+    "step": 33,
+    "request": {
+      "action": "TeleportObject",
+      "forceAction": false,
+      "forceKinematic": true,
+      "objectId": "Kettle|surface|2|6",
+      "position": {
+        "x": 0.4869704246520996,
+        "y": 0.9668458700180054,
+        "z": 2.440995454788208
+      },
+      "rotation": {
+        "x": -4.9145048251375556e-05,
+        "y": 89.99909210205078,
+        "z": -0.0001149480594904162
+      }
+    },
+    "success": true,
+    "pose_max_error_m": {
+      "instance_0": 0.0,
+      "instance_1": 0.0
+    },
+    "camera_position_error_m": 0.0,
+    "view_angle_error_degrees": 0.0,
+    "objects": {
+      "instance_0": {
+        "metadata_visible": false,
+        "distance_m": 2.199944019317627,
+        "mask_pixels": 14
+      },
+      "instance_1": {
+        "metadata_visible": false,
+        "distance_m": 5.1815338134765625,
+        "mask_pixels": 0
+      }
+    }
+  },
+  {
+    "step": 34,
+    "request": {
+      "action": "TeleportFull",
+      "forceAction": false,
+      "horizon": 45.0,
+      "position": {
+        "x": 7.0,
+        "y": 0.9009997844696045,
+        "z": 2.25
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 180.0,
+        "z": 0.0
+      },
+      "standing": true
+    },
+    "success": true,
+    "pose_max_error_m": {
+      "instance_0": 0.0,
+      "instance_1": 0.0
+    },
+    "camera_position_error_m": 0.0,
+    "view_angle_error_degrees": 0.0,
+    "objects": {
+      "instance_0": {
+        "metadata_visible": false,
+        "distance_m": 1.6092711687088013,
+        "mask_pixels": 0
+      },
+      "instance_1": {
+        "metadata_visible": false,
+        "distance_m": 6.516162395477295,
+        "mask_pixels": 0
+      }
+    },
+    "event_tick": 250,
+    "selected": true,
+    "target": "instance_1",
+    "kind": "unknown_actor",
+    "evaluator_sensor_file": "evaluator_pixels_000034.npz",
+    "evaluator_sensor_sha256": "d6c848414a18860e68982713325193c22058fff03a334d69d0d73b564fcdb8cc"
+  },
+  {
+    "step": 35,
+    "request": {
+      "action": "TeleportObject",
+      "forceAction": false,
+      "forceKinematic": true,
+      "objectId": "Kettle|surface|2|6",
+      "position": {
+        "x": 1.5,
+        "y": 0.01937915325164795,
+        "z": 2.75
+      },
+      "rotation": {
+        "x": -4.9145048251375556e-05,
+        "y": 89.99909210205078,
+        "z": -0.0001149480594904162
+      }
+    },
+    "success": true,
+    "pose_max_error_m": {
+      "instance_0": 0.0,
+      "instance_1": 0.0
+    },
+    "camera_position_error_m": 0.0,
+    "view_angle_error_degrees": 0.0,
+    "objects": {
+      "instance_0": {
+        "metadata_visible": false,
+        "distance_m": 1.6092711687088013,
+        "mask_pixels": 0
+      },
+      "instance_1": {
+        "metadata_visible": false,
+        "distance_m": 5.592607021331787,
+        "mask_pixels": 0
+      }
+    }
+  },
+  {
+    "step": 36,
+    "request": {
+      "action": "TeleportFull",
+      "forceAction": false,
+      "horizon": 45.0,
+      "position": {
+        "x": 0.25,
+        "y": 0.9009997844696045,
+        "z": 0.25
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 270.0,
+        "z": 0.0
+      },
+      "standing": true
+    },
+    "success": true,
+    "pose_max_error_m": {
+      "instance_0": 0.0,
+      "instance_1": 0.0
+    },
+    "camera_position_error_m": 0.0,
+    "view_angle_error_degrees": 0.0,
+    "objects": {
+      "instance_0": {
+        "metadata_visible": false,
+        "distance_m": 5.768643856048584,
+        "mask_pixels": 0
+      },
+      "instance_1": {
+        "metadata_visible": false,
+        "distance_m": 2.930828332901001,
+        "mask_pixels": 0
+      }
+    },
+    "event_tick": 300,
+    "selected": true,
+    "target": "instance_1",
+    "kind": "direct_move",
+    "evaluator_sensor_file": "evaluator_pixels_000036.npz",
+    "evaluator_sensor_sha256": "19d17f18d255675fa70f6a00654dabde7d2e5e98c7c956e0cf66f46cb04e1206"
+  },
+  {
+    "step": 37,
+    "request": {
+      "action": "Pass"
+    },
+    "success": true,
+    "pose_max_error_m": {
+      "instance_0": 0.0,
+      "instance_1": 0.0
+    },
+    "camera_position_error_m": 0.0,
+    "view_angle_error_degrees": 0.0,
+    "objects": {
+      "instance_0": {
+        "metadata_visible": false,
+        "distance_m": 5.768643856048584,
+        "mask_pixels": 0
+      },
+      "instance_1": {
+        "metadata_visible": false,
+        "distance_m": 2.930828332901001,
+        "mask_pixels": 0
+      }
+    }
+  },
+  {
+    "step": 38,
+    "request": {
+      "action": "TeleportFull",
+      "forceAction": false,
+      "horizon": 45.0,
+      "position": {
+        "x": 1.5,
+        "y": 0.9009997844696045,
+        "z": 1.75
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 270.0,
+        "z": 0.0
+      },
+      "standing": true
+    },
+    "success": true,
+    "pose_max_error_m": {
+      "instance_0": 0.0,
+      "instance_1": 0.0
+    },
+    "camera_position_error_m": 0.0,
+    "view_angle_error_degrees": 0.0,
+    "objects": {
+      "instance_0": {
+        "metadata_visible": false,
+        "distance_m": 4.340478420257568,
+        "mask_pixels": 0
+      },
+      "instance_1": {
+        "metadata_visible": true,
+        "distance_m": 1.333137035369873,
+        "mask_pixels": 46
+      }
+    },
+    "event_tick": 310,
+    "selected": true,
+    "target": "instance_1",
+    "kind": "late_correction",
+    "evaluator_sensor_file": "evaluator_pixels_000038.npz",
+    "evaluator_sensor_sha256": "922807429114b74494649bcbaa40f097623122b3c8d15af9ab09d468508da19a"
+  },
+  {
+    "step": 39,
+    "request": {
+      "action": "Pass"
+    },
+    "success": true,
+    "pose_max_error_m": {
+      "instance_0": 0.0,
+      "instance_1": 0.0
+    },
+    "camera_position_error_m": 0.0,
+    "view_angle_error_degrees": 0.0,
+    "objects": {
+      "instance_0": {
+        "metadata_visible": false,
+        "distance_m": 4.340478420257568,
+        "mask_pixels": 0
+      },
+      "instance_1": {
+        "metadata_visible": true,
+        "distance_m": 1.333137035369873,
+        "mask_pixels": 46
+      }
+    },
+    "event_tick": 320,
+    "selected": false,
+    "target": "instance_1",
+    "kind": "no_move_observation_policy_change"
+  },
+  {
+    "step": 40,
+    "request": {
+      "action": "TeleportObject",
+      "forceAction": false,
+      "forceKinematic": true,
+      "objectId": "Kettle|surface|2|5",
+      "position": {
+        "x": 2.5,
+        "y": 0.01937939167022705,
+        "z": 3.0
+      },
+      "rotation": {
+        "x": -4.517797788139433e-05,
+        "y": 89.99913787841797,
+        "z": -0.00014780709170736372
+      }
+    },
+    "success": true,
+    "pose_max_error_m": {
+      "instance_0": 0.0,
+      "instance_1": 0.0
+    },
+    "camera_position_error_m": 0.0,
+    "view_angle_error_degrees": 0.0,
+    "objects": {
+      "instance_0": {
+        "metadata_visible": false,
+        "distance_m": 1.8274993896484375,
+        "mask_pixels": 0
+      },
+      "instance_1": {
+        "metadata_visible": true,
+        "distance_m": 1.333137035369873,
+        "mask_pixels": 46
+      }
+    }
+  },
+  {
+    "step": 41,
+    "request": {
+      "action": "TeleportFull",
+      "forceAction": false,
+      "horizon": 45.0,
+      "position": {
+        "x": 4.5,
+        "y": 0.9009997844696045,
+        "z": 1.25
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 270.0,
+        "z": 0.0
+      },
+      "standing": true
+    },
+    "success": true,
+    "pose_max_error_m": {
+      "instance_0": 0.0,
+      "instance_1": 0.0
+    },
+    "camera_position_error_m": 0.0,
+    "view_angle_error_degrees": 0.0,
+    "objects": {
+      "instance_0": {
+        "metadata_visible": false,
+        "distance_m": 2.7999560832977295,
+        "mask_pixels": 13
+      },
+      "instance_1": {
+        "metadata_visible": false,
+        "distance_m": 3.4680330753326416,
+        "mask_pixels": 7
+      }
+    },
+    "event_tick": 330,
+    "selected": true,
+    "target": "instance_0",
+    "kind": "habit_drift",
+    "evaluator_sensor_file": "evaluator_pixels_000041.npz",
+    "evaluator_sensor_sha256": "52306685be7ea71b32079d8fcc80dbe70b5cad5960bc2f09df94b51c51ea3575"
+  },
+  {
+    "step": 42,
+    "request": {
+      "action": "TeleportObject",
+      "forceAction": false,
+      "forceKinematic": true,
+      "objectId": "Kettle|surface|2|6",
+      "position": {
+        "x": 0.4869704246520996,
+        "y": 0.9668458700180054,
+        "z": 2.440995454788208
+      },
+      "rotation": {
+        "x": -4.9145048251375556e-05,
+        "y": 89.99909210205078,
+        "z": -0.0001149480594904162
+      }
+    },
+    "success": true,
+    "pose_max_error_m": {
+      "instance_0": 0.0,
+      "instance_1": 0.0
+    },
+    "camera_position_error_m": 0.0,
+    "view_angle_error_degrees": 0.0,
+    "objects": {
+      "instance_0": {
+        "metadata_visible": false,
+        "distance_m": 2.7999560832977295,
+        "mask_pixels": 13
+      },
+      "instance_1": {
+        "metadata_visible": false,
+        "distance_m": 4.186551570892334,
+        "mask_pixels": 6
+      }
+    }
+  },
+  {
+    "step": 43,
+    "request": {
+      "action": "TeleportFull",
+      "forceAction": false,
+      "horizon": 45.0,
+      "position": {
+        "x": 5.5,
+        "y": 0.9009997844696045,
+        "z": 3.75
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 270.0,
+        "z": 0.0
+      },
+      "standing": true
+    },
+    "success": true,
+    "pose_max_error_m": {
+      "instance_0": 0.0,
+      "instance_1": 0.0
+    },
+    "camera_position_error_m": 0.0,
+    "view_angle_error_degrees": 0.0,
+    "objects": {
+      "instance_0": {
+        "metadata_visible": false,
+        "distance_m": 3.2155487537384033,
+        "mask_pixels": 7
+      },
+      "instance_1": {
+        "metadata_visible": false,
+        "distance_m": 5.1815338134765625,
+        "mask_pixels": 4
+      }
+    },
+    "event_tick": 340,
+    "selected": true,
+    "target": "instance_1",
+    "kind": "ordered_handoff",
+    "evaluator_sensor_file": "evaluator_pixels_000043.npz",
+    "evaluator_sensor_sha256": "2baa53536ba6bec1515b666ba880289399cda902009b6ca6e93962195c18f6d3"
+  },
+  {
+    "step": 44,
+    "request": {
+      "action": "TeleportObject",
+      "forceAction": false,
+      "forceKinematic": true,
+      "objectId": "Kettle|surface|2|5",
+      "position": {
+        "x": 5.75,
+        "y": 0.01937939167022705,
+        "z": 1.75
+      },
+      "rotation": {
+        "x": -4.517797788139433e-05,
+        "y": 89.99913787841797,
+        "z": -0.00014780709170736372
+      }
+    },
+    "success": true,
+    "pose_max_error_m": {
+      "instance_0": 0.0,
+      "instance_1": 0.0
+    },
+    "camera_position_error_m": 0.0,
+    "view_angle_error_degrees": 0.0,
+    "objects": {
+      "instance_0": {
+        "metadata_visible": false,
+        "distance_m": 2.199944019317627,
+        "mask_pixels": 0
+      },
+      "instance_1": {
+        "metadata_visible": false,
+        "distance_m": 5.1815338134765625,
+        "mask_pixels": 4
+      }
+    },
+    "event_tick": 350,
+    "selected": false,
+    "target": "instance_0",
+    "kind": "unknown_actor"
+  },
+  {
+    "step": 45,
+    "request": {
+      "action": "TeleportObject",
+      "forceAction": false,
+      "forceKinematic": true,
+      "objectId": "Kettle|surface|2|5",
+      "position": {
+        "x": 0.4102097749710083,
+        "y": 0.9668458700180054,
+        "z": 3.051038980484009
+      },
+      "rotation": {
+        "x": -4.517797788139433e-05,
+        "y": 89.99913787841797,
+        "z": -0.00014780709170736372
+      }
+    },
+    "success": true,
+    "pose_max_error_m": {
+      "instance_0": 0.0,
+      "instance_1": 0.0
+    },
+    "camera_position_error_m": 0.0,
+    "view_angle_error_degrees": 0.0,
+    "objects": {
+      "instance_0": {
+        "metadata_visible": false,
+        "distance_m": 5.137980937957764,
+        "mask_pixels": 5
+      },
+      "instance_1": {
+        "metadata_visible": false,
+        "distance_m": 5.1815338134765625,
+        "mask_pixels": 4
+      }
+    }
+  },
+  {
+    "step": 46,
+    "request": {
+      "action": "TeleportFull",
+      "forceAction": false,
+      "horizon": 45.0,
+      "position": {
+        "x": 0.25,
+        "y": 0.9009997844696045,
+        "z": 0.25
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "standing": true
+    },
+    "success": true,
+    "pose_max_error_m": {
+      "instance_0": 0.0,
+      "instance_1": 0.0
+    },
+    "camera_position_error_m": 0.0,
+    "view_angle_error_degrees": 0.0,
+    "objects": {
+      "instance_0": {
+        "metadata_visible": false,
+        "distance_m": 2.806389570236206,
+        "mask_pixels": 9
+      },
+      "instance_1": {
+        "metadata_visible": false,
+        "distance_m": 2.204756736755371,
+        "mask_pixels": 17
+      }
+    },
+    "event_tick": 400,
+    "selected": true,
+    "target": "instance_0",
+    "kind": "direct_move",
+    "evaluator_sensor_file": "evaluator_pixels_000046.npz",
+    "evaluator_sensor_sha256": "0ec509d5fd0ef50e2293dd44dd8bcc9f1324decc8cfda2bb088972825e3fafaf"
+  },
+  {
+    "step": 47,
+    "request": {
+      "action": "TeleportObject",
+      "forceAction": false,
+      "forceKinematic": true,
+      "objectId": "Kettle|surface|2|6",
+      "position": {
+        "x": 6.75,
+        "y": 0.01937915325164795,
+        "z": 5.0
+      },
+      "rotation": {
+        "x": -4.9145048251375556e-05,
+        "y": 89.99909210205078,
+        "z": -0.0001149480594904162
+      }
+    },
+    "success": true,
+    "pose_max_error_m": {
+      "instance_0": 0.0,
+      "instance_1": 0.0
+    },
+    "camera_position_error_m": 0.0,
+    "view_angle_error_degrees": 0.0,
+    "objects": {
+      "instance_0": {
+        "metadata_visible": false,
+        "distance_m": 2.806389570236206,
+        "mask_pixels": 9
+      },
+      "instance_1": {
+        "metadata_visible": false,
+        "distance_m": 8.098750114440918,
+        "mask_pixels": 0
+      }
+    }
+  },
+  {
+    "step": 48,
+    "request": {
+      "action": "TeleportFull",
+      "forceAction": false,
+      "horizon": 45.0,
+      "position": {
+        "x": 1.5,
+        "y": 0.9009997844696045,
+        "z": 1.75
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "standing": true
+    },
+    "success": true,
+    "pose_max_error_m": {
+      "instance_0": 0.0,
+      "instance_1": 0.0
+    },
+    "camera_position_error_m": 0.0,
+    "view_angle_error_degrees": 0.0,
+    "objects": {
+      "instance_0": {
+        "metadata_visible": false,
+        "distance_m": 1.698434829711914,
+        "mask_pixels": 49
+      },
+      "instance_1": {
+        "metadata_visible": false,
+        "distance_m": 6.2371673583984375,
+        "mask_pixels": 0
+      }
+    },
+    "event_tick": 410,
+    "selected": true,
+    "target": "instance_1",
+    "kind": "ordered_handoff",
+    "evaluator_sensor_file": "evaluator_pixels_000048.npz",
+    "evaluator_sensor_sha256": "f79b929d084162a86a01c250b17c28932acc9bcc0cfc6fe6c8bfbdac293d0c77"
+  },
+  {
+    "step": 49,
+    "request": {
+      "action": "Pass"
+    },
+    "success": true,
+    "pose_max_error_m": {
+      "instance_0": 0.0,
+      "instance_1": 0.0
+    },
+    "camera_position_error_m": 0.0,
+    "view_angle_error_degrees": 0.0,
+    "objects": {
+      "instance_0": {
+        "metadata_visible": false,
+        "distance_m": 1.698434829711914,
+        "mask_pixels": 49
+      },
+      "instance_1": {
+        "metadata_visible": false,
+        "distance_m": 6.2371673583984375,
+        "mask_pixels": 0
+      }
+    }
+  },
+  {
+    "step": 50,
+    "request": {
+      "action": "TeleportFull",
+      "forceAction": false,
+      "horizon": 45.0,
+      "position": {
+        "x": 3.0,
+        "y": 0.9009997844696045,
+        "z": 0.25
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "standing": true
+    },
+    "success": true,
+    "pose_max_error_m": {
+      "instance_0": 0.0,
+      "instance_1": 0.0
+    },
+    "camera_position_error_m": 0.0,
+    "view_angle_error_degrees": 0.0,
+    "objects": {
+      "instance_0": {
+        "metadata_visible": false,
+        "distance_m": 3.8153858184814453,
+        "mask_pixels": 0
+      },
+      "instance_1": {
+        "metadata_visible": false,
+        "distance_m": 6.115738391876221,
+        "mask_pixels": 2
+      }
+    },
+    "event_tick": 420,
+    "selected": true,
+    "target": "instance_0",
+    "kind": "habit_drift",
+    "evaluator_sensor_file": "evaluator_pixels_000050.npz",
+    "evaluator_sensor_sha256": "2037b0ec6249371017df4a3bda4247423be68f2cc05051d250e397202da1a8e5"
+  },
+  {
+    "step": 51,
+    "request": {
+      "action": "Pass"
+    },
+    "success": true,
+    "pose_max_error_m": {
+      "instance_0": 0.0,
+      "instance_1": 0.0
+    },
+    "camera_position_error_m": 0.0,
+    "view_angle_error_degrees": 0.0,
+    "objects": {
+      "instance_0": {
+        "metadata_visible": false,
+        "distance_m": 3.8153858184814453,
+        "mask_pixels": 0
+      },
+      "instance_1": {
+        "metadata_visible": false,
+        "distance_m": 6.115738391876221,
+        "mask_pixels": 2
+      }
+    }
+  },
+  {
+    "step": 52,
+    "request": {
+      "action": "TeleportFull",
+      "forceAction": false,
+      "horizon": 45.0,
+      "position": {
+        "x": 4.5,
+        "y": 0.9009997844696045,
+        "z": 1.25
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "standing": true
+    },
+    "success": true,
+    "pose_max_error_m": {
+      "instance_0": 0.0,
+      "instance_1": 0.0
+    },
+    "camera_position_error_m": 0.0,
+    "view_angle_error_degrees": 0.0,
+    "objects": {
+      "instance_0": {
+        "metadata_visible": false,
+        "distance_m": 4.469279766082764,
+        "mask_pixels": 0
+      },
+      "instance_1": {
+        "metadata_visible": false,
+        "distance_m": 4.461194038391113,
+        "mask_pixels": 4
+      }
+    },
+    "event_tick": 430,
+    "selected": true,
+    "target": "instance_1",
+    "kind": "no_move_observation_policy_change",
+    "evaluator_sensor_file": "evaluator_pixels_000052.npz",
+    "evaluator_sensor_sha256": "e05977da8b2c0dc8f847590c06291252d0ea97e18b95cf84b6dafb26b05d9300"
+  },
+  {
+    "step": 53,
+    "request": {
+      "action": "Pass"
+    },
+    "success": true,
+    "pose_max_error_m": {
+      "instance_0": 0.0,
+      "instance_1": 0.0
+    },
+    "camera_position_error_m": 0.0,
+    "view_angle_error_degrees": 0.0,
+    "objects": {
+      "instance_0": {
+        "metadata_visible": false,
+        "distance_m": 4.469279766082764,
+        "mask_pixels": 0
+      },
+      "instance_1": {
+        "metadata_visible": false,
+        "distance_m": 4.461194038391113,
+        "mask_pixels": 4
+      }
+    }
+  },
+  {
+    "step": 54,
+    "request": {
+      "action": "TeleportFull",
+      "forceAction": false,
+      "horizon": 45.0,
+      "position": {
+        "x": 5.5,
+        "y": 0.9009997844696045,
+        "z": 3.75
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "standing": true
+    },
+    "success": true,
+    "pose_max_error_m": {
+      "instance_0": 0.0,
+      "instance_1": 0.0
+    },
+    "camera_position_error_m": 0.0,
+    "view_angle_error_degrees": 0.0,
+    "objects": {
+      "instance_0": {
+        "metadata_visible": false,
+        "distance_m": 5.137980937957764,
+        "mask_pixels": 0
+      },
+      "instance_1": {
+        "metadata_visible": false,
+        "distance_m": 1.975412368774414,
+        "mask_pixels": 0
+      }
+    },
+    "event_tick": 440,
+    "selected": true,
+    "target": "instance_1",
+    "kind": "late_correction",
+    "evaluator_sensor_file": "evaluator_pixels_000054.npz",
+    "evaluator_sensor_sha256": "8db113f4fbd4cb75386669f813117546fbd5442229b72d8c23933dacb105dc5e"
+  },
+  {
+    "step": 55,
+    "request": {
+      "action": "TeleportObject",
+      "forceAction": false,
+      "forceKinematic": true,
+      "objectId": "Kettle|surface|2|6",
+      "position": {
+        "x": 0.4869704246520996,
+        "y": 0.9668458700180054,
+        "z": 2.440995454788208
+      },
+      "rotation": {
+        "x": -4.9145048251375556e-05,
+        "y": 89.99909210205078,
+        "z": -0.0001149480594904162
+      }
+    },
+    "success": true,
+    "pose_max_error_m": {
+      "instance_0": 0.0,
+      "instance_1": 0.0
+    },
+    "camera_position_error_m": 0.0,
+    "view_angle_error_degrees": 0.0,
+    "objects": {
+      "instance_0": {
+        "metadata_visible": false,
+        "distance_m": 5.137980937957764,
+        "mask_pixels": 0
+      },
+      "instance_1": {
+        "metadata_visible": false,
+        "distance_m": 5.1815338134765625,
+        "mask_pixels": 0
+      }
+    }
+  },
+  {
+    "step": 56,
+    "request": {
+      "action": "TeleportFull",
+      "forceAction": false,
+      "horizon": 45.0,
+      "position": {
+        "x": 7.0,
+        "y": 0.9009997844696045,
+        "z": 2.25
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "standing": true
+    },
+    "success": true,
+    "pose_max_error_m": {
+      "instance_0": 0.0,
+      "instance_1": 0.0
+    },
+    "camera_position_error_m": 0.0,
+    "view_angle_error_degrees": 0.0,
+    "objects": {
+      "instance_0": {
+        "metadata_visible": false,
+        "distance_m": 6.638624668121338,
+        "mask_pixels": 0
+      },
+      "instance_1": {
+        "metadata_visible": false,
+        "distance_m": 6.516162395477295,
+        "mask_pixels": 0
+      }
+    },
+    "event_tick": 450,
+    "selected": true,
+    "target": "instance_1",
+    "kind": "unknown_actor",
+    "evaluator_sensor_file": "evaluator_pixels_000056.npz",
+    "evaluator_sensor_sha256": "c0075d51c04ed2f8fb5b7f990477bf17e085ba709cb2e1b27ca2408bf7dc8da4"
+  },
+  {
+    "step": 57,
+    "request": {
+      "action": "Pass"
+    },
+    "success": true,
+    "pose_max_error_m": {
+      "instance_0": 0.0,
+      "instance_1": 0.0
+    },
+    "camera_position_error_m": 0.0,
+    "view_angle_error_degrees": 0.0,
+    "objects": {
+      "instance_0": {
+        "metadata_visible": false,
+        "distance_m": 6.638624668121338,
+        "mask_pixels": 0
+      },
+      "instance_1": {
+        "metadata_visible": false,
+        "distance_m": 6.516162395477295,
+        "mask_pixels": 0
+      }
+    },
+    "event_tick": 500,
+    "selected": false,
+    "target": "instance_1",
+    "kind": "no_move_observation_policy_change"
+  },
+  {
+    "step": 58,
+    "request": {
+      "action": "Pass"
+    },
+    "success": true,
+    "pose_max_error_m": {
+      "instance_0": 0.0,
+      "instance_1": 0.0
+    },
+    "camera_position_error_m": 0.0,
+    "view_angle_error_degrees": 0.0,
+    "objects": {
+      "instance_0": {
+        "metadata_visible": false,
+        "distance_m": 6.638624668121338,
+        "mask_pixels": 0
+      },
+      "instance_1": {
+        "metadata_visible": false,
+        "distance_m": 6.516162395477295,
+        "mask_pixels": 0
+      }
+    }
+  },
+  {
+    "step": 59,
+    "request": {
+      "action": "TeleportFull",
+      "forceAction": false,
+      "horizon": 45.0,
+      "position": {
+        "x": 1.5,
+        "y": 0.9009997844696045,
+        "z": 1.75
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 90.0,
+        "z": 0.0
+      },
+      "standing": true
+    },
+    "success": true,
+    "pose_max_error_m": {
+      "instance_0": 0.0,
+      "instance_1": 0.0
+    },
+    "camera_position_error_m": 0.0,
+    "view_angle_error_degrees": 0.0,
+    "objects": {
+      "instance_0": {
+        "metadata_visible": false,
+        "distance_m": 1.698434829711914,
+        "mask_pixels": 0
+      },
+      "instance_1": {
+        "metadata_visible": false,
+        "distance_m": 1.228022575378418,
+        "mask_pixels": 0
+      }
+    },
+    "event_tick": 510,
+    "selected": true,
+    "target": "instance_0",
+    "kind": "habit_drift",
+    "evaluator_sensor_file": "evaluator_pixels_000059.npz",
+    "evaluator_sensor_sha256": "3d17d30042c21c18b6932b4f07b3b6b27088e7718b12c603921bbba4ff179286"
+  },
+  {
+    "step": 60,
+    "request": {
+      "action": "TeleportObject",
+      "forceAction": false,
+      "forceKinematic": true,
+      "objectId": "Kettle|surface|2|6",
+      "position": {
+        "x": 6.75,
+        "y": 0.01937915325164795,
+        "z": 5.0
+      },
+      "rotation": {
+        "x": -4.9145048251375556e-05,
+        "y": 89.99909210205078,
+        "z": -0.0001149480594904162
+      }
+    },
+    "success": true,
+    "pose_max_error_m": {
+      "instance_0": 0.0,
+      "instance_1": 0.0
+    },
+    "camera_position_error_m": 0.0,
+    "view_angle_error_degrees": 0.0,
+    "objects": {
+      "instance_0": {
+        "metadata_visible": false,
+        "distance_m": 1.698434829711914,
+        "mask_pixels": 0
+      },
+      "instance_1": {
+        "metadata_visible": false,
+        "distance_m": 6.2371673583984375,
+        "mask_pixels": 0
+      }
+    }
+  },
+  {
+    "step": 61,
+    "request": {
+      "action": "TeleportFull",
+      "forceAction": false,
+      "horizon": 45.0,
+      "position": {
+        "x": 3.0,
+        "y": 0.9009997844696045,
+        "z": 0.25
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 90.0,
+        "z": 0.0
+      },
+      "standing": true
+    },
+    "success": true,
+    "pose_max_error_m": {
+      "instance_0": 0.0,
+      "instance_1": 0.0
+    },
+    "camera_position_error_m": 0.0,
+    "view_angle_error_degrees": 0.0,
+    "objects": {
+      "instance_0": {
+        "metadata_visible": false,
+        "distance_m": 3.8153858184814453,
+        "mask_pixels": 0
+      },
+      "instance_1": {
+        "metadata_visible": false,
+        "distance_m": 6.115738391876221,
+        "mask_pixels": 0
+      }
+    },
+    "event_tick": 520,
+    "selected": true,
+    "target": "instance_1",
+    "kind": "direct_move",
+    "evaluator_sensor_file": "evaluator_pixels_000061.npz",
+    "evaluator_sensor_sha256": "4bc1deb11ae8fee907307e65425dbacc39334823d64f6dd36c134e1d7ddfd654"
+  },
+  {
+    "step": 62,
+    "request": {
+      "action": "TeleportObject",
+      "forceAction": false,
+      "forceKinematic": true,
+      "objectId": "Kettle|surface|2|5",
+      "position": {
+        "x": 2.5,
+        "y": 0.01937939167022705,
+        "z": 3.0
+      },
+      "rotation": {
+        "x": -4.517797788139433e-05,
+        "y": 89.99913787841797,
+        "z": -0.00014780709170736372
+      }
+    },
+    "success": true,
+    "pose_max_error_m": {
+      "instance_0": 0.0,
+      "instance_1": 0.0
+    },
+    "camera_position_error_m": 0.0,
+    "view_angle_error_degrees": 0.0,
+    "objects": {
+      "instance_0": {
+        "metadata_visible": false,
+        "distance_m": 2.930828094482422,
+        "mask_pixels": 0
+      },
+      "instance_1": {
+        "metadata_visible": false,
+        "distance_m": 6.115738391876221,
+        "mask_pixels": 0
+      }
+    },
+    "event_tick": 530,
+    "selected": false,
+    "target": "instance_0",
+    "kind": "unknown_actor"
+  },
+  {
+    "step": 63,
+    "request": {
+      "action": "TeleportObject",
+      "forceAction": false,
+      "forceKinematic": true,
+      "objectId": "Kettle|surface|2|6",
+      "position": {
+        "x": 0.4869704246520996,
+        "y": 0.9668458700180054,
+        "z": 2.440995454788208
+      },
+      "rotation": {
+        "x": -4.9145048251375556e-05,
+        "y": 89.99909210205078,
+        "z": -0.0001149480594904162
+      }
+    },
+    "success": true,
+    "pose_max_error_m": {
+      "instance_0": 0.0,
+      "instance_1": 0.0
+    },
+    "camera_position_error_m": 0.0,
+    "view_angle_error_degrees": 0.0,
+    "objects": {
+      "instance_0": {
+        "metadata_visible": false,
+        "distance_m": 2.930828094482422,
+        "mask_pixels": 0
+      },
+      "instance_1": {
+        "metadata_visible": false,
+        "distance_m": 3.334683656692505,
+        "mask_pixels": 0
+      }
+    }
+  },
+  {
+    "step": 64,
+    "request": {
+      "action": "TeleportFull",
+      "forceAction": false,
+      "horizon": 45.0,
+      "position": {
+        "x": 5.5,
+        "y": 0.9009997844696045,
+        "z": 3.75
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 90.0,
+        "z": 0.0
+      },
+      "standing": true
+    },
+    "success": true,
+    "pose_max_error_m": {
+      "instance_0": 0.0,
+      "instance_1": 0.0
+    },
+    "camera_position_error_m": 0.0,
+    "view_angle_error_degrees": 0.0,
+    "objects": {
+      "instance_0": {
+        "metadata_visible": false,
+        "distance_m": 3.2155487537384033,
+        "mask_pixels": 0
+      },
+      "instance_1": {
+        "metadata_visible": false,
+        "distance_m": 5.1815338134765625,
+        "mask_pixels": 0
+      }
+    },
+    "event_tick": 540,
+    "selected": true,
+    "target": "instance_1",
+    "kind": "ordered_handoff",
+    "evaluator_sensor_file": "evaluator_pixels_000064.npz",
+    "evaluator_sensor_sha256": "459f79b9f0a748e2dcd3b546d87d258c141d345fe68d505ee8b72ead99afc235"
+  },
+  {
+    "step": 65,
+    "request": {
+      "action": "Pass"
+    },
+    "success": true,
+    "pose_max_error_m": {
+      "instance_0": 0.0,
+      "instance_1": 0.0
+    },
+    "camera_position_error_m": 0.0,
+    "view_angle_error_degrees": 0.0,
+    "objects": {
+      "instance_0": {
+        "metadata_visible": false,
+        "distance_m": 3.2155487537384033,
+        "mask_pixels": 0
+      },
+      "instance_1": {
+        "metadata_visible": false,
+        "distance_m": 5.1815338134765625,
+        "mask_pixels": 0
+      }
+    }
+  },
+  {
+    "step": 66,
+    "request": {
+      "action": "TeleportFull",
+      "forceAction": false,
+      "horizon": 45.0,
+      "position": {
+        "x": 7.0,
+        "y": 0.9009997844696045,
+        "z": 2.25
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 90.0,
+        "z": 0.0
+      },
+      "standing": true
+    },
+    "success": true,
+    "pose_max_error_m": {
+      "instance_0": 0.0,
+      "instance_1": 0.0
+    },
+    "camera_position_error_m": 0.0,
+    "view_angle_error_degrees": 0.0,
+    "objects": {
+      "instance_0": {
+        "metadata_visible": false,
+        "distance_m": 4.646477699279785,
+        "mask_pixels": 0
+      },
+      "instance_1": {
+        "metadata_visible": false,
+        "distance_m": 6.516162395477295,
+        "mask_pixels": 0
+      }
+    },
+    "event_tick": 550,
+    "selected": true,
+    "target": "instance_1",
+    "kind": "late_correction",
+    "evaluator_sensor_file": "evaluator_pixels_000066.npz",
+    "evaluator_sensor_sha256": "065e16aa02da6a4b655c095717575e88eb09e9a870c49477bd153ab355a2eaa5"
+  },
+  {
+    "step": 67,
+    "request": {
+      "action": "TeleportObject",
+      "forceAction": false,
+      "forceKinematic": true,
+      "objectId": "Kettle|surface|2|5",
+      "position": {
+        "x": 0.4102097749710083,
+        "y": 0.9668458700180054,
+        "z": 3.051038980484009
+      },
+      "rotation": {
+        "x": -4.517797788139433e-05,
+        "y": 89.99913787841797,
+        "z": -0.00014780709170736372
+      }
+    },
+    "success": true,
+    "pose_max_error_m": {
+      "instance_0": 0.0,
+      "instance_1": 0.0
+    },
+    "camera_position_error_m": 0.0,
+    "view_angle_error_degrees": 0.0,
+    "objects": {
+      "instance_0": {
+        "metadata_visible": false,
+        "distance_m": 6.638624668121338,
+        "mask_pixels": 0
+      },
+      "instance_1": {
+        "metadata_visible": false,
+        "distance_m": 6.516162395477295,
+        "mask_pixels": 0
+      }
+    }
+  },
+  {
+    "step": 68,
+    "request": {
+      "action": "TeleportFull",
+      "forceAction": false,
+      "horizon": 45.0,
+      "position": {
+        "x": 0.25,
+        "y": 0.9009997844696045,
+        "z": 0.25
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 180.0,
+        "z": 0.0
+      },
+      "standing": true
+    },
+    "success": true,
+    "pose_max_error_m": {
+      "instance_0": 0.0,
+      "instance_1": 0.0
+    },
+    "camera_position_error_m": 0.0,
+    "view_angle_error_degrees": 0.0,
+    "objects": {
+      "instance_0": {
+        "metadata_visible": false,
+        "distance_m": 2.806389570236206,
+        "mask_pixels": 0
+      },
+      "instance_1": {
+        "metadata_visible": false,
+        "distance_m": 2.204756736755371,
+        "mask_pixels": 0
+      }
+    },
+    "event_tick": 600,
+    "selected": true,
+    "target": "instance_0",
+    "kind": "habit_drift",
+    "evaluator_sensor_file": "evaluator_pixels_000068.npz",
+    "evaluator_sensor_sha256": "2f8804a88c6eecd0ef740d6622c6ccfd466250215bb9029ae70ca5bc2730d214"
+  },
+  {
+    "step": 69,
+    "request": {
+      "action": "TeleportObject",
+      "forceAction": false,
+      "forceKinematic": true,
+      "objectId": "Kettle|surface|2|6",
+      "position": {
+        "x": 6.75,
+        "y": 0.01937915325164795,
+        "z": 5.0
+      },
+      "rotation": {
+        "x": -4.9145048251375556e-05,
+        "y": 89.99909210205078,
+        "z": -0.0001149480594904162
+      }
+    },
+    "success": true,
+    "pose_max_error_m": {
+      "instance_0": 0.0,
+      "instance_1": 0.0
+    },
+    "camera_position_error_m": 0.0,
+    "view_angle_error_degrees": 0.0,
+    "objects": {
+      "instance_0": {
+        "metadata_visible": false,
+        "distance_m": 2.806389570236206,
+        "mask_pixels": 0
+      },
+      "instance_1": {
+        "metadata_visible": false,
+        "distance_m": 8.098750114440918,
+        "mask_pixels": 0
+      }
+    }
+  },
+  {
+    "step": 70,
+    "request": {
+      "action": "TeleportFull",
+      "forceAction": false,
+      "horizon": 45.0,
+      "position": {
+        "x": 1.5,
+        "y": 0.9009997844696045,
+        "z": 1.75
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 180.0,
+        "z": 0.0
+      },
+      "standing": true
+    },
+    "success": true,
+    "pose_max_error_m": {
+      "instance_0": 0.0,
+      "instance_1": 0.0
+    },
+    "camera_position_error_m": 0.0,
+    "view_angle_error_degrees": 0.0,
+    "objects": {
+      "instance_0": {
+        "metadata_visible": false,
+        "distance_m": 1.698434829711914,
+        "mask_pixels": 0
+      },
+      "instance_1": {
+        "metadata_visible": false,
+        "distance_m": 6.2371673583984375,
+        "mask_pixels": 0
+      }
+    },
+    "event_tick": 610,
+    "selected": true,
+    "target": "instance_1",
+    "kind": "direct_move",
+    "evaluator_sensor_file": "evaluator_pixels_000070.npz",
+    "evaluator_sensor_sha256": "418c53b8776f60876619c0ca582548542155dd647e7ea06147e2286bcae89803"
+  },
+  {
+    "step": 71,
+    "request": {
+      "action": "TeleportObject",
+      "forceAction": false,
+      "forceKinematic": true,
+      "objectId": "Kettle|surface|2|5",
+      "position": {
+        "x": 2.5,
+        "y": 0.01937939167022705,
+        "z": 3.0
+      },
+      "rotation": {
+        "x": -4.517797788139433e-05,
+        "y": 89.99913787841797,
+        "z": -0.00014780709170736372
+      }
+    },
+    "success": true,
+    "pose_max_error_m": {
+      "instance_0": 0.0,
+      "instance_1": 0.0
+    },
+    "camera_position_error_m": 0.0,
+    "view_angle_error_degrees": 0.0,
+    "objects": {
+      "instance_0": {
+        "metadata_visible": false,
+        "distance_m": 1.8274993896484375,
+        "mask_pixels": 0
+      },
+      "instance_1": {
+        "metadata_visible": false,
+        "distance_m": 6.2371673583984375,
+        "mask_pixels": 0
+      }
+    }
+  },
+  {
+    "step": 72,
+    "request": {
+      "action": "TeleportFull",
+      "forceAction": false,
+      "horizon": 45.0,
+      "position": {
+        "x": 3.0,
+        "y": 0.9009997844696045,
+        "z": 0.25
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 180.0,
+        "z": 0.0
+      },
+      "standing": true
+    },
+    "success": true,
+    "pose_max_error_m": {
+      "instance_0": 0.0,
+      "instance_1": 0.0
+    },
+    "camera_position_error_m": 0.0,
+    "view_angle_error_degrees": 0.0,
+    "objects": {
+      "instance_0": {
+        "metadata_visible": false,
+        "distance_m": 2.930828094482422,
+        "mask_pixels": 0
+      },
+      "instance_1": {
+        "metadata_visible": false,
+        "distance_m": 6.115738391876221,
+        "mask_pixels": 0
+      }
+    },
+    "event_tick": 620,
+    "selected": true,
+    "target": "instance_0",
+    "kind": "ordered_handoff",
+    "evaluator_sensor_file": "evaluator_pixels_000072.npz",
+    "evaluator_sensor_sha256": "fae0b1fbb95d9326e6c7357096d620b2cc21d5db4d7b244e5e28b1fe43fcd9f4"
+  },
+  {
+    "step": 73,
+    "request": {
+      "action": "Pass"
+    },
+    "success": true,
+    "pose_max_error_m": {
+      "instance_0": 0.0,
+      "instance_1": 0.0
+    },
+    "camera_position_error_m": 0.0,
+    "view_angle_error_degrees": 0.0,
+    "objects": {
+      "instance_0": {
+        "metadata_visible": false,
+        "distance_m": 2.930828094482422,
+        "mask_pixels": 0
+      },
+      "instance_1": {
+        "metadata_visible": false,
+        "distance_m": 6.115738391876221,
+        "mask_pixels": 0
+      }
+    }
+  },
+  {
+    "step": 74,
+    "request": {
+      "action": "TeleportFull",
+      "forceAction": false,
+      "horizon": 45.0,
+      "position": {
+        "x": 4.5,
+        "y": 0.9009997844696045,
+        "z": 1.25
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 180.0,
+        "z": 0.0
+      },
+      "standing": true
+    },
+    "success": true,
+    "pose_max_error_m": {
+      "instance_0": 0.0,
+      "instance_1": 0.0
+    },
+    "camera_position_error_m": 0.0,
+    "view_angle_error_degrees": 0.0,
+    "objects": {
+      "instance_0": {
+        "metadata_visible": false,
+        "distance_m": 2.7999560832977295,
+        "mask_pixels": 0
+      },
+      "instance_1": {
+        "metadata_visible": false,
+        "distance_m": 4.461194038391113,
+        "mask_pixels": 0
+      }
+    },
+    "event_tick": 630,
+    "selected": true,
+    "target": "instance_1",
+    "kind": "no_move_observation_policy_change",
+    "evaluator_sensor_file": "evaluator_pixels_000074.npz",
+    "evaluator_sensor_sha256": "fe0aba4c64e9a01c5b03fe435b12dff8fda27086a4d81b1d34e36a1d3b8e67a7"
+  },
+  {
+    "step": 75,
+    "request": {
+      "action": "Pass"
+    },
+    "success": true,
+    "pose_max_error_m": {
+      "instance_0": 0.0,
+      "instance_1": 0.0
+    },
+    "camera_position_error_m": 0.0,
+    "view_angle_error_degrees": 0.0,
+    "objects": {
+      "instance_0": {
+        "metadata_visible": false,
+        "distance_m": 2.7999560832977295,
+        "mask_pixels": 0
+      },
+      "instance_1": {
+        "metadata_visible": false,
+        "distance_m": 4.461194038391113,
+        "mask_pixels": 0
+      }
+    }
+  },
+  {
+    "step": 76,
+    "request": {
+      "action": "TeleportFull",
+      "forceAction": false,
+      "horizon": 45.0,
+      "position": {
+        "x": 5.5,
+        "y": 0.9009997844696045,
+        "z": 3.75
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 180.0,
+        "z": 0.0
+      },
+      "standing": true
+    },
+    "success": true,
+    "pose_max_error_m": {
+      "instance_0": 0.0,
+      "instance_1": 0.0
+    },
+    "camera_position_error_m": 0.0,
+    "view_angle_error_degrees": 0.0,
+    "objects": {
+      "instance_0": {
+        "metadata_visible": false,
+        "distance_m": 3.2155487537384033,
+        "mask_pixels": 0
+      },
+      "instance_1": {
+        "metadata_visible": false,
+        "distance_m": 1.975412368774414,
+        "mask_pixels": 0
+      }
+    },
+    "event_tick": 640,
+    "selected": true,
+    "target": "instance_0",
+    "kind": "late_correction",
+    "evaluator_sensor_file": "evaluator_pixels_000076.npz",
+    "evaluator_sensor_sha256": "e965f525cb8f7178fc5c10628653eec996c961ee56fb2899051262bd0f67a274"
+  },
+  {
+    "step": 77,
+    "request": {
+      "action": "TeleportObject",
+      "forceAction": false,
+      "forceKinematic": true,
+      "objectId": "Kettle|surface|2|6",
+      "position": {
+        "x": 0.4869704246520996,
+        "y": 0.9668458700180054,
+        "z": 2.440995454788208
+      },
+      "rotation": {
+        "x": -4.9145048251375556e-05,
+        "y": 89.99909210205078,
+        "z": -0.0001149480594904162
+      }
+    },
+    "success": true,
+    "pose_max_error_m": {
+      "instance_0": 0.0,
+      "instance_1": 0.0
+    },
+    "camera_position_error_m": 0.0,
+    "view_angle_error_degrees": 0.0,
+    "objects": {
+      "instance_0": {
+        "metadata_visible": false,
+        "distance_m": 3.2155487537384033,
+        "mask_pixels": 0
+      },
+      "instance_1": {
+        "metadata_visible": false,
+        "distance_m": 5.1815338134765625,
+        "mask_pixels": 0
+      }
+    }
+  },
+  {
+    "step": 78,
+    "request": {
+      "action": "TeleportFull",
+      "forceAction": false,
+      "horizon": 45.0,
+      "position": {
+        "x": 7.0,
+        "y": 0.9009997844696045,
+        "z": 2.25
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 180.0,
+        "z": 0.0
+      },
+      "standing": true
+    },
+    "success": true,
+    "pose_max_error_m": {
+      "instance_0": 0.0,
+      "instance_1": 0.0
+    },
+    "camera_position_error_m": 0.0,
+    "view_angle_error_degrees": 0.0,
+    "objects": {
+      "instance_0": {
+        "metadata_visible": false,
+        "distance_m": 4.646477699279785,
+        "mask_pixels": 0
+      },
+      "instance_1": {
+        "metadata_visible": false,
+        "distance_m": 6.516162395477295,
+        "mask_pixels": 0
+      }
+    },
+    "event_tick": 650,
+    "selected": true,
+    "target": "instance_1",
+    "kind": "unknown_actor",
+    "evaluator_sensor_file": "evaluator_pixels_000078.npz",
+    "evaluator_sensor_sha256": "d6c848414a18860e68982713325193c22058fff03a334d69d0d73b564fcdb8cc"
+  }
+]

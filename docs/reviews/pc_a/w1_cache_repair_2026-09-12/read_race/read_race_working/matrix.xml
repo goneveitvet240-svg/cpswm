@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="1" skipped="0" tests="1" time="0.051" timestamp="2026-09-12T19:46:27.486818+08:00" hostname="MacBook-Air-2.local"><testcase classname="tests.test_read_race" name="test_live" time="0.002"><failure message="pytest.UsageError: EXECUTED_LOCAL_CODE_MISMATCH: /private/tmp/cpswm-r6-readrace-xpv7_h88/src/cpswm/read_race.py">item = &lt;Function test_live&gt;
+
+    @pytest.hookimpl(hookwrapper=True)
+    def pytest_runtest_call(item):
+        yield
+&gt;       item.config._s2_runtime.check()
+
+tools/structure_two_pytest_runtime.py:277: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = &lt;tools.structure_two_pytest_runtime.Runtime object at 0x10bb3b770&gt;
+
+    def check(self):
+        if self.code_guard.failed:
+&gt;           raise pytest.UsageError(self.code_guard.failed)
+E           pytest.UsageError: EXECUTED_LOCAL_CODE_MISMATCH: /private/tmp/cpswm-r6-readrace-xpv7_h88/src/cpswm/read_race.py
+
+tools/structure_two_pytest_runtime.py:173: UsageError</failure></testcase></testsuite></testsuites>

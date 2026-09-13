@@ -1,0 +1,15 @@
+import importlib
+import json
+import sys
+from dataclasses import replace
+from pathlib import Path
+root = Path(sys.argv[1]).resolve()
+sys.path.insert(0, str(root))
+m = importlib.import_module('tools.structure_two_unified_acceptance')
+j = m.Journal(root / m.RUN_AREA / sys.argv[2])
+f = m.source_snapshot(root)
+e = m.execution_environment(root)
+s = m.matrix_stage(root, j, 'history_trace', ('tests/test_structure_two_entry_portability.py::test_full_history_replay_and_report_verification_across_roots',))
+s = replace(s, argv=(*s.argv, '-s', '--basetemp=/private/tmp/cpswm-r6-history-trace'))
+m.run_stages(root, j, [s], f, (), environment=e)
+print(json.dumps({'journal': str(j.path), 'status': j.value['status'], 'counts': j.value['stages'][0]['pytest_counts']}))

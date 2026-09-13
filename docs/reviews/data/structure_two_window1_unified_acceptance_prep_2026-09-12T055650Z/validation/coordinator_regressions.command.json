@@ -1,0 +1,33 @@
+{
+  "argv": [
+    "/private/tmp/cpswm-s2-evidence-repair-window1/.venv/bin/pytest",
+    "-o",
+    "addopts=",
+    "-q",
+    "-s",
+    "--confcutdir=.",
+    "tests/test_structure_two_unified_acceptance.py"
+  ],
+  "cwd": "/private/tmp/cpswm-s2-evidence-repair-window1",
+  "started_utc": "2026-09-12T06:17:31.144834+00:00",
+  "inputs_before": {
+    "tools/structure_two_unified_acceptance.py": "08dc070129ee17e3a4d32ebb9a1796603a53a46df7d458b54b51ad5a4f4bb2b3",
+    "tests/test_structure_two_unified_acceptance.py": "12db2f858c7f7913fb382b887a2aa49a592f643768b8e4e24617a4d28f20087b"
+  },
+  "scope": "Real coordinator regression; fixture stages are not unified scientific experiment completion",
+  "ended_utc": "2026-09-12T06:17:53.626405+00:00",
+  "duration_seconds": 22.48158087488264,
+  "exit_code": 0,
+  "inputs_after": {
+    "tools/structure_two_unified_acceptance.py": "08dc070129ee17e3a4d32ebb9a1796603a53a46df7d458b54b51ad5a4f4bb2b3",
+    "tests/test_structure_two_unified_acceptance.py": "12db2f858c7f7913fb382b887a2aa49a592f643768b8e4e24617a4d28f20087b"
+  },
+  "stdout": {
+    "path": "docs/reviews/data/structure_two_window1_unified_acceptance_prep_2026-09-12T055650Z/validation/coordinator_regressions.stdout.log",
+    "sha256": "4d6d82ec04ec1d5a3c87dc55cb5700a494544b47d788d61e1f6df4fa0d623904"
+  },
+  "stderr": {
+    "path": "docs/reviews/data/structure_two_window1_unified_acceptance_prep_2026-09-12T055650Z/validation/coordinator_regressions.stderr.log",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  }
+}

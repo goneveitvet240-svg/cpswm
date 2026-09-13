@@ -423,29 +423,69 @@ def test_receipts_hash_the_actual_bound_callable_inputs_and_outputs(
     router = core._automatic_regimes
     observed: dict[str, tuple[tuple[object, ...], dict[str, object], object]] = {}
 
-    def instrument(operator: str, instance: object, callable_name: str) -> None:
-        original = getattr(instance, callable_name)
+    # A profiler observes the real class members; it does not replace any bound
+    # production callable, and every content assertion below remains in force.
+    import sys
 
-        def actual_callable(*args: object, **kwargs: object) -> object:
-            output = original(*args, **kwargs)
-            observed[operator] = (args, kwargs, output)
-            return output
+    specifications = (
+        ("opceu", core._corrector.weight_for_opportunity, ("record",), ()),
+        (
+            "orrer_cheh",
+            core._event_engine.branch,
+            (),
+            (
+                "before",
+                "after",
+                "actor_prior",
+                "unresolved_probability",
+                "allow_unknown_handoff_roles",
+            ),
+        ),
+        ("pchmp", core._message_passing.consume, ("history", "evidence"), ()),
+        ("cf_bocpd", router.bocpd.observe_online, ("frame",), ()),
+        (
+            "ccrr",
+            router.observe,
+            (),
+            (
+                "frame",
+                "state_key",
+                "context_features",
+                "owner_probability",
+                "evidence_source_record_ids",
+                "identity_switch_probability",
+                "stage_observer",
+            ),
+        ),
+        ("rgrc", core._process_transition, ("transition",), ()),
+    )
+    codes = {
+        method.__func__.__code__: (operator, positional, keywords)
+        for operator, method, positional, keywords in specifications
+    }
 
-        monkeypatch.setattr(instance, callable_name, actual_callable)
-
-    instrument("opceu", core._corrector, "weight_for_opportunity")
-    instrument("orrer_cheh", core._event_engine, "branch")
-    instrument("pchmp", core._message_passing, "consume")
-    instrument("cf_bocpd", router.bocpd, "observe_online")
-    instrument("ccrr", router, "observe")
-    instrument("rgrc", core, "_process_transition")
+    def profile(frame, event, output):
+        if event != "return" or frame.f_code not in codes:
+            return
+        operator, positional, keywords = codes[frame.f_code]
+        values = frame.f_locals
+        observed[operator] = (
+            tuple(values[key] for key in positional),
+            {key: values[key] for key in keywords},
+            output,
+        )
 
     sink = RecordingSink()
-    system.process_transition(
-        transition,
-        execution_plan=canonical_legacy_ordinary_transition_plan(),
-        trace_sink=sink,
-    )
+    previous = sys.getprofile()
+    try:
+        sys.setprofile(profile)
+        system.process_transition(
+            transition,
+            execution_plan=canonical_legacy_ordinary_transition_plan(),
+            trace_sink=sink,
+        )
+    finally:
+        sys.setprofile(previous)
     by_operator = {receipt.operator: receipt for receipt in sink.traces[0].receipts}
 
     opceu_args, _, opceu_output = observed["opceu"]
@@ -476,7 +516,8 @@ def test_receipts_hash_the_actual_bound_callable_inputs_and_outputs(
     rgrc_args, _, rgrc_output = observed["rgrc"]
     assert by_operator["rgrc"].raw_input_sha256 == content_sha256(rgrc_args[0])
     assert by_operator["rgrc"].output_payload_sha256 == content_sha256(rgrc_output)
-    assert all("actual_callable" in by_operator[name].callable_symbol for name in observed)
+    assert all("actual_callable" not in by_operator[name].callable_symbol for name in observed)
+    assert len(observed) == 6
 
 
 def test_public_operator_inventory_override_cannot_forge_the_called_instance(
@@ -988,7 +1029,11 @@ def test_sink_production_wrapper_mutation_is_aborted_and_rolled_back(mutation: s
     sink = MutatingSink()
     with pytest.raises(
         RuntimeError,
-        match=r"replaced an audited runtime component|mutated audited production-wrapper state",
+        match=(
+            r"mutated audited core state"
+            if mutation == "feedback_engine_version"
+            else r"replaced an audited runtime component|mutated audited production-wrapper state"
+        ),
     ):
         system.process_transition(
             transition,
@@ -1174,19 +1219,25 @@ def test_operator_keyboard_interrupt_rolls_back_without_attempting_sink_commit(
     core = system.core
     original = core._process_transition
 
-    def interrupt_after_transition(*args: object, **kwargs: object) -> object:
-        original(*args, **kwargs)
-        raise KeyboardInterrupt
+    import sys
 
-    monkeypatch.setattr(core, "_process_transition", interrupt_after_transition)
+    def interrupt_after_transition(frame, event, _value):
+        if frame.f_code is original.__func__.__code__ and event == "return":
+            raise KeyboardInterrupt
+
     before = _state_fingerprint(system)
     sink = RecordingSink()
-    with pytest.raises(KeyboardInterrupt):
-        system.process_transition(
-            transition,
-            execution_plan=canonical_legacy_ordinary_transition_plan(),
-            trace_sink=sink,
-        )
+    previous = sys.getprofile()
+    try:
+        sys.setprofile(interrupt_after_transition)
+        with pytest.raises(KeyboardInterrupt):
+            system.process_transition(
+                transition,
+                execution_plan=canonical_legacy_ordinary_transition_plan(),
+                trace_sink=sink,
+            )
+    finally:
+        sys.setprofile(previous)
 
     assert sink.traces == []
     assert _state_fingerprint(system) == before

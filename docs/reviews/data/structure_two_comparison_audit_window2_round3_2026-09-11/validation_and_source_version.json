@@ -1,0 +1,153 @@
+{
+  "scope_status": "TESTED_MATRIX_PASSED",
+  "overall_source_threat_audit": "PARTIAL",
+  "code_commit": "bf48fd3aacf31e8da62dcd17596a644f49167031",
+  "reviewed_parent": "f022f1901f07bc0afa43b7c2b3fc5397d6367517",
+  "python_executable": "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/.venv/bin/python",
+  "python_version": "3.13.5 (main, Jun 12 2025, 12:22:43) [Clang 20.1.4 ]",
+  "pytest": {
+    "name": "pytest",
+    "errors": "0",
+    "failures": "0",
+    "skipped": "0",
+    "tests": "42",
+    "time": "809.238",
+    "timestamp": "2026-09-11T21:59:59.248219+08:00",
+    "hostname": "MacBook-Air-2.local"
+  },
+  "pytest_exit_code": 0,
+  "source_cases": [
+    {
+      "case": "attribution_mixed",
+      "exit_code": 1,
+      "positive_records": [],
+      "evidence": "evidence/source_tests/attribution_mixed.json"
+    },
+    {
+      "case": "attribution_single",
+      "exit_code": 1,
+      "positive_records": [],
+      "evidence": "evidence/source_tests/attribution_single.json"
+    },
+    {
+      "case": "downstream_symlink_attribution",
+      "exit_code": 1,
+      "positive_records": [],
+      "evidence": "evidence/source_tests/downstream_symlink_attribution.json"
+    },
+    {
+      "case": "downstream_symlink_main",
+      "exit_code": 1,
+      "positive_records": [],
+      "evidence": "evidence/source_tests/downstream_symlink_main.json"
+    },
+    {
+      "case": "full_positive_stale_pyc_attribution",
+      "exit_code": 0,
+      "positive_records": [
+        {
+          "bundle": "/private/tmp/s2-comparison-audit-window2-20260911/docs/reviews/data/structure_two_comparison_audit_window2_round3_2026-09-11/bundle_v3_final",
+          "episodes": 60,
+          "formal_scientific_verification": false,
+          "independent_historical_custody": false,
+          "input_snapshot_sha256": "edf177f3a3876d1fdf25bc705a5843fcee816b064f20e107cf4ef62482d0bead",
+          "semantic_steps_sha256": "d32b9d7bd2ff4963d8a71939fe752b260806e8775b692d602ac4588205f70c76",
+          "status": "CURRENT_SOURCE_FRESH_REPLAY_MATCH",
+          "steps": 1920
+        }
+      ],
+      "evidence": "evidence/source_tests/full_positive_stale_pyc_attribution.json"
+    },
+    {
+      "case": "full_positive_stale_pyc_main",
+      "exit_code": 0,
+      "positive_records": [
+        {
+          "verified": "/private/tmp/s2-comparison-audit-window2-20260911/docs/reviews/data/structure_two_comparison_audit_window2_round3_2026-09-11/bundle_v3_final"
+        }
+      ],
+      "evidence": "evidence/source_tests/full_positive_stale_pyc_main.json"
+    },
+    {
+      "case": "main",
+      "exit_code": 1,
+      "positive_records": [],
+      "evidence": "evidence/source_tests/main.json"
+    },
+    {
+      "case": "preloaded_downstream_attribution",
+      "exit_code": 1,
+      "positive_records": [],
+      "evidence": "evidence/source_tests/preloaded_downstream_attribution.json"
+    },
+    {
+      "case": "preloaded_downstream_main",
+      "exit_code": 1,
+      "positive_records": [],
+      "evidence": "evidence/source_tests/preloaded_downstream_main.json"
+    },
+    {
+      "case": "preloaded_old_attribution",
+      "exit_code": 1,
+      "positive_records": [],
+      "evidence": "evidence/source_tests/preloaded_old_attribution.json"
+    },
+    {
+      "case": "preloaded_old_main",
+      "exit_code": 1,
+      "positive_records": [],
+      "evidence": "evidence/source_tests/preloaded_old_main.json"
+    },
+    {
+      "case": "repository_root_mismatch",
+      "exit_code": 1,
+      "positive_records": [],
+      "evidence": "evidence/source_tests/repository_root_mismatch.json"
+    },
+    {
+      "case": "runtime_drift_attribution",
+      "exit_code": 1,
+      "positive_records": [],
+      "evidence": "evidence/source_tests/runtime_drift_attribution.json"
+    },
+    {
+      "case": "runtime_drift_main",
+      "exit_code": 1,
+      "positive_records": [],
+      "evidence": "evidence/source_tests/runtime_drift_main.json"
+    },
+    {
+      "case": "stale_entry_attribution",
+      "exit_code": 1,
+      "positive_records": [],
+      "evidence": "evidence/source_tests/stale_entry_attribution.json"
+    },
+    {
+      "case": "stale_entry_main",
+      "exit_code": 1,
+      "positive_records": [],
+      "evidence": "evidence/source_tests/stale_entry_main.json"
+    }
+  ],
+  "previous_complete_attacks_rejected": 21,
+  "previous_matrix_genuine_bundle_status": "CURRENT_SOURCE_FRESH_REPLAY_MATCH",
+  "previous_matrix_cli_exit_code": 1,
+  "bound_file_count": 399,
+  "every_binding_matches_code_commit_bytes": true,
+  "all_loaded_module_source_hashes_match_committed_tree": true,
+  "retained_current_source_forgery_hashes": {
+    "audit.json": "97f17d03ca47e78e87d898d10f4e460573c10c0b8de83e34dd5358faf1eded62",
+    "attribution.json": "b1f5402f284ad0de434127257b02636154c82cf61ffec8cadf11e5a0c589ebcc",
+    "steps.jsonl.gz": "3e45134d04ae0b5eb1272db4b01382f42eb169c308bd60ff0f6f869fc069d8d4"
+  },
+  "foreign_diagnostic_source_hashes": {
+    "declared_A": "8286f5f41e76753207e9fbfd43cdbc41146b77e975faf640a682c7f73b293191",
+    "selected_B": "99df875731a7515a75ca08bc42c0da335743e790c77b403c53ebf546895bc2d0"
+  },
+  "generation_final_exit_code": 0,
+  "attribution_generation_exit_code": 0,
+  "old_inputs_cross_source_after_exit_code": 1,
+  "prior_bundle_current_source_rejection_exit_code": 1,
+  "formal_scientific_verification": false,
+  "independent_historical_custody": false
+}

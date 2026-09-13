@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="6" skipped="0" tests="7" time="0.437" timestamp="2026-09-13T02:27:45.107345+08:00" hostname="MacBook-Air-2.local"><testcase classname="tests.test_pc_a_proposal_two_round_audit" name="test_round1_positive_full_candidate_binding" time="0.036" /><testcase classname="tests.test_pc_a_proposal_two_round_audit" name="test_round1_probability_must_bind_replay_suffix" time="0.036"><failure message="Failed: DID NOT RAISE ValueError">tests/test_pc_a_proposal_two_round_audit.py:100: in test_round1_probability_must_bind_replay_suffix
+    with pytest.raises(ValueError):
+         ^^^^^^^^^^^^^^^^^^^^^^^^^
+E   Failed: DID NOT RAISE ValueError</failure></testcase><testcase classname="tests.test_pc_a_proposal_two_round_audit" name="test_round1_probability_must_bind_evidence_set" time="0.038"><failure message="Failed: DID NOT RAISE ValueError">tests/test_pc_a_proposal_two_round_audit.py:111: in test_round1_probability_must_bind_evidence_set
+    with pytest.raises(ValueError):
+         ^^^^^^^^^^^^^^^^^^^^^^^^^
+E   Failed: DID NOT RAISE ValueError</failure></testcase><testcase classname="tests.test_pc_a_proposal_two_round_audit" name="test_round1_legal_delayed_detection_recorded_on_receipt" time="0.033"><failure message="pydantic_core._pydantic_core.ValidationError: 1 validation error for ProposalSample&#10;  Value error, suffix rejuvenation target requires actually delayed evidence [type=value_error, input_value={'sample_id': 'd2b30d7d-4...play_required': False}]}, input_type=dict]&#10;    For further information visit https://errors.pydantic.dev/2.13/v/value_error">tests/test_pc_a_proposal_two_round_audit.py:120: in test_round1_legal_delayed_detection_recorded_on_receipt
+    ProposalSample.model_validate(payload)
+E   pydantic_core._pydantic_core.ValidationError: 1 validation error for ProposalSample
+E     Value error, suffix rejuvenation target requires actually delayed evidence [type=value_error, input_value={'sample_id': 'd2b30d7d-4...play_required': False}]}, input_type=dict]
+E       For further information visit https://errors.pydantic.dev/2.13/v/value_error</failure></testcase><testcase classname="tests.test_pc_a_proposal_two_round_audit" name="test_round1_nested_oracle_in_sensor_field_rejected[status]" time="0.022"><failure message="Failed: DID NOT RAISE ValueError">tests/test_pc_a_proposal_two_round_audit.py:134: in test_round1_nested_oracle_in_sensor_field_rejected
+    with pytest.raises(ValueError):
+         ^^^^^^^^^^^^^^^^^^^^^^^^^
+E   Failed: DID NOT RAISE ValueError</failure></testcase><testcase classname="tests.test_pc_a_proposal_two_round_audit" name="test_round1_nested_oracle_in_sensor_field_rejected[depth_unit]" time="0.020"><failure message="Failed: DID NOT RAISE ValueError">tests/test_pc_a_proposal_two_round_audit.py:134: in test_round1_nested_oracle_in_sensor_field_rejected
+    with pytest.raises(ValueError):
+         ^^^^^^^^^^^^^^^^^^^^^^^^^
+E   Failed: DID NOT RAISE ValueError</failure></testcase><testcase classname="tests.test_pc_a_proposal_two_round_audit" name="test_round1_oracle_array_with_valid_sensor_hash_rejected" time="0.021"><failure message="Failed: DID NOT RAISE ValueError">tests/test_pc_a_proposal_two_round_audit.py:152: in test_round1_oracle_array_with_valid_sensor_hash_rejected
+    with pytest.raises(ValueError):
+         ^^^^^^^^^^^^^^^^^^^^^^^^^
+E   Failed: DID NOT RAISE ValueError</failure></testcase></testsuite></testsuites>

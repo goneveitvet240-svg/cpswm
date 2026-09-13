@@ -1,0 +1,22 @@
+{
+  "protocol": "structure-two-world-v0.5-source-bundle-audit@0.2",
+  "historical_inventory_recomputable": false,
+  "historical_inventory_blocker": "frozen 245-row path/hash inventory was not persisted",
+  "historical_digest_field_consistency_verified": true,
+  "signed_trace_content_hashes_verified": true,
+  "signed_trace_ed25519_verified_against_manifest_trust_anchor": true,
+  "trace_set_and_result_bindings_verified": true,
+  "gate_b_result_content_integrity_verified": true,
+  "trust_anchor_cross_document_consistent": true,
+  "trust_anchor_externally_immutable": false,
+  "historical_evidence_authenticity_and_integrity_verified": false,
+  "historical_authenticity_blocker": "the 245-row inventory is absent and the manifest trust anchor has no external cryptographic signature or immutable timestamp",
+  "historical_binding_document_count": 13,
+  "frozen_file_count": 245,
+  "frozen_source_bundle_sha256": "a9f7ecba788304aec010380bdb2da1b5e5be75723f24c3caf004ab1db8619c4c",
+  "current_file_count": 310,
+  "current_source_bundle_sha256": "082ccc899180b7b8a85164d5e72f507cce455248632188a8cbeb81f2ff6b60c1",
+  "current_worktree_compatible_with_frozen_v0_5": false,
+  "historical_evidence_rewritten": false,
+  "claim_boundary": "The ten trace content hashes and Ed25519 signatures verify against the trust anchor declared by the current manifests, and the current Gate B result is internally bound. Historical authenticity remains unproved because the 245-row inventory is absent and the trust anchor has no external immutable anchor."
+}

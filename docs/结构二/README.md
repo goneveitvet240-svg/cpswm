@@ -1,5 +1,7 @@
 # 结构二文档入口
 
+2026-09-13 组件进展补充：[完整提议合同与 ProcTHOR 调度交付](../reviews/pc_a/proposal_scheduler_2026-09-13/REPORT.md)。125 项相邻组件测试通过；真实单屋 7 模拟日几何调度跑通，但角色证据与训练数据仍未就绪，不覆盖下文科学/完整主干未验收结论。
+
 最后更新：2026-09-11
 当前结论：**项目所有者已选择 Route C、Architecture A、`P5_FIRST` 以及三臂方法定义 `A1 + B1`，完整 H/R/I/C/Z/r/V、三个 RB blocks 和七算子范围保持不变。首轮 v0.1 匹配死亡测试无信号；随后定位并修复 readout 漏接与 PCHMP→CIAV sequential actor-prior reset 两个问题。完整 60-episode post-hoc 重算中，P5 owner-habit posterior 在 1,870/1,920 步非均匀，PUT_BACK error 从 0.6849 降到 0.0401，优于 learned two-stage 的 0.2740 和 AMG 的 0.0536；但相对 AMG 的绝对改善仅 0.01354，低于冻结门槛 0.02，所以严格 P5 action signal 仍为 false。production debt replay 已在 60 个 episodes 的 1,243 个正转移上确认：`P0_SAFE_DEFERRED → expired debt replay P5` 与 direct P5 的 12 项后验、读出、动作、欠账和七算子路径检查全部一致，失败为 0，fresh recomputation 逐字段一致。该工程确认不重测科学信号，也不覆盖负观测、异位置反馈、并发欠账或长期路由效用。下一决策点是选择新的未见 D0 holdout 或独立托管确认集；在新数据复现信号前，不启动 validation-only router calibration，固定解析阈值继续保留为基线。组合效用、长期人物记忆污染、Task 8 正式通过、外部有效性和七算子行动贡献均未成立。**
 

@@ -1,0 +1,65 @@
+{
+  "command": [
+    "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/.venv/bin/python",
+    "/private/tmp/s2-comparison-audit-window2-20260911/apps/evaluation_runner/summarize_structure_two_comparison_audit.py",
+    "--bundle",
+    "/private/tmp/s2-comparison-audit-window2-20260911/docs/reviews/data/structure_two_comparison_audit_window2_r1_2026-09-11/bundle_v2",
+    "--bundle",
+    "/private/tmp/s2-comparison-audit-window2-20260911/docs/reviews/data/structure_two_comparison_audit_window2_r1_2026-09-11/counterexamples/r1_current_source",
+    "--verify"
+  ],
+  "probe_command": [
+    "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/.venv/bin/python",
+    "-c",
+    "import json; from cpswm.system.evaluation_operations import structure_two_comparison_audit as m; print(json.dumps({\"loaded_module\":m.__file__,\"code_filename\":m._p5_readouts.__code__.co_filename}))"
+  ],
+  "PYTHONPATH": "/private/tmp/s2-w2-round3-cross-source-B/src",
+  "declared_root": "/private/tmp/s2-comparison-audit-window2-20260911",
+  "actual_load_probe": {
+    "loaded_module": "/private/tmp/s2-w2-round3-cross-source-B/src/cpswm/system/evaluation_operations/structure_two_comparison_audit.py",
+    "code_filename": "/private/tmp/s2-w2-round3-cross-source-B/src/cpswm/system/evaluation_operations/structure_two_comparison_audit.py"
+  },
+  "declared_source_sha256": "83e02ea5ae86bf1244312d654ce73df7b88f65c4bf242d63c82a7f8128b438f3",
+  "loaded_source_sha256": "4cdad9cbee851f7f5b492867ffd62ec512854baf429e11313a1c529024180444",
+  "before_bundle_hashes": {
+    "/private/tmp/s2-comparison-audit-window2-20260911/docs/reviews/data/structure_two_comparison_audit_window2_r1_2026-09-11/bundle_v2/audit.json": "5755c1df02401562ff2e48597925c3584f541f9073dadbd91bbdf5f4b6d47996",
+    "/private/tmp/s2-comparison-audit-window2-20260911/docs/reviews/data/structure_two_comparison_audit_window2_r1_2026-09-11/bundle_v2/timing.json": "57aa46d6c397333afe56452a6f74633c0cfca5be075bcc6c70624d8ed0c6cdff",
+    "/private/tmp/s2-comparison-audit-window2-20260911/docs/reviews/data/structure_two_comparison_audit_window2_r1_2026-09-11/bundle_v2/attribution.json": "ae4a895287bc5f79708340ebfaab4c6fed6486b414ba32d833cf7e2aa12c57e1",
+    "/private/tmp/s2-comparison-audit-window2-20260911/docs/reviews/data/structure_two_comparison_audit_window2_r1_2026-09-11/bundle_v2/steps.jsonl.gz": "599be79abdb7215fbb5593fd7b3102166152374350715814a8353ead92beb1fa",
+    "/private/tmp/s2-comparison-audit-window2-20260911/docs/reviews/data/structure_two_comparison_audit_window2_r1_2026-09-11/counterexamples/r1_current_source/audit.json": "bea9e6222c61c607d59358ceff34964f8c7aca55b4c316176c9f813789a1665d",
+    "/private/tmp/s2-comparison-audit-window2-20260911/docs/reviews/data/structure_two_comparison_audit_window2_r1_2026-09-11/counterexamples/r1_current_source/attribution.json": "e3ce3aec793bbed19f29ca39e471c1515fa44508e92b4caa9fd8819910ca71b7",
+    "/private/tmp/s2-comparison-audit-window2-20260911/docs/reviews/data/structure_two_comparison_audit_window2_r1_2026-09-11/counterexamples/r1_current_source/steps.jsonl.gz": "41893c158aee3705d54c0a2abd219daf1e0fbeb7070825213fed4a13ddaefb03"
+  },
+  "exit_code": 1,
+  "after_bundle_hashes": {
+    "/private/tmp/s2-comparison-audit-window2-20260911/docs/reviews/data/structure_two_comparison_audit_window2_r1_2026-09-11/bundle_v2/audit.json": "5755c1df02401562ff2e48597925c3584f541f9073dadbd91bbdf5f4b6d47996",
+    "/private/tmp/s2-comparison-audit-window2-20260911/docs/reviews/data/structure_two_comparison_audit_window2_r1_2026-09-11/bundle_v2/timing.json": "57aa46d6c397333afe56452a6f74633c0cfca5be075bcc6c70624d8ed0c6cdff",
+    "/private/tmp/s2-comparison-audit-window2-20260911/docs/reviews/data/structure_two_comparison_audit_window2_r1_2026-09-11/bundle_v2/attribution.json": "ae4a895287bc5f79708340ebfaab4c6fed6486b414ba32d833cf7e2aa12c57e1",
+    "/private/tmp/s2-comparison-audit-window2-20260911/docs/reviews/data/structure_two_comparison_audit_window2_r1_2026-09-11/bundle_v2/steps.jsonl.gz": "599be79abdb7215fbb5593fd7b3102166152374350715814a8353ead92beb1fa",
+    "/private/tmp/s2-comparison-audit-window2-20260911/docs/reviews/data/structure_two_comparison_audit_window2_r1_2026-09-11/counterexamples/r1_current_source/audit.json": "bea9e6222c61c607d59358ceff34964f8c7aca55b4c316176c9f813789a1665d",
+    "/private/tmp/s2-comparison-audit-window2-20260911/docs/reviews/data/structure_two_comparison_audit_window2_r1_2026-09-11/counterexamples/r1_current_source/attribution.json": "e3ce3aec793bbed19f29ca39e471c1515fa44508e92b4caa9fd8819910ca71b7",
+    "/private/tmp/s2-comparison-audit-window2-20260911/docs/reviews/data/structure_two_comparison_audit_window2_r1_2026-09-11/counterexamples/r1_current_source/steps.jsonl.gz": "41893c158aee3705d54c0a2abd219daf1e0fbeb7070825213fed4a13ddaefb03"
+  },
+  "response": {
+    "fresh_replay_performed": true,
+    "results": [
+      {
+        "bundle": "/private/tmp/s2-comparison-audit-window2-20260911/docs/reviews/data/structure_two_comparison_audit_window2_r1_2026-09-11/bundle_v2",
+        "error": "FRESH_REPLAY_STEP_MISMATCH: steps[0].raw_state.p5_readouts.state_counts._committed_events",
+        "stage": "fresh_replay_comparison",
+        "status": "REJECTED"
+      },
+      {
+        "bundle": "/private/tmp/s2-comparison-audit-window2-20260911/docs/reviews/data/structure_two_comparison_audit_window2_r1_2026-09-11/counterexamples/r1_current_source",
+        "episodes": 60,
+        "formal_scientific_verification": false,
+        "independent_historical_custody": false,
+        "input_snapshot_sha256": "1f1c1171def35041145179165f69b653882fe0787d60617fff7d7b874288f5f9",
+        "semantic_steps_sha256": "bcdf5bd0f833d91fca497f9d1f7b8d6103fb213ef9f100d7ff8b636eaed989c1",
+        "status": "CURRENT_SOURCE_FRESH_REPLAY_MATCH",
+        "steps": 1920
+      }
+    ],
+    "verification_mode": "CURRENT_SOURCE_FRESH_REPLAY"
+  }
+}

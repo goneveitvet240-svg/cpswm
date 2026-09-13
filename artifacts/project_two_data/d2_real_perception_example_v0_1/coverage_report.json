@@ -1,0 +1,99 @@
+{
+  "dataset_version": "project-two-d2-real-perception-example-fixture@0.1",
+  "maturity": [
+    "d0_development_fixture"
+  ],
+  "quality": {
+    "dataset_version": "project-two-d2-real-perception-example-fixture@0.1",
+    "episode_count": 5,
+    "step_count": 60,
+    "feedback_count": 38,
+    "observation_coverage": 0.6333333333333333,
+    "delayed_feedback_count": 38,
+    "unknown_actor_count": 60,
+    "unknown_mechanism_count": 50,
+    "evaluator_unknown_actor_count": 5,
+    "evaluator_unknown_mechanism_count": 5,
+    "family_counts": {
+      "family-validation-01": 1,
+      "family-validation-00": 1,
+      "family-test-01": 2,
+      "family-test-00": 1
+    },
+    "missingness_counts": {
+      "real_sensor_calibration": 60,
+      "robot_pose_covariance": 60,
+      "post_action_destination_observation": 60
+    },
+    "checks_passed": [
+      "schema_version",
+      "missingness",
+      "duplicate_ids",
+      "timestamp_ordering",
+      "feedback_time_ordering",
+      "observation_coverage",
+      "delayed_feedback",
+      "unknown_coverage",
+      "class_family_balance",
+      "identity_consistency",
+      "join_coverage",
+      "source_label_leakage",
+      "household_scene_object_family_split",
+      "visible_content_integrity",
+      "evaluator_content_integrity"
+    ],
+    "failures": [],
+    "warnings": [
+      "declared unavailable fields remain and must be collected at higher maturity"
+    ],
+    "ready": true
+  },
+  "coverage": {
+    "dataset_version": "project-two-d2-real-perception-example-fixture@0.1",
+    "split_episode_counts": {
+      "validation": 2,
+      "test": 3
+    },
+    "unique_household_count": 5,
+    "unique_scene_count": 5,
+    "unique_object_count": 5,
+    "unique_object_family_count": 4,
+    "family_episode_counts": {
+      "family-validation-01": 1,
+      "family-validation-00": 1,
+      "family-test-01": 2,
+      "family-test-00": 1
+    },
+    "true_actor_counts": {
+      "owner": 30,
+      "unknown_actor": 5,
+      "guest": 25
+    },
+    "true_mechanism_counts": {
+      "direct_relocation": 40,
+      "unknown_mechanism": 5,
+      "handoff_relocation": 15
+    },
+    "dominant_feedback_outcome_counts": {
+      "success": 27,
+      "object_slipped": 11
+    },
+    "observed_step_count": 38,
+    "missing_observation_step_count": 22
+  },
+  "provenance": [
+    "adapter:D2RealPerceptionReplayAdapter",
+    "claim:not-real-collection",
+    "fixture:derived-from-visible-controlled-noise",
+    "truth_source:separate-d0-synthetic-fixture"
+  ],
+  "physical_separation": {
+    "visible": "visible_replay.jsonl",
+    "evaluator_only": "evaluator_truth.jsonl"
+  },
+  "content_hashes": {
+    "manifest.json": "b8554cbf73952697c8ea711b67ca47180cdaa3c440e957f6d5f1976d1ebd6703",
+    "visible_replay.jsonl": "c80718b229298dbe12cc2b9eeedafe31e2a67d27aa2856708fd5a36f2b4f2f2f",
+    "evaluator_truth.jsonl": "4416a2ea9b1f589efa35e5167a05d41212df442910ad5e3eb08b8ceb66795e06"
+  }
+}

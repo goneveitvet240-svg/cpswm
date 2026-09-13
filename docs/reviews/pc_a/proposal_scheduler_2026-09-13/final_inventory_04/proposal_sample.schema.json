@@ -1,0 +1,1034 @@
+{
+  "$defs": {
+    "ActorEvidenceTrack": {
+      "description": "How a robot-visible actor posterior was produced for evaluation.",
+      "enum": [
+        "controlled_noise",
+        "oracle",
+        "model"
+      ],
+      "title": "ActorEvidenceTrack",
+      "type": "string"
+    },
+    "ActorResponsibilityEvidence": {
+      "additionalProperties": false,
+      "description": "Robot-visible posterior over who caused one detected object transition.\n\nThe contract never exposes a ``true_actor`` field.  An oracle evaluation\ntrack is explicit in ``evidence_track``; controlled-noise evidence must keep\nnon-zero uncertainty and therefore cannot silently masquerade as oracle.",
+      "properties": {
+        "actor_posterior": {
+          "additionalProperties": {
+            "maximum": 1.0,
+            "minimum": 0.0,
+            "type": "number"
+          },
+          "minProperties": 1,
+          "title": "Actor Posterior",
+          "type": "object"
+        },
+        "effective_sample_weight": {
+          "default": 1.0,
+          "exclusiveMinimum": 0.0,
+          "maximum": 1.0,
+          "title": "Effective Sample Weight",
+          "type": "number"
+        },
+        "evidence_cluster_id": {
+          "format": "uuid",
+          "title": "Evidence Cluster Id",
+          "type": "string"
+        },
+        "evidence_model_id": {
+          "minLength": 1,
+          "title": "Evidence Model Id",
+          "type": "string"
+        },
+        "evidence_refs": {
+          "default": [],
+          "items": {
+            "$ref": "#/$defs/EvidenceRef"
+          },
+          "title": "Evidence Refs",
+          "type": "array"
+        },
+        "evidence_time": {
+          "format": "date-time",
+          "title": "Evidence Time",
+          "type": "string"
+        },
+        "evidence_track": {
+          "$ref": "#/$defs/ActorEvidenceTrack"
+        },
+        "metadata": {
+          "$ref": "#/$defs/BaseRecordMetadata"
+        },
+        "object_instance_id": {
+          "format": "uuid",
+          "title": "Object Instance Id",
+          "type": "string"
+        },
+        "reference_actor_prior": {
+          "additionalProperties": {
+            "exclusiveMinimum": 0.0,
+            "maximum": 1.0,
+            "type": "number"
+          },
+          "minProperties": 1,
+          "title": "Reference Actor Prior",
+          "type": "object"
+        },
+        "source_detection_result_id": {
+          "format": "uuid",
+          "title": "Source Detection Result Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "metadata",
+        "source_detection_result_id",
+        "object_instance_id",
+        "evidence_time",
+        "actor_posterior",
+        "reference_actor_prior",
+        "evidence_cluster_id",
+        "evidence_track",
+        "evidence_model_id"
+      ],
+      "title": "ActorResponsibilityEvidence",
+      "type": "object"
+    },
+    "Arrival": {
+      "additionalProperties": false,
+      "properties": {
+        "received_at": {
+          "format": "date-time",
+          "title": "Received At",
+          "type": "string"
+        },
+        "record_id": {
+          "format": "uuid",
+          "title": "Record Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "record_id",
+        "received_at"
+      ],
+      "title": "Arrival",
+      "type": "object"
+    },
+    "BaseRecordMetadata": {
+      "additionalProperties": false,
+      "description": "Fields that are meaningful on every record.\n\nEvidence reliability and posterior probability intentionally do not live\nhere. They are separate semantic components.",
+      "properties": {
+        "household_id": {
+          "format": "uuid",
+          "title": "Household Id",
+          "type": "string"
+        },
+        "model_version": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Model Version"
+        },
+        "privacy_scope": {
+          "$ref": "#/$defs/PrivacyScope",
+          "default": "household"
+        },
+        "record_id": {
+          "format": "uuid",
+          "title": "Record Id",
+          "type": "string"
+        },
+        "recorded_time": {
+          "format": "date-time",
+          "title": "Recorded Time",
+          "type": "string"
+        },
+        "schema_name": {
+          "minLength": 1,
+          "title": "Schema Name",
+          "type": "string"
+        },
+        "schema_version": {
+          "pattern": "^\\d+\\.\\d+\\.\\d+$",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "session_id": {
+          "format": "uuid",
+          "title": "Session Id",
+          "type": "string"
+        },
+        "source_id": {
+          "minLength": 1,
+          "title": "Source Id",
+          "type": "string"
+        },
+        "source_type": {
+          "$ref": "#/$defs/SourceType"
+        },
+        "trace_id": {
+          "format": "uuid",
+          "title": "Trace Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "schema_name",
+        "schema_version",
+        "household_id",
+        "session_id",
+        "source_type",
+        "source_id"
+      ],
+      "title": "BaseRecordMetadata",
+      "type": "object"
+    },
+    "EventNode": {
+      "additionalProperties": false,
+      "properties": {
+        "actor_key": {
+          "minLength": 1,
+          "title": "Actor Key",
+          "type": "string"
+        },
+        "event_id": {
+          "format": "uuid",
+          "title": "Event Id",
+          "type": "string"
+        },
+        "instance_key": {
+          "minLength": 1,
+          "title": "Instance Key",
+          "type": "string"
+        },
+        "kind": {
+          "enum": [
+            "pick_up",
+            "carry",
+            "handoff",
+            "place",
+            "no_move",
+            "unresolved"
+          ],
+          "title": "Kind",
+          "type": "string"
+        },
+        "location_key": {
+          "minLength": 1,
+          "title": "Location Key",
+          "type": "string"
+        },
+        "receiver_key": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Receiver Key"
+        },
+        "time": {
+          "format": "date-time",
+          "title": "Time",
+          "type": "string"
+        }
+      },
+      "required": [
+        "event_id",
+        "time",
+        "kind",
+        "instance_key",
+        "actor_key",
+        "location_key"
+      ],
+      "title": "EventNode",
+      "type": "object"
+    },
+    "EvidenceRef": {
+      "additionalProperties": false,
+      "properties": {
+        "evidence_id": {
+          "format": "uuid",
+          "title": "Evidence Id",
+          "type": "string"
+        },
+        "evidence_type": {
+          "minLength": 1,
+          "title": "Evidence Type",
+          "type": "string"
+        },
+        "locator": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Locator"
+        },
+        "source_record_id": {
+          "format": "uuid",
+          "title": "Source Record Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "evidence_type",
+        "source_record_id"
+      ],
+      "title": "EvidenceRef",
+      "type": "object"
+    },
+    "FullHypothesis": {
+      "additionalProperties": false,
+      "properties": {
+        "events": {
+          "items": {
+            "$ref": "#/$defs/EventNode"
+          },
+          "minItems": 1,
+          "title": "Events",
+          "type": "array"
+        },
+        "state": {
+          "$ref": "#/$defs/TypedParticleState"
+        }
+      },
+      "required": [
+        "state",
+        "events"
+      ],
+      "title": "FullHypothesis",
+      "type": "object"
+    },
+    "IncidentalObservationContext": {
+      "additionalProperties": false,
+      "description": "Task and sensing context for a non-target observation opportunity.",
+      "properties": {
+        "additional_action_cost": {
+          "minimum": 0.0,
+          "title": "Additional Action Cost",
+          "type": "number"
+        },
+        "candidate_entity_ids": {
+          "default": [],
+          "items": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "title": "Candidate Entity Ids",
+          "type": "array"
+        },
+        "field_of_view_coverage": {
+          "maximum": 1.0,
+          "minimum": 0.0,
+          "title": "Field Of View Coverage",
+          "type": "number"
+        },
+        "frame_id": {
+          "minLength": 1,
+          "title": "Frame Id",
+          "type": "string"
+        },
+        "observation_likelihood_model_id": {
+          "minLength": 1,
+          "title": "Observation Likelihood Model Id",
+          "type": "string"
+        },
+        "observation_mode": {
+          "$ref": "#/$defs/ObservationMode"
+        },
+        "observed_time": {
+          "format": "date-time",
+          "title": "Observed Time",
+          "type": "string"
+        },
+        "occlusion_state": {
+          "$ref": "#/$defs/OcclusionState"
+        },
+        "primary_task_goal": {
+          "minLength": 1,
+          "title": "Primary Task Goal",
+          "type": "string"
+        },
+        "primary_task_id": {
+          "format": "uuid",
+          "title": "Primary Task Id",
+          "type": "string"
+        },
+        "selection_probability": {
+          "maximum": 1.0,
+          "minimum": 0.0,
+          "title": "Selection Probability",
+          "type": "number"
+        }
+      },
+      "required": [
+        "primary_task_id",
+        "primary_task_goal",
+        "observation_mode",
+        "frame_id",
+        "field_of_view_coverage",
+        "occlusion_state",
+        "additional_action_cost",
+        "selection_probability",
+        "observation_likelihood_model_id",
+        "observed_time"
+      ],
+      "title": "IncidentalObservationContext",
+      "type": "object"
+    },
+    "ObservationDetectionResult": {
+      "additionalProperties": false,
+      "description": "Robot-visible outcome produced by one observation opportunity.\n\nIdentity, realized location, and detection time are all-or-none and are\npermitted only for ``DETECTED``. This makes it structurally impossible for\na missed or ambiguous observation to be filled from simulator truth.",
+      "properties": {
+        "detected_location_id": {
+          "anyOf": [
+            {
+              "format": "uuid",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Detected Location Id"
+        },
+        "detected_object_instance_id": {
+          "anyOf": [
+            {
+              "format": "uuid",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Detected Object Instance Id"
+        },
+        "detection_time": {
+          "anyOf": [
+            {
+              "format": "date-time",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Detection Time"
+        },
+        "evidence_refs": {
+          "default": [],
+          "items": {
+            "$ref": "#/$defs/EvidenceRef"
+          },
+          "title": "Evidence Refs",
+          "type": "array"
+        },
+        "metadata": {
+          "$ref": "#/$defs/BaseRecordMetadata"
+        },
+        "negative_evidence_strength": {
+          "default": 0.0,
+          "maximum": 1.0,
+          "minimum": 0.0,
+          "title": "Negative Evidence Strength",
+          "type": "number"
+        },
+        "observation_opportunity_id": {
+          "format": "uuid",
+          "title": "Observation Opportunity Id",
+          "type": "string"
+        },
+        "outcome": {
+          "$ref": "#/$defs/ObservationOutcome"
+        }
+      },
+      "required": [
+        "metadata",
+        "observation_opportunity_id",
+        "outcome"
+      ],
+      "title": "ObservationDetectionResult",
+      "type": "object"
+    },
+    "ObservationMode": {
+      "description": "How an observation relates to the robot's current primary task.",
+      "enum": [
+        "incidental",
+        "micro_verify",
+        "planned_verify",
+        "detour_verify"
+      ],
+      "title": "ObservationMode",
+      "type": "string"
+    },
+    "ObservationOpportunityRecord": {
+      "additionalProperties": false,
+      "description": "A sensing opportunity, recorded before any detection result is known.\n\nIt intentionally carries no incidental object identity, realized location,\nevent time, or outcome. Those values belong to a separate detection result\nand may only be populated when the sensor actually detects an object.",
+      "properties": {
+        "evidence_refs": {
+          "default": [],
+          "items": {
+            "$ref": "#/$defs/EvidenceRef"
+          },
+          "title": "Evidence Refs",
+          "type": "array"
+        },
+        "incidental_context": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/IncidentalObservationContext"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "likelihood_model_id": {
+          "minLength": 1,
+          "title": "Likelihood Model Id",
+          "type": "string"
+        },
+        "metadata": {
+          "$ref": "#/$defs/BaseRecordMetadata"
+        },
+        "observation_action_id": {
+          "format": "uuid",
+          "title": "Observation Action Id",
+          "type": "string"
+        },
+        "opportunity_time": {
+          "format": "date-time",
+          "title": "Opportunity Time",
+          "type": "string"
+        },
+        "p_detect_given_visible": {
+          "maximum": 1.0,
+          "minimum": 0.0,
+          "title": "P Detect Given Visible",
+          "type": "number"
+        },
+        "p_visible_given_state": {
+          "maximum": 1.0,
+          "minimum": 0.0,
+          "title": "P Visible Given State",
+          "type": "number"
+        },
+        "selected": {
+          "title": "Selected",
+          "type": "boolean"
+        },
+        "selection_probability": {
+          "maximum": 1.0,
+          "minimum": 0.0,
+          "title": "Selection Probability",
+          "type": "number"
+        }
+      },
+      "required": [
+        "metadata",
+        "observation_action_id",
+        "opportunity_time",
+        "selected",
+        "selection_probability",
+        "p_visible_given_state",
+        "p_detect_given_visible",
+        "likelihood_model_id"
+      ],
+      "title": "ObservationOpportunityRecord",
+      "type": "object"
+    },
+    "ObservationOutcome": {
+      "description": "Mutually exclusive outcome of one candidate observation opportunity.",
+      "enum": [
+        "detected",
+        "verified_absence",
+        "not_observed",
+        "ambiguous"
+      ],
+      "title": "ObservationOutcome",
+      "type": "string"
+    },
+    "OcclusionState": {
+      "enum": [
+        "clear",
+        "partial",
+        "full",
+        "unknown"
+      ],
+      "title": "OcclusionState",
+      "type": "string"
+    },
+    "OrderedActorRole": {
+      "additionalProperties": false,
+      "properties": {
+        "actor_key": {
+          "minLength": 1,
+          "title": "Actor Key",
+          "type": "string"
+        },
+        "role": {
+          "minLength": 1,
+          "title": "Role",
+          "type": "string"
+        }
+      },
+      "required": [
+        "role",
+        "actor_key"
+      ],
+      "title": "OrderedActorRole",
+      "type": "object"
+    },
+    "ParticleChangeCause": {
+      "enum": [
+        "observation",
+        "actor",
+        "identity",
+        "habit",
+        "noise",
+        "unresolved"
+      ],
+      "title": "ParticleChangeCause",
+      "type": "string"
+    },
+    "ParticleProposalOperation": {
+      "enum": [
+        "branch",
+        "revise",
+        "retract",
+        "reactivate",
+        "rejuvenate",
+        "preserve_unresolved"
+      ],
+      "title": "ParticleProposalOperation",
+      "type": "string"
+    },
+    "ParticleRegimeDecision": {
+      "enum": [
+        "stay",
+        "create",
+        "reactivate",
+        "unresolved"
+      ],
+      "title": "ParticleRegimeDecision",
+      "type": "string"
+    },
+    "PrivacyScope": {
+      "enum": [
+        "private",
+        "household",
+        "research_deidentified"
+      ],
+      "title": "PrivacyScope",
+      "type": "string"
+    },
+    "ProposalTarget": {
+      "additionalProperties": false,
+      "properties": {
+        "candidate": {
+          "$ref": "#/$defs/FullHypothesis"
+        },
+        "evidence_ids": {
+          "items": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Evidence Ids",
+          "type": "array"
+        },
+        "operation": {
+          "$ref": "#/$defs/ParticleProposalOperation"
+        },
+        "replaced_revision_ids": {
+          "default": [],
+          "items": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "title": "Replaced Revision Ids",
+          "type": "array"
+        },
+        "replay_required": {
+          "default": false,
+          "title": "Replay Required",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "operation",
+        "candidate",
+        "evidence_ids"
+      ],
+      "title": "ProposalTarget",
+      "type": "object"
+    },
+    "RevisionRecord": {
+      "additionalProperties": false,
+      "properties": {
+        "event_hypothesis_id": {
+          "format": "uuid",
+          "title": "Event Hypothesis Id",
+          "type": "string"
+        },
+        "ledger_lineage_ref": {
+          "minLength": 1,
+          "title": "Ledger Lineage Ref",
+          "type": "string"
+        },
+        "parent_revision_id": {
+          "anyOf": [
+            {
+              "format": "uuid",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Parent Revision Id"
+        },
+        "particle_id": {
+          "format": "uuid",
+          "title": "Particle Id",
+          "type": "string"
+        },
+        "revision_id": {
+          "format": "uuid",
+          "title": "Revision Id",
+          "type": "string"
+        },
+        "statistic_state_ref": {
+          "minLength": 1,
+          "title": "Statistic State Ref",
+          "type": "string"
+        },
+        "status": {
+          "enum": [
+            "active",
+            "retracted"
+          ],
+          "title": "Status",
+          "type": "string"
+        }
+      },
+      "required": [
+        "revision_id",
+        "parent_revision_id",
+        "particle_id",
+        "event_hypothesis_id",
+        "ledger_lineage_ref",
+        "statistic_state_ref",
+        "status"
+      ],
+      "title": "RevisionRecord",
+      "type": "object"
+    },
+    "SourceType": {
+      "enum": [
+        "sensor",
+        "model",
+        "user",
+        "inference",
+        "action",
+        "import",
+        "simulation"
+      ],
+      "title": "SourceType",
+      "type": "string"
+    },
+    "TypedParticleState": {
+      "additionalProperties": false,
+      "description": "One discrete world-line hypothesis plus references to analytic state.",
+      "properties": {
+        "change_cause": {
+          "$ref": "#/$defs/ParticleChangeCause"
+        },
+        "event_hypothesis_id": {
+          "format": "uuid",
+          "title": "Event Hypothesis Id",
+          "type": "string"
+        },
+        "instance_association_key": {
+          "minLength": 1,
+          "title": "Instance Association Key",
+          "type": "string"
+        },
+        "ledger_lineage_ref": {
+          "minLength": 1,
+          "title": "Ledger Lineage Ref",
+          "type": "string"
+        },
+        "ordered_actor_roles": {
+          "items": {
+            "$ref": "#/$defs/OrderedActorRole"
+          },
+          "title": "Ordered Actor Roles",
+          "type": "array"
+        },
+        "parent_particle_id": {
+          "anyOf": [
+            {
+              "format": "uuid",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Parent Particle Id"
+        },
+        "parent_revision_id": {
+          "anyOf": [
+            {
+              "format": "uuid",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Parent Revision Id"
+        },
+        "particle_id": {
+          "format": "uuid",
+          "title": "Particle Id",
+          "type": "string"
+        },
+        "regime_decision": {
+          "$ref": "#/$defs/ParticleRegimeDecision"
+        },
+        "regime_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Regime Id"
+        },
+        "revision_id": {
+          "format": "uuid",
+          "title": "Revision Id",
+          "type": "string"
+        },
+        "run_length": {
+          "minimum": 0,
+          "title": "Run Length",
+          "type": "integer"
+        },
+        "source_snapshot_id": {
+          "format": "uuid",
+          "title": "Source Snapshot Id",
+          "type": "string"
+        },
+        "statistic_state_ref": {
+          "minLength": 1,
+          "title": "Statistic State Ref",
+          "type": "string"
+        }
+      },
+      "required": [
+        "particle_id",
+        "parent_particle_id",
+        "source_snapshot_id",
+        "event_hypothesis_id",
+        "revision_id",
+        "ordered_actor_roles",
+        "instance_association_key",
+        "change_cause",
+        "regime_decision",
+        "regime_id",
+        "run_length",
+        "statistic_state_ref",
+        "ledger_lineage_ref"
+      ],
+      "title": "TypedParticleState",
+      "type": "object"
+    },
+    "VisibleRecords": {
+      "additionalProperties": false,
+      "properties": {
+        "actor_evidence": {
+          "default": [],
+          "items": {
+            "$ref": "#/$defs/ActorResponsibilityEvidence"
+          },
+          "title": "Actor Evidence",
+          "type": "array"
+        },
+        "arrivals": {
+          "items": {
+            "$ref": "#/$defs/Arrival"
+          },
+          "title": "Arrivals",
+          "type": "array"
+        },
+        "cutoff": {
+          "format": "date-time",
+          "title": "Cutoff",
+          "type": "string"
+        },
+        "detections": {
+          "items": {
+            "$ref": "#/$defs/ObservationDetectionResult"
+          },
+          "title": "Detections",
+          "type": "array"
+        },
+        "opportunities": {
+          "items": {
+            "$ref": "#/$defs/ObservationOpportunityRecord"
+          },
+          "title": "Opportunities",
+          "type": "array"
+        }
+      },
+      "required": [
+        "opportunities",
+        "detections",
+        "arrivals",
+        "cutoff"
+      ],
+      "title": "VisibleRecords",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "actor_support": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Actor Support",
+      "type": "array"
+    },
+    "annotation_kind": {
+      "enum": [
+        "component_fixture",
+        "reviewed_offline",
+        "native_trace"
+      ],
+      "title": "Annotation Kind",
+      "type": "string"
+    },
+    "annotation_ref": {
+      "minLength": 1,
+      "title": "Annotation Ref",
+      "type": "string"
+    },
+    "compatible_targets": {
+      "items": {
+        "$ref": "#/$defs/ProposalTarget"
+      },
+      "minItems": 1,
+      "title": "Compatible Targets",
+      "type": "array"
+    },
+    "house_id": {
+      "minLength": 1,
+      "title": "House Id",
+      "type": "string"
+    },
+    "house_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "title": "House Sha256",
+      "type": "string"
+    },
+    "instance_support": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Instance Support",
+      "type": "array"
+    },
+    "parents": {
+      "items": {
+        "$ref": "#/$defs/FullHypothesis"
+      },
+      "title": "Parents",
+      "type": "array"
+    },
+    "partition": {
+      "enum": [
+        "train",
+        "development"
+      ],
+      "title": "Partition",
+      "type": "string"
+    },
+    "revisions": {
+      "items": {
+        "$ref": "#/$defs/RevisionRecord"
+      },
+      "title": "Revisions",
+      "type": "array"
+    },
+    "sample_id": {
+      "format": "uuid",
+      "title": "Sample Id",
+      "type": "string"
+    },
+    "schedule_block_id": {
+      "minLength": 1,
+      "title": "Schedule Block Id",
+      "type": "string"
+    },
+    "schema_version": {
+      "const": "full-proposal-sample@1",
+      "default": "full-proposal-sample@1",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "source_snapshot_id": {
+      "format": "uuid",
+      "title": "Source Snapshot Id",
+      "type": "string"
+    },
+    "visible": {
+      "$ref": "#/$defs/VisibleRecords"
+    }
+  },
+  "required": [
+    "sample_id",
+    "partition",
+    "house_id",
+    "house_sha256",
+    "schedule_block_id",
+    "annotation_kind",
+    "annotation_ref",
+    "source_snapshot_id",
+    "visible",
+    "parents",
+    "revisions",
+    "instance_support",
+    "actor_support",
+    "compatible_targets"
+  ],
+  "title": "ProposalSample",
+  "type": "object"
+}

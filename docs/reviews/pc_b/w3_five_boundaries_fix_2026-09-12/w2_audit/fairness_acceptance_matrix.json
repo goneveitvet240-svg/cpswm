@@ -1,0 +1,532 @@
+{
+  "schema_version": "1.0",
+  "audit_name": "CPSWM structure-two W2 fairness and 31-forgery independent audit",
+  "auditor_role": "PC-B independent review",
+  "captured_utc": "2026-09-12T15:13:38.5733654Z",
+  "scope": {
+    "production_code_modified": false,
+    "branch_splicing_performed": false,
+    "commit_or_push_performed_by_this_audit": false,
+    "formal_scientific_conclusion_published": false,
+    "historical_r6_results_preserved": true
+  },
+  "formal_acceptance": {
+    "decision": "BLOCKED",
+    "scientific_status": "SCIENCE_NOT_ESTABLISHED",
+    "a_published_unified_post_review_sha": null,
+    "reason_codes": [
+      "NO_A_PUBLISHED_UNIFIED_POST_REVIEW_SHA",
+      "W2_PREPARATION_AND_ORIGINAL_RUNTIME_ARE_DISTINCT_HISTORIES",
+      "PUBLIC_MAP_CAUSALITY_UNDECIDED",
+      "OWNER_PRIOR_PROTOCOL_UNDECIDED",
+      "CAPACITY_AND_TOTAL_BUDGET_NOT_COMPARABLE",
+      "SEARCH_ADAPTER_DISCARDS_METHOD_SPECIFIC_HEADS",
+      "LONG_TERM_POLLUTION_NOT_MEASURED"
+    ],
+    "required_identity_rule": "A must publish one reviewed, frozen commit and tree containing the accepted boundary fixes; PC-B must not synthesize the target by merging or cherry-picking branches locally."
+  },
+  "targets": {
+    "w2_acceptance_preparation": {
+      "remote_ref": "origin/codex/pc-a-w2-acceptance-prep-20260912",
+      "commit_sha": "329787241996631a6abb4fcd3b12d2c13a135777",
+      "tree_sha": "ab3ea1d707df80934ae5348e5dcb066fcaf12203",
+      "worktree": "F:\\庞惟\\codex\\cpswm-w2-audit-20260912",
+      "checkout_mode": "detached",
+      "worktree_clean_after_audit": true,
+      "role": "checker, archived mutation witness and acceptance preparation"
+    },
+    "w2_original_snapshot": {
+      "remote_ref": "origin/codex/snapshot-w2-20260912",
+      "commit_sha": "de2c04c3e690dba674850af9c4f7e126dbab910e",
+      "tree_sha": "0e452a576eeece0e0b49660bd1179907d0aa82aa",
+      "worktree": "F:\\庞惟\\codex\\cpswm-w2-audit-original-20260912",
+      "checkout_mode": "detached",
+      "worktree_clean_after_audit": true,
+      "role": "original W2 comparison implementation, bundle_v5 and local fairness tests"
+    },
+    "historical_runtime_chain": {
+      "metadata_base_commit": "09eb4d48e1c11082e90ca18332d04333e6b5b47a",
+      "metadata_base_is_runtime_identity": false,
+      "initial_fairness_commit_abbrev": "9b58d7e",
+      "dynamic_and_target_instance_commit": "72024164a52db6b70c263a332543cf424f017252",
+      "actual_runtime_code_commit": "d6112489d0a09f7086286e223741be60051b99a5",
+      "test_suite_commit": "e8b5cee9601a35bb1220480ebe60b0c74f3c4799",
+      "bundle_evidence_commit": "aa9690146e5261d826b642c7bc4c54d2c43be31b",
+      "preservation_snapshot": "de2c04c3e690dba674850af9c4f7e126dbab910e"
+    },
+    "remote_heads_observed": {
+      "integration_handoff": "bdec3ee21b7db361e390496d97ff2eb30390dc6c",
+      "pc_b_five_boundary_repair": "23506024213d517ba4bab65d4318663163b00913",
+      "pc_a_w1": "21870b0bcd6c23d43518a27fcc1c4b538b3912b7",
+      "pc_a_crosscheck": "1b2b31e88c47fc232a7b4e2dcec56c02c9ac9636",
+      "pc_a_w3_r7": "62870a3a38fce882b25d8d77f1d0526cca6fbc14",
+      "pc_a_w2_prep": "329787241996631a6abb4fcd3b12d2c13a135777",
+      "unified_post_review_sha": null
+    }
+  },
+  "environment": {
+    "command_record": "windows_environment.command.json",
+    "python_executable": "F:\\庞惟\\codex\\cpswm-w3-five-boundaries-fix-20260912\\.venv\\Scripts\\python.exe",
+    "python_implementation": "CPython",
+    "python_version": "3.13.5",
+    "python_build": "MSC v.1944 64 bit (AMD64)",
+    "platform": "Windows-11-10.0.22631-SP0",
+    "packages": {
+      "pytest": "9.1.1",
+      "numpy": "2.5.3",
+      "pydantic": "2.13.5",
+      "scipy": "1.18.1"
+    },
+    "git": {
+      "core_autocrlf": true,
+      "attributes_for_audited_files": "unspecified",
+      "index_and_worktree_eol": "i/lf w/crlf"
+    }
+  },
+  "source_eol_comparison": {
+    "finding": "The Windows raw-byte hashes differ from the historical LF bundle hashes solely under the recorded CRLF-to-LF normalization check. The legacy source guard hashes raw bytes and therefore rejects an ordinary CRLF checkout.",
+    "files": [
+      {
+        "path": "tools/pc_a_w2_acceptance/inspect_archived_mutations.py",
+        "snapshot": "329787241996631a6abb4fcd3b12d2c13a135777",
+        "windows_raw_sha256": "869ef9a82e4ca070a7359ba0d90e072e0e76a5efb1bf25490da91c8481ff9ae6",
+        "lf_normalized_sha256": "4978aa1860d30a7db04895c989a7c03a27679ca657c642033f206a3b8eacd4de",
+        "historical_expected_sha256": "4978aa1860d30a7db04895c989a7c03a27679ca657c642033f206a3b8eacd4de",
+        "crlf_count": 218
+      },
+      {
+        "path": "tests/pc_a_w2_acceptance/test_mutation_witness.py",
+        "snapshot": "329787241996631a6abb4fcd3b12d2c13a135777",
+        "windows_raw_sha256": "1602b872d0f0bf9b23062b7c744000f1a121e96cac8cee35871c22aaa2a3fb0c",
+        "lf_normalized_sha256": "b0be543b14d047276a4c1ab325cdebc4eaa7412a799ffea6963482f00ec51cf1",
+        "historical_expected_sha256": "b0be543b14d047276a4c1ab325cdebc4eaa7412a799ffea6963482f00ec51cf1",
+        "crlf_count": 97
+      },
+      {
+        "path": "src/cpswm/system/evaluation_operations/structure_two_comparison_audit.py",
+        "snapshot": "de2c04c3e690dba674850af9c4f7e126dbab910e",
+        "windows_raw_sha256": "b6de6a86e09d925ede6d315ce301d1426a09f8cb5defa811c8634677ff5ff910",
+        "lf_normalized_sha256": "3082f9f60945e8fd82a51dd8894dbf05e3b03aee28475fbed85e70285b3098f5",
+        "historical_expected_sha256": "3082f9f60945e8fd82a51dd8894dbf05e3b03aee28475fbed85e70285b3098f5",
+        "crlf_count": 784
+      },
+      {
+        "path": "src/cpswm/system/evaluation_operations/structure_two_comparison_fairness.py",
+        "snapshot": "de2c04c3e690dba674850af9c4f7e126dbab910e",
+        "windows_raw_sha256": "4331c54a9937a4fd1cd798fa59593d59a530eaa524bb1af529ab82264543c34c",
+        "lf_normalized_sha256": "7ac8ab746e7874e1a75031aa3b254727d58f364d25f9ae88a78c7f601bb433bd",
+        "historical_expected_sha256": "7ac8ab746e7874e1a75031aa3b254727d58f364d25f9ae88a78c7f601bb433bd",
+        "crlf_count": 393
+      },
+      {
+        "path": "src/cpswm/system/evaluation_operations/structure_two_comparison_dynamic.py",
+        "snapshot": "de2c04c3e690dba674850af9c4f7e126dbab910e",
+        "windows_raw_sha256": "b1d98b872757d8cf6587f7f231161ec49038ebba292e2db011b392de17fdd23c",
+        "lf_normalized_sha256": "9745f4b3285439e49ed5cfe3dd43786e94d0e0ff1fd6dce5bf3cb6280b2e1d32",
+        "historical_expected_sha256": "9745f4b3285439e49ed5cfe3dd43786e94d0e0ff1fd6dce5bf3cb6280b2e1d32",
+        "crlf_count": 890
+      },
+      {
+        "path": "src/cpswm/system/evaluation_operations/structure_two_p5_three_arm_death_test.py",
+        "snapshot": "de2c04c3e690dba674850af9c4f7e126dbab910e",
+        "windows_raw_sha256": "e8e1adeec57d42396c556dfcd1d8b4001d89f3dc23d174f3b9c22bb5049f7e42",
+        "lf_normalized_sha256": "9707a73acf16bd7c7be42184f3283645c7bb2ae98e59cc9cdf3fc8c4546c58ff",
+        "historical_expected_sha256": "9707a73acf16bd7c7be42184f3283645c7bb2ae98e59cc9cdf3fc8c4546c58ff",
+        "crlf_count": 1676
+      },
+      {
+        "path": "src/cpswm/system/evaluation_operations/project_two_action_benchmark.py",
+        "snapshot": "de2c04c3e690dba674850af9c4f7e126dbab910e",
+        "windows_raw_sha256": "34f9b8e659aa838ceb5ca0deb44555f93c757cf9c01c33acd7a48ac7d554f202",
+        "lf_normalized_sha256": "e9ff226b107cbecb0aa67fa687a7afc20cbfe715bbfe4968f7569483c1a3931a",
+        "historical_expected_sha256": "e9ff226b107cbecb0aa67fa687a7afc20cbfe715bbfe4968f7569483c1a3931a",
+        "crlf_count": 2623
+      },
+      {
+        "path": "configs/project_two_experiments/structure_two_p5_three_arm_death_test_v0_1.json",
+        "snapshot": "de2c04c3e690dba674850af9c4f7e126dbab910e",
+        "windows_raw_sha256": "7b39c5e397723837befea582c11511ad0ea7335848390fc9dd42285e6c37d7e2",
+        "lf_normalized_sha256": "4c9f146d42660d144c2f97f7f8af17fad9a1a38ca32260dfc55c39706268bfc8",
+        "historical_expected_sha256": "4c9f146d42660d144c2f97f7f8af17fad9a1a38ca32260dfc55c39706268bfc8",
+        "crlf_count": 86
+      },
+      {
+        "path": "configs/project_two_datasets/d0_multiseed_readout_v0_5.json",
+        "snapshot": "de2c04c3e690dba674850af9c4f7e126dbab910e",
+        "windows_raw_sha256": "51edd7d8089fb8a937c826de5415cc1b34efa6fe3c120c121f2fe83c414d7589",
+        "lf_normalized_sha256": "c2ce79d46ef9aa1335b092ca06dde0ce170e8c766dce68db63b7b04dde716cb8",
+        "historical_expected_sha256": "c2ce79d46ef9aa1335b092ca06dde0ce170e8c766dce68db63b7b04dde716cb8",
+        "crlf_count": 31
+      }
+    ]
+  },
+  "local_runs": [
+    {
+      "id": "environment",
+      "target_sha": "329787241996631a6abb4fcd3b12d2c13a135777",
+      "exit_code": 0,
+      "status": "PASS",
+      "result": "environment captured",
+      "command": "windows_environment.command.json",
+      "stdout": "windows_environment.stdout.log",
+      "stderr": "windows_environment.stderr.log"
+    },
+    {
+      "id": "archived_mutation_inspection",
+      "target_sha": "329787241996631a6abb4fcd3b12d2c13a135777",
+      "historical_reference_sha": "de2c04c3e690dba674850af9c4f7e126dbab910e",
+      "exit_code": 0,
+      "status": "PASS_ARCHIVE_ONLY",
+      "result": "31/31 selected conclusion dependencies changed; 31/31 have a concrete first_changed_value",
+      "command": "windows_archived_mutation_inspection.command.json",
+      "stdout": "windows_archived_mutation_inspection.stdout.log",
+      "stderr": "windows_archived_mutation_inspection.stderr.log",
+      "machine_evidence": "windows_archived_mutation_values.json"
+    },
+    {
+      "id": "checker_witness_tests",
+      "target_sha": "329787241996631a6abb4fcd3b12d2c13a135777",
+      "exit_code": 0,
+      "status": "PASS",
+      "result": "71 passed in 1.82s",
+      "command": "windows_checker_71.command.json",
+      "stdout": "windows_checker_71.stdout.log",
+      "stderr": "windows_checker_71.stderr.log",
+      "junit": "windows_checker_71.junit.xml",
+      "boundary": "checker unit tests; no algorithm execution"
+    },
+    {
+      "id": "fairness_local_subset",
+      "target_sha": "de2c04c3e690dba674850af9c4f7e126dbab910e",
+      "exit_code": 0,
+      "status": "PASS_LOCAL_ENGINEERING_ONLY",
+      "result": "19 passed in 73.47s",
+      "command": "windows_fairness_local_subset.command.json",
+      "stdout": "windows_fairness_local_subset.stdout.log",
+      "stderr": "windows_fairness_local_subset.stderr.log",
+      "junit": "windows_fairness_local_subset.junit.xml",
+      "boundary": "selected original-snapshot regression tests; not a complete CLI fresh replay and does not exercise legacy bundle source binding"
+    }
+  ],
+  "fairness_dimensions": [
+    {
+      "id": "F01",
+      "title": "public map and support source/time",
+      "engineering_status": "PARTIAL",
+      "scientific_status": "BLOCKED_USER_DECISION",
+      "public_interface_or_internal": "public adapter input with full-episode internal fallback",
+      "trust_assumption": "all locations may be a predeclared public catalog",
+      "positive_control": "all three arms receive the same support and ordering",
+      "finding": "_locations prefers known_location_ids but otherwise scans full episode source/attempted/destination; D0 catalog is empty; adapters hold the full episode.",
+      "quantitative": {
+        "test_steps": 1920,
+        "future_support_exposed_steps": 1040
+      },
+      "consequence": "Equal support rights are shown, but causal-prefix availability is not. A scientific comparison needs a frozen public-map policy."
+    },
+    {
+      "id": "F02",
+      "title": "owner prior",
+      "engineering_status": "PRIOR_MISMATCH_CONFIRMED",
+      "scientific_status": "BLOCKED_USER_DECISION",
+      "public_interface_or_internal": "adapter initialization behavior",
+      "trust_assumption": "native priors are allowed unless a common prior is mandated",
+      "positive_control": "development-only common-uniform prior contrast",
+      "finding": "P5 and learned use a uniform cold distribution with UUID lexical tie-break; AMG missing-owner fallback is encounter-first point mass via _argmax.",
+      "quantitative": {
+        "amg_missing_owner_steps": 53,
+        "amg_total_putback_errors_native": 102,
+        "amg_total_putback_errors_common_uniform": 85,
+        "amg_missing_owner_errors_native": 53,
+        "amg_missing_owner_errors_common_uniform": 36,
+        "p5_total_putback_errors": 85,
+        "native_gap_explained_by_prior_steps": 17
+      },
+      "consequence": "The reported P5-AMG gap is fully confounded by the cold-owner prior in this dataset."
+    },
+    {
+      "id": "F03",
+      "title": "actual features consumed by three arms",
+      "engineering_status": "PARTIAL_OBSERVABILITY",
+      "scientific_status": "BLOCKED",
+      "public_interface_or_internal": "shared public packet plus arm-specific internal feature extraction",
+      "trust_assumption": "ConsumerProbe opcode/call tracing is evidence but not a complete taint proof",
+      "positive_control": "common packet, visible fields, candidate outcomes and costs",
+      "finding": "P5 consumes actor reference prior plus actor/mechanism/ordered-role/context; learned compresses actor posterior, mechanism, visibility/confidence/history/time into 12 features and omits equivalent ordered-role/reference-prior detail; AMG consumes posterior/reference ratio, mechanism and ordered role.",
+      "consequence": "Equal interface rights must not be reported as equal actual information consumption."
+    },
+    {
+      "id": "F04",
+      "title": "training, validation and test access chronology",
+      "engineering_status": "PARTIAL_SAFE_WRAPPER_VERIFIED",
+      "scientific_status": "UNIFIED_SHA_REQUIRED",
+      "public_interface_or_internal": "SplitAccessGuard public receipts and validation evaluator internals",
+      "trust_assumption": "safe W2 wrapper is the selected path",
+      "positive_control": "training truth is limited to training; validation scores after action commit; test truth after all arms commit",
+      "finding": "The old _validation_selection/_evaluate_single_state path obtains a truth envelope before its loop; the W2 audit run uses a safe wrapper instead.",
+      "quantitative": {
+        "training_rows": 640,
+        "training_visible_events": 1,
+        "training_truth_events": 20,
+        "validation_visible_events": 1,
+        "validation_score_after_commit_events": 17280,
+        "validation_total_access_events": 17281,
+        "test_ids_seen_in_selection_receipt": 0
+      },
+      "consequence": "Integration must remove or make unreachable the unsafe chronology and regenerate evidence on one SHA."
+    },
+    {
+      "id": "F05",
+      "title": "independent tuning",
+      "engineering_status": "PARTIAL",
+      "scientific_status": "NO_EQUAL_TUNING_BUDGET",
+      "public_interface_or_internal": "validation selection APIs",
+      "trust_assumption": "historical P5 development budget is not known",
+      "positive_control": "learned and AMG use the same validation PUT_BACK objective without test access",
+      "finding": "Learned evaluates 24 candidates across 12 fits; AMG evaluates 3 candidates; P5 v0.6 is pre-existing and hand-designed; dynamic scenarios reuse selected parameters.",
+      "quantitative": {
+        "learned_trials": 24,
+        "learned_fits": 12,
+        "amg_trials": 3,
+        "learned_selected": {
+          "width": 8,
+          "learning_rate": 0.1,
+          "l2": 0.0,
+          "smoothing": 0.25
+        },
+        "amg_selected_smoothing": 0.2
+      },
+      "consequence": "Independent selection is evidenced; equal development/tuning opportunity is not."
+    },
+    {
+      "id": "F06",
+      "title": "capacity",
+      "engineering_status": "MEASURED_FOR_LEARNED_ONLY",
+      "scientific_status": "BLOCKED_USER_DECISION",
+      "public_interface_or_internal": "model representation internals",
+      "trust_assumption": "symbolic state capacity is not reducible to learned parameter count",
+      "positive_control": "learned active parameter and training MAC counts are recorded",
+      "finding": "No frozen equal-capacity, equal-compute or Pareto protocol exists across learned, P5 and AMG.",
+      "quantitative": {
+        "learned_raw_features": 12,
+        "learned_projection_width": 8,
+        "learned_active_logit_parameters": 64,
+        "learned_conditional_cells": 9,
+        "selected_head_only_training_macs": 2457600,
+        "all_12_fits_training_macs": 68812800
+      },
+      "consequence": "No capacity-based scientific comparison can be accepted."
+    },
+    {
+      "id": "F07",
+      "title": "online budget",
+      "engineering_status": "DEV_TIMING_ONLY",
+      "scientific_status": "NOT_COMPARABLE",
+      "public_interface_or_internal": "diagnostic timing wrapper",
+      "trust_assumption": "nonexclusive macOS timing is descriptive only",
+      "positive_control": "same limited consume/hash/trace/posterior/decode region is timed",
+      "finding": "Timing covers 2 episodes x 3 repeats and excludes initialization, training, data/IO, truth, scoring and robot execution.",
+      "consequence": "No matched total compute, latency, memory, power or historical tuning budget is available for ranking."
+    },
+    {
+      "id": "F08",
+      "title": "SEARCH decoding",
+      "engineering_status": "COMMON_ADAPTER_VERIFIED",
+      "scientific_status": "ADAPTER_DIAGNOSTIC_ONLY",
+      "public_interface_or_internal": "common public decoder fed by adapter-generated posterior heads",
+      "trust_assumption": "common detected-current SEARCH is the target only if explicitly chosen",
+      "positive_control": "decoder action changes when a legal posterior changes",
+      "finding": "All current-location heads are populated from the same latest detection/carry; learned joint is not routed to SEARCH; AMG native SEARCH rank is discarded.",
+      "quantitative": {
+        "test_steps": 1920,
+        "identical_current_and_search_distributions_steps": 1920,
+        "amg_native_rank_differs_from_adapter_steps": 1634,
+        "search_error_rate_all_arms": 0.08020833333333334
+      },
+      "consequence": "The output measures a common adapter, not each method's native SEARCH prediction."
+    },
+    {
+      "id": "F09",
+      "title": "CIAV cost",
+      "engineering_status": "PASS_INFORMATION_CEILING_CONTRACT",
+      "scientific_status": "PRODUCTION_UTILITY_NOT_ESTABLISHED",
+      "public_interface_or_internal": "public packet and receipt checks",
+      "trust_assumption": "zero-priced synthetic calls are sufficient only for an engineering information ceiling",
+      "positive_control": "exact packet/receipt checks and one microverify, outcome and cost call per arm per step",
+      "finding": "All five charged fields remain zero and privacy remains 1 to 1.",
+      "quantitative": {
+        "microverify_calls_per_arm_step": 1,
+        "outcome_calls_per_arm_step": 1,
+        "cost_calls_per_arm_step": 1,
+        "charged_cost_fields_zero": 5,
+        "privacy_before": 1,
+        "privacy_after": 1
+      },
+      "consequence": "The run cannot establish real observation cost, net utility or action-contingent environment performance."
+    },
+    {
+      "id": "F10",
+      "title": "long-term pollution",
+      "engineering_status": "NO_ELIGIBLE_COMMITS",
+      "scientific_status": "C09_NOT_MEASURED_BLOCKED",
+      "public_interface_or_internal": "committed contribution ledger versus action-level proxy",
+      "trust_assumption": "owner_habit_contamination is not accepted as contribution-ledger pollution",
+      "positive_control": "no-long-term-commit and fast/full equality checks",
+      "finding": "P5 commits no long-term events in the 1920-step run. Existing owner_habit_contamination increments on an action condition and is not committed-ledger pollution. The frozen C0-C3 protocol was not run.",
+      "quantitative": {
+        "p5_committed_event_histogram": {
+          "0": 1920
+        },
+        "full_vs_fast_action_differences": 0,
+        "same_location_fast_verification_closures": 1276,
+        "explicit_no_new_transition_steps": 644,
+        "eligible_pollution_denominator": 0
+      },
+      "consequence": "Long-term pollution quality remains unmeasured."
+    }
+  ],
+  "historical_results": {
+    "boundary": "preserved original bundle values, not a formal scientific ranking",
+    "episodes": 60,
+    "steps": 1920,
+    "put_back": {
+      "direct_p5_full_eager": {
+        "errors": 85,
+        "rate": 0.04427083333333333
+      },
+      "amg": {
+        "errors": 102,
+        "rate": 0.053125
+      },
+      "learned": {
+        "errors": 533,
+        "rate": 0.27760416666666665
+      }
+    },
+    "search": {
+      "errors_each_arm": 154,
+      "rate_each_arm": 0.08020833333333334,
+      "all_current_and_search_distributions_equal_steps": 1920
+    },
+    "signal_gate": false,
+    "combined_utility_computed": false
+  },
+  "forgery_audit": {
+    "scope": "historical R6 archive inspection; historical CLI matrices read, not rerun in this audit",
+    "review_sha": "97e1d2c1e83a4532e2b3bab3bf87cc6a2927f274",
+    "archive_sha256": "bdfc801b602a5ed55efe2502f3596010f372ab4b4f6e626a64a7f3e52137f17c",
+    "reference": {
+      "name": "bundle_v5",
+      "episodes": 60,
+      "steps": 1920,
+      "historical_status": "CURRENT_SOURCE_FRESH_REPLAY_MATCH",
+      "nonempty": true,
+      "files_sha256": {
+        "attribution.json": "57889827f353b8787a087a7eb3233342979d92720688aa137c42ed82e518ab5e",
+        "audit.json": "fce3f0124c3c73a3c564699f01f0645baa91f5e9393f093c199b6906adbf468f",
+        "steps.jsonl.gz": "d96b69fc2c65e8c2382568fc5f6efd26b69e9295629f48bae6344e8628bcd76c",
+        "timing.json": "c91b36c4099def996ae8b5427c051c33b8862fc57427d1dd766a718810012afa"
+      }
+    },
+    "summary": {
+      "batches": 3,
+      "batches_with_nonempty_legal_reference_first": 3,
+      "attack_cases": 31,
+      "historically_rejected_by_cli": 31,
+      "selected_dependency_digest_changed": 31,
+      "concrete_first_changed_value": 31,
+      "historical_no_op_count": 0,
+      "conclusion_dependency_attacks_with_source_bindings_unchanged": 30,
+      "intentional_source_metadata_attacks": 1
+    },
+    "batches": [
+      {
+        "id": "semantic_core",
+        "legal_reference_first": true,
+        "legal_reference_status": "CURRENT_SOURCE_FRESH_REPLAY_MATCH",
+        "case_count": 21,
+        "historical_matrix": "docs/reviews/pc_a/round6_2026-09-12/w2_evidence/temporary/popen-gw0/test_real_cli_complete_forgery0/evidence/adversarial_matrix.json",
+        "cases": [
+          "r1_commits_999",
+          "fast_slow_memory",
+          "actions_scores_groups",
+          "learned_joint",
+          "truth_and_labels",
+          "support_and_input",
+          "step_missing",
+          "step_duplicate",
+          "step_reorder",
+          "step_replacement",
+          "episode_missing",
+          "episode_duplicate",
+          "episode_reorder",
+          "data_hash",
+          "config_selection",
+          "seed_split",
+          "source_binding",
+          "source_rebound_state",
+          "source_version",
+          "attribution_only",
+          "forged_verification_receipt"
+        ]
+      },
+      {
+        "id": "fairness",
+        "legal_reference_first": true,
+        "legal_reference_status": "CURRENT_SOURCE_FRESH_REPLAY_MATCH",
+        "case_count": 6,
+        "historical_matrix": "docs/reviews/pc_a/round6_2026-09-12/w2_evidence/temporary/popen-gw3/test_complete_fairness_forgeri0/evidence/fairness_forgery_matrix.json",
+        "cases": [
+          "future_support",
+          "missing_owner",
+          "costs",
+          "selection_access",
+          "consumer_features",
+          "fairness_claim"
+        ]
+      },
+      {
+        "id": "dynamic",
+        "legal_reference_first": true,
+        "legal_reference_status": "CURRENT_SOURCE_FRESH_REPLAY_MATCH",
+        "case_count": 4,
+        "historical_matrix": "docs/reviews/pc_a/round6_2026-09-12/w2_evidence/temporary/popen-gw1/test_new_dynamic_dependency_fo0/evidence/matrix.json",
+        "cases": [
+          "nonempty_commit",
+          "action_consequence",
+          "corrected_memory",
+          "contract_freeze"
+        ]
+      }
+    ],
+    "per_case_machine_evidence": "windows_archived_mutation_values.json",
+    "future_unified_version_warning": {
+      "old_results_transfer_as_acceptance": false,
+      "cases_at_elevated_no_op_risk_after_boundary_repairs": [
+        "corrected_memory",
+        "action_consequence",
+        "nonempty_commit"
+      ],
+      "required_action": "Generate a new nonempty legal reference from the unified frozen SHA, recompute every selected dependency witness, and replace any no-op mutation with a non-no-op mutation in the same category before running the CLI batch."
+    }
+  },
+  "evidence_files": [
+    "REPORT.md",
+    "fairness_acceptance_matrix.json",
+    "windows_environment.command.json",
+    "windows_environment.stdout.log",
+    "windows_environment.stderr.log",
+    "windows_archived_mutation_inspection.command.json",
+    "windows_archived_mutation_inspection.stdout.log",
+    "windows_archived_mutation_inspection.stderr.log",
+    "windows_archived_mutation_values.json",
+    "windows_checker_71.command.json",
+    "windows_checker_71.stdout.log",
+    "windows_checker_71.stderr.log",
+    "windows_checker_71.junit.xml",
+    "windows_fairness_local_subset.command.json",
+    "windows_fairness_local_subset.stdout.log",
+    "windows_fairness_local_subset.stderr.log",
+    "windows_fairness_local_subset.junit.xml"
+  ]
+}

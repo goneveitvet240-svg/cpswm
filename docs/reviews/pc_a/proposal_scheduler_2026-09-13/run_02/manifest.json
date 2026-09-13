@@ -1,0 +1,89 @@
+{
+  "python": "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/.venv/bin/python",
+  "version": "3.13.5 (main, Jun 12 2025, 12:22:43) [Clang 20.1.4 ]",
+  "cwd": "/private/tmp/cpswm-pc-a-proposal-scheduler-20260913",
+  "base_head": "ac8bab46c2eeec46de89288199c5c6ce1edc6a10",
+  "source_before": {
+    "src/cpswm/data_preflight/__init__.py": "aad09974a7c36c2f3b591c12f46b060528ccffb2c692517bdde5a9cf1b873827",
+    "src/cpswm/data_preflight/capture_prefix.py": "9918d27fbf75feb44ce2b2d31121eb1637b343449fa1026ef1b7ebc6ef8cf786",
+    "src/cpswm/data_preflight/procthor_execution.py": "7403a576cb30991dbbd70201874ba77de99bbd67617eecefac756f47f3289356",
+    "src/cpswm/data_preflight/procthor_schedule.py": "e4568a2c9cdb6378a83a03687bffa591a253673c1fb0a6d78a7c21c2053c5f6d",
+    "src/cpswm/data_preflight/proposal_samples.py": "6127bfbe563ea4604b2b6f717687af544e5700f9971e1ca1c1655db6139fa89e",
+    "src/cpswm/data_preflight/simulator_capture.py": "bda9b46c35d0bb65a6c97187b8625a3d8dfa9fbf9214ad4d434dc9f8416aaed1",
+    "src/cpswm/data_preflight/train_coverage.py": "e3a31618dc107e0a9c216e8a391930198e75bd3ffad9f983f627049924f9b19d",
+    "src/cpswm/data_preflight/visible_prefix.py": "7a15da0718ee0875f7977bd4d2ca5224b8ff7077e51f624e2d081f580b4d858f",
+    "tests/test_structure_two_proposal_scheduler.py": "032473113b2eec47de05f8417fcb12f2191344ad66195943d1e88dc4e884030e",
+    "tools/structure_two_procthor_pilot.py": "29110d3c05742ab4254b105ee88a1e84ccebce34c5ffd519416d46a738eaf7ae",
+    "tools/structure_two_prepare_proposals.py": "7d79655e49d9c68b9c2abd211f1a617f93c8a3e2544f4ffb1f4f4f5cb70f67a7"
+  },
+  "commands": [
+    {
+      "name": "pytest",
+      "argv": [
+        "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/.venv/bin/python",
+        "-m",
+        "pytest",
+        "-o",
+        "addopts=",
+        "-q",
+        "-p",
+        "no:cacheprovider",
+        "tests/test_structure_two_proposal_scheduler.py",
+        "tests/test_structure_two_data_preflight.py",
+        "tests/test_d0_shift_scenarios.py",
+        "--junitxml=/private/tmp/cpswm-pc-a-proposal-scheduler-20260913/docs/reviews/pc_a/proposal_scheduler_2026-09-13/run_02/pytest.xml"
+      ],
+      "exit_code": 0,
+      "seconds": 2.827057834016159
+    },
+    {
+      "name": "ruff",
+      "argv": [
+        "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/.venv/bin/python",
+        "-m",
+        "ruff",
+        "check",
+        "src/cpswm/data_preflight/capture_prefix.py",
+        "src/cpswm/data_preflight/procthor_execution.py",
+        "src/cpswm/data_preflight/procthor_schedule.py",
+        "src/cpswm/data_preflight/proposal_samples.py",
+        "tests/test_structure_two_proposal_scheduler.py",
+        "tools/structure_two_procthor_pilot.py",
+        "tools/structure_two_prepare_proposals.py",
+        "--output-format",
+        "concise"
+      ],
+      "exit_code": 0,
+      "seconds": 0.021737833973020315
+    },
+    {
+      "name": "mypy",
+      "argv": [
+        "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/.venv/bin/python",
+        "-m",
+        "mypy",
+        "--follow-imports=silent",
+        "src/cpswm/data_preflight/proposal_samples.py",
+        "src/cpswm/data_preflight/procthor_schedule.py",
+        "src/cpswm/data_preflight/procthor_execution.py",
+        "src/cpswm/data_preflight/capture_prefix.py"
+      ],
+      "exit_code": 0,
+      "seconds": 0.12533645797520876
+    }
+  ],
+  "source_after": {
+    "src/cpswm/data_preflight/__init__.py": "aad09974a7c36c2f3b591c12f46b060528ccffb2c692517bdde5a9cf1b873827",
+    "src/cpswm/data_preflight/capture_prefix.py": "9918d27fbf75feb44ce2b2d31121eb1637b343449fa1026ef1b7ebc6ef8cf786",
+    "src/cpswm/data_preflight/procthor_execution.py": "7403a576cb30991dbbd70201874ba77de99bbd67617eecefac756f47f3289356",
+    "src/cpswm/data_preflight/procthor_schedule.py": "e4568a2c9cdb6378a83a03687bffa591a253673c1fb0a6d78a7c21c2053c5f6d",
+    "src/cpswm/data_preflight/proposal_samples.py": "6127bfbe563ea4604b2b6f717687af544e5700f9971e1ca1c1655db6139fa89e",
+    "src/cpswm/data_preflight/simulator_capture.py": "bda9b46c35d0bb65a6c97187b8625a3d8dfa9fbf9214ad4d434dc9f8416aaed1",
+    "src/cpswm/data_preflight/train_coverage.py": "e3a31618dc107e0a9c216e8a391930198e75bd3ffad9f983f627049924f9b19d",
+    "src/cpswm/data_preflight/visible_prefix.py": "7a15da0718ee0875f7977bd4d2ca5224b8ff7077e51f624e2d081f580b4d858f",
+    "tests/test_structure_two_proposal_scheduler.py": "032473113b2eec47de05f8417fcb12f2191344ad66195943d1e88dc4e884030e",
+    "tools/structure_two_procthor_pilot.py": "29110d3c05742ab4254b105ee88a1e84ccebce34c5ffd519416d46a738eaf7ae",
+    "tools/structure_two_prepare_proposals.py": "7d79655e49d9c68b9c2abd211f1a617f93c8a3e2544f4ffb1f4f4f5cb70f67a7"
+  },
+  "source_unchanged": true
+}

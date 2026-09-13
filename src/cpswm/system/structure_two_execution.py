@@ -11,6 +11,7 @@ from __future__ import annotations
 import hashlib
 import inspect
 import marshal
+from collections.abc import Mapping
 from pathlib import Path
 from types import CodeType, MappingProxyType
 from typing import Annotated, Any, Final, Literal, Protocol, cast, runtime_checkable
@@ -502,6 +503,71 @@ def _source_code_objects(source_path: Path, source_bytes: bytes) -> tuple[CodeTy
     return tuple(discovered)
 
 
+def _require_declared_implementation_member(
+    *,
+    operator: RuntimeOperatorName,
+    implementation_type: type,
+    instance: object,
+    callable_name: str,
+    callable_target: object,
+) -> None:
+    """Refuse a callable that is not the bound implementation type's own member.
+
+    ``hard_safety_kernel.provenance_and_dependency_checks_always_executed`` is
+    ``true`` for every legal path.  Checking only that a callable matches *its own*
+    source file is not a provenance check: a function defined in any other module
+    (or attached to a single instance) passes that test trivially while being
+    receipted under the production implementation symbol.  The round-2 review's
+    fault injection did exactly that and still produced seven verified rows.
+
+    The bound callable must therefore be the attribute that the implementation
+    type's own MRO declares under ``callable_name``, and it must report the
+    defining class's module and qualified name -- which is what makes the
+    subsequent source-file hash comparison meaningful.
+
+    Scope, stated honestly: this is applied only where
+    ``bind_runtime_callable(..., require_declared_member=True)`` asks for it, which
+    today is the adaptive deferred-path safety-maintenance seam.  Those four nodes
+    carry the entire write-safety argument of ``P0_SAFE_DEFERRED``, take no
+    runtime-visible input that a downstream check could catch, and are instrumented
+    by no production or test path.  Applying the same rule to every binding would
+    also refuse the project's existing instance-level receipt instrumentation, so
+    generalizing it is a separate decision, not a silent change.
+    """
+
+    instance_attributes = getattr(instance, "__dict__", None)
+    if isinstance(instance_attributes, Mapping) and callable_name in instance_attributes:
+        raise ValueError(
+            f"bound production callable is shadowed by an instance attribute: "
+            f"{operator}.{callable_name}"
+        )
+    owner = next(
+        (base for base in implementation_type.__mro__ if callable_name in vars(base)),
+        None,
+    )
+    if owner is None:
+        raise ValueError(
+            f"bound production callable is not declared by the bound implementation "
+            f"type: {operator}.{callable_name}"
+        )
+    declared = vars(owner)[callable_name]
+    if isinstance(declared, staticmethod | classmethod):
+        declared = declared.__func__
+    if declared is not callable_target:
+        raise ValueError(
+            f"bound production callable is not the declared class member: "
+            f"{operator}.{callable_name}"
+        )
+    if (
+        getattr(callable_target, "__module__", None) != owner.__module__
+        or getattr(callable_target, "__qualname__", None) != f"{owner.__qualname__}.{callable_name}"
+    ):
+        raise ValueError(
+            f"bound production callable does not belong to the bound implementation "
+            f"type: {operator}.{callable_name}"
+        )
+
+
 def bind_runtime_callable(
     *,
     runtime_execution_id: UUID,
@@ -510,14 +576,28 @@ def bind_runtime_callable(
     binding_kind: InvocationBindingKind,
     instance: object,
     callable_name: str,
+    require_declared_member: bool = False,
 ) -> RuntimeCallableBinding:
-    """Bind an actual live object, callable, and its loaded source bytes."""
+    """Bind an actual live object, callable, and its loaded source bytes.
+
+    ``require_declared_member`` additionally refuses a callable that is not the
+    implementation type's own declared member; see
+    :func:`_require_declared_implementation_member` for why it is opt-in.
+    """
 
     implementation_type = type(instance)
     method = getattr(instance, callable_name, None)
     if not callable(method):
         raise ValueError(f"bound production callable is missing: {operator}.{callable_name}")
     callable_target = method.__func__ if inspect.ismethod(method) else method
+    if require_declared_member:
+        _require_declared_implementation_member(
+            operator=operator,
+            implementation_type=implementation_type,
+            instance=instance,
+            callable_name=callable_name,
+            callable_target=callable_target,
+        )
     source_name = inspect.getsourcefile(callable_target)
     if source_name is None:
         raise ValueError(f"bound production implementation has no inspectable source: {operator}")
@@ -1236,6 +1316,19 @@ class TraceCompensationError(RuntimeError):
     """Raised when rollback succeeds but sink/lock compensation is not verifiable."""
 
 
+class AdaptiveMaintenanceContractError(ValueError):
+    """Raised, before any state mutation, by a deferred path's maintenance checks.
+
+    The frozen pre-death protocol's ``hard_safety_kernel`` requires
+    ``provenance_and_dependency_checks_always_executed`` and caps
+    ``maximum_safety_violations`` / ``maximum_provenance_violations`` /
+    ``maximum_unresolved_as_negative_events`` at zero.  A deferred path whose
+    declared upstream dependency arrives absent, malformed, stale, foreign, or
+    self-contradicting has failed that kernel, so the transaction fails closed
+    instead of emitting a receipt that claims a check which did not happen.
+    """
+
+
 __all__ = [
     "ADAPTIVE_FEEDBACK_CLOSURE_PATHS",
     "ADAPTIVE_TRACE_CLAIM_BOUNDARY",
@@ -1246,6 +1339,7 @@ __all__ = [
     "REGISTERED_ADAPTIVE_PATH_MODES",
     "STRUCTURE_TWO_OPERATOR_ORDER",
     "AdaptiveInferenceDebtCertificate",
+    "AdaptiveMaintenanceContractError",
     "FeedbackClosureKind",
     "OperatorExecutionDirective",
     "OperatorInvocationReceipt",

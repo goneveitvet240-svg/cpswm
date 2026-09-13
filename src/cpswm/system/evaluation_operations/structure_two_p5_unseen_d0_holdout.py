@@ -14,6 +14,11 @@ from cpswm.system.evaluation_operations.project_two_dataset import enforce_proje
 from cpswm.system.evaluation_operations.project_two_experiment_config import (
     D0SyntheticReplayExperimentConfig,
 )
+from cpswm.system.evaluation_operations.structure_two_evidence_versions import (
+    current_evidence_context,
+    require_execution_source,
+    require_frozen_p5_inputs,
+)
 from cpswm.system.evaluation_operations.structure_two_p5_readout_posthoc_diagnostic import (
     _evaluate_posthoc_episode,
 )
@@ -36,7 +41,8 @@ DEFAULT_CONFIG: Final = Path(
     "configs/project_two_experiments/structure_two_p5_unseen_d0_holdout_v0_1.json"
 )
 DEFAULT_OUTPUT: Final = Path(
-    "benchmarks/structure_two/structure_two_p5_unseen_d0_holdout_v0_1.json"
+    "benchmarks/structure_two/evidence_entry_portability_2026_09_12/current_v0_4/"
+    "structure_two_p5_unseen_d0_holdout_v0_4.json"
 )
 CLAIM_BOUNDARY: Final = (
     "This repository-frozen, previously unused D0 test-seed range can internally check "
@@ -45,6 +51,14 @@ CLAIM_BOUNDARY: Final = (
     "independently custodied; it cannot establish external validity, independent "
     "confirmation, scientific superiority, combined SEARCH/PUT_BACK utility, Task 7/8/9 "
     "completion, adaptive-router validity, or permission to narrow Structure Two."
+)
+
+
+REPLAY_CLAIM_BOUNDARY: Final = (
+    "This is a post-open replay of the already recorded internal D0 holdout. "
+    "It does not establish first use, unseen data, preregistration before execution, "
+    "independent confirmation, external validity, scientific superiority, combined utility, "
+    "Task 7/8/9 completion, adaptive-router validity, or ablation authorization."
 )
 
 
@@ -85,6 +99,8 @@ def _load_config(root: Path) -> dict[str, Any]:
 
 
 def _source_binding(root: Path, config: Mapping[str, Any]) -> dict[str, Any]:
+    require_execution_source(root)
+    require_frozen_p5_inputs(root)
     corrected = cast(Mapping[str, Any], config["corrected_components"])
     paths = {
         "configuration": DEFAULT_CONFIG,
@@ -103,11 +119,14 @@ def _source_binding(root: Path, config: Mapping[str, Any]) -> dict[str, Any]:
     binding["production_assembly_manifest_sha256"] = build_production_assembly_manifest(root)[
         "content_sha256"
     ]
+    binding["execution_source"] = require_execution_source(root)
     return binding
 
 
 def run_p5_unseen_d0_holdout(*, repository_root: Path) -> dict[str, Any]:
     root = repository_root.resolve()
+    require_execution_source(root)
+    require_frozen_p5_inputs(root)
     config = _load_config(root)
     method_config = _load_method_config(root)
     dataset_config = D0SyntheticReplayExperimentConfig.load(
@@ -151,6 +170,7 @@ def run_p5_unseen_d0_holdout(*, repository_root: Path) -> dict[str, Any]:
         raise RuntimeError("corrected P5 closures do not cover the unseen holdout stream")
     payload: dict[str, Any] = {
         "schema_version": SCHEMA_VERSION,
+        "evidence_context": current_evidence_context(),
         "protocol_id": PROTOCOL_ID,
         "status": (
             "INTERNAL_UNSEEN_D0_SIGNAL_DETECTED"
@@ -165,7 +185,7 @@ def run_p5_unseen_d0_holdout(*, repository_root: Path) -> dict[str, Any]:
             "dataset_version": dataset.manifest.dataset_version,
             "test_episode_count": len(test),
             "test_step_count": sum(len(episode.steps) for episode in test),
-            "previously_unused_test_seed_range": True,
+            "previously_unused_test_seed_range": False,
             "independent_custodian": False,
             "confirmatory": False,
         },
@@ -195,7 +215,7 @@ def run_p5_unseen_d0_holdout(*, repository_root: Path) -> dict[str, Any]:
         "task_7_8_9_passed": False,
         "adaptive_router_validated": False,
         "external_validity_established": False,
-        "claim_boundary": CLAIM_BOUNDARY,
+        "claim_boundary": REPLAY_CLAIM_BOUNDARY,
     }
     return {**payload, "content_sha256": content_sha256(payload)}
 
@@ -210,6 +230,8 @@ def verify_p5_unseen_d0_holdout(
     repository_root: Path,
     fresh_recompute: bool = True,
 ) -> None:
+    if payload.get("evidence_context") != current_evidence_context() and fresh_recompute:
+        raise ValueError("current evidence lifecycle/version mismatch; use historical audit")
     if not fresh_recompute:
         raise ValueError("P5 unseen-D0 artifact verification requires fresh recomputation")
     root = repository_root.resolve()
@@ -222,7 +244,7 @@ def verify_p5_unseen_d0_holdout(
             "INTERNAL_UNSEEN_D0_SIGNAL_DETECTED",
             "INTERNAL_UNSEEN_D0_SIGNAL_NOT_DETECTED",
         }
-        or payload.get("claim_boundary") != CLAIM_BOUNDARY
+        or payload.get("claim_boundary") != REPLAY_CLAIM_BOUNDARY
         or payload.get("content_sha256") != content_sha256(_unsigned(payload))
         or payload.get("source_binding") != _source_binding(root, config)
         or payload.get("independent_confirmation_established") is not False

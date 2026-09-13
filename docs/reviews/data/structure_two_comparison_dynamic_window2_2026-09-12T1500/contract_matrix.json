@@ -1,0 +1,133 @@
+{
+  "final_frozen_protocol": {
+    "applied_to_this_development_experiment": false,
+    "full_rerun_equivalence": {
+      "action": {
+        "action_distribution_total_variation_p95_maximum": 0.05,
+        "consequential_action_exact_agreement_required": true,
+        "top1_agreement_minimum": 0.99
+      },
+      "all_layers_must_pass": true,
+      "belief": {
+        "critical_axis_total_variation_maximum": 0.1,
+        "critical_axis_total_variation_p95_maximum": 0.05
+      },
+      "exact_discrete_state_fields": [
+        "actor_identity",
+        "commit_retract_state",
+        "authority_transition",
+        "safety_state",
+        "privacy_state"
+      ],
+      "utility": {
+        "absolute_equivalence_margin": "0.2*tau_verify",
+        "both_margins_must_pass": true,
+        "confidence_interval": 0.9,
+        "relative_equivalence_margin": 0.02,
+        "test": "TOST"
+      }
+    },
+    "path": "configs/project_two_experiments/structure_two_final_utility_guardrail_external_validation_protocol_v0_1.json",
+    "primary_utility": {
+      "T_max_rule_per_task_family": "ceil_to_next_5_seconds(max(2*matched_baseline_successful_completion_time_median,matched_baseline_successful_completion_time_p95))",
+      "d1_time_source": "D2_pilot_calibrated_action_duration_table",
+      "d2_time_source": "measured_elapsed_time",
+      "failed_or_timed_out_episode_value": "preregistered_T_max",
+      "metric": "penalized_completion_time",
+      "required_secondary_outputs": [
+        "task_success_rate",
+        "raw_completion_time",
+        "inspected_container_count",
+        "wrong_action_count",
+        "VLM_call_count",
+        "VLM_latency",
+        "online_compute"
+      ],
+      "successful_episode_value": "completion_time",
+      "unit": "equivalent_seconds"
+    },
+    "sha256": "c0be2878fcadc7c7a6b372acba75ebf8f922405b7f460136d7700f561741f176",
+    "status": "FROZEN_NOT_RUN"
+  },
+  "rows": [
+    {
+      "basis": "project_two_action_benchmark._locations; fairness per-step future_support",
+      "classification": "尚未决定",
+      "current": "D0 _locations scans full episode when known catalogue absent; all arms share it",
+      "dimension": "map_and_prefix_support",
+      "impact": "future support changes normalization and ties; information matching alone is insufficient",
+      "minimal_discriminator": "same visible prefix; vary only later unseen location; compare early actions",
+      "options": [
+        "explicit common public map",
+        "common causal prefix catalogue"
+      ]
+    },
+    {
+      "basis": "AMGLocationAdapter.predict_location_posteriors; retained attribution cold-start control",
+      "classification": "尚未决定",
+      "current": "P5 uniform versus AMG last detected fallback; frozen diagnostic decoder unchanged",
+      "dimension": "missing_owner_prior",
+      "impact": "17-step retained difference is explained by this default, not full memory contribution",
+      "minimal_discriminator": "same no-owner prefix, fixed supports/decoder; already-opened cold- start control",
+      "options": [
+        "common explicit prior",
+        "retain method-specific defaults and report cold-start stratum"
+      ]
+    },
+    {
+      "basis": "three-arm method decision; fairness_execution.consumer_probe and dynamic visible/arms",
+      "classification": "已冻结",
+      "current": "common packet and visible step; actual consumers differ in actor/role/temporal features",
+      "dimension": "visible_evidence_and_features",
+      "limitation": "equal information permissions do not mean equal feature extraction or capacity"
+    },
+    {
+      "basis": "three-arm split_policy; fairness_execution.train_access/selection; existing SplitAccess",
+      "classification": "已冻结",
+      "current": "TRAIN labels -> independent learned/AMG VALIDATION PUT_BACK grids -> opened TEST scoring",
+      "dimension": "split_access_and_tuning",
+      "limitation": "dynamic scenarios reuse selected baselines without retuning: sensitivity only, not ranked superiority"
+    },
+    {
+      "basis": "three-arm typed_actions; TypedLocationPosterior.decode; fairness.check_decoded",
+      "classification": "已冻结",
+      "current": "shared typed decoder, lexical UUID ties; SEARCH current location, PUT_BACK owner habit",
+      "dimension": "typed_decoder_and_task_semantics",
+      "limitation": "common detected-current adapter erases native SEARCH differences; changing it requires protocol decision"
+    },
+    {
+      "basis": "three-arm shared_ciav; actual packet/receipt checks",
+      "classification": "已冻结",
+      "current": "one exogenous micro_verify; shared result before action; zero component costs, privacy budget 1",
+      "dimension": "ciav_schedule_cost_privacy",
+      "limitation": "interface secondary-verification probes separate from registered comparison; zero cost is not net utility"
+    },
+    {
+      "basis": "dynamic similar_instance last row; fairness target-instance rejection",
+      "classification": "实现违反合同",
+      "current": "single-instance arm adapters may still target episode first object after another object arrives",
+      "dimension": "target_instance_binding",
+      "repair_scope": "window2 refuses mismatched posteriors; multi-instance production routing remains missing"
+    },
+    {
+      "basis": "framework Task 8; training parameter/compute counters; timing scoped hardware record",
+      "classification": "尚未决定",
+      "current": "framework Task 8 requires matched budgets; concrete P5 diagnosis capacity/compute matching is not fixed",
+      "dimension": "capacity_training_online_latency",
+      "impact": "do not infer equal compute from shared packets or claim speed from concurrent wall time",
+      "minimal_discriminator": "isolated host, independent validation tuning under each common numeric budget",
+      "options": [
+        "fixed compute/latency matched capacity",
+        "frozen PCT-online-compute Pareto with multiple declared budgets"
+      ]
+    },
+    {
+      "basis": "configs/project_two_experiments/structure_two_final_utility_guardrail_external_validation_protocol_v0_1.json",
+      "classification": "已冻结",
+      "current": "PCT and contamination/recovery/safety/privacy plus equivalence requirements frozen, not run",
+      "dimension": "final_scientific_utility",
+      "limitation": "D2 pilot numeric durations and authorization/gates remain pending; metric not reopened"
+    }
+  ],
+  "scientific_fairness_established": false
+}

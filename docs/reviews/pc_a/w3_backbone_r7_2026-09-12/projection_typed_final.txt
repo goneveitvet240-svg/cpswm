@@ -1,0 +1,146 @@
+bringing up nodes...
+bringing up nodes...
+
+FF.F.................................................................... [ 84%]
+.............                                                            [100%]
+=================================== FAILURES ===================================
+_ test_consumption_interrupt_restores_dependency_journal_and_retries[RuntimeError] _
+[gw3] darwin -- Python 3.13.5 /Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/.venv/bin/python
+
+exception = <class 'RuntimeError'>
+
+    @pytest.mark.parametrize("exception", [RuntimeError, KeyboardInterrupt])
+    def test_consumption_interrupt_restores_dependency_journal_and_retries(exception):
+        probe = old._legacy_history(1)
+        core = probe.system.core
+>       args = projected(core)
+               ^^^^^^^^^^^^^^^
+
+tests/test_structure_two_w3_native_posterior_projection.py:164: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_structure_two_w3_native_posterior_projection.py:19: in projected
+    source = core.current_posterior_projection_source()
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/cpswm/system/prototype_spine.py:2715: in current_posterior_projection_source
+    self._validate_native_posterior_source(source)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <cpswm.system.prototype_spine.CorePrototypeSpine object at 0x10b940830>
+source = NativePosteriorSource(source_id=UUID('1c8663a5-21d2-5e1f-9add-23ca68effd45'), runtime_id=UUID('2f712a11-1b36-4bf8-80c4...ting the configured baseline prefix')), body_sha256='2c11e591f42f1594ae5f5c3f69099c74fbcb268f92523684a3e4e4ed5200ae29')
+
+    def _validate_native_posterior_source(self, source: NativePosteriorSource) -> None:
+        source.validate_content()
+        revision = source.history_after.latest.revision_id
+        event = self._observed_events.get(revision)
+        if (
+            source.runtime_id != self._particle_workspace.runtime_id
+            or source.object_instance_id != self.object_instance_id
+            or source.locations != self.locations
+            or source.snapshot_id != self.current_snapshot.snapshot_id
+            or event is None
+            or content_sha256(self._event_histories.get(revision))
+            != content_sha256(source.history_after)
+            or source.transition.after.metadata.record_id != event.source_record_id
+            or source.transition.after.detected_location_id != event.location_id
+            or source.producer_context[0].applied_weight != event.propensity_weight
+            or content_sha256(source.producer_context[1].snapshot)
+            != content_sha256(self.current_cause_snapshot)
+        ):
+>           raise ValueError("posterior source is stale, revoked, or outside runtime dependencies")
+E           ValueError: posterior source is stale, revoked, or outside runtime dependencies
+
+src/cpswm/system/prototype_spine.py:2736: ValueError
+_ test_consumption_interrupt_restores_dependency_journal_and_retries[KeyboardInterrupt] _
+[gw3] darwin -- Python 3.13.5 /Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/.venv/bin/python
+
+exception = <class 'KeyboardInterrupt'>
+
+    @pytest.mark.parametrize("exception", [RuntimeError, KeyboardInterrupt])
+    def test_consumption_interrupt_restores_dependency_journal_and_retries(exception):
+        probe = old._legacy_history(1)
+        core = probe.system.core
+>       args = projected(core)
+               ^^^^^^^^^^^^^^^
+
+tests/test_structure_two_w3_native_posterior_projection.py:164: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_structure_two_w3_native_posterior_projection.py:19: in projected
+    source = core.current_posterior_projection_source()
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/cpswm/system/prototype_spine.py:2715: in current_posterior_projection_source
+    self._validate_native_posterior_source(source)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <cpswm.system.prototype_spine.CorePrototypeSpine object at 0x10b725a90>
+source = NativePosteriorSource(source_id=UUID('90c4c48a-bcc5-5c95-b6be-816f714694ab'), runtime_id=UUID('2699cd4c-58ec-4b62-bf4a...ting the configured baseline prefix')), body_sha256='958ba4c0b16793c607b832dd753231412dce043bcc7664e721ac69e9d84b76ab')
+
+    def _validate_native_posterior_source(self, source: NativePosteriorSource) -> None:
+        source.validate_content()
+        revision = source.history_after.latest.revision_id
+        event = self._observed_events.get(revision)
+        if (
+            source.runtime_id != self._particle_workspace.runtime_id
+            or source.object_instance_id != self.object_instance_id
+            or source.locations != self.locations
+            or source.snapshot_id != self.current_snapshot.snapshot_id
+            or event is None
+            or content_sha256(self._event_histories.get(revision))
+            != content_sha256(source.history_after)
+            or source.transition.after.metadata.record_id != event.source_record_id
+            or source.transition.after.detected_location_id != event.location_id
+            or source.producer_context[0].applied_weight != event.propensity_weight
+            or content_sha256(source.producer_context[1].snapshot)
+            != content_sha256(self.current_cause_snapshot)
+        ):
+>           raise ValueError("posterior source is stale, revoked, or outside runtime dependencies")
+E           ValueError: posterior source is stale, revoked, or outside runtime dependencies
+
+src/cpswm/system/prototype_spine.py:2736: ValueError
+_ test_projection_semantics_reproduce_while_execution_and_source_ids_remain_distinct _
+[gw3] darwin -- Python 3.13.5 /Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/.venv/bin/python
+
+    def test_projection_semantics_reproduce_while_execution_and_source_ids_remain_distinct():
+        semantics = []
+        executions = []
+        sources = []
+        for _ in range(2):
+            core = old._legacy_history(1).system.core
+>           sources.append(core.current_posterior_projection_source().source_id)
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_structure_two_w3_native_posterior_projection.py:189: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/cpswm/system/prototype_spine.py:2715: in current_posterior_projection_source
+    self._validate_native_posterior_source(source)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <cpswm.system.prototype_spine.CorePrototypeSpine object at 0x10b7274d0>
+source = NativePosteriorSource(source_id=UUID('8d5f32f4-6a8d-5d8f-b8e5-8d56f476e716'), runtime_id=UUID('182fde98-6760-4e81-9b87...ting the configured baseline prefix')), body_sha256='cbe0a7cbf3ea8c8f77aa2870d4f4c0c85d2e935af35041461db3f60f34ff8476')
+
+    def _validate_native_posterior_source(self, source: NativePosteriorSource) -> None:
+        source.validate_content()
+        revision = source.history_after.latest.revision_id
+        event = self._observed_events.get(revision)
+        if (
+            source.runtime_id != self._particle_workspace.runtime_id
+            or source.object_instance_id != self.object_instance_id
+            or source.locations != self.locations
+            or source.snapshot_id != self.current_snapshot.snapshot_id
+            or event is None
+            or content_sha256(self._event_histories.get(revision))
+            != content_sha256(source.history_after)
+            or source.transition.after.metadata.record_id != event.source_record_id
+            or source.transition.after.detected_location_id != event.location_id
+            or source.producer_context[0].applied_weight != event.propensity_weight
+            or content_sha256(source.producer_context[1].snapshot)
+            != content_sha256(self.current_cause_snapshot)
+        ):
+>           raise ValueError("posterior source is stale, revoked, or outside runtime dependencies")
+E           ValueError: posterior source is stale, revoked, or outside runtime dependencies
+
+src/cpswm/system/prototype_spine.py:2736: ValueError
+=========================== short test summary info ============================
+FAILED tests/test_structure_two_w3_native_posterior_projection.py::test_consumption_interrupt_restores_dependency_journal_and_retries[RuntimeError]
+FAILED tests/test_structure_two_w3_native_posterior_projection.py::test_consumption_interrupt_restores_dependency_journal_and_retries[KeyboardInterrupt]
+FAILED tests/test_structure_two_w3_native_posterior_projection.py::test_projection_semantics_reproduce_while_execution_and_source_ids_remain_distinct
+3 failed, 82 passed in 26.05s

@@ -1,0 +1,68 @@
+{
+  "argv": [
+    "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/.venv-ai2thor/bin/python",
+    "docs/reviews/pc_a/data_preflight_2026-09-13/run_real_simulator.py",
+    "real_simulator_02",
+    "/Users/pangwei/.ai2thor/releases/thor-OSXIntel64-f0825767cd50d69f666c7f282e54abfe58f1e917/thor-OSXIntel64-f0825767cd50d69f666c7f282e54abfe58f1e917.app/Contents/MacOS/AI2-THOR"
+  ],
+  "cwd": "/private/tmp/cpswm-pc-a-data-preflight.8orI6t",
+  "driver_sha256": "4fbba4e090404035c0c5d9ba6783893e42d9b312d6e38586827b13c6bd161577",
+  "sdk_controller_sha256": "568c1bd1f74b7577b00a667e87ab90c93e0de740489d143bc0fff5b771c29e48",
+  "scope": "real iTHOR transport smoke, NOT ProcTHOR multi-actor D1 or model closed loop",
+  "python": "3.11.16 (main, Aug 14 2026, 15:24:25) [Clang 22.1.3 ]",
+  "executable": "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/.venv-ai2thor/bin/python",
+  "platform": "macOS-26.4-arm64-arm-64bit",
+  "sdk_version": "5.0.0",
+  "sdk_path": "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/.venv-ai2thor/lib/python3.11/site-packages/ai2thor/__init__.py",
+  "unity_binary": "/Users/pangwei/.ai2thor/releases/thor-OSXIntel64-f0825767cd50d69f666c7f282e54abfe58f1e917/thor-OSXIntel64-f0825767cd50d69f666c7f282e54abfe58f1e917.app/Contents/MacOS/AI2-THOR",
+  "binary_sha256": "d8bbfbee47581f4aa4f5df71e095f0a1c00888bed7b493eaffcc0f37d6364df3",
+  "source_sha256": "bda9b46c35d0bb65a6c97187b8625a3d8dfa9fbf9214ad4d434dc9f8416aaed1",
+  "real_simulator_run_verified": true,
+  "steps": [
+    {
+      "run_id": "pc-a-ithor-transport-smoke-20260913",
+      "step_index": 0,
+      "request": {
+        "action": "Pass"
+      },
+      "request_time": "2026-09-12T17:12:43.046318+00:00",
+      "received_at": "2026-09-12T17:12:43.055043+00:00",
+      "last_action_success": true,
+      "sensor_file": "000000.npz",
+      "sensor_sha256": "602256c5fc01605cdde18a72754e5da8116be3e0956ca25f16c69eed2cf169bd",
+      "depth_unit": "m",
+      "status": "RAW_OBSERVATION_CANDIDATE_NOT_METHOD_AUTHORIZATION"
+    },
+    {
+      "run_id": "pc-a-ithor-transport-smoke-20260913",
+      "step_index": 1,
+      "request": {
+        "action": "RotateRight"
+      },
+      "request_time": "2026-09-12T17:12:43.061683+00:00",
+      "received_at": "2026-09-12T17:12:43.068354+00:00",
+      "last_action_success": true,
+      "sensor_file": "000001.npz",
+      "sensor_sha256": "3c66b8dd6ae876d96412ce7cc446ab09b790d3eb961902d2614b9e73d348134d",
+      "depth_unit": "m",
+      "status": "RAW_OBSERVATION_CANDIDATE_NOT_METHOD_AUTHORIZATION"
+    },
+    {
+      "run_id": "pc-a-ithor-transport-smoke-20260913",
+      "step_index": 2,
+      "request": {
+        "action": "MoveAhead"
+      },
+      "request_time": "2026-09-12T17:12:43.074929+00:00",
+      "received_at": "2026-09-12T17:12:43.081294+00:00",
+      "last_action_success": true,
+      "sensor_file": "000002.npz",
+      "sensor_sha256": "6c41d048727ad4bee0ccb180566638fe7e0d6fb192dee55ca855e3bcfdadf489",
+      "depth_unit": "m",
+      "status": "RAW_OBSERVATION_CANDIDATE_NOT_METHOD_AUTHORIZATION"
+    }
+  ],
+  "seconds": 2.665803909301758,
+  "source_after_sha256": "bda9b46c35d0bb65a6c97187b8625a3d8dfa9fbf9214ad4d434dc9f8416aaed1",
+  "source_unchanged": true
+}

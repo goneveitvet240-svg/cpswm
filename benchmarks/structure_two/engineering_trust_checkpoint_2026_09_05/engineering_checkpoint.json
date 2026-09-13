@@ -1,6 +1,109 @@
 {
   "protocol": "structure-two-engineering-trust-checkpoint@1.1",
-  "freeze_date": "2026-09-10",
+  "freeze_date": "2026-09-11",
+  "p5_current_evidence": [
+    {
+      "experiment": "three_arm_death_test",
+      "path": "benchmarks/structure_two/evidence_repair_2026_09_11/current/structure_two_p5_three_arm_death_test_v0_2.json",
+      "file_sha256": "0e17f9cd362c44d16c48ce41631c636761e6e0c5090b417deca078b27080a39d",
+      "content_sha256": "f9dc8c291caa0a7a6138e128949bfa28eddb002d7f7dfd997c59b232407035c0",
+      "status": "P5_ACTION_SIGNAL_NOT_DETECTED",
+      "evidence_context": {
+        "artifact_version": "0.2",
+        "common_base_commit": "09eb4d48e1c11082e90ca18332d04333e6b5b47a",
+        "confirmatory": false,
+        "first_execution_established": false,
+        "historical_results_superseded": false,
+        "independent_custody_established": false,
+        "lifecycle": "POST_OPEN_CURRENT_SOURCE_REPLAY",
+        "previously_unseen_established": false,
+        "run_identity_is_semantic_identity": false,
+        "source_identity": "source_binding.production_assembly_manifest_sha256"
+      },
+      "verification_command_id": "p5_evidence_current"
+    },
+    {
+      "experiment": "readout_posthoc_diagnostic",
+      "path": "benchmarks/structure_two/evidence_repair_2026_09_11/current/structure_two_p5_readout_posthoc_diagnostic_v0_2.json",
+      "file_sha256": "678193b3a197630444b4707394d082341df6eb10ea295f74048ef811d72b53ad",
+      "content_sha256": "60d634a90cd4955f614bfd73a19c473a84956f6c1a83333e967a159d57f591b8",
+      "status": "POSTHOC_READOUT_DEGENERACY_REMOVED",
+      "evidence_context": {
+        "artifact_version": "0.2",
+        "common_base_commit": "09eb4d48e1c11082e90ca18332d04333e6b5b47a",
+        "confirmatory": false,
+        "first_execution_established": false,
+        "historical_results_superseded": false,
+        "independent_custody_established": false,
+        "lifecycle": "POST_OPEN_CURRENT_SOURCE_REPLAY",
+        "previously_unseen_established": false,
+        "run_identity_is_semantic_identity": false,
+        "source_identity": "source_binding.production_assembly_manifest_sha256"
+      },
+      "verification_command_id": "p5_evidence_current"
+    },
+    {
+      "experiment": "debt_replay_confirmation",
+      "path": "benchmarks/structure_two/evidence_repair_2026_09_11/current/structure_two_p5_debt_replay_confirmation_v0_2.json",
+      "file_sha256": "9febaa50ea9e51f0098c5bc8d55549de873625cc74256895f8ca83f0fec4bed2",
+      "content_sha256": "707f5ba1bd35f8a990b96d6847bff2915c75ca783ea5e909d2829576f844b8fc",
+      "status": "PRODUCTION_DEBT_REPLAY_SEMANTIC_EQUIVALENCE_CONFIRMED",
+      "evidence_context": {
+        "artifact_version": "0.2",
+        "common_base_commit": "09eb4d48e1c11082e90ca18332d04333e6b5b47a",
+        "confirmatory": false,
+        "first_execution_established": false,
+        "historical_results_superseded": false,
+        "independent_custody_established": false,
+        "lifecycle": "POST_OPEN_CURRENT_SOURCE_REPLAY",
+        "previously_unseen_established": false,
+        "run_identity_is_semantic_identity": false,
+        "source_identity": "source_binding.production_assembly_manifest_sha256"
+      },
+      "verification_command_id": "p5_evidence_current"
+    },
+    {
+      "experiment": "readout_prior_factorial",
+      "path": "benchmarks/structure_two/evidence_repair_2026_09_11/current/structure_two_p5_readout_prior_factorial_v0_2.json",
+      "file_sha256": "477adc07a5629cadebd1c7099656ab0e92fe26b41d3fa1faa932c5e53a6548bb",
+      "content_sha256": "656cd59091e0b368771dbd389814ccf73b4fde44a089762f473af0387dc1bcde",
+      "status": "DEVELOPMENT_FACTORIAL_COMPLETE",
+      "evidence_context": {
+        "artifact_version": "0.2",
+        "common_base_commit": "09eb4d48e1c11082e90ca18332d04333e6b5b47a",
+        "confirmatory": false,
+        "first_execution_established": false,
+        "historical_results_superseded": false,
+        "independent_custody_established": false,
+        "lifecycle": "POST_OPEN_CURRENT_SOURCE_REPLAY",
+        "previously_unseen_established": false,
+        "run_identity_is_semantic_identity": false,
+        "source_identity": "source_binding.production_assembly_manifest_sha256"
+      },
+      "verification_command_id": "p5_evidence_current"
+    },
+    {
+      "experiment": "unseen_d0_holdout",
+      "path": "benchmarks/structure_two/evidence_repair_2026_09_11/current/structure_two_p5_unseen_d0_holdout_v0_2.json",
+      "file_sha256": "c096017d572f4f5db7c09fbaf98c754876ad4bb2c2c816d6e48f83ce0e707123",
+      "content_sha256": "54c6202f0d1c3ee64f6bb4366bbc16cff2ef9b1d97dcb2979f4e631204da9138",
+      "status": "INTERNAL_UNSEEN_D0_SIGNAL_NOT_DETECTED",
+      "evidence_context": {
+        "artifact_version": "0.2",
+        "common_base_commit": "09eb4d48e1c11082e90ca18332d04333e6b5b47a",
+        "confirmatory": false,
+        "first_execution_established": false,
+        "historical_results_superseded": false,
+        "independent_custody_established": false,
+        "lifecycle": "POST_OPEN_CURRENT_SOURCE_REPLAY",
+        "previously_unseen_established": false,
+        "run_identity_is_semantic_identity": false,
+        "source_identity": "source_binding.production_assembly_manifest_sha256"
+      },
+      "verification_command_id": "p5_evidence_current"
+    }
+  ],
+  "integration_requires_new_checkpoint": true,
   "authority": "CURRENT_LOCAL_TOOLCHAIN_STATE_ONLY",
   "engineering_trust_gate_definition": "CURRENT_LOCAL_RECORDED_AUDIT_ONLY",
   "current_local_recorded_audit_gate_passed": true,
@@ -28,16 +131,18 @@
   },
   "audit_execution_receipt": {
     "path": "benchmarks/structure_two/engineering_trust_checkpoint_2026_09_05/engineering_audit_receipt.json",
-    "file_sha256": "294f8592148c8a131302fd337cf10d899933ee6be5532d0ae4d72ca7cc48848f",
-    "content_sha256": "1dc800c0a2271beda1cd0e6d69bf12a5dd48937ce8aca1b5c47ac72137b3d0f7",
-    "source_manifest_sha256": "ebf05dad4785182c139a552658344acd9a3b812e3437f32aabfa5dcbe84ac9ff",
-    "pre_execution_source_manifest_sha256": "ebf05dad4785182c139a552658344acd9a3b812e3437f32aabfa5dcbe84ac9ff",
-    "post_execution_source_manifest_sha256": "ebf05dad4785182c139a552658344acd9a3b812e3437f32aabfa5dcbe84ac9ff",
-    "execution_environment_sha256": "49acbdb11def530d8beaf3225f159915d58fd9044270eae99ccabc3b1d5e7e22",
+    "file_sha256": "1b06f5066562f37e58c77043888e94ec0b08aa3db94ff9b51875c8a3df08bc5e",
+    "content_sha256": "1222e737f4f37dae6a8da40480cd7309221b1613e3e2a22ba49664ee0596b6ae",
+    "source_manifest_sha256": "12cd9f51373c4303b25f3f3e79a7c1a16399d97ef1901a808055a88708da3952",
+    "pre_execution_source_manifest_sha256": "12cd9f51373c4303b25f3f3e79a7c1a16399d97ef1901a808055a88708da3952",
+    "post_execution_source_manifest_sha256": "12cd9f51373c4303b25f3f3e79a7c1a16399d97ef1901a808055a88708da3952",
+    "execution_environment_sha256": "bba78a7a15b6c7549995038d89482580b105b702aeaa1775b5e5118eb60b563d",
     "execution_environment_fresh_verified": true,
     "recorded_execution_authenticity_established": false,
     "hermetic_toolchain_established": false,
     "command_passes": {
+      "p5_evidence_current": true,
+      "p5_evidence_history": true,
       "p0_adversarial_tests": true,
       "core_pytest": true,
       "mypy_src": true,
@@ -101,8 +206,8 @@
   ],
   "p0_content_manifest": {
     "path": "benchmarks/p0_checkpoint/content_manifest_v0_3.json",
-    "file_sha256": "ba5056bd2e2d6598933e913420c389b7d4797287b46736b569688cbffe150525",
-    "manifest_sha256": "ebf05dad4785182c139a552658344acd9a3b812e3437f32aabfa5dcbe84ac9ff",
+    "file_sha256": "acf57ea80ed3eb419364d0daf87c5f544cc4b64dfb6ae4adbc97529e503ad483",
+    "manifest_sha256": "12cd9f51373c4303b25f3f3e79a7c1a16399d97ef1901a808055a88708da3952",
     "required_scopes": [
       "code",
       "config",
@@ -112,21 +217,25 @@
       "test_fixture_contract",
       "toolchain_contract"
     ],
-    "test_contract_sha256": "a98e427854bcd461e63b0ebbd858d96f79c33e0b8daaf9f855cd31be2f27980e",
-    "test_fixture_contract_sha256": "27424443f218f7039e9fb83bc81ab36d004477026f3e619d18b840d2fe42530d",
+    "test_contract_sha256": "fd057bebb851c1bd9ceb8b0f7abb8ffb87de04f44f4015e6a7ca135cecc48013",
+    "test_fixture_contract_sha256": "31c58489435dc86e66d4f33a5806a93e4980fcc78e3be69be6c65d8efc906560",
     "toolchain_contract_sha256": "dcf1ade9792adadb504ac65bb4439b786d3ac3caab223e69cbf5ee9b6f1c06db",
     "fixture_test_and_toolchain_contracts_verified": true,
     "current_and_self_consistent": true
   },
   "historical_v0_5_source_bundle_audit": {
     "path": "benchmarks/structure_two/structure_two_world_source_bundle_v0_5_compatibility_audit.json",
-    "file_sha256": "51a0d2cd2072db4b44928cde366af64966c455d77039b281fffe4e6ab70226bb",
-    "current_file_count": 301,
-    "current_source_bundle_sha256": "8a48b902c070ea7d1cb1f49ca880f6cb40e40ce282451e7cf0fbbb3686f2c7d7",
+    "file_sha256": "3c737dfb55217673b4ecb7c3ff808646845c490fb38bb7382e079c949315cd27",
+    "current_file_count": 310,
+    "current_source_bundle_sha256": "082ccc899180b7b8a85164d5e72f507cce455248632188a8cbeb81f2ff6b60c1",
     "historical_bundle_compatible_with_current_tree": false,
     "historical_evidence_rewritten": false
   },
   "aligned_reports": [
+    {
+      "path": "docs/reviews/structure_two_evidence_repair_window1_2026-09-11.md",
+      "sha256": "b628ce4c68bfa084eedbcb5bc669b45665dab64119b824b8fa452332fa8bd20a"
+    },
     {
       "path": "docs/结构二/方向结构二_当前证据总表_2026-09-02.md",
       "sha256": "b104c3d675bff9c283a107c04ea999255ae2e975b87be121ac484585861cd0c0"
@@ -181,6 +290,7 @@
   "independent_custody_established": false,
   "claim_boundary": "Only after the local command receipt is freshly matched to the current code, config, data/schema, split-manifest, test source, benchmark test-fixture, toolchain, interpreter, executable, installed-distribution, and allowlisted-environment state may the bound Task 7 v0.4, Task 8 v0.4, and Task 10 D0 results be called recomputable D0 evidence. Task 7 and Task 8 both retain FAIL. The true gate means only that a current-local recorded audit is internally consistent; unkeyed caller-held records do not establish execution authenticity. This is not a hermetic build or independently held custody. The checkpoint does not establish external validity, formal Task-10 resolution, Gate-B execution, seven-operator efficacy, or external method superiority.",
   "positive_output_trust_chain": {
+    "/integration_requires_new_checkpoint": "checkpoint_content+source_bound_command_receipt+current_p0_manifest+current_source_inventory+current_test_contract+current_test_fixture_contract+current_toolchain_contract+fresh_local_execution_environment+critical_tool_module_bytes+task_artifact_positive_path_map+fresh_task_specific_recomputation+bound_reports",
     "/current_local_recorded_audit_gate_passed": "checkpoint_content+source_bound_command_receipt+current_p0_manifest+current_source_inventory+current_test_contract+current_test_fixture_contract+current_toolchain_contract+fresh_local_execution_environment+critical_tool_module_bytes+task_artifact_positive_path_map+fresh_task_specific_recomputation+bound_reports",
     "/engineering_trust_gate_passed": "checkpoint_content+source_bound_command_receipt+current_p0_manifest+current_source_inventory+current_test_contract+current_test_fixture_contract+current_toolchain_contract+fresh_local_execution_environment+critical_tool_module_bytes+task_artifact_positive_path_map+fresh_task_specific_recomputation+bound_reports",
     "/recomputable_d0_evidence_allowed": "checkpoint_content+source_bound_command_receipt+current_p0_manifest+current_source_inventory+current_test_contract+current_test_fixture_contract+current_toolchain_contract+fresh_local_execution_environment+critical_tool_module_bytes+task_artifact_positive_path_map+fresh_task_specific_recomputation+bound_reports",
@@ -197,6 +307,8 @@
     "/p0_repairs/pre_post_manifest_identity_verified": "checkpoint_content+source_bound_command_receipt+current_p0_manifest+current_source_inventory+current_test_contract+current_test_fixture_contract+current_toolchain_contract+fresh_local_execution_environment+critical_tool_module_bytes+task_artifact_positive_path_map+fresh_task_specific_recomputation+bound_reports",
     "/p0_repairs/fresh_local_execution_environment_verified": "checkpoint_content+source_bound_command_receipt+current_p0_manifest+current_source_inventory+current_test_contract+current_test_fixture_contract+current_toolchain_contract+fresh_local_execution_environment+critical_tool_module_bytes+task_artifact_positive_path_map+fresh_task_specific_recomputation+bound_reports",
     "/audit_execution_receipt/execution_environment_fresh_verified": "checkpoint_content+source_bound_command_receipt+current_p0_manifest+current_source_inventory+current_test_contract+current_test_fixture_contract+current_toolchain_contract+fresh_local_execution_environment+critical_tool_module_bytes+task_artifact_positive_path_map+fresh_task_specific_recomputation+bound_reports",
+    "/audit_execution_receipt/command_passes/p5_evidence_current": "checkpoint_content+source_bound_command_receipt+current_p0_manifest+current_source_inventory+current_test_contract+current_test_fixture_contract+current_toolchain_contract+fresh_local_execution_environment+critical_tool_module_bytes+task_artifact_positive_path_map+fresh_task_specific_recomputation+bound_reports",
+    "/audit_execution_receipt/command_passes/p5_evidence_history": "checkpoint_content+source_bound_command_receipt+current_p0_manifest+current_source_inventory+current_test_contract+current_test_fixture_contract+current_toolchain_contract+fresh_local_execution_environment+critical_tool_module_bytes+task_artifact_positive_path_map+fresh_task_specific_recomputation+bound_reports",
     "/audit_execution_receipt/command_passes/p0_adversarial_tests": "checkpoint_content+source_bound_command_receipt+current_p0_manifest+current_source_inventory+current_test_contract+current_test_fixture_contract+current_toolchain_contract+fresh_local_execution_environment+critical_tool_module_bytes+task_artifact_positive_path_map+fresh_task_specific_recomputation+bound_reports",
     "/audit_execution_receipt/command_passes/core_pytest": "checkpoint_content+source_bound_command_receipt+current_p0_manifest+current_source_inventory+current_test_contract+current_test_fixture_contract+current_toolchain_contract+fresh_local_execution_environment+critical_tool_module_bytes+task_artifact_positive_path_map+fresh_task_specific_recomputation+bound_reports",
     "/audit_execution_receipt/command_passes/mypy_src": "checkpoint_content+source_bound_command_receipt+current_p0_manifest+current_source_inventory+current_test_contract+current_test_fixture_contract+current_toolchain_contract+fresh_local_execution_environment+critical_tool_module_bytes+task_artifact_positive_path_map+fresh_task_specific_recomputation+bound_reports",
@@ -219,5 +331,5 @@
     "/p0_content_manifest/fixture_test_and_toolchain_contracts_verified": "checkpoint_content+source_bound_command_receipt+current_p0_manifest+current_source_inventory+current_test_contract+current_test_fixture_contract+current_toolchain_contract+fresh_local_execution_environment+critical_tool_module_bytes+task_artifact_positive_path_map+fresh_task_specific_recomputation+bound_reports",
     "/p0_content_manifest/current_and_self_consistent": "checkpoint_content+source_bound_command_receipt+current_p0_manifest+current_source_inventory+current_test_contract+current_test_fixture_contract+current_toolchain_contract+fresh_local_execution_environment+critical_tool_module_bytes+task_artifact_positive_path_map+fresh_task_specific_recomputation+bound_reports"
   },
-  "content_sha256": "c0da629d5f6da45890409afee3808cd8b7ca11370e784ef8fedc42192f7408d6"
+  "content_sha256": "ff9c165aeecaa91f2a70f2fa3f403d35386a892413be68f439661e891f4ac7c5"
 }

@@ -7,8 +7,6 @@ planner distribution, with open-world actor marginals and source provenance.
 
 from __future__ import annotations
 
-from dataclasses import replace
-from datetime import timedelta
 from uuid import uuid4
 
 import pytest
@@ -274,72 +272,42 @@ def test_probabilistic_place_success_without_observed_landing_never_hard_rewrite
 
 
 def test_deferred_request_retries_exactly_once_after_quarantine_promotion():
-    dataset = D0SyntheticOracleReplayAdapter(
-        validation_seeds=(101,), test_seeds=(211,), max_steps_per_episode=16
-    ).build()
-    episode = dataset.episodes[0]
-    state = _FullProjectTwoMethod(episode, owner_threshold=0.5, rgrc_gate_enabled=False)
-    for step in episode.steps:
-        state.observe(step)
-        if state.spine._committed_events:
-            break
-    template = next(iter(state.spine._committed_events.values()))
-    quarantined_revision_id = uuid4()
-    later = template.evidence.event_time + timedelta(days=1)
-    evidence = template.evidence.model_copy(
-        update={
-            "event_time": later,
-            "metadata": template.evidence.metadata.model_copy(
-                update={"record_id": uuid4(), "recorded_time": later}
-            ),
-        }
-    )
-    event = replace(
-        template,
-        revision_id=quarantined_revision_id,
-        evidence=evidence,
-        source_record_id=evidence.metadata.record_id,
-        regime_frame=(
-            None
-            if template.regime_frame is None
-            else replace(template.regime_frame, timestamp=later)
-        ),
-        hybrid_revision_id=None,
-        hybrid_parent_revision_id=None,
-        derived_from_revision_id=None,
-        belief_snapshot_id=None,
-    )
-    state.spine._quarantined_events.append(event)
+    from test_structure_two_w3_revision_acceptance import public_grant_prefix
+
+    probe, quarantined_revision_id, transition = public_grant_prefix()
+    core = probe.system.core
+    event = core._observed_events[quarantined_revision_id]
+    assert not core.observation_write_eligibility(quarantined_revision_id)["write_eligible"]
+    assert quarantined_revision_id not in core._committed_events
     request = ProjectOneStatRequest(
         kind=ProjectOneRequestKind.CORRECT,
         superseded_revision_id=quarantined_revision_id,
         corrected_revision_id=uuid4(),
         event_hypothesis_id=event.event_hypothesis_id,
-        owner_key=state.episode.owner_actor_key,
+        owner_key=core.owner_key,
         object_instance_id=event.evidence.object_instance_id,
-        location_id=state.locations[-1],
+        location_id=event.location_id,
         owner_mass_before=event.owner_mass,
-        owner_mass_after=max(0.05, event.owner_mass * 0.5),
-        owner_mass_delta=max(0.05, event.owner_mass * 0.5) - event.owner_mass,
+        owner_mass_after=event.owner_mass,
+        owner_mass_delta=0.0,
         source_feedback_record_id=uuid4(),
     )
-    deferred = state.spine.apply_project_one_stat_request(request)
-    assert deferred.status is (ProjectOneRequestApplicationStatus.DEFERRED_DUE_TO_QUARANTINE)
-    state.spine._quarantined_events.remove(event)
-    state.spine._commit_event(event)
+    deferred = core.apply_project_one_stat_request(request)
+    assert deferred.status is ProjectOneRequestApplicationStatus.DEFERRED_DUE_TO_QUARANTINE
+    # The next unblocked observation really confirms CCRR and grants eligibility;
+    # the test may not inject an origin or call the private commit implementation.
+    core.process_transition(transition)
 
-    receipts = state.spine.application_receipts_for_feedback(request.source_feedback_record_id)
+    receipts = core.application_receipts_for_feedback(request.source_feedback_record_id)
     assert receipts[0].status is (ProjectOneRequestApplicationStatus.DEFERRED_DUE_TO_QUARANTINE)
     assert (
         sum(item.status is ProjectOneRequestApplicationStatus.APPLIED for item in receipts) == 1
     ), receipts
     assert receipts[-1].source_feedback_record_id == request.source_feedback_record_id
 
-    alpha_after_promotion = tuple(
-        state.spine.hybrid_alpha(location) for location in state.locations
-    )
-    replay = state.spine.apply_project_one_stat_request(request)
+    alpha_after_promotion = tuple(core.hybrid_alpha(location) for location in core.locations)
+    replay = core.apply_project_one_stat_request(request)
     assert replay.status is ProjectOneRequestApplicationStatus.REPLAY_NOOP
-    assert tuple(
-        state.spine.hybrid_alpha(location) for location in state.locations
-    ) == pytest.approx(alpha_after_promotion)
+    assert tuple(core.hybrid_alpha(location) for location in core.locations) == pytest.approx(
+        alpha_after_promotion
+    )

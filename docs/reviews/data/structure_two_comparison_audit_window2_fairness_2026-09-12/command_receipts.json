@@ -1,0 +1,120 @@
+[
+  {
+    "name": "attribution_generation",
+    "command": [
+      "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/.venv/bin/python",
+      "apps/evaluation_runner/summarize_structure_two_comparison_audit.py",
+      "--bundle",
+      "/private/tmp/s2-comparison-audit-window2-20260911/docs/reviews/data/structure_two_comparison_audit_window2_fairness_2026-09-12/bundle_v4"
+    ],
+    "cwd": "/private/tmp/s2-comparison-audit-window2-20260911",
+    "environment": {
+      "PYTHONPATH": "/private/tmp/s2-comparison-audit-window2-20260911/src",
+      "OPENBLAS_NUM_THREADS": "1",
+      "OMP_NUM_THREADS": "1",
+      "VECLIB_MAXIMUM_THREADS": "1"
+    },
+    "start_unix": 1789151798.9945788,
+    "end_unix": 1789151810.121003,
+    "exit_code": 0,
+    "log": "docs/reviews/data/structure_two_comparison_audit_window2_fairness_2026-09-12/evidence/attribution_generation.log",
+    "timing_for_performance_comparison": false
+  },
+  {
+    "name": "p5_interface",
+    "command": [
+      "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/.venv/bin/python",
+      "/private/tmp/s2-comparison-audit-window2-20260911/docs/reviews/data/structure_two_comparison_audit_window2_fairness_2026-09-12/reproduce_p5_interface.py"
+    ],
+    "cwd": "/private/tmp/s2-comparison-audit-window2-20260911",
+    "environment": {
+      "PYTHONPATH": "/private/tmp/s2-comparison-audit-window2-20260911/src",
+      "OPENBLAS_NUM_THREADS": "1",
+      "OMP_NUM_THREADS": "1",
+      "VECLIB_MAXIMUM_THREADS": "1"
+    },
+    "start_unix": 1789151810.121567,
+    "end_unix": 1789151820.2231302,
+    "exit_code": 0,
+    "log": "docs/reviews/data/structure_two_comparison_audit_window2_fairness_2026-09-12/evidence/p5_interface.log",
+    "timing_for_performance_comparison": false
+  },
+  {
+    "name": "main_verify",
+    "command": [
+      "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/.venv/bin/python",
+      "apps/evaluation_runner/run_structure_two_comparison_audit.py",
+      "--output",
+      "/private/tmp/s2-comparison-audit-window2-20260911/docs/reviews/data/structure_two_comparison_audit_window2_fairness_2026-09-12/bundle_v4",
+      "--verify",
+      "--timing-repeats",
+      "1",
+      "--timing-episodes",
+      "1"
+    ],
+    "cwd": "/private/tmp/s2-comparison-audit-window2-20260911",
+    "environment": {
+      "PYTHONPATH": "/private/tmp/s2-comparison-audit-window2-20260911/src",
+      "OPENBLAS_NUM_THREADS": "1",
+      "OMP_NUM_THREADS": "1",
+      "VECLIB_MAXIMUM_THREADS": "1"
+    },
+    "start_unix": 1789151820.224035,
+    "end_unix": 1789152453.584914,
+    "exit_code": 0,
+    "log": "docs/reviews/data/structure_two_comparison_audit_window2_fairness_2026-09-12/evidence/main_verify.log",
+    "timing_for_performance_comparison": false
+  },
+  {
+    "name": "attribution_verify",
+    "command": [
+      "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/.venv/bin/python",
+      "apps/evaluation_runner/summarize_structure_two_comparison_audit.py",
+      "--bundle",
+      "/private/tmp/s2-comparison-audit-window2-20260911/docs/reviews/data/structure_two_comparison_audit_window2_fairness_2026-09-12/bundle_v4",
+      "--verify"
+    ],
+    "cwd": "/private/tmp/s2-comparison-audit-window2-20260911",
+    "environment": {
+      "PYTHONPATH": "/private/tmp/s2-comparison-audit-window2-20260911/src",
+      "OPENBLAS_NUM_THREADS": "1",
+      "OMP_NUM_THREADS": "1",
+      "VECLIB_MAXIMUM_THREADS": "1"
+    },
+    "start_unix": 1789151820.224213,
+    "end_unix": 1789152467.002232,
+    "exit_code": 0,
+    "log": "docs/reviews/data/structure_two_comparison_audit_window2_fairness_2026-09-12/evidence/attribution_verify.log",
+    "timing_for_performance_comparison": false
+  },
+  {
+    "name": "regressions",
+    "command": [
+      "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/.venv/bin/python",
+      "-m",
+      "pytest",
+      "-n",
+      "3",
+      "-q",
+      "-o",
+      "addopts=",
+      "--junitxml=/private/tmp/s2-comparison-audit-window2-20260911/docs/reviews/data/structure_two_comparison_audit_window2_fairness_2026-09-12/evidence/pytest.xml",
+      "tests/test_structure_two_comparison_audit.py",
+      "tests/test_structure_two_comparison_audit_verification.py",
+      "tests/test_structure_two_comparison_audit_execution_source.py",
+      "tests/test_structure_two_comparison_fairness.py"
+    ],
+    "cwd": "/private/tmp/s2-comparison-audit-window2-20260911",
+    "environment": {
+      "PYTHONPATH": "/private/tmp/s2-comparison-audit-window2-20260911/src",
+      "OPENBLAS_NUM_THREADS": "1",
+      "OMP_NUM_THREADS": "1",
+      "VECLIB_MAXIMUM_THREADS": "1"
+    },
+    "start_unix": 1789151820.225253,
+    "end_unix": 1789152886.992304,
+    "exit_code": 0,
+    "log": "docs/reviews/data/structure_two_comparison_audit_window2_fairness_2026-09-12/evidence/regressions.log",
+    "timing_for_performance_comparison": false
+  }
+]

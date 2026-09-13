@@ -1,7 +1,7 @@
 {
-  "generated_for_date": "2026-09-10",
+  "generated_for_date": "2026-09-11",
   "hash_algorithm": "sha256(path\\0file_sha256\\n)",
-  "manifest_sha256": "ebf05dad4785182c139a552658344acd9a3b812e3437f32aabfa5dcbe84ac9ff",
+  "manifest_sha256": "c87357cee49ff7a712f615773ed66b422cd2e506a810483a412898e0d155af12",
   "schema_version": "p0-checkpoint-content-manifest@0.3",
   "scope_contract": {
     "test_contract": {
@@ -27,12 +27,39 @@
       "excluded_circular_paths": [
         "benchmarks/p0_checkpoint/content_manifest_v0_3.json",
         "benchmarks/structure_two/engineering_trust_checkpoint_2026_09_05/engineering_audit_receipt.json",
-        "benchmarks/structure_two/engineering_trust_checkpoint_2026_09_05/engineering_checkpoint.json"
+        "benchmarks/structure_two/engineering_trust_checkpoint_2026_09_05/engineering_checkpoint.json",
+        "benchmarks/structure_two/engineering_trust_checkpoint_2026_09_11_v0_2/engineering_audit_receipt.json",
+        "benchmarks/structure_two/engineering_trust_checkpoint_2026_09_11_v0_2/engineering_checkpoint.json",
+        "benchmarks/structure_two/engineering_trust_checkpoint_2026_09_12_v0_3/engineering_audit_receipt.json",
+        "benchmarks/structure_two/engineering_trust_checkpoint_2026_09_12_v0_3/engineering_checkpoint.json"
       ],
       "excluded_directories": [
         "engineering_audit_logs"
       ],
-      "included": "all regular benchmark JSON not already covered by split_manifest",
+      "included": "all regular benchmark JSON not already covered by split_manifest; plus explicitly required legacy model/failure fixtures",
+      "required_legacy_files": {
+        "artifacts/project_two_data/d1_generic_development_v0_1/coverage_report.json": "14e7d7c68261c281ad0466989c2905b82b5b6cf28256717f89567cf5794c1787",
+        "artifacts/project_two_data/d1_generic_development_v0_1/evaluator_truth.jsonl": "5ae16eb4721f30141a55d662c7371acb19d048c50e12c0db4932b4c47905601a",
+        "artifacts/project_two_data/d1_generic_development_v0_1/manifest.json": "1a0bf0c2ff7d61c942491564189726d35a24f4894e0160f9e6368d302c556f5b",
+        "artifacts/project_two_data/d1_generic_development_v0_1/visible_replay.jsonl": "2ab7b70035f565129c68683f129e4bc6b7c65796229a21b1613192c57150d5b6",
+        "artifacts/project_two_data/d2_real_perception_example_v0_1/annotation_agreement.json": "774b01e71faa8e6f47d8f5df5818e59c5d04f118dffa23bc1b7238f530588338",
+        "artifacts/project_two_data/d2_real_perception_example_v0_1/annotations.jsonl": "135099c90c5541d9a9f0f91cb01ab61aa073001f02d47c74e5a72a5a0bd386ea",
+        "artifacts/project_two_data/d2_real_perception_example_v0_1/collection_protocol.json": "6be87f5acaa348a0145bd0c91c1c88907e55368e0f2f1c8d8895cdb59f20b29c",
+        "artifacts/project_two_data/d2_real_perception_example_v0_1/coverage_report.json": "4734847797ea49c0b6fd275835398fc787b46b27066067eb954898f77b86e504",
+        "artifacts/project_two_data/d2_real_perception_example_v0_1/d2_evidence_report.json": "7a1f2ad2b33de8f4bb0b7b1b6dfae7165438256789c26780c06e2d647f46e702",
+        "artifacts/project_two_data/d2_real_perception_example_v0_1/evaluator_truth.jsonl": "4416a2ea9b1f589efa35e5167a05d41212df442910ad5e3eb08b8ceb66795e06",
+        "artifacts/project_two_data/d2_real_perception_example_v0_1/manifest.json": "b8554cbf73952697c8ea711b67ca47180cdaa3c440e957f6d5f1976d1ebd6703",
+        "artifacts/project_two_data/d2_real_perception_example_v0_1/raw_perception.jsonl": "668217ea6aafd6f8e1e9bedd690a64ab07c41ae82cccc83505ded1f7ff26581c",
+        "artifacts/project_two_data/d2_real_perception_example_v0_1/split_manifest.json": "859594b6ada441f7073f5d54d5f364508fb8b1e1cbcb4488f6dfe2209fed9e40",
+        "artifacts/project_two_data/d2_real_perception_example_v0_1/visible_replay.jsonl": "c80718b229298dbe12cc2b9eeedafe31e2a67d27aa2856708fd5a36f2b4f2f2f",
+        "artifacts/project_two_v04_development/source_snapshots/structure_two_world_gate_v0_3_at_horizon_probe.py": "8b8b9010ce219b32750446271778a78c0378ca7b930bc389d29418a59d6529f7",
+        "artifacts/project_two_v04_development/structure_two_corrected_instrument_v0_3.json": "0a316e7ba5bee093e51848b0a097e5ee03521449a2952fef3b9c5eca00929dcf",
+        "artifacts/project_two_v04_development/structure_two_neural_amortized_model_v0_1.json": "5be8a0c5c87b2272049ed6e283e63feab12bcaa97b1f7b91ecaec69ad8986478",
+        "artifacts/project_two_v04_development/structure_two_strongest_neighbor_gate_current_source_v0_3.json": "95a80dcfb033db84e5b1820ad5c3476c00bf656fe99e179c2920842eebacd9f7",
+        "artifacts/project_two_v04_development/structure_two_strongest_neighbor_gate_v0_1.json": "cace31c8f9ac1516f7d267069cf28d02ad922d03099e4c2d796ec99b0160b860",
+        "artifacts/project_two_v04_development/structure_two_world_horizon_probe_v0_3.json": "d62a18086e6ab49a93d9f43c65ab116376960c10aed41d8bf492463686cbd130",
+        "output/method_falsification/round_two_structure_one_placement_v0_1.json": "4a4758b3ecc8fd1b409bddef66825259d1a0ed85dcddc5b1a0d94938832b7ef4"
+      },
       "root": "benchmarks",
       "symlink_policy": "REJECT"
     },
@@ -59,8 +86,8 @@
   },
   "scopes": {
     "code": {
-      "content_sha256": "2c715bfec4afa1807effff78b16fef997cde83a5c71d49c35c01a974dd403f34",
-      "file_count": 404,
+      "content_sha256": "29c2020a9a3772bf7bde7000d90a37e7fdea568a512736ec008fea28c06c8b26",
+      "file_count": 425,
       "files": [
         {
           "path": "apps/direction_three/replay_execution_feedback.py",
@@ -85,6 +112,10 @@
         {
           "path": "apps/evaluation_runner/attest_structure_two_seed_block_v0_4.py",
           "sha256": "3cefb71e7b4a6131a56aa3fe83f1901d78f311ebf1b2e608693bf3934a726a20"
+        },
+        {
+          "path": "apps/evaluation_runner/audit_structure_two_evidence_history.py",
+          "sha256": "f92f9cb02383facf5a93008c0bc5be07cd8d87103d7617540ed33035ff89426a"
         },
         {
           "path": "apps/evaluation_runner/audit_structure_two_world_source_bundle_v0_5.py",
@@ -116,7 +147,7 @@
         },
         {
           "path": "apps/evaluation_runner/generate_p0_checkpoint_manifest.py",
-          "sha256": "9ebf52bf3f6049363cc6e1b3b4ccb28f3376bbe675617eaef64e1e3b7aba78f8"
+          "sha256": "eb608fc3004c8fb06ae43b4b615026114029f58254175d6d9f15f406a52d69b0"
         },
         {
           "path": "apps/evaluation_runner/generate_project_one_scenarios.py",
@@ -128,7 +159,7 @@
         },
         {
           "path": "apps/evaluation_runner/generate_structure_two_engineering_trust_checkpoint.py",
-          "sha256": "eaa113aa49303a7b168f837a05b7d2f9068fca751a4ea9fdaed7e15603229180"
+          "sha256": "77401eb92cf71e20a718361e736bd37fd4431703aa116eeaeb46be4b59e258ea"
         },
         {
           "path": "apps/evaluation_runner/generate_structure_two_fresh_seed_block_v0_5.py",
@@ -153,6 +184,10 @@
         {
           "path": "apps/evaluation_runner/prepare_project_two_d2_replay.py",
           "sha256": "f16de75f9fbfb21583921ded5a87f816a74be7d909d4a3a533457490436e9d41"
+        },
+        {
+          "path": "apps/evaluation_runner/probe_structure_two_execution_source.py",
+          "sha256": "7c41af6dc3b55d6b23fb338d8ee94495784e5c15bc276433d05afdd114aa41c7"
         },
         {
           "path": "apps/evaluation_runner/recompute_structure_two_task11_resampling_diagnostic.py",
@@ -320,7 +355,11 @@
         },
         {
           "path": "apps/evaluation_runner/run_structure_two_engineering_audit_receipt.py",
-          "sha256": "073f4e229652205fda91c5af001968e045de374311dbaa2905d6c4def1d5dd96"
+          "sha256": "48de6b1bfed1ead9d1491eade615f0ef086c0f838ac02406e93e56b3598d83ab"
+        },
+        {
+          "path": "apps/evaluation_runner/run_structure_two_evidence_repair.py",
+          "sha256": "891e676c0d163ea86dec1700a0ffc7b10d0aa3ba31850c7d62233830c4dffc3b"
         },
         {
           "path": "apps/evaluation_runner/run_structure_two_fresh_triarm.py",
@@ -337,6 +376,34 @@
         {
           "path": "apps/evaluation_runner/run_structure_two_official_component_parity_v0_6.py",
           "sha256": "935b5db882f8419dc658a7d7888c629790999c3fd190df4c5df1326c353ab0de"
+        },
+        {
+          "path": "apps/evaluation_runner/run_structure_two_p5_debt_replay_confirmation.py",
+          "sha256": "31abf4d7dde19940d2c09fc70f24abe8cc742b4d0e71e0ea4f50b7a820b73532"
+        },
+        {
+          "path": "apps/evaluation_runner/run_structure_two_p5_direct_trace_probe.py",
+          "sha256": "35b2cb11c109d63f2a0381e3c8910793c1a4e16886faa5d0129a46346183c4a1"
+        },
+        {
+          "path": "apps/evaluation_runner/run_structure_two_p5_readout_posthoc_diagnostic.py",
+          "sha256": "822fb0bfa2c4cda39e4f9c68162b4a3be866d3071fe16e3b7218bed2aab9635a"
+        },
+        {
+          "path": "apps/evaluation_runner/run_structure_two_p5_readout_prior_factorial.py",
+          "sha256": "96ae027a89522fc742b1b5b8510c6aa1d01cd0f5e9f5d6bb40b57de76a94d6e6"
+        },
+        {
+          "path": "apps/evaluation_runner/run_structure_two_p5_three_arm_death_test.py",
+          "sha256": "22ed2c51fb938c9269d3f47d3a5db915d506511c9a7a6206ab3946e658912b7b"
+        },
+        {
+          "path": "apps/evaluation_runner/run_structure_two_p5_three_arm_readiness.py",
+          "sha256": "3741e422287dc095d259f65f53320c128cf75946ccbf7641cbab8c999e1cab4b"
+        },
+        {
+          "path": "apps/evaluation_runner/run_structure_two_p5_unseen_d0_holdout.py",
+          "sha256": "f2c27084cb539e4e9c105e926d9d0b7e80832c8f691d7aa0e41707827369d53d"
         },
         {
           "path": "apps/evaluation_runner/run_structure_two_particle_falsifier.py",
@@ -449,6 +516,10 @@
         {
           "path": "apps/evaluation_runner/run_task_nontriviality_gates.py",
           "sha256": "e28da02dbd52de783f5e3f64a8a140234055575b7207d5a120e0e9d03d2e7cb8"
+        },
+        {
+          "path": "apps/evaluation_runner/structure_two_source_bootstrap.py",
+          "sha256": "5ddc9bb15ad5fbce17e64d1c7470592f0c03a42a83f92ec46185e77a9b8caf58"
         },
         {
           "path": "apps/evaluation_runner/tune_project_one.py",
@@ -976,7 +1047,7 @@
         },
         {
           "path": "src/cpswm/system/evaluation_operations/project_two_dataset.py",
-          "sha256": "df1d04138c88dc4f1fd17279781c285103ed7010197f09e8e6a70115628623d4"
+          "sha256": "df06c56ac29ff2e870f57b8042137389760aee32dca0e8942436a768ab6b4927"
         },
         {
           "path": "src/cpswm/system/evaluation_operations/project_two_dataset_adapters.py",
@@ -1064,7 +1135,7 @@
         },
         {
           "path": "src/cpswm/system/evaluation_operations/structure_two_action_utility_construct_gate.py",
-          "sha256": "fe1ccc715a9b2ebab7823939ea31eb400fd0a5e6e721a27588d150b0b4a526fb"
+          "sha256": "e25129e5289cdbcf170e9023e284332e9e24eed803fb0e33f7ebc61de7838a30"
         },
         {
           "path": "src/cpswm/system/evaluation_operations/structure_two_adapter_input_coverage_v0_6.py",
@@ -1129,6 +1200,14 @@
         {
           "path": "src/cpswm/system/evaluation_operations/structure_two_evidence_artifacts.py",
           "sha256": "e9c419681c145c784127887112dd69b674b90efe588bd3f5abebe6a59955d733"
+        },
+        {
+          "path": "src/cpswm/system/evaluation_operations/structure_two_evidence_publication.py",
+          "sha256": "8631c64776fc03fff28dccf26bbfff2cf25129978df426109899cef00d23948d"
+        },
+        {
+          "path": "src/cpswm/system/evaluation_operations/structure_two_evidence_versions.py",
+          "sha256": "43f3d0c320b187c7c0906fb36896bdb90b3f11eb29451a5ab72b0b70a1322e39"
         },
         {
           "path": "src/cpswm/system/evaluation_operations/structure_two_executor_conformance_v0_7.py",
@@ -1209,6 +1288,38 @@
         {
           "path": "src/cpswm/system/evaluation_operations/structure_two_official_component_parity_v0_6.py",
           "sha256": "94a49603f75b647eb63e4502d983c96c14bf9c609df6bf028c9adc39e482c2ef"
+        },
+        {
+          "path": "src/cpswm/system/evaluation_operations/structure_two_p5_debt_replay_confirmation.py",
+          "sha256": "19c4bafbbda89743376e72971a62650940145a9a301dd231796adf1f318af7c5"
+        },
+        {
+          "path": "src/cpswm/system/evaluation_operations/structure_two_p5_direct_trace_probe.py",
+          "sha256": "14039591b61c156a3f4b3cf770146019d75705ed509e1eee3d284d73ddc358c5"
+        },
+        {
+          "path": "src/cpswm/system/evaluation_operations/structure_two_p5_readout_posthoc_diagnostic.py",
+          "sha256": "689fe9a774168c6f3fc5504f65ba7422722343228c3c821d420d2eab88c6792d"
+        },
+        {
+          "path": "src/cpswm/system/evaluation_operations/structure_two_p5_readout_prior_factorial.py",
+          "sha256": "07aa2c73d17d2754ad65f82fb4783bb53d967537feac3f6286eaab09d61d268d"
+        },
+        {
+          "path": "src/cpswm/system/evaluation_operations/structure_two_p5_three_arm_contract.py",
+          "sha256": "b97b22fbce6ceaedd8366345e52843f71d75007cac4ea83eb06ceb672cb95bfe"
+        },
+        {
+          "path": "src/cpswm/system/evaluation_operations/structure_two_p5_three_arm_death_test.py",
+          "sha256": "6ff53e6cc8fb04133dd7ea5a478ad11b9de662cfa9717bb99d00a9d895865218"
+        },
+        {
+          "path": "src/cpswm/system/evaluation_operations/structure_two_p5_three_arm_readiness.py",
+          "sha256": "21518f9742a9cd73b0f75966f6de0f247c258979df9946acb9d11d92004615c8"
+        },
+        {
+          "path": "src/cpswm/system/evaluation_operations/structure_two_p5_unseen_d0_holdout.py",
+          "sha256": "ffab869e2501d34de7efc47580b0e25d20c1cb4fd3842d8b486e74467787ea81"
         },
         {
           "path": "src/cpswm/system/evaluation_operations/structure_two_particle_falsifier.py",
@@ -1480,15 +1591,15 @@
         },
         {
           "path": "src/cpswm/system/structure_two_adaptive_runtime.py",
-          "sha256": "6ec3f9ae9e19dc47738505747f275b741e206a88ab8dc9093dbf60ed250c3601"
+          "sha256": "50512e47e2fe316009b65865596f5b7a4176a59863e161bc67ec3a2217bc7abd"
         },
         {
           "path": "src/cpswm/system/structure_two_execution.py",
-          "sha256": "50648269d5c2a73ea6a29d745f154628b0d0a9d1de129c931bab8582f5d1bb92"
+          "sha256": "7d44668089968ff3f6396558656d746409af0dc48375be15893d8a276d8b74f8"
         },
         {
           "path": "src/cpswm/system/structure_two_production_system.py",
-          "sha256": "f1b737363e75c484b6133a6d05cd3afddd9ea54646e28529aa87589249bf2dc9"
+          "sha256": "435768db74b7d7fb4a46dc5c78aa0ad4f1a9f4fbe95d461ac22e45080ed4c7d8"
         },
         {
           "path": "src/cpswm/system/synthetic_routines/__init__.py",
@@ -1681,8 +1792,8 @@
       ]
     },
     "config": {
-      "content_sha256": "094e93dcd896b3f41402175d934cd3fd03a50e2f3a67f71a13b2cf44f50c9a89",
-      "file_count": 86,
+      "content_sha256": "2cbe4f3ca1e37db6d9945bc51e202c90f511310d8509a7befc889b532a0003f0",
+      "file_count": 96,
       "files": [
         {
           "path": "configs/direction_three/s3_1_oracle_suite_v0_1.json",
@@ -1723,6 +1834,10 @@
         {
           "path": "configs/project_two_datasets/d0_pilot_v0_2.json",
           "sha256": "90ff5be654ffebce96f44dc6878497b51de86f213c879bd8d26b15bd01a8f4b4"
+        },
+        {
+          "path": "configs/project_two_datasets/d0_unseen_p5_holdout_v0_6.json",
+          "sha256": "a7cdae91694c8bea949ae88cda606a763b94e0f54917b342009a0a75b47e0677"
         },
         {
           "path": "configs/project_two_experiments/care_wm_exact_counterfactual_manifest_v0_1.json",
@@ -1779,6 +1894,10 @@
         {
           "path": "configs/project_two_experiments/structure_two_cross_swap_contamination_v0_1.json",
           "sha256": "7fdc9eed17ee17c71018bb90845226c2a66d3fdc72af63f5de65cacf7dfd2216"
+        },
+        {
+          "path": "configs/project_two_experiments/structure_two_evidence_history_v0_1.json",
+          "sha256": "a078cf7196efe76e2129f11fbbc1a5a3a2364776da8d79c5824b108702419744"
         },
         {
           "path": "configs/project_two_experiments/structure_two_exact_enumeration_falsifier_resolution_v0_1.json",
@@ -1841,8 +1960,40 @@
           "sha256": "f7ac142d7d259c5b1b2d620a34dac251dfaa2db7a0e8bc1c81f2502f5f32b377"
         },
         {
+          "path": "configs/project_two_experiments/structure_two_p5_debt_replay_confirmation_v0_1.json",
+          "sha256": "7ef3ec11c443ed615f5bd8f0bad1d56d642278e508dcd8e41c7c90742d3b7741"
+        },
+        {
+          "path": "configs/project_two_experiments/structure_two_p5_direct_trace_probe_v0_1.json",
+          "sha256": "8ad4cbe9dbbf24742b4c1e61a26b5a4132012d420f0ae2258c1ec4475f66ca4e"
+        },
+        {
           "path": "configs/project_two_experiments/structure_two_p5_first_decision_v0_1.json",
-          "sha256": "c3f448f2f65ad98b1e5b2c368207a110cdeae99a821d05c7c31c9bcb0d3b936a"
+          "sha256": "85f727dc4555dd4bb40c3c7acf1e9d20535ef75eeaed41c2852ab156ba1e817c"
+        },
+        {
+          "path": "configs/project_two_experiments/structure_two_p5_readout_posthoc_diagnostic_v0_1.json",
+          "sha256": "b8bd3a960e04db041bb71a0ca81a05022a25e094745ca40755d35cebe753744e"
+        },
+        {
+          "path": "configs/project_two_experiments/structure_two_p5_readout_prior_factorial_v0_1.json",
+          "sha256": "235a9d35db453196033d887ca907eaef625bc3b040f3f806c561a3c26cded16c"
+        },
+        {
+          "path": "configs/project_two_experiments/structure_two_p5_three_arm_death_test_v0_1.json",
+          "sha256": "4c9f146d42660d144c2f97f7f8af17fad9a1a38ca32260dfc55c39706268bfc8"
+        },
+        {
+          "path": "configs/project_two_experiments/structure_two_p5_three_arm_method_decision_v0_1.json",
+          "sha256": "4eff4d50874a13d585ab7bea1d2a02aa52cce1af61131775c7aee91e8adcaf57"
+        },
+        {
+          "path": "configs/project_two_experiments/structure_two_p5_three_arm_readiness_v0_1.json",
+          "sha256": "dfcb3a784df7c654960a3c6d77c2f97c45d852ae2194e29deacf8e18982de354"
+        },
+        {
+          "path": "configs/project_two_experiments/structure_two_p5_unseen_d0_holdout_v0_1.json",
+          "sha256": "913d15c8aaf0917cd7a3bbf0484cfbf989f54f9e8816c6b7cb2094df77087fce"
         },
         {
           "path": "configs/project_two_experiments/structure_two_route_a_utility_contract_v0_1.json",
@@ -2031,7 +2182,7 @@
       ]
     },
     "data_schema": {
-      "content_sha256": "d5bd79bd23df50fee064c94b61d001027633eaad4de92342f41f6b5fdefe1949",
+      "content_sha256": "7c9537d6d8ef13e9ffad60b5f5d0357159d0aaee77902e55759341f955326be2",
       "file_count": 22,
       "files": [
         {
@@ -2116,7 +2267,7 @@
         },
         {
           "path": "src/cpswm/system/evaluation_operations/project_two_dataset.py",
-          "sha256": "df1d04138c88dc4f1fd17279781c285103ed7010197f09e8e6a70115628623d4"
+          "sha256": "df06c56ac29ff2e870f57b8042137389760aee32dca0e8942436a768ab6b4927"
         },
         {
           "path": "src/cpswm/system/evaluation_operations/project_two_dataset_adapters.py",
@@ -2125,8 +2276,8 @@
       ]
     },
     "split_manifest": {
-      "content_sha256": "ab2cd7b5a56dc6215a9ce14878a7f41484cff05d0ac61972d0a8ba17a030f727",
-      "file_count": 28,
+      "content_sha256": "c3a770207dad5337096622bb14a27503c359d7b557701f5359423472c3876a14",
+      "file_count": 31,
       "files": [
         {
           "path": "benchmarks/oam_phm_f0/book_on_sofa_manifest_v0.4.json",
@@ -2167,6 +2318,18 @@
         {
           "path": "benchmarks/structure_two/d0_engineering_checkpoint_2026_09_04/checkpoint_manifest.json",
           "sha256": "3142e5769879f27b9ec22b7b7f6d216985cd4b45486ab437a4e5c5189af9ca6f"
+        },
+        {
+          "path": "benchmarks/structure_two/evidence_entry_portability_2026_09_12/reviewed_p0_manifest.json",
+          "sha256": "a0019a2b88b3336802b5ea0e8ee5d11c1e704f60342f57a016558f7cb3945090"
+        },
+        {
+          "path": "benchmarks/structure_two/evidence_repair_supplement_2026_09_11/candidate_before_command_contract_fix/p0_manifest.json",
+          "sha256": "73f46bd5ee0fa04913a3a36ad678f2d45b725013bf809df0be16815cd8dce78f"
+        },
+        {
+          "path": "benchmarks/structure_two/evidence_repair_supplement_2026_09_11/p0_reviewed_manifest_snapshot.json",
+          "sha256": "acf57ea80ed3eb419364d0daf87c5f544cc4b64dfb6ae4adbc97529e503ad483"
         },
         {
           "path": "benchmarks/structure_two/task11_resampling_full_budget_2026_09_06_adversarial_rerun/TASK11_EVIDENCE_MANIFEST.json",
@@ -2243,9 +2406,13 @@
       ]
     },
     "test_contract": {
-      "content_sha256": "a98e427854bcd461e63b0ebbd858d96f79c33e0b8daaf9f855cd31be2f27980e",
-      "file_count": 229,
+      "content_sha256": "c6dfa6f68b3a77e6170dd937b7ab1edf46a668df05b3042cf1c9759d28031929",
+      "file_count": 241,
       "files": [
+        {
+          "path": "conftest.py",
+          "sha256": "023b27f5fc9dd893669f402a06a883b8f714214dd976149d168986c7dc83774a"
+        },
         {
           "path": "tests/conftest.py",
           "sha256": "d01c88717eb684ae3ba0b0b267e3589068c1409648f42e3b2bc66b825870f14a"
@@ -2544,7 +2711,7 @@
         },
         {
           "path": "tests/test_p0_checkpoint_manifest.py",
-          "sha256": "ebe865054c3efa169aac16ee2239e9586eaec1b79099ce6157fa6a55c753ebb3"
+          "sha256": "f6e2d78e8a62f2665445ad83e3bead5db0d36644d8ab6935934d76b1fddfea0c"
         },
         {
           "path": "tests/test_pchmp_hypothesis_message_passing.py",
@@ -2708,7 +2875,7 @@
         },
         {
           "path": "tests/test_project_two_dataset_contract.py",
-          "sha256": "131cdd48384f4bad6c61a2a9cb6718a2178740885edd9e1883d267e3562e7e1e"
+          "sha256": "8896096a0f8f05920371055d1dd7f67766373c0652e92985198f1cd9951e354c"
         },
         {
           "path": "tests/test_project_two_dataset_leakage.py",
@@ -2836,15 +3003,15 @@
         },
         {
           "path": "tests/test_structure_two_adaptive_runtime.py",
-          "sha256": "de9f4169501a71362bfb53902e11c884edb376258ad3611cb99f42264107dd18"
+          "sha256": "44a5aaa22451ba2d4f0b521c6f488464b6bb501194a00bc431b616a8facca612"
         },
         {
           "path": "tests/test_structure_two_adaptive_runtime_adversarial_round1.py",
-          "sha256": "f8e83766076d59713fa98c30a85c8535891edffd0b0a4353a119b45c7691bb8e"
+          "sha256": "2a0bd9fd2d67ee186038e9cbdd67906a169ba17fba39dd4f55b814956002b628"
         },
         {
           "path": "tests/test_structure_two_adaptive_runtime_adversarial_round2.py",
-          "sha256": "de3401e3396ebdcd48a82c86017a716dc9eef2557ba981321d236bb3c465a021"
+          "sha256": "6d71bb07ccb9b51ea418cfd88c1bb5237c82d6febb8a6019bf06621ee034b8bf"
         },
         {
           "path": "tests/test_structure_two_backbone_b_repairs.py",
@@ -2908,7 +3075,19 @@
         },
         {
           "path": "tests/test_structure_two_engineering_trust_checkpoint.py",
-          "sha256": "e58fba809d9918a7d3d4aeee73f4bf4218fb2528deda5f4d716385781a10fa29"
+          "sha256": "88c55160cf9d7a6b6c86e9b0f6959c0affb516e243153018a554060085b1fb52"
+        },
+        {
+          "path": "tests/test_structure_two_entry_portability.py",
+          "sha256": "2b227a32728bc038a40d16bc58d563a23a948d356302b2cd2cc945835bf4326e"
+        },
+        {
+          "path": "tests/test_structure_two_evidence_supplement.py",
+          "sha256": "9c3977c7cf2d1a6b5b9dc55a4ff6a572e6480241f3bf677efd8b6fadfa43b24c"
+        },
+        {
+          "path": "tests/test_structure_two_evidence_versions.py",
+          "sha256": "c60ea10510ca20d4b151564f2f9f995050bdaca74800b67dd7963c73b217e15f"
         },
         {
           "path": "tests/test_structure_two_execution_interface.py",
@@ -2983,6 +3162,38 @@
           "sha256": "c17d1a3671080573f42643070693ad14e11055c5c82091c6c2f7bf447fdc5fa5"
         },
         {
+          "path": "tests/test_structure_two_p5_debt_replay_confirmation.py",
+          "sha256": "7e9b97dc8f599eb2cfbf86c0375647e65ac4a838872bb22f549d55fad53a7209"
+        },
+        {
+          "path": "tests/test_structure_two_p5_direct_trace_probe.py",
+          "sha256": "008712286bc6ca6779be174c89ea3a5dc70df88c50cde6f3a1340609bece70eb"
+        },
+        {
+          "path": "tests/test_structure_two_p5_readout_posthoc_diagnostic.py",
+          "sha256": "e066daefb25d0bfe1a73b3f58e53df12d364114035c869ce28902296d8d2a464"
+        },
+        {
+          "path": "tests/test_structure_two_p5_readout_prior_factorial.py",
+          "sha256": "81db00ad7021da106904a3a05c1ca9d4d7548ccf9e0fd32e737b6db969d7053a"
+        },
+        {
+          "path": "tests/test_structure_two_p5_three_arm_contract.py",
+          "sha256": "690d6f81d6aae1fd5d0e7ca897c00515b49538d56b1b9869b882f80a216fd2e8"
+        },
+        {
+          "path": "tests/test_structure_two_p5_three_arm_death_test.py",
+          "sha256": "e0c6cef3ac051adaee61d2a2bb5a3bc8789c57a8b7092c7e75d5583df6fc6494"
+        },
+        {
+          "path": "tests/test_structure_two_p5_three_arm_readiness.py",
+          "sha256": "0a1d97e26e12bcb663665438dd64831e2e0bd2eea1dbfd82d2b4419a6ac430fd"
+        },
+        {
+          "path": "tests/test_structure_two_p5_unseen_d0_holdout.py",
+          "sha256": "be152cef5f6bf25e763bb18581db6e7cb2d20f73b2d8fc3a63135aa829f0b24a"
+        },
+        {
           "path": "tests/test_structure_two_particle_falsifier.py",
           "sha256": "3a690024b5deec10f4aff9bde9c1ec7bd1455dfe49cec180bd93fb1d2f40c1d2"
         },
@@ -2992,7 +3203,7 @@
         },
         {
           "path": "tests/test_structure_two_production_system.py",
-          "sha256": "cd482a486f8b7a42477065278655ef48899128dc99f3bc6d3bd81e32a655c201"
+          "sha256": "f8e70eb563094cfd787d10f5f50d4955485bb3f7b676056a774e928bf977a957"
         },
         {
           "path": "tests/test_structure_two_rejuvenation_adversarial.py",
@@ -3165,9 +3376,89 @@
       ]
     },
     "test_fixture_contract": {
-      "content_sha256": "27424443f218f7039e9fb83bc81ab36d004477026f3e619d18b840d2fe42530d",
-      "file_count": 78,
+      "content_sha256": "eb91582c78528fe3e6ddbaa6135fb91d455c64b73aa2747174a1848d2b24b885",
+      "file_count": 147,
       "files": [
+        {
+          "path": "artifacts/project_two_data/d1_generic_development_v0_1/coverage_report.json",
+          "sha256": "14e7d7c68261c281ad0466989c2905b82b5b6cf28256717f89567cf5794c1787"
+        },
+        {
+          "path": "artifacts/project_two_data/d1_generic_development_v0_1/evaluator_truth.jsonl",
+          "sha256": "5ae16eb4721f30141a55d662c7371acb19d048c50e12c0db4932b4c47905601a"
+        },
+        {
+          "path": "artifacts/project_two_data/d1_generic_development_v0_1/manifest.json",
+          "sha256": "1a0bf0c2ff7d61c942491564189726d35a24f4894e0160f9e6368d302c556f5b"
+        },
+        {
+          "path": "artifacts/project_two_data/d1_generic_development_v0_1/visible_replay.jsonl",
+          "sha256": "2ab7b70035f565129c68683f129e4bc6b7c65796229a21b1613192c57150d5b6"
+        },
+        {
+          "path": "artifacts/project_two_data/d2_real_perception_example_v0_1/annotation_agreement.json",
+          "sha256": "774b01e71faa8e6f47d8f5df5818e59c5d04f118dffa23bc1b7238f530588338"
+        },
+        {
+          "path": "artifacts/project_two_data/d2_real_perception_example_v0_1/annotations.jsonl",
+          "sha256": "135099c90c5541d9a9f0f91cb01ab61aa073001f02d47c74e5a72a5a0bd386ea"
+        },
+        {
+          "path": "artifacts/project_two_data/d2_real_perception_example_v0_1/collection_protocol.json",
+          "sha256": "6be87f5acaa348a0145bd0c91c1c88907e55368e0f2f1c8d8895cdb59f20b29c"
+        },
+        {
+          "path": "artifacts/project_two_data/d2_real_perception_example_v0_1/coverage_report.json",
+          "sha256": "4734847797ea49c0b6fd275835398fc787b46b27066067eb954898f77b86e504"
+        },
+        {
+          "path": "artifacts/project_two_data/d2_real_perception_example_v0_1/d2_evidence_report.json",
+          "sha256": "7a1f2ad2b33de8f4bb0b7b1b6dfae7165438256789c26780c06e2d647f46e702"
+        },
+        {
+          "path": "artifacts/project_two_data/d2_real_perception_example_v0_1/evaluator_truth.jsonl",
+          "sha256": "4416a2ea9b1f589efa35e5167a05d41212df442910ad5e3eb08b8ceb66795e06"
+        },
+        {
+          "path": "artifacts/project_two_data/d2_real_perception_example_v0_1/manifest.json",
+          "sha256": "b8554cbf73952697c8ea711b67ca47180cdaa3c440e957f6d5f1976d1ebd6703"
+        },
+        {
+          "path": "artifacts/project_two_data/d2_real_perception_example_v0_1/raw_perception.jsonl",
+          "sha256": "668217ea6aafd6f8e1e9bedd690a64ab07c41ae82cccc83505ded1f7ff26581c"
+        },
+        {
+          "path": "artifacts/project_two_data/d2_real_perception_example_v0_1/split_manifest.json",
+          "sha256": "859594b6ada441f7073f5d54d5f364508fb8b1e1cbcb4488f6dfe2209fed9e40"
+        },
+        {
+          "path": "artifacts/project_two_data/d2_real_perception_example_v0_1/visible_replay.jsonl",
+          "sha256": "c80718b229298dbe12cc2b9eeedafe31e2a67d27aa2856708fd5a36f2b4f2f2f"
+        },
+        {
+          "path": "artifacts/project_two_v04_development/source_snapshots/structure_two_world_gate_v0_3_at_horizon_probe.py",
+          "sha256": "8b8b9010ce219b32750446271778a78c0378ca7b930bc389d29418a59d6529f7"
+        },
+        {
+          "path": "artifacts/project_two_v04_development/structure_two_corrected_instrument_v0_3.json",
+          "sha256": "0a316e7ba5bee093e51848b0a097e5ee03521449a2952fef3b9c5eca00929dcf"
+        },
+        {
+          "path": "artifacts/project_two_v04_development/structure_two_neural_amortized_model_v0_1.json",
+          "sha256": "5be8a0c5c87b2272049ed6e283e63feab12bcaa97b1f7b91ecaec69ad8986478"
+        },
+        {
+          "path": "artifacts/project_two_v04_development/structure_two_strongest_neighbor_gate_current_source_v0_3.json",
+          "sha256": "95a80dcfb033db84e5b1820ad5c3476c00bf656fe99e179c2920842eebacd9f7"
+        },
+        {
+          "path": "artifacts/project_two_v04_development/structure_two_strongest_neighbor_gate_v0_1.json",
+          "sha256": "cace31c8f9ac1516f7d267069cf28d02ad922d03099e4c2d796ec99b0160b860"
+        },
+        {
+          "path": "artifacts/project_two_v04_development/structure_two_world_horizon_probe_v0_3.json",
+          "sha256": "d62a18086e6ab49a93d9f43c65ab116376960c10aed41d8bf492463686cbd130"
+        },
         {
           "path": "benchmarks/d0_shift_attribution/d0_scenario_config_v0.1.json",
           "sha256": "7b8c2ed6b33a781b1b705afc5b499c628610bf211ab91624cd5cc332aee34040"
@@ -3309,6 +3600,166 @@
           "sha256": "26b3fafaedd94f2e9852869887a662b10f9c67441d740d2f2fb8cab3398f1798"
         },
         {
+          "path": "benchmarks/structure_two/evidence_entry_portability_2026_09_12/cross_root_reference_report_v0_3.json",
+          "sha256": "5d07ca09774950f25bd6968a57ce7cb3fdd400ee94a9420082de34a3ee15129d"
+        },
+        {
+          "path": "benchmarks/structure_two/evidence_entry_portability_2026_09_12/current_v0_4/structure_two_p5_debt_replay_confirmation_v0_4.json",
+          "sha256": "9e8d4ba50d72e22b6c07f289e915b5a4aa517b0ff66fc477656bf3814cad9f34"
+        },
+        {
+          "path": "benchmarks/structure_two/evidence_entry_portability_2026_09_12/current_v0_4/structure_two_p5_readout_posthoc_diagnostic_v0_4.json",
+          "sha256": "b9c4c42bf71e3a410456c64f0b9616e9f90e642e6e1655444e4cb39d3fcc747e"
+        },
+        {
+          "path": "benchmarks/structure_two/evidence_entry_portability_2026_09_12/current_v0_4/structure_two_p5_readout_prior_factorial_v0_4.json",
+          "sha256": "f1f3cb6070d5617b8df896c0fd73b909778560d96361c546f106232b1381ce2b"
+        },
+        {
+          "path": "benchmarks/structure_two/evidence_entry_portability_2026_09_12/current_v0_4/structure_two_p5_three_arm_death_test_v0_4.json",
+          "sha256": "0fc4d50dbb049dd33c431e34edd545682f9f63d96319628a133f59962fca1f20"
+        },
+        {
+          "path": "benchmarks/structure_two/evidence_entry_portability_2026_09_12/current_v0_4/structure_two_p5_unseen_d0_holdout_v0_4.json",
+          "sha256": "65c713d289c475d3dd975cffbaa761ff952abad9e50d7a3c165a70d055e0297e"
+        },
+        {
+          "path": "benchmarks/structure_two/evidence_entry_portability_2026_09_12/historical_source_audit_v0_3.json",
+          "sha256": "5d07ca09774950f25bd6968a57ce7cb3fdd400ee94a9420082de34a3ee15129d"
+        },
+        {
+          "path": "benchmarks/structure_two/evidence_entry_portability_2026_09_12/preserved_reviewed_evidence.json",
+          "sha256": "f715d9e82b34b2a161cc58fe6d59be0797aeb99f1f18a6559067ba3b88a4d378"
+        },
+        {
+          "path": "benchmarks/structure_two/evidence_entry_portability_2026_09_12/reviewed_v05_compatibility_audit.json",
+          "sha256": "547089d19260e5efa3058242796dfe480efc035d149404adfa85d75e29bb12f1"
+        },
+        {
+          "path": "benchmarks/structure_two/evidence_repair_2026_09_11/additional_fixture_restoration.json",
+          "sha256": "b6b887b133c02b2cae5c95177a3bca5481afa1acae4bdc6353ac619c7bf6e476"
+        },
+        {
+          "path": "benchmarks/structure_two/evidence_repair_2026_09_11/current/structure_two_p5_debt_replay_confirmation_v0_2.json",
+          "sha256": "9febaa50ea9e51f0098c5bc8d55549de873625cc74256895f8ca83f0fec4bed2"
+        },
+        {
+          "path": "benchmarks/structure_two/evidence_repair_2026_09_11/current/structure_two_p5_readout_posthoc_diagnostic_v0_2.json",
+          "sha256": "678193b3a197630444b4707394d082341df6eb10ea295f74048ef811d72b53ad"
+        },
+        {
+          "path": "benchmarks/structure_two/evidence_repair_2026_09_11/current/structure_two_p5_readout_prior_factorial_v0_2.json",
+          "sha256": "477adc07a5629cadebd1c7099656ab0e92fe26b41d3fa1faa932c5e53a6548bb"
+        },
+        {
+          "path": "benchmarks/structure_two/evidence_repair_2026_09_11/current/structure_two_p5_three_arm_death_test_v0_2.json",
+          "sha256": "0e17f9cd362c44d16c48ce41631c636761e6e0c5090b417deca078b27080a39d"
+        },
+        {
+          "path": "benchmarks/structure_two/evidence_repair_2026_09_11/current/structure_two_p5_unseen_d0_holdout_v0_2.json",
+          "sha256": "c096017d572f4f5db7c09fbaf98c754876ad4bb2c2c816d6e48f83ce0e707123"
+        },
+        {
+          "path": "benchmarks/structure_two/evidence_repair_2026_09_11/failed_full_audit_attempt/engineering_audit_receipt.json",
+          "sha256": "8d0e943c985a4b72dfd64eb0b2efdb77757c40142f3164f530d7bc20bc78ab52"
+        },
+        {
+          "path": "benchmarks/structure_two/evidence_repair_2026_09_11/historical_source_audit.json",
+          "sha256": "aba98dcb29b2061d06500f9a3ba8cbc509edfecb5718730cc20b937192ad770d"
+        },
+        {
+          "path": "benchmarks/structure_two/evidence_repair_2026_09_11/history/debt_replay_4103bea.json",
+          "sha256": "2c4a658e4da3e6a9f56f58064802164dc980b48aed5922694bb17eb21ad5b9bf"
+        },
+        {
+          "path": "benchmarks/structure_two/evidence_repair_2026_09_11/history/debt_replay_first_record.json",
+          "sha256": "bf2016f8d5e038f158aae590aa0401bc231ac46a3e005193865007acb841f8f6"
+        },
+        {
+          "path": "benchmarks/structure_two/evidence_repair_2026_09_11/history/factorial_09eb4d4.json",
+          "sha256": "d5f7a35dc6ff6015480a224641308e13146574a7d5559c05d5b5fd674fbd55c2"
+        },
+        {
+          "path": "benchmarks/structure_two/evidence_repair_2026_09_11/history/factorial_4103bea.json",
+          "sha256": "41714d18ef7b7fea513d7ef10e1a1265a4766f896511226a2465085594b1ff6a"
+        },
+        {
+          "path": "benchmarks/structure_two/evidence_repair_2026_09_11/history/posthoc_first_record.json",
+          "sha256": "6ad677dee1086182af261cecd292e0ed82971ab4a6d1f31a256378cc9dc20f49"
+        },
+        {
+          "path": "benchmarks/structure_two/evidence_repair_2026_09_11/history/posthoc_replay_4103bea.json",
+          "sha256": "98dcb3c35b15f41a523645ef3b9d3415e682882ec980539a337110bdc267658c"
+        },
+        {
+          "path": "benchmarks/structure_two/evidence_repair_2026_09_11/history/three_arm_failed_replay_4103bea.json",
+          "sha256": "1a617567a224d11eca20f589a9aa84ddc2195494263bc58f2c4fb21030643c04"
+        },
+        {
+          "path": "benchmarks/structure_two/evidence_repair_2026_09_11/history/three_arm_first_failure.json",
+          "sha256": "ca30ac7db2ff26476a17fa9ca9d19760763508010a312acd8b18d4ba194dca94"
+        },
+        {
+          "path": "benchmarks/structure_two/evidence_repair_2026_09_11/history/three_arm_repaired_development_09eb4d4.json",
+          "sha256": "a25b8619fd0270b863bfd0aa8e91767a0cd6274d164f3529424175fe7218bfcf"
+        },
+        {
+          "path": "benchmarks/structure_two/evidence_repair_2026_09_11/history/unseen_d0_initial_open.json",
+          "sha256": "6f9edd2433b3294477938e398a3ab4bbe6ffd0ecc3976c2e459977eaf3691653"
+        },
+        {
+          "path": "benchmarks/structure_two/evidence_repair_2026_09_11/history/unseen_d0_post_open_09eb4d4.json",
+          "sha256": "3b99ce671e687f06a4897a18edf57774d467bf2d52dec7830fbd92fb51eba904"
+        },
+        {
+          "path": "benchmarks/structure_two/evidence_repair_supplement_2026_09_11/after_original_attacks/reproduction.json",
+          "sha256": "5800e7d989442954a98b2e7e29094111dfc7b9de8aaf94dcabdab699a531007f"
+        },
+        {
+          "path": "benchmarks/structure_two/evidence_repair_supplement_2026_09_11/before/reproduction.json",
+          "sha256": "a9c138866595b7f7c5f903f1b1f143480ab326e2a607088181ac243bb49b34e7"
+        },
+        {
+          "path": "benchmarks/structure_two/evidence_repair_supplement_2026_09_11/candidate_before_command_contract_fix/engineering_audit_receipt.json",
+          "sha256": "d633863b9a98f8da0191f4a6e64dbdda64348cb564d9004321ccd284fd15b8f8"
+        },
+        {
+          "path": "benchmarks/structure_two/evidence_repair_supplement_2026_09_11/candidate_before_command_contract_fix/engineering_checkpoint.json",
+          "sha256": "7e93c9fd46fa2b6668b6f1197cc9d29bf4a122e4418d9a4a690f575f7e60ef48"
+        },
+        {
+          "path": "benchmarks/structure_two/evidence_repair_supplement_2026_09_11/current_v0_3/structure_two_p5_debt_replay_confirmation_v0_3.json",
+          "sha256": "092f4f2a76621f5219c1d3f00d8b990f74f83b4fae6419e3b76d6d03fbd9b9a6"
+        },
+        {
+          "path": "benchmarks/structure_two/evidence_repair_supplement_2026_09_11/current_v0_3/structure_two_p5_readout_posthoc_diagnostic_v0_3.json",
+          "sha256": "af8ec38170b4bf95b60bbb8786bda198ab3e410f76b09e939542eeb9990f919d"
+        },
+        {
+          "path": "benchmarks/structure_two/evidence_repair_supplement_2026_09_11/current_v0_3/structure_two_p5_readout_prior_factorial_v0_3.json",
+          "sha256": "23431f2e807feb85dde7db37eb921dc303b4500e6c43c49bc342905367a5d657"
+        },
+        {
+          "path": "benchmarks/structure_two/evidence_repair_supplement_2026_09_11/current_v0_3/structure_two_p5_three_arm_death_test_v0_3.json",
+          "sha256": "ebfcb938944f5e107f91f96c4f9de8176bcc7bfb9bb3955bf447b1efbb45ad83"
+        },
+        {
+          "path": "benchmarks/structure_two/evidence_repair_supplement_2026_09_11/current_v0_3/structure_two_p5_unseen_d0_holdout_v0_3.json",
+          "sha256": "d9a68e4fe101a932d858d925a72654091b482ff8cdfa3b5549177f066f2fa7c8"
+        },
+        {
+          "path": "benchmarks/structure_two/evidence_repair_supplement_2026_09_11/historical_source_audit_v0_2.json",
+          "sha256": "24b3a5e7ffcfef6deb2aa12b7c7ce7f3e691f019795a8918faa63a6ac7396953"
+        },
+        {
+          "path": "benchmarks/structure_two/evidence_repair_supplement_2026_09_11/preserved_reviewed_evidence.json",
+          "sha256": "1061eaaa03cf27ae74901d5b8bd5d76189ae5174a06802df9e77dd5366933b21"
+        },
+        {
+          "path": "benchmarks/structure_two/evidence_repair_supplement_2026_09_11/reviewed_v0_5_compatibility_audit.json",
+          "sha256": "3c737dfb55217673b4ecb7c3ff808646845c490fb38bb7382e079c949315cd27"
+        },
+        {
           "path": "benchmarks/structure_two/gate_b_arm_traces_v0_5/arm_active_dreaming_matched.json",
           "sha256": "b01567de723da4bd063a24855f07e06e8085ccb7b483d9f8c060e796ae6accb3"
         },
@@ -3409,6 +3860,38 @@
           "sha256": "f7315f51ed3822fba9e32b056e45acf37d49371cbde1992f843857443b43211e"
         },
         {
+          "path": "benchmarks/structure_two/structure_two_p5_debt_replay_confirmation_v0_1.json",
+          "sha256": "2c4a658e4da3e6a9f56f58064802164dc980b48aed5922694bb17eb21ad5b9bf"
+        },
+        {
+          "path": "benchmarks/structure_two/structure_two_p5_direct_trace_probe_v0_1.json",
+          "sha256": "1dc4e38cd4142c970e2afec9a62388a3316dab5716a2d3ec58e6225530f4d411"
+        },
+        {
+          "path": "benchmarks/structure_two/structure_two_p5_readout_posthoc_diagnostic_v0_1.json",
+          "sha256": "98dcb3c35b15f41a523645ef3b9d3415e682882ec980539a337110bdc267658c"
+        },
+        {
+          "path": "benchmarks/structure_two/structure_two_p5_readout_prior_factorial_v0_1.json",
+          "sha256": "d5f7a35dc6ff6015480a224641308e13146574a7d5559c05d5b5fd674fbd55c2"
+        },
+        {
+          "path": "benchmarks/structure_two/structure_two_p5_three_arm_death_test_v0_1.json",
+          "sha256": "1a617567a224d11eca20f589a9aa84ddc2195494263bc58f2c4fb21030643c04"
+        },
+        {
+          "path": "benchmarks/structure_two/structure_two_p5_three_arm_readiness_v0_1.json",
+          "sha256": "8ea2405b068f53dbc6c00775e50ea20aac2e0feb1169e0a8466d7e83cb0f88c4"
+        },
+        {
+          "path": "benchmarks/structure_two/structure_two_p5_unseen_d0_holdout_initial_open_v0_1.json",
+          "sha256": "6f9edd2433b3294477938e398a3ab4bbe6ffd0ecc3976c2e459977eaf3691653"
+        },
+        {
+          "path": "benchmarks/structure_two/structure_two_p5_unseen_d0_holdout_v0_1.json",
+          "sha256": "3b99ce671e687f06a4897a18edf57774d467bf2d52dec7830fbd92fb51eba904"
+        },
+        {
           "path": "benchmarks/structure_two/structure_two_per_arm_resource_measurement_v0_1.json",
           "sha256": "4df7cc64cf2ecb02496484bc53850a0a2f5832886133dc3225677a701a94074e"
         },
@@ -3450,7 +3933,7 @@
         },
         {
           "path": "benchmarks/structure_two/structure_two_world_source_bundle_v0_5_compatibility_audit.json",
-          "sha256": "51a0d2cd2072db4b44928cde366af64966c455d77039b281fffe4e6ab70226bb"
+          "sha256": "93cd06a0fbe1da0e64c9c745831b1fa25267af1483b0180e11e68b9051f43089"
         },
         {
           "path": "benchmarks/structure_two/structure_two_world_validation_gate_a_v0_5.json",
@@ -3479,6 +3962,10 @@
         {
           "path": "benchmarks/structure_two/task12_rejuvenation_diagnostic_2026_09_06/task12_recomputed_results.json",
           "sha256": "fc8f5572067b3a15800fbde66cbf7dfc337165dc96193ece8ff869b9385762dd"
+        },
+        {
+          "path": "output/method_falsification/round_two_structure_one_placement_v0_1.json",
+          "sha256": "4a4758b3ecc8fd1b409bddef66825259d1a0ed85dcddc5b1a0d94938832b7ef4"
         }
       ]
     },

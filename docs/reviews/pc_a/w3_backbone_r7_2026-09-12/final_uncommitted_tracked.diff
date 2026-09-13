@@ -1,0 +1,662 @@
+diff --git a/src/cpswm/system/prototype_spine.py b/src/cpswm/system/prototype_spine.py
+index 08a6f52..f7a330d 100644
+--- a/src/cpswm/system/prototype_spine.py
++++ b/src/cpswm/system/prototype_spine.py
+@@ -122,6 +122,8 @@ from cpswm.system.structure_two_particle_workspace import (
+     ConditionalAnalyticState,
+     NativeParticleWorkspace,
+     NativePosteriorSource,
++    native_content_payload,
++    native_content_sha256,
+ )
+ from cpswm.world_model.grounded_search.concurrent_map_task import BeliefSnapshot, VersionedBeliefMap
+ from cpswm.world_model.habits_transitions import (
+@@ -988,6 +990,54 @@ class _CommittedPrototypeEvent:
+     identity_switch_probability: float = 0.0
+ 
+ 
++@dataclass(frozen=True, slots=True)
++class DeferredCorrectionCancellation:
++    """Compensating transaction: retain the failed child and its original parent."""
++
++    request_fingerprint: str
++    request: ProjectOneStatRequest
++    parent_event: _CommittedPrototypeEvent
++    corrected_event: _CommittedPrototypeEvent
++    after_operation_count: int
++    trigger_revision_id: UUID
++    rationale: str
++    restore_events: tuple[_CommittedPrototypeEvent, ...]
++    restore_fast_events: tuple[_CommittedPrototypeEvent, ...]
++    body_sha256: str = ""
++
++    def body(self) -> tuple[Any, ...]:
++        return (
++            self.request_fingerprint,
++            self.request,
++            self.parent_event,
++            self.corrected_event,
++            self.after_operation_count,
++            self.trigger_revision_id,
++            self.rationale,
++            self.restore_events,
++            self.restore_fast_events,
++        )
++
++    def validate_content(self) -> None:
++        request, parent, child = self.request, self.parent_event, self.corrected_event
++        if (
++            self.body_sha256 != native_content_sha256(self.body())
++            or self.request_fingerprint != _project_one_request_fingerprint(request)
++            or request.superseded_revision_id != parent.revision_id
++            or request.corrected_revision_id != child.revision_id
++            or request.event_hypothesis_id != parent.event_hypothesis_id
++            or child.event_hypothesis_id != parent.event_hypothesis_id
++            or request.owner_mass_before != parent.owner_mass
++            or request.owner_mass_after != child.owner_mass
++            or request.location_id != child.location_id
++            or child.source_record_id != request.source_feedback_record_id
++            or self.after_operation_count < 1
++            or not self.restore_events
++            or self.restore_events[0].revision_id != parent.revision_id
++        ):
++            raise ValueError("invalid deferred cancellation content or request binding")
++
++
+ class CorePrototypeSpine:
+     """Compose the shortest runnable spine of structure one and structure two.
+ 
+@@ -1063,7 +1113,12 @@ class CorePrototypeSpine:
+         # per observation.  A rebuild is not a write authority; it reads this.
+         self._write_eligibility: dict[UUID, _ObservationWriteEligibility] = {}
+         self._revision_transactions: tuple[EventRevisionOutcome, ...] = ()
++        self._correction_cancellations: tuple[DeferredCorrectionCancellation, ...] = ()
++        self._deferred_correction_restore: dict[
++            str, tuple[tuple[_CommittedPrototypeEvent, ...], tuple[_CommittedPrototypeEvent, ...]]
++        ] = {}
+         self._revision_parent_events: dict[UUID, _CommittedPrototypeEvent] = {}
++        self._hybrid_reinstatement_lineage: dict[UUID, tuple[UUID, UUID | None]] = {}
+         self._particle_workspace = NativeParticleWorkspace()
+         self._particle_workspace_anchor = self._particle_workspace
+         self._event_histories: dict[UUID, EventHypothesisHistory] = {}
+@@ -1618,6 +1673,7 @@ class CorePrototypeSpine:
+                     rationale="CCRR promotion finalized the deferred corrected statistic",
+                 )
+                 self._deferred_project_one_requests.pop(fingerprint, None)
++                self._deferred_correction_restore.pop(fingerprint, None)
+                 receipts.append(receipt)
+             return tuple(receipts)
+         # A manual or duplicate promotion notification is an auditable replay noop.
+@@ -1631,21 +1687,62 @@ class CorePrototypeSpine:
+         return tuple(self._replay_receipt(receipt) for receipt in previous[-1:])
+ 
+     def _reject_deferred_project_one_requests(
+-        self, revision_ids: set[UUID], *, rationale: str
++        self, revision_ids: set[UUID], *, rationale: str, trigger_revision_id: UUID
+     ) -> tuple[ProjectOneRequestApplicationReceipt, ...]:
+         """Close deferred requests when CCRR explicitly discards quarantine."""
+ 
+         pending = [
+-            (fingerprint, request)
++            (fingerprint, request, waiting_revision_id, mode)
+             for fingerprint, (
+                 request,
+                 waiting_revision_id,
+-                _mode,
++                mode,
+             ) in self._deferred_project_one_requests.items()
+             if waiting_revision_id in revision_ids
+         ]
+         receipts = []
+-        for fingerprint, request in pending:
++        for fingerprint, request, child_id, mode in pending:
++            if mode == "promotion_finalizes":
++                parent = self._revision_parent_events.get(request.superseded_revision_id)
++                child = self._observed_events.get(child_id)
++                if (
++                    parent is None
++                    or child is None
++                    or child_id != request.corrected_revision_id
++                    or child_id in self._committed_events
++                    or not self._observation_write_eligible(parent.revision_id)
++                    or any(
++                        c.corrected_event.revision_id == child_id
++                        for c in self._correction_cancellations
++                    )
++                ):
++                    raise ValueError("deferred correction cancellation has no restorable lineage")
++                restoration = self._deferred_correction_restore.get(fingerprint)
++                if restoration is None or restoration[0][0].revision_id != parent.revision_id:
++                    raise ValueError("missing original deferred correction contribution snapshot")
++                cancellation = DeferredCorrectionCancellation(
++                    fingerprint,
++                    request,
++                    parent,
++                    child,
++                    len(self._revision_transactions),
++                    trigger_revision_id,
++                    rationale,
++                    *restoration,
++                )
++                cancellation = replace(
++                    cancellation, body_sha256=native_content_sha256(cancellation.body())
++                )
++                cancellation.validate_content()
++                self._correction_cancellations = (*self._correction_cancellations, cancellation)
++                self._observed_events.pop(child_id)
++                self._fast_action_events.pop(child_id, None)
++                self._particle_workspace.invalidate_revisions({child_id})
++                restored = replace(restoration[0][0], belief_snapshot_id=None)
++                self._observed_events[parent.revision_id] = restored
++                for fast in restoration[1]:
++                    self._fast_action_events[fast.revision_id] = fast
++                self._revision_fault_hook("cancellation_lineage")
+             receipts.append(
+                 self._record_request_receipt(
+                     request=request,
+@@ -1658,6 +1755,7 @@ class CorePrototypeSpine:
+                 )
+             )
+             self._deferred_project_one_requests.pop(fingerprint, None)
++            self._deferred_correction_restore.pop(fingerprint, None)
+         return tuple(receipts)
+ 
+     @property
+@@ -2583,6 +2681,11 @@ class CorePrototypeSpine:
+                 "committed_events": event_rows(self._committed_events),
+                 "write_eligibility": self._write_eligibility,
+                 "revision_transactions": self._revision_transactions,
++                "hybrid_reinstatement_lineage": dict(self._hybrid_reinstatement_lineage),
++                "correction_cancellations": native_content_payload(self._correction_cancellations),
++                "deferred_correction_restore": native_content_payload(
++                    self._deferred_correction_restore
++                ),
+                 "revision_parent_events": event_rows(self._revision_parent_events),
+                 "prepared_particle_workspace": self._particle_workspace.state_payload(),
+                 "event_histories": self._event_histories,
+@@ -3038,6 +3141,7 @@ class CorePrototypeSpine:
+             ),
+         )
+ 
++        cancellation_count = len(self._correction_cancellations)
+         promoted_audits: dict[UUID, HabitUpdateAudit] = {}
+         if force_long_term_write_blocked:
+             self._quarantined_events.append(current_event)
+@@ -3078,6 +3182,7 @@ class CorePrototypeSpine:
+             self._reject_deferred_project_one_requests(
+                 {item.revision_id for item in self._quarantined_events},
+                 rationale="CCRR classified the quarantined event as a short-term disturbance",
++                trigger_revision_id=current_event.revision_id,
+             )
+             self._quarantined_events.clear()
+         elif (
+@@ -3093,6 +3198,7 @@ class CorePrototypeSpine:
+                 self._reject_deferred_project_one_requests(
+                     {item.revision_id for item in self._quarantined_events},
+                     rationale="CCRR closed quarantine without promoting the corrected event",
++                    trigger_revision_id=current_event.revision_id,
+                 )
+                 self._quarantined_events.clear()
+ 
+@@ -3118,6 +3224,43 @@ class CorePrototypeSpine:
+                 habit_update = self._commit_event(current_event)
+         else:
+             habit_update = self._habit.update_audited(evidence, weight_multiplier=0.0)
++        if len(self._correction_cancellations) != cancellation_count:
++            replay_assessments: list[Any] = []
++            restored_snapshot = self._rebuild_personalized_models(
++                replay_assessments=replay_assessments
++            )
++            # Reverse only the descendants captured by the original request.
++            # Later observations are retained and decide whether the parent is
++            # live; cancellation creates no fresh-feedback/CCRR authority.
++            for cancellation in self._correction_cancellations[cancellation_count:]:
++                remaining = {e.revision_id: e for e in cancellation.restore_events[1:]}
++                while remaining:
++                    ready = [
++                        e
++                        for e in remaining.values()
++                        if e.derived_from_revision_id in self._committed_events
++                    ]
++                    if not ready:
++                        for rid in remaining:
++                            self._derived_event_lifecycle[rid] = (
++                                DerivedEvidenceLifecycle.SUSPENDED_PARENT_QUARANTINED
++                            )
++                        break
++                    for event in ready:
++                        self._commit_event(replace(event, belief_snapshot_id=None))
++                        remaining.pop(event.revision_id)
++            restored_snapshot = self._hybrid_loop.publish_snapshot()
++            assessment = replay_assessments[-1]
++            self._last_cause_snapshot = assessment.snapshot
++            regime = self.active_regime
++            for cancellation in self._correction_cancellations[cancellation_count:]:
++                rows = self._project_one_application_receipts[
++                    cancellation.request.source_feedback_record_id
++                ]
++                rows[-1] = rows[-1].model_copy(
++                    update={"new_belief_snapshot_id": restored_snapshot.snapshot_id}
++                )
++            self._revision_fault_hook("cancellation_replay")
+         rls_scores = self._regimes.score_candidates(
+             object_instance_id=self.object_instance_id,
+             actor_id=self.owner_key,
+@@ -3280,6 +3423,11 @@ class CorePrototypeSpine:
+                 source_record_id=event.source_record_id,
+             )
+         )
++        if hybrid_revision_id != event.revision_id:
++            self._hybrid_reinstatement_lineage[hybrid_revision_id] = (
++                event.revision_id,
++                parent_revision_id,
++            )
+         return replace(
+             event,
+             hybrid_revision_id=hybrid_revision_id,
+@@ -3514,6 +3662,9 @@ class CorePrototypeSpine:
+             "late_feedback_relocations": list(self._late_feedback_relocations),
+             "write_eligibility": dict(self._write_eligibility),
+             "revision_transactions": self._revision_transactions,
++            "hybrid_reinstatement_lineage": dict(self._hybrid_reinstatement_lineage),
++            "correction_cancellations": self._correction_cancellations,
++            "deferred_correction_restore": dict(self._deferred_correction_restore),
+             "revision_parent_events": dict(self._revision_parent_events),
+             "particle_workspace": self._particle_workspace,
+             "particle_workspace_state": deepcopy(self._particle_workspace),
+@@ -3657,7 +3808,10 @@ class CorePrototypeSpine:
+         self._late_feedback_relocations = checkpoint["late_feedback_relocations"]  # type: ignore[assignment]
+         self._write_eligibility = checkpoint["write_eligibility"]  # type: ignore[assignment]
+         self._revision_transactions = checkpoint["revision_transactions"]  # type: ignore[assignment]
++        self._hybrid_reinstatement_lineage = checkpoint["hybrid_reinstatement_lineage"]  # type: ignore[assignment]
++        self._correction_cancellations = checkpoint["correction_cancellations"]  # type: ignore[assignment]
+         self._revision_parent_events = checkpoint["revision_parent_events"]  # type: ignore[assignment]
++        self._deferred_correction_restore = checkpoint["deferred_correction_restore"]  # type: ignore[assignment]
+         workspace = checkpoint["particle_workspace"]
+         _restore_reference_state(workspace, checkpoint["particle_workspace_state"])
+         self._particle_workspace = workspace  # type: ignore[assignment]
+@@ -3941,7 +4095,11 @@ class CorePrototypeSpine:
+                 receipt
+                 for receipt in prior_receipts
+                 if receipt.request_fingerprint == fingerprint
+-                and receipt.status is ProjectOneRequestApplicationStatus.APPLIED
++                and receipt.status
++                in {
++                    ProjectOneRequestApplicationStatus.APPLIED,
++                    ProjectOneRequestApplicationStatus.REJECTED,
++                }
+             ),
+             None,
+         )
+@@ -4021,6 +4179,18 @@ class CorePrototypeSpine:
+         # checkpoint so that this becomes an explicit rejected receipt without
+         # leaving a half-applied Dirichlet/RLS/Hybrid mutation.
+         request_checkpoint = self._capture_revision_transaction(include_operator_state=True)
++        restore_events = tuple(
++            self._committed_events[rid]
++            for rid in (
++                request.superseded_revision_id,
++                *self._descendant_revision_ids(request.superseded_revision_id),
++            )
++        )
++        restore_fast = tuple(
++            self._fast_action_events[e.revision_id]
++            for e in restore_events
++            if e.revision_id in self._fast_action_events
++        )
+         old_snapshot = self.current_snapshot
+         before = self.committed_weight_semantics(request.superseded_revision_id)
+         hybrid_before = self.hybrid_alpha(request.location_id)
+@@ -4058,6 +4228,7 @@ class CorePrototypeSpine:
+                 request.corrected_revision_id,
+                 "promotion_finalizes",
+             )
++            self._deferred_correction_restore[fingerprint] = (restore_events, restore_fast)
+             return self._record_request_receipt(
+                 request=request,
+                 fingerprint=fingerprint,
+@@ -4952,6 +5123,10 @@ class CorePrototypeSpine:
+     def _observation_write_eligible(self, revision_id: UUID) -> bool:
+         """Fail closed: an observation with no origin record may not be committed."""
+ 
++        if any(
++            c.corrected_event.revision_id == revision_id for c in self._correction_cancellations
++        ):
++            return False
+         record = self._write_eligibility.get(revision_id)
+         if record is None or not record.write_eligible:
+             return False
+@@ -5073,14 +5248,16 @@ class CorePrototypeSpine:
+             return
+         self._revision_binding_history[revision_id] = (*history, published)
+ 
+-    def _rebuild_personalized_models(self) -> BeliefSnapshot:
++    def _rebuild_personalized_models(
++        self, *, replay_assessments: list[Any] | None = None
++    ) -> BeliefSnapshot:
+         previous_committed = dict(self._committed_events)
+         (
+             recomputed_active_regime,
+             replayed_regimes,
+             committed_observation_ids,
+             quarantined_observation_ids,
+-        ) = self._recompute_active_regime()
++        ) = self._recompute_active_regime(replay_assessments=replay_assessments)
+         desired_observations = {
+             revision_id: self._observed_events[revision_id]
+             for revision_id in committed_observation_ids
+@@ -5148,6 +5325,12 @@ class CorePrototypeSpine:
+                     del pending_restore[revision_id]
+                     restored_one = True
+         for revision_id in desired_observations:
++            # Cancellation restores a previously authorized contribution. Keep
++            # its original qualification immutable for historical child hashes.
++            if any(
++                c.parent_event.revision_id == revision_id for c in self._correction_cancellations
++            ):
++                continue
+             if revision_id in previous_committed:
+                 continue
+             # A rebuild may promote an observation only if it was already write
+@@ -5241,6 +5424,8 @@ class CorePrototypeSpine:
+ 
+     def _recompute_active_regime(
+         self,
++        *,
++        replay_assessments: list[Any] | None = None,
+     ) -> tuple[str, dict[UUID, str], set[UUID], list[UUID]]:
+         """Fresh replay the observation log into regime and storage classifications."""
+ 
+@@ -5346,6 +5531,8 @@ class CorePrototypeSpine:
+                 evidence_source_record_ids=event.evidence.source_record_ids,
+                 identity_switch_probability=event.identity_switch_probability,
+             )
++            if replay_assessments is not None:
++                replay_assessments.append(assessment)
+             self._last_ccrr_decision = (
+                 assessment.ccrr_decision.kind.value
+                 if assessment.ccrr_decision is not None
+diff --git a/src/cpswm/system/structure_two_particle_workspace.py b/src/cpswm/system/structure_two_particle_workspace.py
+index 51f42e8..c644b13 100644
+--- a/src/cpswm/system/structure_two_particle_workspace.py
++++ b/src/cpswm/system/structure_two_particle_workspace.py
+@@ -48,12 +48,20 @@ def native_content_payload(value: Any) -> Any:
+             return tuple(key(x) for x in item)
+         return item
+ 
++    if isinstance(value, np.ndarray):
++        return value.tolist()
+     if is_dataclass(value) and not isinstance(value, type):
+         return {f.name: native_content_payload(getattr(value, f.name)) for f in fields(value)}
+     if hasattr(value, "model_dump"):
+         return native_content_payload(value.model_dump(mode="python"))
+     if isinstance(value, Mapping):
+-        return {key(k): native_content_payload(v) for k, v in value.items()}
++        normalized = {}
++        for k, v in value.items():
++            normalized_key = key(k)
++            if normalized_key in normalized:
++                raise ValueError("native content keys collide after typed normalization")
++            normalized[normalized_key] = native_content_payload(v)
++        return normalized
+     if isinstance(value, (set, frozenset)):
+         return {
+             "native:unordered_members": sorted((native_content_payload(x) for x in value), key=str)
+diff --git a/src/cpswm/system/structure_two_semantic_identity.py b/src/cpswm/system/structure_two_semantic_identity.py
+index 329c18d..47007a0 100644
+--- a/src/cpswm/system/structure_two_semantic_identity.py
++++ b/src/cpswm/system/structure_two_semantic_identity.py
+@@ -39,6 +39,10 @@ def semantic_memory_state(core: Any) -> dict[str, Any]:
+     # The operation order, not a random UUID sort, defines replacement identities.
+     for index, operation in enumerate(core.revision_transactions):
+         bind(operation.corrected_revision_id, f"correction:{index}")
++    for index, (request, _waiting, _mode) in enumerate(
++        core._deferred_project_one_requests.values()
++    ):
++        bind(request.corrected_revision_id, f"pending_correction:{index}")
+     for index, event in enumerate(core._observed_events.values()):
+         bind(event.evidence.metadata.record_id, f"evidence:{index}")
+     for index, event in enumerate(core._revision_parent_events.values()):
+@@ -53,6 +57,17 @@ def semantic_memory_state(core: Any) -> dict[str, Any]:
+         bind(source.source_id, f"native_posterior:{index}")
+         bind(source.snapshot_id, f"native_posterior_snapshot:{index}")
+ 
++    for index, (physical, (logical, parent)) in enumerate(
++        core._hybrid_reinstatement_lineage.items()
++    ):
++        ledger = core._hybrid_loop.ledger
++        if physical not in ledger._revision_event or ledger._revision_parent[physical] != parent:
++            raise ValueError("invalid raw reinstatement ledger lineage")
++        bind(physical, f"restored_hybrid:{index}:" + aliases.get(str(logical), str(logical)))
++    for cancellation in core._correction_cancellations:
++        cancellation.validate_content()
++        if cancellation.after_operation_count > len(core.revision_transactions):
++            raise ValueError("cancellation references an absent operation")
+     history_hashes: dict[str, str] = {}
+     revisions_to_normalize = {}
+     for history in core._event_histories.values():
+@@ -153,7 +168,7 @@ def semantic_memory_state(core: Any) -> dict[str, Any]:
+     # their live eligibility is computed separately by the original guard.
+     operations = {}
+     consumed = set()
+-    for operation in core.revision_transactions:
++    for operation_index, operation in enumerate(core.revision_transactions, 1):
+         if operation.superseded_revision_id in consumed:
+             raise ValueError("duplicate revision transaction parent")
+         consumed.add(operation.superseded_revision_id)
+@@ -163,6 +178,24 @@ def semantic_memory_state(core: Any) -> dict[str, Any]:
+             if operation.corrected_revision_id in operations:
+                 raise ValueError("duplicate corrected revision identity")
+             operations[operation.corrected_revision_id] = operation
++        for cancellation in core._correction_cancellations:
++            if cancellation.after_operation_count != operation_index:
++                continue
++            request = cancellation.request
++            correction = operations.get(request.corrected_revision_id)
++            if (
++                correction is None
++                or correction.superseded_revision_id != request.superseded_revision_id
++                or correction.corrected_owner_mass != request.owner_mass_after
++                or correction.corrected_location_id != request.location_id
++                or cancellation.parent_event
++                != core._revision_parent_events.get(request.superseded_revision_id)
++                or cancellation.corrected_event.revision_id != request.corrected_revision_id
++                or cancellation.trigger_revision_id
++                not in (core._observed_events.keys() | core._revision_parent_events.keys())
++            ):
++                raise ValueError("invalid correction cancellation lineage")
++            consumed.remove(request.superseded_revision_id)
+ 
+     semantic_records: dict[UUID, dict[str, Any]] = {}
+     visiting = set()
+@@ -337,6 +370,22 @@ def semantic_memory_state(core: Any) -> dict[str, Any]:
+         if digest != native_content_sha256(body):
+             raise ValueError("invalid raw prepared input digest")
+         particle_payload["input_journal"][str(canonical(cluster))] = content_sha256(prepared(body))
++
++    def cancellation_semantics(c: Any) -> dict[str, Any]:
++        row: dict[str, Any] = canonical(c)
++        request_digest = content_sha256(canonical(c.request))
++        body = canonical(c.body())
++        body[0] = request_digest
++        row["request_fingerprint"] = request_digest
++        row["body_sha256"] = content_sha256(body)
++        return row
++
++    deferred_restore = {}
++    for fingerprint, values in core._deferred_correction_restore.items():
++        pending = core._deferred_project_one_requests.get(fingerprint)
++        if pending is None or pending[2] != "promotion_finalizes":
++            raise ValueError("orphaned deferred correction restoration input")
++        deferred_restore[content_sha256(canonical(pending[0]))] = canonical(values)
+     return {
+         "schema": "structure-two-semantic-memory@1",
+         "configuration": canonical(
+@@ -355,7 +404,12 @@ def semantic_memory_state(core: Any) -> dict[str, Any]:
+         "fast_action": canonical(core._fast_action_events),
+         "qualifications": qualifications,
+         "operations": canonical(core.revision_transactions),
++        "correction_cancellations": [
++            cancellation_semantics(c) for c in core._correction_cancellations
++        ],
+         "revision_parent_events": canonical(core._revision_parent_events),
++        "hybrid_reinstatement_lineage": canonical(core._hybrid_reinstatement_lineage),
++        "deferred_correction_restore": deferred_restore,
+         "prepared_particle_workspace": particle_payload,
+         "event_histories": canonical(core._event_histories),
+         "bindings": canonical(core._revision_binding_history),
+diff --git a/tests/structure_two_revision_oracle.py b/tests/structure_two_revision_oracle.py
+index ec1b0f0..4489d84 100644
+--- a/tests/structure_two_revision_oracle.py
++++ b/tests/structure_two_revision_oracle.py
+@@ -6,6 +6,7 @@ This detects integration, membership and accounting errors, not errors common to
+ those leaf models, perception, or historical custody before the journal freeze.
+ """
+ 
++import hashlib
+ import json
+ from copy import deepcopy
+ from dataclasses import replace
+@@ -22,6 +23,7 @@ from cpswm.system.continual.project_one_regime_loop import (
+ )
+ from cpswm.system.continual.rls import RLSHabitScoreHead, RLSRegimeBank
+ from cpswm.system.reproducibility import content_sha256
++from cpswm.system.structure_two_particle_workspace import native_content_sha256
+ from cpswm.world_model.habits_transitions import (
+     CauseSignalFrame,
+     ChangeCause,
+@@ -37,6 +39,7 @@ class FrozenRevisionOracle:
+         self.parent_events = deepcopy(core._revision_parent_events)
+         self.raw_eligibility = deepcopy(core._write_eligibility)
+         self.baseline_operations = tuple(core.revision_transactions)
++        self.cancellations = deepcopy(core._correction_cancellations)
+         corrected_ids = {op.corrected_revision_id for op in self.baseline_operations}
+         # Recover original inputs from the retained pre-revision records. Never
+         # infer missing parents from the system's final membership or statistics.
+@@ -61,7 +64,7 @@ class FrozenRevisionOracle:
+     def _validate_frozen_lineage(self):
+         operations = {}
+         consumed = set()
+-        for op in self.baseline_operations:
++        for op_index, op in enumerate(self.baseline_operations, 1):
+             assert op.superseded_revision_id not in consumed, "duplicate historical operation"
+             consumed.add(op.superseded_revision_id)
+             assert op.superseded_revision_id in self.parent_events, "missing original parent input"
+@@ -69,6 +72,62 @@ class FrozenRevisionOracle:
+             if op.kind.value == "correct":
+                 assert op.corrected_revision_id not in operations, "duplicate corrected identity"
+                 operations[op.corrected_revision_id] = op
++            for cancellation in self.cancellations:
++                if cancellation.after_operation_count != op_index:
++                    continue
++                request = cancellation.request
++                request_body = {
++                    "kind": request.kind.value,
++                    "superseded_revision_id": str(request.superseded_revision_id),
++                    "corrected_revision_id": str(request.corrected_revision_id),
++                    "event_hypothesis_id": str(request.event_hypothesis_id),
++                    "owner_key": request.owner_key,
++                    "object_instance_id": str(request.object_instance_id),
++                    "location_id": str(request.location_id),
++                    "owner_mass_before": repr(float(request.owner_mass_before)),
++                    "owner_mass_after": repr(float(request.owner_mass_after)),
++                    "owner_mass_delta": repr(float(request.owner_mass_delta)),
++                    "source_feedback_record_id": str(request.source_feedback_record_id),
++                }
++                assert (
++                    cancellation.request_fingerprint
++                    == hashlib.sha256(json.dumps(request_body, sort_keys=True).encode()).hexdigest()
++                )
++                assert cancellation.body_sha256 == native_content_sha256(
++                    (
++                        cancellation.request_fingerprint,
++                        request,
++                        cancellation.parent_event,
++                        cancellation.corrected_event,
++                        cancellation.after_operation_count,
++                        cancellation.trigger_revision_id,
++                        cancellation.rationale,
++                        cancellation.restore_events,
++                        cancellation.restore_fast_events,
++                    )
++                ), "invalid cancellation body"
++                rid = request.corrected_revision_id
++                assert rid in operations, "cancellation without correction"
++                correction = operations[rid]
++                assert correction.superseded_revision_id == request.superseded_revision_id
++                assert (
++                    cancellation.parent_event == self.parent_events[request.superseded_revision_id]
++                )
++                assert cancellation.corrected_event.revision_id == rid
++                assert correction.corrected_location_id == request.location_id
++                assert correction.corrected_owner_mass == request.owner_mass_after
++                assert correction.evidence_source_record_ids == (request.source_feedback_record_id,)
++                assert cancellation.trigger_revision_id in (
++                    self.frozen_current_events.keys() | self.parent_events.keys()
++                ), "cancellation without trigger"
++                assert request.superseded_revision_id in consumed
++                consumed.remove(request.superseded_revision_id)
++        assert all(
++            0 < c.after_operation_count <= len(self.baseline_operations) for c in self.cancellations
++        )
++        assert len({c.corrected_event.revision_id for c in self.cancellations}) == len(
++            self.cancellations
++        )
+         visiting, checked = set(), set()
+ 
+         def visit(rid):
+@@ -183,7 +242,9 @@ class FrozenRevisionOracle:
+         events = deepcopy(self.events)
+         eligibility = deepcopy(self.eligibility)
+         self._validate_frozen_lineage()
+-        for operation in (*self.baseline_operations, *self.operations):
++        for operation_index, operation in enumerate(
++            (*self.baseline_operations, *self.operations), 1
++        ):
+             assert operation.superseded_revision_id in events, "operation outside frozen journal"
+             parent = events.pop(operation.superseded_revision_id)
+             if operation.kind.value == "correct":
+@@ -226,6 +287,19 @@ class FrozenRevisionOracle:
+                     ),
+                 )
+                 eligibility[rid] = deepcopy(eligibility[parent.revision_id])
++            for cancellation in self.cancellations:
++                if cancellation.after_operation_count != operation_index:
++                    continue
++                request = cancellation.request
++                assert request.corrected_revision_id in events, (
++                    "cancelled child absent from journal"
++                )
++                events.pop(request.corrected_revision_id)
++                # The frozen pre-correction input is the reference, never the
++                # system's final observed/committed event or model value.
++                events[request.superseded_revision_id] = deepcopy(
++                    self.parent_events[request.superseded_revision_id]
++                )
+ 
+         def eligible(rid):
+             row = eligibility[rid]
+@@ -354,6 +428,9 @@ class FrozenRevisionOracle:
+ 
+     def check(self, probe):
+         core = probe.system.core
++        assert core._correction_cancellations == self.cancellations, (
++            "cancellation log changed after freeze"
++        )
+         assert tuple(core.revision_transactions) == (*self.baseline_operations, *self.operations), (
+             "unvalidated or missing operation log"
+         )
+diff --git a/tests/test_structure_two_w3_native_posterior_projection.py b/tests/test_structure_two_w3_native_posterior_projection.py
+index 934c91e..7c49ef2 100644
+--- a/tests/test_structure_two_w3_native_posterior_projection.py
++++ b/tests/test_structure_two_w3_native_posterior_projection.py
+@@ -224,3 +224,9 @@ assert batch.particle_weights[0].posterior_probability > 0
+         timeout=60,
+     )
+     assert result.returncode == 0, result.stdout + result.stderr
++
++
++def test_native_source_encoding_rejects_complete_typed_key_collision():
++    source = {frozenset({"habit", "actor"}): 0.25, ("native:frozenset", ("actor", "habit")): 0.75}
++    with pytest.raises(ValueError, match="collide"):
++        native_content_sha256(source)

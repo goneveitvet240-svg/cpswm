@@ -1,0 +1,68 @@
+--- a/src/cpswm/system/evaluation_operations/structure_two_p5_three_arm_death_test.py
++++ b/src/cpswm/system/evaluation_operations/structure_two_p5_three_arm_death_test.py
+@@ -1048,6 +1048,16 @@
+         run_execution_id=run_execution_id,
+         visible_observation=step.model_dump(mode="json"),
+     )
++    return _score_committed_readout(posterior, readout, truth=truth)
++
++
++def _score_committed_readout(
++    posterior: TypedLocationPosterior,
++    readout: Any,
++    *,
++    truth: ProjectTwoEvaluatorStepTruth,
++) -> tuple[int, int, float, dict[str, Any]]:
++    """Score an already decoded immutable action; never dispatch a method here."""
+     search_locations = tuple(action.location_id for action in readout.search_plan)
+     put_back = readout.put_back_action.location_id
+     search_error = int(search_locations[0] != truth.true_location)
+--- a/src/cpswm/system/evaluation_operations/structure_two_p5_readout_posthoc_diagnostic.py
++++ b/src/cpswm/system/evaluation_operations/structure_two_p5_readout_posthoc_diagnostic.py
+@@ -35,7 +35,7 @@
+     DirectP5LocationAdapter,
+     LearnedTrainingMaterial,
+     LearnedTwoStageLocationAdapter,
+-    _decode_and_score,
++    _score_committed_readout,
+     _episode_schedule_commitment,
+     _EpisodeMetric,
+     _learned_training_material,
+@@ -208,7 +208,6 @@
+         AMGLocationAdapter,
+     ] = (corrected, learned, amg)
+     run_id = content_uuid(RETAINED_PROTOCOL_ID, {"episode_id": str(episode.episode_id)})
+-    truth_envelope = dataset.truth_for(episode.episode_id)
+     counters = {arm: {"search": 0, "put_back": 0, "regret": 0.0} for arm in P5ComparisonArm}
+     actions: dict[P5ComparisonArm, list[dict[str, Any]]] = {arm: [] for arm in P5ComparisonArm}
+     receipts: dict[P5ComparisonArm, list[dict[str, Any]]] = {arm: [] for arm in P5ComparisonArm}
+@@ -220,16 +219,21 @@
+             state.consume_matched_ciav_packet(packet, step, step_index=index) for state in states
+         )
+         verify_matched_consumption(matched_receipts)
+-        truth = truth_envelope.truth_by_step[step.step_id]
+-        for state, receipt in zip(states, matched_receipts, strict=True):
+-            posterior = cast(Any, state).predict_location_posteriors(packet)
+-            search_error, put_back_error, regret, action = _decode_and_score(
+-                posterior,
+-                episode=episode,
+-                step=step,
++        posteriors = tuple(state.predict_location_posteriors(packet) for state in states)
++        committed = tuple(
++            posterior.decode(
+                 step_index=index,
+                 run_execution_id=run_id,
+-                truth=truth,
++                visible_observation=step.model_dump(mode="json"),
++            )
++            for posterior in posteriors
++        )
++        truth = dataset.truth_for(episode.episode_id).truth_by_step[step.step_id]
++        for state, receipt, posterior, readout in zip(
++            states, matched_receipts, posteriors, committed, strict=True
++        ):
++            search_error, put_back_error, regret, action = _score_committed_readout(
++                posterior, readout, truth=truth
+             )
+             counters[receipt.arm]["search"] += search_error
+             counters[receipt.arm]["put_back"] += put_back_error

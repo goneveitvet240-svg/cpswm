@@ -1,0 +1,193 @@
+FFF                                                                      [100%]
+================================== FAILURES ===================================
+_ test_cross_thread_lock_handoff_fails_without_waiting_for_foreign_release[core] _
+
+lock_target = 'core'
+
+    @pytest.mark.parametrize("lock_target", ["core", "wrapper", "ccrr"])
+    def test_cross_thread_lock_handoff_fails_without_waiting_for_foreign_release(
+        lock_target: str,
+    ) -> None:
+        system, transition = _system_and_transition()
+        before_state = _state_fingerprint(system)
+        target_lock = {
+            "core": system.core._execution_lock,
+            "wrapper": system._execution_lock,
+            "ccrr": system.core._automatic_regimes.ccrr._lock,
+        }[lock_target]
+        worker_has_lock = Event()
+        release_worker = Event()
+        worker: Thread | None = None
+    
+        class LockHandoffSink(RecordingSink):
+            def commit(self, trace: StructureTwoExecutionTrace, /) -> TraceCommitAck:
+                nonlocal worker
+                acknowledgement = super().commit(trace)
+                if lock_target != "ccrr":
+                    target_lock.release()
+    
+                def hold_lock() -> None:
+                    with target_lock:
+                        worker_has_lock.set()
+                        assert release_worker.wait(timeout=5.0)
+    
+                worker = Thread(target=hold_lock, daemon=True)
+                worker.start()
+                assert worker_has_lock.wait(timeout=5.0)
+                return acknowledgement
+    
+        sink = LockHandoffSink()
+        outcome: list[BaseException | None] = []
+    
+        def invoke() -> None:
+            try:
+                system.process_transition(
+                    transition,
+                    execution_plan=canonical_legacy_ordinary_transition_plan(),
+                    trace_sink=sink,
+                )
+            except BaseException as error:
+                outcome.append(error)
+            else:
+                outcome.append(None)
+    
+        caller = Thread(target=invoke, daemon=True)
+        caller.start()
+        try:
+            caller.join(timeout=1.0)
+>           assert not caller.is_alive(), "transaction waited for a foreign lock owner"
+E           AssertionError: transaction waited for a foreign lock owner
+E           assert not True
+E            +  where True = is_alive()
+E            +    where is_alive = <Thread(Thread-1 (invoke), started daemon 37296)>.is_alive
+
+tests\test_structure_two_execution_interface.py:1593: AssertionError
+_ test_cross_thread_lock_handoff_fails_without_waiting_for_foreign_release[wrapper] _
+
+lock_target = 'wrapper'
+
+    @pytest.mark.parametrize("lock_target", ["core", "wrapper", "ccrr"])
+    def test_cross_thread_lock_handoff_fails_without_waiting_for_foreign_release(
+        lock_target: str,
+    ) -> None:
+        system, transition = _system_and_transition()
+        before_state = _state_fingerprint(system)
+        target_lock = {
+            "core": system.core._execution_lock,
+            "wrapper": system._execution_lock,
+            "ccrr": system.core._automatic_regimes.ccrr._lock,
+        }[lock_target]
+        worker_has_lock = Event()
+        release_worker = Event()
+        worker: Thread | None = None
+    
+        class LockHandoffSink(RecordingSink):
+            def commit(self, trace: StructureTwoExecutionTrace, /) -> TraceCommitAck:
+                nonlocal worker
+                acknowledgement = super().commit(trace)
+                if lock_target != "ccrr":
+                    target_lock.release()
+    
+                def hold_lock() -> None:
+                    with target_lock:
+                        worker_has_lock.set()
+                        assert release_worker.wait(timeout=5.0)
+    
+                worker = Thread(target=hold_lock, daemon=True)
+                worker.start()
+                assert worker_has_lock.wait(timeout=5.0)
+                return acknowledgement
+    
+        sink = LockHandoffSink()
+        outcome: list[BaseException | None] = []
+    
+        def invoke() -> None:
+            try:
+                system.process_transition(
+                    transition,
+                    execution_plan=canonical_legacy_ordinary_transition_plan(),
+                    trace_sink=sink,
+                )
+            except BaseException as error:
+                outcome.append(error)
+            else:
+                outcome.append(None)
+    
+        caller = Thread(target=invoke, daemon=True)
+        caller.start()
+        try:
+            caller.join(timeout=1.0)
+>           assert not caller.is_alive(), "transaction waited for a foreign lock owner"
+E           AssertionError: transaction waited for a foreign lock owner
+E           assert not True
+E            +  where True = is_alive()
+E            +    where is_alive = <Thread(Thread-3 (invoke), started daemon 21492)>.is_alive
+
+tests\test_structure_two_execution_interface.py:1593: AssertionError
+_ test_cross_thread_lock_handoff_fails_without_waiting_for_foreign_release[ccrr] _
+
+lock_target = 'ccrr'
+
+    @pytest.mark.parametrize("lock_target", ["core", "wrapper", "ccrr"])
+    def test_cross_thread_lock_handoff_fails_without_waiting_for_foreign_release(
+        lock_target: str,
+    ) -> None:
+        system, transition = _system_and_transition()
+        before_state = _state_fingerprint(system)
+        target_lock = {
+            "core": system.core._execution_lock,
+            "wrapper": system._execution_lock,
+            "ccrr": system.core._automatic_regimes.ccrr._lock,
+        }[lock_target]
+        worker_has_lock = Event()
+        release_worker = Event()
+        worker: Thread | None = None
+    
+        class LockHandoffSink(RecordingSink):
+            def commit(self, trace: StructureTwoExecutionTrace, /) -> TraceCommitAck:
+                nonlocal worker
+                acknowledgement = super().commit(trace)
+                if lock_target != "ccrr":
+                    target_lock.release()
+    
+                def hold_lock() -> None:
+                    with target_lock:
+                        worker_has_lock.set()
+                        assert release_worker.wait(timeout=5.0)
+    
+                worker = Thread(target=hold_lock, daemon=True)
+                worker.start()
+                assert worker_has_lock.wait(timeout=5.0)
+                return acknowledgement
+    
+        sink = LockHandoffSink()
+        outcome: list[BaseException | None] = []
+    
+        def invoke() -> None:
+            try:
+                system.process_transition(
+                    transition,
+                    execution_plan=canonical_legacy_ordinary_transition_plan(),
+                    trace_sink=sink,
+                )
+            except BaseException as error:
+                outcome.append(error)
+            else:
+                outcome.append(None)
+    
+        caller = Thread(target=invoke, daemon=True)
+        caller.start()
+        try:
+            caller.join(timeout=1.0)
+>           assert not caller.is_alive(), "transaction waited for a foreign lock owner"
+E           AssertionError: transaction waited for a foreign lock owner
+E           assert not True
+E            +  where True = is_alive()
+E            +    where is_alive = <Thread(Thread-5 (invoke), started daemon 32968)>.is_alive
+
+tests\test_structure_two_execution_interface.py:1593: AssertionError
+=========================== short test summary info ===========================
+FAILED tests/test_structure_two_execution_interface.py::test_cross_thread_lock_handoff_fails_without_waiting_for_foreign_release[core]
+FAILED tests/test_structure_two_execution_interface.py::test_cross_thread_lock_handoff_fails_without_waiting_for_foreign_release[wrapper]
+FAILED tests/test_structure_two_execution_interface.py::test_cross_thread_lock_handoff_fails_without_waiting_for_foreign_release[ccrr]
+3 failed, 71 deselected in 7.43s

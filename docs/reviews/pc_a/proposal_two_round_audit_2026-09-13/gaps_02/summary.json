@@ -1,0 +1,52 @@
+{
+  "scope": "component metamorphic diagnostics; not human action or training evidence",
+  "actor_permutation_changes_schedule": true,
+  "actor_permutation_identical_requests_sensors_releases": true,
+  "correction_relinks": [
+    {
+      "event": "component:13:50",
+      "old": "component:13:40",
+      "new": "component:13:0"
+    },
+    {
+      "event": "component:13:100",
+      "old": "component:13:40",
+      "new": "component:13:0"
+    },
+    {
+      "event": "component:13:220",
+      "old": "component:13:140",
+      "new": "component:13:10"
+    },
+    {
+      "event": "component:13:310",
+      "old": "component:13:300",
+      "new": "component:13:10"
+    },
+    {
+      "event": "component:13:440",
+      "old": "component:13:410",
+      "new": "component:13:10"
+    },
+    {
+      "event": "component:13:550",
+      "old": "component:13:540",
+      "new": "component:13:10"
+    },
+    {
+      "event": "component:13:640",
+      "old": "component:13:620",
+      "new": "component:13:0"
+    }
+  ],
+  "correction_relink_identical_requests_sensors_releases": true,
+  "mixed_preparation_accepted": true,
+  "mixed_features_rows": 2,
+  "partitions_only_in_audit_rows": [
+    "development",
+    "train"
+  ],
+  "training_ready": false,
+  "standalone_queue_nan_capture_not_released": true,
+  "unsupported_location_accepted_without_location_support_field": true
+}

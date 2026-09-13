@@ -1,0 +1,17 @@
+{
+  "schema": "cpswm.D2RealPerceptionRawEpisode",
+  "schema_version": "0.1.0",
+  "required_visible_axes": [
+    "RGB or RGB-D frame reference",
+    "timestamp/household/scene/session",
+    "object instance/category and detector track",
+    "source/attempted/observed destination",
+    "visibility/occlusion/detection confidence",
+    "actor/role/mechanism annotation or unknown",
+    "execution feedback and observation opportunity"
+  ],
+  "review_policy": "two human submissions; retain disagreement; explicit adjudication",
+  "llm_policy": "llm_candidate may be visible evidence only; never evaluator truth",
+  "truth_store": "physically separate evaluator_truth.jsonl",
+  "example_claim": "fixture:not-real-collection"
+}

@@ -246,8 +246,7 @@ class HybridEventToTaskCoordinatorLoop:
         delta, promotion = self._build_placement(
             placement, delta_watermark=base + 1, promotion_watermark=base + 2
         )
-        self._ledger.append_delta(delta)
-        self._ledger.promote(promotion)
+        self._ledger.apply_statistic_bundle(deltas=(delta,), promotions=(promotion,))
 
     def retract_revision(self, revision_id: UUID) -> int:
         """Retract a superseded revision's owner deltas (O(k))."""
@@ -310,6 +309,7 @@ class HybridEventToTaskCoordinatorLoop:
         keys = self._all_location_keys()
         if not keys:
             return self._map.snapshot()
+        self._ledger.ensure_replay_equivalence(tuple(keys.values()))
         beliefs = self._fusion.predict(
             self._ledger,
             keys=tuple(keys.values()),

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="7" skipped="0" tests="8" time="0.390" timestamp="2026-09-13T02:27:45.864278+08:00" hostname="MacBook-Air-2.local"><testcase classname="tests.test_pc_a_proposal_two_round_audit" name="test_round2_positive_geometry_preserves_unresolved_gates" time="0.021" /><testcase classname="tests.test_pc_a_proposal_two_round_audit" name="test_round2_release_clock_must_be_finite_integer[nan]" time="0.000"><failure message="Failed: DID NOT RAISE ValueError">tests/test_pc_a_proposal_two_round_audit.py:171: in test_round2_release_clock_must_be_finite_integer
+    with pytest.raises(ValueError):
+         ^^^^^^^^^^^^^^^^^^^^^^^^^
+E   Failed: DID NOT RAISE ValueError</failure></testcase><testcase classname="tests.test_pc_a_proposal_two_round_audit" name="test_round2_release_clock_must_be_finite_integer[inf]" time="0.000"><failure message="Failed: DID NOT RAISE ValueError">tests/test_pc_a_proposal_two_round_audit.py:171: in test_round2_release_clock_must_be_finite_integer
+    with pytest.raises(ValueError):
+         ^^^^^^^^^^^^^^^^^^^^^^^^^
+E   Failed: DID NOT RAISE ValueError</failure></testcase><testcase classname="tests.test_pc_a_proposal_two_round_audit" name="test_round2_release_clock_must_be_finite_integer[0.5]" time="0.000"><failure message="Failed: DID NOT RAISE ValueError">tests/test_pc_a_proposal_two_round_audit.py:171: in test_round2_release_clock_must_be_finite_integer
+    with pytest.raises(ValueError):
+         ^^^^^^^^^^^^^^^^^^^^^^^^^
+E   Failed: DID NOT RAISE ValueError</failure></testcase><testcase classname="tests.test_pc_a_proposal_two_round_audit" name="test_round2_duplicate_capture_cannot_represent_two_events" time="0.000"><failure message="Failed: DID NOT RAISE ValueError">tests/test_pc_a_proposal_two_round_audit.py:179: in test_round2_duplicate_capture_cannot_represent_two_events
+    with pytest.raises(ValueError):
+         ^^^^^^^^^^^^^^^^^^^^^^^^^
+E   Failed: DID NOT RAISE ValueError</failure></testcase><testcase classname="tests.test_pc_a_proposal_two_round_audit" name="test_round2_numeric_pose_alias_rejected_before_sdk" time="0.019"><failure message="Failed: DID NOT RAISE ValueError">tests/test_pc_a_proposal_two_round_audit.py:187: in test_round2_numeric_pose_alias_rejected_before_sdk
+    with pytest.raises(ValueError, match="alias"):
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   Failed: DID NOT RAISE ValueError</failure></testcase><testcase classname="tests.test_pc_a_proposal_two_round_audit" name="test_round2_schedule_detached_from_mutable_caller_container" time="0.121"><failure message="assert 'foreign_actor' not in '[{&quot;actor_ro...ied&quot;: true}]'&#10;  &#10;  'foreign_actor' is contained here:&#10;  ?           ^^&#10;    &quot;actor&quot;: &quot;foreign_actor&quot;, &quot;kind&quot;: &quot;no_move&quot;, &quot;location&quot;: &quot;a&quot;}], &quot;event_id&quot;: &quot;component:13:0&quot;, &quot;geometry_verified&quot;: true}, {&quot;actor_role_execution_verified&quot;: false, &quot;actual_after&quot;: {&quot;one&quot;: {&quot;x&quot;: 0.0, &quot;y&quot;: 0.0, &quot;z&quot;: 0.0}, &quot;two&quot;: {&quot;x&quot;: 2.0, &quot;y&quot;: 0.0, &quot;z&quot;: 1.0}}, &quot;actual_before&quot;: {&quot;one&quot;: {&quot;x&quot;: 0.0, &quot;y&quot;: 0.0, &quot;z&quot;: 0.0}, &quot;two&quot;: {&quot;x&quot;: 1.0, &quot;y&quot;: 0.0, &quot;z&quot;: 1.0}}, &quot;actual_steps&quot;: [2], &quot;chain_plan&quot;: [{&quot;actor&quot;: &quot;actor_1&quot;, &quot;kind&quot;: &quot;pick_up&quot;, &quot;location&quot;: &quot;b&quot;}, {&quot;actor&quot;: &quot;actor_1&quot;, &quot;kind&quot;: &quot;carry&quot;, &quot;location&quot;: &quot;b&quot;}, {&quot;actor&quot;: &quot;actor_1&quot;, &quot;kind&quot;: &quot;pla...&#10;  &#10;  ...Full output truncated (2 lines hidden), use '-vv' to show">tests/test_pc_a_proposal_two_round_audit.py:210: in test_round2_schedule_detached_from_mutable_caller_container
+    assert "foreign_actor" not in json.dumps(execution)
+E   assert 'foreign_actor' not in '[{"actor_ro...ied": true}]'
+E     
+E     'foreign_actor' is contained here:
+E     ?           ^^
+E       "actor": "foreign_actor", "kind": "no_move", "location": "a"}], "event_id": "component:13:0", "geometry_verified": true}, {"actor_role_execution_verified": false, "actual_after": {"one": {"x": 0.0, "y": 0.0, "z": 0.0}, "two": {"x": 2.0, "y": 0.0, "z": 1.0}}, "actual_before": {"one": {"x": 0.0, "y": 0.0, "z": 0.0}, "two": {"x": 1.0, "y": 0.0, "z": 1.0}}, "actual_steps": [2], "chain_plan": [{"actor": "actor_1", "kind": "pick_up", "location": "b"}, {"actor": "actor_1", "kind": "carry", "location": "b"}, {"actor": "actor_1", "kind": "pla...
+E     
+E     ...Full output truncated (2 lines hidden), use '-vv' to show</failure></testcase><testcase classname="tests.test_pc_a_proposal_two_round_audit" name="test_round2_nan_release_queue_cannot_silently_drop_capture" time="0.000"><failure message="Failed: DID NOT RAISE ValueError">tests/test_pc_a_proposal_two_round_audit.py:218: in test_round2_nan_release_queue_cannot_silently_drop_capture
+    with pytest.raises(ValueError):
+         ^^^^^^^^^^^^^^^^^^^^^^^^^
+E   Failed: DID NOT RAISE ValueError</failure></testcase></testsuite></testsuites>

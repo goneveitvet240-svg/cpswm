@@ -1,0 +1,45 @@
+{
+  "scope": "author unit-adversarial rounds; not PC-B or simulator acceptance",
+  "python": "3.13.5 (main, Jun 12 2025, 12:22:43) [Clang 20.1.4 ]",
+  "source_before": {
+    "src/cpswm/data_preflight/agent_roster.py": "a9d5048a77250d73d2fb0e9c5ce100a55b5ca1aaeaab169c59a2c092121117a4",
+    "tools/structure_two_multiagent_checks.py": "6723e5949b416154838918103ce7e768c4412a5cef54d6ec8869c26498885b45",
+    "tests/test_structure_two_agent_roster_round1.py": "c31077835a4b2306ca8d79599f068c60af6cd357ba605d62e3b8546760b373c2",
+    "tests/test_structure_two_agent_roster_round2.py": "e0658b5c96e809f5140021f2a5ac95579c95b3ad4f19dc88d2b12c0693b6fcd5"
+  },
+  "source_after": {
+    "src/cpswm/data_preflight/agent_roster.py": "a9d5048a77250d73d2fb0e9c5ce100a55b5ca1aaeaab169c59a2c092121117a4",
+    "tools/structure_two_multiagent_checks.py": "6723e5949b416154838918103ce7e768c4412a5cef54d6ec8869c26498885b45",
+    "tests/test_structure_two_agent_roster_round1.py": "c31077835a4b2306ca8d79599f068c60af6cd357ba605d62e3b8546760b373c2",
+    "tests/test_structure_two_agent_roster_round2.py": "e0658b5c96e809f5140021f2a5ac95579c95b3ad4f19dc88d2b12c0693b6fcd5"
+  },
+  "source_unchanged": true,
+  "rounds": [
+    {
+      "round": 1,
+      "command": [
+        "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/.venv/bin/python",
+        "-m",
+        "pytest",
+        "-q",
+        "-o",
+        "addopts=",
+        "tests/test_structure_two_agent_roster_round1.py"
+      ],
+      "returncode": 0
+    },
+    {
+      "round": 2,
+      "command": [
+        "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/.venv/bin/python",
+        "-m",
+        "pytest",
+        "-q",
+        "-o",
+        "addopts=",
+        "tests/test_structure_two_agent_roster_round2.py"
+      ],
+      "returncode": 0
+    }
+  ]
+}

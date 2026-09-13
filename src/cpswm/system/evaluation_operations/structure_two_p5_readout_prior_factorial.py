@@ -16,6 +16,11 @@ from cpswm.system.evaluation_operations.project_two_dataset import enforce_proje
 from cpswm.system.evaluation_operations.project_two_experiment_config import (
     D0SyntheticReplayExperimentConfig,
 )
+from cpswm.system.evaluation_operations.structure_two_evidence_versions import (
+    current_evidence_context,
+    require_execution_source,
+    require_frozen_p5_inputs,
+)
 from cpswm.system.evaluation_operations.structure_two_p5_readout_posthoc_diagnostic import (
     selected_v0_6_action_readout,
 )
@@ -47,7 +52,8 @@ DEFAULT_CONFIG: Final = Path(
     "configs/project_two_experiments/structure_two_p5_readout_prior_factorial_v0_1.json"
 )
 DEFAULT_OUTPUT: Final = Path(
-    "benchmarks/structure_two/structure_two_p5_readout_prior_factorial_v0_1.json"
+    "benchmarks/structure_two/evidence_entry_portability_2026_09_12/current_v0_4/"
+    "structure_two_p5_readout_prior_factorial_v0_4.json"
 )
 CLAIM_BOUNDARY: Final = (
     "This 2x2 factorial uses the previously opened D0 development split to separate "
@@ -259,6 +265,8 @@ def _load_config(root: Path) -> dict[str, Any]:
 
 
 def _source_binding(root: Path, config: Mapping[str, Any]) -> dict[str, Any]:
+    require_execution_source(root)
+    require_frozen_p5_inputs(root)
     paths = {
         "configuration": DEFAULT_CONFIG,
         "dataset_configuration": Path(str(config["dataset_source"])),
@@ -275,11 +283,14 @@ def _source_binding(root: Path, config: Mapping[str, Any]) -> dict[str, Any]:
     binding["production_assembly_manifest_sha256"] = build_production_assembly_manifest(root)[
         "content_sha256"
     ]
+    binding["execution_source"] = require_execution_source(root)
     return binding
 
 
 def run_p5_readout_prior_factorial(*, repository_root: Path) -> dict[str, Any]:
     root = repository_root.resolve()
+    require_execution_source(root)
+    require_frozen_p5_inputs(root)
     config = _load_config(root)
     dataset_config = D0SyntheticReplayExperimentConfig.load(
         root / Path(str(config["dataset_source"]))
@@ -305,6 +316,7 @@ def run_p5_readout_prior_factorial(*, repository_root: Path) -> dict[str, Any]:
     summaries = _summaries(rows)
     payload: dict[str, Any] = {
         "schema_version": SCHEMA_VERSION,
+        "evidence_context": current_evidence_context(),
         "protocol_id": PROTOCOL_ID,
         "status": "DEVELOPMENT_FACTORIAL_COMPLETE",
         "source_binding": _source_binding(root, config),
@@ -352,6 +364,8 @@ def verify_p5_readout_prior_factorial(
     repository_root: Path,
     fresh_recompute: bool = True,
 ) -> None:
+    if payload.get("evidence_context") != current_evidence_context() and fresh_recompute:
+        raise ValueError("current evidence lifecycle/version mismatch; use historical audit")
     if not fresh_recompute:
         raise ValueError("P5 factorial artifact verification requires fresh recomputation")
     root = repository_root.resolve()

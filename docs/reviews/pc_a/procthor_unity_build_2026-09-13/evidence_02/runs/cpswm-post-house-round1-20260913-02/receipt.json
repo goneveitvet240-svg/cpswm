@@ -1,0 +1,69 @@
+{
+  "round": 1,
+  "python": "3.11.16 (main, Aug 14 2026, 15:24:25) [Clang 22.1.3 ]",
+  "argv": [
+    "tools/structure_two_post_house_probe.py",
+    "--binary",
+    "/private/var/folders/x2/000r8p0n6s393lj2sg8wk5f40000gn/T/cpswm-unity-gui-build-79d1f4998dbf4a3d8a89cb9120e26936/cpswm-development.app/Contents/MacOS/AI2-THOR",
+    "--house",
+    "docs/reviews/pc_a/proposal_scheduler_2026-09-13/procthor_run_07/train_house.json",
+    "--output",
+    "/private/tmp/cpswm-post-house-round1-20260913-02",
+    "--round",
+    "1"
+  ],
+  "files_before": {
+    "/private/tmp/cpswm-pc-a-procthor-unity-build-20260913/tools/structure_two_post_house_probe.py": "97a44307e28da9671e62fcc869cc883022ffa30b13c1bf74bb2c5dec851465a4",
+    "/private/var/folders/x2/000r8p0n6s393lj2sg8wk5f40000gn/T/cpswm-unity-gui-build-79d1f4998dbf4a3d8a89cb9120e26936/cpswm-development.app/Contents/MacOS/AI2-THOR": "84d538ddd4e673b89e2dc2e7331c21c90d49fc01eac5890828ae5039c0c9aea4",
+    "docs/reviews/pc_a/proposal_scheduler_2026-09-13/procthor_run_07/train_house.json": "43be9379e7f44cfbffb4f8f5e7a616836ac1063951775895c571e5f9eeb504cb",
+    "/private/var/folders/x2/000r8p0n6s393lj2sg8wk5f40000gn/T/cpswm-unity-gui-build-79d1f4998dbf4a3d8a89cb9120e26936/cpswm-development.app/Contents/Resources/Data/Managed/AI2-THOR-Base.dll": "823575cc05afa25da8b8bd824ab3253deb80250727a03ffb36f98db778ac9b05"
+  },
+  "files_after": {
+    "/private/tmp/cpswm-pc-a-procthor-unity-build-20260913/tools/structure_two_post_house_probe.py": "97a44307e28da9671e62fcc869cc883022ffa30b13c1bf74bb2c5dec851465a4",
+    "/private/var/folders/x2/000r8p0n6s393lj2sg8wk5f40000gn/T/cpswm-unity-gui-build-79d1f4998dbf4a3d8a89cb9120e26936/cpswm-development.app/Contents/MacOS/AI2-THOR": "84d538ddd4e673b89e2dc2e7331c21c90d49fc01eac5890828ae5039c0c9aea4",
+    "docs/reviews/pc_a/proposal_scheduler_2026-09-13/procthor_run_07/train_house.json": "43be9379e7f44cfbffb4f8f5e7a616836ac1063951775895c571e5f9eeb504cb",
+    "/private/var/folders/x2/000r8p0n6s393lj2sg8wk5f40000gn/T/cpswm-unity-gui-build-79d1f4998dbf4a3d8a89cb9120e26936/cpswm-development.app/Contents/Resources/Data/Managed/AI2-THOR-Base.dll": "823575cc05afa25da8b8bd824ab3253deb80250727a03ffb36f98db778ac9b05"
+  },
+  "files_unchanged": true,
+  "cases": [
+    {
+      "case": "positive_1",
+      "passed": true,
+      "seconds": 10.176088291918859,
+      "transport_sha256": "42265d90f21304e3d9971a7d95bbd5b9ae31439401f0c556e28fda533e333b20"
+    },
+    {
+      "case": "positive_2",
+      "passed": true,
+      "seconds": 4.134463750058785,
+      "transport_sha256": "f627788258bfc8e532d36035487de68552397e4e33ec70ad9f6dd2ffb12b859e"
+    },
+    {
+      "case": "positive_3",
+      "passed": true,
+      "seconds": 4.562800250016153,
+      "transport_sha256": "902913505469804894947d57f2784342063dae61060cd76586d7f1265458e82e"
+    },
+    {
+      "case": "positive_6",
+      "passed": true,
+      "seconds": 5.603278457885608,
+      "transport_sha256": "965956f5c625871dc7ecd30db193b4ecccdb5e61c11a5b5140a051321e581c16"
+    },
+    {
+      "case": "malformed_then_valid",
+      "passed": true,
+      "seconds": 4.133196458918974,
+      "transport_sha256": "dcd8ef3f29bab38dfe4acd7d61923ead28c000cb02fd0fac8a02e45cb7e26e75"
+    },
+    {
+      "case": "before_house",
+      "passed": true,
+      "seconds": 3.6581796249374747,
+      "transport_sha256": "3794bdcd1241e68ff7eb6d57f543af2cc2a3928498a74cf47db49e03bf4b79c4"
+    }
+  ],
+  "human_execution_verified": false,
+  "training_started": false,
+  "coverage": "partial author runtime audit; partial-child failure and all collision states remain separate; forced pickup is negative boundary setup, not human evidence"
+}

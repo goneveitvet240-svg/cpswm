@@ -1,0 +1,111 @@
+{
+  "classification": "audit command record; failures are preserved, not overwritten",
+  "records": [
+    {
+      "label": "operator_metrics_initial_failure",
+      "command": [
+        ".\\.venv\\Scripts\\python.exe",
+        "docs\\reviews\\pc_b\\w3_five_boundaries_fix_2026-09-12\\seven_operator\\operator_metrics.py"
+      ],
+      "cwd": "F:\\庞惟\\codex\\cpswm-w3-five-boundaries-fix-20260912",
+      "exit_code": 1,
+      "log": "operator_metrics_initial_failure.log",
+      "cause": "audit script repository root was computed one parent too shallow"
+    },
+    {
+      "label": "operator_metrics_success",
+      "command": [
+        ".\\.venv\\Scripts\\python.exe",
+        "docs\\reviews\\pc_b\\w3_five_boundaries_fix_2026-09-12\\seven_operator\\operator_metrics.py"
+      ],
+      "cwd": "F:\\庞惟\\codex\\cpswm-w3-five-boundaries-fix-20260912",
+      "exit_code": 0,
+      "stdout": "operator_metrics.stdout.log",
+      "output": "operator_metrics.json"
+    },
+    {
+      "label": "summarize_wrong_path_failure",
+      "command": [
+        ".\\.venv\\Scripts\\python.exe",
+        "docs\\reviews\\pc_b\\w3_five_boundaries_fix_20260912\\seven_operator\\summarize_diagnostic.py"
+      ],
+      "cwd": "F:\\庞惟\\codex\\cpswm-w3-five-boundaries-fix-20260912",
+      "exit_code": 1,
+      "log": "summarize_initial_failure.log",
+      "cause": "manual invocation omitted date hyphens in the directory name"
+    },
+    {
+      "label": "summarize_schema_failure",
+      "command": [
+        ".\\.venv\\Scripts\\python.exe",
+        "docs\\reviews\\pc_b\\w3_five_boundaries_fix_2026-09-12\\seven_operator\\summarize_diagnostic.py"
+      ],
+      "cwd": "F:\\庞惟\\codex\\cpswm-w3-five-boundaries-fix-20260912",
+      "exit_code": 1,
+      "log": "summarize_schema_failure.log",
+      "cause": "audit summarizer expected delta_A, while the real serialized field is delta_a"
+    },
+    {
+      "label": "summarize_success",
+      "command": [
+        ".\\.venv\\Scripts\\python.exe",
+        "docs\\reviews\\pc_b\\w3_five_boundaries_fix_2026-09-12\\seven_operator\\summarize_diagnostic.py"
+      ],
+      "cwd": "F:\\庞惟\\codex\\cpswm-w3-five-boundaries-fix-20260912",
+      "exit_code": 0,
+      "stdout": "summarize_diagnostic.stdout.log",
+      "command_record": "summarize_diagnostic.command.json",
+      "output": "connection_and_scenario_matrix.json"
+    },
+    {
+      "label": "validate_evidence_first_success",
+      "command": [
+        ".\\.venv\\Scripts\\python.exe",
+        "docs\\reviews\\pc_b\\w3_five_boundaries_fix_2026-09-12\\seven_operator\\validate_evidence.py"
+      ],
+      "cwd": "F:\\庞惟\\codex\\cpswm-w3-five-boundaries-fix-20260912",
+      "exit_code": 0,
+      "stdout": "validate_evidence_first_run.stdout.log"
+    },
+    {
+      "label": "validate_evidence_junit_newline_policy_failure",
+      "command": [
+        ".\\.venv\\Scripts\\python.exe",
+        "docs\\reviews\\pc_b\\w3_five_boundaries_fix_2026-09-12\\seven_operator\\validate_evidence.py"
+      ],
+      "cwd": "F:\\庞惟\\codex\\cpswm-w3-five-boundaries-fix-20260912",
+      "exit_code": 1,
+      "log": "validate_evidence_junit_newline_failure.log"
+    },
+    {
+      "label": "validate_evidence_pre_eol_warning_success",
+      "command": [
+        ".\\.venv\\Scripts\\python.exe",
+        "docs\\reviews\\pc_b\\w3_five_boundaries_fix_2026-09-12\\seven_operator\\validate_evidence.py"
+      ],
+      "cwd": "F:\\庞惟\\codex\\cpswm-w3-five-boundaries-fix-20260912",
+      "exit_code": 0,
+      "output": "artifact_manifest.json"
+    },
+    {
+      "label": "validate_evidence_concurrent_eol_warning_policy_failure",
+      "command": [
+        ".\\.venv\\Scripts\\python.exe",
+        "docs\\reviews\\pc_b\\w3_five_boundaries_fix_2026-09-12\\seven_operator\\validate_evidence.py"
+      ],
+      "cwd": "F:\\庞惟\\codex\\cpswm-w3-five-boundaries-fix-20260912",
+      "exit_code": 1,
+      "log": "validate_evidence_concurrent_eol_warning_failure.log"
+    },
+    {
+      "label": "validate_evidence_final_success",
+      "command": [
+        ".\\.venv\\Scripts\\python.exe",
+        "docs\\reviews\\pc_b\\w3_five_boundaries_fix_2026-09-12\\seven_operator\\validate_evidence.py"
+      ],
+      "cwd": "F:\\庞惟\\codex\\cpswm-w3-five-boundaries-fix-20260912",
+      "exit_code": 0,
+      "output": "artifact_manifest.json"
+    }
+  ]
+}

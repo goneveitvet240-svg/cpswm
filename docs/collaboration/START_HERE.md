@@ -12,6 +12,10 @@
 
 读取顺序：AGENTS.md → 本文件 → TASK_BOARD.md → STATUS_A.md / STATUS_B.md → SNAPSHOTS.json → docs/结构二/README.md → 对应源码版本的最新报告。
 
+## 2026-09-13 新候选
+
+A 的整合候选是 `codex/pc-a-unified-runtime-20260913`，实际代码 `06366579a1a72a46b465194b6e1bc2b6c27a3e87`。它不是新共享集成分支，完整运行尚未通过。先读更新后的 TASK_BOARD / STATUS_A，再读对应统一候选报告；B 原有状态和历史快照仍分别保留。
+
 ## Windows 首次启动
 
 完整配置、推荐 WSL2 路径与验收命令见 [WINDOWS_SETUP.md](WINDOWS_SETUP.md)。下面的原生 Windows 步骤为备选路径。

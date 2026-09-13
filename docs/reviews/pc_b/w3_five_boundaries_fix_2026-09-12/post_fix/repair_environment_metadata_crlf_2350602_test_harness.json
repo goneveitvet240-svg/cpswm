@@ -1,0 +1,1026 @@
+{
+  "schema_version": "pc-b-w3-repair-metadata-v1",
+  "collected_at_utc": "2026-09-12T15:48:53.513838+00:00",
+  "invocation": {
+    "argv": [
+      "F:\\庞惟\\codex\\cpswm-w3-five-boundaries-fix-20260912\\.venv\\Scripts\\python.exe",
+      "F:\\庞惟\\codex\\cpswm-w3-five-boundaries-fix-20260912\\docs\\reviews\\pc_b\\w3_five_boundaries_fix_2026-09-12\\collect_repair_metadata.py",
+      "--output",
+      "F:\\庞惟\\codex\\cpswm-w3-five-boundaries-fix-20260912\\docs\\reviews\\pc_b\\w3_five_boundaries_fix_2026-09-12\\post_fix\\repair_environment_metadata_crlf_2350602_test_harness.json",
+      "--repo-root",
+      ".",
+      "--preload-module",
+      "test_structure_two_formal_revision_lineage",
+      "--preload-module",
+      "test_structure_two_w3_native_particles"
+    ],
+    "cwd": "F:\\庞惟\\codex\\cpswm-w3-validation-2350602",
+    "started_at_utc": "2026-09-12T15:48:53.513838+00:00",
+    "completed_at_utc": "2026-09-12T15:48:57.062751+00:00",
+    "duration_seconds": 3.548922,
+    "expected_exit_code": 0
+  },
+  "collector": {
+    "path": "F:\\庞惟\\codex\\cpswm-w3-five-boundaries-fix-20260912\\docs\\reviews\\pc_b\\w3_five_boundaries_fix_2026-09-12\\collect_repair_metadata.py",
+    "sha256": "c4cb8179822adfaf9ca7f4e0d83da189a8409f5ec05ebfdcb93de3316ebf5c09",
+    "size_bytes": 16806
+  },
+  "repository": {
+    "requested_root": "F:\\庞惟\\codex\\cpswm-w3-validation-2350602",
+    "resolved_root": "F:\\庞惟\\codex\\cpswm-w3-validation-2350602",
+    "git_top_level_discovery": {
+      "command": [
+        "git",
+        "rev-parse",
+        "--show-toplevel"
+      ],
+      "cwd": "F:\\庞惟\\codex\\cpswm-w3-validation-2350602",
+      "ok": true,
+      "returncode": 0,
+      "duration_seconds": 0.047157,
+      "stdout_byte_count": 44,
+      "stdout_sha256": "4fc1f1109e4a646deb3e09c075b62267a6d2d7f2b8b36cc93eda014f81ec3bb7",
+      "stderr": "",
+      "stdout": "F:/庞惟/codex/cpswm-w3-validation-2350602"
+    }
+  },
+  "runtime": {
+    "executable": "F:\\庞惟\\codex\\cpswm-w3-five-boundaries-fix-20260912\\.venv\\Scripts\\python.exe",
+    "version": "3.13.5 (main, Jul 23 2025, 00:30:06) [MSC v.1944 64 bit (AMD64)]",
+    "version_info": [
+      3,
+      13,
+      5,
+      "final",
+      0
+    ],
+    "implementation": "CPython",
+    "implementation_version": "3.13.5",
+    "prefix": "F:\\庞惟\\codex\\cpswm-w3-five-boundaries-fix-20260912\\.venv",
+    "base_prefix": "F:\\庞惟\\codex\\runtimes\\uv-python\\cpython-3.13.5-windows-x86_64-none",
+    "byteorder": "little",
+    "default_encoding": "utf-8",
+    "filesystem_encoding": "utf-8"
+  },
+  "operating_system": {
+    "platform": "Windows-11-10.0.22631-SP0",
+    "system": "Windows",
+    "release": "11",
+    "version": "10.0.22631",
+    "machine": "AMD64",
+    "processor": "Intel64 Family 6 Model 186 Stepping 2, GenuineIntel",
+    "architecture": [
+      "64bit",
+      "WindowsPE"
+    ]
+  },
+  "environment": {
+    "policy": "Only values for the fixed allowlist are serialized.",
+    "allowlist": [
+      "CI",
+      "GITHUB_ACTIONS",
+      "GITHUB_REF",
+      "GITHUB_SHA",
+      "PYTHONHASHSEED",
+      "PYTHONIOENCODING",
+      "PYTHONUTF8",
+      "SOURCE_DATE_EPOCH",
+      "TZ"
+    ],
+    "values": {}
+  },
+  "preload_imports": [
+    {
+      "module": "test_structure_two_formal_revision_lineage",
+      "resolution": {
+        "ok": true,
+        "origin": "F:\\庞惟\\codex\\cpswm-w3-validation-2350602\\tests\\test_structure_two_formal_revision_lineage.py",
+        "loader": "SourceFileLoader",
+        "submodule_search_locations": null,
+        "error": null
+      },
+      "ok": true,
+      "file": "F:\\庞惟\\codex\\cpswm-w3-validation-2350602\\tests\\test_structure_two_formal_revision_lineage.py",
+      "package": "",
+      "spec_origin": "F:\\庞惟\\codex\\cpswm-w3-validation-2350602\\tests\\test_structure_two_formal_revision_lineage.py",
+      "file_size_bytes": 25045,
+      "file_sha256": "13568b04f0e3ae7cce24184d65320fa43187ca6600aa9b62f2e66a4e0cbd8f01"
+    },
+    {
+      "module": "test_structure_two_w3_native_particles",
+      "resolution": {
+        "ok": true,
+        "origin": "F:\\庞惟\\codex\\cpswm-w3-validation-2350602\\tests\\test_structure_two_w3_native_particles.py",
+        "loader": "SourceFileLoader",
+        "submodule_search_locations": null,
+        "error": null
+      },
+      "ok": true,
+      "file": "F:\\庞惟\\codex\\cpswm-w3-validation-2350602\\tests\\test_structure_two_w3_native_particles.py",
+      "package": "",
+      "spec_origin": "F:\\庞惟\\codex\\cpswm-w3-validation-2350602\\tests\\test_structure_two_w3_native_particles.py",
+      "file_size_bytes": 13702,
+      "file_sha256": "073cd2494919eddc025f1d028e01fa1e0022e3e3b3a39d643a9ccebee60aaa6d"
+    }
+  ],
+  "preload_policy": "Optional preloads identify the exact test or application harness used to establish the production import graph; they are evidence, not hidden setup.",
+  "imports": [
+    {
+      "module": "cpswm",
+      "resolution": {
+        "ok": true,
+        "origin": "F:\\庞惟\\codex\\cpswm-w3-validation-2350602\\src\\cpswm\\__init__.py",
+        "loader": "SourceFileLoader",
+        "submodule_search_locations": [
+          "F:\\庞惟\\codex\\cpswm-w3-validation-2350602\\src\\cpswm"
+        ],
+        "error": null
+      },
+      "ok": true,
+      "file": "F:\\庞惟\\codex\\cpswm-w3-validation-2350602\\src\\cpswm\\__init__.py",
+      "package": "cpswm",
+      "spec_origin": "F:\\庞惟\\codex\\cpswm-w3-validation-2350602\\src\\cpswm\\__init__.py",
+      "file_size_bytes": 77,
+      "file_sha256": "47e5edfe55cce2a8892d29550aa01b278c8e76aa6953263317c4d516c26a30f0"
+    },
+    {
+      "module": "cpswm.system.structure_two_production_system",
+      "resolution": {
+        "ok": true,
+        "origin": "F:\\庞惟\\codex\\cpswm-w3-validation-2350602\\src\\cpswm\\system\\structure_two_production_system.py",
+        "loader": "SourceFileLoader",
+        "submodule_search_locations": null,
+        "error": null
+      },
+      "ok": true,
+      "file": "F:\\庞惟\\codex\\cpswm-w3-validation-2350602\\src\\cpswm\\system\\structure_two_production_system.py",
+      "package": "cpswm.system",
+      "spec_origin": "F:\\庞惟\\codex\\cpswm-w3-validation-2350602\\src\\cpswm\\system\\structure_two_production_system.py",
+      "file_size_bytes": 98841,
+      "file_sha256": "7554b97b717fe557623c7be1682cc3c5e0b2ee952a1db686aebb5dabd0d70755"
+    },
+    {
+      "module": "cpswm.system.prototype_spine",
+      "resolution": {
+        "ok": true,
+        "origin": "F:\\庞惟\\codex\\cpswm-w3-validation-2350602\\src\\cpswm\\system\\prototype_spine.py",
+        "loader": "SourceFileLoader",
+        "submodule_search_locations": null,
+        "error": null
+      },
+      "ok": true,
+      "file": "F:\\庞惟\\codex\\cpswm-w3-validation-2350602\\src\\cpswm\\system\\prototype_spine.py",
+      "package": "cpswm.system",
+      "spec_origin": "F:\\庞惟\\codex\\cpswm-w3-validation-2350602\\src\\cpswm\\system\\prototype_spine.py",
+      "file_size_bytes": 272187,
+      "file_sha256": "2ff75a0e3ae4f0915813c6e81dfb86295b7392fa7ebeceef8581f28142c6c5c1"
+    },
+    {
+      "module": "cpswm.system.structure_two_particle_workspace",
+      "resolution": {
+        "ok": true,
+        "origin": "F:\\庞惟\\codex\\cpswm-w3-validation-2350602\\src\\cpswm\\system\\structure_two_particle_workspace.py",
+        "loader": "SourceFileLoader",
+        "submodule_search_locations": null,
+        "error": null
+      },
+      "ok": true,
+      "file": "F:\\庞惟\\codex\\cpswm-w3-validation-2350602\\src\\cpswm\\system\\structure_two_particle_workspace.py",
+      "package": "cpswm.system",
+      "spec_origin": "F:\\庞惟\\codex\\cpswm-w3-validation-2350602\\src\\cpswm\\system\\structure_two_particle_workspace.py",
+      "file_size_bytes": 39107,
+      "file_sha256": "57233b5f01a15af649d447392c149280bfc03467a0777bdfe1356aeeb8342972"
+    },
+    {
+      "module": "cpswm.system.structure_two_semantic_identity",
+      "resolution": {
+        "ok": true,
+        "origin": "F:\\庞惟\\codex\\cpswm-w3-validation-2350602\\src\\cpswm\\system\\structure_two_semantic_identity.py",
+        "loader": "SourceFileLoader",
+        "submodule_search_locations": null,
+        "error": null
+      },
+      "ok": true,
+      "file": "F:\\庞惟\\codex\\cpswm-w3-validation-2350602\\src\\cpswm\\system\\structure_two_semantic_identity.py",
+      "package": "cpswm.system",
+      "spec_origin": "F:\\庞惟\\codex\\cpswm-w3-validation-2350602\\src\\cpswm\\system\\structure_two_semantic_identity.py",
+      "file_size_bytes": 23125,
+      "file_sha256": "f6452a4a5452e931cd1920881822fb89d36dd755d059e373b83231c38e77026e"
+    },
+    {
+      "module": "pytest",
+      "resolution": {
+        "ok": true,
+        "origin": "F:\\庞惟\\codex\\cpswm-w3-five-boundaries-fix-20260912\\.venv\\Lib\\site-packages\\pytest\\__init__.py",
+        "loader": "SourceFileLoader",
+        "submodule_search_locations": [
+          "F:\\庞惟\\codex\\cpswm-w3-five-boundaries-fix-20260912\\.venv\\Lib\\site-packages\\pytest"
+        ],
+        "error": null
+      },
+      "ok": true,
+      "file": "F:\\庞惟\\codex\\cpswm-w3-five-boundaries-fix-20260912\\.venv\\Lib\\site-packages\\pytest\\__init__.py",
+      "package": "pytest",
+      "spec_origin": "F:\\庞惟\\codex\\cpswm-w3-five-boundaries-fix-20260912\\.venv\\Lib\\site-packages\\pytest\\__init__.py",
+      "file_size_bytes": 5644,
+      "file_sha256": "ee37885c9583f843390684dfb496907f87a0905128e7a3cf4ad227f49ff34c2d"
+    }
+  ],
+  "installed_distributions": {
+    "count": 59,
+    "items": [
+      {
+        "name": "annotated-types",
+        "version": "0.8.0"
+      },
+      {
+        "name": "antlr4-python3-runtime",
+        "version": "4.9.3"
+      },
+      {
+        "name": "ast_serialize",
+        "version": "0.11.1"
+      },
+      {
+        "name": "cffi",
+        "version": "2.1.1"
+      },
+      {
+        "name": "cfgv",
+        "version": "3.5.0"
+      },
+      {
+        "name": "cloudpickle",
+        "version": "3.1.2"
+      },
+      {
+        "name": "colorama",
+        "version": "0.4.6"
+      },
+      {
+        "name": "contourpy",
+        "version": "1.4.0"
+      },
+      {
+        "name": "coverage",
+        "version": "7.16.0"
+      },
+      {
+        "name": "cpswm",
+        "version": "0.1.0"
+      },
+      {
+        "name": "cpswm",
+        "version": "0.1.0"
+      },
+      {
+        "name": "cryptography",
+        "version": "47.0.0"
+      },
+      {
+        "name": "cycler",
+        "version": "0.12.1"
+      },
+      {
+        "name": "distlib",
+        "version": "0.4.3"
+      },
+      {
+        "name": "execnet",
+        "version": "2.1.2"
+      },
+      {
+        "name": "filelock",
+        "version": "3.32.6"
+      },
+      {
+        "name": "fonttools",
+        "version": "4.65.0"
+      },
+      {
+        "name": "hydra-core",
+        "version": "1.3.6"
+      },
+      {
+        "name": "hypothesis",
+        "version": "6.168.0"
+      },
+      {
+        "name": "identify",
+        "version": "2.6.19"
+      },
+      {
+        "name": "iniconfig",
+        "version": "2.3.0"
+      },
+      {
+        "name": "joblib",
+        "version": "1.6.0"
+      },
+      {
+        "name": "kiwisolver",
+        "version": "1.5.1"
+      },
+      {
+        "name": "librt",
+        "version": "0.15.0"
+      },
+      {
+        "name": "matplotlib",
+        "version": "3.11.2"
+      },
+      {
+        "name": "mypy",
+        "version": "2.3.1"
+      },
+      {
+        "name": "mypy_extensions",
+        "version": "1.1.0"
+      },
+      {
+        "name": "narwhals",
+        "version": "2.26.0"
+      },
+      {
+        "name": "networkx",
+        "version": "3.6.1"
+      },
+      {
+        "name": "nodeenv",
+        "version": "1.10.0"
+      },
+      {
+        "name": "numpy",
+        "version": "2.5.3"
+      },
+      {
+        "name": "omegaconf",
+        "version": "2.3.1"
+      },
+      {
+        "name": "packaging",
+        "version": "26.3"
+      },
+      {
+        "name": "pathspec",
+        "version": "1.1.1"
+      },
+      {
+        "name": "pillow",
+        "version": "12.3.0"
+      },
+      {
+        "name": "pip",
+        "version": "25.1.1"
+      },
+      {
+        "name": "platformdirs",
+        "version": "4.11.8"
+      },
+      {
+        "name": "pluggy",
+        "version": "1.6.0"
+      },
+      {
+        "name": "pre_commit",
+        "version": "4.6.2"
+      },
+      {
+        "name": "pycparser",
+        "version": "3.0"
+      },
+      {
+        "name": "pydantic",
+        "version": "2.13.5"
+      },
+      {
+        "name": "pydantic_core",
+        "version": "2.46.5"
+      },
+      {
+        "name": "Pygments",
+        "version": "2.21.0"
+      },
+      {
+        "name": "pyparsing",
+        "version": "3.3.2"
+      },
+      {
+        "name": "pytest",
+        "version": "9.1.1"
+      },
+      {
+        "name": "pytest-cov",
+        "version": "7.1.0"
+      },
+      {
+        "name": "pytest-xdist",
+        "version": "3.8.0"
+      },
+      {
+        "name": "python-dateutil",
+        "version": "2.9.0.post0"
+      },
+      {
+        "name": "python-discovery",
+        "version": "1.6.0"
+      },
+      {
+        "name": "PyYAML",
+        "version": "6.0.3"
+      },
+      {
+        "name": "ruff",
+        "version": "0.16.7"
+      },
+      {
+        "name": "scikit-learn",
+        "version": "1.9.1"
+      },
+      {
+        "name": "scipy",
+        "version": "1.18.1"
+      },
+      {
+        "name": "six",
+        "version": "1.17.0"
+      },
+      {
+        "name": "sortedcontainers",
+        "version": "2.4.0"
+      },
+      {
+        "name": "threadpoolctl",
+        "version": "3.6.0"
+      },
+      {
+        "name": "typing-inspection",
+        "version": "0.4.4"
+      },
+      {
+        "name": "typing_extensions",
+        "version": "4.16.0"
+      },
+      {
+        "name": "virtualenv",
+        "version": "21.7.9"
+      }
+    ],
+    "errors": []
+  },
+  "files": [
+    {
+      "path": "F:\\庞惟\\codex\\cpswm-w3-validation-2350602\\src\\cpswm\\system\\prototype_spine.py",
+      "exists": true,
+      "is_file": true,
+      "size_bytes": 272187,
+      "sha256": "2ff75a0e3ae4f0915813c6e81dfb86295b7392fa7ebeceef8581f28142c6c5c1",
+      "line_endings": {
+        "crlf": 5692,
+        "lf_without_preceding_cr": 0,
+        "cr_without_following_lf": 0
+      },
+      "repository_relative_path": "src/cpswm/system/prototype_spine.py",
+      "git_tracked": {
+        "command": [
+          "git",
+          "ls-files",
+          "--error-unmatch",
+          "--",
+          "src/cpswm/system/prototype_spine.py"
+        ],
+        "cwd": "F:\\庞惟\\codex\\cpswm-w3-validation-2350602",
+        "ok": true,
+        "returncode": 0,
+        "duration_seconds": 0.050601,
+        "stdout_byte_count": 36,
+        "stdout_sha256": "ce7ef7e08816dc68825728172981ccc38de9fd740e71fee3587cba8b22a1e99a",
+        "stderr": "",
+        "stdout": "src/cpswm/system/prototype_spine.py"
+      },
+      "git_raw_blob": {
+        "command": [
+          "git",
+          "hash-object",
+          "--no-filters",
+          "--",
+          "src/cpswm/system/prototype_spine.py"
+        ],
+        "cwd": "F:\\庞惟\\codex\\cpswm-w3-validation-2350602",
+        "ok": true,
+        "returncode": 0,
+        "duration_seconds": 0.051921,
+        "stdout_byte_count": 41,
+        "stdout_sha256": "e25cac1a84989510dc64f87ae2686cd29ef8654d3f0a20bbf52936cf6f030d8e",
+        "stderr": "",
+        "stdout": "47a2a3754ae47c187990cff3d25d2ca7ae5c684c"
+      },
+      "git_filtered_blob": {
+        "command": [
+          "git",
+          "hash-object",
+          "--",
+          "src/cpswm/system/prototype_spine.py"
+        ],
+        "cwd": "F:\\庞惟\\codex\\cpswm-w3-validation-2350602",
+        "ok": true,
+        "returncode": 0,
+        "duration_seconds": 0.05001,
+        "stdout_byte_count": 41,
+        "stdout_sha256": "b7e04cd0d8e12e351cdd039240c35b339c62224aa6006aaa8b08f38d66bb3caa",
+        "stderr": "",
+        "stdout": "d9c1faf58022315c4141aded549b54bd5e355aa4"
+      }
+    },
+    {
+      "path": "F:\\庞惟\\codex\\cpswm-w3-validation-2350602\\src\\cpswm\\system\\structure_two_particle_workspace.py",
+      "exists": true,
+      "is_file": true,
+      "size_bytes": 39107,
+      "sha256": "57233b5f01a15af649d447392c149280bfc03467a0777bdfe1356aeeb8342972",
+      "line_endings": {
+        "crlf": 801,
+        "lf_without_preceding_cr": 0,
+        "cr_without_following_lf": 0
+      },
+      "repository_relative_path": "src/cpswm/system/structure_two_particle_workspace.py",
+      "git_tracked": {
+        "command": [
+          "git",
+          "ls-files",
+          "--error-unmatch",
+          "--",
+          "src/cpswm/system/structure_two_particle_workspace.py"
+        ],
+        "cwd": "F:\\庞惟\\codex\\cpswm-w3-validation-2350602",
+        "ok": true,
+        "returncode": 0,
+        "duration_seconds": 0.047035,
+        "stdout_byte_count": 53,
+        "stdout_sha256": "940f15c9bb1d5d8b5cf27f2ab5f16b22fec686f531fde24e3fb3335f63444b66",
+        "stderr": "",
+        "stdout": "src/cpswm/system/structure_two_particle_workspace.py"
+      },
+      "git_raw_blob": {
+        "command": [
+          "git",
+          "hash-object",
+          "--no-filters",
+          "--",
+          "src/cpswm/system/structure_two_particle_workspace.py"
+        ],
+        "cwd": "F:\\庞惟\\codex\\cpswm-w3-validation-2350602",
+        "ok": true,
+        "returncode": 0,
+        "duration_seconds": 0.048572,
+        "stdout_byte_count": 41,
+        "stdout_sha256": "bc62e1d2b46ee01f5ea5ef05aa311eeadeeca9bcfea28e8409b482ebf75d5fd1",
+        "stderr": "",
+        "stdout": "afbd4b35bc0c1cba796b6d44d8f9124fbca41787"
+      },
+      "git_filtered_blob": {
+        "command": [
+          "git",
+          "hash-object",
+          "--",
+          "src/cpswm/system/structure_two_particle_workspace.py"
+        ],
+        "cwd": "F:\\庞惟\\codex\\cpswm-w3-validation-2350602",
+        "ok": true,
+        "returncode": 0,
+        "duration_seconds": 0.050598,
+        "stdout_byte_count": 41,
+        "stdout_sha256": "d8f65f7877e3af4abdf6a2c22b5ccdb9c1418edb1228aa49a026c3acd5dd1db7",
+        "stderr": "",
+        "stdout": "1e1d6389c7623bc0562ff7b723a6dd89b79423a3"
+      }
+    },
+    {
+      "path": "F:\\庞惟\\codex\\cpswm-w3-validation-2350602\\tests\\test_structure_two_w3_r6_pc_b_review.py",
+      "exists": true,
+      "is_file": true,
+      "size_bytes": 4598,
+      "sha256": "9583eb0136ccec01a818d77188e8f4619dc35986bbc9a3b24a55ac683d2089e0",
+      "line_endings": {
+        "crlf": 117,
+        "lf_without_preceding_cr": 0,
+        "cr_without_following_lf": 0
+      },
+      "repository_relative_path": "tests/test_structure_two_w3_r6_pc_b_review.py",
+      "git_tracked": {
+        "command": [
+          "git",
+          "ls-files",
+          "--error-unmatch",
+          "--",
+          "tests/test_structure_two_w3_r6_pc_b_review.py"
+        ],
+        "cwd": "F:\\庞惟\\codex\\cpswm-w3-validation-2350602",
+        "ok": true,
+        "returncode": 0,
+        "duration_seconds": 0.046489,
+        "stdout_byte_count": 46,
+        "stdout_sha256": "f3de6aa1b75e9fac5a065c9e1c42628e77b6a7f97eb50360e4defe444882cc6c",
+        "stderr": "",
+        "stdout": "tests/test_structure_two_w3_r6_pc_b_review.py"
+      },
+      "git_raw_blob": {
+        "command": [
+          "git",
+          "hash-object",
+          "--no-filters",
+          "--",
+          "tests/test_structure_two_w3_r6_pc_b_review.py"
+        ],
+        "cwd": "F:\\庞惟\\codex\\cpswm-w3-validation-2350602",
+        "ok": true,
+        "returncode": 0,
+        "duration_seconds": 0.048452,
+        "stdout_byte_count": 41,
+        "stdout_sha256": "210b9014202b10e2831c81430425b8300cc82a52e1b1c4df24658526de273a8e",
+        "stderr": "",
+        "stdout": "a02faa969eaa33f040d61480d81f126a553ea401"
+      },
+      "git_filtered_blob": {
+        "command": [
+          "git",
+          "hash-object",
+          "--",
+          "tests/test_structure_two_w3_r6_pc_b_review.py"
+        ],
+        "cwd": "F:\\庞惟\\codex\\cpswm-w3-validation-2350602",
+        "ok": true,
+        "returncode": 0,
+        "duration_seconds": 0.051654,
+        "stdout_byte_count": 41,
+        "stdout_sha256": "64270f323ee4c865011eb59e18556852f869a71a7d6beb2ec290a22cf48fad31",
+        "stderr": "",
+        "stdout": "13de1949a64437af6624b012904031a806d408d1"
+      }
+    },
+    {
+      "path": "F:\\庞惟\\codex\\cpswm-w3-validation-2350602\\tests\\dual_pc_review\\test_w3_five_boundaries_repair.py",
+      "exists": true,
+      "is_file": true,
+      "size_bytes": 30050,
+      "sha256": "9b832b6d4a3000d7545739e21c75840701313577a8e38663b86d32fb58944c20",
+      "line_endings": {
+        "crlf": 764,
+        "lf_without_preceding_cr": 0,
+        "cr_without_following_lf": 0
+      },
+      "repository_relative_path": "tests/dual_pc_review/test_w3_five_boundaries_repair.py",
+      "git_tracked": {
+        "command": [
+          "git",
+          "ls-files",
+          "--error-unmatch",
+          "--",
+          "tests/dual_pc_review/test_w3_five_boundaries_repair.py"
+        ],
+        "cwd": "F:\\庞惟\\codex\\cpswm-w3-validation-2350602",
+        "ok": true,
+        "returncode": 0,
+        "duration_seconds": 0.048081,
+        "stdout_byte_count": 55,
+        "stdout_sha256": "ea2e227017d188d174cb56283cb332c202c0058d8c491a65ea6c7b6f74287779",
+        "stderr": "",
+        "stdout": "tests/dual_pc_review/test_w3_five_boundaries_repair.py"
+      },
+      "git_raw_blob": {
+        "command": [
+          "git",
+          "hash-object",
+          "--no-filters",
+          "--",
+          "tests/dual_pc_review/test_w3_five_boundaries_repair.py"
+        ],
+        "cwd": "F:\\庞惟\\codex\\cpswm-w3-validation-2350602",
+        "ok": true,
+        "returncode": 0,
+        "duration_seconds": 0.050066,
+        "stdout_byte_count": 41,
+        "stdout_sha256": "e3a6b0ed6dcb82bc0f2fd7e7d93003a3b0750e9c19e14d078e5b88e36e6d05d5",
+        "stderr": "",
+        "stdout": "2b0ed20725f4683e323f2fcfe71d4c542ae5f700"
+      },
+      "git_filtered_blob": {
+        "command": [
+          "git",
+          "hash-object",
+          "--",
+          "tests/dual_pc_review/test_w3_five_boundaries_repair.py"
+        ],
+        "cwd": "F:\\庞惟\\codex\\cpswm-w3-validation-2350602",
+        "ok": true,
+        "returncode": 0,
+        "duration_seconds": 0.050354,
+        "stdout_byte_count": 41,
+        "stdout_sha256": "e17034017f58e5522b43c1b630e396411a30d76863f75491391633f2382e1872",
+        "stderr": "",
+        "stdout": "95e092cf3d5f717d92a0b9e41bfa612c949f614b"
+      }
+    },
+    {
+      "path": "F:\\庞惟\\codex\\cpswm-w3-validation-2350602\\docs\\reviews\\pc_b\\w3_five_boundaries_fix_2026-09-12\\collect_repair_metadata.py",
+      "exists": true,
+      "is_file": true,
+      "size_bytes": 15957,
+      "sha256": "72ea75ee89880b0e7ff1104922a6581552ea4fee2770fbb7d85bc0bc6afcb414",
+      "line_endings": {
+        "crlf": 477,
+        "lf_without_preceding_cr": 0,
+        "cr_without_following_lf": 0
+      },
+      "repository_relative_path": "docs/reviews/pc_b/w3_five_boundaries_fix_2026-09-12/collect_repair_metadata.py",
+      "git_tracked": {
+        "command": [
+          "git",
+          "ls-files",
+          "--error-unmatch",
+          "--",
+          "docs/reviews/pc_b/w3_five_boundaries_fix_2026-09-12/collect_repair_metadata.py"
+        ],
+        "cwd": "F:\\庞惟\\codex\\cpswm-w3-validation-2350602",
+        "ok": true,
+        "returncode": 0,
+        "duration_seconds": 0.050964,
+        "stdout_byte_count": 79,
+        "stdout_sha256": "118dcd6356f850c499886d567d24c083c1efa16fcb5fc8fb8ebe5df463086b4d",
+        "stderr": "",
+        "stdout": "docs/reviews/pc_b/w3_five_boundaries_fix_2026-09-12/collect_repair_metadata.py"
+      },
+      "git_raw_blob": {
+        "command": [
+          "git",
+          "hash-object",
+          "--no-filters",
+          "--",
+          "docs/reviews/pc_b/w3_five_boundaries_fix_2026-09-12/collect_repair_metadata.py"
+        ],
+        "cwd": "F:\\庞惟\\codex\\cpswm-w3-validation-2350602",
+        "ok": true,
+        "returncode": 0,
+        "duration_seconds": 0.046193,
+        "stdout_byte_count": 41,
+        "stdout_sha256": "0a2ab3388b4b55d72722572ae451195a7c7ab8742520e7966655adbbc1cf2833",
+        "stderr": "",
+        "stdout": "dc5b9c6c242c51b90a5a28d149421b61202db2e0"
+      },
+      "git_filtered_blob": {
+        "command": [
+          "git",
+          "hash-object",
+          "--",
+          "docs/reviews/pc_b/w3_five_boundaries_fix_2026-09-12/collect_repair_metadata.py"
+        ],
+        "cwd": "F:\\庞惟\\codex\\cpswm-w3-validation-2350602",
+        "ok": true,
+        "returncode": 0,
+        "duration_seconds": 0.055435,
+        "stdout_byte_count": 41,
+        "stdout_sha256": "5e62b86a75f7f5a77e2b9738b087b0a5364c657ba2c57772f8836de1b4ab8e78",
+        "stderr": "",
+        "stdout": "cfb2895e4a9e0b0ff255b2656c39f137f2ff7fd8"
+      }
+    }
+  ],
+  "git": {
+    "version": {
+      "command": [
+        "git",
+        "--version"
+      ],
+      "cwd": "F:\\庞惟\\codex\\cpswm-w3-validation-2350602",
+      "ok": true,
+      "returncode": 0,
+      "duration_seconds": 0.044502,
+      "stdout_byte_count": 29,
+      "stdout_sha256": "c5edede02fe21b2f2c938647bec500fe0b763e9bf18bd027ebf3e02857850c18",
+      "stderr": "",
+      "stdout": "git version 2.53.0.windows.3"
+    },
+    "head": {
+      "command": [
+        "git",
+        "rev-parse",
+        "--verify",
+        "HEAD"
+      ],
+      "cwd": "F:\\庞惟\\codex\\cpswm-w3-validation-2350602",
+      "ok": true,
+      "returncode": 0,
+      "duration_seconds": 0.048563,
+      "stdout_byte_count": 41,
+      "stdout_sha256": "9adaad43ae9c9ccf3ee3b874a118ef2169b3e010dfbb832d98d68e3f1d4862cc",
+      "stderr": "",
+      "stdout": "23506024213d517ba4bab65d4318663163b00913"
+    },
+    "head_tree": {
+      "command": [
+        "git",
+        "rev-parse",
+        "--verify",
+        "HEAD^{tree}"
+      ],
+      "cwd": "F:\\庞惟\\codex\\cpswm-w3-validation-2350602",
+      "ok": true,
+      "returncode": 0,
+      "duration_seconds": 0.054535,
+      "stdout_byte_count": 41,
+      "stdout_sha256": "ccf23742112a16403f7ef21fd161d4d912c0fc9fbc0bd84110c84300fc54d8ab",
+      "stderr": "",
+      "stdout": "c433367468e5cae4d76a454c1b7946b9931d605c"
+    },
+    "branch": {
+      "command": [
+        "git",
+        "symbolic-ref",
+        "--quiet",
+        "--short",
+        "HEAD"
+      ],
+      "cwd": "F:\\庞惟\\codex\\cpswm-w3-validation-2350602",
+      "ok": false,
+      "returncode": 1,
+      "duration_seconds": 0.054134,
+      "stdout_byte_count": 0,
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr": "",
+      "stdout": ""
+    },
+    "status": {
+      "command": [
+        "git",
+        "status",
+        "--porcelain=v2",
+        "--branch",
+        "--untracked-files=all",
+        "-z"
+      ],
+      "cwd": "F:\\庞惟\\codex\\cpswm-w3-validation-2350602",
+      "ok": true,
+      "returncode": 0,
+      "duration_seconds": 0.065575,
+      "stdout_byte_count": 79,
+      "stdout_sha256": "0e6032441377a03171f94b329aa108175501d2b7d80d508cd96cb7767347f4e2",
+      "stderr": "",
+      "porcelain_v2_entries": [
+        "# branch.oid 23506024213d517ba4bab65d4318663163b00913",
+        "# branch.head (detached)"
+      ]
+    },
+    "diff_against_head": {
+      "command": [
+        "git",
+        "diff",
+        "--binary",
+        "--no-ext-diff",
+        "HEAD",
+        "--"
+      ],
+      "cwd": "F:\\庞惟\\codex\\cpswm-w3-validation-2350602",
+      "ok": true,
+      "returncode": 0,
+      "duration_seconds": 0.058171,
+      "stdout_byte_count": 0,
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr": "",
+      "coverage_note": "Hashes staged and unstaged tracked-file differences against HEAD; untracked paths are represented by the porcelain status hash, not diff bytes."
+    },
+    "staged_diff_against_head": {
+      "command": [
+        "git",
+        "diff",
+        "--binary",
+        "--no-ext-diff",
+        "--cached",
+        "HEAD",
+        "--"
+      ],
+      "cwd": "F:\\庞惟\\codex\\cpswm-w3-validation-2350602",
+      "ok": true,
+      "returncode": 0,
+      "duration_seconds": 0.051355,
+      "stdout_byte_count": 0,
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr": ""
+    },
+    "unstaged_diff": {
+      "command": [
+        "git",
+        "diff",
+        "--binary",
+        "--no-ext-diff",
+        "--"
+      ],
+      "cwd": "F:\\庞惟\\codex\\cpswm-w3-validation-2350602",
+      "ok": true,
+      "returncode": 0,
+      "duration_seconds": 0.056417,
+      "stdout_byte_count": 0,
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr": ""
+    },
+    "working_state_sha256": "3a83e7d06d92474e040731987d2160981f0b9d575dc916ba7aca450d40e57036",
+    "working_state_hash_scope": "raw porcelain-v2 status bytes plus raw tracked diff-against-HEAD bytes",
+    "eol_config": {
+      "core.autocrlf": {
+        "command": [
+          "git",
+          "config",
+          "--show-origin",
+          "--get-all",
+          "core.autocrlf"
+        ],
+        "cwd": "F:\\庞惟\\codex\\cpswm-w3-validation-2350602",
+        "ok": true,
+        "returncode": 0,
+        "duration_seconds": 0.046058,
+        "stdout_byte_count": 140,
+        "stdout_sha256": "f89479cc1191371d8a0929702d361831b4f81e8e6571f86ed6a2ced2314bb8bd",
+        "stderr": "",
+        "stdout": "file:\"C:/Users/\\345\\210\\230\\346\\211\\277\\347\\245\\245/.cache/codex-runtimes/codex-primary-runtime/dependencies/native/git/etc/gitconfig\"\ttrue",
+        "state": "set"
+      },
+      "core.eol": {
+        "command": [
+          "git",
+          "config",
+          "--show-origin",
+          "--get-all",
+          "core.eol"
+        ],
+        "cwd": "F:\\庞惟\\codex\\cpswm-w3-validation-2350602",
+        "ok": false,
+        "returncode": 1,
+        "duration_seconds": 0.048432,
+        "stdout_byte_count": 0,
+        "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "stderr": "",
+        "stdout": "",
+        "state": "unset_or_error"
+      },
+      "core.safecrlf": {
+        "command": [
+          "git",
+          "config",
+          "--show-origin",
+          "--get-all",
+          "core.safecrlf"
+        ],
+        "cwd": "F:\\庞惟\\codex\\cpswm-w3-validation-2350602",
+        "ok": false,
+        "returncode": 1,
+        "duration_seconds": 0.048037,
+        "stdout_byte_count": 0,
+        "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "stderr": "",
+        "stdout": "",
+        "state": "unset_or_error"
+      },
+      "core.attributesfile": {
+        "command": [
+          "git",
+          "config",
+          "--show-origin",
+          "--get-all",
+          "core.attributesfile"
+        ],
+        "cwd": "F:\\庞惟\\codex\\cpswm-w3-validation-2350602",
+        "ok": false,
+        "returncode": 1,
+        "duration_seconds": 0.046444,
+        "stdout_byte_count": 0,
+        "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "stderr": "",
+        "stdout": "",
+        "state": "unset_or_error"
+      }
+    },
+    "attributes": {
+      "command": [
+        "git",
+        "check-attr",
+        "-z",
+        "text",
+        "eol",
+        "working-tree-encoding",
+        "--",
+        "src/cpswm/system/prototype_spine.py",
+        "src/cpswm/system/structure_two_particle_workspace.py",
+        "tests/test_structure_two_w3_r6_pc_b_review.py",
+        "tests/dual_pc_review/test_w3_five_boundaries_repair.py",
+        "docs/reviews/pc_b/w3_five_boundaries_fix_2026-09-12/collect_repair_metadata.py"
+      ],
+      "cwd": "F:\\庞惟\\codex\\cpswm-w3-validation-2350602",
+      "ok": true,
+      "returncode": 0,
+      "duration_seconds": 0.05575,
+      "stdout_byte_count": 1142,
+      "stdout_sha256": "97251640f66d084a435e7ba485ba1a601ac2c233b8b2d94421f502bc175bbc00",
+      "stderr": "",
+      "stdout": "src/cpswm/system/prototype_spine.py\u0000text\u0000unspecified\u0000src/cpswm/system/prototype_spine.py\u0000eol\u0000unspecified\u0000src/cpswm/system/prototype_spine.py\u0000working-tree-encoding\u0000unspecified\u0000src/cpswm/system/structure_two_particle_workspace.py\u0000text\u0000unspecified\u0000src/cpswm/system/structure_two_particle_workspace.py\u0000eol\u0000unspecified\u0000src/cpswm/system/structure_two_particle_workspace.py\u0000working-tree-encoding\u0000unspecified\u0000tests/test_structure_two_w3_r6_pc_b_review.py\u0000text\u0000unspecified\u0000tests/test_structure_two_w3_r6_pc_b_review.py\u0000eol\u0000unspecified\u0000tests/test_structure_two_w3_r6_pc_b_review.py\u0000working-tree-encoding\u0000unspecified\u0000tests/dual_pc_review/test_w3_five_boundaries_repair.py\u0000text\u0000unspecified\u0000tests/dual_pc_review/test_w3_five_boundaries_repair.py\u0000eol\u0000unspecified\u0000tests/dual_pc_review/test_w3_five_boundaries_repair.py\u0000working-tree-encoding\u0000unspecified\u0000docs/reviews/pc_b/w3_five_boundaries_fix_2026-09-12/collect_repair_metadata.py\u0000text\u0000unspecified\u0000docs/reviews/pc_b/w3_five_boundaries_fix_2026-09-12/collect_repair_metadata.py\u0000eol\u0000unspecified\u0000docs/reviews/pc_b/w3_five_boundaries_fix_2026-09-12/collect_repair_metadata.py\u0000working-tree-encoding\u0000unspecified\u0000"
+    }
+  }
+}

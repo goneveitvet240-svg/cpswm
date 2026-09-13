@@ -1,0 +1,35 @@
+I001 [*] Import block is un-sorted or un-formatted
+  --> tools/structure_two_data_preflight.py:3:1
+   |
+ 1 |   """Run scoped data diagnostics/export. No training or confirmation-set access."""
+ 2 |
+ 3 | / from __future__ import annotations
+ 4 | |
+ 5 | | import argparse
+ 6 | | from datetime import datetime
+ 7 | | import hashlib
+ 8 | | import json
+ 9 | | from pathlib import Path
+10 | | from uuid import UUID
+11 | |
+12 | | from cpswm.contracts.habit_learning import (
+13 | |     ActorResponsibilityEvidence,
+14 | |     ObservationDetectionResult,
+15 | |     ObservationOpportunityRecord,
+16 | | )
+17 | | from cpswm.data_preflight.simulator_capture import simulator_preflight
+18 | | from cpswm.data_preflight.train_coverage import audit_train_worlds
+19 | | from cpswm.data_preflight.visible_prefix import export_visible_prefix
+   | |_____________________________________________________________________^
+help: Organize imports
+  |
+5 | import argparse
+  - from datetime import datetime
+6 | import hashlib
+7 | import json
+8 + from datetime import datetime
+9 | from pathlib import Path
+  |
+
+Found 1 error.
+[*] 1 fixable with the `--fix` option.

@@ -1,0 +1,1991 @@
+[
+  {
+    "actor_role_execution_verified": false,
+    "actual_after": {
+      "one": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "two": {
+        "x": 1.0,
+        "y": 0.0,
+        "z": 1.0
+      }
+    },
+    "actual_before": {
+      "one": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "two": {
+        "x": 1.0,
+        "y": 0.0,
+        "z": 1.0
+      }
+    },
+    "actual_steps": [
+      1
+    ],
+    "chain_plan": [
+      {
+        "actor": "actor_1",
+        "kind": "no_move",
+        "location": "a"
+      }
+    ],
+    "event_id": "component:13:0",
+    "geometry_verified": true
+  },
+  {
+    "actor_role_execution_verified": false,
+    "actual_after": {
+      "one": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "two": {
+        "x": 2.0,
+        "y": 0.0,
+        "z": 1.0
+      }
+    },
+    "actual_before": {
+      "one": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "two": {
+        "x": 1.0,
+        "y": 0.0,
+        "z": 1.0
+      }
+    },
+    "actual_steps": [
+      2
+    ],
+    "chain_plan": [
+      {
+        "actor": "actor_2",
+        "kind": "pick_up",
+        "location": "b"
+      },
+      {
+        "actor": "actor_2",
+        "kind": "carry",
+        "location": "b"
+      },
+      {
+        "actor": "actor_2",
+        "kind": "place",
+        "location": "c"
+      }
+    ],
+    "event_id": "component:13:10",
+    "geometry_verified": true
+  },
+  {
+    "actor_role_execution_verified": false,
+    "actual_after": {
+      "one": {
+        "x": 1.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "two": {
+        "x": 2.0,
+        "y": 0.0,
+        "z": 1.0
+      }
+    },
+    "actual_before": {
+      "one": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "two": {
+        "x": 2.0,
+        "y": 0.0,
+        "z": 1.0
+      }
+    },
+    "actual_steps": [
+      3
+    ],
+    "chain_plan": [
+      {
+        "actor": "actor_0",
+        "kind": "pick_up",
+        "location": "a"
+      },
+      {
+        "actor": "actor_0",
+        "kind": "carry",
+        "location": "a"
+      },
+      {
+        "actor": "actor_0",
+        "kind": "handoff",
+        "location": "b",
+        "receiver": "actor_1"
+      },
+      {
+        "actor": "actor_1",
+        "kind": "carry",
+        "location": "b"
+      },
+      {
+        "actor": "actor_1",
+        "kind": "place",
+        "location": "b"
+      }
+    ],
+    "event_id": "component:13:20",
+    "geometry_verified": true
+  },
+  {
+    "actor_role_execution_verified": false,
+    "actual_after": {
+      "one": {
+        "x": 1.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "two": {
+        "x": 2.0,
+        "y": 0.0,
+        "z": 1.0
+      }
+    },
+    "actual_before": {
+      "one": {
+        "x": 1.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "two": {
+        "x": 2.0,
+        "y": 0.0,
+        "z": 1.0
+      }
+    },
+    "actual_steps": [
+      4
+    ],
+    "chain_plan": [
+      {
+        "actor": "actor_1",
+        "kind": "no_move",
+        "location": "c"
+      }
+    ],
+    "event_id": "component:13:30",
+    "geometry_verified": true
+  },
+  {
+    "actor_role_execution_verified": false,
+    "actual_after": {
+      "one": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "two": {
+        "x": 2.0,
+        "y": 0.0,
+        "z": 1.0
+      }
+    },
+    "actual_before": {
+      "one": {
+        "x": 1.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "two": {
+        "x": 2.0,
+        "y": 0.0,
+        "z": 1.0
+      }
+    },
+    "actual_steps": [
+      5
+    ],
+    "chain_plan": [
+      {
+        "actor": "actor_2",
+        "kind": "pick_up",
+        "location": "b"
+      },
+      {
+        "actor": "actor_2",
+        "kind": "carry",
+        "location": "b"
+      },
+      {
+        "actor": "actor_2",
+        "kind": "place",
+        "location": "a"
+      }
+    ],
+    "event_id": "component:13:40",
+    "geometry_verified": true
+  },
+  {
+    "actor_role_execution_verified": false,
+    "actual_after": {
+      "one": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "two": {
+        "x": 2.0,
+        "y": 0.0,
+        "z": 1.0
+      }
+    },
+    "actual_before": {
+      "one": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "two": {
+        "x": 2.0,
+        "y": 0.0,
+        "z": 1.0
+      }
+    },
+    "actual_steps": [
+      6
+    ],
+    "chain_plan": [
+      {
+        "actor": "actor_0",
+        "kind": "no_move",
+        "location": "a"
+      }
+    ],
+    "event_id": "component:13:50",
+    "geometry_verified": true
+  },
+  {
+    "actor_role_execution_verified": false,
+    "actual_after": {
+      "one": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "two": {
+        "x": 2.0,
+        "y": 0.0,
+        "z": 1.0
+      }
+    },
+    "actual_before": {
+      "one": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "two": {
+        "x": 2.0,
+        "y": 0.0,
+        "z": 1.0
+      }
+    },
+    "actual_steps": [
+      7
+    ],
+    "chain_plan": [
+      {
+        "actor": "actor_2",
+        "kind": "no_move",
+        "location": "a"
+      }
+    ],
+    "event_id": "component:13:100",
+    "geometry_verified": true
+  },
+  {
+    "actor_role_execution_verified": false,
+    "actual_after": {
+      "one": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "two": {
+        "x": 2.0,
+        "y": 0.0,
+        "z": 1.0
+      }
+    },
+    "actual_before": {
+      "one": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "two": {
+        "x": 2.0,
+        "y": 0.0,
+        "z": 1.0
+      }
+    },
+    "actual_steps": [
+      8
+    ],
+    "chain_plan": [
+      {
+        "actor": "actor_1",
+        "kind": "no_move",
+        "location": "a"
+      }
+    ],
+    "event_id": "component:13:110",
+    "geometry_verified": true
+  },
+  {
+    "actor_role_execution_verified": false,
+    "actual_after": {
+      "one": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "two": {
+        "x": 1.0,
+        "y": 0.0,
+        "z": 1.0
+      }
+    },
+    "actual_before": {
+      "one": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "two": {
+        "x": 2.0,
+        "y": 0.0,
+        "z": 1.0
+      }
+    },
+    "actual_steps": [
+      9
+    ],
+    "chain_plan": [
+      {
+        "actor": "actor_1",
+        "kind": "pick_up",
+        "location": "c"
+      },
+      {
+        "actor": "actor_1",
+        "kind": "carry",
+        "location": "c"
+      },
+      {
+        "actor": "actor_1",
+        "kind": "place",
+        "location": "b"
+      }
+    ],
+    "event_id": "component:13:120",
+    "geometry_verified": true
+  },
+  {
+    "actor_role_execution_verified": false,
+    "actual_after": {
+      "one": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "two": {
+        "x": 1.0,
+        "y": 0.0,
+        "z": 1.0
+      }
+    },
+    "actual_before": {
+      "one": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "two": {
+        "x": 1.0,
+        "y": 0.0,
+        "z": 1.0
+      }
+    },
+    "actual_steps": [
+      10
+    ],
+    "chain_plan": [
+      {
+        "actor": "actor_2",
+        "kind": "no_move",
+        "location": "a"
+      }
+    ],
+    "event_id": "component:13:130",
+    "geometry_verified": true
+  },
+  {
+    "actor_role_execution_verified": false,
+    "actual_after": {
+      "one": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "two": {
+        "x": 2.0,
+        "y": 0.0,
+        "z": 1.0
+      }
+    },
+    "actual_before": {
+      "one": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "two": {
+        "x": 1.0,
+        "y": 0.0,
+        "z": 1.0
+      }
+    },
+    "actual_steps": [
+      11
+    ],
+    "chain_plan": [
+      {
+        "actor": "actor_0",
+        "kind": "pick_up",
+        "location": "b"
+      },
+      {
+        "actor": "actor_0",
+        "kind": "carry",
+        "location": "b"
+      },
+      {
+        "actor": "actor_0",
+        "kind": "place",
+        "location": "c"
+      }
+    ],
+    "event_id": "component:13:140",
+    "geometry_verified": true
+  },
+  {
+    "actor_role_execution_verified": false,
+    "actual_after": {
+      "one": {
+        "x": 1.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "two": {
+        "x": 2.0,
+        "y": 0.0,
+        "z": 1.0
+      }
+    },
+    "actual_before": {
+      "one": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "two": {
+        "x": 2.0,
+        "y": 0.0,
+        "z": 1.0
+      }
+    },
+    "actual_steps": [
+      12
+    ],
+    "chain_plan": [
+      {
+        "actor": "actor_1",
+        "kind": "pick_up",
+        "location": "a"
+      },
+      {
+        "actor": "actor_1",
+        "kind": "carry",
+        "location": "a"
+      },
+      {
+        "actor": "actor_1",
+        "kind": "handoff",
+        "location": "b",
+        "receiver": "actor_2"
+      },
+      {
+        "actor": "actor_2",
+        "kind": "carry",
+        "location": "b"
+      },
+      {
+        "actor": "actor_2",
+        "kind": "handoff",
+        "location": "b",
+        "receiver": "actor_0"
+      },
+      {
+        "actor": "actor_0",
+        "kind": "carry",
+        "location": "b"
+      },
+      {
+        "actor": "actor_0",
+        "kind": "place",
+        "location": "b"
+      }
+    ],
+    "event_id": "component:13:150",
+    "geometry_verified": true
+  },
+  {
+    "actor_role_execution_verified": false,
+    "actual_after": {
+      "one": {
+        "x": 1.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "two": {
+        "x": 2.0,
+        "y": 0.0,
+        "z": 1.0
+      }
+    },
+    "actual_before": {
+      "one": {
+        "x": 1.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "two": {
+        "x": 2.0,
+        "y": 0.0,
+        "z": 1.0
+      }
+    },
+    "actual_steps": [
+      13
+    ],
+    "chain_plan": [
+      {
+        "actor": "actor_1",
+        "kind": "no_move",
+        "location": "b"
+      }
+    ],
+    "event_id": "component:13:200",
+    "geometry_verified": true
+  },
+  {
+    "actor_role_execution_verified": false,
+    "actual_after": {
+      "one": {
+        "x": 1.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "two": {
+        "x": 2.0,
+        "y": 0.0,
+        "z": 1.0
+      }
+    },
+    "actual_before": {
+      "one": {
+        "x": 1.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "two": {
+        "x": 2.0,
+        "y": 0.0,
+        "z": 1.0
+      }
+    },
+    "actual_steps": [
+      14
+    ],
+    "chain_plan": [
+      {
+        "actor": "actor_1",
+        "kind": "no_move",
+        "location": "c"
+      }
+    ],
+    "event_id": "component:13:210",
+    "geometry_verified": true
+  },
+  {
+    "actor_role_execution_verified": false,
+    "actual_after": {
+      "one": {
+        "x": 1.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "two": {
+        "x": 2.0,
+        "y": 0.0,
+        "z": 1.0
+      }
+    },
+    "actual_before": {
+      "one": {
+        "x": 1.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "two": {
+        "x": 2.0,
+        "y": 0.0,
+        "z": 1.0
+      }
+    },
+    "actual_steps": [
+      15
+    ],
+    "chain_plan": [
+      {
+        "actor": "actor_2",
+        "kind": "no_move",
+        "location": "c"
+      }
+    ],
+    "event_id": "component:13:220",
+    "geometry_verified": true
+  },
+  {
+    "actor_role_execution_verified": false,
+    "actual_after": {
+      "one": {
+        "x": 1.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "two": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 1.0
+      }
+    },
+    "actual_before": {
+      "one": {
+        "x": 1.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "two": {
+        "x": 2.0,
+        "y": 0.0,
+        "z": 1.0
+      }
+    },
+    "actual_steps": [
+      16
+    ],
+    "chain_plan": [
+      {
+        "actor": "actor_0",
+        "kind": "pick_up",
+        "location": "c"
+      },
+      {
+        "actor": "actor_0",
+        "kind": "carry",
+        "location": "c"
+      },
+      {
+        "actor": "actor_0",
+        "kind": "place",
+        "location": "a"
+      }
+    ],
+    "event_id": "component:13:230",
+    "geometry_verified": true
+  },
+  {
+    "actor_role_execution_verified": false,
+    "actual_after": {
+      "one": {
+        "x": 2.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "two": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 1.0
+      }
+    },
+    "actual_before": {
+      "one": {
+        "x": 1.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "two": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 1.0
+      }
+    },
+    "actual_steps": [
+      17
+    ],
+    "chain_plan": [
+      {
+        "actor": "actor_1",
+        "kind": "pick_up",
+        "location": "b"
+      },
+      {
+        "actor": "actor_1",
+        "kind": "carry",
+        "location": "b"
+      },
+      {
+        "actor": "actor_1",
+        "kind": "handoff",
+        "location": "c",
+        "receiver": "actor_0"
+      },
+      {
+        "actor": "actor_0",
+        "kind": "carry",
+        "location": "c"
+      },
+      {
+        "actor": "actor_0",
+        "kind": "place",
+        "location": "c"
+      }
+    ],
+    "event_id": "component:13:240",
+    "geometry_verified": true
+  },
+  {
+    "actor_role_execution_verified": false,
+    "actual_after": {
+      "one": {
+        "x": 2.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "two": {
+        "x": 1.0,
+        "y": 0.0,
+        "z": 1.0
+      }
+    },
+    "actual_before": {
+      "one": {
+        "x": 2.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "two": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 1.0
+      }
+    },
+    "actual_steps": [
+      18
+    ],
+    "chain_plan": [
+      {
+        "actor": "actor_2",
+        "kind": "pick_up",
+        "location": "a"
+      },
+      {
+        "actor": "actor_2",
+        "kind": "carry",
+        "location": "a"
+      },
+      {
+        "actor": "actor_2",
+        "kind": "place",
+        "location": "b"
+      }
+    ],
+    "event_id": "component:13:250",
+    "geometry_verified": true
+  },
+  {
+    "actor_role_execution_verified": false,
+    "actual_after": {
+      "one": {
+        "x": 2.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "two": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 1.0
+      }
+    },
+    "actual_before": {
+      "one": {
+        "x": 2.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "two": {
+        "x": 1.0,
+        "y": 0.0,
+        "z": 1.0
+      }
+    },
+    "actual_steps": [
+      19
+    ],
+    "chain_plan": [
+      {
+        "actor": "actor_1",
+        "kind": "pick_up",
+        "location": "b"
+      },
+      {
+        "actor": "actor_1",
+        "kind": "carry",
+        "location": "b"
+      },
+      {
+        "actor": "actor_1",
+        "kind": "place",
+        "location": "a"
+      }
+    ],
+    "event_id": "component:13:300",
+    "geometry_verified": true
+  },
+  {
+    "actor_role_execution_verified": false,
+    "actual_after": {
+      "one": {
+        "x": 2.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "two": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 1.0
+      }
+    },
+    "actual_before": {
+      "one": {
+        "x": 2.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "two": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 1.0
+      }
+    },
+    "actual_steps": [
+      20
+    ],
+    "chain_plan": [
+      {
+        "actor": "actor_2",
+        "kind": "no_move",
+        "location": "a"
+      }
+    ],
+    "event_id": "component:13:310",
+    "geometry_verified": true
+  },
+  {
+    "actor_role_execution_verified": false,
+    "actual_after": {
+      "one": {
+        "x": 2.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "two": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 1.0
+      }
+    },
+    "actual_before": {
+      "one": {
+        "x": 2.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "two": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 1.0
+      }
+    },
+    "actual_steps": [
+      21
+    ],
+    "chain_plan": [
+      {
+        "actor": "actor_0",
+        "kind": "no_move",
+        "location": "a"
+      }
+    ],
+    "event_id": "component:13:320",
+    "geometry_verified": true
+  },
+  {
+    "actor_role_execution_verified": false,
+    "actual_after": {
+      "one": {
+        "x": 1.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "two": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 1.0
+      }
+    },
+    "actual_before": {
+      "one": {
+        "x": 2.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "two": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 1.0
+      }
+    },
+    "actual_steps": [
+      22
+    ],
+    "chain_plan": [
+      {
+        "actor": "actor_1",
+        "kind": "pick_up",
+        "location": "c"
+      },
+      {
+        "actor": "actor_1",
+        "kind": "carry",
+        "location": "c"
+      },
+      {
+        "actor": "actor_1",
+        "kind": "place",
+        "location": "b"
+      }
+    ],
+    "event_id": "component:13:330",
+    "geometry_verified": true
+  },
+  {
+    "actor_role_execution_verified": false,
+    "actual_after": {
+      "one": {
+        "x": 1.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "two": {
+        "x": 1.0,
+        "y": 0.0,
+        "z": 1.0
+      }
+    },
+    "actual_before": {
+      "one": {
+        "x": 1.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "two": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 1.0
+      }
+    },
+    "actual_steps": [
+      23
+    ],
+    "chain_plan": [
+      {
+        "actor": "actor_2",
+        "kind": "pick_up",
+        "location": "a"
+      },
+      {
+        "actor": "actor_2",
+        "kind": "carry",
+        "location": "a"
+      },
+      {
+        "actor": "actor_2",
+        "kind": "handoff",
+        "location": "b",
+        "receiver": "actor_0"
+      },
+      {
+        "actor": "actor_0",
+        "kind": "carry",
+        "location": "b"
+      },
+      {
+        "actor": "actor_0",
+        "kind": "handoff",
+        "location": "b",
+        "receiver": "actor_1"
+      },
+      {
+        "actor": "actor_1",
+        "kind": "carry",
+        "location": "b"
+      },
+      {
+        "actor": "actor_1",
+        "kind": "place",
+        "location": "b"
+      }
+    ],
+    "event_id": "component:13:340",
+    "geometry_verified": true
+  },
+  {
+    "actor_role_execution_verified": false,
+    "actual_after": {
+      "one": {
+        "x": 2.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "two": {
+        "x": 1.0,
+        "y": 0.0,
+        "z": 1.0
+      }
+    },
+    "actual_before": {
+      "one": {
+        "x": 1.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "two": {
+        "x": 1.0,
+        "y": 0.0,
+        "z": 1.0
+      }
+    },
+    "actual_steps": [
+      24
+    ],
+    "chain_plan": [
+      {
+        "actor": "actor_0",
+        "kind": "pick_up",
+        "location": "b"
+      },
+      {
+        "actor": "actor_0",
+        "kind": "carry",
+        "location": "b"
+      },
+      {
+        "actor": "actor_0",
+        "kind": "place",
+        "location": "c"
+      }
+    ],
+    "event_id": "component:13:350",
+    "geometry_verified": true
+  },
+  {
+    "actor_role_execution_verified": false,
+    "actual_after": {
+      "one": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "two": {
+        "x": 1.0,
+        "y": 0.0,
+        "z": 1.0
+      }
+    },
+    "actual_before": {
+      "one": {
+        "x": 2.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "two": {
+        "x": 1.0,
+        "y": 0.0,
+        "z": 1.0
+      }
+    },
+    "actual_steps": [
+      25
+    ],
+    "chain_plan": [
+      {
+        "actor": "actor_2",
+        "kind": "pick_up",
+        "location": "c"
+      },
+      {
+        "actor": "actor_2",
+        "kind": "carry",
+        "location": "c"
+      },
+      {
+        "actor": "actor_2",
+        "kind": "place",
+        "location": "a"
+      }
+    ],
+    "event_id": "component:13:400",
+    "geometry_verified": true
+  },
+  {
+    "actor_role_execution_verified": false,
+    "actual_after": {
+      "one": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "two": {
+        "x": 2.0,
+        "y": 0.0,
+        "z": 1.0
+      }
+    },
+    "actual_before": {
+      "one": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "two": {
+        "x": 1.0,
+        "y": 0.0,
+        "z": 1.0
+      }
+    },
+    "actual_steps": [
+      26
+    ],
+    "chain_plan": [
+      {
+        "actor": "actor_0",
+        "kind": "pick_up",
+        "location": "b"
+      },
+      {
+        "actor": "actor_0",
+        "kind": "carry",
+        "location": "b"
+      },
+      {
+        "actor": "actor_0",
+        "kind": "handoff",
+        "location": "c",
+        "receiver": "actor_2"
+      },
+      {
+        "actor": "actor_2",
+        "kind": "carry",
+        "location": "c"
+      },
+      {
+        "actor": "actor_2",
+        "kind": "place",
+        "location": "c"
+      }
+    ],
+    "event_id": "component:13:410",
+    "geometry_verified": true
+  },
+  {
+    "actor_role_execution_verified": false,
+    "actual_after": {
+      "one": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "two": {
+        "x": 2.0,
+        "y": 0.0,
+        "z": 1.0
+      }
+    },
+    "actual_before": {
+      "one": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "two": {
+        "x": 2.0,
+        "y": 0.0,
+        "z": 1.0
+      }
+    },
+    "actual_steps": [
+      27
+    ],
+    "chain_plan": [
+      {
+        "actor": "actor_1",
+        "kind": "no_move",
+        "location": "a"
+      }
+    ],
+    "event_id": "component:13:420",
+    "geometry_verified": true
+  },
+  {
+    "actor_role_execution_verified": false,
+    "actual_after": {
+      "one": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "two": {
+        "x": 2.0,
+        "y": 0.0,
+        "z": 1.0
+      }
+    },
+    "actual_before": {
+      "one": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "two": {
+        "x": 2.0,
+        "y": 0.0,
+        "z": 1.0
+      }
+    },
+    "actual_steps": [
+      28
+    ],
+    "chain_plan": [
+      {
+        "actor": "actor_2",
+        "kind": "no_move",
+        "location": "c"
+      }
+    ],
+    "event_id": "component:13:430",
+    "geometry_verified": true
+  },
+  {
+    "actor_role_execution_verified": false,
+    "actual_after": {
+      "one": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "two": {
+        "x": 2.0,
+        "y": 0.0,
+        "z": 1.0
+      }
+    },
+    "actual_before": {
+      "one": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "two": {
+        "x": 2.0,
+        "y": 0.0,
+        "z": 1.0
+      }
+    },
+    "actual_steps": [
+      29
+    ],
+    "chain_plan": [
+      {
+        "actor": "actor_0",
+        "kind": "no_move",
+        "location": "c"
+      }
+    ],
+    "event_id": "component:13:440",
+    "geometry_verified": true
+  },
+  {
+    "actor_role_execution_verified": false,
+    "actual_after": {
+      "one": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "two": {
+        "x": 1.0,
+        "y": 0.0,
+        "z": 1.0
+      }
+    },
+    "actual_before": {
+      "one": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "two": {
+        "x": 2.0,
+        "y": 0.0,
+        "z": 1.0
+      }
+    },
+    "actual_steps": [
+      30
+    ],
+    "chain_plan": [
+      {
+        "actor": "actor_1",
+        "kind": "pick_up",
+        "location": "c"
+      },
+      {
+        "actor": "actor_1",
+        "kind": "carry",
+        "location": "c"
+      },
+      {
+        "actor": "actor_1",
+        "kind": "place",
+        "location": "b"
+      }
+    ],
+    "event_id": "component:13:450",
+    "geometry_verified": true
+  },
+  {
+    "actor_role_execution_verified": false,
+    "actual_after": {
+      "one": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "two": {
+        "x": 1.0,
+        "y": 0.0,
+        "z": 1.0
+      }
+    },
+    "actual_before": {
+      "one": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "two": {
+        "x": 1.0,
+        "y": 0.0,
+        "z": 1.0
+      }
+    },
+    "actual_steps": [
+      31
+    ],
+    "chain_plan": [
+      {
+        "actor": "actor_0",
+        "kind": "no_move",
+        "location": "b"
+      }
+    ],
+    "event_id": "component:13:500",
+    "geometry_verified": true
+  },
+  {
+    "actor_role_execution_verified": false,
+    "actual_after": {
+      "one": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "two": {
+        "x": 1.0,
+        "y": 0.0,
+        "z": 1.0
+      }
+    },
+    "actual_before": {
+      "one": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "two": {
+        "x": 1.0,
+        "y": 0.0,
+        "z": 1.0
+      }
+    },
+    "actual_steps": [
+      32
+    ],
+    "chain_plan": [
+      {
+        "actor": "actor_1",
+        "kind": "no_move",
+        "location": "a"
+      }
+    ],
+    "event_id": "component:13:510",
+    "geometry_verified": true
+  },
+  {
+    "actor_role_execution_verified": false,
+    "actual_after": {
+      "one": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "two": {
+        "x": 2.0,
+        "y": 0.0,
+        "z": 1.0
+      }
+    },
+    "actual_before": {
+      "one": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "two": {
+        "x": 1.0,
+        "y": 0.0,
+        "z": 1.0
+      }
+    },
+    "actual_steps": [
+      33
+    ],
+    "chain_plan": [
+      {
+        "actor": "actor_2",
+        "kind": "pick_up",
+        "location": "b"
+      },
+      {
+        "actor": "actor_2",
+        "kind": "carry",
+        "location": "b"
+      },
+      {
+        "actor": "actor_2",
+        "kind": "place",
+        "location": "c"
+      }
+    ],
+    "event_id": "component:13:520",
+    "geometry_verified": true
+  },
+  {
+    "actor_role_execution_verified": false,
+    "actual_after": {
+      "one": {
+        "x": 1.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "two": {
+        "x": 2.0,
+        "y": 0.0,
+        "z": 1.0
+      }
+    },
+    "actual_before": {
+      "one": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "two": {
+        "x": 2.0,
+        "y": 0.0,
+        "z": 1.0
+      }
+    },
+    "actual_steps": [
+      34
+    ],
+    "chain_plan": [
+      {
+        "actor": "actor_0",
+        "kind": "pick_up",
+        "location": "a"
+      },
+      {
+        "actor": "actor_0",
+        "kind": "carry",
+        "location": "a"
+      },
+      {
+        "actor": "actor_0",
+        "kind": "place",
+        "location": "b"
+      }
+    ],
+    "event_id": "component:13:530",
+    "geometry_verified": true
+  },
+  {
+    "actor_role_execution_verified": false,
+    "actual_after": {
+      "one": {
+        "x": 1.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "two": {
+        "x": 1.0,
+        "y": 0.0,
+        "z": 1.0
+      }
+    },
+    "actual_before": {
+      "one": {
+        "x": 1.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "two": {
+        "x": 2.0,
+        "y": 0.0,
+        "z": 1.0
+      }
+    },
+    "actual_steps": [
+      35
+    ],
+    "chain_plan": [
+      {
+        "actor": "actor_1",
+        "kind": "pick_up",
+        "location": "c"
+      },
+      {
+        "actor": "actor_1",
+        "kind": "carry",
+        "location": "c"
+      },
+      {
+        "actor": "actor_1",
+        "kind": "handoff",
+        "location": "b",
+        "receiver": "actor_0"
+      },
+      {
+        "actor": "actor_0",
+        "kind": "carry",
+        "location": "b"
+      },
+      {
+        "actor": "actor_0",
+        "kind": "handoff",
+        "location": "b",
+        "receiver": "actor_2"
+      },
+      {
+        "actor": "actor_2",
+        "kind": "carry",
+        "location": "b"
+      },
+      {
+        "actor": "actor_2",
+        "kind": "place",
+        "location": "b"
+      }
+    ],
+    "event_id": "component:13:540",
+    "geometry_verified": true
+  },
+  {
+    "actor_role_execution_verified": false,
+    "actual_after": {
+      "one": {
+        "x": 1.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "two": {
+        "x": 1.0,
+        "y": 0.0,
+        "z": 1.0
+      }
+    },
+    "actual_before": {
+      "one": {
+        "x": 1.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "two": {
+        "x": 1.0,
+        "y": 0.0,
+        "z": 1.0
+      }
+    },
+    "actual_steps": [
+      36
+    ],
+    "chain_plan": [
+      {
+        "actor": "actor_2",
+        "kind": "no_move",
+        "location": "b"
+      }
+    ],
+    "event_id": "component:13:550",
+    "geometry_verified": true
+  },
+  {
+    "actor_role_execution_verified": false,
+    "actual_after": {
+      "one": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "two": {
+        "x": 1.0,
+        "y": 0.0,
+        "z": 1.0
+      }
+    },
+    "actual_before": {
+      "one": {
+        "x": 1.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "two": {
+        "x": 1.0,
+        "y": 0.0,
+        "z": 1.0
+      }
+    },
+    "actual_steps": [
+      37
+    ],
+    "chain_plan": [
+      {
+        "actor": "actor_1",
+        "kind": "pick_up",
+        "location": "b"
+      },
+      {
+        "actor": "actor_1",
+        "kind": "carry",
+        "location": "b"
+      },
+      {
+        "actor": "actor_1",
+        "kind": "place",
+        "location": "a"
+      }
+    ],
+    "event_id": "component:13:600",
+    "geometry_verified": true
+  },
+  {
+    "actor_role_execution_verified": false,
+    "actual_after": {
+      "one": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "two": {
+        "x": 2.0,
+        "y": 0.0,
+        "z": 1.0
+      }
+    },
+    "actual_before": {
+      "one": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "two": {
+        "x": 1.0,
+        "y": 0.0,
+        "z": 1.0
+      }
+    },
+    "actual_steps": [
+      38
+    ],
+    "chain_plan": [
+      {
+        "actor": "actor_2",
+        "kind": "pick_up",
+        "location": "b"
+      },
+      {
+        "actor": "actor_2",
+        "kind": "carry",
+        "location": "b"
+      },
+      {
+        "actor": "actor_2",
+        "kind": "place",
+        "location": "c"
+      }
+    ],
+    "event_id": "component:13:610",
+    "geometry_verified": true
+  },
+  {
+    "actor_role_execution_verified": false,
+    "actual_after": {
+      "one": {
+        "x": 1.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "two": {
+        "x": 2.0,
+        "y": 0.0,
+        "z": 1.0
+      }
+    },
+    "actual_before": {
+      "one": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "two": {
+        "x": 2.0,
+        "y": 0.0,
+        "z": 1.0
+      }
+    },
+    "actual_steps": [
+      39
+    ],
+    "chain_plan": [
+      {
+        "actor": "actor_0",
+        "kind": "pick_up",
+        "location": "a"
+      },
+      {
+        "actor": "actor_0",
+        "kind": "carry",
+        "location": "a"
+      },
+      {
+        "actor": "actor_0",
+        "kind": "handoff",
+        "location": "b",
+        "receiver": "actor_1"
+      },
+      {
+        "actor": "actor_1",
+        "kind": "carry",
+        "location": "b"
+      },
+      {
+        "actor": "actor_1",
+        "kind": "handoff",
+        "location": "b",
+        "receiver": "actor_2"
+      },
+      {
+        "actor": "actor_2",
+        "kind": "carry",
+        "location": "b"
+      },
+      {
+        "actor": "actor_2",
+        "kind": "place",
+        "location": "b"
+      }
+    ],
+    "event_id": "component:13:620",
+    "geometry_verified": true
+  },
+  {
+    "actor_role_execution_verified": false,
+    "actual_after": {
+      "one": {
+        "x": 1.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "two": {
+        "x": 2.0,
+        "y": 0.0,
+        "z": 1.0
+      }
+    },
+    "actual_before": {
+      "one": {
+        "x": 1.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "two": {
+        "x": 2.0,
+        "y": 0.0,
+        "z": 1.0
+      }
+    },
+    "actual_steps": [
+      40
+    ],
+    "chain_plan": [
+      {
+        "actor": "actor_1",
+        "kind": "no_move",
+        "location": "c"
+      }
+    ],
+    "event_id": "component:13:630",
+    "geometry_verified": true
+  },
+  {
+    "actor_role_execution_verified": false,
+    "actual_after": {
+      "one": {
+        "x": 1.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "two": {
+        "x": 2.0,
+        "y": 0.0,
+        "z": 1.0
+      }
+    },
+    "actual_before": {
+      "one": {
+        "x": 1.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "two": {
+        "x": 2.0,
+        "y": 0.0,
+        "z": 1.0
+      }
+    },
+    "actual_steps": [
+      41
+    ],
+    "chain_plan": [
+      {
+        "actor": "actor_2",
+        "kind": "no_move",
+        "location": "b"
+      }
+    ],
+    "event_id": "component:13:640",
+    "geometry_verified": true
+  },
+  {
+    "actor_role_execution_verified": false,
+    "actual_after": {
+      "one": {
+        "x": 1.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "two": {
+        "x": 1.0,
+        "y": 0.0,
+        "z": 1.0
+      }
+    },
+    "actual_before": {
+      "one": {
+        "x": 1.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "two": {
+        "x": 2.0,
+        "y": 0.0,
+        "z": 1.0
+      }
+    },
+    "actual_steps": [
+      42
+    ],
+    "chain_plan": [
+      {
+        "actor": "actor_0",
+        "kind": "pick_up",
+        "location": "c"
+      },
+      {
+        "actor": "actor_0",
+        "kind": "carry",
+        "location": "c"
+      },
+      {
+        "actor": "actor_0",
+        "kind": "place",
+        "location": "b"
+      }
+    ],
+    "event_id": "component:13:650",
+    "geometry_verified": true
+  }
+]

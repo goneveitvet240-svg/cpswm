@@ -1,0 +1,39 @@
+{
+  "attribution_verified": true,
+  "base_commit": "09eb4d48e1c11082e90ca18332d04333e6b5b47a",
+  "code_commit": "6f9ca3669cef8476c356fda0d2d07f74079671c7",
+  "commands": [
+    "PYTHONPATH=src python apps/evaluation_runner/run_structure_two_comparison_audit.py --output <new-directory>",
+    "PYTHONPATH=src python apps/evaluation_runner/run_structure_two_comparison_audit.py --output <bundle> --verify --timing-repeats 1 --timing-episodes 1",
+    "PYTHONPATH=src python apps/evaluation_runner/summarize_structure_two_comparison_audit.py --bundle <bundle>",
+    "PYTHONPATH=src python apps/evaluation_runner/summarize_structure_two_comparison_audit.py --bundle <bundle> --verify",
+    "PYTHONPATH=src python -m pytest tests/test_structure_two_comparison_audit.py",
+    "mypy --follow-imports=silent src/cpswm/system/evaluation_operations/structure_two_comparison_audit.py"
+  ],
+  "diagnostic_tests": {
+    "failed": 0,
+    "log": "diagnostic_tests.log",
+    "passed": 20,
+    "seconds": 28.79
+  },
+  "fresh_verification": {
+    "retained_score_mismatches": [],
+    "semantic_steps_sha256": "d32b9d7bd2ff4963d8a71939fe752b260806e8775b692d602ac4588205f70c76",
+    "steps": 1920,
+    "verified": "/private/tmp/s2-comparison-audit-window2-20260911/docs/reviews/data/structure_two_comparison_audit_window2_2026-09-11"
+  },
+  "git_diff_check": "passed",
+  "historical_files_modified": false,
+  "neighbor_regression": {
+    "failed": 1,
+    "passed": 15,
+    "preexisting_issue": "baseline_binding_issue.json"
+  },
+  "new_module_mypy": "passed",
+  "original_worktree_status": "clean_at_final_read_only_check",
+  "router_calibration_executed": false,
+  "ruff_check": "passed",
+  "ruff_format_check": "passed",
+  "status": "DEVELOPMENT_DIAGNOSTIC_COMPLETED_AND_FRESHLY_VERIFIED",
+  "suggested_patch_apply_check": "passed_not_applied"
+}

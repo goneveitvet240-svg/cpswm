@@ -1,0 +1,28 @@
+{
+  "command": [
+    "/private/tmp/cpswm-pc-a-w1-r6-isolated-comparison/.venv/bin/python",
+    "-c",
+    "\nimport json, runpy, sys\nsys.path.insert(0, '/private/var/folders/x2/000r8p0n6s393lj2sg8wk5f40000gn/T/pytest-of-pangwei/pytest-1867/test_preloaded_foreign_downstr0/B/src')\nimport cpswm.system.reproducibility as loaded\naudit_name = \"cpswm.system.evaluation_operations.structure_two_comparison_audit\"\nprint(json.dumps({\"preloaded\": loaded.__file__, \"audit_preloaded\": audit_name in sys.modules}))\nsys.path.pop(0)\nsys.argv = sys.argv[1:]\nrunpy.run_path(sys.argv[0], run_name=\"__main__\")\n",
+    "/private/tmp/cpswm-pc-a-w1-r6-isolated-comparison/apps/evaluation_runner/run_structure_two_comparison_audit.py",
+    "--output",
+    "/private/tmp/cpswm-pc-a-w1-r6-isolated-comparison/docs/reviews/data/structure_two_unified_acceptance_runs/r6_comparison_accepted/comparison",
+    "--verify",
+    "--timing-repeats",
+    "1",
+    "--timing-episodes",
+    "1"
+  ],
+  "cwd": "/private/tmp/cpswm-pc-a-w1-r6-isolated-comparison",
+  "PYTHONPATH": "/private/tmp/cpswm-pc-a-w1-r6-isolated-comparison/src",
+  "exit_code": 1,
+  "stdout_json": [
+    {
+      "preloaded": "/private/var/folders/x2/000r8p0n6s393lj2sg8wk5f40000gn/T/pytest-of-pangwei/pytest-1867/test_preloaded_foreign_downstr0/B/src/cpswm/system/reproducibility.py",
+      "audit_preloaded": false
+    },
+    {
+      "status": "EXECUTION_SOURCE_REJECTED",
+      "error": "PRELOADED_LOCAL_MODULES: {'cpswm': '/private/var/folders/x2/000r8p0n6s393lj2sg8wk5f40000gn/T/pytest-of-pangwei/pytest-1867/test_preloaded_foreign_downstr0/B/src/cpswm/__init__.py', 'cpswm.system': '/private/var/folders/x2/000r8p0n6s393lj2sg8wk5f40000gn/T/pytest-of-pangwei/pytest-1867/test_preloaded_foreign_downstr0/B/src/cpswm/system/__init__.py', 'cpswm.system.reproducibility': '/private/var/folders/x2/000r8p0n6s393lj2sg8wk5f40000gn/T/pytest-of-pangwei/pytest-1867/test_preloaded_foreign_downstr0/B/src/cpswm/system/reproducibility.py'}"
+    }
+  ]
+}

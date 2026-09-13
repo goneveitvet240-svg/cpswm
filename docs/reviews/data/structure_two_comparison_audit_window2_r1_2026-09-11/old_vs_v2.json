@@ -1,0 +1,124 @@
+{
+  "semantic_step_difference": null,
+  "old_semantic_steps_sha256": "d32b9d7bd2ff4963d8a71939fe752b260806e8775b692d602ac4588205f70c76",
+  "new_semantic_steps_sha256": "d32b9d7bd2ff4963d8a71939fe752b260806e8775b692d602ac4588205f70c76",
+  "old_summary_equals_new": true,
+  "old_attribution_equals_new_excluding_evidence_and_script": true,
+  "audit_changed_top_level_fields": [
+    "source_bindings",
+    "verification_schema_version"
+  ],
+  "attribution_changed_top_level_fields": [
+    "evidence_level",
+    "script_sha256"
+  ],
+  "errors": {
+    "direct_p5_full_eager": 85,
+    "independently_tuned_amg": 102,
+    "learned_matched_two_stage": 533
+  },
+  "steps": 1920,
+  "episodes": 60,
+  "categories": {
+    "both_correct": 1818,
+    "both_wrong": 85,
+    "p5_loses": 0,
+    "p5_wins": 17
+  },
+  "search_equal_steps": 1920,
+  "p5_state_count_histograms": {
+    "_committed_events": {
+      "0": 1920
+    },
+    "_fast_action_events": {
+      "0": 40,
+      "1": 80,
+      "2": 94,
+      "3": 92,
+      "4": 91,
+      "5": 101,
+      "6": 100,
+      "7": 100,
+      "8": 85,
+      "9": 96,
+      "10": 90,
+      "11": 87,
+      "12": 91,
+      "13": 86,
+      "14": 87,
+      "15": 78,
+      "16": 79,
+      "17": 99,
+      "18": 83,
+      "19": 65,
+      "20": 64,
+      "21": 44,
+      "22": 44,
+      "23": 23,
+      "24": 13,
+      "25": 6,
+      "26": 2
+    },
+    "_observed_events": {
+      "0": 40,
+      "1": 80,
+      "2": 94,
+      "3": 92,
+      "4": 91,
+      "5": 101,
+      "6": 100,
+      "7": 100,
+      "8": 85,
+      "9": 96,
+      "10": 90,
+      "11": 87,
+      "12": 91,
+      "13": 86,
+      "14": 87,
+      "15": 78,
+      "16": 79,
+      "17": 99,
+      "18": 83,
+      "19": 65,
+      "20": 64,
+      "21": 44,
+      "22": 44,
+      "23": 23,
+      "24": 13,
+      "25": 6,
+      "26": 2
+    }
+  },
+  "p5_fast_disagreement_steps": 0,
+  "cold_uniform": {
+    "development_only": true,
+    "original_amg_errors": 53,
+    "steps": 53,
+    "trigger": "fresh AMG replay amg_owner_location is None; no P5 or truth-based selection",
+    "uniform_amg_equals_p5_steps": 53,
+    "uniform_amg_errors": 36
+  },
+  "common_uniform_whole_amg_errors": 85,
+  "historical_action_chains_passed": 180,
+  "historical_action_chains_total": 180,
+  "retained_score_mismatches": [],
+  "old_bundle_file_hashes": {
+    "hardware_supplement.json": "841ca13964eadb80e27d6e894bfaaee2777632be36755c6d5faaab425b4459f3",
+    "audit.json": "3f402745d0433a36b6793e881035edb7437c82f852dfcb471e88b2f57c31931a",
+    "timing.json": "676c9a12293e29c76261eaacee10b3def0167b7e4a0847f331a0d75b3c5da2c6",
+    "baseline_binding_issue.json": "538d50bf53dd5e6e4373bb38cbf6ef2aaaba8ca6c33c42c75204f0ee93492897",
+    "diagnostic_tests.log": "96fb26ee5b93e7daa33dcb9927fbb4549437546ae14539e9818326defafca4e2",
+    "fresh_verification.log": "9716c29ec21a0896145f952a0eae04d34812fd7921f41118cd29f0af1c2aad9b",
+    "validation.json": "b46c5d7647fea521886291a3a4438f20d6cdfeef4e0a4033f9d2d6a2e8fc7d73",
+    "attribution.json": "4621c3dea321ffe5f4cfc2a601be9e023ec95bfa828fd4b3eee6fc9649078814",
+    "steps.jsonl.gz": "59658ce51245a726501f1a312aa5900df6837e915a3f80191800d378a06c7794",
+    "truth_barrier_suggestion.patch": "cd0d83293a7e217c2fe4b702ec470eb16b827353ab083d50f965c2ddabd15361",
+    "attribution_verification.log": "e645d3175f830c6507b1edd02735ed0e1ef40ce311a0a6809d4ca9a2c3cf9c5b"
+  },
+  "new_bundle_file_hashes": {
+    "audit.json": "5755c1df02401562ff2e48597925c3584f541f9073dadbd91bbdf5f4b6d47996",
+    "timing.json": "57aa46d6c397333afe56452a6f74633c0cfca5be075bcc6c70624d8ed0c6cdff",
+    "attribution.json": "ae4a895287bc5f79708340ebfaab4c6fed6486b414ba32d833cf7e2aa12c57e1",
+    "steps.jsonl.gz": "599be79abdb7215fbb5593fd7b3102166152374350715814a8353ead92beb1fa"
+  }
+}

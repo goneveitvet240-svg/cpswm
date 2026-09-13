@@ -1,0 +1,40 @@
+..............F.                                                         [100%]
+=================================== FAILURES ===================================
+____________________ test_frozen_final_pct_is_not_reopened _____________________
+
+    def test_frozen_final_pct_is_not_reopened():
+>       result = dynamic.contract_matrix(ROOT)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_structure_two_comparison_dynamic.py:162: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/cpswm/system/evaluation_operations/structure_two_comparison_dynamic.py:680: in contract_matrix
+    final = json.loads((root / path).read_text())
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^
+/Users/pangwei/.local/share/uv/python/cpython-3.13.5-macos-aarch64-none/lib/python3.13/pathlib/_local.py:546: in read_text
+    return PathBase.read_text(self, encoding, errors, newline)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/Users/pangwei/.local/share/uv/python/cpython-3.13.5-macos-aarch64-none/lib/python3.13/pathlib/_abc.py:632: in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors, newline=newline) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = PosixPath('/private/tmp/s2-comparison-audit-window2-20260911/configs/project_two_experiments/structure_two_final_utility_guardrail_external_va lidation_protocol_v0_1.json')
+mode = 'r', buffering = -1, encoding = 'locale', errors = None, newline = None
+
+    def open(self, mode='r', buffering=-1, encoding=None,
+             errors=None, newline=None):
+        """
+        Open the file pointed to by this path and return a file object, as
+        the built-in open() function does.
+        """
+        if "b" not in mode:
+            encoding = io.text_encoding(encoding)
+>       return io.open(self, mode, buffering, encoding, errors, newline)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       FileNotFoundError: [Errno 2] No such file or directory: '/private/tmp/s2-comparison-audit-window2-20260911/configs/project_two_experiments/structure_two_final_utility_guardrail_external_va lidation_protocol_v0_1.json'
+
+/Users/pangwei/.local/share/uv/python/cpython-3.13.5-macos-aarch64-none/lib/python3.13/pathlib/_local.py:537: FileNotFoundError
+=========================== short test summary info ============================
+FAILED tests/test_structure_two_comparison_dynamic.py::test_frozen_final_pct_is_not_reopened
+1 failed, 15 passed, 1 deselected in 19.74s

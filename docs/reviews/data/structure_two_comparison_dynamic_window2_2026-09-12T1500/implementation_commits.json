@@ -1,0 +1,27 @@
+[
+  {
+    "sha": "72024164a52db6b70c263a332543cf424f017252",
+    "subject": "audit: exercise dynamic production paths and reject cross-instance readouts",
+    "files": [
+      "src/cpswm/system/evaluation_operations/structure_two_comparison_audit.py",
+      "src/cpswm/system/evaluation_operations/structure_two_comparison_dynamic.py",
+      "src/cpswm/system/evaluation_operations/structure_two_comparison_fairness.py",
+      "tests/test_structure_two_comparison_dynamic.py"
+    ]
+  },
+  {
+    "sha": "d6112489d0a09f7086286e223741be60051b99a5",
+    "subject": "fix: materialize dynamic diagnostics as strict retained JSON types",
+    "files": [
+      "src/cpswm/system/evaluation_operations/structure_two_comparison_dynamic.py",
+      "tests/test_structure_two_comparison_dynamic.py"
+    ]
+  },
+  {
+    "sha": "e8b5cee9601a35bb1220480ebe60b0c74f3c4799",
+    "subject": "test: distinguish late first-arrival input from duplicate replay",
+    "files": [
+      "tests/test_structure_two_comparison_dynamic.py"
+    ]
+  }
+]

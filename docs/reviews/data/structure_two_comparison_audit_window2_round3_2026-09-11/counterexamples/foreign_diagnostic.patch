@@ -1,0 +1,11 @@
+--- a/src/cpswm/system/evaluation_operations/structure_two_comparison_audit.py
++++ b/src/cpswm/system/evaluation_operations/structure_two_comparison_audit.py
+@@ -181,7 +181,7 @@
+         result[name] = {str(k): v for k, v in dist.items()}
+     core = state.system.core
+     result["state_counts"] = {
+-        name: len(getattr(core, name))
++        name: 999 if name == '_committed_events' else len(getattr(core, name))
+         for name in ("_fast_action_events", "_committed_events", "_observed_events")
+     }
+     return result

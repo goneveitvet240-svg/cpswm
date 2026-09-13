@@ -1,0 +1,120 @@
+{
+  "status": "BOUNDED_ENGINEERING_VALIDATION_PASSED_COMPARISON_AND_SCIENCE_PARTIAL",
+  "tests": {
+    "tests": 58,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "wall_seconds_not_performance": 1066.09,
+  "original_tests_retained": 42,
+  "new_tests": 16,
+  "complete_semantic_forgery_rejections": 21,
+  "complete_fairness_forgery_rejections": 6,
+  "source_cases": [
+    {
+      "case": "attribution_mixed",
+      "exit_code": 1,
+      "legitimate_positive": false,
+      "log": "evidence/source_tests/attribution_mixed.json"
+    },
+    {
+      "case": "attribution_single",
+      "exit_code": 1,
+      "legitimate_positive": false,
+      "log": "evidence/source_tests/attribution_single.json"
+    },
+    {
+      "case": "downstream_symlink_attribution",
+      "exit_code": 1,
+      "legitimate_positive": false,
+      "log": "evidence/source_tests/downstream_symlink_attribution.json"
+    },
+    {
+      "case": "downstream_symlink_main",
+      "exit_code": 1,
+      "legitimate_positive": false,
+      "log": "evidence/source_tests/downstream_symlink_main.json"
+    },
+    {
+      "case": "full_positive_stale_pyc_attribution",
+      "exit_code": 0,
+      "legitimate_positive": true,
+      "log": "evidence/source_tests/full_positive_stale_pyc_attribution.json"
+    },
+    {
+      "case": "full_positive_stale_pyc_main",
+      "exit_code": 0,
+      "legitimate_positive": true,
+      "log": "evidence/source_tests/full_positive_stale_pyc_main.json"
+    },
+    {
+      "case": "main",
+      "exit_code": 1,
+      "legitimate_positive": false,
+      "log": "evidence/source_tests/main.json"
+    },
+    {
+      "case": "preloaded_downstream_attribution",
+      "exit_code": 1,
+      "legitimate_positive": false,
+      "log": "evidence/source_tests/preloaded_downstream_attribution.json"
+    },
+    {
+      "case": "preloaded_downstream_main",
+      "exit_code": 1,
+      "legitimate_positive": false,
+      "log": "evidence/source_tests/preloaded_downstream_main.json"
+    },
+    {
+      "case": "preloaded_old_attribution",
+      "exit_code": 1,
+      "legitimate_positive": false,
+      "log": "evidence/source_tests/preloaded_old_attribution.json"
+    },
+    {
+      "case": "preloaded_old_main",
+      "exit_code": 1,
+      "legitimate_positive": false,
+      "log": "evidence/source_tests/preloaded_old_main.json"
+    },
+    {
+      "case": "repository_root_mismatch",
+      "exit_code": 1,
+      "legitimate_positive": false,
+      "log": "evidence/source_tests/repository_root_mismatch.json"
+    },
+    {
+      "case": "runtime_drift_attribution",
+      "exit_code": 1,
+      "legitimate_positive": false,
+      "log": "evidence/source_tests/runtime_drift_attribution.json"
+    },
+    {
+      "case": "runtime_drift_main",
+      "exit_code": 1,
+      "legitimate_positive": false,
+      "log": "evidence/source_tests/runtime_drift_main.json"
+    },
+    {
+      "case": "stale_entry_attribution",
+      "exit_code": 1,
+      "legitimate_positive": false,
+      "log": "evidence/source_tests/stale_entry_attribution.json"
+    },
+    {
+      "case": "stale_entry_main",
+      "exit_code": 1,
+      "legitimate_positive": false,
+      "log": "evidence/source_tests/stale_entry_main.json"
+    }
+  ],
+  "real_same_batch_positives": 2,
+  "own_worktree_main_and_attribution_fresh_replays": "both exit 0; 60 episodes / 1920 steps each",
+  "comparison_fairness": "NOT_ESTABLISHED",
+  "scientific_validity": "NOT_ESTABLISHED",
+  "code_commit": "9b58d7e93e8646c869bfd856be0dff5c6229d82b",
+  "preserved_old_files": 122,
+  "ruff": "passed",
+  "mypy": "passed"
+}

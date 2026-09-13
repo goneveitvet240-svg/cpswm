@@ -16,6 +16,7 @@ def main():
     parser.add_argument("--root", type=Path, required=True)
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--python", required=True)
+    parser.add_argument("--native-environment", action="store_true")
     parser.add_argument("args", nargs=argparse.REMAINDER)
     args = parser.parse_args()
     root = args.root.resolve()
@@ -25,7 +26,7 @@ def main():
     def snapshot():
         return {
             str(p.relative_to(root)): hashlib.sha256(p.read_bytes()).hexdigest()
-            for folder in ("src", "tests", "configs", "artifacts")
+            for folder in ("src", "tests", "configs", "artifacts", "apps", "tools")
             for p in sorted((root / folder).rglob("*"))
             if p.is_file() and "__pycache__" not in p.parts and p.suffix != ".pyc"
         }
@@ -38,6 +39,25 @@ def main():
         MKL_NUM_THREADS="1",
         OMP_NUM_THREADS="1",
     )
+    if args.native_environment:
+        for key in ("PYTHONPATH", "PYTHONDONTWRITEBYTECODE"):
+            env.pop(key, None)
+        probe = json.loads(
+            subprocess.check_output(
+                [
+                    args.python,
+                    "-c",
+                    "import sys,json,cpswm; print(json.dumps([sys.prefix,cpswm.__file__]))",
+                ],
+                cwd=root,
+                env=env,
+                text=True,
+            )
+        )
+        if Path(probe[0]).absolute() != root / ".venv" or not Path(
+            probe[1]
+        ).resolve().is_relative_to(root / "src"):
+            raise ValueError("native environment must load this checkout from its own venv")
     rest = args.args[1:] if args.args[:1] == ["--"] else args.args
     command = [args.python, *rest]
     before = snapshot()
@@ -50,13 +70,14 @@ def main():
         "runner_sha256": hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),
         "source_before": before,
         "environment": {
-            k: env[k]
+            k: env.get(k)
             for k in (
                 "PYTHONPATH",
                 "PYTHONDONTWRITEBYTECODE",
                 "OPENBLAS_NUM_THREADS",
                 "MKL_NUM_THREADS",
                 "OMP_NUM_THREADS",
+                "S2_AUDIT_BUNDLE",
             )
         },
     }

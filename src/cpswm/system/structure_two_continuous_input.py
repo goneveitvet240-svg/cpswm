@@ -735,7 +735,10 @@ class ContinuousEvidenceInput:
                 self._busy = False
 
     def _accept_observation(self, command, delivery):
-        if not isinstance(delivery, ObservationDelivery) or delivery.action_id != command.action_id:
+        if type(delivery) is not ObservationDelivery:
+            raise ValueError("observation receipt must be an immutable delivery value")
+        delivery = deepcopy(delivery)
+        if delivery.action_id != command.action_id:
             raise ValueError("observation receipt does not match dispatched command")
         if type(delivery.success) is not bool or (not delivery.success and not delivery.error):
             raise ValueError("observation success/failure receipt is incomplete")

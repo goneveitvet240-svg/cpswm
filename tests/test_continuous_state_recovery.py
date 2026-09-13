@@ -378,3 +378,39 @@ def test_effect_only_store_is_source_bound_before_first_checkpoint(tmp_path):
     store = store_at(path)
     assert store.execute_once("effect", {"camera": 1}, lambda request: None) == {"success": True}
     store.close()
+
+
+def test_accepted_observation_receipt_is_detached_from_transport_and_survives_restore(tmp_path):
+    from cpswm.system.structure_two_continuous_input import ObservationDelivery
+
+    path = tmp_path / "state.db"
+    _, stream, backend, store, transition = durable_setup(path)
+    deliver(stream, backend, transition)
+    when = transition.after.detection_time + timedelta(seconds=2)
+    ids = tuple(stream._raw)
+    command = stream.prepare_observation(
+        action="Pass", degrees=0, reason="fixture", source_ids=ids, decision_time=when
+    )
+
+    class Camera:
+        def execute(self, command):
+            self.reply = ObservationDelivery(command.action_id, (), False, "original failure", when)
+            return self.reply
+
+    camera = Camera()
+    stream.execute_observation(command, executor=camera)
+    object.__setattr__(camera.reply, "success", True)
+    object.__setattr__(camera.reply, "error", "changed outside")
+    stream.prepare_observation(
+        action="Pass",
+        degrees=0,
+        reason="next fixture",
+        source_ids=ids,
+        decision_time=when + timedelta(seconds=1),
+    )
+    store.close()
+    store = store_at(path)
+    restored = ContinuousEvidenceInput.resume(store, producer=DurableFixtureProducer())
+    accepted = restored._observation_status[command.action_id]
+    assert accepted.success is False and accepted.error == "original failure"
+    store.close()

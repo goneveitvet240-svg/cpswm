@@ -1,5 +1,11 @@
 # 电脑 A 状态
 
+## A Unity 授权后恢复构建 2026-09-13
+
+- 用户已完成系统授权；只读核验 `/Library/Application Support/Unity` 现已存在。首轮等待授权超时（3600 秒、退出码 1、关键源码前后未变），原 `baseline-build-20260913-01` 私有日志/失败回执保留。
+- 本轮 fetch 成功，当前 CPSWM `7f8ffd1df102756c2cc66876b42b055cdc47a99e`，B `c366cad0a92593bb2c4c44db7e8d3408a2b5cc9c` 未变；继续同一独立任务分支，不写 B 或共享集成。
+- 确认无旧 Unity Editor 构建进程后，使用新目录 `/private/tmp/cpswm-unity-baseline-build-20260913-02` 重启同一基线构建。开工尚无成功回执；不把许可授权当作后端修复或完整闭环通过。
+
 ## A Unity 工具链已安装，基线构建等待系统授权 2026-09-13
 
 - 本分支 `codex/pc-a-procthor-unity-build-20260913`；Unity Hub 3.21.2 和 Unity Editor 2020.3.25f1 已安装成功。Hub UI 已核验登录及 Personal 许可激活；没有记录或公开账号、凭据、许可文件。

@@ -1,0 +1,22 @@
+F..........                                                              [100%]
+=================================== FAILURES ===================================
+_______ test_queued_old_command_never_dispatched_after_newer_completion ________
+
+    def test_queued_old_command_never_dispatched_after_newer_completion():
+        p,s,b,t,now=ready()
+        older=s.prepare_habit_placement(decision_time=now)
+        newer=s.prepare_habit_placement(decision_time=now+timedelta(seconds=10))
+        world=FixtureWorldExecutor(t.after.metadata)
+        s.execute_placement(newer,executor=world)
+        assert world.calls==1
+        with pytest.raises(ValueError):
+            s.execute_placement(older,executor=world)
+>       assert world.calls==1, 'backdated old command physically dispatched before timeline rejection'
+E       AssertionError: backdated old command physically dispatched before timeline rejection
+E       assert 2 == 1
+E        +  where 2 = <test_structure_two_continuous_input.FixtureWorldExecutor object at 0x10ad82ba0>.calls
+
+../cpswm-continuous-review2/test_independent.py:21: AssertionError
+=========================== short test summary info ============================
+FAILED ../cpswm-continuous-review2/test_independent.py::test_queued_old_command_never_dispatched_after_newer_completion
+1 failed, 10 passed in 12.11s

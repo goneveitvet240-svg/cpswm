@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="1" skipped="0" tests="3" time="1.591" timestamp="2026-09-13T23:07:11.042061+08:00" hostname="MacBook-Air-2.local"><testcase classname="cpswm-continuous-b-review.test_receiver" name="test_loaded_production_functions_equal_fresh_frozen_source" time="0.016"><failure message="KeyError: '__create_fn__.&lt;locals&gt;.__hash__'">def test_loaded_production_functions_equal_fresh_frozen_source():
+        checked = 0
+        for module in (prototype_spine, structure_two_particle_workspace, structure_two_semantic_identity):
+            path = Path(module.__file__).resolve()
+            assert path.is_relative_to(ROOT / 'src')
+            compiled = compile(path.read_bytes(), str(path), 'exec', dont_inherit=True)
+            codes = {}
+            def walk(code):
+                codes.setdefault(code.co_qualname, []).append(code)
+                for child in code.co_consts:
+                    if isinstance(child, types.CodeType): walk(child)
+            walk(compiled)
+            for obj in vars(module).values():
+                values = vars(obj).values() if inspect.isclass(obj) and obj.__module__ == module.__name__ else (obj,)
+                for value in values:
+                    if isinstance(value, (staticmethod, classmethod)): value = value.__func__
+                    if isinstance(value, property): value = value.fget
+                    while inspect.isfunction(value) and value.__module__ == module.__name__:
+&gt;                       assert value.__code__ in codes[value.__code__.co_qualname]
+                                                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E                       KeyError: '__create_fn__.&lt;locals&gt;.__hash__'
+
+../cpswm-continuous-b-review/test_receiver.py:30: KeyError</failure></testcase><testcase classname="cpswm-continuous-b-review.test_receiver" name="test_receiver_anchor_rollback_after_post_acceptance_failure" time="0.291" /><testcase classname="cpswm-continuous-b-review.test_receiver" name="test_receiver_repeated_legal_reads_do_not_cache_away_later_reseal" time="0.512" /></testsuite></testsuites>

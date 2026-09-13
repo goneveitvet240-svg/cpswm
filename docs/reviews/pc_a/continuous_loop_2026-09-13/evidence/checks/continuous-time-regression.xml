@@ -1,0 +1,507 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="7" skipped="0" tests="21" time="13.093" timestamp="2026-09-13T23:23:47.979146+08:00" hostname="MacBook-Air-2.local"><testcase classname="tests.test_structure_two_continuous_input" name="test_continuous_hypotheses_retraction_and_fresh_action_readout" time="4.149" /><testcase classname="tests.test_structure_two_continuous_input" name="test_delayed_capture_is_invisible_until_arrival_and_retains_transport_order" time="0.001" /><testcase classname="tests.test_structure_two_continuous_input" name="test_whole_raw_batch_is_atomic_on_bad_second_payload_and_retry" time="0.001" /><testcase classname="tests.test_structure_two_continuous_input" name="test_bad_producer_is_rejected_without_learning_and_legal_retry[source]" time="0.273" /><testcase classname="tests.test_structure_two_continuous_input" name="test_bad_producer_is_rejected_without_learning_and_legal_retry[future]" time="0.293" /><testcase classname="tests.test_structure_two_continuous_input" name="test_bad_producer_is_rejected_without_learning_and_legal_retry[scope]" time="0.273" /><testcase classname="tests.test_structure_two_continuous_input" name="test_bad_producer_is_rejected_without_learning_and_legal_retry[empty_calibration]" time="0.271" /><testcase classname="tests.test_structure_two_continuous_input" name="test_no_evidence_is_not_missing_object_and_cutoff_cannot_backdate" time="0.001" /><testcase classname="tests.test_structure_two_continuous_input" name="test_reentrant_producer_cannot_mutate_stream" time="0.001" /><testcase classname="tests.test_structure_two_continuous_input" name="test_late_retractions_change_next_issued_and_executed_placement" time="4.081"><failure message="NameError: name 'PlacementFeedbackDelivery' is not defined">def test_late_retractions_change_next_issued_and_executed_placement():
+        probe, stream, backend, transition = setup()
+        for day in probe.observed_days()[:12]:
+            deliver(stream, backend, probe.transition_for(day))
+        core = probe.system.core
+        when = probe.observed_days()[12].after.detection_time
+        first = stream.prepare_habit_placement(decision_time=when)
+        world = FixtureWorldExecutor(transition.after.metadata)
+&gt;       stream.execute_placement(first, executor=world)
+
+tests/test_structure_two_continuous_input.py:282: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/cpswm/system/structure_two_continuous_input.py:466: in execute_placement
+    delivery = executor.execute(deepcopy(command))
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = &lt;test_structure_two_continuous_input.FixtureWorldExecutor object at 0x10dd51550&gt;
+command = PlacementCommand(action_id=UUID('c8f3eec6-23d7-4216-878a-59026ad7f227'), object_instance_id=UUID('d912a2b3-2f43-d7ec-6...40c-5fe8-e981-d10b5cfd9d0d'), 0.0)), decision_time=datetime.datetime(2026, 1, 14, 8, 10, tzinfo=datetime.timezone.utc))
+
+    def execute(self, command):
+        from cpswm.contracts import (
+            EntityRef,
+            EntityType,
+            ExecutionFeedbackRecord,
+            RobotActionOutcome,
+            RobotActionType,
+            SourceType,
+            ValidTimeInterval,
+        )
+    
+        self.calls += 1
+        self.location = command.location_id
+        if self.fail_after_move:
+            raise OSError("fixture transport failed after movement")
+        feedback = ExecutionFeedbackRecord(
+            metadata=self.metadata.model_copy(
+                update={
+                    "record_id": uuid4(),
+                    "source_type": SourceType.ACTION,
+                    "recorded_time": command.decision_time + timedelta(seconds=1),
+                }
+            ),
+            action_id=uuid4() if self.wrong_reply else command.action_id,
+            action_type=RobotActionType.PLACE,
+            target_entity=EntityRef(
+                entity_id=command.object_instance_id, entity_type=EntityType.OBJECT_INSTANCE
+            ),
+            attempted_location_id=command.location_id,
+            valid_time=ValidTimeInterval(
+                start=command.decision_time, end=command.decision_time + timedelta(seconds=1)
+            ),
+            outcome_distribution={RobotActionOutcome.SUCCESS: 1.0},
+        )
+    
+&gt;       return PlacementFeedbackDelivery(feedback, command.decision_time + timedelta(seconds=1))
+               ^^^^^^^^^^^^^^^^^^^^^^^^^
+E       NameError: name 'PlacementFeedbackDelivery' is not defined
+
+tests/test_structure_two_continuous_input.py:271: NameError</failure></testcase><testcase classname="tests.test_structure_two_continuous_input" name="test_uncertain_execution_is_retained_and_never_retried[raise]" time="0.273" /><testcase classname="tests.test_structure_two_continuous_input" name="test_uncertain_execution_is_retained_and_never_retried[wrong_reply]" time="0.272"><failure message="NameError: name 'PlacementFeedbackDelivery' is not defined">mode = 'wrong_reply'
+
+    @pytest.mark.parametrize("mode", ["raise", "wrong_reply"])
+    def test_uncertain_execution_is_retained_and_never_retried(mode):
+        _, stream, backend, transition = setup()
+        deliver(stream, backend, transition)
+        command = stream.prepare_habit_placement(
+            decision_time=transition.after.detection_time + timedelta(seconds=2)
+        )
+        executor = FixtureWorldExecutor(
+            transition.after.metadata,
+            fail_after_move=mode == "raise",
+            wrong_reply=mode == "wrong_reply",
+        )
+        with pytest.raises((ValueError, OSError)):
+&gt;           stream.execute_placement(command, executor=executor)
+
+tests/test_structure_two_continuous_input.py:322: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/cpswm/system/structure_two_continuous_input.py:466: in execute_placement
+    delivery = executor.execute(deepcopy(command))
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = &lt;test_structure_two_continuous_input.FixtureWorldExecutor object at 0x10d858910&gt;
+command = PlacementCommand(action_id=UUID('36b6f3f6-d5c3-4b2f-a826-30e92d9f497e'), object_instance_id=UUID('d912a2b3-2f43-d7ec-6...c-5fe8-e981-d10b5cfd9d0d'), 0.0)), decision_time=datetime.datetime(2026, 1, 1, 8, 10, 2, tzinfo=datetime.timezone.utc))
+
+    def execute(self, command):
+        from cpswm.contracts import (
+            EntityRef,
+            EntityType,
+            ExecutionFeedbackRecord,
+            RobotActionOutcome,
+            RobotActionType,
+            SourceType,
+            ValidTimeInterval,
+        )
+    
+        self.calls += 1
+        self.location = command.location_id
+        if self.fail_after_move:
+            raise OSError("fixture transport failed after movement")
+        feedback = ExecutionFeedbackRecord(
+            metadata=self.metadata.model_copy(
+                update={
+                    "record_id": uuid4(),
+                    "source_type": SourceType.ACTION,
+                    "recorded_time": command.decision_time + timedelta(seconds=1),
+                }
+            ),
+            action_id=uuid4() if self.wrong_reply else command.action_id,
+            action_type=RobotActionType.PLACE,
+            target_entity=EntityRef(
+                entity_id=command.object_instance_id, entity_type=EntityType.OBJECT_INSTANCE
+            ),
+            attempted_location_id=command.location_id,
+            valid_time=ValidTimeInterval(
+                start=command.decision_time, end=command.decision_time + timedelta(seconds=1)
+            ),
+            outcome_distribution={RobotActionOutcome.SUCCESS: 1.0},
+        )
+    
+&gt;       return PlacementFeedbackDelivery(feedback, command.decision_time + timedelta(seconds=1))
+               ^^^^^^^^^^^^^^^^^^^^^^^^^
+E       NameError: name 'PlacementFeedbackDelivery' is not defined
+
+tests/test_structure_two_continuous_input.py:271: NameError</failure></testcase><testcase classname="tests.test_structure_two_continuous_input" name="test_copied_command_is_not_a_live_capability" time="0.272" /><testcase classname="tests.test_structure_two_continuous_input" name="test_forcibly_mutated_live_command_cannot_change_target" time="0.288" /><testcase classname="tests.test_structure_two_continuous_input" name="test_raw_admission_and_prefix_are_detached_from_caller_aliases" time="0.001" /><testcase classname="tests.test_structure_two_continuous_input" name="test_duplicate_feedback_advances_arrival_watermark" time="0.940" /><testcase classname="tests.test_structure_two_continuous_input" name="test_execution_completion_advances_time_and_does_not_expose_owned_command" time="0.275"><failure message="NameError: name 'PlacementFeedbackDelivery' is not defined">def test_execution_completion_advances_time_and_does_not_expose_owned_command():
+        _, stream, backend, transition = setup()
+        deliver(stream, backend, transition)
+        when = transition.after.detection_time + timedelta(seconds=2)
+        command = stream.prepare_habit_placement(decision_time=when)
+        executor = FixtureWorldExecutor(transition.after.metadata)
+&gt;       stream.execute_placement(command, executor=executor)
+
+tests/test_structure_two_continuous_input.py:393: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/cpswm/system/structure_two_continuous_input.py:466: in execute_placement
+    delivery = executor.execute(deepcopy(command))
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = &lt;test_structure_two_continuous_input.FixtureWorldExecutor object at 0x10c2da450&gt;
+command = PlacementCommand(action_id=UUID('8f6c6ae1-03e7-4c86-b4ea-eddd5393d4dd'), object_instance_id=UUID('d912a2b3-2f43-d7ec-6...c-5fe8-e981-d10b5cfd9d0d'), 0.0)), decision_time=datetime.datetime(2026, 1, 1, 8, 10, 2, tzinfo=datetime.timezone.utc))
+
+    def execute(self, command):
+        from cpswm.contracts import (
+            EntityRef,
+            EntityType,
+            ExecutionFeedbackRecord,
+            RobotActionOutcome,
+            RobotActionType,
+            SourceType,
+            ValidTimeInterval,
+        )
+    
+        self.calls += 1
+        self.location = command.location_id
+        if self.fail_after_move:
+            raise OSError("fixture transport failed after movement")
+        feedback = ExecutionFeedbackRecord(
+            metadata=self.metadata.model_copy(
+                update={
+                    "record_id": uuid4(),
+                    "source_type": SourceType.ACTION,
+                    "recorded_time": command.decision_time + timedelta(seconds=1),
+                }
+            ),
+            action_id=uuid4() if self.wrong_reply else command.action_id,
+            action_type=RobotActionType.PLACE,
+            target_entity=EntityRef(
+                entity_id=command.object_instance_id, entity_type=EntityType.OBJECT_INSTANCE
+            ),
+            attempted_location_id=command.location_id,
+            valid_time=ValidTimeInterval(
+                start=command.decision_time, end=command.decision_time + timedelta(seconds=1)
+            ),
+            outcome_distribution={RobotActionOutcome.SUCCESS: 1.0},
+        )
+    
+&gt;       return PlacementFeedbackDelivery(feedback, command.decision_time + timedelta(seconds=1))
+               ^^^^^^^^^^^^^^^^^^^^^^^^^
+E       NameError: name 'PlacementFeedbackDelivery' is not defined
+
+tests/test_structure_two_continuous_input.py:271: NameError</failure></testcase><testcase classname="tests.test_structure_two_continuous_input" name="test_uncertain_action_reconciles_without_reexecution_then_allows_next_command" time="0.272"><failure message="NameError: name 'PlacementFeedbackDelivery' is not defined">def test_uncertain_action_reconciles_without_reexecution_then_allows_next_command():
+        _, stream, backend, transition = setup()
+        deliver(stream, backend, transition)
+        when = transition.after.detection_time + timedelta(seconds=2)
+        command = stream.prepare_habit_placement(decision_time=when)
+        transport = FixtureWorldExecutor(transition.after.metadata, fail_after_move=True)
+        with pytest.raises(OSError):
+            stream.execute_placement(command, executor=transport)
+        with pytest.raises(RuntimeError, match="reconciliation"):
+            stream.prepare_habit_placement(decision_time=when + timedelta(seconds=2))
+        # Independent receipt simulation: read the already attempted action's outcome.
+        # The original transport is never invoked again.
+&gt;       reply = FixtureWorldExecutor(transition.after.metadata).execute(command)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_structure_two_continuous_input.py:414: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = &lt;test_structure_two_continuous_input.FixtureWorldExecutor object at 0x10d4748d0&gt;
+command = PlacementCommand(action_id=UUID('97c1e388-e251-4c0d-8972-b8449393f4b3'), object_instance_id=UUID('d912a2b3-2f43-d7ec-6...c-5fe8-e981-d10b5cfd9d0d'), 0.0)), decision_time=datetime.datetime(2026, 1, 1, 8, 10, 2, tzinfo=datetime.timezone.utc))
+
+    def execute(self, command):
+        from cpswm.contracts import (
+            EntityRef,
+            EntityType,
+            ExecutionFeedbackRecord,
+            RobotActionOutcome,
+            RobotActionType,
+            SourceType,
+            ValidTimeInterval,
+        )
+    
+        self.calls += 1
+        self.location = command.location_id
+        if self.fail_after_move:
+            raise OSError("fixture transport failed after movement")
+        feedback = ExecutionFeedbackRecord(
+            metadata=self.metadata.model_copy(
+                update={
+                    "record_id": uuid4(),
+                    "source_type": SourceType.ACTION,
+                    "recorded_time": command.decision_time + timedelta(seconds=1),
+                }
+            ),
+            action_id=uuid4() if self.wrong_reply else command.action_id,
+            action_type=RobotActionType.PLACE,
+            target_entity=EntityRef(
+                entity_id=command.object_instance_id, entity_type=EntityType.OBJECT_INSTANCE
+            ),
+            attempted_location_id=command.location_id,
+            valid_time=ValidTimeInterval(
+                start=command.decision_time, end=command.decision_time + timedelta(seconds=1)
+            ),
+            outcome_distribution={RobotActionOutcome.SUCCESS: 1.0},
+        )
+    
+&gt;       return PlacementFeedbackDelivery(feedback, command.decision_time + timedelta(seconds=1))
+               ^^^^^^^^^^^^^^^^^^^^^^^^^
+E       NameError: name 'PlacementFeedbackDelivery' is not defined
+
+tests/test_structure_two_continuous_input.py:271: NameError</failure></testcase><testcase classname="tests.test_structure_two_continuous_input" name="test_inconsistent_executor_timeline_remains_uncertain[arrival]" time="0.272"><failure message="NameError: name 'PlacementFeedbackDelivery' is not defined">bad_time = 'arrival'
+
+    @pytest.mark.parametrize("bad_time", ["arrival", "record", "start"])
+    def test_inconsistent_executor_timeline_remains_uncertain(bad_time):
+        _, stream, backend, transition = setup()
+        deliver(stream, backend, transition)
+        when = transition.after.detection_time + timedelta(seconds=2)
+        command = stream.prepare_habit_placement(decision_time=when)
+        realizer = FixtureWorldExecutor(transition.after.metadata)
+    
+        class BadTimeline:
+            def execute(self, cmd):
+                delivery = realizer.execute(cmd)
+                if bad_time == "arrival":
+                    return replace(delivery, received_at=when)
+                if bad_time == "record":
+                    fb = delivery.feedback.model_copy(
+                        update={
+                            "metadata": delivery.feedback.metadata.model_copy(
+                                update={"recorded_time": when}
+                            )
+                        }
+                    )
+                else:
+                    fb = delivery.feedback.model_copy(
+                        update={
+                            "valid_time": delivery.feedback.valid_time.model_copy(
+                                update={"start": when - timedelta(seconds=1)}
+                            )
+                        }
+                    )
+                return replace(delivery, feedback=fb)
+    
+        with pytest.raises(ValueError):
+&gt;           stream.execute_placement(command, executor=BadTimeline())
+
+tests/test_structure_two_continuous_input.py:453: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/cpswm/system/structure_two_continuous_input.py:466: in execute_placement
+    delivery = executor.execute(deepcopy(command))
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/test_structure_two_continuous_input.py:431: in execute
+    delivery = realizer.execute(cmd)
+               ^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = &lt;test_structure_two_continuous_input.FixtureWorldExecutor object at 0x10d7ec450&gt;
+command = PlacementCommand(action_id=UUID('a4dae48c-461f-4834-a7d4-362eab59e0f0'), object_instance_id=UUID('d912a2b3-2f43-d7ec-6...c-5fe8-e981-d10b5cfd9d0d'), 0.0)), decision_time=datetime.datetime(2026, 1, 1, 8, 10, 2, tzinfo=datetime.timezone.utc))
+
+    def execute(self, command):
+        from cpswm.contracts import (
+            EntityRef,
+            EntityType,
+            ExecutionFeedbackRecord,
+            RobotActionOutcome,
+            RobotActionType,
+            SourceType,
+            ValidTimeInterval,
+        )
+    
+        self.calls += 1
+        self.location = command.location_id
+        if self.fail_after_move:
+            raise OSError("fixture transport failed after movement")
+        feedback = ExecutionFeedbackRecord(
+            metadata=self.metadata.model_copy(
+                update={
+                    "record_id": uuid4(),
+                    "source_type": SourceType.ACTION,
+                    "recorded_time": command.decision_time + timedelta(seconds=1),
+                }
+            ),
+            action_id=uuid4() if self.wrong_reply else command.action_id,
+            action_type=RobotActionType.PLACE,
+            target_entity=EntityRef(
+                entity_id=command.object_instance_id, entity_type=EntityType.OBJECT_INSTANCE
+            ),
+            attempted_location_id=command.location_id,
+            valid_time=ValidTimeInterval(
+                start=command.decision_time, end=command.decision_time + timedelta(seconds=1)
+            ),
+            outcome_distribution={RobotActionOutcome.SUCCESS: 1.0},
+        )
+    
+&gt;       return PlacementFeedbackDelivery(feedback, command.decision_time + timedelta(seconds=1))
+               ^^^^^^^^^^^^^^^^^^^^^^^^^
+E       NameError: name 'PlacementFeedbackDelivery' is not defined
+
+tests/test_structure_two_continuous_input.py:271: NameError</failure></testcase><testcase classname="tests.test_structure_two_continuous_input" name="test_inconsistent_executor_timeline_remains_uncertain[record]" time="0.287"><failure message="NameError: name 'PlacementFeedbackDelivery' is not defined">bad_time = 'record'
+
+    @pytest.mark.parametrize("bad_time", ["arrival", "record", "start"])
+    def test_inconsistent_executor_timeline_remains_uncertain(bad_time):
+        _, stream, backend, transition = setup()
+        deliver(stream, backend, transition)
+        when = transition.after.detection_time + timedelta(seconds=2)
+        command = stream.prepare_habit_placement(decision_time=when)
+        realizer = FixtureWorldExecutor(transition.after.metadata)
+    
+        class BadTimeline:
+            def execute(self, cmd):
+                delivery = realizer.execute(cmd)
+                if bad_time == "arrival":
+                    return replace(delivery, received_at=when)
+                if bad_time == "record":
+                    fb = delivery.feedback.model_copy(
+                        update={
+                            "metadata": delivery.feedback.metadata.model_copy(
+                                update={"recorded_time": when}
+                            )
+                        }
+                    )
+                else:
+                    fb = delivery.feedback.model_copy(
+                        update={
+                            "valid_time": delivery.feedback.valid_time.model_copy(
+                                update={"start": when - timedelta(seconds=1)}
+                            )
+                        }
+                    )
+                return replace(delivery, feedback=fb)
+    
+        with pytest.raises(ValueError):
+&gt;           stream.execute_placement(command, executor=BadTimeline())
+
+tests/test_structure_two_continuous_input.py:453: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/cpswm/system/structure_two_continuous_input.py:466: in execute_placement
+    delivery = executor.execute(deepcopy(command))
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/test_structure_two_continuous_input.py:431: in execute
+    delivery = realizer.execute(cmd)
+               ^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = &lt;test_structure_two_continuous_input.FixtureWorldExecutor object at 0x10d53a550&gt;
+command = PlacementCommand(action_id=UUID('bc740b51-c41a-4a0d-97de-7af8ae758f92'), object_instance_id=UUID('d912a2b3-2f43-d7ec-6...c-5fe8-e981-d10b5cfd9d0d'), 0.0)), decision_time=datetime.datetime(2026, 1, 1, 8, 10, 2, tzinfo=datetime.timezone.utc))
+
+    def execute(self, command):
+        from cpswm.contracts import (
+            EntityRef,
+            EntityType,
+            ExecutionFeedbackRecord,
+            RobotActionOutcome,
+            RobotActionType,
+            SourceType,
+            ValidTimeInterval,
+        )
+    
+        self.calls += 1
+        self.location = command.location_id
+        if self.fail_after_move:
+            raise OSError("fixture transport failed after movement")
+        feedback = ExecutionFeedbackRecord(
+            metadata=self.metadata.model_copy(
+                update={
+                    "record_id": uuid4(),
+                    "source_type": SourceType.ACTION,
+                    "recorded_time": command.decision_time + timedelta(seconds=1),
+                }
+            ),
+            action_id=uuid4() if self.wrong_reply else command.action_id,
+            action_type=RobotActionType.PLACE,
+            target_entity=EntityRef(
+                entity_id=command.object_instance_id, entity_type=EntityType.OBJECT_INSTANCE
+            ),
+            attempted_location_id=command.location_id,
+            valid_time=ValidTimeInterval(
+                start=command.decision_time, end=command.decision_time + timedelta(seconds=1)
+            ),
+            outcome_distribution={RobotActionOutcome.SUCCESS: 1.0},
+        )
+    
+&gt;       return PlacementFeedbackDelivery(feedback, command.decision_time + timedelta(seconds=1))
+               ^^^^^^^^^^^^^^^^^^^^^^^^^
+E       NameError: name 'PlacementFeedbackDelivery' is not defined
+
+tests/test_structure_two_continuous_input.py:271: NameError</failure></testcase><testcase classname="tests.test_structure_two_continuous_input" name="test_inconsistent_executor_timeline_remains_uncertain[start]" time="0.271"><failure message="NameError: name 'PlacementFeedbackDelivery' is not defined">bad_time = 'start'
+
+    @pytest.mark.parametrize("bad_time", ["arrival", "record", "start"])
+    def test_inconsistent_executor_timeline_remains_uncertain(bad_time):
+        _, stream, backend, transition = setup()
+        deliver(stream, backend, transition)
+        when = transition.after.detection_time + timedelta(seconds=2)
+        command = stream.prepare_habit_placement(decision_time=when)
+        realizer = FixtureWorldExecutor(transition.after.metadata)
+    
+        class BadTimeline:
+            def execute(self, cmd):
+                delivery = realizer.execute(cmd)
+                if bad_time == "arrival":
+                    return replace(delivery, received_at=when)
+                if bad_time == "record":
+                    fb = delivery.feedback.model_copy(
+                        update={
+                            "metadata": delivery.feedback.metadata.model_copy(
+                                update={"recorded_time": when}
+                            )
+                        }
+                    )
+                else:
+                    fb = delivery.feedback.model_copy(
+                        update={
+                            "valid_time": delivery.feedback.valid_time.model_copy(
+                                update={"start": when - timedelta(seconds=1)}
+                            )
+                        }
+                    )
+                return replace(delivery, feedback=fb)
+    
+        with pytest.raises(ValueError):
+&gt;           stream.execute_placement(command, executor=BadTimeline())
+
+tests/test_structure_two_continuous_input.py:453: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/cpswm/system/structure_two_continuous_input.py:466: in execute_placement
+    delivery = executor.execute(deepcopy(command))
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/test_structure_two_continuous_input.py:431: in execute
+    delivery = realizer.execute(cmd)
+               ^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = &lt;test_structure_two_continuous_input.FixtureWorldExecutor object at 0x10c2b8e60&gt;
+command = PlacementCommand(action_id=UUID('084d8fe6-d182-4904-bfa0-73a16e7c3ebf'), object_instance_id=UUID('d912a2b3-2f43-d7ec-6...c-5fe8-e981-d10b5cfd9d0d'), 0.0)), decision_time=datetime.datetime(2026, 1, 1, 8, 10, 2, tzinfo=datetime.timezone.utc))
+
+    def execute(self, command):
+        from cpswm.contracts import (
+            EntityRef,
+            EntityType,
+            ExecutionFeedbackRecord,
+            RobotActionOutcome,
+            RobotActionType,
+            SourceType,
+            ValidTimeInterval,
+        )
+    
+        self.calls += 1
+        self.location = command.location_id
+        if self.fail_after_move:
+            raise OSError("fixture transport failed after movement")
+        feedback = ExecutionFeedbackRecord(
+            metadata=self.metadata.model_copy(
+                update={
+                    "record_id": uuid4(),
+                    "source_type": SourceType.ACTION,
+                    "recorded_time": command.decision_time + timedelta(seconds=1),
+                }
+            ),
+            action_id=uuid4() if self.wrong_reply else command.action_id,
+            action_type=RobotActionType.PLACE,
+            target_entity=EntityRef(
+                entity_id=command.object_instance_id, entity_type=EntityType.OBJECT_INSTANCE
+            ),
+            attempted_location_id=command.location_id,
+            valid_time=ValidTimeInterval(
+                start=command.decision_time, end=command.decision_time + timedelta(seconds=1)
+            ),
+            outcome_distribution={RobotActionOutcome.SUCCESS: 1.0},
+        )
+    
+&gt;       return PlacementFeedbackDelivery(feedback, command.decision_time + timedelta(seconds=1))
+               ^^^^^^^^^^^^^^^^^^^^^^^^^
+E       NameError: name 'PlacementFeedbackDelivery' is not defined
+
+tests/test_structure_two_continuous_input.py:271: NameError</failure></testcase></testsuite></testsuites>

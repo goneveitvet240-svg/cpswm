@@ -1,0 +1,49 @@
+bringing up nodes...
+bringing up nodes...
+
+........................................................................ [  7%]
+........................................................................ [ 15%]
+........................................................................ [ 23%]
+........................................................................ [ 31%]
+........................................................................ [ 39%]
+........................................................................ [ 47%]
+........................................................................ [ 55%]
+........................................................................ [ 63%]
+........................................................................ [ 71%]
+........................................................................ [ 79%]
+........................................................................ [ 87%]
+........................................................................ [ 95%]
+......................................                                   [100%]
+=============================== warnings summary ===============================
+tests/test_structure_two_w3_native_particles.py::test_public_prepared_boundary_rejects_without_mutation[snapshot]
+tests/test_structure_two_w3_native_particles.py::test_public_prepared_boundary_rejects_without_mutation[instance]
+tests/test_structure_two_w3_native_particles.py::test_public_prepared_boundary_rejects_without_mutation[parent]
+tests/test_structure_two_w3_native_particles.py::test_public_prepared_boundary_rejects_without_mutation[statistics]
+tests/test_structure_two_w3_native_particles.py::test_public_prepared_boundary_rejects_without_mutation[ledger]
+tests/test_structure_two_w3_native_particles.py::test_public_prepared_boundary_rejects_without_mutation[neural]
+tests/test_structure_two_w3_native_particles.py::test_public_prepared_boundary_rejects_without_mutation[nan]
+tests/test_structure_two_w3_native_particles.py::test_public_prepared_boundary_rejects_without_mutation[self_parent]
+  /private/tmp/cpswm-pc-a-continuous-loop-20260913/.venv/lib/python3.13/site-packages/pydantic/main.py:475: UserWarning: Pydantic serializer warnings:
+    PydanticSerializationUnexpectedValue(Expected `OrderedActorRole` - serialized value may not be as expected [field_name='ordered_actor_roles', input_value={'role': 'pickup_actor', 'actor_key': 'owner'}, input_type=dict])
+    PydanticSerializationUnexpectedValue(Expected `OrderedActorRole` - serialized value may not be as expected [field_name='ordered_actor_roles', input_value={'role': 'carrier', 'actor_key': 'owner'}, input_type=dict])
+    PydanticSerializationUnexpectedValue(Expected `OrderedActorRole` - serialized value may not be as expected [field_name='ordered_actor_roles', input_value={'role': 'placer', 'actor_key': 'owner'}, input_type=dict])
+    return self.__pydantic_serializer__.to_python(
+
+tests/test_structure_two_w3_native_particles.py::test_public_prepared_boundary_rejects_without_mutation[reactivate]
+  /private/tmp/cpswm-pc-a-continuous-loop-20260913/.venv/lib/python3.13/site-packages/pydantic/main.py:475: UserWarning: Pydantic serializer warnings:
+    PydanticSerializationUnexpectedValue(Expected `enum` - serialized value may not be as expected [field_name='operation', input_value='reactivate', input_type=str])
+    PydanticSerializationUnexpectedValue(Expected `OrderedActorRole` - serialized value may not be as expected [field_name='ordered_actor_roles', input_value={'role': 'pickup_actor', 'actor_key': 'owner'}, input_type=dict])
+    PydanticSerializationUnexpectedValue(Expected `OrderedActorRole` - serialized value may not be as expected [field_name='ordered_actor_roles', input_value={'role': 'carrier', 'actor_key': 'owner'}, input_type=dict])
+    PydanticSerializationUnexpectedValue(Expected `OrderedActorRole` - serialized value may not be as expected [field_name='ordered_actor_roles', input_value={'role': 'placer', 'actor_key': 'owner'}, input_type=dict])
+    return self.__pydantic_serializer__.to_python(
+
+tests/test_structure_two_w3_native_particles.py::test_public_prepared_boundary_rejects_without_mutation[rejuvenate]
+  /private/tmp/cpswm-pc-a-continuous-loop-20260913/.venv/lib/python3.13/site-packages/pydantic/main.py:475: UserWarning: Pydantic serializer warnings:
+    PydanticSerializationUnexpectedValue(Expected `enum` - serialized value may not be as expected [field_name='operation', input_value='rejuvenate', input_type=str])
+    PydanticSerializationUnexpectedValue(Expected `OrderedActorRole` - serialized value may not be as expected [field_name='ordered_actor_roles', input_value={'role': 'pickup_actor', 'actor_key': 'owner'}, input_type=dict])
+    PydanticSerializationUnexpectedValue(Expected `OrderedActorRole` - serialized value may not be as expected [field_name='ordered_actor_roles', input_value={'role': 'carrier', 'actor_key': 'owner'}, input_type=dict])
+    PydanticSerializationUnexpectedValue(Expected `OrderedActorRole` - serialized value may not be as expected [field_name='ordered_actor_roles', input_value={'role': 'placer', 'actor_key': 'owner'}, input_type=dict])
+    return self.__pydantic_serializer__.to_python(
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+902 passed, 10 warnings in 393.09s (0:06:33)

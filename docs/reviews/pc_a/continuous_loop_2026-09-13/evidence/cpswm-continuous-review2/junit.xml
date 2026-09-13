@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="1" skipped="0" tests="11" time="12.018" timestamp="2026-09-13T23:29:14.204425+08:00" hostname="MacBook-Air-2.local"><testcase classname="cpswm-continuous-review2.test_independent" name="test_queued_old_command_never_dispatched_after_newer_completion" time="0.422"><failure message="AssertionError: backdated old command physically dispatched before timeline rejection&#10;assert 2 == 1&#10; +  where 2 = &lt;test_structure_two_continuous_input.FixtureWorldExecutor object at 0x10ad82ba0&gt;.calls">def test_queued_old_command_never_dispatched_after_newer_completion():
+        p,s,b,t,now=ready()
+        older=s.prepare_habit_placement(decision_time=now)
+        newer=s.prepare_habit_placement(decision_time=now+timedelta(seconds=10))
+        world=FixtureWorldExecutor(t.after.metadata)
+        s.execute_placement(newer,executor=world)
+        assert world.calls==1
+        with pytest.raises(ValueError):
+            s.execute_placement(older,executor=world)
+&gt;       assert world.calls==1, 'backdated old command physically dispatched before timeline rejection'
+E       AssertionError: backdated old command physically dispatched before timeline rejection
+E       assert 2 == 1
+E        +  where 2 = &lt;test_structure_two_continuous_input.FixtureWorldExecutor object at 0x10ad82ba0&gt;.calls
+
+../cpswm-continuous-review2/test_independent.py:21: AssertionError</failure></testcase><testcase classname="cpswm-continuous-review2.test_independent" name="test_uncertain_blocks_already_prepared_command_and_forged_reconcile_is_atomic" time="0.418" /><testcase classname="cpswm-continuous-review2.test_independent" name="test_executor_alias_is_detached" time="0.445" /><testcase classname="cpswm-continuous-review2.test_independent" name="test_complete_but_misbound_receipts_rejected_without_resolving[action_id]" time="0.415" /><testcase classname="cpswm-continuous-review2.test_independent" name="test_complete_but_misbound_receipts_rejected_without_resolving[attempted_location_id]" time="0.386" /><testcase classname="cpswm-continuous-review2.test_independent" name="test_complete_but_misbound_receipts_rejected_without_resolving[target_entity]" time="0.415" /><testcase classname="cpswm-continuous-review2.test_independent" name="test_complete_but_misbound_receipts_rejected_without_resolving[source]" time="0.389" /><testcase classname="cpswm-continuous-review2.test_independent" name="test_complete_but_misbound_receipts_rejected_without_resolving[recorded]" time="0.390" /><testcase classname="cpswm-continuous-review2.test_independent" name="test_complete_but_misbound_receipts_rejected_without_resolving[end]" time="0.400" /><testcase classname="cpswm-continuous-review2.test_independent" name="test_complete_but_misbound_receipts_rejected_without_resolving[received]" time="0.419" /><testcase classname="cpswm-continuous-review2.test_independent" name="test_late_revision_changes_command_and_duplicate_moves_watermark" time="7.522" /></testsuite></testsuites>

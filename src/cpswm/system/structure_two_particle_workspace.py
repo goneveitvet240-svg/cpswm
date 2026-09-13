@@ -251,11 +251,14 @@ class NativeParticleWorkspace:
             ),
         )
 
-    def _validate_persisted_state(self) -> None:
+    def _validate_persisted_state(
+        self,
+    ) -> tuple[dict[UUID, NativePreparedInputBody], dict[UUID, NativeParticleRecord]]:
         self.validate_world_support(self.registered_locations)
         if set(self.input_journal) != set(self.input_bodies):
             raise ValueError("prepared input journal and bodies do not have the same closure")
         bodies = {cluster: self._validated_input_body(cluster) for cluster in self.input_journal}
+        validated_records: dict[UUID, NativeParticleRecord] = {}
         journaled_particle_ids = tuple(
             receipt.proposal.proposed_state.particle_id
             for body in bodies.values()
@@ -266,11 +269,19 @@ class NativeParticleWorkspace:
         ) != set(self.records):
             raise ValueError("prepared particle records differ from journaled receipt closure")
         if self.batch is not None:
-            self._validate_current_batch()
+            self._validate_current_batch(
+                validated_bodies=bodies,
+                validated_records=validated_records,
+            )
         elif self.receipts:
             raise ValueError("prepared receipts exist without a current batch")
         for particle_id, record in self.records.items():
-            self._validate_record_binding(record, expected_particle_id=particle_id)
+            self._validate_record_binding(
+                record,
+                expected_particle_id=particle_id,
+                _validated_bodies=bodies,
+                _validated_records=validated_records,
+            )
         expected_consumption: dict[UUID, UUID] = {}
         for cluster, body in bodies.items():
             for source in body.validated_projections.values():
@@ -279,6 +290,7 @@ class NativeParticleWorkspace:
                     raise ValueError("posterior source appears in more than one prepared input")
         if self.consumed_posterior_sources != expected_consumption:
             raise ValueError("posterior source consumption differs from journaled inputs")
+        return bodies, validated_records
 
     @property
     def registered_locations(self) -> tuple[UUID, ...]:
@@ -309,11 +321,19 @@ class NativeParticleWorkspace:
         *,
         expected_particle_id: UUID | None = None,
         _visited: frozenset[UUID] = frozenset(),
+        _validated_bodies: Mapping[UUID, NativePreparedInputBody] | None = None,
+        _validated_records: dict[UUID, NativeParticleRecord] | None = None,
     ) -> None:
         registered = self.registered_locations
         particle_id = record.state.particle_id
         if particle_id in _visited:
             raise ValueError("prepared particle record has cyclic ancestry")
+        if _validated_records is not None and particle_id in _validated_records:
+            if _validated_records[particle_id] != record:
+                raise ValueError("prepared particle identity refers to conflicting records")
+            if expected_particle_id is not None and particle_id != expected_particle_id:
+                raise ValueError("prepared particle record key differs from its identity")
+            return
         if (
             (expected_particle_id is not None and particle_id != expected_particle_id)
             or record.workspace_runtime_id != self.runtime_id
@@ -335,6 +355,8 @@ class NativeParticleWorkspace:
                 parent,
                 expected_particle_id=parent_id,
                 _visited=_visited | {particle_id},
+                _validated_bodies=_validated_bodies,
+                _validated_records=_validated_records,
             )
         elif record.state.parent_revision_id is not None:
             raise ValueError("initial prepared particle record claims a parent revision")
@@ -346,7 +368,13 @@ class NativeParticleWorkspace:
         if record.statistics.evidence_cluster_ids != expected_clusters:
             raise ValueError("prepared particle record has an invalid evidence cluster lineage")
 
-        body = self._validated_input_body(record.evidence_cluster_id)
+        body = (
+            _validated_bodies.get(record.evidence_cluster_id)
+            if _validated_bodies is not None
+            else None
+        )
+        if body is None:
+            body = self._validated_input_body(record.evidence_cluster_id)
         if record.input_fingerprint_sha256 != self.input_journal[
             record.evidence_cluster_id
         ] or record.source_frame_sha256 != native_content_sha256(body.source_frame):
@@ -381,6 +409,8 @@ class NativeParticleWorkspace:
         )
         if record.event_chain_history != expected_history:
             raise ValueError("prepared particle event-chain history differs from its source")
+        if _validated_records is not None:
+            _validated_records[particle_id] = record
 
     def _validated_input_body(self, cluster: UUID) -> NativePreparedInputBody:
         body = self.input_bodies.get(cluster)
@@ -441,11 +471,22 @@ class NativeParticleWorkspace:
                 raise ValueError("prepared posterior projection has an invalid runtime source")
         return body
 
-    def _validate_current_batch(self) -> None:
+    def _validate_current_batch(
+        self,
+        *,
+        validated_bodies: Mapping[UUID, NativePreparedInputBody] | None = None,
+        validated_records: dict[UUID, NativeParticleRecord] | None = None,
+    ) -> None:
         batch = self.batch
         if batch is None:
             raise ValueError("no prepared particle posterior")
-        body = self._validated_input_body(batch.evidence_cluster_id)
+        body = (
+            validated_bodies.get(batch.evidence_cluster_id)
+            if validated_bodies is not None
+            else None
+        )
+        if body is None:
+            body = self._validated_input_body(batch.evidence_cluster_id)
         expected = normalize_particle_revisions(
             body.receipts, unresolved_log_weight=body.unresolved_log_weight
         )
@@ -455,7 +496,12 @@ class NativeParticleWorkspace:
             record = self.records.get(weight.particle_id)
             if record is None:
                 raise ValueError("prepared particle batch is missing a particle record")
-            self._validate_record_binding(record, expected_particle_id=weight.particle_id)
+            self._validate_record_binding(
+                record,
+                expected_particle_id=weight.particle_id,
+                _validated_bodies=validated_bodies,
+                _validated_records=validated_records,
+            )
 
     def publish_posterior(
         self,
@@ -517,7 +563,7 @@ class NativeParticleWorkspace:
     ) -> ParticleRevisionBatch:
         if not receipts:
             raise ValueError("prepared candidate batch must be nonempty")
-        self._validate_persisted_state()
+        validated_bodies, validated_records = self._validate_persisted_state()
         if self.invalidated_revisions:
             raise ValueError("full particle replay required; selected replay kernel is not bound")
         # Revalidate even model_copy/model_construct inputs, and detach caller
@@ -584,7 +630,12 @@ class NativeParticleWorkspace:
             if state.parent_particle_id is not None and parent is None:
                 raise ValueError("conditional statistic lineage has no runtime parent")
             if parent is not None:
-                self._validate_record_binding(parent, expected_particle_id=state.parent_particle_id)
+                self._validate_record_binding(
+                    parent,
+                    expected_particle_id=state.parent_particle_id,
+                    _validated_bodies=validated_bodies,
+                    _validated_records=validated_records,
+                )
             expected_clusters = (
                 (proposal.evidence_cluster_id,)
                 if parent is None
@@ -664,6 +715,33 @@ class NativeParticleWorkspace:
             chain = chains.get(state.event_hypothesis_id)
             if chain is None:
                 raise ValueError("candidate event chain was not produced by this runtime")
+            # ``advance`` is a public workspace boundary, so do not trust a
+            # caller-provided mapping merely because its UUID and actor roles
+            # look plausible.  Bind the exact chain to the runtime-owned
+            # source-frame history before constructing any record; otherwise a
+            # resealed but altered chain can be committed and only discovered
+            # later by ``state_payload``.
+            try:
+                submitted_chain = EventChainHypothesis.model_validate(chain.model_dump())
+                source_frames, _cause_snapshot = source_frame
+                raw_history = source_frames[state.revision_id][0]
+                source_history = EventHypothesisHistory.model_validate(raw_history.model_dump())
+            except (AttributeError, KeyError, TypeError, ValueError) as error:
+                raise ValueError("candidate source history is unavailable") from error
+            matching_chains = tuple(
+                candidate
+                for candidate in source_history.latest.hypotheses
+                if candidate.hypothesis_id == state.event_hypothesis_id
+            )
+            if (
+                submitted_chain != chain
+                or len(matching_chains) != 1
+                or submitted_chain != matching_chains[0]
+            ):
+                raise ValueError("candidate event chain differs from its runtime source history")
+            # Store the detached, schema-revalidated runtime source rather than
+            # retaining an alias to the caller's chain object.
+            chain = matching_chains[0]
             roles = {
                 "pickup_actor": chain.steps[0].actor_key,
                 "carrier": chain.steps[1].actor_key,
@@ -699,7 +777,12 @@ class NativeParticleWorkspace:
                     raise ValueError("particle parent revision or weight mismatch")
                 if parent.world_support_sha256 != world_support_sha256:
                     raise ValueError("particle parent belongs to another world support")
-                self._validate_record_binding(parent, expected_particle_id=state.parent_particle_id)
+                self._validate_record_binding(
+                    parent,
+                    expected_particle_id=state.parent_particle_id,
+                    _validated_bodies=validated_bodies,
+                    _validated_records=validated_records,
+                )
             elif (
                 self.records
                 or receipt.prior_log_weight != 0.0

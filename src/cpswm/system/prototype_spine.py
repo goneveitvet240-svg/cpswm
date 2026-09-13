@@ -420,6 +420,7 @@ def _serialized_core_mutation[**P, R](
             self._require_external_mutation_permission()
             if self._mutation_is_forbidden_during_sink_commit():
                 raise RuntimeError("runtime mutation is forbidden during trace sink commit")
+            self._validate_correction_state_anchors()
             return method(self, *args, **kwargs)
 
     return wrapped
@@ -1088,6 +1089,15 @@ class DeferredCorrectionCancellation:
 
     def validate_content(self) -> None:
         request, parent, child = self.request, self.parent_event, self.corrected_event
+        restore_by_revision = {event.revision_id: event for event in self.restore_events}
+        fast_ids = tuple(event.revision_id for event in self.restore_fast_events)
+        available_parents = {parent.revision_id}
+        valid_restore_topology = True
+        for event in self.restore_events[1:]:
+            if event.derived_from_revision_id not in available_parents:
+                valid_restore_topology = False
+                break
+            available_parents.add(event.revision_id)
         if (
             self.body_sha256 != native_content_sha256(self.body())
             or self.request_fingerprint != _project_one_request_fingerprint(request)
@@ -1101,7 +1111,16 @@ class DeferredCorrectionCancellation:
             or child.source_record_id != request.source_feedback_record_id
             or self.after_operation_count < 1
             or not self.restore_events
-            or self.restore_events[0].revision_id != parent.revision_id
+            or self.restore_events[0] != parent
+            or len(restore_by_revision) != len(self.restore_events)
+            or child.revision_id in restore_by_revision
+            or not valid_restore_topology
+            or len(set(fast_ids)) != len(fast_ids)
+            or any(
+                event.revision_id not in restore_by_revision for event in self.restore_fast_events
+            )
+            or self.trigger_revision_id in {parent.revision_id, child.revision_id}
+            or not self.rationale.strip()
         ):
             raise ValueError("invalid deferred cancellation content or request binding")
 
@@ -1189,12 +1208,22 @@ class CorePrototypeSpine:
         self._deferred_correction_restore: dict[
             str, tuple[tuple[_CommittedPrototypeEvent, ...], tuple[_CommittedPrototypeEvent, ...]]
         ] = {}
+        # Caller-visible immutable tuples can still be replaced wholesale and
+        # coherently resealed. Preserve the exact bodies accepted by the core in
+        # separate maps, parallel to the prepared-particle acceptance anchors.
+        self._deferred_correction_restore_anchors: dict[str, str] = {}
+        self._correction_cancellation_anchors: dict[str, str] = {}
         self._revision_parent_events: dict[UUID, _CommittedPrototypeEvent] = {}
         self._hybrid_reinstatement_lineage: dict[UUID, tuple[UUID, UUID | None]] = {}
         self._particle_workspace = NativeParticleWorkspace(
             registered_locations=self._registered_particle_locations
         )
         self._particle_workspace_anchor = self._particle_workspace
+        # Keep the trusted acceptance fingerprints outside the caller-visible
+        # workspace state.  Internal workspace hashes establish self-consistency;
+        # this core-owned map establishes that a coherently resealed workspace is
+        # still the exact input accepted through the production boundary.
+        self._particle_input_anchors: dict[UUID, str] = {}
         self._event_histories: dict[UUID, EventHypothesisHistory] = {}
         self._production_operator_contract: Callable[[], Mapping[str, Sequence[object]]] | None = (
             None
@@ -1748,6 +1777,7 @@ class CorePrototypeSpine:
                 )
                 self._deferred_project_one_requests.pop(fingerprint, None)
                 self._deferred_correction_restore.pop(fingerprint, None)
+                self._deferred_correction_restore_anchors.pop(fingerprint, None)
                 receipts.append(receipt)
             return tuple(receipts)
         # A manual or duplicate promotion notification is an auditable replay noop.
@@ -1794,6 +1824,14 @@ class CorePrototypeSpine:
                 restoration = self._deferred_correction_restore.get(fingerprint)
                 if restoration is None or restoration[0][0].revision_id != parent.revision_id:
                     raise ValueError("missing original deferred correction contribution snapshot")
+                expected_restoration = self._deferred_correction_restore_anchors.get(fingerprint)
+                if (
+                    expected_restoration is None
+                    or native_content_sha256(restoration) != expected_restoration
+                ):
+                    raise ValueError(
+                        "deferred correction restoration differs from its acceptance anchor"
+                    )
                 cancellation = DeferredCorrectionCancellation(
                     fingerprint,
                     request,
@@ -1808,6 +1846,11 @@ class CorePrototypeSpine:
                     cancellation, body_sha256=native_content_sha256(cancellation.body())
                 )
                 cancellation.validate_content()
+                if fingerprint in self._correction_cancellation_anchors:
+                    raise ValueError("duplicate deferred correction cancellation anchor")
+                self._correction_cancellation_anchors[fingerprint] = native_content_sha256(
+                    cancellation.body()
+                )
                 self._correction_cancellations = (*self._correction_cancellations, cancellation)
                 self._observed_events.pop(child_id)
                 self._fast_action_events.pop(child_id, None)
@@ -1830,6 +1873,7 @@ class CorePrototypeSpine:
             )
             self._deferred_project_one_requests.pop(fingerprint, None)
             self._deferred_correction_restore.pop(fingerprint, None)
+            self._deferred_correction_restore_anchors.pop(fingerprint, None)
         return tuple(receipts)
 
     @property
@@ -2506,6 +2550,9 @@ class CorePrototypeSpine:
     def _execution_observable_state_sha256(self) -> str:
         """Hash the auditable state envelope without claiming full state custody."""
 
+        self._check_particle_workspace_binding()
+        self._validate_particle_input_anchors()
+        self._validate_correction_state_anchors()
         router = self._automatic_regimes
 
         def event_rows(
@@ -2806,6 +2853,7 @@ class CorePrototypeSpine:
 
         with self._execution_lock:
             self._check_particle_workspace_binding()
+            self._validate_particle_input_anchors()
             return semantic_memory_identity(self)
 
     @_serialized_core_mutation
@@ -2826,6 +2874,7 @@ class CorePrototypeSpine:
             self._production_operator_contract()
         chains = {}
         self._check_particle_workspace_binding()
+        self._validate_particle_input_anchors()
         frames = {}
         for receipt in receipts:
             rid = receipt.proposal.proposed_state.revision_id
@@ -2867,7 +2916,7 @@ class CorePrototypeSpine:
                     ):
                         raise ValueError("posterior projection belongs to another event revision")
                     projections[receipt.proposal.proposed_state.particle_id] = source
-            return self._particle_workspace.advance(
+            batch = self._particle_workspace.advance(
                 receipts=receipts,
                 statistics=statistics,
                 chains=chains,
@@ -2878,6 +2927,15 @@ class CorePrototypeSpine:
                 unresolved_log_weight=unresolved_log_weight,
                 validated_projections=projections,
             )
+            cluster = batch.evidence_cluster_id
+            fingerprint = self._particle_workspace.input_journal.get(cluster)
+            if fingerprint is None:
+                raise ValueError("prepared particle input was not journaled")
+            previous = self._particle_input_anchors.setdefault(cluster, fingerprint)
+            if previous != fingerprint:
+                raise ValueError("prepared particle input differs from its core acceptance anchor")
+            self._validate_particle_input_anchors()
+            return batch
         except BaseException:
             self._restore_revision_transaction(checkpoint)
             raise
@@ -2934,10 +2992,40 @@ class CorePrototypeSpine:
         """Read the explicit candidate posterior, keeping unknown mass separate."""
         with self._execution_lock:
             self._check_particle_workspace_binding()
+            self._validate_particle_input_anchors()
             batch = self._particle_workspace.batch
             if batch is None or batch.snapshot_id != self.current_snapshot.snapshot_id:
                 raise ValueError("prepared particle source snapshot is stale or missing")
             return self._particle_workspace.location_marginal()
+
+    def _validate_particle_input_anchors(self) -> None:
+        """Bind every persisted prepared input to a core-accepted fingerprint."""
+
+        if self._particle_workspace.input_journal != self._particle_input_anchors:
+            raise ValueError(
+                "prepared particle inputs differ from core runtime acceptance binding anchors"
+            )
+
+    def _validate_correction_state_anchors(self) -> None:
+        """Bind staged restorations and durable cancellations to accepted bodies."""
+
+        staged = {
+            fingerprint: native_content_sha256(restoration)
+            for fingerprint, restoration in self._deferred_correction_restore.items()
+        }
+        if staged != self._deferred_correction_restore_anchors:
+            raise ValueError("deferred correction restoration differs from core acceptance anchors")
+        cancellations: dict[str, str] = {}
+        for cancellation in self._correction_cancellations:
+            cancellation.validate_content()
+            fingerprint = cancellation.request_fingerprint
+            if fingerprint in cancellations:
+                raise ValueError("duplicate deferred correction cancellation record")
+            cancellations[fingerprint] = native_content_sha256(cancellation.body())
+        if cancellations != self._correction_cancellation_anchors:
+            raise ValueError(
+                "deferred correction cancellation differs from core acceptance anchors"
+            )
 
     def _check_particle_workspace_binding(self) -> None:
         if (
@@ -2989,6 +3077,7 @@ class CorePrototypeSpine:
         force_long_term_write_blocked: bool = False,
         identity_switch_probability: float | None = None,
     ) -> PrototypeStepResult:
+        self._validate_correction_state_anchors()
         self._validate_transition(transition)
         identity_switch_probability = (
             transition.identity_switch_probability
@@ -3762,9 +3851,12 @@ class CorePrototypeSpine:
             "hybrid_reinstatement_lineage": dict(self._hybrid_reinstatement_lineage),
             "correction_cancellations": self._correction_cancellations,
             "deferred_correction_restore": dict(self._deferred_correction_restore),
+            "deferred_correction_restore_anchors": dict(self._deferred_correction_restore_anchors),
+            "correction_cancellation_anchors": dict(self._correction_cancellation_anchors),
             "revision_parent_events": dict(self._revision_parent_events),
             "particle_workspace": self._particle_workspace,
             "particle_workspace_state": deepcopy(self._particle_workspace),
+            "particle_input_anchors": dict(self._particle_input_anchors),
             "event_histories": dict(self._event_histories),
             "production_operator_contract": self._production_operator_contract,
             "quarantined_events": list(self._quarantined_events),
@@ -3909,9 +4001,16 @@ class CorePrototypeSpine:
         self._correction_cancellations = checkpoint["correction_cancellations"]  # type: ignore[assignment]
         self._revision_parent_events = checkpoint["revision_parent_events"]  # type: ignore[assignment]
         self._deferred_correction_restore = checkpoint["deferred_correction_restore"]  # type: ignore[assignment]
+        self._deferred_correction_restore_anchors = cast(
+            dict[str, str], checkpoint["deferred_correction_restore_anchors"]
+        )
+        self._correction_cancellation_anchors = cast(
+            dict[str, str], checkpoint["correction_cancellation_anchors"]
+        )
         workspace = checkpoint["particle_workspace"]
         _restore_reference_state(workspace, checkpoint["particle_workspace_state"])
         self._particle_workspace = workspace  # type: ignore[assignment]
+        self._particle_input_anchors = cast(dict[UUID, str], checkpoint["particle_input_anchors"])
         self._event_histories = checkpoint["event_histories"]  # type: ignore[assignment]
         self._production_operator_contract = checkpoint["production_operator_contract"]  # type: ignore[assignment]
         self._quarantined_events = checkpoint["quarantined_events"]  # type: ignore[assignment]
@@ -4325,7 +4424,11 @@ class CorePrototypeSpine:
                 request.corrected_revision_id,
                 "promotion_finalizes",
             )
-            self._deferred_correction_restore[fingerprint] = (restore_events, restore_fast)
+            restoration = (restore_events, restore_fast)
+            self._deferred_correction_restore[fingerprint] = restoration
+            self._deferred_correction_restore_anchors[fingerprint] = native_content_sha256(
+                restoration
+            )
             return self._record_request_receipt(
                 request=request,
                 fingerprint=fingerprint,
@@ -4561,6 +4664,7 @@ class CorePrototypeSpine:
         machinery actually maintains and the pooled count cannot express.
         """
 
+        self._validate_correction_state_anchors()
         if snapshot.snapshot_id != self.current_snapshot.snapshot_id:
             raise ValueError("planner attempted to read a stale belief snapshot")
         config = readout or self._action_readout

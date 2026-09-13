@@ -1,0 +1,352 @@
+{
+  "command": {
+    "argv": [
+      "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/.venv/bin/python",
+      "-m",
+      "pytest",
+      "-o",
+      "addopts=",
+      "-q",
+      "-p",
+      "xdist.plugin",
+      "-n4",
+      "-p",
+      "no:cacheprovider",
+      "tests/test_structure_two_comparison_audit.py",
+      "tests/test_structure_two_comparison_audit_verification.py",
+      "tests/test_structure_two_comparison_audit_execution_source.py",
+      "tests/test_structure_two_comparison_fairness.py",
+      "tests/test_structure_two_comparison_dynamic.py"
+    ],
+    "cwd": "/private/tmp/cpswm-pc-a-review6-w2.pfIMZc",
+    "environment": {
+      "PYTHONPATH": "/private/tmp/cpswm-pc-a-review6-w2.pfIMZc/src",
+      "PYTEST_DISABLE_PLUGIN_AUTOLOAD": "1",
+      "S2_AUDIT_BUNDLE": "/private/tmp/cpswm-pc-a-review6-w2.pfIMZc/docs/reviews/data/structure_two_comparison_dynamic_window2_2026-09-12T1500/bundle_v5",
+      "OMP_NUM_THREADS": "1",
+      "OPENBLAS_NUM_THREADS": "1",
+      "VECLIB_MAXIMUM_THREADS": "1"
+    },
+    "started": 1789208913.4380832,
+    "exit_code": 0,
+    "ended": 1789209608.71134
+  },
+  "matrices": [
+    {
+      "path": "w2_evidence/temporary/popen-gw0/test_real_cli_complete_forgery0/evidence/adversarial_matrix.json",
+      "positive": {
+        "bundle": "/private/tmp/cpswm-pc-a-review6-w2.pfIMZc/docs/reviews/data/structure_two_comparison_dynamic_window2_2026-09-12T1500/bundle_v5",
+        "episodes": 60,
+        "formal_scientific_verification": false,
+        "independent_historical_custody": false,
+        "input_snapshot_sha256": "8d839f277f4d00cb5a848151e9da72e31ffed9e4a860b132f07c993ae96a5f02",
+        "semantic_steps_sha256": "a14419c97cc848dfb60610d1df88fd4f7bdc3a87146c396c1741104752756d4e",
+        "status": "CURRENT_SOURCE_FRESH_REPLAY_MATCH",
+        "steps": 1920
+      },
+      "rejected": 21
+    },
+    {
+      "path": "w2_evidence/temporary/popen-gw3/test_complete_fairness_forgeri0/evidence/fairness_forgery_matrix.json",
+      "positive": {
+        "bundle": "/private/tmp/cpswm-pc-a-review6-w2.pfIMZc/docs/reviews/data/structure_two_comparison_dynamic_window2_2026-09-12T1500/bundle_v5",
+        "episodes": 60,
+        "formal_scientific_verification": false,
+        "independent_historical_custody": false,
+        "input_snapshot_sha256": "8d839f277f4d00cb5a848151e9da72e31ffed9e4a860b132f07c993ae96a5f02",
+        "semantic_steps_sha256": "a14419c97cc848dfb60610d1df88fd4f7bdc3a87146c396c1741104752756d4e",
+        "status": "CURRENT_SOURCE_FRESH_REPLAY_MATCH",
+        "steps": 1920
+      },
+      "rejected": 6
+    },
+    {
+      "path": "w2_evidence/temporary/popen-gw1/test_new_dynamic_dependency_fo0/evidence/matrix.json",
+      "positive": {
+        "bundle": "/private/tmp/cpswm-pc-a-review6-w2.pfIMZc/docs/reviews/data/structure_two_comparison_dynamic_window2_2026-09-12T1500/bundle_v5",
+        "episodes": 60,
+        "formal_scientific_verification": false,
+        "independent_historical_custody": false,
+        "input_snapshot_sha256": "8d839f277f4d00cb5a848151e9da72e31ffed9e4a860b132f07c993ae96a5f02",
+        "semantic_steps_sha256": "a14419c97cc848dfb60610d1df88fd4f7bdc3a87146c396c1741104752756d4e",
+        "status": "CURRENT_SOURCE_FRESH_REPLAY_MATCH",
+        "steps": 1920
+      },
+      "rejected": 4
+    }
+  ],
+  "source_records": 16,
+  "evidence_files": {
+    "temporary/popen-gw3/test_complete_fairness_forgeri0/evidence/fairness_forgery_matrix.json": {
+      "original": "/private/var/folders/x2/000r8p0n6s393lj2sg8wk5f40000gn/T/pytest-of-pangwei/pytest-1756/popen-gw3/test_complete_fairness_forgeri0/evidence/fairness_forgery_matrix.json",
+      "sha256": "4a6a24790ec53309d384c6e615704022b601844fe9d247695fd5eb5955636a08"
+    },
+    "temporary/popen-gw3/test_complete_fairness_forgeri0/evidence/fairness_forgery_cli.log": {
+      "original": "/private/var/folders/x2/000r8p0n6s393lj2sg8wk5f40000gn/T/pytest-of-pangwei/pytest-1756/popen-gw3/test_complete_fairness_forgeri0/evidence/fairness_forgery_cli.log",
+      "sha256": "6e646904ae95296d1ad4d2b516418bb99b7194bf2b7d0e8b89a1747784fce985"
+    },
+    "temporary/popen-gw2/test_real_full_positive_compil0/A/source-evidence/full_positive_stale_pyc_attribution.json": {
+      "original": "/private/var/folders/x2/000r8p0n6s393lj2sg8wk5f40000gn/T/pytest-of-pangwei/pytest-1756/popen-gw2/test_real_full_positive_compil0/A/source-evidence/full_positive_stale_pyc_attribution.json",
+      "sha256": "0ec435d14cb6e30021e0345a3fa1b3a934630b0117a9e7530b7c682f5522664c"
+    },
+    "temporary/popen-gw2/test_real_full_positive_compil0/A/source-evidence/full_positive_stale_pyc_attribution.log": {
+      "original": "/private/var/folders/x2/000r8p0n6s393lj2sg8wk5f40000gn/T/pytest-of-pangwei/pytest-1756/popen-gw2/test_real_full_positive_compil0/A/source-evidence/full_positive_stale_pyc_attribution.log",
+      "sha256": "ee864e1a533a2d861ae728b45ffc0685dd40bac3939d98261c19fde55903d44d"
+    },
+    "temporary/popen-gw2/test_preloaded_old_module_with1/A/source-evidence/preloaded_old_attribution.log": {
+      "original": "/private/var/folders/x2/000r8p0n6s393lj2sg8wk5f40000gn/T/pytest-of-pangwei/pytest-1756/popen-gw2/test_preloaded_old_module_with1/A/source-evidence/preloaded_old_attribution.log",
+      "sha256": "897da83d5598d6311bbd0d8db0735aa10269293edfc370598691d067fa71622b"
+    },
+    "temporary/popen-gw2/test_preloaded_old_module_with1/A/source-evidence/preloaded_old_attribution.json": {
+      "original": "/private/var/folders/x2/000r8p0n6s393lj2sg8wk5f40000gn/T/pytest-of-pangwei/pytest-1756/popen-gw2/test_preloaded_old_module_with1/A/source-evidence/preloaded_old_attribution.json",
+      "sha256": "95ad555ece59cf87b8aed2ab79ce97ddf364977b55d782e810b914adb0987a24"
+    },
+    "temporary/popen-gw2/test_preloaded_old_module_with0/A/source-evidence/preloaded_old_main.log": {
+      "original": "/private/var/folders/x2/000r8p0n6s393lj2sg8wk5f40000gn/T/pytest-of-pangwei/pytest-1756/popen-gw2/test_preloaded_old_module_with0/A/source-evidence/preloaded_old_main.log",
+      "sha256": "df8bf02f002a973bbce2941406f41162c67962b484bf9b0495cb3eab8fd6822d"
+    },
+    "temporary/popen-gw2/test_preloaded_old_module_with0/A/source-evidence/preloaded_old_main.json": {
+      "original": "/private/var/folders/x2/000r8p0n6s393lj2sg8wk5f40000gn/T/pytest-of-pangwei/pytest-1756/popen-gw2/test_preloaded_old_module_with0/A/source-evidence/preloaded_old_main.json",
+      "sha256": "8d5ed75572b6164072eaa6fbcd23fa217117c8cdc8e35d86943096c96174eb8c"
+    },
+    "temporary/popen-gw2/test_fresh_identifier_out_of_o0/evidence/fresh_identifier_late_input.json": {
+      "original": "/private/var/folders/x2/000r8p0n6s393lj2sg8wk5f40000gn/T/pytest-of-pangwei/pytest-1756/popen-gw2/test_fresh_identifier_out_of_o0/evidence/fresh_identifier_late_input.json",
+      "sha256": "1122c04bf0580c4c2cdb801db7846d527aa48b2e951a8631f89465c5d46fca4b"
+    },
+    "temporary/popen-gw2/test_only_downstream_source_sy0/A/source-evidence/downstream_symlink_attribution.log": {
+      "original": "/private/var/folders/x2/000r8p0n6s393lj2sg8wk5f40000gn/T/pytest-of-pangwei/pytest-1756/popen-gw2/test_only_downstream_source_sy0/A/source-evidence/downstream_symlink_attribution.log",
+      "sha256": "3f16885cae4aa6eb22a17ff4a29f3bb0f94ca18d28d033dace4885c529e03505"
+    },
+    "temporary/popen-gw2/test_only_downstream_source_sy0/A/source-evidence/downstream_symlink_attribution.json": {
+      "original": "/private/var/folders/x2/000r8p0n6s393lj2sg8wk5f40000gn/T/pytest-of-pangwei/pytest-1756/popen-gw2/test_only_downstream_source_sy0/A/source-evidence/downstream_symlink_attribution.json",
+      "sha256": "374dbc83ce836489d45e77ad38dad96e71357b25362f4959c384c00b7001d204"
+    },
+    "temporary/popen-gw0/test_real_cli_complete_forgery0/evidence/adversarial_matrix.json": {
+      "original": "/private/var/folders/x2/000r8p0n6s393lj2sg8wk5f40000gn/T/pytest-of-pangwei/pytest-1756/popen-gw0/test_real_cli_complete_forgery0/evidence/adversarial_matrix.json",
+      "sha256": "5cad68a0e76a703a69cfa71fab6d19b727b94e5e8ca1a7ba6b21997dda8c4115"
+    },
+    "temporary/popen-gw0/test_real_cli_complete_forgery0/evidence/adversarial_cli.log": {
+      "original": "/private/var/folders/x2/000r8p0n6s393lj2sg8wk5f40000gn/T/pytest-of-pangwei/pytest-1756/popen-gw0/test_real_cli_complete_forgery0/evidence/adversarial_cli.log",
+      "sha256": "4c5ec36a1463607dc479cd79be655671e5855582c324218239bbd338dbe7658b"
+    },
+    "temporary/popen-gw0/test_real_cli_complete_forgery0/evidence/r1_file_consistency_only.log": {
+      "original": "/private/var/folders/x2/000r8p0n6s393lj2sg8wk5f40000gn/T/pytest-of-pangwei/pytest-1756/popen-gw0/test_real_cli_complete_forgery0/evidence/r1_file_consistency_only.log",
+      "sha256": "6e5f532f87c39e22538dc377a71eb5481a157c53bcd0c13687dd4c37701a3204"
+    },
+    "temporary/popen-gw0/test_only_downstream_source_sy0/A/source-evidence/downstream_symlink_main.log": {
+      "original": "/private/var/folders/x2/000r8p0n6s393lj2sg8wk5f40000gn/T/pytest-of-pangwei/pytest-1756/popen-gw0/test_only_downstream_source_sy0/A/source-evidence/downstream_symlink_main.log",
+      "sha256": "cdb492bdfbd0e32f45c32178b724a4ae4dc310a0b40559d451e203fd34e03c6f"
+    },
+    "temporary/popen-gw0/test_only_downstream_source_sy0/A/source-evidence/downstream_symlink_main.json": {
+      "original": "/private/var/folders/x2/000r8p0n6s393lj2sg8wk5f40000gn/T/pytest-of-pangwei/pytest-1756/popen-gw0/test_only_downstream_source_sy0/A/source-evidence/downstream_symlink_main.json",
+      "sha256": "4db8960b4ce8239114c918d205cd811ce56ca0f9a098337ad37f6f5ff5aedb92"
+    },
+    "temporary/popen-gw1/test_source_drift_after_input_0/A/source-evidence/runtime_drift_main.json": {
+      "original": "/private/var/folders/x2/000r8p0n6s393lj2sg8wk5f40000gn/T/pytest-of-pangwei/pytest-1756/popen-gw1/test_source_drift_after_input_0/A/source-evidence/runtime_drift_main.json",
+      "sha256": "d69852a532fe1a09a1b533309f3f15ba359c2badf0f40815eebf28388a5b223b"
+    },
+    "temporary/popen-gw1/test_source_drift_after_input_0/A/source-evidence/runtime_drift_main.log": {
+      "original": "/private/var/folders/x2/000r8p0n6s393lj2sg8wk5f40000gn/T/pytest-of-pangwei/pytest-1756/popen-gw1/test_source_drift_after_input_0/A/source-evidence/runtime_drift_main.log",
+      "sha256": "8eb48579adfb490523e840bdd8c6629f587210837cab36910aff966d753b388e"
+    },
+    "temporary/popen-gw1/test_source_drift_after_input_1/A/source-evidence/runtime_drift_attribution.json": {
+      "original": "/private/var/folders/x2/000r8p0n6s393lj2sg8wk5f40000gn/T/pytest-of-pangwei/pytest-1756/popen-gw1/test_source_drift_after_input_1/A/source-evidence/runtime_drift_attribution.json",
+      "sha256": "01dbfeaaac66379d6d903bc1f57a450495d8d6e5093e5cd9a8f388d7fbb69cd8"
+    },
+    "temporary/popen-gw1/test_source_drift_after_input_1/A/source-evidence/runtime_drift_attribution.log": {
+      "original": "/private/var/folders/x2/000r8p0n6s393lj2sg8wk5f40000gn/T/pytest-of-pangwei/pytest-1756/popen-gw1/test_source_drift_after_input_1/A/source-evidence/runtime_drift_attribution.log",
+      "sha256": "a5dbc6e4dd40035946000c1d6c49bf9a317894700ddf3ef622c91e8725f0cb8e"
+    },
+    "temporary/popen-gw1/test_new_dynamic_dependency_fo0/evidence/dynamic_forgery_cli.log": {
+      "original": "/private/var/folders/x2/000r8p0n6s393lj2sg8wk5f40000gn/T/pytest-of-pangwei/pytest-1756/popen-gw1/test_new_dynamic_dependency_fo0/evidence/dynamic_forgery_cli.log",
+      "sha256": "7dd3e7e772a0b6b1d0a307efd99e252baba4f8f0a782fd90c274a6a57b0ddb45"
+    },
+    "temporary/popen-gw1/test_new_dynamic_dependency_fo0/evidence/matrix.json": {
+      "original": "/private/var/folders/x2/000r8p0n6s393lj2sg8wk5f40000gn/T/pytest-of-pangwei/pytest-1756/popen-gw1/test_new_dynamic_dependency_fo0/evidence/matrix.json",
+      "sha256": "a7755762ddfb5efabe9ecb2d04a324bfd950a44786714defd094ce872602659c"
+    },
+    "temporary/popen-gw1/test_stale_entry_code_rejected1/A/source-evidence/stale_entry_attribution.log": {
+      "original": "/private/var/folders/x2/000r8p0n6s393lj2sg8wk5f40000gn/T/pytest-of-pangwei/pytest-1756/popen-gw1/test_stale_entry_code_rejected1/A/source-evidence/stale_entry_attribution.log",
+      "sha256": "603ca91d4a5873766bdb9c161e7995be7c9fe08c77a90bdffc9cff894bb3ca79"
+    },
+    "temporary/popen-gw1/test_stale_entry_code_rejected1/A/source-evidence/stale_entry_attribution.json": {
+      "original": "/private/var/folders/x2/000r8p0n6s393lj2sg8wk5f40000gn/T/pytest-of-pangwei/pytest-1756/popen-gw1/test_stale_entry_code_rejected1/A/source-evidence/stale_entry_attribution.json",
+      "sha256": "37592e99b68120175ff54dc23b3d8bc06a1d9c6023fc1dfa3d92aab53c9d4400"
+    },
+    "temporary/popen-gw1/test_stale_entry_code_rejected0/A/source-evidence/stale_entry_main.log": {
+      "original": "/private/var/folders/x2/000r8p0n6s393lj2sg8wk5f40000gn/T/pytest-of-pangwei/pytest-1756/popen-gw1/test_stale_entry_code_rejected0/A/source-evidence/stale_entry_main.log",
+      "sha256": "7be33b37969a0ee4be691cae67ad5037b169a7f7d5977f10d1329b235a762364"
+    },
+    "temporary/popen-gw1/test_stale_entry_code_rejected0/A/source-evidence/stale_entry_main.json": {
+      "original": "/private/var/folders/x2/000r8p0n6s393lj2sg8wk5f40000gn/T/pytest-of-pangwei/pytest-1756/popen-gw1/test_stale_entry_code_rejected0/A/source-evidence/stale_entry_main.json",
+      "sha256": "4df8017dbfdf63240086e2fcfd67ac1a4ae8cce6333819409ce0673ec956a745"
+    },
+    "temporary/popen-gw1/test_real_full_positive_compil0/A/source-evidence/full_positive_stale_pyc_main.log": {
+      "original": "/private/var/folders/x2/000r8p0n6s393lj2sg8wk5f40000gn/T/pytest-of-pangwei/pytest-1756/popen-gw1/test_real_full_positive_compil0/A/source-evidence/full_positive_stale_pyc_main.log",
+      "sha256": "507e2c8c5ef1c584aa528f6e4681dfd1855ad79ccda2779f20566b24c044a74b"
+    },
+    "temporary/popen-gw1/test_real_full_positive_compil0/A/source-evidence/full_positive_stale_pyc_main.json": {
+      "original": "/private/var/folders/x2/000r8p0n6s393lj2sg8wk5f40000gn/T/pytest-of-pangwei/pytest-1756/popen-gw1/test_real_full_positive_compil0/A/source-evidence/full_positive_stale_pyc_main.json",
+      "sha256": "2e63352d2f8e1b841d5de788e70014830e093c03193941f0bf0c80b4456046b1"
+    },
+    "source/repository_root_mismatch.json": {
+      "original": "/private/tmp/cpswm-pc-a-review6-w2.pfIMZc/source-evidence/repository_root_mismatch.json",
+      "sha256": "cc35d3108ea2ec0b6ed0347982bcb66744340de540ad951cc8539b2f02d3fe69"
+    },
+    "source/preloaded_downstream_attribution.log": {
+      "original": "/private/tmp/cpswm-pc-a-review6-w2.pfIMZc/source-evidence/preloaded_downstream_attribution.log",
+      "sha256": "701b2ccfa410725779707067447c76e3b59a1f29d6c3ddb880062f203db0fe28"
+    },
+    "source/preloaded_downstream_attribution.json": {
+      "original": "/private/tmp/cpswm-pc-a-review6-w2.pfIMZc/source-evidence/preloaded_downstream_attribution.json",
+      "sha256": "707b9a89b11df16ee53611aed6eab8cf0830abc2bf72cc7758f57d5f1dda89b5"
+    },
+    "source/attribution_single.json": {
+      "original": "/private/tmp/cpswm-pc-a-review6-w2.pfIMZc/source-evidence/attribution_single.json",
+      "sha256": "a8f516979ddfd3d7e752a87c80f06f69665ee1c3af410c64ef343eb3ad1b6375"
+    },
+    "source/main.json": {
+      "original": "/private/tmp/cpswm-pc-a-review6-w2.pfIMZc/source-evidence/main.json",
+      "sha256": "33e55ec9ecb32804f54bf04f2af511f3241ef67ce43491cae8bcaf3a0b18c3ff"
+    },
+    "source/repository_root_mismatch.log": {
+      "original": "/private/tmp/cpswm-pc-a-review6-w2.pfIMZc/source-evidence/repository_root_mismatch.log",
+      "sha256": "5d57490a3968f919291b8f7538c5bef4b28939dd6efec920e87efc1425eb0358"
+    },
+    "source/preloaded_downstream_main.json": {
+      "original": "/private/tmp/cpswm-pc-a-review6-w2.pfIMZc/source-evidence/preloaded_downstream_main.json",
+      "sha256": "8332484e4dcdacaa33e6df397e749c08e2337edc8027942322d40b035c00f0f1"
+    },
+    "source/preloaded_downstream_main.log": {
+      "original": "/private/tmp/cpswm-pc-a-review6-w2.pfIMZc/source-evidence/preloaded_downstream_main.log",
+      "sha256": "798d009396b40bc0e6e98f705a7fa6bac0f7e41bdaa5517e19cdbcb2d09c1fe1"
+    },
+    "source/attribution_single.log": {
+      "original": "/private/tmp/cpswm-pc-a-review6-w2.pfIMZc/source-evidence/attribution_single.log",
+      "sha256": "25950494743330768da9d71d993b29f31ccfffea012365ae9bf9c1fb340efadf"
+    },
+    "source/attribution_mixed.json": {
+      "original": "/private/tmp/cpswm-pc-a-review6-w2.pfIMZc/source-evidence/attribution_mixed.json",
+      "sha256": "8a24fdbd6bd7128cfe1d273f27a820492a8e3f5832ccf482c50123f9c94286aa"
+    },
+    "source/attribution_mixed.log": {
+      "original": "/private/tmp/cpswm-pc-a-review6-w2.pfIMZc/source-evidence/attribution_mixed.log",
+      "sha256": "41dc285096962461254bb5b4f2d219db49e87bfca70c8a5fbbc77a5aab47263e"
+    },
+    "source/main.log": {
+      "original": "/private/tmp/cpswm-pc-a-review6-w2.pfIMZc/source-evidence/main.log",
+      "sha256": "a48582c49dd46990aef94358ab10060d25acc2a7274da0c771d6775e185d65de"
+    }
+  },
+  "package_count": 31,
+  "package_files": {
+    "popen-gw0/test_real_cli_complete_forgery0/r1_commits_999/attribution.json": "bf9859da1dba7ad2bcd1f584f3068df46ba89875c09c9a0a008f0c7b77e7a752",
+    "popen-gw0/test_real_cli_complete_forgery0/r1_commits_999/audit.json": "d23e4e6910f0a7a6dda4cdb909bb3e679d75d6ccd91dd2d27670634f5469aab4",
+    "popen-gw0/test_real_cli_complete_forgery0/r1_commits_999/steps.jsonl.gz": "56f0aad60e62bef37be6484d4a51d9cfe9ecfa1b92a0dd3a01be448e2cffa1c6",
+    "popen-gw0/test_real_cli_complete_forgery0/fast_slow_memory/attribution.json": "b113c563c7e02cd5599cb3eab22a1b8208f1fe5de4ea05cce34486415704eaa5",
+    "popen-gw0/test_real_cli_complete_forgery0/fast_slow_memory/audit.json": "62a0fa923e5a38d8f4d7b6c06ac657e0a8e9deefde80ff6bbaa0279e211eeca6",
+    "popen-gw0/test_real_cli_complete_forgery0/fast_slow_memory/steps.jsonl.gz": "8b9aa10447d6cd12884a3b5070ee0fa9d0b71b025034d5f40086baf1249806fc",
+    "popen-gw0/test_real_cli_complete_forgery0/actions_scores_groups/attribution.json": "ed5f9f286fb133271b38258dbb788d31e54134c3ee793add126d396b39c0bf56",
+    "popen-gw0/test_real_cli_complete_forgery0/actions_scores_groups/audit.json": "1cce63481f8b4deef5e1b3cf84cde1a38c0c4ccfd0ab8519305d335fceb89920",
+    "popen-gw0/test_real_cli_complete_forgery0/actions_scores_groups/steps.jsonl.gz": "22249a3c03d40f9a196b56c9af824fe2498bf29b4b2ee13733702c2cc004ec42",
+    "popen-gw0/test_real_cli_complete_forgery0/learned_joint/attribution.json": "95ac8901b5a6eddd16e083a5216db6b24f0962c542fa14787fcea04a5cd6ffc2",
+    "popen-gw0/test_real_cli_complete_forgery0/learned_joint/audit.json": "c88f733724d668cc16352f129f98760f18158d2b3686187e2161f612b3ef5f12",
+    "popen-gw0/test_real_cli_complete_forgery0/learned_joint/steps.jsonl.gz": "a893609de52ced92767bbfbf4db3ee66902ff3f43f887dcbd078df366dade04a",
+    "popen-gw0/test_real_cli_complete_forgery0/truth_and_labels/attribution.json": "a96222b58a0bfe280f2ee793662600115cad1c4d54fe76a69d467b60b9ae9bc7",
+    "popen-gw0/test_real_cli_complete_forgery0/truth_and_labels/audit.json": "99ec92c6a2b26242e279b073a503cc0dcd11a45931c9c73a11b1f8453ce5e3e9",
+    "popen-gw0/test_real_cli_complete_forgery0/truth_and_labels/steps.jsonl.gz": "f19f1ddc2c73ca50c58a08af12c0226fd6d5c6f1b54ed0608beba771124bde58",
+    "popen-gw0/test_real_cli_complete_forgery0/support_and_input/attribution.json": "c904fe56026aec8625d07cc6d4ef933dbd898c3867729e82d1042efe8f68fda4",
+    "popen-gw0/test_real_cli_complete_forgery0/support_and_input/audit.json": "546b7065e4d740b633635cbcc3be0c96fa32e9a5f26c0d8591e2c9dc19383f4b",
+    "popen-gw0/test_real_cli_complete_forgery0/support_and_input/steps.jsonl.gz": "2d3a69c3424e4e33cf80a20ae759db3dfae0e4cb33a01c7ead3e176162e2d3ce",
+    "popen-gw0/test_real_cli_complete_forgery0/step_missing/attribution.json": "7cb63498eb336cbb908c8f65e92a998b981a672b468e6cbe36052a20a53dabf3",
+    "popen-gw0/test_real_cli_complete_forgery0/step_missing/audit.json": "ae2a9060e6a1be217d06f0d59616465bae3293ea8ee1eaa2b0c159f221d6856d",
+    "popen-gw0/test_real_cli_complete_forgery0/step_missing/steps.jsonl.gz": "d984618de8bb3176c787b04555c1fa32aa8f7d5c038f6f6a313868e2727db5d8",
+    "popen-gw0/test_real_cli_complete_forgery0/step_duplicate/attribution.json": "c0bba4654fc4d2d994a6866938ac317854b17617abbd60952cd3a5334b24483c",
+    "popen-gw0/test_real_cli_complete_forgery0/step_duplicate/audit.json": "cd3f6ed1d73d973e8e02907c256328edf20e7166b29421e9c08ab17cd1d6921a",
+    "popen-gw0/test_real_cli_complete_forgery0/step_duplicate/steps.jsonl.gz": "7ccad8e947f8e9573a5474e8ed12df6cf668f4e89a248fbb74390e20271a3681",
+    "popen-gw0/test_real_cli_complete_forgery0/step_reorder/attribution.json": "2b1fdeb3aed5f6031044763d0056822a1853d6f3e657c8ad5a9a2ac8cc10815a",
+    "popen-gw0/test_real_cli_complete_forgery0/step_reorder/audit.json": "5fe0c9d7dd33fd0ffb9c39cb856408e4f44e2eebd86b1c081bd3dc3a41ce6f73",
+    "popen-gw0/test_real_cli_complete_forgery0/step_reorder/steps.jsonl.gz": "02d3c52f755cc1955372e4484eaabb9d7c1a498237989bf3dfd852b130a66be3",
+    "popen-gw0/test_real_cli_complete_forgery0/step_replacement/attribution.json": "141c1c25db12f983ab2d0ba8396bca5b9f6f80ede4ce0e0bcd1a1c105f4377e0",
+    "popen-gw0/test_real_cli_complete_forgery0/step_replacement/audit.json": "4a4d28f104fd3a916b6fc02c4083e93628d1a959b19b31766491b0b2cf343f25",
+    "popen-gw0/test_real_cli_complete_forgery0/step_replacement/steps.jsonl.gz": "f8754d95166f0b6412d3bb653f3c91b6aafe55899e589f6f3924a71052969cf0",
+    "popen-gw0/test_real_cli_complete_forgery0/episode_missing/attribution.json": "581f494ce9f46a06a951c298a5dd13fbc2a6ab67c2e34cefe59f22b3e2379c93",
+    "popen-gw0/test_real_cli_complete_forgery0/episode_missing/audit.json": "2d24845a1d8e28018a46440e9cdaae76bff232928dc16553dbefd6f3c0fbbd5b",
+    "popen-gw0/test_real_cli_complete_forgery0/episode_missing/steps.jsonl.gz": "86d0b305190cf867396193a047e1f02e6c8eeaa5bafa2d2bd31e01d6e3c9df26",
+    "popen-gw0/test_real_cli_complete_forgery0/episode_duplicate/attribution.json": "ac7a2151a682df1d278e3a28e8ca062afa8989e17fa739bc998206ad15441b97",
+    "popen-gw0/test_real_cli_complete_forgery0/episode_duplicate/audit.json": "657ae424a7a7488311cc176a18668397f9ecc09efb37770d7c4f1d1af7b0c5f1",
+    "popen-gw0/test_real_cli_complete_forgery0/episode_duplicate/steps.jsonl.gz": "fe217ed24a155778a49fc6f08e860fc8458a2a2c7cf0153c4abbd7a5e4142c53",
+    "popen-gw0/test_real_cli_complete_forgery0/episode_reorder/attribution.json": "49798e4c31389ceb1a69c4c833fb4a81fca12332280e8bd24b34914e4c1a1310",
+    "popen-gw0/test_real_cli_complete_forgery0/episode_reorder/audit.json": "2322eec76cc1b10a93a178e089a8273f6624110c05785922cffaa0ae271b943e",
+    "popen-gw0/test_real_cli_complete_forgery0/episode_reorder/steps.jsonl.gz": "aafa4e9698230ca84ad63a06fecbfc9396f9c790a8f311a7e975642c7713001d",
+    "popen-gw0/test_real_cli_complete_forgery0/data_hash/attribution.json": "9e5f82163f0fa40115ee459dc45fa2a7e034d824ee77297cb54565ee8051d44c",
+    "popen-gw0/test_real_cli_complete_forgery0/data_hash/audit.json": "584cee3332191de59dbaf48d6a8f84dd5363d902cda1d35cc25546df268a8c9c",
+    "popen-gw0/test_real_cli_complete_forgery0/data_hash/steps.jsonl.gz": "561284533214ec736988d04d063b711ceb2ec0109f58507a7352894e86ed3efc",
+    "popen-gw0/test_real_cli_complete_forgery0/config_selection/attribution.json": "e22959bb6cf58db9979ed3363aba33f2e25978a121728833a36ba12e10bf55ed",
+    "popen-gw0/test_real_cli_complete_forgery0/config_selection/audit.json": "840df80e077929aa8949bdebc8c6bb988a485cf14acb8902edccbfb42247a24f",
+    "popen-gw0/test_real_cli_complete_forgery0/config_selection/steps.jsonl.gz": "d96b69fc2c65e8c2382568fc5f6efd26b69e9295629f48bae6344e8628bcd76c",
+    "popen-gw0/test_real_cli_complete_forgery0/seed_split/attribution.json": "e22959bb6cf58db9979ed3363aba33f2e25978a121728833a36ba12e10bf55ed",
+    "popen-gw0/test_real_cli_complete_forgery0/seed_split/audit.json": "f64d573cb14e5ad6a1779116b7e4e0b5474a937ebda6fa097372380e6813ee24",
+    "popen-gw0/test_real_cli_complete_forgery0/seed_split/steps.jsonl.gz": "d96b69fc2c65e8c2382568fc5f6efd26b69e9295629f48bae6344e8628bcd76c",
+    "popen-gw0/test_real_cli_complete_forgery0/source_binding/attribution.json": "e22959bb6cf58db9979ed3363aba33f2e25978a121728833a36ba12e10bf55ed",
+    "popen-gw0/test_real_cli_complete_forgery0/source_binding/audit.json": "03c4c0cf7e02ea4eb5b8db59ad9603bd2ba871962b36c1219f392bfd8cc86360",
+    "popen-gw0/test_real_cli_complete_forgery0/source_binding/steps.jsonl.gz": "d96b69fc2c65e8c2382568fc5f6efd26b69e9295629f48bae6344e8628bcd76c",
+    "popen-gw0/test_real_cli_complete_forgery0/source_rebound_state/attribution.json": "bf9859da1dba7ad2bcd1f584f3068df46ba89875c09c9a0a008f0c7b77e7a752",
+    "popen-gw0/test_real_cli_complete_forgery0/source_rebound_state/audit.json": "d23e4e6910f0a7a6dda4cdb909bb3e679d75d6ccd91dd2d27670634f5469aab4",
+    "popen-gw0/test_real_cli_complete_forgery0/source_rebound_state/steps.jsonl.gz": "56f0aad60e62bef37be6484d4a51d9cfe9ecfa1b92a0dd3a01be448e2cffa1c6",
+    "popen-gw0/test_real_cli_complete_forgery0/source_version/attribution.json": "e22959bb6cf58db9979ed3363aba33f2e25978a121728833a36ba12e10bf55ed",
+    "popen-gw0/test_real_cli_complete_forgery0/source_version/audit.json": "5dc55da8cd74aa67c42c9df0a61a5ece2969ddebf0f2b1775991e7a8d3171774",
+    "popen-gw0/test_real_cli_complete_forgery0/source_version/steps.jsonl.gz": "d96b69fc2c65e8c2382568fc5f6efd26b69e9295629f48bae6344e8628bcd76c",
+    "popen-gw0/test_real_cli_complete_forgery0/attribution_only/attribution.json": "da0b5f61310bf67d41367ab761d902a40ca7341068d5a09ea28792dc9385d858",
+    "popen-gw0/test_real_cli_complete_forgery0/attribution_only/audit.json": "64d87ca56eb7467a65a435635674347b68d53f47376738309e26cb9a4f8be363",
+    "popen-gw0/test_real_cli_complete_forgery0/attribution_only/steps.jsonl.gz": "d96b69fc2c65e8c2382568fc5f6efd26b69e9295629f48bae6344e8628bcd76c",
+    "popen-gw0/test_real_cli_complete_forgery0/forged_verification_receipt/attribution.json": "bf9859da1dba7ad2bcd1f584f3068df46ba89875c09c9a0a008f0c7b77e7a752",
+    "popen-gw0/test_real_cli_complete_forgery0/forged_verification_receipt/audit.json": "d23e4e6910f0a7a6dda4cdb909bb3e679d75d6ccd91dd2d27670634f5469aab4",
+    "popen-gw0/test_real_cli_complete_forgery0/forged_verification_receipt/steps.jsonl.gz": "56f0aad60e62bef37be6484d4a51d9cfe9ecfa1b92a0dd3a01be448e2cffa1c6",
+    "popen-gw0/test_real_cli_complete_forgery0/forged_verification_receipt/verified.json": "8031bedf24918940225645185506abcf37b370eaf475256588ed13df4b88c58c",
+    "popen-gw3/test_complete_fairness_forgeri0/future_support/attribution.json": "87258be0d5301b98d6e485793d3be0920a17b2491df9f820b3ce21c8ff542be0",
+    "popen-gw3/test_complete_fairness_forgeri0/future_support/audit.json": "90a09e1a96d536f642b55c6b7a82974ae44be3e8e3d4730561d825db437c1ebd",
+    "popen-gw3/test_complete_fairness_forgeri0/future_support/steps.jsonl.gz": "5748b2a2763954cb47aeb01ce423dcef3bdbb906352691a6689574d59bdf53e1",
+    "popen-gw3/test_complete_fairness_forgeri0/future_support/timing.json": "ca3d163bab055381827226140568f3bef7eaac187cebd76878e0b63e9e442356",
+    "popen-gw3/test_complete_fairness_forgeri0/missing_owner/attribution.json": "dcceba8bf79daa17575d5c5727859553b2503b8b67a298efe8128a1a530b971b",
+    "popen-gw3/test_complete_fairness_forgeri0/missing_owner/audit.json": "b2fdde35fc5213a6055c8d1111352a676ba089ce5992808dd51b8e5e389cdc8a",
+    "popen-gw3/test_complete_fairness_forgeri0/missing_owner/steps.jsonl.gz": "808784b6360287da6873c4f91d40b89de6504a9722df9ee01e4906a193269b33",
+    "popen-gw3/test_complete_fairness_forgeri0/missing_owner/timing.json": "ca3d163bab055381827226140568f3bef7eaac187cebd76878e0b63e9e442356",
+    "popen-gw3/test_complete_fairness_forgeri0/costs/attribution.json": "019958bad3b3b131eaaacf2eafa7ab0ae03c7ab43b20915882e716b6d5d91073",
+    "popen-gw3/test_complete_fairness_forgeri0/costs/audit.json": "82e0eb30f38ae707297be1ea90d072b61c137919cc0bc7c27885fa398ec08ff7",
+    "popen-gw3/test_complete_fairness_forgeri0/costs/steps.jsonl.gz": "67a95b685b6ea11f095868a9465ef9c7cdc1bc563c6b3223608cbf0625b0399a",
+    "popen-gw3/test_complete_fairness_forgeri0/costs/timing.json": "ca3d163bab055381827226140568f3bef7eaac187cebd76878e0b63e9e442356",
+    "popen-gw3/test_complete_fairness_forgeri0/selection_access/attribution.json": "e22959bb6cf58db9979ed3363aba33f2e25978a121728833a36ba12e10bf55ed",
+    "popen-gw3/test_complete_fairness_forgeri0/selection_access/audit.json": "24a815ad03dc66ef7cad09531687b2286d8a138b41a227fc69e237bec94a1616",
+    "popen-gw3/test_complete_fairness_forgeri0/selection_access/steps.jsonl.gz": "d96b69fc2c65e8c2382568fc5f6efd26b69e9295629f48bae6344e8628bcd76c",
+    "popen-gw3/test_complete_fairness_forgeri0/selection_access/timing.json": "ca3d163bab055381827226140568f3bef7eaac187cebd76878e0b63e9e442356",
+    "popen-gw3/test_complete_fairness_forgeri0/consumer_features/attribution.json": "e22959bb6cf58db9979ed3363aba33f2e25978a121728833a36ba12e10bf55ed",
+    "popen-gw3/test_complete_fairness_forgeri0/consumer_features/audit.json": "a38ba0524966062e1957c0469cfe59b1509593b62a84624d8addad81941249f2",
+    "popen-gw3/test_complete_fairness_forgeri0/consumer_features/steps.jsonl.gz": "d96b69fc2c65e8c2382568fc5f6efd26b69e9295629f48bae6344e8628bcd76c",
+    "popen-gw3/test_complete_fairness_forgeri0/consumer_features/timing.json": "ca3d163bab055381827226140568f3bef7eaac187cebd76878e0b63e9e442356",
+    "popen-gw3/test_complete_fairness_forgeri0/fairness_claim/attribution.json": "e22959bb6cf58db9979ed3363aba33f2e25978a121728833a36ba12e10bf55ed",
+    "popen-gw3/test_complete_fairness_forgeri0/fairness_claim/audit.json": "141f902d0602420d3006ed7cdd5b8cd7ad9203e753b1c043eb8ade237d5cdf92",
+    "popen-gw3/test_complete_fairness_forgeri0/fairness_claim/steps.jsonl.gz": "d96b69fc2c65e8c2382568fc5f6efd26b69e9295629f48bae6344e8628bcd76c",
+    "popen-gw3/test_complete_fairness_forgeri0/fairness_claim/timing.json": "ca3d163bab055381827226140568f3bef7eaac187cebd76878e0b63e9e442356",
+    "popen-gw1/test_new_dynamic_dependency_fo0/nonempty_commit/attribution.json": "e22959bb6cf58db9979ed3363aba33f2e25978a121728833a36ba12e10bf55ed",
+    "popen-gw1/test_new_dynamic_dependency_fo0/nonempty_commit/audit.json": "0501aac48d67339a099d0f6b115a1c2f9ea158f88099904f8188fbcb15641160",
+    "popen-gw1/test_new_dynamic_dependency_fo0/nonempty_commit/steps.jsonl.gz": "d96b69fc2c65e8c2382568fc5f6efd26b69e9295629f48bae6344e8628bcd76c",
+    "popen-gw1/test_new_dynamic_dependency_fo0/nonempty_commit/timing.json": "ca3d163bab055381827226140568f3bef7eaac187cebd76878e0b63e9e442356",
+    "popen-gw1/test_new_dynamic_dependency_fo0/action_consequence/attribution.json": "e22959bb6cf58db9979ed3363aba33f2e25978a121728833a36ba12e10bf55ed",
+    "popen-gw1/test_new_dynamic_dependency_fo0/action_consequence/audit.json": "ac79b5f5fe7f687629f9ad3572c919e35a9e88932b9e3874f84a3bf3159f3bb5",
+    "popen-gw1/test_new_dynamic_dependency_fo0/action_consequence/steps.jsonl.gz": "d96b69fc2c65e8c2382568fc5f6efd26b69e9295629f48bae6344e8628bcd76c",
+    "popen-gw1/test_new_dynamic_dependency_fo0/action_consequence/timing.json": "ca3d163bab055381827226140568f3bef7eaac187cebd76878e0b63e9e442356",
+    "popen-gw1/test_new_dynamic_dependency_fo0/corrected_memory/attribution.json": "e22959bb6cf58db9979ed3363aba33f2e25978a121728833a36ba12e10bf55ed",
+    "popen-gw1/test_new_dynamic_dependency_fo0/corrected_memory/audit.json": "26bbb366e51ec20cf8ceadffd855da68f62d333025709b3d38a3e33b9741d557",
+    "popen-gw1/test_new_dynamic_dependency_fo0/corrected_memory/steps.jsonl.gz": "d96b69fc2c65e8c2382568fc5f6efd26b69e9295629f48bae6344e8628bcd76c",
+    "popen-gw1/test_new_dynamic_dependency_fo0/corrected_memory/timing.json": "ca3d163bab055381827226140568f3bef7eaac187cebd76878e0b63e9e442356",
+    "popen-gw1/test_new_dynamic_dependency_fo0/contract_freeze/attribution.json": "e22959bb6cf58db9979ed3363aba33f2e25978a121728833a36ba12e10bf55ed",
+    "popen-gw1/test_new_dynamic_dependency_fo0/contract_freeze/audit.json": "984a1cd07498995554b5e733a54c89d2c1ee06e5bc667378ff8a3e8beaadcfa9",
+    "popen-gw1/test_new_dynamic_dependency_fo0/contract_freeze/steps.jsonl.gz": "d96b69fc2c65e8c2382568fc5f6efd26b69e9295629f48bae6344e8628bcd76c",
+    "popen-gw1/test_new_dynamic_dependency_fo0/contract_freeze/timing.json": "ca3d163bab055381827226140568f3bef7eaac187cebd76878e0b63e9e442356"
+  },
+  "archive": "w2_actual_attack_packages.tar.gz",
+  "archive_sha256": "bdfc801b602a5ed55efe2502f3596010f372ab4b4f6e626a64a7f3e52137f17c",
+  "archive_bytes": 60757458,
+  "old_historical_packages_reconstructed": false
+}

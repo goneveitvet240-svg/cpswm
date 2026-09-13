@@ -1,0 +1,853 @@
+{
+  "command": [
+    "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/.venv/bin/python",
+    "/private/var/folders/x2/000r8p0n6s393lj2sg8wk5f40000gn/T/pytest-of-pangwei/pytest-1756/popen-gw1/test_real_full_positive_compil0/A/apps/evaluation_runner/run_structure_two_comparison_audit.py",
+    "--output",
+    "/private/tmp/cpswm-pc-a-review6-w2.pfIMZc/docs/reviews/data/structure_two_comparison_dynamic_window2_2026-09-12T1500/bundle_v5",
+    "--verify",
+    "--timing-repeats",
+    "1",
+    "--timing-episodes",
+    "1"
+  ],
+  "cwd": "/private/var/folders/x2/000r8p0n6s393lj2sg8wk5f40000gn/T/pytest-of-pangwei/pytest-1756/popen-gw1/test_real_full_positive_compil0/A",
+  "PYTHONPATH": "/private/var/folders/x2/000r8p0n6s393lj2sg8wk5f40000gn/T/pytest-of-pangwei/pytest-1756/popen-gw1/test_real_full_positive_compil0/A/src",
+  "exit_code": 0,
+  "stdout_json": [
+    {
+      "execution_source": {
+        "cli": "/private/var/folders/x2/000r8p0n6s393lj2sg8wk5f40000gn/T/pytest-of-pangwei/pytest-1756/popen-gw1/test_real_full_positive_compil0/A/apps/evaluation_runner/run_structure_two_comparison_audit.py",
+        "cli_sha256": "55c4ba67f386ec4d14b12b6c61f3427a4f65ed9eb4fd97122b8b5508e7288031",
+        "declared_root": "/private/var/folders/x2/000r8p0n6s393lj2sg8wk5f40000gn/T/pytest-of-pangwei/pytest-1756/popen-gw1/test_real_full_positive_compil0/A",
+        "guard_sha256": "001bb84ca09378f9535d099e6de75a0e97b1dc64d03a88725a6aa483c0a0fc6c",
+        "interpreter": "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/.venv/bin/python",
+        "loaded_modules": {
+          "cpswm": {
+            "compiled_code_sha256": "43cb9faa2a151e3f513a51609c913f83e8e2ae9c28c890a41b4db538889f8ece",
+            "path": "src/cpswm/__init__.py",
+            "source_sha256": "56ef16ae57eb660109027d2c2187fec3817d39e04dbafb62f9eeafb01acd401a"
+          },
+          "cpswm.contracts": {
+            "compiled_code_sha256": "916b314de6ff36970b99c30d054a3ba0a88547feea7874132501293d95e29295",
+            "path": "src/cpswm/contracts/__init__.py",
+            "source_sha256": "c91e35251b1ad8438591f77462381eb1561f4087873781c043e4cf8dc5813100"
+          },
+          "cpswm.contracts.assertions": {
+            "compiled_code_sha256": "99609f507c7b11cc1df42db3db87fd45dac959cbd4fe1b12b355b95ebc9aa31a",
+            "path": "src/cpswm/contracts/assertions.py",
+            "source_sha256": "cc715b1fcc9d2124bc4f36f7f08786ff785d84c23f55718207c1372f8d5c400c"
+          },
+          "cpswm.contracts.base": {
+            "compiled_code_sha256": "0cc6afecb1356a4a12ade4cccc1151c369e3d4708acc0492f02aaaa9c67bfe86",
+            "path": "src/cpswm/contracts/base.py",
+            "source_sha256": "dfe260568815a824b4724751b09a41e41d861d92adedb7c628d4f91d857e39c4"
+          },
+          "cpswm.contracts.beliefs": {
+            "compiled_code_sha256": "362669309547e24b48521822a61440373b63d5a37f1c0e143f2d7606abba9cb0",
+            "path": "src/cpswm/contracts/beliefs.py",
+            "source_sha256": "e7034829449169bc39739d87b2336b55840fff75e7f06b20c65b6df5d70d1a39"
+          },
+          "cpswm.contracts.corrections": {
+            "compiled_code_sha256": "be14f931982aa2490d90e240a494034aa7e78637a2c13b10c265684bcf562bcf",
+            "path": "src/cpswm/contracts/corrections.py",
+            "source_sha256": "11ef89973bece3694d117a6f038507ab6f11affcfd723d94fb9ead6306f0c63c"
+          },
+          "cpswm.contracts.decision_context": {
+            "compiled_code_sha256": "605e35839856e26a1105c31952916e4df5441c924b98328a50c4ea309bf741df",
+            "path": "src/cpswm/contracts/decision_context.py",
+            "source_sha256": "3c8e44187a55708b759800894682420d933fcb02a4c1dda1296aff4652ae09fe"
+          },
+          "cpswm.contracts.events": {
+            "compiled_code_sha256": "abd5fa5470f7097b8cd2c8cc8c1eb51786b11dee57686aee2bc871f06f3925ab",
+            "path": "src/cpswm/contracts/events.py",
+            "source_sha256": "1566d538b06d9e9c616f4147fbe502ab3d3ca687e961d659cea43ec85c728f11"
+          },
+          "cpswm.contracts.evidence_factor_trace": {
+            "compiled_code_sha256": "ad6d6b2ddbb9f8efb1dc370d5752d143e12ba9dba7ed3c252e18a54713f808a7",
+            "path": "src/cpswm/contracts/evidence_factor_trace.py",
+            "source_sha256": "1e2b4b1b3a293d0b384fc502c41a61619f8607fc7b351271fdfb1a3b6295de3b"
+          },
+          "cpswm.contracts.evidence_protocol": {
+            "compiled_code_sha256": "6bf1a65d8d78efaaf7551158e5d880596107eb9c259e343c4a50fdc3bc3f0997",
+            "path": "src/cpswm/contracts/evidence_protocol.py",
+            "source_sha256": "f94de6799b55a7c916f956226ec6c867f82425eeb79547b72a27b304ebd6d673"
+          },
+          "cpswm.contracts.grounded_search": {
+            "compiled_code_sha256": "985e818218bf03e26a5260fa9aace713fdc09fd77680e5610bc1c3a7a48236c7",
+            "path": "src/cpswm/contracts/grounded_search.py",
+            "source_sha256": "0631609501d22569d61a1055f6089ef1ff2b77bfb28bb7fe9301acee3f4a8ef0"
+          },
+          "cpswm.contracts.habit_learning": {
+            "compiled_code_sha256": "783d8c07512a272eda91be2af462237bab07d840e63b0a2e4cc24a700cdc3804",
+            "path": "src/cpswm/contracts/habit_learning.py",
+            "source_sha256": "12b6b7a80c3e613a438dc6d745b43e87e130884d87486a39f1309188fd848a5d"
+          },
+          "cpswm.contracts.hidden_event_evidence": {
+            "compiled_code_sha256": "89366a277327490e3924c4ee6a8287f9b8f82f894d7b16888eb558c23990d15e",
+            "path": "src/cpswm/contracts/hidden_event_evidence.py",
+            "source_sha256": "0e2556d9eddf4346f73ef80291715e04ad509b52991d71f1edd16bfda376d18b"
+          },
+          "cpswm.contracts.likelihoods": {
+            "compiled_code_sha256": "adffc3e776ecc7c31bfa76add44bf3faedccb589d721964aaa02c1939cd26a40",
+            "path": "src/cpswm/contracts/likelihoods.py",
+            "source_sha256": "ea5246916b6c85617e9291b769487f833c4161f0d7d1dd2ede91cf766142bee0"
+          },
+          "cpswm.contracts.llm_roles": {
+            "compiled_code_sha256": "a4374ddc81dc774ce1bd5bc82097101ad37302e3dbfafa8513f4f195778273c2",
+            "path": "src/cpswm/contracts/llm_roles.py",
+            "source_sha256": "b718cd124f4cecbbaaedf941829d6b793b64dd53410f19ace23ccb224d5da046"
+          },
+          "cpswm.contracts.observation_mechanism": {
+            "compiled_code_sha256": "2204a0c13fb96c00ee418683b24af9244a968cb194e92c9782802cc711808ece",
+            "path": "src/cpswm/contracts/observation_mechanism.py",
+            "source_sha256": "1da6911bdf63bd1f52f7fad2fd012eeaa80302fdd0caad4528143e1195fb52c8"
+          },
+          "cpswm.contracts.placement_memory": {
+            "compiled_code_sha256": "dab733ba59fabc45a117e76cedf09d6a9e3dd470e9ff58adb62f0f44ce2473b1",
+            "path": "src/cpswm/contracts/placement_memory.py",
+            "source_sha256": "179b9c7f667266b3713421fc445334e1cbe1c29c3b0b61cf08c84f712638e483"
+          },
+          "cpswm.contracts.project_two_replay": {
+            "compiled_code_sha256": "199f975fd4c147d46e375f7779e2187ec4d3d9c4c86397e8176e71f53488945f",
+            "path": "src/cpswm/contracts/project_two_replay.py",
+            "source_sha256": "dd7634fcbe50e4186549f4101860642d9f99bf0b5b5bc14e8ebf33940765c064"
+          },
+          "cpswm.contracts.project_two_revision_action": {
+            "compiled_code_sha256": "e3440ba4f767ee7b8b962f1aaea4fb65657a1e0e5088275aeb08ada5ea6aff7e",
+            "path": "src/cpswm/contracts/project_two_revision_action.py",
+            "source_sha256": "bbc43be68eb3d988ec6ba8691886ebf0512160e7b751b602da2d96cfa29c69c3"
+          },
+          "cpswm.contracts.queries": {
+            "compiled_code_sha256": "fe737806873ad93aa749cbf74d79bc768c89668049275a8777339e621faf1c42",
+            "path": "src/cpswm/contracts/queries.py",
+            "source_sha256": "237240234055b994d733a3efb6424062144b68897563ce7b2142c55eaf17ca35"
+          },
+          "cpswm.foundation": {
+            "compiled_code_sha256": "5cddfb1ea53dd6ca3b60b3e3adf04ca94f283359bca7a7383cb4784159d2b0de",
+            "path": "src/cpswm/foundation/__init__.py",
+            "source_sha256": "9d74df415510d98ca4773f8830356227ecf5f76ba930ef3b0bb55af270dd05bf"
+          },
+          "cpswm.foundation.identity_time_frames": {
+            "compiled_code_sha256": "c640cba708f85b3d8b363a74501597ca40b65613dc24405aa6864e1df7d16353",
+            "path": "src/cpswm/foundation/identity_time_frames/__init__.py",
+            "source_sha256": "bac615673647d5ba5889d755835945447bb9d6d525201506965e21b45a3b566f"
+          },
+          "cpswm.foundation.identity_time_frames.clocks": {
+            "compiled_code_sha256": "5b3471f2071eaf1d178313a88d4531b6ab51596a5baa06904476983208218d87",
+            "path": "src/cpswm/foundation/identity_time_frames/clocks.py",
+            "source_sha256": "4c2dd389f9ddbc3350c3b6e6ab579cb34cc4a3f2f1b6a4a4b40d42c356f50a14"
+          },
+          "cpswm.foundation.identity_time_frames.contracts": {
+            "compiled_code_sha256": "0da7778063f41780cbcbeb81480bfaffbc3880e2b7dd2af8af2696bdb463246c",
+            "path": "src/cpswm/foundation/identity_time_frames/contracts.py",
+            "source_sha256": "85d0365ae71a4156ca776f82f808b92764d4d3a998f2bf9e208a50a848b4059d"
+          },
+          "cpswm.foundation.identity_time_frames.frames": {
+            "compiled_code_sha256": "7408882783c6f1de5705b9534f54ee406445bd1b0aa5c9f164e9f516e66b9a4e",
+            "path": "src/cpswm/foundation/identity_time_frames/frames.py",
+            "source_sha256": "1ee87a16b9826346148e877529695de384c9f2cff1769fe00cb8b3286d3aa433"
+          },
+          "cpswm.foundation.identity_time_frames.identity": {
+            "compiled_code_sha256": "8fe71107004034c39c67d6c964fe1aac9273e675bb298a12b636a1c65383fda8",
+            "path": "src/cpswm/foundation/identity_time_frames/identity.py",
+            "source_sha256": "9c140ea1a692ec16e3ef02ec0c77c5544adb142661b8f52909e75ea79c5cce42"
+          },
+          "cpswm.foundation.identity_time_frames.service": {
+            "compiled_code_sha256": "1e53a0e212358cdc4df8664372ab28fd6e07f9f5fa1b07c5cb575db8b5bc3150",
+            "path": "src/cpswm/foundation/identity_time_frames/service.py",
+            "source_sha256": "ca14eebfbb95b509edb21d62ca105356d119f3cdba3d89da75d3ffc2be34a22c"
+          },
+          "cpswm.foundation.persistence_replay": {
+            "compiled_code_sha256": "9cc2f1e92740cacdd83417c5cbac00ce19b2a1fa7579e5a29d31451f1e16acd6",
+            "path": "src/cpswm/foundation/persistence_replay/__init__.py",
+            "source_sha256": "d07711d7c5dff6e27fe9898fdfcdd62b620aa67d42ecbe7f49edfa823b859738"
+          },
+          "cpswm.foundation.persistence_replay.contracts": {
+            "compiled_code_sha256": "26c34aef263cd86112090a46e5abf95ab86677c5dcc978cd638c1665dec988dd",
+            "path": "src/cpswm/foundation/persistence_replay/contracts.py",
+            "source_sha256": "107e259c2001ca030ff099cd243be30ade9f8af5303280f5748eedf9ad5aad87"
+          },
+          "cpswm.foundation.persistence_replay.memory_store": {
+            "compiled_code_sha256": "ecf2e1b4eb598b60b4484a058218638e6c185c6c45dc852179a648377bd69004",
+            "path": "src/cpswm/foundation/persistence_replay/memory_store.py",
+            "source_sha256": "f090500a9e2b9993df99879663d8d44c0d73f0c3b583ee76dcf4153cef9049a9"
+          },
+          "cpswm.foundation.persistence_replay.snapshots": {
+            "compiled_code_sha256": "73a11de01b7a98228b4cecc9a36595baf5a94c0a4176293988d8858f452a62f6",
+            "path": "src/cpswm/foundation/persistence_replay/snapshots.py",
+            "source_sha256": "6f8ba329370e2f7b85dda10bd0523b782696696d0e9ebd6f380b1a6b0050a502"
+          },
+          "cpswm.foundation.runtime_orchestration": {
+            "compiled_code_sha256": "14c426c299c4f29a1575cbd478bdd385bd719b41e63de379eb53e85c572df2ca",
+            "path": "src/cpswm/foundation/runtime_orchestration/__init__.py",
+            "source_sha256": "38acc3b832c2440acc0ac0ea7a5d8691b99bc07c2fa1aa8d078bac92b1629508"
+          },
+          "cpswm.foundation.runtime_orchestration.contracts": {
+            "compiled_code_sha256": "432f9730f871cf983b35057ae63b933ddbc28f5ac735f8ed09e32854ca7daaa4",
+            "path": "src/cpswm/foundation/runtime_orchestration/contracts.py",
+            "source_sha256": "44fc6ce6b781a65ff73c82285f31d1e83dc529856c0c282598d5c567873de1a6"
+          },
+          "cpswm.foundation.runtime_orchestration.handlers": {
+            "compiled_code_sha256": "4dfd9b9285f43c55fbc731ce8762db77fc348f62e03d077032926cc7904f20bb",
+            "path": "src/cpswm/foundation/runtime_orchestration/handlers.py",
+            "source_sha256": "ee0a14997be44840f66a3af4f56a44380dbaeeccd10cabf8de9490411982be88"
+          },
+          "cpswm.foundation.runtime_orchestration.provenance": {
+            "compiled_code_sha256": "78a6763fc7e6a6bbb209ab58f28ee16069b4bde39d46634c349a717d4023da1d",
+            "path": "src/cpswm/foundation/runtime_orchestration/provenance.py",
+            "source_sha256": "7fd10fef71561341de7c08c346539246386a7c19e666955b4226e27d4e7a112f"
+          },
+          "cpswm.foundation.runtime_orchestration.replay": {
+            "compiled_code_sha256": "51936af231ec423f2575af1476b4c38b8615d3c6513474f8506d008b9b2957dc",
+            "path": "src/cpswm/foundation/runtime_orchestration/replay.py",
+            "source_sha256": "66c0220ed10ab6a150b12888944ba324a7799e2ab8a06aec8daf4571d2787955"
+          },
+          "cpswm.foundation.runtime_orchestration.runtime": {
+            "compiled_code_sha256": "c64982161a6ef293c22573ab35527c9ef202543d1c0232beff65d22631788e2f",
+            "path": "src/cpswm/foundation/runtime_orchestration/runtime.py",
+            "source_sha256": "63248348cb482c61becbc359aec590fcad3de0af615849ca3347592a37aa67da"
+          },
+          "cpswm.system": {
+            "compiled_code_sha256": "955ee747df075c3cd6b71313479990a7ec0b3361a959eb2b47809dae2d8de11f",
+            "path": "src/cpswm/system/__init__.py",
+            "source_sha256": "a8a19caa5d397aaa10b502e0d222440d2db62f87e189c97b3cecae21828dbdf9"
+          },
+          "cpswm.system.attestation": {
+            "compiled_code_sha256": "f3862f22fe26507f2e583b17b015667dd7c71ac87f4da9cb0754c029944b8526",
+            "path": "src/cpswm/system/attestation/__init__.py",
+            "source_sha256": "8bb9446f2a8e10ebeba2240b88dd06bbd378ef41f335a1cee0193e76f41066fb"
+          },
+          "cpswm.system.attestation.authority": {
+            "compiled_code_sha256": "813b3bc0e5f6348c7efcc41bcaf735154713620113a3c0362e6bfd5726867fcf",
+            "path": "src/cpswm/system/attestation/authority.py",
+            "source_sha256": "90ccba754268152d9f8282dcee12139a78935afb965e72d550020ce130127832"
+          },
+          "cpswm.system.continual": {
+            "compiled_code_sha256": "a5de48dcba4eca4464f752b69b0eb4cf4cc7a4bb4549d356d2b1308ef6d5a1b2",
+            "path": "src/cpswm/system/continual/__init__.py",
+            "source_sha256": "09d0d723583d716b120b1fafbb78679c1fc5eddb46ada4c611bb6c63805fd81f"
+          },
+          "cpswm.system.continual.event_derived_update_ledger": {
+            "compiled_code_sha256": "89837b41f75768d5ff149abac6191c748cff9b4afc1faf3ae61c16a3411d418f",
+            "path": "src/cpswm/system/continual/event_derived_update_ledger.py",
+            "source_sha256": "758c64405b28e420ff473963aa329e7a40ca889eac58aaca27fbe6e1273d1462"
+          },
+          "cpswm.system.continual.execution_feedback_projector": {
+            "compiled_code_sha256": "16afefc54db747065ebdbaf1315cfe0d95c45542f9f3d3fc5133e289955512fa",
+            "path": "src/cpswm/system/continual/execution_feedback_projector.py",
+            "source_sha256": "6c3757d04fcb6afeb9e31b713ebe807926ebf89b683c6f714abd89a1a70c94e4"
+          },
+          "cpswm.system.continual.hybrid_event_to_task_loop": {
+            "compiled_code_sha256": "39d6045adb11e928b646e6cc6012bb06bb33269dc0c6189d22cfe33d6a381510",
+            "path": "src/cpswm/system/continual/hybrid_event_to_task_loop.py",
+            "source_sha256": "7364e23cbb6f087aeaa6fbd52f179e6d7b63f40a990cca5d5ba0c957efb357d5"
+          },
+          "cpswm.system.continual.hybrid_statistics": {
+            "compiled_code_sha256": "89ee244ad21b22eb5c855b85ff07e87d5b2c21a2bc4bd83b0d9f106b728dde40",
+            "path": "src/cpswm/system/continual/hybrid_statistics.py",
+            "source_sha256": "e30b4e0ecd8b72b0fa56d794c3674f2d6f607610c096bd94317ff0ad7717fe0a"
+          },
+          "cpswm.system.continual.project_one_feedback": {
+            "compiled_code_sha256": "e9eb1c28924b4bf0a83ef529620678ef7da9495884a334b7f90bf0d87e7c9d99",
+            "path": "src/cpswm/system/continual/project_one_feedback.py",
+            "source_sha256": "6b56f6511da6853b50450ec9dde64e4a595b69d00df4ba8a70e184f5dc14e4b6"
+          },
+          "cpswm.system.continual.project_one_regime_loop": {
+            "compiled_code_sha256": "7a7344aa5f4bc396ca9e90a88f99106f09c51e6706d33fe281146c15548b947d",
+            "path": "src/cpswm/system/continual/project_one_regime_loop.py",
+            "source_sha256": "a76cfcb7f6ac665aa78ceaca0298d3e5ebcfb84ac71ebb8a7bb570d0096987de"
+          },
+          "cpswm.system.continual.regime_authority": {
+            "compiled_code_sha256": "e16b8003509e82efcf733a3fef8398e7f52ec08156729334a8a83f37499198c4",
+            "path": "src/cpswm/system/continual/regime_authority.py",
+            "source_sha256": "4f96dd16fc9117c5b94158e05b931be4a86800444f86780024a1dcfa6aa61a0d"
+          },
+          "cpswm.system.continual.rls": {
+            "compiled_code_sha256": "d2fd0d393bd77beeb1e1d7092326977024035a30bab68e87cecaf7c6dc2ff51f",
+            "path": "src/cpswm/system/continual/rls/__init__.py",
+            "source_sha256": "cfab2fecb61769319b3def16a4093099403ef98e51c4be148f6f848b7f452caa"
+          },
+          "cpswm.system.continual.rls.channel_calibrator": {
+            "compiled_code_sha256": "a5608101bff4f4cf1a39327629ab6e891455d9d44aa4ba0aac68dba64baeb273",
+            "path": "src/cpswm/system/continual/rls/channel_calibrator.py",
+            "source_sha256": "ada4260ffd26532a092d0342ddf229a44902b03d685ed9d507cf53d8cac5ff67"
+          },
+          "cpswm.system.continual.rls.core": {
+            "compiled_code_sha256": "a87268c0385d7bcc0636534beaf3383a4ec0ccd89026b353cce23d9114fc086e",
+            "path": "src/cpswm/system/continual/rls/core.py",
+            "source_sha256": "0221eb6dc541c5029a044349f8531511e566e2ec82172c70457af0e87268a482"
+          },
+          "cpswm.system.continual.rls.habit_head": {
+            "compiled_code_sha256": "00c0f99cc2bbb8b13b76fa300a7e171a29879490942935007df90ae246cbfa01",
+            "path": "src/cpswm/system/continual/rls/habit_head.py",
+            "source_sha256": "77ec049d559616152ce2c9cc4b0c41f581c56afc1e977f7faaa5e3453de1c6e7"
+          },
+          "cpswm.system.continual.rls.regime_bank": {
+            "compiled_code_sha256": "83af8cd992f9c8333f4d15890f601d24c8cc26e4445d036eca4416e1a060ebb4",
+            "path": "src/cpswm/system/continual/rls/regime_bank.py",
+            "source_sha256": "727c1c605efc5ba1e4c862791eb7c19c722574be3af1fbbd66db3a72f44c6943"
+          },
+          "cpswm.system.counterfactual_event_hypergraph": {
+            "compiled_code_sha256": "b1ba6696044b730a68b9c1fba5dc95d6f3006e8b7a5c731795442b3057d85674",
+            "path": "src/cpswm/system/counterfactual_event_hypergraph/__init__.py",
+            "source_sha256": "a60fa7b5d99222d13cbfc43b49e143b18ec27ba338809c79f9c90ca704cd4902"
+          },
+          "cpswm.system.counterfactual_event_hypergraph.baselines": {
+            "compiled_code_sha256": "f4536114a28316a5410dc86038ee154621892783ea0aa19e8731b6f8f1e03b7b",
+            "path": "src/cpswm/system/counterfactual_event_hypergraph/baselines.py",
+            "source_sha256": "2abc13e90dc856abf9bf587fb79bae0231cd6c1d9f40f5d267fa35b17abc0704"
+          },
+          "cpswm.system.counterfactual_event_hypergraph.contracts": {
+            "compiled_code_sha256": "ddc4d401ff214d1f8bab4cb28af94bc870229a259c52346da8c59fabd2e14855",
+            "path": "src/cpswm/system/counterfactual_event_hypergraph/contracts.py",
+            "source_sha256": "52db590c82c4f4dfec844a7496ec513dc815c8fd360c13a186806e56bd9c1fa5"
+          },
+          "cpswm.system.counterfactual_event_hypergraph.engine": {
+            "compiled_code_sha256": "7294fbe96f8abdda8b3846617521a476988154e898e5237c073d2f7e262bee19",
+            "path": "src/cpswm/system/counterfactual_event_hypergraph/engine.py",
+            "source_sha256": "38df426c30a59fcdc614e11afefdb118f41a55376f62fcc86b1bc0c3e38160b2"
+          },
+          "cpswm.system.counterfactual_event_hypergraph.feedback_revision_loop": {
+            "compiled_code_sha256": "8f56cc61cbc98070dd7b84ac76a023773d86120ce12425adf74d0e67133682f9",
+            "path": "src/cpswm/system/counterfactual_event_hypergraph/feedback_revision_loop.py",
+            "source_sha256": "498a631f6cdd874885d0a8b7d8b2861a6544649a0516e03f307cbf0aee2c4890"
+          },
+          "cpswm.system.counterfactual_event_hypergraph.hypothesis_message_passing": {
+            "compiled_code_sha256": "b2921490d2b0eab3c2c9d0cf426b7bd66bc83e57e732cc6b6a2a4267f0c6bf0e",
+            "path": "src/cpswm/system/counterfactual_event_hypergraph/hypothesis_message_passing.py",
+            "source_sha256": "1f18d326813a4e061ccea273c110ad7e0724fd1c184f84e47ff31ac3c5e665a3"
+          },
+          "cpswm.system.evaluation_operations": {
+            "compiled_code_sha256": "15f32c3435a2d0d17acc95f3e0806a4438f9d4a3229a03ecf244e2f19bff5ae8",
+            "path": "src/cpswm/system/evaluation_operations/__init__.py",
+            "source_sha256": "c011fec8482cf2e3b4a4a60dffad0793d1d747077ae11fb80aa3a182afa6b15b"
+          },
+          "cpswm.system.evaluation_operations.d0_shift_scenarios": {
+            "compiled_code_sha256": "7d7e769598cebb0e1623a719e437839b0f6f105b38eb9f3c1017d17de213efeb",
+            "path": "src/cpswm/system/evaluation_operations/d0_shift_scenarios.py",
+            "source_sha256": "d8271c87fff9c53d51fa1844b1dd541bc620351804ec24b8744d544d6cb8ce6f"
+          },
+          "cpswm.system.evaluation_operations.direction_three_dataset": {
+            "compiled_code_sha256": "374124750c02e94a57268c9b5e51d41c1d735f2a0883091bbecbc731ff4a322c",
+            "path": "src/cpswm/system/evaluation_operations/direction_three_dataset.py",
+            "source_sha256": "f3a4c07acc618e77ecc6f20facc00eca01ecd395c92494704ef149e05319953b"
+          },
+          "cpswm.system.evaluation_operations.direction_three_prediction_cache": {
+            "compiled_code_sha256": "5b6ee6f20177cef5dd6f301f746a86d23a6e2d4da692c7d8ec8ad78dd7fcff18",
+            "path": "src/cpswm/system/evaluation_operations/direction_three_prediction_cache.py",
+            "source_sha256": "5e012b084fde9f9dc2af321664333f94ec5b36f5c7406ff176970e5e5acde5e4"
+          },
+          "cpswm.system.evaluation_operations.evaluator": {
+            "compiled_code_sha256": "f6e97403d89d3fef687a2407837bdc6c730b5cb7b150dc421079151233166272",
+            "path": "src/cpswm/system/evaluation_operations/evaluator.py",
+            "source_sha256": "1f7edfab0b3bd9d90a5254ba1912249f5175df0d414996391db8ea8d84543cbc"
+          },
+          "cpswm.system.evaluation_operations.fair_ablation": {
+            "compiled_code_sha256": "a359e28f11b2e5815a2af1904c95587e2f539f3d3ef962d01dde064f216bc10e",
+            "path": "src/cpswm/system/evaluation_operations/fair_ablation.py",
+            "source_sha256": "7b97eacd199be18e078fffb62f77fd245ba6f8e1d59ad37aef2203ed036b8e01"
+          },
+          "cpswm.system.evaluation_operations.hidden_event_death_test": {
+            "compiled_code_sha256": "23e40d5bea1f87f4098109e017cdd3348b056bb6dae6994e6d024cd1768ac823",
+            "path": "src/cpswm/system/evaluation_operations/hidden_event_death_test.py",
+            "source_sha256": "78a79db457f0e5486a67b33c7f01c02662c48f78f4df18fc8f1a519305fa236d"
+          },
+          "cpswm.system.evaluation_operations.independent_test_process": {
+            "compiled_code_sha256": "cab5c3f5d169852a91bbe0d8e40f3c1af03ff23e0b3b939436e9ce91e617e908",
+            "path": "src/cpswm/system/evaluation_operations/independent_test_process.py",
+            "source_sha256": "f18fa66b7cb9e31e963ca4e6e900b352267e63194f5606bedf6f98cb50b7bde8"
+          },
+          "cpswm.system.evaluation_operations.method_falsification": {
+            "compiled_code_sha256": "d8f28d08cb2fc925a5170d1991b04a9fe0163b1d7663010c8b2c88273fbfa5ed",
+            "path": "src/cpswm/system/evaluation_operations/method_falsification.py",
+            "source_sha256": "dce4b55f2b791b086e063355b5135e1b3609f14bdbe742775624be752b0eed50"
+          },
+          "cpswm.system.evaluation_operations.oam_phm_baselines": {
+            "compiled_code_sha256": "8e5817b1f7ecb5a7002eeec235fe0172416a3f850cd63e80bb99181ead22dfa0",
+            "path": "src/cpswm/system/evaluation_operations/oam_phm_baselines.py",
+            "source_sha256": "fbe2620847aacd2bfc84409ca36e914b10d41bc4e1f2e739a65ae5a1f0f7503f"
+          },
+          "cpswm.system.evaluation_operations.oam_phm_external_evidence": {
+            "compiled_code_sha256": "86be6588d028a35e3cca47bf5576f13c88b8274abac920a6878e8a3245a89f55",
+            "path": "src/cpswm/system/evaluation_operations/oam_phm_external_evidence.py",
+            "source_sha256": "c9e79adc6a916135d96cd05783412118ccc94526e1c8a0a7d801c7dd33a78386"
+          },
+          "cpswm.system.evaluation_operations.oam_phm_external_receipts": {
+            "compiled_code_sha256": "ecff7193babac5cf7b11ac2ba98b8c1ef849fa9a52f73bc29f63d646e955ed02",
+            "path": "src/cpswm/system/evaluation_operations/oam_phm_external_receipts.py",
+            "source_sha256": "cbcc8be036f9c71800fbe7c39b12079a5e3567897ca2137099475c9846946f7a"
+          },
+          "cpswm.system.evaluation_operations.oam_phm_selected_protocol": {
+            "compiled_code_sha256": "0ced940e81496143a90aaa982347608c8fa8f66c308669aa372f78145cec9844",
+            "path": "src/cpswm/system/evaluation_operations/oam_phm_selected_protocol.py",
+            "source_sha256": "b273a9f8ae1b4abf94544c873a6ed7732406f810ddc7dd45f6a7a752d2bb249f"
+          },
+          "cpswm.system.evaluation_operations.online_shift_attribution": {
+            "compiled_code_sha256": "1655150d6970a365d1ef31f22b43cfa7b5493ecd47e7295847ee00a710551bd7",
+            "path": "src/cpswm/system/evaluation_operations/online_shift_attribution.py",
+            "source_sha256": "c3f7caa43c93fe2523a8d21da434d12c22736670cd08bb8bedb70f2ddafe9e51"
+          },
+          "cpswm.system.evaluation_operations.project_one_ablation_pilot": {
+            "compiled_code_sha256": "64bb6a6331d59aa33b75458765b067a4775e16679564b623e76fc3900b9ed64f",
+            "path": "src/cpswm/system/evaluation_operations/project_one_ablation_pilot.py",
+            "source_sha256": "06b289b2220a1721f123bb2641c1da9ae8828a4a09fdc01db9800c652a79a1be"
+          },
+          "cpswm.system.evaluation_operations.project_one_ablation_v0_2": {
+            "compiled_code_sha256": "ea97697393b2404ee979189eefddd55d49176faa9719846bca4c03445562f562",
+            "path": "src/cpswm/system/evaluation_operations/project_one_ablation_v0_2.py",
+            "source_sha256": "091d05233a0d91de391dbfd781907c03c5066740d84d0d6ed4d8bba2c5a827f6"
+          },
+          "cpswm.system.evaluation_operations.project_two_ablation": {
+            "compiled_code_sha256": "2c6a3e340e10fc589a429bdc2310b20eb9ca30e5cde8c568f618f87dfcc6ced4",
+            "path": "src/cpswm/system/evaluation_operations/project_two_ablation.py",
+            "source_sha256": "0b8a580b76df197b874376e186dbdb59d3f71ee1e6a1a42fa4bed1333e37d0a0"
+          },
+          "cpswm.system.evaluation_operations.project_two_action_benchmark": {
+            "compiled_code_sha256": "d7abbb9d03bcf10a5074af9be1e5b4ac1a086bbe2e3232ee630ccbf373ff3e37",
+            "path": "src/cpswm/system/evaluation_operations/project_two_action_benchmark.py",
+            "source_sha256": "e9ff226b107cbecb0aa67fa687a7afc20cbfe715bbfe4968f7569483c1a3931a"
+          },
+          "cpswm.system.evaluation_operations.project_two_ciav_interactive_development": {
+            "compiled_code_sha256": "7a5844b9ac5b3f5b726914b65628dc2e3ad83e7212e8dd29cd5b867ba686c90c",
+            "path": "src/cpswm/system/evaluation_operations/project_two_ciav_interactive_development.py",
+            "source_sha256": "e53b8be4c1b09712afae1cf776562bbe905d736edf28ec0f61d2769056ac6942"
+          },
+          "cpswm.system.evaluation_operations.project_two_d1_development": {
+            "compiled_code_sha256": "64d65c5e6c015f0ab9ac2c490cd5f784c6cd86b44d1121300884efe4c7fd46b2",
+            "path": "src/cpswm/system/evaluation_operations/project_two_d1_development.py",
+            "source_sha256": "d0ff3003ca4ccb05de858b747627b885566b826c63d20aded679b9437be16f51"
+          },
+          "cpswm.system.evaluation_operations.project_two_dataset": {
+            "compiled_code_sha256": "35779ac6762d66356fa018d17e77c403677e6d64d46ffe2ed05ce77ba081bdf6",
+            "path": "src/cpswm/system/evaluation_operations/project_two_dataset.py",
+            "source_sha256": "df06c56ac29ff2e870f57b8042137389760aee32dca0e8942436a768ab6b4927"
+          },
+          "cpswm.system.evaluation_operations.project_two_dataset_adapters": {
+            "compiled_code_sha256": "a2031ba4c01f90f51b943f3eb5b4a55994c11e7793678aa22412af6205247a67",
+            "path": "src/cpswm/system/evaluation_operations/project_two_dataset_adapters.py",
+            "source_sha256": "c7daa52d5018a8c7e98a9c3b288fdf6253b4c29dbb3b5fc223d0ba7029d0e993"
+          },
+          "cpswm.system.evaluation_operations.project_two_dual_timescale_development": {
+            "compiled_code_sha256": "2ee07439704499e38b59f7a021c307efa3b10a98f22b8ab5fa3208ca9d278ba4",
+            "path": "src/cpswm/system/evaluation_operations/project_two_dual_timescale_development.py",
+            "source_sha256": "62edfc56e6f76c1b9c00420d3a9d45ec1df919f4a3c8f98a22761f6f4ff00724"
+          },
+          "cpswm.system.evaluation_operations.project_two_experiment_config": {
+            "compiled_code_sha256": "4f118eac27fdff5cc71c59261538e48488e17af2e30a466e22b6aa91aa1ddf0b",
+            "path": "src/cpswm/system/evaluation_operations/project_two_experiment_config.py",
+            "source_sha256": "ecb0af3298e3b5a0b03e986e0a27098b4cce34898d124eee1550ede2478a6934"
+          },
+          "cpswm.system.evaluation_operations.project_two_factorial_benchmark": {
+            "compiled_code_sha256": "8e9fcd3f07b482c04c07fa26a2a6e78f6dcf1baf0c07d51334643630e739070c",
+            "path": "src/cpswm/system/evaluation_operations/project_two_factorial_benchmark.py",
+            "source_sha256": "c6fe851a96f73c96201ccc1b9ede1504b1e532e13e602f7edf2557aa8d38e13d"
+          },
+          "cpswm.system.evaluation_operations.project_two_multiseed_evidence": {
+            "compiled_code_sha256": "849bf0b012fca3519c9ec495152a892ad9178beea21e26b4b607d70315a40e93",
+            "path": "src/cpswm/system/evaluation_operations/project_two_multiseed_evidence.py",
+            "source_sha256": "5c46c599128b5d5d5047eed3e8e974f540072a73d898c33f4d5d9d56d3af4f0e"
+          },
+          "cpswm.system.evaluation_operations.project_two_real_perception": {
+            "compiled_code_sha256": "592b4225c95964ad57b3e5a3cd1f64b2bc751332cbcd190a3d0188895b5b7f5d",
+            "path": "src/cpswm/system/evaluation_operations/project_two_real_perception.py",
+            "source_sha256": "f37334fece7101a18975e08d7d95df6f2c3094c2dd0e93910201b64a315e378c"
+          },
+          "cpswm.system.evaluation_operations.project_two_replay_importer": {
+            "compiled_code_sha256": "d6e203beedec778697b57ea1dacf08ddcc92d94b80d82a8bd70ce836f9bf5abc",
+            "path": "src/cpswm/system/evaluation_operations/project_two_replay_importer.py",
+            "source_sha256": "b12e2ed331f1aec7af06dba51cb212b3543642327b808567e593a4b8fbd8e2d6"
+          },
+          "cpswm.system.evaluation_operations.raw_data_signatures": {
+            "compiled_code_sha256": "89f303fe6b4b1c14acccab311466bc3bfd368008ef822620dca7317a7c072fa1",
+            "path": "src/cpswm/system/evaluation_operations/raw_data_signatures.py",
+            "source_sha256": "b88c5cf6aeb072a26bffda1094daf1caf16724e3325569a932a2dc9eb51cd11b"
+          },
+          "cpswm.system.evaluation_operations.report_output": {
+            "compiled_code_sha256": "33165d05d352fa5fbe608b25b069eac4c99ac5888e9ce45fcf2277c177d63930",
+            "path": "src/cpswm/system/evaluation_operations/report_output.py",
+            "source_sha256": "a78e285057be9a55dfc624cfccb3d7dff3f4f96b83d9e707ae5f8ef11ebd964a"
+          },
+          "cpswm.system.evaluation_operations.sealed_test_split": {
+            "compiled_code_sha256": "9ee9b3541094d5cfd3f1390e366f1b79fbc649be0647067c23ad1b941dab4f34",
+            "path": "src/cpswm/system/evaluation_operations/sealed_test_split.py",
+            "source_sha256": "f6d5817bbff11cb7491f37aa84fd0db64dffdfa11bf8aa3c9e66b0a5f4d3c630"
+          },
+          "cpswm.system.evaluation_operations.shift_attribution": {
+            "compiled_code_sha256": "4b12c12731c108dd684852dc80eac6660da0abba74553d8a67005df0c244ee7a",
+            "path": "src/cpswm/system/evaluation_operations/shift_attribution.py",
+            "source_sha256": "e460616dbe19bc07faa74d5450b8fa65dc4e2e195bd71912801cb009fa4a0132"
+          },
+          "cpswm.system.evaluation_operations.shift_baselines": {
+            "compiled_code_sha256": "cfbfb8c427a524d5771e3aa07f9911f7a6e4ed52c6eeecbc8fda87b136b3f4c8",
+            "path": "src/cpswm/system/evaluation_operations/shift_baselines.py",
+            "source_sha256": "4c92f6b26942d8dc4e827ae4873cea4e95c4aaaf28d71193e66a4ce27c330fc4"
+          },
+          "cpswm.system.evaluation_operations.structure_two_action_death_test": {
+            "compiled_code_sha256": "e790aed21e719c0a4e57ec4990a94b0180416380ee1666328b9bffb5c0bcf1fe",
+            "path": "src/cpswm/system/evaluation_operations/structure_two_action_death_test.py",
+            "source_sha256": "bf5a306257b60869d80e6927991b6ad47e3dc38ab392cace30da2be97f97c35a"
+          },
+          "cpswm.system.evaluation_operations.structure_two_action_utility_construct_gate": {
+            "compiled_code_sha256": "b00121108fa612f9fa3efa0734d646c0b729263799a9862882e9785f6a2e791e",
+            "path": "src/cpswm/system/evaluation_operations/structure_two_action_utility_construct_gate.py",
+            "source_sha256": "e25129e5289cdbcf170e9023e284332e9e24eed803fb0e33f7ebc61de7838a30"
+          },
+          "cpswm.system.evaluation_operations.structure_two_artifact_verifier": {
+            "compiled_code_sha256": "caba666a7bcdddc9897d7b94f1720497f4509c4d84d31da7776f23c835aaf645",
+            "path": "src/cpswm/system/evaluation_operations/structure_two_artifact_verifier.py",
+            "source_sha256": "ef1d9c78c853b676c9b0aa7263206025d6724deef17d5992dcd1eeb59338a11e"
+          },
+          "cpswm.system.evaluation_operations.structure_two_backbone_falsifier": {
+            "compiled_code_sha256": "b000dd7ed9a7dfc22261c9a3d8504acaebe99859979815ed501f5000593a3529",
+            "path": "src/cpswm/system/evaluation_operations/structure_two_backbone_falsifier.py",
+            "source_sha256": "c0c020900bbdf53daeb45ebcb45e6162cdb972b26726348ab5108c2a5f474078"
+          },
+          "cpswm.system.evaluation_operations.structure_two_binding_resolution_protocols": {
+            "compiled_code_sha256": "f267745e62b18331abd5c2352e49223cb0d1cd9604123c9f199be58540ff1d17",
+            "path": "src/cpswm/system/evaluation_operations/structure_two_binding_resolution_protocols.py",
+            "source_sha256": "47db0dd7ebf47fb9dea1bd45a8e6ab54021158cddd3f303160a46eed6186836c"
+          },
+          "cpswm.system.evaluation_operations.structure_two_comparison_audit": {
+            "compiled_code_sha256": "0bf9a8eb87f9f04b6677fd62cd66f29954453164eb03b18cbe8d6e15115018ff",
+            "path": "src/cpswm/system/evaluation_operations/structure_two_comparison_audit.py",
+            "source_sha256": "3082f9f60945e8fd82a51dd8894dbf05e3b03aee28475fbed85e70285b3098f5"
+          },
+          "cpswm.system.evaluation_operations.structure_two_comparison_dynamic": {
+            "compiled_code_sha256": "38004245d88bb60521986feceb06971d18fb861a24cebd74b0f5c942f85fda49",
+            "path": "src/cpswm/system/evaluation_operations/structure_two_comparison_dynamic.py",
+            "source_sha256": "9745f4b3285439e49ed5cfe3dd43786e94d0e0ff1fd6dce5bf3cb6280b2e1d32"
+          },
+          "cpswm.system.evaluation_operations.structure_two_comparison_fairness": {
+            "compiled_code_sha256": "18621c4880347cd0c94089c3ab7dddba265a96e85ecf5e4ee65a1dcdbb2a21e1",
+            "path": "src/cpswm/system/evaluation_operations/structure_two_comparison_fairness.py",
+            "source_sha256": "7ac8ab746e7874e1a75031aa3b254727d58f364d25f9ae88a78c7f601bb433bd"
+          },
+          "cpswm.system.evaluation_operations.structure_two_consolidation_compatibility": {
+            "compiled_code_sha256": "0d3aad93f871f8252ce16967b47ccf74ae9ffba9175f99da1b4d2e77e98ae1f1",
+            "path": "src/cpswm/system/evaluation_operations/structure_two_consolidation_compatibility.py",
+            "source_sha256": "8f6a76f46a71bb0ad34eed33e70c5e769afe98a6bcc515fff806e99034dbd46f"
+          },
+          "cpswm.system.evaluation_operations.structure_two_cost_guardrail_calibration": {
+            "compiled_code_sha256": "27cb8880e0359762271ec817a4dcde9de671048647948b39b012e238a1a5c5d2",
+            "path": "src/cpswm/system/evaluation_operations/structure_two_cost_guardrail_calibration.py",
+            "source_sha256": "c1a47f76f38a0e8685378611bd48a58413ca40523ee7f012fe9c189e56edf39d"
+          },
+          "cpswm.system.evaluation_operations.structure_two_evidence_artifacts": {
+            "compiled_code_sha256": "0f49d7e51e4b08b0ae33cb25eb2d5767b3b4c7e8912d9d3f7f80c01a479f6ee9",
+            "path": "src/cpswm/system/evaluation_operations/structure_two_evidence_artifacts.py",
+            "source_sha256": "e9c419681c145c784127887112dd69b674b90efe588bd3f5abebe6a59955d733"
+          },
+          "cpswm.system.evaluation_operations.structure_two_fresh_triarm": {
+            "compiled_code_sha256": "97afc19bdb2557251fa024700714de75325cebc2835209252f800333f6de170c",
+            "path": "src/cpswm/system/evaluation_operations/structure_two_fresh_triarm.py",
+            "source_sha256": "524752267c8c03feabc7c769625b7f3472703d0655687e889cce8b42e4a39096"
+          },
+          "cpswm.system.evaluation_operations.structure_two_full_scientific_loop": {
+            "compiled_code_sha256": "084c00148be5d2a9597c63e8b469a9ce21374027251b16894b20d36990e98cd0",
+            "path": "src/cpswm/system/evaluation_operations/structure_two_full_scientific_loop.py",
+            "source_sha256": "0b76c42a6ebe1d2bccc99d4905898a2f3217d1e31640c1420960800b338e1f52"
+          },
+          "cpswm.system.evaluation_operations.structure_two_neural_amortized": {
+            "compiled_code_sha256": "1c0601905ab20a8be77a9ef5e27246193c9936a9afc0554de72a1c4b156f8f12",
+            "path": "src/cpswm/system/evaluation_operations/structure_two_neural_amortized.py",
+            "source_sha256": "4341c1074902217abba905b2925689205ca4fec6c37737381a78ef5f521024ba"
+          },
+          "cpswm.system.evaluation_operations.structure_two_p5_direct_trace_probe": {
+            "compiled_code_sha256": "f1d414dbf73560f33abac31b0b49e7bfbaa4b1e3b74a978dc5e22237515df15b",
+            "path": "src/cpswm/system/evaluation_operations/structure_two_p5_direct_trace_probe.py",
+            "source_sha256": "14039591b61c156a3f4b3cf770146019d75705ed509e1eee3d284d73ddc358c5"
+          },
+          "cpswm.system.evaluation_operations.structure_two_p5_readout_posthoc_diagnostic": {
+            "compiled_code_sha256": "9ad405dd0a7b54d888b39c9200247ce3117a588f5152d733c8e26f80f308c4d4",
+            "path": "src/cpswm/system/evaluation_operations/structure_two_p5_readout_posthoc_diagnostic.py",
+            "source_sha256": "7458b3069653157a865317cdd80a80af33350511a1206d8069b09a8dce55af77"
+          },
+          "cpswm.system.evaluation_operations.structure_two_p5_three_arm_contract": {
+            "compiled_code_sha256": "8e7c91dec97eea93c64c6ddc00191c097ae06b492164ad6463632097f56ab7d5",
+            "path": "src/cpswm/system/evaluation_operations/structure_two_p5_three_arm_contract.py",
+            "source_sha256": "b97b22fbce6ceaedd8366345e52843f71d75007cac4ea83eb06ceb672cb95bfe"
+          },
+          "cpswm.system.evaluation_operations.structure_two_p5_three_arm_death_test": {
+            "compiled_code_sha256": "fe180b5caa7048ff5ceef2c1062c58ab190a105aeb839aee528d7d86a3c9c421",
+            "path": "src/cpswm/system/evaluation_operations/structure_two_p5_three_arm_death_test.py",
+            "source_sha256": "9707a73acf16bd7c7be42184f3283645c7bb2ae98e59cc9cdf3fc8c4546c58ff"
+          },
+          "cpswm.system.evaluation_operations.structure_two_particle_falsifier": {
+            "compiled_code_sha256": "b715d6988607ebbaf21c293d44a983fb34d9542c52150d7f6ca3d6d736b4bcd2",
+            "path": "src/cpswm/system/evaluation_operations/structure_two_particle_falsifier.py",
+            "source_sha256": "147e369c88708cf152510f1978beed7cdbd6baf86d60f0ec0de0837631df7e6c"
+          },
+          "cpswm.system.evaluation_operations.structure_two_rejuvenation_gate": {
+            "compiled_code_sha256": "1902e07dda7e515746e765befd90f475ccc3a1c5e76938805b5f908d170572e4",
+            "path": "src/cpswm/system/evaluation_operations/structure_two_rejuvenation_gate.py",
+            "source_sha256": "d97c825b6363460456fb4c7d0b9a8f580500418e49b03c63a48be3198f6ecec2"
+          },
+          "cpswm.system.evaluation_operations.structure_two_search_utility": {
+            "compiled_code_sha256": "4deebc70cf56b8b763733fb7443bf28288e20090c0ef20ee5101aa8ead528c67",
+            "path": "src/cpswm/system/evaluation_operations/structure_two_search_utility.py",
+            "source_sha256": "b7897b0bef6f6519419bf6a2befb419a300296d91878c043719db7430a15b3ec"
+          },
+          "cpswm.system.evaluation_operations.structure_two_selected_method": {
+            "compiled_code_sha256": "54fd734f5b76fceb7835503f44cff87f114e847b7226b4620060e6d0594d8a3d",
+            "path": "src/cpswm/system/evaluation_operations/structure_two_selected_method.py",
+            "source_sha256": "ad54cbfdb23cd0b9d69b1648f406aa2ed26e484bded0fc2b7130dcdc9512ddbc"
+          },
+          "cpswm.system.evaluation_operations.structure_two_sequential_gate": {
+            "compiled_code_sha256": "3bf932050e9d7a0796ff817f3295a04fe0788028038ca2e8f9d50227b88772c5",
+            "path": "src/cpswm/system/evaluation_operations/structure_two_sequential_gate.py",
+            "source_sha256": "82c668ab3a52abab7780b703015c0d2b916ca1f4c61333c54602d6084f77a0ff"
+          },
+          "cpswm.system.evaluation_operations.structure_two_stateful_full_joint": {
+            "compiled_code_sha256": "cc2663de7a80093baca7e9b27506c22435fad259d4c44eba4586e651a8c691c6",
+            "path": "src/cpswm/system/evaluation_operations/structure_two_stateful_full_joint.py",
+            "source_sha256": "fe32501bbcc9dfd2d16dbc13bac024c036d8fa113435fa934bbce15b62a1bb27"
+          },
+          "cpswm.system.evaluation_operations.structure_two_task8_online_compute": {
+            "compiled_code_sha256": "3f6eefe4250ada361938f9ac4bee94e0a1a2a7e87423fe8520fb945f00ddb10d",
+            "path": "src/cpswm/system/evaluation_operations/structure_two_task8_online_compute.py",
+            "source_sha256": "5105d64006d73801f61c83190120d2113beb70284ec79177f486c80f15c1daee"
+          },
+          "cpswm.system.evaluation_operations.structure_two_technical_route_audit": {
+            "compiled_code_sha256": "243f929458e391f9f405692421b8bb0ff6ae5abfc0e63959e026ebbd5033a373",
+            "path": "src/cpswm/system/evaluation_operations/structure_two_technical_route_audit.py",
+            "source_sha256": "09e16ec54d525a26cb9850f9f1b875e0ea6333d4eea5f2d4d585dba2fceee558"
+          },
+          "cpswm.system.evaluation_operations.structure_two_transition_reactivation": {
+            "compiled_code_sha256": "a9183d83cfbd0aef269f35a1b252ed5a511ff5e3aa290bb8f31802bb5fd04ab9",
+            "path": "src/cpswm/system/evaluation_operations/structure_two_transition_reactivation.py",
+            "source_sha256": "e9e99c24bdd330c4efcea7a3f7d9b6920ce542823d72bbdb7dc659cf464bd4e4"
+          },
+          "cpswm.system.evaluation_operations.structure_two_trusted_ablation_authorization": {
+            "compiled_code_sha256": "30196ca97cb3115e0a0b8ae202329e803005a746216f90e768be8dd68d13c800",
+            "path": "src/cpswm/system/evaluation_operations/structure_two_trusted_ablation_authorization.py",
+            "source_sha256": "7a1e9b9267d9daa5ee0dade12a734429a8283d691c435e138630e1db0195a20c"
+          },
+          "cpswm.system.household_memory_benchmark": {
+            "compiled_code_sha256": "93a7dca0519c9ce7082f911fee274e500c10826ad0028f54149e2ef0ae1ea8c5",
+            "path": "src/cpswm/system/household_memory_benchmark/__init__.py",
+            "source_sha256": "665700c10e7c22758e79c47bfa9ca667ec5f33084eec30b12da253a014164696"
+          },
+          "cpswm.system.household_memory_benchmark.contracts": {
+            "compiled_code_sha256": "a0d46f8ea50ed75c105f09d38d6c97aa6274f1a9dc0368df723afd5dc32095a6",
+            "path": "src/cpswm/system/household_memory_benchmark/contracts.py",
+            "source_sha256": "d41549333f8cf820e9c0b4de493b02da7d543463383b1d836f0e2bd5f2e64149"
+          },
+          "cpswm.system.prototype_spine": {
+            "compiled_code_sha256": "80eb3f13d3c2453a7ab260e099511b5ef53abaf3adb8533ee5189e5f385904ba",
+            "path": "src/cpswm/system/prototype_spine.py",
+            "source_sha256": "369dc7b5ab087b6c80c5ec6fe3ca1929fd92f366781db11dbb8240732e83a26e"
+          },
+          "cpswm.system.reproducibility": {
+            "compiled_code_sha256": "8f61df5ab52327194049721c9c972373a73ba8044b52d443cdb428c98a5b80a8",
+            "path": "src/cpswm/system/reproducibility.py",
+            "source_sha256": "5e74a52813d53a04a20c1154897aa192b874e8df226ee47d7c2c122e05809032"
+          },
+          "cpswm.system.structure_two_adaptive_runtime": {
+            "compiled_code_sha256": "16f6b04c3bf1ab01ee59255ab418913704e8a4505342ed782660d364b4984256",
+            "path": "src/cpswm/system/structure_two_adaptive_runtime.py",
+            "source_sha256": "50512e47e2fe316009b65865596f5b7a4176a59863e161bc67ec3a2217bc7abd"
+          },
+          "cpswm.system.structure_two_execution": {
+            "compiled_code_sha256": "ba6995a1401521cfe62c28c2e69b29b5ce318f3abd791e12358c3ab0e97750ed",
+            "path": "src/cpswm/system/structure_two_execution.py",
+            "source_sha256": "7d44668089968ff3f6396558656d746409af0dc48375be15893d8a276d8b74f8"
+          },
+          "cpswm.system.structure_two_production_system": {
+            "compiled_code_sha256": "8ff785c0a7947361165af2022d2acff4098758b2c8326fa16f6d8d309fb025e2",
+            "path": "src/cpswm/system/structure_two_production_system.py",
+            "source_sha256": "306b72ae2223b03bcc609691afa67aa5fd284f728c49cade1e292b6491ba22c5"
+          },
+          "cpswm.system.synthetic_routines": {
+            "compiled_code_sha256": "1f2e1d8e846df74f5e183d2eac202fde8cebb888abf09d9c497348b446fec4f7",
+            "path": "src/cpswm/system/synthetic_routines/__init__.py",
+            "source_sha256": "5ff93f4b4598744bd439a4527035364482655ba062a53d6a96247faebe13d1c1"
+          },
+          "cpswm.system.synthetic_routines.contracts": {
+            "compiled_code_sha256": "eccc9c6cefbdd18c2cb88dc58c8ea54cdd531c05fcaf4026e4d50f149d06d3dd",
+            "path": "src/cpswm/system/synthetic_routines/contracts.py",
+            "source_sha256": "a5f7584ca31d92f3a3a1ab87fc0922fa7504b21383d5b923a3e6757cd49845bf"
+          },
+          "cpswm.system.synthetic_routines.generator": {
+            "compiled_code_sha256": "ca065b856cc7a075d3300162b8f0ec150ac2b4f6b21d36eed7dc5706bfb99629",
+            "path": "src/cpswm/system/synthetic_routines/generator.py",
+            "source_sha256": "ccb3faf5396def039563313c65f4f0823dcf7f9d8c59868fb2ebe99fef5ef5fa"
+          },
+          "cpswm.system.world_model_simulator": {
+            "compiled_code_sha256": "be460b69a2be1da91cf10a1c347ea9b12ce60674ad0032f0103c1e9c50f974ca",
+            "path": "src/cpswm/system/world_model_simulator/__init__.py",
+            "source_sha256": "bd4b52c1480783df0175e8fce81f51ed9beee22e6b6d8039d0a9b5b0ce36a239"
+          },
+          "cpswm.system.world_model_simulator.benchmark_access": {
+            "compiled_code_sha256": "518b209ffd8c2a69e92d2f08ed0f4ca526d2dc107027369f1f2da067f5cc162f",
+            "path": "src/cpswm/system/world_model_simulator/benchmark_access.py",
+            "source_sha256": "66d13e907ffe61bcfe9eb2f9008182041cec00954ee65834d9a9b94b9e7f239a"
+          },
+          "cpswm.system.world_model_simulator.symbolic": {
+            "compiled_code_sha256": "b0a83dfc44d6cfafbf7e2407837e403bd45652ec443abf42280b35d12191294d",
+            "path": "src/cpswm/system/world_model_simulator/symbolic.py",
+            "source_sha256": "87d550277426cfda0f569b2ac41f7b2dba91e7e15809d55f0d072b3cd0f366f2"
+          },
+          "cpswm.world_model": {
+            "compiled_code_sha256": "ccef981d5bacf0471ac93d2a1a1fa2b3f164db6986026dd436796476331a9a21",
+            "path": "src/cpswm/world_model/__init__.py",
+            "source_sha256": "c0ce9422d1cded3d0f629ff3f128ce147d9dafdaae6e109ddc5759a05214a876"
+          },
+          "cpswm.world_model.grounded_search": {
+            "compiled_code_sha256": "1d159d6f3b086c603a899dca7ec353008971b826d43eaf3c2b3bfecbe2e719c0",
+            "path": "src/cpswm/world_model/grounded_search/__init__.py",
+            "source_sha256": "03558eb570e46777d41ce22c845ed8f1d99e3a1ac696cf6e6861ff9b32704692"
+          },
+          "cpswm.world_model.grounded_search.active_verification": {
+            "compiled_code_sha256": "26b030c4e197031dd9f825477929822f1fd19ce08f35ad2f3a54ceaeb20559ce",
+            "path": "src/cpswm/world_model/grounded_search/active_verification.py",
+            "source_sha256": "cbf17bcd30fd06e65b6800bc2c3d5e7f35f398e53ee56d65ab733f040d3a8498"
+          },
+          "cpswm.world_model.grounded_search.adapters": {
+            "compiled_code_sha256": "033dea97584364b66267eed84493aed4e00286823d20e6b0089c1d61d576c202",
+            "path": "src/cpswm/world_model/grounded_search/adapters.py",
+            "source_sha256": "b7b2c219da311c8a245456f643100eb2d22613ca19e3d0403a2b3f5041df1f15"
+          },
+          "cpswm.world_model.grounded_search.ciav_opceu_loop": {
+            "compiled_code_sha256": "036f8fef4ab98a19c8f481a393ba71c58d9c8f56e09585491ac8f1ecc3a75f84",
+            "path": "src/cpswm/world_model/grounded_search/ciav_opceu_loop.py",
+            "source_sha256": "7b8c4422dc16518bdc6808090f6785bffe88eb5e62c21bbda05d767de1a589a8"
+          },
+          "cpswm.world_model.grounded_search.concurrent_map_task": {
+            "compiled_code_sha256": "6d21eb01ccfa4e73519f84548f59ebdc6b5bbef75fa93fc24406b975eedb999d",
+            "path": "src/cpswm/world_model/grounded_search/concurrent_map_task.py",
+            "source_sha256": "0ce7aef67763e3e129e3f5575b036b606dd7d95987b830c29262b7003b517ba1"
+          },
+          "cpswm.world_model.grounded_search.embodiment_platforms": {
+            "compiled_code_sha256": "6cd293a854a8e244653512c505c845ec91817189f42fe7bae8714ba139e1202e",
+            "path": "src/cpswm/world_model/grounded_search/embodiment_platforms.py",
+            "source_sha256": "f714596f3958aae03dd8f5c7d23fecf5fcd8fba147128d85b1ec71dc7cc626b4"
+          },
+          "cpswm.world_model.grounded_search.execution_feedback": {
+            "compiled_code_sha256": "30abccb326a27ea1377e8b1e4a7e4647b0e349e03fce1880bd79f81852fb07be",
+            "path": "src/cpswm/world_model/grounded_search/execution_feedback.py",
+            "source_sha256": "a3303b59e542f46e354639fc81611eb36579c43f93418a2be207bbd53dfa5fcb"
+          },
+          "cpswm.world_model.grounded_search.feedback_replay": {
+            "compiled_code_sha256": "aa656ce64b15c94a652c64c8fc08a731617168498e04d094b0fbae2d0d35e8bc",
+            "path": "src/cpswm/world_model/grounded_search/feedback_replay.py",
+            "source_sha256": "4a935c7c6cf03e0286fde1705983f9b591ad8242361fcfa6fd4a5bebccf3bcd3"
+          },
+          "cpswm.world_model.grounded_search.identity_verification": {
+            "compiled_code_sha256": "8232b03045caa9f6e9d1b521e1066d3ef881243e63c3000ffde83fca8793143a",
+            "path": "src/cpswm/world_model/grounded_search/identity_verification.py",
+            "source_sha256": "5dd3ad8295df32b769e193ffdf483483bb62464976fd6dd6828c6f16852a8d61"
+          },
+          "cpswm.world_model.grounded_search.joint_posterior": {
+            "compiled_code_sha256": "546220ad14a4e14e83d798d3e89d397e168db55a26bce7860dbe7c895f539f1e",
+            "path": "src/cpswm/world_model/grounded_search/joint_posterior.py",
+            "source_sha256": "d2bad46f225c3dc4c359b3e2ec0b701b96535121b2d312f6513d895a4ad9bb28"
+          },
+          "cpswm.world_model.grounded_search.layered_map": {
+            "compiled_code_sha256": "028e2be7e2ef1760208d0ba4bd5a29959610457e66ea3da96146c05cf08f5030",
+            "path": "src/cpswm/world_model/grounded_search/layered_map.py",
+            "source_sha256": "212b85840181aa45fe5428de1af84b24b6ad9ae4854e1336dae65a1126f456e6"
+          },
+          "cpswm.world_model.grounded_search.memory_reliability": {
+            "compiled_code_sha256": "0bc603b817a0741082fe1e6f3088bba3462bb0d9f89b13676dc5e41c632597e1",
+            "path": "src/cpswm/world_model/grounded_search/memory_reliability.py",
+            "source_sha256": "32632a01729a0abdde2f06fd1fe8b7831058a26db79d7beddc2bedd545d1fc19"
+          },
+          "cpswm.world_model.grounded_search.multi_parse_query": {
+            "compiled_code_sha256": "367949fa69d5c1434b2fb435a7032bc850b21a0aeab7085f8caf6ba48b2c88b3",
+            "path": "src/cpswm/world_model/grounded_search/multi_parse_query.py",
+            "source_sha256": "c25935613ba39a31a474b9e0a76b9fd45529fa9fd186313fab7d01283e195ee3"
+          },
+          "cpswm.world_model.grounded_search.oracle": {
+            "compiled_code_sha256": "e686f599a80567440dc48b219fb278e39b1f0261d837b59660d4f29b3a053911",
+            "path": "src/cpswm/world_model/grounded_search/oracle.py",
+            "source_sha256": "ff344271ea378e30e4629525295a64dc94c6c8d0d288ee46a87f0faaa7f1e501"
+          },
+          "cpswm.world_model.grounded_search.pipeline": {
+            "compiled_code_sha256": "8235e0d73f7e9ef4615c1ab7983a5d69734da594308f233fe9c5f35ca38d39fc",
+            "path": "src/cpswm/world_model/grounded_search/pipeline.py",
+            "source_sha256": "addd7e190c2795c28f76d24290c350ef4bd64de46c08f5d29645c03a21908822"
+          },
+          "cpswm.world_model.grounded_search.probabilistic_instance_graph": {
+            "compiled_code_sha256": "71a283460820a09716d78b634940b6f538da5bd6aff7b1cdb2d00a366cec723c",
+            "path": "src/cpswm/world_model/grounded_search/probabilistic_instance_graph.py",
+            "source_sha256": "c5abfdf890effa77d6ab5499446207b5ee60c252a099816c7f098940afc5eaed"
+          },
+          "cpswm.world_model.grounded_search.revision_aware_evidence": {
+            "compiled_code_sha256": "5ee2741df323383dbb56a339cc89d568ec2c0073feec94db296932731dba348f",
+            "path": "src/cpswm/world_model/grounded_search/revision_aware_evidence.py",
+            "source_sha256": "2dd91e0c6fe26000d22a554a3c84a9fbb5dee407abba157f4234ce78e012fbe3"
+          },
+          "cpswm.world_model.habits_transitions": {
+            "compiled_code_sha256": "7dfa4fd21a37feaf594a5646ab6596c352612a966b72b398f4ef8bc92279ebc0",
+            "path": "src/cpswm/world_model/habits_transitions/__init__.py",
+            "source_sha256": "cfa5f192efce1a9a52676fe0b2f70d6d44e09771ee17d8e105b477f4a0324767"
+          },
+          "cpswm.world_model.habits_transitions.cause_factorized_bocpd": {
+            "compiled_code_sha256": "9aabcd00421d9b6720dc571043da2717a0dd329cf96532c024597eb35b46af6c",
+            "path": "src/cpswm/world_model/habits_transitions/cause_factorized_bocpd.py",
+            "source_sha256": "29ec596e9a889a1c5161e2ce9c077e9f37029867f56f887ed8617d6c56efa114"
+          },
+          "cpswm.world_model.habits_transitions.cause_gated_consolidation": {
+            "compiled_code_sha256": "f46824c9338308e1c88cb943e9af7f7e9e237df53e97c1d42af7e1d7a47b1f13",
+            "path": "src/cpswm/world_model/habits_transitions/cause_gated_consolidation.py",
+            "source_sha256": "0898131ce6ef03d42f06ae30fc8164452144d442685202139c13b2b681da19ff"
+          },
+          "cpswm.world_model.habits_transitions.cause_regime_semantics": {
+            "compiled_code_sha256": "46eb466cd721ce11e8a6b24f3d546e0b8446f9297855fcb834dd9c41cc97cb41",
+            "path": "src/cpswm/world_model/habits_transitions/cause_regime_semantics.py",
+            "source_sha256": "6390ed7c9e98f76e0ee8e30255db576dc30c8aae5b5af95791ff7eeced9c3fc6"
+          },
+          "cpswm.world_model.habits_transitions.context_conditioned_regime": {
+            "compiled_code_sha256": "02e3412a09f16ce96d5b664060b0cffe8ee20a1c0f0360b536cf7e5f0271b504",
+            "path": "src/cpswm/world_model/habits_transitions/context_conditioned_regime.py",
+            "source_sha256": "ecce932f1754044c5ef2cbfcb1bf65fda722443c1db7f74dc571b8bc07532b53"
+          },
+          "cpswm.world_model.habits_transitions.habit_regime_write": {
+            "compiled_code_sha256": "25d69fece7182b5d499b3d88a3867e6f49304cb274394723431015e2ae124877",
+            "path": "src/cpswm/world_model/habits_transitions/habit_regime_write.py",
+            "source_sha256": "28f1c74d42c8d8d70c1e231eaae3ff994af99791b1bdddc6aad3c45651cfb7e6"
+          },
+          "cpswm.world_model.habits_transitions.hierarchical_dirichlet": {
+            "compiled_code_sha256": "435af92489104b3a5057ea6b1798a46feb9268f7e8b3d9566bf42cb99a8ed818",
+            "path": "src/cpswm/world_model/habits_transitions/hierarchical_dirichlet.py",
+            "source_sha256": "11ec282aaab0af285da2d0fddc919521b9311d80f1a2f6223d50251825821425"
+          },
+          "cpswm.world_model.habits_transitions.joint_cause_bocpd": {
+            "compiled_code_sha256": "bdd35463b21de217cc9de7f15338215c9f639590e85ba26ba4695d5d6c06ca1c",
+            "path": "src/cpswm/world_model/habits_transitions/joint_cause_bocpd.py",
+            "source_sha256": "dd20b88a30d12ea2cef4d98409bf35677706e07238431887fe52597773294ba7"
+          },
+          "cpswm.world_model.habits_transitions.layered_habit_posterior": {
+            "compiled_code_sha256": "db7234742e897f8755bc92b1347d16e5d8407aa40afa33ee879ad317bffbe974",
+            "path": "src/cpswm/world_model/habits_transitions/layered_habit_posterior.py",
+            "source_sha256": "f45f2b1e331b2038a7353a785ace8c3acad68e6f22deb6e118886984328050f3"
+          },
+          "cpswm.world_model.habits_transitions.mobility_axes": {
+            "compiled_code_sha256": "d51e8939985fa08e1c39c13cddf3d62044a34f390635804f716c123a2d5f7b7d",
+            "path": "src/cpswm/world_model/habits_transitions/mobility_axes.py",
+            "source_sha256": "7416667a26ed853097b3e61c73d4cf203c3b2dac5c0417f1c3f1ae031f6b7d37"
+          },
+          "cpswm.world_model.habits_transitions.mobility_profile": {
+            "compiled_code_sha256": "2e6f2d8f12382b0069434310e6ad1ad9ff3fd4efa65e649d0c084a9b190a0c0e",
+            "path": "src/cpswm/world_model/habits_transitions/mobility_profile.py",
+            "source_sha256": "3f728f2c077c8a48c041631399ab96e89025d8fb090e26bc432d7fff20fabdf3"
+          },
+          "cpswm.world_model.habits_transitions.propensity_correction": {
+            "compiled_code_sha256": "23584512d49216ce828f82ec59075665919bfbf7ca8d3f3b0dd2faadfe88e002",
+            "path": "src/cpswm/world_model/habits_transitions/propensity_correction.py",
+            "source_sha256": "713a6615d8998757c863abd06b9814adee9b5a7b4c1b7ae635a60888340c6bf8"
+          }
+        },
+        "local_bytecode_cache_used": false,
+        "policy": "captured_local_source_compilation_v1",
+        "preloaded_local_modules_allowed": false,
+        "python": "3.13.5 (main, Jun 12 2025, 12:22:43) [Clang 20.1.4 ]",
+        "scope": "cpswm imports and entry source; trusted Python/stdlib and process integrity"
+      },
+      "retained_score_mismatches": [],
+      "semantic_steps_sha256": "a14419c97cc848dfb60610d1df88fd4f7bdc3a87146c396c1741104752756d4e",
+      "steps": 1920,
+      "verified": "/private/tmp/cpswm-pc-a-review6-w2.pfIMZc/docs/reviews/data/structure_two_comparison_dynamic_window2_2026-09-12T1500/bundle_v5"
+    }
+  ]
+}

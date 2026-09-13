@@ -1,0 +1,54 @@
+{
+  "schema": "cpswm.pc-b.command-evidence@1",
+  "name": "original_six_postlock_seed0",
+  "command": [
+    "F:\\庞惟\\codex\\cpswm-w3-five-boundaries-fix-20260912\\.venv\\Scripts\\python.exe",
+    "-m",
+    "pytest",
+    "-o",
+    "addopts=",
+    "-q",
+    "-ra",
+    "-p",
+    "no:cacheprovider",
+    "--basetemp",
+    "F:\\庞惟\\codex\\cpswm-w3-validation-ccf2cf0\\.pytest-postlock-original-six-seed0",
+    "--junitxml",
+    "F:\\庞惟\\codex\\cpswm-w3-five-boundaries-fix-20260912\\docs\\reviews\\pc_b\\w3_five_boundaries_fix_2026-09-12\\post_lock\\original_six_postlock_seed0.junit.xml",
+    "tests/test_structure_two_w3_r6_pc_b_review.py"
+  ],
+  "cwd": "F:\\庞惟\\codex\\cpswm-w3-validation-ccf2cf0",
+  "environment_overrides": {
+    "PYTHONPATH": "F:\\庞惟\\codex\\cpswm-w3-validation-ccf2cf0\\src;F:\\庞惟\\codex\\cpswm-w3-validation-ccf2cf0\\tests",
+    "PYTHONHASHSEED": "0",
+    "OPENBLAS_NUM_THREADS": "1",
+    "OMP_NUM_THREADS": "1",
+    "MKL_NUM_THREADS": "1"
+  },
+  "started_at_utc": "2026-09-12T16:38:43.863913+00:00",
+  "finished_at_utc": "2026-09-12T16:38:48.255040+00:00",
+  "duration_seconds": 4.39179,
+  "returncode": 0,
+  "expected_exit": 0,
+  "outcome_as_expected": true,
+  "launch_error": null,
+  "platform": "Windows-11-10.0.22631-SP0",
+  "runner": {
+    "executable": "F:\\庞惟\\codex\\cpswm-w3-five-boundaries-fix-20260912\\.venv\\Scripts\\python.exe",
+    "version": "3.13.5 (main, Jul 23 2025, 00:30:06) [MSC v.1944 64 bit (AMD64)]",
+    "sha256": "6dc19cff73c8d7d162cd72bdcebd1ecfbe93a7086520e2503c5a68ea64fb8cbe",
+    "size_bytes": 238080
+  },
+  "artifacts": {
+    "stdout": {
+      "path": "F:\\庞惟\\codex\\cpswm-w3-five-boundaries-fix-20260912\\docs\\reviews\\pc_b\\w3_five_boundaries_fix_2026-09-12\\post_lock\\original_six_postlock_seed0.stdout.log",
+      "bytes": 100,
+      "sha256": "b7d38e937affdbc031c80df9f560f5823307ca026d07d79cc7292873c1987b12"
+    },
+    "stderr": {
+      "path": "F:\\庞惟\\codex\\cpswm-w3-five-boundaries-fix-20260912\\docs\\reviews\\pc_b\\w3_five_boundaries_fix_2026-09-12\\post_lock\\original_six_postlock_seed0.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  }
+}

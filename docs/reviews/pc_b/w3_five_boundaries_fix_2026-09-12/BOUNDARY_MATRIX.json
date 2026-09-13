@@ -1,0 +1,515 @@
+{
+  "schema_version": "pc-b-w3-five-boundary-matrix-v1",
+  "claim_boundary": {
+    "classification": "REPAIR_SIDE_ENGINEERING_EVIDENCE_ONLY",
+    "independent_review_signed": false,
+    "default_full_joint_capability_claimed": false,
+    "fair_comparison_claimed": false,
+    "unified_acceptance_claimed": false,
+    "scientific_benefit_claimed": false,
+    "reason": "PC-B implemented the candidate repair and therefore cannot independently sign its own work. The frozen candidate also has a confirmed three-node lock-deadline regression that must be repaired and retested on a new immutable SHA."
+  },
+  "version_binding": {
+    "r6": {
+      "tested_sha": "1bd513f51ab7e54a7290870a5f34b524254d55c6",
+      "tree": "0050c04511be8f2268ad80678ee180d06095cea0",
+      "evidence_delivery_sha": "9195dd4b3872cbf770bd73ad4c84cca007137c3d",
+      "result": {
+        "legal_controls_passed": 1,
+        "adversarial_cases_passed": 0,
+        "adversarial_cases_failed": 5,
+        "finding": "FIVE_CONFIRMED_OPEN"
+      },
+      "historical_evidence_immutable": true
+    },
+    "r7": {
+      "tested_sha": "62870a3a38fce882b25d8d77f1d0526cca6fbc14",
+      "last_production_parent_sha": "1d6887206605841074ada0f5ed67db278d1b7958",
+      "result": {
+        "legal_controls_passed": 1,
+        "adversarial_cases_passed": 0,
+        "adversarial_cases_failed": 5,
+        "finding": "FIVE_CONFIRMED_OPEN"
+      },
+      "observer_binding_caveat": "The preserved observer prints its hard-coded R6 tested_sha. The R7 detached-worktree HEAD, outer command and loaded-source evidence, not that embedded field, bind this replay to R7."
+    },
+    "repair_candidate": {
+      "five_boundary_production_change_sha": "17220e6e22de81508a2e4e34dce81b8dccc9e44f",
+      "frozen_tested_sha": "23506024213d517ba4bab65d4318663163b00913",
+      "frozen_tested_tree": "c433367468e5cae4d76a454c1b7946b9931d605c",
+      "original_six_result": "6 passed, 0 failed, 0 errors, 0 skipped, 0 xfailed",
+      "expanded_matrix_results": [
+        {
+          "python_hash_seed": "0",
+          "result": "47 passed, 0 failed, 0 errors, 0 skipped, 0 xfailed"
+        },
+        {
+          "python_hash_seed": "1",
+          "result": "47 passed, 0 failed, 0 errors, 0 skipped, 0 xfailed"
+        },
+        {
+          "python_hash_seed": "8675309",
+          "result": "47 passed, 0 failed, 0 errors, 0 skipped, 0 xfailed"
+        }
+      ],
+      "known_regression": {
+        "status": "CONFIRMED_REPAIR_SHA_DEADLINE_REGRESSION",
+        "scope": "tests/test_structure_two_execution_interface.py::test_cross_thread_lock_handoff_fails_without_waiting_for_foreign_release for core, wrapper and ccrr",
+        "r7_control": "3 passed",
+        "repair_candidate": "3 failed",
+        "interpretation_limit": "The evidence proves a one-second deadline regression, but not by itself that the caller waited on a foreign-owned lock; the deadline includes all work before handoff."
+      },
+      "final_post_lock_repair_sha": null,
+      "final_post_lock_test_tree": null,
+      "overall_status": "PENDING_LOCK_REPAIR_NEW_SHA_FULL_RETEST_AND_INDEPENDENT_REVIEW"
+    }
+  },
+  "surface_taxonomy": {
+    "public_entry_internal_setup": {
+      "cases": [
+        "W3-PCB-01",
+        "W3-PCB-02",
+        "W3-PCB-03"
+      ],
+      "meaning": "The tested call is a public PrototypeSystemCore entry, but the attack first directly rebinds the public core.locations instance field. No sanctioned world-registration API is used and no underscore-prefixed field is written. This models a same-process extension, plugin or caller holding the core object, not a pure serialized remote-input attacker."
+    },
+    "public_entry_untrusted_dto": {
+      "cases": [
+        "W3-PCB-04",
+        "W3-PCB-05"
+      ],
+      "meaning": "The attacker changes only caller-owned prepared-input DTOs or mappings and then calls the public stage entry. No core or workspace field is modified. This models an untrusted or faulty upstream prepared-candidate producer."
+    },
+    "direct_private_state_defence_in_depth": {
+      "original_finding_ids": [],
+      "coverage_nodeid_families": [
+        "test_direct_private_single_field_tampering_fails_closed",
+        "test_persisted_workspace_tampering_blocks_semantic_readout",
+        "test_persisted_cross_relations_are_rechecked_on_direct_readout"
+      ],
+      "meaning": "Additional expanded tests deliberately corrupt underscore-prefixed workspace fields or persisted records. They are defence-in-depth checks under a stronger trust assumption and are not relabelled as the original five public-boundary counterexamples."
+    }
+  },
+  "production_flow": {
+    "prepared_input_producer": "The public seam accepts caller-supplied ParticleRevisionReceipt tuples and ConditionalAnalyticState mappings. No default production proposer for the complete prepared batch is bound by this seam; the method explicitly does not generate neural proposals or replace the default CIAV/action policy.",
+    "actual_optional_projection_producer": "For posterior-projection receipts, the runtime's actual ORRER/PCHMP chain publishes a NativePosteriorSource through NativeParticleWorkspace.publish_posterior; PrototypeSystemCore.current_posterior_projection_source exposes a detached copy and stage revalidates the producer chain.",
+    "boundary_consumer": "PrototypeSystemCore.stage_prepared_particle_candidates validates runtime evidence and delegates to NativeParticleWorkspace.advance.",
+    "readout_consumer": "PrototypeSystemCore.prepared_particle_location_marginal delegates to NativeParticleWorkspace.location_marginal after runtime, support, snapshot and persisted-state validation.",
+    "persisted_noncommitting_state": [
+      "NativeParticleWorkspace.records",
+      "NativeParticleWorkspace.batch",
+      "NativeParticleWorkspace.receipts",
+      "NativeParticleWorkspace.input_journal",
+      "NativeParticleWorkspace.input_bodies",
+      "NativeParticleWorkspace.consumed_posterior_sources"
+    ],
+    "semantic_consumer": "semantic_memory_state / semantic_memory_identity includes the validated prepared workspace state.",
+    "not_a_consumer": "This engineering seam does not commit the long-term HybridStatisticLedger and does not by itself establish default full-joint, action-policy or scientific capability."
+  },
+  "legal_controls": [
+    {
+      "contract": "Unmodified initial candidates preserve registered location support, unknown instance/actor support, explicit unresolved mass and total probability mass one.",
+      "nodeids": [
+        "tests/test_structure_two_w3_r6_pc_b_review.py::test_legal_prepared_input_control_is_preserved",
+        "tests/dual_pc_review/test_w3_five_boundaries_repair.py::test_legal_initial_unknown_unresolved_and_idempotent_replay"
+      ]
+    },
+    {
+      "contract": "A legal zero-increment second generation keeps the parent's conditional parameters and appends the current evidence cluster to lineage.",
+      "nodeids": [
+        "tests/dual_pc_review/test_w3_five_boundaries_repair.py::test_legal_zero_increment_second_generation_still_appends_cluster"
+      ]
+    },
+    {
+      "contract": "Reordering location/alpha pairs together is legal and preserves the marginal.",
+      "nodeids": [
+        "tests/dual_pc_review/test_w3_five_boundaries_repair.py::test_legal_location_alpha_pair_reordering_preserves_the_marginal"
+      ]
+    },
+    {
+      "contract": "Sibling receipts may share equal statistic content/reference, including the same caller object; object identity is not authority.",
+      "nodeids": [
+        "tests/dual_pc_review/test_w3_five_boundaries_repair.py::test_legal_siblings_may_share_one_statistic_object_and_reference",
+        "tests/dual_pc_review/test_w3_five_boundaries_repair.py::test_conditional_state_copy_is_content_based_not_object_identity_based"
+      ]
+    },
+    {
+      "contract": "One real posterior source may weight multiple siblings in one batch, but cannot be consumed again in a later batch.",
+      "nodeids": [
+        "tests/dual_pc_review/test_w3_five_boundaries_repair.py::test_one_posterior_source_may_weight_multiple_siblings_in_one_batch",
+        "tests/dual_pc_review/test_w3_five_boundaries_repair.py::test_one_posterior_source_cannot_be_recounted_in_a_later_batch"
+      ]
+    }
+  ],
+  "cases": [
+    {
+      "id": "W3-PCB-01",
+      "name": "construction-time world-support authorization",
+      "entrypoints": [
+        "PrototypeSystemCore.stage_prepared_particle_candidates"
+      ],
+      "surface_classification": "PUBLIC_ENTRY_AFTER_DIRECT_PUBLIC_FIELD_REBIND",
+      "input_boundary": "Replace one UUID in core.locations, then build and submit otherwise ordinary candidates for the rebound tuple.",
+      "trusted_authority": "The construction-time PrototypeSystemCore._registered_particle_locations, the workspace's construction-time registered_locations, and their runtime-world-support digest.",
+      "untrusted_material": "The current mutable value of core.locations and caller-supplied receipt/statistic content cannot create world authority merely by being mutually self-consistent.",
+      "trust_assumption": "A same-process caller or plugin holds the core object and can directly rebind core.locations; no private field and no sanctioned registration API is used.",
+      "producer": "Caller-supplied prepared batch; an optional posterior-projection factor may come from the actual runtime NativePosteriorSource, but cannot authorize a changed location support.",
+      "consumer": "PrototypeSystemCore.stage_prepared_particle_candidates -> NativeParticleWorkspace.advance -> prepared marginal and semantic prepared-workspace state.",
+      "legal_positive": "Original construction-time support, including unknown/unresolved mass, is accepted; location/alpha pairs may be reordered together inside a statistic while the support set remains the registered set.",
+      "expected": "Raise ValueError for support/location/binding before records, batch, journal, input body, posterior-source consumption or semantic state can change; after restoring the registered support, the legal call remains retryable and idempotent.",
+      "before": {
+        "r6": {
+          "outcome": "ACCEPTED_PROHIBITED_COUNTEREXAMPLE",
+          "pytest": "FAILED: DID NOT RAISE ValueError",
+          "state_consequence": "Two records and one input body were admitted; the foreign location received approximately 0.0902255639 marginal mass; the prepared semantic identity changed while the long-term ledger head remained unchanged. Habit and embedding supports still described the original world, splitting runtime authority."
+        },
+        "r7": {
+          "outcome": "ACCEPTED_PROHIBITED_COUNTEREXAMPLE",
+          "pytest": "FAILED: DID NOT RAISE ValueError",
+          "state_consequence": "The R7 observer again admitted two records and one input body, returned a marginal containing a foreign location at approximately 0.0902255639, changed semantic identity and left the long-term ledger head unchanged."
+        }
+      },
+      "after_frozen_candidate_2350602": {
+        "repair_side_outcome": "PASS_REJECTED_WITH_ASSERTED_VALUE_ERROR",
+        "asserted_exception_regex": "support|location|binding",
+        "atomicity": "The expanded test compares core state, workspace identity and state digest, long-term ledger export digest, and action distribution before and after rejection; all remain equal.",
+        "retryability": "After restoring core.locations, a legal stage succeeds, mass is one with positive unresolved mass, and an identical repeat is an idempotent no-op.",
+        "nodeids": [
+          "tests/test_structure_two_w3_r6_pc_b_review.py::test_prepared_support_is_bound_to_the_constructed_world",
+          "tests/dual_pc_review/test_w3_five_boundaries_repair.py::test_public_support_rebinding_fails_closed_on_every_surface[stage-foreign]",
+          "tests/dual_pc_review/test_w3_five_boundaries_repair.py::test_public_support_rebinding_fails_closed_on_every_surface[stage-reordered]"
+        ]
+      },
+      "status": {
+        "boundary_at_2350602": "REPAIR_SIDE_COUNTEREXAMPLE_CLOSED",
+        "overall_acceptance": "PENDING_NEW_POST_LOCK_SHA_RETEST_AND_INDEPENDENT_REVIEW"
+      },
+      "evidence_paths": {
+        "r6": [
+          "docs/reviews/data/pc_b_w3_r6_independent_20260912/case_results.json",
+          "docs/reviews/data/pc_b_w3_r6_independent_20260912/logs/five-case-observations-r6.json"
+        ],
+        "r7": [
+          "docs/reviews/pc_b/w3_five_boundaries_fix_2026-09-12/baseline_r7_five_seed0.junit.xml",
+          "docs/reviews/pc_b/w3_five_boundaries_fix_2026-09-12/baseline_r7_historical_observer_seed0.json"
+        ],
+        "after_candidate": [
+          "docs/reviews/pc_b/w3_five_boundaries_fix_2026-09-12/post_fix/original_six_postfix_seed0.result.json",
+          "docs/reviews/pc_b/w3_five_boundaries_fix_2026-09-12/post_fix/repair_matrix_seed0.result.json",
+          "docs/reviews/pc_b/w3_five_boundaries_fix_2026-09-12/post_fix/repair_matrix_seed1.result.json",
+          "docs/reviews/pc_b/w3_five_boundaries_fix_2026-09-12/post_fix/repair_matrix_seed8675309.result.json"
+        ]
+      }
+    },
+    {
+      "id": "W3-PCB-02",
+      "name": "readout rejects rebound or stale world support",
+      "entrypoints": [
+        "PrototypeSystemCore.prepared_particle_location_marginal"
+      ],
+      "surface_classification": "PUBLIC_ENTRY_AFTER_DIRECT_PUBLIC_FIELD_REBIND",
+      "input_boundary": "Legally stage a batch, replace all values in core.locations with foreign UUIDs, then request the prepared marginal.",
+      "trusted_authority": "The construction-time runtime/world-space binding recorded by the core, workspace, input body and every particle record.",
+      "untrusted_material": "A later value assigned to core.locations is not a world migration or extension authority.",
+      "trust_assumption": "A same-process caller or plugin can rebind the public field between stage and readout; no private state write is required.",
+      "producer": "A previously legal prepared batch already resident in NativeParticleWorkspace.",
+      "consumer": "PrototypeSystemCore.prepared_particle_location_marginal -> NativeParticleWorkspace.location_marginal.",
+      "legal_positive": "The same staged batch is readable while the core retains its construction-time support and current source snapshot; probabilities plus unresolved mass equal one.",
+      "expected": "Raise ValueError on foreign or reordered core support and expose no stale marginal as current; make no additional state change; after restoring the support, the same marginal remains readable.",
+      "before": {
+        "r6": {
+          "outcome": "RETURNED_PROHIBITED_STALE_READOUT",
+          "pytest": "FAILED: DID NOT RAISE ValueError",
+          "state_consequence": "Readout returned the previously staged marginal even though its support was disjoint from current core.locations. No new write was needed; semantic identity and the long-term ledger were unchanged during the readout."
+        },
+        "r7": {
+          "outcome": "RETURNED_PROHIBITED_STALE_READOUT",
+          "pytest": "FAILED: DID NOT RAISE ValueError",
+          "state_consequence": "The R7 observer returned a tuple from the prior two-record/one-body batch after all core.locations were replaced. The marginal remained on the old registered UUIDs; semantic identity and ledger head were unchanged during the call."
+        }
+      },
+      "after_frozen_candidate_2350602": {
+        "repair_side_outcome": "PASS_REJECTED_WITH_ASSERTED_VALUE_ERROR",
+        "asserted_exception_regex": "support|location|binding",
+        "atomicity": "The full observable tuple remains unchanged across the rejected readout.",
+        "retryability": "Restoring the registered support makes the existing batch readable again with conserved mass and positive unresolved mass.",
+        "nodeids": [
+          "tests/test_structure_two_w3_r6_pc_b_review.py::test_prepared_readout_rejects_a_rebound_world_support",
+          "tests/dual_pc_review/test_w3_five_boundaries_repair.py::test_public_support_rebinding_fails_closed_on_every_surface[readout-foreign]",
+          "tests/dual_pc_review/test_w3_five_boundaries_repair.py::test_public_support_rebinding_fails_closed_on_every_surface[readout-reordered]"
+        ]
+      },
+      "status": {
+        "boundary_at_2350602": "REPAIR_SIDE_COUNTEREXAMPLE_CLOSED",
+        "overall_acceptance": "PENDING_NEW_POST_LOCK_SHA_RETEST_AND_INDEPENDENT_REVIEW"
+      },
+      "evidence_paths": {
+        "r6": [
+          "docs/reviews/data/pc_b_w3_r6_independent_20260912/case_results.json",
+          "docs/reviews/data/pc_b_w3_r6_independent_20260912/logs/five-case-observations-r6.json"
+        ],
+        "r7": [
+          "docs/reviews/pc_b/w3_five_boundaries_fix_2026-09-12/baseline_r7_five_seed0.junit.xml",
+          "docs/reviews/pc_b/w3_five_boundaries_fix_2026-09-12/baseline_r7_historical_observer_seed0.json"
+        ],
+        "after_candidate": [
+          "docs/reviews/pc_b/w3_five_boundaries_fix_2026-09-12/post_fix/original_six_postfix_seed0.result.json",
+          "docs/reviews/pc_b/w3_five_boundaries_fix_2026-09-12/post_fix/repair_matrix_seed0.result.json",
+          "docs/reviews/pc_b/w3_five_boundaries_fix_2026-09-12/post_fix/repair_matrix_seed1.result.json",
+          "docs/reviews/pc_b/w3_five_boundaries_fix_2026-09-12/post_fix/repair_matrix_seed8675309.result.json"
+        ]
+      }
+    },
+    {
+      "id": "W3-PCB-03",
+      "name": "parent-child support continuity across generations and replay",
+      "entrypoints": [
+        "PrototypeSystemCore.stage_prepared_particle_candidates",
+        "PrototypeSystemCore.prepared_particle_location_marginal"
+      ],
+      "surface_classification": "PUBLIC_ENTRY_AFTER_DIRECT_PUBLIC_FIELD_REBIND",
+      "input_boundary": "Legally stage generation zero, advance the real event history, rebind core.locations to a foreign or reordered tuple, then stage generation one or replay the earlier input.",
+      "trusted_authority": "The construction-time world support and digest carried consistently by workspace, journaled input bodies, parent records and child records.",
+      "untrusted_material": "A child receipt/statistic batch cannot switch support merely because every caller-provided field and digest is resealed against the changed current tuple.",
+      "trust_assumption": "A same-process caller or plugin can rebind core.locations across generations; no private field write or authorized world-extension API is used.",
+      "producer": "Caller-supplied next-generation prepared candidates whose parent identifiers refer to runtime-owned generation-zero records.",
+      "consumer": "PrototypeSystemCore.stage_prepared_particle_candidates -> NativeParticleWorkspace.advance parent lookup and record creation; replay path consults input_journal/input_bodies before returning a batch.",
+      "legal_positive": "A legal second generation remains on the registered support, names a live parent, preserves parent conditional parameters on a zero increment, and appends the current evidence cluster to the parent's ordered cluster lineage.",
+      "expected": "Reject foreign or reordered runtime support before child persistence or replay return; preserve the complete prior generation; after support restoration, accept the valid child generation or legal idempotent replay.",
+      "before": {
+        "r6": {
+          "outcome": "ACCEPTED_PROHIBITED_CROSS_WORLD_CHILD",
+          "pytest": "FAILED: DID NOT RAISE ValueError",
+          "state_consequence": "The foreign-support child generation was persisted and readable. The workspace grew from two parent records/one input body to four records/two input bodies; semantic identity changed and the long-term ledger head did not."
+        },
+        "r7": {
+          "outcome": "ACCEPTED_PROHIBITED_CROSS_WORLD_CHILD",
+          "pytest": "FAILED: DID NOT RAISE ValueError",
+          "state_consequence": "R7 again persisted four total records and two input bodies after an all-foreign support rebind. Child statistics recorded only the new cluster rather than an authenticated accumulated parent lineage; semantic identity changed and the ledger head remained unchanged."
+        }
+      },
+      "after_frozen_candidate_2350602": {
+        "repair_side_outcome": "PASS_REJECTED_WITH_ASSERTED_VALUE_ERROR",
+        "asserted_exception_regex": "support|location|binding",
+        "atomicity": "The expanded parent and replay variants compare the complete observable tuple and preserve the prior generation on rejection.",
+        "retryability": "After restoring the support, the legal child stage or replay succeeds; child lineage is checked against the actual runtime parent and mass remains conserved.",
+        "nodeids": [
+          "tests/test_structure_two_w3_r6_pc_b_review.py::test_particle_parent_and_child_cannot_switch_world_support",
+          "tests/dual_pc_review/test_w3_five_boundaries_repair.py::test_public_support_rebinding_fails_closed_on_every_surface[parent-foreign]",
+          "tests/dual_pc_review/test_w3_five_boundaries_repair.py::test_public_support_rebinding_fails_closed_on_every_surface[parent-reordered]",
+          "tests/dual_pc_review/test_w3_five_boundaries_repair.py::test_public_support_rebinding_fails_closed_on_every_surface[replay-foreign]",
+          "tests/dual_pc_review/test_w3_five_boundaries_repair.py::test_public_support_rebinding_fails_closed_on_every_surface[replay-reordered]",
+          "tests/dual_pc_review/test_w3_five_boundaries_repair.py::test_legal_zero_increment_second_generation_still_appends_cluster"
+        ]
+      },
+      "status": {
+        "boundary_at_2350602": "REPAIR_SIDE_COUNTEREXAMPLE_CLOSED",
+        "overall_acceptance": "PENDING_NEW_POST_LOCK_SHA_RETEST_AND_INDEPENDENT_REVIEW"
+      },
+      "evidence_paths": {
+        "r6": [
+          "docs/reviews/data/pc_b_w3_r6_independent_20260912/case_results.json",
+          "docs/reviews/data/pc_b_w3_r6_independent_20260912/logs/five-case-observations-r6.json"
+        ],
+        "r7": [
+          "docs/reviews/pc_b/w3_five_boundaries_fix_2026-09-12/baseline_r7_five_seed0.junit.xml",
+          "docs/reviews/pc_b/w3_five_boundaries_fix_2026-09-12/baseline_r7_historical_observer_seed0.json"
+        ],
+        "after_candidate": [
+          "docs/reviews/pc_b/w3_five_boundaries_fix_2026-09-12/post_fix/original_six_postfix_seed0.result.json",
+          "docs/reviews/pc_b/w3_five_boundaries_fix_2026-09-12/post_fix/repair_matrix_seed0.result.json",
+          "docs/reviews/pc_b/w3_five_boundaries_fix_2026-09-12/post_fix/repair_matrix_seed1.result.json",
+          "docs/reviews/pc_b/w3_five_boundaries_fix_2026-09-12/post_fix/repair_matrix_seed8675309.result.json"
+        ]
+      }
+    },
+    {
+      "id": "W3-PCB-04",
+      "name": "conditional-statistic evidence-cluster lineage",
+      "entrypoints": [
+        "PrototypeSystemCore.stage_prepared_particle_candidates"
+      ],
+      "surface_classification": "PUBLIC_ENTRY_WITH_UNTRUSTED_SCHEMA_VALID_DTO",
+      "input_boundary": "Change ConditionalAnalyticState.evidence_cluster_ids, recompute its full reference, and reseal the public particle state's statistic_state_ref. Expanded variants use foreign, missing, reordered and duplicate lineage across a second generation.",
+      "trusted_authority": "The current receipt's evidence_cluster_id plus the ordered evidence_cluster_ids of the actual runtime-owned parent record; runtime ID, support digest, parent revision, journaled input and source frame remain jointly authoritative.",
+      "untrusted_material": "A self-consistent ConditionalAnalyticState reference proves only content identity, not that its cluster lineage was produced by this receipt, parent, runtime or revision.",
+      "trust_assumption": "An untrusted or faulty prepared-input producer can submit schema-valid DTOs and recompute every caller-controlled digest, but cannot write core/workspace internals.",
+      "producer": "Caller-supplied ConditionalAnalyticState and ParticleRevisionReceipt; the true parent and event history are retrieved from runtime-owned workspace/evidence history.",
+      "consumer": "NativeParticleWorkspace.advance lineage validation before fingerprint/replay lookup, followed by record/input-body persistence and later readout/semantic validation.",
+      "legal_positive": "Initial statistics contain exactly the current cluster; each legal child appends the current cluster to the exact parent history. Zero statistical increment is legal and does not remove the lineage append. Equal statistic content may be shared by sibling candidates where the receipt references agree.",
+      "expected": "Reject a fully resealed false, missing, reordered or duplicate cluster lineage before fingerprint or persistence; leave all observable state unchanged; accept and replay the untouched legal batch afterward.",
+      "before": {
+        "r6": {
+          "outcome": "ACCEPTED_PROHIBITED_FALSE_LINEAGE",
+          "pytest": "FAILED: DID NOT RAISE ValueError",
+          "state_consequence": "Two records and one input body were persisted even though one statistic carried a foreign cluster instead of the receipt cluster. The mismatch entered semantic state; the long-term ledger remained unchanged."
+        },
+        "r7": {
+          "outcome": "ACCEPTED_PROHIBITED_FALSE_LINEAGE",
+          "pytest": "FAILED: DID NOT RAISE ValueError",
+          "state_consequence": "R7 persisted a statistic cluster of aaaaaaaa-0000-4000-8000-000000000001 under an input body and receipt cluster of 00000000-0000-0000-0000-000000000bb8. Two records were admitted, semantic identity changed and the ledger head remained unchanged."
+        }
+      },
+      "after_frozen_candidate_2350602": {
+        "repair_side_outcome": "PASS_REJECTED_WITH_ASSERTED_VALUE_ERROR",
+        "asserted_exception_regex": "cluster|lineage|statistic",
+        "atomicity": "Every expanded variant is rejected before the input fingerprint/replay journal can authorize it; the complete observable tuple is unchanged.",
+        "retryability": "The untouched legal generation is accepted immediately after the failed attack, returns conserved mass and replays idempotently.",
+        "nodeids": [
+          "tests/test_structure_two_w3_r6_pc_b_review.py::test_conditional_statistics_are_bound_to_the_receipt_cluster",
+          "tests/dual_pc_review/test_w3_five_boundaries_repair.py::test_fully_resealed_false_cluster_lineage_is_rejected_and_retryable[foreign]",
+          "tests/dual_pc_review/test_w3_five_boundaries_repair.py::test_fully_resealed_false_cluster_lineage_is_rejected_and_retryable[missing]",
+          "tests/dual_pc_review/test_w3_five_boundaries_repair.py::test_fully_resealed_false_cluster_lineage_is_rejected_and_retryable[reordered]",
+          "tests/dual_pc_review/test_w3_five_boundaries_repair.py::test_fully_resealed_false_cluster_lineage_is_rejected_and_retryable[duplicate]"
+        ]
+      },
+      "status": {
+        "boundary_at_2350602": "REPAIR_SIDE_COUNTEREXAMPLE_CLOSED",
+        "overall_acceptance": "PENDING_NEW_POST_LOCK_SHA_RETEST_AND_INDEPENDENT_REVIEW"
+      },
+      "evidence_paths": {
+        "r6": [
+          "docs/reviews/data/pc_b_w3_r6_independent_20260912/case_results.json",
+          "docs/reviews/data/pc_b_w3_r6_independent_20260912/logs/five-case-observations-r6.json"
+        ],
+        "r7": [
+          "docs/reviews/pc_b/w3_five_boundaries_fix_2026-09-12/baseline_r7_five_seed0.junit.xml",
+          "docs/reviews/pc_b/w3_five_boundaries_fix_2026-09-12/baseline_r7_historical_observer_seed0.json"
+        ],
+        "after_candidate": [
+          "docs/reviews/pc_b/w3_five_boundaries_fix_2026-09-12/post_fix/original_six_postfix_seed0.result.json",
+          "docs/reviews/pc_b/w3_five_boundaries_fix_2026-09-12/post_fix/repair_matrix_seed0.result.json",
+          "docs/reviews/pc_b/w3_five_boundaries_fix_2026-09-12/post_fix/repair_matrix_seed1.result.json",
+          "docs/reviews/pc_b/w3_five_boundaries_fix_2026-09-12/post_fix/repair_matrix_seed8675309.result.json"
+        ]
+      }
+    },
+    {
+      "id": "W3-PCB-05",
+      "name": "receipt-statistic input-set closure",
+      "entrypoints": [
+        "PrototypeSystemCore.stage_prepared_particle_candidates"
+      ],
+      "surface_classification": "PUBLIC_ENTRY_WITH_UNTRUSTED_MAPPING",
+      "input_boundary": "Add an unreferenced statistic or construct missing, simultaneous missing/extra, duplicate-particle, duplicate-proposal, mixed-snapshot or mixed-cluster variants in caller-owned inputs.",
+      "trusted_authority": "A nonempty batch with unique receipt particle/proposal identifiers, one source snapshot, one evidence cluster and an exact equality between receipt particle IDs and statistic mapping keys.",
+      "untrusted_material": "Extra schema-valid mapping entries, a mapping's iteration stability, and caller object identity are not authority. Closure must be established on one detached snapshot before hashing, replay lookup or persistence.",
+      "trust_assumption": "An untrusted or faulty upstream prepared-input producer controls DTO and mapping contents but does not modify core/workspace internals.",
+      "producer": "Caller-supplied receipts/statistics mapping; optional actual NativePosteriorSource references are separately required to be closed over projected receipts.",
+      "consumer": "NativeParticleWorkspace.advance snapshots the mapping once, checks closure and uniqueness, then may construct NativePreparedInputBody, fingerprint, journal, records and source-consumption state.",
+      "legal_positive": "Exactly one statistic entry per unique receipt particle is accepted. Siblings may share equal statistic content/reference, but still retain distinct mapping keys and receipt particle IDs. A self-mutating mapping is consumed once into a detached snapshot.",
+      "expected": "Reject any missing or unreferenced entry and duplicate/mixed batch identity before fingerprint, idempotency lookup or persistence; do not write then clean up; preserve records, batch, journal, bodies, semantic state, source consumption, action distribution and long-term ledger; allow a legal retry and idempotent repeat.",
+      "before": {
+        "r6": {
+          "outcome": "ACCEPTED_PROHIBITED_UNREFERENCED_STATISTIC",
+          "pytest": "FAILED: DID NOT RAISE ValueError",
+          "state_consequence": "The extra statistic did not become a particle record or receipt, but was persisted in input_bodies and changed semantic/replay identity. Two ordinary records and one body were admitted; the long-term ledger remained unchanged."
+        },
+        "r7": {
+          "outcome": "ACCEPTED_PROHIBITED_UNREFERENCED_STATISTIC",
+          "pytest": "FAILED: DID NOT RAISE ValueError",
+          "state_consequence": "R7 persisted three statistic mapping entries in the body while only two receipt particles and two records existed. The extra entry carried its own foreign cluster, semantic identity changed and the ledger head remained unchanged."
+        }
+      },
+      "after_frozen_candidate_2350602": {
+        "repair_side_outcome": "PASS_REJECTED_WITH_ASSERTED_VALUE_ERROR",
+        "asserted_exception_regex": "closure|unreferenced|missing|duplicate|unique|snapshot|cluster",
+        "atomicity": "All seven closure variants are checked through the shared no-effect helper against core/workspace/ledger/action observables. Duplicate mapping items are rejected before persistence; a one-pass self-mutating mapping is detached and accepted only with the original exact closure.",
+        "retryability": "Each rejected variant is followed by a successful legal stage, conserved marginal mass and idempotent identical replay.",
+        "nodeids": [
+          "tests/test_structure_two_w3_r6_pc_b_review.py::test_unreferenced_statistics_cannot_enter_the_persisted_input_body",
+          "tests/dual_pc_review/test_w3_five_boundaries_repair.py::test_receipt_statistic_input_closure_attacks_are_atomic[extra-closure|unreferenced|statistic]",
+          "tests/dual_pc_review/test_w3_five_boundaries_repair.py::test_receipt_statistic_input_closure_attacks_are_atomic[missing-closure|missing|statistic]",
+          "tests/dual_pc_review/test_w3_five_boundaries_repair.py::test_receipt_statistic_input_closure_attacks_are_atomic[both-closure|missing|unreferenced|statistic]",
+          "tests/dual_pc_review/test_w3_five_boundaries_repair.py::test_receipt_statistic_input_closure_attacks_are_atomic[duplicate_particle-duplicate particle|unique]",
+          "tests/dual_pc_review/test_w3_five_boundaries_repair.py::test_receipt_statistic_input_closure_attacks_are_atomic[duplicate_proposal-duplicate proposal|unique]",
+          "tests/dual_pc_review/test_w3_five_boundaries_repair.py::test_receipt_statistic_input_closure_attacks_are_atomic[mixed_snapshot-snapshot]",
+          "tests/dual_pc_review/test_w3_five_boundaries_repair.py::test_receipt_statistic_input_closure_attacks_are_atomic[mixed_cluster-cluster]",
+          "tests/dual_pc_review/test_w3_five_boundaries_repair.py::test_statistics_mapping_duplicate_items_are_rejected_before_persistence",
+          "tests/dual_pc_review/test_w3_five_boundaries_repair.py::test_statistics_mapping_toctou_is_bound_to_one_detached_snapshot"
+        ]
+      },
+      "status": {
+        "boundary_at_2350602": "REPAIR_SIDE_COUNTEREXAMPLE_CLOSED",
+        "overall_acceptance": "PENDING_NEW_POST_LOCK_SHA_RETEST_AND_INDEPENDENT_REVIEW"
+      },
+      "evidence_paths": {
+        "r6": [
+          "docs/reviews/data/pc_b_w3_r6_independent_20260912/case_results.json",
+          "docs/reviews/data/pc_b_w3_r6_independent_20260912/logs/five-case-observations-r6.json"
+        ],
+        "r7": [
+          "docs/reviews/pc_b/w3_five_boundaries_fix_2026-09-12/baseline_r7_five_seed0.junit.xml",
+          "docs/reviews/pc_b/w3_five_boundaries_fix_2026-09-12/baseline_r7_historical_observer_seed0.json"
+        ],
+        "after_candidate": [
+          "docs/reviews/pc_b/w3_five_boundaries_fix_2026-09-12/post_fix/original_six_postfix_seed0.result.json",
+          "docs/reviews/pc_b/w3_five_boundaries_fix_2026-09-12/post_fix/repair_matrix_seed0.result.json",
+          "docs/reviews/pc_b/w3_five_boundaries_fix_2026-09-12/post_fix/repair_matrix_seed1.result.json",
+          "docs/reviews/pc_b/w3_five_boundaries_fix_2026-09-12/post_fix/repair_matrix_seed8675309.result.json"
+        ]
+      }
+    }
+  ],
+  "evidence_registry": {
+    "r6_case_matrix": {
+      "path": "docs/reviews/data/pc_b_w3_r6_independent_20260912/case_results.json",
+      "sha256": "cb190a4f61dd69594316c910b8ad452250cc43d4f51d41e99a799cd88da13d62"
+    },
+    "r6_state_observer": {
+      "path": "docs/reviews/data/pc_b_w3_r6_independent_20260912/logs/five-case-observations-r6.json",
+      "sha256": "7789c54abaae72b222bccdca20e30ffcdd442287a7e744c1b9289d66ceaa43d4"
+    },
+    "r6_pytest_with_control": {
+      "path": "docs/reviews/data/pc_b_w3_r6_independent_20260912/logs/independent-adversarial-with-control.log",
+      "sha256": "2ddd32b34f028cc35e66b103fab56dd157091d74c4b06615cb98ba67988f4a89"
+    },
+    "r7_pytest_junit": {
+      "path": "docs/reviews/pc_b/w3_five_boundaries_fix_2026-09-12/baseline_r7_five_seed0.junit.xml",
+      "sha256": "6d56423b6780cd568aec8dffcf003085781f338ffc092aa5e18ce37d3b628e88"
+    },
+    "r7_pytest_log": {
+      "path": "docs/reviews/pc_b/w3_five_boundaries_fix_2026-09-12/baseline_r7_five_seed0.log",
+      "sha256": "9c6ddaf25c940f5c7d2818d6606a9e20031f3d36f52b1786563fb827b0df21b7"
+    },
+    "r7_state_observer": {
+      "path": "docs/reviews/pc_b/w3_five_boundaries_fix_2026-09-12/baseline_r7_historical_observer_seed0.json",
+      "sha256": "6bd6594144fea8afe9c5df133fb6116f047498e8a3a889bcb9b88ec8a5725ff4"
+    },
+    "candidate_original_six": {
+      "path": "docs/reviews/pc_b/w3_five_boundaries_fix_2026-09-12/post_fix/original_six_postfix_seed0.result.json",
+      "sha256": "fdd218a69b1d907c4ddc2353072a4cb20179d20decd13fb807d456756e6cd71e"
+    },
+    "candidate_expanded_seed_0": {
+      "path": "docs/reviews/pc_b/w3_five_boundaries_fix_2026-09-12/post_fix/repair_matrix_seed0.result.json",
+      "sha256": "e563eca4845928c6d6c0a91ecb3690577cb3e0230a8d14cc23158edd07f0c1ac"
+    },
+    "candidate_expanded_seed_1": {
+      "path": "docs/reviews/pc_b/w3_five_boundaries_fix_2026-09-12/post_fix/repair_matrix_seed1.result.json",
+      "sha256": "6ec0e52454af26aaaa689183aa1be05fb519031712b83839d2e689ef166586ea"
+    },
+    "candidate_expanded_seed_8675309": {
+      "path": "docs/reviews/pc_b/w3_five_boundaries_fix_2026-09-12/post_fix/repair_matrix_seed8675309.result.json",
+      "sha256": "cf7d47531388ac75fcac4263a42cc8d9e1fb36b5f5d92edaba483b4440d5462a"
+    },
+    "candidate_exact_812_crlf_failed_run": {
+      "path": "docs/reviews/pc_b/w3_five_boundaries_fix_2026-09-12/post_fix/r7_exact_812_postfix_seed0.result.json",
+      "sha256": "7a3ef81ef9ee9bdb7a5ad81d62291af0ad5250b7f3efadf5ab6df36eb3da12a3",
+      "result": "800 passed, 12 failed; preserved failure"
+    },
+    "candidate_exact_812_lf_failed_control": {
+      "path": "docs/reviews/pc_b/w3_five_boundaries_fix_2026-09-12/post_fix/r7_exact_812_postfix_lf_seed0.result.json",
+      "sha256": "9354869035fe1099c2dcdedda8040bd56848e4e8cc7f73489ec43728ec0c14f0",
+      "result": "804 passed, 8 failed; preserved failure"
+    },
+    "lock_regression_triage": {
+      "path": "docs/reviews/pc_b/w3_five_boundaries_fix_2026-09-12/post_fix/failure_triage.md",
+      "status": "The file documents the confirmed repair-SHA regression and is intentionally outside the five boundary case pass claim."
+    },
+    "final_post_lock_evidence": {
+      "path": null,
+      "sha256": null,
+      "status": "PENDING"
+    }
+  }
+}

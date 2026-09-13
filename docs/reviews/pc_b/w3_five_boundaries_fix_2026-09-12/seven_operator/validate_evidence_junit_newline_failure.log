@@ -1,0 +1,6 @@
+command: .\.venv\Scripts\python.exe docs\reviews\pc_b\w3_five_boundaries_fix_2026-09-12\seven_operator\validate_evidence.py
+cwd: F:\庞惟\codex\cpswm-w3-five-boundaries-fix-20260912
+exit_code: 1
+failure: generated pytest JUnit XML files do not end in a newline.
+assessment: valid XML and normal pytest output; this is not trailing whitespace or evidence corruption.
+repair: final-newline policy now applies to authored text artifacts, while XML remains parsed and checked for trailing spaces.

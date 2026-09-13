@@ -1,0 +1,746 @@
+{
+  "scope": "archive inspection; historical CLI results read, NOT rerun this round",
+  "review_sha": "97e1d2c1e83a4532e2b3bab3bf87cc6a2927f274",
+  "archive_sha256": "bdfc801b602a5ed55efe2502f3596010f372ab4b4f6e626a64a7f3e52137f17c",
+  "reference": "F:\\\u5e9e\u60df\\codex\\cpswm-w2-audit-original-20260912\\docs\\reviews\\data\\structure_two_comparison_dynamic_window2_2026-09-12T1500\\bundle_v5",
+  "reference_files_sha256": {
+    "attribution.json": "57889827f353b8787a087a7eb3233342979d92720688aa137c42ed82e518ab5e",
+    "audit.json": "fce3f0124c3c73a3c564699f01f0645baa91f5e9393f093c199b6906adbf468f",
+    "steps.jsonl.gz": "d96b69fc2c65e8c2382568fc5f6efd26b69e9295629f48bae6344e8628bcd76c",
+    "timing.json": "c91b36c4099def996ae8b5427c051c33b8862fc57427d1dd766a718810012afa"
+  },
+  "nonempty_mutations": 31,
+  "records": [
+    {
+      "case": "r1_commits_999",
+      "selector": "steps.*.raw_state.p5_readouts.state_counts._committed_events",
+      "before_sha256": "df4262fd2d63805ad04abe5c4cb34a3e9a74e3b800e5b072c1f55246dbc6d2b8",
+      "after_sha256": "a86ef29a04eff990512cc6dd39946a7006d683ca9162b74dc7fd046a39aa4b75",
+      "first_changed_value": {
+        "path": "steps.*.raw_state.p5_readouts.state_counts._committed_events[0]",
+        "before": 0,
+        "after": 999
+      },
+      "reference_source_bindings_unchanged": true,
+      "kind": "conclusion_dependency",
+      "archive_member": "popen-gw0/test_real_cli_complete_forgery0/r1_commits_999",
+      "historical_cli": {
+        "row": {
+          "bundle": "/private/var/folders/x2/000r8p0n6s393lj2sg8wk5f40000gn/T/pytest-of-pangwei/pytest-1756/popen-gw0/test_real_cli_complete_forgery0/r1_commits_999",
+          "error": "FRESH_REPLAY_STEP_MISMATCH: steps[0].raw_state.p5_readouts.state_counts._committed_events",
+          "stage": "fresh_replay_comparison",
+          "status": "REJECTED"
+        },
+        "matrix": "docs/reviews/pc_a/round6_2026-09-12/w2_evidence/temporary/popen-gw0/test_real_cli_complete_forgery0/evidence/adversarial_matrix.json"
+      }
+    },
+    {
+      "case": "fast_slow_memory",
+      "selector": "steps.*.raw_state.p5_readouts.fast",
+      "before_sha256": "3e7ee030c39c18505ecec8e0f242f2aee927da769e63ca98801579e0125c9d46",
+      "after_sha256": "711223fd5a629a106c36b4a59aa55fc355a719ed659cc8a15e9e9b35df02927e",
+      "first_changed_value": {
+        "path": "steps.*.raw_state.p5_readouts.fast[0].7c3a9c58-c7ee-887b-42d3-95f54155ec01",
+        "before": 1.0,
+        "after": 0.0
+      },
+      "reference_source_bindings_unchanged": true,
+      "kind": "conclusion_dependency",
+      "archive_member": "popen-gw0/test_real_cli_complete_forgery0/fast_slow_memory",
+      "historical_cli": {
+        "row": {
+          "bundle": "/private/var/folders/x2/000r8p0n6s393lj2sg8wk5f40000gn/T/pytest-of-pangwei/pytest-1756/popen-gw0/test_real_cli_complete_forgery0/fast_slow_memory",
+          "error": "FRESH_REPLAY_STEP_MISMATCH: steps[0].alternative_readouts_development_only.fast.put_back",
+          "stage": "fresh_replay_comparison",
+          "status": "REJECTED"
+        },
+        "matrix": "docs/reviews/pc_a/round6_2026-09-12/w2_evidence/temporary/popen-gw0/test_real_cli_complete_forgery0/evidence/adversarial_matrix.json"
+      }
+    },
+    {
+      "case": "actions_scores_groups",
+      "selector": "steps.*.arms",
+      "before_sha256": "7745beae890448017191658a400c12156304dc813a54d20005486e12ae814bfd",
+      "after_sha256": "6fd039808675efdea70291b5310bfd5a9213b4e177c6f4eedc5a3cf438505429",
+      "first_changed_value": {
+        "path": "steps.*.arms[0].direct_p5_full_eager.habit.47c8a4fd-a7ee-c57f-a195-6b4692cc0caa",
+        "before": 0.03125000000000001,
+        "after": 0.0
+      },
+      "reference_source_bindings_unchanged": true,
+      "kind": "conclusion_dependency",
+      "archive_member": "popen-gw0/test_real_cli_complete_forgery0/actions_scores_groups",
+      "historical_cli": {
+        "row": {
+          "bundle": "/private/var/folders/x2/000r8p0n6s393lj2sg8wk5f40000gn/T/pytest-of-pangwei/pytest-1756/popen-gw0/test_real_cli_complete_forgery0/actions_scores_groups",
+          "error": "FRESH_REPLAY_STEP_MISMATCH: steps[0].arms.direct_p5_full_eager.habit.47c8a4fd-a7ee-c57f-a195-6b4692cc0caa",
+          "stage": "fresh_replay_comparison",
+          "status": "REJECTED"
+        },
+        "matrix": "docs/reviews/pc_a/round6_2026-09-12/w2_evidence/temporary/popen-gw0/test_real_cli_complete_forgery0/evidence/adversarial_matrix.json"
+      }
+    },
+    {
+      "case": "learned_joint",
+      "selector": "steps.*.raw_state.learned_joint",
+      "before_sha256": "6a21cfa5a239f4ce15cf7367090438fa2e9d965d33003606de530aae7bc2b5ca",
+      "after_sha256": "6bdbf18c5bca0a56d90c199c53901896270f3cbf2f2b2eea77271c20cd8865d0",
+      "first_changed_value": {
+        "path": "steps.*.raw_state.learned_joint[0][0]",
+        "before": 0.010882209113121172,
+        "after": 1.0
+      },
+      "reference_source_bindings_unchanged": true,
+      "kind": "conclusion_dependency",
+      "archive_member": "popen-gw0/test_real_cli_complete_forgery0/learned_joint",
+      "historical_cli": {
+        "row": {
+          "bundle": "/private/var/folders/x2/000r8p0n6s393lj2sg8wk5f40000gn/T/pytest-of-pangwei/pytest-1756/popen-gw0/test_real_cli_complete_forgery0/learned_joint",
+          "error": "FRESH_REPLAY_STEP_MISMATCH: steps[0].raw_state.learned_joint[0]",
+          "stage": "fresh_replay_comparison",
+          "status": "REJECTED"
+        },
+        "matrix": "docs/reviews/pc_a/round6_2026-09-12/w2_evidence/temporary/popen-gw0/test_real_cli_complete_forgery0/evidence/adversarial_matrix.json"
+      }
+    },
+    {
+      "case": "truth_and_labels",
+      "selector": "steps.*.truth",
+      "before_sha256": "3bc19255133b8c23fb147b5b9a1a8d7111839af1d8cc51c31ac878ccebf8b98e",
+      "after_sha256": "aa3fe435c79d46616c289d61e8c5a22a057e6429985dea81192a055cdc30487f",
+      "first_changed_value": {
+        "path": "steps.*.truth[17].true_owner_habit_location",
+        "before": "47c8a4fd-a7ee-c57f-a195-6b4692cc0caa",
+        "after": "7c3a9c58-c7ee-887b-42d3-95f54155ec01"
+      },
+      "reference_source_bindings_unchanged": true,
+      "kind": "conclusion_dependency",
+      "archive_member": "popen-gw0/test_real_cli_complete_forgery0/truth_and_labels",
+      "historical_cli": {
+        "row": {
+          "bundle": "/private/var/folders/x2/000r8p0n6s393lj2sg8wk5f40000gn/T/pytest-of-pangwei/pytest-1756/popen-gw0/test_real_cli_complete_forgery0/truth_and_labels",
+          "error": "FRESH_REPLAY_STEP_MISMATCH: steps[0].derived_cause_event_labels[0]",
+          "stage": "fresh_replay_comparison",
+          "status": "REJECTED"
+        },
+        "matrix": "docs/reviews/pc_a/round6_2026-09-12/w2_evidence/temporary/popen-gw0/test_real_cli_complete_forgery0/evidence/adversarial_matrix.json"
+      }
+    },
+    {
+      "case": "support_and_input",
+      "selector": "steps.*.support",
+      "before_sha256": "c0f586fc20dfcdff4b1ed84627ff153e8eb7cfb6473b1da5d235a810cde55007",
+      "after_sha256": "fdd05a3a1ea53f2952641fc5c707b47966257b07e2db9a4c9726d4e70dacd975",
+      "first_changed_value": {
+        "path": "steps.*.support[0][0]",
+        "before": "afc41c40-ee36-d29e-8322-5085cc49d1a0",
+        "after": "47c8a4fd-a7ee-c57f-a195-6b4692cc0caa"
+      },
+      "reference_source_bindings_unchanged": true,
+      "kind": "conclusion_dependency",
+      "archive_member": "popen-gw0/test_real_cli_complete_forgery0/support_and_input",
+      "historical_cli": {
+        "row": {
+          "bundle": "/private/var/folders/x2/000r8p0n6s393lj2sg8wk5f40000gn/T/pytest-of-pangwei/pytest-1756/popen-gw0/test_real_cli_complete_forgery0/support_and_input",
+          "error": "FRESH_REPLAY_STEP_MISMATCH: steps[0].future_support_count",
+          "stage": "fresh_replay_comparison",
+          "status": "REJECTED"
+        },
+        "matrix": "docs/reviews/pc_a/round6_2026-09-12/w2_evidence/temporary/popen-gw0/test_real_cli_complete_forgery0/evidence/adversarial_matrix.json"
+      }
+    },
+    {
+      "case": "step_missing",
+      "selector": "steps",
+      "before_sha256": "5eeb46e9f495ac95c5ff5f806756b3ad95efcd4083b172ec809ad0e284572637",
+      "after_sha256": "b9539f78e0255bb973469f319eb2e04398dfeace33aab5ed8dece284e1334731",
+      "first_changed_value": {
+        "path": "steps.length",
+        "before": 1920,
+        "after": 1919
+      },
+      "reference_source_bindings_unchanged": true,
+      "kind": "conclusion_dependency",
+      "archive_member": "popen-gw0/test_real_cli_complete_forgery0/step_missing",
+      "historical_cli": {
+        "row": {
+          "bundle": "/private/var/folders/x2/000r8p0n6s393lj2sg8wk5f40000gn/T/pytest-of-pangwei/pytest-1756/popen-gw0/test_real_cli_complete_forgery0/step_missing",
+          "error": "FRESH_REPLAY_STEP_MISMATCH: steps.length (1919 != 1920)",
+          "stage": "fresh_replay_comparison",
+          "status": "REJECTED"
+        },
+        "matrix": "docs/reviews/pc_a/round6_2026-09-12/w2_evidence/temporary/popen-gw0/test_real_cli_complete_forgery0/evidence/adversarial_matrix.json"
+      }
+    },
+    {
+      "case": "step_duplicate",
+      "selector": "steps",
+      "before_sha256": "5eeb46e9f495ac95c5ff5f806756b3ad95efcd4083b172ec809ad0e284572637",
+      "after_sha256": "78a18589637cfde09d0b606f813ab069a94bb01b49ddfee1d026430284bff4d3",
+      "first_changed_value": {
+        "path": "steps.length",
+        "before": 1920,
+        "after": 1921
+      },
+      "reference_source_bindings_unchanged": true,
+      "kind": "conclusion_dependency",
+      "archive_member": "popen-gw0/test_real_cli_complete_forgery0/step_duplicate",
+      "historical_cli": {
+        "row": {
+          "bundle": "/private/var/folders/x2/000r8p0n6s393lj2sg8wk5f40000gn/T/pytest-of-pangwei/pytest-1756/popen-gw0/test_real_cli_complete_forgery0/step_duplicate",
+          "error": "FRESH_REPLAY_STEP_MISMATCH: steps.length (1921 != 1920)",
+          "stage": "fresh_replay_comparison",
+          "status": "REJECTED"
+        },
+        "matrix": "docs/reviews/pc_a/round6_2026-09-12/w2_evidence/temporary/popen-gw0/test_real_cli_complete_forgery0/evidence/adversarial_matrix.json"
+      }
+    },
+    {
+      "case": "step_reorder",
+      "selector": "steps.*.step_id",
+      "before_sha256": "d2afc79293792b216b1da63ee9be5f5385c2b33abc45648a34cf8dc729b17bcb",
+      "after_sha256": "5a1db6a18ffe8270092d3fef763b411d8296cd29568210c98e9baa44506d2ba6",
+      "first_changed_value": {
+        "path": "steps.*.step_id[1918]",
+        "before": "65319f2f-dab2-5844-9d05-bdb818523195",
+        "after": "fe58d918-4a15-5c2f-9d9f-67b6bf8077a6"
+      },
+      "reference_source_bindings_unchanged": true,
+      "kind": "conclusion_dependency",
+      "archive_member": "popen-gw0/test_real_cli_complete_forgery0/step_reorder",
+      "historical_cli": {
+        "row": {
+          "bundle": "/private/var/folders/x2/000r8p0n6s393lj2sg8wk5f40000gn/T/pytest-of-pangwei/pytest-1756/popen-gw0/test_real_cli_complete_forgery0/step_reorder",
+          "error": "FRESH_REPLAY_STEP_MISMATCH: steps[1918].arms.learned_matched_two_stage.habit.5f4ef36f-7400-d955-39c6-4223b283fa86",
+          "stage": "fresh_replay_comparison",
+          "status": "REJECTED"
+        },
+        "matrix": "docs/reviews/pc_a/round6_2026-09-12/w2_evidence/temporary/popen-gw0/test_real_cli_complete_forgery0/evidence/adversarial_matrix.json"
+      }
+    },
+    {
+      "case": "step_replacement",
+      "selector": "steps.*.step_id",
+      "before_sha256": "d2afc79293792b216b1da63ee9be5f5385c2b33abc45648a34cf8dc729b17bcb",
+      "after_sha256": "d8f3de4b8cc3d2bb6cd67af55657b28f51859ce2da95053387407950f315d969",
+      "first_changed_value": {
+        "path": "steps.*.step_id[1919]",
+        "before": "fe58d918-4a15-5c2f-9d9f-67b6bf8077a6",
+        "after": "65319f2f-dab2-5844-9d05-bdb818523195"
+      },
+      "reference_source_bindings_unchanged": true,
+      "kind": "conclusion_dependency",
+      "archive_member": "popen-gw0/test_real_cli_complete_forgery0/step_replacement",
+      "historical_cli": {
+        "row": {
+          "bundle": "/private/var/folders/x2/000r8p0n6s393lj2sg8wk5f40000gn/T/pytest-of-pangwei/pytest-1756/popen-gw0/test_real_cli_complete_forgery0/step_replacement",
+          "error": "FRESH_REPLAY_STEP_MISMATCH: steps[1919].arms.learned_matched_two_stage.habit.5f4ef36f-7400-d955-39c6-4223b283fa86",
+          "stage": "fresh_replay_comparison",
+          "status": "REJECTED"
+        },
+        "matrix": "docs/reviews/pc_a/round6_2026-09-12/w2_evidence/temporary/popen-gw0/test_real_cli_complete_forgery0/evidence/adversarial_matrix.json"
+      }
+    },
+    {
+      "case": "episode_missing",
+      "selector": "steps.*.episode_id",
+      "before_sha256": "384051eb79f514cd30871c28d41f1d96e70e48aca732e30e32fe336a4025b6ff",
+      "after_sha256": "2d52d7f3c86c54ef8b0c83f00887e5371cc6a7d355bcf04d797727a18474c43e",
+      "first_changed_value": {
+        "path": "steps.*.episode_id.length",
+        "before": 1920,
+        "after": 1888
+      },
+      "reference_source_bindings_unchanged": true,
+      "kind": "conclusion_dependency",
+      "archive_member": "popen-gw0/test_real_cli_complete_forgery0/episode_missing",
+      "historical_cli": {
+        "row": {
+          "bundle": "/private/var/folders/x2/000r8p0n6s393lj2sg8wk5f40000gn/T/pytest-of-pangwei/pytest-1756/popen-gw0/test_real_cli_complete_forgery0/episode_missing",
+          "error": "FRESH_REPLAY_STEP_MISMATCH: steps.length (1888 != 1920)",
+          "stage": "fresh_replay_comparison",
+          "status": "REJECTED"
+        },
+        "matrix": "docs/reviews/pc_a/round6_2026-09-12/w2_evidence/temporary/popen-gw0/test_real_cli_complete_forgery0/evidence/adversarial_matrix.json"
+      }
+    },
+    {
+      "case": "episode_duplicate",
+      "selector": "steps.*.episode_id",
+      "before_sha256": "384051eb79f514cd30871c28d41f1d96e70e48aca732e30e32fe336a4025b6ff",
+      "after_sha256": "e776de965ed56e326c704ce7208f2a81d383eb8e885cd5de94ddf9e16eecc0c6",
+      "first_changed_value": {
+        "path": "steps.*.episode_id.length",
+        "before": 1920,
+        "after": 1952
+      },
+      "reference_source_bindings_unchanged": true,
+      "kind": "conclusion_dependency",
+      "archive_member": "popen-gw0/test_real_cli_complete_forgery0/episode_duplicate",
+      "historical_cli": {
+        "row": {
+          "bundle": "/private/var/folders/x2/000r8p0n6s393lj2sg8wk5f40000gn/T/pytest-of-pangwei/pytest-1756/popen-gw0/test_real_cli_complete_forgery0/episode_duplicate",
+          "error": "FRESH_REPLAY_STEP_MISMATCH: steps.length (1952 != 1920)",
+          "stage": "fresh_replay_comparison",
+          "status": "REJECTED"
+        },
+        "matrix": "docs/reviews/pc_a/round6_2026-09-12/w2_evidence/temporary/popen-gw0/test_real_cli_complete_forgery0/evidence/adversarial_matrix.json"
+      }
+    },
+    {
+      "case": "episode_reorder",
+      "selector": "steps.*.episode_id",
+      "before_sha256": "384051eb79f514cd30871c28d41f1d96e70e48aca732e30e32fe336a4025b6ff",
+      "after_sha256": "78589a601d04f6cb20b7827fd17116efc3c1f3de33aa874e808253dddc9d4cb8",
+      "first_changed_value": {
+        "path": "steps.*.episode_id[0]",
+        "before": "fa475ba4-8719-6c45-f18d-a9d2f4cbc9b5",
+        "after": "ffc9ef8d-6b7a-0197-4394-81e1d876dfa9"
+      },
+      "reference_source_bindings_unchanged": true,
+      "kind": "conclusion_dependency",
+      "archive_member": "popen-gw0/test_real_cli_complete_forgery0/episode_reorder",
+      "historical_cli": {
+        "row": {
+          "bundle": "/private/var/folders/x2/000r8p0n6s393lj2sg8wk5f40000gn/T/pytest-of-pangwei/pytest-1756/popen-gw0/test_real_cli_complete_forgery0/episode_reorder",
+          "error": "FRESH_REPLAY_STEP_MISMATCH: steps[0].alternative_readouts_development_only.amg_native_rank.search_order[0]",
+          "stage": "fresh_replay_comparison",
+          "status": "REJECTED"
+        },
+        "matrix": "docs/reviews/pc_a/round6_2026-09-12/w2_evidence/temporary/popen-gw0/test_real_cli_complete_forgery0/evidence/adversarial_matrix.json"
+      }
+    },
+    {
+      "case": "data_hash",
+      "selector": "steps.*.actor_posterior",
+      "before_sha256": "e6b00d0eb5707ef95e8452de682aadc278ea7a6cae2c728843f7d7e175563d0c",
+      "after_sha256": "1b40db6ef66410164c53ed3f5b1c303f09f1f565b14dffc4aede411a1e467e1d",
+      "first_changed_value": {
+        "path": "steps.*.actor_posterior[1919].keys",
+        "before": [
+          "guest",
+          "owner",
+          "unknown_actor"
+        ],
+        "after": [
+          "unknown_actor"
+        ]
+      },
+      "reference_source_bindings_unchanged": true,
+      "kind": "conclusion_dependency",
+      "archive_member": "popen-gw0/test_real_cli_complete_forgery0/data_hash",
+      "historical_cli": {
+        "row": {
+          "bundle": "/private/var/folders/x2/000r8p0n6s393lj2sg8wk5f40000gn/T/pytest-of-pangwei/pytest-1756/popen-gw0/test_real_cli_complete_forgery0/data_hash",
+          "error": "FRESH_REPLAY_STEP_MISMATCH: steps[1919].actor_posterior (keys: ['guest', 'owner'])",
+          "stage": "fresh_replay_comparison",
+          "status": "REJECTED"
+        },
+        "matrix": "docs/reviews/pc_a/round6_2026-09-12/w2_evidence/temporary/popen-gw0/test_real_cli_complete_forgery0/evidence/adversarial_matrix.json"
+      }
+    },
+    {
+      "case": "config_selection",
+      "selector": "audit.selection.selected_amg_parameter",
+      "before_sha256": "44896b09365746b5f7167ee4d64988a38f7f4628803cbf86224e74eeb7c69e9d",
+      "after_sha256": "5547bf1b31f892555db7bd0f3942410b37ebc0e5b2d956580f04d5d268a3561d",
+      "first_changed_value": {
+        "path": "audit.selection.selected_amg_parameter",
+        "before": 0.2,
+        "after": 0.33
+      },
+      "reference_source_bindings_unchanged": true,
+      "kind": "conclusion_dependency",
+      "archive_member": "popen-gw0/test_real_cli_complete_forgery0/config_selection",
+      "historical_cli": {
+        "row": {
+          "bundle": "/private/var/folders/x2/000r8p0n6s393lj2sg8wk5f40000gn/T/pytest-of-pangwei/pytest-1756/popen-gw0/test_real_cli_complete_forgery0/config_selection",
+          "error": "fresh diagnostic differs at audit.selection.content_sha256",
+          "stage": "fresh_replay_comparison",
+          "status": "REJECTED"
+        },
+        "matrix": "docs/reviews/pc_a/round6_2026-09-12/w2_evidence/temporary/popen-gw0/test_real_cli_complete_forgery0/evidence/adversarial_matrix.json"
+      }
+    },
+    {
+      "case": "seed_split",
+      "selector": "audit.split_episode_ids.test",
+      "before_sha256": "94d123e324825c0e59b9b7ec841f6b27b0d8a93bcd8a1ec37d455757bbd709bd",
+      "after_sha256": "09f8c8e27d8bce2dfb469049168ce6dd2679c60e5035d2a32743224425490955",
+      "first_changed_value": {
+        "path": "audit.split_episode_ids.test.length",
+        "before": 60,
+        "after": 20
+      },
+      "reference_source_bindings_unchanged": true,
+      "kind": "conclusion_dependency",
+      "archive_member": "popen-gw0/test_real_cli_complete_forgery0/seed_split",
+      "historical_cli": {
+        "row": {
+          "bundle": "/private/var/folders/x2/000r8p0n6s393lj2sg8wk5f40000gn/T/pytest-of-pangwei/pytest-1756/popen-gw0/test_real_cli_complete_forgery0/seed_split",
+          "error": "fresh diagnostic differs at audit.split_episode_ids.test.length (20 != 60)",
+          "stage": "fresh_replay_comparison",
+          "status": "REJECTED"
+        },
+        "matrix": "docs/reviews/pc_a/round6_2026-09-12/w2_evidence/temporary/popen-gw0/test_real_cli_complete_forgery0/evidence/adversarial_matrix.json"
+      }
+    },
+    {
+      "case": "source_binding",
+      "selector": "audit.source_bindings",
+      "before_sha256": "8548409b4a4a4ee0b1bb1ede05f5f6411c333c220dd29f3e760d90e1aee58cb6",
+      "after_sha256": "3ce7a054f4ccdc52eb74484d8cab139a222da5918e436c43207590f13f2e4324",
+      "first_changed_value": {
+        "path": "audit.source_bindings.configs/project_two_datasets/d0_unseen_p5_holdout_v0_6.json",
+        "before": "a7cdae91694c8bea949ae88cda606a763b94e0f54917b342009a0a75b47e0677",
+        "after": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"
+      },
+      "reference_source_bindings_unchanged": false,
+      "kind": "source_metadata_attack",
+      "archive_member": "popen-gw0/test_real_cli_complete_forgery0/source_binding",
+      "historical_cli": {
+        "row": {
+          "bundle": "/private/var/folders/x2/000r8p0n6s393lj2sg8wk5f40000gn/T/pytest-of-pangwei/pytest-1756/popen-gw0/test_real_cli_complete_forgery0/source_binding",
+          "error": "SOURCE_BINDING_MISMATCH: audit.source_bindings.configs/project_two_datasets/d0_unseen_p5_holdout_v0_6.json",
+          "stage": "load_or_source_binding",
+          "status": "REJECTED"
+        },
+        "matrix": "docs/reviews/pc_a/round6_2026-09-12/w2_evidence/temporary/popen-gw0/test_real_cli_complete_forgery0/evidence/adversarial_matrix.json"
+      }
+    },
+    {
+      "case": "source_rebound_state",
+      "selector": "steps.*.raw_state.p5_readouts.state_counts._committed_events",
+      "before_sha256": "df4262fd2d63805ad04abe5c4cb34a3e9a74e3b800e5b072c1f55246dbc6d2b8",
+      "after_sha256": "a86ef29a04eff990512cc6dd39946a7006d683ca9162b74dc7fd046a39aa4b75",
+      "first_changed_value": {
+        "path": "steps.*.raw_state.p5_readouts.state_counts._committed_events[0]",
+        "before": 0,
+        "after": 999
+      },
+      "reference_source_bindings_unchanged": true,
+      "kind": "conclusion_dependency",
+      "archive_member": "popen-gw0/test_real_cli_complete_forgery0/source_rebound_state",
+      "historical_cli": {
+        "row": {
+          "bundle": "/private/var/folders/x2/000r8p0n6s393lj2sg8wk5f40000gn/T/pytest-of-pangwei/pytest-1756/popen-gw0/test_real_cli_complete_forgery0/source_rebound_state",
+          "error": "FRESH_REPLAY_STEP_MISMATCH: steps[0].raw_state.p5_readouts.state_counts._committed_events",
+          "stage": "fresh_replay_comparison",
+          "status": "REJECTED"
+        },
+        "matrix": "docs/reviews/pc_a/round6_2026-09-12/w2_evidence/temporary/popen-gw0/test_real_cli_complete_forgery0/evidence/adversarial_matrix.json"
+      }
+    },
+    {
+      "case": "source_version",
+      "selector": "audit.verification_schema_version",
+      "before_sha256": "4b227777d4dd1fc61c6f884f48641d02b4d121d3fd328cb08b5531fcacdabf8a",
+      "after_sha256": "83cf8b609de60036a8277bd0e96135751bbc07eb234256d4b65b893360651bf2",
+      "first_changed_value": {
+        "path": "audit.verification_schema_version",
+        "before": 4,
+        "after": 999
+      },
+      "reference_source_bindings_unchanged": true,
+      "kind": "conclusion_dependency",
+      "archive_member": "popen-gw0/test_real_cli_complete_forgery0/source_version",
+      "historical_cli": {
+        "row": {
+          "bundle": "/private/var/folders/x2/000r8p0n6s393lj2sg8wk5f40000gn/T/pytest-of-pangwei/pytest-1756/popen-gw0/test_real_cli_complete_forgery0/source_version",
+          "error": "fresh diagnostic differs at audit.verification_schema_version",
+          "stage": "fresh_replay_comparison",
+          "status": "REJECTED"
+        },
+        "matrix": "docs/reviews/pc_a/round6_2026-09-12/w2_evidence/temporary/popen-gw0/test_real_cli_complete_forgery0/evidence/adversarial_matrix.json"
+      }
+    },
+    {
+      "case": "attribution_only",
+      "selector": "attribution.p5_state_count_histograms._committed_events",
+      "before_sha256": "abb27ef118800f45342ed5edebb25de94481f0b3ee27c42b74baed3165d7f7ab",
+      "after_sha256": "fdb891f5c060657ac124150a60413e7c8c2283287155405683ac9aec7196f395",
+      "first_changed_value": {
+        "path": "attribution.p5_state_count_histograms._committed_events.keys",
+        "before": [
+          "0"
+        ],
+        "after": [
+          "999"
+        ]
+      },
+      "reference_source_bindings_unchanged": true,
+      "kind": "conclusion_dependency",
+      "archive_member": "popen-gw0/test_real_cli_complete_forgery0/attribution_only",
+      "historical_cli": {
+        "row": {
+          "bundle": "/private/var/folders/x2/000r8p0n6s393lj2sg8wk5f40000gn/T/pytest-of-pangwei/pytest-1756/popen-gw0/test_real_cli_complete_forgery0/attribution_only",
+          "error": "FRESH_REPLAY_ATTRIBUTION_MISMATCH: attribution.p5_state_count_histograms._committed_events (keys: ['0', '999'])",
+          "stage": "fresh_replay_comparison",
+          "status": "REJECTED"
+        },
+        "matrix": "docs/reviews/pc_a/round6_2026-09-12/w2_evidence/temporary/popen-gw0/test_real_cli_complete_forgery0/evidence/adversarial_matrix.json"
+      }
+    },
+    {
+      "case": "forged_verification_receipt",
+      "selector": "steps.*.raw_state.p5_readouts.state_counts._committed_events",
+      "before_sha256": "df4262fd2d63805ad04abe5c4cb34a3e9a74e3b800e5b072c1f55246dbc6d2b8",
+      "after_sha256": "a86ef29a04eff990512cc6dd39946a7006d683ca9162b74dc7fd046a39aa4b75",
+      "first_changed_value": {
+        "path": "steps.*.raw_state.p5_readouts.state_counts._committed_events[0]",
+        "before": 0,
+        "after": 999
+      },
+      "reference_source_bindings_unchanged": true,
+      "kind": "conclusion_dependency",
+      "archive_member": "popen-gw0/test_real_cli_complete_forgery0/forged_verification_receipt",
+      "historical_cli": {
+        "row": {
+          "bundle": "/private/var/folders/x2/000r8p0n6s393lj2sg8wk5f40000gn/T/pytest-of-pangwei/pytest-1756/popen-gw0/test_real_cli_complete_forgery0/forged_verification_receipt",
+          "error": "FRESH_REPLAY_STEP_MISMATCH: steps[0].raw_state.p5_readouts.state_counts._committed_events",
+          "stage": "fresh_replay_comparison",
+          "status": "REJECTED"
+        },
+        "matrix": "docs/reviews/pc_a/round6_2026-09-12/w2_evidence/temporary/popen-gw0/test_real_cli_complete_forgery0/evidence/adversarial_matrix.json"
+      }
+    },
+    {
+      "case": "future_support",
+      "selector": "steps.*.future_support_count",
+      "before_sha256": "8748e69b2182a75609881b0656dd1f37dfbb886fae8d56ad35fe5604c6a29a8a",
+      "after_sha256": "df4262fd2d63805ad04abe5c4cb34a3e9a74e3b800e5b072c1f55246dbc6d2b8",
+      "first_changed_value": {
+        "path": "steps.*.future_support_count[0]",
+        "before": 2,
+        "after": 0
+      },
+      "reference_source_bindings_unchanged": true,
+      "kind": "conclusion_dependency",
+      "archive_member": "popen-gw3/test_complete_fairness_forgeri0/future_support",
+      "historical_cli": {
+        "row": {
+          "bundle": "/private/var/folders/x2/000r8p0n6s393lj2sg8wk5f40000gn/T/pytest-of-pangwei/pytest-1756/popen-gw3/test_complete_fairness_forgeri0/future_support",
+          "error": "FRESH_REPLAY_STEP_MISMATCH: steps[0].future_support_count",
+          "stage": "fresh_replay_comparison",
+          "status": "REJECTED"
+        },
+        "matrix": "docs/reviews/pc_a/round6_2026-09-12/w2_evidence/temporary/popen-gw3/test_complete_fairness_forgeri0/evidence/fairness_forgery_matrix.json"
+      }
+    },
+    {
+      "case": "missing_owner",
+      "selector": "steps.*.fairness_step.amg_owner_missing",
+      "before_sha256": "99803b8d4016c0f53ff3c42bda765de380a00802740b4c5c238bbb6481f2b1a4",
+      "after_sha256": "55f6043da78cb683f0f69bb3eb23b1a4e6497f0758607f18301a86a0576213eb",
+      "first_changed_value": {
+        "path": "steps.*.fairness_step.amg_owner_missing[128]",
+        "before": true,
+        "after": false
+      },
+      "reference_source_bindings_unchanged": true,
+      "kind": "conclusion_dependency",
+      "archive_member": "popen-gw3/test_complete_fairness_forgeri0/missing_owner",
+      "historical_cli": {
+        "row": {
+          "bundle": "/private/var/folders/x2/000r8p0n6s393lj2sg8wk5f40000gn/T/pytest-of-pangwei/pytest-1756/popen-gw3/test_complete_fairness_forgeri0/missing_owner",
+          "error": "FRESH_REPLAY_STEP_MISMATCH: steps[128].fairness_step.amg_owner_missing",
+          "stage": "fresh_replay_comparison",
+          "status": "REJECTED"
+        },
+        "matrix": "docs/reviews/pc_a/round6_2026-09-12/w2_evidence/temporary/popen-gw3/test_complete_fairness_forgeri0/evidence/fairness_forgery_matrix.json"
+      }
+    },
+    {
+      "case": "costs",
+      "selector": "steps.*.fairness_step.costs",
+      "before_sha256": "71d5b629734a7738ee041aa6ee590040d8c93af972ae3fa100dae4b43bb9dc1c",
+      "after_sha256": "e4536bb38c6ffa57acc1f2959bbdd6f8558955075a2419d303e1b78cb9c7c050",
+      "first_changed_value": {
+        "path": "steps.*.fairness_step.costs[0].direct_p5_full_eager.time_cost",
+        "before": 0.0,
+        "after": 1.0
+      },
+      "reference_source_bindings_unchanged": true,
+      "kind": "conclusion_dependency",
+      "archive_member": "popen-gw3/test_complete_fairness_forgeri0/costs",
+      "historical_cli": {
+        "row": {
+          "bundle": "/private/var/folders/x2/000r8p0n6s393lj2sg8wk5f40000gn/T/pytest-of-pangwei/pytest-1756/popen-gw3/test_complete_fairness_forgeri0/costs",
+          "error": "FRESH_REPLAY_STEP_MISMATCH: steps[0].fairness_step.costs.direct_p5_full_eager.time_cost",
+          "stage": "fresh_replay_comparison",
+          "status": "REJECTED"
+        },
+        "matrix": "docs/reviews/pc_a/round6_2026-09-12/w2_evidence/temporary/popen-gw3/test_complete_fairness_forgeri0/evidence/fairness_forgery_matrix.json"
+      }
+    },
+    {
+      "case": "selection_access",
+      "selector": "audit.fairness_execution.selection.access_events",
+      "before_sha256": "2b28aaa547aaa937b9efa1ec6aa11984f07c76d5f3d66767bc4d90271e4ba072",
+      "after_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "first_changed_value": {
+        "path": "audit.fairness_execution.selection.access_events.length",
+        "before": 17281,
+        "after": 0
+      },
+      "reference_source_bindings_unchanged": true,
+      "kind": "conclusion_dependency",
+      "archive_member": "popen-gw3/test_complete_fairness_forgeri0/selection_access",
+      "historical_cli": {
+        "row": {
+          "bundle": "/private/var/folders/x2/000r8p0n6s393lj2sg8wk5f40000gn/T/pytest-of-pangwei/pytest-1756/popen-gw3/test_complete_fairness_forgeri0/selection_access",
+          "error": "fresh diagnostic differs at audit.fairness_execution.selection.access_events.length (0 != 17281)",
+          "stage": "fresh_replay_comparison",
+          "status": "REJECTED"
+        },
+        "matrix": "docs/reviews/pc_a/round6_2026-09-12/w2_evidence/temporary/popen-gw3/test_complete_fairness_forgeri0/evidence/fairness_forgery_matrix.json"
+      }
+    },
+    {
+      "case": "consumer_features",
+      "selector": "audit.fairness_execution.consumer_probe.returns",
+      "before_sha256": "da0d9636a0a8e8a780b11a92c885eb9e02ebb8b464d41385fd52ae02442611b6",
+      "after_sha256": "46a5d3056f7553059cc2395203b0291399306b3217723153951592526a43cf2b",
+      "first_changed_value": {
+        "path": "audit.fairness_execution.consumer_probe.returns[5].feature_values[0]",
+        "before": 1.0,
+        "after": 0.0
+      },
+      "reference_source_bindings_unchanged": true,
+      "kind": "conclusion_dependency",
+      "archive_member": "popen-gw3/test_complete_fairness_forgeri0/consumer_features",
+      "historical_cli": {
+        "row": {
+          "bundle": "/private/var/folders/x2/000r8p0n6s393lj2sg8wk5f40000gn/T/pytest-of-pangwei/pytest-1756/popen-gw3/test_complete_fairness_forgeri0/consumer_features",
+          "error": "fresh diagnostic differs at audit.fairness_execution.consumer_probe.returns[5].feature_values[0]",
+          "stage": "fresh_replay_comparison",
+          "status": "REJECTED"
+        },
+        "matrix": "docs/reviews/pc_a/round6_2026-09-12/w2_evidence/temporary/popen-gw3/test_complete_fairness_forgeri0/evidence/fairness_forgery_matrix.json"
+      }
+    },
+    {
+      "case": "fairness_claim",
+      "selector": "audit.fairness.comparison_fairness",
+      "before_sha256": "61cfe0c262d914c288bf994d5c5704afe68f79038f1ea49213d635d3be547ebc",
+      "after_sha256": "613ec890e4c987c456690b5647ec667a02864079bc32e0bbf57abb5adb45083a",
+      "first_changed_value": {
+        "path": "audit.fairness.comparison_fairness",
+        "before": "NOT_ESTABLISHED",
+        "after": "PASSED"
+      },
+      "reference_source_bindings_unchanged": true,
+      "kind": "conclusion_dependency",
+      "archive_member": "popen-gw3/test_complete_fairness_forgeri0/fairness_claim",
+      "historical_cli": {
+        "row": {
+          "bundle": "/private/var/folders/x2/000r8p0n6s393lj2sg8wk5f40000gn/T/pytest-of-pangwei/pytest-1756/popen-gw3/test_complete_fairness_forgeri0/fairness_claim",
+          "error": "fresh diagnostic differs at audit.fairness.comparison_fairness",
+          "stage": "fresh_replay_comparison",
+          "status": "REJECTED"
+        },
+        "matrix": "docs/reviews/pc_a/round6_2026-09-12/w2_evidence/temporary/popen-gw3/test_complete_fairness_forgeri0/evidence/fairness_forgery_matrix.json"
+      }
+    },
+    {
+      "case": "nonempty_commit",
+      "selector": "audit.dynamic_development.scenes.0.max_direct_p5_committed",
+      "before_sha256": "5feceb66ffc86f38d952786c6d696c79c2dbc239dd4e91b46729d73a27fb57e9",
+      "after_sha256": "6b86b273ff34fce19d6b804eff5a3f5747ada4eaa22f1d49c01e52ddb7875b4b",
+      "first_changed_value": {
+        "path": "audit.dynamic_development.scenes.0.max_direct_p5_committed",
+        "before": 0,
+        "after": 1
+      },
+      "reference_source_bindings_unchanged": true,
+      "kind": "conclusion_dependency",
+      "archive_member": "popen-gw1/test_new_dynamic_dependency_fo0/nonempty_commit",
+      "historical_cli": {
+        "row": {
+          "bundle": "/private/var/folders/x2/000r8p0n6s393lj2sg8wk5f40000gn/T/pytest-of-pangwei/pytest-1756/popen-gw1/test_new_dynamic_dependency_fo0/nonempty_commit",
+          "error": "fresh diagnostic differs at audit.dynamic_development.scenes[0].max_direct_p5_committed",
+          "stage": "fresh_replay_comparison",
+          "status": "REJECTED"
+        },
+        "matrix": "docs/reviews/pc_a/round6_2026-09-12/w2_evidence/temporary/popen-gw1/test_new_dynamic_dependency_fo0/evidence/matrix.json"
+      }
+    },
+    {
+      "case": "action_consequence",
+      "selector": "audit.dynamic_development.execution",
+      "before_sha256": "aa0f0732bd384b038f6443abcc7ac674fa254970603b7854abf88ca763877d12",
+      "after_sha256": "c1d5595947a4505ad712bfe4a6c96fbda7295621650e32e34378c81c38746cb8",
+      "first_changed_value": {
+        "path": "audit.dynamic_development.execution.keys",
+        "before": [
+          "reason",
+          "status"
+        ],
+        "after": [
+          "executed",
+          "status"
+        ]
+      },
+      "reference_source_bindings_unchanged": true,
+      "kind": "conclusion_dependency",
+      "archive_member": "popen-gw1/test_new_dynamic_dependency_fo0/action_consequence",
+      "historical_cli": {
+        "row": {
+          "bundle": "/private/var/folders/x2/000r8p0n6s393lj2sg8wk5f40000gn/T/pytest-of-pangwei/pytest-1756/popen-gw1/test_new_dynamic_dependency_fo0/action_consequence",
+          "error": "fresh diagnostic differs at audit.dynamic_development.execution (keys: ['executed', 'reason'])",
+          "stage": "fresh_replay_comparison",
+          "status": "REJECTED"
+        },
+        "matrix": "docs/reviews/pc_a/round6_2026-09-12/w2_evidence/temporary/popen-gw1/test_new_dynamic_dependency_fo0/evidence/matrix.json"
+      }
+    },
+    {
+      "case": "corrected_memory",
+      "selector": "audit.dynamic_development.production_boundary_probes.correct.new_committed",
+      "before_sha256": "fcbcf165908dd18a9e49f7ff27810176db8e9f63b4352213741664245224f8aa",
+      "after_sha256": "b5bea41b6c623f7c09f1bf24dcae58ebab3c0cdd90ad966bc43a45b44867e12b",
+      "first_changed_value": {
+        "path": "audit.dynamic_development.production_boundary_probes.correct.new_committed",
+        "before": false,
+        "after": true
+      },
+      "reference_source_bindings_unchanged": true,
+      "kind": "conclusion_dependency",
+      "archive_member": "popen-gw1/test_new_dynamic_dependency_fo0/corrected_memory",
+      "historical_cli": {
+        "row": {
+          "bundle": "/private/var/folders/x2/000r8p0n6s393lj2sg8wk5f40000gn/T/pytest-of-pangwei/pytest-1756/popen-gw1/test_new_dynamic_dependency_fo0/corrected_memory",
+          "error": "fresh diagnostic differs at audit.dynamic_development.production_boundary_probes.correct.new_committed",
+          "stage": "fresh_replay_comparison",
+          "status": "REJECTED"
+        },
+        "matrix": "docs/reviews/pc_a/round6_2026-09-12/w2_evidence/temporary/popen-gw1/test_new_dynamic_dependency_fo0/evidence/matrix.json"
+      }
+    },
+    {
+      "case": "contract_freeze",
+      "selector": "audit.comparison_contract.scientific_fairness_established",
+      "before_sha256": "fcbcf165908dd18a9e49f7ff27810176db8e9f63b4352213741664245224f8aa",
+      "after_sha256": "b5bea41b6c623f7c09f1bf24dcae58ebab3c0cdd90ad966bc43a45b44867e12b",
+      "first_changed_value": {
+        "path": "audit.comparison_contract.scientific_fairness_established",
+        "before": false,
+        "after": true
+      },
+      "reference_source_bindings_unchanged": true,
+      "kind": "conclusion_dependency",
+      "archive_member": "popen-gw1/test_new_dynamic_dependency_fo0/contract_freeze",
+      "historical_cli": {
+        "row": {
+          "bundle": "/private/var/folders/x2/000r8p0n6s393lj2sg8wk5f40000gn/T/pytest-of-pangwei/pytest-1756/popen-gw1/test_new_dynamic_dependency_fo0/contract_freeze",
+          "error": "fresh diagnostic differs at audit.comparison_contract.scientific_fairness_established",
+          "stage": "fresh_replay_comparison",
+          "status": "REJECTED"
+        },
+        "matrix": "docs/reviews/pc_a/round6_2026-09-12/w2_evidence/temporary/popen-gw1/test_new_dynamic_dependency_fo0/evidence/matrix.json"
+      }
+    }
+  ],
+  "new_comparison_generated": false,
+  "current_unified_acceptance": "BLOCKED"
+}

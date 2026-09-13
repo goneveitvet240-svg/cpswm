@@ -1,0 +1,103 @@
+FFFFF                                                                    [100%]
+================================== FAILURES ===================================
+___________ test_prepared_support_is_bound_to_the_constructed_world ___________
+
+    def test_prepared_support_is_bound_to_the_constructed_world() -> None:
+        """A reassigned public tuple must not become registered world authority."""
+    
+        probe = old._legacy_history(1)
+        core = probe.system.core
+        original_locations = core.locations
+        foreign_location = uuid4()
+    
+        assert foreign_location not in core._habit._locations
+        assert foreign_location not in core._embeddings
+    
+        # The W3 R6 public entry currently forwards this mutable attribute as the
+        # authority set, although the rest of the runtime still has the original
+        # construction-time world support.
+        core.locations = (*original_locations[:-1], foreign_location)
+    
+>       with pytest.raises(ValueError, match=r"support|location|binding"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE ValueError
+
+tests\test_structure_two_w3_r6_pc_b_review.py:42: Failed
+____________ test_prepared_readout_rejects_a_rebound_world_support ____________
+
+    def test_prepared_readout_rejects_a_rebound_world_support() -> None:
+        probe = old._legacy_history(1)
+        core = probe.system.core
+        original_locations = core.locations
+        core.stage_prepared_particle_candidates(**candidates(core))
+    
+        core.locations = tuple(uuid4() for _ in original_locations)
+    
+>       with pytest.raises(ValueError, match=r"support|location|binding|stale"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE ValueError
+
+tests\test_structure_two_w3_r6_pc_b_review.py:54: Failed
+_________ test_particle_parent_and_child_cannot_switch_world_support __________
+
+    def test_particle_parent_and_child_cannot_switch_world_support() -> None:
+        probe = old._legacy_history(1)
+        core = probe.system.core
+        original_locations = core.locations
+        core.stage_prepared_particle_candidates(**candidates(core))
+        core.process_transition(probe.transition_for(probe.observed_days()[1]))
+    
+        core.locations = tuple(uuid4() for _ in original_locations)
+    
+>       with pytest.raises(ValueError, match=r"support|location|binding|parent"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE ValueError
+
+tests\test_structure_two_w3_r6_pc_b_review.py:67: Failed
+________ test_conditional_statistics_are_bound_to_the_receipt_cluster _________
+
+    def test_conditional_statistics_are_bound_to_the_receipt_cluster() -> None:
+        probe = old._legacy_history(1)
+        core = probe.system.core
+        arguments = candidates(core)
+        receipt = arguments["receipts"][0]
+        particle_id = receipt.proposal.proposed_state.particle_id
+        foreign_cluster = uuid4()
+        statistic = replace(
+            arguments["statistics"][particle_id],
+            evidence_cluster_ids=(foreign_cluster,),
+        )
+        _replace_statistic(arguments, 0, statistic)
+    
+        assert foreign_cluster != receipt.proposal.evidence_cluster_id
+>       with pytest.raises(ValueError, match=r"cluster|statistic|lineage"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE ValueError
+
+tests\test_structure_two_w3_r6_pc_b_review.py:85: Failed
+_____ test_unreferenced_statistics_cannot_enter_the_persisted_input_body ______
+
+    def test_unreferenced_statistics_cannot_enter_the_persisted_input_body() -> None:
+        probe = old._legacy_history(1)
+        core = probe.system.core
+        arguments = candidates(core)
+        extra_particle = uuid4()
+        template = next(iter(arguments["statistics"].values()))
+        arguments["statistics"][extra_particle] = replace(
+            template,
+            locations=tuple(uuid4() for _ in template.locations),
+            evidence_cluster_ids=(uuid4(),),
+        )
+    
+>       with pytest.raises(ValueError, match=r"candidate|particle|statistic|unreferenced"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE ValueError
+
+tests\test_structure_two_w3_r6_pc_b_review.py:101: Failed
+=========================== short test summary info ===========================
+FAILED tests/test_structure_two_w3_r6_pc_b_review.py::test_prepared_support_is_bound_to_the_constructed_world
+FAILED tests/test_structure_two_w3_r6_pc_b_review.py::test_prepared_readout_rejects_a_rebound_world_support
+FAILED tests/test_structure_two_w3_r6_pc_b_review.py::test_particle_parent_and_child_cannot_switch_world_support
+FAILED tests/test_structure_two_w3_r6_pc_b_review.py::test_conditional_statistics_are_bound_to_the_receipt_cluster
+FAILED tests/test_structure_two_w3_r6_pc_b_review.py::test_unreferenced_statistics_cannot_enter_the_persisted_input_body
+5 failed in 3.67s

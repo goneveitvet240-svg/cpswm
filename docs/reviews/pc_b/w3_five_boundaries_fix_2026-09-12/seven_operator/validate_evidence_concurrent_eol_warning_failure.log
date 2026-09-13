@@ -1,0 +1,7 @@
+command: .\.venv\Scripts\python.exe docs\reviews\pc_b\w3_five_boundaries_fix_2026-09-12\seven_operator\validate_evidence.py
+cwd: F:\庞惟\codex\cpswm-w3-five-boundaries-fix-20260912
+exit_code: 1
+failure: validator required git diff --check stderr to be empty although git diff --check itself returned 0.
+concurrent stderr: collect_repair_metadata.py LF will be replaced by CRLF the next time Git touches it.
+scope: the warning concerns a tracked stage-2 collector being edited concurrently outside seven_operator; no whitespace error and no production source change occurred.
+repair: require the authoritative git diff --check exit code 0 and preserve stdout/stderr in the manifest instead of treating an EOL warning as a check failure.

@@ -1,0 +1,624 @@
+{
+  "schema_version": "pc-b-pytest-evidence-v1",
+  "name": "r7_exact_812_postfix_seed0",
+  "started_at_utc": "2026-09-12T15:02:09.093161+00:00",
+  "finished_at_utc": "2026-09-12T15:25:09.588201+00:00",
+  "duration_seconds": 1380.495022,
+  "returncode": 1,
+  "cwd": "F:\\庞惟\\codex\\cpswm-w3-validation-2350602",
+  "command": [
+    "F:\\庞惟\\codex\\cpswm-w3-five-boundaries-fix-20260912\\.venv\\Scripts\\python.exe",
+    "-m",
+    "pytest",
+    "-o",
+    "addopts=",
+    "-q",
+    "-ra",
+    "-p",
+    "no:cacheprovider",
+    "--basetemp=F:\\庞惟\\codex\\_cpswm_test_scratch\\r7_exact_812_postfix_seed0\\basetemp",
+    "--junitxml=F:\\庞惟\\codex\\cpswm-w3-five-boundaries-fix-20260912\\docs\\reviews\\pc_b\\w3_five_boundaries_fix_2026-09-12\\post_fix\\r7_exact_812_postfix_seed0.junit.xml",
+    "-n",
+    "4",
+    "tests/test_structure_two_backbone_operator_wiring.py",
+    "tests/test_core_prototype_spine.py",
+    "tests/test_structure_two_production_system.py",
+    "tests/test_structure_two_execution_interface.py",
+    "tests/test_structure_two_adaptive_runtime.py",
+    "tests/test_structure_two_adaptive_runtime_adversarial_round1.py",
+    "tests/test_structure_two_adaptive_runtime_adversarial_round2.py",
+    "tests/test_structure_two_p5_direct_trace_probe.py",
+    "tests/test_structure_two_p5_debt_replay_confirmation.py",
+    "tests/test_structure_two_backbone_counterexample_regressions.py",
+    "tests/test_structure_two_late_counter_evidence_chain.py",
+    "tests/test_structure_two_operator_causal_matrix.py",
+    "tests/test_structure_two_ciav_negative_observation_layers.py",
+    "tests/test_structure_two_p0_maintenance_fault_injection.py",
+    "tests/test_structure_two_formal_revision_lineage.py",
+    "tests/test_structure_two_operator_coverage_matrix.py",
+    "tests/test_structure_two_w3_revision_acceptance.py",
+    "tests/test_structure_two_w3_operator_acceptance.py",
+    "tests/test_structure_two_w3_supplement.py",
+    "tests/test_project_two_feedback_revision_loop.py",
+    "tests/test_project_two_revision_action_trace.py",
+    "tests/test_orrer_event_revision.py",
+    "tests/test_ccrr_context_conditioned_regime.py",
+    "tests/test_hybrid_ledger_durable_log.py",
+    "tests/test_project_one_automatic_regime_loop.py",
+    "tests/test_structure_two_w3_round5_boundaries.py",
+    "tests/test_structure_two_w3_native_bundle.py",
+    "tests/test_structure_two_w3_native_particles.py",
+    "tests/test_project_two_action_readout.py",
+    "tests/test_structure_two_w3_round6_prepared_boundary.py",
+    "tests/test_structure_two_selected_method.py",
+    "tests/test_structure_two_particle_falsifier.py",
+    "tests/test_structure_two_neural_amortized.py",
+    "tests/test_structure_two_stateful_full_joint.py",
+    "tests/test_structure_two_stateful_full_joint_adversarial.py",
+    "tests/test_structure_two_task7_support_recovery.py",
+    "tests/test_structure_two_w3_native_posterior_projection.py",
+    "tests/test_structure_two_w3_deferred_cancellation.py"
+  ],
+  "command_windows": "F:\\庞惟\\codex\\cpswm-w3-five-boundaries-fix-20260912\\.venv\\Scripts\\python.exe -m pytest -o addopts= -q -ra -p no:cacheprovider --basetemp=F:\\庞惟\\codex\\_cpswm_test_scratch\\r7_exact_812_postfix_seed0\\basetemp --junitxml=F:\\庞惟\\codex\\cpswm-w3-five-boundaries-fix-20260912\\docs\\reviews\\pc_b\\w3_five_boundaries_fix_2026-09-12\\post_fix\\r7_exact_812_postfix_seed0.junit.xml -n 4 tests/test_structure_two_backbone_operator_wiring.py tests/test_core_prototype_spine.py tests/test_structure_two_production_system.py tests/test_structure_two_execution_interface.py tests/test_structure_two_adaptive_runtime.py tests/test_structure_two_adaptive_runtime_adversarial_round1.py tests/test_structure_two_adaptive_runtime_adversarial_round2.py tests/test_structure_two_p5_direct_trace_probe.py tests/test_structure_two_p5_debt_replay_confirmation.py tests/test_structure_two_backbone_counterexample_regressions.py tests/test_structure_two_late_counter_evidence_chain.py tests/test_structure_two_operator_causal_matrix.py tests/test_structure_two_ciav_negative_observation_layers.py tests/test_structure_two_p0_maintenance_fault_injection.py tests/test_structure_two_formal_revision_lineage.py tests/test_structure_two_operator_coverage_matrix.py tests/test_structure_two_w3_revision_acceptance.py tests/test_structure_two_w3_operator_acceptance.py tests/test_structure_two_w3_supplement.py tests/test_project_two_feedback_revision_loop.py tests/test_project_two_revision_action_trace.py tests/test_orrer_event_revision.py tests/test_ccrr_context_conditioned_regime.py tests/test_hybrid_ledger_durable_log.py tests/test_project_one_automatic_regime_loop.py tests/test_structure_two_w3_round5_boundaries.py tests/test_structure_two_w3_native_bundle.py tests/test_structure_two_w3_native_particles.py tests/test_project_two_action_readout.py tests/test_structure_two_w3_round6_prepared_boundary.py tests/test_structure_two_selected_method.py tests/test_structure_two_particle_falsifier.py tests/test_structure_two_neural_amortized.py tests/test_structure_two_stateful_full_joint.py tests/test_structure_two_stateful_full_joint_adversarial.py tests/test_structure_two_task7_support_recovery.py tests/test_structure_two_w3_native_posterior_projection.py tests/test_structure_two_w3_deferred_cancellation.py",
+  "environment_overrides": {
+    "PYTHONPATH": "F:\\庞惟\\codex\\cpswm-w3-validation-2350602\\src",
+    "PYTHONHASHSEED": "0",
+    "PYTHONPYCACHEPREFIX": "F:\\庞惟\\codex\\_cpswm_test_scratch\\r7_exact_812_postfix_seed0\\pycache",
+    "OPENBLAS_NUM_THREADS": "1",
+    "OMP_NUM_THREADS": "1",
+    "MKL_NUM_THREADS": "1"
+  },
+  "platform": "Windows-11-10.0.22631-SP0",
+  "python_executable": "F:\\庞惟\\codex\\cpswm-w3-five-boundaries-fix-20260912\\.venv\\Scripts\\python.exe",
+  "python_version": "3.13.5 (main, Jul 23 2025, 00:30:06) [MSC v.1944 64 bit (AMD64)]",
+  "package_versions": {
+    "command": [
+      "F:\\庞惟\\codex\\cpswm-w3-five-boundaries-fix-20260912\\.venv\\Scripts\\python.exe",
+      "-m",
+      "pip",
+      "show",
+      "pytest",
+      "pytest-xdist"
+    ],
+    "returncode": 0,
+    "stdout": "Name: pytest\r\nVersion: 9.1.1\r\nSummary: pytest: simple powerful testing with Python\r\nHome-page: https://docs.pytest.org/en/latest/\r\nAuthor: Brianna Laugher, Bruno Oliveira, Floris Bruynooghe, Freya Bruhin, Holger Krekel, Others (See AUTHORS), Ronny Pfannschmidt\r\nAuthor-email: \r\nLicense-Expression: MIT\r\nLocation: F:\\\\xc5\\xd3Ω\\codex\\cpswm-w3-five-boundaries-fix-20260912\\.venv\\Lib\\site-packages\r\nRequires: colorama, iniconfig, packaging, pluggy, pygments\r\nRequired-by: pytest-cov, pytest-xdist\r\n---\r\nName: pytest-xdist\r\nVersion: 3.8.0\r\nSummary: pytest xdist plugin for distributed testing, most importantly across multiple CPUs\r\nHome-page: https://github.com/pytest-dev/pytest-xdist\r\nAuthor: \r\nAuthor-email: holger krekel and contributors <pytest-dev@python.org>, holger@merlinux.eu\r\nLicense-Expression: MIT\r\nLocation: F:\\\\xc5\\xd3Ω\\codex\\cpswm-w3-five-boundaries-fix-20260912\\.venv\\Lib\\site-packages\r\nRequires: execnet, pytest\r\nRequired-by:",
+    "stderr": ""
+  },
+  "selection": {
+    "path_count": 38,
+    "paths": [
+      "tests/test_structure_two_backbone_operator_wiring.py",
+      "tests/test_core_prototype_spine.py",
+      "tests/test_structure_two_production_system.py",
+      "tests/test_structure_two_execution_interface.py",
+      "tests/test_structure_two_adaptive_runtime.py",
+      "tests/test_structure_two_adaptive_runtime_adversarial_round1.py",
+      "tests/test_structure_two_adaptive_runtime_adversarial_round2.py",
+      "tests/test_structure_two_p5_direct_trace_probe.py",
+      "tests/test_structure_two_p5_debt_replay_confirmation.py",
+      "tests/test_structure_two_backbone_counterexample_regressions.py",
+      "tests/test_structure_two_late_counter_evidence_chain.py",
+      "tests/test_structure_two_operator_causal_matrix.py",
+      "tests/test_structure_two_ciav_negative_observation_layers.py",
+      "tests/test_structure_two_p0_maintenance_fault_injection.py",
+      "tests/test_structure_two_formal_revision_lineage.py",
+      "tests/test_structure_two_operator_coverage_matrix.py",
+      "tests/test_structure_two_w3_revision_acceptance.py",
+      "tests/test_structure_two_w3_operator_acceptance.py",
+      "tests/test_structure_two_w3_supplement.py",
+      "tests/test_project_two_feedback_revision_loop.py",
+      "tests/test_project_two_revision_action_trace.py",
+      "tests/test_orrer_event_revision.py",
+      "tests/test_ccrr_context_conditioned_regime.py",
+      "tests/test_hybrid_ledger_durable_log.py",
+      "tests/test_project_one_automatic_regime_loop.py",
+      "tests/test_structure_two_w3_round5_boundaries.py",
+      "tests/test_structure_two_w3_native_bundle.py",
+      "tests/test_structure_two_w3_native_particles.py",
+      "tests/test_project_two_action_readout.py",
+      "tests/test_structure_two_w3_round6_prepared_boundary.py",
+      "tests/test_structure_two_selected_method.py",
+      "tests/test_structure_two_particle_falsifier.py",
+      "tests/test_structure_two_neural_amortized.py",
+      "tests/test_structure_two_stateful_full_joint.py",
+      "tests/test_structure_two_stateful_full_joint_adversarial.py",
+      "tests/test_structure_two_task7_support_recovery.py",
+      "tests/test_structure_two_w3_native_posterior_projection.py",
+      "tests/test_structure_two_w3_deferred_cancellation.py"
+    ],
+    "provenance": {
+      "mode": "parsed_command_manifest",
+      "manifest": "F:\\庞惟\\codex\\cpswm-w3-validation-2350602\\docs\\reviews\\pc_a\\w3_backbone_r7_2026-09-12\\final_812.command.json",
+      "manifest_repository_relative": "docs/reviews/pc_a/w3_backbone_r7_2026-09-12/final_812.command.json",
+      "manifest_sha256": "90960ab1ec26d83a3797f813d9c3b966bae3ff12070e5bc9a26c3faa5cf53710",
+      "original_command": [
+        "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/.venv/bin/python",
+        "-m",
+        "pytest",
+        "-o",
+        "addopts=",
+        "-q",
+        "-n",
+        "4",
+        "-p",
+        "no:cacheprovider",
+        "--junitxml=/private/tmp/cpswm-pc-a-w3-backbone-r7-20260912/docs/reviews/pc_a/w3_backbone_r7_2026-09-12/final_812.xml",
+        "tests/test_structure_two_backbone_operator_wiring.py",
+        "tests/test_core_prototype_spine.py",
+        "tests/test_structure_two_production_system.py",
+        "tests/test_structure_two_execution_interface.py",
+        "tests/test_structure_two_adaptive_runtime.py",
+        "tests/test_structure_two_adaptive_runtime_adversarial_round1.py",
+        "tests/test_structure_two_adaptive_runtime_adversarial_round2.py",
+        "tests/test_structure_two_p5_direct_trace_probe.py",
+        "tests/test_structure_two_p5_debt_replay_confirmation.py",
+        "tests/test_structure_two_backbone_counterexample_regressions.py",
+        "tests/test_structure_two_late_counter_evidence_chain.py",
+        "tests/test_structure_two_operator_causal_matrix.py",
+        "tests/test_structure_two_ciav_negative_observation_layers.py",
+        "tests/test_structure_two_p0_maintenance_fault_injection.py",
+        "tests/test_structure_two_formal_revision_lineage.py",
+        "tests/test_structure_two_operator_coverage_matrix.py",
+        "tests/test_structure_two_w3_revision_acceptance.py",
+        "tests/test_structure_two_w3_operator_acceptance.py",
+        "tests/test_structure_two_w3_supplement.py",
+        "tests/test_project_two_feedback_revision_loop.py",
+        "tests/test_project_two_revision_action_trace.py",
+        "tests/test_orrer_event_revision.py",
+        "tests/test_ccrr_context_conditioned_regime.py",
+        "tests/test_hybrid_ledger_durable_log.py",
+        "tests/test_project_one_automatic_regime_loop.py",
+        "tests/test_structure_two_w3_round5_boundaries.py",
+        "tests/test_structure_two_w3_native_bundle.py",
+        "tests/test_structure_two_w3_native_particles.py",
+        "tests/test_project_two_action_readout.py",
+        "tests/test_structure_two_w3_round6_prepared_boundary.py",
+        "tests/test_structure_two_selected_method.py",
+        "tests/test_structure_two_particle_falsifier.py",
+        "tests/test_structure_two_neural_amortized.py",
+        "tests/test_structure_two_stateful_full_joint.py",
+        "tests/test_structure_two_stateful_full_joint_adversarial.py",
+        "tests/test_structure_two_task7_support_recovery.py",
+        "tests/test_structure_two_w3_native_posterior_projection.py",
+        "tests/test_structure_two_w3_deferred_cancellation.py"
+      ],
+      "original_exit_code": 0,
+      "original_base_sha": "5fa093290f7f69d1e789915a66645ef1d0b3b875"
+    }
+  },
+  "git_before": {
+    "head": {
+      "command": [
+        "git",
+        "rev-parse",
+        "HEAD"
+      ],
+      "returncode": 0,
+      "stdout": "23506024213d517ba4bab65d4318663163b00913",
+      "stderr": ""
+    },
+    "tree": {
+      "command": [
+        "git",
+        "rev-parse",
+        "HEAD^{tree}"
+      ],
+      "returncode": 0,
+      "stdout": "c433367468e5cae4d76a454c1b7946b9931d605c",
+      "stderr": ""
+    },
+    "status": {
+      "command": [
+        "git",
+        "status",
+        "--porcelain=v2",
+        "--untracked-files=all"
+      ],
+      "returncode": 0,
+      "stdout": "",
+      "stderr": ""
+    }
+  },
+  "git_after": {
+    "head": {
+      "command": [
+        "git",
+        "rev-parse",
+        "HEAD"
+      ],
+      "returncode": 0,
+      "stdout": "23506024213d517ba4bab65d4318663163b00913",
+      "stderr": ""
+    },
+    "tree": {
+      "command": [
+        "git",
+        "rev-parse",
+        "HEAD^{tree}"
+      ],
+      "returncode": 0,
+      "stdout": "c433367468e5cae4d76a454c1b7946b9931d605c",
+      "stderr": ""
+    },
+    "status": {
+      "command": [
+        "git",
+        "status",
+        "--porcelain=v2",
+        "--untracked-files=all"
+      ],
+      "returncode": 0,
+      "stdout": "",
+      "stderr": ""
+    }
+  },
+  "head_unchanged": true,
+  "tree_unchanged": true,
+  "source_before": {
+    "python_source_file_count": 310,
+    "python_source_inventory_sha256": "d349ca1196f6c4c194dd99056e05ff7c78a5e1e110166a63db672ad61b21f22c",
+    "key_files": {
+      "src/cpswm/system/prototype_spine.py": {
+        "sha256": "2ff75a0e3ae4f0915813c6e81dfb86295b7392fa7ebeceef8581f28142c6c5c1",
+        "size_bytes": 272187
+      },
+      "src/cpswm/system/structure_two_particle_workspace.py": {
+        "sha256": "57233b5f01a15af649d447392c149280bfc03467a0777bdfe1356aeeb8342972",
+        "size_bytes": 39107
+      },
+      "src/cpswm/system/structure_two_semantic_identity.py": {
+        "sha256": "f6452a4a5452e931cd1920881822fb89d36dd755d059e373b83231c38e77026e",
+        "size_bytes": 23125
+      },
+      "tests/test_structure_two_backbone_operator_wiring.py": {
+        "sha256": "be58953f76c888c6e94eb8e92e8d009efac401f651e7c1b5f7c54b690b40dda5",
+        "size_bytes": 34590
+      },
+      "tests/test_core_prototype_spine.py": {
+        "sha256": "b7e58942ed964e90a1c9059e44a76bdecf572ff5b7d6bc253f57582077c70ba3",
+        "size_bytes": 2442
+      },
+      "tests/test_structure_two_production_system.py": {
+        "sha256": "ca18a8744bba431d4ccb54e8f6d5d790dd5398acf3c985e0a74d90bc8f11aaab",
+        "size_bytes": 5309
+      },
+      "tests/test_structure_two_execution_interface.py": {
+        "sha256": "6c025a83053d9ffb5d5fd8e209efadab65fe24a4af76eb083cc719bee7e50b67",
+        "size_bytes": 65358
+      },
+      "tests/test_structure_two_adaptive_runtime.py": {
+        "sha256": "3ee43f96fc31de54957f25563f6a05bcd2412c6fc4021f0c757824c67ffeb083",
+        "size_bytes": 21447
+      },
+      "tests/test_structure_two_adaptive_runtime_adversarial_round1.py": {
+        "sha256": "14f982059eea6959deecb2164a6fc519ba3e6360f2243afd9bd478d98f820059",
+        "size_bytes": 11555
+      },
+      "tests/test_structure_two_adaptive_runtime_adversarial_round2.py": {
+        "sha256": "b1b6cf4325efd51aac8c104fbd09ea37cb05bf4eade2eef4b636f3173732dd01",
+        "size_bytes": 17534
+      },
+      "tests/test_structure_two_p5_direct_trace_probe.py": {
+        "sha256": "2dc9b7d8b6e20bcd4c39c7f8dca7b440664b6b7c9b1eb854e9c3f048e4410127",
+        "size_bytes": 2000
+      },
+      "tests/test_structure_two_p5_debt_replay_confirmation.py": {
+        "sha256": "509d1d6e2832bb45b73c6c46deca4ee65a4a985c22757c0c38ccfd4e379904ad",
+        "size_bytes": 7788
+      },
+      "tests/test_structure_two_backbone_counterexample_regressions.py": {
+        "sha256": "273f9633ea07d4c31c75be0db4b9cf2155ac9997f742107483eecfd2904bd7df",
+        "size_bytes": 18276
+      },
+      "tests/test_structure_two_late_counter_evidence_chain.py": {
+        "sha256": "0c2ec276810f8523bda9ad0b5670bb25fed61e3eed44a4e5f650833b50015b59",
+        "size_bytes": 20194
+      },
+      "tests/test_structure_two_operator_causal_matrix.py": {
+        "sha256": "fd427f6e46b5813fa916bc99a298f65821e38f375d456c48c08ce81444776893",
+        "size_bytes": 21265
+      },
+      "tests/test_structure_two_ciav_negative_observation_layers.py": {
+        "sha256": "411c6893b39f723ba0c7ff87faa869666ff64c6d079aa93389bbaf925763c1e9",
+        "size_bytes": 12737
+      },
+      "tests/test_structure_two_p0_maintenance_fault_injection.py": {
+        "sha256": "2be33c21b9ca591816da3a95bbe967208c0c9d9e3e3cecd04bef4b3789716526",
+        "size_bytes": 21910
+      },
+      "tests/test_structure_two_formal_revision_lineage.py": {
+        "sha256": "13568b04f0e3ae7cce24184d65320fa43187ca6600aa9b62f2e66a4e0cbd8f01",
+        "size_bytes": 25045
+      },
+      "tests/test_structure_two_operator_coverage_matrix.py": {
+        "sha256": "3a5b64c056fa4cf4d14ccc2202815bf5c02c20c32069ffa4efbb41e855651aad",
+        "size_bytes": 22187
+      },
+      "tests/test_structure_two_w3_revision_acceptance.py": {
+        "sha256": "4ac45452c23fe3e66d0218e14a3f2e86f72bceb56b5e085ed8b503dadc1e1ffc",
+        "size_bytes": 15658
+      },
+      "tests/test_structure_two_w3_operator_acceptance.py": {
+        "sha256": "a618aada65033f9d15a022a368dddc54cb7464a0fd4ed5971d1105828973c273",
+        "size_bytes": 12586
+      },
+      "tests/test_structure_two_w3_supplement.py": {
+        "sha256": "605b896ba06b9c044ba8e9a3e61aba20c437df63fed1c47f6e95cf62384b7845",
+        "size_bytes": 2999
+      },
+      "tests/test_project_two_feedback_revision_loop.py": {
+        "sha256": "e35235347b68b38cf41b15602239738cf51fb0898d005034494944c0ddc9e67a",
+        "size_bytes": 42604
+      },
+      "tests/test_project_two_revision_action_trace.py": {
+        "sha256": "8dc15c5d8487eed4bcddabfbe172782fb594424bb15ecf7a0db18026b8c85b06",
+        "size_bytes": 14144
+      },
+      "tests/test_orrer_event_revision.py": {
+        "sha256": "ef6635c49064a21c100275a76e6f45ca2b8b76035d23af74de689e845e3ba39c",
+        "size_bytes": 4999
+      },
+      "tests/test_ccrr_context_conditioned_regime.py": {
+        "sha256": "8c3147565050d3f2dfb7ed5836848cf29deedb09098ef013cebcfff1f43f7a3b",
+        "size_bytes": 22597
+      },
+      "tests/test_hybrid_ledger_durable_log.py": {
+        "sha256": "1aadfebe091356b7518b819b6450eb9e1d11bb25c88a7b00212c11531d32b1b3",
+        "size_bytes": 7093
+      },
+      "tests/test_project_one_automatic_regime_loop.py": {
+        "sha256": "fc38b4d5f8ada9b36e9c1af57afa763b8510ed6533825892eb47d93a1d4b3087",
+        "size_bytes": 59904
+      },
+      "tests/test_structure_two_w3_round5_boundaries.py": {
+        "sha256": "939877a6eb87336075f68ee6b16805a35e7ac429a77d0ebabcbb7e6e8effd09a",
+        "size_bytes": 22248
+      },
+      "tests/test_structure_two_w3_native_bundle.py": {
+        "sha256": "46d215a32ecd39df86722fd797556d188c68cfce080879cd0417b78f09ab94b7",
+        "size_bytes": 7839
+      },
+      "tests/test_structure_two_w3_native_particles.py": {
+        "sha256": "073cd2494919eddc025f1d028e01fa1e0022e3e3b3a39d643a9ccebee60aaa6d",
+        "size_bytes": 13702
+      },
+      "tests/test_project_two_action_readout.py": {
+        "sha256": "e10d1ea7b69879d1fd923563a185f3d33723fe4697cbe31f3a853d80750d53b3",
+        "size_bytes": 17502
+      },
+      "tests/test_structure_two_w3_round6_prepared_boundary.py": {
+        "sha256": "4f5d388fd46f56b2f8836f76e52b2d1e062f1c46045a7fccb75fa36682c8ab45",
+        "size_bytes": 16161
+      },
+      "tests/test_structure_two_selected_method.py": {
+        "sha256": "5d8a363c2949eb46224053342a1b2ce25fe5d0bd58e297a07cf5267eccd511d3",
+        "size_bytes": 10929
+      },
+      "tests/test_structure_two_particle_falsifier.py": {
+        "sha256": "0a1581a9a05755c2f24c1812efafeafd89fba9a4c541ca5abbb9d16c845e7d8c",
+        "size_bytes": 3116
+      },
+      "tests/test_structure_two_neural_amortized.py": {
+        "sha256": "1b28aab5c463f355ddcd13a867fd2cad3604a8d1c3dc8dc9537aa188e39ed418",
+        "size_bytes": 8266
+      },
+      "tests/test_structure_two_stateful_full_joint.py": {
+        "sha256": "7c2e5a32904c3965351f9c9fbf13fa22a8e25005a91cee5de167814be928bfb1",
+        "size_bytes": 10985
+      },
+      "tests/test_structure_two_stateful_full_joint_adversarial.py": {
+        "sha256": "e66effa3eb49bdb0cb841eed1f6a45e4bd969dc800b37457b56528d756d01aaa",
+        "size_bytes": 17741
+      },
+      "tests/test_structure_two_task7_support_recovery.py": {
+        "sha256": "b967272a05c99d860710edb87a1754928eb3a54614b0836beffd44a6fe7a183a",
+        "size_bytes": 5962
+      },
+      "tests/test_structure_two_w3_native_posterior_projection.py": {
+        "sha256": "200be4df3d53bf388277414db6493225879aeb7a6402867adb9a8f320ac659c1",
+        "size_bytes": 9556
+      },
+      "tests/test_structure_two_w3_deferred_cancellation.py": {
+        "sha256": "5c408ac31f26b92aa5a9869e91f6a38b0d402693d968d13a38723793b2899f71",
+        "size_bytes": 12908
+      }
+    }
+  },
+  "source_after": {
+    "python_source_file_count": 310,
+    "python_source_inventory_sha256": "d349ca1196f6c4c194dd99056e05ff7c78a5e1e110166a63db672ad61b21f22c",
+    "key_files": {
+      "src/cpswm/system/prototype_spine.py": {
+        "sha256": "2ff75a0e3ae4f0915813c6e81dfb86295b7392fa7ebeceef8581f28142c6c5c1",
+        "size_bytes": 272187
+      },
+      "src/cpswm/system/structure_two_particle_workspace.py": {
+        "sha256": "57233b5f01a15af649d447392c149280bfc03467a0777bdfe1356aeeb8342972",
+        "size_bytes": 39107
+      },
+      "src/cpswm/system/structure_two_semantic_identity.py": {
+        "sha256": "f6452a4a5452e931cd1920881822fb89d36dd755d059e373b83231c38e77026e",
+        "size_bytes": 23125
+      },
+      "tests/test_structure_two_backbone_operator_wiring.py": {
+        "sha256": "be58953f76c888c6e94eb8e92e8d009efac401f651e7c1b5f7c54b690b40dda5",
+        "size_bytes": 34590
+      },
+      "tests/test_core_prototype_spine.py": {
+        "sha256": "b7e58942ed964e90a1c9059e44a76bdecf572ff5b7d6bc253f57582077c70ba3",
+        "size_bytes": 2442
+      },
+      "tests/test_structure_two_production_system.py": {
+        "sha256": "ca18a8744bba431d4ccb54e8f6d5d790dd5398acf3c985e0a74d90bc8f11aaab",
+        "size_bytes": 5309
+      },
+      "tests/test_structure_two_execution_interface.py": {
+        "sha256": "6c025a83053d9ffb5d5fd8e209efadab65fe24a4af76eb083cc719bee7e50b67",
+        "size_bytes": 65358
+      },
+      "tests/test_structure_two_adaptive_runtime.py": {
+        "sha256": "3ee43f96fc31de54957f25563f6a05bcd2412c6fc4021f0c757824c67ffeb083",
+        "size_bytes": 21447
+      },
+      "tests/test_structure_two_adaptive_runtime_adversarial_round1.py": {
+        "sha256": "14f982059eea6959deecb2164a6fc519ba3e6360f2243afd9bd478d98f820059",
+        "size_bytes": 11555
+      },
+      "tests/test_structure_two_adaptive_runtime_adversarial_round2.py": {
+        "sha256": "b1b6cf4325efd51aac8c104fbd09ea37cb05bf4eade2eef4b636f3173732dd01",
+        "size_bytes": 17534
+      },
+      "tests/test_structure_two_p5_direct_trace_probe.py": {
+        "sha256": "2dc9b7d8b6e20bcd4c39c7f8dca7b440664b6b7c9b1eb854e9c3f048e4410127",
+        "size_bytes": 2000
+      },
+      "tests/test_structure_two_p5_debt_replay_confirmation.py": {
+        "sha256": "509d1d6e2832bb45b73c6c46deca4ee65a4a985c22757c0c38ccfd4e379904ad",
+        "size_bytes": 7788
+      },
+      "tests/test_structure_two_backbone_counterexample_regressions.py": {
+        "sha256": "273f9633ea07d4c31c75be0db4b9cf2155ac9997f742107483eecfd2904bd7df",
+        "size_bytes": 18276
+      },
+      "tests/test_structure_two_late_counter_evidence_chain.py": {
+        "sha256": "0c2ec276810f8523bda9ad0b5670bb25fed61e3eed44a4e5f650833b50015b59",
+        "size_bytes": 20194
+      },
+      "tests/test_structure_two_operator_causal_matrix.py": {
+        "sha256": "fd427f6e46b5813fa916bc99a298f65821e38f375d456c48c08ce81444776893",
+        "size_bytes": 21265
+      },
+      "tests/test_structure_two_ciav_negative_observation_layers.py": {
+        "sha256": "411c6893b39f723ba0c7ff87faa869666ff64c6d079aa93389bbaf925763c1e9",
+        "size_bytes": 12737
+      },
+      "tests/test_structure_two_p0_maintenance_fault_injection.py": {
+        "sha256": "2be33c21b9ca591816da3a95bbe967208c0c9d9e3e3cecd04bef4b3789716526",
+        "size_bytes": 21910
+      },
+      "tests/test_structure_two_formal_revision_lineage.py": {
+        "sha256": "13568b04f0e3ae7cce24184d65320fa43187ca6600aa9b62f2e66a4e0cbd8f01",
+        "size_bytes": 25045
+      },
+      "tests/test_structure_two_operator_coverage_matrix.py": {
+        "sha256": "3a5b64c056fa4cf4d14ccc2202815bf5c02c20c32069ffa4efbb41e855651aad",
+        "size_bytes": 22187
+      },
+      "tests/test_structure_two_w3_revision_acceptance.py": {
+        "sha256": "4ac45452c23fe3e66d0218e14a3f2e86f72bceb56b5e085ed8b503dadc1e1ffc",
+        "size_bytes": 15658
+      },
+      "tests/test_structure_two_w3_operator_acceptance.py": {
+        "sha256": "a618aada65033f9d15a022a368dddc54cb7464a0fd4ed5971d1105828973c273",
+        "size_bytes": 12586
+      },
+      "tests/test_structure_two_w3_supplement.py": {
+        "sha256": "605b896ba06b9c044ba8e9a3e61aba20c437df63fed1c47f6e95cf62384b7845",
+        "size_bytes": 2999
+      },
+      "tests/test_project_two_feedback_revision_loop.py": {
+        "sha256": "e35235347b68b38cf41b15602239738cf51fb0898d005034494944c0ddc9e67a",
+        "size_bytes": 42604
+      },
+      "tests/test_project_two_revision_action_trace.py": {
+        "sha256": "8dc15c5d8487eed4bcddabfbe172782fb594424bb15ecf7a0db18026b8c85b06",
+        "size_bytes": 14144
+      },
+      "tests/test_orrer_event_revision.py": {
+        "sha256": "ef6635c49064a21c100275a76e6f45ca2b8b76035d23af74de689e845e3ba39c",
+        "size_bytes": 4999
+      },
+      "tests/test_ccrr_context_conditioned_regime.py": {
+        "sha256": "8c3147565050d3f2dfb7ed5836848cf29deedb09098ef013cebcfff1f43f7a3b",
+        "size_bytes": 22597
+      },
+      "tests/test_hybrid_ledger_durable_log.py": {
+        "sha256": "1aadfebe091356b7518b819b6450eb9e1d11bb25c88a7b00212c11531d32b1b3",
+        "size_bytes": 7093
+      },
+      "tests/test_project_one_automatic_regime_loop.py": {
+        "sha256": "fc38b4d5f8ada9b36e9c1af57afa763b8510ed6533825892eb47d93a1d4b3087",
+        "size_bytes": 59904
+      },
+      "tests/test_structure_two_w3_round5_boundaries.py": {
+        "sha256": "939877a6eb87336075f68ee6b16805a35e7ac429a77d0ebabcbb7e6e8effd09a",
+        "size_bytes": 22248
+      },
+      "tests/test_structure_two_w3_native_bundle.py": {
+        "sha256": "46d215a32ecd39df86722fd797556d188c68cfce080879cd0417b78f09ab94b7",
+        "size_bytes": 7839
+      },
+      "tests/test_structure_two_w3_native_particles.py": {
+        "sha256": "073cd2494919eddc025f1d028e01fa1e0022e3e3b3a39d643a9ccebee60aaa6d",
+        "size_bytes": 13702
+      },
+      "tests/test_project_two_action_readout.py": {
+        "sha256": "e10d1ea7b69879d1fd923563a185f3d33723fe4697cbe31f3a853d80750d53b3",
+        "size_bytes": 17502
+      },
+      "tests/test_structure_two_w3_round6_prepared_boundary.py": {
+        "sha256": "4f5d388fd46f56b2f8836f76e52b2d1e062f1c46045a7fccb75fa36682c8ab45",
+        "size_bytes": 16161
+      },
+      "tests/test_structure_two_selected_method.py": {
+        "sha256": "5d8a363c2949eb46224053342a1b2ce25fe5d0bd58e297a07cf5267eccd511d3",
+        "size_bytes": 10929
+      },
+      "tests/test_structure_two_particle_falsifier.py": {
+        "sha256": "0a1581a9a05755c2f24c1812efafeafd89fba9a4c541ca5abbb9d16c845e7d8c",
+        "size_bytes": 3116
+      },
+      "tests/test_structure_two_neural_amortized.py": {
+        "sha256": "1b28aab5c463f355ddcd13a867fd2cad3604a8d1c3dc8dc9537aa188e39ed418",
+        "size_bytes": 8266
+      },
+      "tests/test_structure_two_stateful_full_joint.py": {
+        "sha256": "7c2e5a32904c3965351f9c9fbf13fa22a8e25005a91cee5de167814be928bfb1",
+        "size_bytes": 10985
+      },
+      "tests/test_structure_two_stateful_full_joint_adversarial.py": {
+        "sha256": "e66effa3eb49bdb0cb841eed1f6a45e4bd969dc800b37457b56528d756d01aaa",
+        "size_bytes": 17741
+      },
+      "tests/test_structure_two_task7_support_recovery.py": {
+        "sha256": "b967272a05c99d860710edb87a1754928eb3a54614b0836beffd44a6fe7a183a",
+        "size_bytes": 5962
+      },
+      "tests/test_structure_two_w3_native_posterior_projection.py": {
+        "sha256": "200be4df3d53bf388277414db6493225879aeb7a6402867adb9a8f320ac659c1",
+        "size_bytes": 9556
+      },
+      "tests/test_structure_two_w3_deferred_cancellation.py": {
+        "sha256": "5c408ac31f26b92aa5a9869e91f6a38b0d402693d968d13a38723793b2899f71",
+        "size_bytes": 12908
+      }
+    }
+  },
+  "source_unchanged": true,
+  "junit_counts": {
+    "tests": 812,
+    "failures": 12,
+    "errors": 0,
+    "skipped_total": 0,
+    "skipped_non_xfail": 0,
+    "xfailed": 0
+  },
+  "artifacts": {
+    "r7_exact_812_postfix_seed0.stdout.log": {
+      "path": "F:\\庞惟\\codex\\cpswm-w3-five-boundaries-fix-20260912\\docs\\reviews\\pc_b\\w3_five_boundaries_fix_2026-09-12\\post_fix\\r7_exact_812_postfix_seed0.stdout.log",
+      "size_bytes": 40949,
+      "sha256": "e52a868cb8d441cf5c3a09e612d5eb9285f5a5af5ddef65899e262a1f04fd2e9"
+    },
+    "r7_exact_812_postfix_seed0.stderr.log": {
+      "path": "F:\\庞惟\\codex\\cpswm-w3-five-boundaries-fix-20260912\\docs\\reviews\\pc_b\\w3_five_boundaries_fix_2026-09-12\\post_fix\\r7_exact_812_postfix_seed0.stderr.log",
+      "size_bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "r7_exact_812_postfix_seed0.junit.xml": {
+      "path": "F:\\庞惟\\codex\\cpswm-w3-five-boundaries-fix-20260912\\docs\\reviews\\pc_b\\w3_five_boundaries_fix_2026-09-12\\post_fix\\r7_exact_812_postfix_seed0.junit.xml",
+      "size_bytes": 168047,
+      "sha256": "30825bb4c219d940740d91914b6a249a6f472a9c0685a19151a4dbb9fb2a78d4"
+    }
+  },
+  "scratch_directory": "F:\\庞惟\\codex\\_cpswm_test_scratch\\r7_exact_812_postfix_seed0"
+}

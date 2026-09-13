@@ -1,3 +1,32 @@
+# CPSWM · 持续个性化语义世界模型
+
+研究持续学习与具身智能：在隐藏事件、多人共享、开放世界和习惯变化中，维护可追溯、可撤销的个体化世界模型，并连接具身反馈。完整研究范围和既有协议保持不变。
+
+**先看 [当前工作导航](https://github.com/goneveitvet240-svg/cpswm/blob/codex/dual-pc-handoff-20260912/docs/collaboration/GITHUB_INDEX.md)。** 默认 `main` 保留历史代码基线；最新候选位于下面的任务分支，尚未统一验收。
+
+| 当前工作 | 入口 | 状态 |
+|---|---|---|
+| 统一运行候选 | [PR #15](https://github.com/goneveitvet240-svg/cpswm/pull/15) | CI 与完整验收仍有阻塞 |
+| 位姿及本地小预算开发 | [PR #16](https://github.com/goneveitvet240-svg/cpswm/pull/16) | 在统一候选上继续开发，待复核 |
+| B4–B9 修复和审计交接 | [PR #17](https://github.com/goneveitvet240-svg/cpswm/pull/17) | 已同步，待独立复跑 |
+| W2 比较与验收准备 | [PR #2](https://github.com/goneveitvet240-svg/cpswm/pull/2) | 部分覆盖，等待统一版本重算 |
+
+[双机交接入口](https://github.com/goneveitvet240-svg/cpswm/blob/codex/dual-pc-handoff-20260912/docs/collaboration/START_HERE.md) · [当前任务板](https://github.com/goneveitvet240-svg/cpswm/blob/codex/dual-pc-handoff-20260912/docs/collaboration/TASK_BOARD.md) · [结构二完整框架](https://github.com/goneveitvet240-svg/cpswm/blob/codex/dual-pc-handoff-20260912/docs/结构二/README.md) · [所有开放 PR](https://github.com/goneveitvet240-svg/cpswm/pulls)
+
+## 仓库阅读方式
+
+- `docs/结构一/`、`docs/结构二/`、`docs/结构三/`：各研究方向和协议。
+- `docs/collaboration/`（共享集成分支）：双机分工、当前状态、完整 SHA 与交接。
+- `docs/reviews/`：按版本冻结的审查和原始证据；历史报告不自动代表当前代码。
+- `src/`、`tests/`、`tools/`：所选分支对应实现、测试及工具；运行前核对任务分支。
+
+共享集成分支保持 `codex/dual-pc-handoff-20260912`。阶段 PR 已按包含关系归档，历史分支与提交保留，便于复现。工程检查、独立复核、跨机验收、统一验收和科学收益分别记录。
+
+<details>
+<summary>历史 main 基线：实现、运行方法与当时边界</summary>
+
+以下内容保留原文，描述 main 旧代码基线；当前任务分支的进度和运行前提以工作导航为准。
+
 # Continual Personalized Semantic World Model
 
 当前代码阶段：`Step 1 A0` 与首个 F0 纵切已实现，审核状态为 `BLOCK`；仅保留 `implemented_vertical_slice`，不标记为 `accepted`。
@@ -85,3 +114,5 @@ F0 评价底座与 A0 回放阻断修复及复审证据见 `docs/reviews/f0-eval
 方向结构三的独立定义、契约和可运行基线见 `docs/结构三/项目方向结构三_模糊语言联合后验主动确认与具身闭环_v1.0.md`。当前已推进到 `s3-1_oracle_closed_loop_baseline`：M29-L0 真值轨道可以运行主动观察、重新后验、执行反馈规范写回和失败后再规划；它仍不代表 S3-1 全部完成，也不代表真实 VIO、VLM、触觉、MPC 或机器人硬件已经验证。
 
 S3 common pipeline（公共管线）现会在规范日志写入前重验证 request、可替换 fusion result（融合结果）和 provider action/observation/model/domain/outcome/candidate coverage（候选覆盖），将 query/model、候选落地、后验支持集与硬约束绑定回 request，强制具体 schema name/version 与时序绑定，并通过 `GroundedTaskExecution（落地任务执行包）` 绑定所选候选、实体、位置、实际动作、执行机会和反馈；失败更新保持零写入。该结果仍依赖 executor/provider/fusion（执行器/提供器/融合器）诚实报告；当前没有可信 provider/model registry，active verification 的机会 ID 也尚未绑定完整机会 envelope，因此不构成来源认证或硬件 attestation（硬件证明）。
+
+</details>

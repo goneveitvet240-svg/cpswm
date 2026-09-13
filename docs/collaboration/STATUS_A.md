@@ -1,37 +1,13 @@
-# 电脑 A 状态
+# 电脑 A 当前状态
 
-## 2026-09-12 本机第六轮独立复核（交付）
+2026-09-13：执行用户授权的 GitHub 分类、文档归并和导航整理。
 
-- 任务 A0/A2/A1 只读审核；分支 `codex/pc-a-three-window-review6-20260912`，base `bdec3ee21b7db361e390496d97ff2eb30390dc6c`。未改变共享集成分支、生产代码、测试断言、科研配置或 STATUS_B。
-- 被测代码：W1 `b6202bec015679461b06056571bd47a5446045b8`；W2 `de2c04c3e690dba674850af9c4f7e126dbab910e`；W3 `1bd513f51ab7e54a7290870a5f34b524254d55c6`。收尾再次 fetch 成功，四个远端目标未变；对应 769/767/774 文件运行前后未变，与原窗口相等。
-- 执行环境：W1 审核副本 Python 3.13 原生环境；W2/W3 主仓库 Python 3.13.5 + 精确快照 PYTHONPATH；数学库线程 1。不是 B0/B1 的 Windows/WSL 复现。
-- 实跑：W1 65 passed；W2 77 passed；W3 647+67 passed；额外 50 项为 33 passed/7 failed/10 errors，完全匹配旧 R5 的 17 个缺模型/来源绑定失败节点，不误报全绿。
-- 新反例：W1 普通/unchecked 项目 pyc，以及正常 pytest 重写缓存，可在源码不变、真实进程/路径/收集/报告均满足时执行旧代码并记录阶段完成。保持同一失败测试源码，清除缓存即正确失败。只证明 direct matrix 的实际执行身份缺口，未声称科学授权被绕过。
-- W3：四个 R5 独立 prepared 反例关闭；投影消费仍是拒绝未绑定输入，默认完整联合循环、条件统计聚合、模型/校准、完整粒子重放、自主修订与延期取消父贡献恢复未完成。
-- W2：局部诊断可信，31 个完整伪造和真实合法正包逐包验证，16 项来源 CLI 记录保留；不代表完整公平性或统一科学收益。新攻击包归档，不冒充已丢失的历史临时包。
-- 证据/完整命令：`docs/reviews/pc_a/round6_2026-09-12/REPORT.md` 及同目录 `*.command.json`、原始日志、源码/环境清单、独立反例与 W2 攻击归档。只读取核对修复方 115 保护组及五阶段链记录，本轮未重跑它们。
-- 结论：W1 新缺口需修；W3 指定 R6 工程边界可接受但完整能力未验收；W2 保持局部诊断接受。没有整体签收、科学门通过或新全局 checkpoint。
-- 下一步：A2 修缓存/实际测试代码身份；A1 保留 R6 并推进原定完整主干能力；B 先 B0/B1，再在 A 整合的确切新 SHA 上 B2 重算比较与公平性。通过审核 PR 交接，不自动合并。
+- 整理分支：`codex/pc-a-github-organization-20260913`；base `bdec3ee21b7db361e390496d97ff2eb30390dc6c`。
+- 本次只合入 #1/#6 文档审查历史与导航；非 docs 代码/测试/配置保持 base 字节。不继承或宣布统一验收通过。
+- 当前统一候选：[#15](https://github.com/goneveitvet240-svg/cpswm/pull/15)，完整代码和审查状态见其 PR。
+- 最新 A 位姿开发：[#16](https://github.com/goneveitvet240-svg/cpswm/pull/16)，[该分支 STATUS_A](https://github.com/goneveitvet240-svg/cpswm/blob/codex/pc-a-pose-local-dev-20260913/docs/collaboration/STATUS_A.md)。
+- 最新 B 交接：[#17](https://github.com/goneveitvet240-svg/cpswm/pull/17)，已推送但尚未由 A 独立复跑。
+- 检查：纯文档路径核对、历史证据 Git blob 对照、PR 祖先关系/21 文件同一性、Markdown 本地链接核对；本轮没有运行生产测试。
+- 阻塞与下一步：#15–#17 CI/独立验收、#2 W2 重算。具体分工见 TASK_BOARD。
 
-## 2026-09-12 本机第六轮独立复核（开工）
-
-- 任务：用户明确要求复核三个已完成窗口；A0/A2/A1 的只读复核，不实现修复，不替代 B0/B1 Windows/WSL 独立复现。
-- 分支：`codex/pc-a-three-window-review6-20260912`；base `bdec3ee21b7db361e390496d97ff2eb30390dc6c`。
-- 已成功执行 `git fetch origin --prune` 并读取远端四份协作状态、SNAPSHOTS 和结构二入口；三个原窗口均 idle。
-- 被测共享源码：W1 `b6202bec015679461b06056571bd47a5446045b8`；W2 `de2c04c3e690dba674850af9c4f7e126dbab910e`；W3 `1bd513f51ab7e54a7290870a5f34b524254d55c6`。分别在独立 pc-a-review6-w1/w2/w3 分支和目录复核。
-- W1 本地完成提交 `e93ea35187e25a4a3ede70f05cf64a2e35216623` 较远端快照增加最终证据；src/tests/tools/apps/configs 字节相同。本地新增证据不称为已经共享。
-- 文件边界：本分支仅本人状态、任务板登记、独立审核脚本和报告；不改 B 专属比较模块、A 的生产文件、另一方状态或共享集成分支。
-- 验证：目前仅完成远端同步、来源/交付阅读及活动窗口检查，测试尚未开始。后续证据位于 `docs/reviews/pc_a/round6_2026-09-12/`。
-- 下一步：固定文件清单、重跑旧独立反例及新增回归、攻击新的肯定输出与运行进程证明；完成后推送报告并用 PR 交接，不自动集成。
-
-更新时间：2026-09-12；本次为交接初始化。
-
-- 状态：双机交接已完成；GitHub 四个分支已同步，完整归档已校验并交付桌面。后续负责主干修复和统一集成；原窗口一、三的活动修复先收口，避免重复实现。
-- 集成分支：`codex/dual-pc-handoff-20260912`。
-- 精确窗口快照：见 `SNAPSHOTS.json`。
-- 本轮验证：交接包完整性与 GitHub 分支同步；没有在本次交接重新运行科研/生产验收矩阵。
-- 下一步：按 TASK_BOARD 中本人任务开工，在本人分支更新此文件并推送。
-
-后续每条进度需填写：任务 ID、分支、base SHA、实际代码 SHA、改动文件边界、执行环境、命令/结果、证据位置、已知限制、阻塞及下一步。报告不要填写包含自己的提交 SHA 造成自引用；使用被测代码 SHA，报告提交以 Git 历史为准。
-
-交接校验：见 TRANSFER_RECEIPT.json；181880 个普通文件载荷校验一致，离线克隆为干净工作树。该结果不是科研/生产测试验收。第二台仍须完成 B0。
+旧状态原文：[初始化](history/2026-09-13-organization/integration_STATUS_A.md)、[第六轮](history/2026-09-13-organization/round6_STATUS_A.md)、[B 五项交叉复核](history/2026-09-13-organization/crosscheck_STATUS_A.md)。

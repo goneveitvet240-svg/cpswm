@@ -1,3 +1,14 @@
+# CPSWM 项目导航
+
+[当前工作与 PR 分类](docs/collaboration/GITHUB_INDEX.md) · [双机交接入口](docs/collaboration/START_HERE.md) · [任务板](docs/collaboration/TASK_BOARD.md) · [结构二完整框架](docs/结构二/README.md)
+
+共享集成分支目前只归并文档证据；统一运行候选在 [#15](https://github.com/goneveitvet240-svg/cpswm/pull/15)，位姿开发在 [#16](https://github.com/goneveitvet240-svg/cpswm/pull/16)，B 最新修复在 [#17](https://github.com/goneveitvet240-svg/cpswm/pull/17)。CI/独立复核仍有阻塞，尚未统一验收。
+
+以下是本分支旧代码基线的说明，保留历史内容；当前研究进展以工作导航的分支和 SHA 为准。
+
+<details>
+<summary>展开历史代码说明</summary>
+
 # Continual Personalized Semantic World Model
 
 当前代码阶段：正式数据接入前的 contract/fixture vertical slices（契约/样例纵切）可运行，
@@ -96,3 +107,5 @@ F0 评价底座与 A0 回放阻断修复及复审证据见 `docs/reviews/f0-eval
 方向结构三的独立定义、契约和可运行基线见 `docs/结构三/项目方向结构三_模糊语言联合后验主动确认与具身闭环_v1.0.md`。当前已推进到 `s3-2_controlled_noise_semantics_corrected`：17 个确定性真值情境与 3 个组合 probe 已覆盖五维真值、主动观察、六类执行结果和 `not_found` 再规划；统一 episode contract 隔离评价器真值、记录 observation selection probability（观察选择概率）并阻断跨 split 泄漏。S3-2 已明确分离 known-out-of-support（已知但不在支持集）与 true unknown，通道缺失按 episode/channel 采样；扩展扫描为 198 个有效配置 cases，其中只有随机 missingness 臂使用多种子区间。FindingDory adapter 已接受 `task_41` 字符串格式，但仍只是 fixture-validated（样例验证），真实官方 rows/parquet 尚未接入。Prediction cache 在读取时会重新绑定当前 dataset、split、model versions、calibration domains 和 inference config。详见 `docs/experiments/direction_three_s3_1_oracle_suite_v0_1.md`、`docs/experiments/direction_three_s3_2_controlled_noise_v0_2.md` 与 `docs/experiments/direction_three_findingdory_metadata_audit_v0_2.md`。
 
 S3 common pipeline（公共管线）现会在规范日志写入前重验证 request、可替换 fusion result（融合结果）和 provider action/observation/model/domain/outcome/candidate coverage（候选覆盖），将 query/model、候选落地、后验支持集与硬约束绑定回 request，强制具体 schema name/version 与时序绑定，并通过 `GroundedTaskExecution（落地任务执行包）` 绑定所选候选、实体、位置、实际动作、执行机会和反馈；失败更新保持零写入。该结果仍依赖 executor/provider/fusion（执行器/提供器/融合器）诚实报告；当前没有可信 provider/model registry，active verification 的机会 ID 也尚未绑定完整机会 envelope，因此不构成来源认证或硬件 attestation（硬件证明）。
+
+</details>

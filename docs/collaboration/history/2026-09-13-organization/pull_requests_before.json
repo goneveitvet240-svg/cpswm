@@ -1,0 +1,189 @@
+[
+  {
+    "baseRefName": "codex/pc-b-w3-five-boundaries-fix-20260912",
+    "body": "## 交接范围\n\n将用户提供的 B4–B9 未提交交接包同步为独立分支，基于 c366cad0a92593bb2c4c44db7e8d3408a2b5cc9c。原样导入提交 0581ca8ad97896b03e482ae95f87b79a893394f4 包含 110 个文件：三个生产文件、STATUS_B，以及 106 个测试、工具、报告和证据文件；后续提交仅补同步回执。\n\n## 校验与限制\n\n- 110/110 文件字节数及 SHA-256 与原包清单一致。\n- 本次未独立复跑测试。包内报告记录 Linux Python 3.12 受影响集 103/103，exact-812 为 808 passed / 4 failed；这些是 B 提供的历史证据。\n- diff --check 报原始日志空白及工具 EOF 空行；Ruff hook 未通过且改写文件，已恢复原包、重验哈希，仅原样导入提交跳过 hook。不能视为 lint 或验收通过。\n- tools/pytest.py 是 B6 审计 shim，不应加入常规生产 PYTHONPATH。\n- 本 PR 以 B 旧分支为 base，仅展示本次新增交接差异。保持草稿，等待独立复核，不代表共享集成分支已合并或统一验收完成。\n",
+    "headRefName": "codex/pc-b-adversarial-audit-fix-20260913",
+    "headRefOid": "fd4ca6ef5e81c90d7cf7987b42c0b2810d8a810a",
+    "isDraft": true,
+    "number": 17,
+    "state": "OPEN",
+    "title": "PC-B B4–B9: preserve repair and audit handoff for independent review",
+    "url": "https://github.com/goneveitvet240-svg/cpswm/pull/17"
+  },
+  {
+    "baseRefName": "codex/pc-a-unified-runtime-20260913",
+    "body": "Implements the user's C choice (position plus orientation) as a validated local pose chart, and separates RLS feature dimensions from Gaussian state dimensions so a six-dimensional pose block does not change existing RLS features. Adds the requested local CPU development configuration while preserving the formal architecture and schedule protocols.\n\nStacked on draft PR #15; no integration-branch merge is included. Production code is fixed at 188f9fc9aa17bf38f973ee00f04e0b2f148f4ca3. The final documentation commit retains raw review scripts, results and source-bound test records under docs/reviews/pc_a/pose_local_dev_2026-09-13/.\n\nValidation: 871 tests passed at b33992da1bd775f180d915e80b7e7746546adbd9. The first independent review found a DST-fold epoch comparison defect and oversized invalid quaternion handling; both were fixed. At final code 188f9fc, 62 targeted tests and a separate reviewer's 116 independent checks passed. The full 871-test matrix was not rerun at that final SHA. Ruff passed; scoped mypy passed with the third-party missing-stub diagnostic excluded, as documented.\n\nThis delivers local geometry and development configuration only. Real pose observations and calibration, measurement reference binding, native six-operation supervision, model trainers and the continuous action loop remain open. No model training or paid compute was run; the budget configuration is not yet an enforcing trainer. The two reviews cover this implementation, not unified scientific acceptance.\n",
+    "headRefName": "codex/pc-a-pose-local-dev-20260913",
+    "headRefOid": "25ec3478476af6399321e17c8a4981753d578ce0",
+    "isDraft": true,
+    "number": 16,
+    "state": "OPEN",
+    "title": "Add local pose state and small-budget development configuration",
+    "url": "https://github.com/goneveitvet240-svg/cpswm/pull/16"
+  },
+  {
+    "baseRefName": "codex/dual-pc-handoff-20260912",
+    "body": "当前修复、输入与验收工具分散在多个窗口，原始RGB-D也没有接到M05观测入口。本候选接收独立复核的B五边界修复并合入W1/W2实现，新增固定来源的RGB-D归档入口及逐文件清单，修复生产首次导入循环依赖。保留完整结构二范围；默认连续推断—修订—行动反馈闭环尚未实现，本PR为草稿，不能据此统一签收。\n\n实际代码为 `06366579a1a72a46b465194b6e1bc2b6c27a3e87`；交付报告提交 `e6bdd018d3fd49cb304293d25651506e5342344f` 仅更新文档和原始证据。共享集成分支未改。本次合并来自已登记任务分支，历史快照及双方旧状态分开保留。\n\n验证与独立审核：\n\n- B固定源码在macOS独立复核139项及原812项通过；不覆盖Windows既有失败。\n- 合流基线 `01d44d5`：1170项主干/组件回归、85项W1原生环境检查通过。最终相对该版本仅新增CLI修复/测试和文档，没有宣称最终SHA全量重跑。\n- 第一轮独立审核发现重复捕获身份覆盖，第二轮发现Git替换对象绕过SHA来源绑定；两项均修复，第二轮在最终代码独立复验。最终32项检查及真实模拟器档案36捕获→72观测、144文件摘要/长度核对通过。\n- 新比较包60个episode/1920步已生成，但未独立重算及执行完整消费者链；旧CORRECT探针被当前CCRR拒绝并回滚，旧断言失败保留，按B所有权交接合法正路径更新。科学收益仍未通过。\n- 原始失败、命令、环境、各版本源码前后摘要、JUnit与两轮独立探针均保存在 `docs/reviews/pc_a/unified_runtime_2026-09-13/`。审核原脚本无损压缩，未用格式化副本替换执行证据。\n\n继续依赖：真实人物/语义感知与校准、同一历史的原生六操作监督、全轴模型、物理测量与三个条件块、唯一账本到实际行动反馈默认接线。物理状态/训练配置待用户选择，未启动模型训练。两轮本批局部审核不替代完整版本完成后的全链审核及B跨机复现。\n",
+    "headRefName": "codex/pc-a-unified-runtime-20260913",
+    "headRefOid": "e6bdd018d3fd49cb304293d25651506e5342344f",
+    "isDraft": true,
+    "number": 15,
+    "state": "OPEN",
+    "title": "统一运行候选：合流源码、RGB-D入口与两轮审核修复",
+    "url": "https://github.com/goneveitvet240-svg/cpswm/pull/15"
+  },
+  {
+    "baseRefName": "codex/pc-a-multiagent-lifecycle-20260913",
+    "body": "电脑 A 独立交接；不自动合并共享集成分支。任务 base ec2215ac7138c2b359d77219519e5628669c8b82，代码及证据提交 2a82f69c897078e1063572cc3b661103d2d1af80。固定上游 f0825767cd50d69f666c7f282e54abfe58f1e917 的本地源码修复 f52271cf6f1251f6ed31154a8373d89971d7d51e 已实际构建，游戏 DLL SHA256 823575cc05afa25da8b8bd824ab3253deb80250727a03ffb36f98db778ac9b05。两轮作者有限审核 6/6 和 4/4 场景通过，普通双实体回归通过；旧版缺失资产失败证据保留。报告 docs/reviews/pc_a/procthor_unity_build_2026-09-13/REBUILD_F52271CF.md；证据 evidence_01/02/03；补丁 tools/unity/。用户已明确授权选定仿真记录及本机路径公开，不含原始许可日志、凭据或程序二进制。请电脑 B 绑定具体提交核对清单、补丁及可执行环境，独立重建和复跑；尤其补部分子实体初始化失败、复杂碰撞及异常寻址矩阵。机器人多实体不是人物角色证据，不是完整七算子联合主干生产闭环，未训练、未更改科研路线和预算。",
+    "headRefName": "codex/pc-a-procthor-unity-build-20260913",
+    "headRefOid": "05836759cd96b89011efca71d3e9dc3ab393ce1b",
+    "isDraft": true,
+    "number": 14,
+    "state": "OPEN",
+    "title": "PC-A: frozen Unity post-house multi-agent build and partial adversarial evidence",
+    "url": "https://github.com/goneveitvet240-svg/cpswm/pull/14"
+  },
+  {
+    "baseRefName": "codex/pc-a-proposal-g1-fix-20260913",
+    "body": "独立诊断与入口修复，非 ProcTHOR 多人能力验收。入口和测试冻结 0b46b7de077c6b25e675648deb8b5026c901c9eb；原始 Unity 包记录器冻结 14708f93aa006b465ddfb7a9e8823e0fb2311dee；证据提交 bd9e0f238d2afc2d7dbba7bcc1e3eddd66d76c38。真实对照：普通场景 1/2 agent 和 ProcTHOR 单 agent 通过；ProcTHOR 双 agent 原始 Initialize 包仅 1，修后初始化阶段拒绝且不继续运行。实际 AI2-THOR-Base.dll IL 支持 Procedural 限制及旧 controller 接收错误回执的机制定位，未冒称内部动态打点或修后 Unity 构建通过。两轮作者对抗审核 31+22 通过，相邻 G1 177 通过；历史失败与源码快照保留。没有修改 Unity 二进制、B 生产路径、科学配置或集成分支，没有训练。真正 post-house 角色生成待 Unity Editor/许可及构建验证。报告：docs/reviews/pc_a/multiagent_lifecycle_2026-09-13/REPORT.md；下一构建任务：同目录 NEXT_BUILD.md。请求 B 对绑定 SHA 独立复核，不自动合并。",
+    "headRefName": "codex/pc-a-multiagent-lifecycle-20260913",
+    "headRefOid": "ec2215ac7138c2b359d77219519e5628669c8b82",
+    "isDraft": true,
+    "number": 13,
+    "state": "OPEN",
+    "title": "PC-A: multiagent runtime diagnosis and fail-closed initialization guards",
+    "url": "https://github.com/goneveitvet240-svg/cpswm/pull/13"
+  },
+  {
+    "baseRefName": "codex/pc-a-proposal-two-round-audit-20260913",
+    "body": "Frozen production/test SHA: 2ebd815543a9e51948c0eba237aacff8629b51ed. Evidence commit: 975ca330da8e84fd545454e8b14b046b8fd36584. Repairs seven audited defect classes plus partition isolation, stable sample joins, and sourced location contracts. Final baseline 125 passed; post-fix round 1: 30 passed; round 2: 22 passed. First post-fix location binding failure and exact source snapshots retained. Real ProcTHOR 42 geometry events / 36 validated captures; both real multi-agent probes returned only one agent event. G1 author engineering checks passed, independent acceptance pending; G2/G3/G4 and training remain unclosed. No src/cpswm/system changes, no shared integration or PC-B overwrite. Report: docs/reviews/pc_a/proposal_g1_fix_2026-09-13/REPORT.md. Explicit user public publication authorization applies.",
+    "headRefName": "codex/pc-a-proposal-g1-fix-20260913",
+    "headRefOid": "6a008aedd9c588a7716206eba60b3a57f9fc94d4",
+    "isDraft": true,
+    "number": 12,
+    "state": "OPEN",
+    "title": "PC-A G1 fixes: full proposal binding, isolated samples, two post-fix audits",
+    "url": "https://github.com/goneveitvet240-svg/cpswm/pull/12"
+  },
+  {
+    "baseRefName": "codex/pc-a-proposal-scheduler-20260913",
+    "body": "Tested production SHA: 5ec6204dfecc9137523b6c0e5dfb66658e574d41. Frozen audit scripts: 29076b65e7168218b885c890119757caed42f1c8. Evidence commit: becefb3db648db454fb752e2d84f0d24d0378e94. Verdict CHANGES_REQUIRED. Baseline 125 passed; round 1: 1 passed / 6 failed; round 2: 1 passed / 7 failed. Failures remain ordinary assertions, not xfail. Actual Unity replay corrects SDK-visible 1/36 to target-mask-positive 9/36 (4–46 pixels); neither is a calibrated detection or actor label. Production source changes: zero. Report: docs/reviews/pc_a/proposal_two_round_audit_2026-09-13/REPORT.md. Author self-review, not PC-B independent acceptance; no automatic integration. All publication was explicitly authorized.",
+    "headRefName": "codex/pc-a-proposal-two-round-audit-20260913",
+    "headRefOid": "f95086718ad2d7d6f0707bcae1dc6758d3417233",
+    "isDraft": true,
+    "number": 11,
+    "state": "OPEN",
+    "title": "PC-A two-round adversarial audit: seven OPEN defects and native pixel evidence",
+    "url": "https://github.com/goneveitvet240-svg/cpswm/pull/11"
+  },
+  {
+    "baseRefName": "codex/pc-a-data-preflight-20260913",
+    "body": "Public publication explicitly authorized by the user. Frozen implementation SHA: 5ec6204dfecc9137523b6c0e5dfb66658e574d41; production-code SHA: dbc7ec9c9b61ca2a029c3bd59ffbce136c4f7afe. Includes complete prior source and evidence. Author two-round adversarial review found OPEN issues; do not merge or treat as training-ready. Separate audit branch codex/pc-a-proposal-two-round-audit-20260913 contains 125 passing baseline tests, 13 failing new assertions grouped into seven defects, real Unity pixel coverage correction, and remediation gates. This is not PC-B independent acceptance.",
+    "headRefName": "codex/pc-a-proposal-scheduler-20260913",
+    "headRefOid": "5ec6204dfecc9137523b6c0e5dfb66658e574d41",
+    "isDraft": true,
+    "number": 10,
+    "state": "OPEN",
+    "title": "PC-A proposal sample contracts and ProcTHOR scheduler — changes required",
+    "url": "https://github.com/goneveitvet240-svg/cpswm/pull/10"
+  },
+  {
+    "baseRefName": "codex/pc-a-native-joint-consumers-20260912",
+    "body": "本批代码 SHA 57e8576c7dd48203839cdd0ae3a4cdb295db7185。建议复核后仅推进授权的数据/采集范围：24个训练世界、144轨迹、49428步的 method-free 覆盖盘点；既有可见记录的时间前缀导出及CLI；真实AI2-THOR采集接口。43项定向回归、Ruff与四个新源文件mypy通过，失败历史保留。已有独立Python3.11/AI2-THOR5.0环境和arm64 Unity完成两次单场景三步真实RGB-D采集，最终运行2.67秒，三次动作均成功，源码前后一致。不是ProcTHOR多人长期日程或默认完整联合闭环。未训练、未读取确认真值、未改科学配置或电脑B独占生产文件。完整报告、获取边界和源绑定证据在docs/reviews/pc_a/data_preflight_2026-09-13/。请独立复核，不自动集成。",
+    "headRefName": "codex/pc-a-data-preflight-20260913",
+    "headRefOid": "6e07ab682a9ec15e959e1a50001e237877bc4773",
+    "isDraft": true,
+    "number": 9,
+    "state": "OPEN",
+    "title": "PC-A: train coverage, visible-prefix export, real simulator capture preflight",
+    "url": "https://github.com/goneveitvet240-svg/cpswm/pull/9"
+  },
+  {
+    "baseRefName": "codex/pc-a-w3-backbone-r7-20260912",
+    "body": "本批代码 SHA 1d24099a025c9d7c00a59e4c78c593703924b0eb。新增完整粒子决策视图和三个解析块纯更新，扩展 CIAV 联合期望效用；不改电脑 B PR #7 独占的两个核心文件，不改科学配置。85 项定向测试、Ruff、三个源文件 mypy 通过，逐文件源码摘要和日志在 docs/reviews/pc_a/native_joint_consumers_2026-09-12/。独立进程导入与相关性正反对照通过。明确不是完整默认生产路径或同一连续历史闭环签收：全轴模型、完整生产 log-q、真实测量校准、默认接线与动作反馈仍待完成。用户无现成工件，获取与训练路线在 INPUT_ACQUISITION.md。请电脑 B 绑定代码 SHA 独立复核；此 PR 不请求自动集成。",
+    "headRefName": "codex/pc-a-native-joint-consumers-20260912",
+    "headRefOid": "2a7a547fba30412d9349605aff3a7df7c60d6b3a",
+    "isDraft": true,
+    "number": 8,
+    "state": "OPEN",
+    "title": "PC-A: joint CIAV consumer and conditional blocks (component scope)",
+    "url": "https://github.com/goneveitvet240-svg/cpswm/pull/8"
+  },
+  {
+    "baseRefName": "codex/pc-a-w3-backbone-r7-20260912",
+    "body": "PC-B temporarily owns W3-PCB-01 through W3-PCB-05 at the user's direction. Base source is exact R7 candidate 62870a3a38fce882b25d8d77f1d0526cca6fbc14. This draft will carry three separately reviewable repair groups: runtime support lifecycle, statistic evidence-cluster lineage, and prepared-input key closure, followed by state-machine, hash-seed, R7 regression, collaboration, W1 reproduction, and W2 fairness evidence. STATUS_B records the allowed paths and boundaries. Repair-side green tests will not be represented as independent acceptance or scientific benefit.",
+    "headRefName": "codex/pc-b-w3-five-boundaries-fix-20260912",
+    "headRefOid": "c366cad0a92593bb2c4c44db7e8d3408a2b5cc9c",
+    "isDraft": true,
+    "number": 7,
+    "state": "OPEN",
+    "title": "fix(w3): close five PC-B prepared-boundary gaps",
+    "url": "https://github.com/goneveitvet240-svg/cpswm/pull/7"
+  },
+  {
+    "baseRefName": "codex/dual-pc-handoff-20260912",
+    "body": "Independent macOS replay of unchanged PC-B tests and observations from 9195dd4b3872cbf770bd73ad4c84cca007137c3d. Targets: R6 1bd513f51ab7e54a7290870a5f34b524254d55c6 and R7 candidate 62870a3a38fce882b25d8d77f1d0526cca6fbc14. Both: 1 passed, 5 failed (expected rejection absent), all five OPEN. Includes original logs, JUnit, loaded-source/environment identity, source hashes, consequence observations, and STATUS_A. B manifest payloads verified. No production changes, no integration of PR #4/#5. This is scoped candidate crosschecking, not formal R7 or full seven-operator scientific acceptance. Report: docs/reviews/pc_a/pcb_crosscheck_20260912/REPORT.md. Review commit: 1b2b31e88c47fc232a7b4e2dcec56c02c9ac9636.",
+    "headRefName": "codex/pc-a-crosscheck-pcb-r6-r7-20260912",
+    "headRefOid": "1b2b31e88c47fc232a7b4e2dcec56c02c9ac9636",
+    "isDraft": false,
+    "number": 6,
+    "state": "OPEN",
+    "title": "PC-A crosscheck: reproduce PC-B five open findings on R6 and R7 candidate",
+    "url": "https://github.com/goneveitvet240-svg/cpswm/pull/6"
+  },
+  {
+    "baseRefName": "codex/snapshot-w3-r6-20260912",
+    "body": "PC-B audit-only handoff.\n\n- Tested W3 R6: `1bd513f51ab7e54a7290870a5f34b524254d55c6`\n- Audit commit: `9195dd4b3872cbf770bd73ad4c84cca007137c3d`\n- Verdict: **CHANGES_REQUIRED / NOT ACCEPTED**\n- Scope: reports, five counterexamples plus one legal control, complete command/log/metadata package, Windows/LF comparison, and the W1 static report. No production code or scientific thresholds are changed.\n\nR6 history is preserved under `docs/reviews/data/pc_b_w3_r6_independent_20260912/` with a SHA-256 manifest. The same five counterexamples will be run separately on an explicitly frozen R7 SHA; R7 results must not overwrite these R6 logs.\n\nTrust boundary: cases 1-3 require an in-process caller to rebind `core.locations` directly; cases 4-5 only mutate caller-owned prepared input and invoke the public stage boundary.",
+    "headRefName": "codex/pc-b-w3-r6-review-20260912",
+    "headRefOid": "9195dd4b3872cbf770bd73ad4c84cca007137c3d",
+    "isDraft": true,
+    "number": 5,
+    "state": "OPEN",
+    "title": "[PC-B audit] W3 R6 independent review + W1 static review",
+    "url": "https://github.com/goneveitvet240-svg/cpswm/pull/5"
+  },
+  {
+    "baseRefName": "codex/dual-pc-handoff-20260912",
+    "body": "基于已审核 W3 R6 `1bd513f51ab7e54a7290870a5f34b524254d55c6` 分批交付三个工程修复：\n\n- 恢复 Git 中精确模型原件及绑定，额外 50 项由 33 通过、17 失败/错误恢复为 50 通过。\n- 默认观测发布真实 PCHMP 来源，显式候选可合法消费已绑定投影；运行、对象、修订、证据、世界、实际内容与恰好一次消费共同核验，非法与完整重封来源仍拒绝。\n- Project One 延期纠正取消通过唯一 Hybrid 账本恢复原父及其原有派生贡献，保留资格、取消谱系、快记忆、语义身份；新增异常、中断、重复、重试、再纠正和撤回矩阵。\n\n最终源绑定回归：812 passed / 0 failed / 0 skipped / exit 0，包括原 647+67、额外 50、投影 21 和取消 27。原始失败、原独立脚本实际结果、源码快照和完整命令均保留。round4 脚本 direct_revision 字段仍报告原子拒绝异常，没有改成通过。\n\n连续非空运行记录真实七算子输入、输出、下游及公开输入干预的统计/行动后果。**完整默认联合主干仍未完成：默认联合粒子数为 0，普通信息块增量为 0，CIAV 未消费完整粒子后验，默认自主修订未校准。** 此 PR 不将安全拒绝、接口、调用次数或局部回归当作完整能力完成，也未验证科学收益。\n\n证据：`docs/reviews/pc_a/w3_backbone_r7_2026-09-12/REPORT.md`、`REMAINING_NATIVE_BACKBONE.md`、`FINAL_COMMANDS.md`。实际源码 SHA 见 `docs/collaboration/STATUS_A.md` 与最终交付绑定。\n\n保留 Route C、Architecture A、P5_FIRST、A1+B1、七轴、三个 RB blocks 和七算子；未改科学配置、W1 编排器或 W2 专属比较实现。请对本批提交做独立源绑定复核；草稿交接，不自动整合。默认主干的剩余工程和确切待决绑定单列，不请求窗口整体验收。\n",
+    "headRefName": "codex/pc-a-w3-backbone-r7-20260912",
+    "headRefOid": "62870a3a38fce882b25d8d77f1d0526cca6fbc14",
+    "isDraft": true,
+    "number": 4,
+    "state": "OPEN",
+    "title": "W3 R7: restore model, bind native posterior consumption, recover cancelled parents",
+    "url": "https://github.com/goneveitvet240-svg/cpswm/pull/4"
+  },
+  {
+    "baseRefName": "codex/snapshot-w1-20260912",
+    "body": "磁盘源码正确时，旧项目 pyc 或 pytest 断言重写缓存仍可能执行旧实现并被记为阶段完成。本 PR 将真实 controller/xdist worker 执行的本地代码对象与冻结源码直接编译及真实 pytest AST 重写结果比较，并让嵌套 P0/core 工程测试启动走同一运行时保护。预期代码只从同份已核验字节构造；保留合法缓存、断言重写、W2 恶意缓存和外部源码镜像。\n\n范围仅为两个编排/运行时工具、工程回执启动合同及两个测试文件。七算子、比较算法、阈值、种子、历史工件均不改。PR base 使用已审核 W1 快照以便审阅有限代码差异；不自动向共享集成分支合并。\n\n被测代码：`6fcff45c71eff3f3457d0b6eac6cd872102db89d`。\n证据/STATUS_A 交付提交：`21870b0bcd6c23d43518a27fcc1c4b538b3912b7`。交付仅追加文档与证据，不回写测试时 HEAD 或来源清单。\n\n验证均通过真实入口、原生 CPython 3.13.5 和匹配工作树环境：\n\n- 原 65 + 新 20 + 受影响合同 1：86 passed；正式编排器包装完整重跑 86 passed（72.67 秒），实际外层代码观测及来源前后核验通过。\n- 原生保护：115 passed（4272.18 秒）；额外完整历史跨目录日志补跑 1 passed（550.80 秒），保留 13 个子命令的实际 argv/cwd/退出码/双流。\n- 明确隔离的 W2 de2c04c + 本轮两个工具：比较生成 → 完整重算 → 归因生成 → 完整重算 → 消费者矩阵，五阶段退出 0，77 passed（2410.50 秒）；同一新包内容/文件集合冻结、源码前后相同。\n- 原始 timestamp、unchecked-hash、pytest 重写缓存假通过已复现并拒绝；新增真实 worker、conftest、本地 helper、吞异常、伪造代码文件名、读取竞争与嵌套入口回归通过。原失败和主动中断轮次原样保留。\n- 387 份既有结构二 benchmark 及 4 份 P0 文件原字节不变；旧 W1 工作树 e93ea35 保持干净。Ruff 与提交钩子通过。\n\n报告与复跑入口：`docs/reviews/pc_a/w1_cache_repair_2026-09-12/REPORT.md`。\n同目录 `command_index.json`、`artifact_inventory.json`、`validation_summary.json` 保存精确命令、逐文件摘要与分范围结果；原始日志、实际 helper 字节、缓存/镜像和历史归档在 `docs/reviews/data/structure_two_unified_acceptance_runs/r6_*`。大批重复原生夹具使用无损原字节去重包及逐路径清单交付，完整原包本机保留。\n\n**本轮限定修复完成；统一验收 WAITING_UNIFIED_SOURCE；科学门 NOT_PASSED，未授权消融。** 隔离组装不是正式统一版本。仍信任解释器、标准库、安装工具链和进程/OS 完整性；不声称独立执行认证或穷尽 CPSWM 审计。嵌套 P0/core 以最小真实正负负载验证，本轮没有签发全局新工程回执/checkpoint。\n\n整合后必须在明确固定的统一源码上重跑所有矩阵、当前结果、历史重放与跨目录验证，然后按依赖顺序生成 P0、真实完整工程回执及强制 fresh checkpoint 并 fresh 验证；不能拼接各分支绿灯。\n",
+    "headRefName": "codex/pc-a-w1-cache-runtime-r6-20260912",
+    "headRefOid": "21870b0bcd6c23d43518a27fcc1c4b538b3912b7",
+    "isDraft": false,
+    "number": 3,
+    "state": "OPEN",
+    "title": "Repair W1 cached-code execution identity and seal R6 evidence",
+    "url": "https://github.com/goneveitvet240-svg/cpswm/pull/3"
+  },
+  {
+    "baseRefName": "codex/dual-pc-handoff-20260912",
+    "body": "为修复后的统一系统准备独立验收，明确区分工程回归、非空能力、公平性和科学收益。新增20行生产者—消费者—后果矩阵、31类实际归档攻击的非空变异检查和公开CORRECT正负夹具；不改B专属比较实现、原77项、W1/W3生产源码或旧v5。\n\n本次为macOS本机复核，不是Windows/WSL B0/B1，整体PARTIAL：\n- 新检查器71项通过；31类历史实际攻击均有指定结论依赖变化，读取历史真实CLI结果，不冒充本轮新重放。\n- W1 b6202bec015679461b06056571bd47a5446045b8 的项目/断言缓存反例仍复现；2ef1a20354fdffd627aba8480f2dccd54ef1a729仅开工登记。\n- W3 1bd513f51ab7e54a7290870a5f34b524254d55c6 公开合法纠正真实提交，非法完整回滚；粒子指定边界正负复现。分布变化未导致top1变化，未测环境执行。\n- 期间新推送8607a751cc482661baefa127968b4bc0758ec1d8的模型恢复与历史原件逐字节一致；独立受影响组从33通过/7失败/10错误到50通过。仅支持依赖恢复，不支持完整主干通过。\n- 原889对象保持字节一致；完整命令、日志、环境/源码绑定及失败过程随报告保留。\n\n工具代码SHA：8bdd5b2a7d045865d3a72b83a97d34ef822a3760。\n报告：docs/reviews/pc_a/w2_acceptance_prep_2026-09-12/REPORT.md。\n\n正式比较仍BLOCKED：A未公布已审查统一SHA，更新消费者、执行环境与输出域尚未固定。本轮没有重生成比较包、重跑旧77项或开启确认实验；不改变0.02/PCT/共享CIAV/完整七算子范围。请按确切SHA审查；不自动合并其他窗口。\n",
+    "headRefName": "codex/pc-a-w2-acceptance-prep-20260912",
+    "headRefOid": "329787241996631a6abb4fcd3b12d2c13a135777",
+    "isDraft": true,
+    "number": 2,
+    "state": "OPEN",
+    "title": "W2 本机独立验收准备与 W1/W3 精确交付复核（PARTIAL）",
+    "url": "https://github.com/goneveitvet240-svg/cpswm/pull/2"
+  },
+  {
+    "baseRefName": "codex/dual-pc-handoff-20260912",
+    "body": "本 PR 只交付电脑 A 本机独立审核、复现脚本、原始证据和本人状态；不修改生产代码、科研配置或 STATUS_B，不替代 Windows/WSL 的 B0/B1，也不自动整合三个窗口。\n\n精确被测源码：W1 b6202bec015679461b06056571bd47a5446045b8；W2 de2c04c3e690dba674850af9c4f7e126dbab910e；W3 1bd513f51ab7e54a7290870a5f34b524254d55c6。集成 base bdec3ee21b7db361e390496d97ff2eb30390dc6c。收尾 fetch 后目标未变。\n\n独立实跑：W1 65 passed；W2 77 passed；W3 647+67 passed。额外 50 项为 33 passed / 7 failed / 10 errors，与完整匹配旧 R5 的 17 个缺模型及来源绑定失败节点一致，未误报全绿。\n\n新发现 P2：W1 真实 matrix 的项目 pyc 与 pytest assertion-rewrite 缓存可使实际执行旧代码而冻结磁盘源码不变，仍记为阶段完成；清缓存后相同失败源码正确失败。未证明可越过科学授权，也不倒推既有测试已使用旧缓存。\n\nW3 四个上轮 prepared 反例关闭，但真实投影消费、默认完整联合主干与完整生命周期仍未验收。W2 31 类完整伪造逐包拒绝且合法正例匹配；实际攻击包 104 个成员已逐个核验并归档，非重建历史原件。归档 57.94 MB，GitHub 警告但推送成功。\n\n完整报告：docs/reviews/pc_a/round6_2026-09-12/REPORT.md。原 helper 字节已归档，格式整理后的 W1 反例另有复跑。ruff / formatter 通过；原始失败日志与 XML 保持输出原字节，其行尾空格会产生 diff --check 提示，不清洗原始证据。下一步请 B 复核确切 SHA；A2 关闭缓存执行身份缺口后再推进整合。",
+    "headRefName": "codex/pc-a-three-window-review6-20260912",
+    "headRefOid": "97e1d2c1e83a4532e2b3bab3bf87cc6a2927f274",
+    "isDraft": false,
+    "number": 1,
+    "state": "OPEN",
+    "title": "A: 三窗口第六轮独立审核与 W1 旧测试缓存反例",
+    "url": "https://github.com/goneveitvet240-svg/cpswm/pull/1"
+  }
+]

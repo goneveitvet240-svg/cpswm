@@ -1,0 +1,25 @@
+import os, json, hashlib, tarfile
+from pathlib import Path
+root = Path('/private/tmp/cpswm-r6_native115_accepted')
+out = Path('/private/tmp/cpswm-pc-a-w1-cache-runtime-r6/docs/reviews/data/structure_two_unified_acceptance_runs/r6_execution_records/native115_fixture_archives')
+out.mkdir()
+records = []
+for case in sorted(root.iterdir()):
+    if case.is_symlink():
+        records.append({'source': str(case), 'symlink': os.readlink(case)})
+        continue
+    if not case.is_dir():
+        continue
+    archive = out / (case.name + '.tar.gz')
+    files = {}
+    with tarfile.open(archive, 'x:gz') as t:
+        for directory, dirs, names in os.walk(case, followlinks=False):
+            dirs[:] = sorted(d for d in dirs if d not in ('.venv', '.git'))
+            for name in sorted(names) + [n for n in dirs if (Path(directory)/n).is_symlink()]:
+                p = Path(directory)/name
+                rel = p.relative_to(root)
+                t.add(p, arcname=str(rel), recursive=False)
+                files[str(rel)] = {'symlink': os.readlink(p)} if p.is_symlink() else {'sha256': hashlib.sha256(p.read_bytes()).hexdigest(), 'bytes': p.stat().st_size}
+    records.append({'source': str(case), 'archive': archive.name, 'sha256': hashlib.sha256(archive.read_bytes()).hexdigest(), 'bytes': archive.stat().st_size, 'files': files})
+(out/'inventory.json').write_text(json.dumps({'scope': 'Surviving native115 fixture files; .venv and Git object directories excluded; intentional removals within tests are not reconstructed', 'records': records}, indent=2)+'\n')
+print(json.dumps({'case_archives': sum('archive' in x for x in records), 'files': sum(len(x.get('files', {})) for x in records), 'bytes': sum(x.get('bytes', 0) for x in records)}))

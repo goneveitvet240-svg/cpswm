@@ -1,5 +1,7 @@
 # 结构二 P5 readout + sequential-prior post-hoc 诊断结果 v0.1（2026-09-11）
 
+> 2026-09-11 证据版本勘误：本文保留历史实验叙述，不能据此声明当前源码通过或首次未见已证实。旧三臂 v0.1 路径是 `4103bea` 失败重放的兼容引用；真正首次失败另存。历史源码缺失、首次 D0 来源不匹配及当前 v0.2 重放边界见 [窗口一证据链修复报告](../reviews/structure_two_evidence_repair_window1_2026-09-11.md)。
+
 协议：`structure-two-p5-readout-posthoc-diagnostic@0.1-development`
 实现 checkpoint：`d0bd9c1`
 状态：`POSTHOC_READOUT_DEGENERACY_REMOVED`

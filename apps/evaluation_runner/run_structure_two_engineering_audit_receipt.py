@@ -15,6 +15,7 @@ import subprocess
 import sys
 import sysconfig
 from collections.abc import Mapping, Sequence
+from concurrent.futures import ThreadPoolExecutor
 from datetime import UTC, datetime
 from pathlib import Path
 from types import ModuleType
@@ -22,29 +23,33 @@ from typing import Any, Final
 
 ROOT: Final = Path(__file__).resolve().parents[2]
 DEFAULT_OUTPUT: Final = (
-    ROOT / "benchmarks/structure_two/engineering_trust_checkpoint_2026_09_05/"
+    ROOT / "benchmarks/structure_two/engineering_trust_checkpoint_2026_09_12_v0_3/"
     "engineering_audit_receipt.json"
 )
 P0_MANIFEST: Final = ROOT / "benchmarks/p0_checkpoint/content_manifest_v0_3.json"
 COMMANDS: Final = {
+    "p5_evidence_current": (
+        ".venv/bin/python",
+        "apps/evaluation_runner/run_structure_two_evidence_repair.py",
+        "--verify-current",
+    ),
+    "p5_evidence_history": (
+        ".venv/bin/python",
+        "apps/evaluation_runner/audit_structure_two_evidence_history.py",
+        "--verify",
+        "benchmarks/structure_two/evidence_entry_portability_2026_09_12/historical_source_audit_v0_3.json",
+    ),
     "p0_adversarial_tests": (
-        ".venv/bin/pytest",
-        "-q",
-        "--confcutdir=.",
-        "tests/test_structure_two_trusted_ablation_authorization.py",
-        "tests/test_structure_two_gate_b_v0_8_raw_formal_execution.py",
-        "tests/test_structure_two_comparator_typed_dual_gate_b_v0_8.py",
-        "tests/test_p0_checkpoint_manifest.py",
+        ".venv/bin/python",
+        "tools/structure_two_unified_acceptance.py",
+        "--native-audit-command",
+        "p0_adversarial_tests",
     ),
     "core_pytest": (
-        ".venv/bin/pytest",
-        "-p",
-        "xdist.plugin",
-        "-n",
-        "auto",
-        "-q",
-        "--confcutdir=.",
-        "--ignore=tests/test_structure_two_engineering_trust_checkpoint.py",
+        ".venv/bin/python",
+        "tools/structure_two_unified_acceptance.py",
+        "--native-audit-command",
+        "core_pytest",
     ),
     "mypy_src": (".venv/bin/mypy", "src"),
     "ruff_lint": (".venv/bin/ruff", "check", "src", "tests", "apps"),
@@ -70,8 +75,32 @@ COMMANDS: Final = {
         "--check",
         "--",
         ".",
-        ":(exclude)benchmarks/structure_two/engineering_trust_checkpoint_2026_09_05/"
+        ":(exclude)benchmarks/structure_two/engineering_trust_checkpoint_2026_09_12_v0_3/"
         "engineering_audit_logs/*.log",
+    ),
+}
+NATIVE_PYTEST_ARGUMENTS: Final = {
+    "p0_adversarial_tests": (
+        "-o",
+        "addopts=",
+        "-q",
+        "--confcutdir=.",
+        "tests/test_structure_two_trusted_ablation_authorization.py",
+        "tests/test_structure_two_gate_b_v0_8_raw_formal_execution.py",
+        "tests/test_structure_two_comparator_typed_dual_gate_b_v0_8.py",
+        "tests/test_p0_checkpoint_manifest.py",
+    ),
+    "core_pytest": (
+        "-o",
+        "addopts=",
+        "-p",
+        "xdist.plugin",
+        "-n",
+        "auto",
+        "--dist=worksteal",
+        "-q",
+        "--confcutdir=.",
+        "--ignore=tests/test_structure_two_engineering_trust_checkpoint.py",
     ),
 }
 PYTEST_ENVIRONMENT_OVERRIDES: Final = {
@@ -86,7 +115,7 @@ COMMAND_ENVIRONMENT_OVERRIDES: Final = {
     "core_pytest": PYTEST_ENVIRONMENT_OVERRIDES,
 }
 TOOL_VERSION_COMMANDS: Final = {
-    "pytest": (".venv/bin/pytest", "--version"),
+    "pytest": (".venv/bin/python", "-m", "pytest", "--version"),
     "mypy": (".venv/bin/mypy", "--version"),
     "ruff": (".venv/bin/ruff", "--version"),
     "git": ("git", "--version"),
@@ -197,7 +226,13 @@ def command_executable_identity(
     if not argv:
         raise ValueError("audit command argv is empty")
     resolved = _resolve_executable(argv[0], repository_root=repository_root)
+    invocation = (
+        str((repository_root / argv[0]).absolute()) if "/" in argv[0] else shutil.which(argv[0])
+    )
+    if invocation is None:
+        raise ValueError("audit invocation executable is unavailable")
     return {
+        "invocation_executable": invocation,
         "resolved_executable": str(resolved),
         "executable_sha256": _sha256_file(resolved),
     }
@@ -493,6 +528,21 @@ def _verified_manifest_snapshot() -> tuple[dict[str, Any], str, str]:
     return stored, _sha256_file(P0_MANIFEST), manifest_hash
 
 
+def _execute_audit_command(
+    command_id: str, argv: Sequence[str]
+) -> tuple[dict[str, str], str, str, subprocess.CompletedProcess[bytes]]:
+    identity = command_executable_identity(argv, repository_root=ROOT)
+    start = _now()
+    completed = subprocess.run(
+        (identity["invocation_executable"], *argv[1:]),
+        cwd=ROOT,
+        capture_output=True,
+        check=False,
+        env=_command_environment(command_id),
+    )
+    return identity, start, _now(), completed
+
+
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--output", type=Path, default=DEFAULT_OUTPUT)
@@ -507,42 +557,43 @@ def main() -> int:
     environment_pre = build_execution_environment_fingerprint(manifest_pre, repository_root=ROOT)
     environment_hash_pre = environment_pre["content_sha256"]
     runs: list[dict[str, object]] = []
-    for command_id, argv in COMMANDS.items():
-        executable_identity = command_executable_identity(argv, repository_root=ROOT)
-        resolved_argv = (executable_identity["resolved_executable"], *argv[1:])
-        start = _now()
-        completed = subprocess.run(
-            resolved_argv,
-            cwd=ROOT,
-            capture_output=True,
-            check=False,
-            env=_command_environment(command_id),
-        )
-        end = _now()
-        stdout_path = log_dir / f"{command_id}.stdout.log"
-        stderr_path = log_dir / f"{command_id}.stderr.log"
-        stdout_path.write_bytes(completed.stdout)
-        stderr_path.write_bytes(completed.stderr)
-        runs.append(
-            {
-                "command_id": command_id,
-                "argv": list(argv),
-                "source_manifest_sha256": manifest_hash_pre,
-                "source_manifest_file_sha256": manifest_file_hash_pre,
-                "execution_environment_sha256": environment_hash_pre,
-                "environment_overrides": command_environment_binding(command_id),
-                "cwd": str(ROOT.resolve()),
-                **executable_identity,
-                "start_timestamp": start,
-                "end_timestamp": end,
-                "exit_code": completed.returncode,
-                "stdout_path": stdout_path.relative_to(ROOT).as_posix(),
-                "stdout_sha256": _sha256_file(stdout_path),
-                "stderr_path": stderr_path.relative_to(ROOT).as_posix(),
-                "stderr_sha256": _sha256_file(stderr_path),
-            }
-        )
-        print(f"{command_id}={completed.returncode}", flush=True)
+    # These two read-only validations have disjoint outputs and fixed inputs.
+    # Capture timestamps inside their workers; retain the declared receipt order.
+    with ThreadPoolExecutor(max_workers=2) as pool:
+        parallel = {
+            name: pool.submit(_execute_audit_command, name, COMMANDS[name])
+            for name in ("p5_evidence_current", "p5_evidence_history")
+        }
+        for command_id, argv in COMMANDS.items():
+            executable_identity, start, end, completed = (
+                parallel[command_id].result()
+                if command_id in parallel
+                else _execute_audit_command(command_id, argv)
+            )
+            stdout_path = log_dir / f"{command_id}.stdout.log"
+            stderr_path = log_dir / f"{command_id}.stderr.log"
+            stdout_path.write_bytes(completed.stdout)
+            stderr_path.write_bytes(completed.stderr)
+            runs.append(
+                {
+                    "command_id": command_id,
+                    "argv": list(argv),
+                    "source_manifest_sha256": manifest_hash_pre,
+                    "source_manifest_file_sha256": manifest_file_hash_pre,
+                    "execution_environment_sha256": environment_hash_pre,
+                    "environment_overrides": command_environment_binding(command_id),
+                    "cwd": str(ROOT.resolve()),
+                    **executable_identity,
+                    "start_timestamp": start,
+                    "end_timestamp": end,
+                    "exit_code": completed.returncode,
+                    "stdout_path": stdout_path.relative_to(ROOT).as_posix(),
+                    "stdout_sha256": _sha256_file(stdout_path),
+                    "stderr_path": stderr_path.relative_to(ROOT).as_posix(),
+                    "stderr_sha256": _sha256_file(stderr_path),
+                }
+            )
+            print(f"{command_id}={completed.returncode}", flush=True)
 
     manifest_post, manifest_file_hash_post, manifest_hash_post = _verified_manifest_snapshot()
     environment_post = build_execution_environment_fingerprint(manifest_post, repository_root=ROOT)

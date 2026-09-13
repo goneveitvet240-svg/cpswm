@@ -1,0 +1,15 @@
+Traceback (most recent call last):
+  File "/private/tmp/cpswm-s2-evidence-repair-window1/apps/evaluation_runner/generate_structure_two_engineering_trust_checkpoint.py", line 540, in <module>
+    raise SystemExit(main())
+                     ~~~~^^
+  File "/private/tmp/cpswm-s2-evidence-repair-window1/apps/evaluation_runner/generate_structure_two_engineering_trust_checkpoint.py", line 526, in main
+    verify_checkpoint(_load_json(args.verify), fresh_recomputation=fresh)
+    ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/private/tmp/cpswm-s2-evidence-repair-window1/apps/evaluation_runner/generate_structure_two_engineering_trust_checkpoint.py", line 511, in verify_checkpoint
+    expected = build_checkpoint(fresh_recomputation=fresh_recomputation)
+  File "/private/tmp/cpswm-s2-evidence-repair-window1/apps/evaluation_runner/generate_structure_two_engineering_trust_checkpoint.py", line 341, in build_checkpoint
+    result_rows, p0_manifest = _verify_inputs(fresh_recomputation=fresh_recomputation)
+                               ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/private/tmp/cpswm-s2-evidence-repair-window1/apps/evaluation_runner/generate_structure_two_engineering_trust_checkpoint.py", line 321, in _verify_inputs
+    raise ValueError("P0 content manifest is not current")
+ValueError: P0 content manifest is not current

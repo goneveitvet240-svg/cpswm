@@ -7,20 +7,34 @@ import argparse
 import hashlib
 import importlib.util
 import json
+
+# Establish execution provenance before importing project dependencies.
+import sys
+import types
 from collections.abc import Mapping, Sequence
 from datetime import datetime
 from pathlib import Path
 from types import ModuleType
 from typing import Any, Final
 
+_bootstrap_path = (
+    Path(__file__).resolve().parents[2] / "apps/evaluation_runner/structure_two_source_bootstrap.py"
+)
+if "_cpswm_source_bootstrap" not in sys.modules:
+    _bootstrap = types.ModuleType("_cpswm_source_bootstrap")
+    _bootstrap.__file__ = str(_bootstrap_path)
+    sys.modules[_bootstrap.__name__] = _bootstrap
+    exec(compile(_bootstrap_path.read_bytes(), str(_bootstrap_path), "exec"), _bootstrap.__dict__)
+sys.modules["_cpswm_source_bootstrap"].establish(Path(__file__).resolve().parents[2])
+
 ROOT: Final = Path(__file__).resolve().parents[2]
 OUTPUT: Final = (
-    ROOT
-    / "benchmarks/structure_two/engineering_trust_checkpoint_2026_09_05/engineering_checkpoint.json"
+    ROOT / "benchmarks/structure_two/engineering_trust_checkpoint_2026_09_12_v0_3/"
+    "engineering_checkpoint.json"
 )
 P0_MANIFEST: Final = Path("benchmarks/p0_checkpoint/content_manifest_v0_3.json")
 AUDIT_RECEIPT: Final = Path(
-    "benchmarks/structure_two/engineering_trust_checkpoint_2026_09_05/"
+    "benchmarks/structure_two/engineering_trust_checkpoint_2026_09_12_v0_3/"
     "engineering_audit_receipt.json"
 )
 AUDIT_LOG_DIRECTORY: Final = AUDIT_RECEIPT.parent / "engineering_audit_logs"
@@ -63,6 +77,9 @@ RESULTS: Final = (
     ),
 )
 BOUND_REPORTS: Final = (
+    Path("docs/reviews/structure_two_evidence_entry_portability_window1_2026-09-12.md"),
+    Path("docs/reviews/structure_two_evidence_repair_window1_supplement_2026-09-11.md"),
+    Path("docs/reviews/structure_two_evidence_repair_window1_2026-09-11.md"),
     Path("docs/结构二/方向结构二_当前证据总表_2026-09-02.md"),
     Path("docs/experiments/structure_two_task7_windowed_rejuvenation_result_v0_4_2026-09-05.md"),
     Path(
@@ -82,7 +99,7 @@ def _load(name: str, relative_path: str) -> ModuleType:
     if spec is None or spec.loader is None:
         raise RuntimeError(f"cannot load checkpoint dependency: {relative_path}")
     module = importlib.util.module_from_spec(spec)
-    spec.loader.exec_module(module)
+    sys.modules["_cpswm_source_bootstrap"].guard.execute_application(module, ROOT / relative_path)
     return module
 
 
@@ -202,6 +219,7 @@ def _verify_audit_receipt(p0_manifest: Mapping[str, Any]) -> tuple[dict[str, Any
             or raw.get("environment_overrides")
             != audit_runner.command_environment_binding(command_id)
             or raw.get("cwd") != str(ROOT.resolve())
+            or raw.get("invocation_executable") != expected_executable["invocation_executable"]
             or raw.get("resolved_executable") != expected_executable["resolved_executable"]
             or raw.get("executable_sha256") != expected_executable["executable_sha256"]
         ):
@@ -334,6 +352,11 @@ def build_checkpoint(*, fresh_recomputation: bool = True) -> dict[str, object]:
         raise ValueError("readiness current Gate-B status drift")
     if readiness.get("current_v0_8_formal_gate_b_receipt_verified") is not False:
         raise ValueError("readiness cannot claim an unexecuted Gate-B receipt")
+    p5_runner = _load(
+        "structure_two_evidence_repair_runner",
+        "apps/evaluation_runner/run_structure_two_evidence_repair.py",
+    )
+    p5_inventory = p5_runner.current_evidence_inventory()
     reports = [{"path": path.as_posix(), "sha256": _sha256(ROOT / path)} for path in BOUND_REPORTS]
     required_manifest_scopes = {
         "code",
@@ -366,7 +389,9 @@ def build_checkpoint(*, fresh_recomputation: bool = True) -> dict[str, object]:
     p0_adversarial_passed = audit_runs["p0_adversarial_tests"]
     payload: dict[str, object] = {
         "protocol": "structure-two-engineering-trust-checkpoint@1.1",
-        "freeze_date": "2026-09-10",
+        "freeze_date": "2026-09-11",
+        "p5_current_evidence": p5_inventory,
+        "integration_requires_new_checkpoint": True,
         "authority": "CURRENT_LOCAL_TOOLCHAIN_STATE_ONLY",
         "engineering_trust_gate_definition": "CURRENT_LOCAL_RECORDED_AUDIT_ONLY",
         "current_local_recorded_audit_gate_passed": engineering_passed,

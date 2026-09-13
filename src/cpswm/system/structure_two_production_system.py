@@ -397,12 +397,20 @@ def build_production_assembly_manifest(repository_root: Path) -> dict[str, Any]:
     transitive_source_paths = tuple(
         path.relative_to(root).as_posix() for path in sorted((root / "src/cpswm").rglob("*.py"))
     )
+    for relative in transitive_source_paths:
+        source = root / relative
+        if not source.resolve().is_relative_to(root) or any(
+            p.is_symlink() for p in (source, *source.parents) if p.is_relative_to(root)
+        ):
+            raise ValueError("production transitive source must be a local regular file")
     transitive_source_rows = [
         {"path": path, "sha256": _file_sha256(root / path)} for path in transitive_source_paths
     ]
     environment_lock_paths = ("pyproject.toml", "uv.lock")
     if any(not (root / path).is_file() for path in environment_lock_paths):
         raise FileNotFoundError("production environment lock source is missing")
+    if any((root / path).is_symlink() for path in environment_lock_paths):
+        raise ValueError("production environment lock refuses symlinks")
     environment_lock_rows = [
         {"path": path, "sha256": _file_sha256(root / path)} for path in environment_lock_paths
     ]

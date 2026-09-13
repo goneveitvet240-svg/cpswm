@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="1" failures="0" skipped="0" tests="1" time="0.019" timestamp="2026-09-12T19:31:45.008692+08:00" hostname="MacBook-Air-2.local"><testcase classname="" name="tests.test_rewritten_cache" time="0.000"><error message="collection failure">/Users/pangwei/.local/share/uv/python/cpython-3.13.5-macos-aarch64-none/lib/python3.13/importlib/__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+&lt;frozen importlib._bootstrap&gt;:1387: in _gcd_import
+    ???
+&lt;frozen importlib._bootstrap&gt;:1360: in _find_and_load
+    ???
+&lt;frozen importlib._bootstrap&gt;:1331: in _find_and_load_unlocked
+    ???
+&lt;frozen importlib._bootstrap&gt;:935: in _load_unlocked
+    ???
+.venv/lib/python3.13/site-packages/_pytest/assertion/rewrite.py:188: in exec_module
+    exec(co, module.__dict__)
+tools/structure_two_pytest_runtime.py:99: in audit
+    self.reject("EXECUTED_LOCAL_CODE_MISMATCH: " + key)
+tools/structure_two_pytest_runtime.py:72: in reject
+    raise pytest.UsageError(reason)
+E   pytest.UsageError: EXECUTED_LOCAL_CODE_MISMATCH: /private/tmp/cpswm-review6-cache-jbbzfxan/tests/test_rewritten_cache.py</error></testcase></testsuite></testsuites>

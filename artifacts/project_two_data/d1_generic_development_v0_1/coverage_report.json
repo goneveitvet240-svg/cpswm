@@ -1,0 +1,144 @@
+{
+  "dataset_version": "project-two-d1-generic-annotated-development@0.1",
+  "maturity": [
+    "d1_simulator_annotated_replay"
+  ],
+  "quality": {
+    "dataset_version": "project-two-d1-generic-annotated-development@0.1",
+    "episode_count": 30,
+    "step_count": 960,
+    "feedback_count": 630,
+    "observation_coverage": 0.65625,
+    "delayed_feedback_count": 630,
+    "unknown_actor_count": 960,
+    "unknown_mechanism_count": 885,
+    "evaluator_unknown_actor_count": 30,
+    "evaluator_unknown_mechanism_count": 30,
+    "family_counts": {
+      "family-validation-01": 2,
+      "family-validation-02": 2,
+      "family-validation-03": 2,
+      "family-validation-04": 2,
+      "family-validation-00": 2,
+      "family-test-01": 4,
+      "family-test-02": 4,
+      "family-test-03": 4,
+      "family-test-04": 4,
+      "family-test-00": 4
+    },
+    "missingness_counts": {
+      "real_sensor_calibration": 960,
+      "robot_pose_covariance": 960,
+      "post_action_destination_observation": 960
+    },
+    "checks_passed": [
+      "schema_version",
+      "missingness",
+      "duplicate_ids",
+      "timestamp_ordering",
+      "feedback_time_ordering",
+      "observation_coverage",
+      "delayed_feedback",
+      "unknown_coverage",
+      "class_family_balance",
+      "identity_consistency",
+      "join_coverage",
+      "source_label_leakage",
+      "household_scene_object_family_split",
+      "visible_content_integrity",
+      "evaluator_content_integrity"
+    ],
+    "failures": [],
+    "warnings": [
+      "declared unavailable fields remain and must be collected at higher maturity"
+    ],
+    "ready": true
+  },
+  "coverage": {
+    "dataset_version": "project-two-d1-generic-annotated-development@0.1",
+    "split_episode_counts": {
+      "validation": 10,
+      "test": 20
+    },
+    "unique_household_count": 30,
+    "unique_scene_count": 6,
+    "unique_object_count": 30,
+    "unique_object_family_count": 10,
+    "family_episode_counts": {
+      "family-validation-01": 2,
+      "family-validation-02": 2,
+      "family-validation-03": 2,
+      "family-validation-04": 2,
+      "family-validation-00": 2,
+      "family-test-01": 4,
+      "family-test-02": 4,
+      "family-test-03": 4,
+      "family-test-04": 4,
+      "family-test-00": 4
+    },
+    "true_actor_counts": {
+      "owner": 690,
+      "unknown_actor": 30,
+      "guest": 240
+    },
+    "true_mechanism_counts": {
+      "direct_relocation": 804,
+      "unknown_mechanism": 30,
+      "handoff_relocation": 126
+    },
+    "dominant_feedback_outcome_counts": {
+      "success": 416,
+      "object_slipped": 214
+    },
+    "observed_step_count": 630,
+    "missing_observation_step_count": 330
+  },
+  "provenance": [
+    "claim:not-external-simulator-data",
+    "development_seed:3101",
+    "development_seed:3102",
+    "development_seed:3103",
+    "development_seed:3104",
+    "development_seed:3105",
+    "development_seed:3106",
+    "development_seed:3107",
+    "development_seed:3108",
+    "development_seed:3109",
+    "development_seed:3110",
+    "development_seed:4101",
+    "development_seed:4102",
+    "development_seed:4103",
+    "development_seed:4104",
+    "development_seed:4105",
+    "development_seed:4106",
+    "development_seed:4107",
+    "development_seed:4108",
+    "development_seed:4109",
+    "development_seed:4110",
+    "development_seed:4111",
+    "development_seed:4112",
+    "development_seed:4113",
+    "development_seed:4114",
+    "development_seed:4115",
+    "development_seed:4116",
+    "development_seed:4117",
+    "development_seed:4118",
+    "development_seed:4119",
+    "development_seed:4120",
+    "generated:StructureTwoActionScenarioGenerator",
+    "normalized:D1SimulatorAnnotatedReplayAdapter",
+    "scene_category:bedroom",
+    "scene_category:kitchen",
+    "scene_category:living-room",
+    "source-neutral:generic-annotated-simulator-fixture"
+  ],
+  "physical_separation": {
+    "visible": "visible_replay.jsonl",
+    "evaluator_only": "evaluator_truth.jsonl"
+  },
+  "content_hashes": {
+    "manifest.json": "1a0bf0c2ff7d61c942491564189726d35a24f4894e0160f9e6368d302c556f5b",
+    "visible_replay.jsonl": "2ab7b70035f565129c68683f129e4bc6b7c65796229a21b1613192c57150d5b6",
+    "evaluator_truth.jsonl": "5ae16eb4721f30141a55d662c7371acb19d048c50e12c0db4932b4c47905601a"
+  }
+}

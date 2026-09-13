@@ -1,0 +1,465 @@
+{
+  "adaptive_router_calibration_validated": false,
+  "claim_boundary": "This test-opened-split engineering confirmation can establish semantic equivalence between evaluation-only direct P5 and the isolated production P0-to-expired-debt-replay-P5 path for positive same-location A1 observations. It cannot retest or establish a SEARCH or PUT_BACK scientific signal, overwrite the retained v0.1 failure, validate router calibration or utility, cover negative observations, different-location feedback, concurrent debts, or long-horizon recovery, pass Task 7/8/9, establish external validity, authorize ablation, aggregate tasks, or narrow Structure Two.",
+  "content_sha256": "2451fad079b91fcb8b264bc391dc16e2a566dfd2feef8850fb7a7ba7e8186cb9",
+  "coverage_limits": {
+    "concurrent_multiple_debt_replay_covered": false,
+    "different_location_full_feedback_transition_replay_covered": false,
+    "negative_observation_replay_covered": false,
+    "post_debt_long_horizon_router_utility_covered": false,
+    "search_or_put_back_scientific_signal_retested": false
+  },
+  "data_scope": {
+    "dataset_version": "project-two-d0-multiseed-readout@0.5",
+    "evaluator_truth_access_count": 0,
+    "negative_observation_step_count_excluded": 677,
+    "positive_transition_count": 1243,
+    "split": "test",
+    "test_episode_count": 60
+  },
+  "equivalence_audit": {
+    "all_required_checks_passed": true,
+    "failed_transition_count": 0,
+    "first_failed_transitions": [],
+    "passed_transition_count_by_check": {
+      "direct_and_replay_CIAV_actor_posteriors_match": 1243,
+      "direct_and_replay_consume_the_same_A1_action_outcome_and_location": 1243,
+      "direct_and_replay_owner_habit_location_distributions_match": 1243,
+      "direct_and_replay_primary_PCHMP_actor_posteriors_match": 1243,
+      "direct_and_replay_typed_PUT_BACK_locations_match": 1243,
+      "direct_and_replay_use_same_location_fast_verification": 1243,
+      "exactly_one_bound_debt_is_created_and_pending": 1243,
+      "expired_debt_replay_selects_P5_FULL_EAGER": 1243,
+      "normal_router_selects_P0_SAFE_DEFERRED": 1243,
+      "replay_settles_the_debt_without_pending_remainder": 1243,
+      "replay_trace_consumes_the_exact_debt_certificate": 1243,
+      "replay_trace_invokes_all_seven_primary_operators": 1243
+    },
+    "per_episode": [
+      {
+        "episode_id": "6b6640f0-9d9d-67e6-4740-b473d7e1731e",
+        "failed_check_count": 0,
+        "positive_transition_count": 20,
+        "semantic_comparison_chain_sha256": "d909cfea4b926bd1b4312cfe22d29331c03554674c7a8d463d788bd4dbf7c117"
+      },
+      {
+        "episode_id": "40366d43-1878-9d89-ebb5-4fbc7de7bd47",
+        "failed_check_count": 0,
+        "positive_transition_count": 22,
+        "semantic_comparison_chain_sha256": "6dbd8af2be0749220c4f1c4141ba728519b645d5dcd432d9e5eb67790ca1092f"
+      },
+      {
+        "episode_id": "5c0ad82e-b958-1ba0-78cf-6911ce16ad6f",
+        "failed_check_count": 0,
+        "positive_transition_count": 24,
+        "semantic_comparison_chain_sha256": "25d1e81f136876c5dca68fa57608c937656fc2bb3ddd06fa968d31e0f01cf6c8"
+      },
+      {
+        "episode_id": "9ac99b8f-b1b1-6742-eecd-107aee65248f",
+        "failed_check_count": 0,
+        "positive_transition_count": 18,
+        "semantic_comparison_chain_sha256": "d0ca62556bb5ffc03ae8e09c7692805742e864d34eb484ab1d25c559cee5add7"
+      },
+      {
+        "episode_id": "d487ee7f-0466-4d91-60b8-9e98de21675d",
+        "failed_check_count": 0,
+        "positive_transition_count": 21,
+        "semantic_comparison_chain_sha256": "852c895a4c115c00668f25c0b4c72784cb44886e4e2d6501d07fddc38829c845"
+      },
+      {
+        "episode_id": "af8febe1-b884-831d-9f4c-649a350ea148",
+        "failed_check_count": 0,
+        "positive_transition_count": 18,
+        "semantic_comparison_chain_sha256": "456037cd55c2968cd8a03b0680cd05cab48812ac786862180ef74e2d32c08c73"
+      },
+      {
+        "episode_id": "700a1460-5a97-5f63-c4fd-e80f0eb5f2dc",
+        "failed_check_count": 0,
+        "positive_transition_count": 16,
+        "semantic_comparison_chain_sha256": "d9e87dcfaa747a19153db2fbaf41db55f263000536702568db4b23d14b4e3116"
+      },
+      {
+        "episode_id": "8735885a-e75a-014c-e1fd-eadee298e7ec",
+        "failed_check_count": 0,
+        "positive_transition_count": 16,
+        "semantic_comparison_chain_sha256": "bf59a8ff5393e0dda829f22f4a130bcbd1c23ad0bd86673b2c1e2960df572217"
+      },
+      {
+        "episode_id": "fd92356a-141b-b56e-e80c-40e4c3da2018",
+        "failed_check_count": 0,
+        "positive_transition_count": 18,
+        "semantic_comparison_chain_sha256": "979ea0b49230bf3bb144f9e224b3e962103ba325c454765bb3c538bb54fd87f2"
+      },
+      {
+        "episode_id": "d4d2ee7b-af9e-e2a0-93ed-65ac6956888e",
+        "failed_check_count": 0,
+        "positive_transition_count": 23,
+        "semantic_comparison_chain_sha256": "f4a6fb618257d2f8bf9c1aeb623861d3716d02406a9551fb1e84804927d44caa"
+      },
+      {
+        "episode_id": "79b9d6d6-66c8-1a97-0740-81934096bc58",
+        "failed_check_count": 0,
+        "positive_transition_count": 16,
+        "semantic_comparison_chain_sha256": "26a11b97641c8e95a6900732546e1268c8ad4657acaf2cc8ae3fc099235326ea"
+      },
+      {
+        "episode_id": "7cdf586d-79a5-bfee-b8b9-43df9a87303f",
+        "failed_check_count": 0,
+        "positive_transition_count": 22,
+        "semantic_comparison_chain_sha256": "ef011a07de7476fccec31efe6342949553a8935052d6b6acba1095784acbcde2"
+      },
+      {
+        "episode_id": "d7b85d13-a84a-72ca-6c4e-9874123c53c2",
+        "failed_check_count": 0,
+        "positive_transition_count": 19,
+        "semantic_comparison_chain_sha256": "ccbefd0c98db4130045875afb4a3d88f299cf366b1b3c832b17b877f4d8c62a5"
+      },
+      {
+        "episode_id": "f1c944a2-1a53-ced3-d2ad-2e3a64b4609f",
+        "failed_check_count": 0,
+        "positive_transition_count": 20,
+        "semantic_comparison_chain_sha256": "8a1c881982cac7d8f38307840a520a655e0fdfb14a37ffc99659d234b1602fc9"
+      },
+      {
+        "episode_id": "8ba9a84a-a736-4904-050c-c1ab1bd73650",
+        "failed_check_count": 0,
+        "positive_transition_count": 19,
+        "semantic_comparison_chain_sha256": "550e46dd53a5c6d5614a7e49f0268bc8fdea77257de7ce711de4572d21a9bb2d"
+      },
+      {
+        "episode_id": "65210fe3-3e79-7247-d27e-024fefb3bda1",
+        "failed_check_count": 0,
+        "positive_transition_count": 21,
+        "semantic_comparison_chain_sha256": "e25cb151c6e1d6d907eb86fabdd269cdf3846b2c36927673304d32fc6e8e16fa"
+      },
+      {
+        "episode_id": "28f29ae5-3982-84de-b508-8229007f68cc",
+        "failed_check_count": 0,
+        "positive_transition_count": 18,
+        "semantic_comparison_chain_sha256": "c4e3300a8b4783e0d7d48ee2f326571bf5efb62ae94f8fcc9506f935ea5e25b9"
+      },
+      {
+        "episode_id": "42cab80b-7449-1566-1a86-83feb1fcf335",
+        "failed_check_count": 0,
+        "positive_transition_count": 26,
+        "semantic_comparison_chain_sha256": "85683c2650f1a14c8f874a0ec0c6d72d300664f4df78178677eb13219588eff4"
+      },
+      {
+        "episode_id": "f5bf37f6-22e8-18d2-60e3-ef7fd60a67e1",
+        "failed_check_count": 0,
+        "positive_transition_count": 25,
+        "semantic_comparison_chain_sha256": "4904958acbdc87f5697c54e8fe051a48797c9cda3959e446c7fca92afa5270d3"
+      },
+      {
+        "episode_id": "0533b218-facc-8c54-b83d-b43ef43afbae",
+        "failed_check_count": 0,
+        "positive_transition_count": 17,
+        "semantic_comparison_chain_sha256": "c85265b45f788d5a4f29d71f055512a990053a785163d3db88eb1e2890da51da"
+      },
+      {
+        "episode_id": "7eaee944-b043-1a5e-54da-2c54958b0af6",
+        "failed_check_count": 0,
+        "positive_transition_count": 23,
+        "semantic_comparison_chain_sha256": "4a647010423443899edecac8cbfe0644f582f4bb920fa69aa3830df632241586"
+      },
+      {
+        "episode_id": "356004d1-b901-ae15-684f-d980a70958cd",
+        "failed_check_count": 0,
+        "positive_transition_count": 22,
+        "semantic_comparison_chain_sha256": "d883dd1f1f03fed9c2028469161b4c7f2936cf94eec57de041d4c0846a308016"
+      },
+      {
+        "episode_id": "2d47072f-9b36-ecb9-945e-de94b1e3f027",
+        "failed_check_count": 0,
+        "positive_transition_count": 22,
+        "semantic_comparison_chain_sha256": "9e6848d7d236e22afe953f9f18822534c4e487bc91f1c0ec93ab3b9b7d2dd7d1"
+      },
+      {
+        "episode_id": "e8dbaf3c-d048-0ee1-d79e-f87dab33e143",
+        "failed_check_count": 0,
+        "positive_transition_count": 21,
+        "semantic_comparison_chain_sha256": "6de6a3f93b8b0105f45a578610073abecaafe675f8f1806bf5acd4055322a97d"
+      },
+      {
+        "episode_id": "a154d600-6779-efad-daca-d83b1f9704e0",
+        "failed_check_count": 0,
+        "positive_transition_count": 24,
+        "semantic_comparison_chain_sha256": "f24a13b7a4145dd2a3a391b7171381933cf07d1ae7095969978956bb1095ee3f"
+      },
+      {
+        "episode_id": "8388ccb2-6664-9f21-252c-00c28e8d8fd0",
+        "failed_check_count": 0,
+        "positive_transition_count": 25,
+        "semantic_comparison_chain_sha256": "c8085406a45d69063f540422628b3a485af3f71a6459bc56b323f23b55fadff5"
+      },
+      {
+        "episode_id": "ea26f5d3-167a-0b55-1010-bb4c2580f616",
+        "failed_check_count": 0,
+        "positive_transition_count": 17,
+        "semantic_comparison_chain_sha256": "4f1f1db82dc09b8e96a26f0ba0c35ac8d20f2e4b001a5dff3e174b3dafe8624c"
+      },
+      {
+        "episode_id": "e0ddfa4d-0c55-368c-e9a9-01c186f06f75",
+        "failed_check_count": 0,
+        "positive_transition_count": 21,
+        "semantic_comparison_chain_sha256": "84a0245c890eb47e6505faa6c0d5c7ecff5245045e5f36e51c0144b2fd88e784"
+      },
+      {
+        "episode_id": "5a4940ad-05f6-acc9-e422-58ca22627351",
+        "failed_check_count": 0,
+        "positive_transition_count": 22,
+        "semantic_comparison_chain_sha256": "75fa95f51f770dcac2e4c363219b8381c254682e7b4ea52209375337ced1441d"
+      },
+      {
+        "episode_id": "7a93617f-9a21-0a7b-1766-7a6a5b746d16",
+        "failed_check_count": 0,
+        "positive_transition_count": 19,
+        "semantic_comparison_chain_sha256": "6135b90b12d277b5cafc1cf956fcdbc7b60f4a60107e882cefce84bc318ce9b5"
+      },
+      {
+        "episode_id": "78056298-278f-eac8-5cd4-6cb96ae67703",
+        "failed_check_count": 0,
+        "positive_transition_count": 22,
+        "semantic_comparison_chain_sha256": "0c0c72beb812ea0335f964f5541e7a95767eef985060426560065eafad98c94b"
+      },
+      {
+        "episode_id": "c7d785d5-f2ca-17d4-4d6d-db9923f45a50",
+        "failed_check_count": 0,
+        "positive_transition_count": 20,
+        "semantic_comparison_chain_sha256": "3ca3bf505e93c7ca3366600c1b07a2e5aaf0accbd533e2f03e3743863b97edfc"
+      },
+      {
+        "episode_id": "62795407-dfbe-b4f5-24de-c1a9076a6ffa",
+        "failed_check_count": 0,
+        "positive_transition_count": 16,
+        "semantic_comparison_chain_sha256": "d12bb1a2b096184d974d50c1ef3a4940826cc47d2db84e41d04c7562b20177b0"
+      },
+      {
+        "episode_id": "b6a5b8d7-578b-4ca7-895f-fc775cb29e59",
+        "failed_check_count": 0,
+        "positive_transition_count": 20,
+        "semantic_comparison_chain_sha256": "57c5f8a1df09f9f084d4e8442fbee6eec8ed1aed32a5e798322465349a8046f6"
+      },
+      {
+        "episode_id": "c2a59d56-2177-8c0d-d707-78166473fd6f",
+        "failed_check_count": 0,
+        "positive_transition_count": 25,
+        "semantic_comparison_chain_sha256": "ebdd4e742279a1408c945e637b73027ea8673d3b39c757f6b7f6ed96eab12e53"
+      },
+      {
+        "episode_id": "4b3416eb-aa4c-49c6-8e96-79dc4535e6f3",
+        "failed_check_count": 0,
+        "positive_transition_count": 22,
+        "semantic_comparison_chain_sha256": "a345f4701378bb6d2b146080d2c152b45aa9ca2acaaf3111415696ec9fb56663"
+      },
+      {
+        "episode_id": "6bbeb4c1-6d47-531a-8c24-a33062ac078f",
+        "failed_check_count": 0,
+        "positive_transition_count": 22,
+        "semantic_comparison_chain_sha256": "4e1d405e18467442fb25386a28b728dcbd53d2372e0086ad261a1ae056cc9264"
+      },
+      {
+        "episode_id": "51ddff10-9feb-ca35-9da2-9c0348bd4083",
+        "failed_check_count": 0,
+        "positive_transition_count": 21,
+        "semantic_comparison_chain_sha256": "a3a85301c1209a72a46d6025423a41e550f8335a37ded9a49e692012a256f222"
+      },
+      {
+        "episode_id": "f5df0a7a-7a5b-71f4-a20a-84b4e7673e32",
+        "failed_check_count": 0,
+        "positive_transition_count": 15,
+        "semantic_comparison_chain_sha256": "149eb1d4f0591ce6c9828dee011a406fb88b246018934aca38b94ffd5e14fa14"
+      },
+      {
+        "episode_id": "dc819b0a-f37c-524d-1d9e-9e333917137b",
+        "failed_check_count": 0,
+        "positive_transition_count": 21,
+        "semantic_comparison_chain_sha256": "91304d570a14a4cdc37b9549b9b74512d6d8549494a2936ab41c6e7f2e6676f6"
+      },
+      {
+        "episode_id": "91205e21-416a-9920-80f6-909ff74e52ad",
+        "failed_check_count": 0,
+        "positive_transition_count": 28,
+        "semantic_comparison_chain_sha256": "d5fb6496386cd2f81e188882a1a4da39b2fb9235f050fb9b703c27d8fe16030d"
+      },
+      {
+        "episode_id": "4ba7efb9-c5ba-636e-685d-6d3784c94e17",
+        "failed_check_count": 0,
+        "positive_transition_count": 19,
+        "semantic_comparison_chain_sha256": "6b739424b5d194f39b26ab905a65efafeb14c0c2fff5b0c390c59da075d71145"
+      },
+      {
+        "episode_id": "520beefd-c5f3-27ac-ac83-942b00ab6d6a",
+        "failed_check_count": 0,
+        "positive_transition_count": 21,
+        "semantic_comparison_chain_sha256": "fac8a285ee35d422df4c6dc2bef9f794203fe868fce9a8d6a2bb7481f2e17a3a"
+      },
+      {
+        "episode_id": "363b9dde-64ec-5169-6b4c-5bdb91dcceab",
+        "failed_check_count": 0,
+        "positive_transition_count": 22,
+        "semantic_comparison_chain_sha256": "a337e5b5cafb6bdca82ec5ac0d5a3f4297cc8e738603573049f1c907a9ff3987"
+      },
+      {
+        "episode_id": "4efd6112-0d25-6ff4-10ca-9c30809048ce",
+        "failed_check_count": 0,
+        "positive_transition_count": 22,
+        "semantic_comparison_chain_sha256": "6b6fa4aeecf5ce982b40b0ab0b28fb5188dc48d0d253ad5cfc0372ea3ec54350"
+      },
+      {
+        "episode_id": "e4f9ed22-e259-6738-332e-0a93d2cfa1bd",
+        "failed_check_count": 0,
+        "positive_transition_count": 22,
+        "semantic_comparison_chain_sha256": "aa73acb6fc578451080a7956fbba2fa46dc543c144b0c3793b3587f2ee1fa1fa"
+      },
+      {
+        "episode_id": "d9dc85e8-8ce8-c826-cee4-0c25272174b1",
+        "failed_check_count": 0,
+        "positive_transition_count": 19,
+        "semantic_comparison_chain_sha256": "cb7ff5f3ae92c3e3ae435a5b979e74fc56aafd0d9482e4f4fdeaca1c2b92f2a8"
+      },
+      {
+        "episode_id": "e8a00faa-3233-6807-7094-3c2a8713b670",
+        "failed_check_count": 0,
+        "positive_transition_count": 16,
+        "semantic_comparison_chain_sha256": "38998f7f8b7fc022fb97ee81d9504088d5b9ac543d52495ade52d47c7a25cb62"
+      },
+      {
+        "episode_id": "29d56ac6-3f6a-68ba-3fc6-305a9de4e03c",
+        "failed_check_count": 0,
+        "positive_transition_count": 22,
+        "semantic_comparison_chain_sha256": "bafe76e766923fbd7d8056b547f89a574a11a3c47f12dd3547a155b9471bc54f"
+      },
+      {
+        "episode_id": "a90ca92f-6497-f2e5-3838-c8b40ba19e85",
+        "failed_check_count": 0,
+        "positive_transition_count": 17,
+        "semantic_comparison_chain_sha256": "8ff4da38503a7ca8410bff25744c0bf7a28521ef8105b5eec3d56313bad920cb"
+      },
+      {
+        "episode_id": "8ee49c21-4b91-02c3-1217-4f3ab3a2ba32",
+        "failed_check_count": 0,
+        "positive_transition_count": 17,
+        "semantic_comparison_chain_sha256": "762a69519f48a611dbfd0c1dbe5a433a76af16bfe66d499d33dab01445c24e1c"
+      },
+      {
+        "episode_id": "7fd88c43-6ec7-e63c-e375-1814b2f7f118",
+        "failed_check_count": 0,
+        "positive_transition_count": 19,
+        "semantic_comparison_chain_sha256": "ed5f5b9dded5346b2ed9d1eb1684c14a80cb12c08e16008059e2419d10acb7c2"
+      },
+      {
+        "episode_id": "656ad99f-48d6-3579-8809-8b5db515991e",
+        "failed_check_count": 0,
+        "positive_transition_count": 21,
+        "semantic_comparison_chain_sha256": "71051e92c8256ad2bf5dd9e4af8a271fc2a8857fe67ff09c4e9a98d0d9618837"
+      },
+      {
+        "episode_id": "193921cc-dea1-caf9-2dd3-409488e2c2da",
+        "failed_check_count": 0,
+        "positive_transition_count": 20,
+        "semantic_comparison_chain_sha256": "09c6c85d6d79494d1fb10ec3612fe57639205916e49d8aa7a7ecd4e349c7d9f0"
+      },
+      {
+        "episode_id": "82a9e2d7-38f7-324d-90d6-774d412f4c46",
+        "failed_check_count": 0,
+        "positive_transition_count": 24,
+        "semantic_comparison_chain_sha256": "9eee09266ba1ffa3e1f7d0778ba5f6e61bb541ee3997121e2d55fc1353754f38"
+      },
+      {
+        "episode_id": "824403ae-104a-9152-c294-aa1ede5ce623",
+        "failed_check_count": 0,
+        "positive_transition_count": 23,
+        "semantic_comparison_chain_sha256": "1dff9a57c4334f64d9a4e70b1b75786e4d4e490a6047bd8288bef28e3848f5bf"
+      },
+      {
+        "episode_id": "940751e1-a7f9-45bc-fce1-7171e9a1e18b",
+        "failed_check_count": 0,
+        "positive_transition_count": 26,
+        "semantic_comparison_chain_sha256": "0c25b222bb4bd9be39232dbd67f60ee9ddb5f0d0f987d497170002882c5bab2b"
+      },
+      {
+        "episode_id": "388d9c14-48cf-1fed-9cd7-4a63dbbc7e83",
+        "failed_check_count": 0,
+        "positive_transition_count": 24,
+        "semantic_comparison_chain_sha256": "2946f0dd46b10146b38a7c8636caae7f7019c7efa10d6c5df3faa4f159044fd7"
+      },
+      {
+        "episode_id": "64300845-7be2-09a2-343a-669ac5a1911f",
+        "failed_check_count": 0,
+        "positive_transition_count": 20,
+        "semantic_comparison_chain_sha256": "d431e2c08d6f63a9a42d40520cf10c6fb9cda9f511bf493e5b0c32359eebf165"
+      },
+      {
+        "episode_id": "7c364369-5191-f47a-2297-d5b93bf67b87",
+        "failed_check_count": 0,
+        "positive_transition_count": 22,
+        "semantic_comparison_chain_sha256": "09513dc1b7c0a13a2b28d61cd86818c2e7214054e790a1b02604c47461e4f695"
+      }
+    ],
+    "required_check_count": 12,
+    "semantic_comparison_chain_sha256": "71e6d1387ef1f9ac8223fe1f76641686268f334658f38da245978b3a3314f071"
+  },
+  "execution": {
+    "action_readout": "dual_timescale_reversible_fast_0.7_surviving_0.2_regime_local_0.1",
+    "ciav_feedback_closure": "same_location_fast_verification_from_the_same_A1_packet",
+    "dataset": "project-two-d0-multiseed-readout@0.5",
+    "debt_expiry_steps": 1,
+    "direct_path": "evaluation_only_P5_FULL_EAGER",
+    "episode_policy": "all_test_episodes",
+    "evaluator_truth_accessed": false,
+    "negative_observation_policy": "excluded_because_no_PrototypeTransition_or_adaptive_debt_is_fabricated",
+    "numeric_absolute_tolerance": 1e-12,
+    "p0_step_index": "2_times_original_step_index",
+    "production_path": [
+      "P0_SAFE_DEFERRED",
+      "expired_debt_replay_P5_FULL_EAGER"
+    ],
+    "replay_step_index": "2_times_original_step_index_plus_1",
+    "split": "test",
+    "test_split_previously_opened": true,
+    "transition_policy": "all_positive_detected_transitions_in_original_episode_order"
+  },
+  "external_validity_established": false,
+  "positive_scientific_receipt_issued": false,
+  "protocol_id": "structure-two-p5-debt-replay-confirmation@0.1-development",
+  "retained_v0_1_failure_overwritten": false,
+  "schema_version": "0.1.0",
+  "scope_policy": {
+    "embodied_feedback_loop_retained": true,
+    "hidden_event_inference_retained": true,
+    "multi_actor_reasoning_retained": true,
+    "open_world_unknowns_retained": true,
+    "reversible_attribution_retained": true,
+    "scope_reduction_authorized": false,
+    "unified_seven_operator_framework_retained": true
+  },
+  "search_or_put_back_scientific_signal_retested": false,
+  "source_binding": {
+    "configuration": {
+      "path": "configs/project_two_experiments/structure_two_p5_debt_replay_confirmation_v0_1.json",
+      "sha256": "07e0a77be15fc17b74d0978ddc65b41a02945db9b172a6acecefd9c166c0cc68"
+    },
+    "execution_module": {
+      "path": "src/cpswm/system/evaluation_operations/structure_two_p5_debt_replay_confirmation.py",
+      "sha256": "0c4c0ab5161dbf69523edb0b4624f74433ea8f957de9fff0d0b64765611e9d01"
+    },
+    "posthoc_execution_module": {
+      "path": "src/cpswm/system/evaluation_operations/structure_two_p5_readout_posthoc_diagnostic.py",
+      "sha256": "1f6844054cdc94d94e6dd122fad4313d20587a7f84ef3460909bf7d3dfb8aa95"
+    },
+    "posthoc_result": {
+      "path": "benchmarks/structure_two/structure_two_p5_readout_posthoc_diagnostic_v0_1.json",
+      "sha256": "6ad677dee1086182af261cecd292e0ed82971ab4a6d1f31a256378cc9dc20f49"
+    },
+    "production_assembly_manifest_sha256": "7459376cc4a2c0bb0e7f9f852bee9518cc0aa09de0c40b6c2da38268b979982c"
+  },
+  "status": "PRODUCTION_DEBT_REPLAY_SEMANTIC_EQUIVALENCE_CONFIRMED",
+  "task_7_8_9_passed": false,
+  "test_reuse_disclosure": {
+    "confirmatory": false,
+    "engineering_confirmation_only": true,
+    "fresh_preregistered_death_test": false,
+    "may_issue_positive_scientific_receipt": false
+  }
+}

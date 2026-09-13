@@ -1,0 +1,59 @@
+{
+  "status": "STAGES_COMPLETED_NOT_AUTHORIZATION",
+  "scope": "ISOLATED_ASSEMBLY_NOT_UNIFIED_SOURCE",
+  "code_sha": "6fcff45c71eff3f3457d0b6eac6cd872102db89d",
+  "fixture_head": "07fc56983ae93d2d3abd63736abd78201b9c34fa",
+  "source_before_equals_after": true,
+  "source_sha256": "cfcdd457726024b9858ae5a9aed78922ccad75c340167cf9204ccf43600e9abb",
+  "full_bundle_inventory_matches_frozen": true,
+  "bundle_files": {
+    "docs/reviews/data/structure_two_unified_acceptance_runs/r6_comparison_accepted/comparison": "directory",
+    "docs/reviews/data/structure_two_unified_acceptance_runs/r6_comparison_accepted/comparison/attribution.json": "506a20010640eb1934b3b07a6bf4b2ee4082e58c59cdcf353c2a54ebf1b1d63e",
+    "docs/reviews/data/structure_two_unified_acceptance_runs/r6_comparison_accepted/comparison/audit.json": "e1f0ab34774c5f788c498bc67d6e710c78e03154661df9ae2b82959a92cd4d36",
+    "docs/reviews/data/structure_two_unified_acceptance_runs/r6_comparison_accepted/comparison/steps.jsonl.gz": "83a1ff1164d690a65c644fa9976102ac31ad91b2065a23f7a35b01fc330a4c13",
+    "docs/reviews/data/structure_two_unified_acceptance_runs/r6_comparison_accepted/comparison/timing.json": "6206f18ad7e6b9af91821dc9f6a5a8c4c378e3046c8adf6177ad3c8241dec059"
+  },
+  "stages": [
+    {
+      "name": "comparison_generate",
+      "exit_code": 0,
+      "seconds": 609.2519490718842,
+      "pytest_counts": null
+    },
+    {
+      "name": "comparison_recompute",
+      "exit_code": 0,
+      "seconds": 447.4139540195465,
+      "pytest_counts": null
+    },
+    {
+      "name": "attribution_generate",
+      "exit_code": 0,
+      "seconds": 6.951042890548706,
+      "pytest_counts": null
+    },
+    {
+      "name": "attribution_recompute",
+      "exit_code": 0,
+      "seconds": 410.49229192733765,
+      "pytest_counts": null
+    },
+    {
+      "name": "window2_comparison_and_forgery",
+      "exit_code": 0,
+      "seconds": 2411.882617712021,
+      "pytest_counts": {
+        "total": 77,
+        "failure": 0,
+        "error": 0,
+        "skipped": 0
+      }
+    }
+  ],
+  "tool_sources_match_window1": {
+    "structure_two_unified_acceptance.py": true,
+    "structure_two_pytest_runtime.py": true
+  },
+  "scientific_gate": "NOT_PASSED",
+  "ablation_authorized": false
+}

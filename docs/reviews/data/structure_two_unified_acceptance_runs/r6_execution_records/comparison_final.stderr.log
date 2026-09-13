@@ -1,0 +1,17 @@
+Traceback (most recent call last):
+  File "/private/tmp/cpswm-pc-a-w1-cache-runtime-r6/docs/reviews/pc_a/w1_cache_repair_2026-09-12/run_integration.py", line 29, in <module>
+    m.run_stages(root, j, plan, frozen, (), environment=env)
+    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/private/tmp/cpswm-pc-a-w1-r6-isolated-comparison/tools/structure_two_unified_acceptance.py", line 597, in run_stages
+    row["exit_code"] = proc.wait()
+                       ~~~~~~~~~^^
+  File "/Users/pangwei/.local/share/uv/python/cpython-3.13.5-macos-aarch64-none/lib/python3.13/subprocess.py", line 1280, in wait
+    return self._wait(timeout=timeout)
+           ~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/Users/pangwei/.local/share/uv/python/cpython-3.13.5-macos-aarch64-none/lib/python3.13/subprocess.py", line 2066, in _wait
+    (pid, sts) = self._try_wait(0)
+                 ~~~~~~~~~~~~~~^^^
+  File "/Users/pangwei/.local/share/uv/python/cpython-3.13.5-macos-aarch64-none/lib/python3.13/subprocess.py", line 2024, in _try_wait
+    (pid, sts) = os.waitpid(self.pid, wait_flags)
+                 ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^
+KeyboardInterrupt

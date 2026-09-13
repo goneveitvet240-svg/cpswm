@@ -1,0 +1,512 @@
+{
+  "scope": "Exact completed outer execution records; original JSON logs and child journal argv remain authoritative. History child stdout/stderr are separately decoded without rewriting original logs. A probe-script exit 0 is not a passed child stage.",
+  "long_run_environment": {
+    "OPENBLAS_NUM_THREADS": "1",
+    "OMP_NUM_THREADS": "1",
+    "MKL_NUM_THREADS": "1"
+  },
+  "commands": [
+    {
+      "record": "docs/reviews/pc_a/w1_cache_repair_2026-09-12/after/original_assertion.command.json",
+      "argv": [
+        ".venv/bin/python",
+        "docs/reviews/pc_a/w1_cache_repair_2026-09-12/review_original/w1_cached_test_probe.py",
+        "docs/reviews/pc_a/w1_cache_repair_2026-09-12/after"
+      ],
+      "cwd": "/private/tmp/cpswm-pc-a-w1-cache-runtime-r6",
+      "start": "2026-09-12T11:31:44.033792+00:00",
+      "end": "2026-09-12T11:31:45.785451+00:00",
+      "seconds": 1.7515460830181837,
+      "exit_code": 0,
+      "environment": {},
+      "stdout_file": "docs/reviews/pc_a/w1_cache_repair_2026-09-12/after/original_assertion.stdout.log",
+      "stderr_file": "docs/reviews/pc_a/w1_cache_repair_2026-09-12/after/original_assertion.stderr.log"
+    },
+    {
+      "record": "docs/reviews/pc_a/w1_cache_repair_2026-09-12/after/original_code.command.json",
+      "argv": [
+        ".venv/bin/python",
+        "docs/reviews/pc_a/w1_cache_repair_2026-09-12/review_original/w1_cached_code_probe.py",
+        "/private/tmp/cpswm-pc-a-w1-cache-runtime-r6",
+        "docs/reviews/pc_a/w1_cache_repair_2026-09-12/after"
+      ],
+      "cwd": "/private/tmp/cpswm-pc-a-w1-cache-runtime-r6",
+      "start": "2026-09-12T11:31:02.465355+00:00",
+      "end": "2026-09-12T11:31:08.498198+00:00",
+      "seconds": 6.032636499963701,
+      "exit_code": 0,
+      "environment": {},
+      "stdout_file": "docs/reviews/pc_a/w1_cache_repair_2026-09-12/after/original_code.stdout.log",
+      "stderr_file": "docs/reviews/pc_a/w1_cache_repair_2026-09-12/after/original_code.stderr.log"
+    },
+    {
+      "record": "docs/reviews/pc_a/w1_cache_repair_2026-09-12/after_final/original_assertion.command.json",
+      "argv": [
+        ".venv/bin/python",
+        "docs/reviews/pc_a/w1_cache_repair_2026-09-12/review_original/w1_cached_test_probe.py",
+        "docs/reviews/pc_a/w1_cache_repair_2026-09-12/after_final"
+      ],
+      "cwd": "/private/tmp/cpswm-pc-a-w1-cache-runtime-r6",
+      "start": "2026-09-12T11:48:59.718777+00:00",
+      "end": "2026-09-12T11:49:01.424881+00:00",
+      "seconds": 1.7059900830499828,
+      "exit_code": 0,
+      "environment": {},
+      "stdout_file": "docs/reviews/pc_a/w1_cache_repair_2026-09-12/after_final/original_assertion.stdout.log",
+      "stderr_file": "docs/reviews/pc_a/w1_cache_repair_2026-09-12/after_final/original_assertion.stderr.log"
+    },
+    {
+      "record": "docs/reviews/pc_a/w1_cache_repair_2026-09-12/after_final/original_code.command.json",
+      "argv": [
+        ".venv/bin/python",
+        "docs/reviews/pc_a/w1_cache_repair_2026-09-12/review_original/w1_cached_code_probe.py",
+        "/private/tmp/cpswm-pc-a-w1-cache-runtime-r6",
+        "docs/reviews/pc_a/w1_cache_repair_2026-09-12/after_final"
+      ],
+      "cwd": "/private/tmp/cpswm-pc-a-w1-cache-runtime-r6",
+      "start": "2026-09-12T11:48:06.745983+00:00",
+      "end": "2026-09-12T11:48:11.503234+00:00",
+      "seconds": 4.757100916933268,
+      "exit_code": 0,
+      "environment": {},
+      "stdout_file": "docs/reviews/pc_a/w1_cache_repair_2026-09-12/after_final/original_code.stdout.log",
+      "stderr_file": "docs/reviews/pc_a/w1_cache_repair_2026-09-12/after_final/original_code.stderr.log"
+    },
+    {
+      "record": "docs/reviews/pc_a/w1_cache_repair_2026-09-12/before/original_assertion.command.json",
+      "argv": [
+        ".venv/bin/python",
+        "docs/reviews/pc_a/w1_cache_repair_2026-09-12/review_original/w1_cached_test_probe.py",
+        "docs/reviews/pc_a/w1_cache_repair_2026-09-12/before"
+      ],
+      "cwd": "/private/tmp/cpswm-pc-a-w1-cache-runtime-r6",
+      "start": "2026-09-12T11:17:15.392776+00:00",
+      "end": "2026-09-12T11:17:17.123268+00:00",
+      "seconds": 1.7304436250124127,
+      "exit_code": 0,
+      "environment": {},
+      "stdout_file": "docs/reviews/pc_a/w1_cache_repair_2026-09-12/before/original_assertion.stdout.log",
+      "stderr_file": "docs/reviews/pc_a/w1_cache_repair_2026-09-12/before/original_assertion.stderr.log"
+    },
+    {
+      "record": "docs/reviews/pc_a/w1_cache_repair_2026-09-12/before/original_code.command.json",
+      "argv": [
+        ".venv/bin/python",
+        "docs/reviews/pc_a/w1_cache_repair_2026-09-12/review_original/w1_cached_code_probe.py",
+        "/private/tmp/cpswm-pc-a-w1-cache-runtime-r6",
+        "docs/reviews/pc_a/w1_cache_repair_2026-09-12/before"
+      ],
+      "cwd": "/private/tmp/cpswm-pc-a-w1-cache-runtime-r6",
+      "start": "2026-09-12T11:16:47.616113+00:00",
+      "end": "2026-09-12T11:17:01.716079+00:00",
+      "seconds": 14.099629250122234,
+      "exit_code": 0,
+      "environment": {},
+      "stdout_file": "docs/reviews/pc_a/w1_cache_repair_2026-09-12/before/original_code.stdout.log",
+      "stderr_file": "docs/reviews/pc_a/w1_cache_repair_2026-09-12/before/original_code.stderr.log"
+    },
+    {
+      "record": "docs/reviews/pc_a/w1_cache_repair_2026-09-12/development/cache_regressions_1.command.json",
+      "argv": [
+        ".venv/bin/python",
+        "-m",
+        "pytest",
+        "-o",
+        "addopts=",
+        "-q",
+        "-s",
+        "--confcutdir=.",
+        "tests/test_structure_two_runtime_cache_identity.py"
+      ],
+      "cwd": "/private/tmp/cpswm-pc-a-w1-cache-runtime-r6",
+      "start": "2026-09-12T11:23:04.990890+00:00",
+      "end": "2026-09-12T11:23:35.205184+00:00",
+      "seconds": 30.213672125013545,
+      "exit_code": 1,
+      "environment": {},
+      "stdout_file": "docs/reviews/pc_a/w1_cache_repair_2026-09-12/development/cache_regressions_1.stdout.log",
+      "stderr_file": "docs/reviews/pc_a/w1_cache_repair_2026-09-12/development/cache_regressions_1.stderr.log"
+    },
+    {
+      "record": "docs/reviews/pc_a/w1_cache_repair_2026-09-12/development/cache_regressions_2.command.json",
+      "argv": [
+        ".venv/bin/python",
+        "-m",
+        "pytest",
+        "-o",
+        "addopts=",
+        "-q",
+        "-s",
+        "--confcutdir=.",
+        "tests/test_structure_two_runtime_cache_identity.py",
+        "tests/test_structure_two_unified_acceptance.py",
+        "tests/test_structure_two_unified_dependencies.py"
+      ],
+      "cwd": "/private/tmp/cpswm-pc-a-w1-cache-runtime-r6",
+      "start": "2026-09-12T11:24:34.078037+00:00",
+      "end": "2026-09-12T11:25:54.868974+00:00",
+      "seconds": 80.78955162502825,
+      "exit_code": 0,
+      "environment": {},
+      "stdout_file": "docs/reviews/pc_a/w1_cache_repair_2026-09-12/development/cache_regressions_2.stdout.log",
+      "stderr_file": "docs/reviews/pc_a/w1_cache_repair_2026-09-12/development/cache_regressions_2.stderr.log"
+    },
+    {
+      "record": "docs/reviews/pc_a/w1_cache_repair_2026-09-12/development/guard_original_code.command.json",
+      "argv": [
+        ".venv/bin/python",
+        "docs/reviews/pc_a/w1_cache_repair_2026-09-12/review_original/w1_cached_code_probe.py",
+        "/private/tmp/cpswm-pc-a-w1-cache-runtime-r6",
+        "docs/reviews/pc_a/w1_cache_repair_2026-09-12/development"
+      ],
+      "cwd": "/private/tmp/cpswm-pc-a-w1-cache-runtime-r6",
+      "start": "2026-09-12T11:18:52.152497+00:00",
+      "end": "2026-09-12T11:19:02.820593+00:00",
+      "seconds": 10.667588250013068,
+      "exit_code": 0,
+      "environment": {},
+      "stdout_file": "docs/reviews/pc_a/w1_cache_repair_2026-09-12/development/guard_original_code.stdout.log",
+      "stderr_file": "docs/reviews/pc_a/w1_cache_repair_2026-09-12/development/guard_original_code.stderr.log"
+    },
+    {
+      "record": "docs/reviews/pc_a/w1_cache_repair_2026-09-12/development/original65_guard.command.json",
+      "argv": [
+        ".venv/bin/python",
+        "-m",
+        "pytest",
+        "-o",
+        "addopts=",
+        "-q",
+        "-s",
+        "--confcutdir=.",
+        "tests/test_structure_two_unified_acceptance.py",
+        "tests/test_structure_two_unified_dependencies.py"
+      ],
+      "cwd": "/private/tmp/cpswm-pc-a-w1-cache-runtime-r6",
+      "start": "2026-09-12T11:21:17.025194+00:00",
+      "end": "2026-09-12T11:22:27.728010+00:00",
+      "seconds": 70.70167754194699,
+      "exit_code": 1,
+      "environment": {},
+      "stdout_file": "docs/reviews/pc_a/w1_cache_repair_2026-09-12/development/original65_guard.stdout.log",
+      "stderr_file": "docs/reviews/pc_a/w1_cache_repair_2026-09-12/development/original65_guard.stderr.log"
+    },
+    {
+      "record": "docs/reviews/pc_a/w1_cache_repair_2026-09-12/development/revised_runtime_suite.command.json",
+      "argv": [
+        ".venv/bin/python",
+        "-m",
+        "pytest",
+        "-o",
+        "addopts=",
+        "-q",
+        "-s",
+        "--confcutdir=.",
+        "tests/test_structure_two_runtime_cache_identity.py",
+        "tests/test_structure_two_unified_acceptance.py",
+        "tests/test_structure_two_unified_dependencies.py",
+        "tests/test_structure_two_engineering_trust_checkpoint.py::test_audit_matrix_contains_frozen_offline_uv_environment_check"
+      ],
+      "cwd": "/private/tmp/cpswm-pc-a-w1-cache-runtime-r6",
+      "start": "2026-09-12T11:26:35.602881+00:00",
+      "end": "2026-09-12T11:27:31.553558+00:00",
+      "seconds": 55.94992637494579,
+      "exit_code": 1,
+      "environment": {},
+      "stdout_file": "docs/reviews/pc_a/w1_cache_repair_2026-09-12/development/revised_runtime_suite.stdout.log",
+      "stderr_file": "docs/reviews/pc_a/w1_cache_repair_2026-09-12/development/revised_runtime_suite.stderr.log"
+    },
+    {
+      "record": "docs/reviews/pc_a/w1_cache_repair_2026-09-12/read_race/read_race_c2.command.json",
+      "argv": [
+        ".venv/bin/python",
+        "docs/reviews/pc_a/w1_cache_repair_2026-09-12/read_race_probe.py",
+        "/private/tmp/cpswm-pc-a-w1-cache-runtime-r6",
+        "docs/reviews/pc_a/w1_cache_repair_2026-09-12/read_race",
+        "c2e983b"
+      ],
+      "cwd": "/private/tmp/cpswm-pc-a-w1-cache-runtime-r6",
+      "start": "2026-09-12T11:45:07.420319+00:00",
+      "end": "2026-09-12T11:45:18.024148+00:00",
+      "seconds": 10.603396582882851,
+      "exit_code": 0,
+      "environment": {},
+      "stdout_file": "docs/reviews/pc_a/w1_cache_repair_2026-09-12/read_race/read_race_c2.stdout.log",
+      "stderr_file": "docs/reviews/pc_a/w1_cache_repair_2026-09-12/read_race/read_race_c2.stderr.log"
+    },
+    {
+      "record": "docs/reviews/pc_a/w1_cache_repair_2026-09-12/read_race/read_race_fixed.command.json",
+      "argv": [
+        ".venv/bin/python",
+        "docs/reviews/pc_a/w1_cache_repair_2026-09-12/read_race_probe.py",
+        "/private/tmp/cpswm-pc-a-w1-cache-runtime-r6",
+        "docs/reviews/pc_a/w1_cache_repair_2026-09-12/read_race",
+        "working"
+      ],
+      "cwd": "/private/tmp/cpswm-pc-a-w1-cache-runtime-r6",
+      "start": "2026-09-12T11:46:21.291916+00:00",
+      "end": "2026-09-12T11:46:27.698207+00:00",
+      "seconds": 6.405850916868076,
+      "exit_code": 0,
+      "environment": {},
+      "stdout_file": "docs/reviews/pc_a/w1_cache_repair_2026-09-12/read_race/read_race_fixed.stdout.log",
+      "stderr_file": "docs/reviews/pc_a/w1_cache_repair_2026-09-12/read_race/read_race_fixed.stderr.log"
+    },
+    {
+      "record": "docs/reviews/pc_a/w1_cache_repair_2026-09-12/validation/runtime_suite_candidate.command.json",
+      "argv": [
+        ".venv/bin/python",
+        "-m",
+        "pytest",
+        "-o",
+        "addopts=",
+        "-q",
+        "-s",
+        "--confcutdir=.",
+        "tests/test_structure_two_runtime_cache_identity.py",
+        "tests/test_structure_two_unified_acceptance.py",
+        "tests/test_structure_two_unified_dependencies.py",
+        "tests/test_structure_two_engineering_trust_checkpoint.py::test_audit_matrix_contains_frozen_offline_uv_environment_check"
+      ],
+      "cwd": "/private/tmp/cpswm-pc-a-w1-cache-runtime-r6",
+      "start": "2026-09-12T11:29:53.699178+00:00",
+      "end": "2026-09-12T11:30:54.574105+00:00",
+      "seconds": 60.87413649982773,
+      "exit_code": 0,
+      "environment": {},
+      "stdout_file": "docs/reviews/pc_a/w1_cache_repair_2026-09-12/validation/runtime_suite_candidate.stdout.log",
+      "stderr_file": "docs/reviews/pc_a/w1_cache_repair_2026-09-12/validation/runtime_suite_candidate.stderr.log"
+    },
+    {
+      "record": "docs/reviews/data/structure_two_unified_acceptance_runs/r6_execution_records/comparison_accepted.command.json",
+      "argv": [
+        ".venv/bin/python",
+        "/private/tmp/cpswm-pc-a-w1-cache-runtime-r6/docs/reviews/pc_a/w1_cache_repair_2026-09-12/run_integration.py",
+        "/private/tmp/cpswm-pc-a-w1-r6-isolated-comparison",
+        "r6_comparison_accepted",
+        "comparison"
+      ],
+      "cwd": "/private/tmp/cpswm-pc-a-w1-r6-isolated-comparison",
+      "start": "2026-09-12T11:50:12.188886+00:00",
+      "end": "2026-09-12T12:55:06.164736+00:00",
+      "seconds": 3893.9616132080555,
+      "exit_code": 0,
+      "environment": {},
+      "stdout_file": "docs/reviews/data/structure_two_unified_acceptance_runs/r6_execution_records/comparison_accepted.stdout.log",
+      "stderr_file": "docs/reviews/data/structure_two_unified_acceptance_runs/r6_execution_records/comparison_accepted.stderr.log"
+    },
+    {
+      "record": "docs/reviews/data/structure_two_unified_acceptance_runs/r6_execution_records/comparison_final.command.json",
+      "argv": [
+        ".venv/bin/python",
+        "/private/tmp/cpswm-pc-a-w1-cache-runtime-r6/docs/reviews/pc_a/w1_cache_repair_2026-09-12/run_integration.py",
+        "/private/tmp/cpswm-pc-a-w1-r6-isolated-comparison",
+        "r6_comparison_final",
+        "comparison"
+      ],
+      "cwd": "/private/tmp/cpswm-pc-a-w1-r6-isolated-comparison",
+      "start": "2026-09-12T11:33:49.424068+00:00",
+      "end": "2026-09-12T11:42:43.002882+00:00",
+      "seconds": 533.5719867500011,
+      "exit_code": -2,
+      "environment": {},
+      "stdout_file": "docs/reviews/data/structure_two_unified_acceptance_runs/r6_execution_records/comparison_final.stdout.log",
+      "stderr_file": "docs/reviews/data/structure_two_unified_acceptance_runs/r6_execution_records/comparison_final.stderr.log"
+    },
+    {
+      "record": "docs/reviews/data/structure_two_unified_acceptance_runs/r6_execution_records/final_ruff_check.command.json",
+      "argv": [
+        ".venv/bin/ruff",
+        "check",
+        "--no-cache",
+        "tools/structure_two_pytest_runtime.py",
+        "tools/structure_two_unified_acceptance.py",
+        "apps/evaluation_runner/run_structure_two_engineering_audit_receipt.py",
+        "tests/test_structure_two_runtime_cache_identity.py",
+        "tests/test_structure_two_engineering_trust_checkpoint.py"
+      ],
+      "cwd": "/private/tmp/cpswm-pc-a-w1-cache-runtime-r6",
+      "start": "2026-09-12T12:41:11.800764+00:00",
+      "end": "2026-09-12T12:41:11.858733+00:00",
+      "seconds": 0.05789095885120332,
+      "exit_code": 0,
+      "environment": {},
+      "stdout_file": "docs/reviews/data/structure_two_unified_acceptance_runs/r6_execution_records/final_ruff_check.stdout.log",
+      "stderr_file": "docs/reviews/data/structure_two_unified_acceptance_runs/r6_execution_records/final_ruff_check.stderr.log"
+    },
+    {
+      "record": "docs/reviews/data/structure_two_unified_acceptance_runs/r6_execution_records/final_ruff_format.command.json",
+      "argv": [
+        ".venv/bin/ruff",
+        "format",
+        "--check",
+        "--no-cache",
+        "tools/structure_two_pytest_runtime.py",
+        "tools/structure_two_unified_acceptance.py",
+        "apps/evaluation_runner/run_structure_two_engineering_audit_receipt.py",
+        "tests/test_structure_two_runtime_cache_identity.py",
+        "tests/test_structure_two_engineering_trust_checkpoint.py"
+      ],
+      "cwd": "/private/tmp/cpswm-pc-a-w1-cache-runtime-r6",
+      "start": "2026-09-12T12:41:11.990583+00:00",
+      "end": "2026-09-12T12:41:12.012576+00:00",
+      "seconds": 0.021776000037789345,
+      "exit_code": 0,
+      "environment": {},
+      "stdout_file": "docs/reviews/data/structure_two_unified_acceptance_runs/r6_execution_records/final_ruff_format.stdout.log",
+      "stderr_file": "docs/reviews/data/structure_two_unified_acceptance_runs/r6_execution_records/final_ruff_format.stderr.log"
+    },
+    {
+      "record": "docs/reviews/data/structure_two_unified_acceptance_runs/r6_execution_records/history_trace_accepted.command.json",
+      "argv": [
+        ".venv/bin/python",
+        "/private/tmp/cpswm-r6-history-trace.py",
+        "/private/tmp/cpswm-pc-a-w1-cache-runtime-r6",
+        "r6_history_trace_accepted"
+      ],
+      "cwd": "/private/tmp/cpswm-pc-a-w1-cache-runtime-r6",
+      "start": "2026-09-12T13:06:05.334237+00:00",
+      "end": "2026-09-12T13:15:17.836885+00:00",
+      "seconds": 552.5625454999972,
+      "exit_code": 0,
+      "environment": {},
+      "stdout_file": "docs/reviews/data/structure_two_unified_acceptance_runs/r6_execution_records/history_trace_accepted.stdout.log",
+      "stderr_file": "docs/reviews/data/structure_two_unified_acceptance_runs/r6_execution_records/history_trace_accepted.stderr.log"
+    },
+    {
+      "record": "docs/reviews/data/structure_two_unified_acceptance_runs/r6_execution_records/native115_accepted.command.json",
+      "argv": [
+        ".venv/bin/python",
+        "docs/reviews/pc_a/w1_cache_repair_2026-09-12/run_native_protection.py",
+        "/private/tmp/cpswm-pc-a-w1-cache-runtime-r6",
+        "r6_native115_accepted"
+      ],
+      "cwd": "/private/tmp/cpswm-pc-a-w1-cache-runtime-r6",
+      "start": "2026-09-12T11:50:05.625303+00:00",
+      "end": "2026-09-12T13:01:20.037272+00:00",
+      "seconds": 4274.394636458019,
+      "exit_code": 0,
+      "environment": {},
+      "stdout_file": "docs/reviews/data/structure_two_unified_acceptance_runs/r6_execution_records/native115_accepted.stdout.log",
+      "stderr_file": "docs/reviews/data/structure_two_unified_acceptance_runs/r6_execution_records/native115_accepted.stderr.log"
+    },
+    {
+      "record": "docs/reviews/data/structure_two_unified_acceptance_runs/r6_execution_records/native115_final.command.json",
+      "argv": [
+        ".venv/bin/python",
+        "docs/reviews/pc_a/w1_cache_repair_2026-09-12/run_native_protection.py",
+        "/private/tmp/cpswm-pc-a-w1-cache-runtime-r6",
+        "r6_native115_final"
+      ],
+      "cwd": "/private/tmp/cpswm-pc-a-w1-cache-runtime-r6",
+      "start": "2026-09-12T11:33:42.576201+00:00",
+      "end": "2026-09-12T11:42:42.847434+00:00",
+      "seconds": 540.2643999999855,
+      "exit_code": -2,
+      "environment": {},
+      "stdout_file": "docs/reviews/data/structure_two_unified_acceptance_runs/r6_execution_records/native115_final.stdout.log",
+      "stderr_file": "docs/reviews/data/structure_two_unified_acceptance_runs/r6_execution_records/native115_final.stderr.log"
+    },
+    {
+      "record": "docs/reviews/data/structure_two_unified_acceptance_runs/r6_execution_records/runtime85_final.command.json",
+      "argv": [
+        ".venv/bin/python",
+        "-m",
+        "pytest",
+        "-o",
+        "addopts=",
+        "-q",
+        "-s",
+        "--confcutdir=.",
+        "--basetemp=/private/tmp/cpswm-r6-runtime85-final",
+        "tests/test_structure_two_runtime_cache_identity.py",
+        "tests/test_structure_two_unified_acceptance.py",
+        "tests/test_structure_two_unified_dependencies.py",
+        "tests/test_structure_two_engineering_trust_checkpoint.py::test_audit_matrix_contains_frozen_offline_uv_environment_check"
+      ],
+      "cwd": "/private/tmp/cpswm-pc-a-w1-cache-runtime-r6",
+      "start": "2026-09-12T11:33:19.073662+00:00",
+      "end": "2026-09-12T11:35:28.274846+00:00",
+      "seconds": 129.19951666588895,
+      "exit_code": 0,
+      "environment": {},
+      "stdout_file": "docs/reviews/data/structure_two_unified_acceptance_runs/r6_execution_records/runtime85_final.stdout.log",
+      "stderr_file": "docs/reviews/data/structure_two_unified_acceptance_runs/r6_execution_records/runtime85_final.stderr.log"
+    },
+    {
+      "record": "docs/reviews/data/structure_two_unified_acceptance_runs/r6_execution_records/runtime86_accepted.command.json",
+      "argv": [
+        ".venv/bin/python",
+        "-m",
+        "pytest",
+        "-o",
+        "addopts=",
+        "-q",
+        "-s",
+        "--confcutdir=.",
+        "--basetemp=/private/tmp/cpswm-r6-runtime86-accepted",
+        "tests/test_structure_two_runtime_cache_identity.py",
+        "tests/test_structure_two_unified_acceptance.py",
+        "tests/test_structure_two_unified_dependencies.py",
+        "tests/test_structure_two_engineering_trust_checkpoint.py::test_audit_matrix_contains_frozen_offline_uv_environment_check"
+      ],
+      "cwd": "/private/tmp/cpswm-pc-a-w1-cache-runtime-r6",
+      "start": "2026-09-12T11:49:59.916706+00:00",
+      "end": "2026-09-12T11:51:41.640377+00:00",
+      "seconds": 101.72240741597489,
+      "exit_code": 0,
+      "environment": {},
+      "stdout_file": "docs/reviews/data/structure_two_unified_acceptance_runs/r6_execution_records/runtime86_accepted.stdout.log",
+      "stderr_file": "docs/reviews/data/structure_two_unified_acceptance_runs/r6_execution_records/runtime86_accepted.stderr.log"
+    },
+    {
+      "record": "docs/reviews/data/structure_two_unified_acceptance_runs/r6_execution_records/runtime86_final.command.json",
+      "argv": [
+        ".venv/bin/python",
+        "-m",
+        "pytest",
+        "-o",
+        "addopts=",
+        "-q",
+        "-s",
+        "--confcutdir=.",
+        "--basetemp=/private/tmp/cpswm-r6-runtime86-final",
+        "tests/test_structure_two_runtime_cache_identity.py",
+        "tests/test_structure_two_unified_acceptance.py",
+        "tests/test_structure_two_unified_dependencies.py",
+        "tests/test_structure_two_engineering_trust_checkpoint.py::test_audit_matrix_contains_frozen_offline_uv_environment_check"
+      ],
+      "cwd": "/private/tmp/cpswm-pc-a-w1-cache-runtime-r6",
+      "start": "2026-09-12T11:43:38.720702+00:00",
+      "end": "2026-09-12T11:46:22.478281+00:00",
+      "seconds": 163.75529545801692,
+      "exit_code": 0,
+      "environment": {},
+      "stdout_file": "docs/reviews/data/structure_two_unified_acceptance_runs/r6_execution_records/runtime86_final.stdout.log",
+      "stderr_file": "docs/reviews/data/structure_two_unified_acceptance_runs/r6_execution_records/runtime86_final.stderr.log"
+    },
+    {
+      "record": "docs/reviews/data/structure_two_unified_acceptance_runs/r6_execution_records/runtime86_protected.command.json",
+      "argv": [
+        ".venv/bin/python",
+        "/private/tmp/cpswm-r6-runtime-trace.py",
+        "/private/tmp/cpswm-pc-a-w1-cache-runtime-r6",
+        "r6_runtime86_protected"
+      ],
+      "cwd": "/private/tmp/cpswm-pc-a-w1-cache-runtime-r6",
+      "start": "2026-09-12T13:12:16.386141+00:00",
+      "end": "2026-09-12T13:13:31.740370+00:00",
+      "seconds": 75.35411491594277,
+      "exit_code": 0,
+      "environment": {},
+      "stdout_file": "docs/reviews/data/structure_two_unified_acceptance_runs/r6_execution_records/runtime86_protected.stdout.log",
+      "stderr_file": "docs/reviews/data/structure_two_unified_acceptance_runs/r6_execution_records/runtime86_protected.stderr.log"
+    }
+  ],
+  "final_journals": [
+    "docs/reviews/data/structure_two_unified_acceptance_runs/r6_runtime86_protected/state.json",
+    "docs/reviews/data/structure_two_unified_acceptance_runs/r6_native115_accepted/state.json",
+    "docs/reviews/data/structure_two_unified_acceptance_runs/r6_history_trace_accepted/state.json",
+    "docs/reviews/data/structure_two_unified_acceptance_runs/r6_isolated_comparison_archive/r6_comparison_accepted/state.json"
+  ]
+}

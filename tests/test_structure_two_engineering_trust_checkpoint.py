@@ -169,7 +169,13 @@ def test_audit_matrix_contains_frozen_offline_uv_environment_check() -> None:
         "--no-cache",
     )
     for command_id in ("p0_adversarial_tests", "core_pytest"):
-        assert "--confcutdir=." in AUDIT_MODULE.COMMANDS[command_id]
+        assert "--confcutdir=." in AUDIT_MODULE.NATIVE_PYTEST_ARGUMENTS[command_id]
+        assert AUDIT_MODULE.COMMANDS[command_id] == (
+            ".venv/bin/python",
+            "tools/structure_two_unified_acceptance.py",
+            "--native-audit-command",
+            command_id,
+        )
         binding = AUDIT_MODULE.command_environment_binding(command_id)
         assert set(binding) == {
             "PYTEST_ADDOPTS",
@@ -178,7 +184,20 @@ def test_audit_matrix_contains_frozen_offline_uv_environment_check() -> None:
             "PYTHONHASHSEED",
             "PYTHONPATH",
         }
-    assert AUDIT_MODULE.COMMANDS["core_pytest"][1:3] == ("-p", "xdist.plugin")
+    # Freeze the complete command, including explicit plugin loading and the
+    # reporting override; a positional slice missed the rest of this contract.
+    assert AUDIT_MODULE.NATIVE_PYTEST_ARGUMENTS["core_pytest"] == (
+        "-o",
+        "addopts=",
+        "-p",
+        "xdist.plugin",
+        "-n",
+        "auto",
+        "--dist=worksteal",
+        "-q",
+        "--confcutdir=.",
+        "--ignore=tests/test_structure_two_engineering_trust_checkpoint.py",
+    )
 
 
 def test_receipt_rows_bind_manifest_cwd_executable_and_controlled_pytest_env() -> None:
@@ -280,7 +299,7 @@ def test_test_and_manifest_resign_rejects_old_receipt_and_old_checkpoint(
 
     resigned_receipt = json.loads(
         (
-            ROOT / "benchmarks/structure_two/engineering_trust_checkpoint_2026_09_05/"
+            ROOT / "benchmarks/structure_two/engineering_trust_checkpoint_2026_09_12_v0_3/"
             "engineering_audit_receipt.json"
         ).read_text(encoding="utf-8")
     )
@@ -323,3 +342,49 @@ def test_checkpoint_cannot_be_generated_with_fresh_recomputation_disabled(
     monkeypatch.setattr(sys, "argv", [str(SCRIPT), "--no-fresh-recomputation"])
     with pytest.raises(ValueError, match="generation always requires"):
         MODULE.main()
+
+
+def test_checkpoint_binds_all_current_p5_replays_without_promoting_history() -> None:
+    stored = _stored()
+    rows = stored["p5_current_evidence"]
+    assert {row["experiment"] for row in rows} == {
+        "three_arm_death_test",
+        "readout_posthoc_diagnostic",
+        "debt_replay_confirmation",
+        "readout_prior_factorial",
+        "unseen_d0_holdout",
+    }
+    assert stored["integration_requires_new_checkpoint"] is True
+    for row in rows:
+        assert row["verification_command_id"] == "p5_evidence_current"
+        assert row["evidence_context"]["lifecycle"] == "POST_OPEN_CURRENT_SOURCE_REPLAY"
+        assert row["evidence_context"]["first_execution_established"] is False
+        assert row["evidence_context"]["previously_unseen_established"] is False
+        assert row["evidence_context"]["confirmatory"] is False
+        assert len(row["file_sha256"]) == len(row["content_sha256"]) == 64
+    assert AUDIT_MODULE.COMMANDS["p5_evidence_current"] == (
+        ".venv/bin/python",
+        "apps/evaluation_runner/run_structure_two_evidence_repair.py",
+        "--verify-current",
+    )
+
+
+def test_audit_preserves_venv_invocation_while_hashing_resolved_python() -> None:
+    import subprocess
+
+    identity = AUDIT_MODULE.command_executable_identity((".venv/bin/python",))
+    assert identity["invocation_executable"] == str(ROOT / ".venv/bin/python")
+    assert Path(identity["resolved_executable"]) == (ROOT / ".venv/bin/python").resolve()
+    completed = subprocess.run(
+        [
+            identity["invocation_executable"],
+            "-c",
+            "import sys,cpswm; print(sys.prefix)",
+        ],
+        check=True,
+        capture_output=True,
+        text=True,
+        cwd=ROOT,
+    )
+    assert Path(completed.stdout.strip()) == ROOT / ".venv"
+    assert all(argv[-1] == "--version" for argv in AUDIT_MODULE.TOOL_VERSION_COMMANDS.values())

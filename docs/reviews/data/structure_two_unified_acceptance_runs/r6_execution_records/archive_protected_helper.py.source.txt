@@ -1,0 +1,18 @@
+import os,json,tarfile,hashlib
+from pathlib import Path
+root=Path('/private/tmp/cpswm-r6-runtime86-protected')
+out=Path('/private/tmp/cpswm-pc-a-w1-cache-runtime-r6/docs/reviews/data/structure_two_unified_acceptance_runs/r6_execution_records')
+files={}
+with tarfile.open(out/'runtime86_protected_preserved.tar.gz','x:gz') as t:
+    for directory,dirs,names in os.walk(root,followlinks=False):
+        d=Path(directory)
+        extras=[]
+        if '.venv' in dirs:
+            v=d/'.venv';extras=[v/'bin/pytest',v/'pyvenv.cfg',*v.glob('lib/python*/site-packages/*.pth')];dirs.remove('.venv')
+        paths=[d/n for n in sorted(names)]+[d/n for n in dirs if (d/n).is_symlink()]+extras
+        for p in paths:
+            if not p.exists() and not p.is_symlink():continue
+            rel=p.relative_to(root);t.add(p,arcname=str(rel),recursive=False)
+            files[str(rel)]={'symlink':os.readlink(p)} if p.is_symlink() else {'sha256':hashlib.sha256(p.read_bytes()).hexdigest(),'bytes':p.stat().st_size}
+(out/'runtime86_protected_preserved_inventory.json').write_text(json.dumps({'scope':'Surviving fixture bytes; venv binaries/packages excluded, actual pytest shebang scripts and venv path configuration retained','root':str(root),'files':files},indent=2)+'\n')
+print(json.dumps({'files':len(files),'archive_bytes':(out/'runtime86_protected_preserved.tar.gz').stat().st_size}))

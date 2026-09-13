@@ -1,0 +1,78 @@
+{
+  "status": "FAILED",
+  "scientific_gate": "NOT_PASSED",
+  "ablation_authorized": false,
+  "stages": [
+    {
+      "name": "matrix",
+      "argv": [
+        "/private/tmp/cpswm-r6-readrace-xpv7_h88/.venv/bin/python",
+        "-m",
+        "pytest",
+        "-p",
+        "tools.structure_two_pytest_runtime",
+        "-o",
+        "addopts=",
+        "-q",
+        "--confcutdir=.",
+        "--junitxml=/private/tmp/cpswm-r6-readrace-xpv7_h88/docs/reviews/data/structure_two_unified_acceptance_runs/read_race/matrix.xml",
+        "--s2-runtime-contract=/private/tmp/cpswm-r6-readrace-xpv7_h88/docs/reviews/data/structure_two_unified_acceptance_runs/read_race/matrix_runtime/contract.json",
+        "tests/test_read_race.py"
+      ],
+      "cwd": "/private/tmp/cpswm-r6-readrace-xpv7_h88",
+      "status": "FAILED",
+      "environment_overrides": {},
+      "started_unix": 1789213586.8252149,
+      "pid": 18909,
+      "runtime_rejections": [
+        {
+          "pid": 18909,
+          "error": "EXECUTED_LOCAL_CODE_MISMATCH: /private/tmp/cpswm-r6-readrace-xpv7_h88/src/cpswm/read_race.py"
+        }
+      ],
+      "exit_code": 4,
+      "ended_unix": 1789213587.606734,
+      "stdout": {
+        "path": "matrix.stdout.log",
+        "sha256": "f67ab10ad4e4c53121b6a5fe4da9c10ddee905b978d3788d2723d7bfacbe28a9"
+      },
+      "stderr": {
+        "path": "matrix.stderr.log",
+        "sha256": "5357029f154458d03bc7e3c9186e2c4d6383852a1835c9b8e4ae5f1e86d80527"
+      }
+    }
+  ],
+  "pid": 18880,
+  "source_before": {
+    "head": "93e4e4b29732d429f9951527f604794a16399f14",
+    "files": {
+      ".gitignore": "4409b253ac33acb862192f9cad8583ed3fe0bac938082a6cfa784d7cf0d185ef",
+      "pyproject.toml": "8a39608054c58873fe18c65606182e1cb841131c622f2653962184fb2868812d",
+      "src/cpswm/__init__.py": "76b26c40fd1de8995c9a5457c2bd4cf363c42d1f88a66f4d583bc10295f2062a",
+      "src/cpswm/read_race.py": "e13df8c44af5dea1e412403910b99cc5a48f2ccbf68a66b3374d6ab9cef9fc65",
+      "tests/conftest.py": "60c04bc7cce434a8f64853dea26fbd08306ad38fa8dd74b69adfe1716b5efcc3",
+      "tests/test_read_race.py": "784229844e66b456b1d49dd2b5b6ab3a2011201f01dd06f125b473e5a490a0dc",
+      "tools/structure_two_pytest_runtime.py": "b89095f757467cfe017865eace1e2f8ecead33979e2adaf22d0ac1fd7ad882ff",
+      "tools/structure_two_unified_acceptance.py": "aa18331dc73c86baab8e018408e9cffb9b84912ec4b7b4ecb2eb78b1b31d80e5"
+    },
+    "sha256": "4ee220d7f8880995cc5b5bf6e9abd48b6dca7d68e403be4bf16e1bf77bfef938"
+  },
+  "required_stages": [
+    "matrix"
+  ],
+  "error": "ValueError: ACTUAL_TEST_RUNTIME_REJECTED: matrix",
+  "source_after_failure": {
+    "head": "93e4e4b29732d429f9951527f604794a16399f14",
+    "files": {
+      ".gitignore": "4409b253ac33acb862192f9cad8583ed3fe0bac938082a6cfa784d7cf0d185ef",
+      "pyproject.toml": "8a39608054c58873fe18c65606182e1cb841131c622f2653962184fb2868812d",
+      "src/cpswm/__init__.py": "76b26c40fd1de8995c9a5457c2bd4cf363c42d1f88a66f4d583bc10295f2062a",
+      "src/cpswm/read_race.py": "e13df8c44af5dea1e412403910b99cc5a48f2ccbf68a66b3374d6ab9cef9fc65",
+      "tests/conftest.py": "60c04bc7cce434a8f64853dea26fbd08306ad38fa8dd74b69adfe1716b5efcc3",
+      "tests/test_read_race.py": "784229844e66b456b1d49dd2b5b6ab3a2011201f01dd06f125b473e5a490a0dc",
+      "tools/structure_two_pytest_runtime.py": "b89095f757467cfe017865eace1e2f8ecead33979e2adaf22d0ac1fd7ad882ff",
+      "tools/structure_two_unified_acceptance.py": "aa18331dc73c86baab8e018408e9cffb9b84912ec4b7b4ecb2eb78b1b31d80e5"
+    },
+    "sha256": "4ee220d7f8880995cc5b5bf6e9abd48b6dca7d68e403be4bf16e1bf77bfef938"
+  }
+}

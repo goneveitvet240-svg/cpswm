@@ -1,0 +1,131 @@
+FF                                                                       [100%]
+=================================== FAILURES ===================================
+____ test_posthoc_config_discloses_opened_test_and_forbids_positive_receipt ____
+
+    def test_posthoc_config_discloses_opened_test_and_forbids_positive_receipt() -> None:
+>       config = _load_posthoc_config(ROOT)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_structure_two_p5_readout_posthoc_diagnostic.py:30:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+root = PosixPath('/private/tmp/cpswm-s2-evidence-repair-window1')
+
+    def _load_posthoc_config(root: Path) -> dict[str, Any]:
+        config = json.loads((root / DEFAULT_CONFIG).read_text(encoding="utf-8"))
+        trigger = cast(Mapping[str, Any], config.get("trigger"))
+        corrections = cast(Mapping[str, Any], config.get("posthoc_corrections"))
+        action_readout = cast(Mapping[str, Any], corrections.get("action_readout"))
+        sequential_handoff = cast(Mapping[str, Any], corrections.get("sequential_actor_prior_handoff"))
+        disclosure = cast(Mapping[str, Any], config.get("test_reuse_disclosure"))
+        if (
+            config.get("schema_version") != SCHEMA_VERSION
+            or config.get("protocol_id") != PROTOCOL_ID
+            or config.get("status")
+            != "FROZEN_AFTER_TWO_PREFLIGHT_DIAGNOSES_BEFORE_FULL_POSTHOC_EXECUTION"
+            or config.get("claim_boundary") != CLAIM_BOUNDARY
+            or trigger.get("discovered_after_test_open") is not True
+            or action_readout.get("to") != "dual_timescale_fast_0.7_surviving_0.2_regime_0.1"
+            or sequential_handoff.get("from") != "original_transition_actor_prior"
+            or sequential_handoff.get("to") != "primary_pchmp_actor_posterior"
+            or disclosure.get("same_test_split_reused") is not True
+            or disclosure.get("test_split_previously_opened") is not True
+            or disclosure.get("confirmatory") is not False
+            or disclosure.get("fresh_preregistered_death_test") is not False
+            or disclosure.get("may_issue_positive_scientific_receipt") is not False
+        ):
+            raise ValueError("P5 post-hoc readout diagnostic configuration drifted")
+        baseline_path = root / Path(str(trigger["retained_failed_result_path"]))
+        if _file_sha256(baseline_path) != trigger.get("retained_failed_result_file_sha256"):
+>           raise ValueError("retained v0.1 result file hash drifted")
+E           ValueError: retained v0.1 result file hash drifted
+
+src/cpswm/system/evaluation_operations/structure_two_p5_readout_posthoc_diagnostic.py:327: ValueError
+_____ test_checkpoint_is_current_without_repeating_the_expensive_fresh_run _____
+
+    def test_checkpoint_is_current_without_repeating_the_expensive_fresh_run() -> None:
+        stored = _stored()
+>       MODULE.verify_checkpoint(stored, fresh_recomputation=False)
+
+tests/test_structure_two_engineering_trust_checkpoint.py:32:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+apps/evaluation_runner/generate_structure_two_engineering_trust_checkpoint.py:486: in verify_checkpoint
+    expected = build_checkpoint(fresh_recomputation=fresh_recomputation)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+apps/evaluation_runner/generate_structure_two_engineering_trust_checkpoint.py:323: in build_checkpoint
+    result_rows, p0_manifest = _verify_inputs(fresh_recomputation=fresh_recomputation)
+                               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+fresh_recomputation = False
+
+    def _verify_inputs(*, fresh_recomputation: bool) -> tuple[list[dict[str, object]], dict[str, Any]]:
+        b_runner = _load(
+            "structure_two_b_checkpoint_runner",
+            "apps/evaluation_runner/run_structure_two_backbone_b_repairs.py",
+        )
+        d0_runner = _load(
+            "structure_two_d0_checkpoint_runner",
+            "apps/evaluation_runner/run_structure_two_d0_evidence_checkpoint.py",
+        )
+        rows: list[dict[str, object]] = []
+        for result_id, relative, verifier in RESULTS:
+            payload = _load_json(ROOT / relative)
+            if verifier == "b":
+                b_runner.verify_artifact(payload, recompute=fresh_recomputation)
+            else:
+                command = payload.get("runner_argv")
+                if not isinstance(command, list) or not all(isinstance(item, str) for item in command):
+                    raise ValueError("Task-10 runner argv binding is malformed")
+                stored_result = payload.get("result")
+                fresh = (
+                    d0_runner._fresh_result_for_command(command)
+                    if fresh_recomputation
+                    else stored_result
+                )
+                d0_runner.verify_envelope(payload, fresh_result=fresh)
+            result = payload.get("result")
+            if not isinstance(result, Mapping):
+                raise ValueError(f"result missing from {relative}")
+            positive_chain = payload.get("positive_output_trust_chain")
+            if not isinstance(positive_chain, Mapping):
+                raise ValueError(f"positive-output trust chain missing from {relative}")
+            rows.append(
+                {
+                    "result_id": result_id,
+                    "path": relative.as_posix(),
+                    "file_sha256": _sha256(ROOT / relative),
+                    "content_sha256": payload["content_sha256"],
+                    "positive_output_count": len(positive_chain),
+                    "positive_output_trust_chain_complete": True,
+                    "fresh_task_specific_recomputation_verified": True,
+                    "task_gate_passed": bool(
+                        result.get("task_7_passed", result.get("task_8_passed", False))
+                    ),
+                    "definition_and_rerun_complete": bool(
+                        result.get(
+                            "task_7_definition_and_rerun_complete",
+                            result.get(
+                                "task_8_definition_and_rerun_complete",
+                                result.get("task_10_definition_and_rerun_complete", False),
+                            ),
+                        )
+                    ),
+                    "formal_authorization": False,
+                }
+            )
+
+        p0_module = _load(
+            "structure_two_p0_manifest_generator",
+            "apps/evaluation_runner/generate_p0_checkpoint_manifest.py",
+        )
+        stored_p0 = _load_json(ROOT / P0_MANIFEST)
+        if stored_p0 != p0_module.build_manifest():
+>           raise ValueError("P0 content manifest is not current")
+E           ValueError: P0 content manifest is not current
+
+apps/evaluation_runner/generate_structure_two_engineering_trust_checkpoint.py:303: ValueError
+=========================== short test summary info ============================
+FAILED tests/test_structure_two_p5_readout_posthoc_diagnostic.py::test_posthoc_config_discloses_opened_test_and_forbids_positive_receipt
+FAILED tests/test_structure_two_engineering_trust_checkpoint.py::test_checkpoint_is_current_without_repeating_the_expensive_fresh_run
+2 failed in 3.41s

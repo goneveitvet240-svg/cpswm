@@ -1,0 +1,1130 @@
+{
+  "protocol": "structure-two-engineering-audit-receipt@1.1",
+  "authority": "CURRENT_LOCAL_TOOLCHAIN_STATE_ONLY",
+  "source_manifest_path": "benchmarks/p0_checkpoint/content_manifest_v0_3.json",
+  "source_manifest_file_sha256": "a0019a2b88b3336802b5ea0e8ee5d11c1e704f60342f57a016558f7cb3945090",
+  "source_manifest_sha256": "dc7067c2769af765f71ba62f12dd543221905af108eb7ea0121355571ca89fc6",
+  "pre_execution_source_manifest_file_sha256": "a0019a2b88b3336802b5ea0e8ee5d11c1e704f60342f57a016558f7cb3945090",
+  "pre_execution_source_manifest_sha256": "dc7067c2769af765f71ba62f12dd543221905af108eb7ea0121355571ca89fc6",
+  "post_execution_source_manifest_file_sha256": "a0019a2b88b3336802b5ea0e8ee5d11c1e704f60342f57a016558f7cb3945090",
+  "post_execution_source_manifest_sha256": "dc7067c2769af765f71ba62f12dd543221905af108eb7ea0121355571ca89fc6",
+  "pre_execution_environment": {
+    "protocol": "structure-two-local-execution-environment@1.0",
+    "authority": "CURRENT_LOCAL_TOOLCHAIN_STATE_ONLY",
+    "python": {
+      "implementation": "cpython",
+      "version": "3.13.5",
+      "full_version": "3.13.5 (main, Jun 12 2025, 12:22:43) [Clang 20.1.4 ]",
+      "implementation_version": {
+        "major": 3,
+        "minor": 13,
+        "micro": 5,
+        "releaselevel": "final",
+        "serial": 0
+      },
+      "cache_tag": "cpython-313",
+      "soabi": "cpython-313-darwin",
+      "platform": "macOS-26.4-arm64-arm-64bit-Mach-O",
+      "interpreter_invocation_path": "/Users/pangwei/.local/share/uv/python/cpython-3.13.5-macos-aarch64-none/bin/python3.13",
+      "interpreter_invocation_path_policy": "CANONICAL_RESOLVED_PATH",
+      "resolved_interpreter": "/Users/pangwei/.local/share/uv/python/cpython-3.13.5-macos-aarch64-none/bin/python3.13",
+      "interpreter_sha256": "3e96a8b2f541b3d5ded271fb6e2bc83aea0557e863d0a4c472fd4679d1983fec"
+    },
+    "tools": {
+      "pytest": {
+        "version_argv": [
+          ".venv/bin/pytest",
+          "--version"
+        ],
+        "invocation_executable": "/private/tmp/cpswm-s2-evidence-repair-window1/.venv/bin/pytest",
+        "resolved_executable": "/private/tmp/cpswm-s2-evidence-repair-window1/.venv/bin/pytest",
+        "executable_sha256": "de6df365cc6aadce8a43b8177ed771f57534ac7aeb1e5c138ee068233514edc0",
+        "version": "pytest 9.1.1",
+        "version_output_sha256": "ef5a4d39b097310ed885c4a4dc78e963c7ef42c92ed56ab09571200962f53779"
+      },
+      "mypy": {
+        "version_argv": [
+          ".venv/bin/mypy",
+          "--version"
+        ],
+        "invocation_executable": "/private/tmp/cpswm-s2-evidence-repair-window1/.venv/bin/mypy",
+        "resolved_executable": "/private/tmp/cpswm-s2-evidence-repair-window1/.venv/bin/mypy",
+        "executable_sha256": "7d9fe1faee53230e0f8122b6632500de8644b6fe9ad309052fb251bf8bfb2464",
+        "version": "mypy 2.3.1 (compiled: yes)",
+        "version_output_sha256": "fa7c9d68c73be8f4a3a3b8fdf30f16f2f9f45dd0bf67b878351daa895efb1028"
+      },
+      "ruff": {
+        "version_argv": [
+          ".venv/bin/ruff",
+          "--version"
+        ],
+        "invocation_executable": "/private/tmp/cpswm-s2-evidence-repair-window1/.venv/bin/ruff",
+        "resolved_executable": "/private/tmp/cpswm-s2-evidence-repair-window1/.venv/bin/ruff",
+        "executable_sha256": "9151d40f2f5b37cc6c4dffba0de8433274c7ec11c872551f38ea0f8ba51f516e",
+        "version": "ruff 0.16.3",
+        "version_output_sha256": "bfe8e679bbd44119921e638e71a35912ac128214744be275492ff2315a5d5dd4"
+      },
+      "git": {
+        "version_argv": [
+          "git",
+          "--version"
+        ],
+        "invocation_executable": "/usr/bin/git",
+        "resolved_executable": "/usr/bin/git",
+        "executable_sha256": "12bed4523661307059b879b9b54e77a73176e9d27d27a0e40363271d8f0668ba",
+        "version": "git version 2.50.1 (Apple Git-155)",
+        "version_output_sha256": "0a72a762b37a3800276a1004e2c169aed0610d4a3ba601ba59e70e1c4d9f3200"
+      },
+      "uv": {
+        "version_argv": [
+          "uv",
+          "--version"
+        ],
+        "invocation_executable": "/opt/homebrew/bin/uv",
+        "resolved_executable": "/opt/homebrew/Cellar/uv/0.12.5/bin/uv",
+        "executable_sha256": "debc68c21b3bb1086e20d9889b53ff5ccf9ef343fda9a57dc2022212e3511125",
+        "version": "uv 0.12.5 (Homebrew 2026-08-14 aarch64-apple-darwin)",
+        "version_output_sha256": "0ad45b5aa445a1f8c5280da404b7dfc6e407cd17bc17372fd5f963543a9de322"
+      }
+    },
+    "critical_python_modules": {
+      "mypy_entrypoint": {
+        "module_file_sha256": "fa454ca53a2a1db120742a9750ce4a7a7a40c68a5d30b4b21d66a98e3d632f33",
+        "module_name": "mypy.__main__",
+        "package_content_sha256": "6682882ff82304e469ff684937c064b0c3ffaef7045d4186bcefe57bfb8564bc",
+        "package_file_count": 1095,
+        "package_name": "mypy",
+        "resolved_module_file": "/private/tmp/cpswm-s2-evidence-repair-window1/.venv/lib/python3.13/site-packages/mypy/__main__.py",
+        "resolved_package_root": "/private/tmp/cpswm-s2-evidence-repair-window1/.venv/lib/python3.13/site-packages/mypy"
+      },
+      "pytest_engine": {
+        "module_file_sha256": "98b05c2c37d09e1d5c05975efc2d9af98d4aff6ea47de410a8e93956420873c1",
+        "module_name": "_pytest.config",
+        "package_content_sha256": "6a1903215e82095ba1d99f960189430a631642b53e085eb56c2fe0cdcd1f32bc",
+        "package_file_count": 79,
+        "package_name": "_pytest",
+        "resolved_module_file": "/private/tmp/cpswm-s2-evidence-repair-window1/.venv/lib/python3.13/site-packages/_pytest/config/__init__.py",
+        "resolved_package_root": "/private/tmp/cpswm-s2-evidence-repair-window1/.venv/lib/python3.13/site-packages/_pytest"
+      },
+      "pytest_public": {
+        "module_file_sha256": "ee37885c9583f843390684dfb496907f87a0905128e7a3cf4ad227f49ff34c2d",
+        "module_name": "pytest",
+        "package_content_sha256": "081263e8c2d2baf30daf5ba17cf8ed8a8343a0dbba136d9f8b17ef1bb2c198a7",
+        "package_file_count": 3,
+        "package_name": "pytest",
+        "resolved_module_file": "/private/tmp/cpswm-s2-evidence-repair-window1/.venv/lib/python3.13/site-packages/pytest/__init__.py",
+        "resolved_package_root": "/private/tmp/cpswm-s2-evidence-repair-window1/.venv/lib/python3.13/site-packages/pytest"
+      },
+      "pytest_xdist": {
+        "module_file_sha256": "62df71dfe342969ab667cb3a4f2280a93be9c11bc9a4c2d9ead271c979d2afd8",
+        "module_name": "xdist.plugin",
+        "package_content_sha256": "fefdcaff96720807e6ff2ebd069b2e31d36553c0ed9e908d2a4461bd51db9048",
+        "package_file_count": 18,
+        "package_name": "xdist",
+        "resolved_module_file": "/private/tmp/cpswm-s2-evidence-repair-window1/.venv/lib/python3.13/site-packages/xdist/plugin.py",
+        "resolved_package_root": "/private/tmp/cpswm-s2-evidence-repair-window1/.venv/lib/python3.13/site-packages/xdist"
+      }
+    },
+    "toolchain_files": [
+      {
+        "path": ".python-version",
+        "sha256": "02e735b3dfe1c32833eb550b7ff8ffa17f5f2bc3fa1e7bae61a8f5a3883ce398"
+      },
+      {
+        "path": "pyproject.toml",
+        "sha256": "6fb202d1ca629d7256cb8759f70e64991e6e7993cb159cc8039c265288d95f18"
+      },
+      {
+        "path": "uv.lock",
+        "sha256": "8ff0275d2b10eef8c258f14c82a050358ceee6443a5d0fa4c9ddfcc3832291b1"
+      }
+    ],
+    "installed_distributions": {
+      "sort_key": "normalised_name,version",
+      "count": 56,
+      "entries": [
+        {
+          "name": "annotated-types",
+          "version": "0.8.0"
+        },
+        {
+          "name": "antlr4-python3-runtime",
+          "version": "4.9.3"
+        },
+        {
+          "name": "ast-serialize",
+          "version": "0.8.0"
+        },
+        {
+          "name": "cffi",
+          "version": "2.1.1"
+        },
+        {
+          "name": "cfgv",
+          "version": "3.5.0"
+        },
+        {
+          "name": "contourpy",
+          "version": "1.3.3"
+        },
+        {
+          "name": "coverage",
+          "version": "7.15.4"
+        },
+        {
+          "name": "cpswm",
+          "version": "0.1.0"
+        },
+        {
+          "name": "cpswm",
+          "version": "0.1.0"
+        },
+        {
+          "name": "cryptography",
+          "version": "47.0.0"
+        },
+        {
+          "name": "cycler",
+          "version": "0.12.1"
+        },
+        {
+          "name": "distlib",
+          "version": "0.4.3"
+        },
+        {
+          "name": "execnet",
+          "version": "2.1.2"
+        },
+        {
+          "name": "filelock",
+          "version": "3.32.3"
+        },
+        {
+          "name": "fonttools",
+          "version": "4.63.0"
+        },
+        {
+          "name": "hydra-core",
+          "version": "1.3.5"
+        },
+        {
+          "name": "hypothesis",
+          "version": "6.165.10"
+        },
+        {
+          "name": "identify",
+          "version": "2.6.19"
+        },
+        {
+          "name": "iniconfig",
+          "version": "2.3.0"
+        },
+        {
+          "name": "joblib",
+          "version": "1.5.3"
+        },
+        {
+          "name": "kiwisolver",
+          "version": "1.5.0"
+        },
+        {
+          "name": "librt",
+          "version": "0.15.0"
+        },
+        {
+          "name": "matplotlib",
+          "version": "3.11.1"
+        },
+        {
+          "name": "mypy",
+          "version": "2.3.1"
+        },
+        {
+          "name": "mypy-extensions",
+          "version": "1.1.0"
+        },
+        {
+          "name": "narwhals",
+          "version": "2.24.0"
+        },
+        {
+          "name": "networkx",
+          "version": "3.6.1"
+        },
+        {
+          "name": "nodeenv",
+          "version": "1.10.0"
+        },
+        {
+          "name": "numpy",
+          "version": "2.5.2"
+        },
+        {
+          "name": "omegaconf",
+          "version": "2.3.1"
+        },
+        {
+          "name": "packaging",
+          "version": "26.3"
+        },
+        {
+          "name": "pathspec",
+          "version": "1.1.1"
+        },
+        {
+          "name": "pillow",
+          "version": "12.3.0"
+        },
+        {
+          "name": "platformdirs",
+          "version": "4.11.3"
+        },
+        {
+          "name": "pluggy",
+          "version": "1.6.0"
+        },
+        {
+          "name": "pre-commit",
+          "version": "4.6.2"
+        },
+        {
+          "name": "pycparser",
+          "version": "3.0"
+        },
+        {
+          "name": "pydantic",
+          "version": "2.13.4"
+        },
+        {
+          "name": "pydantic-core",
+          "version": "2.46.4"
+        },
+        {
+          "name": "pygments",
+          "version": "2.20.0"
+        },
+        {
+          "name": "pyparsing",
+          "version": "3.3.2"
+        },
+        {
+          "name": "pytest",
+          "version": "9.1.1"
+        },
+        {
+          "name": "pytest-cov",
+          "version": "7.1.0"
+        },
+        {
+          "name": "pytest-xdist",
+          "version": "3.8.0"
+        },
+        {
+          "name": "python-dateutil",
+          "version": "2.9.0.post0"
+        },
+        {
+          "name": "python-discovery",
+          "version": "1.5.2"
+        },
+        {
+          "name": "pyyaml",
+          "version": "6.0.3"
+        },
+        {
+          "name": "ruff",
+          "version": "0.16.3"
+        },
+        {
+          "name": "scikit-learn",
+          "version": "1.9.0"
+        },
+        {
+          "name": "scipy",
+          "version": "1.18.0"
+        },
+        {
+          "name": "six",
+          "version": "1.17.0"
+        },
+        {
+          "name": "sortedcontainers",
+          "version": "2.4.0"
+        },
+        {
+          "name": "threadpoolctl",
+          "version": "3.6.0"
+        },
+        {
+          "name": "typing-extensions",
+          "version": "4.16.0"
+        },
+        {
+          "name": "typing-inspection",
+          "version": "0.4.4"
+        },
+        {
+          "name": "virtualenv",
+          "version": "21.7.4"
+        }
+      ],
+      "digest_sha256": "2d3855d37a0a6cb0602b3845a3c3f62404f27397e5edf2328ec480d9545e9a82"
+    },
+    "sensitive_environment_allowlist": {
+      "PYTEST_ADDOPTS": {
+        "state": "absent"
+      },
+      "PYTEST_DISABLE_PLUGIN_AUTOLOAD": {
+        "state": "absent"
+      },
+      "PYTEST_PLUGINS": {
+        "state": "absent"
+      },
+      "PYTHONHASHSEED": {
+        "state": "absent"
+      },
+      "PYTHONPATH": {
+        "state": "absent"
+      },
+      "COVERAGE_PROCESS_START": {
+        "state": "absent"
+      },
+      "MYPYPATH": {
+        "state": "absent"
+      },
+      "RUFF_CACHE_DIR": {
+        "state": "absent"
+      },
+      "UV_OFFLINE": {
+        "state": "absent"
+      },
+      "UV_FROZEN": {
+        "state": "absent"
+      },
+      "UV_NO_SYNC": {
+        "state": "absent"
+      },
+      "VIRTUAL_ENV": {
+        "state": "effective",
+        "value_sha256": "00c1788a536cfd24b14147814718aa0f3745764773a9db555cb1bce33e56fbfa"
+      }
+    },
+    "claim_boundary": "This fingerprint describes only the current local interpreter, executables, toolchain files, installed distributions, and allowlisted effective environment state. It is not a hermetic build attestation or independently held evidence.",
+    "content_sha256": "bba78a7a15b6c7549995038d89482580b105b702aeaa1775b5e5118eb60b563d"
+  },
+  "post_execution_environment": {
+    "protocol": "structure-two-local-execution-environment@1.0",
+    "authority": "CURRENT_LOCAL_TOOLCHAIN_STATE_ONLY",
+    "python": {
+      "implementation": "cpython",
+      "version": "3.13.5",
+      "full_version": "3.13.5 (main, Jun 12 2025, 12:22:43) [Clang 20.1.4 ]",
+      "implementation_version": {
+        "major": 3,
+        "minor": 13,
+        "micro": 5,
+        "releaselevel": "final",
+        "serial": 0
+      },
+      "cache_tag": "cpython-313",
+      "soabi": "cpython-313-darwin",
+      "platform": "macOS-26.4-arm64-arm-64bit-Mach-O",
+      "interpreter_invocation_path": "/Users/pangwei/.local/share/uv/python/cpython-3.13.5-macos-aarch64-none/bin/python3.13",
+      "interpreter_invocation_path_policy": "CANONICAL_RESOLVED_PATH",
+      "resolved_interpreter": "/Users/pangwei/.local/share/uv/python/cpython-3.13.5-macos-aarch64-none/bin/python3.13",
+      "interpreter_sha256": "3e96a8b2f541b3d5ded271fb6e2bc83aea0557e863d0a4c472fd4679d1983fec"
+    },
+    "tools": {
+      "pytest": {
+        "version_argv": [
+          ".venv/bin/pytest",
+          "--version"
+        ],
+        "invocation_executable": "/private/tmp/cpswm-s2-evidence-repair-window1/.venv/bin/pytest",
+        "resolved_executable": "/private/tmp/cpswm-s2-evidence-repair-window1/.venv/bin/pytest",
+        "executable_sha256": "de6df365cc6aadce8a43b8177ed771f57534ac7aeb1e5c138ee068233514edc0",
+        "version": "pytest 9.1.1",
+        "version_output_sha256": "ef5a4d39b097310ed885c4a4dc78e963c7ef42c92ed56ab09571200962f53779"
+      },
+      "mypy": {
+        "version_argv": [
+          ".venv/bin/mypy",
+          "--version"
+        ],
+        "invocation_executable": "/private/tmp/cpswm-s2-evidence-repair-window1/.venv/bin/mypy",
+        "resolved_executable": "/private/tmp/cpswm-s2-evidence-repair-window1/.venv/bin/mypy",
+        "executable_sha256": "7d9fe1faee53230e0f8122b6632500de8644b6fe9ad309052fb251bf8bfb2464",
+        "version": "mypy 2.3.1 (compiled: yes)",
+        "version_output_sha256": "fa7c9d68c73be8f4a3a3b8fdf30f16f2f9f45dd0bf67b878351daa895efb1028"
+      },
+      "ruff": {
+        "version_argv": [
+          ".venv/bin/ruff",
+          "--version"
+        ],
+        "invocation_executable": "/private/tmp/cpswm-s2-evidence-repair-window1/.venv/bin/ruff",
+        "resolved_executable": "/private/tmp/cpswm-s2-evidence-repair-window1/.venv/bin/ruff",
+        "executable_sha256": "9151d40f2f5b37cc6c4dffba0de8433274c7ec11c872551f38ea0f8ba51f516e",
+        "version": "ruff 0.16.3",
+        "version_output_sha256": "bfe8e679bbd44119921e638e71a35912ac128214744be275492ff2315a5d5dd4"
+      },
+      "git": {
+        "version_argv": [
+          "git",
+          "--version"
+        ],
+        "invocation_executable": "/usr/bin/git",
+        "resolved_executable": "/usr/bin/git",
+        "executable_sha256": "12bed4523661307059b879b9b54e77a73176e9d27d27a0e40363271d8f0668ba",
+        "version": "git version 2.50.1 (Apple Git-155)",
+        "version_output_sha256": "0a72a762b37a3800276a1004e2c169aed0610d4a3ba601ba59e70e1c4d9f3200"
+      },
+      "uv": {
+        "version_argv": [
+          "uv",
+          "--version"
+        ],
+        "invocation_executable": "/opt/homebrew/bin/uv",
+        "resolved_executable": "/opt/homebrew/Cellar/uv/0.12.5/bin/uv",
+        "executable_sha256": "debc68c21b3bb1086e20d9889b53ff5ccf9ef343fda9a57dc2022212e3511125",
+        "version": "uv 0.12.5 (Homebrew 2026-08-14 aarch64-apple-darwin)",
+        "version_output_sha256": "0ad45b5aa445a1f8c5280da404b7dfc6e407cd17bc17372fd5f963543a9de322"
+      }
+    },
+    "critical_python_modules": {
+      "mypy_entrypoint": {
+        "module_file_sha256": "fa454ca53a2a1db120742a9750ce4a7a7a40c68a5d30b4b21d66a98e3d632f33",
+        "module_name": "mypy.__main__",
+        "package_content_sha256": "6682882ff82304e469ff684937c064b0c3ffaef7045d4186bcefe57bfb8564bc",
+        "package_file_count": 1095,
+        "package_name": "mypy",
+        "resolved_module_file": "/private/tmp/cpswm-s2-evidence-repair-window1/.venv/lib/python3.13/site-packages/mypy/__main__.py",
+        "resolved_package_root": "/private/tmp/cpswm-s2-evidence-repair-window1/.venv/lib/python3.13/site-packages/mypy"
+      },
+      "pytest_engine": {
+        "module_file_sha256": "98b05c2c37d09e1d5c05975efc2d9af98d4aff6ea47de410a8e93956420873c1",
+        "module_name": "_pytest.config",
+        "package_content_sha256": "6a1903215e82095ba1d99f960189430a631642b53e085eb56c2fe0cdcd1f32bc",
+        "package_file_count": 79,
+        "package_name": "_pytest",
+        "resolved_module_file": "/private/tmp/cpswm-s2-evidence-repair-window1/.venv/lib/python3.13/site-packages/_pytest/config/__init__.py",
+        "resolved_package_root": "/private/tmp/cpswm-s2-evidence-repair-window1/.venv/lib/python3.13/site-packages/_pytest"
+      },
+      "pytest_public": {
+        "module_file_sha256": "ee37885c9583f843390684dfb496907f87a0905128e7a3cf4ad227f49ff34c2d",
+        "module_name": "pytest",
+        "package_content_sha256": "081263e8c2d2baf30daf5ba17cf8ed8a8343a0dbba136d9f8b17ef1bb2c198a7",
+        "package_file_count": 3,
+        "package_name": "pytest",
+        "resolved_module_file": "/private/tmp/cpswm-s2-evidence-repair-window1/.venv/lib/python3.13/site-packages/pytest/__init__.py",
+        "resolved_package_root": "/private/tmp/cpswm-s2-evidence-repair-window1/.venv/lib/python3.13/site-packages/pytest"
+      },
+      "pytest_xdist": {
+        "module_file_sha256": "62df71dfe342969ab667cb3a4f2280a93be9c11bc9a4c2d9ead271c979d2afd8",
+        "module_name": "xdist.plugin",
+        "package_content_sha256": "fefdcaff96720807e6ff2ebd069b2e31d36553c0ed9e908d2a4461bd51db9048",
+        "package_file_count": 18,
+        "package_name": "xdist",
+        "resolved_module_file": "/private/tmp/cpswm-s2-evidence-repair-window1/.venv/lib/python3.13/site-packages/xdist/plugin.py",
+        "resolved_package_root": "/private/tmp/cpswm-s2-evidence-repair-window1/.venv/lib/python3.13/site-packages/xdist"
+      }
+    },
+    "toolchain_files": [
+      {
+        "path": ".python-version",
+        "sha256": "02e735b3dfe1c32833eb550b7ff8ffa17f5f2bc3fa1e7bae61a8f5a3883ce398"
+      },
+      {
+        "path": "pyproject.toml",
+        "sha256": "6fb202d1ca629d7256cb8759f70e64991e6e7993cb159cc8039c265288d95f18"
+      },
+      {
+        "path": "uv.lock",
+        "sha256": "8ff0275d2b10eef8c258f14c82a050358ceee6443a5d0fa4c9ddfcc3832291b1"
+      }
+    ],
+    "installed_distributions": {
+      "sort_key": "normalised_name,version",
+      "count": 56,
+      "entries": [
+        {
+          "name": "annotated-types",
+          "version": "0.8.0"
+        },
+        {
+          "name": "antlr4-python3-runtime",
+          "version": "4.9.3"
+        },
+        {
+          "name": "ast-serialize",
+          "version": "0.8.0"
+        },
+        {
+          "name": "cffi",
+          "version": "2.1.1"
+        },
+        {
+          "name": "cfgv",
+          "version": "3.5.0"
+        },
+        {
+          "name": "contourpy",
+          "version": "1.3.3"
+        },
+        {
+          "name": "coverage",
+          "version": "7.15.4"
+        },
+        {
+          "name": "cpswm",
+          "version": "0.1.0"
+        },
+        {
+          "name": "cpswm",
+          "version": "0.1.0"
+        },
+        {
+          "name": "cryptography",
+          "version": "47.0.0"
+        },
+        {
+          "name": "cycler",
+          "version": "0.12.1"
+        },
+        {
+          "name": "distlib",
+          "version": "0.4.3"
+        },
+        {
+          "name": "execnet",
+          "version": "2.1.2"
+        },
+        {
+          "name": "filelock",
+          "version": "3.32.3"
+        },
+        {
+          "name": "fonttools",
+          "version": "4.63.0"
+        },
+        {
+          "name": "hydra-core",
+          "version": "1.3.5"
+        },
+        {
+          "name": "hypothesis",
+          "version": "6.165.10"
+        },
+        {
+          "name": "identify",
+          "version": "2.6.19"
+        },
+        {
+          "name": "iniconfig",
+          "version": "2.3.0"
+        },
+        {
+          "name": "joblib",
+          "version": "1.5.3"
+        },
+        {
+          "name": "kiwisolver",
+          "version": "1.5.0"
+        },
+        {
+          "name": "librt",
+          "version": "0.15.0"
+        },
+        {
+          "name": "matplotlib",
+          "version": "3.11.1"
+        },
+        {
+          "name": "mypy",
+          "version": "2.3.1"
+        },
+        {
+          "name": "mypy-extensions",
+          "version": "1.1.0"
+        },
+        {
+          "name": "narwhals",
+          "version": "2.24.0"
+        },
+        {
+          "name": "networkx",
+          "version": "3.6.1"
+        },
+        {
+          "name": "nodeenv",
+          "version": "1.10.0"
+        },
+        {
+          "name": "numpy",
+          "version": "2.5.2"
+        },
+        {
+          "name": "omegaconf",
+          "version": "2.3.1"
+        },
+        {
+          "name": "packaging",
+          "version": "26.3"
+        },
+        {
+          "name": "pathspec",
+          "version": "1.1.1"
+        },
+        {
+          "name": "pillow",
+          "version": "12.3.0"
+        },
+        {
+          "name": "platformdirs",
+          "version": "4.11.3"
+        },
+        {
+          "name": "pluggy",
+          "version": "1.6.0"
+        },
+        {
+          "name": "pre-commit",
+          "version": "4.6.2"
+        },
+        {
+          "name": "pycparser",
+          "version": "3.0"
+        },
+        {
+          "name": "pydantic",
+          "version": "2.13.4"
+        },
+        {
+          "name": "pydantic-core",
+          "version": "2.46.4"
+        },
+        {
+          "name": "pygments",
+          "version": "2.20.0"
+        },
+        {
+          "name": "pyparsing",
+          "version": "3.3.2"
+        },
+        {
+          "name": "pytest",
+          "version": "9.1.1"
+        },
+        {
+          "name": "pytest-cov",
+          "version": "7.1.0"
+        },
+        {
+          "name": "pytest-xdist",
+          "version": "3.8.0"
+        },
+        {
+          "name": "python-dateutil",
+          "version": "2.9.0.post0"
+        },
+        {
+          "name": "python-discovery",
+          "version": "1.5.2"
+        },
+        {
+          "name": "pyyaml",
+          "version": "6.0.3"
+        },
+        {
+          "name": "ruff",
+          "version": "0.16.3"
+        },
+        {
+          "name": "scikit-learn",
+          "version": "1.9.0"
+        },
+        {
+          "name": "scipy",
+          "version": "1.18.0"
+        },
+        {
+          "name": "six",
+          "version": "1.17.0"
+        },
+        {
+          "name": "sortedcontainers",
+          "version": "2.4.0"
+        },
+        {
+          "name": "threadpoolctl",
+          "version": "3.6.0"
+        },
+        {
+          "name": "typing-extensions",
+          "version": "4.16.0"
+        },
+        {
+          "name": "typing-inspection",
+          "version": "0.4.4"
+        },
+        {
+          "name": "virtualenv",
+          "version": "21.7.4"
+        }
+      ],
+      "digest_sha256": "2d3855d37a0a6cb0602b3845a3c3f62404f27397e5edf2328ec480d9545e9a82"
+    },
+    "sensitive_environment_allowlist": {
+      "PYTEST_ADDOPTS": {
+        "state": "absent"
+      },
+      "PYTEST_DISABLE_PLUGIN_AUTOLOAD": {
+        "state": "absent"
+      },
+      "PYTEST_PLUGINS": {
+        "state": "absent"
+      },
+      "PYTHONHASHSEED": {
+        "state": "absent"
+      },
+      "PYTHONPATH": {
+        "state": "absent"
+      },
+      "COVERAGE_PROCESS_START": {
+        "state": "absent"
+      },
+      "MYPYPATH": {
+        "state": "absent"
+      },
+      "RUFF_CACHE_DIR": {
+        "state": "absent"
+      },
+      "UV_OFFLINE": {
+        "state": "absent"
+      },
+      "UV_FROZEN": {
+        "state": "absent"
+      },
+      "UV_NO_SYNC": {
+        "state": "absent"
+      },
+      "VIRTUAL_ENV": {
+        "state": "effective",
+        "value_sha256": "00c1788a536cfd24b14147814718aa0f3745764773a9db555cb1bce33e56fbfa"
+      }
+    },
+    "claim_boundary": "This fingerprint describes only the current local interpreter, executables, toolchain files, installed distributions, and allowlisted effective environment state. It is not a hermetic build attestation or independently held evidence.",
+    "content_sha256": "bba78a7a15b6c7549995038d89482580b105b702aeaa1775b5e5118eb60b563d"
+  },
+  "command_runs": [
+    {
+      "command_id": "p5_evidence_current",
+      "argv": [
+        ".venv/bin/python",
+        "apps/evaluation_runner/run_structure_two_evidence_repair.py",
+        "--verify-current"
+      ],
+      "source_manifest_sha256": "dc7067c2769af765f71ba62f12dd543221905af108eb7ea0121355571ca89fc6",
+      "source_manifest_file_sha256": "a0019a2b88b3336802b5ea0e8ee5d11c1e704f60342f57a016558f7cb3945090",
+      "execution_environment_sha256": "bba78a7a15b6c7549995038d89482580b105b702aeaa1775b5e5118eb60b563d",
+      "environment_overrides": {},
+      "cwd": "/private/tmp/cpswm-s2-evidence-repair-window1",
+      "invocation_executable": "/private/tmp/cpswm-s2-evidence-repair-window1/.venv/bin/python",
+      "resolved_executable": "/Users/pangwei/.local/share/uv/python/cpython-3.13.5-macos-aarch64-none/bin/python3.13",
+      "executable_sha256": "3e96a8b2f541b3d5ded271fb6e2bc83aea0557e863d0a4c472fd4679d1983fec",
+      "start_timestamp": "2026-09-11T15:24:57.058603+00:00",
+      "end_timestamp": "2026-09-11T15:37:26.214769+00:00",
+      "exit_code": 0,
+      "stdout_path": "benchmarks/structure_two/engineering_trust_checkpoint_2026_09_11_v0_2/engineering_audit_logs/p5_evidence_current.stdout.log",
+      "stdout_sha256": "d4c8bd23dbbc6abe1d0651a850a156be50bccf953592e55262600d5f6940527f",
+      "stderr_path": "benchmarks/structure_two/engineering_trust_checkpoint_2026_09_11_v0_2/engineering_audit_logs/p5_evidence_current.stderr.log",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "command_id": "p5_evidence_history",
+      "argv": [
+        ".venv/bin/python",
+        "apps/evaluation_runner/audit_structure_two_evidence_history.py",
+        "--verify",
+        "benchmarks/structure_two/evidence_repair_supplement_2026_09_11/historical_source_audit_v0_2.json"
+      ],
+      "source_manifest_sha256": "dc7067c2769af765f71ba62f12dd543221905af108eb7ea0121355571ca89fc6",
+      "source_manifest_file_sha256": "a0019a2b88b3336802b5ea0e8ee5d11c1e704f60342f57a016558f7cb3945090",
+      "execution_environment_sha256": "bba78a7a15b6c7549995038d89482580b105b702aeaa1775b5e5118eb60b563d",
+      "environment_overrides": {},
+      "cwd": "/private/tmp/cpswm-s2-evidence-repair-window1",
+      "invocation_executable": "/private/tmp/cpswm-s2-evidence-repair-window1/.venv/bin/python",
+      "resolved_executable": "/Users/pangwei/.local/share/uv/python/cpython-3.13.5-macos-aarch64-none/bin/python3.13",
+      "executable_sha256": "3e96a8b2f541b3d5ded271fb6e2bc83aea0557e863d0a4c472fd4679d1983fec",
+      "start_timestamp": "2026-09-11T15:24:57.059520+00:00",
+      "end_timestamp": "2026-09-11T15:31:06.013344+00:00",
+      "exit_code": 0,
+      "stdout_path": "benchmarks/structure_two/engineering_trust_checkpoint_2026_09_11_v0_2/engineering_audit_logs/p5_evidence_history.stdout.log",
+      "stdout_sha256": "6a0495b3028e1dd08e5c928a22dc2f61c7e226d914d7505d44f009169d8a88f0",
+      "stderr_path": "benchmarks/structure_two/engineering_trust_checkpoint_2026_09_11_v0_2/engineering_audit_logs/p5_evidence_history.stderr.log",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "command_id": "p0_adversarial_tests",
+      "argv": [
+        ".venv/bin/pytest",
+        "-o",
+        "addopts=",
+        "-q",
+        "--confcutdir=.",
+        "tests/test_structure_two_trusted_ablation_authorization.py",
+        "tests/test_structure_two_gate_b_v0_8_raw_formal_execution.py",
+        "tests/test_structure_two_comparator_typed_dual_gate_b_v0_8.py",
+        "tests/test_p0_checkpoint_manifest.py"
+      ],
+      "source_manifest_sha256": "dc7067c2769af765f71ba62f12dd543221905af108eb7ea0121355571ca89fc6",
+      "source_manifest_file_sha256": "a0019a2b88b3336802b5ea0e8ee5d11c1e704f60342f57a016558f7cb3945090",
+      "execution_environment_sha256": "bba78a7a15b6c7549995038d89482580b105b702aeaa1775b5e5118eb60b563d",
+      "environment_overrides": {
+        "PYTEST_ADDOPTS": {
+          "state": "forced",
+          "value_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "PYTEST_DISABLE_PLUGIN_AUTOLOAD": {
+          "state": "forced",
+          "value_sha256": "6b86b273ff34fce19d6b804eff5a3f5747ada4eaa22f1d49c01e52ddb7875b4b"
+        },
+        "PYTEST_PLUGINS": {
+          "state": "forced",
+          "value_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "PYTHONHASHSEED": {
+          "state": "forced",
+          "value_sha256": "5feceb66ffc86f38d952786c6d696c79c2dbc239dd4e91b46729d73a27fb57e9"
+        },
+        "PYTHONPATH": {
+          "state": "forced",
+          "value_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      },
+      "cwd": "/private/tmp/cpswm-s2-evidence-repair-window1",
+      "invocation_executable": "/private/tmp/cpswm-s2-evidence-repair-window1/.venv/bin/pytest",
+      "resolved_executable": "/private/tmp/cpswm-s2-evidence-repair-window1/.venv/bin/pytest",
+      "executable_sha256": "de6df365cc6aadce8a43b8177ed771f57534ac7aeb1e5c138ee068233514edc0",
+      "start_timestamp": "2026-09-11T15:37:26.215884+00:00",
+      "end_timestamp": "2026-09-11T15:37:31.577459+00:00",
+      "exit_code": 0,
+      "stdout_path": "benchmarks/structure_two/engineering_trust_checkpoint_2026_09_11_v0_2/engineering_audit_logs/p0_adversarial_tests.stdout.log",
+      "stdout_sha256": "8143d7f65f37c4c5a1d13720b7b90eab26bf541b4d7e4af750f28fff0cc16feb",
+      "stderr_path": "benchmarks/structure_two/engineering_trust_checkpoint_2026_09_11_v0_2/engineering_audit_logs/p0_adversarial_tests.stderr.log",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "command_id": "core_pytest",
+      "argv": [
+        ".venv/bin/pytest",
+        "-o",
+        "addopts=",
+        "-p",
+        "xdist.plugin",
+        "-n",
+        "auto",
+        "--dist=worksteal",
+        "-q",
+        "--confcutdir=.",
+        "--ignore=tests/test_structure_two_engineering_trust_checkpoint.py"
+      ],
+      "source_manifest_sha256": "dc7067c2769af765f71ba62f12dd543221905af108eb7ea0121355571ca89fc6",
+      "source_manifest_file_sha256": "a0019a2b88b3336802b5ea0e8ee5d11c1e704f60342f57a016558f7cb3945090",
+      "execution_environment_sha256": "bba78a7a15b6c7549995038d89482580b105b702aeaa1775b5e5118eb60b563d",
+      "environment_overrides": {
+        "PYTEST_ADDOPTS": {
+          "state": "forced",
+          "value_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "PYTEST_DISABLE_PLUGIN_AUTOLOAD": {
+          "state": "forced",
+          "value_sha256": "6b86b273ff34fce19d6b804eff5a3f5747ada4eaa22f1d49c01e52ddb7875b4b"
+        },
+        "PYTEST_PLUGINS": {
+          "state": "forced",
+          "value_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "PYTHONHASHSEED": {
+          "state": "forced",
+          "value_sha256": "5feceb66ffc86f38d952786c6d696c79c2dbc239dd4e91b46729d73a27fb57e9"
+        },
+        "PYTHONPATH": {
+          "state": "forced",
+          "value_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      },
+      "cwd": "/private/tmp/cpswm-s2-evidence-repair-window1",
+      "invocation_executable": "/private/tmp/cpswm-s2-evidence-repair-window1/.venv/bin/pytest",
+      "resolved_executable": "/private/tmp/cpswm-s2-evidence-repair-window1/.venv/bin/pytest",
+      "executable_sha256": "de6df365cc6aadce8a43b8177ed771f57534ac7aeb1e5c138ee068233514edc0",
+      "start_timestamp": "2026-09-11T15:37:31.577898+00:00",
+      "end_timestamp": "2026-09-11T16:03:03.641469+00:00",
+      "exit_code": 0,
+      "stdout_path": "benchmarks/structure_two/engineering_trust_checkpoint_2026_09_11_v0_2/engineering_audit_logs/core_pytest.stdout.log",
+      "stdout_sha256": "d63ec1c1609c4289d12b0de3e606dc0c48fb8865bd9b5c464fe162aaf387f9fc",
+      "stderr_path": "benchmarks/structure_two/engineering_trust_checkpoint_2026_09_11_v0_2/engineering_audit_logs/core_pytest.stderr.log",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "command_id": "mypy_src",
+      "argv": [
+        ".venv/bin/mypy",
+        "src"
+      ],
+      "source_manifest_sha256": "dc7067c2769af765f71ba62f12dd543221905af108eb7ea0121355571ca89fc6",
+      "source_manifest_file_sha256": "a0019a2b88b3336802b5ea0e8ee5d11c1e704f60342f57a016558f7cb3945090",
+      "execution_environment_sha256": "bba78a7a15b6c7549995038d89482580b105b702aeaa1775b5e5118eb60b563d",
+      "environment_overrides": {},
+      "cwd": "/private/tmp/cpswm-s2-evidence-repair-window1",
+      "invocation_executable": "/private/tmp/cpswm-s2-evidence-repair-window1/.venv/bin/mypy",
+      "resolved_executable": "/private/tmp/cpswm-s2-evidence-repair-window1/.venv/bin/mypy",
+      "executable_sha256": "7d9fe1faee53230e0f8122b6632500de8644b6fe9ad309052fb251bf8bfb2464",
+      "start_timestamp": "2026-09-11T16:03:03.644172+00:00",
+      "end_timestamp": "2026-09-11T16:03:03.884290+00:00",
+      "exit_code": 0,
+      "stdout_path": "benchmarks/structure_two/engineering_trust_checkpoint_2026_09_11_v0_2/engineering_audit_logs/mypy_src.stdout.log",
+      "stdout_sha256": "d834083e82e2977a04dff983d38de274ffd9716b40dc8dfbe49b6f4b47389317",
+      "stderr_path": "benchmarks/structure_two/engineering_trust_checkpoint_2026_09_11_v0_2/engineering_audit_logs/mypy_src.stderr.log",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "command_id": "ruff_lint",
+      "argv": [
+        ".venv/bin/ruff",
+        "check",
+        "src",
+        "tests",
+        "apps"
+      ],
+      "source_manifest_sha256": "dc7067c2769af765f71ba62f12dd543221905af108eb7ea0121355571ca89fc6",
+      "source_manifest_file_sha256": "a0019a2b88b3336802b5ea0e8ee5d11c1e704f60342f57a016558f7cb3945090",
+      "execution_environment_sha256": "bba78a7a15b6c7549995038d89482580b105b702aeaa1775b5e5118eb60b563d",
+      "environment_overrides": {},
+      "cwd": "/private/tmp/cpswm-s2-evidence-repair-window1",
+      "invocation_executable": "/private/tmp/cpswm-s2-evidence-repair-window1/.venv/bin/ruff",
+      "resolved_executable": "/private/tmp/cpswm-s2-evidence-repair-window1/.venv/bin/ruff",
+      "executable_sha256": "9151d40f2f5b37cc6c4dffba0de8433274c7ec11c872551f38ea0f8ba51f516e",
+      "start_timestamp": "2026-09-11T16:03:03.895660+00:00",
+      "end_timestamp": "2026-09-11T16:03:03.919713+00:00",
+      "exit_code": 0,
+      "stdout_path": "benchmarks/structure_two/engineering_trust_checkpoint_2026_09_11_v0_2/engineering_audit_logs/ruff_lint.stdout.log",
+      "stdout_sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+      "stderr_path": "benchmarks/structure_two/engineering_trust_checkpoint_2026_09_11_v0_2/engineering_audit_logs/ruff_lint.stderr.log",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "command_id": "ruff_format",
+      "argv": [
+        ".venv/bin/ruff",
+        "format",
+        "--check",
+        "src",
+        "tests",
+        "apps"
+      ],
+      "source_manifest_sha256": "dc7067c2769af765f71ba62f12dd543221905af108eb7ea0121355571ca89fc6",
+      "source_manifest_file_sha256": "a0019a2b88b3336802b5ea0e8ee5d11c1e704f60342f57a016558f7cb3945090",
+      "execution_environment_sha256": "bba78a7a15b6c7549995038d89482580b105b702aeaa1775b5e5118eb60b563d",
+      "environment_overrides": {},
+      "cwd": "/private/tmp/cpswm-s2-evidence-repair-window1",
+      "invocation_executable": "/private/tmp/cpswm-s2-evidence-repair-window1/.venv/bin/ruff",
+      "resolved_executable": "/private/tmp/cpswm-s2-evidence-repair-window1/.venv/bin/ruff",
+      "executable_sha256": "9151d40f2f5b37cc6c4dffba0de8433274c7ec11c872551f38ea0f8ba51f516e",
+      "start_timestamp": "2026-09-11T16:03:03.929282+00:00",
+      "end_timestamp": "2026-09-11T16:03:03.941236+00:00",
+      "exit_code": 0,
+      "stdout_path": "benchmarks/structure_two/engineering_trust_checkpoint_2026_09_11_v0_2/engineering_audit_logs/ruff_format.stdout.log",
+      "stdout_sha256": "6d120a75f7da099c2443953f3d4933916a935ea7ae2a2e422b87fbad1341c18d",
+      "stderr_path": "benchmarks/structure_two/engineering_trust_checkpoint_2026_09_11_v0_2/engineering_audit_logs/ruff_format.stderr.log",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "command_id": "compileall",
+      "argv": [
+        ".venv/bin/python",
+        "-m",
+        "compileall",
+        "-q",
+        "src",
+        "apps",
+        "tests"
+      ],
+      "source_manifest_sha256": "dc7067c2769af765f71ba62f12dd543221905af108eb7ea0121355571ca89fc6",
+      "source_manifest_file_sha256": "a0019a2b88b3336802b5ea0e8ee5d11c1e704f60342f57a016558f7cb3945090",
+      "execution_environment_sha256": "bba78a7a15b6c7549995038d89482580b105b702aeaa1775b5e5118eb60b563d",
+      "environment_overrides": {},
+      "cwd": "/private/tmp/cpswm-s2-evidence-repair-window1",
+      "invocation_executable": "/private/tmp/cpswm-s2-evidence-repair-window1/.venv/bin/python",
+      "resolved_executable": "/Users/pangwei/.local/share/uv/python/cpython-3.13.5-macos-aarch64-none/bin/python3.13",
+      "executable_sha256": "3e96a8b2f541b3d5ded271fb6e2bc83aea0557e863d0a4c472fd4679d1983fec",
+      "start_timestamp": "2026-09-11T16:03:03.941657+00:00",
+      "end_timestamp": "2026-09-11T16:03:04.030159+00:00",
+      "exit_code": 0,
+      "stdout_path": "benchmarks/structure_two/engineering_trust_checkpoint_2026_09_11_v0_2/engineering_audit_logs/compileall.stdout.log",
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr_path": "benchmarks/structure_two/engineering_trust_checkpoint_2026_09_11_v0_2/engineering_audit_logs/compileall.stderr.log",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "command_id": "uv_frozen_offline_check",
+      "argv": [
+        "uv",
+        "sync",
+        "--frozen",
+        "--offline",
+        "--check",
+        "--extra",
+        "dev",
+        "--no-cache"
+      ],
+      "source_manifest_sha256": "dc7067c2769af765f71ba62f12dd543221905af108eb7ea0121355571ca89fc6",
+      "source_manifest_file_sha256": "a0019a2b88b3336802b5ea0e8ee5d11c1e704f60342f57a016558f7cb3945090",
+      "execution_environment_sha256": "bba78a7a15b6c7549995038d89482580b105b702aeaa1775b5e5118eb60b563d",
+      "environment_overrides": {},
+      "cwd": "/private/tmp/cpswm-s2-evidence-repair-window1",
+      "invocation_executable": "/opt/homebrew/bin/uv",
+      "resolved_executable": "/opt/homebrew/Cellar/uv/0.12.5/bin/uv",
+      "executable_sha256": "debc68c21b3bb1086e20d9889b53ff5ccf9ef343fda9a57dc2022212e3511125",
+      "start_timestamp": "2026-09-11T16:03:04.050840+00:00",
+      "end_timestamp": "2026-09-11T16:03:04.102539+00:00",
+      "exit_code": 0,
+      "stdout_path": "benchmarks/structure_two/engineering_trust_checkpoint_2026_09_11_v0_2/engineering_audit_logs/uv_frozen_offline_check.stdout.log",
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr_path": "benchmarks/structure_two/engineering_trust_checkpoint_2026_09_11_v0_2/engineering_audit_logs/uv_frozen_offline_check.stderr.log",
+      "stderr_sha256": "375aa50644fcb723cbddf25708926b453af965aa8f51ec83731f64b37d986e66"
+    },
+    {
+      "command_id": "git_diff_check",
+      "argv": [
+        "git",
+        "diff",
+        "--check",
+        "--",
+        ".",
+        ":(exclude)benchmarks/structure_two/engineering_trust_checkpoint_2026_09_11_v0_2/engineering_audit_logs/*.log"
+      ],
+      "source_manifest_sha256": "dc7067c2769af765f71ba62f12dd543221905af108eb7ea0121355571ca89fc6",
+      "source_manifest_file_sha256": "a0019a2b88b3336802b5ea0e8ee5d11c1e704f60342f57a016558f7cb3945090",
+      "execution_environment_sha256": "bba78a7a15b6c7549995038d89482580b105b702aeaa1775b5e5118eb60b563d",
+      "environment_overrides": {},
+      "cwd": "/private/tmp/cpswm-s2-evidence-repair-window1",
+      "invocation_executable": "/usr/bin/git",
+      "resolved_executable": "/usr/bin/git",
+      "executable_sha256": "12bed4523661307059b879b9b54e77a73176e9d27d27a0e40363271d8f0668ba",
+      "start_timestamp": "2026-09-11T16:03:04.103050+00:00",
+      "end_timestamp": "2026-09-11T16:03:04.120094+00:00",
+      "exit_code": 0,
+      "stdout_path": "benchmarks/structure_two/engineering_trust_checkpoint_2026_09_11_v0_2/engineering_audit_logs/git_diff_check.stdout.log",
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr_path": "benchmarks/structure_two/engineering_trust_checkpoint_2026_09_11_v0_2/engineering_audit_logs/git_diff_check.stderr.log",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "all_commands_passed": true,
+  "recorded_execution_authenticity_established": false,
+  "hermetic_toolchain_established": false,
+  "independent_custody_established": false,
+  "claim_boundary": "This receipt binds local command outputs to the current code, config, data/schema, split-manifest, test source, benchmark test-fixture, and toolchain manifest plus the freshly observed local execution environment. Its unkeyed, caller-held hashes do not independently prove that the recorded commands ran. It describes only a current-local recorded audit, not a hermetic build attestation, independent custody, historical authenticity, or external-validity claim.",
+  "content_sha256": "ce51f3f93096d04b8f02584e58a7307ce9a188fd0f20852ce6dee1e26b3b5c79"
+}

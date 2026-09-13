@@ -2,12 +2,12 @@
   "protocol": "structure-two-engineering-audit-receipt@1.1",
   "authority": "CURRENT_LOCAL_TOOLCHAIN_STATE_ONLY",
   "source_manifest_path": "benchmarks/p0_checkpoint/content_manifest_v0_3.json",
-  "source_manifest_file_sha256": "ba5056bd2e2d6598933e913420c389b7d4797287b46736b569688cbffe150525",
-  "source_manifest_sha256": "ebf05dad4785182c139a552658344acd9a3b812e3437f32aabfa5dcbe84ac9ff",
-  "pre_execution_source_manifest_file_sha256": "ba5056bd2e2d6598933e913420c389b7d4797287b46736b569688cbffe150525",
-  "pre_execution_source_manifest_sha256": "ebf05dad4785182c139a552658344acd9a3b812e3437f32aabfa5dcbe84ac9ff",
-  "post_execution_source_manifest_file_sha256": "ba5056bd2e2d6598933e913420c389b7d4797287b46736b569688cbffe150525",
-  "post_execution_source_manifest_sha256": "ebf05dad4785182c139a552658344acd9a3b812e3437f32aabfa5dcbe84ac9ff",
+  "source_manifest_file_sha256": "acf57ea80ed3eb419364d0daf87c5f544cc4b64dfb6ae4adbc97529e503ad483",
+  "source_manifest_sha256": "12cd9f51373c4303b25f3f3e79a7c1a16399d97ef1901a808055a88708da3952",
+  "pre_execution_source_manifest_file_sha256": "acf57ea80ed3eb419364d0daf87c5f544cc4b64dfb6ae4adbc97529e503ad483",
+  "pre_execution_source_manifest_sha256": "12cd9f51373c4303b25f3f3e79a7c1a16399d97ef1901a808055a88708da3952",
+  "post_execution_source_manifest_file_sha256": "acf57ea80ed3eb419364d0daf87c5f544cc4b64dfb6ae4adbc97529e503ad483",
+  "post_execution_source_manifest_sha256": "12cd9f51373c4303b25f3f3e79a7c1a16399d97ef1901a808055a88708da3952",
   "pre_execution_environment": {
     "protocol": "structure-two-local-execution-environment@1.0",
     "authority": "CURRENT_LOCAL_TOOLCHAIN_STATE_ONLY",
@@ -36,8 +36,9 @@
           ".venv/bin/pytest",
           "--version"
         ],
-        "resolved_executable": "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/.venv/bin/pytest",
-        "executable_sha256": "86186320905bba81fd941a91c6fb4bab4aab84306c50e3bea6ceb15281c37197",
+        "invocation_executable": "/private/tmp/cpswm-s2-evidence-repair-window1/.venv/bin/pytest",
+        "resolved_executable": "/private/tmp/cpswm-s2-evidence-repair-window1/.venv/bin/pytest",
+        "executable_sha256": "de6df365cc6aadce8a43b8177ed771f57534ac7aeb1e5c138ee068233514edc0",
         "version": "pytest 9.1.1",
         "version_output_sha256": "ef5a4d39b097310ed885c4a4dc78e963c7ef42c92ed56ab09571200962f53779"
       },
@@ -46,8 +47,9 @@
           ".venv/bin/mypy",
           "--version"
         ],
-        "resolved_executable": "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/.venv/bin/mypy",
-        "executable_sha256": "db85902a5f90e91fa2da16f6da2bf747f442e9a810d86ca8bad63be32c017a2c",
+        "invocation_executable": "/private/tmp/cpswm-s2-evidence-repair-window1/.venv/bin/mypy",
+        "resolved_executable": "/private/tmp/cpswm-s2-evidence-repair-window1/.venv/bin/mypy",
+        "executable_sha256": "7d9fe1faee53230e0f8122b6632500de8644b6fe9ad309052fb251bf8bfb2464",
         "version": "mypy 2.3.1 (compiled: yes)",
         "version_output_sha256": "fa7c9d68c73be8f4a3a3b8fdf30f16f2f9f45dd0bf67b878351daa895efb1028"
       },
@@ -56,7 +58,8 @@
           ".venv/bin/ruff",
           "--version"
         ],
-        "resolved_executable": "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/.venv/bin/ruff",
+        "invocation_executable": "/private/tmp/cpswm-s2-evidence-repair-window1/.venv/bin/ruff",
+        "resolved_executable": "/private/tmp/cpswm-s2-evidence-repair-window1/.venv/bin/ruff",
         "executable_sha256": "9151d40f2f5b37cc6c4dffba0de8433274c7ec11c872551f38ea0f8ba51f516e",
         "version": "ruff 0.16.3",
         "version_output_sha256": "bfe8e679bbd44119921e638e71a35912ac128214744be275492ff2315a5d5dd4"
@@ -66,6 +69,7 @@
           "git",
           "--version"
         ],
+        "invocation_executable": "/usr/bin/git",
         "resolved_executable": "/usr/bin/git",
         "executable_sha256": "12bed4523661307059b879b9b54e77a73176e9d27d27a0e40363271d8f0668ba",
         "version": "git version 2.50.1 (Apple Git-155)",
@@ -76,6 +80,7 @@
           "uv",
           "--version"
         ],
+        "invocation_executable": "/opt/homebrew/bin/uv",
         "resolved_executable": "/opt/homebrew/Cellar/uv/0.12.5/bin/uv",
         "executable_sha256": "debc68c21b3bb1086e20d9889b53ff5ccf9ef343fda9a57dc2022212e3511125",
         "version": "uv 0.12.5 (Homebrew 2026-08-14 aarch64-apple-darwin)",
@@ -89,8 +94,8 @@
         "package_content_sha256": "6682882ff82304e469ff684937c064b0c3ffaef7045d4186bcefe57bfb8564bc",
         "package_file_count": 1095,
         "package_name": "mypy",
-        "resolved_module_file": "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/.venv/lib/python3.13/site-packages/mypy/__main__.py",
-        "resolved_package_root": "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/.venv/lib/python3.13/site-packages/mypy"
+        "resolved_module_file": "/private/tmp/cpswm-s2-evidence-repair-window1/.venv/lib/python3.13/site-packages/mypy/__main__.py",
+        "resolved_package_root": "/private/tmp/cpswm-s2-evidence-repair-window1/.venv/lib/python3.13/site-packages/mypy"
       },
       "pytest_engine": {
         "module_file_sha256": "98b05c2c37d09e1d5c05975efc2d9af98d4aff6ea47de410a8e93956420873c1",
@@ -98,8 +103,8 @@
         "package_content_sha256": "6a1903215e82095ba1d99f960189430a631642b53e085eb56c2fe0cdcd1f32bc",
         "package_file_count": 79,
         "package_name": "_pytest",
-        "resolved_module_file": "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/.venv/lib/python3.13/site-packages/_pytest/config/__init__.py",
-        "resolved_package_root": "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/.venv/lib/python3.13/site-packages/_pytest"
+        "resolved_module_file": "/private/tmp/cpswm-s2-evidence-repair-window1/.venv/lib/python3.13/site-packages/_pytest/config/__init__.py",
+        "resolved_package_root": "/private/tmp/cpswm-s2-evidence-repair-window1/.venv/lib/python3.13/site-packages/_pytest"
       },
       "pytest_public": {
         "module_file_sha256": "ee37885c9583f843390684dfb496907f87a0905128e7a3cf4ad227f49ff34c2d",
@@ -107,8 +112,8 @@
         "package_content_sha256": "081263e8c2d2baf30daf5ba17cf8ed8a8343a0dbba136d9f8b17ef1bb2c198a7",
         "package_file_count": 3,
         "package_name": "pytest",
-        "resolved_module_file": "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/.venv/lib/python3.13/site-packages/pytest/__init__.py",
-        "resolved_package_root": "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/.venv/lib/python3.13/site-packages/pytest"
+        "resolved_module_file": "/private/tmp/cpswm-s2-evidence-repair-window1/.venv/lib/python3.13/site-packages/pytest/__init__.py",
+        "resolved_package_root": "/private/tmp/cpswm-s2-evidence-repair-window1/.venv/lib/python3.13/site-packages/pytest"
       },
       "pytest_xdist": {
         "module_file_sha256": "62df71dfe342969ab667cb3a4f2280a93be9c11bc9a4c2d9ead271c979d2afd8",
@@ -116,8 +121,8 @@
         "package_content_sha256": "fefdcaff96720807e6ff2ebd069b2e31d36553c0ed9e908d2a4461bd51db9048",
         "package_file_count": 18,
         "package_name": "xdist",
-        "resolved_module_file": "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/.venv/lib/python3.13/site-packages/xdist/plugin.py",
-        "resolved_package_root": "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/.venv/lib/python3.13/site-packages/xdist"
+        "resolved_module_file": "/private/tmp/cpswm-s2-evidence-repair-window1/.venv/lib/python3.13/site-packages/xdist/plugin.py",
+        "resolved_package_root": "/private/tmp/cpswm-s2-evidence-repair-window1/.venv/lib/python3.13/site-packages/xdist"
       }
     },
     "toolchain_files": [
@@ -136,7 +141,7 @@
     ],
     "installed_distributions": {
       "sort_key": "normalised_name,version",
-      "count": 55,
+      "count": 56,
       "entries": [
         {
           "name": "annotated-types",
@@ -165,6 +170,10 @@
         {
           "name": "coverage",
           "version": "7.15.4"
+        },
+        {
+          "name": "cpswm",
+          "version": "0.1.0"
         },
         {
           "name": "cpswm",
@@ -359,7 +368,7 @@
           "version": "21.7.4"
         }
       ],
-      "digest_sha256": "9461e9ff848ece2d9e72600aa9a53d8c74de066506c3a85957c0cd9064baa4c0"
+      "digest_sha256": "2d3855d37a0a6cb0602b3845a3c3f62404f27397e5edf2328ec480d9545e9a82"
     },
     "sensitive_environment_allowlist": {
       "PYTEST_ADDOPTS": {
@@ -397,11 +406,11 @@
       },
       "VIRTUAL_ENV": {
         "state": "effective",
-        "value_sha256": "25325bfdd47af3ec50763d8e1385a766ff0cabce8788bed5503994804bf9e46f"
+        "value_sha256": "00c1788a536cfd24b14147814718aa0f3745764773a9db555cb1bce33e56fbfa"
       }
     },
     "claim_boundary": "This fingerprint describes only the current local interpreter, executables, toolchain files, installed distributions, and allowlisted effective environment state. It is not a hermetic build attestation or independently held evidence.",
-    "content_sha256": "49acbdb11def530d8beaf3225f159915d58fd9044270eae99ccabc3b1d5e7e22"
+    "content_sha256": "bba78a7a15b6c7549995038d89482580b105b702aeaa1775b5e5118eb60b563d"
   },
   "post_execution_environment": {
     "protocol": "structure-two-local-execution-environment@1.0",
@@ -431,8 +440,9 @@
           ".venv/bin/pytest",
           "--version"
         ],
-        "resolved_executable": "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/.venv/bin/pytest",
-        "executable_sha256": "86186320905bba81fd941a91c6fb4bab4aab84306c50e3bea6ceb15281c37197",
+        "invocation_executable": "/private/tmp/cpswm-s2-evidence-repair-window1/.venv/bin/pytest",
+        "resolved_executable": "/private/tmp/cpswm-s2-evidence-repair-window1/.venv/bin/pytest",
+        "executable_sha256": "de6df365cc6aadce8a43b8177ed771f57534ac7aeb1e5c138ee068233514edc0",
         "version": "pytest 9.1.1",
         "version_output_sha256": "ef5a4d39b097310ed885c4a4dc78e963c7ef42c92ed56ab09571200962f53779"
       },
@@ -441,8 +451,9 @@
           ".venv/bin/mypy",
           "--version"
         ],
-        "resolved_executable": "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/.venv/bin/mypy",
-        "executable_sha256": "db85902a5f90e91fa2da16f6da2bf747f442e9a810d86ca8bad63be32c017a2c",
+        "invocation_executable": "/private/tmp/cpswm-s2-evidence-repair-window1/.venv/bin/mypy",
+        "resolved_executable": "/private/tmp/cpswm-s2-evidence-repair-window1/.venv/bin/mypy",
+        "executable_sha256": "7d9fe1faee53230e0f8122b6632500de8644b6fe9ad309052fb251bf8bfb2464",
         "version": "mypy 2.3.1 (compiled: yes)",
         "version_output_sha256": "fa7c9d68c73be8f4a3a3b8fdf30f16f2f9f45dd0bf67b878351daa895efb1028"
       },
@@ -451,7 +462,8 @@
           ".venv/bin/ruff",
           "--version"
         ],
-        "resolved_executable": "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/.venv/bin/ruff",
+        "invocation_executable": "/private/tmp/cpswm-s2-evidence-repair-window1/.venv/bin/ruff",
+        "resolved_executable": "/private/tmp/cpswm-s2-evidence-repair-window1/.venv/bin/ruff",
         "executable_sha256": "9151d40f2f5b37cc6c4dffba0de8433274c7ec11c872551f38ea0f8ba51f516e",
         "version": "ruff 0.16.3",
         "version_output_sha256": "bfe8e679bbd44119921e638e71a35912ac128214744be275492ff2315a5d5dd4"
@@ -461,6 +473,7 @@
           "git",
           "--version"
         ],
+        "invocation_executable": "/usr/bin/git",
         "resolved_executable": "/usr/bin/git",
         "executable_sha256": "12bed4523661307059b879b9b54e77a73176e9d27d27a0e40363271d8f0668ba",
         "version": "git version 2.50.1 (Apple Git-155)",
@@ -471,6 +484,7 @@
           "uv",
           "--version"
         ],
+        "invocation_executable": "/opt/homebrew/bin/uv",
         "resolved_executable": "/opt/homebrew/Cellar/uv/0.12.5/bin/uv",
         "executable_sha256": "debc68c21b3bb1086e20d9889b53ff5ccf9ef343fda9a57dc2022212e3511125",
         "version": "uv 0.12.5 (Homebrew 2026-08-14 aarch64-apple-darwin)",
@@ -484,8 +498,8 @@
         "package_content_sha256": "6682882ff82304e469ff684937c064b0c3ffaef7045d4186bcefe57bfb8564bc",
         "package_file_count": 1095,
         "package_name": "mypy",
-        "resolved_module_file": "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/.venv/lib/python3.13/site-packages/mypy/__main__.py",
-        "resolved_package_root": "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/.venv/lib/python3.13/site-packages/mypy"
+        "resolved_module_file": "/private/tmp/cpswm-s2-evidence-repair-window1/.venv/lib/python3.13/site-packages/mypy/__main__.py",
+        "resolved_package_root": "/private/tmp/cpswm-s2-evidence-repair-window1/.venv/lib/python3.13/site-packages/mypy"
       },
       "pytest_engine": {
         "module_file_sha256": "98b05c2c37d09e1d5c05975efc2d9af98d4aff6ea47de410a8e93956420873c1",
@@ -493,8 +507,8 @@
         "package_content_sha256": "6a1903215e82095ba1d99f960189430a631642b53e085eb56c2fe0cdcd1f32bc",
         "package_file_count": 79,
         "package_name": "_pytest",
-        "resolved_module_file": "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/.venv/lib/python3.13/site-packages/_pytest/config/__init__.py",
-        "resolved_package_root": "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/.venv/lib/python3.13/site-packages/_pytest"
+        "resolved_module_file": "/private/tmp/cpswm-s2-evidence-repair-window1/.venv/lib/python3.13/site-packages/_pytest/config/__init__.py",
+        "resolved_package_root": "/private/tmp/cpswm-s2-evidence-repair-window1/.venv/lib/python3.13/site-packages/_pytest"
       },
       "pytest_public": {
         "module_file_sha256": "ee37885c9583f843390684dfb496907f87a0905128e7a3cf4ad227f49ff34c2d",
@@ -502,8 +516,8 @@
         "package_content_sha256": "081263e8c2d2baf30daf5ba17cf8ed8a8343a0dbba136d9f8b17ef1bb2c198a7",
         "package_file_count": 3,
         "package_name": "pytest",
-        "resolved_module_file": "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/.venv/lib/python3.13/site-packages/pytest/__init__.py",
-        "resolved_package_root": "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/.venv/lib/python3.13/site-packages/pytest"
+        "resolved_module_file": "/private/tmp/cpswm-s2-evidence-repair-window1/.venv/lib/python3.13/site-packages/pytest/__init__.py",
+        "resolved_package_root": "/private/tmp/cpswm-s2-evidence-repair-window1/.venv/lib/python3.13/site-packages/pytest"
       },
       "pytest_xdist": {
         "module_file_sha256": "62df71dfe342969ab667cb3a4f2280a93be9c11bc9a4c2d9ead271c979d2afd8",
@@ -511,8 +525,8 @@
         "package_content_sha256": "fefdcaff96720807e6ff2ebd069b2e31d36553c0ed9e908d2a4461bd51db9048",
         "package_file_count": 18,
         "package_name": "xdist",
-        "resolved_module_file": "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/.venv/lib/python3.13/site-packages/xdist/plugin.py",
-        "resolved_package_root": "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/.venv/lib/python3.13/site-packages/xdist"
+        "resolved_module_file": "/private/tmp/cpswm-s2-evidence-repair-window1/.venv/lib/python3.13/site-packages/xdist/plugin.py",
+        "resolved_package_root": "/private/tmp/cpswm-s2-evidence-repair-window1/.venv/lib/python3.13/site-packages/xdist"
       }
     },
     "toolchain_files": [
@@ -531,7 +545,7 @@
     ],
     "installed_distributions": {
       "sort_key": "normalised_name,version",
-      "count": 55,
+      "count": 56,
       "entries": [
         {
           "name": "annotated-types",
@@ -560,6 +574,10 @@
         {
           "name": "coverage",
           "version": "7.15.4"
+        },
+        {
+          "name": "cpswm",
+          "version": "0.1.0"
         },
         {
           "name": "cpswm",
@@ -754,7 +772,7 @@
           "version": "21.7.4"
         }
       ],
-      "digest_sha256": "9461e9ff848ece2d9e72600aa9a53d8c74de066506c3a85957c0cd9064baa4c0"
+      "digest_sha256": "2d3855d37a0a6cb0602b3845a3c3f62404f27397e5edf2328ec480d9545e9a82"
     },
     "sensitive_environment_allowlist": {
       "PYTEST_ADDOPTS": {
@@ -792,13 +810,60 @@
       },
       "VIRTUAL_ENV": {
         "state": "effective",
-        "value_sha256": "25325bfdd47af3ec50763d8e1385a766ff0cabce8788bed5503994804bf9e46f"
+        "value_sha256": "00c1788a536cfd24b14147814718aa0f3745764773a9db555cb1bce33e56fbfa"
       }
     },
     "claim_boundary": "This fingerprint describes only the current local interpreter, executables, toolchain files, installed distributions, and allowlisted effective environment state. It is not a hermetic build attestation or independently held evidence.",
-    "content_sha256": "49acbdb11def530d8beaf3225f159915d58fd9044270eae99ccabc3b1d5e7e22"
+    "content_sha256": "bba78a7a15b6c7549995038d89482580b105b702aeaa1775b5e5118eb60b563d"
   },
   "command_runs": [
+    {
+      "command_id": "p5_evidence_current",
+      "argv": [
+        ".venv/bin/python",
+        "apps/evaluation_runner/run_structure_two_evidence_repair.py",
+        "--verify-current"
+      ],
+      "source_manifest_sha256": "12cd9f51373c4303b25f3f3e79a7c1a16399d97ef1901a808055a88708da3952",
+      "source_manifest_file_sha256": "acf57ea80ed3eb419364d0daf87c5f544cc4b64dfb6ae4adbc97529e503ad483",
+      "execution_environment_sha256": "bba78a7a15b6c7549995038d89482580b105b702aeaa1775b5e5118eb60b563d",
+      "environment_overrides": {},
+      "cwd": "/private/tmp/cpswm-s2-evidence-repair-window1",
+      "invocation_executable": "/private/tmp/cpswm-s2-evidence-repair-window1/.venv/bin/python",
+      "resolved_executable": "/Users/pangwei/.local/share/uv/python/cpython-3.13.5-macos-aarch64-none/bin/python3.13",
+      "executable_sha256": "3e96a8b2f541b3d5ded271fb6e2bc83aea0557e863d0a4c472fd4679d1983fec",
+      "start_timestamp": "2026-09-11T10:59:15.888736+00:00",
+      "end_timestamp": "2026-09-11T11:11:17.250582+00:00",
+      "exit_code": 0,
+      "stdout_path": "benchmarks/structure_two/engineering_trust_checkpoint_2026_09_05/engineering_audit_logs/p5_evidence_current.stdout.log",
+      "stdout_sha256": "e140ed71bf8ba29cc3e04b6907b9e5f616d1ae26f1c57482b423661787f150da",
+      "stderr_path": "benchmarks/structure_two/engineering_trust_checkpoint_2026_09_05/engineering_audit_logs/p5_evidence_current.stderr.log",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "command_id": "p5_evidence_history",
+      "argv": [
+        ".venv/bin/python",
+        "apps/evaluation_runner/audit_structure_two_evidence_history.py",
+        "--verify",
+        "benchmarks/structure_two/evidence_repair_2026_09_11/historical_source_audit.json"
+      ],
+      "source_manifest_sha256": "12cd9f51373c4303b25f3f3e79a7c1a16399d97ef1901a808055a88708da3952",
+      "source_manifest_file_sha256": "acf57ea80ed3eb419364d0daf87c5f544cc4b64dfb6ae4adbc97529e503ad483",
+      "execution_environment_sha256": "bba78a7a15b6c7549995038d89482580b105b702aeaa1775b5e5118eb60b563d",
+      "environment_overrides": {},
+      "cwd": "/private/tmp/cpswm-s2-evidence-repair-window1",
+      "invocation_executable": "/private/tmp/cpswm-s2-evidence-repair-window1/.venv/bin/python",
+      "resolved_executable": "/Users/pangwei/.local/share/uv/python/cpython-3.13.5-macos-aarch64-none/bin/python3.13",
+      "executable_sha256": "3e96a8b2f541b3d5ded271fb6e2bc83aea0557e863d0a4c472fd4679d1983fec",
+      "start_timestamp": "2026-09-11T10:59:15.888850+00:00",
+      "end_timestamp": "2026-09-11T11:03:57.616252+00:00",
+      "exit_code": 0,
+      "stdout_path": "benchmarks/structure_two/engineering_trust_checkpoint_2026_09_05/engineering_audit_logs/p5_evidence_history.stdout.log",
+      "stdout_sha256": "6b5b3b0d06d7136b97c0297bc2698b755a00b7d36cd83a3232801798a79afad7",
+      "stderr_path": "benchmarks/structure_two/engineering_trust_checkpoint_2026_09_05/engineering_audit_logs/p5_evidence_history.stderr.log",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
     {
       "command_id": "p0_adversarial_tests",
       "argv": [
@@ -810,9 +875,9 @@
         "tests/test_structure_two_comparator_typed_dual_gate_b_v0_8.py",
         "tests/test_p0_checkpoint_manifest.py"
       ],
-      "source_manifest_sha256": "ebf05dad4785182c139a552658344acd9a3b812e3437f32aabfa5dcbe84ac9ff",
-      "source_manifest_file_sha256": "ba5056bd2e2d6598933e913420c389b7d4797287b46736b569688cbffe150525",
-      "execution_environment_sha256": "49acbdb11def530d8beaf3225f159915d58fd9044270eae99ccabc3b1d5e7e22",
+      "source_manifest_sha256": "12cd9f51373c4303b25f3f3e79a7c1a16399d97ef1901a808055a88708da3952",
+      "source_manifest_file_sha256": "acf57ea80ed3eb419364d0daf87c5f544cc4b64dfb6ae4adbc97529e503ad483",
+      "execution_environment_sha256": "bba78a7a15b6c7549995038d89482580b105b702aeaa1775b5e5118eb60b563d",
       "environment_overrides": {
         "PYTEST_ADDOPTS": {
           "state": "forced",
@@ -835,14 +900,15 @@
           "value_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
         }
       },
-      "cwd": "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model",
-      "resolved_executable": "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/.venv/bin/pytest",
-      "executable_sha256": "86186320905bba81fd941a91c6fb4bab4aab84306c50e3bea6ceb15281c37197",
-      "start_timestamp": "2026-09-10T05:02:05.407691+00:00",
-      "end_timestamp": "2026-09-10T05:02:10.477276+00:00",
+      "cwd": "/private/tmp/cpswm-s2-evidence-repair-window1",
+      "invocation_executable": "/private/tmp/cpswm-s2-evidence-repair-window1/.venv/bin/pytest",
+      "resolved_executable": "/private/tmp/cpswm-s2-evidence-repair-window1/.venv/bin/pytest",
+      "executable_sha256": "de6df365cc6aadce8a43b8177ed771f57534ac7aeb1e5c138ee068233514edc0",
+      "start_timestamp": "2026-09-11T11:11:17.254037+00:00",
+      "end_timestamp": "2026-09-11T11:11:23.702195+00:00",
       "exit_code": 0,
       "stdout_path": "benchmarks/structure_two/engineering_trust_checkpoint_2026_09_05/engineering_audit_logs/p0_adversarial_tests.stdout.log",
-      "stdout_sha256": "4e10206c039ed42fed66b2c4800cc80f393ec98b809c7fbb8c91c7b3fefd808b",
+      "stdout_sha256": "9f987b2f573532331f033712a27a7be4d492a4b8a13083c20e6f76e9846f40b3",
       "stderr_path": "benchmarks/structure_two/engineering_trust_checkpoint_2026_09_05/engineering_audit_logs/p0_adversarial_tests.stderr.log",
       "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
     },
@@ -858,9 +924,9 @@
         "--confcutdir=.",
         "--ignore=tests/test_structure_two_engineering_trust_checkpoint.py"
       ],
-      "source_manifest_sha256": "ebf05dad4785182c139a552658344acd9a3b812e3437f32aabfa5dcbe84ac9ff",
-      "source_manifest_file_sha256": "ba5056bd2e2d6598933e913420c389b7d4797287b46736b569688cbffe150525",
-      "execution_environment_sha256": "49acbdb11def530d8beaf3225f159915d58fd9044270eae99ccabc3b1d5e7e22",
+      "source_manifest_sha256": "12cd9f51373c4303b25f3f3e79a7c1a16399d97ef1901a808055a88708da3952",
+      "source_manifest_file_sha256": "acf57ea80ed3eb419364d0daf87c5f544cc4b64dfb6ae4adbc97529e503ad483",
+      "execution_environment_sha256": "bba78a7a15b6c7549995038d89482580b105b702aeaa1775b5e5118eb60b563d",
       "environment_overrides": {
         "PYTEST_ADDOPTS": {
           "state": "forced",
@@ -883,14 +949,15 @@
           "value_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
         }
       },
-      "cwd": "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model",
-      "resolved_executable": "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/.venv/bin/pytest",
-      "executable_sha256": "86186320905bba81fd941a91c6fb4bab4aab84306c50e3bea6ceb15281c37197",
-      "start_timestamp": "2026-09-10T05:02:10.478249+00:00",
-      "end_timestamp": "2026-09-10T05:20:25.697044+00:00",
+      "cwd": "/private/tmp/cpswm-s2-evidence-repair-window1",
+      "invocation_executable": "/private/tmp/cpswm-s2-evidence-repair-window1/.venv/bin/pytest",
+      "resolved_executable": "/private/tmp/cpswm-s2-evidence-repair-window1/.venv/bin/pytest",
+      "executable_sha256": "de6df365cc6aadce8a43b8177ed771f57534ac7aeb1e5c138ee068233514edc0",
+      "start_timestamp": "2026-09-11T11:11:23.702713+00:00",
+      "end_timestamp": "2026-09-11T11:31:52.920171+00:00",
       "exit_code": 0,
       "stdout_path": "benchmarks/structure_two/engineering_trust_checkpoint_2026_09_05/engineering_audit_logs/core_pytest.stdout.log",
-      "stdout_sha256": "268426ef89b5e456f7f7140837de8648f7deaf2433c1fcf3f9ea0b0a38f45927",
+      "stdout_sha256": "95de32f031234a405c3a1dee91b66d296f370cef662b5ff6fcf7223edef55bb4",
       "stderr_path": "benchmarks/structure_two/engineering_trust_checkpoint_2026_09_05/engineering_audit_logs/core_pytest.stderr.log",
       "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
     },
@@ -900,18 +967,19 @@
         ".venv/bin/mypy",
         "src"
       ],
-      "source_manifest_sha256": "ebf05dad4785182c139a552658344acd9a3b812e3437f32aabfa5dcbe84ac9ff",
-      "source_manifest_file_sha256": "ba5056bd2e2d6598933e913420c389b7d4797287b46736b569688cbffe150525",
-      "execution_environment_sha256": "49acbdb11def530d8beaf3225f159915d58fd9044270eae99ccabc3b1d5e7e22",
+      "source_manifest_sha256": "12cd9f51373c4303b25f3f3e79a7c1a16399d97ef1901a808055a88708da3952",
+      "source_manifest_file_sha256": "acf57ea80ed3eb419364d0daf87c5f544cc4b64dfb6ae4adbc97529e503ad483",
+      "execution_environment_sha256": "bba78a7a15b6c7549995038d89482580b105b702aeaa1775b5e5118eb60b563d",
       "environment_overrides": {},
-      "cwd": "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model",
-      "resolved_executable": "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/.venv/bin/mypy",
-      "executable_sha256": "db85902a5f90e91fa2da16f6da2bf747f442e9a810d86ca8bad63be32c017a2c",
-      "start_timestamp": "2026-09-10T05:20:25.699039+00:00",
-      "end_timestamp": "2026-09-10T05:20:25.930818+00:00",
+      "cwd": "/private/tmp/cpswm-s2-evidence-repair-window1",
+      "invocation_executable": "/private/tmp/cpswm-s2-evidence-repair-window1/.venv/bin/mypy",
+      "resolved_executable": "/private/tmp/cpswm-s2-evidence-repair-window1/.venv/bin/mypy",
+      "executable_sha256": "7d9fe1faee53230e0f8122b6632500de8644b6fe9ad309052fb251bf8bfb2464",
+      "start_timestamp": "2026-09-11T11:31:52.923196+00:00",
+      "end_timestamp": "2026-09-11T11:31:53.171091+00:00",
       "exit_code": 0,
       "stdout_path": "benchmarks/structure_two/engineering_trust_checkpoint_2026_09_05/engineering_audit_logs/mypy_src.stdout.log",
-      "stdout_sha256": "9031c6c4acc9adad8f3c6dff8b8a8ec31cd7973ee4b25ccc750dd7558fc6cc5d",
+      "stdout_sha256": "397ac7524050ffafa65dd14431b6bd3dcbec68caa14da843159a085bc984fea6",
       "stderr_path": "benchmarks/structure_two/engineering_trust_checkpoint_2026_09_05/engineering_audit_logs/mypy_src.stderr.log",
       "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
     },
@@ -924,15 +992,16 @@
         "tests",
         "apps"
       ],
-      "source_manifest_sha256": "ebf05dad4785182c139a552658344acd9a3b812e3437f32aabfa5dcbe84ac9ff",
-      "source_manifest_file_sha256": "ba5056bd2e2d6598933e913420c389b7d4797287b46736b569688cbffe150525",
-      "execution_environment_sha256": "49acbdb11def530d8beaf3225f159915d58fd9044270eae99ccabc3b1d5e7e22",
+      "source_manifest_sha256": "12cd9f51373c4303b25f3f3e79a7c1a16399d97ef1901a808055a88708da3952",
+      "source_manifest_file_sha256": "acf57ea80ed3eb419364d0daf87c5f544cc4b64dfb6ae4adbc97529e503ad483",
+      "execution_environment_sha256": "bba78a7a15b6c7549995038d89482580b105b702aeaa1775b5e5118eb60b563d",
       "environment_overrides": {},
-      "cwd": "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model",
-      "resolved_executable": "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/.venv/bin/ruff",
+      "cwd": "/private/tmp/cpswm-s2-evidence-repair-window1",
+      "invocation_executable": "/private/tmp/cpswm-s2-evidence-repair-window1/.venv/bin/ruff",
+      "resolved_executable": "/private/tmp/cpswm-s2-evidence-repair-window1/.venv/bin/ruff",
       "executable_sha256": "9151d40f2f5b37cc6c4dffba0de8433274c7ec11c872551f38ea0f8ba51f516e",
-      "start_timestamp": "2026-09-10T05:20:25.943350+00:00",
-      "end_timestamp": "2026-09-10T05:20:25.959639+00:00",
+      "start_timestamp": "2026-09-11T11:31:53.184730+00:00",
+      "end_timestamp": "2026-09-11T11:31:53.206568+00:00",
       "exit_code": 0,
       "stdout_path": "benchmarks/structure_two/engineering_trust_checkpoint_2026_09_05/engineering_audit_logs/ruff_lint.stdout.log",
       "stdout_sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
@@ -949,18 +1018,19 @@
         "tests",
         "apps"
       ],
-      "source_manifest_sha256": "ebf05dad4785182c139a552658344acd9a3b812e3437f32aabfa5dcbe84ac9ff",
-      "source_manifest_file_sha256": "ba5056bd2e2d6598933e913420c389b7d4797287b46736b569688cbffe150525",
-      "execution_environment_sha256": "49acbdb11def530d8beaf3225f159915d58fd9044270eae99ccabc3b1d5e7e22",
+      "source_manifest_sha256": "12cd9f51373c4303b25f3f3e79a7c1a16399d97ef1901a808055a88708da3952",
+      "source_manifest_file_sha256": "acf57ea80ed3eb419364d0daf87c5f544cc4b64dfb6ae4adbc97529e503ad483",
+      "execution_environment_sha256": "bba78a7a15b6c7549995038d89482580b105b702aeaa1775b5e5118eb60b563d",
       "environment_overrides": {},
-      "cwd": "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model",
-      "resolved_executable": "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/.venv/bin/ruff",
+      "cwd": "/private/tmp/cpswm-s2-evidence-repair-window1",
+      "invocation_executable": "/private/tmp/cpswm-s2-evidence-repair-window1/.venv/bin/ruff",
+      "resolved_executable": "/private/tmp/cpswm-s2-evidence-repair-window1/.venv/bin/ruff",
       "executable_sha256": "9151d40f2f5b37cc6c4dffba0de8433274c7ec11c872551f38ea0f8ba51f516e",
-      "start_timestamp": "2026-09-10T05:20:25.969431+00:00",
-      "end_timestamp": "2026-09-10T05:20:25.979362+00:00",
+      "start_timestamp": "2026-09-11T11:31:53.219368+00:00",
+      "end_timestamp": "2026-09-11T11:31:53.230861+00:00",
       "exit_code": 0,
       "stdout_path": "benchmarks/structure_two/engineering_trust_checkpoint_2026_09_05/engineering_audit_logs/ruff_format.stdout.log",
-      "stdout_sha256": "b58bd81ef551b31b438034208a313011fa67ac392a54e8f49688e186660173a4",
+      "stdout_sha256": "254ee95bb6cf72ba159ac33a37fdb4340d338df1aaddfb66c7e88041a4651331",
       "stderr_path": "benchmarks/structure_two/engineering_trust_checkpoint_2026_09_05/engineering_audit_logs/ruff_format.stderr.log",
       "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
     },
@@ -975,15 +1045,16 @@
         "apps",
         "tests"
       ],
-      "source_manifest_sha256": "ebf05dad4785182c139a552658344acd9a3b812e3437f32aabfa5dcbe84ac9ff",
-      "source_manifest_file_sha256": "ba5056bd2e2d6598933e913420c389b7d4797287b46736b569688cbffe150525",
-      "execution_environment_sha256": "49acbdb11def530d8beaf3225f159915d58fd9044270eae99ccabc3b1d5e7e22",
+      "source_manifest_sha256": "12cd9f51373c4303b25f3f3e79a7c1a16399d97ef1901a808055a88708da3952",
+      "source_manifest_file_sha256": "acf57ea80ed3eb419364d0daf87c5f544cc4b64dfb6ae4adbc97529e503ad483",
+      "execution_environment_sha256": "bba78a7a15b6c7549995038d89482580b105b702aeaa1775b5e5118eb60b563d",
       "environment_overrides": {},
-      "cwd": "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model",
+      "cwd": "/private/tmp/cpswm-s2-evidence-repair-window1",
+      "invocation_executable": "/private/tmp/cpswm-s2-evidence-repair-window1/.venv/bin/python",
       "resolved_executable": "/Users/pangwei/.local/share/uv/python/cpython-3.13.5-macos-aarch64-none/bin/python3.13",
       "executable_sha256": "3e96a8b2f541b3d5ded271fb6e2bc83aea0557e863d0a4c472fd4679d1983fec",
-      "start_timestamp": "2026-09-10T05:20:25.980159+00:00",
-      "end_timestamp": "2026-09-10T05:20:26.066301+00:00",
+      "start_timestamp": "2026-09-11T11:31:53.231446+00:00",
+      "end_timestamp": "2026-09-11T11:31:53.324762+00:00",
       "exit_code": 0,
       "stdout_path": "benchmarks/structure_two/engineering_trust_checkpoint_2026_09_05/engineering_audit_logs/compileall.stdout.log",
       "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
@@ -1002,20 +1073,21 @@
         "dev",
         "--no-cache"
       ],
-      "source_manifest_sha256": "ebf05dad4785182c139a552658344acd9a3b812e3437f32aabfa5dcbe84ac9ff",
-      "source_manifest_file_sha256": "ba5056bd2e2d6598933e913420c389b7d4797287b46736b569688cbffe150525",
-      "execution_environment_sha256": "49acbdb11def530d8beaf3225f159915d58fd9044270eae99ccabc3b1d5e7e22",
+      "source_manifest_sha256": "12cd9f51373c4303b25f3f3e79a7c1a16399d97ef1901a808055a88708da3952",
+      "source_manifest_file_sha256": "acf57ea80ed3eb419364d0daf87c5f544cc4b64dfb6ae4adbc97529e503ad483",
+      "execution_environment_sha256": "bba78a7a15b6c7549995038d89482580b105b702aeaa1775b5e5118eb60b563d",
       "environment_overrides": {},
-      "cwd": "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model",
+      "cwd": "/private/tmp/cpswm-s2-evidence-repair-window1",
+      "invocation_executable": "/opt/homebrew/bin/uv",
       "resolved_executable": "/opt/homebrew/Cellar/uv/0.12.5/bin/uv",
       "executable_sha256": "debc68c21b3bb1086e20d9889b53ff5ccf9ef343fda9a57dc2022212e3511125",
-      "start_timestamp": "2026-09-10T05:20:26.083816+00:00",
-      "end_timestamp": "2026-09-10T05:20:26.128189+00:00",
+      "start_timestamp": "2026-09-11T11:31:53.348127+00:00",
+      "end_timestamp": "2026-09-11T11:31:53.407368+00:00",
       "exit_code": 0,
       "stdout_path": "benchmarks/structure_two/engineering_trust_checkpoint_2026_09_05/engineering_audit_logs/uv_frozen_offline_check.stdout.log",
       "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
       "stderr_path": "benchmarks/structure_two/engineering_trust_checkpoint_2026_09_05/engineering_audit_logs/uv_frozen_offline_check.stderr.log",
-      "stderr_sha256": "8a54f71f323bea5bc75780fd3d23d1508ba0f62f030fe26359d6188266e490c0"
+      "stderr_sha256": "90d4e5153a370e6bfd08293de51deebaf1b80aaf428bfac743020e51b3d7bb19"
     },
     {
       "command_id": "git_diff_check",
@@ -1027,15 +1099,16 @@
         ".",
         ":(exclude)benchmarks/structure_two/engineering_trust_checkpoint_2026_09_05/engineering_audit_logs/*.log"
       ],
-      "source_manifest_sha256": "ebf05dad4785182c139a552658344acd9a3b812e3437f32aabfa5dcbe84ac9ff",
-      "source_manifest_file_sha256": "ba5056bd2e2d6598933e913420c389b7d4797287b46736b569688cbffe150525",
-      "execution_environment_sha256": "49acbdb11def530d8beaf3225f159915d58fd9044270eae99ccabc3b1d5e7e22",
+      "source_manifest_sha256": "12cd9f51373c4303b25f3f3e79a7c1a16399d97ef1901a808055a88708da3952",
+      "source_manifest_file_sha256": "acf57ea80ed3eb419364d0daf87c5f544cc4b64dfb6ae4adbc97529e503ad483",
+      "execution_environment_sha256": "bba78a7a15b6c7549995038d89482580b105b702aeaa1775b5e5118eb60b563d",
       "environment_overrides": {},
-      "cwd": "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model",
+      "cwd": "/private/tmp/cpswm-s2-evidence-repair-window1",
+      "invocation_executable": "/usr/bin/git",
       "resolved_executable": "/usr/bin/git",
       "executable_sha256": "12bed4523661307059b879b9b54e77a73176e9d27d27a0e40363271d8f0668ba",
-      "start_timestamp": "2026-09-10T05:20:26.129376+00:00",
-      "end_timestamp": "2026-09-10T05:20:26.163287+00:00",
+      "start_timestamp": "2026-09-11T11:31:53.408328+00:00",
+      "end_timestamp": "2026-09-11T11:31:53.430476+00:00",
       "exit_code": 0,
       "stdout_path": "benchmarks/structure_two/engineering_trust_checkpoint_2026_09_05/engineering_audit_logs/git_diff_check.stdout.log",
       "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
@@ -1048,5 +1121,5 @@
   "hermetic_toolchain_established": false,
   "independent_custody_established": false,
   "claim_boundary": "This receipt binds local command outputs to the current code, config, data/schema, split-manifest, test source, benchmark test-fixture, and toolchain manifest plus the freshly observed local execution environment. Its unkeyed, caller-held hashes do not independently prove that the recorded commands ran. It describes only a current-local recorded audit, not a hermetic build attestation, independent custody, historical authenticity, or external-validity claim.",
-  "content_sha256": "1dc800c0a2271beda1cd0e6d69bf12a5dd48937ce8aca1b5c47ac72137b3d0f7"
+  "content_sha256": "1222e737f4f37dae6a8da40480cd7309221b1613e3e2a22ba49664ee0596b6ae"
 }

@@ -1,0 +1,165 @@
+{
+  "dataset_version": "project-two-d2-real-perception-example-fixture@0.1",
+  "maturity": [
+    "d0_development_fixture"
+  ],
+  "quality": {
+    "dataset_version": "project-two-d2-real-perception-example-fixture@0.1",
+    "episode_count": 5,
+    "step_count": 60,
+    "feedback_count": 38,
+    "observation_coverage": 0.6333333333333333,
+    "delayed_feedback_count": 38,
+    "unknown_actor_count": 60,
+    "unknown_mechanism_count": 50,
+    "evaluator_unknown_actor_count": 5,
+    "evaluator_unknown_mechanism_count": 5,
+    "family_counts": {
+      "family-validation-01": 1,
+      "family-validation-00": 1,
+      "family-test-01": 2,
+      "family-test-00": 1
+    },
+    "missingness_counts": {
+      "real_sensor_calibration": 60,
+      "robot_pose_covariance": 60,
+      "post_action_destination_observation": 60
+    },
+    "checks_passed": [
+      "schema_version",
+      "missingness",
+      "duplicate_ids",
+      "timestamp_ordering",
+      "feedback_time_ordering",
+      "observation_coverage",
+      "delayed_feedback",
+      "unknown_coverage",
+      "class_family_balance",
+      "identity_consistency",
+      "join_coverage",
+      "source_label_leakage",
+      "household_scene_object_family_split",
+      "visible_content_integrity",
+      "evaluator_content_integrity"
+    ],
+    "failures": [],
+    "warnings": [
+      "declared unavailable fields remain and must be collected at higher maturity"
+    ],
+    "ready": true
+  },
+  "coverage": {
+    "dataset_version": "project-two-d2-real-perception-example-fixture@0.1",
+    "split_episode_counts": {
+      "validation": 2,
+      "test": 3
+    },
+    "unique_household_count": 5,
+    "unique_scene_count": 5,
+    "unique_object_count": 5,
+    "unique_object_family_count": 4,
+    "family_episode_counts": {
+      "family-validation-01": 1,
+      "family-validation-00": 1,
+      "family-test-01": 2,
+      "family-test-00": 1
+    },
+    "true_actor_counts": {
+      "owner": 30,
+      "unknown_actor": 5,
+      "guest": 25
+    },
+    "true_mechanism_counts": {
+      "direct_relocation": 40,
+      "unknown_mechanism": 5,
+      "handoff_relocation": 15
+    },
+    "dominant_feedback_outcome_counts": {
+      "success": 27,
+      "object_slipped": 11
+    },
+    "observed_step_count": 38,
+    "missing_observation_step_count": 22
+  },
+  "provenance": [
+    "adapter:D2RealPerceptionReplayAdapter",
+    "claim:not-real-collection",
+    "fixture:derived-from-visible-controlled-noise",
+    "truth_source:separate-d0-synthetic-fixture"
+  ],
+  "physical_separation": {
+    "visible": "visible_replay.jsonl",
+    "evaluator_only": "evaluator_truth.jsonl"
+  },
+  "content_hashes": {
+    "manifest.json": "b8554cbf73952697c8ea711b67ca47180cdaa3c440e957f6d5f1976d1ebd6703",
+    "visible_replay.jsonl": "c80718b229298dbe12cc2b9eeedafe31e2a67d27aa2856708fd5a36f2b4f2f2f",
+    "evaluator_truth.jsonl": "4416a2ea9b1f589efa35e5167a05d41212df442910ad5e3eb08b8ceb66795e06"
+  },
+  "annotation_agreement": {
+    "compared_step_count": 60,
+    "actor_exact_agreement": 0.9,
+    "mechanism_exact_agreement": 1.0,
+    "role_exact_agreement": 1.0,
+    "disagreement_step_ids": [
+      "2d7199b8-5049-53fe-bd8d-af1176607328",
+      "35809f5f-9014-5e62-828f-715ef398a0c7",
+      "473d4c7a-2850-51ea-8fa0-458c5b520163",
+      "a24fbebd-dfd5-5679-9889-88c0eb2f89f6",
+      "cf3e707a-d411-5033-8389-985af33aa2be",
+      "d96eb12f-013f-5cf0-a46f-aea717e16247"
+    ],
+    "unresolved_step_ids": []
+  },
+  "split_manifest": {
+    "dataset_version": "project-two-d2-real-perception-example-fixture@0.1",
+    "split_episode_ids": {
+      "validation": [
+        "fd347003-a494-9385-4447-933bd9ba4e41",
+        "e05b14a7-6c10-b8e0-20c4-d287c8f42def"
+      ],
+      "test": [
+        "11ffd93b-f25a-c7be-4b23-d2a9197fb480",
+        "ff35a0b1-bfd3-d1f7-6b7d-bdcc7d68313b",
+        "560ac7ae-a732-0dac-fc35-b1bee331002f"
+      ]
+    },
+    "split_keys": [
+      "household_id",
+      "scene_id",
+      "object_instance_id",
+      "object_family"
+    ],
+    "manifest_content_hash": "0773749eeeeacd40ed197ba1477d087ff54b24741fadcbacaac7a41767e4908c"
+  },
+  "collection_status": {
+    "actual_collected_episode_count": 0,
+    "fixture_episode_count": 5,
+    "fixture_step_count": 60,
+    "claim": "executable schema/example only; no physical RGB/RGB-D capture performed"
+  },
+  "collection_protocol": {
+    "schema": "cpswm.D2RealPerceptionRawEpisode",
+    "schema_version": "0.1.0",
+    "required_visible_axes": [
+      "RGB or RGB-D frame reference",
+      "timestamp/household/scene/session",
+      "object instance/category and detector track",
+      "source/attempted/observed destination",
+      "visibility/occlusion/detection confidence",
+      "actor/role/mechanism annotation or unknown",
+      "execution feedback and observation opportunity"
+    ],
+    "review_policy": "two human submissions; retain disagreement; explicit adjudication",
+    "llm_policy": "llm_candidate may be visible evidence only; never evaluator truth",
+    "truth_store": "physically separate evaluator_truth.jsonl",
+    "example_claim": "fixture:not-real-collection"
+  },
+  "additional_content_hashes": {
+    "raw_perception.jsonl": "668217ea6aafd6f8e1e9bedd690a64ab07c41ae82cccc83505ded1f7ff26581c",
+    "annotations.jsonl": "135099c90c5541d9a9f0f91cb01ab61aa073001f02d47c74e5a72a5a0bd386ea",
+    "annotation_agreement.json": "774b01e71faa8e6f47d8f5df5818e59c5d04f118dffa23bc1b7238f530588338",
+    "split_manifest.json": "859594b6ada441f7073f5d54d5f364508fb8b1e1cbcb4488f6dfe2209fed9e40",
+    "collection_protocol.json": "6be87f5acaa348a0145bd0c91c1c88907e55368e0f2f1c8d8895cdb59f20b29c"
+  }
+}

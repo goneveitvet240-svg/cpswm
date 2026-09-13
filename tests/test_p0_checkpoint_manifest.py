@@ -38,6 +38,8 @@ def _minimal_repository(root: Path) -> Path:
     _write(root / "configs/config.json", "{}\n")
     _write(root / "tests/test_unit.py", "def test_ok():\n    assert True\n")
     _write(root / "benchmarks/stable_fixture.json", '{"ok": true}\n')
+    for relative in MODULE.LEGACY_TEST_FIXTURE_PATHS:
+        _write(root / relative, (ROOT / relative).read_text())
     return root
 
 
@@ -191,7 +193,10 @@ def test_test_fixture_contract_excludes_cycles_and_defers_manifests_to_split_sco
     payload = build_manifest(repository_root=root)
     fixture_files = {row["path"] for row in _scope(payload, "test_fixture_contract")["files"]}
     split_files = {row["path"] for row in _scope(payload, "split_manifest")["files"]}
-    assert fixture_files == {"benchmarks/stable_fixture.json"}
+    assert fixture_files == {
+        "benchmarks/stable_fixture.json",
+        *(path.as_posix() for path in MODULE.LEGACY_TEST_FIXTURE_PATHS),
+    }
     assert "benchmarks/cases/frozen_split.json" in split_files
     assert not fixture_files & split_files
     assert (
@@ -294,3 +299,24 @@ def test_git_baseline_audit_detects_forged_numstat_fields() -> None:
     forged = json.loads(stored_path.read_text(encoding="utf-8"))
     forged["git_diff_added_lines"] = int(forged["git_diff_added_lines"]) + 1
     assert forged != live
+
+
+@pytest.mark.parametrize("fixture_index", [0, 5, 16])
+def test_required_legacy_fixtures_are_pinned_and_cannot_be_missing(
+    tmp_path: Path, fixture_index: int
+) -> None:
+    root = _minimal_repository(tmp_path)
+    payload = build_manifest(root)
+    verify_manifest_snapshot(payload)
+    included = {
+        row["path"]: row["sha256"] for row in _scope(payload, "test_fixture_contract")["files"]
+    }
+    for path, digest in MODULE.LEGACY_TEST_FIXTURE_HASHES.items():
+        assert included[path.as_posix()] == digest
+    path = root / MODULE.LEGACY_TEST_FIXTURE_PATHS[fixture_index]
+    path.write_text("{}\n")
+    with pytest.raises(ValueError, match="differs from historical pinned"):
+        build_manifest(root)
+    path.unlink()
+    with pytest.raises(ValueError, match="required legacy test fixture is missing"):
+        build_manifest(root)

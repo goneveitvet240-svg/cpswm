@@ -172,3 +172,45 @@ def test_no_detection_does_not_authorize_absence(raw):
     detector = fixture_detector(raw, prediction(scores=torch.tensor([0.1])))
     result = detector.infer(raw, cutoff=raw.envelope().arrival_time)
     assert result.candidates == () and not result.negative_observation_authorized
+
+
+def test_producer_connects_to_continuous_stream_without_fabricating_memory(raw):
+    from cpswm.perception_mapping.natural_vision import NaturalVisionEvidenceProducer
+    from cpswm.system.structure_two_continuous_input import ContinuousEvidenceInput
+
+    probe, _, _, transition = setup(False)
+    raw = raw_for(transition)
+    producer = NaturalVisionEvidenceProducer(fixture_detector(raw, prediction()))
+    scope = raw.envelope().identity
+    stream = ContinuousEvidenceInput(
+        system=probe.system,
+        execution_lane="legacy_component_diagnostic",
+        household_id=scope.household_id,
+        session_id=scope.session_id,
+        trace_id=scope.trace_id,
+        producer=producer,
+    )
+    when = raw.envelope().arrival_time
+    before = probe.system.core.current_snapshot
+    stream.admit((raw,), received_at=when)
+    assert stream.advance(cutoff=when).status == "INSUFFICIENT_SEMANTIC_EVIDENCE"
+    assert len(producer.frames()) == 1
+    assert stream.advance(cutoff=when).status == "INSUFFICIENT_SEMANTIC_EVIDENCE"
+    assert producer._detector._model.calls == 1
+    assert probe.system.core.current_snapshot == before and not stream.execution_traces()
+
+
+def test_producer_rejects_history_changes_and_keeps_journal_atomic(raw):
+    from cpswm.perception_mapping.natural_vision import NaturalVisionEvidenceProducer
+
+    p = NaturalVisionEvidenceProducer(fixture_detector(raw, prediction()))
+    when = raw.envelope().arrival_time
+    p.infer((raw,), cutoff=when)
+    before = p.frames()
+    for prefix in ((), (raw, raw)):
+        with pytest.raises(ValueError):
+            p.infer(prefix, cutoff=when)
+    with pytest.raises(ValueError):
+        p.infer((raw,), cutoff=when - timedelta(seconds=1))
+    assert p.frames() == before and p._detector._model.calls == 1
+    assert p.infer((raw,), cutoff=when) is None

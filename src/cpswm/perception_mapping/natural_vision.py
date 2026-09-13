@@ -222,3 +222,83 @@ class NaturalAppearanceDetector:
                     )
                 )
         return tuple(candidates)
+
+
+class NaturalVisionEvidenceProducer:
+    """Connect pixel inference to the continuous stream without inventing semantics.
+
+    The stream invokes this producer on its delivered prefix. Candidates are
+    retained atomically and replayed inputs are not inferred again. No calibrated
+    instance/role/pose bridge exists yet, so infer returns None and the memory
+    core remains unchanged. This is an explicit capability boundary.
+    """
+
+    def __init__(self, detector: NaturalAppearanceDetector) -> None:
+        from threading import RLock
+
+        self._detector = detector
+        self._prefix: tuple[RawModalityObservation, ...] = ()
+        self._frames: tuple[VisualFrame, ...] = ()
+        self._cutoff: datetime | None = None
+        self._lock = RLock()
+        self._busy = False
+
+    def frames(self) -> tuple[VisualFrame, ...]:
+        from copy import deepcopy
+
+        with self._lock:
+            return deepcopy(self._frames)
+
+    def infer(
+        self, visible_prefix: tuple[RawModalityObservation, ...], *, cutoff: datetime
+    ) -> None:
+        from copy import deepcopy
+
+        with self._lock:
+            if self._busy:
+                raise RuntimeError("reentrant visual producer")
+            self._busy = True
+            try:
+                when = require_aware(cutoff, "cutoff").astimezone(UTC)
+                if self._cutoff is not None and when < self._cutoff:
+                    raise ValueError("visual cutoff moved backwards")
+                prefix = deepcopy(visible_prefix)
+                if prefix[: len(self._prefix)] != self._prefix:
+                    raise ValueError("visual history changed or was truncated")
+                ids = set()
+                selected = []
+                for index, raw in enumerate(prefix):
+                    if (
+                        type(raw) is not RawModalityObservation
+                        or type(raw.payload_bytes) is not bytes
+                    ):
+                        raise ValueError("immutable raw observation required")
+                    env = raw.envelope()
+                    if env.identity.observation_id in ids:
+                        raise ValueError("duplicate visual observation identity")
+                    ids.add(env.identity.observation_id)
+                    if (
+                        env.oracle_channel
+                        or env.metadata.source_type
+                        not in {SourceType.SENSOR, SourceType.SIMULATION, SourceType.IMPORT}
+                        or (
+                            env.identity.household_id,
+                            env.identity.session_id,
+                            env.identity.trace_id,
+                        )
+                        != self._detector._scope
+                        or not env.capture_time.astimezone(UTC)
+                        <= env.arrival_time.astimezone(UTC)
+                        <= when
+                    ):
+                        raise ValueError("invalid visual prefix scope or time")
+                    if index >= len(self._prefix) and env.sensor.modality is SensorModality.RGB:
+                        decode_rgb(raw, cutoff=when)
+                        selected.append(raw)
+                # A failed batch may have consumed computation, never committed evidence.
+                frames = tuple(self._detector.infer(raw, cutoff=when) for raw in selected)
+                self._frames += frames
+                self._prefix, self._cutoff = prefix, when
+                return None
+            finally:
+                self._busy = False

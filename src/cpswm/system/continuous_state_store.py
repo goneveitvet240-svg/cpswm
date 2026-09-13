@@ -48,6 +48,22 @@ class ContinuousStateStore:
                 raise ValueError(
                     "checkpoint source or dependencies differ; explicit migration required"
                 )
+            self._db.execute(
+                "CREATE TABLE IF NOT EXISTS deployment (id INTEGER PRIMARY KEY CHECK(id=1), "
+                "source TEXT NOT NULL, dependencies TEXT NOT NULL)"
+            )
+            binding = self._db.execute(
+                "SELECT source,dependencies FROM deployment WHERE id=1"
+            ).fetchone()
+            if binding is None:
+                if self._db.execute("SELECT 1 FROM effects LIMIT 1").fetchone() is not None:
+                    raise ValueError("unbound historical effects require explicit migration")
+                self._db.execute(
+                    "INSERT INTO deployment VALUES (1,?,?)", (source_identity, dependency_identity)
+                )
+                self._db.commit()
+            elif binding != (source_identity, dependency_identity):
+                raise ValueError("deployment source or dependencies differ")
         except BaseException:
             self._db.close()
             raise

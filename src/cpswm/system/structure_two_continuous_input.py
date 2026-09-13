@@ -704,6 +704,7 @@ class ContinuousEvidenceInput:
                 )
                 self._observation_commands[command.action_id] = (command, content_sha256(command))
                 self._observation_status[command.action_id] = "READY"
+                self._last_cutoff = when
                 self._persist()
                 return command
             finally:
@@ -721,9 +722,14 @@ class ContinuousEvidenceInput:
                 self._require_resolved_dispatches()
                 if command.snapshot_id != self._system.core.current_snapshot.snapshot_id:
                     raise ValueError("stale observation command")
+                if any(
+                    t is not None and command.decision_time < t
+                    for t in (self._last_arrival, self._last_cutoff)
+                ):
+                    raise ValueError("observation decision predates current evidence or decision")
                 self._observation_status[command.action_id] = "OUTCOME_UNCERTAIN"
                 self._persist()
-                delivery = executor.execute(command)
+                delivery = executor.execute(deepcopy(command))
                 return self._accept_observation(command, delivery)
             finally:
                 self._busy = False
@@ -734,6 +740,8 @@ class ContinuousEvidenceInput:
         if type(delivery.success) is not bool or (not delivery.success and not delivery.error):
             raise ValueError("observation success/failure receipt is incomplete")
         when = _utc(delivery.received_at)
+        if any(t is not None and when < t for t in (self._last_arrival, self._last_cutoff)):
+            raise ValueError("observation receipt predates current history")
         if when < command.decision_time or (delivery.success and not delivery.observations):
             raise ValueError("observation execution lacks new post-action input")
         for raw in delivery.observations:
@@ -750,6 +758,7 @@ class ContinuousEvidenceInput:
             self._busy = True
             self._checkpoint_suspended = False
         self._observation_status[command.action_id] = delivery
+        self._last_arrival = when
         self._persist()
         return deepcopy(delivery)
 

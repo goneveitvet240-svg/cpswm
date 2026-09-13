@@ -330,3 +330,51 @@ def test_codec_preserves_mutable_cycles_and_rejects_immutable_cycles():
     cycle.append(immutable)
     with pytest.raises(ValueError, match="immutable cycle"):
         codec.loads(codec.dumps(immutable))
+
+
+def test_observation_old_decision_rejected_and_empty_failure_advances_watermark():
+    from cpswm.system.structure_two_continuous_input import ObservationDelivery
+
+    _, stream, _, transition = setup(False)
+    when = transition.after.detection_time
+    ids = stream.admit((raw_for(transition),), received_at=when)
+    command = stream.prepare_observation(
+        action="Pass", degrees=0, reason="fixture", source_ids=ids, decision_time=when
+    )
+    stream.admit((raw_for(transition),), received_at=when + timedelta(hours=1))
+
+    class Failure:
+        calls = 0
+
+        def execute(self, command):
+            self.calls += 1
+            return ObservationDelivery(
+                command.action_id, (), False, "failed", when + timedelta(hours=2)
+            )
+
+    executor = Failure()
+    with pytest.raises(ValueError, match="predates"):
+        stream.execute_observation(command, executor=executor)
+    assert executor.calls == 0
+    fresh = stream.prepare_observation(
+        action="Pass",
+        degrees=0,
+        reason="fixture",
+        source_ids=ids,
+        decision_time=when + timedelta(hours=1),
+    )
+    stream.execute_observation(fresh, executor=executor)
+    with pytest.raises(ValueError):
+        stream.admit((raw_for(transition),), received_at=when + timedelta(minutes=90))
+
+
+def test_effect_only_store_is_source_bound_before_first_checkpoint(tmp_path):
+    path = tmp_path / "effects.db"
+    store = store_at(path)
+    store.execute_once("effect", {"camera": 1}, lambda request: {"success": True})
+    store.close()
+    with pytest.raises(ValueError, match="differ"):
+        ContinuousStateStore(path, source_identity="c" * 64, dependency_identity="d" * 64)
+    store = store_at(path)
+    assert store.execute_once("effect", {"camera": 1}, lambda request: None) == {"success": True}
+    store.close()

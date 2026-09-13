@@ -789,9 +789,13 @@ class NativeParticleWorkspace:
                 or state.parent_revision_id is not None
             ):
                 raise ValueError("noninitial particle requires a real parent")
-            analytic = statistics.get(state.particle_id)
-            if analytic is None or state.statistic_state_ref != analytic.reference:
+            resolved_analytic = statistics.get(state.particle_id)
+            if (
+                resolved_analytic is None
+                or state.statistic_state_ref != resolved_analytic.reference
+            ):
                 raise ValueError("missing or mismatched conditional statistic reference")
+            analytic = resolved_analytic
             # Reordering is allowed with paired alpha entries. Subsets must be
             # represented by zero alpha on the full registered world support.
             if set(analytic.locations) != set(allowed_locations):

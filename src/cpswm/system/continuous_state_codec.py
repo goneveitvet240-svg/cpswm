@@ -16,6 +16,7 @@ import types
 from datetime import datetime
 from enum import Enum
 from threading import RLock
+from typing import Any
 from uuid import UUID
 
 import numpy as np
@@ -40,10 +41,11 @@ class StateCodec:
         self.registry = runtime_types() if registry is None else dict(registry)
 
     def dumps(self, root: object) -> str:
-        nodes = []
-        seen = {}
+        nodes: list[Any] = []
+        seen: dict[int, int] = {}
 
-        def encode(value):
+        def encode(value: Any) -> dict[str, Any]:
+            node: dict[str, Any]
             if value is None or type(value) in (bool, str, int):
                 return {"value": value}
             if type(value) is float:
@@ -132,12 +134,13 @@ class StateCodec:
         if doc.get("schema") != 1:
             raise ValueError("unsupported checkpoint schema")
         nodes = doc["nodes"]
-        cache = {}
+        cache: dict[int, Any] = {}
         active = set()
         if len(nodes) > 1000000:
             raise ValueError("checkpoint graph too large")
 
-        def decode(ref):
+        def decode(ref: dict[str, Any]) -> Any:
+            result: Any
             if (
                 set(ref) == {"infinity"}
                 and type(ref["infinity"]) is int

@@ -15,8 +15,8 @@ from threading import RLock
 from uuid import UUID, uuid5
 
 import numpy as np
-from scipy.optimize import minimize
-from scipy.special import expit
+from scipy.optimize import minimize  # type: ignore[import-untyped]
+from scipy.special import expit  # type: ignore[import-untyped]
 
 from cpswm.contracts.base import require_aware
 from cpswm.perception_mapping.natural_vision import VisualFrame
@@ -89,7 +89,7 @@ class CausalInstanceAssociator:
         self.config = deepcopy(config or AssociationConfig())
         self._lock = RLock()
         self._last: AssociatedFrame | None = None
-        self._scope: tuple | None = None
+        self._scope: tuple[object, ...] | None = None
         self._seen: dict[UUID, tuple[str, AssociatedFrame]] = {}
 
     def update(self, frame: VisualFrame, *, sequence_id: str, media_time: float) -> AssociatedFrame:

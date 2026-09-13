@@ -10,7 +10,9 @@ from __future__ import annotations
 
 import hashlib
 import sqlite3
+from collections.abc import Callable
 from pathlib import Path
+from typing import Any
 
 from cpswm.system.continuous_state_codec import StateCodec
 
@@ -37,7 +39,7 @@ class ContinuousStateStore:
             self._db.commit()
             self._db.execute(
                 "CREATE TABLE IF NOT EXISTS effects (effect_key TEXT PRIMARY KEY, "
-                "request_hash TEXT NOT NULL, result TEXT, digest TEXT)"
+                "request_hash TEXT NOT NULL, request TEXT NOT NULL, result TEXT, digest TEXT)"
             )
             self._db.commit()
             row = self._db.execute(
@@ -102,7 +104,7 @@ class ContinuousStateStore:
     def close(self) -> None:
         self._db.close()
 
-    def execute_once(self, effect_key: str, request: object, executor):
+    def execute_once(self, effect_key: str, request: object, executor: Callable[[Any], Any]) -> Any:
         """Commit intent before dispatch; never redispatch an uncertain effect.
 
         A saved result may be reused by a rolled-back core transaction. A crash
@@ -125,11 +127,28 @@ class ContinuousStateStore:
             return StateCodec().loads(row[1])
         with self._db:
             self._db.execute(
-                "INSERT INTO effects VALUES (?,?,NULL,NULL)", (effect_key, request_hash)
+                "INSERT INTO effects VALUES (?,?,?,NULL,NULL)",
+                (effect_key, request_hash, StateCodec().dumps(request)),
             )
         result = executor(request)
         self.reconcile_effect(effect_key, request, result)
         return result
+
+    def pending_effects(self) -> tuple[tuple[str, object], ...]:
+        """Recover exact recorded requests for transport reconciliation."""
+        from cpswm.system.reproducibility import content_sha256
+
+        rows = self._db.execute(
+            "SELECT effect_key,request_hash,request FROM effects WHERE result IS NULL "
+            "ORDER BY effect_key"
+        ).fetchall()
+        pending = []
+        for key, expected_hash, document in rows:
+            request = StateCodec().loads(document)
+            if content_sha256(request) != expected_hash:
+                raise ValueError("pending effect request digest mismatch")
+            pending.append((key, request))
+        return tuple(pending)
 
     def reconcile_effect(self, effect_key: str, request: object, result: object) -> None:
         """Accept the configured transport's recovered receipt for a pending intent."""

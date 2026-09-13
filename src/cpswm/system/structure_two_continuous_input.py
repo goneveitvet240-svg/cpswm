@@ -14,7 +14,7 @@ from copy import deepcopy
 from dataclasses import dataclass, replace
 from datetime import UTC, datetime
 from threading import RLock
-from typing import Literal, Protocol
+from typing import Any, Literal, Protocol, cast
 from uuid import UUID, uuid4
 
 from cpswm.contracts import (
@@ -22,6 +22,7 @@ from cpswm.contracts import (
     DecisionContextBinding,
     EntityType,
     ExecutionFeedbackRecord,
+    ObservationOpportunityRecord,
     RobotActionType,
     SourceType,
 )
@@ -46,6 +47,7 @@ from cpswm.system.structure_two_execution import (
     verify_execution_trace,
 )
 from cpswm.system.structure_two_production_system import StructureTwoProductionSystem
+from cpswm.world_model.grounded_search import RealizedCIAVObservation
 
 
 def _utc(value: datetime) -> datetime:
@@ -69,6 +71,10 @@ class GroundedTransition:
 
 
 class PerceptionProducer(Protocol):
+    def checkpoint_state(self) -> dict[str, Any]: ...
+
+    def restore_state(self, state: dict[str, Any]) -> None: ...
+
     def infer(
         self,
         visible_prefix: tuple[RawModalityObservation, ...],
@@ -84,13 +90,21 @@ class PerceptionProducer(Protocol):
 
 
 class _DurableCIAVRealizer:
-    def __init__(self, store, effect_key, realizer):
+    def __init__(
+        self,
+        store: ContinuousStateStore,
+        effect_key: str,
+        realizer: Callable[[ObservationOpportunityRecord], RealizedCIAVObservation],
+    ) -> None:
         self.store = store
         self.effect_key = effect_key
         self.realizer = realizer
 
-    def execute(self, opportunity):
-        return self.store.execute_once(self.effect_key, opportunity, self.realizer)
+    def execute(self, opportunity: ObservationOpportunityRecord) -> RealizedCIAVObservation:
+        return cast(
+            RealizedCIAVObservation,
+            self.store.execute_once(self.effect_key, opportunity, self.realizer),
+        )
 
 
 class _TraceJournal:
@@ -166,6 +180,10 @@ class PlacementFeedbackDelivery:
     received_at: datetime
 
 
+class ObservationExecutor(Protocol):
+    def execute(self, command: ObservationCommand) -> ObservationDelivery: ...
+
+
 class PlacementExecutor(Protocol):
     def execute(self, command: PlacementCommand) -> PlacementFeedbackDelivery:
         """Execute once and return observed feedback; do not invent success."""
@@ -217,7 +235,7 @@ class ContinuousEvidenceInput:
         self._state_store = state_store
         self._durability_failed = False
         self._checkpoint_suspended = False
-        self._pending_step = None
+        self._pending_step: dict[str, Any] | None = None
         self._system = system
         self._scope = (household_id, session_id, trace_id)
         self._producer = producer
@@ -231,8 +249,8 @@ class ContinuousEvidenceInput:
         self._commands: dict[UUID, PlacementCommand] = {}
         self._command_hashes: dict[UUID, str] = {}
         self._dispatches: dict[UUID, PlacementDispatch] = {}
-        self._observation_commands = {}
-        self._observation_status = {}
+        self._observation_commands: dict[UUID, tuple[ObservationCommand, str]] = {}
+        self._observation_status: dict[UUID, str | ObservationDelivery] = {}
         self._lock = RLock()
         self._busy = False
         self._persist()
@@ -379,6 +397,7 @@ class ContinuousEvidenceInput:
                     return deepcopy(old[1])
                 # The core handles hypotheses, propensity, cause/regime competition,
                 # memory writes and rollback. No caller supplies a posterior here.
+                result: PrototypeStepResult | AdaptiveStepResult
                 if self._execution_lane == "registered_p5_first":
                     assert self._context_builder is not None
                     context = self._context_builder(self._system, item, when, len(self._advanced))
@@ -445,6 +464,7 @@ class ContinuousEvidenceInput:
                 if self._pending_step is not None:
                     self._durability_failed = True
                 elif producer_before is not None and not self._durability_failed:
+                    assert self._producer is not None
                     self._producer.restore_state(producer_before)
                 raise
             finally:
@@ -710,7 +730,9 @@ class ContinuousEvidenceInput:
             finally:
                 self._busy = False
 
-    def execute_observation(self, command: ObservationCommand, *, executor) -> ObservationDelivery:
+    def execute_observation(
+        self, command: ObservationCommand, *, executor: ObservationExecutor
+    ) -> ObservationDelivery:
         with self._lock:
             self._enter()
             try:
@@ -734,7 +756,11 @@ class ContinuousEvidenceInput:
             finally:
                 self._busy = False
 
-    def _accept_observation(self, command, delivery):
+    def _accept_observation(
+        self,
+        command: ObservationCommand,
+        delivery: ObservationDelivery,
+    ) -> ObservationDelivery:
         if type(delivery) is not ObservationDelivery:
             raise ValueError("observation receipt must be an immutable delivery value")
         delivery = deepcopy(delivery)
@@ -765,7 +791,11 @@ class ContinuousEvidenceInput:
         self._persist()
         return deepcopy(delivery)
 
-    def reconcile_observation(self, action_id: UUID, delivery: ObservationDelivery):
+    def reconcile_observation(
+        self,
+        action_id: UUID,
+        delivery: ObservationDelivery,
+    ) -> ObservationDelivery:
         with self._lock:
             self._enter()
             try:
@@ -820,7 +850,11 @@ class ContinuousEvidenceInput:
         store: ContinuousStateStore,
         *,
         producer: PerceptionProducer | None = None,
-        context_builder=None,
+        context_builder: Callable[
+            [StructureTwoProductionSystem, GroundedTransition, datetime, int],
+            AdaptiveExecutionContext,
+        ]
+        | None = None,
     ) -> ContinuousEvidenceInput:
         """Restore one owned system graph; never replay actions or reinitialize a core.
 

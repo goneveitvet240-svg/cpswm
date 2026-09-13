@@ -15,7 +15,8 @@ import selectors
 import subprocess
 from datetime import UTC, datetime
 from pathlib import Path
-from uuid import uuid4
+from typing import Any
+from uuid import UUID, uuid4
 
 from cpswm.contracts.base import BaseRecordMetadata, SourceType
 from cpswm.perception_mapping.adapters.contracts import (
@@ -27,7 +28,7 @@ from cpswm.perception_mapping.adapters.contracts import (
 )
 from cpswm.perception_mapping.adapters.rgbd_capture import RawModalityObservation
 from cpswm.system.reproducibility import content_sha256
-from cpswm.system.structure_two_continuous_input import ObservationDelivery
+from cpswm.system.structure_two_continuous_input import ObservationCommand, ObservationDelivery
 
 
 class UnityObservationExecutor:
@@ -39,10 +40,10 @@ class UnityObservationExecutor:
         binary: Path,
         house: Path,
         log_dir: Path,
-        household_id,
-        session_id,
-        trace_id,
-    ):
+        household_id: UUID,
+        session_id: UUID,
+        trace_id: UUID,
+    ) -> None:
         self.scope = (household_id, session_id, trace_id)
         self.provenance = {
             name: hashlib.sha256(path.read_bytes()).hexdigest()
@@ -67,7 +68,7 @@ class UnityObservationExecutor:
             text=True,
             bufsize=1,
         )
-        self._seen = set()
+        self._seen: set[UUID] = set()
         try:
             if self._receive().get("ready") is not True:
                 raise RuntimeError("Unity worker did not initialize")
@@ -75,7 +76,7 @@ class UnityObservationExecutor:
             self.close()
             raise
 
-    def _receive(self):
+    def _receive(self) -> dict[str, Any]:
         assert self._process.stdout is not None
         with selectors.DefaultSelector() as selector:
             selector.register(self._process.stdout, selectors.EVENT_READ)
@@ -84,10 +85,11 @@ class UnityObservationExecutor:
                 if not line:
                     raise RuntimeError("Unity worker exited; outcome uncertain")
                 if line.startswith("CPSWM_RESPONSE "):
-                    return json.loads(line.removeprefix("CPSWM_RESPONSE "))
+                    result: dict[str, Any] = json.loads(line.removeprefix("CPSWM_RESPONSE "))
+                    return result
             raise TimeoutError("Unity receipt timed out; outcome uncertain")
 
-    def execute(self, command):
+    def execute(self, command: ObservationCommand) -> ObservationDelivery:
         if command.action_id in self._seen:
             raise ValueError("transport action already dispatched")
         self._seen.add(command.action_id)
@@ -146,9 +148,10 @@ class UnityObservationExecutor:
             command.action_id, (raw,), response["success"], response["error"], arrival
         )
 
-    def close(self):
+    def close(self) -> None:
         if self._process.poll() is None:
             try:
+                assert self._process.stdin is not None
                 self._process.stdin.write('{"stop": true}\n')
                 self._process.stdin.flush()
                 self._process.wait(timeout=5)

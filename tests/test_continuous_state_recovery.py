@@ -135,7 +135,9 @@ def test_effect_receipt_reuse_and_uncertain_reconciliation(tmp_path):
     store = store_at(path)
     with pytest.raises(RuntimeError, match="UNCERTAIN"):
         store.execute_once("step0", {"look": 1}, fail)
+    assert store.pending_effects() == (("step0", {"look": 1}),)
     store.reconcile_effect("step0", {"look": 1}, {"success": True})
+    assert store.pending_effects() == ()
     assert store.execute_once("step0", {"look": 1}, fail) == {"success": True}
     assert len(calls) == 1
     with pytest.raises(ValueError, match="changed"):
@@ -414,3 +416,49 @@ def test_accepted_observation_receipt_is_detached_from_transport_and_survives_re
     accepted = restored._observation_status[command.action_id]
     assert accepted.success is False and accepted.error == "original failure"
     store.close()
+
+
+def test_fresh_process_registers_configured_visual_history_before_restore(tmp_path):
+    import subprocess
+    import sys
+    from types import SimpleNamespace
+
+    from test_interaction_evidence import frame
+
+    from cpswm.perception_mapping.natural_vision import NaturalVisionEvidenceProducer
+    from cpswm.system.continuous_state_codec import StateCodec
+
+    observed = frame()
+    scope = (observed.household_id, observed.session_id, observed.trace_id)
+    producer = NaturalVisionEvidenceProducer(
+        SimpleNamespace(
+            _scope=scope,
+            _versions=("test", "test"),
+            _minimum_score=0.5,
+        )
+    )
+    # A type-bootstrap probe, not a detector correctness claim.
+    producer._frames = (observed,)
+    producer._interactions = producer._recompute_interactions(producer._frames)
+    path = tmp_path / "visual-state.json"
+    path.write_text(StateCodec().dumps(producer.checkpoint_state()))
+    script = """
+from pathlib import Path
+import sys
+from types import SimpleNamespace
+from uuid import UUID
+from cpswm.perception_mapping.natural_vision import NaturalVisionEvidenceProducer
+from cpswm.system.continuous_state_codec import StateCodec
+producer = NaturalVisionEvidenceProducer(SimpleNamespace(
+    _scope=tuple(UUID(x) for x in sys.argv[2:]), _versions=("test","test"), _minimum_score=.5,
+))
+producer.restore_state(StateCodec().loads(Path(sys.argv[1]).read_text()))
+assert len(producer.frames()) == len(producer.interactions()) == 1
+assert len(producer.interactions()[0][0].detections) == 2
+print("visual history restored in fresh process")
+"""
+    result = subprocess.run(
+        [sys.executable, "-c", script, str(path), *map(str, scope)], text=True, capture_output=True
+    )
+    assert result.returncode == 0, result.stderr
+    assert result.stdout.strip() == "visual history restored in fresh process"

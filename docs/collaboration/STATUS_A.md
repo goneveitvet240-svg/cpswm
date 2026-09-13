@@ -1,5 +1,12 @@
 # 电脑 A 状态
 
+## A 最新缺失资产修复重建及两轮复测完成 2026-09-13
+
+- 本分支 `codex/pc-a-procthor-unity-build-20260913`，base `ec2215ac7138c2b359d77219519e5628669c8b82`；测试工具版本 `253ade19297ca26f1f74431141d8dd50eef98e68`，上游修复源码 `f52271cf6f1251f6ed31154a8373d89971d7d51e`。本段结果待随当前提交公开，旧证据 253ade1 已在远端核验。
+- 新 Unity 构建 Succeeded / 0 errors / 26 warnings；实际 gameplay DLL `823575cc05afa25da8b8bd824ab3253deb80250727a03ffb36f98db778ac9b05`。两轮真实作者复测 6/6、4/4 通过，普通双实体回归通过；缺失资产失败/停止 episode/reset 恢复反例已关闭。输入快照工具 9 项检查通过。
+- 新证据位于 `docs/reviews/pc_a/procthor_unity_build_2026-09-13/evidence_02/` 和 `evidence_03/`，报告 `REBUILD_F52271CF.md`；旧 3 passed / 1 failed 不覆盖。输入唯一变化为生成 ResourceAssetCatalog，不声称位级可复现。
+- 仍为部分作者审核，待 B 独立复核；部分子实体失败/复杂碰撞等矩阵、人物像素及角色证据、真实连续监督和默认联合主干闭环仍未验收。没有训练、没有自动合并共享分支。下一步见报告，原始许可日志和二进制不公开。
+
 ## A 明确公开授权后交付并恢复重建 2026-09-13
 
 - 用户已明确允许本批仿真证据、房屋对象记录及本机路径向指定 GitHub 仓库公开。已成功推送并通过 ls-remote 核验 `253ade19297ca26f1f74431141d8dd50eef98e68`；下方此前拒绝/仅本地记录属于历史状态，不再代表当前发布状态。

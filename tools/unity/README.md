@@ -6,7 +6,7 @@ https://github.com/allenai/ai2thor ，固定 base
 补丁保留上游文件版权头；新增及修改部分是 CPSWM 开发实验，不是 AllenAI 官方发布。
 
 - `post_house_a86468d6.patch`：已构建的原型。真实多人生成及部分状态机检查通过，扩展审核发现缺失对象资产仍能建房“成功”，**CHANGES_REQUIRED**。
-- `post_house_f52271cf_UNVERIFIED.patch`：包含以上原型并修复缺失资产静默跳过；当前 Mac 锁屏，**未重新编译/未复测**。旧原型结果不转移给它。
+- `post_house_f52271cf_UNVERIFIED.patch`：文件名保留历史未测状态；同一内容现已重新构建并通过两轮有限作者复测（6/6、4/4）和普通双实体回归。不是全面验收或独立异机签收，详见 `REBUILD_F52271CF.md`。旧原型失败记录保留。
 - 两份补丁均从同一 upstream base 生成，只选一份，不叠加。应用到新的独立源码 checkout，先 `git apply --check <patch>`，再 `git apply <patch>`；不得覆盖已有工作。
 - 2020.3.25f1 是冻结编辑器版本；不要以升级到 Unity 6 代替复现。
 - 直接命令行初始化许可在本机失败；通过已登录 Hub 添加并打开 `unity` 子目录成功。编辑器中选择 `CPSWM > Build Frozen Mac Development`，输出为系统临时目录中的全新 `cpswm-unity-gui-build-*`，不覆盖原官方 Player。

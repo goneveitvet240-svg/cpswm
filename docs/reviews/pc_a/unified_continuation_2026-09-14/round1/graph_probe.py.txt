@@ -1,0 +1,21 @@
+import sys,subprocess,json
+from pathlib import Path
+import numpy as np
+from cpswm.system.continuous_state_codec import StateCodec
+from cpswm.system.continuous_state_store import ContinuousStateStore
+p=Path('/private/tmp/cpswm-unified-review1/graph.json')
+root={}; shared=np.arange(6,dtype=np.float64).reshape(2,3); root['self']=root; root['a']=shared;root['b']=shared;root['sequence']=[root]
+p.write_text(StateCodec().dumps(root))
+script='''import sys,numpy as np
+from pathlib import Path
+from cpswm.system.continuous_state_codec import StateCodec
+r=StateCodec().loads(Path(sys.argv[1]).read_text()); assert r["self"] is r and r["sequence"][0] is r and r["a"] is r["b"]; assert np.array_equal(r["a"],np.arange(6).reshape(2,3)); print("PASS crossprocess graph aliases and numeric content")'''
+r=subprocess.run([sys.executable,'-c',script,str(p)],capture_output=True,text=True);assert r.returncode==0,r.stderr;print(r.stdout.strip())
+db=Path('/private/tmp/cpswm-unified-review1/locked.db');s=ContinuousStateStore(db,source_identity='a'*64,dependency_identity='b'*64)
+s.save({'state':1})
+r=subprocess.run([sys.executable,'-c','''import sys,sqlite3
+from pathlib import Path
+from cpswm.system.continuous_state_store import ContinuousStateStore
+try:ContinuousStateStore(Path(sys.argv[1]),source_identity="a"*64,dependency_identity="b"*64)
+except sqlite3.OperationalError:print("PASS second process writer blocked")
+else:raise AssertionError("second writer admitted")''',str(db)],capture_output=True,text=True);assert r.returncode==0,r.stderr;print(r.stdout.strip());s.close()

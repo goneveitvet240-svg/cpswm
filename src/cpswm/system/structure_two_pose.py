@@ -15,7 +15,7 @@ from uuid import UUID
 
 import numpy as np
 from pydantic import field_validator, model_validator
-from scipy.spatial.transform import Rotation
+from scipy.spatial.transform import Rotation  # type: ignore[import-untyped]
 
 from cpswm.contracts.base import ContractModel, require_aware
 from cpswm.contracts.likelihoods import Pose3D

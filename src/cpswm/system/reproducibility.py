@@ -29,6 +29,12 @@ def _canonical_value(value: Any) -> Any:
     # and de-duplication keys from treating a sign-bit-only change as evidence.
     if isinstance(value, float) and value == 0.0:
         return 0.0
+    if isinstance(value, (set, frozenset)):
+        # Python's hash seed changes set repr/order between processes. Cause-set
+        # keys must retain one identity across a durable runtime restart.
+        items = [_canonical_value(item) for item in value]
+        items.sort(key=lambda item: json.dumps(item, sort_keys=True, allow_nan=False))
+        return {"__" + type(value).__name__ + "__": items}
     if isinstance(value, dict):
         normalized: dict[str, Any] = {}
         for key, nested in value.items():

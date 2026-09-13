@@ -1,0 +1,34 @@
+import sys
+from pathlib import Path
+from datetime import timedelta
+sys.path[:0]=['tests','src']
+from test_structure_two_continuous_input import setup,raw_for
+from cpswm.system.structure_two_continuous_input import ObservationDelivery
+from cpswm.system.continuous_state_store import ContinuousStateStore
+
+def reject(call,word):
+ try:call()
+ except ValueError as e:assert word in str(e),str(e)
+ else:raise AssertionError('expected rejection')
+p,s,b,t=setup(False);w=t.after.detection_time;ids=s.admit((raw_for(t),),received_at=w)
+c=s.prepare_observation(action='Pass',degrees=0,reason='fixture',source_ids=ids,decision_time=w)
+s.admit((raw_for(t),),received_at=w+timedelta(hours=1))
+class Ex:
+ calls=0
+ def execute(self,cmd):
+  self.calls+=1
+  return ObservationDelivery(cmd.action_id,(),False,'fixture failed',w+timedelta(hours=2))
+e=Ex();reject(lambda:s.execute_observation(c,executor=e),'predates');assert e.calls==0
+c2=s.prepare_observation(action='Pass',degrees=0,reason='fixture',source_ids=ids,decision_time=w+timedelta(hours=1))
+s.execute_observation(c2,executor=e);assert e.calls==1
+reject(lambda:s.admit((raw_for(t),),received_at=w+timedelta(minutes=90)),'backwards')
+s.admit((raw_for(t),),received_at=w+timedelta(hours=3))
+print('PASS stale dispatch rejected before callback; legal failure advances watermark; later input succeeds')
+path=Path('/private/tmp/cpswm-unified-review1/closure-source.db')
+a=ContinuousStateStore(path,source_identity='a'*64,dependency_identity='b'*64)
+a.execute_once('action',{'x':1},lambda req:{'success':True});a.close()
+reject(lambda:ContinuousStateStore(path,source_identity='c'*64,dependency_identity='d'*64),'differ')
+a=ContinuousStateStore(path,source_identity='a'*64,dependency_identity='b'*64)
+v=a.execute_once('action',{'x':1},lambda req:(_ for _ in ()).throw(AssertionError('redispatch')))
+assert v=={'success':True};a.close()
+print('PASS changed deployment rejected; same deployment effect receipt reused without execution')

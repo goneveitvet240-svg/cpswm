@@ -1,0 +1,101 @@
+unformatted: File would be reformatted
+   --> tests/dual_pc_review/test_w3_five_boundaries_repair.py:88:34
+    |
+87  |         "alpha": original.alpha if alpha is None else alpha,
+    -         "evidence_cluster_ids": (
+    -             original.evidence_cluster_ids if clusters is None else clusters
+    -         ),
+88  +         "evidence_cluster_ids": (original.evidence_cluster_ids if clusters is None else clusters),
+89  |     }
+--------------------------------------------------------------------------------
+187 |     arguments = candidates(core)
+    -     original = arguments["statistics"][
+    -         arguments["receipts"][0].proposal.proposed_state.particle_id
+    -     ]
+188 +     original = arguments["statistics"][arguments["receipts"][0].proposal.proposed_state.particle_id]
+189 |     paired = tuple(zip(original.locations, original.alpha, strict=True))
+--------------------------------------------------------------------------------
+349 |     bad = deepcopy(good)
+    -     statistic = bad["statistics"][
+    -         bad["receipts"][0].proposal.proposed_state.particle_id
+    -     ]
+350 +     statistic = bad["statistics"][bad["receipts"][0].proposal.proposed_state.particle_id]
+351 |     lineage = statistic.evidence_cluster_ids
+--------------------------------------------------------------------------------
+367 |     # conditional-statistic digest and resealed the public particle state.
+    -     assert (
+    -         bad["receipts"][0].proposal.proposed_state.statistic_state_ref
+    -         == resealed.reference
+    -     )
+368 +     assert bad["receipts"][0].proposal.proposed_state.statistic_state_ref == resealed.reference
+369 |     _reject_without_effect_then_retry(
+--------------------------------------------------------------------------------
+434 | )
+    - def test_receipt_statistic_input_closure_attacks_are_atomic(
+    -     fault: str, match: str
+    - ) -> None:
+435 + def test_receipt_statistic_input_closure_attacks_are_atomic(fault: str, match: str) -> None:
+436 |     core = old._legacy_history(1).system.core
+--------------------------------------------------------------------------------
+447 |     bad = deepcopy(good)
+    -     particle_ids = tuple(
+    -         receipt.proposal.proposed_state.particle_id for receipt in bad["receipts"]
+    -     )
+448 +     particle_ids = tuple(receipt.proposal.proposed_state.particle_id for receipt in bad["receipts"])
+449 |     shared = bad["statistics"][particle_ids[0]]
+    |
+
+unformatted: File would be reformatted
+   --> tests/test_structure_two_ciav_negative_observation_layers.py:213:33
+    |
+212 |         transition = probe.transition_for(probe.observed_days()[0])
+    -         ciav = probe.ciav_input(
+    -             transition, outcome=CIAVOutcomeKind.DETECTED_DIFFERENT_LOCATION
+    -         )
+213 +         ciav = probe.ciav_input(transition, outcome=CIAVOutcomeKind.DETECTED_DIFFERENT_LOCATION)
+214 |         result, _ = probe.run_direct_p5(transition, ciav_input=ciav)
+--------------------------------------------------------------------------------
+219 |         transition = probe.transition_for(probe.observed_days()[0])
+    -         ciav = probe.ciav_input(
+    -             transition, outcome=CIAVOutcomeKind.DETECTED_DIFFERENT_LOCATION
+    -         )
+220 +         ciav = probe.ciav_input(transition, outcome=CIAVOutcomeKind.DETECTED_DIFFERENT_LOCATION)
+221 |         deferred, _ = probe.run_adaptive(
+--------------------------------------------------------------------------------
+225 |             debt_expiry_steps=1,
+    -         )
+    -         result, _ = probe.replay_debt(
+    -             deferred.debt_certificates[0].debt_id, ciav_input=ciav
+226 |         )
+227 +         result, _ = probe.replay_debt(deferred.debt_certificates[0].debt_id, ciav_input=ciav)
+228 |         return probe, result
+--------------------------------------------------------------------------------
+237 |     )
+    -     assert len(direct_probe.committed_revision_ids()) == len(
+    -         replay_probe.committed_revision_ids()
+    -     )
+238 +     assert len(direct_probe.committed_revision_ids()) == len(replay_probe.committed_revision_ids())
+239 |     for location in direct_probe.case.locations:
+240 |         assert direct_probe.system.core.hybrid_alpha(location) == pytest.approx(
+241 |             replay_probe.system.core.hybrid_alpha(location)
+242 |         )
+    -     assert direct_probe.action_distribution_sha256() == (
+    -         replay_probe.action_distribution_sha256()
+    -     )
+243 +     assert direct_probe.action_distribution_sha256() == (replay_probe.action_distribution_sha256())
+244 |
+--------------------------------------------------------------------------------
+265 |         object_instance_id=probe.system.core.object_instance_id,
+    -         actor_keys=tuple(
+    -             actor for actor in transition.actor_prior if actor != "unknown_actor"
+    -         ),
+266 +         actor_keys=tuple(actor for actor in transition.actor_prior if actor != "unknown_actor"),
+267 |         actor_prior=dict(result.primary_result.actor_posterior),
+268 |         actor_likelihoods_by_outcome={
+    -             outcome: dict(values)
+    -             for outcome, values in ciav.actor_likelihoods_by_outcome.items()
+269 +             outcome: dict(values) for outcome, values in ciav.actor_likelihoods_by_outcome.items()
+270 |         },
+    |
+
+2 files would be reformatted, 622 files already formatted

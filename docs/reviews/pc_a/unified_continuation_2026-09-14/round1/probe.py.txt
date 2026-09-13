@@ -1,0 +1,26 @@
+import sys
+from pathlib import Path
+from datetime import timedelta
+sys.path[:0]=['tests','src']
+from test_structure_two_continuous_input import setup,raw_for
+from cpswm.system.structure_two_continuous_input import ObservationDelivery
+from cpswm.system.continuous_state_store import ContinuousStateStore
+p,s,b,t=setup(False); when=t.after.detection_time; r=raw_for(t); ids=s.admit((r,),received_at=when)
+c=s.prepare_observation(action='Pass',degrees=0,reason='fixture',source_ids=ids,decision_time=when)
+s.admit((raw_for(t),),received_at=when+timedelta(hours=1))
+class Ex:
+ calls=0
+ def execute(self,cmd):
+  self.calls+=1
+  return ObservationDelivery(cmd.action_id,(),False,'fixture failed',when+timedelta(hours=2))
+e=Ex();s.execute_observation(c,executor=e)
+print('STALE_OBSERVATION_EXECUTED',e.calls)
+s.admit((raw_for(t),),received_at=when+timedelta(minutes=90))
+print('FAILURE_RECEIPT_WATERMARK_BACKDATED_ADMISSION_ACCEPTED')
+
+path=Path('/private/tmp/cpswm-unified-review1/source.db')
+a=ContinuousStateStore(path,source_identity='a'*64,dependency_identity='b'*64)
+a.execute_once('action',{'x':1},lambda req:{'success':True});a.close()
+c=ContinuousStateStore(path,source_identity='c'*64,dependency_identity='d'*64)
+v=c.execute_once('action',{'x':1},lambda req: (_ for _ in ()).throw(AssertionError('shouldnotdispatch')))
+print('SOURCE_REBOUND_WITH_EFFECT_ONLY',v);c.close()

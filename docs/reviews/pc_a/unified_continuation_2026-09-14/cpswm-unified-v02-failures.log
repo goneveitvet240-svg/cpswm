@@ -1,0 +1,263 @@
+FF                                                                       [100%]
+=================================== FAILURES ===================================
+_____ test_v02_calls_real_feedback_revision_loop_and_project_one_interface _____
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x10c359810>
+
+    def test_v02_calls_real_feedback_revision_loop_and_project_one_interface(monkeypatch):
+        """The v0.2 full arm cannot regress to the stand-in owner write gate."""
+        import cpswm.system.evaluation_operations.project_two_action_benchmark as module
+        from cpswm.system.counterfactual_event_hypergraph import ProjectTwoFeedbackRevisionLoop
+        from cpswm.system.evaluation_operations import (
+            D0SyntheticOracleReplayAdapter,
+            ProjectTwoActionBenchmarkV02,
+            ProjectTwoActionMethod,
+        )
+    
+        calls = {"feedback": 0, "project_one": 0}
+        original_ingest = ProjectTwoFeedbackRevisionLoop.ingest_feedback
+        original_apply = module.apply_project_one_request
+    
+        def ingest(self, **kwargs):
+            calls["feedback"] += 1
+            return original_ingest(self, **kwargs)
+    
+        def apply(request, loop):
+            calls["project_one"] += 1
+            # Project two can only submit a typed request; it receives no direct
+            # access to the project's internal statistic dictionaries here.
+            from cpswm.system.counterfactual_event_hypergraph import ProjectOneStatRequest
+    
+            assert isinstance(request, ProjectOneStatRequest)
+            return original_apply(request, loop)
+    
+        monkeypatch.setattr(ProjectTwoFeedbackRevisionLoop, "ingest_feedback", ingest)
+        monkeypatch.setattr(module, "apply_project_one_request", apply)
+        dataset = D0SyntheticOracleReplayAdapter(
+            validation_seeds=(101,), test_seeds=(211,), max_steps_per_episode=8
+        ).build()
+>       report = ProjectTwoActionBenchmarkV02().run(dataset)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_structure_two_action_death_test.py:54: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/cpswm/system/evaluation_operations/project_two_action_benchmark.py:1882: in run
+    self._evaluate_episode(dataset, episode, method, params)
+src/cpswm/system/evaluation_operations/project_two_action_benchmark.py:2181: in _evaluate_episode
+    state = self._method(episode, method, params)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/cpswm/system/evaluation_operations/project_two_action_benchmark.py:2141: in _method
+    return _FullProjectTwoMethod(
+src/cpswm/system/evaluation_operations/project_two_action_benchmark.py:820: in __init__
+    self.spine.verify_runtime_assembly(
+src/cpswm/system/structure_two_production_system.py:2131: in verify_runtime_assembly
+    instances = self.runtime_operator_instances()
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/cpswm/system/structure_two_production_system.py:2112: in runtime_operator_instances
+    return self._runtime_operator_instances_for_execution()
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/cpswm/system/structure_two_production_system.py:2098: in _runtime_operator_instances_for_execution
+    bind_runtime_callable(
+src/cpswm/system/structure_two_execution.py:594: in bind_runtime_callable
+    _require_declared_implementation_member(
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+operator = 'orrer_cheh'
+implementation_type = <class 'cpswm.system.counterfactual_event_hypergraph.feedback_revision_loop.ProjectTwoFeedbackRevisionLoop'>
+instance = <cpswm.system.counterfactual_event_hypergraph.feedback_revision_loop.ProjectTwoFeedbackRevisionLoop object at 0x10d350ad0>
+callable_name = 'ingest_feedback'
+callable_target = <function test_v02_calls_real_feedback_revision_loop_and_project_one_interface.<locals>.ingest at 0x10c202480>
+
+    def _require_declared_implementation_member(
+        *,
+        operator: RuntimeOperatorName,
+        implementation_type: type,
+        instance: object,
+        callable_name: str,
+        callable_target: object,
+    ) -> None:
+        """Refuse a callable that is not the bound implementation type's own member.
+    
+        ``hard_safety_kernel.provenance_and_dependency_checks_always_executed`` is
+        ``true`` for every legal path.  Checking only that a callable matches *its own*
+        source file is not a provenance check: a function defined in any other module
+        (or attached to a single instance) passes that test trivially while being
+        receipted under the production implementation symbol.  The round-2 review's
+        fault injection did exactly that and still produced seven verified rows.
+    
+        The bound callable must therefore be the attribute that the implementation
+        type's own MRO declares under ``callable_name``, and it must report the
+        defining class's module and qualified name -- which is what makes the
+        subsequent source-file hash comparison meaningful.
+    
+        Scope, stated honestly: this is applied only where
+        ``bind_runtime_callable(..., require_declared_member=True)`` asks for it, which
+        today is the adaptive deferred-path safety-maintenance seam.  Those four nodes
+        carry the entire write-safety argument of ``P0_SAFE_DEFERRED``, take no
+        runtime-visible input that a downstream check could catch, and are instrumented
+        by no production or test path.  Applying the same rule to every binding would
+        also refuse the project's existing instance-level receipt instrumentation, so
+        generalizing it is a separate decision, not a silent change.
+        """
+    
+        instance_attributes = getattr(instance, "__dict__", None)
+        if isinstance(instance_attributes, Mapping) and callable_name in instance_attributes:
+            raise ValueError(
+                f"bound production callable is shadowed by an instance attribute: "
+                f"{operator}.{callable_name}"
+            )
+        owner = next(
+            (base for base in implementation_type.__mro__ if callable_name in vars(base)),
+            None,
+        )
+        if owner is None:
+            raise ValueError(
+                f"bound production callable is not declared by the bound implementation "
+                f"type: {operator}.{callable_name}"
+            )
+        declared = vars(owner)[callable_name]
+        if isinstance(declared, staticmethod | classmethod):
+            declared = declared.__func__
+        if declared is not callable_target:
+            raise ValueError(
+                f"bound production callable is not the declared class member: "
+                f"{operator}.{callable_name}"
+            )
+        if (
+            getattr(callable_target, "__module__", None) != owner.__module__
+            or getattr(callable_target, "__qualname__", None) != f"{owner.__qualname__}.{callable_name}"
+        ):
+>           raise ValueError(
+                f"bound production callable does not belong to the bound implementation "
+                f"type: {operator}.{callable_name}"
+            )
+E           ValueError: bound production callable does not belong to the bound implementation type: orrer_cheh.ingest_feedback
+
+src/cpswm/system/structure_two_execution.py:565: ValueError
+______ test_v02_success_and_failure_feedback_both_flow_through_full_loop _______
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x10c358640>
+
+    def test_v02_success_and_failure_feedback_both_flow_through_full_loop(monkeypatch):
+        from cpswm.contracts import RobotActionOutcome
+        from cpswm.system.counterfactual_event_hypergraph import ProjectTwoFeedbackRevisionLoop
+        from cpswm.system.evaluation_operations import (
+            D0SyntheticOracleReplayAdapter,
+            ProjectTwoActionBenchmarkV02,
+        )
+    
+        observed_success_probabilities = []
+        original = ProjectTwoFeedbackRevisionLoop.ingest_feedback
+    
+        def capture(self, **kwargs):
+            feedback = kwargs["feedback"]
+            observed_success_probabilities.append(
+                feedback.outcome_distribution.get(RobotActionOutcome.SUCCESS, 0.0)
+            )
+            return original(self, **kwargs)
+    
+        monkeypatch.setattr(ProjectTwoFeedbackRevisionLoop, "ingest_feedback", capture)
+        dataset = D0SyntheticOracleReplayAdapter(
+            validation_seeds=(101,), test_seeds=(211,), max_steps_per_episode=8
+        ).build()
+>       ProjectTwoActionBenchmarkV02().run(dataset)
+
+tests/test_structure_two_action_death_test.py:165: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/cpswm/system/evaluation_operations/project_two_action_benchmark.py:1882: in run
+    self._evaluate_episode(dataset, episode, method, params)
+src/cpswm/system/evaluation_operations/project_two_action_benchmark.py:2181: in _evaluate_episode
+    state = self._method(episode, method, params)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/cpswm/system/evaluation_operations/project_two_action_benchmark.py:2141: in _method
+    return _FullProjectTwoMethod(
+src/cpswm/system/evaluation_operations/project_two_action_benchmark.py:820: in __init__
+    self.spine.verify_runtime_assembly(
+src/cpswm/system/structure_two_production_system.py:2131: in verify_runtime_assembly
+    instances = self.runtime_operator_instances()
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/cpswm/system/structure_two_production_system.py:2112: in runtime_operator_instances
+    return self._runtime_operator_instances_for_execution()
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/cpswm/system/structure_two_production_system.py:2098: in _runtime_operator_instances_for_execution
+    bind_runtime_callable(
+src/cpswm/system/structure_two_execution.py:594: in bind_runtime_callable
+    _require_declared_implementation_member(
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+operator = 'orrer_cheh'
+implementation_type = <class 'cpswm.system.counterfactual_event_hypergraph.feedback_revision_loop.ProjectTwoFeedbackRevisionLoop'>
+instance = <cpswm.system.counterfactual_event_hypergraph.feedback_revision_loop.ProjectTwoFeedbackRevisionLoop object at 0x10d26c2d0>
+callable_name = 'ingest_feedback'
+callable_target = <function test_v02_success_and_failure_feedback_both_flow_through_full_loop.<locals>.capture at 0x10ced6480>
+
+    def _require_declared_implementation_member(
+        *,
+        operator: RuntimeOperatorName,
+        implementation_type: type,
+        instance: object,
+        callable_name: str,
+        callable_target: object,
+    ) -> None:
+        """Refuse a callable that is not the bound implementation type's own member.
+    
+        ``hard_safety_kernel.provenance_and_dependency_checks_always_executed`` is
+        ``true`` for every legal path.  Checking only that a callable matches *its own*
+        source file is not a provenance check: a function defined in any other module
+        (or attached to a single instance) passes that test trivially while being
+        receipted under the production implementation symbol.  The round-2 review's
+        fault injection did exactly that and still produced seven verified rows.
+    
+        The bound callable must therefore be the attribute that the implementation
+        type's own MRO declares under ``callable_name``, and it must report the
+        defining class's module and qualified name -- which is what makes the
+        subsequent source-file hash comparison meaningful.
+    
+        Scope, stated honestly: this is applied only where
+        ``bind_runtime_callable(..., require_declared_member=True)`` asks for it, which
+        today is the adaptive deferred-path safety-maintenance seam.  Those four nodes
+        carry the entire write-safety argument of ``P0_SAFE_DEFERRED``, take no
+        runtime-visible input that a downstream check could catch, and are instrumented
+        by no production or test path.  Applying the same rule to every binding would
+        also refuse the project's existing instance-level receipt instrumentation, so
+        generalizing it is a separate decision, not a silent change.
+        """
+    
+        instance_attributes = getattr(instance, "__dict__", None)
+        if isinstance(instance_attributes, Mapping) and callable_name in instance_attributes:
+            raise ValueError(
+                f"bound production callable is shadowed by an instance attribute: "
+                f"{operator}.{callable_name}"
+            )
+        owner = next(
+            (base for base in implementation_type.__mro__ if callable_name in vars(base)),
+            None,
+        )
+        if owner is None:
+            raise ValueError(
+                f"bound production callable is not declared by the bound implementation "
+                f"type: {operator}.{callable_name}"
+            )
+        declared = vars(owner)[callable_name]
+        if isinstance(declared, staticmethod | classmethod):
+            declared = declared.__func__
+        if declared is not callable_target:
+            raise ValueError(
+                f"bound production callable is not the declared class member: "
+                f"{operator}.{callable_name}"
+            )
+        if (
+            getattr(callable_target, "__module__", None) != owner.__module__
+            or getattr(callable_target, "__qualname__", None) != f"{owner.__qualname__}.{callable_name}"
+        ):
+>           raise ValueError(
+                f"bound production callable does not belong to the bound implementation "
+                f"type: {operator}.{callable_name}"
+            )
+E           ValueError: bound production callable does not belong to the bound implementation type: orrer_cheh.ingest_feedback
+
+src/cpswm/system/structure_two_execution.py:565: ValueError
+=========================== short test summary info ============================
+FAILED tests/test_structure_two_action_death_test.py::test_v02_calls_real_feedback_revision_loop_and_project_one_interface
+FAILED tests/test_structure_two_action_death_test.py::test_v02_success_and_failure_feedback_both_flow_through_full_loop
+2 failed in 0.51s

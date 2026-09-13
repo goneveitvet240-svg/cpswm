@@ -57,6 +57,7 @@ from cpswm.system.structure_two_adaptive_runtime import (
     AdaptiveStepResult,
     select_adaptive_path,
     select_evaluation_direct_p5,
+    select_production_p5_first,
 )
 from cpswm.system.structure_two_execution import (
     STRUCTURE_TWO_OPERATOR_ORDER,
@@ -811,6 +812,44 @@ class StructureTwoProductionSystem:
             raise RuntimeError("evaluation-only P5 execution returned a legacy result")
         return result
 
+    def process_p5_first_transition(
+        self,
+        transition: PrototypeTransition,
+        *,
+        context: AdaptiveExecutionContext,
+        trace_sink: TraceSink,
+    ) -> AdaptiveStepResult:
+        """Execute the configured P5-first production policy on this live state.
+
+        Includes the registered seven-operator path and selected CIAV execution.
+        Availability of calibrated perception/full-axis neural inputs is still
+        the producer's responsibility, not implied by this routing policy.
+        """
+
+        context = _snapshot_adaptive_context(context)
+        current_state_sha256 = self.adaptive_router_state_sha256()
+        if context.router_features.source_state_sha256 != current_state_sha256:
+            raise ValueError("P5-first production P5 feature snapshot is stale or foreign")
+        if self.pending_adaptive_debts():
+            raise RuntimeError(
+                "P5-first production direct P5 cannot run while adaptive debt is pending"
+            )
+        selection = select_production_p5_first(
+            context.router_features,
+            ciav_runtime_input_available=context.ciav_input is not None,
+        )
+        result = self.process_transition(
+            transition,
+            execution_plan=registered_adaptive_execution_plan("P5_FULL_EAGER"),
+            trace_sink=trace_sink,
+            adaptive_context=context,
+            adaptive_selection=selection,
+            _production_p5_first=True,
+        )
+        if not isinstance(result, AdaptiveStepResult):
+            raise RuntimeError("P5-first production P5 execution returned a legacy result")
+        return result
+
     def replay_adaptive_debt(
         self,
         debt_id: UUID,
@@ -948,6 +987,7 @@ class StructureTwoProductionSystem:
         adaptive_context: None = None,
         adaptive_selection: None = None,
         _evaluation_direct_p5: bool = False,
+        _production_p5_first: bool = False,
     ) -> PrototypeStepResult: ...
 
     @overload
@@ -960,6 +1000,7 @@ class StructureTwoProductionSystem:
         adaptive_context: None = None,
         adaptive_selection: None = None,
         _evaluation_direct_p5: bool = False,
+        _production_p5_first: bool = False,
     ) -> PrototypeStepResult: ...
 
     @overload
@@ -972,6 +1013,7 @@ class StructureTwoProductionSystem:
         adaptive_context: AdaptiveExecutionContext,
         adaptive_selection: AdaptivePathSelectionReceipt,
         _evaluation_direct_p5: bool = False,
+        _production_p5_first: bool = False,
     ) -> AdaptiveStepResult: ...
 
     @overload
@@ -984,6 +1026,7 @@ class StructureTwoProductionSystem:
         adaptive_context: AdaptiveExecutionContext | None = None,
         adaptive_selection: AdaptivePathSelectionReceipt | None = None,
         _evaluation_direct_p5: bool = False,
+        _production_p5_first: bool = False,
     ) -> PrototypeStepResult | AdaptiveStepResult: ...
 
     def process_transition(
@@ -995,6 +1038,7 @@ class StructureTwoProductionSystem:
         adaptive_context: AdaptiveExecutionContext | None = None,
         adaptive_selection: AdaptivePathSelectionReceipt | None = None,
         _evaluation_direct_p5: bool = False,
+        _production_p5_first: bool = False,
     ) -> PrototypeStepResult | AdaptiveStepResult:
         """Run one transition through the selected Architecture-A interface.
 
@@ -1009,7 +1053,9 @@ class StructureTwoProductionSystem:
         adaptive = bool(
             execution_plan is not None and execution_plan.lane == "registered_adaptive_path"
         )
-        if _evaluation_direct_p5 and not adaptive:
+        if _evaluation_direct_p5 and _production_p5_first:
+            raise ValueError("production and evaluation P5 policies cannot be mixed")
+        if (_evaluation_direct_p5 or _production_p5_first) and not adaptive:
             raise ValueError("evaluation-only P5 authorization requires an adaptive P5 plan")
         if adaptive:
             assert execution_plan is not None
@@ -1089,6 +1135,7 @@ class StructureTwoProductionSystem:
                                 adaptive_selection,
                             ),
                             evaluation_direct_p5=_evaluation_direct_p5,
+                            production_p5_first=_production_p5_first,
                         )
                     )
                     if adaptive
@@ -1136,6 +1183,7 @@ class StructureTwoProductionSystem:
         context: AdaptiveExecutionContext,
         selection: AdaptivePathSelectionReceipt,
         evaluation_direct_p5: bool = False,
+        production_p5_first: bool = False,
     ) -> AdaptiveStepResult:
         features = context.router_features
         step_index = context.step_index
@@ -1187,7 +1235,11 @@ class StructureTwoProductionSystem:
             context.ciav_input.content_sha256 if context.ciav_input is not None else None
         )
         expected_selection = (
-            select_evaluation_direct_p5(
+            select_production_p5_first(
+                features, ciav_runtime_input_available=ciav_input is not None
+            )
+            if production_p5_first
+            else select_evaluation_direct_p5(
                 features,
                 ciav_runtime_input_available=ciav_input is not None,
             )

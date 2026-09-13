@@ -281,6 +281,23 @@ def select_evaluation_direct_p5(
     )
 
 
+def select_production_p5_first(
+    features: AdaptiveRouterFeatures, *, ciav_runtime_input_available: bool
+) -> AdaptivePathSelectionReceipt:
+    """The explicitly selected P5-first policy, independent of cheap-path routing.
+
+    Reuse the same debt/freshness/authorization preconditions, with a distinct
+    production receipt. This does not manufacture risk features to force P5.
+    """
+    select_evaluation_direct_p5(features, ciav_runtime_input_available=ciav_runtime_input_available)
+    return _selection_receipt(
+        features,
+        selected_path_id="P5_FULL_EAGER",
+        reasons=("configured_production_p5_first",),
+        ciav_available=True,
+    )
+
+
 def _callable_source_binding(callback: Callable[..., object]) -> dict[str, object]:
     target = getattr(callback, "__func__", callback)
     module = getattr(target, "__module__", None)

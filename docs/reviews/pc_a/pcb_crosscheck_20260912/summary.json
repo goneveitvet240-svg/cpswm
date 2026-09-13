@@ -1,0 +1,246 @@
+{
+  "b_manifest_verified_files": 20,
+  "b_changed_files": [
+    "docs/reviews/data/pc_b_w3_r6_independent_20260912/.gitattributes",
+    "docs/reviews/data/pc_b_w3_r6_independent_20260912/COMMANDS.md",
+    "docs/reviews/data/pc_b_w3_r6_independent_20260912/README.md",
+    "docs/reviews/data/pc_b_w3_r6_independent_20260912/case_results.json",
+    "docs/reviews/data/pc_b_w3_r6_independent_20260912/collect_metadata.ps1",
+    "docs/reviews/data/pc_b_w3_r6_independent_20260912/logs/affected-group.log",
+    "docs/reviews/data/pc_b_w3_r6_independent_20260912/logs/five-case-observations-r6.json",
+    "docs/reviews/data/pc_b_w3_r6_independent_20260912/logs/independent-adversarial-with-control.log",
+    "docs/reviews/data/pc_b_w3_r6_independent_20260912/logs/independent-adversarial.log",
+    "docs/reviews/data/pc_b_w3_r6_independent_20260912/logs/independent-support-rebind.log",
+    "docs/reviews/data/pc_b_w3_r6_independent_20260912/logs/line-ending-control.log",
+    "docs/reviews/data/pc_b_w3_r6_independent_20260912/logs/previous-independent-probe.json",
+    "docs/reviews/data/pc_b_w3_r6_independent_20260912/logs/round6-prepared-boundary.log",
+    "docs/reviews/data/pc_b_w3_r6_independent_20260912/logs/w3-snapshot-tests.log",
+    "docs/reviews/data/pc_b_w3_r6_independent_20260912/manifest.sha256",
+    "docs/reviews/data/pc_b_w3_r6_independent_20260912/metadata.log",
+    "docs/reviews/data/pc_b_w3_r6_independent_20260912/run-exit-codes.txt",
+    "docs/reviews/data/pc_b_w3_r6_independent_20260912/w3_five_case_observations.py",
+    "docs/reviews/structure_two_window1_pc_b_static_review_2026-09-12.md",
+    "docs/reviews/structure_two_window3_round6_pc_b_independent_review_2026-09-12.md",
+    "tests/test_structure_two_w3_r6_pc_b_review.py"
+  ],
+  "versions": {
+    "r6": {
+      "tested_sha": "1bd513f51ab7e54a7290870a5f34b524254d55c6",
+      "overlay_sha256": {
+        "tests/test_structure_two_w3_r6_pc_b_review.py": "174e7c8dbe1b96870f828052c515c218d54a2cbbcaef8525942edef4bd2e6fa0",
+        "docs/reviews/data/pc_b_w3_r6_independent_20260912/w3_five_case_observations.py": "eb9348a579e7692003338accc0bde447f1dbfe24ed14c94ba15a572709ed69f2"
+      },
+      "passed": 1,
+      "failed": [
+        "test_prepared_support_is_bound_to_the_constructed_world",
+        "test_prepared_readout_rejects_a_rebound_world_support",
+        "test_particle_parent_and_child_cannot_switch_world_support",
+        "test_conditional_statistics_are_bound_to_the_receipt_cluster",
+        "test_unreferenced_statistics_cannot_enter_the_persisted_input_body"
+      ],
+      "consequences": [
+        {
+          "id": "LEGAL-CONTROL",
+          "call": {
+            "result_type": "ParticleRevisionBatch",
+            "status": "ACCEPTED_OR_RETURNED"
+          },
+          "foreign_probabilities": {},
+          "records_before": 0,
+          "records_after": 2,
+          "orphan_statistics_in_body": 0,
+          "readout_disjoint_current_support": false,
+          "semantic_changed": true,
+          "ledger_unchanged": true
+        },
+        {
+          "id": "W3-PCB-01",
+          "call": {
+            "result_type": "ParticleRevisionBatch",
+            "status": "ACCEPTED_OR_RETURNED"
+          },
+          "foreign_probabilities": {
+            "aaaaaaaa-0000-4000-8000-000000000001": 0.09022556390977444
+          },
+          "records_before": 0,
+          "records_after": 2,
+          "orphan_statistics_in_body": 0,
+          "readout_disjoint_current_support": false,
+          "semantic_changed": true,
+          "ledger_unchanged": true
+        },
+        {
+          "id": "W3-PCB-02",
+          "call": {
+            "result_type": "tuple",
+            "status": "ACCEPTED_OR_RETURNED"
+          },
+          "foreign_probabilities": {},
+          "records_before": 2,
+          "records_after": 2,
+          "orphan_statistics_in_body": 0,
+          "readout_disjoint_current_support": true,
+          "semantic_changed": false,
+          "ledger_unchanged": true
+        },
+        {
+          "id": "W3-PCB-03",
+          "call": {
+            "result_type": "ParticleRevisionBatch",
+            "status": "ACCEPTED_OR_RETURNED"
+          },
+          "foreign_probabilities": {
+            "aaaaaaaa-0000-4000-8000-000000000001": 0.3791968400263331,
+            "aaaaaaaa-0000-4000-8000-000000000002": 0.09479921000658327,
+            "aaaaaaaa-0000-4000-8000-000000000003": 0.09479921000658327,
+            "aaaaaaaa-0000-4000-8000-000000000004": 0.09479921000658327
+          },
+          "records_before": 2,
+          "records_after": 4,
+          "orphan_statistics_in_body": 0,
+          "readout_disjoint_current_support": false,
+          "semantic_changed": true,
+          "ledger_unchanged": true
+        },
+        {
+          "id": "W3-PCB-04",
+          "call": {
+            "result_type": "ParticleRevisionBatch",
+            "status": "ACCEPTED_OR_RETURNED"
+          },
+          "foreign_probabilities": {},
+          "records_before": 0,
+          "records_after": 2,
+          "orphan_statistics_in_body": 0,
+          "readout_disjoint_current_support": false,
+          "semantic_changed": true,
+          "ledger_unchanged": true
+        },
+        {
+          "id": "W3-PCB-05",
+          "call": {
+            "result_type": "ParticleRevisionBatch",
+            "status": "ACCEPTED_OR_RETURNED"
+          },
+          "foreign_probabilities": {},
+          "records_before": 0,
+          "records_after": 2,
+          "orphan_statistics_in_body": 1,
+          "readout_disjoint_current_support": false,
+          "semantic_changed": true,
+          "ledger_unchanged": true
+        }
+      ],
+      "unchanged_recorder_embedded_sha": "1bd513f51ab7e54a7290870a5f34b524254d55c6"
+    },
+    "r7": {
+      "tested_sha": "62870a3a38fce882b25d8d77f1d0526cca6fbc14",
+      "overlay_sha256": {
+        "tests/test_structure_two_w3_r6_pc_b_review.py": "174e7c8dbe1b96870f828052c515c218d54a2cbbcaef8525942edef4bd2e6fa0",
+        "docs/reviews/data/pc_b_w3_r6_independent_20260912/w3_five_case_observations.py": "eb9348a579e7692003338accc0bde447f1dbfe24ed14c94ba15a572709ed69f2"
+      },
+      "passed": 1,
+      "failed": [
+        "test_prepared_support_is_bound_to_the_constructed_world",
+        "test_prepared_readout_rejects_a_rebound_world_support",
+        "test_particle_parent_and_child_cannot_switch_world_support",
+        "test_conditional_statistics_are_bound_to_the_receipt_cluster",
+        "test_unreferenced_statistics_cannot_enter_the_persisted_input_body"
+      ],
+      "consequences": [
+        {
+          "id": "LEGAL-CONTROL",
+          "call": {
+            "result_type": "ParticleRevisionBatch",
+            "status": "ACCEPTED_OR_RETURNED"
+          },
+          "foreign_probabilities": {},
+          "records_before": 0,
+          "records_after": 2,
+          "orphan_statistics_in_body": 0,
+          "readout_disjoint_current_support": false,
+          "semantic_changed": true,
+          "ledger_unchanged": true
+        },
+        {
+          "id": "W3-PCB-01",
+          "call": {
+            "result_type": "ParticleRevisionBatch",
+            "status": "ACCEPTED_OR_RETURNED"
+          },
+          "foreign_probabilities": {
+            "aaaaaaaa-0000-4000-8000-000000000001": 0.09022556390977444
+          },
+          "records_before": 0,
+          "records_after": 2,
+          "orphan_statistics_in_body": 0,
+          "readout_disjoint_current_support": false,
+          "semantic_changed": true,
+          "ledger_unchanged": true
+        },
+        {
+          "id": "W3-PCB-02",
+          "call": {
+            "result_type": "tuple",
+            "status": "ACCEPTED_OR_RETURNED"
+          },
+          "foreign_probabilities": {},
+          "records_before": 2,
+          "records_after": 2,
+          "orphan_statistics_in_body": 0,
+          "readout_disjoint_current_support": true,
+          "semantic_changed": false,
+          "ledger_unchanged": true
+        },
+        {
+          "id": "W3-PCB-03",
+          "call": {
+            "result_type": "ParticleRevisionBatch",
+            "status": "ACCEPTED_OR_RETURNED"
+          },
+          "foreign_probabilities": {
+            "aaaaaaaa-0000-4000-8000-000000000001": 0.3791968400263331,
+            "aaaaaaaa-0000-4000-8000-000000000002": 0.09479921000658327,
+            "aaaaaaaa-0000-4000-8000-000000000003": 0.09479921000658327,
+            "aaaaaaaa-0000-4000-8000-000000000004": 0.09479921000658327
+          },
+          "records_before": 2,
+          "records_after": 4,
+          "orphan_statistics_in_body": 0,
+          "readout_disjoint_current_support": false,
+          "semantic_changed": true,
+          "ledger_unchanged": true
+        },
+        {
+          "id": "W3-PCB-04",
+          "call": {
+            "result_type": "ParticleRevisionBatch",
+            "status": "ACCEPTED_OR_RETURNED"
+          },
+          "foreign_probabilities": {},
+          "records_before": 0,
+          "records_after": 2,
+          "orphan_statistics_in_body": 0,
+          "readout_disjoint_current_support": false,
+          "semantic_changed": true,
+          "ledger_unchanged": true
+        },
+        {
+          "id": "W3-PCB-05",
+          "call": {
+            "result_type": "ParticleRevisionBatch",
+            "status": "ACCEPTED_OR_RETURNED"
+          },
+          "foreign_probabilities": {},
+          "records_before": 0,
+          "records_after": 2,
+          "orphan_statistics_in_body": 1,
+          "readout_disjoint_current_support": false,
+          "semantic_changed": true,
+          "ledger_unchanged": true
+        }
+      ],
+      "unchanged_recorder_embedded_sha": "1bd513f51ab7e54a7290870a5f34b524254d55c6"
+    }
+  }
+}

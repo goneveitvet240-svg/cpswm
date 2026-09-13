@@ -1,13 +1,13 @@
-# 电脑 A 状态
+# 电脑 A 当前状态
 
-更新时间：2026-09-12；本次为交接初始化。
+2026-09-13：执行用户授权的 GitHub 分类、文档归并和导航整理。
 
-- 状态：双机交接已完成；GitHub 四个分支已同步，完整归档已校验并交付桌面。后续负责主干修复和统一集成；原窗口一、三的活动修复先收口，避免重复实现。
-- 集成分支：`codex/dual-pc-handoff-20260912`。
-- 精确窗口快照：见 `SNAPSHOTS.json`。
-- 本轮验证：交接包完整性与 GitHub 分支同步；没有在本次交接重新运行科研/生产验收矩阵。
-- 下一步：按 TASK_BOARD 中本人任务开工，在本人分支更新此文件并推送。
+- 整理分支：`codex/pc-a-github-organization-20260913`；base `bdec3ee21b7db361e390496d97ff2eb30390dc6c`。
+- 本次只合入 #1/#6 文档审查历史与导航；非 docs 代码/测试/配置保持 base 字节。不继承或宣布统一验收通过。
+- 当前统一候选：[#15](https://github.com/goneveitvet240-svg/cpswm/pull/15)，完整代码和审查状态见其 PR。
+- 最新 A 位姿开发：[#16](https://github.com/goneveitvet240-svg/cpswm/pull/16)，[该分支 STATUS_A](https://github.com/goneveitvet240-svg/cpswm/blob/codex/pc-a-pose-local-dev-20260913/docs/collaboration/STATUS_A.md)。
+- 最新 B 交接：[#17](https://github.com/goneveitvet240-svg/cpswm/pull/17)，已推送但尚未由 A 独立复跑。
+- 检查：纯文档路径核对、历史证据 Git blob 对照、PR 祖先关系/21 文件同一性、Markdown 本地链接核对；本轮没有运行生产测试。
+- 阻塞与下一步：#15–#17 CI/独立验收、#2 W2 重算。具体分工见 TASK_BOARD。
 
-后续每条进度需填写：任务 ID、分支、base SHA、实际代码 SHA、改动文件边界、执行环境、命令/结果、证据位置、已知限制、阻塞及下一步。报告不要填写包含自己的提交 SHA 造成自引用；使用被测代码 SHA，报告提交以 Git 历史为准。
-
-交接校验：见 TRANSFER_RECEIPT.json；181880 个普通文件载荷校验一致，离线克隆为干净工作树。该结果不是科研/生产测试验收。第二台仍须完成 B0。
+旧状态原文：[初始化](history/2026-09-13-organization/integration_STATUS_A.md)、[第六轮](history/2026-09-13-organization/round6_STATUS_A.md)、[B 五项交叉复核](history/2026-09-13-organization/crosscheck_STATUS_A.md)。

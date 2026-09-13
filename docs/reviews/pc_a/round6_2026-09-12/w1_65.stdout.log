@@ -1,0 +1,17 @@
+........................................F........................        [100%]
+=================================== FAILURES ===================================
+___________ test_copied_venv_old_shebang_is_not_used_by_real_matrix ____________
+
+runtime_tree = PosixPath('/private/var/folders/x2/000r8p0n6s393lj2sg8wk5f40000gn/T/pytest-of-pangwei/pytest-1744/actual_pytest_checkout0')
+
+    def test_copied_venv_old_shebang_is_not_used_by_real_matrix(runtime_tree):
+        root = runtime_tree
+        shebang = (root / ".venv/bin/pytest").read_text().splitlines()[0]
+>       assert str(ROOT / ".venv/bin/python") in shebang
+E       AssertionError: assert '/private/tmp/cpswm-pc-a-review6-w1.2dQj1v/.venv/bin/python' in '#!/private/tmp/cpswm-s2-evidence-repair-window1/.venv/bin/python'
+E        +  where '/private/tmp/cpswm-pc-a-review6-w1.2dQj1v/.venv/bin/python' = str((PosixPath('/private/tmp/cpswm-pc-a-review6-w1.2dQj1v') / '.venv/bin/python'))
+
+tests/test_structure_two_unified_dependencies.py:83: AssertionError
+=========================== short test summary info ============================
+FAILED tests/test_structure_two_unified_dependencies.py::test_copied_venv_old_shebang_is_not_used_by_real_matrix
+1 failed, 64 passed in 38.20s

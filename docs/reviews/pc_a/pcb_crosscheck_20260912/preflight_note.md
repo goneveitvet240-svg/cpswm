@@ -1,0 +1,1 @@
+首次两版 preflight 均在测试前中止：审核 helper 直接首先导入 prototype_spine，触发其与 evaluation_operations 的循环导入（ActionReadout 尚未定义）。未开始六项测试，不计入边界结果。调整审核 helper，使身份查询遵循 B 测试原有 fixture 导入顺序；未修改 B 测试、采集器、任何生产源码或依赖。随后重新运行，真实 pytest 及采集进程退出结果另存 command.json。

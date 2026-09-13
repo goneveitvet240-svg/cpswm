@@ -111,3 +111,14 @@
   `docs/reviews/pc_b/b4_b9_followup_2026-09-13/FINAL_HANDOFF_REPORT.md` 及 B6–B9
   各自 review 目录。下一接收方 A 需独立复核 B4/B5，并处理越界问题后发布
   单一冻结 SHA；Windows/WSL 3.13.5 接收方需补 CRLF/LF、锁和 W1 正式复现。
+
+
+## PC-A 代同步回执（2026-09-13）
+
+- 用户提供 B 未提交 ZIP 并明确要求推送 GitHub；A 仅执行原样导入与交接。
+- 分支：`codex/pc-b-adversarial-audit-fix-20260913`；base SHA：`c366cad0a92593bb2c4c44db7e8d3408a2b5cc9c`。
+- 原样导入提交：`0581ca8ad97896b03e482ae95f87b79a893394f4`；110/110 文件字节数与 SHA-256 均与包内清单一致。
+- ZIP SHA-256：`aa64b4a315d1fd07b9d46e2a66e3c5416d001b0a7369b8063b2be2a52dab042c`。
+- 本次仅校验文件身份和提交范围，未独立执行 B 的测试；历史 Linux Python 3.12 测试结果不是本次 Mac/Windows 验收。
+- 检查限制：diff --check 报原始日志行尾空白及两个工具 EOF 空行；Ruff hook 报错并自动修改文件。已恢复原包并重新验证 110/110 哈希，仅原样导入提交跳过 hook，未声称 lint 通过。
+- 当前生产代码 SHA 仍为上述导入提交；本回执仅增加文档。下一步由接收方绑定该 SHA 独立复核；不自动合并共享集成分支。

@@ -456,3 +456,20 @@ def test_inconsistent_executor_timeline_remains_uncertain(bad_time):
     with pytest.raises(ValueError):
         stream.execute_placement(command, executor=BadTimeline())
     assert stream.placement_dispatches()[0].status == "OUTCOME_UNCERTAIN"
+
+
+def test_queued_old_command_rejected_before_any_external_dispatch():
+    _, stream, backend, transition = setup()
+    deliver(stream, backend, transition)
+    when = transition.after.detection_time + timedelta(seconds=2)
+    old_command = stream.prepare_habit_placement(decision_time=when)
+    newer = stream.prepare_habit_placement(decision_time=when + timedelta(seconds=10))
+    executor = FixtureWorldExecutor(transition.after.metadata)
+    with pytest.raises(ValueError, match="predates"):
+        stream.execute_placement(old_command, executor=executor)
+    assert executor.calls == 0 and not stream.placement_dispatches()
+    stream.execute_placement(newer, executor=executor)
+    before = stream.placement_dispatches()
+    with pytest.raises(ValueError, match="predates"):
+        stream.execute_placement(old_command, executor=executor)
+    assert executor.calls == 1 and stream.placement_dispatches() == before

@@ -452,6 +452,11 @@ class ContinuousEvidenceInput:
                 core = self._system.core
                 if command.snapshot_id != core.current_snapshot.snapshot_id:
                     raise ValueError("placement command is stale after a belief revision")
+                if any(
+                    t is not None and command.decision_time < t
+                    for t in (self._last_arrival, self._last_cutoff)
+                ):
+                    raise ValueError("placement decision predates current evidence or decision")
                 distribution = tuple(
                     sorted(
                         self.current_habit_location_distribution().items(), key=lambda x: str(x[0])

@@ -14,7 +14,7 @@ from copy import deepcopy
 from dataclasses import dataclass
 from datetime import UTC, datetime
 from threading import RLock
-from typing import Protocol
+from typing import Literal, Protocol
 from uuid import UUID, uuid4
 
 from cpswm.contracts import (
@@ -54,8 +54,8 @@ def _utc(value: datetime) -> datetime:
 class GroundedTransition:
     """Producer output: evidence values plus exact visible source dependencies.
 
-    Bindings cover every record, including the sensing opportunity. A producer
-    must obtain opportunity propensities from its registered acquisition model,
+    Source IDs name the batch consumed by the producer, not a per-record proof.
+    A producer must obtain opportunity propensities from its registered acquisition model,
     not infer them from whether an object was found. Hashes establish dependency
     identity only; they do not establish calibration or detector correctness.
     """
@@ -128,8 +128,14 @@ class PlacementCommand:
     decision_time: datetime
 
 
+@dataclass(frozen=True)
+class PlacementFeedbackDelivery:
+    feedback: ExecutionFeedbackRecord
+    received_at: datetime
+
+
 class PlacementExecutor(Protocol):
-    def execute(self, command: PlacementCommand) -> ExecutionFeedbackRecord:
+    def execute(self, command: PlacementCommand) -> PlacementFeedbackDelivery:
         """Execute once and return observed feedback; do not invent success."""
         ...
 
@@ -139,6 +145,7 @@ class PlacementDispatch:
     command: PlacementCommand
     status: str
     feedback_json: str | None
+    received_at: datetime | None = None
 
 
 class ContinuousEvidenceInput:
@@ -154,11 +161,14 @@ class ContinuousEvidenceInput:
         self,
         *,
         system: StructureTwoProductionSystem,
+        execution_lane: Literal["legacy_component_diagnostic"],
         household_id: UUID,
         session_id: UUID,
         trace_id: UUID,
         producer: PerceptionProducer | None = None,
     ) -> None:
+        if execution_lane != "legacy_component_diagnostic":
+            raise ValueError("full P5/neural assembly is not supplied by this diagnostic bridge")
         self._system = system
         self._scope = (household_id, session_id, trace_id)
         self._producer = producer
@@ -358,6 +368,7 @@ class ContinuousEvidenceInput:
                 if previous:
                     if previous[0] != fingerprint:
                         raise ValueError("feedback identity reused with changed content")
+                    self._last_arrival = when
                     return deepcopy(previous[1])
                 result = self._system.core.process_execution_feedback(
                     feedback=feedback,
@@ -394,6 +405,7 @@ class ContinuousEvidenceInput:
                 when = _utc(decision_time)
                 if any(t is not None and when < t for t in (self._last_arrival, self._last_cutoff)):
                     raise ValueError("decision predates delivered evidence")
+                self._require_resolved_dispatches()
                 core = self._system.core
                 snapshot = core.current_snapshot
                 probabilities = tuple(
@@ -436,6 +448,7 @@ class ContinuousEvidenceInput:
                     raise ValueError("placement command content was changed after issue")
                 if command.action_id in self._dispatches:
                     raise ValueError("placement already dispatched; reconcile instead of retrying")
+                self._require_resolved_dispatches()
                 core = self._system.core
                 if command.snapshot_id != core.current_snapshot.snapshot_id:
                     raise ValueError("placement command is stale after a belief revision")
@@ -447,28 +460,70 @@ class ContinuousEvidenceInput:
                 if distribution != command.distribution:
                     raise ValueError("placement readout changed since command issue")
                 self._dispatches[command.action_id] = PlacementDispatch(
-                    command, "OUTCOME_UNCERTAIN", None
+                    deepcopy(command), "OUTCOME_UNCERTAIN", None
                 )
-                feedback = executor.execute(command)
-                feedback = ExecutionFeedbackRecord.model_validate_json(feedback.model_dump_json())
-                self._scope_check(feedback.metadata)
-                if (
-                    feedback.action_id != command.action_id
-                    or feedback.action_type is not RobotActionType.PLACE
-                    or feedback.target_entity is None
-                    or feedback.target_entity.entity_id != command.object_instance_id
-                    or feedback.target_entity.entity_type is not EntityType.OBJECT_INSTANCE
-                    or feedback.metadata.source_type is not SourceType.ACTION
-                    or feedback.attempted_location_id != command.location_id
-                    or _utc(feedback.valid_time.start) < command.decision_time
-                ):
-                    raise ValueError("executor feedback does not describe the issued placement")
-                record = PlacementDispatch(command, "FEEDBACK_RECEIVED", feedback.model_dump_json())
-                self._dispatches[command.action_id] = record
-                return record
+                # Do not expose the owned command or command journal to callback aliases.
+                delivery = executor.execute(deepcopy(command))
+                return self._accept_placement_delivery(command.action_id, delivery)
             finally:
                 self._busy = False
 
     def placement_dispatches(self) -> tuple[PlacementDispatch, ...]:
         with self._lock:
-            return tuple(self._dispatches.values())
+            return deepcopy(tuple(self._dispatches.values()))
+
+    def _require_resolved_dispatches(self) -> None:
+        if any(r.status == "OUTCOME_UNCERTAIN" for r in self._dispatches.values()):
+            raise RuntimeError(
+                "uncertain placement requires reconciliation before another dispatch"
+            )
+
+    def _accept_placement_delivery(
+        self, action_id: UUID, delivery: PlacementFeedbackDelivery
+    ) -> PlacementDispatch:
+        original = self._dispatches[action_id]
+        command = original.command
+        when = _utc(delivery.received_at)
+        if any(t is not None and when < t for t in (self._last_arrival, self._last_cutoff)):
+            raise ValueError("placement receipt arrival moved backwards")
+        feedback = ExecutionFeedbackRecord.model_validate_json(delivery.feedback.model_dump_json())
+        self._scope_check(feedback.metadata)
+        if (
+            feedback.action_id != command.action_id
+            or feedback.action_type is not RobotActionType.PLACE
+            or feedback.target_entity is None
+            or feedback.target_entity.entity_id != command.object_instance_id
+            or feedback.target_entity.entity_type is not EntityType.OBJECT_INSTANCE
+            or feedback.metadata.source_type is not SourceType.ACTION
+            or feedback.attempted_location_id != command.location_id
+        ):
+            raise ValueError("executor feedback does not describe the issued placement")
+        start = _utc(feedback.valid_time.start)
+        end = _utc(feedback.valid_time.end or feedback.valid_time.start)
+        recorded = _utc(feedback.metadata.recorded_time)
+        if not command.decision_time <= start <= end <= recorded <= when:
+            raise ValueError("placement decision/execution/record/receipt times are inconsistent")
+        value = feedback.model_dump_json()
+        if original.status == "FEEDBACK_RECEIVED" and original.feedback_json != value:
+            raise ValueError("conflicting feedback for an already reconciled placement")
+        result = (
+            original
+            if original.status == "FEEDBACK_RECEIVED"
+            else PlacementDispatch(deepcopy(command), "FEEDBACK_RECEIVED", value, when)
+        )
+        self._dispatches[action_id] = result
+        self._last_arrival = when
+        return deepcopy(result)
+
+    def reconcile_placement(
+        self, action_id: UUID, delivery: PlacementFeedbackDelivery
+    ) -> PlacementDispatch:
+        """Accept a later original-action receipt without sending another command."""
+        with self._lock:
+            self._enter()
+            try:
+                if action_id not in self._dispatches:
+                    raise ValueError("cannot reconcile an action this session never dispatched")
+                return self._accept_placement_delivery(action_id, delivery)
+            finally:
+                self._busy = False

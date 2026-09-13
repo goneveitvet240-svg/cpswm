@@ -25,7 +25,11 @@ from cpswm.perception_mapping.adapters.contracts import (
 )
 from cpswm.perception_mapping.adapters.rgbd_capture import RawModalityObservation
 from cpswm.system.continual.project_one_regime_loop import PrototypeStatisticOperation
-from cpswm.system.structure_two_continuous_input import ContinuousEvidenceInput, GroundedTransition
+from cpswm.system.structure_two_continuous_input import (
+    ContinuousEvidenceInput,
+    GroundedTransition,
+    PlacementFeedbackDelivery,
+)
 
 
 def raw_for(transition, *, capture=None, arrival=None):
@@ -74,6 +78,7 @@ def setup(producer=True):
     backend = FixtureProducer() if producer else None
     stream = ContinuousEvidenceInput(
         system=probe.system,
+        execution_lane="legacy_component_diagnostic",
         household_id=meta.household_id,
         session_id=meta.session_id,
         trace_id=meta.trace_id,
@@ -247,7 +252,7 @@ class FixtureWorldExecutor:
         self.location = command.location_id
         if self.fail_after_move:
             raise OSError("fixture transport failed after movement")
-        return ExecutionFeedbackRecord(
+        feedback = ExecutionFeedbackRecord(
             metadata=self.metadata.model_copy(
                 update={
                     "record_id": uuid4(),
@@ -267,6 +272,8 @@ class FixtureWorldExecutor:
             outcome_distribution={RobotActionOutcome.SUCCESS: 1.0},
         )
 
+        return PlacementFeedbackDelivery(feedback, command.decision_time + timedelta(seconds=1))
+
 
 def test_late_retractions_change_next_issued_and_executed_placement():
     probe, stream, backend, transition = setup()
@@ -278,7 +285,7 @@ def test_late_retractions_change_next_issued_and_executed_placement():
     world = FixtureWorldExecutor(transition.after.metadata)
     stream.execute_placement(first, executor=world)
     assert world.location == first.location_id and world.calls == 1
-    stale = stream.prepare_habit_placement(decision_time=when)
+    stale = stream.prepare_habit_placement(decision_time=when + timedelta(seconds=1))
     # Capture each original decision binding BEFORE any delayed revision.
     bundles = [
         old._feedback(probe, rid)
@@ -359,3 +366,93 @@ def test_raw_admission_and_prefix_are_detached_from_caller_aliases():
     delivered.envelope()
     object.__setattr__(delivered, "payload_bytes", b"mutated public read")
     stream.visible_prefix(cutoff=when)[0].envelope()
+
+
+def test_duplicate_feedback_advances_arrival_watermark():
+    probe, stream, backend, _ = setup()
+    for day in probe.observed_days()[:3]:
+        deliver(stream, backend, probe.transition_for(day))
+    when = probe.observed_days()[3].after.detection_time
+    rid = next(iter(probe.system.core._committed_events))
+    feedback, binding, likelihood = old._feedback(probe, rid)
+    for arrival in (when, when + timedelta(hours=2)):
+        stream.consume_feedback(
+            feedback=feedback,
+            binding=binding,
+            likelihood_model=likelihood,
+            received_at=arrival,
+            policy=old.RETRACTION_POLICY,
+        )
+    transition = probe.transition_for(probe.observed_days()[0])
+    with pytest.raises(ValueError, match="backwards"):
+        stream.admit((raw_for(transition),), received_at=when + timedelta(hours=1))
+
+
+def test_execution_completion_advances_time_and_does_not_expose_owned_command():
+    _, stream, backend, transition = setup()
+    deliver(stream, backend, transition)
+    when = transition.after.detection_time + timedelta(seconds=2)
+    command = stream.prepare_habit_placement(decision_time=when)
+    executor = FixtureWorldExecutor(transition.after.metadata)
+    stream.execute_placement(command, executor=executor)
+    with pytest.raises(ValueError, match="predates"):
+        stream.prepare_habit_placement(decision_time=when)
+    detached = stream.placement_dispatches()[0]
+    original = detached.command.location_id
+    object.__setattr__(detached.command, "location_id", uuid4())
+    assert stream.placement_dispatches()[0].command.location_id == original
+
+
+def test_uncertain_action_reconciles_without_reexecution_then_allows_next_command():
+    _, stream, backend, transition = setup()
+    deliver(stream, backend, transition)
+    when = transition.after.detection_time + timedelta(seconds=2)
+    command = stream.prepare_habit_placement(decision_time=when)
+    transport = FixtureWorldExecutor(transition.after.metadata, fail_after_move=True)
+    with pytest.raises(OSError):
+        stream.execute_placement(command, executor=transport)
+    with pytest.raises(RuntimeError, match="reconciliation"):
+        stream.prepare_habit_placement(decision_time=when + timedelta(seconds=2))
+    # Independent receipt simulation: read the already attempted action's outcome.
+    # The original transport is never invoked again.
+    reply = FixtureWorldExecutor(transition.after.metadata).execute(command)
+    result = stream.reconcile_placement(command.action_id, reply)
+    assert result.status == "FEEDBACK_RECEIVED" and transport.calls == 1
+    next_command = stream.prepare_habit_placement(decision_time=when + timedelta(seconds=2))
+    assert next_command.action_id != command.action_id
+
+
+@pytest.mark.parametrize("bad_time", ["arrival", "record", "start"])
+def test_inconsistent_executor_timeline_remains_uncertain(bad_time):
+    _, stream, backend, transition = setup()
+    deliver(stream, backend, transition)
+    when = transition.after.detection_time + timedelta(seconds=2)
+    command = stream.prepare_habit_placement(decision_time=when)
+    realizer = FixtureWorldExecutor(transition.after.metadata)
+
+    class BadTimeline:
+        def execute(self, cmd):
+            delivery = realizer.execute(cmd)
+            if bad_time == "arrival":
+                return replace(delivery, received_at=when)
+            if bad_time == "record":
+                fb = delivery.feedback.model_copy(
+                    update={
+                        "metadata": delivery.feedback.metadata.model_copy(
+                            update={"recorded_time": when}
+                        )
+                    }
+                )
+            else:
+                fb = delivery.feedback.model_copy(
+                    update={
+                        "valid_time": delivery.feedback.valid_time.model_copy(
+                            update={"start": when - timedelta(seconds=1)}
+                        )
+                    }
+                )
+            return replace(delivery, feedback=fb)
+
+    with pytest.raises(ValueError):
+        stream.execute_placement(command, executor=BadTimeline())
+    assert stream.placement_dispatches()[0].status == "OUTCOME_UNCERTAIN"

@@ -46,6 +46,7 @@ def main() -> None:
         raise ValueError("archive differs from retained manifest digest")
     manifest = json.loads(raw_manifest)
     verified: dict[Path, bytes] = {}
+    entries_by_path = {}
     for entry in manifest["output_manifest"]:
         path = (root / entry["file"]).resolve()
         if not path.is_relative_to(root) or path in verified:
@@ -57,12 +58,24 @@ def main() -> None:
         ):
             raise ValueError("archive payload mismatch")
         verified[path] = payload
+        entries_by_path[path] = entry
     captures = {}
     for row in manifest["captures"]:
         key = row["capture_ref"]
         if key in captures:
             raise ValueError("duplicate capture reference")
         captures[key] = row
+    for path, entry in entries_by_path.items():
+        if entry["capture_ref"] not in captures:
+            raise ValueError("unknown capture reference")
+        if path.suffix not in {".json", ".npy"}:
+            raise ValueError("unexpected observation payload extension")
+        other = path.with_suffix(".npy" if path.suffix == ".json" else ".json")
+        if (
+            other not in entries_by_path
+            or entries_by_path[other]["capture_ref"] != entry["capture_ref"]
+        ):
+            raise ValueError("paired observation capture references differ or are incomplete")
     raws = []
     observation_ids = set()
     for entry in manifest["output_manifest"]:
@@ -74,6 +87,11 @@ def main() -> None:
         if env.identity.observation_id in observation_ids:
             raise ValueError("duplicate observation identity")
         observation_ids.add(env.identity.observation_id)
+        for paired in (entry, entries_by_path[path.with_suffix(".npy").resolve()]):
+            if "observation_id" in paired and paired["observation_id"] != str(
+                env.identity.observation_id
+            ):
+                raise ValueError("manifest observation identity differs from envelope")
         if env.sensor.modality not in {SensorModality.RGB, SensorModality.DEPTH}:
             continue
         npy_path = path.with_suffix(".npy").resolve()

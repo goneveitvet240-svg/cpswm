@@ -1,0 +1,17 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuite name="B6 independent adversarial audit" tests="7" failures="4" errors="0" skipped="0" time="1.059934989"><testcase classname="b6.audit" name="independent_conditional_block_oracle" time="0.560227400"><failure type="runner_error" message="cannot import name 'ConditionalAnalyticState' from partially initialized module 'cpswm.system.structure_two_particle_workspace' (most likely due to a circular import) (/workspace/scratch/b158d995e8cc/cpswm_b6_snapshot/src/cpswm/system/structure_two_particle_workspace.py)">Traceback (most recent call last):
+  File "/workspace/scratch/b158d995e8cc/cpswm_b6_snapshot/tools/b6_independent_adversarial_audit.py", line 437, in run_case
+    detail = function()
+             ^^^^^^^^^^
+  File "/workspace/scratch/b158d995e8cc/cpswm_b6_snapshot/tools/b6_independent_adversarial_audit.py", line 65, in conditional_oracle
+    from cpswm.system.structure_two_particle_workspace import ConditionalAnalyticState
+  File "/workspace/scratch/b158d995e8cc/cpswm_b6_snapshot/src/cpswm/system/structure_two_particle_workspace.py", line 26, in &lt;module&gt;
+    from cpswm.system.evaluation_operations.structure_two_selected_method import (
+  File "/workspace/scratch/b158d995e8cc/cpswm_b6_snapshot/src/cpswm/system/evaluation_operations/__init__.py", line 262, in &lt;module&gt;
+    from .project_two_action_benchmark import (
+  File "/workspace/scratch/b158d995e8cc/cpswm_b6_snapshot/src/cpswm/system/evaluation_operations/project_two_action_benchmark.py", line 94, in &lt;module&gt;
+    from cpswm.system.prototype_spine import (
+  File "/workspace/scratch/b158d995e8cc/cpswm_b6_snapshot/src/cpswm/system/prototype_spine.py", line 121, in &lt;module&gt;
+    from cpswm.system.structure_two_particle_workspace import (
+ImportError: cannot import name 'ConditionalAnalyticState' from partially initialized module 'cpswm.system.structure_two_particle_workspace' (most likely due to a circular import) (/workspace/scratch/b158d995e8cc/cpswm_b6_snapshot/src/cpswm/system/structure_two_particle_workspace.py)
+</failure></testcase><testcase classname="b6.audit" name="joint_distribution_and_unknown_mass_oracle" time="0.000523999" /><testcase classname="b6.audit" name="source_particle_statistics_action_binding_attacks" time="0.470396746" /><testcase classname="b6.audit" name="prepared_seam_vs_default_path_inventory" time="0.022889727" /><testcase classname="b6.finding" name="B6-F1" time="0"><failure type="high-if-promoted-to-production-authority" message="JointDecisionView accepts a caller-selected foreign runtime and an unverified source-frame hash">Declared value-object seam; becomes a security/correctness bug if treated as a trusted production view.</failure></testcase><testcase classname="b6.finding" name="B6-F2" time="0"><failure type="medium" message="Joint belief source_snapshot_sha256 is not consumed by the planner">Action likelihood and utility provenance cannot be enforced by the planner API itself.</failure></testcase><testcase classname="b6.finding" name="B6-F3" time="0"><failure type="low" message="An empty action set is reported as privacy-blocked">Misleading stop/audit reason; selection remains no-action.</failure></testcase></testsuite>

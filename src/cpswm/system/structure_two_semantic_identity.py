@@ -31,6 +31,8 @@ _UUID = re.compile(r"[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12
 def semantic_memory_state(core: Any) -> dict[str, Any]:
     """Return inspectable semantic content; all runtime binding checks stay active."""
     core._check_particle_workspace_binding()
+    core._validate_particle_input_anchors()
+    core._validate_correction_state_anchors()
     aliases: dict[str, str] = {}
 
     def bind(value: Any, label: str) -> None:

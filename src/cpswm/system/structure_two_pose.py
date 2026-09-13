@@ -8,13 +8,13 @@ relinearizing retained evidence; covariance cannot be copied across charts.
 
 from __future__ import annotations
 
-from datetime import datetime
+from datetime import UTC, datetime
 from math import pi
-from typing import Self
+from typing import Any, Self
 from uuid import UUID
 
 import numpy as np
-from pydantic import model_validator
+from pydantic import field_validator, model_validator
 from scipy.spatial.transform import Rotation
 
 from cpswm.contracts.base import ContractModel, require_aware
@@ -23,9 +23,23 @@ from cpswm.contracts.likelihoods import Pose3D
 _CUT_MARGIN = 64 * np.finfo(float).eps
 
 
-def _pose(value: Pose3D) -> Pose3D:
+def _pose(value: Any) -> Pose3D:
     # Reconstruct even model_copy / externally mutated instances at the boundary.
-    result = Pose3D.model_validate(dict(vars(value)))
+    if isinstance(value, Pose3D):
+        raw = dict(vars(value))
+    elif isinstance(value, dict):
+        raw = dict(value)
+    else:
+        raise ValueError("pose must be a Pose3D or field mapping")
+    try:
+        numbers = np.asarray([raw[k] for k in ("x", "y", "z", "qx", "qy", "qz", "qw")], dtype=float)
+    except (KeyError, TypeError, ValueError, OverflowError) as error:
+        raise ValueError("invalid pose coordinates") from error
+    # A normalized quaternion cannot have a component larger than two. This
+    # loose pre-bound avoids overflow in the existing squared-norm validator.
+    if not np.isfinite(numbers).all() or np.any(np.abs(numbers[3:]) > 2):
+        raise ValueError("finite coordinates and normalized quaternion required")
+    result = Pose3D.model_validate(raw)
     if (
         not result.frame_id.strip()
         or not np.isfinite(
@@ -40,6 +54,11 @@ class PoseState(ContractModel):
     object_instance_id: UUID
     valid_at: datetime
     pose: Pose3D
+
+    @field_validator("pose", mode="before")
+    @classmethod
+    def validate_pose_input(cls, value: Any) -> Pose3D:
+        return _pose(value)
 
     @model_validator(mode="after")
     def validate_state(self) -> Self:
@@ -68,7 +87,7 @@ def pose_residual(reference: PoseState, observed: PoseState) -> tuple[float, ...
     reference, observed = _state(reference), _state(observed)
     if (
         reference.object_instance_id != observed.object_instance_id
-        or reference.valid_at != observed.valid_at
+        or reference.valid_at.astimezone(UTC) != observed.valid_at.astimezone(UTC)
         or reference.pose.frame_id != observed.pose.frame_id
     ):
         raise ValueError("pose object, epoch and coordinate frame must match")

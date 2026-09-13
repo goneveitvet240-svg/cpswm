@@ -151,3 +151,33 @@ def test_each_analytic_block_requires_its_own_valid_dimension(bad):
     }[bad]
     with pytest.raises(ValueError):
         replace(p, **changes)
+
+
+def test_dst_fold_is_not_the_same_epoch_but_timezone_conversion_is():
+    from zoneinfo import ZoneInfo
+
+    zone = ZoneInfo("America/New_York")
+    early = datetime(2026, 11, 1, 1, 30, tzinfo=zone, fold=0)
+    late = datetime(2026, 11, 1, 1, 30, tzinfo=zone, fold=1)
+    assert early == late and early.timestamp() != late.timestamp()
+    ref = state().model_copy(update={"valid_at": early})
+    obs = state().model_copy(update={"valid_at": late})
+    with pytest.raises(ValueError, match="must match"):
+        pose_residual(ref, obs)
+    assert (
+        pose_residual(ref, ref.model_copy(update={"valid_at": early.astimezone(UTC)})) == (0.0,) * 6
+    )
+
+
+def test_huge_forged_quaternion_rejects_before_squared_norm_overflow():
+    ref = state()
+    bad = ref.model_copy(update={"pose": ref.pose.model_copy(update={"qx": 1e308})})
+    with pytest.raises(ValueError, match="normalized quaternion"):
+        apply_pose_delta(bad, (0.0,) * 6)
+
+
+def test_public_pose_state_mapping_rejects_huge_quaternion_before_nested_validation():
+    raw = state().model_dump()
+    raw["pose"]["qx"] = 1e308
+    with pytest.raises(ValueError, match="normalized quaternion"):
+        PoseState.model_validate(raw)

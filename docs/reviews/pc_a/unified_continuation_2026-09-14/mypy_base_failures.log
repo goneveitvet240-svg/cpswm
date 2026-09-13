@@ -1,0 +1,9 @@
+src/cpswm/system/structure_two_pose.py:18: error: Library stubs not installed for "scipy.spatial.transform"  [import-untyped]
+src/cpswm/system/structure_two_particle_workspace.py:792: error: Incompatible types in assignment (expression has type "ConditionalAnalyticState | None", variable has type "ConditionalAnalyticState")  [assignment]
+src/cpswm/perception_mapping/interaction_evidence.py:18: error: Library stubs not installed for "scipy.optimize"  [import-untyped]
+src/cpswm/perception_mapping/interaction_evidence.py:18: note: Hint: "python3 -m pip install scipy-stubs"
+src/cpswm/perception_mapping/interaction_evidence.py:18: note: (or run "mypy --install-types" to install all missing stub packages)
+src/cpswm/perception_mapping/interaction_evidence.py:18: note: See https://mypy.readthedocs.io/en/stable/running_mypy.html#missing-imports
+src/cpswm/perception_mapping/interaction_evidence.py:19: error: Library stubs not installed for "scipy.special"  [import-untyped]
+src/cpswm/perception_mapping/interaction_evidence.py:92: error: Missing type arguments for generic type "tuple"  [type-arg]
+Found 5 errors in 3 files (checked 332 source files)

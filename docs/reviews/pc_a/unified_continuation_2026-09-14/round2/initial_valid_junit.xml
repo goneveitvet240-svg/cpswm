@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="1" skipped="0" tests="5" time="2.043" timestamp="2026-09-14T04:24:16.966473+08:00" hostname="MacBook-Air-2.local"><testcase classname="cpswm-unified-review2.test_independent" name="test_observation_transport_receipt_alias_cannot_rewrite_durable_history" time="0.303"><failure message="AssertionError: assert False is True&#10; +  where False = ObservationDelivery(action_id=UUID('7a3825bd-7327-4226-a09a-22b9e06f471d'), observations=(RawModalityObservation(envel...se, error='forged after acceptance', received_at=datetime.datetime(2026, 1, 1, 8, 10, 3, tzinfo=datetime.timezone.utc)).success">tmp_path = PosixPath('/private/var/folders/x2/000r8p0n6s393lj2sg8wk5f40000gn/T/pytest-of-pangwei/pytest-1978/test_observation_transport_rec0')
+
+    def test_observation_transport_receipt_alias_cannot_rewrite_durable_history(tmp_path):
+        _,stream,backend,store,tr=durable_setup(tmp_path/'state.db');deliver(stream,backend,tr)
+        cmd=command_for(stream,tr)
+        raw=raw_for(tr,capture=cmd.decision_time+timedelta(seconds=1))
+        reply=ObservationDelivery(cmd.action_id,(raw,),True,'',cmd.decision_time+timedelta(seconds=1))
+        class E:
+            def execute(self,c):return reply
+        stream.execute_observation(cmd,executor=E())
+        object.__setattr__(reply,'success',False)
+        object.__setattr__(reply,'error','forged after acceptance')
+&gt;       assert stream._observation_status[cmd.action_id].success is True
+E       AssertionError: assert False is True
+E        +  where False = ObservationDelivery(action_id=UUID('7a3825bd-7327-4226-a09a-22b9e06f471d'), observations=(RawModalityObservation(envel...se, error='forged after acceptance', received_at=datetime.datetime(2026, 1, 1, 8, 10, 3, tzinfo=datetime.timezone.utc)).success
+
+../cpswm-unified-review2/test_independent.py:23: AssertionError</failure></testcase><testcase classname="cpswm-unified-review2.test_independent" name="test_effect_failure_checkpoint_recovery_rejects_reexecute" time="0.319" /><testcase classname="cpswm-unified-review2.test_independent" name="test_source_and_dependency_rebind_rejected_with_effect_only_db" time="0.002" /><testcase classname="cpswm-unified-review2.test_independent" name="test_actual_p5_effect_reused_after_final_save_failure" time="0.673" /><testcase classname="cpswm-unified-review2.test_independent" name="test_visual_late_recompute_and_config_boundary" time="0.490" /></testsuite></testsuites>

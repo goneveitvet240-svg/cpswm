@@ -1,0 +1,62 @@
+.......F                                                                 [100%]
+=================================== FAILURES ===================================
+________ test_pending_request_exact_recovery_aliases_and_reconciliation ________
+
+tmp_path = PosixPath('/private/var/folders/x2/000r8p0n6s393lj2sg8wk5f40000gn/T/pytest-of-pangwei/pytest-1985/test_pending_request_exact_rec0')
+
+    def test_pending_request_exact_recovery_aliases_and_reconciliation(tmp_path):
+        store=store_at(tmp_path/'effects.db');request={'camera':{'action':'rotate','degrees':37.5},'raw':b'\x00\xff','sequence':(1,2)}
+        def effect(req):raise OSError('effect happened reply lost')
+>       with pytest.raises(OSError):store.execute_once('effect',request,effect)
+                                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+../cpswm-unified-review2/test_fresh_process.py:42: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/cpswm/system/continuous_state_store.py:116: in execute_once
+    request_hash = content_sha256(request)
+                   ^^^^^^^^^^^^^^^^^^^^^^^
+src/cpswm/system/reproducibility.py:66: in content_sha256
+    return hashlib.sha256(canonical_json(value).encode("utf-8")).hexdigest()
+                          ^^^^^^^^^^^^^^^^^^^^^
+src/cpswm/system/reproducibility.py:56: in canonical_json
+    return json.dumps(
+/Users/pangwei/.local/share/uv/python/cpython-3.13.5-macos-aarch64-none/lib/python3.13/json/__init__.py:238: in dumps
+    **kw).encode(obj)
+          ^^^^^^^^^^^
+/Users/pangwei/.local/share/uv/python/cpython-3.13.5-macos-aarch64-none/lib/python3.13/json/encoder.py:200: in encode
+    chunks = self.iterencode(o, _one_shot=True)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/Users/pangwei/.local/share/uv/python/cpython-3.13.5-macos-aarch64-none/lib/python3.13/json/encoder.py:261: in iterencode
+    return _iterencode(o, 0)
+           ^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <json.encoder.JSONEncoder object at 0x11283f650>, o = b'\x00\xff'
+
+    def default(self, o):
+        """Implement this method in a subclass such that it returns
+        a serializable object for ``o``, or calls the base implementation
+        (to raise a ``TypeError``).
+    
+        For example, to support arbitrary iterators, you could
+        implement default like this::
+    
+            def default(self, o):
+                try:
+                    iterable = iter(o)
+                except TypeError:
+                    pass
+                else:
+                    return list(iterable)
+                # Let the base class default method raise the TypeError
+                return super().default(o)
+    
+        """
+>       raise TypeError(f'Object of type {o.__class__.__name__} '
+                        f'is not JSON serializable')
+E       TypeError: Object of type bytes is not JSON serializable
+
+/Users/pangwei/.local/share/uv/python/cpython-3.13.5-macos-aarch64-none/lib/python3.13/json/encoder.py:180: TypeError
+=========================== short test summary info ============================
+FAILED ../cpswm-unified-review2/test_fresh_process.py::test_pending_request_exact_recovery_aliases_and_reconciliation
+1 failed, 7 passed in 9.88s

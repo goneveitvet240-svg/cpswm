@@ -29,13 +29,15 @@ def main():
         raise ValueError("full committed source SHA required")
     root = args.source_root.resolve()
     object_type = subprocess.check_output(
-        ["git", "cat-file", "-t", args.source_sha], cwd=root, text=True
+        ["git", "--no-replace-objects", "cat-file", "-t", args.source_sha], cwd=root, text=True
     ).strip()
     if object_type != "commit":
         raise ValueError("source SHA must name a commit, not another Git object")
 
     def frozen(path):
-        return subprocess.check_output(["git", "show", f"{args.source_sha}:{path}"], cwd=root)
+        return subprocess.check_output(
+            ["git", "--no-replace-objects", "show", f"{args.source_sha}:{path}"], cwd=root
+        )
 
     run = args.run_path
     journal_raw = frozen(run + "/schedule_run/observation_candidates/release_journal.json")

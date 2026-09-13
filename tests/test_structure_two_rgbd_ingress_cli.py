@@ -149,3 +149,44 @@ def test_source_sha_must_identify_a_commit(tmp_path):
     assert result.returncode != 0
     assert "source SHA must name a commit" in result.stderr
     assert not (tmp_path / "out").exists()
+
+
+@pytest.mark.parametrize("object_kind", ["commit", "blob"])
+def test_git_replacement_cannot_change_bytes_read_under_original_sha(tmp_path, object_kind):
+    root, original = _archive(tmp_path)
+    journal_path = "case/schedule_run/observation_candidates/release_journal.json"
+
+    def git(*args):
+        return subprocess.check_output(["git", *args], cwd=root, text=True).strip()
+
+    old_blob = git("rev-parse", f"{original}:{journal_path}")
+    path = root / journal_path
+    path.write_text(json.dumps(json.loads(path.read_text())[:1]))
+    git("add", journal_path)
+    git(
+        "-c",
+        "user.name=Local regression fixture",
+        "-c",
+        "user.email=fixture@example.invalid",
+        "-c",
+        "commit.gpgsign=false",
+        "commit",
+        "-qm",
+        "Different single-capture archive",
+    )
+    replacement = git("rev-parse", "HEAD")
+    new_blob = git("rev-parse", f"{replacement}:{journal_path}")
+    if object_kind == "commit":
+        git("replace", original, replacement)
+    else:
+        git("replace", old_blob, new_blob)
+    # Demonstrate the complete source alias really exists in ordinary Git reads.
+    assert len(json.loads(git("show", f"{original}:{journal_path}"))) == 1
+    output = tmp_path / "out"
+    result = _run(root, original, output)
+    assert result.returncode == 0, result.stderr
+    receipt = json.loads((output / "receipt.json").read_text())
+    assert receipt["source_sha"] == original
+    assert receipt["selected_capture_count"] == 2
+    assert receipt["observation_count"] == 4
+    assert len(receipt["output_manifest"]) == 8

@@ -2786,7 +2786,15 @@ class CorePrototypeSpine:
                     "last_observation_time": router._last_observation_time,
                     "pending": repr(router._pending),
                     "seeded": router._seeded,
-                    "bocpd_online_beam": repr(router.bocpd._online_beam),
+                    "bocpd_online_beam": [
+                        {
+                            "run_length": hypothesis.run_length,
+                            "active_causes": sorted(c.value for c in hypothesis.active_causes),
+                            "blocks": hypothesis.blocks,
+                            "log_weight": repr(hypothesis.log_weight),
+                        }
+                        for hypothesis in router.bocpd._online_beam
+                    ],
                     "bocpd_last_timestamp": router.bocpd._online_last_timestamp,
                     "bocpd_last_opportunity_index": router.bocpd._online_last_opportunity_index,
                     "ccrr_view": router.ccrr.view(

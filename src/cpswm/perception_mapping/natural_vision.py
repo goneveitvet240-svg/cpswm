@@ -240,8 +240,79 @@ class NaturalVisionEvidenceProducer:
         self._prefix: tuple[RawModalityObservation, ...] = ()
         self._frames: tuple[VisualFrame, ...] = ()
         self._cutoff: datetime | None = None
+        self._interactions = ()
         self._lock = RLock()
         self._busy = False
+
+    def checkpoint_state(self):
+        from copy import deepcopy
+
+        with self._lock:
+            return deepcopy(
+                {
+                    "scope": self._detector._scope,
+                    "detector_binding": (
+                        WEIGHTS_SHA256,
+                        self._detector._versions,
+                        self._detector._minimum_score,
+                    ),
+                    "interactions": self._interactions,
+                    "prefix": self._prefix,
+                    "frames": self._frames,
+                    "cutoff": self._cutoff,
+                }
+            )
+
+    def restore_state(self, state):
+        from copy import deepcopy
+
+        with self._lock:
+            if state["scope"] != self._detector._scope:
+                raise ValueError("perception restore requires a matching detector scope")
+            if state["detector_binding"] != (
+                WEIGHTS_SHA256,
+                self._detector._versions,
+                self._detector._minimum_score,
+            ):
+                raise ValueError("checkpoint detector configuration changed")
+            self._interactions = deepcopy(state["interactions"])
+            self._prefix, self._frames, self._cutoff = deepcopy(
+                (state["prefix"], state["frames"], state["cutoff"])
+            )
+
+    def interactions(self):
+        from copy import deepcopy
+
+        with self._lock:
+            return deepcopy(self._interactions)
+
+    @staticmethod
+    def _recompute_interactions(frames):
+        from cpswm.perception_mapping.interaction_evidence import (
+            CausalInstanceAssociator,
+            role_readout,
+        )
+
+        # Late frames trigger recomputation from the retained original observations.
+        # Separate sensors never share instance identities. Equal capture times do
+        # not establish temporal contact/release and therefore start a new segment.
+        groups = {}
+        for frame in frames:
+            key = (frame.sensor_id, frame.frame_id, frame.width, frame.height)
+            groups.setdefault(key, []).append(frame)
+        result = []
+        for key, values in sorted(groups.items()):
+            associator = CausalInstanceAssociator()
+            previous = None
+            for frame in sorted(values, key=lambda f: (f.capture_time, str(f.observation_id))):
+                time = frame.capture_time.timestamp()
+                if previous is not None and time <= previous.media_time:
+                    associator = CausalInstanceAssociator()
+                    previous = None
+                associated = associator.update(frame, sequence_id=str(key), media_time=time)
+                result.append((associated, role_readout(previous, associated)))
+                previous = associated
+        return tuple(result)
 
     def frames(self) -> tuple[VisualFrame, ...]:
         from copy import deepcopy
@@ -297,7 +368,10 @@ class NaturalVisionEvidenceProducer:
                         selected.append(raw)
                 # A failed batch may have consumed computation, never committed evidence.
                 frames = tuple(self._detector.infer(raw, cutoff=when) for raw in selected)
-                self._frames += frames
+                all_frames = self._frames + frames
+                interactions = self._recompute_interactions(all_frames)
+                self._frames = all_frames
+                self._interactions = interactions
                 self._prefix, self._cutoff = prefix, when
                 return None
             finally:

@@ -1,0 +1,76 @@
+{
+  "maintenance": {
+    "cases": [
+      {
+        "case": "wrong_evidence_hashes",
+        "accepted": true,
+        "semantic_guard_unchanged": true,
+        "receipt_changed": true
+      },
+      {
+        "case": "wrong_evidence_type",
+        "accepted": true,
+        "semantic_guard_unchanged": true,
+        "receipt_changed": true
+      },
+      {
+        "case": "wrong_cf_dependency_hash",
+        "accepted": true,
+        "semantic_guard_unchanged": true,
+        "receipt_changed": true
+      },
+      {
+        "case": "wrong_cf_dependency_type",
+        "accepted": true,
+        "semantic_guard_unchanged": true,
+        "receipt_changed": true
+      }
+    ],
+    "different_runtime_same_head_accepted": true,
+    "old_malformed_counterexample_rejected": true
+  },
+  "injected_p0_path": {
+    "accepted": true,
+    "path": "P0_SAFE_DEFERRED",
+    "verified_operator_rows": 7,
+    "pending_debts": 1,
+    "committed": 0,
+    "expected_evidence_hashes": [
+      "ad80fb1c90a1f6a401b1d9110744375444fbfb946263d2fadbda8d477331d124"
+    ],
+    "injected_evidence_hashes": [
+      "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"
+    ]
+  },
+  "formal_revision": {
+    "operations": [
+      "retract"
+    ],
+    "before_committed": 3,
+    "after_committed": 19,
+    "before_quarantined": 17,
+    "after_quarantined": 0,
+    "newly_committed": 17,
+    "all_new_were_quarantined": true,
+    "target_removed": true,
+    "alpha_before": 2.2904373204180026,
+    "target_weight": 0.9611691033872968,
+    "alpha_after": 17.533654496790184,
+    "hybrid_internal_rerun_equivalent": true
+  },
+  "delayed_feedback": {
+    "valid_before_unrelated_retraction": true,
+    "target_still_committed": true,
+    "original_binding_replaced": true,
+    "accepted": false,
+    "error_type": "ValueError",
+    "error": "feedback revision snapshot does not match the committed event"
+  },
+  "ciav_runtime_calls": {"legacy_window_2":{"planner":0,"executor":0},"legacy_window_3":{"planner":0,"executor":0},"direct_p5_control":{"planner":1,"executor":1}},
+  "pending_debt_control": {
+    "blocked": true,
+    "error": "pending adaptive debt blocks legacy and direct-core mutation; resolve it through replay_adaptive_debt",
+    "committed_unchanged": true,
+    "pending_debts": 1
+  }
+}

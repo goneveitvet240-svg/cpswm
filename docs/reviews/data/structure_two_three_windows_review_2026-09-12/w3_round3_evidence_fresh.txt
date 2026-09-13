@@ -1,0 +1,211 @@
+{
+  "r2_maintenance": {
+    "cases": [
+      {
+        "case": "wrong_evidence_hashes",
+        "accepted": false,
+        "error": "rgrc maintenance dependency binds evidence from another transition"
+      },
+      {
+        "case": "wrong_evidence_type",
+        "accepted": false,
+        "error": "rgrc maintenance dependency field evidence_content_sha256s is not a content-hash tuple"
+      },
+      {
+        "case": "wrong_cf_dependency_hash",
+        "accepted": false,
+        "error": "rgrc declared consumption of a ccrr output this execution never produced"
+      },
+      {
+        "case": "wrong_cf_dependency_type",
+        "accepted": false,
+        "error": "rgrc maintenance dependency field consumed_cf_bocpd_maintenance_sha256 is not a content hash"
+      }
+    ],
+    "different_runtime_same_head": {
+      "semantic_heads_identical": true,
+      "accepted": false,
+      "error": "ccrr maintenance dependency came from a foreign runtime execution"
+    }
+  },
+  "r2_legal_p0": {
+    "path": "P0_SAFE_DEFERRED",
+    "verified_operator_rows": 7,
+    "executed": [
+      "ccrr",
+      "cf_bocpd",
+      "opceu",
+      "pchmp",
+      "rgrc"
+    ],
+    "deferred": [
+      "ciav",
+      "orrer_cheh"
+    ],
+    "pending_debts": 1,
+    "committed": 0
+  },
+  "r2_injected_p0_binding_layer": {
+    "accepted": false,
+    "error_type": "ValueError",
+    "error": "bound production callable does not belong to the bound implementation type: pchmp._adaptive_pchmp_safety_maintenance",
+    "committed_trace": false,
+    "pending_debts": 0,
+    "committed_unchanged": true,
+    "maintenance_context_open": false
+  },
+  "r2_injected_p0_context_layer": {
+    "accepted": false,
+    "error_type": "AdaptiveMaintenanceContractError",
+    "error": "rgrc maintenance dependency field set drifted from the frozen shape",
+    "committed_trace": false,
+    "pending_debts": 0,
+    "committed_unchanged": true,
+    "maintenance_context_open": false
+  },
+  "r2_injected_p0_perfect_payload": {
+    "accepted": false,
+    "error_type": "AdaptiveMaintenanceContractError",
+    "error": "rgrc declared consumption of pchmp before it ran in this execution",
+    "committed_trace": false,
+    "pending_debts": 0,
+    "committed_unchanged": true,
+    "maintenance_context_open": false
+  },
+  "r3_prerepair_first_committed": {
+    "target_kind": "first_committed",
+    "operations": [
+      "retract"
+    ],
+    "before_committed": 3,
+    "after_committed": 19,
+    "before_quarantined": 17,
+    "after_quarantined": 0,
+    "newly_committed": 17,
+    "newly_committed_were_write_blocked": 10,
+    "committed_with_blocked_origin": 10,
+    "blocked_still_quarantined": 0,
+    "target_removed": true,
+    "alpha_before": 2.2904373204180026,
+    "alpha_after": 17.533654496790184,
+    "hybrid_internal_rerun_equivalent": true,
+    "promotion_authorities": [
+      "ccrr_rebuild_replay_promotion"
+    ]
+  },
+  "r3_prerepair_majority_location": {
+    "target_kind": "majority_location",
+    "operations": [
+      "retract"
+    ],
+    "before_committed": 3,
+    "after_committed": 18,
+    "before_quarantined": 17,
+    "after_quarantined": 0,
+    "newly_committed": 16,
+    "newly_committed_were_write_blocked": 10,
+    "committed_with_blocked_origin": 10,
+    "blocked_still_quarantined": 0,
+    "target_removed": true,
+    "alpha_before": 2.2904373204180026,
+    "alpha_after": 17.165555383146774,
+    "hybrid_internal_rerun_equivalent": true,
+    "promotion_authorities": [
+      "ccrr_rebuild_replay_promotion"
+    ]
+  },
+  "r3_formal_revision_first_committed": {
+    "target_kind": "first_committed",
+    "operations": [
+      "retract"
+    ],
+    "before_committed": 3,
+    "after_committed": 4,
+    "before_quarantined": 17,
+    "after_quarantined": 10,
+    "newly_committed": 2,
+    "newly_committed_were_write_blocked": 0,
+    "committed_with_blocked_origin": 0,
+    "blocked_still_quarantined": 10,
+    "target_removed": true,
+    "alpha_before": 2.2904373204180026,
+    "alpha_after": 3.2516064238052995,
+    "hybrid_internal_rerun_equivalent": true,
+    "promotion_authorities": [
+      "ccrr_rebuild_replay_promotion"
+    ]
+  },
+  "r3_formal_revision_majority_location": {
+    "target_kind": "majority_location",
+    "operations": [
+      "retract"
+    ],
+    "before_committed": 3,
+    "after_committed": 2,
+    "before_quarantined": 17,
+    "after_quarantined": 10,
+    "newly_committed": 0,
+    "newly_committed_were_write_blocked": 0,
+    "committed_with_blocked_origin": 0,
+    "blocked_still_quarantined": 10,
+    "target_removed": true,
+    "alpha_before": 2.2904373204180026,
+    "alpha_after": 1.6258032119026498,
+    "hybrid_internal_rerun_equivalent": true,
+    "promotion_authorities": []
+  },
+  "r3_delayed_feedback": {
+    "valid_before_unrelated_retraction": true,
+    "original_binding_replaced": true,
+    "published_binding_count": 2,
+    "accepted": true,
+    "operations": [
+      "retract"
+    ],
+    "relocations_recorded": 1,
+    "relocation": {
+      "presented_map_version": 2,
+      "current_map_version": 13
+    },
+    "foreign_snapshot_control": {
+      "accepted": false,
+      "error": "feedback revision snapshot does not match the committed event"
+    }
+  },
+  "r3_pending_debt_control": {
+    "blocked": true,
+    "error": "pending adaptive debt blocks legacy and direct-core mutation; resolve it through replay_adaptive_debt",
+    "committed_unchanged": true,
+    "pending_debts": 1
+  },
+  "r4_runtime_calls": {
+    "legacy_window_2": {
+      "ciav_planner": 0,
+      "ciav_executor": 0,
+      "ciav_operator": 0,
+      "core_process_transition": 18
+    },
+    "legacy_window_3": {
+      "ciav_planner": 0,
+      "ciav_executor": 0,
+      "ciav_operator": 0,
+      "core_process_transition": 18
+    },
+    "direct_p5": {
+      "ciav_planner": 1,
+      "ciav_executor": 1,
+      "ciav_operator": 1,
+      "core_process_transition": 2,
+      "verified_rows": 13,
+      "ciav_input_is_runtime_cause_snapshot": true,
+      "ciav_input_sha256_equals_cf_receipt": true
+    },
+    "debt_replay": {
+      "ciav_planner": 1,
+      "ciav_executor": 1,
+      "ciav_operator": 1,
+      "core_process_transition": 2,
+      "verified_rows": 13
+    }
+  }
+}

@@ -1,0 +1,5 @@
+cwd: /private/tmp/cpswm-s2-evidence-repair-window1
+command: env -u PYTHONPATH .venv/bin/python apps/evaluation_runner/generate_structure_two_engineering_trust_checkpoint.py --verify benchmarks/structure_two/engineering_trust_checkpoint_2026_09_11_v0_2/engineering_checkpoint.json --no-fresh-recomputation
+exit_code: 0
+benchmarks/structure_two/engineering_trust_checkpoint_2026_09_11_v0_2/engineering_checkpoint.json
+Note: This is a currentness check, not another full fresh checkpoint generation. A preliminary invocation with PYTHONPATH=src failed as intended; the environment diff contained only this allowlisted variable and the derived digest.

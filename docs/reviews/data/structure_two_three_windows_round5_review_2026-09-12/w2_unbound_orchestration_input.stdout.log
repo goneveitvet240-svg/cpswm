@@ -1,0 +1,19 @@
+F                                                                        [100%]
+=================================== FAILURES ===================================
+________ test_cross_tree_current_bound_forgery_is_never_certified[main] ________
+
+tmp_path = PosixPath('/private/var/folders/x2/000r8p0n6s393lj2sg8wk5f40000gn/T/pytest-of-pangwei/pytest-1712/test_cross_tree_current_bound_0')
+mode = 'main'
+
+    @pytest.mark.parametrize("mode", ["main", "attribution_single", "attribution_mixed"])
+    def test_cross_tree_current_bound_forgery_is_never_certified(tmp_path, mode):
+>       assert BUNDLE.exists(), "generate the current round3 bundle first"
+E       AssertionError: generate the current round3 bundle first
+E       assert False
+E        +  where False = exists()
+E        +    where exists = PosixPath('/private/tmp/s2-review5-w2.OkojBR/not-generated-round3-bundle').exists
+
+tests/test_structure_two_comparison_audit_execution_source.py:96: AssertionError
+=========================== short test summary info ============================
+FAILED tests/test_structure_two_comparison_audit_execution_source.py::test_cross_tree_current_bound_forgery_is_never_certified[main]
+1 failed in 0.81s

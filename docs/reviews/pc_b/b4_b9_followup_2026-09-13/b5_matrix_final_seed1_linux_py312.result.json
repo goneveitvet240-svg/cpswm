@@ -1,0 +1,69 @@
+{
+  "artifacts": {
+    "b5_matrix_final_seed1_linux_py312.junit.xml": {
+      "bytes": 8439,
+      "sha256": "4d83d9d328e40ecce5d9e94d38fbbd55ab00e06cdc38205e8fb7ceb2f2a630ab"
+    },
+    "b5_matrix_final_seed1_linux_py312.stderr.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "b5_matrix_final_seed1_linux_py312.stdout.log": {
+      "bytes": 143,
+      "sha256": "e26df0868f4e34e0e02ce3ba992fb2736e2f9aa0c4736659a04f88cce204bb58"
+    }
+  },
+  "base_sha": "c366cad0a92593bb2c4c44db7e8d3408a2b5cc9c",
+  "classification": "repair-side Linux LF engineering regression",
+  "command": [
+    "/workspace/scratch/b158d995e8cc/cpswm_b4_snapshot/.venv/bin/python",
+    "-m",
+    "pytest",
+    "-o",
+    "addopts=",
+    "-q",
+    "-p",
+    "no:cacheprovider",
+    "-n",
+    "4",
+    "--basetemp",
+    "/workspace/scratch/b158d995e8cc/cpswm_b4_snapshot/docs/reviews/pc_b/b4_b9_followup_2026-09-13/.b5_matrix_final_seed1_linux_py312.tmp",
+    "--junitxml",
+    "/workspace/scratch/b158d995e8cc/cpswm_b4_snapshot/docs/reviews/pc_b/b4_b9_followup_2026-09-13/b5_matrix_final_seed1_linux_py312.junit.xml",
+    "tests/dual_pc_review/test_w3_five_boundaries_repair.py"
+  ],
+  "cwd": "/workspace/scratch/b158d995e8cc/cpswm_b4_snapshot",
+  "duration_seconds": 10.772441005001383,
+  "environment_overrides": {
+    "MKL_NUM_THREADS": "1",
+    "OMP_NUM_THREADS": "1",
+    "OPENBLAS_NUM_THREADS": "1",
+    "PYTHONHASHSEED": "1",
+    "PYTHONPATH": "/workspace/scratch/b158d995e8cc/cpswm_b4_snapshot/src:/workspace/scratch/b158d995e8cc/cpswm_b4_snapshot/tests"
+  },
+  "failed_from_junit": null,
+  "finished_at_utc": "2026-09-13T14:24:23.054943+00:00",
+  "junit": {
+    "errors": 0,
+    "failures": 0,
+    "skipped": 0,
+    "tests": 47,
+    "time_seconds": 10.442
+  },
+  "name": "b5_matrix_final_seed1_linux_py312",
+  "platform": "Linux-6.18.44-x86_64-with-glibc2.39",
+  "returncode": 0,
+  "runner": {
+    "executable": "/workspace/scratch/b158d995e8cc/cpswm_b4_snapshot/.venv/bin/python",
+    "version": "3.12.14 (main, Aug 25 2026, 14:00:49) [Clang 22.1.3 ]"
+  },
+  "schema": "cpswm.pc-b.command-evidence@1",
+  "selected_nodeids": null,
+  "selected_test_paths": 1,
+  "source_sha256": {
+    "prototype_spine.py": "f9a0bc926b1d28e37b364db96dee1fe0d5aa9fa6b8ebd6dcdd543808546f4a67",
+    "structure_two_particle_workspace.py": "7d7de3eae09d9c6c8dd12b287da96b34680e5bcd366c8bdaf9386fa87d568905",
+    "structure_two_semantic_identity.py": "1b7d75ceaafc845bee37029e41e10a93f899c03d98fb87b7b3549f52be29b680"
+  },
+  "started_at_utc": "2026-09-13T14:24:12.282532+00:00"
+}

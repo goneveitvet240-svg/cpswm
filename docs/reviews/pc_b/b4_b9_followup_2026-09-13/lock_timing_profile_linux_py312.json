@@ -1,0 +1,802 @@
+{
+  "binding_check_ms": [
+    0.226923,
+    0.179424,
+    0.173985,
+    0.145564,
+    0.13613,
+    0.128308,
+    0.125915,
+    0.144752,
+    0.121047,
+    0.119996,
+    0.162559,
+    0.161467,
+    0.136931,
+    0.152825,
+    0.133306,
+    0.128689,
+    1.040428,
+    0.144072,
+    0.15655,
+    0.145003
+  ],
+  "cases": [
+    {
+      "alive_at_1s": false,
+      "outcome": {
+        "message": "model state rolled back but trace tombstone acknowledgement or runtime-lock restoration could not be verified",
+        "type": "TraceCompensationError"
+      },
+      "phases_ms": {
+        "post_sink_until_done": 3.992954,
+        "pre_sink": 439.628702,
+        "release_to_worker": 0.239252,
+        "setup": 1.352888,
+        "sink_super": 1.008932,
+        "start_to_deadline_observation": 445.295735,
+        "total_invoke": 444.887175,
+        "worker_to_sink_return": 0.015743
+      },
+      "target": "core"
+    },
+    {
+      "alive_at_1s": false,
+      "outcome": {
+        "message": "model state rolled back but trace tombstone acknowledgement or runtime-lock restoration could not be verified",
+        "type": "TraceCompensationError"
+      },
+      "phases_ms": {
+        "post_sink_until_done": 3.855954,
+        "pre_sink": 480.86916,
+        "release_to_worker": 0.300907,
+        "setup": 1.728699,
+        "sink_super": 1.014,
+        "start_to_deadline_observation": 486.30852,
+        "total_invoke": 486.074927,
+        "worker_to_sink_return": 0.033364
+      },
+      "target": "wrapper"
+    },
+    {
+      "alive_at_1s": false,
+      "outcome": {
+        "message": "model state rolled back but trace tombstone acknowledgement or runtime-lock restoration could not be verified",
+        "type": "TraceCompensationError"
+      },
+      "phases_ms": {
+        "post_sink_until_done": 4.342089,
+        "pre_sink": 420.930676,
+        "release_to_worker": 0.157071,
+        "setup": 1.344324,
+        "sink_super": 1.037204,
+        "start_to_deadline_observation": 426.723495,
+        "total_invoke": 426.505896,
+        "worker_to_sink_return": 0.038336
+      },
+      "target": "ccrr"
+    },
+    {
+      "alive_at_1s": false,
+      "outcome": {
+        "message": "model state rolled back but trace tombstone acknowledgement or runtime-lock restoration could not be verified",
+        "type": "TraceCompensationError"
+      },
+      "phases_ms": {
+        "post_sink_until_done": 3.843946,
+        "pre_sink": 441.964187,
+        "release_to_worker": 0.178778,
+        "setup": 2.119584,
+        "sink_super": 0.982823,
+        "start_to_deadline_observation": 447.217614,
+        "total_invoke": 446.986193,
+        "worker_to_sink_return": 0.015307
+      },
+      "target": "core"
+    },
+    {
+      "alive_at_1s": false,
+      "outcome": {
+        "message": "model state rolled back but trace tombstone acknowledgement or runtime-lock restoration could not be verified",
+        "type": "TraceCompensationError"
+      },
+      "phases_ms": {
+        "post_sink_until_done": 5.380594,
+        "pre_sink": 453.283049,
+        "release_to_worker": 0.202377,
+        "setup": 1.364735,
+        "sink_super": 1.437211,
+        "start_to_deadline_observation": 460.699563,
+        "total_invoke": 460.338773,
+        "worker_to_sink_return": 0.03399
+      },
+      "target": "wrapper"
+    },
+    {
+      "alive_at_1s": false,
+      "outcome": {
+        "message": "model state rolled back but trace tombstone acknowledgement or runtime-lock restoration could not be verified",
+        "type": "TraceCompensationError"
+      },
+      "phases_ms": {
+        "post_sink_until_done": 3.960488,
+        "pre_sink": 444.141916,
+        "release_to_worker": 0.284969,
+        "setup": 1.69511,
+        "sink_super": 0.996013,
+        "start_to_deadline_observation": 449.622581,
+        "total_invoke": 449.4139,
+        "worker_to_sink_return": 0.030124
+      },
+      "target": "ccrr"
+    },
+    {
+      "alive_at_1s": false,
+      "outcome": {
+        "message": "model state rolled back but trace tombstone acknowledgement or runtime-lock restoration could not be verified",
+        "type": "TraceCompensationError"
+      },
+      "phases_ms": {
+        "post_sink_until_done": 4.001827,
+        "pre_sink": 464.273678,
+        "release_to_worker": 0.151953,
+        "setup": 1.612348,
+        "sink_super": 1.056502,
+        "start_to_deadline_observation": 469.823284,
+        "total_invoke": 469.516989,
+        "worker_to_sink_return": 0.031897
+      },
+      "target": "core"
+    },
+    {
+      "alive_at_1s": false,
+      "outcome": {
+        "message": "model state rolled back but trace tombstone acknowledgement or runtime-lock restoration could not be verified",
+        "type": "TraceCompensationError"
+      },
+      "phases_ms": {
+        "post_sink_until_done": 5.416791,
+        "pre_sink": 416.756675,
+        "release_to_worker": 0.24223,
+        "setup": 1.752414,
+        "sink_super": 1.003584,
+        "start_to_deadline_observation": 423.779721,
+        "total_invoke": 423.452916,
+        "worker_to_sink_return": 0.032554
+      },
+      "target": "wrapper"
+    },
+    {
+      "alive_at_1s": false,
+      "outcome": {
+        "message": "model state rolled back but trace tombstone acknowledgement or runtime-lock restoration could not be verified",
+        "type": "TraceCompensationError"
+      },
+      "phases_ms": {
+        "post_sink_until_done": 3.831609,
+        "pre_sink": 467.943747,
+        "release_to_worker": 0.174031,
+        "setup": 1.7083,
+        "sink_super": 0.988612,
+        "start_to_deadline_observation": 473.15354,
+        "total_invoke": 472.952395,
+        "worker_to_sink_return": 0.014105
+      },
+      "target": "ccrr"
+    }
+  ],
+  "disk_sha_ms": [
+    0.070012,
+    0.032788,
+    0.031105,
+    0.030815,
+    0.029113,
+    0.029133,
+    0.029052,
+    0.029022,
+    0.029653,
+    0.029162,
+    0.028682,
+    0.032678,
+    0.032308,
+    0.045086,
+    0.033089,
+    0.028952,
+    0.028832,
+    0.030755,
+    0.029313,
+    0.031045
+  ],
+  "platform": "linux",
+  "profiled_cases": [
+    {
+      "alive_at_1s": false,
+      "outcome": {
+        "message": "model state rolled back but trace tombstone acknowledgement or runtime-lock restoration could not be verified",
+        "type": "TraceCompensationError"
+      },
+      "phases_ms": {
+        "post_sink_until_done": 13.097449,
+        "pre_sink": 548.014837,
+        "release_to_worker": 0.298363,
+        "setup": 1.635382,
+        "sink_super": 5.352843,
+        "start_to_deadline_observation": 567.048777,
+        "total_invoke": 566.842448,
+        "worker_to_sink_return": 0.074689
+      },
+      "profile_top_by_cumulative_time": [
+        {
+          "calls": 61,
+          "cumulative_ms": 373.775059,
+          "recursive_calls": 0,
+          "self_ms": 1.4150060000000002,
+          "symbol": "src/cpswm/system/structure_two_execution.py:571:bind_runtime_callable"
+        },
+        {
+          "calls": 61,
+          "cumulative_ms": 346.72116800000003,
+          "recursive_calls": 0,
+          "self_ms": 0.203651,
+          "symbol": "src/cpswm/system/structure_two_execution.py:492:_source_code_objects"
+        },
+        {
+          "calls": 61,
+          "cumulative_ms": 339.3455,
+          "recursive_calls": 0,
+          "self_ms": 339.3455,
+          "symbol": "<built-in method builtins.compile>"
+        },
+        {
+          "calls": 5,
+          "cumulative_ms": 335.125555,
+          "recursive_calls": 0,
+          "self_ms": 0.282785,
+          "symbol": "src/cpswm/system/structure_two_production_system.py:1989:_runtime_operator_instances_for_execution"
+        },
+        {
+          "calls": 3,
+          "cumulative_ms": 202.97893900000003,
+          "recursive_calls": 0,
+          "self_ms": 0.00723,
+          "symbol": "src/cpswm/system/structure_two_production_system.py:1061:<lambda>"
+        },
+        {
+          "calls": 1,
+          "cumulative_ms": 186.343969,
+          "recursive_calls": 0,
+          "self_ms": 0.163232,
+          "symbol": "src/cpswm/system/prototype_spine.py:2983:_process_transition"
+        },
+        {
+          "calls": 569,
+          "cumulative_ms": 143.044524,
+          "recursive_calls": 0,
+          "self_ms": 0.6247750000000001,
+          "symbol": "src/cpswm/system/reproducibility.py:59:content_sha256"
+        },
+        {
+          "calls": 569,
+          "cumulative_ms": 141.068267,
+          "recursive_calls": 0,
+          "self_ms": 0.8088240000000001,
+          "symbol": "src/cpswm/system/reproducibility.py:47:canonical_json"
+        },
+        {
+          "calls": 55448,
+          "cumulative_ms": 130.09826200000003,
+          "recursive_calls": 54879,
+          "self_ms": 59.022598,
+          "symbol": "src/cpswm/system/reproducibility.py:16:_canonical_value"
+        },
+        {
+          "calls": 1,
+          "cumulative_ms": 106.108067,
+          "recursive_calls": 0,
+          "self_ms": 0.039058,
+          "symbol": "src/cpswm/system/prototype_spine.py:2276:_execution_callable_bindings"
+        },
+        {
+          "calls": 1,
+          "cumulative_ms": 78.291396,
+          "recursive_calls": 0,
+          "self_ms": 0.018236,
+          "symbol": "src/cpswm/system/prototype_spine.py:3459:_commit_event"
+        },
+        {
+          "calls": 1,
+          "cumulative_ms": 77.105244,
+          "recursive_calls": 0,
+          "self_ms": 0.056344,
+          "symbol": "src/cpswm/system/prototype_spine.py:407:wrapped"
+        },
+        {
+          "calls": 1,
+          "cumulative_ms": 77.039207,
+          "recursive_calls": 0,
+          "self_ms": 0.010016,
+          "symbol": "src/cpswm/system/prototype_spine.py:1674:retry_deferred_project_one_requests"
+        },
+        {
+          "calls": 154,
+          "cumulative_ms": 63.71794,
+          "recursive_calls": 0,
+          "self_ms": 2.515423,
+          "symbol": "<method 'validate_python' of 'pydantic_core._pydantic_core.SchemaValidator' objects>"
+        },
+        {
+          "calls": 1,
+          "cumulative_ms": 44.448392000000005,
+          "recursive_calls": 0,
+          "self_ms": 0.022133000000000003,
+          "symbol": "src/cpswm/system/structure_two_particle_workspace.py:461:publish_posterior"
+        },
+        {
+          "calls": 490321,
+          "cumulative_ms": 43.490746,
+          "recursive_calls": 1,
+          "self_ms": 41.43421300000001,
+          "symbol": "<built-in method builtins.isinstance>"
+        },
+        {
+          "calls": 13,
+          "cumulative_ms": 34.199086,
+          "recursive_calls": 0,
+          "self_ms": 0.013567000000000001,
+          "symbol": "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/pydantic/main.py:693:model_validate"
+        },
+        {
+          "calls": 8,
+          "cumulative_ms": 31.531137,
+          "recursive_calls": 0,
+          "self_ms": 0.36634700000000003,
+          "symbol": "src/cpswm/system/counterfactual_event_hypergraph/contracts.py:314:validate_revision"
+        },
+        {
+          "calls": 14448,
+          "cumulative_ms": 30.618804000000004,
+          "recursive_calls": 13985,
+          "self_ms": 12.046354000000001,
+          "symbol": "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/copy.py:118:deepcopy"
+        },
+        {
+          "calls": 141,
+          "cumulative_ms": 29.639132000000004,
+          "recursive_calls": 0,
+          "self_ms": 0.106711,
+          "symbol": "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/pydantic/main.py:253:__init__"
+        },
+        {
+          "calls": 10,
+          "cumulative_ms": 27.786065,
+          "recursive_calls": 0,
+          "self_ms": 0.04463,
+          "symbol": "src/cpswm/system/structure_two_particle_workspace.py:74:native_content_sha256"
+        },
+        {
+          "calls": 1,
+          "cumulative_ms": 27.019801000000005,
+          "recursive_calls": 0,
+          "self_ms": 0.057383,
+          "symbol": "src/cpswm/system/structure_two_particle_workspace.py:169:validate_content"
+        },
+        {
+          "calls": 1241,
+          "cumulative_ms": 26.779756000000003,
+          "recursive_calls": 1015,
+          "self_ms": 2.421777,
+          "symbol": "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/copy.py:217:_deepcopy_dict"
+        },
+        {
+          "calls": 2,
+          "cumulative_ms": 26.053581,
+          "recursive_calls": 0,
+          "self_ms": 0.225258,
+          "symbol": "src/cpswm/system/prototype_spine.py:2506:_execution_observable_state_sha256"
+        },
+        {
+          "calls": 7,
+          "cumulative_ms": 25.941989000000003,
+          "recursive_calls": 0,
+          "self_ms": 0.08503100000000001,
+          "symbol": "src/cpswm/system/structure_two_execution.py:770:seal_operator_receipt"
+        }
+      ],
+      "target": "core"
+    },
+    {
+      "alive_at_1s": false,
+      "outcome": {
+        "message": "model state rolled back but trace tombstone acknowledgement or runtime-lock restoration could not be verified",
+        "type": "TraceCompensationError"
+      },
+      "phases_ms": {
+        "post_sink_until_done": 12.223666,
+        "pre_sink": 554.5891,
+        "release_to_worker": 0.288414,
+        "setup": 1.661461,
+        "sink_super": 3.449708,
+        "start_to_deadline_observation": 570.873771,
+        "total_invoke": 570.602773,
+        "worker_to_sink_return": 0.049312
+      },
+      "profile_top_by_cumulative_time": [
+        {
+          "calls": 61,
+          "cumulative_ms": 374.07873700000005,
+          "recursive_calls": 0,
+          "self_ms": 1.196351,
+          "symbol": "src/cpswm/system/structure_two_execution.py:571:bind_runtime_callable"
+        },
+        {
+          "calls": 61,
+          "cumulative_ms": 346.529264,
+          "recursive_calls": 0,
+          "self_ms": 0.29442300000000005,
+          "symbol": "src/cpswm/system/structure_two_execution.py:492:_source_code_objects"
+        },
+        {
+          "calls": 61,
+          "cumulative_ms": 339.271738,
+          "recursive_calls": 0,
+          "self_ms": 339.271738,
+          "symbol": "<built-in method builtins.compile>"
+        },
+        {
+          "calls": 5,
+          "cumulative_ms": 331.198372,
+          "recursive_calls": 0,
+          "self_ms": 0.270699,
+          "symbol": "src/cpswm/system/structure_two_production_system.py:1989:_runtime_operator_instances_for_execution"
+        },
+        {
+          "calls": 3,
+          "cumulative_ms": 196.63052900000002,
+          "recursive_calls": 0,
+          "self_ms": 0.005938000000000001,
+          "symbol": "src/cpswm/system/structure_two_production_system.py:1061:<lambda>"
+        },
+        {
+          "calls": 1,
+          "cumulative_ms": 188.576829,
+          "recursive_calls": 0,
+          "self_ms": 0.138767,
+          "symbol": "src/cpswm/system/prototype_spine.py:2983:_process_transition"
+        },
+        {
+          "calls": 569,
+          "cumulative_ms": 143.97851,
+          "recursive_calls": 0,
+          "self_ms": 0.742066,
+          "symbol": "src/cpswm/system/reproducibility.py:59:content_sha256"
+        },
+        {
+          "calls": 569,
+          "cumulative_ms": 141.916628,
+          "recursive_calls": 0,
+          "self_ms": 0.967018,
+          "symbol": "src/cpswm/system/reproducibility.py:47:canonical_json"
+        },
+        {
+          "calls": 55448,
+          "cumulative_ms": 131.073271,
+          "recursive_calls": 54879,
+          "self_ms": 58.966604000000004,
+          "symbol": "src/cpswm/system/reproducibility.py:16:_canonical_value"
+        },
+        {
+          "calls": 1,
+          "cumulative_ms": 113.575676,
+          "recursive_calls": 0,
+          "self_ms": 0.040346,
+          "symbol": "src/cpswm/system/prototype_spine.py:2276:_execution_callable_bindings"
+        },
+        {
+          "calls": 1,
+          "cumulative_ms": 77.830468,
+          "recursive_calls": 0,
+          "self_ms": 0.012527,
+          "symbol": "src/cpswm/system/prototype_spine.py:3459:_commit_event"
+        },
+        {
+          "calls": 1,
+          "cumulative_ms": 76.596705,
+          "recursive_calls": 0,
+          "self_ms": 0.071443,
+          "symbol": "src/cpswm/system/prototype_spine.py:407:wrapped"
+        },
+        {
+          "calls": 1,
+          "cumulative_ms": 76.514615,
+          "recursive_calls": 0,
+          "self_ms": 0.005248,
+          "symbol": "src/cpswm/system/prototype_spine.py:1674:retry_deferred_project_one_requests"
+        },
+        {
+          "calls": 154,
+          "cumulative_ms": 62.805577,
+          "recursive_calls": 0,
+          "self_ms": 2.334142,
+          "symbol": "<method 'validate_python' of 'pydantic_core._pydantic_core.SchemaValidator' objects>"
+        },
+        {
+          "calls": 1,
+          "cumulative_ms": 43.955218,
+          "recursive_calls": 0,
+          "self_ms": 0.020980000000000002,
+          "symbol": "src/cpswm/system/structure_two_particle_workspace.py:461:publish_posterior"
+        },
+        {
+          "calls": 490321,
+          "cumulative_ms": 43.90253,
+          "recursive_calls": 1,
+          "self_ms": 41.679241000000005,
+          "symbol": "<built-in method builtins.isinstance>"
+        },
+        {
+          "calls": 14448,
+          "cumulative_ms": 32.95897,
+          "recursive_calls": 13985,
+          "self_ms": 12.857446000000001,
+          "symbol": "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/copy.py:118:deepcopy"
+        },
+        {
+          "calls": 8,
+          "cumulative_ms": 32.841421000000004,
+          "recursive_calls": 0,
+          "self_ms": 0.42823400000000006,
+          "symbol": "src/cpswm/system/counterfactual_event_hypergraph/contracts.py:314:validate_revision"
+        },
+        {
+          "calls": 13,
+          "cumulative_ms": 31.536607,
+          "recursive_calls": 0,
+          "self_ms": 0.011441000000000002,
+          "symbol": "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/pydantic/main.py:693:model_validate"
+        },
+        {
+          "calls": 141,
+          "cumulative_ms": 31.391087000000006,
+          "recursive_calls": 0,
+          "self_ms": 0.11067600000000001,
+          "symbol": "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/pydantic/main.py:253:__init__"
+        },
+        {
+          "calls": 1241,
+          "cumulative_ms": 28.914813000000002,
+          "recursive_calls": 1015,
+          "self_ms": 2.493833,
+          "symbol": "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/copy.py:217:_deepcopy_dict"
+        },
+        {
+          "calls": 10,
+          "cumulative_ms": 27.529483,
+          "recursive_calls": 0,
+          "self_ms": 0.040262,
+          "symbol": "src/cpswm/system/structure_two_particle_workspace.py:74:native_content_sha256"
+        },
+        {
+          "calls": 2,
+          "cumulative_ms": 26.743645000000004,
+          "recursive_calls": 0,
+          "self_ms": 0.211071,
+          "symbol": "src/cpswm/system/prototype_spine.py:2506:_execution_observable_state_sha256"
+        },
+        {
+          "calls": 1,
+          "cumulative_ms": 26.4747,
+          "recursive_calls": 0,
+          "self_ms": 0.050273000000000005,
+          "symbol": "src/cpswm/system/structure_two_particle_workspace.py:169:validate_content"
+        },
+        {
+          "calls": 7,
+          "cumulative_ms": 26.401564000000004,
+          "recursive_calls": 0,
+          "self_ms": 0.08810500000000002,
+          "symbol": "src/cpswm/system/structure_two_execution.py:770:seal_operator_receipt"
+        }
+      ],
+      "target": "wrapper"
+    },
+    {
+      "alive_at_1s": false,
+      "outcome": {
+        "message": "model state rolled back but trace tombstone acknowledgement or runtime-lock restoration could not be verified",
+        "type": "TraceCompensationError"
+      },
+      "phases_ms": {
+        "post_sink_until_done": 13.151037,
+        "pre_sink": 577.403613,
+        "release_to_worker": 0.229502,
+        "setup": 1.546242,
+        "sink_super": 4.515603,
+        "start_to_deadline_observation": 595.639565,
+        "total_invoke": 595.345107,
+        "worker_to_sink_return": 0.04398
+      },
+      "profile_top_by_cumulative_time": [
+        {
+          "calls": 61,
+          "cumulative_ms": 391.326407,
+          "recursive_calls": 0,
+          "self_ms": 1.204263,
+          "symbol": "src/cpswm/system/structure_two_execution.py:571:bind_runtime_callable"
+        },
+        {
+          "calls": 61,
+          "cumulative_ms": 360.876703,
+          "recursive_calls": 0,
+          "self_ms": 0.29444600000000004,
+          "symbol": "src/cpswm/system/structure_two_execution.py:492:_source_code_objects"
+        },
+        {
+          "calls": 61,
+          "cumulative_ms": 353.457138,
+          "recursive_calls": 0,
+          "self_ms": 353.457138,
+          "symbol": "<built-in method builtins.compile>"
+        },
+        {
+          "calls": 5,
+          "cumulative_ms": 348.48891000000003,
+          "recursive_calls": 0,
+          "self_ms": 0.339528,
+          "symbol": "src/cpswm/system/structure_two_production_system.py:1989:_runtime_operator_instances_for_execution"
+        },
+        {
+          "calls": 3,
+          "cumulative_ms": 211.236814,
+          "recursive_calls": 0,
+          "self_ms": 0.007871,
+          "symbol": "src/cpswm/system/structure_two_production_system.py:1061:<lambda>"
+        },
+        {
+          "calls": 1,
+          "cumulative_ms": 200.022141,
+          "recursive_calls": 0,
+          "self_ms": 0.150518,
+          "symbol": "src/cpswm/system/prototype_spine.py:2983:_process_transition"
+        },
+        {
+          "calls": 569,
+          "cumulative_ms": 150.479194,
+          "recursive_calls": 0,
+          "self_ms": 0.6345310000000001,
+          "symbol": "src/cpswm/system/reproducibility.py:59:content_sha256"
+        },
+        {
+          "calls": 569,
+          "cumulative_ms": 148.44438200000002,
+          "recursive_calls": 0,
+          "self_ms": 0.788433,
+          "symbol": "src/cpswm/system/reproducibility.py:47:canonical_json"
+        },
+        {
+          "calls": 55448,
+          "cumulative_ms": 136.221659,
+          "recursive_calls": 54879,
+          "self_ms": 62.37053100000001,
+          "symbol": "src/cpswm/system/reproducibility.py:16:_canonical_value"
+        },
+        {
+          "calls": 1,
+          "cumulative_ms": 111.47978800000001,
+          "recursive_calls": 0,
+          "self_ms": 0.040650000000000006,
+          "symbol": "src/cpswm/system/prototype_spine.py:2276:_execution_callable_bindings"
+        },
+        {
+          "calls": 1,
+          "cumulative_ms": 83.855338,
+          "recursive_calls": 0,
+          "self_ms": 0.013078000000000001,
+          "symbol": "src/cpswm/system/prototype_spine.py:3459:_commit_event"
+        },
+        {
+          "calls": 1,
+          "cumulative_ms": 82.704999,
+          "recursive_calls": 0,
+          "self_ms": 0.063002,
+          "symbol": "src/cpswm/system/prototype_spine.py:407:wrapped"
+        },
+        {
+          "calls": 1,
+          "cumulative_ms": 82.63171100000001,
+          "recursive_calls": 0,
+          "self_ms": 0.00715,
+          "symbol": "src/cpswm/system/prototype_spine.py:1674:retry_deferred_project_one_requests"
+        },
+        {
+          "calls": 154,
+          "cumulative_ms": 66.390078,
+          "recursive_calls": 0,
+          "self_ms": 2.6529130000000003,
+          "symbol": "<method 'validate_python' of 'pydantic_core._pydantic_core.SchemaValidator' objects>"
+        },
+        {
+          "calls": 1,
+          "cumulative_ms": 47.949515000000005,
+          "recursive_calls": 0,
+          "self_ms": 0.025104,
+          "symbol": "src/cpswm/system/structure_two_particle_workspace.py:461:publish_posterior"
+        },
+        {
+          "calls": 490323,
+          "cumulative_ms": 44.258708,
+          "recursive_calls": 1,
+          "self_ms": 42.194892,
+          "symbol": "<built-in method builtins.isinstance>"
+        },
+        {
+          "calls": 13,
+          "cumulative_ms": 34.402589000000006,
+          "recursive_calls": 0,
+          "self_ms": 0.012971,
+          "symbol": "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/pydantic/main.py:693:model_validate"
+        },
+        {
+          "calls": 8,
+          "cumulative_ms": 33.269333,
+          "recursive_calls": 0,
+          "self_ms": 0.440678,
+          "symbol": "src/cpswm/system/counterfactual_event_hypergraph/contracts.py:314:validate_revision"
+        },
+        {
+          "calls": 14448,
+          "cumulative_ms": 32.649466000000004,
+          "recursive_calls": 13985,
+          "self_ms": 12.723597000000002,
+          "symbol": "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/copy.py:118:deepcopy"
+        },
+        {
+          "calls": 141,
+          "cumulative_ms": 32.115917,
+          "recursive_calls": 0,
+          "self_ms": 0.115457,
+          "symbol": "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/pydantic/main.py:253:__init__"
+        },
+        {
+          "calls": 10,
+          "cumulative_ms": 30.928453,
+          "recursive_calls": 0,
+          "self_ms": 0.052401,
+          "symbol": "src/cpswm/system/structure_two_particle_workspace.py:74:native_content_sha256"
+        },
+        {
+          "calls": 1241,
+          "cumulative_ms": 28.763145,
+          "recursive_calls": 1015,
+          "self_ms": 2.6063410000000005,
+          "symbol": "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/copy.py:217:_deepcopy_dict"
+        },
+        {
+          "calls": 1,
+          "cumulative_ms": 28.506074,
+          "recursive_calls": 0,
+          "self_ms": 0.058625000000000003,
+          "symbol": "src/cpswm/system/structure_two_particle_workspace.py:169:validate_content"
+        },
+        {
+          "calls": 7,
+          "cumulative_ms": 27.497743,
+          "recursive_calls": 0,
+          "self_ms": 0.145355,
+          "symbol": "src/cpswm/system/structure_two_execution.py:770:seal_operator_receipt"
+        },
+        {
+          "calls": 2,
+          "cumulative_ms": 27.21049,
+          "recursive_calls": 0,
+          "self_ms": 0.2064,
+          "symbol": "src/cpswm/system/prototype_spine.py:2506:_execution_observable_state_sha256"
+        }
+      ],
+      "target": "ccrr"
+    }
+  ],
+  "python": "3.12.14 (main, Aug 25 2026, 14:00:49) [Clang 22.1.3 ]",
+  "schema": "cpswm.pc-b.lock-timing-probe@1",
+  "source_path": "/workspace/scratch/b158d995e8cc/cpswm_b4_snapshot/src/cpswm/system/structure_two_particle_workspace.py",
+  "source_sha256": "0410db7cf57c647a2e42938c66d34f196e0ba8883d2caae949d8cff3e1df7e67"
+}

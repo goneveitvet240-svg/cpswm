@@ -1,0 +1,456 @@
+{
+  "runner": "direct compatibility runner; explicitly not pytest",
+  "frozen_code_sha": "1d24099a025c9d7c00a59e4c78c593703924b0eb",
+  "python": "3.12.14 (main, Aug 25 2026, 14:00:49) [Clang 22.1.3 ]",
+  "executable": "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python",
+  "platform": "Linux-6.18.35-x86_64-with-glibc2.39",
+  "cwd": "/workspace/scratch/b158d995e8cc/cpswm_b6_snapshot",
+  "command": [
+    "tools/b6_direct_test_runner.py",
+    "docs/reviews/pc_b/b6_joint_audit_2026-09-13/run_direct_01"
+  ],
+  "environment": {
+    "PYTHONPATH": "src:tests:.",
+    "PYTHONHASHSEED": "0"
+  },
+  "source_identity": {
+    "expected_sha": "1d24099a025c9d7c00a59e4c78c593703924b0eb",
+    "source_file_count": 313,
+    "exact_blob_matches": 313,
+    "mismatches": {}
+  },
+  "counts": {
+    "collected": 85,
+    "passed": 85,
+    "failed": 0,
+    "not_run": 0
+  },
+  "seconds": 137.75984685500225,
+  "results": [
+    {
+      "case": "test_structure_two_joint_consumption_components::test_invalid_measurement_has_no_partial_update[0]",
+      "status": "passed",
+      "seconds": 0.0003808699984801933
+    },
+    {
+      "case": "test_structure_two_joint_consumption_components::test_invalid_measurement_has_no_partial_update[1]",
+      "status": "passed",
+      "seconds": 0.000105314000393264
+    },
+    {
+      "case": "test_structure_two_joint_consumption_components::test_invalid_measurement_has_no_partial_update[2]",
+      "status": "passed",
+      "seconds": 9.045299884746782e-05
+    },
+    {
+      "case": "test_structure_two_joint_consumption_components::test_invalid_measurement_has_no_partial_update[3]",
+      "status": "passed",
+      "seconds": 0.00012241000149515457
+    },
+    {
+      "case": "test_structure_two_joint_consumption_components::test_invalid_measurement_has_no_partial_update[4]",
+      "status": "passed",
+      "seconds": 9.18849982554093e-05
+    },
+    {
+      "case": "test_structure_two_joint_consumption_components::test_invalid_measurement_has_no_partial_update[5]",
+      "status": "passed",
+      "seconds": 9.181499990518205e-05
+    },
+    {
+      "case": "test_structure_two_joint_consumption_components::test_invalid_measurement_has_no_partial_update[6]",
+      "status": "passed",
+      "seconds": 0.00011088300016126595
+    },
+    {
+      "case": "test_structure_two_joint_consumption_components::test_invalid_measurement_has_no_partial_update[7]",
+      "status": "passed",
+      "seconds": 0.00013622000187751837
+    },
+    {
+      "case": "test_structure_two_joint_consumption_components::test_invalid_measurement_has_no_partial_update[8]",
+      "status": "passed",
+      "seconds": 9.263600077247247e-05
+    },
+    {
+      "case": "test_structure_two_joint_consumption_components::test_invalid_measurement_has_no_partial_update[9]",
+      "status": "passed",
+      "seconds": 8.999199781101197e-05
+    },
+    {
+      "case": "test_structure_two_joint_consumption_components::test_invalid_measurement_has_no_partial_update[10]",
+      "status": "passed",
+      "seconds": 7.683299918426201e-05
+    },
+    {
+      "case": "test_structure_two_joint_consumption_components::test_invalid_measurement_has_no_partial_update[11]",
+      "status": "passed",
+      "seconds": 7.693300358369015e-05
+    },
+    {
+      "case": "test_structure_two_joint_consumption_components::test_invalid_measurement_has_no_partial_update[12]",
+      "status": "passed",
+      "seconds": 0.00036484600059338845
+    },
+    {
+      "case": "test_structure_two_joint_consumption_components::test_joint_consumer_revalidates_mutable_inputs[0]",
+      "status": "passed",
+      "seconds": 0.00020466999922064133
+    },
+    {
+      "case": "test_structure_two_joint_consumption_components::test_joint_consumer_revalidates_mutable_inputs[1]",
+      "status": "passed",
+      "seconds": 6.91010027367156e-05
+    },
+    {
+      "case": "test_structure_two_joint_consumption_components::test_joint_consumer_revalidates_mutable_inputs[2]",
+      "status": "passed",
+      "seconds": 5.66829985473305e-05
+    },
+    {
+      "case": "test_structure_two_joint_consumption_components::test_joint_consumer_revalidates_mutable_inputs[3]",
+      "status": "passed",
+      "seconds": 5.640299787046388e-05
+    },
+    {
+      "case": "test_structure_two_joint_consumption_components::test_joint_consumer_revalidates_mutable_inputs[4]",
+      "status": "passed",
+      "seconds": 5.442000110633671e-05
+    },
+    {
+      "case": "test_structure_two_joint_consumption_components::test_joint_correlation_changes_ciav_even_with_identical_marginals",
+      "status": "passed",
+      "seconds": 0.00026088300000992604
+    },
+    {
+      "case": "test_structure_two_joint_consumption_components::test_joint_privacy_blocks_profitable_verification",
+      "status": "passed",
+      "seconds": 6.836100146756507e-05
+    },
+    {
+      "case": "test_structure_two_joint_consumption_components::test_multivariate_observation_correlated_noise",
+      "status": "passed",
+      "seconds": 0.00035123600173392333
+    },
+    {
+      "case": "test_structure_two_joint_consumption_components::test_mutated_joint_objective_weights_rejected[0]",
+      "status": "passed",
+      "seconds": 0.00011895500210812315
+    },
+    {
+      "case": "test_structure_two_joint_consumption_components::test_mutated_joint_objective_weights_rejected[1]",
+      "status": "passed",
+      "seconds": 5.340799907571636e-05
+    },
+    {
+      "case": "test_structure_two_joint_consumption_components::test_mutated_joint_objective_weights_rejected[2]",
+      "status": "passed",
+      "seconds": 4.331299714976922e-05
+    },
+    {
+      "case": "test_structure_two_joint_consumption_components::test_new_modules_import_without_fixture_import_order[0]",
+      "status": "passed",
+      "seconds": 0.11841465799807338
+    },
+    {
+      "case": "test_structure_two_joint_consumption_components::test_new_modules_import_without_fixture_import_order[1]",
+      "status": "passed",
+      "seconds": 0.4295631580025656
+    },
+    {
+      "case": "test_structure_two_joint_consumption_components::test_real_posterior_explicit_seam_view_preserves_full_state_and_has_no_commit",
+      "status": "passed",
+      "seconds": 0.002345905999391107
+    },
+    {
+      "case": "test_structure_two_joint_consumption_components::test_repeated_cluster_and_prior_cluster_rejected",
+      "status": "passed",
+      "seconds": 0.0004313729987188708
+    },
+    {
+      "case": "test_structure_two_joint_consumption_components::test_replay_retraction_and_correction_rebuild_all_blocks",
+      "status": "passed",
+      "seconds": 0.0011131749997730367
+    },
+    {
+      "case": "test_structure_two_joint_consumption_components::test_three_blocks_match_independent_scalar_equations",
+      "status": "passed",
+      "seconds": 0.00018645400268724188
+    },
+    {
+      "case": "test_structure_two_joint_consumption_components::test_view_consumes_actual_ciav_without_mutating_core",
+      "status": "passed",
+      "seconds": 0.038959756999247475
+    },
+    {
+      "case": "test_structure_two_joint_consumption_components::test_view_rejects_stale_snapshot",
+      "status": "passed",
+      "seconds": 8.14300001366064e-05
+    },
+    {
+      "case": "test_structure_two_joint_consumption_components::test_zero_information_is_preserved_not_fabricated",
+      "status": "passed",
+      "seconds": 0.0003959120003855787
+    },
+    {
+      "case": "test_structure_two_ciav::test_ciav_couples_cause_memory_and_task_utility_under_hard_privacy",
+      "status": "passed",
+      "seconds": 0.011202555000636494
+    },
+    {
+      "case": "test_structure_two_ciav::test_ciav_linear_single_consolidation_decision_has_zero_information_value",
+      "status": "passed",
+      "seconds": 0.010570762999122962
+    },
+    {
+      "case": "test_structure_two_ciav::test_ciav_matched_baselines_share_action_set_and_privacy_gate[0]",
+      "status": "passed",
+      "seconds": 0.010045466002338799
+    },
+    {
+      "case": "test_structure_two_ciav::test_ciav_matched_baselines_share_action_set_and_privacy_gate[1]",
+      "status": "passed",
+      "seconds": 0.010030823999841232
+    },
+    {
+      "case": "test_structure_two_ciav::test_ciav_matched_baselines_share_action_set_and_privacy_gate[2]",
+      "status": "passed",
+      "seconds": 0.010270997001498472
+    },
+    {
+      "case": "test_structure_two_ciav::test_ciav_off_policy_evaluation_reports_overlap_and_non_identification",
+      "status": "passed",
+      "seconds": 5.217600119067356e-05
+    },
+    {
+      "case": "test_structure_two_ciav::test_ciav_realizer_contract_cannot_author_a_posterior_or_location",
+      "status": "passed",
+      "seconds": 7.4310009949840605e-06
+    },
+    {
+      "case": "test_structure_two_ciav::test_ciav_rejects_forged_complete_realizations[0]",
+      "status": "passed",
+      "seconds": 0.0003446059999987483
+    },
+    {
+      "case": "test_structure_two_ciav::test_ciav_rejects_forged_complete_realizations[1]",
+      "status": "passed",
+      "seconds": 0.0002787789999274537
+    },
+    {
+      "case": "test_structure_two_ciav::test_ciav_rejects_zero_support_actor_likelihood_before_producing_evidence",
+      "status": "passed",
+      "seconds": 0.00022787399939261377
+    },
+    {
+      "case": "test_structure_two_ciav::test_ciav_selected_action_enters_real_opceu_loop_before_truth_realization",
+      "status": "passed",
+      "seconds": 0.0017893879994517192
+    },
+    {
+      "case": "test_structure_two_ciav::test_never_act_baseline_is_explicit",
+      "status": "passed",
+      "seconds": 0.009860084002866643
+    },
+    {
+      "case": "test_structure_two_ciav::test_structure_two_snapshot_exposes_identity_and_unresolved_to_ciav",
+      "status": "passed",
+      "seconds": 0.010142376999283442
+    },
+    {
+      "case": "test_structure_two_ciav_negative_observation_layers::test_a_negative_observation_is_never_upgraded_to_a_positive_event",
+      "status": "passed",
+      "seconds": 0.5169685430009849
+    },
+    {
+      "case": "test_structure_two_ciav_negative_observation_layers::test_an_unexecuted_action_is_not_encoded_as_a_negative_observation",
+      "status": "passed",
+      "seconds": 0.5335361430006742
+    },
+    {
+      "case": "test_structure_two_ciav_negative_observation_layers::test_layer_four_a_negative_observation_leaves_the_decoded_action_unchanged",
+      "status": "passed",
+      "seconds": 0.9711569030005194
+    },
+    {
+      "case": "test_structure_two_ciav_negative_observation_layers::test_layer_one_the_local_actor_posterior_is_an_exact_bayes_update[0]",
+      "status": "passed",
+      "seconds": 0.5090347089972056
+    },
+    {
+      "case": "test_structure_two_ciav_negative_observation_layers::test_layer_one_the_local_actor_posterior_is_an_exact_bayes_update[1]",
+      "status": "passed",
+      "seconds": 0.6971996929969464
+    },
+    {
+      "case": "test_structure_two_ciav_negative_observation_layers::test_layer_one_the_local_actor_posterior_is_an_exact_bayes_update[2]",
+      "status": "passed",
+      "seconds": 0.5158409540017601
+    },
+    {
+      "case": "test_structure_two_ciav_negative_observation_layers::test_layer_three_only_the_same_location_branch_writes_the_fast_ledger",
+      "status": "passed",
+      "seconds": 1.7357960640001693
+    },
+    {
+      "case": "test_structure_two_ciav_negative_observation_layers::test_layer_two_the_consumption_target_is_the_loop_s_own_local_posterior[0]",
+      "status": "passed",
+      "seconds": 0.5244663689991285
+    },
+    {
+      "case": "test_structure_two_ciav_negative_observation_layers::test_layer_two_the_consumption_target_is_the_loop_s_own_local_posterior[1]",
+      "status": "passed",
+      "seconds": 0.6127460730021994
+    },
+    {
+      "case": "test_structure_two_ciav_negative_observation_layers::test_layer_two_the_consumption_target_is_the_loop_s_own_local_posterior[2]",
+      "status": "passed",
+      "seconds": 0.48056728200026555
+    },
+    {
+      "case": "test_structure_two_ciav_negative_observation_layers::test_one_realized_ciav_observation_is_counted_once_across_direct_and_replay",
+      "status": "passed",
+      "seconds": 2.0093883099980303
+    },
+    {
+      "case": "test_structure_two_ciav_negative_observation_layers::test_repeating_the_identical_ciav_execution_produces_no_second_factor",
+      "status": "passed",
+      "seconds": 0.4844092070015904
+    },
+    {
+      "case": "test_structure_two_w3_native_posterior_projection::test_complete_resealing_cannot_replace_actual_producer_dependencies[0]",
+      "status": "passed",
+      "seconds": 0.7003300020005554
+    },
+    {
+      "case": "test_structure_two_w3_native_posterior_projection::test_complete_resealing_cannot_replace_actual_producer_dependencies[1]",
+      "status": "passed",
+      "seconds": 1.0228243339988694
+    },
+    {
+      "case": "test_structure_two_w3_native_posterior_projection::test_complete_resealing_cannot_replace_actual_producer_dependencies[2]",
+      "status": "passed",
+      "seconds": 0.6817899039997428
+    },
+    {
+      "case": "test_structure_two_w3_native_posterior_projection::test_complete_resealing_cannot_replace_actual_producer_dependencies[3]",
+      "status": "passed",
+      "seconds": 0.6665703069993469
+    },
+    {
+      "case": "test_structure_two_w3_native_posterior_projection::test_complete_resealing_cannot_replace_actual_producer_dependencies[4]",
+      "status": "passed",
+      "seconds": 0.6932533100007277
+    },
+    {
+      "case": "test_structure_two_w3_native_posterior_projection::test_consumption_interrupt_restores_dependency_journal_and_retries[0]",
+      "status": "passed",
+      "seconds": 0.7573806639993563
+    },
+    {
+      "case": "test_structure_two_w3_native_posterior_projection::test_consumption_interrupt_restores_dependency_journal_and_retries[1]",
+      "status": "passed",
+      "seconds": 0.7355386939998425
+    },
+    {
+      "case": "test_structure_two_w3_native_posterior_projection::test_default_observation_publishes_real_pchmp_source_and_weight_consumes_it",
+      "status": "passed",
+      "seconds": 0.8738365979988885
+    },
+    {
+      "case": "test_structure_two_w3_native_posterior_projection::test_invalid_projection_is_atomic_and_legal_retry_works[0]",
+      "status": "passed",
+      "seconds": 0.6622481910017086
+    },
+    {
+      "case": "test_structure_two_w3_native_posterior_projection::test_invalid_projection_is_atomic_and_legal_retry_works[1]",
+      "status": "passed",
+      "seconds": 0.7102909370005364
+    },
+    {
+      "case": "test_structure_two_w3_native_posterior_projection::test_invalid_projection_is_atomic_and_legal_retry_works[2]",
+      "status": "passed",
+      "seconds": 0.8749544230013271
+    },
+    {
+      "case": "test_structure_two_w3_native_posterior_projection::test_invalid_projection_is_atomic_and_legal_retry_works[3]",
+      "status": "passed",
+      "seconds": 0.9337995009991573
+    },
+    {
+      "case": "test_structure_two_w3_native_posterior_projection::test_invalid_projection_is_atomic_and_legal_retry_works[4]",
+      "status": "passed",
+      "seconds": 0.694112214998313
+    },
+    {
+      "case": "test_structure_two_w3_native_posterior_projection::test_invalid_projection_is_atomic_and_legal_retry_works[5]",
+      "status": "passed",
+      "seconds": 0.6859923180018086
+    },
+    {
+      "case": "test_structure_two_w3_native_posterior_projection::test_invalid_projection_is_atomic_and_legal_retry_works[6]",
+      "status": "passed",
+      "seconds": 0.8926950079985545
+    },
+    {
+      "case": "test_structure_two_w3_native_posterior_projection::test_invalid_projection_is_atomic_and_legal_retry_works[7]",
+      "status": "passed",
+      "seconds": 0.8611428599979263
+    },
+    {
+      "case": "test_structure_two_w3_native_posterior_projection::test_native_source_encoding_rejects_complete_typed_key_collision",
+      "status": "passed",
+      "seconds": 8.15700004750397e-05
+    },
+    {
+      "case": "test_structure_two_w3_native_posterior_projection::test_projection_semantics_reproduce_while_execution_and_source_ids_remain_distinct",
+      "status": "passed",
+      "seconds": 1.0992625829967437
+    },
+    {
+      "case": "test_structure_two_w3_native_posterior_projection::test_real_projection_consumes_under_independent_python_hash_seeds[0]",
+      "status": "passed",
+      "seconds": 1.1783542500015756
+    },
+    {
+      "case": "test_structure_two_w3_native_posterior_projection::test_real_projection_consumes_under_independent_python_hash_seeds[1]",
+      "status": "passed",
+      "seconds": 1.1641786090003734
+    },
+    {
+      "case": "test_structure_two_w3_native_posterior_projection::test_same_posterior_cannot_be_recounted_under_a_new_candidate_cluster",
+      "status": "passed",
+      "seconds": 1.1024733249978453
+    },
+    {
+      "case": "test_project_two_ciav_interactive_development::test_every_interactive_policy_has_the_same_registered_tuning_budget",
+      "status": "passed",
+      "seconds": 2.826100171660073e-05
+    },
+    {
+      "case": "test_project_two_ciav_interactive_development::test_interactive_development_splits_must_be_disjoint",
+      "status": "passed",
+      "seconds": 6.957200093893334e-05
+    },
+    {
+      "case": "test_project_two_ciav_interactive_development::test_interactive_smoke_keeps_shared_actions_costs_and_privacy_explicit",
+      "status": "passed",
+      "seconds": 81.44731966100153
+    },
+    {
+      "case": "test_project_two_ciav_break_even::test_surface_is_frozen_and_excludes_a_zero_cost_corner",
+      "status": "passed",
+      "seconds": 1.6420017345808446e-06
+    },
+    {
+      "case": "test_project_two_ciav_break_even::test_surface_requires_nonempty_evaluation_seeds",
+      "status": "passed",
+      "seconds": 6.965200009290129e-05
+    },
+    {
+      "case": "test_project_two_ciav_break_even::test_surface_smoke_reports_every_point_and_frozen_gate",
+      "status": "passed",
+      "seconds": 28.00428449500032
+    }
+  ]
+}

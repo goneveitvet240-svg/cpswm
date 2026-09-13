@@ -1,0 +1,465 @@
+{
+  "binding_check_ms": [
+    0.235215,
+    0.190249,
+    0.140266,
+    0.124393,
+    0.1225,
+    0.120437,
+    0.121498,
+    0.144082,
+    0.127307,
+    0.120647,
+    0.118825,
+    0.123732,
+    0.162568,
+    0.143711,
+    0.12271,
+    0.118824,
+    0.175828,
+    0.27905,
+    0.147276,
+    0.134478
+  ],
+  "cases": [
+    {
+      "alive_at_1s": false,
+      "outcome": {
+        "message": "model state rolled back but trace tombstone acknowledgement or runtime-lock restoration could not be verified",
+        "type": "TraceCompensationError"
+      },
+      "phases_ms": {
+        "post_sink_until_done": 4.706213,
+        "pre_sink": 468.80885,
+        "release_to_worker": 0.247709,
+        "setup": 1.281572,
+        "sink_super": 1.006869,
+        "start_to_deadline_observation": 475.067116,
+        "total_invoke": 474.790516,
+        "worker_to_sink_return": 0.019373
+      },
+      "target": "core"
+    },
+    {
+      "alive_at_1s": false,
+      "outcome": {
+        "message": "model state rolled back but trace tombstone acknowledgement or runtime-lock restoration could not be verified",
+        "type": "TraceCompensationError"
+      },
+      "phases_ms": {
+        "post_sink_until_done": 3.823636,
+        "pre_sink": 470.313349,
+        "release_to_worker": 0.195116,
+        "setup": 1.669623,
+        "sink_super": 0.968032,
+        "start_to_deadline_observation": 475.569429,
+        "total_invoke": 475.321855,
+        "worker_to_sink_return": 0.020651
+      },
+      "target": "wrapper"
+    },
+    {
+      "alive_at_1s": false,
+      "outcome": {
+        "message": "model state rolled back but trace tombstone acknowledgement or runtime-lock restoration could not be verified",
+        "type": "TraceCompensationError"
+      },
+      "phases_ms": {
+        "post_sink_until_done": 3.823306,
+        "pre_sink": 418.841341,
+        "release_to_worker": 0.222311,
+        "setup": 2.060267,
+        "sink_super": 0.972679,
+        "start_to_deadline_observation": 424.150294,
+        "total_invoke": 423.889957,
+        "worker_to_sink_return": 0.029839
+      },
+      "target": "ccrr"
+    },
+    {
+      "alive_at_1s": false,
+      "outcome": {
+        "message": "model state rolled back but trace tombstone acknowledgement or runtime-lock restoration could not be verified",
+        "type": "TraceCompensationError"
+      },
+      "phases_ms": {
+        "post_sink_until_done": 3.912057,
+        "pre_sink": 422.037271,
+        "release_to_worker": 0.243263,
+        "setup": 1.97436,
+        "sink_super": 1.00136,
+        "start_to_deadline_observation": 427.460566,
+        "total_invoke": 427.22439,
+        "worker_to_sink_return": 0.029247
+      },
+      "target": "core"
+    },
+    {
+      "alive_at_1s": false,
+      "outcome": {
+        "message": "model state rolled back but trace tombstone acknowledgement or runtime-lock restoration could not be verified",
+        "type": "TraceCompensationError"
+      },
+      "phases_ms": {
+        "post_sink_until_done": 4.080143,
+        "pre_sink": 428.597771,
+        "release_to_worker": 0.226849,
+        "setup": 2.254161,
+        "sink_super": 0.96705,
+        "start_to_deadline_observation": 434.171503,
+        "total_invoke": 433.908632,
+        "worker_to_sink_return": 0.035717
+      },
+      "target": "wrapper"
+    },
+    {
+      "alive_at_1s": false,
+      "outcome": {
+        "message": "model state rolled back but trace tombstone acknowledgement or runtime-lock restoration could not be verified",
+        "type": "TraceCompensationError"
+      },
+      "phases_ms": {
+        "post_sink_until_done": 3.810847,
+        "pre_sink": 430.59774,
+        "release_to_worker": 0.295283,
+        "setup": 2.263514,
+        "sink_super": 0.958297,
+        "start_to_deadline_observation": 435.887244,
+        "total_invoke": 435.691211,
+        "worker_to_sink_return": 0.028623
+      },
+      "target": "ccrr"
+    },
+    {
+      "alive_at_1s": false,
+      "outcome": {
+        "message": "model state rolled back but trace tombstone acknowledgement or runtime-lock restoration could not be verified",
+        "type": "TraceCompensationError"
+      },
+      "phases_ms": {
+        "post_sink_until_done": 3.974007,
+        "pre_sink": 429.991343,
+        "release_to_worker": 0.202802,
+        "setup": 1.343944,
+        "sink_super": 1.053007,
+        "start_to_deadline_observation": 435.476731,
+        "total_invoke": 435.234004,
+        "worker_to_sink_return": 0.011673
+      },
+      "target": "core"
+    },
+    {
+      "alive_at_1s": false,
+      "outcome": {
+        "message": "model state rolled back but trace tombstone acknowledgement or runtime-lock restoration could not be verified",
+        "type": "TraceCompensationError"
+      },
+      "phases_ms": {
+        "post_sink_until_done": 3.834942,
+        "pre_sink": 435.029884,
+        "release_to_worker": 0.246387,
+        "setup": 1.668951,
+        "sink_super": 0.969564,
+        "start_to_deadline_observation": 440.382617,
+        "total_invoke": 440.110857,
+        "worker_to_sink_return": 0.028748
+      },
+      "target": "wrapper"
+    },
+    {
+      "alive_at_1s": false,
+      "outcome": {
+        "message": "model state rolled back but trace tombstone acknowledgement or runtime-lock restoration could not be verified",
+        "type": "TraceCompensationError"
+      },
+      "phases_ms": {
+        "post_sink_until_done": 3.800111,
+        "pre_sink": 434.007823,
+        "release_to_worker": 0.243287,
+        "setup": 1.928753,
+        "sink_super": 0.967791,
+        "start_to_deadline_observation": 439.271213,
+        "total_invoke": 439.049017,
+        "worker_to_sink_return": 0.029634
+      },
+      "target": "ccrr"
+    }
+  ],
+  "disk_sha_ms": [
+    0.074239,
+    0.031286,
+    0.030104,
+    0.030645,
+    0.029083,
+    0.028972,
+    0.028742,
+    0.028472,
+    0.029153,
+    0.028512,
+    0.029443,
+    0.028612,
+    0.029273,
+    0.028652,
+    0.031276,
+    0.028612,
+    0.028712,
+    0.229608,
+    0.033338,
+    0.029553
+  ],
+  "parallel_process_control": {
+    "group_elapsed_ms": 2864.671895,
+    "workers": 4,
+    "workers_result": [
+      {
+        "cases": [
+          {
+            "alive_at_1s": false,
+            "outcome": {
+              "message": "model state rolled back but trace tombstone acknowledgement or runtime-lock restoration could not be verified",
+              "type": "TraceCompensationError"
+            },
+            "phases_ms": {
+              "post_sink_until_done": 6.432117,
+              "pre_sink": 561.909772,
+              "release_to_worker": 0.313947,
+              "setup": 1.506152,
+              "sink_super": 1.749319,
+              "start_to_deadline_observation": 575.165727,
+              "total_invoke": 570.463275,
+              "worker_to_sink_return": 0.055977
+            },
+            "target": "core"
+          },
+          {
+            "alive_at_1s": false,
+            "outcome": {
+              "message": "model state rolled back but trace tombstone acknowledgement or runtime-lock restoration could not be verified",
+              "type": "TraceCompensationError"
+            },
+            "phases_ms": {
+              "post_sink_until_done": 4.287157,
+              "pre_sink": 569.977247,
+              "release_to_worker": 0.237739,
+              "setup": 2.870036,
+              "sink_super": 1.039016,
+              "start_to_deadline_observation": 575.983769,
+              "total_invoke": 575.571373,
+              "worker_to_sink_return": 0.028672
+            },
+            "target": "wrapper"
+          },
+          {
+            "alive_at_1s": false,
+            "outcome": {
+              "message": "model state rolled back but trace tombstone acknowledgement or runtime-lock restoration could not be verified",
+              "type": "TraceCompensationError"
+            },
+            "phases_ms": {
+              "post_sink_until_done": 5.398369,
+              "pre_sink": 506.794639,
+              "release_to_worker": 0.205852,
+              "setup": 2.414136,
+              "sink_super": 1.191369,
+              "start_to_deadline_observation": 513.821134,
+              "total_invoke": 513.625301,
+              "worker_to_sink_return": 0.034571
+            },
+            "target": "ccrr"
+          }
+        ],
+        "returncode": 0,
+        "stderr": "",
+        "worker": 0
+      },
+      {
+        "cases": [
+          {
+            "alive_at_1s": false,
+            "outcome": {
+              "message": "model state rolled back but trace tombstone acknowledgement or runtime-lock restoration could not be verified",
+              "type": "TraceCompensationError"
+            },
+            "phases_ms": {
+              "post_sink_until_done": 3.94204,
+              "pre_sink": 541.296329,
+              "release_to_worker": 0.312579,
+              "setup": 1.603305,
+              "sink_super": 0.957136,
+              "start_to_deadline_observation": 548.114588,
+              "total_invoke": 546.539109,
+              "worker_to_sink_return": 0.029353
+            },
+            "target": "core"
+          },
+          {
+            "alive_at_1s": false,
+            "outcome": {
+              "message": "model state rolled back but trace tombstone acknowledgement or runtime-lock restoration could not be verified",
+              "type": "TraceCompensationError"
+            },
+            "phases_ms": {
+              "post_sink_until_done": 4.113082,
+              "pre_sink": 491.754241,
+              "release_to_worker": 0.171772,
+              "setup": 1.335742,
+              "sink_super": 1.068359,
+              "start_to_deadline_observation": 497.319385,
+              "total_invoke": 497.139451,
+              "worker_to_sink_return": 0.030715
+            },
+            "target": "wrapper"
+          },
+          {
+            "alive_at_1s": false,
+            "outcome": {
+              "message": "model state rolled back but trace tombstone acknowledgement or runtime-lock restoration could not be verified",
+              "type": "TraceCompensationError"
+            },
+            "phases_ms": {
+              "post_sink_until_done": 5.444948,
+              "pre_sink": 492.192815,
+              "release_to_worker": 0.25582,
+              "setup": 1.448358,
+              "sink_super": 1.398334,
+              "start_to_deadline_observation": 503.566832,
+              "total_invoke": 499.326664,
+              "worker_to_sink_return": 0.034106
+            },
+            "target": "ccrr"
+          }
+        ],
+        "returncode": 0,
+        "stderr": "",
+        "worker": 1
+      },
+      {
+        "cases": [
+          {
+            "alive_at_1s": false,
+            "outcome": {
+              "message": "model state rolled back but trace tombstone acknowledgement or runtime-lock restoration could not be verified",
+              "type": "TraceCompensationError"
+            },
+            "phases_ms": {
+              "post_sink_until_done": 4.025983,
+              "pre_sink": 516.406104,
+              "release_to_worker": 0.176138,
+              "setup": 2.451,
+              "sink_super": 1.303695,
+              "start_to_deadline_observation": 523.782415,
+              "total_invoke": 521.926873,
+              "worker_to_sink_return": 0.01333
+            },
+            "target": "core"
+          },
+          {
+            "alive_at_1s": false,
+            "outcome": {
+              "message": "model state rolled back but trace tombstone acknowledgement or runtime-lock restoration could not be verified",
+              "type": "TraceCompensationError"
+            },
+            "phases_ms": {
+              "post_sink_until_done": 6.375896,
+              "pre_sink": 562.06165,
+              "release_to_worker": 0.153591,
+              "setup": 2.018264,
+              "sink_super": 1.634931,
+              "start_to_deadline_observation": 570.450562,
+              "total_invoke": 570.249707,
+              "worker_to_sink_return": 0.021987
+            },
+            "target": "wrapper"
+          },
+          {
+            "alive_at_1s": false,
+            "outcome": {
+              "message": "model state rolled back but trace tombstone acknowledgement or runtime-lock restoration could not be verified",
+              "type": "TraceCompensationError"
+            },
+            "phases_ms": {
+              "post_sink_until_done": 3.8737,
+              "pre_sink": 491.240777,
+              "release_to_worker": 0.171932,
+              "setup": 2.320719,
+              "sink_super": 0.977316,
+              "start_to_deadline_observation": 496.518694,
+              "total_invoke": 496.277455,
+              "worker_to_sink_return": 0.013129
+            },
+            "target": "ccrr"
+          }
+        ],
+        "returncode": 0,
+        "stderr": "",
+        "worker": 2
+      },
+      {
+        "cases": [
+          {
+            "alive_at_1s": false,
+            "outcome": {
+              "message": "model state rolled back but trace tombstone acknowledgement or runtime-lock restoration could not be verified",
+              "type": "TraceCompensationError"
+            },
+            "phases_ms": {
+              "post_sink_until_done": 3.953778,
+              "pre_sink": 528.210368,
+              "release_to_worker": 0.270207,
+              "setup": 1.476118,
+              "sink_super": 0.99413,
+              "start_to_deadline_observation": 534.331965,
+              "total_invoke": 533.458897,
+              "worker_to_sink_return": 0.028562
+            },
+            "target": "core"
+          },
+          {
+            "alive_at_1s": false,
+            "outcome": {
+              "message": "model state rolled back but trace tombstone acknowledgement or runtime-lock restoration could not be verified",
+              "type": "TraceCompensationError"
+            },
+            "phases_ms": {
+              "post_sink_until_done": 6.395544,
+              "pre_sink": 612.325709,
+              "release_to_worker": 0.16719,
+              "setup": 1.392094,
+              "sink_super": 1.737192,
+              "start_to_deadline_observation": 626.546547,
+              "total_invoke": 620.650066,
+              "worker_to_sink_return": 0.022629
+            },
+            "target": "wrapper"
+          },
+          {
+            "alive_at_1s": false,
+            "outcome": {
+              "message": "model state rolled back but trace tombstone acknowledgement or runtime-lock restoration could not be verified",
+              "type": "TraceCompensationError"
+            },
+            "phases_ms": {
+              "post_sink_until_done": 3.861522,
+              "pre_sink": 473.172949,
+              "release_to_worker": 0.237839,
+              "setup": 1.641582,
+              "sink_super": 1.080827,
+              "start_to_deadline_observation": 478.599299,
+              "total_invoke": 478.383973,
+              "worker_to_sink_return": 0.030305
+            },
+            "target": "ccrr"
+          }
+        ],
+        "returncode": 0,
+        "stderr": "",
+        "worker": 3
+      }
+    ]
+  },
+  "platform": "linux",
+  "python": "3.12.14 (main, Aug 25 2026, 14:00:49) [Clang 22.1.3 ]",
+  "schema": "cpswm.pc-b.lock-timing-probe@1",
+  "source_path": "/workspace/scratch/b158d995e8cc/cpswm_b4_snapshot/src/cpswm/system/structure_two_particle_workspace.py",
+  "source_sha256": "0410db7cf57c647a2e42938c66d34f196e0ba8883d2caae949d8cff3e1df7e67"
+}

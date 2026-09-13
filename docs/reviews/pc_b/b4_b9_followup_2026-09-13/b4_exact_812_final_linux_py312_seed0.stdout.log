@@ -1,0 +1,2332 @@
+bringing up nodes...
+bringing up nodes...
+
+.F...................................................................... [  8%]
+.........................FF..........................FFFFFFF............ [ 17%]
+............................................F..F........FF.............. [ 26%]
+........................................................................ [ 35%]
+............................F..............F............................ [ 44%]
+........................................................................ [ 53%]
+........................................................................ [ 62%]
+........................................................................ [ 70%]
+........................................................................ [ 79%]
+.........................FF...FFF..FF.F.FFFFFFEEEEFFFEF...EEEE.EFFFFFF.. [ 88%]
+........................FF.............................................. [ 97%]
+....................                                                     [100%]
+==================================== ERRORS ====================================
+__ ERROR at setup of test_route_c_particles_carry_all_seven_axes_across_time ___
+[gw3] linux -- Python 3.12.14 /opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python
+
+    @pytest.fixture(scope="module")
+    def runtime_dependencies():
+>       config = load_stateful_full_joint_config(ROOT)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_structure_two_stateful_full_joint.py:41: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/cpswm/system/evaluation_operations/structure_two_stateful_full_joint.py:145: in load_stateful_full_joint_config
+    payload = json.loads((repository_root / path).read_text(encoding="utf-8"))
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/pathlib.py:1027: in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = PosixPath('/workspace/scratch/b158d995e8cc/cpswm_b4_snapshot/configs/project_two_experiments/structure_two_stateful_full_joint_v0_1.json')
+mode = 'r', buffering = -1, encoding = 'utf-8', errors = None, newline = None
+
+    def open(self, mode='r', buffering=-1, encoding=None,
+             errors=None, newline=None):
+        """
+        Open the file pointed to by this path and return a file object, as
+        the built-in open() function does.
+        """
+        if "b" not in mode:
+            encoding = io.text_encoding(encoding)
+>       return io.open(self, mode, buffering, encoding, errors, newline)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       FileNotFoundError: [Errno 2] No such file or directory: '/workspace/scratch/b158d995e8cc/cpswm_b4_snapshot/configs/project_two_experiments/structure_two_stateful_full_joint_v0_1.json'
+
+/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/pathlib.py:1013: FileNotFoundError
+_ ERROR at setup of test_joint_and_factorized_arms_are_compute_matched_but_not_the_same_model _
+[gw3] linux -- Python 3.12.14 /opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python
+
+    @pytest.fixture(scope="module")
+    def runtime_dependencies():
+>       config = load_stateful_full_joint_config(ROOT)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_structure_two_stateful_full_joint.py:41: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/cpswm/system/evaluation_operations/structure_two_stateful_full_joint.py:145: in load_stateful_full_joint_config
+    payload = json.loads((repository_root / path).read_text(encoding="utf-8"))
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/pathlib.py:1027: in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = PosixPath('/workspace/scratch/b158d995e8cc/cpswm_b4_snapshot/configs/project_two_experiments/structure_two_stateful_full_joint_v0_1.json')
+mode = 'r', buffering = -1, encoding = 'utf-8', errors = None, newline = None
+
+    def open(self, mode='r', buffering=-1, encoding=None,
+             errors=None, newline=None):
+        """
+        Open the file pointed to by this path and return a file object, as
+        the built-in open() function does.
+        """
+        if "b" not in mode:
+            encoding = io.text_encoding(encoding)
+>       return io.open(self, mode, buffering, encoding, errors, newline)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       FileNotFoundError: [Errno 2] No such file or directory: '/workspace/scratch/b158d995e8cc/cpswm_b4_snapshot/configs/project_two_experiments/structure_two_stateful_full_joint_v0_1.json'
+
+/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/pathlib.py:1013: FileNotFoundError
+____ ERROR at setup of test_low_owner_unknown_event_cannot_enter_joint_rgrc ____
+[gw3] linux -- Python 3.12.14 /opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python
+
+    @pytest.fixture(scope="module")
+    def runtime_dependencies():
+>       config = load_stateful_full_joint_config(ROOT)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_structure_two_stateful_full_joint.py:41: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/cpswm/system/evaluation_operations/structure_two_stateful_full_joint.py:145: in load_stateful_full_joint_config
+    payload = json.loads((repository_root / path).read_text(encoding="utf-8"))
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/pathlib.py:1027: in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = PosixPath('/workspace/scratch/b158d995e8cc/cpswm_b4_snapshot/configs/project_two_experiments/structure_two_stateful_full_joint_v0_1.json')
+mode = 'r', buffering = -1, encoding = 'utf-8', errors = None, newline = None
+
+    def open(self, mode='r', buffering=-1, encoding=None,
+             errors=None, newline=None):
+        """
+        Open the file pointed to by this path and return a file object, as
+        the built-in open() function does.
+        """
+        if "b" not in mode:
+            encoding = io.text_encoding(encoding)
+>       return io.open(self, mode, buffering, encoding, errors, newline)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       FileNotFoundError: [Errno 2] No such file or directory: '/workspace/scratch/b158d995e8cc/cpswm_b4_snapshot/configs/project_two_experiments/structure_two_stateful_full_joint_v0_1.json'
+
+/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/pathlib.py:1013: FileNotFoundError
+_ ERROR at setup of test_feedback_reweights_full_state_and_extends_revision_lineage _
+[gw3] linux -- Python 3.12.14 /opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python
+
+    @pytest.fixture(scope="module")
+    def runtime_dependencies():
+>       config = load_stateful_full_joint_config(ROOT)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_structure_two_stateful_full_joint.py:41: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/cpswm/system/evaluation_operations/structure_two_stateful_full_joint.py:145: in load_stateful_full_joint_config
+    payload = json.loads((repository_root / path).read_text(encoding="utf-8"))
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/pathlib.py:1027: in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = PosixPath('/workspace/scratch/b158d995e8cc/cpswm_b4_snapshot/configs/project_two_experiments/structure_two_stateful_full_joint_v0_1.json')
+mode = 'r', buffering = -1, encoding = 'utf-8', errors = None, newline = None
+
+    def open(self, mode='r', buffering=-1, encoding=None,
+             errors=None, newline=None):
+        """
+        Open the file pointed to by this path and return a file object, as
+        the built-in open() function does.
+        """
+        if "b" not in mode:
+            encoding = io.text_encoding(encoding)
+>       return io.open(self, mode, buffering, encoding, errors, newline)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       FileNotFoundError: [Errno 2] No such file or directory: '/workspace/scratch/b158d995e8cc/cpswm_b4_snapshot/configs/project_two_experiments/structure_two_stateful_full_joint_v0_1.json'
+
+/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/pathlib.py:1013: FileNotFoundError
+_ ERROR at setup of test_round_one_complete_positive_support_is_not_top_k_truncated _
+[gw3] linux -- Python 3.12.14 /opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python
+
+    @pytest.fixture(scope="module")
+    def dependencies():
+>       config = load_stateful_full_joint_config(ROOT)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_structure_two_stateful_full_joint_adversarial.py:43: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/cpswm/system/evaluation_operations/structure_two_stateful_full_joint.py:145: in load_stateful_full_joint_config
+    payload = json.loads((repository_root / path).read_text(encoding="utf-8"))
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/pathlib.py:1027: in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = PosixPath('/workspace/scratch/b158d995e8cc/cpswm_b4_snapshot/configs/project_two_experiments/structure_two_stateful_full_joint_v0_1.json')
+mode = 'r', buffering = -1, encoding = 'utf-8', errors = None, newline = None
+
+    def open(self, mode='r', buffering=-1, encoding=None,
+             errors=None, newline=None):
+        """
+        Open the file pointed to by this path and return a file object, as
+        the built-in open() function does.
+        """
+        if "b" not in mode:
+            encoding = io.text_encoding(encoding)
+>       return io.open(self, mode, buffering, encoding, errors, newline)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       FileNotFoundError: [Errno 2] No such file or directory: '/workspace/scratch/b158d995e8cc/cpswm_b4_snapshot/configs/project_two_experiments/structure_two_stateful_full_joint_v0_1.json'
+
+/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/pathlib.py:1013: FileNotFoundError
+_ ERROR at setup of test_round_one_mutated_observation_is_revalidated_at_use_boundary _
+[gw3] linux -- Python 3.12.14 /opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python
+
+    @pytest.fixture(scope="module")
+    def dependencies():
+>       config = load_stateful_full_joint_config(ROOT)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_structure_two_stateful_full_joint_adversarial.py:43: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/cpswm/system/evaluation_operations/structure_two_stateful_full_joint.py:145: in load_stateful_full_joint_config
+    payload = json.loads((repository_root / path).read_text(encoding="utf-8"))
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/pathlib.py:1027: in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = PosixPath('/workspace/scratch/b158d995e8cc/cpswm_b4_snapshot/configs/project_two_experiments/structure_two_stateful_full_joint_v0_1.json')
+mode = 'r', buffering = -1, encoding = 'utf-8', errors = None, newline = None
+
+    def open(self, mode='r', buffering=-1, encoding=None,
+             errors=None, newline=None):
+        """
+        Open the file pointed to by this path and return a file object, as
+        the built-in open() function does.
+        """
+        if "b" not in mode:
+            encoding = io.text_encoding(encoding)
+>       return io.open(self, mode, buffering, encoding, errors, newline)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       FileNotFoundError: [Errno 2] No such file or directory: '/workspace/scratch/b158d995e8cc/cpswm_b4_snapshot/configs/project_two_experiments/structure_two_stateful_full_joint_v0_1.json'
+
+/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/pathlib.py:1013: FileNotFoundError
+_ ERROR at setup of test_round_one_revision_failure_rolls_back_all_mutable_state _
+[gw3] linux -- Python 3.12.14 /opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python
+
+    @pytest.fixture(scope="module")
+    def dependencies():
+>       config = load_stateful_full_joint_config(ROOT)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_structure_two_stateful_full_joint_adversarial.py:43: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/cpswm/system/evaluation_operations/structure_two_stateful_full_joint.py:145: in load_stateful_full_joint_config
+    payload = json.loads((repository_root / path).read_text(encoding="utf-8"))
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/pathlib.py:1027: in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = PosixPath('/workspace/scratch/b158d995e8cc/cpswm_b4_snapshot/configs/project_two_experiments/structure_two_stateful_full_joint_v0_1.json')
+mode = 'r', buffering = -1, encoding = 'utf-8', errors = None, newline = None
+
+    def open(self, mode='r', buffering=-1, encoding=None,
+             errors=None, newline=None):
+        """
+        Open the file pointed to by this path and return a file object, as
+        the built-in open() function does.
+        """
+        if "b" not in mode:
+            encoding = io.text_encoding(encoding)
+>       return io.open(self, mode, buffering, encoding, errors, newline)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       FileNotFoundError: [Errno 2] No such file or directory: '/workspace/scratch/b158d995e8cc/cpswm_b4_snapshot/configs/project_two_experiments/structure_two_stateful_full_joint_v0_1.json'
+
+/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/pathlib.py:1013: FileNotFoundError
+_ ERROR at setup of test_round_one_feedback_replay_and_substitution_are_rejected_atomically _
+[gw3] linux -- Python 3.12.14 /opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python
+
+    @pytest.fixture(scope="module")
+    def dependencies():
+>       config = load_stateful_full_joint_config(ROOT)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_structure_two_stateful_full_joint_adversarial.py:43: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/cpswm/system/evaluation_operations/structure_two_stateful_full_joint.py:145: in load_stateful_full_joint_config
+    payload = json.loads((repository_root / path).read_text(encoding="utf-8"))
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/pathlib.py:1027: in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = PosixPath('/workspace/scratch/b158d995e8cc/cpswm_b4_snapshot/configs/project_two_experiments/structure_two_stateful_full_joint_v0_1.json')
+mode = 'r', buffering = -1, encoding = 'utf-8', errors = None, newline = None
+
+    def open(self, mode='r', buffering=-1, encoding=None,
+             errors=None, newline=None):
+        """
+        Open the file pointed to by this path and return a file object, as
+        the built-in open() function does.
+        """
+        if "b" not in mode:
+            encoding = io.text_encoding(encoding)
+>       return io.open(self, mode, buffering, encoding, errors, newline)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       FileNotFoundError: [Errno 2] No such file or directory: '/workspace/scratch/b158d995e8cc/cpswm_b4_snapshot/configs/project_two_experiments/structure_two_stateful_full_joint_v0_1.json'
+
+/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/pathlib.py:1013: FileNotFoundError
+_ ERROR at setup of test_round_one_rgrc_requires_consecutive_stability_and_retracts_old_subject _
+[gw3] linux -- Python 3.12.14 /opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python
+
+    @pytest.fixture(scope="module")
+    def dependencies():
+>       config = load_stateful_full_joint_config(ROOT)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_structure_two_stateful_full_joint_adversarial.py:43: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/cpswm/system/evaluation_operations/structure_two_stateful_full_joint.py:145: in load_stateful_full_joint_config
+    payload = json.loads((repository_root / path).read_text(encoding="utf-8"))
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/pathlib.py:1027: in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = PosixPath('/workspace/scratch/b158d995e8cc/cpswm_b4_snapshot/configs/project_two_experiments/structure_two_stateful_full_joint_v0_1.json')
+mode = 'r', buffering = -1, encoding = 'utf-8', errors = None, newline = None
+
+    def open(self, mode='r', buffering=-1, encoding=None,
+             errors=None, newline=None):
+        """
+        Open the file pointed to by this path and return a file object, as
+        the built-in open() function does.
+        """
+        if "b" not in mode:
+            encoding = io.text_encoding(encoding)
+>       return io.open(self, mode, buffering, encoding, errors, newline)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       FileNotFoundError: [Errno 2] No such file or directory: '/workspace/scratch/b158d995e8cc/cpswm_b4_snapshot/configs/project_two_experiments/structure_two_stateful_full_joint_v0_1.json'
+
+/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/pathlib.py:1013: FileNotFoundError
+____ ERROR at setup of test_round_one_operator_chain_tampering_is_detected _____
+[gw3] linux -- Python 3.12.14 /opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python
+
+    @pytest.fixture(scope="module")
+    def dependencies():
+>       config = load_stateful_full_joint_config(ROOT)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_structure_two_stateful_full_joint_adversarial.py:43: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/cpswm/system/evaluation_operations/structure_two_stateful_full_joint.py:145: in load_stateful_full_joint_config
+    payload = json.loads((repository_root / path).read_text(encoding="utf-8"))
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/pathlib.py:1027: in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = PosixPath('/workspace/scratch/b158d995e8cc/cpswm_b4_snapshot/configs/project_two_experiments/structure_two_stateful_full_joint_v0_1.json')
+mode = 'r', buffering = -1, encoding = 'utf-8', errors = None, newline = None
+
+    def open(self, mode='r', buffering=-1, encoding=None,
+             errors=None, newline=None):
+        """
+        Open the file pointed to by this path and return a file object, as
+        the built-in open() function does.
+        """
+        if "b" not in mode:
+            encoding = io.text_encoding(encoding)
+>       return io.open(self, mode, buffering, encoding, errors, newline)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       FileNotFoundError: [Errno 2] No such file or directory: '/workspace/scratch/b158d995e8cc/cpswm_b4_snapshot/configs/project_two_experiments/structure_two_stateful_full_joint_v0_1.json'
+
+/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/pathlib.py:1013: FileNotFoundError
+=================================== FAILURES ===================================
+____ test_the_frozen_hard_safety_kernel_still_carries_the_clauses_used_here ____
+[gw3] linux -- Python 3.12.14 /opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python
+
+    def test_the_frozen_hard_safety_kernel_still_carries_the_clauses_used_here() -> None:
+>       kernel = _frozen()["hard_safety_kernel"]
+                 ^^^^^^^^^
+
+tests/test_structure_two_backbone_counterexample_regressions.py:71: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+    def _frozen() -> dict[str, Any]:
+        for candidate in (Path.cwd(), *Path(__file__).resolve().parents):
+            path = candidate / PREDEATH_CONFIG
+            if path.is_file():
+                return json.loads(path.read_text(encoding="utf-8"))
+>       raise AssertionError("frozen pre-death protocol config not found")
+E       AssertionError: frozen pre-death protocol config not found
+
+tests/test_structure_two_backbone_counterexample_regressions.py:49: AssertionError
+_______ test_sink_cannot_swap_an_in_place_attestation_verifier_key[core] _______
+[gw1] linux -- Python 3.12.14 /opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python
+
+target = 'core'
+
+    @pytest.mark.parametrize("target", ["core", "wrapper"])
+    def test_sink_cannot_swap_an_in_place_attestation_verifier_key(target: str) -> None:
+        system, transition = _system_and_transition()
+        original_authority = Ed25519AttestationSigner.generate(key_id="stable-key").verifier()
+        replacement_authority = Ed25519AttestationSigner.generate(key_id="stable-key").verifier()
+        if target == "core":
+            message_passing = system.core._message_passing
+        else:
+            message_passing = system.feedback_revision_loop._message_passing
+        message_passing._independence_authority = original_authority
+        original_public_key_sha256 = original_authority.public_key_sha256
+        before = _state_fingerprint(system)
+    
+        class KeyMutatingSink(RecordingSink):
+            def commit(self, trace: StructureTwoExecutionTrace, /) -> TraceCommitAck:
+                acknowledgement = super().commit(trace)
+                original_authority._public_key = replacement_authority._public_key
+                return acknowledgement
+    
+        sink = KeyMutatingSink()
+        with pytest.raises(
+            RuntimeError,
+            match=r"mutated audited core state|mutated audited production-wrapper state",
+        ):
+>           system.process_transition(
+                transition,
+                execution_plan=canonical_legacy_ordinary_transition_plan(),
+                trace_sink=sink,
+            )
+
+tests/test_structure_two_execution_interface.py:1132: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/cpswm/system/structure_two_production_system.py:1054: in process_transition
+    checkpoint = self._capture_execution_wrapper_state()
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/cpswm/system/structure_two_production_system.py:1824: in _capture_execution_wrapper_state
+    "fields": deepcopy(dict(vars(component))),
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/copy.py:136: in deepcopy
+    y = copier(x, memo)
+        ^^^^^^^^^^^^^^^
+/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/copy.py:221: in _deepcopy_dict
+    y[deepcopy(key, memo)] = deepcopy(value, memo)
+                             ^^^^^^^^^^^^^^^^^^^^^
+/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/copy.py:162: in deepcopy
+    y = _reconstruct(x, memo, *rv)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^
+/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/copy.py:259: in _reconstruct
+    state = deepcopy(state, memo)
+            ^^^^^^^^^^^^^^^^^^^^^
+/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/copy.py:136: in deepcopy
+    y = copier(x, memo)
+        ^^^^^^^^^^^^^^^
+/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/copy.py:221: in _deepcopy_dict
+    y[deepcopy(key, memo)] = deepcopy(value, memo)
+                             ^^^^^^^^^^^^^^^^^^^^^
+/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/copy.py:162: in deepcopy
+    y = _reconstruct(x, memo, *rv)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^
+/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/copy.py:259: in _reconstruct
+    state = deepcopy(state, memo)
+            ^^^^^^^^^^^^^^^^^^^^^
+/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/copy.py:136: in deepcopy
+    y = copier(x, memo)
+        ^^^^^^^^^^^^^^^
+/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/copy.py:221: in _deepcopy_dict
+    y[deepcopy(key, memo)] = deepcopy(value, memo)
+                             ^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+x = <cryptography.hazmat.bindings._rust.openssl.ed25519.Ed25519PublicKey object at 0x7f97716cae70>
+memo = {140288418593856: {'_projector': <cpswm.system.continual.execution_feedback_projector.ExecutionFeedbackProjector objec...ojector.ExecutionFeedbackProjector object at 0x7f976edd7b90>, 140288418207168: {'_seen': {}}, 140288418210752: {}, ...}
+_nil = []
+
+    def deepcopy(x, memo=None, _nil=[]):
+        """Deep copy operation on arbitrary Python objects.
+    
+        See the module's __doc__ string for more info.
+        """
+    
+        if memo is None:
+            memo = {}
+    
+        d = id(x)
+        y = memo.get(d, _nil)
+        if y is not _nil:
+            return y
+    
+        cls = type(x)
+    
+        copier = _deepcopy_dispatch.get(cls)
+        if copier is not None:
+            y = copier(x, memo)
+        else:
+            if issubclass(cls, type):
+                y = _deepcopy_atomic(x, memo)
+            else:
+                copier = getattr(x, "__deepcopy__", None)
+                if copier is not None:
+                    y = copier(memo)
+                else:
+                    reductor = dispatch_table.get(cls)
+                    if reductor:
+                        rv = reductor(x)
+                    else:
+                        reductor = getattr(x, "__reduce_ex__", None)
+                        if reductor is not None:
+>                           rv = reductor(4)
+                                 ^^^^^^^^^^^
+E                           TypeError: cannot pickle 'cryptography.hazmat.bindings._rust.openssl.ed25519.Ed25519PublicKey' object
+
+/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/copy.py:151: TypeError
+_____ test_sink_cannot_swap_an_in_place_attestation_verifier_key[wrapper] ______
+[gw1] linux -- Python 3.12.14 /opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python
+
+target = 'wrapper'
+
+    @pytest.mark.parametrize("target", ["core", "wrapper"])
+    def test_sink_cannot_swap_an_in_place_attestation_verifier_key(target: str) -> None:
+        system, transition = _system_and_transition()
+        original_authority = Ed25519AttestationSigner.generate(key_id="stable-key").verifier()
+        replacement_authority = Ed25519AttestationSigner.generate(key_id="stable-key").verifier()
+        if target == "core":
+            message_passing = system.core._message_passing
+        else:
+            message_passing = system.feedback_revision_loop._message_passing
+        message_passing._independence_authority = original_authority
+        original_public_key_sha256 = original_authority.public_key_sha256
+        before = _state_fingerprint(system)
+    
+        class KeyMutatingSink(RecordingSink):
+            def commit(self, trace: StructureTwoExecutionTrace, /) -> TraceCommitAck:
+                acknowledgement = super().commit(trace)
+                original_authority._public_key = replacement_authority._public_key
+                return acknowledgement
+    
+        sink = KeyMutatingSink()
+        with pytest.raises(
+            RuntimeError,
+            match=r"mutated audited core state|mutated audited production-wrapper state",
+        ):
+>           system.process_transition(
+                transition,
+                execution_plan=canonical_legacy_ordinary_transition_plan(),
+                trace_sink=sink,
+            )
+
+tests/test_structure_two_execution_interface.py:1132: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/cpswm/system/structure_two_production_system.py:1054: in process_transition
+    checkpoint = self._capture_execution_wrapper_state()
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/cpswm/system/structure_two_production_system.py:1824: in _capture_execution_wrapper_state
+    "fields": deepcopy(dict(vars(component))),
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/copy.py:136: in deepcopy
+    y = copier(x, memo)
+        ^^^^^^^^^^^^^^^
+/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/copy.py:221: in _deepcopy_dict
+    y[deepcopy(key, memo)] = deepcopy(value, memo)
+                             ^^^^^^^^^^^^^^^^^^^^^
+/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/copy.py:162: in deepcopy
+    y = _reconstruct(x, memo, *rv)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^
+/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/copy.py:259: in _reconstruct
+    state = deepcopy(state, memo)
+            ^^^^^^^^^^^^^^^^^^^^^
+/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/copy.py:136: in deepcopy
+    y = copier(x, memo)
+        ^^^^^^^^^^^^^^^
+/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/copy.py:221: in _deepcopy_dict
+    y[deepcopy(key, memo)] = deepcopy(value, memo)
+                             ^^^^^^^^^^^^^^^^^^^^^
+/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/copy.py:162: in deepcopy
+    y = _reconstruct(x, memo, *rv)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^
+/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/copy.py:259: in _reconstruct
+    state = deepcopy(state, memo)
+            ^^^^^^^^^^^^^^^^^^^^^
+/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/copy.py:136: in deepcopy
+    y = copier(x, memo)
+        ^^^^^^^^^^^^^^^
+/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/copy.py:221: in _deepcopy_dict
+    y[deepcopy(key, memo)] = deepcopy(value, memo)
+                             ^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+x = <cryptography.hazmat.bindings._rust.openssl.ed25519.Ed25519PublicKey object at 0x7f976e37b8d0>
+memo = {140288416160000: {'_projector': <cpswm.system.continual.execution_feedback_projector.ExecutionFeedbackProjector objec...ojector.ExecutionFeedbackProjector object at 0x7f97711b0980>, 140288416156032: {'_seen': {}}, 140288417271488: {}, ...}
+_nil = []
+
+    def deepcopy(x, memo=None, _nil=[]):
+        """Deep copy operation on arbitrary Python objects.
+    
+        See the module's __doc__ string for more info.
+        """
+    
+        if memo is None:
+            memo = {}
+    
+        d = id(x)
+        y = memo.get(d, _nil)
+        if y is not _nil:
+            return y
+    
+        cls = type(x)
+    
+        copier = _deepcopy_dispatch.get(cls)
+        if copier is not None:
+            y = copier(x, memo)
+        else:
+            if issubclass(cls, type):
+                y = _deepcopy_atomic(x, memo)
+            else:
+                copier = getattr(x, "__deepcopy__", None)
+                if copier is not None:
+                    y = copier(memo)
+                else:
+                    reductor = dispatch_table.get(cls)
+                    if reductor:
+                        rv = reductor(x)
+                    else:
+                        reductor = getattr(x, "__reduce_ex__", None)
+                        if reductor is not None:
+>                           rv = reductor(4)
+                                 ^^^^^^^^^^^
+E                           TypeError: cannot pickle 'cryptography.hazmat.bindings._rust.openssl.ed25519.Ed25519PublicKey' object
+
+/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/copy.py:151: TypeError
+______________ test_direct_p5_trace_probe_fresh_recompute_passes _______________
+[gw2] linux -- Python 3.12.14 /opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python
+
+    def test_direct_p5_trace_probe_fresh_recompute_passes() -> None:
+>       result = run_p5_direct_trace_probe(repository_root=ROOT)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_structure_two_p5_direct_trace_probe.py:24: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/cpswm/system/evaluation_operations/structure_two_p5_direct_trace_probe.py:341: in run_p5_direct_trace_probe
+    config = json.loads(config_path.read_text(encoding="utf-8"))
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/pathlib.py:1027: in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = PosixPath('/workspace/scratch/b158d995e8cc/cpswm_b4_snapshot/configs/project_two_experiments/structure_two_p5_direct_trace_probe_v0_1.json')
+mode = 'r', buffering = -1, encoding = 'utf-8', errors = None, newline = None
+
+    def open(self, mode='r', buffering=-1, encoding=None,
+             errors=None, newline=None):
+        """
+        Open the file pointed to by this path and return a file object, as
+        the built-in open() function does.
+        """
+        if "b" not in mode:
+            encoding = io.text_encoding(encoding)
+>       return io.open(self, mode, buffering, encoding, errors, newline)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       FileNotFoundError: [Errno 2] No such file or directory: '/workspace/scratch/b158d995e8cc/cpswm_b4_snapshot/configs/project_two_experiments/structure_two_p5_direct_trace_probe_v0_1.json'
+
+/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/pathlib.py:1013: FileNotFoundError
+_____ test_direct_p5_trace_probe_rejects_resigned_trace_projection_tamper ______
+[gw2] linux -- Python 3.12.14 /opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python
+
+    def test_direct_p5_trace_probe_rejects_resigned_trace_projection_tamper() -> None:
+>       result = run_p5_direct_trace_probe(repository_root=ROOT)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_structure_two_p5_direct_trace_probe.py:36: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/cpswm/system/evaluation_operations/structure_two_p5_direct_trace_probe.py:341: in run_p5_direct_trace_probe
+    config = json.loads(config_path.read_text(encoding="utf-8"))
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/pathlib.py:1027: in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = PosixPath('/workspace/scratch/b158d995e8cc/cpswm_b4_snapshot/configs/project_two_experiments/structure_two_p5_direct_trace_probe_v0_1.json')
+mode = 'r', buffering = -1, encoding = 'utf-8', errors = None, newline = None
+
+    def open(self, mode='r', buffering=-1, encoding=None,
+             errors=None, newline=None):
+        """
+        Open the file pointed to by this path and return a file object, as
+        the built-in open() function does.
+        """
+        if "b" not in mode:
+            encoding = io.text_encoding(encoding)
+>       return io.open(self, mode, buffering, encoding, errors, newline)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       FileNotFoundError: [Errno 2] No such file or directory: '/workspace/scratch/b158d995e8cc/cpswm_b4_snapshot/configs/project_two_experiments/structure_two_p5_direct_trace_probe_v0_1.json'
+
+/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/pathlib.py:1013: FileNotFoundError
+______________ test_direct_p5_trace_probe_rejects_claim_promotion ______________
+[gw2] linux -- Python 3.12.14 /opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python
+
+    def test_direct_p5_trace_probe_rejects_claim_promotion() -> None:
+>       result = run_p5_direct_trace_probe(repository_root=ROOT)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_structure_two_p5_direct_trace_probe.py:46: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/cpswm/system/evaluation_operations/structure_two_p5_direct_trace_probe.py:341: in run_p5_direct_trace_probe
+    config = json.loads(config_path.read_text(encoding="utf-8"))
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/pathlib.py:1027: in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = PosixPath('/workspace/scratch/b158d995e8cc/cpswm_b4_snapshot/configs/project_two_experiments/structure_two_p5_direct_trace_probe_v0_1.json')
+mode = 'r', buffering = -1, encoding = 'utf-8', errors = None, newline = None
+
+    def open(self, mode='r', buffering=-1, encoding=None,
+             errors=None, newline=None):
+        """
+        Open the file pointed to by this path and return a file object, as
+        the built-in open() function does.
+        """
+        if "b" not in mode:
+            encoding = io.text_encoding(encoding)
+>       return io.open(self, mode, buffering, encoding, errors, newline)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       FileNotFoundError: [Errno 2] No such file or directory: '/workspace/scratch/b158d995e8cc/cpswm_b4_snapshot/configs/project_two_experiments/structure_two_p5_direct_trace_probe_v0_1.json'
+
+/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/pathlib.py:1013: FileNotFoundError
+__ test_replay_config_is_engineering_only_and_keeps_coverage_limits_explicit ___
+[gw2] linux -- Python 3.12.14 /opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python
+
+    def test_replay_config_is_engineering_only_and_keeps_coverage_limits_explicit() -> None:
+>       config = _load_config(ROOT)
+                 ^^^^^^^^^^^^^^^^^^
+
+tests/test_structure_two_p5_debt_replay_confirmation.py:45: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/cpswm/system/evaluation_operations/structure_two_p5_debt_replay_confirmation.py:94: in _load_config
+    config = json.loads((root / DEFAULT_CONFIG).read_text(encoding="utf-8"))
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/pathlib.py:1027: in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = PosixPath('/workspace/scratch/b158d995e8cc/cpswm_b4_snapshot/configs/project_two_experiments/structure_two_p5_debt_replay_confirmation_v0_1.json')
+mode = 'r', buffering = -1, encoding = 'utf-8', errors = None, newline = None
+
+    def open(self, mode='r', buffering=-1, encoding=None,
+             errors=None, newline=None):
+        """
+        Open the file pointed to by this path and return a file object, as
+        the built-in open() function does.
+        """
+        if "b" not in mode:
+            encoding = io.text_encoding(encoding)
+>       return io.open(self, mode, buffering, encoding, errors, newline)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       FileNotFoundError: [Errno 2] No such file or directory: '/workspace/scratch/b158d995e8cc/cpswm_b4_snapshot/configs/project_two_experiments/structure_two_p5_debt_replay_confirmation_v0_1.json'
+
+/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/pathlib.py:1013: FileNotFoundError
+____ test_one_positive_transition_matches_direct_and_production_debt_replay ____
+[gw2] linux -- Python 3.12.14 /opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python
+
+    def test_one_positive_transition_matches_direct_and_production_debt_replay() -> None:
+>       retained = _load_retained_config(ROOT)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_structure_two_p5_debt_replay_confirmation.py:59: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/cpswm/system/evaluation_operations/structure_two_p5_three_arm_death_test.py:1457: in _load_config
+    config = json.loads((root / DEFAULT_CONFIG).read_text(encoding="utf-8"))
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/pathlib.py:1027: in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = PosixPath('/workspace/scratch/b158d995e8cc/cpswm_b4_snapshot/configs/project_two_experiments/structure_two_p5_three_arm_death_test_v0_1.json')
+mode = 'r', buffering = -1, encoding = 'utf-8', errors = None, newline = None
+
+    def open(self, mode='r', buffering=-1, encoding=None,
+             errors=None, newline=None):
+        """
+        Open the file pointed to by this path and return a file object, as
+        the built-in open() function does.
+        """
+        if "b" not in mode:
+            encoding = io.text_encoding(encoding)
+>       return io.open(self, mode, buffering, encoding, errors, newline)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       FileNotFoundError: [Errno 2] No such file or directory: '/workspace/scratch/b158d995e8cc/cpswm_b4_snapshot/configs/project_two_experiments/structure_two_p5_three_arm_death_test_v0_1.json'
+
+/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/pathlib.py:1013: FileNotFoundError
+_____ test_different_location_feedback_has_representable_time_and_replays ______
+[gw2] linux -- Python 3.12.14 /opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python
+
+    def test_different_location_feedback_has_representable_time_and_replays() -> None:
+>       retained = _load_retained_config(ROOT)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_structure_two_p5_debt_replay_confirmation.py:93: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/cpswm/system/evaluation_operations/structure_two_p5_three_arm_death_test.py:1457: in _load_config
+    config = json.loads((root / DEFAULT_CONFIG).read_text(encoding="utf-8"))
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/pathlib.py:1027: in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = PosixPath('/workspace/scratch/b158d995e8cc/cpswm_b4_snapshot/configs/project_two_experiments/structure_two_p5_three_arm_death_test_v0_1.json')
+mode = 'r', buffering = -1, encoding = 'utf-8', errors = None, newline = None
+
+    def open(self, mode='r', buffering=-1, encoding=None,
+             errors=None, newline=None):
+        """
+        Open the file pointed to by this path and return a file object, as
+        the built-in open() function does.
+        """
+        if "b" not in mode:
+            encoding = io.text_encoding(encoding)
+>       return io.open(self, mode, buffering, encoding, errors, newline)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       FileNotFoundError: [Errno 2] No such file or directory: '/workspace/scratch/b158d995e8cc/cpswm_b4_snapshot/configs/project_two_experiments/structure_two_p5_three_arm_death_test_v0_1.json'
+
+/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/pathlib.py:1013: FileNotFoundError
+___________ test_artifact_numeric_forgery_fails_fresh_recomputation ____________
+[gw2] linux -- Python 3.12.14 /opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f9ed65405f0>
+
+    def test_artifact_numeric_forgery_fails_fresh_recomputation(monkeypatch) -> None:
+        retained = {
+            "schema_version": replay_module.SCHEMA_VERSION,
+            "protocol_id": PROTOCOL_ID,
+            "status": "PRODUCTION_DEBT_REPLAY_SEMANTIC_EQUIVALENCE_CONFIRMED",
+            "claim_boundary": CLAIM_BOUNDARY,
+            "source_binding": replay_module._source_binding(
+                ROOT,
+>               replay_module._load_config(ROOT),
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+            ),
+            "data_scope": {
+                "evaluator_truth_access_count": 0,
+                "positive_transition_count": 1,
+            },
+            "equivalence_audit": {
+                "all_required_checks_passed": True,
+                "failed_transition_count": 0,
+            },
+            "search_or_put_back_scientific_signal_retested": False,
+            "retained_v0_1_failure_overwritten": False,
+            "positive_scientific_receipt_issued": False,
+            "adaptive_router_calibration_validated": False,
+            "task_7_8_9_passed": False,
+            "external_validity_established": False,
+        }
+
+tests/test_structure_two_p5_debt_replay_confirmation.py:168: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/cpswm/system/evaluation_operations/structure_two_p5_debt_replay_confirmation.py:94: in _load_config
+    config = json.loads((root / DEFAULT_CONFIG).read_text(encoding="utf-8"))
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/pathlib.py:1027: in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = PosixPath('/workspace/scratch/b158d995e8cc/cpswm_b4_snapshot/configs/project_two_experiments/structure_two_p5_debt_replay_confirmation_v0_1.json')
+mode = 'r', buffering = -1, encoding = 'utf-8', errors = None, newline = None
+
+    def open(self, mode='r', buffering=-1, encoding=None,
+             errors=None, newline=None):
+        """
+        Open the file pointed to by this path and return a file object, as
+        the built-in open() function does.
+        """
+        if "b" not in mode:
+            encoding = io.text_encoding(encoding)
+>       return io.open(self, mode, buffering, encoding, errors, newline)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       FileNotFoundError: [Errno 2] No such file or directory: '/workspace/scratch/b158d995e8cc/cpswm_b4_snapshot/configs/project_two_experiments/structure_two_p5_debt_replay_confirmation_v0_1.json'
+
+/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/pathlib.py:1013: FileNotFoundError
+______ test_production_assembly_manifest_recomputes_every_source_binding _______
+[gw0] linux -- Python 3.12.14 /opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python
+
+    def test_production_assembly_manifest_recomputes_every_source_binding() -> None:
+>       manifest = build_production_assembly_manifest(ROOT)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_structure_two_production_system.py:99: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+repository_root = PosixPath('/workspace/scratch/b158d995e8cc/cpswm_b4_snapshot')
+
+    def build_production_assembly_manifest(repository_root: Path) -> dict[str, Any]:
+        """Bind the complete operator graph, transitive sources, and environment lock."""
+    
+        root = repository_root.resolve()
+        runtime = StructureTwoProductionSystem(
+            owner_key="production-manifest-owner",
+            object_instance_id=UUID("00000000-0000-4000-8000-000000000201"),
+            locations=(
+                UUID("00000000-0000-4000-8000-000000000211"),
+                UUID("00000000-0000-4000-8000-000000000212"),
+                UUID("00000000-0000-4000-8000-000000000213"),
+            ),
+            authorization_scope_id=UUID("00000000-0000-4000-8000-000000000221"),
+        )
+        runtime.verify_runtime_assembly()
+        runtime_instances = runtime.runtime_operator_instances()
+        rows: list[dict[str, Any]] = []
+        for binding in PRODUCTION_OPERATOR_BINDINGS:
+            if len(binding.implementation_symbols) != len(binding.source_paths):
+                raise ValueError(f"production binding arity mismatch: {binding.operator}")
+            sources = []
+            runtime_types = [
+                f"{type(item).__module__}.{type(item).__qualname__}"
+                for item in runtime_instances[binding.operator]
+            ]
+            for qualified_name, source_path_text in zip(
+                binding.implementation_symbols,
+                binding.source_paths,
+                strict=True,
+            ):
+                symbol = _resolve_symbol(qualified_name)
+                if f"{symbol.__module__}.{symbol.__qualname__}" not in runtime_types:
+                    raise ValueError(f"production runtime does not own bound symbol: {qualified_name}")
+                source_path = Path(source_path_text)
+                resolved = (root / source_path).resolve()
+                if (
+                    source_path.is_absolute()
+                    or ".." in source_path.parts
+                    or not resolved.is_relative_to(root)
+                    or not resolved.is_file()
+                ):
+                    raise ValueError(f"production source is not repository-local: {source_path}")
+                sources.append({"path": source_path_text, "sha256": _file_sha256(resolved)})
+            rows.append(
+                {
+                    "operator": binding.operator,
+                    "runtime_types": runtime_types,
+                    "sources": sources,
+                    "consumes": list(binding.consumes),
+                    "produces": list(binding.produces),
+                }
+            )
+        backbone_paths = (
+            "src/cpswm/system/structure_two_production_system.py",
+            "src/cpswm/system/structure_two_execution.py",
+            "src/cpswm/system/prototype_spine.py",
+            "src/cpswm/system/continual/project_one_regime_loop.py",
+        )
+        transitive_source_paths = tuple(
+            path.relative_to(root).as_posix() for path in sorted((root / "src/cpswm").rglob("*.py"))
+        )
+        transitive_source_rows = [
+            {"path": path, "sha256": _file_sha256(root / path)} for path in transitive_source_paths
+        ]
+        environment_lock_paths = ("pyproject.toml", "uv.lock")
+        if any(not (root / path).is_file() for path in environment_lock_paths):
+>           raise FileNotFoundError("production environment lock source is missing")
+E           FileNotFoundError: production environment lock source is missing
+
+src/cpswm/system/structure_two_production_system.py:405: FileNotFoundError
+___________ test_forged_but_complete_production_manifest_is_rejected ___________
+[gw0] linux -- Python 3.12.14 /opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python
+
+    def test_forged_but_complete_production_manifest_is_rejected() -> None:
+>       forged = copy.deepcopy(build_production_assembly_manifest(ROOT))
+                               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_structure_two_production_system.py:135: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+repository_root = PosixPath('/workspace/scratch/b158d995e8cc/cpswm_b4_snapshot')
+
+    def build_production_assembly_manifest(repository_root: Path) -> dict[str, Any]:
+        """Bind the complete operator graph, transitive sources, and environment lock."""
+    
+        root = repository_root.resolve()
+        runtime = StructureTwoProductionSystem(
+            owner_key="production-manifest-owner",
+            object_instance_id=UUID("00000000-0000-4000-8000-000000000201"),
+            locations=(
+                UUID("00000000-0000-4000-8000-000000000211"),
+                UUID("00000000-0000-4000-8000-000000000212"),
+                UUID("00000000-0000-4000-8000-000000000213"),
+            ),
+            authorization_scope_id=UUID("00000000-0000-4000-8000-000000000221"),
+        )
+        runtime.verify_runtime_assembly()
+        runtime_instances = runtime.runtime_operator_instances()
+        rows: list[dict[str, Any]] = []
+        for binding in PRODUCTION_OPERATOR_BINDINGS:
+            if len(binding.implementation_symbols) != len(binding.source_paths):
+                raise ValueError(f"production binding arity mismatch: {binding.operator}")
+            sources = []
+            runtime_types = [
+                f"{type(item).__module__}.{type(item).__qualname__}"
+                for item in runtime_instances[binding.operator]
+            ]
+            for qualified_name, source_path_text in zip(
+                binding.implementation_symbols,
+                binding.source_paths,
+                strict=True,
+            ):
+                symbol = _resolve_symbol(qualified_name)
+                if f"{symbol.__module__}.{symbol.__qualname__}" not in runtime_types:
+                    raise ValueError(f"production runtime does not own bound symbol: {qualified_name}")
+                source_path = Path(source_path_text)
+                resolved = (root / source_path).resolve()
+                if (
+                    source_path.is_absolute()
+                    or ".." in source_path.parts
+                    or not resolved.is_relative_to(root)
+                    or not resolved.is_file()
+                ):
+                    raise ValueError(f"production source is not repository-local: {source_path}")
+                sources.append({"path": source_path_text, "sha256": _file_sha256(resolved)})
+            rows.append(
+                {
+                    "operator": binding.operator,
+                    "runtime_types": runtime_types,
+                    "sources": sources,
+                    "consumes": list(binding.consumes),
+                    "produces": list(binding.produces),
+                }
+            )
+        backbone_paths = (
+            "src/cpswm/system/structure_two_production_system.py",
+            "src/cpswm/system/structure_two_execution.py",
+            "src/cpswm/system/prototype_spine.py",
+            "src/cpswm/system/continual/project_one_regime_loop.py",
+        )
+        transitive_source_paths = tuple(
+            path.relative_to(root).as_posix() for path in sorted((root / "src/cpswm").rglob("*.py"))
+        )
+        transitive_source_rows = [
+            {"path": path, "sha256": _file_sha256(root / path)} for path in transitive_source_paths
+        ]
+        environment_lock_paths = ("pyproject.toml", "uv.lock")
+        if any(not (root / path).is_file() for path in environment_lock_paths):
+>           raise FileNotFoundError("production environment lock source is missing")
+E           FileNotFoundError: production environment lock source is missing
+
+src/cpswm/system/structure_two_production_system.py:405: FileNotFoundError
+_ test_sink_cannot_replace_registered_pchmp_delegate_and_rollback_preserves_identity _
+[gw0] linux -- Python 3.12.14 /opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python
+
+    def test_sink_cannot_replace_registered_pchmp_delegate_and_rollback_preserves_identity() -> None:
+        message_passing = PriorOnlyMessagePassing()
+        authority = Ed25519AttestationSigner.generate(key_id="delegate-key").verifier()
+        message_passing._delegate._independence_authority = authority
+        system, transition = _system_and_transition(message_passing=message_passing)
+        before = _state_fingerprint(system)
+        original_delegate = message_passing._delegate
+        replacement_delegate = ProvenanceConstrainedMessagePassing(independence_authority=authority)
+    
+        class DelegateReplacingSink(RecordingSink):
+            def commit(self, trace: StructureTwoExecutionTrace, /) -> TraceCommitAck:
+                acknowledgement = super().commit(trace)
+                message_passing._delegate = replacement_delegate
+                return acknowledgement
+    
+        sink = DelegateReplacingSink()
+        with pytest.raises(RuntimeError, match="replaced an audited runtime component"):
+>           system.process_transition(
+                transition,
+                execution_plan=canonical_legacy_ordinary_transition_plan(),
+                trace_sink=sink,
+            )
+
+tests/test_structure_two_execution_interface.py:264: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/cpswm/system/structure_two_production_system.py:1054: in process_transition
+    checkpoint = self._capture_execution_wrapper_state()
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/cpswm/system/structure_two_production_system.py:1824: in _capture_execution_wrapper_state
+    "fields": deepcopy(dict(vars(component))),
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/copy.py:136: in deepcopy
+    y = copier(x, memo)
+        ^^^^^^^^^^^^^^^
+/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/copy.py:221: in _deepcopy_dict
+    y[deepcopy(key, memo)] = deepcopy(value, memo)
+                             ^^^^^^^^^^^^^^^^^^^^^
+/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/copy.py:162: in deepcopy
+    y = _reconstruct(x, memo, *rv)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^
+/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/copy.py:259: in _reconstruct
+    state = deepcopy(state, memo)
+            ^^^^^^^^^^^^^^^^^^^^^
+/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/copy.py:136: in deepcopy
+    y = copier(x, memo)
+        ^^^^^^^^^^^^^^^
+/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/copy.py:221: in _deepcopy_dict
+    y[deepcopy(key, memo)] = deepcopy(value, memo)
+                             ^^^^^^^^^^^^^^^^^^^^^
+/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/copy.py:162: in deepcopy
+    y = _reconstruct(x, memo, *rv)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^
+/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/copy.py:259: in _reconstruct
+    state = deepcopy(state, memo)
+            ^^^^^^^^^^^^^^^^^^^^^
+/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/copy.py:136: in deepcopy
+    y = copier(x, memo)
+        ^^^^^^^^^^^^^^^
+/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/copy.py:221: in _deepcopy_dict
+    y[deepcopy(key, memo)] = deepcopy(value, memo)
+                             ^^^^^^^^^^^^^^^^^^^^^
+/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/copy.py:162: in deepcopy
+    y = _reconstruct(x, memo, *rv)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^
+/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/copy.py:259: in _reconstruct
+    state = deepcopy(state, memo)
+            ^^^^^^^^^^^^^^^^^^^^^
+/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/copy.py:136: in deepcopy
+    y = copier(x, memo)
+        ^^^^^^^^^^^^^^^
+/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/copy.py:221: in _deepcopy_dict
+    y[deepcopy(key, memo)] = deepcopy(value, memo)
+                             ^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+x = <cryptography.hazmat.bindings._rust.openssl.ed25519.Ed25519PublicKey object at 0x7ffa4a329a50>
+memo = {140712965649856: {'_projector': <cpswm.system.continual.execution_feedback_projector.ExecutionFeedbackProjector objec...ojector.ExecutionFeedbackProjector object at 0x7ffa497ffbf0>, 140712964216256: {'_seen': {}}, 140712962399616: {}, ...}
+_nil = []
+
+    def deepcopy(x, memo=None, _nil=[]):
+        """Deep copy operation on arbitrary Python objects.
+    
+        See the module's __doc__ string for more info.
+        """
+    
+        if memo is None:
+            memo = {}
+    
+        d = id(x)
+        y = memo.get(d, _nil)
+        if y is not _nil:
+            return y
+    
+        cls = type(x)
+    
+        copier = _deepcopy_dispatch.get(cls)
+        if copier is not None:
+            y = copier(x, memo)
+        else:
+            if issubclass(cls, type):
+                y = _deepcopy_atomic(x, memo)
+            else:
+                copier = getattr(x, "__deepcopy__", None)
+                if copier is not None:
+                    y = copier(memo)
+                else:
+                    reductor = dispatch_table.get(cls)
+                    if reductor:
+                        rv = reductor(x)
+                    else:
+                        reductor = getattr(x, "__reduce_ex__", None)
+                        if reductor is not None:
+>                           rv = reductor(4)
+                                 ^^^^^^^^^^^
+E                           TypeError: cannot pickle 'cryptography.hazmat.bindings._rust.openssl.ed25519.Ed25519PublicKey' object
+
+/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/copy.py:151: TypeError
+_____ test_sink_cannot_mutate_registered_pchmp_delegate_authority_in_place _____
+[gw0] linux -- Python 3.12.14 /opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python
+
+    def test_sink_cannot_mutate_registered_pchmp_delegate_authority_in_place() -> None:
+        message_passing = PriorOnlyMessagePassing()
+        authority = Ed25519AttestationSigner.generate(key_id="delegate-key").verifier()
+        replacement = Ed25519AttestationSigner.generate(key_id="delegate-key").verifier()
+        message_passing._delegate._independence_authority = authority
+        system, transition = _system_and_transition(message_passing=message_passing)
+        before = _state_fingerprint(system)
+        original_public_key_sha256 = authority.public_key_sha256
+    
+        class DelegateAuthorityMutatingSink(RecordingSink):
+            def commit(self, trace: StructureTwoExecutionTrace, /) -> TraceCommitAck:
+                acknowledgement = super().commit(trace)
+                authority._public_key = replacement._public_key
+                return acknowledgement
+    
+        sink = DelegateAuthorityMutatingSink()
+        with pytest.raises(RuntimeError, match="mutated audited core state"):
+>           system.process_transition(
+                transition,
+                execution_plan=canonical_legacy_ordinary_transition_plan(),
+                trace_sink=sink,
+            )
+
+tests/test_structure_two_execution_interface.py:296: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/cpswm/system/structure_two_production_system.py:1054: in process_transition
+    checkpoint = self._capture_execution_wrapper_state()
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/cpswm/system/structure_two_production_system.py:1824: in _capture_execution_wrapper_state
+    "fields": deepcopy(dict(vars(component))),
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/copy.py:136: in deepcopy
+    y = copier(x, memo)
+        ^^^^^^^^^^^^^^^
+/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/copy.py:221: in _deepcopy_dict
+    y[deepcopy(key, memo)] = deepcopy(value, memo)
+                             ^^^^^^^^^^^^^^^^^^^^^
+/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/copy.py:162: in deepcopy
+    y = _reconstruct(x, memo, *rv)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^
+/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/copy.py:259: in _reconstruct
+    state = deepcopy(state, memo)
+            ^^^^^^^^^^^^^^^^^^^^^
+/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/copy.py:136: in deepcopy
+    y = copier(x, memo)
+        ^^^^^^^^^^^^^^^
+/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/copy.py:221: in _deepcopy_dict
+    y[deepcopy(key, memo)] = deepcopy(value, memo)
+                             ^^^^^^^^^^^^^^^^^^^^^
+/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/copy.py:162: in deepcopy
+    y = _reconstruct(x, memo, *rv)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^
+/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/copy.py:259: in _reconstruct
+    state = deepcopy(state, memo)
+            ^^^^^^^^^^^^^^^^^^^^^
+/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/copy.py:136: in deepcopy
+    y = copier(x, memo)
+        ^^^^^^^^^^^^^^^
+/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/copy.py:221: in _deepcopy_dict
+    y[deepcopy(key, memo)] = deepcopy(value, memo)
+                             ^^^^^^^^^^^^^^^^^^^^^
+/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/copy.py:162: in deepcopy
+    y = _reconstruct(x, memo, *rv)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^
+/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/copy.py:259: in _reconstruct
+    state = deepcopy(state, memo)
+            ^^^^^^^^^^^^^^^^^^^^^
+/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/copy.py:136: in deepcopy
+    y = copier(x, memo)
+        ^^^^^^^^^^^^^^^
+/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/copy.py:221: in _deepcopy_dict
+    y[deepcopy(key, memo)] = deepcopy(value, memo)
+                             ^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+x = <cryptography.hazmat.bindings._rust.openssl.ed25519.Ed25519PublicKey object at 0x7ffa48f5fb50>
+memo = {140713000988224: {'_projector': <cpswm.system.continual.execution_feedback_projector.ExecutionFeedbackProjector objec...ojector.ExecutionFeedbackProjector object at 0x7ffa4a461a60>, 140712963893760: {'_seen': {}}, 140712961997312: {}, ...}
+_nil = []
+
+    def deepcopy(x, memo=None, _nil=[]):
+        """Deep copy operation on arbitrary Python objects.
+    
+        See the module's __doc__ string for more info.
+        """
+    
+        if memo is None:
+            memo = {}
+    
+        d = id(x)
+        y = memo.get(d, _nil)
+        if y is not _nil:
+            return y
+    
+        cls = type(x)
+    
+        copier = _deepcopy_dispatch.get(cls)
+        if copier is not None:
+            y = copier(x, memo)
+        else:
+            if issubclass(cls, type):
+                y = _deepcopy_atomic(x, memo)
+            else:
+                copier = getattr(x, "__deepcopy__", None)
+                if copier is not None:
+                    y = copier(memo)
+                else:
+                    reductor = dispatch_table.get(cls)
+                    if reductor:
+                        rv = reductor(x)
+                    else:
+                        reductor = getattr(x, "__reduce_ex__", None)
+                        if reductor is not None:
+>                           rv = reductor(4)
+                                 ^^^^^^^^^^^
+E                           TypeError: cannot pickle 'cryptography.hazmat.bindings._rust.openssl.ed25519.Ed25519PublicKey' object
+
+/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/copy.py:151: TypeError
+__________ test_the_frozen_clauses_this_file_depends_on_are_unchanged __________
+[gw3] linux -- Python 3.12.14 /opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python
+
+    def test_the_frozen_clauses_this_file_depends_on_are_unchanged() -> None:
+>       frozen = _frozen()
+                 ^^^^^^^^^
+
+tests/test_structure_two_p0_maintenance_fault_injection.py:102: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+    def _frozen() -> dict[str, Any]:
+        for candidate in (Path.cwd(), *Path(__file__).resolve().parents):
+            path = candidate / PREDEATH_CONFIG
+            if path.is_file():
+                return json.loads(path.read_text(encoding="utf-8"))
+>       raise AssertionError("frozen pre-death protocol config not found")
+E       AssertionError: frozen pre-death protocol config not found
+
+tests/test_structure_two_p0_maintenance_fault_injection.py:59: AssertionError
+____________ test_the_frozen_write_authority_clauses_are_unchanged _____________
+[gw3] linux -- Python 3.12.14 /opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python
+
+    def test_the_frozen_write_authority_clauses_are_unchanged() -> None:
+>       kernel = _frozen()["hard_safety_kernel"]
+                 ^^^^^^^^^
+
+tests/test_structure_two_formal_revision_lineage.py:252: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+    def _frozen() -> dict[str, Any]:
+        for candidate in (Path.cwd(), *Path(__file__).resolve().parents):
+            path = candidate / PREDEATH_CONFIG
+            if path.is_file():
+                return json.loads(path.read_text(encoding="utf-8"))
+>       raise AssertionError("frozen pre-death protocol config not found")
+E       AssertionError: frozen pre-death protocol config not found
+
+tests/test_structure_two_formal_revision_lineage.py:71: AssertionError
+___ test_selected_method_receipt_freezes_scope_authority_and_unresolved_work ___
+[gw3] linux -- Python 3.12.14 /opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python
+
+    def test_selected_method_receipt_freezes_scope_authority_and_unresolved_work() -> None:
+>       selection = StructureTwoSelectedMethod.load(CONFIG)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_structure_two_selected_method.py:98: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/cpswm/system/evaluation_operations/structure_two_selected_method.py:247: in load
+    return cls.model_validate(json.loads(path.read_text(encoding="utf-8")))
+                                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/pathlib.py:1027: in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = PosixPath('/workspace/scratch/b158d995e8cc/cpswm_b4_snapshot/configs/project_two_experiments/structure_two_selected_method_v0_1.json')
+mode = 'r', buffering = -1, encoding = 'utf-8', errors = None, newline = None
+
+    def open(self, mode='r', buffering=-1, encoding=None,
+             errors=None, newline=None):
+        """
+        Open the file pointed to by this path and return a file object, as
+        the built-in open() function does.
+        """
+        if "b" not in mode:
+            encoding = io.text_encoding(encoding)
+>       return io.open(self, mode, buffering, encoding, errors, newline)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       FileNotFoundError: [Errno 2] No such file or directory: '/workspace/scratch/b158d995e8cc/cpswm_b4_snapshot/configs/project_two_experiments/structure_two_selected_method_v0_1.json'
+
+/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/pathlib.py:1013: FileNotFoundError
+____ test_selected_method_rejects_scope_narrowing_and_authority_escalation _____
+[gw3] linux -- Python 3.12.14 /opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python
+
+    def test_selected_method_rejects_scope_narrowing_and_authority_escalation() -> None:
+>       payload = StructureTwoSelectedMethod.load(CONFIG).model_dump(mode="python")
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_structure_two_selected_method.py:110: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/cpswm/system/evaluation_operations/structure_two_selected_method.py:247: in load
+    return cls.model_validate(json.loads(path.read_text(encoding="utf-8")))
+                                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/pathlib.py:1027: in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = PosixPath('/workspace/scratch/b158d995e8cc/cpswm_b4_snapshot/configs/project_two_experiments/structure_two_selected_method_v0_1.json')
+mode = 'r', buffering = -1, encoding = 'utf-8', errors = None, newline = None
+
+    def open(self, mode='r', buffering=-1, encoding=None,
+             errors=None, newline=None):
+        """
+        Open the file pointed to by this path and return a file object, as
+        the built-in open() function does.
+        """
+        if "b" not in mode:
+            encoding = io.text_encoding(encoding)
+>       return io.open(self, mode, buffering, encoding, errors, newline)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       FileNotFoundError: [Errno 2] No such file or directory: '/workspace/scratch/b158d995e8cc/cpswm_b4_snapshot/configs/project_two_experiments/structure_two_selected_method_v0_1.json'
+
+/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/pathlib.py:1013: FileNotFoundError
+________ test_stage_local_forgetting_factor_rejects_every_value_but_one ________
+[gw3] linux -- Python 3.12.14 /opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python
+
+    def test_stage_local_forgetting_factor_rejects_every_value_but_one() -> None:
+        """The frozen method fixes within-regime forgetting at 1.0.
+    
+        The RLS runtime itself admits ``(0, 1]``.  Widening this receipt field to
+        that range would silently reopen a frozen design decision -- stage change is
+        handled by explicit regime competition, not by unsourced exponential decay.
+        """
+    
+        from cpswm.system.evaluation_operations.structure_two_selected_method import (
+            FROZEN_STAGE_LOCAL_FORGETTING_FACTOR,
+        )
+    
+>       payload = StructureTwoSelectedMethod.load(CONFIG).model_dump(mode="python")
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_structure_two_selected_method.py:213: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/cpswm/system/evaluation_operations/structure_two_selected_method.py:247: in load
+    return cls.model_validate(json.loads(path.read_text(encoding="utf-8")))
+                                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/pathlib.py:1027: in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = PosixPath('/workspace/scratch/b158d995e8cc/cpswm_b4_snapshot/configs/project_two_experiments/structure_two_selected_method_v0_1.json')
+mode = 'r', buffering = -1, encoding = 'utf-8', errors = None, newline = None
+
+    def open(self, mode='r', buffering=-1, encoding=None,
+             errors=None, newline=None):
+        """
+        Open the file pointed to by this path and return a file object, as
+        the built-in open() function does.
+        """
+        if "b" not in mode:
+            encoding = io.text_encoding(encoding)
+>       return io.open(self, mode, buffering, encoding, errors, newline)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       FileNotFoundError: [Errno 2] No such file or directory: '/workspace/scratch/b158d995e8cc/cpswm_b4_snapshot/configs/project_two_experiments/structure_two_selected_method_v0_1.json'
+
+/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/pathlib.py:1013: FileNotFoundError
+_____ test_stage_local_forgetting_factor_is_bound_to_the_runtime_defaults ______
+[gw3] linux -- Python 3.12.14 /opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python
+
+    def test_stage_local_forgetting_factor_is_bound_to_the_runtime_defaults() -> None:
+        """The receipt field is enforced, not decorative JSON.
+    
+        Before this binding the value appeared only in the selection contract and
+        the config file; nothing downstream read it, so the runtime could have
+        drifted to any admissible forgetting factor without a single test failing.
+        """
+    
+        from cpswm.system.evaluation_operations.structure_two_selected_method import (
+            STAGE_LOCAL_FORGETTING_RUNTIME_BINDINGS,
+            verify_stage_local_forgetting_runtime_binding,
+        )
+    
+>       selection = StructureTwoSelectedMethod.load(CONFIG)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_structure_two_selected_method.py:238: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/cpswm/system/evaluation_operations/structure_two_selected_method.py:247: in load
+    return cls.model_validate(json.loads(path.read_text(encoding="utf-8")))
+                                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/pathlib.py:1027: in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = PosixPath('/workspace/scratch/b158d995e8cc/cpswm_b4_snapshot/configs/project_two_experiments/structure_two_selected_method_v0_1.json')
+mode = 'r', buffering = -1, encoding = 'utf-8', errors = None, newline = None
+
+    def open(self, mode='r', buffering=-1, encoding=None,
+             errors=None, newline=None):
+        """
+        Open the file pointed to by this path and return a file object, as
+        the built-in open() function does.
+        """
+        if "b" not in mode:
+            encoding = io.text_encoding(encoding)
+>       return io.open(self, mode, buffering, encoding, errors, newline)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       FileNotFoundError: [Errno 2] No such file or directory: '/workspace/scratch/b158d995e8cc/cpswm_b4_snapshot/configs/project_two_experiments/structure_two_selected_method_v0_1.json'
+
+/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/pathlib.py:1013: FileNotFoundError
+___ test_clarifying_the_forgetting_contract_did_not_move_the_receipt_hashes ____
+[gw3] linux -- Python 3.12.14 /opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python
+
+    def test_clarifying_the_forgetting_contract_did_not_move_the_receipt_hashes() -> None:
+        """Retuning would need a new receipt version, never a rehash of this one.
+    
+        Task 9, the authorization DAG and the backbone open-task protocol pin both
+        the receipt's file hash and its content hash.  Making the contract more
+        explicit must leave both untouched; a changed value would have to arrive as
+        a new receipt version with its own binding-resolution protocol.
+        """
+    
+        import hashlib
+    
+        from cpswm.system.evaluation_operations.structure_two_backbone_open_task_protocols import (
+            SELECTED_METHOD_RECEIPT_CONTENT_SHA256 as BACKBONE_CONTENT_SHA256,
+        )
+        from cpswm.system.evaluation_operations.structure_two_task9_protocol import (
+            SELECTED_METHOD_RECEIPT_CONTENT_SHA256,
+            SELECTED_METHOD_RECEIPT_FILE_SHA256,
+        )
+    
+>       selection = StructureTwoSelectedMethod.load(CONFIG)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_structure_two_selected_method.py:266: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/cpswm/system/evaluation_operations/structure_two_selected_method.py:247: in load
+    return cls.model_validate(json.loads(path.read_text(encoding="utf-8")))
+                                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/pathlib.py:1027: in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = PosixPath('/workspace/scratch/b158d995e8cc/cpswm_b4_snapshot/configs/project_two_experiments/structure_two_selected_method_v0_1.json')
+mode = 'r', buffering = -1, encoding = 'utf-8', errors = None, newline = None
+
+    def open(self, mode='r', buffering=-1, encoding=None,
+             errors=None, newline=None):
+        """
+        Open the file pointed to by this path and return a file object, as
+        the built-in open() function does.
+        """
+        if "b" not in mode:
+            encoding = io.text_encoding(encoding)
+>       return io.open(self, mode, buffering, encoding, errors, newline)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       FileNotFoundError: [Errno 2] No such file or directory: '/workspace/scratch/b158d995e8cc/cpswm_b4_snapshot/configs/project_two_experiments/structure_two_selected_method_v0_1.json'
+
+/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/pathlib.py:1013: FileNotFoundError
+___ test_falsifier_runs_all_non_neural_arms_and_keeps_neural_arm_fail_closed ___
+[gw3] linux -- Python 3.12.14 /opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python
+
+    def test_falsifier_runs_all_non_neural_arms_and_keeps_neural_arm_fail_closed() -> None:
+>       report = run_exact_enumeration_falsifier(particle_budget=24, bootstrap_seed=8701)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_structure_two_particle_falsifier.py:41: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/cpswm/system/evaluation_operations/structure_two_particle_falsifier.py:719: in run_exact_enumeration_falsifier
+    "selected_method_receipt_file_sha256": _file_sha256(selected_method_receipt),
+                                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/cpswm/system/evaluation_operations/structure_two_particle_falsifier.py:44: in _file_sha256
+    return hashlib.sha256(path.read_bytes()).hexdigest()
+                          ^^^^^^^^^^^^^^^^^
+/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/pathlib.py:1019: in read_bytes
+    with self.open(mode='rb') as f:
+         ^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = PosixPath('/workspace/scratch/b158d995e8cc/cpswm_b4_snapshot/configs/project_two_experiments/structure_two_selected_method_v0_1.json')
+mode = 'rb', buffering = -1, encoding = None, errors = None, newline = None
+
+    def open(self, mode='r', buffering=-1, encoding=None,
+             errors=None, newline=None):
+        """
+        Open the file pointed to by this path and return a file object, as
+        the built-in open() function does.
+        """
+        if "b" not in mode:
+            encoding = io.text_encoding(encoding)
+>       return io.open(self, mode, buffering, encoding, errors, newline)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       FileNotFoundError: [Errno 2] No such file or directory: '/workspace/scratch/b158d995e8cc/cpswm_b4_snapshot/configs/project_two_experiments/structure_two_selected_method_v0_1.json'
+
+/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/pathlib.py:1013: FileNotFoundError
+_____ test_typed_revision_passes_registered_development_conformance_gates ______
+[gw3] linux -- Python 3.12.14 /opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python
+
+    def test_typed_revision_passes_registered_development_conformance_gates() -> None:
+>       report = run_exact_enumeration_falsifier(particle_budget=24, bootstrap_seed=8701)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_structure_two_particle_falsifier.py:53: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/cpswm/system/evaluation_operations/structure_two_particle_falsifier.py:719: in run_exact_enumeration_falsifier
+    "selected_method_receipt_file_sha256": _file_sha256(selected_method_receipt),
+                                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/cpswm/system/evaluation_operations/structure_two_particle_falsifier.py:44: in _file_sha256
+    return hashlib.sha256(path.read_bytes()).hexdigest()
+                          ^^^^^^^^^^^^^^^^^
+/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/pathlib.py:1019: in read_bytes
+    with self.open(mode='rb') as f:
+         ^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = PosixPath('/workspace/scratch/b158d995e8cc/cpswm_b4_snapshot/configs/project_two_experiments/structure_two_selected_method_v0_1.json')
+mode = 'rb', buffering = -1, encoding = None, errors = None, newline = None
+
+    def open(self, mode='r', buffering=-1, encoding=None,
+             errors=None, newline=None):
+        """
+        Open the file pointed to by this path and return a file object, as
+        the built-in open() function does.
+        """
+        if "b" not in mode:
+            encoding = io.text_encoding(encoding)
+>       return io.open(self, mode, buffering, encoding, errors, newline)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       FileNotFoundError: [Errno 2] No such file or directory: '/workspace/scratch/b158d995e8cc/cpswm_b4_snapshot/configs/project_two_experiments/structure_two_selected_method_v0_1.json'
+
+/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/pathlib.py:1013: FileNotFoundError
+__________ test_design_freezes_disjoint_train_validation_and_holdout ___________
+[gw3] linux -- Python 3.12.14 /opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python
+
+    def test_design_freezes_disjoint_train_validation_and_holdout() -> None:
+>       design = load_frozen_neural_design(ROOT / DEFAULT_MANIFEST)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_structure_two_neural_amortized.py:57: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/cpswm/system/evaluation_operations/structure_two_neural_amortized.py:214: in load_frozen_neural_design
+    payload = json.loads(manifest_path.read_text(encoding="utf-8"))
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/pathlib.py:1027: in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = PosixPath('/workspace/scratch/b158d995e8cc/cpswm_b4_snapshot/configs/project_two_experiments/structure_two_neural_amortized_manifest_v0_1.json')
+mode = 'r', buffering = -1, encoding = 'utf-8', errors = None, newline = None
+
+    def open(self, mode='r', buffering=-1, encoding=None,
+             errors=None, newline=None):
+        """
+        Open the file pointed to by this path and return a file object, as
+        the built-in open() function does.
+        """
+        if "b" not in mode:
+            encoding = io.text_encoding(encoding)
+>       return io.open(self, mode, buffering, encoding, errors, newline)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       FileNotFoundError: [Errno 2] No such file or directory: '/workspace/scratch/b158d995e8cc/cpswm_b4_snapshot/configs/project_two_experiments/structure_two_neural_amortized_manifest_v0_1.json'
+
+/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/pathlib.py:1013: FileNotFoundError
+__________ test_trained_mlp_is_deterministic_and_emits_neural_receipt __________
+[gw3] linux -- Python 3.12.14 /opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python
+
+    def test_trained_mlp_is_deterministic_and_emits_neural_receipt() -> None:
+>       design = load_frozen_neural_design(ROOT / DEFAULT_MANIFEST)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_structure_two_neural_amortized.py:76: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/cpswm/system/evaluation_operations/structure_two_neural_amortized.py:214: in load_frozen_neural_design
+    payload = json.loads(manifest_path.read_text(encoding="utf-8"))
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/pathlib.py:1027: in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = PosixPath('/workspace/scratch/b158d995e8cc/cpswm_b4_snapshot/configs/project_two_experiments/structure_two_neural_amortized_manifest_v0_1.json')
+mode = 'r', buffering = -1, encoding = 'utf-8', errors = None, newline = None
+
+    def open(self, mode='r', buffering=-1, encoding=None,
+             errors=None, newline=None):
+        """
+        Open the file pointed to by this path and return a file object, as
+        the built-in open() function does.
+        """
+        if "b" not in mode:
+            encoding = io.text_encoding(encoding)
+>       return io.open(self, mode, buffering, encoding, errors, newline)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       FileNotFoundError: [Errno 2] No such file or directory: '/workspace/scratch/b158d995e8cc/cpswm_b4_snapshot/configs/project_two_experiments/structure_two_neural_amortized_manifest_v0_1.json'
+
+/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/pathlib.py:1013: FileNotFoundError
+_____ test_neural_score_is_only_q_and_every_runtime_weight_subtracts_log_q _____
+[gw3] linux -- Python 3.12.14 /opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python
+
+    def test_neural_score_is_only_q_and_every_runtime_weight_subtracts_log_q() -> None:
+>       design = load_frozen_neural_design(ROOT / DEFAULT_MANIFEST)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_structure_two_neural_amortized.py:122: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/cpswm/system/evaluation_operations/structure_two_neural_amortized.py:214: in load_frozen_neural_design
+    payload = json.loads(manifest_path.read_text(encoding="utf-8"))
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/pathlib.py:1027: in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = PosixPath('/workspace/scratch/b158d995e8cc/cpswm_b4_snapshot/configs/project_two_experiments/structure_two_neural_amortized_manifest_v0_1.json')
+mode = 'r', buffering = -1, encoding = 'utf-8', errors = None, newline = None
+
+    def open(self, mode='r', buffering=-1, encoding=None,
+             errors=None, newline=None):
+        """
+        Open the file pointed to by this path and return a file object, as
+        the built-in open() function does.
+        """
+        if "b" not in mode:
+            encoding = io.text_encoding(encoding)
+>       return io.open(self, mode, buffering, encoding, errors, newline)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       FileNotFoundError: [Errno 2] No such file or directory: '/workspace/scratch/b158d995e8cc/cpswm_b4_snapshot/configs/project_two_experiments/structure_two_neural_amortized_manifest_v0_1.json'
+
+/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/pathlib.py:1013: FileNotFoundError
+___ test_same_visible_posterior_snapshot_cannot_be_replayed_as_new_evidence ____
+[gw3] linux -- Python 3.12.14 /opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python
+
+    def test_same_visible_posterior_snapshot_cannot_be_replayed_as_new_evidence() -> None:
+>       design = load_frozen_neural_design(ROOT / DEFAULT_MANIFEST)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_structure_two_neural_amortized.py:151: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/cpswm/system/evaluation_operations/structure_two_neural_amortized.py:214: in load_frozen_neural_design
+    payload = json.loads(manifest_path.read_text(encoding="utf-8"))
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/pathlib.py:1027: in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = PosixPath('/workspace/scratch/b158d995e8cc/cpswm_b4_snapshot/configs/project_two_experiments/structure_two_neural_amortized_manifest_v0_1.json')
+mode = 'r', buffering = -1, encoding = 'utf-8', errors = None, newline = None
+
+    def open(self, mode='r', buffering=-1, encoding=None,
+             errors=None, newline=None):
+        """
+        Open the file pointed to by this path and return a file object, as
+        the built-in open() function does.
+        """
+        if "b" not in mode:
+            encoding = io.text_encoding(encoding)
+>       return io.open(self, mode, buffering, encoding, errors, newline)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       FileNotFoundError: [Errno 2] No such file or directory: '/workspace/scratch/b158d995e8cc/cpswm_b4_snapshot/configs/project_two_experiments/structure_two_neural_amortized_manifest_v0_1.json'
+
+/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/pathlib.py:1013: FileNotFoundError
+_____ test_systematic_proposal_is_reproducible_but_not_deterministic_top_k _____
+[gw3] linux -- Python 3.12.14 /opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python
+
+    def test_systematic_proposal_is_reproducible_but_not_deterministic_top_k() -> None:
+>       design = load_frozen_neural_design(ROOT / DEFAULT_MANIFEST)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_structure_two_neural_amortized.py:168: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/cpswm/system/evaluation_operations/structure_two_neural_amortized.py:214: in load_frozen_neural_design
+    payload = json.loads(manifest_path.read_text(encoding="utf-8"))
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/pathlib.py:1027: in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = PosixPath('/workspace/scratch/b158d995e8cc/cpswm_b4_snapshot/configs/project_two_experiments/structure_two_neural_amortized_manifest_v0_1.json')
+mode = 'r', buffering = -1, encoding = 'utf-8', errors = None, newline = None
+
+    def open(self, mode='r', buffering=-1, encoding=None,
+             errors=None, newline=None):
+        """
+        Open the file pointed to by this path and return a file object, as
+        the built-in open() function does.
+        """
+        if "b" not in mode:
+            encoding = io.text_encoding(encoding)
+>       return io.open(self, mode, buffering, encoding, errors, newline)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       FileNotFoundError: [Errno 2] No such file or directory: '/workspace/scratch/b158d995e8cc/cpswm_b4_snapshot/configs/project_two_experiments/structure_two_neural_amortized_manifest_v0_1.json'
+
+/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/pathlib.py:1013: FileNotFoundError
+_____ test_model_payload_declares_trained_mlp_not_deterministic_heuristic ______
+[gw3] linux -- Python 3.12.14 /opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python
+
+    def test_model_payload_declares_trained_mlp_not_deterministic_heuristic() -> None:
+>       design = load_frozen_neural_design(ROOT / DEFAULT_MANIFEST)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_structure_two_neural_amortized.py:189: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/cpswm/system/evaluation_operations/structure_two_neural_amortized.py:214: in load_frozen_neural_design
+    payload = json.loads(manifest_path.read_text(encoding="utf-8"))
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/pathlib.py:1027: in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = PosixPath('/workspace/scratch/b158d995e8cc/cpswm_b4_snapshot/configs/project_two_experiments/structure_two_neural_amortized_manifest_v0_1.json')
+mode = 'r', buffering = -1, encoding = 'utf-8', errors = None, newline = None
+
+    def open(self, mode='r', buffering=-1, encoding=None,
+             errors=None, newline=None):
+        """
+        Open the file pointed to by this path and return a file object, as
+        the built-in open() function does.
+        """
+        if "b" not in mode:
+            encoding = io.text_encoding(encoding)
+>       return io.open(self, mode, buffering, encoding, errors, newline)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       FileNotFoundError: [Errno 2] No such file or directory: '/workspace/scratch/b158d995e8cc/cpswm_b4_snapshot/configs/project_two_experiments/structure_two_neural_amortized_manifest_v0_1.json'
+
+/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/pathlib.py:1013: FileNotFoundError
+_________ test_project_owner_selected_route_c_without_narrowing_scope __________
+[gw3] linux -- Python 3.12.14 /opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python
+
+    def test_project_owner_selected_route_c_without_narrowing_scope() -> None:
+>       decision = json.loads(DECISION.read_text(encoding="utf-8"))
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_structure_two_stateful_full_joint.py:91: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/pathlib.py:1027: in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = PosixPath('/workspace/scratch/b158d995e8cc/cpswm_b4_snapshot/configs/project_two_experiments/structure_two_task8_joint_redesign_decision_v0_1.json')
+mode = 'r', buffering = -1, encoding = 'utf-8', errors = None, newline = None
+
+    def open(self, mode='r', buffering=-1, encoding=None,
+             errors=None, newline=None):
+        """
+        Open the file pointed to by this path and return a file object, as
+        the built-in open() function does.
+        """
+        if "b" not in mode:
+            encoding = io.text_encoding(encoding)
+>       return io.open(self, mode, buffering, encoding, errors, newline)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       FileNotFoundError: [Errno 2] No such file or directory: '/workspace/scratch/b158d995e8cc/cpswm_b4_snapshot/configs/project_two_experiments/structure_two_task8_joint_redesign_decision_v0_1.json'
+
+/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/pathlib.py:1013: FileNotFoundError
+_____ test_full_d0_episode_executes_all_seven_operators_in_one_closed_loop _____
+[gw3] linux -- Python 3.12.14 /opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python
+
+    def test_full_d0_episode_executes_all_seven_operators_in_one_closed_loop() -> None:
+        dataset = D0SyntheticOracleReplayAdapter(
+            validation_seeds=(701,),
+            test_seeds=(709,),
+            max_steps_per_episode=10,
+            dataset_version="route-c-integration-test@0.1",
+            scenario_duration_days=10,
+            guest_window=(2, 3),
+            abrupt_day=5,
+            recurrence_day=8,
+            unknown_event_days=(1,),
+        ).build()
+        episode = dataset.visible_episodes(ProjectTwoDatasetSplit.VALIDATION)[0]
+    
+>       metric, runtime = evaluate_stateful_full_joint_episode(
+            repository_root=ROOT,
+            dataset=dataset,
+            episode=episode,
+            arm=FullJointArm.STATEFUL_FULL_JOINT,
+        )
+
+tests/test_structure_two_stateful_full_joint.py:234: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/cpswm/system/evaluation_operations/structure_two_stateful_full_joint.py:2347: in evaluate_stateful_full_joint_episode
+    state = build_stateful_full_joint_state(
+src/cpswm/system/evaluation_operations/structure_two_stateful_full_joint.py:2322: in build_stateful_full_joint_state
+    config = load_stateful_full_joint_config(repository_root)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/cpswm/system/evaluation_operations/structure_two_stateful_full_joint.py:145: in load_stateful_full_joint_config
+    payload = json.loads((repository_root / path).read_text(encoding="utf-8"))
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/pathlib.py:1027: in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = PosixPath('/workspace/scratch/b158d995e8cc/cpswm_b4_snapshot/configs/project_two_experiments/structure_two_stateful_full_joint_v0_1.json')
+mode = 'r', buffering = -1, encoding = 'utf-8', errors = None, newline = None
+
+    def open(self, mode='r', buffering=-1, encoding=None,
+             errors=None, newline=None):
+        """
+        Open the file pointed to by this path and return a file object, as
+        the built-in open() function does.
+        """
+        if "b" not in mode:
+            encoding = io.text_encoding(encoding)
+>       return io.open(self, mode, buffering, encoding, errors, newline)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       FileNotFoundError: [Errno 2] No such file or directory: '/workspace/scratch/b158d995e8cc/cpswm_b4_snapshot/configs/project_two_experiments/structure_two_stateful_full_joint_v0_1.json'
+
+/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/pathlib.py:1013: FileNotFoundError
+__________ test_checked_in_route_c_artifact_is_honest_and_verifiable ___________
+[gw3] linux -- Python 3.12.14 /opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python
+
+    def test_checked_in_route_c_artifact_is_honest_and_verifiable() -> None:
+>       artifact = json.loads(ARTIFACT.read_text(encoding="utf-8"))
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_structure_two_stateful_full_joint.py:257: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/pathlib.py:1027: in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = PosixPath('/workspace/scratch/b158d995e8cc/cpswm_b4_snapshot/benchmarks/structure_two/structure_two_stateful_full_joint_v0_1.json')
+mode = 'r', buffering = -1, encoding = 'utf-8', errors = None, newline = None
+
+    def open(self, mode='r', buffering=-1, encoding=None,
+             errors=None, newline=None):
+        """
+        Open the file pointed to by this path and return a file object, as
+        the built-in open() function does.
+        """
+        if "b" not in mode:
+            encoding = io.text_encoding(encoding)
+>       return io.open(self, mode, buffering, encoding, errors, newline)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       FileNotFoundError: [Errno 2] No such file or directory: '/workspace/scratch/b158d995e8cc/cpswm_b4_snapshot/benchmarks/structure_two/structure_two_stateful_full_joint_v0_1.json'
+
+/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/pathlib.py:1013: FileNotFoundError
+_______________ test_rehashed_forged_scientific_pass_is_rejected _______________
+[gw3] linux -- Python 3.12.14 /opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python
+
+    def test_rehashed_forged_scientific_pass_is_rejected() -> None:
+>       artifact = json.loads(ARTIFACT.read_text(encoding="utf-8"))
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_structure_two_stateful_full_joint.py:271: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/pathlib.py:1027: in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = PosixPath('/workspace/scratch/b158d995e8cc/cpswm_b4_snapshot/benchmarks/structure_two/structure_two_stateful_full_joint_v0_1.json')
+mode = 'r', buffering = -1, encoding = 'utf-8', errors = None, newline = None
+
+    def open(self, mode='r', buffering=-1, encoding=None,
+             errors=None, newline=None):
+        """
+        Open the file pointed to by this path and return a file object, as
+        the built-in open() function does.
+        """
+        if "b" not in mode:
+            encoding = io.text_encoding(encoding)
+>       return io.open(self, mode, buffering, encoding, errors, newline)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       FileNotFoundError: [Errno 2] No such file or directory: '/workspace/scratch/b158d995e8cc/cpswm_b4_snapshot/benchmarks/structure_two/structure_two_stateful_full_joint_v0_1.json'
+
+/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/pathlib.py:1013: FileNotFoundError
+____ test_round_one_matched_arms_keep_pre_treatment_fairness_after_feedback ____
+[gw3] linux -- Python 3.12.14 /opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python
+
+    def test_round_one_matched_arms_keep_pre_treatment_fairness_after_feedback() -> None:
+        dataset = D0SyntheticOracleReplayAdapter(
+            validation_seeds=(701,),
+            test_seeds=(709,),
+            max_steps_per_episode=5,
+            dataset_version="route-c-adversarial-fairness@0.1",
+            scenario_duration_days=10,
+            guest_window=(2, 3),
+            abrupt_day=5,
+            recurrence_day=8,
+            unknown_event_days=(1,),
+        ).build()
+        episode = dataset.visible_episodes(ProjectTwoDatasetSplit.TEST)[0]
+>       joint = build_stateful_full_joint_state(
+            repository_root=ROOT,
+            dataset=dataset,
+            episode=episode,
+            arm=FullJointArm.STATEFUL_FULL_JOINT,
+        )
+
+tests/test_structure_two_stateful_full_joint_adversarial.py:160: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/cpswm/system/evaluation_operations/structure_two_stateful_full_joint.py:2322: in build_stateful_full_joint_state
+    config = load_stateful_full_joint_config(repository_root)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/cpswm/system/evaluation_operations/structure_two_stateful_full_joint.py:145: in load_stateful_full_joint_config
+    payload = json.loads((repository_root / path).read_text(encoding="utf-8"))
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/pathlib.py:1027: in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = PosixPath('/workspace/scratch/b158d995e8cc/cpswm_b4_snapshot/configs/project_two_experiments/structure_two_stateful_full_joint_v0_1.json')
+mode = 'r', buffering = -1, encoding = 'utf-8', errors = None, newline = None
+
+    def open(self, mode='r', buffering=-1, encoding=None,
+             errors=None, newline=None):
+        """
+        Open the file pointed to by this path and return a file object, as
+        the built-in open() function does.
+        """
+        if "b" not in mode:
+            encoding = io.text_encoding(encoding)
+>       return io.open(self, mode, buffering, encoding, errors, newline)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       FileNotFoundError: [Errno 2] No such file or directory: '/workspace/scratch/b158d995e8cc/cpswm_b4_snapshot/configs/project_two_experiments/structure_two_stateful_full_joint_v0_1.json'
+
+/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/pathlib.py:1013: FileNotFoundError
+_____________ test_round_two_embedded_receipt_forgery_is_rejected ______________
+[gw3] linux -- Python 3.12.14 /opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python
+
+    def test_round_two_embedded_receipt_forgery_is_rejected() -> None:
+>       forged = copy.deepcopy(json.loads(ARTIFACT.read_text(encoding="utf-8")))
+                                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_structure_two_stateful_full_joint_adversarial.py:350: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/pathlib.py:1027: in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = PosixPath('/workspace/scratch/b158d995e8cc/cpswm_b4_snapshot/benchmarks/structure_two/structure_two_stateful_full_joint_v0_1.json')
+mode = 'r', buffering = -1, encoding = 'utf-8', errors = None, newline = None
+
+    def open(self, mode='r', buffering=-1, encoding=None,
+             errors=None, newline=None):
+        """
+        Open the file pointed to by this path and return a file object, as
+        the built-in open() function does.
+        """
+        if "b" not in mode:
+            encoding = io.text_encoding(encoding)
+>       return io.open(self, mode, buffering, encoding, errors, newline)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       FileNotFoundError: [Errno 2] No such file or directory: '/workspace/scratch/b158d995e8cc/cpswm_b4_snapshot/benchmarks/structure_two/structure_two_stateful_full_joint_v0_1.json'
+
+/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/pathlib.py:1013: FileNotFoundError
+_____ test_round_two_paired_action_deletion_is_rejected_even_when_rehashed _____
+[gw3] linux -- Python 3.12.14 /opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python
+
+    def test_round_two_paired_action_deletion_is_rejected_even_when_rehashed() -> None:
+>       forged = copy.deepcopy(json.loads(ARTIFACT.read_text(encoding="utf-8")))
+                                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_structure_two_stateful_full_joint_adversarial.py:360: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/pathlib.py:1027: in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = PosixPath('/workspace/scratch/b158d995e8cc/cpswm_b4_snapshot/benchmarks/structure_two/structure_two_stateful_full_joint_v0_1.json')
+mode = 'r', buffering = -1, encoding = 'utf-8', errors = None, newline = None
+
+    def open(self, mode='r', buffering=-1, encoding=None,
+             errors=None, newline=None):
+        """
+        Open the file pointed to by this path and return a file object, as
+        the built-in open() function does.
+        """
+        if "b" not in mode:
+            encoding = io.text_encoding(encoding)
+>       return io.open(self, mode, buffering, encoding, errors, newline)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       FileNotFoundError: [Errno 2] No such file or directory: '/workspace/scratch/b158d995e8cc/cpswm_b4_snapshot/benchmarks/structure_two/structure_two_stateful_full_joint_v0_1.json'
+
+/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/pathlib.py:1013: FileNotFoundError
+______ test_round_two_claim_boundary_and_source_substitution_are_rejected ______
+[gw3] linux -- Python 3.12.14 /opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python
+
+    def test_round_two_claim_boundary_and_source_substitution_are_rejected() -> None:
+>       artifact = json.loads(ARTIFACT.read_text(encoding="utf-8"))
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_structure_two_stateful_full_joint_adversarial.py:369: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/pathlib.py:1027: in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = PosixPath('/workspace/scratch/b158d995e8cc/cpswm_b4_snapshot/benchmarks/structure_two/structure_two_stateful_full_joint_v0_1.json')
+mode = 'r', buffering = -1, encoding = 'utf-8', errors = None, newline = None
+
+    def open(self, mode='r', buffering=-1, encoding=None,
+             errors=None, newline=None):
+        """
+        Open the file pointed to by this path and return a file object, as
+        the built-in open() function does.
+        """
+        if "b" not in mode:
+            encoding = io.text_encoding(encoding)
+>       return io.open(self, mode, buffering, encoding, errors, newline)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       FileNotFoundError: [Errno 2] No such file or directory: '/workspace/scratch/b158d995e8cc/cpswm_b4_snapshot/benchmarks/structure_two/structure_two_stateful_full_joint_v0_1.json'
+
+/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/pathlib.py:1013: FileNotFoundError
+____________ test_round_two_config_rejects_extra_or_promoted_claims ____________
+[gw3] linux -- Python 3.12.14 /opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python
+
+tmp_path = PosixPath('/workspace/scratch/b158d995e8cc/cpswm_b4_snapshot/docs/reviews/pc_b/b4_b9_followup_2026-09-13/.b4_exact_812_final_linux_py312_seed0.tmp/popen-gw3/test_round_two_config_rejects_0')
+
+    def test_round_two_config_rejects_extra_or_promoted_claims(tmp_path) -> None:
+        source = ROOT / "configs/project_two_experiments/structure_two_stateful_full_joint_v0_1.json"
+>       payload = json.loads(source.read_text(encoding="utf-8"))
+                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_structure_two_stateful_full_joint_adversarial.py:390: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/pathlib.py:1027: in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = PosixPath('/workspace/scratch/b158d995e8cc/cpswm_b4_snapshot/configs/project_two_experiments/structure_two_stateful_full_joint_v0_1.json')
+mode = 'r', buffering = -1, encoding = 'utf-8', errors = None, newline = None
+
+    def open(self, mode='r', buffering=-1, encoding=None,
+             errors=None, newline=None):
+        """
+        Open the file pointed to by this path and return a file object, as
+        the built-in open() function does.
+        """
+        if "b" not in mode:
+            encoding = io.text_encoding(encoding)
+>       return io.open(self, mode, buffering, encoding, errors, newline)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       FileNotFoundError: [Errno 2] No such file or directory: '/workspace/scratch/b158d995e8cc/cpswm_b4_snapshot/configs/project_two_experiments/structure_two_stateful_full_joint_v0_1.json'
+
+/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/pathlib.py:1013: FileNotFoundError
+__ test_round_two_fresh_replay_detects_forged_but_self_consistent_provenance ___
+[gw3] linux -- Python 3.12.14 /opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python
+
+    def test_round_two_fresh_replay_detects_forged_but_self_consistent_provenance() -> None:
+>       forged = copy.deepcopy(json.loads(ARTIFACT.read_text(encoding="utf-8")))
+                                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_structure_two_stateful_full_joint_adversarial.py:400: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/pathlib.py:1027: in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = PosixPath('/workspace/scratch/b158d995e8cc/cpswm_b4_snapshot/benchmarks/structure_two/structure_two_stateful_full_joint_v0_1.json')
+mode = 'r', buffering = -1, encoding = 'utf-8', errors = None, newline = None
+
+    def open(self, mode='r', buffering=-1, encoding=None,
+             errors=None, newline=None):
+        """
+        Open the file pointed to by this path and return a file object, as
+        the built-in open() function does.
+        """
+        if "b" not in mode:
+            encoding = io.text_encoding(encoding)
+>       return io.open(self, mode, buffering, encoding, errors, newline)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       FileNotFoundError: [Errno 2] No such file or directory: '/workspace/scratch/b158d995e8cc/cpswm_b4_snapshot/benchmarks/structure_two/structure_two_stateful_full_joint_v0_1.json'
+
+/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/pathlib.py:1013: FileNotFoundError
+__________ test_round_two_strict_json_rejects_duplicate_keys_and_nan ___________
+[gw3] linux -- Python 3.12.14 /opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python
+
+    def test_round_two_strict_json_rejects_duplicate_keys_and_nan() -> None:
+        spec = importlib.util.spec_from_file_location("route_c_runner", RUNNER)
+        assert spec is not None and spec.loader is not None
+        module = importlib.util.module_from_spec(spec)
+>       spec.loader.exec_module(module)
+
+tests/test_structure_two_stateful_full_joint_adversarial.py:416: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+<frozen importlib._bootstrap_external>:995: in exec_module
+    ???
+<frozen importlib._bootstrap_external>:1132: in get_code
+    ???
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <_frozen_importlib_external.SourceFileLoader object at 0x7fb58b2085f0>
+path = '/workspace/scratch/b158d995e8cc/cpswm_b4_snapshot/apps/evaluation_runner/run_structure_two_stateful_full_joint.py'
+
+>   ???
+E   FileNotFoundError: [Errno 2] No such file or directory: '/workspace/scratch/b158d995e8cc/cpswm_b4_snapshot/apps/evaluation_runner/run_structure_two_stateful_full_joint.py'
+
+<frozen importlib._bootstrap_external>:1190: FileNotFoundError
+_____ test_real_projection_consumes_under_independent_python_hash_seeds[5] _____
+[gw3] linux -- Python 3.12.14 /opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python
+
+hash_seed = '5'
+
+    @pytest.mark.parametrize("hash_seed", ["5", "11"])
+    def test_real_projection_consumes_under_independent_python_hash_seeds(hash_seed):
+        import os
+        import subprocess
+        from pathlib import Path
+    
+        root = Path(__file__).resolve().parents[1]
+        script = """
+    import test_structure_two_formal_revision_lineage as old
+    from test_structure_two_w3_native_posterior_projection import projected
+    core = old._legacy_history(1).system.core
+    source = core.current_posterior_projection_source()
+    source.validate_content()
+    batch = core.stage_prepared_particle_candidates(**projected(core))
+    assert batch.particle_weights[0].posterior_probability > 0
+    """
+        result = subprocess.run(
+            [sys.executable, "-c", script],
+            cwd=root,
+            env={
+                **os.environ,
+                "PYTHONHASHSEED": hash_seed,
+                "PYTHONPATH": os.pathsep.join((str(root / "src"), str(root / "tests"))),
+            },
+            text=True,
+            capture_output=True,
+            timeout=60,
+        )
+>       assert result.returncode == 0, result.stdout + result.stderr
+E       AssertionError: Traceback (most recent call last):
+E           File "<string>", line 2, in <module>
+E           File "/workspace/scratch/b158d995e8cc/cpswm_b4_snapshot/tests/test_structure_two_formal_revision_lineage.py", line 43, in <module>
+E             import pytest
+E         ModuleNotFoundError: No module named 'pytest'
+E         
+E       assert 1 == 0
+E        +  where 1 = CompletedProcess(args=['/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python', '-c', '\nimport tes...rmal_revision_lineage.py", line 43, in <module>\n    import pytest\nModuleNotFoundError: No module named \'pytest\'\n').returncode
+
+tests/test_structure_two_w3_native_posterior_projection.py:226: AssertionError
+____ test_real_projection_consumes_under_independent_python_hash_seeds[11] _____
+[gw3] linux -- Python 3.12.14 /opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python
+
+hash_seed = '11'
+
+    @pytest.mark.parametrize("hash_seed", ["5", "11"])
+    def test_real_projection_consumes_under_independent_python_hash_seeds(hash_seed):
+        import os
+        import subprocess
+        from pathlib import Path
+    
+        root = Path(__file__).resolve().parents[1]
+        script = """
+    import test_structure_two_formal_revision_lineage as old
+    from test_structure_two_w3_native_posterior_projection import projected
+    core = old._legacy_history(1).system.core
+    source = core.current_posterior_projection_source()
+    source.validate_content()
+    batch = core.stage_prepared_particle_candidates(**projected(core))
+    assert batch.particle_weights[0].posterior_probability > 0
+    """
+        result = subprocess.run(
+            [sys.executable, "-c", script],
+            cwd=root,
+            env={
+                **os.environ,
+                "PYTHONHASHSEED": hash_seed,
+                "PYTHONPATH": os.pathsep.join((str(root / "src"), str(root / "tests"))),
+            },
+            text=True,
+            capture_output=True,
+            timeout=60,
+        )
+>       assert result.returncode == 0, result.stdout + result.stderr
+E       AssertionError: Traceback (most recent call last):
+E           File "<string>", line 2, in <module>
+E           File "/workspace/scratch/b158d995e8cc/cpswm_b4_snapshot/tests/test_structure_two_formal_revision_lineage.py", line 43, in <module>
+E             import pytest
+E         ModuleNotFoundError: No module named 'pytest'
+E         
+E       assert 1 == 0
+E        +  where 1 = CompletedProcess(args=['/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python', '-c', '\nimport tes...rmal_revision_lineage.py", line 43, in <module>\n    import pytest\nModuleNotFoundError: No module named \'pytest\'\n').returncode
+
+tests/test_structure_two_w3_native_posterior_projection.py:226: AssertionError
+=============================== warnings summary ===============================
+tests/test_structure_two_w3_native_particles.py::test_public_prepared_boundary_rejects_without_mutation[snapshot]
+tests/test_structure_two_w3_native_particles.py::test_public_prepared_boundary_rejects_without_mutation[instance]
+tests/test_structure_two_w3_native_particles.py::test_public_prepared_boundary_rejects_without_mutation[parent]
+tests/test_structure_two_w3_native_particles.py::test_public_prepared_boundary_rejects_without_mutation[statistics]
+tests/test_structure_two_w3_native_particles.py::test_public_prepared_boundary_rejects_without_mutation[ledger]
+tests/test_structure_two_w3_native_particles.py::test_public_prepared_boundary_rejects_without_mutation[neural]
+tests/test_structure_two_w3_native_particles.py::test_public_prepared_boundary_rejects_without_mutation[nan]
+tests/test_structure_two_w3_native_particles.py::test_public_prepared_boundary_rejects_without_mutation[self_parent]
+  /opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/pydantic/main.py:475: UserWarning: Pydantic serializer warnings:
+    PydanticSerializationUnexpectedValue(Expected `OrderedActorRole` - serialized value may not be as expected [field_name='ordered_actor_roles', input_value={'role': 'pickup_actor', 'actor_key': 'owner'}, input_type=dict])
+    PydanticSerializationUnexpectedValue(Expected `OrderedActorRole` - serialized value may not be as expected [field_name='ordered_actor_roles', input_value={'role': 'carrier', 'actor_key': 'owner'}, input_type=dict])
+    PydanticSerializationUnexpectedValue(Expected `OrderedActorRole` - serialized value may not be as expected [field_name='ordered_actor_roles', input_value={'role': 'placer', 'actor_key': 'owner'}, input_type=dict])
+    return self.__pydantic_serializer__.to_python(
+
+tests/test_structure_two_w3_native_particles.py::test_public_prepared_boundary_rejects_without_mutation[reactivate]
+  /opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/pydantic/main.py:475: UserWarning: Pydantic serializer warnings:
+    PydanticSerializationUnexpectedValue(Expected `enum` - serialized value may not be as expected [field_name='operation', input_value='reactivate', input_type=str])
+    PydanticSerializationUnexpectedValue(Expected `OrderedActorRole` - serialized value may not be as expected [field_name='ordered_actor_roles', input_value={'role': 'pickup_actor', 'actor_key': 'owner'}, input_type=dict])
+    PydanticSerializationUnexpectedValue(Expected `OrderedActorRole` - serialized value may not be as expected [field_name='ordered_actor_roles', input_value={'role': 'carrier', 'actor_key': 'owner'}, input_type=dict])
+    PydanticSerializationUnexpectedValue(Expected `OrderedActorRole` - serialized value may not be as expected [field_name='ordered_actor_roles', input_value={'role': 'placer', 'actor_key': 'owner'}, input_type=dict])
+    return self.__pydantic_serializer__.to_python(
+
+tests/test_structure_two_w3_native_particles.py::test_public_prepared_boundary_rejects_without_mutation[rejuvenate]
+  /opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/pydantic/main.py:475: UserWarning: Pydantic serializer warnings:
+    PydanticSerializationUnexpectedValue(Expected `enum` - serialized value may not be as expected [field_name='operation', input_value='rejuvenate', input_type=str])
+    PydanticSerializationUnexpectedValue(Expected `OrderedActorRole` - serialized value may not be as expected [field_name='ordered_actor_roles', input_value={'role': 'pickup_actor', 'actor_key': 'owner'}, input_type=dict])
+    PydanticSerializationUnexpectedValue(Expected `OrderedActorRole` - serialized value may not be as expected [field_name='ordered_actor_roles', input_value={'role': 'carrier', 'actor_key': 'owner'}, input_type=dict])
+    PydanticSerializationUnexpectedValue(Expected `OrderedActorRole` - serialized value may not be as expected [field_name='ordered_actor_roles', input_value={'role': 'placer', 'actor_key': 'owner'}, input_type=dict])
+    return self.__pydantic_serializer__.to_python(
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/test_structure_two_backbone_counterexample_regressions.py::test_the_frozen_hard_safety_kernel_still_carries_the_clauses_used_here
+FAILED tests/test_structure_two_execution_interface.py::test_sink_cannot_swap_an_in_place_attestation_verifier_key[core]
+FAILED tests/test_structure_two_execution_interface.py::test_sink_cannot_swap_an_in_place_attestation_verifier_key[wrapper]
+FAILED tests/test_structure_two_p5_direct_trace_probe.py::test_direct_p5_trace_probe_fresh_recompute_passes
+FAILED tests/test_structure_two_p5_direct_trace_probe.py::test_direct_p5_trace_probe_rejects_resigned_trace_projection_tamper
+FAILED tests/test_structure_two_p5_direct_trace_probe.py::test_direct_p5_trace_probe_rejects_claim_promotion
+FAILED tests/test_structure_two_p5_debt_replay_confirmation.py::test_replay_config_is_engineering_only_and_keeps_coverage_limits_explicit
+FAILED tests/test_structure_two_p5_debt_replay_confirmation.py::test_one_positive_transition_matches_direct_and_production_debt_replay
+FAILED tests/test_structure_two_p5_debt_replay_confirmation.py::test_different_location_feedback_has_representable_time_and_replays
+FAILED tests/test_structure_two_p5_debt_replay_confirmation.py::test_artifact_numeric_forgery_fails_fresh_recomputation
+FAILED tests/test_structure_two_production_system.py::test_production_assembly_manifest_recomputes_every_source_binding
+FAILED tests/test_structure_two_production_system.py::test_forged_but_complete_production_manifest_is_rejected
+FAILED tests/test_structure_two_execution_interface.py::test_sink_cannot_replace_registered_pchmp_delegate_and_rollback_preserves_identity
+FAILED tests/test_structure_two_execution_interface.py::test_sink_cannot_mutate_registered_pchmp_delegate_authority_in_place
+FAILED tests/test_structure_two_p0_maintenance_fault_injection.py::test_the_frozen_clauses_this_file_depends_on_are_unchanged
+FAILED tests/test_structure_two_formal_revision_lineage.py::test_the_frozen_write_authority_clauses_are_unchanged
+FAILED tests/test_structure_two_selected_method.py::test_selected_method_receipt_freezes_scope_authority_and_unresolved_work
+FAILED tests/test_structure_two_selected_method.py::test_selected_method_rejects_scope_narrowing_and_authority_escalation
+FAILED tests/test_structure_two_selected_method.py::test_stage_local_forgetting_factor_rejects_every_value_but_one
+FAILED tests/test_structure_two_selected_method.py::test_stage_local_forgetting_factor_is_bound_to_the_runtime_defaults
+FAILED tests/test_structure_two_selected_method.py::test_clarifying_the_forgetting_contract_did_not_move_the_receipt_hashes
+FAILED tests/test_structure_two_particle_falsifier.py::test_falsifier_runs_all_non_neural_arms_and_keeps_neural_arm_fail_closed
+FAILED tests/test_structure_two_particle_falsifier.py::test_typed_revision_passes_registered_development_conformance_gates
+FAILED tests/test_structure_two_neural_amortized.py::test_design_freezes_disjoint_train_validation_and_holdout
+FAILED tests/test_structure_two_neural_amortized.py::test_trained_mlp_is_deterministic_and_emits_neural_receipt
+FAILED tests/test_structure_two_neural_amortized.py::test_neural_score_is_only_q_and_every_runtime_weight_subtracts_log_q
+FAILED tests/test_structure_two_neural_amortized.py::test_same_visible_posterior_snapshot_cannot_be_replayed_as_new_evidence
+FAILED tests/test_structure_two_neural_amortized.py::test_systematic_proposal_is_reproducible_but_not_deterministic_top_k
+FAILED tests/test_structure_two_neural_amortized.py::test_model_payload_declares_trained_mlp_not_deterministic_heuristic
+FAILED tests/test_structure_two_stateful_full_joint.py::test_project_owner_selected_route_c_without_narrowing_scope
+FAILED tests/test_structure_two_stateful_full_joint.py::test_full_d0_episode_executes_all_seven_operators_in_one_closed_loop
+FAILED tests/test_structure_two_stateful_full_joint.py::test_checked_in_route_c_artifact_is_honest_and_verifiable
+FAILED tests/test_structure_two_stateful_full_joint.py::test_rehashed_forged_scientific_pass_is_rejected
+FAILED tests/test_structure_two_stateful_full_joint_adversarial.py::test_round_one_matched_arms_keep_pre_treatment_fairness_after_feedback
+FAILED tests/test_structure_two_stateful_full_joint_adversarial.py::test_round_two_embedded_receipt_forgery_is_rejected
+FAILED tests/test_structure_two_stateful_full_joint_adversarial.py::test_round_two_paired_action_deletion_is_rejected_even_when_rehashed
+FAILED tests/test_structure_two_stateful_full_joint_adversarial.py::test_round_two_claim_boundary_and_source_substitution_are_rejected
+FAILED tests/test_structure_two_stateful_full_joint_adversarial.py::test_round_two_config_rejects_extra_or_promoted_claims
+FAILED tests/test_structure_two_stateful_full_joint_adversarial.py::test_round_two_fresh_replay_detects_forged_but_self_consistent_provenance
+FAILED tests/test_structure_two_stateful_full_joint_adversarial.py::test_round_two_strict_json_rejects_duplicate_keys_and_nan
+FAILED tests/test_structure_two_w3_native_posterior_projection.py::test_real_projection_consumes_under_independent_python_hash_seeds[5]
+FAILED tests/test_structure_two_w3_native_posterior_projection.py::test_real_projection_consumes_under_independent_python_hash_seeds[11]
+ERROR tests/test_structure_two_stateful_full_joint.py::test_route_c_particles_carry_all_seven_axes_across_time
+ERROR tests/test_structure_two_stateful_full_joint.py::test_joint_and_factorized_arms_are_compute_matched_but_not_the_same_model
+ERROR tests/test_structure_two_stateful_full_joint.py::test_low_owner_unknown_event_cannot_enter_joint_rgrc
+ERROR tests/test_structure_two_stateful_full_joint.py::test_feedback_reweights_full_state_and_extends_revision_lineage
+ERROR tests/test_structure_two_stateful_full_joint_adversarial.py::test_round_one_complete_positive_support_is_not_top_k_truncated
+ERROR tests/test_structure_two_stateful_full_joint_adversarial.py::test_round_one_mutated_observation_is_revalidated_at_use_boundary
+ERROR tests/test_structure_two_stateful_full_joint_adversarial.py::test_round_one_revision_failure_rolls_back_all_mutable_state
+ERROR tests/test_structure_two_stateful_full_joint_adversarial.py::test_round_one_feedback_replay_and_substitution_are_rejected_atomically
+ERROR tests/test_structure_two_stateful_full_joint_adversarial.py::test_round_one_rgrc_requires_consecutive_stability_and_retracts_old_subject
+ERROR tests/test_structure_two_stateful_full_joint_adversarial.py::test_round_one_operator_chain_tampering_is_detected
+42 failed, 760 passed, 10 warnings, 10 errors in 647.05s (0:10:47)

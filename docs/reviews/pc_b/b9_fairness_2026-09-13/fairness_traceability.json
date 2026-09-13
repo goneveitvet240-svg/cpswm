@@ -1,0 +1,65 @@
+{
+  "scope": "W2 fairness traceability and unified-acceptance preparation",
+  "delivery_sha": "329787241996631a6abb4fcd3b12d2c13a135777",
+  "historical_preservation_sha": "de2c04c3e690dba674850af9c4f7e126dbab910e",
+  "historical_actual_source_sha": "d6112489d0a09f7086286e223741be60051b99a5",
+  "dimensions": [
+    {
+      "id": "map_support",
+      "contract_status": "USER_DECISION_PENDING",
+      "implementation": ["structure_two_comparison_dynamic.py:699-716", "structure_two_comparison_audit.py:202,275,316-317"],
+      "finding": "full-episode support is shared but exposes future locations when no public catalogue exists",
+      "minimal_discriminator": "same visible prefix; vary only a later unseen location; compare early posterior, normalization, ties and actions"
+    },
+    {
+      "id": "owner_prior",
+      "contract_status": "USER_DECISION_PENDING",
+      "implementation": ["structure_two_comparison_dynamic.py:718-739", "AMGLocationAdapter.predict_location_posteriors"],
+      "finding": "P5 uniform and AMG last-detected fallback explain the retained 17-step difference; not full-memory benefit",
+      "minimal_discriminator": "same missing-owner prefix and support under both preregistered candidate rules"
+    },
+    {
+      "id": "consumer_features",
+      "contract_status": "FEATURE_ENTITLEMENT_PENDING",
+      "implementation": ["structure_two_comparison_fairness.py:273-340", "structure_two_comparison_dynamic.py:742-754"],
+      "finding": "common visible information does not imply equal extracted features or capacity"
+    },
+    {
+      "id": "split_selection",
+      "contract_status": "FROZEN",
+      "implementation": ["structure_two_comparison_audit.py:653-675", "structure_two_comparison_fairness.py:161-260"],
+      "finding": "TRAIN fit, independent VALIDATION PUT_BACK grid selection, opened TEST scoring; truth after action commit"
+    },
+    {
+      "id": "ciav_budget",
+      "contract_status": "PACKET_MATCH_FROZEN_COMPUTE_PARITY_PENDING",
+      "implementation": ["structure_two_p5_three_arm_contract.py:MatchedCIAVArmReceipt", "structure_two_comparison_fairness.py:104-136"],
+      "finding": "exogenous shared packet; component costs zero and privacy budget one isolate inference but do not estimate net utility"
+    },
+    {
+      "id": "stopping_signal",
+      "contract_status": "SCIENTIFIC_SIGNAL_FROZEN_ONLINE_STOPPING_NOT_ESTABLISHED",
+      "implementation": ["structure_two_p5_three_arm_death_test_v0_1.json:signal_rule"],
+      "finding": "3000 episode bootstrap, 95 percent, absolute 0.02 and relative 0.1; SEARCH and PUT_BACK separate"
+    },
+    {
+      "id": "decoder",
+      "contract_status": "SHARED_TYPED_DECODER_FROZEN_NATIVE_INTERFACE_PENDING",
+      "implementation": ["structure_two_p5_three_arm_contract.py:TypedLocationPosterior.decode", "structure_two_comparison_fairness.py:77-101"],
+      "finding": "common detected-current adapter erases native SEARCH differences"
+    },
+    {
+      "id": "long_term_ledger",
+      "contract_status": "NOT_ESTABLISHED",
+      "implementation": ["structure_two_comparison_audit.py:172-190", "structure_two_comparison_dynamic.py:179-217"],
+      "finding": "historical direct P5 committed count is zero across 1920 steps; ordinary reference positives are not direct-P5 capability"
+    },
+    {
+      "id": "actual_action",
+      "contract_status": "COMMIT_ORDER_CHECKED_ENVIRONMENT_EXECUTION_MISSING",
+      "implementation": ["structure_two_comparison_audit.py:CommitBarrier", "structure_two_comparison_fairness.py:SplitAccess.score_committed"],
+      "finding": "typed actions precede truth, but no action-contingent environment or world consequence is present"
+    }
+  ],
+  "unified_acceptance": "BLOCKED_NO_SINGLE_FROZEN_SHA"
+}

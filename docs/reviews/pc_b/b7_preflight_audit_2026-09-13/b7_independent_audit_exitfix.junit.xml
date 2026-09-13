@@ -1,0 +1,65 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites>
+  <testsuite name="b7-delivery-43" tests="43" failures="0" errors="0" time="2.4570836549846717">
+    <testcase classname="b7.delivery" name="data.visible_legal" time="0.0005221480005275225" />
+    <testcase classname="b7.delivery" name="data.late_detection" time="0.00034897700061264914" />
+    <testcase classname="b7.delivery" name="data.late_actor" time="0.0004481759988266276" />
+    <testcase classname="b7.delivery" name="data.future_invariance" time="0.00037134000012883916" />
+    <testcase classname="b7.delivery" name="data.missingness.not_observed" time="0.0001812329992390005" />
+    <testcase classname="b7.delivery" name="data.missingness.ambiguous" time="0.00018964599985338282" />
+    <testcase classname="b7.delivery" name="data.missingness.verified_absence" time="0.00017413299974577967" />
+    <testcase classname="b7.delivery" name="data.invalid.duplicate" time="5.06369997310685e-05" />
+    <testcase classname="b7.delivery" name="data.invalid.orphan" time="3.97000003431458e-05" />
+    <testcase classname="b7.delivery" name="data.invalid.arrival_missing" time="2.293499892402906e-05" />
+    <testcase classname="b7.delivery" name="data.invalid.arrival_early" time="2.4947999918367714e-05" />
+    <testcase classname="b7.delivery" name="data.invalid.session" time="3.1066998417372815e-05" />
+    <testcase classname="b7.delivery" name="data.invalid.unselected" time="2.580900036264211e-05" />
+    <testcase classname="b7.delivery" name="data.invalid.mutated_result" time="0.0004106500000489177" />
+    <testcase classname="b7.delivery" name="data.invalid.oracle_actor" time="6.656999903498217e-05" />
+    <testcase classname="b7.delivery" name="data.capture_separation" time="0.003347672000018065" />
+    <testcase classname="b7.delivery" name="data.capture_known_failure" time="0.0009253759999410249" />
+    <testcase classname="b7.delivery" name="data.capture_uncertain.nan" time="0.000665253999613924" />
+    <testcase classname="b7.delivery" name="data.capture_uncertain.mismatch" time="0.00048684499961382244" />
+    <testcase classname="b7.delivery" name="data.capture_uncertain.interrupt" time="0.00033979299951170105" />
+    <testcase classname="b7.delivery" name="data.capture_action_contract" time="0.0006127449996711221" />
+    <testcase classname="b7.delivery" name="data.simulator_preflight_truthful" time="0.00025755800015758723" />
+    <testcase classname="b7.delivery" name="data.train_profile" time="0.40022586600025534" />
+    <testcase classname="b7.delivery" name="data.cli.legal" time="0.2529440939997585" />
+    <testcase classname="b7.delivery" name="data.cli.confirmation" time="0.25635764700018626" />
+    <testcase classname="b7.delivery" name="data.cli.truth" time="0.26239336999969964" />
+    <testcase classname="b7.delivery" name="data.cli.overwrite" time="0.29883889299890143" />
+    <testcase classname="b7.delivery" name="data.empty_prefix" time="0.00024526000015612226" />
+    <testcase classname="b7.delivery" name="data.mutable_actor_revalidated" time="0.0010440549995109905" />
+    <testcase classname="b7.delivery" name="d0.checked_config" time="0.07499153399839997" />
+    <testcase classname="b7.delivery" name="d0.deterministic_one_factor" time="0.11638865999884729" />
+    <testcase classname="b7.delivery" name="d0.preperiod" time="0.05919590699886612" />
+    <testcase classname="b7.delivery" name="d0.paired_randomness" time="0.1081122889991093" />
+    <testcase classname="b7.delivery" name="d0.shared_session" time="0.05906452800081752" />
+    <testcase classname="b7.delivery" name="d0.nonidentifiable_without_people" time="0.05796861499948136" />
+    <testcase classname="b7.delivery" name="d0.truth_excluded" time="0.06748335399970529" />
+    <testcase classname="b7.delivery" name="d0.baseline_leakage_metric" time="0.06151549700007308" />
+    <testcase classname="b7.delivery" name="d0.abstention_scores" time="0.060871615998621564" />
+    <testcase classname="b7.delivery" name="d0.actor_track.controlled_noise" time="0.06805683899983705" />
+    <testcase classname="b7.delivery" name="d0.actor_track.oracle" time="0.07438852399900497" />
+    <testcase classname="b7.delivery" name="d0.controlled_uncertainty" time="0.07061554999927466" />
+    <testcase classname="b7.delivery" name="d0.truth_multifactor_rejected" time="0.09679630100072245" />
+    <testcase classname="b7.delivery" name="d0.identical_fingerprint" time="4.204399920126889e-05" />
+  </testsuite>
+  <testsuite name="b7-adversarial-extensions" tests="7" failures="4" errors="0" time="0.6786516869997286">
+    <testcase classname="b7.adversarial" name="boundary_and_receipt" time="0.06993676700039941" />
+    <testcase classname="b7.adversarial" name="input_reordering" time="0.06611423700087471" />
+    <testcase classname="b7.adversarial" name="semantic_actor_duplicate" time="0.06796209599997383">
+      <failure type="B7-DUPLICATE-ACTOR-CLUSTER" message="adversarial input was accepted or leaked into a protected output">{"attacked_actor_entries": 2, "duplicate_payloads_identical": true, "evidence_cluster_id": "12ec8d25-95f4-55d0-b15e-cbedb3bd4525", "feature_hash_changed": true, "finding_id": "B7-DUPLICATE-ACTOR-CLUSTER", "legal_actor_entries": 1, "name": "semantic_actor_duplicate", "seconds": 0.06796209599997383, "status": "vulnerable"}</failure>
+    </testcase>
+    <testcase classname="b7.adversarial" name="duplicate_json_keys" time="0.33019306599999254">
+      <failure type="B7-DUPLICATE-JSON-KEY" message="adversarial input was accepted or leaked into a protected output">{"exit_code": 0, "finding_id": "B7-DUPLICATE-JSON-KEY", "input_sha256": "102147e35b4ec7440021acb493368f4e7e387820b610b345d8ac35a248b3cc34", "name": "duplicate_json_keys", "output_created": true, "raw_contains_confirmation_and_development": true, "reported_partition": "development", "seconds": 0.33019306599999254, "status": "vulnerable"}</failure>
+    </testcase>
+    <testcase classname="b7.adversarial" name="nested_request_leakage" time="0.0009972149982786505">
+      <failure type="B7-NESTED-REQUEST-LEAK" message="adversarial input was accepted or leaked into a protected output">{"candidate_contains_nested_truth": true, "controller_called": true, "finding_id": "B7-NESTED-REQUEST-LEAK", "name": "nested_request_leakage", "persisted_candidate_matches": true, "seconds": 0.0009972149982786505, "status": "vulnerable"}</failure>
+    </testcase>
+    <testcase classname="b7.adversarial" name="future_recorded_time" time="0.07133243200041761">
+      <failure type="B7-ARRIVAL-PRECEDES-RECORDED-TIME" message="adversarial input was accepted or leaked into a protected output">{"classification": "temporal-consistency risk; recorded_time semantics need owner confirmation", "cutoff": "2026-08-17T10:00:00+00:00", "declared_received_at": "2026-08-17T10:00:00+00:00", "finding_id": "B7-ARRIVAL-PRECEDES-RECORDED-TIME", "name": "future_recorded_time", "record_included": true, "recorded_time": "2026-08-20T10:00:00+00:00", "seconds": 0.07133243200041761, "status": "vulnerable"}</failure>
+    </testcase>
+    <testcase classname="b7.adversarial" name="actor_prior_distinction" time="0.0721158739997918" />
+  </testsuite>
+</testsuites>

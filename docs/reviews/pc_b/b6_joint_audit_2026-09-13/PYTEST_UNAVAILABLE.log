@@ -1,0 +1,5 @@
+command: PYTHONDONTWRITEBYTECODE=1 PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 OMP_NUM_THREADS=1 PYTHONPATH=src python -m pytest -o addopts= -p no:cacheprovider -q tests/test_structure_two_joint_consumption_components.py tests/test_structure_two_ciav.py tests/test_structure_two_ciav_negative_observation_layers.py tests/test_structure_two_w3_native_posterior_projection.py tests/test_project_two_ciav_interactive_development.py tests/test_project_two_ciav_break_even.py
+exit_code: 1
+stdout_stderr:
+/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python: No module named pytest
+

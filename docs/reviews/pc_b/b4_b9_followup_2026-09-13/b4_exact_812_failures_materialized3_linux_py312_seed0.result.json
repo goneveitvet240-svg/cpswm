@@ -1,0 +1,77 @@
+{
+  "artifacts": {
+    "b4_exact_812_failures_materialized3_linux_py312_seed0.junit.xml": {
+      "bytes": 25390,
+      "sha256": "be9fcdfb482d8b7eb29fa583fce3c84d6affde6082e8c48fe36d29f53c32b6c8"
+    },
+    "b4_exact_812_failures_materialized3_linux_py312_seed0.stderr.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "b4_exact_812_failures_materialized3_linux_py312_seed0.stdout.log": {
+      "bytes": 24600,
+      "sha256": "9285d60145bf0c4b1a58ffcbaeb5153d98185cf40c06ff074d0c1c412723649c"
+    }
+  },
+  "base_sha": "c366cad0a92593bb2c4c44db7e8d3408a2b5cc9c",
+  "classification": "repair-side Linux LF engineering regression",
+  "command": [
+    "/workspace/scratch/b158d995e8cc/cpswm_b4_snapshot/.venv/bin/python",
+    "-m",
+    "pytest",
+    "-o",
+    "addopts=",
+    "-q",
+    "-p",
+    "no:cacheprovider",
+    "-n",
+    "4",
+    "--basetemp",
+    "/workspace/scratch/b158d995e8cc/cpswm_b4_snapshot/docs/reviews/pc_b/b4_b9_followup_2026-09-13/.b4_exact_812_failures_materialized3_linux_py312_seed0.tmp",
+    "--junitxml",
+    "/workspace/scratch/b158d995e8cc/cpswm_b4_snapshot/docs/reviews/pc_b/b4_b9_followup_2026-09-13/b4_exact_812_failures_materialized3_linux_py312_seed0.junit.xml",
+    "tests/test_structure_two_execution_interface.py::test_sink_cannot_swap_an_in_place_attestation_verifier_key[core]",
+    "tests/test_structure_two_execution_interface.py::test_sink_cannot_swap_an_in_place_attestation_verifier_key[wrapper]",
+    "tests/test_structure_two_execution_interface.py::test_sink_cannot_replace_registered_pchmp_delegate_and_rollback_preserves_identity",
+    "tests/test_structure_two_execution_interface.py::test_sink_cannot_mutate_registered_pchmp_delegate_authority_in_place",
+    "tests/test_structure_two_stateful_full_joint_adversarial.py::test_round_two_embedded_receipt_forgery_is_rejected",
+    "tests/test_structure_two_stateful_full_joint_adversarial.py::test_round_two_paired_action_deletion_is_rejected_even_when_rehashed",
+    "tests/test_structure_two_stateful_full_joint_adversarial.py::test_round_two_claim_boundary_and_source_substitution_are_rejected",
+    "tests/test_structure_two_stateful_full_joint_adversarial.py::test_round_two_fresh_replay_detects_forged_but_self_consistent_provenance",
+    "tests/test_structure_two_stateful_full_joint.py::test_checked_in_route_c_artifact_is_honest_and_verifiable"
+  ],
+  "cwd": "/workspace/scratch/b158d995e8cc/cpswm_b4_snapshot",
+  "duration_seconds": 66.88374248200125,
+  "environment_overrides": {
+    "MKL_NUM_THREADS": "1",
+    "OMP_NUM_THREADS": "1",
+    "OPENBLAS_NUM_THREADS": "1",
+    "PYTHONHASHSEED": "0",
+    "PYTHONPATH": "/workspace/scratch/b158d995e8cc/cpswm_b4_snapshot/src:/workspace/scratch/b158d995e8cc/cpswm_b4_snapshot/tests"
+  },
+  "failed_from_junit": "/workspace/scratch/b158d995e8cc/cpswm_b4_snapshot/docs/reviews/pc_b/b4_b9_followup_2026-09-13/b4_exact_812_failures_materialized2_linux_py312_seed0.junit.xml",
+  "finished_at_utc": "2026-09-12T20:12:15.845599+00:00",
+  "junit": {
+    "errors": 0,
+    "failures": 4,
+    "skipped": 0,
+    "tests": 9,
+    "time_seconds": 66.544
+  },
+  "name": "b4_exact_812_failures_materialized3_linux_py312_seed0",
+  "platform": "Linux-6.18.35-x86_64-with-glibc2.39",
+  "returncode": 1,
+  "runner": {
+    "executable": "/workspace/scratch/b158d995e8cc/cpswm_b4_snapshot/.venv/bin/python",
+    "version": "3.12.14 (main, Aug 25 2026, 14:00:49) [Clang 22.1.3 ]"
+  },
+  "schema": "cpswm.pc-b.command-evidence@1",
+  "selected_nodeids": 9,
+  "selected_test_paths": 38,
+  "source_sha256": {
+    "prototype_spine.py": "39b2b7c5f27eeb6bbc81b13fe407addbd1b65509b2671e52852a74927ee01d49",
+    "structure_two_particle_workspace.py": "7d7de3eae09d9c6c8dd12b287da96b34680e5bcd366c8bdaf9386fa87d568905",
+    "structure_two_semantic_identity.py": "1320930bc8ddba9c20ba90bbb1cdf44fbbd911c1a905042113224493220cfc5d"
+  },
+  "started_at_utc": "2026-09-12T20:11:08.961986+00:00"
+}

@@ -1,0 +1,459 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="4" skipped="0" tests="9" time="66.544" timestamp="2026-09-13T05:11:09.242927+09:00" hostname="localhost"><testcase classname="tests.test_structure_two_stateful_full_joint_adversarial" name="test_round_two_claim_boundary_and_source_substitution_are_rejected" time="0.532" /><testcase classname="tests.test_structure_two_execution_interface" name="test_sink_cannot_replace_registered_pchmp_delegate_and_rollback_preserves_identity" time="0.010"><failure message="TypeError: cannot pickle 'cryptography.hazmat.bindings._rust.openssl.ed25519.Ed25519PublicKey' object">def test_sink_cannot_replace_registered_pchmp_delegate_and_rollback_preserves_identity() -&gt; None:
+        message_passing = PriorOnlyMessagePassing()
+        authority = Ed25519AttestationSigner.generate(key_id="delegate-key").verifier()
+        message_passing._delegate._independence_authority = authority
+        system, transition = _system_and_transition(message_passing=message_passing)
+        before = _state_fingerprint(system)
+        original_delegate = message_passing._delegate
+        replacement_delegate = ProvenanceConstrainedMessagePassing(independence_authority=authority)
+    
+        class DelegateReplacingSink(RecordingSink):
+            def commit(self, trace: StructureTwoExecutionTrace, /) -&gt; TraceCommitAck:
+                acknowledgement = super().commit(trace)
+                message_passing._delegate = replacement_delegate
+                return acknowledgement
+    
+        sink = DelegateReplacingSink()
+        with pytest.raises(RuntimeError, match="replaced an audited runtime component"):
+&gt;           system.process_transition(
+                transition,
+                execution_plan=canonical_legacy_ordinary_transition_plan(),
+                trace_sink=sink,
+            )
+
+tests/test_structure_two_execution_interface.py:264: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/cpswm/system/structure_two_production_system.py:1054: in process_transition
+    checkpoint = self._capture_execution_wrapper_state()
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/cpswm/system/structure_two_production_system.py:1824: in _capture_execution_wrapper_state
+    "fields": deepcopy(dict(vars(component))),
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/copy.py:136: in deepcopy
+    y = copier(x, memo)
+        ^^^^^^^^^^^^^^^
+/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/copy.py:221: in _deepcopy_dict
+    y[deepcopy(key, memo)] = deepcopy(value, memo)
+                             ^^^^^^^^^^^^^^^^^^^^^
+/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/copy.py:162: in deepcopy
+    y = _reconstruct(x, memo, *rv)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^
+/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/copy.py:259: in _reconstruct
+    state = deepcopy(state, memo)
+            ^^^^^^^^^^^^^^^^^^^^^
+/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/copy.py:136: in deepcopy
+    y = copier(x, memo)
+        ^^^^^^^^^^^^^^^
+/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/copy.py:221: in _deepcopy_dict
+    y[deepcopy(key, memo)] = deepcopy(value, memo)
+                             ^^^^^^^^^^^^^^^^^^^^^
+/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/copy.py:162: in deepcopy
+    y = _reconstruct(x, memo, *rv)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^
+/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/copy.py:259: in _reconstruct
+    state = deepcopy(state, memo)
+            ^^^^^^^^^^^^^^^^^^^^^
+/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/copy.py:136: in deepcopy
+    y = copier(x, memo)
+        ^^^^^^^^^^^^^^^
+/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/copy.py:221: in _deepcopy_dict
+    y[deepcopy(key, memo)] = deepcopy(value, memo)
+                             ^^^^^^^^^^^^^^^^^^^^^
+/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/copy.py:162: in deepcopy
+    y = _reconstruct(x, memo, *rv)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^
+/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/copy.py:259: in _reconstruct
+    state = deepcopy(state, memo)
+            ^^^^^^^^^^^^^^^^^^^^^
+/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/copy.py:136: in deepcopy
+    y = copier(x, memo)
+        ^^^^^^^^^^^^^^^
+/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/copy.py:221: in _deepcopy_dict
+    y[deepcopy(key, memo)] = deepcopy(value, memo)
+                             ^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+x = &lt;cryptography.hazmat.bindings._rust.openssl.ed25519.Ed25519PublicKey object at 0x7f0a22f97670&gt;
+memo = {139681511839936: {'_projector': &lt;cpswm.system.continual.execution_feedback_projector.ExecutionFeedbackProjector objec...ojector.ExecutionFeedbackProjector object at 0x7f0a22e9a780&gt;, 139681690555648: {'_seen': {}}, 139681512330816: {}, ...}
+_nil = []
+
+    def deepcopy(x, memo=None, _nil=[]):
+        """Deep copy operation on arbitrary Python objects.
+    
+        See the module's __doc__ string for more info.
+        """
+    
+        if memo is None:
+            memo = {}
+    
+        d = id(x)
+        y = memo.get(d, _nil)
+        if y is not _nil:
+            return y
+    
+        cls = type(x)
+    
+        copier = _deepcopy_dispatch.get(cls)
+        if copier is not None:
+            y = copier(x, memo)
+        else:
+            if issubclass(cls, type):
+                y = _deepcopy_atomic(x, memo)
+            else:
+                copier = getattr(x, "__deepcopy__", None)
+                if copier is not None:
+                    y = copier(memo)
+                else:
+                    reductor = dispatch_table.get(cls)
+                    if reductor:
+                        rv = reductor(x)
+                    else:
+                        reductor = getattr(x, "__reduce_ex__", None)
+                        if reductor is not None:
+&gt;                           rv = reductor(4)
+                                 ^^^^^^^^^^^
+E                           TypeError: cannot pickle 'cryptography.hazmat.bindings._rust.openssl.ed25519.Ed25519PublicKey' object
+
+/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/copy.py:151: TypeError</failure></testcase><testcase classname="tests.test_structure_two_execution_interface" name="test_sink_cannot_swap_an_in_place_attestation_verifier_key[core]" time="0.011"><failure message="TypeError: cannot pickle 'cryptography.hazmat.bindings._rust.openssl.ed25519.Ed25519PublicKey' object">target = 'core'
+
+    @pytest.mark.parametrize("target", ["core", "wrapper"])
+    def test_sink_cannot_swap_an_in_place_attestation_verifier_key(target: str) -&gt; None:
+        system, transition = _system_and_transition()
+        original_authority = Ed25519AttestationSigner.generate(key_id="stable-key").verifier()
+        replacement_authority = Ed25519AttestationSigner.generate(key_id="stable-key").verifier()
+        if target == "core":
+            message_passing = system.core._message_passing
+        else:
+            message_passing = system.feedback_revision_loop._message_passing
+        message_passing._independence_authority = original_authority
+        original_public_key_sha256 = original_authority.public_key_sha256
+        before = _state_fingerprint(system)
+    
+        class KeyMutatingSink(RecordingSink):
+            def commit(self, trace: StructureTwoExecutionTrace, /) -&gt; TraceCommitAck:
+                acknowledgement = super().commit(trace)
+                original_authority._public_key = replacement_authority._public_key
+                return acknowledgement
+    
+        sink = KeyMutatingSink()
+        with pytest.raises(
+            RuntimeError,
+            match=r"mutated audited core state|mutated audited production-wrapper state",
+        ):
+&gt;           system.process_transition(
+                transition,
+                execution_plan=canonical_legacy_ordinary_transition_plan(),
+                trace_sink=sink,
+            )
+
+tests/test_structure_two_execution_interface.py:1132: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/cpswm/system/structure_two_production_system.py:1054: in process_transition
+    checkpoint = self._capture_execution_wrapper_state()
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/cpswm/system/structure_two_production_system.py:1824: in _capture_execution_wrapper_state
+    "fields": deepcopy(dict(vars(component))),
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/copy.py:136: in deepcopy
+    y = copier(x, memo)
+        ^^^^^^^^^^^^^^^
+/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/copy.py:221: in _deepcopy_dict
+    y[deepcopy(key, memo)] = deepcopy(value, memo)
+                             ^^^^^^^^^^^^^^^^^^^^^
+/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/copy.py:162: in deepcopy
+    y = _reconstruct(x, memo, *rv)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^
+/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/copy.py:259: in _reconstruct
+    state = deepcopy(state, memo)
+            ^^^^^^^^^^^^^^^^^^^^^
+/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/copy.py:136: in deepcopy
+    y = copier(x, memo)
+        ^^^^^^^^^^^^^^^
+/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/copy.py:221: in _deepcopy_dict
+    y[deepcopy(key, memo)] = deepcopy(value, memo)
+                             ^^^^^^^^^^^^^^^^^^^^^
+/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/copy.py:162: in deepcopy
+    y = _reconstruct(x, memo, *rv)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^
+/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/copy.py:259: in _reconstruct
+    state = deepcopy(state, memo)
+            ^^^^^^^^^^^^^^^^^^^^^
+/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/copy.py:136: in deepcopy
+    y = copier(x, memo)
+        ^^^^^^^^^^^^^^^
+/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/copy.py:221: in _deepcopy_dict
+    y[deepcopy(key, memo)] = deepcopy(value, memo)
+                             ^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+x = &lt;cryptography.hazmat.bindings._rust.openssl.ed25519.Ed25519PublicKey object at 0x7f280de6ab70&gt;
+memo = {139809832098368: {'_projector': &lt;cpswm.system.continual.execution_feedback_projector.ExecutionFeedbackProjector objec...ojector.ExecutionFeedbackProjector object at 0x7f2803398050&gt;, 139809829673152: {'_seen': {}}, 139809829676224: {}, ...}
+_nil = []
+
+    def deepcopy(x, memo=None, _nil=[]):
+        """Deep copy operation on arbitrary Python objects.
+    
+        See the module's __doc__ string for more info.
+        """
+    
+        if memo is None:
+            memo = {}
+    
+        d = id(x)
+        y = memo.get(d, _nil)
+        if y is not _nil:
+            return y
+    
+        cls = type(x)
+    
+        copier = _deepcopy_dispatch.get(cls)
+        if copier is not None:
+            y = copier(x, memo)
+        else:
+            if issubclass(cls, type):
+                y = _deepcopy_atomic(x, memo)
+            else:
+                copier = getattr(x, "__deepcopy__", None)
+                if copier is not None:
+                    y = copier(memo)
+                else:
+                    reductor = dispatch_table.get(cls)
+                    if reductor:
+                        rv = reductor(x)
+                    else:
+                        reductor = getattr(x, "__reduce_ex__", None)
+                        if reductor is not None:
+&gt;                           rv = reductor(4)
+                                 ^^^^^^^^^^^
+E                           TypeError: cannot pickle 'cryptography.hazmat.bindings._rust.openssl.ed25519.Ed25519PublicKey' object
+
+/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/copy.py:151: TypeError</failure></testcase><testcase classname="tests.test_structure_two_stateful_full_joint_adversarial" name="test_round_two_embedded_receipt_forgery_is_rejected" time="0.258" /><testcase classname="tests.test_structure_two_execution_interface" name="test_sink_cannot_swap_an_in_place_attestation_verifier_key[wrapper]" time="0.004"><failure message="TypeError: cannot pickle 'cryptography.hazmat.bindings._rust.openssl.ed25519.Ed25519PublicKey' object">target = 'wrapper'
+
+    @pytest.mark.parametrize("target", ["core", "wrapper"])
+    def test_sink_cannot_swap_an_in_place_attestation_verifier_key(target: str) -&gt; None:
+        system, transition = _system_and_transition()
+        original_authority = Ed25519AttestationSigner.generate(key_id="stable-key").verifier()
+        replacement_authority = Ed25519AttestationSigner.generate(key_id="stable-key").verifier()
+        if target == "core":
+            message_passing = system.core._message_passing
+        else:
+            message_passing = system.feedback_revision_loop._message_passing
+        message_passing._independence_authority = original_authority
+        original_public_key_sha256 = original_authority.public_key_sha256
+        before = _state_fingerprint(system)
+    
+        class KeyMutatingSink(RecordingSink):
+            def commit(self, trace: StructureTwoExecutionTrace, /) -&gt; TraceCommitAck:
+                acknowledgement = super().commit(trace)
+                original_authority._public_key = replacement_authority._public_key
+                return acknowledgement
+    
+        sink = KeyMutatingSink()
+        with pytest.raises(
+            RuntimeError,
+            match=r"mutated audited core state|mutated audited production-wrapper state",
+        ):
+&gt;           system.process_transition(
+                transition,
+                execution_plan=canonical_legacy_ordinary_transition_plan(),
+                trace_sink=sink,
+            )
+
+tests/test_structure_two_execution_interface.py:1132: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/cpswm/system/structure_two_production_system.py:1054: in process_transition
+    checkpoint = self._capture_execution_wrapper_state()
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/cpswm/system/structure_two_production_system.py:1824: in _capture_execution_wrapper_state
+    "fields": deepcopy(dict(vars(component))),
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/copy.py:136: in deepcopy
+    y = copier(x, memo)
+        ^^^^^^^^^^^^^^^
+/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/copy.py:221: in _deepcopy_dict
+    y[deepcopy(key, memo)] = deepcopy(value, memo)
+                             ^^^^^^^^^^^^^^^^^^^^^
+/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/copy.py:162: in deepcopy
+    y = _reconstruct(x, memo, *rv)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^
+/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/copy.py:259: in _reconstruct
+    state = deepcopy(state, memo)
+            ^^^^^^^^^^^^^^^^^^^^^
+/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/copy.py:136: in deepcopy
+    y = copier(x, memo)
+        ^^^^^^^^^^^^^^^
+/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/copy.py:221: in _deepcopy_dict
+    y[deepcopy(key, memo)] = deepcopy(value, memo)
+                             ^^^^^^^^^^^^^^^^^^^^^
+/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/copy.py:162: in deepcopy
+    y = _reconstruct(x, memo, *rv)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^
+/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/copy.py:259: in _reconstruct
+    state = deepcopy(state, memo)
+            ^^^^^^^^^^^^^^^^^^^^^
+/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/copy.py:136: in deepcopy
+    y = copier(x, memo)
+        ^^^^^^^^^^^^^^^
+/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/copy.py:221: in _deepcopy_dict
+    y[deepcopy(key, memo)] = deepcopy(value, memo)
+                             ^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+x = &lt;cryptography.hazmat.bindings._rust.openssl.ed25519.Ed25519PublicKey object at 0x7f2802dbfad0&gt;
+memo = {139809829060288: {'_projector': &lt;cpswm.system.continual.execution_feedback_projector.ExecutionFeedbackProjector objec...ojector.ExecutionFeedbackProjector object at 0x7f28033e85c0&gt;, 139809828264640: {'_seen': {}}, 139809828268928: {}, ...}
+_nil = []
+
+    def deepcopy(x, memo=None, _nil=[]):
+        """Deep copy operation on arbitrary Python objects.
+    
+        See the module's __doc__ string for more info.
+        """
+    
+        if memo is None:
+            memo = {}
+    
+        d = id(x)
+        y = memo.get(d, _nil)
+        if y is not _nil:
+            return y
+    
+        cls = type(x)
+    
+        copier = _deepcopy_dispatch.get(cls)
+        if copier is not None:
+            y = copier(x, memo)
+        else:
+            if issubclass(cls, type):
+                y = _deepcopy_atomic(x, memo)
+            else:
+                copier = getattr(x, "__deepcopy__", None)
+                if copier is not None:
+                    y = copier(memo)
+                else:
+                    reductor = dispatch_table.get(cls)
+                    if reductor:
+                        rv = reductor(x)
+                    else:
+                        reductor = getattr(x, "__reduce_ex__", None)
+                        if reductor is not None:
+&gt;                           rv = reductor(4)
+                                 ^^^^^^^^^^^
+E                           TypeError: cannot pickle 'cryptography.hazmat.bindings._rust.openssl.ed25519.Ed25519PublicKey' object
+
+/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/copy.py:151: TypeError</failure></testcase><testcase classname="tests.test_structure_two_execution_interface" name="test_sink_cannot_mutate_registered_pchmp_delegate_authority_in_place" time="0.004"><failure message="TypeError: cannot pickle 'cryptography.hazmat.bindings._rust.openssl.ed25519.Ed25519PublicKey' object">def test_sink_cannot_mutate_registered_pchmp_delegate_authority_in_place() -&gt; None:
+        message_passing = PriorOnlyMessagePassing()
+        authority = Ed25519AttestationSigner.generate(key_id="delegate-key").verifier()
+        replacement = Ed25519AttestationSigner.generate(key_id="delegate-key").verifier()
+        message_passing._delegate._independence_authority = authority
+        system, transition = _system_and_transition(message_passing=message_passing)
+        before = _state_fingerprint(system)
+        original_public_key_sha256 = authority.public_key_sha256
+    
+        class DelegateAuthorityMutatingSink(RecordingSink):
+            def commit(self, trace: StructureTwoExecutionTrace, /) -&gt; TraceCommitAck:
+                acknowledgement = super().commit(trace)
+                authority._public_key = replacement._public_key
+                return acknowledgement
+    
+        sink = DelegateAuthorityMutatingSink()
+        with pytest.raises(RuntimeError, match="mutated audited core state"):
+&gt;           system.process_transition(
+                transition,
+                execution_plan=canonical_legacy_ordinary_transition_plan(),
+                trace_sink=sink,
+            )
+
+tests/test_structure_two_execution_interface.py:296: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/cpswm/system/structure_two_production_system.py:1054: in process_transition
+    checkpoint = self._capture_execution_wrapper_state()
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/cpswm/system/structure_two_production_system.py:1824: in _capture_execution_wrapper_state
+    "fields": deepcopy(dict(vars(component))),
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/copy.py:136: in deepcopy
+    y = copier(x, memo)
+        ^^^^^^^^^^^^^^^
+/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/copy.py:221: in _deepcopy_dict
+    y[deepcopy(key, memo)] = deepcopy(value, memo)
+                             ^^^^^^^^^^^^^^^^^^^^^
+/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/copy.py:162: in deepcopy
+    y = _reconstruct(x, memo, *rv)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^
+/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/copy.py:259: in _reconstruct
+    state = deepcopy(state, memo)
+            ^^^^^^^^^^^^^^^^^^^^^
+/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/copy.py:136: in deepcopy
+    y = copier(x, memo)
+        ^^^^^^^^^^^^^^^
+/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/copy.py:221: in _deepcopy_dict
+    y[deepcopy(key, memo)] = deepcopy(value, memo)
+                             ^^^^^^^^^^^^^^^^^^^^^
+/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/copy.py:162: in deepcopy
+    y = _reconstruct(x, memo, *rv)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^
+/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/copy.py:259: in _reconstruct
+    state = deepcopy(state, memo)
+            ^^^^^^^^^^^^^^^^^^^^^
+/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/copy.py:136: in deepcopy
+    y = copier(x, memo)
+        ^^^^^^^^^^^^^^^
+/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/copy.py:221: in _deepcopy_dict
+    y[deepcopy(key, memo)] = deepcopy(value, memo)
+                             ^^^^^^^^^^^^^^^^^^^^^
+/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/copy.py:162: in deepcopy
+    y = _reconstruct(x, memo, *rv)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^
+/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/copy.py:259: in _reconstruct
+    state = deepcopy(state, memo)
+            ^^^^^^^^^^^^^^^^^^^^^
+/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/copy.py:136: in deepcopy
+    y = copier(x, memo)
+        ^^^^^^^^^^^^^^^
+/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/copy.py:221: in _deepcopy_dict
+    y[deepcopy(key, memo)] = deepcopy(value, memo)
+                             ^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+x = &lt;cryptography.hazmat.bindings._rust.openssl.ed25519.Ed25519PublicKey object at 0x7f0a228c7650&gt;
+memo = {139681511669440: {'_projector': &lt;cpswm.system.continual.execution_feedback_projector.ExecutionFeedbackProjector objec...ojector.ExecutionFeedbackProjector object at 0x7f0a22eb9b20&gt;, 139681510874304: {'_seen': {}}, 139681510877760: {}, ...}
+_nil = []
+
+    def deepcopy(x, memo=None, _nil=[]):
+        """Deep copy operation on arbitrary Python objects.
+    
+        See the module's __doc__ string for more info.
+        """
+    
+        if memo is None:
+            memo = {}
+    
+        d = id(x)
+        y = memo.get(d, _nil)
+        if y is not _nil:
+            return y
+    
+        cls = type(x)
+    
+        copier = _deepcopy_dispatch.get(cls)
+        if copier is not None:
+            y = copier(x, memo)
+        else:
+            if issubclass(cls, type):
+                y = _deepcopy_atomic(x, memo)
+            else:
+                copier = getattr(x, "__deepcopy__", None)
+                if copier is not None:
+                    y = copier(memo)
+                else:
+                    reductor = dispatch_table.get(cls)
+                    if reductor:
+                        rv = reductor(x)
+                    else:
+                        reductor = getattr(x, "__reduce_ex__", None)
+                        if reductor is not None:
+&gt;                           rv = reductor(4)
+                                 ^^^^^^^^^^^
+E                           TypeError: cannot pickle 'cryptography.hazmat.bindings._rust.openssl.ed25519.Ed25519PublicKey' object
+
+/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/copy.py:151: TypeError</failure></testcase><testcase classname="tests.test_structure_two_stateful_full_joint" name="test_checked_in_route_c_artifact_is_honest_and_verifiable" time="0.181" /><testcase classname="tests.test_structure_two_stateful_full_joint_adversarial" name="test_round_two_paired_action_deletion_is_rejected_even_when_rehashed" time="0.302" /><testcase classname="tests.test_structure_two_stateful_full_joint_adversarial" name="test_round_two_fresh_replay_detects_forged_but_self_consistent_provenance" time="64.501" /></testsuite></testsuites>

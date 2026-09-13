@@ -1,0 +1,321 @@
+{
+  "actual_code_sha": "57e8576c7dd48203839cdd0ae3a4cdb295db7185",
+  "delivery_matrix": [
+    {
+      "name": "data.visible_legal",
+      "seconds": 0.0005221480005275225,
+      "status": "passed"
+    },
+    {
+      "name": "data.late_detection",
+      "seconds": 0.00034897700061264914,
+      "status": "passed"
+    },
+    {
+      "name": "data.late_actor",
+      "seconds": 0.0004481759988266276,
+      "status": "passed"
+    },
+    {
+      "name": "data.future_invariance",
+      "seconds": 0.00037134000012883916,
+      "status": "passed"
+    },
+    {
+      "name": "data.missingness.not_observed",
+      "seconds": 0.0001812329992390005,
+      "status": "passed"
+    },
+    {
+      "name": "data.missingness.ambiguous",
+      "seconds": 0.00018964599985338282,
+      "status": "passed"
+    },
+    {
+      "name": "data.missingness.verified_absence",
+      "seconds": 0.00017413299974577967,
+      "status": "passed"
+    },
+    {
+      "name": "data.invalid.duplicate",
+      "seconds": 5.06369997310685e-05,
+      "status": "passed"
+    },
+    {
+      "name": "data.invalid.orphan",
+      "seconds": 3.97000003431458e-05,
+      "status": "passed"
+    },
+    {
+      "name": "data.invalid.arrival_missing",
+      "seconds": 2.293499892402906e-05,
+      "status": "passed"
+    },
+    {
+      "name": "data.invalid.arrival_early",
+      "seconds": 2.4947999918367714e-05,
+      "status": "passed"
+    },
+    {
+      "name": "data.invalid.session",
+      "seconds": 3.1066998417372815e-05,
+      "status": "passed"
+    },
+    {
+      "name": "data.invalid.unselected",
+      "seconds": 2.580900036264211e-05,
+      "status": "passed"
+    },
+    {
+      "name": "data.invalid.mutated_result",
+      "seconds": 0.0004106500000489177,
+      "status": "passed"
+    },
+    {
+      "name": "data.invalid.oracle_actor",
+      "seconds": 6.656999903498217e-05,
+      "status": "passed"
+    },
+    {
+      "name": "data.capture_separation",
+      "seconds": 0.003347672000018065,
+      "status": "passed"
+    },
+    {
+      "name": "data.capture_known_failure",
+      "seconds": 0.0009253759999410249,
+      "status": "passed"
+    },
+    {
+      "name": "data.capture_uncertain.nan",
+      "seconds": 0.000665253999613924,
+      "status": "passed"
+    },
+    {
+      "name": "data.capture_uncertain.mismatch",
+      "seconds": 0.00048684499961382244,
+      "status": "passed"
+    },
+    {
+      "name": "data.capture_uncertain.interrupt",
+      "seconds": 0.00033979299951170105,
+      "status": "passed"
+    },
+    {
+      "name": "data.capture_action_contract",
+      "seconds": 0.0006127449996711221,
+      "status": "passed"
+    },
+    {
+      "name": "data.simulator_preflight_truthful",
+      "seconds": 0.00025755800015758723,
+      "status": "passed"
+    },
+    {
+      "name": "data.train_profile",
+      "seconds": 0.40022586600025534,
+      "status": "passed"
+    },
+    {
+      "name": "data.cli.legal",
+      "seconds": 0.2529440939997585,
+      "status": "passed"
+    },
+    {
+      "name": "data.cli.confirmation",
+      "seconds": 0.25635764700018626,
+      "status": "passed"
+    },
+    {
+      "name": "data.cli.truth",
+      "seconds": 0.26239336999969964,
+      "status": "passed"
+    },
+    {
+      "name": "data.cli.overwrite",
+      "seconds": 0.29883889299890143,
+      "status": "passed"
+    },
+    {
+      "name": "data.empty_prefix",
+      "seconds": 0.00024526000015612226,
+      "status": "passed"
+    },
+    {
+      "name": "data.mutable_actor_revalidated",
+      "seconds": 0.0010440549995109905,
+      "status": "passed"
+    },
+    {
+      "name": "d0.checked_config",
+      "seconds": 0.07499153399839997,
+      "status": "passed"
+    },
+    {
+      "name": "d0.deterministic_one_factor",
+      "seconds": 0.11638865999884729,
+      "status": "passed"
+    },
+    {
+      "name": "d0.preperiod",
+      "seconds": 0.05919590699886612,
+      "status": "passed"
+    },
+    {
+      "name": "d0.paired_randomness",
+      "seconds": 0.1081122889991093,
+      "status": "passed"
+    },
+    {
+      "name": "d0.shared_session",
+      "seconds": 0.05906452800081752,
+      "status": "passed"
+    },
+    {
+      "name": "d0.nonidentifiable_without_people",
+      "seconds": 0.05796861499948136,
+      "status": "passed"
+    },
+    {
+      "name": "d0.truth_excluded",
+      "seconds": 0.06748335399970529,
+      "status": "passed"
+    },
+    {
+      "name": "d0.baseline_leakage_metric",
+      "seconds": 0.06151549700007308,
+      "status": "passed"
+    },
+    {
+      "name": "d0.abstention_scores",
+      "seconds": 0.060871615998621564,
+      "status": "passed"
+    },
+    {
+      "name": "d0.actor_track.controlled_noise",
+      "seconds": 0.06805683899983705,
+      "status": "passed"
+    },
+    {
+      "name": "d0.actor_track.oracle",
+      "seconds": 0.07438852399900497,
+      "status": "passed"
+    },
+    {
+      "name": "d0.controlled_uncertainty",
+      "seconds": 0.07061554999927466,
+      "status": "passed"
+    },
+    {
+      "name": "d0.truth_multifactor_rejected",
+      "seconds": 0.09679630100072245,
+      "status": "passed"
+    },
+    {
+      "name": "d0.identical_fingerprint",
+      "seconds": 4.204399920126889e-05,
+      "status": "passed"
+    }
+  ],
+  "delivery_sha": "6e07ab682a9ec15e959e1a50001e237877bc4773",
+  "environment": {
+    "cpu_count": 9,
+    "cwd": "/workspace/scratch/b158d995e8cc/cpswm_b7_snapshot",
+    "executable": "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python",
+    "execution_mode": "direct invocation of exact test functions with minimal assertion shim",
+    "platform": "Linux-6.18.44-x86_64-with-glibc2.39",
+    "pytest_installed": false,
+    "python": "3.12.14 (main, Aug 25 2026, 14:00:49) [Clang 22.1.3 ]"
+  },
+  "extensions": [
+    {
+      "exact_cutoff_included": true,
+      "feature_hash_matches": true,
+      "name": "boundary_and_receipt",
+      "record_hashes_match": true,
+      "seconds": 0.06993676700039941,
+      "status": "defense_passed"
+    },
+    {
+      "identical": true,
+      "name": "input_reordering",
+      "observation_count": 2,
+      "seconds": 0.06611423700087471,
+      "status": "defense_passed"
+    },
+    {
+      "attacked_actor_entries": 2,
+      "duplicate_payloads_identical": true,
+      "evidence_cluster_id": "12ec8d25-95f4-55d0-b15e-cbedb3bd4525",
+      "feature_hash_changed": true,
+      "finding_id": "B7-DUPLICATE-ACTOR-CLUSTER",
+      "legal_actor_entries": 1,
+      "name": "semantic_actor_duplicate",
+      "seconds": 0.06796209599997383,
+      "status": "vulnerable"
+    },
+    {
+      "exit_code": 0,
+      "finding_id": "B7-DUPLICATE-JSON-KEY",
+      "input_sha256": "102147e35b4ec7440021acb493368f4e7e387820b610b345d8ac35a248b3cc34",
+      "name": "duplicate_json_keys",
+      "output_created": true,
+      "raw_contains_confirmation_and_development": true,
+      "reported_partition": "development",
+      "seconds": 0.33019306599999254,
+      "status": "vulnerable"
+    },
+    {
+      "candidate_contains_nested_truth": true,
+      "controller_called": true,
+      "finding_id": "B7-NESTED-REQUEST-LEAK",
+      "name": "nested_request_leakage",
+      "persisted_candidate_matches": true,
+      "seconds": 0.0009972149982786505,
+      "status": "vulnerable"
+    },
+    {
+      "classification": "temporal-consistency risk; recorded_time semantics need owner confirmation",
+      "cutoff": "2026-08-17T10:00:00+00:00",
+      "declared_received_at": "2026-08-17T10:00:00+00:00",
+      "finding_id": "B7-ARRIVAL-PRECEDES-RECORDED-TIME",
+      "name": "future_recorded_time",
+      "record_included": true,
+      "recorded_time": "2026-08-20T10:00:00+00:00",
+      "seconds": 0.07133243200041761,
+      "status": "vulnerable"
+    },
+    {
+      "name": "actor_prior_distinction",
+      "posterior_preserved": true,
+      "prior_distinct": true,
+      "receipt_changed": true,
+      "seconds": 0.0721158739997918,
+      "status": "defense_passed"
+    }
+  ],
+  "schema": "cpswm.pc-b.b7-independent-audit@1",
+  "scope": {
+    "method_arm_run": false,
+    "real_simulator_run": false,
+    "reserved_validation_or_confirmation_generated": false,
+    "reserved_validation_or_confirmation_read": false,
+    "training_run": false
+  },
+  "source_sha256": {
+    "src/cpswm/data_preflight/simulator_capture.py": "bda9b46c35d0bb65a6c97187b8625a3d8dfa9fbf9214ad4d434dc9f8416aaed1",
+    "src/cpswm/data_preflight/train_coverage.py": "e3a31618dc107e0a9c216e8a391930198e75bd3ffad9f983f627049924f9b19d",
+    "src/cpswm/data_preflight/visible_prefix.py": "7a15da0718ee0875f7977bd4d2ca5224b8ff7077e51f624e2d081f580b4d858f",
+    "tests/test_d0_shift_scenarios.py": "f3040c8ac5f1041f8772be66e3b6ca4b105b671ad969df0a11da9f6b3c7e39f9",
+    "tests/test_structure_two_data_preflight.py": "daaeae0b013c0ded20d66b58b04ef8960e21d5e0341fdc90cf6c7821d15dec6b",
+    "tools/structure_two_data_preflight.py": "b3179005f48c8a2a4b069fccfdfd303ff30669e8607b0f1af9def5fd9c6e2539"
+  },
+  "summary": {
+    "delivery_failed": 0,
+    "delivery_passed": 43,
+    "extension_defenses_passed": 3,
+    "extension_probe_errors": 0,
+    "extension_vulnerabilities": 4,
+    "seconds": 3.204712159000337
+  }
+}

@@ -1,0 +1,51 @@
+{
+  "cwd": "/workspace/scratch/b158d995e8cc/cpswm_b4_snapshot",
+  "platform": "Linux-6.18.35-x86_64-with-glibc2.39",
+  "python": "3.12.14 (main, Aug 25 2026, 14:00:49) [Clang 22.1.3 ]",
+  "rounds": [
+    {
+      "attack": {
+        "advance_error": {
+          "message": "candidate event chain differs from its runtime source history",
+          "type": "ValueError"
+        },
+        "content_changed": true,
+        "journal_entries_after_attack": 0,
+        "post_commit_state_payload_error": null,
+        "records_after_attack": 0,
+        "same_hypothesis_id": true,
+        "same_roles": true,
+        "subsequent_legal_core_stage_error": null
+      },
+      "elapsed_ms": 1180.442677,
+      "legal_control": {
+        "advance_returned_particles": 2,
+        "state_payload_error": null
+      },
+      "name": "public-workspace forged-chain atomicity",
+      "verdict": "PASS: forged source lineage was rejected atomically"
+    },
+    {
+      "name": "fresh-interpreter public import order",
+      "prototype_spine_first": {
+        "elapsed_ms": 604.614616,
+        "returncode": 1,
+        "stderr": "Traceback (most recent call last):\n  File \"<string>\", line 1, in <module>\n  File \"/workspace/scratch/b158d995e8cc/cpswm_b4_snapshot/src/cpswm/system/prototype_spine.py\", line 86, in <module>\n    from cpswm.system.evaluation_operations.structure_two_selected_method import (\n  File \"/workspace/scratch/b158d995e8cc/cpswm_b4_snapshot/src/cpswm/system/evaluation_operations/__init__.py\", line 262, in <module>\n    from .project_two_action_benchmark import (\n  File \"/workspace/scratch/b158d995e8cc/cpswm_b4_snapshot/src/cpswm/system/evaluation_operations/project_two_action_benchmark.py\", line 94, in <module>\n    from cpswm.system.prototype_spine import (\nImportError: cannot import name 'ActionReadout' from partially initialized module 'cpswm.system.prototype_spine' (most likely due to a circular import) (/workspace/scratch/b158d995e8cc/cpswm_b4_snapshot/src/cpswm/system/prototype_spine.py)\n",
+        "stdout": ""
+      },
+      "selected_method_then_prototype_spine_control": {
+        "elapsed_ms": 803.292963,
+        "returncode": 0,
+        "stderr": "",
+        "stdout": "CorePrototypeSpine\n"
+      },
+      "verdict": "FAIL: prototype_spine cannot be imported as the first public module"
+    }
+  ],
+  "schema": "cpswm.pc-b.two-round-adversarial-audit@1",
+  "source_sha256": {
+    "src/cpswm/system/prototype_spine.py": "aaecc9bf5a7be0307ffc2c418da6ef479c80050f4c2b4e1832b3c0e700ec5a0f",
+    "src/cpswm/system/structure_two_particle_workspace.py": "0410db7cf57c647a2e42938c66d34f196e0ba8883d2caae949d8cff3e1df7e67",
+    "src/cpswm/system/structure_two_semantic_identity.py": "83b3d0ae6e564ecc84a3096335b9b6fc6b790e554719eb05b434ff94e284a665"
+  }
+}

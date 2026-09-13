@@ -1,0 +1,150 @@
+{
+  "frozen_code_sha": "1d24099a025c9d7c00a59e4c78c593703924b0eb",
+  "python": "3.12.14 (main, Aug 25 2026, 14:00:49) [Clang 22.1.3 ]",
+  "executable": "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python",
+  "platform": "Linux-6.18.35-x86_64-with-glibc2.39",
+  "cwd": "/workspace/scratch/b158d995e8cc/cpswm_b6_snapshot",
+  "command": [
+    "tools/b6_independent_adversarial_audit.py",
+    "docs/reviews/pc_b/b6_joint_audit_2026-09-13/run_adversarial_03"
+  ],
+  "source_identity": {
+    "checked": 312,
+    "matched": 312,
+    "mismatch": {}
+  },
+  "seconds": 3.118858450001426,
+  "cases": [
+    {
+      "case": "cold_public_entrypoint_import_order",
+      "status": "observed",
+      "seconds": 2.1405187230011506,
+      "detail": {
+        "results": {
+          "module_only": {
+            "returncode": 0,
+            "stderr": "",
+            "circular_import": false
+          },
+          "required_prior_type": {
+            "returncode": 1,
+            "stderr": "Traceback (most recent call last):\n  File \"<string>\", line 1, in <module>\n  File \"/workspace/scratch/b158d995e8cc/cpswm_b6_snapshot/src/cpswm/system/structure_two_particle_workspace.py\", line 26, in <module>\n    from cpswm.system.evaluation_operations.structure_two_selected_method import (\n  File \"/workspace/scratch/b158d995e8cc/cpswm_b6_snapshot/src/cpswm/system/evaluation_operations/__init__.py\", line 262, in <module>\n    from .project_two_action_benchmark import (\n  File \"/workspace/scratch/b158d995e8cc/cpswm_b6_snapshot/src/cpswm/system/evaluation_operations/project_two_action_benchmark.py\", line 94, in <module>\n    from cpswm.system.prototype_spine import (\n  File \"/workspace/scratch/b158d995e8cc/cpswm_b6_snapshot/src/cpswm/system/prototype_spine.py\", line 121, in <module>\n    from cpswm.system.structure_two_particle_workspace import (\nImportError: cannot import name 'ConditionalAnalyticState' from partially initialized module 'cpswm.system.structure_two_particle_workspace' (most likely due to a circular import) (/workspace/scratch/b158d995e8cc/cpswm_b6_snapshot/src/cpswm/system/structure_two_particle_workspace.py)\n",
+            "circular_import": true
+          },
+          "first_public_call": {
+            "returncode": 1,
+            "stderr": "Traceback (most recent call last):\n  File \"<string>\", line 1, in <module>\n  File \"/workspace/scratch/b158d995e8cc/cpswm_b6_snapshot/src/cpswm/system/structure_two_conditional_updates.py\", line 79, in rebuild_conditional_state\n    from cpswm.system.structure_two_particle_workspace import ConditionalAnalyticState\n  File \"/workspace/scratch/b158d995e8cc/cpswm_b6_snapshot/src/cpswm/system/structure_two_particle_workspace.py\", line 26, in <module>\n    from cpswm.system.evaluation_operations.structure_two_selected_method import (\n  File \"/workspace/scratch/b158d995e8cc/cpswm_b6_snapshot/src/cpswm/system/evaluation_operations/__init__.py\", line 262, in <module>\n    from .project_two_action_benchmark import (\n  File \"/workspace/scratch/b158d995e8cc/cpswm_b6_snapshot/src/cpswm/system/evaluation_operations/project_two_action_benchmark.py\", line 94, in <module>\n    from cpswm.system.prototype_spine import (\n  File \"/workspace/scratch/b158d995e8cc/cpswm_b6_snapshot/src/cpswm/system/prototype_spine.py\", line 121, in <module>\n    from cpswm.system.structure_two_particle_workspace import (\nImportError: cannot import name 'ConditionalAnalyticState' from partially initialized module 'cpswm.system.structure_two_particle_workspace' (most likely due to a circular import) (/workspace/scratch/b158d995e8cc/cpswm_b6_snapshot/src/cpswm/system/structure_two_particle_workspace.py)\n",
+            "circular_import": true
+          },
+          "joint_view_first_digest": {
+            "returncode": 1,
+            "stderr": "Traceback (most recent call last):\n  File \"<string>\", line 1, in <module>\n  File \"/workspace/scratch/b158d995e8cc/cpswm_b6_snapshot/src/cpswm/system/structure_two_joint_consumption.py\", line 125, in content_sha256\n    from cpswm.system.structure_two_particle_workspace import native_content_sha256\n  File \"/workspace/scratch/b158d995e8cc/cpswm_b6_snapshot/src/cpswm/system/structure_two_particle_workspace.py\", line 26, in <module>\n    from cpswm.system.evaluation_operations.structure_two_selected_method import (\n  File \"/workspace/scratch/b158d995e8cc/cpswm_b6_snapshot/src/cpswm/system/evaluation_operations/__init__.py\", line 262, in <module>\n    from .project_two_action_benchmark import (\n  File \"/workspace/scratch/b158d995e8cc/cpswm_b6_snapshot/src/cpswm/system/evaluation_operations/project_two_action_benchmark.py\", line 94, in <module>\n    from cpswm.system.prototype_spine import (\n  File \"/workspace/scratch/b158d995e8cc/cpswm_b6_snapshot/src/cpswm/system/prototype_spine.py\", line 121, in <module>\n    from cpswm.system.structure_two_particle_workspace import (\nImportError: cannot import name 'ConditionalAnalyticState' from partially initialized module 'cpswm.system.structure_two_particle_workspace' (most likely due to a circular import) (/workspace/scratch/b158d995e8cc/cpswm_b6_snapshot/src/cpswm/system/structure_two_particle_workspace.py)\n",
+            "circular_import": true
+          }
+        },
+        "module_import_succeeds_but_public_dependency_fails_circularly": true
+      }
+    },
+    {
+      "case": "independent_conditional_block_oracle",
+      "status": "observed",
+      "seconds": 0.5873404839985596,
+      "detail": {
+        "random_trials": 25,
+        "random_mismatches": [],
+        "lifecycle_ok": true,
+        "invalid_rejections": 6,
+        "invalid_total": 6,
+        "source_model_alias_same_reference": true,
+        "source_model_alias_note": "ConditionalAnalyticState intentionally retains numeric blocks and cluster IDs only; source_record_ids and observation_model_id are not bound into its reference."
+      }
+    },
+    {
+      "case": "joint_distribution_and_unknown_mass_oracle",
+      "status": "observed",
+      "seconds": 0.0005451700017147232,
+      "detail": {
+        "identical_cause_marginal": true,
+        "observations": {
+          "correlated": {
+            "manual_evsi": 0.4,
+            "planner_evsi": 0.4,
+            "planner_cause_information_gain": 0.0,
+            "manual_joint_information_gain": 0.7999999999999998,
+            "net": 0.30000000000000004,
+            "should_act": true
+          },
+          "independent": {
+            "manual_evsi": 0.0,
+            "planner_evsi": 0.0,
+            "planner_cause_information_gain": 0.0,
+            "manual_joint_information_gain": 0.8,
+            "net": -0.1,
+            "should_act": false
+          }
+        },
+        "expected_relation": true,
+        "empty_belief_rejected": true,
+        "unresolved_only_no_action": true,
+        "empty_actions_stop_reason": "privacy_hard_constraint_blocked_all_actions",
+        "empty_actions_misclassified_as_privacy": true
+      }
+    },
+    {
+      "case": "source_particle_statistics_action_binding_attacks",
+      "status": "observed",
+      "seconds": 0.33759263399770134,
+      "detail": {
+        "legal_atom_count": 2,
+        "legal_unresolved_probability": 0.19522184894644604,
+        "missing_particle_rejected": true,
+        "foreign_runtime_id_accepted": true,
+        "tampered_source_frame_hash_accepted": true,
+        "belief_source_digest_unused_by_planner": true
+      }
+    },
+    {
+      "case": "prepared_seam_vs_default_path_inventory",
+      "status": "observed",
+      "seconds": 0.05284932100039441,
+      "detail": {
+        "production_references_outside_component_modules": {
+          "JointDecisionView": [],
+          "rebuild_conditional_state": []
+        },
+        "default_production_path_connected": false,
+        "prepared_seam_exercised": true
+      }
+    }
+  ],
+  "findings": [
+    {
+      "id": "B6-F1",
+      "severity": "high-if-promoted-to-production-authority",
+      "title": "JointDecisionView accepts a caller-selected foreign runtime and an unverified source-frame hash",
+      "confirmed": true,
+      "scope": "Declared value-object seam; becomes a security/correctness bug if treated as a trusted production view."
+    },
+    {
+      "id": "B6-F2",
+      "severity": "medium",
+      "title": "Joint belief source_snapshot_sha256 is not consumed by the planner",
+      "confirmed": true,
+      "scope": "Action likelihood and utility provenance cannot be enforced by the planner API itself."
+    },
+    {
+      "id": "B6-F3",
+      "severity": "low",
+      "title": "An empty action set is reported as privacy-blocked",
+      "confirmed": true,
+      "scope": "Misleading stop/audit reason; selection remains no-action."
+    },
+    {
+      "id": "B6-F4",
+      "severity": "high",
+      "title": "Both new components' cold public operations fail through a circular import",
+      "confirmed": true,
+      "scope": "The module-only regression is green, but the conditional first call, its required prior type import, and JointDecisionView.content_sha256 fail in a fresh interpreter."
+    }
+  ]
+}

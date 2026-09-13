@@ -1,0 +1,171 @@
+{
+  "valid_delayed": {
+    "code": 0,
+    "stdout": "{\"source_sha\": \"8ea5887c1d339b708607a9868f77bd31a9adb660\", \"source_run\": \"case\", \"journal_sha256\": \"a20ef30be94dcb587f5d478d8d84cda33fcb10d4f6b7bea7d057784d5c95c622\", \"selected_capture_count\": 2, \"observation_count\": 4, \"execution_kind\": \"archived_raw_ingress_replay\", \"new_simulator_run\": false, \"semantic_detector_verified\": false, \"default_joint_runtime_verified\": false}\n",
+    "stderr": "",
+    "success_receipt": true,
+    "json_files": 4,
+    "receipt": {
+      "source_sha": "8ea5887c1d339b708607a9868f77bd31a9adb660",
+      "source_run": "case",
+      "journal_sha256": "a20ef30be94dcb587f5d478d8d84cda33fcb10d4f6b7bea7d057784d5c95c622",
+      "captures": [
+        {
+          "capture_ref": "000001.json",
+          "source_receipt_sha256": "38c487ace04383f9b65b60ce5ef5d33aec4e246599a04813d5d0a8d26e6b37ea",
+          "sensor_sha256": "92ad1117fe6f65281cf6f7c2219421f5fb8545a0d390bc02498e14176908c8a7",
+          "modalities": 2,
+          "recorded_event_tick": 1,
+          "recorded_received_tick": 1
+        },
+        {
+          "capture_ref": "000000.json",
+          "source_receipt_sha256": "528af32a0252227818f5e920a3882d71d02b25d120e162deee11d2668d1ae561",
+          "sensor_sha256": "cc88b252070ac9a2ffd24c59794aaac1aa9b7e6eb231bc1db416ad59fb596bec",
+          "modalities": 2,
+          "recorded_event_tick": 0,
+          "recorded_received_tick": 2
+        }
+      ],
+      "output_manifest": [
+        {
+          "capture_ref": "000001.json",
+          "observation_id": "ad08e8b3-0e94-5ac4-add3-b0e5cb319909",
+          "file": "observations/ad08e8b3-0e94-5ac4-add3-b0e5cb319909.json",
+          "sha256": "4442ee858461fb7bedcb1abd5ada05fdd1bb1765b74742bd059ab3fb143fa6ad",
+          "size_bytes": 1151
+        },
+        {
+          "capture_ref": "000001.json",
+          "observation_id": "ad08e8b3-0e94-5ac4-add3-b0e5cb319909",
+          "file": "observations/ad08e8b3-0e94-5ac4-add3-b0e5cb319909.npy",
+          "sha256": "939e31d9837da980005cee594a60dbdc35fa7f1a62aa9b814a0d8a39bf38e80a",
+          "size_bytes": 146
+        },
+        {
+          "capture_ref": "000001.json",
+          "observation_id": "e49a5d9c-9109-58a5-9100-3e9ba5cf9945",
+          "file": "observations/e49a5d9c-9109-58a5-9100-3e9ba5cf9945.json",
+          "sha256": "76c37c6018ec15b451e37ec3d83961a1ea9eb7a02f8a60f0ea270f1ab6d76040",
+          "size_bytes": 1155
+        },
+        {
+          "capture_ref": "000001.json",
+          "observation_id": "e49a5d9c-9109-58a5-9100-3e9ba5cf9945",
+          "file": "observations/e49a5d9c-9109-58a5-9100-3e9ba5cf9945.npy",
+          "sha256": "f9aa4e4e9747271d3d4dd5aeea3c0ea52ab528d4170c61d0b87f7de6e0be3ca9",
+          "size_bytes": 152
+        },
+        {
+          "capture_ref": "000000.json",
+          "observation_id": "18313771-3e40-5d07-ac61-d3555a72690b",
+          "file": "observations/18313771-3e40-5d07-ac61-d3555a72690b.json",
+          "sha256": "6c742816178c372c084f15aa0559cf55913b456c0b5395a4fd5231be0f823ed0",
+          "size_bytes": 1151
+        },
+        {
+          "capture_ref": "000000.json",
+          "observation_id": "18313771-3e40-5d07-ac61-d3555a72690b",
+          "file": "observations/18313771-3e40-5d07-ac61-d3555a72690b.npy",
+          "sha256": "8947d8ebd96ca837fcc62421f4db3959843f9d9dafce048b6b3f77e2a0564243",
+          "size_bytes": 146
+        },
+        {
+          "capture_ref": "000000.json",
+          "observation_id": "01ae53e8-57d4-5ce3-87e8-f821d86536a9",
+          "file": "observations/01ae53e8-57d4-5ce3-87e8-f821d86536a9.json",
+          "sha256": "24009b885ac085e039faa96a19bb034a9131e7afaeb09344bd2862c6291a6560",
+          "size_bytes": 1155
+        },
+        {
+          "capture_ref": "000000.json",
+          "observation_id": "01ae53e8-57d4-5ce3-87e8-f821d86536a9",
+          "file": "observations/01ae53e8-57d4-5ce3-87e8-f821d86536a9.npy",
+          "sha256": "f9aa4e4e9747271d3d4dd5aeea3c0ea52ab528d4170c61d0b87f7de6e0be3ca9",
+          "size_bytes": 152
+        }
+      ],
+      "selected_capture_count": 2,
+      "observation_count": 4,
+      "execution_kind": "archived_raw_ingress_replay",
+      "new_simulator_run": false,
+      "semantic_detector_verified": false,
+      "default_joint_runtime_verified": false
+    }
+  },
+  "first_round_collision": {
+    "code": 1,
+    "stdout": "",
+    "stderr": "Traceback (most recent call last):\n  File \"/private/tmp/cpswm-pc-a-unified-runtime-20260913/tools/structure_two_rgbd_ingress_replay.py\", line 148, in <module>\n    main()\n    ~~~~^^\n  File \"/private/tmp/cpswm-pc-a-unified-runtime-20260913/tools/structure_two_rgbd_ingress_replay.py\", line 76, in main\n    raise ValueError(\"released reference differs from capture identity\")\nValueError: released reference differs from capture identity\n",
+    "success_receipt": false,
+    "json_files": 0
+  },
+  "late_bad_hash": {
+    "code": 1,
+    "stdout": "",
+    "stderr": "Traceback (most recent call last):\n  File \"/private/tmp/cpswm-pc-a-unified-runtime-20260913/tools/structure_two_rgbd_ingress_replay.py\", line 148, in <module>\n    main()\n    ~~~~^^\n  File \"/private/tmp/cpswm-pc-a-unified-runtime-20260913/tools/structure_two_rgbd_ingress_replay.py\", line 80, in main\n    rows = adapt_raw_rgbd_capture(\n        receipt_bytes=receipt,\n    ...<9 lines>...\n        cutoff=delivered,\n    )\n  File \"/private/tmp/cpswm-pc-a-unified-runtime-20260913/src/cpswm/perception_mapping/adapters/rgbd_capture.py\", line 131, in adapt_raw_rgbd_capture\n    raise ValueError(\"sensor bytes differ from captured receipt\")\nValueError: sensor bytes differ from captured receipt\n",
+    "success_receipt": false,
+    "json_files": 2
+  },
+  "git_replace": {
+    "original": "8e0f923d3b155bbb4757fe8ed222ba644de15bc2",
+    "replacement": "0639f0ec8ecd46bc2751e9aa9e1fa39d594a57e0",
+    "code": 0,
+    "stdout": "{\"source_sha\": \"8e0f923d3b155bbb4757fe8ed222ba644de15bc2\", \"source_run\": \"case\", \"journal_sha256\": \"3eb80eca07509410a84ab2b6331d9c3fbf8fa8c90391be47fdb21afa1e22f4f7\", \"selected_capture_count\": 1, \"observation_count\": 2, \"execution_kind\": \"archived_raw_ingress_replay\", \"new_simulator_run\": false, \"semantic_detector_verified\": false, \"default_joint_runtime_verified\": false}\n",
+    "stderr": "",
+    "original_journal": "[{\"capture_ref\": \"000000.json\", \"event_tick\": 0, \"received_tick\": 2}, {\"capture_ref\": \"000001.json\", \"event_tick\": 1, \"received_tick\": 1}]",
+    "git_actual_unreplaced_journal": "[{\"capture_ref\": \"000000.json\", \"event_tick\": 0, \"received_tick\": 2}, {\"capture_ref\": \"000001.json\", \"event_tick\": 1, \"received_tick\": 1}]",
+    "success_receipt": true,
+    "receipt": {
+      "source_sha": "8e0f923d3b155bbb4757fe8ed222ba644de15bc2",
+      "source_run": "case",
+      "journal_sha256": "3eb80eca07509410a84ab2b6331d9c3fbf8fa8c90391be47fdb21afa1e22f4f7",
+      "captures": [
+        {
+          "capture_ref": "000000.json",
+          "source_receipt_sha256": "528af32a0252227818f5e920a3882d71d02b25d120e162deee11d2668d1ae561",
+          "sensor_sha256": "cc88b252070ac9a2ffd24c59794aaac1aa9b7e6eb231bc1db416ad59fb596bec",
+          "modalities": 2,
+          "recorded_event_tick": 0,
+          "recorded_received_tick": 2
+        }
+      ],
+      "output_manifest": [
+        {
+          "capture_ref": "000000.json",
+          "observation_id": "fc7a5697-0acc-514d-b80c-e885a7da57c6",
+          "file": "observations/fc7a5697-0acc-514d-b80c-e885a7da57c6.json",
+          "sha256": "c727a58ba5b46fc3f62fffc5e5161d8380a141f12cca85e4c666585a4180ece6",
+          "size_bytes": 1151
+        },
+        {
+          "capture_ref": "000000.json",
+          "observation_id": "fc7a5697-0acc-514d-b80c-e885a7da57c6",
+          "file": "observations/fc7a5697-0acc-514d-b80c-e885a7da57c6.npy",
+          "sha256": "8947d8ebd96ca837fcc62421f4db3959843f9d9dafce048b6b3f77e2a0564243",
+          "size_bytes": 146
+        },
+        {
+          "capture_ref": "000000.json",
+          "observation_id": "44b3c14b-d187-5570-a4df-9bb253e6cf7d",
+          "file": "observations/44b3c14b-d187-5570-a4df-9bb253e6cf7d.json",
+          "sha256": "4ccbe6f5f0a0ae70cbf649f1e84404abab9c2882cf0e763a23875cd9879725c0",
+          "size_bytes": 1155
+        },
+        {
+          "capture_ref": "000000.json",
+          "observation_id": "44b3c14b-d187-5570-a4df-9bb253e6cf7d",
+          "file": "observations/44b3c14b-d187-5570-a4df-9bb253e6cf7d.npy",
+          "sha256": "f9aa4e4e9747271d3d4dd5aeea3c0ea52ab528d4170c61d0b87f7de6e0be3ca9",
+          "size_bytes": 152
+        }
+      ],
+      "selected_capture_count": 1,
+      "observation_count": 2,
+      "execution_kind": "archived_raw_ingress_replay",
+      "new_simulator_run": false,
+      "semantic_detector_verified": false,
+      "default_joint_runtime_verified": false
+    }
+  }
+}

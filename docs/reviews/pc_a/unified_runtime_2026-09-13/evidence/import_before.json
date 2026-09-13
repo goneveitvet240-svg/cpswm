@@ -1,0 +1,57 @@
+[
+  {
+    "module": "cpswm.system.prototype_spine",
+    "command": [
+      "/private/tmp/cpswm-pc-a-unified-runtime-20260913/.venv/bin/python",
+      "-c",
+      "import importlib; importlib.import_module('cpswm.system.prototype_spine')"
+    ],
+    "exit_code": 1,
+    "stdout": "",
+    "stderr": "Traceback (most recent call last):\n  File \"<string>\", line 1, in <module>\n    import importlib; importlib.import_module('cpswm.system.prototype_spine')\n                      ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/pangwei/.local/share/uv/python/cpython-3.13.5-macos-aarch64-none/lib/python3.13/importlib/__init__.py\", line 88, in import_module\n    return _bootstrap._gcd_import(name[level:], package, level)\n           ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"<frozen importlib._bootstrap>\", line 1387, in _gcd_import\n  File \"<frozen importlib._bootstrap>\", line 1360, in _find_and_load\n  File \"<frozen importlib._bootstrap>\", line 1331, in _find_and_load_unlocked\n  File \"<frozen importlib._bootstrap>\", line 935, in _load_unlocked\n  File \"<frozen importlib._bootstrap_external>\", line 1026, in exec_module\n  File \"<frozen importlib._bootstrap>\", line 488, in _call_with_frames_removed\n  File \"/private/tmp/cpswm-pc-a-unified-runtime-20260913/src/cpswm/system/prototype_spine.py\", line 86, in <module>\n    from cpswm.system.evaluation_operations.structure_two_selected_method import (\n    ...<2 lines>...\n    )\n  File \"/private/tmp/cpswm-pc-a-unified-runtime-20260913/src/cpswm/system/evaluation_operations/__init__.py\", line 262, in <module>\n    from .project_two_action_benchmark import (\n    ...<9 lines>...\n    )\n  File \"/private/tmp/cpswm-pc-a-unified-runtime-20260913/src/cpswm/system/evaluation_operations/project_two_action_benchmark.py\", line 94, in <module>\n    from cpswm.system.prototype_spine import (\n    ...<4 lines>...\n    )\nImportError: cannot import name 'ActionReadout' from partially initialized module 'cpswm.system.prototype_spine' (most likely due to a circular import) (/private/tmp/cpswm-pc-a-unified-runtime-20260913/src/cpswm/system/prototype_spine.py)\n"
+  },
+  {
+    "module": "cpswm.system.structure_two_particle_workspace",
+    "command": [
+      "/private/tmp/cpswm-pc-a-unified-runtime-20260913/.venv/bin/python",
+      "-c",
+      "import importlib; importlib.import_module('cpswm.system.structure_two_particle_workspace')"
+    ],
+    "exit_code": 1,
+    "stdout": "",
+    "stderr": "Traceback (most recent call last):\n  File \"<string>\", line 1, in <module>\n    import importlib; importlib.import_module('cpswm.system.structure_two_particle_workspace')\n                      ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/pangwei/.local/share/uv/python/cpython-3.13.5-macos-aarch64-none/lib/python3.13/importlib/__init__.py\", line 88, in import_module\n    return _bootstrap._gcd_import(name[level:], package, level)\n           ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"<frozen importlib._bootstrap>\", line 1387, in _gcd_import\n  File \"<frozen importlib._bootstrap>\", line 1360, in _find_and_load\n  File \"<frozen importlib._bootstrap>\", line 1331, in _find_and_load_unlocked\n  File \"<frozen importlib._bootstrap>\", line 935, in _load_unlocked\n  File \"<frozen importlib._bootstrap_external>\", line 1026, in exec_module\n  File \"<frozen importlib._bootstrap>\", line 488, in _call_with_frames_removed\n  File \"/private/tmp/cpswm-pc-a-unified-runtime-20260913/src/cpswm/system/structure_two_particle_workspace.py\", line 26, in <module>\n    from cpswm.system.evaluation_operations.structure_two_selected_method import (\n    ...<5 lines>...\n    )\n  File \"/private/tmp/cpswm-pc-a-unified-runtime-20260913/src/cpswm/system/evaluation_operations/__init__.py\", line 262, in <module>\n    from .project_two_action_benchmark import (\n    ...<9 lines>...\n    )\n  File \"/private/tmp/cpswm-pc-a-unified-runtime-20260913/src/cpswm/system/evaluation_operations/project_two_action_benchmark.py\", line 94, in <module>\n    from cpswm.system.prototype_spine import (\n    ...<4 lines>...\n    )\n  File \"/private/tmp/cpswm-pc-a-unified-runtime-20260913/src/cpswm/system/prototype_spine.py\", line 124, in <module>\n    from cpswm.system.structure_two_particle_workspace import (\n    ...<5 lines>...\n    )\nImportError: cannot import name 'ConditionalAnalyticState' from partially initialized module 'cpswm.system.structure_two_particle_workspace' (most likely due to a circular import) (/private/tmp/cpswm-pc-a-unified-runtime-20260913/src/cpswm/system/structure_two_particle_workspace.py)\n"
+  },
+  {
+    "module": "cpswm.system.structure_two_production_system",
+    "command": [
+      "/private/tmp/cpswm-pc-a-unified-runtime-20260913/.venv/bin/python",
+      "-c",
+      "import importlib; importlib.import_module('cpswm.system.structure_two_production_system')"
+    ],
+    "exit_code": 1,
+    "stdout": "",
+    "stderr": "Traceback (most recent call last):\n  File \"<string>\", line 1, in <module>\n    import importlib; importlib.import_module('cpswm.system.structure_two_production_system')\n                      ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/pangwei/.local/share/uv/python/cpython-3.13.5-macos-aarch64-none/lib/python3.13/importlib/__init__.py\", line 88, in import_module\n    return _bootstrap._gcd_import(name[level:], package, level)\n           ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"<frozen importlib._bootstrap>\", line 1387, in _gcd_import\n  File \"<frozen importlib._bootstrap>\", line 1360, in _find_and_load\n  File \"<frozen importlib._bootstrap>\", line 1331, in _find_and_load_unlocked\n  File \"<frozen importlib._bootstrap>\", line 935, in _load_unlocked\n  File \"<frozen importlib._bootstrap_external>\", line 1026, in exec_module\n  File \"<frozen importlib._bootstrap>\", line 488, in _call_with_frames_removed\n  File \"/private/tmp/cpswm-pc-a-unified-runtime-20260913/src/cpswm/system/structure_two_production_system.py\", line 40, in <module>\n    from cpswm.system.prototype_spine import (\n    ...<7 lines>...\n    )\n  File \"/private/tmp/cpswm-pc-a-unified-runtime-20260913/src/cpswm/system/prototype_spine.py\", line 86, in <module>\n    from cpswm.system.evaluation_operations.structure_two_selected_method import (\n    ...<2 lines>...\n    )\n  File \"/private/tmp/cpswm-pc-a-unified-runtime-20260913/src/cpswm/system/evaluation_operations/__init__.py\", line 262, in <module>\n    from .project_two_action_benchmark import (\n    ...<9 lines>...\n    )\n  File \"/private/tmp/cpswm-pc-a-unified-runtime-20260913/src/cpswm/system/evaluation_operations/project_two_action_benchmark.py\", line 94, in <module>\n    from cpswm.system.prototype_spine import (\n    ...<4 lines>...\n    )\nImportError: cannot import name 'ActionReadout' from partially initialized module 'cpswm.system.prototype_spine' (most likely due to a circular import) (/private/tmp/cpswm-pc-a-unified-runtime-20260913/src/cpswm/system/prototype_spine.py)\n"
+  },
+  {
+    "module": "cpswm.system.structure_two_joint_consumption",
+    "command": [
+      "/private/tmp/cpswm-pc-a-unified-runtime-20260913/.venv/bin/python",
+      "-c",
+      "import importlib; importlib.import_module('cpswm.system.structure_two_joint_consumption')"
+    ],
+    "exit_code": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "module": "cpswm.system.structure_two_conditional_updates",
+    "command": [
+      "/private/tmp/cpswm-pc-a-unified-runtime-20260913/.venv/bin/python",
+      "-c",
+      "import importlib; importlib.import_module('cpswm.system.structure_two_conditional_updates')"
+    ],
+    "exit_code": 0,
+    "stdout": "",
+    "stderr": ""
+  }
+]

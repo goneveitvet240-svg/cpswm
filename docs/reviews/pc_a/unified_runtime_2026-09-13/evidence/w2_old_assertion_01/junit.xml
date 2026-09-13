@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="1" skipped="0" tests="1" time="102.196" timestamp="2026-09-13T17:26:26.374508+08:00" hostname="MacBook-Air-2.local"><testcase classname="tests.test_structure_two_comparison_dynamic" name="test_current_production_revision_defect_is_not_promoted_to_success" time="101.496"><failure message="KeyError: 'operations'">results = {'development_only': True, 'id': 'window2-dynamic@0.1-development-only', 'plans_sha256': '282e52e640a294bb3d052554526b...8d00bf83ebcfbf34500f629ff3fc', 'condition': 'explicit common public catalogue; shared visible priors and packets', ...}
+
+    def test_current_production_revision_defect_is_not_promoted_to_success(results):
+        correct = results["production_boundary_probes"]["correct"]
+        assert correct["nonempty_target"]
+&gt;       assert correct["operations"] == ["correct"]
+               ^^^^^^^^^^^^^^^^^^^^^
+E       KeyError: 'operations'
+
+tests/test_structure_two_comparison_dynamic.py:153: KeyError</failure></testcase></testsuite></testsuites>

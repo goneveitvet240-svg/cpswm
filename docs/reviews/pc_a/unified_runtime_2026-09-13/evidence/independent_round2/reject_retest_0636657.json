@@ -1,0 +1,12 @@
+{
+  "first_round_collision": {
+    "exit_code": 1,
+    "stderr": "Traceback (most recent call last):\n  File \"/private/tmp/cpswm-pc-a-unified-runtime-20260913/tools/structure_two_rgbd_ingress_replay.py\", line 150, in <module>\n    main()\n    ~~~~^^\n  File \"/private/tmp/cpswm-pc-a-unified-runtime-20260913/tools/structure_two_rgbd_ingress_replay.py\", line 78, in main\n    raise ValueError(\"released reference differs from capture identity\")\nValueError: released reference differs from capture identity\n",
+    "success_receipt": false
+  },
+  "late_bad_hash": {
+    "exit_code": 1,
+    "stderr": "Traceback (most recent call last):\n  File \"/private/tmp/cpswm-pc-a-unified-runtime-20260913/tools/structure_two_rgbd_ingress_replay.py\", line 150, in <module>\n    main()\n    ~~~~^^\n  File \"/private/tmp/cpswm-pc-a-unified-runtime-20260913/tools/structure_two_rgbd_ingress_replay.py\", line 82, in main\n    rows = adapt_raw_rgbd_capture(\n        receipt_bytes=receipt,\n    ...<9 lines>...\n        cutoff=delivered,\n    )\n  File \"/private/tmp/cpswm-pc-a-unified-runtime-20260913/src/cpswm/perception_mapping/adapters/rgbd_capture.py\", line 131, in adapt_raw_rgbd_capture\n    raise ValueError(\"sensor bytes differ from captured receipt\")\nValueError: sensor bytes differ from captured receipt\n",
+    "success_receipt": false
+  }
+}

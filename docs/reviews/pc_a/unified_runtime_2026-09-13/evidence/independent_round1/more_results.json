@@ -1,0 +1,23 @@
+{
+  "sensor_id": {
+    "same_ids": true
+  },
+  "frame_id": {
+    "same_ids": true
+  },
+  "session_id": {
+    "same_ids": true
+  },
+  "household_id": {
+    "same_ids": true
+  },
+  "trace_id": {
+    "same_ids": false
+  },
+  "partial_failure": {
+    "returncode": 1,
+    "receipt_exists": false,
+    "observation_files": 4,
+    "stderr": "Traceback (most recent call last):\n  File \"/private/tmp/cpswm-pc-a-unified-runtime-20260913/tools/structure_two_rgbd_ingress_replay.py\", line 109, in <module>\n    main()\n    ~~~~^^\n  File \"/private/tmp/cpswm-pc-a-unified-runtime-20260913/tools/structure_two_rgbd_ingress_replay.py\", line 64, in main\n    rows = adapt_raw_rgbd_capture(\n        receipt_bytes=receipt,\n    ...<9 lines>...\n        cutoff=delivered,\n    )\n  File \"/private/tmp/cpswm-pc-a-unified-runtime-20260913/src/cpswm/perception_mapping/adapters/rgbd_capture.py\", line 131, in adapt_raw_rgbd_capture\n    raise ValueError(\"sensor bytes differ from captured receipt\")\nValueError: sensor bytes differ from captured receipt\n"
+  }
+}

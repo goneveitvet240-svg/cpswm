@@ -1,0 +1,173 @@
+{
+  "scope": "separate source-bound checks; not unified scientific acceptance",
+  "checks": [
+    {
+      "head": "c366cad0a92593bb2c4c44db7e8d3408a2b5cc9c",
+      "exit_code": 0,
+      "seconds": 446.7613649368286,
+      "source_unchanged": true,
+      "run": "b_full_01",
+      "junit": {
+        "tests": 812,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      }
+    },
+    {
+      "head": "c366cad0a92593bb2c4c44db7e8d3408a2b5cc9c",
+      "exit_code": 0,
+      "seconds": 12.968092918395996,
+      "source_unchanged": true,
+      "run": "b_review_01",
+      "junit": {
+        "tests": 139,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      }
+    },
+    {
+      "head": "6b97e41afdb701eb197f23656d3796a6cd11e5e1",
+      "exit_code": 1,
+      "seconds": 567.5349109172821,
+      "source_unchanged": true,
+      "run": "candidate_01",
+      "junit": {
+        "tests": 1264,
+        "failures": 29,
+        "errors": 0,
+        "skipped": 0
+      }
+    },
+    {
+      "head": "01d44d58a691d4144ffaaa3c23b9aa414115d977",
+      "exit_code": 0,
+      "seconds": 674.2005460262299,
+      "source_unchanged": true,
+      "run": "candidate_final_core",
+      "junit": {
+        "tests": 1170,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      }
+    },
+    {
+      "head": "01d44d58a691d4144ffaaa3c23b9aa414115d977",
+      "exit_code": 0,
+      "seconds": 1440.1396789550781,
+      "source_unchanged": true,
+      "run": "comparison_generate_01"
+    },
+    {
+      "head": "482563104f1af7d397ac6b4a2a885521fca830b4",
+      "exit_code": 1,
+      "seconds": 0.8509550094604492,
+      "source_unchanged": true,
+      "run": "ingress_01"
+    },
+    {
+      "head": "482563104f1af7d397ac6b4a2a885521fca830b4",
+      "exit_code": 0,
+      "seconds": 0.7302200794219971,
+      "source_unchanged": true,
+      "run": "ingress_02"
+    },
+    {
+      "head": "482563104f1af7d397ac6b4a2a885521fca830b4",
+      "exit_code": 0,
+      "seconds": 1.7378489971160889,
+      "source_unchanged": true,
+      "run": "real_ingress_01"
+    },
+    {
+      "head": "fd516c33532a3fb61a978d0a0c0bd403a3f3794a",
+      "exit_code": 0,
+      "seconds": 0.8871328830718994,
+      "source_unchanged": true,
+      "run": "real_ingress_02"
+    },
+    {
+      "head": "06366579a1a72a46b465194b6e1bc2b6c27a3e87",
+      "exit_code": 0,
+      "seconds": 0.8070881366729736,
+      "source_unchanged": true,
+      "run": "real_ingress_03"
+    },
+    {
+      "head": "fd516c33532a3fb61a978d0a0c0bd403a3f3794a",
+      "exit_code": 1,
+      "seconds": 0.22549915313720703,
+      "source_unchanged": true,
+      "run": "review1_attack_fixed_01",
+      "interpretation": "EXPECTED_REJECTION: original complete identity-aliasing attack; no completion receipt"
+    },
+    {
+      "head": "fd516c33532a3fb61a978d0a0c0bd403a3f3794a",
+      "exit_code": 0,
+      "seconds": 3.537982940673828,
+      "source_unchanged": true,
+      "run": "round1_fix_01",
+      "junit": {
+        "tests": 30,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      }
+    },
+    {
+      "head": "06366579a1a72a46b465194b6e1bc2b6c27a3e87",
+      "exit_code": 0,
+      "seconds": 4.017045974731445,
+      "source_unchanged": true,
+      "run": "round2_fix_01",
+      "junit": {
+        "tests": 32,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      }
+    },
+    {
+      "head": "6b97e41afdb701eb197f23656d3796a6cd11e5e1",
+      "exit_code": 0,
+      "seconds": 1.9102048873901367,
+      "source_unchanged": true,
+      "run": "startup_fix_01"
+    },
+    {
+      "head": "01d44d58a691d4144ffaaa3c23b9aa414115d977",
+      "exit_code": 0,
+      "seconds": 55.471887826919556,
+      "source_unchanged": true,
+      "run": "w1_native_02",
+      "junit": {
+        "tests": 85,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      }
+    },
+    {
+      "head": "01d44d58a691d4144ffaaa3c23b9aa414115d977",
+      "exit_code": 0,
+      "seconds": 11.91242504119873,
+      "source_unchanged": true,
+      "run": "w2_boundary_detail_01"
+    },
+    {
+      "head": "01d44d58a691d4144ffaaa3c23b9aa414115d977",
+      "exit_code": 1,
+      "seconds": 102.84223628044128,
+      "source_unchanged": true,
+      "run": "w2_old_assertion_01",
+      "junit": {
+        "tests": 1,
+        "failures": 1,
+        "errors": 0,
+        "skipped": 0
+      }
+    }
+  ]
+}

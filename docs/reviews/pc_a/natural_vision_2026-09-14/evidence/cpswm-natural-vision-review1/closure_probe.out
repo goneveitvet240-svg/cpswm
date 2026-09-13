@@ -1,0 +1,27 @@
+PASS duplicate capture rejected
+{
+  "source_sha": "6bb72386d588c82f0e264afa1dadd51306c1cada",
+  "source_files": {
+    "/private/tmp/cpswm-pc-a-natural-vision-20260914/tools/run_natural_vision_archive.py": "608c0518598e4e7e8879dd5fa12be2a6ee4a7eaadbb6147e2f292323f1cb0433",
+    "/private/tmp/cpswm-pc-a-natural-vision-20260914/src/cpswm/perception_mapping/natural_vision.py": "0435cbca02ecbbb639bf6e1547eab25d93b328f467dfd7b538eae67723eb3f48"
+  },
+  "source_unchanged": true,
+  "source_identity_scope": "entry_and_detector_files_not_whole_runtime_attestation",
+  "git_dirty": true,
+  "archive_manifest_sha256": "37bfbe2576fdf75337c80ebc9292454daa34ee55df1c0c23d0d2a8bd428540ce",
+  "archive_source_sha": "fixture-source",
+  "frames": 1,
+  "raw_observations": 1,
+  "continuous_input_invoked": true,
+  "core_unchanged_verified": true,
+  "bookkeeping_initialization_only": true,
+  "candidate_counts": {},
+  "inference_seconds": 0.0912768340203911,
+  "semantic_transitions": 0,
+  "physical_actions": 0,
+  "status": "NATURAL_PIXEL_DETECTIONS_UNCALIBRATED",
+  "new_simulator_run": false,
+  "frames_sha256": "2bb903938200bddaacb49933f85ed712df9b5ddfb05066024d99f0e2057bc4b0"
+}
+PASS correct source SHA from foreign cwd; real detector invoked without semantic/action authority
+PASS duplicate observation under distinct files rejected

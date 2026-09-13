@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="4" skipped="0" tests="19" time="0.791" timestamp="2026-09-14T00:50:48.428489+08:00" hostname="MacBook-Air-2.local"><testcase classname="tests.test_natural_vision" name="test_decode_real_wire_shape_and_detachment" time="0.002" /><testcase classname="tests.test_natural_vision" name="test_bad_wire_rejected[float]" time="0.003"><failure message="pydantic_core._pydantic_core.ValidationError: 1 validation error for PayloadRef&#10;payload_sha256&#10;  Instance is frozen [type=frozen_instance, input_value='45e1e1163ce330bd2e0e19b7...568959aeb51db8811d9e2db', input_type=str]&#10;    For further information visit https://errors.pydantic.dev/2.13/v/frozen_instance">raw = RawModalityObservation(envelope_json='{"metadata":{"record_id":"c9552d70-6408-4603-85bd-8c2df505a75c","schema_name":"c...0\x00\x00", capture_receipt_sha256='aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa', depth_unit=None)
+kind = 'float'
+
+    @pytest.mark.parametrize(
+        "kind", ["float", "gray", "channels", "trailing", "hash", "future", "unit", "receipt"]
+    )
+    def test_bad_wire_rejected(raw, kind):
+        when = raw.envelope().arrival_time
+        if kind == "float":
+&gt;           raw = with_pixels(raw, np.zeros((4, 4, 3), np.float32))
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_natural_vision.py:45: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_natural_vision.py:27: in with_pixels
+    env.payload.payload_sha256 = hashlib.sha256(payload).hexdigest()
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.13/site-packages/pydantic/main.py:1048: in __setattr__
+    elif (setattr_handler := self._setattr_handler(name, value)) is not None:
+                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.13/site-packages/pydantic/main.py:1084: in _setattr_handler
+    _check_frozen(cls, name, value)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+model_cls = &lt;class 'cpswm.perception_mapping.adapters.contracts.PayloadRef'&gt;
+name = 'payload_sha256'
+value = '45e1e1163ce330bd2e0e19b7e68ffec1f47075430568959aeb51db8811d9e2db'
+
+    def _check_frozen(model_cls: type[BaseModel], name: str, value: Any) -&gt; None:
+        if model_cls.model_config.get('frozen'):
+            error_type = 'frozen_instance'
+        elif getattr(model_cls.__pydantic_fields__.get(name), 'frozen', False):
+            error_type = 'frozen_field'
+        else:
+            return
+    
+&gt;       raise ValidationError.from_exception_data(
+            model_cls.__name__, [{'type': error_type, 'loc': (name,), 'input': value}]
+        )
+E       pydantic_core._pydantic_core.ValidationError: 1 validation error for PayloadRef
+E       payload_sha256
+E         Instance is frozen [type=frozen_instance, input_value='45e1e1163ce330bd2e0e19b7...568959aeb51db8811d9e2db', input_type=str]
+E           For further information visit https://errors.pydantic.dev/2.13/v/frozen_instance
+
+.venv/lib/python3.13/site-packages/pydantic/main.py:90: ValidationError</failure></testcase><testcase classname="tests.test_natural_vision" name="test_bad_wire_rejected[gray]" time="0.001"><failure message="pydantic_core._pydantic_core.ValidationError: 1 validation error for PayloadRef&#10;payload_sha256&#10;  Instance is frozen [type=frozen_instance, input_value='ee3160d4bc5d95480954274d...ee4fc3eb44543e3e45d5a2a', input_type=str]&#10;    For further information visit https://errors.pydantic.dev/2.13/v/frozen_instance">raw = RawModalityObservation(envelope_json='{"metadata":{"record_id":"01b227af-3d2e-476e-bb20-a2a8c963985a","schema_name":"c...0\x00\x00", capture_receipt_sha256='aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa', depth_unit=None)
+kind = 'gray'
+
+    @pytest.mark.parametrize(
+        "kind", ["float", "gray", "channels", "trailing", "hash", "future", "unit", "receipt"]
+    )
+    def test_bad_wire_rejected(raw, kind):
+        when = raw.envelope().arrival_time
+        if kind == "float":
+            raw = with_pixels(raw, np.zeros((4, 4, 3), np.float32))
+        if kind == "gray":
+&gt;           raw = with_pixels(raw, np.zeros((4, 4), np.uint8))
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_natural_vision.py:47: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_natural_vision.py:27: in with_pixels
+    env.payload.payload_sha256 = hashlib.sha256(payload).hexdigest()
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.13/site-packages/pydantic/main.py:1048: in __setattr__
+    elif (setattr_handler := self._setattr_handler(name, value)) is not None:
+                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.13/site-packages/pydantic/main.py:1084: in _setattr_handler
+    _check_frozen(cls, name, value)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+model_cls = &lt;class 'cpswm.perception_mapping.adapters.contracts.PayloadRef'&gt;
+name = 'payload_sha256'
+value = 'ee3160d4bc5d95480954274d1bc08eeca4fde40c8ee4fc3eb44543e3e45d5a2a'
+
+    def _check_frozen(model_cls: type[BaseModel], name: str, value: Any) -&gt; None:
+        if model_cls.model_config.get('frozen'):
+            error_type = 'frozen_instance'
+        elif getattr(model_cls.__pydantic_fields__.get(name), 'frozen', False):
+            error_type = 'frozen_field'
+        else:
+            return
+    
+&gt;       raise ValidationError.from_exception_data(
+            model_cls.__name__, [{'type': error_type, 'loc': (name,), 'input': value}]
+        )
+E       pydantic_core._pydantic_core.ValidationError: 1 validation error for PayloadRef
+E       payload_sha256
+E         Instance is frozen [type=frozen_instance, input_value='ee3160d4bc5d95480954274d...ee4fc3eb44543e3e45d5a2a', input_type=str]
+E           For further information visit https://errors.pydantic.dev/2.13/v/frozen_instance
+
+.venv/lib/python3.13/site-packages/pydantic/main.py:90: ValidationError</failure></testcase><testcase classname="tests.test_natural_vision" name="test_bad_wire_rejected[channels]" time="0.001"><failure message="pydantic_core._pydantic_core.ValidationError: 1 validation error for PayloadRef&#10;payload_sha256&#10;  Instance is frozen [type=frozen_instance, input_value='88718a21834e213b088d5498...9224ae1b4bccde75c76c144', input_type=str]&#10;    For further information visit https://errors.pydantic.dev/2.13/v/frozen_instance">raw = RawModalityObservation(envelope_json='{"metadata":{"record_id":"2d868760-f910-4750-9a0d-097971d480b8","schema_name":"c...0\x00\x00", capture_receipt_sha256='aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa', depth_unit=None)
+kind = 'channels'
+
+    @pytest.mark.parametrize(
+        "kind", ["float", "gray", "channels", "trailing", "hash", "future", "unit", "receipt"]
+    )
+    def test_bad_wire_rejected(raw, kind):
+        when = raw.envelope().arrival_time
+        if kind == "float":
+            raw = with_pixels(raw, np.zeros((4, 4, 3), np.float32))
+        if kind == "gray":
+            raw = with_pixels(raw, np.zeros((4, 4), np.uint8))
+        if kind == "channels":
+&gt;           raw = with_pixels(raw, np.zeros((4, 4, 4), np.uint8))
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_natural_vision.py:49: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_natural_vision.py:27: in with_pixels
+    env.payload.payload_sha256 = hashlib.sha256(payload).hexdigest()
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.13/site-packages/pydantic/main.py:1048: in __setattr__
+    elif (setattr_handler := self._setattr_handler(name, value)) is not None:
+                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.13/site-packages/pydantic/main.py:1084: in _setattr_handler
+    _check_frozen(cls, name, value)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+model_cls = &lt;class 'cpswm.perception_mapping.adapters.contracts.PayloadRef'&gt;
+name = 'payload_sha256'
+value = '88718a21834e213b088d5498b7c77cee975a14b949224ae1b4bccde75c76c144'
+
+    def _check_frozen(model_cls: type[BaseModel], name: str, value: Any) -&gt; None:
+        if model_cls.model_config.get('frozen'):
+            error_type = 'frozen_instance'
+        elif getattr(model_cls.__pydantic_fields__.get(name), 'frozen', False):
+            error_type = 'frozen_field'
+        else:
+            return
+    
+&gt;       raise ValidationError.from_exception_data(
+            model_cls.__name__, [{'type': error_type, 'loc': (name,), 'input': value}]
+        )
+E       pydantic_core._pydantic_core.ValidationError: 1 validation error for PayloadRef
+E       payload_sha256
+E         Instance is frozen [type=frozen_instance, input_value='88718a21834e213b088d5498...9224ae1b4bccde75c76c144', input_type=str]
+E           For further information visit https://errors.pydantic.dev/2.13/v/frozen_instance
+
+.venv/lib/python3.13/site-packages/pydantic/main.py:90: ValidationError</failure></testcase><testcase classname="tests.test_natural_vision" name="test_bad_wire_rejected[trailing]" time="0.001"><failure message="pydantic_core._pydantic_core.ValidationError: 1 validation error for PayloadRef&#10;payload_sha256&#10;  Instance is frozen [type=frozen_instance, input_value='d742297de39f526532bb4b44...6b4c7e23f24aa812746360d', input_type=str]&#10;    For further information visit https://errors.pydantic.dev/2.13/v/frozen_instance">raw = RawModalityObservation(envelope_json='{"metadata":{"record_id":"97a1a389-ef16-474d-8629-f5aa4edb4076","schema_name":"c...0\x00\x00", capture_receipt_sha256='aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa', depth_unit=None)
+kind = 'trailing'
+
+    @pytest.mark.parametrize(
+        "kind", ["float", "gray", "channels", "trailing", "hash", "future", "unit", "receipt"]
+    )
+    def test_bad_wire_rejected(raw, kind):
+        when = raw.envelope().arrival_time
+        if kind == "float":
+            raw = with_pixels(raw, np.zeros((4, 4, 3), np.float32))
+        if kind == "gray":
+            raw = with_pixels(raw, np.zeros((4, 4), np.uint8))
+        if kind == "channels":
+            raw = with_pixels(raw, np.zeros((4, 4, 4), np.uint8))
+        if kind == "hash":
+            raw = replace(raw, payload_bytes=raw.payload_bytes + b"x")
+        if kind == "future":
+            when -= timedelta(seconds=1)
+        if kind == "unit":
+            raw = replace(raw, depth_unit="m")
+        if kind == "receipt":
+            raw = replace(raw, capture_receipt_sha256="z" * 64)
+        if kind == "trailing":
+            payload = raw.payload_bytes + b"x"
+            env = raw.envelope()
+&gt;           env.payload.payload_sha256 = hashlib.sha256(payload).hexdigest()
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_natural_vision.py:61: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+.venv/lib/python3.13/site-packages/pydantic/main.py:1048: in __setattr__
+    elif (setattr_handler := self._setattr_handler(name, value)) is not None:
+                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.13/site-packages/pydantic/main.py:1084: in _setattr_handler
+    _check_frozen(cls, name, value)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+model_cls = &lt;class 'cpswm.perception_mapping.adapters.contracts.PayloadRef'&gt;
+name = 'payload_sha256'
+value = 'd742297de39f526532bb4b449952b4539fe7846f46b4c7e23f24aa812746360d'
+
+    def _check_frozen(model_cls: type[BaseModel], name: str, value: Any) -&gt; None:
+        if model_cls.model_config.get('frozen'):
+            error_type = 'frozen_instance'
+        elif getattr(model_cls.__pydantic_fields__.get(name), 'frozen', False):
+            error_type = 'frozen_field'
+        else:
+            return
+    
+&gt;       raise ValidationError.from_exception_data(
+            model_cls.__name__, [{'type': error_type, 'loc': (name,), 'input': value}]
+        )
+E       pydantic_core._pydantic_core.ValidationError: 1 validation error for PayloadRef
+E       payload_sha256
+E         Instance is frozen [type=frozen_instance, input_value='d742297de39f526532bb4b44...6b4c7e23f24aa812746360d', input_type=str]
+E           For further information visit https://errors.pydantic.dev/2.13/v/frozen_instance
+
+.venv/lib/python3.13/site-packages/pydantic/main.py:90: ValidationError</failure></testcase><testcase classname="tests.test_natural_vision" name="test_bad_wire_rejected[hash]" time="0.001" /><testcase classname="tests.test_natural_vision" name="test_bad_wire_rejected[future]" time="0.001" /><testcase classname="tests.test_natural_vision" name="test_bad_wire_rejected[unit]" time="0.001" /><testcase classname="tests.test_natural_vision" name="test_bad_wire_rejected[receipt]" time="0.001" /><testcase classname="tests.test_natural_vision" name="test_wrong_weight_rejected_without_loading_model" time="0.005" /><testcase classname="tests.test_natural_vision" name="test_frame_candidates_are_not_identity_pose_or_negative_evidence" time="0.394" /><testcase classname="tests.test_natural_vision" name="test_scope_and_future_rejected_before_inference" time="0.001" /><testcase classname="tests.test_natural_vision" name="test_bad_model_output_rejected[nan]" time="0.001" /><testcase classname="tests.test_natural_vision" name="test_bad_model_output_rejected[outside]" time="0.001" /><testcase classname="tests.test_natural_vision" name="test_bad_model_output_rejected[degenerate]" time="0.001" /><testcase classname="tests.test_natural_vision" name="test_bad_model_output_rejected[label]" time="0.001" /><testcase classname="tests.test_natural_vision" name="test_bad_model_output_rejected[length]" time="0.001" /><testcase classname="tests.test_natural_vision" name="test_bad_model_output_rejected[score]" time="0.001" /><testcase classname="tests.test_natural_vision" name="test_no_detection_does_not_authorize_absence" time="0.001" /></testsuite></testsuites>

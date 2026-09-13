@@ -98,8 +98,10 @@ class ConditionalAnalyticState:
             raise ValueError("duplicate conditional evidence cluster")
         if any(not np.isfinite(x) or x < 0 for x in self.alpha):
             raise ValueError("invalid conditional alpha")
-        dim = len(self.b)
-        for matrix in (self.a, self.information):
+        for matrix, dim in (
+            (self.a, len(self.b)),
+            (self.information, len(self.information_vector)),
+        ):
             array = np.asarray(matrix)
             if (
                 not dim
@@ -112,10 +114,7 @@ class ConditionalAnalyticState:
                 np.linalg.cholesky(array)
             except np.linalg.LinAlgError as error:
                 raise ValueError("conditional precision must be positive definite") from error
-        if (
-            len(self.information_vector) != dim
-            or not np.isfinite((*self.b, *self.information_vector)).all()
-        ):
+        if not np.isfinite((*self.b, *self.information_vector)).all():
             raise ValueError("invalid conditional natural vector")
 
     @property

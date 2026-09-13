@@ -94,6 +94,7 @@ def rebuild_conditional_state(
     natural = np.array(initial.information_vector, dtype=float)
     clusters = list(initial.evidence_cluster_ids)
     dim = len(initial.b)
+    gaussian_dim = len(initial.information_vector)
     for supplied in measurements:
         item = supplied.detached()
         if (
@@ -118,7 +119,7 @@ def rebuild_conditional_state(
         m = len(z)
         if (
             not m
-            or h.shape != (m, dim)
+            or h.shape != (m, gaussian_dim)
             or covariance.shape != (m, m)
             or not np.isfinite(h).all()
             or not np.isfinite(covariance).all()

@@ -1,0 +1,30 @@
+{
+  "random_roundtrip_1000_max_error": 8.881784197001252e-16,
+  "dst_fold": {
+    "first": "2026-11-01T01:30:00-04:00",
+    "second": "2026-11-01T01:30:00-05:00",
+    "timestamp_delta": 3600.0,
+    "python_equality": true,
+    "accepted_residual": [
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+    ]
+  },
+  "same_instant_timezone": [
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0
+  ],
+  "huge_quaternion": "OverflowError: (34, 'Result too large')",
+  "nan": "ValueError: pose frame and finite coordinates required",
+  "unknown_field": "ValidationError: 1 validation error for Pose3D\nevil\n  Extra inputs are not permitted [type=extra_forbidden, input_value=1, input_type=int]\n    For further information visit https://errors.pydantic.dev/2.13/v/extra_forbidden",
+  "independent_dimension_positive_cases": 3,
+  "source_sha": "b33992da1bd775f180d915e80b7e7746546adbd9"
+}

@@ -1,0 +1,96 @@
+{
+  "schema_version": "0.1.0",
+  "purpose": "local_development_only_not_formal_selection",
+  "user_decision": "C_position_and_orientation_plus_local_small_budget",
+  "physical_state": {
+    "position_unit": "meter",
+    "orientation": "unit_quaternion_xyzw",
+    "local_coordinates": [
+      "dx_world",
+      "dy_world",
+      "dz_world",
+      "dtheta_x_reference",
+      "dtheta_y_reference",
+      "dtheta_z_reference"
+    ],
+    "binding": [
+      "object_instance_id",
+      "valid_at",
+      "frame_id",
+      "reference_pose"
+    ],
+    "dynamics": "not_implemented_no_implicit_stationarity_or_velocity",
+    "symmetry": "retain_unresolved_or_multiple_hypotheses_until_observed",
+    "covariance": "must_be_calibrated_in_same_local_chart_no_default_identity",
+    "retraction": "rebuild_from_retained_evidence_with_same_reference_or_relinearize_all"
+  },
+  "architecture_protocol": "structure_two_neural_proposer_architecture_resolution_v0_1.json",
+  "schedule_protocol": "structure_two_training_schedule_resolution_v0_1.json",
+  "architecture_arms": [
+    "typed_factor_graph_transformer",
+    "slot_conditioned_perceiver",
+    "autoregressive_typed_graph_policy"
+  ],
+  "full_output": [
+    "operation",
+    "parent",
+    "H",
+    "R",
+    "I",
+    "C",
+    "Z",
+    "r",
+    "V",
+    "joint_log_q",
+    "lineage",
+    "unresolved_mass"
+  ],
+  "operations": [
+    "branch",
+    "revise",
+    "retract",
+    "reactivate",
+    "rejuvenate",
+    "preserve_unresolved"
+  ],
+  "development_network": {
+    "hidden_width": 64,
+    "layers": 2,
+    "attention_heads": 4,
+    "perceiver_latent_slots": 16,
+    "batch_size": 8,
+    "history_truncation_allowed": false,
+    "over_budget_behavior": "report_resource_limit_do_not_drop_fields_or_events"
+  },
+  "budget": {
+    "device": "cpu",
+    "cpu_threads": 2,
+    "training_seeds": [
+      0,
+      1,
+      2
+    ],
+    "max_optimizer_steps_per_run": 1500,
+    "max_seconds_per_run": 300,
+    "max_runs_in_development_batch": 9,
+    "max_aggregate_optimizer_steps": 13500,
+    "max_aggregate_training_seconds": 2700,
+    "parameter_search_trials_per_arm": 1,
+    "paid_compute": false,
+    "stop_rule": "first_limit_reached",
+    "formal_ranking_allowed": false,
+    "includes": "training_budget_only_report_setup_and_data_preparation_separately"
+  },
+  "data_prerequisites": [
+    "independently_reviewed_visible_inputs_and_labels",
+    "native_revision_lineage_and_six_operation_coverage",
+    "partitioned_train_validation_confirmatory_with_hidden_confirmation",
+    "actual_pose_observations_and_calibration"
+  ],
+  "selection_policy": "developer_smoke_results_do_not_resolve_architecture_or_schedule",
+  "implementation_status": {
+    "model_trainer_available": false,
+    "training_started": false,
+    "production_pose_tracker_available": false
+  }
+}

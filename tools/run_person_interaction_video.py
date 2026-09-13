@@ -60,6 +60,17 @@ def run(
         or not 1 <= fps <= 10
     ):
         raise ValueError("bounded, source-described video window required")
+    repo = Path(__file__).resolve().parents[1]
+    git = ["git", "--no-replace-objects", "-C", str(repo)]
+    code_sha = subprocess.check_output([*git, "rev-parse", "HEAD"], text=True).strip()
+    source_files = [
+        Path(__file__).resolve(),
+        repo / "src/cpswm/perception_mapping/interaction_evidence.py",
+        repo / "src/cpswm/perception_mapping/natural_vision.py",
+    ]
+    source_before = {
+        str(p.relative_to(repo)): hashlib.sha256(p.read_bytes()).hexdigest() for p in source_files
+    }
     x, y, w, h = crop
     if min(x, y) < 0 or not 0 < w <= 1920 or not 0 < h <= 1080:
         raise ValueError("invalid RGB crop")
@@ -133,7 +144,7 @@ def run(
                 "-t",
                 str(duration),
                 "-vf",
-                f"crop={w}:{h}:{x}:{y},fps={fps}",
+                f"crop={w}:{h}:{x}:{y}:exact=1,fps={fps}",
                 "-f",
                 "rawvideo",
                 "-pix_fmt",
@@ -212,7 +223,21 @@ def run(
         previous = associated
     if system.core.current_snapshot != before or stream.execution_traces():
         raise RuntimeError("candidate analysis changed long-term memory")
+    source_after = {
+        str(p.relative_to(repo)): hashlib.sha256(p.read_bytes()).hexdigest() for p in source_files
+    }
+    if (
+        source_before != source_after
+        or code_sha != subprocess.check_output([*git, "rev-parse", "HEAD"], text=True).strip()
+    ):
+        raise RuntimeError("source changed during inference")
     summary = {
+        "code_sha": code_sha,
+        "source_files": source_after,
+        "source_identity_scope": "three_disk_files_not_whole_runtime_attestation",
+        "git_dirty": bool(
+            subprocess.check_output([*git, "status", "--porcelain"], text=True).strip()
+        ),
         "continuous_input_invoked": True,
         "core_unchanged_verified": True,
         "source_url": source_url,

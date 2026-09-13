@@ -9,7 +9,8 @@ from __future__ import annotations
 
 import math
 from copy import deepcopy
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
+from datetime import UTC
 from threading import RLock
 from uuid import UUID, uuid5
 
@@ -17,6 +18,7 @@ import numpy as np
 from scipy.optimize import minimize
 from scipy.special import expit
 
+from cpswm.contracts.base import require_aware
 from cpswm.perception_mapping.natural_vision import VisualFrame
 from cpswm.system.reproducibility import content_sha256
 
@@ -87,7 +89,7 @@ class CausalInstanceAssociator:
         self.config = deepcopy(config or AssociationConfig())
         self._lock = RLock()
         self._last: AssociatedFrame | None = None
-        self._scope: tuple[UUID, UUID, UUID, str, str] | None = None
+        self._scope: tuple | None = None
         self._seen: dict[UUID, tuple[str, AssociatedFrame]] = {}
 
     def update(self, frame: VisualFrame, *, sequence_id: str, media_time: float) -> AssociatedFrame:
@@ -103,7 +105,11 @@ class CausalInstanceAssociator:
             raise ValueError("explicit sequence and finite media time required")
         if frame.width <= 0 or frame.height <= 0:
             raise ValueError("invalid frame dimensions")
-        if not frame.capture_time <= frame.arrival_time <= frame.inference_cutoff:
+        if (
+            not require_aware(frame.capture_time, "capture").astimezone(UTC)
+            <= require_aware(frame.arrival_time, "arrival").astimezone(UTC)
+            <= require_aware(frame.inference_cutoff, "cutoff").astimezone(UTC)
+        ):
             raise ValueError("invalid visual time order")
         fingerprint = content_sha256((frame, sequence_id, media_time))
         existing = self._seen.get(frame.observation_id)
@@ -117,6 +123,13 @@ class CausalInstanceAssociator:
             frame.trace_id,
             frame.sensor_id,
             frame.frame_id,
+            frame.width,
+            frame.height,
+            frame.model_id,
+            frame.weights_sha256,
+            frame.minimum_score,
+            frame.torch_version,
+            frame.torchvision_version,
         )
         if self._scope is not None and scope != self._scope:
             raise ValueError("association cannot cross camera or session scope")
@@ -260,6 +273,7 @@ class CalibrationArtifact:
 
 
 def fit_calibration(examples: tuple[CalibrationExample, ...]) -> CalibrationArtifact:
+    examples = tuple(replace(e) for e in deepcopy(examples))
     if len(examples) < 4 or len({e.label for e in examples}) != 2:
         raise ValueError("calibration needs positive and negative independent labels")
     if len({e.sample_id for e in examples}) != len(examples):
@@ -297,6 +311,8 @@ def fit_calibration(examples: tuple[CalibrationExample, ...]) -> CalibrationArti
 def evaluate_calibration(
     artifact: CalibrationArtifact, examples: tuple[CalibrationExample, ...]
 ) -> dict[str, float | int]:
+    artifact = replace(deepcopy(artifact))
+    examples = tuple(replace(e) for e in deepcopy(examples))
     if not examples:
         raise ValueError("held-out evaluation is empty")
     if any(

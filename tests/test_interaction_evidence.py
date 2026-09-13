@@ -203,3 +203,42 @@ def test_bad_calibration_inputs(attack):
             CalibrationArtifact("x", ("a",), ("b",), float("nan"), 0, 4, "a" * 64)
         else:
             fit_calibration(data)
+
+
+@pytest.mark.parametrize("kind", ["naive", "dst", "model", "dimensions"])
+def test_time_and_feature_domain_rejections(kind):
+    from zoneinfo import ZoneInfo
+
+    t = CausalInstanceAssociator()
+    f = frame()
+    t.update(f, sequence_id="s", media_time=0)
+    g = frame(f)
+    if kind == "naive":
+        now = datetime(2026, 1, 1)
+        g = replace(g, capture_time=now, arrival_time=now, inference_cutoff=now)
+    if kind == "dst":
+        tz = ZoneInfo("America/New_York")
+        first = datetime(2026, 11, 1, 1, 30, tzinfo=tz, fold=0)
+        late = datetime(2026, 11, 1, 1, 30, tzinfo=tz, fold=1)
+        g = replace(g, capture_time=late, arrival_time=first, inference_cutoff=late)
+    if kind == "model":
+        g = replace(g, weights_sha256="d" * 64)
+    if kind == "dimensions":
+        g = replace(g, width=200)
+    with pytest.raises(ValueError):
+        t.update(g, sequence_id="s", media_time=0.2)
+    assert (
+        t.update(frame(f), sequence_id="s", media_time=0.2).detections[0].status
+        == "ASSOCIATED_GEOMETRIC"
+    )
+
+
+def test_calibration_revalidates_invalidated_objects():
+    data = examples()
+    object.__setattr__(data[0], "annotation_source", "prediction")
+    with pytest.raises(ValueError):
+        fit_calibration(data)
+    artifact = fit_calibration(examples())
+    object.__setattr__(artifact, "slope", float("nan"))
+    with pytest.raises(ValueError):
+        evaluate_calibration(artifact, examples("test", "b"))

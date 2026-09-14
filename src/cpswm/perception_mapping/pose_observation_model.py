@@ -76,7 +76,11 @@ class PoseLabel:
             raise ValueError("pose calibration requires independently supplied labels")
         observed = np.asarray(self.observation.residual())
         truth = np.asarray(pose_residual(self.observation.reference, self.truth))
-        return np.asarray(observed - truth, dtype=np.float64)
+        with np.errstate(over="ignore", invalid="ignore"):
+            error = np.asarray(observed - truth, dtype=np.float64)
+        if not np.isfinite(error).all():
+            raise ValueError("pose calibration residual overflow")
+        return error
 
 
 def _validated_rows(rows: tuple[PoseLabel, ...]) -> tuple[PoseLabel, ...]:
@@ -192,25 +196,34 @@ class GaussianPoseObservationModel:
             or set(self.fit_sequences) & {x.observation.sequence_id for x in rows}
         ):
             raise ValueError("pose evaluation must use held-out sequences and inputs")
-        errors = np.stack(
-            [
-                np.asarray(self.measurement(x.observation))
-                - np.asarray(pose_residual(x.observation.reference, x.truth))
-                for x in rows
-            ]
-        )
-        _, covariance = self._parameters()
-        mahalanobis = np.sum(errors * np.linalg.solve(covariance, errors.T).T, axis=1)
-        _, logdet = np.linalg.slogdet(covariance)
-        nll = 0.5 * (6 * log(2 * pi) + logdet + mahalanobis)
+        try:
+            with np.errstate(over="raise", invalid="raise", divide="raise"):
+                errors = np.stack(
+                    [
+                        np.asarray(self.measurement(x.observation))
+                        - np.asarray(pose_residual(x.observation.reference, x.truth))
+                        for x in rows
+                    ]
+                )
+                _, covariance = self._parameters()
+                mahalanobis = np.sum(errors * np.linalg.solve(covariance, errors.T).T, axis=1)
+                _, logdet = np.linalg.slogdet(covariance)
+                nll = 0.5 * (6 * log(2 * pi) + logdet + mahalanobis)
+                values = {
+                    "mean_nll": float(nll.mean()),
+                    "mean_squared_mahalanobis": float(mahalanobis.mean()),
+                    "position_rmse_m": float(np.sqrt(np.mean(errors[:, :3] ** 2))),
+                    "orientation_chart_rmse_rad": float(np.sqrt(np.mean(errors[:, 3:] ** 2))),
+                }
+        except FloatingPointError as error:
+            raise ValueError("pose evaluation overflow") from error
+        if not all(np.isfinite(value) for value in values.values()):
+            raise ValueError("pose evaluation has nonfinite metrics")
         return {
             "model_id": self.model_id,
             "samples": len(rows),
             "sequences": len({x.observation.sequence_id for x in rows}),
-            "mean_nll": float(nll.mean()),
-            "mean_squared_mahalanobis": float(mahalanobis.mean()),
-            "position_rmse_m": float(np.sqrt(np.mean(errors[:, :3] ** 2))),
-            "orientation_chart_rmse_rad": float(np.sqrt(np.mean(errors[:, 3:] ** 2))),
+            **values,
             "evaluation_sha256": content_sha256(rows),
             "source_authentication_verified": False,
             "scientific_acceptance": "NOT_DECIDED",
@@ -272,7 +285,10 @@ class PoseConditionalHistory:
         seen: set[UUID] = set()
         pixels: set[str] = set()
         for key, item in values.items():
-            if item.observation.reference != self._reference:
+            # Compare physical references, including UTC epochs and quaternion
+            # sign equivalence, using the same geometry as the measurement.
+            reference_delta = pose_residual(self._reference, item.observation.reference)
+            if any(x != 0 for x in reference_delta):
                 raise ValueError("retained pose input changed reference, object or epoch")
             c = item.contribution
             if not c.model_id.strip() or not c.source_record_ids:

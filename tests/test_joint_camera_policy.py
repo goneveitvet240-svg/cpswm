@@ -169,3 +169,34 @@ def test_unseen_policy_dependencies_do_not_issue_a_command(tmp_path):
         )
     assert not stream._observation_commands
     store.close()
+
+
+def test_fixed_camera_entry_cannot_misrepresent_opposite_action_as_model_choice(tmp_path):
+    stream, store, _, _, start = p5_setup(tmp_path / "policy.db")
+    when = start + timedelta(seconds=2)
+    problem = problem_for(stream, when)
+    plan, chosen = problem.select(
+        stream.current_joint_decision_view(), stream._system.cause_information_planner
+    )
+    assert plan.should_act and chosen.action == "RotateLeft"
+    forged = stream.prepare_observation(
+        action="RotateRight",
+        degrees=30,
+        reason="joint-ciav@1:" + problem.model_dump_json(),
+        source_ids=problem.source_observation_ids,
+        decision_time=when,
+    )
+
+    class Camera:
+        calls = 0
+
+        def execute(self, command):
+            self.calls += 1
+            raise AssertionError("wrong model action reached executor")
+
+    executor = Camera()
+    with pytest.raises(ValueError, match="differs from joint model decision"):
+        stream.execute_observation(forged, executor=executor)
+    assert executor.calls == 0
+    assert stream._observation_status[forged.action_id] == "READY"
+    store.close()

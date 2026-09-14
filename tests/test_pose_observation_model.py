@@ -201,3 +201,19 @@ def test_zero_other_blocks_stay_zero_and_model_configuration_is_detached():
     assert result.information != prior().information
     object.__setattr__(x.observation.observed.pose, "x", 999)
     assert h.state == result
+
+
+def test_equivalent_quaternion_reference_is_consumed_identically():
+    value = item()
+    r = value.observation.reference
+    negative = r.model_copy(update={"pose": r.pose.model_copy(update={"qw": -1.0})})
+    equivalent = replace(value, observation=replace(value.observation, reference=negative))
+    assert history().upsert(value) == history().upsert(equivalent)
+
+
+def test_finite_heldout_pose_cannot_emit_infinite_metrics():
+    row = labels("heldout", 30)[0]
+    far = apply_pose_delta(reference(), (1e200, 0.0, 0.0, 0.0, 0.0, 0.0))
+    row = replace(row, observation=replace(row.observation, observed=far))
+    with pytest.raises(ValueError, match="overflow"):
+        model().evaluate((row,))

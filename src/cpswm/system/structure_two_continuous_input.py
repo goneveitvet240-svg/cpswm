@@ -802,7 +802,7 @@ class ContinuousEvidenceInput:
     def execute_observation(
         self, command: ObservationCommand, *, executor: ObservationExecutor
     ) -> ObservationDelivery:
-        with self._lock:
+        with self._lock, self._system.core._execution_lock:
             self._enter()
             try:
                 owned, digest = self._observation_commands[command.action_id]
@@ -819,11 +819,17 @@ class ContinuousEvidenceInput:
                     problem = JointCameraProblem.model_validate_json(
                         command.reason.removeprefix("joint-ciav@1:")
                     )
-                    if (
-                        problem.source_belief_sha256
-                        != self._current_joint_decision_view().content_sha256
-                    ):
+                    view = self._current_joint_decision_view()
+                    if problem.source_belief_sha256 != view.content_sha256:
                         raise ValueError("observation command joint posterior has changed")
+                    _, selected = problem.select(view, self._system.cause_information_planner)
+                    if (
+                        selected is None
+                        or selected.action != command.action
+                        or selected.degrees != command.degrees
+                        or problem.source_observation_ids != command.source_ids
+                    ):
+                        raise ValueError("observation command differs from joint model decision")
                 if any(
                     t is not None and command.decision_time < t
                     for t in (self._last_arrival, self._last_cutoff)

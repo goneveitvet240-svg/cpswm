@@ -1,0 +1,24 @@
+{
+  "source_sha": "269b87374474f8f10eb9f54816b1f948fc199436",
+  "command": [
+    ".venv/bin/python",
+    "-m",
+    "pytest",
+    "-q",
+    "tests/test_pose_observation_model.py",
+    "tests/test_proposal_learning.py",
+    "tests/test_joint_camera_policy.py",
+    "tests/test_structure_two_pose.py",
+    "tests/test_structure_two_joint_consumption_components.py",
+    "tests/test_structure_two_proposal_scheduler.py",
+    "tests/test_structure_two_continuous_input.py",
+    "tests/test_continuous_state_recovery.py",
+    "tests/test_structure_two_proposal_g1_repair.py",
+    "--junitxml=docs/reviews/pc_a/semantic_production_2026-09-15/regression_initial.xml"
+  ],
+  "exit_code": 0,
+  "wall_seconds": 32.722215624991804,
+  "child_cpu_seconds": 28.839922,
+  "max_rss_bytes_macos": 465305600,
+  "scope": "engineering fixtures and adjacent regression; not scientific full lifecycle comparison"
+}

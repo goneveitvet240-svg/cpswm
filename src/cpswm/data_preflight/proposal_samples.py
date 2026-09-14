@@ -585,25 +585,11 @@ class JointProposalProbability(ContractModel):
         return self
 
 
-def bind_probability(
-    sample: ProposalSample, target: ProposalTarget, trace: JointProposalProbability
-) -> None:
-    """Check full chain-rule terms bind this input and this actual proposed state.
-
-    Does not authenticate a model file or prove support was enumerated completely.
-    """
-    sample = ProposalSample.model_validate(sample.model_dump(mode="json"))
-    projection = export_sample(sample)
-    trace = JointProposalProbability.model_validate(trace.model_dump(mode="json"))
+def proposal_factor_values(target: ProposalTarget) -> tuple[str, ...]:
+    """The shared nine-factor target order for model loss and probability receipts."""
     target = ProposalTarget.model_validate(target.model_dump(mode="json"))
-    if trace.proposal_sha256 != content_sha256(target.model_dump(mode="json")):
-        raise ValueError("probability trace does not bind the full proposal and replay effects")
-    if target not in sample.compatible_targets:
-        raise ValueError("target does not belong to the sample")
-    if trace.root_context_sha256 != content_sha256(projection["model_input"]):
-        raise ValueError("probability trace belongs to a different model input")
     state = target.candidate.state
-    expected = (
+    return (
         target.operation.value,
         str(state.parent_particle_id),
         content_sha256([e.model_dump(mode="json") for e in target.candidate.events]),
@@ -626,6 +612,26 @@ def bind_probability(
             }
         ),
     )
+
+
+def bind_probability(
+    sample: ProposalSample, target: ProposalTarget, trace: JointProposalProbability
+) -> None:
+    """Check full chain-rule terms bind this input and this actual proposed state.
+
+    Does not authenticate a model file or prove support was enumerated completely.
+    """
+    sample = ProposalSample.model_validate(sample.model_dump(mode="json"))
+    projection = export_sample(sample)
+    trace = JointProposalProbability.model_validate(trace.model_dump(mode="json"))
+    target = ProposalTarget.model_validate(target.model_dump(mode="json"))
+    if trace.proposal_sha256 != content_sha256(target.model_dump(mode="json")):
+        raise ValueError("probability trace does not bind the full proposal and replay effects")
+    if target not in sample.compatible_targets:
+        raise ValueError("target does not belong to the sample")
+    if trace.root_context_sha256 != content_sha256(projection["model_input"]):
+        raise ValueError("probability trace belongs to a different model input")
+    expected = proposal_factor_values(target)
     if tuple(f.selected for f in trace.factors) != expected:
         raise ValueError(
             "probability trace selected values do not describe this complete candidate"

@@ -1,0 +1,74 @@
+"""Independent fixture-only probes against source 269b87374474f8f10eb9f54816b1f948fc199436."""
+from dataclasses import replace
+from datetime import timedelta
+import math
+import numpy as np
+import pytest
+import torch
+from test_pose_observation_model import labels, observation, reference
+from test_joint_camera_policy import p5_setup, problem_for
+from test_continuous_state_recovery import DurableFixtureProducer, store_at
+from test_structure_two_continuous_input import raw_for
+from test_structure_two_proposal_scheduler import sample_payload
+from cpswm.perception_mapping.pose_observation_model import GaussianPoseObservationModel
+from cpswm.system.structure_two_continuous_input import ContinuousEvidenceInput, ObservationDelivery
+from cpswm.data_preflight.proposal_samples import ProposalSample
+from cpswm.data_preflight.proposal_learning import ProposalLearningExample, FACTOR_ORDER, compatible_proposal_nll
+
+
+def test_correlated_pose_noise_survives_fit_and_density_evaluation():
+    transform = np.eye(6)
+    transform[0, 3] = 0.4
+    transform[2, 1] = -0.3
+    bias = np.array([.02, -.01, .03, .01, .02, -.01])
+    errors = np.concatenate((np.eye(6), -np.eye(6))) @ transform.T * .1 + bias
+    training = tuple(replace(label, observation=observation(10+i, e))
+                     for i, (label, e) in enumerate(zip(labels(), errors)))
+    fitted = GaussianPoseObservationModel.fit(training)
+    covariance = transform @ transform.T * (.02 / 11)
+    assert np.allclose(fitted.covariance, covariance)
+    assert abs(fitted.covariance[0][3]) > 0
+    heldout = tuple(replace(label, observation=observation(100+i, e, 'heldout'))
+                    for i, (label, e) in enumerate(zip(labels('heldout',100), errors)))
+    report = fitted.evaluate(heldout)
+    expected = .5 * (6*math.log(2*math.pi)+np.linalg.slogdet(covariance)[1]+5.5)
+    assert report['mean_nll'] == pytest.approx(expected)
+
+
+def test_ready_posterior_command_survives_recovery_and_executes_once(tmp_path):
+    path = tmp_path/'ready.db'
+    stream, store, transition, builder, start = p5_setup(path)
+    _, command = stream.prepare_posterior_observation(problem_for(stream,start), decision_time=start+timedelta(seconds=2))
+    before = stream.current_joint_decision_view().content_sha256
+    store.close()
+    store = store_at(path)
+    recovered = ContinuousEvidenceInput.resume(store,producer=DurableFixtureProducer(),context_builder=builder)
+    assert recovered.current_joint_decision_view().content_sha256 == before
+    owned = recovered._observation_commands[command.action_id][0]
+    class Camera:
+        calls = 0
+        def execute(self, cmd):
+            self.calls += 1
+            at = cmd.decision_time+timedelta(seconds=1)
+            return ObservationDelivery(cmd.action_id,(raw_for(transition,capture=at),),True,'',at)
+    camera = Camera()
+    recovered.execute_observation(owned,executor=camera)
+    with pytest.raises(ValueError,match='already dispatched'):
+        recovered.execute_observation(owned,executor=camera)
+    assert camera.calls == 1
+    store.close()
+
+
+def test_joint_nll_matches_softmax_logits_and_backpropagates_into_normalizer():
+    example = ProposalLearningExample.from_sample(ProposalSample.model_validate(sample_payload.__wrapped__()))
+    n = len(example.target_sha256s)
+    logits = torch.linspace(-1,1,n*9*3,dtype=torch.float64).reshape(n,9,3).requires_grad_()
+    logps = logits.log_softmax(-1)[:,:,0]
+    loss = compatible_proposal_nll(example,target_sha256s=example.target_sha256s,
+             factor_order=FACTOR_ORDER,conditional_log_probabilities=logps)
+    expected = -torch.log(torch.exp(logps).prod(1).sum())
+    assert loss.item() == pytest.approx(expected.item())
+    loss.backward()
+    assert torch.isfinite(logits.grad).all()
+    assert (logits.grad[:,:,0] < 0).all()
+    assert (logits.grad[:,:,1:] > 0).all()

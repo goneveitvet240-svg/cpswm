@@ -14,7 +14,7 @@ from copy import deepcopy
 from dataclasses import dataclass, replace
 from datetime import UTC, datetime
 from threading import RLock
-from typing import Any, Literal, Protocol, cast
+from typing import TYPE_CHECKING, Any, Literal, Protocol, cast
 from uuid import UUID, uuid4
 
 from cpswm.contracts import (
@@ -48,6 +48,11 @@ from cpswm.system.structure_two_execution import (
 )
 from cpswm.system.structure_two_production_system import StructureTwoProductionSystem
 from cpswm.world_model.grounded_search import RealizedCIAVObservation
+
+if TYPE_CHECKING:
+    from cpswm.contracts.grounded_search import ActiveObservationPlan
+    from cpswm.system.joint_camera_policy import JointCameraProblem
+    from cpswm.system.structure_two_joint_consumption import JointDecisionView
 
 
 def _utc(value: datetime) -> datetime:
@@ -684,6 +689,70 @@ class ContinuousEvidenceInput:
             finally:
                 self._busy = False
 
+    def _current_joint_decision_view(self) -> JointDecisionView:
+        from cpswm.system.structure_two_joint_consumption import JointDecisionView
+
+        core = self._system.core
+        # Use the existing native consumer validation before exposing whole atoms.
+        core.prepared_particle_location_marginal()
+        batch = core._particle_workspace.batch
+        if batch is None:
+            raise ValueError("no current native joint posterior for observation policy")
+        return JointDecisionView.from_batch(
+            runtime_id=core._particle_workspace.runtime_id,
+            expected_snapshot_id=core.current_snapshot.snapshot_id,
+            batch=batch,
+            records=core._particle_workspace.records,
+        )
+
+    def current_joint_decision_view(self) -> JointDecisionView:
+        """Read this owner's current native batch without accepting caller posterior mass."""
+        with self._lock, self._system.core._execution_lock:
+            self._enter()
+            try:
+                return self._current_joint_decision_view()
+            finally:
+                self._busy = False
+
+    def prepare_posterior_observation(
+        self, problem: JointCameraProblem, *, decision_time: datetime
+    ) -> tuple[ActiveObservationPlan, ObservationCommand | None]:
+        """Choose using the actual joint posterior, then issue through the durable path.
+
+        A fitted outcome model must provide the problem; source hashes alone do
+        not establish its calibration. Absence of a usable posterior or a
+        beneficial action never falls back to a fixed scan.
+        """
+        from cpswm.system.joint_camera_policy import JointCameraProblem
+
+        with self._lock, self._system.core._execution_lock:
+            problem = JointCameraProblem.model_validate(problem.model_dump())
+            view = self.current_joint_decision_view()
+            self._enter()
+            try:
+                self._require_resolved_dispatches()
+                when = _utc(decision_time)
+                if any(t is not None and when < t for t in (self._last_arrival, self._last_cutoff)):
+                    raise ValueError("posterior observation decision predates current history")
+                if not set(problem.source_observation_ids) <= set(self._raw):
+                    raise ValueError("posterior observation references unseen raw evidence")
+                plan, selected = problem.select(view, self._system.cause_information_planner)
+                if selected is None:
+                    return plan, None
+                reason = "joint-ciav@1:" + problem.model_dump_json()
+                # Retain both locks while using the existing command issuer.
+                self._busy = False
+                command = self.prepare_observation(
+                    action=selected.action,
+                    degrees=selected.degrees,
+                    reason=reason,
+                    source_ids=problem.source_observation_ids,
+                    decision_time=when,
+                )
+                return plan, command
+            finally:
+                self._busy = False
+
     def prepare_observation(
         self,
         *,
@@ -733,7 +802,7 @@ class ContinuousEvidenceInput:
     def execute_observation(
         self, command: ObservationCommand, *, executor: ObservationExecutor
     ) -> ObservationDelivery:
-        with self._lock:
+        with self._lock, self._system.core._execution_lock:
             self._enter()
             try:
                 owned, digest = self._observation_commands[command.action_id]
@@ -744,6 +813,23 @@ class ContinuousEvidenceInput:
                 self._require_resolved_dispatches()
                 if command.snapshot_id != self._system.core.current_snapshot.snapshot_id:
                     raise ValueError("stale observation command")
+                if command.reason.startswith("joint-ciav@1:"):
+                    from cpswm.system.joint_camera_policy import JointCameraProblem
+
+                    problem = JointCameraProblem.model_validate_json(
+                        command.reason.removeprefix("joint-ciav@1:")
+                    )
+                    view = self._current_joint_decision_view()
+                    if problem.source_belief_sha256 != view.content_sha256:
+                        raise ValueError("observation command joint posterior has changed")
+                    _, selected = problem.select(view, self._system.cause_information_planner)
+                    if (
+                        selected is None
+                        or selected.action != command.action
+                        or selected.degrees != command.degrees
+                        or problem.source_observation_ids != command.source_ids
+                    ):
+                        raise ValueError("observation command differs from joint model decision")
                 if any(
                     t is not None and command.decision_time < t
                     for t in (self._last_arrival, self._last_cutoff)

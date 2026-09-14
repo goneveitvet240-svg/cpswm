@@ -1,0 +1,87 @@
+from datetime import timedelta
+from dataclasses import replace
+import pytest
+from test_joint_camera_policy import p5_setup, problem_for
+from test_continuous_state_recovery import DurableFixtureProducer, store_at
+from test_structure_two_continuous_input import raw_for
+from test_pose_observation_model import history, item
+from cpswm.system.structure_two_continuous_input import ContinuousEvidenceInput, ObservationDelivery
+
+class Camera:
+    def __init__(self, transition):
+        self.transition = transition
+        self.calls = []
+    def execute(self, command):
+        self.calls.append(command.action)
+        when = command.decision_time + timedelta(seconds=1)
+        return ObservationDelivery(command.action_id, (raw_for(self.transition, capture=when),), True, '', when)
+
+def test_prepared_policy_command_recovers_and_executes(tmp_path):
+    path = tmp_path / 'db'
+    stream, store, transition, builder, start = p5_setup(path)
+    when = start + timedelta(seconds=2)
+    p = problem_for(stream, when)
+    plan, cmd = stream.prepare_posterior_observation(p, decision_time=when)
+    store.close()
+    recovered_store = store_at(path)
+    recovered = ContinuousEvidenceInput.resume(recovered_store, producer=DurableFixtureProducer(), context_builder=builder)
+    owned = recovered._observation_commands[cmd.action_id][0]
+    camera = Camera(transition)
+    recovered.execute_observation(owned, executor=camera)
+    assert camera.calls == ['RotateLeft']
+    recovered_store.close()
+
+def test_forged_policy_reason_cannot_execute_opposite_decision(tmp_path):
+    stream, store, transition, builder, start = p5_setup(tmp_path / 'db')
+    when = start + timedelta(seconds=2)
+    p = problem_for(stream, when)
+    plan, selected = p.select(stream.current_joint_decision_view(), stream._system.cause_information_planner)
+    assert selected.action == 'RotateLeft'
+    forged = stream.prepare_observation(action='RotateRight', degrees=30, reason='joint-ciav@1:' + p.model_dump_json(), source_ids=p.source_observation_ids, decision_time=when)
+    camera = Camera(transition)
+    with pytest.raises(ValueError):
+        stream.execute_observation(forged, executor=camera)
+    assert camera.calls == []
+    store.close()
+
+def test_equivalent_quaternion_reference_accepted():
+    h = history()
+    value = item()
+    r = value.observation.reference
+    q = r.pose.model_copy(update={k: -getattr(r.pose,k) for k in ('qx','qy','qz','qw')})
+    equivalent = r.model_copy(update={'pose':q})
+    opposite = replace(value, observation=replace(value.observation, reference=equivalent))
+    expected = history().upsert(value)
+    assert h.upsert(opposite) == expected
+
+def test_finite_heldout_pose_overflow_is_rejected():
+    from test_pose_observation_model import model, labels, observation
+    rows = labels('heldout', 400)
+    enormous = tuple(replace(x, observation=observation(500+i, (1e200,0,0,0,0,0), 'heldout')) for i,x in enumerate(rows))
+    with pytest.raises(ValueError):
+        model().evaluate(enormous)
+
+def test_invalid_large_update_is_atomic():
+    h = history()
+    h.upsert(item())
+    before_state, before_inputs = h.state, h.retained_inputs
+    x = item(200)
+    invalid = replace(x, contribution=replace(x.contribution, rls_features=(1e308, 1e308)))
+    with pytest.raises(ValueError):
+        h.upsert(invalid)
+    assert h.state == before_state
+    assert h.retained_inputs == before_inputs
+
+def test_current_nonuniform_posterior_stops_when_action_cost_exceeds_gain(tmp_path):
+    stream, store, _, _, start = p5_setup(tmp_path / 'db')
+    when = start + timedelta(seconds=2)
+    p = problem_for(stream, when)
+    view = stream.current_joint_decision_view()
+    probabilities = list(view.verification_belief().posterior.values())
+    assert len(set(probabilities)) > 1
+    alternatives = tuple(x.model_copy(update={'candidate': x.candidate.model_copy(update={'motion_cost':100000.0})}) for x in p.alternatives)
+    p = p.model_copy(update={'alternatives':alternatives})
+    plan, cmd = stream.prepare_posterior_observation(p, decision_time=when)
+    assert cmd is None
+    assert not stream._observation_commands
+    store.close()

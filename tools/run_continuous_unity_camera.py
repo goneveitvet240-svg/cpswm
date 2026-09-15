@@ -36,6 +36,13 @@ def load_runtime_factory(spec: str, root: Path):
     if ":" not in spec:
         raise ValueError("runtime factory must be an explicit module:callable")
     module_name, name = spec.split(":", 1)
+    parts = module_name.split(".")
+    if not parts or parts[0] != "cpswm" or not all(x.isidentifier() for x in (*parts, name)):
+        raise ValueError("factory must name a repository cpswm module before import")
+    module_path = root.joinpath("src", *parts)
+    candidates = (module_path.with_suffix(".py"), module_path / "__init__.py")
+    if not any(p.is_file() and p.resolve().is_relative_to(root / "src") for p in candidates):
+        raise ValueError("factory module does not exist inside the source-bound repository")
     module = importlib.import_module(module_name)
     factory = getattr(module, name)
     source = inspect.getsourcefile(factory)

@@ -157,3 +157,19 @@ def test_scorer_nonfinite_or_wrong_support_is_rejected():
                 runtime_candidates=sample.compatible_targets,
                 scorer=scorer,
             )
+
+
+def test_numerical_underflow_cannot_silently_remove_supported_choices():
+    sample, _, _ = setup()
+
+    def extreme_logits(context, axis, prefix, choices, **kwargs):
+        values = torch.full((len(choices),), -10000.0, dtype=torch.float64)
+        values[0] = 0.0
+        return values
+
+    with pytest.raises(ValueError, match="underflow would drop supported choices"):
+        TypedProposalDistribution(
+            context=sample.runtime_context(),
+            runtime_candidates=sample.compatible_targets,
+            scorer=extreme_logits,
+        )

@@ -144,6 +144,10 @@ class TypedProposalDistribution:
                 logs = torch.log_softmax(logits.to(dtype=torch.float64), dim=0)
                 if not torch.isfinite(logs).all():
                     raise ValueError("conditional log probability overflow")
+                if (logs.detach().exp() == 0).any():
+                    raise ValueError(
+                        "conditional probability underflow would drop supported choices"
+                    )
                 self._nodes[prefix] = (choices, logs)
 
     @property

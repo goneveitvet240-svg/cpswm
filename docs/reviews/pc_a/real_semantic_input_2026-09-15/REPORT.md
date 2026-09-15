@@ -4,6 +4,7 @@
 
 ## 源码与协作身份
 
+- 已推送并建立[草稿 PR26](https://github.com/goneveitvet240-svg/cpswm/pull/26)，接续 PR25；本报告及交接链接提交不改变下述生产／测试源码。
 - A 分支：`codex/pc-a-real-semantic-input-20260915`；base `bdf5f55dfaddf978e548aeedcd28e2bc465a5054`（PR25）。
 - 本批实际生产／测试冻结源码：`521d4f17c8538116b30a7c3c3c6c5e5a8f894141`。
 - 开工 fetch 验证共享集成 `19ddf26830348a2f0b33f0af54d6ba702c5cfb1c`；没有自动合并、覆盖共享分支或修改 B 验收实现。

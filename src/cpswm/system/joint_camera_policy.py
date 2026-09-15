@@ -36,7 +36,19 @@ class CameraAlternative(ContractModel):
         return self
 
 
+class CameraModelSources(ContractModel):
+    """Declared source identity, not a certificate of calibration quality."""
+
+    observation_model_id: str = Field(min_length=1)
+    observation_artifact_sha256: str = Field(pattern=r"^[0-9a-f]{64}$")
+    calibration_domain: str = Field(min_length=1)
+    calibration_data_sha256: str = Field(pattern=r"^[0-9a-f]{64}$")
+    utility_definition_id: str = Field(min_length=1)
+    utility_artifact_sha256: str = Field(pattern=r"^[0-9a-f]{64}$")
+
+
 class JointCameraProblem(ContractModel):
+    model_sources: CameraModelSources | None = None
     source_belief_sha256: str = Field(pattern=r"^[0-9a-f]{64}$")
     source_observation_ids: tuple[UUID, ...] = Field(min_length=1)
     alternatives: tuple[CameraAlternative, ...] = Field(min_length=1)
@@ -52,6 +64,14 @@ class JointCameraProblem(ContractModel):
             set(self.source_observation_ids)
         ):
             raise ValueError("duplicate camera alternatives or observation dependencies")
+        if self.model_sources is not None:
+            for option in self.alternatives:
+                if (
+                    option.candidate.observation_likelihood_model_id
+                    != self.model_sources.observation_model_id
+                    or option.candidate.calibration_domain != self.model_sources.calibration_domain
+                ):
+                    raise ValueError("camera alternative differs from declared model source/domain")
         return self
 
     def select(

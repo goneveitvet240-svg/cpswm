@@ -190,15 +190,9 @@ class LocationBinding(ContractModel):
         return self
 
 
-class ProposalSample(ContractModel):
-    schema_version: Literal["full-proposal-sample@2"] = "full-proposal-sample@2"
-    sample_id: UUID
-    partition: Literal["train", "development"]
-    house_id: str = Field(min_length=1)
-    house_sha256: str = Field(pattern=r"^[0-9a-f]{64}$")
-    schedule_block_id: str = Field(min_length=1)
-    annotation_kind: Literal["component_fixture", "reviewed_offline", "native_trace"]
-    annotation_ref: str = Field(min_length=1)
+class ProposalContext(ContractModel):
+    """Runtime-visible context, with no targets or annotation metadata."""
+
     source_snapshot_id: UUID
     visible: VisibleRecords
     parents: tuple[FullHypothesis, ...]
@@ -207,10 +201,9 @@ class ProposalSample(ContractModel):
     actor_support: tuple[str, ...]
     location_support: tuple[LocationBinding, ...] = Field(min_length=1)
     snapshot_location_catalog: tuple[SnapshotLocation, ...] = ()
-    compatible_targets: tuple[ProposalTarget, ...] = Field(min_length=1)
 
     @model_validator(mode="after")
-    def validate_sample(self) -> Self:
+    def validate_context(self) -> Self:
         self.visible.prefix()  # validates missing/negative/arrival/source distinctions
         require_aware(self.visible.cutoff, "cutoff")
         locations = {x.location_key: x for x in self.location_support}
@@ -298,6 +291,14 @@ class ProposalSample(ContractModel):
             bound_revisions.add(state.revision_id)
         if bound_revisions != set(revisions):
             raise ValueError("unreferenced revision metadata")
+        return self
+
+    def validate_candidates(self, targets: tuple[ProposalTarget, ...]) -> None:
+        """Validate runtime proposals using the same native rules as supervision."""
+        if not targets:
+            raise ValueError("empty runtime proposal support")
+        parents = {x.state.particle_id: x for x in self.parents}
+        revisions = {x.revision_id: x for x in self.revisions}
         arrivals = {x.record_id: x.received_at for x in self.visible.arrivals}
         # References must be visible in the *exported* prefix, not just in a raw bundle.
         prefix = self.visible.prefix()
@@ -305,7 +306,7 @@ class ProposalSample(ContractModel):
         visible_ids = {UUID(x["record_id"]) for x in provenance["included_records"]}
         candidate_ids: set[UUID] = set()
         candidate_revisions: set[UUID] = set()
-        for target in self.compatible_targets:
+        for target in targets:
             self._check_hypothesis(target.candidate)
             state = target.candidate.state
             if state.particle_id in parents or state.particle_id in candidate_ids:
@@ -379,12 +380,11 @@ class ProposalSample(ContractModel):
             target.operation.value == "preserve_unresolved"
             and target.candidate.state.instance_association_key == "unknown_instance"
             and any(event.actor_key == "unknown_actor" for event in target.candidate.events)
-            for target in self.compatible_targets
+            for target in targets
         ):
             raise ValueError(
                 "candidate targets must retain an open actor/instance unresolved fallback"
             )
-        return self
 
     def _evidence_time(self, record_id: UUID) -> datetime:
         records: tuple[
@@ -427,6 +427,45 @@ class ProposalSample(ContractModel):
                 raise ValueError("actor outside declared support")
 
 
+class ProposalSample(ProposalContext):
+    schema_version: Literal["full-proposal-sample@2"] = "full-proposal-sample@2"
+    sample_id: UUID
+    partition: Literal["train", "development"]
+    house_id: str = Field(min_length=1)
+    house_sha256: str = Field(pattern=r"^[0-9a-f]{64}$")
+    schedule_block_id: str = Field(min_length=1)
+    annotation_kind: Literal["component_fixture", "reviewed_offline", "native_trace"]
+    annotation_ref: str = Field(min_length=1)
+    compatible_targets: tuple[ProposalTarget, ...] = Field(min_length=1)
+
+    @model_validator(mode="after")
+    def validate_sample(self) -> Self:
+        self.validate_candidates(self.compatible_targets)
+        return self
+
+    def runtime_context(self) -> ProposalContext:
+        return ProposalContext.model_validate(
+            self.model_dump(include=set(ProposalContext.model_fields))
+        )
+
+
+def export_context(context: ProposalContext) -> dict[str, Any]:
+    context = ProposalContext.model_validate(context.model_dump())
+    return {
+        "visible_prefix": context.visible.prefix().model_input(),
+        "source_snapshot_id": str(context.source_snapshot_id),
+        "parent_hypotheses": [x.model_dump(mode="json") for x in context.parents],
+        "revision_context": [x.model_dump(mode="json") for x in context.revisions],
+        "instance_support": context.instance_support,
+        "actor_support": context.actor_support,
+        "location_support": [x.location_key for x in context.location_support],
+        "location_entities": {
+            x.location_key: str(x.location_entity_id) if x.location_entity_id else None
+            for x in context.location_support
+        },
+    }
+
+
 def semantic_state(hypothesis: FullHypothesis) -> dict[str, Any]:
     payload = hypothesis.model_dump(mode="json")
     for key in (
@@ -443,19 +482,7 @@ def export_sample(sample: ProposalSample) -> dict[str, Any]:
     """Revalidate mutable nested typed inputs before projecting the training envelope."""
     sample = ProposalSample.model_validate(sample.model_dump(mode="json"))
     return {
-        "model_input": {
-            "visible_prefix": sample.visible.prefix().model_input(),
-            "source_snapshot_id": str(sample.source_snapshot_id),
-            "parent_hypotheses": [x.model_dump(mode="json") for x in sample.parents],
-            "revision_context": [x.model_dump(mode="json") for x in sample.revisions],
-            "instance_support": sample.instance_support,
-            "actor_support": sample.actor_support,
-            "location_support": [x.location_key for x in sample.location_support],
-            "location_entities": {
-                x.location_key: str(x.location_entity_id) if x.location_entity_id else None
-                for x in sample.location_support
-            },
-        },
+        "model_input": export_context(sample.runtime_context()),
         "training_targets": [x.model_dump(mode="json") for x in sample.compatible_targets],
         "audit_only": {
             "sample_id": str(sample.sample_id),

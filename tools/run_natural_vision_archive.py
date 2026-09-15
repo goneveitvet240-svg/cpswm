@@ -17,6 +17,7 @@ from uuid import uuid5
 from cpswm.perception_mapping.adapters.contracts import ObservationEnvelope, SensorModality
 from cpswm.perception_mapping.adapters.rgbd_capture import RawModalityObservation
 from cpswm.perception_mapping.natural_vision import (
+    FasterNaturalAppearanceDetector,
     NaturalAppearanceDetector,
     NaturalVisionEvidenceProducer,
 )
@@ -31,6 +32,7 @@ def main() -> None:
     parser.add_argument("--weights", type=Path, required=True)
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--minimum-score", type=float, default=0.5)
+    parser.add_argument("--detector", choices=("ssdlite", "fasterrcnn"), default="ssdlite")
     args = parser.parse_args()
     source_root = Path(__file__).resolve().parents[1]
     git = ["git", "--no-replace-objects", "-C", str(source_root)]
@@ -112,7 +114,10 @@ def main() -> None:
 
     torch.set_num_threads(2)
     scope = raws[0].envelope().identity
-    detector = NaturalAppearanceDetector(
+    detector_type = (
+        NaturalAppearanceDetector if args.detector == "ssdlite" else FasterNaturalAppearanceDetector
+    )
+    detector = detector_type(
         weights_path=args.weights,
         household_id=scope.household_id,
         session_id=scope.session_id,
@@ -140,10 +145,20 @@ def main() -> None:
     )
     before = system.core.current_snapshot
     started = time.monotonic()
-    for raw in raws:
+    for raw_index, raw in enumerate(raws):
         when = raw.envelope().arrival_time
         stream.admit((raw,), received_at=when)
         result = stream.advance(cutoff=when)
+        if (raw_index + 1) % 60 == 0:
+            print(
+                json.dumps(
+                    {
+                        "processed_raw_observations": raw_index + 1,
+                        "elapsed_seconds": time.monotonic() - started,
+                    }
+                ),
+                flush=True,
+            )
         if result.status != "INSUFFICIENT_SEMANTIC_EVIDENCE":
             raise RuntimeError("uncalibrated vision unexpectedly advanced memory")
     if system.core.current_snapshot != before or stream.execution_traces():

@@ -214,3 +214,40 @@ def test_producer_rejects_history_changes_and_keeps_journal_atomic(raw):
         p.infer((raw,), cutoff=when - timedelta(seconds=1))
     assert p.frames() == before and p._detector._model.calls == 1
     assert p.infer((raw,), cutoff=when) is None
+
+
+def test_alternative_detector_keeps_distinct_candidate_and_restore_binding(raw):
+    from cpswm.perception_mapping.natural_vision import (
+        FasterNaturalAppearanceDetector,
+        NaturalVisionEvidenceProducer,
+    )
+
+    original = fixture_detector(raw, prediction())
+    alternative = object.__new__(FasterNaturalAppearanceDetector)
+    alternative.__dict__.update(original.__dict__)
+    when = raw.envelope().arrival_time
+    first, second = original.infer(raw, cutoff=when), alternative.infer(raw, cutoff=when)
+    assert first.observation_id == second.observation_id
+    assert first.input_sha256 == second.input_sha256
+    assert first.model_id != second.model_id
+    assert first.weights_sha256 != second.weights_sha256
+    assert first.candidates[0].candidate_id != second.candidates[0].candidate_id
+    assert second.calibration_status == "UNCALIBRATED_CANDIDATES_ONLY"
+    old = NaturalVisionEvidenceProducer(original).checkpoint_state()
+    with pytest.raises(ValueError, match="configuration changed"):
+        NaturalVisionEvidenceProducer(alternative).restore_state(old)
+
+
+def test_native_resize_roundoff_is_counted_without_accepting_real_overflow(raw):
+    import torch
+
+    epsilon = float(np.spacing(np.float32(4)))
+    data = prediction(boxes=torch.tensor([[-epsilon, 0.0, 4.0 + epsilon, 4.0]]))
+    detector = fixture_detector(raw, data)
+    frame = detector.infer(raw, cutoff=raw.envelope().arrival_time)
+    assert frame.candidates[0].box_xyxy == (0.0, 0.0, 4.0, 4.0)
+    assert frame.resize_roundoff_clamps == 1
+    assert float(data["boxes"][0, 0]) < 0  # original output is not mutated
+    data["boxes"][0, 2] = 4.0 + 4 * epsilon
+    with pytest.raises(ValueError, match="numerical resize bound"):
+        detector.infer(raw, cutoff=raw.envelope().arrival_time)

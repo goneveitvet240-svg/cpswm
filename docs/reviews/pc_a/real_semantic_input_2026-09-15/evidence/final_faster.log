@@ -1,0 +1,20 @@
+Traceback (most recent call last):
+  File "/private/tmp/cpswm-pc-a-real-semantic-input-20260915/tools/run_natural_vision_archive.py", line 207, in <module>
+    main()
+    ~~~~^^
+  File "/private/tmp/cpswm-pc-a-real-semantic-input-20260915/tools/run_natural_vision_archive.py", line 151, in main
+    result = stream.advance(cutoff=when)
+  File "/private/tmp/cpswm-pc-a-real-semantic-input-20260915/src/cpswm/system/structure_two_continuous_input.py", line 362, in advance
+    produced = self._producer.infer(prefix, cutoff=when)
+  File "/private/tmp/cpswm-pc-a-real-semantic-input-20260915/src/cpswm/perception_mapping/natural_vision.py", line 410, in infer
+    frames = tuple(self._detector.infer(raw, cutoff=when) for raw in selected)
+  File "/private/tmp/cpswm-pc-a-real-semantic-input-20260915/src/cpswm/perception_mapping/natural_vision.py", line 410, in <genexpr>
+    frames = tuple(self._detector.infer(raw, cutoff=when) for raw in selected)
+                   ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^
+  File "/private/tmp/cpswm-pc-a-real-semantic-input-20260915/src/cpswm/perception_mapping/natural_vision.py", line 183, in infer
+    candidates = self._validate_prediction(
+        prediction, env.identity.observation_id, width, height
+    )
+  File "/private/tmp/cpswm-pc-a-real-semantic-input-20260915/src/cpswm/perception_mapping/natural_vision.py", line 225, in _validate_prediction
+    raise ValueError("invalid detector candidate")
+ValueError: invalid detector candidate

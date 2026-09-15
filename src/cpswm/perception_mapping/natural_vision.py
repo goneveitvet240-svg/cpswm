@@ -68,6 +68,7 @@ class VisualFrame:
     identity_status: str = "UNRESOLVED"
     pose_status: str = "NOT_ESTIMATED"
     negative_observation_authorized: bool = False
+    resize_roundoff_clamps: int = 0
 
 
 def decode_rgb(
@@ -125,6 +126,19 @@ class NaturalAppearanceDetector:
     its native NMS/top-k postprocessing; returned boxes are not full hypotheses.
     """
 
+    model_id = MODEL_ID
+    weights_sha256 = WEIGHTS_SHA256
+
+    @staticmethod
+    def _build_model_and_categories() -> tuple[Any, tuple[str, ...]]:
+        from torchvision.models.detection import (  # type: ignore[import-untyped]
+            SSDLite320_MobileNet_V3_Large_Weights,
+            ssdlite320_mobilenet_v3_large,
+        )
+
+        model = ssdlite320_mobilenet_v3_large(weights=None, weights_backbone=None)
+        return model, tuple(SSDLite320_MobileNet_V3_Large_Weights.COCO_V1.meta["categories"])
+
     def __init__(
         self,
         *,
@@ -139,23 +153,18 @@ class NaturalAppearanceDetector:
         if not 0 <= minimum_score <= 1:
             raise ValueError("minimum score must lie in [0,1]")
         weight_bytes = weights_path.read_bytes()
-        if hashlib.sha256(weight_bytes).hexdigest() != WEIGHTS_SHA256:
+        if hashlib.sha256(weight_bytes).hexdigest() != self.weights_sha256:
             raise ValueError("weights differ from pinned official artifact")
         # Optional heavy dependency: raw validation remains usable without torch.
         import torch
         import torchvision  # type: ignore[import-untyped]
-        from torchvision.models.detection import (  # type: ignore[import-untyped]
-            SSDLite320_MobileNet_V3_Large_Weights,
-            ssdlite320_mobilenet_v3_large,
-        )
 
         self._torch = torch
         self._versions = (str(torch.__version__), str(torchvision.__version__))
         self._scope = (household_id, session_id, trace_id)
         self._minimum_score = float(minimum_score)
-        self._categories = tuple(SSDLite320_MobileNet_V3_Large_Weights.COCO_V1.meta["categories"])
         # No default backbone download; state_dict comes from the exact hashed bytes.
-        self._model = ssdlite320_mobilenet_v3_large(weights=None, weights_backbone=None)
+        self._model, self._categories = self._build_model_and_categories()
         self._model.load_state_dict(
             torch.load(io.BytesIO(weight_bytes), weights_only=True, map_location="cpu"), strict=True
         )
@@ -172,6 +181,7 @@ class NaturalAppearanceDetector:
         with torch.inference_mode():
             prediction = self._model([tensor])[0]
         height, width = pixels.shape[:2]
+        prediction, roundoff_clamps = self._normalize_resize_roundoff(prediction, width, height)
         candidates = self._validate_prediction(
             prediction, env.identity.observation_id, width, height
         )
@@ -185,14 +195,42 @@ class NaturalAppearanceDetector:
             require_aware(cutoff, "cutoff").astimezone(UTC),
             hashlib.sha256(raw.payload_bytes).hexdigest(),
             raw.capture_receipt_sha256,
-            MODEL_ID,
-            WEIGHTS_SHA256,
+            self.model_id,
+            self.weights_sha256,
             *self._versions,
             self._minimum_score,
             width,
             height,
             candidates,
+            resize_roundoff_clamps=roundoff_clamps,
         )
+
+    def _normalize_resize_roundoff(
+        self,
+        prediction: dict[str, Any],
+        width: int,
+        height: int,
+    ) -> tuple[dict[str, Any], int]:
+        """Clamp at most two float32 ULPs introduced by native image rescaling.
+
+        Native Faster R-CNN can return y2=480.0000305 for a 480px image.
+        This is representation repair, not a relaxed geometric validity gate.
+        Every repaired box is counted even if later removed by score filtering.
+        """
+        boxes = prediction["boxes"]
+        if boxes.ndim != 2 or boxes.shape[1] != 4 or boxes.dtype != self._torch.float32:
+            raise ValueError("invalid detector box tensor")
+        bounds = boxes.new_tensor([width, height, width, height])
+        tolerance = 2 * float(np.spacing(np.float32(max(width, height))))
+        if (
+            not self._torch.isfinite(boxes).all()
+            or (boxes < -tolerance).any()
+            or (boxes > bounds + tolerance).any()
+        ):
+            raise ValueError("invalid detector candidate outside numerical resize bound")
+        changed = ((boxes < 0) | (boxes > bounds)).any(dim=1)
+        normalized = self._torch.minimum(boxes.clamp_min(0), bounds)
+        return dict(prediction, boxes=normalized), int(changed.sum().item())
 
     def _validate_prediction(
         self, prediction: dict[str, Any], observation_id: UUID, width: int, height: int
@@ -216,7 +254,7 @@ class NaturalAppearanceDetector:
             ):
                 raise ValueError("invalid detector candidate")
             if score >= self._minimum_score:
-                key = f"{WEIGHTS_SHA256}:{self._minimum_score}:{index}:{label}:{box}:{score}"
+                key = f"{self.weights_sha256}:{self._minimum_score}:{index}:{label}:{box}:{score}"
                 candidates.append(
                     DetectionCandidate(
                         uuid5(observation_id, key),
@@ -226,6 +264,28 @@ class NaturalAppearanceDetector:
                     )
                 )
         return tuple(candidates)
+
+
+class FasterNaturalAppearanceDetector(NaturalAppearanceDetector):
+    """Pinned higher-resolution COCO alternative for small-object development.
+
+    Uses the official native 800/1333 transform and the same raw-only boundary.
+    Scores remain uncalibrated; this model does not estimate roles or 6D poses.
+    """
+
+    model_id = "torchvision/fasterrcnn_resnet50_fpn_v2/COCO_V1"
+    weights_sha256 = "dd69338a24b8d7381807e247652bdc356325bcbaf1cd3e092e00e0a1a58706bf"
+    weights_url = "https://download.pytorch.org/models/fasterrcnn_resnet50_fpn_v2_coco-dd69338a.pth"
+
+    @staticmethod
+    def _build_model_and_categories() -> tuple[Any, tuple[str, ...]]:
+        from torchvision.models.detection import (
+            FasterRCNN_ResNet50_FPN_V2_Weights,
+            fasterrcnn_resnet50_fpn_v2,
+        )
+
+        model = fasterrcnn_resnet50_fpn_v2(weights=None, weights_backbone=None)
+        return model, tuple(FasterRCNN_ResNet50_FPN_V2_Weights.COCO_V1.meta["categories"])
 
 
 class NaturalVisionEvidenceProducer:
@@ -260,7 +320,7 @@ class NaturalVisionEvidenceProducer:
                 {
                     "scope": self._detector._scope,
                     "detector_binding": (
-                        WEIGHTS_SHA256,
+                        self._detector.weights_sha256,
                         self._detector._versions,
                         self._detector._minimum_score,
                     ),
@@ -278,7 +338,7 @@ class NaturalVisionEvidenceProducer:
             if state["scope"] != self._detector._scope:
                 raise ValueError("perception restore requires a matching detector scope")
             if state["detector_binding"] != (
-                WEIGHTS_SHA256,
+                self._detector.weights_sha256,
                 self._detector._versions,
                 self._detector._minimum_score,
             ):

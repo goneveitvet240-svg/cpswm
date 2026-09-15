@@ -425,7 +425,10 @@ def test_fresh_process_registers_configured_visual_history_before_restore(tmp_pa
 
     from test_interaction_evidence import frame
 
-    from cpswm.perception_mapping.natural_vision import NaturalVisionEvidenceProducer
+    from cpswm.perception_mapping.natural_vision import (
+        WEIGHTS_SHA256,
+        NaturalVisionEvidenceProducer,
+    )
     from cpswm.system.continuous_state_codec import StateCodec
 
     observed = frame()
@@ -434,6 +437,7 @@ def test_fresh_process_registers_configured_visual_history_before_restore(tmp_pa
         SimpleNamespace(
             _scope=scope,
             _versions=("test", "test"),
+            weights_sha256=WEIGHTS_SHA256,
             _minimum_score=0.5,
         )
     )
@@ -447,10 +451,11 @@ from pathlib import Path
 import sys
 from types import SimpleNamespace
 from uuid import UUID
-from cpswm.perception_mapping.natural_vision import NaturalVisionEvidenceProducer
+from cpswm.perception_mapping.natural_vision import WEIGHTS_SHA256, NaturalVisionEvidenceProducer
 from cpswm.system.continuous_state_codec import StateCodec
 producer = NaturalVisionEvidenceProducer(SimpleNamespace(
     _scope=tuple(UUID(x) for x in sys.argv[2:]), _versions=("test","test"), _minimum_score=.5,
+    weights_sha256=WEIGHTS_SHA256,
 ))
 producer.restore_state(StateCodec().loads(Path(sys.argv[1]).read_text()))
 assert len(producer.frames()) == len(producer.interactions()) == 1

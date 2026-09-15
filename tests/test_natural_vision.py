@@ -214,3 +214,25 @@ def test_producer_rejects_history_changes_and_keeps_journal_atomic(raw):
         p.infer((raw,), cutoff=when - timedelta(seconds=1))
     assert p.frames() == before and p._detector._model.calls == 1
     assert p.infer((raw,), cutoff=when) is None
+
+
+def test_alternative_detector_keeps_distinct_candidate_and_restore_binding(raw):
+    from cpswm.perception_mapping.natural_vision import (
+        FasterNaturalAppearanceDetector,
+        NaturalVisionEvidenceProducer,
+    )
+
+    original = fixture_detector(raw, prediction())
+    alternative = object.__new__(FasterNaturalAppearanceDetector)
+    alternative.__dict__.update(original.__dict__)
+    when = raw.envelope().arrival_time
+    first, second = original.infer(raw, cutoff=when), alternative.infer(raw, cutoff=when)
+    assert first.observation_id == second.observation_id
+    assert first.input_sha256 == second.input_sha256
+    assert first.model_id != second.model_id
+    assert first.weights_sha256 != second.weights_sha256
+    assert first.candidates[0].candidate_id != second.candidates[0].candidate_id
+    assert second.calibration_status == "UNCALIBRATED_CANDIDATES_ONLY"
+    old = NaturalVisionEvidenceProducer(original).checkpoint_state()
+    with pytest.raises(ValueError, match="configuration changed"):
+        NaturalVisionEvidenceProducer(alternative).restore_state(old)

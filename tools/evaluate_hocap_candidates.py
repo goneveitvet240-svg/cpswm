@@ -20,7 +20,12 @@ from cpswm.perception_mapping.interaction_evidence import (
     evaluate_calibration,
     fit_calibration,
 )
-from cpswm.perception_mapping.natural_vision import MODEL_ID, WEIGHTS_SHA256, DetectionCandidate
+from cpswm.perception_mapping.natural_vision import (
+    MODEL_ID,
+    WEIGHTS_SHA256,
+    DetectionCandidate,
+    FasterNaturalAppearanceDetector,
+)
 from cpswm.system.reproducibility import content_sha256
 
 FIT_SEQUENCES = ("subject_5/20231027_112303", "subject_5/20231027_113202")
@@ -64,14 +69,30 @@ def main() -> None:
     for identity, s in by_id.items():
         f = by_frame[identity]
         if (
-            f["model_id"] != MODEL_ID
-            or f["weights_sha256"] != WEIGHTS_SHA256
+            (
+                (f["model_id"], f["weights_sha256"])
+                not in {
+                    (MODEL_ID, WEIGHTS_SHA256),
+                    (
+                        FasterNaturalAppearanceDetector.model_id,
+                        FasterNaturalAppearanceDetector.weights_sha256,
+                    ),
+                }
+            )
             or f["frame_id"] != f"hocap:{s.sequence_id}:{s.camera_id}"
             or f["receipt_sha256"] != content_sha256(s)
             or (f["width"], f["height"]) != (640, 480)
         ):
             raise ValueError("prediction source/model/frame mismatch")
-        configs.add((f["minimum_score"], f["torch_version"], f["torchvision_version"]))
+        configs.add(
+            (
+                f["model_id"],
+                f["weights_sha256"],
+                f["minimum_score"],
+                f["torch_version"],
+                f["torchvision_version"],
+            )
+        )
         if len(configs) != 1:
             raise ValueError("evaluation crosses detector configurations")
         label = by_label[(s.sequence_id, s.camera_id, s.frame_index)]
@@ -92,7 +113,7 @@ def main() -> None:
         matches, missed = match_targets(candidates, targets)
         signature = content_sha256(
             {
-                "weights": WEIGHTS_SHA256,
+                "weights": f["weights_sha256"],
                 "config": next(iter(configs)),
                 "event": "class_agnostic_score_ranked_unique_annotated_target_iou_ge_0.5",
                 "domain": "HO-Cap_subject5_G15_camera105322251564_first60frames",

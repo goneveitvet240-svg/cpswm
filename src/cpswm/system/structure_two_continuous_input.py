@@ -877,6 +877,18 @@ class ContinuousEvidenceInput:
         self._persist()
         return deepcopy(delivery)
 
+    def observation_history(
+        self,
+    ) -> tuple[tuple[ObservationCommand, str | ObservationDelivery], ...]:
+        """Detached issued requests and actual receipts for the observation model."""
+        with self._lock:
+            return deepcopy(
+                tuple(
+                    (value[0], self._observation_status[key])
+                    for key, value in self._observation_commands.items()
+                )
+            )
+
     def reconcile_observation(
         self,
         action_id: UUID,

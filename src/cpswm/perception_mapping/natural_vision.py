@@ -68,6 +68,7 @@ class VisualFrame:
     identity_status: str = "UNRESOLVED"
     pose_status: str = "NOT_ESTIMATED"
     negative_observation_authorized: bool = False
+    resize_roundoff_clamps: int = 0
 
 
 def decode_rgb(
@@ -180,6 +181,7 @@ class NaturalAppearanceDetector:
         with torch.inference_mode():
             prediction = self._model([tensor])[0]
         height, width = pixels.shape[:2]
+        prediction, roundoff_clamps = self._normalize_resize_roundoff(prediction, width, height)
         candidates = self._validate_prediction(
             prediction, env.identity.observation_id, width, height
         )
@@ -200,7 +202,35 @@ class NaturalAppearanceDetector:
             width,
             height,
             candidates,
+            resize_roundoff_clamps=roundoff_clamps,
         )
+
+    def _normalize_resize_roundoff(
+        self,
+        prediction: dict[str, Any],
+        width: int,
+        height: int,
+    ) -> tuple[dict[str, Any], int]:
+        """Clamp at most two float32 ULPs introduced by native image rescaling.
+
+        Native Faster R-CNN can return y2=480.0000305 for a 480px image.
+        This is representation repair, not a relaxed geometric validity gate.
+        Every repaired box is counted even if later removed by score filtering.
+        """
+        boxes = prediction["boxes"]
+        if boxes.ndim != 2 or boxes.shape[1] != 4 or boxes.dtype != self._torch.float32:
+            raise ValueError("invalid detector box tensor")
+        bounds = boxes.new_tensor([width, height, width, height])
+        tolerance = 2 * float(np.spacing(np.float32(max(width, height))))
+        if (
+            not self._torch.isfinite(boxes).all()
+            or (boxes < -tolerance).any()
+            or (boxes > bounds + tolerance).any()
+        ):
+            raise ValueError("invalid detector candidate outside numerical resize bound")
+        changed = ((boxes < 0) | (boxes > bounds)).any(dim=1)
+        normalized = self._torch.minimum(boxes.clamp_min(0), bounds)
+        return dict(prediction, boxes=normalized), int(changed.sum().item())
 
     def _validate_prediction(
         self, prediction: dict[str, Any], observation_id: UUID, width: int, height: int

@@ -236,3 +236,18 @@ def test_alternative_detector_keeps_distinct_candidate_and_restore_binding(raw):
     old = NaturalVisionEvidenceProducer(original).checkpoint_state()
     with pytest.raises(ValueError, match="configuration changed"):
         NaturalVisionEvidenceProducer(alternative).restore_state(old)
+
+
+def test_native_resize_roundoff_is_counted_without_accepting_real_overflow(raw):
+    import torch
+
+    epsilon = float(np.spacing(np.float32(4)))
+    data = prediction(boxes=torch.tensor([[-epsilon, 0.0, 4.0 + epsilon, 4.0]]))
+    detector = fixture_detector(raw, data)
+    frame = detector.infer(raw, cutoff=raw.envelope().arrival_time)
+    assert frame.candidates[0].box_xyxy == (0.0, 0.0, 4.0, 4.0)
+    assert frame.resize_roundoff_clamps == 1
+    assert float(data["boxes"][0, 0]) < 0  # original output is not mutated
+    data["boxes"][0, 2] = 4.0 + 4 * epsilon
+    with pytest.raises(ValueError, match="numerical resize bound"):
+        detector.infer(raw, cutoff=raw.envelope().arrival_time)

@@ -4,6 +4,8 @@
 
 ## 固定源码与任务身份
 
+已推送并建立[草稿 PR28](https://github.com/goneveitvet240-svg/cpswm/pull/28)，接续 PR26。交付前再次fetch确认共享集成与B分支未变。
+
 - 分支 `codex/pc-a-semantic-diagnostics-20260916`；base `7e00bf81ea5671228ba6be32d3d550bbc1a29cba`（PR26）。
 - 最终生产、工具和测试源码 `47e307d97100c7fc1f04cb64fd1a05e926355c7e`；后续只提交证据和交接文档。
 - 开工fetch：共享集成 `19ddf26830348a2f0b33f0af54d6ba702c5cfb1c`，B专属分支 `fd4ca6ef5e81c90d7cf7987b42c0b2810d8a810a`，未更换集成、未修改B实现、未自动合并。

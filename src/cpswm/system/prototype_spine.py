@@ -3661,6 +3661,16 @@ class CorePrototypeSpine:
         """Apply project-two retract/correct via existing reversible components."""
 
         original = self._committed_events.get(outcome.superseded_revision_id)
+        if (
+            original is None
+            and outcome.kind is EventRevisionKind.RETRACT
+            and self.published_revision_bindings(outcome.superseded_revision_id)
+        ):
+            # A replay can withhold an earlier published contribution while its
+            # source observation remains active. Late counter-evidence must also
+            # remove that retained source; otherwise a later rebuild can revive
+            # it. This grants no correction/promotion authority over quarantine.
+            original = self._observed_events.get(outcome.superseded_revision_id)
         if original is None:
             raise KeyError("superseded revision is not a committed prototype event")
         if outcome.kind is EventRevisionKind.CORRECT:
@@ -3679,6 +3689,15 @@ class CorePrototypeSpine:
         old_regime = self.active_regime
         dependent_revision_ids = self._descendant_revision_ids(outcome.superseded_revision_id)
         if outcome.kind is EventRevisionKind.RETRACT:
+            dependent_revision_ids = self._derived_descendants_in(
+                {
+                    **self._derived_event_archive,
+                    **self._observed_events,
+                    **self._committed_events,
+                },
+                {outcome.superseded_revision_id},
+            )
+            self._particle_workspace.invalidate_revisions(set(dependent_revision_ids))
             if original.derived_from_revision_id is not None:
                 self._derived_event_lifecycle[outcome.superseded_revision_id] = (
                     DerivedEvidenceLifecycle.TOMBSTONED_EXPLICIT_RETRACT
@@ -3691,8 +3710,9 @@ class CorePrototypeSpine:
                 outcome.superseded_revision_id,
                 *dependent_revision_ids,
             ):
-                self._retract_event_hybrid(self._committed_events[revision_id])
-                del self._committed_events[revision_id]
+                committed = self._committed_events.pop(revision_id, None)
+                if committed is not None:
+                    self._retract_event_hybrid(committed)
                 self._observed_events.pop(revision_id, None)
                 self._fast_action_events.pop(revision_id, None)
             snapshot = self._hybrid_loop.publish_snapshot()

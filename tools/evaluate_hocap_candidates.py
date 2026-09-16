@@ -1,7 +1,7 @@
 """Evaluate frozen pixel predictions against separately supplied HO-Cap labels.
 
 The fit/evaluation split is two sequences versus a third sequence from the same
-subject and object group. Results are exploratory component measurements only.
+subject with object groups reported explicitly. These are development measurements.
 """
 
 from __future__ import annotations
@@ -116,7 +116,13 @@ def main() -> None:
                 "weights": f["weights_sha256"],
                 "config": next(iter(configs)),
                 "event": "class_agnostic_score_ranked_unique_annotated_target_iou_ge_0.5",
-                "domain": "HO-Cap_subject5_G15_camera105322251564_first60frames",
+                "domain": {
+                    "dataset": "HO-Cap",
+                    "raw_manifest_sha256": args.raw_manifest_sha256,
+                    "sequences": sorted({source.sequence_id for source in sources}),
+                    "cameras": sorted({source.camera_id for source in sources}),
+                    "scope": "registered_development_frames_not_confirmatory_holdout",
+                },
             }
         )
         for m in matches:
@@ -166,7 +172,13 @@ def main() -> None:
         "annotation_manifest_sha256": args.annotation_manifest_sha256,
         "predictions_sha256": args.frames_sha256,
         "meaning": "localization_of_annotated_manipulation_targets_only",
-        "scope": "same_subject_same_objects_exploratory_sequence_holdout",
+        "scope": "same_subject_exploratory_sequence_holdout_object_groups_reported_separately",
+        "annotated_targets_by_sequence": {
+            sequence: sorted(
+                {t["name"] for f in per_frame if f["sequence_id"] == sequence for t in f["targets"]}
+            )
+            for sequence in sorted({f["sequence_id"] for f in per_frame})
+        },
         "scientific_acceptance": "NOT_ESTABLISHED",
         "role_calibration": False,
         "pose_error_calibration": False,

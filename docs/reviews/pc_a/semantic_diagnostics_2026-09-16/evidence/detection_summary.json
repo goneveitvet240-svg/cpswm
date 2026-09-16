@@ -1,0 +1,33 @@
+{
+  "target_frames": 720,
+  "misses": 555,
+  "mechanisms": {
+    "application_score_filter": 422,
+    "native_size_nms_topk_filter": 8,
+    "matched": 165,
+    "roi_score_below_native_floor": 125
+  },
+  "byte_equivalent_retained_predictions": true,
+  "paired_frames_validated": 180,
+  "pairing_validation": "exact_identity_member_and_hash_not_independent_label_quality_audit",
+  "association_used_in_localization_metric": false,
+  "native_score_floor": 0.05,
+  "native_top_k": 100,
+  "native_nms": 0.5,
+  "interpretation": "stage_opportunity_hierarchy_not_proven_causal_intervention",
+  "no_candidate_scope": "after_RPN_only_not_all_anchors",
+  "calibration_refit": false,
+  "calibration_acceptance": false,
+  "label_scope": "class_agnostic_visible_manipulation_target_bbox_matching",
+  "inputs": {
+    "raw_manifest": "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/datasets/hocap-development-20260915/raw_manifest.json",
+    "raw_manifest_sha256": "2333b3202fa8dbffb56fa931f64a8156f61ec438954d06993b1cf7bbece66107",
+    "annotation_manifest": "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/datasets/hocap-development-20260915/annotation_manifest.json",
+    "annotation_manifest_sha256": "6d0de55f82748c613b90faa978a2882c66add7a8d9220ff4e26cd4674e44d50a",
+    "capture_manifest": "output/detector-stages/manifest.json",
+    "capture_manifest_sha256": "b5cabefc482ae8bc61886b766b8c3fdfaa8568ad67537b244188ec653ea01490",
+    "baseline_frames": "/private/tmp/cpswm-pc-a-real-semantic-input-20260915/output/hocap-faster-corrected/frames.json",
+    "baseline_frames_sha256": "ffb6609d01552c9beb28b129d4fb395aa43b36a276e005ca1d9d5ea60ee69d7d",
+    "evaluator_root": "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/datasets/hocap-development-20260915/evaluator"
+  }
+}

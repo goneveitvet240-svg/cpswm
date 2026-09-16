@@ -1,0 +1,33 @@
+{
+  "frames": 180,
+  "source_hashes": {
+    "/private/tmp/cpswm-pc-a-semantic-diagnostics-20260916/tools/run_natural_geometry.py": "69febfc9d42575fa5c3aea2cea7b4d9393f64e9a5820072d3b29f355311b54be",
+    "/private/tmp/cpswm-pc-a-semantic-diagnostics-20260916/src/cpswm/perception_mapping/natural_geometry.py": "ffe0c25173236ee811a33afb496b7bb3bb19eb626de814b4754ad4a8ea9bcf98"
+  },
+  "raw_manifest_sha256": "2333b3202fa8dbffb56fa931f64a8156f61ec438954d06993b1cf7bbece66107",
+  "frames_sha256": "ffb6609d01552c9beb28b129d4fb395aa43b36a276e005ca1d9d5ea60ee69d7d",
+  "intrinsics_sha256": "8f004a684c62c94bf21b3b2b0e103aa81e1cb7f315f2f307b2537695243509a8",
+  "execution_lane": "legacy_component_diagnostic",
+  "raw_observations": 360,
+  "surface_candidates": 413,
+  "no_valid_depth": 1,
+  "mixed_depth_spread_over_10cm": 334,
+  "statuses": {
+    "INSUFFICIENT_SEMANTIC_EVIDENCE": 180
+  },
+  "core_unchanged": true,
+  "grounded_transitions": 0,
+  "accepted_conditional_measurements": 0,
+  "memory_updates": 0,
+  "actions": 0,
+  "partial_camera_geometry_only": true,
+  "orientation_estimated": false,
+  "scientific_pose_calibration_passed": false,
+  "recovery": {
+    "frames": 6,
+    "interrupted_after": 3,
+    "sqlite_reopen": true,
+    "surface_records_equal": true
+  },
+  "blocking": "No object-centre/6D estimator or instance identity; no independent surface-to-object likelihood/covariance; nominal pinhole coordinates do not compensate distortion; no role or acquisition model."
+}

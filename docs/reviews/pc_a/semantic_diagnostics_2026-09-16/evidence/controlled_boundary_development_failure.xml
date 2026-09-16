@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="1" skipped="0" tests="7" time="44.684" timestamp="2026-09-16T16:47:35.957743+08:00" hostname="MacBook-Air-2.local"><testcase classname="tests.test_controlled_semantic_mechanism" name="test_registered_p5_retracts_and_recovery_preserves_semantic_results" time="39.450" /><testcase classname="tests.test_controlled_semantic_mechanism" name="test_missing_semantics_do_not_write_or_invoke_core" time="0.001" /><testcase classname="tests.test_controlled_semantic_mechanism" name="test_retraction_does_not_expand_binding_or_correction_authority[unpublished]" time="1.395" /><testcase classname="tests.test_controlled_semantic_mechanism" name="test_retraction_does_not_expand_binding_or_correction_authority[already_removed]" time="0.786" /><testcase classname="tests.test_controlled_semantic_mechanism" name="test_retraction_does_not_expand_binding_or_correction_authority[correct_demoted]" time="0.675" /><testcase classname="tests.test_controlled_semantic_mechanism" name="test_retraction_tombstones_suspended_archived_descendants" time="0.387" /><testcase classname="tests.test_controlled_semantic_mechanism" name="test_retraction_failure_restores_core_and_archive_lifecycle" time="0.820"><failure message="AssertionError: assert '04e571f2b7ea...82e610c4a7a97' == '165b0fb02ed1...e049448021a66'&#10;  &#10;  - 165b0fb02ed1f2127136901ea06d4436c4a695fb45bb9d342d5e049448021a66&#10;  + 04e571f2b7eaefa3b69b0abef6bc288731bd5260da97b508bcc82e610c4a7a97">retained_core = &lt;cpswm.system.structure_two_production_system.StructureTwoProductionSystem object at 0x10966e030&gt;
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x108190b00&gt;
+
+    def test_retraction_failure_restores_core_and_archive_lifecycle(retained_core, monkeypatch):
+        system, core = retained_core, retained_core.core
+        parent, descendants = _add_suspended_archived_chain(core)
+        before = system.adaptive_router_state_sha256()
+    
+        def fail(stage):
+            if stage == "dirichlet":
+                raise RuntimeError("controlled rebuild fault")
+    
+        monkeypatch.setattr(core, "_revision_fault_hook", fail)
+        with pytest.raises(RuntimeError, match="controlled rebuild fault"):
+            core.apply_event_revision_outcome(_outcome(parent))
+&gt;       assert system.adaptive_router_state_sha256() == before
+E       AssertionError: assert '04e571f2b7ea...82e610c4a7a97' == '165b0fb02ed1...e049448021a66'
+E         
+E         - 165b0fb02ed1f2127136901ea06d4436c4a695fb45bb9d342d5e049448021a66
+E         + 04e571f2b7eaefa3b69b0abef6bc288731bd5260da97b508bcc82e610c4a7a97
+
+tests/test_controlled_semantic_mechanism.py:166: AssertionError</failure></testcase></testsuite></testsuites>

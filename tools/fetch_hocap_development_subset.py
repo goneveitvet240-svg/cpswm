@@ -18,6 +18,8 @@ import zipfile
 from dataclasses import asdict
 from pathlib import Path
 
+import yaml
+
 from cpswm.perception_mapping.adapters.hocap_rgbd import HOCapFrameSource
 
 SEQUENCES = ("20231027_112303", "20231027_113202", "20231027_113535")
@@ -32,7 +34,10 @@ ARCHIVES = {
 class RangeReader(io.RawIOBase):
     """Bounded explicit-range reader; ZIP validates every extracted member CRC."""
 
-    def __init__(self, url: str, cache: Path):
+    def __init__(self, url: str, cache: Path, *, download_budget: int = 128 * 1024 * 1024):
+        if not 0 < download_budget <= 512 * 1024 * 1024:
+            raise ValueError("download budget must be within 512MiB per archive")
+        self.download_budget = download_budget
         with urllib.request.urlopen(url, timeout=30) as response:
             self.resolved_url = response.url  # ephemeral public URL; never logged
             self.size = int(response.headers["Content-Length"])
@@ -75,8 +80,8 @@ class RangeReader(io.RawIOBase):
                 if hashlib.sha256(data).hexdigest() != path.with_suffix(".sha256").read_text():
                     raise ValueError("cached range changed")
             else:
-                if self.downloaded + stop - start > 128 * 1024 * 1024:
-                    raise ValueError("archive download exceeds 128MiB budget")
+                if self.downloaded + stop - start > self.download_budget:
+                    raise ValueError("archive download exceeds declared budget")
                 request = urllib.request.Request(
                     self.resolved_url, headers={"Range": f"bytes={start}-{stop - 1}"}
                 )
@@ -105,16 +110,43 @@ def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--cache", type=Path, required=True)
+    parser.add_argument(
+        "--windows", nargs="+", choices=("prefix", "midpoint", "suffix"), default=["prefix"]
+    )
+    parser.add_argument("--frame-count", type=int, default=60)
+    parser.add_argument("--download-budget-mib", type=int, default=128)
     args = parser.parse_args()
+    if not 1 <= args.frame_count <= 120 or len(set(args.windows)) != len(args.windows):
+        parser.error("bounded frame count and unique windows required")
+    indices = {}
     args.output.mkdir(parents=True, exist_ok=False)
     receipts, sources = [], []
     for lane, key in ARCHIVES.items():
         url = f"https://app.box.com/shared/static/{key}.zip"
-        reader = RangeReader(url, args.cache / key)
+        reader = RangeReader(
+            url, args.cache / key, download_budget=args.download_budget_mib * 1024 * 1024
+        )
         with zipfile.ZipFile(reader) as archive:
             selected = []
             for sequence in SEQUENCES:
                 prefix = f"subject_5/{sequence}"
+                if lane == "raw":
+                    metadata = yaml.safe_load(archive.read(prefix + "/meta.yaml"))
+                    total = metadata["num_frames"]
+                    if type(total) is not int or total < args.frame_count:
+                        raise ValueError("sequence shorter than requested window")
+                    starts = {
+                        "prefix": 0,
+                        "midpoint": (total - args.frame_count) // 2,
+                        "suffix": total - args.frame_count,
+                    }
+                    indices[sequence] = sorted(
+                        {
+                            i
+                            for window in args.windows
+                            for i in range(starts[window], starts[window] + args.frame_count)
+                        }
+                    )
                 if lane == "poses":
                     selected.extend(
                         f"{prefix}/{p}" for p in ("poses_o.npy", "poses_m.npy", "poses_pv.npy")
@@ -123,11 +155,13 @@ def main() -> None:
                     selected.append(prefix + "/meta.yaml")
                     selected.extend(
                         f"{prefix}/{CAMERA}/{kind}_{i:06d}.{ext}"
-                        for i in range(60)
+                        for i in indices[sequence]
                         for kind, ext in (("color", "jpg"), ("depth", "png"))
                     )
                 else:
-                    selected.extend(f"{prefix}/{CAMERA}/label_{i:06d}.npz" for i in range(60))
+                    selected.extend(
+                        f"{prefix}/{CAMERA}/label_{i:06d}.npz" for i in indices[sequence]
+                    )
             for member in selected:
                 info = archive.getinfo(member)
                 if not 0 < info.file_size <= 4 * 1024 * 1024:
@@ -174,7 +208,7 @@ def main() -> None:
     frames, annotations = [], []
     for sequence in SEQUENCES:
         seq = "subject_5/" + sequence
-        for index in range(60):
+        for index in indices[sequence]:
             prefix = f"{seq}/{CAMERA}"
             rgb = by_member[f"{prefix}/color_{index:06d}.jpg"]
             depth = by_member[f"{prefix}/depth_{index:06d}.png"]
@@ -196,6 +230,15 @@ def main() -> None:
         ("annotation_manifest.json", annotations),
         ("download_receipts.json", receipts),
         ("archives.json", sources),
+        (
+            "sampling.json",
+            dict(
+                windows=args.windows,
+                frame_count=args.frame_count,
+                selection="metadata_only_fixed_windows_development_not_holdout",
+                frame_indices=indices,
+            ),
+        ),
     ):
         path = args.output / filename
         path.write_text(json.dumps(value, indent=2) + "\n")

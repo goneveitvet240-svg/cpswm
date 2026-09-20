@@ -12,6 +12,7 @@ from typing import TYPE_CHECKING, Any
 
 if TYPE_CHECKING:
     from cpswm.perception_mapping.interaction_evidence import AssociatedFrame, InteractionReadout
+    from cpswm.perception_mapping.natural_hands import HandFrame, NaturalHandDetector
 
 import hashlib
 import io
@@ -297,10 +298,16 @@ class NaturalVisionEvidenceProducer:
     core remains unchanged. This is an explicit capability boundary.
     """
 
-    def __init__(self, detector: NaturalAppearanceDetector) -> None:
+    def __init__(
+        self, detector: NaturalAppearanceDetector, hand_detector: NaturalHandDetector | None = None
+    ) -> None:
         from threading import RLock
 
         self._detector = detector
+        if hand_detector is not None and hand_detector._scope != detector._scope:
+            raise ValueError("visual and hand detector scopes differ")
+        self._hand_detector = hand_detector
+        self._hand_frames: tuple[HandFrame, ...] = ()
         self._prefix: tuple[RawModalityObservation, ...] = ()
         self._frames: tuple[VisualFrame, ...] = ()
         self._cutoff: datetime | None = None
@@ -328,6 +335,10 @@ class NaturalVisionEvidenceProducer:
                     "prefix": self._prefix,
                     "frames": self._frames,
                     "cutoff": self._cutoff,
+                    "hand_binding": None
+                    if self._hand_detector is None
+                    else self._hand_detector.binding,
+                    "hand_frames": self._hand_frames,
                 }
             )
 
@@ -335,6 +346,9 @@ class NaturalVisionEvidenceProducer:
         from copy import deepcopy
 
         with self._lock:
+            expected_hand = None if self._hand_detector is None else self._hand_detector.binding
+            if state.get("hand_binding") != expected_hand:
+                raise ValueError("checkpoint hand model configuration changed")
             if state["scope"] != self._detector._scope:
                 raise ValueError("perception restore requires a matching detector scope")
             if state["detector_binding"] != (
@@ -347,6 +361,13 @@ class NaturalVisionEvidenceProducer:
             self._prefix, self._frames, self._cutoff = deepcopy(
                 (state["prefix"], state["frames"], state["cutoff"])
             )
+            self._hand_frames = deepcopy(state.get("hand_frames", ()))
+
+    def hand_frames(self) -> tuple[HandFrame, ...]:
+        from copy import deepcopy
+
+        with self._lock:
+            return deepcopy(self._hand_frames)
 
     def interactions(self) -> tuple[tuple[AssociatedFrame, InteractionReadout], ...]:
         from copy import deepcopy
@@ -438,9 +459,15 @@ class NaturalVisionEvidenceProducer:
                         selected.append(raw)
                 # A failed batch may have consumed computation, never committed evidence.
                 frames = tuple(self._detector.infer(raw, cutoff=when) for raw in selected)
+                hand_frames = (
+                    ()
+                    if self._hand_detector is None
+                    else tuple(self._hand_detector.infer(raw, cutoff=when) for raw in selected)
+                )
                 all_frames = self._frames + frames
                 interactions = self._recompute_interactions(all_frames)
                 self._frames = all_frames
+                self._hand_frames += hand_frames
                 self._interactions = interactions
                 self._prefix, self._cutoff = prefix, when
                 return None

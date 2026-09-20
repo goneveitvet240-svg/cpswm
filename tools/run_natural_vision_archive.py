@@ -33,6 +33,7 @@ def main() -> None:
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--minimum-score", type=float, default=0.5)
     parser.add_argument("--detector", choices=("ssdlite", "fasterrcnn"), default="ssdlite")
+    parser.add_argument("--hand-model", type=Path)
     args = parser.parse_args()
     source_root = Path(__file__).resolve().parents[1]
     git = ["git", "--no-replace-objects", "-C", str(source_root)]
@@ -40,6 +41,7 @@ def main() -> None:
     source_paths = (
         Path(__file__).resolve(),
         source_root / "src/cpswm/perception_mapping/natural_vision.py",
+        source_root / "src/cpswm/perception_mapping/natural_hands.py",
     )
     source_before = {str(p): hashlib.sha256(p.read_bytes()).hexdigest() for p in source_paths}
     root = args.archive.resolve()
@@ -124,7 +126,14 @@ def main() -> None:
         trace_id=scope.trace_id,
         minimum_score=args.minimum_score,
     )
-    producer = NaturalVisionEvidenceProducer(detector)
+    hand_detector = None
+    if args.hand_model is not None:
+        from cpswm.perception_mapping.natural_hands import NaturalHandDetector
+
+        hand_detector = NaturalHandDetector(
+            model_path=args.hand_model, scope=(scope.household_id, scope.session_id, scope.trace_id)
+        )
+    producer = NaturalVisionEvidenceProducer(detector, hand_detector)
     # Initialization IDs are bookkeeping only, never recognized object/person identities.
     system = StructureTwoProductionSystem(
         owner_key="unresolved-visual-observer",
@@ -170,6 +179,10 @@ def main() -> None:
         for candidate in frame.candidates:
             counts[candidate.category] = counts.get(candidate.category, 0) + 1
     (args.output / "frames.json").write_text(json.dumps(records, default=str, indent=2) + "\n")
+    hands = [asdict(frame) for frame in producer.hand_frames()]
+    (args.output / "hand_frames.json").write_text(json.dumps(hands, default=str, indent=2) + "\n")
+    if hand_detector is not None:
+        hand_detector.close()
     source_after = {str(p): hashlib.sha256(p.read_bytes()).hexdigest() for p in source_paths}
     if (
         source_before != source_after
@@ -192,6 +205,11 @@ def main() -> None:
         "core_unchanged_verified": True,
         "bookkeeping_initialization_only": True,
         "candidate_counts": counts,
+        "hand_frames": len(hands),
+        "hand_candidates": sum(len(f["candidates"]) for f in hands),
+        "hand_frames_sha256": hashlib.sha256(
+            (args.output / "hand_frames.json").read_bytes()
+        ).hexdigest(),
         "inference_seconds": time.monotonic() - started,
         "semantic_transitions": 0,
         "physical_actions": 0,

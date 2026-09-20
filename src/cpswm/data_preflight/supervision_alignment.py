@@ -42,7 +42,7 @@ def pose_audit(poses: NDArray[Any], *, tolerance: float = 1e-5) -> dict[str, Any
         or not 0 < tolerance <= 1e-3
     ):
         raise ValueError("floating 4x4 transforms and bounded numerical tolerance required")
-    rows = []
+    rows: list[dict[str, Any]] = []
     for i, p in enumerate(poses):
         if not np.isfinite(p).all():
             rows.append({"row": i, "finite": False, "rigid": False})
@@ -135,7 +135,7 @@ def boundary_support(rgb: NDArray[Any], masks: NDArray[Any]) -> NDArray[np.float
     of present nonzero regions avoids the largest body dominating other regions.
     Strong background edges can win: scores never certify alignment or identity.
     """
-    from scipy.ndimage import binary_erosion, sobel
+    from scipy.ndimage import binary_erosion, sobel  # type: ignore[import-untyped]
 
     if (
         rgb.ndim != 4

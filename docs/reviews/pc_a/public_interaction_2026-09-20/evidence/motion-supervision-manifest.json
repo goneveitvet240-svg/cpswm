@@ -1,0 +1,98 @@
+{
+  "revision": "81bb2bb876a4a54ac94e67c788d7c31364f1c43e",
+  "sequences": [
+    "20231002/023",
+    "20231002/024"
+  ],
+  "archives": [
+    {
+      "path": "CORE4D_Real/human_object_motions.zip",
+      "size": 34157536563,
+      "lfs_sha256": "ebfb77cd82889dd49a7677c34ff8e22a3063039afa1ec9a54d524d01ca8b59a9",
+      "url": "https://hf-mirror.com/datasets/leolyliu/CORE4D/resolve/81bb2bb876a4a54ac94e67c788d7c31364f1c43e/CORE4D_Real/human_object_motions.zip",
+      "new_range_bytes": 2008371
+    },
+    {
+      "path": "CORE4D_Real/camera_parameters.zip",
+      "size": 36448,
+      "lfs_sha256": "5896dd2da88a45f36fdbec5f838cc5185893f757901f89ffad7746a6eb4dee77",
+      "url": "https://hf-mirror.com/datasets/leolyliu/CORE4D/resolve/81bb2bb876a4a54ac94e67c788d7c31364f1c43e/CORE4D_Real/camera_parameters.zip",
+      "new_range_bytes": 36448
+    }
+  ],
+  "receipts": [
+    {
+      "archive": "human_object_motions.zip",
+      "member": "human_object_motions/20231002/023/smooth_objposes.npy",
+      "sha256": "28a62a98d97ba9484ed6c5a17096443805a7482811794a5be5b80d53d087c9bf",
+      "bytes": 23168,
+      "zip_crc32": 1959135850
+    },
+    {
+      "archive": "human_object_motions.zip",
+      "member": "human_object_motions/20231002/023/object_metadata.json",
+      "sha256": "7322445bdb0b8b00dc0967e5004e82ebd41b4d55e6fa8d6b4f0f7e1641735224",
+      "bytes": 120,
+      "zip_crc32": 3080777468
+    },
+    {
+      "archive": "human_object_motions.zip",
+      "member": "human_object_motions/20231002/023/aligned_frame_ids.txt",
+      "sha256": "ed654bc1fb9afa5fabfad0b0f707f9dd6d1e222219e301e1e09ccc03897f3f0e",
+      "bytes": 4212,
+      "zip_crc32": 4093647307
+    },
+    {
+      "archive": "human_object_motions.zip",
+      "member": "human_object_motions/20231002/024/smooth_objposes.npy",
+      "sha256": "bcd62889d938783215428eeb69a911b07f97f1ecd288d139c3e6a5570f46fe53",
+      "bytes": 26752,
+      "zip_crc32": 1416757940
+    },
+    {
+      "archive": "human_object_motions.zip",
+      "member": "human_object_motions/20231002/024/object_metadata.json",
+      "sha256": "7322445bdb0b8b00dc0967e5004e82ebd41b4d55e6fa8d6b4f0f7e1641735224",
+      "bytes": 120,
+      "zip_crc32": 3080777468
+    },
+    {
+      "archive": "human_object_motions.zip",
+      "member": "human_object_motions/20231002/024/aligned_frame_ids.txt",
+      "sha256": "1cc58b09dda5cc6e53407be072976524a625fc6f1d0add392b53f55bd476e033",
+      "bytes": 4941,
+      "zip_crc32": 478519705
+    },
+    {
+      "archive": "camera_parameters.zip",
+      "member": "camera_parameters/20231002/camera1_extrinsic.txt",
+      "sha256": "3f2e2f743119d54c49ffd75bb9157fde3a34b484a33fb880b66cbc9fea057799",
+      "bytes": 408,
+      "zip_crc32": 2728559529
+    },
+    {
+      "archive": "camera_parameters.zip",
+      "member": "camera_parameters/20231002/camera2_extrinsic.txt",
+      "sha256": "876d3c0ad3ba205160d4adee5db741289e804399036abf778936dd13999096ae",
+      "bytes": 411,
+      "zip_crc32": 1955122901
+    },
+    {
+      "archive": "camera_parameters.zip",
+      "member": "camera_parameters/20231002/camera3_extrinsic.txt",
+      "sha256": "871e367c4f4e507f98efcb70442e4b4072e70663bc6cbb3b30b9076797cb8589",
+      "bytes": 405,
+      "zip_crc32": 2839182304
+    },
+    {
+      "archive": "camera_parameters.zip",
+      "member": "camera_parameters/20231002/camera4_extrinsic.txt",
+      "sha256": "41aa01316397f43f36cd4dd01453d360454af8f7a6b5015c138781cace9eb15e",
+      "bytes": 408,
+      "zip_crc32": 3197550104
+    }
+  ],
+  "lane": "evaluator_only",
+  "human_pickle_loaded": false,
+  "full_archive_sha_verified": false
+}

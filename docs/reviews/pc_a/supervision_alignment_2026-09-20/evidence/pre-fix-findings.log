@@ -1,0 +1,202 @@
+F..FFF                                                                   [100%]
+=================================== FAILURES ===================================
+____________ test_supported_floating_identity_is_auditable[float16] ____________
+
+dtype = <class 'numpy.float16'>
+
+    @pytest.mark.parametrize("dtype", [np.float16, np.float32, np.float64, np.longdouble])
+    def test_supported_floating_identity_is_auditable(dtype):
+        import json
+    
+>       result = pose_audit(np.eye(4, dtype=dtype)[None])
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_supervision_alignment.py:110: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/cpswm/data_preflight/supervision_alignment.py:51: in pose_audit
+    determinant = float(np.linalg.det(rotation))
+                        ^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.13/site-packages/numpy/linalg/_linalg.py:2404: in det
+    t, result_t = _commonType(a)
+                  ^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+arrays = (array([[1., 0., 0.],
+       [0., 1., 0.],
+       [0., 0., 1.]], dtype=float16),)
+
+    def _commonType(*arrays):
+        # in lite version, use higher precision (always double or cdouble)
+        result_type = single
+        is_complex = False
+        for a in arrays:
+            type_ = a.dtype.type
+            if issubclass(type_, inexact):
+                if isComplexType(type_):
+                    is_complex = True
+                rt = _realType(type_, default=None)
+                if rt is double:
+                    result_type = double
+                elif rt is None:
+                    # unsupported inexact scalar
+>                   raise TypeError(f"array type {a.dtype.name} is unsupported in linalg")
+E                   TypeError: array type float16 is unsupported in linalg
+
+.venv/lib/python3.13/site-packages/numpy/linalg/_linalg.py:215: TypeError
+__________ test_supported_floating_identity_is_auditable[longdouble] ___________
+
+dtype = <class 'numpy.longdouble'>
+
+    @pytest.mark.parametrize("dtype", [np.float16, np.float32, np.float64, np.longdouble])
+    def test_supported_floating_identity_is_auditable(dtype):
+        import json
+    
+>       result = pose_audit(np.eye(4, dtype=dtype)[None])
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_supervision_alignment.py:110: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/cpswm/data_preflight/supervision_alignment.py:51: in pose_audit
+    determinant = float(np.linalg.det(rotation))
+                        ^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.13/site-packages/numpy/linalg/_linalg.py:2404: in det
+    t, result_t = _commonType(a)
+                  ^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+arrays = (array([[1., 0., 0.],
+       [0., 1., 0.],
+       [0., 0., 1.]], dtype=float64),)
+
+    def _commonType(*arrays):
+        # in lite version, use higher precision (always double or cdouble)
+        result_type = single
+        is_complex = False
+        for a in arrays:
+            type_ = a.dtype.type
+            if issubclass(type_, inexact):
+                if isComplexType(type_):
+                    is_complex = True
+                rt = _realType(type_, default=None)
+                if rt is double:
+                    result_type = double
+                elif rt is None:
+                    # unsupported inexact scalar
+>                   raise TypeError(f"array type {a.dtype.name} is unsupported in linalg")
+E                   TypeError: array type float64 is unsupported in linalg
+
+.venv/lib/python3.13/site-packages/numpy/linalg/_linalg.py:215: TypeError
+____________ test_pose_computation_overflow_is_serializable_defect _____________
+
+    def test_pose_computation_overflow_is_serializable_defect():
+        import json
+    
+        poses = np.eye(4)[None]
+        poses[0, 0, 0] = 1e308
+        result = pose_audit(poses)
+        assert result["invalid_rows"] == [0]
+>       json.dumps(result, allow_nan=False)
+
+tests/test_supervision_alignment.py:122: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+/Users/pangwei/.local/share/uv/python/cpython-3.13.5-macos-aarch64-none/lib/python3.13/json/__init__.py:238: in dumps
+    **kw).encode(obj)
+          ^^^^^^^^^^^
+/Users/pangwei/.local/share/uv/python/cpython-3.13.5-macos-aarch64-none/lib/python3.13/json/encoder.py:200: in encode
+    chunks = self.iterencode(o, _one_shot=True)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <json.encoder.JSONEncoder object at 0x10ca75940>
+o = {'numerical_tolerance': 1e-05, 'rows': [{'row': 0, 'finite': True, 'determinant': 1.0000000000000136e+308, 'orthogonality_max_error': inf, ...}], 'invalid_rows': [0], 'calibrated_pose_error': False, ...}
+_one_shot = True
+
+    def iterencode(self, o, _one_shot=False):
+        """Encode the given object and yield each string
+        representation as available.
+    
+        For example::
+    
+            for chunk in JSONEncoder().iterencode(bigobject):
+                mysocket.write(chunk)
+    
+        """
+        if self.check_circular:
+            markers = {}
+        else:
+            markers = None
+        if self.ensure_ascii:
+            _encoder = encode_basestring_ascii
+        else:
+            _encoder = encode_basestring
+    
+        def floatstr(o, allow_nan=self.allow_nan,
+                _repr=float.__repr__, _inf=INFINITY, _neginf=-INFINITY):
+            # Check for specials.  Note that this type of test is processor
+            # and/or platform-specific, so do tests which don't depend on the
+            # internals.
+    
+            if o != o:
+                text = 'NaN'
+            elif o == _inf:
+                text = 'Infinity'
+            elif o == _neginf:
+                text = '-Infinity'
+            else:
+                return _repr(o)
+    
+            if not allow_nan:
+                raise ValueError(
+                    "Out of range float values are not JSON compliant: " +
+                    repr(o))
+    
+            return text
+    
+    
+        if self.indent is None or isinstance(self.indent, str):
+            indent = self.indent
+        else:
+            indent = ' ' * self.indent
+        if _one_shot and c_make_encoder is not None:
+            _iterencode = c_make_encoder(
+                markers, self.default, _encoder, indent,
+                self.key_separator, self.item_separator, self.sort_keys,
+                self.skipkeys, self.allow_nan)
+        else:
+            _iterencode = _make_iterencode(
+                markers, self.default, _encoder, indent, floatstr,
+                self.key_separator, self.item_separator, self.sort_keys,
+                self.skipkeys, _one_shot)
+>       return _iterencode(o, 0)
+               ^^^^^^^^^^^^^^^^^
+E       ValueError: Out of range float values are not JSON compliant: inf
+
+/Users/pangwei/.local/share/uv/python/cpython-3.13.5-macos-aarch64-none/lib/python3.13/json/encoder.py:261: ValueError
+____________ test_each_edge_score_depends_only_on_its_own_rgb_frame ____________
+
+    def test_each_edge_score_depends_only_on_its_own_rgb_frame():
+        masks = np.zeros((1, 24, 24), np.uint8)
+        masks[0, 6:18, 6:18] = 1
+        rgb = np.zeros((3, 24, 24, 3), np.uint8)
+        before = boundary_support(rgb, masks)
+        rgb[0, 6:18, 6:18] = 255
+        after = boundary_support(rgb, masks)
+>       np.testing.assert_array_equal(after[:, 1:], before[:, 1:])
+E       AssertionError: 
+E       Arrays are not equal
+E       
+E       Mismatched elements: 1 / 2 (50%)
+E       Mismatch at index:
+E        [0, 0]: 6.296667879797423 (ACTUAL), 0.0 (DESIRED)
+E       Max absolute difference among violations: 6.29666788
+E       Max relative difference among violations: inf
+E        ACTUAL: array([[6.296668, 0.      ]])
+E        DESIRED: array([[0., 0.]])
+
+tests/test_supervision_alignment.py:132: AssertionError
+=========================== short test summary info ============================
+FAILED tests/test_supervision_alignment.py::test_supported_floating_identity_is_auditable[float16]
+FAILED tests/test_supervision_alignment.py::test_supported_floating_identity_is_auditable[longdouble]
+FAILED tests/test_supervision_alignment.py::test_pose_computation_overflow_is_serializable_defect
+FAILED tests/test_supervision_alignment.py::test_each_edge_score_depends_only_on_its_own_rgb_frame
+4 failed, 2 passed, 12 deselected in 0.21s

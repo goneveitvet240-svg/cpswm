@@ -60,7 +60,11 @@ def parse_author_phases(
         raise ValueError("phase source digest/budget mismatch")
     if b"\0" in payload:
         raise ValueError("null bytes in author CSV")
-    reader = csv.reader(io.StringIO(payload.decode("utf-8-sig")))
+    try:
+        rows = list(csv.reader(io.StringIO(payload.decode("utf-8-sig")), strict=True))
+    except csv.Error as exc:
+        raise ValueError("malformed author CSV") from exc
+    reader = iter(rows)
     header = next(reader, [])
     if len(set(header)) != len(header) or not {"Index", "Time", "Giver", "Receiver"} <= set(header):
         raise ValueError("unique required author columns missing")

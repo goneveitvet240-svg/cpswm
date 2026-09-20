@@ -23,6 +23,8 @@ def read_member(root: Path, receipt: dict) -> bytes:
     path = (root / receipt["local_path"]).resolve()
     if not path.is_relative_to(root.resolve()) or not 0 < receipt["bytes"] <= 16 * 1024 * 1024:
         raise ValueError("invalid member path or size")
+    if path.stat().st_size != receipt["bytes"]:
+        raise ValueError("member size differs from fixed manifest")
     data = path.read_bytes()
     if len(data) != receipt["bytes"] or hashlib.sha256(data).hexdigest() != receipt["sha256"]:
         raise ValueError("member differs from fixed manifest")
@@ -98,9 +100,15 @@ def depth_timestamp_status(data: bytes) -> dict:
     if b"\0" in data:
         return {"status": "INVALID_NULL_BYTES", "alignment_authorized": False}
     try:
-        rows = list(csv.DictReader(io.StringIO(data.decode("utf-8-sig"))))
-        times = [float(r["Time"]) for r in rows]
-        indices = [int(r["Index"]) for r in rows]
+        reader = csv.reader(io.StringIO(data.decode("utf-8-sig")), strict=True)
+        header = next(reader, [])
+        if len(set(header)) != len(header) or not {"Index", "Time"} <= set(header):
+            raise ValueError("invalid depth header")
+        rows = list(reader)
+        if any(len(row) != len(header) for row in rows):
+            raise ValueError("invalid depth row width")
+        times = [float(r[header.index("Time")]) for r in rows]
+        indices = [int(r[header.index("Index")]) for r in rows]
         import math
         from itertools import pairwise
 
@@ -111,7 +119,7 @@ def depth_timestamp_status(data: bytes) -> dict:
             or any(b <= a for a, b in pairwise(times))
         ):
             raise ValueError("bad depth clock")
-    except (ValueError, KeyError, UnicodeError):
+    except (ValueError, KeyError, UnicodeError, csv.Error):
         return {"status": "INVALID_TABLE", "alignment_authorized": False}
     return {
         "status": "PARSED_NO_DEPTH_FRAMES_ACQUIRED",
@@ -120,6 +128,19 @@ def depth_timestamp_status(data: bytes) -> dict:
         "last_seconds": times[-1],
         "alignment_authorized": False,
     }
+
+
+def validate_member_pairing(phase_record: dict, video: dict, depth: dict, camera: int) -> None:
+    seq = Path(phase_record["member"]).stem
+    pair = "_".join(sorted(seq.split("_")[:2]))
+    prefix = f"Bimanual Handovers Dataset/{pair}/"
+    expected = (
+        prefix + f"OptiTrack_Global_Frame/{seq}.csv",
+        prefix + f"Kinect_{camera}/{seq}.mp4",
+        prefix + f"Kinect_{camera}/{seq}_Depth_Timestamps.csv",
+    )
+    if tuple(r["member"] for r in (phase_record, video, depth)) != expected:
+        raise ValueError("cross-file author sequence/camera mismatch")
 
 
 def main() -> None:
@@ -173,6 +194,7 @@ def main() -> None:
             ]
             if len(timestamps) != 1:
                 raise ValueError("missing timestamp receipt")
+            validate_member_pairing(phase_record, record, timestamps[0], camera)
             cameras.append(
                 {
                     "camera": camera,
@@ -216,6 +238,7 @@ def main() -> None:
         "manifest_sha256": args.manifest_sha256,
         "lane": "evaluator_only",
         "contact_gold": False,
+        "published_pixels": "BURNED_IN_AUTHOR_PHASE_LABELS_NOT_MODEL_READY",
         "runtime_semantic_transitions": 0,
         "clips": output,
     }

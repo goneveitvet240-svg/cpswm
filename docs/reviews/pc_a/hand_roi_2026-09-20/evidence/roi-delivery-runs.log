@@ -1,0 +1,14 @@
+I0000 00:00:1789898157.486074 45261050 init-domain.cc:128] Fiber init: default domain = pthread, concurrency = 11, prefix = pthread-default
+I0000 00:00:1789898157.531628 45261050 gl_context.cc:407] GL version: 2.1 (2.1 Metal - 90.5), renderer: Apple M5
+INFO: Created TensorFlow Lite XNNPACK delegate for CPU.
+W0000 00:00:1789898157.538037 45261054 inference_feedback_manager.cc:121] Feedback manager requires a model with a single signature inference. Disabling support for feedback tensors.
+W0000 00:00:1789898157.539848 45261054 inference_feedback_manager.cc:121] Feedback manager requires a model with a single signature inference. Disabling support for feedback tensors.
+W0000 00:00:1789898159.356777 45261056 landmark_projection_calculator.cc:81] Using NORM_RECT without IMAGE_DIMENSIONS is only supported for the square ROI. Provide IMAGE_DIMENSIONS or use PROJECTION_MATRIX.
+{'code_sha': 'e0e572baf602c0e75bf834fd8e9f2aabe62da90b', 'frames': 34, 'hand_candidates': 48, 'hand_object_measurements': 445}
+I0000 00:00:1789898204.528159 45262992 gl_context.cc:407] GL version: 2.1 (2.1 Metal - 90.5), renderer: Apple M5
+W0000 00:00:1789898204.530980 45262994 inference_feedback_manager.cc:121] Feedback manager requires a model with a single signature inference. Disabling support for feedback tensors.
+W0000 00:00:1789898204.532642 45262996 inference_feedback_manager.cc:121] Feedback manager requires a model with a single signature inference. Disabling support for feedback tensors.
+E0000 00:00:1789898269.210587 45262993 portable_clearcut_uploader.cc:90] Failed to send to clearcut: FAILED_PRECONDITION: Not valid for uploading until: 2026-09-20T18:12:45.042536+08:00
+=== Source Location Trace: === 
+wireless/android/play/playlog/cplusplus/portable_clearcut_uploader.cc:180
+{'code_sha': 'e0e572baf602c0e75bf834fd8e9f2aabe62da90b', 'frames': 38, 'hand_candidates': 7, 'hand_object_measurements': 75}

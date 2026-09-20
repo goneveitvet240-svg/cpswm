@@ -292,6 +292,18 @@ def validate_hand_regions(frame: HandFrame, visual: VisualFrame) -> None:
         ids = {r.region_id for r in expected}
         if len(ids) != len(expected) or any(c.region_id not in ids for c in frame.candidates):
             raise ValueError("ROI candidate region identity differs")
+        expected_candidates = []
+        for region in expected:
+            count = sum(c.region_id == region.region_id for c in frame.candidates)
+            if count > frame.model_binding[2]:
+                raise ValueError("ROI candidate count exceeds configured capacity")
+            expected_candidates.extend(
+                (uuid5(region.region_id, f"hand:{HAND_MODEL_SHA256}:{i}"), region.region_id)
+                for i in range(count)
+            )
+        if [(c.candidate_id, c.region_id) for c in frame.candidates] != expected_candidates:
+            raise ValueError("ROI candidate identity/order differs from region derivation")
+
     elif (
         frame.visual_source_sha256 is not None
         or frame.regions_evaluated

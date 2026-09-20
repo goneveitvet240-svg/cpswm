@@ -94,3 +94,32 @@ def test_roi_checkpoint_roundtrip_and_atomic_rejection(tmp_path, corruption):
     with pytest.raises(ValueError, match="ROI"):
         producer.restore_state(bad)
     assert producer.checkpoint_state() == state
+
+
+@pytest.mark.parametrize("corruption", ["swap_existing_region", "exceed_capacity", "reorder"])
+def test_impossible_region_history_rejected(corruption):
+    from uuid import uuid5
+
+    from cpswm.perception_mapping.natural_hands import HAND_MODEL_SHA256
+
+    raw, detector, hands = roi_components()
+    producer = NaturalVisionEvidenceProducer(detector, hands)
+    producer.infer((raw,), cutoff=raw.envelope().arrival_time)
+    state = producer.checkpoint_state()
+    bad = deepcopy(state)
+    frame = bad["hand_frames"][0]
+    candidates = frame.candidates
+    if corruption == "swap_existing_region":
+        candidates = (replace(candidates[0], region_id=candidates[1].region_id), candidates[1])
+    elif corruption == "reorder":
+        candidates = tuple(reversed(candidates))
+    else:
+        region = candidates[0].region_id
+        candidates = tuple(
+            replace(candidates[0], candidate_id=uuid5(region, f"hand:{HAND_MODEL_SHA256}:{i}"))
+            for i in range(5)
+        )
+    bad["hand_frames"] = (replace(frame, candidates=candidates),)
+    with pytest.raises(ValueError, match="ROI"):
+        producer.restore_state(bad)
+    assert producer.checkpoint_state() == state

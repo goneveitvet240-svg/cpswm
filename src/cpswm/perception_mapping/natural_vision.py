@@ -358,7 +358,11 @@ class NaturalVisionEvidenceProducer:
         from copy import deepcopy
         from dataclasses import replace
 
-        from cpswm.perception_mapping.natural_hands import HandCandidate, HandFrame
+        from cpswm.perception_mapping.natural_hands import (
+            HandCandidate,
+            HandFrame,
+            validate_hand_regions,
+        )
 
         with self._lock:
             if self._busy:
@@ -461,6 +465,7 @@ class NaturalVisionEvidenceProducer:
                     or len({h.candidate_id for h in hand.candidates}) != len(hand.candidates)
                 ):
                     raise ValueError("checkpoint hand/raw/model binding mismatch")
+                validate_hand_regions(hand, visual)
                 for detection in hand.candidates:
                     if type(detection) is not HandCandidate:
                         raise ValueError("invalid checkpoint hand candidate")
@@ -613,7 +618,12 @@ class NaturalVisionEvidenceProducer:
                 hand_frames = (
                     ()
                     if self._hand_detector is None
-                    else tuple(self._hand_detector.infer(raw, cutoff=when) for raw in selected)
+                    else tuple(
+                        self._hand_detector.infer_with_visual(raw, frame, cutoff=when)
+                        if getattr(self._hand_detector, "uses_person_regions", False)
+                        else self._hand_detector.infer(raw, cutoff=when)
+                        for raw, frame in zip(selected, frames, strict=True)
+                    )
                 )
                 all_frames = self._frames + frames
                 interactions = self._recompute_interactions(all_frames)

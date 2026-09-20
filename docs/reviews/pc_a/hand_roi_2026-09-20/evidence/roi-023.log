@@ -1,0 +1,16 @@
+I0000 00:00:1789897525.452123 45243821 init-domain.cc:128] Fiber init: default domain = pthread, concurrency = 11, prefix = pthread-default
+I0000 00:00:1789897525.499254 45243821 gl_context.cc:407] GL version: 2.1 (2.1 Metal - 90.5), renderer: Apple M5
+INFO: Created TensorFlow Lite XNNPACK delegate for CPU.
+W0000 00:00:1789897525.502704 45243824 inference_feedback_manager.cc:121] Feedback manager requires a model with a single signature inference. Disabling support for feedback tensors.
+W0000 00:00:1789897525.505069 45243824 inference_feedback_manager.cc:121] Feedback manager requires a model with a single signature inference. Disabling support for feedback tensors.
+W0000 00:00:1789897527.323954 45243824 landmark_projection_calculator.cc:81] Using NORM_RECT without IMAGE_DIMENSIONS is only supported for the square ROI. Provide IMAGE_DIMENSIONS or use PROJECTION_MATRIX.
+Traceback (most recent call last):
+  File "/private/tmp/cpswm-pc-a-hand-roi-supervision-20260920/tools/run_person_interaction_video.py", line 321, in <module>
+    print(
+    
+    ...<12 lines>...
+                hand_model=args.hand_model,
+    
+  File "/private/tmp/cpswm-pc-a-hand-roi-supervision-20260920/tools/run_person_interaction_video.py", line 262, in run
+    raise RuntimeError("source changed during inference")
+RuntimeError: source changed during inference

@@ -12,7 +12,7 @@ from dataclasses import dataclass
 from uuid import UUID
 
 from cpswm.perception_mapping.interaction_evidence import AssociatedFrame
-from cpswm.perception_mapping.natural_hands import HandFrame
+from cpswm.perception_mapping.natural_hands import HandFrame, validate_hand_regions
 from cpswm.perception_mapping.natural_vision import VisualFrame
 from cpswm.system.reproducibility import content_sha256
 
@@ -56,6 +56,7 @@ def measure_hand_object_evidence(
         or (visual.width, visual.height) != (hands.width, hands.height)
     ):
         raise ValueError("hand/object measurements require the same source frame")
+    validate_hand_regions(hands, visual)
     # An associated frame must contain exactly these visual candidates; callers
     # cannot swap boxes while retaining an old claimed visual fingerprint.
     original = {d.candidate_id: d for d in visual.candidates}

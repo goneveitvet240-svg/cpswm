@@ -54,7 +54,10 @@ def run(
     output: Path,
     detector_name: str = "ssdlite",
     hand_model: Path | None = None,
+    hand_person_rois: bool = False,
 ) -> dict:
+    if hand_person_rois and hand_model is None:
+        raise ValueError("ROI mode requires hand model")
     if (
         not source_url.startswith("https://")
         or not np.isfinite([start, duration]).all()
@@ -105,7 +108,9 @@ def run(
     hand_detector = (
         None
         if hand_model is None
-        else NaturalHandDetector(model_path=hand_model, scope=(household, session, trace))
+        else NaturalHandDetector(
+            model_path=hand_model, scope=(household, session, trace), person_rois=hand_person_rois
+        )
     )
     producer = NaturalVisionEvidenceProducer(detector, hand_detector)
     system = StructureTwoProductionSystem(
@@ -278,6 +283,10 @@ def run(
         "ordered_role_alternatives": sum(
             len(r["interaction"]["role_alternatives"]) for r in records
         ),
+        "hand_person_rois": hand_person_rois,
+        "hand_candidate_count_semantics": (
+            "raw regional observations; overlapping regions may duplicate physical hands"
+        ),
         "hand_candidates": sum(len(r["hands"]["candidates"]) for r in records if r["hands"]),
         "hand_object_measurements": sum(
             len(r["hand_object_evidence"]["measurements"])
@@ -307,6 +316,7 @@ if __name__ == "__main__":
     p.add_argument("--output", type=Path, required=True)
     p.add_argument("--detector", choices=("ssdlite", "fasterrcnn"), default="ssdlite")
     p.add_argument("--hand-model", type=Path)
+    p.add_argument("--hand-person-rois", action="store_true")
     args = p.parse_args()
     print(
         json.dumps(
@@ -322,6 +332,7 @@ if __name__ == "__main__":
                 output=args.output,
                 detector_name=args.detector,
                 hand_model=args.hand_model,
+                hand_person_rois=args.hand_person_rois,
             ),
             indent=2,
         )

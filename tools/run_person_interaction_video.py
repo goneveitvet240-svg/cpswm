@@ -30,8 +30,11 @@ from cpswm.perception_mapping.adapters.contracts import (
     SensorRef,
 )
 from cpswm.perception_mapping.adapters.rgbd_capture import RawModalityObservation
+from cpswm.perception_mapping.hand_object_evidence import measure_hand_object_evidence
 from cpswm.perception_mapping.interaction_evidence import CausalInstanceAssociator, role_readout
+from cpswm.perception_mapping.natural_hands import NaturalHandDetector
 from cpswm.perception_mapping.natural_vision import (
+    FasterNaturalAppearanceDetector,
     NaturalAppearanceDetector,
     NaturalVisionEvidenceProducer,
 )
@@ -51,6 +54,8 @@ def run(
     fps: int,
     weights: Path,
     output: Path,
+    detector_name: str = "ssdlite",
+    hand_model: Path | None = None,
 ) -> dict:
     if (
         not source_url.startswith("https://")
@@ -67,6 +72,8 @@ def run(
         Path(__file__).resolve(),
         repo / "src/cpswm/perception_mapping/interaction_evidence.py",
         repo / "src/cpswm/perception_mapping/natural_vision.py",
+        repo / "src/cpswm/perception_mapping/natural_hands.py",
+        repo / "src/cpswm/perception_mapping/hand_object_evidence.py",
     ]
     source_before = {
         str(p.relative_to(repo)): hashlib.sha256(p.read_bytes()).hexdigest() for p in source_files
@@ -86,10 +93,22 @@ def run(
     household = uuid5(NAMESPACE_URL, "public-interaction-development")
     session = uuid5(household, seq)
     trace = uuid5(session, str((start, duration, fps)))
-    detector = NaturalAppearanceDetector(
+    if detector_name not in {"ssdlite", "fasterrcnn"}:
+        raise ValueError("unknown detector")
+    detector_type = (
+        FasterNaturalAppearanceDetector
+        if detector_name == "fasterrcnn"
+        else NaturalAppearanceDetector
+    )
+    detector = detector_type(
         weights_path=weights, household_id=household, session_id=session, trace_id=trace
     )
-    producer = NaturalVisionEvidenceProducer(detector)
+    hand_detector = (
+        None
+        if hand_model is None
+        else NaturalHandDetector(model_path=hand_model, scope=(household, session, trace))
+    )
+    producer = NaturalVisionEvidenceProducer(detector, hand_detector)
     system = StructureTwoProductionSystem(
         owner_key="unresolved-visual-observer",
         object_instance_id=uuid5(session, "unresolved-object"),
@@ -218,9 +237,17 @@ def run(
                 "visual": asdict(visual),
                 "association": asdict(associated),
                 "interaction": asdict(readout),
+                "hands": None if hand_detector is None else asdict(producer.hand_frames()[-1]),
+                "hand_object_evidence": None
+                if hand_detector is None
+                else asdict(
+                    measure_hand_object_evidence(visual, producer.hand_frames()[-1], associated)
+                ),
             }
         )
         previous = associated
+    if hand_detector is not None:
+        hand_detector.close()
     if system.core.current_snapshot != before or stream.execution_traces():
         raise RuntimeError("candidate analysis changed long-term memory")
     source_after = {
@@ -234,7 +261,7 @@ def run(
     summary = {
         "code_sha": code_sha,
         "source_files": source_after,
-        "source_identity_scope": "three_disk_files_not_whole_runtime_attestation",
+        "source_identity_scope": "entry_and_frontend_files_not_whole_runtime_attestation",
         "git_dirty": bool(
             subprocess.check_output([*git, "status", "--porcelain"], text=True).strip()
         ),
@@ -251,6 +278,12 @@ def run(
         ),
         "ordered_role_alternatives": sum(
             len(r["interaction"]["role_alternatives"]) for r in records
+        ),
+        "hand_candidates": sum(len(r["hands"]["candidates"]) for r in records if r["hands"]),
+        "hand_object_measurements": sum(
+            len(r["hand_object_evidence"]["measurements"])
+            for r in records
+            if r["hand_object_evidence"]
         ),
         "calibration": "NO_INDEPENDENT_LABELS",
         "memory_writes": 0,
@@ -273,6 +306,8 @@ if __name__ == "__main__":
     p.add_argument("--fps", type=int, default=5)
     p.add_argument("--weights", type=Path, required=True)
     p.add_argument("--output", type=Path, required=True)
+    p.add_argument("--detector", choices=("ssdlite", "fasterrcnn"), default="ssdlite")
+    p.add_argument("--hand-model", type=Path)
     args = p.parse_args()
     print(
         json.dumps(
@@ -286,6 +321,8 @@ if __name__ == "__main__":
                 fps=args.fps,
                 weights=args.weights,
                 output=args.output,
+                detector_name=args.detector,
+                hand_model=args.hand_model,
             ),
             indent=2,
         )

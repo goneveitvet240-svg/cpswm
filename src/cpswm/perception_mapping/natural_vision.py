@@ -11,6 +11,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Any
 
 if TYPE_CHECKING:
+    from cpswm.perception_mapping.hand_object_evidence import HandObjectEvidence
     from cpswm.perception_mapping.interaction_evidence import AssociatedFrame, InteractionReadout
     from cpswm.perception_mapping.natural_hands import HandFrame, NaturalHandDetector
 
@@ -452,6 +453,24 @@ class NaturalVisionEvidenceProducer:
                 raise ValueError("checkpoint interactions differ from visual history")
             self._prefix, self._frames, self._cutoff = prefix, frames, cutoff
             self._hand_frames, self._interactions = hands, interactions
+
+    def hand_object_evidence(self) -> tuple[HandObjectEvidence, ...]:
+        """Derived image measurements from the same retained raw-prefix inference.
+
+        Checkpoints retain source frames, not a second mutable relation ledger.
+        No hand detector means no measurements, never inferred absence of contact.
+        """
+        from cpswm.perception_mapping.hand_object_evidence import measure_hand_object_evidence
+
+        with self._lock:
+            if self._hand_detector is None:
+                return ()
+            return tuple(
+                measure_hand_object_evidence(visual, hands, association)
+                for visual, hands, (association, _) in zip(
+                    self._frames, self._hand_frames, self._interactions, strict=True
+                )
+            )
 
     def hand_frames(self) -> tuple[HandFrame, ...]:
         from copy import deepcopy

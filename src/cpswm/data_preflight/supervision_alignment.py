@@ -47,10 +47,25 @@ def pose_audit(poses: NDArray[Any], *, tolerance: float = 1e-5) -> dict[str, Any
         if not np.isfinite(p).all():
             rows.append({"row": i, "finite": False, "rigid": False})
             continue
-        rotation = p[:3, :3]
-        determinant = float(np.linalg.det(rotation))
-        residual = float(np.max(np.abs(rotation.T @ rotation - np.eye(3))))
-        bottom = float(np.max(np.abs(p[3] - [0, 0, 0, 1])))
+        with np.errstate(over="ignore", invalid="ignore"):
+            numeric = np.asarray(p, dtype=np.float64)
+            rotation = numeric[:3, :3]
+            if np.isfinite(numeric).all():
+                determinant = float(np.linalg.det(rotation))
+                residual = float(np.max(np.abs(rotation.T @ rotation - np.eye(3))))
+                bottom = float(np.max(np.abs(numeric[3] - [0, 0, 0, 1])))
+            else:
+                determinant = residual = bottom = float("inf")
+        if not all(math.isfinite(v) for v in (determinant, residual, bottom)):
+            rows.append(
+                {
+                    "row": i,
+                    "finite": True,
+                    "rigid": False,
+                    "numerical_status": "FLOAT64_COMPUTATION_OVERFLOW",
+                }
+            )
+            continue
         rows.append(
             {
                 "row": i,
@@ -150,7 +165,8 @@ def boundary_support(rgb: NDArray[Any], masks: NDArray[Any]) -> NDArray[np.float
     ):
         raise ValueError("nonempty matching RGB/mask grids required")
     gray = rgb.astype(np.float64).mean(axis=-1) / 255
-    gradients = np.hypot(sobel(gray, axis=1), sobel(gray, axis=2))
+    # Sobel smooths every other axis too: never pass the time axis to it.
+    gradients = np.stack([np.hypot(sobel(frame, axis=0), sobel(frame, axis=1)) for frame in gray])
     norms = gradients.mean(axis=(1, 2), keepdims=True)
     gradients /= np.maximum(norms, 1e-12)
     scores = np.zeros((len(masks), len(rgb)), dtype=np.float64)

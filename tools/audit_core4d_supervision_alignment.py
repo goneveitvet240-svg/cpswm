@@ -124,6 +124,8 @@ def main() -> None:
                     str(frozen),
                     "-vf",
                     "scale=240:135",
+                    "-fps_mode",
+                    "passthrough",
                     "-frames:v",
                     "1025",
                     "-f",

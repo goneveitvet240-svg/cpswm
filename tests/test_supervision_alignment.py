@@ -101,3 +101,33 @@ def test_pinned_bytes_and_array_allocation(tmp_path):
         pinned(p, "a" * 64, 100)
     with pytest.raises(ValueError):
         pinned(p, "a" * 64, 1)
+
+
+@pytest.mark.parametrize("dtype", [np.float16, np.float32, np.float64, np.longdouble])
+def test_supported_floating_identity_is_auditable(dtype):
+    import json
+
+    result = pose_audit(np.eye(4, dtype=dtype)[None])
+    assert result["invalid_rows"] == []
+    json.dumps(result, allow_nan=False)
+
+
+def test_pose_computation_overflow_is_serializable_defect():
+    import json
+
+    poses = np.eye(4)[None]
+    poses[0, 0, 0] = 1e308
+    result = pose_audit(poses)
+    assert result["invalid_rows"] == [0]
+    json.dumps(result, allow_nan=False)
+
+
+def test_each_edge_score_depends_only_on_its_own_rgb_frame():
+    masks = np.zeros((1, 24, 24), np.uint8)
+    masks[0, 6:18, 6:18] = 1
+    rgb = np.zeros((3, 24, 24, 3), np.uint8)
+    before = boundary_support(rgb, masks)
+    rgb[0, 6:18, 6:18] = 255
+    after = boundary_support(rgb, masks)
+    np.testing.assert_array_equal(after[:, 1:], before[:, 1:])
+    assert after[0, 0] > 0

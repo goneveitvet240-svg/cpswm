@@ -292,7 +292,7 @@ def validate_hand_regions(frame: HandFrame, visual: VisualFrame) -> None:
         ids = {r.region_id for r in expected}
         if len(ids) != len(expected) or any(c.region_id not in ids for c in frame.candidates):
             raise ValueError("ROI candidate region identity differs")
-        expected_candidates = []
+        expected_candidates: list[tuple[UUID, UUID]] = []
         for region in expected:
             count = sum(c.region_id == region.region_id for c in frame.candidates)
             if count > frame.model_binding[2]:

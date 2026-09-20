@@ -1,0 +1,305 @@
+[
+  {
+    "clip": "clip-0001",
+    "code_sha": "5188e65986eab9f6345ec03231968858296bd8aa",
+    "source_files": {
+      "tools/run_person_interaction_video.py": "2e2a0636732718056f337435776659911edbae5d107cf485fb4b7efd44a6c571",
+      "src/cpswm/perception_mapping/interaction_evidence.py": "a80ebd8b88c4826e91b2ed11496dd98566270496af65c85c475db9fa4d601f9d",
+      "src/cpswm/perception_mapping/natural_vision.py": "05f3b95c63fc65bde7331bc877937f94741c1d4961dd7ef091aea9d2a96bcb0c",
+      "src/cpswm/perception_mapping/natural_hands.py": "e9133a0f24ff3d6ba25a32475a4c8969d53d380f2a9554ec214481a557e32f5e",
+      "src/cpswm/perception_mapping/hand_object_evidence.py": "237d44f069485e3597c7d9ed20579b56ab94fb1fa350ee969dd8ee81ae491fda",
+      "src/cpswm/perception_mapping/adapters/rgbd_capture.py": "d57b578a2b0ab5a72520886b704993584d90d837c92af377d52e3232518f8a67"
+    },
+    "source_identity_scope": "entry_and_frontend_files_not_whole_runtime_attestation",
+    "git_dirty": true,
+    "continuous_input_invoked": true,
+    "associations_from_same_producer": true,
+    "association_clock": "receipt_bound_resampled_media_grid",
+    "core_unchanged_verified": true,
+    "source_url": "https://zenodo.org/records/7767535",
+    "source_sha256": "4932c9b968ecf83fee63d945ce56e705ac056083c285fedb3afdedbf9e1e38fc",
+    "frames": 17,
+    "candidates": {
+      "person": 34,
+      "keyboard": 17,
+      "cup": 36,
+      "sports ball": 26,
+      "book": 19,
+      "teddy bear": 17,
+      "dining table": 15,
+      "backpack": 2,
+      "handbag": 4,
+      "baseball glove": 5,
+      "bottle": 3,
+      "suitcase": 2
+    },
+    "association_statuses": {
+      "NEW_UNVERIFIED": 26,
+      "ASSOCIATED_GEOMETRIC": 154
+    },
+    "ordered_role_alternatives": 5,
+    "hand_person_rois": true,
+    "hand_candidate_count_semantics": "raw regional observations; overlapping regions may duplicate physical hands",
+    "hand_candidates": 5,
+    "hand_object_measurements": 46,
+    "calibration": "NO_INDEPENDENT_LABELS",
+    "memory_writes": 0,
+    "executed_actions": 0,
+    "lane": "real_video_frontend_diagnostic",
+    "result_sha256": "d95314d21fda5fd79999040117d1644747ad3c7f798266f6cf786e870392187e",
+    "pixel_policy": {
+      "source_files": {
+        "tools/run_bimanual_pixel_frontend.py": "6a7285624d69c5563bf7d226d562a34998e82efe2f89f3f08c8b1b86357e1b3c",
+        "configs/data/bimanual_pixel_policy.json": "4e352b10ce51846de9fa9c9fe2a9df571bf49a80c8c161e9556377fe7673c992"
+      },
+      "video_sha256": "4932c9b968ecf83fee63d945ce56e705ac056083c285fedb3afdedbf9e1e38fc",
+      "crop_xywh": [
+        0,
+        0,
+        1920,
+        960
+      ],
+      "removed_rectangle_xywh": [
+        0,
+        960,
+        1920,
+        120
+      ],
+      "author_tables_read": false,
+      "full_published_frames_model_visible": false,
+      "domain": "motion_capture_development_not_marker_free_household",
+      "result_sha256": "d95314d21fda5fd79999040117d1644747ad3c7f798266f6cf786e870392187e"
+    },
+    "saved_model_arrays_match_independent_ffmpeg": true
+  },
+  {
+    "clip": "clip-0002",
+    "code_sha": "5188e65986eab9f6345ec03231968858296bd8aa",
+    "source_files": {
+      "tools/run_person_interaction_video.py": "2e2a0636732718056f337435776659911edbae5d107cf485fb4b7efd44a6c571",
+      "src/cpswm/perception_mapping/interaction_evidence.py": "a80ebd8b88c4826e91b2ed11496dd98566270496af65c85c475db9fa4d601f9d",
+      "src/cpswm/perception_mapping/natural_vision.py": "05f3b95c63fc65bde7331bc877937f94741c1d4961dd7ef091aea9d2a96bcb0c",
+      "src/cpswm/perception_mapping/natural_hands.py": "e9133a0f24ff3d6ba25a32475a4c8969d53d380f2a9554ec214481a557e32f5e",
+      "src/cpswm/perception_mapping/hand_object_evidence.py": "237d44f069485e3597c7d9ed20579b56ab94fb1fa350ee969dd8ee81ae491fda",
+      "src/cpswm/perception_mapping/adapters/rgbd_capture.py": "d57b578a2b0ab5a72520886b704993584d90d837c92af377d52e3232518f8a67"
+    },
+    "source_identity_scope": "entry_and_frontend_files_not_whole_runtime_attestation",
+    "git_dirty": true,
+    "continuous_input_invoked": true,
+    "associations_from_same_producer": true,
+    "association_clock": "receipt_bound_resampled_media_grid",
+    "core_unchanged_verified": true,
+    "source_url": "https://zenodo.org/records/7767535",
+    "source_sha256": "339a3d53a4b3bfd054730d1eee42a7e4e85b6800048bae10d4811f807b454d18",
+    "frames": 15,
+    "candidates": {
+      "person": 30,
+      "keyboard": 15,
+      "sports ball": 25,
+      "cup": 30,
+      "teddy bear": 15,
+      "suitcase": 2,
+      "book": 23,
+      "tennis racket": 1,
+      "dining table": 11,
+      "baseball glove": 5,
+      "bottle": 1,
+      "umbrella": 5,
+      "backpack": 1
+    },
+    "association_statuses": {
+      "NEW_UNVERIFIED": 27,
+      "ASSOCIATED_GEOMETRIC": 137
+    },
+    "ordered_role_alternatives": 3,
+    "hand_person_rois": true,
+    "hand_candidate_count_semantics": "raw regional observations; overlapping regions may duplicate physical hands",
+    "hand_candidates": 5,
+    "hand_object_measurements": 46,
+    "calibration": "NO_INDEPENDENT_LABELS",
+    "memory_writes": 0,
+    "executed_actions": 0,
+    "lane": "real_video_frontend_diagnostic",
+    "result_sha256": "9705b7a84a2c3fef72df128111ce2a1ae02d047ff7e70a7eef1c0ac5d75466da",
+    "pixel_policy": {
+      "source_files": {
+        "tools/run_bimanual_pixel_frontend.py": "6a7285624d69c5563bf7d226d562a34998e82efe2f89f3f08c8b1b86357e1b3c",
+        "configs/data/bimanual_pixel_policy.json": "4e352b10ce51846de9fa9c9fe2a9df571bf49a80c8c161e9556377fe7673c992"
+      },
+      "video_sha256": "339a3d53a4b3bfd054730d1eee42a7e4e85b6800048bae10d4811f807b454d18",
+      "crop_xywh": [
+        0,
+        0,
+        1920,
+        960
+      ],
+      "removed_rectangle_xywh": [
+        0,
+        960,
+        1920,
+        120
+      ],
+      "author_tables_read": false,
+      "full_published_frames_model_visible": false,
+      "domain": "motion_capture_development_not_marker_free_household",
+      "result_sha256": "9705b7a84a2c3fef72df128111ce2a1ae02d047ff7e70a7eef1c0ac5d75466da"
+    },
+    "saved_model_arrays_match_independent_ffmpeg": true
+  },
+  {
+    "clip": "clip-0003",
+    "code_sha": "5188e65986eab9f6345ec03231968858296bd8aa",
+    "source_files": {
+      "tools/run_person_interaction_video.py": "2e2a0636732718056f337435776659911edbae5d107cf485fb4b7efd44a6c571",
+      "src/cpswm/perception_mapping/interaction_evidence.py": "a80ebd8b88c4826e91b2ed11496dd98566270496af65c85c475db9fa4d601f9d",
+      "src/cpswm/perception_mapping/natural_vision.py": "05f3b95c63fc65bde7331bc877937f94741c1d4961dd7ef091aea9d2a96bcb0c",
+      "src/cpswm/perception_mapping/natural_hands.py": "e9133a0f24ff3d6ba25a32475a4c8969d53d380f2a9554ec214481a557e32f5e",
+      "src/cpswm/perception_mapping/hand_object_evidence.py": "237d44f069485e3597c7d9ed20579b56ab94fb1fa350ee969dd8ee81ae491fda",
+      "src/cpswm/perception_mapping/adapters/rgbd_capture.py": "d57b578a2b0ab5a72520886b704993584d90d837c92af377d52e3232518f8a67"
+    },
+    "source_identity_scope": "entry_and_frontend_files_not_whole_runtime_attestation",
+    "git_dirty": true,
+    "continuous_input_invoked": true,
+    "associations_from_same_producer": true,
+    "association_clock": "receipt_bound_resampled_media_grid",
+    "core_unchanged_verified": true,
+    "source_url": "https://zenodo.org/records/7767535",
+    "source_sha256": "1155433df1f571c2a9e2a3bbc6c227cabd0c4695a6e2828c37fa15c6873c0575",
+    "frames": 17,
+    "candidates": {
+      "person": 34,
+      "cup": 152,
+      "sports ball": 22,
+      "dining table": 18,
+      "keyboard": 17,
+      "teddy bear": 17,
+      "umbrella": 6,
+      "bowl": 24,
+      "bottle": 7,
+      "bed": 1,
+      "baseball glove": 11,
+      "clock": 1,
+      "chair": 4,
+      "remote": 4,
+      "tv": 1,
+      "bench": 2,
+      "tennis racket": 1
+    },
+    "association_statuses": {
+      "NEW_UNVERIFIED": 49,
+      "ASSOCIATED_GEOMETRIC": 257,
+      "AMBIGUOUS_NEW_BRANCH": 16
+    },
+    "ordered_role_alternatives": 17,
+    "hand_person_rois": true,
+    "hand_candidate_count_semantics": "raw regional observations; overlapping regions may duplicate physical hands",
+    "hand_candidates": 25,
+    "hand_object_measurements": 446,
+    "calibration": "NO_INDEPENDENT_LABELS",
+    "memory_writes": 0,
+    "executed_actions": 0,
+    "lane": "real_video_frontend_diagnostic",
+    "result_sha256": "68a8b80be4b952c56c689a28bbc478d05634518f2caa7058ab859d9fe58084dd",
+    "pixel_policy": {
+      "source_files": {
+        "tools/run_bimanual_pixel_frontend.py": "6a7285624d69c5563bf7d226d562a34998e82efe2f89f3f08c8b1b86357e1b3c",
+        "configs/data/bimanual_pixel_policy.json": "4e352b10ce51846de9fa9c9fe2a9df571bf49a80c8c161e9556377fe7673c992"
+      },
+      "video_sha256": "1155433df1f571c2a9e2a3bbc6c227cabd0c4695a6e2828c37fa15c6873c0575",
+      "crop_xywh": [
+        0,
+        0,
+        1920,
+        960
+      ],
+      "removed_rectangle_xywh": [
+        0,
+        960,
+        1920,
+        120
+      ],
+      "author_tables_read": false,
+      "full_published_frames_model_visible": false,
+      "domain": "motion_capture_development_not_marker_free_household",
+      "result_sha256": "68a8b80be4b952c56c689a28bbc478d05634518f2caa7058ab859d9fe58084dd"
+    },
+    "saved_model_arrays_match_independent_ffmpeg": true
+  },
+  {
+    "clip": "clip-0004",
+    "code_sha": "5188e65986eab9f6345ec03231968858296bd8aa",
+    "source_files": {
+      "tools/run_person_interaction_video.py": "2e2a0636732718056f337435776659911edbae5d107cf485fb4b7efd44a6c571",
+      "src/cpswm/perception_mapping/interaction_evidence.py": "a80ebd8b88c4826e91b2ed11496dd98566270496af65c85c475db9fa4d601f9d",
+      "src/cpswm/perception_mapping/natural_vision.py": "05f3b95c63fc65bde7331bc877937f94741c1d4961dd7ef091aea9d2a96bcb0c",
+      "src/cpswm/perception_mapping/natural_hands.py": "e9133a0f24ff3d6ba25a32475a4c8969d53d380f2a9554ec214481a557e32f5e",
+      "src/cpswm/perception_mapping/hand_object_evidence.py": "237d44f069485e3597c7d9ed20579b56ab94fb1fa350ee969dd8ee81ae491fda",
+      "src/cpswm/perception_mapping/adapters/rgbd_capture.py": "d57b578a2b0ab5a72520886b704993584d90d837c92af377d52e3232518f8a67"
+    },
+    "source_identity_scope": "entry_and_frontend_files_not_whole_runtime_attestation",
+    "git_dirty": true,
+    "continuous_input_invoked": true,
+    "associations_from_same_producer": true,
+    "association_clock": "receipt_bound_resampled_media_grid",
+    "core_unchanged_verified": true,
+    "source_url": "https://zenodo.org/records/7767535",
+    "source_sha256": "7b2962308f278e23bc4920fc1a5686d37950fcfb7af3081b213a59a46be0dc94",
+    "frames": 15,
+    "candidates": {
+      "person": 30,
+      "sports ball": 17,
+      "cup": 121,
+      "teddy bear": 15,
+      "bowl": 29,
+      "dining table": 19,
+      "keyboard": 15,
+      "bottle": 2,
+      "baseball glove": 13,
+      "chair": 3,
+      "tennis racket": 1,
+      "tv": 2,
+      "remote": 2,
+      "laptop": 3,
+      "backpack": 1
+    },
+    "association_statuses": {
+      "NEW_UNVERIFIED": 36,
+      "ASSOCIATED_GEOMETRIC": 229,
+      "AMBIGUOUS_NEW_BRANCH": 8
+    },
+    "ordered_role_alternatives": 15,
+    "hand_person_rois": true,
+    "hand_candidate_count_semantics": "raw regional observations; overlapping regions may duplicate physical hands",
+    "hand_candidates": 23,
+    "hand_object_measurements": 373,
+    "calibration": "NO_INDEPENDENT_LABELS",
+    "memory_writes": 0,
+    "executed_actions": 0,
+    "lane": "real_video_frontend_diagnostic",
+    "result_sha256": "3884ea66939a3c4b645a5c20bb48d94b255ebed4ff2b61b2984dba8aa475acfe",
+    "pixel_policy": {
+      "source_files": {
+        "tools/run_bimanual_pixel_frontend.py": "6a7285624d69c5563bf7d226d562a34998e82efe2f89f3f08c8b1b86357e1b3c",
+        "configs/data/bimanual_pixel_policy.json": "4e352b10ce51846de9fa9c9fe2a9df571bf49a80c8c161e9556377fe7673c992"
+      },
+      "video_sha256": "7b2962308f278e23bc4920fc1a5686d37950fcfb7af3081b213a59a46be0dc94",
+      "crop_xywh": [
+        0,
+        0,
+        1920,
+        960
+      ],
+      "removed_rectangle_xywh": [
+        0,
+        960,
+        1920,
+        120
+      ],
+      "author_tables_read": false,
+      "full_published_frames_model_visible": false,
+      "domain": "motion_capture_development_not_marker_free_household",
+      "result_sha256": "3884ea66939a3c4b645a5c20bb48d94b255ebed4ff2b61b2984dba8aa475acfe"
+    },
+    "saved_model_arrays_match_independent_ffmpeg": true
+  }
+]

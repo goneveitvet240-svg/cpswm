@@ -1,0 +1,31 @@
+import sys
+sys.path[:0]=['src','tests']
+from dataclasses import replace
+from copy import deepcopy
+from uuid import uuid4
+from test_natural_hands import components
+from cpswm.perception_mapping.natural_vision import NaturalVisionEvidenceProducer
+raw, detector, hands=components()
+p=NaturalVisionEvidenceProducer(detector,hands)
+p.infer((raw,),cutoff=raw.envelope().arrival_time)
+s=p.checkpoint_state()
+q=NaturalVisionEvidenceProducer(detector,hands)
+q.restore_state(s)
+assert q.checkpoint_state()==s
+q.infer((raw,),cutoff=raw.envelope().arrival_time)
+assert q.checkpoint_state()==s
+print('legal restore and identical-prefix no-op: PASS')
+for name in ['missing-hand','missing-visual','wrong-hand-binding','malformed-hand-score','duplicate-prefix','inconsistent-derived-interactions']:
+    bad=deepcopy(s)
+    if name=='missing-hand':bad.pop('hand_frames')
+    if name=='missing-visual':bad.pop('frames');bad['interactions']=('replacement',)
+    if name=='wrong-hand-binding':bad['hand_frames']=(replace(bad['hand_frames'][0],model_binding=('0'*64,'other',1,.1,.1),observation_id=uuid4()),)
+    if name=='malformed-hand-score':object.__setattr__(bad['hand_frames'][0].candidates[0],'handedness_score',float('nan'))
+    if name=='duplicate-prefix':bad['prefix']=bad['prefix']*2
+    if name=='inconsistent-derived-interactions':bad['interactions']=('replacement',)
+    before=q.checkpoint_state()
+    try:q.restore_state(bad)
+    except ValueError:pass
+    else:raise AssertionError(name+' accepted')
+    assert q.checkpoint_state()==before,name+' mutated state'
+    print(name+': rejected atomically')

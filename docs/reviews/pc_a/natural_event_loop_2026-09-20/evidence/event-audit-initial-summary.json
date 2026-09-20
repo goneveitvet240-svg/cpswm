@@ -1,0 +1,67 @@
+{
+  "raw_frames": 180,
+  "sequences": [
+    {
+      "sequence_id": "subject_5/20231027_112303",
+      "camera_id": "105322251564",
+      "downloaded_frames": 60,
+      "sequence_frames": 702,
+      "fraction": 0.08547008547008547,
+      "task_id": 1,
+      "subject_id": "subject_5",
+      "hand_sides": [
+        "right"
+      ],
+      "independently_annotated_interperson_handoffs": 0,
+      "independently_annotated_corrections": 0
+    },
+    {
+      "sequence_id": "subject_5/20231027_113202",
+      "camera_id": "105322251564",
+      "downloaded_frames": 60,
+      "sequence_frames": 791,
+      "fraction": 0.07585335018963338,
+      "task_id": 2,
+      "subject_id": "subject_5",
+      "hand_sides": [
+        "right",
+        "left"
+      ],
+      "independently_annotated_interperson_handoffs": 0,
+      "independently_annotated_corrections": 0
+    },
+    {
+      "sequence_id": "subject_5/20231027_113535",
+      "camera_id": "105322251564",
+      "downloaded_frames": 60,
+      "sequence_frames": 854,
+      "fraction": 0.0702576112412178,
+      "task_id": 2,
+      "subject_id": "subject_5",
+      "hand_sides": [
+        "right",
+        "left"
+      ],
+      "independently_annotated_interperson_handoffs": 0,
+      "independently_annotated_corrections": 0
+    }
+  ],
+  "identical_receipts_deduplicated": 9,
+  "raw_and_author_hashes_verified": true,
+  "explicit_event_labels_available": false,
+  "two_hands_do_not_establish_two_people": true,
+  "runtime_labels_injected": false,
+  "natural_p5_acceptance": false,
+  "pose_pairs": 177,
+  "provenance": {
+    "raw_manifest": "2333b3202fa8dbffb56fa931f64a8156f61ec438954d06993b1cf7bbece66107",
+    "annotation_manifest": "6d0de55f82748c613b90faa978a2882c66add7a8d9220ff4e26cd4674e44d50a",
+    "download_receipts": "5d41b3082504114f343487a3ee6e3ee46c05a7282d8f729b0e45609810326933"
+  },
+  "limitations": [
+    "Author poses/keypoints are supervision, not raw predictions",
+    "Endpoint motion is not independently annotated pickup/release",
+    "No interperson role or correction annotations in these files",
+    "Replay frame ordinal is not a measured physical clock"
+  ]
+}

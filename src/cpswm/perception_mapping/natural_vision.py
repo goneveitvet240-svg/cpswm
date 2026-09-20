@@ -12,6 +12,7 @@ from typing import TYPE_CHECKING, Any
 
 if TYPE_CHECKING:
     from cpswm.perception_mapping.interaction_evidence import AssociatedFrame, InteractionReadout
+    from cpswm.perception_mapping.natural_hands import HandFrame, NaturalHandDetector
 
 import hashlib
 import io
@@ -297,10 +298,16 @@ class NaturalVisionEvidenceProducer:
     core remains unchanged. This is an explicit capability boundary.
     """
 
-    def __init__(self, detector: NaturalAppearanceDetector) -> None:
+    def __init__(
+        self, detector: NaturalAppearanceDetector, hand_detector: NaturalHandDetector | None = None
+    ) -> None:
         from threading import RLock
 
         self._detector = detector
+        if hand_detector is not None and hand_detector._scope != detector._scope:
+            raise ValueError("visual and hand detector scopes differ")
+        self._hand_detector = hand_detector
+        self._hand_frames: tuple[HandFrame, ...] = ()
         self._prefix: tuple[RawModalityObservation, ...] = ()
         self._frames: tuple[VisualFrame, ...] = ()
         self._cutoff: datetime | None = None
@@ -328,25 +335,129 @@ class NaturalVisionEvidenceProducer:
                     "prefix": self._prefix,
                     "frames": self._frames,
                     "cutoff": self._cutoff,
+                    "hand_binding": None
+                    if self._hand_detector is None
+                    else self._hand_detector.binding,
+                    "hand_frames": self._hand_frames,
                 }
             )
 
     def restore_state(self, state: dict[str, Any]) -> None:
         from copy import deepcopy
+        from dataclasses import replace
+
+        from cpswm.perception_mapping.natural_hands import HandCandidate, HandFrame
 
         with self._lock:
-            if state["scope"] != self._detector._scope:
+            if self._busy:
+                raise RuntimeError("cannot restore during visual inference")
+            # Stage the entire checkpoint. Nothing is assigned until every dependency
+            # and derived record has been validated, including failure/retry paths.
+            candidate = deepcopy(state)
+            required = {"scope", "detector_binding", "interactions", "prefix", "frames", "cutoff"}
+            if self._hand_detector is not None:
+                required |= {"hand_binding", "hand_frames"}
+            if not required <= candidate.keys():
+                raise ValueError("incomplete perception checkpoint")
+            expected_hand = None if self._hand_detector is None else self._hand_detector.binding
+            if candidate.get("hand_binding") != expected_hand:
+                raise ValueError("checkpoint hand model configuration changed")
+            if candidate["scope"] != self._detector._scope:
                 raise ValueError("perception restore requires a matching detector scope")
-            if state["detector_binding"] != (
+            if candidate["detector_binding"] != (
                 self._detector.weights_sha256,
                 self._detector._versions,
                 self._detector._minimum_score,
             ):
                 raise ValueError("checkpoint detector configuration changed")
-            self._interactions = deepcopy(state["interactions"])
-            self._prefix, self._frames, self._cutoff = deepcopy(
-                (state["prefix"], state["frames"], state["cutoff"])
-            )
+            prefix, frames, cutoff = candidate["prefix"], candidate["frames"], candidate["cutoff"]
+            hands = candidate.get("hand_frames", ())
+            if any(type(value) is not tuple for value in (prefix, frames, hands)):
+                raise ValueError("checkpoint evidence must be immutable tuples")
+            if prefix and cutoff is None:
+                raise ValueError("nonempty checkpoint requires a causal cutoff")
+            if cutoff is not None:
+                require_aware(cutoff, "checkpoint cutoff")
+            rgb = []
+            seen = set()
+            for raw in prefix:
+                if type(raw) is not RawModalityObservation:
+                    raise ValueError("invalid checkpoint raw observation")
+                env = raw.envelope()
+                if (
+                    env.identity.observation_id in seen
+                    or env.oracle_channel
+                    or env.metadata.source_type
+                    not in {SourceType.SENSOR, SourceType.SIMULATION, SourceType.IMPORT}
+                    or (env.identity.household_id, env.identity.session_id, env.identity.trace_id)
+                    != self._detector._scope
+                    or not env.capture_time <= env.arrival_time <= cutoff
+                ):
+                    raise ValueError("checkpoint prefix identity/scope/time mismatch")
+                seen.add(env.identity.observation_id)
+                if env.sensor.modality is SensorModality.RGB:
+                    _, pixels = decode_rgb(raw, cutoff=cutoff)
+                    rgb.append((raw, env, pixels.shape))
+            if len(frames) != len(rgb):
+                raise ValueError("checkpoint visual coverage differs from raw prefix")
+            for frame, (raw, env, shape) in zip(frames, rgb, strict=True):
+                if (
+                    type(frame) is not VisualFrame
+                    or env.payload is None
+                    or frame.observation_id != env.identity.observation_id
+                    or (frame.household_id, frame.session_id, frame.trace_id)
+                    != self._detector._scope
+                    or frame.sensor_id != env.sensor.sensor_id
+                    or frame.frame_id != env.frame_id
+                    or frame.capture_time != env.capture_time
+                    or frame.arrival_time != env.arrival_time
+                    or not env.arrival_time <= frame.inference_cutoff <= cutoff
+                    or frame.input_sha256 != env.payload.payload_sha256
+                    or frame.receipt_sha256 != raw.capture_receipt_sha256
+                    or (frame.height, frame.width) != shape[:2]
+                    or frame.model_id != self._detector.model_id
+                    or frame.weights_sha256 != self._detector.weights_sha256
+                    or (frame.torch_version, frame.torchvision_version) != self._detector._versions
+                    or frame.minimum_score != self._detector._minimum_score
+                    or frame.calibration_status != "UNCALIBRATED_CANDIDATES_ONLY"
+                    or frame.identity_status != "UNRESOLVED"
+                    or frame.pose_status != "NOT_ESTIMATED"
+                    or frame.negative_observation_authorized is not False
+                ):
+                    raise ValueError("checkpoint visual/raw/model binding mismatch")
+            expected_count = len(frames) if self._hand_detector is not None else 0
+            if len(hands) != expected_count:
+                raise ValueError("checkpoint hand coverage differs from visual history")
+            for hand, visual in zip(hands, frames[:expected_count], strict=True):
+                if (
+                    type(hand) is not HandFrame
+                    or hand.model_binding != expected_hand
+                    or hand.observation_id != visual.observation_id
+                    or hand.capture_time != visual.capture_time
+                    or hand.input_sha256 != visual.input_sha256
+                    or hand.capture_receipt_sha256 != visual.receipt_sha256
+                    or (hand.width, hand.height) != (visual.width, visual.height)
+                    or hand.semantic_status != "UNCALIBRATED_HANDS_NO_PERSON_CONTACT_OR_METRIC_POSE"
+                    or type(hand.candidates) is not tuple
+                    or any(type(h) is not HandCandidate for h in hand.candidates)
+                    or len({h.candidate_id for h in hand.candidates}) != len(hand.candidates)
+                ):
+                    raise ValueError("checkpoint hand/raw/model binding mismatch")
+                for detection in hand.candidates:
+                    if type(detection) is not HandCandidate:
+                        raise ValueError("invalid checkpoint hand candidate")
+                    replace(detection)  # revalidate dataclass contents after deserialization
+            interactions = self._recompute_interactions(frames)
+            if interactions != candidate["interactions"]:
+                raise ValueError("checkpoint interactions differ from visual history")
+            self._prefix, self._frames, self._cutoff = prefix, frames, cutoff
+            self._hand_frames, self._interactions = hands, interactions
+
+    def hand_frames(self) -> tuple[HandFrame, ...]:
+        from copy import deepcopy
+
+        with self._lock:
+            return deepcopy(self._hand_frames)
 
     def interactions(self) -> tuple[tuple[AssociatedFrame, InteractionReadout], ...]:
         from copy import deepcopy
@@ -438,9 +549,15 @@ class NaturalVisionEvidenceProducer:
                         selected.append(raw)
                 # A failed batch may have consumed computation, never committed evidence.
                 frames = tuple(self._detector.infer(raw, cutoff=when) for raw in selected)
+                hand_frames = (
+                    ()
+                    if self._hand_detector is None
+                    else tuple(self._hand_detector.infer(raw, cutoff=when) for raw in selected)
+                )
                 all_frames = self._frames + frames
                 interactions = self._recompute_interactions(all_frames)
                 self._frames = all_frames
+                self._hand_frames += hand_frames
                 self._interactions = interactions
                 self._prefix, self._cutoff = prefix, when
                 return None

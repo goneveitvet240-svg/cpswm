@@ -1,0 +1,22 @@
+import sys,json,hashlib,subprocess,io
+from pathlib import Path
+import numpy as np
+sys.path.insert(0,'tools')
+from evaluate_natural_hands import evaluate_frame
+payload=io.BytesIO()
+xy=np.array([[[10.,20.]]*21,[[100.,200.]]*21])
+np.savez(payload,hand_joints_2d=xy,hand_joints_3d=np.ones((2,21,3)))
+pred=[dict(candidate_id='a',landmarks_xy_pixels=xy[1].tolist(),handedness='Right'),dict(candidate_id='b',landmarks_xy_pixels=xy[0].tolist(),handedness='Left')]
+r=evaluate_frame(pred,payload.getvalue())
+assert [m['author_side'] for m in r['assigned_pairs']]==['Left','Right']
+assert all(m['mean_pixel_error']==0 for m in r['assigned_pairs'])
+assert evaluate_frame([],payload.getvalue())['unassigned_annotations']==2
+print('Geometric assignment ignores predicted sides; zero-prediction denominator: PASS')
+frames=json.loads(Path('output/natural-hands-additional/hand_frames.json').read_bytes())
+frames[0],frames[1]=frames[1],frames[0]
+p=Path('/private/tmp/cpswm-natural-review2/swapped.json');p.write_text(json.dumps(frames))
+args=[sys.executable,'tools/evaluate_natural_hands.py','--dataset','/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/datasets/hocap-additional-20260920','--hand-frames',str(p),'--raw-manifest-sha256','0b8d5fe14d6416f1afe6fcf93e95166291aab9ec234a83f2dc4aa69019632250','--annotation-manifest-sha256','461ea1c4c0a9cdc09d5a63044af5367b7d068fceb418e646b75e0ba66b4e36c3','--hand-frames-sha256',hashlib.sha256(p.read_bytes()).hexdigest(),'--output','/private/tmp/cpswm-natural-review2/should-not-exist']
+r=subprocess.run(args,capture_output=True,text=True)
+assert r.returncode!=0 and 'duplicate or mismatched raw prediction identity' in r.stderr
+assert not Path(args[-1]).exists()
+print('Swapped predictions, newly pinned file: rejected before output')

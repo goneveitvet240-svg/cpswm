@@ -1,0 +1,875 @@
+FFFFFFFFFFFFF                                                            [100%]
+=================================== FAILURES ===================================
+__ test_malformed_restore_is_rejected_without_partial_mutation[missing_hands] __
+
+kind = 'missing_hands'
+
+    @pytest.mark.parametrize(
+        "kind",
+        [
+            "missing_hands",
+            "missing_visual",
+            "empty_hands",
+            "wrong_observation",
+            "wrong_model",
+            "wrong_pixels",
+            "wrong_receipt",
+            "wrong_dimensions",
+            "wrong_interactions",
+            "wrong_visual",
+            "hand_privilege",
+            "future_cutoff",
+            "changed_raw",
+        ],
+    )
+    def test_malformed_restore_is_rejected_without_partial_mutation(kind):
+        from copy import deepcopy
+        from datetime import timedelta
+    
+        raw, detector, hands = components()
+        producer = NaturalVisionEvidenceProducer(detector, hands)
+        producer.infer((raw,), cutoff=raw.envelope().arrival_time)
+        before = producer.checkpoint_state()
+        state = deepcopy(before)
+        hand = state["hand_frames"][0]
+        if kind == "missing_hands":
+            state.pop("hand_frames")
+        elif kind == "missing_visual":
+            state.pop("frames")
+            state["interactions"] = ("partially-applied",)
+        elif kind == "empty_hands":
+            state["hand_frames"] = ()
+        elif kind == "wrong_observation":
+            state["hand_frames"] = (replace(hand, observation_id=uuid4()),)
+        elif kind == "wrong_model":
+            state["hand_frames"] = (replace(hand, model_binding=("0" * 64, "other", 4, 0.5, 0.5)),)
+        elif kind == "wrong_pixels":
+            state["hand_frames"] = (replace(hand, input_sha256="0" * 64),)
+        elif kind == "wrong_receipt":
+            state["hand_frames"] = (replace(hand, capture_receipt_sha256="0" * 64),)
+        elif kind == "wrong_dimensions":
+            state["hand_frames"] = (replace(hand, width=999),)
+        elif kind == "wrong_interactions":
+            state["interactions"] = ()
+        elif kind == "wrong_visual":
+            state["frames"] = (replace(state["frames"][0], observation_id=uuid4()),)
+        elif kind == "hand_privilege":
+            state["hand_frames"] = (replace(hand, semantic_status="CALIBRATED_ACTOR"),)
+        elif kind == "future_cutoff":
+            state["cutoff"] -= timedelta(seconds=1)
+        elif kind == "changed_raw":
+            state["prefix"] = (replace(raw, payload_bytes=raw.payload_bytes + b"changed"),)
+>       with pytest.raises(ValueError):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE ValueError
+
+tests/test_natural_hands.py:167: Failed
+_ test_malformed_restore_is_rejected_without_partial_mutation[missing_visual] __
+
+kind = 'missing_visual'
+
+    @pytest.mark.parametrize(
+        "kind",
+        [
+            "missing_hands",
+            "missing_visual",
+            "empty_hands",
+            "wrong_observation",
+            "wrong_model",
+            "wrong_pixels",
+            "wrong_receipt",
+            "wrong_dimensions",
+            "wrong_interactions",
+            "wrong_visual",
+            "hand_privilege",
+            "future_cutoff",
+            "changed_raw",
+        ],
+    )
+    def test_malformed_restore_is_rejected_without_partial_mutation(kind):
+        from copy import deepcopy
+        from datetime import timedelta
+    
+        raw, detector, hands = components()
+        producer = NaturalVisionEvidenceProducer(detector, hands)
+        producer.infer((raw,), cutoff=raw.envelope().arrival_time)
+        before = producer.checkpoint_state()
+        state = deepcopy(before)
+        hand = state["hand_frames"][0]
+        if kind == "missing_hands":
+            state.pop("hand_frames")
+        elif kind == "missing_visual":
+            state.pop("frames")
+            state["interactions"] = ("partially-applied",)
+        elif kind == "empty_hands":
+            state["hand_frames"] = ()
+        elif kind == "wrong_observation":
+            state["hand_frames"] = (replace(hand, observation_id=uuid4()),)
+        elif kind == "wrong_model":
+            state["hand_frames"] = (replace(hand, model_binding=("0" * 64, "other", 4, 0.5, 0.5)),)
+        elif kind == "wrong_pixels":
+            state["hand_frames"] = (replace(hand, input_sha256="0" * 64),)
+        elif kind == "wrong_receipt":
+            state["hand_frames"] = (replace(hand, capture_receipt_sha256="0" * 64),)
+        elif kind == "wrong_dimensions":
+            state["hand_frames"] = (replace(hand, width=999),)
+        elif kind == "wrong_interactions":
+            state["interactions"] = ()
+        elif kind == "wrong_visual":
+            state["frames"] = (replace(state["frames"][0], observation_id=uuid4()),)
+        elif kind == "hand_privilege":
+            state["hand_frames"] = (replace(hand, semantic_status="CALIBRATED_ACTOR"),)
+        elif kind == "future_cutoff":
+            state["cutoff"] -= timedelta(seconds=1)
+        elif kind == "changed_raw":
+            state["prefix"] = (replace(raw, payload_bytes=raw.payload_bytes + b"changed"),)
+        with pytest.raises(ValueError):
+>           producer.restore_state(state)
+
+tests/test_natural_hands.py:168: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <cpswm.perception_mapping.natural_vision.NaturalVisionEvidenceProducer object at 0x114baa490>
+state = {'scope': (UUID('dc10965f-41ff-eed3-9166-7e9c125940da'), UUID('bc6c4cd6-41e5-6f5e-57ac-4dc3f2e56de8'), UUID('6d3a7ba0-...0", capture_receipt_sha256='aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa', depth_unit=None),), ...}
+
+    def restore_state(self, state: dict[str, Any]) -> None:
+        from copy import deepcopy
+    
+        with self._lock:
+            expected_hand = None if self._hand_detector is None else self._hand_detector.binding
+            if state.get("hand_binding") != expected_hand:
+                raise ValueError("checkpoint hand model configuration changed")
+            if state["scope"] != self._detector._scope:
+                raise ValueError("perception restore requires a matching detector scope")
+            if state["detector_binding"] != (
+                self._detector.weights_sha256,
+                self._detector._versions,
+                self._detector._minimum_score,
+            ):
+                raise ValueError("checkpoint detector configuration changed")
+            self._interactions = deepcopy(state["interactions"])
+            self._prefix, self._frames, self._cutoff = deepcopy(
+>               (state["prefix"], state["frames"], state["cutoff"])
+                                  ^^^^^^^^^^^^^^^
+            )
+E           KeyError: 'frames'
+
+src/cpswm/perception_mapping/natural_vision.py:362: KeyError
+___ test_malformed_restore_is_rejected_without_partial_mutation[empty_hands] ___
+
+kind = 'empty_hands'
+
+    @pytest.mark.parametrize(
+        "kind",
+        [
+            "missing_hands",
+            "missing_visual",
+            "empty_hands",
+            "wrong_observation",
+            "wrong_model",
+            "wrong_pixels",
+            "wrong_receipt",
+            "wrong_dimensions",
+            "wrong_interactions",
+            "wrong_visual",
+            "hand_privilege",
+            "future_cutoff",
+            "changed_raw",
+        ],
+    )
+    def test_malformed_restore_is_rejected_without_partial_mutation(kind):
+        from copy import deepcopy
+        from datetime import timedelta
+    
+        raw, detector, hands = components()
+        producer = NaturalVisionEvidenceProducer(detector, hands)
+        producer.infer((raw,), cutoff=raw.envelope().arrival_time)
+        before = producer.checkpoint_state()
+        state = deepcopy(before)
+        hand = state["hand_frames"][0]
+        if kind == "missing_hands":
+            state.pop("hand_frames")
+        elif kind == "missing_visual":
+            state.pop("frames")
+            state["interactions"] = ("partially-applied",)
+        elif kind == "empty_hands":
+            state["hand_frames"] = ()
+        elif kind == "wrong_observation":
+            state["hand_frames"] = (replace(hand, observation_id=uuid4()),)
+        elif kind == "wrong_model":
+            state["hand_frames"] = (replace(hand, model_binding=("0" * 64, "other", 4, 0.5, 0.5)),)
+        elif kind == "wrong_pixels":
+            state["hand_frames"] = (replace(hand, input_sha256="0" * 64),)
+        elif kind == "wrong_receipt":
+            state["hand_frames"] = (replace(hand, capture_receipt_sha256="0" * 64),)
+        elif kind == "wrong_dimensions":
+            state["hand_frames"] = (replace(hand, width=999),)
+        elif kind == "wrong_interactions":
+            state["interactions"] = ()
+        elif kind == "wrong_visual":
+            state["frames"] = (replace(state["frames"][0], observation_id=uuid4()),)
+        elif kind == "hand_privilege":
+            state["hand_frames"] = (replace(hand, semantic_status="CALIBRATED_ACTOR"),)
+        elif kind == "future_cutoff":
+            state["cutoff"] -= timedelta(seconds=1)
+        elif kind == "changed_raw":
+            state["prefix"] = (replace(raw, payload_bytes=raw.payload_bytes + b"changed"),)
+>       with pytest.raises(ValueError):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE ValueError
+
+tests/test_natural_hands.py:167: Failed
+_ test_malformed_restore_is_rejected_without_partial_mutation[wrong_observation] _
+
+kind = 'wrong_observation'
+
+    @pytest.mark.parametrize(
+        "kind",
+        [
+            "missing_hands",
+            "missing_visual",
+            "empty_hands",
+            "wrong_observation",
+            "wrong_model",
+            "wrong_pixels",
+            "wrong_receipt",
+            "wrong_dimensions",
+            "wrong_interactions",
+            "wrong_visual",
+            "hand_privilege",
+            "future_cutoff",
+            "changed_raw",
+        ],
+    )
+    def test_malformed_restore_is_rejected_without_partial_mutation(kind):
+        from copy import deepcopy
+        from datetime import timedelta
+    
+        raw, detector, hands = components()
+        producer = NaturalVisionEvidenceProducer(detector, hands)
+        producer.infer((raw,), cutoff=raw.envelope().arrival_time)
+        before = producer.checkpoint_state()
+        state = deepcopy(before)
+        hand = state["hand_frames"][0]
+        if kind == "missing_hands":
+            state.pop("hand_frames")
+        elif kind == "missing_visual":
+            state.pop("frames")
+            state["interactions"] = ("partially-applied",)
+        elif kind == "empty_hands":
+            state["hand_frames"] = ()
+        elif kind == "wrong_observation":
+            state["hand_frames"] = (replace(hand, observation_id=uuid4()),)
+        elif kind == "wrong_model":
+            state["hand_frames"] = (replace(hand, model_binding=("0" * 64, "other", 4, 0.5, 0.5)),)
+        elif kind == "wrong_pixels":
+            state["hand_frames"] = (replace(hand, input_sha256="0" * 64),)
+        elif kind == "wrong_receipt":
+            state["hand_frames"] = (replace(hand, capture_receipt_sha256="0" * 64),)
+        elif kind == "wrong_dimensions":
+            state["hand_frames"] = (replace(hand, width=999),)
+        elif kind == "wrong_interactions":
+            state["interactions"] = ()
+        elif kind == "wrong_visual":
+            state["frames"] = (replace(state["frames"][0], observation_id=uuid4()),)
+        elif kind == "hand_privilege":
+            state["hand_frames"] = (replace(hand, semantic_status="CALIBRATED_ACTOR"),)
+        elif kind == "future_cutoff":
+            state["cutoff"] -= timedelta(seconds=1)
+        elif kind == "changed_raw":
+            state["prefix"] = (replace(raw, payload_bytes=raw.payload_bytes + b"changed"),)
+>       with pytest.raises(ValueError):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE ValueError
+
+tests/test_natural_hands.py:167: Failed
+___ test_malformed_restore_is_rejected_without_partial_mutation[wrong_model] ___
+
+kind = 'wrong_model'
+
+    @pytest.mark.parametrize(
+        "kind",
+        [
+            "missing_hands",
+            "missing_visual",
+            "empty_hands",
+            "wrong_observation",
+            "wrong_model",
+            "wrong_pixels",
+            "wrong_receipt",
+            "wrong_dimensions",
+            "wrong_interactions",
+            "wrong_visual",
+            "hand_privilege",
+            "future_cutoff",
+            "changed_raw",
+        ],
+    )
+    def test_malformed_restore_is_rejected_without_partial_mutation(kind):
+        from copy import deepcopy
+        from datetime import timedelta
+    
+        raw, detector, hands = components()
+        producer = NaturalVisionEvidenceProducer(detector, hands)
+        producer.infer((raw,), cutoff=raw.envelope().arrival_time)
+        before = producer.checkpoint_state()
+        state = deepcopy(before)
+        hand = state["hand_frames"][0]
+        if kind == "missing_hands":
+            state.pop("hand_frames")
+        elif kind == "missing_visual":
+            state.pop("frames")
+            state["interactions"] = ("partially-applied",)
+        elif kind == "empty_hands":
+            state["hand_frames"] = ()
+        elif kind == "wrong_observation":
+            state["hand_frames"] = (replace(hand, observation_id=uuid4()),)
+        elif kind == "wrong_model":
+            state["hand_frames"] = (replace(hand, model_binding=("0" * 64, "other", 4, 0.5, 0.5)),)
+        elif kind == "wrong_pixels":
+            state["hand_frames"] = (replace(hand, input_sha256="0" * 64),)
+        elif kind == "wrong_receipt":
+            state["hand_frames"] = (replace(hand, capture_receipt_sha256="0" * 64),)
+        elif kind == "wrong_dimensions":
+            state["hand_frames"] = (replace(hand, width=999),)
+        elif kind == "wrong_interactions":
+            state["interactions"] = ()
+        elif kind == "wrong_visual":
+            state["frames"] = (replace(state["frames"][0], observation_id=uuid4()),)
+        elif kind == "hand_privilege":
+            state["hand_frames"] = (replace(hand, semantic_status="CALIBRATED_ACTOR"),)
+        elif kind == "future_cutoff":
+            state["cutoff"] -= timedelta(seconds=1)
+        elif kind == "changed_raw":
+            state["prefix"] = (replace(raw, payload_bytes=raw.payload_bytes + b"changed"),)
+>       with pytest.raises(ValueError):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE ValueError
+
+tests/test_natural_hands.py:167: Failed
+__ test_malformed_restore_is_rejected_without_partial_mutation[wrong_pixels] ___
+
+kind = 'wrong_pixels'
+
+    @pytest.mark.parametrize(
+        "kind",
+        [
+            "missing_hands",
+            "missing_visual",
+            "empty_hands",
+            "wrong_observation",
+            "wrong_model",
+            "wrong_pixels",
+            "wrong_receipt",
+            "wrong_dimensions",
+            "wrong_interactions",
+            "wrong_visual",
+            "hand_privilege",
+            "future_cutoff",
+            "changed_raw",
+        ],
+    )
+    def test_malformed_restore_is_rejected_without_partial_mutation(kind):
+        from copy import deepcopy
+        from datetime import timedelta
+    
+        raw, detector, hands = components()
+        producer = NaturalVisionEvidenceProducer(detector, hands)
+        producer.infer((raw,), cutoff=raw.envelope().arrival_time)
+        before = producer.checkpoint_state()
+        state = deepcopy(before)
+        hand = state["hand_frames"][0]
+        if kind == "missing_hands":
+            state.pop("hand_frames")
+        elif kind == "missing_visual":
+            state.pop("frames")
+            state["interactions"] = ("partially-applied",)
+        elif kind == "empty_hands":
+            state["hand_frames"] = ()
+        elif kind == "wrong_observation":
+            state["hand_frames"] = (replace(hand, observation_id=uuid4()),)
+        elif kind == "wrong_model":
+            state["hand_frames"] = (replace(hand, model_binding=("0" * 64, "other", 4, 0.5, 0.5)),)
+        elif kind == "wrong_pixels":
+            state["hand_frames"] = (replace(hand, input_sha256="0" * 64),)
+        elif kind == "wrong_receipt":
+            state["hand_frames"] = (replace(hand, capture_receipt_sha256="0" * 64),)
+        elif kind == "wrong_dimensions":
+            state["hand_frames"] = (replace(hand, width=999),)
+        elif kind == "wrong_interactions":
+            state["interactions"] = ()
+        elif kind == "wrong_visual":
+            state["frames"] = (replace(state["frames"][0], observation_id=uuid4()),)
+        elif kind == "hand_privilege":
+            state["hand_frames"] = (replace(hand, semantic_status="CALIBRATED_ACTOR"),)
+        elif kind == "future_cutoff":
+            state["cutoff"] -= timedelta(seconds=1)
+        elif kind == "changed_raw":
+            state["prefix"] = (replace(raw, payload_bytes=raw.payload_bytes + b"changed"),)
+>       with pytest.raises(ValueError):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE ValueError
+
+tests/test_natural_hands.py:167: Failed
+__ test_malformed_restore_is_rejected_without_partial_mutation[wrong_receipt] __
+
+kind = 'wrong_receipt'
+
+    @pytest.mark.parametrize(
+        "kind",
+        [
+            "missing_hands",
+            "missing_visual",
+            "empty_hands",
+            "wrong_observation",
+            "wrong_model",
+            "wrong_pixels",
+            "wrong_receipt",
+            "wrong_dimensions",
+            "wrong_interactions",
+            "wrong_visual",
+            "hand_privilege",
+            "future_cutoff",
+            "changed_raw",
+        ],
+    )
+    def test_malformed_restore_is_rejected_without_partial_mutation(kind):
+        from copy import deepcopy
+        from datetime import timedelta
+    
+        raw, detector, hands = components()
+        producer = NaturalVisionEvidenceProducer(detector, hands)
+        producer.infer((raw,), cutoff=raw.envelope().arrival_time)
+        before = producer.checkpoint_state()
+        state = deepcopy(before)
+        hand = state["hand_frames"][0]
+        if kind == "missing_hands":
+            state.pop("hand_frames")
+        elif kind == "missing_visual":
+            state.pop("frames")
+            state["interactions"] = ("partially-applied",)
+        elif kind == "empty_hands":
+            state["hand_frames"] = ()
+        elif kind == "wrong_observation":
+            state["hand_frames"] = (replace(hand, observation_id=uuid4()),)
+        elif kind == "wrong_model":
+            state["hand_frames"] = (replace(hand, model_binding=("0" * 64, "other", 4, 0.5, 0.5)),)
+        elif kind == "wrong_pixels":
+            state["hand_frames"] = (replace(hand, input_sha256="0" * 64),)
+        elif kind == "wrong_receipt":
+            state["hand_frames"] = (replace(hand, capture_receipt_sha256="0" * 64),)
+        elif kind == "wrong_dimensions":
+            state["hand_frames"] = (replace(hand, width=999),)
+        elif kind == "wrong_interactions":
+            state["interactions"] = ()
+        elif kind == "wrong_visual":
+            state["frames"] = (replace(state["frames"][0], observation_id=uuid4()),)
+        elif kind == "hand_privilege":
+            state["hand_frames"] = (replace(hand, semantic_status="CALIBRATED_ACTOR"),)
+        elif kind == "future_cutoff":
+            state["cutoff"] -= timedelta(seconds=1)
+        elif kind == "changed_raw":
+            state["prefix"] = (replace(raw, payload_bytes=raw.payload_bytes + b"changed"),)
+>       with pytest.raises(ValueError):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE ValueError
+
+tests/test_natural_hands.py:167: Failed
+_ test_malformed_restore_is_rejected_without_partial_mutation[wrong_dimensions] _
+
+kind = 'wrong_dimensions'
+
+    @pytest.mark.parametrize(
+        "kind",
+        [
+            "missing_hands",
+            "missing_visual",
+            "empty_hands",
+            "wrong_observation",
+            "wrong_model",
+            "wrong_pixels",
+            "wrong_receipt",
+            "wrong_dimensions",
+            "wrong_interactions",
+            "wrong_visual",
+            "hand_privilege",
+            "future_cutoff",
+            "changed_raw",
+        ],
+    )
+    def test_malformed_restore_is_rejected_without_partial_mutation(kind):
+        from copy import deepcopy
+        from datetime import timedelta
+    
+        raw, detector, hands = components()
+        producer = NaturalVisionEvidenceProducer(detector, hands)
+        producer.infer((raw,), cutoff=raw.envelope().arrival_time)
+        before = producer.checkpoint_state()
+        state = deepcopy(before)
+        hand = state["hand_frames"][0]
+        if kind == "missing_hands":
+            state.pop("hand_frames")
+        elif kind == "missing_visual":
+            state.pop("frames")
+            state["interactions"] = ("partially-applied",)
+        elif kind == "empty_hands":
+            state["hand_frames"] = ()
+        elif kind == "wrong_observation":
+            state["hand_frames"] = (replace(hand, observation_id=uuid4()),)
+        elif kind == "wrong_model":
+            state["hand_frames"] = (replace(hand, model_binding=("0" * 64, "other", 4, 0.5, 0.5)),)
+        elif kind == "wrong_pixels":
+            state["hand_frames"] = (replace(hand, input_sha256="0" * 64),)
+        elif kind == "wrong_receipt":
+            state["hand_frames"] = (replace(hand, capture_receipt_sha256="0" * 64),)
+        elif kind == "wrong_dimensions":
+            state["hand_frames"] = (replace(hand, width=999),)
+        elif kind == "wrong_interactions":
+            state["interactions"] = ()
+        elif kind == "wrong_visual":
+            state["frames"] = (replace(state["frames"][0], observation_id=uuid4()),)
+        elif kind == "hand_privilege":
+            state["hand_frames"] = (replace(hand, semantic_status="CALIBRATED_ACTOR"),)
+        elif kind == "future_cutoff":
+            state["cutoff"] -= timedelta(seconds=1)
+        elif kind == "changed_raw":
+            state["prefix"] = (replace(raw, payload_bytes=raw.payload_bytes + b"changed"),)
+>       with pytest.raises(ValueError):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE ValueError
+
+tests/test_natural_hands.py:167: Failed
+_ test_malformed_restore_is_rejected_without_partial_mutation[wrong_interactions] _
+
+kind = 'wrong_interactions'
+
+    @pytest.mark.parametrize(
+        "kind",
+        [
+            "missing_hands",
+            "missing_visual",
+            "empty_hands",
+            "wrong_observation",
+            "wrong_model",
+            "wrong_pixels",
+            "wrong_receipt",
+            "wrong_dimensions",
+            "wrong_interactions",
+            "wrong_visual",
+            "hand_privilege",
+            "future_cutoff",
+            "changed_raw",
+        ],
+    )
+    def test_malformed_restore_is_rejected_without_partial_mutation(kind):
+        from copy import deepcopy
+        from datetime import timedelta
+    
+        raw, detector, hands = components()
+        producer = NaturalVisionEvidenceProducer(detector, hands)
+        producer.infer((raw,), cutoff=raw.envelope().arrival_time)
+        before = producer.checkpoint_state()
+        state = deepcopy(before)
+        hand = state["hand_frames"][0]
+        if kind == "missing_hands":
+            state.pop("hand_frames")
+        elif kind == "missing_visual":
+            state.pop("frames")
+            state["interactions"] = ("partially-applied",)
+        elif kind == "empty_hands":
+            state["hand_frames"] = ()
+        elif kind == "wrong_observation":
+            state["hand_frames"] = (replace(hand, observation_id=uuid4()),)
+        elif kind == "wrong_model":
+            state["hand_frames"] = (replace(hand, model_binding=("0" * 64, "other", 4, 0.5, 0.5)),)
+        elif kind == "wrong_pixels":
+            state["hand_frames"] = (replace(hand, input_sha256="0" * 64),)
+        elif kind == "wrong_receipt":
+            state["hand_frames"] = (replace(hand, capture_receipt_sha256="0" * 64),)
+        elif kind == "wrong_dimensions":
+            state["hand_frames"] = (replace(hand, width=999),)
+        elif kind == "wrong_interactions":
+            state["interactions"] = ()
+        elif kind == "wrong_visual":
+            state["frames"] = (replace(state["frames"][0], observation_id=uuid4()),)
+        elif kind == "hand_privilege":
+            state["hand_frames"] = (replace(hand, semantic_status="CALIBRATED_ACTOR"),)
+        elif kind == "future_cutoff":
+            state["cutoff"] -= timedelta(seconds=1)
+        elif kind == "changed_raw":
+            state["prefix"] = (replace(raw, payload_bytes=raw.payload_bytes + b"changed"),)
+>       with pytest.raises(ValueError):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE ValueError
+
+tests/test_natural_hands.py:167: Failed
+__ test_malformed_restore_is_rejected_without_partial_mutation[wrong_visual] ___
+
+kind = 'wrong_visual'
+
+    @pytest.mark.parametrize(
+        "kind",
+        [
+            "missing_hands",
+            "missing_visual",
+            "empty_hands",
+            "wrong_observation",
+            "wrong_model",
+            "wrong_pixels",
+            "wrong_receipt",
+            "wrong_dimensions",
+            "wrong_interactions",
+            "wrong_visual",
+            "hand_privilege",
+            "future_cutoff",
+            "changed_raw",
+        ],
+    )
+    def test_malformed_restore_is_rejected_without_partial_mutation(kind):
+        from copy import deepcopy
+        from datetime import timedelta
+    
+        raw, detector, hands = components()
+        producer = NaturalVisionEvidenceProducer(detector, hands)
+        producer.infer((raw,), cutoff=raw.envelope().arrival_time)
+        before = producer.checkpoint_state()
+        state = deepcopy(before)
+        hand = state["hand_frames"][0]
+        if kind == "missing_hands":
+            state.pop("hand_frames")
+        elif kind == "missing_visual":
+            state.pop("frames")
+            state["interactions"] = ("partially-applied",)
+        elif kind == "empty_hands":
+            state["hand_frames"] = ()
+        elif kind == "wrong_observation":
+            state["hand_frames"] = (replace(hand, observation_id=uuid4()),)
+        elif kind == "wrong_model":
+            state["hand_frames"] = (replace(hand, model_binding=("0" * 64, "other", 4, 0.5, 0.5)),)
+        elif kind == "wrong_pixels":
+            state["hand_frames"] = (replace(hand, input_sha256="0" * 64),)
+        elif kind == "wrong_receipt":
+            state["hand_frames"] = (replace(hand, capture_receipt_sha256="0" * 64),)
+        elif kind == "wrong_dimensions":
+            state["hand_frames"] = (replace(hand, width=999),)
+        elif kind == "wrong_interactions":
+            state["interactions"] = ()
+        elif kind == "wrong_visual":
+            state["frames"] = (replace(state["frames"][0], observation_id=uuid4()),)
+        elif kind == "hand_privilege":
+            state["hand_frames"] = (replace(hand, semantic_status="CALIBRATED_ACTOR"),)
+        elif kind == "future_cutoff":
+            state["cutoff"] -= timedelta(seconds=1)
+        elif kind == "changed_raw":
+            state["prefix"] = (replace(raw, payload_bytes=raw.payload_bytes + b"changed"),)
+>       with pytest.raises(ValueError):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE ValueError
+
+tests/test_natural_hands.py:167: Failed
+_ test_malformed_restore_is_rejected_without_partial_mutation[hand_privilege] __
+
+kind = 'hand_privilege'
+
+    @pytest.mark.parametrize(
+        "kind",
+        [
+            "missing_hands",
+            "missing_visual",
+            "empty_hands",
+            "wrong_observation",
+            "wrong_model",
+            "wrong_pixels",
+            "wrong_receipt",
+            "wrong_dimensions",
+            "wrong_interactions",
+            "wrong_visual",
+            "hand_privilege",
+            "future_cutoff",
+            "changed_raw",
+        ],
+    )
+    def test_malformed_restore_is_rejected_without_partial_mutation(kind):
+        from copy import deepcopy
+        from datetime import timedelta
+    
+        raw, detector, hands = components()
+        producer = NaturalVisionEvidenceProducer(detector, hands)
+        producer.infer((raw,), cutoff=raw.envelope().arrival_time)
+        before = producer.checkpoint_state()
+        state = deepcopy(before)
+        hand = state["hand_frames"][0]
+        if kind == "missing_hands":
+            state.pop("hand_frames")
+        elif kind == "missing_visual":
+            state.pop("frames")
+            state["interactions"] = ("partially-applied",)
+        elif kind == "empty_hands":
+            state["hand_frames"] = ()
+        elif kind == "wrong_observation":
+            state["hand_frames"] = (replace(hand, observation_id=uuid4()),)
+        elif kind == "wrong_model":
+            state["hand_frames"] = (replace(hand, model_binding=("0" * 64, "other", 4, 0.5, 0.5)),)
+        elif kind == "wrong_pixels":
+            state["hand_frames"] = (replace(hand, input_sha256="0" * 64),)
+        elif kind == "wrong_receipt":
+            state["hand_frames"] = (replace(hand, capture_receipt_sha256="0" * 64),)
+        elif kind == "wrong_dimensions":
+            state["hand_frames"] = (replace(hand, width=999),)
+        elif kind == "wrong_interactions":
+            state["interactions"] = ()
+        elif kind == "wrong_visual":
+            state["frames"] = (replace(state["frames"][0], observation_id=uuid4()),)
+        elif kind == "hand_privilege":
+            state["hand_frames"] = (replace(hand, semantic_status="CALIBRATED_ACTOR"),)
+        elif kind == "future_cutoff":
+            state["cutoff"] -= timedelta(seconds=1)
+        elif kind == "changed_raw":
+            state["prefix"] = (replace(raw, payload_bytes=raw.payload_bytes + b"changed"),)
+>       with pytest.raises(ValueError):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE ValueError
+
+tests/test_natural_hands.py:167: Failed
+__ test_malformed_restore_is_rejected_without_partial_mutation[future_cutoff] __
+
+kind = 'future_cutoff'
+
+    @pytest.mark.parametrize(
+        "kind",
+        [
+            "missing_hands",
+            "missing_visual",
+            "empty_hands",
+            "wrong_observation",
+            "wrong_model",
+            "wrong_pixels",
+            "wrong_receipt",
+            "wrong_dimensions",
+            "wrong_interactions",
+            "wrong_visual",
+            "hand_privilege",
+            "future_cutoff",
+            "changed_raw",
+        ],
+    )
+    def test_malformed_restore_is_rejected_without_partial_mutation(kind):
+        from copy import deepcopy
+        from datetime import timedelta
+    
+        raw, detector, hands = components()
+        producer = NaturalVisionEvidenceProducer(detector, hands)
+        producer.infer((raw,), cutoff=raw.envelope().arrival_time)
+        before = producer.checkpoint_state()
+        state = deepcopy(before)
+        hand = state["hand_frames"][0]
+        if kind == "missing_hands":
+            state.pop("hand_frames")
+        elif kind == "missing_visual":
+            state.pop("frames")
+            state["interactions"] = ("partially-applied",)
+        elif kind == "empty_hands":
+            state["hand_frames"] = ()
+        elif kind == "wrong_observation":
+            state["hand_frames"] = (replace(hand, observation_id=uuid4()),)
+        elif kind == "wrong_model":
+            state["hand_frames"] = (replace(hand, model_binding=("0" * 64, "other", 4, 0.5, 0.5)),)
+        elif kind == "wrong_pixels":
+            state["hand_frames"] = (replace(hand, input_sha256="0" * 64),)
+        elif kind == "wrong_receipt":
+            state["hand_frames"] = (replace(hand, capture_receipt_sha256="0" * 64),)
+        elif kind == "wrong_dimensions":
+            state["hand_frames"] = (replace(hand, width=999),)
+        elif kind == "wrong_interactions":
+            state["interactions"] = ()
+        elif kind == "wrong_visual":
+            state["frames"] = (replace(state["frames"][0], observation_id=uuid4()),)
+        elif kind == "hand_privilege":
+            state["hand_frames"] = (replace(hand, semantic_status="CALIBRATED_ACTOR"),)
+        elif kind == "future_cutoff":
+            state["cutoff"] -= timedelta(seconds=1)
+        elif kind == "changed_raw":
+            state["prefix"] = (replace(raw, payload_bytes=raw.payload_bytes + b"changed"),)
+>       with pytest.raises(ValueError):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE ValueError
+
+tests/test_natural_hands.py:167: Failed
+___ test_malformed_restore_is_rejected_without_partial_mutation[changed_raw] ___
+
+kind = 'changed_raw'
+
+    @pytest.mark.parametrize(
+        "kind",
+        [
+            "missing_hands",
+            "missing_visual",
+            "empty_hands",
+            "wrong_observation",
+            "wrong_model",
+            "wrong_pixels",
+            "wrong_receipt",
+            "wrong_dimensions",
+            "wrong_interactions",
+            "wrong_visual",
+            "hand_privilege",
+            "future_cutoff",
+            "changed_raw",
+        ],
+    )
+    def test_malformed_restore_is_rejected_without_partial_mutation(kind):
+        from copy import deepcopy
+        from datetime import timedelta
+    
+        raw, detector, hands = components()
+        producer = NaturalVisionEvidenceProducer(detector, hands)
+        producer.infer((raw,), cutoff=raw.envelope().arrival_time)
+        before = producer.checkpoint_state()
+        state = deepcopy(before)
+        hand = state["hand_frames"][0]
+        if kind == "missing_hands":
+            state.pop("hand_frames")
+        elif kind == "missing_visual":
+            state.pop("frames")
+            state["interactions"] = ("partially-applied",)
+        elif kind == "empty_hands":
+            state["hand_frames"] = ()
+        elif kind == "wrong_observation":
+            state["hand_frames"] = (replace(hand, observation_id=uuid4()),)
+        elif kind == "wrong_model":
+            state["hand_frames"] = (replace(hand, model_binding=("0" * 64, "other", 4, 0.5, 0.5)),)
+        elif kind == "wrong_pixels":
+            state["hand_frames"] = (replace(hand, input_sha256="0" * 64),)
+        elif kind == "wrong_receipt":
+            state["hand_frames"] = (replace(hand, capture_receipt_sha256="0" * 64),)
+        elif kind == "wrong_dimensions":
+            state["hand_frames"] = (replace(hand, width=999),)
+        elif kind == "wrong_interactions":
+            state["interactions"] = ()
+        elif kind == "wrong_visual":
+            state["frames"] = (replace(state["frames"][0], observation_id=uuid4()),)
+        elif kind == "hand_privilege":
+            state["hand_frames"] = (replace(hand, semantic_status="CALIBRATED_ACTOR"),)
+        elif kind == "future_cutoff":
+            state["cutoff"] -= timedelta(seconds=1)
+        elif kind == "changed_raw":
+            state["prefix"] = (replace(raw, payload_bytes=raw.payload_bytes + b"changed"),)
+>       with pytest.raises(ValueError):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE ValueError
+
+tests/test_natural_hands.py:167: Failed
+=========================== short test summary info ============================
+FAILED tests/test_natural_hands.py::test_malformed_restore_is_rejected_without_partial_mutation[missing_hands]
+FAILED tests/test_natural_hands.py::test_malformed_restore_is_rejected_without_partial_mutation[missing_visual]
+FAILED tests/test_natural_hands.py::test_malformed_restore_is_rejected_without_partial_mutation[empty_hands]
+FAILED tests/test_natural_hands.py::test_malformed_restore_is_rejected_without_partial_mutation[wrong_observation]
+FAILED tests/test_natural_hands.py::test_malformed_restore_is_rejected_without_partial_mutation[wrong_model]
+FAILED tests/test_natural_hands.py::test_malformed_restore_is_rejected_without_partial_mutation[wrong_pixels]
+FAILED tests/test_natural_hands.py::test_malformed_restore_is_rejected_without_partial_mutation[wrong_receipt]
+FAILED tests/test_natural_hands.py::test_malformed_restore_is_rejected_without_partial_mutation[wrong_dimensions]
+FAILED tests/test_natural_hands.py::test_malformed_restore_is_rejected_without_partial_mutation[wrong_interactions]
+FAILED tests/test_natural_hands.py::test_malformed_restore_is_rejected_without_partial_mutation[wrong_visual]
+FAILED tests/test_natural_hands.py::test_malformed_restore_is_rejected_without_partial_mutation[hand_privilege]
+FAILED tests/test_natural_hands.py::test_malformed_restore_is_rejected_without_partial_mutation[future_cutoff]
+FAILED tests/test_natural_hands.py::test_malformed_restore_is_rejected_without_partial_mutation[changed_raw]

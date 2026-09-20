@@ -1,3 +1,10 @@
+# 2026-09-20 监督对齐和位姿真值核验（A，部分推进）
+
+最终源码3534e9796bb2aae99b594a330671a1328ddf5ccf；分支codex/pc-a-supervision-alignment-20260920，叠加PR31。
+新增固定清单核验工具并实际发现024的7行非刚体姿态；保持对齐未决、不用作者序列标签生成答案。
+独立审核发现跨帧梯度泄漏后修复；33工程回归及两位独立真实重跑通过。
+A继续持有合法监督/语义生产责任；[报告与剩余缺口](../reviews/pc_a/supervision_alignment_2026-09-20/REPORT.md)，[B复核入口](../reviews/pc_a/supervision_alignment_2026-09-20/COMMANDS.md)。B未复核、完整自然闭环未成立。
+
 # 2026-09-20 人物区域手部推理与监督核查（A，部分推进）
 
 最终源码 `e0e572baf602c0e75bf834fd8e9f2aabe62da90b`，分支 `codex/pc-a-hand-roi-supervision-20260920` 接续PR30。

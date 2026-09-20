@@ -1,0 +1,23 @@
+import sys
+sys.path[:0]=['src','tests']
+from dataclasses import replace
+from uuid import uuid4
+from test_natural_hands import components
+from cpswm.perception_mapping.natural_vision import NaturalVisionEvidenceProducer
+raw, detector, hands = components()
+p=NaturalVisionEvidenceProducer(detector,hands)
+p.infer((raw,),cutoff=raw.envelope().arrival_time)
+s=p.checkpoint_state()
+q=NaturalVisionEvidenceProducer(detector,hands)
+missing=dict(s); missing.pop('hand_frames')
+q.restore_state(missing)
+q.infer((raw,),cutoff=raw.envelope().arrival_time)
+print('missing key accepted; visual/hand frames=',len(q.frames()),len(q.hand_frames()))
+wrong=dict(s);wrong['hand_frames']=(replace(s['hand_frames'][0],observation_id=uuid4(),model_binding=('0'*64,'other',1,.1,.1)),)
+q.restore_state(wrong)
+print('wrong observation and model accepted=',q.hand_frames()[0].observation_id != raw.envelope().identity.observation_id)
+bad=dict(s);bad.pop('frames');bad['interactions']=('replacement',)
+before=q.checkpoint_state()
+try:q.restore_state(bad)
+except KeyError:pass
+print('failed restore changed state=',q.checkpoint_state()!=before)

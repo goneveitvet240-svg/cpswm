@@ -1,0 +1,30 @@
+I0000 00:00:1789889664.132841 45070416 init-domain.cc:128] Fiber init: default domain = pthread, concurrency = 11, prefix = pthread-default
+I0000 00:00:1789889664.177808 45070416 gl_context.cc:407] GL version: 2.1 (2.1 Metal - 90.5), renderer: Apple M5
+INFO: Created TensorFlow Lite XNNPACK delegate for CPU.
+W0000 00:00:1789889664.185195 45070420 inference_feedback_manager.cc:121] Feedback manager requires a model with a single signature inference. Disabling support for feedback tensors.
+W0000 00:00:1789889664.187286 45070423 inference_feedback_manager.cc:121] Feedback manager requires a model with a single signature inference. Disabling support for feedback tensors.
+W0000 00:00:1789889666.492437 45070421 landmark_projection_calculator.cc:81] Using NORM_RECT without IMAGE_DIMENSIONS is only supported for the square ROI. Provide IMAGE_DIMENSIONS or use PROJECTION_MATRIX.
+I0000 00:00:1789889676.862717 45070734 gl_context.cc:407] GL version: 2.1 (2.1 Metal - 90.5), renderer: Apple M5
+W0000 00:00:1789889676.865281 45070738 inference_feedback_manager.cc:121] Feedback manager requires a model with a single signature inference. Disabling support for feedback tensors.
+W0000 00:00:1789889676.867125 45070739 inference_feedback_manager.cc:121] Feedback manager requires a model with a single signature inference. Disabling support for feedback tensors.
+I0000 00:00:1789889683.197058 45071007 gl_context.cc:407] GL version: 2.1 (2.1 Metal - 90.5), renderer: Apple M5
+W0000 00:00:1789889683.199564 45071010 inference_feedback_manager.cc:121] Feedback manager requires a model with a single signature inference. Disabling support for feedback tensors.
+W0000 00:00:1789889683.201130 45071014 inference_feedback_manager.cc:121] Feedback manager requires a model with a single signature inference. Disabling support for feedback tensors.
+{
+  "raw_frames": 6,
+  "interrupted_after": 3,
+  "sqlite_closed_reopened": true,
+  "actual_models_reconstructed": true,
+  "pixel_candidates_equal": true,
+  "hand_candidates": 6,
+  "semantic_transitions": 0,
+  "physical_actions": 0,
+  "source_unchanged": true,
+  "source_hashes": {
+    "/private/tmp/cpswm-pc-a-natural-event-loop-20260920/tools/check_natural_hand_recovery.py": "4096a3565ee604a39159ac5198c243f4acfafbcb39990efa33d1c6c741df950c",
+    "src/cpswm/perception_mapping/natural_hands.py": "13ca229121b8f66faeda5beadec403600f03266c93760b0810c306ab6cad2586",
+    "src/cpswm/perception_mapping/natural_vision.py": "db8d12210bf590898e00581f980cae16fdddd8265be9c45a7d458e009240d083"
+  },
+  "raw_manifest_sha256": "0b8d5fe14d6416f1afe6fcf93e95166291aab9ec234a83f2dc4aa69019632250",
+  "scope": "real pixel candidates, not semantic correction or P5 acceptance"
+}

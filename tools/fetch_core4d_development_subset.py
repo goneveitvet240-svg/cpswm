@@ -100,6 +100,8 @@ class ConcatRangeReader(io.RawIOBase):
                 self.downloaded += len(data)
                 if len(data) != stop - start:
                     raise ValueError("short or oversized range")
+                if path.exists() and path.read_bytes() != data:
+                    raise ValueError("existing extracted member differs from archive")
                 path.write_bytes(data)
                 path.with_suffix(".sha256").write_text(hashlib.sha256(data).hexdigest())
             if len(data) != stop - start:
@@ -108,6 +110,12 @@ class ConcatRangeReader(io.RawIOBase):
             chunks.append(data[offset - start : high - start])
             self.position = base + high
         return b"".join(chunks)
+
+
+def retain_text(path, text):
+    if path.exists() and path.read_text() != text:
+        raise ValueError("retained subset metadata differs")
+    path.write_text(text)
 
 
 def main():
@@ -119,8 +127,11 @@ def main():
     )
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--cache", type=Path, required=True)
+    parser.add_argument("--resume-incomplete", action="store_true")
     args = parser.parse_args()
-    args.output.mkdir(parents=True, exist_ok=False)
+    if args.resume_incomplete and (args.output / "manifest.json").exists():
+        parser.error("completed subset cannot be resumed or overwritten")
+    args.output.mkdir(parents=True, exist_ok=args.resume_incomplete)
     prefix = f"{args.endpoint}/datasets/{REPOSITORY}/resolve/{REVISION}/"
     trees = get_json(
         f"{args.endpoint}/api/datasets/{REPOSITORY}/tree/{REVISION}/CORE4D_Real/allocentric_RGB_videos"
@@ -144,11 +155,12 @@ def main():
         for action in ("pass1_obs0", "pass2_obs0")
     ]
     evaluator = args.output / "evaluator"
-    evaluator.mkdir()
-    (evaluator / "action_labels.json").write_text(
-        json.dumps(labels, sort_keys=True, indent=2) + "\n"
+    evaluator.mkdir(exist_ok=args.resume_incomplete)
+    retain_text(
+        evaluator / "action_labels.json", json.dumps(labels, sort_keys=True, indent=2) + "\n"
     )
-    (args.output / "selection.json").write_text(
+    retain_text(
+        args.output / "selection.json",
         json.dumps(
             {
                 "sequences": sequences,
@@ -161,12 +173,13 @@ def main():
             },
             indent=2,
         )
-        + "\n"
+        + "\n",
     )
     reader = ConcatRangeReader(parts, args.cache)
     receipts = []
     with zipfile.ZipFile(reader) as archive:
-        (args.output / "archive_members.json").write_text(
+        retain_text(
+            args.output / "archive_members.json",
             json.dumps(
                 [
                     {
@@ -179,7 +192,7 @@ def main():
                 ],
                 indent=2,
             )
-            + "\n"
+            + "\n",
         )
         for sequence in sequences:
             videos = sorted(
@@ -208,6 +221,8 @@ def main():
                     raise ValueError("unsafe archive member")
                 path = args.output / "raw" / member
                 path.parent.mkdir(parents=True, exist_ok=True)
+                if path.exists() and path.read_bytes() != data:
+                    raise ValueError("existing extracted member differs from archive")
                 path.write_bytes(data)
                 receipts.append(
                     dict(

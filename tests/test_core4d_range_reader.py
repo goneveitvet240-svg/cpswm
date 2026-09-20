@@ -60,3 +60,14 @@ def test_cache_identity_and_unbounded_read_rejected(tmp_path):
     )
     with pytest.raises(ValueError, match="allocation"):
         r.read()
+
+
+def test_resume_metadata_cannot_overwrite_changed_selection(tmp_path):
+    from tools.fetch_core4d_development_subset import retain_text
+
+    path = tmp_path / "selection.json"
+    retain_text(path, "same")
+    retain_text(path, "same")
+    with pytest.raises(ValueError, match="metadata differs"):
+        retain_text(path, "changed")
+    assert path.read_text() == "same"

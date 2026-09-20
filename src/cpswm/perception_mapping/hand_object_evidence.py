@@ -63,7 +63,11 @@ def measure_hand_object_evidence(
         {d.candidate_id for d in associated.detections}
     ) != len(original):
         raise ValueError("association coverage differs")
+    if len({d.track_id for d in associated.detections}) != len(associated.detections):
+        raise ValueError("duplicate association track")
     for d in associated.detections:
+        if d.status not in {"NEW_UNVERIFIED", "ASSOCIATED_GEOMETRIC", "AMBIGUOUS_NEW_BRANCH"}:
+            raise ValueError("invalid geometric association status")
         source = original.get(d.candidate_id)
         if source is None or (source.category, source.box_xyxy, source.detector_score) != (
             d.category,

@@ -88,3 +88,29 @@ def test_same_producer_derived_evidence_survives_restore():
     assert (
         producer.hand_object_evidence()[0].observation_id == raw.envelope().identity.observation_id
     )
+
+
+def test_late_frames_pair_by_observation_id_before_and_after_restore():
+    from datetime import timedelta
+
+    from test_natural_hands import FakeHands
+    from test_natural_vision import fixture_detector, prediction
+    from test_structure_two_continuous_input import raw_for, setup
+
+    _, _, _, transition = setup(False)
+    t = transition.after.detection_time
+    newer = raw_for(transition, capture=t, arrival=t)
+    older = raw_for(
+        transition, capture=t - timedelta(seconds=0.5), arrival=t + timedelta(seconds=1)
+    )
+    d = fixture_detector(newer, prediction())
+    p = NaturalVisionEvidenceProducer(d, FakeHands(d))
+    p.infer((newer,), cutoff=t)
+    p.infer((newer, older), cutoff=t + timedelta(seconds=1))
+    actual = p.hand_object_evidence()
+    assert tuple(x.observation_id for x in actual) == tuple(
+        x.envelope().identity.observation_id for x in (newer, older)
+    )
+    restored = NaturalVisionEvidenceProducer(d, FakeHands(d))
+    restored.restore_state(p.checkpoint_state())
+    assert restored.hand_object_evidence() == actual

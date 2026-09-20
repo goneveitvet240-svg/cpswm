@@ -1,0 +1,11 @@
+Traceback (most recent call last):
+  File "/private/tmp/cpswm-pc-a-public-interaction-20260920/tools/fetch_core4d_development_subset.py", line 245, in <module>
+    main()
+    ~~~~^^
+  File "/private/tmp/cpswm-pc-a-public-interaction-20260920/tools/fetch_core4d_development_subset.py", line 152, in main
+    evaluator.mkdir()
+    ~~~~~~~~~~~~~~~^^
+  File "/Users/pangwei/.local/share/uv/python/cpython-3.13.5-macos-aarch64-none/lib/python3.13/pathlib/_local.py", line 722, in mkdir
+    os.mkdir(self, mode)
+    ~~~~~~~~^^^^^^^^^^^^
+FileExistsError: [Errno 17] File exists: '/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/datasets/core4d-development-20260920/evaluator'

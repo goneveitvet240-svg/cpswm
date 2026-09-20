@@ -1,0 +1,27 @@
+import io,random,tempfile,zipfile
+from pathlib import Path
+from tools.fetch_core4d_development_subset import ConcatRangeReader
+rng=random.Random(20260920); payload=rng.randbytes(1500000)
+b=io.BytesIO()
+with zipfile.ZipFile(b,'w',compression=zipfile.ZIP_STORED) as z:z.writestr('raw/two_person.mp4',payload)
+archive=b.getvalue(); splits=[1,300001,700009,len(archive)]; chunks=[]; last=0
+for end in splits: chunks.append(archive[last:end]); last=end
+parts=[dict(url=str(i),size=len(x)) for i,x in enumerate(chunks)]
+with tempfile.TemporaryDirectory() as td:
+ cache=Path(td); calls=[0]
+ def flaky(p,a,b):
+  calls[0]+=1
+  if calls[0]==4: raise TimeoutError('injected interrupted fetch')
+  return chunks[int(p['url'])][a:b]
+ try:
+  with zipfile.ZipFile(ConcatRangeReader(parts,cache,budget=3000000,fetch=flaky)) as z:z.read('raw/two_person.mp4')
+ except TimeoutError:pass
+ else:raise AssertionError('failure did not occur')
+ present={p.name:p.read_bytes() for p in cache.glob('*.bin')}
+ used=[]
+ def continued(p,a,b): used.append((p['url'],a,b)); return chunks[int(p['url'])][a:b]
+ with zipfile.ZipFile(ConcatRangeReader(parts,cache,budget=3000000,fetch=continued)) as z:assert z.read('raw/two_person.mp4')==payload
+ assert all((cache/k).read_bytes()==v for k,v in present.items())
+ def forbidden(*_):raise AssertionError('unexpected fetch')
+ with zipfile.ZipFile(ConcatRangeReader(parts,cache,budget=1,fetch=forbidden)) as z:assert z.read('raw/two_person.mp4')==payload
+ print('Interrupted cross-volume ZIP resumes byte-exactly; existing',len(present),'blocks retained; downloaded',len(used),'new ranges; complete cached replay no fetch PASS')

@@ -11,6 +11,7 @@ from __future__ import annotations
 import hashlib
 import io
 import json
+import math
 import re
 import zipfile
 from dataclasses import dataclass
@@ -53,11 +54,66 @@ class RawModalityObservation:
     payload_bytes: bytes
     capture_receipt_sha256: str
     depth_unit: str | None
+    archive_sampling_json: str | None = None
 
     def envelope(self) -> ObservationEnvelope:
         value = ObservationEnvelope.model_validate_json(self.envelope_json)
         validate_observation_envelope(value, payload_bytes=self.payload_bytes)
+        if self.archive_sampling_json is not None:
+            from cpswm.system.reproducibility import content_sha256
+
+            receipt = _unique_json(self.archive_sampling_json.encode())
+            expected = {
+                "source_url",
+                "source_sha256",
+                "crop_xywh",
+                "sampling_grid_time_seconds",
+                "sampling_fps",
+                "time_semantics",
+                "payload_sha256",
+                "observation_id",
+            }
+            crop = receipt.get("crop_xywh")
+            time: Any = receipt.get("sampling_grid_time_seconds")
+            fps = receipt.get("sampling_fps")
+            if (
+                set(receipt) != expected
+                or value.metadata.source_type is not SourceType.IMPORT
+                or value.sensor.modality is not SensorModality.RGB
+                or value.clock_domain != "archive-import-acquisition-utc"
+                or value.payload is None
+                or receipt["source_url"] != value.metadata.source_id
+                or not str(receipt["source_url"]).startswith("https://")
+                or re.fullmatch(r"[0-9a-f]{64}", str(receipt["source_sha256"])) is None
+                or receipt["payload_sha256"] != value.payload.payload_sha256
+                or receipt["observation_id"] != str(value.identity.observation_id)
+                or receipt["time_semantics"] != "resampled_grid_not_original_exposure"
+                or type(time) not in (int, float)
+                or not math.isfinite(time)
+                or time < 0
+                or type(fps) is not int
+                or not 1 <= fps <= 240
+                or type(crop) is not list
+                or len(crop) != 4
+                or any(type(x) is not int for x in crop)
+                or min(crop[:2]) < 0
+                or min(crop[2:]) <= 0
+                or content_sha256(receipt) != self.capture_receipt_sha256
+            ):
+                raise ValueError("archive sampling differs from bound RGB receipt")
         return value
+
+    def archive_timeline(self) -> tuple[str, float] | None:
+        if self.archive_sampling_json is None:
+            return None
+        from cpswm.system.reproducibility import content_sha256
+
+        self.envelope()  # Validate before promoting sampling metadata to a timeline.
+        receipt = _unique_json(self.archive_sampling_json.encode())
+        return (
+            content_sha256((receipt["source_sha256"], receipt["crop_xywh"])),
+            float(receipt["sampling_grid_time_seconds"]),
+        )
 
 
 def _unique_json(raw: bytes) -> dict[str, Any]:

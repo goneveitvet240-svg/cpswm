@@ -11,6 +11,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Any
 
 if TYPE_CHECKING:
+    from cpswm.perception_mapping.hand_object_evidence import HandObjectEvidence
     from cpswm.perception_mapping.interaction_evidence import AssociatedFrame, InteractionReadout
     from cpswm.perception_mapping.natural_hands import HandFrame, NaturalHandDetector
 
@@ -70,6 +71,8 @@ class VisualFrame:
     pose_status: str = "NOT_ESTIMATED"
     negative_observation_authorized: bool = False
     resize_roundoff_clamps: int = 0
+    archive_sequence_id: str | None = None
+    archive_media_time: float | None = None
 
 
 def decode_rgb(
@@ -115,6 +118,12 @@ def decode_rgb(
         or math.prod(shape) != len(raw.payload_bytes) - stream.tell()
     ):
         raise ValueError("RGB must be bounded HWC uint8 with exact payload size")
+    if raw.archive_sampling_json is not None:
+        import json
+
+        crop = json.loads(raw.archive_sampling_json)["crop_xywh"]
+        if (crop[3], crop[2]) != shape[:2]:
+            raise ValueError("archive crop differs from RGB payload dimensions")
     pixels: NDArray[np.uint8] = np.load(io.BytesIO(raw.payload_bytes), allow_pickle=False)
     return env, pixels
 
@@ -186,6 +195,7 @@ class NaturalAppearanceDetector:
         candidates = self._validate_prediction(
             prediction, env.identity.observation_id, width, height
         )
+        timeline = raw.archive_timeline()
         return VisualFrame(
             env.identity.observation_id,
             *scope,
@@ -204,6 +214,8 @@ class NaturalAppearanceDetector:
             height,
             candidates,
             resize_roundoff_clamps=roundoff_clamps,
+            archive_sequence_id=None if timeline is None else timeline[0],
+            archive_media_time=None if timeline is None else timeline[1],
         )
 
     def _normalize_resize_roundoff(
@@ -414,6 +426,12 @@ class NaturalVisionEvidenceProducer:
                     or not env.arrival_time <= frame.inference_cutoff <= cutoff
                     or frame.input_sha256 != env.payload.payload_sha256
                     or frame.receipt_sha256 != raw.capture_receipt_sha256
+                    or (
+                        None
+                        if frame.archive_sequence_id is None and frame.archive_media_time is None
+                        else (frame.archive_sequence_id, frame.archive_media_time)
+                    )
+                    != raw.archive_timeline()
                     or (frame.height, frame.width) != shape[:2]
                     or frame.model_id != self._detector.model_id
                     or frame.weights_sha256 != self._detector.weights_sha256
@@ -453,6 +471,35 @@ class NaturalVisionEvidenceProducer:
             self._prefix, self._frames, self._cutoff = prefix, frames, cutoff
             self._hand_frames, self._interactions = hands, interactions
 
+    def hand_object_evidence(self) -> tuple[HandObjectEvidence, ...]:
+        """Derived image measurements from the same retained raw-prefix inference.
+
+        Checkpoints retain source frames, not a second mutable relation ledger.
+        No hand detector means no measurements, never inferred absence of contact.
+        """
+        from cpswm.perception_mapping.hand_object_evidence import measure_hand_object_evidence
+
+        with self._lock:
+            if self._hand_detector is None:
+                return ()
+            hands = {h.observation_id: h for h in self._hand_frames}
+            associations = {a.observation_id: a for a, _ in self._interactions}
+            identities = {f.observation_id for f in self._frames}
+            if (
+                len(hands) != len(self._hand_frames)
+                or len(associations) != len(self._interactions)
+                or len(identities) != len(self._frames)
+                or set(hands) != identities
+                or set(associations) != identities
+            ):
+                raise ValueError("derived hand/object observation coverage differs")
+            return tuple(
+                measure_hand_object_evidence(
+                    visual, hands[visual.observation_id], associations[visual.observation_id]
+                )
+                for visual in self._frames
+            )
+
     def hand_frames(self) -> tuple[HandFrame, ...]:
         from copy import deepcopy
 
@@ -477,16 +524,30 @@ class NaturalVisionEvidenceProducer:
         # Late frames trigger recomputation from the retained original observations.
         # Separate sensors never share instance identities. Equal capture times do
         # not establish temporal contact/release and therefore start a new segment.
-        groups: dict[tuple[str, str, int, int], list[VisualFrame]] = {}
+        groups: dict[tuple[str, str, int, int, str], list[VisualFrame]] = {}
         for frame in frames:
-            key = (frame.sensor_id, frame.frame_id, frame.width, frame.height)
+            key = (
+                frame.sensor_id,
+                frame.frame_id,
+                frame.width,
+                frame.height,
+                frame.archive_sequence_id or "capture-clock",
+            )
             groups.setdefault(key, []).append(frame)
         result = []
         for key, values in sorted(groups.items()):
             associator = CausalInstanceAssociator()
             previous = None
-            for frame in sorted(values, key=lambda f: (f.capture_time, str(f.observation_id))):
-                time = frame.capture_time.timestamp()
+
+            def observation_time(f: VisualFrame) -> float:
+                return (
+                    f.capture_time.timestamp()
+                    if f.archive_media_time is None
+                    else f.archive_media_time
+                )
+
+            for frame in sorted(values, key=lambda f: (observation_time(f), str(f.observation_id))):
+                time = observation_time(frame)
                 if previous is not None and time <= previous.media_time:
                     associator = CausalInstanceAssociator()
                     previous = None

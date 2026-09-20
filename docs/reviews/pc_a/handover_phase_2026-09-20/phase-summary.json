@@ -1,0 +1,515 @@
+{
+  "code_sha": "5188e65986eab9f6345ec03231968858296bd8aa",
+  "source_files": {
+    "tools/inspect_bimanual_phase_subset.py": "1ac541b4f99d111c355b9cb0b8a49c7949c60568776ae32a02a24f192902b2e6",
+    "src/cpswm/data_preflight/handover_phase_supervision.py": "5418b109e0fcd3474d4a46b6ebc7b4ccf6e1d88c58faf1ec296f21bf7fcb6bcb"
+  },
+  "manifest_sha256": "621626525ee58468394943b35cd638f8bb7b622f09deffe448a5304f0e0c2f37",
+  "lane": "evaluator_only",
+  "contact_gold": false,
+  "published_pixels": "BURNED_IN_AUTHOR_PHASE_LABELS_NOT_MODEL_READY",
+  "runtime_semantic_transitions": 0,
+  "clips": [
+    {
+      "clip": "clip-0001",
+      "sequence_name": "P07_P08_double_bag",
+      "author_giver_id": "P07",
+      "author_receiver_id": "P08",
+      "author_rows": 201,
+      "phase_source_sha256": "bb84505373e5f632d8faa84f1a8e42baf87599294a143612b6ccc75d118b3fc6",
+      "phase_counts": {
+        "giver": {
+          "reach": 100,
+          "transfer": 35,
+          "retreat": 66
+        },
+        "receiver": {
+          "reach": 100,
+          "transfer": 35,
+          "retreat": 66
+        }
+      },
+      "phase_boundaries": [
+        {
+          "role": "giver",
+          "author_participant_id": "P07",
+          "visual_identity_binding": "UNRESOLVED",
+          "from_phase": "reach",
+          "to_phase": "transfer",
+          "bracket_rows": [
+            99,
+            100
+          ],
+          "nominal_time_bracket_seconds": [
+            0.8249999999999886,
+            0.8333329999999819
+          ],
+          "meaning": "AUTHOR_PROXY_PHASE_CHANGE_NOT_VERIFIED_PHYSICAL_CONTACT"
+        },
+        {
+          "role": "receiver",
+          "author_participant_id": "P08",
+          "visual_identity_binding": "UNRESOLVED",
+          "from_phase": "reach",
+          "to_phase": "transfer",
+          "bracket_rows": [
+            99,
+            100
+          ],
+          "nominal_time_bracket_seconds": [
+            0.8249999999999886,
+            0.8333329999999819
+          ],
+          "meaning": "AUTHOR_PROXY_PHASE_CHANGE_NOT_VERIFIED_PHYSICAL_CONTACT"
+        },
+        {
+          "role": "giver",
+          "author_participant_id": "P07",
+          "visual_identity_binding": "UNRESOLVED",
+          "from_phase": "transfer",
+          "to_phase": "retreat",
+          "bracket_rows": [
+            134,
+            135
+          ],
+          "nominal_time_bracket_seconds": [
+            1.1166669999999783,
+            1.125
+          ],
+          "meaning": "AUTHOR_PROXY_PHASE_CHANGE_NOT_VERIFIED_PHYSICAL_CONTACT"
+        },
+        {
+          "role": "receiver",
+          "author_participant_id": "P08",
+          "visual_identity_binding": "UNRESOLVED",
+          "from_phase": "transfer",
+          "to_phase": "retreat",
+          "bracket_rows": [
+            134,
+            135
+          ],
+          "nominal_time_bracket_seconds": [
+            1.1166669999999783,
+            1.125
+          ],
+          "meaning": "AUTHOR_PROXY_PHASE_CHANGE_NOT_VERIFIED_PHYSICAL_CONTACT"
+        }
+      ],
+      "cameras": [
+        {
+          "camera": 1,
+          "video_sha256": "4932c9b968ecf83fee63d945ce56e705ac056083c285fedb3afdedbf9e1e38fc",
+          "status": "DECODED",
+          "decoded_frames": 51,
+          "stream": {
+            "width": 1920,
+            "height": 1080
+          },
+          "phase_reference_status_counts": {
+            "AUTHOR_PROXY": 50,
+            "OUTSIDE_AUTHOR_RANGE": 1
+          },
+          "depth_timestamp": {
+            "status": "INVALID_NULL_BYTES",
+            "alignment_authorized": false
+          }
+        },
+        {
+          "camera": 2,
+          "video_sha256": "1779e690a6927061f53564eb7e023f2f632600dd3b8691e13d2674f669979fb9",
+          "status": "INVALID_ALL_ZERO",
+          "decoded_frames": 0,
+          "phase_reference_status_counts": {},
+          "depth_timestamp": {
+            "status": "PARSED_NO_DEPTH_FRAMES_ACQUIRED",
+            "rows": 49,
+            "first_seconds": -0.00289280000001213,
+            "last_seconds": 1.697166100000004,
+            "alignment_authorized": false
+          }
+        }
+      ]
+    },
+    {
+      "clip": "clip-0002",
+      "sequence_name": "P08_P07_double_bag",
+      "author_giver_id": "P08",
+      "author_receiver_id": "P07",
+      "author_rows": 177,
+      "phase_source_sha256": "d817b4d5168fc1016df4e7d1c39c856861e97650ad55570e4fe37d9375cd1164",
+      "phase_counts": {
+        "giver": {
+          "reach": 80,
+          "transfer": 40,
+          "retreat": 57
+        },
+        "receiver": {
+          "reach": 80,
+          "transfer": 40,
+          "retreat": 57
+        }
+      },
+      "phase_boundaries": [
+        {
+          "role": "giver",
+          "author_participant_id": "P08",
+          "visual_identity_binding": "UNRESOLVED",
+          "from_phase": "reach",
+          "to_phase": "transfer",
+          "bracket_rows": [
+            79,
+            80
+          ],
+          "nominal_time_bracket_seconds": [
+            0.658332999999999,
+            0.6666669999999897
+          ],
+          "meaning": "AUTHOR_PROXY_PHASE_CHANGE_NOT_VERIFIED_PHYSICAL_CONTACT"
+        },
+        {
+          "role": "receiver",
+          "author_participant_id": "P07",
+          "visual_identity_binding": "UNRESOLVED",
+          "from_phase": "reach",
+          "to_phase": "transfer",
+          "bracket_rows": [
+            79,
+            80
+          ],
+          "nominal_time_bracket_seconds": [
+            0.658332999999999,
+            0.6666669999999897
+          ],
+          "meaning": "AUTHOR_PROXY_PHASE_CHANGE_NOT_VERIFIED_PHYSICAL_CONTACT"
+        },
+        {
+          "role": "giver",
+          "author_participant_id": "P08",
+          "visual_identity_binding": "UNRESOLVED",
+          "from_phase": "transfer",
+          "to_phase": "retreat",
+          "bracket_rows": [
+            119,
+            120
+          ],
+          "nominal_time_bracket_seconds": [
+            0.9916670000000067,
+            1.0
+          ],
+          "meaning": "AUTHOR_PROXY_PHASE_CHANGE_NOT_VERIFIED_PHYSICAL_CONTACT"
+        },
+        {
+          "role": "receiver",
+          "author_participant_id": "P07",
+          "visual_identity_binding": "UNRESOLVED",
+          "from_phase": "transfer",
+          "to_phase": "retreat",
+          "bracket_rows": [
+            119,
+            120
+          ],
+          "nominal_time_bracket_seconds": [
+            0.9916670000000067,
+            1.0
+          ],
+          "meaning": "AUTHOR_PROXY_PHASE_CHANGE_NOT_VERIFIED_PHYSICAL_CONTACT"
+        }
+      ],
+      "cameras": [
+        {
+          "camera": 1,
+          "video_sha256": "339a3d53a4b3bfd054730d1eee42a7e4e85b6800048bae10d4811f807b454d18",
+          "status": "DECODED",
+          "decoded_frames": 45,
+          "stream": {
+            "width": 1920,
+            "height": 1080
+          },
+          "phase_reference_status_counts": {
+            "AUTHOR_PROXY": 45
+          },
+          "depth_timestamp": {
+            "status": "PARSED_NO_DEPTH_FRAMES_ACQUIRED",
+            "rows": 46,
+            "first_seconds": -0.006249999999994316,
+            "last_seconds": 1.4937134000000185,
+            "alignment_authorized": false
+          }
+        },
+        {
+          "camera": 2,
+          "video_sha256": "affd0a44ae2c80a5563efdfc262ff8b802b1b3a60b4eb6bd58c44577a8a2dab0",
+          "status": "INVALID_ALL_ZERO",
+          "decoded_frames": 0,
+          "phase_reference_status_counts": {},
+          "depth_timestamp": {
+            "status": "PARSED_NO_DEPTH_FRAMES_ACQUIRED",
+            "rows": 36,
+            "first_seconds": -0.0028371999999876607,
+            "last_seconds": 6.297239899999994,
+            "alignment_authorized": false
+          }
+        }
+      ]
+    },
+    {
+      "clip": "clip-0003",
+      "sequence_name": "P09_P10_double_bag",
+      "author_giver_id": "P09",
+      "author_receiver_id": "P10",
+      "author_rows": 201,
+      "phase_source_sha256": "407ab5dabf702a2d82c57830a23162b92d94bc3b05a95a09aa830940178bc056",
+      "phase_counts": {
+        "giver": {
+          "reach": 96,
+          "transfer": 35,
+          "retreat": 70
+        },
+        "receiver": {
+          "reach": 96,
+          "transfer": 35,
+          "retreat": 70
+        }
+      },
+      "phase_boundaries": [
+        {
+          "role": "giver",
+          "author_participant_id": "P09",
+          "visual_identity_binding": "UNRESOLVED",
+          "from_phase": "reach",
+          "to_phase": "transfer",
+          "bracket_rows": [
+            95,
+            96
+          ],
+          "nominal_time_bracket_seconds": [
+            0.7916659999999922,
+            0.799999999999983
+          ],
+          "meaning": "AUTHOR_PROXY_PHASE_CHANGE_NOT_VERIFIED_PHYSICAL_CONTACT"
+        },
+        {
+          "role": "receiver",
+          "author_participant_id": "P10",
+          "visual_identity_binding": "UNRESOLVED",
+          "from_phase": "reach",
+          "to_phase": "transfer",
+          "bracket_rows": [
+            95,
+            96
+          ],
+          "nominal_time_bracket_seconds": [
+            0.7916659999999922,
+            0.799999999999983
+          ],
+          "meaning": "AUTHOR_PROXY_PHASE_CHANGE_NOT_VERIFIED_PHYSICAL_CONTACT"
+        },
+        {
+          "role": "giver",
+          "author_participant_id": "P09",
+          "visual_identity_binding": "UNRESOLVED",
+          "from_phase": "transfer",
+          "to_phase": "retreat",
+          "bracket_rows": [
+            130,
+            131
+          ],
+          "nominal_time_bracket_seconds": [
+            1.083332999999982,
+            1.0916659999999752
+          ],
+          "meaning": "AUTHOR_PROXY_PHASE_CHANGE_NOT_VERIFIED_PHYSICAL_CONTACT"
+        },
+        {
+          "role": "receiver",
+          "author_participant_id": "P10",
+          "visual_identity_binding": "UNRESOLVED",
+          "from_phase": "transfer",
+          "to_phase": "retreat",
+          "bracket_rows": [
+            130,
+            131
+          ],
+          "nominal_time_bracket_seconds": [
+            1.083332999999982,
+            1.0916659999999752
+          ],
+          "meaning": "AUTHOR_PROXY_PHASE_CHANGE_NOT_VERIFIED_PHYSICAL_CONTACT"
+        }
+      ],
+      "cameras": [
+        {
+          "camera": 1,
+          "video_sha256": "1155433df1f571c2a9e2a3bbc6c227cabd0c4695a6e2828c37fa15c6873c0575",
+          "status": "DECODED",
+          "decoded_frames": 51,
+          "stream": {
+            "width": 1920,
+            "height": 1080
+          },
+          "phase_reference_status_counts": {
+            "AUTHOR_PROXY": 50,
+            "OUTSIDE_AUTHOR_RANGE": 1
+          },
+          "depth_timestamp": {
+            "status": "PARSED_NO_DEPTH_FRAMES_ACQUIRED",
+            "rows": 52,
+            "first_seconds": -0.006249999999994316,
+            "last_seconds": 1.6937432000000001,
+            "alignment_authorized": false
+          }
+        },
+        {
+          "camera": 2,
+          "video_sha256": "3012a57cdee7a94a4132b41274844401cf06a6beb504b33ee40f020403788bee",
+          "status": "DECODED",
+          "decoded_frames": 51,
+          "stream": {
+            "width": 1920,
+            "height": 1080
+          },
+          "phase_reference_status_counts": {
+            "AUTHOR_PROXY": 50,
+            "OUTSIDE_AUTHOR_RANGE": 1
+          },
+          "depth_timestamp": {
+            "status": "PARSED_NO_DEPTH_FRAMES_ACQUIRED",
+            "rows": 17,
+            "first_seconds": -0.36925739999998086,
+            "last_seconds": 1.6978753999999867,
+            "alignment_authorized": false
+          }
+        }
+      ]
+    },
+    {
+      "clip": "clip-0004",
+      "sequence_name": "P10_P09_double_bag",
+      "author_giver_id": "P10",
+      "author_receiver_id": "P09",
+      "author_rows": 181,
+      "phase_source_sha256": "8dbcd87fee241b702e86d0d46a2969cc19ffb8326b9f648b0dc52de4f15965b4",
+      "phase_counts": {
+        "giver": {
+          "reach": 95,
+          "transfer": 33,
+          "retreat": 53
+        },
+        "receiver": {
+          "reach": 95,
+          "transfer": 33,
+          "retreat": 53
+        }
+      },
+      "phase_boundaries": [
+        {
+          "role": "giver",
+          "author_participant_id": "P10",
+          "visual_identity_binding": "UNRESOLVED",
+          "from_phase": "reach",
+          "to_phase": "transfer",
+          "bracket_rows": [
+            94,
+            95
+          ],
+          "nominal_time_bracket_seconds": [
+            0.783332999999999,
+            0.7916659999999922
+          ],
+          "meaning": "AUTHOR_PROXY_PHASE_CHANGE_NOT_VERIFIED_PHYSICAL_CONTACT"
+        },
+        {
+          "role": "receiver",
+          "author_participant_id": "P09",
+          "visual_identity_binding": "UNRESOLVED",
+          "from_phase": "reach",
+          "to_phase": "transfer",
+          "bracket_rows": [
+            94,
+            95
+          ],
+          "nominal_time_bracket_seconds": [
+            0.783332999999999,
+            0.7916659999999922
+          ],
+          "meaning": "AUTHOR_PROXY_PHASE_CHANGE_NOT_VERIFIED_PHYSICAL_CONTACT"
+        },
+        {
+          "role": "giver",
+          "author_participant_id": "P10",
+          "visual_identity_binding": "UNRESOLVED",
+          "from_phase": "transfer",
+          "to_phase": "retreat",
+          "bracket_rows": [
+            127,
+            128
+          ],
+          "nominal_time_bracket_seconds": [
+            1.0583330000000046,
+            1.066665999999998
+          ],
+          "meaning": "AUTHOR_PROXY_PHASE_CHANGE_NOT_VERIFIED_PHYSICAL_CONTACT"
+        },
+        {
+          "role": "receiver",
+          "author_participant_id": "P09",
+          "visual_identity_binding": "UNRESOLVED",
+          "from_phase": "transfer",
+          "to_phase": "retreat",
+          "bracket_rows": [
+            127,
+            128
+          ],
+          "nominal_time_bracket_seconds": [
+            1.0583330000000046,
+            1.066665999999998
+          ],
+          "meaning": "AUTHOR_PROXY_PHASE_CHANGE_NOT_VERIFIED_PHYSICAL_CONTACT"
+        }
+      ],
+      "cameras": [
+        {
+          "camera": 1,
+          "video_sha256": "7b2962308f278e23bc4920fc1a5686d37950fcfb7af3081b213a59a46be0dc94",
+          "status": "DECODED",
+          "decoded_frames": 46,
+          "stream": {
+            "width": 1920,
+            "height": 1080
+          },
+          "phase_reference_status_counts": {
+            "AUTHOR_PROXY": 46
+          },
+          "depth_timestamp": {
+            "status": "PARSED_NO_DEPTH_FRAMES_ACQUIRED",
+            "rows": 47,
+            "first_seconds": -0.006250000000022737,
+            "last_seconds": 1.5277767999999696,
+            "alignment_authorized": false
+          }
+        },
+        {
+          "camera": 2,
+          "video_sha256": "f281d8fe9b8920b22039d03191e07c10945dc9651b3053e27a1d95cb1d785d6f",
+          "status": "DECODED",
+          "decoded_frames": 46,
+          "stream": {
+            "width": 1920,
+            "height": 1080
+          },
+          "phase_reference_status_counts": {
+            "AUTHOR_PROXY": 46
+          },
+          "depth_timestamp": {
+            "status": "PARSED_NO_DEPTH_FRAMES_ACQUIRED",
+            "rows": 14,
+            "first_seconds": -0.0021178000000361408,
+            "last_seconds": 1.7979032999999731,
+            "alignment_authorized": false
+          }
+        }
+      ]
+    }
+  ],
+  "complete_result_sha256": "a6f4fa5f5637eb58445eb7476c73a641f96c586de78af38bd5cfd406fba69375"
+}

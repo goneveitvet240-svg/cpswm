@@ -421,29 +421,30 @@ def test_accepted_observation_receipt_is_detached_from_transport_and_survives_re
 def test_fresh_process_registers_configured_visual_history_before_restore(tmp_path):
     import subprocess
     import sys
-    from types import SimpleNamespace
 
-    from test_interaction_evidence import frame
+    import torch
+    from test_natural_vision import fixture_detector, prediction
+    from test_structure_two_continuous_input import raw_for, setup
 
     from cpswm.perception_mapping.natural_vision import (
-        WEIGHTS_SHA256,
         NaturalVisionEvidenceProducer,
     )
     from cpswm.system.continuous_state_codec import StateCodec
 
-    observed = frame()
-    scope = (observed.household_id, observed.session_id, observed.trace_id)
-    producer = NaturalVisionEvidenceProducer(
-        SimpleNamespace(
-            _scope=scope,
-            _versions=("test", "test"),
-            weights_sha256=WEIGHTS_SHA256,
-            _minimum_score=0.5,
-        )
+    _, _, _, transition = setup(False)
+    raw = raw_for(transition)
+    detector = fixture_detector(
+        raw,
+        prediction(
+            boxes=torch.tensor([[0.0, 0.0, 3.0, 3.0], [1.0, 1.0, 4.0, 4.0]]),
+            scores=torch.tensor([0.8, 0.9]),
+            labels=torch.tensor([1, 2]),
+        ),
     )
-    # A type-bootstrap probe, not a detector correctness claim.
-    producer._frames = (observed,)
-    producer._interactions = producer._recompute_interactions(producer._frames)
+    scope = detector._scope
+    producer = NaturalVisionEvidenceProducer(detector)
+    # Synthetic model output, but a complete legal raw-to-checkpoint path.
+    producer.infer((raw,), cutoff=raw.envelope().arrival_time)
     path = tmp_path / "visual-state.json"
     path.write_text(StateCodec().dumps(producer.checkpoint_state()))
     script = """
@@ -451,11 +452,13 @@ from pathlib import Path
 import sys
 from types import SimpleNamespace
 from uuid import UUID
-from cpswm.perception_mapping.natural_vision import WEIGHTS_SHA256, NaturalVisionEvidenceProducer
+from cpswm.perception_mapping.natural_vision import (
+    MODEL_ID, WEIGHTS_SHA256, NaturalVisionEvidenceProducer,
+)
 from cpswm.system.continuous_state_codec import StateCodec
 producer = NaturalVisionEvidenceProducer(SimpleNamespace(
-    _scope=tuple(UUID(x) for x in sys.argv[2:]), _versions=("test","test"), _minimum_score=.5,
-    weights_sha256=WEIGHTS_SHA256,
+    _scope=tuple(UUID(x) for x in sys.argv[2:]), _versions=("fixture","fixture"), _minimum_score=.5,
+    weights_sha256=WEIGHTS_SHA256, model_id=MODEL_ID,
 ))
 producer.restore_state(StateCodec().loads(Path(sys.argv[1]).read_text()))
 assert len(producer.frames()) == len(producer.interactions()) == 1

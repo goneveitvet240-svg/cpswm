@@ -107,3 +107,63 @@ def test_durable_roundtrip_and_configuration_rejection(tmp_path):
     with pytest.raises(ValueError, match="hand model"):
         incompatible.restore_state(state)
     assert incompatible.checkpoint_state() == before
+
+
+@pytest.mark.parametrize(
+    "kind",
+    [
+        "missing_hands",
+        "missing_visual",
+        "empty_hands",
+        "wrong_observation",
+        "wrong_model",
+        "wrong_pixels",
+        "wrong_receipt",
+        "wrong_dimensions",
+        "wrong_interactions",
+        "wrong_visual",
+        "hand_privilege",
+        "future_cutoff",
+        "changed_raw",
+    ],
+)
+def test_malformed_restore_is_rejected_without_partial_mutation(kind):
+    from copy import deepcopy
+    from datetime import timedelta
+
+    raw, detector, hands = components()
+    producer = NaturalVisionEvidenceProducer(detector, hands)
+    producer.infer((raw,), cutoff=raw.envelope().arrival_time)
+    before = producer.checkpoint_state()
+    state = deepcopy(before)
+    hand = state["hand_frames"][0]
+    if kind == "missing_hands":
+        state.pop("hand_frames")
+    elif kind == "missing_visual":
+        state.pop("frames")
+        state["interactions"] = ("partially-applied",)
+    elif kind == "empty_hands":
+        state["hand_frames"] = ()
+    elif kind == "wrong_observation":
+        state["hand_frames"] = (replace(hand, observation_id=uuid4()),)
+    elif kind == "wrong_model":
+        state["hand_frames"] = (replace(hand, model_binding=("0" * 64, "other", 4, 0.5, 0.5)),)
+    elif kind == "wrong_pixels":
+        state["hand_frames"] = (replace(hand, input_sha256="0" * 64),)
+    elif kind == "wrong_receipt":
+        state["hand_frames"] = (replace(hand, capture_receipt_sha256="0" * 64),)
+    elif kind == "wrong_dimensions":
+        state["hand_frames"] = (replace(hand, width=999),)
+    elif kind == "wrong_interactions":
+        state["interactions"] = ()
+    elif kind == "wrong_visual":
+        state["frames"] = (replace(state["frames"][0], observation_id=uuid4()),)
+    elif kind == "hand_privilege":
+        state["hand_frames"] = (replace(hand, semantic_status="CALIBRATED_ACTOR"),)
+    elif kind == "future_cutoff":
+        state["cutoff"] -= timedelta(seconds=1)
+    elif kind == "changed_raw":
+        state["prefix"] = (replace(raw, payload_bytes=raw.payload_bytes + b"changed"),)
+    with pytest.raises(ValueError):
+        producer.restore_state(state)
+    assert producer.checkpoint_state() == before

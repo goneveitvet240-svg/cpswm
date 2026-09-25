@@ -22,6 +22,11 @@ from cpswm.contracts.habit_learning import (
     ObservationDetectionResult,
     ObservationOpportunityRecord,
 )
+from cpswm.data_preflight.proposal_perception import (
+    PixelIdentityBinding,
+    ProposalPixelObservation,
+    pixel_hypothesis_bindings,
+)
 from cpswm.data_preflight.visible_prefix import VisiblePrefix, export_visible_prefix
 from cpswm.system.evaluation_operations.structure_two_selected_method import (
     ParticleProposalOperation,
@@ -127,16 +132,50 @@ class VisibleRecords(ContractModel):
     actor_evidence: tuple[ActorResponsibilityEvidence, ...] = ()
     arrivals: tuple[Arrival, ...]
     cutoff: datetime
+    pixel_observations: tuple[ProposalPixelObservation, ...] = ()
 
     def prefix(self) -> VisiblePrefix:
         if len({x.record_id for x in self.arrivals}) != len(self.arrivals):
             raise ValueError("duplicate arrival entry")
-        return export_visible_prefix(
+        prefix = export_visible_prefix(
             self.opportunities,
             self.detections,
             actor_evidence=self.actor_evidence,
             received_at={x.record_id: x.received_at for x in self.arrivals},
             cutoff=self.cutoff,
+        )
+        if not self.pixel_observations:
+            return prefix
+        pixels = tuple(
+            ProposalPixelObservation.model_validate(p.model_dump()) for p in self.pixel_observations
+        )
+        ids = [p.observation_id for p in pixels]
+        if len(set(ids)) != len(ids) or set(ids) & {a.record_id for a in self.arrivals}:
+            raise ValueError("duplicate pixel/semantic observation identity")
+        scopes = {(p.household_id, p.session_id) for p in pixels}
+        for group in (self.opportunities, self.detections, self.actor_evidence):
+            scopes.update((p.metadata.household_id, p.metadata.session_id) for p in group)
+        if len(scopes) != 1:
+            raise ValueError("mixed pixel/semantic stream")
+        visible = sorted(
+            (p for p in pixels if p.capture_time <= p.arrival_time <= self.cutoff),
+            key=lambda p: (p.capture_time, str(p.observation_id)),
+        )
+        payload, provenance = prefix.model_input(), json.loads(prefix.provenance_json)
+        if visible:
+            payload["pixel_observations"] = [p.model_input() for p in visible]
+            provenance["included_records"].extend(
+                {
+                    "record_id": str(p.observation_id),
+                    "content_sha256": content_sha256(p),
+                    "received_at": p.arrival_time.isoformat(),
+                }
+                for p in visible
+            )
+        provenance["feature_sha256"] = content_sha256(payload)
+        return VisiblePrefix(
+            json.dumps(payload, sort_keys=True, allow_nan=False),
+            json.dumps(provenance, sort_keys=True, allow_nan=False),
         )
 
 
@@ -201,10 +240,20 @@ class ProposalContext(ContractModel):
     actor_support: tuple[str, ...]
     location_support: tuple[LocationBinding, ...] = Field(min_length=1)
     snapshot_location_catalog: tuple[SnapshotLocation, ...] = ()
+    pixel_identity_bindings: tuple[PixelIdentityBinding, ...] = ()
 
     @model_validator(mode="after")
     def validate_context(self) -> Self:
         self.visible.prefix()  # validates missing/negative/arrival/source distinctions
+        expected_pixel_bindings = pixel_hypothesis_bindings(
+            self.visible.pixel_observations, self.visible.cutoff
+        )
+        if self.pixel_identity_bindings != expected_pixel_bindings:
+            raise ValueError("pixel identity hypotheses differ from causal source association")
+        for pixel_binding in self.pixel_identity_bindings:
+            support = self.actor_support if pixel_binding.kind == "actor" else self.instance_support
+            if pixel_binding.key not in support:
+                raise ValueError("missing pixel identity hypothesis support")
         require_aware(self.visible.cutoff, "cutoff")
         locations = {x.location_key: x for x in self.location_support}
         if len(locations) != len(self.location_support) or "unknown_location" not in locations:
@@ -300,6 +349,7 @@ class ProposalContext(ContractModel):
         parents = {x.state.particle_id: x for x in self.parents}
         revisions = {x.revision_id: x for x in self.revisions}
         arrivals = {x.record_id: x.received_at for x in self.visible.arrivals}
+        arrivals.update((p.observation_id, p.arrival_time) for p in self.visible.pixel_observations)
         # References must be visible in the *exported* prefix, not just in a raw bundle.
         prefix = self.visible.prefix()
         provenance = json.loads(prefix.provenance_json)
@@ -387,6 +437,9 @@ class ProposalContext(ContractModel):
             )
 
     def _evidence_time(self, record_id: UUID) -> datetime:
+        for pixel in self.visible.pixel_observations:
+            if pixel.observation_id == record_id:
+                return pixel.capture_time
         records: tuple[
             ObservationOpportunityRecord | ObservationDetectionResult | ActorResponsibilityEvidence,
             ...,
@@ -451,7 +504,7 @@ class ProposalSample(ProposalContext):
 
 def export_context(context: ProposalContext) -> dict[str, Any]:
     context = ProposalContext.model_validate(context.model_dump())
-    return {
+    output = {
         "visible_prefix": context.visible.prefix().model_input(),
         "source_snapshot_id": str(context.source_snapshot_id),
         "parent_hypotheses": [x.model_dump(mode="json") for x in context.parents],
@@ -464,6 +517,11 @@ def export_context(context: ProposalContext) -> dict[str, Any]:
             for x in context.location_support
         },
     }
+    if context.pixel_identity_bindings:
+        output["pixel_identity_bindings"] = [
+            b.model_dump(mode="json") for b in context.pixel_identity_bindings
+        ]
+    return output
 
 
 def semantic_state(hypothesis: FullHypothesis) -> dict[str, Any]:

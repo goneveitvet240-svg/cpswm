@@ -80,7 +80,7 @@ def distance(a, b):
     )
 
 
-def build(output, *, seed, source, ciav_journal=None):
+def build(output, *, seed, source, ciav_journal=None, joint_producer=None):
     probe = BackboneWiringProbe.build(seed=seed)
     producer = OracleProducer()
     store = ContinuousStateStore(
@@ -115,11 +115,12 @@ def build(output, *, seed, source, ciav_journal=None):
         session_id=meta.session_id,
         trace_id=meta.trace_id,
         state_store=store,
+        joint_producer=joint_producer,
     )
     return probe, producer, stream, store, context_builder
 
 
-def ingest(probe, producer, stream, *, skip_days=(), input_journal=None):
+def ingest(probe, producer, stream, *, skip_days=(), input_journal=None, produce_joint=False):
     rows = []
     for index, day in enumerate(probe.observed_days()[:12]):
         if index in skip_days:
@@ -137,6 +138,8 @@ def ingest(probe, producer, stream, *, skip_days=(), input_journal=None):
         )
         start = perf_counter()
         receipt = stream.advance(cutoff=when)
+        if produce_joint:
+            stream.produce_joint_posterior()
         rows.append(
             {
                 "day_index": index,

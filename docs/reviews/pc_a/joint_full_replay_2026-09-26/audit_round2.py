@@ -75,7 +75,13 @@ def test_second_real_withdrawal_rebuilds_all_three_blocks_from_initial_model(
         assert count == len(first.atoms[0].statistics.evidence_cluster_ids) - 1
         x = np.array([1.0, 0.5])
         pose = np.array([0.1, 0.2, 0.3, 0.0, 0.0, 0.0])
-        for index, atom in enumerate(second.atoms):
+        from cpswm.system.evaluation_operations.structure_two_selected_method import (
+            TypedParticleState,
+        )
+
+        for atom in second.atoms:
+            state = TypedParticleState.model_validate_json(atom.state_json)
+            index = 0 if state.ordered_actor_roles[0].actor_key == "owner" else 1
             stats = atom.statistics
             expected_alpha = np.ones(len(stats.locations))
             expected_alpha[index] += 0.2 * count
@@ -233,6 +239,28 @@ def test_complete_false_model_cannot_replace_checkpoint_producer_under_same_clai
         assert substituted._system.core._hybrid_loop.ledger.export_state() == ledger
         pytest.fail(
             "complete false replacement model published under original claimed artifact hash"
+        )
+    finally:
+        store.close()
+
+
+def test_full_replay_preserves_original_consumed_input_schedule(corrected_checkpoint, tmp_path):
+    stream, store, producer = restore_copy(corrected_checkpoint, tmp_path / "schedule.db")
+    try:
+        core = stream._system.core
+        original = {r.state.revision_id for r in core._particle_workspace.records.values()}
+        retained = original & set(core._observed_events)
+        assert retained and retained < set(core._observed_events)
+        assert len(original) == 12 and len(retained) == 11
+        stream.replay_joint_posterior()
+        actual = {r.state.revision_id for r in core._particle_workspace.records.values()}
+        assert actual == retained, (
+            "replay added semantic sources never consumed by the joint kernel"
+        )
+        assert producer.calls == len(retained)
+        assert all(
+            len(a.statistics.evidence_cluster_ids) == len(retained)
+            for a in stream.current_joint_decision_view().atoms
         )
     finally:
         store.close()

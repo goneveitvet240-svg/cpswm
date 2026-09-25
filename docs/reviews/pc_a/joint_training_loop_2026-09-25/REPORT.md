@@ -72,3 +72,5 @@ HANDdata 的论文显示有负载传感器，但公开文件入口本次遇到 4
 上述依赖未完成不授权缩减论文框架；工程通过、外部数据取得、独立复核、统一验收和科学收益分开登记。
 
 本机原始工件持久备份：`/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/joint-training-loop-20260925`，清单 212 文件、412,460,982 字节，见 [ARTIFACTS.json](ARTIFACTS.json)。清单不含后续方便阅读的 handoff 文档副本。
+
+GitHub 交付：[草稿 PR36](https://github.com/goneveitvet240-svg/cpswm/pull/36)，实现与证据提交 `b9a39dfd1c99d97f28a6fb5c9128b022e3d6efe0` 已推送；后续状态登记不改固定实现。未合并，B 未签收。

@@ -1,0 +1,56 @@
+.FFF                                                                     [100%]
+=================================== FAILURES ===================================
+_______ test_changed_annotation_mid_run_cannot_claim_new_annotation_hash _______
+
+tmp_path = PosixPath('/private/var/folders/x2/000r8p0n6s393lj2sg8wk5f40000gn/T/pytest-of-pangwei/pytest-2067/test_changed_annotation_mid_ru0')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x11cc90fc0>
+
+    def test_changed_annotation_mid_run_cannot_claim_new_annotation_hash(tmp_path, monkeypatch):
+        pixels, path, original = sample(tmp_path)
+        update = tracking.InitializedPixelTargetTracker.update
+    
+        def mutate(self, rgb, *, frame_index):
+            if frame_index == 0:
+                original['clips'][0]['first_frame_initialization_xyxy'] = [1, 1, 10, 10]
+                path.write_text(json.dumps(original))
+            return update(self, rgb, frame_index=frame_index)
+    
+        monkeypatch.setattr(tracking.InitializedPixelTargetTracker, 'update', mutate)
+>       with pytest.raises(ValueError, match='annotation.*changed'):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE ValueError
+
+tests/test_grounded_development_audit.py:61: Failed
+__ test_forged_payload_and_annotation_digest_cannot_rebind_original_pixel_run __
+
+tmp_path = PosixPath('/private/var/folders/x2/000r8p0n6s393lj2sg8wk5f40000gn/T/pytest-of-pangwei/pytest-2067/test_forged_payload_and_annota0')
+
+    def test_forged_payload_and_annotation_digest_cannot_rebind_original_pixel_run(tmp_path):
+        pixels, path, annotation = sample(tmp_path)
+        payload = encoded(np.full((80, 80, 3), 127, dtype=np.uint8))
+        (pixels / 'clip-0001/0000.npy').write_bytes(payload)
+        annotation['clips'][0]['rows'][0]['payload_sha256'] = hashlib.sha256(payload).hexdigest()
+        path.write_text(json.dumps(annotation))
+>       with pytest.raises(ValueError, match='archive|original'):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE ValueError
+
+tests/test_grounded_development_audit.py:72: Failed
+_____ test_truncating_failure_suffix_cannot_report_complete_reviewed_clip ______
+
+tmp_path = PosixPath('/private/var/folders/x2/000r8p0n6s393lj2sg8wk5f40000gn/T/pytest-of-pangwei/pytest-2067/test_truncating_failure_suffix0')
+
+    def test_truncating_failure_suffix_cannot_report_complete_reviewed_clip(tmp_path):
+        pixels, path, annotation = sample(tmp_path)
+        annotation['clips'][0]['rows'] = annotation['clips'][0]['rows'][:1]
+        path.write_text(json.dumps(annotation))
+>       with pytest.raises(ValueError, match='complete|coverage|frame count'):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE ValueError
+
+tests/test_grounded_development_audit.py:81: Failed
+=========================== short test summary info ============================
+FAILED tests/test_grounded_development_audit.py::test_changed_annotation_mid_run_cannot_claim_new_annotation_hash
+FAILED tests/test_grounded_development_audit.py::test_forged_payload_and_annotation_digest_cannot_rebind_original_pixel_run
+FAILED tests/test_grounded_development_audit.py::test_truncating_failure_suffix_cannot_report_complete_reviewed_clip
+3 failed, 1 passed in 28.26s

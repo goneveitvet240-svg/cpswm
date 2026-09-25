@@ -1,6 +1,7 @@
 """Full native continuation with explicitly assumed semantic/conditional models."""
 
 import sys
+from contextlib import contextmanager
 from copy import deepcopy
 from datetime import timedelta
 from pathlib import Path
@@ -64,7 +65,9 @@ def test_replay_restores_actual_joint_readout_without_ledger_write(tmp_path):
         core = stream._system.core
         old_runtime = core._particle_workspace.runtime_id
         old_workspace = deepcopy(core._particle_workspace)
-        old_sources = set(core._observed_events)
+        old_sources = {r.state.revision_id for r in old_workspace.records.values()} & set(
+            core._observed_events
+        )
         ledger_before = core._hybrid_loop.ledger.export_state()
         with pytest.raises(ValueError, match="full particle revision replay"):
             stream.produce_joint_posterior()
@@ -124,18 +127,25 @@ def restore_copy(corrected_checkpoint, path, joint=None):
     return stream, store, joint
 
 
-class FailingReplayFixture(JointFixture):
-    fail_at = None
+@contextmanager
+def fixture_method_profile(callback):
+    """Fault/observation seam without changing the registered model implementation."""
+    previous = sys.getprofile()
+    codes = {JointFixture.produce.__code__, JointFixture.restore_state.__code__}
 
-    def produce(self, context):
-        result = super().produce(context)
-        if self.calls == self.fail_at:
-            raise RuntimeError("injected middle-of-replay failure")
-        return result
+    def profile(frame, event, value):
+        if event == "return" and frame.f_code in codes:
+            callback(frame)
+
+    sys.setprofile(profile)
+    try:
+        yield
+    finally:
+        sys.setprofile(previous)
 
 
 def test_partial_generation_failure_restores_all_owned_state(corrected_checkpoint, tmp_path):
-    joint = FailingReplayFixture()
+    joint = JointFixture()
     stream, store, _ = restore_copy(corrected_checkpoint, tmp_path / "fail.db", joint)
     try:
         core = stream._system.core
@@ -146,8 +156,19 @@ def test_partial_generation_failure_restores_all_owned_state(corrected_checkpoin
             stream._joint_published_batch_sha256,
             stream._joint_published_source_sha256,
         )
-        joint.fail_at = 2
-        with pytest.raises(RuntimeError, match="middle-of-replay"):
+
+        def interrupt(frame):
+            if (
+                frame.f_code is JointFixture.produce.__code__
+                and frame.f_locals["self"] is joint
+                and joint.calls == 2
+            ):
+                raise RuntimeError("injected middle-of-replay failure")
+
+        with (
+            fixture_method_profile(interrupt),
+            pytest.raises(RuntimeError, match="middle-of-replay"),
+        ):
             stream.replay_joint_posterior()
         assert native_content_sha256(vars(core._particle_workspace)) == workspace_before
         assert (
@@ -161,7 +182,6 @@ def test_partial_generation_failure_restores_all_owned_state(corrected_checkpoin
         ) == publication_before
         with pytest.raises(ValueError):
             stream.current_joint_decision_view()
-        joint.fail_at = None
         stream.replay_joint_posterior()
         assert stream.current_joint_decision_view().atoms
     finally:

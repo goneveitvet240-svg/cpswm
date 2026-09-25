@@ -48,7 +48,12 @@ def test_second_real_withdrawal_rebuilds_all_three_blocks_from_initial_model(
         assert old_command is not None
         core = stream._system.core
         # A new, live source, not an artificial invalidation bit.
-        rid, event = next(iter(core._committed_events.items()))
+        selected_revisions = {
+            r.state.revision_id for r in core._particle_workspace.records.values()
+        }
+        rid, event = next(
+            (rid, e) for rid, e in core._committed_events.items() if rid in selected_revisions
+        )
         probe = corrected_checkpoint[1][0]
         probe.system = stream._system
         bundle = build_execution_feedback_bundle(
@@ -70,7 +75,7 @@ def test_second_real_withdrawal_rebuilds_all_three_blocks_from_initial_model(
         assert second.runtime_id != first.runtime_id
         assert len(core._particle_replay_generations) == 2
         assert core._hybrid_loop.ledger.export_state() == ledger
-        count = len(core._observed_events)
+        count = len(selected_revisions & set(core._observed_events))
         assert producer.calls == count
         assert count == len(first.atoms[0].statistics.evidence_cluster_ids) - 1
         x = np.array([1.0, 0.5])
@@ -264,3 +269,21 @@ def test_full_replay_preserves_original_consumed_input_schedule(corrected_checkp
         )
     finally:
         store.close()
+
+
+def test_dictionary_reordering_cannot_change_original_update_order(corrected_checkpoint, tmp_path):
+    stream, store, _ = restore_copy(corrected_checkpoint, tmp_path / "ordered.db")
+    reordered, other_store, _ = restore_copy(corrected_checkpoint, tmp_path / "reordered.db")
+    try:
+        workspace = reordered._system.core._particle_workspace
+        original = native_content_sha256(vars(workspace))
+        workspace.input_bodies = dict(reversed(tuple(workspace.input_bodies.items())))
+        workspace.input_journal = dict(reversed(tuple(workspace.input_journal.items())))
+        workspace.records = dict(reversed(tuple(workspace.records.items())))
+        assert native_content_sha256(vars(workspace)) == original
+        stream.replay_joint_posterior()
+        reordered.replay_joint_posterior()
+        assert stream.current_joint_decision_view() == reordered.current_joint_decision_view()
+    finally:
+        store.close()
+        other_store.close()

@@ -100,3 +100,57 @@ def producer_binding(producer: NativeJointProducer | None) -> str | None:
     ):
         raise ValueError("joint producer requires a SHA256 dependency binding")
     return value
+
+
+def producer_implementation_binding(producer: NativeJointProducer | None) -> str | None:
+    """Pin actual Python implementations as well as the declared artifact hash.
+
+    This detects a changed factory/callable at recovery and inference. It is not
+    evidence that a model's measurements are true or that its declared external
+    weights/calibration artifacts have independent custody.
+    """
+    import inspect
+    from pathlib import Path
+    from types import CodeType
+
+    from cpswm.system.structure_two_execution import _code_object_sha256
+
+    if producer is None:
+        return None
+    cls = type(producer)
+    class_path = inspect.getsourcefile(cls)
+    if class_path is None:
+        raise ValueError("joint producer implementation has no inspectable class source")
+    methods = []
+    for name in ("produce", "checkpoint_state", "restore_state"):
+        method = getattr(producer, name, None)
+        declared = next((vars(c)[name] for c in cls.__mro__ if name in vars(c)), None)
+        if (
+            name in getattr(producer, "__dict__", {})
+            or not inspect.ismethod(method)
+            or method.__self__ is not producer
+            or method.__func__ is not declared
+        ):
+            raise ValueError("joint producer implementation must use declared instance methods")
+        code = getattr(method.__func__, "__code__", None)
+        path = inspect.getsourcefile(method.__func__)
+        if not isinstance(code, CodeType) or path is None:
+            raise ValueError("joint producer implementation has no inspectable loaded code")
+        methods.append(
+            (
+                name,
+                method.__func__.__module__,
+                method.__func__.__qualname__,
+                sha256(Path(path).read_bytes()).hexdigest(),
+                _code_object_sha256(code),
+            )
+        )
+    return native_content_sha256(
+        (
+            "joint-producer-implementation@1",
+            cls.__module__,
+            cls.__qualname__,
+            sha256(Path(class_path).read_bytes()).hexdigest(),
+            tuple(methods),
+        )
+    )

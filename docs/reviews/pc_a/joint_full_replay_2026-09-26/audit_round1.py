@@ -13,32 +13,33 @@ import pytest
 
 ROOT = Path(__file__).resolve().parents[4]
 sys.path[:0] = [str(ROOT / "tests"), str(ROOT / "tools")]
-from test_native_joint_full_replay import corrected_checkpoint, restore_copy  # noqa: E402,F401
+from test_native_joint_full_replay import (  # noqa: E402,F401
+    corrected_checkpoint,
+    fixture_method_profile,
+    restore_copy,
+)
 from test_native_joint_production import JointFixture  # noqa: E402
 
 from cpswm.system.structure_two_particle_workspace import native_content_sha256  # noqa: E402
 
 
-class ClockFixture(JointFixture):
-    def __init__(self):
-        super().__init__()
-        self.contexts = []
-
-    def produce(self, context):
-        self.contexts.append(deepcopy(context))
-        return super().produce(context)
-
-
 def test_replay_knowledge_clock_covers_feedback_arrival(corrected_checkpoint, tmp_path):
-    producer = ClockFixture()
+    producer = JointFixture()
+    contexts = []
     stream, store, _ = restore_copy(corrected_checkpoint, tmp_path / "clock.db", producer)
     try:
         assert stream._last_arrival > stream._last_cutoff
         arrival = stream._last_arrival
-        stream.replay_joint_posterior()
-        assert producer.contexts and all(c.cutoff == arrival for c in producer.contexts)
+
+        def observe(frame):
+            if frame.f_code is JointFixture.produce.__code__ and frame.f_locals["self"] is producer:
+                contexts.append(deepcopy(frame.f_locals["context"]))
+
+        with fixture_method_profile(observe):
+            stream.replay_joint_posterior()
+        assert contexts and all(c.cutoff == arrival for c in contexts)
         assert stream._last_cutoff == arrival
-        assert all(c.source.producer_context[1].basis_sha256 for c in producer.contexts)
+        assert all(c.source.producer_context[1].basis_sha256 for c in contexts)
         # A command cannot backdate the newly incorporated correction.
         from test_joint_camera_policy import problem_for
 
@@ -65,23 +66,23 @@ def test_initial_model_state_cannot_be_resealed_as_a_new_prior(corrected_checkpo
         store.close()
 
 
-class IncorrectRestoreFixture(JointFixture):
-    bad_restore = False
-
-    def restore_state(self, state):
-        if self.bad_restore:
-            self.calls = -99
-        else:
-            super().restore_state(state)
-
-
 def test_incorrect_restore_fails_closed_before_any_action(corrected_checkpoint, tmp_path):
-    producer = IncorrectRestoreFixture()
+    producer = JointFixture()
     stream, store, _ = restore_copy(corrected_checkpoint, tmp_path / "reset.db", producer)
     try:
         original = native_content_sha256(vars(stream._system.core._particle_workspace))
-        producer.bad_restore = True
-        with pytest.raises(ValueError, match="rollback did not restore"):
+
+        def corrupt_return(frame):
+            if (
+                frame.f_code is JointFixture.restore_state.__code__
+                and frame.f_locals["self"] is producer
+            ):
+                producer.calls = -99
+
+        with (
+            fixture_method_profile(corrupt_return),
+            pytest.raises(ValueError, match="rollback did not restore"),
+        ):
             stream.replay_joint_posterior()
         assert native_content_sha256(vars(stream._system.core._particle_workspace)) == original
         with pytest.raises(RuntimeError, match="durable state failed"):

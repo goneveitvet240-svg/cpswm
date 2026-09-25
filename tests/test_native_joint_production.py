@@ -2,6 +2,9 @@
 
 Normal positive tests never manually stage particles: the collector calls the
 producer. One complete-forgery attack deliberately prepopulates the old seam.
+
+
+PYTEST_DONT_REWRITE: this module also supplies source-bound runtime model fixtures.
 """
 
 from dataclasses import replace

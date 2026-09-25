@@ -43,6 +43,8 @@ def run(output: Path):
         ledger = core._hybrid_loop.ledger.export_state()
         snapshot_id = core.current_snapshot.snapshot_id
         old_calls = joint.calls
+        original_schedule = {r.state.revision_id for r in old.records.values()}
+        retained_schedule = original_schedule & set(core._observed_events)
         cutoff_before = stream._last_cutoff
         arrival = stream._last_arrival
         errors = {}
@@ -86,7 +88,11 @@ def run(output: Path):
             "before_replay_rejections": errors,
             "retained_semantic_revisions": len(core._observed_events),
             "recomputed_joint_sources": joint.calls,
-            "retained_source_closure_exact": record_revisions == set(core._observed_events),
+            "retained_joint_source_count": len(retained_schedule),
+            "unconsumed_intermediate_sources_not_added": len(
+                set(core._observed_events) - retained_schedule
+            ),
+            "retained_source_closure_exact": record_revisions == retained_schedule,
             "replay_seconds": replay_seconds,
             "ledger_unchanged_by_replay_and_camera": (
                 recovered._system.core._hybrid_loop.ledger.export_state() == ledger

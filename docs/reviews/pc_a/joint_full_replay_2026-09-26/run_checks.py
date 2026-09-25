@@ -12,7 +12,9 @@ ROOT = Path(__file__).resolve().parents[4]
 OUT = Path(sys.argv[1]).resolve()
 ROUND = sys.argv[2]
 dirty = subprocess.check_output(
-    ["git", "status", "--porcelain", "--", "src", "tests", "tools"], cwd=ROOT, text=True
+    ["git", "status", "--porcelain", "--", "src", "tests", "tools", str(Path(__file__).parent)],
+    cwd=ROOT,
+    text=True,
 )
 if dirty.strip():
     raise RuntimeError("source must be committed before a formal audit: " + dirty)
@@ -50,6 +52,7 @@ tests = [
     "test_conditioned_proposal_runtime",
     "test_conditioned_inference_session",
     "test_native_joint_full_replay",
+    "test_native_joint_producer_binding",
     "test_core_prototype_spine",
     "test_structure_two_backbone_b_repairs",
     "test_structure_two_w3_round6_prepared_boundary",
@@ -81,7 +84,7 @@ commands = {
         "-q",
         *[f"tests/{n}.py" for n in tests],
     ],
-    "adversarial": [
+    "audit_round1": [
         python,
         "-m",
         "pytest",
@@ -89,19 +92,29 @@ commands = {
         "addopts=",
         "-q",
         "docs/reviews/pc_a/joint_full_replay_2026-09-26/audit_round1.py",
-        *(
-            ["docs/reviews/pc_a/joint_full_replay_2026-09-26/audit_round2.py"]
-            if ROUND == "2"
-            else []
-        ),
     ],
+    **(
+        {
+            "audit_round2": [
+                python,
+                "-m",
+                "pytest",
+                "-o",
+                "addopts=",
+                "-q",
+                "docs/reviews/pc_a/joint_full_replay_2026-09-26/audit_round2.py",
+            ]
+        }
+        if ROUND == "2"
+        else {}
+    ),
     "controlled_continuation": [
         python,
         "tools/run_native_joint_full_replay.py",
         "--output",
         str(OUT / "controlled-continuation"),
     ],
-    "mypy": [python, "-m", "mypy", "src"],
+    "mypy": [python, "-m", "mypy", "--no-incremental", "src"],
     "ruff": [python, "-m", "ruff", "check", *changed],
 }
 
@@ -109,7 +122,7 @@ commands = {
 def hashes():
     return {
         str(p.relative_to(ROOT)): hashlib.sha256(p.read_bytes()).hexdigest()
-        for folder in ("src", "tests", "tools")
+        for folder in ("src", "tests", "tools", "docs/reviews/pc_a/joint_full_replay_2026-09-26")
         for p in sorted((ROOT / folder).rglob("*.py"))
     }
 

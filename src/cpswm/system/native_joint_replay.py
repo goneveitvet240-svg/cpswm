@@ -107,8 +107,40 @@ def validate_replay_source(core: Any, source: NativePosteriorSource) -> None:
         raise ValueError("joint replay source is stale after semantic correction")
 
 
+def consumed_schedule(workspace: NativeParticleWorkspace) -> tuple[UUID, ...]:
+    """Recover update order from accepted parent links, never dictionary order."""
+    if workspace.batch is None:
+        if workspace.input_bodies:
+            raise ValueError("joint replay has inputs without a current batch")
+        return ()
+    cursor: UUID | None = workspace.batch.evidence_cluster_id
+    visited: set[UUID] = set()
+    reverse = []
+    while cursor is not None:
+        if cursor in visited or cursor not in workspace.input_bodies:
+            raise ValueError("joint replay has an invalid input ancestry")
+        visited.add(cursor)
+        body = workspace.input_bodies[cursor]
+        revisions = {r.proposal.proposed_state.revision_id for r in body.receipts}
+        if len(revisions) != 1:
+            raise ValueError("joint replay cannot infer a unique consumed source per batch")
+        reverse.append(next(iter(revisions)))
+        parents = {
+            None
+            if r.proposal.proposed_state.parent_particle_id is None
+            else workspace.records[r.proposal.proposed_state.parent_particle_id].evidence_cluster_id
+            for r in body.receipts
+        }
+        if len(parents) != 1:
+            raise ValueError("joint replay has ambiguous predecessor batches")
+        cursor = parents.pop()
+    if visited != set(workspace.input_bodies) or len(set(reverse)) != len(reverse):
+        raise ValueError("joint replay history has orphan or repeated source updates")
+    return tuple(reversed(reverse))
+
+
 def prepare_generation(core: Any) -> JointReplayGeneration:
-    """Compile every live observed revision, failing on any missing source.
+    """Replay the retained subsequence of the originally consumed joint inputs.
 
     Every source is bound to the core's acceptance anchor recorded at actual
     publication, including sources not yet consumed by a joint batch.
@@ -121,24 +153,28 @@ def prepare_generation(core: Any) -> JointReplayGeneration:
     old._validate_persisted_state()
     if not old.invalidated_revisions:
         raise ValueError("full joint replay requires a populated invalidated history")
-    if not core._observed_events:
-        raise ValueError("no retained semantic source for a nonempty joint posterior")
     source_pool: dict[UUID, NativePosteriorSource] = {}
     # Current and archived bodies have each already passed their core anchors.
     workspaces = [g.old_workspace for g in core._particle_replay_generations] + [old]
+    schedule: list[UUID] = []
     for workspace in workspaces:
+        for revision in consumed_schedule(workspace):
+            if revision not in schedule:
+                schedule.append(revision)
         for source in workspace.posterior_sources.values():
             source_pool[source.history_after.latest.revision_id] = source
+    retained = [rid for rid in schedule if rid in core._observed_events]
+    if not retained:
+        raise ValueError("no retained consumed source for a nonempty joint posterior")
+    # Intermediate PCHMP results can already be included in the next CIAV prior.
+    # Publishing a source does not schedule an additional joint update.
     basis = correction_basis(core)
     runtime_id = content_uuid("full-joint-replay-generation", (old.runtime_id, basis))
     new = NativeParticleWorkspace(registered_locations=core._registered_particle_locations)
     new.runtime_id = runtime_id
     sources = []
-    ordered = sorted(
-        core._observed_events.items(),
-        key=lambda row: (row[1].evidence.event_time, str(row[0])),
-    )
-    for rid, event in ordered:
+    for rid in retained:
+        event = core._observed_events[rid]
         original = source_pool.get(rid)
         if original is None:
             raise ValueError("full joint replay lacks a retained revision's original source")

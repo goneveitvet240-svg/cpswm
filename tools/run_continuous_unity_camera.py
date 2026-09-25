@@ -26,6 +26,7 @@ from cpswm.system.continuous_camera_collection import (
     collect_posterior_step,
 )
 from cpswm.system.continuous_state_store import ContinuousStateStore
+from cpswm.system.native_joint_production import producer_binding
 from cpswm.system.reproducibility import content_sha256
 from cpswm.system.structure_two_continuous_input import ContinuousEvidenceInput, ObservationCommand
 from cpswm.system.structure_two_production_system import StructureTwoProductionSystem
@@ -120,6 +121,7 @@ def main():
                 "environment": dependency_id,
                 "factory": args.runtime_factory,
                 "model_sources": configured.camera_model.sources.model_dump(mode="json"),
+                "joint_producer_binding": producer_binding(configured.joint_producer),
             }
         )
     else:
@@ -144,6 +146,7 @@ def main():
         context_builder=configured.context_builder if configured else None,
         producer=backend,
         state_store=store,
+        joint_producer=configured.joint_producer if configured else None,
         **scope,
     )
     executor = UnityObservationExecutor(
@@ -247,6 +250,7 @@ def main():
                     store,
                     producer=backend,
                     context_builder=configured.context_builder if configured else None,
+                    joint_producer=configured.joint_producer if configured else None,
                 )
                 assert stream._system.adaptive_router_state_sha256() == core_hash
                 assert len(stream.visible_prefix(cutoff=delivery.received_at)) >= 2

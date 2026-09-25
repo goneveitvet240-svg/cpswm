@@ -1,0 +1,46 @@
+{
+  "original_sha": "baa37172c35f442419ae3aea048060d01c9101c2",
+  "fixed_tested_sha": "1e6e0373248d3881be67f00922cc7c330b6f1bba",
+  "round1": {
+    "legal_positive_passed": 1,
+    "reproduced_failures": 3,
+    "fixed_plus_tracker_tests_passed": 7
+  },
+  "round2": {
+    "tests_passed": 114,
+    "mypy_source_files": 350,
+    "cases": [
+      {
+        "seed": 7,
+        "targets": 1,
+        "action_changed": false,
+        "recovery_equal": true,
+        "replay_equal": true,
+        "source_unchanged": true,
+        "comparison_sha256": "58101d3f92edbd20a9ae52306daa8a16843ea9d441822357611100611ef27084"
+      },
+      {
+        "seed": 11,
+        "targets": 1,
+        "action_changed": true,
+        "recovery_equal": true,
+        "replay_equal": true,
+        "source_unchanged": true,
+        "comparison_sha256": "89d8b9212b6735532a7a99b70a6f180da5d231e52dcd1ef1a575d678d0aa6207"
+      },
+      {
+        "seed": 19,
+        "targets": 1,
+        "action_changed": true,
+        "recovery_equal": true,
+        "replay_equal": true,
+        "source_unchanged": true,
+        "comparison_sha256": "ba1c4dcd2d18469d4f8d7e590b4d64a8f0fe3359a3c39a27daf375f8c1b473b4"
+      }
+    ],
+    "new_blocking_findings": 0
+  },
+  "independent_reviewer_count": 0,
+  "B_review_completed": false,
+  "scope": "PR34 added tracking/comparison surface; not complete unified framework acceptance"
+}

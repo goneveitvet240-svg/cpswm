@@ -1,6 +1,6 @@
 # 固定版本复现与 B 交接
 
-最终受审源码待新 manifest 记录；前次 `92e1960a815ac6ae0afa2e0a7516ab764628ba25` 被追加反证否决，分支 `codex/pc-a-joint-full-replay-20260926`，base 为 PR39。请独立 fetch、检出和重建环境，不复制 A 的虚拟环境，不改写旧结果。
+最终受审源码 `348d11a172d0d26cb6ec990ad930664912f8495d`；前次 `92e1960a815ac6ae0afa2e0a7516ab764628ba25` 被追加反证否决，分支 `codex/pc-a-joint-full-replay-20260926`，base 为 PR39。请独立 fetch、检出和重建环境，不复制 A 的虚拟环境，不改写旧结果。
 
 ```sh
 git fetch origin --prune

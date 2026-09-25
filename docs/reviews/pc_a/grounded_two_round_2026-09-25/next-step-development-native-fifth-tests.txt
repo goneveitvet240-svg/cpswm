@@ -1,0 +1,58 @@
+..........F.                                                             [100%]
+=================================== FAILURES ===================================
+_ test_two_semantic_steps_automatically_extend_real_ancestry_and_three_blocks __
+
+tmp_path = PosixPath('/private/var/folders/x2/000r8p0n6s393lj2sg8wk5f40000gn/T/pytest-of-pangwei/pytest-2074/test_two_semantic_steps_automa0')
+
+    def test_two_semantic_steps_automatically_extend_real_ancestry_and_three_blocks(tmp_path):
+        from structure_two_backbone_wiring_probe import BackboneWiringProbe, CIAVOutcomeKind
+    
+        probe = BackboneWiringProbe.build(seed=7)
+        meta = probe.observed_days()[0].after.metadata
+        joint, backend, store = JointFixture(), DurableFixtureProducer(), store_at(tmp_path / "db")
+    
+        def builder(system, item, when, step):
+            probe.system = system
+            probe.step_index = step
+            return AdaptiveExecutionContext(
+                router_features=probe.router_features(),
+                step_index=step,
+                ciav_input=probe.ciav_input(
+                    item.transition, outcome=CIAVOutcomeKind.DETECTED_DIFFERENT_LOCATION
+                ),
+            )
+    
+        stream = ContinuousEvidenceInput(
+            system=probe.system,
+            execution_lane="registered_p5_first",
+            household_id=meta.household_id,
+            session_id=meta.session_id,
+            trace_id=meta.trace_id,
+            producer=backend,
+            context_builder=builder,
+            state_store=store,
+            joint_producer=joint,
+        )
+        previous = set()
+        for index, day in enumerate(probe.observed_days()[:2]):
+            transition = probe.transition_for(day)
+            when = transition.after.detection_time + timedelta(minutes=1)
+            ids = stream.admit((raw_for(transition),), received_at=when)
+            backend.output = GroundedTransition(transition, ids, "oracle", "assumed-not-calibrated")
+            stream.advance(cutoff=when)
+            stream.produce_joint_posterior()
+            view = stream.current_joint_decision_view()
+            records = stream._system.core._particle_workspace.records
+            for atom in view.atoms:
+                record = records[atom.particle_id]
+                assert len(record.statistics.information_vector) == 6
+>               assert len(record.statistics.evidence_cluster_ids) == index + 1
+E               AssertionError: assert 1 == (1 + 1)
+E                +  where 1 = len((UUID('e4504e70-3958-53a9-9628-37d2b08fd787'),))
+E                +    where (UUID('e4504e70-3958-53a9-9628-37d2b08fd787'),) = ConditionalAnalyticState(locations=(UUID('44b33099-dee8-2a8b-cc46-e34a555d6659'), UUID('23a2ff08-fd31-2108-19c8-56bbe1...rmation_vector=(0.06, 0.12, 0.18, 0.0, 0.0, 0.0), evidence_cluster_ids=(UUID('e4504e70-3958-53a9-9628-37d2b08fd787'),)).evidence_cluster_ids
+E                +      where ConditionalAnalyticState(locations=(UUID('44b33099-dee8-2a8b-cc46-e34a555d6659'), UUID('23a2ff08-fd31-2108-19c8-56bbe1...rmation_vector=(0.06, 0.12, 0.18, 0.0, 0.0, 0.0), evidence_cluster_ids=(UUID('e4504e70-3958-53a9-9628-37d2b08fd787'),)) = NativeParticleRecord(state=TypedParticleState(particle_id=UUID('8bf0d08e-0fbf-57ce-a113-07d0629a45f0'), parent_particl...6e167985c5ec4354646719e4', input_fingerprint_sha256='a9ef9d6e5622398d23fd076b2a725b0b9a28703d799c4bc1e5db307ae4e15fd6').statistics
+
+tests/test_native_joint_production.py:394: AssertionError
+=========================== short test summary info ============================
+FAILED tests/test_native_joint_production.py::test_two_semantic_steps_automatically_extend_real_ancestry_and_three_blocks
+1 failed, 11 passed in 7.58s

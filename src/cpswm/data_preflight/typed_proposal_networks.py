@@ -1,0 +1,241 @@
+"""Three development architecture arms over the same complete typed support.
+
+All visible JSON leaves are encoded, including record order and numeric values.
+Support must be supplied by a runtime provider; labels never construct it here.
+The shared decoder supplies exact normalized nine-factor probabilities. These
+implementations do not resolve the registered architecture/schedule protocols.
+"""
+
+from __future__ import annotations
+
+import json
+from dataclasses import dataclass
+from typing import Any, cast
+
+import torch
+from torch import Tensor, nn
+from torch.nn.utils.rnn import pack_padded_sequence, pad_sequence
+
+from cpswm.data_preflight.proposal_learning import FACTOR_ORDER
+from cpswm.data_preflight.proposal_samples import (
+    ProposalContext,
+    ProposalTarget,
+    export_context,
+    proposal_factor_values,
+)
+from cpswm.system.reproducibility import content_sha256
+
+ARMS = (
+    "typed_factor_graph_transformer",
+    "slot_conditioned_perceiver",
+    "autoregressive_typed_graph_policy",
+)
+
+
+@dataclass(frozen=True)
+class NetworkConfig:
+    hidden_width: int = 64
+    layers: int = 2
+    attention_heads: int = 4
+    perceiver_latent_slots: int = 16
+    max_nodes: int = 4096
+    max_bytes_per_leaf: int = 4096
+
+    def validate(self) -> None:
+        if (self.hidden_width, self.layers, self.attention_heads, self.perceiver_latent_slots) != (
+            64,
+            2,
+            4,
+            16,
+        ):
+            raise ValueError("use the frozen local-development architecture dimensions")
+        if self.max_nodes <= 0 or self.max_bytes_per_leaf <= 0:
+            raise ValueError("positive resource limits required; no history truncation")
+
+
+def leaves(value: Any, path: tuple[str, ...] = ()) -> list[tuple[tuple[str, ...], str]]:
+    if isinstance(value, dict) and value:
+        return [item for key in sorted(value) for item in leaves(value[key], (*path, str(key)))]
+    if isinstance(value, (list, tuple)) and value:
+        return [item for i, v in enumerate(value) for item in leaves(v, (*path, str(i)))]
+    return [(path, json.dumps(value, sort_keys=True, allow_nan=False, separators=(",", ":")))]
+
+
+class TypedProposalNetwork(nn.Module):
+    def __init__(self, arm: str, config: NetworkConfig | None = None) -> None:
+        super().__init__()
+        config = config or NetworkConfig()
+        config.validate()
+        if arm not in ARMS:
+            raise ValueError("unknown architecture arm")
+        self.arm, self.config = arm, config
+        w, h = config.hidden_width, config.attention_heads
+        # Byte encoding avoids a training-label vocabulary or opaque hash buckets.
+        self.byte_embedding = nn.Embedding(257, w, padding_idx=256)
+        self.leaf_encoder = nn.GRU(w, w, batch_first=True)
+        self.axis_embedding = nn.Embedding(len(FACTOR_ORDER), w)
+        self.anchor = nn.Parameter(torch.zeros(1, w))
+        self.encoder = nn.TransformerEncoder(
+            nn.TransformerEncoderLayer(w, h, 4 * w, dropout=0, batch_first=True),
+            config.layers,
+            enable_nested_tensor=False,
+        )
+        if arm == "slot_conditioned_perceiver":
+            self.latents = nn.Parameter(torch.randn(config.perceiver_latent_slots, w) / w**0.5)
+            self.cross_layers = nn.ModuleList(
+                [
+                    nn.MultiheadAttention(w, h, dropout=0, batch_first=True)
+                    for _ in range(config.layers)
+                ]
+            )
+            self.cross_norms = nn.ModuleList([nn.LayerNorm(w) for _ in range(config.layers)])
+        if arm == "autoregressive_typed_graph_policy":
+            self.prefix_encoder = nn.GRU(w, w, num_layers=config.layers, batch_first=True)
+        self.choice_attention = nn.MultiheadAttention(w, h, dropout=0, batch_first=True)
+        self.head = nn.Sequential(nn.Linear(3 * w, w), nn.GELU(), nn.Linear(w, 1))
+
+    def prepare(
+        self, context: ProposalContext, candidates: tuple[ProposalTarget, ...]
+    ) -> PreparedScorer:
+        if type(context) is not ProposalContext:
+            raise ValueError("network input cannot contain a supervision envelope")
+        context = ProposalContext.model_validate(context.model_dump())
+        candidates = tuple(ProposalTarget.model_validate(c.model_dump()) for c in candidates)
+        context.validate_candidates(candidates)
+        # Runtime support is a set. Its caller's enumeration must not change q.
+        candidates = tuple(
+            sorted(candidates, key=lambda c: content_sha256(c.model_dump(mode="json")))
+        )
+        payload = export_context(context)
+        rows = leaves(payload, ("context",))
+        ranges = []
+        for i, candidate in enumerate(candidates):
+            start = len(rows) + 1
+            rows.extend(leaves(candidate.model_dump(mode="json"), ("candidate", str(i))))
+            ranges.append((start, len(rows) + 1))
+        if len(rows) + 1 > self.config.max_nodes:
+            raise ValueError(
+                "resource limit: full history/support exceeds node budget; no truncation"
+            )
+        encoded = [
+            json.dumps([list(path), value], separators=(",", ":")).encode() for path, value in rows
+        ]
+        if any(len(b) > self.config.max_bytes_per_leaf for b in encoded):
+            raise ValueError("resource limit: full leaf exceeds byte budget; no truncation")
+        device = self.anchor.device
+        sequences = [torch.tensor(list(b), dtype=torch.long, device=device) for b in encoded]
+        padded = pad_sequence(sequences, batch_first=True, padding_value=256)
+        packed = pack_padded_sequence(
+            self.byte_embedding(padded),
+            [len(s) for s in sequences],
+            batch_first=True,
+            enforce_sorted=False,
+        )
+        _, hidden = self.leaf_encoder(packed)
+        nodes = torch.cat([self.anchor, hidden[-1]], dim=0)
+        raw_candidates = torch.stack([nodes[a:b].mean(0) for a, b in ranges])
+        if self.arm == "typed_factor_graph_transformer":
+            # Local typed records and shared scalar identities form edges; anchor
+            # connects records so multi-hop evidence is retained across layers.
+            groups = [path[:-1] for path, _ in rows]
+            values = [value for _, value in rows]
+            mask = torch.ones((len(nodes), len(nodes)), dtype=torch.bool, device=device)
+            mask[0, :] = False
+            mask[:, 0] = False
+            for membership in (groups, values):
+                indexed: dict[Any, list[int]] = {}
+                for i, key in enumerate(membership):
+                    indexed.setdefault(key, []).append(i + 1)
+                for members in indexed.values():
+                    indices = torch.tensor(members, dtype=torch.long, device=device)
+                    mask[indices[:, None], indices[None, :]] = False
+            memory = self.encoder(nodes[None], mask=mask)
+            candidate_vectors = torch.stack([memory[0, a:b].mean(0) for a, b in ranges])
+        elif self.arm == "slot_conditioned_perceiver":
+            memory = self.latents[None]
+            for cross, norm in zip(self.cross_layers, self.cross_norms, strict=True):
+                update, _ = cross(memory, nodes[None], nodes[None], need_weights=False)
+                memory = norm(memory + update)
+            memory = self.encoder(memory)
+            candidate_vectors = raw_candidates
+        else:
+            memory = self.encoder(nodes[None])
+            candidate_vectors = torch.stack([memory[0, a:b].mean(0) for a, b in ranges])
+        return PreparedScorer(self, payload, candidates, memory, candidate_vectors, len(rows) + 1)
+
+
+class PreparedScorer:
+    """One graph evaluation, valid for one input and optimizer parameter version."""
+
+    def __init__(
+        self,
+        network: TypedProposalNetwork,
+        context: dict[str, Any],
+        candidates: tuple[ProposalTarget, ...],
+        memory: Tensor,
+        vectors: Tensor,
+        nodes: int,
+    ) -> None:
+        self.network, self.context_hash = network, content_sha256(context)
+        self.factors = tuple(proposal_factor_values(t) for t in candidates)
+        self.candidate_hashes = frozenset(
+            content_sha256(t.model_dump(mode="json")) for t in candidates
+        )
+        self.memory, self.vectors, self.node_count = memory, vectors, nodes
+        self.parameter_versions = tuple(p._version for p in network.parameters())
+
+    def __call__(
+        self,
+        context: dict[str, object],
+        axis: str,
+        prefix: tuple[str, ...],
+        choices: tuple[str, ...],
+        *,
+        runtime_candidates: tuple[ProposalTarget, ...],
+    ) -> Tensor:
+        if (
+            content_sha256(context) != self.context_hash
+            or tuple(p._version for p in self.network.parameters()) != self.parameter_versions
+            or frozenset(content_sha256(t.model_dump(mode="json")) for t in runtime_candidates)
+            != self.candidate_hashes
+        ):
+            raise ValueError("prepared network belongs to another input/support/optimizer state")
+        depth = len(prefix)
+        if depth >= len(FACTOR_ORDER) or axis != FACTOR_ORDER[depth]:
+            raise ValueError("invalid typed autoregressive prefix")
+        compatible = [i for i, row in enumerate(self.factors) if row[:depth] == prefix]
+        expected = {self.factors[i][depth] for i in compatible}
+        if not compatible or set(choices) != expected or len(choices) != len(expected):
+            raise ValueError("conditional choice support is incomplete")
+        queries = torch.stack(
+            [
+                self.vectors[[i for i in compatible if self.factors[i][depth] == c]].mean(0)
+                for c in choices
+            ]
+        )
+        axes = self.network.axis_embedding.weight
+        if depth:
+            prefix_vectors = torch.stack(
+                [
+                    self.vectors[
+                        [i for i, row in enumerate(self.factors) if row[: j + 1] == prefix[: j + 1]]
+                    ].mean(0)
+                    + axes[j]
+                    for j in range(depth)
+                ]
+            )
+            if self.network.arm == "autoregressive_typed_graph_policy":
+                _, h = self.network.prefix_encoder(prefix_vectors[None])
+                conditioned = h[-1, 0]
+            else:
+                conditioned = prefix_vectors.mean(0)
+        else:
+            conditioned = torch.zeros_like(queries[0])
+        queries = queries + axes[depth] + conditioned
+        attended, _ = self.network.choice_attention(
+            queries[None], self.memory, self.memory, need_weights=False
+        )
+        scores = self.network.head(
+            torch.cat([queries, attended[0], conditioned.expand(len(choices), -1)], dim=-1)
+        ).squeeze(-1)
+        return cast(Tensor, scores)

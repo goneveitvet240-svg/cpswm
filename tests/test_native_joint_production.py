@@ -54,6 +54,9 @@ class JointFixture:
     def restore_state(self, state):
         self.calls = state["calls"]
 
+    def build_statistics(self, pid, parent, source, prior, measure, context):
+        return rebuild_conditional_state(prior, (measure,))
+
     def produce(self, context):
         self.calls += 1
         source = context.source
@@ -113,7 +116,7 @@ class JointFixture:
                 eye6,
                 0.6,
             )
-            analytic = rebuild_conditional_state(prior, (measure,))
+            analytic = self.build_statistics(pid, parent, source, prior, measure, context)
             statistics[pid] = analytic
             state = TypedParticleState(
                 particle_id=pid,

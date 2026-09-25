@@ -1,0 +1,144 @@
+FFFFF................................                                    [100%]
+=================================== FAILURES ===================================
+_ test_fully_forged_but_self_consistent_public_package_cannot_claim_author_provenance _
+
+tmp_path = PosixPath('/private/var/folders/x2/000r8p0n6s393lj2sg8wk5f40000gn/T/pytest-of-pangwei/pytest-2086/test_fully_forged_but_self_con0')
+
+    def test_fully_forged_but_self_consistent_public_package_cannot_claim_author_provenance(tmp_path):
+        source, output = tmp_path / "source", tmp_path / "output"
+        complete_public_forgery(source)
+>       with pytest.raises(ValueError, match=r"enrolled|registry|author|source"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE ValueError
+
+tests/test_joint_package_adversarial.py:138: Failed
+----------------------------- Captured stdout call -----------------------------
+{
+  "pose_pairs": 1,
+  "rpl_samples": 3,
+  "hfd_frames": 6
+}
+________ test_hocap_package_rechecks_earlier_subset_before_publication _________
+
+tmp_path = PosixPath('/private/var/folders/x2/000r8p0n6s393lj2sg8wk5f40000gn/T/pytest-of-pangwei/pytest-2086/test_hocap_package_rechecks_ea0')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x11d9c5e00>
+
+    def test_hocap_package_rechecks_earlier_subset_before_publication(tmp_path, monkeypatch):
+        roots = [tmp_path / str(i) for i in range(2)]
+        digest = hashlib.sha256(b"original").hexdigest()
+        for root in roots:
+            root.mkdir()
+            (root / "source.dat").write_bytes(b"original")
+        spec = tmp_path / "spec.json"
+        spec.write_text(
+            json.dumps(
+                {
+                    "hocap_subsets": [
+                        {
+                            "root": str(r),
+                            "raw_sha256": digest,
+                            "annotation_sha256": digest,
+                            "receipts_sha256": digest,
+                        }
+                        for r in roots
+                    ]
+                }
+            )
+        )
+    
+        def assemble(root, **kwargs):
+            i = roots.index(root)
+            if i == 1:
+                (roots[0] / "source.dat").write_bytes(b"substituted after first subset")
+            return {
+                "model_inputs": [
+                    {"sequence_id": f"subject_5/seq{i}", "camera_id": "camera", "frame_index": 0}
+                ],
+                "evaluator_only": [{"objects": [{"visible_mask_pixels": 1, "cross_file_max_abs": 0}]}],
+                "source_files": {"source.dat": digest},
+                "source_unchanged": True,
+                "blockers": [],
+            }
+    
+        monkeypatch.setattr(hocap_tool, "assemble_subset", assemble)
+>       with pytest.raises(ValueError, match=r"source|changed"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE ValueError
+
+tests/test_joint_package_adversarial.py:181: Failed
+___ test_prepared_scorer_rejects_tensor_write_that_preserves_version_counter ___
+
+    def test_prepared_scorer_rejects_tensor_write_that_preserves_version_counter():
+        sample, support = data()
+        old_threads = torch.get_num_threads()
+        torch.set_num_threads(2)
+        try:
+            model = TypedProposalNetwork(ARMS[0]).eval()
+            scorer = model.prepare(sample.runtime_context(), support)
+            before = tuple(p._version for p in model.parameters())
+            model.byte_embedding.weight.data.add_(0.7)
+            assert tuple(p._version for p in model.parameters()) == before
+>           with pytest.raises(ValueError, match=r"model|parameter|optimizer"):
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E           Failed: DID NOT RAISE ValueError
+
+tests/test_joint_package_adversarial.py:195: Failed
+___ test_checkpoint_rejects_fully_rehashed_invalid_weight_payload[nonfinite] ___
+
+tmp_path = PosixPath('/private/var/folders/x2/000r8p0n6s393lj2sg8wk5f40000gn/T/pytest-of-pangwei/pytest-2086/test_checkpoint_rejects_fully_0')
+kind = 'nonfinite'
+
+    @pytest.mark.parametrize("kind", ["nonfinite", "wrong_dtype"])
+    def test_checkpoint_rejects_fully_rehashed_invalid_weight_payload(tmp_path, kind):
+        model = TypedProposalNetwork(ARMS[0]).eval()
+        directory = tmp_path / "model"
+        save_checkpoint(model, {"track": "COMPONENT_FIXTURE_ONLY"}, directory)
+        weights = torch.load(directory / "weights.pt", weights_only=True)
+        key = next(iter(weights))
+        if kind == "nonfinite":
+            weights[key].fill_(float("nan"))
+        else:
+            weights[key] = weights[key].to(torch.float64)
+        torch.save(weights, directory / "weights.pt")
+        manifest = json.loads((directory / "manifest.json").read_text())
+        manifest["weights_sha256"] = hashlib.sha256((directory / "weights.pt").read_bytes()).hexdigest()
+        blob = json.dumps(manifest).encode()
+        (directory / "manifest.json").write_bytes(blob)
+>       with pytest.raises(ValueError, match=r"finite|dtype|tensor|parameter"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE ValueError
+
+tests/test_joint_package_adversarial.py:223: Failed
+__ test_checkpoint_rejects_fully_rehashed_invalid_weight_payload[wrong_dtype] __
+
+tmp_path = PosixPath('/private/var/folders/x2/000r8p0n6s393lj2sg8wk5f40000gn/T/pytest-of-pangwei/pytest-2086/test_checkpoint_rejects_fully_1')
+kind = 'wrong_dtype'
+
+    @pytest.mark.parametrize("kind", ["nonfinite", "wrong_dtype"])
+    def test_checkpoint_rejects_fully_rehashed_invalid_weight_payload(tmp_path, kind):
+        model = TypedProposalNetwork(ARMS[0]).eval()
+        directory = tmp_path / "model"
+        save_checkpoint(model, {"track": "COMPONENT_FIXTURE_ONLY"}, directory)
+        weights = torch.load(directory / "weights.pt", weights_only=True)
+        key = next(iter(weights))
+        if kind == "nonfinite":
+            weights[key].fill_(float("nan"))
+        else:
+            weights[key] = weights[key].to(torch.float64)
+        torch.save(weights, directory / "weights.pt")
+        manifest = json.loads((directory / "manifest.json").read_text())
+        manifest["weights_sha256"] = hashlib.sha256((directory / "weights.pt").read_bytes()).hexdigest()
+        blob = json.dumps(manifest).encode()
+        (directory / "manifest.json").write_bytes(blob)
+>       with pytest.raises(ValueError, match=r"finite|dtype|tensor|parameter"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE ValueError
+
+tests/test_joint_package_adversarial.py:223: Failed
+=========================== short test summary info ============================
+FAILED tests/test_joint_package_adversarial.py::test_fully_forged_but_self_consistent_public_package_cannot_claim_author_provenance
+FAILED tests/test_joint_package_adversarial.py::test_hocap_package_rechecks_earlier_subset_before_publication
+FAILED tests/test_joint_package_adversarial.py::test_prepared_scorer_rejects_tensor_write_that_preserves_version_counter
+FAILED tests/test_joint_package_adversarial.py::test_checkpoint_rejects_fully_rehashed_invalid_weight_payload[nonfinite]
+FAILED tests/test_joint_package_adversarial.py::test_checkpoint_rejects_fully_rehashed_invalid_weight_payload[wrong_dtype]
+5 failed, 32 passed in 15.29s

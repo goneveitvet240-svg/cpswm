@@ -1,0 +1,394 @@
+{
+  "enrollment_review_commit": "cf5f1f873681772574d18c1787c73cb121ae9db1",
+  "enrolled_source_snapshot_verified": true,
+  "annotation_truth_independently_verified": false,
+  "pose": {
+    "matched_object_pose_pairs": 1680,
+    "objects": [
+      "G01_1",
+      "G01_2",
+      "G01_3",
+      "G01_4"
+    ],
+    "subject_sequence_camera_groups": [
+      "subject_7/20231022_190534/043422252387",
+      "subject_7/20231022_190534/046122250168",
+      "subject_7/20231022_190534/105322251225",
+      "subject_7/20231022_190534/105322251564",
+      "subject_7/20231022_190534/108222250342",
+      "subject_7/20231022_190534/117222250549",
+      "subject_8/20231024_180111/043422252387",
+      "subject_8/20231024_180111/046122250168",
+      "subject_8/20231024_180111/105322251225",
+      "subject_8/20231024_180111/105322251564",
+      "subject_8/20231024_180111/108222250342",
+      "subject_8/20231024_180111/117222250549"
+    ],
+    "units": [
+      "m",
+      "m",
+      "m",
+      "rad",
+      "rad",
+      "rad"
+    ],
+    "residual_definition": "t_pred-t_gt; Log(R_pred R_gt^T), camera frame",
+    "mean_residual": [
+      0.0016674942212245825,
+      0.00014034892277171214,
+      -0.0018611789104484376,
+      -0.013579468120796339,
+      -0.0046653870924342955,
+      0.013680303481341197
+    ],
+    "sample_covariance_descriptive_only": [
+      [
+        3.980100943683666e-05,
+        3.635005640364804e-06,
+        1.8380662816764414e-06,
+        -0.00014929710716537147,
+        4.241355801790766e-05,
+        -0.0004292872969528453
+      ],
+      [
+        3.635005640364804e-06,
+        1.9416400557607724e-05,
+        -7.323165712088232e-06,
+        1.9179409602412884e-05,
+        -7.531076048459705e-06,
+        -7.169614094077493e-05
+      ],
+      [
+        1.8380662816764414e-06,
+        -7.323165712088232e-06,
+        7.442032262067742e-05,
+        0.0007375207239817858,
+        -3.7582907515554574e-05,
+        -0.00010452358620029635
+      ],
+      [
+        -0.00014929710716537147,
+        1.9179409602412884e-05,
+        0.0007375207239817858,
+        0.4672282705830916,
+        -0.026305310629252374,
+        0.0009483853548445946
+      ],
+      [
+        4.241355801790766e-05,
+        -7.531076048459705e-06,
+        -3.7582907515554574e-05,
+        -0.026305310629252374,
+        0.27261551263077094,
+        -0.14452931071037123
+      ],
+      [
+        -0.0004292872969528453,
+        -7.169614094077493e-05,
+        -0.00010452358620029635,
+        0.0009483853548445946,
+        -0.14452931071037123,
+        0.2717470599983365
+      ]
+    ],
+    "translation_norm_quantiles_m": [
+      0.006826889612892614,
+      0.011274175854962465,
+      0.0121908209475522,
+      0.2159362659706589
+    ],
+    "rotation_angle_quantiles_deg": [
+      1.7774319613032759,
+      164.61020283153297,
+      178.18347783060094,
+      179.97655113721072
+    ],
+    "quantile_levels": [
+      0.5,
+      0.9,
+      0.95,
+      1
+    ],
+    "prediction_identity": "author ope_demo; exact generating model/checkpoint unverified",
+    "ground_truth_kind": "author optimized labels, not independent physical mocap",
+    "correlated_frames_and_cameras": true,
+    "object_symmetry_adjusted": false,
+    "partition": "spent_external_development_diagnostic",
+    "runtime_noise_calibrated": false,
+    "runtime_covariance_authority": false,
+    "independent_confirmation": false
+  },
+  "rpl": {
+    "samples": 801,
+    "csv_channels": 30,
+    "nominal_hz_author": 120,
+    "actual_sensor_timestamps_available": false,
+    "roles": [
+      "giver",
+      "taker"
+    ],
+    "global_participant_ids_available": false,
+    "rgb_available": false,
+    "author_sensor_kind": "three force torque sensors plus optical motion capture",
+    "max_quaternion_norm_error": 2.447900699920069e-07,
+    "quaternion_component_convention_verified": false,
+    "contact_release_threshold_selected": false,
+    "independent_physical_contact_gold": false,
+    "native_operation_labels": [],
+    "full_proposal_training_ready": false,
+    "source_members": [
+      {
+        "member": "one_saved_handover_New/handover_sample/Wrench_giver_saved.csv",
+        "sha256": "59186c101032521bd84c684ebda95348813812a0dbbfe4ca46f34f3da257aee1"
+      },
+      {
+        "member": "one_saved_handover_New/handover_sample/Wrench_taker_saved.csv",
+        "sha256": "e4cf342bee9b4ebed659d33d4d5167836dbde7db1f2b5e384328630e2f490096"
+      },
+      {
+        "member": "one_saved_handover_New/handover_sample/Wrench_interaction_saved.csv",
+        "sha256": "75638fb5c2c9270d6e18df05887a2aef82496fca2e7139ed81ad60b9d6c00764"
+      },
+      {
+        "member": "one_saved_handover_New/handover_sample/giver_hip_pose_saved.csv",
+        "sha256": "5fac0f8490ceecab40779365e8d40a72599a6fdf241003a2767dc40f61a6a4e6"
+      },
+      {
+        "member": "one_saved_handover_New/handover_sample/giver_ab_pose_saved.csv",
+        "sha256": "c5cefab5cfac4a0268a6adb56ef9db93e4b6f9276bc131ec538177d80110b391"
+      },
+      {
+        "member": "one_saved_handover_New/handover_sample/giver_chest_pose_saved.csv",
+        "sha256": "999c0ff573becfc4b293345cd5235d3b3d33bbd4062b0327864456db823fa2b8"
+      },
+      {
+        "member": "one_saved_handover_New/handover_sample/giver_neck_pose_saved.csv",
+        "sha256": "3a1d17338c303b4efea0f1ab783380cb8cd70e094c1ef4e9cd4247313bb0b0ad"
+      },
+      {
+        "member": "one_saved_handover_New/handover_sample/giver_head_pose_saved.csv",
+        "sha256": "15125ce4b2d7b79c1ade6a353f9045fecd8a066db199f1d9557ef80f88540f42"
+      },
+      {
+        "member": "one_saved_handover_New/handover_sample/giver_LShoulder_pose_saved.csv",
+        "sha256": "06f3d71a0948517f3ed20ed07e7565cded647036a3be8bb27e4e248adca9ebc7"
+      },
+      {
+        "member": "one_saved_handover_New/handover_sample/giver_LUArm_pose_saved.csv",
+        "sha256": "03a7b8c5e0f5dad2e965c304e6aec740a016430eab8439b3009a841114a34a88"
+      },
+      {
+        "member": "one_saved_handover_New/handover_sample/giver_LFArm_pose_saved.csv",
+        "sha256": "791b874b13a1e904efdfe106719e16aa86695d0be5cce64ac8ae5bba9525efc6"
+      },
+      {
+        "member": "one_saved_handover_New/handover_sample/giver_LHand_pose_saved.csv",
+        "sha256": "f198160c845d916e48590dd7e1d891807a9de5e1312dedf89ceeefe8b1bf2394"
+      },
+      {
+        "member": "one_saved_handover_New/handover_sample/giver_RShoulder_pose_saved.csv",
+        "sha256": "e2ffb02ba20e955cbf20c17053edc17dfb48f7d251b7706ed5d4d71935cdc8d8"
+      },
+      {
+        "member": "one_saved_handover_New/handover_sample/giver_RUArm_pose_saved.csv",
+        "sha256": "99cdbb38a255241c1d19881502338773f8636c09a0d0b0a3f91716c2c0e8241b"
+      },
+      {
+        "member": "one_saved_handover_New/handover_sample/giver_RFArm_pose_saved.csv",
+        "sha256": "399833013c97f932eee61c9f8428bb3d4f6577027663c943c77e92bf7149f102"
+      },
+      {
+        "member": "one_saved_handover_New/handover_sample/giver_RHand_pose_saved.csv",
+        "sha256": "a16b7adfd8b16c968809657e4230952ac08ddc5108a91794b65ec88dd65032cf"
+      },
+      {
+        "member": "one_saved_handover_New/handover_sample/taker_hip_pose_saved.csv",
+        "sha256": "c8dc9ebf997cced1c217afa9757d0f7e85d4eac05c948a60070a9fc0121bf0aa"
+      },
+      {
+        "member": "one_saved_handover_New/handover_sample/taker_ab_pose_saved.csv",
+        "sha256": "3c6fcbdfe8e272b50d6fb35d5e975f865405cc93e00db24c571487cc5370a821"
+      },
+      {
+        "member": "one_saved_handover_New/handover_sample/taker_chest_pose_saved.csv",
+        "sha256": "0b4204e5474f4c6880b44617aa18e99dc68fb8bba201067f93e3f32623298771"
+      },
+      {
+        "member": "one_saved_handover_New/handover_sample/taker_neck_pose_saved.csv",
+        "sha256": "c5ac8445633b8fbd40f32802a44acd95e7c7fc23bf0838468e591697b7b2dedc"
+      },
+      {
+        "member": "one_saved_handover_New/handover_sample/taker_head_pose_saved.csv",
+        "sha256": "bf01c243481debe8a09c7684e228a32d459154c697c41c628f31aa0213553f0c"
+      },
+      {
+        "member": "one_saved_handover_New/handover_sample/taker_LShoulder_pose_saved.csv",
+        "sha256": "e97e18fdff1eda22a1ffc2711c2ba1c69d0b9f2e711bcf876326380bd78cfe66"
+      },
+      {
+        "member": "one_saved_handover_New/handover_sample/taker_LUArm_pose_saved.csv",
+        "sha256": "7b5f959ebff29f14a8bf0203631f079f20e2c059e1cc72d0e4f051a51b878bc3"
+      },
+      {
+        "member": "one_saved_handover_New/handover_sample/taker_LFArm_pose_saved.csv",
+        "sha256": "2d300b3fa379d0ab8dcfff1ab0410aab8c6a11fc9c322c2bfe336596cc94f8d7"
+      },
+      {
+        "member": "one_saved_handover_New/handover_sample/taker_LHand_pose_saved.csv",
+        "sha256": "798f208ae11be93b3b57480ec6472231dcbaba5a83b2f78ff4a2642db1d89fec"
+      },
+      {
+        "member": "one_saved_handover_New/handover_sample/taker_RShoulder_pose_saved.csv",
+        "sha256": "55ee5a9daca28a11436b83ea45d817bde571169d01147de2354128580afea9ee"
+      },
+      {
+        "member": "one_saved_handover_New/handover_sample/taker_RUArm_pose_saved.csv",
+        "sha256": "69899141d5cd5995287bdc143ececa7a3b97bffcc2ffdec3cd78f7f1fd265b4e"
+      },
+      {
+        "member": "one_saved_handover_New/handover_sample/taker_RFArm_pose_saved.csv",
+        "sha256": "5b2a8e46f868dfcdab7d2113c0a07cfde454133da0ee7f6b42cc661d68a404c7"
+      },
+      {
+        "member": "one_saved_handover_New/handover_sample/taker_RHand_pose_saved.csv",
+        "sha256": "0e97d36256c7a0efbd3a61ebcc8af5ba18eacca10da56b84f2ceadd44a35f480"
+      },
+      {
+        "member": "one_saved_handover_New/handover_sample/baton_pose_saved.csv",
+        "sha256": "fa1394930d915ca5dac02f24db7bbd30e42caa26879959cbc681a829c5694859"
+      }
+    ]
+  },
+  "hfd_trials": [
+    {
+      "trial": "trial0000",
+      "frames": 313,
+      "raw_wrench_samples": 1142,
+      "metadata": {
+        "task": "human to robot handover",
+        "robot": "Kinova Gen3"
+      },
+      "outcome": 3,
+      "human_class_counts": {
+        "idle": 47,
+        "approach": 53,
+        "interact": 17,
+        "post_idle": 156,
+        "dropped": 40
+      },
+      "human_phase_boundaries": [
+        {
+          "frame_index": 47,
+          "bracket_seconds": [
+            1.7105646133422852,
+            1.7457621097564697
+          ],
+          "from": "idle",
+          "to": "approach",
+          "bracket_is_sampling_interval_not_annotation_error_bound": true
+        },
+        {
+          "frame_index": 100,
+          "bracket_seconds": [
+            3.648669481277466,
+            3.684983253479004
+          ],
+          "from": "approach",
+          "to": "interact",
+          "bracket_is_sampling_interval_not_annotation_error_bound": true
+        },
+        {
+          "frame_index": 117,
+          "bracket_seconds": [
+            4.26853609085083,
+            4.305075168609619
+          ],
+          "from": "interact",
+          "to": "dropped",
+          "bracket_is_sampling_interval_not_annotation_error_bound": true
+        },
+        {
+          "frame_index": 157,
+          "bracket_seconds": [
+            5.731355667114258,
+            5.767580270767212
+          ],
+          "from": "dropped",
+          "to": "post_idle",
+          "bracket_is_sampling_interval_not_annotation_error_bound": true
+        }
+      ],
+      "wrench_kind": "estimated wrist wrench from sensed joint torques",
+      "zero_raw_wrench_rows": 0,
+      "zero_resampled_wrench_rows": 0,
+      "frame_times_outside_raw_wrench_range": 1,
+      "human_label_provenance": "single external human annotator using video and force torque",
+      "robot_label_provenance": "extracted from joint data",
+      "independent_second_human_review": false,
+      "temporal_boundary_ambiguity": true,
+      "actor_identity_labels_available": false,
+      "contact_release_gold": false,
+      "partition": "author_train_spent_development_here",
+      "full_proposal_training_ready": false,
+      "decoded_frames": 313,
+      "frame_shape": [
+        480,
+        640,
+        3
+      ],
+      "video_sha256": "f6b4da2e4cda0b2cba46b1023f8dc49350cab72198b0de27fc7cc17225aca1e8"
+    },
+    {
+      "trial": "trial0002",
+      "frames": 584,
+      "raw_wrench_samples": 2327,
+      "metadata": {
+        "task": "robot to human handover",
+        "robot": "Toyota HSR"
+      },
+      "outcome": 1,
+      "human_class_counts": {
+        "idle": 584
+      },
+      "human_phase_boundaries": [],
+      "wrench_kind": "wrist force torque sensor",
+      "zero_raw_wrench_rows": 2112,
+      "zero_resampled_wrench_rows": 533,
+      "frame_times_outside_raw_wrench_range": 0,
+      "human_label_provenance": "single external human annotator using video and force torque",
+      "robot_label_provenance": "extracted from joint data",
+      "independent_second_human_review": false,
+      "temporal_boundary_ambiguity": true,
+      "actor_identity_labels_available": false,
+      "contact_release_gold": false,
+      "partition": "author_train_spent_development_here",
+      "full_proposal_training_ready": false,
+      "decoded_frames": 584,
+      "frame_shape": [
+        480,
+        640,
+        3
+      ],
+      "video_sha256": "6ecc29f82367a03d44100b634dfafe28b239612186d72017e11d76373215361e"
+    }
+  ],
+  "source_sha256s": {
+    "ope-receipts.json": "86e79ea3754c1d1e27140b85e05bbc7a890d453ab78cd111c678a667013e9142",
+    "ope_gt.json": "ec5a39654670d2d861af5e4e44829886043e1b399d2bdff80404fe1e39a03a48",
+    "ope_demo.json": "a74cf3c7fdd5712111ea5f73c7aeeab9aaaf3a95737d9218994c23a2ad278047",
+    "rpl/receipts.json": "d59f0964a23382dd6faf8fd01a4955748c79d4cc9598c0839264a6e3109905cd",
+    "rpl/one_saved_handover_New.zip": "946c2909adce0e86cb1a12d91182a921544a902c770805d97af043bce74c929f",
+    "rpl/README.md": "7774331aade7dcb4ccdc5736a35e4c938b0ca39ff0a00a92f9aa00241446e2b6",
+    "rpl/LICENSE": "7df5b891155a94028c1b388849281077788a2d6820d4e9116bb9c154da5f8925",
+    "rpl/Readme_text.txt": "52ac0213e51c1bb451a9c9a9dfe5e312a9db8cf33af9475ac1715ae54fdb2b40",
+    "rpl/Readme_description_handover.txt": "d6853ac706ce891a28f5ea8ef61526e64a9a01585a8faa864131c649dfe233d0",
+    "handover-record.json": "11b251e9b1520675cf7db6e0e7224a45324ddf427989dfe3fb56afc839818235",
+    "datasheet.pdf": "faee6c57ce920fb845d5a3be5a7485b94a18c9489915018eadecf286659a17d1",
+    "training_labels.tar.gz": "4cfbdd9ee4b7b1b22fe38dc456b60a1be4d4b62e6deeae33b98ac8c75a26019b",
+    "class_names.json": "a529dd91b4605fad26745f591f05b68a4511d91560c4c0b75d526ab5c4f8a656",
+    "sample_training_set.verified.tar.gz": "4203bc5685002ba959cc6356a5d0b3231a161d6259e6335727b766e30afeee93"
+  },
+  "runtime_label_injection": false,
+  "native_proposal_supervision_complete": false,
+  "natural_closed_loop_verified": false
+}

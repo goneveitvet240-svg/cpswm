@@ -1,3 +1,13 @@
+# A：三解析块消费与可恢复推理（2026-09-26 交付）
+
+- 分支 `codex/pc-a-joint-revision-runtime-20260926`，base `26736d5acde0112c4a69863a56977bb044aff3eb`（PR38）。首轮源码 `fc3537d8fd0540ff95a3cab3724004f69502e88a`；修复/第二轮源码 `69d8b6a615c2c12f49e4573905596b709b16e809`，741 Python 文件逐个与 Git 对象一致。
+- 自动完整提议现可实际重算三解析块，保留六维位置＋朝向、原 q 目标与推导状态绑定；替换潜在后缀不删除原始证据。新会话把神经采样和条件计算的失败/恢复合成原子边界，不自动晋升粒子、写账本或发布。
+- 首轮 466 一般回归通过但专项 4 failed：模型标识漂移、重入后孤立日志、合法父历史恢复误拒绝、回滚失败后继续出快照。修复后 26 定向通过；第二轮 466 回归＋11 两轮专项、mypy 363、Ruff、三实际检查点命令均通过，源码前后相同。
+- 每个此前已训练检查点处理 88 个完整六操作候选；非法源注入不推进状态，恢复后 3 次续跑精确一致。输入/先验/条件模型为显式受控夹具，无自然校准声明；新训练 0、原生发布/记忆/动作入口调用 0。实际活跃集合的六操作修订与联合发布仍未完成。
+- 两轮 A 自审，独立审核者 0，B 未复核；保留完整 H/R/I/C/Z/r/V、三解析块、七算子和全部研究范围。未选择具体神经架构、重采样、先验或自然训练日程。
+- [报告](../reviews/pc_a/joint_revision_runtime_2026-09-26/REPORT.md)、[复跑](../reviews/pc_a/joint_revision_runtime_2026-09-26/COMMANDS.md)、[证据](../reviews/pc_a/joint_revision_runtime_2026-09-26/EVIDENCE_SUMMARY.json)。23 原始工件共 11,653,676 bytes 已哈希校验备份主仓 `output/joint-revision-runtime-20260926/`。
+- 八小时窗口继续至 11:18:22；下一轮重点是采样语义正确的结构化权重/活跃修订消费及联合发布，不把完整枚举/q 当正确后验，不改名为旧 prepared 绕过。B 比较/独立验收职责保持，未合并集成。
+
 # A：三解析块与六操作修订消费（2026-09-26 开工）
 
 - 八小时窗口第二轮，基于已完成双审的 [PR38](https://github.com/goneveitvet240-svg/cpswm/pull/38)。独立分支 `codex/pc-a-joint-revision-runtime-20260926`；目录 `/private/tmp/cpswm-pc-a-joint-revision-runtime-20260926`；base `26736d5acde0112c4a69863a56977bb044aff3eb`。

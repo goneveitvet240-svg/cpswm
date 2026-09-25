@@ -1,0 +1,192 @@
+FFFF                                                                     [100%]
+=================================== FAILURES ===================================
+_ test_between_request_model_identity_change_cannot_silently_bind_new_observation_model _
+
+tmp_path = PosixPath('/private/var/folders/x2/000r8p0n6s393lj2sg8wk5f40000gn/T/pytest-of-pangwei/pytest-2102/test_between_request_model_ide0')
+
+    def test_between_request_model_identity_change_cannot_silently_bind_new_observation_model(tmp_path):
+        session, _, _, model, args = setup(tmp_path, ARMS[0])
+        before = session.snapshot()
+        model.observation_model_id = "changed-model-under-old-artifact"
+        try:
+>           with pytest.raises(ValueError, match="model"):
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E           Failed: DID NOT RAISE ValueError
+
+docs/reviews/pc_a/joint_revision_runtime_2026-09-26/audit_round1.py:37: Failed
+___ test_reentrant_success_then_outer_failure_cannot_leave_an_orphan_journal ___
+
+tmp_path = PosixPath('/private/var/folders/x2/000r8p0n6s393lj2sg8wk5f40000gn/T/pytest-of-pangwei/pytest-2102/test_reentrant_success_then_ou0')
+
+    def test_reentrant_success_then_outer_failure_cannot_leave_an_orphan_journal(tmp_path):
+        class Reentrant(FixtureModel):
+            def checkpoint_state(self):
+                return {}
+    
+            def restore_state(self, state):
+                pass
+    
+            def measure(self, ctx, target, group, state):
+                if not self.triggered:
+                    self.triggered = True
+                    self.session.process(**{**self.args, "request_id": "nested"})
+                    raise RuntimeError("outer interrupted after nested success")
+                return super().measure(ctx, target, group, state)
+    
+        path, pin = checkpoint(tmp_path, ARMS[0])
+        model = Reentrant()
+        model.triggered = False
+        session = ConditionedInferenceSession(
+            path,
+            manifest_sha256=pin,
+            seed=11,
+            prior=prior(),
+            model=model,
+            expected_model_binding_sha256=model.binding_sha256,
+        )
+        generated, kwargs = inputs()
+        args = dict(
+            request_id="outer",
+            context=generated.context,
+            bootstrap_ledger_lineage_ref=LEDGER,
+            groups=kwargs["groups"],
+            parent_statistics={},
+        )
+        model.session, model.args = session, args
+        before = session.snapshot()
+        with pytest.raises(RuntimeError):
+            session.process(**args)
+>       assert session.snapshot() == before
+E       assert b'{"checkpoin..."],"seed":11}' == b'{"checkpoin...[],"seed":11}'
+E         
+E         At index 1255 diff: b'"' != b']'
+E         Use -v to get more diff
+
+docs/reviews/pc_a/joint_revision_runtime_2026-09-26/audit_round1.py:82: AssertionError
+_____ test_legal_full_parent_history_with_shared_immutable_values_restores _____
+
+tmp_path = PosixPath('/private/var/folders/x2/000r8p0n6s393lj2sg8wk5f40000gn/T/pytest-of-pangwei/pytest-2102/test_legal_full_parent_history0')
+
+    def test_legal_full_parent_history_with_shared_immutable_values_restores(tmp_path):
+        path, pin = checkpoint(tmp_path, ARMS[0])
+        ctx, parents = bound_posterior()
+        raw = ctx.model_dump()
+        raw["parents"] = [raw["parents"][0], raw["parents"][2]]
+        raw["revisions"] = [raw["revisions"][0], raw["revisions"][2]]
+        raw["visible"]["pixel_observations"] = raw["visible"]["pixel_observations"][:2]
+        ctx = ProposalContext.model_validate(raw)
+        parents = {
+            key: value
+            for key, value in parents.items()
+            if key in {p.state.particle_id for p in ctx.parents}
+        }
+        generated, kwargs = inputs(ctx)
+        session = ConditionedInferenceSession(
+            path,
+            manifest_sha256=pin,
+            seed=11,
+            prior=prior(),
+            model=FixtureModel(),
+            expected_model_binding_sha256=FixtureModel.binding_sha256,
+        )
+        result = session.process(
+            request_id="parents",
+            context=ctx,
+            bootstrap_ledger_lineage_ref=LEDGER,
+            groups=kwargs["groups"],
+            parent_statistics=parents,
+        )
+        assert len(result.conditioned.candidates) == 88
+        blob = session.snapshot()
+>       recovered = restore(path, pin, blob)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^
+
+docs/reviews/pc_a/joint_revision_runtime_2026-09-26/audit_round1.py:118: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_conditioned_inference_session.py:41: in restore
+    return ConditionedInferenceSession.restore(
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+cls = <class 'cpswm.system.conditioned_inference_session.ConditionedInferenceSession'>
+checkpoint = PosixPath('/private/var/folders/x2/000r8p0n6s393lj2sg8wk5f40000gn/T/pytest-of-pangwei/pytest-2102/test_legal_full_parent_history0/typed_factor_graph_transformer')
+manifest_sha256 = '7fc09556ebb8d13dc71057926140199de026b64e2e9aec70aea2b58d5fc12a17'
+snapshot = b'{"checkpoint_manifest_sha256":"7fc09556ebb8d13dc71057926140199de026b64e2e9aec70aea2b58d5fc12a17","conditional_model_...06fb6f1405a2\\"},{\\"value\\":\\"29eac9ab1632378d6bd0b19f4d25d03ec29ce6484a9273da2f41fcec692b8057\\"}]}]}"],"seed":11}'
+snapshot_sha256 = 'abe9d08edd2a937e8f95bc542be6ddd21119bc5dd3c459a7ddce5046953691c7'
+prior = ConditionalAnalyticState(locations=(UUID('00000000-0000-0000-0000-00000000000b'), UUID('00000000-0000-0000-0000-000000...1.0, 0.0), (0.0, 0.0, 0.0, 0.0, 0.0, 1.0)), information_vector=(0.0, 0.0, 0.0, 0.0, 0.0, 0.0), evidence_cluster_ids=())
+model = <test_conditioned_proposal_runtime.FixtureModel object at 0x10fb37e30>
+expected_model_binding_sha256 = 'fe610c138384cb9139ec5d12759da3f7e71071780bb53171d95ebb6225ef3d70'
+
+    @classmethod
+    def restore(
+        cls,
+        checkpoint: Path,
+        *,
+        manifest_sha256: str,
+        snapshot: bytes,
+        snapshot_sha256: str,
+        prior: ConditionalAnalyticState,
+        model: ConditionalProposalModel,
+        expected_model_binding_sha256: str,
+    ) -> ConditionedInferenceSession:
+        if hashlib.sha256(snapshot).hexdigest() != snapshot_sha256:
+            raise ValueError("conditioned inference snapshot identity mismatch")
+        payload: dict[str, Any] = json.loads(snapshot)
+        if (
+            payload.get("format") != "conditioned-inference-session@1"
+            or payload["checkpoint_manifest_sha256"] != manifest_sha256
+            or payload["prior_sha256"] != content_sha256(prior)
+            or payload["conditional_model_binding_sha256"] != expected_model_binding_sha256
+        ):
+            raise ValueError("conditioned inference dependencies differ")
+        result = cls(
+            checkpoint,
+            manifest_sha256=manifest_sha256,
+            seed=payload["seed"],
+            prior=prior,
+            model=model,
+            expected_model_binding_sha256=expected_model_binding_sha256,
+        )
+        for raw in payload["requests"]:
+            request = StateCodec().loads(raw)
+            if type(request) is not ConditioningRequest or request.request_id in result._requests:
+                raise ValueError("invalid or repeated conditional inference request")
+            actual = result.process(
+                request_id=request.request_id,
+                context=ProposalContext.model_validate_json(request.context_json),
+                bootstrap_ledger_lineage_ref=request.ledger_lineage_ref,
+                groups=request.groups,
+                parent_statistics=request.parent_statistics,
+                max_candidates=request.max_candidates,
+            )
+            if content_sha256(actual) != content_sha256(request.result):
+                raise ValueError("conditional inference differs from complete model replay")
+        if result.snapshot() != encoded(payload):
+>           raise ValueError("conditional journal, sampling history or authority changed")
+E           ValueError: conditional journal, sampling history or authority changed
+
+src/cpswm/system/conditioned_inference_session.py:225: ValueError
+______ test_failed_checkpoint_rollback_must_stop_the_damaged_live_session ______
+
+tmp_path = PosixPath('/private/var/folders/x2/000r8p0n6s393lj2sg8wk5f40000gn/T/pytest-of-pangwei/pytest-2102/test_failed_checkpoint_rollbac0')
+
+    def test_failed_checkpoint_rollback_must_stop_the_damaged_live_session(tmp_path):
+        session, path, pin, model, args = setup(tmp_path, ARMS[0])
+        before = session.snapshot()
+        weights = path / "weights.pt"
+        authentic = weights.read_bytes()
+        model.attack = "source"
+        weights.write_bytes(authentic + b"changed-during-transaction")
+        try:
+            with pytest.raises((ValueError, RuntimeError)):
+                session.process(**args)
+>           with pytest.raises(RuntimeError, match="recover|rollback"):
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E           Failed: DID NOT RAISE RuntimeError
+
+docs/reviews/pc_a/joint_revision_runtime_2026-09-26/audit_round1.py:132: Failed
+=========================== short test summary info ============================
+FAILED docs/reviews/pc_a/joint_revision_runtime_2026-09-26/audit_round1.py::test_between_request_model_identity_change_cannot_silently_bind_new_observation_model
+FAILED docs/reviews/pc_a/joint_revision_runtime_2026-09-26/audit_round1.py::test_reentrant_success_then_outer_failure_cannot_leave_an_orphan_journal
+FAILED docs/reviews/pc_a/joint_revision_runtime_2026-09-26/audit_round1.py::test_legal_full_parent_history_with_shared_immutable_values_restores
+FAILED docs/reviews/pc_a/joint_revision_runtime_2026-09-26/audit_round1.py::test_failed_checkpoint_rollback_must_stop_the_damaged_live_session
+4 failed in 4.04s

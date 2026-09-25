@@ -1,0 +1,13 @@
+Traceback (most recent call last):
+  File "/private/tmp/cpswm-pc-a-joint-revision-runtime-20260926/tools/run_conditioned_proposal_development.py", line 167, in <module>
+    run(args.training, args.output)
+    ~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/private/tmp/cpswm-pc-a-joint-revision-runtime-20260926/tools/run_conditioned_proposal_development.py", line 86, in run
+    restored = ConditionedInferenceSession.restore(
+        training / arm,
+    ...<5 lines>...
+        expected_model_binding_sha256=model.binding_sha256,
+    )
+  File "/private/tmp/cpswm-pc-a-joint-revision-runtime-20260926/src/cpswm/system/conditioned_inference_session.py", line 225, in restore
+    raise ValueError("conditional journal, sampling history or authority changed")
+ValueError: conditional journal, sampling history or authority changed

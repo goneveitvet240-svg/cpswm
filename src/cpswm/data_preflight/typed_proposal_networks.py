@@ -8,8 +8,9 @@ implementations do not resolve the registered architecture/schedule protocols.
 
 from __future__ import annotations
 
+import hashlib
 import json
-from dataclasses import dataclass
+from dataclasses import asdict, dataclass
 from typing import Any, cast
 
 import torch
@@ -61,6 +62,20 @@ def leaves(value: Any, path: tuple[str, ...] = ()) -> list[tuple[tuple[str, ...]
     return [(path, json.dumps(value, sort_keys=True, allow_nan=False, separators=(",", ":")))]
 
 
+def parameter_fingerprint(network: TypedProposalNetwork) -> str:
+    """Bind actual parameter/buffer bytes, including writes outside _version."""
+    digest = hashlib.sha256()
+    digest.update(
+        json.dumps({"arm": network.arm, "config": asdict(network.config)}, sort_keys=True).encode()
+    )
+    for name, value in network.state_dict().items():
+        digest.update(
+            json.dumps([name, str(value.dtype), list(value.shape), str(value.device)]).encode()
+        )
+        digest.update(value.detach().contiguous().view(torch.uint8).cpu().numpy().tobytes())
+    return digest.hexdigest()
+
+
 class TypedProposalNetwork(nn.Module):
     def __init__(self, arm: str, config: NetworkConfig | None = None) -> None:
         super().__init__()
@@ -106,6 +121,7 @@ class TypedProposalNetwork(nn.Module):
         candidates = tuple(
             sorted(candidates, key=lambda c: content_sha256(c.model_dump(mode="json")))
         )
+        parameter_sha256 = parameter_fingerprint(self)
         payload = export_context(context)
         rows = leaves(payload, ("context",))
         ranges = []
@@ -161,7 +177,11 @@ class TypedProposalNetwork(nn.Module):
         else:
             memory = self.encoder(nodes[None])
             candidate_vectors = torch.stack([memory[0, a:b].mean(0) for a, b in ranges])
-        return PreparedScorer(self, payload, candidates, memory, candidate_vectors, len(rows) + 1)
+        if parameter_fingerprint(self) != parameter_sha256:
+            raise ValueError("model parameters changed during graph preparation")
+        return PreparedScorer(
+            self, payload, candidates, memory, candidate_vectors, len(rows) + 1, parameter_sha256
+        )
 
 
 class PreparedScorer:
@@ -175,6 +195,7 @@ class PreparedScorer:
         memory: Tensor,
         vectors: Tensor,
         nodes: int,
+        parameter_sha256: str,
     ) -> None:
         self.network, self.context_hash = network, content_sha256(context)
         self.factors = tuple(proposal_factor_values(t) for t in candidates)
@@ -183,6 +204,7 @@ class PreparedScorer:
         )
         self.memory, self.vectors, self.node_count = memory, vectors, nodes
         self.parameter_versions = tuple(p._version for p in network.parameters())
+        self.parameter_sha256 = parameter_sha256
 
     def __call__(
         self,
@@ -196,6 +218,7 @@ class PreparedScorer:
         if (
             content_sha256(context) != self.context_hash
             or tuple(p._version for p in self.network.parameters()) != self.parameter_versions
+            or parameter_fingerprint(self.network) != self.parameter_sha256
             or frozenset(content_sha256(t.model_dump(mode="json")) for t in runtime_candidates)
             != self.candidate_hashes
         ):
@@ -238,4 +261,6 @@ class PreparedScorer:
         scores = self.network.head(
             torch.cat([queries, attended[0], conditioned.expand(len(choices), -1)], dim=-1)
         ).squeeze(-1)
+        if parameter_fingerprint(self.network) != self.parameter_sha256:
+            raise ValueError("model parameters changed during conditional scoring")
         return cast(Tensor, scores)

@@ -10,7 +10,11 @@ from pathlib import Path, PurePosixPath
 import cv2
 import numpy as np
 
-from cpswm.data_preflight.hocap_joint_supervision import pinned_bytes, strict_json
+from cpswm.data_preflight.hocap_joint_supervision import strict_json
+from cpswm.data_preflight.public_evidence_registry import (
+    ENROLLMENT_REVIEW,
+    enrolled_source_snapshot,
+)
 from cpswm.data_preflight.public_handover_evidence import (
     inspect_hfd_trial,
     inspect_rpl_archive,
@@ -29,14 +33,16 @@ def jsonl(path, rows):
 
 
 def run(source: Path, output: Path):
+    snapshot = enrolled_source_snapshot(source)
     output.mkdir(parents=True, exist_ok=False)
     source_hashes = {}
 
     def author_bytes(name, sha=None, md5=None):
-        p = source / name
-        b = p.read_bytes()
-        if sha is not None:
-            b = pinned_bytes(source, name, sha)
+        if name not in snapshot:
+            raise ValueError("source not in enrolled author registry")
+        b = snapshot[name]
+        if sha is not None and hashlib.sha256(b).hexdigest() != sha:
+            raise ValueError("source SHA256 differs from receipt")
         if md5 is not None and hashlib.md5(b).hexdigest() != md5:
             raise ValueError("author MD5 mismatch: " + name)
         source_hashes[name] = hashlib.sha256(b).hexdigest()
@@ -122,11 +128,12 @@ def run(source: Path, output: Path):
                     "video_sha256": hashlib.sha256(video).hexdigest(),
                 }
             )
-    if any(
-        hashlib.sha256((source / n).read_bytes()).hexdigest() != h for n, h in source_hashes.items()
-    ):
+    if enrolled_source_snapshot(source) != snapshot:
         raise ValueError("public source changed during inspection")
     result = {
+        "enrollment_review_commit": ENROLLMENT_REVIEW,
+        "enrolled_source_snapshot_verified": True,
+        "annotation_truth_independently_verified": False,
         "pose": pose_summary,
         "rpl": rpl_summary,
         "hfd_trials": summaries,

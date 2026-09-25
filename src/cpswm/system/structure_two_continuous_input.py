@@ -30,6 +30,12 @@ from cpswm.contracts.base import require_aware
 from cpswm.perception_mapping.adapters.rgbd_capture import RawModalityObservation
 from cpswm.system.continual.project_one_feedback import ExecutionFeedbackInterpretationPolicy
 from cpswm.system.continuous_state_store import ContinuousStateStore
+from cpswm.system.native_joint_production import (
+    NativeJointContext,
+    NativeJointProducer,
+    ProducedJointCandidates,
+    producer_binding,
+)
 from cpswm.system.prototype_spine import (
     PrototypeRevisionResult,
     PrototypeStepResult,
@@ -46,6 +52,7 @@ from cpswm.system.structure_two_execution import (
     seal_trace_commit_ack,
     verify_execution_trace,
 )
+from cpswm.system.structure_two_particle_workspace import native_content_sha256
 from cpswm.system.structure_two_production_system import StructureTwoProductionSystem
 from cpswm.world_model.grounded_search import RealizedCIAVObservation
 
@@ -228,6 +235,7 @@ class ContinuousEvidenceInput:
         ]
         | None = None,
         state_store: ContinuousStateStore | None = None,
+        joint_producer: NativeJointProducer | None = None,
     ) -> None:
         if execution_lane not in {"legacy_component_diagnostic", "registered_p5_first"}:
             raise ValueError("unsupported continuous execution lane")
@@ -244,6 +252,10 @@ class ContinuousEvidenceInput:
         self._system = system
         self._scope = (household_id, session_id, trace_id)
         self._producer = producer
+        self._joint_producer = joint_producer
+        self._joint_dependency_binding = producer_binding(joint_producer)
+        self._joint_published_batch_sha256: str | None = None
+        self._joint_published_source_sha256: str | None = None
         self._last_cutoff: datetime | None = None
         self._raw: dict[UUID, RawModalityObservation] = {}
         self._received: dict[UUID, datetime] = {}
@@ -693,6 +705,19 @@ class ContinuousEvidenceInput:
         from cpswm.system.structure_two_joint_consumption import JointDecisionView
 
         core = self._system.core
+        if producer_binding(self._joint_producer) != self._joint_dependency_binding:
+            raise ValueError("joint producer dependency changed")
+        if self._joint_producer is not None and (
+            self._joint_published_batch_sha256 is None
+            or self._joint_published_batch_sha256
+            != native_content_sha256(core._particle_workspace.batch)
+        ):
+            raise ValueError("current batch was not published by the configured joint producer")
+        if self._joint_producer is not None and (
+            core.current_posterior_projection_source().body_sha256
+            != self._joint_published_source_sha256
+        ):
+            raise ValueError("joint posterior source changed; production required")
         # Use the existing native consumer validation before exposing whole atoms.
         core.prepared_particle_location_marginal()
         batch = core._particle_workspace.batch
@@ -704,6 +729,87 @@ class ContinuousEvidenceInput:
             batch=batch,
             records=core._particle_workspace.records,
         )
+
+    def produce_joint_posterior(self) -> None:
+        """Populate the current native batch with the configured producer, once.
+
+        Called by the collector after P5, before planning. No producer means no
+        synthetic fallback. Revision invalidation still requires the selected
+        replay kernel; this seam never clears invalidations or reuses stale mass.
+        """
+        with self._lock, self._system.core._execution_lock:
+            self._enter()
+            producer = self._joint_producer
+            previous = None
+            try:
+                if producer_binding(producer) != self._joint_dependency_binding:
+                    raise ValueError("joint producer dependency changed")
+                if producer is None:
+                    return
+                if self._execution_lane != "registered_p5_first":
+                    raise ValueError("joint production requires registered P5-first")
+                core = self._system.core
+                core._check_particle_workspace_binding()
+                core._validate_particle_input_anchors()
+                workspace = core._particle_workspace
+                if workspace.invalidated_revisions:
+                    raise ValueError("joint posterior requires full particle revision replay")
+                source = core.current_posterior_projection_source()
+                if workspace.batch is not None:
+                    if self._joint_published_batch_sha256 != native_content_sha256(workspace.batch):
+                        raise ValueError(
+                            "current batch was not published by the configured joint producer"
+                        )
+                    if (
+                        workspace.batch.snapshot_id == core.current_snapshot.snapshot_id
+                        and self._joint_published_source_sha256 == source.body_sha256
+                    ):
+                        core.prepared_particle_location_marginal()
+                        return
+                if self._last_cutoff is None:
+                    raise ValueError("joint production requires an advanced semantic source")
+                context = deepcopy(
+                    NativeJointContext(
+                        source=source,
+                        previous_batch=workspace.batch,
+                        records=tuple(workspace.records.values()),
+                        ledger_head_sha256=core._hybrid_loop.ledger.export_state().manifest.head_hash,
+                        visible_prefix=self.visible_prefix(cutoff=self._last_cutoff),
+                        cutoff=self._last_cutoff,
+                    )
+                )
+                context_hash = context.content_sha256
+                previous = deepcopy(producer.checkpoint_state())
+                produced = deepcopy(producer.produce(context))
+                if (
+                    type(produced) is not ProducedJointCandidates
+                    or produced.context_sha256 != context_hash
+                    or produced.source_posterior_id != source.source_id
+                    or produced.source_body_sha256 != source.body_sha256
+                    or produced.dependency_sha256 != self._joint_dependency_binding
+                    or producer_binding(producer) != self._joint_dependency_binding
+                ):
+                    raise ValueError(
+                        "joint candidates differ from the current source or dependency"
+                    )
+                core.stage_prepared_particle_candidates(
+                    receipts=produced.receipts,
+                    statistics=produced.statistics,
+                    unresolved_log_weight=produced.unresolved_log_weight,
+                )
+                self._joint_published_batch_sha256 = native_content_sha256(workspace.batch)
+                self._joint_published_source_sha256 = source.body_sha256
+                self._persist()
+            except BaseException:
+                if producer is not None and previous is not None and not self._durability_failed:
+                    try:
+                        producer.restore_state(previous)
+                    except BaseException:
+                        self._durability_failed = True
+                        raise
+                raise
+            finally:
+                self._busy = False
 
     def current_joint_decision_view(self) -> JointDecisionView:
         """Read this owner's current native batch without accepting caller posterior mass."""
@@ -917,6 +1023,13 @@ class ContinuousEvidenceInput:
                 if not callable(getattr(self._producer, "checkpoint_state", None)):
                     raise ValueError("durable perception producer must implement checkpoint_state")
                 producer_state = self._producer.checkpoint_state()
+            if producer_binding(self._joint_producer) != self._joint_dependency_binding:
+                raise ValueError("joint producer dependency changed before checkpoint")
+            joint_state = (
+                deepcopy(self._joint_producer.checkpoint_state())
+                if self._joint_producer is not None
+                else None
+            )
             fields = {
                 k: v
                 for k, v in vars(self).items()
@@ -925,12 +1038,14 @@ class ContinuousEvidenceInput:
                     "_lock",
                     "_busy",
                     "_producer",
+                    "_joint_producer",
                     "_context_builder",
                     "_state_store",
                     "_durability_failed",
                     "_checkpoint_suspended",
                 }
             }
+            fields["_joint_producer_state"] = joint_state
             self._state_store.save(
                 {
                     "fields": fields,
@@ -953,6 +1068,7 @@ class ContinuousEvidenceInput:
             AdaptiveExecutionContext,
         ]
         | None = None,
+        joint_producer: NativeJointProducer | None = None,
     ) -> ContinuousEvidenceInput:
         """Restore one owned system graph; never replay actions or reinitialize a core.
 
@@ -971,6 +1087,9 @@ class ContinuousEvidenceInput:
             raise ValueError("checkpoint perception dependency missing or changed")
         restored = object.__new__(cls)
         restored.__dict__.update(saved["fields"])
+        expected_joint = getattr(restored, "_joint_dependency_binding", None)
+        if producer_binding(joint_producer) != expected_joint:
+            raise ValueError("checkpoint joint producer dependency missing or changed")
         if not isinstance(restored._system, StructureTwoProductionSystem):
             raise ValueError("checkpoint does not own a production system")
         if restored._execution_lane == "registered_p5_first" and context_builder is None:
@@ -979,6 +1098,19 @@ class ContinuousEvidenceInput:
             if not callable(getattr(producer, "restore_state", None)):
                 raise ValueError("durable perception producer must implement restore_state")
             producer.restore_state(saved["producer_state"])
+        joint_state = restored.__dict__.pop("_joint_producer_state", None)
+        if joint_producer is not None:
+            joint_producer.restore_state(deepcopy(joint_state))
+            if producer_binding(joint_producer) != expected_joint:
+                raise ValueError("restored joint producer dependency changed")
+        restored._joint_producer = joint_producer
+        restored._joint_dependency_binding = expected_joint
+        restored._joint_published_batch_sha256 = getattr(
+            restored, "_joint_published_batch_sha256", None
+        )
+        restored._joint_published_source_sha256 = getattr(
+            restored, "_joint_published_source_sha256", None
+        )
         restored._producer = producer
         restored._context_builder = context_builder
         restored._state_store = store

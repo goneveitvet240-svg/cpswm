@@ -15,6 +15,7 @@ from typing import Protocol
 from cpswm.contracts.grounded_search import ActiveObservationPlan
 from cpswm.perception_mapping.adapters.rgbd_capture import RawModalityObservation
 from cpswm.system.joint_camera_policy import CameraModelSources, JointCameraProblem
+from cpswm.system.native_joint_production import NativeJointProducer
 from cpswm.system.structure_two_adaptive_runtime import AdaptiveExecutionContext
 from cpswm.system.structure_two_continuous_input import (
     ContinuousEvidenceInput,
@@ -50,6 +51,7 @@ class ContinuousRuntimeComponents:
         [StructureTwoProductionSystem, GroundedTransition, datetime, int], AdaptiveExecutionContext
     ]
     camera_model: ContinuousCameraModel
+    joint_producer: NativeJointProducer | None = None
 
 
 @dataclass(frozen=True)
@@ -102,6 +104,7 @@ def collect_posterior_step(
             if stream._pending_step is not None:
                 stream.advance(cutoff=stream._pending_step["cutoff"])
             receipt = stream.advance(cutoff=decision_time)
+            stream.produce_joint_posterior()
             view = stream.current_joint_decision_view()
             problem = JointCameraProblem.model_validate(
                 model.problem(

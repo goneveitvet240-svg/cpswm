@@ -103,11 +103,10 @@ def producer_binding(producer: NativeJointProducer | None) -> str | None:
 
 
 def producer_implementation_binding(producer: NativeJointProducer | None) -> str | None:
-    """Pin actual Python implementations as well as the declared artifact hash.
+    """Pin Python class implementations, including helpers in the full MRO.
 
-    This detects a changed factory/callable at recovery and inference. It is not
-    evidence that a model's measurements are true or that its declared external
-    weights/calibration artifacts have independent custody.
+    Mutable external data/weights still need the model's artifact/state contract;
+    code identity does not certify measurements, likelihoods, or calibration.
     """
     import inspect
     from pathlib import Path
@@ -118,10 +117,26 @@ def producer_implementation_binding(producer: NativeJointProducer | None) -> str
     if producer is None:
         return None
     cls = type(producer)
-    class_path = inspect.getsourcefile(cls)
-    if class_path is None:
-        raise ValueError("joint producer implementation has no inspectable class source")
-    methods = []
+    source_hashes: dict[str, str] = {}
+
+    def source_hash(path: str | None) -> str:
+        if path is None:
+            raise ValueError("joint producer implementation has no inspectable source")
+        if path not in source_hashes:
+            source_hashes[path] = sha256(Path(path).read_bytes()).hexdigest()
+        return source_hashes[path]
+
+    def function_identity(function: Any) -> tuple[str, str, str, str]:
+        code = getattr(function, "__code__", None)
+        if not inspect.isfunction(function) or not isinstance(code, CodeType):
+            raise ValueError("joint producer implementation has no inspectable loaded Python code")
+        return (
+            function.__module__,
+            function.__qualname__,
+            source_hash(inspect.getsourcefile(function)),
+            _code_object_sha256(code),
+        )
+
     for name in ("produce", "checkpoint_state", "restore_state"):
         method = getattr(producer, name, None)
         declared = next((vars(c)[name] for c in cls.__mro__ if name in vars(c)), None)
@@ -132,25 +147,42 @@ def producer_implementation_binding(producer: NativeJointProducer | None) -> str
             or method.__func__ is not declared
         ):
             raise ValueError("joint producer implementation must use declared instance methods")
-        code = getattr(method.__func__, "__code__", None)
-        path = inspect.getsourcefile(method.__func__)
-        if not isinstance(code, CodeType) or path is None:
-            raise ValueError("joint producer implementation has no inspectable loaded code")
-        methods.append(
+
+    classes = []
+    resolved: set[str] = set()
+    for owner in cls.__mro__:
+        if owner is object:
+            continue
+        members = []
+        for name, descriptor in sorted(vars(owner).items()):
+            functions: tuple[tuple[str, Any], ...]
+            if isinstance(descriptor, property):
+                functions = tuple(
+                    (role, fn)
+                    for role, fn in (
+                        ("get", descriptor.fget),
+                        ("set", descriptor.fset),
+                        ("delete", descriptor.fdel),
+                    )
+                    if fn is not None
+                )
+            elif isinstance(descriptor, (staticmethod, classmethod)):
+                functions = ((type(descriptor).__name__, descriptor.__func__),)
+            elif inspect.isfunction(descriptor):
+                functions = (("method", descriptor),)
+            else:
+                resolved.add(name)
+                continue
+            if name not in resolved and name in getattr(producer, "__dict__", {}):
+                raise ValueError("joint producer implementation cannot shadow a declared helper")
+            resolved.add(name)
+            members.append((name, tuple((role, function_identity(fn)) for role, fn in functions)))
+        classes.append(
             (
-                name,
-                method.__func__.__module__,
-                method.__func__.__qualname__,
-                sha256(Path(path).read_bytes()).hexdigest(),
-                _code_object_sha256(code),
+                owner.__module__,
+                owner.__qualname__,
+                source_hash(inspect.getsourcefile(owner)),
+                tuple(members),
             )
         )
-    return native_content_sha256(
-        (
-            "joint-producer-implementation@1",
-            cls.__module__,
-            cls.__qualname__,
-            sha256(Path(class_path).read_bytes()).hexdigest(),
-            tuple(methods),
-        )
-    )
+    return native_content_sha256(("joint-producer-implementation@2", tuple(classes)))

@@ -287,3 +287,42 @@ def test_dictionary_reordering_cannot_change_original_update_order(corrected_che
     finally:
         store.close()
         other_store.close()
+
+
+def test_complete_helper_code_forgery_cannot_publish_under_original_entry_bindings(
+    corrected_checkpoint, tmp_path, monkeypatch
+):
+    stream, store, _ = restore_copy(corrected_checkpoint, tmp_path / "false-helper.db")
+
+    def changed(self, pid, parent, source, prior, measure, context):
+        # Executed with the original method globals, where these names already
+        # exist. Native receipts subsequently bind all altered statistics.
+        state = rebuild_conditional_state(prior, (measure,))  # noqa: F821
+        return replace(state, alpha=tuple(value + 100.0 for value in state.alpha))
+
+    before = native_content_sha256(vars(stream._system.core._particle_workspace))
+    monkeypatch.setattr(JointFixture.build_statistics, "__code__", changed.__code__)
+    try:
+        try:
+            substituted = ContinuousEvidenceInput.resume(
+                store,
+                producer=OracleProducer(),
+                context_builder=corrected_checkpoint[1][4],
+                joint_producer=JointFixture(),
+            )
+        except ValueError as error:
+            assert "implementation" in str(error) or "dependency" in str(error)
+            assert native_content_sha256(vars(stream._system.core._particle_workspace)) == before
+            assert not stream._observation_commands
+            monkeypatch.undo()
+            stream.replay_joint_posterior()
+            genuine = stream.current_joint_decision_view()
+            assert len(genuine.atoms) == 2
+            assert all(max(a.statistics.alpha) < 100 for a in genuine.atoms)
+            return
+        substituted.replay_joint_posterior()
+        view = substituted.current_joint_decision_view()
+        assert len(view.atoms) == 2 and all(min(a.statistics.alpha) > 100 for a in view.atoms)
+        pytest.fail("complete helper code forgery reached real native publication")
+    finally:
+        store.close()

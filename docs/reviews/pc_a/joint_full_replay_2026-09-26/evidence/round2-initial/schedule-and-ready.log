@@ -1,0 +1,146 @@
+bringing up nodes...
+bringing up nodes...
+
+FF                                                                       [100%]
+=================================== FAILURES ===================================
+_________ test_full_replay_preserves_original_consumed_input_schedule __________
+[gw1] darwin -- Python 3.13.5 /private/tmp/cpswm-pc-a-joint-full-replay-20260926/.venv/bin/python
+
+corrected_checkpoint = (PosixPath('/private/var/folders/x2/000r8p0n6s393lj2sg8wk5f40000gn/T/pytest-of-pangwei/pytest-2116/popen-gw1/joint-rep...uild.<locals>.context_builder at 0x10bad1d00>, <test_native_joint_production.JointFixture object at 0x109fd7b60>, ...))
+tmp_path = PosixPath('/private/var/folders/x2/000r8p0n6s393lj2sg8wk5f40000gn/T/pytest-of-pangwei/pytest-2116/popen-gw1/test_full_replay_preserves_ori0')
+
+    def test_full_replay_preserves_original_consumed_input_schedule(corrected_checkpoint, tmp_path):
+        stream, store, producer = restore_copy(corrected_checkpoint, tmp_path / "schedule.db")
+        try:
+            core = stream._system.core
+            original = {r.state.revision_id for r in core._particle_workspace.records.values()}
+            retained = original & set(core._observed_events)
+            assert retained and retained < set(core._observed_events)
+            assert len(original) == 12 and len(retained) == 11
+            stream.replay_joint_posterior()
+            actual = {r.state.revision_id for r in core._particle_workspace.records.values()}
+>           assert actual == retained, (
+                "replay added semantic sources never consumed by the joint kernel"
+            )
+E           AssertionError: replay added semantic sources never consumed by the joint kernel
+E           assert {UUID('0a51ff...ecfeb1'), ...} == {UUID('279b90...ccb337'), ...}
+E             
+E             Extra items in the left set:
+E             UUID('75aba253-9999-572e-b3ff-e2f75f4c4ccf')
+E             UUID('0a51ffd7-cdf4-57b6-9910-210d61afd0cc')
+E             UUID('e2dfe57b-8fb2-545d-8078-ea1d9aeb3d65')
+E             UUID('ebdd8b83-f013-5728-bbfa-2ffb2140776d')
+E             UUID('10d32be6-3d9d-520e-915c-0b2efd9f7e40')...
+E             
+E             ...Full output truncated (8 lines hidden), use '-vv' to show
+
+docs/reviews/pc_a/joint_full_replay_2026-09-26/audit_round2.py:257: AssertionError
+___ test_second_real_withdrawal_rebuilds_all_three_blocks_from_initial_model ___
+[gw0] darwin -- Python 3.13.5 /private/tmp/cpswm-pc-a-joint-full-replay-20260926/.venv/bin/python
+
+corrected_checkpoint = (PosixPath('/private/var/folders/x2/000r8p0n6s393lj2sg8wk5f40000gn/T/pytest-of-pangwei/pytest-2116/popen-gw0/joint-rep...uild.<locals>.context_builder at 0x108fedbc0>, <test_native_joint_production.JointFixture object at 0x1074dbb60>, ...))
+tmp_path = PosixPath('/private/var/folders/x2/000r8p0n6s393lj2sg8wk5f40000gn/T/pytest-of-pangwei/pytest-2116/popen-gw0/test_second_real_withdrawal_re0')
+
+    def test_second_real_withdrawal_rebuilds_all_three_blocks_from_initial_model(
+        corrected_checkpoint, tmp_path
+    ):
+        stream, store, producer = restore_copy(corrected_checkpoint, tmp_path / "twice.db")
+        try:
+            stream.replay_joint_posterior()
+            first = stream.current_joint_decision_view()
+            from test_continuous_camera_collection import Camera, Model
+    
+            from cpswm.system.continuous_camera_collection import collect_posterior_step
+    
+            when = stream._last_arrival + timedelta(seconds=1)
+            model = Model(stream)
+            problem = model.problem(first, stream.visible_prefix(cutoff=when), decision_time=when)
+            _, old_command = stream.prepare_posterior_observation(problem, decision_time=when)
+            assert old_command is not None
+            core = stream._system.core
+            # A new, live source, not an artificial invalidation bit.
+            rid, event = next(iter(core._committed_events.items()))
+            probe = corrected_checkpoint[1][0]
+            probe.system = stream._system
+            bundle = build_execution_feedback_bundle(
+                probe,
+                revision_id=rid,
+                location_id=event.location_id,
+                belief_snapshot_id=event.belief_snapshot_id,
+                when=event.evidence.event_time,
+                opportunity_id=event.evidence.observation_opportunity_id,
+                outcome_distribution=NEGATIVE_SEARCH_OUTCOME,
+                present_likelihood=NEGATIVE_PRESENT_LIKELIHOOD,
+                absent_likelihood=NEGATIVE_ABSENT_LIKELIHOOD,
+            )
+            apply_feedback(stream, [bundle], stream._last_arrival + timedelta(seconds=2))
+            assert rid not in core._observed_events and core._particle_workspace.invalidated_revisions
+            ledger = core._hybrid_loop.ledger.export_state()
+            stream.replay_joint_posterior()
+            second = stream.current_joint_decision_view()
+            assert second.runtime_id != first.runtime_id
+            assert len(core._particle_replay_generations) == 2
+            assert core._hybrid_loop.ledger.export_state() == ledger
+            count = len(core._observed_events)
+            assert producer.calls == count
+            assert count == len(first.atoms[0].statistics.evidence_cluster_ids) - 1
+            x = np.array([1.0, 0.5])
+            pose = np.array([0.1, 0.2, 0.3, 0.0, 0.0, 0.0])
+            from cpswm.system.evaluation_operations.structure_two_selected_method import (
+                TypedParticleState,
+            )
+    
+            for atom in second.atoms:
+                state = TypedParticleState.model_validate_json(atom.state_json)
+                index = 0 if state.ordered_actor_roles[0].actor_key == "owner" else 1
+                stats = atom.statistics
+                expected_alpha = np.ones(len(stats.locations))
+                expected_alpha[index] += 0.2 * count
+                np.testing.assert_allclose(stats.alpha, expected_alpha, atol=1e-12)
+                np.testing.assert_allclose(
+                    stats.a, np.eye(2) + 0.8 * count * np.outer(x, x), atol=1e-12
+                )
+                np.testing.assert_allclose(stats.b, 0.8 * 0.3 * count * x, atol=1e-12)
+                np.testing.assert_allclose(stats.information, (1 + 0.6 * count) * np.eye(6), atol=1e-12)
+                np.testing.assert_allclose(stats.information_vector, 0.6 * count * pose, atol=1e-12)
+            assert rid not in {r.state.revision_id for r in core._particle_workspace.records.values()}
+            camera = Camera(core.current_posterior_projection_source().transition)
+>           action = collect_posterior_step(
+                stream,
+                model=model,
+                executor=camera,
+                decision_time=stream._last_arrival + timedelta(seconds=3),
+            )
+
+docs/reviews/pc_a/joint_full_replay_2026-09-26/audit_round2.py:97: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/cpswm/system/continuous_camera_collection.py:127: in collect_posterior_step
+    delivery = stream.execute_observation(command, executor=executor)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <cpswm.system.structure_two_continuous_input.ContinuousEvidenceInput object at 0x10928d810>
+command = ObservationCommand(action_id=UUID('b599eeaa-630e-42e7-a165-fa2d83909c5e'), snapshot_id=UUID('67077ed0-7e9d-49bd-94c9-5...-c5a9-5866-8657-98837e50e98b')), decision_time=datetime.datetime(2026, 1, 13, 10, 10, 1, tzinfo=datetime.timezone.utc))
+executor = <test_continuous_camera_collection.Camera object at 0x108fe2e40>
+
+    def execute_observation(
+        self, command: ObservationCommand, *, executor: ObservationExecutor
+    ) -> ObservationDelivery:
+        with self._lock, self._system.core._execution_lock:
+            self._enter()
+            try:
+                owned, digest = self._observation_commands[command.action_id]
+                if owned is not command or content_sha256(command) != digest:
+                    raise ValueError("observation command is not this runtime's issued capability")
+                if self._observation_status[command.action_id] != "READY":
+                    raise ValueError("observation already dispatched; reconcile instead")
+                self._require_resolved_dispatches()
+                if command.snapshot_id != self._system.core.current_snapshot.snapshot_id:
+>                   raise ValueError("stale observation command")
+E                   ValueError: stale observation command
+
+src/cpswm/system/structure_two_continuous_input.py:1031: ValueError
+=========================== short test summary info ============================
+FAILED docs/reviews/pc_a/joint_full_replay_2026-09-26/audit_round2.py::test_full_replay_preserves_original_consumed_input_schedule
+FAILED docs/reviews/pc_a/joint_full_replay_2026-09-26/audit_round2.py::test_second_real_withdrawal_rebuilds_all_three_blocks_from_initial_model
+2 failed in 222.84s (0:03:42)

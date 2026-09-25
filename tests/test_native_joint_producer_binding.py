@@ -74,3 +74,22 @@ def test_recovery_verifies_actual_restored_model_state(tmp_path):
             )
     finally:
         store.close()
+
+
+@pytest.mark.parametrize("cls", (JointFixture, Replacement))
+def test_loaded_helper_code_change_is_bound_including_inherited_helpers(monkeypatch, cls):
+    producer = cls()
+    before = producer_implementation_binding(producer)
+
+    def replacement(self, pid, parent, source, prior, measure, context):
+        return prior
+
+    monkeypatch.setattr(JointFixture.build_statistics, "__code__", replacement.__code__)
+    assert producer_implementation_binding(producer) != before
+
+
+def test_instance_helper_override_is_rejected():
+    producer = JointFixture()
+    producer.build_statistics = MethodType(JointFixture.build_statistics, producer)
+    with pytest.raises(ValueError, match="shadow a declared helper"):
+        producer_implementation_binding(producer)

@@ -1,0 +1,578 @@
+{
+  "schema": "cpswm-assistant-visual-development-annotations@1",
+  "annotation_source": "assistant_visual_review",
+  "independent_human_annotation": false,
+  "scientific_confirmation": false,
+  "label_semantics": "Visible support proxy from inspected cropped RGB; not physical contact force or author phases. Intermediate ambiguous frames remain uncertain. Image-left/right are within-sequence identities only.",
+  "reviewed_inputs": "Four complete 10Hz cropped contact sheets and first-frame full-resolution coordinate grids; no author phase CSV consulted for these labels.",
+  "clips": [
+    {
+      "clip_id": "clip-0001",
+      "participant_group": "pair-A",
+      "input_result_sha256": "d95314d21fda5fd79999040117d1644747ad3c7f798266f6cf786e870392187e",
+      "first_frame_initialization_xyxy": [
+        625,
+        245,
+        790,
+        340
+      ],
+      "initialization_semantics": "visible bag patch; excludes straps; not a full object box",
+      "rows": [
+        {
+          "frame_index": 0,
+          "payload_sha256": "33acec871f1000d6a39c7a089761481204b1ad099f5cf3c43bb7c14e4cbcd797",
+          "visible_support_proxy": "left",
+          "physical_contact_truth": "unknown",
+          "world_pose": "unknown",
+          "stationary_placement_observed": false
+        },
+        {
+          "frame_index": 1,
+          "payload_sha256": "d01ee6f8c9cf876ee0144383c4dcf478e894fa2faadfd95843161f9311bcd188",
+          "visible_support_proxy": "left",
+          "physical_contact_truth": "unknown",
+          "world_pose": "unknown",
+          "stationary_placement_observed": false
+        },
+        {
+          "frame_index": 2,
+          "payload_sha256": "bdff27ec5d80acd8b4f1b05e77aa9bd871a9b674737113b0384f352c8a4ba770",
+          "visible_support_proxy": "left",
+          "physical_contact_truth": "unknown",
+          "world_pose": "unknown",
+          "stationary_placement_observed": false
+        },
+        {
+          "frame_index": 3,
+          "payload_sha256": "016790796e9df068a24585ba6adef19685fe526261faa3e5b11a33e1d4728db6",
+          "visible_support_proxy": "left",
+          "physical_contact_truth": "unknown",
+          "world_pose": "unknown",
+          "stationary_placement_observed": false
+        },
+        {
+          "frame_index": 4,
+          "payload_sha256": "02cfc053d87df5d215e7bf9ff4ec944f421db6bd26f35bbc1fb1c79040746f0a",
+          "visible_support_proxy": "uncertain",
+          "physical_contact_truth": "unknown",
+          "world_pose": "unknown",
+          "stationary_placement_observed": false
+        },
+        {
+          "frame_index": 5,
+          "payload_sha256": "499cf80364be7540089e0cc422dcf002e20c19ded726f21f1b4ea2727bd7411d",
+          "visible_support_proxy": "uncertain",
+          "physical_contact_truth": "unknown",
+          "world_pose": "unknown",
+          "stationary_placement_observed": false
+        },
+        {
+          "frame_index": 6,
+          "payload_sha256": "b2335630bc48bfaa896884c9d28106aff930b77847d0d0470729a5dfea20a02a",
+          "visible_support_proxy": "both",
+          "physical_contact_truth": "unknown",
+          "world_pose": "unknown",
+          "stationary_placement_observed": false
+        },
+        {
+          "frame_index": 7,
+          "payload_sha256": "197e4d050c3e3bb94a9398c4803c1c555d65c678528301ac2267ad992814412a",
+          "visible_support_proxy": "both",
+          "physical_contact_truth": "unknown",
+          "world_pose": "unknown",
+          "stationary_placement_observed": false
+        },
+        {
+          "frame_index": 8,
+          "payload_sha256": "7ee01150db24b42e2e0b5935924108451ac02b37c1a35872b37677ad919e20f4",
+          "visible_support_proxy": "both",
+          "physical_contact_truth": "unknown",
+          "world_pose": "unknown",
+          "stationary_placement_observed": false
+        },
+        {
+          "frame_index": 9,
+          "payload_sha256": "5326a08baf3a444cf9ec9ba60071c03e28b9b27fbe9b8fe1d7e31454cb007439",
+          "visible_support_proxy": "both",
+          "physical_contact_truth": "unknown",
+          "world_pose": "unknown",
+          "stationary_placement_observed": false
+        },
+        {
+          "frame_index": 10,
+          "payload_sha256": "24732226e81bf9e43c342fac3bdcd37e8e8fd468f312b2aed8b79a2db2e17294",
+          "visible_support_proxy": "both",
+          "physical_contact_truth": "unknown",
+          "world_pose": "unknown",
+          "stationary_placement_observed": false
+        },
+        {
+          "frame_index": 11,
+          "payload_sha256": "66348c038e662f163caa6425fa109d4799a18fc6b8a37e5e5384a4012b97b22d",
+          "visible_support_proxy": "uncertain",
+          "physical_contact_truth": "unknown",
+          "world_pose": "unknown",
+          "stationary_placement_observed": false
+        },
+        {
+          "frame_index": 12,
+          "payload_sha256": "38c54e1acaea55a378cb638f5fefd9561160044bdec21f959164b3d5689deb83",
+          "visible_support_proxy": "uncertain",
+          "physical_contact_truth": "unknown",
+          "world_pose": "unknown",
+          "stationary_placement_observed": false
+        },
+        {
+          "frame_index": 13,
+          "payload_sha256": "160c2d0aca3646cc247194bf726d9ba6e4d987800d254a0ba49e4bc8fc32fbce",
+          "visible_support_proxy": "uncertain",
+          "physical_contact_truth": "unknown",
+          "world_pose": "unknown",
+          "stationary_placement_observed": false
+        },
+        {
+          "frame_index": 14,
+          "payload_sha256": "2e57555ff3b4963106b6bf7fdf835e720eb9833dcdd7b4d6d80f205f988f195a",
+          "visible_support_proxy": "right",
+          "physical_contact_truth": "unknown",
+          "world_pose": "unknown",
+          "stationary_placement_observed": false
+        },
+        {
+          "frame_index": 15,
+          "payload_sha256": "01effdea378a9f3d9cd082f9db627586dcf961d25d792707193d0c48e1427b28",
+          "visible_support_proxy": "right",
+          "physical_contact_truth": "unknown",
+          "world_pose": "unknown",
+          "stationary_placement_observed": false
+        },
+        {
+          "frame_index": 16,
+          "payload_sha256": "cc7bd8d0b597a5d8c734432d5dc45cda3a44466e63a75e9326689f55cb6af48f",
+          "visible_support_proxy": "right",
+          "physical_contact_truth": "unknown",
+          "world_pose": "unknown",
+          "stationary_placement_observed": false
+        }
+      ]
+    },
+    {
+      "clip_id": "clip-0002",
+      "participant_group": "pair-A",
+      "input_result_sha256": "9705b7a84a2c3fef72df128111ce2a1ae02d047ff7e70a7eef1c0ac5d75466da",
+      "first_frame_initialization_xyxy": [
+        890,
+        300,
+        1050,
+        375
+      ],
+      "initialization_semantics": "visible bag patch; excludes straps; not a full object box",
+      "rows": [
+        {
+          "frame_index": 0,
+          "payload_sha256": "d637a040c257c280045dad49193856c35c690377d2de573ee36497529181e740",
+          "visible_support_proxy": "right",
+          "physical_contact_truth": "unknown",
+          "world_pose": "unknown",
+          "stationary_placement_observed": false
+        },
+        {
+          "frame_index": 1,
+          "payload_sha256": "c7e47d72278a372e9bd1c77e015ffa5eae7bf3e8adf52a3fed77538f7d6c1b88",
+          "visible_support_proxy": "right",
+          "physical_contact_truth": "unknown",
+          "world_pose": "unknown",
+          "stationary_placement_observed": false
+        },
+        {
+          "frame_index": 2,
+          "payload_sha256": "47b977be7ab3e5b25bf32f0e198e00ebe76e2b102ec31f4f42918b274147fbb9",
+          "visible_support_proxy": "uncertain",
+          "physical_contact_truth": "unknown",
+          "world_pose": "unknown",
+          "stationary_placement_observed": false
+        },
+        {
+          "frame_index": 3,
+          "payload_sha256": "69326ddcbfe0c578ce27a66c2c1fb138c57970867b6a77db60c3753b2a2d22f4",
+          "visible_support_proxy": "uncertain",
+          "physical_contact_truth": "unknown",
+          "world_pose": "unknown",
+          "stationary_placement_observed": false
+        },
+        {
+          "frame_index": 4,
+          "payload_sha256": "e7f0579b1be7f38548f8b0e8c270c64c7069daf470bab3358dda3c8ab3944fc2",
+          "visible_support_proxy": "both",
+          "physical_contact_truth": "unknown",
+          "world_pose": "unknown",
+          "stationary_placement_observed": false
+        },
+        {
+          "frame_index": 5,
+          "payload_sha256": "f9fec97184ed1df601507d7dd69232ea8d4a6deb364400be4865d4eb9df1e7ac",
+          "visible_support_proxy": "both",
+          "physical_contact_truth": "unknown",
+          "world_pose": "unknown",
+          "stationary_placement_observed": false
+        },
+        {
+          "frame_index": 6,
+          "payload_sha256": "b84076ee74e56889a1180cee1bbb419938e2e4e45223a181f41a7e0f12653512",
+          "visible_support_proxy": "both",
+          "physical_contact_truth": "unknown",
+          "world_pose": "unknown",
+          "stationary_placement_observed": false
+        },
+        {
+          "frame_index": 7,
+          "payload_sha256": "87e24a4e0c34b0d43d86bd8af038d3bddca2993e58d0ca68150ee211a4245224",
+          "visible_support_proxy": "both",
+          "physical_contact_truth": "unknown",
+          "world_pose": "unknown",
+          "stationary_placement_observed": false
+        },
+        {
+          "frame_index": 8,
+          "payload_sha256": "41b9c9eb170e286822a651c80fb8aeca72284c1613f6963abcc94077d2836c2a",
+          "visible_support_proxy": "both",
+          "physical_contact_truth": "unknown",
+          "world_pose": "unknown",
+          "stationary_placement_observed": false
+        },
+        {
+          "frame_index": 9,
+          "payload_sha256": "8fcd5fe12580655cf579498c76f3e03bbdbca2d3a2e45e64bc984cf9062d6a3d",
+          "visible_support_proxy": "both",
+          "physical_contact_truth": "unknown",
+          "world_pose": "unknown",
+          "stationary_placement_observed": false
+        },
+        {
+          "frame_index": 10,
+          "payload_sha256": "20693c17bcf0742eb97aa6355c7073641723c5805ff4833dbd3b6bf64f981771",
+          "visible_support_proxy": "uncertain",
+          "physical_contact_truth": "unknown",
+          "world_pose": "unknown",
+          "stationary_placement_observed": false
+        },
+        {
+          "frame_index": 11,
+          "payload_sha256": "cb6e147f9916dea417b0dbfdb2e242d8337ad486080ddea97eec41aa4ec1f78a",
+          "visible_support_proxy": "uncertain",
+          "physical_contact_truth": "unknown",
+          "world_pose": "unknown",
+          "stationary_placement_observed": false
+        },
+        {
+          "frame_index": 12,
+          "payload_sha256": "938c3fe24802818f93c14173206315f253eda92563ac5bfdf969ce52c244569a",
+          "visible_support_proxy": "uncertain",
+          "physical_contact_truth": "unknown",
+          "world_pose": "unknown",
+          "stationary_placement_observed": false
+        },
+        {
+          "frame_index": 13,
+          "payload_sha256": "0be8b8484d78d93f36887f56accb5074983cf25507479a2242b213315115c03f",
+          "visible_support_proxy": "left",
+          "physical_contact_truth": "unknown",
+          "world_pose": "unknown",
+          "stationary_placement_observed": false
+        },
+        {
+          "frame_index": 14,
+          "payload_sha256": "fb7a690917730734091c251e99c8eb8be9d68ae0acd2c6bf265629c939efe958",
+          "visible_support_proxy": "left",
+          "physical_contact_truth": "unknown",
+          "world_pose": "unknown",
+          "stationary_placement_observed": false
+        }
+      ]
+    },
+    {
+      "clip_id": "clip-0003",
+      "participant_group": "pair-B",
+      "input_result_sha256": "68a8b80be4b952c56c689a28bbc478d05634518f2caa7058ab859d9fe58084dd",
+      "first_frame_initialization_xyxy": [
+        695,
+        310,
+        745,
+        370
+      ],
+      "initialization_semantics": "narrow blurred bag-edge patch overlaps hand; target initialization ambiguous, not a reliable object box",
+      "rows": [
+        {
+          "frame_index": 0,
+          "payload_sha256": "0f18e69ae890f302b14cbe1a06f1df5e9d21b76464c8f9149a453a48bda2b10d",
+          "visible_support_proxy": "left",
+          "physical_contact_truth": "unknown",
+          "world_pose": "unknown",
+          "stationary_placement_observed": false
+        },
+        {
+          "frame_index": 1,
+          "payload_sha256": "12c5963b2ba32806deb2057e9829cf06d543387219acc4e0a43d495f84e51ae7",
+          "visible_support_proxy": "left",
+          "physical_contact_truth": "unknown",
+          "world_pose": "unknown",
+          "stationary_placement_observed": false
+        },
+        {
+          "frame_index": 2,
+          "payload_sha256": "cfcabe1232963d65d618bd7df65be548cb6a281669b01faccfa3bd7b39890710",
+          "visible_support_proxy": "left",
+          "physical_contact_truth": "unknown",
+          "world_pose": "unknown",
+          "stationary_placement_observed": false
+        },
+        {
+          "frame_index": 3,
+          "payload_sha256": "50a477764956a9df187c202e65b8d9c19f19515c7846b38c88179b2dcf1ec0eb",
+          "visible_support_proxy": "left",
+          "physical_contact_truth": "unknown",
+          "world_pose": "unknown",
+          "stationary_placement_observed": false
+        },
+        {
+          "frame_index": 4,
+          "payload_sha256": "e6e5a12740f74ecfa6f17492adeb0e4aebec013c895e9d76166a0280480cd240",
+          "visible_support_proxy": "uncertain",
+          "physical_contact_truth": "unknown",
+          "world_pose": "unknown",
+          "stationary_placement_observed": false
+        },
+        {
+          "frame_index": 5,
+          "payload_sha256": "88553e6a6562315e46bb1c1611290fb3106e38b820cd70d680537e54526c744e",
+          "visible_support_proxy": "uncertain",
+          "physical_contact_truth": "unknown",
+          "world_pose": "unknown",
+          "stationary_placement_observed": false
+        },
+        {
+          "frame_index": 6,
+          "payload_sha256": "fb71b8d6ba37845f224ee1ce208f55ed3db9f0ef77e447b5587048f830e01fb1",
+          "visible_support_proxy": "both",
+          "physical_contact_truth": "unknown",
+          "world_pose": "unknown",
+          "stationary_placement_observed": false
+        },
+        {
+          "frame_index": 7,
+          "payload_sha256": "ccae49e6a8425213d7ecdfe71092277b2748e5e7c5942a7b5c5f9b1a749f8a02",
+          "visible_support_proxy": "both",
+          "physical_contact_truth": "unknown",
+          "world_pose": "unknown",
+          "stationary_placement_observed": false
+        },
+        {
+          "frame_index": 8,
+          "payload_sha256": "f0b74b711a2f3ae1dfd8daf00c18bada1032cb32cb49e9fd4c5b2b23b573e6d5",
+          "visible_support_proxy": "both",
+          "physical_contact_truth": "unknown",
+          "world_pose": "unknown",
+          "stationary_placement_observed": false
+        },
+        {
+          "frame_index": 9,
+          "payload_sha256": "62ce49f91cf781489af5b4b1af1006e28b12ecf509f61d6f2b91115ee1aee914",
+          "visible_support_proxy": "both",
+          "physical_contact_truth": "unknown",
+          "world_pose": "unknown",
+          "stationary_placement_observed": false
+        },
+        {
+          "frame_index": 10,
+          "payload_sha256": "ca9ab65b28da6a4f4d95cc6c01973f13bf5c9247bdac0c4750edf236ebdd15f8",
+          "visible_support_proxy": "both",
+          "physical_contact_truth": "unknown",
+          "world_pose": "unknown",
+          "stationary_placement_observed": false
+        },
+        {
+          "frame_index": 11,
+          "payload_sha256": "9d1f6fc484b19beb9e4f888c7f790c3a501fc398aa6d2827aaa065d581878a07",
+          "visible_support_proxy": "uncertain",
+          "physical_contact_truth": "unknown",
+          "world_pose": "unknown",
+          "stationary_placement_observed": false
+        },
+        {
+          "frame_index": 12,
+          "payload_sha256": "4dba6f6f1d23b536b0d7ba899ae09193f546978a19b9102feb85740766460500",
+          "visible_support_proxy": "uncertain",
+          "physical_contact_truth": "unknown",
+          "world_pose": "unknown",
+          "stationary_placement_observed": false
+        },
+        {
+          "frame_index": 13,
+          "payload_sha256": "82f776134745ed764c54c605ecf695a988b9ef4ff1744a19a1fc44864c23349e",
+          "visible_support_proxy": "uncertain",
+          "physical_contact_truth": "unknown",
+          "world_pose": "unknown",
+          "stationary_placement_observed": false
+        },
+        {
+          "frame_index": 14,
+          "payload_sha256": "5bf5a73230a5116fb507050c4b0869be6cf2891320fd84199c2c586e2b1e7064",
+          "visible_support_proxy": "right",
+          "physical_contact_truth": "unknown",
+          "world_pose": "unknown",
+          "stationary_placement_observed": false
+        },
+        {
+          "frame_index": 15,
+          "payload_sha256": "484cdc068292a64b3600cf083a5178728690349ae199a6af910e7cdb8a5b2173",
+          "visible_support_proxy": "right",
+          "physical_contact_truth": "unknown",
+          "world_pose": "unknown",
+          "stationary_placement_observed": false
+        },
+        {
+          "frame_index": 16,
+          "payload_sha256": "5c5cb5a5d4388288f7cbe92df376bcd538a30b46fb37a88d3f0303448cbb0765",
+          "visible_support_proxy": "right",
+          "physical_contact_truth": "unknown",
+          "world_pose": "unknown",
+          "stationary_placement_observed": false
+        }
+      ]
+    },
+    {
+      "clip_id": "clip-0004",
+      "participant_group": "pair-B",
+      "input_result_sha256": "3884ea66939a3c4b645a5c20bb48d94b255ebed4ff2b61b2984dba8aa475acfe",
+      "first_frame_initialization_xyxy": [
+        885,
+        160,
+        945,
+        260
+      ],
+      "initialization_semantics": "visible bag patch; excludes straps; not a full object box",
+      "rows": [
+        {
+          "frame_index": 0,
+          "payload_sha256": "83f53f33459ec27e800002f1709dfcfe24ea8cbbfebbca9031610471fd4a9085",
+          "visible_support_proxy": "right",
+          "physical_contact_truth": "unknown",
+          "world_pose": "unknown",
+          "stationary_placement_observed": false
+        },
+        {
+          "frame_index": 1,
+          "payload_sha256": "67164fd5e0cfcf1bc6503cbac5c6cc4a0a86421fe5741cd77ae5aa43556fa69e",
+          "visible_support_proxy": "right",
+          "physical_contact_truth": "unknown",
+          "world_pose": "unknown",
+          "stationary_placement_observed": false
+        },
+        {
+          "frame_index": 2,
+          "payload_sha256": "495fc2d2a35f7c874c03955d8cd4698874519910ac27627e5b22643a4e612322",
+          "visible_support_proxy": "right",
+          "physical_contact_truth": "unknown",
+          "world_pose": "unknown",
+          "stationary_placement_observed": false
+        },
+        {
+          "frame_index": 3,
+          "payload_sha256": "70c69d6a10e018efe541350e5cc981f5d9268716f7ce06fce9c73ecdbef528d2",
+          "visible_support_proxy": "uncertain",
+          "physical_contact_truth": "unknown",
+          "world_pose": "unknown",
+          "stationary_placement_observed": false
+        },
+        {
+          "frame_index": 4,
+          "payload_sha256": "492d8298488ceb2578b111e4bd286d7cf22954f0c3521e208ce0b96a694302a7",
+          "visible_support_proxy": "uncertain",
+          "physical_contact_truth": "unknown",
+          "world_pose": "unknown",
+          "stationary_placement_observed": false
+        },
+        {
+          "frame_index": 5,
+          "payload_sha256": "7045d7bec221be93eff0170068ec2178528652639bdba26e59711f3fc818075e",
+          "visible_support_proxy": "uncertain",
+          "physical_contact_truth": "unknown",
+          "world_pose": "unknown",
+          "stationary_placement_observed": false
+        },
+        {
+          "frame_index": 6,
+          "payload_sha256": "4bee3abd81e4bed675ca44577aa1754150521fb45b0c381e771061f9bf09fd46",
+          "visible_support_proxy": "both",
+          "physical_contact_truth": "unknown",
+          "world_pose": "unknown",
+          "stationary_placement_observed": false
+        },
+        {
+          "frame_index": 7,
+          "payload_sha256": "c9e8400217cbc87188b2bcf6bbb20d585e786e1e400ae7ab3c2e966cab64c252",
+          "visible_support_proxy": "both",
+          "physical_contact_truth": "unknown",
+          "world_pose": "unknown",
+          "stationary_placement_observed": false
+        },
+        {
+          "frame_index": 8,
+          "payload_sha256": "f04762e38c1236d375e5b74cb6bcdf28bf7b240d4044f5385b0bf5f4aa2ecaa8",
+          "visible_support_proxy": "both",
+          "physical_contact_truth": "unknown",
+          "world_pose": "unknown",
+          "stationary_placement_observed": false
+        },
+        {
+          "frame_index": 9,
+          "payload_sha256": "97a8f2cd8d0c7754728e9b9c45b64ceb3c8ec7d41d3d2989485a7a6fafd2a860",
+          "visible_support_proxy": "both",
+          "physical_contact_truth": "unknown",
+          "world_pose": "unknown",
+          "stationary_placement_observed": false
+        },
+        {
+          "frame_index": 10,
+          "payload_sha256": "3d73400ffd1286064ddc84059d377dc278a2064d042d1a9b34804521c36fca5e",
+          "visible_support_proxy": "both",
+          "physical_contact_truth": "unknown",
+          "world_pose": "unknown",
+          "stationary_placement_observed": false
+        },
+        {
+          "frame_index": 11,
+          "payload_sha256": "ddca4b81ebdd76aa3968da638a73b06573338fee800c4b5d310158f22e582247",
+          "visible_support_proxy": "uncertain",
+          "physical_contact_truth": "unknown",
+          "world_pose": "unknown",
+          "stationary_placement_observed": false
+        },
+        {
+          "frame_index": 12,
+          "payload_sha256": "f94a746f62bf9d5f9e97d4d7ac80030eac5d56ef186a0c7a279a29561d8dd4ae",
+          "visible_support_proxy": "uncertain",
+          "physical_contact_truth": "unknown",
+          "world_pose": "unknown",
+          "stationary_placement_observed": false
+        },
+        {
+          "frame_index": 13,
+          "payload_sha256": "1abce36c816934d7fee3732e0d571b27a85b0e69fec2334028788ccf18ea3ff0",
+          "visible_support_proxy": "uncertain",
+          "physical_contact_truth": "unknown",
+          "world_pose": "unknown",
+          "stationary_placement_observed": false
+        },
+        {
+          "frame_index": 14,
+          "payload_sha256": "a9c8b494a232d4b35ccb1a20d28ad8bfeeab9ba1296302e15227b96a716f5c07",
+          "visible_support_proxy": "left",
+          "physical_contact_truth": "unknown",
+          "world_pose": "unknown",
+          "stationary_placement_observed": false
+        }
+      ]
+    }
+  ]
+}

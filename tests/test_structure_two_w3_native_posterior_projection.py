@@ -135,6 +135,7 @@ def test_complete_resealing_cannot_replace_actual_producer_dependencies(attack):
         source = replace(source, locations=tuple(uuid4() for _ in source.locations))
     source = replace(source, body_sha256=native_content_sha256(source.body()))
     # Adversarial private corruption is a negative test, never positive enrollment.
+    semantic_before = content_sha256(semantic_memory_state(core))
     original = dict(core._particle_workspace.posterior_sources)
     core._particle_workspace.posterior_sources[source.source_id] = source
     args = reseal(args, source_posterior_snapshot_id=source.source_id)
@@ -142,14 +143,13 @@ def test_complete_resealing_cannot_replace_actual_producer_dependencies(attack):
     # the deliberately poisoned raw workspace for the no-further-mutation check;
     # do not weaken the public snapshot validation just to inspect a forged state.
     before = native_content_sha256(vars(core._particle_workspace))
-    semantic_before = content_sha256(semantic_memory_state(core))
     with pytest.raises(ValueError):
         snapshot(probe)
     with pytest.raises(ValueError):
         core.stage_prepared_particle_candidates(**args)
     assert native_content_sha256(vars(core._particle_workspace)) == before
-    assert content_sha256(semantic_memory_state(core)) == semantic_before
     core._particle_workspace.posterior_sources = original
+    assert content_sha256(semantic_memory_state(core)) == semantic_before
     assert core.stage_prepared_particle_candidates(**projected(core)).particle_weights
 
 

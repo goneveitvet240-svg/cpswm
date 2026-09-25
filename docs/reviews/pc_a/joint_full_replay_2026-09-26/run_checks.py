@@ -11,6 +11,11 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[4]
 OUT = Path(sys.argv[1]).resolve()
 ROUND = sys.argv[2]
+dirty = subprocess.check_output(
+    ["git", "status", "--porcelain", "--", "src", "tests", "tools"], cwd=ROOT, text=True
+)
+if dirty.strip():
+    raise RuntimeError("source must be committed before a formal audit: " + dirty)
 OUT.mkdir(parents=True, exist_ok=False)
 python = str(ROOT / ".venv/bin/python")
 tests = [
@@ -89,6 +94,12 @@ commands = {
             if ROUND == "2"
             else []
         ),
+    ],
+    "controlled_continuation": [
+        python,
+        "tools/run_native_joint_full_replay.py",
+        "--output",
+        str(OUT / "controlled-continuation"),
     ],
     "mypy": [python, "-m", "mypy", "src"],
     "ruff": [python, "-m", "ruff", "check", *changed],

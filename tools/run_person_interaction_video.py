@@ -55,6 +55,7 @@ def run(
     detector_name: str = "ssdlite",
     hand_model: Path | None = None,
     hand_person_rois: bool = False,
+    include_records: bool = False,
 ) -> dict:
     if hand_person_rois and hand_model is None:
         raise ValueError("ROI mode requires hand model")
@@ -300,7 +301,7 @@ def run(
         "records": records,
     }
     (output / "result.json").write_text(json.dumps(summary, default=str, indent=2))
-    return {k: v for k, v in summary.items() if k != "records"}
+    return summary if include_records else {k: v for k, v in summary.items() if k != "records"}
 
 
 if __name__ == "__main__":

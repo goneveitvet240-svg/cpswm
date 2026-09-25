@@ -1,0 +1,28 @@
+bringing up nodes...
+bringing up nodes...
+
+.........F.....................                                          [100%]
+=================================== FAILURES ===================================
+________ test_producer_checkpoint_and_artifact_binding_survive_recovery ________
+[gw0] darwin -- Python 3.13.5 /private/tmp/cpswm-pc-a-joint-full-replay-20260926/.venv/bin/python
+
+tmp_path = PosixPath('/private/var/folders/x2/000r8p0n6s393lj2sg8wk5f40000gn/T/pytest-of-pangwei/pytest-2117/popen-gw0/test_producer_checkpoint_and_a0')
+
+    def test_producer_checkpoint_and_artifact_binding_survive_recovery(tmp_path):
+        path = tmp_path / "db"
+        producer = JointFixture()
+        stream, store, _, builder, _ = setup(path, producer)
+        stream.produce_joint_posterior()
+        old = stream.current_joint_decision_view()
+        store.close()
+        store = store_at(path)
+>       with pytest.raises(ValueError, match="joint producer dependency"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AssertionError: Regex pattern did not match.
+E         Expected regex: 'joint producer dependency'
+E         Actual message: 'checkpoint joint producer implementation dependency changed'
+
+tests/test_native_joint_production.py:287: AssertionError
+=========================== short test summary info ============================
+FAILED tests/test_native_joint_production.py::test_producer_checkpoint_and_artifact_binding_survive_recovery
+1 failed, 30 passed in 351.39s (0:05:51)

@@ -100,3 +100,89 @@ def producer_binding(producer: NativeJointProducer | None) -> str | None:
     ):
         raise ValueError("joint producer requires a SHA256 dependency binding")
     return value
+
+
+def producer_implementation_binding(producer: NativeJointProducer | None) -> str | None:
+    """Pin Python class implementations, including helpers in the full MRO.
+
+    Mutable external data/weights still need the model's artifact/state contract;
+    code identity does not certify measurements, likelihoods, or calibration.
+    """
+    import inspect
+    from pathlib import Path
+    from types import CodeType
+
+    from cpswm.system.structure_two_execution import _code_object_sha256
+
+    if producer is None:
+        return None
+    cls = type(producer)
+    source_hashes: dict[str, str] = {}
+
+    def source_hash(path: str | None) -> str:
+        if path is None:
+            raise ValueError("joint producer implementation has no inspectable source")
+        if path not in source_hashes:
+            source_hashes[path] = sha256(Path(path).read_bytes()).hexdigest()
+        return source_hashes[path]
+
+    def function_identity(function: Any) -> tuple[str, str, str, str]:
+        code = getattr(function, "__code__", None)
+        if not inspect.isfunction(function) or not isinstance(code, CodeType):
+            raise ValueError("joint producer implementation has no inspectable loaded Python code")
+        return (
+            function.__module__,
+            function.__qualname__,
+            source_hash(inspect.getsourcefile(function)),
+            _code_object_sha256(code),
+        )
+
+    for name in ("produce", "checkpoint_state", "restore_state"):
+        method = getattr(producer, name, None)
+        declared = next((vars(c)[name] for c in cls.__mro__ if name in vars(c)), None)
+        if (
+            name in getattr(producer, "__dict__", {})
+            or not inspect.ismethod(method)
+            or method.__self__ is not producer
+            or method.__func__ is not declared
+        ):
+            raise ValueError("joint producer implementation must use declared instance methods")
+
+    classes = []
+    resolved: set[str] = set()
+    for owner in cls.__mro__:
+        if owner is object:
+            continue
+        members = []
+        for name, descriptor in sorted(vars(owner).items()):
+            functions: tuple[tuple[str, Any], ...]
+            if isinstance(descriptor, property):
+                functions = tuple(
+                    (role, fn)
+                    for role, fn in (
+                        ("get", descriptor.fget),
+                        ("set", descriptor.fset),
+                        ("delete", descriptor.fdel),
+                    )
+                    if fn is not None
+                )
+            elif isinstance(descriptor, (staticmethod, classmethod)):
+                functions = ((type(descriptor).__name__, descriptor.__func__),)
+            elif inspect.isfunction(descriptor):
+                functions = (("method", descriptor),)
+            else:
+                resolved.add(name)
+                continue
+            if name not in resolved and name in getattr(producer, "__dict__", {}):
+                raise ValueError("joint producer implementation cannot shadow a declared helper")
+            resolved.add(name)
+            members.append((name, tuple((role, function_identity(fn)) for role, fn in functions)))
+        classes.append(
+            (
+                owner.__module__,
+                owner.__qualname__,
+                source_hash(inspect.getsourcefile(owner)),
+                tuple(members),
+            )
+        )
+    return native_content_sha256(("joint-producer-implementation@2", tuple(classes)))

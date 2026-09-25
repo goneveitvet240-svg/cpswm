@@ -1,0 +1,197 @@
+{
+  "source_sha": "348d11a172d0d26cb6ec990ad930664912f8495d",
+  "base_sha": "1c1281b9d8ed5d535a335149ebfe622150d6bf0f",
+  "source_verified_against_git_objects": true,
+  "commands": {
+    "regression": {
+      "argv": [
+        "/private/tmp/cpswm-pc-a-joint-full-replay-20260926/.venv/bin/python",
+        "-m",
+        "pytest",
+        "-o",
+        "addopts=",
+        "-q",
+        "tests/test_grounded_development_audit.py",
+        "tests/test_visual_target_tracking.py",
+        "tests/test_natural_vision.py",
+        "tests/test_natural_hands.py",
+        "tests/test_hand_object_evidence.py",
+        "tests/test_structure_two_continuous_input.py",
+        "tests/test_continuous_state_recovery.py",
+        "tests/test_joint_camera_policy.py",
+        "tests/test_continuous_camera_collection.py",
+        "tests/test_continuous_camera_cli.py",
+        "tests/test_native_joint_production.py",
+        "tests/test_structure_two_w3_native_posterior_projection.py",
+        "tests/test_structure_two_w3_native_particles.py",
+        "tests/test_structure_two_w3_native_bundle.py",
+        "tests/test_structure_two_joint_consumption_components.py",
+        "tests/test_structure_two_pose.py",
+        "tests/test_pose_observation_model.py",
+        "tests/test_proposal_decoder.py",
+        "tests/test_proposal_learning.py",
+        "tests/test_structure_two_proposal_scheduler.py",
+        "tests/test_hocap_joint_supervision.py",
+        "tests/test_typed_proposal_training.py",
+        "tests/test_conditional_revision_replay.py",
+        "tests/test_public_handover_evidence.py",
+        "tests/test_joint_package_adversarial.py",
+        "tests/test_proposal_inference_session.py",
+        "tests/test_runtime_candidates.py",
+        "tests/test_interaction_evidence.py",
+        "tests/test_conditioned_proposal_runtime.py",
+        "tests/test_conditioned_inference_session.py",
+        "tests/test_native_joint_full_replay.py",
+        "tests/test_native_joint_producer_binding.py",
+        "tests/test_core_prototype_spine.py",
+        "tests/test_structure_two_backbone_b_repairs.py",
+        "tests/test_structure_two_w3_round6_prepared_boundary.py",
+        "tests/test_structure_two_w3_revision_acceptance.py",
+        "tests/test_structure_two_w3_deferred_cancellation.py"
+      ],
+      "exit_code": 0,
+      "seconds": 733.7653722087853
+    },
+    "audit_round1": {
+      "argv": [
+        "/private/tmp/cpswm-pc-a-joint-full-replay-20260926/.venv/bin/python",
+        "-m",
+        "pytest",
+        "-o",
+        "addopts=",
+        "-q",
+        "docs/reviews/pc_a/joint_full_replay_2026-09-26/audit_round1.py"
+      ],
+      "exit_code": 0,
+      "seconds": 160.5675215832889
+    },
+    "audit_round2": {
+      "argv": [
+        "/private/tmp/cpswm-pc-a-joint-full-replay-20260926/.venv/bin/python",
+        "-m",
+        "pytest",
+        "-o",
+        "addopts=",
+        "-q",
+        "docs/reviews/pc_a/joint_full_replay_2026-09-26/audit_round2.py"
+      ],
+      "exit_code": 0,
+      "seconds": 250.44838091731071
+    },
+    "controlled_continuation": {
+      "argv": [
+        "/private/tmp/cpswm-pc-a-joint-full-replay-20260926/.venv/bin/python",
+        "tools/run_native_joint_full_replay.py",
+        "--output",
+        "/private/tmp/cpswm-pc-a-joint-full-replay-20260926/output/joint-full-replay-20260926/final-two-round/controlled-continuation"
+      ],
+      "exit_code": 0,
+      "seconds": 52.56590845808387
+    },
+    "mypy": {
+      "argv": [
+        "/private/tmp/cpswm-pc-a-joint-full-replay-20260926/.venv/bin/python",
+        "-m",
+        "mypy",
+        "--no-incremental",
+        "src"
+      ],
+      "exit_code": 0,
+      "seconds": 11.438290833961219
+    },
+    "ruff": {
+      "argv": [
+        "/private/tmp/cpswm-pc-a-joint-full-replay-20260926/.venv/bin/python",
+        "-m",
+        "ruff",
+        "check",
+        "src/cpswm/system/native_joint_production.py",
+        "src/cpswm/system/native_joint_replay.py",
+        "src/cpswm/system/prototype_spine.py",
+        "src/cpswm/system/structure_two_continuous_input.py",
+        "tests/test_native_joint_full_replay.py",
+        "tests/test_native_joint_producer_binding.py",
+        "tests/test_native_joint_production.py",
+        "tests/test_structure_two_w3_native_posterior_projection.py",
+        "tools/run_native_joint_full_replay.py"
+      ],
+      "exit_code": 0,
+      "seconds": 0.06885154079645872
+    }
+  },
+  "regression_passed": 654,
+  "audit_round1_passed": 5,
+  "audit_round2_passed": 7,
+  "mypy_files": 364,
+  "all_frozen_checks_passed": true,
+  "self_audit_only": true,
+  "independent_auditors": 0,
+  "pc_b_reviewed": false,
+  "resolved_production_findings": [
+    "replacement implementation accepted under self-declared artifact",
+    "replay added never-consumed semantic sources",
+    "stale READY joint command blocked continuation",
+    "loaded helper code replacement reached native publication"
+  ],
+  "consequences": {
+    "track": "CONTROLLED_SEMANTIC_CONDITIONAL_AND_TRANSPORT_FIXTURES",
+    "seed": 171,
+    "old_joint_calls": 12,
+    "old_native_records": 24,
+    "invalidated_revisions": [
+      "62f0b66c-114e-556c-bcf9-bd22e30d0ff5"
+    ],
+    "before_replay_rejections": {
+      "produce": "joint posterior requires full particle revision replay",
+      "readout": "posterior source is stale, revoked, or outside runtime dependencies"
+    },
+    "retained_semantic_revisions": 23,
+    "recomputed_joint_sources": 11,
+    "retained_joint_source_count": 11,
+    "unconsumed_intermediate_sources_not_added": 12,
+    "retained_source_closure_exact": true,
+    "replay_seconds": 19.6039714589715,
+    "ledger_unchanged_by_replay_and_camera": true,
+    "semantic_snapshot_unchanged_by_replay": true,
+    "knowledge_cutoff_before": "2026-01-13T08:11:00+00:00",
+    "feedback_arrival": "2026-01-13T10:10:00+00:00",
+    "replay_cutoff": "2026-01-13T10:10:00+00:00",
+    "current_native_records": 22,
+    "current_atoms": 2,
+    "atom_history_lengths": [
+      11,
+      11
+    ],
+    "conditional_history_lengths": [
+      11,
+      11
+    ],
+    "pose_dimensions": [
+      6,
+      6
+    ],
+    "conditional_states_changed": [
+      true,
+      true
+    ],
+    "old_generation_preserved_sha256": "3140ddff62b5fc95010c55bdb6465b3a15e3303ecb49b9822b22b31c803cae0c",
+    "exact_restored_view": true,
+    "controlled_camera_command": "RotateLeft",
+    "controlled_transport_dispatches": 1,
+    "actual_simulator_dispatches": 0,
+    "natural_semantic_transitions": 0,
+    "empirical_calibration_established": false,
+    "learned_six_operation_kernel_bound": false,
+    "full_prepared_joint_replay_bound": true,
+    "independent_auditors": 0,
+    "source_unchanged": true,
+    "ledger_sha256": "d1bd37bbd922ef4295bd149bd48441ca34da90f5a091cf2b947a33417500945a"
+  },
+  "artifact_backup": {
+    "persistent_directory": "output/joint-full-replay-20260926",
+    "count": 71,
+    "bytes": 83905428,
+    "backup_verified": true
+  },
+  "full_project_acceptance": false
+}

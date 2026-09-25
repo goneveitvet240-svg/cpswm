@@ -7,7 +7,7 @@
 - 已选神经工件/完整六操作修订内核、真实测量与独立校准、自然 GroundedTransition、同一自然纠正到任务行动、独立强基线仍未完成。默认未配置模型仍无 joint batch；自然转移 0；完整 H/R/I/C/Z/r/V、三解析块、七算子及科学阈值不缩改。
 - 交付前 fetch：集成 `19ddf26830348a2f0b33f0af54d6ba702c5cfb1c`；B `codex/pc-b-adversarial-audit-fix-20260913` 为 `fd4ca6ef5e81c90d7cf7987b42c0b2810d8a810a`；PR34 base 不变。原活动主工作树保持，未合并共享集成。
 - [报告与完成/缺口矩阵](../reviews/pc_a/grounded_two_round_2026-09-25/REPORT.md)、[复跑/B入口](../reviews/pc_a/grounded_two_round_2026-09-25/COMMANDS.md)。本机工件已持久备份主仓 `output/grounded-audit-native-20260925/`（107 文件/142,204,464 字节），失败不覆盖。下一依赖是已选模型/监督与条件测量工件绑定，随后完整修订重放与自然任务对照。
-- GitHub 交付：本地已提交实现和证据，推送及草稿 PR 地址由交付登记补充；B 未复核。
+- GitHub 交付：实现与证据提交 `1c68e7d13db7b1be4dfca884c108b33e65774053` 已推送；[草稿 PR35](https://github.com/goneveitvet240-svg/cpswm/pull/35) 叠加 PR34。后续状态登记不改变被测源码；未合并集成，B 未复核。
 
 # A：PR34 二轮对抗审核与默认联合主干接续（2026-09-25 开工，历史）
 

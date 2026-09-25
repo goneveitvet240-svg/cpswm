@@ -5,7 +5,7 @@ import hashlib
 import json
 from pathlib import Path
 
-from cpswm.data_preflight.hocap_joint_supervision import assemble_subset, strict_json
+from cpswm.data_preflight.hocap_joint_supervision import assemble_subset, pinned_bytes, strict_json
 
 
 def run(spec_path: Path, output: Path) -> dict:
@@ -29,6 +29,10 @@ def run(spec_path: Path, output: Path) -> dict:
         raise ValueError("duplicate frame across subsets; windows are not independent sequences")
     if spec_path.read_bytes() != spec_bytes:
         raise ValueError("source specification changed")
+    # All subsets must still match at the common publication boundary.
+    for subset, pack in zip(spec["hocap_subsets"], packs, strict=True):
+        for name, digest in pack["source_files"].items():
+            pinned_bytes(Path(subset["root"]), name, digest)
     output.mkdir(parents=True, exist_ok=False)
     for name, rows in (("model_inputs.jsonl", inputs), ("evaluator_pose_labels.jsonl", labels)):
         (output / name).write_text(

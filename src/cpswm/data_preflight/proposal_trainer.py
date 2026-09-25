@@ -160,6 +160,10 @@ def save_checkpoint(model: TypedProposalNetwork, report: dict[str, Any], directo
     directory.mkdir(parents=True, exist_ok=False)
     blob = io.BytesIO()
     torch.save(model.state_dict(), blob)
+    if any(
+        v.dtype != torch.float32 or not torch.isfinite(v).all() for v in model.state_dict().values()
+    ):
+        raise ValueError("checkpoint requires finite float32 parameters")
     payload = blob.getvalue()
     digest = hashlib.sha256(payload).hexdigest()
     (directory / "weights.pt").write_bytes(payload)
@@ -194,8 +198,20 @@ def load_checkpoint(
         raise ValueError("checkpoint weights identity mismatch")
     with torch.random.fork_rng(devices=[]):
         model = TypedProposalNetwork(manifest["arm"], NetworkConfig(**manifest["config"]))
-    model.load_state_dict(
-        torch.load(io.BytesIO(payload), map_location="cpu", weights_only=True), strict=True
-    )
+    weights = torch.load(io.BytesIO(payload), map_location="cpu", weights_only=True)
+    expected = model.state_dict()
+    if not isinstance(weights, dict) or set(weights) != set(expected):
+        raise ValueError("checkpoint parameter tensor schema mismatch")
+    for name, reference in expected.items():
+        value = weights[name]
+        if (
+            not isinstance(value, torch.Tensor)
+            or value.layout != torch.strided
+            or value.shape != reference.shape
+            or value.dtype != reference.dtype
+            or not torch.isfinite(value).all()
+        ):
+            raise ValueError("checkpoint tensor shape/dtype or finite parameter mismatch")
+    model.load_state_dict(weights, strict=True)
     model.eval()
     return model, manifest

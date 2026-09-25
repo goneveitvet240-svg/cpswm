@@ -52,7 +52,10 @@ from cpswm.system.structure_two_execution import (
     seal_trace_commit_ack,
     verify_execution_trace,
 )
-from cpswm.system.structure_two_particle_workspace import native_content_sha256
+from cpswm.system.structure_two_particle_workspace import (
+    NativePosteriorSource,
+    native_content_sha256,
+)
 from cpswm.system.structure_two_production_system import StructureTwoProductionSystem
 from cpswm.world_model.grounded_search import RealizedCIAVObservation
 
@@ -254,6 +257,10 @@ class ContinuousEvidenceInput:
         self._producer = producer
         self._joint_producer = joint_producer
         self._joint_dependency_binding = producer_binding(joint_producer)
+        self._joint_initial_state = (
+            deepcopy(joint_producer.checkpoint_state()) if joint_producer is not None else None
+        )
+        self._joint_initial_state_sha256 = native_content_sha256(self._joint_initial_state)
         self._joint_published_batch_sha256: str | None = None
         self._joint_published_source_sha256: str | None = None
         self._last_cutoff: datetime | None = None
@@ -804,6 +811,109 @@ class ContinuousEvidenceInput:
                 if producer is not None and previous is not None and not self._durability_failed:
                     try:
                         producer.restore_state(previous)
+                    except BaseException:
+                        self._durability_failed = True
+                        raise
+                raise
+            finally:
+                self._busy = False
+
+    def replay_joint_posterior(self) -> None:
+        """Explicit full-history fallback after a real revision invalidation.
+
+        Replay resets the same configured producer to its recorded initial state,
+        recomputes all retained sources, and preserves the semantic ledger and old
+        invalidated generation. No action is executed or replayed by this method.
+        """
+        with self._lock, self._system.core._execution_lock:
+            self._enter()
+            producer = self._joint_producer
+            previous = None
+            core_checkpoint = None
+            old_publication = (
+                self._joint_published_batch_sha256,
+                self._joint_published_source_sha256,
+                self._last_cutoff,
+            )
+            try:
+                if (
+                    producer is None
+                    or self._joint_initial_state is None
+                    or producer_binding(producer) != self._joint_dependency_binding
+                ):
+                    raise ValueError("full joint replay requires the original configured producer")
+                if self._execution_lane != "registered_p5_first" or self._last_cutoff is None:
+                    raise ValueError("full joint replay requires advanced registered P5")
+                if (
+                    native_content_sha256(self._joint_initial_state)
+                    != self._joint_initial_state_sha256
+                ):
+                    raise ValueError("joint producer initial-state binding changed")
+                core = self._system.core
+                core_checkpoint = core._capture_revision_transaction(include_operator_state=True)
+                previous = deepcopy(producer.checkpoint_state())
+                producer.restore_state(deepcopy(self._joint_initial_state))
+                if (
+                    native_content_sha256(producer.checkpoint_state())
+                    != self._joint_initial_state_sha256
+                ):
+                    raise ValueError("joint producer did not restore its recorded initial state")
+
+                cutoff = max(self._last_cutoff, self._last_arrival or self._last_cutoff)
+
+                def produce(source: NativePosteriorSource) -> ProducedJointCandidates:
+                    workspace = core._particle_workspace
+                    context = deepcopy(
+                        NativeJointContext(
+                            source=source,
+                            previous_batch=workspace.batch,
+                            records=tuple(workspace.records.values()),
+                            ledger_head_sha256=core._hybrid_loop.ledger.export_state().manifest.head_hash,
+                            visible_prefix=self.visible_prefix(cutoff=cutoff),
+                            cutoff=cutoff,
+                        )
+                    )
+                    expected = context.content_sha256
+                    produced = deepcopy(producer.produce(context))
+                    if (
+                        type(produced) is not ProducedJointCandidates
+                        or produced.context_sha256 != expected
+                        or produced.source_posterior_id != source.source_id
+                        or produced.source_body_sha256 != source.body_sha256
+                        or produced.dependency_sha256 != self._joint_dependency_binding
+                        or producer_binding(producer) != self._joint_dependency_binding
+                    ):
+                        raise ValueError(
+                            "joint replay result differs from its live source/dependency"
+                        )
+                    return produced
+
+                core.rebuild_prepared_particle_history(produce)
+                self._joint_published_batch_sha256 = native_content_sha256(
+                    core._particle_workspace.batch
+                )
+                self._joint_published_source_sha256 = (
+                    core.current_posterior_projection_source().body_sha256
+                )
+                self._last_cutoff = cutoff
+                self._persist()
+            except BaseException:
+                if core_checkpoint is not None and not self._durability_failed:
+                    self._system.core._restore_revision_transaction(core_checkpoint)
+                    (
+                        self._joint_published_batch_sha256,
+                        self._joint_published_source_sha256,
+                        self._last_cutoff,
+                    ) = old_publication
+                if producer is not None and previous is not None and not self._durability_failed:
+                    try:
+                        producer.restore_state(previous)
+                        if native_content_sha256(
+                            producer.checkpoint_state()
+                        ) != native_content_sha256(previous):
+                            raise ValueError(
+                                "joint producer rollback did not restore its prior state"
+                            )
                     except BaseException:
                         self._durability_failed = True
                         raise

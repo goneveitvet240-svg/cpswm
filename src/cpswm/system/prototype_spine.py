@@ -87,6 +87,7 @@ from cpswm.system.evaluation_operations.structure_two_selected_method import (
     ParticleRevisionBatch,
     ParticleRevisionReceipt,
 )
+from cpswm.system.native_joint_replay import JointReplayGeneration
 from cpswm.system.reproducibility import content_sha256
 from cpswm.system.structure_two_execution import (
     GENESIS_RECEIPT_SHA256,
@@ -1219,6 +1220,9 @@ class CorePrototypeSpine:
             registered_locations=self._registered_particle_locations
         )
         self._particle_workspace_anchor = self._particle_workspace
+        self._particle_posterior_source_anchors: dict[UUID, str] = {}
+        self._particle_replay_generations: tuple[JointReplayGeneration, ...] = ()
+        self._particle_replay_generation_anchors: tuple[str, ...] = ()
         # Keep the trusted acceptance fingerprints outside the caller-visible
         # workspace state.  Internal workspace hashes establish self-consistency;
         # this core-owned map establishes that a coherently resealed workspace is
@@ -2817,6 +2821,8 @@ class CorePrototypeSpine:
                 ),
                 "revision_parent_events": event_rows(self._revision_parent_events),
                 "prepared_particle_workspace": self._particle_workspace.state_payload(),
+                "particle_posterior_source_anchors": self._particle_posterior_source_anchors,
+                "particle_replay_generation_anchors": self._particle_replay_generation_anchors,
                 "event_histories": self._event_histories,
                 "observed_events": event_rows(self._observed_events),
                 "fast_action_events": event_rows(self._fast_action_events),
@@ -2863,6 +2869,42 @@ class CorePrototypeSpine:
             self._check_particle_workspace_binding()
             self._validate_particle_input_anchors()
             return semantic_memory_identity(self)
+
+    @_serialized_core_mutation
+    def rebuild_prepared_particle_history(self, produce: Any) -> None:
+        """Recompute a complete retained history, atomically, with an owned producer.
+
+        The callback is internal continuous-runtime plumbing, not a new candidate
+        or calibration authority. All returned receipts still pass the existing
+        native source, ancestry, and prepared-model guards.
+        """
+        from cpswm.system.native_joint_replay import (
+            correction_basis,
+            install_empty_generation,
+            prepare_generation,
+        )
+
+        if self._production_operator_contract is not None:
+            self._production_operator_contract()
+        checkpoint = self._capture_revision_transaction(include_operator_state=True)
+        try:
+            generation = prepare_generation(self)
+            install_empty_generation(self, generation)
+            for source in generation.sources:
+                self._particle_workspace.posterior_sources[source.source_id] = source
+                self._particle_posterior_source_anchors[source.source_id] = source.body_sha256
+                produced = produce(deepcopy(source))
+                self.stage_prepared_particle_candidates(
+                    receipts=produced.receipts,
+                    statistics=produced.statistics,
+                    unresolved_log_weight=produced.unresolved_log_weight,
+                )
+            if correction_basis(self) != generation.basis_sha256:
+                raise ValueError("semantic state changed during full joint replay")
+            self.prepared_particle_location_marginal()
+        except BaseException:
+            self._restore_revision_transaction(checkpoint)
+            raise
 
     @_serialized_core_mutation
     def stage_prepared_particle_candidates(
@@ -2961,6 +3003,12 @@ class CorePrototypeSpine:
 
     def _validate_native_posterior_source(self, source: NativePosteriorSource) -> None:
         source.validate_content()
+        if self._particle_posterior_source_anchors.get(source.source_id) != source.body_sha256:
+            raise ValueError("posterior producer source differs from core acceptance anchor")
+        from cpswm.system.native_joint_replay import ReplayAssessment, validate_replay_source
+
+        if type(source.producer_context[1]) is ReplayAssessment:
+            validate_replay_source(self, source)
         revision = source.history_after.latest.revision_id
         event = self._observed_events.get(revision)
         if (
@@ -3009,6 +3057,14 @@ class CorePrototypeSpine:
     def _validate_particle_input_anchors(self) -> None:
         """Bind every persisted prepared input to a core-accepted fingerprint."""
 
+        if {
+            k: v.body_sha256 for k, v in self._particle_workspace.posterior_sources.items()
+        } != self._particle_posterior_source_anchors:
+            raise ValueError("posterior producer sources differ from core acceptance anchors")
+        if self._particle_replay_generations:
+            from cpswm.system.native_joint_replay import validate_generations
+
+            validate_generations(self)
         if self._particle_workspace.input_journal != self._particle_input_anchors:
             raise ValueError(
                 "prepared particle inputs differ from core runtime acceptance binding anchors"
@@ -3532,7 +3588,7 @@ class CorePrototypeSpine:
             event_revision_id=receipted_history.latest.revision_id,
             decision=decision,
         )
-        self._particle_workspace.publish_posterior(
+        published_source = self._particle_workspace.publish_posterior(
             object_instance_id=self.object_instance_id,
             snapshot_id=belief_snapshot.snapshot_id,
             locations=self._registered_particle_locations,
@@ -3541,6 +3597,9 @@ class CorePrototypeSpine:
             posterior=event_posterior,
             transition=transition,
             producer_context=(propensity, assessment),
+        )
+        self._particle_posterior_source_anchors[published_source.source_id] = (
+            published_source.body_sha256
         )
         if trace_recorder is not None:
             trace_recorder.record_executed(
@@ -3885,6 +3944,9 @@ class CorePrototypeSpine:
             "particle_workspace": self._particle_workspace,
             "particle_workspace_state": deepcopy(self._particle_workspace),
             "particle_input_anchors": dict(self._particle_input_anchors),
+            "particle_posterior_source_anchors": dict(self._particle_posterior_source_anchors),
+            "particle_replay_generations": self._particle_replay_generations,
+            "particle_replay_generation_anchors": self._particle_replay_generation_anchors,
             "event_histories": dict(self._event_histories),
             "production_operator_contract": self._production_operator_contract,
             "quarantined_events": list(self._quarantined_events),
@@ -4039,6 +4101,15 @@ class CorePrototypeSpine:
         _restore_reference_state(workspace, checkpoint["particle_workspace_state"])
         self._particle_workspace = workspace  # type: ignore[assignment]
         self._particle_input_anchors = cast(dict[UUID, str], checkpoint["particle_input_anchors"])
+        self._particle_posterior_source_anchors = cast(
+            dict[UUID, str], checkpoint["particle_posterior_source_anchors"]
+        )
+        self._particle_replay_generations = cast(
+            tuple[JointReplayGeneration, ...], checkpoint["particle_replay_generations"]
+        )
+        self._particle_replay_generation_anchors = cast(
+            tuple[str, ...], checkpoint["particle_replay_generation_anchors"]
+        )
         self._event_histories = checkpoint["event_histories"]  # type: ignore[assignment]
         self._production_operator_contract = checkpoint["production_operator_contract"]  # type: ignore[assignment]
         self._quarantined_events = checkpoint["quarantined_events"]  # type: ignore[assignment]

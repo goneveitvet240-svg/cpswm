@@ -1,0 +1,451 @@
+FFFFFFFFFFFFF                                                            [100%]
+=================================== FAILURES ===================================
+_ test_all_three_blocks_are_recomputed_and_original_scored_targets_stay_unchanged _
+
+    def test_all_three_blocks_are_recomputed_and_original_scored_targets_stay_unchanged():
+>       generated, kwargs = inputs()
+                            ^^^^^^^^
+
+tests/test_conditioned_proposal_runtime.py:112: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_conditioned_proposal_runtime.py:86: in inputs
+    groups = tuple(
+tests/test_conditioned_proposal_runtime.py:87: in <genexpr>
+    evidence_group(ctx, UUID(int=2000 + i), (p.observation_id,))
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+context = ProposalContext(source_snapshot_id=UUID('00000000-0000-0000-0000-0000000026ac'), visible=VisibleRecords(opportunities=...000000000065'), candidate_id=UUID('00000000-0000-0000-0000-0000000003eb'), association_status='ASSOCIATED_GEOMETRIC')))
+cluster_id = UUID('00000000-0000-0000-0000-0000000007d0')
+record_ids = (UUID('00000000-0000-0000-0000-000000000064'),)
+
+    def evidence_group(
+        context: ProposalContext, cluster_id: UUID, record_ids: tuple[UUID, ...]
+    ) -> ConditionalEvidenceGroup:
+        """Bind actual visible record bodies, not an external truth/annotation payload."""
+        records = {
+            UUID(row["record_id"]): row
+            for row in json.loads(context.visible.prefix().provenance_json)["included_records"]
+        }
+>       if not record_ids or len(set(record_ids)) != len(record_ids) or not set(record_ids) <= records:
+                                                                            ^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       TypeError: '<=' not supported between instances of 'set' and 'dict'
+
+src/cpswm/system/conditioned_proposal_runtime.py:48: TypeError
+__ test_six_operations_keep_full_raw_history_and_retraction_preserves_parent ___
+
+    def test_six_operations_keep_full_raw_history_and_retraction_preserves_parent():
+        ctx, parents = bound_posterior()
+>       generated, kwargs = inputs(ctx)
+                            ^^^^^^^^^^^
+
+tests/test_conditioned_proposal_runtime.py:137: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_conditioned_proposal_runtime.py:86: in inputs
+    groups = tuple(
+tests/test_conditioned_proposal_runtime.py:87: in <genexpr>
+    evidence_group(ctx, UUID(int=2000 + i), (p.observation_id,))
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+context = ProposalContext(source_snapshot_id=UUID('00000000-0000-0000-0000-0000000026ac'), visible=VisibleRecords(opportunities=...t_id=None, source_record_id=None, location_entity_id=None),), snapshot_location_catalog=(), pixel_identity_bindings=())
+cluster_id = UUID('00000000-0000-0000-0000-0000000007d0')
+record_ids = (UUID('00000000-0000-0000-0000-000000000064'),)
+
+    def evidence_group(
+        context: ProposalContext, cluster_id: UUID, record_ids: tuple[UUID, ...]
+    ) -> ConditionalEvidenceGroup:
+        """Bind actual visible record bodies, not an external truth/annotation payload."""
+        records = {
+            UUID(row["record_id"]): row
+            for row in json.loads(context.visible.prefix().provenance_json)["included_records"]
+        }
+>       if not record_ids or len(set(record_ids)) != len(record_ids) or not set(record_ids) <= records:
+                                                                            ^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       TypeError: '<=' not supported between instances of 'set' and 'dict'
+
+src/cpswm/system/conditioned_proposal_runtime.py:48: TypeError
+_ test_bad_measurements_or_interruption_restore_model_and_do_not_return_partial_support[cluster] _
+
+fault = 'cluster'
+
+    @pytest.mark.parametrize("fault", ["cluster", "source", "model", "covariance", "raise"])
+    def test_bad_measurements_or_interruption_restore_model_and_do_not_return_partial_support(fault):
+>       generated, kwargs = inputs()
+                            ^^^^^^^^
+
+tests/test_conditioned_proposal_runtime.py:159: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_conditioned_proposal_runtime.py:86: in inputs
+    groups = tuple(
+tests/test_conditioned_proposal_runtime.py:87: in <genexpr>
+    evidence_group(ctx, UUID(int=2000 + i), (p.observation_id,))
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+context = ProposalContext(source_snapshot_id=UUID('00000000-0000-0000-0000-0000000026ac'), visible=VisibleRecords(opportunities=...000000000065'), candidate_id=UUID('00000000-0000-0000-0000-0000000003eb'), association_status='ASSOCIATED_GEOMETRIC')))
+cluster_id = UUID('00000000-0000-0000-0000-0000000007d0')
+record_ids = (UUID('00000000-0000-0000-0000-000000000064'),)
+
+    def evidence_group(
+        context: ProposalContext, cluster_id: UUID, record_ids: tuple[UUID, ...]
+    ) -> ConditionalEvidenceGroup:
+        """Bind actual visible record bodies, not an external truth/annotation payload."""
+        records = {
+            UUID(row["record_id"]): row
+            for row in json.loads(context.visible.prefix().provenance_json)["included_records"]
+        }
+>       if not record_ids or len(set(record_ids)) != len(record_ids) or not set(record_ids) <= records:
+                                                                            ^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       TypeError: '<=' not supported between instances of 'set' and 'dict'
+
+src/cpswm/system/conditioned_proposal_runtime.py:48: TypeError
+_ test_bad_measurements_or_interruption_restore_model_and_do_not_return_partial_support[source] _
+
+fault = 'source'
+
+    @pytest.mark.parametrize("fault", ["cluster", "source", "model", "covariance", "raise"])
+    def test_bad_measurements_or_interruption_restore_model_and_do_not_return_partial_support(fault):
+>       generated, kwargs = inputs()
+                            ^^^^^^^^
+
+tests/test_conditioned_proposal_runtime.py:159: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_conditioned_proposal_runtime.py:86: in inputs
+    groups = tuple(
+tests/test_conditioned_proposal_runtime.py:87: in <genexpr>
+    evidence_group(ctx, UUID(int=2000 + i), (p.observation_id,))
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+context = ProposalContext(source_snapshot_id=UUID('00000000-0000-0000-0000-0000000026ac'), visible=VisibleRecords(opportunities=...000000000065'), candidate_id=UUID('00000000-0000-0000-0000-0000000003eb'), association_status='ASSOCIATED_GEOMETRIC')))
+cluster_id = UUID('00000000-0000-0000-0000-0000000007d0')
+record_ids = (UUID('00000000-0000-0000-0000-000000000064'),)
+
+    def evidence_group(
+        context: ProposalContext, cluster_id: UUID, record_ids: tuple[UUID, ...]
+    ) -> ConditionalEvidenceGroup:
+        """Bind actual visible record bodies, not an external truth/annotation payload."""
+        records = {
+            UUID(row["record_id"]): row
+            for row in json.loads(context.visible.prefix().provenance_json)["included_records"]
+        }
+>       if not record_ids or len(set(record_ids)) != len(record_ids) or not set(record_ids) <= records:
+                                                                            ^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       TypeError: '<=' not supported between instances of 'set' and 'dict'
+
+src/cpswm/system/conditioned_proposal_runtime.py:48: TypeError
+_ test_bad_measurements_or_interruption_restore_model_and_do_not_return_partial_support[model] _
+
+fault = 'model'
+
+    @pytest.mark.parametrize("fault", ["cluster", "source", "model", "covariance", "raise"])
+    def test_bad_measurements_or_interruption_restore_model_and_do_not_return_partial_support(fault):
+>       generated, kwargs = inputs()
+                            ^^^^^^^^
+
+tests/test_conditioned_proposal_runtime.py:159: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_conditioned_proposal_runtime.py:86: in inputs
+    groups = tuple(
+tests/test_conditioned_proposal_runtime.py:87: in <genexpr>
+    evidence_group(ctx, UUID(int=2000 + i), (p.observation_id,))
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+context = ProposalContext(source_snapshot_id=UUID('00000000-0000-0000-0000-0000000026ac'), visible=VisibleRecords(opportunities=...000000000065'), candidate_id=UUID('00000000-0000-0000-0000-0000000003eb'), association_status='ASSOCIATED_GEOMETRIC')))
+cluster_id = UUID('00000000-0000-0000-0000-0000000007d0')
+record_ids = (UUID('00000000-0000-0000-0000-000000000064'),)
+
+    def evidence_group(
+        context: ProposalContext, cluster_id: UUID, record_ids: tuple[UUID, ...]
+    ) -> ConditionalEvidenceGroup:
+        """Bind actual visible record bodies, not an external truth/annotation payload."""
+        records = {
+            UUID(row["record_id"]): row
+            for row in json.loads(context.visible.prefix().provenance_json)["included_records"]
+        }
+>       if not record_ids or len(set(record_ids)) != len(record_ids) or not set(record_ids) <= records:
+                                                                            ^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       TypeError: '<=' not supported between instances of 'set' and 'dict'
+
+src/cpswm/system/conditioned_proposal_runtime.py:48: TypeError
+_ test_bad_measurements_or_interruption_restore_model_and_do_not_return_partial_support[covariance] _
+
+fault = 'covariance'
+
+    @pytest.mark.parametrize("fault", ["cluster", "source", "model", "covariance", "raise"])
+    def test_bad_measurements_or_interruption_restore_model_and_do_not_return_partial_support(fault):
+>       generated, kwargs = inputs()
+                            ^^^^^^^^
+
+tests/test_conditioned_proposal_runtime.py:159: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_conditioned_proposal_runtime.py:86: in inputs
+    groups = tuple(
+tests/test_conditioned_proposal_runtime.py:87: in <genexpr>
+    evidence_group(ctx, UUID(int=2000 + i), (p.observation_id,))
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+context = ProposalContext(source_snapshot_id=UUID('00000000-0000-0000-0000-0000000026ac'), visible=VisibleRecords(opportunities=...000000000065'), candidate_id=UUID('00000000-0000-0000-0000-0000000003eb'), association_status='ASSOCIATED_GEOMETRIC')))
+cluster_id = UUID('00000000-0000-0000-0000-0000000007d0')
+record_ids = (UUID('00000000-0000-0000-0000-000000000064'),)
+
+    def evidence_group(
+        context: ProposalContext, cluster_id: UUID, record_ids: tuple[UUID, ...]
+    ) -> ConditionalEvidenceGroup:
+        """Bind actual visible record bodies, not an external truth/annotation payload."""
+        records = {
+            UUID(row["record_id"]): row
+            for row in json.loads(context.visible.prefix().provenance_json)["included_records"]
+        }
+>       if not record_ids or len(set(record_ids)) != len(record_ids) or not set(record_ids) <= records:
+                                                                            ^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       TypeError: '<=' not supported between instances of 'set' and 'dict'
+
+src/cpswm/system/conditioned_proposal_runtime.py:48: TypeError
+_ test_bad_measurements_or_interruption_restore_model_and_do_not_return_partial_support[raise] _
+
+fault = 'raise'
+
+    @pytest.mark.parametrize("fault", ["cluster", "source", "model", "covariance", "raise"])
+    def test_bad_measurements_or_interruption_restore_model_and_do_not_return_partial_support(fault):
+>       generated, kwargs = inputs()
+                            ^^^^^^^^
+
+tests/test_conditioned_proposal_runtime.py:159: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_conditioned_proposal_runtime.py:86: in inputs
+    groups = tuple(
+tests/test_conditioned_proposal_runtime.py:87: in <genexpr>
+    evidence_group(ctx, UUID(int=2000 + i), (p.observation_id,))
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+context = ProposalContext(source_snapshot_id=UUID('00000000-0000-0000-0000-0000000026ac'), visible=VisibleRecords(opportunities=...000000000065'), candidate_id=UUID('00000000-0000-0000-0000-0000000003eb'), association_status='ASSOCIATED_GEOMETRIC')))
+cluster_id = UUID('00000000-0000-0000-0000-0000000007d0')
+record_ids = (UUID('00000000-0000-0000-0000-000000000064'),)
+
+    def evidence_group(
+        context: ProposalContext, cluster_id: UUID, record_ids: tuple[UUID, ...]
+    ) -> ConditionalEvidenceGroup:
+        """Bind actual visible record bodies, not an external truth/annotation payload."""
+        records = {
+            UUID(row["record_id"]): row
+            for row in json.loads(context.visible.prefix().provenance_json)["included_records"]
+        }
+>       if not record_ids or len(set(record_ids)) != len(record_ids) or not set(record_ids) <= records:
+                                                                            ^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       TypeError: '<=' not supported between instances of 'set' and 'dict'
+
+src/cpswm/system/conditioned_proposal_runtime.py:48: TypeError
+________ test_source_partition_and_parent_binding_are_enforced[missing] ________
+
+fault = 'missing'
+
+    @pytest.mark.parametrize("fault", ["missing", "duplicate", "content", "future", "parent"])
+    def test_source_partition_and_parent_binding_are_enforced(fault):
+>       generated, kwargs = inputs()
+                            ^^^^^^^^
+
+tests/test_conditioned_proposal_runtime.py:171: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_conditioned_proposal_runtime.py:86: in inputs
+    groups = tuple(
+tests/test_conditioned_proposal_runtime.py:87: in <genexpr>
+    evidence_group(ctx, UUID(int=2000 + i), (p.observation_id,))
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+context = ProposalContext(source_snapshot_id=UUID('00000000-0000-0000-0000-0000000026ac'), visible=VisibleRecords(opportunities=...000000000065'), candidate_id=UUID('00000000-0000-0000-0000-0000000003eb'), association_status='ASSOCIATED_GEOMETRIC')))
+cluster_id = UUID('00000000-0000-0000-0000-0000000007d0')
+record_ids = (UUID('00000000-0000-0000-0000-000000000064'),)
+
+    def evidence_group(
+        context: ProposalContext, cluster_id: UUID, record_ids: tuple[UUID, ...]
+    ) -> ConditionalEvidenceGroup:
+        """Bind actual visible record bodies, not an external truth/annotation payload."""
+        records = {
+            UUID(row["record_id"]): row
+            for row in json.loads(context.visible.prefix().provenance_json)["included_records"]
+        }
+>       if not record_ids or len(set(record_ids)) != len(record_ids) or not set(record_ids) <= records:
+                                                                            ^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       TypeError: '<=' not supported between instances of 'set' and 'dict'
+
+src/cpswm/system/conditioned_proposal_runtime.py:48: TypeError
+_______ test_source_partition_and_parent_binding_are_enforced[duplicate] _______
+
+fault = 'duplicate'
+
+    @pytest.mark.parametrize("fault", ["missing", "duplicate", "content", "future", "parent"])
+    def test_source_partition_and_parent_binding_are_enforced(fault):
+>       generated, kwargs = inputs()
+                            ^^^^^^^^
+
+tests/test_conditioned_proposal_runtime.py:171: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_conditioned_proposal_runtime.py:86: in inputs
+    groups = tuple(
+tests/test_conditioned_proposal_runtime.py:87: in <genexpr>
+    evidence_group(ctx, UUID(int=2000 + i), (p.observation_id,))
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+context = ProposalContext(source_snapshot_id=UUID('00000000-0000-0000-0000-0000000026ac'), visible=VisibleRecords(opportunities=...000000000065'), candidate_id=UUID('00000000-0000-0000-0000-0000000003eb'), association_status='ASSOCIATED_GEOMETRIC')))
+cluster_id = UUID('00000000-0000-0000-0000-0000000007d0')
+record_ids = (UUID('00000000-0000-0000-0000-000000000064'),)
+
+    def evidence_group(
+        context: ProposalContext, cluster_id: UUID, record_ids: tuple[UUID, ...]
+    ) -> ConditionalEvidenceGroup:
+        """Bind actual visible record bodies, not an external truth/annotation payload."""
+        records = {
+            UUID(row["record_id"]): row
+            for row in json.loads(context.visible.prefix().provenance_json)["included_records"]
+        }
+>       if not record_ids or len(set(record_ids)) != len(record_ids) or not set(record_ids) <= records:
+                                                                            ^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       TypeError: '<=' not supported between instances of 'set' and 'dict'
+
+src/cpswm/system/conditioned_proposal_runtime.py:48: TypeError
+________ test_source_partition_and_parent_binding_are_enforced[content] ________
+
+fault = 'content'
+
+    @pytest.mark.parametrize("fault", ["missing", "duplicate", "content", "future", "parent"])
+    def test_source_partition_and_parent_binding_are_enforced(fault):
+>       generated, kwargs = inputs()
+                            ^^^^^^^^
+
+tests/test_conditioned_proposal_runtime.py:171: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_conditioned_proposal_runtime.py:86: in inputs
+    groups = tuple(
+tests/test_conditioned_proposal_runtime.py:87: in <genexpr>
+    evidence_group(ctx, UUID(int=2000 + i), (p.observation_id,))
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+context = ProposalContext(source_snapshot_id=UUID('00000000-0000-0000-0000-0000000026ac'), visible=VisibleRecords(opportunities=...000000000065'), candidate_id=UUID('00000000-0000-0000-0000-0000000003eb'), association_status='ASSOCIATED_GEOMETRIC')))
+cluster_id = UUID('00000000-0000-0000-0000-0000000007d0')
+record_ids = (UUID('00000000-0000-0000-0000-000000000064'),)
+
+    def evidence_group(
+        context: ProposalContext, cluster_id: UUID, record_ids: tuple[UUID, ...]
+    ) -> ConditionalEvidenceGroup:
+        """Bind actual visible record bodies, not an external truth/annotation payload."""
+        records = {
+            UUID(row["record_id"]): row
+            for row in json.loads(context.visible.prefix().provenance_json)["included_records"]
+        }
+>       if not record_ids or len(set(record_ids)) != len(record_ids) or not set(record_ids) <= records:
+                                                                            ^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       TypeError: '<=' not supported between instances of 'set' and 'dict'
+
+src/cpswm/system/conditioned_proposal_runtime.py:48: TypeError
+________ test_source_partition_and_parent_binding_are_enforced[future] _________
+
+fault = 'future'
+
+    @pytest.mark.parametrize("fault", ["missing", "duplicate", "content", "future", "parent"])
+    def test_source_partition_and_parent_binding_are_enforced(fault):
+>       generated, kwargs = inputs()
+                            ^^^^^^^^
+
+tests/test_conditioned_proposal_runtime.py:171: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_conditioned_proposal_runtime.py:86: in inputs
+    groups = tuple(
+tests/test_conditioned_proposal_runtime.py:87: in <genexpr>
+    evidence_group(ctx, UUID(int=2000 + i), (p.observation_id,))
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+context = ProposalContext(source_snapshot_id=UUID('00000000-0000-0000-0000-0000000026ac'), visible=VisibleRecords(opportunities=...000000000065'), candidate_id=UUID('00000000-0000-0000-0000-0000000003eb'), association_status='ASSOCIATED_GEOMETRIC')))
+cluster_id = UUID('00000000-0000-0000-0000-0000000007d0')
+record_ids = (UUID('00000000-0000-0000-0000-000000000064'),)
+
+    def evidence_group(
+        context: ProposalContext, cluster_id: UUID, record_ids: tuple[UUID, ...]
+    ) -> ConditionalEvidenceGroup:
+        """Bind actual visible record bodies, not an external truth/annotation payload."""
+        records = {
+            UUID(row["record_id"]): row
+            for row in json.loads(context.visible.prefix().provenance_json)["included_records"]
+        }
+>       if not record_ids or len(set(record_ids)) != len(record_ids) or not set(record_ids) <= records:
+                                                                            ^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       TypeError: '<=' not supported between instances of 'set' and 'dict'
+
+src/cpswm/system/conditioned_proposal_runtime.py:48: TypeError
+________ test_source_partition_and_parent_binding_are_enforced[parent] _________
+
+fault = 'parent'
+
+    @pytest.mark.parametrize("fault", ["missing", "duplicate", "content", "future", "parent"])
+    def test_source_partition_and_parent_binding_are_enforced(fault):
+>       generated, kwargs = inputs()
+                            ^^^^^^^^
+
+tests/test_conditioned_proposal_runtime.py:171: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_conditioned_proposal_runtime.py:86: in inputs
+    groups = tuple(
+tests/test_conditioned_proposal_runtime.py:87: in <genexpr>
+    evidence_group(ctx, UUID(int=2000 + i), (p.observation_id,))
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+context = ProposalContext(source_snapshot_id=UUID('00000000-0000-0000-0000-0000000026ac'), visible=VisibleRecords(opportunities=...000000000065'), candidate_id=UUID('00000000-0000-0000-0000-0000000003eb'), association_status='ASSOCIATED_GEOMETRIC')))
+cluster_id = UUID('00000000-0000-0000-0000-0000000007d0')
+record_ids = (UUID('00000000-0000-0000-0000-000000000064'),)
+
+    def evidence_group(
+        context: ProposalContext, cluster_id: UUID, record_ids: tuple[UUID, ...]
+    ) -> ConditionalEvidenceGroup:
+        """Bind actual visible record bodies, not an external truth/annotation payload."""
+        records = {
+            UUID(row["record_id"]): row
+            for row in json.loads(context.visible.prefix().provenance_json)["included_records"]
+        }
+>       if not record_ids or len(set(record_ids)) != len(record_ids) or not set(record_ids) <= records:
+                                                                            ^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       TypeError: '<=' not supported between instances of 'set' and 'dict'
+
+src/cpswm/system/conditioned_proposal_runtime.py:48: TypeError
+_______ test_complete_resealed_false_statistics_fail_actual_model_replay _______
+
+    def test_complete_resealed_false_statistics_fail_actual_model_replay():
+>       generated, kwargs = inputs()
+                            ^^^^^^^^
+
+tests/test_conditioned_proposal_runtime.py:193: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_conditioned_proposal_runtime.py:86: in inputs
+    groups = tuple(
+tests/test_conditioned_proposal_runtime.py:87: in <genexpr>
+    evidence_group(ctx, UUID(int=2000 + i), (p.observation_id,))
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+context = ProposalContext(source_snapshot_id=UUID('00000000-0000-0000-0000-0000000026ac'), visible=VisibleRecords(opportunities=...000000000065'), candidate_id=UUID('00000000-0000-0000-0000-0000000003eb'), association_status='ASSOCIATED_GEOMETRIC')))
+cluster_id = UUID('00000000-0000-0000-0000-0000000007d0')
+record_ids = (UUID('00000000-0000-0000-0000-000000000064'),)
+
+    def evidence_group(
+        context: ProposalContext, cluster_id: UUID, record_ids: tuple[UUID, ...]
+    ) -> ConditionalEvidenceGroup:
+        """Bind actual visible record bodies, not an external truth/annotation payload."""
+        records = {
+            UUID(row["record_id"]): row
+            for row in json.loads(context.visible.prefix().provenance_json)["included_records"]
+        }
+>       if not record_ids or len(set(record_ids)) != len(record_ids) or not set(record_ids) <= records:
+                                                                            ^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       TypeError: '<=' not supported between instances of 'set' and 'dict'
+
+src/cpswm/system/conditioned_proposal_runtime.py:48: TypeError
+=========================== short test summary info ============================
+FAILED tests/test_conditioned_proposal_runtime.py::test_all_three_blocks_are_recomputed_and_original_scored_targets_stay_unchanged
+FAILED tests/test_conditioned_proposal_runtime.py::test_six_operations_keep_full_raw_history_and_retraction_preserves_parent
+FAILED tests/test_conditioned_proposal_runtime.py::test_bad_measurements_or_interruption_restore_model_and_do_not_return_partial_support[cluster]
+FAILED tests/test_conditioned_proposal_runtime.py::test_bad_measurements_or_interruption_restore_model_and_do_not_return_partial_support[source]
+FAILED tests/test_conditioned_proposal_runtime.py::test_bad_measurements_or_interruption_restore_model_and_do_not_return_partial_support[model]
+FAILED tests/test_conditioned_proposal_runtime.py::test_bad_measurements_or_interruption_restore_model_and_do_not_return_partial_support[covariance]
+FAILED tests/test_conditioned_proposal_runtime.py::test_bad_measurements_or_interruption_restore_model_and_do_not_return_partial_support[raise]
+FAILED tests/test_conditioned_proposal_runtime.py::test_source_partition_and_parent_binding_are_enforced[missing]
+FAILED tests/test_conditioned_proposal_runtime.py::test_source_partition_and_parent_binding_are_enforced[duplicate]
+FAILED tests/test_conditioned_proposal_runtime.py::test_source_partition_and_parent_binding_are_enforced[content]
+FAILED tests/test_conditioned_proposal_runtime.py::test_source_partition_and_parent_binding_are_enforced[future]
+FAILED tests/test_conditioned_proposal_runtime.py::test_source_partition_and_parent_binding_are_enforced[parent]
+FAILED tests/test_conditioned_proposal_runtime.py::test_complete_resealed_false_statistics_fail_actual_model_replay
+13 failed in 19.00s

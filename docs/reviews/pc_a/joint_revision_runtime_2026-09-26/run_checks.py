@@ -9,6 +9,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[4]
 OUT = Path(sys.argv[1]).resolve()
+TRAINING = Path(sys.argv[2]).resolve()
 OUT.mkdir(parents=True, exist_ok=False)
 python = str(ROOT / ".venv/bin/python")
 tests = [
@@ -67,6 +68,24 @@ commands = {
         "addopts=",
         "-q",
         *[f"tests/{n}.py" for n in tests],
+    ],
+    "adversarial": [
+        python,
+        "-m",
+        "pytest",
+        "-o",
+        "addopts=",
+        "-q",
+        "docs/reviews/pc_a/joint_revision_runtime_2026-09-26/audit_round1.py",
+        "docs/reviews/pc_a/joint_revision_runtime_2026-09-26/audit_round2.py",
+    ],
+    "checkpoint_conditioning": [
+        python,
+        "tools/run_conditioned_proposal_development.py",
+        "--training",
+        str(TRAINING),
+        "--output",
+        str(OUT / "conditioned-inference"),
     ],
     "mypy": [python, "-m", "mypy", "src"],
     "ruff": [python, "-m", "ruff", "check", *changed],

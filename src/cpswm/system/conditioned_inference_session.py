@@ -4,6 +4,8 @@ from __future__ import annotations
 
 import hashlib
 import json
+from collections.abc import Iterator
+from contextlib import contextmanager
 from copy import deepcopy
 from dataclasses import dataclass
 from pathlib import Path
@@ -71,6 +73,8 @@ class ConditionedInferenceSession:
         expected_model_binding_sha256: str,
     ):
         self._lock = RLock()
+        self._busy = False
+        self._rollback_failed = False
         self._checkpoint = checkpoint
         self._manifest = manifest_sha256
         self._seed = seed
@@ -79,6 +83,7 @@ class ConditionedInferenceSession:
             raise ValueError("explicit empty-history pose prior required")
         self._model = model
         self._model_binding = expected_model_binding_sha256
+        self._model_id = model.observation_model_id
         self._model_state = StateCodec().dumps(deepcopy(model.checkpoint_state()))
         self._proposals = RuntimeCandidateSession(
             checkpoint, manifest_sha256=manifest_sha256, seed=seed
@@ -87,11 +92,25 @@ class ConditionedInferenceSession:
         self._check_model()
 
     def _check_model(self) -> None:
+        if self._rollback_failed:
+            raise RuntimeError("conditional rollback failed; recover from a durable snapshot")
         if (
             self._model.binding_sha256 != self._model_binding
+            or self._model.observation_model_id != self._model_id
             or StateCodec().dumps(self._model.checkpoint_state()) != self._model_state
         ):
             raise ValueError("owned conditional inference model/state changed")
+
+    @contextmanager
+    def _transaction(self) -> Iterator[None]:
+        with self._lock:
+            if self._busy:
+                raise RuntimeError("reentrant conditioned inference is forbidden")
+            self._busy = True
+            try:
+                yield
+            finally:
+                self._busy = False
 
     def process(
         self,
@@ -103,7 +122,7 @@ class ConditionedInferenceSession:
         parent_statistics: dict[UUID, ConditionalAnalyticState],
         max_candidates: int = 4096,
     ) -> ConditionedInference:
-        with self._lock:
+        with self._transaction():
             self._check_model()
             before = self._proposals.snapshot()
             try:
@@ -148,19 +167,23 @@ class ConditionedInferenceSession:
                         )
                 self._check_model()
             except BaseException:
-                self._proposals = RuntimeCandidateSession.restore(
-                    self._checkpoint,
-                    manifest_sha256=self._manifest,
-                    snapshot=before,
-                    snapshot_sha256=hashlib.sha256(before).hexdigest(),
-                )
+                try:
+                    self._proposals = RuntimeCandidateSession.restore(
+                        self._checkpoint,
+                        manifest_sha256=self._manifest,
+                        snapshot=before,
+                        snapshot_sha256=hashlib.sha256(before).hexdigest(),
+                    )
+                except BaseException:
+                    self._rollback_failed = True
+                    raise
                 raise
             if previous is None:
                 self._requests[request_id] = payload
             return deepcopy(result)
 
     def snapshot(self) -> bytes:
-        with self._lock:
+        with self._transaction():
             self._check_model()
             return encoded(
                 {
@@ -169,6 +192,7 @@ class ConditionedInferenceSession:
                     "seed": self._seed,
                     "prior_sha256": content_sha256(self._prior),
                     "conditional_model_binding_sha256": self._model_binding,
+                    "conditional_observation_model_id": self._model_id,
                     "conditional_model_state": self._model_state,
                     "proposals": json.loads(self._proposals.snapshot()),
                     "requests": list(self._requests.values()),
@@ -197,6 +221,7 @@ class ConditionedInferenceSession:
             or payload["checkpoint_manifest_sha256"] != manifest_sha256
             or payload["prior_sha256"] != content_sha256(prior)
             or payload["conditional_model_binding_sha256"] != expected_model_binding_sha256
+            or payload["conditional_observation_model_id"] != model.observation_model_id
         ):
             raise ValueError("conditioned inference dependencies differ")
         result = cls(
@@ -221,6 +246,14 @@ class ConditionedInferenceSession:
             )
             if content_sha256(actual) != content_sha256(request.result):
                 raise ValueError("conditional inference differs from complete model replay")
+            expected_request = StateCodec().loads(result._requests[request.request_id])
+            if content_sha256(expected_request) != content_sha256(request):
+                raise ValueError("conditional request dependencies differ after replay")
+            # StateCodec records shared object identities, including immutable
+            # tuples/UUIDs. A legal reconstruction can change only that sharing.
+            # Preserve the received encoding ONLY after re-evaluating every input
+            # and output. Runtime results always come from the recomputation.
+            result._requests[request.request_id] = raw
         if result.snapshot() != encoded(payload):
             raise ValueError("conditional journal, sampling history or authority changed")
         return result

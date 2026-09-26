@@ -83,11 +83,16 @@ def attend_query_rows(
     weight = _checked_attention(module)
     width, heads = module.embed_dim, module.num_heads
     bias = module.in_proj_bias
-    if queries is memory and projected_kv is None:
-        projected = F.linear(queries, weight, bias)
-        query, key, value = projected.reshape(len(queries), 3, heads, width // heads).permute(
-            1, 2, 0, 3
-        )
+    native_self = queries is memory and projected_kv is None
+    if native_self:
+        if bias is None:
+            raise ValueError("blocked native self attention requires the frozen bias")
+        # Mirror the installed CPU native encoder: projection WITHOUT bias,
+        # then its bias/rescale kernel. Flash SDPA is mathematically equivalent
+        # but exceeded the preregistered 1e-5 graph tolerance at 10,246 nodes.
+        projected = F.linear(queries, weight)
+        query4, key4, value4 = torch._transform_bias_rescale_qkv(projected[None], bias, heads)
+        query, key, value = query4[0], key4[0], value4[0]
     else:
         query = F.linear(queries, weight[:width], None if bias is None else bias[:width])
         query = query.reshape(len(queries), heads, width // heads).transpose(0, 1)
@@ -96,15 +101,29 @@ def attend_query_rows(
     for start in range(0, len(queries), QUERY_BATCH):
         stop = min(start + QUERY_BATCH, len(queries))
         mask = None if allowed_rows is None else allowed_rows(start, stop)
-        attended = F.scaled_dot_product_attention(
-            query[None, :, start:stop],
-            key[None],
-            value[None],
-            attn_mask=None if mask is None else mask[None, None],
-            dropout_p=0.0,
-            is_causal=False,
-        )
-        pieces.append(attended[0].transpose(0, 1).reshape(stop - start, width))
+        if native_self:
+            scores = torch.bmm(query[:, start:stop], key.transpose(1, 2))
+            probabilities = (
+                scores.softmax(-1)
+                if mask is None
+                else torch._masked_softmax(
+                    scores[None],
+                    (~mask)[None, None].expand(1, heads, stop - start, len(memory)),
+                    -1,
+                    2,
+                )[0]
+            )
+            attended = torch.bmm(probabilities, value)
+        else:
+            attended = F.scaled_dot_product_attention(
+                query[None, :, start:stop],
+                key[None],
+                value[None],
+                attn_mask=None if mask is None else mask[None, None],
+                dropout_p=0.0,
+                is_causal=False,
+            )[0]
+        pieces.append(attended.transpose(0, 1).reshape(stop - start, width))
     return F.linear(torch.cat(pieces), module.out_proj.weight, module.out_proj.bias)
 
 

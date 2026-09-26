@@ -35,6 +35,7 @@ spec.loader.exec_module(prior)
 def test_valid_complete_clock_compression_passes_structure_but_not_source(tmp_path, monkeypatch):
     args, _ = dense_fixture(tmp_path, monkeypatch)
     root = args["output"]
+    original_pin = runtime_pin(root)
     backup = {p: p.read_bytes() for p in root.rglob("*") if p.is_file()}
     by_key = {}
     for path in (root / "runtime").rglob("*.receipt.json"):
@@ -55,11 +56,76 @@ def test_valid_complete_clock_compression_passes_structure_but_not_source(tmp_pa
     assert (
         len(module.load_runtime_windows(root / "runtime", manifest_sha256=runtime_pin(root))) == 8
     )
+    front = frontend_module()
+    monkeypatch.setattr(front, "FasterNaturalAppearanceDetector", TwoPeopleDetector)
+    monkeypatch.setattr(front, "NaturalHandDetector", FixtureHands)
+    monkeypatch.setattr(FixtureHands, "instances", [])
+    with pytest.raises(ValueError):
+        front.run(
+            root / "runtime",
+            original_pin,
+            tmp_path / "weights",
+            tmp_path / "hands",
+            tmp_path / "trusted-pin-rejection",
+        )
+    assert not (tmp_path / "trusted-pin-rejection").exists()
+    assert not FixtureHands.instances
+    # A caller deliberately substituting the forged self-pin can get plausible
+    # diagnostic candidates. Follow that complete positive path to actual core,
+    # ledger, action and artifact checks; do not mistake it for source authority.
+    diagnostic = front.run(
+        root / "runtime",
+        runtime_pin(root),
+        tmp_path / "weights",
+        tmp_path / "hands",
+        tmp_path / "forged-diagnostic",
+    )
+    assert diagnostic["role_alternatives"] > 0
+    assert diagnostic["hand_object_measurements"] > 0
+    assert diagnostic["associations_per_presentation"]["ASSOCIATED_GEOMETRIC"] > 0
+    assert all(
+        w["support"]["status"] == "COMPLETE_SUPPORT_GENERATED"
+        and w["core_ledger_unchanged"]
+        and w["perception_restore_equal"]
+        and w["execution_traces"] == 0
+        for w in diagnostic["windows"]
+    )
+    assert (tmp_path / "forged-diagnostic/result.json").exists()
+    assert diagnostic["natural_semantic_publications"] == 0
+    assert diagnostic["memory_writes"] == diagnostic["executed_actions"] == 0
+    assert all(h.closed for h in FixtureHands.instances)
     with pytest.raises(ValueError, match="original source"):
         module.align_hfd_training(**args, verify=True)
     for path, raw in backup.items():
         path.write_bytes(raw)
     assert module.align_hfd_training(**args, verify=True)["selected_frames"] == 32
+
+
+def test_windows_do_not_inherit_association_or_role_state(tmp_path, monkeypatch):
+    args, _ = dense_fixture(tmp_path, monkeypatch)
+    front = frontend_module()
+    monkeypatch.setattr(front, "FasterNaturalAppearanceDetector", TwoPeopleDetector)
+    monkeypatch.setattr(front, "NaturalHandDetector", FixtureHands)
+    output = tmp_path / "run"
+    front.run(
+        args["output"] / "runtime",
+        runtime_pin(args["output"]),
+        tmp_path / "weights",
+        tmp_path / "hands",
+        output,
+    )
+    records = json.loads((output / "result.json").read_bytes())["records"]
+    seen = set()
+    for row in records:
+        if row["window"] not in seen:
+            assert all(d["status"] == "NEW_UNVERIFIED" for d in row["association"]["detections"])
+            assert not row["interaction"]["role_alternatives"]
+            seen.add(row["window"])
+        else:
+            assert any(
+                d["status"] == "ASSOCIATED_GEOMETRIC" for d in row["association"]["detections"]
+            )
+    assert len(seen) == 8
 
 
 @pytest.mark.parametrize("attack", ("omission", "count", "origin", "time_order", "scope", "policy"))

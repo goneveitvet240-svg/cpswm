@@ -87,11 +87,19 @@ def test_complete_resealed_alignment_rejected_by_source_then_legal_retry(
         files = sorted((root / "runtime").rglob("*.npy"))
         files[0].write_bytes(files[1].read_bytes())
     elif attack == "clock":
-        path = next((root / "runtime").rglob("*.receipt.json"))
-        receipt = json.loads(path.read_bytes())
-        receipt["author_clock_seconds"] += 10
-        receipt["author_clock_origin_seconds"] += 10
-        path.write_bytes(module.encoded(receipt))
+        for receipt_path in (root / "runtime").rglob("*.receipt.json"):
+            receipt = json.loads(receipt_path.read_bytes())
+            receipt["author_clock_seconds"] += 10
+            receipt["author_clock_origin_seconds"] += 10
+            receipt["media_time_seconds"] = (
+                receipt["author_clock_seconds"] - receipt["author_clock_origin_seconds"]
+            )
+            receipt_path.write_bytes(module.encoded(receipt))
+        for row in rows:
+            row["author_frame"]["timestamp_seconds"] += 10
+            for boundary in row["human_phase_boundaries"]:
+                boundary["bracket_seconds"] = [v + 10 for v in boundary["bracket_seconds"]]
+        path.write_bytes(b"".join(module.encoded(r) for r in rows))
     elif attack == "index":
         rows[0]["author_frame"]["frame_index"] = 2
         path.write_bytes(b"".join(module.encoded(r) for r in rows))

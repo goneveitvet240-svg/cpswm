@@ -112,17 +112,62 @@ def hand_control(ctx, mode):
     return ProposalContext.model_validate(data)
 
 
-def run(frontend, frontend_sha256, training, output, arm, prefix_frames):
-    if prefix_frames not in (2, 4) or arm not in ARMS:
-        raise ValueError("predeclared prefix and unselected architecture required")
-    contexts, dependencies, features = load_frontend(frontend, frontend_sha256)
-    chosen = {}
+def plan_windows(contexts, window_scope):
+    if window_scope not in {"first", "all"}:
+        raise ValueError("unknown window scope")
+    first = {}
     for key in sorted(contexts):
         source = key.split("/")[0]
-        if source not in chosen:
+        if source not in first:
             if not key.endswith("window-000000"):
                 raise ValueError("fixed first window unavailable; no replacement selection")
-            chosen[source] = key
+            first[source] = key
+    return (
+        tuple(sorted(contexts)) if window_scope == "all" else tuple(first.values()),
+        frozenset(first.values()),
+    )
+
+
+def checked_scores(scored, support):
+    expected = sorted(content_sha256(t.model_dump(mode="json")) for t in support)
+    rows = []
+    for decoded in scored:
+        probability = decoded.probability
+        if content_sha256(decoded.target.model_dump(mode="json")) != probability.proposal_sha256:
+            raise RuntimeError("score target differs from claimed probability identity")
+        if (
+            not math.isfinite(probability.joint_log_probability)
+            or probability.joint_log_probability > 0
+        ):
+            raise RuntimeError("invalid proposal log probability")
+        rows.append(
+            {
+                "target_sha256": probability.proposal_sha256,
+                "joint_log_probability": probability.joint_log_probability,
+            }
+        )
+    if [r["target_sha256"] for r in rows] != expected:
+        raise RuntimeError("scorer omitted, duplicated or changed full support")
+    mass = math.fsum(math.exp(r["joint_log_probability"]) for r in rows)
+    if abs(mass - 1) > 1e-10:
+        raise RuntimeError("incomplete normalized support")
+    return rows, mass
+
+
+def run(
+    frontend,
+    frontend_sha256,
+    training,
+    output,
+    arm,
+    prefix_frames,
+    window_scope="first",
+    restore_scope="all",
+):
+    if prefix_frames not in (2, 4) or arm not in ARMS or restore_scope not in {"first", "all"}:
+        raise ValueError("predeclared prefix, recovery scope and unselected architecture required")
+    contexts, dependencies, features = load_frontend(frontend, frontend_sha256)
+    chosen, first_windows = plan_windows(contexts, window_scope)
     summary_bytes = (training / "summary.json").read_bytes()
     training_summary = strict_json(summary_bytes)
     if (
@@ -139,7 +184,9 @@ def run(frontend, frontend_sha256, training, output, arm, prefix_frames):
     output.mkdir(parents=True, exist_ok=False)
     torch.set_num_threads(2)
     results = []
-    for source, key in chosen.items():
+    for key in chosen:
+        source = key.split("/")[0]
+        do_restore = restore_scope == "all" or key in first_windows
         started = monotonic()
         original, ledger = contexts[key]
         pixels = original.visible.pixel_observations[:prefix_frames]
@@ -149,25 +196,31 @@ def run(frontend, frontend_sha256, training, output, arm, prefix_frames):
             pixels, cutoff=pixels[-1].arrival_time, source_snapshot_id=original.source_snapshot_id
         )
         session = RuntimeCandidateSession(training / arm, manifest_sha256=pin, seed=11)
-        result = session.process(
-            request_id="with-hands", context=ctx, bootstrap_ledger_lineage_ref=ledger
-        )
-        support = result.support.targets
-        blob = session.snapshot()
-        restored = RuntimeCandidateSession.restore(
-            training / arm,
-            manifest_sha256=pin,
-            snapshot=blob,
-            snapshot_sha256=hashlib.sha256(blob).hexdigest(),
-        )
-        if (
-            restored.snapshot() != blob
-            or restored.process(
+        generated = generate_runtime_candidates(ctx, bootstrap_ledger_lineage_ref=ledger)
+        support = generated.targets
+        result = restored = None
+        if do_restore:
+            result = session.process(
                 request_id="with-hands", context=ctx, bootstrap_ledger_lineage_ref=ledger
             )
-            != result
-        ):
-            raise RuntimeError("hand-aware inference restore differs")
+            if result.support != generated:
+                raise RuntimeError("sampling changed complete support")
+            snapshot = session.snapshot()
+            restored = RuntimeCandidateSession.restore(
+                training / arm,
+                manifest_sha256=pin,
+                snapshot=snapshot,
+                snapshot_sha256=hashlib.sha256(snapshot).hexdigest(),
+            )
+            if (
+                restored.snapshot() != snapshot
+                or restored.process(
+                    request_id="with-hands", context=ctx, bootstrap_ledger_lineage_ref=ledger
+                )
+                != result
+            ):
+                raise RuntimeError("hand-aware inference restore differs")
+        blob = session.snapshot()
         controls = {
             "with_hands": ctx,
             **{n: hand_control(ctx, n) for n in ("without_hands", "shift_x_plus_1px")},
@@ -176,20 +229,11 @@ def run(frontend, frontend_sha256, training, output, arm, prefix_frames):
         base_keys = None
         for name, controlled in controls.items():
             scored = session._engine.score_support(context=controlled, support=support)
-            rows = [
-                {
-                    "target_sha256": d.probability.proposal_sha256,
-                    "joint_log_probability": d.probability.joint_log_probability,
-                }
-                for d in scored
-            ]
+            rows, mass = checked_scores(scored, support)
             keys = [r["target_sha256"] for r in rows]
             if base_keys is not None and keys != base_keys:
                 raise RuntimeError("ablation changed target set or target identity")
             base_keys = keys
-            mass = math.fsum(math.exp(r["joint_log_probability"]) for r in rows)
-            if abs(mass - 1) > 1e-10:
-                raise RuntimeError("incomplete normalized support")
             conditions[name] = {
                 "probability_mass": mass,
                 "scores": rows,
@@ -200,14 +244,29 @@ def run(frontend, frontend_sha256, training, output, arm, prefix_frames):
             }
         if session.snapshot() != blob:
             raise RuntimeError("scoring consumed RNG or wrote inference history")
-        next_request = dict(
-            request_id="next-draw", context=ctx, bootstrap_ledger_lineage_ref=ledger
-        )
-        if (
-            session.process(**next_request) != restored.process(**next_request)
-            or session.snapshot() != restored.snapshot()
-        ):
-            raise RuntimeError("restored hand-aware next draw differs")
+        repeat_equal = None
+        if do_restore:
+            repeat, _ = checked_scores(
+                session._engine.score_support(context=ctx, support=support), support
+            )
+            repeat_equal = repeat == conditions["with_hands"]["scores"]
+            if not repeat_equal:
+                raise RuntimeError("identical input produced a different complete distribution")
+            sampled = result.receipt.decoded.probability
+            matches = [r for r in repeat if r["target_sha256"] == sampled.proposal_sha256]
+            if (
+                len(matches) != 1
+                or matches[0]["joint_log_probability"] != sampled.joint_log_probability
+            ):
+                raise RuntimeError("sampled probability differs from full scored distribution")
+            next_request = dict(
+                request_id="next-draw", context=ctx, bootstrap_ledger_lineage_ref=ledger
+            )
+            if (
+                session.process(**next_request) != restored.process(**next_request)
+                or session.snapshot() != restored.snapshot()
+            ):
+                raise RuntimeError("restored hand-aware next draw differs")
         deltas = {}
         for name in ("without_hands", "shift_x_plus_1px"):
             deltas[name] = max(
@@ -226,14 +285,19 @@ def run(frontend, frontend_sha256, training, output, arm, prefix_frames):
             "conditions": conditions,
             "max_probability_delta": deltas,
             "target_ids_fixed_across_controls": True,
-            "restore_and_next_draw_equal": True,
+            "restore_and_next_draw_equal": True if do_restore else None,
+            "repeated_complete_distribution_equal": repeat_equal,
+            "scoring_left_rng_and_requests_unchanged": True,
+            "event_kinds_in_support": sorted({e.kind for t in support for e in t.candidate.events}),
             "new_optimizer_steps": 0,
             "native_publication_authorized": False,
             "ledger_authorized": False,
             "seconds": monotonic() - started,
         }
-        (output / (source + ".json")).write_text(json.dumps(detail, indent=2) + "\n")
-        (output / (source + ".snapshot.json")).write_bytes(session.snapshot())
+        stem = source if window_scope == "first" else key.replace("/", "__")
+        (output / (stem + ".json")).write_text(json.dumps(detail, indent=2) + "\n")
+        if do_restore:
+            (output / (stem + ".snapshot.json")).write_bytes(session.snapshot())
         compact = {k: v for k, v in detail.items() if k != "conditions"}
         results.append(compact)
         print(json.dumps(compact), flush=True)
@@ -249,7 +313,12 @@ def run(frontend, frontend_sha256, training, output, arm, prefix_frames):
         "checkpoint_manifest_sha256": pin,
         "feature_coverage": features,
         "runs": results,
-        "selection": "first declared window of every source; fixed first two or four frames",
+        "selection": {
+            "window_scope": window_scope,
+            "prefix_frames": prefix_frames,
+            "restore_scope": restore_scope,
+            "planned_windows": list(chosen),
+        },
         "contact_or_identity_truth_established": False,
         "independent_auditors": 0,
         "new_optimizer_steps": 0,
@@ -272,4 +341,6 @@ if __name__ == "__main__":
     parser.add_argument("--frontend-sha256", required=True)
     parser.add_argument("--arm", choices=ARMS, required=True)
     parser.add_argument("--prefix-frames", type=int, choices=(2, 4), default=2)
+    parser.add_argument("--window-scope", choices=("first", "all"), default="first")
+    parser.add_argument("--restore-scope", choices=("first", "all"), default="all")
     run(**vars(parser.parse_args()))

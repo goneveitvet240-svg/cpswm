@@ -1,0 +1,145 @@
+..F...........                                                           [100%]
+=================================== FAILURES ===================================
+_ test_complete_resealed_alignment_rejected_by_source_then_legal_retry[clock] __
+
+tmp_path = PosixPath('/private/var/folders/x2/000r8p0n6s393lj2sg8wk5f40000gn/T/pytest-of-pangwei/pytest-2158/test_complete_resealed_alignme2')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x11b702450>
+attack = 'clock'
+
+    @pytest.mark.parametrize(
+        "attack", ("labels", "pixels", "clock", "index", "authority", "omission", "extra")
+    )
+    def test_complete_resealed_alignment_rejected_by_source_then_legal_retry(
+        tmp_path, monkeypatch, attack
+    ):
+        args, baseline = fixture(tmp_path, monkeypatch)
+        root = args["output"]
+        original = {p: p.read_bytes() for p in root.rglob("*") if p.is_file()}
+        path = root / "evaluator/author_supervision.jsonl"
+        rows = [json.loads(v) for v in path.read_text().splitlines()]
+        if attack == "labels":
+            # Keep well formed and fully paired; invent a success/interaction target.
+            rows[0]["author_outcome"] = 2
+            rows[0]["author_frame"]["human_action"] = "interact"
+            rows[0]["author_frame"]["human_action_id"] = 2
+            path.write_bytes(b"".join(module.encoded(r) for r in rows))
+        elif attack == "pixels":
+            files = sorted((root / "runtime").rglob("*.npy"))
+            files[0].write_bytes(files[1].read_bytes())
+        elif attack == "clock":
+            path = next((root / "runtime").rglob("*.receipt.json"))
+            receipt = json.loads(path.read_bytes())
+            receipt["author_clock_seconds"] += 10
+            receipt["author_clock_origin_seconds"] += 10
+            path.write_bytes(module.encoded(receipt))
+        elif attack == "index":
+            rows[0]["author_frame"]["frame_index"] = 2
+            path.write_bytes(b"".join(module.encoded(r) for r in rows))
+        elif attack == "authority":
+            manifest = json.loads((root / "manifest.json").read_bytes())
+            manifest.update(full_proposal_training_ready=True, native_publication_authorized=True)
+            (root / "manifest.json").write_bytes(module.encoded(manifest))
+        elif attack == "omission":
+            index = root / "runtime/index.jsonl"
+            lines = index.read_bytes().splitlines(keepends=True)
+            index.write_bytes(b"".join(lines[1:]))
+        else:
+            (root / "evaluator/hidden-answer.json").write_text("{}")
+        reseal(root)
+        if attack in {"labels", "pixels", "clock", "index", "authority"}:
+            assert (
+                len(
+>                   module.load_runtime_observations(
+                        root / "runtime", manifest_sha256=runtime_pin(root)
+                    )
+                )
+                == 6
+            )
+
+docs/reviews/pc_a/hfd_observation_alignment_2026-09-26/audit_alignment_second.py:112: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/cpswm/data_preflight/hfd_observation_alignment.py:393: in load_runtime_observations
+    env = raw.envelope()
+          ^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = RawModalityObservation(envelope_json='{"arrival_time":"2026-09-26T12:30:00.000002Z","capture_time":"2026-09-26T12:30:0...urce_url":"https://zenodo.org/records/10708763","time_semantics":"original_frame_author_clock_unverified_exposure"}\n')
+
+    def envelope(self) -> ObservationEnvelope:
+        value = ObservationEnvelope.model_validate_json(self.envelope_json)
+        validate_observation_envelope(value, payload_bytes=self.payload_bytes)
+        if self.archive_sampling_json is not None:
+            from cpswm.system.reproducibility import content_sha256
+    
+            receipt = _unique_json(self.archive_sampling_json.encode())
+            common = {
+                "source_url",
+                "source_sha256",
+                "crop_xywh",
+                "time_semantics",
+                "payload_sha256",
+                "observation_id",
+            }
+            exact = (
+                receipt.get("time_semantics") == "original_frame_author_clock_unverified_exposure"
+            )
+            timing = (
+                {
+                    "original_frame_index",
+                    "source_frame_count",
+                    "source_clock_sha256",
+                    "author_clock_seconds",
+                    "author_clock_origin_seconds",
+                    "media_time_seconds",
+                }
+                if exact
+                else {"sampling_grid_time_seconds", "sampling_fps"}
+            )
+            crop = receipt.get("crop_xywh")
+            time: Any = receipt.get("media_time_seconds" if exact else "sampling_grid_time_seconds")
+            if (
+                set(receipt) != common | timing
+                or value.metadata.source_type is not SourceType.IMPORT
+                or value.sensor.modality is not SensorModality.RGB
+                or value.clock_domain != "archive-import-acquisition-utc"
+                or value.payload is None
+                or receipt["source_url"] != value.metadata.source_id
+                or not str(receipt["source_url"]).startswith("https://")
+                or re.fullmatch(r"[0-9a-f]{64}", str(receipt["source_sha256"])) is None
+                or receipt["payload_sha256"] != value.payload.payload_sha256
+                or receipt["observation_id"] != str(value.identity.observation_id)
+                or type(time) not in (int, float)
+                or not math.isfinite(time)
+                or time < 0
+                or type(crop) is not list
+                or len(crop) != 4
+                or any(type(x) is not int for x in crop)
+                or min(crop[:2]) < 0
+                or min(crop[2:]) <= 0
+                or content_sha256(receipt) != self.capture_receipt_sha256
+            ):
+                raise ValueError("archive sampling differs from bound RGB receipt")
+            if exact:
+                index, count = receipt["original_frame_index"], receipt["source_frame_count"]
+                stamp, origin = (
+                    receipt["author_clock_seconds"],
+                    receipt["author_clock_origin_seconds"],
+                )
+                if (
+                    type(index) is not int
+                    or type(count) is not int
+                    or not 0 <= index < count
+                    or re.fullmatch(r"[0-9a-f]{64}", str(receipt["source_clock_sha256"])) is None
+                    or type(stamp) not in (int, float)
+                    or type(origin) not in (int, float)
+                    or not math.isfinite(stamp)
+                    or not math.isfinite(origin)
+                    or time != stamp - origin
+                ):
+>                   raise ValueError("invalid original frame index or author clock")
+E                   ValueError: invalid original frame index or author clock
+
+src/cpswm/perception_mapping/adapters/rgbd_capture.py:130: ValueError
+=========================== short test summary info ============================
+FAILED docs/reviews/pc_a/hfd_observation_alignment_2026-09-26/audit_alignment_second.py::test_complete_resealed_alignment_rejected_by_source_then_legal_retry[clock]
+1 failed, 13 passed in 1.35s

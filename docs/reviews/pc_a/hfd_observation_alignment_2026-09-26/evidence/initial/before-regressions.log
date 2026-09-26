@@ -1,0 +1,34 @@
+F.                                                                       [100%]
+=================================== FAILURES ===================================
+________ test_outcome_sort_order_cannot_encode_answers_in_import_times _________
+
+tmp_path = PosixPath('/private/var/folders/x2/000r8p0n6s393lj2sg8wk5f40000gn/T/pytest-of-pangwei/pytest-2153/test_outcome_sort_order_cannot0')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x109b528b0>
+
+    def test_outcome_sort_order_cannot_encode_answers_in_import_times(tmp_path, monkeypatch):
+        args, _ = fixture(tmp_path, monkeypatch)
+        manifest = json.loads((args["intake"] / "manifest.json").read_bytes())
+        files, _ = module.alignment_artifacts(args["intake"], manifest, imported_at=NOW)
+        changed = copy.deepcopy(manifest)
+        for row in changed["report"]["trials"]:
+            row["outcome"] = 3 - row["outcome"]
+        other, _ = module.alignment_artifacts(args["intake"], changed, imported_at=NOW)
+        # Parent intake digest naturally changes, and is provenance, not model input.
+>       assert {
+            k: v for k, v in files.items() if k.startswith("runtime/") and k != "runtime/manifest.json"
+        } == {
+            k: v for k, v in other.items() if k.startswith("runtime/") and k != "runtime/manifest.json"
+        }
+E       assert {'runtime/e8a...CCFCCFC", ...} == {'runtime/698...CCFCCFC", ...}
+E         
+E         Omitting 13 identical items, use -vv to show
+E         Differing items:
+E         {'runtime/698f47e0415df249bd410f7eeaeae0b1cbb4bb8248f5f5538fbdee3143917017/000001.envelope.json': b'{"metadata":{"reco...74d8","payload_uri":null,"size_bytes":4736},"oracle_payload":null,"oracle_channel":false,"oracle_authorization":null}'} != {'runtime/698f47e0415df249bd410f7eeaeae0b1cbb4bb8248f5f5538fbdee3143917017/000001.envelope.json': b'{"metadata":{"reco...74d8","payload_uri":null,"size_bytes":4736},"oracle_payload":null,"oracle_channel":false,"oracle_authorization":null}'}
+E         {'runtime/698f47e0415df249bd410f...
+E         
+E         ...Full output truncated (6 lines hidden), use '-vv' to show
+
+../cpswm-pc-a-hfd-observation-alignment-20260926/docs/reviews/pc_a/hfd_observation_alignment_2026-09-26/audit_alignment_second.py:101: AssertionError
+=========================== short test summary info ============================
+FAILED ../cpswm-pc-a-hfd-observation-alignment-20260926/docs/reviews/pc_a/hfd_observation_alignment_2026-09-26/audit_alignment_second.py::test_outcome_sort_order_cannot_encode_answers_in_import_times
+1 failed, 1 passed, 12 deselected in 0.69s

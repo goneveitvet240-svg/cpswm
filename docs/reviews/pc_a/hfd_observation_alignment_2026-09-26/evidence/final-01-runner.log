@@ -1,0 +1,18 @@
+{"name": "round1", "argv": ["/private/tmp/cpswm-pc-a-hfd-observation-alignment-20260926/.venv/bin/python", "-m", "pytest", "-o", "addopts=", "-q", "tests/test_hfd_observation_alignment.py", "tests/test_archive_media_timeline.py", "tests/test_natural_vision.py", "tests/test_runtime_candidates.py", "tests/test_full_hfd_training.py"], "started_utc": "2026-09-26T12:14:03.017099+00:00", "seconds": 9.044366708025336, "exit_code": 1}
+Traceback (most recent call last):
+  File "/private/tmp/cpswm-pc-a-hfd-observation-alignment-20260926/docs/reviews/pc_a/hfd_observation_alignment_2026-09-26/run_frozen_alignment.py", line 133, in <module>
+    run(args.main.resolve(), args.output.resolve())
+    ~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/private/tmp/cpswm-pc-a-hfd-observation-alignment-20260926/docs/reviews/pc_a/hfd_observation_alignment_2026-09-26/run_frozen_alignment.py", line 66, in run
+    command(
+    ~~~~~~~^
+        "round1",
+        ^^^^^^^^^
+    ...<12 lines>...
+        ],
+        ^^
+    )
+    ^
+  File "/private/tmp/cpswm-pc-a-hfd-observation-alignment-20260926/docs/reviews/pc_a/hfd_observation_alignment_2026-09-26/run_frozen_alignment.py", line 63, in command
+    raise RuntimeError("failed command: " + name)
+RuntimeError: failed command: round1

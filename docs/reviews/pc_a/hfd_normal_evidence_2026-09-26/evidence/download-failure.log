@@ -1,0 +1,24 @@
+{"start": 6190792704, "stop": 6207569920, "bytes": 16777216, "attempt": 1}
+{"start": 6174015488, "stop": 6190792704, "bytes": 16777216, "attempt": 1}
+{"start": 6207569920, "stop": 6224347136, "bytes": 16777216, "attempt": 1}
+{"start": 6224347136, "stop": 6241124352, "bytes": 16777216, "attempt": 1}
+{"start": 6257901568, "stop": 6274678784, "bytes": 16777216, "attempt": 1}
+Traceback (most recent call last):
+  File "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/datasets/hfd-full-training-20260926/fetch_training_ranges.py", line 60, in <module>
+    paths = list(pool.map(get, range(0, SIZE, BLOCK)))
+  File "/Users/pangwei/.local/share/uv/python/cpython-3.13.5-macos-aarch64-none/lib/python3.13/concurrent/futures/_base.py", line 619, in result_iterator
+    yield _result_or_cancel(fs.pop())
+          ~~~~~~~~~~~~~~~~~^^^^^^^^^^
+  File "/Users/pangwei/.local/share/uv/python/cpython-3.13.5-macos-aarch64-none/lib/python3.13/concurrent/futures/_base.py", line 317, in _result_or_cancel
+    return fut.result(timeout)
+           ~~~~~~~~~~^^^^^^^^^
+  File "/Users/pangwei/.local/share/uv/python/cpython-3.13.5-macos-aarch64-none/lib/python3.13/concurrent/futures/_base.py", line 456, in result
+    return self.__get_result()
+           ~~~~~~~~~~~~~~~~~^^
+  File "/Users/pangwei/.local/share/uv/python/cpython-3.13.5-macos-aarch64-none/lib/python3.13/concurrent/futures/_base.py", line 401, in __get_result
+    raise self._exception
+  File "/Users/pangwei/.local/share/uv/python/cpython-3.13.5-macos-aarch64-none/lib/python3.13/concurrent/futures/thread.py", line 59, in run
+    result = self.fn(*self.args, **self.kwargs)
+  File "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/datasets/hfd-full-training-20260926/fetch_training_ranges.py", line 55, in get
+    raise RuntimeError(f'range failed {start}-{stop}: {error}')
+RuntimeError: range failed 6241124352-6257901568: URLError(SSLEOFError(8, '[SSL: UNEXPECTED_EOF_WHILE_READING] EOF occurred in violation of protocol (_ssl.c:1028)'))

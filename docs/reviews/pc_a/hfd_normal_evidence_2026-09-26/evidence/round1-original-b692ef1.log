@@ -1,0 +1,96 @@
+FFFF                                                                     [100%]
+=================================== FAILURES ===================================
+_________ test_late_extra_artifact_cannot_leave_an_acceptance_manifest _________
+
+tmp_path = PosixPath('/private/var/folders/x2/000r8p0n6s393lj2sg8wk5f40000gn/T/pytest-of-pangwei/pytest-2137/test_late_extra_artifact_canno0')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x10c03e9e0>
+
+    def test_late_extra_artifact_cannot_leave_an_acceptance_manifest(tmp_path, monkeypatch):
+        archive, metadata, output = fixture_archive(tmp_path, monkeypatch)
+        original = module.build_report
+    
+        def changed(root, outcomes, *, write_rows):
+            value = original(root, outcomes, write_rows=write_rows)
+            (root / "unregistered-labels.jsonl").write_bytes(b"{}\n")
+            return value
+    
+        monkeypatch.setattr(module, "build_report", changed)
+        with pytest.raises(ValueError, match=r"artifact|packet"):
+            module.inspect_full_training(archive, metadata, output)
+>       assert not (output / "manifest.json").exists()
+E       AssertionError: assert not True
+E        +  where True = exists()
+E        +    where exists = (PosixPath('/private/var/folders/x2/000r8p0n6s393lj2sg8wk5f40000gn/T/pytest-of-pangwei/pytest-2137/test_late_extra_artifact_canno0/packet') / 'manifest.json').exists
+
+docs/reviews/pc_a/hfd_normal_evidence_2026-09-26/audit_round1.py:28: AssertionError
+____ test_mutation_after_initial_member_check_cannot_return_success[False] _____
+
+tmp_path = PosixPath('/private/var/folders/x2/000r8p0n6s393lj2sg8wk5f40000gn/T/pytest-of-pangwei/pytest-2137/test_mutation_after_initial_me0')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x11c2faea0>
+verify = False
+
+    @pytest.mark.parametrize("verify", (False, True))
+    def test_mutation_after_initial_member_check_cannot_return_success(tmp_path, monkeypatch, verify):
+        archive, metadata, output = fixture_archive(tmp_path, monkeypatch)
+        if verify:
+            module.inspect_full_training(archive, metadata, output)
+        original = module.build_report
+    
+        def changed(root, outcomes, *, write_rows):
+            value = original(root, outcomes, write_rows=write_rows)
+            (root / "raw/trial0000/human_activity.npy").write_bytes(npy(np.array([0, 3, 3])))
+            return value
+    
+        monkeypatch.setattr(module, "build_report", changed)
+>       with pytest.raises(ValueError, match=r"member|source|packet|artifact"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE ValueError
+
+docs/reviews/pc_a/hfd_normal_evidence_2026-09-26/audit_round1.py:44: Failed
+_____ test_mutation_after_initial_member_check_cannot_return_success[True] _____
+
+tmp_path = PosixPath('/private/var/folders/x2/000r8p0n6s393lj2sg8wk5f40000gn/T/pytest-of-pangwei/pytest-2137/test_mutation_after_initial_me1')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x11c665910>
+verify = True
+
+    @pytest.mark.parametrize("verify", (False, True))
+    def test_mutation_after_initial_member_check_cannot_return_success(tmp_path, monkeypatch, verify):
+        archive, metadata, output = fixture_archive(tmp_path, monkeypatch)
+        if verify:
+            module.inspect_full_training(archive, metadata, output)
+        original = module.build_report
+    
+        def changed(root, outcomes, *, write_rows):
+            value = original(root, outcomes, write_rows=write_rows)
+            (root / "raw/trial0000/human_activity.npy").write_bytes(npy(np.array([0, 3, 3])))
+            return value
+    
+        monkeypatch.setattr(module, "build_report", changed)
+>       with pytest.raises(ValueError, match=r"member|source|packet|artifact"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE ValueError
+
+docs/reviews/pc_a/hfd_normal_evidence_2026-09-26/audit_round1.py:44: Failed
+______ test_packet_member_alias_cannot_escape_its_source_bound_directory _______
+
+tmp_path = PosixPath('/private/var/folders/x2/000r8p0n6s393lj2sg8wk5f40000gn/T/pytest-of-pangwei/pytest-2137/test_packet_member_alias_canno0')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x11d0a0160>
+
+    def test_packet_member_alias_cannot_escape_its_source_bound_directory(tmp_path, monkeypatch):
+        archive, metadata, output = fixture_archive(tmp_path, monkeypatch)
+        module.inspect_full_training(archive, metadata, output)
+        source = output / "raw/trial0000/human_activity.npy"
+        external = tmp_path / "mutable-external.npy"
+        source.rename(external)
+        source.symlink_to(external)
+>       with pytest.raises(ValueError, match=r"link|alias|packet"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE ValueError
+
+docs/reviews/pc_a/hfd_normal_evidence_2026-09-26/audit_round1.py:57: Failed
+=========================== short test summary info ============================
+FAILED docs/reviews/pc_a/hfd_normal_evidence_2026-09-26/audit_round1.py::test_late_extra_artifact_cannot_leave_an_acceptance_manifest
+FAILED docs/reviews/pc_a/hfd_normal_evidence_2026-09-26/audit_round1.py::test_mutation_after_initial_member_check_cannot_return_success[False]
+FAILED docs/reviews/pc_a/hfd_normal_evidence_2026-09-26/audit_round1.py::test_mutation_after_initial_member_check_cannot_return_success[True]
+FAILED docs/reviews/pc_a/hfd_normal_evidence_2026-09-26/audit_round1.py::test_packet_member_alias_cannot_escape_its_source_bound_directory
+4 failed in 0.63s

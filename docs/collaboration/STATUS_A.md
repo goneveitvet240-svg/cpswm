@@ -4,6 +4,12 @@ base/开工源码60453f212c7a9435b272cbd4aece3cf8db4be4a8；独立分支codex/pc
 
 只读profile显示243候选一次评分有1,461条件节点和约35万次候选处理，规范化摘要占主要插桩耗时。先用严格内置标量类型快路径降低重复类型判断，保留原完整校验次数和摘要语义，不引入信任缓存或跳过篡改检查。独立差分参考保存原源码；计划完整结构值/异常/负零/枚举差分，以及三臂全q、恢复、原篡改路径双审。尚无本轮测试结果；授权截止UTC16:47:47不变，计算最晚16:40停止，无新训练/模型选择/自然发布。
 
+# A：第三轮双审完成，真实矩阵运行中；第四轮独立性能验证（2026-09-26）
+
+第三轮受测源码60453f212c7a9435b272cbd4aece3cf8db4be4a8，228/51两审及mypy368/Ruff已通过，901个Python冻结。全32窗×三臂的96组合矩阵在本目录final-03运行，尚未完成，不能用计划数代替完成数。首窗24组合有采样恢复，其余72只做完整评分和状态检查；时间截止16:40 UTC。[第三轮报告](../reviews/pc_a/full_hand_proposal_matrix_2026-09-26/REPORT.md)。
+
+发现规范化占主要插桩耗时后，第四轮在独立目录/private/tmp/cpswm-pc-a-canonical-scoring-speed-20260926、分支codex/pc-a-canonical-scoring-speed-20260926推进严格标量快路径，base同60453f2；第三轮Python保持不动。第四轮计划原/新内容身份与完整q差分、两审和真实三臂比较；实际结果以该分支交付为准，不拼接新旧版本。B未验收，集成与科学范围不变，三小时授权截止UTC16:47:47。
+
 # A：三小时第三轮完整四帧窗口矩阵开工（2026-09-26）
 
 前轮[草稿PR48](https://github.com/goneveitvet240-svg/cpswm/pull/48)已完成224/44两审及24个真实两帧组合。新分支 `codex/pc-a-full-hand-proposal-matrix-20260926`，目录 `/private/tmp/cpswm-pc-a-full-hand-proposal-matrix-20260926`，base/开工代码 `6b9f260530d53ac9c1a58ca35cb881ed86a48cf7`。已fetch核验集成与B仍为19ddf26830348a2f0b33f0af54d6ba702c5cfb1c、fd4ca6ef5e81c90d7cf7987b42c0b2810d8a810a。

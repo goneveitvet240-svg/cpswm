@@ -71,6 +71,9 @@ def run(runtime: Path, manifest_sha256: str, weights: Path, hand_model: Path, ou
         "associations_per_presentation": dict(
             Counter(d["status"] for r in records for d in r["association"]["detections"])
         ),
+        "role_unresolved_reasons": dict(
+            Counter(reason for r in records for reason in r["interaction"]["unresolved_reasons"])
+        ),
         "role_alternatives": sum(len(r["interaction"]["role_alternatives"]) for r in records),
         "regional_hand_candidates": sum(len(r["hands"]["candidates"]) for r in records),
         "hand_object_measurements": sum(

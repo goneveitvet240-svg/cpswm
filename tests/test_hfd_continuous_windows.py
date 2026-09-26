@@ -114,9 +114,10 @@ class TwoPeopleDetector(FixtureDetector):
         return replace(
             frame,
             candidates=(
-                *frame.candidates,
+                replace(frame.candidates[0], box_xyxy=(0, 0, 27, 30)),
+                frame.candidates[1],
                 DetectionCandidate(
-                    uuid5(frame.observation_id, "second"), "person", 0.8, (33, 0, 47, 30)
+                    uuid5(frame.observation_id, "second"), "person", 0.8, (23, 0, 47, 30)
                 ),
             ),
         )

@@ -482,7 +482,7 @@ def load_runtime_windows(
     groups: dict[str, list[tuple[str, RawModalityObservation]]] = defaultdict(list)
     for key, raw in observations:
         groups[key.split("/")[0]].append((key, raw))
-    result = []
+    result: list[tuple[str, tuple[tuple[str, RawModalityObservation], ...]]] = []
     for sequence, rows in sorted(groups.items()):
         receipts = [
             strict_json(raw.archive_sampling_json.encode())

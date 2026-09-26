@@ -1,3 +1,9 @@
+# A：三小时主路径推进开工（2026-09-26 21:47）
+
+新授权截止北京时间次日 00:47:47。独立分支 `codex/pc-a-person-ambiguity-20260926`，工作目录 `/private/tmp/cpswm-pc-a-person-ambiguity-20260926`，base/开工代码 PR46 `47a51cc88c1cd9bc1d661eaedf12e703fee48983`。已 fetch，集成 `19ddf26830348a2f0b33f0af54d6ba702c5cfb1c`、B `fd4ca6ef5e81c90d7cf7987b42c0b2810d8a810a` 不变。
+
+先处理人物对身份未决条件，再接手物观测到提议网络，最后固定真实样本复跑。每轮源码冻结后两次不同自审，失败修复则两审重跑；测试/实验时不编辑 Python。尚无本轮通过结果，当前实际源码同 base。完整范围和科学选择保持，不新增费用、正式训练、共享合并或对外联络。[限时计划](THREE_HOUR_20260926.md)。
+
 # A：HFD 连续窗口已双审运行，角色质量暴露新缺陷（2026-09-26）
 
 [草稿 PR46](https://github.com/goneveitvet240-svg/cpswm/pull/46)，已推送，叠加 PR45，未合并共享集成。

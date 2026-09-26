@@ -1,0 +1,82 @@
+{
+  "source_sha": "765acf923509237f9ef503591a601ac0d4a49ec4",
+  "commands": [
+    {
+      "name": "round1",
+      "argv": [
+        "/private/tmp/cpswm-pc-a-visor-contact-supervision-20260927/.venv/bin/python",
+        "-m",
+        "pytest",
+        "-o",
+        "addopts=",
+        "-q",
+        "tests/test_visor_contact_supervision.py",
+        "tests/test_full_hfd_training.py",
+        "tests/test_public_handover_evidence.py",
+        "tests/test_hocap_joint_supervision.py"
+      ],
+      "started_utc": "2026-09-26T21:32:49.482730+00:00",
+      "seconds": 33.97782849986106,
+      "exit_code": 0
+    },
+    {
+      "name": "round2",
+      "argv": [
+        "/private/tmp/cpswm-pc-a-visor-contact-supervision-20260927/.venv/bin/python",
+        "-m",
+        "pytest",
+        "-o",
+        "addopts=",
+        "-q",
+        "/private/tmp/cpswm-pc-a-visor-contact-supervision-20260927/docs/reviews/pc_a/visor_contact_supervision_2026-09-27/audit_second.py",
+        "tests/test_structure_two_continuous_input.py",
+        "tests/test_continuous_state_recovery.py"
+      ],
+      "started_utc": "2026-09-26T21:33:23.714382+00:00",
+      "seconds": 37.204452875070274,
+      "exit_code": 0
+    },
+    {
+      "name": "mypy",
+      "argv": [
+        "/private/tmp/cpswm-pc-a-visor-contact-supervision-20260927/.venv/bin/python",
+        "-m",
+        "mypy",
+        "--no-incremental"
+      ],
+      "started_utc": "2026-09-26T21:34:01.172483+00:00",
+      "seconds": 11.56582499993965,
+      "exit_code": 0
+    },
+    {
+      "name": "ruff",
+      "argv": [
+        "/private/tmp/cpswm-pc-a-visor-contact-supervision-20260927/.venv/bin/python",
+        "-m",
+        "ruff",
+        "check",
+        "src",
+        "tests",
+        "tools",
+        "/private/tmp/cpswm-pc-a-visor-contact-supervision-20260927/docs/reviews/pc_a/visor_contact_supervision_2026-09-27"
+      ],
+      "started_utc": "2026-09-26T21:34:12.888390+00:00",
+      "seconds": 0.09641674999147654,
+      "exit_code": 0
+    },
+    {
+      "name": "real-import",
+      "argv": [
+        "/private/tmp/cpswm-pc-a-visor-contact-supervision-20260927/.venv/bin/python",
+        "tools/prepare_visor_contact_supervision.py",
+        "--source",
+        "/private/tmp/cpswm-pc-a-visor-contact-supervision-20260927/output/visor-contact/raw",
+        "--output",
+        "/private/tmp/cpswm-pc-a-visor-contact-supervision-20260927/output/visor-contact/final-01/packet"
+      ],
+      "started_utc": "2026-09-26T21:34:13.121830+00:00",
+      "seconds": 0.511639999691397,
+      "exit_code": 1
+    }
+  ]
+}

@@ -1,0 +1,10 @@
+Traceback (most recent call last):
+  File "/private/tmp/cpswm-pc-a-visor-contact-supervision-20260927/tools/prepare_visor_contact_supervision.py", line 15, in <module>
+    result = prepare_contact_package(args.source, args.output, verify=args.verify)
+  File "/private/tmp/cpswm-pc-a-visor-contact-supervision-20260927/src/cpswm/data_preflight/visor_contact_supervision.py", line 327, in prepare_contact_package
+    artifacts = _derive(_source_bytes(root))
+  File "/private/tmp/cpswm-pc-a-visor-contact-supervision-20260927/src/cpswm/data_preflight/visor_contact_supervision.py", line 130, in _derive
+    frames = _author_frames(source["P01_01.json"], source["correct.json"])
+  File "/private/tmp/cpswm-pc-a-visor-contact-supervision-20260927/src/cpswm/data_preflight/visor_contact_supervision.py", line 72, in _author_frames
+    raise ValueError("wrong video, duplicate, unordered or unsafe frame identity")
+ValueError: wrong video, duplicate, unordered or unsafe frame identity

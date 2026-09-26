@@ -1,0 +1,167 @@
+{
+  "source_sha": "60453f212c7a9435b272cbd4aece3cf8db4be4a8",
+  "commands": [
+    {
+      "name": "round1",
+      "argv": [
+        "/private/tmp/cpswm-pc-a-full-hand-proposal-matrix-20260926/.venv/bin/python",
+        "-m",
+        "pytest",
+        "-o",
+        "addopts=",
+        "-q",
+        "tests/test_full_hand_proposal_matrix.py",
+        "tests/test_proposal_hand_input.py",
+        "tests/test_typed_proposal_training.py",
+        "tests/test_proposal_inference_session.py",
+        "tests/test_person_identity_ambiguity.py",
+        "tests/test_hfd_continuous_windows.py",
+        "tests/test_hfd_observation_alignment.py",
+        "tests/test_natural_hands.py",
+        "tests/test_hand_object_evidence.py",
+        "tests/test_hand_person_regions.py",
+        "tests/test_continuous_state_recovery.py",
+        "tests/test_structure_two_continuous_input.py",
+        "tests/test_archive_media_timeline.py",
+        "tests/test_natural_vision.py",
+        "tests/test_runtime_candidates.py",
+        "tests/test_interaction_evidence.py"
+      ],
+      "started_utc": "2026-09-26T15:11:51.578347+00:00",
+      "seconds": 95.38629470905289,
+      "exit_code": 0,
+      "timed_out_at_compute_deadline": false
+    },
+    {
+      "name": "round2",
+      "argv": [
+        "/private/tmp/cpswm-pc-a-full-hand-proposal-matrix-20260926/.venv/bin/python",
+        "-m",
+        "pytest",
+        "-o",
+        "addopts=",
+        "-q",
+        "/private/tmp/cpswm-pc-a-full-hand-proposal-matrix-20260926/docs/reviews/pc_a/full_hand_proposal_matrix_2026-09-26/audit_matrix_second.py",
+        "/private/tmp/cpswm-pc-a-full-hand-proposal-matrix-20260926/docs/reviews/pc_a/hand_proposal_input_2026-09-26/audit_hands_second.py",
+        "/private/tmp/cpswm-pc-a-full-hand-proposal-matrix-20260926/docs/reviews/pc_a/person_ambiguity_2026-09-26/audit_person_second.py",
+        "/private/tmp/cpswm-pc-a-full-hand-proposal-matrix-20260926/docs/reviews/pc_a/hfd_continuous_windows_2026-09-26/audit_windows_second.py",
+        "/private/tmp/cpswm-pc-a-full-hand-proposal-matrix-20260926/docs/reviews/pc_a/hfd_observation_alignment_2026-09-26/audit_alignment_second.py"
+      ],
+      "started_utc": "2026-09-26T15:13:48.380230+00:00",
+      "seconds": 38.9210937502794,
+      "exit_code": 0,
+      "timed_out_at_compute_deadline": false
+    },
+    {
+      "name": "mypy",
+      "argv": [
+        "/private/tmp/cpswm-pc-a-full-hand-proposal-matrix-20260926/.venv/bin/python",
+        "-m",
+        "mypy",
+        "--no-incremental"
+      ],
+      "started_utc": "2026-09-26T15:14:27.439802+00:00",
+      "seconds": 11.317809666972607,
+      "exit_code": 0,
+      "timed_out_at_compute_deadline": false
+    },
+    {
+      "name": "ruff",
+      "argv": [
+        "/private/tmp/cpswm-pc-a-full-hand-proposal-matrix-20260926/.venv/bin/python",
+        "-m",
+        "ruff",
+        "check",
+        "src",
+        "tests",
+        "tools",
+        "/private/tmp/cpswm-pc-a-full-hand-proposal-matrix-20260926/docs/reviews/pc_a/full_hand_proposal_matrix_2026-09-26"
+      ],
+      "started_utc": "2026-09-26T15:14:38.892298+00:00",
+      "seconds": 0.07927550002932549,
+      "exit_code": 0,
+      "timed_out_at_compute_deadline": false
+    },
+    {
+      "name": "full-autoregressive_typed_graph_policy",
+      "argv": [
+        "/private/tmp/cpswm-pc-a-full-hand-proposal-matrix-20260926/.venv/bin/python",
+        "tools/run_hfd_hand_proposals.py",
+        "--frontend",
+        "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/hand-proposal-input-20260926/closed/final-01/frontend",
+        "--frontend-sha256",
+        "677505fa2891aab0b2602a5ec002ea3fb3612d5e219ad788437b5b03feaf3c48",
+        "--training",
+        "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/hand-proposal-input-20260926/closed/final-01/derived",
+        "--output",
+        "/private/tmp/cpswm-pc-a-full-hand-proposal-matrix-20260926/output/full-hand-matrix/final-03/autoregressive_typed_graph_policy",
+        "--arm",
+        "autoregressive_typed_graph_policy",
+        "--prefix-frames",
+        "4",
+        "--window-scope",
+        "all",
+        "--restore-scope",
+        "first"
+      ],
+      "started_utc": "2026-09-26T15:14:39.167262+00:00",
+      "seconds": 2030.9784486670978,
+      "exit_code": -15,
+      "timed_out_at_compute_deadline": false
+    },
+    {
+      "name": "full-typed_factor_graph_transformer",
+      "argv": [
+        "/private/tmp/cpswm-pc-a-full-hand-proposal-matrix-20260926/.venv/bin/python",
+        "tools/run_hfd_hand_proposals.py",
+        "--frontend",
+        "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/hand-proposal-input-20260926/closed/final-01/frontend",
+        "--frontend-sha256",
+        "677505fa2891aab0b2602a5ec002ea3fb3612d5e219ad788437b5b03feaf3c48",
+        "--training",
+        "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/hand-proposal-input-20260926/closed/final-01/derived",
+        "--output",
+        "/private/tmp/cpswm-pc-a-full-hand-proposal-matrix-20260926/output/full-hand-matrix/final-03/typed_factor_graph_transformer",
+        "--arm",
+        "typed_factor_graph_transformer",
+        "--prefix-frames",
+        "4",
+        "--window-scope",
+        "all",
+        "--restore-scope",
+        "first"
+      ],
+      "started_utc": "2026-09-26T15:14:39.164782+00:00",
+      "seconds": 2030.9822924169712,
+      "exit_code": -15,
+      "timed_out_at_compute_deadline": false
+    },
+    {
+      "name": "full-slot_conditioned_perceiver",
+      "argv": [
+        "/private/tmp/cpswm-pc-a-full-hand-proposal-matrix-20260926/.venv/bin/python",
+        "tools/run_hfd_hand_proposals.py",
+        "--frontend",
+        "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/hand-proposal-input-20260926/closed/final-01/frontend",
+        "--frontend-sha256",
+        "677505fa2891aab0b2602a5ec002ea3fb3612d5e219ad788437b5b03feaf3c48",
+        "--training",
+        "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/hand-proposal-input-20260926/closed/final-01/derived",
+        "--output",
+        "/private/tmp/cpswm-pc-a-full-hand-proposal-matrix-20260926/output/full-hand-matrix/final-03/slot_conditioned_perceiver",
+        "--arm",
+        "slot_conditioned_perceiver",
+        "--prefix-frames",
+        "4",
+        "--window-scope",
+        "all",
+        "--restore-scope",
+        "first"
+      ],
+      "started_utc": "2026-09-26T15:14:39.166205+00:00",
+      "seconds": 2030.9811197090894,
+      "exit_code": -15,
+      "timed_out_at_compute_deadline": false
+    }
+  ]
+}

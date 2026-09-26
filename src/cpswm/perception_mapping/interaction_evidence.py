@@ -11,7 +11,9 @@ import math
 from copy import deepcopy
 from dataclasses import dataclass, replace
 from datetime import UTC
+from itertools import combinations
 from threading import RLock
+from typing import Literal
 from uuid import UUID, uuid5
 
 import numpy as np
@@ -338,12 +340,51 @@ def evaluate_calibration(
 
 
 @dataclass(frozen=True)
+class PersonIdentityPair:
+    """Two detection tracks with both physical-person explanations still open.
+
+    These are pairwise alternatives, not independently selectable assignments:
+    a future joint identity partition must enforce equivalence/transitivity.
+    Box overlap is a measurement, never a same-person or distinct-person gate.
+    """
+
+    pair_id: UUID
+    track_ids: tuple[UUID, UUID]
+    candidate_ids: tuple[UUID, UUID]
+    observation_id: UUID
+    box_iou: float
+    hypotheses: tuple[str, str] = ("same_person_multiple_detections", "distinct_people")
+    status: Literal["UNRESOLVED_GEOMETRY_ONLY"] = "UNRESOLVED_GEOMETRY_ONLY"
+
+
+def person_identity_pairs(current: AssociatedFrame) -> tuple[PersonIdentityPair, ...]:
+    """Retain both alternatives for every pair without choosing a new prior."""
+    people = sorted(
+        (d for d in current.detections if d.category == "person"), key=lambda d: str(d.track_id)
+    )
+    if len({d.track_id for d in people}) != len(people):
+        raise ValueError("duplicate person track in one frame")
+    return tuple(
+        PersonIdentityPair(
+            uuid5(current.observation_id, f"person-pair:{a.track_id}:{b.track_id}"),
+            (a.track_id, b.track_id),
+            (a.candidate_id, b.candidate_id),
+            current.observation_id,
+            box_iou(a.box_xyxy, b.box_xyxy),
+        )
+        for a, b in combinations(people, 2)
+    )
+
+
+@dataclass(frozen=True)
 class RoleAlternative:
     object_track_id: UUID
     actor_track_id: UUID
     recipient_track_id: UUID
     evidence_observation_ids: tuple[UUID, UUID]
-    explanation: str = "possible_transfer_or_joint_manipulation"
+    identity_pair_id: UUID
+    required_identity_hypothesis: Literal["distinct_people"] = "distinct_people"
+    explanation: str = "conditional_possible_transfer_or_joint_manipulation"
     # This is pixel-box temporal evidence, not a role posterior or contact proof.
 
 
@@ -354,6 +395,7 @@ class InteractionReadout:
     unresolved_reasons: tuple[str, ...]
     next_observation_request: str
     memory_write_authorized: bool = False
+    person_identity_pairs: tuple[PersonIdentityPair, ...] = ()
 
 
 def _near(person: AssociatedDetection, obj: AssociatedDetection) -> bool:
@@ -366,14 +408,21 @@ def role_readout(previous: AssociatedFrame | None, current: AssociatedFrame) -> 
 
     Object class is never inferred from person motion. Identity breaks remove the
     corresponding temporal role evidence. The non-transfer explanation remains
-    explicit. Hands, release and independent calibration are required downstream.
+    explicit. Every role is conditional on two physically distinct people, which
+    separate track IDs do not establish. Same-person alternatives remain in the
+    readout, including for disjoint body-part boxes. Hands, release and independent
+    calibration are required downstream.
     """
     people = tuple(d for d in current.detections if d.category == "person")
     objects = tuple(d for d in current.detections if d.category != "person")
+    pairs = person_identity_pairs(current)
+    pair_index = {frozenset(p.track_ids): p.pair_id for p in pairs}
     reasons = ["contact_and_release_not_observed", "role_likelihood_not_calibrated"]
     alternatives = []
     if len(people) < 2:
         reasons.append("fewer_than_two_person_candidates")
+    else:
+        reasons.append("physical_person_identity_not_resolved")
     if not objects:
         reasons.append("no_object_candidate")
     if previous is not None:
@@ -400,9 +449,16 @@ def role_readout(previous: AssociatedFrame | None, current: AssociatedFrame) -> 
                                 actor.track_id,
                                 recipient.track_id,
                                 (previous.observation_id, current.observation_id),
+                                pair_index[frozenset((actor.track_id, recipient.track_id))],
                             )
                         )
     if not alternatives:
         reasons.append("no_stable_ordered_role_evidence")
     request = "observe_hands_and_object" if objects else "obtain_closer_object_view"
-    return InteractionReadout(current.observation_id, tuple(alternatives), tuple(reasons), request)
+    return InteractionReadout(
+        current.observation_id,
+        tuple(alternatives),
+        tuple(reasons),
+        request,
+        person_identity_pairs=pairs,
+    )

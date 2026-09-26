@@ -1,0 +1,593 @@
+FF..FFFFFFFFFF.....                                                      [100%]
+=================================== FAILURES ===================================
+_____ test_otherwise_complete_packet_rejects_alias_or_special_member[fifo] _____
+
+tmp_path = PosixPath('/private/var/folders/x2/000r8p0n6s393lj2sg8wk5f40000gn/T/pytest-of-pangwei/pytest-2144/test_otherwise_complete_packet0')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x109750fc0>
+kind = 'fifo'
+
+    @pytest.mark.parametrize("kind", ("fifo", "socket", "hardlink", "directory_link"))
+    def test_otherwise_complete_packet_rejects_alias_or_special_member(tmp_path, monkeypatch, kind):
+        archive, metadata, output = fixture_archive(tmp_path, monkeypatch)
+        baseline = module.inspect_full_training(archive, metadata, output)
+        alias = output / "extra"
+        sock = None
+        if kind == "fifo":
+            os.mkfifo(alias)
+        elif kind == "socket":
+            sock = socket.socket(socket.AF_UNIX)
+            sock.bind(str(alias))
+        elif kind == "hardlink":
+            os.link(output / "raw/trial0000/head_cam.mp4", alias)
+        else:
+            alias.symlink_to(output / "raw", target_is_directory=True)
+        try:
+>           with pytest.raises(ValueError, match=r"packet|alias|link|special|regular"):
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E           Failed: DID NOT RAISE ValueError
+
+docs/reviews/pc_a/complete_hfd_resume_2026-09-26/audit_intake_second.py:41: Failed
+____ test_otherwise_complete_packet_rejects_alias_or_special_member[socket] ____
+
+tmp_path = PosixPath('/private/var/folders/x2/000r8p0n6s393lj2sg8wk5f40000gn/T/pytest-of-pangwei/pytest-2144/test_otherwise_complete_packet1')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x109751940>
+kind = 'socket'
+
+    @pytest.mark.parametrize("kind", ("fifo", "socket", "hardlink", "directory_link"))
+    def test_otherwise_complete_packet_rejects_alias_or_special_member(tmp_path, monkeypatch, kind):
+        archive, metadata, output = fixture_archive(tmp_path, monkeypatch)
+        baseline = module.inspect_full_training(archive, metadata, output)
+        alias = output / "extra"
+        sock = None
+        if kind == "fifo":
+            os.mkfifo(alias)
+        elif kind == "socket":
+            sock = socket.socket(socket.AF_UNIX)
+>           sock.bind(str(alias))
+E           OSError: AF_UNIX path too long
+
+docs/reviews/pc_a/complete_hfd_resume_2026-09-26/audit_intake_second.py:35: OSError
+_ test_fault_after_final_content_check_cannot_return_an_accepted_packet[raw-False] _
+
+tmp_path = PosixPath('/private/var/folders/x2/000r8p0n6s393lj2sg8wk5f40000gn/T/pytest-of-pangwei/pytest-2144/test_fault_after_final_content0')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x119e548d0>
+verification = False, kind = 'raw'
+
+    @pytest.mark.parametrize("verification", (False, True))
+    @pytest.mark.parametrize("kind", ("raw", "extra"))
+    def test_fault_after_final_content_check_cannot_return_an_accepted_packet(
+        tmp_path, monkeypatch, verification, kind
+    ):
+        archive, metadata, output = fixture_archive(tmp_path, monkeypatch)
+        baseline = None
+        if verification:
+            baseline = module.inspect_full_training(archive, metadata, output)
+        original = module.check_members
+        calls = 0
+        backup = None
+        changed = output / ("raw/trial0000/human_activity.npy" if kind == "raw" else "late.json")
+    
+        def corrupted(root, members):
+            nonlocal calls, backup
+            original(root, members)
+            calls += 1
+            if calls == 2:
+                backup = changed.read_bytes() if changed.exists() else None
+                changed.write_bytes(npy(np.array([0, 3, 3])) if kind == "raw" else b"{}\n")
+    
+        with monkeypatch.context() as fault:
+            fault.setattr(module, "check_members", corrupted)
+>           with pytest.raises(ValueError, match=r"packet|artifact|member|changed"):
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E           Failed: DID NOT RAISE ValueError
+
+docs/reviews/pc_a/complete_hfd_resume_2026-09-26/audit_intake_second.py:74: Failed
+_ test_fault_after_final_content_check_cannot_return_an_accepted_packet[raw-True] _
+
+tmp_path = PosixPath('/private/var/folders/x2/000r8p0n6s393lj2sg8wk5f40000gn/T/pytest-of-pangwei/pytest-2144/test_fault_after_final_content1')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x119eb5e50>
+verification = True, kind = 'raw'
+
+    @pytest.mark.parametrize("verification", (False, True))
+    @pytest.mark.parametrize("kind", ("raw", "extra"))
+    def test_fault_after_final_content_check_cannot_return_an_accepted_packet(
+        tmp_path, monkeypatch, verification, kind
+    ):
+        archive, metadata, output = fixture_archive(tmp_path, monkeypatch)
+        baseline = None
+        if verification:
+            baseline = module.inspect_full_training(archive, metadata, output)
+        original = module.check_members
+        calls = 0
+        backup = None
+        changed = output / ("raw/trial0000/human_activity.npy" if kind == "raw" else "late.json")
+    
+        def corrupted(root, members):
+            nonlocal calls, backup
+            original(root, members)
+            calls += 1
+            if calls == 2:
+                backup = changed.read_bytes() if changed.exists() else None
+                changed.write_bytes(npy(np.array([0, 3, 3])) if kind == "raw" else b"{}\n")
+    
+        with monkeypatch.context() as fault:
+            fault.setattr(module, "check_members", corrupted)
+>           with pytest.raises(ValueError, match=r"packet|artifact|member|changed"):
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E           Failed: DID NOT RAISE ValueError
+
+docs/reviews/pc_a/complete_hfd_resume_2026-09-26/audit_intake_second.py:74: Failed
+_ test_fault_after_final_content_check_cannot_return_an_accepted_packet[extra-False] _
+
+tmp_path = PosixPath('/private/var/folders/x2/000r8p0n6s393lj2sg8wk5f40000gn/T/pytest-of-pangwei/pytest-2144/test_fault_after_final_content2')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x11a43c050>
+verification = False, kind = 'extra'
+
+    @pytest.mark.parametrize("verification", (False, True))
+    @pytest.mark.parametrize("kind", ("raw", "extra"))
+    def test_fault_after_final_content_check_cannot_return_an_accepted_packet(
+        tmp_path, monkeypatch, verification, kind
+    ):
+        archive, metadata, output = fixture_archive(tmp_path, monkeypatch)
+        baseline = None
+        if verification:
+            baseline = module.inspect_full_training(archive, metadata, output)
+        original = module.check_members
+        calls = 0
+        backup = None
+        changed = output / ("raw/trial0000/human_activity.npy" if kind == "raw" else "late.json")
+    
+        def corrupted(root, members):
+            nonlocal calls, backup
+            original(root, members)
+            calls += 1
+            if calls == 2:
+                backup = changed.read_bytes() if changed.exists() else None
+                changed.write_bytes(npy(np.array([0, 3, 3])) if kind == "raw" else b"{}\n")
+    
+        with monkeypatch.context() as fault:
+            fault.setattr(module, "check_members", corrupted)
+>           with pytest.raises(ValueError, match=r"packet|artifact|member|changed"):
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E           Failed: DID NOT RAISE ValueError
+
+docs/reviews/pc_a/complete_hfd_resume_2026-09-26/audit_intake_second.py:74: Failed
+_ test_fault_after_final_content_check_cannot_return_an_accepted_packet[extra-True] _
+
+tmp_path = PosixPath('/private/var/folders/x2/000r8p0n6s393lj2sg8wk5f40000gn/T/pytest-of-pangwei/pytest-2144/test_fault_after_final_content3')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x11a3fbcb0>
+verification = True, kind = 'extra'
+
+    @pytest.mark.parametrize("verification", (False, True))
+    @pytest.mark.parametrize("kind", ("raw", "extra"))
+    def test_fault_after_final_content_check_cannot_return_an_accepted_packet(
+        tmp_path, monkeypatch, verification, kind
+    ):
+        archive, metadata, output = fixture_archive(tmp_path, monkeypatch)
+        baseline = None
+        if verification:
+            baseline = module.inspect_full_training(archive, metadata, output)
+        original = module.check_members
+        calls = 0
+        backup = None
+        changed = output / ("raw/trial0000/human_activity.npy" if kind == "raw" else "late.json")
+    
+        def corrupted(root, members):
+            nonlocal calls, backup
+            original(root, members)
+            calls += 1
+            if calls == 2:
+                backup = changed.read_bytes() if changed.exists() else None
+                changed.write_bytes(npy(np.array([0, 3, 3])) if kind == "raw" else b"{}\n")
+    
+        with monkeypatch.context() as fault:
+            fault.setattr(module, "check_members", corrupted)
+>           with pytest.raises(ValueError, match=r"packet|artifact|member|changed"):
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E           Failed: DID NOT RAISE ValueError
+
+docs/reviews/pc_a/complete_hfd_resume_2026-09-26/audit_intake_second.py:74: Failed
+_ test_bad_numeric_or_schema_trial_is_quarantined_with_its_full_denominator[string_force] _
+
+tmp_path = PosixPath('/private/var/folders/x2/000r8p0n6s393lj2sg8wk5f40000gn/T/pytest-of-pangwei/pytest-2144/test_bad_numeric_or_schema_tri0')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x11a408590>
+kind = 'string_force'
+
+    @pytest.mark.parametrize(
+        "kind",
+        (
+            "string_force",
+            "complex_clock",
+            "complex_force",
+            "unsigned_camera_clock",
+            "unsigned_force_clock",
+            "non_object_metadata",
+        ),
+    )
+    def test_bad_numeric_or_schema_trial_is_quarantined_with_its_full_denominator(
+        tmp_path, monkeypatch, kind
+    ):
+        def change(values):
+            prefix = "training_set/trial0000/"
+            if kind == "string_force":
+                values[prefix + "wrench.npy"] = npy(np.full((4, 6), "missing"))
+            elif kind == "complex_clock":
+                values[prefix + "head_cam_ts.npy"] = npy(np.array([1j, 0.1 + 2j, 0.2 + 3j]))
+            elif kind == "complex_force":
+                values[prefix + "wrench_resampled.npy"] = npy(np.ones((3, 6), dtype=complex) * 1j)
+            elif kind == "unsigned_camera_clock":
+                values[prefix + "head_cam_ts.npy"] = npy(np.array([250, 5, 10], dtype=np.uint8))
+            elif kind == "unsigned_force_clock":
+                values[prefix + "wrench_ts.npy"] = npy(np.array([250, 5, 10, 15], dtype=np.uint8))
+            else:
+                values[prefix + "task_info.json"] = b"[]\n"
+    
+        archive, metadata, output = fixture_archive(tmp_path, monkeypatch, mutate=change)
+>       report = module.inspect_full_training(archive, metadata, output)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+docs/reviews/pc_a/complete_hfd_resume_2026-09-26/audit_intake_second.py:119: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/cpswm/data_preflight/full_hfd_training.py:298: in inspect_full_training
+    report, row_files = build_report(output, outcomes, write_rows=not verify)
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/cpswm/data_preflight/full_hfd_training.py:247: in build_report
+    rows, summary = inspect_trial(root, trial, outcome)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/cpswm/data_preflight/full_hfd_training.py:213: in inspect_trial
+    rows, summary = inspect_hfd_trial(arrays, info, outcome)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+arrays = {'head_cam_ts': array([0. , 0.1, 0.2]), 'wrench_ts': array([0.  , 0.05, 0.1 , 0.2 ]), 'human_activity': array([0, 2, 3]), 'robot_actions': array([0, 2, 3]), ...}
+metadata = {'robot': 'Kinova Gen3', 'task': 'human to robot handover'}
+outcome = {'robot': 'Kinova Gen3', 'task': 'human to robot handover', 'outcome': 0}
+
+    def inspect_hfd_trial(
+        arrays: dict[str, np.ndarray], metadata: dict[str, Any], outcome: dict[str, Any]
+    ) -> tuple[list[dict[str, Any]], dict[str, Any]]:
+        """Validate frame alignment, retaining author boundary ambiguity explicitly."""
+        for name, value in arrays.items():
+>           if not np.isfinite(value).all():
+                   ^^^^^^^^^^^^^^^^^^
+E           TypeError: ufunc 'isfinite' not supported for the input types, and the inputs could not be safely coerced to any supported types according to the casting rule ''safe''
+
+src/cpswm/data_preflight/public_handover_evidence.py:184: TypeError
+_ test_bad_numeric_or_schema_trial_is_quarantined_with_its_full_denominator[complex_clock] _
+
+tmp_path = PosixPath('/private/var/folders/x2/000r8p0n6s393lj2sg8wk5f40000gn/T/pytest-of-pangwei/pytest-2144/test_bad_numeric_or_schema_tri1')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x11a4087d0>
+kind = 'complex_clock'
+
+    @pytest.mark.parametrize(
+        "kind",
+        (
+            "string_force",
+            "complex_clock",
+            "complex_force",
+            "unsigned_camera_clock",
+            "unsigned_force_clock",
+            "non_object_metadata",
+        ),
+    )
+    def test_bad_numeric_or_schema_trial_is_quarantined_with_its_full_denominator(
+        tmp_path, monkeypatch, kind
+    ):
+        def change(values):
+            prefix = "training_set/trial0000/"
+            if kind == "string_force":
+                values[prefix + "wrench.npy"] = npy(np.full((4, 6), "missing"))
+            elif kind == "complex_clock":
+                values[prefix + "head_cam_ts.npy"] = npy(np.array([1j, 0.1 + 2j, 0.2 + 3j]))
+            elif kind == "complex_force":
+                values[prefix + "wrench_resampled.npy"] = npy(np.ones((3, 6), dtype=complex) * 1j)
+            elif kind == "unsigned_camera_clock":
+                values[prefix + "head_cam_ts.npy"] = npy(np.array([250, 5, 10], dtype=np.uint8))
+            elif kind == "unsigned_force_clock":
+                values[prefix + "wrench_ts.npy"] = npy(np.array([250, 5, 10, 15], dtype=np.uint8))
+            else:
+                values[prefix + "task_info.json"] = b"[]\n"
+    
+        archive, metadata, output = fixture_archive(tmp_path, monkeypatch, mutate=change)
+        report = module.inspect_full_training(archive, metadata, output)
+        assert report["report"]["enrolled_trials"] == 2
+>       assert report["report"]["accepted_trials"] == 1
+E       assert 2 == 1
+
+docs/reviews/pc_a/complete_hfd_resume_2026-09-26/audit_intake_second.py:121: AssertionError
+_ test_bad_numeric_or_schema_trial_is_quarantined_with_its_full_denominator[complex_force] _
+
+tmp_path = PosixPath('/private/var/folders/x2/000r8p0n6s393lj2sg8wk5f40000gn/T/pytest-of-pangwei/pytest-2144/test_bad_numeric_or_schema_tri2')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x11a3db540>
+kind = 'complex_force'
+
+    @pytest.mark.parametrize(
+        "kind",
+        (
+            "string_force",
+            "complex_clock",
+            "complex_force",
+            "unsigned_camera_clock",
+            "unsigned_force_clock",
+            "non_object_metadata",
+        ),
+    )
+    def test_bad_numeric_or_schema_trial_is_quarantined_with_its_full_denominator(
+        tmp_path, monkeypatch, kind
+    ):
+        def change(values):
+            prefix = "training_set/trial0000/"
+            if kind == "string_force":
+                values[prefix + "wrench.npy"] = npy(np.full((4, 6), "missing"))
+            elif kind == "complex_clock":
+                values[prefix + "head_cam_ts.npy"] = npy(np.array([1j, 0.1 + 2j, 0.2 + 3j]))
+            elif kind == "complex_force":
+                values[prefix + "wrench_resampled.npy"] = npy(np.ones((3, 6), dtype=complex) * 1j)
+            elif kind == "unsigned_camera_clock":
+                values[prefix + "head_cam_ts.npy"] = npy(np.array([250, 5, 10], dtype=np.uint8))
+            elif kind == "unsigned_force_clock":
+                values[prefix + "wrench_ts.npy"] = npy(np.array([250, 5, 10, 15], dtype=np.uint8))
+            else:
+                values[prefix + "task_info.json"] = b"[]\n"
+    
+        archive, metadata, output = fixture_archive(tmp_path, monkeypatch, mutate=change)
+>       report = module.inspect_full_training(archive, metadata, output)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+docs/reviews/pc_a/complete_hfd_resume_2026-09-26/audit_intake_second.py:119: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/cpswm/data_preflight/full_hfd_training.py:298: in inspect_full_training
+    report, row_files = build_report(output, outcomes, write_rows=not verify)
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/cpswm/data_preflight/full_hfd_training.py:247: in build_report
+    rows, summary = inspect_trial(root, trial, outcome)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/cpswm/data_preflight/full_hfd_training.py:230: in inspect_trial
+    return b"".join(encoded(row) for row in rows), {
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/cpswm/data_preflight/full_hfd_training.py:230: in <genexpr>
+    return b"".join(encoded(row) for row in rows), {
+                    ^^^^^^^^^^^^
+src/cpswm/data_preflight/full_hfd_training.py:44: in encoded
+    json.dumps(value, sort_keys=True, separators=(",", ":"), allow_nan=False) + "\n"
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/Users/pangwei/.local/share/uv/python/cpython-3.13.5-macos-aarch64-none/lib/python3.13/json/__init__.py:238: in dumps
+    **kw).encode(obj)
+          ^^^^^^^^^^^
+/Users/pangwei/.local/share/uv/python/cpython-3.13.5-macos-aarch64-none/lib/python3.13/json/encoder.py:200: in encode
+    chunks = self.iterencode(o, _one_shot=True)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/Users/pangwei/.local/share/uv/python/cpython-3.13.5-macos-aarch64-none/lib/python3.13/json/encoder.py:261: in iterencode
+    return _iterencode(o, 0)
+           ^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <json.encoder.JSONEncoder object at 0x11a3e3410>, o = 1j
+
+    def default(self, o):
+        """Implement this method in a subclass such that it returns
+        a serializable object for ``o``, or calls the base implementation
+        (to raise a ``TypeError``).
+    
+        For example, to support arbitrary iterators, you could
+        implement default like this::
+    
+            def default(self, o):
+                try:
+                    iterable = iter(o)
+                except TypeError:
+                    pass
+                else:
+                    return list(iterable)
+                # Let the base class default method raise the TypeError
+                return super().default(o)
+    
+        """
+>       raise TypeError(f'Object of type {o.__class__.__name__} '
+                        f'is not JSON serializable')
+E       TypeError: Object of type complex is not JSON serializable
+
+/Users/pangwei/.local/share/uv/python/cpython-3.13.5-macos-aarch64-none/lib/python3.13/json/encoder.py:180: TypeError
+_ test_bad_numeric_or_schema_trial_is_quarantined_with_its_full_denominator[unsigned_camera_clock] _
+
+tmp_path = PosixPath('/private/var/folders/x2/000r8p0n6s393lj2sg8wk5f40000gn/T/pytest-of-pangwei/pytest-2144/test_bad_numeric_or_schema_tri3')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x11a3dba10>
+kind = 'unsigned_camera_clock'
+
+    @pytest.mark.parametrize(
+        "kind",
+        (
+            "string_force",
+            "complex_clock",
+            "complex_force",
+            "unsigned_camera_clock",
+            "unsigned_force_clock",
+            "non_object_metadata",
+        ),
+    )
+    def test_bad_numeric_or_schema_trial_is_quarantined_with_its_full_denominator(
+        tmp_path, monkeypatch, kind
+    ):
+        def change(values):
+            prefix = "training_set/trial0000/"
+            if kind == "string_force":
+                values[prefix + "wrench.npy"] = npy(np.full((4, 6), "missing"))
+            elif kind == "complex_clock":
+                values[prefix + "head_cam_ts.npy"] = npy(np.array([1j, 0.1 + 2j, 0.2 + 3j]))
+            elif kind == "complex_force":
+                values[prefix + "wrench_resampled.npy"] = npy(np.ones((3, 6), dtype=complex) * 1j)
+            elif kind == "unsigned_camera_clock":
+                values[prefix + "head_cam_ts.npy"] = npy(np.array([250, 5, 10], dtype=np.uint8))
+            elif kind == "unsigned_force_clock":
+                values[prefix + "wrench_ts.npy"] = npy(np.array([250, 5, 10, 15], dtype=np.uint8))
+            else:
+                values[prefix + "task_info.json"] = b"[]\n"
+    
+        archive, metadata, output = fixture_archive(tmp_path, monkeypatch, mutate=change)
+        report = module.inspect_full_training(archive, metadata, output)
+        assert report["report"]["enrolled_trials"] == 2
+>       assert report["report"]["accepted_trials"] == 1
+E       assert 2 == 1
+
+docs/reviews/pc_a/complete_hfd_resume_2026-09-26/audit_intake_second.py:121: AssertionError
+_ test_bad_numeric_or_schema_trial_is_quarantined_with_its_full_denominator[unsigned_force_clock] _
+
+tmp_path = PosixPath('/private/var/folders/x2/000r8p0n6s393lj2sg8wk5f40000gn/T/pytest-of-pangwei/pytest-2144/test_bad_numeric_or_schema_tri4')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x11a4236b0>
+kind = 'unsigned_force_clock'
+
+    @pytest.mark.parametrize(
+        "kind",
+        (
+            "string_force",
+            "complex_clock",
+            "complex_force",
+            "unsigned_camera_clock",
+            "unsigned_force_clock",
+            "non_object_metadata",
+        ),
+    )
+    def test_bad_numeric_or_schema_trial_is_quarantined_with_its_full_denominator(
+        tmp_path, monkeypatch, kind
+    ):
+        def change(values):
+            prefix = "training_set/trial0000/"
+            if kind == "string_force":
+                values[prefix + "wrench.npy"] = npy(np.full((4, 6), "missing"))
+            elif kind == "complex_clock":
+                values[prefix + "head_cam_ts.npy"] = npy(np.array([1j, 0.1 + 2j, 0.2 + 3j]))
+            elif kind == "complex_force":
+                values[prefix + "wrench_resampled.npy"] = npy(np.ones((3, 6), dtype=complex) * 1j)
+            elif kind == "unsigned_camera_clock":
+                values[prefix + "head_cam_ts.npy"] = npy(np.array([250, 5, 10], dtype=np.uint8))
+            elif kind == "unsigned_force_clock":
+                values[prefix + "wrench_ts.npy"] = npy(np.array([250, 5, 10, 15], dtype=np.uint8))
+            else:
+                values[prefix + "task_info.json"] = b"[]\n"
+    
+        archive, metadata, output = fixture_archive(tmp_path, monkeypatch, mutate=change)
+        report = module.inspect_full_training(archive, metadata, output)
+        assert report["report"]["enrolled_trials"] == 2
+>       assert report["report"]["accepted_trials"] == 1
+E       assert 2 == 1
+
+docs/reviews/pc_a/complete_hfd_resume_2026-09-26/audit_intake_second.py:121: AssertionError
+_ test_bad_numeric_or_schema_trial_is_quarantined_with_its_full_denominator[non_object_metadata] _
+
+tmp_path = PosixPath('/private/var/folders/x2/000r8p0n6s393lj2sg8wk5f40000gn/T/pytest-of-pangwei/pytest-2144/test_bad_numeric_or_schema_tri5')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x11a423b10>
+kind = 'non_object_metadata'
+
+    @pytest.mark.parametrize(
+        "kind",
+        (
+            "string_force",
+            "complex_clock",
+            "complex_force",
+            "unsigned_camera_clock",
+            "unsigned_force_clock",
+            "non_object_metadata",
+        ),
+    )
+    def test_bad_numeric_or_schema_trial_is_quarantined_with_its_full_denominator(
+        tmp_path, monkeypatch, kind
+    ):
+        def change(values):
+            prefix = "training_set/trial0000/"
+            if kind == "string_force":
+                values[prefix + "wrench.npy"] = npy(np.full((4, 6), "missing"))
+            elif kind == "complex_clock":
+                values[prefix + "head_cam_ts.npy"] = npy(np.array([1j, 0.1 + 2j, 0.2 + 3j]))
+            elif kind == "complex_force":
+                values[prefix + "wrench_resampled.npy"] = npy(np.ones((3, 6), dtype=complex) * 1j)
+            elif kind == "unsigned_camera_clock":
+                values[prefix + "head_cam_ts.npy"] = npy(np.array([250, 5, 10], dtype=np.uint8))
+            elif kind == "unsigned_force_clock":
+                values[prefix + "wrench_ts.npy"] = npy(np.array([250, 5, 10, 15], dtype=np.uint8))
+            else:
+                values[prefix + "task_info.json"] = b"[]\n"
+    
+        archive, metadata, output = fixture_archive(tmp_path, monkeypatch, mutate=change)
+>       report = module.inspect_full_training(archive, metadata, output)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+docs/reviews/pc_a/complete_hfd_resume_2026-09-26/audit_intake_second.py:119: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/cpswm/data_preflight/full_hfd_training.py:298: in inspect_full_training
+    report, row_files = build_report(output, outcomes, write_rows=not verify)
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/cpswm/data_preflight/full_hfd_training.py:247: in build_report
+    rows, summary = inspect_trial(root, trial, outcome)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/cpswm/data_preflight/full_hfd_training.py:213: in inspect_trial
+    rows, summary = inspect_hfd_trial(arrays, info, outcome)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+arrays = {'head_cam_ts': array([0. , 0.1, 0.2]), 'wrench_ts': array([0.  , 0.05, 0.1 , 0.2 ]), 'human_activity': array([0, 2, 3]), 'robot_actions': array([0, 2, 3]), ...}
+metadata = []
+outcome = {'robot': 'Kinova Gen3', 'task': 'human to robot handover', 'outcome': 0}
+
+    def inspect_hfd_trial(
+        arrays: dict[str, np.ndarray], metadata: dict[str, Any], outcome: dict[str, Any]
+    ) -> tuple[list[dict[str, Any]], dict[str, Any]]:
+        """Validate frame alignment, retaining author boundary ambiguity explicitly."""
+        for name, value in arrays.items():
+            if not np.isfinite(value).all():
+                raise ValueError("nonfinite sensor or label data: " + name)
+        time = arrays["head_cam_ts"]
+        raw_time = arrays["wrench_ts"]
+        human, robot = arrays["human_activity"], arrays["robot_actions"]
+        raw, resampled = arrays["wrench"], arrays["wrench_resampled"]
+        if (
+            time.ndim != 1
+            or raw_time.ndim != 1
+            or len(time) < 2
+            or len(raw_time) < 2
+            or np.any(np.diff(time) <= 0)
+            or np.any(np.diff(raw_time) <= 0)
+            or human.shape != time.shape
+            or robot.shape != time.shape
+            or raw.shape != (len(raw_time), 6)
+            or resampled.shape != (len(time), 6)
+        ):
+            raise ValueError("unaligned timestamps, labels or wrench channels")
+        if (
+            human.dtype.kind not in "iu"
+            or robot.dtype.kind not in "iu"
+            or not set(human.tolist()) <= set(range(7))
+            or not set(robot.tolist()) <= set(range(5))
+>           or metadata.get("robot") not in {"Toyota HSR", "Kinova Gen3"}
+               ^^^^^^^^^^^^
+            or metadata.get("task") not in {"human to robot handover", "robot to human handover"}
+            or any(outcome.get(k) != metadata[k] for k in ("task", "robot"))
+            or type(outcome.get("outcome")) is not int
+            or outcome["outcome"] not in range(4)
+        ):
+E       AttributeError: 'list' object has no attribute 'get'
+
+src/cpswm/data_preflight/public_handover_evidence.py:208: AttributeError
+=============================== warnings summary ===============================
+docs/reviews/pc_a/complete_hfd_resume_2026-09-26/audit_intake_second.py::test_bad_numeric_or_schema_trial_is_quarantined_with_its_full_denominator[complex_clock]
+  /private/tmp/cpswm-pc-a-complete-hfd-resume-20260926/src/cpswm/data_preflight/public_handover_evidence.py:228: ComplexWarning: Casting complex values to real discards the imaginary part
+    "timestamp_seconds": float(time[i]),
+
+docs/reviews/pc_a/complete_hfd_resume_2026-09-26/audit_intake_second.py::test_bad_numeric_or_schema_trial_is_quarantined_with_its_full_denominator[complex_clock]
+  /private/tmp/cpswm-pc-a-complete-hfd-resume-20260926/src/cpswm/data_preflight/public_handover_evidence.py:250: ComplexWarning: Casting complex values to real discards the imaginary part
+    "bracket_seconds": [float(time[i - 1]), float(time[i])],
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED docs/reviews/pc_a/complete_hfd_resume_2026-09-26/audit_intake_second.py::test_otherwise_complete_packet_rejects_alias_or_special_member[fifo]
+FAILED docs/reviews/pc_a/complete_hfd_resume_2026-09-26/audit_intake_second.py::test_otherwise_complete_packet_rejects_alias_or_special_member[socket]
+FAILED docs/reviews/pc_a/complete_hfd_resume_2026-09-26/audit_intake_second.py::test_fault_after_final_content_check_cannot_return_an_accepted_packet[raw-False]
+FAILED docs/reviews/pc_a/complete_hfd_resume_2026-09-26/audit_intake_second.py::test_fault_after_final_content_check_cannot_return_an_accepted_packet[raw-True]
+FAILED docs/reviews/pc_a/complete_hfd_resume_2026-09-26/audit_intake_second.py::test_fault_after_final_content_check_cannot_return_an_accepted_packet[extra-False]
+FAILED docs/reviews/pc_a/complete_hfd_resume_2026-09-26/audit_intake_second.py::test_fault_after_final_content_check_cannot_return_an_accepted_packet[extra-True]
+FAILED docs/reviews/pc_a/complete_hfd_resume_2026-09-26/audit_intake_second.py::test_bad_numeric_or_schema_trial_is_quarantined_with_its_full_denominator[string_force]
+FAILED docs/reviews/pc_a/complete_hfd_resume_2026-09-26/audit_intake_second.py::test_bad_numeric_or_schema_trial_is_quarantined_with_its_full_denominator[complex_clock]
+FAILED docs/reviews/pc_a/complete_hfd_resume_2026-09-26/audit_intake_second.py::test_bad_numeric_or_schema_trial_is_quarantined_with_its_full_denominator[complex_force]
+FAILED docs/reviews/pc_a/complete_hfd_resume_2026-09-26/audit_intake_second.py::test_bad_numeric_or_schema_trial_is_quarantined_with_its_full_denominator[unsigned_camera_clock]
+FAILED docs/reviews/pc_a/complete_hfd_resume_2026-09-26/audit_intake_second.py::test_bad_numeric_or_schema_trial_is_quarantined_with_its_full_denominator[unsigned_force_clock]
+FAILED docs/reviews/pc_a/complete_hfd_resume_2026-09-26/audit_intake_second.py::test_bad_numeric_or_schema_trial_is_quarantined_with_its_full_denominator[non_object_metadata]
+12 failed, 7 passed, 2 warnings in 37.47s

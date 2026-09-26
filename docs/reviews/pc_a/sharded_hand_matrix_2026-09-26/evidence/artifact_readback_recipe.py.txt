@@ -1,0 +1,150 @@
+"""Separate A artifact readback; does not run a model or alter experiment files."""
+import argparse
+import hashlib
+import json
+import math
+from collections import Counter, defaultdict
+from datetime import UTC, datetime
+from pathlib import Path
+
+from cpswm.data_preflight.proposal_samples import ProposalTarget
+from cpswm.system.reproducibility import content_sha256
+
+PIN = '677505fa2891aab0b2602a5ec002ea3fb3612d5e219ad788437b5b03feaf3c48'
+ARMS = ('typed_factor_graph_transformer', 'slot_conditioned_perceiver', 'autoregressive_typed_graph_policy')
+
+
+def readback(root, frontend, evaluator, output):
+    raw = (frontend / 'result.json').read_bytes()
+    assert hashlib.sha256(raw).hexdigest() == PIN
+    front = json.loads(raw)
+    windows = {r['sequence']: r for r in front['windows']}
+    plan = json.loads((root / 'execution-plan.json').read_bytes())
+    jobs = {j['arm'] + '-shard-' + str(j['shard_index']): j for j in plan}
+    planned = {(a, k) for a in ARMS for k in windows}
+    plan_pairs = [(j['arm'], k) for j in plan for k in j['windows']]
+    assert len(plan_pairs) == len(set(plan_pairs)) == len(planned) == 96
+    assert set(plan_pairs) == planned
+    expected, records, pairs, details = {}, [], set(), []
+    partial_tails = []
+    completed_shards = []
+    for stem, job in jobs.items():
+        log = root / (stem + '.log')
+        if not log.exists():
+            continue
+        text = log.read_text()
+        lines = text.splitlines()
+        if text and not text.endswith('\n'):
+            partial_tails.append(stem)
+            lines = lines[:-1]
+        compact = []
+        for line in lines:
+            if not line.startswith('{'):
+                continue
+            row = json.loads(line)
+            if 'window' not in row:
+                continue
+            key = row['window']
+            assert row['arm'] == job['arm'] and key in job['windows']
+            pair = (row['arm'], key)
+            assert pair not in pairs
+            pairs.add(pair)
+            path = root / stem / (key.replace('/', '__') + '.json')
+            detail = json.loads(path.read_bytes())
+            assert {k: v for k, v in detail.items() if k != 'conditions'} == row
+            if key not in expected:
+                source = (frontend / key / 'support.json').read_bytes()
+                assert hashlib.sha256(source).hexdigest() == windows[key]['support_sha256']
+                targets = [ProposalTarget.model_validate(t) for t in json.loads(source)['targets']]
+                expected[key] = sorted(content_sha256(t.model_dump(mode='json')) for t in targets)
+            assert detail['candidates'] == len(expected[key]) == windows[key]['support']['candidate_count']
+            conditions = detail['conditions']
+            assert set(conditions) == {'with_hands', 'without_hands', 'shift_x_plus_1px'}
+            for name, condition in conditions.items():
+                scores = condition['scores']
+                assert [r['target_sha256'] for r in scores] == expected[key]
+                assert all(math.isfinite(r['joint_log_probability']) and r['joint_log_probability'] <= 0 for r in scores)
+                mass = math.fsum(math.exp(r['joint_log_probability']) for r in scores)
+                assert abs(mass - 1) <= 1e-10 and mass == condition['probability_mass']
+            for name in ('without_hands', 'shift_x_plus_1px'):
+                delta = max(abs(math.exp(a['joint_log_probability']) - math.exp(b['joint_log_probability']))
+                            for a, b in zip(conditions['with_hands']['scores'], conditions[name]['scores'], strict=True))
+                assert delta == detail['max_probability_delta'][name]
+            first = key.endswith('000000')
+            assert detail['prefix_frames'] == 4
+            assert detail['restore_and_next_draw_equal'] is (True if first else None)
+            assert detail['repeated_complete_distribution_equal'] is (True if first else None)
+            assert detail['scoring_left_rng_and_requests_unchanged'] is True
+            assert detail['target_ids_fixed_across_controls'] is True
+            assert (path.parent / (key.replace('/', '__') + '.snapshot.json')).exists() == first
+            assert detail['ledger_authorized'] is False and detail['native_publication_authorized'] is False
+            assert detail['new_optimizer_steps'] == 0
+            compact.append(row)
+            details.append(detail)
+            records.append({**row, 'artifact_sha256': hashlib.sha256(path.read_bytes()).hexdigest(),
+                            'graph_nodes': {k: v['graph_nodes'] for k, v in conditions.items()}})
+        summary_path = root / stem / 'summary.json'
+        if summary_path.exists():
+            summary = json.loads(summary_path.read_bytes())
+            assert summary['runs'] == compact
+            assert [r['window'] for r in compact] == job['windows']
+            completed_shards.append(stem)
+    commands = json.loads((root / 'commands.json').read_bytes())
+    before = json.loads((root / 'source-before.json').read_bytes())
+    source_equal = None
+    if (root / 'source-after.json').exists():
+        source_equal = before == json.loads((root / 'source-after.json').read_bytes())
+        assert source_equal
+    stage = json.loads(evaluator.read_bytes())
+    assert stage['frontend_sha256'] == PIN
+    stage_windows = {r['window']: r for r in stage['windows']}
+    assert set(stage_windows) == set(windows)
+    by_arm = {}
+    for arm in ARMS:
+        chosen = [r for r in records if r['arm'] == arm]
+        phases = Counter()
+        for r in chosen:
+            phases.update(stage_windows[r['window']]['author_phase_counts'])
+        by_arm[arm] = {'cases': len(chosen), 'restores': sum(r['restore_and_next_draw_equal'] is True for r in chosen),
+                       'candidate_total': sum(r['candidates'] for r in chosen), 'author_phase_counts_evaluation_only': dict(phases)}
+        by_arm[arm]['probability_delta_ranges'] = {mode: {
+            'min': min((r['max_probability_delta'][mode] for r in chosen), default=None),
+            'max': max((r['max_probability_delta'][mode] for r in chosen), default=None),
+            'nonzero_cases': sum(r['max_probability_delta'][mode] != 0 for r in chosen)}
+            for mode in ('without_hands', 'shift_x_plus_1px')}
+    counts = Counter(r['window'] for r in records)
+    unique_frames = {k for w in counts for k in stage_windows[w]['keys']}
+    receipts = {r['name']: r for r in commands['commands']}
+    missing = []
+    for stem, job in jobs.items():
+        for key in job['windows']:
+            if (job['arm'], key) not in pairs:
+                missing.append({'arm': job['arm'], 'window': key, 'shard': stem,
+                                'exit_code': receipts.get(stem, {}).get('exit_code'),
+                                'started': (root / (stem + '.log')).exists()})
+    status = json.loads((root / 'matrix-status.json').read_bytes()) if (root / 'matrix-status.json').exists() else None
+    result = {'scope': 'separate A self-review artifact readback, not independent B acceptance',
+              'checked_utc': datetime.now(UTC).isoformat(), 'source_sha': commands['source_sha'],
+              'python_source_files': len(before), 'source_before_after_equal': source_equal,
+              'planned_cases': 96, 'completed_cases': len(records), 'planned_restores': 24,
+              'completed_restores': sum(r['restore_and_next_draw_equal'] is True for r in records),
+              'planned_shards': len(jobs), 'completed_shards': len(completed_shards),
+              'started_shards': sum((root / (s + '.log')).exists() for s in jobs),
+              'windows_completed_in_any_arm': len(counts), 'windows_completed_in_all_three_arms': sum(v == 3 for v in counts.values()),
+              'unique_original_frame_keys_in_completed_cases': len(unique_frames),
+              'all_completed_artifacts_verified': True, 'matrix_status': status,
+              'partial_log_tails_ignored': partial_tails, 'by_arm': by_arm,
+              'max_completed_candidate_count': max((r['candidates'] for r in records), default=0),
+              'max_completed_graph_nodes': max((r['graph_nodes']['with_hands'] for r in records), default=0),
+              'missing_cases': missing, 'records': records,
+              'validation_recipe_sha256': hashlib.sha256(Path(__file__).read_bytes()).hexdigest()}
+    output.parent.mkdir(parents=True, exist_ok=True)
+    output.write_text(json.dumps(result, indent=2) + '\n')
+    print(json.dumps({k: v for k, v in result.items() if k not in ('records', 'missing_cases', 'by_arm', 'matrix_status')}, indent=2))
+
+
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser()
+    for name in ('root', 'frontend', 'evaluator', 'output'):
+        parser.add_argument('--' + name, type=Path, required=True)
+    readback(**vars(parser.parse_args()))

@@ -63,21 +63,33 @@ class RawModalityObservation:
             from cpswm.system.reproducibility import content_sha256
 
             receipt = _unique_json(self.archive_sampling_json.encode())
-            expected = {
+            common = {
                 "source_url",
                 "source_sha256",
                 "crop_xywh",
-                "sampling_grid_time_seconds",
-                "sampling_fps",
                 "time_semantics",
                 "payload_sha256",
                 "observation_id",
             }
+            exact = (
+                receipt.get("time_semantics") == "original_frame_author_clock_unverified_exposure"
+            )
+            timing = (
+                {
+                    "original_frame_index",
+                    "source_frame_count",
+                    "source_clock_sha256",
+                    "author_clock_seconds",
+                    "author_clock_origin_seconds",
+                    "media_time_seconds",
+                }
+                if exact
+                else {"sampling_grid_time_seconds", "sampling_fps"}
+            )
             crop = receipt.get("crop_xywh")
-            time: Any = receipt.get("sampling_grid_time_seconds")
-            fps = receipt.get("sampling_fps")
+            time: Any = receipt.get("media_time_seconds" if exact else "sampling_grid_time_seconds")
             if (
-                set(receipt) != expected
+                set(receipt) != common | timing
                 or value.metadata.source_type is not SourceType.IMPORT
                 or value.sensor.modality is not SensorModality.RGB
                 or value.clock_domain != "archive-import-acquisition-utc"
@@ -87,12 +99,9 @@ class RawModalityObservation:
                 or re.fullmatch(r"[0-9a-f]{64}", str(receipt["source_sha256"])) is None
                 or receipt["payload_sha256"] != value.payload.payload_sha256
                 or receipt["observation_id"] != str(value.identity.observation_id)
-                or receipt["time_semantics"] != "resampled_grid_not_original_exposure"
                 or type(time) not in (int, float)
                 or not math.isfinite(time)
                 or time < 0
-                or type(fps) is not int
-                or not 1 <= fps <= 240
                 or type(crop) is not list
                 or len(crop) != 4
                 or any(type(x) is not int for x in crop)
@@ -101,6 +110,30 @@ class RawModalityObservation:
                 or content_sha256(receipt) != self.capture_receipt_sha256
             ):
                 raise ValueError("archive sampling differs from bound RGB receipt")
+            if exact:
+                index, count = receipt["original_frame_index"], receipt["source_frame_count"]
+                stamp, origin = (
+                    receipt["author_clock_seconds"],
+                    receipt["author_clock_origin_seconds"],
+                )
+                if (
+                    type(index) is not int
+                    or type(count) is not int
+                    or not 0 <= index < count
+                    or re.fullmatch(r"[0-9a-f]{64}", str(receipt["source_clock_sha256"])) is None
+                    or type(stamp) not in (int, float)
+                    or type(origin) not in (int, float)
+                    or not math.isfinite(stamp)
+                    or not math.isfinite(origin)
+                    or time != stamp - origin
+                ):
+                    raise ValueError("invalid original frame index or author clock")
+            elif (
+                receipt["time_semantics"] != "resampled_grid_not_original_exposure"
+                or type(receipt["sampling_fps"]) is not int
+                or not 1 <= receipt["sampling_fps"] <= 240
+            ):
+                raise ValueError("invalid resampled archive clock")
         return value
 
     def archive_timeline(self) -> tuple[str, float] | None:
@@ -110,6 +143,18 @@ class RawModalityObservation:
 
         self.envelope()  # Validate before promoting sampling metadata to a timeline.
         receipt = _unique_json(self.archive_sampling_json.encode())
+        if receipt["time_semantics"] == "original_frame_author_clock_unverified_exposure":
+            return (
+                content_sha256(
+                    (
+                        receipt["source_sha256"],
+                        receipt["crop_xywh"],
+                        receipt["source_clock_sha256"],
+                        receipt["time_semantics"],
+                    )
+                ),
+                float(receipt["media_time_seconds"]),
+            )
         return (
             content_sha256((receipt["source_sha256"], receipt["crop_xywh"])),
             float(receipt["sampling_grid_time_seconds"]),

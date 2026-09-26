@@ -95,7 +95,7 @@ def test_attention_workspace_failure_after_valid_history_preserves_next_rng(
     )
     with monkeypatch.context() as patch:
         patch.setattr(compute, "ATTENTION_TEMPORARY_BYTES", 1)
-        with pytest.raises(ValueError, match="resource limit"):
+        with pytest.raises(ValueError, match=r"resource limit|binding|architecture"):
             session.process(request_id="next", **args)
     assert before == session.snapshot()
     assert session.process(request_id="next", **args) == reference.process(
@@ -115,3 +115,48 @@ def test_complete_resealed_derivative_cannot_remove_the_physical_bound(tmp_path)
         load_checkpoint(path, manifest_sha256=hashlib.sha256(forged).hexdigest())
     (path / "manifest.json").write_bytes(original)
     load_checkpoint(path, manifest_sha256=pin)
+
+
+@pytest.mark.parametrize("attack", ("loaded_code", "import_alias", "workspace_constant"))
+def test_owned_attention_implementation_drift_cannot_return_valid_but_wrong_distribution(
+    monkeypatch, attack
+):
+    from test_full_support_compute import paired
+    from test_typed_proposal_training import data
+
+    from cpswm.data_preflight import typed_proposal_networks as networks
+    from cpswm.data_preflight.proposal_decoder import TypedProposalDistribution
+
+    sample, support = data()
+    ctx = sample.runtime_context()
+    _, model = paired(ARMS[0])
+    with torch.no_grad():
+        original = TypedProposalDistribution(
+            context=ctx, runtime_candidates=support, scorer=model.prepare(ctx, support)
+        )
+        with monkeypatch.context() as patch:
+            if attack == "loaded_code":
+
+                def altered(module, queries, memory, *, allowed_rows=None, projected_kv=None):
+                    return torch.zeros_like(queries)
+
+                patch.setattr(compute.attend_query_rows, "__code__", altered.__code__)
+            elif attack == "import_alias":
+                patch.setattr(
+                    networks,
+                    "encode_graph_rows",
+                    lambda encoder, nodes, rows, *, typed: nodes[None],
+                )
+            else:
+                patch.setattr(compute, "ATTENTION_TEMPORARY_BYTES", 128 * 1024**2)
+            with pytest.raises(ValueError, match=r"architecture|implementation|binding"):
+                TypedProposalDistribution(
+                    context=ctx, runtime_candidates=support, scorer=model.prepare(ctx, support)
+                )
+        restored = TypedProposalDistribution(
+            context=ctx, runtime_candidates=support, scorer=model.prepare(ctx, support)
+        )
+        for key in original.target_sha256s:
+            assert torch.equal(
+                original.factor_log_probabilities(key), restored.factor_log_probabilities(key)
+            )

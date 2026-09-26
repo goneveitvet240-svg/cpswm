@@ -1,0 +1,549 @@
+{
+  "accepted_frames": 141462,
+  "accepted_outcome_counts": [
+    {
+      "outcome": 0,
+      "task": "human to robot handover",
+      "trials": 35
+    },
+    {
+      "outcome": 1,
+      "task": "human to robot handover",
+      "trials": 34
+    },
+    {
+      "outcome": 2,
+      "task": "human to robot handover",
+      "trials": 45
+    },
+    {
+      "outcome": 3,
+      "task": "human to robot handover",
+      "trials": 55
+    },
+    {
+      "outcome": 0,
+      "task": "robot to human handover",
+      "trials": 55
+    },
+    {
+      "outcome": 1,
+      "task": "robot to human handover",
+      "trials": 35
+    },
+    {
+      "outcome": 2,
+      "task": "robot to human handover",
+      "trials": 34
+    },
+    {
+      "outcome": 3,
+      "task": "robot to human handover",
+      "trials": 44
+    }
+  ],
+  "accepted_success_trials": 90,
+  "accepted_trials": 337,
+  "author_annotation_reviewers": 1,
+  "enrolled_trials": 337,
+  "exact_contact_release_gold": false,
+  "full_proposal_training_ready": false,
+  "global_person_identity_gold": false,
+  "independent_reannotation": false,
+  "native_publication_authorized": false,
+  "new_optimizer_steps": 0,
+  "our_frontend_pose_calibration": false,
+  "runtime_label_injection": false,
+  "validation_or_test_split_read": false,
+  "manifest_sha256": "e4362769c9f44f02b5a6e055897ef487322b832101a79018034f2d9d8fbe6502",
+  "archive": {
+    "bytes": 9185706983,
+    "md5": "14232fcd1b34030b77db48d8c771710d",
+    "sha256": "d515b35e9c6cc2a9af717395247eda0a914118d368a09d5b00b7b8da9aded5a4"
+  },
+  "source_sha": "c10a311430ff68ecce4aea0eaa6b3039e2f88974",
+  "raw_members": 2696,
+  "evaluator_files": 337,
+  "raw_bytes": 2366082001,
+  "evaluator_bytes": 43117642,
+  "raw_wrench_samples": 610420,
+  "phase_boundaries": 956,
+  "zero_raw_wrench_rows": 98625,
+  "zero_resampled_wrench_rows": 23987,
+  "frames_outside_raw_wrench_range": 89,
+  "outside_range_trials": [
+    {
+      "trial": "trial0000",
+      "robot": "Kinova Gen3",
+      "outcome": 3,
+      "frames": 1
+    },
+    {
+      "trial": "trial0010",
+      "robot": "Kinova Gen3",
+      "outcome": 1,
+      "frames": 1
+    },
+    {
+      "trial": "trial0013",
+      "robot": "Toyota HSR",
+      "outcome": 3,
+      "frames": 1
+    },
+    {
+      "trial": "trial0015",
+      "robot": "Kinova Gen3",
+      "outcome": 2,
+      "frames": 3
+    },
+    {
+      "trial": "trial0016",
+      "robot": "Toyota HSR",
+      "outcome": 1,
+      "frames": 1
+    },
+    {
+      "trial": "trial0026",
+      "robot": "Kinova Gen3",
+      "outcome": 1,
+      "frames": 1
+    },
+    {
+      "trial": "trial0028",
+      "robot": "Kinova Gen3",
+      "outcome": 1,
+      "frames": 1
+    },
+    {
+      "trial": "trial0031",
+      "robot": "Kinova Gen3",
+      "outcome": 1,
+      "frames": 1
+    },
+    {
+      "trial": "trial0032",
+      "robot": "Toyota HSR",
+      "outcome": 0,
+      "frames": 1
+    },
+    {
+      "trial": "trial0034",
+      "robot": "Toyota HSR",
+      "outcome": 0,
+      "frames": 1
+    },
+    {
+      "trial": "trial0037",
+      "robot": "Toyota HSR",
+      "outcome": 1,
+      "frames": 1
+    },
+    {
+      "trial": "trial0044",
+      "robot": "Toyota HSR",
+      "outcome": 3,
+      "frames": 1
+    },
+    {
+      "trial": "trial0045",
+      "robot": "Toyota HSR",
+      "outcome": 2,
+      "frames": 1
+    },
+    {
+      "trial": "trial0055",
+      "robot": "Toyota HSR",
+      "outcome": 2,
+      "frames": 1
+    },
+    {
+      "trial": "trial0056",
+      "robot": "Kinova Gen3",
+      "outcome": 3,
+      "frames": 2
+    },
+    {
+      "trial": "trial0058",
+      "robot": "Toyota HSR",
+      "outcome": 2,
+      "frames": 1
+    },
+    {
+      "trial": "trial0060",
+      "robot": "Toyota HSR",
+      "outcome": 1,
+      "frames": 1
+    },
+    {
+      "trial": "trial0063",
+      "robot": "Toyota HSR",
+      "outcome": 2,
+      "frames": 1
+    },
+    {
+      "trial": "trial0064",
+      "robot": "Kinova Gen3",
+      "outcome": 2,
+      "frames": 1
+    },
+    {
+      "trial": "trial0067",
+      "robot": "Kinova Gen3",
+      "outcome": 1,
+      "frames": 1
+    },
+    {
+      "trial": "trial0069",
+      "robot": "Toyota HSR",
+      "outcome": 1,
+      "frames": 1
+    },
+    {
+      "trial": "trial0070",
+      "robot": "Toyota HSR",
+      "outcome": 1,
+      "frames": 1
+    },
+    {
+      "trial": "trial0071",
+      "robot": "Kinova Gen3",
+      "outcome": 3,
+      "frames": 1
+    },
+    {
+      "trial": "trial0075",
+      "robot": "Kinova Gen3",
+      "outcome": 1,
+      "frames": 1
+    },
+    {
+      "trial": "trial0076",
+      "robot": "Toyota HSR",
+      "outcome": 0,
+      "frames": 4
+    },
+    {
+      "trial": "trial0081",
+      "robot": "Toyota HSR",
+      "outcome": 0,
+      "frames": 1
+    },
+    {
+      "trial": "trial0084",
+      "robot": "Toyota HSR",
+      "outcome": 3,
+      "frames": 1
+    },
+    {
+      "trial": "trial0091",
+      "robot": "Toyota HSR",
+      "outcome": 0,
+      "frames": 1
+    },
+    {
+      "trial": "trial0097",
+      "robot": "Toyota HSR",
+      "outcome": 2,
+      "frames": 1
+    },
+    {
+      "trial": "trial0098",
+      "robot": "Kinova Gen3",
+      "outcome": 3,
+      "frames": 1
+    },
+    {
+      "trial": "trial0105",
+      "robot": "Kinova Gen3",
+      "outcome": 0,
+      "frames": 1
+    },
+    {
+      "trial": "trial0115",
+      "robot": "Toyota HSR",
+      "outcome": 1,
+      "frames": 1
+    },
+    {
+      "trial": "trial0116",
+      "robot": "Toyota HSR",
+      "outcome": 0,
+      "frames": 1
+    },
+    {
+      "trial": "trial0119",
+      "robot": "Toyota HSR",
+      "outcome": 1,
+      "frames": 1
+    },
+    {
+      "trial": "trial0126",
+      "robot": "Toyota HSR",
+      "outcome": 2,
+      "frames": 1
+    },
+    {
+      "trial": "trial0127",
+      "robot": "Kinova Gen3",
+      "outcome": 0,
+      "frames": 2
+    },
+    {
+      "trial": "trial0136",
+      "robot": "Toyota HSR",
+      "outcome": 1,
+      "frames": 1
+    },
+    {
+      "trial": "trial0139",
+      "robot": "Kinova Gen3",
+      "outcome": 2,
+      "frames": 1
+    },
+    {
+      "trial": "trial0140",
+      "robot": "Toyota HSR",
+      "outcome": 3,
+      "frames": 1
+    },
+    {
+      "trial": "trial0144",
+      "robot": "Kinova Gen3",
+      "outcome": 0,
+      "frames": 2
+    },
+    {
+      "trial": "trial0147",
+      "robot": "Toyota HSR",
+      "outcome": 3,
+      "frames": 1
+    },
+    {
+      "trial": "trial0151",
+      "robot": "Kinova Gen3",
+      "outcome": 1,
+      "frames": 1
+    },
+    {
+      "trial": "trial0152",
+      "robot": "Kinova Gen3",
+      "outcome": 3,
+      "frames": 1
+    },
+    {
+      "trial": "trial0158",
+      "robot": "Toyota HSR",
+      "outcome": 0,
+      "frames": 1
+    },
+    {
+      "trial": "trial0161",
+      "robot": "Kinova Gen3",
+      "outcome": 0,
+      "frames": 1
+    },
+    {
+      "trial": "trial0166",
+      "robot": "Kinova Gen3",
+      "outcome": 0,
+      "frames": 1
+    },
+    {
+      "trial": "trial0171",
+      "robot": "Kinova Gen3",
+      "outcome": 3,
+      "frames": 1
+    },
+    {
+      "trial": "trial0173",
+      "robot": "Kinova Gen3",
+      "outcome": 1,
+      "frames": 1
+    },
+    {
+      "trial": "trial0178",
+      "robot": "Toyota HSR",
+      "outcome": 3,
+      "frames": 1
+    },
+    {
+      "trial": "trial0183",
+      "robot": "Kinova Gen3",
+      "outcome": 1,
+      "frames": 1
+    },
+    {
+      "trial": "trial0190",
+      "robot": "Toyota HSR",
+      "outcome": 2,
+      "frames": 1
+    },
+    {
+      "trial": "trial0200",
+      "robot": "Kinova Gen3",
+      "outcome": 3,
+      "frames": 3
+    },
+    {
+      "trial": "trial0215",
+      "robot": "Kinova Gen3",
+      "outcome": 3,
+      "frames": 1
+    },
+    {
+      "trial": "trial0216",
+      "robot": "Toyota HSR",
+      "outcome": 3,
+      "frames": 1
+    },
+    {
+      "trial": "trial0221",
+      "robot": "Kinova Gen3",
+      "outcome": 0,
+      "frames": 1
+    },
+    {
+      "trial": "trial0223",
+      "robot": "Toyota HSR",
+      "outcome": 3,
+      "frames": 1
+    },
+    {
+      "trial": "trial0226",
+      "robot": "Kinova Gen3",
+      "outcome": 0,
+      "frames": 2
+    },
+    {
+      "trial": "trial0235",
+      "robot": "Toyota HSR",
+      "outcome": 1,
+      "frames": 1
+    },
+    {
+      "trial": "trial0236",
+      "robot": "Toyota HSR",
+      "outcome": 2,
+      "frames": 1
+    },
+    {
+      "trial": "trial0239",
+      "robot": "Kinova Gen3",
+      "outcome": 2,
+      "frames": 1
+    },
+    {
+      "trial": "trial0245",
+      "robot": "Kinova Gen3",
+      "outcome": 2,
+      "frames": 1
+    },
+    {
+      "trial": "trial0248",
+      "robot": "Kinova Gen3",
+      "outcome": 0,
+      "frames": 1
+    },
+    {
+      "trial": "trial0256",
+      "robot": "Kinova Gen3",
+      "outcome": 2,
+      "frames": 1
+    },
+    {
+      "trial": "trial0257",
+      "robot": "Kinova Gen3",
+      "outcome": 2,
+      "frames": 1
+    },
+    {
+      "trial": "trial0263",
+      "robot": "Toyota HSR",
+      "outcome": 3,
+      "frames": 1
+    },
+    {
+      "trial": "trial0266",
+      "robot": "Toyota HSR",
+      "outcome": 0,
+      "frames": 1
+    },
+    {
+      "trial": "trial0268",
+      "robot": "Kinova Gen3",
+      "outcome": 1,
+      "frames": 1
+    },
+    {
+      "trial": "trial0277",
+      "robot": "Toyota HSR",
+      "outcome": 2,
+      "frames": 1
+    },
+    {
+      "trial": "trial0278",
+      "robot": "Kinova Gen3",
+      "outcome": 1,
+      "frames": 1
+    },
+    {
+      "trial": "trial0298",
+      "robot": "Kinova Gen3",
+      "outcome": 3,
+      "frames": 1
+    },
+    {
+      "trial": "trial0301",
+      "robot": "Kinova Gen3",
+      "outcome": 2,
+      "frames": 1
+    },
+    {
+      "trial": "trial0309",
+      "robot": "Kinova Gen3",
+      "outcome": 2,
+      "frames": 2
+    },
+    {
+      "trial": "trial0320",
+      "robot": "Toyota HSR",
+      "outcome": 1,
+      "frames": 1
+    },
+    {
+      "trial": "trial0321",
+      "robot": "Toyota HSR",
+      "outcome": 2,
+      "frames": 1
+    },
+    {
+      "trial": "trial0326",
+      "robot": "Toyota HSR",
+      "outcome": 2,
+      "frames": 1
+    },
+    {
+      "trial": "trial0332",
+      "robot": "Kinova Gen3",
+      "outcome": 0,
+      "frames": 1
+    },
+    {
+      "trial": "trial0334",
+      "robot": "Toyota HSR",
+      "outcome": 0,
+      "frames": 1
+    }
+  ],
+  "robots": {
+    "Kinova Gen3": 61,
+    "Toyota HSR": 276
+  },
+  "quarantined_trials": [],
+  "fresh_source_reconstruction_complete": true,
+  "all_6_commands_exit0": true,
+  "source_files": 879,
+  "source_unchanged": true,
+  "intake_seconds": 84.80131395859644,
+  "reconstruction_seconds": 84.88785262499005
+}

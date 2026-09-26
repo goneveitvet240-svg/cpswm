@@ -180,7 +180,11 @@ def inspect_hfd_trial(
     arrays: dict[str, np.ndarray], metadata: dict[str, Any], outcome: dict[str, Any]
 ) -> tuple[list[dict[str, Any]], dict[str, Any]]:
     """Validate frame alignment, retaining author boundary ambiguity explicitly."""
+    if not isinstance(metadata, dict) or not isinstance(outcome, dict):
+        raise ValueError("author metadata and outcome must be JSON objects")
     for name, value in arrays.items():
+        if value.dtype.kind not in "iuf":
+            raise ValueError("sensor and label arrays must contain real numeric data: " + name)
         if not np.isfinite(value).all():
             raise ValueError("nonfinite sensor or label data: " + name)
     time = arrays["head_cam_ts"]
@@ -192,8 +196,8 @@ def inspect_hfd_trial(
         or raw_time.ndim != 1
         or len(time) < 2
         or len(raw_time) < 2
-        or np.any(np.diff(time) <= 0)
-        or np.any(np.diff(raw_time) <= 0)
+        or np.any(time[1:] <= time[:-1])
+        or np.any(raw_time[1:] <= raw_time[:-1])
         or human.shape != time.shape
         or robot.shape != time.shape
         or raw.shape != (len(raw_time), 6)

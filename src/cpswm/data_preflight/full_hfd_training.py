@@ -12,6 +12,7 @@ import io
 import json
 import os
 import re
+import stat
 import tarfile
 from collections import Counter
 from pathlib import Path, PurePosixPath
@@ -66,12 +67,15 @@ def packet_inventory(root: Path) -> dict[str, tuple[int, ...]]:
         raise ValueError("packet root cannot be a symbolic link")
     result = {}
     for path in root.rglob("*"):
-        if path.is_symlink():
+        state = path.lstat()
+        if stat.S_ISLNK(state.st_mode):
             raise ValueError("packet aliases and symbolic links are not accepted")
-        if path.is_file():
-            if path.stat().st_nlink != 1:
+        if stat.S_ISREG(state.st_mode):
+            if state.st_nlink != 1:
                 raise ValueError("packet hard-link aliases are not accepted")
             result[str(path.relative_to(root))] = file_identity(path)
+        elif not stat.S_ISDIR(state.st_mode):
+            raise ValueError("packet special files are not regular evidence artifacts")
     return result
 
 
@@ -322,6 +326,10 @@ def inspect_full_training(
     ):
         raise ValueError("packet artifacts changed, escaped or have undeclared/missing members")
     check_members(output, {**members, **row_files})
+    # Content hashing is itself a custody interval. Detect both rewritten bytes
+    # and new artifacts introduced after the previous directory inventory.
+    if packet_inventory(output) != after:
+        raise ValueError("packet artifacts changed during final content verification")
     if verify:
         if (output / "manifest.json").read_bytes() != payload:
             raise ValueError("packet differs from full source-derived reconstruction")

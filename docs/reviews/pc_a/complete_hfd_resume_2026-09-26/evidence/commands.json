@@ -1,0 +1,98 @@
+{
+  "source_sha": "c10a311430ff68ecce4aea0eaa6b3039e2f88974",
+  "commands": [
+    {
+      "name": "round1",
+      "argv": [
+        "/private/tmp/cpswm-pc-a-complete-hfd-resume-20260926/.venv/bin/python",
+        "-m",
+        "pytest",
+        "-o",
+        "addopts=",
+        "-q",
+        "docs/reviews/pc_a/hfd_normal_evidence_2026-09-26/audit_round1.py",
+        "tests/test_full_hfd_training.py",
+        "tests/test_public_handover_evidence.py"
+      ],
+      "started_utc": "2026-09-26T11:31:57.190304+00:00",
+      "seconds": 0.8226752085611224,
+      "exit_code": 0
+    },
+    {
+      "name": "round2",
+      "argv": [
+        "/private/tmp/cpswm-pc-a-complete-hfd-resume-20260926/.venv/bin/python",
+        "-m",
+        "pytest",
+        "-o",
+        "addopts=",
+        "-q",
+        "/private/tmp/cpswm-pc-a-complete-hfd-resume-20260926/docs/reviews/pc_a/complete_hfd_resume_2026-09-26/audit_intake_second.py"
+      ],
+      "started_utc": "2026-09-26T11:31:58.106797+00:00",
+      "seconds": 0.7148746247403324,
+      "exit_code": 0
+    },
+    {
+      "name": "mypy",
+      "argv": [
+        "/private/tmp/cpswm-pc-a-complete-hfd-resume-20260926/.venv/bin/python",
+        "-m",
+        "mypy",
+        "--no-incremental"
+      ],
+      "started_utc": "2026-09-26T11:31:58.915072+00:00",
+      "seconds": 13.802487082779408,
+      "exit_code": 0
+    },
+    {
+      "name": "ruff",
+      "argv": [
+        "/private/tmp/cpswm-pc-a-complete-hfd-resume-20260926/.venv/bin/python",
+        "-m",
+        "ruff",
+        "check",
+        "src",
+        "tests",
+        "tools",
+        "/private/tmp/cpswm-pc-a-complete-hfd-resume-20260926/docs/reviews/pc_a/complete_hfd_resume_2026-09-26"
+      ],
+      "started_utc": "2026-09-26T11:32:12.915005+00:00",
+      "seconds": 0.10120004182681441,
+      "exit_code": 0
+    },
+    {
+      "name": "real-intake",
+      "argv": [
+        "/private/tmp/cpswm-pc-a-complete-hfd-resume-20260926/.venv/bin/python",
+        "tools/inspect_hfd_training_archive.py",
+        "--archive",
+        "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/datasets/hfd-full-training-20260926/raw/training_set.verified.tar.gz",
+        "--metadata",
+        "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/joint-training-loop-20260925/public-evidence",
+        "--output",
+        "/private/tmp/cpswm-pc-a-complete-hfd-resume-20260926/output/complete-hfd-resume-20260926/final-02/packet"
+      ],
+      "started_utc": "2026-09-26T11:32:13.105601+00:00",
+      "seconds": 84.80131395859644,
+      "exit_code": 0
+    },
+    {
+      "name": "fresh-source-reconstruction",
+      "argv": [
+        "/private/tmp/cpswm-pc-a-complete-hfd-resume-20260926/.venv/bin/python",
+        "tools/inspect_hfd_training_archive.py",
+        "--archive",
+        "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/datasets/hfd-full-training-20260926/raw/training_set.verified.tar.gz",
+        "--metadata",
+        "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/joint-training-loop-20260925/public-evidence",
+        "--output",
+        "/private/tmp/cpswm-pc-a-complete-hfd-resume-20260926/output/complete-hfd-resume-20260926/final-02/packet",
+        "--verify"
+      ],
+      "started_utc": "2026-09-26T11:33:38.136434+00:00",
+      "seconds": 84.88785262499005,
+      "exit_code": 0
+    }
+  ]
+}

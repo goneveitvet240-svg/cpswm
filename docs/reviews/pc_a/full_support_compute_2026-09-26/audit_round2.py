@@ -99,3 +99,31 @@ def test_mutated_dense_architecture_cannot_be_exported_as_original_configuration
     with pytest.raises(ValueError, match=r"structure|architecture"):
         save_checkpoint(model, {"track": "TEST_FIXTURE_UNTRAINED"}, tmp_path / "forged")
     assert not (tmp_path / "forged").exists()
+
+
+def test_complete_factor_association_permutation_cannot_return_a_different_valid_distribution():
+    from cpswm.data_preflight.proposal_decoder import TypedProposalDistribution
+
+    sample, support = data()
+    _, model = paired(ARMS[0])
+    with torch.no_grad():
+        prepared = model.prepare(sample.runtime_context(), support)
+        before = TypedProposalDistribution(
+            context=sample.runtime_context(), runtime_candidates=support, scorer=prepared
+        )
+        original = prepared.factors
+        prepared.factors = tuple(reversed(original))
+        try:
+            with pytest.raises(ValueError, match=r"prepared|cache|graph"):
+                TypedProposalDistribution(
+                    context=sample.runtime_context(), runtime_candidates=support, scorer=prepared
+                )
+        finally:
+            prepared.factors = original
+        after = TypedProposalDistribution(
+            context=sample.runtime_context(), runtime_candidates=support, scorer=prepared
+        )
+        for key in before.target_sha256s:
+            assert torch.equal(
+                before.factor_log_probabilities(key), after.factor_log_probabilities(key)
+            )

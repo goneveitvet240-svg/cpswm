@@ -347,6 +347,13 @@ class PreparedScorer:
         if not isinstance(self.choice_key_value, tuple) or len(self.choice_key_value) != 2:
             raise ValueError("prepared graph cache schema changed")
         digest = hashlib.sha256()
+        digest.update(
+            json.dumps(
+                [self.context_hash, sorted(self.candidate_hashes), self.factors, self.node_count],
+                sort_keys=True,
+                allow_nan=False,
+            ).encode()
+        )
         for value in (self.memory, self.vectors, *self.choice_key_value):
             if not isinstance(value, Tensor):
                 raise ValueError("prepared graph cache tensor changed")

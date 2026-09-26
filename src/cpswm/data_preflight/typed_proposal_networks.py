@@ -340,6 +340,21 @@ class PreparedScorer:
             if network.config.execution_backend == BLOCKED_BACKEND
             else None
         )
+        self.graph_sha256 = self._graph_fingerprint() if self.choice_key_value is not None else None
+
+    def _graph_fingerprint(self) -> str:
+        """The eval cache is owned computed state, including raw-data mutations."""
+        if not isinstance(self.choice_key_value, tuple) or len(self.choice_key_value) != 2:
+            raise ValueError("prepared graph cache schema changed")
+        digest = hashlib.sha256()
+        for value in (self.memory, self.vectors, *self.choice_key_value):
+            if not isinstance(value, Tensor):
+                raise ValueError("prepared graph cache tensor changed")
+            digest.update(
+                json.dumps([str(value.dtype), str(value.device), list(value.shape)]).encode()
+            )
+            digest.update(value.detach().contiguous().view(torch.uint8).cpu().numpy().tobytes())
+        return digest.hexdigest()
 
     def __call__(
         self,
@@ -362,6 +377,8 @@ class PreparedScorer:
             torch.is_grad_enabled() or any(m.training for m in self.network.modules())
         ):
             raise ValueError("blocked scorer is evaluation only, without gradients")
+        if self.graph_sha256 is not None and self._graph_fingerprint() != self.graph_sha256:
+            raise ValueError("prepared graph cache changed after complete encoding")
         depth = len(prefix)
         if depth >= len(FACTOR_ORDER) or axis != FACTOR_ORDER[depth]:
             raise ValueError("invalid typed autoregressive prefix")
@@ -411,4 +428,6 @@ class PreparedScorer:
         ).squeeze(-1)
         if parameter_fingerprint(self.network) != self.parameter_sha256:
             raise ValueError("model parameters changed during conditional scoring")
+        if self.graph_sha256 is not None and self._graph_fingerprint() != self.graph_sha256:
+            raise ValueError("prepared graph cache changed during conditional scoring")
         return cast(Tensor, scores)

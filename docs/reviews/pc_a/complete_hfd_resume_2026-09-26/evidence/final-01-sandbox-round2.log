@@ -1,0 +1,27 @@
+.F.................                                                      [100%]
+=================================== FAILURES ===================================
+____ test_otherwise_complete_packet_rejects_alias_or_special_member[socket] ____
+
+tmp_path = PosixPath('/private/var/folders/x2/000r8p0n6s393lj2sg8wk5f40000gn/T/pytest-of-pangwei/pytest-2147/test_otherwise_complete_packet1')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x10986cd60>
+kind = 'socket'
+
+    @pytest.mark.parametrize("kind", ("fifo", "socket", "hardlink", "directory_link"))
+    def test_otherwise_complete_packet_rejects_alias_or_special_member(tmp_path, monkeypatch, kind):
+        archive, metadata, output = fixture_archive(tmp_path, monkeypatch)
+        baseline = module.inspect_full_training(archive, metadata, output)
+        alias = output / "extra"
+        sock = None
+        if kind == "fifo":
+            os.mkfifo(alias)
+        elif kind == "socket":
+            sock = socket.socket(socket.AF_UNIX)
+            with monkeypatch.context() as local:
+                local.chdir(output)
+>               sock.bind("extra")
+E               PermissionError: [Errno 1] Operation not permitted
+
+docs/reviews/pc_a/complete_hfd_resume_2026-09-26/audit_intake_second.py:37: PermissionError
+=========================== short test summary info ============================
+FAILED docs/reviews/pc_a/complete_hfd_resume_2026-09-26/audit_intake_second.py::test_otherwise_complete_packet_rejects_alias_or_special_member[socket]
+1 failed, 18 passed in 0.51s

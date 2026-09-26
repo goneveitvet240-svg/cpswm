@@ -1,3 +1,7 @@
+# A：HFD修后双审完成，337试次真实验收中（2026-09-26）
+
+分支 `codex/pc-a-complete-hfd-resume-20260926`，base f72413fdd55bb3324ca064c02ba1fd8507aba54b，受测Python源码 `c10a311430ff68ecce4aea0eaa6b3039e2f88974`。首审32、二审19、mypy366/Ruff通过。修前12实际反例已保存，另将socket路径/沙箱搭建失败单列，未冒充生产缺陷。全337作者训练试次正实际读取/解码，随后新进程全源重建；当前尚不签收真实数据。Python冻结，新训练/自然权限0，A自审、B未签收。[当前报告](../reviews/pc_a/complete_hfd_resume_2026-09-26/REPORT.md)。
+
 # A：HFD完整证据接续开工（2026-09-26 19:24）
 
 分支 `codex/pc-a-complete-hfd-resume-20260926`，独立目录 `/private/tmp/cpswm-pc-a-complete-hfd-resume-20260926`，base/开工实际源码PR43 `f72413fdd55bb3324ca064c02ba1fd8507aba54b`。已fetch：集成19ddf26830348a2f0b33f0af54d6ba702c5cfb1c、B fd4ca6ef5e81c90d7cf7987b42c0b2810d8a810a不变；前轮完整12组合、双审和877文件源绑定已封存后才启动本轮。

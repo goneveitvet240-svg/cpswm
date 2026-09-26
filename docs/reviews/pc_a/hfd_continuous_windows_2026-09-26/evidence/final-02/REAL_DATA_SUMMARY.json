@@ -1,0 +1,705 @@
+{
+  "source_sha": "16df89b13576ba1af83564169caaed0102b4c2b2",
+  "source_files": 889,
+  "round1_passed": 178,
+  "round2_passed": 26,
+  "second_round_new_checks": 12,
+  "second_round_prior_regressions": 14,
+  "mypy_files": 367,
+  "all_seven_commands_exit_zero": true,
+  "python_before_after_identical": true,
+  "alignment_manifest_sha256": "85a709cc776fc00ee13c0641830e55035c2dc50da68c091106ae46e4af4c0fa4",
+  "runtime_manifest_sha256": "602f24808a3e83f1c85d6776b2e0e86d8ddebbd4983fdfba21447d1f9ff4827a",
+  "frontend_result_sha256": "c9d26251da1c4eba8a67625169b1130530ed2fb1fd223d46fea237cc1a9ef80a",
+  "enrolled_trials": 337,
+  "accepted_source_frames": 141462,
+  "selected_trials": [
+    {
+      "outcome": 0,
+      "selected_original_indices": [
+        0,
+        1,
+        2,
+        3,
+        81,
+        82,
+        83,
+        84,
+        163,
+        164,
+        165,
+        166,
+        245,
+        246,
+        247,
+        248
+      ],
+      "source_frames": 249,
+      "task": "human to robot handover",
+      "trial": "trial0005",
+      "windows": [
+        [
+          0,
+          1,
+          2,
+          3
+        ],
+        [
+          81,
+          82,
+          83,
+          84
+        ],
+        [
+          163,
+          164,
+          165,
+          166
+        ],
+        [
+          245,
+          246,
+          247,
+          248
+        ]
+      ],
+      "robot": "Toyota HSR",
+      "detections": 157,
+      "associations": {
+        "NEW_UNVERIFIED": 52,
+        "ASSOCIATED_GEOMETRIC": 96,
+        "AMBIGUOUS_NEW_BRANCH": 9
+      },
+      "regional_hands": 56,
+      "hand_object_measurements": 476,
+      "role_alternatives": 0,
+      "candidate_count": 976
+    },
+    {
+      "outcome": 1,
+      "selected_original_indices": [
+        0,
+        1,
+        2,
+        3,
+        166,
+        167,
+        168,
+        169,
+        332,
+        333,
+        334,
+        335,
+        499,
+        500,
+        501,
+        502
+      ],
+      "source_frames": 503,
+      "task": "human to robot handover",
+      "trial": "trial0008",
+      "windows": [
+        [
+          0,
+          1,
+          2,
+          3
+        ],
+        [
+          166,
+          167,
+          168,
+          169
+        ],
+        [
+          332,
+          333,
+          334,
+          335
+        ],
+        [
+          499,
+          500,
+          501,
+          502
+        ]
+      ],
+      "robot": "Toyota HSR",
+      "detections": 176,
+      "associations": {
+        "NEW_UNVERIFIED": 62,
+        "ASSOCIATED_GEOMETRIC": 96,
+        "AMBIGUOUS_NEW_BRANCH": 18
+      },
+      "regional_hands": 28,
+      "hand_object_measurements": 287,
+      "role_alternatives": 0,
+      "candidate_count": 1280
+    },
+    {
+      "outcome": 2,
+      "selected_original_indices": [
+        0,
+        1,
+        2,
+        3,
+        82,
+        83,
+        84,
+        85,
+        164,
+        165,
+        166,
+        167,
+        247,
+        248,
+        249,
+        250
+      ],
+      "source_frames": 251,
+      "task": "human to robot handover",
+      "trial": "trial0015",
+      "windows": [
+        [
+          0,
+          1,
+          2,
+          3
+        ],
+        [
+          82,
+          83,
+          84,
+          85
+        ],
+        [
+          164,
+          165,
+          166,
+          167
+        ],
+        [
+          247,
+          248,
+          249,
+          250
+        ]
+      ],
+      "robot": "Kinova Gen3",
+      "detections": 183,
+      "associations": {
+        "NEW_UNVERIFIED": 53,
+        "ASSOCIATED_GEOMETRIC": 126,
+        "AMBIGUOUS_NEW_BRANCH": 4
+      },
+      "regional_hands": 64,
+      "hand_object_measurements": 632,
+      "role_alternatives": 24,
+      "candidate_count": 1260
+    },
+    {
+      "outcome": 3,
+      "selected_original_indices": [
+        0,
+        1,
+        2,
+        3,
+        103,
+        104,
+        105,
+        106,
+        206,
+        207,
+        208,
+        209,
+        309,
+        310,
+        311,
+        312
+      ],
+      "source_frames": 313,
+      "task": "human to robot handover",
+      "trial": "trial0000",
+      "windows": [
+        [
+          0,
+          1,
+          2,
+          3
+        ],
+        [
+          103,
+          104,
+          105,
+          106
+        ],
+        [
+          206,
+          207,
+          208,
+          209
+        ],
+        [
+          309,
+          310,
+          311,
+          312
+        ]
+      ],
+      "robot": "Kinova Gen3",
+      "detections": 93,
+      "associations": {
+        "NEW_UNVERIFIED": 40,
+        "ASSOCIATED_GEOMETRIC": 52,
+        "AMBIGUOUS_NEW_BRANCH": 1
+      },
+      "regional_hands": 40,
+      "hand_object_measurements": 184,
+      "role_alternatives": 0,
+      "candidate_count": 739
+    },
+    {
+      "outcome": 0,
+      "selected_original_indices": [
+        0,
+        1,
+        2,
+        3,
+        159,
+        160,
+        161,
+        162,
+        318,
+        319,
+        320,
+        321,
+        478,
+        479,
+        480,
+        481
+      ],
+      "source_frames": 482,
+      "task": "robot to human handover",
+      "trial": "trial0003",
+      "windows": [
+        [
+          0,
+          1,
+          2,
+          3
+        ],
+        [
+          159,
+          160,
+          161,
+          162
+        ],
+        [
+          318,
+          319,
+          320,
+          321
+        ],
+        [
+          478,
+          479,
+          480,
+          481
+        ]
+      ],
+      "robot": "Toyota HSR",
+      "detections": 98,
+      "associations": {
+        "NEW_UNVERIFIED": 34,
+        "ASSOCIATED_GEOMETRIC": 56,
+        "AMBIGUOUS_NEW_BRANCH": 8
+      },
+      "regional_hands": 56,
+      "hand_object_measurements": 273,
+      "role_alternatives": 22,
+      "candidate_count": 1026
+    },
+    {
+      "outcome": 1,
+      "selected_original_indices": [
+        0,
+        1,
+        2,
+        3,
+        193,
+        194,
+        195,
+        196,
+        386,
+        387,
+        388,
+        389,
+        580,
+        581,
+        582,
+        583
+      ],
+      "source_frames": 584,
+      "task": "robot to human handover",
+      "trial": "trial0002",
+      "windows": [
+        [
+          0,
+          1,
+          2,
+          3
+        ],
+        [
+          193,
+          194,
+          195,
+          196
+        ],
+        [
+          386,
+          387,
+          388,
+          389
+        ],
+        [
+          580,
+          581,
+          582,
+          583
+        ]
+      ],
+      "robot": "Toyota HSR",
+      "detections": 83,
+      "associations": {
+        "NEW_UNVERIFIED": 27,
+        "AMBIGUOUS_NEW_BRANCH": 9,
+        "ASSOCIATED_GEOMETRIC": 47
+      },
+      "regional_hands": 27,
+      "hand_object_measurements": 109,
+      "role_alternatives": 12,
+      "candidate_count": 637
+    },
+    {
+      "outcome": 2,
+      "selected_original_indices": [
+        0,
+        1,
+        2,
+        3,
+        104,
+        105,
+        106,
+        107,
+        208,
+        209,
+        210,
+        211,
+        313,
+        314,
+        315,
+        316
+      ],
+      "source_frames": 317,
+      "task": "robot to human handover",
+      "trial": "trial0042",
+      "windows": [
+        [
+          0,
+          1,
+          2,
+          3
+        ],
+        [
+          104,
+          105,
+          106,
+          107
+        ],
+        [
+          208,
+          209,
+          210,
+          211
+        ],
+        [
+          313,
+          314,
+          315,
+          316
+        ]
+      ],
+      "robot": "Kinova Gen3",
+      "detections": 115,
+      "associations": {
+        "NEW_UNVERIFIED": 43,
+        "ASSOCIATED_GEOMETRIC": 72
+      },
+      "regional_hands": 46,
+      "hand_object_measurements": 288,
+      "role_alternatives": 0,
+      "candidate_count": 688
+    },
+    {
+      "outcome": 3,
+      "selected_original_indices": [
+        0,
+        1,
+        2,
+        3,
+        97,
+        98,
+        99,
+        100,
+        195,
+        196,
+        197,
+        198,
+        293,
+        294,
+        295,
+        296
+      ],
+      "source_frames": 297,
+      "task": "robot to human handover",
+      "trial": "trial0009",
+      "windows": [
+        [
+          0,
+          1,
+          2,
+          3
+        ],
+        [
+          97,
+          98,
+          99,
+          100
+        ],
+        [
+          195,
+          196,
+          197,
+          198
+        ],
+        [
+          293,
+          294,
+          295,
+          296
+        ]
+      ],
+      "robot": "Toyota HSR",
+      "detections": 97,
+      "associations": {
+        "NEW_UNVERIFIED": 31,
+        "ASSOCIATED_GEOMETRIC": 56,
+        "AMBIGUOUS_NEW_BRANCH": 10
+      },
+      "regional_hands": 61,
+      "hand_object_measurements": 281,
+      "role_alternatives": 6,
+      "candidate_count": 1406
+    }
+  ],
+  "actual_unique_frames": 128,
+  "actual_windows": 32,
+  "frame_presentations": 128,
+  "actual_adjacent_source_gaps": {
+    "count": 96,
+    "minimum_seconds": 0.0020377635955810547,
+    "maximum_seconds": 0.09032106399536133
+  },
+  "detections": 1002,
+  "associations": {
+    "AMBIGUOUS_NEW_BRANCH": 59,
+    "ASSOCIATED_GEOMETRIC": 601,
+    "NEW_UNVERIFIED": 342
+  },
+  "regional_hand_candidates": 378,
+  "frames_with_hand_candidate": 122,
+  "hand_object_measurements": 2530,
+  "role_alternatives": 64,
+  "role_positive_frames": 11,
+  "role_unresolved_reasons": {
+    "contact_and_release_not_observed": 128,
+    "fewer_than_two_person_candidates": 104,
+    "no_stable_ordered_role_evidence": 117,
+    "role_likelihood_not_calibrated": 128
+  },
+  "role_positive_frames_visual_diagnostic": "All 11 show duplicate body/partial-body boxes on a single visible person, AI review only; no distinct-human-role success claim.",
+  "zero_distance_measurement_categories": {
+    "couch": 194,
+    "remote": 19,
+    "clock": 10,
+    "bed": 34,
+    "banana": 17,
+    "cell phone": 33,
+    "oven": 4,
+    "chair": 161,
+    "toothbrush": 3,
+    "train": 10,
+    "hair drier": 1,
+    "cup": 4,
+    "book": 30
+  },
+  "full_candidate_count": 8012,
+  "support_range": [
+    112,
+    819
+  ],
+  "author_phase_counts": {
+    "idle": 75,
+    "approach": 13,
+    "post_idle": 24,
+    "interact": 12,
+    "not_released": 4
+  },
+  "selected_all_zero_wrench_frames": 33,
+  "selected_outside_wrench_time_range_frames": 4,
+  "proposal_targets_supervised": 0,
+  "proposal_network_training_steps": 0,
+  "natural_semantic_publications": 0,
+  "memory_writes": 0,
+  "executed_actions": 0,
+  "independent_human_review": false,
+  "B_acceptance": false,
+  "continuous_episode_or_independent_window_claim": false,
+  "actual_hand_input_used_by_proposal_network": false,
+  "commands": [
+    {
+      "name": "round1",
+      "argv": [
+        "/private/tmp/cpswm-pc-a-hfd-continuous-windows-20260926/.venv/bin/python",
+        "-m",
+        "pytest",
+        "-o",
+        "addopts=",
+        "-q",
+        "tests/test_hfd_continuous_windows.py",
+        "tests/test_hfd_observation_alignment.py",
+        "tests/test_natural_hands.py",
+        "tests/test_hand_object_evidence.py",
+        "tests/test_hand_person_regions.py",
+        "tests/test_continuous_state_recovery.py",
+        "tests/test_structure_two_continuous_input.py",
+        "tests/test_archive_media_timeline.py",
+        "tests/test_natural_vision.py",
+        "tests/test_runtime_candidates.py",
+        "tests/test_interaction_evidence.py"
+      ],
+      "started_utc": "2026-09-26T13:00:20.597315+00:00",
+      "seconds": 34.600252124946564,
+      "exit_code": 0
+    },
+    {
+      "name": "round2",
+      "argv": [
+        "/private/tmp/cpswm-pc-a-hfd-continuous-windows-20260926/.venv/bin/python",
+        "-m",
+        "pytest",
+        "-o",
+        "addopts=",
+        "-q",
+        "/private/tmp/cpswm-pc-a-hfd-continuous-windows-20260926/docs/reviews/pc_a/hfd_continuous_windows_2026-09-26/audit_windows_second.py",
+        "/private/tmp/cpswm-pc-a-hfd-continuous-windows-20260926/docs/reviews/pc_a/hfd_observation_alignment_2026-09-26/audit_alignment_second.py"
+      ],
+      "started_utc": "2026-09-26T13:00:55.300054+00:00",
+      "seconds": 3.964282499626279,
+      "exit_code": 0
+    },
+    {
+      "name": "mypy",
+      "argv": [
+        "/private/tmp/cpswm-pc-a-hfd-continuous-windows-20260926/.venv/bin/python",
+        "-m",
+        "mypy",
+        "--no-incremental"
+      ],
+      "started_utc": "2026-09-26T13:00:59.358729+00:00",
+      "seconds": 11.754806584212929,
+      "exit_code": 0
+    },
+    {
+      "name": "ruff",
+      "argv": [
+        "/private/tmp/cpswm-pc-a-hfd-continuous-windows-20260926/.venv/bin/python",
+        "-m",
+        "ruff",
+        "check",
+        "src",
+        "tests",
+        "tools",
+        "/private/tmp/cpswm-pc-a-hfd-continuous-windows-20260926/docs/reviews/pc_a/hfd_continuous_windows_2026-09-26"
+      ],
+      "started_utc": "2026-09-26T13:01:11.204920+00:00",
+      "seconds": 0.03169795824214816,
+      "exit_code": 0
+    },
+    {
+      "name": "real-alignment",
+      "argv": [
+        "/private/tmp/cpswm-pc-a-hfd-continuous-windows-20260926/.venv/bin/python",
+        "tools/align_hfd_observations.py",
+        "--archive",
+        "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/datasets/hfd-full-training-20260926/raw/training_set.verified.tar.gz",
+        "--metadata",
+        "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/joint-training-loop-20260925/public-evidence",
+        "--intake",
+        "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/complete-hfd-resume-20260926/closed/final-02/packet",
+        "--output",
+        "/private/tmp/cpswm-pc-a-hfd-continuous-windows-20260926/output/hfd-continuous-20260926/final-02/aligned",
+        "--imported-at",
+        "2026-09-26T13:01:11.280964+00:00",
+        "--sampling",
+        "continuous"
+      ],
+      "started_utc": "2026-09-26T13:01:11.324548+00:00",
+      "seconds": 83.96425383305177,
+      "exit_code": 0
+    },
+    {
+      "name": "fresh-source-reconstruction",
+      "argv": [
+        "/private/tmp/cpswm-pc-a-hfd-continuous-windows-20260926/.venv/bin/python",
+        "tools/align_hfd_observations.py",
+        "--archive",
+        "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/datasets/hfd-full-training-20260926/raw/training_set.verified.tar.gz",
+        "--metadata",
+        "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/joint-training-loop-20260925/public-evidence",
+        "--intake",
+        "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/complete-hfd-resume-20260926/closed/final-02/packet",
+        "--output",
+        "/private/tmp/cpswm-pc-a-hfd-continuous-windows-20260926/output/hfd-continuous-20260926/final-02/aligned",
+        "--imported-at",
+        "2026-09-26T13:01:11.280964+00:00",
+        "--sampling",
+        "continuous",
+        "--verify"
+      ],
+      "started_utc": "2026-09-26T13:02:35.536995+00:00",
+      "seconds": 84.72347883321345,
+      "exit_code": 0
+    },
+    {
+      "name": "real-frontend",
+      "argv": [
+        "/private/tmp/cpswm-pc-a-hfd-continuous-windows-20260926/.venv/bin/python",
+        "tools/run_hfd_continuous_frontend.py",
+        "--runtime",
+        "/private/tmp/cpswm-pc-a-hfd-continuous-windows-20260926/output/hfd-continuous-20260926/final-02/aligned/runtime",
+        "--manifest-sha256",
+        "602f24808a3e83f1c85d6776b2e0e86d8ddebbd4983fdfba21447d1f9ff4827a",
+        "--weights",
+        "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/models/torchvision/fasterrcnn_resnet50_fpn_v2_coco-dd69338a.pth",
+        "--hand-model",
+        "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/models/mediapipe/hand_landmarker-1.task",
+        "--output",
+        "/private/tmp/cpswm-pc-a-hfd-continuous-windows-20260926/output/hfd-continuous-20260926/final-02/frontend"
+      ],
+      "started_utc": "2026-09-26T13:04:00.509224+00:00",
+      "seconds": 329.2300692917779,
+      "exit_code": 0
+    }
+  ]
+}

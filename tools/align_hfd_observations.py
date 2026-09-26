@@ -13,6 +13,7 @@ if __name__ == "__main__":
         parser.add_argument("--" + name, type=Path, required=True)
     parser.add_argument("--imported-at", type=datetime.fromisoformat, required=True)
     parser.add_argument("--verify", action="store_true")
+    parser.add_argument("--sampling", choices=("sparse", "continuous"), default="sparse")
     args = parser.parse_args()
     result = align_hfd_training(**vars(args))
     print(json.dumps({k: v for k, v in result.items() if k != "files"}, indent=2))

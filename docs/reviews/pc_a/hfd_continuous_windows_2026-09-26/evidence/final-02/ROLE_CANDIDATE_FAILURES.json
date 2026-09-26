@@ -1,0 +1,1432 @@
+{
+  "source_sha": "16df89b13576ba1af83564169caaed0102b4c2b2",
+  "runtime_manifest_sha256": "602f24808a3e83f1c85d6776b2e0e86d8ddebbd4983fdfba21447d1f9ff4827a",
+  "result_sha256": "c9d26251da1c4eba8a67625169b1130530ed2fb1fd223d46fea237cc1a9ef80a",
+  "role_positive_frames": 11,
+  "role_alternatives": 64,
+  "independent_human_review": false,
+  "not_training_targets": true,
+  "cases": [
+    {
+      "trial": "trial0003",
+      "key": "6b4616fe82a5cf3e037fc1d45127b2d99311e6e6ff38e70d8d5c6d4428642b58/000479",
+      "observation_id": "d5a5f1b0-f0ac-57d8-ba4e-215e9c81832e",
+      "source_payload_sha256": "b04f71e7508f84488c822480e173d255636e03831c76372d93d43fae60d9c7b5",
+      "person_boxes": [
+        {
+          "alternatives": [
+            [
+              "4720ee91-31d7-581c-8737-c806d0cf28bf",
+              0.8767632919497749
+            ],
+            [
+              "381c6a3f-d0a1-5927-8c77-48dd493ccc7a",
+              0.41830351114583675
+            ]
+          ],
+          "box_xyxy": [
+            0.0,
+            197.5076446533203,
+            640.0,
+            451.839599609375
+          ],
+          "candidate_id": "4a0e8636-26b5-5abb-8033-be3b25ce7a19",
+          "category": "person",
+          "detector_score": 0.9580835700035095,
+          "status": "ASSOCIATED_GEOMETRIC",
+          "track_id": "4720ee91-31d7-581c-8737-c806d0cf28bf"
+        },
+        {
+          "alternatives": [
+            [
+              "381c6a3f-d0a1-5927-8c77-48dd493ccc7a",
+              0.8586022060694531
+            ],
+            [
+              "4720ee91-31d7-581c-8737-c806d0cf28bf",
+              0.44545804930131555
+            ]
+          ],
+          "box_xyxy": [
+            325.73565673828125,
+            171.52476501464844,
+            639.8760986328125,
+            465.8230285644531
+          ],
+          "candidate_id": "0ddeebf9-b2a6-5ead-a1b9-a6003440ecf8",
+          "category": "person",
+          "detector_score": 0.8576480150222778,
+          "status": "ASSOCIATED_GEOMETRIC",
+          "track_id": "381c6a3f-d0a1-5927-8c77-48dd493ccc7a"
+        }
+      ],
+      "role_pairs": [
+        {
+          "actor_track_id": "4720ee91-31d7-581c-8737-c806d0cf28bf",
+          "evidence_observation_ids": [
+            "bb83052e-fae6-546c-a428-a24231dea8e2",
+            "d5a5f1b0-f0ac-57d8-ba4e-215e9c81832e"
+          ],
+          "explanation": "possible_transfer_or_joint_manipulation",
+          "object_track_id": "4c889c53-34f1-534c-a0a9-797dbf79006c",
+          "recipient_track_id": "381c6a3f-d0a1-5927-8c77-48dd493ccc7a",
+          "object_category": "banana"
+        },
+        {
+          "actor_track_id": "381c6a3f-d0a1-5927-8c77-48dd493ccc7a",
+          "evidence_observation_ids": [
+            "bb83052e-fae6-546c-a428-a24231dea8e2",
+            "d5a5f1b0-f0ac-57d8-ba4e-215e9c81832e"
+          ],
+          "explanation": "possible_transfer_or_joint_manipulation",
+          "object_track_id": "4c889c53-34f1-534c-a0a9-797dbf79006c",
+          "recipient_track_id": "4720ee91-31d7-581c-8737-c806d0cf28bf",
+          "object_category": "banana"
+        },
+        {
+          "actor_track_id": "4720ee91-31d7-581c-8737-c806d0cf28bf",
+          "evidence_observation_ids": [
+            "bb83052e-fae6-546c-a428-a24231dea8e2",
+            "d5a5f1b0-f0ac-57d8-ba4e-215e9c81832e"
+          ],
+          "explanation": "possible_transfer_or_joint_manipulation",
+          "object_track_id": "a86c2eb1-a1e2-51b1-a56e-1b0a07dcdb12",
+          "recipient_track_id": "381c6a3f-d0a1-5927-8c77-48dd493ccc7a",
+          "object_category": "couch"
+        },
+        {
+          "actor_track_id": "381c6a3f-d0a1-5927-8c77-48dd493ccc7a",
+          "evidence_observation_ids": [
+            "bb83052e-fae6-546c-a428-a24231dea8e2",
+            "d5a5f1b0-f0ac-57d8-ba4e-215e9c81832e"
+          ],
+          "explanation": "possible_transfer_or_joint_manipulation",
+          "object_track_id": "a86c2eb1-a1e2-51b1-a56e-1b0a07dcdb12",
+          "recipient_track_id": "4720ee91-31d7-581c-8737-c806d0cf28bf",
+          "object_category": "couch"
+        },
+        {
+          "actor_track_id": "4720ee91-31d7-581c-8737-c806d0cf28bf",
+          "evidence_observation_ids": [
+            "bb83052e-fae6-546c-a428-a24231dea8e2",
+            "d5a5f1b0-f0ac-57d8-ba4e-215e9c81832e"
+          ],
+          "explanation": "possible_transfer_or_joint_manipulation",
+          "object_track_id": "0fe0a6ea-8a32-568d-9533-05f72ad857ae",
+          "recipient_track_id": "381c6a3f-d0a1-5927-8c77-48dd493ccc7a",
+          "object_category": "bed"
+        },
+        {
+          "actor_track_id": "381c6a3f-d0a1-5927-8c77-48dd493ccc7a",
+          "evidence_observation_ids": [
+            "bb83052e-fae6-546c-a428-a24231dea8e2",
+            "d5a5f1b0-f0ac-57d8-ba4e-215e9c81832e"
+          ],
+          "explanation": "possible_transfer_or_joint_manipulation",
+          "object_track_id": "0fe0a6ea-8a32-568d-9533-05f72ad857ae",
+          "recipient_track_id": "4720ee91-31d7-581c-8737-c806d0cf28bf",
+          "object_category": "bed"
+        },
+        {
+          "actor_track_id": "4720ee91-31d7-581c-8737-c806d0cf28bf",
+          "evidence_observation_ids": [
+            "bb83052e-fae6-546c-a428-a24231dea8e2",
+            "d5a5f1b0-f0ac-57d8-ba4e-215e9c81832e"
+          ],
+          "explanation": "possible_transfer_or_joint_manipulation",
+          "object_track_id": "cb8ee724-4ab6-5e07-bdf9-29da9cc4cd5c",
+          "recipient_track_id": "381c6a3f-d0a1-5927-8c77-48dd493ccc7a",
+          "object_category": "couch"
+        },
+        {
+          "actor_track_id": "381c6a3f-d0a1-5927-8c77-48dd493ccc7a",
+          "evidence_observation_ids": [
+            "bb83052e-fae6-546c-a428-a24231dea8e2",
+            "d5a5f1b0-f0ac-57d8-ba4e-215e9c81832e"
+          ],
+          "explanation": "possible_transfer_or_joint_manipulation",
+          "object_track_id": "cb8ee724-4ab6-5e07-bdf9-29da9cc4cd5c",
+          "recipient_track_id": "4720ee91-31d7-581c-8737-c806d0cf28bf",
+          "object_category": "couch"
+        },
+        {
+          "actor_track_id": "4720ee91-31d7-581c-8737-c806d0cf28bf",
+          "evidence_observation_ids": [
+            "bb83052e-fae6-546c-a428-a24231dea8e2",
+            "d5a5f1b0-f0ac-57d8-ba4e-215e9c81832e"
+          ],
+          "explanation": "possible_transfer_or_joint_manipulation",
+          "object_track_id": "d7e8b999-ed83-5b36-978b-e01f137780ab",
+          "recipient_track_id": "381c6a3f-d0a1-5927-8c77-48dd493ccc7a",
+          "object_category": "clock"
+        },
+        {
+          "actor_track_id": "381c6a3f-d0a1-5927-8c77-48dd493ccc7a",
+          "evidence_observation_ids": [
+            "bb83052e-fae6-546c-a428-a24231dea8e2",
+            "d5a5f1b0-f0ac-57d8-ba4e-215e9c81832e"
+          ],
+          "explanation": "possible_transfer_or_joint_manipulation",
+          "object_track_id": "d7e8b999-ed83-5b36-978b-e01f137780ab",
+          "recipient_track_id": "4720ee91-31d7-581c-8737-c806d0cf28bf",
+          "object_category": "clock"
+        }
+      ],
+      "visual_diagnostic": "Multiple model person boxes cover the same single visible person/body regions; not evidence of distinct people.",
+      "reviewer_kind": "AI_visual_diagnostic_not_independent_human",
+      "gold_label": false
+    },
+    {
+      "trial": "trial0003",
+      "key": "6b4616fe82a5cf3e037fc1d45127b2d99311e6e6ff38e70d8d5c6d4428642b58/000480",
+      "observation_id": "7a4f8393-9f73-577c-9789-ca1def3d462e",
+      "source_payload_sha256": "9cb501191b7eccee6dc10df95acec4073223719b8d98296f3c89b4909b6eb86a",
+      "person_boxes": [
+        {
+          "alternatives": [
+            [
+              "4720ee91-31d7-581c-8737-c806d0cf28bf",
+              0.9607891956537903
+            ],
+            [
+              "381c6a3f-d0a1-5927-8c77-48dd493ccc7a",
+              0.4491689602324352
+            ]
+          ],
+          "box_xyxy": [
+            3.028186559677124,
+            199.49557495117188,
+            640.0,
+            445.01666259765625
+          ],
+          "candidate_id": "3218bdb7-2ef7-563f-80a5-95cc8a8426f3",
+          "category": "person",
+          "detector_score": 0.9706698060035706,
+          "status": "ASSOCIATED_GEOMETRIC",
+          "track_id": "4720ee91-31d7-581c-8737-c806d0cf28bf"
+        },
+        {
+          "alternatives": [
+            [
+              "381c6a3f-d0a1-5927-8c77-48dd493ccc7a",
+              0.7953225384630378
+            ],
+            [
+              "4720ee91-31d7-581c-8737-c806d0cf28bf",
+              0.40944226519020616
+            ]
+          ],
+          "box_xyxy": [
+            367.3140563964844,
+            187.99871826171875,
+            637.21826171875,
+            460.422607421875
+          ],
+          "candidate_id": "a490167c-94a3-5cc4-9665-c49820b80fed",
+          "category": "person",
+          "detector_score": 0.8600093722343445,
+          "status": "ASSOCIATED_GEOMETRIC",
+          "track_id": "381c6a3f-d0a1-5927-8c77-48dd493ccc7a"
+        }
+      ],
+      "role_pairs": [
+        {
+          "actor_track_id": "4720ee91-31d7-581c-8737-c806d0cf28bf",
+          "evidence_observation_ids": [
+            "d5a5f1b0-f0ac-57d8-ba4e-215e9c81832e",
+            "7a4f8393-9f73-577c-9789-ca1def3d462e"
+          ],
+          "explanation": "possible_transfer_or_joint_manipulation",
+          "object_track_id": "4c889c53-34f1-534c-a0a9-797dbf79006c",
+          "recipient_track_id": "381c6a3f-d0a1-5927-8c77-48dd493ccc7a",
+          "object_category": "banana"
+        },
+        {
+          "actor_track_id": "381c6a3f-d0a1-5927-8c77-48dd493ccc7a",
+          "evidence_observation_ids": [
+            "d5a5f1b0-f0ac-57d8-ba4e-215e9c81832e",
+            "7a4f8393-9f73-577c-9789-ca1def3d462e"
+          ],
+          "explanation": "possible_transfer_or_joint_manipulation",
+          "object_track_id": "4c889c53-34f1-534c-a0a9-797dbf79006c",
+          "recipient_track_id": "4720ee91-31d7-581c-8737-c806d0cf28bf",
+          "object_category": "banana"
+        },
+        {
+          "actor_track_id": "4720ee91-31d7-581c-8737-c806d0cf28bf",
+          "evidence_observation_ids": [
+            "d5a5f1b0-f0ac-57d8-ba4e-215e9c81832e",
+            "7a4f8393-9f73-577c-9789-ca1def3d462e"
+          ],
+          "explanation": "possible_transfer_or_joint_manipulation",
+          "object_track_id": "1dc4f9bb-3a01-50ab-9d00-8ecb68c94cc4",
+          "recipient_track_id": "381c6a3f-d0a1-5927-8c77-48dd493ccc7a",
+          "object_category": "couch"
+        },
+        {
+          "actor_track_id": "381c6a3f-d0a1-5927-8c77-48dd493ccc7a",
+          "evidence_observation_ids": [
+            "d5a5f1b0-f0ac-57d8-ba4e-215e9c81832e",
+            "7a4f8393-9f73-577c-9789-ca1def3d462e"
+          ],
+          "explanation": "possible_transfer_or_joint_manipulation",
+          "object_track_id": "1dc4f9bb-3a01-50ab-9d00-8ecb68c94cc4",
+          "recipient_track_id": "4720ee91-31d7-581c-8737-c806d0cf28bf",
+          "object_category": "couch"
+        },
+        {
+          "actor_track_id": "4720ee91-31d7-581c-8737-c806d0cf28bf",
+          "evidence_observation_ids": [
+            "d5a5f1b0-f0ac-57d8-ba4e-215e9c81832e",
+            "7a4f8393-9f73-577c-9789-ca1def3d462e"
+          ],
+          "explanation": "possible_transfer_or_joint_manipulation",
+          "object_track_id": "d7e8b999-ed83-5b36-978b-e01f137780ab",
+          "recipient_track_id": "381c6a3f-d0a1-5927-8c77-48dd493ccc7a",
+          "object_category": "clock"
+        },
+        {
+          "actor_track_id": "381c6a3f-d0a1-5927-8c77-48dd493ccc7a",
+          "evidence_observation_ids": [
+            "d5a5f1b0-f0ac-57d8-ba4e-215e9c81832e",
+            "7a4f8393-9f73-577c-9789-ca1def3d462e"
+          ],
+          "explanation": "possible_transfer_or_joint_manipulation",
+          "object_track_id": "d7e8b999-ed83-5b36-978b-e01f137780ab",
+          "recipient_track_id": "4720ee91-31d7-581c-8737-c806d0cf28bf",
+          "object_category": "clock"
+        }
+      ],
+      "visual_diagnostic": "Multiple model person boxes cover the same single visible person/body regions; not evidence of distinct people.",
+      "reviewer_kind": "AI_visual_diagnostic_not_independent_human",
+      "gold_label": false
+    },
+    {
+      "trial": "trial0003",
+      "key": "6b4616fe82a5cf3e037fc1d45127b2d99311e6e6ff38e70d8d5c6d4428642b58/000481",
+      "observation_id": "c20c3e88-500d-5061-9215-1cdfcd2b2489",
+      "source_payload_sha256": "e1a07a48416e91c9e738cac18ece8ad740565b10753f51df88b93b5929b852d7",
+      "person_boxes": [
+        {
+          "alternatives": [
+            [
+              "4720ee91-31d7-581c-8737-c806d0cf28bf",
+              0.9220982556108038
+            ],
+            [
+              "381c6a3f-d0a1-5927-8c77-48dd493ccc7a",
+              0.3826826219698235
+            ]
+          ],
+          "box_xyxy": [
+            1.0413124561309814,
+            192.28964233398438,
+            620.960205078125,
+            440.2455749511719
+          ],
+          "candidate_id": "1c1abf76-58b1-58e6-aa97-3973edb51d92",
+          "category": "person",
+          "detector_score": 0.9845814108848572,
+          "status": "ASSOCIATED_GEOMETRIC",
+          "track_id": "4720ee91-31d7-581c-8737-c806d0cf28bf"
+        },
+        {
+          "alternatives": [
+            [
+              "381c6a3f-d0a1-5927-8c77-48dd493ccc7a",
+              0.827453612809226
+            ],
+            [
+              "4720ee91-31d7-581c-8737-c806d0cf28bf",
+              0.436271557450847
+            ]
+          ],
+          "box_xyxy": [
+            335.29119873046875,
+            171.4379425048828,
+            638.7098999023438,
+            464.3038635253906
+          ],
+          "candidate_id": "2a2ea50e-0d5f-5161-ba89-c9961afe50e2",
+          "category": "person",
+          "detector_score": 0.8870487213134766,
+          "status": "ASSOCIATED_GEOMETRIC",
+          "track_id": "381c6a3f-d0a1-5927-8c77-48dd493ccc7a"
+        }
+      ],
+      "role_pairs": [
+        {
+          "actor_track_id": "4720ee91-31d7-581c-8737-c806d0cf28bf",
+          "evidence_observation_ids": [
+            "7a4f8393-9f73-577c-9789-ca1def3d462e",
+            "c20c3e88-500d-5061-9215-1cdfcd2b2489"
+          ],
+          "explanation": "possible_transfer_or_joint_manipulation",
+          "object_track_id": "4c889c53-34f1-534c-a0a9-797dbf79006c",
+          "recipient_track_id": "381c6a3f-d0a1-5927-8c77-48dd493ccc7a",
+          "object_category": "banana"
+        },
+        {
+          "actor_track_id": "381c6a3f-d0a1-5927-8c77-48dd493ccc7a",
+          "evidence_observation_ids": [
+            "7a4f8393-9f73-577c-9789-ca1def3d462e",
+            "c20c3e88-500d-5061-9215-1cdfcd2b2489"
+          ],
+          "explanation": "possible_transfer_or_joint_manipulation",
+          "object_track_id": "4c889c53-34f1-534c-a0a9-797dbf79006c",
+          "recipient_track_id": "4720ee91-31d7-581c-8737-c806d0cf28bf",
+          "object_category": "banana"
+        },
+        {
+          "actor_track_id": "4720ee91-31d7-581c-8737-c806d0cf28bf",
+          "evidence_observation_ids": [
+            "7a4f8393-9f73-577c-9789-ca1def3d462e",
+            "c20c3e88-500d-5061-9215-1cdfcd2b2489"
+          ],
+          "explanation": "possible_transfer_or_joint_manipulation",
+          "object_track_id": "1dc4f9bb-3a01-50ab-9d00-8ecb68c94cc4",
+          "recipient_track_id": "381c6a3f-d0a1-5927-8c77-48dd493ccc7a",
+          "object_category": "couch"
+        },
+        {
+          "actor_track_id": "381c6a3f-d0a1-5927-8c77-48dd493ccc7a",
+          "evidence_observation_ids": [
+            "7a4f8393-9f73-577c-9789-ca1def3d462e",
+            "c20c3e88-500d-5061-9215-1cdfcd2b2489"
+          ],
+          "explanation": "possible_transfer_or_joint_manipulation",
+          "object_track_id": "1dc4f9bb-3a01-50ab-9d00-8ecb68c94cc4",
+          "recipient_track_id": "4720ee91-31d7-581c-8737-c806d0cf28bf",
+          "object_category": "couch"
+        },
+        {
+          "actor_track_id": "4720ee91-31d7-581c-8737-c806d0cf28bf",
+          "evidence_observation_ids": [
+            "7a4f8393-9f73-577c-9789-ca1def3d462e",
+            "c20c3e88-500d-5061-9215-1cdfcd2b2489"
+          ],
+          "explanation": "possible_transfer_or_joint_manipulation",
+          "object_track_id": "f81b952f-b80e-50ea-9333-fbdf81f9a914",
+          "recipient_track_id": "381c6a3f-d0a1-5927-8c77-48dd493ccc7a",
+          "object_category": "couch"
+        },
+        {
+          "actor_track_id": "381c6a3f-d0a1-5927-8c77-48dd493ccc7a",
+          "evidence_observation_ids": [
+            "7a4f8393-9f73-577c-9789-ca1def3d462e",
+            "c20c3e88-500d-5061-9215-1cdfcd2b2489"
+          ],
+          "explanation": "possible_transfer_or_joint_manipulation",
+          "object_track_id": "f81b952f-b80e-50ea-9333-fbdf81f9a914",
+          "recipient_track_id": "4720ee91-31d7-581c-8737-c806d0cf28bf",
+          "object_category": "couch"
+        }
+      ],
+      "visual_diagnostic": "Multiple model person boxes cover the same single visible person/body regions; not evidence of distinct people.",
+      "reviewer_kind": "AI_visual_diagnostic_not_independent_human",
+      "gold_label": false
+    },
+    {
+      "trial": "trial0009",
+      "key": "9f75bafb357a863e4740e6c1f430b26c9f55cb5aac03731dd33e4b1e38916179/000003",
+      "observation_id": "b7e8c913-9981-57ed-8d63-c15a0a80f149",
+      "source_payload_sha256": "06d480ada54943e560babb19bf6661770ee9b05aaaca73c249e431c4d57c6ab4",
+      "person_boxes": [
+        {
+          "alternatives": [
+            [
+              "8cffbe69-24cf-5481-89f0-2368a2b34e19",
+              0.9783677219049783
+            ],
+            [
+              "477d7e22-8a8f-5b20-a915-6127d4e3b7a7",
+              0.47985255891197826
+            ]
+          ],
+          "box_xyxy": [
+            0.0,
+            201.07101440429688,
+            543.0146484375,
+            442.65240478515625
+          ],
+          "candidate_id": "6a9c1d8e-bc84-5a3d-a56a-bdae4e1adade",
+          "category": "person",
+          "detector_score": 0.9589477181434631,
+          "status": "ASSOCIATED_GEOMETRIC",
+          "track_id": "8cffbe69-24cf-5481-89f0-2368a2b34e19"
+        },
+        {
+          "alternatives": [
+            [
+              "477d7e22-8a8f-5b20-a915-6127d4e3b7a7",
+              0.9815661816566318
+            ],
+            [
+              "8cffbe69-24cf-5481-89f0-2368a2b34e19",
+              0.4890553763076966
+            ]
+          ],
+          "box_xyxy": [
+            258.31024169921875,
+            188.8678436279297,
+            566.1876220703125,
+            444.9691162109375
+          ],
+          "candidate_id": "7e3280f1-2de5-5fe2-9ace-5bcc4c6c26cb",
+          "category": "person",
+          "detector_score": 0.7822747826576233,
+          "status": "ASSOCIATED_GEOMETRIC",
+          "track_id": "477d7e22-8a8f-5b20-a915-6127d4e3b7a7"
+        }
+      ],
+      "role_pairs": [
+        {
+          "actor_track_id": "8cffbe69-24cf-5481-89f0-2368a2b34e19",
+          "evidence_observation_ids": [
+            "08dc3770-a703-5df0-9375-23ebb5a50dbd",
+            "b7e8c913-9981-57ed-8d63-c15a0a80f149"
+          ],
+          "explanation": "possible_transfer_or_joint_manipulation",
+          "object_track_id": "7c2db2b4-706b-56c0-b283-3bbdc3a9732e",
+          "recipient_track_id": "477d7e22-8a8f-5b20-a915-6127d4e3b7a7",
+          "object_category": "couch"
+        },
+        {
+          "actor_track_id": "477d7e22-8a8f-5b20-a915-6127d4e3b7a7",
+          "evidence_observation_ids": [
+            "08dc3770-a703-5df0-9375-23ebb5a50dbd",
+            "b7e8c913-9981-57ed-8d63-c15a0a80f149"
+          ],
+          "explanation": "possible_transfer_or_joint_manipulation",
+          "object_track_id": "7c2db2b4-706b-56c0-b283-3bbdc3a9732e",
+          "recipient_track_id": "8cffbe69-24cf-5481-89f0-2368a2b34e19",
+          "object_category": "couch"
+        },
+        {
+          "actor_track_id": "8cffbe69-24cf-5481-89f0-2368a2b34e19",
+          "evidence_observation_ids": [
+            "08dc3770-a703-5df0-9375-23ebb5a50dbd",
+            "b7e8c913-9981-57ed-8d63-c15a0a80f149"
+          ],
+          "explanation": "possible_transfer_or_joint_manipulation",
+          "object_track_id": "693e9f4c-f640-5a34-9264-5098af28da5c",
+          "recipient_track_id": "477d7e22-8a8f-5b20-a915-6127d4e3b7a7",
+          "object_category": "bowl"
+        },
+        {
+          "actor_track_id": "477d7e22-8a8f-5b20-a915-6127d4e3b7a7",
+          "evidence_observation_ids": [
+            "08dc3770-a703-5df0-9375-23ebb5a50dbd",
+            "b7e8c913-9981-57ed-8d63-c15a0a80f149"
+          ],
+          "explanation": "possible_transfer_or_joint_manipulation",
+          "object_track_id": "693e9f4c-f640-5a34-9264-5098af28da5c",
+          "recipient_track_id": "8cffbe69-24cf-5481-89f0-2368a2b34e19",
+          "object_category": "bowl"
+        }
+      ],
+      "visual_diagnostic": "Multiple model person boxes cover the same single visible person/body regions; not evidence of distinct people.",
+      "reviewer_kind": "AI_visual_diagnostic_not_independent_human",
+      "gold_label": false
+    },
+    {
+      "trial": "trial0009",
+      "key": "9f75bafb357a863e4740e6c1f430b26c9f55cb5aac03731dd33e4b1e38916179/000198",
+      "observation_id": "15ff5a6c-38c7-5ccf-99ba-b35546519a40",
+      "source_payload_sha256": "6b846aba9a841c6d4f431161ac4c47d16e928d96ff3fab684884eb96708864f2",
+      "person_boxes": [
+        {
+          "alternatives": [
+            [
+              "c42f9af5-a425-5aa3-a843-0354fdc959b6",
+              0.9836166897015847
+            ]
+          ],
+          "box_xyxy": [
+            225.12957763671875,
+            261.8689270019531,
+            582.0537719726562,
+            480.0
+          ],
+          "candidate_id": "fe1815d7-36b1-5202-94bd-589498987294",
+          "category": "person",
+          "detector_score": 0.9969848990440369,
+          "status": "ASSOCIATED_GEOMETRIC",
+          "track_id": "c42f9af5-a425-5aa3-a843-0354fdc959b6"
+        },
+        {
+          "alternatives": [
+            [
+              "47d83151-d981-5d9d-9e86-3795e9780347",
+              0.8696033019715264
+            ]
+          ],
+          "box_xyxy": [
+            414.44775390625,
+            261.76470947265625,
+            580.4073486328125,
+            366.9312438964844
+          ],
+          "candidate_id": "361929ca-a1cc-5f69-bfbd-0652abfa8404",
+          "category": "person",
+          "detector_score": 0.7391460537910461,
+          "status": "ASSOCIATED_GEOMETRIC",
+          "track_id": "47d83151-d981-5d9d-9e86-3795e9780347"
+        },
+        {
+          "alternatives": [
+            [
+              "c42f9af5-a425-5aa3-a843-0354fdc959b6",
+              0.4587721559388041
+            ]
+          ],
+          "box_xyxy": [
+            6.224147796630859,
+            290.36376953125,
+            514.8929443359375,
+            480.0
+          ],
+          "candidate_id": "2066012a-e6e8-54e1-a56e-af8238baaddb",
+          "category": "person",
+          "detector_score": 0.5002704858779907,
+          "status": "AMBIGUOUS_NEW_BRANCH",
+          "track_id": "ea106d81-6677-5b93-a4d4-137149be6ce6"
+        }
+      ],
+      "role_pairs": [
+        {
+          "actor_track_id": "c42f9af5-a425-5aa3-a843-0354fdc959b6",
+          "evidence_observation_ids": [
+            "e536dc69-41c4-54a2-86c3-b5900f77e93b",
+            "15ff5a6c-38c7-5ccf-99ba-b35546519a40"
+          ],
+          "explanation": "possible_transfer_or_joint_manipulation",
+          "object_track_id": "fb8d7b67-c30e-57e3-9721-0e4278c6c76b",
+          "recipient_track_id": "47d83151-d981-5d9d-9e86-3795e9780347",
+          "object_category": "couch"
+        },
+        {
+          "actor_track_id": "47d83151-d981-5d9d-9e86-3795e9780347",
+          "evidence_observation_ids": [
+            "e536dc69-41c4-54a2-86c3-b5900f77e93b",
+            "15ff5a6c-38c7-5ccf-99ba-b35546519a40"
+          ],
+          "explanation": "possible_transfer_or_joint_manipulation",
+          "object_track_id": "fb8d7b67-c30e-57e3-9721-0e4278c6c76b",
+          "recipient_track_id": "c42f9af5-a425-5aa3-a843-0354fdc959b6",
+          "object_category": "couch"
+        }
+      ],
+      "visual_diagnostic": "Multiple model person boxes cover the same single visible person/body regions; not evidence of distinct people.",
+      "reviewer_kind": "AI_visual_diagnostic_not_independent_human",
+      "gold_label": false
+    },
+    {
+      "trial": "trial0002",
+      "key": "d273879c89140cddbeabfe0d3fadb6d3cc8fe5483410254645e311242f945bb6/000387",
+      "observation_id": "1a8408cb-48ae-5611-bd71-c27205d82786",
+      "source_payload_sha256": "999bcf465545f79fd865dc274f950a5af3600037fb5250cd545259a9c5817e70",
+      "person_boxes": [
+        {
+          "alternatives": [
+            [
+              "0c5fe538-3dc9-555e-bf69-3f0b7524e17e",
+              0.8676269537316679
+            ],
+            [
+              "64206ac3-b02a-5cc4-b80d-9803473e42e9",
+              0.4726401212766
+            ]
+          ],
+          "box_xyxy": [
+            7.395564556121826,
+            279.7323303222656,
+            585.431396484375,
+            474.0781555175781
+          ],
+          "candidate_id": "abd02bae-e653-5807-9269-2ba30dfbc784",
+          "category": "person",
+          "detector_score": 0.9440769553184509,
+          "status": "ASSOCIATED_GEOMETRIC",
+          "track_id": "0c5fe538-3dc9-555e-bf69-3f0b7524e17e"
+        },
+        {
+          "alternatives": [
+            [
+              "64206ac3-b02a-5cc4-b80d-9803473e42e9",
+              0.974146074351463
+            ],
+            [
+              "0c5fe538-3dc9-555e-bf69-3f0b7524e17e",
+              0.42553840516770436
+            ]
+          ],
+          "box_xyxy": [
+            278.4955139160156,
+            296.1407775878906,
+            575.5867919921875,
+            477.4599304199219
+          ],
+          "candidate_id": "ff69f520-5fbe-5cb4-9dfe-19754eed6e14",
+          "category": "person",
+          "detector_score": 0.9394521713256836,
+          "status": "ASSOCIATED_GEOMETRIC",
+          "track_id": "64206ac3-b02a-5cc4-b80d-9803473e42e9"
+        }
+      ],
+      "role_pairs": [
+        {
+          "actor_track_id": "0c5fe538-3dc9-555e-bf69-3f0b7524e17e",
+          "evidence_observation_ids": [
+            "fb6ace83-64cb-514e-9e09-833992517184",
+            "1a8408cb-48ae-5611-bd71-c27205d82786"
+          ],
+          "explanation": "possible_transfer_or_joint_manipulation",
+          "object_track_id": "00454b5d-57a4-5238-b584-56d4db95a9cd",
+          "recipient_track_id": "64206ac3-b02a-5cc4-b80d-9803473e42e9",
+          "object_category": "couch"
+        },
+        {
+          "actor_track_id": "64206ac3-b02a-5cc4-b80d-9803473e42e9",
+          "evidence_observation_ids": [
+            "fb6ace83-64cb-514e-9e09-833992517184",
+            "1a8408cb-48ae-5611-bd71-c27205d82786"
+          ],
+          "explanation": "possible_transfer_or_joint_manipulation",
+          "object_track_id": "00454b5d-57a4-5238-b584-56d4db95a9cd",
+          "recipient_track_id": "0c5fe538-3dc9-555e-bf69-3f0b7524e17e",
+          "object_category": "couch"
+        },
+        {
+          "actor_track_id": "0c5fe538-3dc9-555e-bf69-3f0b7524e17e",
+          "evidence_observation_ids": [
+            "fb6ace83-64cb-514e-9e09-833992517184",
+            "1a8408cb-48ae-5611-bd71-c27205d82786"
+          ],
+          "explanation": "possible_transfer_or_joint_manipulation",
+          "object_track_id": "94f61e69-7a81-53bf-975d-a4570d1df912",
+          "recipient_track_id": "64206ac3-b02a-5cc4-b80d-9803473e42e9",
+          "object_category": "bottle"
+        },
+        {
+          "actor_track_id": "64206ac3-b02a-5cc4-b80d-9803473e42e9",
+          "evidence_observation_ids": [
+            "fb6ace83-64cb-514e-9e09-833992517184",
+            "1a8408cb-48ae-5611-bd71-c27205d82786"
+          ],
+          "explanation": "possible_transfer_or_joint_manipulation",
+          "object_track_id": "94f61e69-7a81-53bf-975d-a4570d1df912",
+          "recipient_track_id": "0c5fe538-3dc9-555e-bf69-3f0b7524e17e",
+          "object_category": "bottle"
+        }
+      ],
+      "visual_diagnostic": "Multiple model person boxes cover the same single visible person/body regions; not evidence of distinct people.",
+      "reviewer_kind": "AI_visual_diagnostic_not_independent_human",
+      "gold_label": false
+    },
+    {
+      "trial": "trial0002",
+      "key": "d273879c89140cddbeabfe0d3fadb6d3cc8fe5483410254645e311242f945bb6/000388",
+      "observation_id": "ac1a5faf-f736-563a-9ccc-f97646a61401",
+      "source_payload_sha256": "691e10227b1265e49db1efef20969634b09e5c75c85af421622147813daf882a",
+      "person_boxes": [
+        {
+          "alternatives": [
+            [
+              "0c5fe538-3dc9-555e-bf69-3f0b7524e17e",
+              0.9473418133903602
+            ],
+            [
+              "64206ac3-b02a-5cc4-b80d-9803473e42e9",
+              0.4862665304064564
+            ]
+          ],
+          "box_xyxy": [
+            7.588312149047852,
+            288.1268615722656,
+            584.2963256835938,
+            472.6626892089844
+          ],
+          "candidate_id": "97a54f0f-3959-5857-893c-0d830bf29a89",
+          "category": "person",
+          "detector_score": 0.9602665305137634,
+          "status": "ASSOCIATED_GEOMETRIC",
+          "track_id": "0c5fe538-3dc9-555e-bf69-3f0b7524e17e"
+        },
+        {
+          "alternatives": [
+            [
+              "64206ac3-b02a-5cc4-b80d-9803473e42e9",
+              0.9541965018175161
+            ],
+            [
+              "0c5fe538-3dc9-555e-bf69-3f0b7524e17e",
+              0.4453311202993492
+            ]
+          ],
+          "box_xyxy": [
+            281.3626403808594,
+            300.0977478027344,
+            571.6558837890625,
+            477.7706298828125
+          ],
+          "candidate_id": "82536817-e1e0-57f0-aefe-cfc273e313a2",
+          "category": "person",
+          "detector_score": 0.8488320112228394,
+          "status": "ASSOCIATED_GEOMETRIC",
+          "track_id": "64206ac3-b02a-5cc4-b80d-9803473e42e9"
+        }
+      ],
+      "role_pairs": [
+        {
+          "actor_track_id": "0c5fe538-3dc9-555e-bf69-3f0b7524e17e",
+          "evidence_observation_ids": [
+            "1a8408cb-48ae-5611-bd71-c27205d82786",
+            "ac1a5faf-f736-563a-9ccc-f97646a61401"
+          ],
+          "explanation": "possible_transfer_or_joint_manipulation",
+          "object_track_id": "00454b5d-57a4-5238-b584-56d4db95a9cd",
+          "recipient_track_id": "64206ac3-b02a-5cc4-b80d-9803473e42e9",
+          "object_category": "couch"
+        },
+        {
+          "actor_track_id": "64206ac3-b02a-5cc4-b80d-9803473e42e9",
+          "evidence_observation_ids": [
+            "1a8408cb-48ae-5611-bd71-c27205d82786",
+            "ac1a5faf-f736-563a-9ccc-f97646a61401"
+          ],
+          "explanation": "possible_transfer_or_joint_manipulation",
+          "object_track_id": "00454b5d-57a4-5238-b584-56d4db95a9cd",
+          "recipient_track_id": "0c5fe538-3dc9-555e-bf69-3f0b7524e17e",
+          "object_category": "couch"
+        },
+        {
+          "actor_track_id": "0c5fe538-3dc9-555e-bf69-3f0b7524e17e",
+          "evidence_observation_ids": [
+            "1a8408cb-48ae-5611-bd71-c27205d82786",
+            "ac1a5faf-f736-563a-9ccc-f97646a61401"
+          ],
+          "explanation": "possible_transfer_or_joint_manipulation",
+          "object_track_id": "94f61e69-7a81-53bf-975d-a4570d1df912",
+          "recipient_track_id": "64206ac3-b02a-5cc4-b80d-9803473e42e9",
+          "object_category": "bottle"
+        },
+        {
+          "actor_track_id": "64206ac3-b02a-5cc4-b80d-9803473e42e9",
+          "evidence_observation_ids": [
+            "1a8408cb-48ae-5611-bd71-c27205d82786",
+            "ac1a5faf-f736-563a-9ccc-f97646a61401"
+          ],
+          "explanation": "possible_transfer_or_joint_manipulation",
+          "object_track_id": "94f61e69-7a81-53bf-975d-a4570d1df912",
+          "recipient_track_id": "0c5fe538-3dc9-555e-bf69-3f0b7524e17e",
+          "object_category": "bottle"
+        }
+      ],
+      "visual_diagnostic": "Multiple model person boxes cover the same single visible person/body regions; not evidence of distinct people.",
+      "reviewer_kind": "AI_visual_diagnostic_not_independent_human",
+      "gold_label": false
+    },
+    {
+      "trial": "trial0002",
+      "key": "d273879c89140cddbeabfe0d3fadb6d3cc8fe5483410254645e311242f945bb6/000389",
+      "observation_id": "fd57ef09-4271-57a5-8929-7aa771d047f9",
+      "source_payload_sha256": "b63b38e5aaecad232ab2a7db3392110768d6a51d05f40736a1bcd62c92840c97",
+      "person_boxes": [
+        {
+          "alternatives": [
+            [
+              "0c5fe538-3dc9-555e-bf69-3f0b7524e17e",
+              0.9602041234807853
+            ],
+            [
+              "64206ac3-b02a-5cc4-b80d-9803473e42e9",
+              0.44876456106159696
+            ]
+          ],
+          "box_xyxy": [
+            7.758725166320801,
+            283.1734619140625,
+            590.2785034179688,
+            473.3298034667969
+          ],
+          "candidate_id": "dfa05012-df54-5d7a-834d-2be6c4688588",
+          "category": "person",
+          "detector_score": 0.9480152726173401,
+          "status": "ASSOCIATED_GEOMETRIC",
+          "track_id": "0c5fe538-3dc9-555e-bf69-3f0b7524e17e"
+        },
+        {
+          "alternatives": [
+            [
+              "64206ac3-b02a-5cc4-b80d-9803473e42e9",
+              0.959928660076514
+            ],
+            [
+              "0c5fe538-3dc9-555e-bf69-3f0b7524e17e",
+              0.4782497236292052
+            ]
+          ],
+          "box_xyxy": [
+            280.0113525390625,
+            295.0072021484375,
+            571.663330078125,
+            479.2345886230469
+          ],
+          "candidate_id": "55c00d3e-0165-5dc8-83b9-97ae5ed79599",
+          "category": "person",
+          "detector_score": 0.9427734613418579,
+          "status": "ASSOCIATED_GEOMETRIC",
+          "track_id": "64206ac3-b02a-5cc4-b80d-9803473e42e9"
+        }
+      ],
+      "role_pairs": [
+        {
+          "actor_track_id": "0c5fe538-3dc9-555e-bf69-3f0b7524e17e",
+          "evidence_observation_ids": [
+            "ac1a5faf-f736-563a-9ccc-f97646a61401",
+            "fd57ef09-4271-57a5-8929-7aa771d047f9"
+          ],
+          "explanation": "possible_transfer_or_joint_manipulation",
+          "object_track_id": "00454b5d-57a4-5238-b584-56d4db95a9cd",
+          "recipient_track_id": "64206ac3-b02a-5cc4-b80d-9803473e42e9",
+          "object_category": "couch"
+        },
+        {
+          "actor_track_id": "64206ac3-b02a-5cc4-b80d-9803473e42e9",
+          "evidence_observation_ids": [
+            "ac1a5faf-f736-563a-9ccc-f97646a61401",
+            "fd57ef09-4271-57a5-8929-7aa771d047f9"
+          ],
+          "explanation": "possible_transfer_or_joint_manipulation",
+          "object_track_id": "00454b5d-57a4-5238-b584-56d4db95a9cd",
+          "recipient_track_id": "0c5fe538-3dc9-555e-bf69-3f0b7524e17e",
+          "object_category": "couch"
+        },
+        {
+          "actor_track_id": "0c5fe538-3dc9-555e-bf69-3f0b7524e17e",
+          "evidence_observation_ids": [
+            "ac1a5faf-f736-563a-9ccc-f97646a61401",
+            "fd57ef09-4271-57a5-8929-7aa771d047f9"
+          ],
+          "explanation": "possible_transfer_or_joint_manipulation",
+          "object_track_id": "94f61e69-7a81-53bf-975d-a4570d1df912",
+          "recipient_track_id": "64206ac3-b02a-5cc4-b80d-9803473e42e9",
+          "object_category": "bottle"
+        },
+        {
+          "actor_track_id": "64206ac3-b02a-5cc4-b80d-9803473e42e9",
+          "evidence_observation_ids": [
+            "ac1a5faf-f736-563a-9ccc-f97646a61401",
+            "fd57ef09-4271-57a5-8929-7aa771d047f9"
+          ],
+          "explanation": "possible_transfer_or_joint_manipulation",
+          "object_track_id": "94f61e69-7a81-53bf-975d-a4570d1df912",
+          "recipient_track_id": "0c5fe538-3dc9-555e-bf69-3f0b7524e17e",
+          "object_category": "bottle"
+        }
+      ],
+      "visual_diagnostic": "Multiple model person boxes cover the same single visible person/body regions; not evidence of distinct people.",
+      "reviewer_kind": "AI_visual_diagnostic_not_independent_human",
+      "gold_label": false
+    },
+    {
+      "trial": "trial0015",
+      "key": "e878bb28c13aa6dde99c6f6ae8bd86fabd73c63f9754969cb4aa11e5e9801782/000165",
+      "observation_id": "072147b6-5082-53cd-bb91-b082ab72df1d",
+      "source_payload_sha256": "ab1905ba2ab22881e4b60af0533f4901ff3cbb952125aeaa7ea2e5432db15286",
+      "person_boxes": [
+        {
+          "alternatives": [
+            [
+              "0233f9f5-780e-5c52-a206-99a4f76f1936",
+              0.9766556913290025
+            ],
+            [
+              "ae850ada-d260-5719-8a91-d3f0c49a24f9",
+              0.472384478818826
+            ]
+          ],
+          "box_xyxy": [
+            3.247629165649414,
+            4.829260349273682,
+            334.5617370605469,
+            480.0
+          ],
+          "candidate_id": "e4b23d79-7d72-56b1-81ad-8a6bc765bd1a",
+          "category": "person",
+          "detector_score": 0.9980348944664001,
+          "status": "ASSOCIATED_GEOMETRIC",
+          "track_id": "0233f9f5-780e-5c52-a206-99a4f76f1936"
+        },
+        {
+          "alternatives": [
+            [
+              "ae850ada-d260-5719-8a91-d3f0c49a24f9",
+              0.7415548755037992
+            ],
+            [
+              "0233f9f5-780e-5c52-a206-99a4f76f1936",
+              0.34712258635135784
+            ]
+          ],
+          "box_xyxy": [
+            2.652118444442749,
+            5.35951566696167,
+            205.59205627441406,
+            281.07647705078125
+          ],
+          "candidate_id": "5e68b68e-36af-5694-b82e-351ce82e6a39",
+          "category": "person",
+          "detector_score": 0.8410603404045105,
+          "status": "ASSOCIATED_GEOMETRIC",
+          "track_id": "ae850ada-d260-5719-8a91-d3f0c49a24f9"
+        },
+        {
+          "alternatives": [
+            [
+              "0e8f5011-9e7f-514b-8fc3-426fad379922",
+              0.9087936904518195
+            ]
+          ],
+          "box_xyxy": [
+            35.249000549316406,
+            359.03948974609375,
+            139.69972229003906,
+            436.1058044433594
+          ],
+          "candidate_id": "48345895-4a15-51c4-bd62-0d204f805743",
+          "category": "person",
+          "detector_score": 0.5965230464935303,
+          "status": "ASSOCIATED_GEOMETRIC",
+          "track_id": "0e8f5011-9e7f-514b-8fc3-426fad379922"
+        }
+      ],
+      "role_pairs": [
+        {
+          "actor_track_id": "0233f9f5-780e-5c52-a206-99a4f76f1936",
+          "evidence_observation_ids": [
+            "8e0d2fdd-30bb-538a-8b49-7aa9a35a835f",
+            "072147b6-5082-53cd-bb91-b082ab72df1d"
+          ],
+          "explanation": "possible_transfer_or_joint_manipulation",
+          "object_track_id": "0466acd0-a10a-5110-b901-6f7bdbfaa010",
+          "recipient_track_id": "0e8f5011-9e7f-514b-8fc3-426fad379922",
+          "object_category": "chair"
+        },
+        {
+          "actor_track_id": "0e8f5011-9e7f-514b-8fc3-426fad379922",
+          "evidence_observation_ids": [
+            "8e0d2fdd-30bb-538a-8b49-7aa9a35a835f",
+            "072147b6-5082-53cd-bb91-b082ab72df1d"
+          ],
+          "explanation": "possible_transfer_or_joint_manipulation",
+          "object_track_id": "0466acd0-a10a-5110-b901-6f7bdbfaa010",
+          "recipient_track_id": "0233f9f5-780e-5c52-a206-99a4f76f1936",
+          "object_category": "chair"
+        },
+        {
+          "actor_track_id": "0233f9f5-780e-5c52-a206-99a4f76f1936",
+          "evidence_observation_ids": [
+            "8e0d2fdd-30bb-538a-8b49-7aa9a35a835f",
+            "072147b6-5082-53cd-bb91-b082ab72df1d"
+          ],
+          "explanation": "possible_transfer_or_joint_manipulation",
+          "object_track_id": "a25bd4ea-d3be-5b6d-a80f-e303933d8080",
+          "recipient_track_id": "ae850ada-d260-5719-8a91-d3f0c49a24f9",
+          "object_category": "chair"
+        },
+        {
+          "actor_track_id": "0233f9f5-780e-5c52-a206-99a4f76f1936",
+          "evidence_observation_ids": [
+            "8e0d2fdd-30bb-538a-8b49-7aa9a35a835f",
+            "072147b6-5082-53cd-bb91-b082ab72df1d"
+          ],
+          "explanation": "possible_transfer_or_joint_manipulation",
+          "object_track_id": "a25bd4ea-d3be-5b6d-a80f-e303933d8080",
+          "recipient_track_id": "0e8f5011-9e7f-514b-8fc3-426fad379922",
+          "object_category": "chair"
+        },
+        {
+          "actor_track_id": "ae850ada-d260-5719-8a91-d3f0c49a24f9",
+          "evidence_observation_ids": [
+            "8e0d2fdd-30bb-538a-8b49-7aa9a35a835f",
+            "072147b6-5082-53cd-bb91-b082ab72df1d"
+          ],
+          "explanation": "possible_transfer_or_joint_manipulation",
+          "object_track_id": "a25bd4ea-d3be-5b6d-a80f-e303933d8080",
+          "recipient_track_id": "0233f9f5-780e-5c52-a206-99a4f76f1936",
+          "object_category": "chair"
+        },
+        {
+          "actor_track_id": "ae850ada-d260-5719-8a91-d3f0c49a24f9",
+          "evidence_observation_ids": [
+            "8e0d2fdd-30bb-538a-8b49-7aa9a35a835f",
+            "072147b6-5082-53cd-bb91-b082ab72df1d"
+          ],
+          "explanation": "possible_transfer_or_joint_manipulation",
+          "object_track_id": "a25bd4ea-d3be-5b6d-a80f-e303933d8080",
+          "recipient_track_id": "0e8f5011-9e7f-514b-8fc3-426fad379922",
+          "object_category": "chair"
+        },
+        {
+          "actor_track_id": "0e8f5011-9e7f-514b-8fc3-426fad379922",
+          "evidence_observation_ids": [
+            "8e0d2fdd-30bb-538a-8b49-7aa9a35a835f",
+            "072147b6-5082-53cd-bb91-b082ab72df1d"
+          ],
+          "explanation": "possible_transfer_or_joint_manipulation",
+          "object_track_id": "a25bd4ea-d3be-5b6d-a80f-e303933d8080",
+          "recipient_track_id": "0233f9f5-780e-5c52-a206-99a4f76f1936",
+          "object_category": "chair"
+        },
+        {
+          "actor_track_id": "0e8f5011-9e7f-514b-8fc3-426fad379922",
+          "evidence_observation_ids": [
+            "8e0d2fdd-30bb-538a-8b49-7aa9a35a835f",
+            "072147b6-5082-53cd-bb91-b082ab72df1d"
+          ],
+          "explanation": "possible_transfer_or_joint_manipulation",
+          "object_track_id": "a25bd4ea-d3be-5b6d-a80f-e303933d8080",
+          "recipient_track_id": "ae850ada-d260-5719-8a91-d3f0c49a24f9",
+          "object_category": "chair"
+        }
+      ],
+      "visual_diagnostic": "Multiple model person boxes cover the same single visible person/body regions; not evidence of distinct people.",
+      "reviewer_kind": "AI_visual_diagnostic_not_independent_human",
+      "gold_label": false
+    },
+    {
+      "trial": "trial0015",
+      "key": "e878bb28c13aa6dde99c6f6ae8bd86fabd73c63f9754969cb4aa11e5e9801782/000166",
+      "observation_id": "6553d360-0550-5072-b356-b83452e673fb",
+      "source_payload_sha256": "9ca3e4152d485b3d3e0678df5391807a12a5f6e8846de99b180efe8f23fee299",
+      "person_boxes": [
+        {
+          "alternatives": [
+            [
+              "0233f9f5-780e-5c52-a206-99a4f76f1936",
+              0.9799455347340283
+            ],
+            [
+              "ae850ada-d260-5719-8a91-d3f0c49a24f9",
+              0.35886972552170393
+            ]
+          ],
+          "box_xyxy": [
+            1.5630862712860107,
+            4.738677978515625,
+            329.62945556640625,
+            480.0
+          ],
+          "candidate_id": "c2d5a256-cd5e-5425-97d5-8b3f52c896e4",
+          "category": "person",
+          "detector_score": 0.9978819489479065,
+          "status": "ASSOCIATED_GEOMETRIC",
+          "track_id": "0233f9f5-780e-5c52-a206-99a4f76f1936"
+        },
+        {
+          "alternatives": [
+            [
+              "ae850ada-d260-5719-8a91-d3f0c49a24f9",
+              0.9689449119983743
+            ],
+            [
+              "0233f9f5-780e-5c52-a206-99a4f76f1936",
+              0.34302091757766906
+            ]
+          ],
+          "box_xyxy": [
+            2.64093279838562,
+            5.448916912078857,
+            203.24964904785156,
+            275.7376708984375
+          ],
+          "candidate_id": "606d1757-cf95-54af-b46b-d8c80dd8c6ff",
+          "category": "person",
+          "detector_score": 0.8516027927398682,
+          "status": "ASSOCIATED_GEOMETRIC",
+          "track_id": "ae850ada-d260-5719-8a91-d3f0c49a24f9"
+        },
+        {
+          "alternatives": [
+            [
+              "0e8f5011-9e7f-514b-8fc3-426fad379922",
+              0.8957168672373909
+            ]
+          ],
+          "box_xyxy": [
+            31.152774810791016,
+            362.9721374511719,
+            140.6571807861328,
+            437.10107421875
+          ],
+          "candidate_id": "82edf51b-beb8-52d2-81c2-7486c36f4878",
+          "category": "person",
+          "detector_score": 0.593660295009613,
+          "status": "ASSOCIATED_GEOMETRIC",
+          "track_id": "0e8f5011-9e7f-514b-8fc3-426fad379922"
+        }
+      ],
+      "role_pairs": [
+        {
+          "actor_track_id": "0233f9f5-780e-5c52-a206-99a4f76f1936",
+          "evidence_observation_ids": [
+            "072147b6-5082-53cd-bb91-b082ab72df1d",
+            "6553d360-0550-5072-b356-b83452e673fb"
+          ],
+          "explanation": "possible_transfer_or_joint_manipulation",
+          "object_track_id": "a25bd4ea-d3be-5b6d-a80f-e303933d8080",
+          "recipient_track_id": "ae850ada-d260-5719-8a91-d3f0c49a24f9",
+          "object_category": "chair"
+        },
+        {
+          "actor_track_id": "0233f9f5-780e-5c52-a206-99a4f76f1936",
+          "evidence_observation_ids": [
+            "072147b6-5082-53cd-bb91-b082ab72df1d",
+            "6553d360-0550-5072-b356-b83452e673fb"
+          ],
+          "explanation": "possible_transfer_or_joint_manipulation",
+          "object_track_id": "a25bd4ea-d3be-5b6d-a80f-e303933d8080",
+          "recipient_track_id": "0e8f5011-9e7f-514b-8fc3-426fad379922",
+          "object_category": "chair"
+        },
+        {
+          "actor_track_id": "ae850ada-d260-5719-8a91-d3f0c49a24f9",
+          "evidence_observation_ids": [
+            "072147b6-5082-53cd-bb91-b082ab72df1d",
+            "6553d360-0550-5072-b356-b83452e673fb"
+          ],
+          "explanation": "possible_transfer_or_joint_manipulation",
+          "object_track_id": "a25bd4ea-d3be-5b6d-a80f-e303933d8080",
+          "recipient_track_id": "0233f9f5-780e-5c52-a206-99a4f76f1936",
+          "object_category": "chair"
+        },
+        {
+          "actor_track_id": "ae850ada-d260-5719-8a91-d3f0c49a24f9",
+          "evidence_observation_ids": [
+            "072147b6-5082-53cd-bb91-b082ab72df1d",
+            "6553d360-0550-5072-b356-b83452e673fb"
+          ],
+          "explanation": "possible_transfer_or_joint_manipulation",
+          "object_track_id": "a25bd4ea-d3be-5b6d-a80f-e303933d8080",
+          "recipient_track_id": "0e8f5011-9e7f-514b-8fc3-426fad379922",
+          "object_category": "chair"
+        },
+        {
+          "actor_track_id": "0e8f5011-9e7f-514b-8fc3-426fad379922",
+          "evidence_observation_ids": [
+            "072147b6-5082-53cd-bb91-b082ab72df1d",
+            "6553d360-0550-5072-b356-b83452e673fb"
+          ],
+          "explanation": "possible_transfer_or_joint_manipulation",
+          "object_track_id": "a25bd4ea-d3be-5b6d-a80f-e303933d8080",
+          "recipient_track_id": "0233f9f5-780e-5c52-a206-99a4f76f1936",
+          "object_category": "chair"
+        },
+        {
+          "actor_track_id": "0e8f5011-9e7f-514b-8fc3-426fad379922",
+          "evidence_observation_ids": [
+            "072147b6-5082-53cd-bb91-b082ab72df1d",
+            "6553d360-0550-5072-b356-b83452e673fb"
+          ],
+          "explanation": "possible_transfer_or_joint_manipulation",
+          "object_track_id": "a25bd4ea-d3be-5b6d-a80f-e303933d8080",
+          "recipient_track_id": "ae850ada-d260-5719-8a91-d3f0c49a24f9",
+          "object_category": "chair"
+        },
+        {
+          "actor_track_id": "0233f9f5-780e-5c52-a206-99a4f76f1936",
+          "evidence_observation_ids": [
+            "072147b6-5082-53cd-bb91-b082ab72df1d",
+            "6553d360-0550-5072-b356-b83452e673fb"
+          ],
+          "explanation": "possible_transfer_or_joint_manipulation",
+          "object_track_id": "0466acd0-a10a-5110-b901-6f7bdbfaa010",
+          "recipient_track_id": "0e8f5011-9e7f-514b-8fc3-426fad379922",
+          "object_category": "chair"
+        },
+        {
+          "actor_track_id": "0e8f5011-9e7f-514b-8fc3-426fad379922",
+          "evidence_observation_ids": [
+            "072147b6-5082-53cd-bb91-b082ab72df1d",
+            "6553d360-0550-5072-b356-b83452e673fb"
+          ],
+          "explanation": "possible_transfer_or_joint_manipulation",
+          "object_track_id": "0466acd0-a10a-5110-b901-6f7bdbfaa010",
+          "recipient_track_id": "0233f9f5-780e-5c52-a206-99a4f76f1936",
+          "object_category": "chair"
+        }
+      ],
+      "visual_diagnostic": "Multiple model person boxes cover the same single visible person/body regions; not evidence of distinct people.",
+      "reviewer_kind": "AI_visual_diagnostic_not_independent_human",
+      "gold_label": false
+    },
+    {
+      "trial": "trial0015",
+      "key": "e878bb28c13aa6dde99c6f6ae8bd86fabd73c63f9754969cb4aa11e5e9801782/000167",
+      "observation_id": "58845954-20bd-5bac-af48-b63385331e4c",
+      "source_payload_sha256": "eb7c20c41af7cc598633bfff65a9b1759f3ad01ac8d1071564d82c87c6b63999",
+      "person_boxes": [
+        {
+          "alternatives": [
+            [
+              "0233f9f5-780e-5c52-a206-99a4f76f1936",
+              0.9868180676963699
+            ],
+            [
+              "ae850ada-d260-5719-8a91-d3f0c49a24f9",
+              0.3435770314431395
+            ]
+          ],
+          "box_xyxy": [
+            1.754386305809021,
+            4.504559516906738,
+            333.6544189453125,
+            480.0
+          ],
+          "candidate_id": "f0ace332-da73-54f1-bf21-40936c628054",
+          "category": "person",
+          "detector_score": 0.9975830316543579,
+          "status": "ASSOCIATED_GEOMETRIC",
+          "track_id": "0233f9f5-780e-5c52-a206-99a4f76f1936"
+        },
+        {
+          "alternatives": [
+            [
+              "ae850ada-d260-5719-8a91-d3f0c49a24f9",
+              0.7411919432796144
+            ],
+            [
+              "0233f9f5-780e-5c52-a206-99a4f76f1936",
+              0.46033198096614214
+            ]
+          ],
+          "box_xyxy": [
+            4.049839496612549,
+            3.2508363723754883,
+            228.2932891845703,
+            325.4940185546875
+          ],
+          "candidate_id": "9695e424-f66f-53da-a600-3d9f74d90a65",
+          "category": "person",
+          "detector_score": 0.9104021191596985,
+          "status": "ASSOCIATED_GEOMETRIC",
+          "track_id": "ae850ada-d260-5719-8a91-d3f0c49a24f9"
+        },
+        {
+          "alternatives": [
+            [
+              "0e8f5011-9e7f-514b-8fc3-426fad379922",
+              0.8974197579104571
+            ]
+          ],
+          "box_xyxy": [
+            35.81282043457031,
+            359.14813232421875,
+            141.55987548828125,
+            436.4830322265625
+          ],
+          "candidate_id": "224166eb-1534-584e-b34f-bc8329c110de",
+          "category": "person",
+          "detector_score": 0.6206605434417725,
+          "status": "ASSOCIATED_GEOMETRIC",
+          "track_id": "0e8f5011-9e7f-514b-8fc3-426fad379922"
+        }
+      ],
+      "role_pairs": [
+        {
+          "actor_track_id": "0233f9f5-780e-5c52-a206-99a4f76f1936",
+          "evidence_observation_ids": [
+            "6553d360-0550-5072-b356-b83452e673fb",
+            "58845954-20bd-5bac-af48-b63385331e4c"
+          ],
+          "explanation": "possible_transfer_or_joint_manipulation",
+          "object_track_id": "a25bd4ea-d3be-5b6d-a80f-e303933d8080",
+          "recipient_track_id": "ae850ada-d260-5719-8a91-d3f0c49a24f9",
+          "object_category": "chair"
+        },
+        {
+          "actor_track_id": "0233f9f5-780e-5c52-a206-99a4f76f1936",
+          "evidence_observation_ids": [
+            "6553d360-0550-5072-b356-b83452e673fb",
+            "58845954-20bd-5bac-af48-b63385331e4c"
+          ],
+          "explanation": "possible_transfer_or_joint_manipulation",
+          "object_track_id": "a25bd4ea-d3be-5b6d-a80f-e303933d8080",
+          "recipient_track_id": "0e8f5011-9e7f-514b-8fc3-426fad379922",
+          "object_category": "chair"
+        },
+        {
+          "actor_track_id": "ae850ada-d260-5719-8a91-d3f0c49a24f9",
+          "evidence_observation_ids": [
+            "6553d360-0550-5072-b356-b83452e673fb",
+            "58845954-20bd-5bac-af48-b63385331e4c"
+          ],
+          "explanation": "possible_transfer_or_joint_manipulation",
+          "object_track_id": "a25bd4ea-d3be-5b6d-a80f-e303933d8080",
+          "recipient_track_id": "0233f9f5-780e-5c52-a206-99a4f76f1936",
+          "object_category": "chair"
+        },
+        {
+          "actor_track_id": "ae850ada-d260-5719-8a91-d3f0c49a24f9",
+          "evidence_observation_ids": [
+            "6553d360-0550-5072-b356-b83452e673fb",
+            "58845954-20bd-5bac-af48-b63385331e4c"
+          ],
+          "explanation": "possible_transfer_or_joint_manipulation",
+          "object_track_id": "a25bd4ea-d3be-5b6d-a80f-e303933d8080",
+          "recipient_track_id": "0e8f5011-9e7f-514b-8fc3-426fad379922",
+          "object_category": "chair"
+        },
+        {
+          "actor_track_id": "0e8f5011-9e7f-514b-8fc3-426fad379922",
+          "evidence_observation_ids": [
+            "6553d360-0550-5072-b356-b83452e673fb",
+            "58845954-20bd-5bac-af48-b63385331e4c"
+          ],
+          "explanation": "possible_transfer_or_joint_manipulation",
+          "object_track_id": "a25bd4ea-d3be-5b6d-a80f-e303933d8080",
+          "recipient_track_id": "0233f9f5-780e-5c52-a206-99a4f76f1936",
+          "object_category": "chair"
+        },
+        {
+          "actor_track_id": "0e8f5011-9e7f-514b-8fc3-426fad379922",
+          "evidence_observation_ids": [
+            "6553d360-0550-5072-b356-b83452e673fb",
+            "58845954-20bd-5bac-af48-b63385331e4c"
+          ],
+          "explanation": "possible_transfer_or_joint_manipulation",
+          "object_track_id": "a25bd4ea-d3be-5b6d-a80f-e303933d8080",
+          "recipient_track_id": "ae850ada-d260-5719-8a91-d3f0c49a24f9",
+          "object_category": "chair"
+        },
+        {
+          "actor_track_id": "0233f9f5-780e-5c52-a206-99a4f76f1936",
+          "evidence_observation_ids": [
+            "6553d360-0550-5072-b356-b83452e673fb",
+            "58845954-20bd-5bac-af48-b63385331e4c"
+          ],
+          "explanation": "possible_transfer_or_joint_manipulation",
+          "object_track_id": "0466acd0-a10a-5110-b901-6f7bdbfaa010",
+          "recipient_track_id": "0e8f5011-9e7f-514b-8fc3-426fad379922",
+          "object_category": "chair"
+        },
+        {
+          "actor_track_id": "0e8f5011-9e7f-514b-8fc3-426fad379922",
+          "evidence_observation_ids": [
+            "6553d360-0550-5072-b356-b83452e673fb",
+            "58845954-20bd-5bac-af48-b63385331e4c"
+          ],
+          "explanation": "possible_transfer_or_joint_manipulation",
+          "object_track_id": "0466acd0-a10a-5110-b901-6f7bdbfaa010",
+          "recipient_track_id": "0233f9f5-780e-5c52-a206-99a4f76f1936",
+          "object_category": "chair"
+        }
+      ],
+      "visual_diagnostic": "Multiple model person boxes cover the same single visible person/body regions; not evidence of distinct people.",
+      "reviewer_kind": "AI_visual_diagnostic_not_independent_human",
+      "gold_label": false
+    }
+  ]
+}

@@ -109,7 +109,6 @@ def test_all_states_no_hand_and_rgb_only_lane_roundtrip(tmp_path, monkeypatch):
     [
         "foreign_video",
         "duplicate_frame",
-        "reverse",
         "duplicate_mask",
         "dangling",
         "self_contact",
@@ -129,8 +128,6 @@ def test_malformed_annotation_rejected_before_output(tmp_path, monkeypatch, atta
             f["image"]["video"] = "P02_01"
         if attack == "duplicate_frame":
             d["video_annotations"][1] = copy.deepcopy(f)
-        if attack == "reverse":
-            d["video_annotations"].reverse()
         if attack == "duplicate_mask":
             f["annotations"].append(copy.deepcopy(e))
         if attack == "dangling":

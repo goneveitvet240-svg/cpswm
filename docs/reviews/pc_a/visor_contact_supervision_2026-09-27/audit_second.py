@@ -160,3 +160,20 @@ def test_late_packet_change_is_not_verified(tmp_path, monkeypatch, change):
     monkeypatch.setattr(module, "packet_inventory", inventory)
     with pytest.raises(ValueError):
         module.load_contact_component(root, packet)
+
+
+def test_author_unsorted_records_keep_exact_all_frame_correspondence(tmp_path, monkeypatch):
+    _, _, source = fixture_sources(tmp_path, monkeypatch)
+    original = module._derive(source)
+    changed = copy.deepcopy(source)
+    doc = json.loads(changed["P01_01.json"])
+    doc["video_annotations"] = list(reversed(doc["video_annotations"]))
+    changed["P01_01.json"] = module.encoded(doc)
+    result = module._derive(changed)
+    for name, raw in original.items():
+        if name != "manifest.json":
+            assert result[name] == raw
+    assert (
+        json.loads(result["manifest.json"])["report"]
+        == json.loads(original["manifest.json"])["report"]
+    )

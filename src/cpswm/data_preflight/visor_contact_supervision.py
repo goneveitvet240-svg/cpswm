@@ -53,7 +53,6 @@ def _author_frames(raw: bytes, corrections_raw: bytes) -> list[dict[str, Any]]:
         raise ValueError("bounded nonempty fixed-video annotation required")
     corrections = strict_json(corrections_raw)
     names: set[str] = set()
-    previous = -1
     for frame in frames:
         if set(frame) != {"image", "annotations"}:
             raise ValueError("unexpected annotation frame fields")
@@ -67,10 +66,8 @@ def _author_frames(raw: bytes, corrections_raw: bytes) -> list[dict[str, Any]]:
             or image["video"] != VIDEO
             or image["image_path"] != VIDEO + "/" + name
             or not re.fullmatch(VIDEO + r"_seq_\d{5}", image["subsequence"])
-            or int(match[1]) <= previous
         ):
-            raise ValueError("wrong video, duplicate, unordered or unsafe frame identity")
-        previous = int(match[1])
+            raise ValueError("wrong video, duplicate or unsafe frame identity")
         names.add(name)
         entities = frame["annotations"]
         if not isinstance(entities, list) or not 1 <= len(entities) <= 100:
@@ -123,7 +120,7 @@ def _author_frames(raw: bytes, corrections_raw: bytes) -> list[dict[str, Any]]:
                     or (target not in SPECIAL and target not in ids)
                 ):
                     raise ValueError("dangling or self contact target")
-    return frames
+    return sorted(frames, key=lambda frame: frame["image"]["name"])
 
 
 def _derive(source: dict[str, bytes]) -> dict[str, bytes]:
@@ -239,6 +236,7 @@ def _derive(source: dict[str, bytes]) -> dict[str, bytes]:
         "known_author_corrections_affecting_pilot": 0,
         "author_code_revision": AUTHOR_CODE_SHA,
         "dense_interpolation_used": False,
+        "frame_order_policy": "sort by VISOR frame ordinal; source records need not be ordered",
         "rgb_only_lane_contains_targets": False,
         "cross_frame_instance_identity_assumed": False,
         "exact_contact_release_gold": False,

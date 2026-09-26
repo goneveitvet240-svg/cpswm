@@ -160,6 +160,9 @@ def train_proposer(
 def save_checkpoint(model: TypedProposalNetwork, report: dict[str, Any], directory: Path) -> str:
     if model.config.execution_backend != "dense@1":
         raise ValueError("use explicit execution derivation for an existing dense checkpoint")
+    from cpswm.data_preflight.typed_proposal_networks import parameter_fingerprint
+
+    parameter_fingerprint(model)
     directory.mkdir(parents=True, exist_ok=False)
     blob = io.BytesIO()
     torch.save(model.state_dict(), blob)

@@ -10,7 +10,9 @@ from __future__ import annotations
 
 import hashlib
 import json
+import marshal
 from dataclasses import asdict, dataclass
+from types import CodeType
 from typing import Any, cast
 
 import torch
@@ -77,7 +79,11 @@ def leaves(value: Any, path: tuple[str, ...] = ()) -> list[tuple[tuple[str, ...]
 
 def parameter_fingerprint(network: TypedProposalNetwork) -> str:
     """Bind actual parameter/buffer bytes, including writes outside _version."""
+    structure = architecture_fingerprint(network)
+    if structure != network._architecture_sha256:
+        raise ValueError("model architecture structure binding changed")
     digest = hashlib.sha256()
+    digest.update(structure.encode())
     digest.update(
         json.dumps({"arm": network.arm, "config": asdict(network.config)}, sort_keys=True).encode()
     )
@@ -87,6 +93,97 @@ def parameter_fingerprint(network: TypedProposalNetwork) -> str:
         )
         digest.update(value.detach().contiguous().view(torch.uint8).cpu().numpy().tobytes())
     return digest.hexdigest()
+
+
+def architecture_fingerprint(network: nn.Module) -> str:
+    """Bind the concrete module graph, non-tensor settings and loaded methods.
+
+    This detects owned-model drift, not hostile replacement of the interpreter
+    or its externally trusted roots. Runtime hooks are outside this contract.
+    """
+
+    def normalized(code: CodeType) -> CodeType:
+        return code.replace(
+            co_filename="",
+            co_consts=tuple(
+                normalized(v) if isinstance(v, CodeType) else v for v in code.co_consts
+            ),
+        )
+
+    def callable_identity(value: Any) -> dict[str, str]:
+        code = getattr(value, "__code__", None)
+        return {
+            "module": getattr(value, "__module__", type(value).__module__),
+            "name": getattr(value, "__qualname__", type(value).__qualname__),
+            "code": "native"
+            if code is None
+            else hashlib.sha256(marshal.dumps(normalized(code))).hexdigest(),
+        }
+
+    settings = (
+        "eps",
+        "normalized_shape",
+        "num_heads",
+        "head_dim",
+        "embed_dim",
+        "kdim",
+        "vdim",
+        "_qkv_same_embed_dim",
+        "dropout",
+        "batch_first",
+        "norm_first",
+        "activation_relu_or_gelu",
+        "p",
+        "inplace",
+        "input_size",
+        "hidden_size",
+        "num_layers",
+        "bias",
+        "bidirectional",
+        "proj_size",
+        "num_embeddings",
+        "embedding_dim",
+        "padding_idx",
+        "max_norm",
+        "norm_type",
+        "scale_grad_by_freq",
+        "sparse",
+        "in_features",
+        "out_features",
+        "approximate",
+        "add_zero_attn",
+        "enable_nested_tensor",
+        "use_nested_tensor",
+        "mask_check",
+    )
+    rows = []
+    for name, module in network.named_modules():
+        if any(
+            bool(getattr(module, field, None))
+            for field in (
+                "_forward_hooks",
+                "_forward_pre_hooks",
+                "_backward_hooks",
+                "_backward_pre_hooks",
+            )
+        ):
+            raise ValueError("model architecture structure cannot include runtime hooks")
+        attributes = {}
+        for field in settings:
+            value = getattr(module, field, None)
+            if value is None or type(value) in (str, int, float, bool, tuple):
+                attributes[field] = value
+        activation = getattr(module, "activation", None)
+        rows.append(
+            {
+                "path": name,
+                "class": f"{type(module).__module__}.{type(module).__qualname__}",
+                "settings": attributes,
+                "forward": callable_identity(module.forward),
+                "activation": callable_identity(activation) if callable(activation) else None,
+            }
+        )
+    return content_sha256(rows)
 
 
 class TypedProposalNetwork(nn.Module):
@@ -121,6 +218,7 @@ class TypedProposalNetwork(nn.Module):
             self.prefix_encoder = nn.GRU(w, w, num_layers=config.layers, batch_first=True)
         self.choice_attention = nn.MultiheadAttention(w, h, dropout=0, batch_first=True)
         self.head = nn.Sequential(nn.Linear(3 * w, w), nn.GELU(), nn.Linear(w, 1))
+        self._architecture_sha256 = architecture_fingerprint(self)
 
     def prepare(
         self, context: ProposalContext, candidates: tuple[ProposalTarget, ...]

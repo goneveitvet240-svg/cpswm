@@ -1,0 +1,950 @@
+FFFFFFFFFFF....FF.............................................           [100%]
+=================================== FAILURES ===================================
+_______ test_exact_original_frames_independent_decode_and_reconstruction _______
+
+tmp_path = PosixPath('/private/var/folders/x2/000r8p0n6s393lj2sg8wk5f40000gn/T/pytest-of-pangwei/pytest-2151/test_exact_original_frames_ind0')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x10970aea0>
+
+    def test_exact_original_frames_independent_decode_and_reconstruction(tmp_path, monkeypatch):
+        args, report = fixture(tmp_path, monkeypatch)
+        assert report["selected_frames"] == 6
+        assert len(report["selected_trials"]) == 2
+        assert report["complete_proposal_targets"] == 0
+        assert not report["native_publication_authorized"]
+>       assert module.align_hfd_training(**args, verify=True) == report
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_hfd_observation_alignment.py:48: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+archive = PosixPath('/private/var/folders/x2/000r8p0n6s393lj2sg8wk5f40000gn/T/pytest-of-pangwei/pytest-2151/test_exact_original_frames_ind0/fixture.tar.gz')
+metadata = PosixPath('/private/var/folders/x2/000r8p0n6s393lj2sg8wk5f40000gn/T/pytest-of-pangwei/pytest-2151/test_exact_original_frames_ind0/metadata')
+intake = PosixPath('/private/var/folders/x2/000r8p0n6s393lj2sg8wk5f40000gn/T/pytest-of-pangwei/pytest-2151/test_exact_original_frames_ind0/packet')
+output = PosixPath('/private/var/folders/x2/000r8p0n6s393lj2sg8wk5f40000gn/T/pytest-of-pangwei/pytest-2151/test_exact_original_frames_ind0/aligned')
+imported_at = datetime.datetime(2026, 9, 26, 12, 30, tzinfo=datetime.timezone.utc)
+verify = True
+
+    def align_hfd_training(
+        *,
+        archive: Path,
+        metadata: Path,
+        intake: Path,
+        output: Path,
+        imported_at: datetime,
+        verify: bool = False,
+    ) -> dict[str, Any]:
+        """Reconstruct source roots on every call; a resealed output is not authority."""
+        if not verify and output.exists():
+            raise FileExistsError(output)
+        before = packet_inventory(output) if verify else None
+        manifest = inspect_full_training(archive, metadata, intake, verify=True)
+        files, report = alignment_artifacts(intake, manifest, imported_at=imported_at)
+        files["manifest.json"] = encoded(report)
+        if verify:
+            if set(packet_inventory(output)) != set(files):
+                raise ValueError("alignment package member coverage differs")
+            for name, expected in files.items():
+                if (output / name).read_bytes() != expected:
+>                   raise ValueError("alignment artifact differs from original source: " + name)
+E                   ValueError: alignment artifact differs from original source: runtime/e8a0ccb7824a2fe73dfbc0016a72b2ea6e3274fd9664b3c9f2f88193d5b7cd63/000000.envelope.json
+
+src/cpswm/data_preflight/hfd_observation_alignment.py:322: ValueError
+_ test_resealed_receipt_cannot_change_clock_or_add_answers[original_frame_index-True] _
+
+tmp_path = PosixPath('/private/var/folders/x2/000r8p0n6s393lj2sg8wk5f40000gn/T/pytest-of-pangwei/pytest-2151/test_resealed_receipt_cannot_c0')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x11c1e7100>
+field = 'original_frame_index', value = True
+
+    @pytest.mark.parametrize(
+        "field,value",
+        [
+            ("original_frame_index", True),
+            ("original_frame_index", -1),
+            ("original_frame_index", 3),
+            ("source_frame_count", 0),
+            ("media_time_seconds", 0.2),
+            ("author_clock_seconds", float("inf")),
+            ("author_clock_origin_seconds", True),
+            ("source_clock_sha256", "bad"),
+            ("human_action", "interact"),
+            ("time_semantics", "exact_contact_time"),
+        ],
+    )
+    def test_resealed_receipt_cannot_change_clock_or_add_answers(tmp_path, monkeypatch, field, value):
+        args, _ = fixture(tmp_path, monkeypatch)
+>       raw = module.load_runtime_observations(
+            args["output"] / "runtime", manifest_sha256=runtime_pin(args["output"])
+        )[0][1]
+
+tests/test_hfd_observation_alignment.py:89: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+root = PosixPath('/private/var/folders/x2/000r8p0n6s393lj2sg8wk5f40000gn/T/pytest-of-pangwei/pytest-2151/test_resealed_receipt_cannot_c0/aligned/runtime')
+manifest_sha256 = '6b18a3da26f73f63375d5495b6aeba86cec3d6d59071a96d3d061469b1c66dbc'
+
+    def load_runtime_observations(
+        root: Path,
+        *,
+        manifest_sha256: str,
+    ) -> tuple[tuple[str, RawModalityObservation], ...]:
+        """Load only the runtime subtree, pinned by the source-reconstructing caller.
+    
+        A digest obtained from this same untrusted package is not source verification.
+        This function validates the selected bytes, not external annotation accuracy.
+        """
+        before = packet_inventory(root)
+        manifest = strict_json(pinned_bytes(root, "manifest.json", manifest_sha256))
+        if set(manifest) != {"format", "intake_manifest_sha256", "files"} or (
+            manifest["format"] != "hfd-original-runtime-inputs@1"
+        ):
+            raise ValueError("unexpected runtime manifest")
+        index = [
+            strict_json(line)
+            for line in pinned_bytes(root, "index.jsonl", manifest["files"]["index.jsonl"]).splitlines()
+        ]
+        if not 1 <= len(index) <= 256:
+            raise ValueError("runtime sample exceeds local development budget")
+        files = {"manifest.json", "index.jsonl"}
+        observed: list[tuple[str, RawModalityObservation]] = []
+        keys: set[str] = set()
+        ids: set[str] = set()
+        previous: dict[str, int] = {}
+        from cpswm.perception_mapping.natural_vision import decode_rgb
+    
+        for row in index:
+            key = row.get("key")
+            if (
+                set(row) != {"key", "observation_id", "payload_sha256", "receipt_sha256"}
+                or not isinstance(key, str)
+                or re.fullmatch(r"[0-9a-f]{64}/[0-9]{6}", key) is None
+                or key in keys
+            ):
+>               raise ValueError("invalid or duplicate runtime original frame key")
+E               ValueError: invalid or duplicate runtime original frame key
+
+src/cpswm/data_preflight/hfd_observation_alignment.py:373: ValueError
+_ test_resealed_receipt_cannot_change_clock_or_add_answers[original_frame_index--1] _
+
+tmp_path = PosixPath('/private/var/folders/x2/000r8p0n6s393lj2sg8wk5f40000gn/T/pytest-of-pangwei/pytest-2151/test_resealed_receipt_cannot_c1')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x10a34f410>
+field = 'original_frame_index', value = -1
+
+    @pytest.mark.parametrize(
+        "field,value",
+        [
+            ("original_frame_index", True),
+            ("original_frame_index", -1),
+            ("original_frame_index", 3),
+            ("source_frame_count", 0),
+            ("media_time_seconds", 0.2),
+            ("author_clock_seconds", float("inf")),
+            ("author_clock_origin_seconds", True),
+            ("source_clock_sha256", "bad"),
+            ("human_action", "interact"),
+            ("time_semantics", "exact_contact_time"),
+        ],
+    )
+    def test_resealed_receipt_cannot_change_clock_or_add_answers(tmp_path, monkeypatch, field, value):
+        args, _ = fixture(tmp_path, monkeypatch)
+>       raw = module.load_runtime_observations(
+            args["output"] / "runtime", manifest_sha256=runtime_pin(args["output"])
+        )[0][1]
+
+tests/test_hfd_observation_alignment.py:89: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+root = PosixPath('/private/var/folders/x2/000r8p0n6s393lj2sg8wk5f40000gn/T/pytest-of-pangwei/pytest-2151/test_resealed_receipt_cannot_c1/aligned/runtime')
+manifest_sha256 = '35e4f737b15ea00a70d1275dbf0855382891da3ddd6e0869061b9c7670b122a1'
+
+    def load_runtime_observations(
+        root: Path,
+        *,
+        manifest_sha256: str,
+    ) -> tuple[tuple[str, RawModalityObservation], ...]:
+        """Load only the runtime subtree, pinned by the source-reconstructing caller.
+    
+        A digest obtained from this same untrusted package is not source verification.
+        This function validates the selected bytes, not external annotation accuracy.
+        """
+        before = packet_inventory(root)
+        manifest = strict_json(pinned_bytes(root, "manifest.json", manifest_sha256))
+        if set(manifest) != {"format", "intake_manifest_sha256", "files"} or (
+            manifest["format"] != "hfd-original-runtime-inputs@1"
+        ):
+            raise ValueError("unexpected runtime manifest")
+        index = [
+            strict_json(line)
+            for line in pinned_bytes(root, "index.jsonl", manifest["files"]["index.jsonl"]).splitlines()
+        ]
+        if not 1 <= len(index) <= 256:
+            raise ValueError("runtime sample exceeds local development budget")
+        files = {"manifest.json", "index.jsonl"}
+        observed: list[tuple[str, RawModalityObservation]] = []
+        keys: set[str] = set()
+        ids: set[str] = set()
+        previous: dict[str, int] = {}
+        from cpswm.perception_mapping.natural_vision import decode_rgb
+    
+        for row in index:
+            key = row.get("key")
+            if (
+                set(row) != {"key", "observation_id", "payload_sha256", "receipt_sha256"}
+                or not isinstance(key, str)
+                or re.fullmatch(r"[0-9a-f]{64}/[0-9]{6}", key) is None
+                or key in keys
+            ):
+>               raise ValueError("invalid or duplicate runtime original frame key")
+E               ValueError: invalid or duplicate runtime original frame key
+
+src/cpswm/data_preflight/hfd_observation_alignment.py:373: ValueError
+_ test_resealed_receipt_cannot_change_clock_or_add_answers[original_frame_index-3] _
+
+tmp_path = PosixPath('/private/var/folders/x2/000r8p0n6s393lj2sg8wk5f40000gn/T/pytest-of-pangwei/pytest-2151/test_resealed_receipt_cannot_c2')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x120d9c160>
+field = 'original_frame_index', value = 3
+
+    @pytest.mark.parametrize(
+        "field,value",
+        [
+            ("original_frame_index", True),
+            ("original_frame_index", -1),
+            ("original_frame_index", 3),
+            ("source_frame_count", 0),
+            ("media_time_seconds", 0.2),
+            ("author_clock_seconds", float("inf")),
+            ("author_clock_origin_seconds", True),
+            ("source_clock_sha256", "bad"),
+            ("human_action", "interact"),
+            ("time_semantics", "exact_contact_time"),
+        ],
+    )
+    def test_resealed_receipt_cannot_change_clock_or_add_answers(tmp_path, monkeypatch, field, value):
+        args, _ = fixture(tmp_path, monkeypatch)
+>       raw = module.load_runtime_observations(
+            args["output"] / "runtime", manifest_sha256=runtime_pin(args["output"])
+        )[0][1]
+
+tests/test_hfd_observation_alignment.py:89: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+root = PosixPath('/private/var/folders/x2/000r8p0n6s393lj2sg8wk5f40000gn/T/pytest-of-pangwei/pytest-2151/test_resealed_receipt_cannot_c2/aligned/runtime')
+manifest_sha256 = '50f8f381a7e33640b65cdd52bd1b92dbbe465f14afb8606b7d4f6348f1d2432e'
+
+    def load_runtime_observations(
+        root: Path,
+        *,
+        manifest_sha256: str,
+    ) -> tuple[tuple[str, RawModalityObservation], ...]:
+        """Load only the runtime subtree, pinned by the source-reconstructing caller.
+    
+        A digest obtained from this same untrusted package is not source verification.
+        This function validates the selected bytes, not external annotation accuracy.
+        """
+        before = packet_inventory(root)
+        manifest = strict_json(pinned_bytes(root, "manifest.json", manifest_sha256))
+        if set(manifest) != {"format", "intake_manifest_sha256", "files"} or (
+            manifest["format"] != "hfd-original-runtime-inputs@1"
+        ):
+            raise ValueError("unexpected runtime manifest")
+        index = [
+            strict_json(line)
+            for line in pinned_bytes(root, "index.jsonl", manifest["files"]["index.jsonl"]).splitlines()
+        ]
+        if not 1 <= len(index) <= 256:
+            raise ValueError("runtime sample exceeds local development budget")
+        files = {"manifest.json", "index.jsonl"}
+        observed: list[tuple[str, RawModalityObservation]] = []
+        keys: set[str] = set()
+        ids: set[str] = set()
+        previous: dict[str, int] = {}
+        from cpswm.perception_mapping.natural_vision import decode_rgb
+    
+        for row in index:
+            key = row.get("key")
+            if (
+                set(row) != {"key", "observation_id", "payload_sha256", "receipt_sha256"}
+                or not isinstance(key, str)
+                or re.fullmatch(r"[0-9a-f]{64}/[0-9]{6}", key) is None
+                or key in keys
+            ):
+>               raise ValueError("invalid or duplicate runtime original frame key")
+E               ValueError: invalid or duplicate runtime original frame key
+
+src/cpswm/data_preflight/hfd_observation_alignment.py:373: ValueError
+_ test_resealed_receipt_cannot_change_clock_or_add_answers[source_frame_count-0] _
+
+tmp_path = PosixPath('/private/var/folders/x2/000r8p0n6s393lj2sg8wk5f40000gn/T/pytest-of-pangwei/pytest-2151/test_resealed_receipt_cannot_c3')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x120d9cd10>
+field = 'source_frame_count', value = 0
+
+    @pytest.mark.parametrize(
+        "field,value",
+        [
+            ("original_frame_index", True),
+            ("original_frame_index", -1),
+            ("original_frame_index", 3),
+            ("source_frame_count", 0),
+            ("media_time_seconds", 0.2),
+            ("author_clock_seconds", float("inf")),
+            ("author_clock_origin_seconds", True),
+            ("source_clock_sha256", "bad"),
+            ("human_action", "interact"),
+            ("time_semantics", "exact_contact_time"),
+        ],
+    )
+    def test_resealed_receipt_cannot_change_clock_or_add_answers(tmp_path, monkeypatch, field, value):
+        args, _ = fixture(tmp_path, monkeypatch)
+>       raw = module.load_runtime_observations(
+            args["output"] / "runtime", manifest_sha256=runtime_pin(args["output"])
+        )[0][1]
+
+tests/test_hfd_observation_alignment.py:89: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+root = PosixPath('/private/var/folders/x2/000r8p0n6s393lj2sg8wk5f40000gn/T/pytest-of-pangwei/pytest-2151/test_resealed_receipt_cannot_c3/aligned/runtime')
+manifest_sha256 = '6937ae6670b395e2e730fa938493fcafde36ee8641f5b5e92a246d0e12e1ee7b'
+
+    def load_runtime_observations(
+        root: Path,
+        *,
+        manifest_sha256: str,
+    ) -> tuple[tuple[str, RawModalityObservation], ...]:
+        """Load only the runtime subtree, pinned by the source-reconstructing caller.
+    
+        A digest obtained from this same untrusted package is not source verification.
+        This function validates the selected bytes, not external annotation accuracy.
+        """
+        before = packet_inventory(root)
+        manifest = strict_json(pinned_bytes(root, "manifest.json", manifest_sha256))
+        if set(manifest) != {"format", "intake_manifest_sha256", "files"} or (
+            manifest["format"] != "hfd-original-runtime-inputs@1"
+        ):
+            raise ValueError("unexpected runtime manifest")
+        index = [
+            strict_json(line)
+            for line in pinned_bytes(root, "index.jsonl", manifest["files"]["index.jsonl"]).splitlines()
+        ]
+        if not 1 <= len(index) <= 256:
+            raise ValueError("runtime sample exceeds local development budget")
+        files = {"manifest.json", "index.jsonl"}
+        observed: list[tuple[str, RawModalityObservation]] = []
+        keys: set[str] = set()
+        ids: set[str] = set()
+        previous: dict[str, int] = {}
+        from cpswm.perception_mapping.natural_vision import decode_rgb
+    
+        for row in index:
+            key = row.get("key")
+            if (
+                set(row) != {"key", "observation_id", "payload_sha256", "receipt_sha256"}
+                or not isinstance(key, str)
+                or re.fullmatch(r"[0-9a-f]{64}/[0-9]{6}", key) is None
+                or key in keys
+            ):
+>               raise ValueError("invalid or duplicate runtime original frame key")
+E               ValueError: invalid or duplicate runtime original frame key
+
+src/cpswm/data_preflight/hfd_observation_alignment.py:373: ValueError
+_ test_resealed_receipt_cannot_change_clock_or_add_answers[media_time_seconds-0.2] _
+
+tmp_path = PosixPath('/private/var/folders/x2/000r8p0n6s393lj2sg8wk5f40000gn/T/pytest-of-pangwei/pytest-2151/test_resealed_receipt_cannot_c4')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x120e7af50>
+field = 'media_time_seconds', value = 0.2
+
+    @pytest.mark.parametrize(
+        "field,value",
+        [
+            ("original_frame_index", True),
+            ("original_frame_index", -1),
+            ("original_frame_index", 3),
+            ("source_frame_count", 0),
+            ("media_time_seconds", 0.2),
+            ("author_clock_seconds", float("inf")),
+            ("author_clock_origin_seconds", True),
+            ("source_clock_sha256", "bad"),
+            ("human_action", "interact"),
+            ("time_semantics", "exact_contact_time"),
+        ],
+    )
+    def test_resealed_receipt_cannot_change_clock_or_add_answers(tmp_path, monkeypatch, field, value):
+        args, _ = fixture(tmp_path, monkeypatch)
+>       raw = module.load_runtime_observations(
+            args["output"] / "runtime", manifest_sha256=runtime_pin(args["output"])
+        )[0][1]
+
+tests/test_hfd_observation_alignment.py:89: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+root = PosixPath('/private/var/folders/x2/000r8p0n6s393lj2sg8wk5f40000gn/T/pytest-of-pangwei/pytest-2151/test_resealed_receipt_cannot_c4/aligned/runtime')
+manifest_sha256 = 'acfdac01c695f92115e548df0de3864a4e866b3b5746700d9aa503523d6cb32b'
+
+    def load_runtime_observations(
+        root: Path,
+        *,
+        manifest_sha256: str,
+    ) -> tuple[tuple[str, RawModalityObservation], ...]:
+        """Load only the runtime subtree, pinned by the source-reconstructing caller.
+    
+        A digest obtained from this same untrusted package is not source verification.
+        This function validates the selected bytes, not external annotation accuracy.
+        """
+        before = packet_inventory(root)
+        manifest = strict_json(pinned_bytes(root, "manifest.json", manifest_sha256))
+        if set(manifest) != {"format", "intake_manifest_sha256", "files"} or (
+            manifest["format"] != "hfd-original-runtime-inputs@1"
+        ):
+            raise ValueError("unexpected runtime manifest")
+        index = [
+            strict_json(line)
+            for line in pinned_bytes(root, "index.jsonl", manifest["files"]["index.jsonl"]).splitlines()
+        ]
+        if not 1 <= len(index) <= 256:
+            raise ValueError("runtime sample exceeds local development budget")
+        files = {"manifest.json", "index.jsonl"}
+        observed: list[tuple[str, RawModalityObservation]] = []
+        keys: set[str] = set()
+        ids: set[str] = set()
+        previous: dict[str, int] = {}
+        from cpswm.perception_mapping.natural_vision import decode_rgb
+    
+        for row in index:
+            key = row.get("key")
+            if (
+                set(row) != {"key", "observation_id", "payload_sha256", "receipt_sha256"}
+                or not isinstance(key, str)
+                or re.fullmatch(r"[0-9a-f]{64}/[0-9]{6}", key) is None
+                or key in keys
+            ):
+>               raise ValueError("invalid or duplicate runtime original frame key")
+E               ValueError: invalid or duplicate runtime original frame key
+
+src/cpswm/data_preflight/hfd_observation_alignment.py:373: ValueError
+_ test_resealed_receipt_cannot_change_clock_or_add_answers[author_clock_seconds-inf] _
+
+tmp_path = PosixPath('/private/var/folders/x2/000r8p0n6s393lj2sg8wk5f40000gn/T/pytest-of-pangwei/pytest-2151/test_resealed_receipt_cannot_c5')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x120e7b350>
+field = 'author_clock_seconds', value = inf
+
+    @pytest.mark.parametrize(
+        "field,value",
+        [
+            ("original_frame_index", True),
+            ("original_frame_index", -1),
+            ("original_frame_index", 3),
+            ("source_frame_count", 0),
+            ("media_time_seconds", 0.2),
+            ("author_clock_seconds", float("inf")),
+            ("author_clock_origin_seconds", True),
+            ("source_clock_sha256", "bad"),
+            ("human_action", "interact"),
+            ("time_semantics", "exact_contact_time"),
+        ],
+    )
+    def test_resealed_receipt_cannot_change_clock_or_add_answers(tmp_path, monkeypatch, field, value):
+        args, _ = fixture(tmp_path, monkeypatch)
+>       raw = module.load_runtime_observations(
+            args["output"] / "runtime", manifest_sha256=runtime_pin(args["output"])
+        )[0][1]
+
+tests/test_hfd_observation_alignment.py:89: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+root = PosixPath('/private/var/folders/x2/000r8p0n6s393lj2sg8wk5f40000gn/T/pytest-of-pangwei/pytest-2151/test_resealed_receipt_cannot_c5/aligned/runtime')
+manifest_sha256 = 'c1c75db157b77ef480ce2ee95614da465ca65d7ca0ba7a788fdad4484fb0ab5d'
+
+    def load_runtime_observations(
+        root: Path,
+        *,
+        manifest_sha256: str,
+    ) -> tuple[tuple[str, RawModalityObservation], ...]:
+        """Load only the runtime subtree, pinned by the source-reconstructing caller.
+    
+        A digest obtained from this same untrusted package is not source verification.
+        This function validates the selected bytes, not external annotation accuracy.
+        """
+        before = packet_inventory(root)
+        manifest = strict_json(pinned_bytes(root, "manifest.json", manifest_sha256))
+        if set(manifest) != {"format", "intake_manifest_sha256", "files"} or (
+            manifest["format"] != "hfd-original-runtime-inputs@1"
+        ):
+            raise ValueError("unexpected runtime manifest")
+        index = [
+            strict_json(line)
+            for line in pinned_bytes(root, "index.jsonl", manifest["files"]["index.jsonl"]).splitlines()
+        ]
+        if not 1 <= len(index) <= 256:
+            raise ValueError("runtime sample exceeds local development budget")
+        files = {"manifest.json", "index.jsonl"}
+        observed: list[tuple[str, RawModalityObservation]] = []
+        keys: set[str] = set()
+        ids: set[str] = set()
+        previous: dict[str, int] = {}
+        from cpswm.perception_mapping.natural_vision import decode_rgb
+    
+        for row in index:
+            key = row.get("key")
+            if (
+                set(row) != {"key", "observation_id", "payload_sha256", "receipt_sha256"}
+                or not isinstance(key, str)
+                or re.fullmatch(r"[0-9a-f]{64}/[0-9]{6}", key) is None
+                or key in keys
+            ):
+>               raise ValueError("invalid or duplicate runtime original frame key")
+E               ValueError: invalid or duplicate runtime original frame key
+
+src/cpswm/data_preflight/hfd_observation_alignment.py:373: ValueError
+_ test_resealed_receipt_cannot_change_clock_or_add_answers[author_clock_origin_seconds-True] _
+
+tmp_path = PosixPath('/private/var/folders/x2/000r8p0n6s393lj2sg8wk5f40000gn/T/pytest-of-pangwei/pytest-2151/test_resealed_receipt_cannot_c6')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x11ef53d40>
+field = 'author_clock_origin_seconds', value = True
+
+    @pytest.mark.parametrize(
+        "field,value",
+        [
+            ("original_frame_index", True),
+            ("original_frame_index", -1),
+            ("original_frame_index", 3),
+            ("source_frame_count", 0),
+            ("media_time_seconds", 0.2),
+            ("author_clock_seconds", float("inf")),
+            ("author_clock_origin_seconds", True),
+            ("source_clock_sha256", "bad"),
+            ("human_action", "interact"),
+            ("time_semantics", "exact_contact_time"),
+        ],
+    )
+    def test_resealed_receipt_cannot_change_clock_or_add_answers(tmp_path, monkeypatch, field, value):
+        args, _ = fixture(tmp_path, monkeypatch)
+>       raw = module.load_runtime_observations(
+            args["output"] / "runtime", manifest_sha256=runtime_pin(args["output"])
+        )[0][1]
+
+tests/test_hfd_observation_alignment.py:89: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+root = PosixPath('/private/var/folders/x2/000r8p0n6s393lj2sg8wk5f40000gn/T/pytest-of-pangwei/pytest-2151/test_resealed_receipt_cannot_c6/aligned/runtime')
+manifest_sha256 = '8e62a035b282c23fed652f66a9bd872078d44aefea12fc8be14df952c2feddee'
+
+    def load_runtime_observations(
+        root: Path,
+        *,
+        manifest_sha256: str,
+    ) -> tuple[tuple[str, RawModalityObservation], ...]:
+        """Load only the runtime subtree, pinned by the source-reconstructing caller.
+    
+        A digest obtained from this same untrusted package is not source verification.
+        This function validates the selected bytes, not external annotation accuracy.
+        """
+        before = packet_inventory(root)
+        manifest = strict_json(pinned_bytes(root, "manifest.json", manifest_sha256))
+        if set(manifest) != {"format", "intake_manifest_sha256", "files"} or (
+            manifest["format"] != "hfd-original-runtime-inputs@1"
+        ):
+            raise ValueError("unexpected runtime manifest")
+        index = [
+            strict_json(line)
+            for line in pinned_bytes(root, "index.jsonl", manifest["files"]["index.jsonl"]).splitlines()
+        ]
+        if not 1 <= len(index) <= 256:
+            raise ValueError("runtime sample exceeds local development budget")
+        files = {"manifest.json", "index.jsonl"}
+        observed: list[tuple[str, RawModalityObservation]] = []
+        keys: set[str] = set()
+        ids: set[str] = set()
+        previous: dict[str, int] = {}
+        from cpswm.perception_mapping.natural_vision import decode_rgb
+    
+        for row in index:
+            key = row.get("key")
+            if (
+                set(row) != {"key", "observation_id", "payload_sha256", "receipt_sha256"}
+                or not isinstance(key, str)
+                or re.fullmatch(r"[0-9a-f]{64}/[0-9]{6}", key) is None
+                or key in keys
+            ):
+>               raise ValueError("invalid or duplicate runtime original frame key")
+E               ValueError: invalid or duplicate runtime original frame key
+
+src/cpswm/data_preflight/hfd_observation_alignment.py:373: ValueError
+_ test_resealed_receipt_cannot_change_clock_or_add_answers[source_clock_sha256-bad] _
+
+tmp_path = PosixPath('/private/var/folders/x2/000r8p0n6s393lj2sg8wk5f40000gn/T/pytest-of-pangwei/pytest-2151/test_resealed_receipt_cannot_c7')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x11ef537a0>
+field = 'source_clock_sha256', value = 'bad'
+
+    @pytest.mark.parametrize(
+        "field,value",
+        [
+            ("original_frame_index", True),
+            ("original_frame_index", -1),
+            ("original_frame_index", 3),
+            ("source_frame_count", 0),
+            ("media_time_seconds", 0.2),
+            ("author_clock_seconds", float("inf")),
+            ("author_clock_origin_seconds", True),
+            ("source_clock_sha256", "bad"),
+            ("human_action", "interact"),
+            ("time_semantics", "exact_contact_time"),
+        ],
+    )
+    def test_resealed_receipt_cannot_change_clock_or_add_answers(tmp_path, monkeypatch, field, value):
+        args, _ = fixture(tmp_path, monkeypatch)
+>       raw = module.load_runtime_observations(
+            args["output"] / "runtime", manifest_sha256=runtime_pin(args["output"])
+        )[0][1]
+
+tests/test_hfd_observation_alignment.py:89: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+root = PosixPath('/private/var/folders/x2/000r8p0n6s393lj2sg8wk5f40000gn/T/pytest-of-pangwei/pytest-2151/test_resealed_receipt_cannot_c7/aligned/runtime')
+manifest_sha256 = 'f55013e29a655433e751d906cb622e2024a1966112e481414fc655ddad23a221'
+
+    def load_runtime_observations(
+        root: Path,
+        *,
+        manifest_sha256: str,
+    ) -> tuple[tuple[str, RawModalityObservation], ...]:
+        """Load only the runtime subtree, pinned by the source-reconstructing caller.
+    
+        A digest obtained from this same untrusted package is not source verification.
+        This function validates the selected bytes, not external annotation accuracy.
+        """
+        before = packet_inventory(root)
+        manifest = strict_json(pinned_bytes(root, "manifest.json", manifest_sha256))
+        if set(manifest) != {"format", "intake_manifest_sha256", "files"} or (
+            manifest["format"] != "hfd-original-runtime-inputs@1"
+        ):
+            raise ValueError("unexpected runtime manifest")
+        index = [
+            strict_json(line)
+            for line in pinned_bytes(root, "index.jsonl", manifest["files"]["index.jsonl"]).splitlines()
+        ]
+        if not 1 <= len(index) <= 256:
+            raise ValueError("runtime sample exceeds local development budget")
+        files = {"manifest.json", "index.jsonl"}
+        observed: list[tuple[str, RawModalityObservation]] = []
+        keys: set[str] = set()
+        ids: set[str] = set()
+        previous: dict[str, int] = {}
+        from cpswm.perception_mapping.natural_vision import decode_rgb
+    
+        for row in index:
+            key = row.get("key")
+            if (
+                set(row) != {"key", "observation_id", "payload_sha256", "receipt_sha256"}
+                or not isinstance(key, str)
+                or re.fullmatch(r"[0-9a-f]{64}/[0-9]{6}", key) is None
+                or key in keys
+            ):
+>               raise ValueError("invalid or duplicate runtime original frame key")
+E               ValueError: invalid or duplicate runtime original frame key
+
+src/cpswm/data_preflight/hfd_observation_alignment.py:373: ValueError
+_ test_resealed_receipt_cannot_change_clock_or_add_answers[human_action-interact] _
+
+tmp_path = PosixPath('/private/var/folders/x2/000r8p0n6s393lj2sg8wk5f40000gn/T/pytest-of-pangwei/pytest-2151/test_resealed_receipt_cannot_c8')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x120db1390>
+field = 'human_action', value = 'interact'
+
+    @pytest.mark.parametrize(
+        "field,value",
+        [
+            ("original_frame_index", True),
+            ("original_frame_index", -1),
+            ("original_frame_index", 3),
+            ("source_frame_count", 0),
+            ("media_time_seconds", 0.2),
+            ("author_clock_seconds", float("inf")),
+            ("author_clock_origin_seconds", True),
+            ("source_clock_sha256", "bad"),
+            ("human_action", "interact"),
+            ("time_semantics", "exact_contact_time"),
+        ],
+    )
+    def test_resealed_receipt_cannot_change_clock_or_add_answers(tmp_path, monkeypatch, field, value):
+        args, _ = fixture(tmp_path, monkeypatch)
+>       raw = module.load_runtime_observations(
+            args["output"] / "runtime", manifest_sha256=runtime_pin(args["output"])
+        )[0][1]
+
+tests/test_hfd_observation_alignment.py:89: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+root = PosixPath('/private/var/folders/x2/000r8p0n6s393lj2sg8wk5f40000gn/T/pytest-of-pangwei/pytest-2151/test_resealed_receipt_cannot_c8/aligned/runtime')
+manifest_sha256 = 'e1994f799a4d717935e41cbe7d82382bcbc53dc8ccadda7b66be6bb2e0cfa789'
+
+    def load_runtime_observations(
+        root: Path,
+        *,
+        manifest_sha256: str,
+    ) -> tuple[tuple[str, RawModalityObservation], ...]:
+        """Load only the runtime subtree, pinned by the source-reconstructing caller.
+    
+        A digest obtained from this same untrusted package is not source verification.
+        This function validates the selected bytes, not external annotation accuracy.
+        """
+        before = packet_inventory(root)
+        manifest = strict_json(pinned_bytes(root, "manifest.json", manifest_sha256))
+        if set(manifest) != {"format", "intake_manifest_sha256", "files"} or (
+            manifest["format"] != "hfd-original-runtime-inputs@1"
+        ):
+            raise ValueError("unexpected runtime manifest")
+        index = [
+            strict_json(line)
+            for line in pinned_bytes(root, "index.jsonl", manifest["files"]["index.jsonl"]).splitlines()
+        ]
+        if not 1 <= len(index) <= 256:
+            raise ValueError("runtime sample exceeds local development budget")
+        files = {"manifest.json", "index.jsonl"}
+        observed: list[tuple[str, RawModalityObservation]] = []
+        keys: set[str] = set()
+        ids: set[str] = set()
+        previous: dict[str, int] = {}
+        from cpswm.perception_mapping.natural_vision import decode_rgb
+    
+        for row in index:
+            key = row.get("key")
+            if (
+                set(row) != {"key", "observation_id", "payload_sha256", "receipt_sha256"}
+                or not isinstance(key, str)
+                or re.fullmatch(r"[0-9a-f]{64}/[0-9]{6}", key) is None
+                or key in keys
+            ):
+>               raise ValueError("invalid or duplicate runtime original frame key")
+E               ValueError: invalid or duplicate runtime original frame key
+
+src/cpswm/data_preflight/hfd_observation_alignment.py:373: ValueError
+_ test_resealed_receipt_cannot_change_clock_or_add_answers[time_semantics-exact_contact_time] _
+
+tmp_path = PosixPath('/private/var/folders/x2/000r8p0n6s393lj2sg8wk5f40000gn/T/pytest-of-pangwei/pytest-2151/test_resealed_receipt_cannot_c9')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x120db0130>
+field = 'time_semantics', value = 'exact_contact_time'
+
+    @pytest.mark.parametrize(
+        "field,value",
+        [
+            ("original_frame_index", True),
+            ("original_frame_index", -1),
+            ("original_frame_index", 3),
+            ("source_frame_count", 0),
+            ("media_time_seconds", 0.2),
+            ("author_clock_seconds", float("inf")),
+            ("author_clock_origin_seconds", True),
+            ("source_clock_sha256", "bad"),
+            ("human_action", "interact"),
+            ("time_semantics", "exact_contact_time"),
+        ],
+    )
+    def test_resealed_receipt_cannot_change_clock_or_add_answers(tmp_path, monkeypatch, field, value):
+        args, _ = fixture(tmp_path, monkeypatch)
+>       raw = module.load_runtime_observations(
+            args["output"] / "runtime", manifest_sha256=runtime_pin(args["output"])
+        )[0][1]
+
+tests/test_hfd_observation_alignment.py:89: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+root = PosixPath('/private/var/folders/x2/000r8p0n6s393lj2sg8wk5f40000gn/T/pytest-of-pangwei/pytest-2151/test_resealed_receipt_cannot_c9/aligned/runtime')
+manifest_sha256 = 'f19e1dc37f11f93d14b3ba0cba83a78ad2abebb4f4a1f11855256b5ac17878c5'
+
+    def load_runtime_observations(
+        root: Path,
+        *,
+        manifest_sha256: str,
+    ) -> tuple[tuple[str, RawModalityObservation], ...]:
+        """Load only the runtime subtree, pinned by the source-reconstructing caller.
+    
+        A digest obtained from this same untrusted package is not source verification.
+        This function validates the selected bytes, not external annotation accuracy.
+        """
+        before = packet_inventory(root)
+        manifest = strict_json(pinned_bytes(root, "manifest.json", manifest_sha256))
+        if set(manifest) != {"format", "intake_manifest_sha256", "files"} or (
+            manifest["format"] != "hfd-original-runtime-inputs@1"
+        ):
+            raise ValueError("unexpected runtime manifest")
+        index = [
+            strict_json(line)
+            for line in pinned_bytes(root, "index.jsonl", manifest["files"]["index.jsonl"]).splitlines()
+        ]
+        if not 1 <= len(index) <= 256:
+            raise ValueError("runtime sample exceeds local development budget")
+        files = {"manifest.json", "index.jsonl"}
+        observed: list[tuple[str, RawModalityObservation]] = []
+        keys: set[str] = set()
+        ids: set[str] = set()
+        previous: dict[str, int] = {}
+        from cpswm.perception_mapping.natural_vision import decode_rgb
+    
+        for row in index:
+            key = row.get("key")
+            if (
+                set(row) != {"key", "observation_id", "payload_sha256", "receipt_sha256"}
+                or not isinstance(key, str)
+                or re.fullmatch(r"[0-9a-f]{64}/[0-9]{6}", key) is None
+                or key in keys
+            ):
+>               raise ValueError("invalid or duplicate runtime original frame key")
+E               ValueError: invalid or duplicate runtime original frame key
+
+src/cpswm/data_preflight/hfd_observation_alignment.py:373: ValueError
+__ test_runtime_isolated_labels_full_candidates_and_core_action_consequences ___
+
+tmp_path = PosixPath('/private/var/folders/x2/000r8p0n6s393lj2sg8wk5f40000gn/T/pytest-of-pangwei/pytest-2151/test_runtime_isolated_labels_f0')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x11b4f9640>
+
+    def test_runtime_isolated_labels_full_candidates_and_core_action_consequences(
+        tmp_path, monkeypatch
+    ):
+        args, _ = fixture(tmp_path, monkeypatch)
+        root = args["output"]
+        frontend = frontend_module()
+        monkeypatch.setattr(frontend, "FasterNaturalAppearanceDetector", FixtureDetector)
+        # Deny reads of *any* evaluator or author files during frontend execution.
+        original = Path.open
+    
+        def guarded(path, *a, **kw):
+            if "evaluator" in path.parts or path.name in {"human_activity.npy", "task_info.json"}:
+                raise AssertionError("runtime accessed answers")
+            return original(path, *a, **kw)
+    
+        monkeypatch.setattr(Path, "open", guarded)
+>       result = frontend.run(
+            root / "runtime", runtime_pin(root), tmp_path / "unused", tmp_path / "run"
+        )
+
+tests/test_hfd_observation_alignment.py:177: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tools/run_hfd_pixel_frontend.py:33: in run
+    inputs = load_runtime_observations(runtime, manifest_sha256=manifest_sha256)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+root = PosixPath('/private/var/folders/x2/000r8p0n6s393lj2sg8wk5f40000gn/T/pytest-of-pangwei/pytest-2151/test_runtime_isolated_labels_f0/aligned/runtime')
+manifest_sha256 = '1f831c24c937c4653c2f6e53cc68b9c10676fb9f0ebd9ba2dcc3c4d0f9a1c672'
+
+    def load_runtime_observations(
+        root: Path,
+        *,
+        manifest_sha256: str,
+    ) -> tuple[tuple[str, RawModalityObservation], ...]:
+        """Load only the runtime subtree, pinned by the source-reconstructing caller.
+    
+        A digest obtained from this same untrusted package is not source verification.
+        This function validates the selected bytes, not external annotation accuracy.
+        """
+        before = packet_inventory(root)
+        manifest = strict_json(pinned_bytes(root, "manifest.json", manifest_sha256))
+        if set(manifest) != {"format", "intake_manifest_sha256", "files"} or (
+            manifest["format"] != "hfd-original-runtime-inputs@1"
+        ):
+            raise ValueError("unexpected runtime manifest")
+        index = [
+            strict_json(line)
+            for line in pinned_bytes(root, "index.jsonl", manifest["files"]["index.jsonl"]).splitlines()
+        ]
+        if not 1 <= len(index) <= 256:
+            raise ValueError("runtime sample exceeds local development budget")
+        files = {"manifest.json", "index.jsonl"}
+        observed: list[tuple[str, RawModalityObservation]] = []
+        keys: set[str] = set()
+        ids: set[str] = set()
+        previous: dict[str, int] = {}
+        from cpswm.perception_mapping.natural_vision import decode_rgb
+    
+        for row in index:
+            key = row.get("key")
+            if (
+                set(row) != {"key", "observation_id", "payload_sha256", "receipt_sha256"}
+                or not isinstance(key, str)
+                or re.fullmatch(r"[0-9a-f]{64}/[0-9]{6}", key) is None
+                or key in keys
+            ):
+>               raise ValueError("invalid or duplicate runtime original frame key")
+E               ValueError: invalid or duplicate runtime original frame key
+
+src/cpswm/data_preflight/hfd_observation_alignment.py:373: ValueError
+______ test_original_timeline_restore_late_failure_retry_and_model_input _______
+
+tmp_path = PosixPath('/private/var/folders/x2/000r8p0n6s393lj2sg8wk5f40000gn/T/pytest-of-pangwei/pytest-2151/test_original_timeline_restore0')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x11ef7e750>
+
+    def test_original_timeline_restore_late_failure_retry_and_model_input(tmp_path, monkeypatch):
+        args, _ = fixture(tmp_path, monkeypatch)
+>       rows = module.load_runtime_observations(
+            args["output"] / "runtime", manifest_sha256=runtime_pin(args["output"])
+        )[:3]
+
+tests/test_hfd_observation_alignment.py:192: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+root = PosixPath('/private/var/folders/x2/000r8p0n6s393lj2sg8wk5f40000gn/T/pytest-of-pangwei/pytest-2151/test_original_timeline_restore0/aligned/runtime')
+manifest_sha256 = '2382f4c826a4a4300f23f2c394ffef877a8c4afe3b9e3bd3750797433e2937c4'
+
+    def load_runtime_observations(
+        root: Path,
+        *,
+        manifest_sha256: str,
+    ) -> tuple[tuple[str, RawModalityObservation], ...]:
+        """Load only the runtime subtree, pinned by the source-reconstructing caller.
+    
+        A digest obtained from this same untrusted package is not source verification.
+        This function validates the selected bytes, not external annotation accuracy.
+        """
+        before = packet_inventory(root)
+        manifest = strict_json(pinned_bytes(root, "manifest.json", manifest_sha256))
+        if set(manifest) != {"format", "intake_manifest_sha256", "files"} or (
+            manifest["format"] != "hfd-original-runtime-inputs@1"
+        ):
+            raise ValueError("unexpected runtime manifest")
+        index = [
+            strict_json(line)
+            for line in pinned_bytes(root, "index.jsonl", manifest["files"]["index.jsonl"]).splitlines()
+        ]
+        if not 1 <= len(index) <= 256:
+            raise ValueError("runtime sample exceeds local development budget")
+        files = {"manifest.json", "index.jsonl"}
+        observed: list[tuple[str, RawModalityObservation]] = []
+        keys: set[str] = set()
+        ids: set[str] = set()
+        previous: dict[str, int] = {}
+        from cpswm.perception_mapping.natural_vision import decode_rgb
+    
+        for row in index:
+            key = row.get("key")
+            if (
+                set(row) != {"key", "observation_id", "payload_sha256", "receipt_sha256"}
+                or not isinstance(key, str)
+                or re.fullmatch(r"[0-9a-f]{64}/[0-9]{6}", key) is None
+                or key in keys
+            ):
+>               raise ValueError("invalid or duplicate runtime original frame key")
+E               ValueError: invalid or duplicate runtime original frame key
+
+src/cpswm/data_preflight/hfd_observation_alignment.py:373: ValueError
+=============================== warnings summary ===============================
+tests/test_runtime_candidates.py::test_invalid_sources_or_partial_support_cannot_be_published[binding]
+  /private/tmp/cpswm-pc-a-hfd-observation-alignment-20260926/.venv/lib/python3.13/site-packages/pydantic/main.py:475: UserWarning: Pydantic serializer warnings:
+    PydanticSerializationUnexpectedValue(Expected `VisibleRecords` - serialized value may not be as expected [field_name='visible', input_value={'opportunities': (), 'de...ive_media_time': 0.0},)}, input_type=dict])
+    PydanticSerializationUnexpectedValue(Expected `LocationBinding` - serialized value may not be as expected [field_name='location_support', input_value={'location_key': 'unknown...cation_entity_id': None}, input_type=dict])
+    PydanticSerializationUnexpectedValue(Expected `PixelIdentityBinding` - serialized value may not be as expected [field_name='pixel_identity_bindings', input_value={'key': 'forged-person', ...atus': 'NEW_UNVERIFIED'}, input_type=dict])
+    PydanticSerializationUnexpectedValue(Expected `PixelIdentityBinding` - serialized value may not be as expected [field_name='pixel_identity_bindings', input_value={'key': 'perceptual-track...atus': 'NEW_UNVERIFIED'}, input_type=dict])
+    return self.__pydantic_serializer__.to_python(
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/test_hfd_observation_alignment.py::test_exact_original_frames_independent_decode_and_reconstruction
+FAILED tests/test_hfd_observation_alignment.py::test_resealed_receipt_cannot_change_clock_or_add_answers[original_frame_index-True]
+FAILED tests/test_hfd_observation_alignment.py::test_resealed_receipt_cannot_change_clock_or_add_answers[original_frame_index--1]
+FAILED tests/test_hfd_observation_alignment.py::test_resealed_receipt_cannot_change_clock_or_add_answers[original_frame_index-3]
+FAILED tests/test_hfd_observation_alignment.py::test_resealed_receipt_cannot_change_clock_or_add_answers[source_frame_count-0]
+FAILED tests/test_hfd_observation_alignment.py::test_resealed_receipt_cannot_change_clock_or_add_answers[media_time_seconds-0.2]
+FAILED tests/test_hfd_observation_alignment.py::test_resealed_receipt_cannot_change_clock_or_add_answers[author_clock_seconds-inf]
+FAILED tests/test_hfd_observation_alignment.py::test_resealed_receipt_cannot_change_clock_or_add_answers[author_clock_origin_seconds-True]
+FAILED tests/test_hfd_observation_alignment.py::test_resealed_receipt_cannot_change_clock_or_add_answers[source_clock_sha256-bad]
+FAILED tests/test_hfd_observation_alignment.py::test_resealed_receipt_cannot_change_clock_or_add_answers[human_action-interact]
+FAILED tests/test_hfd_observation_alignment.py::test_resealed_receipt_cannot_change_clock_or_add_answers[time_semantics-exact_contact_time]
+FAILED tests/test_hfd_observation_alignment.py::test_runtime_isolated_labels_full_candidates_and_core_action_consequences
+FAILED tests/test_hfd_observation_alignment.py::test_original_timeline_restore_late_failure_retry_and_model_input
+13 failed, 49 passed, 1 warning in 55.56s

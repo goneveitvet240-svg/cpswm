@@ -1,0 +1,13 @@
+........................................................................ [ 91%]
+.......                                                                  [100%]
+=============================== warnings summary ===============================
+tests/test_runtime_candidates.py::test_invalid_sources_or_partial_support_cannot_be_published[binding]
+  /private/tmp/cpswm-pc-a-hfd-observation-alignment-20260926/.venv/lib/python3.13/site-packages/pydantic/main.py:475: UserWarning: Pydantic serializer warnings:
+    PydanticSerializationUnexpectedValue(Expected `VisibleRecords` - serialized value may not be as expected [field_name='visible', input_value={'opportunities': (), 'de...ive_media_time': 0.0},)}, input_type=dict])
+    PydanticSerializationUnexpectedValue(Expected `LocationBinding` - serialized value may not be as expected [field_name='location_support', input_value={'location_key': 'unknown...cation_entity_id': None}, input_type=dict])
+    PydanticSerializationUnexpectedValue(Expected `PixelIdentityBinding` - serialized value may not be as expected [field_name='pixel_identity_bindings', input_value={'key': 'forged-person', ...atus': 'NEW_UNVERIFIED'}, input_type=dict])
+    PydanticSerializationUnexpectedValue(Expected `PixelIdentityBinding` - serialized value may not be as expected [field_name='pixel_identity_bindings', input_value={'key': 'perceptual-track...atus': 'NEW_UNVERIFIED'}, input_type=dict])
+    return self.__pydantic_serializer__.to_python(
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+79 passed, 1 warning in 8.43s

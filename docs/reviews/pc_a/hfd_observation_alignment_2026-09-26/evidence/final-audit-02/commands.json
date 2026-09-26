@@ -1,0 +1,70 @@
+{
+  "source_sha": "dc2c23183d244a443fae05494912b6cd7619d81a",
+  "commands": [
+    {
+      "name": "round1",
+      "argv": [
+        "/private/tmp/cpswm-pc-a-hfd-observation-alignment-20260926/.venv/bin/python",
+        "-m",
+        "pytest",
+        "-o",
+        "addopts=",
+        "-q",
+        "tests/test_hfd_observation_alignment.py",
+        "tests/test_archive_media_timeline.py",
+        "tests/test_natural_vision.py",
+        "tests/test_runtime_candidates.py",
+        "tests/test_full_hfd_training.py",
+        "tests/test_structure_two_raw_rgbd_ingress.py",
+        "tests/test_natural_hands.py",
+        "tests/test_structure_two_continuous_input.py"
+      ],
+      "started_utc": "2026-09-26T12:25:39.513571+00:00",
+      "seconds": 23.700546292122453,
+      "exit_code": 0
+    },
+    {
+      "name": "round2",
+      "argv": [
+        "/private/tmp/cpswm-pc-a-hfd-observation-alignment-20260926/.venv/bin/python",
+        "-m",
+        "pytest",
+        "-o",
+        "addopts=",
+        "-q",
+        "/private/tmp/cpswm-pc-a-hfd-observation-alignment-20260926/docs/reviews/pc_a/hfd_observation_alignment_2026-09-26/audit_alignment_second.py"
+      ],
+      "started_utc": "2026-09-26T12:26:03.308662+00:00",
+      "seconds": 1.8139626253396273,
+      "exit_code": 0
+    },
+    {
+      "name": "mypy",
+      "argv": [
+        "/private/tmp/cpswm-pc-a-hfd-observation-alignment-20260926/.venv/bin/python",
+        "-m",
+        "mypy",
+        "--no-incremental"
+      ],
+      "started_utc": "2026-09-26T12:26:05.216980+00:00",
+      "seconds": 12.404055667109787,
+      "exit_code": 0
+    },
+    {
+      "name": "ruff",
+      "argv": [
+        "/private/tmp/cpswm-pc-a-hfd-observation-alignment-20260926/.venv/bin/python",
+        "-m",
+        "ruff",
+        "check",
+        "src",
+        "tests",
+        "tools",
+        "/private/tmp/cpswm-pc-a-hfd-observation-alignment-20260926/docs/reviews/pc_a/hfd_observation_alignment_2026-09-26"
+      ],
+      "started_utc": "2026-09-26T12:26:17.717622+00:00",
+      "seconds": 0.037072000093758106,
+      "exit_code": 0
+    }
+  ]
+}

@@ -1,0 +1,7 @@
+ACTUAL_SOURCE /private/tmp/cpswm-hfd-alignment-before-20260926/src/cpswm/data_preflight/hfd_observation_alignment.py
+ImportError while loading conftest '/private/tmp/cpswm-pc-a-hfd-observation-alignment-20260926/conftest.py'.
+../cpswm-pc-a-hfd-observation-alignment-20260926/conftest.py:19: in <module>
+    sys.modules["_cpswm_source_bootstrap"].establish(Path(__file__).resolve().parent)
+../cpswm-pc-a-hfd-observation-alignment-20260926/apps/evaluation_runner/structure_two_source_bootstrap.py:170: in establish
+    raise ValueError("formal bootstrap must precede every project dependency import")
+E   ValueError: formal bootstrap must precede every project dependency import

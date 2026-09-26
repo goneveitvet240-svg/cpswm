@@ -1,3 +1,9 @@
+# A：第四轮规范化提速双审与真实等价验证完成（2026-09-26）
+
+受测e018c432c2c6f4181b8521c4ea2eb7a700be971b：284/74两审、mypy368/Ruff、5命令与执行器exit0，906 Python前后同源。9行严格内置标量快路径，全部候选和指纹检查保留。固定真实首窗三臂各243候选完整目标/概率回执逐字相同，完整评分本次耗时减少约22%/31%/23%；共享主机计时，不是公平速度或能力增益结论。[报告](../reviews/pc_a/canonical_speed_2026-09-26/REPORT.md)。
+
+14文件19,665,825字节已逐文件校验备份主仓output/canonical-speed-20260926/closed。A自审、B未验收、无新训练/自然发布/动作。第三轮仍是17/96部分覆盖；第五轮独立分片从头运行全部96，不能把不同版本拼接成完成。授权截止UTC16:47:47不变。
+
 # A：三小时第四轮规范化评分性能开工（2026-09-26）
 
 base/开工源码60453f212c7a9435b272cbd4aece3cf8db4be4a8；独立分支codex/pc-a-canonical-scoring-speed-20260926，目录/private/tmp/cpswm-pc-a-canonical-scoring-speed-20260926。第三轮228/51两审已通过，原目录真实矩阵仍独立运行，不修改它的Python或拼接新旧结果。GitHub fetch已验证集成19ddf26830348a2f0b33f0af54d6ba702c5cfb1c、B fd4ca6ef5e81c90d7cf7987b42c0b2810d8a810a未变。

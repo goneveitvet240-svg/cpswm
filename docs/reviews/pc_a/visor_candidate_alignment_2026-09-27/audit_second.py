@@ -154,3 +154,21 @@ def test_no_detection_is_not_negative_contact(tmp_path, monkeypatch):
     assert result["frames"][0]["relations"][0]["binary_contact_target"] is True
     assert result["frames"][0]["relations"][0]["geometric_pair_count"] == 0
     assert result["summary"]["assigned_candidate_labels"] == 0
+
+
+def test_unique_overlap_person_false_positive_then_valid_object_retry(tmp_path, monkeypatch):
+    source, packet, prediction, doc = fixture_packet(tmp_path, monkeypatch)
+    first = doc["records"][0]
+    first["hands"] = first["hands"][:1]
+    first["objects"] = first["objects"][:1]
+    first["objects"][0]["category"] = "person"
+    prediction.write_bytes(alignment.encoded(doc))
+    result = evaluate_fixture(source, packet, prediction)
+    row = result["frames"][0]
+    assert row["object_pairs"][0]["intersection_pixels"] > 0
+    assert row["relations"][0]["geometric_pair_count"] == 0
+    first["objects"][0]["category"] = "cup"
+    prediction.write_bytes(alignment.encoded(doc))
+    row = evaluate_fixture(source, packet, prediction)["frames"][0]
+    assert row["relations"][0]["geometric_pair_count"] == 1
+    assert row["relations"][0]["assigned_candidate_label"] is None

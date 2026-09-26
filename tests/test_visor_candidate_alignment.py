@@ -201,3 +201,21 @@ def test_rgb_only_runtime_rejects_modified_or_aliased_sources(tmp_path, monkeypa
         (runtime / "manifest.json").write_text("{}")
     with pytest.raises(ValueError):
         alignment.runtime_frames(runtime, alignment.sha(manifest))
+
+
+def test_person_boxes_retained_but_cannot_fill_contact_object_slot(tmp_path, monkeypatch):
+    source, packet, prediction, doc = fixture_packet(tmp_path, monkeypatch)
+    for row in doc["records"]:
+        for obj in row["objects"]:
+            obj["category"] = "person"
+    prediction.write_bytes(alignment.encoded(doc))
+    result = evaluate_fixture(source, packet, prediction)
+    assert result["summary"]["visual_candidates"] == 15
+    assert result["summary"]["person_candidates"] == 15
+    assert result["summary"]["object_candidates"] == 0
+    assert result["summary"]["frames_without_object_candidates"] == 5
+    first = result["frames"][0]
+    assert len(first["object_pairs"]) == 3  # all measurements survive
+    assert all(p["candidate_kind"] == "actor" for p in first["object_pairs"])
+    assert first["relations"][0]["object_positive_geometry_ids"] == []
+    assert first["relations"][0]["geometric_pair_count"] == 0

@@ -281,6 +281,7 @@ def align_frame(
                 object_pairs.append(
                     {
                         "candidate_id": obj["id"],
+                        "candidate_kind": "actor" if obj["category"] == "person" else "instance",
                         "mask_id": entity["id"],
                         **box_overlap(mask, obj["box"]),
                     }
@@ -301,7 +302,9 @@ def align_frame(
             [
                 p["candidate_id"]
                 for p in object_pairs
-                if p["mask_id"] == target["contact_segment_id"] and p["intersection_pixels"] > 0
+                if p["mask_id"] == target["contact_segment_id"]
+                and p["intersection_pixels"] > 0
+                and p["candidate_kind"] == "instance"
             ]
             if object_target
             else None
@@ -368,7 +371,7 @@ def evaluate(
     relations = [r for f in frames for r in f["relations"]]
     contacts = [r for r in relations if r["object_positive_geometry_ids"] is not None]
     return {
-        "format": "visor_all_pairs_geometry_v1",
+        "format": "visor_all_pairs_geometry_v2",
         "prediction_sha256": prediction_sha256,
         "runtime_manifest_sha256": doc["runtime_manifest_sha256"],
         "frames": frames,
@@ -376,9 +379,17 @@ def evaluate(
             "frames": len(frames),
             "masks": sum(len(f["masks"]) for f in frames),
             "hand_candidates": sum(len(f["hands"]) for f in frames),
-            "object_candidates": sum(len(f["objects"]) for f in frames),
+            "visual_candidates": sum(len(f["objects"]) for f in frames),
+            "person_candidates": sum(
+                o["category"] == "person" for f in frames for o in f["objects"]
+            ),
+            "object_candidates": sum(
+                o["category"] != "person" for f in frames for o in f["objects"]
+            ),
             "frames_without_hand_candidates": sum(not f["hands"] for f in frames),
-            "frames_without_object_candidates": sum(not f["objects"] for f in frames),
+            "frames_without_object_candidates": sum(
+                not any(o["category"] != "person" for o in f["objects"]) for f in frames
+            ),
             "relations": len(relations),
             "states": dict(Counter(r["state"] for r in relations)),
             "hand_geometry_multiplicity": dict(

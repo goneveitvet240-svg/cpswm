@@ -1,0 +1,53 @@
+         636525980 function calls (586249797 primitive calls) in 125.648 seconds
+
+   Ordered by: cumulative time
+   List reduced from 365 to 45 due to restriction <45>
+
+   ncalls  tottime  percall  cumtime  percall filename:lineno(function)
+        1    0.000    0.000  125.650  125.650 /private/tmp/cpswm-pc-a-full-hand-proposal-matrix-20260926/src/cpswm/data_preflight/proposal_inference_session.py:112(score_support)
+        1    0.002    0.002  125.192  125.192 /private/tmp/cpswm-pc-a-full-hand-proposal-matrix-20260926/src/cpswm/data_preflight/proposal_trainer.py:36(distribution)
+        1    0.804    0.804  122.225  122.225 /private/tmp/cpswm-pc-a-full-hand-proposal-matrix-20260926/src/cpswm/data_preflight/proposal_decoder.py:87(__init__)
+     1461    0.554    0.000  111.534    0.076 /private/tmp/cpswm-pc-a-full-hand-proposal-matrix-20260926/src/cpswm/data_preflight/typed_proposal_networks.py:414(__call__)
+   367332    0.263    0.000   85.936    0.000 /private/tmp/cpswm-pc-a-full-hand-proposal-matrix-20260926/src/cpswm/system/reproducibility.py:65(content_sha256)
+   367332    0.254    0.000   85.016    0.000 /private/tmp/cpswm-pc-a-full-hand-proposal-matrix-20260926/src/cpswm/system/reproducibility.py:53(canonical_json)
+49257101/367332   41.594    0.000   79.245    0.000 /private/tmp/cpswm-pc-a-full-hand-proposal-matrix-20260926/src/cpswm/system/reproducibility.py:16(_canonical_value)
+   356484    0.308    0.000   68.919    0.000 /private/tmp/cpswm-pc-a-full-hand-proposal-matrix-20260926/src/cpswm/data_preflight/typed_proposal_networks.py:427(<genexpr>)
+442451889   25.288    0.000   25.288    0.000 {built-in method builtins.isinstance}
+     2926    0.336    0.000   20.783    0.007 /private/tmp/cpswm-pc-a-full-hand-proposal-matrix-20260926/src/cpswm/data_preflight/typed_proposal_networks.py:81(parameter_fingerprint)
+     2926    0.539    0.000   18.585    0.006 /private/tmp/cpswm-pc-a-full-hand-proposal-matrix-20260926/src/cpswm/data_preflight/typed_proposal_networks.py:99(architecture_fingerprint)
+     2923    0.091    0.000   14.440    0.005 /private/tmp/cpswm-pc-a-full-hand-proposal-matrix-20260926/src/cpswm/data_preflight/typed_proposal_networks.py:393(_graph_fingerprint)
+ 49257041    9.664    0.000   14.440    0.000 /Users/pangwei/.local/share/uv/python/cpython-3.13.5-macos-aarch64-none/lib/python3.13/dataclasses.py:1331(is_dataclass)
+   260387   12.812    0.000   12.812    0.000 {method 'update' of '_hashlib.HASH' objects}
+   356484    0.144    0.000    9.256    0.000 /private/tmp/cpswm-pc-a-full-hand-proposal-matrix-20260926/src/cpswm/data_preflight/proposal_decoder.py:130(<genexpr>)
+   355266    0.082    0.000    9.117    0.000 /private/tmp/cpswm-pc-a-full-hand-proposal-matrix-20260926/.venv/lib/python3.13/site-packages/pydantic/main.py:742(model_validate_json)
+   355266    4.861    0.000    9.035    0.000 {method 'validate_json' of 'pydantic_core._pydantic_core.SchemaValidator' objects}
+   523875    0.329    0.000    6.441    0.000 /Users/pangwei/.local/share/uv/python/cpython-3.13.5-macos-aarch64-none/lib/python3.13/json/__init__.py:183(dumps)
+   523875    0.332    0.000    6.055    0.000 /Users/pangwei/.local/share/uv/python/cpython-3.13.5-macos-aarch64-none/lib/python3.13/json/encoder.py:183(encode)
+   514262    5.602    0.000    5.603    0.000 /Users/pangwei/.local/share/uv/python/cpython-3.13.5-macos-aarch64-none/lib/python3.13/json/encoder.py:205(iterencode)
+   364076    0.096    0.000    3.134    0.000 /private/tmp/cpswm-pc-a-full-hand-proposal-matrix-20260926/.venv/lib/python3.13/site-packages/pydantic/main.py:427(model_dump)
+   364076    2.773    0.000    3.039    0.000 {method 'to_python' of 'pydantic_core._pydantic_core.SchemaSerializer' objects}
+        1    0.006    0.006    2.965    2.965 /private/tmp/cpswm-pc-a-full-hand-proposal-matrix-20260926/src/cpswm/data_preflight/typed_proposal_networks.py:271(prepare)
+   356481    1.073    0.000    2.876    0.000 /private/tmp/cpswm-pc-a-full-hand-proposal-matrix-20260926/src/cpswm/data_preflight/proposal_samples.py:63(validate_chain)
+ 49389308    2.506    0.000    2.506    0.000 {built-in method builtins.hasattr}
+  4311946    0.749    0.000    2.163    0.000 {built-in method builtins.getattr}
+     1463    0.051    0.000    2.150    0.001 /private/tmp/cpswm-pc-a-full-hand-proposal-matrix-20260926/src/cpswm/data_preflight/proposal_graph_compute.py:90(attend_query_rows)
+   149226    0.207    0.000    1.797    0.000 /private/tmp/cpswm-pc-a-full-hand-proposal-matrix-20260926/src/cpswm/data_preflight/typed_proposal_networks.py:114(callable_identity)
+        1    0.001    0.001    1.576    1.576 /private/tmp/cpswm-pc-a-full-hand-proposal-matrix-20260926/src/cpswm/data_preflight/proposal_graph_compute.py:169(encode_graph_rows)
+  3025822    1.428    0.000    1.428    0.000 /private/tmp/cpswm-pc-a-full-hand-proposal-matrix-20260926/.venv/lib/python3.13/site-packages/torch/nn/modules/module.py:1954(__getattr__)
+1171250/1171247    0.455    0.000    1.127    0.000 {built-in method builtins.any}
+   125806    1.034    0.000    1.034    0.000 {method 'contiguous' of 'torch._C.TensorBase' objects}
+        1    0.012    0.012    0.965    0.965 /private/tmp/cpswm-pc-a-full-hand-proposal-matrix-20260926/src/cpswm/data_preflight/proposal_graph_compute.py:46(encode_leaf_batches)
+      194    0.943    0.005    0.943    0.005 {built-in method torch._masked_softmax}
+6052/1669    0.008    0.000    0.890    0.001 /private/tmp/cpswm-pc-a-full-hand-proposal-matrix-20260926/.venv/lib/python3.13/site-packages/torch/nn/modules/module.py:1774(_wrapped_call_impl)
+6052/1669    0.011    0.000    0.887    0.001 /private/tmp/cpswm-pc-a-full-hand-proposal-matrix-20260926/.venv/lib/python3.13/site-packages/torch/nn/modules/module.py:1782(_call_impl)
+       97    0.001    0.000    0.826    0.009 /private/tmp/cpswm-pc-a-full-hand-proposal-matrix-20260926/.venv/lib/python3.13/site-packages/torch/nn/modules/rnn.py:1378(forward)
+       97    0.821    0.008    0.821    0.008 {built-in method torch.gru}
+248710/149226    0.224    0.000    0.763    0.000 /private/tmp/cpswm-pc-a-full-hand-proposal-matrix-20260926/src/cpswm/data_preflight/typed_proposal_networks.py:106(normalized)
+   125806    0.707    0.000    0.707    0.000 {method 'tobytes' of 'numpy.ndarray' objects}
+   356481    0.456    0.000    0.686    0.000 /private/tmp/cpswm-pc-a-full-hand-proposal-matrix-20260926/src/cpswm/system/evaluation_operations/structure_two_selected_method.py:285(_validate_typed_state)
+  1029834    0.196    0.000    0.627    0.000 /private/tmp/cpswm-pc-a-full-hand-proposal-matrix-20260926/src/cpswm/data_preflight/proposal_samples.py:48(validate_node)
+   522407    0.624    0.000    0.624    0.000 {built-in method _hashlib.openssl_sha256}
+   149226    0.575    0.000    0.575    0.000 {built-in method marshal.dumps}
+  1029834    0.408    0.000    0.543    0.000 /private/tmp/cpswm-pc-a-full-hand-proposal-matrix-20260926/src/cpswm/data_preflight/proposal_samples.py:78(append_role)
+
+

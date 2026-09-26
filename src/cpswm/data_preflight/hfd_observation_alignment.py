@@ -212,11 +212,13 @@ def alignment_artifacts(
                 clock=float(times[i]),
                 origin=float(times[0]),
                 shape=shape,
-                imported_at=when + timedelta(microseconds=len(runtime_index)),
+                imported_at=when + timedelta(microseconds=indices.index(i)),
             )
             env = raw.envelope()
             key = f"{sequence}/{i:06d}"
             base = f"runtime/{key}"
+            if base + ".npy" in files:
+                raise ValueError("duplicate sensor source across selected author trials")
             files[base + ".npy"] = raw.payload_bytes
             files[base + ".envelope.json"] = raw.envelope_json.encode()
             assert raw.archive_sampling_json is not None
@@ -261,6 +263,7 @@ def alignment_artifacts(
                 "selected_original_indices": list(indices),
             }
         )
+    runtime_index.sort(key=lambda r: r["key"])
     files["runtime/index.jsonl"] = b"".join(encoded(r) for r in runtime_index)
     runtime_manifest = {
         "format": "hfd-original-runtime-inputs@1",
@@ -285,6 +288,8 @@ def alignment_artifacts(
         "selected_trials": selected_rows,
         "selected_frames": len(runtime_index),
         "sampled_accuracy_or_population_estimate": False,
+        "retrospective_sampling_not_online_policy": True,
+        "runtime_event_clock": "import_order_not_physical_event_duration",
         "pixel_annotation_overlay_audit": "NOT_ESTABLISHED_BY_THIS_ADAPTER",
         "complete_proposal_targets": 0,
         "full_proposal_training_ready": False,

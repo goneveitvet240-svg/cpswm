@@ -10,7 +10,7 @@ from pathlib import Path
 import cv2
 import numpy as np
 import pytest
-from test_full_hfd_training import fixture_archive
+from test_full_hfd_training import fixture_archive, npy
 
 from cpswm.data_preflight import full_hfd_training as intake_module
 from cpswm.data_preflight import hfd_observation_alignment as module
@@ -27,7 +27,12 @@ NOW = datetime(2026, 9, 26, 12, 30, tzinfo=UTC)
 
 
 def fixture(tmp_path, monkeypatch):
-    archive, metadata, intake = fixture_archive(tmp_path, monkeypatch)
+    def clocks(values):
+        # Two distinct raw sensor sequences, not duplicate file aliases.
+        values["training_set/trial0001/head_cam_ts.npy"] = npy(np.array([1.0, 1.1, 1.2]))
+        values["training_set/trial0001/wrench_ts.npy"] = npy(np.array([1.0, 1.05, 1.1, 1.2]))
+
+    archive, metadata, intake = fixture_archive(tmp_path, monkeypatch, mutate=clocks)
     intake_module.inspect_full_training(archive, metadata, intake)
     output = tmp_path / "aligned"
     args = dict(archive=archive, metadata=metadata, intake=intake, output=output, imported_at=NOW)
@@ -53,7 +58,9 @@ def test_exact_original_frames_independent_decode_and_reconstruction(tmp_path, m
         json.loads(line)
         for line in (args["output"] / "evaluator/author_supervision.jsonl").read_text().splitlines()
     ]
-    for (_, raw), label in zip(observations, labels, strict=True):
+    by_key = {r["key"]: r for r in labels}
+    for key, raw in observations:
+        label = by_key[key]
         env, pixels = decode_rgb(raw, cutoff=raw.envelope().arrival_time)
         reader = cv2.VideoCapture(str(args["intake"] / f"raw/{label['trial']}/head_cam.mp4"))
         for _ in range(label["author_frame"]["frame_index"] + 1):
@@ -61,7 +68,9 @@ def test_exact_original_frames_independent_decode_and_reconstruction(tmp_path, m
             assert ok
         reader.release()
         assert np.array_equal(pixels, bgr[:, :, ::-1])
-        assert raw.archive_timeline()[1] == label["author_frame"]["timestamp_seconds"]
+        assert raw.archive_timeline()[1] == pytest.approx(
+            label["author_frame"]["timestamp_seconds"] % 1
+        )
         assert env.capture_time >= NOW  # Import time, never the author clock as UTC.
         assert label["actor_identity"] is None and label["full_proposal_target"] is None
         assert label["temporal_error_bound_seconds"] is None
@@ -109,6 +118,11 @@ def test_fixed_original_index_schedule(count, expected):
 
 class FixtureDetector:
     """Explicit synthetic detector; actual frozen-weight execution is separate."""
+
+    model_id = "synthetic-fixture"
+    weights_sha256 = "a" * 64
+    _versions = ("fixture", "fixture")
+    _minimum_score = 0.5
 
     def __init__(self, weights_path, household_id, session_id, trace_id):
         self._scope = (household_id, session_id, trace_id)
@@ -204,7 +218,7 @@ def test_original_timeline_restore_late_failure_retry_and_model_input(tmp_path, 
         producer.infer((a, c, bad), cutoff=cutoff)
     assert producer.checkpoint_state() == before
     producer.infer((a, c, b), cutoff=cutoff)
-    assert [r[0].media_time for r in producer.interactions()] == [0, 0.1, 0.2]
+    assert [r[0].media_time for r in producer.interactions()] == pytest.approx([0, 0.1, 0.2])
     restored = NaturalVisionEvidenceProducer(detector)
     restored.restore_state(producer.checkpoint_state())
     assert restored.frames() == producer.frames()

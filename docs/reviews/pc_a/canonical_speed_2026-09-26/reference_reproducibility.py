@@ -14,15 +14,6 @@ from pydantic import BaseModel
 
 
 def _canonical_value(value: Any) -> Any:
-    # Plain JSON scalars dominate complete proposal scoring. Exact types are
-    # required: Enum, dataclass and user-defined scalar subclasses must retain
-    # the established precedence below. This changes no content identity and
-    # deliberately adds no cache that could hide an in-place mutation.
-    kind = type(value)
-    if kind is str or kind is int or kind is bool or value is None:
-        return value
-    if kind is float:
-        return 0.0 if value == 0.0 else value
     if isinstance(value, BaseModel):
         return _canonical_value(value.model_dump(mode="python"))
     if is_dataclass(value) and not isinstance(value, type):

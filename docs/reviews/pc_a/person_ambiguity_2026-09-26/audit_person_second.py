@@ -1,6 +1,7 @@
 """Second review: complete checkpoint forgery and actual diagnostic consequences."""
 
 import copy
+import json
 import sys
 from dataclasses import replace
 from pathlib import Path
@@ -119,7 +120,8 @@ def test_accepted_two_person_predictions_reach_candidates_without_memory_or_acti
         tmp_path / "out",
     )
     assert result["role_alternatives"] > 0
-    for row in result["records"]:
+    artifact = json.loads((tmp_path / "out/result.json").read_bytes())
+    for row in artifact["records"]:
         readout = row["interaction"]
         pairs = {p["pair_id"]: p for p in readout["person_identity_pairs"]}
         for role in readout["role_alternatives"]:

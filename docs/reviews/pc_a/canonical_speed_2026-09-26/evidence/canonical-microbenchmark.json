@@ -1,0 +1,66 @@
+{
+  "scope": "canonical-only microbenchmark on all targets of fixed real first window; shared host",
+  "source_sha": "e018c432c2c6f4181b8521c4ea2eb7a700be971b",
+  "targets": 243,
+  "passes_per_timing": 25,
+  "paired_repeats": 5,
+  "all_hashes_equal": true,
+  "python_sources_equal": true,
+  "input_file_sha256": "2f95ad75accfe207966b960671f57f5aa303a51499c587b902c381f858501981",
+  "measurements": [
+    {
+      "order": [
+        "legacy",
+        "fast"
+      ],
+      "seconds": {
+        "legacy": 0.3919808338396251,
+        "fast": 0.182069624774158
+      }
+    },
+    {
+      "order": [
+        "fast",
+        "legacy"
+      ],
+      "seconds": {
+        "fast": 0.17799491714686155,
+        "legacy": 0.40726312482729554
+      }
+    },
+    {
+      "order": [
+        "legacy",
+        "fast"
+      ],
+      "seconds": {
+        "legacy": 0.40145383263006806,
+        "fast": 0.17427666718140244
+      }
+    },
+    {
+      "order": [
+        "fast",
+        "legacy"
+      ],
+      "seconds": {
+        "fast": 0.17700641695410013,
+        "legacy": 0.39397362479940057
+      }
+    },
+    {
+      "order": [
+        "legacy",
+        "fast"
+      ],
+      "seconds": {
+        "legacy": 0.4122297498397529,
+        "fast": 0.1831434997729957
+      }
+    }
+  ],
+  "median_seconds": {
+    "legacy": 0.40145383263006806,
+    "fast": 0.17799491714686155
+  }
+}

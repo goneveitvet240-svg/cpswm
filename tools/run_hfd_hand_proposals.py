@@ -154,6 +154,27 @@ def checked_scores(scored, support):
     return rows, mass
 
 
+def partition_windows(chosen, shard_index=0, shard_count=1):
+    """Disjoint deterministic work allocation, independent of labels or outcomes."""
+    if (
+        type(shard_count) is not int
+        or type(shard_index) is not int
+        or not 1 <= shard_count <= 8
+        or not 0 <= shard_index < shard_count
+        or len(set(chosen)) != len(chosen)
+    ):
+        raise ValueError("invalid or duplicate fixed-window shard plan")
+    groups = {}
+    for key in sorted(chosen):
+        groups.setdefault(key.split("/")[0], []).append(key)
+    return tuple(
+        key
+        for source_index, source in enumerate(sorted(groups))
+        for window_index, key in enumerate(groups[source])
+        if (source_index + window_index) % shard_count == shard_index
+    )
+
+
 def run(
     frontend,
     frontend_sha256,
@@ -163,11 +184,14 @@ def run(
     prefix_frames,
     window_scope="first",
     restore_scope="all",
+    shard_index=0,
+    shard_count=1,
 ):
     if prefix_frames not in (2, 4) or arm not in ARMS or restore_scope not in {"first", "all"}:
         raise ValueError("predeclared prefix, recovery scope and unselected architecture required")
     contexts, dependencies, features = load_frontend(frontend, frontend_sha256)
-    chosen, first_windows = plan_windows(contexts, window_scope)
+    planned, first_windows = plan_windows(contexts, window_scope)
+    chosen = partition_windows(planned, shard_index, shard_count)
     summary_bytes = (training / "summary.json").read_bytes()
     training_summary = strict_json(summary_bytes)
     if (
@@ -318,6 +342,9 @@ def run(
             "prefix_frames": prefix_frames,
             "restore_scope": restore_scope,
             "planned_windows": list(chosen),
+            "all_planned_windows": list(planned),
+            "shard_index": shard_index,
+            "shard_count": shard_count,
         },
         "contact_or_identity_truth_established": False,
         "independent_auditors": 0,
@@ -343,4 +370,6 @@ if __name__ == "__main__":
     parser.add_argument("--prefix-frames", type=int, choices=(2, 4), default=2)
     parser.add_argument("--window-scope", choices=("first", "all"), default="first")
     parser.add_argument("--restore-scope", choices=("first", "all"), default="all")
+    parser.add_argument("--shard-index", type=int, default=0)
+    parser.add_argument("--shard-count", type=int, default=1)
     run(**vars(parser.parse_args()))

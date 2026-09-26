@@ -16,10 +16,37 @@ from test_hfd_observation_alignment import NOW, fixture, frontend_module, runtim
 
 from cpswm.data_preflight import full_hfd_training as intake_module  # noqa: E402
 from cpswm.data_preflight import hfd_observation_alignment as module  # noqa: E402
+from cpswm.system.reproducibility import content_sha256  # noqa: E402
 
 
 def reseal(root):
     """Rewrite *every* local digest/count; source reconstruction still owns truth."""
+    # Repair all internal payload -> envelope -> receipt -> index -> evaluator
+    # links. These attacks must pass structural runtime admission with a forged
+    # self-issued pin; only the independent original source can refute them.
+    index_path = root / "runtime/index.jsonl"
+    index = [json.loads(v) for v in index_path.read_text().splitlines()]
+    for row in index:
+        base = root / "runtime" / row["key"]
+        payload = Path(str(base) + ".npy").read_bytes()
+        digest = hashlib.sha256(payload).hexdigest()
+        env_path = Path(str(base) + ".envelope.json")
+        env = json.loads(env_path.read_bytes())
+        env["payload"].update(payload_sha256=digest, size_bytes=len(payload))
+        env_path.write_bytes(module.encoded(env))
+        receipt_path = Path(str(base) + ".receipt.json")
+        receipt = json.loads(receipt_path.read_bytes())
+        receipt["payload_sha256"] = digest
+        receipt_path.write_bytes(module.encoded(receipt))
+        row.update(payload_sha256=digest, receipt_sha256=content_sha256(receipt))
+    index_path.write_bytes(b"".join(module.encoded(r) for r in index))
+    by_key = {r["key"]: r for r in index}
+    evaluator_path = root / "evaluator/author_supervision.jsonl"
+    evaluator = [json.loads(v) for v in evaluator_path.read_text().splitlines()]
+    for row in evaluator:
+        if row["key"] in by_key:
+            row["payload_sha256"] = by_key[row["key"]]["payload_sha256"]
+    evaluator_path.write_bytes(b"".join(module.encoded(r) for r in evaluator))
     runtime = json.loads((root / "runtime/manifest.json").read_bytes())
     runtime["files"] = {
         str(p.relative_to(root / "runtime")): hashlib.sha256(p.read_bytes()).hexdigest()
@@ -79,6 +106,15 @@ def test_complete_resealed_alignment_rejected_by_source_then_legal_retry(
     else:
         (root / "evaluator/hidden-answer.json").write_text("{}")
     reseal(root)
+    if attack in {"labels", "pixels", "clock", "index", "authority"}:
+        assert (
+            len(
+                module.load_runtime_observations(
+                    root / "runtime", manifest_sha256=runtime_pin(root)
+                )
+            )
+            == 6
+        )
     with pytest.raises(ValueError):
         module.align_hfd_training(**args, verify=True)
     for path in list(root.rglob("*")):

@@ -1,3 +1,11 @@
+# A：VISOR 全量候选对齐交付（2026-09-27）
+
+独立分支codex/pc-a-visor-candidate-alignment-20260927，base ced69a60c2e81d37f7b9012276451a6778b78020；最终评估受测860bc46a05bed4b805badbf351154292b0761653，79/43顺序两审、mypy370/Ruff、8命令及执行器exit0，919 Python前后同Git。真实485帧预测生产于98c64b1df1008422c1af6f5056fb371edd9c96c9；修后自动证明推理代码不变，固定摘要复用，不伪称重新推理。
+
+完整485帧/2,876掩膜，1,041手候选、5,300非人物物候选、1,187人物候选。809作者手关系中268无地标覆盖；680明确接触中218至少一侧缺失，462两侧有几何，其中446多组合、16唯一组合仍不保证正确。首版物侧误计person的3个唯一组合被真实反例否决；沿用既有actor/instance类型规则修正后重审、重算、实际回读，旧结果保留。
+
+[报告](../reviews/pc_a/visor_candidate_alignment_2026-09-27/REPORT.md)。30文件26,153,681字节逐文件SHA备份主仓output/visor-candidate-alignment-20260927/closed。下一主项：补候选对应监督与第一视角手部覆盖，再接组件训练，不能用唯一几何组合或未选物框自动造标签。新增训练/自然发布/记忆/动作0；B未验收、不合并，完整范围保持，旧自动接续暂停。HFD46/96及10/24仍部分覆盖。
+
 # A：VISOR 候选—人工掩膜逐帧对齐开工（2026-09-27）
 
 独立分支 codex/pc-a-visor-candidate-alignment-20260927，目录 /private/tmp/cpswm-pc-a-visor-candidate-alignment-20260927。base/开工代码 ced69a60c2e81d37f7b9012276451a6778b78020。fetch 已核验共享集成19ddf26830348a2f0b33f0af54d6ba702c5cfb1c、B fd4ca6ef5e81c90d7cf7987b42c0b2810d8a810a，均未变。

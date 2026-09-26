@@ -1,0 +1,153 @@
+{
+  "source_sha": "4b576567d11258f18697ad74c680e91cadf77cde",
+  "commands": [
+    {
+      "name": "round1",
+      "argv": [
+        "/private/tmp/cpswm-pc-a-person-ambiguity-20260926/.venv/bin/python",
+        "-m",
+        "pytest",
+        "-o",
+        "addopts=",
+        "-q",
+        "tests/test_person_identity_ambiguity.py",
+        "tests/test_hfd_continuous_windows.py",
+        "tests/test_hfd_observation_alignment.py",
+        "tests/test_natural_hands.py",
+        "tests/test_hand_object_evidence.py",
+        "tests/test_hand_person_regions.py",
+        "tests/test_continuous_state_recovery.py",
+        "tests/test_structure_two_continuous_input.py",
+        "tests/test_archive_media_timeline.py",
+        "tests/test_natural_vision.py",
+        "tests/test_runtime_candidates.py",
+        "tests/test_interaction_evidence.py"
+      ],
+      "started_utc": "2026-09-26T14:02:09.077470+00:00",
+      "seconds": 34.982062249910086,
+      "exit_code": 0
+    },
+    {
+      "name": "round2",
+      "argv": [
+        "/private/tmp/cpswm-pc-a-person-ambiguity-20260926/.venv/bin/python",
+        "-m",
+        "pytest",
+        "-o",
+        "addopts=",
+        "-q",
+        "/private/tmp/cpswm-pc-a-person-ambiguity-20260926/docs/reviews/pc_a/person_ambiguity_2026-09-26/audit_person_second.py",
+        "/private/tmp/cpswm-pc-a-person-ambiguity-20260926/docs/reviews/pc_a/hfd_continuous_windows_2026-09-26/audit_windows_second.py",
+        "/private/tmp/cpswm-pc-a-person-ambiguity-20260926/docs/reviews/pc_a/hfd_observation_alignment_2026-09-26/audit_alignment_second.py"
+      ],
+      "started_utc": "2026-09-26T14:02:44.177721+00:00",
+      "seconds": 4.772038583178073,
+      "exit_code": 0
+    },
+    {
+      "name": "mypy",
+      "argv": [
+        "/private/tmp/cpswm-pc-a-person-ambiguity-20260926/.venv/bin/python",
+        "-m",
+        "mypy",
+        "--no-incremental"
+      ],
+      "started_utc": "2026-09-26T14:02:49.046286+00:00",
+      "seconds": 14.051623292267323,
+      "exit_code": 0
+    },
+    {
+      "name": "ruff",
+      "argv": [
+        "/private/tmp/cpswm-pc-a-person-ambiguity-20260926/.venv/bin/python",
+        "-m",
+        "ruff",
+        "check",
+        "src",
+        "tests",
+        "tools",
+        "/private/tmp/cpswm-pc-a-person-ambiguity-20260926/docs/reviews/pc_a/person_ambiguity_2026-09-26"
+      ],
+      "started_utc": "2026-09-26T14:03:03.190544+00:00",
+      "seconds": 0.10077687539160252,
+      "exit_code": 0
+    },
+    {
+      "name": "real-alignment",
+      "argv": [
+        "/private/tmp/cpswm-pc-a-person-ambiguity-20260926/.venv/bin/python",
+        "tools/align_hfd_observations.py",
+        "--archive",
+        "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/datasets/hfd-full-training-20260926/raw/training_set.verified.tar.gz",
+        "--metadata",
+        "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/joint-training-loop-20260925/public-evidence",
+        "--intake",
+        "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/complete-hfd-resume-20260926/closed/final-02/packet",
+        "--output",
+        "/private/tmp/cpswm-pc-a-person-ambiguity-20260926/output/person-ambiguity/final-02/aligned",
+        "--imported-at",
+        "2026-09-26T14:03:03.337066+00:00",
+        "--sampling",
+        "continuous"
+      ],
+      "started_utc": "2026-09-26T14:03:03.381852+00:00",
+      "seconds": 85.96842295769602,
+      "exit_code": 0
+    },
+    {
+      "name": "fresh-source-reconstruction",
+      "argv": [
+        "/private/tmp/cpswm-pc-a-person-ambiguity-20260926/.venv/bin/python",
+        "tools/align_hfd_observations.py",
+        "--archive",
+        "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/datasets/hfd-full-training-20260926/raw/training_set.verified.tar.gz",
+        "--metadata",
+        "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/joint-training-loop-20260925/public-evidence",
+        "--intake",
+        "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/complete-hfd-resume-20260926/closed/final-02/packet",
+        "--output",
+        "/private/tmp/cpswm-pc-a-person-ambiguity-20260926/output/person-ambiguity/final-02/aligned",
+        "--imported-at",
+        "2026-09-26T14:03:03.337066+00:00",
+        "--sampling",
+        "continuous",
+        "--verify"
+      ],
+      "started_utc": "2026-09-26T14:04:29.631768+00:00",
+      "seconds": 85.10047425003722,
+      "exit_code": 0
+    },
+    {
+      "name": "real-frontend",
+      "argv": [
+        "/private/tmp/cpswm-pc-a-person-ambiguity-20260926/.venv/bin/python",
+        "tools/run_hfd_continuous_frontend.py",
+        "--runtime",
+        "/private/tmp/cpswm-pc-a-person-ambiguity-20260926/output/person-ambiguity/final-02/aligned/runtime",
+        "--manifest-sha256",
+        "77f02b3dbf093243033f232ce4721d54f1ca35189b1a963d6552b92dd199279f",
+        "--weights",
+        "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/models/torchvision/fasterrcnn_resnet50_fpn_v2_coco-dd69338a.pth",
+        "--hand-model",
+        "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/models/mediapipe/hand_landmarker-1.task",
+        "--output",
+        "/private/tmp/cpswm-pc-a-person-ambiguity-20260926/output/person-ambiguity/final-02/frontend"
+      ],
+      "started_utc": "2026-09-26T14:05:54.977254+00:00",
+      "seconds": 325.7197282910347,
+      "exit_code": 0
+    },
+    {
+      "name": "identity-summary",
+      "argv": [
+        "/private/tmp/cpswm-pc-a-person-ambiguity-20260926/.venv/bin/python",
+        "/private/tmp/cpswm-pc-a-person-ambiguity-20260926/docs/reviews/pc_a/person_ambiguity_2026-09-26/summarize_identity.py",
+        "/private/tmp/cpswm-pc-a-person-ambiguity-20260926/output/person-ambiguity/final-02/frontend/result.json",
+        "/private/tmp/cpswm-pc-a-person-ambiguity-20260926/output/person-ambiguity/final-02/IDENTITY_SUMMARY.json"
+      ],
+      "started_utc": "2026-09-26T14:11:20.833655+00:00",
+      "seconds": 0.03155604097992182,
+      "exit_code": 0
+    }
+  ]
+}

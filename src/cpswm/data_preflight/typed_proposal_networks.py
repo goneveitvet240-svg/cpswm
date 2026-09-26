@@ -17,6 +17,14 @@ import torch
 from torch import Tensor, nn
 from torch.nn.utils.rnn import pack_padded_sequence, pad_sequence
 
+from cpswm.data_preflight.proposal_graph_compute import (
+    BLOCKED_BACKEND,
+    MAX_BLOCKED_NODES,
+    attend_query_rows,
+    encode_graph_rows,
+    encode_leaf_batches,
+    project_key_value,
+)
 from cpswm.data_preflight.proposal_learning import FACTOR_ORDER
 from cpswm.data_preflight.proposal_samples import (
     ProposalContext,
@@ -41,6 +49,7 @@ class NetworkConfig:
     perceiver_latent_slots: int = 16
     max_nodes: int = 4096
     max_bytes_per_leaf: int = 4096
+    execution_backend: str = "dense@1"
 
     def validate(self) -> None:
         if (self.hidden_width, self.layers, self.attention_heads, self.perceiver_latent_slots) != (
@@ -50,8 +59,12 @@ class NetworkConfig:
             16,
         ):
             raise ValueError("use the frozen local-development architecture dimensions")
-        if self.max_nodes <= 0 or self.max_bytes_per_leaf <= 0:
-            raise ValueError("positive resource limits required; no history truncation")
+        if any(type(n) is not int or n <= 0 for n in (self.max_nodes, self.max_bytes_per_leaf)):
+            raise ValueError("positive integer resource limits required; no history truncation")
+        if self.execution_backend not in {"dense@1", BLOCKED_BACKEND}:
+            raise ValueError("unknown proposal execution backend")
+        if self.execution_backend == BLOCKED_BACKEND and self.max_nodes > MAX_BLOCKED_NODES:
+            raise ValueError("blocked execution exceeds its bounded local node budget")
 
 
 def leaves(value: Any, path: tuple[str, ...] = ()) -> list[tuple[tuple[str, ...], str]]:
@@ -112,6 +125,14 @@ class TypedProposalNetwork(nn.Module):
     def prepare(
         self, context: ProposalContext, candidates: tuple[ProposalTarget, ...]
     ) -> PreparedScorer:
+        blocked = self.config.execution_backend == BLOCKED_BACKEND
+        if blocked and (
+            torch.is_grad_enabled()
+            or any(m.training for m in self.modules())
+            or self.anchor.device.type != "cpu"
+            or self.anchor.dtype != torch.float32
+        ):
+            raise ValueError("blocked backend is CPU float32 evaluation only, without gradients")
         if type(context) is not ProposalContext:
             raise ValueError("network input cannot contain a supervision envelope")
         context = ProposalContext.model_validate(context.model_dump())
@@ -139,33 +160,40 @@ class TypedProposalNetwork(nn.Module):
         if any(len(b) > self.config.max_bytes_per_leaf for b in encoded):
             raise ValueError("resource limit: full leaf exceeds byte budget; no truncation")
         device = self.anchor.device
-        sequences = [torch.tensor(list(b), dtype=torch.long, device=device) for b in encoded]
-        padded = pad_sequence(sequences, batch_first=True, padding_value=256)
-        packed = pack_padded_sequence(
-            self.byte_embedding(padded),
-            [len(s) for s in sequences],
-            batch_first=True,
-            enforce_sorted=False,
-        )
-        _, hidden = self.leaf_encoder(packed)
-        nodes = torch.cat([self.anchor, hidden[-1]], dim=0)
+        if blocked:
+            leaf_vectors = encode_leaf_batches(self, encoded)
+        else:
+            sequences = [torch.tensor(list(b), dtype=torch.long, device=device) for b in encoded]
+            padded = pad_sequence(sequences, batch_first=True, padding_value=256)
+            packed = pack_padded_sequence(
+                self.byte_embedding(padded),
+                [len(s) for s in sequences],
+                batch_first=True,
+                enforce_sorted=False,
+            )
+            _, hidden = self.leaf_encoder(packed)
+            leaf_vectors = hidden[-1]
+        nodes = torch.cat([self.anchor, leaf_vectors], dim=0)
         raw_candidates = torch.stack([nodes[a:b].mean(0) for a, b in ranges])
         if self.arm == "typed_factor_graph_transformer":
-            # Local typed records and shared scalar identities form edges; anchor
-            # connects records so multi-hop evidence is retained across layers.
-            groups = [path[:-1] for path, _ in rows]
-            values = [value for _, value in rows]
-            mask = torch.ones((len(nodes), len(nodes)), dtype=torch.bool, device=device)
-            mask[0, :] = False
-            mask[:, 0] = False
-            for membership in (groups, values):
-                indexed: dict[Any, list[int]] = {}
-                for i, key in enumerate(membership):
-                    indexed.setdefault(key, []).append(i + 1)
-                for members in indexed.values():
-                    indices = torch.tensor(members, dtype=torch.long, device=device)
-                    mask[indices[:, None], indices[None, :]] = False
-            memory = self.encoder(nodes[None], mask=mask)
+            if blocked:
+                memory = encode_graph_rows(self.encoder, nodes, rows, typed=True)
+            else:
+                # Local typed records and shared scalar identities form edges; anchor
+                # connects records so multi-hop evidence is retained across layers.
+                groups = [path[:-1] for path, _ in rows]
+                values = [value for _, value in rows]
+                mask = torch.ones((len(nodes), len(nodes)), dtype=torch.bool, device=device)
+                mask[0, :] = False
+                mask[:, 0] = False
+                for membership in (groups, values):
+                    indexed: dict[Any, list[int]] = {}
+                    for i, key in enumerate(membership):
+                        indexed.setdefault(key, []).append(i + 1)
+                    for members in indexed.values():
+                        indices = torch.tensor(members, dtype=torch.long, device=device)
+                        mask[indices[:, None], indices[None, :]] = False
+                memory = self.encoder(nodes[None], mask=mask)
             candidate_vectors = torch.stack([memory[0, a:b].mean(0) for a, b in ranges])
         elif self.arm == "slot_conditioned_perceiver":
             memory = self.latents[None]
@@ -175,7 +203,11 @@ class TypedProposalNetwork(nn.Module):
             memory = self.encoder(memory)
             candidate_vectors = raw_candidates
         else:
-            memory = self.encoder(nodes[None])
+            memory = (
+                encode_graph_rows(self.encoder, nodes, rows, typed=False)
+                if blocked
+                else self.encoder(nodes[None])
+            )
             candidate_vectors = torch.stack([memory[0, a:b].mean(0) for a, b in ranges])
         if parameter_fingerprint(self) != parameter_sha256:
             raise ValueError("model parameters changed during graph preparation")
@@ -205,6 +237,11 @@ class PreparedScorer:
         self.memory, self.vectors, self.node_count = memory, vectors, nodes
         self.parameter_versions = tuple(p._version for p in network.parameters())
         self.parameter_sha256 = parameter_sha256
+        self.choice_key_value = (
+            project_key_value(network.choice_attention, memory[0])
+            if network.config.execution_backend == BLOCKED_BACKEND
+            else None
+        )
 
     def __call__(
         self,
@@ -223,6 +260,10 @@ class PreparedScorer:
             != self.candidate_hashes
         ):
             raise ValueError("prepared network belongs to another input/support/optimizer state")
+        if self.network.config.execution_backend == BLOCKED_BACKEND and (
+            torch.is_grad_enabled() or any(m.training for m in self.network.modules())
+        ):
+            raise ValueError("blocked scorer is evaluation only, without gradients")
         depth = len(prefix)
         if depth >= len(FACTOR_ORDER) or axis != FACTOR_ORDER[depth]:
             raise ValueError("invalid typed autoregressive prefix")
@@ -255,11 +296,20 @@ class PreparedScorer:
         else:
             conditioned = torch.zeros_like(queries[0])
         queries = queries + axes[depth] + conditioned
-        attended, _ = self.network.choice_attention(
-            queries[None], self.memory, self.memory, need_weights=False
-        )
+        if self.network.config.execution_backend == BLOCKED_BACKEND:
+            attended = attend_query_rows(
+                self.network.choice_attention,
+                queries,
+                self.memory[0],
+                projected_kv=self.choice_key_value,
+            )
+        else:
+            batched, _ = self.network.choice_attention(
+                queries[None], self.memory, self.memory, need_weights=False
+            )
+            attended = batched[0]
         scores = self.network.head(
-            torch.cat([queries, attended[0], conditioned.expand(len(choices), -1)], dim=-1)
+            torch.cat([queries, attended, conditioned.expand(len(choices), -1)], dim=-1)
         ).squeeze(-1)
         if parameter_fingerprint(self.network) != self.parameter_sha256:
             raise ValueError("model parameters changed during conditional scoring")

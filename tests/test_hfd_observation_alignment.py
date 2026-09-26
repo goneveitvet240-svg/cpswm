@@ -103,7 +103,7 @@ def test_resealed_receipt_cannot_change_clock_or_add_answers(tmp_path, monkeypat
     bad = replace(
         raw,
         archive_sampling_json=json.dumps(receipt),
-        capture_receipt_sha256=content_sha256(receipt),
+        capture_receipt_sha256=("0" * 64 if value == float("inf") else content_sha256(receipt)),
     )
     with pytest.raises(ValueError):
         bad.envelope()

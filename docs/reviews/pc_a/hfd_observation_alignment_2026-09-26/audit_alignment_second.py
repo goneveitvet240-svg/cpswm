@@ -97,6 +97,17 @@ def test_outcome_sort_order_cannot_encode_answers_in_import_times(tmp_path, monk
     for row in changed["report"]["trials"]:
         row["outcome"] = 3 - row["outcome"]
     other, _ = module.alignment_artifacts(args["intake"], changed, imported_at=NOW)
+
+    # Compare the clocks separately, so a random metadata UUID cannot hide
+    # a real outcome-order channel in a before-fix reproduction.
+    def clock_values(items):
+        return {
+            k: (json.loads(v)["capture_time"], json.loads(v)["arrival_time"])
+            for k, v in items.items()
+            if k.endswith(".envelope.json")
+        }
+
+    assert clock_values(files) == clock_values(other)
     # Parent intake digest naturally changes, and is provenance, not model input.
     assert {
         k: v for k, v in files.items() if k.startswith("runtime/") and k != "runtime/manifest.json"

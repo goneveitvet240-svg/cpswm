@@ -127,6 +127,7 @@ def make_observation(
     }
     env = ObservationEnvelope(
         metadata=BaseRecordMetadata(
+            record_id=uuid5(observation, "metadata"),
             schema_name="hfd_original_frame_import",
             schema_version="1.0.0",
             household_id=household,

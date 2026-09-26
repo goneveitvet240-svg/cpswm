@@ -1,0 +1,142 @@
+{
+  "source_sha": "98c64b1df1008422c1af6f5056fb371edd9c96c9",
+  "commands": [
+    {
+      "name": "round1",
+      "argv": [
+        "/private/tmp/cpswm-pc-a-visor-candidate-alignment-20260927/.venv/bin/python",
+        "-m",
+        "pytest",
+        "-o",
+        "addopts=",
+        "-q",
+        "tests/test_visor_candidate_alignment.py",
+        "tests/test_visor_contact_supervision.py",
+        "tests/test_natural_hands.py",
+        "tests/test_hand_person_regions.py"
+      ],
+      "started_utc": "2026-09-26T22:09:38.969862+00:00",
+      "seconds": 25.629389957990497,
+      "exit_code": 0
+    },
+    {
+      "name": "round2",
+      "argv": [
+        "/private/tmp/cpswm-pc-a-visor-candidate-alignment-20260927/.venv/bin/python",
+        "-m",
+        "pytest",
+        "-o",
+        "addopts=",
+        "-q",
+        "/private/tmp/cpswm-pc-a-visor-candidate-alignment-20260927/docs/reviews/pc_a/visor_candidate_alignment_2026-09-27/audit_second.py",
+        "tests/test_structure_two_continuous_input.py",
+        "tests/test_continuous_state_recovery.py"
+      ],
+      "started_utc": "2026-09-26T22:10:04.854033+00:00",
+      "seconds": 26.886509041767567,
+      "exit_code": 0
+    },
+    {
+      "name": "mypy",
+      "argv": [
+        "/private/tmp/cpswm-pc-a-visor-candidate-alignment-20260927/.venv/bin/python",
+        "-m",
+        "mypy",
+        "--no-incremental"
+      ],
+      "started_utc": "2026-09-26T22:10:31.987687+00:00",
+      "seconds": 11.667817375157028,
+      "exit_code": 0
+    },
+    {
+      "name": "ruff",
+      "argv": [
+        "/private/tmp/cpswm-pc-a-visor-candidate-alignment-20260927/.venv/bin/python",
+        "-m",
+        "ruff",
+        "check",
+        "src",
+        "tests",
+        "tools",
+        "/private/tmp/cpswm-pc-a-visor-candidate-alignment-20260927/docs/reviews/pc_a/visor_candidate_alignment_2026-09-27"
+      ],
+      "started_utc": "2026-09-26T22:10:43.799153+00:00",
+      "seconds": 0.09617375023663044,
+      "exit_code": 0
+    },
+    {
+      "name": "source-verify",
+      "argv": [
+        "/private/tmp/cpswm-pc-a-visor-candidate-alignment-20260927/.venv/bin/python",
+        "tools/prepare_visor_contact_supervision.py",
+        "--source",
+        "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/visor-contact-supervision-20260927/closed/raw",
+        "--output",
+        "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/visor-contact-supervision-20260927/closed/final-02/packet",
+        "--verify"
+      ],
+      "started_utc": "2026-09-26T22:10:44.033528+00:00",
+      "seconds": 4.177400624845177,
+      "exit_code": 0
+    },
+    {
+      "name": "frontend",
+      "argv": [
+        "/private/tmp/cpswm-pc-a-visor-candidate-alignment-20260927/.venv/bin/python",
+        "-u",
+        "tools/run_visor_candidate_alignment.py",
+        "infer",
+        "--runtime",
+        "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/visor-contact-supervision-20260927/closed/final-02/packet/runtime",
+        "--manifest-sha256",
+        "78f35acfdfb4b051f8630a240beb02e76854d899c4bf34200e74f65576afb162",
+        "--weights",
+        "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/models/torchvision/fasterrcnn_resnet50_fpn_v2_coco-dd69338a.pth",
+        "--hand-model",
+        "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/models/mediapipe/hand_landmarker-1.task",
+        "--output",
+        "/private/tmp/cpswm-pc-a-visor-candidate-alignment-20260927/output/visor-alignment/final-01/predictions.json"
+      ],
+      "started_utc": "2026-09-26T22:10:48.347261+00:00",
+      "seconds": 1182.6206227079965,
+      "exit_code": 0
+    },
+    {
+      "name": "alignment",
+      "argv": [
+        "/private/tmp/cpswm-pc-a-visor-candidate-alignment-20260927/.venv/bin/python",
+        "tools/run_visor_candidate_alignment.py",
+        "evaluate",
+        "--source",
+        "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/visor-contact-supervision-20260927/closed/raw",
+        "--packet",
+        "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/visor-contact-supervision-20260927/closed/final-02/packet",
+        "--prediction",
+        "/private/tmp/cpswm-pc-a-visor-candidate-alignment-20260927/output/visor-alignment/final-01/predictions.json",
+        "--prediction-sha256",
+        "7d654b5d2f574bd7a977b8fcd299605327ace6ab30e90b6768378453da5f2e47",
+        "--output",
+        "/private/tmp/cpswm-pc-a-visor-candidate-alignment-20260927/output/visor-alignment/final-01/alignment.json"
+      ],
+      "started_utc": "2026-09-26T22:30:31.233509+00:00",
+      "seconds": 16.973767375107855,
+      "exit_code": 0
+    },
+    {
+      "name": "fresh-consumer",
+      "argv": [
+        "/private/tmp/cpswm-pc-a-visor-candidate-alignment-20260927/.venv/bin/python",
+        "-c",
+        "import json,sys; from pathlib import Path; from cpswm.data_preflight.visor_candidate_alignment import verify_alignment; r=verify_alignment(Path(sys.argv[1]),Path(sys.argv[2]),Path(sys.argv[3]),sys.argv[4],Path(sys.argv[5])); print(json.dumps(r['summary'],indent=2))",
+        "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/visor-contact-supervision-20260927/closed/raw",
+        "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/visor-contact-supervision-20260927/closed/final-02/packet",
+        "/private/tmp/cpswm-pc-a-visor-candidate-alignment-20260927/output/visor-alignment/final-01/predictions.json",
+        "7d654b5d2f574bd7a977b8fcd299605327ace6ab30e90b6768378453da5f2e47",
+        "/private/tmp/cpswm-pc-a-visor-candidate-alignment-20260927/output/visor-alignment/final-01/alignment.json"
+      ],
+      "started_utc": "2026-09-26T22:30:48.346352+00:00",
+      "seconds": 16.713076958898455,
+      "exit_code": 0
+    }
+  ]
+}

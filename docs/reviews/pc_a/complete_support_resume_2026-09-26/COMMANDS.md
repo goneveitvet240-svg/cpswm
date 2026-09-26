@@ -1,6 +1,6 @@
 # 固定复跑
 
-独立检出报告源码65aa8b35050b0eb85b04200e867e9dc00d746307，按uv.lock重建Python3.13.5、dev/perception/hand-perception环境，然后：
+独立检出报告源码7c19637791e45dbf28e041beb3b98bc9acd92038，按uv.lock重建Python3.13.5、dev/perception/hand-perception环境，然后：
 
 ```sh
 .venv/bin/python docs/reviews/pc_a/complete_support_resume_2026-09-26/run_frozen_validation.py --main <containing-original-outputs-project> --output <new-validation-directory>

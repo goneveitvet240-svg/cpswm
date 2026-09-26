@@ -11,6 +11,7 @@ import hashlib
 import io
 import re
 import tempfile
+from collections import defaultdict
 from datetime import UTC, datetime, timedelta
 from pathlib import Path
 from typing import Any
@@ -37,6 +38,10 @@ from cpswm.perception_mapping.adapters.rgbd_capture import RawModalityObservatio
 from cpswm.system.reproducibility import content_sha256
 
 POLICY = "first_lexical_trial_per_author_direction_outcome;four_uniform_original_indices@1"
+CONTINUOUS_POLICY = (
+    "first_lexical_trial_per_author_direction_outcome;"
+    "four_uniform_windows_of_four_original_frames@1"
+)
 TIME_SEMANTICS = "original_frame_author_clock_unverified_exposure"
 
 
@@ -44,6 +49,20 @@ def uniform_indices(count: int) -> tuple[int, ...]:
     if type(count) is not int or count < 2:
         raise ValueError("at least two original frames required")
     return tuple(sorted({i * (count - 1) // 3 for i in range(4)}))
+
+
+def sample_windows(count: int, sampling: str = "sparse") -> tuple[tuple[int, ...], ...]:
+    """Fixed retrospective windows; source frame count, never phase labels, sets positions."""
+    anchors = uniform_indices(count)
+    if sampling == "sparse":
+        return (anchors,)
+    if sampling != "continuous":
+        raise ValueError("unknown HFD sampling policy")
+    width = min(4, count)
+    # The first/last windows include the first/last original frames. Short
+    # recordings may overlap; shared original frames are decoded/stored once.
+    starts = sorted({i * (count - width) // 3 for i in range(4)})
+    return tuple(tuple(range(start, start + width)) for start in starts)
 
 
 def select_trials(manifest: dict[str, Any]) -> list[dict[str, Any]]:
@@ -105,11 +124,12 @@ def make_observation(
     origin: float,
     shape: tuple[int, ...],
     imported_at: datetime,
+    policy: str = POLICY,
 ) -> RawModalityObservation:
     when = require_aware(imported_at, "imported_at").astimezone(UTC)
     household = uuid5(NAMESPACE_URL, "hfd-author-training-development")
     session = uuid5(household, video_sha + clock_sha)
-    trace = uuid5(session, POLICY)
+    trace = uuid5(session, policy)
     observation = uuid5(session, f"head_cam/original/{index}")
     receipt = {
         "source_url": RECORD,
@@ -163,8 +183,11 @@ def alignment_artifacts(
     manifest: dict[str, Any],
     *,
     imported_at: datetime,
+    sampling: str = "sparse",
 ) -> tuple[dict[str, bytes], dict[str, Any]]:
     """Consume a source-reconstructed manifest; never a self-certified receipt."""
+    sample_windows(2, sampling)  # Validate before any source/output work.
+    policy = POLICY if sampling == "sparse" else CONTINUOUS_POLICY
     when = require_aware(imported_at, "imported_at").astimezone(UTC)
     files: dict[str, bytes] = {}
     runtime_index: list[dict[str, Any]] = []
@@ -196,7 +219,8 @@ def alignment_artifacts(
         count, shape = row["decoded_frames"], tuple(row["frame_shape"])
         if len(times) != count or len(labels) != count:
             raise ValueError("source clock/label count mismatch")
-        indices = uniform_indices(count)
+        windows = sample_windows(count, sampling)
+        indices = tuple(sorted({i for window in windows for i in window}))
         frames = decode_original_frames(video, indices=indices, count=count, shape=shape)
         # This sequence key depends only on raw sensor sources, not trial answers.
         sequence = hashlib.sha256((video_sha + clock_sha).encode()).hexdigest()
@@ -214,6 +238,7 @@ def alignment_artifacts(
                 origin=float(times[0]),
                 shape=shape,
                 imported_at=when + timedelta(microseconds=indices.index(i)),
+                policy=policy,
             )
             env = raw.envelope()
             key = f"{sequence}/{i:06d}"
@@ -262,6 +287,7 @@ def alignment_artifacts(
                 "outcome": row["outcome"],
                 "source_frames": count,
                 "selected_original_indices": list(indices),
+                **({"windows": [list(w) for w in windows]} if sampling == "continuous" else {}),
             }
         )
     runtime_index.sort(key=lambda r: r["key"])
@@ -274,11 +300,15 @@ def alignment_artifacts(
             for name, raw in sorted(files.items())
         },
     }
+    if sampling == "continuous":
+        runtime_manifest.update(
+            format="hfd-original-runtime-inputs@2", sampling_policy=CONTINUOUS_POLICY
+        )
     files["runtime/manifest.json"] = encoded(runtime_manifest)
     files["evaluator/author_supervision.jsonl"] = b"".join(encoded(r) for r in evaluator)
     report = {
         "format": "hfd-original-frame-alignment@1",
-        "policy": POLICY,
+        "policy": policy,
         "intake_manifest_sha256": hashlib.sha256(encoded(manifest)).hexdigest(),
         "imported_at": when.isoformat(),
         "selection_uses_author_outcomes_for_development_stratification": True,
@@ -301,6 +331,13 @@ def alignment_artifacts(
             for name, raw in sorted(files.items())
         },
     }
+    if sampling == "continuous":
+        report.update(
+            format="hfd-original-frame-alignment@2",
+            selected_windows=sum(len(r["windows"]) for r in selected_rows),
+            frame_presentations=sum(len(w) for r in selected_rows for w in r["windows"]),
+            overlapping_windows_are_not_independent_trials=True,
+        )
     return files, report
 
 
@@ -312,13 +349,17 @@ def align_hfd_training(
     output: Path,
     imported_at: datetime,
     verify: bool = False,
+    sampling: str = "sparse",
 ) -> dict[str, Any]:
     """Reconstruct source roots on every call; a resealed output is not authority."""
+    sample_windows(2, sampling)
     if not verify and output.exists():
         raise FileExistsError(output)
     before = packet_inventory(output) if verify else None
     manifest = inspect_full_training(archive, metadata, intake, verify=True)
-    files, report = alignment_artifacts(intake, manifest, imported_at=imported_at)
+    files, report = alignment_artifacts(
+        intake, manifest, imported_at=imported_at, sampling=sampling
+    )
     files["manifest.json"] = encoded(report)
     if verify:
         if set(packet_inventory(output)) != set(files):
@@ -351,8 +392,17 @@ def load_runtime_observations(
     """
     before = packet_inventory(root)
     manifest = strict_json(pinned_bytes(root, "manifest.json", manifest_sha256))
-    if set(manifest) != {"format", "intake_manifest_sha256", "files"} or (
-        manifest["format"] != "hfd-original-runtime-inputs@1"
+    fields = {"format", "intake_manifest_sha256", "files"}
+    continuous = manifest.get("format") == "hfd-original-runtime-inputs@2"
+    if continuous:
+        fields.add("sampling_policy")
+    if (
+        set(manifest) != fields
+        or (
+            manifest["format"]
+            not in {"hfd-original-runtime-inputs@1", "hfd-original-runtime-inputs@2"}
+        )
+        or (continuous and manifest["sampling_policy"] != CONTINUOUS_POLICY)
     ):
         raise ValueError("unexpected runtime manifest")
     index = [
@@ -416,3 +466,53 @@ def load_runtime_observations(
     if packet_inventory(root) != before:
         raise ValueError("runtime source changed during admission")
     return tuple(observed)
+
+
+def load_runtime_windows(
+    root: Path,
+    *,
+    manifest_sha256: str,
+) -> tuple[tuple[str, tuple[tuple[str, RawModalityObservation], ...]], ...]:
+    """Return fixed windows with shared source frames retained, never fabricated fills."""
+    before = packet_inventory(root)
+    observations = load_runtime_observations(root, manifest_sha256=manifest_sha256)
+    manifest = strict_json(pinned_bytes(root, "manifest.json", manifest_sha256))
+    if manifest["format"] != "hfd-original-runtime-inputs@2":
+        raise ValueError("continuous windows require their independently pinned v2 manifest")
+    groups: dict[str, list[tuple[str, RawModalityObservation]]] = defaultdict(list)
+    for key, raw in observations:
+        groups[key.split("/")[0]].append((key, raw))
+    result = []
+    for sequence, rows in sorted(groups.items()):
+        receipts = [
+            strict_json(raw.archive_sampling_json.encode())
+            for _, raw in rows
+            if raw.archive_sampling_json is not None
+        ]
+        first = receipts[0]
+        identity = rows[0][1].envelope().identity
+        scope = (identity.household_id, identity.session_id, identity.trace_id)
+        previous_clock, previous_arrival = None, None
+        for (_, raw), receipt in zip(rows, receipts, strict=True):
+            env = raw.envelope()
+            if (
+                receipt["source_frame_count"] != first["source_frame_count"]
+                or receipt["author_clock_origin_seconds"] != first["author_clock_origin_seconds"]
+                or (env.identity.household_id, env.identity.session_id, env.identity.trace_id)
+                != scope
+                or (previous_clock is not None and receipt["media_time_seconds"] <= previous_clock)
+                or (previous_arrival is not None and env.arrival_time <= previous_arrival)
+            ):
+                raise ValueError("inconsistent continuous sequence count, clock, scope or order")
+            previous_clock, previous_arrival = receipt["media_time_seconds"], env.arrival_time
+        windows = sample_windows(first["source_frame_count"], "continuous")
+        by_index = {r["original_frame_index"]: row for r, row in zip(receipts, rows, strict=True)}
+        if set(by_index) != {i for window in windows for i in window}:
+            raise ValueError("continuous source coverage differs from fixed original windows")
+        result.extend(
+            (f"{sequence}/window-{window[0]:06d}", tuple(by_index[i] for i in window))
+            for window in windows
+        )
+    if packet_inventory(root) != before:
+        raise ValueError("runtime windows changed during admission")
+    return tuple(result)

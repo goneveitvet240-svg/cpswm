@@ -1,4 +1,4 @@
-"""Freeze -> two sequential audits -> original windows -> hand and object frontend."""
+"""Two sequential frozen audits, then three independent fixed-window matrix arms."""
 
 import argparse
 import hashlib
@@ -6,8 +6,10 @@ import json
 import subprocess
 import sys
 import time
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from datetime import UTC, datetime
 from pathlib import Path
+from threading import Lock
 
 ROOT = Path(__file__).resolve().parents[4]
 AUDIT = Path(__file__).resolve().parent
@@ -38,6 +40,7 @@ def run(main, output):
     sha = subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=ROOT).decode().strip()
     (output / "source-before.json").write_text(json.dumps(baseline, indent=2) + "\n")
     receipts = []
+    receipt_lock = Lock()
 
     def command(name, argv):
         if sources() != baseline:
@@ -64,14 +67,15 @@ def run(main, output):
             "exit_code": exit_code,
             "timed_out_at_compute_deadline": timed_out,
         }
-        receipts.append(receipt)
-        (output / "commands.json").write_text(
-            json.dumps({"source_sha": sha, "commands": receipts}, indent=2) + "\n"
-        )
-        print(json.dumps(receipt), flush=True)
-        if sources() != baseline:
-            raise ValueError("Python source changed during command")
-        (output / "source-latest.json").write_text(json.dumps(sources(), indent=2) + "\n")
+        with receipt_lock:
+            receipts.append(receipt)
+            (output / "commands.json").write_text(
+                json.dumps({"source_sha": sha, "commands": receipts}, indent=2) + "\n"
+            )
+            print(json.dumps(receipt), flush=True)
+            if sources() != baseline:
+                raise ValueError("Python source changed during command")
+            (output / "source-latest.json").write_text(json.dumps(sources(), indent=2) + "\n")
         if exit_code:
             raise RuntimeError("failed or deadline-limited command: " + name)
 
@@ -124,11 +128,8 @@ def run(main, output):
     frontend = main / "output/hand-proposal-input-20260926/closed/final-01/frontend"
     training = main / "output/hand-proposal-input-20260926/closed/final-01/derived"
     front_pin = "677505fa2891aab0b2602a5ec002ea3fb3612d5e219ad788437b5b03feaf3c48"
-    for arm in (
-        "typed_factor_graph_transformer",
-        "slot_conditioned_perceiver",
-        "autoregressive_typed_graph_policy",
-    ):
+
+    def matrix_arm(arm):
         command(
             "full-" + arm,
             [
@@ -152,7 +153,30 @@ def run(main, output):
                 "first",
             ],
         )
+
+    failures = []
+    with ThreadPoolExecutor(max_workers=3) as pool:
+        futures = {
+            pool.submit(matrix_arm, arm): arm
+            for arm in (
+                "typed_factor_graph_transformer",
+                "slot_conditioned_perceiver",
+                "autoregressive_typed_graph_policy",
+            )
+        }
+        for future in as_completed(futures):
+            try:
+                future.result()
+            except Exception as error:
+                failures.append({"arm": futures[future], "error": str(error)})
+    if sources() != baseline:
+        raise ValueError("Python source changed across full matrix")
     (output / "source-after.json").write_text(json.dumps(sources(), indent=2) + "\n")
+    (output / "matrix-status.json").write_text(
+        json.dumps({"complete": not failures, "failures": failures}, indent=2) + "\n"
+    )
+    if failures:
+        raise RuntimeError("matrix incomplete; preserve all arm receipts: " + str(failures))
     print(
         json.dumps({"complete": True, "source_sha": sha, "source_files": len(baseline)}), flush=True
     )

@@ -1,0 +1,16 @@
+{"arm": "typed_factor_graph_transformer", "phase": "dense_reference", "seconds": 15.406471041962504, "node_count": 10246, "candidate_count": 303, "probability_mass": 1.0, "weights_sha256": "8b7a783dac08df12d1487365764c91bd44cc6a45be015178766ddb614225b7a8", "process_peak_rss_bytes": 5047730176}
+{"arm": "typed_factor_graph_transformer", "phase": "blocked", "seconds": 17.644896124955267, "node_count": 10246, "candidate_count": 303, "probability_mass": 1.0, "weights_sha256": "8b7a783dac08df12d1487365764c91bd44cc6a45be015178766ddb614225b7a8", "process_peak_rss_bytes": 5047730176}
+Traceback (most recent call last):
+  File "/private/tmp/cpswm-pc-a-full-support-compute-20260926/docs/reviews/pc_a/full_support_compute_2026-09-26/run_complete_support.py", line 181, in <module>
+    run(args.original, args.derived, args.arm, args.output)
+    ~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/private/tmp/cpswm-pc-a-full-support-compute-20260926/docs/reviews/pc_a/full_support_compute_2026-09-26/run_complete_support.py", line 115, in run
+    torch.testing.assert_close(a, b, atol=1e-5, rtol=1e-5)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/private/tmp/cpswm-pc-a-full-support-compute-20260926/.venv/lib/python3.13/site-packages/torch/testing/_comparison.py", line 1631, in assert_close
+    raise error_metas[0].to_error(msg)
+AssertionError: Tensor-likes are not close!
+
+Mismatched elements: 17 / 655744 (0.0%)
+Greatest absolute difference: 3.3020973205566406e-05 at index (0, 0, 54) (up to 1e-05 allowed)
+Greatest relative difference: 0.001396919833496213 at index (0, 2389, 63) (up to 1e-05 allowed)

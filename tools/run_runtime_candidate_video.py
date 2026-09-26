@@ -1,6 +1,6 @@
 """Real cropped pixels -> detector -> automatic candidates -> three proposal arms.
 
-The first two regular sample frames are fixed before inference. The second frame
+The first requested regular sample frames are fixed before inference. The final frame
 is deliberately delayed in a delivery experiment, not an independently labelled
 contact event. No evaluator CSV, target annotation, or fixture candidate is read.
 """
@@ -30,14 +30,25 @@ from cpswm.system.reproducibility import content_sha256
 from cpswm.system.structure_two_production_system import StructureTwoProductionSystem
 
 
-def run(video: Path, weights: Path, training: Path, output: Path):
+def run(video: Path, weights: Path, training: Path, output: Path, frames: int = 2):
+    if type(frames) is not int or frames not in (2, 3, 4):
+        raise ValueError("fixed development prefix must contain two, three or four frames")
     policy_bytes = POLICY.read_bytes()
     policy = json.loads(policy_bytes)
     record = validate_pixel_input(video, policy)
     training_bytes = (training / "summary.json").read_bytes()
     training_report = json.loads(training_bytes)
-    if training_report["track"] != "COMPONENT_FIXTURE_OPTIMIZER_DIAGNOSTIC":
+    if training_report["track"] not in {
+        "COMPONENT_FIXTURE_OPTIMIZER_DIAGNOSTIC",
+        "COMPONENT_FIXTURE_WEIGHTS_EXECUTION_DERIVATION",
+    }:
         raise ValueError("development experiment requires the documented fixture checkpoints")
+    if training_report["track"] == "COMPONENT_FIXTURE_WEIGHTS_EXECUTION_DERIVATION" and (
+        training_report.get("new_optimizer_steps") != 0
+        or training_report.get("production_authorized") is not False
+        or training_report.get("architecture_selected") is not None
+    ):
+        raise ValueError("execution derivation cannot claim training, selection or production")
     pins = {r["arm"]: r["checkpoint_manifest_sha256"] for r in training_report["runs"]}
     if set(pins) != set(ARMS):
         raise ValueError("all three unselected arms required")
@@ -50,7 +61,7 @@ def run(video: Path, weights: Path, training: Path, output: Path):
         source_url=policy["source_url"],
         crop=CROP,
         start=0,
-        duration=0.2,
+        duration=frames / 10,
         fps=10,
         weights=weights,
         hand_model=None,
@@ -61,8 +72,8 @@ def run(video: Path, weights: Path, training: Path, output: Path):
     raw_pixels = tuple(
         ProposalPixelObservation.model_validate(r["visual"]) for r in frontend["records"]
     )
-    if len(raw_pixels) != 2:
-        raise ValueError("fixed prefix must decode exactly two sample frames")
+    if len(raw_pixels) != frames:
+        raise ValueError("fixed prefix must decode exactly the requested sample frames")
     # Exact bytes were freshly decoded from an enrolled video. The old source
     # records remain intact; only this explicit experimental delivery is delayed.
     delivery = raw_pixels[-1].arrival_time + timedelta(seconds=1)
@@ -73,6 +84,7 @@ def run(video: Path, weights: Path, training: Path, output: Path):
             "inference_cutoff": delivery,
         }
     )
+    early = raw_pixels[:-1]
     scope = raw_pixels[0]
     core = StructureTwoProductionSystem(
         owner_key="unresolved-visual-observer",
@@ -88,13 +100,13 @@ def run(video: Path, weights: Path, training: Path, output: Path):
     snapshot = core.current_snapshot.snapshot_id
     contexts = {
         "before_delivery": bootstrap_pixel_context(
-            (scope, late), cutoff=raw_pixels[-1].arrival_time, source_snapshot_id=snapshot
+            (*early, late), cutoff=raw_pixels[-1].arrival_time, source_snapshot_id=snapshot
         ),
         "omission_control": bootstrap_pixel_context(
-            (scope,), cutoff=delivery, source_snapshot_id=snapshot
+            early, cutoff=delivery, source_snapshot_id=snapshot
         ),
         "after_delivery": bootstrap_pixel_context(
-            (scope, late), cutoff=delivery, source_snapshot_id=snapshot
+            (*early, late), cutoff=delivery, source_snapshot_id=snapshot
         ),
     }
     supports = {
@@ -199,6 +211,7 @@ def run(video: Path, weights: Path, training: Path, output: Path):
         "video_sha256": record["sha256"],
         "policy_sha256": hashlib.sha256(policy_bytes).hexdigest(),
         "training_summary_sha256": hashlib.sha256(training_bytes).hexdigest(),
+        "training_bundle_kind": training_report["track"],
         "frames": len(raw_pixels),
         "detections": [len(p.candidates) for p in raw_pixels],
         "raw_pixel_sha256s": [p.input_sha256 for p in raw_pixels],
@@ -234,5 +247,6 @@ if __name__ == "__main__":
     parser.add_argument("--weights", type=Path, required=True)
     parser.add_argument("--training", type=Path, required=True)
     parser.add_argument("--output", type=Path, required=True)
+    parser.add_argument("--frames", type=int, choices=(2, 3, 4), default=2)
     args = parser.parse_args()
-    run(args.video, args.weights, args.training, args.output)
+    run(args.video, args.weights, args.training, args.output, args.frames)

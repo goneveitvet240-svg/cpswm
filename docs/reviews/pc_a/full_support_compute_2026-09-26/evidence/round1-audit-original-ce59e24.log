@@ -1,0 +1,97 @@
+FFF...............................                                       [100%]
+=================================== FAILURES ===================================
+_ test_live_non_tensor_architecture_changes_cannot_publish_a_new_valid_proposal[normalization] _
+
+tmp_path = PosixPath('/private/var/folders/x2/000r8p0n6s393lj2sg8wk5f40000gn/T/pytest-of-pangwei/pytest-2127/test_live_non_tensor_architect0')
+fault = 'normalization'
+
+    @pytest.mark.parametrize("fault", ("normalization", "attention_heads", "activation"))
+    def test_live_non_tensor_architecture_changes_cannot_publish_a_new_valid_proposal(tmp_path, fault):
+        previous = torch.get_num_threads()
+        torch.set_num_threads(2)
+        try:
+            _, _, path, pin = artifacts(tmp_path)
+            session = RuntimeCandidateSession(path, manifest_sha256=pin, seed=11)
+            ctx = context([pixel(0)])
+            session.process(request_id="first", context=ctx, bootstrap_ledger_lineage_ref=LEDGER)
+            before = session.snapshot()
+            layer = session._engine._model.encoder.layers[0]
+            if fault == "normalization":
+                owner, name, value = layer.norm1, "eps", 0.75
+            elif fault == "attention_heads":
+                owner, name, value = layer.self_attn, "num_heads", 2
+            else:
+                owner, name, value = layer, "activation", torch.sigmoid
+            original = getattr(owner, name)
+            try:
+                setattr(owner, name, value)
+>               with pytest.raises(ValueError, match=r"binding|structure|architecture"):
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E               Failed: DID NOT RAISE ValueError
+
+docs/reviews/pc_a/full_support_compute_2026-09-26/audit_round1.py:37: Failed
+_ test_live_non_tensor_architecture_changes_cannot_publish_a_new_valid_proposal[attention_heads] _
+
+tmp_path = PosixPath('/private/var/folders/x2/000r8p0n6s393lj2sg8wk5f40000gn/T/pytest-of-pangwei/pytest-2127/test_live_non_tensor_architect1')
+fault = 'attention_heads'
+
+    @pytest.mark.parametrize("fault", ("normalization", "attention_heads", "activation"))
+    def test_live_non_tensor_architecture_changes_cannot_publish_a_new_valid_proposal(tmp_path, fault):
+        previous = torch.get_num_threads()
+        torch.set_num_threads(2)
+        try:
+            _, _, path, pin = artifacts(tmp_path)
+            session = RuntimeCandidateSession(path, manifest_sha256=pin, seed=11)
+            ctx = context([pixel(0)])
+            session.process(request_id="first", context=ctx, bootstrap_ledger_lineage_ref=LEDGER)
+            before = session.snapshot()
+            layer = session._engine._model.encoder.layers[0]
+            if fault == "normalization":
+                owner, name, value = layer.norm1, "eps", 0.75
+            elif fault == "attention_heads":
+                owner, name, value = layer.self_attn, "num_heads", 2
+            else:
+                owner, name, value = layer, "activation", torch.sigmoid
+            original = getattr(owner, name)
+            try:
+                setattr(owner, name, value)
+>               with pytest.raises(ValueError, match=r"binding|structure|architecture"):
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E               Failed: DID NOT RAISE ValueError
+
+docs/reviews/pc_a/full_support_compute_2026-09-26/audit_round1.py:37: Failed
+_ test_live_non_tensor_architecture_changes_cannot_publish_a_new_valid_proposal[activation] _
+
+tmp_path = PosixPath('/private/var/folders/x2/000r8p0n6s393lj2sg8wk5f40000gn/T/pytest-of-pangwei/pytest-2127/test_live_non_tensor_architect2')
+fault = 'activation'
+
+    @pytest.mark.parametrize("fault", ("normalization", "attention_heads", "activation"))
+    def test_live_non_tensor_architecture_changes_cannot_publish_a_new_valid_proposal(tmp_path, fault):
+        previous = torch.get_num_threads()
+        torch.set_num_threads(2)
+        try:
+            _, _, path, pin = artifacts(tmp_path)
+            session = RuntimeCandidateSession(path, manifest_sha256=pin, seed=11)
+            ctx = context([pixel(0)])
+            session.process(request_id="first", context=ctx, bootstrap_ledger_lineage_ref=LEDGER)
+            before = session.snapshot()
+            layer = session._engine._model.encoder.layers[0]
+            if fault == "normalization":
+                owner, name, value = layer.norm1, "eps", 0.75
+            elif fault == "attention_heads":
+                owner, name, value = layer.self_attn, "num_heads", 2
+            else:
+                owner, name, value = layer, "activation", torch.sigmoid
+            original = getattr(owner, name)
+            try:
+                setattr(owner, name, value)
+>               with pytest.raises(ValueError, match=r"binding|structure|architecture"):
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E               Failed: DID NOT RAISE ValueError
+
+docs/reviews/pc_a/full_support_compute_2026-09-26/audit_round1.py:37: Failed
+=========================== short test summary info ============================
+FAILED docs/reviews/pc_a/full_support_compute_2026-09-26/audit_round1.py::test_live_non_tensor_architecture_changes_cannot_publish_a_new_valid_proposal[normalization]
+FAILED docs/reviews/pc_a/full_support_compute_2026-09-26/audit_round1.py::test_live_non_tensor_architecture_changes_cannot_publish_a_new_valid_proposal[attention_heads]
+FAILED docs/reviews/pc_a/full_support_compute_2026-09-26/audit_round1.py::test_live_non_tensor_architecture_changes_cannot_publish_a_new_valid_proposal[activation]
+3 failed, 31 passed in 4.12s

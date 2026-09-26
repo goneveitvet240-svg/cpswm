@@ -1,0 +1,85 @@
+{
+  "name": "video-0002",
+  "command": {
+    "name": "video-0002",
+    "argv": [
+      "/private/tmp/cpswm-pc-a-full-support-compute-20260926/.venv/bin/python",
+      "tools/run_runtime_candidate_video.py",
+      "--video",
+      "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/datasets/bimanual-phase-four-clips-20260920/raw/clip-0002/camera-1.mp4",
+      "--weights",
+      "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/models/torchvision/fasterrcnn_resnet50_fpn_v2_coco-dd69338a.pth",
+      "--training",
+      "/private/tmp/cpswm-pc-a-full-support-compute-20260926/output/full-support-compute-20260926/final-03/derived",
+      "--output",
+      "/private/tmp/cpswm-pc-a-full-support-compute-20260926/output/full-support-compute-20260926/final-03/video-0002",
+      "--frames",
+      "4"
+    ],
+    "started_utc": "2026-09-26T00:51:13.552032+00:00",
+    "seconds": 843.8091589589603,
+    "exit_code": 0
+  },
+  "source_sha": "c25fa44d51a42d87b906c844b03b67c39900ff2a",
+  "candidate_counts": {
+    "before_delivery": 117,
+    "after_delivery": 378
+  },
+  "complete": true,
+  "frames": 4,
+  "detections": [
+    13,
+    11,
+    11,
+    12
+  ],
+  "bootstrap": true,
+  "native_particle_publications": 0,
+  "executed_actions": 0,
+  "new_optimizer_steps": 0,
+  "natural_training_runs": 0,
+  "complete_natural_closed_loop": false,
+  "frontend_core_unchanged": true,
+  "arms": [
+    {
+      "arm": "typed_factor_graph_transformer",
+      "conditions": {
+        "after_delivery": {
+          "candidate_count": 378,
+          "restored_exactly_equal": true
+        },
+        "omission_control": {
+          "candidate_count": 117,
+          "restored_exactly_equal": true
+        }
+      }
+    },
+    {
+      "arm": "slot_conditioned_perceiver",
+      "conditions": {
+        "after_delivery": {
+          "candidate_count": 378,
+          "restored_exactly_equal": true
+        },
+        "omission_control": {
+          "candidate_count": 117,
+          "restored_exactly_equal": true
+        }
+      }
+    },
+    {
+      "arm": "autoregressive_typed_graph_policy",
+      "conditions": {
+        "after_delivery": {
+          "candidate_count": 378,
+          "restored_exactly_equal": true
+        },
+        "omission_control": {
+          "candidate_count": 117,
+          "restored_exactly_equal": true
+        }
+      }
+    }
+  ],
+  "result_sha256": "b33e4a75dffd740537a2b0bb21b641ccf5f4824067e455863687945e8d2d94e9"
+}

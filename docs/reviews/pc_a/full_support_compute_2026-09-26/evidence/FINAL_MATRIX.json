@@ -1,0 +1,298 @@
+{
+  "source_sha": "c25fa44d51a42d87b906c844b03b67c39900ff2a",
+  "source_files_unchanged": 868,
+  "video_success_cases": 3,
+  "video_planned_cases": 4,
+  "completed_case_arm_pairs": 9,
+  "planned_case_arm_pairs": 12,
+  "overall_matrix_passed": false,
+  "videos": [
+    {
+      "name": "video-0001",
+      "command": {
+        "name": "video-0001",
+        "argv": [
+          "/private/tmp/cpswm-pc-a-full-support-compute-20260926/.venv/bin/python",
+          "tools/run_runtime_candidate_video.py",
+          "--video",
+          "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/datasets/bimanual-phase-four-clips-20260920/raw/clip-0001/camera-1.mp4",
+          "--weights",
+          "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/models/torchvision/fasterrcnn_resnet50_fpn_v2_coco-dd69338a.pth",
+          "--training",
+          "/private/tmp/cpswm-pc-a-full-support-compute-20260926/output/full-support-compute-20260926/final-03/derived",
+          "--output",
+          "/private/tmp/cpswm-pc-a-full-support-compute-20260926/output/full-support-compute-20260926/final-03/video-0001",
+          "--frames",
+          "4"
+        ],
+        "started_utc": "2026-09-26T00:40:55.854484+00:00",
+        "seconds": 617.4987528328784,
+        "exit_code": 0
+      },
+      "source_sha": "c25fa44d51a42d87b906c844b03b67c39900ff2a",
+      "candidate_counts": {
+        "before_delivery": 108,
+        "after_delivery": 324
+      },
+      "complete": true,
+      "frames": 4,
+      "detections": [
+        10,
+        12,
+        13,
+        11
+      ],
+      "bootstrap": true,
+      "native_particle_publications": 0,
+      "executed_actions": 0,
+      "new_optimizer_steps": 0,
+      "natural_training_runs": 0,
+      "complete_natural_closed_loop": false,
+      "frontend_core_unchanged": true,
+      "arms": [
+        {
+          "arm": "typed_factor_graph_transformer",
+          "conditions": {
+            "after_delivery": {
+              "candidate_count": 324,
+              "restored_exactly_equal": true
+            },
+            "omission_control": {
+              "candidate_count": 108,
+              "restored_exactly_equal": true
+            }
+          }
+        },
+        {
+          "arm": "slot_conditioned_perceiver",
+          "conditions": {
+            "after_delivery": {
+              "candidate_count": 324,
+              "restored_exactly_equal": true
+            },
+            "omission_control": {
+              "candidate_count": 108,
+              "restored_exactly_equal": true
+            }
+          }
+        },
+        {
+          "arm": "autoregressive_typed_graph_policy",
+          "conditions": {
+            "after_delivery": {
+              "candidate_count": 324,
+              "restored_exactly_equal": true
+            },
+            "omission_control": {
+              "candidate_count": 108,
+              "restored_exactly_equal": true
+            }
+          }
+        }
+      ],
+      "result_sha256": "f4b266abdaecf916ff4b64bcc0cb5f7289a777f4e0841b72c227a5e9c0977b0d"
+    },
+    {
+      "name": "video-0002",
+      "command": {
+        "name": "video-0002",
+        "argv": [
+          "/private/tmp/cpswm-pc-a-full-support-compute-20260926/.venv/bin/python",
+          "tools/run_runtime_candidate_video.py",
+          "--video",
+          "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/datasets/bimanual-phase-four-clips-20260920/raw/clip-0002/camera-1.mp4",
+          "--weights",
+          "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/models/torchvision/fasterrcnn_resnet50_fpn_v2_coco-dd69338a.pth",
+          "--training",
+          "/private/tmp/cpswm-pc-a-full-support-compute-20260926/output/full-support-compute-20260926/final-03/derived",
+          "--output",
+          "/private/tmp/cpswm-pc-a-full-support-compute-20260926/output/full-support-compute-20260926/final-03/video-0002",
+          "--frames",
+          "4"
+        ],
+        "started_utc": "2026-09-26T00:51:13.552032+00:00",
+        "seconds": 843.8091589589603,
+        "exit_code": 0
+      },
+      "source_sha": "c25fa44d51a42d87b906c844b03b67c39900ff2a",
+      "candidate_counts": {
+        "before_delivery": 117,
+        "after_delivery": 378
+      },
+      "complete": true,
+      "frames": 4,
+      "detections": [
+        13,
+        11,
+        11,
+        12
+      ],
+      "bootstrap": true,
+      "native_particle_publications": 0,
+      "executed_actions": 0,
+      "new_optimizer_steps": 0,
+      "natural_training_runs": 0,
+      "complete_natural_closed_loop": false,
+      "frontend_core_unchanged": true,
+      "arms": [
+        {
+          "arm": "typed_factor_graph_transformer",
+          "conditions": {
+            "after_delivery": {
+              "candidate_count": 378,
+              "restored_exactly_equal": true
+            },
+            "omission_control": {
+              "candidate_count": 117,
+              "restored_exactly_equal": true
+            }
+          }
+        },
+        {
+          "arm": "slot_conditioned_perceiver",
+          "conditions": {
+            "after_delivery": {
+              "candidate_count": 378,
+              "restored_exactly_equal": true
+            },
+            "omission_control": {
+              "candidate_count": 117,
+              "restored_exactly_equal": true
+            }
+          }
+        },
+        {
+          "arm": "autoregressive_typed_graph_policy",
+          "conditions": {
+            "after_delivery": {
+              "candidate_count": 378,
+              "restored_exactly_equal": true
+            },
+            "omission_control": {
+              "candidate_count": 117,
+              "restored_exactly_equal": true
+            }
+          }
+        }
+      ],
+      "result_sha256": "b33e4a75dffd740537a2b0bb21b641ccf5f4824067e455863687945e8d2d94e9"
+    },
+    {
+      "name": "video-0003",
+      "command": {
+        "name": "video-0003",
+        "argv": [
+          "/private/tmp/cpswm-pc-a-full-support-compute-20260926/.venv/bin/python",
+          "tools/run_runtime_candidate_video.py",
+          "--video",
+          "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/datasets/bimanual-phase-four-clips-20260920/raw/clip-0003/camera-1.mp4",
+          "--weights",
+          "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/models/torchvision/fasterrcnn_resnet50_fpn_v2_coco-dd69338a.pth",
+          "--training",
+          "/private/tmp/cpswm-pc-a-full-support-compute-20260926/output/full-support-compute-20260926/final-03/derived",
+          "--output",
+          "/private/tmp/cpswm-pc-a-full-support-compute-20260926/output/full-support-compute-20260926/final-03/video-0003",
+          "--frames",
+          "4"
+        ],
+        "started_utc": "2026-09-26T01:05:17.589612+00:00",
+        "seconds": 132.17724074982107,
+        "exit_code": 1
+      },
+      "source_sha": "c25fa44d51a42d87b906c844b03b67c39900ff2a",
+      "candidate_counts": {
+        "before_delivery": 216,
+        "after_delivery": 783
+      },
+      "complete": false,
+      "failure": "resource limit: full history/support exceeds node budget; no truncation",
+      "uncompleted_arms": 3,
+      "restoration_or_failure_atomicity_for_this_case": "not established by aborted video command"
+    },
+    {
+      "name": "video-0004",
+      "command": {
+        "name": "video-0004",
+        "argv": [
+          "/private/tmp/cpswm-pc-a-full-support-compute-20260926/.venv/bin/python",
+          "tools/run_runtime_candidate_video.py",
+          "--video",
+          "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/datasets/bimanual-phase-four-clips-20260920/raw/clip-0004/camera-1.mp4",
+          "--weights",
+          "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/models/torchvision/fasterrcnn_resnet50_fpn_v2_coco-dd69338a.pth",
+          "--training",
+          "/private/tmp/cpswm-pc-a-full-support-compute-20260926/output/full-support-compute-20260926/final-03/derived",
+          "--output",
+          "/private/tmp/cpswm-pc-a-full-support-compute-20260926/output/full-support-compute-20260926/final-03/video-0004",
+          "--frames",
+          "4"
+        ],
+        "started_utc": "2026-09-26T01:07:29.872964+00:00",
+        "seconds": 1987.3923469581641,
+        "exit_code": 0
+      },
+      "source_sha": "c25fa44d51a42d87b906c844b03b67c39900ff2a",
+      "candidate_counts": {
+        "before_delivery": 189,
+        "after_delivery": 594
+      },
+      "complete": true,
+      "frames": 4,
+      "detections": [
+        17,
+        19,
+        20,
+        18
+      ],
+      "bootstrap": true,
+      "native_particle_publications": 0,
+      "executed_actions": 0,
+      "new_optimizer_steps": 0,
+      "natural_training_runs": 0,
+      "complete_natural_closed_loop": false,
+      "frontend_core_unchanged": true,
+      "arms": [
+        {
+          "arm": "typed_factor_graph_transformer",
+          "conditions": {
+            "after_delivery": {
+              "candidate_count": 594,
+              "restored_exactly_equal": true
+            },
+            "omission_control": {
+              "candidate_count": 189,
+              "restored_exactly_equal": true
+            }
+          }
+        },
+        {
+          "arm": "slot_conditioned_perceiver",
+          "conditions": {
+            "after_delivery": {
+              "candidate_count": 594,
+              "restored_exactly_equal": true
+            },
+            "omission_control": {
+              "candidate_count": 189,
+              "restored_exactly_equal": true
+            }
+          }
+        },
+        {
+          "arm": "autoregressive_typed_graph_policy",
+          "conditions": {
+            "after_delivery": {
+              "candidate_count": 594,
+              "restored_exactly_equal": true
+            },
+            "omission_control": {
+              "candidate_count": 189,
+              "restored_exactly_equal": true
+            }
+          }
+        }
+      ],
+      "result_sha256": "c19aa6fc6ef9df5019f017ee067443fa7145cc43466366e0ac44ec0f38ead4b9"
+    }
+  ]
+}

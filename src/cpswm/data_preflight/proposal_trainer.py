@@ -12,7 +12,7 @@ import hashlib
 import io
 import json
 from collections.abc import Callable
-from dataclasses import asdict
+from dataclasses import asdict, replace
 from pathlib import Path
 from time import monotonic
 from typing import Any
@@ -20,6 +20,7 @@ from typing import Any
 import torch
 
 from cpswm.data_preflight.proposal_decoder import TypedProposalDistribution
+from cpswm.data_preflight.proposal_graph_compute import BLOCKED_BACKEND
 from cpswm.data_preflight.proposal_learning import (
     FACTOR_ORDER,
     ProposalLearningExample,
@@ -157,6 +158,11 @@ def train_proposer(
 
 
 def save_checkpoint(model: TypedProposalNetwork, report: dict[str, Any], directory: Path) -> str:
+    if model.config.execution_backend != "dense@1":
+        raise ValueError("use explicit execution derivation for an existing dense checkpoint")
+    from cpswm.data_preflight.typed_proposal_networks import parameter_fingerprint
+
+    parameter_fingerprint(model)
     directory.mkdir(parents=True, exist_ok=False)
     blob = io.BytesIO()
     torch.save(model.state_dict(), blob)
@@ -193,6 +199,7 @@ def load_checkpoint(
         or manifest["production_authorized"] is not False
     ):
         raise ValueError("development checkpoint cannot authorize production")
+    validate_execution_derivation(manifest)
     payload = (directory / "weights.pt").read_bytes()
     if hashlib.sha256(payload).hexdigest() != manifest["weights_sha256"]:
         raise ValueError("checkpoint weights identity mismatch")
@@ -215,3 +222,118 @@ def load_checkpoint(
     model.load_state_dict(weights, strict=True)
     model.eval()
     return model, manifest
+
+
+def execution_source_files() -> dict[str, str]:
+    """Bind the concrete graph/backend and checkpoint interpreter implementation."""
+    return {
+        name: hashlib.sha256(Path(__file__).with_name(name).read_bytes()).hexdigest()
+        for name in (
+            "proposal_graph_compute.py",
+            "typed_proposal_networks.py",
+            "proposal_trainer.py",
+        )
+    }
+
+
+def validate_execution_derivation(manifest: dict[str, Any]) -> None:
+    config = NetworkConfig(**manifest["config"])
+    config.validate()
+    derivative = manifest.get("execution_derivation")
+    if config.execution_backend == "dense@1":
+        if derivative is not None:
+            raise ValueError("dense checkpoint cannot claim a blocked execution derivation")
+        return
+    fields = {
+        "format",
+        "parent_manifest_sha256",
+        "parent_manifest_utf8",
+        "parameters_changed",
+        "added_optimizer_steps",
+        "execution_source_files",
+        "execution_torch_version",
+    }
+    if (
+        not isinstance(derivative, dict)
+        or set(derivative) != fields
+        or derivative["format"] != "full-support-execution-derivation@1"
+        or derivative["parameters_changed"] is not False
+        or type(derivative["added_optimizer_steps"]) is not int
+        or derivative["added_optimizer_steps"] != 0
+        or derivative["execution_source_files"] != execution_source_files()
+        or derivative["execution_torch_version"] != torch.__version__
+        or not isinstance(derivative["parent_manifest_utf8"], str)
+    ):
+        raise ValueError("execution derivation identity or provenance mismatch")
+    parent_bytes = derivative["parent_manifest_utf8"].encode()
+    if hashlib.sha256(parent_bytes).hexdigest() != derivative["parent_manifest_sha256"]:
+        raise ValueError("execution derivation parent manifest identity mismatch")
+    parent = json.loads(parent_bytes)
+    parent_config = NetworkConfig(**parent["config"])
+    parent_config.validate()
+    if (
+        parent_config.execution_backend != "dense@1"
+        or parent.get("execution_derivation") is not None
+        or parent["format"] != "typed-proposal-development@1"
+        or parent["production_authorized"] is not False
+        or parent["arm"] != manifest["arm"]
+        or parent["weights_sha256"] != manifest["weights_sha256"]
+        or parent["training"] != manifest["training"]
+        or parent["torch_version"] != manifest["torch_version"]
+        or replace(parent_config, max_nodes=config.max_nodes, execution_backend=BLOCKED_BACKEND)
+        != config
+    ):
+        raise ValueError(
+            "execution derivation changed parameters, training lineage or architecture"
+        )
+
+
+def derive_execution_checkpoint(
+    source: Path,
+    *,
+    manifest_sha256: str,
+    directory: Path,
+    max_nodes: int,
+) -> str:
+    """Create an explicitly derived eval artifact; copy original weight bytes.
+
+    The original manifest is retained verbatim. This export neither trains nor
+    selects a model, authorizes production, nor authenticates caller-held roots.
+    """
+    sources_before = execution_source_files()
+    parent_bytes = (source / "manifest.json").read_bytes()
+    model, parent = load_checkpoint(source, manifest_sha256=manifest_sha256)
+    if hashlib.sha256(parent_bytes).hexdigest() != manifest_sha256:
+        raise ValueError("parent manifest changed during execution derivation")
+    if model.config.execution_backend != "dense@1":
+        raise ValueError("derive execution directly from the original dense checkpoint")
+    config = replace(model.config, execution_backend=BLOCKED_BACKEND, max_nodes=max_nodes)
+    config.validate()
+    payload = (source / "weights.pt").read_bytes()
+    if hashlib.sha256(payload).hexdigest() != parent["weights_sha256"]:
+        raise ValueError("parent weights changed during execution derivation")
+    manifest = {
+        **parent,
+        "config": asdict(config),
+        "execution_derivation": {
+            "format": "full-support-execution-derivation@1",
+            "parent_manifest_sha256": manifest_sha256,
+            "parent_manifest_utf8": parent_bytes.decode(),
+            "parameters_changed": False,
+            "added_optimizer_steps": 0,
+            "execution_source_files": sources_before,
+            "execution_torch_version": torch.__version__,
+        },
+    }
+    validate_execution_derivation(manifest)
+    data = json.dumps(manifest, sort_keys=True, indent=2, allow_nan=False).encode()
+    if (
+        execution_source_files() != sources_before
+        or (source / "manifest.json").read_bytes() != parent_bytes
+        or (source / "weights.pt").read_bytes() != payload
+    ):
+        raise ValueError("dependencies changed during execution derivation")
+    directory.mkdir(parents=True, exist_ok=False)
+    (directory / "weights.pt").write_bytes(payload)
+    (directory / "manifest.json").write_bytes(data)
+    return hashlib.sha256(data).hexdigest()

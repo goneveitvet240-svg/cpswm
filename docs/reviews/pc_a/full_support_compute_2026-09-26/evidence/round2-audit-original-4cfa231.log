@@ -1,0 +1,108 @@
+FFFF...                                                                  [100%]
+=================================== FAILURES ===================================
+_ test_complete_cached_graph_data_mutation_is_not_a_valid_same_input_score[memory] _
+
+field = 'memory'
+
+    @pytest.mark.parametrize("field", ("memory", "vectors", "cached_key", "cached_value"))
+    def test_complete_cached_graph_data_mutation_is_not_a_valid_same_input_score(field):
+        sample, support = data()
+        _, model = paired(ARMS[0])
+        with torch.no_grad():
+            prepared = model.prepare(sample.runtime_context(), support)
+            targets = {
+                "memory": prepared.memory,
+                "vectors": prepared.vectors,
+                "cached_key": prepared.choice_key_value[0],
+                "cached_value": prepared.choice_key_value[1],
+            }
+            tensor = targets[field]
+            original = tensor.clone()
+            tensor.data.add_(17.25)  # Does not increment the version counter.
+            try:
+>               with pytest.raises(ValueError, match=r"prepared|cache|graph"):
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E               Failed: DID NOT RAISE ValueError
+
+docs/reviews/pc_a/full_support_compute_2026-09-26/audit_round2.py:46: Failed
+_ test_complete_cached_graph_data_mutation_is_not_a_valid_same_input_score[vectors] _
+
+field = 'vectors'
+
+    @pytest.mark.parametrize("field", ("memory", "vectors", "cached_key", "cached_value"))
+    def test_complete_cached_graph_data_mutation_is_not_a_valid_same_input_score(field):
+        sample, support = data()
+        _, model = paired(ARMS[0])
+        with torch.no_grad():
+            prepared = model.prepare(sample.runtime_context(), support)
+            targets = {
+                "memory": prepared.memory,
+                "vectors": prepared.vectors,
+                "cached_key": prepared.choice_key_value[0],
+                "cached_value": prepared.choice_key_value[1],
+            }
+            tensor = targets[field]
+            original = tensor.clone()
+            tensor.data.add_(17.25)  # Does not increment the version counter.
+            try:
+>               with pytest.raises(ValueError, match=r"prepared|cache|graph"):
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E               Failed: DID NOT RAISE ValueError
+
+docs/reviews/pc_a/full_support_compute_2026-09-26/audit_round2.py:46: Failed
+_ test_complete_cached_graph_data_mutation_is_not_a_valid_same_input_score[cached_key] _
+
+field = 'cached_key'
+
+    @pytest.mark.parametrize("field", ("memory", "vectors", "cached_key", "cached_value"))
+    def test_complete_cached_graph_data_mutation_is_not_a_valid_same_input_score(field):
+        sample, support = data()
+        _, model = paired(ARMS[0])
+        with torch.no_grad():
+            prepared = model.prepare(sample.runtime_context(), support)
+            targets = {
+                "memory": prepared.memory,
+                "vectors": prepared.vectors,
+                "cached_key": prepared.choice_key_value[0],
+                "cached_value": prepared.choice_key_value[1],
+            }
+            tensor = targets[field]
+            original = tensor.clone()
+            tensor.data.add_(17.25)  # Does not increment the version counter.
+            try:
+>               with pytest.raises(ValueError, match=r"prepared|cache|graph"):
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E               Failed: DID NOT RAISE ValueError
+
+docs/reviews/pc_a/full_support_compute_2026-09-26/audit_round2.py:46: Failed
+_ test_complete_cached_graph_data_mutation_is_not_a_valid_same_input_score[cached_value] _
+
+field = 'cached_value'
+
+    @pytest.mark.parametrize("field", ("memory", "vectors", "cached_key", "cached_value"))
+    def test_complete_cached_graph_data_mutation_is_not_a_valid_same_input_score(field):
+        sample, support = data()
+        _, model = paired(ARMS[0])
+        with torch.no_grad():
+            prepared = model.prepare(sample.runtime_context(), support)
+            targets = {
+                "memory": prepared.memory,
+                "vectors": prepared.vectors,
+                "cached_key": prepared.choice_key_value[0],
+                "cached_value": prepared.choice_key_value[1],
+            }
+            tensor = targets[field]
+            original = tensor.clone()
+            tensor.data.add_(17.25)  # Does not increment the version counter.
+            try:
+>               with pytest.raises(ValueError, match=r"prepared|cache|graph"):
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E               Failed: DID NOT RAISE ValueError
+
+docs/reviews/pc_a/full_support_compute_2026-09-26/audit_round2.py:46: Failed
+=========================== short test summary info ============================
+FAILED docs/reviews/pc_a/full_support_compute_2026-09-26/audit_round2.py::test_complete_cached_graph_data_mutation_is_not_a_valid_same_input_score[memory]
+FAILED docs/reviews/pc_a/full_support_compute_2026-09-26/audit_round2.py::test_complete_cached_graph_data_mutation_is_not_a_valid_same_input_score[vectors]
+FAILED docs/reviews/pc_a/full_support_compute_2026-09-26/audit_round2.py::test_complete_cached_graph_data_mutation_is_not_a_valid_same_input_score[cached_key]
+FAILED docs/reviews/pc_a/full_support_compute_2026-09-26/audit_round2.py::test_complete_cached_graph_data_mutation_is_not_a_valid_same_input_score[cached_value]
+4 failed, 3 passed in 2.09s

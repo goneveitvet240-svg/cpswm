@@ -22,9 +22,25 @@ if TYPE_CHECKING:
 BLOCKED_BACKEND = "blocked-full-support-eval@1"
 LEAF_BATCH = 128
 QUERY_BATCH = 128
-MAX_BLOCKED_NODES = 32768
+DEFAULT_BLOCKED_NODES = 32768
+MAX_BLOCKED_NODES = 65536
+# Conservative accounting for three score/probability buffers and two boolean
+# masks, including head broadcasting. This bounds those temporary tensors,
+# not the complete Python/PyTorch process or resident input/parameter storage.
+ATTENTION_TEMPORARY_BYTES = 256 * 1024**2
 LeafRow = tuple[tuple[str, ...], str]
 ProjectedKV = tuple[Tensor, Tensor]
+
+
+def query_block_size(keys: int, heads: int, element_bytes: int) -> int:
+    """Keep ALL keys; reduce only independent query rows to fit the workspace."""
+    if any(type(value) is not int or value <= 0 for value in (keys, heads, element_bytes)):
+        raise ValueError("attention resource dimensions must be positive integers")
+    per_query = keys * heads * (3 * element_bytes + 2)
+    count = min(QUERY_BATCH, ATTENTION_TEMPORARY_BYTES // per_query)
+    if count < 1:
+        raise ValueError("resource limit: one complete attention row exceeds temporary budget")
+    return count
 
 
 def encode_leaf_batches(model: TypedProposalNetwork, encoded: list[bytes]) -> Tensor:
@@ -83,6 +99,7 @@ def attend_query_rows(
     weight = _checked_attention(module)
     width, heads = module.embed_dim, module.num_heads
     bias = module.in_proj_bias
+    batch = query_block_size(len(memory), heads, queries.element_size())
     native_self = queries is memory and projected_kv is None
     if native_self:
         if bias is None:
@@ -98,8 +115,8 @@ def attend_query_rows(
         query = query.reshape(len(queries), heads, width // heads).transpose(0, 1)
         key, value = project_key_value(module, memory) if projected_kv is None else projected_kv
     pieces = []
-    for start in range(0, len(queries), QUERY_BATCH):
-        stop = min(start + QUERY_BATCH, len(queries))
+    for start in range(0, len(queries), batch):
+        stop = min(start + batch, len(queries))
         mask = None if allowed_rows is None else allowed_rows(start, stop)
         if native_self:
             scores = torch.bmm(query[:, start:stop], key.transpose(1, 2))

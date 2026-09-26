@@ -1,0 +1,55 @@
+{
+  "track": "COMPONENT_FIXTURE_WEIGHTS_EXECUTION_DERIVATION",
+  "source_training_summary_sha256": "4e245218aa9ff7b7c440a45fd95ef23b1f01395ea6519438e7a307b987d00e8c",
+  "runs": [
+    {
+      "arm": "typed_factor_graph_transformer",
+      "checkpoint_manifest_sha256": "c7000f4dd6bf06d3c37614b0cb3f0b9a18e845eb374083632600e846c50db96a",
+      "source_checkpoint_manifest_sha256": "ccb063ca90ae00e2a83e91142585151ec3986a8f1880bb587896385e0e2a2c0d",
+      "weights_sha256": "8b7a783dac08df12d1487365764c91bd44cc6a45be015178766ddb614225b7a8",
+      "config": {
+        "attention_heads": 4,
+        "execution_backend": "blocked-full-support-eval@1",
+        "hidden_width": 64,
+        "layers": 2,
+        "max_bytes_per_leaf": 4096,
+        "max_nodes": 65536,
+        "perceiver_latent_slots": 16
+      }
+    },
+    {
+      "arm": "slot_conditioned_perceiver",
+      "checkpoint_manifest_sha256": "0eb4675c7861b24d75424b805f6d084bcaa8f158defde759d6e1a2854d7eb923",
+      "source_checkpoint_manifest_sha256": "950198ec812e757e415a100058930c326286d4554536af9dcd57a0a2471af5f4",
+      "weights_sha256": "d97d95ce3d76f6f48cda5b6205e5d9b8b4631ac070c301939e0bf83c7e0663b4",
+      "config": {
+        "attention_heads": 4,
+        "execution_backend": "blocked-full-support-eval@1",
+        "hidden_width": 64,
+        "layers": 2,
+        "max_bytes_per_leaf": 4096,
+        "max_nodes": 65536,
+        "perceiver_latent_slots": 16
+      }
+    },
+    {
+      "arm": "autoregressive_typed_graph_policy",
+      "checkpoint_manifest_sha256": "baedefe0e963b030e9f984448c3fc9618e975a1fb8eead080355e7986cfc3f9c",
+      "source_checkpoint_manifest_sha256": "9f13fbab8b1241ad0865537ab2326b5938d72ad35c865506f69ea54203cc4d78",
+      "weights_sha256": "6e02d8d8b500adf16de82b1a446f5cb3ceeab696cd691c43b123bfdad8ddb73c",
+      "config": {
+        "attention_heads": 4,
+        "execution_backend": "blocked-full-support-eval@1",
+        "hidden_width": 64,
+        "layers": 2,
+        "max_bytes_per_leaf": 4096,
+        "max_nodes": 65536,
+        "perceiver_latent_slots": 16
+      }
+    }
+  ],
+  "new_optimizer_steps": 0,
+  "architecture_selected": null,
+  "production_authorized": false,
+  "scope": "same weights and full attention graph; evaluation arithmetic order differs"
+}

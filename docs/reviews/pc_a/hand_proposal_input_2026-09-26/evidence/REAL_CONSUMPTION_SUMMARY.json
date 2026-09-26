@@ -1,0 +1,127 @@
+{
+  "source_sha": "b55867d0138c2af2c39175cba18123d99c8bd60b",
+  "arms": [
+    {
+      "arm": "typed_factor_graph_transformer",
+      "feature_coverage": {
+        "windows": 32,
+        "frames": 128,
+        "regional_hands_in_model_input": 378,
+        "hand_object_measurements_in_model_input": 2530,
+        "identity_pairs_in_model_input": 34
+      },
+      "cases": 8,
+      "candidate_counts": [
+        36,
+        56,
+        24,
+        36,
+        28,
+        32,
+        64,
+        20
+      ],
+      "regional_hands_in_selected_prefixes": 50,
+      "without_hands": {
+        "range": [
+          6.696125396001007e-05,
+          0.00018079197176112255
+        ],
+        "nonzero": 8,
+        "total": 8
+      },
+      "shift_1px": {
+        "range": [
+          7.195617750949124e-09,
+          2.1949517108044159e-07
+        ],
+        "nonzero": 8,
+        "total": 8
+      },
+      "checkpoint_manifest_sha256": "c7000f4dd6bf06d3c37614b0cb3f0b9a18e845eb374083632600e846c50db96a"
+    },
+    {
+      "arm": "slot_conditioned_perceiver",
+      "feature_coverage": {
+        "windows": 32,
+        "frames": 128,
+        "regional_hands_in_model_input": 378,
+        "hand_object_measurements_in_model_input": 2530,
+        "identity_pairs_in_model_input": 34
+      },
+      "cases": 8,
+      "candidate_counts": [
+        36,
+        56,
+        24,
+        36,
+        28,
+        32,
+        64,
+        20
+      ],
+      "regional_hands_in_selected_prefixes": 50,
+      "without_hands": {
+        "range": [
+          5.6092689805498086e-08,
+          1.6024946555837083e-07
+        ],
+        "nonzero": 8,
+        "total": 8
+      },
+      "shift_1px": {
+        "range": [
+          2.1429594956184905e-09,
+          5.180628759315908e-09
+        ],
+        "nonzero": 8,
+        "total": 8
+      },
+      "checkpoint_manifest_sha256": "0eb4675c7861b24d75424b805f6d084bcaa8f158defde759d6e1a2854d7eb923"
+    },
+    {
+      "arm": "autoregressive_typed_graph_policy",
+      "feature_coverage": {
+        "windows": 32,
+        "frames": 128,
+        "regional_hands_in_model_input": 378,
+        "hand_object_measurements_in_model_input": 2530,
+        "identity_pairs_in_model_input": 34
+      },
+      "cases": 8,
+      "candidate_counts": [
+        36,
+        56,
+        24,
+        36,
+        28,
+        32,
+        64,
+        20
+      ],
+      "regional_hands_in_selected_prefixes": 50,
+      "without_hands": {
+        "range": [
+          1.0185386150191045e-06,
+          4.909333047843634e-06
+        ],
+        "nonzero": 8,
+        "total": 8
+      },
+      "shift_1px": {
+        "range": [
+          7.521939411614387e-09,
+          8.999989790231533e-08
+        ],
+        "nonzero": 8,
+        "total": 8
+      },
+      "checkpoint_manifest_sha256": "baedefe0e963b030e9f984448c3fc9618e975a1fb8eead080355e7986cfc3f9c"
+    }
+  ],
+  "matrix_cases": 24,
+  "unique_selected_original_frames": 16,
+  "frontend_frames": 128,
+  "new_optimizer_steps": 0,
+  "calibrated_accuracy_claim": false
+}

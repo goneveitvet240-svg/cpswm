@@ -1,3 +1,9 @@
+# A：三小时第二轮手物提议输入已双审和三网络实际验证（2026-09-26）
+
+分支 `codex/pc-a-hand-proposal-input-20260926`，base PR47 `74db008222979e4ae508a7c6fded524ae62e19ae`；实际受测 `b55867d0138c2af2c39175cba18123d99c8bd60b`。224/44两审、mypy368/Ruff通过，9命令exit0，898 Python前后同Git。128帧/32窗中378区域手候选、2,530手物测量、34未决人物对进入模型特征；24个试次×网络两帧组合完成固定目标消融、完整质量及恢复/下一次采样。概率差很小，仅输入响应，无准确率/校准收益；新优化/自然发布/动作0。
+
+136文件28,101,313字节校验备份 `output/hand-proposal-input-20260926/closed/`。A自审、B未复核，不合并集成。[报告与范围](../reviews/pc_a/hand_proposal_input_2026-09-26/REPORT.md)。下一轮对全部既定32窗做四帧三臂完整分布评分，并对每个试次首窗做采样恢复；其他窗仅评分状态检查，分别报告，截止UTC16:47:47不变。
+
 # A：三小时第二轮手物提议输入开工（2026-09-26）
 
 第一轮[草稿PR47](https://github.com/goneveitvet240-svg/cpswm/pull/47)的185/34两审和128原帧全窗复跑已经封存，才开始本轮。新分支 `codex/pc-a-hand-proposal-input-20260926`，目录 `/private/tmp/cpswm-pc-a-hand-proposal-input-20260926`，base/开工实际代码 `74db008222979e4ae508a7c6fded524ae62e19ae`。再次fetch，集成19ddf26830348a2f0b33f0af54d6ba702c5cfb1c、B fd4ca6ef5e81c90d7cf7987b42c0b2810d8a810a未变。

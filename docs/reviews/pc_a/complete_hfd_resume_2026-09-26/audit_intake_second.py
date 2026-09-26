@@ -32,7 +32,9 @@ def test_otherwise_complete_packet_rejects_alias_or_special_member(tmp_path, mon
         os.mkfifo(alias)
     elif kind == "socket":
         sock = socket.socket(socket.AF_UNIX)
-        sock.bind(str(alias))
+        with monkeypatch.context() as local:
+            local.chdir(output)
+            sock.bind("extra")
     elif kind == "hardlink":
         os.link(output / "raw/trial0000/head_cam.mp4", alias)
     else:

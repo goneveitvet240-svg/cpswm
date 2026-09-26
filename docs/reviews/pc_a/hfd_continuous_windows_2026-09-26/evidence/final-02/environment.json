@@ -1,0 +1,31 @@
+{
+  "python": "3.13.5 (main, Jun 12 2025, 12:22:43) [Clang 20.1.4 ]",
+  "platform": "macOS-26.4-arm64-arm-64bit-Mach-O",
+  "packages": {
+    "numpy": "2.5.2",
+    "torch": "2.13.0",
+    "torchvision": "0.28.0",
+    "mediapipe": "0.10.35",
+    "opencv-contrib-python": "5.0.0.93",
+    "pydantic": "2.13.4",
+    "pytest": "9.1.1",
+    "mypy": "2.3.1",
+    "ruff": "0.16.3"
+  },
+  "uv_lock_sha256": "db650d2a8839860b098d6bcfe44c4f260d727fac32b31d1aff42daee6380df38",
+  "models": {
+    "mediapipe/hand_landmarker-1.task": {
+      "bytes": 7819105,
+      "sha256": "fbc2a30080c3c557093b5ddfc334698132eb341044ccee322ccf8bcf3607cde1"
+    },
+    "torchvision/fasterrcnn_resnet50_fpn_v2_coco-dd69338a.pth": {
+      "bytes": 175221657,
+      "sha256": "dd69338a24b8d7381807e247652bdc356325bcbaf1cd3e092e00e0a1a58706bf"
+    }
+  },
+  "torch_threads": 2,
+  "mediapipe_declared_delegate": "CPU",
+  "mediapipe_native_graph_requires_macos_graphics_service": true,
+  "actual_run_execution": "outside sandbox after local initializer test",
+  "MPLCONFIGDIR": "/private/tmp/cpswm-pc-a-hfd-continuous-windows-20260926/output/matplotlib-cache"
+}

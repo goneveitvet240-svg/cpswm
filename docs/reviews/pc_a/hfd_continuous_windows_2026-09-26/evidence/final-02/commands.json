@@ -1,0 +1,139 @@
+{
+  "source_sha": "16df89b13576ba1af83564169caaed0102b4c2b2",
+  "commands": [
+    {
+      "name": "round1",
+      "argv": [
+        "/private/tmp/cpswm-pc-a-hfd-continuous-windows-20260926/.venv/bin/python",
+        "-m",
+        "pytest",
+        "-o",
+        "addopts=",
+        "-q",
+        "tests/test_hfd_continuous_windows.py",
+        "tests/test_hfd_observation_alignment.py",
+        "tests/test_natural_hands.py",
+        "tests/test_hand_object_evidence.py",
+        "tests/test_hand_person_regions.py",
+        "tests/test_continuous_state_recovery.py",
+        "tests/test_structure_two_continuous_input.py",
+        "tests/test_archive_media_timeline.py",
+        "tests/test_natural_vision.py",
+        "tests/test_runtime_candidates.py",
+        "tests/test_interaction_evidence.py"
+      ],
+      "started_utc": "2026-09-26T13:00:20.597315+00:00",
+      "seconds": 34.600252124946564,
+      "exit_code": 0
+    },
+    {
+      "name": "round2",
+      "argv": [
+        "/private/tmp/cpswm-pc-a-hfd-continuous-windows-20260926/.venv/bin/python",
+        "-m",
+        "pytest",
+        "-o",
+        "addopts=",
+        "-q",
+        "/private/tmp/cpswm-pc-a-hfd-continuous-windows-20260926/docs/reviews/pc_a/hfd_continuous_windows_2026-09-26/audit_windows_second.py",
+        "/private/tmp/cpswm-pc-a-hfd-continuous-windows-20260926/docs/reviews/pc_a/hfd_observation_alignment_2026-09-26/audit_alignment_second.py"
+      ],
+      "started_utc": "2026-09-26T13:00:55.300054+00:00",
+      "seconds": 3.964282499626279,
+      "exit_code": 0
+    },
+    {
+      "name": "mypy",
+      "argv": [
+        "/private/tmp/cpswm-pc-a-hfd-continuous-windows-20260926/.venv/bin/python",
+        "-m",
+        "mypy",
+        "--no-incremental"
+      ],
+      "started_utc": "2026-09-26T13:00:59.358729+00:00",
+      "seconds": 11.754806584212929,
+      "exit_code": 0
+    },
+    {
+      "name": "ruff",
+      "argv": [
+        "/private/tmp/cpswm-pc-a-hfd-continuous-windows-20260926/.venv/bin/python",
+        "-m",
+        "ruff",
+        "check",
+        "src",
+        "tests",
+        "tools",
+        "/private/tmp/cpswm-pc-a-hfd-continuous-windows-20260926/docs/reviews/pc_a/hfd_continuous_windows_2026-09-26"
+      ],
+      "started_utc": "2026-09-26T13:01:11.204920+00:00",
+      "seconds": 0.03169795824214816,
+      "exit_code": 0
+    },
+    {
+      "name": "real-alignment",
+      "argv": [
+        "/private/tmp/cpswm-pc-a-hfd-continuous-windows-20260926/.venv/bin/python",
+        "tools/align_hfd_observations.py",
+        "--archive",
+        "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/datasets/hfd-full-training-20260926/raw/training_set.verified.tar.gz",
+        "--metadata",
+        "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/joint-training-loop-20260925/public-evidence",
+        "--intake",
+        "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/complete-hfd-resume-20260926/closed/final-02/packet",
+        "--output",
+        "/private/tmp/cpswm-pc-a-hfd-continuous-windows-20260926/output/hfd-continuous-20260926/final-02/aligned",
+        "--imported-at",
+        "2026-09-26T13:01:11.280964+00:00",
+        "--sampling",
+        "continuous"
+      ],
+      "started_utc": "2026-09-26T13:01:11.324548+00:00",
+      "seconds": 83.96425383305177,
+      "exit_code": 0
+    },
+    {
+      "name": "fresh-source-reconstruction",
+      "argv": [
+        "/private/tmp/cpswm-pc-a-hfd-continuous-windows-20260926/.venv/bin/python",
+        "tools/align_hfd_observations.py",
+        "--archive",
+        "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/datasets/hfd-full-training-20260926/raw/training_set.verified.tar.gz",
+        "--metadata",
+        "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/joint-training-loop-20260925/public-evidence",
+        "--intake",
+        "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/complete-hfd-resume-20260926/closed/final-02/packet",
+        "--output",
+        "/private/tmp/cpswm-pc-a-hfd-continuous-windows-20260926/output/hfd-continuous-20260926/final-02/aligned",
+        "--imported-at",
+        "2026-09-26T13:01:11.280964+00:00",
+        "--sampling",
+        "continuous",
+        "--verify"
+      ],
+      "started_utc": "2026-09-26T13:02:35.536995+00:00",
+      "seconds": 84.72347883321345,
+      "exit_code": 0
+    },
+    {
+      "name": "real-frontend",
+      "argv": [
+        "/private/tmp/cpswm-pc-a-hfd-continuous-windows-20260926/.venv/bin/python",
+        "tools/run_hfd_continuous_frontend.py",
+        "--runtime",
+        "/private/tmp/cpswm-pc-a-hfd-continuous-windows-20260926/output/hfd-continuous-20260926/final-02/aligned/runtime",
+        "--manifest-sha256",
+        "602f24808a3e83f1c85d6776b2e0e86d8ddebbd4983fdfba21447d1f9ff4827a",
+        "--weights",
+        "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/models/torchvision/fasterrcnn_resnet50_fpn_v2_coco-dd69338a.pth",
+        "--hand-model",
+        "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/models/mediapipe/hand_landmarker-1.task",
+        "--output",
+        "/private/tmp/cpswm-pc-a-hfd-continuous-windows-20260926/output/hfd-continuous-20260926/final-02/frontend"
+      ],
+      "started_utc": "2026-09-26T13:04:00.509224+00:00",
+      "seconds": 329.2300692917779,
+      "exit_code": 0
+    }
+  ]
+}

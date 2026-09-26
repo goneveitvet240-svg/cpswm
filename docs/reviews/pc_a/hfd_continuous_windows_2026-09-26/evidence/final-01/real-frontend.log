@@ -1,0 +1,29 @@
+/Users/pangwei/.matplotlib is not a writable directory
+Matplotlib created a temporary cache directory at /var/folders/x2/000r8p0n6s393lj2sg8wk5f40000gn/T/matplotlib-gsijgyzk because there was an issue with the default path ({configdir}); it is highly recommended to set the MPLCONFIGDIR environment variable to a writable directory, in particular to speed up the import of Matplotlib and to better support multiprocessing.
+
+Fontconfig error: No writable cache directories
+	/opt/homebrew/var/cache/fontconfig
+	/Users/pangwei/.cache/fontconfig
+	/Users/pangwei/.fontconfig
+Matplotlib is building the font cache; this may take a moment.
+I0000 00:00:1790427386.263632 53112025 init-domain.cc:128] Fiber init: default domain = pthread, concurrency = 11, prefix = pthread-default
+W0000 00:00:1790427386.276674 53112025 gl_context_nsgl.cc:80] failed to create pixel format; trying without acceleration
+W0000 00:00:1790427386.276714 53112025 gl_context_nsgl.cc:80] failed to create pixel format; trying without acceleration
+W0000 00:00:1790427386.276752 53112025 gl_context_nsgl.cc:80] failed to create pixel format; trying without acceleration
+W0000 00:00:1790427386.276776 53112025 gl_context_nsgl.cc:80] failed to create pixel format; trying without acceleration
+W0000 00:00:1790427386.276799 53112025 gl_context_nsgl.cc:80] failed to create pixel format; trying without acceleration
+INFO: Created TensorFlow Lite XNNPACK delegate for CPU.
+W0000 00:00:1790427386.280488 53112028 inference_feedback_manager.cc:121] Feedback manager requires a model with a single signature inference. Disabling support for feedback tensors.
+F0000 00:00:1790427386.280508 53112028 graph_service.h:139] Check failed: service_ Service is unavailable.
+*** Check failure stack trace: ***
+    @        0x142f44fd8  absl::log_internal::LogMessage::SendToLog()
+    @        0x142f44f70  absl::log_internal::LogMessage::Flush()
+    @        0x1420a1e14  -[DrishtiMetalHelper initWithCalculatorContext:]
+    @        0x14201a2d8  mediapipe::api2::TensorsToDetectionsCalculator::Open()
+    @        0x1426a7f70  mediapipe::CalculatorNode::OpenNode()
+    @        0x14269806c  mediapipe::internal::SchedulerQueue::OpenCalculatorNode()
+    @        0x142697ed4  mediapipe::internal::SchedulerQueue::RunNextTask()
+    @        0x142bad4a0  mediapipe::ThreadPool::RunWorker()
+    @        0x142bacea0  mediapipe::ThreadPool::WorkerThread::ThreadBody()
+    @        0x1886dbc58  _pthread_start
+    @        0x1886d6c1c  thread_start

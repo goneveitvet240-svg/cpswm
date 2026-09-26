@@ -1,0 +1,48 @@
+...........F.........................................................    [100%]
+=================================== FAILURES ===================================
+__ test_continuous_frontend_hand_geometry_association_and_memory_consequences __
+
+tmp_path = PosixPath('/private/var/folders/x2/000r8p0n6s393lj2sg8wk5f40000gn/T/pytest-of-pangwei/pytest-2161/test_continuous_frontend_hand_0')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x11c4a69f0>
+
+    def test_continuous_frontend_hand_geometry_association_and_memory_consequences(
+        tmp_path, monkeypatch
+    ):
+        args, _ = dense_fixture(tmp_path, monkeypatch)
+        front = frontend_module()
+        monkeypatch.setattr(front, "FasterNaturalAppearanceDetector", TwoPeopleDetector)
+        monkeypatch.setattr(front, "NaturalHandDetector", FixtureHands)
+        monkeypatch.setattr(FixtureHands, "instances", [])
+        original = Path.open
+    
+        def guard(path, *a, **kw):
+            if "evaluator" in path.parts or path.name in {"human_activity.npy", "task_info.json"}:
+                raise AssertionError("runtime accessed author answers")
+            return original(path, *a, **kw)
+    
+        monkeypatch.setattr(Path, "open", guard)
+        result = front.run(
+            args["output"] / "runtime",
+            runtime_pin(args["output"]),
+            tmp_path / "weights",
+            tmp_path / "hands",
+            tmp_path / "run",
+        )
+        assert result["unique_input_frames"] == 32 and result["frame_presentations"] == 32
+        assert result["associations_per_presentation"]["ASSOCIATED_GEOMETRIC"] > 0
+>       assert result["role_alternatives"] > 0
+E       assert 0 > 0
+
+tests/test_hfd_continuous_windows.py:197: AssertionError
+----------------------------- Captured stdout call -----------------------------
+{"window": "71af615c2c0af94af7c8e844facae6e67c6e32ada31b6953c475415b69a2a2c7/window-000000", "frames": 4, "candidate_status": "COMPLETE_SUPPORT_GENERATED"}
+{"window": "71af615c2c0af94af7c8e844facae6e67c6e32ada31b6953c475415b69a2a2c7/window-000005", "frames": 4, "candidate_status": "COMPLETE_SUPPORT_GENERATED"}
+{"window": "71af615c2c0af94af7c8e844facae6e67c6e32ada31b6953c475415b69a2a2c7/window-000010", "frames": 4, "candidate_status": "COMPLETE_SUPPORT_GENERATED"}
+{"window": "71af615c2c0af94af7c8e844facae6e67c6e32ada31b6953c475415b69a2a2c7/window-000016", "frames": 4, "candidate_status": "COMPLETE_SUPPORT_GENERATED"}
+{"window": "826c1fdf072964d94a1c207a80d4110c8fff620e2254ae2a05502e729cf1d0e1/window-000000", "frames": 4, "candidate_status": "COMPLETE_SUPPORT_GENERATED"}
+{"window": "826c1fdf072964d94a1c207a80d4110c8fff620e2254ae2a05502e729cf1d0e1/window-000005", "frames": 4, "candidate_status": "COMPLETE_SUPPORT_GENERATED"}
+{"window": "826c1fdf072964d94a1c207a80d4110c8fff620e2254ae2a05502e729cf1d0e1/window-000010", "frames": 4, "candidate_status": "COMPLETE_SUPPORT_GENERATED"}
+{"window": "826c1fdf072964d94a1c207a80d4110c8fff620e2254ae2a05502e729cf1d0e1/window-000016", "frames": 4, "candidate_status": "COMPLETE_SUPPORT_GENERATED"}
+=========================== short test summary info ============================
+FAILED tests/test_hfd_continuous_windows.py::test_continuous_frontend_hand_geometry_association_and_memory_consequences
+1 failed, 68 passed in 57.66s

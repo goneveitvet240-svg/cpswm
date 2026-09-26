@@ -10,6 +10,7 @@ from __future__ import annotations
 import hashlib
 import io
 import json
+import os
 import re
 import tarfile
 from collections import Counter
@@ -58,6 +59,27 @@ def file_hashes(path: Path) -> dict[str, Any]:
 def file_identity(path: Path) -> tuple[int, ...]:
     state = path.stat()
     return state.st_dev, state.st_ino, state.st_size, state.st_mtime_ns, state.st_ctime_ns
+
+
+def packet_inventory(root: Path) -> dict[str, tuple[int, ...]]:
+    if root.is_symlink():
+        raise ValueError("packet root cannot be a symbolic link")
+    result = {}
+    for path in root.rglob("*"):
+        if path.is_symlink():
+            raise ValueError("packet aliases and symbolic links are not accepted")
+        if path.is_file():
+            if path.stat().st_nlink != 1:
+                raise ValueError("packet hard-link aliases are not accepted")
+            result[str(path.relative_to(root))] = file_identity(path)
+    return result
+
+
+def check_members(root: Path, members: dict[str, dict[str, Any]]) -> None:
+    for relative, expected in members.items():
+        actual = file_hashes(root / relative)
+        if actual["bytes"] != expected["bytes"] or actual["sha256"] != expected["sha256"]:
+            raise ValueError("staged member differs from source-derived artifact bytes")
 
 
 def canonical_member(member: tarfile.TarInfo) -> tuple[str, ...]:
@@ -271,11 +293,8 @@ def inspect_full_training(
     if not verify:
         output.mkdir(parents=True, exist_ok=False)
     members = stream_members(archive, outcomes, None if verify else output)
-    for relative, expected in members.items():
-        path = output / relative
-        actual = file_hashes(path)
-        if actual["bytes"] != expected["bytes"] or actual["sha256"] != expected["sha256"]:
-            raise ValueError("staged raw member differs from original author archive")
+    before = packet_inventory(output)
+    check_members(output, members)
     report, row_files = build_report(output, outcomes, write_rows=not verify)
     manifest = {
         "format": "hfd-full-training-evidence@1",
@@ -294,12 +313,23 @@ def inspect_full_training(
     ):
         raise ValueError("source changed during full training inspection")
     payload = encoded(manifest)
+    expected_files = {*members, *row_files}
+    if verify:
+        expected_files.add("manifest.json")
+    after = packet_inventory(output)
+    if set(after) != expected_files or any(
+        after.get(name) != identity for name, identity in before.items()
+    ):
+        raise ValueError("packet artifacts changed, escaped or have undeclared/missing members")
+    check_members(output, {**members, **row_files})
     if verify:
         if (output / "manifest.json").read_bytes() != payload:
             raise ValueError("packet differs from full source-derived reconstruction")
     else:
-        (output / "manifest.json").write_bytes(payload)
-    expected_files = {*members, *row_files, "manifest.json"}
-    if {str(p.relative_to(output)) for p in output.rglob("*") if p.is_file()} != expected_files:
-        raise ValueError("packet has undeclared or missing artifacts")
+        pending = output / ".manifest.pending"
+        with pending.open("xb") as writer:
+            writer.write(payload)
+            writer.flush()
+            os.fsync(writer.fileno())
+        pending.replace(output / "manifest.json")
     return manifest

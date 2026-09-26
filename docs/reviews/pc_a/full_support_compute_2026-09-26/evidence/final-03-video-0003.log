@@ -1,0 +1,21 @@
+Traceback (most recent call last):
+  File "/private/tmp/cpswm-pc-a-full-support-compute-20260926/tools/run_runtime_candidate_video.py", line 252, in <module>
+    run(args.video, args.weights, args.training, args.output, args.frames)
+    ~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/private/tmp/cpswm-pc-a-full-support-compute-20260926/tools/run_runtime_candidate_video.py", line 159, in run
+    online = session.process(**args)
+  File "/private/tmp/cpswm-pc-a-full-support-compute-20260926/src/cpswm/data_preflight/runtime_candidate_session.py", line 63, in process
+    receipt = self._engine.infer(
+        request_id=request_id, context=generated.context, support=generated.targets
+    )
+  File "/private/tmp/cpswm-pc-a-full-support-compute-20260926/src/cpswm/data_preflight/proposal_inference_session.py", line 142, in infer
+    decoded = distribution(self._model, clean, targets).sample(
+              ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/private/tmp/cpswm-pc-a-full-support-compute-20260926/src/cpswm/data_preflight/proposal_trainer.py", line 40, in distribution
+    context=context, runtime_candidates=support, scorer=model.prepare(context, support)
+                                                        ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^
+  File "/private/tmp/cpswm-pc-a-full-support-compute-20260926/src/cpswm/data_preflight/typed_proposal_networks.py", line 252, in prepare
+    raise ValueError(
+        "resource limit: full history/support exceeds node budget; no truncation"
+    )
+ValueError: resource limit: full history/support exceeds node budget; no truncation

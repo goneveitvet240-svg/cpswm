@@ -1,3 +1,9 @@
+# A：三小时第四轮规范化评分性能开工（2026-09-26）
+
+base/开工源码60453f212c7a9435b272cbd4aece3cf8db4be4a8；独立分支codex/pc-a-canonical-scoring-speed-20260926，目录/private/tmp/cpswm-pc-a-canonical-scoring-speed-20260926。第三轮228/51两审已通过，原目录真实矩阵仍独立运行，不修改它的Python或拼接新旧结果。GitHub fetch已验证集成19ddf26830348a2f0b33f0af54d6ba702c5cfb1c、B fd4ca6ef5e81c90d7cf7987b42c0b2810d8a810a未变。
+
+只读profile显示243候选一次评分有1,461条件节点和约35万次候选处理，规范化摘要占主要插桩耗时。先用严格内置标量类型快路径降低重复类型判断，保留原完整校验次数和摘要语义，不引入信任缓存或跳过篡改检查。独立差分参考保存原源码；计划完整结构值/异常/负零/枚举差分，以及三臂全q、恢复、原篡改路径双审。尚无本轮测试结果；授权截止UTC16:47:47不变，计算最晚16:40停止，无新训练/模型选择/自然发布。
+
 # A：三小时第三轮完整四帧窗口矩阵开工（2026-09-26）
 
 前轮[草稿PR48](https://github.com/goneveitvet240-svg/cpswm/pull/48)已完成224/44两审及24个真实两帧组合。新分支 `codex/pc-a-full-hand-proposal-matrix-20260926`，目录 `/private/tmp/cpswm-pc-a-full-hand-proposal-matrix-20260926`，base/开工代码 `6b9f260530d53ac9c1a58ca35cb881ed86a48cf7`。已fetch核验集成与B仍为19ddf26830348a2f0b33f0af54d6ba702c5cfb1c、fd4ca6ef5e81c90d7cf7987b42c0b2810d8a810a。

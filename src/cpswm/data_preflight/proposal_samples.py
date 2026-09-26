@@ -26,6 +26,7 @@ from cpswm.data_preflight.proposal_perception import (
     PixelIdentityBinding,
     ProposalPixelObservation,
     pixel_hypothesis_bindings,
+    pixel_model_inputs,
 )
 from cpswm.data_preflight.visible_prefix import VisiblePrefix, export_visible_prefix
 from cpswm.system.evaluation_operations.structure_two_selected_method import (
@@ -163,7 +164,7 @@ class VisibleRecords(ContractModel):
         )
         payload, provenance = prefix.model_input(), json.loads(prefix.provenance_json)
         if visible:
-            payload["pixel_observations"] = [p.model_input() for p in visible]
+            payload["pixel_observations"] = pixel_model_inputs(tuple(visible), self.cutoff)
             provenance["included_records"].extend(
                 {
                     "record_id": str(p.observation_id),

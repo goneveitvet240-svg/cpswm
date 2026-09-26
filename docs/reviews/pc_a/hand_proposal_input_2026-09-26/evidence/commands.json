@@ -1,0 +1,182 @@
+{
+  "source_sha": "b55867d0138c2af2c39175cba18123d99c8bd60b",
+  "commands": [
+    {
+      "name": "round1",
+      "argv": [
+        "/private/tmp/cpswm-pc-a-hand-proposal-input-20260926/.venv/bin/python",
+        "-m",
+        "pytest",
+        "-o",
+        "addopts=",
+        "-q",
+        "tests/test_proposal_hand_input.py",
+        "tests/test_typed_proposal_training.py",
+        "tests/test_proposal_inference_session.py",
+        "tests/test_person_identity_ambiguity.py",
+        "tests/test_hfd_continuous_windows.py",
+        "tests/test_hfd_observation_alignment.py",
+        "tests/test_natural_hands.py",
+        "tests/test_hand_object_evidence.py",
+        "tests/test_hand_person_regions.py",
+        "tests/test_continuous_state_recovery.py",
+        "tests/test_structure_two_continuous_input.py",
+        "tests/test_archive_media_timeline.py",
+        "tests/test_natural_vision.py",
+        "tests/test_runtime_candidates.py",
+        "tests/test_interaction_evidence.py"
+      ],
+      "started_utc": "2026-09-26T14:25:20.198443+00:00",
+      "seconds": 113.16429099999368,
+      "exit_code": 0
+    },
+    {
+      "name": "round2",
+      "argv": [
+        "/private/tmp/cpswm-pc-a-hand-proposal-input-20260926/.venv/bin/python",
+        "-m",
+        "pytest",
+        "-o",
+        "addopts=",
+        "-q",
+        "/private/tmp/cpswm-pc-a-hand-proposal-input-20260926/docs/reviews/pc_a/hand_proposal_input_2026-09-26/audit_hands_second.py",
+        "/private/tmp/cpswm-pc-a-hand-proposal-input-20260926/docs/reviews/pc_a/person_ambiguity_2026-09-26/audit_person_second.py",
+        "/private/tmp/cpswm-pc-a-hand-proposal-input-20260926/docs/reviews/pc_a/hfd_continuous_windows_2026-09-26/audit_windows_second.py",
+        "/private/tmp/cpswm-pc-a-hand-proposal-input-20260926/docs/reviews/pc_a/hfd_observation_alignment_2026-09-26/audit_alignment_second.py"
+      ],
+      "started_utc": "2026-09-26T14:27:13.550755+00:00",
+      "seconds": 18.013579374644905,
+      "exit_code": 0
+    },
+    {
+      "name": "mypy",
+      "argv": [
+        "/private/tmp/cpswm-pc-a-hand-proposal-input-20260926/.venv/bin/python",
+        "-m",
+        "mypy",
+        "--no-incremental"
+      ],
+      "started_utc": "2026-09-26T14:27:31.662798+00:00",
+      "seconds": 11.547880500089377,
+      "exit_code": 0
+    },
+    {
+      "name": "ruff",
+      "argv": [
+        "/private/tmp/cpswm-pc-a-hand-proposal-input-20260926/.venv/bin/python",
+        "-m",
+        "ruff",
+        "check",
+        "src",
+        "tests",
+        "tools",
+        "/private/tmp/cpswm-pc-a-hand-proposal-input-20260926/docs/reviews/pc_a/hand_proposal_input_2026-09-26"
+      ],
+      "started_utc": "2026-09-26T14:27:43.304117+00:00",
+      "seconds": 0.05569962505251169,
+      "exit_code": 0
+    },
+    {
+      "name": "real-frontend",
+      "argv": [
+        "/private/tmp/cpswm-pc-a-hand-proposal-input-20260926/.venv/bin/python",
+        "tools/run_hfd_continuous_frontend.py",
+        "--runtime",
+        "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/person-ambiguity-20260926/closed/final-02/aligned/runtime",
+        "--manifest-sha256",
+        "77f02b3dbf093243033f232ce4721d54f1ca35189b1a963d6552b92dd199279f",
+        "--weights",
+        "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/models/torchvision/fasterrcnn_resnet50_fpn_v2_coco-dd69338a.pth",
+        "--hand-model",
+        "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/models/mediapipe/hand_landmarker-1.task",
+        "--output",
+        "/private/tmp/cpswm-pc-a-hand-proposal-input-20260926/output/hand-proposal/final-01/frontend"
+      ],
+      "started_utc": "2026-09-26T14:27:43.449106+00:00",
+      "seconds": 290.63540095929056,
+      "exit_code": 0
+    },
+    {
+      "name": "derive-original-weights",
+      "argv": [
+        "/private/tmp/cpswm-pc-a-hand-proposal-input-20260926/.venv/bin/python",
+        "tools/derive_proposal_execution.py",
+        "--training",
+        "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/joint-audit-next-20260925/round2/training",
+        "--output",
+        "/private/tmp/cpswm-pc-a-hand-proposal-input-20260926/output/hand-proposal/final-01/derived",
+        "--max-nodes",
+        "65536"
+      ],
+      "started_utc": "2026-09-26T14:32:34.267250+00:00",
+      "seconds": 0.9551189169287682,
+      "exit_code": 0
+    },
+    {
+      "name": "consume-typed_factor_graph_transformer",
+      "argv": [
+        "/private/tmp/cpswm-pc-a-hand-proposal-input-20260926/.venv/bin/python",
+        "tools/run_hfd_hand_proposals.py",
+        "--frontend",
+        "/private/tmp/cpswm-pc-a-hand-proposal-input-20260926/output/hand-proposal/final-01/frontend",
+        "--frontend-sha256",
+        "677505fa2891aab0b2602a5ec002ea3fb3612d5e219ad788437b5b03feaf3c48",
+        "--training",
+        "/private/tmp/cpswm-pc-a-hand-proposal-input-20260926/output/hand-proposal/final-01/derived",
+        "--output",
+        "/private/tmp/cpswm-pc-a-hand-proposal-input-20260926/output/hand-proposal/final-01/typed_factor_graph_transformer",
+        "--arm",
+        "typed_factor_graph_transformer",
+        "--prefix-frames",
+        "2"
+      ],
+      "started_utc": "2026-09-26T14:32:35.314609+00:00",
+      "seconds": 119.82081537507474,
+      "exit_code": 0
+    },
+    {
+      "name": "consume-slot_conditioned_perceiver",
+      "argv": [
+        "/private/tmp/cpswm-pc-a-hand-proposal-input-20260926/.venv/bin/python",
+        "tools/run_hfd_hand_proposals.py",
+        "--frontend",
+        "/private/tmp/cpswm-pc-a-hand-proposal-input-20260926/output/hand-proposal/final-01/frontend",
+        "--frontend-sha256",
+        "677505fa2891aab0b2602a5ec002ea3fb3612d5e219ad788437b5b03feaf3c48",
+        "--training",
+        "/private/tmp/cpswm-pc-a-hand-proposal-input-20260926/output/hand-proposal/final-01/derived",
+        "--output",
+        "/private/tmp/cpswm-pc-a-hand-proposal-input-20260926/output/hand-proposal/final-01/slot_conditioned_perceiver",
+        "--arm",
+        "slot_conditioned_perceiver",
+        "--prefix-frames",
+        "2"
+      ],
+      "started_utc": "2026-09-26T14:34:35.237634+00:00",
+      "seconds": 122.66274408390746,
+      "exit_code": 0
+    },
+    {
+      "name": "consume-autoregressive_typed_graph_policy",
+      "argv": [
+        "/private/tmp/cpswm-pc-a-hand-proposal-input-20260926/.venv/bin/python",
+        "tools/run_hfd_hand_proposals.py",
+        "--frontend",
+        "/private/tmp/cpswm-pc-a-hand-proposal-input-20260926/output/hand-proposal/final-01/frontend",
+        "--frontend-sha256",
+        "677505fa2891aab0b2602a5ec002ea3fb3612d5e219ad788437b5b03feaf3c48",
+        "--training",
+        "/private/tmp/cpswm-pc-a-hand-proposal-input-20260926/output/hand-proposal/final-01/derived",
+        "--output",
+        "/private/tmp/cpswm-pc-a-hand-proposal-input-20260926/output/hand-proposal/final-01/autoregressive_typed_graph_policy",
+        "--arm",
+        "autoregressive_typed_graph_policy",
+        "--prefix-frames",
+        "2"
+      ],
+      "started_utc": "2026-09-26T14:36:38.033028+00:00",
+      "seconds": 143.67496304214,
+      "exit_code": 0
+    }
+  ]
+}

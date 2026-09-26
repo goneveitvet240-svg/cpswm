@@ -84,7 +84,11 @@ def run_window(sequence, rows, detector, hand_detector, output):
         or restored.hand_object_evidence() != producer.hand_object_evidence()
     ):
         raise RuntimeError("perception window restore differs")
-    observations = tuple(ProposalPixelObservation.from_frame(f) for f in producer.frames())
+    hand_frames = {h.observation_id: h for h in producer.hand_frames()}
+    observations = tuple(
+        ProposalPixelObservation.from_frame(f, hand_frames.get(f.observation_id))
+        for f in producer.frames()
+    )
     context = bootstrap_pixel_context(
         observations, cutoff=when, source_snapshot_id=snapshot.snapshot_id
     )
@@ -131,6 +135,12 @@ def run_window(sequence, rows, detector, hand_detector, output):
             "sequence": sequence,
             "frames": len(observations),
             "support": support_report,
+            "context_sha256": hashlib.sha256((directory / "context.json").read_bytes()).hexdigest(),
+            "support_sha256": (
+                hashlib.sha256((directory / "support.json").read_bytes()).hexdigest()
+                if support_report["status"] == "COMPLETE_SUPPORT_GENERATED"
+                else None
+            ),
             "core_ledger_unchanged": True,
             "execution_traces": 0,
             "perception_restore_equal": True,

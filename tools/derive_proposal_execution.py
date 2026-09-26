@@ -7,12 +7,12 @@ from pathlib import Path
 
 import torch
 
-from cpswm.data_preflight.proposal_graph_compute import MAX_BLOCKED_NODES
+from cpswm.data_preflight.proposal_graph_compute import DEFAULT_BLOCKED_NODES
 from cpswm.data_preflight.proposal_trainer import derive_execution_checkpoint, load_checkpoint
 from cpswm.data_preflight.typed_proposal_networks import ARMS
 
 
-def run(training: Path, output: Path, max_nodes: int = MAX_BLOCKED_NODES):
+def run(training: Path, output: Path, max_nodes: int = DEFAULT_BLOCKED_NODES):
     parent_bytes = (training / "summary.json").read_bytes()
     parent = json.loads(parent_bytes)
     if parent["track"] != "COMPONENT_FIXTURE_OPTIMIZER_DIAGNOSTIC":
@@ -62,7 +62,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--training", required=True, type=Path)
     parser.add_argument("--output", required=True, type=Path)
-    parser.add_argument("--max-nodes", type=int, default=MAX_BLOCKED_NODES)
+    parser.add_argument("--max-nodes", type=int, default=DEFAULT_BLOCKED_NODES)
     args = parser.parse_args()
     torch.set_num_threads(2)
     run(args.training, args.output, args.max_nodes)

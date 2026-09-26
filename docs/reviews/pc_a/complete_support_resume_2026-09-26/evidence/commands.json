@@ -1,0 +1,252 @@
+{
+  "source_sha": "7c19637791e45dbf28e041beb3b98bc9acd92038",
+  "commands": [
+    {
+      "name": "round1",
+      "argv": [
+        "/private/tmp/cpswm-pc-a-complete-support-resume-20260926/.venv/bin/python",
+        "-m",
+        "pytest",
+        "-o",
+        "addopts=",
+        "-q",
+        "/private/tmp/cpswm-pc-a-complete-support-resume-20260926/docs/reviews/pc_a/complete_support_resume_2026-09-26/audit_workspace_round1.py",
+        "tests/test_attention_workspace.py",
+        "docs/reviews/pc_a/full_support_compute_2026-09-26/audit_round1.py",
+        "tests/test_full_support_compute.py",
+        "tests/test_proposal_execution_derivation.py",
+        "tests/test_typed_proposal_training.py",
+        "tests/test_proposal_inference_session.py",
+        "tests/test_runtime_candidates.py",
+        "tests/test_conditioned_inference_session.py",
+        "tests/test_conditioned_proposal_runtime.py",
+        "tests/test_proposal_decoder.py",
+        "tests/test_proposal_learning.py"
+      ],
+      "started_utc": "2026-09-26T08:50:31.547165+00:00",
+      "seconds": 50.77010750025511,
+      "exit_code": 0
+    },
+    {
+      "name": "round2",
+      "argv": [
+        "/private/tmp/cpswm-pc-a-complete-support-resume-20260926/.venv/bin/python",
+        "-m",
+        "pytest",
+        "-o",
+        "addopts=",
+        "-q",
+        "/private/tmp/cpswm-pc-a-complete-support-resume-20260926/docs/reviews/pc_a/complete_support_resume_2026-09-26/audit_workspace_round2.py",
+        "docs/reviews/pc_a/full_support_compute_2026-09-26/audit_round2.py",
+        "tests/test_proposal_execution_derivation.py"
+      ],
+      "started_utc": "2026-09-26T08:51:22.496068+00:00",
+      "seconds": 20.371093042194843,
+      "exit_code": 0
+    },
+    {
+      "name": "mypy",
+      "argv": [
+        "/private/tmp/cpswm-pc-a-complete-support-resume-20260926/.venv/bin/mypy",
+        "--no-incremental"
+      ],
+      "started_utc": "2026-09-26T08:51:42.984856+00:00",
+      "seconds": 12.857213582843542,
+      "exit_code": 0
+    },
+    {
+      "name": "ruff",
+      "argv": [
+        "/private/tmp/cpswm-pc-a-complete-support-resume-20260926/.venv/bin/ruff",
+        "check",
+        "src",
+        "tests",
+        "tools",
+        "/private/tmp/cpswm-pc-a-complete-support-resume-20260926/docs/reviews/pc_a/complete_support_resume_2026-09-26"
+      ],
+      "started_utc": "2026-09-26T08:51:55.955415+00:00",
+      "seconds": 0.03685404174029827,
+      "exit_code": 0
+    },
+    {
+      "name": "derive",
+      "argv": [
+        "/private/tmp/cpswm-pc-a-complete-support-resume-20260926/.venv/bin/python",
+        "tools/derive_proposal_execution.py",
+        "--training",
+        "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/joint-audit-next-20260925/round2/training",
+        "--output",
+        "/private/tmp/cpswm-pc-a-complete-support-resume-20260926/output/complete-support-resume-20260926/final-04/derived",
+        "--max-nodes",
+        "65536"
+      ],
+      "started_utc": "2026-09-26T08:51:56.089599+00:00",
+      "seconds": 0.8147332910448313,
+      "exit_code": 0
+    },
+    {
+      "name": "full-typed_factor_graph_transformer",
+      "argv": [
+        "/private/tmp/cpswm-pc-a-complete-support-resume-20260926/.venv/bin/python",
+        "/private/tmp/cpswm-pc-a-complete-support-resume-20260926/docs/reviews/pc_a/full_support_compute_2026-09-26/run_complete_support.py",
+        "--original",
+        "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/joint-audit-next-20260925/round2/training",
+        "--derived",
+        "/private/tmp/cpswm-pc-a-complete-support-resume-20260926/output/complete-support-resume-20260926/final-04/derived",
+        "--arm",
+        "typed_factor_graph_transformer",
+        "--output",
+        "/private/tmp/cpswm-pc-a-complete-support-resume-20260926/output/complete-support-resume-20260926/final-04/full-typed_factor_graph_transformer"
+      ],
+      "started_utc": "2026-09-26T08:51:57.001211+00:00",
+      "seconds": 89.60796420881525,
+      "exit_code": 0
+    },
+    {
+      "name": "full-slot_conditioned_perceiver",
+      "argv": [
+        "/private/tmp/cpswm-pc-a-complete-support-resume-20260926/.venv/bin/python",
+        "/private/tmp/cpswm-pc-a-complete-support-resume-20260926/docs/reviews/pc_a/full_support_compute_2026-09-26/run_complete_support.py",
+        "--original",
+        "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/joint-audit-next-20260925/round2/training",
+        "--derived",
+        "/private/tmp/cpswm-pc-a-complete-support-resume-20260926/output/complete-support-resume-20260926/final-04/derived",
+        "--arm",
+        "slot_conditioned_perceiver",
+        "--output",
+        "/private/tmp/cpswm-pc-a-complete-support-resume-20260926/output/complete-support-resume-20260926/final-04/full-slot_conditioned_perceiver"
+      ],
+      "started_utc": "2026-09-26T08:53:26.752881+00:00",
+      "seconds": 83.16893541673198,
+      "exit_code": 0
+    },
+    {
+      "name": "full-autoregressive_typed_graph_policy",
+      "argv": [
+        "/private/tmp/cpswm-pc-a-complete-support-resume-20260926/.venv/bin/python",
+        "/private/tmp/cpswm-pc-a-complete-support-resume-20260926/docs/reviews/pc_a/full_support_compute_2026-09-26/run_complete_support.py",
+        "--original",
+        "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/joint-audit-next-20260925/round2/training",
+        "--derived",
+        "/private/tmp/cpswm-pc-a-complete-support-resume-20260926/output/complete-support-resume-20260926/final-04/derived",
+        "--arm",
+        "autoregressive_typed_graph_policy",
+        "--output",
+        "/private/tmp/cpswm-pc-a-complete-support-resume-20260926/output/complete-support-resume-20260926/final-04/full-autoregressive_typed_graph_policy"
+      ],
+      "started_utc": "2026-09-26T08:54:50.349048+00:00",
+      "seconds": 105.07721879193559,
+      "exit_code": 0
+    },
+    {
+      "name": "derive-legacy",
+      "argv": [
+        "/private/tmp/cpswm-pc-a-complete-support-resume-20260926/.venv/bin/python",
+        "tools/derive_proposal_execution.py",
+        "--training",
+        "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/joint-audit-next-20260925/round2/training",
+        "--output",
+        "/private/tmp/cpswm-pc-a-complete-support-resume-20260926/output/complete-support-resume-20260926/final-04/legacy-profile"
+      ],
+      "started_utc": "2026-09-26T08:56:35.706778+00:00",
+      "seconds": 1.0684028752148151,
+      "exit_code": 0
+    },
+    {
+      "name": "legacy-real-rejection",
+      "argv": [
+        "/private/tmp/cpswm-pc-a-complete-support-resume-20260926/.venv/bin/python",
+        "/private/tmp/cpswm-pc-a-complete-support-resume-20260926/docs/reviews/pc_a/complete_support_resume_2026-09-26/run_resource_rejection.py",
+        "--training",
+        "/private/tmp/cpswm-pc-a-complete-support-resume-20260926/output/complete-support-resume-20260926/final-04/legacy-profile",
+        "--inputs",
+        "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/full-support-compute-20260926/final-03/video-0003",
+        "--output",
+        "/private/tmp/cpswm-pc-a-complete-support-resume-20260926/output/complete-support-resume-20260926/final-04/legacy-real-rejection"
+      ],
+      "started_utc": "2026-09-26T08:56:36.890708+00:00",
+      "seconds": 391.05073783313856,
+      "exit_code": 0
+    },
+    {
+      "name": "video-0001",
+      "argv": [
+        "/private/tmp/cpswm-pc-a-complete-support-resume-20260926/.venv/bin/python",
+        "tools/run_runtime_candidate_video.py",
+        "--video",
+        "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/datasets/bimanual-phase-four-clips-20260920/raw/clip-0001/camera-1.mp4",
+        "--weights",
+        "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/models/torchvision/fasterrcnn_resnet50_fpn_v2_coco-dd69338a.pth",
+        "--training",
+        "/private/tmp/cpswm-pc-a-complete-support-resume-20260926/output/complete-support-resume-20260926/final-04/derived",
+        "--output",
+        "/private/tmp/cpswm-pc-a-complete-support-resume-20260926/output/complete-support-resume-20260926/final-04/video-0001",
+        "--frames",
+        "4"
+      ],
+      "started_utc": "2026-09-26T09:03:08.251886+00:00",
+      "seconds": 979.9652899997309,
+      "exit_code": 0
+    },
+    {
+      "name": "video-0002",
+      "argv": [
+        "/private/tmp/cpswm-pc-a-complete-support-resume-20260926/.venv/bin/python",
+        "tools/run_runtime_candidate_video.py",
+        "--video",
+        "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/datasets/bimanual-phase-four-clips-20260920/raw/clip-0002/camera-1.mp4",
+        "--weights",
+        "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/models/torchvision/fasterrcnn_resnet50_fpn_v2_coco-dd69338a.pth",
+        "--training",
+        "/private/tmp/cpswm-pc-a-complete-support-resume-20260926/output/complete-support-resume-20260926/final-04/derived",
+        "--output",
+        "/private/tmp/cpswm-pc-a-complete-support-resume-20260926/output/complete-support-resume-20260926/final-04/video-0002",
+        "--frames",
+        "4"
+      ],
+      "started_utc": "2026-09-26T09:19:28.460579+00:00",
+      "seconds": 1021.499777416233,
+      "exit_code": 0
+    },
+    {
+      "name": "video-0003",
+      "argv": [
+        "/private/tmp/cpswm-pc-a-complete-support-resume-20260926/.venv/bin/python",
+        "tools/run_runtime_candidate_video.py",
+        "--video",
+        "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/datasets/bimanual-phase-four-clips-20260920/raw/clip-0003/camera-1.mp4",
+        "--weights",
+        "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/models/torchvision/fasterrcnn_resnet50_fpn_v2_coco-dd69338a.pth",
+        "--training",
+        "/private/tmp/cpswm-pc-a-complete-support-resume-20260926/output/complete-support-resume-20260926/final-04/derived",
+        "--output",
+        "/private/tmp/cpswm-pc-a-complete-support-resume-20260926/output/complete-support-resume-20260926/final-04/video-0003",
+        "--frames",
+        "4"
+      ],
+      "started_utc": "2026-09-26T09:36:30.162691+00:00",
+      "seconds": 4004.907355500385,
+      "exit_code": 0
+    },
+    {
+      "name": "video-0004",
+      "argv": [
+        "/private/tmp/cpswm-pc-a-complete-support-resume-20260926/.venv/bin/python",
+        "tools/run_runtime_candidate_video.py",
+        "--video",
+        "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/datasets/bimanual-phase-four-clips-20260920/raw/clip-0004/camera-1.mp4",
+        "--weights",
+        "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/models/torchvision/fasterrcnn_resnet50_fpn_v2_coco-dd69338a.pth",
+        "--training",
+        "/private/tmp/cpswm-pc-a-complete-support-resume-20260926/output/complete-support-resume-20260926/final-04/derived",
+        "--output",
+        "/private/tmp/cpswm-pc-a-complete-support-resume-20260926/output/complete-support-resume-20260926/final-04/video-0004",
+        "--frames",
+        "4"
+      ],
+      "started_utc": "2026-09-26T10:43:15.460974+00:00",
+      "seconds": 2099.630413458217,
+      "exit_code": 0
+    }
+  ]
+}

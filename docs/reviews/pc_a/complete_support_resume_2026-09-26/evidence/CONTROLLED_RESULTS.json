@@ -1,0 +1,140 @@
+{
+  "full-autoregressive_typed_graph_policy": {
+    "arm": "autoregressive_typed_graph_policy",
+    "exact_same_backend_restore": true,
+    "max_abs_difference": {
+      "logs": 1.6735858165972672e-07,
+      "memory": 1.1920928955078125e-06,
+      "vectors": 4.76837158203125e-07
+    },
+    "native_publications": 0,
+    "natural_transitions": 0,
+    "no_truncation": true,
+    "operation_counts": {
+      "branch": 84,
+      "preserve_unresolved": 6,
+      "reactivate": 1,
+      "rejuvenate": 126,
+      "retract": 2,
+      "revise": 84
+    },
+    "optimizer_steps_added": 0,
+    "rejection_preserves_rng_history": true,
+    "rows": {
+      "blocked": {
+        "candidate_count": 303,
+        "node_count": 10246,
+        "probability_mass": 1.0,
+        "process_peak_rss_bytes": 3067379712,
+        "seconds": 26.13657308369875,
+        "weights_sha256": "6e02d8d8b500adf16de82b1a446f5cb3ceeab696cd691c43b123bfdad8ddb73c"
+      },
+      "dense_reference": {
+        "candidate_count": 303,
+        "node_count": 10246,
+        "probability_mass": 1.0,
+        "process_peak_rss_bytes": 3067379712,
+        "seconds": 21.472781791351736,
+        "weights_sha256": "6e02d8d8b500adf16de82b1a446f5cb3ceeab696cd691c43b123bfdad8ddb73c"
+      }
+    },
+    "seconds": 103.76070595812052,
+    "tolerance": {
+      "atol": 1e-05,
+      "rtol": 1e-05
+    },
+    "track": "CONTROLLED_FULL_SUPPORT_COMPUTE_ONLY"
+  },
+  "full-typed_factor_graph_transformer": {
+    "arm": "typed_factor_graph_transformer",
+    "exact_same_backend_restore": true,
+    "max_abs_difference": {
+      "logs": 1.6912569411609013e-07,
+      "memory": 7.152557373046875e-07,
+      "vectors": 4.76837158203125e-07
+    },
+    "native_publications": 0,
+    "natural_transitions": 0,
+    "no_truncation": true,
+    "operation_counts": {
+      "branch": 84,
+      "preserve_unresolved": 6,
+      "reactivate": 1,
+      "rejuvenate": 126,
+      "retract": 2,
+      "revise": 84
+    },
+    "optimizer_steps_added": 0,
+    "rejection_preserves_rng_history": true,
+    "rows": {
+      "blocked": {
+        "candidate_count": 303,
+        "node_count": 10246,
+        "probability_mass": 1.0,
+        "process_peak_rss_bytes": 4630593536,
+        "seconds": 23.01312433416024,
+        "weights_sha256": "8b7a783dac08df12d1487365764c91bd44cc6a45be015178766ddb614225b7a8"
+      },
+      "dense_reference": {
+        "candidate_count": 303,
+        "node_count": 10246,
+        "probability_mass": 1.0,
+        "process_peak_rss_bytes": 4630593536,
+        "seconds": 19.551059666089714,
+        "weights_sha256": "8b7a783dac08df12d1487365764c91bd44cc6a45be015178766ddb614225b7a8"
+      }
+    },
+    "seconds": 88.76254524989054,
+    "tolerance": {
+      "atol": 1e-05,
+      "rtol": 1e-05
+    },
+    "track": "CONTROLLED_FULL_SUPPORT_COMPUTE_ONLY"
+  },
+  "full-slot_conditioned_perceiver": {
+    "arm": "slot_conditioned_perceiver",
+    "exact_same_backend_restore": true,
+    "max_abs_difference": {
+      "logs": 1.0927414995087759e-07,
+      "memory": 4.76837158203125e-07,
+      "vectors": 1.4901161193847656e-08
+    },
+    "native_publications": 0,
+    "natural_transitions": 0,
+    "no_truncation": true,
+    "operation_counts": {
+      "branch": 84,
+      "preserve_unresolved": 6,
+      "reactivate": 1,
+      "rejuvenate": 126,
+      "retract": 2,
+      "revise": 84
+    },
+    "optimizer_steps_added": 0,
+    "rejection_preserves_rng_history": true,
+    "rows": {
+      "blocked": {
+        "candidate_count": 303,
+        "node_count": 10246,
+        "probability_mass": 1.0000000000000002,
+        "process_peak_rss_bytes": 2087518208,
+        "seconds": 19.25510433409363,
+        "weights_sha256": "d97d95ce3d76f6f48cda5b6205e5d9b8b4631ac070c301939e0bf83c7e0663b4"
+      },
+      "dense_reference": {
+        "candidate_count": 303,
+        "node_count": 10246,
+        "probability_mass": 1.0,
+        "process_peak_rss_bytes": 2087518208,
+        "seconds": 20.008547582663596,
+        "weights_sha256": "d97d95ce3d76f6f48cda5b6205e5d9b8b4631ac070c301939e0bf83c7e0663b4"
+      }
+    },
+    "seconds": 81.96230541728437,
+    "tolerance": {
+      "atol": 1e-05,
+      "rtol": 1e-05
+    },
+    "track": "CONTROLLED_FULL_SUPPORT_COMPUTE_ONLY"
+  }
+}

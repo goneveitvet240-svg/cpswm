@@ -19,6 +19,7 @@ import torch
 from torch import Tensor, nn
 from torch.nn.utils.rnn import pack_padded_sequence, pad_sequence
 
+from cpswm.data_preflight import proposal_graph_compute as graph_compute
 from cpswm.data_preflight.proposal_graph_compute import (
     BLOCKED_BACKEND,
     MAX_BLOCKED_NODES,
@@ -183,7 +184,54 @@ def architecture_fingerprint(network: nn.Module) -> str:
                 "activation": callable_identity(activation) if callable(activation) else None,
             }
         )
-    return content_sha256(rows)
+    # Source-file hashes alone do not detect a loaded helper's __code__ being
+    # replaced after construction. Bind both its module and the imported aliases
+    # actually used by this network, as well as the owned scoring entry points.
+    helper_names = (
+        "query_block_size",
+        "encode_leaf_batches",
+        "_checked_attention",
+        "project_key_value",
+        "attend_query_rows",
+        "typed_allowed_rows",
+        "encode_graph_rows",
+    )
+    return content_sha256(
+        {
+            "modules": rows,
+            "graph_helpers": {
+                name: callable_identity(getattr(graph_compute, name, None)) for name in helper_names
+            },
+            "imported_helpers": [
+                callable_identity(value)
+                for value in (
+                    leaves,
+                    attend_query_rows,
+                    encode_graph_rows,
+                    encode_leaf_batches,
+                    project_key_value,
+                )
+            ],
+            "owned_classes": {
+                cls.__name__: {
+                    name: callable_identity(value)
+                    for name, value in vars(cls).items()
+                    if callable(value)
+                }
+                for cls in (TypedProposalNetwork, PreparedScorer)
+            },
+            "workspace_limits": {
+                name: getattr(graph_compute, name, None)
+                for name in (
+                    "LEAF_BATCH",
+                    "QUERY_BATCH",
+                    "DEFAULT_BLOCKED_NODES",
+                    "MAX_BLOCKED_NODES",
+                    "ATTENTION_TEMPORARY_BYTES",
+                )
+            },
+        }
+    )
 
 
 class TypedProposalNetwork(nn.Module):

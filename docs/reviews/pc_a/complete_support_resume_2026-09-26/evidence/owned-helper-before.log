@@ -1,0 +1,133 @@
+FFF                                                                      [100%]
+=================================== FAILURES ===================================
+_ test_owned_attention_implementation_drift_cannot_return_valid_but_wrong_distribution[loaded_code] _
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x10bcc2ea0>
+attack = 'loaded_code'
+
+    @pytest.mark.parametrize("attack", ("loaded_code", "import_alias", "workspace_constant"))
+    def test_owned_attention_implementation_drift_cannot_return_valid_but_wrong_distribution(
+        monkeypatch, attack
+    ):
+        from test_full_support_compute import paired
+        from test_typed_proposal_training import data
+    
+        from cpswm.data_preflight import typed_proposal_networks as networks
+        from cpswm.data_preflight.proposal_decoder import TypedProposalDistribution
+    
+        sample, support = data()
+        ctx = sample.runtime_context()
+        _, model = paired(ARMS[0])
+        with torch.no_grad():
+            original = TypedProposalDistribution(
+                context=ctx, runtime_candidates=support, scorer=model.prepare(ctx, support)
+            )
+            with monkeypatch.context() as patch:
+                if attack == "loaded_code":
+    
+                    def altered(module, queries, memory, *, allowed_rows=None, projected_kv=None):
+                        return torch.zeros_like(queries)
+    
+                    patch.setattr(compute.attend_query_rows, "__code__", altered.__code__)
+                elif attack == "import_alias":
+                    patch.setattr(
+                        networks,
+                        "encode_graph_rows",
+                        lambda encoder, nodes, rows, *, typed: nodes[None],
+                    )
+                else:
+                    patch.setattr(compute, "ATTENTION_TEMPORARY_BYTES", 128 * 1024**2)
+>               with pytest.raises(ValueError, match=r"architecture|implementation|binding"):
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E               Failed: DID NOT RAISE ValueError
+
+docs/reviews/pc_a/complete_support_resume_2026-09-26/audit_workspace_round2.py:152: Failed
+_ test_owned_attention_implementation_drift_cannot_return_valid_but_wrong_distribution[import_alias] _
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x114333770>
+attack = 'import_alias'
+
+    @pytest.mark.parametrize("attack", ("loaded_code", "import_alias", "workspace_constant"))
+    def test_owned_attention_implementation_drift_cannot_return_valid_but_wrong_distribution(
+        monkeypatch, attack
+    ):
+        from test_full_support_compute import paired
+        from test_typed_proposal_training import data
+    
+        from cpswm.data_preflight import typed_proposal_networks as networks
+        from cpswm.data_preflight.proposal_decoder import TypedProposalDistribution
+    
+        sample, support = data()
+        ctx = sample.runtime_context()
+        _, model = paired(ARMS[0])
+        with torch.no_grad():
+            original = TypedProposalDistribution(
+                context=ctx, runtime_candidates=support, scorer=model.prepare(ctx, support)
+            )
+            with monkeypatch.context() as patch:
+                if attack == "loaded_code":
+    
+                    def altered(module, queries, memory, *, allowed_rows=None, projected_kv=None):
+                        return torch.zeros_like(queries)
+    
+                    patch.setattr(compute.attend_query_rows, "__code__", altered.__code__)
+                elif attack == "import_alias":
+                    patch.setattr(
+                        networks,
+                        "encode_graph_rows",
+                        lambda encoder, nodes, rows, *, typed: nodes[None],
+                    )
+                else:
+                    patch.setattr(compute, "ATTENTION_TEMPORARY_BYTES", 128 * 1024**2)
+>               with pytest.raises(ValueError, match=r"architecture|implementation|binding"):
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E               Failed: DID NOT RAISE ValueError
+
+docs/reviews/pc_a/complete_support_resume_2026-09-26/audit_workspace_round2.py:152: Failed
+_ test_owned_attention_implementation_drift_cannot_return_valid_but_wrong_distribution[workspace_constant] _
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x1147ba690>
+attack = 'workspace_constant'
+
+    @pytest.mark.parametrize("attack", ("loaded_code", "import_alias", "workspace_constant"))
+    def test_owned_attention_implementation_drift_cannot_return_valid_but_wrong_distribution(
+        monkeypatch, attack
+    ):
+        from test_full_support_compute import paired
+        from test_typed_proposal_training import data
+    
+        from cpswm.data_preflight import typed_proposal_networks as networks
+        from cpswm.data_preflight.proposal_decoder import TypedProposalDistribution
+    
+        sample, support = data()
+        ctx = sample.runtime_context()
+        _, model = paired(ARMS[0])
+        with torch.no_grad():
+            original = TypedProposalDistribution(
+                context=ctx, runtime_candidates=support, scorer=model.prepare(ctx, support)
+            )
+            with monkeypatch.context() as patch:
+                if attack == "loaded_code":
+    
+                    def altered(module, queries, memory, *, allowed_rows=None, projected_kv=None):
+                        return torch.zeros_like(queries)
+    
+                    patch.setattr(compute.attend_query_rows, "__code__", altered.__code__)
+                elif attack == "import_alias":
+                    patch.setattr(
+                        networks,
+                        "encode_graph_rows",
+                        lambda encoder, nodes, rows, *, typed: nodes[None],
+                    )
+                else:
+                    patch.setattr(compute, "ATTENTION_TEMPORARY_BYTES", 128 * 1024**2)
+>               with pytest.raises(ValueError, match=r"architecture|implementation|binding"):
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E               Failed: DID NOT RAISE ValueError
+
+docs/reviews/pc_a/complete_support_resume_2026-09-26/audit_workspace_round2.py:152: Failed
+=========================== short test summary info ============================
+FAILED docs/reviews/pc_a/complete_support_resume_2026-09-26/audit_workspace_round2.py::test_owned_attention_implementation_drift_cannot_return_valid_but_wrong_distribution[loaded_code]
+FAILED docs/reviews/pc_a/complete_support_resume_2026-09-26/audit_workspace_round2.py::test_owned_attention_implementation_drift_cannot_return_valid_but_wrong_distribution[import_alias]
+FAILED docs/reviews/pc_a/complete_support_resume_2026-09-26/audit_workspace_round2.py::test_owned_attention_implementation_drift_cannot_return_valid_but_wrong_distribution[workspace_constant]
+3 failed, 7 deselected in 2.69s

@@ -1,3 +1,11 @@
+# A：VISOR 接触监督完整子集交付（2026-09-27）
+
+分支codex/pc-a-visor-contact-supervision-20260927，base b31ba02b17fdf28c9ad8cf2224f10a34b6e79ffb；实际受测7fba64d39699be5e47fe1b9867583ac8c3854f62。63/44顺序双审、mypy369/Ruff通过，7实际命令与执行器exit0，914 Python前后同Git。完整485训练稀疏帧：680明确接触+74无接触，55未知关系保留，23无手帧不当负例。标签隔离、来源重建和组件读取实际通过；初版乱序失败修复后重审，失败保留。
+
+517文件366,344,895字节逐文件SHA校验备份主仓output/visor-contact-supervision-20260927/closed。证据[本轮报告](../reviews/pc_a/visor_contact_supervision_2026-09-27/REPORT.md)，命令入口run_frozen.py；受测源码后只文档交付。最后fetch集成19ddf26830348a2f0b33f0af54d6ba702c5cfb1c、B fd4ca6ef5e81c90d7cf7987b42c0b2810d8a810a未变。
+
+A局部自审，B未验收、不合并；新增优化/自然发布/记忆/动作0。单帧作者接触不等于精确释放、身份或前端位姿校准，完整自然闭环未完成。下一主项：当前前端候选与该人工掩膜逐帧对齐及漏检/配对歧义，再接组件学习监督；科学选型和完整研究范围保持。旧自动接续保持暂停。上轮46/96及10/24仍单独部分覆盖。
+
 # A：VISOR 作者人工接触监督接入开工（2026-09-27）
 
 独立分支 codex/pc-a-visor-contact-supervision-20260927，目录 /private/tmp/cpswm-pc-a-visor-contact-supervision-20260927，base/开工实际代码 b31ba02b17fdf28c9ad8cf2224f10a34b6e79ffb。已 fetch 核验共享集成19ddf26830348a2f0b33f0af54d6ba702c5cfb1c、B fd4ca6ef5e81c90d7cf7987b42c0b2810d8a810a未变；上一轮46/96及10/24部分覆盖保持原状。

@@ -1,0 +1,47 @@
+{
+  "verified_utc": "2026-09-26T21:34:22.585015+00:00",
+  "selection": "first published train/P01 video P01_01, all 485 sparse annotated frames; fixed before reading contact outcomes",
+  "author_code_sha": "8566507382add7dd037a83e7233950e0ad1ea78e",
+  "source_receipts": [
+    {
+      "file": "P01_01.json",
+      "url": "https://data.bris.ac.uk/datasets/2v6cgv1x04ol22qp9rm9x2j6a7/GroundTruth-SparseAnnotations/annotations/train/P01_01.json",
+      "bytes": 17282261,
+      "sha256": "b826142ec8ab896f2645c1fac214af36bf8a3b0bf5696ddbd4fc5c49fca81dee"
+    },
+    {
+      "file": "P01_01.zip",
+      "url": "https://data.bris.ac.uk/datasets/2v6cgv1x04ol22qp9rm9x2j6a7/GroundTruth-SparseAnnotations/rgb_frames/train/P01/P01_01.zip",
+      "bytes": 165668857,
+      "sha256": "797192c4090a66241992657d7522d1cec2ed0844311a49e77fdfdc3095abbe1c"
+    },
+    {
+      "file": "README.txt",
+      "url": "https://data.bris.ac.uk/datasets/2v6cgv1x04ol22qp9rm9x2j6a7/README.txt",
+      "bytes": 5939,
+      "sha256": "667d7cb63aa531899d692a7a63cee36d9f86d5f5d8755b43d926218c80b60728"
+    },
+    {
+      "file": "correct.json",
+      "url": "https://github.com/epic-kitchens/VISOR-HOS/blob/8566507382add7dd037a83e7233950e0ad1ea78e/data_preparation/correct.json",
+      "bytes": 1403,
+      "sha256": "fecffd6d3eb5fb08d392e72f5ca35fd5476e89de2a0f088de24ab46fc34dba95"
+    },
+    {
+      "file": "author_converter.py.txt",
+      "url": "https://github.com/epic-kitchens/VISOR-HOS/blob/8566507382add7dd037a83e7233950e0ad1ea78e/data_preparation/gen_coco_format.py",
+      "bytes": 31547,
+      "sha256": "686a052c8676c8378438efcf90e97e71cd6abca576381b0ca560e6cb07759cd7"
+    }
+  ],
+  "pin_origin": "observed official HTTPS download bytes frozen before tests; not independently signed author digests",
+  "git_blobs_verified": {
+    "correct.json": "6f89f3cb186d7f6ad6ac87163b0c72c5d9d09c50",
+    "author_converter.py.txt": "89fe017edf2239633f70fc150287d1688c807443"
+  },
+  "previous_failures": [
+    "raw GitHub wrong root converter path 404; no code executed",
+    "some web fetches and HTML directory requests timed out; not accepted as full receipts"
+  ],
+  "license_note": "Dataset README declares CC-BY-NC-4.0; catalog generic license field differs. Source README retained; noncommercial research only."
+}

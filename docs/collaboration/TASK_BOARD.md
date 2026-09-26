@@ -1,3 +1,9 @@
+# A：三小时第三轮完整四帧窗口矩阵开工（2026-09-26）
+
+前轮[草稿PR48](https://github.com/goneveitvet240-svg/cpswm/pull/48)已完成224/44两审及24个真实两帧组合。新分支 `codex/pc-a-full-hand-proposal-matrix-20260926`，目录 `/private/tmp/cpswm-pc-a-full-hand-proposal-matrix-20260926`，base/开工代码 `6b9f260530d53ac9c1a58ca35cb881ed86a48cf7`。已fetch核验集成与B仍为19ddf26830348a2f0b33f0af54d6ba702c5cfb1c、fd4ca6ef5e81c90d7cf7987b42c0b2810d8a810a。
+
+计划32既定窗口四帧×三臂共96组合，全候选q及同支持手部消融；每个试次首窗额外采样恢复/下一次采样和相同输入重复评分，其他窗仅评分前后请求/RNG不变，分别记录。截止前保留未完成分母，不改原权重、数据、门限或截断。实现只有实验矩阵编排，生产src不变；冻结后两轮不同审查。计划16:40 UTC停止计算，为16:47:47授权截止前备份交付留时间。证据 `docs/reviews/pc_a/full_hand_proposal_matrix_2026-09-26/`，尚无本轮结果。
+
 # A：三小时第二轮手物提议输入已双审和三网络实际验证（2026-09-26）
 
 分支 `codex/pc-a-hand-proposal-input-20260926`，base PR47 `74db008222979e4ae508a7c6fded524ae62e19ae`；实际受测 `b55867d0138c2af2c39175cba18123d99c8bd60b`。224/44两审、mypy368/Ruff通过，9命令exit0，898 Python前后同Git。128帧/32窗中378区域手候选、2,530手物测量、34未决人物对进入模型特征；24个试次×网络两帧组合完成固定目标消融、完整质量及恢复/下一次采样。概率差很小，仅输入响应，无准确率/校准收益；新优化/自然发布/动作0。

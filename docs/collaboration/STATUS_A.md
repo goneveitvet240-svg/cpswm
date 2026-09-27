@@ -1,3 +1,11 @@
+# A：VISOR 全图监督及真实梯度探针交付（2026-09-27）
+
+分支codex/pc-a-visor-pixel-supervision-20260927，base7f9d6def715169d19079f1d72f09ccf24cfe6169，受测38224fece7f0ad2baec2293d62a79f7608150b99。58/45顺序两轮A局部自审、mypy372/Ruff、8实际命令和执行器exit0；925 Python每命令前后同Git。完整485帧两轴像素监督源重建；未标注/冲突忽略，未知接触保留手存在监督。
+
+固定前8帧两遍、后8帧只诊断，冻结现有FPN，仅训练隔离514参数读出。16次非零梯度及参数变化，另2次隔离下一更新恢复检查；原模型参数/缓冲未变；新进程从头16+2次重放后report/head逐字一致。训练目标1.2130→1.0790、后8帧1.2997→1.1468，但事后不看RGB的标签频率常数反例更低（0.5207/0.3631），不能主张视觉能力收益。后8帧接触负像素0，非独立验证。
+
+[报告](../reviews/pc_a/visor_pixel_supervision_2026-09-27/REPORT.md)。完整数据/参数/日志备份主仓output/visor-pixel-supervision-20260927/closed并逐文件SHA核验，最新清单见该根上级backup-manifest.json。下一主项：图像特征与仅偏置读出受控对照、正负均覆盖的分离视频检查，再接候选生成/对应。三提议网络自然训练/自然发布/记忆/动作仍0；B未验收、不合并，旧定时接续暂停，完整范围保持。
+
 # A：VISOR 全图像素监督与冻结骨干学习探针开工（2026-09-27）
 
 独立分支codex/pc-a-visor-pixel-supervision-20260927，目录/private/tmp/cpswm-pc-a-visor-pixel-supervision-20260927，base/开工源码7f9d6def715169d19079f1d72f09ccf24cfe6169。已fetch确认集成19ddf26830348a2f0b33f0af54d6ba702c5cfb1c、B fd4ca6ef5e81c90d7cf7987b42c0b2810d8a810a未变。

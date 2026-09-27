@@ -1,0 +1,22 @@
+...........F.............................................                [100%]
+=================================== FAILURES ===================================
+_________ test_all_fixed_budgets_restore_full_outputs_and_next_update __________
+
+    def test_all_fixed_budgets_restore_full_outputs_and_next_update():
+        torch.set_num_threads(2)
+        f, t = tiny_training()
+        heads, artifacts, report = control.train_controls(f[:8], t[:8])
+        assert set(heads) == {"feature_16", "feature_128", "bias_16", "bias_128", "analytic_constant"}
+        assert report["training_updates"] == 256 and report["verification_extra_updates"] == 8
+        for arm in ("feature", "bias"):
+            assert [r["ordinal"] for r in report["updates"][arm]] == list(range(8)) * 16
+>           assert all(
+                r["gradient_norm"] > 0 and r["before"] != r["after"] for r in report["updates"][arm]
+            )
+E           assert False
+E            +  where False = all(<generator object test_all_fixed_budgets_restore_full_outputs_and_next_update.<locals>.<genexpr> at 0x118ac3850>)
+
+tests/test_visor_feature_control.py:121: AssertionError
+=========================== short test summary info ============================
+FAILED tests/test_visor_feature_control.py::test_all_fixed_budgets_restore_full_outputs_and_next_update
+1 failed, 56 passed in 12.03s

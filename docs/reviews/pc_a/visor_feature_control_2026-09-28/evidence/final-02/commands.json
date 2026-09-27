@@ -1,0 +1,40 @@
+{
+  "source_sha": "fa56b7fd3da8398655d642a1b154537ddfb1517c",
+  "commands": [
+    {
+      "name": "round1",
+      "argv": [
+        "/private/tmp/cpswm-pc-a-visor-feature-control-20260928/.venv/bin/python",
+        "-m",
+        "pytest",
+        "-o",
+        "addopts=",
+        "-q",
+        "tests/test_visor_feature_control.py",
+        "tests/test_visor_pixel_supervision.py",
+        "tests/test_visor_contact_supervision.py"
+      ],
+      "started_utc": "2026-09-27T17:17:27.442805+00:00",
+      "seconds": 3.361336125060916,
+      "exit_code": 0
+    },
+    {
+      "name": "round2",
+      "argv": [
+        "/private/tmp/cpswm-pc-a-visor-feature-control-20260928/.venv/bin/python",
+        "-m",
+        "pytest",
+        "-o",
+        "addopts=",
+        "-q",
+        "/private/tmp/cpswm-pc-a-visor-feature-control-20260928/docs/reviews/pc_a/visor_feature_control_2026-09-28/audit_second.py",
+        "docs/reviews/pc_a/visor_pixel_supervision_2026-09-27/audit_second.py",
+        "tests/test_structure_two_continuous_input.py",
+        "tests/test_continuous_state_recovery.py"
+      ],
+      "started_utc": "2026-09-27T17:17:30.942687+00:00",
+      "seconds": 5.234449583105743,
+      "exit_code": 2
+    }
+  ]
+}

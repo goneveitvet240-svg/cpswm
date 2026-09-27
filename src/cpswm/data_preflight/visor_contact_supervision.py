@@ -44,7 +44,11 @@ def _sha(raw: bytes) -> str:
     return hashlib.sha256(raw).hexdigest()
 
 
-def _author_frames(raw: bytes, corrections_raw: bytes) -> list[dict[str, Any]]:
+def _author_frames(
+    raw: bytes, corrections_raw: bytes, *, video: str = VIDEO
+) -> list[dict[str, Any]]:
+    if video not in {VIDEO, "P01_03"}:
+        raise ValueError("video is not enrolled for component development")
     doc = strict_json(raw)
     if set(doc) != {"info", "video_annotations"} or doc["info"].get("Dataset Name") != "VISOR":
         raise ValueError("expected VISOR sparse annotation document")
@@ -58,14 +62,14 @@ def _author_frames(raw: bytes, corrections_raw: bytes) -> list[dict[str, Any]]:
             raise ValueError("unexpected annotation frame fields")
         image = frame["image"]
         name = image["name"]
-        match = re.fullmatch(VIDEO + r"_frame_(\d{10})\.jpg", name)
+        match = re.fullmatch(video + r"_frame_(\d{10})\.jpg", name)
         if (
             set(image) != {"image_path", "name", "subsequence", "video"}
             or not match
             or name in names
-            or image["video"] != VIDEO
-            or image["image_path"] != VIDEO + "/" + name
-            or not re.fullmatch(VIDEO + r"_seq_\d{5}", image["subsequence"])
+            or image["video"] != video
+            or image["image_path"] != video + "/" + name
+            or not re.fullmatch(video + r"_seq_\d{5}", image["subsequence"])
         ):
             raise ValueError("wrong video, duplicate or unsafe frame identity")
         names.add(name)
@@ -123,14 +127,14 @@ def _author_frames(raw: bytes, corrections_raw: bytes) -> list[dict[str, Any]]:
     return sorted(frames, key=lambda frame: frame["image"]["name"])
 
 
-def _derive(source: dict[str, bytes]) -> dict[str, bytes]:
-    frames = _author_frames(source["P01_01.json"], source["correct.json"])
+def _derive(source: dict[str, bytes], *, video: str = VIDEO) -> dict[str, bytes]:
+    frames = _author_frames(source[video + ".json"], source["correct.json"], video=video)
     expected = {f["image"]["name"] for f in frames}
     artifacts: dict[str, bytes] = {}
     inputs, evaluation, targets = [], [], []
     states: Counter[str] = Counter()
     geometry_outside_image = 0
-    with zipfile.ZipFile(io.BytesIO(source["P01_01.zip"])) as archive:
+    with zipfile.ZipFile(io.BytesIO(source[video + ".zip"])) as archive:
         members = archive.infolist()
         names = [m.filename for m in members]
         if len(names) != len(set(names)):
@@ -149,7 +153,7 @@ def _derive(source: dict[str, bytes]) -> dict[str, bytes]:
             ):
                 raise ValueError("unsafe or nonregular ZIP member")
             if member.is_dir():
-                if member.filename != VIDEO + "/":
+                if member.filename != video + "/":
                     raise ValueError("unexpected ZIP directory")
                 continue
             if member.filename not in expected or not 0 < member.file_size <= 4 * 1024**2:
@@ -217,7 +221,7 @@ def _derive(source: dict[str, bytes]) -> dict[str, bytes]:
                 )
     report = {
         "dataset": "VISOR",
-        "video": VIDEO,
+        "video": video,
         "partition": "author_train_development",
         "source_kind": "author_sparse_human_annotation",
         "frames": len(frames),

@@ -1,0 +1,21 @@
+
+==================================== ERRORS ====================================
+_____________ ERROR collecting tests/test_visor_feature_control.py _____________
+ImportError while importing test module '/private/tmp/cpswm-pc-a-visor-feature-control-20260928/tests/test_visor_feature_control.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+tests/test_visor_feature_control.py:10: in <module>
+    from test_visor_pixel_supervision import fixture_pixel, tiny_training
+E   ModuleNotFoundError: No module named 'test_visor_pixel_supervision'
+____________ ERROR collecting tests/test_visor_pixel_supervision.py ____________
+ImportError while importing test module '/private/tmp/cpswm-pc-a-visor-feature-control-20260928/tests/test_visor_pixel_supervision.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+tests/test_visor_pixel_supervision.py:10: in <module>
+    from test_visor_contact_supervision import fixture_sources
+E   ModuleNotFoundError: No module named 'test_visor_contact_supervision'
+=========================== short test summary info ============================
+ERROR tests/test_visor_feature_control.py
+ERROR tests/test_visor_pixel_supervision.py
+!!!!!!!!!!!!!!!!!!! Interrupted: 2 errors during collection !!!!!!!!!!!!!!!!!!!!
+2 errors in 0.54s

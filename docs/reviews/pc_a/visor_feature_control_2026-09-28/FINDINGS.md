@@ -9,3 +9,7 @@
 ## 第二次执行：pytest 同名模块收集冲突
 
 fa56b7fd3da8398655d642a1b154537ddfb1517c第一审57通过；第二审在收集阶段因新旧audit_second.py同名而停止，尚未执行第二审测试。改用pytest显式importlib导入模式，保留两个原审查文件；未删除重复文件或减少覆盖。final-02保留错误回执；再次冻结并从第一审重跑。
+
+## importlib 与历史测试直接导入不兼容
+
+b9915a8b5c586ed959c515a6de158294c5f6ae99在第一审收集阶段失败：历史测试通过顶层test_visor_contact_supervision导入夹具，importlib模式未暴露该路径。保留旧pytest默认模式，将本轮脚本改成唯一文件名audit_feature_control_second.py，未删除任何测试。final-03保存失败；重新冻结后两审从头执行。

@@ -1,0 +1,18 @@
+{"name": "round1", "argv": ["/private/tmp/cpswm-pc-a-visor-feature-control-20260928/.venv/bin/python", "-m", "pytest", "-o", "addopts=", "-q", "tests/test_visor_feature_control.py", "tests/test_visor_pixel_supervision.py", "tests/test_visor_contact_supervision.py"], "started_utc": "2026-09-27T17:16:15.404038+00:00", "seconds": 12.985467500053346, "exit_code": 1}
+Traceback (most recent call last):
+  File "/private/tmp/cpswm-pc-a-visor-feature-control-20260928/docs/reviews/pc_a/visor_feature_control_2026-09-28/run_frozen.py", line 127, in <module>
+    run(args.main.resolve(), args.output.resolve())
+    ~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/private/tmp/cpswm-pc-a-visor-feature-control-20260928/docs/reviews/pc_a/visor_feature_control_2026-09-28/run_frozen.py", line 66, in run
+    command(
+    ~~~~~~~^
+        "round1",
+        ^^^^^^^^^
+    ...<10 lines>...
+        ],
+        ^^
+    )
+    ^
+  File "/private/tmp/cpswm-pc-a-visor-feature-control-20260928/docs/reviews/pc_a/visor_feature_control_2026-09-28/run_frozen.py", line 63, in command
+    raise RuntimeError("failed: " + name)
+RuntimeError: failed: round1

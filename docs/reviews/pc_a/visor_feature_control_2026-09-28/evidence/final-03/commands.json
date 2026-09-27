@@ -1,0 +1,23 @@
+{
+  "source_sha": "b9915a8b5c586ed959c515a6de158294c5f6ae99",
+  "commands": [
+    {
+      "name": "round1",
+      "argv": [
+        "/private/tmp/cpswm-pc-a-visor-feature-control-20260928/.venv/bin/python",
+        "-m",
+        "pytest",
+        "--import-mode=importlib",
+        "-o",
+        "addopts=",
+        "-q",
+        "tests/test_visor_feature_control.py",
+        "tests/test_visor_pixel_supervision.py",
+        "tests/test_visor_contact_supervision.py"
+      ],
+      "started_utc": "2026-09-27T17:18:38.293170+00:00",
+      "seconds": 0.9459714172407985,
+      "exit_code": 2
+    }
+  ]
+}

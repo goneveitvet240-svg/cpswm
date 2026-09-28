@@ -122,6 +122,8 @@ def main():
                     "target_sdk_visible": obj["visible"],
                     "target_position": obj["position"],
                     "agent": event.metadata["agent"],
+                    "camera_position": event.metadata["cameraPosition"],
+                    "fov": event.metadata["fov"],
                 }
             )
             (private / "actions.json").write_text(json.dumps(rows, indent=2) + "\n")

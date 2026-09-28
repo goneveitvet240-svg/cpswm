@@ -156,6 +156,7 @@ _PARTICLE_WORKSPACE_BOUND_METHOD_NAMES: Final = (
     "_validate_current_batch",
     "_validated_input_body",
     "_validate_record_binding",
+    "_validate_neural_implementation",
 )
 
 
@@ -1220,6 +1221,8 @@ class CorePrototypeSpine:
             registered_locations=self._registered_particle_locations
         )
         self._particle_workspace_anchor = self._particle_workspace
+        self._particle_joint_dependency_binding: str | None = None
+        self._particle_neural_source_sha256: str | None = None
         self._particle_posterior_source_anchors: dict[UUID, str] = {}
         self._particle_replay_generations: tuple[JointReplayGeneration, ...] = ()
         self._particle_replay_generation_anchors: tuple[str, ...] = ()
@@ -2871,6 +2874,25 @@ class CorePrototypeSpine:
             return semantic_memory_identity(self)
 
     @_serialized_core_mutation
+    def configure_native_joint_dependency(self, binding: str) -> None:
+        """Pin the explicitly configured producer before its first publication."""
+        self._check_particle_workspace_binding()
+        if len(binding) != 64 or any(c not in "0123456789abcdef" for c in binding):
+            raise ValueError("native joint dependency must be an explicit SHA256 binding")
+        if self._particle_joint_dependency_binding == binding:
+            return
+        if self._particle_joint_dependency_binding is not None or self._particle_workspace.records:
+            raise ValueError(
+                "native joint dependency cannot replace an existing configured history"
+            )
+        self._particle_joint_dependency_binding = binding
+        self._particle_workspace.joint_dependency_binding = binding
+        self._particle_neural_source_sha256 = hashlib.sha256(
+            Path(__file__).with_name("native_neural_production.py").read_bytes()
+        ).hexdigest()
+        self._particle_workspace.neural_source_sha256 = self._particle_neural_source_sha256
+
+    @_serialized_core_mutation
     def rebuild_prepared_particle_history(self, produce: Any) -> None:
         """Recompute a complete retained history, atomically, with an owned producer.
 
@@ -2898,6 +2920,7 @@ class CorePrototypeSpine:
                     receipts=produced.receipts,
                     statistics=produced.statistics,
                     unresolved_log_weight=produced.unresolved_log_weight,
+                    neural_evidence=produced.neural_evidence,
                 )
             if correction_basis(self) != generation.basis_sha256:
                 raise ValueError("semantic state changed during full joint replay")
@@ -2913,6 +2936,7 @@ class CorePrototypeSpine:
         receipts: tuple[ParticleRevisionReceipt, ...],
         statistics: dict[UUID, ConditionalAnalyticState],
         unresolved_log_weight: float,
+        neural_evidence: Any = None,
     ) -> ParticleRevisionBatch:
         """Consume explicit prepared candidates against this runtime's real evidence.
 
@@ -2976,6 +3000,7 @@ class CorePrototypeSpine:
                 ledger_head_sha256=self._hybrid_loop.ledger.export_state().manifest.head_hash,
                 unresolved_log_weight=unresolved_log_weight,
                 validated_projections=projections,
+                neural_evidence=neural_evidence,
             )
             cluster = batch.evidence_cluster_id
             fingerprint = self._particle_workspace.input_journal.get(cluster)
@@ -3097,6 +3122,12 @@ class CorePrototypeSpine:
             or type(self._particle_workspace) is not NativeParticleWorkspace
         ):
             raise ValueError("native particle workspace identity was replaced")
+        if (
+            self._particle_workspace.joint_dependency_binding
+            != self._particle_joint_dependency_binding
+            or self._particle_workspace.neural_source_sha256 != self._particle_neural_source_sha256
+        ):
+            raise ValueError("native joint dependency differs from its core configuration anchor")
         instance_attributes = vars(self._particle_workspace)
         for (
             method_name,

@@ -1,0 +1,3527 @@
+{
+  "source_head": "c54f890aecd5c6af2f9a2005413f7cbf0ba7920b",
+  "verified_episodes": 48,
+  "same_initial_priors_across_resolutions": true,
+  "shared_methods_models_thresholds_and_budget": true,
+  "complete_natural_closed_loop": false,
+  "matrices": {
+    "320": {
+      "scope": "A_LOCAL_CONTROLLED_PRIOR_CAMERA_DIAGNOSTIC_NOT_FORMAL_B_ACCEPTANCE",
+      "image_size": 320,
+      "expected_episodes": 24,
+      "verified_episodes": 24,
+      "same_initial_priors": true,
+      "same_pixels_per_site_heading": false,
+      "pixel_hash_counts_per_site_heading": {
+        "north:270.0": 2,
+        "north:315.0": 2,
+        "north:225.0": 2,
+        "south:270.0": 2,
+        "south:315.0": 2,
+        "south:225.0": 2
+      },
+      "results": [
+        {
+          "method": "typed_factor_graph_transformer",
+          "image_size": 320,
+          "frontend": "ssdlite",
+          "site": "north",
+          "verified": true,
+          "source_sha256": "0c594481bd9d6b02fb6d024634a3cef9706bf954f5c42e7402630fef410400c1",
+          "checkpoint_manifest_sha256": "4f17225e73bf40b0aca9c996c1803dfc03918bfa5972a66a785be871417114f4",
+          "initial_joint_probabilities": {
+            "aggregate_unresolved": 0.3554512046748357,
+            "unknown_instance": 0.3554512046748357,
+            "known_instance": 0.28909759065032864
+          },
+          "final_joint_probabilities": {
+            "aggregate_unresolved": 0.592043963026935,
+            "unknown_instance": 0.2249767059502352,
+            "known_instance": 0.18297933102282998
+          },
+          "actions": [
+            {
+              "action": "RotateRight",
+              "degrees": 45.0,
+              "success": true,
+              "outcome": "no_category_candidate",
+              "seconds": 1.2326536662876606
+            },
+            {
+              "action": "RotateLeft",
+              "degrees": 90.0,
+              "success": true,
+              "outcome": "no_category_candidate",
+              "seconds": 1.9664433747529984
+            }
+          ],
+          "rotation_count": 2,
+          "rotation_degrees": 135.0,
+          "all_actions_succeeded": true,
+          "any_category_positive": false,
+          "any_bbox_overlap": false,
+          "any_false_positive_without_pixels": false,
+          "frames": [
+            {
+              "index": 0,
+              "heading": 270.0,
+              "rgb_sha256": "497db5e1a08908a46650a423086997c79da4b15cb25b930efaef78666851aad8",
+              "target_pixels": 0,
+              "target_sdk_visible": false,
+              "apple_scores": [],
+              "apple_bbox_ious": [],
+              "false_positive_without_target_pixels": false
+            },
+            {
+              "index": 1,
+              "heading": 315.0,
+              "rgb_sha256": "9f079a33f1b18b04c4827ccb3244e2d551797287b6b7ed5ef20c92fa4106f461",
+              "target_pixels": 554,
+              "target_sdk_visible": true,
+              "apple_scores": [],
+              "apple_bbox_ious": [],
+              "false_positive_without_target_pixels": false
+            },
+            {
+              "index": 2,
+              "heading": 225.0,
+              "rgb_sha256": "37e0a1e84a3c09dfdd985ef48438d969b89880e88901d77085fb4154fcc6feeb",
+              "target_pixels": 0,
+              "target_sdk_visible": false,
+              "apple_scores": [],
+              "apple_bbox_ious": [],
+              "false_positive_without_target_pixels": false
+            }
+          ],
+          "seconds": 10.817460832651705,
+          "stop_reason": "no_remaining_positive_utility_or_views"
+        },
+        {
+          "method": "slot_conditioned_perceiver",
+          "image_size": 320,
+          "frontend": "ssdlite",
+          "site": "north",
+          "verified": true,
+          "source_sha256": "0c594481bd9d6b02fb6d024634a3cef9706bf954f5c42e7402630fef410400c1",
+          "checkpoint_manifest_sha256": "f9ef284b0d89883b47fcc010d952e49cb4a4fb0be63a5eb1200a5cd011f40b85",
+          "initial_joint_probabilities": {
+            "aggregate_unresolved": 0.3554512046748357,
+            "unknown_instance": 0.3554512046748357,
+            "known_instance": 0.28909759065032864
+          },
+          "final_joint_probabilities": {
+            "aggregate_unresolved": 0.592043963026935,
+            "unknown_instance": 0.2249767059502352,
+            "known_instance": 0.18297933102282998
+          },
+          "actions": [
+            {
+              "action": "RotateRight",
+              "degrees": 45.0,
+              "success": true,
+              "outcome": "no_category_candidate",
+              "seconds": 1.2255141655914485
+            },
+            {
+              "action": "RotateLeft",
+              "degrees": 90.0,
+              "success": true,
+              "outcome": "no_category_candidate",
+              "seconds": 1.9642407922074199
+            }
+          ],
+          "rotation_count": 2,
+          "rotation_degrees": 135.0,
+          "all_actions_succeeded": true,
+          "any_category_positive": false,
+          "any_bbox_overlap": false,
+          "any_false_positive_without_pixels": false,
+          "frames": [
+            {
+              "index": 0,
+              "heading": 270.0,
+              "rgb_sha256": "c3b6b5171994483819441f41ba02bd219af9cc7d574b5d5f0ecfdf4aa623b74d",
+              "target_pixels": 0,
+              "target_sdk_visible": false,
+              "apple_scores": [],
+              "apple_bbox_ious": [],
+              "false_positive_without_target_pixels": false
+            },
+            {
+              "index": 1,
+              "heading": 315.0,
+              "rgb_sha256": "9f079a33f1b18b04c4827ccb3244e2d551797287b6b7ed5ef20c92fa4106f461",
+              "target_pixels": 554,
+              "target_sdk_visible": true,
+              "apple_scores": [],
+              "apple_bbox_ious": [],
+              "false_positive_without_target_pixels": false
+            },
+            {
+              "index": 2,
+              "heading": 225.0,
+              "rgb_sha256": "37e0a1e84a3c09dfdd985ef48438d969b89880e88901d77085fb4154fcc6feeb",
+              "target_pixels": 0,
+              "target_sdk_visible": false,
+              "apple_scores": [],
+              "apple_bbox_ious": [],
+              "false_positive_without_target_pixels": false
+            }
+          ],
+          "seconds": 10.660489125177264,
+          "stop_reason": "no_remaining_positive_utility_or_views"
+        },
+        {
+          "method": "autoregressive_typed_graph_policy",
+          "image_size": 320,
+          "frontend": "ssdlite",
+          "site": "north",
+          "verified": true,
+          "source_sha256": "0c594481bd9d6b02fb6d024634a3cef9706bf954f5c42e7402630fef410400c1",
+          "checkpoint_manifest_sha256": "68ff631b677c207842244432931dd880a48565a0fb21956979566b3f97f3c9b2",
+          "initial_joint_probabilities": {
+            "aggregate_unresolved": 0.3554512046748357,
+            "known_instance": 0.28909759065032864,
+            "unknown_instance": 0.3554512046748357
+          },
+          "final_joint_probabilities": {
+            "aggregate_unresolved": 0.592043963026935,
+            "known_instance": 0.18297933102282998,
+            "unknown_instance": 0.2249767059502352
+          },
+          "actions": [
+            {
+              "action": "RotateRight",
+              "degrees": 45.0,
+              "success": true,
+              "outcome": "no_category_candidate",
+              "seconds": 1.220749709289521
+            },
+            {
+              "action": "RotateLeft",
+              "degrees": 90.0,
+              "success": true,
+              "outcome": "no_category_candidate",
+              "seconds": 1.9765420001931489
+            }
+          ],
+          "rotation_count": 2,
+          "rotation_degrees": 135.0,
+          "all_actions_succeeded": true,
+          "any_category_positive": false,
+          "any_bbox_overlap": false,
+          "any_false_positive_without_pixels": false,
+          "frames": [
+            {
+              "index": 0,
+              "heading": 270.0,
+              "rgb_sha256": "c3b6b5171994483819441f41ba02bd219af9cc7d574b5d5f0ecfdf4aa623b74d",
+              "target_pixels": 0,
+              "target_sdk_visible": false,
+              "apple_scores": [],
+              "apple_bbox_ious": [],
+              "false_positive_without_target_pixels": false
+            },
+            {
+              "index": 1,
+              "heading": 315.0,
+              "rgb_sha256": "9f079a33f1b18b04c4827ccb3244e2d551797287b6b7ed5ef20c92fa4106f461",
+              "target_pixels": 554,
+              "target_sdk_visible": true,
+              "apple_scores": [],
+              "apple_bbox_ious": [],
+              "false_positive_without_target_pixels": false
+            },
+            {
+              "index": 2,
+              "heading": 225.0,
+              "rgb_sha256": "37e0a1e84a3c09dfdd985ef48438d969b89880e88901d77085fb4154fcc6feeb",
+              "target_pixels": 0,
+              "target_sdk_visible": false,
+              "apple_scores": [],
+              "apple_bbox_ious": [],
+              "false_positive_without_target_pixels": false
+            }
+          ],
+          "seconds": 10.686265125405043,
+          "stop_reason": "no_remaining_positive_utility_or_views"
+        },
+        {
+          "method": "no_feedback",
+          "image_size": 320,
+          "frontend": "ssdlite",
+          "site": "north",
+          "verified": true,
+          "source_sha256": "0c594481bd9d6b02fb6d024634a3cef9706bf954f5c42e7402630fef410400c1",
+          "checkpoint_manifest_sha256": "4f17225e73bf40b0aca9c996c1803dfc03918bfa5972a66a785be871417114f4",
+          "initial_joint_probabilities": {
+            "aggregate_unresolved": 0.3554512046748357,
+            "known_instance": 0.28909759065032864,
+            "unknown_instance": 0.3554512046748357
+          },
+          "final_joint_probabilities": {
+            "aggregate_unresolved": 0.3554512046748357,
+            "known_instance": 0.28909759065032864,
+            "unknown_instance": 0.3554512046748357
+          },
+          "actions": [
+            {
+              "action": "RotateRight",
+              "degrees": 45.0,
+              "success": true,
+              "outcome": "no_category_candidate",
+              "seconds": 0.5926569160073996
+            },
+            {
+              "action": "RotateLeft",
+              "degrees": 90.0,
+              "success": true,
+              "outcome": "no_category_candidate",
+              "seconds": 0.6573062078095973
+            }
+          ],
+          "rotation_count": 2,
+          "rotation_degrees": 135.0,
+          "all_actions_succeeded": true,
+          "any_category_positive": false,
+          "any_bbox_overlap": false,
+          "any_false_positive_without_pixels": false,
+          "frames": [
+            {
+              "index": 0,
+              "heading": 270.0,
+              "rgb_sha256": "c3b6b5171994483819441f41ba02bd219af9cc7d574b5d5f0ecfdf4aa623b74d",
+              "target_pixels": 0,
+              "target_sdk_visible": false,
+              "apple_scores": [],
+              "apple_bbox_ious": [],
+              "false_positive_without_target_pixels": false
+            },
+            {
+              "index": 1,
+              "heading": 315.0,
+              "rgb_sha256": "9f079a33f1b18b04c4827ccb3244e2d551797287b6b7ed5ef20c92fa4106f461",
+              "target_pixels": 554,
+              "target_sdk_visible": true,
+              "apple_scores": [],
+              "apple_bbox_ious": [],
+              "false_positive_without_target_pixels": false
+            },
+            {
+              "index": 2,
+              "heading": 225.0,
+              "rgb_sha256": "37e0a1e84a3c09dfdd985ef48438d969b89880e88901d77085fb4154fcc6feeb",
+              "target_pixels": 0,
+              "target_sdk_visible": false,
+              "apple_scores": [],
+              "apple_bbox_ious": [],
+              "false_positive_without_target_pixels": false
+            }
+          ],
+          "seconds": 7.28932054201141,
+          "stop_reason": "no_remaining_positive_utility_or_views"
+        },
+        {
+          "method": "scan_left_first",
+          "image_size": 320,
+          "frontend": "ssdlite",
+          "site": "north",
+          "verified": true,
+          "source_sha256": "0c594481bd9d6b02fb6d024634a3cef9706bf954f5c42e7402630fef410400c1",
+          "checkpoint_manifest_sha256": "4f17225e73bf40b0aca9c996c1803dfc03918bfa5972a66a785be871417114f4",
+          "initial_joint_probabilities": {
+            "aggregate_unresolved": 0.3554512046748357,
+            "known_instance": 0.28909759065032864,
+            "unknown_instance": 0.3554512046748357
+          },
+          "final_joint_probabilities": {
+            "aggregate_unresolved": 0.3554512046748357,
+            "known_instance": 0.28909759065032864,
+            "unknown_instance": 0.3554512046748357
+          },
+          "actions": [
+            {
+              "action": "RotateLeft",
+              "degrees": 45.0,
+              "success": true,
+              "outcome": "no_category_candidate",
+              "seconds": 0.4160961671732366
+            },
+            {
+              "action": "RotateRight",
+              "degrees": 90.0,
+              "success": true,
+              "outcome": "no_category_candidate",
+              "seconds": 0.5564846252091229
+            }
+          ],
+          "rotation_count": 2,
+          "rotation_degrees": 135.0,
+          "all_actions_succeeded": true,
+          "any_category_positive": false,
+          "any_bbox_overlap": false,
+          "any_false_positive_without_pixels": false,
+          "frames": [
+            {
+              "index": 0,
+              "heading": 270.0,
+              "rgb_sha256": "c3b6b5171994483819441f41ba02bd219af9cc7d574b5d5f0ecfdf4aa623b74d",
+              "target_pixels": 0,
+              "target_sdk_visible": false,
+              "apple_scores": [],
+              "apple_bbox_ious": [],
+              "false_positive_without_target_pixels": false
+            },
+            {
+              "index": 1,
+              "heading": 225.0,
+              "rgb_sha256": "04490182634ff6948fdb409b438b59612acd88d29155f16686c6a05a05970fd0",
+              "target_pixels": 0,
+              "target_sdk_visible": false,
+              "apple_scores": [],
+              "apple_bbox_ious": [],
+              "false_positive_without_target_pixels": false
+            },
+            {
+              "index": 2,
+              "heading": 315.0,
+              "rgb_sha256": "1318d047abc93582035ba0ccda9106f5ca12f62ba9a7144cabf0eaeb66815f76",
+              "target_pixels": 554,
+              "target_sdk_visible": true,
+              "apple_scores": [],
+              "apple_bbox_ious": [],
+              "false_positive_without_target_pixels": false
+            }
+          ],
+          "seconds": 6.782053125090897,
+          "stop_reason": "no_remaining_positive_utility_or_views"
+        },
+        {
+          "method": "scan_right_first",
+          "image_size": 320,
+          "frontend": "ssdlite",
+          "site": "north",
+          "verified": true,
+          "source_sha256": "0c594481bd9d6b02fb6d024634a3cef9706bf954f5c42e7402630fef410400c1",
+          "checkpoint_manifest_sha256": "4f17225e73bf40b0aca9c996c1803dfc03918bfa5972a66a785be871417114f4",
+          "initial_joint_probabilities": {
+            "aggregate_unresolved": 0.3554512046748357,
+            "known_instance": 0.28909759065032864,
+            "unknown_instance": 0.3554512046748357
+          },
+          "final_joint_probabilities": {
+            "aggregate_unresolved": 0.3554512046748357,
+            "known_instance": 0.28909759065032864,
+            "unknown_instance": 0.3554512046748357
+          },
+          "actions": [
+            {
+              "action": "RotateRight",
+              "degrees": 45.0,
+              "success": true,
+              "outcome": "no_category_candidate",
+              "seconds": 0.4176562922075391
+            },
+            {
+              "action": "RotateLeft",
+              "degrees": 90.0,
+              "success": true,
+              "outcome": "no_category_candidate",
+              "seconds": 0.56138233281672
+            }
+          ],
+          "rotation_count": 2,
+          "rotation_degrees": 135.0,
+          "all_actions_succeeded": true,
+          "any_category_positive": false,
+          "any_bbox_overlap": false,
+          "any_false_positive_without_pixels": false,
+          "frames": [
+            {
+              "index": 0,
+              "heading": 270.0,
+              "rgb_sha256": "c3b6b5171994483819441f41ba02bd219af9cc7d574b5d5f0ecfdf4aa623b74d",
+              "target_pixels": 0,
+              "target_sdk_visible": false,
+              "apple_scores": [],
+              "apple_bbox_ious": [],
+              "false_positive_without_target_pixels": false
+            },
+            {
+              "index": 1,
+              "heading": 315.0,
+              "rgb_sha256": "9f079a33f1b18b04c4827ccb3244e2d551797287b6b7ed5ef20c92fa4106f461",
+              "target_pixels": 554,
+              "target_sdk_visible": true,
+              "apple_scores": [],
+              "apple_bbox_ious": [],
+              "false_positive_without_target_pixels": false
+            },
+            {
+              "index": 2,
+              "heading": 225.0,
+              "rgb_sha256": "37e0a1e84a3c09dfdd985ef48438d969b89880e88901d77085fb4154fcc6feeb",
+              "target_pixels": 0,
+              "target_sdk_visible": false,
+              "apple_scores": [],
+              "apple_bbox_ious": [],
+              "false_positive_without_target_pixels": false
+            }
+          ],
+          "seconds": 6.738252125214785,
+          "stop_reason": "no_remaining_positive_utility_or_views"
+        },
+        {
+          "method": "typed_factor_graph_transformer",
+          "image_size": 320,
+          "frontend": "ssdlite",
+          "site": "south",
+          "verified": true,
+          "source_sha256": "0c594481bd9d6b02fb6d024634a3cef9706bf954f5c42e7402630fef410400c1",
+          "checkpoint_manifest_sha256": "4f17225e73bf40b0aca9c996c1803dfc03918bfa5972a66a785be871417114f4",
+          "initial_joint_probabilities": {
+            "aggregate_unresolved": 0.3554512046748357,
+            "unknown_instance": 0.3554512046748357,
+            "known_instance": 0.28909759065032864
+          },
+          "final_joint_probabilities": {
+            "aggregate_unresolved": 0.592043963026935,
+            "unknown_instance": 0.2249767059502352,
+            "known_instance": 0.18297933102282998
+          },
+          "actions": [
+            {
+              "action": "RotateRight",
+              "degrees": 45.0,
+              "success": true,
+              "outcome": "no_category_candidate",
+              "seconds": 1.2586912917904556
+            },
+            {
+              "action": "RotateLeft",
+              "degrees": 90.0,
+              "success": true,
+              "outcome": "no_category_candidate",
+              "seconds": 2.01188495894894
+            }
+          ],
+          "rotation_count": 2,
+          "rotation_degrees": 135.0,
+          "all_actions_succeeded": true,
+          "any_category_positive": false,
+          "any_bbox_overlap": false,
+          "any_false_positive_without_pixels": false,
+          "frames": [
+            {
+              "index": 0,
+              "heading": 270.0,
+              "rgb_sha256": "0a81c889cc7107bb3426c4f96c5ea7887cecdc7df8a2e3b2cfc1a8298b715134",
+              "target_pixels": 0,
+              "target_sdk_visible": false,
+              "apple_scores": [],
+              "apple_bbox_ious": [],
+              "false_positive_without_target_pixels": false
+            },
+            {
+              "index": 1,
+              "heading": 315.0,
+              "rgb_sha256": "b3809ba1b624a0b07ac980361dc2e9da4ccb2b6f6177871c583282793a9e0457",
+              "target_pixels": 0,
+              "target_sdk_visible": false,
+              "apple_scores": [],
+              "apple_bbox_ious": [],
+              "false_positive_without_target_pixels": false
+            },
+            {
+              "index": 2,
+              "heading": 225.0,
+              "rgb_sha256": "4cefde302ef170c798a3db7bab3074c0afdcfedc5a4da9acafcaee2fe78a04e6",
+              "target_pixels": 558,
+              "target_sdk_visible": true,
+              "apple_scores": [],
+              "apple_bbox_ious": [],
+              "false_positive_without_target_pixels": false
+            }
+          ],
+          "seconds": 10.7094157920219,
+          "stop_reason": "no_remaining_positive_utility_or_views"
+        },
+        {
+          "method": "slot_conditioned_perceiver",
+          "image_size": 320,
+          "frontend": "ssdlite",
+          "site": "south",
+          "verified": true,
+          "source_sha256": "0c594481bd9d6b02fb6d024634a3cef9706bf954f5c42e7402630fef410400c1",
+          "checkpoint_manifest_sha256": "f9ef284b0d89883b47fcc010d952e49cb4a4fb0be63a5eb1200a5cd011f40b85",
+          "initial_joint_probabilities": {
+            "aggregate_unresolved": 0.3554512046748357,
+            "known_instance": 0.28909759065032864,
+            "unknown_instance": 0.3554512046748357
+          },
+          "final_joint_probabilities": {
+            "aggregate_unresolved": 0.592043963026935,
+            "known_instance": 0.18297933102282998,
+            "unknown_instance": 0.2249767059502352
+          },
+          "actions": [
+            {
+              "action": "RotateRight",
+              "degrees": 45.0,
+              "success": true,
+              "outcome": "no_category_candidate",
+              "seconds": 1.2228992921300232
+            },
+            {
+              "action": "RotateLeft",
+              "degrees": 90.0,
+              "success": true,
+              "outcome": "no_category_candidate",
+              "seconds": 1.9650181671604514
+            }
+          ],
+          "rotation_count": 2,
+          "rotation_degrees": 135.0,
+          "all_actions_succeeded": true,
+          "any_category_positive": false,
+          "any_bbox_overlap": false,
+          "any_false_positive_without_pixels": false,
+          "frames": [
+            {
+              "index": 0,
+              "heading": 270.0,
+              "rgb_sha256": "0a81c889cc7107bb3426c4f96c5ea7887cecdc7df8a2e3b2cfc1a8298b715134",
+              "target_pixels": 0,
+              "target_sdk_visible": false,
+              "apple_scores": [],
+              "apple_bbox_ious": [],
+              "false_positive_without_target_pixels": false
+            },
+            {
+              "index": 1,
+              "heading": 315.0,
+              "rgb_sha256": "b3809ba1b624a0b07ac980361dc2e9da4ccb2b6f6177871c583282793a9e0457",
+              "target_pixels": 0,
+              "target_sdk_visible": false,
+              "apple_scores": [],
+              "apple_bbox_ious": [],
+              "false_positive_without_target_pixels": false
+            },
+            {
+              "index": 2,
+              "heading": 225.0,
+              "rgb_sha256": "4cefde302ef170c798a3db7bab3074c0afdcfedc5a4da9acafcaee2fe78a04e6",
+              "target_pixels": 558,
+              "target_sdk_visible": true,
+              "apple_scores": [],
+              "apple_bbox_ious": [],
+              "false_positive_without_target_pixels": false
+            }
+          ],
+          "seconds": 10.539168207906187,
+          "stop_reason": "no_remaining_positive_utility_or_views"
+        },
+        {
+          "method": "autoregressive_typed_graph_policy",
+          "image_size": 320,
+          "frontend": "ssdlite",
+          "site": "south",
+          "verified": true,
+          "source_sha256": "0c594481bd9d6b02fb6d024634a3cef9706bf954f5c42e7402630fef410400c1",
+          "checkpoint_manifest_sha256": "68ff631b677c207842244432931dd880a48565a0fb21956979566b3f97f3c9b2",
+          "initial_joint_probabilities": {
+            "aggregate_unresolved": 0.3554512046748357,
+            "unknown_instance": 0.3554512046748357,
+            "known_instance": 0.28909759065032864
+          },
+          "final_joint_probabilities": {
+            "aggregate_unresolved": 0.592043963026935,
+            "unknown_instance": 0.2249767059502352,
+            "known_instance": 0.18297933102282998
+          },
+          "actions": [
+            {
+              "action": "RotateRight",
+              "degrees": 45.0,
+              "success": true,
+              "outcome": "no_category_candidate",
+              "seconds": 1.2176747918128967
+            },
+            {
+              "action": "RotateLeft",
+              "degrees": 90.0,
+              "success": true,
+              "outcome": "no_category_candidate",
+              "seconds": 1.977229249663651
+            }
+          ],
+          "rotation_count": 2,
+          "rotation_degrees": 135.0,
+          "all_actions_succeeded": true,
+          "any_category_positive": false,
+          "any_bbox_overlap": false,
+          "any_false_positive_without_pixels": false,
+          "frames": [
+            {
+              "index": 0,
+              "heading": 270.0,
+              "rgb_sha256": "0a81c889cc7107bb3426c4f96c5ea7887cecdc7df8a2e3b2cfc1a8298b715134",
+              "target_pixels": 0,
+              "target_sdk_visible": false,
+              "apple_scores": [],
+              "apple_bbox_ious": [],
+              "false_positive_without_target_pixels": false
+            },
+            {
+              "index": 1,
+              "heading": 315.0,
+              "rgb_sha256": "b3809ba1b624a0b07ac980361dc2e9da4ccb2b6f6177871c583282793a9e0457",
+              "target_pixels": 0,
+              "target_sdk_visible": false,
+              "apple_scores": [],
+              "apple_bbox_ious": [],
+              "false_positive_without_target_pixels": false
+            },
+            {
+              "index": 2,
+              "heading": 225.0,
+              "rgb_sha256": "4cefde302ef170c798a3db7bab3074c0afdcfedc5a4da9acafcaee2fe78a04e6",
+              "target_pixels": 558,
+              "target_sdk_visible": true,
+              "apple_scores": [],
+              "apple_bbox_ious": [],
+              "false_positive_without_target_pixels": false
+            }
+          ],
+          "seconds": 10.543126583099365,
+          "stop_reason": "no_remaining_positive_utility_or_views"
+        },
+        {
+          "method": "no_feedback",
+          "image_size": 320,
+          "frontend": "ssdlite",
+          "site": "south",
+          "verified": true,
+          "source_sha256": "0c594481bd9d6b02fb6d024634a3cef9706bf954f5c42e7402630fef410400c1",
+          "checkpoint_manifest_sha256": "4f17225e73bf40b0aca9c996c1803dfc03918bfa5972a66a785be871417114f4",
+          "initial_joint_probabilities": {
+            "aggregate_unresolved": 0.3554512046748357,
+            "known_instance": 0.28909759065032864,
+            "unknown_instance": 0.3554512046748357
+          },
+          "final_joint_probabilities": {
+            "aggregate_unresolved": 0.3554512046748357,
+            "known_instance": 0.28909759065032864,
+            "unknown_instance": 0.3554512046748357
+          },
+          "actions": [
+            {
+              "action": "RotateRight",
+              "degrees": 45.0,
+              "success": true,
+              "outcome": "no_category_candidate",
+              "seconds": 0.5755056249909103
+            },
+            {
+              "action": "RotateLeft",
+              "degrees": 90.0,
+              "success": true,
+              "outcome": "no_category_candidate",
+              "seconds": 0.644245833158493
+            }
+          ],
+          "rotation_count": 2,
+          "rotation_degrees": 135.0,
+          "all_actions_succeeded": true,
+          "any_category_positive": false,
+          "any_bbox_overlap": false,
+          "any_false_positive_without_pixels": false,
+          "frames": [
+            {
+              "index": 0,
+              "heading": 270.0,
+              "rgb_sha256": "1d609ea2eb618bdf08f711354f4158c158a8592656398ecd0fbdb1b602819868",
+              "target_pixels": 0,
+              "target_sdk_visible": false,
+              "apple_scores": [],
+              "apple_bbox_ious": [],
+              "false_positive_without_target_pixels": false
+            },
+            {
+              "index": 1,
+              "heading": 315.0,
+              "rgb_sha256": "b3809ba1b624a0b07ac980361dc2e9da4ccb2b6f6177871c583282793a9e0457",
+              "target_pixels": 0,
+              "target_sdk_visible": false,
+              "apple_scores": [],
+              "apple_bbox_ious": [],
+              "false_positive_without_target_pixels": false
+            },
+            {
+              "index": 2,
+              "heading": 225.0,
+              "rgb_sha256": "4cefde302ef170c798a3db7bab3074c0afdcfedc5a4da9acafcaee2fe78a04e6",
+              "target_pixels": 558,
+              "target_sdk_visible": true,
+              "apple_scores": [],
+              "apple_bbox_ious": [],
+              "false_positive_without_target_pixels": false
+            }
+          ],
+          "seconds": 7.178243999835104,
+          "stop_reason": "no_remaining_positive_utility_or_views"
+        },
+        {
+          "method": "scan_left_first",
+          "image_size": 320,
+          "frontend": "ssdlite",
+          "site": "south",
+          "verified": true,
+          "source_sha256": "0c594481bd9d6b02fb6d024634a3cef9706bf954f5c42e7402630fef410400c1",
+          "checkpoint_manifest_sha256": "4f17225e73bf40b0aca9c996c1803dfc03918bfa5972a66a785be871417114f4",
+          "initial_joint_probabilities": {
+            "aggregate_unresolved": 0.3554512046748357,
+            "known_instance": 0.28909759065032864,
+            "unknown_instance": 0.3554512046748357
+          },
+          "final_joint_probabilities": {
+            "aggregate_unresolved": 0.3554512046748357,
+            "known_instance": 0.28909759065032864,
+            "unknown_instance": 0.3554512046748357
+          },
+          "actions": [
+            {
+              "action": "RotateLeft",
+              "degrees": 45.0,
+              "success": true,
+              "outcome": "no_category_candidate",
+              "seconds": 0.4284036671742797
+            },
+            {
+              "action": "RotateRight",
+              "degrees": 90.0,
+              "success": true,
+              "outcome": "no_category_candidate",
+              "seconds": 0.5499429577030241
+            }
+          ],
+          "rotation_count": 2,
+          "rotation_degrees": 135.0,
+          "all_actions_succeeded": true,
+          "any_category_positive": false,
+          "any_bbox_overlap": false,
+          "any_false_positive_without_pixels": false,
+          "frames": [
+            {
+              "index": 0,
+              "heading": 270.0,
+              "rgb_sha256": "0a81c889cc7107bb3426c4f96c5ea7887cecdc7df8a2e3b2cfc1a8298b715134",
+              "target_pixels": 0,
+              "target_sdk_visible": false,
+              "apple_scores": [],
+              "apple_bbox_ious": [],
+              "false_positive_without_target_pixels": false
+            },
+            {
+              "index": 1,
+              "heading": 225.0,
+              "rgb_sha256": "501acccf0a6dfb1350b932fdff794295c4632632b24c68846df2b5feaf15d55a",
+              "target_pixels": 558,
+              "target_sdk_visible": true,
+              "apple_scores": [],
+              "apple_bbox_ious": [],
+              "false_positive_without_target_pixels": false
+            },
+            {
+              "index": 2,
+              "heading": 315.0,
+              "rgb_sha256": "d5403360d55a42b20fccca7559e508540356ca4c481051e330cd2d68d09ca033",
+              "target_pixels": 0,
+              "target_sdk_visible": false,
+              "apple_scores": [],
+              "apple_bbox_ious": [],
+              "false_positive_without_target_pixels": false
+            }
+          ],
+          "seconds": 6.81116845831275,
+          "stop_reason": "no_remaining_positive_utility_or_views"
+        },
+        {
+          "method": "scan_right_first",
+          "image_size": 320,
+          "frontend": "ssdlite",
+          "site": "south",
+          "verified": true,
+          "source_sha256": "0c594481bd9d6b02fb6d024634a3cef9706bf954f5c42e7402630fef410400c1",
+          "checkpoint_manifest_sha256": "4f17225e73bf40b0aca9c996c1803dfc03918bfa5972a66a785be871417114f4",
+          "initial_joint_probabilities": {
+            "aggregate_unresolved": 0.3554512046748357,
+            "known_instance": 0.28909759065032864,
+            "unknown_instance": 0.3554512046748357
+          },
+          "final_joint_probabilities": {
+            "aggregate_unresolved": 0.3554512046748357,
+            "known_instance": 0.28909759065032864,
+            "unknown_instance": 0.3554512046748357
+          },
+          "actions": [
+            {
+              "action": "RotateRight",
+              "degrees": 45.0,
+              "success": true,
+              "outcome": "no_category_candidate",
+              "seconds": 0.4319309168495238
+            },
+            {
+              "action": "RotateLeft",
+              "degrees": 90.0,
+              "success": true,
+              "outcome": "no_category_candidate",
+              "seconds": 0.5785677498206496
+            }
+          ],
+          "rotation_count": 2,
+          "rotation_degrees": 135.0,
+          "all_actions_succeeded": true,
+          "any_category_positive": false,
+          "any_bbox_overlap": false,
+          "any_false_positive_without_pixels": false,
+          "frames": [
+            {
+              "index": 0,
+              "heading": 270.0,
+              "rgb_sha256": "0a81c889cc7107bb3426c4f96c5ea7887cecdc7df8a2e3b2cfc1a8298b715134",
+              "target_pixels": 0,
+              "target_sdk_visible": false,
+              "apple_scores": [],
+              "apple_bbox_ious": [],
+              "false_positive_without_target_pixels": false
+            },
+            {
+              "index": 1,
+              "heading": 315.0,
+              "rgb_sha256": "b3809ba1b624a0b07ac980361dc2e9da4ccb2b6f6177871c583282793a9e0457",
+              "target_pixels": 0,
+              "target_sdk_visible": false,
+              "apple_scores": [],
+              "apple_bbox_ious": [],
+              "false_positive_without_target_pixels": false
+            },
+            {
+              "index": 2,
+              "heading": 225.0,
+              "rgb_sha256": "4cefde302ef170c798a3db7bab3074c0afdcfedc5a4da9acafcaee2fe78a04e6",
+              "target_pixels": 558,
+              "target_sdk_visible": true,
+              "apple_scores": [],
+              "apple_bbox_ious": [],
+              "false_positive_without_target_pixels": false
+            }
+          ],
+          "seconds": 6.833874792326242,
+          "stop_reason": "no_remaining_positive_utility_or_views"
+        },
+        {
+          "method": "typed_factor_graph_transformer",
+          "image_size": 320,
+          "frontend": "fasterrcnn",
+          "site": "north",
+          "verified": true,
+          "source_sha256": "0c594481bd9d6b02fb6d024634a3cef9706bf954f5c42e7402630fef410400c1",
+          "checkpoint_manifest_sha256": "4f17225e73bf40b0aca9c996c1803dfc03918bfa5972a66a785be871417114f4",
+          "initial_joint_probabilities": {
+            "aggregate_unresolved": 0.3554512046748357,
+            "known_instance": 0.28909759065032864,
+            "unknown_instance": 0.3554512046748357
+          },
+          "final_joint_probabilities": {
+            "aggregate_unresolved": 0.39001769774911593,
+            "known_instance": 0.5709805324759725,
+            "unknown_instance": 0.0390017697749116
+          },
+          "actions": [
+            {
+              "action": "RotateRight",
+              "degrees": 45.0,
+              "success": true,
+              "outcome": "category_candidate",
+              "seconds": 8.618318541906774
+            }
+          ],
+          "rotation_count": 1,
+          "rotation_degrees": 45.0,
+          "all_actions_succeeded": true,
+          "any_category_positive": true,
+          "any_bbox_overlap": true,
+          "any_false_positive_without_pixels": false,
+          "frames": [
+            {
+              "index": 0,
+              "heading": 270.0,
+              "rgb_sha256": "c3b6b5171994483819441f41ba02bd219af9cc7d574b5d5f0ecfdf4aa623b74d",
+              "target_pixels": 0,
+              "target_sdk_visible": false,
+              "apple_scores": [],
+              "apple_bbox_ious": [],
+              "false_positive_without_target_pixels": false
+            },
+            {
+              "index": 1,
+              "heading": 315.0,
+              "rgb_sha256": "9f079a33f1b18b04c4827ccb3244e2d551797287b6b7ed5ef20c92fa4106f461",
+              "target_pixels": 554,
+              "target_sdk_visible": true,
+              "apple_scores": [
+                0.6333507895469666
+              ],
+              "apple_bbox_ious": [
+                0.959715354798535
+              ],
+              "false_positive_without_target_pixels": false
+            }
+          ],
+          "seconds": 33.65890541579574,
+          "stop_reason": "category_candidate"
+        },
+        {
+          "method": "slot_conditioned_perceiver",
+          "image_size": 320,
+          "frontend": "fasterrcnn",
+          "site": "north",
+          "verified": true,
+          "source_sha256": "0c594481bd9d6b02fb6d024634a3cef9706bf954f5c42e7402630fef410400c1",
+          "checkpoint_manifest_sha256": "f9ef284b0d89883b47fcc010d952e49cb4a4fb0be63a5eb1200a5cd011f40b85",
+          "initial_joint_probabilities": {
+            "aggregate_unresolved": 0.3554512046748357,
+            "unknown_instance": 0.3554512046748357,
+            "known_instance": 0.28909759065032864
+          },
+          "final_joint_probabilities": {
+            "aggregate_unresolved": 0.39001769774911593,
+            "unknown_instance": 0.0390017697749116,
+            "known_instance": 0.5709805324759725
+          },
+          "actions": [
+            {
+              "action": "RotateRight",
+              "degrees": 45.0,
+              "success": true,
+              "outcome": "category_candidate",
+              "seconds": 8.858049250207841
+            }
+          ],
+          "rotation_count": 1,
+          "rotation_degrees": 45.0,
+          "all_actions_succeeded": true,
+          "any_category_positive": true,
+          "any_bbox_overlap": true,
+          "any_false_positive_without_pixels": false,
+          "frames": [
+            {
+              "index": 0,
+              "heading": 270.0,
+              "rgb_sha256": "c3b6b5171994483819441f41ba02bd219af9cc7d574b5d5f0ecfdf4aa623b74d",
+              "target_pixels": 0,
+              "target_sdk_visible": false,
+              "apple_scores": [],
+              "apple_bbox_ious": [],
+              "false_positive_without_target_pixels": false
+            },
+            {
+              "index": 1,
+              "heading": 315.0,
+              "rgb_sha256": "9f079a33f1b18b04c4827ccb3244e2d551797287b6b7ed5ef20c92fa4106f461",
+              "target_pixels": 554,
+              "target_sdk_visible": true,
+              "apple_scores": [
+                0.6333507895469666
+              ],
+              "apple_bbox_ious": [
+                0.959715354798535
+              ],
+              "false_positive_without_target_pixels": false
+            }
+          ],
+          "seconds": 34.21653316589072,
+          "stop_reason": "category_candidate"
+        },
+        {
+          "method": "autoregressive_typed_graph_policy",
+          "image_size": 320,
+          "frontend": "fasterrcnn",
+          "site": "north",
+          "verified": true,
+          "source_sha256": "0c594481bd9d6b02fb6d024634a3cef9706bf954f5c42e7402630fef410400c1",
+          "checkpoint_manifest_sha256": "68ff631b677c207842244432931dd880a48565a0fb21956979566b3f97f3c9b2",
+          "initial_joint_probabilities": {
+            "aggregate_unresolved": 0.3554512046748357,
+            "unknown_instance": 0.3554512046748357,
+            "known_instance": 0.28909759065032864
+          },
+          "final_joint_probabilities": {
+            "aggregate_unresolved": 0.39001769774911593,
+            "unknown_instance": 0.0390017697749116,
+            "known_instance": 0.5709805324759725
+          },
+          "actions": [
+            {
+              "action": "RotateRight",
+              "degrees": 45.0,
+              "success": true,
+              "outcome": "category_candidate",
+              "seconds": 8.885666041169316
+            }
+          ],
+          "rotation_count": 1,
+          "rotation_degrees": 45.0,
+          "all_actions_succeeded": true,
+          "any_category_positive": true,
+          "any_bbox_overlap": true,
+          "any_false_positive_without_pixels": false,
+          "frames": [
+            {
+              "index": 0,
+              "heading": 270.0,
+              "rgb_sha256": "497db5e1a08908a46650a423086997c79da4b15cb25b930efaef78666851aad8",
+              "target_pixels": 0,
+              "target_sdk_visible": false,
+              "apple_scores": [],
+              "apple_bbox_ious": [],
+              "false_positive_without_target_pixels": false
+            },
+            {
+              "index": 1,
+              "heading": 315.0,
+              "rgb_sha256": "9f079a33f1b18b04c4827ccb3244e2d551797287b6b7ed5ef20c92fa4106f461",
+              "target_pixels": 554,
+              "target_sdk_visible": true,
+              "apple_scores": [
+                0.6333507895469666
+              ],
+              "apple_bbox_ious": [
+                0.959715354798535
+              ],
+              "false_positive_without_target_pixels": false
+            }
+          ],
+          "seconds": 34.25128391711041,
+          "stop_reason": "category_candidate"
+        },
+        {
+          "method": "no_feedback",
+          "image_size": 320,
+          "frontend": "fasterrcnn",
+          "site": "north",
+          "verified": true,
+          "source_sha256": "0c594481bd9d6b02fb6d024634a3cef9706bf954f5c42e7402630fef410400c1",
+          "checkpoint_manifest_sha256": "4f17225e73bf40b0aca9c996c1803dfc03918bfa5972a66a785be871417114f4",
+          "initial_joint_probabilities": {
+            "aggregate_unresolved": 0.3554512046748357,
+            "known_instance": 0.28909759065032864,
+            "unknown_instance": 0.3554512046748357
+          },
+          "final_joint_probabilities": {
+            "aggregate_unresolved": 0.3554512046748357,
+            "known_instance": 0.28909759065032864,
+            "unknown_instance": 0.3554512046748357
+          },
+          "actions": [
+            {
+              "action": "RotateRight",
+              "degrees": 45.0,
+              "success": true,
+              "outcome": "category_candidate",
+              "seconds": 3.946948042139411
+            }
+          ],
+          "rotation_count": 1,
+          "rotation_degrees": 45.0,
+          "all_actions_succeeded": true,
+          "any_category_positive": true,
+          "any_bbox_overlap": true,
+          "any_false_positive_without_pixels": false,
+          "frames": [
+            {
+              "index": 0,
+              "heading": 270.0,
+              "rgb_sha256": "c3b6b5171994483819441f41ba02bd219af9cc7d574b5d5f0ecfdf4aa623b74d",
+              "target_pixels": 0,
+              "target_sdk_visible": false,
+              "apple_scores": [],
+              "apple_bbox_ious": [],
+              "false_positive_without_target_pixels": false
+            },
+            {
+              "index": 1,
+              "heading": 315.0,
+              "rgb_sha256": "9f079a33f1b18b04c4827ccb3244e2d551797287b6b7ed5ef20c92fa4106f461",
+              "target_pixels": 554,
+              "target_sdk_visible": true,
+              "apple_scores": [
+                0.6333507895469666
+              ],
+              "apple_bbox_ious": [
+                0.959715354798535
+              ],
+              "false_positive_without_target_pixels": false
+            }
+          ],
+          "seconds": 16.85570125002414,
+          "stop_reason": "category_candidate"
+        },
+        {
+          "method": "scan_left_first",
+          "image_size": 320,
+          "frontend": "fasterrcnn",
+          "site": "north",
+          "verified": true,
+          "source_sha256": "0c594481bd9d6b02fb6d024634a3cef9706bf954f5c42e7402630fef410400c1",
+          "checkpoint_manifest_sha256": "4f17225e73bf40b0aca9c996c1803dfc03918bfa5972a66a785be871417114f4",
+          "initial_joint_probabilities": {
+            "aggregate_unresolved": 0.3554512046748357,
+            "known_instance": 0.28909759065032864,
+            "unknown_instance": 0.3554512046748357
+          },
+          "final_joint_probabilities": {
+            "aggregate_unresolved": 0.3554512046748357,
+            "known_instance": 0.28909759065032864,
+            "unknown_instance": 0.3554512046748357
+          },
+          "actions": [
+            {
+              "action": "RotateLeft",
+              "degrees": 45.0,
+              "success": true,
+              "outcome": "no_category_candidate",
+              "seconds": 3.7896345830522478
+            },
+            {
+              "action": "RotateRight",
+              "degrees": 90.0,
+              "success": true,
+              "outcome": "category_candidate",
+              "seconds": 5.647190290968865
+            }
+          ],
+          "rotation_count": 2,
+          "rotation_degrees": 135.0,
+          "all_actions_succeeded": true,
+          "any_category_positive": true,
+          "any_bbox_overlap": true,
+          "any_false_positive_without_pixels": false,
+          "frames": [
+            {
+              "index": 0,
+              "heading": 270.0,
+              "rgb_sha256": "497db5e1a08908a46650a423086997c79da4b15cb25b930efaef78666851aad8",
+              "target_pixels": 0,
+              "target_sdk_visible": false,
+              "apple_scores": [],
+              "apple_bbox_ious": [],
+              "false_positive_without_target_pixels": false
+            },
+            {
+              "index": 1,
+              "heading": 225.0,
+              "rgb_sha256": "04490182634ff6948fdb409b438b59612acd88d29155f16686c6a05a05970fd0",
+              "target_pixels": 0,
+              "target_sdk_visible": false,
+              "apple_scores": [],
+              "apple_bbox_ious": [],
+              "false_positive_without_target_pixels": false
+            },
+            {
+              "index": 2,
+              "heading": 315.0,
+              "rgb_sha256": "1318d047abc93582035ba0ccda9106f5ca12f62ba9a7144cabf0eaeb66815f76",
+              "target_pixels": 554,
+              "target_sdk_visible": true,
+              "apple_scores": [
+                0.628237783908844
+              ],
+              "apple_bbox_ious": [
+                0.9600307170440004
+              ],
+              "false_positive_without_target_pixels": false
+            }
+          ],
+          "seconds": 25.938487458974123,
+          "stop_reason": "category_candidate"
+        },
+        {
+          "method": "scan_right_first",
+          "image_size": 320,
+          "frontend": "fasterrcnn",
+          "site": "north",
+          "verified": true,
+          "source_sha256": "0c594481bd9d6b02fb6d024634a3cef9706bf954f5c42e7402630fef410400c1",
+          "checkpoint_manifest_sha256": "4f17225e73bf40b0aca9c996c1803dfc03918bfa5972a66a785be871417114f4",
+          "initial_joint_probabilities": {
+            "aggregate_unresolved": 0.3554512046748357,
+            "known_instance": 0.28909759065032864,
+            "unknown_instance": 0.3554512046748357
+          },
+          "final_joint_probabilities": {
+            "aggregate_unresolved": 0.3554512046748357,
+            "known_instance": 0.28909759065032864,
+            "unknown_instance": 0.3554512046748357
+          },
+          "actions": [
+            {
+              "action": "RotateRight",
+              "degrees": 45.0,
+              "success": true,
+              "outcome": "category_candidate",
+              "seconds": 4.057980875018984
+            }
+          ],
+          "rotation_count": 1,
+          "rotation_degrees": 45.0,
+          "all_actions_succeeded": true,
+          "any_category_positive": true,
+          "any_bbox_overlap": true,
+          "any_false_positive_without_pixels": false,
+          "frames": [
+            {
+              "index": 0,
+              "heading": 270.0,
+              "rgb_sha256": "497db5e1a08908a46650a423086997c79da4b15cb25b930efaef78666851aad8",
+              "target_pixels": 0,
+              "target_sdk_visible": false,
+              "apple_scores": [],
+              "apple_bbox_ious": [],
+              "false_positive_without_target_pixels": false
+            },
+            {
+              "index": 1,
+              "heading": 315.0,
+              "rgb_sha256": "9f079a33f1b18b04c4827ccb3244e2d551797287b6b7ed5ef20c92fa4106f461",
+              "target_pixels": 554,
+              "target_sdk_visible": true,
+              "apple_scores": [
+                0.6333507895469666
+              ],
+              "apple_bbox_ious": [
+                0.959715354798535
+              ],
+              "false_positive_without_target_pixels": false
+            }
+          ],
+          "seconds": 17.23187004122883,
+          "stop_reason": "category_candidate"
+        },
+        {
+          "method": "typed_factor_graph_transformer",
+          "image_size": 320,
+          "frontend": "fasterrcnn",
+          "site": "south",
+          "verified": true,
+          "source_sha256": "0c594481bd9d6b02fb6d024634a3cef9706bf954f5c42e7402630fef410400c1",
+          "checkpoint_manifest_sha256": "4f17225e73bf40b0aca9c996c1803dfc03918bfa5972a66a785be871417114f4",
+          "initial_joint_probabilities": {
+            "aggregate_unresolved": 0.3554512046748357,
+            "unknown_instance": 0.3554512046748357,
+            "known_instance": 0.28909759065032864
+          },
+          "final_joint_probabilities": {
+            "aggregate_unresolved": 0.592043963026935,
+            "unknown_instance": 0.2249767059502352,
+            "known_instance": 0.18297933102282998
+          },
+          "actions": [
+            {
+              "action": "RotateRight",
+              "degrees": 45.0,
+              "success": true,
+              "outcome": "no_category_candidate",
+              "seconds": 9.203037624713033
+            },
+            {
+              "action": "RotateLeft",
+              "degrees": 90.0,
+              "success": true,
+              "outcome": "no_category_candidate",
+              "seconds": 22.44980916706845
+            }
+          ],
+          "rotation_count": 2,
+          "rotation_degrees": 135.0,
+          "all_actions_succeeded": true,
+          "any_category_positive": false,
+          "any_bbox_overlap": false,
+          "any_false_positive_without_pixels": false,
+          "frames": [
+            {
+              "index": 0,
+              "heading": 270.0,
+              "rgb_sha256": "0a81c889cc7107bb3426c4f96c5ea7887cecdc7df8a2e3b2cfc1a8298b715134",
+              "target_pixels": 0,
+              "target_sdk_visible": false,
+              "apple_scores": [],
+              "apple_bbox_ious": [],
+              "false_positive_without_target_pixels": false
+            },
+            {
+              "index": 1,
+              "heading": 315.0,
+              "rgb_sha256": "b3809ba1b624a0b07ac980361dc2e9da4ccb2b6f6177871c583282793a9e0457",
+              "target_pixels": 0,
+              "target_sdk_visible": false,
+              "apple_scores": [],
+              "apple_bbox_ious": [],
+              "false_positive_without_target_pixels": false
+            },
+            {
+              "index": 2,
+              "heading": 225.0,
+              "rgb_sha256": "4cefde302ef170c798a3db7bab3074c0afdcfedc5a4da9acafcaee2fe78a04e6",
+              "target_pixels": 558,
+              "target_sdk_visible": true,
+              "apple_scores": [],
+              "apple_bbox_ious": [],
+              "false_positive_without_target_pixels": false
+            }
+          ],
+          "seconds": 69.10882045794278,
+          "stop_reason": "no_remaining_positive_utility_or_views"
+        },
+        {
+          "method": "slot_conditioned_perceiver",
+          "image_size": 320,
+          "frontend": "fasterrcnn",
+          "site": "south",
+          "verified": true,
+          "source_sha256": "0c594481bd9d6b02fb6d024634a3cef9706bf954f5c42e7402630fef410400c1",
+          "checkpoint_manifest_sha256": "f9ef284b0d89883b47fcc010d952e49cb4a4fb0be63a5eb1200a5cd011f40b85",
+          "initial_joint_probabilities": {
+            "aggregate_unresolved": 0.3554512046748357,
+            "unknown_instance": 0.3554512046748357,
+            "known_instance": 0.28909759065032864
+          },
+          "final_joint_probabilities": {
+            "aggregate_unresolved": 0.592043963026935,
+            "unknown_instance": 0.2249767059502352,
+            "known_instance": 0.18297933102282998
+          },
+          "actions": [
+            {
+              "action": "RotateRight",
+              "degrees": 45.0,
+              "success": true,
+              "outcome": "no_category_candidate",
+              "seconds": 9.202283499762416
+            },
+            {
+              "action": "RotateLeft",
+              "degrees": 90.0,
+              "success": true,
+              "outcome": "no_category_candidate",
+              "seconds": 22.509430333040655
+            }
+          ],
+          "rotation_count": 2,
+          "rotation_degrees": 135.0,
+          "all_actions_succeeded": true,
+          "any_category_positive": false,
+          "any_bbox_overlap": false,
+          "any_false_positive_without_pixels": false,
+          "frames": [
+            {
+              "index": 0,
+              "heading": 270.0,
+              "rgb_sha256": "1d609ea2eb618bdf08f711354f4158c158a8592656398ecd0fbdb1b602819868",
+              "target_pixels": 0,
+              "target_sdk_visible": false,
+              "apple_scores": [],
+              "apple_bbox_ious": [],
+              "false_positive_without_target_pixels": false
+            },
+            {
+              "index": 1,
+              "heading": 315.0,
+              "rgb_sha256": "b3809ba1b624a0b07ac980361dc2e9da4ccb2b6f6177871c583282793a9e0457",
+              "target_pixels": 0,
+              "target_sdk_visible": false,
+              "apple_scores": [],
+              "apple_bbox_ious": [],
+              "false_positive_without_target_pixels": false
+            },
+            {
+              "index": 2,
+              "heading": 225.0,
+              "rgb_sha256": "4cefde302ef170c798a3db7bab3074c0afdcfedc5a4da9acafcaee2fe78a04e6",
+              "target_pixels": 558,
+              "target_sdk_visible": true,
+              "apple_scores": [],
+              "apple_bbox_ious": [],
+              "false_positive_without_target_pixels": false
+            }
+          ],
+          "seconds": 69.38532158266753,
+          "stop_reason": "no_remaining_positive_utility_or_views"
+        },
+        {
+          "method": "autoregressive_typed_graph_policy",
+          "image_size": 320,
+          "frontend": "fasterrcnn",
+          "site": "south",
+          "verified": true,
+          "source_sha256": "0c594481bd9d6b02fb6d024634a3cef9706bf954f5c42e7402630fef410400c1",
+          "checkpoint_manifest_sha256": "68ff631b677c207842244432931dd880a48565a0fb21956979566b3f97f3c9b2",
+          "initial_joint_probabilities": {
+            "aggregate_unresolved": 0.3554512046748357,
+            "unknown_instance": 0.3554512046748357,
+            "known_instance": 0.28909759065032864
+          },
+          "final_joint_probabilities": {
+            "aggregate_unresolved": 0.592043963026935,
+            "unknown_instance": 0.2249767059502352,
+            "known_instance": 0.18297933102282998
+          },
+          "actions": [
+            {
+              "action": "RotateRight",
+              "degrees": 45.0,
+              "success": true,
+              "outcome": "no_category_candidate",
+              "seconds": 9.35967283276841
+            },
+            {
+              "action": "RotateLeft",
+              "degrees": 90.0,
+              "success": true,
+              "outcome": "no_category_candidate",
+              "seconds": 23.372127791401
+            }
+          ],
+          "rotation_count": 2,
+          "rotation_degrees": 135.0,
+          "all_actions_succeeded": true,
+          "any_category_positive": false,
+          "any_bbox_overlap": false,
+          "any_false_positive_without_pixels": false,
+          "frames": [
+            {
+              "index": 0,
+              "heading": 270.0,
+              "rgb_sha256": "1d609ea2eb618bdf08f711354f4158c158a8592656398ecd0fbdb1b602819868",
+              "target_pixels": 0,
+              "target_sdk_visible": false,
+              "apple_scores": [],
+              "apple_bbox_ious": [],
+              "false_positive_without_target_pixels": false
+            },
+            {
+              "index": 1,
+              "heading": 315.0,
+              "rgb_sha256": "b3809ba1b624a0b07ac980361dc2e9da4ccb2b6f6177871c583282793a9e0457",
+              "target_pixels": 0,
+              "target_sdk_visible": false,
+              "apple_scores": [],
+              "apple_bbox_ious": [],
+              "false_positive_without_target_pixels": false
+            },
+            {
+              "index": 2,
+              "heading": 225.0,
+              "rgb_sha256": "4cefde302ef170c798a3db7bab3074c0afdcfedc5a4da9acafcaee2fe78a04e6",
+              "target_pixels": 558,
+              "target_sdk_visible": true,
+              "apple_scores": [],
+              "apple_bbox_ious": [],
+              "false_positive_without_target_pixels": false
+            }
+          ],
+          "seconds": 70.9367507500574,
+          "stop_reason": "no_remaining_positive_utility_or_views"
+        },
+        {
+          "method": "no_feedback",
+          "image_size": 320,
+          "frontend": "fasterrcnn",
+          "site": "south",
+          "verified": true,
+          "source_sha256": "0c594481bd9d6b02fb6d024634a3cef9706bf954f5c42e7402630fef410400c1",
+          "checkpoint_manifest_sha256": "4f17225e73bf40b0aca9c996c1803dfc03918bfa5972a66a785be871417114f4",
+          "initial_joint_probabilities": {
+            "aggregate_unresolved": 0.3554512046748357,
+            "unknown_instance": 0.3554512046748357,
+            "known_instance": 0.28909759065032864
+          },
+          "final_joint_probabilities": {
+            "aggregate_unresolved": 0.3554512046748357,
+            "unknown_instance": 0.3554512046748357,
+            "known_instance": 0.28909759065032864
+          },
+          "actions": [
+            {
+              "action": "RotateRight",
+              "degrees": 45.0,
+              "success": true,
+              "outcome": "no_category_candidate",
+              "seconds": 4.43985337484628
+            },
+            {
+              "action": "RotateLeft",
+              "degrees": 90.0,
+              "success": true,
+              "outcome": "no_category_candidate",
+              "seconds": 6.134897583629936
+            }
+          ],
+          "rotation_count": 2,
+          "rotation_degrees": 135.0,
+          "all_actions_succeeded": true,
+          "any_category_positive": false,
+          "any_bbox_overlap": false,
+          "any_false_positive_without_pixels": false,
+          "frames": [
+            {
+              "index": 0,
+              "heading": 270.0,
+              "rgb_sha256": "1d609ea2eb618bdf08f711354f4158c158a8592656398ecd0fbdb1b602819868",
+              "target_pixels": 0,
+              "target_sdk_visible": false,
+              "apple_scores": [],
+              "apple_bbox_ious": [],
+              "false_positive_without_target_pixels": false
+            },
+            {
+              "index": 1,
+              "heading": 315.0,
+              "rgb_sha256": "b3809ba1b624a0b07ac980361dc2e9da4ccb2b6f6177871c583282793a9e0457",
+              "target_pixels": 0,
+              "target_sdk_visible": false,
+              "apple_scores": [],
+              "apple_bbox_ious": [],
+              "false_positive_without_target_pixels": false
+            },
+            {
+              "index": 2,
+              "heading": 225.0,
+              "rgb_sha256": "4cefde302ef170c798a3db7bab3074c0afdcfedc5a4da9acafcaee2fe78a04e6",
+              "target_pixels": 558,
+              "target_sdk_visible": true,
+              "apple_scores": [],
+              "apple_bbox_ious": [],
+              "false_positive_without_target_pixels": false
+            }
+          ],
+          "seconds": 27.89577562501654,
+          "stop_reason": "no_remaining_positive_utility_or_views"
+        },
+        {
+          "method": "scan_left_first",
+          "image_size": 320,
+          "frontend": "fasterrcnn",
+          "site": "south",
+          "verified": true,
+          "source_sha256": "0c594481bd9d6b02fb6d024634a3cef9706bf954f5c42e7402630fef410400c1",
+          "checkpoint_manifest_sha256": "4f17225e73bf40b0aca9c996c1803dfc03918bfa5972a66a785be871417114f4",
+          "initial_joint_probabilities": {
+            "aggregate_unresolved": 0.3554512046748357,
+            "unknown_instance": 0.3554512046748357,
+            "known_instance": 0.28909759065032864
+          },
+          "final_joint_probabilities": {
+            "aggregate_unresolved": 0.3554512046748357,
+            "unknown_instance": 0.3554512046748357,
+            "known_instance": 0.28909759065032864
+          },
+          "actions": [
+            {
+              "action": "RotateLeft",
+              "degrees": 45.0,
+              "success": true,
+              "outcome": "no_category_candidate",
+              "seconds": 4.0813697087578475
+            },
+            {
+              "action": "RotateRight",
+              "degrees": 90.0,
+              "success": true,
+              "outcome": "no_category_candidate",
+              "seconds": 6.063214583322406
+            }
+          ],
+          "rotation_count": 2,
+          "rotation_degrees": 135.0,
+          "all_actions_succeeded": true,
+          "any_category_positive": false,
+          "any_bbox_overlap": false,
+          "any_false_positive_without_pixels": false,
+          "frames": [
+            {
+              "index": 0,
+              "heading": 270.0,
+              "rgb_sha256": "0a81c889cc7107bb3426c4f96c5ea7887cecdc7df8a2e3b2cfc1a8298b715134",
+              "target_pixels": 0,
+              "target_sdk_visible": false,
+              "apple_scores": [],
+              "apple_bbox_ious": [],
+              "false_positive_without_target_pixels": false
+            },
+            {
+              "index": 1,
+              "heading": 225.0,
+              "rgb_sha256": "501acccf0a6dfb1350b932fdff794295c4632632b24c68846df2b5feaf15d55a",
+              "target_pixels": 558,
+              "target_sdk_visible": true,
+              "apple_scores": [],
+              "apple_bbox_ious": [],
+              "false_positive_without_target_pixels": false
+            },
+            {
+              "index": 2,
+              "heading": 315.0,
+              "rgb_sha256": "d5403360d55a42b20fccca7559e508540356ca4c481051e330cd2d68d09ca033",
+              "target_pixels": 0,
+              "target_sdk_visible": false,
+              "apple_scores": [],
+              "apple_bbox_ious": [],
+              "false_positive_without_target_pixels": false
+            }
+          ],
+          "seconds": 27.40659600030631,
+          "stop_reason": "no_remaining_positive_utility_or_views"
+        },
+        {
+          "method": "scan_right_first",
+          "image_size": 320,
+          "frontend": "fasterrcnn",
+          "site": "south",
+          "verified": true,
+          "source_sha256": "0c594481bd9d6b02fb6d024634a3cef9706bf954f5c42e7402630fef410400c1",
+          "checkpoint_manifest_sha256": "4f17225e73bf40b0aca9c996c1803dfc03918bfa5972a66a785be871417114f4",
+          "initial_joint_probabilities": {
+            "aggregate_unresolved": 0.3554512046748357,
+            "unknown_instance": 0.3554512046748357,
+            "known_instance": 0.28909759065032864
+          },
+          "final_joint_probabilities": {
+            "aggregate_unresolved": 0.3554512046748357,
+            "unknown_instance": 0.3554512046748357,
+            "known_instance": 0.28909759065032864
+          },
+          "actions": [
+            {
+              "action": "RotateRight",
+              "degrees": 45.0,
+              "success": true,
+              "outcome": "no_category_candidate",
+              "seconds": 4.149192499928176
+            },
+            {
+              "action": "RotateLeft",
+              "degrees": 90.0,
+              "success": true,
+              "outcome": "no_category_candidate",
+              "seconds": 6.000853333622217
+            }
+          ],
+          "rotation_count": 2,
+          "rotation_degrees": 135.0,
+          "all_actions_succeeded": true,
+          "any_category_positive": false,
+          "any_bbox_overlap": false,
+          "any_false_positive_without_pixels": false,
+          "frames": [
+            {
+              "index": 0,
+              "heading": 270.0,
+              "rgb_sha256": "1d609ea2eb618bdf08f711354f4158c158a8592656398ecd0fbdb1b602819868",
+              "target_pixels": 0,
+              "target_sdk_visible": false,
+              "apple_scores": [],
+              "apple_bbox_ious": [],
+              "false_positive_without_target_pixels": false
+            },
+            {
+              "index": 1,
+              "heading": 315.0,
+              "rgb_sha256": "b3809ba1b624a0b07ac980361dc2e9da4ccb2b6f6177871c583282793a9e0457",
+              "target_pixels": 0,
+              "target_sdk_visible": false,
+              "apple_scores": [],
+              "apple_bbox_ious": [],
+              "false_positive_without_target_pixels": false
+            },
+            {
+              "index": 2,
+              "heading": 225.0,
+              "rgb_sha256": "4cefde302ef170c798a3db7bab3074c0afdcfedc5a4da9acafcaee2fe78a04e6",
+              "target_pixels": 558,
+              "target_sdk_visible": true,
+              "apple_scores": [],
+              "apple_bbox_ious": [],
+              "false_positive_without_target_pixels": false
+            }
+          ],
+          "seconds": 27.203949000220746,
+          "stop_reason": "no_remaining_positive_utility_or_views"
+        }
+      ],
+      "complete_natural_closed_loop": false
+    },
+    "640": {
+      "scope": "A_LOCAL_CONTROLLED_PRIOR_CAMERA_DIAGNOSTIC_NOT_FORMAL_B_ACCEPTANCE",
+      "image_size": 640,
+      "expected_episodes": 24,
+      "verified_episodes": 24,
+      "same_initial_priors": true,
+      "same_pixels_per_site_heading": false,
+      "pixel_hash_counts_per_site_heading": {
+        "north:270.0": 2,
+        "north:315.0": 2,
+        "north:225.0": 2,
+        "south:270.0": 4,
+        "south:315.0": 2,
+        "south:225.0": 2
+      },
+      "results": [
+        {
+          "method": "typed_factor_graph_transformer",
+          "image_size": 640,
+          "frontend": "ssdlite",
+          "site": "north",
+          "verified": true,
+          "source_sha256": "0c594481bd9d6b02fb6d024634a3cef9706bf954f5c42e7402630fef410400c1",
+          "checkpoint_manifest_sha256": "4f17225e73bf40b0aca9c996c1803dfc03918bfa5972a66a785be871417114f4",
+          "initial_joint_probabilities": {
+            "aggregate_unresolved": 0.3554512046748357,
+            "unknown_instance": 0.3554512046748357,
+            "known_instance": 0.28909759065032864
+          },
+          "final_joint_probabilities": {
+            "aggregate_unresolved": 0.592043963026935,
+            "unknown_instance": 0.2249767059502352,
+            "known_instance": 0.18297933102282998
+          },
+          "actions": [
+            {
+              "action": "RotateRight",
+              "degrees": 45.0,
+              "success": true,
+              "outcome": "no_category_candidate",
+              "seconds": 1.28463941719383
+            },
+            {
+              "action": "RotateLeft",
+              "degrees": 90.0,
+              "success": true,
+              "outcome": "no_category_candidate",
+              "seconds": 2.065934833139181
+            }
+          ],
+          "rotation_count": 2,
+          "rotation_degrees": 135.0,
+          "all_actions_succeeded": true,
+          "any_category_positive": false,
+          "any_bbox_overlap": false,
+          "any_false_positive_without_pixels": false,
+          "frames": [
+            {
+              "index": 0,
+              "heading": 270.0,
+              "rgb_sha256": "c9c35de1a2ba7ddbb83ab1dffae2e221ef131f0fdb03fe122c90dece7efa6728",
+              "target_pixels": 0,
+              "target_sdk_visible": false,
+              "apple_scores": [],
+              "apple_bbox_ious": [],
+              "false_positive_without_target_pixels": false
+            },
+            {
+              "index": 1,
+              "heading": 315.0,
+              "rgb_sha256": "32733cda0c3a77f6c79b392d0d3e5f44d173972e198404d6cc80808f1041d9f3",
+              "target_pixels": 2223,
+              "target_sdk_visible": true,
+              "apple_scores": [],
+              "apple_bbox_ious": [],
+              "false_positive_without_target_pixels": false
+            },
+            {
+              "index": 2,
+              "heading": 225.0,
+              "rgb_sha256": "bda5dd2644233afd8fe80dfc9e2265486e2a814ed5799071a35365a85132915f",
+              "target_pixels": 0,
+              "target_sdk_visible": false,
+              "apple_scores": [],
+              "apple_bbox_ious": [],
+              "false_positive_without_target_pixels": false
+            }
+          ],
+          "seconds": 11.337374082766473,
+          "stop_reason": "no_remaining_positive_utility_or_views"
+        },
+        {
+          "method": "slot_conditioned_perceiver",
+          "image_size": 640,
+          "frontend": "ssdlite",
+          "site": "north",
+          "verified": true,
+          "source_sha256": "0c594481bd9d6b02fb6d024634a3cef9706bf954f5c42e7402630fef410400c1",
+          "checkpoint_manifest_sha256": "f9ef284b0d89883b47fcc010d952e49cb4a4fb0be63a5eb1200a5cd011f40b85",
+          "initial_joint_probabilities": {
+            "aggregate_unresolved": 0.3554512046748357,
+            "unknown_instance": 0.3554512046748357,
+            "known_instance": 0.28909759065032864
+          },
+          "final_joint_probabilities": {
+            "aggregate_unresolved": 0.592043963026935,
+            "unknown_instance": 0.2249767059502352,
+            "known_instance": 0.18297933102282998
+          },
+          "actions": [
+            {
+              "action": "RotateRight",
+              "degrees": 45.0,
+              "success": true,
+              "outcome": "no_category_candidate",
+              "seconds": 1.289823833387345
+            },
+            {
+              "action": "RotateLeft",
+              "degrees": 90.0,
+              "success": true,
+              "outcome": "no_category_candidate",
+              "seconds": 2.0674983747303486
+            }
+          ],
+          "rotation_count": 2,
+          "rotation_degrees": 135.0,
+          "all_actions_succeeded": true,
+          "any_category_positive": false,
+          "any_bbox_overlap": false,
+          "any_false_positive_without_pixels": false,
+          "frames": [
+            {
+              "index": 0,
+              "heading": 270.0,
+              "rgb_sha256": "c9c35de1a2ba7ddbb83ab1dffae2e221ef131f0fdb03fe122c90dece7efa6728",
+              "target_pixels": 0,
+              "target_sdk_visible": false,
+              "apple_scores": [],
+              "apple_bbox_ious": [],
+              "false_positive_without_target_pixels": false
+            },
+            {
+              "index": 1,
+              "heading": 315.0,
+              "rgb_sha256": "32733cda0c3a77f6c79b392d0d3e5f44d173972e198404d6cc80808f1041d9f3",
+              "target_pixels": 2223,
+              "target_sdk_visible": true,
+              "apple_scores": [],
+              "apple_bbox_ious": [],
+              "false_positive_without_target_pixels": false
+            },
+            {
+              "index": 2,
+              "heading": 225.0,
+              "rgb_sha256": "bda5dd2644233afd8fe80dfc9e2265486e2a814ed5799071a35365a85132915f",
+              "target_pixels": 0,
+              "target_sdk_visible": false,
+              "apple_scores": [],
+              "apple_bbox_ious": [],
+              "false_positive_without_target_pixels": false
+            }
+          ],
+          "seconds": 11.231039791367948,
+          "stop_reason": "no_remaining_positive_utility_or_views"
+        },
+        {
+          "method": "autoregressive_typed_graph_policy",
+          "image_size": 640,
+          "frontend": "ssdlite",
+          "site": "north",
+          "verified": true,
+          "source_sha256": "0c594481bd9d6b02fb6d024634a3cef9706bf954f5c42e7402630fef410400c1",
+          "checkpoint_manifest_sha256": "68ff631b677c207842244432931dd880a48565a0fb21956979566b3f97f3c9b2",
+          "initial_joint_probabilities": {
+            "aggregate_unresolved": 0.3554512046748357,
+            "known_instance": 0.28909759065032864,
+            "unknown_instance": 0.3554512046748357
+          },
+          "final_joint_probabilities": {
+            "aggregate_unresolved": 0.592043963026935,
+            "known_instance": 0.18297933102282998,
+            "unknown_instance": 0.2249767059502352
+          },
+          "actions": [
+            {
+              "action": "RotateRight",
+              "degrees": 45.0,
+              "success": true,
+              "outcome": "no_category_candidate",
+              "seconds": 1.288889333140105
+            },
+            {
+              "action": "RotateLeft",
+              "degrees": 90.0,
+              "success": true,
+              "outcome": "no_category_candidate",
+              "seconds": 2.0582383750006557
+            }
+          ],
+          "rotation_count": 2,
+          "rotation_degrees": 135.0,
+          "all_actions_succeeded": true,
+          "any_category_positive": false,
+          "any_bbox_overlap": false,
+          "any_false_positive_without_pixels": false,
+          "frames": [
+            {
+              "index": 0,
+              "heading": 270.0,
+              "rgb_sha256": "c9c35de1a2ba7ddbb83ab1dffae2e221ef131f0fdb03fe122c90dece7efa6728",
+              "target_pixels": 0,
+              "target_sdk_visible": false,
+              "apple_scores": [],
+              "apple_bbox_ious": [],
+              "false_positive_without_target_pixels": false
+            },
+            {
+              "index": 1,
+              "heading": 315.0,
+              "rgb_sha256": "32733cda0c3a77f6c79b392d0d3e5f44d173972e198404d6cc80808f1041d9f3",
+              "target_pixels": 2223,
+              "target_sdk_visible": true,
+              "apple_scores": [],
+              "apple_bbox_ious": [],
+              "false_positive_without_target_pixels": false
+            },
+            {
+              "index": 2,
+              "heading": 225.0,
+              "rgb_sha256": "bda5dd2644233afd8fe80dfc9e2265486e2a814ed5799071a35365a85132915f",
+              "target_pixels": 0,
+              "target_sdk_visible": false,
+              "apple_scores": [],
+              "apple_bbox_ious": [],
+              "false_positive_without_target_pixels": false
+            }
+          ],
+          "seconds": 11.135093917138875,
+          "stop_reason": "no_remaining_positive_utility_or_views"
+        },
+        {
+          "method": "no_feedback",
+          "image_size": 640,
+          "frontend": "ssdlite",
+          "site": "north",
+          "verified": true,
+          "source_sha256": "0c594481bd9d6b02fb6d024634a3cef9706bf954f5c42e7402630fef410400c1",
+          "checkpoint_manifest_sha256": "4f17225e73bf40b0aca9c996c1803dfc03918bfa5972a66a785be871417114f4",
+          "initial_joint_probabilities": {
+            "aggregate_unresolved": 0.3554512046748357,
+            "known_instance": 0.28909759065032864,
+            "unknown_instance": 0.3554512046748357
+          },
+          "final_joint_probabilities": {
+            "aggregate_unresolved": 0.3554512046748357,
+            "known_instance": 0.28909759065032864,
+            "unknown_instance": 0.3554512046748357
+          },
+          "actions": [
+            {
+              "action": "RotateRight",
+              "degrees": 45.0,
+              "success": true,
+              "outcome": "no_category_candidate",
+              "seconds": 0.6351549588143826
+            },
+            {
+              "action": "RotateLeft",
+              "degrees": 90.0,
+              "success": true,
+              "outcome": "no_category_candidate",
+              "seconds": 0.7196376249194145
+            }
+          ],
+          "rotation_count": 2,
+          "rotation_degrees": 135.0,
+          "all_actions_succeeded": true,
+          "any_category_positive": false,
+          "any_bbox_overlap": false,
+          "any_false_positive_without_pixels": false,
+          "frames": [
+            {
+              "index": 0,
+              "heading": 270.0,
+              "rgb_sha256": "8d086d7a86f22f6cb2a19cca2ef1230454075a172dfff40b6fb2b45394c3bfa5",
+              "target_pixels": 0,
+              "target_sdk_visible": false,
+              "apple_scores": [],
+              "apple_bbox_ious": [],
+              "false_positive_without_target_pixels": false
+            },
+            {
+              "index": 1,
+              "heading": 315.0,
+              "rgb_sha256": "32733cda0c3a77f6c79b392d0d3e5f44d173972e198404d6cc80808f1041d9f3",
+              "target_pixels": 2223,
+              "target_sdk_visible": true,
+              "apple_scores": [],
+              "apple_bbox_ious": [],
+              "false_positive_without_target_pixels": false
+            },
+            {
+              "index": 2,
+              "heading": 225.0,
+              "rgb_sha256": "bda5dd2644233afd8fe80dfc9e2265486e2a814ed5799071a35365a85132915f",
+              "target_pixels": 0,
+              "target_sdk_visible": false,
+              "apple_scores": [],
+              "apple_bbox_ious": [],
+              "false_positive_without_target_pixels": false
+            }
+          ],
+          "seconds": 7.673253416083753,
+          "stop_reason": "no_remaining_positive_utility_or_views"
+        },
+        {
+          "method": "scan_left_first",
+          "image_size": 640,
+          "frontend": "ssdlite",
+          "site": "north",
+          "verified": true,
+          "source_sha256": "0c594481bd9d6b02fb6d024634a3cef9706bf954f5c42e7402630fef410400c1",
+          "checkpoint_manifest_sha256": "4f17225e73bf40b0aca9c996c1803dfc03918bfa5972a66a785be871417114f4",
+          "initial_joint_probabilities": {
+            "aggregate_unresolved": 0.3554512046748357,
+            "unknown_instance": 0.3554512046748357,
+            "known_instance": 0.28909759065032864
+          },
+          "final_joint_probabilities": {
+            "aggregate_unresolved": 0.3554512046748357,
+            "unknown_instance": 0.3554512046748357,
+            "known_instance": 0.28909759065032864
+          },
+          "actions": [
+            {
+              "action": "RotateLeft",
+              "degrees": 45.0,
+              "success": true,
+              "outcome": "no_category_candidate",
+              "seconds": 0.469543166924268
+            },
+            {
+              "action": "RotateRight",
+              "degrees": 90.0,
+              "success": true,
+              "outcome": "no_category_candidate",
+              "seconds": 0.6368542909622192
+            }
+          ],
+          "rotation_count": 2,
+          "rotation_degrees": 135.0,
+          "all_actions_succeeded": true,
+          "any_category_positive": false,
+          "any_bbox_overlap": false,
+          "any_false_positive_without_pixels": false,
+          "frames": [
+            {
+              "index": 0,
+              "heading": 270.0,
+              "rgb_sha256": "8d086d7a86f22f6cb2a19cca2ef1230454075a172dfff40b6fb2b45394c3bfa5",
+              "target_pixels": 0,
+              "target_sdk_visible": false,
+              "apple_scores": [],
+              "apple_bbox_ious": [],
+              "false_positive_without_target_pixels": false
+            },
+            {
+              "index": 1,
+              "heading": 225.0,
+              "rgb_sha256": "a1cdb6f3d497378700b07b749bb4a2a6828253433095eb7c144395aa65c58e3c",
+              "target_pixels": 0,
+              "target_sdk_visible": false,
+              "apple_scores": [],
+              "apple_bbox_ious": [],
+              "false_positive_without_target_pixels": false
+            },
+            {
+              "index": 2,
+              "heading": 315.0,
+              "rgb_sha256": "2fad82c0105ab294f7e7a86c2ae57dd5f644b10cc3031139dbbbf8ed2bf7c034",
+              "target_pixels": 2223,
+              "target_sdk_visible": true,
+              "apple_scores": [],
+              "apple_bbox_ious": [],
+              "false_positive_without_target_pixels": false
+            }
+          ],
+          "seconds": 7.270323041360825,
+          "stop_reason": "no_remaining_positive_utility_or_views"
+        },
+        {
+          "method": "scan_right_first",
+          "image_size": 640,
+          "frontend": "ssdlite",
+          "site": "north",
+          "verified": true,
+          "source_sha256": "0c594481bd9d6b02fb6d024634a3cef9706bf954f5c42e7402630fef410400c1",
+          "checkpoint_manifest_sha256": "4f17225e73bf40b0aca9c996c1803dfc03918bfa5972a66a785be871417114f4",
+          "initial_joint_probabilities": {
+            "aggregate_unresolved": 0.3554512046748357,
+            "known_instance": 0.28909759065032864,
+            "unknown_instance": 0.3554512046748357
+          },
+          "final_joint_probabilities": {
+            "aggregate_unresolved": 0.3554512046748357,
+            "known_instance": 0.28909759065032864,
+            "unknown_instance": 0.3554512046748357
+          },
+          "actions": [
+            {
+              "action": "RotateRight",
+              "degrees": 45.0,
+              "success": true,
+              "outcome": "no_category_candidate",
+              "seconds": 0.4855159167200327
+            },
+            {
+              "action": "RotateLeft",
+              "degrees": 90.0,
+              "success": true,
+              "outcome": "no_category_candidate",
+              "seconds": 0.6409255000762641
+            }
+          ],
+          "rotation_count": 2,
+          "rotation_degrees": 135.0,
+          "all_actions_succeeded": true,
+          "any_category_positive": false,
+          "any_bbox_overlap": false,
+          "any_false_positive_without_pixels": false,
+          "frames": [
+            {
+              "index": 0,
+              "heading": 270.0,
+              "rgb_sha256": "8d086d7a86f22f6cb2a19cca2ef1230454075a172dfff40b6fb2b45394c3bfa5",
+              "target_pixels": 0,
+              "target_sdk_visible": false,
+              "apple_scores": [],
+              "apple_bbox_ious": [],
+              "false_positive_without_target_pixels": false
+            },
+            {
+              "index": 1,
+              "heading": 315.0,
+              "rgb_sha256": "32733cda0c3a77f6c79b392d0d3e5f44d173972e198404d6cc80808f1041d9f3",
+              "target_pixels": 2223,
+              "target_sdk_visible": true,
+              "apple_scores": [],
+              "apple_bbox_ious": [],
+              "false_positive_without_target_pixels": false
+            },
+            {
+              "index": 2,
+              "heading": 225.0,
+              "rgb_sha256": "bda5dd2644233afd8fe80dfc9e2265486e2a814ed5799071a35365a85132915f",
+              "target_pixels": 0,
+              "target_sdk_visible": false,
+              "apple_scores": [],
+              "apple_bbox_ious": [],
+              "false_positive_without_target_pixels": false
+            }
+          ],
+          "seconds": 7.3000038750469685,
+          "stop_reason": "no_remaining_positive_utility_or_views"
+        },
+        {
+          "method": "typed_factor_graph_transformer",
+          "image_size": 640,
+          "frontend": "ssdlite",
+          "site": "south",
+          "verified": true,
+          "source_sha256": "0c594481bd9d6b02fb6d024634a3cef9706bf954f5c42e7402630fef410400c1",
+          "checkpoint_manifest_sha256": "4f17225e73bf40b0aca9c996c1803dfc03918bfa5972a66a785be871417114f4",
+          "initial_joint_probabilities": {
+            "aggregate_unresolved": 0.3554512046748357,
+            "unknown_instance": 0.3554512046748357,
+            "known_instance": 0.28909759065032864
+          },
+          "final_joint_probabilities": {
+            "aggregate_unresolved": 0.592043963026935,
+            "unknown_instance": 0.2249767059502352,
+            "known_instance": 0.18297933102282998
+          },
+          "actions": [
+            {
+              "action": "RotateRight",
+              "degrees": 45.0,
+              "success": true,
+              "outcome": "no_category_candidate",
+              "seconds": 1.2837112499400973
+            },
+            {
+              "action": "RotateLeft",
+              "degrees": 90.0,
+              "success": true,
+              "outcome": "no_category_candidate",
+              "seconds": 2.1003157920204103
+            }
+          ],
+          "rotation_count": 2,
+          "rotation_degrees": 135.0,
+          "all_actions_succeeded": true,
+          "any_category_positive": false,
+          "any_bbox_overlap": false,
+          "any_false_positive_without_pixels": false,
+          "frames": [
+            {
+              "index": 0,
+              "heading": 270.0,
+              "rgb_sha256": "294a450f5d3cd30ad07b58d9e194350ed968bc57d1227e5aeb8dbaa983ba8bd2",
+              "target_pixels": 0,
+              "target_sdk_visible": false,
+              "apple_scores": [],
+              "apple_bbox_ious": [],
+              "false_positive_without_target_pixels": false
+            },
+            {
+              "index": 1,
+              "heading": 315.0,
+              "rgb_sha256": "056b496678fe5bb5e6527091810c3ca7073e7b15849b70ef78371cb99a64214d",
+              "target_pixels": 0,
+              "target_sdk_visible": false,
+              "apple_scores": [],
+              "apple_bbox_ious": [],
+              "false_positive_without_target_pixels": false
+            },
+            {
+              "index": 2,
+              "heading": 225.0,
+              "rgb_sha256": "e8345a6aa29dc3992f8a230f19b739db8453fa5e3b9c9a1d5608903e6455f3f1",
+              "target_pixels": 2235,
+              "target_sdk_visible": true,
+              "apple_scores": [],
+              "apple_bbox_ious": [],
+              "false_positive_without_target_pixels": false
+            }
+          ],
+          "seconds": 11.204848333261907,
+          "stop_reason": "no_remaining_positive_utility_or_views"
+        },
+        {
+          "method": "slot_conditioned_perceiver",
+          "image_size": 640,
+          "frontend": "ssdlite",
+          "site": "south",
+          "verified": true,
+          "source_sha256": "0c594481bd9d6b02fb6d024634a3cef9706bf954f5c42e7402630fef410400c1",
+          "checkpoint_manifest_sha256": "f9ef284b0d89883b47fcc010d952e49cb4a4fb0be63a5eb1200a5cd011f40b85",
+          "initial_joint_probabilities": {
+            "aggregate_unresolved": 0.3554512046748357,
+            "known_instance": 0.28909759065032864,
+            "unknown_instance": 0.3554512046748357
+          },
+          "final_joint_probabilities": {
+            "aggregate_unresolved": 0.592043963026935,
+            "known_instance": 0.18297933102282998,
+            "unknown_instance": 0.2249767059502352
+          },
+          "actions": [
+            {
+              "action": "RotateRight",
+              "degrees": 45.0,
+              "success": true,
+              "outcome": "no_category_candidate",
+              "seconds": 1.2911561662331223
+            },
+            {
+              "action": "RotateLeft",
+              "degrees": 90.0,
+              "success": true,
+              "outcome": "no_category_candidate",
+              "seconds": 2.0708906669169664
+            }
+          ],
+          "rotation_count": 2,
+          "rotation_degrees": 135.0,
+          "all_actions_succeeded": true,
+          "any_category_positive": false,
+          "any_bbox_overlap": false,
+          "any_false_positive_without_pixels": false,
+          "frames": [
+            {
+              "index": 0,
+              "heading": 270.0,
+              "rgb_sha256": "294a450f5d3cd30ad07b58d9e194350ed968bc57d1227e5aeb8dbaa983ba8bd2",
+              "target_pixels": 0,
+              "target_sdk_visible": false,
+              "apple_scores": [],
+              "apple_bbox_ious": [],
+              "false_positive_without_target_pixels": false
+            },
+            {
+              "index": 1,
+              "heading": 315.0,
+              "rgb_sha256": "056b496678fe5bb5e6527091810c3ca7073e7b15849b70ef78371cb99a64214d",
+              "target_pixels": 0,
+              "target_sdk_visible": false,
+              "apple_scores": [],
+              "apple_bbox_ious": [],
+              "false_positive_without_target_pixels": false
+            },
+            {
+              "index": 2,
+              "heading": 225.0,
+              "rgb_sha256": "e8345a6aa29dc3992f8a230f19b739db8453fa5e3b9c9a1d5608903e6455f3f1",
+              "target_pixels": 2235,
+              "target_sdk_visible": true,
+              "apple_scores": [],
+              "apple_bbox_ious": [],
+              "false_positive_without_target_pixels": false
+            }
+          ],
+          "seconds": 11.158373292069882,
+          "stop_reason": "no_remaining_positive_utility_or_views"
+        },
+        {
+          "method": "autoregressive_typed_graph_policy",
+          "image_size": 640,
+          "frontend": "ssdlite",
+          "site": "south",
+          "verified": true,
+          "source_sha256": "0c594481bd9d6b02fb6d024634a3cef9706bf954f5c42e7402630fef410400c1",
+          "checkpoint_manifest_sha256": "68ff631b677c207842244432931dd880a48565a0fb21956979566b3f97f3c9b2",
+          "initial_joint_probabilities": {
+            "aggregate_unresolved": 0.3554512046748357,
+            "unknown_instance": 0.3554512046748357,
+            "known_instance": 0.28909759065032864
+          },
+          "final_joint_probabilities": {
+            "aggregate_unresolved": 0.592043963026935,
+            "unknown_instance": 0.2249767059502352,
+            "known_instance": 0.18297933102282998
+          },
+          "actions": [
+            {
+              "action": "RotateRight",
+              "degrees": 45.0,
+              "success": true,
+              "outcome": "no_category_candidate",
+              "seconds": 1.3318479172885418
+            },
+            {
+              "action": "RotateLeft",
+              "degrees": 90.0,
+              "success": true,
+              "outcome": "no_category_candidate",
+              "seconds": 2.1473859576508403
+            }
+          ],
+          "rotation_count": 2,
+          "rotation_degrees": 135.0,
+          "all_actions_succeeded": true,
+          "any_category_positive": false,
+          "any_bbox_overlap": false,
+          "any_false_positive_without_pixels": false,
+          "frames": [
+            {
+              "index": 0,
+              "heading": 270.0,
+              "rgb_sha256": "294a450f5d3cd30ad07b58d9e194350ed968bc57d1227e5aeb8dbaa983ba8bd2",
+              "target_pixels": 0,
+              "target_sdk_visible": false,
+              "apple_scores": [],
+              "apple_bbox_ious": [],
+              "false_positive_without_target_pixels": false
+            },
+            {
+              "index": 1,
+              "heading": 315.0,
+              "rgb_sha256": "056b496678fe5bb5e6527091810c3ca7073e7b15849b70ef78371cb99a64214d",
+              "target_pixels": 0,
+              "target_sdk_visible": false,
+              "apple_scores": [],
+              "apple_bbox_ious": [],
+              "false_positive_without_target_pixels": false
+            },
+            {
+              "index": 2,
+              "heading": 225.0,
+              "rgb_sha256": "e8345a6aa29dc3992f8a230f19b739db8453fa5e3b9c9a1d5608903e6455f3f1",
+              "target_pixels": 2235,
+              "target_sdk_visible": true,
+              "apple_scores": [],
+              "apple_bbox_ious": [],
+              "false_positive_without_target_pixels": false
+            }
+          ],
+          "seconds": 11.335050541907549,
+          "stop_reason": "no_remaining_positive_utility_or_views"
+        },
+        {
+          "method": "no_feedback",
+          "image_size": 640,
+          "frontend": "ssdlite",
+          "site": "south",
+          "verified": true,
+          "source_sha256": "0c594481bd9d6b02fb6d024634a3cef9706bf954f5c42e7402630fef410400c1",
+          "checkpoint_manifest_sha256": "4f17225e73bf40b0aca9c996c1803dfc03918bfa5972a66a785be871417114f4",
+          "initial_joint_probabilities": {
+            "aggregate_unresolved": 0.3554512046748357,
+            "unknown_instance": 0.3554512046748357,
+            "known_instance": 0.28909759065032864
+          },
+          "final_joint_probabilities": {
+            "aggregate_unresolved": 0.3554512046748357,
+            "unknown_instance": 0.3554512046748357,
+            "known_instance": 0.28909759065032864
+          },
+          "actions": [
+            {
+              "action": "RotateRight",
+              "degrees": 45.0,
+              "success": true,
+              "outcome": "no_category_candidate",
+              "seconds": 0.6317094578407705
+            },
+            {
+              "action": "RotateLeft",
+              "degrees": 90.0,
+              "success": true,
+              "outcome": "no_category_candidate",
+              "seconds": 0.730793041177094
+            }
+          ],
+          "rotation_count": 2,
+          "rotation_degrees": 135.0,
+          "all_actions_succeeded": true,
+          "any_category_positive": false,
+          "any_bbox_overlap": false,
+          "any_false_positive_without_pixels": false,
+          "frames": [
+            {
+              "index": 0,
+              "heading": 270.0,
+              "rgb_sha256": "294a450f5d3cd30ad07b58d9e194350ed968bc57d1227e5aeb8dbaa983ba8bd2",
+              "target_pixels": 0,
+              "target_sdk_visible": false,
+              "apple_scores": [],
+              "apple_bbox_ious": [],
+              "false_positive_without_target_pixels": false
+            },
+            {
+              "index": 1,
+              "heading": 315.0,
+              "rgb_sha256": "056b496678fe5bb5e6527091810c3ca7073e7b15849b70ef78371cb99a64214d",
+              "target_pixels": 0,
+              "target_sdk_visible": false,
+              "apple_scores": [],
+              "apple_bbox_ious": [],
+              "false_positive_without_target_pixels": false
+            },
+            {
+              "index": 2,
+              "heading": 225.0,
+              "rgb_sha256": "e8345a6aa29dc3992f8a230f19b739db8453fa5e3b9c9a1d5608903e6455f3f1",
+              "target_pixels": 2235,
+              "target_sdk_visible": true,
+              "apple_scores": [],
+              "apple_bbox_ious": [],
+              "false_positive_without_target_pixels": false
+            }
+          ],
+          "seconds": 7.696693416684866,
+          "stop_reason": "no_remaining_positive_utility_or_views"
+        },
+        {
+          "method": "scan_left_first",
+          "image_size": 640,
+          "frontend": "ssdlite",
+          "site": "south",
+          "verified": true,
+          "source_sha256": "0c594481bd9d6b02fb6d024634a3cef9706bf954f5c42e7402630fef410400c1",
+          "checkpoint_manifest_sha256": "4f17225e73bf40b0aca9c996c1803dfc03918bfa5972a66a785be871417114f4",
+          "initial_joint_probabilities": {
+            "aggregate_unresolved": 0.3554512046748357,
+            "unknown_instance": 0.3554512046748357,
+            "known_instance": 0.28909759065032864
+          },
+          "final_joint_probabilities": {
+            "aggregate_unresolved": 0.3554512046748357,
+            "unknown_instance": 0.3554512046748357,
+            "known_instance": 0.28909759065032864
+          },
+          "actions": [
+            {
+              "action": "RotateLeft",
+              "degrees": 45.0,
+              "success": true,
+              "outcome": "no_category_candidate",
+              "seconds": 0.4738922920078039
+            },
+            {
+              "action": "RotateRight",
+              "degrees": 90.0,
+              "success": true,
+              "outcome": "no_category_candidate",
+              "seconds": 0.6581585835665464
+            }
+          ],
+          "rotation_count": 2,
+          "rotation_degrees": 135.0,
+          "all_actions_succeeded": true,
+          "any_category_positive": false,
+          "any_bbox_overlap": false,
+          "any_false_positive_without_pixels": false,
+          "frames": [
+            {
+              "index": 0,
+              "heading": 270.0,
+              "rgb_sha256": "f9bf9a9e59ba1e49f51c6ce7fcc69a11cadbfa7ff4e59d08f2a8651d66a2c9cb",
+              "target_pixels": 0,
+              "target_sdk_visible": false,
+              "apple_scores": [],
+              "apple_bbox_ious": [],
+              "false_positive_without_target_pixels": false
+            },
+            {
+              "index": 1,
+              "heading": 225.0,
+              "rgb_sha256": "87f39be1d43673721c563c8eadefa8b0d93dbccf2a7a83b94e5f6a91f35dfb09",
+              "target_pixels": 2235,
+              "target_sdk_visible": true,
+              "apple_scores": [],
+              "apple_bbox_ious": [],
+              "false_positive_without_target_pixels": false
+            },
+            {
+              "index": 2,
+              "heading": 315.0,
+              "rgb_sha256": "e594aa099d64354b26538a2b4e1ff1fdef76ccb067ec2bf7e836771302894b03",
+              "target_pixels": 0,
+              "target_sdk_visible": false,
+              "apple_scores": [],
+              "apple_bbox_ious": [],
+              "false_positive_without_target_pixels": false
+            }
+          ],
+          "seconds": 7.2675241669639945,
+          "stop_reason": "no_remaining_positive_utility_or_views"
+        },
+        {
+          "method": "scan_right_first",
+          "image_size": 640,
+          "frontend": "ssdlite",
+          "site": "south",
+          "verified": true,
+          "source_sha256": "0c594481bd9d6b02fb6d024634a3cef9706bf954f5c42e7402630fef410400c1",
+          "checkpoint_manifest_sha256": "4f17225e73bf40b0aca9c996c1803dfc03918bfa5972a66a785be871417114f4",
+          "initial_joint_probabilities": {
+            "aggregate_unresolved": 0.3554512046748357,
+            "known_instance": 0.28909759065032864,
+            "unknown_instance": 0.3554512046748357
+          },
+          "final_joint_probabilities": {
+            "aggregate_unresolved": 0.3554512046748357,
+            "known_instance": 0.28909759065032864,
+            "unknown_instance": 0.3554512046748357
+          },
+          "actions": [
+            {
+              "action": "RotateRight",
+              "degrees": 45.0,
+              "success": true,
+              "outcome": "no_category_candidate",
+              "seconds": 0.4737652922049165
+            },
+            {
+              "action": "RotateLeft",
+              "degrees": 90.0,
+              "success": true,
+              "outcome": "no_category_candidate",
+              "seconds": 0.6321853748522699
+            }
+          ],
+          "rotation_count": 2,
+          "rotation_degrees": 135.0,
+          "all_actions_succeeded": true,
+          "any_category_positive": false,
+          "any_bbox_overlap": false,
+          "any_false_positive_without_pixels": false,
+          "frames": [
+            {
+              "index": 0,
+              "heading": 270.0,
+              "rgb_sha256": "294a450f5d3cd30ad07b58d9e194350ed968bc57d1227e5aeb8dbaa983ba8bd2",
+              "target_pixels": 0,
+              "target_sdk_visible": false,
+              "apple_scores": [],
+              "apple_bbox_ious": [],
+              "false_positive_without_target_pixels": false
+            },
+            {
+              "index": 1,
+              "heading": 315.0,
+              "rgb_sha256": "056b496678fe5bb5e6527091810c3ca7073e7b15849b70ef78371cb99a64214d",
+              "target_pixels": 0,
+              "target_sdk_visible": false,
+              "apple_scores": [],
+              "apple_bbox_ious": [],
+              "false_positive_without_target_pixels": false
+            },
+            {
+              "index": 2,
+              "heading": 225.0,
+              "rgb_sha256": "e8345a6aa29dc3992f8a230f19b739db8453fa5e3b9c9a1d5608903e6455f3f1",
+              "target_pixels": 2235,
+              "target_sdk_visible": true,
+              "apple_scores": [],
+              "apple_bbox_ious": [],
+              "false_positive_without_target_pixels": false
+            }
+          ],
+          "seconds": 7.472306000068784,
+          "stop_reason": "no_remaining_positive_utility_or_views"
+        },
+        {
+          "method": "typed_factor_graph_transformer",
+          "image_size": 640,
+          "frontend": "fasterrcnn",
+          "site": "north",
+          "verified": true,
+          "source_sha256": "0c594481bd9d6b02fb6d024634a3cef9706bf954f5c42e7402630fef410400c1",
+          "checkpoint_manifest_sha256": "4f17225e73bf40b0aca9c996c1803dfc03918bfa5972a66a785be871417114f4",
+          "initial_joint_probabilities": {
+            "aggregate_unresolved": 0.3554512046748357,
+            "known_instance": 0.28909759065032864,
+            "unknown_instance": 0.3554512046748357
+          },
+          "final_joint_probabilities": {
+            "aggregate_unresolved": 0.39001769774911593,
+            "known_instance": 0.5709805324759725,
+            "unknown_instance": 0.0390017697749116
+          },
+          "actions": [
+            {
+              "action": "RotateRight",
+              "degrees": 45.0,
+              "success": true,
+              "outcome": "category_candidate",
+              "seconds": 10.179540458135307
+            }
+          ],
+          "rotation_count": 1,
+          "rotation_degrees": 45.0,
+          "all_actions_succeeded": true,
+          "any_category_positive": true,
+          "any_bbox_overlap": true,
+          "any_false_positive_without_pixels": false,
+          "frames": [
+            {
+              "index": 0,
+              "heading": 270.0,
+              "rgb_sha256": "c9c35de1a2ba7ddbb83ab1dffae2e221ef131f0fdb03fe122c90dece7efa6728",
+              "target_pixels": 0,
+              "target_sdk_visible": false,
+              "apple_scores": [],
+              "apple_bbox_ious": [],
+              "false_positive_without_target_pixels": false
+            },
+            {
+              "index": 1,
+              "heading": 315.0,
+              "rgb_sha256": "32733cda0c3a77f6c79b392d0d3e5f44d173972e198404d6cc80808f1041d9f3",
+              "target_pixels": 2223,
+              "target_sdk_visible": true,
+              "apple_scores": [
+                0.9170534610748291
+              ],
+              "apple_bbox_ious": [
+                0.9518482785005677
+              ],
+              "false_positive_without_target_pixels": false
+            }
+          ],
+          "seconds": 38.31908754166216,
+          "stop_reason": "category_candidate"
+        },
+        {
+          "method": "slot_conditioned_perceiver",
+          "image_size": 640,
+          "frontend": "fasterrcnn",
+          "site": "north",
+          "verified": true,
+          "source_sha256": "0c594481bd9d6b02fb6d024634a3cef9706bf954f5c42e7402630fef410400c1",
+          "checkpoint_manifest_sha256": "f9ef284b0d89883b47fcc010d952e49cb4a4fb0be63a5eb1200a5cd011f40b85",
+          "initial_joint_probabilities": {
+            "aggregate_unresolved": 0.3554512046748357,
+            "unknown_instance": 0.3554512046748357,
+            "known_instance": 0.28909759065032864
+          },
+          "final_joint_probabilities": {
+            "aggregate_unresolved": 0.39001769774911593,
+            "unknown_instance": 0.0390017697749116,
+            "known_instance": 0.5709805324759725
+          },
+          "actions": [
+            {
+              "action": "RotateRight",
+              "degrees": 45.0,
+              "success": true,
+              "outcome": "category_candidate",
+              "seconds": 10.111689957790077
+            }
+          ],
+          "rotation_count": 1,
+          "rotation_degrees": 45.0,
+          "all_actions_succeeded": true,
+          "any_category_positive": true,
+          "any_bbox_overlap": true,
+          "any_false_positive_without_pixels": false,
+          "frames": [
+            {
+              "index": 0,
+              "heading": 270.0,
+              "rgb_sha256": "c9c35de1a2ba7ddbb83ab1dffae2e221ef131f0fdb03fe122c90dece7efa6728",
+              "target_pixels": 0,
+              "target_sdk_visible": false,
+              "apple_scores": [],
+              "apple_bbox_ious": [],
+              "false_positive_without_target_pixels": false
+            },
+            {
+              "index": 1,
+              "heading": 315.0,
+              "rgb_sha256": "32733cda0c3a77f6c79b392d0d3e5f44d173972e198404d6cc80808f1041d9f3",
+              "target_pixels": 2223,
+              "target_sdk_visible": true,
+              "apple_scores": [
+                0.9170534610748291
+              ],
+              "apple_bbox_ious": [
+                0.9518482785005677
+              ],
+              "false_positive_without_target_pixels": false
+            }
+          ],
+          "seconds": 37.90978462481871,
+          "stop_reason": "category_candidate"
+        },
+        {
+          "method": "autoregressive_typed_graph_policy",
+          "image_size": 640,
+          "frontend": "fasterrcnn",
+          "site": "north",
+          "verified": true,
+          "source_sha256": "0c594481bd9d6b02fb6d024634a3cef9706bf954f5c42e7402630fef410400c1",
+          "checkpoint_manifest_sha256": "68ff631b677c207842244432931dd880a48565a0fb21956979566b3f97f3c9b2",
+          "initial_joint_probabilities": {
+            "aggregate_unresolved": 0.3554512046748357,
+            "unknown_instance": 0.3554512046748357,
+            "known_instance": 0.28909759065032864
+          },
+          "final_joint_probabilities": {
+            "aggregate_unresolved": 0.39001769774911593,
+            "unknown_instance": 0.0390017697749116,
+            "known_instance": 0.5709805324759725
+          },
+          "actions": [
+            {
+              "action": "RotateRight",
+              "degrees": 45.0,
+              "success": true,
+              "outcome": "category_candidate",
+              "seconds": 9.90750345773995
+            }
+          ],
+          "rotation_count": 1,
+          "rotation_degrees": 45.0,
+          "all_actions_succeeded": true,
+          "any_category_positive": true,
+          "any_bbox_overlap": true,
+          "any_false_positive_without_pixels": false,
+          "frames": [
+            {
+              "index": 0,
+              "heading": 270.0,
+              "rgb_sha256": "c9c35de1a2ba7ddbb83ab1dffae2e221ef131f0fdb03fe122c90dece7efa6728",
+              "target_pixels": 0,
+              "target_sdk_visible": false,
+              "apple_scores": [],
+              "apple_bbox_ious": [],
+              "false_positive_without_target_pixels": false
+            },
+            {
+              "index": 1,
+              "heading": 315.0,
+              "rgb_sha256": "32733cda0c3a77f6c79b392d0d3e5f44d173972e198404d6cc80808f1041d9f3",
+              "target_pixels": 2223,
+              "target_sdk_visible": true,
+              "apple_scores": [
+                0.9170534610748291
+              ],
+              "apple_bbox_ious": [
+                0.9518482785005677
+              ],
+              "false_positive_without_target_pixels": false
+            }
+          ],
+          "seconds": 37.72327204188332,
+          "stop_reason": "category_candidate"
+        },
+        {
+          "method": "no_feedback",
+          "image_size": 640,
+          "frontend": "fasterrcnn",
+          "site": "north",
+          "verified": true,
+          "source_sha256": "0c594481bd9d6b02fb6d024634a3cef9706bf954f5c42e7402630fef410400c1",
+          "checkpoint_manifest_sha256": "4f17225e73bf40b0aca9c996c1803dfc03918bfa5972a66a785be871417114f4",
+          "initial_joint_probabilities": {
+            "aggregate_unresolved": 0.3554512046748357,
+            "unknown_instance": 0.3554512046748357,
+            "known_instance": 0.28909759065032864
+          },
+          "final_joint_probabilities": {
+            "aggregate_unresolved": 0.3554512046748357,
+            "unknown_instance": 0.3554512046748357,
+            "known_instance": 0.28909759065032864
+          },
+          "actions": [
+            {
+              "action": "RotateRight",
+              "degrees": 45.0,
+              "success": true,
+              "outcome": "category_candidate",
+              "seconds": 4.698846707586199
+            }
+          ],
+          "rotation_count": 1,
+          "rotation_degrees": 45.0,
+          "all_actions_succeeded": true,
+          "any_category_positive": true,
+          "any_bbox_overlap": true,
+          "any_false_positive_without_pixels": false,
+          "frames": [
+            {
+              "index": 0,
+              "heading": 270.0,
+              "rgb_sha256": "8d086d7a86f22f6cb2a19cca2ef1230454075a172dfff40b6fb2b45394c3bfa5",
+              "target_pixels": 0,
+              "target_sdk_visible": false,
+              "apple_scores": [],
+              "apple_bbox_ious": [],
+              "false_positive_without_target_pixels": false
+            },
+            {
+              "index": 1,
+              "heading": 315.0,
+              "rgb_sha256": "32733cda0c3a77f6c79b392d0d3e5f44d173972e198404d6cc80808f1041d9f3",
+              "target_pixels": 2223,
+              "target_sdk_visible": true,
+              "apple_scores": [
+                0.9170534610748291
+              ],
+              "apple_bbox_ious": [
+                0.9518482785005677
+              ],
+              "false_positive_without_target_pixels": false
+            }
+          ],
+          "seconds": 18.895862750243396,
+          "stop_reason": "category_candidate"
+        },
+        {
+          "method": "scan_left_first",
+          "image_size": 640,
+          "frontend": "fasterrcnn",
+          "site": "north",
+          "verified": true,
+          "source_sha256": "0c594481bd9d6b02fb6d024634a3cef9706bf954f5c42e7402630fef410400c1",
+          "checkpoint_manifest_sha256": "4f17225e73bf40b0aca9c996c1803dfc03918bfa5972a66a785be871417114f4",
+          "initial_joint_probabilities": {
+            "aggregate_unresolved": 0.3554512046748357,
+            "known_instance": 0.28909759065032864,
+            "unknown_instance": 0.3554512046748357
+          },
+          "final_joint_probabilities": {
+            "aggregate_unresolved": 0.3554512046748357,
+            "known_instance": 0.28909759065032864,
+            "unknown_instance": 0.3554512046748357
+          },
+          "actions": [
+            {
+              "action": "RotateLeft",
+              "degrees": 45.0,
+              "success": true,
+              "outcome": "category_candidate",
+              "seconds": 4.531602667178959
+            }
+          ],
+          "rotation_count": 1,
+          "rotation_degrees": 45.0,
+          "all_actions_succeeded": true,
+          "any_category_positive": true,
+          "any_bbox_overlap": false,
+          "any_false_positive_without_pixels": true,
+          "frames": [
+            {
+              "index": 0,
+              "heading": 270.0,
+              "rgb_sha256": "c9c35de1a2ba7ddbb83ab1dffae2e221ef131f0fdb03fe122c90dece7efa6728",
+              "target_pixels": 0,
+              "target_sdk_visible": false,
+              "apple_scores": [],
+              "apple_bbox_ious": [],
+              "false_positive_without_target_pixels": false
+            },
+            {
+              "index": 1,
+              "heading": 225.0,
+              "rgb_sha256": "a1cdb6f3d497378700b07b749bb4a2a6828253433095eb7c144395aa65c58e3c",
+              "target_pixels": 0,
+              "target_sdk_visible": false,
+              "apple_scores": [
+                0.9209120273590088
+              ],
+              "apple_bbox_ious": [
+                0.0
+              ],
+              "false_positive_without_target_pixels": true
+            }
+          ],
+          "seconds": 18.715824082959443,
+          "stop_reason": "category_candidate"
+        },
+        {
+          "method": "scan_right_first",
+          "image_size": 640,
+          "frontend": "fasterrcnn",
+          "site": "north",
+          "verified": true,
+          "source_sha256": "0c594481bd9d6b02fb6d024634a3cef9706bf954f5c42e7402630fef410400c1",
+          "checkpoint_manifest_sha256": "4f17225e73bf40b0aca9c996c1803dfc03918bfa5972a66a785be871417114f4",
+          "initial_joint_probabilities": {
+            "aggregate_unresolved": 0.3554512046748357,
+            "unknown_instance": 0.3554512046748357,
+            "known_instance": 0.28909759065032864
+          },
+          "final_joint_probabilities": {
+            "aggregate_unresolved": 0.3554512046748357,
+            "unknown_instance": 0.3554512046748357,
+            "known_instance": 0.28909759065032864
+          },
+          "actions": [
+            {
+              "action": "RotateRight",
+              "degrees": 45.0,
+              "success": true,
+              "outcome": "category_candidate",
+              "seconds": 4.579076709225774
+            }
+          ],
+          "rotation_count": 1,
+          "rotation_degrees": 45.0,
+          "all_actions_succeeded": true,
+          "any_category_positive": true,
+          "any_bbox_overlap": true,
+          "any_false_positive_without_pixels": false,
+          "frames": [
+            {
+              "index": 0,
+              "heading": 270.0,
+              "rgb_sha256": "c9c35de1a2ba7ddbb83ab1dffae2e221ef131f0fdb03fe122c90dece7efa6728",
+              "target_pixels": 0,
+              "target_sdk_visible": false,
+              "apple_scores": [],
+              "apple_bbox_ious": [],
+              "false_positive_without_target_pixels": false
+            },
+            {
+              "index": 1,
+              "heading": 315.0,
+              "rgb_sha256": "32733cda0c3a77f6c79b392d0d3e5f44d173972e198404d6cc80808f1041d9f3",
+              "target_pixels": 2223,
+              "target_sdk_visible": true,
+              "apple_scores": [
+                0.9170534610748291
+              ],
+              "apple_bbox_ious": [
+                0.9518482785005677
+              ],
+              "false_positive_without_target_pixels": false
+            }
+          ],
+          "seconds": 18.52086758427322,
+          "stop_reason": "category_candidate"
+        },
+        {
+          "method": "typed_factor_graph_transformer",
+          "image_size": 640,
+          "frontend": "fasterrcnn",
+          "site": "south",
+          "verified": true,
+          "source_sha256": "0c594481bd9d6b02fb6d024634a3cef9706bf954f5c42e7402630fef410400c1",
+          "checkpoint_manifest_sha256": "4f17225e73bf40b0aca9c996c1803dfc03918bfa5972a66a785be871417114f4",
+          "initial_joint_probabilities": {
+            "aggregate_unresolved": 0.3554512046748357,
+            "unknown_instance": 0.3554512046748357,
+            "known_instance": 0.28909759065032864
+          },
+          "final_joint_probabilities": {
+            "aggregate_unresolved": 0.2254147709478177,
+            "unknown_instance": 0.7709185166415365,
+            "known_instance": 0.0036667124106457305
+          },
+          "actions": [
+            {
+              "action": "RotateRight",
+              "degrees": 45.0,
+              "success": true,
+              "outcome": "no_category_candidate",
+              "seconds": 10.004882792010903
+            },
+            {
+              "action": "RotateLeft",
+              "degrees": 90.0,
+              "success": true,
+              "outcome": "category_candidate",
+              "seconds": 24.147269332781434
+            }
+          ],
+          "rotation_count": 2,
+          "rotation_degrees": 135.0,
+          "all_actions_succeeded": true,
+          "any_category_positive": true,
+          "any_bbox_overlap": true,
+          "any_false_positive_without_pixels": false,
+          "frames": [
+            {
+              "index": 0,
+              "heading": 270.0,
+              "rgb_sha256": "98424d44be402bea60eb77067c317f7edbd2bbc1140b4ebf0d03c3f815996ab9",
+              "target_pixels": 0,
+              "target_sdk_visible": false,
+              "apple_scores": [],
+              "apple_bbox_ious": [],
+              "false_positive_without_target_pixels": false
+            },
+            {
+              "index": 1,
+              "heading": 315.0,
+              "rgb_sha256": "056b496678fe5bb5e6527091810c3ca7073e7b15849b70ef78371cb99a64214d",
+              "target_pixels": 0,
+              "target_sdk_visible": false,
+              "apple_scores": [],
+              "apple_bbox_ious": [],
+              "false_positive_without_target_pixels": false
+            },
+            {
+              "index": 2,
+              "heading": 225.0,
+              "rgb_sha256": "e8345a6aa29dc3992f8a230f19b739db8453fa5e3b9c9a1d5608903e6455f3f1",
+              "target_pixels": 2235,
+              "target_sdk_visible": true,
+              "apple_scores": [
+                0.9519223570823669,
+                0.5999839901924133
+              ],
+              "apple_bbox_ious": [
+                0.0,
+                0.9732998583745427
+              ],
+              "false_positive_without_target_pixels": false
+            }
+          ],
+          "seconds": 73.91650962503627,
+          "stop_reason": "category_candidate"
+        },
+        {
+          "method": "slot_conditioned_perceiver",
+          "image_size": 640,
+          "frontend": "fasterrcnn",
+          "site": "south",
+          "verified": true,
+          "source_sha256": "0c594481bd9d6b02fb6d024634a3cef9706bf954f5c42e7402630fef410400c1",
+          "checkpoint_manifest_sha256": "f9ef284b0d89883b47fcc010d952e49cb4a4fb0be63a5eb1200a5cd011f40b85",
+          "initial_joint_probabilities": {
+            "aggregate_unresolved": 0.3554512046748357,
+            "unknown_instance": 0.3554512046748357,
+            "known_instance": 0.28909759065032864
+          },
+          "final_joint_probabilities": {
+            "aggregate_unresolved": 0.2254147709478177,
+            "unknown_instance": 0.7709185166415365,
+            "known_instance": 0.0036667124106457305
+          },
+          "actions": [
+            {
+              "action": "RotateRight",
+              "degrees": 45.0,
+              "success": true,
+              "outcome": "no_category_candidate",
+              "seconds": 9.805242749862373
+            },
+            {
+              "action": "RotateLeft",
+              "degrees": 90.0,
+              "success": true,
+              "outcome": "category_candidate",
+              "seconds": 24.047421040944755
+            }
+          ],
+          "rotation_count": 2,
+          "rotation_degrees": 135.0,
+          "all_actions_succeeded": true,
+          "any_category_positive": true,
+          "any_bbox_overlap": true,
+          "any_false_positive_without_pixels": false,
+          "frames": [
+            {
+              "index": 0,
+              "heading": 270.0,
+              "rgb_sha256": "c196662ff87584f607a1b2f697b085ba2df27c6d478457ea533b8cb4cbeb6e34",
+              "target_pixels": 0,
+              "target_sdk_visible": false,
+              "apple_scores": [],
+              "apple_bbox_ious": [],
+              "false_positive_without_target_pixels": false
+            },
+            {
+              "index": 1,
+              "heading": 315.0,
+              "rgb_sha256": "056b496678fe5bb5e6527091810c3ca7073e7b15849b70ef78371cb99a64214d",
+              "target_pixels": 0,
+              "target_sdk_visible": false,
+              "apple_scores": [],
+              "apple_bbox_ious": [],
+              "false_positive_without_target_pixels": false
+            },
+            {
+              "index": 2,
+              "heading": 225.0,
+              "rgb_sha256": "e8345a6aa29dc3992f8a230f19b739db8453fa5e3b9c9a1d5608903e6455f3f1",
+              "target_pixels": 2235,
+              "target_sdk_visible": true,
+              "apple_scores": [
+                0.9519223570823669,
+                0.5999839901924133
+              ],
+              "apple_bbox_ious": [
+                0.0,
+                0.9732998583745427
+              ],
+              "false_positive_without_target_pixels": false
+            }
+          ],
+          "seconds": 73.5114525416866,
+          "stop_reason": "category_candidate"
+        },
+        {
+          "method": "autoregressive_typed_graph_policy",
+          "image_size": 640,
+          "frontend": "fasterrcnn",
+          "site": "south",
+          "verified": true,
+          "source_sha256": "0c594481bd9d6b02fb6d024634a3cef9706bf954f5c42e7402630fef410400c1",
+          "checkpoint_manifest_sha256": "68ff631b677c207842244432931dd880a48565a0fb21956979566b3f97f3c9b2",
+          "initial_joint_probabilities": {
+            "aggregate_unresolved": 0.3554512046748357,
+            "known_instance": 0.28909759065032864,
+            "unknown_instance": 0.3554512046748357
+          },
+          "final_joint_probabilities": {
+            "aggregate_unresolved": 0.2254147709478177,
+            "known_instance": 0.0036667124106457305,
+            "unknown_instance": 0.7709185166415365
+          },
+          "actions": [
+            {
+              "action": "RotateRight",
+              "degrees": 45.0,
+              "success": true,
+              "outcome": "no_category_candidate",
+              "seconds": 9.801953583024442
+            },
+            {
+              "action": "RotateLeft",
+              "degrees": 90.0,
+              "success": true,
+              "outcome": "category_candidate",
+              "seconds": 24.04701399989426
+            }
+          ],
+          "rotation_count": 2,
+          "rotation_degrees": 135.0,
+          "all_actions_succeeded": true,
+          "any_category_positive": true,
+          "any_bbox_overlap": true,
+          "any_false_positive_without_pixels": false,
+          "frames": [
+            {
+              "index": 0,
+              "heading": 270.0,
+              "rgb_sha256": "f9bf9a9e59ba1e49f51c6ce7fcc69a11cadbfa7ff4e59d08f2a8651d66a2c9cb",
+              "target_pixels": 0,
+              "target_sdk_visible": false,
+              "apple_scores": [],
+              "apple_bbox_ious": [],
+              "false_positive_without_target_pixels": false
+            },
+            {
+              "index": 1,
+              "heading": 315.0,
+              "rgb_sha256": "056b496678fe5bb5e6527091810c3ca7073e7b15849b70ef78371cb99a64214d",
+              "target_pixels": 0,
+              "target_sdk_visible": false,
+              "apple_scores": [],
+              "apple_bbox_ious": [],
+              "false_positive_without_target_pixels": false
+            },
+            {
+              "index": 2,
+              "heading": 225.0,
+              "rgb_sha256": "e8345a6aa29dc3992f8a230f19b739db8453fa5e3b9c9a1d5608903e6455f3f1",
+              "target_pixels": 2235,
+              "target_sdk_visible": true,
+              "apple_scores": [
+                0.9519223570823669,
+                0.5999839901924133
+              ],
+              "apple_bbox_ious": [
+                0.0,
+                0.9732998583745427
+              ],
+              "false_positive_without_target_pixels": false
+            }
+          ],
+          "seconds": 73.74078679131344,
+          "stop_reason": "category_candidate"
+        },
+        {
+          "method": "no_feedback",
+          "image_size": 640,
+          "frontend": "fasterrcnn",
+          "site": "south",
+          "verified": true,
+          "source_sha256": "0c594481bd9d6b02fb6d024634a3cef9706bf954f5c42e7402630fef410400c1",
+          "checkpoint_manifest_sha256": "4f17225e73bf40b0aca9c996c1803dfc03918bfa5972a66a785be871417114f4",
+          "initial_joint_probabilities": {
+            "aggregate_unresolved": 0.3554512046748357,
+            "unknown_instance": 0.3554512046748357,
+            "known_instance": 0.28909759065032864
+          },
+          "final_joint_probabilities": {
+            "aggregate_unresolved": 0.3554512046748357,
+            "unknown_instance": 0.3554512046748357,
+            "known_instance": 0.28909759065032864
+          },
+          "actions": [
+            {
+              "action": "RotateRight",
+              "degrees": 45.0,
+              "success": true,
+              "outcome": "no_category_candidate",
+              "seconds": 4.576782916672528
+            },
+            {
+              "action": "RotateLeft",
+              "degrees": 90.0,
+              "success": true,
+              "outcome": "category_candidate",
+              "seconds": 6.557725834194571
+            }
+          ],
+          "rotation_count": 2,
+          "rotation_degrees": 135.0,
+          "all_actions_succeeded": true,
+          "any_category_positive": true,
+          "any_bbox_overlap": true,
+          "any_false_positive_without_pixels": false,
+          "frames": [
+            {
+              "index": 0,
+              "heading": 270.0,
+              "rgb_sha256": "f9bf9a9e59ba1e49f51c6ce7fcc69a11cadbfa7ff4e59d08f2a8651d66a2c9cb",
+              "target_pixels": 0,
+              "target_sdk_visible": false,
+              "apple_scores": [],
+              "apple_bbox_ious": [],
+              "false_positive_without_target_pixels": false
+            },
+            {
+              "index": 1,
+              "heading": 315.0,
+              "rgb_sha256": "056b496678fe5bb5e6527091810c3ca7073e7b15849b70ef78371cb99a64214d",
+              "target_pixels": 0,
+              "target_sdk_visible": false,
+              "apple_scores": [],
+              "apple_bbox_ious": [],
+              "false_positive_without_target_pixels": false
+            },
+            {
+              "index": 2,
+              "heading": 225.0,
+              "rgb_sha256": "e8345a6aa29dc3992f8a230f19b739db8453fa5e3b9c9a1d5608903e6455f3f1",
+              "target_pixels": 2235,
+              "target_sdk_visible": true,
+              "apple_scores": [
+                0.9519223570823669,
+                0.5999839901924133
+              ],
+              "apple_bbox_ious": [
+                0.0,
+                0.9732998583745427
+              ],
+              "false_positive_without_target_pixels": false
+            }
+          ],
+          "seconds": 29.024993333034217,
+          "stop_reason": "category_candidate"
+        },
+        {
+          "method": "scan_left_first",
+          "image_size": 640,
+          "frontend": "fasterrcnn",
+          "site": "south",
+          "verified": true,
+          "source_sha256": "0c594481bd9d6b02fb6d024634a3cef9706bf954f5c42e7402630fef410400c1",
+          "checkpoint_manifest_sha256": "4f17225e73bf40b0aca9c996c1803dfc03918bfa5972a66a785be871417114f4",
+          "initial_joint_probabilities": {
+            "aggregate_unresolved": 0.3554512046748357,
+            "unknown_instance": 0.3554512046748357,
+            "known_instance": 0.28909759065032864
+          },
+          "final_joint_probabilities": {
+            "aggregate_unresolved": 0.3554512046748357,
+            "unknown_instance": 0.3554512046748357,
+            "known_instance": 0.28909759065032864
+          },
+          "actions": [
+            {
+              "action": "RotateLeft",
+              "degrees": 45.0,
+              "success": true,
+              "outcome": "category_candidate",
+              "seconds": 4.471247333101928
+            }
+          ],
+          "rotation_count": 1,
+          "rotation_degrees": 45.0,
+          "all_actions_succeeded": true,
+          "any_category_positive": true,
+          "any_bbox_overlap": true,
+          "any_false_positive_without_pixels": false,
+          "frames": [
+            {
+              "index": 0,
+              "heading": 270.0,
+              "rgb_sha256": "294a450f5d3cd30ad07b58d9e194350ed968bc57d1227e5aeb8dbaa983ba8bd2",
+              "target_pixels": 0,
+              "target_sdk_visible": false,
+              "apple_scores": [],
+              "apple_bbox_ious": [],
+              "false_positive_without_target_pixels": false
+            },
+            {
+              "index": 1,
+              "heading": 225.0,
+              "rgb_sha256": "87f39be1d43673721c563c8eadefa8b0d93dbccf2a7a83b94e5f6a91f35dfb09",
+              "target_pixels": 2235,
+              "target_sdk_visible": true,
+              "apple_scores": [
+                0.9519569873809814,
+                0.5992876291275024
+              ],
+              "apple_bbox_ious": [
+                0.0,
+                0.9732612215336712
+              ],
+              "false_positive_without_target_pixels": false
+            }
+          ],
+          "seconds": 18.365607250016183,
+          "stop_reason": "category_candidate"
+        },
+        {
+          "method": "scan_right_first",
+          "image_size": 640,
+          "frontend": "fasterrcnn",
+          "site": "south",
+          "verified": true,
+          "source_sha256": "0c594481bd9d6b02fb6d024634a3cef9706bf954f5c42e7402630fef410400c1",
+          "checkpoint_manifest_sha256": "4f17225e73bf40b0aca9c996c1803dfc03918bfa5972a66a785be871417114f4",
+          "initial_joint_probabilities": {
+            "aggregate_unresolved": 0.3554512046748357,
+            "unknown_instance": 0.3554512046748357,
+            "known_instance": 0.28909759065032864
+          },
+          "final_joint_probabilities": {
+            "aggregate_unresolved": 0.3554512046748357,
+            "unknown_instance": 0.3554512046748357,
+            "known_instance": 0.28909759065032864
+          },
+          "actions": [
+            {
+              "action": "RotateRight",
+              "degrees": 45.0,
+              "success": true,
+              "outcome": "no_category_candidate",
+              "seconds": 4.376805000007153
+            },
+            {
+              "action": "RotateLeft",
+              "degrees": 90.0,
+              "success": true,
+              "outcome": "category_candidate",
+              "seconds": 6.515551917254925
+            }
+          ],
+          "rotation_count": 2,
+          "rotation_degrees": 135.0,
+          "all_actions_succeeded": true,
+          "any_category_positive": true,
+          "any_bbox_overlap": true,
+          "any_false_positive_without_pixels": false,
+          "frames": [
+            {
+              "index": 0,
+              "heading": 270.0,
+              "rgb_sha256": "f9bf9a9e59ba1e49f51c6ce7fcc69a11cadbfa7ff4e59d08f2a8651d66a2c9cb",
+              "target_pixels": 0,
+              "target_sdk_visible": false,
+              "apple_scores": [],
+              "apple_bbox_ious": [],
+              "false_positive_without_target_pixels": false
+            },
+            {
+              "index": 1,
+              "heading": 315.0,
+              "rgb_sha256": "056b496678fe5bb5e6527091810c3ca7073e7b15849b70ef78371cb99a64214d",
+              "target_pixels": 0,
+              "target_sdk_visible": false,
+              "apple_scores": [],
+              "apple_bbox_ious": [],
+              "false_positive_without_target_pixels": false
+            },
+            {
+              "index": 2,
+              "heading": 225.0,
+              "rgb_sha256": "e8345a6aa29dc3992f8a230f19b739db8453fa5e3b9c9a1d5608903e6455f3f1",
+              "target_pixels": 2235,
+              "target_sdk_visible": true,
+              "apple_scores": [
+                0.9519223570823669,
+                0.5999839901924133
+              ],
+              "apple_bbox_ious": [
+                0.0,
+                0.9732998583745427
+              ],
+              "false_positive_without_target_pixels": false
+            }
+          ],
+          "seconds": 28.681359749753028,
+          "stop_reason": "category_candidate"
+        }
+      ],
+      "complete_natural_closed_loop": false
+    }
+  }
+}

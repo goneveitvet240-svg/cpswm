@@ -1,0 +1,81 @@
+{
+  "capture_receipt_sha256": "6b0c96e72dd5fce3ff639b474f1952a333837a1a32ac2a6caba2c24a5d45bf22",
+  "depth_unit": null,
+  "archive_sampling_json": null,
+  "cutoff": "2026-09-28T20:17:09.459847+00:00",
+  "original_fasterrcnn_measurements": [
+    {
+      "observation_id": "3e762822-d145-4345-b879-0ad98f48ae8f",
+      "household_id": "51c20f50-9d82-5050-f704-9a53d62cfee6",
+      "session_id": "914a0788-6769-a1e2-1491-3367fd255bd7",
+      "trace_id": "c3349866-0738-69da-8bf6-858407b95560",
+      "sensor_id": "live-unity-camera",
+      "frame_id": "unity-main-camera",
+      "capture_time": "2026-09-28 20:17:09.435009+00:00",
+      "arrival_time": "2026-09-28 20:17:09.459847+00:00",
+      "inference_cutoff": "2026-09-28 20:17:09.459847+00:00",
+      "input_sha256": "a1cdb6f3d497378700b07b749bb4a2a6828253433095eb7c144395aa65c58e3c",
+      "receipt_sha256": "6b0c96e72dd5fce3ff639b474f1952a333837a1a32ac2a6caba2c24a5d45bf22",
+      "model_id": "torchvision/fasterrcnn_resnet50_fpn_v2/COCO_V1",
+      "weights_sha256": "dd69338a24b8d7381807e247652bdc356325bcbaf1cd3e092e00e0a1a58706bf",
+      "torch_version": "2.13.0",
+      "torchvision_version": "0.28.0",
+      "minimum_score": 0.5,
+      "width": 640,
+      "height": 640,
+      "candidates": [
+        {
+          "candidate_id": "6079f86d-0c81-5860-b3a4-f3af49f8e2b4",
+          "category": "bottle",
+          "detector_score": 0.9972794651985168,
+          "box_xyxy": [
+            416.71466064453125,
+            172.8096923828125,
+            464.8927917480469,
+            323.4104309082031
+          ]
+        },
+        {
+          "candidate_id": "445e680f-84cb-5edc-9daf-ed1991a0989d",
+          "category": "apple",
+          "detector_score": 0.9209120273590088,
+          "box_xyxy": [
+            315.484619140625,
+            232.8602752685547,
+            365.27740478515625,
+            279.2684020996094
+          ]
+        },
+        {
+          "candidate_id": "39893579-aa57-59d4-bf09-12f9d729d165",
+          "category": "dining table",
+          "detector_score": 0.8719386458396912,
+          "box_xyxy": [
+            158.1121826171875,
+            214.08518981933594,
+            635.7957153320312,
+            627.2457885742188
+          ]
+        },
+        {
+          "candidate_id": "d09842d9-94e2-58de-a8ed-042c40e9ca48",
+          "category": "bowl",
+          "detector_score": 0.8486075401306152,
+          "box_xyxy": [
+            515.3194580078125,
+            304.2139587402344,
+            628.6232299804688,
+            384.403076171875
+          ]
+        }
+      ],
+      "calibration_status": "UNCALIBRATED_CANDIDATES_ONLY",
+      "identity_status": "UNRESOLVED",
+      "pose_status": "NOT_ESTIMATED",
+      "negative_observation_authorized": false,
+      "resize_roundoff_clamps": 0,
+      "archive_sequence_id": null,
+      "archive_media_time": null
+    }
+  ]
+}

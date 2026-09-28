@@ -43,12 +43,17 @@ class UnityObservationExecutor:
         household_id: UUID,
         session_id: UUID,
         trace_id: UUID,
+        image_size: int | None = None,
     ) -> None:
+        if image_size is not None and (type(image_size) is not int or image_size not in (320, 640)):
+            raise ValueError("unsupported explicit Unity image size")
         self.scope = (household_id, session_id, trace_id)
         self.provenance = {
             name: hashlib.sha256(path.read_bytes()).hexdigest()
             for name, path in (("worker", worker), ("unity", binary), ("house", house))
         }
+        if image_size is not None:
+            self.provenance["capture_configuration"] = content_sha256((image_size, image_size, 60))
         log_dir.mkdir(parents=True, exist_ok=True)
         self._log = (log_dir / "transport.stderr").open("w")
         self._process = subprocess.Popen(
@@ -61,6 +66,7 @@ class UnityObservationExecutor:
                 str(house),
                 "--log-dir",
                 str(log_dir),
+                *([] if image_size is None else ["--image-size", str(image_size)]),
             ],
             stdin=subprocess.PIPE,
             stdout=subprocess.PIPE,

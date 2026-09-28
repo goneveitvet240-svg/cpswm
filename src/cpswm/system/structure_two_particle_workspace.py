@@ -11,6 +11,7 @@ from collections.abc import Mapping
 from copy import deepcopy
 from dataclasses import asdict, dataclass, fields, is_dataclass
 from math import fsum, isclose, isfinite, log
+from pathlib import Path
 from typing import Any, cast
 from uuid import UUID, uuid4
 
@@ -31,6 +32,8 @@ from cpswm.system.evaluation_operations.structure_two_selected_method import (
     normalize_particle_revisions,
 )
 from cpswm.system.reproducibility import content_sha256, content_uuid
+
+_NEURAL_COMPILED_SOURCES: dict[tuple[str, str], dict[str, str]] = {}
 
 
 def native_content_payload(value: Any) -> Any:
@@ -200,6 +203,7 @@ class NativePreparedInputBody:
     registered_locations: tuple[UUID, ...]
     world_support_sha256: str
     validated_projections: dict[UUID, NativePosteriorSource]
+    neural_evidence: Any = None
 
 
 class NativeParticleWorkspace:
@@ -228,6 +232,8 @@ class NativeParticleWorkspace:
         self.input_journal: dict[UUID, str] = {}
         self.input_bodies: dict[UUID, NativePreparedInputBody] = {}
         self.invalidated_revisions: set[UUID] = set()
+        self.joint_dependency_binding: str | None = None
+        self.neural_source_sha256: str | None = None
 
     def state_payload(self) -> dict[str, Any]:
         self._validate_persisted_state()
@@ -246,6 +252,8 @@ class NativeParticleWorkspace:
                     "input_journal": self.input_journal,
                     "input_bodies": self.input_bodies,
                     "invalidated_revisions": tuple(sorted(self.invalidated_revisions, key=str)),
+                    "joint_dependency_binding": self.joint_dependency_binding,
+                    "neural_source_sha256": self.neural_source_sha256,
                     "input_status": "explicit_prepared_inputs_not_calibrated",
                 }
             ),
@@ -412,6 +420,77 @@ class NativeParticleWorkspace:
         if _validated_records is not None:
             _validated_records[particle_id] = record
 
+    def _validate_neural_implementation(self) -> None:
+        """Check verifier helpers and their loaded CPSWM dependencies against source.
+
+        This is bounded owned-code integrity, not an adversarial Python sandbox.
+        The native owner pins this verifier's bytes during explicit configuration.
+        Compiler output is cached; live function identities are checked each call.
+        """
+        import ast
+        import hashlib
+        import importlib
+        import inspect
+        from types import CodeType
+
+        from cpswm.system.structure_two_execution import _code_object_sha256, _source_code_objects
+
+        own_path = Path(__file__).with_name("native_neural_production.py")
+        if hashlib.sha256(own_path.read_bytes()).hexdigest() != self.neural_source_sha256:
+            raise ValueError("native neural verifier source differs from configured implementation")
+        for name in (
+            "cpswm.system.native_neural_production",
+            "cpswm.data_preflight.proposal_inference_session",
+            "cpswm.data_preflight.proposal_decoder",
+            "cpswm.data_preflight.proposal_trainer",
+            "cpswm.data_preflight.typed_proposal_networks",
+        ):
+            module = importlib.import_module(name)
+            path = Path(module.__file__ or "")
+            data = path.read_bytes()
+            key = (str(path), hashlib.sha256(data).hexdigest())
+            if key not in _NEURAL_COMPILED_SOURCES:
+                _NEURAL_COMPILED_SOURCES[key] = {
+                    code.co_qualname: _code_object_sha256(code)
+                    for code in _source_code_objects(path, data)
+                    if code.co_flags & inspect.CO_NEWLOCALS and "<" not in code.co_qualname
+                }
+            compiled = _NEURAL_COMPILED_SOURCES[key]
+            for qualname, expected in compiled.items():
+                owner: Any = module
+                names = qualname.split(".")
+                for part in names[:-1]:
+                    owner = vars(owner).get(part)
+                    if not isinstance(owner, type):
+                        raise ValueError("native neural implementation class changed: " + qualname)
+                function = vars(owner).get(names[-1])
+                if isinstance(function, staticmethod | classmethod):
+                    function = function.__func__
+                elif isinstance(function, property):
+                    function = function.fget
+                code = getattr(function, "__code__", None)
+                if (
+                    not isinstance(code, CodeType)
+                    or getattr(function, "__globals__", None) is not vars(module)
+                    or expected != _code_object_sha256(code)
+                ):
+                    raise ValueError("native neural loaded implementation changed: " + qualname)
+            # Also bind the imported objects actually called by these helpers.
+            # Matching source for a helper with a replaced imported verifier is
+            # insufficient. Conditional/local-only imports absent here are skipped.
+            for node in ast.walk(ast.parse(data)):
+                if not isinstance(node, ast.ImportFrom) or not node.module or node.level:
+                    continue
+                imported = importlib.import_module(node.module)
+                for alias in node.names:
+                    local_name = alias.asname or alias.name
+                    if local_name in vars(module) and vars(module)[local_name] is not getattr(
+                        imported, alias.name, None
+                    ):
+                        raise ValueError(
+                            "native neural imported implementation changed: " + local_name
+                        )
+
     def _validated_input_body(self, cluster: UUID) -> NativePreparedInputBody:
         body = self.input_bodies.get(cluster)
         digest = self.input_journal.get(cluster)
@@ -419,6 +498,13 @@ class NativeParticleWorkspace:
             raise ValueError("prepared input journal body is missing or has the wrong type")
         if digest != native_content_sha256(body):
             raise ValueError("prepared input journal body changed")
+        if body.neural_evidence is not None:
+            self._validate_neural_implementation()
+            from cpswm.system.native_neural_production import validate_neural_input_body
+
+            validate_neural_input_body(body, self)
+        elif any(r.integration_log_weight != 0.0 for r in body.receipts):
+            raise ValueError("integration measure requires verified neural kernel evidence")
         if (
             body.workspace_runtime_id != self.runtime_id
             or body.registered_locations != self.registered_locations
@@ -560,6 +646,7 @@ class NativeParticleWorkspace:
         ledger_head_sha256: str,
         unresolved_log_weight: float,
         validated_projections: dict[UUID, NativePosteriorSource] | None = None,
+        neural_evidence: Any = None,
     ) -> ParticleRevisionBatch:
         if not receipts:
             raise ValueError("prepared candidate batch must be nonempty")
@@ -661,7 +748,15 @@ class NativeParticleWorkspace:
             registered_locations=allowed_locations,
             world_support_sha256=world_support_sha256,
             validated_projections=validated_projections,
+            neural_evidence=deepcopy(neural_evidence),
         )
+        if neural_evidence is not None:
+            self._validate_neural_implementation()
+            from cpswm.system.native_neural_production import validate_neural_input_body
+
+            validate_neural_input_body(body, self, current=True)
+        elif any(receipt.integration_log_weight != 0.0 for receipt in receipts):
+            raise ValueError("integration measure requires verified neural kernel evidence")
         fingerprint = native_content_sha256(body)
         cluster = receipts[0].proposal.evidence_cluster_id
         if cluster in self.input_journal:
@@ -701,7 +796,10 @@ class NativeParticleWorkspace:
                     raise ValueError("posterior factor or runtime source mismatch")
             elif receipt.source_posterior_snapshot_id is not None:
                 raise ValueError("raw likelihood cannot claim a posterior source")
-            if proposal.proposer_model_version != "explicit-prepared-candidates@1":
+            if proposal.proposer_model_version != "explicit-prepared-candidates@1" and (
+                neural_evidence is None
+                or proposal.proposer_model_version != neural_evidence.model_version
+            ):
                 raise ValueError("neural/model proposal requires a valid selected artifact binding")
             if proposal.source_snapshot_id != snapshot_id:
                 raise ValueError("candidate source snapshot is not current")

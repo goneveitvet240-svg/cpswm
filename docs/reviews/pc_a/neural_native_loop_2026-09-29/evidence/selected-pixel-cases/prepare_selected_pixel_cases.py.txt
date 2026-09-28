@@ -1,0 +1,40 @@
+"""Copy three explicitly selected examples from verified round5 owned artifacts."""
+import hashlib
+import json
+import shutil
+import sqlite3
+import sys
+from pathlib import Path
+
+sys.path[:0] = ['tools', 'tests']
+import verify_neural_camera_comparison  # register the owned evidence classes
+from cpswm.system.continuous_state_codec import StateCodec
+from cpswm.system.structure_two_continuous_input import ObservationDelivery
+
+src = Path('/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/neural-native-loop-20260929/round5-attempt01')
+dst = Path('docs/reviews/pc_a/neural_native_loop_2026-09-29/evidence/selected-pixel-cases')
+specs = [('south_320_missed', 320, 'south', 'typed_factor_graph_transformer', 2), ('south_640_found', 640, 'south', 'typed_factor_graph_transformer', 2), ('north_640_wrong_stop', 640, 'north', 'scan_left_first', 1)]
+cases = []
+for name, size, site, method, index in specs:
+    directory = src / f'matrix-{size}/fasterrcnn' / site / method
+    report = json.loads((directory / 'result.json').read_text())
+    with sqlite3.connect(f'file:{directory}/state.sqlite?mode=ro', uri=True) as db:
+        document = db.execute('select document from checkpoint where id=1').fetchone()[0]
+    fields = StateCodec().loads(document)['fields']
+    target = (directory / f'unity-logs/evaluator_only/{index:03d}-rgb.npy').read_bytes()
+    raw = next(r for r in fields['_raw'].values() if r.payload_bytes == target)
+    row = next(r for r in report['actions'] if not r.get('stopped') and str(raw.envelope().identity.observation_id) in r['delivery_observation_ids'])
+    delivery = next(v for v in fields['_observation_status'].values() if type(v) is ObservationDelivery and raw in v.observations)
+    output = dst / name
+    (output / 'evaluator_only').mkdir(parents=True, exist_ok=True)
+    (output / 'rgb.npy').write_bytes(target)
+    (output / 'envelope.json').write_text(raw.envelope_json)
+    metadata = dict(capture_receipt_sha256=raw.capture_receipt_sha256, depth_unit=raw.depth_unit, archive_sampling_json=raw.archive_sampling_json, cutoff=delivery.received_at.isoformat(), original_fasterrcnn_measurements=row['pixel_measurements'])
+    (output / 'raw.json').write_text(json.dumps(metadata, indent=2) + '\n')
+    shutil.copyfile(directory / f'unity-logs/evaluator_only/{index:03d}-mask.npy', output / 'evaluator_only/target-mask.npy')
+    truth = json.loads((directory / 'unity-logs/evaluator_only/actions.json').read_text())[index]
+    (output / 'evaluator_only/frame.json').write_text(json.dumps(truth, indent=2) + '\n')
+    cases.append(dict(name=name, image_size=size, site=site, method=method, frame_index=index, source_code_sha='c54f890aecd5c6af2f9a2005413f7cbf0ba7920b'))
+records = [dict(path=str(p.relative_to(dst)), bytes=p.stat().st_size, sha256=hashlib.sha256(p.read_bytes()).hexdigest()) for p in sorted(dst.rglob('*')) if p.is_file() and p.name != 'FILES.json']
+(dst / 'FILES.json').write_text(json.dumps(dict(scope='POST_HOC_SELECTED_FAILURE_AND_SUCCESS_REPRODUCTION_NOT_A_BENCHMARK', packaging_script_sha256=hashlib.sha256(Path(__file__).read_bytes()).hexdigest(), cases=cases, files=records), indent=2) + '\n')
+print({'files': len(records), 'bytes': sum(r['bytes'] for r in records)})

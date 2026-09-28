@@ -1,0 +1,646 @@
+FFFFF.F..                                                                [100%]
+=================================== FAILURES ===================================
+_ test_real_checkpoint_to_native_joint_and_camera_with_exact_enumeration[typed_factor_graph_transformer] _
+
+tmp_path = PosixPath('/private/var/folders/x2/000r8p0n6s393lj2sg8wk5f40000gn/T/pytest-of-pangwei/pytest-2194/test_real_checkpoint_to_native0')
+checkpoints = {'typed_factor_graph_transformer': (PosixPath('/private/var/folders/x2/000r8p0n6s393lj2sg8wk5f40000gn/T/pytest-of-pang...-checkpoints0/autoregressive_typed_graph_policy'), '9319832a504e8dd351bb9d59495e0c2720f2f39bdf74788c96062a00dba64e35')}
+arm = 'typed_factor_graph_transformer'
+
+    @pytest.mark.parametrize("arm", ARMS)
+    def test_real_checkpoint_to_native_joint_and_camera_with_exact_enumeration(
+        tmp_path, checkpoints, arm
+    ):
+        path, pin = checkpoints[arm]
+        producer = NeuralNativeProducer(JointFixture(), path, manifest_sha256=pin)
+        stream, store, transition, _, when = setup(tmp_path / "db", producer)
+        before = stream._system.core._hybrid_loop.ledger.export_state()
+>       result = collect_posterior_step(
+            stream,
+            model=Model(stream),
+            executor=Camera(transition),
+            decision_time=when + timedelta(seconds=2),
+        )
+
+tests/test_native_neural_production.py:86: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/cpswm/system/continuous_camera_collection.py:107: in collect_posterior_step
+    stream.produce_joint_posterior()
+src/cpswm/system/structure_two_continuous_input.py:815: in produce_joint_posterior
+    core.stage_prepared_particle_candidates(
+src/cpswm/system/prototype_spine.py:425: in wrapped
+    return method(self, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/cpswm/system/prototype_spine.py:2971: in stage_prepared_particle_candidates
+    batch = self._particle_workspace.advance(
+src/cpswm/system/structure_two_particle_workspace.py:677: in advance
+    validate_neural_input_body(body, self, current=True)
+src/cpswm/system/native_neural_production.py:361: in validate_neural_input_body
+    verify_neural_evidence(evidence)
+src/cpswm/system/native_neural_production.py:304: in verify_neural_evidence
+    digest = native_content_sha256(evidence)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/cpswm/system/structure_two_particle_workspace.py:75: in native_content_sha256
+    return content_sha256(native_content_payload(value))
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/cpswm/system/reproducibility.py:75: in content_sha256
+    return hashlib.sha256(canonical_json(value).encode("utf-8")).hexdigest()
+                          ^^^^^^^^^^^^^^^^^^^^^
+src/cpswm/system/reproducibility.py:65: in canonical_json
+    return json.dumps(
+/Users/pangwei/.local/share/uv/python/cpython-3.13.5-macos-aarch64-none/lib/python3.13/json/__init__.py:238: in dumps
+    **kw).encode(obj)
+          ^^^^^^^^^^^
+/Users/pangwei/.local/share/uv/python/cpython-3.13.5-macos-aarch64-none/lib/python3.13/json/encoder.py:200: in encode
+    chunks = self.iterencode(o, _one_shot=True)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/Users/pangwei/.local/share/uv/python/cpython-3.13.5-macos-aarch64-none/lib/python3.13/json/encoder.py:261: in iterencode
+    return _iterencode(o, 0)
+           ^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <json.encoder.JSONEncoder object at 0x11669ef90>
+o = b"\x93NUMPY\x01\x00v\x00{'descr': '|u1', 'fortran_order': False, 'shape': (4, 4, 3), }                                ...00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00"
+
+    def default(self, o):
+        """Implement this method in a subclass such that it returns
+        a serializable object for ``o``, or calls the base implementation
+        (to raise a ``TypeError``).
+    
+        For example, to support arbitrary iterators, you could
+        implement default like this::
+    
+            def default(self, o):
+                try:
+                    iterable = iter(o)
+                except TypeError:
+                    pass
+                else:
+                    return list(iterable)
+                # Let the base class default method raise the TypeError
+                return super().default(o)
+    
+        """
+>       raise TypeError(f'Object of type {o.__class__.__name__} '
+                        f'is not JSON serializable')
+E       TypeError: Object of type bytes is not JSON serializable
+
+/Users/pangwei/.local/share/uv/python/cpython-3.13.5-macos-aarch64-none/lib/python3.13/json/encoder.py:180: TypeError
+_ test_real_checkpoint_to_native_joint_and_camera_with_exact_enumeration[slot_conditioned_perceiver] _
+
+tmp_path = PosixPath('/private/var/folders/x2/000r8p0n6s393lj2sg8wk5f40000gn/T/pytest-of-pangwei/pytest-2194/test_real_checkpoint_to_native1')
+checkpoints = {'typed_factor_graph_transformer': (PosixPath('/private/var/folders/x2/000r8p0n6s393lj2sg8wk5f40000gn/T/pytest-of-pang...-checkpoints0/autoregressive_typed_graph_policy'), '9319832a504e8dd351bb9d59495e0c2720f2f39bdf74788c96062a00dba64e35')}
+arm = 'slot_conditioned_perceiver'
+
+    @pytest.mark.parametrize("arm", ARMS)
+    def test_real_checkpoint_to_native_joint_and_camera_with_exact_enumeration(
+        tmp_path, checkpoints, arm
+    ):
+        path, pin = checkpoints[arm]
+        producer = NeuralNativeProducer(JointFixture(), path, manifest_sha256=pin)
+        stream, store, transition, _, when = setup(tmp_path / "db", producer)
+        before = stream._system.core._hybrid_loop.ledger.export_state()
+>       result = collect_posterior_step(
+            stream,
+            model=Model(stream),
+            executor=Camera(transition),
+            decision_time=when + timedelta(seconds=2),
+        )
+
+tests/test_native_neural_production.py:86: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/cpswm/system/continuous_camera_collection.py:107: in collect_posterior_step
+    stream.produce_joint_posterior()
+src/cpswm/system/structure_two_continuous_input.py:815: in produce_joint_posterior
+    core.stage_prepared_particle_candidates(
+src/cpswm/system/prototype_spine.py:425: in wrapped
+    return method(self, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/cpswm/system/prototype_spine.py:2971: in stage_prepared_particle_candidates
+    batch = self._particle_workspace.advance(
+src/cpswm/system/structure_two_particle_workspace.py:677: in advance
+    validate_neural_input_body(body, self, current=True)
+src/cpswm/system/native_neural_production.py:361: in validate_neural_input_body
+    verify_neural_evidence(evidence)
+src/cpswm/system/native_neural_production.py:304: in verify_neural_evidence
+    digest = native_content_sha256(evidence)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/cpswm/system/structure_two_particle_workspace.py:75: in native_content_sha256
+    return content_sha256(native_content_payload(value))
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/cpswm/system/reproducibility.py:75: in content_sha256
+    return hashlib.sha256(canonical_json(value).encode("utf-8")).hexdigest()
+                          ^^^^^^^^^^^^^^^^^^^^^
+src/cpswm/system/reproducibility.py:65: in canonical_json
+    return json.dumps(
+/Users/pangwei/.local/share/uv/python/cpython-3.13.5-macos-aarch64-none/lib/python3.13/json/__init__.py:238: in dumps
+    **kw).encode(obj)
+          ^^^^^^^^^^^
+/Users/pangwei/.local/share/uv/python/cpython-3.13.5-macos-aarch64-none/lib/python3.13/json/encoder.py:200: in encode
+    chunks = self.iterencode(o, _one_shot=True)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/Users/pangwei/.local/share/uv/python/cpython-3.13.5-macos-aarch64-none/lib/python3.13/json/encoder.py:261: in iterencode
+    return _iterencode(o, 0)
+           ^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <json.encoder.JSONEncoder object at 0x116b86690>
+o = b"\x93NUMPY\x01\x00v\x00{'descr': '|u1', 'fortran_order': False, 'shape': (4, 4, 3), }                                ...00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00"
+
+    def default(self, o):
+        """Implement this method in a subclass such that it returns
+        a serializable object for ``o``, or calls the base implementation
+        (to raise a ``TypeError``).
+    
+        For example, to support arbitrary iterators, you could
+        implement default like this::
+    
+            def default(self, o):
+                try:
+                    iterable = iter(o)
+                except TypeError:
+                    pass
+                else:
+                    return list(iterable)
+                # Let the base class default method raise the TypeError
+                return super().default(o)
+    
+        """
+>       raise TypeError(f'Object of type {o.__class__.__name__} '
+                        f'is not JSON serializable')
+E       TypeError: Object of type bytes is not JSON serializable
+
+/Users/pangwei/.local/share/uv/python/cpython-3.13.5-macos-aarch64-none/lib/python3.13/json/encoder.py:180: TypeError
+_ test_real_checkpoint_to_native_joint_and_camera_with_exact_enumeration[autoregressive_typed_graph_policy] _
+
+tmp_path = PosixPath('/private/var/folders/x2/000r8p0n6s393lj2sg8wk5f40000gn/T/pytest-of-pangwei/pytest-2194/test_real_checkpoint_to_native2')
+checkpoints = {'typed_factor_graph_transformer': (PosixPath('/private/var/folders/x2/000r8p0n6s393lj2sg8wk5f40000gn/T/pytest-of-pang...-checkpoints0/autoregressive_typed_graph_policy'), '9319832a504e8dd351bb9d59495e0c2720f2f39bdf74788c96062a00dba64e35')}
+arm = 'autoregressive_typed_graph_policy'
+
+    @pytest.mark.parametrize("arm", ARMS)
+    def test_real_checkpoint_to_native_joint_and_camera_with_exact_enumeration(
+        tmp_path, checkpoints, arm
+    ):
+        path, pin = checkpoints[arm]
+        producer = NeuralNativeProducer(JointFixture(), path, manifest_sha256=pin)
+        stream, store, transition, _, when = setup(tmp_path / "db", producer)
+        before = stream._system.core._hybrid_loop.ledger.export_state()
+>       result = collect_posterior_step(
+            stream,
+            model=Model(stream),
+            executor=Camera(transition),
+            decision_time=when + timedelta(seconds=2),
+        )
+
+tests/test_native_neural_production.py:86: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/cpswm/system/continuous_camera_collection.py:107: in collect_posterior_step
+    stream.produce_joint_posterior()
+src/cpswm/system/structure_two_continuous_input.py:815: in produce_joint_posterior
+    core.stage_prepared_particle_candidates(
+src/cpswm/system/prototype_spine.py:425: in wrapped
+    return method(self, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/cpswm/system/prototype_spine.py:2971: in stage_prepared_particle_candidates
+    batch = self._particle_workspace.advance(
+src/cpswm/system/structure_two_particle_workspace.py:677: in advance
+    validate_neural_input_body(body, self, current=True)
+src/cpswm/system/native_neural_production.py:361: in validate_neural_input_body
+    verify_neural_evidence(evidence)
+src/cpswm/system/native_neural_production.py:304: in verify_neural_evidence
+    digest = native_content_sha256(evidence)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/cpswm/system/structure_two_particle_workspace.py:75: in native_content_sha256
+    return content_sha256(native_content_payload(value))
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/cpswm/system/reproducibility.py:75: in content_sha256
+    return hashlib.sha256(canonical_json(value).encode("utf-8")).hexdigest()
+                          ^^^^^^^^^^^^^^^^^^^^^
+src/cpswm/system/reproducibility.py:65: in canonical_json
+    return json.dumps(
+/Users/pangwei/.local/share/uv/python/cpython-3.13.5-macos-aarch64-none/lib/python3.13/json/__init__.py:238: in dumps
+    **kw).encode(obj)
+          ^^^^^^^^^^^
+/Users/pangwei/.local/share/uv/python/cpython-3.13.5-macos-aarch64-none/lib/python3.13/json/encoder.py:200: in encode
+    chunks = self.iterencode(o, _one_shot=True)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/Users/pangwei/.local/share/uv/python/cpython-3.13.5-macos-aarch64-none/lib/python3.13/json/encoder.py:261: in iterencode
+    return _iterencode(o, 0)
+           ^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <json.encoder.JSONEncoder object at 0x1169edc70>
+o = b"\x93NUMPY\x01\x00v\x00{'descr': '|u1', 'fortran_order': False, 'shape': (4, 4, 3), }                                ...00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00"
+
+    def default(self, o):
+        """Implement this method in a subclass such that it returns
+        a serializable object for ``o``, or calls the base implementation
+        (to raise a ``TypeError``).
+    
+        For example, to support arbitrary iterators, you could
+        implement default like this::
+    
+            def default(self, o):
+                try:
+                    iterable = iter(o)
+                except TypeError:
+                    pass
+                else:
+                    return list(iterable)
+                # Let the base class default method raise the TypeError
+                return super().default(o)
+    
+        """
+>       raise TypeError(f'Object of type {o.__class__.__name__} '
+                        f'is not JSON serializable')
+E       TypeError: Object of type bytes is not JSON serializable
+
+/Users/pangwei/.local/share/uv/python/cpython-3.13.5-macos-aarch64-none/lib/python3.13/json/encoder.py:180: TypeError
+_ test_complete_forged_neural_outputs_rejected_before_native_mutation[probabilities] _
+
+tmp_path = PosixPath('/private/var/folders/x2/000r8p0n6s393lj2sg8wk5f40000gn/T/pytest-of-pangwei/pytest-2194/test_complete_forged_neural_ou0')
+checkpoints = {'typed_factor_graph_transformer': (PosixPath('/private/var/folders/x2/000r8p0n6s393lj2sg8wk5f40000gn/T/pytest-of-pang...-checkpoints0/autoregressive_typed_graph_policy'), '9319832a504e8dd351bb9d59495e0c2720f2f39bdf74788c96062a00dba64e35')}
+attack = 'probabilities'
+
+    @pytest.mark.parametrize(
+        "attack", ["probabilities", "measure", "ancestor", "weights", "proof_omitted"]
+    )
+    def test_complete_forged_neural_outputs_rejected_before_native_mutation(
+        tmp_path, checkpoints, attack
+    ):
+        path, pin = checkpoints[ARMS[0]]
+        producer = NeuralNativeProducer(JointFixture(), path, manifest_sha256=pin)
+        stream, store, _, _, when = setup(tmp_path / "db", producer)
+        produced = producer.produce(context_for(stream, when))
+        evidence = produced.neural_evidence
+        if attack == "probabilities":
+            context, support = proposal_view(evidence.context, evidence.base_candidates)
+            d = TypedProposalDistribution(
+                context=context,
+                runtime_candidates=support,
+                scorer=lambda context, axis, prefix, choices, **kwargs: torch.zeros(len(choices)),
+            )
+            evidence = replace(evidence, scored=tuple(d.decode(k) for k in d.target_sha256s))
+            produced = replace(
+                produced,
+                neural_evidence=evidence,
+                receipts=materialize(evidence.base_candidates, evidence),
+            )
+        elif attack == "measure":
+            produced = replace(
+                produced,
+                receipts=tuple(
+                    r.model_copy(update={"integration_log_weight": 0.0}) for r in produced.receipts
+                ),
+            )
+        elif attack == "ancestor":
+            altered = replace(evidence.context, ledger_head_sha256="0" * 64)
+            evidence = replace(
+                evidence,
+                context=altered,
+                base_candidates=replace(
+                    evidence.base_candidates, context_sha256=altered.content_sha256
+                ),
+            )
+            produced = replace(produced, neural_evidence=evidence)
+        elif attack == "weights":
+            # A self-consistent changed receipt still differs from the executed proof.
+            r = produced.receipts[0]
+            produced = replace(
+                produced,
+                receipts=(
+                    r.model_copy(update={"transition_log_probability": -1.0}),
+                    *produced.receipts[1:],
+                ),
+            )
+        else:
+            produced = replace(produced, neural_evidence=None)
+        core = stream._system.core
+        before = native_content_sha256(core._particle_workspace.state_payload())
+        ledger = core._hybrid_loop.ledger.export_state()
+        with pytest.raises(ValueError):
+>           stage(stream, produced)
+
+tests/test_native_neural_production.py:184: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_native_neural_production.py:70: in stage
+    return stream._system.core.stage_prepared_particle_candidates(
+src/cpswm/system/prototype_spine.py:425: in wrapped
+    return method(self, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/cpswm/system/prototype_spine.py:2971: in stage_prepared_particle_candidates
+    batch = self._particle_workspace.advance(
+src/cpswm/system/structure_two_particle_workspace.py:677: in advance
+    validate_neural_input_body(body, self, current=True)
+src/cpswm/system/native_neural_production.py:361: in validate_neural_input_body
+    verify_neural_evidence(evidence)
+src/cpswm/system/native_neural_production.py:304: in verify_neural_evidence
+    digest = native_content_sha256(evidence)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/cpswm/system/structure_two_particle_workspace.py:75: in native_content_sha256
+    return content_sha256(native_content_payload(value))
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/cpswm/system/reproducibility.py:75: in content_sha256
+    return hashlib.sha256(canonical_json(value).encode("utf-8")).hexdigest()
+                          ^^^^^^^^^^^^^^^^^^^^^
+src/cpswm/system/reproducibility.py:65: in canonical_json
+    return json.dumps(
+/Users/pangwei/.local/share/uv/python/cpython-3.13.5-macos-aarch64-none/lib/python3.13/json/__init__.py:238: in dumps
+    **kw).encode(obj)
+          ^^^^^^^^^^^
+/Users/pangwei/.local/share/uv/python/cpython-3.13.5-macos-aarch64-none/lib/python3.13/json/encoder.py:200: in encode
+    chunks = self.iterencode(o, _one_shot=True)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/Users/pangwei/.local/share/uv/python/cpython-3.13.5-macos-aarch64-none/lib/python3.13/json/encoder.py:261: in iterencode
+    return _iterencode(o, 0)
+           ^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <json.encoder.JSONEncoder object at 0x11656d400>
+o = b"\x93NUMPY\x01\x00v\x00{'descr': '|u1', 'fortran_order': False, 'shape': (4, 4, 3), }                                ...00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00"
+
+    def default(self, o):
+        """Implement this method in a subclass such that it returns
+        a serializable object for ``o``, or calls the base implementation
+        (to raise a ``TypeError``).
+    
+        For example, to support arbitrary iterators, you could
+        implement default like this::
+    
+            def default(self, o):
+                try:
+                    iterable = iter(o)
+                except TypeError:
+                    pass
+                else:
+                    return list(iterable)
+                # Let the base class default method raise the TypeError
+                return super().default(o)
+    
+        """
+>       raise TypeError(f'Object of type {o.__class__.__name__} '
+                        f'is not JSON serializable')
+E       TypeError: Object of type bytes is not JSON serializable
+
+/Users/pangwei/.local/share/uv/python/cpython-3.13.5-macos-aarch64-none/lib/python3.13/json/encoder.py:180: TypeError
+_ test_complete_forged_neural_outputs_rejected_before_native_mutation[measure] _
+
+tmp_path = PosixPath('/private/var/folders/x2/000r8p0n6s393lj2sg8wk5f40000gn/T/pytest-of-pangwei/pytest-2194/test_complete_forged_neural_ou1')
+checkpoints = {'typed_factor_graph_transformer': (PosixPath('/private/var/folders/x2/000r8p0n6s393lj2sg8wk5f40000gn/T/pytest-of-pang...-checkpoints0/autoregressive_typed_graph_policy'), '9319832a504e8dd351bb9d59495e0c2720f2f39bdf74788c96062a00dba64e35')}
+attack = 'measure'
+
+    @pytest.mark.parametrize(
+        "attack", ["probabilities", "measure", "ancestor", "weights", "proof_omitted"]
+    )
+    def test_complete_forged_neural_outputs_rejected_before_native_mutation(
+        tmp_path, checkpoints, attack
+    ):
+        path, pin = checkpoints[ARMS[0]]
+        producer = NeuralNativeProducer(JointFixture(), path, manifest_sha256=pin)
+        stream, store, _, _, when = setup(tmp_path / "db", producer)
+        produced = producer.produce(context_for(stream, when))
+        evidence = produced.neural_evidence
+        if attack == "probabilities":
+            context, support = proposal_view(evidence.context, evidence.base_candidates)
+            d = TypedProposalDistribution(
+                context=context,
+                runtime_candidates=support,
+                scorer=lambda context, axis, prefix, choices, **kwargs: torch.zeros(len(choices)),
+            )
+            evidence = replace(evidence, scored=tuple(d.decode(k) for k in d.target_sha256s))
+            produced = replace(
+                produced,
+                neural_evidence=evidence,
+                receipts=materialize(evidence.base_candidates, evidence),
+            )
+        elif attack == "measure":
+            produced = replace(
+                produced,
+                receipts=tuple(
+                    r.model_copy(update={"integration_log_weight": 0.0}) for r in produced.receipts
+                ),
+            )
+        elif attack == "ancestor":
+            altered = replace(evidence.context, ledger_head_sha256="0" * 64)
+            evidence = replace(
+                evidence,
+                context=altered,
+                base_candidates=replace(
+                    evidence.base_candidates, context_sha256=altered.content_sha256
+                ),
+            )
+            produced = replace(produced, neural_evidence=evidence)
+        elif attack == "weights":
+            # A self-consistent changed receipt still differs from the executed proof.
+            r = produced.receipts[0]
+            produced = replace(
+                produced,
+                receipts=(
+                    r.model_copy(update={"transition_log_probability": -1.0}),
+                    *produced.receipts[1:],
+                ),
+            )
+        else:
+            produced = replace(produced, neural_evidence=None)
+        core = stream._system.core
+        before = native_content_sha256(core._particle_workspace.state_payload())
+        ledger = core._hybrid_loop.ledger.export_state()
+        with pytest.raises(ValueError):
+>           stage(stream, produced)
+
+tests/test_native_neural_production.py:184: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_native_neural_production.py:70: in stage
+    return stream._system.core.stage_prepared_particle_candidates(
+src/cpswm/system/prototype_spine.py:425: in wrapped
+    return method(self, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/cpswm/system/prototype_spine.py:2971: in stage_prepared_particle_candidates
+    batch = self._particle_workspace.advance(
+src/cpswm/system/structure_two_particle_workspace.py:677: in advance
+    validate_neural_input_body(body, self, current=True)
+src/cpswm/system/native_neural_production.py:361: in validate_neural_input_body
+    verify_neural_evidence(evidence)
+src/cpswm/system/native_neural_production.py:304: in verify_neural_evidence
+    digest = native_content_sha256(evidence)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/cpswm/system/structure_two_particle_workspace.py:75: in native_content_sha256
+    return content_sha256(native_content_payload(value))
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/cpswm/system/reproducibility.py:75: in content_sha256
+    return hashlib.sha256(canonical_json(value).encode("utf-8")).hexdigest()
+                          ^^^^^^^^^^^^^^^^^^^^^
+src/cpswm/system/reproducibility.py:65: in canonical_json
+    return json.dumps(
+/Users/pangwei/.local/share/uv/python/cpython-3.13.5-macos-aarch64-none/lib/python3.13/json/__init__.py:238: in dumps
+    **kw).encode(obj)
+          ^^^^^^^^^^^
+/Users/pangwei/.local/share/uv/python/cpython-3.13.5-macos-aarch64-none/lib/python3.13/json/encoder.py:200: in encode
+    chunks = self.iterencode(o, _one_shot=True)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/Users/pangwei/.local/share/uv/python/cpython-3.13.5-macos-aarch64-none/lib/python3.13/json/encoder.py:261: in iterencode
+    return _iterencode(o, 0)
+           ^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <json.encoder.JSONEncoder object at 0x116dea450>
+o = b"\x93NUMPY\x01\x00v\x00{'descr': '|u1', 'fortran_order': False, 'shape': (4, 4, 3), }                                ...00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00"
+
+    def default(self, o):
+        """Implement this method in a subclass such that it returns
+        a serializable object for ``o``, or calls the base implementation
+        (to raise a ``TypeError``).
+    
+        For example, to support arbitrary iterators, you could
+        implement default like this::
+    
+            def default(self, o):
+                try:
+                    iterable = iter(o)
+                except TypeError:
+                    pass
+                else:
+                    return list(iterable)
+                # Let the base class default method raise the TypeError
+                return super().default(o)
+    
+        """
+>       raise TypeError(f'Object of type {o.__class__.__name__} '
+                        f'is not JSON serializable')
+E       TypeError: Object of type bytes is not JSON serializable
+
+/Users/pangwei/.local/share/uv/python/cpython-3.13.5-macos-aarch64-none/lib/python3.13/json/encoder.py:180: TypeError
+_ test_complete_forged_neural_outputs_rejected_before_native_mutation[weights] _
+
+tmp_path = PosixPath('/private/var/folders/x2/000r8p0n6s393lj2sg8wk5f40000gn/T/pytest-of-pangwei/pytest-2194/test_complete_forged_neural_ou3')
+checkpoints = {'typed_factor_graph_transformer': (PosixPath('/private/var/folders/x2/000r8p0n6s393lj2sg8wk5f40000gn/T/pytest-of-pang...-checkpoints0/autoregressive_typed_graph_policy'), '9319832a504e8dd351bb9d59495e0c2720f2f39bdf74788c96062a00dba64e35')}
+attack = 'weights'
+
+    @pytest.mark.parametrize(
+        "attack", ["probabilities", "measure", "ancestor", "weights", "proof_omitted"]
+    )
+    def test_complete_forged_neural_outputs_rejected_before_native_mutation(
+        tmp_path, checkpoints, attack
+    ):
+        path, pin = checkpoints[ARMS[0]]
+        producer = NeuralNativeProducer(JointFixture(), path, manifest_sha256=pin)
+        stream, store, _, _, when = setup(tmp_path / "db", producer)
+        produced = producer.produce(context_for(stream, when))
+        evidence = produced.neural_evidence
+        if attack == "probabilities":
+            context, support = proposal_view(evidence.context, evidence.base_candidates)
+            d = TypedProposalDistribution(
+                context=context,
+                runtime_candidates=support,
+                scorer=lambda context, axis, prefix, choices, **kwargs: torch.zeros(len(choices)),
+            )
+            evidence = replace(evidence, scored=tuple(d.decode(k) for k in d.target_sha256s))
+            produced = replace(
+                produced,
+                neural_evidence=evidence,
+                receipts=materialize(evidence.base_candidates, evidence),
+            )
+        elif attack == "measure":
+            produced = replace(
+                produced,
+                receipts=tuple(
+                    r.model_copy(update={"integration_log_weight": 0.0}) for r in produced.receipts
+                ),
+            )
+        elif attack == "ancestor":
+            altered = replace(evidence.context, ledger_head_sha256="0" * 64)
+            evidence = replace(
+                evidence,
+                context=altered,
+                base_candidates=replace(
+                    evidence.base_candidates, context_sha256=altered.content_sha256
+                ),
+            )
+            produced = replace(produced, neural_evidence=evidence)
+        elif attack == "weights":
+            # A self-consistent changed receipt still differs from the executed proof.
+            r = produced.receipts[0]
+            produced = replace(
+                produced,
+                receipts=(
+                    r.model_copy(update={"transition_log_probability": -1.0}),
+                    *produced.receipts[1:],
+                ),
+            )
+        else:
+            produced = replace(produced, neural_evidence=None)
+        core = stream._system.core
+        before = native_content_sha256(core._particle_workspace.state_payload())
+        ledger = core._hybrid_loop.ledger.export_state()
+        with pytest.raises(ValueError):
+>           stage(stream, produced)
+
+tests/test_native_neural_production.py:184: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_native_neural_production.py:70: in stage
+    return stream._system.core.stage_prepared_particle_candidates(
+src/cpswm/system/prototype_spine.py:425: in wrapped
+    return method(self, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/cpswm/system/prototype_spine.py:2971: in stage_prepared_particle_candidates
+    batch = self._particle_workspace.advance(
+src/cpswm/system/structure_two_particle_workspace.py:677: in advance
+    validate_neural_input_body(body, self, current=True)
+src/cpswm/system/native_neural_production.py:361: in validate_neural_input_body
+    verify_neural_evidence(evidence)
+src/cpswm/system/native_neural_production.py:304: in verify_neural_evidence
+    digest = native_content_sha256(evidence)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/cpswm/system/structure_two_particle_workspace.py:75: in native_content_sha256
+    return content_sha256(native_content_payload(value))
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/cpswm/system/reproducibility.py:75: in content_sha256
+    return hashlib.sha256(canonical_json(value).encode("utf-8")).hexdigest()
+                          ^^^^^^^^^^^^^^^^^^^^^
+src/cpswm/system/reproducibility.py:65: in canonical_json
+    return json.dumps(
+/Users/pangwei/.local/share/uv/python/cpython-3.13.5-macos-aarch64-none/lib/python3.13/json/__init__.py:238: in dumps
+    **kw).encode(obj)
+          ^^^^^^^^^^^
+/Users/pangwei/.local/share/uv/python/cpython-3.13.5-macos-aarch64-none/lib/python3.13/json/encoder.py:200: in encode
+    chunks = self.iterencode(o, _one_shot=True)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/Users/pangwei/.local/share/uv/python/cpython-3.13.5-macos-aarch64-none/lib/python3.13/json/encoder.py:261: in iterencode
+    return _iterencode(o, 0)
+           ^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <json.encoder.JSONEncoder object at 0x11669d7f0>
+o = b"\x93NUMPY\x01\x00v\x00{'descr': '|u1', 'fortran_order': False, 'shape': (4, 4, 3), }                                ...00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00"
+
+    def default(self, o):
+        """Implement this method in a subclass such that it returns
+        a serializable object for ``o``, or calls the base implementation
+        (to raise a ``TypeError``).
+    
+        For example, to support arbitrary iterators, you could
+        implement default like this::
+    
+            def default(self, o):
+                try:
+                    iterable = iter(o)
+                except TypeError:
+                    pass
+                else:
+                    return list(iterable)
+                # Let the base class default method raise the TypeError
+                return super().default(o)
+    
+        """
+>       raise TypeError(f'Object of type {o.__class__.__name__} '
+                        f'is not JSON serializable')
+E       TypeError: Object of type bytes is not JSON serializable
+
+/Users/pangwei/.local/share/uv/python/cpython-3.13.5-macos-aarch64-none/lib/python3.13/json/encoder.py:180: TypeError
+=========================== short test summary info ============================
+FAILED tests/test_native_neural_production.py::test_real_checkpoint_to_native_joint_and_camera_with_exact_enumeration[typed_factor_graph_transformer]
+FAILED tests/test_native_neural_production.py::test_real_checkpoint_to_native_joint_and_camera_with_exact_enumeration[slot_conditioned_perceiver]
+FAILED tests/test_native_neural_production.py::test_real_checkpoint_to_native_joint_and_camera_with_exact_enumeration[autoregressive_typed_graph_policy]
+FAILED tests/test_native_neural_production.py::test_complete_forged_neural_outputs_rejected_before_native_mutation[probabilities]
+FAILED tests/test_native_neural_production.py::test_complete_forged_neural_outputs_rejected_before_native_mutation[measure]
+FAILED tests/test_native_neural_production.py::test_complete_forged_neural_outputs_rejected_before_native_mutation[weights]
+6 failed, 3 passed in 27.79s

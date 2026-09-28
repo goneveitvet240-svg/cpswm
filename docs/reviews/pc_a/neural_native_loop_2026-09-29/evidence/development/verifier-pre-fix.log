@@ -1,0 +1,47 @@
+F                                                                        [100%]
+=================================== FAILURES ===================================
+______ test_loaded_verifier_replacement_cannot_publish_a_complete_forgery ______
+
+tmp_path = PosixPath('/private/var/folders/x2/000r8p0n6s393lj2sg8wk5f40000gn/T/pytest-of-pangwei/pytest-2199/test_loaded_verifier_replaceme0')
+checkpoints = {'typed_factor_graph_transformer': (PosixPath('/private/var/folders/x2/000r8p0n6s393lj2sg8wk5f40000gn/T/pytest-of-pang...-checkpoints0/autoregressive_typed_graph_policy'), '0a4d08c07c4e4294579cd15a5a940121e01133597471e4a8f66aaeac5a15d870')}
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x114f72fd0>
+
+    def test_loaded_verifier_replacement_cannot_publish_a_complete_forgery(
+        tmp_path, checkpoints, monkeypatch
+    ):
+        import torch
+    
+        import cpswm.system.native_neural_production as module
+        from cpswm.data_preflight.proposal_decoder import TypedProposalDistribution
+    
+        path, pin = checkpoints[ARMS[0]]
+        producer = NeuralNativeProducer(JointFixture(), path, manifest_sha256=pin)
+        stream, store, _, _, when = setup(tmp_path / "db", producer)
+        original = producer.produce(context_for(stream, when))
+        proof = original.neural_evidence
+        d = TypedProposalDistribution(
+            context=proof.context,
+            runtime_candidates=proof.support,
+            scorer=lambda context, axis, prefix, choices, **kwargs: torch.zeros(len(choices)),
+        )
+        proof = replace(proof, scored=tuple(d.decode(k) for k in d.target_sha256s))
+        forged = replace(
+            original, neural_evidence=proof, receipts=module.materialize(proof.base_candidates, proof)
+        )
+        assert proof.scored != original.neural_evidence.scored
+        before = native_content_sha256(stream._system.core._particle_workspace.state_payload())
+    
+        def bypass(evidence):
+            return None
+    
+        try:
+            with monkeypatch.context() as patch:
+                patch.setattr(module.verify_neural_evidence, "__code__", bypass.__code__)
+>               with pytest.raises(ValueError, match="implementation|loaded|source"):
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E               Failed: DID NOT RAISE ValueError
+
+tests/test_native_neural_recovery.py:140: Failed
+=========================== short test summary info ============================
+FAILED tests/test_native_neural_recovery.py::test_loaded_verifier_replacement_cannot_publish_a_complete_forgery
+1 failed in 4.89s

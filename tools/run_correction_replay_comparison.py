@@ -80,7 +80,9 @@ def distance(a, b):
     )
 
 
-def build(output, *, seed, source, ciav_journal=None, joint_producer=None):
+def build(
+    output, *, seed, source, ciav_journal=None, joint_producer=None, observation_decoder=None
+):
     probe = BackboneWiringProbe.build(seed=seed)
     producer = OracleProducer()
     store = ContinuousStateStore(
@@ -116,6 +118,7 @@ def build(output, *, seed, source, ciav_journal=None, joint_producer=None):
         trace_id=meta.trace_id,
         state_store=store,
         joint_producer=joint_producer,
+        observation_decoder=observation_decoder,
     )
     return probe, producer, stream, store, context_builder
 

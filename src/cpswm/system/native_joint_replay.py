@@ -236,6 +236,8 @@ def install_empty_generation(core: Any, generation: JointReplayGeneration) -> No
         raise ValueError("joint replay basis changed before reconstruction")
     workspace = core._particle_workspace
     fresh = NativeParticleWorkspace(registered_locations=core._registered_particle_locations)
+    fresh.joint_dependency_binding = core._particle_joint_dependency_binding
+    fresh.neural_source_sha256 = core._particle_neural_source_sha256
     fresh.runtime_id = generation.sources[0].runtime_id
     # Keep the runtime-owned object identity and method bindings intact.
     vars(workspace).clear()

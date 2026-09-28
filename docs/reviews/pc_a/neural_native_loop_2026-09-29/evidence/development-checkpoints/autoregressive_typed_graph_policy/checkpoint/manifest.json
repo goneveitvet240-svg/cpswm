@@ -1,0 +1,45 @@
+{
+  "arm": "autoregressive_typed_graph_policy",
+  "config": {
+    "attention_heads": 4,
+    "execution_backend": "dense@1",
+    "hidden_width": 64,
+    "layers": 2,
+    "max_bytes_per_leaf": 4096,
+    "max_nodes": 4096,
+    "perceiver_latent_slots": 16
+  },
+  "format": "typed-proposal-development@1",
+  "production_authorized": false,
+  "torch_version": "2.13.0",
+  "training": {
+    "arm": "autoregressive_typed_graph_policy",
+    "examples_seen": 2,
+    "formal_architecture_selected": false,
+    "joint_training_schedule_implemented": false,
+    "learning_rate": 0.001,
+    "losses": [
+      1.0992804888092615,
+      1.0949420602327606
+    ],
+    "natural_closed_loop_verified": false,
+    "objective": "compatible_proposal_nll_only",
+    "optimizer": "AdamW(default betas/weight_decay)",
+    "optimizer_steps": 2,
+    "parameter_count": 220993,
+    "requested_steps": 2,
+    "sample_sha256s": [
+      "884bc672872eeaaf86becaa1349b888b34c426cde27982d06288b9eaa51e06df"
+    ],
+    "seconds": 0.8236497910693288,
+    "seed": 0,
+    "stop_reason": "step_limit",
+    "support_sha256s": [
+      "96906162e150ddb73610f009ddc8efa60e25947fce2ededa32942fbf5c6e4d66"
+    ],
+    "track": "COMPONENT_FIXTURE_ONLY",
+    "wall_limit_seconds": 60,
+    "wall_overrun_seconds": 0.0
+  },
+  "weights_sha256": "082d2bdec8542c35c45fedb1f9d22df04d106ce4852cde506d98b18c5e1b9071"
+}

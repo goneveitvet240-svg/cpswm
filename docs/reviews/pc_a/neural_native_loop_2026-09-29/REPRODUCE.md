@@ -4,7 +4,9 @@
 
 先fetch，再使用独立工作目录检出欲复核的完整SHA。不要把本机venv、工作树.git指针或绝对路径拷贝到另一台机器。按uv.lock新建环境：`uv sync --frozen --extra dev --extra perception --extra hand-perception`。本轮实际Python 3.13.5 / Torch 2.13.0，像素与神经推理固定2 CPU线程；Unity SDK使用另一个已配置解释器，不能将两者混作同一依赖。运行路径通过CLI显式传入，不自动安装/购买资源。
 
-第一轮实际检查点由`tools/run_neural_native_replay.py`生成，三个目录名分别为typed_factor_graph_transformer、slot_conditioned_perceiver、autoregressive_typed_graph_policy，内含checkpoint/manifest.json与实际权重；它们是微型组件夹具训练，不是自然训练。固定源码的完整两审/运行入口是`docs/reviews/pc_a/neural_native_loop_2026-09-29/run_frozen.py --output <新空目录>`。受测原始目录与完整文件摘要保留在A主仓output/neural-native-loop-20260929/round1-attempt01。
+第一轮实际检查点由`tools/run_neural_native_replay.py`生成，三个目录名分别为typed_factor_graph_transformer、slot_conditioned_perceiver、autoregressive_typed_graph_policy，内含checkpoint/manifest.json与实际权重；它们是微型组件夹具训练，不是自然训练。固定源码的完整两审/运行入口是`.venv/bin/python docs/reviews/pc_a/neural_native_loop_2026-09-29/run_frozen.py <新空目录>`（输出是位置参数，不是--output）。受测原始目录与完整文件摘要保留在A主仓output/neural-native-loop-20260929/round1-attempt01。
+
+这三个**实际已使用**的微型检查点亦逐字备份到本报告目录`evidence/development-checkpoints/`；六个文件共2,440,880字节，逐文件摘要在FILES.json。`--checkpoints`可指向该目录，从而不依赖A的临时目录或重新训练出不同权重。旧SHA本身不含此后补充的证据包，复核旧版本时应在独立数据目录取得并核对包后再检出对应旧源码；不能把新源码叫旧SHA复现。SQLite中实际神经证据保存当时绝对路径，跨机重新执行可以使用新路径，直接搬旧SQLite并改路径不叫原样恢复。
 
 第二轮入口run_frozen_camera.py显式接收--output、--sdk-python、--binary、--weights、--checkpoint。第三轮入口run_frozen_comparison.py接收--output、--sdk-python、--binary、--ssdlite-weights、--fasterrcnn-weights、--checkpoints。checkpoints指向上面的三架构目录的共同父目录。后两个入口会启动真实Unity进程及本机通信；所提供的解释器、仿真二进制与官方权重必须实际可用，不能以伪造响应替代未配置的仿真器。
 

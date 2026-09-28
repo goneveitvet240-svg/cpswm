@@ -1,0 +1,407 @@
+{
+  "scope": "OFFLINE_REINFERENCE_ON_IDENTICAL_DELIVERED_RGB_NO_NEW_ACTION",
+  "weights_sha256": "dd69338a24b8d7381807e247652bdc356325bcbaf1cd3e092e00e0a1a58706bf",
+  "rows": [
+    {
+      "site": "north",
+      "frame": {
+        "observation_id": "62a0c75f-04f2-4e7a-8567-8ae59944ace3",
+        "household_id": "51c20f50-9d82-5050-f704-9a53d62cfee6",
+        "session_id": "914a0788-6769-a1e2-1491-3367fd255bd7",
+        "trace_id": "c3349866-0738-69da-8bf6-858407b95560",
+        "sensor_id": "live-unity-camera",
+        "frame_id": "unity-main-camera",
+        "capture_time": "2026-09-28 18:26:32.424905+00:00",
+        "arrival_time": "2026-09-28 18:26:32.433531+00:00",
+        "inference_cutoff": "2026-09-28 18:26:32.433531+00:00",
+        "input_sha256": "497db5e1a08908a46650a423086997c79da4b15cb25b930efaef78666851aad8",
+        "receipt_sha256": "e5847b95a77970cf36eda14441bd9956483db6f184ba8fb11e40b83a3a6115f4",
+        "model_id": "torchvision/fasterrcnn_resnet50_fpn_v2/COCO_V1",
+        "weights_sha256": "dd69338a24b8d7381807e247652bdc356325bcbaf1cd3e092e00e0a1a58706bf",
+        "torch_version": "2.13.0",
+        "torchvision_version": "0.28.0",
+        "minimum_score": 0.5,
+        "width": 320,
+        "height": 320,
+        "candidates": [
+          {
+            "candidate_id": "e6fc516b-b2da-508a-a4f9-955ed53e845a",
+            "category": "bottle",
+            "detector_score": 0.9860689640045166,
+            "box_xyxy": [
+              146.64112854003906,
+              145.6919403076172,
+              173.6594696044922,
+              215.8154296875
+            ]
+          },
+          {
+            "candidate_id": "9b418e93-656f-522f-a000-b1af11a3a802",
+            "category": "bottle",
+            "detector_score": 0.9156012535095215,
+            "box_xyxy": [
+              0.06879272311925888,
+              101.1219482421875,
+              28.021774291992188,
+              179.6958465576172
+            ]
+          },
+          {
+            "candidate_id": "71246730-b6fa-58dd-ac11-bf359c7eeeaa",
+            "category": "dining table",
+            "detector_score": 0.7837913036346436,
+            "box_xyxy": [
+              5.429699897766113,
+              136.58580017089844,
+              319.3683776855469,
+              244.7770233154297
+            ]
+          },
+          {
+            "candidate_id": "66d2082b-7b2e-5783-9625-ec07e949fefd",
+            "category": "bowl",
+            "detector_score": 0.6578782200813293,
+            "box_xyxy": [
+              60.69973373413086,
+              144.4644012451172,
+              110.19941711425781,
+              179.38858032226562
+            ]
+          }
+        ],
+        "calibration_status": "UNCALIBRATED_CANDIDATES_ONLY",
+        "identity_status": "UNRESOLVED",
+        "pose_status": "NOT_ESTIMATED",
+        "negative_observation_authorized": false,
+        "resize_roundoff_clamps": 0,
+        "archive_sequence_id": null,
+        "archive_media_time": null
+      }
+    },
+    {
+      "site": "north",
+      "frame": {
+        "observation_id": "2591ba14-cba2-44ab-95a8-4a19269b9d54",
+        "household_id": "51c20f50-9d82-5050-f704-9a53d62cfee6",
+        "session_id": "914a0788-6769-a1e2-1491-3367fd255bd7",
+        "trace_id": "c3349866-0738-69da-8bf6-858407b95560",
+        "sensor_id": "live-unity-camera",
+        "frame_id": "unity-main-camera",
+        "capture_time": "2026-09-28 18:26:33.479659+00:00",
+        "arrival_time": "2026-09-28 18:26:33.489244+00:00",
+        "inference_cutoff": "2026-09-28 18:26:33.489244+00:00",
+        "input_sha256": "9f079a33f1b18b04c4827ccb3244e2d551797287b6b7ed5ef20c92fa4106f461",
+        "receipt_sha256": "dbce245e2de38dff93bf259b7c0204012979fa4fda19bacf4a6afb668ebbed18",
+        "model_id": "torchvision/fasterrcnn_resnet50_fpn_v2/COCO_V1",
+        "weights_sha256": "dd69338a24b8d7381807e247652bdc356325bcbaf1cd3e092e00e0a1a58706bf",
+        "torch_version": "2.13.0",
+        "torchvision_version": "0.28.0",
+        "minimum_score": 0.5,
+        "width": 320,
+        "height": 320,
+        "candidates": [
+          {
+            "candidate_id": "b827a3f6-604b-58f9-8858-73c2ec71768e",
+            "category": "bottle",
+            "detector_score": 0.8919044733047485,
+            "box_xyxy": [
+              91.90416717529297,
+              106.31523895263672,
+              110.60713958740234,
+              160.0650177001953
+            ]
+          },
+          {
+            "candidate_id": "0ee5bf24-bd83-5f2a-8a6a-331cb0f58bac",
+            "category": "bottle",
+            "detector_score": 0.880313515663147,
+            "box_xyxy": [
+              154.4767303466797,
+              123.1297836303711,
+              165.24818420410156,
+              143.46629333496094
+            ]
+          },
+          {
+            "candidate_id": "8fc7c850-6ce7-57aa-b9ad-6543333e2afe",
+            "category": "dining table",
+            "detector_score": 0.665092408657074,
+            "box_xyxy": [
+              0.0,
+              111.58625793457031,
+              238.83071899414062,
+              306.5013122558594
+            ]
+          },
+          {
+            "candidate_id": "bec37dd2-e834-5968-8e22-74ebe946fe33",
+            "category": "apple",
+            "detector_score": 0.6333507895469666,
+            "box_xyxy": [
+              133.98028564453125,
+              154.3555145263672,
+              158.62518310546875,
+              183.08164978027344
+            ]
+          }
+        ],
+        "calibration_status": "UNCALIBRATED_CANDIDATES_ONLY",
+        "identity_status": "UNRESOLVED",
+        "pose_status": "NOT_ESTIMATED",
+        "negative_observation_authorized": false,
+        "resize_roundoff_clamps": 0,
+        "archive_sequence_id": null,
+        "archive_media_time": null
+      }
+    },
+    {
+      "site": "north",
+      "frame": {
+        "observation_id": "20cfe74e-c299-4f75-be45-b88b10b2731c",
+        "household_id": "51c20f50-9d82-5050-f704-9a53d62cfee6",
+        "session_id": "914a0788-6769-a1e2-1491-3367fd255bd7",
+        "trace_id": "c3349866-0738-69da-8bf6-858407b95560",
+        "sensor_id": "live-unity-camera",
+        "frame_id": "unity-main-camera",
+        "capture_time": "2026-09-28 18:26:35.552970+00:00",
+        "arrival_time": "2026-09-28 18:26:35.559572+00:00",
+        "inference_cutoff": "2026-09-28 18:26:35.559572+00:00",
+        "input_sha256": "37e0a1e84a3c09dfdd985ef48438d969b89880e88901d77085fb4154fcc6feeb",
+        "receipt_sha256": "80db8f6972d16302919c979b8f344cbf10ec543e8b8c39bb5476429edbae86d9",
+        "model_id": "torchvision/fasterrcnn_resnet50_fpn_v2/COCO_V1",
+        "weights_sha256": "dd69338a24b8d7381807e247652bdc356325bcbaf1cd3e092e00e0a1a58706bf",
+        "torch_version": "2.13.0",
+        "torchvision_version": "0.28.0",
+        "minimum_score": 0.5,
+        "width": 320,
+        "height": 320,
+        "candidates": [
+          {
+            "candidate_id": "1644971d-a30e-5480-876e-6dfb29780bd0",
+            "category": "bottle",
+            "detector_score": 0.9882672429084778,
+            "box_xyxy": [
+              209.2277069091797,
+              86.0610580444336,
+              232.7093963623047,
+              162.03176879882812
+            ]
+          },
+          {
+            "candidate_id": "a1a826a2-77d4-58b2-a184-c232143a86e2",
+            "category": "dining table",
+            "detector_score": 0.595435619354248,
+            "box_xyxy": [
+              79.5999755859375,
+              106.4448471069336,
+              319.43096923828125,
+              317.7674255371094
+            ]
+          }
+        ],
+        "calibration_status": "UNCALIBRATED_CANDIDATES_ONLY",
+        "identity_status": "UNRESOLVED",
+        "pose_status": "NOT_ESTIMATED",
+        "negative_observation_authorized": false,
+        "resize_roundoff_clamps": 0,
+        "archive_sequence_id": null,
+        "archive_media_time": null
+      }
+    },
+    {
+      "site": "south",
+      "frame": {
+        "observation_id": "8cda4b78-b07b-4f7a-b990-ef10f579ffec",
+        "household_id": "51c20f50-9d82-5050-f704-9a53d62cfee6",
+        "session_id": "914a0788-6769-a1e2-1491-3367fd255bd7",
+        "trace_id": "c3349866-0738-69da-8bf6-858407b95560",
+        "sensor_id": "live-unity-camera",
+        "frame_id": "unity-main-camera",
+        "capture_time": "2026-09-28 18:26:45.593901+00:00",
+        "arrival_time": "2026-09-28 18:26:45.603102+00:00",
+        "inference_cutoff": "2026-09-28 18:26:45.603102+00:00",
+        "input_sha256": "8dcf3fcad40d2f60ad027097f55f8c8727bd0fc74fc861ca0ed30ca9fc2b9df8",
+        "receipt_sha256": "e68a3854c5e2f10eef0348d08dab753b4dcbdbe11eecfac32ce6e773405a5d7f",
+        "model_id": "torchvision/fasterrcnn_resnet50_fpn_v2/COCO_V1",
+        "weights_sha256": "dd69338a24b8d7381807e247652bdc356325bcbaf1cd3e092e00e0a1a58706bf",
+        "torch_version": "2.13.0",
+        "torchvision_version": "0.28.0",
+        "minimum_score": 0.5,
+        "width": 320,
+        "height": 320,
+        "candidates": [
+          {
+            "candidate_id": "83177d7f-5216-5d38-ac4d-2b8c7aa18b92",
+            "category": "bottle",
+            "detector_score": 0.9890589118003845,
+            "box_xyxy": [
+              146.5640106201172,
+              145.20484924316406,
+              173.63702392578125,
+              216.001953125
+            ]
+          },
+          {
+            "candidate_id": "eb9d8a4a-5d91-55f2-8220-bcb099a00687",
+            "category": "bottle",
+            "detector_score": 0.936125636100769,
+            "box_xyxy": [
+              0.07018890231847763,
+              103.14812469482422,
+              25.69978141784668,
+              179.4770050048828
+            ]
+          },
+          {
+            "candidate_id": "85388534-74b4-5b94-9598-885b2ed80513",
+            "category": "dining table",
+            "detector_score": 0.8231404423713684,
+            "box_xyxy": [
+              0.0,
+              130.578369140625,
+              319.5595703125,
+              251.39028930664062
+            ]
+          },
+          {
+            "candidate_id": "8a141477-64f8-5f52-81da-e7bd0b91587f",
+            "category": "bowl",
+            "detector_score": 0.6737043261528015,
+            "box_xyxy": [
+              60.90781784057617,
+              145.08213806152344,
+              110.11537170410156,
+              178.47879028320312
+            ]
+          }
+        ],
+        "calibration_status": "UNCALIBRATED_CANDIDATES_ONLY",
+        "identity_status": "UNRESOLVED",
+        "pose_status": "NOT_ESTIMATED",
+        "negative_observation_authorized": false,
+        "resize_roundoff_clamps": 0,
+        "archive_sequence_id": null,
+        "archive_media_time": null
+      }
+    },
+    {
+      "site": "south",
+      "frame": {
+        "observation_id": "32f031ce-01e8-45bd-a032-1ed85063c1b5",
+        "household_id": "51c20f50-9d82-5050-f704-9a53d62cfee6",
+        "session_id": "914a0788-6769-a1e2-1491-3367fd255bd7",
+        "trace_id": "c3349866-0738-69da-8bf6-858407b95560",
+        "sensor_id": "live-unity-camera",
+        "frame_id": "unity-main-camera",
+        "capture_time": "2026-09-28 18:26:46.656336+00:00",
+        "arrival_time": "2026-09-28 18:26:46.663333+00:00",
+        "inference_cutoff": "2026-09-28 18:26:46.663333+00:00",
+        "input_sha256": "b3809ba1b624a0b07ac980361dc2e9da4ccb2b6f6177871c583282793a9e0457",
+        "receipt_sha256": "a1e220c1758ca55ca4ca2e1d34be41e364d4e3ab27fe4e179f1fbbbf364f0d66",
+        "model_id": "torchvision/fasterrcnn_resnet50_fpn_v2/COCO_V1",
+        "weights_sha256": "dd69338a24b8d7381807e247652bdc356325bcbaf1cd3e092e00e0a1a58706bf",
+        "torch_version": "2.13.0",
+        "torchvision_version": "0.28.0",
+        "minimum_score": 0.5,
+        "width": 320,
+        "height": 320,
+        "candidates": [
+          {
+            "candidate_id": "464531ed-6a49-564d-8e03-6fb9862672e5",
+            "category": "bottle",
+            "detector_score": 0.891779899597168,
+            "box_xyxy": [
+              91.9498519897461,
+              106.41753387451172,
+              110.62346649169922,
+              160.0569610595703
+            ]
+          },
+          {
+            "candidate_id": "4bb9c067-d06a-5558-b0ae-b9f7f3c5f7a3",
+            "category": "bottle",
+            "detector_score": 0.8289972543716431,
+            "box_xyxy": [
+              154.4531707763672,
+              123.1493148803711,
+              165.23011779785156,
+              143.5185089111328
+            ]
+          },
+          {
+            "candidate_id": "b545c0ce-c063-56ce-95de-31ca245679df",
+            "category": "dining table",
+            "detector_score": 0.5746562480926514,
+            "box_xyxy": [
+              0.0,
+              111.29598236083984,
+              234.3698272705078,
+              310.8903503417969
+            ]
+          }
+        ],
+        "calibration_status": "UNCALIBRATED_CANDIDATES_ONLY",
+        "identity_status": "UNRESOLVED",
+        "pose_status": "NOT_ESTIMATED",
+        "negative_observation_authorized": false,
+        "resize_roundoff_clamps": 0,
+        "archive_sequence_id": null,
+        "archive_media_time": null
+      }
+    },
+    {
+      "site": "south",
+      "frame": {
+        "observation_id": "65e1f084-7673-4118-a5bb-c8fd331e68ff",
+        "household_id": "51c20f50-9d82-5050-f704-9a53d62cfee6",
+        "session_id": "914a0788-6769-a1e2-1491-3367fd255bd7",
+        "trace_id": "c3349866-0738-69da-8bf6-858407b95560",
+        "sensor_id": "live-unity-camera",
+        "frame_id": "unity-main-camera",
+        "capture_time": "2026-09-28 18:26:48.689618+00:00",
+        "arrival_time": "2026-09-28 18:26:48.696248+00:00",
+        "inference_cutoff": "2026-09-28 18:26:48.696248+00:00",
+        "input_sha256": "4cefde302ef170c798a3db7bab3074c0afdcfedc5a4da9acafcaee2fe78a04e6",
+        "receipt_sha256": "05dc41adca8ef37b9931b10ce8bf613d1fcebb143c770fd097ec88be3ac67686",
+        "model_id": "torchvision/fasterrcnn_resnet50_fpn_v2/COCO_V1",
+        "weights_sha256": "dd69338a24b8d7381807e247652bdc356325bcbaf1cd3e092e00e0a1a58706bf",
+        "torch_version": "2.13.0",
+        "torchvision_version": "0.28.0",
+        "minimum_score": 0.5,
+        "width": 320,
+        "height": 320,
+        "candidates": [
+          {
+            "candidate_id": "c79fce79-67b2-5e5f-8540-d415a47e52d6",
+            "category": "bottle",
+            "detector_score": 0.9897176027297974,
+            "box_xyxy": [
+              209.2260284423828,
+              86.0636215209961,
+              232.67031860351562,
+              162.0152130126953
+            ]
+          },
+          {
+            "candidate_id": "bd43249f-4b58-56f7-94f1-374370351c06",
+            "category": "dining table",
+            "detector_score": 0.832700788974762,
+            "box_xyxy": [
+              82.4483413696289,
+              106.85015869140625,
+              319.2946472167969,
+              317.3898010253906
+            ]
+          }
+        ],
+        "calibration_status": "UNCALIBRATED_CANDIDATES_ONLY",
+        "identity_status": "UNRESOLVED",
+        "pose_status": "NOT_ESTIMATED",
+        "negative_observation_authorized": false,
+        "resize_roundoff_clamps": 0,
+        "archive_sequence_id": null,
+        "archive_media_time": null
+      }
+    }
+  ]
+}

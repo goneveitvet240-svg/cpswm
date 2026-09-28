@@ -63,6 +63,67 @@ def test_new_semantic_batch_does_not_double_count_old_camera_measurement(tmp_pat
     store.close()
 
 
+def test_revision_replay_starts_a_new_camera_conditioning_origin(tmp_path):
+    from cpswm.system.reproducibility import content_sha256
+    from tools.run_correction_replay_comparison import (
+        NEGATIVE_ABSENT_LIKELIHOOD,
+        NEGATIVE_PRESENT_LIKELIHOOD,
+        NEGATIVE_SEARCH_OUTCOME,
+        apply_feedback,
+        build,
+        build_execution_feedback_bundle,
+        ingest,
+    )
+
+    probe, backend, stream, store, _ = build(
+        tmp_path / "history.db",
+        seed=171,
+        source=content_sha256("camera-origin-replay-test"),
+        joint_producer=JointFixture(),
+        observation_decoder=BrightnessDecoder(),
+    )
+    try:
+        ingest(probe, backend, stream, produce_joint=True)
+        transition = probe.transition_for(probe.observed_days()[11])
+        when = stream._last_cutoff + timedelta(seconds=2)
+        _, _, command, _, _ = execute(stream, transition, when)
+        old = stream.current_joint_decision_view()
+        assert len(old.observation_evidence) == 1
+        core = stream._system.core
+        invalid_dates = {d.after.detection_time.date() for d in probe.observed_days()[:7]}
+        targets = [
+            (rid, e)
+            for rid, e in core._committed_events.items()
+            if e.evidence.event_time.date() in invalid_dates
+        ]
+        bundles = [
+            build_execution_feedback_bundle(
+                probe,
+                revision_id=rid,
+                location_id=e.location_id,
+                belief_snapshot_id=e.belief_snapshot_id,
+                when=e.evidence.event_time,
+                opportunity_id=e.evidence.observation_opportunity_id,
+                outcome_distribution=NEGATIVE_SEARCH_OUTCOME,
+                present_likelihood=NEGATIVE_PRESENT_LIKELIHOOD,
+                absent_likelihood=NEGATIVE_ABSENT_LIKELIHOOD,
+            )
+            for rid, e in targets
+        ]
+        assert bundles
+        apply_feedback(stream, bundles, when + timedelta(hours=1))
+        with pytest.raises(ValueError):
+            stream.current_joint_decision_view()
+        stream.replay_joint_posterior()
+        current = stream.current_joint_decision_view()
+        assert current.runtime_id != old.runtime_id and current.observation_evidence == ()
+        assert stream.joint_observation_updates() == ()
+        assert stream._observation_native_origins[command.action_id] != current.content_sha256
+        assert len(stream.observation_history()) == 1
+    finally:
+        store.close()
+
+
 def test_loaded_conditioning_math_replacement_is_not_accepted(tmp_path, monkeypatch):
     import cpswm.system.joint_camera_feedback as module
 
@@ -78,6 +139,53 @@ def test_loaded_conditioning_math_replacement_is_not_accepted(tmp_path, monkeypa
     store.close()
 
 
+def test_complete_resealed_disconnected_current_action_cannot_erase_its_evidence(tmp_path):
+    from dataclasses import replace
+
+    from cpswm.system.joint_camera_policy import JointCameraProblem
+    from cpswm.system.reproducibility import content_sha256
+
+    stream, store, transition, _, start = setup(tmp_path / "db")
+    _, _, command, _, _ = execute(stream, transition, start + timedelta(seconds=2))
+    problem = JointCameraProblem.model_validate_json(command.reason.removeprefix("joint-ciav@1:"))
+    forged_problem = problem.model_copy(update={"source_belief_sha256": "f" * 64})
+    forged = replace(command, reason="joint-ciav@1:" + forged_problem.model_dump_json())
+    stream._observation_commands[command.action_id] = (forged, content_sha256(forged))
+    try:
+        with pytest.raises(ValueError, match=r"current.*history|origin|chain"):
+            stream.current_joint_decision_view()
+    finally:
+        store.close()
+
+
+def test_resealed_plain_reason_cannot_hide_a_model_measurement(tmp_path):
+    from dataclasses import replace
+
+    from cpswm.system.reproducibility import content_sha256
+
+    stream, store, transition, _, start = setup(tmp_path / "db")
+    _, _, command, _, _ = execute(stream, transition, start + timedelta(seconds=2))
+    forged = replace(command, reason="ordinary scan with no posterior effect")
+    stream._observation_commands[command.action_id] = (forged, content_sha256(forged))
+    try:
+        with pytest.raises(ValueError, match="origin"):
+            stream.current_joint_decision_view()
+    finally:
+        store.close()
+
+
+def test_missing_current_command_cannot_leave_an_orphaned_native_origin(tmp_path):
+    stream, store, transition, _, start = setup(tmp_path / "db")
+    _, _, command, _, _ = execute(stream, transition, start + timedelta(seconds=2))
+    del stream._observation_commands[command.action_id]
+    del stream._observation_status[command.action_id]
+    try:
+        with pytest.raises(ValueError, match="origin"):
+            stream.current_joint_decision_view()
+    finally:
+        store.close()
+
+
 def test_forked_complete_delivered_command_rejected_before_second_conditioning(tmp_path):
     from dataclasses import replace
     from uuid import uuid4
@@ -89,6 +197,9 @@ def test_forked_complete_delivered_command_rejected_before_second_conditioning(t
     forged = replace(command, action_id=uuid4())
     stream._observation_commands[forged.action_id] = (forged, content_sha256(forged))
     stream._observation_status[forged.action_id] = replace(delivery, action_id=forged.action_id)
+    stream._observation_native_origins[forged.action_id] = stream._observation_native_origins[
+        command.action_id
+    ]
     with pytest.raises(ValueError, match="fork"):
         stream.current_joint_decision_view()
     store.close()
@@ -171,3 +282,18 @@ def test_real_decoder_actual_weight_and_forward_drift_are_rejected(real_decoder,
             _ = decoder.binding_sha256
     assert all(not x.training for x in model.modules())
     assert not torch.isnan(parameter).any()
+
+
+def test_real_decoder_thread_configuration_is_part_of_recovery_binding(real_decoder):
+    import torch
+
+    decoder, _ = real_decoder
+    before = decoder.binding_sha256
+    threads = torch.get_num_threads()
+    try:
+        torch.set_num_threads(threads + 1)
+        with pytest.raises(ValueError, match="configuration changed"):
+            _ = decoder.binding_sha256
+    finally:
+        torch.set_num_threads(threads)
+    assert decoder.binding_sha256 == before

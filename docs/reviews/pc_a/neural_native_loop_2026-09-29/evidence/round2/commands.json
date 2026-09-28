@@ -1,0 +1,183 @@
+[
+  {
+    "name": "round1_feedback",
+    "command": [
+      "/private/tmp/cpswm-pc-a-neural-native-loop-20260929/.venv/bin/python",
+      "-m",
+      "pytest",
+      "-o",
+      "addopts=",
+      "-q",
+      "tests/test_joint_camera_feedback.py",
+      "tests/test_neural_pixel_camera_loop.py",
+      "tests/test_native_neural_production.py",
+      "--junitxml",
+      "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/neural-native-loop-20260929/round2-attempt01/round1_feedback.xml"
+    ],
+    "cwd": "/private/tmp/cpswm-pc-a-neural-native-loop-20260929",
+    "head": "01d041189c702c3e7f571f9c565b6fe86aa6b7e5",
+    "started_at": "2026-09-28T18:21:43.624837+00:00",
+    "seconds": 24.442990791983902,
+    "exit_code": 0,
+    "source_unchanged": true
+  },
+  {
+    "name": "round1_adjacent",
+    "command": [
+      "/private/tmp/cpswm-pc-a-neural-native-loop-20260929/.venv/bin/python",
+      "-m",
+      "pytest",
+      "-o",
+      "addopts=",
+      "-q",
+      "tests/test_joint_camera_policy.py",
+      "tests/test_continuous_camera_collection.py",
+      "tests/test_native_joint_production.py",
+      "--junitxml",
+      "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/neural-native-loop-20260929/round2-attempt01/round1_adjacent.xml"
+    ],
+    "cwd": "/private/tmp/cpswm-pc-a-neural-native-loop-20260929",
+    "head": "01d041189c702c3e7f571f9c565b6fe86aa6b7e5",
+    "started_at": "2026-09-28T18:22:08.143583+00:00",
+    "seconds": 12.014489749912173,
+    "exit_code": 0,
+    "source_unchanged": true
+  },
+  {
+    "name": "round2_feedback_recovery",
+    "command": [
+      "/private/tmp/cpswm-pc-a-neural-native-loop-20260929/.venv/bin/python",
+      "-m",
+      "pytest",
+      "-o",
+      "addopts=",
+      "-q",
+      "tests/test_joint_camera_feedback_recovery.py",
+      "tests/test_native_neural_recovery.py",
+      "--junitxml",
+      "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/neural-native-loop-20260929/round2-attempt01/round2_feedback_recovery.xml"
+    ],
+    "cwd": "/private/tmp/cpswm-pc-a-neural-native-loop-20260929",
+    "head": "01d041189c702c3e7f571f9c565b6fe86aa6b7e5",
+    "started_at": "2026-09-28T18:22:20.235888+00:00",
+    "seconds": 103.73316183313727,
+    "exit_code": 0,
+    "source_unchanged": true
+  },
+  {
+    "name": "round2_state_dependencies",
+    "command": [
+      "/private/tmp/cpswm-pc-a-neural-native-loop-20260929/.venv/bin/python",
+      "-m",
+      "pytest",
+      "-o",
+      "addopts=",
+      "-q",
+      "tests/test_native_joint_producer_binding.py",
+      "tests/test_native_joint_full_replay.py",
+      "tests/test_continuous_state_recovery.py",
+      "--junitxml",
+      "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/neural-native-loop-20260929/round2-attempt01/round2_state_dependencies.xml"
+    ],
+    "cwd": "/private/tmp/cpswm-pc-a-neural-native-loop-20260929",
+    "head": "01d041189c702c3e7f571f9c565b6fe86aa6b7e5",
+    "started_at": "2026-09-28T18:24:03.944887+00:00",
+    "seconds": 128.349855333101,
+    "exit_code": 0,
+    "source_unchanged": true
+  },
+  {
+    "name": "mypy",
+    "command": [
+      "/private/tmp/cpswm-pc-a-neural-native-loop-20260929/.venv/bin/python",
+      "-m",
+      "mypy",
+      "--no-incremental",
+      "src"
+    ],
+    "cwd": "/private/tmp/cpswm-pc-a-neural-native-loop-20260929",
+    "head": "01d041189c702c3e7f571f9c565b6fe86aa6b7e5",
+    "started_at": "2026-09-28T18:26:12.373322+00:00",
+    "seconds": 12.38378804223612,
+    "exit_code": 0,
+    "source_unchanged": true
+  },
+  {
+    "name": "ruff",
+    "command": [
+      "/private/tmp/cpswm-pc-a-neural-native-loop-20260929/.venv/bin/python",
+      "-m",
+      "ruff",
+      "check",
+      "docs/reviews/pc_a/neural_native_loop_2026-09-29/run_frozen_camera.py",
+      "src/cpswm/perception_mapping/pixel_camera_feedback.py",
+      "src/cpswm/system/joint_camera_feedback.py",
+      "src/cpswm/system/native_joint_production.py",
+      "src/cpswm/system/structure_two_continuous_input.py",
+      "src/cpswm/system/structure_two_joint_consumption.py",
+      "tests/test_joint_camera_feedback.py",
+      "tests/test_joint_camera_feedback_recovery.py",
+      "tests/test_neural_pixel_camera_loop.py",
+      "tools/run_neural_pixel_camera_loop.py",
+      "tools/unity_camera_feedback_worker.py"
+    ],
+    "cwd": "/private/tmp/cpswm-pc-a-neural-native-loop-20260929",
+    "head": "01d041189c702c3e7f571f9c565b6fe86aa6b7e5",
+    "started_at": "2026-09-28T18:26:24.830383+00:00",
+    "seconds": 0.12888012500479817,
+    "exit_code": 0,
+    "source_unchanged": true
+  },
+  {
+    "name": "live_north",
+    "command": [
+      "/private/tmp/cpswm-pc-a-neural-native-loop-20260929/.venv/bin/python",
+      "-u",
+      "tools/run_neural_pixel_camera_loop.py",
+      "--output",
+      "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/neural-native-loop-20260929/round2-attempt01/live-north",
+      "--sdk-python",
+      "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/.venv-ai2thor/bin/python",
+      "--binary",
+      "/Users/pangwei/.ai2thor/releases/thor-OSXIntel64-f0825767cd50d69f666c7f282e54abfe58f1e917/thor-OSXIntel64-f0825767cd50d69f666c7f282e54abfe58f1e917.app/Contents/MacOS/AI2-THOR",
+      "--weights",
+      "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/models/torchvision/ssdlite320_mobilenet_v3_large_coco-a79551df.pth",
+      "--checkpoint",
+      "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/neural-native-loop-20260929/round1-attempt01/actual-replay/typed_factor_graph_transformer/checkpoint",
+      "--site",
+      "north"
+    ],
+    "cwd": "/private/tmp/cpswm-pc-a-neural-native-loop-20260929",
+    "head": "01d041189c702c3e7f571f9c565b6fe86aa6b7e5",
+    "started_at": "2026-09-28T18:26:25.041419+00:00",
+    "seconds": 13.65664729103446,
+    "exit_code": 0,
+    "source_unchanged": true
+  },
+  {
+    "name": "live_south",
+    "command": [
+      "/private/tmp/cpswm-pc-a-neural-native-loop-20260929/.venv/bin/python",
+      "-u",
+      "tools/run_neural_pixel_camera_loop.py",
+      "--output",
+      "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/neural-native-loop-20260929/round2-attempt01/live-south",
+      "--sdk-python",
+      "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/.venv-ai2thor/bin/python",
+      "--binary",
+      "/Users/pangwei/.ai2thor/releases/thor-OSXIntel64-f0825767cd50d69f666c7f282e54abfe58f1e917/thor-OSXIntel64-f0825767cd50d69f666c7f282e54abfe58f1e917.app/Contents/MacOS/AI2-THOR",
+      "--weights",
+      "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/models/torchvision/ssdlite320_mobilenet_v3_large_coco-a79551df.pth",
+      "--checkpoint",
+      "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/neural-native-loop-20260929/round1-attempt01/actual-replay/typed_factor_graph_transformer/checkpoint",
+      "--site",
+      "south"
+    ],
+    "cwd": "/private/tmp/cpswm-pc-a-neural-native-loop-20260929",
+    "head": "01d041189c702c3e7f571f9c565b6fe86aa6b7e5",
+    "started_at": "2026-09-28T18:26:38.787429+00:00",
+    "seconds": 13.049021000042558,
+    "exit_code": 0,
+    "source_unchanged": true
+  }
+]

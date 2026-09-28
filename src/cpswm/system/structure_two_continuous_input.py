@@ -285,6 +285,9 @@ class ContinuousEvidenceInput:
         self._dispatches: dict[UUID, PlacementDispatch] = {}
         self._observation_commands: dict[UUID, tuple[ObservationCommand, str]] = {}
         self._observation_status: dict[UUID, str | ObservationDelivery] = {}
+        # Captured by the owner at command issue, outside the caller's problem
+        # body: disconnected current actions cannot masquerade as older epochs.
+        self._observation_native_origins: dict[UUID, str] = {}
         self._lock = RLock()
         self._busy = False
         self._persist()
@@ -733,10 +736,7 @@ class ContinuousEvidenceInput:
         if decoder_binding(self._observation_decoder) != self._observation_decoder_binding:
             raise ValueError("configured camera decoder dependency changed")
 
-    def _joint_decision_and_observation_updates(
-        self,
-    ) -> tuple[JointDecisionView, tuple[JointObservationUpdate, ...]]:
-        from cpswm.system.joint_camera_feedback import replay_camera_history
+    def _native_joint_decision_view(self) -> JointDecisionView:
         from cpswm.system.structure_two_joint_consumption import JointDecisionView
 
         core = self._system.core
@@ -759,12 +759,19 @@ class ContinuousEvidenceInput:
         batch = core._particle_workspace.batch
         if batch is None:
             raise ValueError("no current native joint posterior for observation policy")
-        view = JointDecisionView.from_batch(
+        return JointDecisionView.from_batch(
             runtime_id=core._particle_workspace.runtime_id,
             expected_snapshot_id=core.current_snapshot.snapshot_id,
             batch=batch,
             records=core._particle_workspace.records,
         )
+
+    def _joint_decision_and_observation_updates(
+        self,
+    ) -> tuple[JointDecisionView, tuple[JointObservationUpdate, ...]]:
+        from cpswm.system.joint_camera_feedback import replay_camera_history
+
+        view = self._native_joint_decision_view()
         if self._observation_decoder is None:
             return view, ()
         assert self._observation_decoder_binding is not None
@@ -772,6 +779,7 @@ class ContinuousEvidenceInput:
             view,
             commands=self._observation_commands,
             statuses=self._observation_status,
+            native_origins=self._observation_native_origins,
             raw=self._raw,
             decoder=self._observation_decoder,
             expected_binding=self._observation_decoder_binding,
@@ -1104,6 +1112,11 @@ class ContinuousEvidenceInput:
                     raise ValueError("observation request needs reason and unique source evidence")
                 if not set(source_ids) <= set(self._raw):
                     raise ValueError("observation request references unseen evidence")
+                native_origin = (
+                    self._native_joint_decision_view().content_sha256
+                    if self._observation_decoder is not None and reason.startswith("joint-ciav@1:")
+                    else None
+                )
                 command = ObservationCommand(
                     uuid4(),
                     self._system.core.current_snapshot.snapshot_id,
@@ -1115,6 +1128,8 @@ class ContinuousEvidenceInput:
                 )
                 self._observation_commands[command.action_id] = (command, content_sha256(command))
                 self._observation_status[command.action_id] = "READY"
+                if native_origin is not None:
+                    self._observation_native_origins[command.action_id] = native_origin
                 self._last_cutoff = when
                 self._persist()
                 return command

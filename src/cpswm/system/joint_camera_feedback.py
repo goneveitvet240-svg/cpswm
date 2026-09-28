@@ -121,6 +121,7 @@ def replay_camera_history(
     *,
     commands: Mapping[UUID, tuple[ObservationCommand, str]],
     statuses: Mapping[UUID, str | ObservationDelivery],
+    native_origins: Mapping[UUID, str],
     raw: Mapping[UUID, RawModalityObservation],
     decoder: CameraOutcomeDecoder,
     expected_binding: str,
@@ -135,21 +136,28 @@ def replay_camera_history(
 
     if decoder_binding(decoder) != expected_binding:
         raise ValueError("camera decoder dependency changed")
+    if set(statuses) != set(commands) or not set(native_origins) <= set(commands):
+        raise ValueError("camera native origin or command/status journal is incomplete")
     pending = {}
     for key, (command, digest) in commands.items():
         status = statuses[key]
+        if key in native_origins and not command.reason.startswith("joint-ciav@1:"):
+            raise ValueError("owned model camera origin lost its issued problem")
         if type(status) is not ObservationDelivery or not command.reason.startswith(
             "joint-ciav@1:"
         ):
             continue
         if key != command.action_id or key != status.action_id or content_sha256(command) != digest:
             raise ValueError("owned camera command or delivery identity changed")
+        if key not in native_origins:
+            raise ValueError("model camera feedback has no owner-issued native origin")
+        if native_origins[key] != base.content_sha256:
+            continue
         problem = JointCameraProblem.model_validate_json(
             command.reason.removeprefix("joint-ciav@1:")
         )
         pending[key] = (command, status, problem)
     view, updates = base, []
-    visited = set()
     while True:
         matching = [
             key
@@ -161,7 +169,6 @@ def replay_camera_history(
         if len(matching) != 1:
             raise ValueError("delivered camera commands fork the same joint belief")
         command, delivery, problem = pending.pop(matching[0])
-        visited.add(view.content_sha256)
         if (
             problem.model_sources != decoder.sources
             or problem.source_observation_ids != command.source_ids
@@ -253,6 +260,6 @@ def replay_camera_history(
                 evidence,
             )
         )
-    if any(p.source_belief_sha256 in visited for _, _, p in pending.values()):
-        raise ValueError("stale delivered camera branch would duplicate evidence")
+    if pending:
+        raise ValueError("current native camera history cannot reconstruct its full evidence chain")
     return view, tuple(updates)

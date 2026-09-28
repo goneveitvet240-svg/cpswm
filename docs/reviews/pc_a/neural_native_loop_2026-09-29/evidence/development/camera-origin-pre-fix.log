@@ -1,0 +1,27 @@
+F                                                                        [100%]
+=================================== FAILURES ===================================
+_ test_complete_resealed_disconnected_current_action_cannot_erase_its_evidence _
+
+tmp_path = PosixPath('/private/var/folders/x2/000r8p0n6s393lj2sg8wk5f40000gn/T/pytest-of-pangwei/pytest-2215/test_complete_resealed_disconn0')
+
+    def test_complete_resealed_disconnected_current_action_cannot_erase_its_evidence(tmp_path):
+        from dataclasses import replace
+    
+        from cpswm.system.joint_camera_policy import JointCameraProblem
+        from cpswm.system.reproducibility import content_sha256
+    
+        stream, store, transition, _, start = setup(tmp_path / "db")
+        _, _, command, _, _ = execute(stream, transition, start + timedelta(seconds=2))
+        problem = JointCameraProblem.model_validate_json(command.reason.removeprefix("joint-ciav@1:"))
+        forged_problem = problem.model_copy(update={"source_belief_sha256": "f" * 64})
+        forged = replace(command, reason="joint-ciav@1:" + forged_problem.model_dump_json())
+        stream._observation_commands[command.action_id] = (forged, content_sha256(forged))
+        try:
+>           with pytest.raises(ValueError, match=r"current.*history|origin|chain"):
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E           Failed: DID NOT RAISE ValueError
+
+tests/test_joint_camera_feedback_recovery.py:94: Failed
+=========================== short test summary info ============================
+FAILED tests/test_joint_camera_feedback_recovery.py::test_complete_resealed_disconnected_current_action_cannot_erase_its_evidence
+1 failed, 7 deselected in 1.80s

@@ -1,0 +1,159 @@
+[
+  {
+    "name": "round1_grid",
+    "command": [
+      "/private/tmp/cpswm-pc-a-neural-native-loop-20260929/.venv/bin/python",
+      "-m",
+      "pytest",
+      "-o",
+      "addopts=",
+      "-q",
+      "tests/test_camera_measurement_grid.py",
+      "tests/test_neural_pixel_camera_loop.py",
+      "tests/test_natural_vision.py",
+      "--junitxml",
+      "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/neural-native-loop-20260929/round4-attempt01/round1_grid.xml"
+    ],
+    "head": "f8425a0813d78ebabb6b8dbcb55a297203ff978d",
+    "cwd": "/private/tmp/cpswm-pc-a-neural-native-loop-20260929",
+    "started_at": "2026-09-28T19:38:23.724255+00:00",
+    "seconds": 8.267324749846011,
+    "exit_code": 0,
+    "source_unchanged": true
+  },
+  {
+    "name": "live_grid_fixture",
+    "command": [
+      "/private/tmp/cpswm-pc-a-neural-native-loop-20260929/.venv/bin/python",
+      "-u",
+      "tools/run_camera_measurement_grid.py",
+      "--mode",
+      "fixture",
+      "--output",
+      "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/neural-native-loop-20260929/round4-attempt01/audit-fixture",
+      "--sdk-python",
+      "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/.venv-ai2thor/bin/python",
+      "--binary",
+      "/Users/pangwei/.ai2thor/releases/thor-OSXIntel64-f0825767cd50d69f666c7f282e54abfe58f1e917/thor-OSXIntel64-f0825767cd50d69f666c7f282e54abfe58f1e917.app/Contents/MacOS/AI2-THOR",
+      "--ssdlite-weights",
+      "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/models/torchvision/ssdlite320_mobilenet_v3_large_coco-a79551df.pth",
+      "--fasterrcnn-weights",
+      "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/models/torchvision/fasterrcnn_resnet50_fpn_v2_coco-dd69338a.pth"
+    ],
+    "head": "f8425a0813d78ebabb6b8dbcb55a297203ff978d",
+    "cwd": "/private/tmp/cpswm-pc-a-neural-native-loop-20260929",
+    "started_at": "2026-09-28T19:38:32.148108+00:00",
+    "seconds": 24.492633124813437,
+    "exit_code": 0,
+    "source_unchanged": true
+  },
+  {
+    "name": "round2_grid",
+    "command": [
+      "/private/tmp/cpswm-pc-a-neural-native-loop-20260929/.venv/bin/python",
+      "-m",
+      "pytest",
+      "-o",
+      "addopts=",
+      "-q",
+      "tests/test_camera_measurement_grid_artifacts.py",
+      "tests/test_pixel_camera_detector_binding.py",
+      "--junitxml",
+      "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/neural-native-loop-20260929/round4-attempt01/round2_grid.xml"
+    ],
+    "head": "f8425a0813d78ebabb6b8dbcb55a297203ff978d",
+    "cwd": "/private/tmp/cpswm-pc-a-neural-native-loop-20260929",
+    "started_at": "2026-09-28T19:38:56.800332+00:00",
+    "seconds": 224.2024052501656,
+    "exit_code": 0,
+    "source_unchanged": true
+  },
+  {
+    "name": "mypy",
+    "command": [
+      "/private/tmp/cpswm-pc-a-neural-native-loop-20260929/.venv/bin/python",
+      "-m",
+      "mypy",
+      "--no-incremental",
+      "src"
+    ],
+    "head": "f8425a0813d78ebabb6b8dbcb55a297203ff978d",
+    "cwd": "/private/tmp/cpswm-pc-a-neural-native-loop-20260929",
+    "started_at": "2026-09-28T19:42:41.223514+00:00",
+    "seconds": 11.514194750227034,
+    "exit_code": 0,
+    "source_unchanged": true
+  },
+  {
+    "name": "ruff",
+    "command": [
+      "/private/tmp/cpswm-pc-a-neural-native-loop-20260929/.venv/bin/python",
+      "-m",
+      "ruff",
+      "check",
+      "docs/reviews/pc_a/neural_native_loop_2026-09-29/run_frozen_grid.py",
+      "tests/test_camera_measurement_grid.py",
+      "tests/test_camera_measurement_grid_artifacts.py",
+      "tools/run_camera_measurement_grid.py",
+      "tools/unity_camera_feedback_worker.py"
+    ],
+    "head": "f8425a0813d78ebabb6b8dbcb55a297203ff978d",
+    "cwd": "/private/tmp/cpswm-pc-a-neural-native-loop-20260929",
+    "started_at": "2026-09-28T19:42:52.963838+00:00",
+    "seconds": 0.05083316704258323,
+    "exit_code": 0,
+    "source_unchanged": true
+  },
+  {
+    "name": "actual_grid",
+    "command": [
+      "/private/tmp/cpswm-pc-a-neural-native-loop-20260929/.venv/bin/python",
+      "-u",
+      "tools/run_camera_measurement_grid.py",
+      "--mode",
+      "run",
+      "--output",
+      "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/neural-native-loop-20260929/round4-attempt01/grid",
+      "--sdk-python",
+      "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/.venv-ai2thor/bin/python",
+      "--binary",
+      "/Users/pangwei/.ai2thor/releases/thor-OSXIntel64-f0825767cd50d69f666c7f282e54abfe58f1e917/thor-OSXIntel64-f0825767cd50d69f666c7f282e54abfe58f1e917.app/Contents/MacOS/AI2-THOR",
+      "--ssdlite-weights",
+      "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/models/torchvision/ssdlite320_mobilenet_v3_large_coco-a79551df.pth",
+      "--fasterrcnn-weights",
+      "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/models/torchvision/fasterrcnn_resnet50_fpn_v2_coco-dd69338a.pth"
+    ],
+    "head": "f8425a0813d78ebabb6b8dbcb55a297203ff978d",
+    "cwd": "/private/tmp/cpswm-pc-a-neural-native-loop-20260929",
+    "started_at": "2026-09-28T19:42:53.170809+00:00",
+    "seconds": 149.5246646250598,
+    "exit_code": 0,
+    "source_unchanged": true
+  },
+  {
+    "name": "recompute_grid",
+    "command": [
+      "/private/tmp/cpswm-pc-a-neural-native-loop-20260929/.venv/bin/python",
+      "-u",
+      "tools/run_camera_measurement_grid.py",
+      "--mode",
+      "verify",
+      "--output",
+      "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/neural-native-loop-20260929/round4-attempt01/grid",
+      "--sdk-python",
+      "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/.venv-ai2thor/bin/python",
+      "--binary",
+      "/Users/pangwei/.ai2thor/releases/thor-OSXIntel64-f0825767cd50d69f666c7f282e54abfe58f1e917/thor-OSXIntel64-f0825767cd50d69f666c7f282e54abfe58f1e917.app/Contents/MacOS/AI2-THOR",
+      "--ssdlite-weights",
+      "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/models/torchvision/ssdlite320_mobilenet_v3_large_coco-a79551df.pth",
+      "--fasterrcnn-weights",
+      "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/models/torchvision/fasterrcnn_resnet50_fpn_v2_coco-dd69338a.pth"
+    ],
+    "head": "f8425a0813d78ebabb6b8dbcb55a297203ff978d",
+    "cwd": "/private/tmp/cpswm-pc-a-neural-native-loop-20260929",
+    "started_at": "2026-09-28T19:45:22.925849+00:00",
+    "seconds": 126.5200005415827,
+    "exit_code": 0,
+    "source_unchanged": true
+  }
+]

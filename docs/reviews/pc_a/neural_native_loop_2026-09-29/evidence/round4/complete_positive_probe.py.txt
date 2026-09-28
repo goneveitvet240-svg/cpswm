@@ -1,0 +1,34 @@
+import json
+import shutil
+import sys
+from pathlib import Path
+from uuid import uuid4
+
+root=Path('/private/tmp/cpswm-pc-a-neural-native-loop-20260929')
+sys.path[:0]=[str(root/'src'),str(root/'tools'),str(root/'tests')]
+from run_camera_measurement_grid import analyze_case, source_identity
+
+output=Path(__file__).resolve().parent
+source=output/'audit-fixture'
+forged=output/'complete-valid-positive-forgery'
+shutil.copytree(source,forged)
+predictions=json.loads((forged/'predictions.json').read_text())
+evaluation=json.loads((forged/'evaluation.json').read_text())
+truth=json.loads((forged/'unity-logs/evaluator_only/actions.json').read_text())
+index=next(i for i,f in enumerate(evaluation['frames']) if f['target_pixels']>0 and not f['frontends']['ssdlite']['scores'])
+box=truth[index]['target_bbox']
+candidate={'candidate_id':str(uuid4()),'category':'apple','detector_score':.99,'box_xyxy':box}
+predictions['measurements']['ssdlite'][index]['candidates'].append(candidate)
+evaluation['frames'][index]['frontends']['ssdlite']={'scores':[.99],'bbox_ious':[1.]}
+(forged/'predictions.json').write_text(json.dumps(predictions,indent=2)+'\n')
+(forged/'evaluation.json').write_text(json.dumps(evaluation,indent=2)+'\n')
+weights_root=Path('/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/models/torchvision')
+try:
+ analyze_case(forged,weights={'ssdlite':weights_root/'ssdlite320_mobilenet_v3_large_coco-a79551df.pth','fasterrcnn':weights_root/'fasterrcnn_resnet50_fpn_v2_coco-dd69338a.pth'},site='north',x=1.25,verify=True)
+except ValueError as error:
+ assert str(error)=='predictions differ from fresh actual inference',str(error)
+ receipt={'source_sha256':source_identity()[0],'attacked_frame':index,'complete_valid_candidate':candidate,'otherwise_original_scope_weights_input_hash_and_capture':True,'forged_consistent_positive_evaluation':True,'rejected':True,'reason':str(error)}
+ (output/'complete-positive-probe.json').write_text(json.dumps(receipt,indent=2)+'\n')
+ print(json.dumps(receipt,indent=2))
+else:
+ raise AssertionError('complete valid pixel result forgery was accepted')

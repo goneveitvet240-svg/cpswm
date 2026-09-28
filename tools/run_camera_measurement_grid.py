@@ -54,6 +54,18 @@ SOURCES = CameraModelSources(
 )
 
 
+def configuration(image_size=320):
+    if type(image_size) is not int or image_size not in (320, 640):
+        raise ValueError("unsupported fixed-grid resolution")
+    return {**GRID, "shape": (image_size, image_size, 3)}
+
+
+def measurement_sources(image_size):
+    return SOURCES.model_copy(
+        update={"observation_artifact_sha256": content_sha256(configuration(image_size))}
+    )
+
+
 def write_json(path, value):
     temporary = path.with_name(path.name + ".tmp")
     temporary.write_text(json.dumps(value, indent=2) + "\n")
@@ -82,7 +94,8 @@ def original_house():
     return json.loads(path.read_text())
 
 
-def capture_case(directory, *, sdk_python, binary, site, x):
+def capture_case(directory, *, sdk_python, binary, site, x, image_size=320):
+    grid = configuration(image_size)
     directory.mkdir(parents=True, exist_ok=False)
     house = directory / "evaluator_house.json"
     write_json(house, grid_house(original_house(), site, x))
@@ -90,7 +103,7 @@ def capture_case(directory, *, sdk_python, binary, site, x):
     source, files = source_identity()
     metadata = {
         "scope": GRID["scope"],
-        "grid": plain(GRID),
+        "grid": plain(grid),
         "site": site,
         "camera_x": x,
         "source_sha256": source,
@@ -112,6 +125,7 @@ def capture_case(directory, *, sdk_python, binary, site, x):
             binary=binary,
             house=house,
             log_dir=directory / "unity-logs",
+            image_size=image_size,
             **scope,
         )
         for index in range(len(HEADINGS)):
@@ -150,14 +164,15 @@ def capture_case(directory, *, sdk_python, binary, site, x):
             executor.close()
 
 
-def load_public_capture(directory, *, site, x):
+def load_public_capture(directory, *, site, x, image_size=320):
+    grid = configuration(image_size)
     manifest = json.loads((directory / "capture.json").read_text())
     require(
         manifest["status"] == "COMPLETE" and manifest["source_unchanged"] is True,
         "incomplete fixed capture",
     )
     require(
-        manifest["grid"] == plain(GRID) and (manifest["site"], manifest["camera_x"]) == (site, x),
+        manifest["grid"] == plain(grid) and (manifest["site"], manifest["camera_x"]) == (site, x),
         "capture differs from declared grid cell",
     )
     source, files = source_identity()
@@ -207,7 +222,7 @@ def load_public_capture(directory, *, site, x):
             <= delivery.received_at,
             "capture does not follow its issued action",
         )
-        require(tuple(pixels.shape) == GRID["shape"], "capture resolution changed")
+        require(tuple(pixels.shape) == grid["shape"], "capture resolution changed")
         require(env.identity.observation_id not in raw_ids, "duplicated raw observation")
         require(
             plain(
@@ -230,6 +245,12 @@ def measure_public(records, *, weights):
     """No scene label, position, mask, SDK metadata or evaluator path is accepted."""
     observations = tuple(delivery.observations[0] for _, delivery in records)
     identity = observations[0].envelope().identity
+    shapes = [
+        tuple(decode_rgb(raw, cutoff=records[-1][1].received_at)[1].shape) for raw in observations
+    ]
+    grid = configuration(shapes[0][0])
+    require(all(shape == grid["shape"] for shape in shapes), "mixed or invalid public image shapes")
+    sources = measurement_sources(shapes[0][0])
     scope = dict(
         household_id=identity.household_id,
         session_id=identity.session_id,
@@ -240,7 +261,7 @@ def measure_public(records, *, weights):
         decoder = PixelCategoryOutcomeDecoder(
             weights_path=weights[frontend],
             category="apple",
-            sources=SOURCES,
+            sources=sources,
             detector_kind=frontend,
             **scope,
         )
@@ -254,8 +275,9 @@ def measure_public(records, *, weights):
     return {"decoder_bindings": bindings, "measurements": measurements}
 
 
-def evaluate_case(directory, records, predictions, *, site, x):
+def evaluate_case(directory, records, predictions, *, site, x, image_size=320):
     """Read privileged evaluation only after both models have produced predictions."""
+    grid = configuration(image_size)
     expected_house = grid_house(original_house(), site, x)
     require(
         json.loads((directory / "evaluator_house.json").read_text()) == expected_house,
@@ -332,13 +354,17 @@ def evaluate_case(directory, records, predictions, *, site, x):
             ),
             "target moved during fixed sweep",
         )
+        require(
+            evaluator["image_size"] == [image_size, image_size],
+            "actual evaluator image size differs",
+        )
         raw = delivery.observations[0]
         require(
             (private / f"{index:03d}-rgb.npy").read_bytes() == raw.payload_bytes,
             "evaluator RGB differs from actual delivered bytes",
         )
         mask = np.load(private / f"{index:03d}-mask.npy", allow_pickle=False)
-        require(mask.dtype == bool and mask.shape == GRID["shape"][:2], "invalid target mask")
+        require(mask.dtype == bool and mask.shape == grid["shape"][:2], "invalid target mask")
         positions = np.argwhere(mask)
         box = (
             None
@@ -384,15 +410,16 @@ def evaluate_case(directory, records, predictions, *, site, x):
         "site": site,
         "camera_x": x,
         "frame_count": len(rows),
+        "image_size": image_size,
         "actual_agent_position": initial_agent["position"],
         "actual_camera_position": initial_camera,
         "frames": rows,
     }
 
 
-def analyze_case(directory, *, weights, site, x, verify=False):
+def analyze_case(directory, *, weights, site, x, verify=False, image_size=320):
     torch.set_num_threads(2)
-    manifest, records = load_public_capture(directory, site=site, x=x)
+    manifest, records = load_public_capture(directory, site=site, x=x, image_size=image_size)
     predictions = measure_public(records, weights=weights)
     if verify:
         require(
@@ -401,7 +428,9 @@ def analyze_case(directory, *, weights, site, x, verify=False):
         )
     else:
         write_json(directory / "predictions.json", predictions)
-    evaluated = evaluate_case(directory, records, predictions, site=site, x=x)
+    evaluated = evaluate_case(
+        directory, records, predictions, site=site, x=x, image_size=image_size
+    )
     if verify:
         require(
             evaluated == json.loads((directory / "evaluation.json").read_text()),
@@ -413,7 +442,9 @@ def analyze_case(directory, *, weights, site, x, verify=False):
     return evaluated
 
 
-def summarize(cases):
+def summarize(cases, image_size=320):
+    configuration(image_size)
+    require(all(c["image_size"] == image_size for c in cases), "grid contains another resolution")
     require(
         [(c["site"], c["camera_x"]) for c in cases] == [(s, x) for s in SITES for x in XS],
         "grid omitted, duplicated or reordered a cell",
@@ -444,6 +475,7 @@ def summarize(cases):
     return {
         "scope": GRID["scope"],
         "complete_frames": 66,
+        "image_size": image_size,
         "house_count": 1,
         "asset_count": 1,
         "scene_initializations": 6,
@@ -457,15 +489,27 @@ def summarize(cases):
 
 
 def main(args):
+    configuration(args.image_size)
     weights = {"ssdlite": args.ssdlite_weights, "fasterrcnn": args.fasterrcnn_weights}
     if args.mode == "fixture":
         capture_case(
-            args.output, sdk_python=args.sdk_python, binary=args.binary, site="north", x=1.25
+            args.output,
+            sdk_python=args.sdk_python,
+            binary=args.binary,
+            site="north",
+            x=1.25,
+            image_size=args.image_size,
         )
-        analyze_case(args.output, weights=weights, site="north", x=1.25)
+        analyze_case(args.output, weights=weights, site="north", x=1.25, image_size=args.image_size)
         return
     plan = [
-        {"site": site, "camera_x": x, "directory": f"{site}-{x:.2f}", "status": "PENDING"}
+        {
+            "site": site,
+            "camera_x": x,
+            "directory": f"{site}-{x:.2f}",
+            "status": "PENDING",
+            "image_size": args.image_size,
+        }
         for site in SITES
         for x in XS
     ]
@@ -477,7 +521,9 @@ def main(args):
         require(
             [(r["site"], r["camera_x"], r["directory"]) for r in saved]
             == [(r["site"], r["camera_x"], r["directory"]) for r in plan]
-            and all(r["status"] == "COMPLETE" for r in saved),
+            and all(
+                r["status"] == "COMPLETE" and r["image_size"] == args.image_size for r in saved
+            ),
             "incomplete or redirected grid",
         )
     cases = []
@@ -489,10 +535,20 @@ def main(args):
                 cell["status"] = "RUNNING"
                 write_json(args.output / "grid.json", plan)
                 capture_case(
-                    directory, sdk_python=args.sdk_python, binary=args.binary, site=site, x=x
+                    directory,
+                    sdk_python=args.sdk_python,
+                    binary=args.binary,
+                    site=site,
+                    x=x,
+                    image_size=args.image_size,
                 )
             result = analyze_case(
-                directory, weights=weights, site=site, x=x, verify=args.mode == "verify"
+                directory,
+                weights=weights,
+                site=site,
+                x=x,
+                verify=args.mode == "verify",
+                image_size=args.image_size,
             )
             cases.append(result)
             cell["status"] = "COMPLETE"
@@ -517,7 +573,7 @@ def main(args):
                 write_json(args.output / "grid.json", plan)
     if any(r["status"] != "COMPLETE" for r in plan):
         raise SystemExit(1)
-    summary = summarize(cases)
+    summary = summarize(cases, args.image_size)
     if args.mode == "verify":
         require(
             summary == json.loads((args.output / "summary.json").read_text()),
@@ -527,6 +583,7 @@ def main(args):
             args.output / "verification.json",
             {
                 "verified_frames": 66,
+                "image_size": args.image_size,
                 "source_sha256": source_identity()[0],
                 "summary_sha256": content_sha256(summary),
             },
@@ -537,6 +594,7 @@ def main(args):
 
 if __name__ == "__main__":
     p = argparse.ArgumentParser(description=__doc__)
+    p.add_argument("--image-size", type=int, choices=(320, 640), default=320)
     p.add_argument("--mode", choices=("fixture", "run", "verify"), required=True)
     for name in ("output", "sdk-python", "binary", "ssdlite-weights", "fasterrcnn-weights"):
         p.add_argument("--" + name, type=Path, required=True)

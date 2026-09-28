@@ -43,7 +43,28 @@ def test_both_decoders_receive_exactly_same_raw_tuple_without_evaluator_metadata
     from cpswm.system.structure_two_continuous_input import ObservationDelivery
 
     _, transition = _adaptive_system_and_transition()
+    import hashlib
+    import io
+    from dataclasses import replace
+
+    import numpy as np
+
     raw = raw_for(transition)
+    buffer = io.BytesIO()
+    np.save(buffer, np.zeros((320, 320, 3), dtype=np.uint8), allow_pickle=False)
+    payload = buffer.getvalue()
+    env = raw.envelope()
+    env = env.model_copy(
+        update={
+            "payload": env.payload.model_copy(
+                update={
+                    "payload_sha256": hashlib.sha256(payload).hexdigest(),
+                    "size_bytes": len(payload),
+                }
+            )
+        }
+    )
+    raw = replace(raw, envelope_json=env.model_dump_json(), payload_bytes=payload)
     records = ((None, ObservationDelivery(uuid4(), (raw,), True, "", raw.envelope().arrival_time)),)
     seen = []
 
@@ -87,6 +108,7 @@ def test_failed_cell_is_preserved_and_every_other_declared_cell_is_attempted(tmp
     )
     args = SimpleNamespace(
         mode="run",
+        image_size=320,
         output=tmp_path / "grid",
         sdk_python=Path("sdk"),
         binary=Path("binary"),

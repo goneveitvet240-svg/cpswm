@@ -272,9 +272,12 @@ def run(
     *,
     method=None,
     detector_kind="ssdlite",
+    image_size=320,
 ):
     if type(max_actions) is not int or not 1 <= max_actions <= 20:
         raise ValueError("camera diagnostic requires an explicit 1..20 action budget")
+    if type(image_size) is not int or image_size not in (320, 640):
+        raise ValueError("unsupported explicit image size")
     output.mkdir(parents=True, exist_ok=False)
     torch.set_num_threads(2)
     started = monotonic()
@@ -324,6 +327,7 @@ def run(
         "detector_kind": detector_kind,
         "method": method,
         "max_actions": max_actions,
+        "image_size": image_size,
     }
     dependency = content_sha256(dependencies)
     path = output / "state.sqlite"
@@ -358,6 +362,7 @@ def run(
             binary=binary,
             house=house,
             log_dir=output / "unity-logs",
+            image_size=image_size,
             **scope,
         )
         initial = executor.execute(
@@ -477,6 +482,7 @@ def run(
             "detector_kind": detector_kind,
             "feedback_enabled": feedback,
             "max_actions": max_actions,
+            "image_size": image_size,
             "seconds": monotonic() - started,
             "initial_capture": initial_capture,
             "initial_joint_probabilities": initial_probabilities,
@@ -519,6 +525,7 @@ if __name__ == "__main__":
     p.add_argument("--max-actions", type=int, default=3)
     p.add_argument("--method", choices=METHODS)
     p.add_argument("--detector-kind", choices=("ssdlite", "fasterrcnn"), default="ssdlite")
+    p.add_argument("--image-size", type=int, choices=(320, 640), default=320)
     a = p.parse_args()
     result = run(
         a.output,
@@ -530,6 +537,7 @@ if __name__ == "__main__":
         a.max_actions,
         method=a.method,
         detector_kind=a.detector_kind,
+        image_size=a.image_size,
     )
     print(
         json.dumps(

@@ -25,6 +25,7 @@ def main(args):
             "directory": f"{f}/{s}/{m}",
             "exit_code": None,
             "status": "PENDING",
+            "image_size": args.image_size,
         }
         for f in FRONTENDS
         for s in SITES
@@ -60,6 +61,8 @@ def main(args):
             case["method"],
             "--detector-kind",
             case["frontend"],
+            "--image-size",
+            str(args.image_size),
         ]
         case.update(status="RUNNING", command=command, started_at=datetime.now(UTC).isoformat())
         (output / "matrix.json").write_text(json.dumps(plan, indent=2) + "\n")
@@ -93,4 +96,5 @@ if __name__ == "__main__":
         "checkpoints",
     ):
         p.add_argument("--" + name, type=Path, required=True)
+    p.add_argument("--image-size", type=int, choices=(320, 640), default=320)
     main(p.parse_args())

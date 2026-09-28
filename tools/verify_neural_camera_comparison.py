@@ -65,7 +65,7 @@ def bbox_iou(box, target):
     return overlap / area if area > 0 else 0.0
 
 
-def verify_episode(directory, *, weights, checkpoint, method, frontend, site):
+def verify_episode(directory, *, weights, checkpoint, method, frontend, site, image_size=320):
     torch.set_num_threads(2)
     report = json.loads((directory / "result.json").read_text())
     require(method in METHODS and frontend in FRONTENDS and site in SITES, "undeclared case")
@@ -77,6 +77,13 @@ def verify_episode(directory, *, weights, checkpoint, method, frontend, site):
     require(
         report["assumptions"] == ASSUMPTIONS and report["max_actions"] == 3,
         "comparison assumptions or budget changed",
+    )
+    require(
+        type(image_size) is int
+        and image_size in (320, 640)
+        and report["image_size"] == image_size
+        and report["dependencies"]["image_size"] == image_size,
+        "capture resolution differs from declared condition",
     )
     source, files = source_identity()
     require(
@@ -308,6 +315,11 @@ def verify_episode(directory, *, weights, checkpoint, method, frontend, site):
             "evaluator pixels differ from delivered RGB",
         )
         rgb = np.load(private / f"{index:03d}-rgb.npy", allow_pickle=False)
+        require(
+            rgb.shape == (image_size, image_size, 3)
+            and evaluator["image_size"] == [image_size, image_size],
+            "actual image dimensions differ from declared condition",
+        )
         mask = np.load(private / f"{index:03d}-mask.npy", allow_pickle=False)
         require(mask.dtype == bool and mask.shape == rgb.shape[:2], "invalid evaluator mask")
         locations = np.argwhere(mask)
@@ -405,6 +417,7 @@ def verify_episode(directory, *, weights, checkpoint, method, frontend, site):
     )
     return {
         "method": method,
+        "image_size": image_size,
         "frontend": frontend,
         "site": site,
         "verified": True,
@@ -430,7 +443,7 @@ def verify_episode(directory, *, weights, checkpoint, method, frontend, site):
     }
 
 
-def verify_matrix(directory, weights, checkpoints):
+def verify_matrix(directory, weights, checkpoints, *, image_size=320):
     plan = json.loads((directory / "matrix.json").read_text())
     expected = [(f, s, m) for f in FRONTENDS for s in SITES for m in METHODS]
     require(
@@ -443,6 +456,7 @@ def verify_matrix(directory, weights, checkpoints):
         require(
             case["directory"] == cell and case["exit_code"] == 0, "failed or redirected matrix cell"
         )
+        require(case["image_size"] == image_size, "matrix capture condition differs")
         result = verify_episode(
             directory / cell,
             weights=weights[case["frontend"]],
@@ -452,6 +466,7 @@ def verify_matrix(directory, weights, checkpoints):
             method=case["method"],
             frontend=case["frontend"],
             site=case["site"],
+            image_size=image_size,
         )
         results.append(result)
     prior = results[0]["initial_joint_probabilities"]
@@ -473,6 +488,7 @@ def verify_matrix(directory, weights, checkpoints):
             pixel_groups.setdefault(key, set()).add(frame["rgb_sha256"])
     return {
         "scope": "A_LOCAL_CONTROLLED_PRIOR_CAMERA_DIAGNOSTIC_NOT_FORMAL_B_ACCEPTANCE",
+        "image_size": image_size,
         "expected_episodes": 24,
         "verified_episodes": len(results),
         "same_initial_priors": True,
@@ -489,11 +505,13 @@ if __name__ == "__main__":
     p.add_argument("--ssdlite-weights", type=Path, required=True)
     p.add_argument("--fasterrcnn-weights", type=Path, required=True)
     p.add_argument("--checkpoints", type=Path, required=True)
+    p.add_argument("--image-size", type=int, choices=(320, 640), default=320)
     a = p.parse_args()
     result = verify_matrix(
         a.directory,
         {"ssdlite": a.ssdlite_weights, "fasterrcnn": a.fasterrcnn_weights},
         a.checkpoints,
+        image_size=a.image_size,
     )
     (a.directory / "verified-summary.json").write_text(json.dumps(result, indent=2) + "\n")
     print(json.dumps({k: v for k, v in result.items() if k != "results"}, indent=2))

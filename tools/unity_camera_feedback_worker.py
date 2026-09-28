@@ -56,6 +56,7 @@ def main():
     parser.add_argument("--binary", required=True)
     parser.add_argument("--house", required=True)
     parser.add_argument("--log-dir", required=True)
+    parser.add_argument("--image-size", type=int, choices=(320, 640), default=320)
     args = parser.parse_args()
     house = json.loads(Path(args.house).read_text())
     target = house["metadata"].pop("cpswm_diagnostic_target")
@@ -70,8 +71,8 @@ def main():
     controller = LocalLogs(
         local_executable_path=args.binary,
         scene=house,
-        width=320,
-        height=320,
+        width=args.image_size,
+        height=args.image_size,
         fieldOfView=60,
         renderInstanceSegmentation=True,
         server_timeout=30.0,
@@ -124,6 +125,7 @@ def main():
                     "agent": event.metadata["agent"],
                     "camera_position": event.metadata["cameraPosition"],
                     "fov": event.metadata["fov"],
+                    "image_size": [int(event.frame.shape[1]), int(event.frame.shape[0])],
                 }
             )
             (private / "actions.json").write_text(json.dumps(rows, indent=2) + "\n")

@@ -9,18 +9,23 @@ from __future__ import annotations
 from datetime import datetime
 from hashlib import sha256
 from pathlib import Path
+from typing import Any, Literal
 from uuid import UUID
 
 from cpswm.data_preflight.typed_proposal_networks import architecture_fingerprint
 from cpswm.perception_mapping.adapters.rgbd_capture import RawModalityObservation
-from cpswm.perception_mapping.natural_vision import NaturalAppearanceDetector, VisualFrame
+from cpswm.perception_mapping.natural_vision import (
+    FasterNaturalAppearanceDetector,
+    NaturalAppearanceDetector,
+    VisualFrame,
+)
 from cpswm.system.joint_camera_policy import CameraModelSources
 from cpswm.system.native_joint_production import python_dependency_implementation_binding
 from cpswm.system.reproducibility import content_sha256
 
 
 class PixelCategoryOutcomeDecoder:
-    """Pinned SSDLite inference, using the existing default development threshold."""
+    """Explicit pinned detector, using its existing default development threshold."""
 
     def __init__(
         self,
@@ -31,8 +36,16 @@ class PixelCategoryOutcomeDecoder:
         trace_id: UUID,
         category: str,
         sources: CameraModelSources,
+        detector_kind: Literal["ssdlite", "fasterrcnn"] = "ssdlite",
     ) -> None:
-        self._detector = NaturalAppearanceDetector(
+        classes = {
+            "ssdlite": NaturalAppearanceDetector,
+            "fasterrcnn": FasterNaturalAppearanceDetector,
+        }
+        if detector_kind not in classes:
+            raise ValueError("explicit supported pixel detector required")
+        self.detector_kind = detector_kind
+        self._detector = classes[detector_kind](
             weights_path=weights_path,
             household_id=household_id,
             session_id=session_id,
@@ -40,6 +53,13 @@ class PixelCategoryOutcomeDecoder:
         )
         if category not in self._detector._categories:
             raise ValueError("requested camera category is not in the detector label space")
+        if detector_kind == "fasterrcnn":
+            # Torchvision creates ROI pyramid scales and LevelMapper lazily.
+            # Initialize deterministic geometry before freezing, not on a
+            # supplied observation. The black tensor provides no evidence.
+            torch = self._detector._torch
+            with torch.inference_mode():
+                self._detector._model([torch.zeros(3, 320, 320)])
         self.category = category
         self.sources = CameraModelSources.model_validate(sources.model_dump())
         self._parameters = self._model_fingerprint()
@@ -62,12 +82,53 @@ class PixelCategoryOutcomeDecoder:
             digest.update(
                 value.detach().contiguous().reshape(-1).view(torch.uint8).cpu().numpy().tobytes()
             )
+        for name, module in self._detector._model.named_modules():
+            for index, value in enumerate(getattr(module, "cell_anchors", ())):
+                digest.update(
+                    content_sha256((name, index, str(value.dtype), tuple(value.shape))).encode()
+                )
+                digest.update(
+                    value.detach()
+                    .contiguous()
+                    .reshape(-1)
+                    .view(torch.uint8)
+                    .cpu()
+                    .numpy()
+                    .tobytes()
+                )
         return digest.hexdigest()
 
     def _configuration_digest(self) -> str:
+        # Include native detection/resize/RPN/ROI settings and CNN geometry, not
+        # only weights. Values are primitive configuration, never model outputs.
+        omitted = object()
+
+        def plain(value: Any) -> Any:
+            if value is None or type(value) in (str, int, float, bool):
+                return value
+            if type(value) in (tuple, list):
+                items = [plain(v) for v in value]
+                return omitted if any(v is omitted for v in items) else items
+            if type(value) is dict and all(type(k) in (str, int) for k in value):
+                mapped = {str(k): plain(v) for k, v in value.items()}
+                return omitted if any(v is omitted for v in mapped.values()) else mapped
+            return omitted
+
+        settings = {}
+        for name, module in self._detector._model.named_modules():
+            values = {k: plain(v) for k, v in vars(module).items()}
+            settings[name] = {k: v for k, v in values.items() if v is not omitted}
+            for helper in ("box_coder", "proposal_matcher", "fg_bg_sampler", "map_levels"):
+                item = getattr(module, helper, None)
+                if item is not None:
+                    values = {k: plain(v) for k, v in vars(item).items()}
+                    settings[name + ":" + helper] = {
+                        k: v for k, v in values.items() if v is not omitted
+                    }
         return content_sha256(
             (
-                "pixel-category-camera-measurement@1",
+                "pixel-category-camera-measurement@2",
+                self.detector_kind,
                 self._detector.model_id,
                 self._detector.weights_sha256,
                 self._detector._versions,
@@ -78,15 +139,7 @@ class PixelCategoryOutcomeDecoder:
                 self._detector._scope,
                 self._detector._minimum_score,
                 self._detector._categories,
-                tuple(
-                    (key, getattr(self._detector._model, key))
-                    for key in (
-                        "score_thresh",
-                        "nms_thresh",
-                        "detections_per_img",
-                        "topk_candidates",
-                    )
-                ),
+                settings,
                 self.category,
                 self.sources,
             )

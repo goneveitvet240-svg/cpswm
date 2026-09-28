@@ -14,6 +14,7 @@ import sys
 from dataclasses import asdict
 from datetime import UTC, datetime
 from pathlib import Path
+from time import monotonic
 from uuid import uuid4
 
 import torch
@@ -30,8 +31,12 @@ from test_structure_two_adaptive_runtime import (  # noqa: E402
 from test_structure_two_continuous_input import raw_for  # noqa: E402
 
 from cpswm.contracts.grounded_search import ObservationActionCandidate  # noqa: E402
+from cpswm.data_preflight.typed_proposal_networks import ARMS  # noqa: E402
 from cpswm.perception_mapping.pixel_camera_feedback import PixelCategoryOutcomeDecoder  # noqa: E402
-from cpswm.system.continuous_camera_collection import collect_posterior_step  # noqa: E402
+from cpswm.system.continuous_camera_collection import (  # noqa: E402
+    CollectionStep,
+    collect_posterior_step,
+)
 from cpswm.system.continuous_state_store import ContinuousStateStore  # noqa: E402
 from cpswm.system.evaluation_operations.structure_two_selected_method import (  # noqa: E402
     TypedParticleState,
@@ -76,6 +81,63 @@ SOURCES = CameraModelSources(
     utility_definition_id="whole-joint-atom-classification-development",
     utility_artifact_sha256=content_sha256(("0/1", 0.01)),
 )
+METHODS = (*ARMS, "no_feedback", "scan_left_first", "scan_right_first")
+
+
+def canonical_probabilities(view):
+    """Semantic labels remove per-runtime UUIDs, not probabilities or unknown mass."""
+    result = {"aggregate_unresolved": view.unresolved_probability}
+    for atom in view.atoms:
+        state = TypedParticleState.model_validate_json(atom.state_json)
+        key = (
+            "unknown_instance"
+            if state.instance_association_key == "unknown_instance"
+            else "known_instance"
+        )
+        if key in result:
+            raise ValueError("diagnostic requires one atom per explicit hypothesis")
+        result[key] = atom.probability
+    return result
+
+
+def scan_rotation(history, model, *, left_first):
+    heading, outcomes = model.history(history)
+    if "category_candidate" in outcomes.values():
+        return None
+    for target in (225.0, 315.0) if left_first else (315.0, 225.0):
+        if target not in outcomes:
+            delta = (target - heading + 180) % 360 - 180
+            if not 0 < abs(delta) <= 90:
+                raise ValueError("scan requires an unvisited bounded rotation")
+            return ("RotateRight" if delta > 0 else "RotateLeft", abs(delta))
+    return None
+
+
+def collect_comparison_step(stream, model, executor, method, when):
+    if method not in METHODS:
+        raise ValueError("undeclared development method")
+    if not method.startswith("scan_"):
+        return collect_posterior_step(stream, model=model, executor=executor, decision_time=when)
+    receipt = stream.advance(cutoff=when)
+    stream.produce_joint_posterior()
+    rotation = scan_rotation(
+        stream.observation_history(), model, left_first=method == "scan_left_first"
+    )
+    if rotation is None:
+        return CollectionStep(None, None, None, receipt, False)
+    action, degrees = rotation
+    command = stream.prepare_observation(
+        action=action,
+        degrees=degrees,
+        reason="coverage-scan@1:" + method,
+        source_ids=tuple(
+            x.envelope().identity.observation_id for x in stream.visible_prefix(cutoff=when)
+        ),
+        decision_time=when,
+    )
+    delivery = stream.execute_observation(command, executor=executor)
+    receipt = stream.advance(cutoff=delivery.received_at)
+    return CollectionStep(None, command, delivery, receipt, False)
 
 
 def diagnostic_house(original: dict, site: str) -> dict:
@@ -199,11 +261,29 @@ def source_identity():
     return content_sha256(files), files
 
 
-def run(output, sdk_python, binary, weights, checkpoint, site, max_actions=3):
+def run(
+    output,
+    sdk_python,
+    binary,
+    weights,
+    checkpoint,
+    site,
+    max_actions=3,
+    *,
+    method=None,
+    detector_kind="ssdlite",
+):
     if type(max_actions) is not int or not 1 <= max_actions <= 20:
         raise ValueError("camera diagnostic requires an explicit 1..20 action budget")
     output.mkdir(parents=True, exist_ok=False)
     torch.set_num_threads(2)
+    started = monotonic()
+    manifest = json.loads((checkpoint / "manifest.json").read_text())
+    method = manifest["arm"] if method is None else method
+    expected_arm = method if method in ARMS else ARMS[0]
+    if method not in METHODS or manifest["arm"] != expected_arm:
+        raise ValueError("method does not match declared checkpoint arm")
+    feedback = method in ARMS
     source, files = source_identity()
     original = (
         ROOT / "docs/reviews/pc_a/proposal_scheduler_2026-09-13/procthor_run_07/train_house.json"
@@ -226,7 +306,11 @@ def run(output, sdk_python, binary, weights, checkpoint, site, max_actions=3):
     meta = transition.after.metadata
     scope = dict(household_id=meta.household_id, session_id=meta.session_id, trace_id=meta.trace_id)
     decoder = PixelCategoryOutcomeDecoder(
-        weights_path=weights, category="apple", sources=SOURCES, **scope
+        weights_path=weights,
+        category="apple",
+        sources=SOURCES,
+        detector_kind=detector_kind,
+        **scope,
     )
     joint = NeuralNativeProducer(JointFixture(), checkpoint, manifest_sha256=pin)
     dependencies = {
@@ -237,6 +321,9 @@ def run(output, sdk_python, binary, weights, checkpoint, site, max_actions=3):
         "sdk_python_sha256": hashlib.sha256(sdk_python.resolve().read_bytes()).hexdigest(),
         "source_house_sha256": hashlib.sha256(original.read_bytes()).hexdigest(),
         "model_sources": SOURCES.model_dump(mode="json"),
+        "detector_kind": detector_kind,
+        "method": method,
+        "max_actions": max_actions,
     }
     dependency = content_sha256(dependencies)
     path = output / "state.sqlite"
@@ -253,7 +340,7 @@ def run(output, sdk_python, binary, weights, checkpoint, site, max_actions=3):
         context_builder=builder,
         state_store=store,
         joint_producer=joint,
-        observation_decoder=decoder,
+        observation_decoder=decoder if feedback else None,
         **scope,
     )
     ids = stream.admit((raw_for(transition),), received_at=ciav.opportunity_time)
@@ -287,22 +374,41 @@ def run(output, sdk_python, binary, weights, checkpoint, site, max_actions=3):
         stream.admit(initial.observations, received_at=initial.received_at)
         stream.advance(cutoff=initial.received_at)
         stream.produce_joint_posterior()
+        initial_view = stream.current_joint_decision_view()
+        initial_probabilities = canonical_probabilities(initial_view)
+        initial_capture = {
+            "action_id": str(initial.action_id),
+            "success": initial.success,
+            "observation_ids": [
+                str(x.envelope().identity.observation_id) for x in initial.observations
+            ],
+        }
         native_before = native_content_sha256(system.core._particle_workspace.state_payload())
         ledger_before = system.core._hybrid_loop.ledger.export_state()
         model = DiagnosticViewModel(decoder)
         resumed = False
         for index in range(max_actions):
+            step_started = monotonic()
             before = stream.current_joint_decision_view()
-            result = collect_posterior_step(
-                stream, model=model, executor=executor, decision_time=datetime.now(UTC)
-            )
+            result = collect_comparison_step(stream, model, executor, method, datetime.now(UTC))
             if result.command is None:
+                _, history_outcomes = model.history(stream.observation_history())
                 rows.append(
-                    {"index": index, "stopped": True, "plan": result.plan.model_dump(mode="json")}
+                    {
+                        "index": index,
+                        "stopped": True,
+                        "stop_reason": "category_candidate"
+                        if "category_candidate" in history_outcomes.values()
+                        else "no_remaining_positive_utility_or_views",
+                        "seconds": monotonic() - step_started,
+                        "plan": None
+                        if result.plan is None
+                        else result.plan.model_dump(mode="json"),
+                    }
                 )
                 break
             after = stream.current_joint_decision_view()
-            update = stream.joint_observation_updates()[-1]
+            update = stream.joint_observation_updates()[-1] if feedback else None
             frames = decoder.measurements(
                 result.delivery.observations, cutoff=result.delivery.received_at
             )
@@ -313,14 +419,24 @@ def run(output, sdk_python, binary, weights, checkpoint, site, max_actions=3):
                     "action": result.command.action,
                     "degrees": result.command.degrees,
                     "success": result.delivery.success,
-                    "outcome": update.outcome,
+                    "command": json.loads(json.dumps(asdict(result.command), default=str)),
+                    "delivery_observation_ids": [
+                        str(x.envelope().identity.observation_id)
+                        for x in result.delivery.observations
+                    ],
+                    "outcome": decoder.decode(
+                        result.delivery.observations, cutoff=result.delivery.received_at
+                    ),
                     "prior": {str(k): v for k, v in before.verification_belief().posterior.items()},
                     "posterior": {
                         str(k): v for k, v in after.verification_belief().posterior.items()
                     },
                     "probabilities_changed": before.verification_belief().posterior
                     != after.verification_belief().posterior,
-                    "update": json.loads(json.dumps(asdict(update), default=str)),
+                    "update": None
+                    if update is None
+                    else json.loads(json.dumps(asdict(update), default=str)),
+                    "seconds": monotonic() - step_started,
                     "pixel_measurements": json.loads(
                         json.dumps([asdict(f) for f in frames], default=str)
                     ),
@@ -331,7 +447,11 @@ def run(output, sdk_python, binary, weights, checkpoint, site, max_actions=3):
                 store.close()
                 store = open_store()
                 decoder = PixelCategoryOutcomeDecoder(
-                    weights_path=weights, category="apple", sources=SOURCES, **scope
+                    weights_path=weights,
+                    category="apple",
+                    sources=SOURCES,
+                    detector_kind=detector_kind,
+                    **scope,
                 )
                 joint = NeuralNativeProducer(JointFixture(), checkpoint, manifest_sha256=pin)
                 stream = ContinuousEvidenceInput.resume(
@@ -339,7 +459,7 @@ def run(output, sdk_python, binary, weights, checkpoint, site, max_actions=3):
                     producer=DurableFixtureProducer(),
                     context_builder=builder,
                     joint_producer=joint,
-                    observation_decoder=decoder,
+                    observation_decoder=decoder if feedback else None,
                 )
                 model = DiagnosticViewModel(decoder)
                 assert stream.current_joint_decision_view() == expected
@@ -352,6 +472,15 @@ def run(output, sdk_python, binary, weights, checkpoint, site, max_actions=3):
             "dependencies": dependencies,
             "assumptions": ASSUMPTIONS,
             "checkpoint_manifest_sha256": pin,
+            "checkpoint_arm": manifest["arm"],
+            "method": method,
+            "detector_kind": detector_kind,
+            "feedback_enabled": feedback,
+            "max_actions": max_actions,
+            "seconds": monotonic() - started,
+            "initial_capture": initial_capture,
+            "initial_joint_probabilities": initial_probabilities,
+            "final_joint_probabilities": canonical_probabilities(final),
             "site_evaluator_only": site,
             "actions": rows,
             "joint_producer_calls": joint.calls,
@@ -388,8 +517,20 @@ if __name__ == "__main__":
         p.add_argument("--" + name, type=Path, required=True)
     p.add_argument("--site", choices=("north", "south"), required=True)
     p.add_argument("--max-actions", type=int, default=3)
+    p.add_argument("--method", choices=METHODS)
+    p.add_argument("--detector-kind", choices=("ssdlite", "fasterrcnn"), default="ssdlite")
     a = p.parse_args()
-    result = run(a.output, a.sdk_python, a.binary, a.weights, a.checkpoint, a.site, a.max_actions)
+    result = run(
+        a.output,
+        a.sdk_python,
+        a.binary,
+        a.weights,
+        a.checkpoint,
+        a.site,
+        a.max_actions,
+        method=a.method,
+        detector_kind=a.detector_kind,
+    )
     print(
         json.dumps(
             {

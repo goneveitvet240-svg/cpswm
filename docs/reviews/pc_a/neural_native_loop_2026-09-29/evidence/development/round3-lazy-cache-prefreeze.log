@@ -1,0 +1,37 @@
+..............F......                                                    [100%]
+=================================== FAILURES ===================================
+__ test_faster_inference_uses_pixels_at_same_unselected_development_threshold __
+
+faster_decoder = (<cpswm.perception_mapping.pixel_camera_feedback.PixelCategoryOutcomeDecoder object at 0x10aadd7f0>, PrototypeTransiti...efs=()),), context_key='weekday|home', context_value=0.0, unresolved_probability=0.1, identity_switch_probability=0.0))
+
+    def test_faster_inference_uses_pixels_at_same_unselected_development_threshold(faster_decoder):
+        decoder, transition = faster_decoder
+        raw = raw_for(transition)
+>       result = decoder.measurements((raw,), cutoff=raw.envelope().arrival_time)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_pixel_camera_detector_binding.py:53: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/cpswm/perception_mapping/pixel_camera_feedback.py:144: in measurements
+    _ = self.binding_sha256
+        ^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <cpswm.perception_mapping.pixel_camera_feedback.PixelCategoryOutcomeDecoder object at 0x10aadd7f0>
+
+    @property
+    def binding_sha256(self) -> str:
+        if (
+            self._configuration_digest() != self._configuration
+            or self._model_fingerprint() != self._parameters
+            or any(m.training for m in self._detector._model.modules())
+            or python_dependency_implementation_binding(self._detector, required_methods=("infer",))
+            != self._implementation
+        ):
+>           raise ValueError("pixel camera decoder weights, code or configuration changed")
+E           ValueError: pixel camera decoder weights, code or configuration changed
+
+src/cpswm/perception_mapping/pixel_camera_feedback.py:136: ValueError
+=========================== short test summary info ============================
+FAILED tests/test_pixel_camera_detector_binding.py::test_faster_inference_uses_pixels_at_same_unselected_development_threshold
+1 failed, 20 passed in 13.62s

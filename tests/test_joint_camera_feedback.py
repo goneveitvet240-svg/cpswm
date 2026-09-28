@@ -53,7 +53,7 @@ class AbstainDecoder(BrightnessDecoder):
         return None
 
 
-def setup(path, decoder=None, joint=None):
+def setup(path, decoder=None, joint=None, *, feedback=True):
     system, transition = _adaptive_system_and_transition()
     ciav = _ciav_input(transition)
 
@@ -76,7 +76,7 @@ def setup(path, decoder=None, joint=None):
         context_builder=builder,
         state_store=store,
         joint_producer=joint or JointFixture(),
-        observation_decoder=decoder or BrightnessDecoder(),
+        observation_decoder=(decoder or BrightnessDecoder()) if feedback else None,
     )
     when = ciav.opportunity_time
     ids = stream.admit((raw_for(transition),), received_at=when)

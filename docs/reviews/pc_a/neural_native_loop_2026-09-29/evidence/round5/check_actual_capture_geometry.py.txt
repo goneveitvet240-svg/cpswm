@@ -1,0 +1,67 @@
+"""Supplemental read-only comparison of actual camera geometry; no model fitting."""
+
+import hashlib
+import json
+import math
+from pathlib import Path
+
+root = Path(__file__).resolve().parent
+summary = json.loads((root / "resolution-summary.json").read_text())
+assert summary["verified_episodes"] == 48
+reference_body = reference_camera = None
+reference_targets = {}
+frames = []
+for size in (320, 640):
+    matrix = summary["matrices"][str(size)]
+    assert matrix["verified_episodes"] == 24
+    for row in matrix["results"]:
+        directory = root / f"matrix-{size}" / row["frontend"] / row["site"] / row["method"]
+        records = json.loads((directory / "unity-logs/evaluator_only/actions.json").read_text())
+        assert len(records) == len(row["frames"])
+        for record, verified in zip(records, row["frames"], strict=True):
+            body = record["agent"]["position"]
+            camera = record["camera_position"]
+            if reference_body is None:
+                reference_body, reference_camera = body, camera
+            assert all(
+                math.isclose(body[k], reference_body[k], abs_tol=1e-5) for k in ("x", "y", "z")
+            )
+            assert all(
+                math.isclose(camera[k], reference_camera[k], abs_tol=1e-5) for k in ("x", "y", "z")
+            )
+            assert math.isclose(record["fov"], 60, abs_tol=1e-5)
+            assert math.isclose(record["agent"]["cameraHorizon"], 30, abs_tol=1e-4)
+            assert math.isclose(record["agent"]["rotation"]["y"], verified["heading"], abs_tol=1e-3)
+            assert record["image_size"] == [size, size]
+            target = record["target_position"]
+            expected_target = reference_targets.setdefault(row["site"], target)
+            assert all(
+                math.isclose(target[k], expected_target[k], abs_tol=1e-5) for k in ("x", "y", "z")
+            )
+            frames.append(
+                dict(
+                    image_size=size,
+                    frontend=row["frontend"],
+                    site=row["site"],
+                    method=row["method"],
+                    index=record["index"],
+                    target_pixels=record["target_pixels"],
+                    heading=verified["heading"],
+                )
+            )
+result = dict(
+    scope="SUPPLEMENTAL_RECORDED_SIMULATOR_GEOMETRY_NOT_INDEPENDENT_CALIBRATION",
+    source_head=summary["source_head"],
+    script_sha256=hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),
+    verified_episodes=48,
+    frames_checked=len(frames),
+    body_position=reference_body,
+    camera_position=reference_camera,
+    target_positions=reference_targets,
+    same_actual_body_and_camera_position=True,
+    same_actual_fov_60=True,
+    same_actual_pitch_30=True,
+    frames=frames,
+)
+(root / "actual-capture-geometry.json").write_text(json.dumps(result, indent=2) + "\n")
+print(json.dumps({k: v for k, v in result.items() if k != "frames"}, indent=2))

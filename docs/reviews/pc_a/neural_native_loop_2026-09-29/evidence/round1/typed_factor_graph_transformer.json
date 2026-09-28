@@ -1,0 +1,72 @@
+{
+  "arm": "typed_factor_graph_transformer",
+  "track": "CONTROLLED_NEURAL_NATIVE_ENUMERATION",
+  "checkpoint_manifest_sha256": "4f17225e73bf40b0aca9c996c1803dfc03918bfa5972a66a785be871417114f4",
+  "training": {
+    "arm": "typed_factor_graph_transformer",
+    "seed": 0,
+    "optimizer_steps": 2,
+    "examples_seen": 2,
+    "requested_steps": 2,
+    "seconds": 0.8095472087152302,
+    "wall_limit_seconds": 60,
+    "wall_overrun_seconds": 0.0,
+    "stop_reason": "step_limit",
+    "losses": [
+      1.0987406015505976,
+      1.0926468374570468
+    ],
+    "learning_rate": 0.001,
+    "optimizer": "AdamW(default betas/weight_decay)",
+    "objective": "compatible_proposal_nll_only",
+    "track": "COMPONENT_FIXTURE_ONLY",
+    "formal_architecture_selected": false,
+    "joint_training_schedule_implemented": false,
+    "natural_closed_loop_verified": false,
+    "parameter_count": 171073,
+    "sample_sha256s": [
+      "884bc672872eeaaf86becaa1349b888b34c426cde27982d06288b9eaa51e06df"
+    ],
+    "support_sha256s": [
+      "96906162e150ddb73610f009ddc8efa60e25947fce2ededa32942fbf5c6e4d66"
+    ]
+  },
+  "old_joint_calls": 12,
+  "old_native_records": 24,
+  "invalidated_revisions": [
+    "e30ff9f3-f6f0-541a-875c-321023e279dd"
+  ],
+  "stale_readout_rejected": "posterior source is stale, revoked, or outside runtime dependencies",
+  "recomputed_sources": 11,
+  "new_native_records": 22,
+  "current_atoms": 2,
+  "conditional_history_lengths": [
+    11,
+    11
+  ],
+  "pose_dimensions": [
+    6,
+    6
+  ],
+  "new_generation": true,
+  "joint_view_changed": true,
+  "ledger_unchanged_by_neural_replay": true,
+  "exact_recovered_view": true,
+  "exact_recovered_producer": true,
+  "verified_neural_inputs": 11,
+  "neural_log_q_range": [
+    -0.6945894221504787,
+    -0.6917070160349468
+  ],
+  "quadrature_equals_log_q": true,
+  "ledger_sha256": "5a8f26bcb52dac4aaa1b9c2b0694f252b643ddc06937fdc2214d521fef65f9dc",
+  "replay_seconds": 43.58066212479025,
+  "total_seconds": 90.63589274976403,
+  "integration_measure": "all_configured_candidates_once__q_over_q",
+  "neural_publication_is_development_only": true,
+  "learned_six_operation_kernel_bound": false,
+  "candidate_measurement_model_empirically_calibrated": false,
+  "natural_semantic_transitions": 0,
+  "actual_simulator_dispatches": 0,
+  "complete_natural_closed_loop": false
+}

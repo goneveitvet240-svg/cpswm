@@ -1,3 +1,9 @@
+# A：第一轮神经原生接入完成，进入仿真反馈（2026-09-29）
+
+分支 `codex/pc-a-neural-native-loop-20260929`，base `2a0bbdf2e77e76b8e45d5f92211e820d337c3cf3`，受测源码 `08e5cc1f5cdb049d7bbd68b66e4da829a59e4efd`。43/16顺序两审、mypy375/Ruff、三网络真实12→撤回1→重放11→SQLite同视图/状态全部通过；22原生记录、2当前原子、6维位姿、11份实际模型证明。原生发布和恢复的完整伪造概率/已加载验证函数攻击已修复。
+
+[第一轮报告](../reviews/pc_a/neural_native_loop_2026-09-29/ROUND1.md)。完整工件主仓output/neural-native-loop-20260929/round1-attempt01。有限支撑枚举q/q正确性，不是神经性能收益、六操作全闭合或自然训练。B独立验收未完成，不合并。第二轮按预先固定计划接实际相机反馈到短时联合行动视图；不把单次未检出授予长期记忆撤回资格。
+
 # A：神经原生接入、仿真闭环与比较诊断开工（2026-09-29）
 
 用户授权五小时按三个顺序推进，开工 UTC 2026-09-28 17:05:56，工作预算截止 UTC 22:05:56（北京时间 06:05:56）。分支 `codex/pc-a-neural-native-loop-20260929`，独立目录 `/private/tmp/cpswm-pc-a-neural-native-loop-20260929`，base/开工源码 `2a0bbdf2e77e76b8e45d5f92211e820d337c3cf3`。fetch 成功：共享集成 `19ddf26830348a2f0b33f0af54d6ba702c5cfb1c`、B `fd4ca6ef5e81c90d7cf7987b42c0b2810d8a810a` 未变。

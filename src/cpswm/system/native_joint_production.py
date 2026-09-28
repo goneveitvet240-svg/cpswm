@@ -67,6 +67,9 @@ class ProducedJointCandidates:
     receipts: tuple[ParticleRevisionReceipt, ...]
     statistics: dict[UUID, ConditionalAnalyticState]
     unresolved_log_weight: float
+    # An inert proof object, re-executed by the native consumer. A caller's flag
+    # or a self-consistent probability trace does not authorize a neural input.
+    neural_evidence: Any = None
 
 
 class NativeJointProducer(Protocol):

@@ -263,6 +263,8 @@ class ContinuousEvidenceInput:
             deepcopy(joint_producer.checkpoint_state()) if joint_producer is not None else None
         )
         self._joint_initial_state_sha256 = native_content_sha256(self._joint_initial_state)
+        if self._joint_dependency_binding is not None:
+            self._system.core.configure_native_joint_dependency(self._joint_dependency_binding)
         self._joint_published_batch_sha256: str | None = None
         self._joint_published_source_sha256: str | None = None
         self._last_cutoff: datetime | None = None
@@ -801,7 +803,16 @@ class ContinuousEvidenceInput:
                     or produced.context_sha256 != context_hash
                     or produced.source_posterior_id != source.source_id
                     or produced.source_body_sha256 != source.body_sha256
+                    or (
+                        produced.neural_evidence is not None
+                        and produced.neural_evidence.input_context_sha256 != context_hash
+                    )
                     or produced.dependency_sha256 != self._joint_dependency_binding
+                    or (
+                        produced.neural_evidence is not None
+                        and produced.neural_evidence.producer_binding_sha256
+                        != self._joint_dependency_binding
+                    )
                     or not self._joint_binding_matches(producer)
                 ):
                     raise ValueError(
@@ -811,6 +822,7 @@ class ContinuousEvidenceInput:
                     receipts=produced.receipts,
                     statistics=produced.statistics,
                     unresolved_log_weight=produced.unresolved_log_weight,
+                    neural_evidence=produced.neural_evidence,
                 )
                 self._joint_published_batch_sha256 = native_content_sha256(workspace.batch)
                 self._joint_published_source_sha256 = source.body_sha256
@@ -895,7 +907,16 @@ class ContinuousEvidenceInput:
                         or produced.context_sha256 != expected
                         or produced.source_posterior_id != source.source_id
                         or produced.source_body_sha256 != source.body_sha256
+                        or (
+                            produced.neural_evidence is not None
+                            and produced.neural_evidence.input_context_sha256 != expected
+                        )
                         or produced.dependency_sha256 != self._joint_dependency_binding
+                        or (
+                            produced.neural_evidence is not None
+                            and produced.neural_evidence.producer_binding_sha256
+                            != self._joint_dependency_binding
+                        )
                         or not self._joint_binding_matches(producer)
                     ):
                         raise ValueError(

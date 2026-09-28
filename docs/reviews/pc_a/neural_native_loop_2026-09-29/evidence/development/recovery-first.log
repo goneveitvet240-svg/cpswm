@@ -1,0 +1,135 @@
+.........F..                                                             [100%]
+=================================== FAILURES ===================================
+________ test_neural_full_history_correction_restores_exact_joint_state ________
+
+tmp_path = PosixPath('/private/var/folders/x2/000r8p0n6s393lj2sg8wk5f40000gn/T/pytest-of-pangwei/pytest-2197/test_neural_full_history_corre0')
+checkpoints = {'typed_factor_graph_transformer': (PosixPath('/private/var/folders/x2/000r8p0n6s393lj2sg8wk5f40000gn/T/pytest-of-pang...-checkpoints1/autoregressive_typed_graph_policy'), 'd80101865eb8fdbb85ae8acda67abe128269a88f3ef9b57ff507b79fa869de52')}
+
+    def test_neural_full_history_correction_restores_exact_joint_state(tmp_path, checkpoints):
+        from run_correction_replay_comparison import OracleProducer
+    
+        from cpswm.system.structure_two_continuous_input import ContinuousEvidenceInput
+    
+        path, pin = checkpoints[ARMS[1]]
+        joint = NeuralNativeProducer(JointFixture(), path, manifest_sha256=pin)
+>       _, _, stream, store, builder, _, before = corrected(tmp_path / "online.db", joint)
+                                                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_native_neural_recovery.py:22: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_native_joint_full_replay.py:32: in corrected
+    ingest(probe, producer, stream, produce_joint=True)
+tools/run_correction_replay_comparison.py:142: in ingest
+    stream.produce_joint_posterior()
+src/cpswm/system/structure_two_continuous_input.py:800: in produce_joint_posterior
+    produced = deepcopy(producer.produce(context))
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^
+src/cpswm/system/native_neural_production.py:508: in produce
+    view, support = proposal_view(model_context, model_base)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/cpswm/system/native_neural_production.py:232: in proposal_view
+    view.validate_candidates(support)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = ProposalContext(source_snapshot_id=UUID('3672bcc7-cb49-4665-b385-91e530300783'), visible=VisibleRecords(opportunities=...3e93-c992-b73759bb8737', location_entity_id=UUID('b2082bd2-b048-3e93-c992-b73759bb8737'))), pixel_identity_bindings=())
+targets = (ProposalTarget(operation=<ParticleProposalOperation.BRANCH: 'branch'>, candidate=FullHypothesis(state=TypedParticleSt...f7'))), evidence_ids=(UUID('65181004-7f64-514c-bb37-b3c8cd93f8b9'),), replaced_revision_ids=(), replay_required=False))
+
+    def validate_candidates(self, targets: tuple[ProposalTarget, ...]) -> None:
+        """Validate runtime proposals using the same native rules as supervision."""
+        if not targets:
+            raise ValueError("empty runtime proposal support")
+        parents = {x.state.particle_id: x for x in self.parents}
+        revisions = {x.revision_id: x for x in self.revisions}
+        arrivals = {x.record_id: x.received_at for x in self.visible.arrivals}
+        arrivals.update((p.observation_id, p.arrival_time) for p in self.visible.pixel_observations)
+        # References must be visible in the *exported* prefix, not just in a raw bundle.
+        prefix = self.visible.prefix()
+        provenance = json.loads(prefix.provenance_json)
+        visible_ids = {UUID(x["record_id"]) for x in provenance["included_records"]}
+        candidate_ids: set[UUID] = set()
+        candidate_revisions: set[UUID] = set()
+        for target in targets:
+            self._check_hypothesis(target.candidate)
+            state = target.candidate.state
+            if state.particle_id in parents or state.particle_id in candidate_ids:
+                raise ValueError("candidate must have a unique new particle identity")
+            if state.revision_id in revisions or state.revision_id in candidate_revisions:
+                raise ValueError("candidate must have a unique new revision identity")
+            candidate_ids.add(state.particle_id)
+            candidate_revisions.add(state.revision_id)
+            if (
+                len(set(target.evidence_ids)) != len(target.evidence_ids)
+                or not set(target.evidence_ids) <= visible_ids
+            ):
+                raise ValueError("target cites duplicate, future or non-visible evidence")
+            parent = parents.get(state.parent_particle_id) if state.parent_particle_id else None
+            if (
+                not parents
+                and state.parent_particle_id is None
+                and state.parent_revision_id is None
+                and target.operation.value == "preserve_unresolved"
+                and state.change_cause.value == "unresolved"
+                and state.regime_decision.value == "unresolved"
+                and not target.replaced_revision_ids
+                and not target.replay_required
+            ):
+                # Genuine empty-context bootstrap, not a fabricated resolved seed particle.
+                continue
+            if parent is None or state.parent_revision_id != parent.state.revision_id:
+                raise ValueError("proposal parent/revision must resolve in the frozen context")
+            if state.ledger_lineage_ref != parent.state.ledger_lineage_ref:
+                raise ValueError("proposal cannot switch ledger lineage")
+            old = revisions[parent.state.revision_id]
+            operation = target.operation.value
+            if operation == "reactivate":
+                if old.status != "retracted":
+                    raise ValueError("reactivate requires a retracted source revision")
+            elif old.status != "active":
+                raise ValueError("only reactivate can propose from a retracted source")
+            if operation == "retract":  # noqa: SIM102 - explicit operation guard
+                if semantic_state(target.candidate) != semantic_state(parent):
+                    raise ValueError(
+                        "retract labels a removal, not an unrelated changed hypothesis"
+                    )
+            if operation == "preserve_unresolved":  # noqa: SIM102 - explicit operation guard
+                if (
+                    state.change_cause.value != "unresolved"
+                    or state.regime_decision.value != "unresolved"
+                ):
+                    raise ValueError(
+                        "preserve_unresolved must preserve unresolved cause and regime"
+                    )
+            if operation == "rejuvenate":
+                if not target.replay_required or not target.replaced_revision_ids:
+                    raise ValueError("rejuvenation must name a suffix and require replay")
+                suffix = target.replaced_revision_ids
+                if len(set(suffix)) != len(suffix) or suffix[-1] != old.revision_id:
+                    raise ValueError("suffix must be unique and end at selected parent")
+                for index, revision_id in enumerate(suffix):
+                    suffix_revision = revisions.get(revision_id)
+                    if suffix_revision is None or suffix_revision.status != "active":
+                        raise ValueError("suffix contains missing or retracted revisions")
+                    if index and suffix_revision.parent_revision_id != suffix[index - 1]:
+                        raise ValueError("replacement is not a contiguous revision suffix")
+                if not any(arrivals[x] > self._evidence_time(x) for x in target.evidence_ids):
+                    raise ValueError(
+                        "suffix rejuvenation target requires actually delayed evidence"
+                    )
+            elif target.replaced_revision_ids or target.replay_required:
+                raise ValueError("suffix replay fields belong to rejuvenation only")
+        # This does not claim complete support enumeration or teacher correctness.
+        if not any(
+            target.operation.value == "preserve_unresolved"
+            and target.candidate.state.instance_association_key == "unknown_instance"
+            and any(event.actor_key == "unknown_actor" for event in target.candidate.events)
+            for target in targets
+        ):
+>           raise ValueError(
+                "candidate targets must retain an open actor/instance unresolved fallback"
+            )
+E           ValueError: candidate targets must retain an open actor/instance unresolved fallback
+
+src/cpswm/data_preflight/proposal_samples.py:436: ValueError
+=========================== short test summary info ============================
+FAILED tests/test_native_neural_recovery.py::test_neural_full_history_correction_restores_exact_joint_state
+1 failed, 11 passed in 15.64s

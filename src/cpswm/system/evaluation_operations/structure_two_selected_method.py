@@ -360,6 +360,11 @@ class ParticleRevisionReceipt(ContractModel):
     ] = "raw_observation_likelihood"
     source_posterior_snapshot_id: UUID | None = None
     constraints: tuple[StructuredConstraint, ...]
+    # A native, verified integration kernel may supply a quadrature coefficient.
+    # Random proposals retain the historical zero default. Exhaustive finite
+    # enumeration uses log(q), so each target is integrated once, not divided by
+    # q as if it had been drawn at random. This is not a new likelihood factor.
+    integration_log_weight: float = 0.0
 
     @model_validator(mode="after")
     def _validate_weight_terms(self) -> Self:
@@ -368,6 +373,7 @@ class ParticleRevisionReceipt(ContractModel):
             self.transition_log_probability,
             self.observation_log_likelihood,
             self.posterior_projection_log_factor,
+            self.integration_log_weight,
         )
         if not all(isfinite(value) for value in numeric_terms):
             raise ValueError("particle weight terms must be finite")
@@ -416,6 +422,7 @@ class ParticleRevisionReceipt(ContractModel):
             self.posterior_projection_log_factor,
             *(constraint.log_potential for constraint in self.constraints),
             -self.proposal.proposal_log_probability,
+            self.integration_log_weight,
         )
         if not all(isfinite(term) for term in terms):
             raise ValueError("nonfinite particle weight operand")

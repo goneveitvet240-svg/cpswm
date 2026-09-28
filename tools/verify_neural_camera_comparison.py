@@ -200,10 +200,14 @@ def verify_episode(directory, *, weights, checkpoint, method, frontend, site):
     scene_target = next(o for o in expected_house["objects"][0]["children"] if o["id"] == target_id)
     require(
         all(
-            math.isclose(target["position"][k], scene_target["position"][k], abs_tol=1e-4)
+            math.isclose(
+                target["axisAlignedBoundingBox"]["center"][k],
+                scene_target["position"][k],
+                abs_tol=1e-4,
+            )
             for k in ("x", "y", "z")
         ),
-        "actual target placement drifted",
+        "actual asset bounds center differs from requested house placement",
     )
     expected_heading = ASSUMPTIONS["initial_heading"]
     rows, history = [], []

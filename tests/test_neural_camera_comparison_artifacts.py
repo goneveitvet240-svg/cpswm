@@ -124,7 +124,20 @@ def test_forged_complete_result_cannot_override_owned_state_or_actual_pixels(
             data[1]["target_position"]["x"] += 1
         p.write_text(json.dumps(data))
     report_path.write_text(json.dumps(report))
-    with pytest.raises(ValueError):
+    messages = {
+        "posterior": "reported posterior differs",
+        "outcome": "reported outcome differs",
+        "complete_positive": "reported conditioning differs",
+        "degrees": "reported command differs",
+        "missing_action": "action count mismatch",
+        "duplicate_action": "duplicate action row",
+        "wrong_treatment": "feedback treatment changed",
+        "rgb": "evaluator pixels differ",
+        "mask_summary": "evaluator visibility differs",
+        "target_pose": "static target moved",
+        "wrong_budget": "assumptions or budget changed",
+    }
+    with pytest.raises(ValueError, match=messages[attack]):
         verify_episode(destination, **arguments(live_configuration, "ssdlite"))
 
 

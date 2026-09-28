@@ -1,0 +1,62 @@
+FF...............                                                        [100%]
+=================================== FAILURES ===================================
+_ test_recompute_actual_owned_episode_including_live_pixel_inference[ssdlite] __
+
+live_configuration = {'CPSWM_COMPARISON_FIXTURES': PosixPath('/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/outpu...i/continual-personalized-semantic-world-model/output/models/torchvision/fasterrcnn_resnet50_fpn_v2_coco-dd69338a.pth')}
+frontend = 'ssdlite'
+
+    @pytest.mark.parametrize("frontend", FRONTENDS)
+    def test_recompute_actual_owned_episode_including_live_pixel_inference(
+        live_configuration, frontend
+    ):
+>       result = verify_episode(
+            live_configuration["CPSWM_COMPARISON_FIXTURES"] / frontend,
+            **arguments(live_configuration, frontend),
+        )
+
+tests/test_neural_camera_comparison_artifacts.py:46: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tools/verify_neural_camera_comparison.py:201: in verify_episode
+    require(
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+value = False, message = 'actual target placement drifted'
+
+    def require(value, message):
+        if not value:
+>           raise ValueError(message)
+E           ValueError: actual target placement drifted
+
+tools/verify_neural_camera_comparison.py:54: ValueError
+_ test_recompute_actual_owned_episode_including_live_pixel_inference[fasterrcnn] _
+
+live_configuration = {'CPSWM_COMPARISON_FIXTURES': PosixPath('/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/outpu...i/continual-personalized-semantic-world-model/output/models/torchvision/fasterrcnn_resnet50_fpn_v2_coco-dd69338a.pth')}
+frontend = 'fasterrcnn'
+
+    @pytest.mark.parametrize("frontend", FRONTENDS)
+    def test_recompute_actual_owned_episode_including_live_pixel_inference(
+        live_configuration, frontend
+    ):
+>       result = verify_episode(
+            live_configuration["CPSWM_COMPARISON_FIXTURES"] / frontend,
+            **arguments(live_configuration, frontend),
+        )
+
+tests/test_neural_camera_comparison_artifacts.py:46: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tools/verify_neural_camera_comparison.py:201: in verify_episode
+    require(
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+value = False, message = 'actual target placement drifted'
+
+    def require(value, message):
+        if not value:
+>           raise ValueError(message)
+E           ValueError: actual target placement drifted
+
+tools/verify_neural_camera_comparison.py:54: ValueError
+=========================== short test summary info ============================
+FAILED tests/test_neural_camera_comparison_artifacts.py::test_recompute_actual_owned_episode_including_live_pixel_inference[ssdlite]
+FAILED tests/test_neural_camera_comparison_artifacts.py::test_recompute_actual_owned_episode_including_live_pixel_inference[fasterrcnn]
+2 failed, 15 passed in 17.27s

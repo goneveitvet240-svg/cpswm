@@ -51,6 +51,9 @@ class JointDecisionView:
     evidence_cluster_id: UUID
     atoms: tuple[JointDecisionAtom, ...]
     unresolved_probability: float
+    # Executed camera evidence changes only the decision view, not its native
+    # semantic batch, analytic statistics, event history or long-term ledger.
+    observation_evidence: tuple[str, ...] = ()
 
     @classmethod
     def from_batch(

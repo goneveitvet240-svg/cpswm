@@ -106,6 +106,14 @@ def producer_binding(producer: NativeJointProducer | None) -> str | None:
 
 
 def producer_implementation_binding(producer: NativeJointProducer | None) -> str | None:
+    return python_dependency_implementation_binding(
+        producer, required_methods=("produce", "checkpoint_state", "restore_state")
+    )
+
+
+def python_dependency_implementation_binding(
+    producer: Any, *, required_methods: tuple[str, ...]
+) -> str | None:
     """Pin Python class implementations, including helpers in the full MRO.
 
     Mutable external data/weights still need the model's artifact/state contract;
@@ -140,7 +148,7 @@ def producer_implementation_binding(producer: NativeJointProducer | None) -> str
             _code_object_sha256(code),
         )
 
-    for name in ("produce", "checkpoint_state", "restore_state"):
+    for name in required_methods:
         method = getattr(producer, name, None)
         declared = next((vars(c)[name] for c in cls.__mro__ if name in vars(c)), None)
         if (
@@ -188,4 +196,6 @@ def producer_implementation_binding(producer: NativeJointProducer | None) -> str
                 tuple(members),
             )
         )
-    return native_content_sha256(("joint-producer-implementation@2", tuple(classes)))
+    return native_content_sha256(
+        ("python-dependency-implementation@1", required_methods, tuple(classes))
+    )

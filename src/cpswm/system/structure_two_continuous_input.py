@@ -62,6 +62,7 @@ from cpswm.world_model.grounded_search import RealizedCIAVObservation
 
 if TYPE_CHECKING:
     from cpswm.contracts.grounded_search import ActiveObservationPlan
+    from cpswm.system.joint_camera_feedback import CameraOutcomeDecoder, JointObservationUpdate
     from cpswm.system.joint_camera_policy import JointCameraProblem
     from cpswm.system.structure_two_joint_consumption import JointDecisionView
 
@@ -240,6 +241,7 @@ class ContinuousEvidenceInput:
         | None = None,
         state_store: ContinuousStateStore | None = None,
         joint_producer: NativeJointProducer | None = None,
+        observation_decoder: CameraOutcomeDecoder | None = None,
     ) -> None:
         if execution_lane not in {"legacy_component_diagnostic", "registered_p5_first"}:
             raise ValueError("unsupported continuous execution lane")
@@ -267,6 +269,10 @@ class ContinuousEvidenceInput:
             self._system.core.configure_native_joint_dependency(self._joint_dependency_binding)
         self._joint_published_batch_sha256: str | None = None
         self._joint_published_source_sha256: str | None = None
+        from cpswm.system.joint_camera_feedback import decoder_binding
+
+        self._observation_decoder = observation_decoder
+        self._observation_decoder_binding = decoder_binding(observation_decoder)
         self._last_cutoff: datetime | None = None
         self._raw: dict[UUID, RawModalityObservation] = {}
         self._received: dict[UUID, datetime] = {}
@@ -719,9 +725,22 @@ class ContinuousEvidenceInput:
         )
 
     def _current_joint_decision_view(self) -> JointDecisionView:
+        return self._joint_decision_and_observation_updates()[0]
+
+    def _check_observation_decoder(self) -> None:
+        from cpswm.system.joint_camera_feedback import decoder_binding
+
+        if decoder_binding(self._observation_decoder) != self._observation_decoder_binding:
+            raise ValueError("configured camera decoder dependency changed")
+
+    def _joint_decision_and_observation_updates(
+        self,
+    ) -> tuple[JointDecisionView, tuple[JointObservationUpdate, ...]]:
+        from cpswm.system.joint_camera_feedback import replay_camera_history
         from cpswm.system.structure_two_joint_consumption import JointDecisionView
 
         core = self._system.core
+        self._check_observation_decoder()
         if not self._joint_binding_matches(self._joint_producer):
             raise ValueError("joint producer dependency changed")
         if self._joint_producer is not None and (
@@ -740,12 +759,33 @@ class ContinuousEvidenceInput:
         batch = core._particle_workspace.batch
         if batch is None:
             raise ValueError("no current native joint posterior for observation policy")
-        return JointDecisionView.from_batch(
+        view = JointDecisionView.from_batch(
             runtime_id=core._particle_workspace.runtime_id,
             expected_snapshot_id=core.current_snapshot.snapshot_id,
             batch=batch,
             records=core._particle_workspace.records,
         )
+        if self._observation_decoder is None:
+            return view, ()
+        assert self._observation_decoder_binding is not None
+        return replay_camera_history(
+            view,
+            commands=self._observation_commands,
+            statuses=self._observation_status,
+            raw=self._raw,
+            decoder=self._observation_decoder,
+            expected_binding=self._observation_decoder_binding,
+            planner=self._system.cause_information_planner,
+        )
+
+    def joint_observation_updates(self) -> tuple[JointObservationUpdate, ...]:
+        """Recomputed current-generation measurement effects; no long-term writes."""
+        with self._lock, self._system.core._execution_lock:
+            self._enter()
+            try:
+                return self._joint_decision_and_observation_updates()[1]
+            finally:
+                self._busy = False
 
     def produce_joint_posterior(self) -> None:
         """Populate the current native batch with the configured producer, once.
@@ -1012,6 +1052,10 @@ class ContinuousEvidenceInput:
                 when = _utc(decision_time)
                 if any(t is not None and when < t for t in (self._last_arrival, self._last_cutoff)):
                     raise ValueError("posterior observation decision predates current history")
+                if self._observation_decoder is not None and (
+                    problem.model_sources != self._observation_decoder.sources
+                ):
+                    raise ValueError("camera problem differs from configured outcome decoder")
                 if not set(problem.source_observation_ids) <= set(self._raw):
                     raise ValueError("posterior observation references unseen raw evidence")
                 plan, selected = problem.select(view, self._system.cause_information_planner)
@@ -1197,6 +1241,7 @@ class ContinuousEvidenceInput:
                 producer_state = self._producer.checkpoint_state()
             if not self._joint_binding_matches(self._joint_producer):
                 raise ValueError("joint producer dependency changed before checkpoint")
+            self._check_observation_decoder()
             joint_state = (
                 deepcopy(self._joint_producer.checkpoint_state())
                 if self._joint_producer is not None
@@ -1211,6 +1256,7 @@ class ContinuousEvidenceInput:
                     "_busy",
                     "_producer",
                     "_joint_producer",
+                    "_observation_decoder",
                     "_context_builder",
                     "_state_store",
                     "_durability_failed",
@@ -1241,6 +1287,7 @@ class ContinuousEvidenceInput:
         ]
         | None = None,
         joint_producer: NativeJointProducer | None = None,
+        observation_decoder: CameraOutcomeDecoder | None = None,
     ) -> ContinuousEvidenceInput:
         """Restore one owned system graph; never replay actions or reinitialize a core.
 
@@ -1259,6 +1306,11 @@ class ContinuousEvidenceInput:
             raise ValueError("checkpoint perception dependency missing or changed")
         restored = object.__new__(cls)
         restored.__dict__.update(saved["fields"])
+        restored._observation_decoder = observation_decoder
+        restored._observation_decoder_binding = getattr(
+            restored, "_observation_decoder_binding", None
+        )
+        restored._check_observation_decoder()
         expected_joint = getattr(restored, "_joint_dependency_binding", None)
         expected_implementation = getattr(restored, "_joint_implementation_binding", None)
         if producer_implementation_binding(joint_producer) != expected_implementation:

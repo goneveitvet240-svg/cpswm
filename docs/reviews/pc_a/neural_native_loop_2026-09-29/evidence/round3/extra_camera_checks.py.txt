@@ -1,0 +1,43 @@
+import hashlib
+import json
+from pathlib import Path
+import numpy as np
+
+root = Path(__file__).resolve().parent
+matrix = root / 'matrix'
+plan = json.loads((matrix / 'matrix.json').read_text())
+assert len(plan) == 24 and all(c['exit_code'] == 0 for c in plan)
+groups, poses = {}, []
+for case in plan:
+    directory = matrix / case['directory']
+    private = directory / 'unity-logs/evaluator_only'
+    initial = json.loads((private / 'initial.json').read_text())
+    requested = json.loads((directory / 'evaluator_house.json').read_text())['metadata']['agent']
+    for row in json.loads((private / 'actions.json').read_text()):
+        key = f"{case['site']}:{round(row['agent']['rotation']['y'], 3)}"
+        pixels = np.load(private / f"{row['index']:03d}-rgb.npy", allow_pickle=False)
+        groups.setdefault(key, []).append((case['directory'], row['index'], pixels, row['target_pixels']))
+        poses.append({'cell': case['directory'], 'index': row['index'], 'agent_body_position': row['agent']['position'], 'camera_horizon': row['agent']['cameraHorizon'], 'requested_agent_body_position': requested['position']})
+    poses[-1]['initial_camera_position'] = initial['cameraPosition']
+    poses[-1]['initial_fov'] = initial['fov']
+rows = {}
+for key, frames in groups.items():
+    reference = frames[0][2].astype(float)
+    differences = [np.abs(x[2].astype(float) - reference) for x in frames]
+    rows[key] = {'frame_count': len(frames), 'reference': frames[0][:2],
+                 'pixel_arrays_all_identical': all(not d.any() for d in differences),
+                 'max_mean_absolute_channel_byte_difference': max(float(d.mean()) for d in differences),
+                 'max_channel_byte_difference': max(float(d.max()) for d in differences),
+                 'target_pixel_counts': sorted({x[3] for x in frames})}
+reference_pose = np.array([poses[0]['agent_body_position'][k] for k in ('x','y','z')])
+max_position_diff = max(float(np.max(np.abs(np.array([r['agent_body_position'][k] for k in ('x','y','z')])-reference_pose))) for r in poses)
+report = {'scope': 'read-only supplementary checks on all 24 live records',
+          'analysis_script_sha256': hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),
+          'episode_count':24, 'frame_count':len(poses), 'pixel_differences':rows,
+          'max_agent_position_difference_from_first':max_position_diff,
+          'max_camera_pitch_deviation_from_30_degrees':max(abs(r['camera_horizon']-30) for r in poses),
+          'actual_initial_camera_heights':sorted({r['initial_camera_position']['y'] for r in poses if 'initial_camera_position' in r}),
+          'all_initial_fov_60':all(r['initial_fov']==60 for r in poses if 'initial_fov' in r),
+          'requested_body_height_is_not_actual_camera_height':True, 'poses':poses}
+(root / 'extra-camera-checks.json').write_text(json.dumps(report,indent=2)+'\n')
+print(json.dumps({k:v for k,v in report.items() if k!='poses'},indent=2))

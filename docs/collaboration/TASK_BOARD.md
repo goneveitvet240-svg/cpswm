@@ -1,3 +1,7 @@
+# A：24场真实比较完整交付，推进测量诊断（2026-09-29）
+
+实际代码a8992c02508bcede986f1af9986e5f7dbdc6c5cc，45/33顺序两审、mypy377/Ruff、24场实际运行和逐场重算，9命令源码冻结通过。43转动/67原图无执行失败；各组初始后验一致。SSDLite两位置均漏；Faster R-CNN只北位置阳性，后验组与关闭反馈/右先扫描动作相同，未见额外收益。重复渲染有微小差异，不冒称逐字同输入。见[第三轮完整报告](../reviews/pc_a/neural_native_loop_2026-09-29/ROUND3.md)，工件output/neural-native-loop-20260929/round3-attempt02。草稿[PR56](https://github.com/goneveitvet240-svg/cpswm/pull/56)，B未验收，不合并。接着按预先固定66帧计划诊断测量漏检；自然语义、完整神经修订和长期任务仍未闭合，完整框架不缩减。
+
 # A：第三轮两审通过，24次实际比较执行中（2026-09-29）
 
 分支 `codex/pc-a-neural-native-loop-20260929`，base沿开工记录。实际代码 `a8992c02508bcede986f1af9986e5f7dbdc6c5cc` 已完成45/33顺序两轮A自审、mypy377/Ruff。前次5ab9597误混坐标导致合法工件拒绝，未算通过；修后两个实际阳/阴像素样本重新采集并完整重建。SSDLite北处2动作均漏检；Faster R-CNN北处1动作类别阳性、同样第一动作后恢复。6方法×2位置×2前端的24次真实比较执行中，尚未出完整结论；[第三轮报告](../reviews/pc_a/neural_native_loop_2026-09-29/ROUND3.md)。工件output/neural-native-loop-20260929/round3-attempt02。B独立验收未完成、不合并，原生完整神经修订/自然语义/长期效果范围保留。

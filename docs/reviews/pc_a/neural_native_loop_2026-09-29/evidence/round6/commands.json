@@ -1,0 +1,100 @@
+[
+  {
+    "name": "round1_paths",
+    "command": [
+      "/private/tmp/cpswm-pc-a-neural-native-loop-20260929/.venv/bin/python",
+      "-m",
+      "pytest",
+      "-o",
+      "addopts=",
+      "-q",
+      "tests/test_camera_policy_identifiability.py",
+      "tests/test_neural_camera_comparison.py",
+      "--junitxml",
+      "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/neural-native-loop-20260929/round6-attempt01/round1_paths.xml"
+    ],
+    "head": "db67b66b2703a34dda750ac8f65c0a3a4a3c5e93",
+    "cwd": "/private/tmp/cpswm-pc-a-neural-native-loop-20260929",
+    "started_at": "2026-09-28T20:27:50.597709+00:00",
+    "seconds": 32.28361283382401,
+    "exit_code": 0,
+    "source_unchanged": true
+  },
+  {
+    "name": "round2_artifacts",
+    "command": [
+      "/private/tmp/cpswm-pc-a-neural-native-loop-20260929/.venv/bin/python",
+      "-m",
+      "pytest",
+      "-o",
+      "addopts=",
+      "-q",
+      "tests/test_camera_policy_identifiability_artifacts.py",
+      "--junitxml",
+      "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/neural-native-loop-20260929/round6-attempt01/round2_artifacts.xml"
+    ],
+    "head": "db67b66b2703a34dda750ac8f65c0a3a4a3c5e93",
+    "cwd": "/private/tmp/cpswm-pc-a-neural-native-loop-20260929",
+    "started_at": "2026-09-28T20:28:23.043876+00:00",
+    "seconds": 27.65432595834136,
+    "exit_code": 0,
+    "source_unchanged": true
+  },
+  {
+    "name": "ruff",
+    "command": [
+      "/private/tmp/cpswm-pc-a-neural-native-loop-20260929/.venv/bin/python",
+      "-m",
+      "ruff",
+      "check",
+      "docs/reviews/pc_a/neural_native_loop_2026-09-29/run_frozen_identifiability.py",
+      "tests/test_camera_policy_identifiability.py",
+      "tests/test_camera_policy_identifiability_artifacts.py",
+      "tools/run_camera_policy_identifiability.py"
+    ],
+    "head": "db67b66b2703a34dda750ac8f65c0a3a4a3c5e93",
+    "cwd": "/private/tmp/cpswm-pc-a-neural-native-loop-20260929",
+    "started_at": "2026-09-28T20:28:50.859755+00:00",
+    "seconds": 0.024391083978116512,
+    "exit_code": 0,
+    "source_unchanged": true
+  },
+  {
+    "name": "run_matrix",
+    "command": [
+      "/private/tmp/cpswm-pc-a-neural-native-loop-20260929/.venv/bin/python",
+      "-u",
+      "tools/run_camera_policy_identifiability.py",
+      "run",
+      "--output",
+      "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/neural-native-loop-20260929/round6-attempt01/matrix",
+      "--checkpoints",
+      "/private/tmp/cpswm-pc-a-neural-native-loop-20260929/docs/reviews/pc_a/neural_native_loop_2026-09-29/evidence/development-checkpoints"
+    ],
+    "head": "db67b66b2703a34dda750ac8f65c0a3a4a3c5e93",
+    "cwd": "/private/tmp/cpswm-pc-a-neural-native-loop-20260929",
+    "started_at": "2026-09-28T20:28:51.044328+00:00",
+    "seconds": 59.824473292101175,
+    "exit_code": 0,
+    "source_unchanged": true
+  },
+  {
+    "name": "verify_matrix",
+    "command": [
+      "/private/tmp/cpswm-pc-a-neural-native-loop-20260929/.venv/bin/python",
+      "-u",
+      "tools/run_camera_policy_identifiability.py",
+      "verify",
+      "--output",
+      "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/neural-native-loop-20260929/round6-attempt01/matrix",
+      "--checkpoints",
+      "/private/tmp/cpswm-pc-a-neural-native-loop-20260929/docs/reviews/pc_a/neural_native_loop_2026-09-29/evidence/development-checkpoints"
+    ],
+    "head": "db67b66b2703a34dda750ac8f65c0a3a4a3c5e93",
+    "cwd": "/private/tmp/cpswm-pc-a-neural-native-loop-20260929",
+    "started_at": "2026-09-28T20:29:51.154252+00:00",
+    "seconds": 51.1490440829657,
+    "exit_code": 0,
+    "source_unchanged": true
+  }
+]

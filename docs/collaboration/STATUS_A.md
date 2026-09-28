@@ -1,3 +1,7 @@
+# A：第三轮两审通过，24次实际比较执行中（2026-09-29）
+
+分支 `codex/pc-a-neural-native-loop-20260929`，base沿开工记录。实际代码 `a8992c02508bcede986f1af9986e5f7dbdc6c5cc` 已完成45/33顺序两轮A自审、mypy377/Ruff。前次5ab9597误混坐标导致合法工件拒绝，未算通过；修后两个实际阳/阴像素样本重新采集并完整重建。SSDLite北处2动作均漏检；Faster R-CNN北处1动作类别阳性、同样第一动作后恢复。6方法×2位置×2前端的24次真实比较执行中，尚未出完整结论；[第三轮报告](../reviews/pc_a/neural_native_loop_2026-09-29/ROUND3.md)。工件output/neural-native-loop-20260929/round3-attempt02。B独立验收未完成、不合并，原生完整神经修订/自然语义/长期效果范围保留。
+
 # A：相机历史来源漏洞修复及重审交付（2026-09-29）
 
 实际代码 `3d917ee4f5a203bd3bddbdfb1fa6a8e71713c372`，分支/base沿本轮开工登记。完整重封的断链动作不能再静默丢弃像素后验；所有者独立记录原生来源，新批次和12来源纠错重放合法路径仍通过。56/41两轮A自审、mypy377/Ruff、两次真实Unity，共8命令源码冻结通过。证据 `output/neural-native-loop-20260929/round2-attempt02/` 与 [第二轮报告](../reviews/pc_a/neural_native_loop_2026-09-29/ROUND2.md)。实际仿真仍两处SSDLite漏检，没有识别成功主张。第三轮固定24次比较实现开工；B正式协议/验收未动，完整范围保留。

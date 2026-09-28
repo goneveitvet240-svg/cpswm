@@ -1,0 +1,65 @@
+"""Supplemental public-pixel replay of selected examples, not a new benchmark."""
+import argparse
+import hashlib
+import json
+import sys
+from dataclasses import asdict
+from datetime import datetime
+from pathlib import Path
+
+import numpy as np
+import torch
+sys.path[:0] = ['tools', 'tests']
+from run_neural_pixel_camera_loop import SOURCES, source_identity
+from cpswm.perception_mapping.adapters.rgbd_capture import RawModalityObservation
+from cpswm.perception_mapping.pixel_camera_feedback import PixelCategoryOutcomeDecoder
+
+
+def infer_public(raw, cutoff, weights, kind):
+    identity = raw.envelope().identity
+    decoder = PixelCategoryOutcomeDecoder(weights_path=weights, category='apple', sources=SOURCES,
+        detector_kind=kind, household_id=identity.household_id, session_id=identity.session_id,
+        trace_id=identity.trace_id)
+    return json.loads(json.dumps([asdict(f) for f in decoder.measurements((raw,), cutoff=cutoff)], default=str))
+
+
+def main(args):
+    torch.set_num_threads(2)
+    manifest = json.loads((args.directory / 'FILES.json').read_text())
+    for record in manifest['files']:
+        path = args.directory / record['path']
+        assert path.stat().st_size == record['bytes']
+        assert hashlib.sha256(path.read_bytes()).hexdigest() == record['sha256']
+    results = []
+    for case in manifest['cases']:
+        directory = args.directory / case['name']
+        construction = json.loads((directory / 'raw.json').read_text())
+        raw = RawModalityObservation((directory / 'envelope.json').read_text(),
+            (directory / 'rgb.npy').read_bytes(), construction['capture_receipt_sha256'],
+            construction['depth_unit'], construction['archive_sampling_json'])
+        cutoff = datetime.fromisoformat(construction['cutoff'])
+        predictions = {}
+        for kind, filename in (('ssdlite', 'ssdlite320_mobilenet_v3_large_coco-a79551df.pth'),
+                               ('fasterrcnn', 'fasterrcnn_resnet50_fpn_v2_coco-dd69338a.pth')):
+            predictions[kind] = infer_public(raw, cutoff, args.weights_root / filename, kind)
+        assert predictions['fasterrcnn'] == construction['original_fasterrcnn_measurements']
+        # Only after both models finish, read simulation truth for descriptive output.
+        mask = np.load(directory / 'evaluator_only/target-mask.npy', allow_pickle=False)
+        results.append(dict(case=case['name'], image_size=case['image_size'],
+            target_pixels=int(mask.sum()), same_fasterrcnn_readout_as_round5=True,
+            predictions=predictions))
+    result = dict(scope=manifest['scope'], source_sha256=source_identity()[0],
+        script_sha256=hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),
+        verified_package_files=len(manifest['files']), selected_cases=results)
+    args.output.write_text(json.dumps(result, indent=2)+'\n')
+    print(json.dumps([dict(case=r['case'], target_pixels=r['target_pixels'],
+        scores={k:[c['detector_score'] for f in v for c in f['candidates'] if c['category']=='apple']
+                for k,v in r['predictions'].items()}) for r in results],indent=2))
+
+
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--directory',type=Path,required=True)
+    parser.add_argument('--weights-root',type=Path,required=True)
+    parser.add_argument('--output',type=Path,required=True)
+    main(parser.parse_args())

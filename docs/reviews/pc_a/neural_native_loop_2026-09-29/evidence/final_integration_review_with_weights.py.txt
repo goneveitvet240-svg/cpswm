@@ -1,0 +1,40 @@
+"""Two final cross-module self-review passes on the same frozen production source."""
+import json
+import os
+import subprocess
+import sys
+from datetime import UTC, datetime
+from pathlib import Path
+from time import monotonic
+
+root = Path('/private/tmp/cpswm-pc-a-neural-native-loop-20260929')
+sys.path.insert(0, str(root / 'docs/reviews/pc_a/neural_native_loop_2026-09-29'))
+from run_frozen import snapshot
+
+output = Path(__file__).resolve().parent / 'final-integration-attempt02'
+output.mkdir(exist_ok=False)
+source = snapshot()
+head = subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=root, text=True).strip()
+(output / 'source.json').write_text(json.dumps(dict(head=head, files=source), indent=2)+'\n')
+groups = [
+ ('round1_native_actions', ['test_structure_two_w3_native_particles.py', 'test_structure_two_w3_native_bundle.py', 'test_structure_two_w3_revision_acceptance.py', 'test_structure_two_w3_native_posterior_projection.py', 'test_native_joint_production.py', 'test_continuous_camera_collection.py', 'test_joint_camera_feedback.py']),
+ ('round2_forgery_replay_recovery', ['test_structure_two_particle_falsifier.py', 'test_structure_two_formal_revision_lineage.py', 'test_native_joint_producer_binding.py', 'test_native_joint_full_replay.py', 'test_native_neural_production.py', 'test_native_neural_recovery.py', 'test_joint_camera_feedback_recovery.py', 'test_continuous_state_recovery.py']),
+]
+env = dict(os.environ, PYTHONPATH='src:tests:tools', PYTHONHASHSEED='0', OMP_NUM_THREADS='2', MKL_NUM_THREADS='2', CPSWM_SSDLITE_WEIGHTS='/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/models/torchvision/ssdlite320_mobilenet_v3_large_coco-a79551df.pth')
+receipts = []
+for name, files in groups:
+    assert snapshot() == source
+    command = [str(root / '.venv/bin/python'), '-m', 'pytest', '-o', 'addopts=', '-q', *['tests/'+f for f in files], '--junitxml', str(output / (name+'.xml'))]
+    started, start = datetime.now(UTC).isoformat(), monotonic()
+    with (output / (name+'.log')).open('w') as log:
+        try:
+            result = subprocess.run(command, cwd=root, env=env, stdout=log, stderr=subprocess.STDOUT, timeout=1200)
+            code = result.returncode
+        except subprocess.TimeoutExpired:
+            code = 124
+    receipt = dict(name=name, source_head=head, command=command, cwd=str(root), started_at=started, seconds=monotonic()-start, exit_code=code, source_unchanged=snapshot()==source)
+    receipts.append(receipt)
+    (output/'commands.json').write_text(json.dumps(receipts, indent=2)+'\n')
+    print(json.dumps(receipt), flush=True)
+    if code or not receipt['source_unchanged']:
+        raise SystemExit(code or 2)

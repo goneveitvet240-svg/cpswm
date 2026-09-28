@@ -2,6 +2,7 @@
 
 import argparse
 import json
+import math
 import os
 import subprocess
 from datetime import UTC, datetime
@@ -181,9 +182,20 @@ def main(args):
     assert all(
         v["verified_episodes"] == 24 and v["same_initial_priors"] for v in summaries.values()
     )
+    common_prior = summaries["320"]["results"][0]["initial_joint_probabilities"]
+    assert all(
+        set(row["initial_joint_probabilities"]) == set(common_prior)
+        and all(
+            math.isclose(row["initial_joint_probabilities"][key], value, rel_tol=0, abs_tol=1e-12)
+            for key, value in common_prior.items()
+        )
+        for summary in summaries.values()
+        for row in summary["results"]
+    )
     report = {
         "source_head": head,
         "verified_episodes": 48,
+        "same_initial_priors_across_resolutions": True,
         "shared_methods_models_thresholds_and_budget": True,
         "complete_natural_closed_loop": False,
         "matrices": summaries,

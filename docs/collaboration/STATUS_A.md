@@ -22,6 +22,12 @@
 
 分支codex/pc-a-ci-failure-artifacts-20260930，base/开工源码053b27851c2f935e4de8fb00b0bee4dd9f294821。父任务完整集合在另一冻结目录继续，实体环境两轮84/124通过。前轮远端65分钟到76%超时且丢失完整失败回溯；本轮改善原始日志/JUnit/覆盖率/退出码保留，不减少测试集合或改变科学协议。[计划](../reviews/pc_a/ci_failure_artifacts_2026-09-30/PLAN.md)，证据output/ci-failure-artifacts-20260930。以下历史记录保留。
 
+# A：真实正路径调用观测交付（2026-09-30）
+
+分支codex/pc-a-positive-call-observation-20260930，base2bd0ee7f44e01cb59dd29d36deb3ed4464907c5c，实际源码053b27851c2f935e4de8fb00b0bee4dd9f294821。仅测试观测从生产方法替身改为真实函数调用监测；原断言和生产来源防护保留。实体环境顺序84/124 passed、零跳过，Ruff/格式通过。完整诊断4276通过/21失败/29跳过/1预期失败，2975.46秒退出2；达到20失败诊断预算后向本任务控制器SIGINT，未执行余下集合，不是全仓完成。远端同源码65分钟超时失败。
+
+8项旧清单/回执、9项缺少当前比较包/旧schema、旧CORRECT预期1项、trace覆盖率冲突1项、基础解释器误调用2项已保留回溯分类；不自动刷新或弱化检查。封存94文件/8098483原始字节，压缩1521984字节，SHA256 8847057989bb9c6fc5ecefd7b4131ec3b2ec50ae485cd06bbc1828ab7db661ae，逐文件读回通过。证据output/positive-call-observation-20260930。[报告](../reviews/pc_a/positive_call_observation_2026-09-30/REPORT.md)、[双审](../reviews/pc_a/positive_call_observation_2026-09-30/REVIEWS.md)、[当前pipeline](../reviews/pc_a/positive_call_observation_2026-09-30/CURRENT_PIPELINE.md)。后继PR67已完成失败证据保存；历史检出另轮推进。B独立/完整CI/自然模型与任务收益未关闭，完整框架和对照保留。以下为历史状态。
+
 # A：反馈正路径观测修复开工（2026-09-30）
 
 分支codex/pc-a-positive-call-observation-20260930，base/开工源码2bd0ee7f44e01cb59dd29d36deb3ed4464907c5c。修复完整回归首失败中的测试替身，保留生产来源防护与正路径断言；随后顺序两轮对抗审查，再诊断下一失败。[计划](../reviews/pc_a/positive_call_observation_2026-09-30/PLAN.md)，证据output/positive-call-observation-20260930。完整CI/B独立及自然监督校准仍未关闭。以下历史时点保留。

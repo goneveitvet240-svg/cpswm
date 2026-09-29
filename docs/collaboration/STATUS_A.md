@@ -1,5 +1,7 @@
 # A：完整依赖与行动报告交付（2026-09-30）
 
+已推送并通过[草稿PR66](https://github.com/goneveitvet240-svg/cpswm/pull/66)叠加PR65交接，未合并。
+
 分支codex/pc-a-ci-action-report-20260930，base778e35418d79b350148c774d98377b0a4ab6e6d4，实际源码c87b6bb1e3c72986afe517f7f29ebf3d028f2283。冻结依赖、src/tests/tools搜索路径补齐，保留全部6035项/367模块；新环境顺序74/31双审零跳过，全仓mypy382及Ruff/格式757文件通过。远端static-quality与收集通过，完整回归尚在运行。
 
 真实RGB-D三观察、一受控撤回、11源/22记录，旧READY左转90取消后Pass，报告明确action_replaced；无旧动作的历史则action_started，不再混淆。独立视觉复算与源码/模型搬移完整重放通过；两种完整自洽假报告均被真实计划/回执重算拒绝，原件未变。未决仍97.5440%，不是自然任务成功。

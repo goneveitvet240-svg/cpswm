@@ -35,6 +35,10 @@ from cpswm.data_preflight.proposal_samples import (
     SnapshotLocation,
     VisibleRecords,
 )
+from cpswm.system.checkpoint_artifacts import (
+    register_checkpoint_artifact,
+    resolve_checkpoint_artifact,
+)
 from cpswm.system.evaluation_operations.structure_two_selected_method import (
     ParticleRevisionReceipt,
     TypedParticleState,
@@ -52,7 +56,7 @@ from cpswm.system.structure_two_particle_workspace import (
     native_content_sha256,
 )
 
-FORMAT = "native-neural-enumeration-development@1"
+FORMAT = "native-neural-enumeration-development@2"
 SUPPORTED_OPERATIONS = frozenset({"branch", "preserve_unresolved"})
 
 
@@ -242,7 +246,7 @@ def proposal_view(
 @dataclass(frozen=True)
 class NativeNeuralEvidence:
     format: str
-    checkpoint_directory: str
+    checkpoint_artifact_id: str
     manifest_sha256: str
     inference_binding_sha256: str
     producer_binding_sha256: str
@@ -317,7 +321,9 @@ def verify_neural_evidence(evidence: NativeNeuralEvidence) -> None:
         )
     ):
         raise ValueError("native neural artifact differs from its configured producer binding")
-    directory = Path(evidence.checkpoint_directory)
+    directory = resolve_checkpoint_artifact(
+        evidence.checkpoint_artifact_id, manifest_sha256=evidence.manifest_sha256
+    )
     manifest = directory / "manifest.json"
     if sha256(manifest.read_bytes()).hexdigest() != evidence.manifest_sha256:
         raise ValueError("native neural checkpoint manifest changed")
@@ -460,10 +466,12 @@ class NeuralNativeProducer:
             raise ValueError("a concrete bound native candidate model is required")
         self._candidate_binding = binding
         self._candidate_implementation = implementation
-        self._checkpoint = str(checkpoint.resolve())
         self._manifest_sha256 = manifest_sha256
         self._session = ProposalInferenceSession(
             checkpoint, manifest_sha256=manifest_sha256, seed=0
+        )
+        self._checkpoint_artifact_id = register_checkpoint_artifact(
+            checkpoint, manifest_sha256=manifest_sha256
         )
         self.calls = 0
         self._last_evidence: NativeNeuralEvidence | None = None
@@ -538,7 +546,7 @@ class NeuralNativeProducer:
             scored = self._session.score_support(context=view, support=support)
             evidence = NativeNeuralEvidence(
                 FORMAT,
-                self._checkpoint,
+                self._checkpoint_artifact_id,
                 self._manifest_sha256,
                 self._session.binding_sha256,
                 self.binding_sha256,

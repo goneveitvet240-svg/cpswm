@@ -1,3 +1,19 @@
+# A：内容定位神经checkpoint交付（2026-09-30）
+
+分支codex/pc-a-portable-checkpoints-20260930，base589b825e2bc232ce7d24213745ed4908f06ad18d，实际方法/采集源码154595da9a2f033934edaeb2d490d039ece29c23。v2证明按manifest内容引用，可信配置指定本机目录；v1原件不改。顺序两轮33/45自审零跳过、四文件Ruff/格式、三个修改模块及全仓382模块mypy通过。
+
+新格式真实RGB-D历史2动作、1受控撤回、11源/22记录；正常及新进程完整复算通过。源码/模型同时搬移、禁止读原源码目录后，workspace/证明/视图/动作/账本完全一致，原历史未改。完整假几何+真实11源网络重封装内部通过，但拥有者原件核验拒绝读出/恢复。SDK27/Unity166文件前后未变。
+
+最终未决99.1422%，无自然语义或物体操作，不是任务成功。这次纠正前无READY，继承报告把None→Pass标成动作改变，已明确记录歧义，下一轮修正；没有将其算作取消或替换旧动作。隔离dev环境复现45个torch/cv2收集错误，连同既有两个格式失败待下一轮修复。
+
+完整归档2,064文件/350,060,119字节，压缩47,287,798字节，SHA256 805893b66846d682ab42d615e99dae4b4b5ecab88475a885891f30e3912029e8；逐文件读回核验。包含实际历史、完整伪造副本、源码搬移副本及初次失败原件；见evidence/archive.json及inventory.json。
+
+[报告](../reviews/pc_a/portable_checkpoints_2026-09-30/REPORT.md)、[双审](../reviews/pc_a/portable_checkpoints_2026-09-30/REVIEWS.md)、[复现](../reviews/pc_a/portable_checkpoints_2026-09-30/REPRODUCE.md)。原件output/portable-checkpoints-20260930。离线监督用途待用户答复，训练/校准未启动；完整框架与原对照保持。B独立/跨平台/全CI/自然长期闭环未关闭。交付fetch核验集成19ddf26830348a2f0b33f0af54d6ba702c5cfb1c、父分支589b825e2bc232ce7d24213745ed4908f06ad18d、B fd4ca6ef5e81c90d7cf7987b42c0b2810d8a810a未变。已推送并通过[草稿PR65](https://github.com/goneveitvet240-svg/cpswm/pull/65)叠加PR64交付，未合并。以下为历史时点。
+
+# A：按内容定位神经checkpoint开工（2026-09-30）
+
+分支codex/pc-a-portable-checkpoints-20260930，base/当前源码589b825e2bc232ce7d24213745ed4908f06ad18d（PR64交付头）。[计划](../reviews/pc_a/portable_checkpoints_2026-09-30/PLAN.md)固定新证明格式和可信本地模型配置，目录搬移不改变模型/概率证据；旧原件不改。先复现故障，再冻结双审与真实历史复算；不是跨平台验收。证据output/portable-checkpoints-20260930。离线监督科学权限选择仍待用户答复，依赖它的训练/校准未启动；B独立/全仓CI/自然闭环仍未关闭。以下为历史时点。
+
 # A：RGB-D 进入原生神经提议交付（2026-09-30）
 
 分支 codex/pc-a-owned-visual-neural-20260930，base c1ae096f55c6487285a83a4aff5e08f743054df5。实际方法/采集源码30d57a0ba7df824ab7fb6fc955e5deacb404f256；新增显式视觉条件输入，由拥有者登记来源、消费者重建网络输入，恢复/行动前再从公共原件复推。默认语义/RGB/分类/澄清及完整框架保持。

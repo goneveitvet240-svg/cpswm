@@ -469,6 +469,7 @@ class NativeParticleWorkspace:
             raise ValueError("native neural verifier source differs from configured implementation")
         for name in (
             "cpswm.system.native_neural_production",
+            "cpswm.system.checkpoint_artifacts",
             "cpswm.system.native_visual_source",
             "cpswm.system.owned_visual_support",
             "cpswm.data_preflight.proposal_perception",

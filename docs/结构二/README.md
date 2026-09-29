@@ -1,3 +1,5 @@
+> 2026-09-30：版本核验入口已修复并9/49双审；历史检出7/2双审。完整回归仍被当前材料准备与旧清单/回执等阻塞。见[当前pipeline](../reviews/pc_a/positive_call_observation_2026-09-30/CURRENT_PIPELINE.md)、[入口修复](../reviews/pc_a/audit_venv_invocation_2026-09-30/REPORT.md)。
+
 # 2026-09-30 完整环境与真实动作报告
 
 [本轮交付](../reviews/pc_a/ci_action_report_2026-09-30/REPORT.md)：源码c87b6bb1e3c72986afe517f7f29ebf3d028f2283，74/31顺序双审、6035项完整收集和全仓静态检查通过。真实三观察、一撤回、11源/22记录、完整复算/搬移一致；两种完整假报告被拒绝。action_started与action_replaced分开，未决97.5440%，仍无自然任务收益。

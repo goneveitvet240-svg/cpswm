@@ -8,7 +8,7 @@
 
 完整归档2,064文件/350,060,119字节，压缩47,287,798字节，SHA256 805893b66846d682ab42d615e99dae4b4b5ecab88475a885891f30e3912029e8；逐文件读回核验。包含实际历史、完整伪造副本、源码搬移副本及初次失败原件；见evidence/archive.json及inventory.json。
 
-[报告](../reviews/pc_a/portable_checkpoints_2026-09-30/REPORT.md)、[双审](../reviews/pc_a/portable_checkpoints_2026-09-30/REVIEWS.md)、[复现](../reviews/pc_a/portable_checkpoints_2026-09-30/REPRODUCE.md)。原件output/portable-checkpoints-20260930。离线监督用途待用户答复，训练/校准未启动；完整框架与原对照保持。B独立/跨平台/全CI/自然长期闭环未关闭。交付fetch核验集成19ddf26830348a2f0b33f0af54d6ba702c5cfb1c、父分支589b825e2bc232ce7d24213745ed4908f06ad18d、B fd4ca6ef5e81c90d7cf7987b42c0b2810d8a810a未变。以草稿PR叠加PR64交付，未合并。以下为历史时点。
+[报告](../reviews/pc_a/portable_checkpoints_2026-09-30/REPORT.md)、[双审](../reviews/pc_a/portable_checkpoints_2026-09-30/REVIEWS.md)、[复现](../reviews/pc_a/portable_checkpoints_2026-09-30/REPRODUCE.md)。原件output/portable-checkpoints-20260930。离线监督用途待用户答复，训练/校准未启动；完整框架与原对照保持。B独立/跨平台/全CI/自然长期闭环未关闭。交付fetch核验集成19ddf26830348a2f0b33f0af54d6ba702c5cfb1c、父分支589b825e2bc232ce7d24213745ed4908f06ad18d、B fd4ca6ef5e81c90d7cf7987b42c0b2810d8a810a未变。已推送并通过[草稿PR65](https://github.com/goneveitvet240-svg/cpswm/pull/65)叠加PR64交付，未合并。以下为历史时点。
 
 # A：按内容定位神经checkpoint开工（2026-09-30）
 

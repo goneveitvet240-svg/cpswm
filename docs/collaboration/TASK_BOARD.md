@@ -1,3 +1,7 @@
+# A：版本核验虚拟环境入口修复开工（2026-09-30）
+
+分支codex/pc-a-audit-venv-invocation-20260930，base21619f014b43c724b28a93fa4612e03e5a10e2c7。前轮同源码两轮7/2通过零跳过，完整历史重放及攻击结束，证据已本地封存；该目录当前正在只读生成D0比较材料，延后文档提交以保持其HEAD稳定。当前轮只修复环境版本命令使用基础Python的问题，保留身份哈希、清单失效和全部生产保护；不刷新P0或旧回执。冻结源码后顺序两轮审查。原件output/audit-venv-invocation-20260930。GitHub远端重新fetch，集成19ddf26830348a2f0b33f0af54d6ba702c5cfb1c、B fd4ca6ef5e81c90d7cf7987b42c0b2810d8a810a。
+
 ## 2026-09-30 A 开工：CI 历史检出完整性
 
 任务分支 codex/pc-a-ci-history-20260930，base 59dd5ce3ab70411e3af5a9421c99cf5b482a19c2。上一轮 PR #67 已交付双审与失败原件。GitHub 集成19ddf26830348a2f0b33f0af54d6ba702c5cfb1c / B fd4ca6ef5e81c90d7cf7987b42c0b2810d8a810a 已重新 fetch 核对。本轮只修复默认浅历史造成的历史来源校验失败，保留固定版本证据、所有比较协议与科学 BLOCK。源码冻结后两轮顺序审查；证据输出 output/ci-history-20260930。

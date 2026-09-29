@@ -8,6 +8,12 @@
 
 分支codex/pc-a-audit-venv-invocation-20260930，base21619f014b43c724b28a93fa4612e03e5a10e2c7。前轮同源码两轮7/2通过零跳过，完整历史重放及攻击结束，证据已本地封存；该目录当前正在只读生成D0比较材料，延后文档提交以保持其HEAD稳定。当前轮只修复环境版本命令使用基础Python的问题，保留身份哈希、清单失效和全部生产保护；不刷新P0或旧回执。冻结源码后顺序两轮审查。原件output/audit-venv-invocation-20260930。GitHub远端重新fetch，集成19ddf26830348a2f0b33f0af54d6ba702c5cfb1c、B fd4ca6ef5e81c90d7cf7987b42c0b2810d8a810a。
 
+# A：CI历史检出修复（2026-09-30）
+
+分支codex/pc-a-ci-history-20260930，base59dd5ce3ab70411e3af5a9421c99cf5b482a19c2，实际源码21619f014b43c724b28a93fa4612e03e5a10e2c7。测试job使用完整Git历史；同HEAD/同12份材料，浅检出拒绝，补全后11记录通过，完整重签伪造仍拒绝。顺序两轮7/2 passed、零跳过；第二轮包含跨目录完整重放、9类报告伪造及源码/历史记录替换，10份报告原件保留。完整集合6050项/368模块收集通过，远端run36641464926尚执行，不能等同全部通过。
+
+封存36文件/515382原始字节，压缩132659字节，SHA256 de4523855efd7812d772b708b32b6e13fc2792e7344025ae5a3aada7b64f75b0，逐文件读回核验。最初过宽局部尝试中断记录保留。报告位于docs/reviews/pc_a/ci_history_2026-09-30，原件output/ci-history-20260930。下一项版本核验误用基础解释器已因果重现，分支隔离修复；当前受控比较包在固定源码目录另行生成。P0旧清单、B独立、完整CI、自然训练/校准与任务收益仍未关闭，完整范围/对照保持。以下历史状态保留。
+
 ## 2026-09-30 A 开工：CI 历史检出完整性
 
 任务分支 codex/pc-a-ci-history-20260930，base 59dd5ce3ab70411e3af5a9421c99cf5b482a19c2。上一轮 PR #67 已交付双审与失败原件。GitHub 集成19ddf26830348a2f0b33f0af54d6ba702c5cfb1c / B fd4ca6ef5e81c90d7cf7987b42c0b2810d8a810a 已重新 fetch 核对。本轮只修复默认浅历史造成的历史来源校验失败，保留固定版本证据、所有比较协议与科学 BLOCK。源码冻结后两轮顺序审查；证据输出 output/ci-history-20260930。
@@ -25,6 +31,12 @@
 # A：CI失败证据保存独立开工（2026-09-30）
 
 分支codex/pc-a-ci-failure-artifacts-20260930，base/开工源码053b27851c2f935e4de8fb00b0bee4dd9f294821。父任务完整集合在另一冻结目录继续，实体环境两轮84/124通过。前轮远端65分钟到76%超时且丢失完整失败回溯；本轮改善原始日志/JUnit/覆盖率/退出码保留，不减少测试集合或改变科学协议。[计划](../reviews/pc_a/ci_failure_artifacts_2026-09-30/PLAN.md)，证据output/ci-failure-artifacts-20260930。以下历史记录保留。
+
+# A：真实正路径调用观测交付（2026-09-30）
+
+分支codex/pc-a-positive-call-observation-20260930，base2bd0ee7f44e01cb59dd29d36deb3ed4464907c5c，实际源码053b27851c2f935e4de8fb00b0bee4dd9f294821。仅测试观测从生产方法替身改为真实函数调用监测；原断言和生产来源防护保留。实体环境顺序84/124 passed、零跳过，Ruff/格式通过。完整诊断4276通过/21失败/29跳过/1预期失败，2975.46秒退出2；达到20失败诊断预算后向本任务控制器SIGINT，未执行余下集合，不是全仓完成。远端同源码65分钟超时失败。
+
+8项旧清单/回执、9项缺少当前比较包/旧schema、旧CORRECT预期1项、trace覆盖率冲突1项、基础解释器误调用2项已保留回溯分类；不自动刷新或弱化检查。封存94文件/8098483原始字节，压缩1521984字节，SHA256 8847057989bb9c6fc5ecefd7b4131ec3b2ec50ae485cd06bbc1828ab7db661ae，逐文件读回通过。证据output/positive-call-observation-20260930。[报告](../reviews/pc_a/positive_call_observation_2026-09-30/REPORT.md)、[双审](../reviews/pc_a/positive_call_observation_2026-09-30/REVIEWS.md)、[当前pipeline](../reviews/pc_a/positive_call_observation_2026-09-30/CURRENT_PIPELINE.md)。后继PR67已完成失败证据保存；历史检出另轮推进。B独立/完整CI/自然模型与任务收益未关闭，完整框架和对照保留。以下为历史状态。
 
 # A：反馈正路径观测修复开工（2026-09-30）
 

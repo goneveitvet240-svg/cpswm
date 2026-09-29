@@ -1,3 +1,7 @@
+# A：CI依赖与行动报告修复开工（2026-09-30）
+
+分支codex/pc-a-ci-action-report-20260930，base/开工源码778e35418d79b350148c774d98377b0a4ab6e6d4（PR65）。[计划](../reviews/pc_a/ci_action_report_2026-09-30/PLAN.md)处理45个隔离dev收集错误、两个继承格式错误及None→Pass动作报告歧义；不删测试、不改变方法/先验/效用。冻结后顺序双审，再实际运行与完整回归。证据output/ci-action-report-20260930；旧记录保留。B独立/自然模型校准及标签权限答复仍未关闭。以下为历史时点。
+
 # A：内容定位神经checkpoint交付（2026-09-30）
 
 分支codex/pc-a-portable-checkpoints-20260930，base589b825e2bc232ce7d24213745ed4908f06ad18d，实际方法/采集源码154595da9a2f033934edaeb2d490d039ece29c23。v2证明按manifest内容引用，可信配置指定本机目录；v1原件不改。顺序两轮33/45自审零跳过、四文件Ruff/格式、三个修改模块及全仓382模块mypy通过。

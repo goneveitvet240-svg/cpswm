@@ -4,16 +4,20 @@ import os
 from pathlib import Path
 
 import pytest
-import torch
-from clarification_camera_model import CLARIFICATION_SOURCES
-from run_history_action_loop import decoder_for
-from run_neural_pixel_camera_loop import SOURCES
+
+torch = pytest.importorskip("torch", reason="optional perception runtime required")
+from clarification_camera_model import CLARIFICATION_SOURCES  # noqa: E402
+from run_history_action_loop import decoder_for  # noqa: E402
+from run_neural_pixel_camera_loop import SOURCES  # noqa: E402
 
 
 @pytest.mark.parametrize("kind", ["ssdlite", "fasterrcnn"])
 def test_both_real_frontends_bind_task_sources_and_survive_reconstruction(kind):
+    weights = Path(os.environ.get("CPSWM_" + kind.upper() + "_WEIGHTS", ""))
+    if not weights.is_file():
+        pytest.skip("explicit local official " + kind + " weights required")
+    pytest.importorskip("torchvision", reason="optional perception runtime required")
     torch.set_num_threads(2)
-    weights = Path(os.environ["CPSWM_" + kind.upper() + "_WEIGHTS"])
     first, scope = decoder_for(weights, "clarification", kind)
     recovered, same_scope = decoder_for(weights, "clarification", kind)
     assert first.binding_sha256 == recovered.binding_sha256 and scope == same_scope

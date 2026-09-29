@@ -9,6 +9,8 @@ from uuid import uuid4
 
 import numpy as np
 import pytest
+
+pytest.importorskip("torch", reason="history diagnostic tools require optional perception runtime")
 from history_visual_evidence import evaluate_frame
 from test_instance_correspondence import event_fixture
 from test_structure_two_adaptive_runtime import _adaptive_system_and_transition

@@ -86,4 +86,4 @@ flowchart LR
 
 完整受测原件和脚本（含失败attempt01、成功attempt02、状态库、全部公共/准备原图、掩膜、SDK记录、冻结映射、开发失败日志）共269个文件、325,879,662字节；逐文件读回校验通过。Git共享33,412,800字节压缩包及清单，压缩包SHA256为 `6f29fe4572f7f90bb0f84d61d0f14d551557b64244ac53ffae433320737d2d5d`。报告、外层描述和Python临时缓存不在原件清单计数内。见 [完整原件](evidence/history-action-loop.tar.gz)、[外层摘要](evidence/archive.json)、[逐文件清单](evidence/inventory.json)。
 
-持久本机原件 `output/history-action-loop-20260929/`。以父分支 `codex/pc-a-sim-timing-control-20260929` 的叠加草稿PR交付，不合并。交付前fetch成功，集成 `19ddf26830348a2f0b33f0af54d6ba702c5cfb1c`、B `fd4ca6ef5e81c90d7cf7987b42c0b2810d8a810a`、父分支 `bf374f9331426cfa384f2ec23bf0bd0a098ba033` 未变。后续交付提交仅文档/证据，不将源码自审当作B对新PR的签收。
+持久本机原件 `output/history-action-loop-20260929/`。已通过[草稿PR60](https://github.com/goneveitvet240-svg/cpswm/pull/60)叠加父分支 `codex/pc-a-sim-timing-control-20260929` 交付，未合并。交付前fetch成功，集成 `19ddf26830348a2f0b33f0af54d6ba702c5cfb1c`、B `fd4ca6ef5e81c90d7cf7987b42c0b2810d8a810a`、父分支 `bf374f9331426cfa384f2ec23bf0bd0a098ba033` 未变。后续交付提交仅文档/证据，不将源码自审当作B对新PR的签收。

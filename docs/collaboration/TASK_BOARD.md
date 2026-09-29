@@ -6,7 +6,7 @@
 
 首版d9d4941在实际归档核验因内部随机ID误比较而失败，首批/开发失败日志完整保留；修正后从头运行四条。完整原件269文件/325,879,662字节，以33,412,800字节压缩包共享并逐字读回验证；三项完整归档攻击被拒绝。SDK27/Unity166文件运行前后未变。此为受控语义+真实相机混合工程闭环，不是自然完整pipeline或B独立验收；既有全量CI失败仍未解决。
 
-[报告](../reviews/pc_a/history_action_loop_2026-09-29/REPORT.md)、[两轮审查](../reviews/pc_a/history_action_loop_2026-09-29/REVIEWS.md)、[复现](../reviews/pc_a/history_action_loop_2026-09-29/REPRODUCE.md)。持久原件output/history-action-loop-20260929；叠加上一A分支草稿PR交接，不合并。下一主项是将可信自然实例/事件证据接入这条同历史链路，补测量可靠性和自然纠正，再评估任务完成/成本/长期恢复。交付前fetch成功：集成19ddf26830348a2f0b33f0af54d6ba702c5cfb1c、B fd4ca6ef5e81c90d7cf7987b42c0b2810d8a810a未变。
+[报告](../reviews/pc_a/history_action_loop_2026-09-29/REPORT.md)、[两轮审查](../reviews/pc_a/history_action_loop_2026-09-29/REVIEWS.md)、[复现](../reviews/pc_a/history_action_loop_2026-09-29/REPRODUCE.md)。持久原件output/history-action-loop-20260929；已推送并通过[草稿PR60](https://github.com/goneveitvet240-svg/cpswm/pull/60)叠加上一A分支交接，未合并。下一主项是将可信自然实例/事件证据接入这条同历史链路，补测量可靠性和自然纠正，再评估任务完成/成本/长期恢复。交付前fetch成功：集成19ddf26830348a2f0b33f0af54d6ba702c5cfb1c、B fd4ca6ef5e81c90d7cf7987b42c0b2810d8a810a未变。
 
 下方为历史时点，不覆盖本节绑定源码和原件的结果。
 

@@ -1,3 +1,7 @@
+# A：CI失败证据保存独立开工（2026-09-30）
+
+分支codex/pc-a-ci-failure-artifacts-20260930，base/开工源码053b27851c2f935e4de8fb00b0bee4dd9f294821。父任务完整集合在另一冻结目录继续，实体环境两轮84/124通过。前轮远端65分钟到76%超时且丢失完整失败回溯；本轮改善原始日志/JUnit/覆盖率/退出码保留，不减少测试集合或改变科学协议。[计划](../reviews/pc_a/ci_failure_artifacts_2026-09-30/PLAN.md)，证据output/ci-failure-artifacts-20260930。以下历史记录保留。
+
 # A：反馈正路径观测修复开工（2026-09-30）
 
 分支codex/pc-a-positive-call-observation-20260930，base/开工源码2bd0ee7f44e01cb59dd29d36deb3ed4464907c5c。修复完整回归首失败中的测试替身，保留生产来源防护与正路径断言；随后顺序两轮对抗审查，再诊断下一失败。[计划](../reviews/pc_a/positive_call_observation_2026-09-30/PLAN.md)，证据output/positive-call-observation-20260930。完整CI/B独立及自然监督校准仍未关闭。以下历史时点保留。

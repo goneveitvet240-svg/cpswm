@@ -1,0 +1,8 @@
+"""Simulated absent optional module; not an independently rebuilt environment."""
+import sys,importlib.abc,pytest
+class MissingTorch(importlib.abc.MetaPathFinder):
+ def find_spec(self, fullname, path=None, target=None):
+  if fullname=='torch' or fullname.startswith('torch.'):
+   raise ModuleNotFoundError("torch intentionally unavailable in dependency isolation probe",name=fullname)
+sys.meta_path.insert(0,MissingTorch())
+raise SystemExit(pytest.main(['-o','addopts=','-q','tests/test_history_detector_profile.py','tests/test_history_visual_evidence.py','--junitxml',sys.argv[1]]))

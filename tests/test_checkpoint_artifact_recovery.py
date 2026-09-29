@@ -172,6 +172,10 @@ def test_new_process_relocates_source_and_model_without_reading_original_checkou
 import sys,os,json
 from pathlib import Path
 old=Path(sys.argv[1]).resolve();base=Path(sys.argv[2]);reads=[]
+# An editable installation leaves the old src path in the shared interpreter.
+# Configure this child for the relocated source before dependency/plugin scans;
+# keep the audit prohibition on every original-checkout read below.
+sys.path=[p for p in sys.path if not Path(p or os.curdir).resolve().is_relative_to(old)]
 def audit(event,args):
     if event=='open' and isinstance(args[0],(str,bytes)):
         p=Path(os.fsdecode(args[0])).resolve()

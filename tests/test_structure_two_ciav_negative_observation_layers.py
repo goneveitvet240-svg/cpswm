@@ -210,27 +210,21 @@ def test_one_realized_ciav_observation_is_counted_once_across_direct_and_replay(
     def direct():
         probe = BackboneWiringProbe.build(seed=SEED)
         transition = probe.transition_for(probe.observed_days()[0])
-        ciav = probe.ciav_input(
-            transition, outcome=CIAVOutcomeKind.DETECTED_DIFFERENT_LOCATION
-        )
+        ciav = probe.ciav_input(transition, outcome=CIAVOutcomeKind.DETECTED_DIFFERENT_LOCATION)
         result, _ = probe.run_direct_p5(transition, ciav_input=ciav)
         return probe, result
 
     def replay():
         probe = BackboneWiringProbe.build(seed=SEED)
         transition = probe.transition_for(probe.observed_days()[0])
-        ciav = probe.ciav_input(
-            transition, outcome=CIAVOutcomeKind.DETECTED_DIFFERENT_LOCATION
-        )
+        ciav = probe.ciav_input(transition, outcome=CIAVOutcomeKind.DETECTED_DIFFERENT_LOCATION)
         deferred, _ = probe.run_adaptive(
             transition,
             ciav_input=ciav,
             features=probe.router_features(action_margin=0.9, regime_hazard=0.0),
             debt_expiry_steps=1,
         )
-        result, _ = probe.replay_debt(
-            deferred.debt_certificates[0].debt_id, ciav_input=ciav
-        )
+        result, _ = probe.replay_debt(deferred.debt_certificates[0].debt_id, ciav_input=ciav)
         return probe, result
 
     direct_probe, direct_result = direct()
@@ -241,16 +235,12 @@ def test_one_realized_ciav_observation_is_counted_once_across_direct_and_replay(
     assert dict(direct_result.ciav_receipt.evidence.actor_posterior) == dict(
         replay_result.ciav_receipt.evidence.actor_posterior
     )
-    assert len(direct_probe.committed_revision_ids()) == len(
-        replay_probe.committed_revision_ids()
-    )
+    assert len(direct_probe.committed_revision_ids()) == len(replay_probe.committed_revision_ids())
     for location in direct_probe.case.locations:
         assert direct_probe.system.core.hybrid_alpha(location) == pytest.approx(
             replay_probe.system.core.hybrid_alpha(location)
         )
-    assert direct_probe.action_distribution_sha256() == (
-        replay_probe.action_distribution_sha256()
-    )
+    assert direct_probe.action_distribution_sha256() == (replay_probe.action_distribution_sha256())
 
 
 def test_repeating_the_identical_ciav_execution_produces_no_second_factor() -> None:
@@ -273,13 +263,10 @@ def test_repeating_the_identical_ciav_execution_produces_no_second_factor() -> N
         trace_id=transition.after.metadata.trace_id,
         opportunity_time=ciav.opportunity_time,
         object_instance_id=probe.system.core.object_instance_id,
-        actor_keys=tuple(
-            actor for actor in transition.actor_prior if actor != "unknown_actor"
-        ),
+        actor_keys=tuple(actor for actor in transition.actor_prior if actor != "unknown_actor"),
         actor_prior=dict(result.primary_result.actor_posterior),
         actor_likelihoods_by_outcome={
-            outcome: dict(values)
-            for outcome, values in ciav.actor_likelihoods_by_outcome.items()
+            outcome: dict(values) for outcome, values in ciav.actor_likelihoods_by_outcome.items()
         },
         location_keys=tuple(str(item) for item in probe.system.core.locations),
         expected_detected_location_id=ciav.expected_detected_location_id,

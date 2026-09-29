@@ -936,6 +936,7 @@ hand-perception = [
     { name = "mediapipe" },
 ]
 perception = [
+    { name = "opencv-contrib-python" },
     { name = "torch" },
     { name = "torchvision" },
     { name = "transformers" },
@@ -968,6 +969,7 @@ requires-dist = [
     { name = "mypy", marker = "extra == 'dev'", specifier = ">=2.3.1" },
     { name = "networkx", specifier = ">=3.6.1" },
     { name = "numpy", specifier = ">=2.4.6" },
+    { name = "opencv-contrib-python", marker = "extra == 'perception'", specifier = ">=5.0.0.93,<6" },
     { name = "pandas", marker = "extra == 'viz'", specifier = ">=3.0.5" },
     { name = "plotly", marker = "extra == 'viz'", specifier = ">=6.9.0" },
     { name = "pre-commit", marker = "extra == 'dev'", specifier = ">=4.6.2" },

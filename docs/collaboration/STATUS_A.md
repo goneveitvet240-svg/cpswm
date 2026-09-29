@@ -1,3 +1,7 @@
+# A：公共视觉候选同历史接线开工（2026-09-30）
+
+分支codex/pc-a-visual-support-20260930，base/当前实际源码1d3538794b8b86d66414255f8d37f64d8ff0d88e。核验远端后从父分支独立开工；[计划](../reviews/pc_a/visual_support_2026-09-30/PLAN.md)固定两轮审查后再跑两条北侧历史。生产候选读出接线，不添加传感器权限、世界身份、密度先验或阈值；完整框架保持。证据output/visual-support-20260930，目前未验收。B独立及全仓CI缺口仍未关闭。
+
 # A：视觉历史测试依赖修复及重审（2026-09-30）
 
 分支codex/pc-a-visual-history-20260929，base 00cc5a47cad988b453d5839b63fd7c6a89f4246d；测试修复源ac93f8d489209943cbcff9292ab483330538854b。仅两个测试隔离可选依赖/权重；真实权重下重新顺序33/42双审零跳过，局部Ruff通过。四条实际历史仍绑定00283c607a5fb49c293cefe8eafd65cc2192f558，原封存包不变；其他Python/依赖源码一致。见[补充命令与失败记录](../reviews/pc_a/visual_history_2026-09-29/CI_FOLLOWUP.md)。

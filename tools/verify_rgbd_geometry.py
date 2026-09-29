@@ -5,6 +5,7 @@ import hashlib
 import json
 import math
 from datetime import datetime, timedelta
+from itertools import pairwise
 from pathlib import Path
 from uuid import uuid4
 
@@ -16,6 +17,65 @@ from cpswm.perception_mapping.unity_rgbd import (
     observations_from_response,
 )
 from cpswm.system.reproducibility import content_sha256
+
+TRAJECTORY = (
+    {"action": "Pass"},
+    {"action": "RotateRight", "degrees": 30},
+    {"action": "RotateLeft", "degrees": 60},
+    {"action": "RotateRight", "degrees": 30},
+    {"action": "LookDown", "degrees": 30},
+    {"action": "LookUp", "degrees": 60},
+)
+BINDING_FIELDS = frozenset(
+    {
+        "schema_id",
+        "action_id",
+        "capture_time",
+        "rgb_sha256",
+        "depth_sha256",
+        "worker_sha256",
+        "unity_sha256",
+        "scene_sha256",
+        "configuration_sha256",
+    }
+)
+
+
+def validate_protocol_frame(camera, row, *, index, initial_camera):
+    """A geometrically consistent image cannot substitute for the fixed action trace."""
+    if not 0 <= index < len(TRAJECTORY):
+        raise ValueError("undeclared geometry frame")
+    request = TRAJECTORY[index]
+    metadata = row["metadata"]
+    if (
+        row["index"] != index
+        or row["request"] != request
+        or metadata["lastAction"] != request["action"]
+        or metadata["lastActionSuccess"] is not True
+        or metadata["errorMessage"]
+    ):
+        raise ValueError("geometry action trace differs from fixed protocol")
+    if row["camera"] != {k: v for k, v in camera.items() if k not in BINDING_FIELDS}:
+        raise ValueError("recorded camera packet differs from public camera")
+    yaw = (initial_camera["yaw_degrees"] + (0, 30, -30, 0, 0, 0)[index]) % 360
+    pitch = initial_camera["pitch_degrees"] + (0, 0, 0, 0, 30, -30)[index]
+    if (
+        abs((camera["yaw_degrees"] - yaw + 180) % 360 - 180) > 1e-3
+        or abs(camera["pitch_degrees"] - pitch) > 1e-3
+        or math.dist(camera["position_m"], initial_camera["position_m"]) > 1e-5
+    ):
+        raise ValueError("measured camera motion differs from fixed protocol")
+    # These are float-renderer execution tolerances, not a noise calibration model.
+    if (
+        camera["position_m"] != [metadata["cameraPosition"][k] for k in ("x", "y", "z")]
+        or camera["pitch_degrees"] != metadata["agent"]["cameraHorizon"]
+        or camera["yaw_degrees"] != metadata["agent"]["rotation"]["y"]
+        or camera["vertical_fov_degrees"] != metadata["fov"]
+        or camera["width"] != metadata["screenWidth"]
+        or camera["height"] != metadata["screenHeight"]
+        or metadata["depthFormat"] != "Meters"
+    ):
+        raise ValueError("public camera differs from recorded SDK camera")
 
 
 def verify(directory, *, expected=None):
@@ -69,10 +129,17 @@ def verify(directory, *, expected=None):
     evaluation = json.loads((directory / "evaluator_only.json").read_text())
     if len(evaluation) != 6:
         raise ValueError("incomplete evaluator raycast coverage")
+    identities = [p["camera"]["action_id"] for p in predictions]
+    captures = [datetime.fromisoformat(p["camera"]["capture_time"]) for p in predictions]
+    if len(set(identities)) != len(identities) or any(a >= b for a, b in pairwise(captures)):
+        raise ValueError("repeated camera action or noncausal geometry capture")
     residuals = []
     for i, (pred, row) in enumerate(zip(predictions, evaluation, strict=True)):
         if row["index"] != i or len(row["rays"]) != 9:
             raise ValueError("probe frame/query order differs")
+        validate_protocol_frame(
+            pred["camera"], row, index=i, initial_camera=predictions[0]["camera"]
+        )
         meta = row["metadata"]
         camera = pred["camera"]
         if (

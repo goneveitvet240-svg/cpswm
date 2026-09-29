@@ -1,0 +1,26 @@
+import sys,subprocess,os,json,datetime,time
+from pathlib import Path
+root=Path('/private/tmp/cpswm-pc-a-sim-method-audit-20260929')
+sys.path.insert(0,str(root/'docs/reviews/pc_a/neural_native_loop_2026-09-29'))
+from run_frozen import snapshot
+out=Path(__file__).parent/'archive-audit-attempt02';out.mkdir(exist_ok=False)
+main=Path('/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model')
+py=str(root/'.venv/bin/python');weights=main/'output/models/torchvision'
+ssd=weights/'ssdlite320_mobilenet_v3_large_coco-a79551df.pth';frcnn=weights/'fasterrcnn_resnet50_fpn_v2_coco-dd69338a.pth'
+sdk=main/'.venv-ai2thor/bin/python';binary=Path('/Users/pangwei/.ai2thor/releases/thor-OSXIntel64-f0825767cd50d69f666c7f282e54abfe58f1e917/thor-OSXIntel64-f0825767cd50d69f666c7f282e54abfe58f1e917.app/Contents/MacOS/AI2-THOR')
+common=['--ssdlite-weights',str(ssd),'--fasterrcnn-weights',str(frcnn)]
+archive=main/'output/neural-native-loop-20260929'
+audit=[py,'-u','tools/audit_simulation_evidence.py','--archive',str(archive),'--inventory',str(root/'docs/reviews/pc_a/neural_native_loop_2026-09-29/evidence/local-artifact-inventory.json'),*common]
+pytest=[py,'-m','pytest','-o','addopts=','-q']
+commands=[('round1_records',pytest+['tests/test_simulation_evidence_audit.py','tests/test_unity_capture_resolution.py','tests/test_instance_correspondence.py','--junitxml',str(out/'round1.xml')]),('archive_records',audit+['--mode','records','--output',str(out/'records')]),('live_fixture',[py,'tools/run_instance_correspondence_diagnostic.py','--mode','fixture','--output',str(out/'fixture'),'--sdk-python',str(sdk),'--binary',str(binary),*common]),('round2_forged_positive',pytest+['tests/test_instance_correspondence_artifacts.py','tests/test_pixel_camera_detector_binding.py','--junitxml',str(out/'round2.xml')]),('archive_fresh_inference',audit+['--mode','inference','--output',str(out/'inference')]),('ruff',[py,'-m','ruff','check','tools/audit_simulation_evidence.py','tests/test_simulation_evidence_audit.py'])]
+source=snapshot();head=subprocess.check_output(['git','rev-parse','HEAD'],cwd=root,text=True).strip();(out/'source.json').write_text(json.dumps(dict(head=head,files=source),indent=2)+'\n')
+env=dict(os.environ,PYTHONPATH='src:tests:tools',PYTHONHASHSEED='0',OMP_NUM_THREADS='2',MKL_NUM_THREADS='2',CPSWM_INSTANCE_FIXTURE=str(out/'fixture'),CPSWM_SSDLITE_WEIGHTS=str(ssd),CPSWM_FASTERRCNN_WEIGHTS=str(frcnn))
+rows=[]
+for name,command in commands:
+ assert snapshot()==source
+ start=time.monotonic()
+ with (out/(name+'.log')).open('w') as log:
+  result=subprocess.run(command,cwd=root,env=env,stdout=log,stderr=subprocess.STDOUT,timeout=1500)
+ row=dict(name=name,command=command,exit_code=result.returncode,seconds=time.monotonic()-start,source_unchanged=snapshot()==source,source_head=head)
+ rows.append(row);(out/'commands.json').write_text(json.dumps(rows,indent=2)+'\n');print(json.dumps(row),flush=True)
+ if row['exit_code'] or not row['source_unchanged']:raise SystemExit(row['exit_code'] or 2)

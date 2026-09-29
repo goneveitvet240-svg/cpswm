@@ -20,6 +20,7 @@ from run_instance_correspondence_diagnostic import reconstruct_catalog
 from verify_neural_camera_comparison import bbox_iou, plain, require
 
 from cpswm.perception_mapping.natural_vision import decode_rgb
+from cpswm.perception_mapping.unity_rgbd import public_rgb_observations
 from cpswm.system.structure_two_continuous_input import ObservationDelivery
 
 FRONTENDS = ("ssdlite", "fasterrcnn")
@@ -34,7 +35,8 @@ def paired_predictions(records, *, task, weights):
             type(delivery) is ObservationDelivery
             and delivery.success
             and command.action_id == delivery.action_id
-            and len(delivery.observations) == 1,
+            and len(public_rgb_observations(delivery.observations, cutoff=delivery.received_at))
+            == 1,
             "invalid public delivery",
         )
         raw = delivery.observations[0]

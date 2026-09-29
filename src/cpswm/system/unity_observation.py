@@ -27,6 +27,7 @@ from cpswm.perception_mapping.adapters.contracts import (
     SensorRef,
 )
 from cpswm.perception_mapping.adapters.rgbd_capture import RawModalityObservation
+from cpswm.perception_mapping.unity_rgbd import PROFILE, observations_from_response
 from cpswm.system.reproducibility import content_sha256
 from cpswm.system.structure_two_continuous_input import ObservationCommand, ObservationDelivery
 
@@ -44,9 +45,15 @@ class UnityObservationExecutor:
         session_id: UUID,
         trace_id: UUID,
         image_size: int | None = None,
+        sensor_profile: str = "rgb",
     ) -> None:
         if image_size is not None and (type(image_size) is not int or image_size not in (320, 640)):
             raise ValueError("unsupported explicit Unity image size")
+        if sensor_profile not in ("rgb", PROFILE) or (
+            sensor_profile == PROFILE and image_size is None
+        ):
+            raise ValueError("explicit RGB-D capture configuration required")
+        self.sensor_profile = sensor_profile
         self.scope = (household_id, session_id, trace_id)
         self.provenance = {
             name: hashlib.sha256(path.read_bytes()).hexdigest()
@@ -54,6 +61,10 @@ class UnityObservationExecutor:
         }
         if image_size is not None:
             self.provenance["capture_configuration"] = content_sha256((image_size, image_size, 60))
+        if sensor_profile == PROFILE:
+            self.provenance["capture_configuration"] = content_sha256(
+                (PROFILE, image_size, image_size, 60.0, 0.1, 20.0, False)
+            )
         log_dir.mkdir(parents=True, exist_ok=True)
         self._log = (log_dir / "transport.stderr").open("w")
         self._process = subprocess.Popen(
@@ -67,6 +78,7 @@ class UnityObservationExecutor:
                 "--log-dir",
                 str(log_dir),
                 *([] if image_size is None else ["--image-size", str(image_size)]),
+                *([] if sensor_profile == "rgb" else ["--sensor-profile", sensor_profile]),
             ],
             stdin=subprocess.PIPE,
             stdout=subprocess.PIPE,
@@ -114,6 +126,18 @@ class UnityObservationExecutor:
         response = self._receive()
         if response["action_id"] != str(command.action_id):
             raise ValueError("Unity response command mismatch")
+        if self.sensor_profile == PROFILE:
+            arrival = datetime.now(UTC)
+            observations = observations_from_response(
+                response,
+                action_id=command.action_id,
+                scope=self.scope,
+                arrival=arrival,
+                provenance=self.provenance,
+            )
+            return ObservationDelivery(
+                command.action_id, observations, response["success"], response["error"], arrival
+            )
         payload = base64.b64decode(response.pop("rgb_npy"), validate=True)
         capture = datetime.fromisoformat(response["capture_time"])
         arrival = datetime.now(UTC)

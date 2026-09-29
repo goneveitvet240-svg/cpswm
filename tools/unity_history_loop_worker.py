@@ -51,7 +51,11 @@ def main(recorder_type=HistoryCameraRecorder):
     for key in ("binary", "house", "log-dir"):
         parser.add_argument("--" + key, required=True)
     parser.add_argument("--image-size", type=int, choices=(320, 640), required=True)
+    parser.add_argument("--sensor-profile", choices=("rgb", "rgbd_self_pose"), default="rgb")
     args = parser.parse_args()
+    from unity_rgbd_capture import FAR, NEAR, rgbd_response
+
+    rgbd = args.sensor_profile == "rgbd_self_pose"
     house = json.loads(Path(args.house).read_text())
     target = house["metadata"].pop("cpswm_diagnostic_target")
     private = Path(args.log_dir) / "evaluator_only"
@@ -69,6 +73,16 @@ def main(recorder_type=HistoryCameraRecorder):
         height=args.image_size,
         fieldOfView=60,
         renderInstanceSegmentation=True,
+        **(
+            dict(
+                renderDepthImage=True,
+                cameraNearPlane=NEAR,
+                cameraFarPlane=FAR,
+                add_depth_noise=False,
+            )
+            if rgbd
+            else {}
+        ),
         server_timeout=30.0,
         server_start_timeout=30.0,
     )
@@ -90,7 +104,10 @@ def main(recorder_type=HistoryCameraRecorder):
             if event.frame.shape != (args.image_size, args.image_size, 3):
                 raise ValueError("history camera image size changed")
             print(
-                "CPSWM_RESPONSE " + json.dumps(method_response(command["action_id"], event)),
+                "CPSWM_RESPONSE "
+                + json.dumps(
+                    (rgbd_response if rgbd else method_response)(command["action_id"], event)
+                ),
                 flush=True,
             )
     finally:

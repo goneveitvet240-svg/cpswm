@@ -40,6 +40,11 @@ from run_neural_pixel_camera_loop import (  # noqa: E402
 from test_native_neural_recovery import OpenWorldJointFixture  # noqa: E402
 
 from cpswm.perception_mapping.pixel_camera_feedback import PixelCategoryOutcomeDecoder  # noqa: E402
+from cpswm.perception_mapping.unity_rgbd import (  # noqa: E402
+    PROFILE,
+    decode_unity_rgbd,
+    public_rgb_observations,
+)
 from cpswm.system.continuous_state_codec import StateCodec  # noqa: E402
 from cpswm.system.continuous_state_store import ContinuousStateStore  # noqa: E402
 from cpswm.system.native_neural_production import NeuralNativeProducer  # noqa: E402
@@ -300,9 +305,22 @@ def verify_revision_chain(output, *, final_stream, checkpoint, decoder, builder,
             store.close()
 
 
-def run(output, *, sdk_python, binary, weights, checkpoint, site, task, detector_kind="ssdlite"):
+def run(
+    output,
+    *,
+    sdk_python,
+    binary,
+    weights,
+    checkpoint,
+    site,
+    task,
+    detector_kind="ssdlite",
+    sensor_profile="rgb",
+):
     if task not in ("classification", "clarification"):
         raise ValueError("explicit development task required")
+    if sensor_profile not in ("rgb", PROFILE):
+        raise ValueError("unsupported sensor profile")
     output.mkdir(parents=True, exist_ok=False)
     source, files = source_identity()
     decoder, scope = decoder_for(weights, task, detector_kind)
@@ -321,6 +339,7 @@ def run(output, *, sdk_python, binary, weights, checkpoint, site, task, detector
             scope=SCOPE,
             task=task,
             detector_kind=detector_kind,
+            sensor_profile=sensor_profile,
             private_instance_evaluation=True,
             site=site,
             source=source,
@@ -354,6 +373,7 @@ def run(output, *, sdk_python, binary, weights, checkpoint, site, task, detector
             house=house,
             log_dir=output / "unity-logs",
             image_size=320,
+            sensor_profile=sensor_profile,
             **scope,
         )
         model = (ClarificationViewModel if task == "clarification" else DiagnosticViewModel)(
@@ -481,6 +501,7 @@ def verify(output, *, weights, checkpoint):
     if (
         manifest["site"] not in ("north", "south")
         or manifest["image_size"] != 320
+        or manifest["sensor_profile"] not in ("rgb", PROFILE)
         or manifest["pre_correction_actions"] != 1
         or manifest["post_correction_budget"] != 2
         or manifest["private_instance_evaluation"] is not True
@@ -589,8 +610,29 @@ def verify(output, *, weights, checkpoint):
             ):
                 raise ValueError("SDK history action differs")
             raw = (private / f"{row['index']:03d}-rgb.npy").read_bytes()
-            if len(delivery.observations) != 1 or delivery.observations[0].payload_bytes != raw:
+            pixels = public_rgb_observations(delivery.observations, cutoff=delivery.received_at)
+            expected_channels = 3 if manifest["sensor_profile"] == PROFILE else 1
+            if (
+                len(delivery.observations) != expected_channels
+                or len(pixels) != 1
+                or pixels[0].payload_bytes != raw
+            ):
                 raise ValueError("SDK history RGB differs")
+            if manifest["sensor_profile"] == PROFILE:
+                camera, _ = decode_unity_rgbd(delivery.observations, cutoff=delivery.received_at)
+                if (
+                    delivery.observations[1].payload_bytes
+                    != (private / f"{row['index']:03d}-depth.npy").read_bytes()
+                ):
+                    raise ValueError("SDK history depth differs")
+                m = row["metadata"]
+                if (
+                    camera.position_m != tuple(m["cameraPosition"][k] for k in ("x", "y", "z"))
+                    or camera.yaw_degrees != m["agent"]["rotation"]["y"]
+                    or camera.pitch_degrees != m["agent"]["cameraHorizon"]
+                    or camera.vertical_fov_degrees != m["fov"]
+                ):
+                    raise ValueError("SDK camera self-pose differs")
             frames = decoder.measurements(delivery.observations, cutoff=delivery.received_at)
             measurements.extend(frames)
             mask = np.load(private / f"{row['index']:03d}-mask.npy", allow_pickle=False)
@@ -637,6 +679,7 @@ if __name__ == "__main__":
     p.add_argument("--mode", choices=("run", "verify"), required=True)
     p.add_argument("--site", choices=("north", "south"), default="north")
     p.add_argument("--task", choices=("classification", "clarification"), required=True)
+    p.add_argument("--sensor-profile", choices=("rgb", PROFILE), default="rgb")
     p.add_argument("--detector-kind", choices=("ssdlite", "fasterrcnn"), default="ssdlite")
     for name in ("output", "sdk-python", "binary", "weights", "checkpoint"):
         p.add_argument("--" + name, type=Path, required=True)
@@ -654,6 +697,7 @@ if __name__ == "__main__":
                     site=a.site,
                     task=a.task,
                     detector_kind=a.detector_kind,
+                    sensor_profile=a.sensor_profile,
                 )
             )
         )

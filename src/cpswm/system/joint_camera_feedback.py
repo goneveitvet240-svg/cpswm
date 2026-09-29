@@ -50,6 +50,7 @@ class CameraOutcomeDecoder(Protocol):
 
 
 def decoder_binding(decoder: CameraOutcomeDecoder | None) -> str | None:
+    from cpswm.perception_mapping.unity_rgbd import implementation_binding
     from cpswm.system.structure_two_execution import _code_object_sha256
 
     if decoder is None:
@@ -62,6 +63,7 @@ def decoder_binding(decoder: CameraOutcomeDecoder | None) -> str | None:
         (
             artifact,
             sources,
+            implementation_binding(),
             python_dependency_implementation_binding(decoder, required_methods=("decode",)),
             sha256(Path(__file__).read_bytes()).hexdigest(),
             tuple(

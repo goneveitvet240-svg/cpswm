@@ -19,6 +19,7 @@ from cpswm.perception_mapping.natural_vision import (
     NaturalAppearanceDetector,
     VisualFrame,
 )
+from cpswm.perception_mapping.unity_rgbd import public_rgb_observations
 from cpswm.system.joint_camera_policy import CameraModelSources
 from cpswm.system.native_joint_production import python_dependency_implementation_binding
 from cpswm.system.reproducibility import content_sha256
@@ -161,7 +162,12 @@ class PixelCategoryOutcomeDecoder:
         self, observations: tuple[RawModalityObservation, ...], *, cutoff: datetime
     ) -> tuple[VisualFrame, ...]:
         _ = self.binding_sha256
-        frames = tuple(self._detector.infer(x, cutoff=cutoff) for x in observations)
+        from cpswm.perception_mapping import unity_rgbd
+
+        if public_rgb_observations is not unity_rgbd.public_rgb_observations:
+            raise ValueError("pixel camera modality adapter changed")
+        pixels = public_rgb_observations(observations, cutoff=cutoff)
+        frames = tuple(self._detector.infer(x, cutoff=cutoff) for x in pixels)
         _ = self.binding_sha256
         return frames
 

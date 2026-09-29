@@ -8,7 +8,7 @@ created. The existing durable raw/action journal is the only retained source.
 from __future__ import annotations
 
 from collections.abc import Mapping
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 from datetime import datetime
 from hashlib import sha256
 from math import isfinite
@@ -18,6 +18,11 @@ from uuid import UUID
 from cpswm.contracts.base import require_aware
 from cpswm.perception_mapping.adapters.rgbd_capture import RawModalityObservation
 from cpswm.perception_mapping.natural_vision import DetectionCandidate, VisualFrame, decode_rgb
+from cpswm.perception_mapping.unity_rgbd import (
+    RGBDSurfaceSupport,
+    public_rgb_observations,
+    surface_support,
+)
 from cpswm.system.joint_camera_feedback import CameraOutcomeDecoder, decoder_binding
 from cpswm.system.reproducibility import content_sha256
 
@@ -49,6 +54,7 @@ class OwnedVisualFrame:
     frame: VisualFrame
     candidates: tuple[ImageCandidateSupport, ...]
     identical_pixel_group: str
+    geometry: RGBDSurfaceSupport | None = None
 
 
 @dataclass(frozen=True)
@@ -65,7 +71,7 @@ class OwnedVisualSupport:
     decoder_binding_sha256: str
     owned_history_sha256: str
     actions: tuple[OwnedVisualAction, ...]
-    scope: str = "PUBLIC_FRAME_DETECTIONS_AND_IMAGE_LOCATIONS_ONLY"
+    scope: str = "PUBLIC_FRAME_CANDIDATES_AND_OPTIONAL_SURFACE_GEOMETRY_ONLY"
     scored_joint_density: None = None
     negative_observation_authorized: bool = False
     memory_write_authorized: bool = False
@@ -151,9 +157,14 @@ def reconstruct_visual_support(
     The caller is the runtime owner. Hashes bind its declared inputs; they do not
     authenticate a fabricated replacement for the entire owner or physical run.
     """
+    from cpswm.perception_mapping import unity_rgbd
     from cpswm.system.structure_two_continuous_input import ObservationCommand, ObservationDelivery
 
-    if decoder_binding(decoder) != expected_binding:
+    if (
+        public_rgb_observations is not unity_rgbd.public_rgb_observations
+        or surface_support is not unity_rgbd.surface_support
+        or decoder_binding(decoder) != expected_binding
+    ):
         raise ValueError("visual support decoder dependency changed")
     if not callable(getattr(decoder, "measurements", None)):
         raise ValueError("configured camera decoder has no visual measurements")
@@ -194,8 +205,9 @@ def reconstruct_visual_support(
         ):
             raise ValueError("invalid visual support delivery")
         require_aware(delivery.received_at, "received")
+        rgb = public_rgb_observations(delivery.observations, cutoff=delivery.received_at)
         for item in delivery.observations:
-            env, _ = decode_rgb(item, cutoff=delivery.received_at)
+            env = item.envelope()
             identity = env.identity.observation_id
             if (
                 identity in seen
@@ -214,11 +226,20 @@ def reconstruct_visual_support(
         frames: tuple[OwnedVisualFrame, ...] = ()
         if delivery.success:
             measured = decoder.measurements(delivery.observations, cutoff=delivery.received_at)
-            if type(measured) is not tuple or len(measured) != len(delivery.observations):
+            if type(measured) is not tuple or len(measured) != len(rgb):
                 raise ValueError("visual support measurement coverage differs")
             frames = tuple(
                 _frame_support(item, frame, delivery.received_at)
-                for item, frame in zip(delivery.observations, measured, strict=True)
+                for item, frame in zip(rgb, measured, strict=True)
+            )
+        if delivery.success and len(rgb) != len(delivery.observations):
+            frames = (
+                replace(
+                    frames[0],
+                    geometry=surface_support(
+                        delivery.observations, frames[0].frame, cutoff=delivery.received_at
+                    ),
+                ),
             )
         actions.append(
             OwnedVisualAction(

@@ -1,3 +1,19 @@
+# A：RGB-D / 自位姿主干接线交付（2026-09-30）
+
+用户已明确授权新增公开 RGB-D 与相机自身位姿；本轮分支 codex/pc-a-rgbd-camera-geometry-20260930，base f57d67e4bde4f036cb6cfc13710966d8b289930b。实际方法/采集源码 dacc6c6cf070225fbc5b13ce351f1487636f6ec8，归档轨迹核验修复源码 2ff55ee5b69f27b963d389c5ecccd0044f2d7373（仅验证器+测试）。RGB/depth/self-pose 三路配对进入原有 M05/SQLite，由 owner 重建世界表面候选；没有加入世界身份/物体中心/概率或新记忆权限。
+
+初始两审 96/44、修复后再两审 19/54，均零跳过。真实归档攻击曾揭出伪造动作标签被旧验证器接受，已修复并保留失败；合法完整归档与五类完整伪造均已核验。6 姿态/54 射线中 50 点误差小于1厘米，最大17.05厘米差异未掩盖。两条真实主历史各3动作；RGB-D有10候选/30世界表面点，另进程2/2完整恢复复算完成，未决均97.5440%，不是任务成功。苹果被报为 sports ball，框内混合背景；几何尚未进入原生联合提议/目标密度。
+
+[报告](../reviews/pc_a/rgbd_camera_geometry_2026-09-30/REPORT.md)、[双审](../reviews/pc_a/rgbd_camera_geometry_2026-09-30/REVIEWS.md)、[复现](../reviews/pc_a/rgbd_camera_geometry_2026-09-30/REPRODUCE.md)。全原件462文件/288,148,940字节，压缩54,907,409字节，逐文件读回核验，SHA256 4ef7f013203f48d5786b1ede52ead6cfc7789a8cc27d39e6d26994e2a127c3a9。SDK27/Unity166文件前后不变。本机原件 output/rgbd-camera-geometry-20260930。保留纯RGB、分类对照、已批准澄清和完整研究范围；B独立、全量CI、旧checkpoint绝对路径及自然长期闭环仍未关闭。
+
+已推送并通过[草稿PR63](https://github.com/goneveitvet240-svg/cpswm/pull/63)叠加PR62交接，未合并。交付fetch核验集成19ddf26830348a2f0b33f0af54d6ba702c5cfb1c、父分支f57d67e4bde4f036cb6cfc13710966d8b289930b、B fd4ca6ef5e81c90d7cf7987b42c0b2810d8a810a未变。
+
+下一主项：完整候选/几何通过运行时拥有的来源进入提议网络，保留类别歧义，不使用评价标签或任意先验制造成功。继续推进，以下为历史时点。
+
+# A：RGB-D / 相机自身位姿主干开工（2026-09-30）
+
+用户本轮明确同意新增公开 RGB-D 与相机自身位姿，另授权八小时主干推进和常规工程选择。分支 codex/pc-a-rgbd-camera-geometry-20260930，base/开工实际源码 f57d67e4bde4f036cb6cfc13710966d8b289930b。先做单位/坐标/权限/同历史来源绑定和几何候选，再核验对后续联合输入的贡献。原 RGB/分类对照、已批准澄清任务及完整研究范围保留。两轮顺序自审后才进入下一轮；B 独立与科学收益未关闭。证据 output/rgbd-camera-geometry-20260930；[计划](../reviews/pc_a/rgbd_camera_geometry_2026-09-30/PLAN.md)。开工远端集成 19ddf26830348a2f0b33f0af54d6ba702c5cfb1c、B fd4ca6ef5e81c90d7cf7987b42c0b2810d8a810a 未变。以下为历史时点。
+
 # A：公共视觉候选同历史接线交付（2026-09-30）
 
 分支codex/pc-a-visual-support-20260930，base 1d3538794b8b86d66414255f8d37f64d8ff0d88e；实际功能源码d699b90db2b0cfa719be7f44f8c7128d27c08780。新增运行时visual_observation_support读出，使用原始动作拥有的公共RGB和既有绑定检测器，返回帧候选/图像位置/原生代际及重复像素组。未拟合自然目标密度，未把图像位置当三维位置、框ID当世界身份或检测分数当概率。

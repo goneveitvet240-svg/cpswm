@@ -1,0 +1,57 @@
+import gzip
+import hashlib
+import json
+from collections import Counter
+from pathlib import Path
+
+OUT = Path(__file__).resolve().parent
+LOCAL = Path('/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output')
+
+def save(name, value):
+    (OUT / name).write_text(json.dumps(value, indent=2) + '\n')
+
+inventory = json.loads(Path('docs/reviews/pc_a/neural_native_loop_2026-09-29/evidence/local-artifact-inventory.json').read_text())
+errors = []
+for row in inventory['artifacts']:
+    raw = (LOCAL / 'neural-native-loop-20260929' / row['path']).read_bytes()
+    if len(raw) != row['bytes'] or hashlib.sha256(raw).hexdigest() != row['sha256']:
+        errors.append(row['path'])
+save('neural_inventory_check.json', dict(files=len(inventory['artifacts']), bytes=inventory['total_bytes'], errors=errors))
+assert not errors
+
+p = Path('docs/reviews/data/structure_two_comparison_audit_window2_2026-09-11/steps.jsonl.gz')
+with gzip.open(p, 'rt') as f:
+    rows = [json.loads(line) for line in f]
+arms = tuple(rows[0]['arms'])
+put = {a: sum(r['arms'][a]['put_back'] != r['truth']['true_owner_habit_location'] for r in rows) for a in arms}
+search = {a: sum(r['arms'][a]['search_order'][0] != r['truth']['true_location'] for r in rows) for a in arms}
+for a in arms:
+    assert put[a] == sum(r['arms'][a]['put_back_error'] for r in rows)
+    assert search[a] == sum(r['arms'][a]['search_error'] for r in rows)
+save('historical_independent_readback.json', dict(
+    scope='Historical saved actions and released truth; not current-model replay',
+    path=str(p), sha256=hashlib.sha256(p.read_bytes()).hexdigest(), steps=len(rows),
+    episodes=len({r['episode_id'] for r in rows}), put_back_errors=put, search_errors=search,
+    full_equals_fast=sum(r['arms']['direct_p5_full_eager']['put_back'] == r['alternative_readouts_development_only']['fast']['put_back'] for r in rows),
+    zero_committed_steps=sum(r['raw_state']['p5_readouts']['state_counts']['_committed_events']==0 for r in rows),
+    same_current_distribution_steps=sum(all(r['arms'][a]['current'] == r['arms'][arms[0]]['current'] for a in arms) for r in rows),
+    p5_amg_partition=dict(Counter((str(r['arms']['direct_p5_full_eager']['put_back_error']) + '/' + str(r['arms']['independently_tuned_amg']['put_back_error'])) for r in rows))))
+
+p = Path('docs/reviews/pc_a/visor_feature_control_2026-09-28/evidence/final-04/control/report.json')
+data = json.loads(p.read_text())
+recomputed = {}
+for split, models in data['rows'].items():
+    recomputed[split] = {}
+    for model, frames in models.items():
+        frame_objectives = [sum(a['loss'] for a in row['axes'].values() if a['loss'] is not None) for row in frames]
+        for expected, row in zip(frame_objectives, frames):
+            assert abs(expected - row['objective']) < 1e-6
+        value = sum(frame_objectives) / len(frame_objectives)
+        assert abs(value - data['summary'][split][model]['objective_equal_frame']) < 1e-6
+        contact_negative = [r['axes']['contact']['negative_bce'] for r in frames if r['axes']['contact']['negative_bce'] is not None]
+        recomputed[split][model] = dict(frames=len(frames), objective=value,
+            negative_contact_frames=len(contact_negative),
+            negative_contact_bce=sum(contact_negative)/len(contact_negative) if contact_negative else None)
+save('visor_independent_readback.json', dict(scope='Saved per-frame loss arithmetic only; no retraining',
+    source_sha256=hashlib.sha256(p.read_bytes()).hexdigest(), rows=recomputed))
+print(json.dumps(dict(neural_inventory_files=len(inventory['artifacts']), historical_steps=len(rows), visor_arithmetic='matched')))

@@ -1,0 +1,918 @@
+static-quality	UNKNOWN STEP	﻿2026-09-29T05:21:20.0085765Z Current runner version: '2.337.0'
+static-quality	UNKNOWN STEP	2026-09-29T05:21:20.0111870Z ##[group]Runner Image Provisioner
+static-quality	UNKNOWN STEP	2026-09-29T05:21:20.0112748Z Hosted Compute Agent
+static-quality	UNKNOWN STEP	2026-09-29T05:21:20.0113371Z Version: 20260828.587
+static-quality	UNKNOWN STEP	2026-09-29T05:21:20.0114094Z Commit: abac92662cab4cc7352de4f9f9d2e2419aad9c29
+static-quality	UNKNOWN STEP	2026-09-29T05:21:20.0114857Z Build Date: 2026-08-28T16:44:25Z
+static-quality	UNKNOWN STEP	2026-09-29T05:21:20.0115597Z Worker ID: {e54d3d3d-5fbb-4352-99e3-cd4f0b3dc78e}
+static-quality	UNKNOWN STEP	2026-09-29T05:21:20.0116619Z Azure Region: northcentralus
+static-quality	UNKNOWN STEP	2026-09-29T05:21:20.0117265Z ##[endgroup]
+static-quality	UNKNOWN STEP	2026-09-29T05:21:20.0118766Z ##[group]Operating System
+static-quality	UNKNOWN STEP	2026-09-29T05:21:20.0119410Z Ubuntu
+static-quality	UNKNOWN STEP	2026-09-29T05:21:20.0119975Z 24.04.5
+static-quality	UNKNOWN STEP	2026-09-29T05:21:20.0120583Z LTS
+static-quality	UNKNOWN STEP	2026-09-29T05:21:20.0121122Z ##[endgroup]
+static-quality	UNKNOWN STEP	2026-09-29T05:21:20.0121725Z ##[group]Runner Image
+static-quality	UNKNOWN STEP	2026-09-29T05:21:20.0122363Z Image: ubuntu-24.04
+static-quality	UNKNOWN STEP	2026-09-29T05:21:20.0122997Z Version: 20260920.314.1
+static-quality	UNKNOWN STEP	2026-09-29T05:21:20.0124350Z Included Software: https://github.com/actions/runner-images/blob/ubuntu24/20260920.314/images/ubuntu/Ubuntu2404-Readme.md
+static-quality	UNKNOWN STEP	2026-09-29T05:21:20.0126258Z Image Release: https://github.com/actions/runner-images/releases/tag/ubuntu24%2F20260920.314
+static-quality	UNKNOWN STEP	2026-09-29T05:21:20.0127496Z ##[endgroup]
+static-quality	UNKNOWN STEP	2026-09-29T05:21:20.0128883Z ##[group]GITHUB_TOKEN Permissions
+static-quality	UNKNOWN STEP	2026-09-29T05:21:20.0131229Z Contents: read
+static-quality	UNKNOWN STEP	2026-09-29T05:21:20.0131869Z Metadata: read
+static-quality	UNKNOWN STEP	2026-09-29T05:21:20.0132597Z Packages: read
+static-quality	UNKNOWN STEP	2026-09-29T05:21:20.0133219Z ##[endgroup]
+static-quality	UNKNOWN STEP	2026-09-29T05:21:20.0135329Z Secret source: Actions
+static-quality	UNKNOWN STEP	2026-09-29T05:21:20.0136606Z Cache mode: write
+static-quality	UNKNOWN STEP	2026-09-29T05:21:20.0137752Z Prepare workflow directory
+static-quality	UNKNOWN STEP	2026-09-29T05:21:20.0471226Z Prepare all required actions
+static-quality	UNKNOWN STEP	2026-09-29T05:21:20.0520778Z Getting action download info
+static-quality	UNKNOWN STEP	2026-09-29T05:21:20.3081372Z Download action repository 'actions/checkout@v4' (SHA:11d5960a326750d5838078e36cf38b85af677262)
+static-quality	UNKNOWN STEP	2026-09-29T05:21:20.4196444Z Download action repository 'astral-sh/setup-uv@v5' (SHA:d4b2f3b6ecc6e67c4457f6d3e41ec42d3d0fcb86)
+static-quality	UNKNOWN STEP	2026-09-29T05:21:20.9612805Z Complete job name: static-quality
+static-quality	UNKNOWN STEP	2026-09-29T05:21:21.0354182Z ##[group]Run actions/checkout@v4
+static-quality	UNKNOWN STEP	2026-09-29T05:21:21.0355015Z with:
+static-quality	UNKNOWN STEP	2026-09-29T05:21:21.0355473Z   repository: goneveitvet240-svg/cpswm
+static-quality	UNKNOWN STEP	2026-09-29T05:21:21.0359643Z   token: ***
+static-quality	UNKNOWN STEP	2026-09-29T05:21:21.0360089Z   ssh-strict: true
+static-quality	UNKNOWN STEP	2026-09-29T05:21:21.0360531Z   ssh-user: git
+static-quality	UNKNOWN STEP	2026-09-29T05:21:21.0360988Z   persist-credentials: true
+static-quality	UNKNOWN STEP	2026-09-29T05:21:21.0361473Z   clean: true
+static-quality	UNKNOWN STEP	2026-09-29T05:21:21.0361920Z   sparse-checkout-cone-mode: true
+static-quality	UNKNOWN STEP	2026-09-29T05:21:21.0362437Z   fetch-depth: 1
+static-quality	UNKNOWN STEP	2026-09-29T05:21:21.0362863Z   fetch-tags: false
+static-quality	UNKNOWN STEP	2026-09-29T05:21:21.0363309Z   show-progress: true
+static-quality	UNKNOWN STEP	2026-09-29T05:21:21.0363759Z   lfs: false
+static-quality	UNKNOWN STEP	2026-09-29T05:21:21.0364172Z   submodules: false
+static-quality	UNKNOWN STEP	2026-09-29T05:21:21.0364627Z   set-safe-directory: true
+static-quality	UNKNOWN STEP	2026-09-29T05:21:21.0365129Z   allow-unsafe-pr-checkout: false
+static-quality	UNKNOWN STEP	2026-09-29T05:21:21.0365847Z ##[endgroup]
+static-quality	UNKNOWN STEP	2026-09-29T05:21:21.1373075Z Syncing repository: goneveitvet240-svg/cpswm
+static-quality	UNKNOWN STEP	2026-09-29T05:21:21.1375583Z ##[group]Getting Git version info
+static-quality	UNKNOWN STEP	2026-09-29T05:21:21.1376962Z Working directory is '/home/runner/work/cpswm/cpswm'
+static-quality	UNKNOWN STEP	2026-09-29T05:21:21.1378488Z [command]/usr/bin/git version
+static-quality	UNKNOWN STEP	2026-09-29T05:21:21.1402276Z git version 2.55.0
+static-quality	UNKNOWN STEP	2026-09-29T05:21:21.1421737Z ##[endgroup]
+static-quality	UNKNOWN STEP	2026-09-29T05:21:21.1435686Z Temporarily overriding HOME='/home/runner/work/_temp/99f2b410-23a2-4750-a6a0-5df6fb02ad17' before making global git config changes
+static-quality	UNKNOWN STEP	2026-09-29T05:21:21.1438185Z Adding repository directory to the temporary git global config as a safe directory
+static-quality	UNKNOWN STEP	2026-09-29T05:21:21.1440574Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/cpswm/cpswm
+static-quality	UNKNOWN STEP	2026-09-29T05:21:21.1485150Z Deleting the contents of '/home/runner/work/cpswm/cpswm'
+static-quality	UNKNOWN STEP	2026-09-29T05:21:21.1490397Z ##[group]Initializing the repository
+static-quality	UNKNOWN STEP	2026-09-29T05:21:21.1494195Z [command]/usr/bin/git init /home/runner/work/cpswm/cpswm
+static-quality	UNKNOWN STEP	2026-09-29T05:21:21.1573297Z hint: Using 'master' as the name for the initial branch. This default branch name
+static-quality	UNKNOWN STEP	2026-09-29T05:21:21.1575139Z hint: will change to "main" in Git 3.0. To configure the initial branch name
+static-quality	UNKNOWN STEP	2026-09-29T05:21:21.1577496Z hint: to use in all of your new repositories, which will suppress this warning,
+static-quality	UNKNOWN STEP	2026-09-29T05:21:21.1578863Z hint: call:
+static-quality	UNKNOWN STEP	2026-09-29T05:21:21.1579934Z hint:
+static-quality	UNKNOWN STEP	2026-09-29T05:21:21.1580896Z hint: 	git config --global init.defaultBranch <name>
+static-quality	UNKNOWN STEP	2026-09-29T05:21:21.1583475Z hint:
+static-quality	UNKNOWN STEP	2026-09-29T05:21:21.1584850Z hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+static-quality	UNKNOWN STEP	2026-09-29T05:21:21.1586580Z hint: 'development'. The just-created branch can be renamed via this command:
+static-quality	UNKNOWN STEP	2026-09-29T05:21:21.1587769Z hint:
+static-quality	UNKNOWN STEP	2026-09-29T05:21:21.1588435Z hint: 	git branch -m <name>
+static-quality	UNKNOWN STEP	2026-09-29T05:21:21.1589016Z hint:
+static-quality	UNKNOWN STEP	2026-09-29T05:21:21.1589662Z hint: Disable this message with "git config set advice.defaultBranchName false"
+static-quality	UNKNOWN STEP	2026-09-29T05:21:21.1590620Z Initialized empty Git repository in /home/runner/work/cpswm/cpswm/.git/
+static-quality	UNKNOWN STEP	2026-09-29T05:21:21.1594082Z [command]/usr/bin/git remote add origin https://github.com/goneveitvet240-svg/cpswm
+static-quality	UNKNOWN STEP	2026-09-29T05:21:21.1640959Z ##[endgroup]
+static-quality	UNKNOWN STEP	2026-09-29T05:21:21.1642190Z ##[group]Disabling automatic garbage collection
+static-quality	UNKNOWN STEP	2026-09-29T05:21:21.1646907Z [command]/usr/bin/git config --local gc.auto 0
+static-quality	UNKNOWN STEP	2026-09-29T05:21:21.1680404Z ##[endgroup]
+static-quality	UNKNOWN STEP	2026-09-29T05:21:21.1681521Z ##[group]Setting up auth
+static-quality	UNKNOWN STEP	2026-09-29T05:21:21.1687890Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+static-quality	UNKNOWN STEP	2026-09-29T05:21:21.1725569Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+static-quality	UNKNOWN STEP	2026-09-29T05:21:21.2061512Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+static-quality	UNKNOWN STEP	2026-09-29T05:21:21.2104753Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+static-quality	UNKNOWN STEP	2026-09-29T05:21:21.2364883Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+static-quality	UNKNOWN STEP	2026-09-29T05:21:21.2404202Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+static-quality	UNKNOWN STEP	2026-09-29T05:21:21.2646400Z [command]/usr/bin/git config --local http.https://github.com/.extraheader AUTHORIZATION: basic ***
+static-quality	UNKNOWN STEP	2026-09-29T05:21:21.2687577Z ##[endgroup]
+static-quality	UNKNOWN STEP	2026-09-29T05:21:21.2688654Z ##[group]Fetching the repository
+static-quality	UNKNOWN STEP	2026-09-29T05:21:21.2696846Z [command]/usr/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin +0beb17b5b48416d878e3651ccf5258c3bc8c0270:refs/remotes/pull/57/merge
+static-quality	UNKNOWN STEP	2026-09-29T05:21:29.6698729Z From https://github.com/goneveitvet240-svg/cpswm
+static-quality	UNKNOWN STEP	2026-09-29T05:21:29.6699924Z  * [new ref]         0beb17b5b48416d878e3651ccf5258c3bc8c0270 -> pull/57/merge
+static-quality	UNKNOWN STEP	2026-09-29T05:21:29.6737352Z ##[endgroup]
+static-quality	UNKNOWN STEP	2026-09-29T05:21:29.6738195Z ##[group]Determining the checkout info
+static-quality	UNKNOWN STEP	2026-09-29T05:21:29.6739298Z ##[endgroup]
+static-quality	UNKNOWN STEP	2026-09-29T05:21:29.6740084Z [command]/usr/bin/git sparse-checkout disable
+static-quality	UNKNOWN STEP	2026-09-29T05:21:29.6796769Z [command]/usr/bin/git config --local --unset-all extensions.worktreeConfig
+static-quality	UNKNOWN STEP	2026-09-29T05:21:29.7190826Z ##[group]Checking out the ref
+static-quality	UNKNOWN STEP	2026-09-29T05:21:29.7193156Z [command]/usr/bin/git checkout --progress --force refs/remotes/pull/57/merge
+static-quality	UNKNOWN STEP	2026-09-29T05:21:30.9264010Z Updating files:   7% (568/7852)
+static-quality	UNKNOWN STEP	2026-09-29T05:21:30.9339116Z Updating files:   8% (629/7852)
+static-quality	UNKNOWN STEP	2026-09-29T05:21:30.9418791Z Updating files:   9% (707/7852)
+static-quality	UNKNOWN STEP	2026-09-29T05:21:30.9737100Z Updating files:  10% (786/7852)
+static-quality	UNKNOWN STEP	2026-09-29T05:21:31.0034766Z Updating files:  11% (864/7852)
+static-quality	UNKNOWN STEP	2026-09-29T05:21:31.0143658Z Updating files:  12% (943/7852)
+static-quality	UNKNOWN STEP	2026-09-29T05:21:31.0415843Z Updating files:  13% (1021/7852)
+static-quality	UNKNOWN STEP	2026-09-29T05:21:31.0460038Z Updating files:  14% (1100/7852)
+static-quality	UNKNOWN STEP	2026-09-29T05:21:31.0522212Z Updating files:  15% (1178/7852)
+static-quality	UNKNOWN STEP	2026-09-29T05:21:31.0587342Z Updating files:  16% (1257/7852)
+static-quality	UNKNOWN STEP	2026-09-29T05:21:31.2184681Z Updating files:  17% (1335/7852)
+static-quality	UNKNOWN STEP	2026-09-29T05:21:31.3985642Z Updating files:  18% (1414/7852)
+static-quality	UNKNOWN STEP	2026-09-29T05:21:31.4210764Z Updating files:  19% (1492/7852)
+static-quality	UNKNOWN STEP	2026-09-29T05:21:31.4327601Z Updating files:  20% (1571/7852)
+static-quality	UNKNOWN STEP	2026-09-29T05:21:31.4396650Z Updating files:  21% (1649/7852)
+static-quality	UNKNOWN STEP	2026-09-29T05:21:31.4486915Z Updating files:  22% (1728/7852)
+static-quality	UNKNOWN STEP	2026-09-29T05:21:31.4536682Z Updating files:  23% (1806/7852)
+static-quality	UNKNOWN STEP	2026-09-29T05:21:31.4598203Z Updating files:  24% (1885/7852)
+static-quality	UNKNOWN STEP	2026-09-29T05:21:31.4650410Z Updating files:  25% (1963/7852)
+static-quality	UNKNOWN STEP	2026-09-29T05:21:31.4705698Z Updating files:  26% (2042/7852)
+static-quality	UNKNOWN STEP	2026-09-29T05:21:31.4765894Z Updating files:  27% (2121/7852)
+static-quality	UNKNOWN STEP	2026-09-29T05:21:31.5205792Z Updating files:  28% (2199/7852)
+static-quality	UNKNOWN STEP	2026-09-29T05:21:31.5350095Z Updating files:  29% (2278/7852)
+static-quality	UNKNOWN STEP	2026-09-29T05:21:31.5523055Z Updating files:  30% (2356/7852)
+static-quality	UNKNOWN STEP	2026-09-29T05:21:31.5588873Z Updating files:  31% (2435/7852)
+static-quality	UNKNOWN STEP	2026-09-29T05:21:31.5636420Z Updating files:  32% (2513/7852)
+static-quality	UNKNOWN STEP	2026-09-29T05:21:31.6030739Z Updating files:  33% (2592/7852)
+static-quality	UNKNOWN STEP	2026-09-29T05:21:31.6160242Z Updating files:  34% (2670/7852)
+static-quality	UNKNOWN STEP	2026-09-29T05:21:31.7012850Z Updating files:  35% (2749/7852)
+static-quality	UNKNOWN STEP	2026-09-29T05:21:31.7471422Z Updating files:  36% (2827/7852)
+static-quality	UNKNOWN STEP	2026-09-29T05:21:31.7575692Z Updating files:  37% (2906/7852)
+static-quality	UNKNOWN STEP	2026-09-29T05:21:31.7655664Z Updating files:  38% (2984/7852)
+static-quality	UNKNOWN STEP	2026-09-29T05:21:31.7714257Z Updating files:  39% (3063/7852)
+static-quality	UNKNOWN STEP	2026-09-29T05:21:31.7758317Z Updating files:  40% (3141/7852)
+static-quality	UNKNOWN STEP	2026-09-29T05:21:31.7844029Z Updating files:  41% (3220/7852)
+static-quality	UNKNOWN STEP	2026-09-29T05:21:31.7992157Z Updating files:  42% (3298/7852)
+static-quality	UNKNOWN STEP	2026-09-29T05:21:31.8035281Z Updating files:  43% (3377/7852)
+static-quality	UNKNOWN STEP	2026-09-29T05:21:31.8074473Z Updating files:  44% (3455/7852)
+static-quality	UNKNOWN STEP	2026-09-29T05:21:31.8202812Z Updating files:  45% (3534/7852)
+static-quality	UNKNOWN STEP	2026-09-29T05:21:31.8242940Z Updating files:  46% (3612/7852)
+static-quality	UNKNOWN STEP	2026-09-29T05:21:31.8294113Z Updating files:  47% (3691/7852)
+static-quality	UNKNOWN STEP	2026-09-29T05:21:31.8358696Z Updating files:  48% (3769/7852)
+static-quality	UNKNOWN STEP	2026-09-29T05:21:31.8398461Z Updating files:  49% (3848/7852)
+static-quality	UNKNOWN STEP	2026-09-29T05:21:31.8455690Z Updating files:  50% (3926/7852)
+static-quality	UNKNOWN STEP	2026-09-29T05:21:31.8563239Z Updating files:  51% (4005/7852)
+static-quality	UNKNOWN STEP	2026-09-29T05:21:31.8610349Z Updating files:  52% (4084/7852)
+static-quality	UNKNOWN STEP	2026-09-29T05:21:31.8654139Z Updating files:  53% (4162/7852)
+static-quality	UNKNOWN STEP	2026-09-29T05:21:31.8692869Z Updating files:  54% (4241/7852)
+static-quality	UNKNOWN STEP	2026-09-29T05:21:31.8725230Z Updating files:  55% (4319/7852)
+static-quality	UNKNOWN STEP	2026-09-29T05:21:31.8751952Z Updating files:  56% (4398/7852)
+static-quality	UNKNOWN STEP	2026-09-29T05:21:31.8778899Z Updating files:  57% (4476/7852)
+static-quality	UNKNOWN STEP	2026-09-29T05:21:31.8805570Z Updating files:  58% (4555/7852)
+static-quality	UNKNOWN STEP	2026-09-29T05:21:31.8832413Z Updating files:  59% (4633/7852)
+static-quality	UNKNOWN STEP	2026-09-29T05:21:31.8858848Z Updating files:  60% (4712/7852)
+static-quality	UNKNOWN STEP	2026-09-29T05:21:31.8883768Z Updating files:  61% (4790/7852)
+static-quality	UNKNOWN STEP	2026-09-29T05:21:31.8909400Z Updating files:  62% (4869/7852)
+static-quality	UNKNOWN STEP	2026-09-29T05:21:31.8938859Z Updating files:  63% (4947/7852)
+static-quality	UNKNOWN STEP	2026-09-29T05:21:31.8964324Z Updating files:  64% (5026/7852)
+static-quality	UNKNOWN STEP	2026-09-29T05:21:31.8989953Z Updating files:  65% (5104/7852)
+static-quality	UNKNOWN STEP	2026-09-29T05:21:31.9016295Z Updating files:  66% (5183/7852)
+static-quality	UNKNOWN STEP	2026-09-29T05:21:31.9027935Z Updating files:  67% (5261/7852)
+static-quality	UNKNOWN STEP	2026-09-29T05:21:31.9043669Z Updating files:  67% (5295/7852)
+static-quality	UNKNOWN STEP	2026-09-29T05:21:31.9070320Z Updating files:  68% (5340/7852)
+static-quality	UNKNOWN STEP	2026-09-29T05:21:31.9095236Z Updating files:  69% (5418/7852)
+static-quality	UNKNOWN STEP	2026-09-29T05:21:31.9121014Z Updating files:  70% (5497/7852)
+static-quality	UNKNOWN STEP	2026-09-29T05:21:31.9160480Z Updating files:  71% (5575/7852)
+static-quality	UNKNOWN STEP	2026-09-29T05:21:31.9247985Z Updating files:  72% (5654/7852)
+static-quality	UNKNOWN STEP	2026-09-29T05:21:31.9349592Z Updating files:  73% (5732/7852)
+static-quality	UNKNOWN STEP	2026-09-29T05:21:31.9459574Z Updating files:  74% (5811/7852)
+static-quality	UNKNOWN STEP	2026-09-29T05:21:31.9587348Z Updating files:  75% (5889/7852)
+static-quality	UNKNOWN STEP	2026-09-29T05:21:31.9731186Z Updating files:  76% (5968/7852)
+static-quality	UNKNOWN STEP	2026-09-29T05:21:31.9782147Z Updating files:  77% (6047/7852)
+static-quality	UNKNOWN STEP	2026-09-29T05:21:31.9830429Z Updating files:  78% (6125/7852)
+static-quality	UNKNOWN STEP	2026-09-29T05:21:31.9890865Z Updating files:  79% (6204/7852)
+static-quality	UNKNOWN STEP	2026-09-29T05:21:31.9938297Z Updating files:  80% (6282/7852)
+static-quality	UNKNOWN STEP	2026-09-29T05:21:31.9982743Z Updating files:  81% (6361/7852)
+static-quality	UNKNOWN STEP	2026-09-29T05:21:32.0033815Z Updating files:  82% (6439/7852)
+static-quality	UNKNOWN STEP	2026-09-29T05:21:32.0521145Z Updating files:  83% (6518/7852)
+static-quality	UNKNOWN STEP	2026-09-29T05:21:32.0580499Z Updating files:  84% (6596/7852)
+static-quality	UNKNOWN STEP	2026-09-29T05:21:32.0725916Z Updating files:  85% (6675/7852)
+static-quality	UNKNOWN STEP	2026-09-29T05:21:32.0767254Z Updating files:  86% (6753/7852)
+static-quality	UNKNOWN STEP	2026-09-29T05:21:32.0813728Z Updating files:  87% (6832/7852)
+static-quality	UNKNOWN STEP	2026-09-29T05:21:32.0892959Z Updating files:  88% (6910/7852)
+static-quality	UNKNOWN STEP	2026-09-29T05:21:32.0959200Z Updating files:  89% (6989/7852)
+static-quality	UNKNOWN STEP	2026-09-29T05:21:32.1019900Z Updating files:  90% (7067/7852)
+static-quality	UNKNOWN STEP	2026-09-29T05:21:32.1120224Z Updating files:  91% (7146/7852)
+static-quality	UNKNOWN STEP	2026-09-29T05:21:32.1262807Z Updating files:  92% (7224/7852)
+static-quality	UNKNOWN STEP	2026-09-29T05:21:32.1344485Z Updating files:  93% (7303/7852)
+static-quality	UNKNOWN STEP	2026-09-29T05:21:32.1402567Z Updating files:  94% (7381/7852)
+static-quality	UNKNOWN STEP	2026-09-29T05:21:32.1460501Z Updating files:  95% (7460/7852)
+static-quality	UNKNOWN STEP	2026-09-29T05:21:32.1516206Z Updating files:  96% (7538/7852)
+static-quality	UNKNOWN STEP	2026-09-29T05:21:32.1587772Z Updating files:  97% (7617/7852)
+static-quality	UNKNOWN STEP	2026-09-29T05:21:32.1649909Z Updating files:  98% (7695/7852)
+static-quality	UNKNOWN STEP	2026-09-29T05:21:32.1747379Z Updating files:  99% (7774/7852)
+static-quality	UNKNOWN STEP	2026-09-29T05:21:32.1748208Z Updating files: 100% (7852/7852)
+static-quality	UNKNOWN STEP	2026-09-29T05:21:32.1748799Z Updating files: 100% (7852/7852), done.
+static-quality	UNKNOWN STEP	2026-09-29T05:21:32.1839750Z Note: switching to 'refs/remotes/pull/57/merge'.
+static-quality	UNKNOWN STEP	2026-09-29T05:21:32.1840194Z 
+static-quality	UNKNOWN STEP	2026-09-29T05:21:32.1840438Z You are in 'detached HEAD' state. You can look around, make experimental
+static-quality	UNKNOWN STEP	2026-09-29T05:21:32.1841484Z changes and commit them, and you can discard any commits you make in this
+static-quality	UNKNOWN STEP	2026-09-29T05:21:32.1842412Z state without impacting any branches by switching back to a branch.
+static-quality	UNKNOWN STEP	2026-09-29T05:21:32.1842905Z 
+static-quality	UNKNOWN STEP	2026-09-29T05:21:32.1843303Z If you want to create a new branch to retain commits you create, you may
+static-quality	UNKNOWN STEP	2026-09-29T05:21:32.1844213Z do so (now or later) by using -c with the switch command. Example:
+static-quality	UNKNOWN STEP	2026-09-29T05:21:32.1844679Z 
+static-quality	UNKNOWN STEP	2026-09-29T05:21:32.1845017Z   git switch -c <new-branch-name>
+static-quality	UNKNOWN STEP	2026-09-29T05:21:32.1845426Z 
+static-quality	UNKNOWN STEP	2026-09-29T05:21:32.1845597Z Or undo this operation with:
+static-quality	UNKNOWN STEP	2026-09-29T05:21:32.1846186Z 
+static-quality	UNKNOWN STEP	2026-09-29T05:21:32.1846404Z   git switch -
+static-quality	UNKNOWN STEP	2026-09-29T05:21:32.1846883Z 
+static-quality	UNKNOWN STEP	2026-09-29T05:21:32.1847392Z Turn off this advice by setting config variable advice.detachedHead to false
+static-quality	UNKNOWN STEP	2026-09-29T05:21:32.1847921Z 
+static-quality	UNKNOWN STEP	2026-09-29T05:21:32.1848847Z HEAD is now at 0beb17b Merge e80ddab4f4f792a372c1410862b071f79aebdb64 into 915d7614026ac2b90be5b7bc91bc2bbe5201595d
+static-quality	UNKNOWN STEP	2026-09-29T05:21:32.2024004Z ##[endgroup]
+static-quality	UNKNOWN STEP	2026-09-29T05:21:32.2025730Z [command]/usr/bin/git log -1 --format=%H
+static-quality	UNKNOWN STEP	2026-09-29T05:21:32.2039225Z 0beb17b5b48416d878e3651ccf5258c3bc8c0270
+static-quality	UNKNOWN STEP	2026-09-29T05:21:32.2308233Z ##[group]Run astral-sh/setup-uv@v5
+static-quality	UNKNOWN STEP	2026-09-29T05:21:32.2308518Z with:
+static-quality	UNKNOWN STEP	2026-09-29T05:21:32.2308732Z   python-version: 3.13
+static-quality	UNKNOWN STEP	2026-09-29T05:21:32.2308956Z   enable-cache: true
+static-quality	UNKNOWN STEP	2026-09-29T05:21:32.2311502Z   github-token: ***
+static-quality	UNKNOWN STEP	2026-09-29T05:21:32.2311789Z   cache-dependency-glob: **/uv.lock
+static-quality	UNKNOWN STEP	**/requirements*.txt
+static-quality	UNKNOWN STEP	
+static-quality	UNKNOWN STEP	2026-09-29T05:21:32.2312119Z   prune-cache: true
+static-quality	UNKNOWN STEP	2026-09-29T05:21:32.2312347Z   ignore-nothing-to-cache: false
+static-quality	UNKNOWN STEP	2026-09-29T05:21:32.2312612Z   ignore-empty-workdir: false
+static-quality	UNKNOWN STEP	2026-09-29T05:21:32.2312857Z ##[endgroup]
+static-quality	UNKNOWN STEP	2026-09-29T05:21:32.4043268Z (node:2250) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+static-quality	UNKNOWN STEP	2026-09-29T05:21:32.4044739Z (Use `node --trace-deprecation ...` to show where the warning was created)
+static-quality	UNKNOWN STEP	2026-09-29T05:21:32.6901000Z Downloading uv from "https://github.com/astral-sh/uv/releases/download/0.12.20/uv-x86_64-unknown-linux-gnu.tar.gz" ...
+static-quality	UNKNOWN STEP	2026-09-29T05:21:32.9404002Z [command]/usr/bin/tar xz --warning=no-unknown-keyword --overwrite -C /home/runner/work/_temp/15e85246-2922-4c65-8e89-1c267bde0b9b -f /home/runner/work/_temp/af05d3b5-01d2-4fa5-ac65-4a67858c50fd
+static-quality	UNKNOWN STEP	2026-09-29T05:21:33.3522514Z Added /home/runner/.local/bin to the path
+static-quality	UNKNOWN STEP	2026-09-29T05:21:33.3525206Z Added /opt/hostedtoolcache/uv/0.12.20/x86_64 to the path
+static-quality	UNKNOWN STEP	2026-09-29T05:21:33.3527737Z Set UV_PYTHON to 3.13
+static-quality	UNKNOWN STEP	2026-09-29T05:21:33.3528155Z Activating python venv...
+static-quality	UNKNOWN STEP	2026-09-29T05:21:34.6800989Z Set UV_CACHE_DIR to /home/runner/work/_temp/setup-uv-cache
+static-quality	UNKNOWN STEP	2026-09-29T05:21:34.6801422Z Successfully installed uv version 0.12.20
+static-quality	UNKNOWN STEP	2026-09-29T05:21:34.6802179Z Searching files using cache dependency glob: **/uv.lock,**/requirements*.txt
+static-quality	UNKNOWN STEP	2026-09-29T05:21:35.2836805Z /home/runner/work/cpswm/cpswm/uv.lock
+static-quality	UNKNOWN STEP	2026-09-29T05:21:35.2873164Z Found 1 files to hash.
+static-quality	UNKNOWN STEP	2026-09-29T05:21:35.2938369Z Trying to restore uv cache from GitHub Actions cache with key: setup-uv-1-x86_64-unknown-linux-gnu-3.13-2ca490cfdbd82a2b5d2f4d7f7811964d4521f9dcd1edf6869894dbadcfd6e844
+static-quality	UNKNOWN STEP	2026-09-29T05:21:35.3958263Z No GitHub Actions cache found for key: setup-uv-1-x86_64-unknown-linux-gnu-3.13-2ca490cfdbd82a2b5d2f4d7f7811964d4521f9dcd1edf6869894dbadcfd6e844
+static-quality	UNKNOWN STEP	2026-09-29T05:21:35.4121746Z ##[group]Run uv sync --extra dev
+static-quality	UNKNOWN STEP	2026-09-29T05:21:35.4122108Z ^[[36;1muv sync --extra dev^[[0m
+static-quality	UNKNOWN STEP	2026-09-29T05:21:35.4356369Z shell: /usr/bin/bash -e {0}
+static-quality	UNKNOWN STEP	2026-09-29T05:21:35.4356661Z env:
+static-quality	UNKNOWN STEP	2026-09-29T05:21:35.4356875Z   UV_PYTHON: 3.13
+static-quality	UNKNOWN STEP	2026-09-29T05:21:35.4357145Z   VIRTUAL_ENV: /home/runner/work/cpswm/cpswm/.venv
+static-quality	UNKNOWN STEP	2026-09-29T05:21:35.4357506Z   UV_CACHE_DIR: /home/runner/work/_temp/setup-uv-cache
+static-quality	UNKNOWN STEP	2026-09-29T05:21:35.4357855Z ##[endgroup]
+static-quality	UNKNOWN STEP	2026-09-29T05:21:35.6103770Z Resolved 214 packages in 1ms
+static-quality	UNKNOWN STEP	2026-09-29T05:21:35.6250961Z    Building cpswm @ file:///home/runner/work/cpswm/cpswm
+static-quality	UNKNOWN STEP	2026-09-29T05:21:35.7036798Z Downloading cryptography (4.5MiB)
+static-quality	UNKNOWN STEP	2026-09-29T05:21:35.7037978Z Downloading scipy (33.6MiB)
+static-quality	UNKNOWN STEP	2026-09-29T05:21:35.7043205Z Downloading pillow (6.6MiB)
+static-quality	UNKNOWN STEP	2026-09-29T05:21:35.7044325Z Downloading pydantic-core (2.0MiB)
+static-quality	UNKNOWN STEP	2026-09-29T05:21:35.7050185Z Downloading hypothesis (1.1MiB)
+static-quality	UNKNOWN STEP	2026-09-29T05:21:35.7054433Z Downloading networkx (2.0MiB)
+static-quality	UNKNOWN STEP	2026-09-29T05:21:35.7056468Z Downloading fonttools (4.7MiB)
+static-quality	UNKNOWN STEP	2026-09-29T05:21:35.7059008Z Downloading pygments (1.2MiB)
+static-quality	UNKNOWN STEP	2026-09-29T05:21:35.7062741Z Downloading scikit-learn (8.7MiB)
+static-quality	UNKNOWN STEP	2026-09-29T05:21:35.7068280Z Downloading ast-serialize (1.2MiB)
+static-quality	UNKNOWN STEP	2026-09-29T05:21:35.7070817Z Downloading ruff (10.5MiB)
+static-quality	UNKNOWN STEP	2026-09-29T05:21:35.7073291Z Downloading virtualenv (5.1MiB)
+static-quality	UNKNOWN STEP	2026-09-29T05:21:35.7075762Z Downloading matplotlib (9.6MiB)
+static-quality	UNKNOWN STEP	2026-09-29T05:21:35.7078451Z Downloading mypy (14.5MiB)
+static-quality	UNKNOWN STEP	2026-09-29T05:21:35.7121412Z Downloading kiwisolver (1.4MiB)
+static-quality	UNKNOWN STEP	2026-09-29T05:21:35.7121874Z Downloading numpy (15.9MiB)
+static-quality	UNKNOWN STEP	2026-09-29T05:21:35.9067237Z  Downloaded ast-serialize
+static-quality	UNKNOWN STEP	2026-09-29T05:21:35.9067787Z  Downloaded hypothesis
+static-quality	UNKNOWN STEP	2026-09-29T05:21:35.9250989Z  Downloaded pygments
+static-quality	UNKNOWN STEP	2026-09-29T05:21:35.9599317Z  Downloaded kiwisolver
+static-quality	UNKNOWN STEP	2026-09-29T05:21:35.9602312Z  Downloaded networkx
+static-quality	UNKNOWN STEP	2026-09-29T05:21:35.9603017Z  Downloaded pydantic-core
+static-quality	UNKNOWN STEP	2026-09-29T05:21:36.0857586Z  Downloaded cryptography
+static-quality	UNKNOWN STEP	2026-09-29T05:21:36.1151087Z  Downloaded virtualenv
+static-quality	UNKNOWN STEP	2026-09-29T05:21:36.1587368Z  Downloaded fonttools
+static-quality	UNKNOWN STEP	2026-09-29T05:21:36.1987033Z  Downloaded pillow
+static-quality	UNKNOWN STEP	2026-09-29T05:21:36.2505830Z    Building antlr4-python3-runtime==4.9.3
+static-quality	UNKNOWN STEP	2026-09-29T05:21:36.2856338Z  Downloaded scikit-learn
+static-quality	UNKNOWN STEP	2026-09-29T05:21:36.2908125Z  Downloaded matplotlib
+static-quality	UNKNOWN STEP	2026-09-29T05:21:36.3014758Z  Downloaded ruff
+static-quality	UNKNOWN STEP	2026-09-29T05:21:36.3947175Z  Downloaded numpy
+static-quality	UNKNOWN STEP	2026-09-29T05:21:36.4907670Z  Downloaded mypy
+static-quality	UNKNOWN STEP	2026-09-29T05:21:36.6343965Z  Downloaded scipy
+static-quality	UNKNOWN STEP	2026-09-29T05:21:37.4023057Z       Built antlr4-python3-runtime==4.9.3
+static-quality	UNKNOWN STEP	2026-09-29T05:21:37.5317873Z       Built cpswm @ file:///home/runner/work/cpswm/cpswm
+static-quality	UNKNOWN STEP	2026-09-29T05:21:37.5329105Z Prepared 55 packages in 1.92s
+static-quality	UNKNOWN STEP	2026-09-29T05:21:37.6218464Z Installed 55 packages in 88ms
+static-quality	UNKNOWN STEP	2026-09-29T05:21:37.6219046Z  + annotated-types==0.8.0
+static-quality	UNKNOWN STEP	2026-09-29T05:21:37.6219546Z  + antlr4-python3-runtime==4.9.3
+static-quality	UNKNOWN STEP	2026-09-29T05:21:37.6220105Z  + ast-serialize==0.8.0
+static-quality	UNKNOWN STEP	2026-09-29T05:21:37.6220559Z  + cffi==2.1.1
+static-quality	UNKNOWN STEP	2026-09-29T05:21:37.6221077Z  + cfgv==3.5.0
+static-quality	UNKNOWN STEP	2026-09-29T05:21:37.6221352Z  + contourpy==1.3.3
+static-quality	UNKNOWN STEP	2026-09-29T05:21:37.6226386Z  + coverage==7.15.4
+static-quality	UNKNOWN STEP	2026-09-29T05:21:37.6227110Z  + cpswm==0.1.0 (from file:///home/runner/work/cpswm/cpswm)
+static-quality	UNKNOWN STEP	2026-09-29T05:21:37.6228077Z  + cryptography==47.0.0
+static-quality	UNKNOWN STEP	2026-09-29T05:21:37.6228764Z  + cycler==0.12.1
+static-quality	UNKNOWN STEP	2026-09-29T05:21:37.6229317Z  + distlib==0.4.3
+static-quality	UNKNOWN STEP	2026-09-29T05:21:37.6229809Z  + execnet==2.1.2
+static-quality	UNKNOWN STEP	2026-09-29T05:21:37.6230294Z  + filelock==3.32.3
+static-quality	UNKNOWN STEP	2026-09-29T05:21:37.6230781Z  + fonttools==4.63.0
+static-quality	UNKNOWN STEP	2026-09-29T05:21:37.6231269Z  + hydra-core==1.3.5
+static-quality	UNKNOWN STEP	2026-09-29T05:21:37.6232159Z  + hypothesis==6.165.10
+static-quality	UNKNOWN STEP	2026-09-29T05:21:37.6232702Z  + identify==2.6.19
+static-quality	UNKNOWN STEP	2026-09-29T05:21:37.6233206Z  + iniconfig==2.3.0
+static-quality	UNKNOWN STEP	2026-09-29T05:21:37.6233740Z  + joblib==1.5.3
+static-quality	UNKNOWN STEP	2026-09-29T05:21:37.6234267Z  + kiwisolver==1.5.0
+static-quality	UNKNOWN STEP	2026-09-29T05:21:37.6234783Z  + librt==0.15.0
+static-quality	UNKNOWN STEP	2026-09-29T05:21:37.6235284Z  + matplotlib==3.11.1
+static-quality	UNKNOWN STEP	2026-09-29T05:21:37.6235805Z  + mypy==2.3.1
+static-quality	UNKNOWN STEP	2026-09-29T05:21:37.6236621Z  + mypy-extensions==1.1.0
+static-quality	UNKNOWN STEP	2026-09-29T05:21:37.6237198Z  + narwhals==2.24.0
+static-quality	UNKNOWN STEP	2026-09-29T05:21:37.6237774Z  + networkx==3.6.1
+static-quality	UNKNOWN STEP	2026-09-29T05:21:37.6239109Z  + nodeenv==1.10.0
+static-quality	UNKNOWN STEP	2026-09-29T05:21:37.6239819Z  + numpy==2.5.2
+static-quality	UNKNOWN STEP	2026-09-29T05:21:37.6240393Z  + omegaconf==2.3.1
+static-quality	UNKNOWN STEP	2026-09-29T05:21:37.6240946Z  + packaging==26.3
+static-quality	UNKNOWN STEP	2026-09-29T05:21:37.6241486Z  + pathspec==1.1.1
+static-quality	UNKNOWN STEP	2026-09-29T05:21:37.6242017Z  + pillow==12.3.0
+static-quality	UNKNOWN STEP	2026-09-29T05:21:37.6242551Z  + platformdirs==4.11.3
+static-quality	UNKNOWN STEP	2026-09-29T05:21:37.6243179Z  + pluggy==1.6.0
+static-quality	UNKNOWN STEP	2026-09-29T05:21:37.6243706Z  + pre-commit==4.6.2
+static-quality	UNKNOWN STEP	2026-09-29T05:21:37.6244260Z  + pycparser==3.0
+static-quality	UNKNOWN STEP	2026-09-29T05:21:37.6244825Z  + pydantic==2.13.4
+static-quality	UNKNOWN STEP	2026-09-29T05:21:37.6245368Z  + pydantic-core==2.46.4
+static-quality	UNKNOWN STEP	2026-09-29T05:21:37.6245918Z  + pygments==2.20.0
+static-quality	UNKNOWN STEP	2026-09-29T05:21:37.6246699Z  + pyparsing==3.3.2
+static-quality	UNKNOWN STEP	2026-09-29T05:21:37.6247233Z  + pytest==9.1.1
+static-quality	UNKNOWN STEP	2026-09-29T05:21:37.6247764Z  + pytest-cov==7.1.0
+static-quality	UNKNOWN STEP	2026-09-29T05:21:37.6248312Z  + pytest-xdist==3.8.0
+static-quality	UNKNOWN STEP	2026-09-29T05:21:37.6248888Z  + python-dateutil==2.9.0.post0
+static-quality	UNKNOWN STEP	2026-09-29T05:21:37.6249555Z  + python-discovery==1.5.2
+static-quality	UNKNOWN STEP	2026-09-29T05:21:37.6250117Z  + pyyaml==6.0.3
+static-quality	UNKNOWN STEP	2026-09-29T05:21:37.6250620Z  + ruff==0.16.3
+static-quality	UNKNOWN STEP	2026-09-29T05:21:37.6251154Z  + scikit-learn==1.9.0
+static-quality	UNKNOWN STEP	2026-09-29T05:21:37.6251687Z  + scipy==1.18.0
+static-quality	UNKNOWN STEP	2026-09-29T05:21:37.6252185Z  + six==1.17.0
+static-quality	UNKNOWN STEP	2026-09-29T05:21:37.6252708Z  + sortedcontainers==2.4.0
+static-quality	UNKNOWN STEP	2026-09-29T05:21:37.6253293Z  + threadpoolctl==3.6.0
+static-quality	UNKNOWN STEP	2026-09-29T05:21:37.6253875Z  + typing-extensions==4.16.0
+static-quality	UNKNOWN STEP	2026-09-29T05:21:37.6254466Z  + typing-inspection==0.4.4
+static-quality	UNKNOWN STEP	2026-09-29T05:21:37.6255028Z  + virtualenv==21.7.4
+static-quality	UNKNOWN STEP	2026-09-29T05:21:37.6553647Z ##[group]Run uv run --extra dev ruff check src tests
+static-quality	UNKNOWN STEP	2026-09-29T05:21:37.6554093Z ^[[36;1muv run --extra dev ruff check src tests^[[0m
+static-quality	UNKNOWN STEP	2026-09-29T05:21:37.6627017Z shell: /usr/bin/bash -e {0}
+static-quality	UNKNOWN STEP	2026-09-29T05:21:37.6627277Z env:
+static-quality	UNKNOWN STEP	2026-09-29T05:21:37.6627484Z   UV_PYTHON: 3.13
+static-quality	UNKNOWN STEP	2026-09-29T05:21:37.6627755Z   VIRTUAL_ENV: /home/runner/work/cpswm/cpswm/.venv
+static-quality	UNKNOWN STEP	2026-09-29T05:21:37.6628114Z   UV_CACHE_DIR: /home/runner/work/_temp/setup-uv-cache
+static-quality	UNKNOWN STEP	2026-09-29T05:21:37.6628444Z ##[endgroup]
+static-quality	UNKNOWN STEP	2026-09-29T05:21:37.9367192Z All checks passed!
+static-quality	UNKNOWN STEP	2026-09-29T05:21:37.9425209Z ##[group]Run uv run --extra dev ruff format --check src tests
+static-quality	UNKNOWN STEP	2026-09-29T05:21:37.9425683Z ^[[36;1muv run --extra dev ruff format --check src tests^[[0m
+static-quality	UNKNOWN STEP	2026-09-29T05:21:37.9498201Z shell: /usr/bin/bash -e {0}
+static-quality	UNKNOWN STEP	2026-09-29T05:21:37.9498460Z env:
+static-quality	UNKNOWN STEP	2026-09-29T05:21:37.9498669Z   UV_PYTHON: 3.13
+static-quality	UNKNOWN STEP	2026-09-29T05:21:37.9498938Z   VIRTUAL_ENV: /home/runner/work/cpswm/cpswm/.venv
+static-quality	UNKNOWN STEP	2026-09-29T05:21:37.9499298Z   UV_CACHE_DIR: /home/runner/work/_temp/setup-uv-cache
+static-quality	UNKNOWN STEP	2026-09-29T05:21:37.9499611Z ##[endgroup]
+static-quality	UNKNOWN STEP	2026-09-29T05:21:38.2392153Z unformatted: File would be reformatted
+static-quality	UNKNOWN STEP	2026-09-29T05:21:38.2392839Z    --> tests/dual_pc_review/test_w3_five_boundaries_repair.py:88:34
+static-quality	UNKNOWN STEP	2026-09-29T05:21:38.2393587Z     |
+static-quality	UNKNOWN STEP	2026-09-29T05:21:38.2394078Z 87  |         "alpha": original.alpha if alpha is None else alpha,
+static-quality	UNKNOWN STEP	2026-09-29T05:21:38.2394788Z     -         "evidence_cluster_ids": (
+static-quality	UNKNOWN STEP	2026-09-29T05:21:38.2395463Z     -             original.evidence_cluster_ids if clusters is None else clusters
+static-quality	UNKNOWN STEP	2026-09-29T05:21:38.2396452Z     -         ),
+static-quality	UNKNOWN STEP	2026-09-29T05:21:38.2397127Z 88  +         "evidence_cluster_ids": (original.evidence_cluster_ids if clusters is None else clusters),
+static-quality	UNKNOWN STEP	2026-09-29T05:21:38.2397932Z 89  |     }
+static-quality	UNKNOWN STEP	2026-09-29T05:21:38.2398353Z --------------------------------------------------------------------------------
+static-quality	UNKNOWN STEP	2026-09-29T05:21:38.2398908Z 187 |     arguments = candidates(core)
+static-quality	UNKNOWN STEP	2026-09-29T05:21:38.2399352Z     -     original = arguments["statistics"][
+static-quality	UNKNOWN STEP	2026-09-29T05:21:38.2399939Z     -         arguments["receipts"][0].proposal.proposed_state.particle_id
+static-quality	UNKNOWN STEP	2026-09-29T05:21:38.2400810Z     -     ]
+static-quality	UNKNOWN STEP	2026-09-29T05:21:38.2401462Z 188 +     original = arguments["statistics"][arguments["receipts"][0].proposal.proposed_state.particle_id]
+static-quality	UNKNOWN STEP	2026-09-29T05:21:38.2402376Z 189 |     paired = tuple(zip(original.locations, original.alpha, strict=True))
+static-quality	UNKNOWN STEP	2026-09-29T05:21:38.2403085Z --------------------------------------------------------------------------------
+static-quality	UNKNOWN STEP	2026-09-29T05:21:38.2403616Z 349 |     bad = deepcopy(good)
+static-quality	UNKNOWN STEP	2026-09-29T05:21:38.2404002Z     -     statistic = bad["statistics"][
+static-quality	UNKNOWN STEP	2026-09-29T05:21:38.2404524Z     -         bad["receipts"][0].proposal.proposed_state.particle_id
+static-quality	UNKNOWN STEP	2026-09-29T05:21:38.2405007Z     -     ]
+static-quality	UNKNOWN STEP	2026-09-29T05:21:38.2405537Z 350 +     statistic = bad["statistics"][bad["receipts"][0].proposal.proposed_state.particle_id]
+static-quality	UNKNOWN STEP	2026-09-29T05:21:38.2406468Z 351 |     lineage = statistic.evidence_cluster_ids
+static-quality	UNKNOWN STEP	2026-09-29T05:21:38.2407039Z --------------------------------------------------------------------------------
+static-quality	UNKNOWN STEP	2026-09-29T05:21:38.2407864Z 367 |     # conditional-statistic digest and resealed the public particle state.
+static-quality	UNKNOWN STEP	2026-09-29T05:21:38.2408516Z     -     assert (
+static-quality	UNKNOWN STEP	2026-09-29T05:21:38.2408997Z     -         bad["receipts"][0].proposal.proposed_state.statistic_state_ref
+static-quality	UNKNOWN STEP	2026-09-29T05:21:38.2409607Z     -         == resealed.reference
+static-quality	UNKNOWN STEP	2026-09-29T05:21:38.2410009Z     -     )
+static-quality	UNKNOWN STEP	2026-09-29T05:21:38.2410633Z 368 +     assert bad["receipts"][0].proposal.proposed_state.statistic_state_ref == resealed.reference
+static-quality	UNKNOWN STEP	2026-09-29T05:21:38.2411430Z 369 |     _reject_without_effect_then_retry(
+static-quality	UNKNOWN STEP	2026-09-29T05:21:38.2412011Z --------------------------------------------------------------------------------
+static-quality	UNKNOWN STEP	2026-09-29T05:21:38.2412569Z 434 | )
+static-quality	UNKNOWN STEP	2026-09-29T05:21:38.2412972Z     - def test_receipt_statistic_input_closure_attacks_are_atomic(
+static-quality	UNKNOWN STEP	2026-09-29T05:21:38.2413507Z     -     fault: str, match: str
+static-quality	UNKNOWN STEP	2026-09-29T05:21:38.2413880Z     - ) -> None:
+static-quality	UNKNOWN STEP	2026-09-29T05:21:38.2414453Z 435 + def test_receipt_statistic_input_closure_attacks_are_atomic(fault: str, match: str) -> None:
+static-quality	UNKNOWN STEP	2026-09-29T05:21:38.2415195Z 436 |     core = old._legacy_history(1).system.core
+static-quality	UNKNOWN STEP	2026-09-29T05:21:38.2415778Z --------------------------------------------------------------------------------
+static-quality	UNKNOWN STEP	2026-09-29T05:21:38.2416519Z 447 |     bad = deepcopy(good)
+static-quality	UNKNOWN STEP	2026-09-29T05:21:38.2416905Z     -     particle_ids = tuple(
+static-quality	UNKNOWN STEP	2026-09-29T05:21:38.2417523Z     -         receipt.proposal.proposed_state.particle_id for receipt in bad["receipts"]
+static-quality	UNKNOWN STEP	2026-09-29T05:21:38.2418181Z     -     )
+static-quality	UNKNOWN STEP	2026-09-29T05:21:38.2419155Z 448 +     particle_ids = tuple(receipt.proposal.proposed_state.particle_id for receipt in bad["receipts"])
+static-quality	UNKNOWN STEP	2026-09-29T05:21:38.2420030Z 449 |     shared = bad["statistics"][particle_ids[0]]
+static-quality	UNKNOWN STEP	2026-09-29T05:21:38.2420498Z     |
+static-quality	UNKNOWN STEP	2026-09-29T05:21:38.2420666Z 
+static-quality	UNKNOWN STEP	2026-09-29T05:21:38.2420844Z unformatted: File would be reformatted
+static-quality	UNKNOWN STEP	2026-09-29T05:21:38.2421421Z    --> tests/test_structure_two_ciav_negative_observation_layers.py:213:33
+static-quality	UNKNOWN STEP	2026-09-29T05:21:38.2421985Z     |
+static-quality	UNKNOWN STEP	2026-09-29T05:21:38.2422428Z 212 |         transition = probe.transition_for(probe.observed_days()[0])
+static-quality	UNKNOWN STEP	2026-09-29T05:21:38.2423060Z     -         ciav = probe.ciav_input(
+static-quality	UNKNOWN STEP	2026-09-29T05:21:38.2423667Z     -             transition, outcome=CIAVOutcomeKind.DETECTED_DIFFERENT_LOCATION
+static-quality	UNKNOWN STEP	2026-09-29T05:21:38.2424270Z     -         )
+static-quality	UNKNOWN STEP	2026-09-29T05:21:38.2425004Z 213 +         ciav = probe.ciav_input(transition, outcome=CIAVOutcomeKind.DETECTED_DIFFERENT_LOCATION)
+static-quality	UNKNOWN STEP	2026-09-29T05:21:38.2426139Z 214 |         result, _ = probe.run_direct_p5(transition, ciav_input=ciav)
+static-quality	UNKNOWN STEP	2026-09-29T05:21:38.2426829Z --------------------------------------------------------------------------------
+static-quality	UNKNOWN STEP	2026-09-29T05:21:38.2427526Z 219 |         transition = probe.transition_for(probe.observed_days()[0])
+static-quality	UNKNOWN STEP	2026-09-29T05:21:38.2427901Z     -         ciav = probe.ciav_input(
+static-quality	UNKNOWN STEP	2026-09-29T05:21:38.2428269Z     -             transition, outcome=CIAVOutcomeKind.DETECTED_DIFFERENT_LOCATION
+static-quality	UNKNOWN STEP	2026-09-29T05:21:38.2428631Z     -         )
+static-quality	UNKNOWN STEP	2026-09-29T05:21:38.2429021Z 220 +         ciav = probe.ciav_input(transition, outcome=CIAVOutcomeKind.DETECTED_DIFFERENT_LOCATION)
+static-quality	UNKNOWN STEP	2026-09-29T05:21:38.2429684Z 221 |         deferred, _ = probe.run_adaptive(
+static-quality	UNKNOWN STEP	2026-09-29T05:21:38.2430061Z --------------------------------------------------------------------------------
+static-quality	UNKNOWN STEP	2026-09-29T05:21:38.2430432Z 225 |             debt_expiry_steps=1,
+static-quality	UNKNOWN STEP	2026-09-29T05:21:38.2430687Z     -         )
+static-quality	UNKNOWN STEP	2026-09-29T05:21:38.2430918Z     -         result, _ = probe.replay_debt(
+static-quality	UNKNOWN STEP	2026-09-29T05:21:38.2431274Z     -             deferred.debt_certificates[0].debt_id, ciav_input=ciav
+static-quality	UNKNOWN STEP	2026-09-29T05:21:38.2431606Z 226 |         )
+static-quality	UNKNOWN STEP	2026-09-29T05:21:38.2431969Z 227 +         result, _ = probe.replay_debt(deferred.debt_certificates[0].debt_id, ciav_input=ciav)
+static-quality	UNKNOWN STEP	2026-09-29T05:21:38.2432455Z 228 |         return probe, result
+static-quality	UNKNOWN STEP	2026-09-29T05:21:38.2432936Z --------------------------------------------------------------------------------
+static-quality	UNKNOWN STEP	2026-09-29T05:21:38.2433432Z 237 |     )
+static-quality	UNKNOWN STEP	2026-09-29T05:21:38.2433851Z     -     assert len(direct_probe.committed_revision_ids()) == len(
+static-quality	UNKNOWN STEP	2026-09-29T05:21:38.2434454Z     -         replay_probe.committed_revision_ids()
+static-quality	UNKNOWN STEP	2026-09-29T05:21:38.2434886Z     -     )
+static-quality	UNKNOWN STEP	2026-09-29T05:21:38.2435512Z 238 +     assert len(direct_probe.committed_revision_ids()) == len(replay_probe.committed_revision_ids())
+static-quality	UNKNOWN STEP	2026-09-29T05:21:38.2436473Z 239 |     for location in direct_probe.case.locations:
+static-quality	UNKNOWN STEP	2026-09-29T05:21:38.2436906Z 240 |         assert direct_probe.system.core.hybrid_alpha(location) == pytest.approx(
+static-quality	UNKNOWN STEP	2026-09-29T05:21:38.2437570Z 241 |             replay_probe.system.core.hybrid_alpha(location)
+static-quality	UNKNOWN STEP	2026-09-29T05:21:38.2437888Z 242 |         )
+static-quality	UNKNOWN STEP	2026-09-29T05:21:38.2438153Z     -     assert direct_probe.action_distribution_sha256() == (
+static-quality	UNKNOWN STEP	2026-09-29T05:21:38.2438520Z     -         replay_probe.action_distribution_sha256()
+static-quality	UNKNOWN STEP	2026-09-29T05:21:38.2438801Z     -     )
+static-quality	UNKNOWN STEP	2026-09-29T05:21:38.2439188Z 243 +     assert direct_probe.action_distribution_sha256() == (replay_probe.action_distribution_sha256())
+static-quality	UNKNOWN STEP	2026-09-29T05:21:38.2460891Z 244 |
+static-quality	UNKNOWN STEP	2026-09-29T05:21:38.2461345Z --------------------------------------------------------------------------------
+static-quality	UNKNOWN STEP	2026-09-29T05:21:38.2462005Z 265 |         object_instance_id=probe.system.core.object_instance_id,
+static-quality	UNKNOWN STEP	2026-09-29T05:21:38.2462405Z     -         actor_keys=tuple(
+static-quality	UNKNOWN STEP	2026-09-29T05:21:38.2462800Z     -             actor for actor in transition.actor_prior if actor != "unknown_actor"
+static-quality	UNKNOWN STEP	2026-09-29T05:21:38.2463200Z     -         ),
+static-quality	UNKNOWN STEP	2026-09-29T05:21:38.2463826Z 266 +         actor_keys=tuple(actor for actor in transition.actor_prior if actor != "unknown_actor"),
+static-quality	UNKNOWN STEP	2026-09-29T05:21:38.2464400Z 267 |         actor_prior=dict(result.primary_result.actor_posterior),
+static-quality	UNKNOWN STEP	2026-09-29T05:21:38.2464768Z 268 |         actor_likelihoods_by_outcome={
+static-quality	UNKNOWN STEP	2026-09-29T05:21:38.2465058Z     -             outcome: dict(values)
+static-quality	UNKNOWN STEP	2026-09-29T05:21:38.2465421Z     -             for outcome, values in ciav.actor_likelihoods_by_outcome.items()
+static-quality	UNKNOWN STEP	2026-09-29T05:21:38.2466134Z 269 +             outcome: dict(values) for outcome, values in ciav.actor_likelihoods_by_outcome.items()
+static-quality	UNKNOWN STEP	2026-09-29T05:21:38.2466587Z 270 |         },
+static-quality	UNKNOWN STEP	2026-09-29T05:21:38.2466784Z     |
+static-quality	UNKNOWN STEP	2026-09-29T05:21:38.2466890Z 
+static-quality	UNKNOWN STEP	2026-09-29T05:21:38.2467073Z 2 files would be reformatted, 732 files already formatted
+static-quality	UNKNOWN STEP	2026-09-29T05:21:38.2476565Z ##[error]Process completed with exit code 1.
+static-quality	UNKNOWN STEP	2026-09-29T05:21:38.2624344Z Post job cleanup.
+static-quality	UNKNOWN STEP	2026-09-29T05:21:38.3480245Z [command]/usr/bin/git version
+static-quality	UNKNOWN STEP	2026-09-29T05:21:38.3524527Z git version 2.55.0
+static-quality	UNKNOWN STEP	2026-09-29T05:21:38.3559042Z Temporarily overriding HOME='/home/runner/work/_temp/c9b71735-0135-4995-91e8-51a260b085db' before making global git config changes
+static-quality	UNKNOWN STEP	2026-09-29T05:21:38.3560510Z Adding repository directory to the temporary git global config as a safe directory
+static-quality	UNKNOWN STEP	2026-09-29T05:21:38.3563465Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/cpswm/cpswm
+static-quality	UNKNOWN STEP	2026-09-29T05:21:38.3603762Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+static-quality	UNKNOWN STEP	2026-09-29T05:21:38.3639593Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+static-quality	UNKNOWN STEP	2026-09-29T05:21:38.3916712Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+static-quality	UNKNOWN STEP	2026-09-29T05:21:38.3944081Z http.https://github.com/.extraheader
+static-quality	UNKNOWN STEP	2026-09-29T05:21:38.3956184Z [command]/usr/bin/git config --local --unset-all http.https://github.com/.extraheader
+static-quality	UNKNOWN STEP	2026-09-29T05:21:38.3991631Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+static-quality	UNKNOWN STEP	2026-09-29T05:21:38.4260524Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+static-quality	UNKNOWN STEP	2026-09-29T05:21:38.4299785Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+static-quality	UNKNOWN STEP	2026-09-29T05:21:38.4712548Z Cleaning up orphan processes
+static-quality	UNKNOWN STEP	2026-09-29T05:21:38.4996439Z ##[warning]Node.js 20 is deprecated. The following actions target Node.js 20 but are being forced to run on Node.js 24: actions/checkout@v4, astral-sh/setup-uv@v5. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/
+test	UNKNOWN STEP	﻿2026-09-29T05:21:19.8679149Z Current runner version: '2.337.0'
+test	UNKNOWN STEP	2026-09-29T05:21:19.8705164Z ##[group]Runner Image Provisioner
+test	UNKNOWN STEP	2026-09-29T05:21:19.8706031Z Hosted Compute Agent
+test	UNKNOWN STEP	2026-09-29T05:21:19.8706778Z Version: 20260828.587
+test	UNKNOWN STEP	2026-09-29T05:21:19.8707473Z Commit: abac92662cab4cc7352de4f9f9d2e2419aad9c29
+test	UNKNOWN STEP	2026-09-29T05:21:19.8708284Z Build Date: 2026-08-28T16:44:25Z
+test	UNKNOWN STEP	2026-09-29T05:21:19.8709033Z Worker ID: {5b17674d-79ec-4554-9190-dabfd610f8b7}
+test	UNKNOWN STEP	2026-09-29T05:21:19.8709742Z Azure Region: eastus
+test	UNKNOWN STEP	2026-09-29T05:21:19.8710771Z ##[endgroup]
+test	UNKNOWN STEP	2026-09-29T05:21:19.8712324Z ##[group]Operating System
+test	UNKNOWN STEP	2026-09-29T05:21:19.8713050Z Ubuntu
+test	UNKNOWN STEP	2026-09-29T05:21:19.8713635Z 24.04.5
+test	UNKNOWN STEP	2026-09-29T05:21:19.8714239Z LTS
+test	UNKNOWN STEP	2026-09-29T05:21:19.8714799Z ##[endgroup]
+test	UNKNOWN STEP	2026-09-29T05:21:19.8715401Z ##[group]Runner Image
+test	UNKNOWN STEP	2026-09-29T05:21:19.8716033Z Image: ubuntu-24.04
+test	UNKNOWN STEP	2026-09-29T05:21:19.8716650Z Version: 20260920.314.1
+test	UNKNOWN STEP	2026-09-29T05:21:19.8717950Z Included Software: https://github.com/actions/runner-images/blob/ubuntu24/20260920.314/images/ubuntu/Ubuntu2404-Readme.md
+test	UNKNOWN STEP	2026-09-29T05:21:19.8719621Z Image Release: https://github.com/actions/runner-images/releases/tag/ubuntu24%2F20260920.314
+test	UNKNOWN STEP	2026-09-29T05:21:19.8720943Z ##[endgroup]
+test	UNKNOWN STEP	2026-09-29T05:21:19.8722220Z ##[group]GITHUB_TOKEN Permissions
+test	UNKNOWN STEP	2026-09-29T05:21:19.8724525Z Contents: read
+test	UNKNOWN STEP	2026-09-29T05:21:19.8725150Z Metadata: read
+test	UNKNOWN STEP	2026-09-29T05:21:19.8725708Z Packages: read
+test	UNKNOWN STEP	2026-09-29T05:21:19.8726422Z ##[endgroup]
+test	UNKNOWN STEP	2026-09-29T05:21:19.8728554Z Secret source: Actions
+test	UNKNOWN STEP	2026-09-29T05:21:19.8729674Z Cache mode: write
+test	UNKNOWN STEP	2026-09-29T05:21:19.8730901Z Prepare workflow directory
+test	UNKNOWN STEP	2026-09-29T05:21:19.9066349Z Prepare all required actions
+test	UNKNOWN STEP	2026-09-29T05:21:19.9115017Z Getting action download info
+test	UNKNOWN STEP	2026-09-29T05:21:20.1374070Z Download action repository 'actions/checkout@v4' (SHA:11d5960a326750d5838078e36cf38b85af677262)
+test	UNKNOWN STEP	2026-09-29T05:21:20.2408985Z Download action repository 'astral-sh/setup-uv@v5' (SHA:d4b2f3b6ecc6e67c4457f6d3e41ec42d3d0fcb86)
+test	UNKNOWN STEP	2026-09-29T05:21:20.6386433Z Complete job name: test
+test	UNKNOWN STEP	2026-09-29T05:21:20.7184607Z ##[group]Run actions/checkout@v4
+test	UNKNOWN STEP	2026-09-29T05:21:20.7185599Z with:
+test	UNKNOWN STEP	2026-09-29T05:21:20.7186075Z   repository: goneveitvet240-svg/cpswm
+test	UNKNOWN STEP	2026-09-29T05:21:20.7189854Z   token: ***
+test	UNKNOWN STEP	2026-09-29T05:21:20.7190627Z   ssh-strict: true
+test	UNKNOWN STEP	2026-09-29T05:21:20.7191076Z   ssh-user: git
+test	UNKNOWN STEP	2026-09-29T05:21:20.7191530Z   persist-credentials: true
+test	UNKNOWN STEP	2026-09-29T05:21:20.7192018Z   clean: true
+test	UNKNOWN STEP	2026-09-29T05:21:20.7192467Z   sparse-checkout-cone-mode: true
+test	UNKNOWN STEP	2026-09-29T05:21:20.7192982Z   fetch-depth: 1
+test	UNKNOWN STEP	2026-09-29T05:21:20.7193411Z   fetch-tags: false
+test	UNKNOWN STEP	2026-09-29T05:21:20.7193846Z   show-progress: true
+test	UNKNOWN STEP	2026-09-29T05:21:20.7194283Z   lfs: false
+test	UNKNOWN STEP	2026-09-29T05:21:20.7194691Z   submodules: false
+test	UNKNOWN STEP	2026-09-29T05:21:20.7195132Z   set-safe-directory: true
+test	UNKNOWN STEP	2026-09-29T05:21:20.7195632Z   allow-unsafe-pr-checkout: false
+test	UNKNOWN STEP	2026-09-29T05:21:20.7196447Z ##[endgroup]
+test	UNKNOWN STEP	2026-09-29T05:21:20.8313278Z Syncing repository: goneveitvet240-svg/cpswm
+test	UNKNOWN STEP	2026-09-29T05:21:20.8315126Z ##[group]Getting Git version info
+test	UNKNOWN STEP	2026-09-29T05:21:20.8315900Z Working directory is '/home/runner/work/cpswm/cpswm'
+test	UNKNOWN STEP	2026-09-29T05:21:20.8316923Z [command]/usr/bin/git version
+test	UNKNOWN STEP	2026-09-29T05:21:20.8446309Z git version 2.55.0
+test	UNKNOWN STEP	2026-09-29T05:21:20.8516082Z ##[endgroup]
+test	UNKNOWN STEP	2026-09-29T05:21:20.8530491Z Temporarily overriding HOME='/home/runner/work/_temp/780f0598-beed-4851-89bc-b770f4fe7a80' before making global git config changes
+test	UNKNOWN STEP	2026-09-29T05:21:20.8533041Z Adding repository directory to the temporary git global config as a safe directory
+test	UNKNOWN STEP	2026-09-29T05:21:20.8535109Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/cpswm/cpswm
+test	UNKNOWN STEP	2026-09-29T05:21:20.8589631Z Deleting the contents of '/home/runner/work/cpswm/cpswm'
+test	UNKNOWN STEP	2026-09-29T05:21:20.8595681Z ##[group]Initializing the repository
+test	UNKNOWN STEP	2026-09-29T05:21:20.8602236Z [command]/usr/bin/git init /home/runner/work/cpswm/cpswm
+test	UNKNOWN STEP	2026-09-29T05:21:20.8763561Z hint: Using 'master' as the name for the initial branch. This default branch name
+test	UNKNOWN STEP	2026-09-29T05:21:20.8791734Z hint: will change to "main" in Git 3.0. To configure the initial branch name
+test	UNKNOWN STEP	2026-09-29T05:21:20.8793813Z hint: to use in all of your new repositories, which will suppress this warning,
+test	UNKNOWN STEP	2026-09-29T05:21:20.8795981Z hint: call:
+test	UNKNOWN STEP	2026-09-29T05:21:20.8796906Z hint:
+test	UNKNOWN STEP	2026-09-29T05:21:20.8798083Z hint: 	git config --global init.defaultBranch <name>
+test	UNKNOWN STEP	2026-09-29T05:21:20.8804646Z hint:
+test	UNKNOWN STEP	2026-09-29T05:21:20.8805902Z hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+test	UNKNOWN STEP	2026-09-29T05:21:20.8807864Z hint: 'development'. The just-created branch can be renamed via this command:
+test	UNKNOWN STEP	2026-09-29T05:21:20.8809664Z hint:
+test	UNKNOWN STEP	2026-09-29T05:21:20.8811517Z hint: 	git branch -m <name>
+test	UNKNOWN STEP	2026-09-29T05:21:20.8812648Z hint:
+test	UNKNOWN STEP	2026-09-29T05:21:20.8814036Z hint: Disable this message with "git config set advice.defaultBranchName false"
+test	UNKNOWN STEP	2026-09-29T05:21:20.8816304Z Initialized empty Git repository in /home/runner/work/cpswm/cpswm/.git/
+test	UNKNOWN STEP	2026-09-29T05:21:20.8820739Z [command]/usr/bin/git remote add origin https://github.com/goneveitvet240-svg/cpswm
+test	UNKNOWN STEP	2026-09-29T05:21:20.8906124Z ##[endgroup]
+test	UNKNOWN STEP	2026-09-29T05:21:20.8907486Z ##[group]Disabling automatic garbage collection
+test	UNKNOWN STEP	2026-09-29T05:21:20.8908762Z [command]/usr/bin/git config --local gc.auto 0
+test	UNKNOWN STEP	2026-09-29T05:21:20.8997447Z ##[endgroup]
+test	UNKNOWN STEP	2026-09-29T05:21:20.8998974Z ##[group]Setting up auth
+test	UNKNOWN STEP	2026-09-29T05:21:20.9000859Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+test	UNKNOWN STEP	2026-09-29T05:21:20.9033799Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+test	UNKNOWN STEP	2026-09-29T05:21:20.9643243Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+test	UNKNOWN STEP	2026-09-29T05:21:20.9705526Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+test	UNKNOWN STEP	2026-09-29T05:21:21.0075306Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+test	UNKNOWN STEP	2026-09-29T05:21:21.0114252Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+test	UNKNOWN STEP	2026-09-29T05:21:21.0359405Z [command]/usr/bin/git config --local http.https://github.com/.extraheader AUTHORIZATION: basic ***
+test	UNKNOWN STEP	2026-09-29T05:21:21.0404255Z ##[endgroup]
+test	UNKNOWN STEP	2026-09-29T05:21:21.0414344Z ##[group]Fetching the repository
+test	UNKNOWN STEP	2026-09-29T05:21:21.0415994Z [command]/usr/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin +0beb17b5b48416d878e3651ccf5258c3bc8c0270:refs/remotes/pull/57/merge
+test	UNKNOWN STEP	2026-09-29T05:21:28.2363521Z From https://github.com/goneveitvet240-svg/cpswm
+test	UNKNOWN STEP	2026-09-29T05:21:28.2366038Z  * [new ref]         0beb17b5b48416d878e3651ccf5258c3bc8c0270 -> pull/57/merge
+test	UNKNOWN STEP	2026-09-29T05:21:28.2371420Z ##[endgroup]
+test	UNKNOWN STEP	2026-09-29T05:21:28.2373692Z ##[group]Determining the checkout info
+test	UNKNOWN STEP	2026-09-29T05:21:28.2376451Z ##[endgroup]
+test	UNKNOWN STEP	2026-09-29T05:21:28.2378215Z [command]/usr/bin/git sparse-checkout disable
+test	UNKNOWN STEP	2026-09-29T05:21:28.2484002Z [command]/usr/bin/git config --local --unset-all extensions.worktreeConfig
+test	UNKNOWN STEP	2026-09-29T05:21:28.2529266Z ##[group]Checking out the ref
+test	UNKNOWN STEP	2026-09-29T05:21:28.2534016Z [command]/usr/bin/git checkout --progress --force refs/remotes/pull/57/merge
+test	UNKNOWN STEP	2026-09-29T05:21:29.2847036Z Updating files:  11% (914/7852)
+test	UNKNOWN STEP	2026-09-29T05:21:29.2949575Z Updating files:  12% (943/7852)
+test	UNKNOWN STEP	2026-09-29T05:21:29.3215542Z Updating files:  13% (1021/7852)
+test	UNKNOWN STEP	2026-09-29T05:21:29.3260661Z Updating files:  14% (1100/7852)
+test	UNKNOWN STEP	2026-09-29T05:21:29.3324086Z Updating files:  15% (1178/7852)
+test	UNKNOWN STEP	2026-09-29T05:21:29.3390594Z Updating files:  16% (1257/7852)
+test	UNKNOWN STEP	2026-09-29T05:21:29.4885035Z Updating files:  17% (1335/7852)
+test	UNKNOWN STEP	2026-09-29T05:21:29.6582402Z Updating files:  18% (1414/7852)
+test	UNKNOWN STEP	2026-09-29T05:21:29.6782750Z Updating files:  19% (1492/7852)
+test	UNKNOWN STEP	2026-09-29T05:21:29.6870926Z Updating files:  20% (1571/7852)
+test	UNKNOWN STEP	2026-09-29T05:21:29.6944627Z Updating files:  21% (1649/7852)
+test	UNKNOWN STEP	2026-09-29T05:21:29.7014564Z Updating files:  22% (1728/7852)
+test	UNKNOWN STEP	2026-09-29T05:21:29.7064155Z Updating files:  23% (1806/7852)
+test	UNKNOWN STEP	2026-09-29T05:21:29.7130131Z Updating files:  24% (1885/7852)
+test	UNKNOWN STEP	2026-09-29T05:21:29.7192645Z Updating files:  25% (1963/7852)
+test	UNKNOWN STEP	2026-09-29T05:21:29.7247159Z Updating files:  26% (2042/7852)
+test	UNKNOWN STEP	2026-09-29T05:21:29.7306689Z Updating files:  27% (2121/7852)
+test	UNKNOWN STEP	2026-09-29T05:21:29.7749980Z Updating files:  28% (2199/7852)
+test	UNKNOWN STEP	2026-09-29T05:21:29.7901726Z Updating files:  29% (2278/7852)
+test	UNKNOWN STEP	2026-09-29T05:21:29.8049636Z Updating files:  30% (2356/7852)
+test	UNKNOWN STEP	2026-09-29T05:21:29.8113591Z Updating files:  31% (2435/7852)
+test	UNKNOWN STEP	2026-09-29T05:21:29.8171468Z Updating files:  32% (2513/7852)
+test	UNKNOWN STEP	2026-09-29T05:21:29.8536878Z Updating files:  33% (2592/7852)
+test	UNKNOWN STEP	2026-09-29T05:21:29.8661464Z Updating files:  34% (2670/7852)
+test	UNKNOWN STEP	2026-09-29T05:21:29.9436637Z Updating files:  35% (2749/7852)
+test	UNKNOWN STEP	2026-09-29T05:21:29.9928864Z Updating files:  36% (2827/7852)
+test	UNKNOWN STEP	2026-09-29T05:21:30.0035399Z Updating files:  37% (2906/7852)
+test	UNKNOWN STEP	2026-09-29T05:21:30.0115255Z Updating files:  38% (2984/7852)
+test	UNKNOWN STEP	2026-09-29T05:21:30.0173812Z Updating files:  39% (3063/7852)
+test	UNKNOWN STEP	2026-09-29T05:21:30.0217768Z Updating files:  40% (3141/7852)
+test	UNKNOWN STEP	2026-09-29T05:21:30.0301066Z Updating files:  41% (3220/7852)
+test	UNKNOWN STEP	2026-09-29T05:21:30.0444055Z Updating files:  42% (3298/7852)
+test	UNKNOWN STEP	2026-09-29T05:21:30.0489194Z Updating files:  43% (3377/7852)
+test	UNKNOWN STEP	2026-09-29T05:21:30.0531439Z Updating files:  44% (3455/7852)
+test	UNKNOWN STEP	2026-09-29T05:21:30.0670373Z Updating files:  45% (3534/7852)
+test	UNKNOWN STEP	2026-09-29T05:21:30.0715423Z Updating files:  46% (3612/7852)
+test	UNKNOWN STEP	2026-09-29T05:21:30.0768114Z Updating files:  47% (3691/7852)
+test	UNKNOWN STEP	2026-09-29T05:21:30.0845156Z Updating files:  48% (3769/7852)
+test	UNKNOWN STEP	2026-09-29T05:21:30.0905633Z Updating files:  49% (3848/7852)
+test	UNKNOWN STEP	2026-09-29T05:21:30.0980858Z Updating files:  50% (3926/7852)
+test	UNKNOWN STEP	2026-09-29T05:21:30.1111751Z Updating files:  51% (4005/7852)
+test	UNKNOWN STEP	2026-09-29T05:21:30.1165180Z Updating files:  52% (4084/7852)
+test	UNKNOWN STEP	2026-09-29T05:21:30.1212233Z Updating files:  53% (4162/7852)
+test	UNKNOWN STEP	2026-09-29T05:21:30.1253798Z Updating files:  54% (4241/7852)
+test	UNKNOWN STEP	2026-09-29T05:21:30.1288467Z Updating files:  55% (4319/7852)
+test	UNKNOWN STEP	2026-09-29T05:21:30.1317593Z Updating files:  56% (4398/7852)
+test	UNKNOWN STEP	2026-09-29T05:21:30.1345805Z Updating files:  57% (4476/7852)
+test	UNKNOWN STEP	2026-09-29T05:21:30.1374018Z Updating files:  58% (4555/7852)
+test	UNKNOWN STEP	2026-09-29T05:21:30.1402668Z Updating files:  59% (4633/7852)
+test	UNKNOWN STEP	2026-09-29T05:21:30.1430261Z Updating files:  60% (4712/7852)
+test	UNKNOWN STEP	2026-09-29T05:21:30.1457228Z Updating files:  61% (4790/7852)
+test	UNKNOWN STEP	2026-09-29T05:21:30.1484381Z Updating files:  62% (4869/7852)
+test	UNKNOWN STEP	2026-09-29T05:21:30.1514849Z Updating files:  63% (4947/7852)
+test	UNKNOWN STEP	2026-09-29T05:21:30.1541360Z Updating files:  64% (5026/7852)
+test	UNKNOWN STEP	2026-09-29T05:21:30.1568458Z Updating files:  65% (5104/7852)
+test	UNKNOWN STEP	2026-09-29T05:21:30.1596805Z Updating files:  66% (5183/7852)
+test	UNKNOWN STEP	2026-09-29T05:21:30.1624772Z Updating files:  67% (5261/7852)
+test	UNKNOWN STEP	2026-09-29T05:21:30.1652278Z Updating files:  68% (5340/7852)
+test	UNKNOWN STEP	2026-09-29T05:21:30.1678748Z Updating files:  69% (5418/7852)
+test	UNKNOWN STEP	2026-09-29T05:21:30.1706537Z Updating files:  70% (5497/7852)
+test	UNKNOWN STEP	2026-09-29T05:21:30.1747792Z Updating files:  71% (5575/7852)
+test	UNKNOWN STEP	2026-09-29T05:21:30.1836463Z Updating files:  72% (5654/7852)
+test	UNKNOWN STEP	2026-09-29T05:21:30.1947057Z Updating files:  73% (5732/7852)
+test	UNKNOWN STEP	2026-09-29T05:21:30.2047532Z Updating files:  74% (5811/7852)
+test	UNKNOWN STEP	2026-09-29T05:21:30.2169498Z Updating files:  75% (5889/7852)
+test	UNKNOWN STEP	2026-09-29T05:21:30.2306342Z Updating files:  76% (5968/7852)
+test	UNKNOWN STEP	2026-09-29T05:21:30.2356748Z Updating files:  77% (6047/7852)
+test	UNKNOWN STEP	2026-09-29T05:21:30.2405174Z Updating files:  78% (6125/7852)
+test	UNKNOWN STEP	2026-09-29T05:21:30.2465036Z Updating files:  79% (6204/7852)
+test	UNKNOWN STEP	2026-09-29T05:21:30.2513817Z Updating files:  80% (6282/7852)
+test	UNKNOWN STEP	2026-09-29T05:21:30.2558956Z Updating files:  81% (6361/7852)
+test	UNKNOWN STEP	2026-09-29T05:21:30.2611129Z Updating files:  82% (6439/7852)
+test	UNKNOWN STEP	2026-09-29T05:21:30.2677725Z Updating files:  83% (6518/7852)
+test	UNKNOWN STEP	2026-09-29T05:21:30.3077281Z Updating files:  83% (6535/7852)
+test	UNKNOWN STEP	2026-09-29T05:21:30.3138104Z Updating files:  84% (6596/7852)
+test	UNKNOWN STEP	2026-09-29T05:21:30.3275678Z Updating files:  85% (6675/7852)
+test	UNKNOWN STEP	2026-09-29T05:21:30.3316777Z Updating files:  86% (6753/7852)
+test	UNKNOWN STEP	2026-09-29T05:21:30.3362539Z Updating files:  87% (6832/7852)
+test	UNKNOWN STEP	2026-09-29T05:21:30.3439103Z Updating files:  88% (6910/7852)
+test	UNKNOWN STEP	2026-09-29T05:21:30.3502134Z Updating files:  89% (6989/7852)
+test	UNKNOWN STEP	2026-09-29T05:21:30.3562022Z Updating files:  90% (7067/7852)
+test	UNKNOWN STEP	2026-09-29T05:21:30.3660683Z Updating files:  91% (7146/7852)
+test	UNKNOWN STEP	2026-09-29T05:21:30.3794024Z Updating files:  92% (7224/7852)
+test	UNKNOWN STEP	2026-09-29T05:21:30.3873405Z Updating files:  93% (7303/7852)
+test	UNKNOWN STEP	2026-09-29T05:21:30.3930229Z Updating files:  94% (7381/7852)
+test	UNKNOWN STEP	2026-09-29T05:21:30.3988708Z Updating files:  95% (7460/7852)
+test	UNKNOWN STEP	2026-09-29T05:21:30.4043414Z Updating files:  96% (7538/7852)
+test	UNKNOWN STEP	2026-09-29T05:21:30.4114045Z Updating files:  97% (7617/7852)
+test	UNKNOWN STEP	2026-09-29T05:21:30.4175303Z Updating files:  98% (7695/7852)
+test	UNKNOWN STEP	2026-09-29T05:21:30.4268021Z Updating files:  99% (7774/7852)
+test	UNKNOWN STEP	2026-09-29T05:21:30.4268958Z Updating files: 100% (7852/7852)
+test	UNKNOWN STEP	2026-09-29T05:21:30.4269567Z Updating files: 100% (7852/7852), done.
+test	UNKNOWN STEP	2026-09-29T05:21:30.5751419Z Note: switching to 'refs/remotes/pull/57/merge'.
+test	UNKNOWN STEP	2026-09-29T05:21:30.5752249Z 
+test	UNKNOWN STEP	2026-09-29T05:21:30.5752851Z You are in 'detached HEAD' state. You can look around, make experimental
+test	UNKNOWN STEP	2026-09-29T05:21:30.5754018Z changes and commit them, and you can discard any commits you make in this
+test	UNKNOWN STEP	2026-09-29T05:21:30.5754967Z state without impacting any branches by switching back to a branch.
+test	UNKNOWN STEP	2026-09-29T05:21:30.5755412Z 
+test	UNKNOWN STEP	2026-09-29T05:21:30.5755750Z If you want to create a new branch to retain commits you create, you may
+test	UNKNOWN STEP	2026-09-29T05:21:30.5756698Z do so (now or later) by using -c with the switch command. Example:
+test	UNKNOWN STEP	2026-09-29T05:21:30.5757371Z 
+test	UNKNOWN STEP	2026-09-29T05:21:30.5757626Z   git switch -c <new-branch-name>
+test	UNKNOWN STEP	2026-09-29T05:21:30.5758122Z 
+test	UNKNOWN STEP	2026-09-29T05:21:30.5758386Z Or undo this operation with:
+test	UNKNOWN STEP	2026-09-29T05:21:30.5758929Z 
+test	UNKNOWN STEP	2026-09-29T05:21:30.5759235Z   git switch -
+test	UNKNOWN STEP	2026-09-29T05:21:30.5759605Z 
+test	UNKNOWN STEP	2026-09-29T05:21:30.5760465Z Turn off this advice by setting config variable advice.detachedHead to false
+test	UNKNOWN STEP	2026-09-29T05:21:30.5761225Z 
+test	UNKNOWN STEP	2026-09-29T05:21:30.5762554Z HEAD is now at 0beb17b Merge e80ddab4f4f792a372c1410862b071f79aebdb64 into 915d7614026ac2b90be5b7bc91bc2bbe5201595d
+test	UNKNOWN STEP	2026-09-29T05:21:30.5848662Z ##[endgroup]
+test	UNKNOWN STEP	2026-09-29T05:21:30.5905786Z [command]/usr/bin/git log -1 --format=%H
+test	UNKNOWN STEP	2026-09-29T05:21:30.5935742Z 0beb17b5b48416d878e3651ccf5258c3bc8c0270
+test	UNKNOWN STEP	2026-09-29T05:21:30.6283431Z ##[group]Run astral-sh/setup-uv@v5
+test	UNKNOWN STEP	2026-09-29T05:21:30.6283734Z with:
+test	UNKNOWN STEP	2026-09-29T05:21:30.6283938Z   python-version: 3.13
+test	UNKNOWN STEP	2026-09-29T05:21:30.6284167Z   enable-cache: true
+test	UNKNOWN STEP	2026-09-29T05:21:30.6286691Z   github-token: ***
+test	UNKNOWN STEP	2026-09-29T05:21:30.6286989Z   cache-dependency-glob: **/uv.lock
+test	UNKNOWN STEP	**/requirements*.txt
+test	UNKNOWN STEP	
+test	UNKNOWN STEP	2026-09-29T05:21:30.6287332Z   prune-cache: true
+test	UNKNOWN STEP	2026-09-29T05:21:30.6287564Z   ignore-nothing-to-cache: false
+test	UNKNOWN STEP	2026-09-29T05:21:30.6287828Z   ignore-empty-workdir: false
+test	UNKNOWN STEP	2026-09-29T05:21:30.6288072Z ##[endgroup]
+test	UNKNOWN STEP	2026-09-29T05:21:30.8106375Z (node:2183) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+test	UNKNOWN STEP	2026-09-29T05:21:30.8107598Z (Use `node --trace-deprecation ...` to show where the warning was created)
+test	UNKNOWN STEP	2026-09-29T05:21:31.0315624Z Downloading uv from "https://github.com/astral-sh/uv/releases/download/0.12.20/uv-x86_64-unknown-linux-gnu.tar.gz" ...
+test	UNKNOWN STEP	2026-09-29T05:21:31.2413246Z [command]/usr/bin/tar xz --warning=no-unknown-keyword --overwrite -C /home/runner/work/_temp/a3505c8c-88e3-48da-93a4-82f855bf9ae8 -f /home/runner/work/_temp/fa4f75d0-560f-4c19-b0ec-dba374e5e2c8
+test	UNKNOWN STEP	2026-09-29T05:21:31.7761590Z Added /home/runner/.local/bin to the path
+test	UNKNOWN STEP	2026-09-29T05:21:31.7766217Z Added /opt/hostedtoolcache/uv/0.12.20/x86_64 to the path
+test	UNKNOWN STEP	2026-09-29T05:21:31.7768302Z Set UV_PYTHON to 3.13
+test	UNKNOWN STEP	2026-09-29T05:21:31.7770347Z Activating python venv...
+test	UNKNOWN STEP	2026-09-29T05:21:33.0427214Z Set UV_CACHE_DIR to /home/runner/work/_temp/setup-uv-cache
+test	UNKNOWN STEP	2026-09-29T05:21:33.0427923Z Successfully installed uv version 0.12.20
+test	UNKNOWN STEP	2026-09-29T05:21:33.0428690Z Searching files using cache dependency glob: **/uv.lock,**/requirements*.txt
+test	UNKNOWN STEP	2026-09-29T05:21:33.8766303Z /home/runner/work/cpswm/cpswm/uv.lock
+test	UNKNOWN STEP	2026-09-29T05:21:33.8808410Z Found 1 files to hash.
+test	UNKNOWN STEP	2026-09-29T05:21:33.8881770Z Trying to restore uv cache from GitHub Actions cache with key: setup-uv-1-x86_64-unknown-linux-gnu-3.13-2ca490cfdbd82a2b5d2f4d7f7811964d4521f9dcd1edf6869894dbadcfd6e844
+test	UNKNOWN STEP	2026-09-29T05:21:33.9360641Z No GitHub Actions cache found for key: setup-uv-1-x86_64-unknown-linux-gnu-3.13-2ca490cfdbd82a2b5d2f4d7f7811964d4521f9dcd1edf6869894dbadcfd6e844
+test	UNKNOWN STEP	2026-09-29T05:21:33.9528423Z ##[group]Run uv sync --extra dev
+test	UNKNOWN STEP	2026-09-29T05:21:33.9528776Z ^[[36;1muv sync --extra dev^[[0m
+test	UNKNOWN STEP	2026-09-29T05:21:33.9818982Z shell: /usr/bin/bash -e {0}
+test	UNKNOWN STEP	2026-09-29T05:21:33.9819347Z env:
+test	UNKNOWN STEP	2026-09-29T05:21:33.9819612Z   UV_PYTHON: 3.13
+test	UNKNOWN STEP	2026-09-29T05:21:33.9820236Z   VIRTUAL_ENV: /home/runner/work/cpswm/cpswm/.venv
+test	UNKNOWN STEP	2026-09-29T05:21:33.9820754Z   UV_CACHE_DIR: /home/runner/work/_temp/setup-uv-cache
+test	UNKNOWN STEP	2026-09-29T05:21:33.9821192Z ##[endgroup]
+test	UNKNOWN STEP	2026-09-29T05:21:34.1526624Z Resolved 214 packages in 1ms
+test	UNKNOWN STEP	2026-09-29T05:21:34.1668031Z    Building cpswm @ file:///home/runner/work/cpswm/cpswm
+test	UNKNOWN STEP	2026-09-29T05:21:34.2349422Z Downloading pillow (6.6MiB)
+test	UNKNOWN STEP	2026-09-29T05:21:34.2356479Z Downloading virtualenv (5.1MiB)
+test	UNKNOWN STEP	2026-09-29T05:21:34.2482634Z Downloading matplotlib (9.6MiB)
+test	UNKNOWN STEP	2026-09-29T05:21:34.2486301Z Downloading ruff (10.5MiB)
+test	UNKNOWN STEP	2026-09-29T05:21:34.2490524Z Downloading numpy (15.9MiB)
+test	UNKNOWN STEP	2026-09-29T05:21:34.2492386Z Downloading kiwisolver (1.4MiB)
+test	UNKNOWN STEP	2026-09-29T05:21:34.2493972Z Downloading scipy (33.6MiB)
+test	UNKNOWN STEP	2026-09-29T05:21:34.2495720Z Downloading pygments (1.2MiB)
+test	UNKNOWN STEP	2026-09-29T05:21:34.2498227Z Downloading ast-serialize (1.2MiB)
+test	UNKNOWN STEP	2026-09-29T05:21:34.2504697Z Downloading fonttools (4.7MiB)
+test	UNKNOWN STEP	2026-09-29T05:21:34.2506198Z Downloading hypothesis (1.1MiB)
+test	UNKNOWN STEP	2026-09-29T05:21:34.2508120Z Downloading cryptography (4.5MiB)
+test	UNKNOWN STEP	2026-09-29T05:21:34.2510442Z Downloading scikit-learn (8.7MiB)
+test	UNKNOWN STEP	2026-09-29T05:21:34.2512487Z Downloading mypy (14.5MiB)
+test	UNKNOWN STEP	2026-09-29T05:21:34.2514086Z Downloading pydantic-core (2.0MiB)
+test	UNKNOWN STEP	2026-09-29T05:21:34.2518115Z Downloading networkx (2.0MiB)
+test	UNKNOWN STEP	2026-09-29T05:21:34.4215262Z  Downloaded hypothesis
+test	UNKNOWN STEP	2026-09-29T05:21:34.4389789Z  Downloaded ast-serialize
+test	UNKNOWN STEP	2026-09-29T05:21:34.4548372Z  Downloaded kiwisolver
+test	UNKNOWN STEP	2026-09-29T05:21:34.4560780Z  Downloaded pygments
+test	UNKNOWN STEP	2026-09-29T05:21:34.4763510Z  Downloaded networkx
+test	UNKNOWN STEP	2026-09-29T05:21:34.4811422Z  Downloaded pydantic-core
+test	UNKNOWN STEP	2026-09-29T05:21:34.5891505Z  Downloaded cryptography
+test	UNKNOWN STEP	2026-09-29T05:21:34.6101987Z  Downloaded virtualenv
+test	UNKNOWN STEP	2026-09-29T05:21:34.6533531Z  Downloaded fonttools
+test	UNKNOWN STEP	2026-09-29T05:21:34.6682692Z  Downloaded pillow
+test	UNKNOWN STEP	2026-09-29T05:21:34.6747894Z    Building antlr4-python3-runtime==4.9.3
+test	UNKNOWN STEP	2026-09-29T05:21:34.7598063Z  Downloaded scikit-learn
+test	UNKNOWN STEP	2026-09-29T05:21:34.7621054Z  Downloaded ruff
+test	UNKNOWN STEP	2026-09-29T05:21:34.7691217Z  Downloaded matplotlib
+test	UNKNOWN STEP	2026-09-29T05:21:34.9626071Z  Downloaded numpy
+test	UNKNOWN STEP	2026-09-29T05:21:34.9967269Z  Downloaded mypy
+test	UNKNOWN STEP	2026-09-29T05:21:35.1284427Z  Downloaded scipy
+test	UNKNOWN STEP	2026-09-29T05:21:35.7321186Z       Built antlr4-python3-runtime==4.9.3
+test	UNKNOWN STEP	2026-09-29T05:21:35.8389210Z       Built cpswm @ file:///home/runner/work/cpswm/cpswm
+test	UNKNOWN STEP	2026-09-29T05:21:35.8399164Z Prepared 55 packages in 1.68s
+test	UNKNOWN STEP	2026-09-29T05:21:35.9247396Z Installed 55 packages in 84ms
+test	UNKNOWN STEP	2026-09-29T05:21:35.9248031Z  + annotated-types==0.8.0
+test	UNKNOWN STEP	2026-09-29T05:21:35.9248472Z  + antlr4-python3-runtime==4.9.3
+test	UNKNOWN STEP	2026-09-29T05:21:35.9248919Z  + ast-serialize==0.8.0
+test	UNKNOWN STEP	2026-09-29T05:21:35.9249283Z  + cffi==2.1.1
+test	UNKNOWN STEP	2026-09-29T05:21:35.9249605Z  + cfgv==3.5.0
+test	UNKNOWN STEP	2026-09-29T05:21:35.9249928Z  + contourpy==1.3.3
+test	UNKNOWN STEP	2026-09-29T05:21:35.9250519Z  + coverage==7.15.4
+test	UNKNOWN STEP	2026-09-29T05:21:35.9251114Z  + cpswm==0.1.0 (from file:///home/runner/work/cpswm/cpswm)
+test	UNKNOWN STEP	2026-09-29T05:21:35.9251825Z  + cryptography==47.0.0
+test	UNKNOWN STEP	2026-09-29T05:21:35.9252374Z  + cycler==0.12.1
+test	UNKNOWN STEP	2026-09-29T05:21:35.9252786Z  + distlib==0.4.3
+test	UNKNOWN STEP	2026-09-29T05:21:35.9253143Z  + execnet==2.1.2
+test	UNKNOWN STEP	2026-09-29T05:21:35.9253510Z  + filelock==3.32.3
+test	UNKNOWN STEP	2026-09-29T05:21:35.9253889Z  + fonttools==4.63.0
+test	UNKNOWN STEP	2026-09-29T05:21:35.9254274Z  + hydra-core==1.3.5
+test	UNKNOWN STEP	2026-09-29T05:21:35.9254903Z  + hypothesis==6.165.10
+test	UNKNOWN STEP	2026-09-29T05:21:35.9255449Z  + identify==2.6.19
+test	UNKNOWN STEP	2026-09-29T05:21:35.9255918Z  + iniconfig==2.3.0
+test	UNKNOWN STEP	2026-09-29T05:21:35.9256378Z  + joblib==1.5.3
+test	UNKNOWN STEP	2026-09-29T05:21:35.9256851Z  + kiwisolver==1.5.0
+test	UNKNOWN STEP	2026-09-29T05:21:35.9257625Z  + librt==0.15.0
+test	UNKNOWN STEP	2026-09-29T05:21:35.9258081Z  + matplotlib==3.11.1
+test	UNKNOWN STEP	2026-09-29T05:21:35.9258561Z  + mypy==2.3.1
+test	UNKNOWN STEP	2026-09-29T05:21:35.9259019Z  + mypy-extensions==1.1.0
+test	UNKNOWN STEP	2026-09-29T05:21:35.9259544Z  + narwhals==2.24.0
+test	UNKNOWN STEP	2026-09-29T05:21:35.9260211Z  + networkx==3.6.1
+test	UNKNOWN STEP	2026-09-29T05:21:35.9260963Z  + nodeenv==1.10.0
+test	UNKNOWN STEP	2026-09-29T05:21:35.9261421Z  + numpy==2.5.2
+test	UNKNOWN STEP	2026-09-29T05:21:35.9261860Z  + omegaconf==2.3.1
+test	UNKNOWN STEP	2026-09-29T05:21:35.9262307Z  + packaging==26.3
+test	UNKNOWN STEP	2026-09-29T05:21:35.9262777Z  + pathspec==1.1.1
+test	UNKNOWN STEP	2026-09-29T05:21:35.9263211Z  + pillow==12.3.0
+test	UNKNOWN STEP	2026-09-29T05:21:35.9263669Z  + platformdirs==4.11.3
+test	UNKNOWN STEP	2026-09-29T05:21:35.9264154Z  + pluggy==1.6.0
+test	UNKNOWN STEP	2026-09-29T05:21:35.9264814Z  + pre-commit==4.6.2
+test	UNKNOWN STEP	2026-09-29T05:21:35.9265211Z  + pycparser==3.0
+test	UNKNOWN STEP	2026-09-29T05:21:35.9265788Z  + pydantic==2.13.4
+test	UNKNOWN STEP	2026-09-29T05:21:35.9266280Z  + pydantic-core==2.46.4
+test	UNKNOWN STEP	2026-09-29T05:21:35.9266857Z  + pygments==2.20.0
+test	UNKNOWN STEP	2026-09-29T05:21:35.9267369Z  + pyparsing==3.3.2
+test	UNKNOWN STEP	2026-09-29T05:21:35.9268009Z  + pytest==9.1.1
+test	UNKNOWN STEP	2026-09-29T05:21:35.9268432Z  + pytest-cov==7.1.0
+test	UNKNOWN STEP	2026-09-29T05:21:35.9268807Z  + pytest-xdist==3.8.0
+test	UNKNOWN STEP	2026-09-29T05:21:35.9269220Z  + python-dateutil==2.9.0.post0
+test	UNKNOWN STEP	2026-09-29T05:21:35.9269701Z  + python-discovery==1.5.2
+test	UNKNOWN STEP	2026-09-29T05:21:35.9270304Z  + pyyaml==6.0.3
+test	UNKNOWN STEP	2026-09-29T05:21:35.9270694Z  + ruff==0.16.3
+test	UNKNOWN STEP	2026-09-29T05:21:35.9271081Z  + scikit-learn==1.9.0
+test	UNKNOWN STEP	2026-09-29T05:21:35.9271481Z  + scipy==1.18.0
+test	UNKNOWN STEP	2026-09-29T05:21:35.9271829Z  + six==1.17.0
+test	UNKNOWN STEP	2026-09-29T05:21:35.9272241Z  + sortedcontainers==2.4.0
+test	UNKNOWN STEP	2026-09-29T05:21:35.9272722Z  + threadpoolctl==3.6.0
+test	UNKNOWN STEP	2026-09-29T05:21:35.9273144Z  + typing-extensions==4.16.0
+test	UNKNOWN STEP	2026-09-29T05:21:35.9273572Z  + typing-inspection==0.4.4
+test	UNKNOWN STEP	2026-09-29T05:21:35.9273812Z  + virtualenv==21.7.4
+test	UNKNOWN STEP	2026-09-29T05:21:35.9542621Z ##[group]Run timeout 65m uv run --extra dev pytest -n auto --dist=loadscope --durations=25 --cov=src --cov-report=term-missing
+test	UNKNOWN STEP	2026-09-29T05:21:35.9543549Z ^[[36;1mtimeout 65m uv run --extra dev pytest -n auto --dist=loadscope --durations=25 --cov=src --cov-report=term-missing^[[0m
+test	UNKNOWN STEP	2026-09-29T05:21:35.9610495Z shell: /usr/bin/bash -e {0}
+test	UNKNOWN STEP	2026-09-29T05:21:35.9610762Z env:
+test	UNKNOWN STEP	2026-09-29T05:21:35.9610958Z   UV_PYTHON: 3.13
+test	UNKNOWN STEP	2026-09-29T05:21:35.9611226Z   VIRTUAL_ENV: /home/runner/work/cpswm/cpswm/.venv
+test	UNKNOWN STEP	2026-09-29T05:21:35.9611610Z   UV_CACHE_DIR: /home/runner/work/_temp/setup-uv-cache
+test	UNKNOWN STEP	2026-09-29T05:21:35.9611934Z ##[endgroup]
+test	UNKNOWN STEP	2026-09-29T05:22:14.2371405Z bringing up nodes...
+test	UNKNOWN STEP	2026-09-29T05:22:14.2372192Z bringing up nodes...
+test	UNKNOWN STEP	2026-09-29T05:22:14.2400540Z 
+test	UNKNOWN STEP	2026-09-29T05:22:14.5348164Z ........................................................................ [  1%]
+test	UNKNOWN STEP	2026-09-29T05:22:14.7446772Z ........................................................................ [  2%]
+test	UNKNOWN STEP	2026-09-29T05:22:14.9562745Z ........................................................................ [  3%]
+test	UNKNOWN STEP	2026-09-29T05:22:15.2011085Z ........................................................................ [  5%]
+test	UNKNOWN STEP	2026-09-29T05:22:15.4821219Z ........................................................................ [  6%]
+test	UNKNOWN STEP	2026-09-29T05:22:15.7879416Z ........................................................................ [  7%]
+test	UNKNOWN STEP	2026-09-29T05:22:16.0891291Z ........................................................................ [  9%]
+test	UNKNOWN STEP	2026-09-29T05:22:16.4026966Z ........................................................................ [ 10%]
+test	UNKNOWN STEP	2026-09-29T05:22:16.7171284Z ........................................................................ [ 11%]
+test	UNKNOWN STEP	2026-09-29T05:22:17.0209215Z ........................................................................ [ 13%]
+test	UNKNOWN STEP	2026-09-29T05:22:17.6411178Z ........................................................................ [ 14%]
+test	UNKNOWN STEP	2026-09-29T05:22:28.0771274Z ........................................................................ [ 15%]
+test	UNKNOWN STEP	2026-09-29T05:22:59.5142422Z ........................................................................ [ 17%]
+test	UNKNOWN STEP	2026-09-29T05:23:35.9981800Z ........................................F.F............................. [ 18%]
+test	UNKNOWN STEP	2026-09-29T05:23:47.1891267Z ........................................................................ [ 19%]
+test	UNKNOWN STEP	2026-09-29T05:24:29.5231234Z ........................................................................ [ 21%]
+test	UNKNOWN STEP	2026-09-29T05:24:52.8481336Z ........................................................................ [ 22%]
+test	UNKNOWN STEP	2026-09-29T05:25:00.1078875Z ........................................................................ [ 23%]
+test	UNKNOWN STEP	2026-09-29T05:26:23.1281214Z ..........................FFF.F.FFFFFFFFFFFFFFFFF....................FF. [ 25%]
+test	UNKNOWN STEP	2026-09-29T05:28:02.6141201Z ....F................................................................... [ 26%]
+test	UNKNOWN STEP	2026-09-29T05:28:08.2155294Z ............................................x........................... [ 27%]
+test	UNKNOWN STEP	2026-09-29T05:29:40.8321144Z ............................................................F........... [ 29%]
+test	UNKNOWN STEP	2026-09-29T05:34:18.3598375Z .................................F...................................... [ 30%]
+test	UNKNOWN STEP	2026-09-29T05:35:10.2781129Z ........................................................................ [ 31%]
+test	UNKNOWN STEP	2026-09-29T05:35:20.2591123Z ........................................................................ [ 33%]
+test	UNKNOWN STEP	2026-09-29T05:35:39.2091168Z ........................................................................ [ 34%]
+test	UNKNOWN STEP	2026-09-29T05:36:59.6156919Z ........................................................................ [ 35%]
+test	UNKNOWN STEP	2026-09-29T05:38:08.8693753Z ....................................FF.FF.FFFF..FF.F..FFF.FFF.FFF.F...FF [ 37%]
+test	UNKNOWN STEP	2026-09-29T05:38:26.1321087Z ........................................................................ [ 38%]
+test	UNKNOWN STEP	2026-09-29T05:38:28.1892869Z ........................................................................ [ 39%]
+test	UNKNOWN STEP	2026-09-29T05:39:46.8574631Z ........................................................................ [ 41%]
+test	UNKNOWN STEP	2026-09-29T05:40:57.9061075Z ........................................................................ [ 42%]
+test	UNKNOWN STEP	2026-09-29T05:41:02.2814861Z ........................................................................ [ 43%]
+test	UNKNOWN STEP	2026-09-29T05:42:04.3893891Z ........................................................................ [ 45%]
+test	UNKNOWN STEP	2026-09-29T05:43:07.9981107Z ........................................................................ [ 46%]
+test	UNKNOWN STEP	2026-09-29T05:45:14.3231030Z ........................................................................ [ 47%]
+test	UNKNOWN STEP	2026-09-29T05:51:46.1189746Z ........................................................................ [ 49%]
+test	UNKNOWN STEP	2026-09-29T05:52:11.9309790Z ..................FFFFFF.FFFFF...........FF............................. [ 50%]
+test	UNKNOWN STEP	2026-09-29T05:52:31.7411005Z ........................................................................ [ 51%]
+test	UNKNOWN STEP	2026-09-29T05:52:32.5231207Z ........................................................................ [ 53%]
+test	UNKNOWN STEP	2026-09-29T05:52:41.0001504Z ..............FFFFFFFFFFFFF..F.......................................... [ 54%]
+test	UNKNOWN STEP	2026-09-29T05:53:00.1042146Z ........................................................................ [ 55%]
+test	UNKNOWN STEP	2026-09-29T05:53:01.8071629Z ........................................................................ [ 57%]
+test	UNKNOWN STEP	2026-09-29T05:54:06.4011225Z ........................................................................ [ 58%]
+test	UNKNOWN STEP	2026-09-29T05:55:49.5381102Z ........................................................................ [ 59%]
+test	UNKNOWN STEP	2026-09-29T05:58:14.9083878Z ........................................................................ [ 61%]
+test	UNKNOWN STEP	2026-09-29T05:59:03.6831302Z ......FFFFFFFFFFFFFFF................................................... [ 62%]
+test	UNKNOWN STEP	2026-09-29T06:01:43.0031112Z ........................................................................ [ 63%]
+test	UNKNOWN STEP	2026-09-29T06:01:44.2668106Z ........................................................................ [ 65%]
+test	UNKNOWN STEP	2026-09-29T06:05:01.5658884Z ........................................................................ [ 66%]
+test	UNKNOWN STEP	2026-09-29T06:06:09.3344212Z ........................................................................ [ 67%]
+test	UNKNOWN STEP	2026-09-29T06:06:19.9942252Z ........................................................................ [ 69%]
+test	UNKNOWN STEP	2026-09-29T06:09:40.5151012Z ...........F............................................................ [ 70%]
+test	UNKNOWN STEP	2026-09-29T06:09:55.0106449Z ...........................................................FFF.......FF. [ 71%]
+test	UNKNOWN STEP	2026-09-29T06:11:34.8619882Z .FF..............FF...FFF.FFF....FF..................................... [ 73%]
+test	UNKNOWN STEP	2026-09-29T06:13:01.1462549Z .....................................................FFF..FF.FFFF....... [ 74%]
+test	UNKNOWN STEP	2026-09-29T06:16:26.4620964Z .............F.......................................................... [ 75%]
+test	UNKNOWN STEP	2026-09-29T06:17:21.8731271Z .........................F.............................................. [ 77%]
+test	UNKNOWN STEP	2026-09-29T06:17:41.3091080Z ........................................................................ [ 78%]
+test	UNKNOWN STEP	2026-09-29T06:20:36.3981361Z ......................................................FFFFFFFFFFFF...... [ 79%]
+test	UNKNOWN STEP	2026-09-29T06:21:15.0031132Z ....s................................................................... [ 81%]
+test	UNKNOWN STEP	2026-09-29T06:24:53.9354525Z ..........................ssssssssss........................FFFFFFFFFFF. [ 82%]
+test	UNKNOWN STEP	2026-09-29T06:25:38.0961103Z ........................................................................ [ 83%]
+test	UNKNOWN STEP	2026-09-29T06:25:58.9551147Z ..................................................................F.FF.. [ 85%]
+test	UNKNOWN STEP	2026-09-29T06:26:35.9802180Z ............
+test	UNKNOWN STEP	2026-09-29T06:26:36.0039211Z ##[error]Process completed with exit code 124.
+test	UNKNOWN STEP	2026-09-29T06:26:36.0187112Z Post job cleanup.
+test	UNKNOWN STEP	2026-09-29T06:26:36.1138275Z [command]/usr/bin/git version
+test	UNKNOWN STEP	2026-09-29T06:26:36.1181617Z git version 2.55.0
+test	UNKNOWN STEP	2026-09-29T06:26:36.1222442Z Temporarily overriding HOME='/home/runner/work/_temp/08bb3e46-8eaa-4f94-ab2d-445ccb18622a' before making global git config changes
+test	UNKNOWN STEP	2026-09-29T06:26:36.1224133Z Adding repository directory to the temporary git global config as a safe directory
+test	UNKNOWN STEP	2026-09-29T06:26:36.1228023Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/cpswm/cpswm
+test	UNKNOWN STEP	2026-09-29T06:26:36.1268437Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+test	UNKNOWN STEP	2026-09-29T06:26:36.1312321Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+test	UNKNOWN STEP	2026-09-29T06:26:36.1621535Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+test	UNKNOWN STEP	2026-09-29T06:26:36.1622565Z http.https://github.com/.extraheader
+test	UNKNOWN STEP	2026-09-29T06:26:36.1642958Z [command]/usr/bin/git config --local --unset-all http.https://github.com/.extraheader
+test	UNKNOWN STEP	2026-09-29T06:26:36.1681366Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+test	UNKNOWN STEP	2026-09-29T06:26:36.2043376Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+test	UNKNOWN STEP	2026-09-29T06:26:36.2102178Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+test	UNKNOWN STEP	2026-09-29T06:26:36.2590846Z Cleaning up orphan processes
+test	UNKNOWN STEP	2026-09-29T06:26:36.3064660Z ##[warning]Node.js 20 is deprecated. The following actions target Node.js 20 but are being forced to run on Node.js 24: actions/checkout@v4, astral-sh/setup-uv@v5. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/

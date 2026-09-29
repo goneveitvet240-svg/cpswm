@@ -6,7 +6,7 @@
 
 [完整报告](../reviews/pc_a/visual_support_2026-09-30/REPORT.md)、[复现](../reviews/pc_a/visual_support_2026-09-30/REPRODUCE.md)、[下一实现单元](../reviews/pc_a/visual_support_2026-09-30/NEXT_STEP.md)。原件173文件143,006,032字节，压缩14,843,221字节并逐文件读回核验；持久位置output/visual-support-20260930。SDK27/Unity166文件前后不变；同机复用环境，不是B独立验收。完整CI、旧神经归档绝对路径跨机定位和自然长期闭环仍未关闭。
 
-交付前fetch核验集成19ddf26830348a2f0b33f0af54d6ba702c5cfb1c、父分支1d3538794b8b86d66414255f8d37f64d8ff0d88e、B fd4ca6ef5e81c90d7cf7987b42c0b2810d8a810a未变。下一主项仍是自然实例/位置候选密度与测量模型；新增RGB-D及相机自身位姿权限已提出具体选择，未收到答复前维持纯RGB，不自行新增先验/指标或收窄框架。以下为历史时点。
+交付前fetch核验集成19ddf26830348a2f0b33f0af54d6ba702c5cfb1c、父分支1d3538794b8b86d66414255f8d37f64d8ff0d88e、B fd4ca6ef5e81c90d7cf7987b42c0b2810d8a810a未变。下一主项仍是自然实例/位置候选密度与测量模型；新增RGB-D及相机自身位姿权限已提出具体选择，未收到答复前维持纯RGB，不自行新增先验/指标或收窄框架。已推送并通过[草稿PR62](https://github.com/goneveitvet240-svg/cpswm/pull/62)叠加PR61交接，未合并。以下为历史时点。
 
 # A：公共视觉候选同历史接线开工（2026-09-30）
 

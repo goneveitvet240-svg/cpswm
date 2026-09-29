@@ -30,3 +30,5 @@ SDK27个Python文件、Unity166个文件运行前后摘要不变。两次启动�
 原件173文件、143,006,032字节，压缩14,843,221字节，逐文件读回核验通过；包SHA256 `269809057607b8ee5e255df5cb6a86f7550ce1d4ce1e966160816407ad877a9c`。见[清单](evidence/inventory.json)、[原件包](evidence/visual-support.tar.gz)、[复现说明](REPRODUCE.md)。持久本机位置output/visual-support-20260930。开发阶段出现的摘要序列化/测试接口/类型错误均修正并单列，不混入冻结通过计数；冻结后的实际失败试次以commands.json为准。
 
 下一主项仍为自然实例/位置候选密度、观测模型与自然纠正。现有ProposalPixelObservation可承接帧，但其IoU关联不能直接授权相机转动后的世界身份；仅增加提议q训练也不会改变精确枚举目标密度。详见[下一实现单元](NEXT_STEP.md)。新增RGB-D与相机自身位姿的开发观测权限已向用户提出具体选择，尚未收到答复时维持现有纯RGB权限；物体真值只做评价。完整H/R/I/C/Z/r/V、三RB blocks、七算子和已批准澄清/原分类对照均保留。
+
+本轮已推送并通过[草稿PR62](https://github.com/goneveitvet240-svg/cpswm/pull/62)交接，未合并。

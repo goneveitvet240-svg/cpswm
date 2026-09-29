@@ -22,7 +22,10 @@ from cpswm.world_model.habits_transitions.joint_cause_bocpd import JointCauseSna
 
 
 def _entropy(probabilities: list[float]) -> float:
-    return -sum(value * log2(value) for value in probabilities if value > 0.0)
+    value = -sum(p * log2(p) for p in probabilities if p > 0.0)
+    # A normalized cause marginal can be 1 + one ULP after summation. Preserve
+    # rejection of materially invalid inputs; only remove negative roundoff.
+    return 0.0 if -1e-12 < value < 0.0 else value
 
 
 class InformationGainPlanner:

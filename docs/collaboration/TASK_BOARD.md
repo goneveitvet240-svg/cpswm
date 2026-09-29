@@ -6,7 +6,7 @@
 
 完整原件326文件289,262,814字节，压缩31,019,073字节并逐文件读回验证；监督索引保留11观测/5份不同RGB/1房屋来源组，不当独立holdout。见[报告](../reviews/pc_a/visual_history_2026-09-29/REPORT.md)、[双审](../reviews/pc_a/visual_history_2026-09-29/REVIEWS.md)、[复现](../reviews/pc_a/visual_history_2026-09-29/REPRODUCE.md)、[下一实现单元](../reviews/pc_a/visual_history_2026-09-29/NEXT_STEP.md)。本机原件output/visual-history-20260929。旧神经归档绝对路径跨机定位、B独立/统一验收及既有全量CI仍未关闭；完整框架、原任务对照和已批准澄清任务保持。下一主项为公共自然观测支持的实例/位置候选密度及校准，不能用任意降未决或私有标签入策略造成功。
 
-交付前fetch核验集成19ddf26830348a2f0b33f0af54d6ba702c5cfb1c、父分支00cc5a47cad988b453d5839b63fd7c6a89f4246d、B fd4ca6ef5e81c90d7cf7987b42c0b2810d8a810a未变。当前正在以草稿PR推送交接，不合并；以下为历史时点。
+交付前fetch核验集成19ddf26830348a2f0b33f0af54d6ba702c5cfb1c、父分支00cc5a47cad988b453d5839b63fd7c6a89f4246d、B fd4ca6ef5e81c90d7cf7987b42c0b2810d8a810a未变。已推送并通过[草稿PR61](https://github.com/goneveitvet240-svg/cpswm/pull/61)叠加父分支交接，未合并；以下为历史时点。
 
 # A：同历史视觉证据接线开工（2026-09-29）
 

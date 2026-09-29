@@ -68,7 +68,9 @@ def load(path):
     return StateCodec().loads(path.read_text())
 
 
-def decoder_for(weights, task):
+def decoder_for(weights, task, detector_kind="ssdlite"):
+    if task not in ("classification", "clarification"):
+        raise ValueError("explicit development task required")
     probe = BackboneWiringProbe.build(seed=171)
     meta = probe.observed_days()[0].after.metadata
     scope = dict(household_id=meta.household_id, session_id=meta.session_id, trace_id=meta.trace_id)
@@ -76,6 +78,7 @@ def decoder_for(weights, task):
         weights_path=weights,
         category="apple",
         sources=CLARIFICATION_SOURCES if task == "clarification" else SOURCES,
+        detector_kind=detector_kind,
         **scope,
     ), scope
 
@@ -296,12 +299,12 @@ def verify_revision_chain(output, *, final_stream, checkpoint, decoder, builder,
             store.close()
 
 
-def run(output, *, sdk_python, binary, weights, checkpoint, site, task):
+def run(output, *, sdk_python, binary, weights, checkpoint, site, task, detector_kind="ssdlite"):
     if task not in ("classification", "clarification"):
         raise ValueError("explicit development task required")
     output.mkdir(parents=True, exist_ok=False)
     source, files = source_identity()
-    decoder, scope = decoder_for(weights, task)
+    decoder, scope = decoder_for(weights, task, detector_kind)
     joint = open_joint(checkpoint)
     probe, backend, stream, store, builder = build(
         output / "state.sqlite",
@@ -316,6 +319,8 @@ def run(output, *, sdk_python, binary, weights, checkpoint, site, task):
         dict(
             scope=SCOPE,
             task=task,
+            detector_kind=detector_kind,
+            private_instance_evaluation=True,
             site=site,
             source=source,
             source_files=files,
@@ -343,7 +348,7 @@ def run(output, *, sdk_python, binary, weights, checkpoint, site, task):
         write(output / "semantic-ingest.json", ingest(probe, backend, stream, produce_joint=True))
         executor = UnityObservationExecutor(
             python=sdk_python,
-            worker=ROOT / "tools/unity_history_loop_worker.py",
+            worker=ROOT / "tools/unity_visual_history_worker.py",
             binary=binary,
             house=house,
             log_dir=output / "unity-logs",
@@ -391,7 +396,7 @@ def run(output, *, sdk_python, binary, weights, checkpoint, site, task):
             source_identity=source,
             dependency_identity=content_sha256(sys.version),
         )
-        decoder, _ = decoder_for(weights, task)
+        decoder, _ = decoder_for(weights, task, detector_kind)
         joint = open_joint(checkpoint)
         stream = ContinuousEvidenceInput.resume(
             store,
@@ -415,6 +420,7 @@ def run(output, *, sdk_python, binary, weights, checkpoint, site, task):
                 break
         save(output / "post-actions.json", tuple(steps))
         save(output / "final-view.json", stream.current_joint_decision_view())
+        save(output / "camera-updates.json", stream.joint_observation_updates())
         save(output / "owned-history.json", stream.observation_history())
         write(output / "final-memory.json", summary(stream))
         first = steps[0]
@@ -467,7 +473,23 @@ def verify(output, *, weights, checkpoint):
     ):
         raise ValueError("history manifest/source incomplete or changed")
     task = manifest["task"]
-    decoder, _ = decoder_for(weights, task)
+    if (
+        manifest["site"] not in ("north", "south")
+        or manifest["image_size"] != 320
+        or manifest["pre_correction_actions"] != 1
+        or manifest["post_correction_budget"] != 2
+        or manifest["private_instance_evaluation"] is not True
+        or manifest["semantic_and_correction_input"] != "CONTROLLED_EXISTING_FIXTURE_NOT_NATURAL"
+    ):
+        raise ValueError("history declared configuration differs")
+    decoder, _ = decoder_for(weights, task, manifest["detector_kind"])
+    original = (
+        ROOT / "docs/reviews/pc_a/proposal_scheduler_2026-09-13/procthor_run_07/train_house.json"
+    )
+    if json.loads((output / "evaluator_house.json").read_text()) != diagnostic_house(
+        json.loads(original.read_text()), manifest["site"]
+    ):
+        raise ValueError("history declared scene differs")
     joint = open_joint(checkpoint)
     if (
         decoder.binding_sha256 != manifest["decoder_binding"]
@@ -505,6 +527,8 @@ def verify(output, *, weights, checkpoint):
         history = stream.observation_history()
         if history != load(output / "owned-history.json"):
             raise ValueError("history action chain differs")
+        if stream.joint_observation_updates() != load(output / "camera-updates.json"):
+            raise ValueError("history camera update consequences differ")
         verify_revision_chain(
             output,
             final_stream=stream,
@@ -607,6 +631,7 @@ if __name__ == "__main__":
     p.add_argument("--mode", choices=("run", "verify"), required=True)
     p.add_argument("--site", choices=("north", "south"), default="north")
     p.add_argument("--task", choices=("classification", "clarification"), required=True)
+    p.add_argument("--detector-kind", choices=("ssdlite", "fasterrcnn"), default="ssdlite")
     for name in ("output", "sdk-python", "binary", "weights", "checkpoint"):
         p.add_argument("--" + name, type=Path, required=True)
     a = p.parse_args()
@@ -622,6 +647,7 @@ if __name__ == "__main__":
                     checkpoint=a.checkpoint,
                     site=a.site,
                     task=a.task,
+                    detector_kind=a.detector_kind,
                 )
             )
         )

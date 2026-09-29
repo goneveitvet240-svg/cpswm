@@ -1,3 +1,7 @@
+# A：按内容定位神经checkpoint开工（2026-09-30）
+
+分支codex/pc-a-portable-checkpoints-20260930，base/当前源码589b825e2bc232ce7d24213745ed4908f06ad18d（PR64交付头）。[计划](../reviews/pc_a/portable_checkpoints_2026-09-30/PLAN.md)固定新证明格式和可信本地模型配置，目录搬移不改变模型/概率证据；旧原件不改。先复现故障，再冻结双审与真实历史复算；不是跨平台验收。证据output/portable-checkpoints-20260930。离线监督科学权限选择仍待用户答复，依赖它的训练/校准未启动；B独立/全仓CI/自然闭环仍未关闭。以下为历史时点。
+
 # A：RGB-D 进入原生神经提议交付（2026-09-30）
 
 分支 codex/pc-a-owned-visual-neural-20260930，base c1ae096f55c6487285a83a4aff5e08f743054df5。实际方法/采集源码30d57a0ba7df824ab7fb6fc955e5deacb404f256；新增显式视觉条件输入，由拥有者登记来源、消费者重建网络输入，恢复/行动前再从公共原件复推。默认语义/RGB/分类/澄清及完整框架保持。

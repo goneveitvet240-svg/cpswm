@@ -85,9 +85,7 @@ def _reseal_statistic(
     updates = {
         "locations": original.locations if locations is None else locations,
         "alpha": original.alpha if alpha is None else alpha,
-        "evidence_cluster_ids": (
-            original.evidence_cluster_ids if clusters is None else clusters
-        ),
+        "evidence_cluster_ids": (original.evidence_cluster_ids if clusters is None else clusters),
     }
     if bypass_duplicate_constructor:
         statistic = deepcopy(original)
@@ -187,9 +185,7 @@ def test_legal_zero_increment_second_generation_still_appends_cluster() -> None:
 def test_legal_location_alpha_pair_reordering_preserves_the_marginal() -> None:
     core = old._legacy_history(1).system.core
     arguments = candidates(core)
-    original = arguments["statistics"][
-        arguments["receipts"][0].proposal.proposed_state.particle_id
-    ]
+    original = arguments["statistics"][arguments["receipts"][0].proposal.proposed_state.particle_id]
     paired = tuple(zip(original.locations, original.alpha, strict=True))
     _reseal_statistic(
         arguments,
@@ -351,9 +347,7 @@ def test_public_support_rebinding_fails_closed_on_every_surface(
 def test_fully_resealed_false_cluster_lineage_is_rejected_and_retryable(fault: str) -> None:
     _, core, good = _second_generation()
     bad = deepcopy(good)
-    statistic = bad["statistics"][
-        bad["receipts"][0].proposal.proposed_state.particle_id
-    ]
+    statistic = bad["statistics"][bad["receipts"][0].proposal.proposed_state.particle_id]
     lineage = statistic.evidence_cluster_ids
     assert len(lineage) == 2 and lineage[0] != lineage[1]
     attacked = {
@@ -371,10 +365,7 @@ def test_fully_resealed_false_cluster_lineage_is_rejected_and_retryable(fault: s
 
     # The attack is not a stale reference: the attacker recomputed the full
     # conditional-statistic digest and resealed the public particle state.
-    assert (
-        bad["receipts"][0].proposal.proposed_state.statistic_state_ref
-        == resealed.reference
-    )
+    assert bad["receipts"][0].proposal.proposed_state.statistic_state_ref == resealed.reference
     _reject_without_effect_then_retry(
         core,
         bad,
@@ -441,9 +432,7 @@ def _closure_attack(arguments, fault: str) -> None:
         ("mixed_cluster", r"cluster"),
     ],
 )
-def test_receipt_statistic_input_closure_attacks_are_atomic(
-    fault: str, match: str
-) -> None:
+def test_receipt_statistic_input_closure_attacks_are_atomic(fault: str, match: str) -> None:
     core = old._legacy_history(1).system.core
     good = candidates(core)
     bad = deepcopy(good)
@@ -456,9 +445,7 @@ def test_caller_alias_mutation_before_acceptance_is_revalidated_atomically() -> 
     core = old._legacy_history(1).system.core
     good = candidates(core)
     bad = deepcopy(good)
-    particle_ids = tuple(
-        receipt.proposal.proposed_state.particle_id for receipt in bad["receipts"]
-    )
+    particle_ids = tuple(receipt.proposal.proposed_state.particle_id for receipt in bad["receipts"])
     shared = bad["statistics"][particle_ids[0]]
     bad["statistics"][particle_ids[1]] = shared
     object.__setattr__(shared, "alpha", (9.0, 1.0, 1.0, 1.0))

@@ -107,6 +107,24 @@ def action_key(command):
     return None if command is None else [command.action, command.degrees]
 
 
+def action_transition(before, after):
+    """Report a decision change without inventing a replaced physical action."""
+    old, new = action_key(before), action_key(after)
+    if old is None:
+        kind = "no_action" if new is None else "action_started"
+    elif new is None:
+        kind = "action_stopped"
+    else:
+        kind = "action_unchanged" if old == new else "action_replaced"
+    return dict(
+        old_pending_action=old,
+        new_action=new,
+        action_transition_kind=kind,
+        decision_changed_at_same_physical_history=old != new,
+        action_changed_at_same_physical_history=kind == "action_replaced",
+    )
+
+
 def next_time(stream):
     return max(
         datetime.now(UTC),
@@ -292,10 +310,7 @@ def verify_revision_chain(output, *, final_stream, checkpoint, decoder, builder,
                 replay_ledger_unchanged=ledger
                 == native_content_sha256(stream._system.core._hybrid_loop.ledger.export_state()),
                 old_pending_cancelled=pending is not None and pending.action_id in cancelled,
-                old_pending_action=action_key(pending),
-                new_action=action_key(first.collection.command),
-                action_changed_at_same_physical_history=action_key(pending)
-                != action_key(first.collection.command),
+                **action_transition(pending, first.collection.command),
                 memory_changed=before["semantic_sha256"] != after["semantic_sha256"],
                 memory_argmax_changed=before["argmax"] != after["argmax"],
                 source_unchanged=True,
@@ -469,10 +484,7 @@ def run(
             == first.ledger_after_replay_sha256,
             old_pending_cancelled=pending is not None
             and pending.action_id in first.cancelled_command_ids,
-            old_pending_action=action_key(pending),
-            new_action=action_key(first.collection.command),
-            action_changed_at_same_physical_history=action_key(pending)
-            != action_key(first.collection.command),
+            **action_transition(pending, first.collection.command),
             memory_changed=before_memory["semantic_sha256"] != summary(stream)["semantic_sha256"],
             memory_argmax_changed=before_memory["argmax"] != summary(stream)["argmax"],
             source_unchanged=source_identity()[0] == source,

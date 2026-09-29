@@ -234,6 +234,30 @@ class NativeParticleWorkspace:
         self.invalidated_revisions: set[UUID] = set()
         self.joint_dependency_binding: str | None = None
         self.neural_source_sha256: str | None = None
+        self._visual_authority: Any = None
+        self.visual_sources: dict[str, Any] = {}
+
+    def bind_visual_owner(self, authority: Any) -> None:
+        from cpswm.system.native_visual_source import NativeVisualAuthority
+
+        if type(authority) is not NativeVisualAuthority:
+            raise ValueError("invalid visual owner authority")
+        if self._visual_authority is not None and self._visual_authority != authority:
+            raise ValueError("native visual owner cannot be rebound")
+        self._visual_authority = authority
+
+    def register_visual_source(self, source: Any, *, authority: Any) -> None:
+        from cpswm.system.native_visual_source import NativeVisualAuthority, NativeVisualSource
+
+        if (
+            type(authority) is not NativeVisualAuthority
+            or authority != self._visual_authority
+            or type(source) is not NativeVisualSource
+            or source.runtime_id != self.runtime_id
+        ):
+            raise ValueError("native visual source registration is not owner-authorized")
+        source.pixels()
+        self.visual_sources[source.content_sha256] = source
 
     def state_payload(self) -> dict[str, Any]:
         self._validate_persisted_state()
@@ -254,6 +278,7 @@ class NativeParticleWorkspace:
                     "invalidated_revisions": tuple(sorted(self.invalidated_revisions, key=str)),
                     "joint_dependency_binding": self.joint_dependency_binding,
                     "neural_source_sha256": self.neural_source_sha256,
+                    "visual_sources": self.visual_sources,
                     "input_status": "explicit_prepared_inputs_not_calibrated",
                 }
             ),
@@ -263,6 +288,10 @@ class NativeParticleWorkspace:
         self,
     ) -> tuple[dict[UUID, NativePreparedInputBody], dict[UUID, NativeParticleRecord]]:
         self.validate_world_support(self.registered_locations)
+        for key, source in self.visual_sources.items():
+            if key != source.content_sha256 or source.runtime_id != self.runtime_id:
+                raise ValueError("native visual source catalogue changed")
+            source.pixels()
         if set(self.input_journal) != set(self.input_bodies):
             raise ValueError("prepared input journal and bodies do not have the same closure")
         bodies = {cluster: self._validated_input_body(cluster) for cluster in self.input_journal}
@@ -440,6 +469,9 @@ class NativeParticleWorkspace:
             raise ValueError("native neural verifier source differs from configured implementation")
         for name in (
             "cpswm.system.native_neural_production",
+            "cpswm.system.native_visual_source",
+            "cpswm.system.owned_visual_support",
+            "cpswm.data_preflight.proposal_perception",
             "cpswm.data_preflight.proposal_inference_session",
             "cpswm.data_preflight.proposal_decoder",
             "cpswm.data_preflight.proposal_trainer",

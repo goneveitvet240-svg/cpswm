@@ -88,9 +88,14 @@ def decoder_for(weights, task, detector_kind="ssdlite"):
     ), scope
 
 
-def open_joint(checkpoint):
+def open_joint(checkpoint, *, visual_context=False):
     pin = hashlib.sha256((checkpoint / "manifest.json").read_bytes()).hexdigest()
-    return NeuralNativeProducer(OpenWorldJointFixture(), checkpoint, manifest_sha256=pin)
+    return NeuralNativeProducer(
+        OpenWorldJointFixture(),
+        checkpoint,
+        manifest_sha256=pin,
+        use_owned_visual_context=visual_context,
+    )
 
 
 def backup(store, path):
@@ -168,7 +173,7 @@ def verify_revision_chain(output, *, final_stream, checkpoint, decoder, builder,
             source_identity=manifest["source_store"],
             dependency_identity=manifest["dependency_store"],
         )
-        joint = open_joint(checkpoint)
+        joint = open_joint(checkpoint, visual_context=manifest.get("visual_context", False))
         try:
             stream = ContinuousEvidenceInput.resume(
                 store,
@@ -225,7 +230,7 @@ def verify_revision_chain(output, *, final_stream, checkpoint, decoder, builder,
                 source_identity=manifest["source_store"],
                 dependency_identity=manifest["dependency_store"],
             )
-            joint = open_joint(checkpoint)
+            joint = open_joint(checkpoint, visual_context=manifest.get("visual_context", False))
             stream = ContinuousEvidenceInput.resume(
                 store,
                 producer=OracleProducer(),
@@ -316,6 +321,7 @@ def run(
     task,
     detector_kind="ssdlite",
     sensor_profile="rgb",
+    visual_context=False,
 ):
     if task not in ("classification", "clarification"):
         raise ValueError("explicit development task required")
@@ -324,7 +330,7 @@ def run(
     output.mkdir(parents=True, exist_ok=False)
     source, files = source_identity()
     decoder, scope = decoder_for(weights, task, detector_kind)
-    joint = open_joint(checkpoint)
+    joint = open_joint(checkpoint, visual_context=visual_context)
     probe, backend, stream, store, builder = build(
         output / "state.sqlite",
         seed=171,
@@ -340,6 +346,7 @@ def run(
             task=task,
             detector_kind=detector_kind,
             sensor_profile=sensor_profile,
+            visual_context=visual_context,
             private_instance_evaluation=True,
             site=site,
             source=source,
@@ -419,7 +426,7 @@ def run(
             dependency_identity=content_sha256(sys.version),
         )
         decoder, _ = decoder_for(weights, task, detector_kind)
-        joint = open_joint(checkpoint)
+        joint = open_joint(checkpoint, visual_context=visual_context)
         stream = ContinuousEvidenceInput.resume(
             store,
             producer=OracleProducer(),
@@ -516,7 +523,7 @@ def verify(output, *, weights, checkpoint):
         json.loads(original.read_text()), manifest["site"]
     ):
         raise ValueError("history declared scene differs")
-    joint = open_joint(checkpoint)
+    joint = open_joint(checkpoint, visual_context=manifest.get("visual_context", False))
     if (
         decoder.binding_sha256 != manifest["decoder_binding"]
         or joint.binding_sha256 != manifest["joint_binding"]
@@ -528,7 +535,9 @@ def verify(output, *, weights, checkpoint):
             Path(folder) / "context.sqlite",
             seed=171,
             source=manifest["source"],
-            joint_producer=open_joint(checkpoint),
+            joint_producer=open_joint(
+                checkpoint, visual_context=manifest.get("visual_context", False)
+            ),
             observation_decoder=decoder,
         )
         temporary.close()
@@ -679,6 +688,7 @@ if __name__ == "__main__":
     p.add_argument("--mode", choices=("run", "verify"), required=True)
     p.add_argument("--site", choices=("north", "south"), default="north")
     p.add_argument("--task", choices=("classification", "clarification"), required=True)
+    p.add_argument("--visual-context", action="store_true")
     p.add_argument("--sensor-profile", choices=("rgb", PROFILE), default="rgb")
     p.add_argument("--detector-kind", choices=("ssdlite", "fasterrcnn"), default="ssdlite")
     for name in ("output", "sdk-python", "binary", "weights", "checkpoint"):
@@ -698,6 +708,7 @@ if __name__ == "__main__":
                     task=a.task,
                     detector_kind=a.detector_kind,
                     sensor_profile=a.sensor_profile,
+                    visual_context=a.visual_context,
                 )
             )
         )

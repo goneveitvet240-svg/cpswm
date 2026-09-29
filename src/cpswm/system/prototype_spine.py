@@ -150,6 +150,8 @@ _PARTICLE_WORKSPACE_BOUND_METHOD_NAMES: Final = (
     "location_marginal",
     "invalidate_revisions",
     "publish_posterior",
+    "bind_visual_owner",
+    "register_visual_source",
     "state_payload",
     "validate_world_support",
     "_validate_persisted_state",

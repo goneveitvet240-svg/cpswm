@@ -23,6 +23,7 @@ from uuid import UUID
 
 from cpswm.data_preflight.proposal_decoder import DecodedProposal
 from cpswm.data_preflight.proposal_inference_session import ProposalInferenceSession, source_digest
+from cpswm.data_preflight.proposal_perception import pixel_hypothesis_bindings
 from cpswm.data_preflight.proposal_samples import (
     Arrival,
     EventNode,
@@ -121,7 +122,7 @@ def _hypothesis(
 def proposal_view(
     context: NativeJointContext, base: ProducedJointCandidates
 ) -> tuple[ProposalContext, tuple[ProposalTarget, ...]]:
-    """Build the scorer's label-free semantic view from actual native inputs."""
+    """Build the label-free semantic and optional owned-visual input view."""
     source = context.source
     source.validate_content()
     if (
@@ -135,8 +136,8 @@ def proposal_view(
     transition = source.transition
     op, detection = transition.opportunity, transition.after
     # Publication only consumes semantic records already accepted by the core.
-    # Cutoff is conservative native-record availability, not a camera arrival
-    # timestamp. This bridge does not claim RGB perception or precise latency.
+    # Semantic availability is conservative. Optional visual records retain
+    # their actual capture/arrival times and their owner-issued source proof.
     if any(t > context.cutoff for t in (op.opportunity_time, detection.detection_time)):
         raise ValueError("native neural source exceeds current cutoff")
     visible = VisibleRecords(
@@ -147,6 +148,7 @@ def proposal_view(
             Arrival(record_id=detection.metadata.record_id, received_at=context.cutoff),
         ),
         cutoff=context.cutoff,
+        pixel_observations=() if context.visual_source is None else context.visual_source.pixels(),
     )
     weights = (
         {}
@@ -212,6 +214,9 @@ def proposal_view(
         )
         for loc in source.locations
     )
+    bindings = pixel_hypothesis_bindings(visible.pixel_observations, context.cutoff)
+    instance_support.update(b.key for b in bindings if b.kind == "instance")
+    actors.update(b.key for b in bindings if b.kind == "actor")
     view = ProposalContext(
         source_snapshot_id=source.snapshot_id,
         visible=visible,
@@ -219,6 +224,7 @@ def proposal_view(
         revisions=revisions,
         instance_support=tuple(sorted(instance_support)),
         actor_support=tuple(sorted(actors)),
+        pixel_identity_bindings=bindings,
         location_support=(
             *locations,
             LocationBinding(location_key="unknown_location", origin="unknown"),
@@ -247,6 +253,7 @@ class NativeNeuralEvidence:
     support: tuple[ProposalTarget, ...]
     base_candidates: ProducedJointCandidates
     scored: tuple[DecodedProposal, ...]
+    visual_source_sha256: str | None = None
 
     @property
     def model_version(self) -> str:
@@ -306,6 +313,7 @@ def verify_neural_evidence(evidence: NativeNeuralEvidence) -> None:
             evidence.candidate_implementation_sha256,
             evidence.manifest_sha256,
             evidence.inference_binding_sha256,
+            *(("owned-visual-context@1",) if evidence.visual_source_sha256 is not None else ()),
         )
     ):
         raise ValueError("native neural artifact differs from its configured producer binding")
@@ -399,6 +407,16 @@ def validate_neural_input_body(body: Any, workspace: Any, *, current: bool = Fal
             )
         else:
             previous_batch = None
+    visual = None
+    if evidence.visual_source_sha256 is not None:
+        visual = workspace.visual_sources.get(evidence.visual_source_sha256)
+        if (
+            visual is None
+            or visual.content_sha256 != evidence.visual_source_sha256
+            or visual.runtime_id != workspace.runtime_id
+            or visual.cutoff != evidence.cutoff
+        ):
+            raise ValueError("neural visual source is not owned by this runtime")
     native_context = NativeJointContext(
         source,
         previous_batch,
@@ -406,6 +424,7 @@ def validate_neural_input_body(body: Any, workspace: Any, *, current: bool = Fal
         body.ledger_head_sha256,
         (),
         evidence.cutoff,
+        visual,
     )
     context, support = proposal_view(native_context, base)
     if context != evidence.context or support != evidence.support:
@@ -424,8 +443,16 @@ class NeuralNativeProducer:
     """
 
     def __init__(
-        self, candidate_model: NativeJointProducer, checkpoint: Path, *, manifest_sha256: str
+        self,
+        candidate_model: NativeJointProducer,
+        checkpoint: Path,
+        *,
+        manifest_sha256: str,
+        use_owned_visual_context: bool = False,
     ) -> None:
+        if type(use_owned_visual_context) is not bool:
+            raise ValueError("visual conditioning must be an explicit boolean")
+        self.use_owned_visual_context = use_owned_visual_context
         self._candidate_model = candidate_model
         binding = producer_binding(candidate_model)
         implementation = producer_implementation_binding(candidate_model)
@@ -457,6 +484,7 @@ class NeuralNativeProducer:
                 self._candidate_implementation,
                 self._manifest_sha256,
                 self._session.binding_sha256,
+                *(("owned-visual-context@1",) if self.use_owned_visual_context else ()),
             )
         )
 
@@ -498,9 +526,10 @@ class NeuralNativeProducer:
             base = deepcopy(self._candidate_model.produce(deepcopy(context)))
             if base.dependency_sha256 != self._candidate_binding:
                 raise ValueError("native candidate model returned a different binding")
-            # The network consumes semantic records, not raw RGB. Retain the
-            # original acquisition-context digest, but do not duplicate image
-            # payloads into every persistent model proof and its ancestor tree.
+            if (context.visual_source is not None) != self.use_owned_visual_context:
+                raise ValueError("native neural visual source profile differs")
+            # Owned candidates and geometry enter the model; raw pixel payloads
+            # remain in the acquisition journal, avoiding recursive duplication.
             model_context = replace(
                 context, visible_prefix=(), records=canonical_records(context.records)
             )
@@ -520,6 +549,7 @@ class NeuralNativeProducer:
                 support,
                 model_base,
                 scored,
+                None if context.visual_source is None else context.visual_source.content_sha256,
             )
             result = replace(
                 base,

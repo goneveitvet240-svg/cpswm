@@ -21,6 +21,7 @@ from cpswm.perception_mapping.interaction_evidence import (
 )
 from cpswm.perception_mapping.natural_hands import HandFrame
 from cpswm.perception_mapping.natural_vision import VisualFrame
+from cpswm.perception_mapping.unity_rgbd import RGBDSurfaceSupport
 
 
 class PixelCandidate(ContractModel):
@@ -186,6 +187,7 @@ class ProposalPixelObservation(ContractModel):
     negative_observation_authorized: Literal[False]
     resize_roundoff_clamps: int = Field(ge=0)
     hand_observation: ProposalHandObservation | None = None
+    surface_geometry: RGBDSurfaceSupport | None = None
     archive_sequence_id: str | None = None
     archive_media_time: float | None = Field(default=None, ge=0, allow_inf_nan=False)
 
@@ -205,6 +207,45 @@ class ProposalPixelObservation(ContractModel):
                 raise ValueError("pixel box outside source frame")
         if self.hand_observation is not None:
             self.hand_observation.validate_visual(self.visual_frame())
+        g = self.surface_geometry
+        if g is not None:
+            if (
+                g.observation_ids[0] != self.observation_id
+                or g.payload_sha256[0] != self.input_sha256
+                or g.capture_receipt_sha256 != self.receipt_sha256
+                or (g.camera.width, g.camera.height) != (self.width, self.height)
+                or g.camera.capture_time != self.capture_time
+                or g.camera.rgb_sha256 != self.input_sha256
+                or g.identity_association is not None
+                or g.likelihood_model is not None
+                or g.memory_write_authorized is not False
+                or g.status != "UNCALIBRATED_BOX_SURFACES_WITH_IDEAL_CAMERA_SELF_POSE"
+                or tuple((c.detection_candidate_id, c.category, c.box_xyxy) for c in g.candidates)
+                != tuple((c.candidate_id, c.category, c.box_xyxy) for c in self.candidates)
+                or any(
+                    c.object_instance_id is not None
+                    or c.object_centre_m is not None
+                    or c.orientation is not None
+                    or c.probability is not None
+                    for c in g.candidates
+                )
+            ):
+                raise ValueError("proposal surface geometry differs from its visual frame")
+            for c in g.candidates:
+                if not 0 <= c.valid_depth_pixel_count <= c.box_pixel_count:
+                    raise ValueError("invalid proposal surface pixel counts")
+                for sample in c.samples:
+                    u, v = sample.pixel_uv
+                    if (
+                        not 0 <= sample.depth_rank_fraction <= 1
+                        or not 0 <= u < self.width
+                        or not 0 <= v < self.height
+                        or not c.box_xyxy[0] <= u + 0.5 < c.box_xyxy[2]
+                        or not c.box_xyxy[1] <= v + 0.5 < c.box_xyxy[3]
+                        or sample.nominal_world_xyz_m
+                        != g.camera.world_point(u, v, sample.rendered_depth_m)
+                    ):
+                        raise ValueError("invalid proposal surface sample")
         return self
 
     @classmethod
@@ -212,10 +253,13 @@ class ProposalPixelObservation(ContractModel):
         cls,
         frame: VisualFrame,
         hands: HandFrame | None = None,
+        *,
+        geometry: RGBDSurfaceSupport | None = None,
     ) -> ProposalPixelObservation:
         return cls.model_validate(
             {
                 **asdict(frame),
+                "surface_geometry": geometry,
                 "hand_observation": None
                 if hands is None
                 else ProposalHandObservation.from_frame(hands),
@@ -225,7 +269,7 @@ class ProposalPixelObservation(ContractModel):
     def visual_frame(self) -> VisualFrame:
         from cpswm.perception_mapping.natural_vision import DetectionCandidate
 
-        data = self.model_dump(exclude={"hand_observation"})
+        data = self.model_dump(exclude={"hand_observation", "surface_geometry"})
         data["candidates"] = tuple(DetectionCandidate(**v) for v in data["candidates"])
         return VisualFrame(**data)
 
@@ -250,4 +294,29 @@ class ProposalPixelObservation(ContractModel):
 
         if self.hand_observation is not None:
             payload["hands"] = self.hand_observation.model_input()
+        if self.surface_geometry is not None:
+            g = self.surface_geometry
+            # No asset/scene IDs, private instance labels, provenance hashes or
+            # authority tokens enter the network. Surfaces are not object centres.
+            payload["box_surface_geometry"] = {
+                "status": g.status,
+                "camera": g.camera.model_dump(
+                    mode="json",
+                    include={
+                        "width",
+                        "height",
+                        "vertical_fov_degrees",
+                        "position_m",
+                        "yaw_degrees",
+                        "pitch_degrees",
+                        "near_plane_m",
+                        "far_plane_m",
+                        "depth_semantics",
+                        "depth_unit",
+                        "world_frame",
+                        "localization",
+                    },
+                ),
+                "candidates": [asdict(c) for c in g.candidates],
+            }
         return payload

@@ -37,6 +37,7 @@ from cpswm.system.native_joint_production import (
     producer_binding,
     producer_implementation_binding,
 )
+from cpswm.system.native_visual_source import NativeVisualAuthority, NativeVisualSource
 from cpswm.system.owned_visual_support import (
     OwnedVisualSupport,
     VisualMeasurementDecoder,
@@ -278,6 +279,16 @@ class ContinuousEvidenceInput:
 
         self._observation_decoder = observation_decoder
         self._observation_decoder_binding = decoder_binding(observation_decoder)
+        self._visual_authority = NativeVisualAuthority.create()
+        self._joint_uses_visual_context = bool(
+            getattr(joint_producer, "use_owned_visual_context", False)
+        )
+        if self._joint_uses_visual_context:
+            if observation_decoder is None or not callable(
+                getattr(observation_decoder, "measurements", None)
+            ):
+                raise ValueError("owned visual neural input requires a visual decoder")
+            self._system.core._particle_workspace.bind_visual_owner(self._visual_authority)
         self._last_cutoff: datetime | None = None
         self._raw: dict[UUID, RawModalityObservation] = {}
         self._received: dict[UUID, datetime] = {}
@@ -759,6 +770,7 @@ class ContinuousEvidenceInput:
             != self._joint_published_source_sha256
         ):
             raise ValueError("joint posterior source changed; production required")
+        self._verify_native_visual_sources()
         # Use the existing native consumer validation before exposing whole atoms.
         core.prepared_particle_location_marginal()
         batch = core._particle_workspace.batch
@@ -811,6 +823,8 @@ class ContinuousEvidenceInput:
             self._enter()
             producer = self._joint_producer
             previous = None
+            previous_visual_sources = None
+            published = False
             try:
                 if not self._joint_binding_matches(producer):
                     raise ValueError("joint producer dependency changed")
@@ -838,6 +852,7 @@ class ContinuousEvidenceInput:
                         return
                 if self._last_cutoff is None:
                     raise ValueError("joint production requires an advanced semantic source")
+                previous_visual_sources = dict(workspace.visual_sources)
                 context = deepcopy(
                     NativeJointContext(
                         source=source,
@@ -846,6 +861,7 @@ class ContinuousEvidenceInput:
                         ledger_head_sha256=core._hybrid_loop.ledger.export_state().manifest.head_hash,
                         visible_prefix=self.visible_prefix(cutoff=self._last_cutoff),
                         cutoff=self._last_cutoff,
+                        visual_source=self._native_visual_source(self._last_cutoff),
                     )
                 )
                 context_hash = context.content_sha256
@@ -877,10 +893,13 @@ class ContinuousEvidenceInput:
                     unresolved_log_weight=produced.unresolved_log_weight,
                     neural_evidence=produced.neural_evidence,
                 )
+                published = True
                 self._joint_published_batch_sha256 = native_content_sha256(workspace.batch)
                 self._joint_published_source_sha256 = source.body_sha256
                 self._persist()
             except BaseException:
+                if previous_visual_sources is not None and not published:
+                    self._system.core._particle_workspace.visual_sources = previous_visual_sources
                 if producer is not None and previous is not None and not self._durability_failed:
                     try:
                         producer.restore_state(previous)
@@ -951,6 +970,7 @@ class ContinuousEvidenceInput:
                             ledger_head_sha256=core._hybrid_loop.ledger.export_state().manifest.head_hash,
                             visible_prefix=self.visible_prefix(cutoff=cutoff),
                             cutoff=cutoff,
+                            visual_source=self._native_visual_source(cutoff),
                         )
                     )
                     expected = context.content_sha256
@@ -1231,6 +1251,65 @@ class ContinuousEvidenceInput:
                 )
             )
 
+    def _reconstruct_native_visual_source(
+        self, cutoff: datetime, runtime_id: UUID | None = None
+    ) -> NativeVisualSource:
+        self._check_observation_decoder()
+        assert self._observation_decoder is not None
+        assert self._observation_decoder_binding is not None
+        # Exclude pending commands and future deliveries: a frozen proof must
+        # survive later dispatch, cancellation, correction and new observations.
+        keys = {
+            k
+            for k, d in self._observation_status.items()
+            if type(d) is ObservationDelivery and d.received_at <= cutoff
+        }
+        support = reconstruct_visual_support(
+            commands={k: v for k, v in self._observation_commands.items() if k in keys},
+            statuses={k: v for k, v in self._observation_status.items() if k in keys},
+            native_origins={k: v for k, v in self._observation_native_origins.items() if k in keys},
+            raw=self._raw,
+            scope=self._scope,
+            decoder=cast(VisualMeasurementDecoder, self._observation_decoder),
+            expected_binding=self._observation_decoder_binding,
+        )
+        return NativeVisualSource(
+            self._system.core._particle_workspace.runtime_id if runtime_id is None else runtime_id,
+            self._scope,
+            cutoff,
+            support,
+        )
+
+    def _native_visual_source(self, cutoff: datetime) -> NativeVisualSource | None:
+        if not self._joint_uses_visual_context:
+            return None
+        source = self._reconstruct_native_visual_source(cutoff)
+        workspace = self._system.core._particle_workspace
+        workspace.bind_visual_owner(self._visual_authority)
+        workspace.register_visual_source(source, authority=self._visual_authority)
+        return source
+
+    def _verify_native_visual_sources(self) -> None:
+        if not self._joint_uses_visual_context:
+            return
+        core = self._system.core
+        workspaces = (
+            core._particle_workspace,
+            *(g.old_workspace for g in core._particle_replay_generations),
+        )
+        fresh: dict[tuple[UUID, datetime], Any] = {}
+        for workspace in workspaces:
+            if workspace._visual_authority != self._visual_authority:
+                raise ValueError("restored native visual owner differs")
+            for key, source in workspace.visual_sources.items():
+                lookup = (workspace.runtime_id, source.cutoff)
+                if lookup not in fresh:
+                    fresh[lookup] = self._reconstruct_native_visual_source(
+                        source.cutoff, workspace.runtime_id
+                    )
+                if key != source.content_sha256 or source != fresh[lookup]:
+                    raise ValueError("fresh owned visual neural source differs")
+
     def visual_observation_support(
         self, *, expected: OwnedVisualSupport | None = None
     ) -> OwnedVisualSupport:
@@ -1389,6 +1468,10 @@ class ContinuousEvidenceInput:
                 or producer_implementation_binding(joint_producer) != expected_implementation
             ):
                 raise ValueError("restored joint producer dependency changed")
+        if restored._joint_uses_visual_context != bool(
+            getattr(joint_producer, "use_owned_visual_context", False)
+        ):
+            raise ValueError("restored visual neural profile differs")
         restored._joint_producer = joint_producer
         restored._joint_dependency_binding = expected_joint
         restored._joint_published_batch_sha256 = getattr(
@@ -1404,4 +1487,5 @@ class ContinuousEvidenceInput:
         restored._busy = False
         restored._durability_failed = False
         restored._checkpoint_suspended = False
+        restored._verify_native_visual_sources()
         return restored

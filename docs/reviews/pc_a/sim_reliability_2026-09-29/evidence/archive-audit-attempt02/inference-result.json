@@ -1,0 +1,2708 @@
+{
+  "scope": "LOCAL_ARCHIVED_RECORD_AND_MEASUREMENT_AUDIT_NOT_EXTERNAL_ATTESTATION",
+  "mode": "inference",
+  "auditor_sha256": "a3ac76a34ca73d1dd5ceaee9c6ceb62722e77a9800f9332e010c332e045a290b",
+  "historical_code": "b0a2abaeb945ab60f8fd6697ec10595db92a8596",
+  "inventory": {
+    "verified_files": 2072,
+    "bytes": 1188985260
+  },
+  "grids": [
+    {
+      "image_size": 320,
+      "frames": 66,
+      "fresh_detector_readouts": 132,
+      "groups": {
+        "ssdlite:north:1.05": {
+          "frames": 11,
+          "visible_frames": 5,
+          "visible_with_candidate": 0,
+          "visible_with_overlapping_candidate": 0,
+          "no_target_pixels_frames": 6,
+          "candidate_without_target_pixels": 0
+        },
+        "fasterrcnn:north:1.05": {
+          "frames": 11,
+          "visible_frames": 5,
+          "visible_with_candidate": 4,
+          "visible_with_overlapping_candidate": 4,
+          "no_target_pixels_frames": 6,
+          "candidate_without_target_pixels": 1
+        },
+        "ssdlite:north:1.25": {
+          "frames": 11,
+          "visible_frames": 5,
+          "visible_with_candidate": 0,
+          "visible_with_overlapping_candidate": 0,
+          "no_target_pixels_frames": 6,
+          "candidate_without_target_pixels": 0
+        },
+        "fasterrcnn:north:1.25": {
+          "frames": 11,
+          "visible_frames": 5,
+          "visible_with_candidate": 5,
+          "visible_with_overlapping_candidate": 5,
+          "no_target_pixels_frames": 6,
+          "candidate_without_target_pixels": 0
+        },
+        "ssdlite:north:1.45": {
+          "frames": 11,
+          "visible_frames": 5,
+          "visible_with_candidate": 0,
+          "visible_with_overlapping_candidate": 0,
+          "no_target_pixels_frames": 6,
+          "candidate_without_target_pixels": 0
+        },
+        "fasterrcnn:north:1.45": {
+          "frames": 11,
+          "visible_frames": 5,
+          "visible_with_candidate": 4,
+          "visible_with_overlapping_candidate": 4,
+          "no_target_pixels_frames": 6,
+          "candidate_without_target_pixels": 0
+        },
+        "ssdlite:south:1.05": {
+          "frames": 11,
+          "visible_frames": 5,
+          "visible_with_candidate": 0,
+          "visible_with_overlapping_candidate": 0,
+          "no_target_pixels_frames": 6,
+          "candidate_without_target_pixels": 0
+        },
+        "fasterrcnn:south:1.05": {
+          "frames": 11,
+          "visible_frames": 5,
+          "visible_with_candidate": 2,
+          "visible_with_overlapping_candidate": 1,
+          "no_target_pixels_frames": 6,
+          "candidate_without_target_pixels": 0
+        },
+        "ssdlite:south:1.25": {
+          "frames": 11,
+          "visible_frames": 5,
+          "visible_with_candidate": 0,
+          "visible_with_overlapping_candidate": 0,
+          "no_target_pixels_frames": 6,
+          "candidate_without_target_pixels": 0
+        },
+        "fasterrcnn:south:1.25": {
+          "frames": 11,
+          "visible_frames": 5,
+          "visible_with_candidate": 2,
+          "visible_with_overlapping_candidate": 2,
+          "no_target_pixels_frames": 6,
+          "candidate_without_target_pixels": 0
+        },
+        "ssdlite:south:1.45": {
+          "frames": 11,
+          "visible_frames": 5,
+          "visible_with_candidate": 0,
+          "visible_with_overlapping_candidate": 0,
+          "no_target_pixels_frames": 6,
+          "candidate_without_target_pixels": 0
+        },
+        "fasterrcnn:south:1.45": {
+          "frames": 11,
+          "visible_frames": 5,
+          "visible_with_candidate": 0,
+          "visible_with_overlapping_candidate": 0,
+          "no_target_pixels_frames": 6,
+          "candidate_without_target_pixels": 0
+        }
+      },
+      "raw_rows": [
+        {
+          "cell": "north-1.05",
+          "index": 0,
+          "heading": 195,
+          "target_pixels": 0,
+          "rgb_sha256": "4aa2a11b72236867b94b060cbaee35f7f0fa84c1336d40b09627459600594432",
+          "frontends": {
+            "ssdlite": {
+              "scores": [],
+              "bbox_ious": []
+            },
+            "fasterrcnn": {
+              "scores": [],
+              "bbox_ious": []
+            }
+          }
+        },
+        {
+          "cell": "north-1.05",
+          "index": 1,
+          "heading": 210,
+          "target_pixels": 0,
+          "rgb_sha256": "3368f06fe40f624226e295c09a707f630b8ed0b551addb473488c08397627628",
+          "frontends": {
+            "ssdlite": {
+              "scores": [],
+              "bbox_ious": []
+            },
+            "fasterrcnn": {
+              "scores": [],
+              "bbox_ious": []
+            }
+          }
+        },
+        {
+          "cell": "north-1.05",
+          "index": 2,
+          "heading": 225,
+          "target_pixels": 0,
+          "rgb_sha256": "e95bb8c177502f3297812a33e3cc83acf340bd6cc7a0c8c87fb6e83f1b7db0ab",
+          "frontends": {
+            "ssdlite": {
+              "scores": [],
+              "bbox_ious": []
+            },
+            "fasterrcnn": {
+              "scores": [
+                0.5639617443084717
+              ],
+              "bbox_ious": [
+                0.0
+              ]
+            }
+          }
+        },
+        {
+          "cell": "north-1.05",
+          "index": 3,
+          "heading": 240,
+          "target_pixels": 0,
+          "rgb_sha256": "a694e5f41a3a41fb41e5669e4cc8806acadd5a7432b592fa4c29df9709705233",
+          "frontends": {
+            "ssdlite": {
+              "scores": [],
+              "bbox_ious": []
+            },
+            "fasterrcnn": {
+              "scores": [],
+              "bbox_ious": []
+            }
+          }
+        },
+        {
+          "cell": "north-1.05",
+          "index": 4,
+          "heading": 255,
+          "target_pixels": 0,
+          "rgb_sha256": "3a5d62f895ebc6568454127eba12141640f3718acde737d9b9508f807e367762",
+          "frontends": {
+            "ssdlite": {
+              "scores": [],
+              "bbox_ious": []
+            },
+            "fasterrcnn": {
+              "scores": [],
+              "bbox_ious": []
+            }
+          }
+        },
+        {
+          "cell": "north-1.05",
+          "index": 5,
+          "heading": 270,
+          "target_pixels": 0,
+          "rgb_sha256": "74b95644c7f287ca2d44e9af856136dc4a83302044ce963cd3ddb6f7fef10f0a",
+          "frontends": {
+            "ssdlite": {
+              "scores": [],
+              "bbox_ious": []
+            },
+            "fasterrcnn": {
+              "scores": [],
+              "bbox_ious": []
+            }
+          }
+        },
+        {
+          "cell": "north-1.05",
+          "index": 6,
+          "heading": 285,
+          "target_pixels": 683,
+          "rgb_sha256": "76de586133e757bf8cda876ba7ecd563c9fcfa327bbe7d85a0406abd70aa7256",
+          "frontends": {
+            "ssdlite": {
+              "scores": [],
+              "bbox_ious": []
+            },
+            "fasterrcnn": {
+              "scores": [],
+              "bbox_ious": []
+            }
+          }
+        },
+        {
+          "cell": "north-1.05",
+          "index": 7,
+          "heading": 300,
+          "target_pixels": 804,
+          "rgb_sha256": "919e54c4692968067e2c1a92dcceb3800e3aa18df1568dfb00fc54cf354987c4",
+          "frontends": {
+            "ssdlite": {
+              "scores": [],
+              "bbox_ious": []
+            },
+            "fasterrcnn": {
+              "scores": [
+                0.9498546123504639
+              ],
+              "bbox_ious": [
+                0.9439488193482988
+              ]
+            }
+          }
+        },
+        {
+          "cell": "north-1.05",
+          "index": 8,
+          "heading": 315,
+          "target_pixels": 698,
+          "rgb_sha256": "c2fa9b2c216186797e770bc1d9b60c2af9d26756afa51e8e3ace4f06139d8d7b",
+          "frontends": {
+            "ssdlite": {
+              "scores": [],
+              "bbox_ious": []
+            },
+            "fasterrcnn": {
+              "scores": [
+                0.9643641114234924
+              ],
+              "bbox_ious": [
+                0.9416226952638779
+              ]
+            }
+          }
+        },
+        {
+          "cell": "north-1.05",
+          "index": 9,
+          "heading": 330,
+          "target_pixels": 705,
+          "rgb_sha256": "16fb263ada615fa92f8a63722b689ee90f9a541be92bb9b9019012df3e068600",
+          "frontends": {
+            "ssdlite": {
+              "scores": [],
+              "bbox_ious": []
+            },
+            "fasterrcnn": {
+              "scores": [
+                0.9458559155464172
+              ],
+              "bbox_ious": [
+                0.9401148550033565
+              ]
+            }
+          }
+        },
+        {
+          "cell": "north-1.05",
+          "index": 10,
+          "heading": 345,
+          "target_pixels": 829,
+          "rgb_sha256": "877c35fa33035524b02bf08db8dfbc37edd5d489306f808e684e50de29cdae24",
+          "frontends": {
+            "ssdlite": {
+              "scores": [],
+              "bbox_ious": []
+            },
+            "fasterrcnn": {
+              "scores": [
+                0.906934380531311
+              ],
+              "bbox_ious": [
+                0.9767595920491191
+              ]
+            }
+          }
+        },
+        {
+          "cell": "north-1.25",
+          "index": 0,
+          "heading": 195,
+          "target_pixels": 0,
+          "rgb_sha256": "0dac2773d92d078dc08c359146ba666b9faf9bd0b6cbdf09900c0244f83428c5",
+          "frontends": {
+            "ssdlite": {
+              "scores": [],
+              "bbox_ious": []
+            },
+            "fasterrcnn": {
+              "scores": [],
+              "bbox_ious": []
+            }
+          }
+        },
+        {
+          "cell": "north-1.25",
+          "index": 1,
+          "heading": 210,
+          "target_pixels": 0,
+          "rgb_sha256": "2e990a59261b354e7bcf01b8e48bd55fc3a5ba674b1441d137b1000bd77d29e8",
+          "frontends": {
+            "ssdlite": {
+              "scores": [],
+              "bbox_ious": []
+            },
+            "fasterrcnn": {
+              "scores": [],
+              "bbox_ious": []
+            }
+          }
+        },
+        {
+          "cell": "north-1.25",
+          "index": 2,
+          "heading": 225,
+          "target_pixels": 0,
+          "rgb_sha256": "58d7bcb3826247d70cc7762d3ec726c25c87b34d8d528f992e3963fc0f2dfed5",
+          "frontends": {
+            "ssdlite": {
+              "scores": [],
+              "bbox_ious": []
+            },
+            "fasterrcnn": {
+              "scores": [],
+              "bbox_ious": []
+            }
+          }
+        },
+        {
+          "cell": "north-1.25",
+          "index": 3,
+          "heading": 240,
+          "target_pixels": 0,
+          "rgb_sha256": "6f8f83f9d86906a101a741ea16fb8d4104d879cee7e339006dc82171c9c02dd7",
+          "frontends": {
+            "ssdlite": {
+              "scores": [],
+              "bbox_ious": []
+            },
+            "fasterrcnn": {
+              "scores": [],
+              "bbox_ious": []
+            }
+          }
+        },
+        {
+          "cell": "north-1.25",
+          "index": 4,
+          "heading": 255,
+          "target_pixels": 0,
+          "rgb_sha256": "161ba7346a2324585c5f2ed30c5991834c533f939294de09f9b975db313f118b",
+          "frontends": {
+            "ssdlite": {
+              "scores": [],
+              "bbox_ious": []
+            },
+            "fasterrcnn": {
+              "scores": [],
+              "bbox_ious": []
+            }
+          }
+        },
+        {
+          "cell": "north-1.25",
+          "index": 5,
+          "heading": 270,
+          "target_pixels": 0,
+          "rgb_sha256": "f764c9edad9ac7dbd6c0f2c7575b57bca3877c45089d2d1bb0be2eb16f42c2d0",
+          "frontends": {
+            "ssdlite": {
+              "scores": [],
+              "bbox_ious": []
+            },
+            "fasterrcnn": {
+              "scores": [],
+              "bbox_ious": []
+            }
+          }
+        },
+        {
+          "cell": "north-1.25",
+          "index": 6,
+          "heading": 285,
+          "target_pixels": 708,
+          "rgb_sha256": "94c73e380572938a98a40a19e03939037e23f17685d2b98b2ecf7205fe679f09",
+          "frontends": {
+            "ssdlite": {
+              "scores": [],
+              "bbox_ious": []
+            },
+            "fasterrcnn": {
+              "scores": [
+                0.5443447232246399
+              ],
+              "bbox_ious": [
+                0.936845874987035
+              ]
+            }
+          }
+        },
+        {
+          "cell": "north-1.25",
+          "index": 7,
+          "heading": 300,
+          "target_pixels": 580,
+          "rgb_sha256": "b00626432454245d199d44144032051289041d85701bdd7958eac98a3fd1a8a1",
+          "frontends": {
+            "ssdlite": {
+              "scores": [],
+              "bbox_ious": []
+            },
+            "fasterrcnn": {
+              "scores": [
+                0.6819256544113159
+              ],
+              "bbox_ious": [
+                0.9527873198210773
+              ]
+            }
+          }
+        },
+        {
+          "cell": "north-1.25",
+          "index": 8,
+          "heading": 315,
+          "target_pixels": 554,
+          "rgb_sha256": "00d5478760f445908a031444c4b331e41bfaee794ab1c0785f9ccae4021a3028",
+          "frontends": {
+            "ssdlite": {
+              "scores": [],
+              "bbox_ious": []
+            },
+            "fasterrcnn": {
+              "scores": [
+                0.6433292031288147
+              ],
+              "bbox_ious": [
+                0.9496965045912268
+              ]
+            }
+          }
+        },
+        {
+          "cell": "north-1.25",
+          "index": 9,
+          "heading": 330,
+          "target_pixels": 620,
+          "rgb_sha256": "82d2594d2e57e476890977e3c865858ce4fe74aea8359c01b0fb6c16dce18994",
+          "frontends": {
+            "ssdlite": {
+              "scores": [],
+              "bbox_ious": []
+            },
+            "fasterrcnn": {
+              "scores": [
+                0.9252015352249146
+              ],
+              "bbox_ious": [
+                0.9596754145072574
+              ]
+            }
+          }
+        },
+        {
+          "cell": "north-1.25",
+          "index": 10,
+          "heading": 345,
+          "target_pixels": 763,
+          "rgb_sha256": "98ef446ac6506de806ca39bf17545dbc12d4eaa45ed9db71959d4036782296b4",
+          "frontends": {
+            "ssdlite": {
+              "scores": [],
+              "bbox_ious": []
+            },
+            "fasterrcnn": {
+              "scores": [
+                0.9127147793769836
+              ],
+              "bbox_ious": [
+                0.9809033133927908
+              ]
+            }
+          }
+        },
+        {
+          "cell": "north-1.45",
+          "index": 0,
+          "heading": 195,
+          "target_pixels": 0,
+          "rgb_sha256": "61c678779061e63d791c8058b4a62d75380059b35505e6f1254c5993e2ac1831",
+          "frontends": {
+            "ssdlite": {
+              "scores": [],
+              "bbox_ious": []
+            },
+            "fasterrcnn": {
+              "scores": [],
+              "bbox_ious": []
+            }
+          }
+        },
+        {
+          "cell": "north-1.45",
+          "index": 1,
+          "heading": 210,
+          "target_pixels": 0,
+          "rgb_sha256": "d0abfb81f1b735fa6bbf3e0b6216ce6f3fa362d055b738f5f987e1ce3e26e3ef",
+          "frontends": {
+            "ssdlite": {
+              "scores": [],
+              "bbox_ious": []
+            },
+            "fasterrcnn": {
+              "scores": [],
+              "bbox_ious": []
+            }
+          }
+        },
+        {
+          "cell": "north-1.45",
+          "index": 2,
+          "heading": 225,
+          "target_pixels": 0,
+          "rgb_sha256": "82245172342df9d28e69e65baf2b8ed15c3ff480174bf60f8cbccaeee9c72a38",
+          "frontends": {
+            "ssdlite": {
+              "scores": [],
+              "bbox_ious": []
+            },
+            "fasterrcnn": {
+              "scores": [],
+              "bbox_ious": []
+            }
+          }
+        },
+        {
+          "cell": "north-1.45",
+          "index": 3,
+          "heading": 240,
+          "target_pixels": 0,
+          "rgb_sha256": "10c44fd8e9e6de97320a89872cfced40d815116de32f7c6ca8eb52162ff503dd",
+          "frontends": {
+            "ssdlite": {
+              "scores": [],
+              "bbox_ious": []
+            },
+            "fasterrcnn": {
+              "scores": [],
+              "bbox_ious": []
+            }
+          }
+        },
+        {
+          "cell": "north-1.45",
+          "index": 4,
+          "heading": 255,
+          "target_pixels": 0,
+          "rgb_sha256": "1e2c88c65b6d3bab42c67a52a0cf7c4081967e4b5b18b4fa71aacb486077c0d8",
+          "frontends": {
+            "ssdlite": {
+              "scores": [],
+              "bbox_ious": []
+            },
+            "fasterrcnn": {
+              "scores": [],
+              "bbox_ious": []
+            }
+          }
+        },
+        {
+          "cell": "north-1.45",
+          "index": 5,
+          "heading": 270,
+          "target_pixels": 305,
+          "rgb_sha256": "b1736d0d1d74e5bdc122f5f034ce7953a41dc68f0079dabfda063f031bf0fbb5",
+          "frontends": {
+            "ssdlite": {
+              "scores": [],
+              "bbox_ious": []
+            },
+            "fasterrcnn": {
+              "scores": [],
+              "bbox_ious": []
+            }
+          }
+        },
+        {
+          "cell": "north-1.45",
+          "index": 6,
+          "heading": 285,
+          "target_pixels": 509,
+          "rgb_sha256": "d75471a840628d3171dfe0a737397c3db574c7f170cac1dab8df6c118f9bfbe4",
+          "frontends": {
+            "ssdlite": {
+              "scores": [],
+              "bbox_ious": []
+            },
+            "fasterrcnn": {
+              "scores": [
+                0.8072231411933899
+              ],
+              "bbox_ious": [
+                0.9654565970874608
+              ]
+            }
+          }
+        },
+        {
+          "cell": "north-1.45",
+          "index": 7,
+          "heading": 300,
+          "target_pixels": 448,
+          "rgb_sha256": "66bf7699a2864c5164488de5194cfa1e5c652cd44d5deb2449260960c73b1153",
+          "frontends": {
+            "ssdlite": {
+              "scores": [],
+              "bbox_ious": []
+            },
+            "fasterrcnn": {
+              "scores": [
+                0.722489595413208
+              ],
+              "bbox_ious": [
+                0.94917498724594
+              ]
+            }
+          }
+        },
+        {
+          "cell": "north-1.45",
+          "index": 8,
+          "heading": 315,
+          "target_pixels": 457,
+          "rgb_sha256": "d23f94bce6e9d956ed5146661073134b518fda80f724db6697f816047787ae5a",
+          "frontends": {
+            "ssdlite": {
+              "scores": [],
+              "bbox_ious": []
+            },
+            "fasterrcnn": {
+              "scores": [
+                0.7367352843284607
+              ],
+              "bbox_ious": [
+                0.9473478182608907
+              ]
+            }
+          }
+        },
+        {
+          "cell": "north-1.45",
+          "index": 9,
+          "heading": 330,
+          "target_pixels": 560,
+          "rgb_sha256": "35adb61ff0e03fa4a298174c0fd635d0d2625a31e4832534a3e36105b124cc69",
+          "frontends": {
+            "ssdlite": {
+              "scores": [],
+              "bbox_ious": []
+            },
+            "fasterrcnn": {
+              "scores": [
+                0.6134511828422546
+              ],
+              "bbox_ious": [
+                0.9592245329918058
+              ]
+            }
+          }
+        },
+        {
+          "cell": "north-1.45",
+          "index": 10,
+          "heading": 345,
+          "target_pixels": 0,
+          "rgb_sha256": "aa748b8dc4ada58959ee818f710faa97ea7279b2da127828a7641340e83fa41a",
+          "frontends": {
+            "ssdlite": {
+              "scores": [],
+              "bbox_ious": []
+            },
+            "fasterrcnn": {
+              "scores": [],
+              "bbox_ious": []
+            }
+          }
+        },
+        {
+          "cell": "south-1.05",
+          "index": 0,
+          "heading": 195,
+          "target_pixels": 832,
+          "rgb_sha256": "da996e63f27d3055a48e991540b4f667a252af52dc48cd8c2faee862e7de1993",
+          "frontends": {
+            "ssdlite": {
+              "scores": [],
+              "bbox_ious": []
+            },
+            "fasterrcnn": {
+              "scores": [
+                0.9056239128112793
+              ],
+              "bbox_ious": [
+                0.9728123969093144
+              ]
+            }
+          }
+        },
+        {
+          "cell": "south-1.05",
+          "index": 1,
+          "heading": 210,
+          "target_pixels": 711,
+          "rgb_sha256": "43b9078d842db76016d188d2b9533a3a2c1c2d4619e50b87c4532364e57fdd89",
+          "frontends": {
+            "ssdlite": {
+              "scores": [],
+              "bbox_ious": []
+            },
+            "fasterrcnn": {
+              "scores": [],
+              "bbox_ious": []
+            }
+          }
+        },
+        {
+          "cell": "south-1.05",
+          "index": 2,
+          "heading": 225,
+          "target_pixels": 700,
+          "rgb_sha256": "73afbddee0dc2de94a2cb47a0c0e3e4d7503274797bffe6e268704cc2bc5bbaa",
+          "frontends": {
+            "ssdlite": {
+              "scores": [],
+              "bbox_ious": []
+            },
+            "fasterrcnn": {
+              "scores": [
+                0.6594259738922119
+              ],
+              "bbox_ious": [
+                0.0
+              ]
+            }
+          }
+        },
+        {
+          "cell": "south-1.05",
+          "index": 3,
+          "heading": 240,
+          "target_pixels": 805,
+          "rgb_sha256": "3fafe0552e02f8e632bced4c4023a8067f4c21e6ace36ecb928bbc6427c6d26b",
+          "frontends": {
+            "ssdlite": {
+              "scores": [],
+              "bbox_ious": []
+            },
+            "fasterrcnn": {
+              "scores": [],
+              "bbox_ious": []
+            }
+          }
+        },
+        {
+          "cell": "south-1.05",
+          "index": 4,
+          "heading": 255,
+          "target_pixels": 703,
+          "rgb_sha256": "28198fd3767db477249ba6b44a0a87af96b89a65cce67b2746bb711a1d7706bd",
+          "frontends": {
+            "ssdlite": {
+              "scores": [],
+              "bbox_ious": []
+            },
+            "fasterrcnn": {
+              "scores": [],
+              "bbox_ious": []
+            }
+          }
+        },
+        {
+          "cell": "south-1.05",
+          "index": 5,
+          "heading": 270,
+          "target_pixels": 0,
+          "rgb_sha256": "2687a444169a33b0b710d7d6bde4c4efa0db87f249bd2c3a0ba5787583466dba",
+          "frontends": {
+            "ssdlite": {
+              "scores": [],
+              "bbox_ious": []
+            },
+            "fasterrcnn": {
+              "scores": [],
+              "bbox_ious": []
+            }
+          }
+        },
+        {
+          "cell": "south-1.05",
+          "index": 6,
+          "heading": 285,
+          "target_pixels": 0,
+          "rgb_sha256": "8dec1ba1814ca1ea9f5f6e6eb0953d5caf5e4f93dd0ec5e31b5d6f0ab1270966",
+          "frontends": {
+            "ssdlite": {
+              "scores": [],
+              "bbox_ious": []
+            },
+            "fasterrcnn": {
+              "scores": [],
+              "bbox_ious": []
+            }
+          }
+        },
+        {
+          "cell": "south-1.05",
+          "index": 7,
+          "heading": 300,
+          "target_pixels": 0,
+          "rgb_sha256": "56eea13472a5c80c507a5aca4acdbb8d9ebc89bdf211da05071faf0ad5dac33f",
+          "frontends": {
+            "ssdlite": {
+              "scores": [],
+              "bbox_ious": []
+            },
+            "fasterrcnn": {
+              "scores": [],
+              "bbox_ious": []
+            }
+          }
+        },
+        {
+          "cell": "south-1.05",
+          "index": 8,
+          "heading": 315,
+          "target_pixels": 0,
+          "rgb_sha256": "1c836224e48a33207ae780b8d54f1258cb43d362be3ad147b1c8fcbc04c5c93f",
+          "frontends": {
+            "ssdlite": {
+              "scores": [],
+              "bbox_ious": []
+            },
+            "fasterrcnn": {
+              "scores": [],
+              "bbox_ious": []
+            }
+          }
+        },
+        {
+          "cell": "south-1.05",
+          "index": 9,
+          "heading": 330,
+          "target_pixels": 0,
+          "rgb_sha256": "1ccb13a26022f1968ec44637f98318c698219f50fd89d7760293cf37691499df",
+          "frontends": {
+            "ssdlite": {
+              "scores": [],
+              "bbox_ious": []
+            },
+            "fasterrcnn": {
+              "scores": [],
+              "bbox_ious": []
+            }
+          }
+        },
+        {
+          "cell": "south-1.05",
+          "index": 10,
+          "heading": 345,
+          "target_pixels": 0,
+          "rgb_sha256": "4e3357fc66f1f035bb171356440cd5e27cd8360d4670c7b54e39b4d7eb22da3b",
+          "frontends": {
+            "ssdlite": {
+              "scores": [],
+              "bbox_ious": []
+            },
+            "fasterrcnn": {
+              "scores": [],
+              "bbox_ious": []
+            }
+          }
+        },
+        {
+          "cell": "south-1.25",
+          "index": 0,
+          "heading": 195,
+          "target_pixels": 766,
+          "rgb_sha256": "4d3ea4b7d2ca1eb593563d22778b1062631c7e3bb718ef2e58a718098d7f2952",
+          "frontends": {
+            "ssdlite": {
+              "scores": [],
+              "bbox_ious": []
+            },
+            "fasterrcnn": {
+              "scores": [
+                0.904201090335846
+              ],
+              "bbox_ious": [
+                0.9707814542645642
+              ]
+            }
+          }
+        },
+        {
+          "cell": "south-1.25",
+          "index": 1,
+          "heading": 210,
+          "target_pixels": 624,
+          "rgb_sha256": "8d7a5c6ed6a94ca665e8d17061b8b2d6e45f491a934a94942578279ab075da94",
+          "frontends": {
+            "ssdlite": {
+              "scores": [],
+              "bbox_ious": []
+            },
+            "fasterrcnn": {
+              "scores": [],
+              "bbox_ious": []
+            }
+          }
+        },
+        {
+          "cell": "south-1.25",
+          "index": 2,
+          "heading": 225,
+          "target_pixels": 558,
+          "rgb_sha256": "c3e8e627c41afcb6244145435f805ced695caab51ffcf77000accf7d948decfa",
+          "frontends": {
+            "ssdlite": {
+              "scores": [],
+              "bbox_ious": []
+            },
+            "fasterrcnn": {
+              "scores": [],
+              "bbox_ious": []
+            }
+          }
+        },
+        {
+          "cell": "south-1.25",
+          "index": 3,
+          "heading": 240,
+          "target_pixels": 585,
+          "rgb_sha256": "aafb63fddd105452031d9f12754e7cb348d2ce72f34f25bb8a8677c9b20019a7",
+          "frontends": {
+            "ssdlite": {
+              "scores": [],
+              "bbox_ious": []
+            },
+            "fasterrcnn": {
+              "scores": [
+                0.7527844309806824
+              ],
+              "bbox_ious": [
+                0.9352434506107778
+              ]
+            }
+          }
+        },
+        {
+          "cell": "south-1.25",
+          "index": 4,
+          "heading": 255,
+          "target_pixels": 709,
+          "rgb_sha256": "6a8d7a45f76191aaafce2388f395424f56ae3338a62c4b3c0e09c03d47795baa",
+          "frontends": {
+            "ssdlite": {
+              "scores": [],
+              "bbox_ious": []
+            },
+            "fasterrcnn": {
+              "scores": [],
+              "bbox_ious": []
+            }
+          }
+        },
+        {
+          "cell": "south-1.25",
+          "index": 5,
+          "heading": 270,
+          "target_pixels": 0,
+          "rgb_sha256": "0731348c074aca862d1773b7fe87f5a785ed828021b99ad9060aebe253860cb7",
+          "frontends": {
+            "ssdlite": {
+              "scores": [],
+              "bbox_ious": []
+            },
+            "fasterrcnn": {
+              "scores": [],
+              "bbox_ious": []
+            }
+          }
+        },
+        {
+          "cell": "south-1.25",
+          "index": 6,
+          "heading": 285,
+          "target_pixels": 0,
+          "rgb_sha256": "d9cc59206053511876cc15f1a05b8312501e0153d9184a2e656a7a8ac79fc790",
+          "frontends": {
+            "ssdlite": {
+              "scores": [],
+              "bbox_ious": []
+            },
+            "fasterrcnn": {
+              "scores": [],
+              "bbox_ious": []
+            }
+          }
+        },
+        {
+          "cell": "south-1.25",
+          "index": 7,
+          "heading": 300,
+          "target_pixels": 0,
+          "rgb_sha256": "eb4ef2f8fa43eef44de3d742fedb159216200cf4f750f51f5f451b5901c42a37",
+          "frontends": {
+            "ssdlite": {
+              "scores": [],
+              "bbox_ious": []
+            },
+            "fasterrcnn": {
+              "scores": [],
+              "bbox_ious": []
+            }
+          }
+        },
+        {
+          "cell": "south-1.25",
+          "index": 8,
+          "heading": 315,
+          "target_pixels": 0,
+          "rgb_sha256": "f1002e645d4b5b839bda7baf7c2a9424e38bb04e2447eb4357b0b9aa51399aa3",
+          "frontends": {
+            "ssdlite": {
+              "scores": [],
+              "bbox_ious": []
+            },
+            "fasterrcnn": {
+              "scores": [],
+              "bbox_ious": []
+            }
+          }
+        },
+        {
+          "cell": "south-1.25",
+          "index": 9,
+          "heading": 330,
+          "target_pixels": 0,
+          "rgb_sha256": "4020c7cc8580a5dd5e1e3fc741953ea15cb74f6d7f52a9a19673c04518575475",
+          "frontends": {
+            "ssdlite": {
+              "scores": [],
+              "bbox_ious": []
+            },
+            "fasterrcnn": {
+              "scores": [],
+              "bbox_ious": []
+            }
+          }
+        },
+        {
+          "cell": "south-1.25",
+          "index": 10,
+          "heading": 345,
+          "target_pixels": 0,
+          "rgb_sha256": "eece093de1c49c019506482c191ee4254ae9285617558b56dd728d05345de63f",
+          "frontends": {
+            "ssdlite": {
+              "scores": [],
+              "bbox_ious": []
+            },
+            "fasterrcnn": {
+              "scores": [],
+              "bbox_ious": []
+            }
+          }
+        },
+        {
+          "cell": "south-1.45",
+          "index": 0,
+          "heading": 195,
+          "target_pixels": 0,
+          "rgb_sha256": "61c678779061e63d791c8058b4a62d75380059b35505e6f1254c5993e2ac1831",
+          "frontends": {
+            "ssdlite": {
+              "scores": [],
+              "bbox_ious": []
+            },
+            "fasterrcnn": {
+              "scores": [],
+              "bbox_ious": []
+            }
+          }
+        },
+        {
+          "cell": "south-1.45",
+          "index": 1,
+          "heading": 210,
+          "target_pixels": 561,
+          "rgb_sha256": "a4f8071c62676ccb6abffc755587343ac7a8a1b6560cad3c9f277e9172b8d624",
+          "frontends": {
+            "ssdlite": {
+              "scores": [],
+              "bbox_ious": []
+            },
+            "fasterrcnn": {
+              "scores": [],
+              "bbox_ious": []
+            }
+          }
+        },
+        {
+          "cell": "south-1.45",
+          "index": 2,
+          "heading": 225,
+          "target_pixels": 464,
+          "rgb_sha256": "fa44b566117e1327ba680e6d5388362581e664efedf075a925616e4417b4c6ce",
+          "frontends": {
+            "ssdlite": {
+              "scores": [],
+              "bbox_ious": []
+            },
+            "fasterrcnn": {
+              "scores": [],
+              "bbox_ious": []
+            }
+          }
+        },
+        {
+          "cell": "south-1.45",
+          "index": 3,
+          "heading": 240,
+          "target_pixels": 449,
+          "rgb_sha256": "f5f3c390576c2cad8020f54e5a39e77d749f910df8ee844b4a3cb929095db148",
+          "frontends": {
+            "ssdlite": {
+              "scores": [],
+              "bbox_ious": []
+            },
+            "fasterrcnn": {
+              "scores": [],
+              "bbox_ious": []
+            }
+          }
+        },
+        {
+          "cell": "south-1.45",
+          "index": 4,
+          "heading": 255,
+          "target_pixels": 513,
+          "rgb_sha256": "60298f38457621ba9a1bb7a2d790ef9bd082c093a2893fbd384e99d22e1ddd6d",
+          "frontends": {
+            "ssdlite": {
+              "scores": [],
+              "bbox_ious": []
+            },
+            "fasterrcnn": {
+              "scores": [],
+              "bbox_ious": []
+            }
+          }
+        },
+        {
+          "cell": "south-1.45",
+          "index": 5,
+          "heading": 270,
+          "target_pixels": 312,
+          "rgb_sha256": "debef61ea60e273a5b003d6e06fefd42621d9a5648282ba3594a3a407bdd6a8a",
+          "frontends": {
+            "ssdlite": {
+              "scores": [],
+              "bbox_ious": []
+            },
+            "fasterrcnn": {
+              "scores": [],
+              "bbox_ious": []
+            }
+          }
+        },
+        {
+          "cell": "south-1.45",
+          "index": 6,
+          "heading": 285,
+          "target_pixels": 0,
+          "rgb_sha256": "5b5297c3f14fe5e66e8be02d0802fbb624d40f5f704ca7e7f2d95c0d7793915b",
+          "frontends": {
+            "ssdlite": {
+              "scores": [],
+              "bbox_ious": []
+            },
+            "fasterrcnn": {
+              "scores": [],
+              "bbox_ious": []
+            }
+          }
+        },
+        {
+          "cell": "south-1.45",
+          "index": 7,
+          "heading": 300,
+          "target_pixels": 0,
+          "rgb_sha256": "bc2e7c880c1803ec80c6d5ec20360e7433401b73fde34a843f8cc45b853d1a9d",
+          "frontends": {
+            "ssdlite": {
+              "scores": [],
+              "bbox_ious": []
+            },
+            "fasterrcnn": {
+              "scores": [],
+              "bbox_ious": []
+            }
+          }
+        },
+        {
+          "cell": "south-1.45",
+          "index": 8,
+          "heading": 315,
+          "target_pixels": 0,
+          "rgb_sha256": "e7a6a756b4c725b7b0b224221dba1d65c336ca43b40991178ed9c8a80ea0f064",
+          "frontends": {
+            "ssdlite": {
+              "scores": [],
+              "bbox_ious": []
+            },
+            "fasterrcnn": {
+              "scores": [],
+              "bbox_ious": []
+            }
+          }
+        },
+        {
+          "cell": "south-1.45",
+          "index": 9,
+          "heading": 330,
+          "target_pixels": 0,
+          "rgb_sha256": "1e3236b1695709ee99a436d4cb9ebb14f1c6b5db2e69a15eae61d5259ef460b3",
+          "frontends": {
+            "ssdlite": {
+              "scores": [],
+              "bbox_ious": []
+            },
+            "fasterrcnn": {
+              "scores": [],
+              "bbox_ious": []
+            }
+          }
+        },
+        {
+          "cell": "south-1.45",
+          "index": 10,
+          "heading": 345,
+          "target_pixels": 0,
+          "rgb_sha256": "62644eae20f5831a358176849c37ef634ddbd0610955c0d8ec28a9f4cd35a4c5",
+          "frontends": {
+            "ssdlite": {
+              "scores": [],
+              "bbox_ious": []
+            },
+            "fasterrcnn": {
+              "scores": [],
+              "bbox_ious": []
+            }
+          }
+        }
+      ]
+    },
+    {
+      "image_size": 640,
+      "frames": 66,
+      "fresh_detector_readouts": 132,
+      "groups": {
+        "ssdlite:north:1.05": {
+          "frames": 11,
+          "visible_frames": 5,
+          "visible_with_candidate": 0,
+          "visible_with_overlapping_candidate": 0,
+          "no_target_pixels_frames": 6,
+          "candidate_without_target_pixels": 0
+        },
+        "fasterrcnn:north:1.05": {
+          "frames": 11,
+          "visible_frames": 5,
+          "visible_with_candidate": 5,
+          "visible_with_overlapping_candidate": 5,
+          "no_target_pixels_frames": 6,
+          "candidate_without_target_pixels": 4
+        },
+        "ssdlite:north:1.25": {
+          "frames": 11,
+          "visible_frames": 5,
+          "visible_with_candidate": 0,
+          "visible_with_overlapping_candidate": 0,
+          "no_target_pixels_frames": 6,
+          "candidate_without_target_pixels": 0
+        },
+        "fasterrcnn:north:1.25": {
+          "frames": 11,
+          "visible_frames": 5,
+          "visible_with_candidate": 5,
+          "visible_with_overlapping_candidate": 5,
+          "no_target_pixels_frames": 6,
+          "candidate_without_target_pixels": 5
+        },
+        "ssdlite:north:1.45": {
+          "frames": 11,
+          "visible_frames": 5,
+          "visible_with_candidate": 0,
+          "visible_with_overlapping_candidate": 0,
+          "no_target_pixels_frames": 6,
+          "candidate_without_target_pixels": 0
+        },
+        "fasterrcnn:north:1.45": {
+          "frames": 11,
+          "visible_frames": 5,
+          "visible_with_candidate": 4,
+          "visible_with_overlapping_candidate": 4,
+          "no_target_pixels_frames": 6,
+          "candidate_without_target_pixels": 4
+        },
+        "ssdlite:south:1.05": {
+          "frames": 11,
+          "visible_frames": 5,
+          "visible_with_candidate": 0,
+          "visible_with_overlapping_candidate": 0,
+          "no_target_pixels_frames": 6,
+          "candidate_without_target_pixels": 0
+        },
+        "fasterrcnn:south:1.05": {
+          "frames": 11,
+          "visible_frames": 5,
+          "visible_with_candidate": 4,
+          "visible_with_overlapping_candidate": 2,
+          "no_target_pixels_frames": 6,
+          "candidate_without_target_pixels": 0
+        },
+        "ssdlite:south:1.25": {
+          "frames": 11,
+          "visible_frames": 5,
+          "visible_with_candidate": 0,
+          "visible_with_overlapping_candidate": 0,
+          "no_target_pixels_frames": 6,
+          "candidate_without_target_pixels": 0
+        },
+        "fasterrcnn:south:1.25": {
+          "frames": 11,
+          "visible_frames": 5,
+          "visible_with_candidate": 5,
+          "visible_with_overlapping_candidate": 3,
+          "no_target_pixels_frames": 6,
+          "candidate_without_target_pixels": 0
+        },
+        "ssdlite:south:1.45": {
+          "frames": 11,
+          "visible_frames": 5,
+          "visible_with_candidate": 0,
+          "visible_with_overlapping_candidate": 0,
+          "no_target_pixels_frames": 6,
+          "candidate_without_target_pixels": 0
+        },
+        "fasterrcnn:south:1.45": {
+          "frames": 11,
+          "visible_frames": 5,
+          "visible_with_candidate": 4,
+          "visible_with_overlapping_candidate": 0,
+          "no_target_pixels_frames": 6,
+          "candidate_without_target_pixels": 0
+        }
+      },
+      "raw_rows": [
+        {
+          "cell": "north-1.05",
+          "index": 0,
+          "heading": 195,
+          "target_pixels": 0,
+          "rgb_sha256": "f46e026439b02035fd8de85ca58b0aca14832d13d05696f2bb04f647fc87c05b",
+          "frontends": {
+            "ssdlite": {
+              "scores": [],
+              "bbox_ious": []
+            },
+            "fasterrcnn": {
+              "scores": [
+                0.9408447742462158
+              ],
+              "bbox_ious": [
+                0.0
+              ]
+            }
+          }
+        },
+        {
+          "cell": "north-1.05",
+          "index": 1,
+          "heading": 210,
+          "target_pixels": 0,
+          "rgb_sha256": "ff00b12bf5abcf8008464b7a77bef717532b7e18a0ad92ed0ffdd63f9443de74",
+          "frontends": {
+            "ssdlite": {
+              "scores": [],
+              "bbox_ious": []
+            },
+            "fasterrcnn": {
+              "scores": [
+                0.9431565403938293
+              ],
+              "bbox_ious": [
+                0.0
+              ]
+            }
+          }
+        },
+        {
+          "cell": "north-1.05",
+          "index": 2,
+          "heading": 225,
+          "target_pixels": 0,
+          "rgb_sha256": "dbcc52b210c2bde4b1fdf0bc4dfeae7c5e3a93e28021b6a002991a0efaa57738",
+          "frontends": {
+            "ssdlite": {
+              "scores": [],
+              "bbox_ious": []
+            },
+            "fasterrcnn": {
+              "scores": [
+                0.9494014382362366
+              ],
+              "bbox_ious": [
+                0.0
+              ]
+            }
+          }
+        },
+        {
+          "cell": "north-1.05",
+          "index": 3,
+          "heading": 240,
+          "target_pixels": 0,
+          "rgb_sha256": "d247ba06a87c436f96932d3b8c2ef0bf8954165c34fa55c9feb45f6c7daad26b",
+          "frontends": {
+            "ssdlite": {
+              "scores": [],
+              "bbox_ious": []
+            },
+            "fasterrcnn": {
+              "scores": [
+                0.9654538035392761
+              ],
+              "bbox_ious": [
+                0.0
+              ]
+            }
+          }
+        },
+        {
+          "cell": "north-1.05",
+          "index": 4,
+          "heading": 255,
+          "target_pixels": 0,
+          "rgb_sha256": "5564e918eb8e7262eaf33933aead1d29120381881bfc6d9a772d7e96059f534a",
+          "frontends": {
+            "ssdlite": {
+              "scores": [],
+              "bbox_ious": []
+            },
+            "fasterrcnn": {
+              "scores": [],
+              "bbox_ious": []
+            }
+          }
+        },
+        {
+          "cell": "north-1.05",
+          "index": 5,
+          "heading": 270,
+          "target_pixels": 0,
+          "rgb_sha256": "78993be61ba80189b0260bdc3c636b28c29f45a47fb69c102e10acf2236bd28b",
+          "frontends": {
+            "ssdlite": {
+              "scores": [],
+              "bbox_ious": []
+            },
+            "fasterrcnn": {
+              "scores": [],
+              "bbox_ious": []
+            }
+          }
+        },
+        {
+          "cell": "north-1.05",
+          "index": 6,
+          "heading": 285,
+          "target_pixels": 2737,
+          "rgb_sha256": "e662263cfa1d4e20a8480c0951af177957ff1b53e396a7a1f1815718bc62fdd3",
+          "frontends": {
+            "ssdlite": {
+              "scores": [],
+              "bbox_ious": []
+            },
+            "fasterrcnn": {
+              "scores": [
+                0.6100121736526489
+              ],
+              "bbox_ious": [
+                0.9565465207122126
+              ]
+            }
+          }
+        },
+        {
+          "cell": "north-1.05",
+          "index": 7,
+          "heading": 300,
+          "target_pixels": 3216,
+          "rgb_sha256": "916de70f8f4907ad9b012cb30417f382bb943fb35ef53816899a8407a372155a",
+          "frontends": {
+            "ssdlite": {
+              "scores": [],
+              "bbox_ious": []
+            },
+            "fasterrcnn": {
+              "scores": [
+                0.9821915030479431
+              ],
+              "bbox_ious": [
+                0.9713595228721137
+              ]
+            }
+          }
+        },
+        {
+          "cell": "north-1.05",
+          "index": 8,
+          "heading": 315,
+          "target_pixels": 2802,
+          "rgb_sha256": "cb63e874e76a5b15d664ea12887ed8b5a117b497a00de9a62b50b8302b327958",
+          "frontends": {
+            "ssdlite": {
+              "scores": [],
+              "bbox_ious": []
+            },
+            "fasterrcnn": {
+              "scores": [
+                0.9928815364837646
+              ],
+              "bbox_ious": [
+                0.960371746227835
+              ]
+            }
+          }
+        },
+        {
+          "cell": "north-1.05",
+          "index": 9,
+          "heading": 330,
+          "target_pixels": 2831,
+          "rgb_sha256": "e2114952aaec129780881093316edba6e643001315aeb080809817caf85be8f0",
+          "frontends": {
+            "ssdlite": {
+              "scores": [],
+              "bbox_ious": []
+            },
+            "fasterrcnn": {
+              "scores": [
+                0.9903828501701355
+              ],
+              "bbox_ious": [
+                0.9766012543829319
+              ]
+            }
+          }
+        },
+        {
+          "cell": "north-1.05",
+          "index": 10,
+          "heading": 345,
+          "target_pixels": 3309,
+          "rgb_sha256": "5b7a2d1433968b15464612a570fd6c89b22f0f06dc91a726c22c7ac490c31a54",
+          "frontends": {
+            "ssdlite": {
+              "scores": [],
+              "bbox_ious": []
+            },
+            "fasterrcnn": {
+              "scores": [
+                0.987180769443512
+              ],
+              "bbox_ious": [
+                0.9748516478271358
+              ]
+            }
+          }
+        },
+        {
+          "cell": "north-1.25",
+          "index": 0,
+          "heading": 195,
+          "target_pixels": 0,
+          "rgb_sha256": "89292b84fe756abfa6d6e92a14536869d6dbbc0c0c505c13889de6f240d01f79",
+          "frontends": {
+            "ssdlite": {
+              "scores": [],
+              "bbox_ious": []
+            },
+            "fasterrcnn": {
+              "scores": [
+                0.6063875555992126
+              ],
+              "bbox_ious": [
+                0.0
+              ]
+            }
+          }
+        },
+        {
+          "cell": "north-1.25",
+          "index": 1,
+          "heading": 210,
+          "target_pixels": 0,
+          "rgb_sha256": "de90aa435b7f93c41dffee75ed117d520dcd723a4388e20372f983db03a524bb",
+          "frontends": {
+            "ssdlite": {
+              "scores": [],
+              "bbox_ious": []
+            },
+            "fasterrcnn": {
+              "scores": [
+                0.8501452803611755
+              ],
+              "bbox_ious": [
+                0.0
+              ]
+            }
+          }
+        },
+        {
+          "cell": "north-1.25",
+          "index": 2,
+          "heading": 225,
+          "target_pixels": 0,
+          "rgb_sha256": "0124b64d1884fdf18772fa68fe4a33ec850a186c33b5625a25571dca09bdb39f",
+          "frontends": {
+            "ssdlite": {
+              "scores": [],
+              "bbox_ious": []
+            },
+            "fasterrcnn": {
+              "scores": [
+                0.9159271121025085
+              ],
+              "bbox_ious": [
+                0.0
+              ]
+            }
+          }
+        },
+        {
+          "cell": "north-1.25",
+          "index": 3,
+          "heading": 240,
+          "target_pixels": 0,
+          "rgb_sha256": "c8213c2456f9bd540fee8fd4e003c1e596fc7b6eda38300c8248a823fb6c47cd",
+          "frontends": {
+            "ssdlite": {
+              "scores": [],
+              "bbox_ious": []
+            },
+            "fasterrcnn": {
+              "scores": [
+                0.9488570690155029
+              ],
+              "bbox_ious": [
+                0.0
+              ]
+            }
+          }
+        },
+        {
+          "cell": "north-1.25",
+          "index": 4,
+          "heading": 255,
+          "target_pixels": 0,
+          "rgb_sha256": "e6fa96a7b08d1c9a9800b10faa511c8cf34307ad5452173224bdf62c1e3c8c3b",
+          "frontends": {
+            "ssdlite": {
+              "scores": [],
+              "bbox_ious": []
+            },
+            "fasterrcnn": {
+              "scores": [
+                0.8925529718399048
+              ],
+              "bbox_ious": [
+                0.0
+              ]
+            }
+          }
+        },
+        {
+          "cell": "north-1.25",
+          "index": 5,
+          "heading": 270,
+          "target_pixels": 0,
+          "rgb_sha256": "24e426d3fca05c43486d7fc25dca2531405586d8fa02c500b43058af002c281c",
+          "frontends": {
+            "ssdlite": {
+              "scores": [],
+              "bbox_ious": []
+            },
+            "fasterrcnn": {
+              "scores": [],
+              "bbox_ious": []
+            }
+          }
+        },
+        {
+          "cell": "north-1.25",
+          "index": 6,
+          "heading": 285,
+          "target_pixels": 2836,
+          "rgb_sha256": "ab64a0e71979f48208bc9935b7cb13b4859436110c06358a9729e9c7ff54b389",
+          "frontends": {
+            "ssdlite": {
+              "scores": [],
+              "bbox_ious": []
+            },
+            "fasterrcnn": {
+              "scores": [
+                0.7785674929618835
+              ],
+              "bbox_ious": [
+                0.9803743288613461
+              ]
+            }
+          }
+        },
+        {
+          "cell": "north-1.25",
+          "index": 7,
+          "heading": 300,
+          "target_pixels": 2317,
+          "rgb_sha256": "4507a2b24fe7f171b0bdead113a9126e7216d03ae7ac4fc2ac7c043a75186908",
+          "frontends": {
+            "ssdlite": {
+              "scores": [],
+              "bbox_ious": []
+            },
+            "fasterrcnn": {
+              "scores": [
+                0.8726739287376404
+              ],
+              "bbox_ious": [
+                0.9745996087507496
+              ]
+            }
+          }
+        },
+        {
+          "cell": "north-1.25",
+          "index": 8,
+          "heading": 315,
+          "target_pixels": 2223,
+          "rgb_sha256": "1c554cf60da642555d0dc957108188f15fa97cff095959a7fc8c70bb4152955d",
+          "frontends": {
+            "ssdlite": {
+              "scores": [],
+              "bbox_ious": []
+            },
+            "fasterrcnn": {
+              "scores": [
+                0.9157279133796692
+              ],
+              "bbox_ious": [
+                0.9524943085184384
+              ]
+            }
+          }
+        },
+        {
+          "cell": "north-1.25",
+          "index": 9,
+          "heading": 330,
+          "target_pixels": 2480,
+          "rgb_sha256": "d4c698348bafa38fe37e06089fcc78e3e8f752a2a6955db173618775cacd1c10",
+          "frontends": {
+            "ssdlite": {
+              "scores": [],
+              "bbox_ious": []
+            },
+            "fasterrcnn": {
+              "scores": [
+                0.9891437888145447
+              ],
+              "bbox_ious": [
+                0.9691993276512649
+              ]
+            }
+          }
+        },
+        {
+          "cell": "north-1.25",
+          "index": 10,
+          "heading": 345,
+          "target_pixels": 3058,
+          "rgb_sha256": "74e21a89afff077b3e9f2dcdafe0b5c1760dfd737a276ecfe8c2e30ac0f67917",
+          "frontends": {
+            "ssdlite": {
+              "scores": [],
+              "bbox_ious": []
+            },
+            "fasterrcnn": {
+              "scores": [
+                0.9768062829971313
+              ],
+              "bbox_ious": [
+                0.9833543915875265
+              ]
+            }
+          }
+        },
+        {
+          "cell": "north-1.45",
+          "index": 0,
+          "heading": 195,
+          "target_pixels": 0,
+          "rgb_sha256": "b73f6cf75ec75667544258aaab20e47d4a55a2eaa9030a8f61e221aa7424f858",
+          "frontends": {
+            "ssdlite": {
+              "scores": [],
+              "bbox_ious": []
+            },
+            "fasterrcnn": {
+              "scores": [],
+              "bbox_ious": []
+            }
+          }
+        },
+        {
+          "cell": "north-1.45",
+          "index": 1,
+          "heading": 210,
+          "target_pixels": 0,
+          "rgb_sha256": "cdcde232f5432cd1afb6a10459c873bcfd47ca275726a15818349b294abc99e1",
+          "frontends": {
+            "ssdlite": {
+              "scores": [],
+              "bbox_ious": []
+            },
+            "fasterrcnn": {
+              "scores": [
+                0.9119670987129211
+              ],
+              "bbox_ious": [
+                0.0
+              ]
+            }
+          }
+        },
+        {
+          "cell": "north-1.45",
+          "index": 2,
+          "heading": 225,
+          "target_pixels": 0,
+          "rgb_sha256": "ac3ec9bcc62a48e5bccc27ef18d703687ebf2d12f9d743cd1d1e820d2dfddc6a",
+          "frontends": {
+            "ssdlite": {
+              "scores": [],
+              "bbox_ious": []
+            },
+            "fasterrcnn": {
+              "scores": [
+                0.9751415252685547
+              ],
+              "bbox_ious": [
+                0.0
+              ]
+            }
+          }
+        },
+        {
+          "cell": "north-1.45",
+          "index": 3,
+          "heading": 240,
+          "target_pixels": 0,
+          "rgb_sha256": "9d879c0b9b000e74d177db312848a26b013261617b55b6c02f005868aa167df2",
+          "frontends": {
+            "ssdlite": {
+              "scores": [],
+              "bbox_ious": []
+            },
+            "fasterrcnn": {
+              "scores": [
+                0.9343457221984863
+              ],
+              "bbox_ious": [
+                0.0
+              ]
+            }
+          }
+        },
+        {
+          "cell": "north-1.45",
+          "index": 4,
+          "heading": 255,
+          "target_pixels": 0,
+          "rgb_sha256": "6b322bdde08765299e0c69ef1da0261376ebe3d68912c71e718df2a611df284c",
+          "frontends": {
+            "ssdlite": {
+              "scores": [],
+              "bbox_ious": []
+            },
+            "fasterrcnn": {
+              "scores": [
+                0.8349117636680603
+              ],
+              "bbox_ious": [
+                0.0
+              ]
+            }
+          }
+        },
+        {
+          "cell": "north-1.45",
+          "index": 5,
+          "heading": 270,
+          "target_pixels": 1221,
+          "rgb_sha256": "3d40d52c4888eb6396444fda3c4210bf1646e2981283eaffadc15110af3380df",
+          "frontends": {
+            "ssdlite": {
+              "scores": [],
+              "bbox_ious": []
+            },
+            "fasterrcnn": {
+              "scores": [],
+              "bbox_ious": []
+            }
+          }
+        },
+        {
+          "cell": "north-1.45",
+          "index": 6,
+          "heading": 285,
+          "target_pixels": 2027,
+          "rgb_sha256": "635f8d5a1575fbca3c7082ea0259f70fe1c89e60e2198acad892b964b87233e6",
+          "frontends": {
+            "ssdlite": {
+              "scores": [],
+              "bbox_ious": []
+            },
+            "fasterrcnn": {
+              "scores": [
+                0.7418301701545715
+              ],
+              "bbox_ious": [
+                0.9862146415179476
+              ]
+            }
+          }
+        },
+        {
+          "cell": "north-1.45",
+          "index": 7,
+          "heading": 300,
+          "target_pixels": 1786,
+          "rgb_sha256": "53a21f7607958b538ed5e0825e0bf2bf2959203d562a57e2fd957c677bfbe835",
+          "frontends": {
+            "ssdlite": {
+              "scores": [],
+              "bbox_ious": []
+            },
+            "fasterrcnn": {
+              "scores": [
+                0.8510302901268005
+              ],
+              "bbox_ious": [
+                0.9577284698105417
+              ]
+            }
+          }
+        },
+        {
+          "cell": "north-1.45",
+          "index": 8,
+          "heading": 315,
+          "target_pixels": 1842,
+          "rgb_sha256": "49ee8bdcc622184d36ac8006befcf1e272ca7f21f320d8b06866e720761bd489",
+          "frontends": {
+            "ssdlite": {
+              "scores": [],
+              "bbox_ious": []
+            },
+            "fasterrcnn": {
+              "scores": [
+                0.8662652969360352
+              ],
+              "bbox_ious": [
+                0.9509223935475505
+              ]
+            }
+          }
+        },
+        {
+          "cell": "north-1.45",
+          "index": 9,
+          "heading": 330,
+          "target_pixels": 2231,
+          "rgb_sha256": "f5a2a2a510f6fd8251f695f871544a6d6f3e32ae7cef3058654411a47c91c979",
+          "frontends": {
+            "ssdlite": {
+              "scores": [],
+              "bbox_ious": []
+            },
+            "fasterrcnn": {
+              "scores": [
+                0.8848813772201538
+              ],
+              "bbox_ious": [
+                0.9570199050669929
+              ]
+            }
+          }
+        },
+        {
+          "cell": "north-1.45",
+          "index": 10,
+          "heading": 345,
+          "target_pixels": 0,
+          "rgb_sha256": "4c24d35a8bda2fdde44feef634ff8a5ae27a056bc64aef3dbc3f1d34593fc1ca",
+          "frontends": {
+            "ssdlite": {
+              "scores": [],
+              "bbox_ious": []
+            },
+            "fasterrcnn": {
+              "scores": [],
+              "bbox_ious": []
+            }
+          }
+        },
+        {
+          "cell": "south-1.05",
+          "index": 0,
+          "heading": 195,
+          "target_pixels": 3318,
+          "rgb_sha256": "fb44ed6ab6bb395ca6660eff6cd61e7aa11201e2ef491665227345c0e499cdc8",
+          "frontends": {
+            "ssdlite": {
+              "scores": [],
+              "bbox_ious": []
+            },
+            "fasterrcnn": {
+              "scores": [
+                0.9942365288734436,
+                0.9308055639266968
+              ],
+              "bbox_ious": [
+                0.9485745987355143,
+                0.0
+              ]
+            }
+          }
+        },
+        {
+          "cell": "south-1.05",
+          "index": 1,
+          "heading": 210,
+          "target_pixels": 2841,
+          "rgb_sha256": "4ad154f2867bb30cc5b0141b80cbff94bf06a619806372fb9f08deb5c3cc6e43",
+          "frontends": {
+            "ssdlite": {
+              "scores": [],
+              "bbox_ious": []
+            },
+            "fasterrcnn": {
+              "scores": [
+                0.9496474266052246
+              ],
+              "bbox_ious": [
+                0.0
+              ]
+            }
+          }
+        },
+        {
+          "cell": "south-1.05",
+          "index": 2,
+          "heading": 225,
+          "target_pixels": 2809,
+          "rgb_sha256": "28442ec2e611923603c2cfc61a6b407c294d41c7fd5613e795f51e998163f9f1",
+          "frontends": {
+            "ssdlite": {
+              "scores": [],
+              "bbox_ious": []
+            },
+            "fasterrcnn": {
+              "scores": [
+                0.9565836191177368,
+                0.6261423230171204
+              ],
+              "bbox_ious": [
+                0.0,
+                0.9970052181699589
+              ]
+            }
+          }
+        },
+        {
+          "cell": "south-1.05",
+          "index": 3,
+          "heading": 240,
+          "target_pixels": 3222,
+          "rgb_sha256": "d7381a3916e93461b3193b458513730b2399566c8aa698cf56b2f777fd400fad",
+          "frontends": {
+            "ssdlite": {
+              "scores": [],
+              "bbox_ious": []
+            },
+            "fasterrcnn": {
+              "scores": [
+                0.944611668586731
+              ],
+              "bbox_ious": [
+                0.0
+              ]
+            }
+          }
+        },
+        {
+          "cell": "south-1.05",
+          "index": 4,
+          "heading": 255,
+          "target_pixels": 2804,
+          "rgb_sha256": "890144d5ee509979494635b6c0b4934b2256ce6480b64a3f8a36e03f597bc2a8",
+          "frontends": {
+            "ssdlite": {
+              "scores": [],
+              "bbox_ious": []
+            },
+            "fasterrcnn": {
+              "scores": [],
+              "bbox_ious": []
+            }
+          }
+        },
+        {
+          "cell": "south-1.05",
+          "index": 5,
+          "heading": 270,
+          "target_pixels": 0,
+          "rgb_sha256": "78993be61ba80189b0260bdc3c636b28c29f45a47fb69c102e10acf2236bd28b",
+          "frontends": {
+            "ssdlite": {
+              "scores": [],
+              "bbox_ious": []
+            },
+            "fasterrcnn": {
+              "scores": [],
+              "bbox_ious": []
+            }
+          }
+        },
+        {
+          "cell": "south-1.05",
+          "index": 6,
+          "heading": 285,
+          "target_pixels": 0,
+          "rgb_sha256": "efc4a39da963e5c215eb69aa61d74db588b343e945a005bd6da7034256b08d2f",
+          "frontends": {
+            "ssdlite": {
+              "scores": [],
+              "bbox_ious": []
+            },
+            "fasterrcnn": {
+              "scores": [],
+              "bbox_ious": []
+            }
+          }
+        },
+        {
+          "cell": "south-1.05",
+          "index": 7,
+          "heading": 300,
+          "target_pixels": 0,
+          "rgb_sha256": "5cf33f3e1beae4d846031106fe45f0ee0c8abcd1fc9baea07ac0588c14be63fd",
+          "frontends": {
+            "ssdlite": {
+              "scores": [],
+              "bbox_ious": []
+            },
+            "fasterrcnn": {
+              "scores": [],
+              "bbox_ious": []
+            }
+          }
+        },
+        {
+          "cell": "south-1.05",
+          "index": 8,
+          "heading": 315,
+          "target_pixels": 0,
+          "rgb_sha256": "8b1b8864f0d8d079f87ca39fea917c6068d9cf418c130478bfbe773fb1493c47",
+          "frontends": {
+            "ssdlite": {
+              "scores": [],
+              "bbox_ious": []
+            },
+            "fasterrcnn": {
+              "scores": [],
+              "bbox_ious": []
+            }
+          }
+        },
+        {
+          "cell": "south-1.05",
+          "index": 9,
+          "heading": 330,
+          "target_pixels": 0,
+          "rgb_sha256": "3144417d38d5ab198ff657ff0e3223d9560e6922b410ef9d65cf70b67f0cad4c",
+          "frontends": {
+            "ssdlite": {
+              "scores": [],
+              "bbox_ious": []
+            },
+            "fasterrcnn": {
+              "scores": [],
+              "bbox_ious": []
+            }
+          }
+        },
+        {
+          "cell": "south-1.05",
+          "index": 10,
+          "heading": 345,
+          "target_pixels": 0,
+          "rgb_sha256": "c8d41fb3720a50f482438fe7cf41c966d9ae28c78b82daad143b1a23af37a901",
+          "frontends": {
+            "ssdlite": {
+              "scores": [],
+              "bbox_ious": []
+            },
+            "fasterrcnn": {
+              "scores": [],
+              "bbox_ious": []
+            }
+          }
+        },
+        {
+          "cell": "south-1.25",
+          "index": 0,
+          "heading": 195,
+          "target_pixels": 3066,
+          "rgb_sha256": "b42999189581de9d87967a1675c4b49b00498e59a9bd4e606cf8c730147285b9",
+          "frontends": {
+            "ssdlite": {
+              "scores": [],
+              "bbox_ious": []
+            },
+            "fasterrcnn": {
+              "scores": [
+                0.9861526489257812,
+                0.7112846970558167
+              ],
+              "bbox_ious": [
+                0.9656432298614219,
+                0.0
+              ]
+            }
+          }
+        },
+        {
+          "cell": "south-1.25",
+          "index": 1,
+          "heading": 210,
+          "target_pixels": 2489,
+          "rgb_sha256": "efbe934f087c07286df246c80ae0660d8316e0d039b0c846ca51c1457dd74544",
+          "frontends": {
+            "ssdlite": {
+              "scores": [],
+              "bbox_ious": []
+            },
+            "fasterrcnn": {
+              "scores": [
+                0.8981138467788696,
+                0.6914210915565491
+              ],
+              "bbox_ious": [
+                0.0,
+                0.9667754514759623
+              ]
+            }
+          }
+        },
+        {
+          "cell": "south-1.25",
+          "index": 2,
+          "heading": 225,
+          "target_pixels": 2235,
+          "rgb_sha256": "a36dcc80e50974536e565ecaebf30baafee7c3d5d89df6857b36c77c959f67de",
+          "frontends": {
+            "ssdlite": {
+              "scores": [],
+              "bbox_ious": []
+            },
+            "fasterrcnn": {
+              "scores": [
+                0.9497711658477783,
+                0.5982898473739624
+              ],
+              "bbox_ious": [
+                0.0,
+                0.9733419540432908
+              ]
+            }
+          }
+        },
+        {
+          "cell": "south-1.25",
+          "index": 3,
+          "heading": 240,
+          "target_pixels": 2322,
+          "rgb_sha256": "5d6dc7811c6aa8ae0147a6ae496118022dabd44ac90134abb2196d3022a7996f",
+          "frontends": {
+            "ssdlite": {
+              "scores": [],
+              "bbox_ious": []
+            },
+            "fasterrcnn": {
+              "scores": [
+                0.9374803304672241
+              ],
+              "bbox_ious": [
+                0.0
+              ]
+            }
+          }
+        },
+        {
+          "cell": "south-1.25",
+          "index": 4,
+          "heading": 255,
+          "target_pixels": 2844,
+          "rgb_sha256": "8c655585a1cf057068e23ed6dab8c8339187c2eeed91c364be507402b63aacd1",
+          "frontends": {
+            "ssdlite": {
+              "scores": [],
+              "bbox_ious": []
+            },
+            "fasterrcnn": {
+              "scores": [
+                0.8633591532707214
+              ],
+              "bbox_ious": [
+                0.0
+              ]
+            }
+          }
+        },
+        {
+          "cell": "south-1.25",
+          "index": 5,
+          "heading": 270,
+          "target_pixels": 0,
+          "rgb_sha256": "2a9a6ba9279e17de25c0a71e8517b4d3ff2f9bb9f56517684bdbe788428065d8",
+          "frontends": {
+            "ssdlite": {
+              "scores": [],
+              "bbox_ious": []
+            },
+            "fasterrcnn": {
+              "scores": [],
+              "bbox_ious": []
+            }
+          }
+        },
+        {
+          "cell": "south-1.25",
+          "index": 6,
+          "heading": 285,
+          "target_pixels": 0,
+          "rgb_sha256": "b8a0d6360cf1964accb45f03ccfa711bcf2193c6aecf0d521a3c5b81a5f8db3e",
+          "frontends": {
+            "ssdlite": {
+              "scores": [],
+              "bbox_ious": []
+            },
+            "fasterrcnn": {
+              "scores": [],
+              "bbox_ious": []
+            }
+          }
+        },
+        {
+          "cell": "south-1.25",
+          "index": 7,
+          "heading": 300,
+          "target_pixels": 0,
+          "rgb_sha256": "bdfbb0ca1d21a65f38021180f2ad907d9539ac1e7f312267de32a23d16f0246b",
+          "frontends": {
+            "ssdlite": {
+              "scores": [],
+              "bbox_ious": []
+            },
+            "fasterrcnn": {
+              "scores": [],
+              "bbox_ious": []
+            }
+          }
+        },
+        {
+          "cell": "south-1.25",
+          "index": 8,
+          "heading": 315,
+          "target_pixels": 0,
+          "rgb_sha256": "9b8bc12e38567939d0c4070d9a3b3d712b0ff73b407bb5c6afa221f2ae1e330e",
+          "frontends": {
+            "ssdlite": {
+              "scores": [],
+              "bbox_ious": []
+            },
+            "fasterrcnn": {
+              "scores": [],
+              "bbox_ious": []
+            }
+          }
+        },
+        {
+          "cell": "south-1.25",
+          "index": 9,
+          "heading": 330,
+          "target_pixels": 0,
+          "rgb_sha256": "265a51ce16dc798f7d706370ba498e8689031df5ebb77a1f2f8c451637855337",
+          "frontends": {
+            "ssdlite": {
+              "scores": [],
+              "bbox_ious": []
+            },
+            "fasterrcnn": {
+              "scores": [],
+              "bbox_ious": []
+            }
+          }
+        },
+        {
+          "cell": "south-1.25",
+          "index": 10,
+          "heading": 345,
+          "target_pixels": 0,
+          "rgb_sha256": "b10b2f8b0c3b0c43a42862ac69356d5172c854dddc3baea540825709c29306a7",
+          "frontends": {
+            "ssdlite": {
+              "scores": [],
+              "bbox_ious": []
+            },
+            "fasterrcnn": {
+              "scores": [],
+              "bbox_ious": []
+            }
+          }
+        },
+        {
+          "cell": "south-1.45",
+          "index": 0,
+          "heading": 195,
+          "target_pixels": 0,
+          "rgb_sha256": "b73f6cf75ec75667544258aaab20e47d4a55a2eaa9030a8f61e221aa7424f858",
+          "frontends": {
+            "ssdlite": {
+              "scores": [],
+              "bbox_ious": []
+            },
+            "fasterrcnn": {
+              "scores": [],
+              "bbox_ious": []
+            }
+          }
+        },
+        {
+          "cell": "south-1.45",
+          "index": 1,
+          "heading": 210,
+          "target_pixels": 2245,
+          "rgb_sha256": "6ffdcc1db4fce8a1c191416978fee2b94812a603295b42a59c0d71a2f52de880",
+          "frontends": {
+            "ssdlite": {
+              "scores": [],
+              "bbox_ious": []
+            },
+            "fasterrcnn": {
+              "scores": [
+                0.9098272323608398
+              ],
+              "bbox_ious": [
+                0.0
+              ]
+            }
+          }
+        },
+        {
+          "cell": "south-1.45",
+          "index": 2,
+          "heading": 225,
+          "target_pixels": 1849,
+          "rgb_sha256": "7c0e3d4f01e0a4552d4882feb6d1e87a3bbd59595590bf5886786d7fd1ad4dd5",
+          "frontends": {
+            "ssdlite": {
+              "scores": [],
+              "bbox_ious": []
+            },
+            "fasterrcnn": {
+              "scores": [
+                0.972359299659729
+              ],
+              "bbox_ious": [
+                0.0
+              ]
+            }
+          }
+        },
+        {
+          "cell": "south-1.45",
+          "index": 3,
+          "heading": 240,
+          "target_pixels": 1791,
+          "rgb_sha256": "aa851058e790eb325ca55663abeeede4aab2c14bea3e8c3b1f45d3f7d4d9acf4",
+          "frontends": {
+            "ssdlite": {
+              "scores": [],
+              "bbox_ious": []
+            },
+            "fasterrcnn": {
+              "scores": [
+                0.905302882194519
+              ],
+              "bbox_ious": [
+                0.0
+              ]
+            }
+          }
+        },
+        {
+          "cell": "south-1.45",
+          "index": 4,
+          "heading": 255,
+          "target_pixels": 2037,
+          "rgb_sha256": "d0324034858739d367990402111025771188184a8b762a33a5459364ccca34ae",
+          "frontends": {
+            "ssdlite": {
+              "scores": [],
+              "bbox_ious": []
+            },
+            "fasterrcnn": {
+              "scores": [
+                0.8147903680801392
+              ],
+              "bbox_ious": [
+                0.0
+              ]
+            }
+          }
+        },
+        {
+          "cell": "south-1.45",
+          "index": 5,
+          "heading": 270,
+          "target_pixels": 1259,
+          "rgb_sha256": "b6c447f0b6cc70675df96a371c18f6eb78488a21718bfbc4749a273940491360",
+          "frontends": {
+            "ssdlite": {
+              "scores": [],
+              "bbox_ious": []
+            },
+            "fasterrcnn": {
+              "scores": [],
+              "bbox_ious": []
+            }
+          }
+        },
+        {
+          "cell": "south-1.45",
+          "index": 6,
+          "heading": 285,
+          "target_pixels": 0,
+          "rgb_sha256": "cec9ae7323d54349ea4310bc63031224c30e35933c3332026f62384dda19ec5a",
+          "frontends": {
+            "ssdlite": {
+              "scores": [],
+              "bbox_ious": []
+            },
+            "fasterrcnn": {
+              "scores": [],
+              "bbox_ious": []
+            }
+          }
+        },
+        {
+          "cell": "south-1.45",
+          "index": 7,
+          "heading": 300,
+          "target_pixels": 0,
+          "rgb_sha256": "023a2eb7cb15a2c2de12ffcde038441eec8b979566018be9a8f271fa9ac6a809",
+          "frontends": {
+            "ssdlite": {
+              "scores": [],
+              "bbox_ious": []
+            },
+            "fasterrcnn": {
+              "scores": [],
+              "bbox_ious": []
+            }
+          }
+        },
+        {
+          "cell": "south-1.45",
+          "index": 8,
+          "heading": 315,
+          "target_pixels": 0,
+          "rgb_sha256": "8bc704b016341fb6212945da48b1b11431cf2253d32662e72ae91b1cd55b4f12",
+          "frontends": {
+            "ssdlite": {
+              "scores": [],
+              "bbox_ious": []
+            },
+            "fasterrcnn": {
+              "scores": [],
+              "bbox_ious": []
+            }
+          }
+        },
+        {
+          "cell": "south-1.45",
+          "index": 9,
+          "heading": 330,
+          "target_pixels": 0,
+          "rgb_sha256": "9fc52512617572a0af2922d55c394b5bbb3b84976172a7ce79368172df007821",
+          "frontends": {
+            "ssdlite": {
+              "scores": [],
+              "bbox_ious": []
+            },
+            "fasterrcnn": {
+              "scores": [],
+              "bbox_ious": []
+            }
+          }
+        },
+        {
+          "cell": "south-1.45",
+          "index": 10,
+          "heading": 345,
+          "target_pixels": 0,
+          "rgb_sha256": "4c24d35a8bda2fdde44feef634ff8a5ae27a056bc64aef3dbc3f1d34593fc1ca",
+          "frontends": {
+            "ssdlite": {
+              "scores": [],
+              "bbox_ious": []
+            },
+            "fasterrcnn": {
+              "scores": [],
+              "bbox_ious": []
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

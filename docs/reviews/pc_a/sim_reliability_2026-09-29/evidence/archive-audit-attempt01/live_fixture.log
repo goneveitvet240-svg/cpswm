@@ -1,0 +1,19 @@
+Traceback (most recent call last):
+  File "/private/tmp/cpswm-pc-a-sim-method-audit-20260929/tools/run_instance_correspondence_diagnostic.py", line 398, in <module>
+    main(p.parse_args())
+    ~~~~^^^^^^^^^^^^^^^^
+  File "/private/tmp/cpswm-pc-a-sim-method-audit-20260929/tools/run_instance_correspondence_diagnostic.py", line 334, in main
+    capture(args.output, site="north", size=640, sdk_python=args.sdk_python, binary=args.binary)
+    ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/private/tmp/cpswm-pc-a-sim-method-audit-20260929/tools/run_instance_correspondence_diagnostic.py", line 53, in capture
+    executor = UnityObservationExecutor(
+        python=sdk_python,
+    ...<5 lines>...
+        **scope,
+    )
+  File "/private/tmp/cpswm-pc-a-sim-method-audit-20260929/src/cpswm/system/unity_observation.py", line 79, in __init__
+    if self._receive().get("ready") is not True:
+       ~~~~~~~~~~~~~^^
+  File "/private/tmp/cpswm-pc-a-sim-method-audit-20260929/src/cpswm/system/unity_observation.py", line 96, in _receive
+    raise TimeoutError("Unity receipt timed out; outcome uncertain")
+TimeoutError: Unity receipt timed out; outcome uncertain

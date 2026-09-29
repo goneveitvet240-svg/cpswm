@@ -1,3 +1,7 @@
+# A：RGB-D / 相机自身位姿主干开工（2026-09-30）
+
+用户本轮明确同意新增公开 RGB-D 与相机自身位姿，另授权八小时主干推进和常规工程选择。分支 codex/pc-a-rgbd-camera-geometry-20260930，base/开工实际源码 f57d67e4bde4f036cb6cfc13710966d8b289930b。先做单位/坐标/权限/同历史来源绑定和几何候选，再核验对后续联合输入的贡献。原 RGB/分类对照、已批准澄清任务及完整研究范围保留。两轮顺序自审后才进入下一轮；B 独立与科学收益未关闭。证据 output/rgbd-camera-geometry-20260930；[计划](../reviews/pc_a/rgbd_camera_geometry_2026-09-30/PLAN.md)。开工远端集成 19ddf26830348a2f0b33f0af54d6ba702c5cfb1c、B fd4ca6ef5e81c90d7cf7987b42c0b2810d8a810a 未变。以下为历史时点。
+
 # A：公共视觉候选同历史接线交付（2026-09-30）
 
 分支codex/pc-a-visual-support-20260930，base 1d3538794b8b86d66414255f8d37f64d8ff0d88e；实际功能源码d699b90db2b0cfa719be7f44f8c7128d27c08780。新增运行时visual_observation_support读出，使用原始动作拥有的公共RGB和既有绑定检测器，返回帧候选/图像位置/原生代际及重复像素组。未拟合自然目标密度，未把图像位置当三维位置、框ID当世界身份或检测分数当概率。

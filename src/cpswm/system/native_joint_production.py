@@ -11,7 +11,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from datetime import datetime
 from hashlib import sha256
-from typing import Any, Protocol
+from typing import TYPE_CHECKING, Any, Protocol
 from uuid import UUID
 
 from cpswm.perception_mapping.adapters.rgbd_capture import RawModalityObservation
@@ -26,6 +26,9 @@ from cpswm.system.structure_two_particle_workspace import (
     native_content_sha256,
 )
 
+if TYPE_CHECKING:
+    from cpswm.system.native_visual_source import NativeVisualSource
+
 
 @dataclass(frozen=True)
 class NativeJointContext:
@@ -35,6 +38,7 @@ class NativeJointContext:
     ledger_head_sha256: str
     visible_prefix: tuple[RawModalityObservation, ...]
     cutoff: datetime
+    visual_source: NativeVisualSource | None = None
 
     @property
     def content_sha256(self) -> str:
@@ -54,6 +58,7 @@ class NativeJointContext:
                     for raw in self.visible_prefix
                 ),
                 self.cutoff,
+                *((self.visual_source,) if self.visual_source is not None else ()),
             )
         )
 

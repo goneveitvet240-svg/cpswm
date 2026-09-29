@@ -1,3 +1,7 @@
+# A：视觉输入进入原生神经提议开工（2026-09-30）
+
+分支 codex/pc-a-owned-visual-neural-20260930，base/开工源码 c1ae096f55c6487285a83a4aff5e08f743054df5。承接已交付 PR63，推进运行时拥有的完整候选/几何进入提议网络及原生源核验；默认语义对照保留。精确枚举 q 仍抵消，目标密度与自然训练缺口不变。[计划](../reviews/pc_a/owned_visual_neural_2026-09-30/PLAN.md)。输出 output/owned-visual-neural-20260930；冻结后顺序两轮自审，B 独立未关闭。远端集成19ddf26830348a2f0b33f0af54d6ba702c5cfb1c、B fd4ca6ef5e81c90d7cf7987b42c0b2810d8a810a 未变。以下为历史时点。
+
 # A：RGB-D / 自位姿主干接线交付（2026-09-30）
 
 用户已明确授权新增公开 RGB-D 与相机自身位姿；本轮分支 codex/pc-a-rgbd-camera-geometry-20260930，base f57d67e4bde4f036cb6cfc13710966d8b289930b。实际方法/采集源码 dacc6c6cf070225fbc5b13ce351f1487636f6ec8，归档轨迹核验修复源码 2ff55ee5b69f27b963d389c5ecccd0044f2d7373（仅验证器+测试）。RGB/depth/self-pose 三路配对进入原有 M05/SQLite，由 owner 重建世界表面候选；没有加入世界身份/物体中心/概率或新记忆权限。

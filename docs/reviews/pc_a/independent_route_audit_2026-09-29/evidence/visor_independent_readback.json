@@ -1,0 +1,84 @@
+{
+  "scope": "Saved per-frame loss arithmetic only; no retraining",
+  "source_sha256": "f6e35bfe091de0a42a0f50feef535a1342fdde0193277752dc9713b15c5fcd6c",
+  "rows": {
+    "cyclic_wrong_image": {
+      "feature_128": {
+        "frames": 61,
+        "objective": 0.8095163698079156,
+        "negative_contact_frames": 2,
+        "negative_contact_bce": 1.3669874668121338
+      },
+      "feature_16": {
+        "frames": 61,
+        "objective": 1.092378496146593,
+        "negative_contact_frames": 2,
+        "negative_contact_bce": 0.792668879032135
+      }
+    },
+    "separate_video": {
+      "analytic_constant": {
+        "frames": 61,
+        "objective": 0.7254229274074562,
+        "negative_contact_frames": 2,
+        "negative_contact_bce": 3.0039368867874146
+      },
+      "bias_128": {
+        "frames": 61,
+        "objective": 0.9915372084398739,
+        "negative_contact_frames": 2,
+        "negative_contact_bce": 0.904045045375824
+      },
+      "bias_16": {
+        "frames": 61,
+        "objective": 1.1606216293866518,
+        "negative_contact_frames": 2,
+        "negative_contact_bce": 0.7201472222805023
+      },
+      "feature_128": {
+        "frames": 61,
+        "objective": 0.7899106672552766,
+        "negative_contact_frames": 2,
+        "negative_contact_bce": 1.3436865210533142
+      },
+      "feature_16": {
+        "frames": 61,
+        "objective": 1.0889605987267417,
+        "negative_contact_frames": 2,
+        "negative_contact_bce": 0.7898688614368439
+      }
+    },
+    "train": {
+      "analytic_constant": {
+        "frames": 8,
+        "objective": 0.5207267352379858,
+        "negative_contact_frames": 1,
+        "negative_contact_bce": 3.003936767578125
+      },
+      "bias_128": {
+        "frames": 8,
+        "objective": 0.9619488269090652,
+        "negative_contact_frames": 1,
+        "negative_contact_bce": 0.9040449857711792
+      },
+      "bias_16": {
+        "frames": 8,
+        "objective": 1.1733824834227562,
+        "negative_contact_frames": 1,
+        "negative_contact_bce": 0.7201471924781799
+      },
+      "feature_128": {
+        "frames": 8,
+        "objective": 0.6732072308659554,
+        "negative_contact_frames": 1,
+        "negative_contact_bce": 1.3738408088684082
+      },
+      "feature_16": {
+        "frames": 8,
+        "objective": 1.0789642110466957,
+        "negative_contact_frames": 1,
+        "negative_contact_bce": 0.7949138283729553
+      }
+    }
+  }
+}

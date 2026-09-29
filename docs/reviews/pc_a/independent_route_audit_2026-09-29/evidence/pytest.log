@@ -1,0 +1,109 @@
+..................................................EEEEE                  [100%]
+==================================== ERRORS ====================================
+___ ERROR at setup of test_actual_eight_frame_sequence_recomputes_completely ___
+
+    @pytest.fixture(scope="module")
+    def actual():
+>       return Path(os.environ["CPSWM_REPETITION_FIXTURE"]), dict(
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+            ssdlite=Path(os.environ["CPSWM_SSDLITE_WEIGHTS"]),
+            fasterrcnn=Path(os.environ["CPSWM_FASTERRCNN_WEIGHTS"]),
+        )
+
+tests/test_simulator_repeatability_artifacts.py:15: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = environ({'CODEX_APP_TOOLS_PIPE_PATH': '/tmp/codex-browser-use/928235df-19ea-432c-9dc1-8a8ba7583226.sock', 'CODEX_CI': ...T': 'tests/test_simulator_repeatability_artifacts.py::test_actual_eight_frame_sequence_recomputes_completely (setup)'})
+key = 'CPSWM_REPETITION_FIXTURE'
+
+>   ???
+E   KeyError: 'CPSWM_REPETITION_FIXTURE'
+
+<frozen os>:717: KeyError
+_ ERROR at setup of test_consistent_positive_and_sequence_corruption_rejected[full_positive] _
+
+    @pytest.fixture(scope="module")
+    def actual():
+>       return Path(os.environ["CPSWM_REPETITION_FIXTURE"]), dict(
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+            ssdlite=Path(os.environ["CPSWM_SSDLITE_WEIGHTS"]),
+            fasterrcnn=Path(os.environ["CPSWM_FASTERRCNN_WEIGHTS"]),
+        )
+
+tests/test_simulator_repeatability_artifacts.py:15: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = environ({'CODEX_APP_TOOLS_PIPE_PATH': '/tmp/codex-browser-use/928235df-19ea-432c-9dc1-8a8ba7583226.sock', 'CODEX_CI': ...mulator_repeatability_artifacts.py::test_consistent_positive_and_sequence_corruption_rejected[full_positive] (setup)'})
+key = 'CPSWM_REPETITION_FIXTURE'
+
+>   ???
+E   KeyError: 'CPSWM_REPETITION_FIXTURE'
+
+<frozen os>:717: KeyError
+_ ERROR at setup of test_consistent_positive_and_sequence_corruption_rejected[mask_summary] _
+
+    @pytest.fixture(scope="module")
+    def actual():
+>       return Path(os.environ["CPSWM_REPETITION_FIXTURE"]), dict(
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+            ssdlite=Path(os.environ["CPSWM_SSDLITE_WEIGHTS"]),
+            fasterrcnn=Path(os.environ["CPSWM_FASTERRCNN_WEIGHTS"]),
+        )
+
+tests/test_simulator_repeatability_artifacts.py:15: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = environ({'CODEX_APP_TOOLS_PIPE_PATH': '/tmp/codex-browser-use/928235df-19ea-432c-9dc1-8a8ba7583226.sock', 'CODEX_CI': ...imulator_repeatability_artifacts.py::test_consistent_positive_and_sequence_corruption_rejected[mask_summary] (setup)'})
+key = 'CPSWM_REPETITION_FIXTURE'
+
+>   ???
+E   KeyError: 'CPSWM_REPETITION_FIXTURE'
+
+<frozen os>:717: KeyError
+_ ERROR at setup of test_consistent_positive_and_sequence_corruption_rejected[missing_owned_frame] _
+
+    @pytest.fixture(scope="module")
+    def actual():
+>       return Path(os.environ["CPSWM_REPETITION_FIXTURE"]), dict(
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+            ssdlite=Path(os.environ["CPSWM_SSDLITE_WEIGHTS"]),
+            fasterrcnn=Path(os.environ["CPSWM_FASTERRCNN_WEIGHTS"]),
+        )
+
+tests/test_simulator_repeatability_artifacts.py:15: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = environ({'CODEX_APP_TOOLS_PIPE_PATH': '/tmp/codex-browser-use/928235df-19ea-432c-9dc1-8a8ba7583226.sock', 'CODEX_CI': ...r_repeatability_artifacts.py::test_consistent_positive_and_sequence_corruption_rejected[missing_owned_frame] (setup)'})
+key = 'CPSWM_REPETITION_FIXTURE'
+
+>   ???
+E   KeyError: 'CPSWM_REPETITION_FIXTURE'
+
+<frozen os>:717: KeyError
+_ ERROR at setup of test_consistent_positive_and_sequence_corruption_rejected[full_metadata_drift] _
+
+    @pytest.fixture(scope="module")
+    def actual():
+>       return Path(os.environ["CPSWM_REPETITION_FIXTURE"]), dict(
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+            ssdlite=Path(os.environ["CPSWM_SSDLITE_WEIGHTS"]),
+            fasterrcnn=Path(os.environ["CPSWM_FASTERRCNN_WEIGHTS"]),
+        )
+
+tests/test_simulator_repeatability_artifacts.py:15: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = environ({'CODEX_APP_TOOLS_PIPE_PATH': '/tmp/codex-browser-use/928235df-19ea-432c-9dc1-8a8ba7583226.sock', 'CODEX_CI': ...r_repeatability_artifacts.py::test_consistent_positive_and_sequence_corruption_rejected[full_metadata_drift] (setup)'})
+key = 'CPSWM_REPETITION_FIXTURE'
+
+>   ???
+E   KeyError: 'CPSWM_REPETITION_FIXTURE'
+
+<frozen os>:717: KeyError
+=========================== short test summary info ============================
+ERROR tests/test_simulator_repeatability_artifacts.py::test_actual_eight_frame_sequence_recomputes_completely
+ERROR tests/test_simulator_repeatability_artifacts.py::test_consistent_positive_and_sequence_corruption_rejected[full_positive]
+ERROR tests/test_simulator_repeatability_artifacts.py::test_consistent_positive_and_sequence_corruption_rejected[mask_summary]
+ERROR tests/test_simulator_repeatability_artifacts.py::test_consistent_positive_and_sequence_corruption_rejected[missing_owned_frame]
+ERROR tests/test_simulator_repeatability_artifacts.py::test_consistent_positive_and_sequence_corruption_rejected[full_metadata_drift]
+50 passed, 5 errors in 132.86s (0:02:12)

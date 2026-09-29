@@ -1,0 +1,75 @@
+"""Read-only independent review; run from the frozen review worktree."""
+import hashlib
+import json
+import sys
+import time
+from pathlib import Path
+
+import numpy as np
+import torch
+from run_simulator_repeatability import analyze, plan, summarize
+from run_camera_measurement_grid import source_identity
+
+OUT = Path(__file__).resolve().parent
+ROOT = Path('/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output')
+CAP = ROOT / 'sim-reliability-20260929/repeatability-attempt01/captures'
+WEIGHTS = ROOT / 'models/torchvision'
+
+def save(name, value):
+    (OUT / name).write_text(json.dumps(value, indent=2) + '\n')
+
+def independent_counts():
+    inventory = json.loads((ROOT / 'sim-reliability-20260929/RAW_INVENTORY.json').read_text())
+    errors = []
+    for row in inventory['files']:
+        p = ROOT / 'sim-reliability-20260929' / row['path']
+        raw = p.read_bytes()
+        if len(raw) != row['bytes'] or hashlib.sha256(raw).hexdigest() != row['sha256']:
+            errors.append(row['path'])
+    save('inventory_check.json', dict(files=len(inventory['files']), bytes=inventory['bytes'], errors=errors))
+    assert not errors
+    cells = []
+    # Recompute directly from raw masks, saved full predictions, and SDK metadata.
+    # Do not call the author's analysis/summary/IoU helpers for these statistics.
+    for site in ('north', 'south'):
+        for size in (320, 640):
+            for repeat in (0, 1):
+                for route in ('direct', 'rotate'):
+                    name = f'{site}-{size}-{route}-{repeat}'
+                    p = CAP / name
+                    pred = json.loads((p / 'predictions.json').read_text())['measurements']
+                    priv = p / 'unity-logs/evaluator_only'
+                    masks = [np.load(priv / f'{i:03d}-mask.npy', allow_pickle=False) for i in range(8)]
+                    images = [np.load(priv / f'{i:03d}-rgb.npy', allow_pickle=False) for i in range(8)]
+                    meta = [json.loads((priv / f'full_metadata/{i:03d}.json').read_text())['metadata'] for i in range(8)]
+                    positive = {kind: ''.join(str(int(any(c['category'] == 'apple' for c in row['candidates']))) for row in pred[kind]) for kind in pred}
+                    cells.append(dict(name=name, target_pixels=[int(m.sum()) for m in masks],
+                        rest=[m['isSceneAtRest'] for m in meta], apple_sequences=positive,
+                        masks_equal=all(np.array_equal(masks[0], m) for m in masks),
+                        first_last_mean_abs=float(np.abs(images[0].astype(np.int16)-images[-1].astype(np.int16)).mean())))
+    save('independent_counts.json', dict(frames=128, cells=cells,
+        rest_true=sum(sum(x['rest']) for x in cells),
+        south_320=[x['apple_sequences']['fasterrcnn'] for x in cells if x['name'].startswith('south-320')],
+        north_640_false_positive_frames=sum(x['apple_sequences']['fasterrcnn'].count('1') for x in cells if x['name'].startswith('north-640'))))
+    print('Independent raw-file counts and inventory completed', flush=True)
+
+def inference():
+    torch.set_num_threads(2)
+    before = source_identity()
+    rows = []
+    started = time.monotonic()
+    for cell in plan():
+        rows.append(analyze(CAP / cell['name'], cell, weights={
+            'ssdlite': WEIGHTS / 'ssdlite320_mobilenet_v3_large_coco-a79551df.pth',
+            'fasterrcnn': WEIGHTS / 'fasterrcnn_resnet50_fpn_v2_coco-dd69338a.pth'}, verify=True))
+        print('Verified from original pixels:', cell['name'], flush=True)
+    assert summarize(rows) == json.loads((CAP / 'summary.json').read_text())
+    assert source_identity() == before
+    save('fresh_inference.json', dict(frames=128, inference_calls=256, cells=16,
+        source_sha256=before[0], source_unchanged=True, saved_predictions_equal=True,
+        saved_analysis_equal=True, seconds=time.monotonic()-started,
+        python=sys.executable, torch=torch.__version__, code_root=str(Path.cwd()),
+        limitation='Same-host existing locked dependencies; no fresh Unity collection'))
+
+independent_counts()
+inference()

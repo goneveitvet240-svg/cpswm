@@ -1,0 +1,25 @@
+{
+  "scope": "Historical saved actions and released truth; not current-model replay",
+  "path": "docs/reviews/data/structure_two_comparison_audit_window2_2026-09-11/steps.jsonl.gz",
+  "sha256": "59658ce51245a726501f1a312aa5900df6837e915a3f80191800d378a06c7794",
+  "steps": 1920,
+  "episodes": 60,
+  "put_back_errors": {
+    "direct_p5_full_eager": 85,
+    "independently_tuned_amg": 102,
+    "learned_matched_two_stage": 533
+  },
+  "search_errors": {
+    "direct_p5_full_eager": 154,
+    "independently_tuned_amg": 154,
+    "learned_matched_two_stage": 154
+  },
+  "full_equals_fast": 1920,
+  "zero_committed_steps": 1920,
+  "same_current_distribution_steps": 1920,
+  "p5_amg_partition": {
+    "0/0": 1818,
+    "1/1": 85,
+    "0/1": 17
+  }
+}

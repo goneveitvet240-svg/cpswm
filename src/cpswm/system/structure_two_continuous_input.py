@@ -37,6 +37,11 @@ from cpswm.system.native_joint_production import (
     producer_binding,
     producer_implementation_binding,
 )
+from cpswm.system.owned_visual_support import (
+    OwnedVisualSupport,
+    VisualMeasurementDecoder,
+    reconstruct_visual_support,
+)
 from cpswm.system.prototype_spine import (
     PrototypeRevisionResult,
     PrototypeStepResult,
@@ -1225,6 +1230,36 @@ class ContinuousEvidenceInput:
                     for key, value in self._observation_commands.items()
                 )
             )
+
+    def visual_observation_support(
+        self, *, expected: OwnedVisualSupport | None = None
+    ) -> OwnedVisualSupport:
+        """Reinfer full frame candidates from owned pixels without changing state.
+
+        Old generations remain explicit history; no frame is silently reused as
+        current-generation density, persistent instance identity or metric pose.
+        """
+        with self._lock:
+            self._enter()
+            try:
+                self._check_observation_decoder()
+                if self._observation_decoder is None:
+                    raise ValueError("visual support requires a configured decoder")
+                assert self._observation_decoder_binding is not None
+                result = reconstruct_visual_support(
+                    commands=deepcopy(self._observation_commands),
+                    statuses=deepcopy(self._observation_status),
+                    native_origins=deepcopy(self._observation_native_origins),
+                    raw=deepcopy(self._raw),
+                    scope=self._scope,
+                    decoder=cast(VisualMeasurementDecoder, self._observation_decoder),
+                    expected_binding=self._observation_decoder_binding,
+                )
+                if expected is not None and result != expected:
+                    raise ValueError("fresh owned visual support differs")
+                return result
+            finally:
+                self._busy = False
 
     def reconcile_observation(
         self,

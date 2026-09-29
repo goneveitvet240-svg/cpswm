@@ -5,6 +5,9 @@ from __future__ import annotations
 import copy
 import json
 import os
+import subprocess
+import sys
+import xml.etree.ElementTree as ET
 from dataclasses import replace
 from pathlib import Path
 
@@ -151,7 +154,48 @@ def test_safe_selection_preserves_frozen_grid_and_results(setup):
         fair.validation_selection(dataset, config, replace(material, training_episode_ids=()))
 
 
-def test_consumer_probe_records_actual_values_and_restores_tracer(setup):
+def test_consumer_probe_records_actual_values_and_restores_tracer(setup, tmp_path):
+    previous = sys.gettrace()
+    if previous is not None:
+        # Coverage owns the parent's tracer. Exercise the unchanged production
+        # probe in an actual child, rather than replacing that tracer or skipping
+        # the assertions. A child that still has a tracer must fail, not recurse.
+        assert os.environ.get("CPSWM_CONSUMER_PROBE_ISOLATED") != "1"
+        environment = {
+            name: value
+            for name, value in os.environ.items()
+            if not name.startswith("COV_CORE_") and name != "COVERAGE_PROCESS_START"
+        }
+        environment.update(CPSWM_CONSUMER_PROBE_ISOLATED="1", PYTEST_ADDOPTS="")
+        report = tmp_path / "consumer-probe-child.xml"
+        result = subprocess.run(
+            [
+                sys.executable,
+                "-m",
+                "pytest",
+                "-o",
+                "addopts=",
+                "-p",
+                "no:cov",
+                "-q",
+                f"{__file__}::test_consumer_probe_records_actual_values_and_restores_tracer",
+                "--junitxml",
+                str(report),
+            ],
+            cwd=ROOT,
+            env=environment,
+            capture_output=True,
+            text=True,
+            timeout=300,
+        )
+        assert result.returncode == 0, result.stdout + result.stderr
+        suites = list(ET.parse(report).getroot().iter("testsuite"))
+        assert sum(int(s.attrib["tests"]) for s in suites) == 1
+        assert all(
+            int(s.attrib[key]) == 0 for s in suites for key in ("failures", "errors", "skipped")
+        )
+        assert sys.gettrace() is previous
+        return
     dataset, train, model, ep, *_ = setup
     probe = fair.ConsumerProbe()
     with probe:
@@ -165,6 +209,21 @@ def test_consumer_probe_records_actual_values_and_restores_tracer(setup):
         k.startswith("_feature_row:ordered_role") for k in result["executed_attribute_reads"]
     )
     assert fair.findings(rows)["comparison_fairness"] == "NOT_ESTABLISHED"
+    assert sys.gettrace() is None
+
+    def observer(frame, event, arg):
+        return None
+
+    sys.settrace(observer)
+    try:
+        with (
+            pytest.raises(ValueError, match="FAIRNESS_PROBE_EXISTING_TRACER"),
+            fair.ConsumerProbe(),
+        ):
+            pytest.fail("an existing tracer must not be replaced")
+        assert sys.gettrace() is observer
+    finally:
+        sys.settrace(previous)
 
 
 def test_complete_fairness_forgeries_real_cli_and_valid_positive(tmp_path):

@@ -1,3 +1,15 @@
+# A：完整依赖与行动报告交付（2026-09-30）
+
+分支codex/pc-a-ci-action-report-20260930，base778e35418d79b350148c774d98377b0a4ab6e6d4，实际源码c87b6bb1e3c72986afe517f7f29ebf3d028f2283。冻结依赖、src/tests/tools搜索路径补齐，保留全部6035项/367模块；新环境顺序74/31双审零跳过，全仓mypy382及Ruff/格式757文件通过。远端static-quality与收集通过，完整回归尚在运行。
+
+真实RGB-D三观察、一受控撤回、11源/22记录，旧READY左转90取消后Pass，报告明确action_replaced；无旧动作的历史则action_started，不再混淆。独立视觉复算与源码/模型搬移完整重放通过；两种完整自洽假报告均被真实计划/回执重算拒绝，原件未变。未决仍97.5440%，不是自然任务成功。
+
+完整选择首失败诊断1750 passed/1 xfailed/1 failed：旧正路径测试替换生产方法触犯来源检查。下一轮修复调用观测手段，生产防护和正路径断言保留；完整CI、B独立、自然目标密度/监督校准仍未关闭。离线标签用途待用户明确答复，未开展私有标签训练。
+
+完整封存1,248文件/356,394,634字节，压缩48,530,479字节，SHA256 28bd25e25a1eef66d621d47f11f1f796e900bf95aae1c9c471b9641b75ce546d，逐文件读回核验；仅排除派生Python/pytest缓存。远端完整CI仍在运行，未冒充已完成。
+
+[报告](../reviews/pc_a/ci_action_report_2026-09-30/REPORT.md)、[双审](../reviews/pc_a/ci_action_report_2026-09-30/REVIEWS.md)、[复现](../reviews/pc_a/ci_action_report_2026-09-30/REPRODUCE.md)。原件output/ci-action-report-20260930。交付fetch核验集成19ddf26830348a2f0b33f0af54d6ba702c5cfb1c、B fd4ca6ef5e81c90d7cf7987b42c0b2810d8a810a、父778e35418d79b350148c774d98377b0a4ab6e6d4未变；完整统一框架与原对照保留。以下为历史时点。
+
 # A：CI依赖与行动报告修复开工（2026-09-30）
 
 分支codex/pc-a-ci-action-report-20260930，base/开工源码778e35418d79b350148c774d98377b0a4ab6e6d4（PR65）。[计划](../reviews/pc_a/ci_action_report_2026-09-30/PLAN.md)处理45个隔离dev收集错误、两个继承格式错误及None→Pass动作报告歧义；不删测试、不改变方法/先验/效用。冻结后顺序双审，再实际运行与完整回归。证据output/ci-action-report-20260930；旧记录保留。B独立/自然模型校准及标签权限答复仍未关闭。以下为历史时点。

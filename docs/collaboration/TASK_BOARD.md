@@ -1,3 +1,7 @@
+# A：反馈正路径观测修复开工（2026-09-30）
+
+分支codex/pc-a-positive-call-observation-20260930，base/开工源码2bd0ee7f44e01cb59dd29d36deb3ed4464907c5c。修复完整回归首失败中的测试替身，保留生产来源防护与正路径断言；随后顺序两轮对抗审查，再诊断下一失败。[计划](../reviews/pc_a/positive_call_observation_2026-09-30/PLAN.md)，证据output/positive-call-observation-20260930。完整CI/B独立及自然监督校准仍未关闭。以下历史时点保留。
+
 # A：完整依赖与行动报告交付（2026-09-30）
 
 已推送并通过[草稿PR66](https://github.com/goneveitvet240-svg/cpswm/pull/66)叠加PR65交接，未合并。

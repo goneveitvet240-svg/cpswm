@@ -50,6 +50,7 @@ from cpswm.system.structure_two_continuous_input import (  # noqa: E402
     ObservationDelivery,
 )
 from cpswm.system.structure_two_particle_workspace import native_content_sha256  # noqa: E402
+from cpswm.system.structure_two_semantic_identity import semantic_memory_state  # noqa: E402
 from cpswm.system.unity_observation import UnityObservationExecutor  # noqa: E402
 
 SCOPE = "CONTROLLED_SEMANTICS_AND_RETRACTION_WITH_REAL_CAMERA_SAME_HISTORY"
@@ -99,6 +100,50 @@ def next_time(stream):
         stream._last_arrival + timedelta(microseconds=1),
         stream._last_cutoff + timedelta(microseconds=1),
     )
+
+
+def validate_feedback_checkpoint(recomputed, recorded):
+    """Re-execution allocates fresh ledger/snapshot UUIDs; compare their semantics.
+
+    The existing semantic verifier checks raw ledger hashes before alpha-renaming
+    internal IDs. External evidence, authorization and memory values stay exact.
+    The recorded accepted checkpoint is then the origin for exact neural replay.
+    """
+    a, b = recomputed._system.core, recorded._system.core
+    if semantic_memory_state(a) != semantic_memory_state(b):
+        raise ValueError("accepted feedback semantic checkpoint differs")
+    sa, sb = asdict(a.current_snapshot), asdict(b.current_snapshot)
+    sa.pop("snapshot_id")
+    sb.pop("snapshot_id")
+    if sa != sb or a.current_cause_snapshot != b.current_cause_snapshot:
+        raise ValueError("accepted feedback snapshot content differs")
+    if native_content_sha256(vars(a._particle_workspace)) != native_content_sha256(
+        vars(b._particle_workspace)
+    ):
+        raise ValueError("accepted feedback original native workspace differs")
+    fields = (
+        "_scope",
+        "_raw",
+        "_last_arrival",
+        "_last_cutoff",
+        "_observation_commands",
+        "_observation_status",
+        "_observation_native_origins",
+        "_joint_initial_state_sha256",
+        "_joint_dependency_binding",
+        "_observation_decoder_binding",
+    )
+    if any(getattr(recomputed, key) != getattr(recorded, key) for key in fields) or {
+        k: v[0] for k, v in recomputed._feedback.items()
+    } != {k: v[0] for k, v in recorded._feedback.items()}:
+        raise ValueError("accepted feedback input or action binding differs")
+    for key in recomputed._feedback:
+        left, right = (asdict(s._feedback[key][1]) for s in (recomputed, recorded))
+        for row, core in ((left, a), (right, b)):
+            if row["snapshot_id"] == core.current_snapshot.snapshot_id:
+                row["snapshot_id"] = "current_accepted_snapshot"
+        if left != right:
+            raise ValueError("accepted feedback returned consequence differs")
 
 
 def verify_revision_chain(output, *, final_stream, checkpoint, decoder, builder, manifest):
@@ -155,6 +200,31 @@ def verify_revision_chain(output, *, final_stream, checkpoint, decoder, builder,
                 r["operations"] for r in expected_operations
             ] or summary(stream) != json.loads((output / "after-feedback-memory.json").read_text()):
                 raise ValueError("history feedback replay differs")
+            # Fresh semantic re-execution intentionally issues new internal UUIDs.
+            # Validate all semantic/external bindings first, then replay from the
+            # actually accepted post-feedback snapshot for byte-exact identities.
+            recomputed = stream
+            store.close()
+            accepted_path = Path(folder) / "accepted.sqlite"
+            with (
+                sqlite3.connect(output / "after-feedback.sqlite") as old,
+                sqlite3.connect(accepted_path) as new,
+            ):
+                old.backup(new)
+            store = ContinuousStateStore(
+                accepted_path,
+                source_identity=manifest["source_store"],
+                dependency_identity=manifest["dependency_store"],
+            )
+            joint = open_joint(checkpoint)
+            stream = ContinuousEvidenceInput.resume(
+                store,
+                producer=OracleProducer(),
+                context_builder=builder,
+                joint_producer=joint,
+                observation_decoder=decoder,
+            )
+            validate_feedback_checkpoint(recomputed, stream)
             old_runtime = stream._system.core._particle_workspace.runtime_id
             invalidated = tuple(
                 sorted(stream._system.core._particle_workspace.invalidated_revisions, key=str)

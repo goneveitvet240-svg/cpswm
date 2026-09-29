@@ -1,3 +1,5 @@
+> 2026-09-30：真实反馈正路径测试已修复并84/124双审；完整诊断4276通过/21失败，仍为部分覆盖。见[当前pipeline](../reviews/pc_a/positive_call_observation_2026-09-30/CURRENT_PIPELINE.md)与[失败分类](../reviews/pc_a/positive_call_observation_2026-09-30/REPORT.md)。
+
 # 2026-09-30 完整环境与真实动作报告
 
 [本轮交付](../reviews/pc_a/ci_action_report_2026-09-30/REPORT.md)：源码c87b6bb1e3c72986afe517f7f29ebf3d028f2283，74/31顺序双审、6035项完整收集和全仓静态检查通过。真实三观察、一撤回、11源/22记录、完整复算/搬移一致；两种完整假报告被拒绝。action_started与action_replaced分开，未决97.5440%，仍无自然任务收益。

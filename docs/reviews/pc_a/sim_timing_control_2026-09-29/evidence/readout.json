@@ -1,0 +1,5552 @@
+{
+  "scope": "FIXED_WINDOWS_DESCRIPTIVE_ONLY_NO_CALIBRATION",
+  "script_sha256": "496575171a50e10664fff6e55793861a9f0fae4e7724b91a055bf9eb995f02cf",
+  "cells": [
+    {
+      "cell": {
+        "name": "north-320-auto-0",
+        "site": "north",
+        "size": 320,
+        "mode": "auto",
+        "repeat": 0
+      },
+      "category_patterns": {
+        "ssdlite": "0000000000000000",
+        "fasterrcnn": "0000000000000000"
+      },
+      "overlap_patterns": {
+        "ssdlite": "0000000000000000",
+        "fasterrcnn": "0000000000000000"
+      },
+      "scene_rest_count": 6,
+      "tail_rgb_equal": true,
+      "tail_mask_equal": true,
+      "target_pixels": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "max_translation_from_prepare": 0.00631144642829895,
+      "max_rotation_from_prepare": 16.43099594116211,
+      "tail_max_translation_from_tail_start": 5.960464477539063e-08,
+      "tail_max_rotation_from_tail_start": 0.0001354217529296875,
+      "all_sdk_max_translation_after_prepare": 0.006409138441085815,
+      "all_sdk_max_rotation_after_prepare": 16.676607131958008,
+      "all_sdk_camera_equal_after_prepare": true,
+      "all_sdk_target_masks_equal_after_prepare": true,
+      "public_first_last": {
+        "equal": false,
+        "mean_abs_byte": 0.024309895833333334,
+        "maximum_abs_byte": 92,
+        "changed_pixel_fraction": 0.0089453125,
+        "target_region_mean_abs_byte": null
+      },
+      "after_prepare_to_last": {
+        "equal": false,
+        "mean_abs_byte": 14.957926432291666,
+        "maximum_abs_byte": 214,
+        "changed_pixel_fraction": 1.0,
+        "target_region_mean_abs_byte": null
+      },
+      "sdk_adjacent_mean_bytes": [
+        0.06868489583333333,
+        14.946715494791667,
+        0.031438802083333335,
+        0.040625,
+        0.0025423177083333335,
+        0.005813802083333333,
+        0.01099609375,
+        0.010856119791666667,
+        0.0052669270833333335,
+        0.0009244791666666667,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "cell": {
+        "name": "north-320-frozen-0",
+        "site": "north",
+        "size": 320,
+        "mode": "frozen",
+        "repeat": 0
+      },
+      "category_patterns": {
+        "ssdlite": "0000000000000000",
+        "fasterrcnn": "0000000000000000"
+      },
+      "overlap_patterns": {
+        "ssdlite": "0000000000000000",
+        "fasterrcnn": "0000000000000000"
+      },
+      "scene_rest_count": 16,
+      "tail_rgb_equal": true,
+      "tail_mask_equal": true,
+      "target_pixels": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "max_translation_from_prepare": 0.0,
+      "max_rotation_from_prepare": 0.0,
+      "tail_max_translation_from_tail_start": 0.0,
+      "tail_max_rotation_from_tail_start": 0.0,
+      "all_sdk_max_translation_after_prepare": 0.0,
+      "all_sdk_max_rotation_after_prepare": 0.0,
+      "all_sdk_camera_equal_after_prepare": true,
+      "all_sdk_target_masks_equal_after_prepare": true,
+      "public_first_last": {
+        "equal": true,
+        "mean_abs_byte": 0.0,
+        "maximum_abs_byte": 0,
+        "changed_pixel_fraction": 0.0,
+        "target_region_mean_abs_byte": null
+      },
+      "after_prepare_to_last": {
+        "equal": false,
+        "mean_abs_byte": 14.936402994791667,
+        "maximum_abs_byte": 214,
+        "changed_pixel_fraction": 0.99998046875,
+        "target_region_mean_abs_byte": null
+      },
+      "sdk_adjacent_mean_bytes": [
+        0.0,
+        14.936402994791667,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "cell": {
+        "name": "north-320-stepped-0",
+        "site": "north",
+        "size": 320,
+        "mode": "stepped",
+        "repeat": 0
+      },
+      "category_patterns": {
+        "ssdlite": "0000000000000000",
+        "fasterrcnn": "0000000000000000"
+      },
+      "overlap_patterns": {
+        "ssdlite": "0000000000000000",
+        "fasterrcnn": "0000000000000000"
+      },
+      "scene_rest_count": 0,
+      "tail_rgb_equal": false,
+      "tail_mask_equal": true,
+      "target_pixels": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "max_translation_from_prepare": 0.008220136165618896,
+      "max_rotation_from_prepare": 21.521029949188232,
+      "tail_max_translation_from_tail_start": 0.003258258104324341,
+      "tail_max_rotation_from_tail_start": 8.445907592773438,
+      "all_sdk_max_translation_after_prepare": 0.008220136165618896,
+      "all_sdk_max_rotation_after_prepare": 21.521029949188232,
+      "all_sdk_camera_equal_after_prepare": true,
+      "all_sdk_target_masks_equal_after_prepare": true,
+      "public_first_last": {
+        "equal": false,
+        "mean_abs_byte": 0.06792317708333333,
+        "maximum_abs_byte": 98,
+        "changed_pixel_fraction": 0.015634765625,
+        "target_region_mean_abs_byte": null
+      },
+      "after_prepare_to_last": {
+        "equal": false,
+        "mean_abs_byte": 14.95908203125,
+        "maximum_abs_byte": 214,
+        "changed_pixel_fraction": 0.999990234375,
+        "target_region_mean_abs_byte": null
+      },
+      "sdk_adjacent_mean_bytes": [
+        0.0,
+        14.940305989583333,
+        0.0,
+        0.0105078125,
+        0.0,
+        0.019723307291666665,
+        0.0,
+        0.028147786458333334,
+        0.0,
+        0.027428385416666666,
+        0.0,
+        0.024622395833333335,
+        0.0,
+        0.015807291666666667,
+        0.0,
+        0.005940755208333333,
+        0.0,
+        0.005641276041666666,
+        0.0,
+        0.009892578125,
+        0.0,
+        0.008551432291666666,
+        0.0,
+        0.004680989583333333,
+        0.0,
+        0.0042513020833333335,
+        0.0,
+        0.004326171875,
+        0.0,
+        0.0021158854166666665,
+        0.0,
+        0.002138671875,
+        0.0
+      ]
+    },
+    {
+      "cell": {
+        "name": "north-320-stepped-1",
+        "site": "north",
+        "size": 320,
+        "mode": "stepped",
+        "repeat": 1
+      },
+      "category_patterns": {
+        "ssdlite": "0000000000000000",
+        "fasterrcnn": "0000000000000000"
+      },
+      "overlap_patterns": {
+        "ssdlite": "0000000000000000",
+        "fasterrcnn": "0000000000000000"
+      },
+      "scene_rest_count": 0,
+      "tail_rgb_equal": false,
+      "tail_mask_equal": true,
+      "target_pixels": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "max_translation_from_prepare": 0.008220136165618896,
+      "max_rotation_from_prepare": 21.521029949188232,
+      "tail_max_translation_from_tail_start": 0.003258258104324341,
+      "tail_max_rotation_from_tail_start": 8.445907592773438,
+      "all_sdk_max_translation_after_prepare": 0.008220136165618896,
+      "all_sdk_max_rotation_after_prepare": 21.521029949188232,
+      "all_sdk_camera_equal_after_prepare": true,
+      "all_sdk_target_masks_equal_after_prepare": true,
+      "public_first_last": {
+        "equal": false,
+        "mean_abs_byte": 0.06792317708333333,
+        "maximum_abs_byte": 98,
+        "changed_pixel_fraction": 0.015634765625,
+        "target_region_mean_abs_byte": null
+      },
+      "after_prepare_to_last": {
+        "equal": false,
+        "mean_abs_byte": 14.95908203125,
+        "maximum_abs_byte": 214,
+        "changed_pixel_fraction": 0.999990234375,
+        "target_region_mean_abs_byte": null
+      },
+      "sdk_adjacent_mean_bytes": [
+        0.0,
+        14.940305989583333,
+        0.0,
+        0.0105078125,
+        0.0,
+        0.019723307291666665,
+        0.0,
+        0.028147786458333334,
+        0.0,
+        0.027428385416666666,
+        0.0,
+        0.024622395833333335,
+        0.0,
+        0.015807291666666667,
+        0.0,
+        0.005940755208333333,
+        0.0,
+        0.005641276041666666,
+        0.0,
+        0.009892578125,
+        0.0,
+        0.008551432291666666,
+        0.0,
+        0.004680989583333333,
+        0.0,
+        0.0042513020833333335,
+        0.0,
+        0.004326171875,
+        0.0,
+        0.0021158854166666665,
+        0.0,
+        0.002138671875,
+        0.0
+      ]
+    },
+    {
+      "cell": {
+        "name": "north-320-frozen-1",
+        "site": "north",
+        "size": 320,
+        "mode": "frozen",
+        "repeat": 1
+      },
+      "category_patterns": {
+        "ssdlite": "0000000000000000",
+        "fasterrcnn": "0000000000000000"
+      },
+      "overlap_patterns": {
+        "ssdlite": "0000000000000000",
+        "fasterrcnn": "0000000000000000"
+      },
+      "scene_rest_count": 16,
+      "tail_rgb_equal": true,
+      "tail_mask_equal": true,
+      "target_pixels": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "max_translation_from_prepare": 0.0,
+      "max_rotation_from_prepare": 0.0,
+      "tail_max_translation_from_tail_start": 0.0,
+      "tail_max_rotation_from_tail_start": 0.0,
+      "all_sdk_max_translation_after_prepare": 0.0,
+      "all_sdk_max_rotation_after_prepare": 0.0,
+      "all_sdk_camera_equal_after_prepare": true,
+      "all_sdk_target_masks_equal_after_prepare": true,
+      "public_first_last": {
+        "equal": true,
+        "mean_abs_byte": 0.0,
+        "maximum_abs_byte": 0,
+        "changed_pixel_fraction": 0.0,
+        "target_region_mean_abs_byte": null
+      },
+      "after_prepare_to_last": {
+        "equal": false,
+        "mean_abs_byte": 14.936402994791667,
+        "maximum_abs_byte": 214,
+        "changed_pixel_fraction": 0.99998046875,
+        "target_region_mean_abs_byte": null
+      },
+      "sdk_adjacent_mean_bytes": [
+        0.0,
+        14.936402994791667,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "cell": {
+        "name": "north-320-auto-1",
+        "site": "north",
+        "size": 320,
+        "mode": "auto",
+        "repeat": 1
+      },
+      "category_patterns": {
+        "ssdlite": "0000000000000000",
+        "fasterrcnn": "0000000000000000"
+      },
+      "overlap_patterns": {
+        "ssdlite": "0000000000000000",
+        "fasterrcnn": "0000000000000000"
+      },
+      "scene_rest_count": 6,
+      "tail_rgb_equal": true,
+      "tail_mask_equal": true,
+      "target_pixels": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "max_translation_from_prepare": 0.007620483636856079,
+      "max_rotation_from_prepare": 20.057910442352295,
+      "tail_max_translation_from_tail_start": 5.960464477539063e-08,
+      "tail_max_rotation_from_tail_start": 0.0001087188720703125,
+      "all_sdk_max_translation_after_prepare": 0.007620483636856079,
+      "all_sdk_max_rotation_after_prepare": 20.057910442352295,
+      "all_sdk_camera_equal_after_prepare": true,
+      "all_sdk_target_masks_equal_after_prepare": true,
+      "public_first_last": {
+        "equal": false,
+        "mean_abs_byte": 0.0440234375,
+        "maximum_abs_byte": 92,
+        "changed_pixel_fraction": 0.011689453125,
+        "target_region_mean_abs_byte": null
+      },
+      "after_prepare_to_last": {
+        "equal": false,
+        "mean_abs_byte": 14.958828125,
+        "maximum_abs_byte": 214,
+        "changed_pixel_fraction": 1.0,
+        "target_region_mean_abs_byte": null
+      },
+      "sdk_adjacent_mean_bytes": [
+        0.07346028645833333,
+        14.9369140625,
+        0.029427083333333333,
+        0.047314453125,
+        0.019892578125,
+        0.0025423177083333335,
+        0.005813802083333333,
+        0.01099609375,
+        0.010856119791666667,
+        0.008876953125,
+        0.003798828125,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "cell": {
+        "name": "north-640-auto-0",
+        "site": "north",
+        "size": 640,
+        "mode": "auto",
+        "repeat": 0
+      },
+      "category_patterns": {
+        "ssdlite": "0000000000000000",
+        "fasterrcnn": "1111111111111111"
+      },
+      "overlap_patterns": {
+        "ssdlite": "0000000000000000",
+        "fasterrcnn": "0000000000000000"
+      },
+      "scene_rest_count": 12,
+      "tail_rgb_equal": true,
+      "tail_mask_equal": true,
+      "target_pixels": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "max_translation_from_prepare": 0.005096703767776489,
+      "max_rotation_from_prepare": 13.256340026855469,
+      "tail_max_translation_from_tail_start": 0.0,
+      "tail_max_rotation_from_tail_start": 0.0,
+      "all_sdk_max_translation_after_prepare": 0.005180716514587402,
+      "all_sdk_max_rotation_after_prepare": 13.465692520141602,
+      "all_sdk_camera_equal_after_prepare": true,
+      "all_sdk_target_masks_equal_after_prepare": true,
+      "public_first_last": {
+        "equal": false,
+        "mean_abs_byte": 0.021167805989583333,
+        "maximum_abs_byte": 97,
+        "changed_pixel_fraction": 0.0092626953125,
+        "target_region_mean_abs_byte": null
+      },
+      "after_prepare_to_last": {
+        "equal": false,
+        "mean_abs_byte": 14.915042317708334,
+        "maximum_abs_byte": 215,
+        "changed_pixel_fraction": 0.99999755859375,
+        "target_region_mean_abs_byte": null
+      },
+      "sdk_adjacent_mean_bytes": [
+        0.0319677734375,
+        14.917711588541666,
+        0.014029134114583333,
+        0.021590169270833334,
+        0.0021150716145833335,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "cell": {
+        "name": "north-640-frozen-0",
+        "site": "north",
+        "size": 640,
+        "mode": "frozen",
+        "repeat": 0
+      },
+      "category_patterns": {
+        "ssdlite": "0000000000000000",
+        "fasterrcnn": "1111111111111111"
+      },
+      "overlap_patterns": {
+        "ssdlite": "0000000000000000",
+        "fasterrcnn": "0000000000000000"
+      },
+      "scene_rest_count": 16,
+      "tail_rgb_equal": true,
+      "tail_mask_equal": true,
+      "target_pixels": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "max_translation_from_prepare": 0.0,
+      "max_rotation_from_prepare": 0.0,
+      "tail_max_translation_from_tail_start": 0.0,
+      "tail_max_rotation_from_tail_start": 0.0,
+      "all_sdk_max_translation_after_prepare": 0.0,
+      "all_sdk_max_rotation_after_prepare": 0.0,
+      "all_sdk_camera_equal_after_prepare": true,
+      "all_sdk_target_masks_equal_after_prepare": true,
+      "public_first_last": {
+        "equal": true,
+        "mean_abs_byte": 0.0,
+        "maximum_abs_byte": 0,
+        "changed_pixel_fraction": 0.0,
+        "target_region_mean_abs_byte": null
+      },
+      "after_prepare_to_last": {
+        "equal": false,
+        "mean_abs_byte": 14.90090087890625,
+        "maximum_abs_byte": 215,
+        "changed_pixel_fraction": 0.9999951171875,
+        "target_region_mean_abs_byte": null
+      },
+      "sdk_adjacent_mean_bytes": [
+        0.0,
+        14.90090087890625,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "cell": {
+        "name": "north-640-stepped-0",
+        "site": "north",
+        "size": 640,
+        "mode": "stepped",
+        "repeat": 0
+      },
+      "category_patterns": {
+        "ssdlite": "0000000000000000",
+        "fasterrcnn": "1111111111111111"
+      },
+      "overlap_patterns": {
+        "ssdlite": "0000000000000000",
+        "fasterrcnn": "0000000000000000"
+      },
+      "scene_rest_count": 0,
+      "tail_rgb_equal": false,
+      "tail_mask_equal": true,
+      "target_pixels": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "max_translation_from_prepare": 0.008220136165618896,
+      "max_rotation_from_prepare": 21.521029949188232,
+      "tail_max_translation_from_tail_start": 0.003258258104324341,
+      "tail_max_rotation_from_tail_start": 8.445907592773438,
+      "all_sdk_max_translation_after_prepare": 0.008220136165618896,
+      "all_sdk_max_rotation_after_prepare": 21.521029949188232,
+      "all_sdk_camera_equal_after_prepare": true,
+      "all_sdk_target_masks_equal_after_prepare": true,
+      "public_first_last": {
+        "equal": false,
+        "mean_abs_byte": 0.071923828125,
+        "maximum_abs_byte": 103,
+        "changed_pixel_fraction": 0.01747314453125,
+        "target_region_mean_abs_byte": null
+      },
+      "after_prepare_to_last": {
+        "equal": false,
+        "mean_abs_byte": 14.92500732421875,
+        "maximum_abs_byte": 215,
+        "changed_pixel_fraction": 0.99999755859375,
+        "target_region_mean_abs_byte": null
+      },
+      "sdk_adjacent_mean_bytes": [
+        0.0,
+        14.903734537760416,
+        0.0,
+        0.008499348958333333,
+        0.0,
+        0.019925944010416665,
+        0.0,
+        0.0273828125,
+        0.0,
+        0.0291455078125,
+        0.0,
+        0.02529541015625,
+        0.0,
+        0.019579264322916668,
+        0.0,
+        0.0063330078125,
+        0.0,
+        0.005418294270833333,
+        0.0,
+        0.01089599609375,
+        0.0,
+        0.011118977864583334,
+        0.0,
+        0.00688232421875,
+        0.0,
+        0.00232666015625,
+        0.0,
+        0.0013232421875,
+        0.0,
+        0.003931477864583333,
+        0.0,
+        0.0036979166666666666,
+        0.0
+      ]
+    },
+    {
+      "cell": {
+        "name": "north-640-stepped-1",
+        "site": "north",
+        "size": 640,
+        "mode": "stepped",
+        "repeat": 1
+      },
+      "category_patterns": {
+        "ssdlite": "0000000000000000",
+        "fasterrcnn": "1111111111111111"
+      },
+      "overlap_patterns": {
+        "ssdlite": "0000000000000000",
+        "fasterrcnn": "0000000000000000"
+      },
+      "scene_rest_count": 0,
+      "tail_rgb_equal": false,
+      "tail_mask_equal": true,
+      "target_pixels": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "max_translation_from_prepare": 0.008220136165618896,
+      "max_rotation_from_prepare": 21.521029949188232,
+      "tail_max_translation_from_tail_start": 0.003258258104324341,
+      "tail_max_rotation_from_tail_start": 8.445907592773438,
+      "all_sdk_max_translation_after_prepare": 0.008220136165618896,
+      "all_sdk_max_rotation_after_prepare": 21.521029949188232,
+      "all_sdk_camera_equal_after_prepare": true,
+      "all_sdk_target_masks_equal_after_prepare": true,
+      "public_first_last": {
+        "equal": false,
+        "mean_abs_byte": 0.071923828125,
+        "maximum_abs_byte": 103,
+        "changed_pixel_fraction": 0.01747314453125,
+        "target_region_mean_abs_byte": null
+      },
+      "after_prepare_to_last": {
+        "equal": false,
+        "mean_abs_byte": 14.92500732421875,
+        "maximum_abs_byte": 215,
+        "changed_pixel_fraction": 0.99999755859375,
+        "target_region_mean_abs_byte": null
+      },
+      "sdk_adjacent_mean_bytes": [
+        0.0,
+        14.903734537760416,
+        0.0,
+        0.008499348958333333,
+        0.0,
+        0.019925944010416665,
+        0.0,
+        0.0273828125,
+        0.0,
+        0.0291455078125,
+        0.0,
+        0.02529541015625,
+        0.0,
+        0.019579264322916668,
+        0.0,
+        0.0063330078125,
+        0.0,
+        0.005418294270833333,
+        0.0,
+        0.01089599609375,
+        0.0,
+        0.011118977864583334,
+        0.0,
+        0.00688232421875,
+        0.0,
+        0.00232666015625,
+        0.0,
+        0.0013232421875,
+        0.0,
+        0.003931477864583333,
+        0.0,
+        0.0036979166666666666,
+        0.0
+      ]
+    },
+    {
+      "cell": {
+        "name": "north-640-frozen-1",
+        "site": "north",
+        "size": 640,
+        "mode": "frozen",
+        "repeat": 1
+      },
+      "category_patterns": {
+        "ssdlite": "0000000000000000",
+        "fasterrcnn": "1111111111111111"
+      },
+      "overlap_patterns": {
+        "ssdlite": "0000000000000000",
+        "fasterrcnn": "0000000000000000"
+      },
+      "scene_rest_count": 16,
+      "tail_rgb_equal": true,
+      "tail_mask_equal": true,
+      "target_pixels": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "max_translation_from_prepare": 0.0,
+      "max_rotation_from_prepare": 0.0,
+      "tail_max_translation_from_tail_start": 0.0,
+      "tail_max_rotation_from_tail_start": 0.0,
+      "all_sdk_max_translation_after_prepare": 0.0,
+      "all_sdk_max_rotation_after_prepare": 0.0,
+      "all_sdk_camera_equal_after_prepare": true,
+      "all_sdk_target_masks_equal_after_prepare": true,
+      "public_first_last": {
+        "equal": true,
+        "mean_abs_byte": 0.0,
+        "maximum_abs_byte": 0,
+        "changed_pixel_fraction": 0.0,
+        "target_region_mean_abs_byte": null
+      },
+      "after_prepare_to_last": {
+        "equal": false,
+        "mean_abs_byte": 14.9021435546875,
+        "maximum_abs_byte": 215,
+        "changed_pixel_fraction": 0.99999755859375,
+        "target_region_mean_abs_byte": null
+      },
+      "sdk_adjacent_mean_bytes": [
+        0.0,
+        14.9021435546875,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "cell": {
+        "name": "north-640-auto-1",
+        "site": "north",
+        "size": 640,
+        "mode": "auto",
+        "repeat": 1
+      },
+      "category_patterns": {
+        "ssdlite": "0000000000000000",
+        "fasterrcnn": "1111111111111111"
+      },
+      "overlap_patterns": {
+        "ssdlite": "0000000000000000",
+        "fasterrcnn": "0000000000000000"
+      },
+      "scene_rest_count": 15,
+      "tail_rgb_equal": true,
+      "tail_mask_equal": true,
+      "target_pixels": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "max_translation_from_prepare": 7.769465446472168e-05,
+      "max_rotation_from_prepare": 0.1981487274169922,
+      "tail_max_translation_from_tail_start": 0.0,
+      "tail_max_rotation_from_tail_start": 0.0,
+      "all_sdk_max_translation_after_prepare": 7.769465446472168e-05,
+      "all_sdk_max_rotation_after_prepare": 0.1981487274169922,
+      "all_sdk_camera_equal_after_prepare": true,
+      "all_sdk_target_masks_equal_after_prepare": true,
+      "public_first_last": {
+        "equal": true,
+        "mean_abs_byte": 0.0,
+        "maximum_abs_byte": 0,
+        "changed_pixel_fraction": 0.0,
+        "target_region_mean_abs_byte": null
+      },
+      "after_prepare_to_last": {
+        "equal": false,
+        "mean_abs_byte": 14.901812337239583,
+        "maximum_abs_byte": 215,
+        "changed_pixel_fraction": 0.9999951171875,
+        "target_region_mean_abs_byte": null
+      },
+      "sdk_adjacent_mean_bytes": [
+        0.02347412109375,
+        14.901812337239583,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "cell": {
+        "name": "south-320-auto-0",
+        "site": "south",
+        "size": 320,
+        "mode": "auto",
+        "repeat": 0
+      },
+      "category_patterns": {
+        "ssdlite": "0000000000000000",
+        "fasterrcnn": "0000000000000000"
+      },
+      "overlap_patterns": {
+        "ssdlite": "0000000000000000",
+        "fasterrcnn": "0000000000000000"
+      },
+      "scene_rest_count": 9,
+      "tail_rgb_equal": true,
+      "tail_mask_equal": true,
+      "target_pixels": [
+        558,
+        558,
+        558,
+        558,
+        558,
+        558,
+        558,
+        558,
+        558,
+        558,
+        558,
+        558,
+        558,
+        558,
+        558,
+        558
+      ],
+      "max_translation_from_prepare": 0.004239916801452637,
+      "max_rotation_from_prepare": 10.997411727905273,
+      "tail_max_translation_from_tail_start": 0.0,
+      "tail_max_rotation_from_tail_start": 2.47955322265625e-05,
+      "all_sdk_max_translation_after_prepare": 0.004337608814239502,
+      "all_sdk_max_rotation_after_prepare": 11.243022918701172,
+      "all_sdk_camera_equal_after_prepare": true,
+      "all_sdk_target_masks_equal_after_prepare": true,
+      "public_first_last": {
+        "equal": false,
+        "mean_abs_byte": 0.025406901041666666,
+        "maximum_abs_byte": 103,
+        "changed_pixel_fraction": 0.00939453125,
+        "target_region_mean_abs_byte": 0.0
+      },
+      "after_prepare_to_last": {
+        "equal": false,
+        "mean_abs_byte": 14.739306640625,
+        "maximum_abs_byte": 214,
+        "changed_pixel_fraction": 0.999990234375,
+        "target_region_mean_abs_byte": 10.78853046594982
+      },
+      "sdk_adjacent_mean_bytes": [
+        0.045478515625,
+        14.74083984375,
+        0.019889322916666667,
+        0.004417317708333333,
+        0.01099609375,
+        0.013489583333333333,
+        0.0,
+        0.0009244791666666667,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "cell": {
+        "name": "south-320-frozen-0",
+        "site": "south",
+        "size": 320,
+        "mode": "frozen",
+        "repeat": 0
+      },
+      "category_patterns": {
+        "ssdlite": "0000000000000000",
+        "fasterrcnn": "0000000000000000"
+      },
+      "overlap_patterns": {
+        "ssdlite": "0000000000000000",
+        "fasterrcnn": "0000000000000000"
+      },
+      "scene_rest_count": 16,
+      "tail_rgb_equal": true,
+      "tail_mask_equal": true,
+      "target_pixels": [
+        558,
+        558,
+        558,
+        558,
+        558,
+        558,
+        558,
+        558,
+        558,
+        558,
+        558,
+        558,
+        558,
+        558,
+        558,
+        558
+      ],
+      "max_translation_from_prepare": 0.0,
+      "max_rotation_from_prepare": 0.0,
+      "tail_max_translation_from_tail_start": 0.0,
+      "tail_max_rotation_from_tail_start": 0.0,
+      "all_sdk_max_translation_after_prepare": 0.0,
+      "all_sdk_max_rotation_after_prepare": 0.0,
+      "all_sdk_camera_equal_after_prepare": true,
+      "all_sdk_target_masks_equal_after_prepare": true,
+      "public_first_last": {
+        "equal": true,
+        "mean_abs_byte": 0.0,
+        "maximum_abs_byte": 0,
+        "changed_pixel_fraction": 0.0,
+        "target_region_mean_abs_byte": 0.0
+      },
+      "after_prepare_to_last": {
+        "equal": false,
+        "mean_abs_byte": 14.729990234375,
+        "maximum_abs_byte": 214,
+        "changed_pixel_fraction": 0.999990234375,
+        "target_region_mean_abs_byte": 10.78853046594982
+      },
+      "sdk_adjacent_mean_bytes": [
+        0.0,
+        14.729990234375,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "cell": {
+        "name": "south-320-stepped-0",
+        "site": "south",
+        "size": 320,
+        "mode": "stepped",
+        "repeat": 0
+      },
+      "category_patterns": {
+        "ssdlite": "0000000000000000",
+        "fasterrcnn": "0000000000000000"
+      },
+      "overlap_patterns": {
+        "ssdlite": "0000000000000000",
+        "fasterrcnn": "0000000000000000"
+      },
+      "scene_rest_count": 0,
+      "tail_rgb_equal": false,
+      "tail_mask_equal": true,
+      "target_pixels": [
+        558,
+        558,
+        558,
+        558,
+        558,
+        558,
+        558,
+        558,
+        558,
+        558,
+        558,
+        558,
+        558,
+        558,
+        558,
+        558
+      ],
+      "max_translation_from_prepare": 0.008220136165618896,
+      "max_rotation_from_prepare": 21.521029949188232,
+      "tail_max_translation_from_tail_start": 0.003258258104324341,
+      "tail_max_rotation_from_tail_start": 8.445907592773438,
+      "all_sdk_max_translation_after_prepare": 0.008220136165618896,
+      "all_sdk_max_rotation_after_prepare": 21.521029949188232,
+      "all_sdk_camera_equal_after_prepare": true,
+      "all_sdk_target_masks_equal_after_prepare": true,
+      "public_first_last": {
+        "equal": false,
+        "mean_abs_byte": 0.067919921875,
+        "maximum_abs_byte": 98,
+        "changed_pixel_fraction": 0.015625,
+        "target_region_mean_abs_byte": 0.0
+      },
+      "after_prepare_to_last": {
+        "equal": false,
+        "mean_abs_byte": 14.753938802083333,
+        "maximum_abs_byte": 214,
+        "changed_pixel_fraction": 0.99998046875,
+        "target_region_mean_abs_byte": 10.78853046594982
+      },
+      "sdk_adjacent_mean_bytes": [
+        0.0,
+        14.735159505208333,
+        0.0,
+        0.010504557291666666,
+        0.0,
+        0.01972005208333333,
+        0.0,
+        0.028147786458333334,
+        0.0,
+        0.027425130208333332,
+        0.0,
+        0.024622395833333335,
+        0.0,
+        0.015807291666666667,
+        0.0,
+        0.005940755208333333,
+        0.0,
+        0.005641276041666666,
+        0.0,
+        0.009889322916666667,
+        0.0,
+        0.008548177083333334,
+        0.0,
+        0.004680989583333333,
+        0.0,
+        0.0042513020833333335,
+        0.0,
+        0.004326171875,
+        0.0,
+        0.0021158854166666665,
+        0.0,
+        0.002138671875,
+        0.0
+      ]
+    },
+    {
+      "cell": {
+        "name": "south-320-stepped-1",
+        "site": "south",
+        "size": 320,
+        "mode": "stepped",
+        "repeat": 1
+      },
+      "category_patterns": {
+        "ssdlite": "0000000000000000",
+        "fasterrcnn": "0000000000000000"
+      },
+      "overlap_patterns": {
+        "ssdlite": "0000000000000000",
+        "fasterrcnn": "0000000000000000"
+      },
+      "scene_rest_count": 0,
+      "tail_rgb_equal": false,
+      "tail_mask_equal": true,
+      "target_pixels": [
+        558,
+        558,
+        558,
+        558,
+        558,
+        558,
+        558,
+        558,
+        558,
+        558,
+        558,
+        558,
+        558,
+        558,
+        558,
+        558
+      ],
+      "max_translation_from_prepare": 0.008220136165618896,
+      "max_rotation_from_prepare": 21.521029949188232,
+      "tail_max_translation_from_tail_start": 0.003258258104324341,
+      "tail_max_rotation_from_tail_start": 8.445907592773438,
+      "all_sdk_max_translation_after_prepare": 0.008220136165618896,
+      "all_sdk_max_rotation_after_prepare": 21.521029949188232,
+      "all_sdk_camera_equal_after_prepare": true,
+      "all_sdk_target_masks_equal_after_prepare": true,
+      "public_first_last": {
+        "equal": false,
+        "mean_abs_byte": 0.067919921875,
+        "maximum_abs_byte": 98,
+        "changed_pixel_fraction": 0.015625,
+        "target_region_mean_abs_byte": 0.0
+      },
+      "after_prepare_to_last": {
+        "equal": false,
+        "mean_abs_byte": 14.753938802083333,
+        "maximum_abs_byte": 214,
+        "changed_pixel_fraction": 0.99998046875,
+        "target_region_mean_abs_byte": 10.78853046594982
+      },
+      "sdk_adjacent_mean_bytes": [
+        0.0,
+        14.735159505208333,
+        0.0,
+        0.010504557291666666,
+        0.0,
+        0.01972005208333333,
+        0.0,
+        0.028147786458333334,
+        0.0,
+        0.027425130208333332,
+        0.0,
+        0.024622395833333335,
+        0.0,
+        0.015807291666666667,
+        0.0,
+        0.005940755208333333,
+        0.0,
+        0.005641276041666666,
+        0.0,
+        0.009889322916666667,
+        0.0,
+        0.008548177083333334,
+        0.0,
+        0.004680989583333333,
+        0.0,
+        0.0042513020833333335,
+        0.0,
+        0.004326171875,
+        0.0,
+        0.0021158854166666665,
+        0.0,
+        0.002138671875,
+        0.0
+      ]
+    },
+    {
+      "cell": {
+        "name": "south-320-frozen-1",
+        "site": "south",
+        "size": 320,
+        "mode": "frozen",
+        "repeat": 1
+      },
+      "category_patterns": {
+        "ssdlite": "0000000000000000",
+        "fasterrcnn": "0000000000000000"
+      },
+      "overlap_patterns": {
+        "ssdlite": "0000000000000000",
+        "fasterrcnn": "0000000000000000"
+      },
+      "scene_rest_count": 16,
+      "tail_rgb_equal": true,
+      "tail_mask_equal": true,
+      "target_pixels": [
+        558,
+        558,
+        558,
+        558,
+        558,
+        558,
+        558,
+        558,
+        558,
+        558,
+        558,
+        558,
+        558,
+        558,
+        558,
+        558
+      ],
+      "max_translation_from_prepare": 0.0,
+      "max_rotation_from_prepare": 0.0,
+      "tail_max_translation_from_tail_start": 0.0,
+      "tail_max_rotation_from_tail_start": 0.0,
+      "all_sdk_max_translation_after_prepare": 0.0,
+      "all_sdk_max_rotation_after_prepare": 0.0,
+      "all_sdk_camera_equal_after_prepare": true,
+      "all_sdk_target_masks_equal_after_prepare": true,
+      "public_first_last": {
+        "equal": true,
+        "mean_abs_byte": 0.0,
+        "maximum_abs_byte": 0,
+        "changed_pixel_fraction": 0.0,
+        "target_region_mean_abs_byte": 0.0
+      },
+      "after_prepare_to_last": {
+        "equal": false,
+        "mean_abs_byte": 14.729837239583333,
+        "maximum_abs_byte": 214,
+        "changed_pixel_fraction": 0.999990234375,
+        "target_region_mean_abs_byte": 10.78853046594982
+      },
+      "sdk_adjacent_mean_bytes": [
+        0.0,
+        14.729837239583333,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "cell": {
+        "name": "south-320-auto-1",
+        "site": "south",
+        "size": 320,
+        "mode": "auto",
+        "repeat": 1
+      },
+      "category_patterns": {
+        "ssdlite": "0000000000000000",
+        "fasterrcnn": "0000000000000000"
+      },
+      "overlap_patterns": {
+        "ssdlite": "0000000000000000",
+        "fasterrcnn": "0000000000000000"
+      },
+      "scene_rest_count": 8,
+      "tail_rgb_equal": true,
+      "tail_mask_equal": true,
+      "target_pixels": [
+        558,
+        558,
+        558,
+        558,
+        558,
+        558,
+        558,
+        558,
+        558,
+        558,
+        558,
+        558,
+        558,
+        558,
+        558,
+        558
+      ],
+      "max_translation_from_prepare": 0.006395459175109863,
+      "max_rotation_from_prepare": 16.640348434448242,
+      "tail_max_translation_from_tail_start": 5.960464477539063e-08,
+      "tail_max_rotation_from_tail_start": 0.0002079010009765625,
+      "all_sdk_max_translation_after_prepare": 0.006395459175109863,
+      "all_sdk_max_rotation_after_prepare": 16.640348434448242,
+      "all_sdk_camera_equal_after_prepare": true,
+      "all_sdk_target_masks_equal_after_prepare": true,
+      "public_first_last": {
+        "equal": false,
+        "mean_abs_byte": 0.009820963541666667,
+        "maximum_abs_byte": 78,
+        "changed_pixel_fraction": 0.006552734375,
+        "target_region_mean_abs_byte": 0.0
+      },
+      "after_prepare_to_last": {
+        "equal": false,
+        "mean_abs_byte": 14.752776692708334,
+        "maximum_abs_byte": 214,
+        "changed_pixel_fraction": 0.999990234375,
+        "target_region_mean_abs_byte": 10.78853046594982
+      },
+      "sdk_adjacent_mean_bytes": [
+        0.011617838541666667,
+        14.7415625,
+        0.047311197916666665,
+        0.019889322916666667,
+        0.0025325520833333333,
+        0.015875651041666668,
+        0.010859375,
+        0.0052669270833333335,
+        0.003961588541666667,
+        0.003798828125,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "cell": {
+        "name": "south-640-auto-0",
+        "site": "south",
+        "size": 640,
+        "mode": "auto",
+        "repeat": 0
+      },
+      "category_patterns": {
+        "ssdlite": "0000000000000000",
+        "fasterrcnn": "1111111111111111"
+      },
+      "overlap_patterns": {
+        "ssdlite": "0000000000000000",
+        "fasterrcnn": "1111111111111111"
+      },
+      "scene_rest_count": 13,
+      "tail_rgb_equal": true,
+      "tail_mask_equal": true,
+      "target_pixels": [
+        2235,
+        2235,
+        2235,
+        2235,
+        2235,
+        2235,
+        2235,
+        2235,
+        2235,
+        2235,
+        2235,
+        2235,
+        2235,
+        2235,
+        2235,
+        2235
+      ],
+      "max_translation_from_prepare": 0.003506392240524292,
+      "max_rotation_from_prepare": 9.079410552978516,
+      "tail_max_translation_from_tail_start": 0.0,
+      "tail_max_rotation_from_tail_start": 0.0,
+      "all_sdk_max_translation_after_prepare": 0.0035122931003570557,
+      "all_sdk_max_rotation_after_prepare": 9.095710754394531,
+      "all_sdk_camera_equal_after_prepare": true,
+      "all_sdk_target_masks_equal_after_prepare": true,
+      "public_first_last": {
+        "equal": false,
+        "mean_abs_byte": 0.0009765625,
+        "maximum_abs_byte": 55,
+        "changed_pixel_fraction": 0.00137939453125,
+        "target_region_mean_abs_byte": 0.0
+      },
+      "after_prepare_to_last": {
+        "equal": false,
+        "mean_abs_byte": 14.7011083984375,
+        "maximum_abs_byte": 215,
+        "changed_pixel_fraction": 0.9999853515625,
+        "target_region_mean_abs_byte": 10.883072334079046
+      },
+      "sdk_adjacent_mean_bytes": [
+        0.058785807291666665,
+        14.701078287760417,
+        0.02064697265625,
+        0.0009765625,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "cell": {
+        "name": "south-640-frozen-0",
+        "site": "south",
+        "size": 640,
+        "mode": "frozen",
+        "repeat": 0
+      },
+      "category_patterns": {
+        "ssdlite": "0000000000000000",
+        "fasterrcnn": "1111111111111111"
+      },
+      "overlap_patterns": {
+        "ssdlite": "0000000000000000",
+        "fasterrcnn": "1111111111111111"
+      },
+      "scene_rest_count": 16,
+      "tail_rgb_equal": true,
+      "tail_mask_equal": true,
+      "target_pixels": [
+        2235,
+        2235,
+        2235,
+        2235,
+        2235,
+        2235,
+        2235,
+        2235,
+        2235,
+        2235,
+        2235,
+        2235,
+        2235,
+        2235,
+        2235,
+        2235
+      ],
+      "max_translation_from_prepare": 0.0,
+      "max_rotation_from_prepare": 0.0,
+      "tail_max_translation_from_tail_start": 0.0,
+      "tail_max_rotation_from_tail_start": 0.0,
+      "all_sdk_max_translation_after_prepare": 0.0,
+      "all_sdk_max_rotation_after_prepare": 0.0,
+      "all_sdk_camera_equal_after_prepare": true,
+      "all_sdk_target_masks_equal_after_prepare": true,
+      "public_first_last": {
+        "equal": true,
+        "mean_abs_byte": 0.0,
+        "maximum_abs_byte": 0,
+        "changed_pixel_fraction": 0.0,
+        "target_region_mean_abs_byte": 0.0
+      },
+      "after_prepare_to_last": {
+        "equal": false,
+        "mean_abs_byte": 14.695607096354166,
+        "maximum_abs_byte": 215,
+        "changed_pixel_fraction": 0.9999853515625,
+        "target_region_mean_abs_byte": 10.883072334079046
+      },
+      "sdk_adjacent_mean_bytes": [
+        0.0,
+        14.695607096354166,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "cell": {
+        "name": "south-640-stepped-0",
+        "site": "south",
+        "size": 640,
+        "mode": "stepped",
+        "repeat": 0
+      },
+      "category_patterns": {
+        "ssdlite": "0000000000000000",
+        "fasterrcnn": "1111111111111111"
+      },
+      "overlap_patterns": {
+        "ssdlite": "0000000000000000",
+        "fasterrcnn": "1111111111111111"
+      },
+      "scene_rest_count": 0,
+      "tail_rgb_equal": false,
+      "tail_mask_equal": true,
+      "target_pixels": [
+        2235,
+        2235,
+        2235,
+        2235,
+        2235,
+        2235,
+        2235,
+        2235,
+        2235,
+        2235,
+        2235,
+        2235,
+        2235,
+        2235,
+        2235,
+        2235
+      ],
+      "max_translation_from_prepare": 0.007567554712295532,
+      "max_rotation_from_prepare": 19.750056743621826,
+      "tail_max_translation_from_tail_start": 0.0024938881397247314,
+      "tail_max_rotation_from_tail_start": 6.460573196411133,
+      "all_sdk_max_translation_after_prepare": 0.007567554712295532,
+      "all_sdk_max_rotation_after_prepare": 19.750056743621826,
+      "all_sdk_camera_equal_after_prepare": true,
+      "all_sdk_target_masks_equal_after_prepare": true,
+      "public_first_last": {
+        "equal": false,
+        "mean_abs_byte": 0.0711474609375,
+        "maximum_abs_byte": 98,
+        "changed_pixel_fraction": 0.0164501953125,
+        "target_region_mean_abs_byte": 0.0
+      },
+      "after_prepare_to_last": {
+        "equal": false,
+        "mean_abs_byte": 14.721048990885416,
+        "maximum_abs_byte": 215,
+        "changed_pixel_fraction": 0.9999853515625,
+        "target_region_mean_abs_byte": 10.883072334079046
+      },
+      "sdk_adjacent_mean_bytes": [
+        0.0,
+        14.698339029947917,
+        0.0,
+        0.0230712890625,
+        0.0,
+        0.028958333333333332,
+        0.0,
+        0.030594075520833333,
+        0.0,
+        0.025703125,
+        0.0,
+        0.019515787760416667,
+        0.0,
+        0.006676432291666667,
+        0.0,
+        0.005047200520833333,
+        0.0,
+        0.010804850260416667,
+        0.0,
+        0.011555989583333334,
+        0.0,
+        0.0070621744791666665,
+        0.0,
+        0.0023885091145833333,
+        0.0,
+        0.0012898763020833333,
+        0.0,
+        0.0037337239583333333,
+        0.0,
+        0.0033902994791666667,
+        0.0,
+        0.003199869791666667,
+        0.0
+      ]
+    },
+    {
+      "cell": {
+        "name": "south-640-stepped-1",
+        "site": "south",
+        "size": 640,
+        "mode": "stepped",
+        "repeat": 1
+      },
+      "category_patterns": {
+        "ssdlite": "0000000000000000",
+        "fasterrcnn": "1111111111111111"
+      },
+      "overlap_patterns": {
+        "ssdlite": "0000000000000000",
+        "fasterrcnn": "1111111111111111"
+      },
+      "scene_rest_count": 0,
+      "tail_rgb_equal": false,
+      "tail_mask_equal": true,
+      "target_pixels": [
+        2235,
+        2235,
+        2235,
+        2235,
+        2235,
+        2235,
+        2235,
+        2235,
+        2235,
+        2235,
+        2235,
+        2235,
+        2235,
+        2235,
+        2235,
+        2235
+      ],
+      "max_translation_from_prepare": 0.008220136165618896,
+      "max_rotation_from_prepare": 21.521029949188232,
+      "tail_max_translation_from_tail_start": 0.003258258104324341,
+      "tail_max_rotation_from_tail_start": 8.445907592773438,
+      "all_sdk_max_translation_after_prepare": 0.008220136165618896,
+      "all_sdk_max_rotation_after_prepare": 21.521029949188232,
+      "all_sdk_camera_equal_after_prepare": true,
+      "all_sdk_target_masks_equal_after_prepare": true,
+      "public_first_last": {
+        "equal": false,
+        "mean_abs_byte": 0.071923828125,
+        "maximum_abs_byte": 103,
+        "changed_pixel_fraction": 0.01747314453125,
+        "target_region_mean_abs_byte": 0.0
+      },
+      "after_prepare_to_last": {
+        "equal": false,
+        "mean_abs_byte": 14.7202734375,
+        "maximum_abs_byte": 215,
+        "changed_pixel_fraction": 0.9999853515625,
+        "target_region_mean_abs_byte": 10.883072334079046
+      },
+      "sdk_adjacent_mean_bytes": [
+        0.0,
+        14.699000651041667,
+        0.0,
+        0.008499348958333333,
+        0.0,
+        0.019925130208333332,
+        0.0,
+        0.0273828125,
+        0.0,
+        0.029144694010416666,
+        0.0,
+        0.02529541015625,
+        0.0,
+        0.019579264322916668,
+        0.0,
+        0.006332194010416667,
+        0.0,
+        0.005418294270833333,
+        0.0,
+        0.01089599609375,
+        0.0,
+        0.0111181640625,
+        0.0,
+        0.00688232421875,
+        0.0,
+        0.00232666015625,
+        0.0,
+        0.0013224283854166667,
+        0.0,
+        0.003931477864583333,
+        0.0,
+        0.003697102864583333,
+        0.0
+      ]
+    },
+    {
+      "cell": {
+        "name": "south-640-frozen-1",
+        "site": "south",
+        "size": 640,
+        "mode": "frozen",
+        "repeat": 1
+      },
+      "category_patterns": {
+        "ssdlite": "0000000000000000",
+        "fasterrcnn": "1111111111111111"
+      },
+      "overlap_patterns": {
+        "ssdlite": "0000000000000000",
+        "fasterrcnn": "1111111111111111"
+      },
+      "scene_rest_count": 16,
+      "tail_rgb_equal": true,
+      "tail_mask_equal": true,
+      "target_pixels": [
+        2235,
+        2235,
+        2235,
+        2235,
+        2235,
+        2235,
+        2235,
+        2235,
+        2235,
+        2235,
+        2235,
+        2235,
+        2235,
+        2235,
+        2235,
+        2235
+      ],
+      "max_translation_from_prepare": 0.0,
+      "max_rotation_from_prepare": 0.0,
+      "tail_max_translation_from_tail_start": 0.0,
+      "tail_max_rotation_from_tail_start": 0.0,
+      "all_sdk_max_translation_after_prepare": 0.0,
+      "all_sdk_max_rotation_after_prepare": 0.0,
+      "all_sdk_camera_equal_after_prepare": true,
+      "all_sdk_target_masks_equal_after_prepare": true,
+      "public_first_last": {
+        "equal": true,
+        "mean_abs_byte": 0.0,
+        "maximum_abs_byte": 0,
+        "changed_pixel_fraction": 0.0,
+        "target_region_mean_abs_byte": 0.0
+      },
+      "after_prepare_to_last": {
+        "equal": false,
+        "mean_abs_byte": 14.696171875,
+        "maximum_abs_byte": 215,
+        "changed_pixel_fraction": 0.99998291015625,
+        "target_region_mean_abs_byte": 10.883072334079046
+      },
+      "sdk_adjacent_mean_bytes": [
+        0.0,
+        14.696171875,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "cell": {
+        "name": "south-640-auto-1",
+        "site": "south",
+        "size": 640,
+        "mode": "auto",
+        "repeat": 1
+      },
+      "category_patterns": {
+        "ssdlite": "0000000000000000",
+        "fasterrcnn": "1111111111111111"
+      },
+      "overlap_patterns": {
+        "ssdlite": "0000000000000000",
+        "fasterrcnn": "1111111111111111"
+      },
+      "scene_rest_count": 12,
+      "tail_rgb_equal": true,
+      "tail_mask_equal": true,
+      "target_pixels": [
+        2235,
+        2235,
+        2235,
+        2235,
+        2235,
+        2235,
+        2235,
+        2235,
+        2235,
+        2235,
+        2235,
+        2235,
+        2235,
+        2235,
+        2235,
+        2235
+      ],
+      "max_translation_from_prepare": 0.005024939775466919,
+      "max_rotation_from_prepare": 13.074583053588867,
+      "tail_max_translation_from_tail_start": 0.0,
+      "tail_max_rotation_from_tail_start": 0.0,
+      "all_sdk_max_translation_after_prepare": 0.005180716514587402,
+      "all_sdk_max_rotation_after_prepare": 13.465692520141602,
+      "all_sdk_camera_equal_after_prepare": true,
+      "all_sdk_target_masks_equal_after_prepare": true,
+      "public_first_last": {
+        "equal": false,
+        "mean_abs_byte": 0.02116455078125,
+        "maximum_abs_byte": 97,
+        "changed_pixel_fraction": 0.00925537109375,
+        "target_region_mean_abs_byte": 0.0
+      },
+      "after_prepare_to_last": {
+        "equal": false,
+        "mean_abs_byte": 14.71032958984375,
+        "maximum_abs_byte": 215,
+        "changed_pixel_fraction": 0.9999853515625,
+        "target_region_mean_abs_byte": 10.883072334079046
+      },
+      "sdk_adjacent_mean_bytes": [
+        0.03197102864583334,
+        14.715357259114583,
+        0.004170735677083333,
+        0.02158935546875,
+        0.0021126302083333335,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ]
+    }
+  ],
+  "reset_pairs": [
+    {
+      "a": "north-320-auto-0",
+      "b": "north-320-auto-1",
+      "index": 0,
+      "masks_equal": true,
+      "rgb": {
+        "equal": false,
+        "mean_abs_byte": 0.031438802083333335,
+        "maximum_abs_byte": 97,
+        "changed_pixel_fraction": 0.0101171875,
+        "target_region_mean_abs_byte": null
+      },
+      "geometry": {
+        "max_object_translation": 0.0008567869663238525,
+        "max_object_rotation": 2.2589282989501953
+      }
+    },
+    {
+      "a": "north-320-auto-0",
+      "b": "north-320-auto-1",
+      "index": 1,
+      "masks_equal": true,
+      "rgb": {
+        "equal": false,
+        "mean_abs_byte": 0.0025423177083333335,
+        "maximum_abs_byte": 14,
+        "changed_pixel_fraction": 0.003486328125,
+        "target_region_mean_abs_byte": null
+      },
+      "geometry": {
+        "max_object_translation": 0.00047767162322998047,
+        "max_object_rotation": 1.2390995025634766
+      }
+    },
+    {
+      "a": "north-320-auto-0",
+      "b": "north-320-auto-1",
+      "index": 2,
+      "masks_equal": true,
+      "rgb": {
+        "equal": false,
+        "mean_abs_byte": 0.01099609375,
+        "maximum_abs_byte": 95,
+        "changed_pixel_fraction": 0.005732421875,
+        "target_region_mean_abs_byte": null
+      },
+      "geometry": {
+        "max_object_translation": 0.0005277097225189209,
+        "max_object_rotation": 1.3723411560058594
+      }
+    },
+    {
+      "a": "north-320-auto-0",
+      "b": "north-320-auto-1",
+      "index": 3,
+      "masks_equal": true,
+      "rgb": {
+        "equal": false,
+        "mean_abs_byte": 0.0052669270833333335,
+        "maximum_abs_byte": 96,
+        "changed_pixel_fraction": 0.004541015625,
+        "target_region_mean_abs_byte": null
+      },
+      "geometry": {
+        "max_object_translation": 0.0006633996963500977,
+        "max_object_rotation": 1.7053756713867188
+      }
+    },
+    {
+      "a": "north-320-auto-0",
+      "b": "north-320-auto-1",
+      "index": 4,
+      "masks_equal": true,
+      "rgb": {
+        "equal": true,
+        "mean_abs_byte": 0.0,
+        "maximum_abs_byte": 0,
+        "changed_pixel_fraction": 0.0,
+        "target_region_mean_abs_byte": null
+      },
+      "geometry": {
+        "max_object_translation": 9.769201278686523e-05,
+        "max_object_rotation": 0.24561119079589844
+      }
+    },
+    {
+      "a": "north-320-auto-0",
+      "b": "north-320-auto-1",
+      "index": 5,
+      "masks_equal": true,
+      "rgb": {
+        "equal": true,
+        "mean_abs_byte": 0.0,
+        "maximum_abs_byte": 0,
+        "changed_pixel_fraction": 0.0,
+        "target_region_mean_abs_byte": null
+      },
+      "geometry": {
+        "max_object_translation": 0.0,
+        "max_object_rotation": 0.0
+      }
+    },
+    {
+      "a": "north-320-auto-0",
+      "b": "north-320-auto-1",
+      "index": 6,
+      "masks_equal": true,
+      "rgb": {
+        "equal": true,
+        "mean_abs_byte": 0.0,
+        "maximum_abs_byte": 0,
+        "changed_pixel_fraction": 0.0,
+        "target_region_mean_abs_byte": null
+      },
+      "geometry": {
+        "max_object_translation": 0.0,
+        "max_object_rotation": 0.0
+      }
+    },
+    {
+      "a": "north-320-auto-0",
+      "b": "north-320-auto-1",
+      "index": 7,
+      "masks_equal": true,
+      "rgb": {
+        "equal": true,
+        "mean_abs_byte": 0.0,
+        "maximum_abs_byte": 0,
+        "changed_pixel_fraction": 0.0,
+        "target_region_mean_abs_byte": null
+      },
+      "geometry": {
+        "max_object_translation": 0.0,
+        "max_object_rotation": 0.0
+      }
+    },
+    {
+      "a": "north-320-auto-0",
+      "b": "north-320-auto-1",
+      "index": 8,
+      "masks_equal": true,
+      "rgb": {
+        "equal": true,
+        "mean_abs_byte": 0.0,
+        "maximum_abs_byte": 0,
+        "changed_pixel_fraction": 0.0,
+        "target_region_mean_abs_byte": null
+      },
+      "geometry": {
+        "max_object_translation": 0.0,
+        "max_object_rotation": 0.0
+      }
+    },
+    {
+      "a": "north-320-auto-0",
+      "b": "north-320-auto-1",
+      "index": 9,
+      "masks_equal": true,
+      "rgb": {
+        "equal": true,
+        "mean_abs_byte": 0.0,
+        "maximum_abs_byte": 0,
+        "changed_pixel_fraction": 0.0,
+        "target_region_mean_abs_byte": null
+      },
+      "geometry": {
+        "max_object_translation": 5.960464477539063e-08,
+        "max_object_rotation": 4.57763671875e-05
+      }
+    },
+    {
+      "a": "north-320-auto-0",
+      "b": "north-320-auto-1",
+      "index": 10,
+      "masks_equal": true,
+      "rgb": {
+        "equal": true,
+        "mean_abs_byte": 0.0,
+        "maximum_abs_byte": 0,
+        "changed_pixel_fraction": 0.0,
+        "target_region_mean_abs_byte": null
+      },
+      "geometry": {
+        "max_object_translation": 0.0,
+        "max_object_rotation": 0.0
+      }
+    },
+    {
+      "a": "north-320-auto-0",
+      "b": "north-320-auto-1",
+      "index": 11,
+      "masks_equal": true,
+      "rgb": {
+        "equal": true,
+        "mean_abs_byte": 0.0,
+        "maximum_abs_byte": 0,
+        "changed_pixel_fraction": 0.0,
+        "target_region_mean_abs_byte": null
+      },
+      "geometry": {
+        "max_object_translation": 0.0,
+        "max_object_rotation": 0.0
+      }
+    },
+    {
+      "a": "north-320-auto-0",
+      "b": "north-320-auto-1",
+      "index": 12,
+      "masks_equal": true,
+      "rgb": {
+        "equal": true,
+        "mean_abs_byte": 0.0,
+        "maximum_abs_byte": 0,
+        "changed_pixel_fraction": 0.0,
+        "target_region_mean_abs_byte": null
+      },
+      "geometry": {
+        "max_object_translation": 0.0,
+        "max_object_rotation": 0.0
+      }
+    },
+    {
+      "a": "north-320-auto-0",
+      "b": "north-320-auto-1",
+      "index": 13,
+      "masks_equal": true,
+      "rgb": {
+        "equal": true,
+        "mean_abs_byte": 0.0,
+        "maximum_abs_byte": 0,
+        "changed_pixel_fraction": 0.0,
+        "target_region_mean_abs_byte": null
+      },
+      "geometry": {
+        "max_object_translation": 0.0,
+        "max_object_rotation": 0.0
+      }
+    },
+    {
+      "a": "north-320-auto-0",
+      "b": "north-320-auto-1",
+      "index": 14,
+      "masks_equal": true,
+      "rgb": {
+        "equal": true,
+        "mean_abs_byte": 0.0,
+        "maximum_abs_byte": 0,
+        "changed_pixel_fraction": 0.0,
+        "target_region_mean_abs_byte": null
+      },
+      "geometry": {
+        "max_object_translation": 0.0,
+        "max_object_rotation": 0.0
+      }
+    },
+    {
+      "a": "north-320-auto-0",
+      "b": "north-320-auto-1",
+      "index": 15,
+      "masks_equal": true,
+      "rgb": {
+        "equal": true,
+        "mean_abs_byte": 0.0,
+        "maximum_abs_byte": 0,
+        "changed_pixel_fraction": 0.0,
+        "target_region_mean_abs_byte": null
+      },
+      "geometry": {
+        "max_object_translation": 0.0,
+        "max_object_rotation": 0.0
+      }
+    },
+    {
+      "a": "north-320-frozen-0",
+      "b": "north-320-frozen-1",
+      "index": 0,
+      "masks_equal": true,
+      "rgb": {
+        "equal": true,
+        "mean_abs_byte": 0.0,
+        "maximum_abs_byte": 0,
+        "changed_pixel_fraction": 0.0,
+        "target_region_mean_abs_byte": null
+      },
+      "geometry": {
+        "max_object_translation": 0.0,
+        "max_object_rotation": 0.0
+      }
+    },
+    {
+      "a": "north-320-frozen-0",
+      "b": "north-320-frozen-1",
+      "index": 1,
+      "masks_equal": true,
+      "rgb": {
+        "equal": true,
+        "mean_abs_byte": 0.0,
+        "maximum_abs_byte": 0,
+        "changed_pixel_fraction": 0.0,
+        "target_region_mean_abs_byte": null
+      },
+      "geometry": {
+        "max_object_translation": 0.0,
+        "max_object_rotation": 0.0
+      }
+    },
+    {
+      "a": "north-320-frozen-0",
+      "b": "north-320-frozen-1",
+      "index": 2,
+      "masks_equal": true,
+      "rgb": {
+        "equal": true,
+        "mean_abs_byte": 0.0,
+        "maximum_abs_byte": 0,
+        "changed_pixel_fraction": 0.0,
+        "target_region_mean_abs_byte": null
+      },
+      "geometry": {
+        "max_object_translation": 0.0,
+        "max_object_rotation": 0.0
+      }
+    },
+    {
+      "a": "north-320-frozen-0",
+      "b": "north-320-frozen-1",
+      "index": 3,
+      "masks_equal": true,
+      "rgb": {
+        "equal": true,
+        "mean_abs_byte": 0.0,
+        "maximum_abs_byte": 0,
+        "changed_pixel_fraction": 0.0,
+        "target_region_mean_abs_byte": null
+      },
+      "geometry": {
+        "max_object_translation": 0.0,
+        "max_object_rotation": 0.0
+      }
+    },
+    {
+      "a": "north-320-frozen-0",
+      "b": "north-320-frozen-1",
+      "index": 4,
+      "masks_equal": true,
+      "rgb": {
+        "equal": true,
+        "mean_abs_byte": 0.0,
+        "maximum_abs_byte": 0,
+        "changed_pixel_fraction": 0.0,
+        "target_region_mean_abs_byte": null
+      },
+      "geometry": {
+        "max_object_translation": 0.0,
+        "max_object_rotation": 0.0
+      }
+    },
+    {
+      "a": "north-320-frozen-0",
+      "b": "north-320-frozen-1",
+      "index": 5,
+      "masks_equal": true,
+      "rgb": {
+        "equal": true,
+        "mean_abs_byte": 0.0,
+        "maximum_abs_byte": 0,
+        "changed_pixel_fraction": 0.0,
+        "target_region_mean_abs_byte": null
+      },
+      "geometry": {
+        "max_object_translation": 0.0,
+        "max_object_rotation": 0.0
+      }
+    },
+    {
+      "a": "north-320-frozen-0",
+      "b": "north-320-frozen-1",
+      "index": 6,
+      "masks_equal": true,
+      "rgb": {
+        "equal": true,
+        "mean_abs_byte": 0.0,
+        "maximum_abs_byte": 0,
+        "changed_pixel_fraction": 0.0,
+        "target_region_mean_abs_byte": null
+      },
+      "geometry": {
+        "max_object_translation": 0.0,
+        "max_object_rotation": 0.0
+      }
+    },
+    {
+      "a": "north-320-frozen-0",
+      "b": "north-320-frozen-1",
+      "index": 7,
+      "masks_equal": true,
+      "rgb": {
+        "equal": true,
+        "mean_abs_byte": 0.0,
+        "maximum_abs_byte": 0,
+        "changed_pixel_fraction": 0.0,
+        "target_region_mean_abs_byte": null
+      },
+      "geometry": {
+        "max_object_translation": 0.0,
+        "max_object_rotation": 0.0
+      }
+    },
+    {
+      "a": "north-320-frozen-0",
+      "b": "north-320-frozen-1",
+      "index": 8,
+      "masks_equal": true,
+      "rgb": {
+        "equal": true,
+        "mean_abs_byte": 0.0,
+        "maximum_abs_byte": 0,
+        "changed_pixel_fraction": 0.0,
+        "target_region_mean_abs_byte": null
+      },
+      "geometry": {
+        "max_object_translation": 0.0,
+        "max_object_rotation": 0.0
+      }
+    },
+    {
+      "a": "north-320-frozen-0",
+      "b": "north-320-frozen-1",
+      "index": 9,
+      "masks_equal": true,
+      "rgb": {
+        "equal": true,
+        "mean_abs_byte": 0.0,
+        "maximum_abs_byte": 0,
+        "changed_pixel_fraction": 0.0,
+        "target_region_mean_abs_byte": null
+      },
+      "geometry": {
+        "max_object_translation": 0.0,
+        "max_object_rotation": 0.0
+      }
+    },
+    {
+      "a": "north-320-frozen-0",
+      "b": "north-320-frozen-1",
+      "index": 10,
+      "masks_equal": true,
+      "rgb": {
+        "equal": true,
+        "mean_abs_byte": 0.0,
+        "maximum_abs_byte": 0,
+        "changed_pixel_fraction": 0.0,
+        "target_region_mean_abs_byte": null
+      },
+      "geometry": {
+        "max_object_translation": 0.0,
+        "max_object_rotation": 0.0
+      }
+    },
+    {
+      "a": "north-320-frozen-0",
+      "b": "north-320-frozen-1",
+      "index": 11,
+      "masks_equal": true,
+      "rgb": {
+        "equal": true,
+        "mean_abs_byte": 0.0,
+        "maximum_abs_byte": 0,
+        "changed_pixel_fraction": 0.0,
+        "target_region_mean_abs_byte": null
+      },
+      "geometry": {
+        "max_object_translation": 0.0,
+        "max_object_rotation": 0.0
+      }
+    },
+    {
+      "a": "north-320-frozen-0",
+      "b": "north-320-frozen-1",
+      "index": 12,
+      "masks_equal": true,
+      "rgb": {
+        "equal": true,
+        "mean_abs_byte": 0.0,
+        "maximum_abs_byte": 0,
+        "changed_pixel_fraction": 0.0,
+        "target_region_mean_abs_byte": null
+      },
+      "geometry": {
+        "max_object_translation": 0.0,
+        "max_object_rotation": 0.0
+      }
+    },
+    {
+      "a": "north-320-frozen-0",
+      "b": "north-320-frozen-1",
+      "index": 13,
+      "masks_equal": true,
+      "rgb": {
+        "equal": true,
+        "mean_abs_byte": 0.0,
+        "maximum_abs_byte": 0,
+        "changed_pixel_fraction": 0.0,
+        "target_region_mean_abs_byte": null
+      },
+      "geometry": {
+        "max_object_translation": 0.0,
+        "max_object_rotation": 0.0
+      }
+    },
+    {
+      "a": "north-320-frozen-0",
+      "b": "north-320-frozen-1",
+      "index": 14,
+      "masks_equal": true,
+      "rgb": {
+        "equal": true,
+        "mean_abs_byte": 0.0,
+        "maximum_abs_byte": 0,
+        "changed_pixel_fraction": 0.0,
+        "target_region_mean_abs_byte": null
+      },
+      "geometry": {
+        "max_object_translation": 0.0,
+        "max_object_rotation": 0.0
+      }
+    },
+    {
+      "a": "north-320-frozen-0",
+      "b": "north-320-frozen-1",
+      "index": 15,
+      "masks_equal": true,
+      "rgb": {
+        "equal": true,
+        "mean_abs_byte": 0.0,
+        "maximum_abs_byte": 0,
+        "changed_pixel_fraction": 0.0,
+        "target_region_mean_abs_byte": null
+      },
+      "geometry": {
+        "max_object_translation": 0.0,
+        "max_object_rotation": 0.0
+      }
+    },
+    {
+      "a": "north-320-stepped-0",
+      "b": "north-320-stepped-1",
+      "index": 0,
+      "masks_equal": true,
+      "rgb": {
+        "equal": true,
+        "mean_abs_byte": 0.0,
+        "maximum_abs_byte": 0,
+        "changed_pixel_fraction": 0.0,
+        "target_region_mean_abs_byte": null
+      },
+      "geometry": {
+        "max_object_translation": 0.0,
+        "max_object_rotation": 0.0
+      }
+    },
+    {
+      "a": "north-320-stepped-0",
+      "b": "north-320-stepped-1",
+      "index": 1,
+      "masks_equal": true,
+      "rgb": {
+        "equal": true,
+        "mean_abs_byte": 0.0,
+        "maximum_abs_byte": 0,
+        "changed_pixel_fraction": 0.0,
+        "target_region_mean_abs_byte": null
+      },
+      "geometry": {
+        "max_object_translation": 0.0,
+        "max_object_rotation": 0.0
+      }
+    },
+    {
+      "a": "north-320-stepped-0",
+      "b": "north-320-stepped-1",
+      "index": 2,
+      "masks_equal": true,
+      "rgb": {
+        "equal": true,
+        "mean_abs_byte": 0.0,
+        "maximum_abs_byte": 0,
+        "changed_pixel_fraction": 0.0,
+        "target_region_mean_abs_byte": null
+      },
+      "geometry": {
+        "max_object_translation": 0.0,
+        "max_object_rotation": 0.0
+      }
+    },
+    {
+      "a": "north-320-stepped-0",
+      "b": "north-320-stepped-1",
+      "index": 3,
+      "masks_equal": true,
+      "rgb": {
+        "equal": true,
+        "mean_abs_byte": 0.0,
+        "maximum_abs_byte": 0,
+        "changed_pixel_fraction": 0.0,
+        "target_region_mean_abs_byte": null
+      },
+      "geometry": {
+        "max_object_translation": 0.0,
+        "max_object_rotation": 0.0
+      }
+    },
+    {
+      "a": "north-320-stepped-0",
+      "b": "north-320-stepped-1",
+      "index": 4,
+      "masks_equal": true,
+      "rgb": {
+        "equal": true,
+        "mean_abs_byte": 0.0,
+        "maximum_abs_byte": 0,
+        "changed_pixel_fraction": 0.0,
+        "target_region_mean_abs_byte": null
+      },
+      "geometry": {
+        "max_object_translation": 0.0,
+        "max_object_rotation": 0.0
+      }
+    },
+    {
+      "a": "north-320-stepped-0",
+      "b": "north-320-stepped-1",
+      "index": 5,
+      "masks_equal": true,
+      "rgb": {
+        "equal": true,
+        "mean_abs_byte": 0.0,
+        "maximum_abs_byte": 0,
+        "changed_pixel_fraction": 0.0,
+        "target_region_mean_abs_byte": null
+      },
+      "geometry": {
+        "max_object_translation": 0.0,
+        "max_object_rotation": 0.0
+      }
+    },
+    {
+      "a": "north-320-stepped-0",
+      "b": "north-320-stepped-1",
+      "index": 6,
+      "masks_equal": true,
+      "rgb": {
+        "equal": true,
+        "mean_abs_byte": 0.0,
+        "maximum_abs_byte": 0,
+        "changed_pixel_fraction": 0.0,
+        "target_region_mean_abs_byte": null
+      },
+      "geometry": {
+        "max_object_translation": 0.0,
+        "max_object_rotation": 0.0
+      }
+    },
+    {
+      "a": "north-320-stepped-0",
+      "b": "north-320-stepped-1",
+      "index": 7,
+      "masks_equal": true,
+      "rgb": {
+        "equal": true,
+        "mean_abs_byte": 0.0,
+        "maximum_abs_byte": 0,
+        "changed_pixel_fraction": 0.0,
+        "target_region_mean_abs_byte": null
+      },
+      "geometry": {
+        "max_object_translation": 0.0,
+        "max_object_rotation": 0.0
+      }
+    },
+    {
+      "a": "north-320-stepped-0",
+      "b": "north-320-stepped-1",
+      "index": 8,
+      "masks_equal": true,
+      "rgb": {
+        "equal": true,
+        "mean_abs_byte": 0.0,
+        "maximum_abs_byte": 0,
+        "changed_pixel_fraction": 0.0,
+        "target_region_mean_abs_byte": null
+      },
+      "geometry": {
+        "max_object_translation": 0.0,
+        "max_object_rotation": 0.0
+      }
+    },
+    {
+      "a": "north-320-stepped-0",
+      "b": "north-320-stepped-1",
+      "index": 9,
+      "masks_equal": true,
+      "rgb": {
+        "equal": true,
+        "mean_abs_byte": 0.0,
+        "maximum_abs_byte": 0,
+        "changed_pixel_fraction": 0.0,
+        "target_region_mean_abs_byte": null
+      },
+      "geometry": {
+        "max_object_translation": 0.0,
+        "max_object_rotation": 0.0
+      }
+    },
+    {
+      "a": "north-320-stepped-0",
+      "b": "north-320-stepped-1",
+      "index": 10,
+      "masks_equal": true,
+      "rgb": {
+        "equal": true,
+        "mean_abs_byte": 0.0,
+        "maximum_abs_byte": 0,
+        "changed_pixel_fraction": 0.0,
+        "target_region_mean_abs_byte": null
+      },
+      "geometry": {
+        "max_object_translation": 0.0,
+        "max_object_rotation": 0.0
+      }
+    },
+    {
+      "a": "north-320-stepped-0",
+      "b": "north-320-stepped-1",
+      "index": 11,
+      "masks_equal": true,
+      "rgb": {
+        "equal": true,
+        "mean_abs_byte": 0.0,
+        "maximum_abs_byte": 0,
+        "changed_pixel_fraction": 0.0,
+        "target_region_mean_abs_byte": null
+      },
+      "geometry": {
+        "max_object_translation": 0.0,
+        "max_object_rotation": 0.0
+      }
+    },
+    {
+      "a": "north-320-stepped-0",
+      "b": "north-320-stepped-1",
+      "index": 12,
+      "masks_equal": true,
+      "rgb": {
+        "equal": true,
+        "mean_abs_byte": 0.0,
+        "maximum_abs_byte": 0,
+        "changed_pixel_fraction": 0.0,
+        "target_region_mean_abs_byte": null
+      },
+      "geometry": {
+        "max_object_translation": 0.0,
+        "max_object_rotation": 0.0
+      }
+    },
+    {
+      "a": "north-320-stepped-0",
+      "b": "north-320-stepped-1",
+      "index": 13,
+      "masks_equal": true,
+      "rgb": {
+        "equal": true,
+        "mean_abs_byte": 0.0,
+        "maximum_abs_byte": 0,
+        "changed_pixel_fraction": 0.0,
+        "target_region_mean_abs_byte": null
+      },
+      "geometry": {
+        "max_object_translation": 0.0,
+        "max_object_rotation": 0.0
+      }
+    },
+    {
+      "a": "north-320-stepped-0",
+      "b": "north-320-stepped-1",
+      "index": 14,
+      "masks_equal": true,
+      "rgb": {
+        "equal": true,
+        "mean_abs_byte": 0.0,
+        "maximum_abs_byte": 0,
+        "changed_pixel_fraction": 0.0,
+        "target_region_mean_abs_byte": null
+      },
+      "geometry": {
+        "max_object_translation": 0.0,
+        "max_object_rotation": 0.0
+      }
+    },
+    {
+      "a": "north-320-stepped-0",
+      "b": "north-320-stepped-1",
+      "index": 15,
+      "masks_equal": true,
+      "rgb": {
+        "equal": true,
+        "mean_abs_byte": 0.0,
+        "maximum_abs_byte": 0,
+        "changed_pixel_fraction": 0.0,
+        "target_region_mean_abs_byte": null
+      },
+      "geometry": {
+        "max_object_translation": 0.0,
+        "max_object_rotation": 0.0
+      }
+    },
+    {
+      "a": "north-640-auto-0",
+      "b": "north-640-auto-1",
+      "index": 0,
+      "masks_equal": true,
+      "rgb": {
+        "equal": false,
+        "mean_abs_byte": 0.021167805989583333,
+        "maximum_abs_byte": 97,
+        "changed_pixel_fraction": 0.0092626953125,
+        "target_region_mean_abs_byte": null
+      },
+      "geometry": {
+        "max_object_translation": 0.0020093321800231934,
+        "max_object_rotation": 5.196657180786133
+      }
+    },
+    {
+      "a": "north-640-auto-0",
+      "b": "north-640-auto-1",
+      "index": 1,
+      "masks_equal": true,
+      "rgb": {
+        "equal": true,
+        "mean_abs_byte": 0.0,
+        "maximum_abs_byte": 0,
+        "changed_pixel_fraction": 0.0,
+        "target_region_mean_abs_byte": null
+      },
+      "geometry": {
+        "max_object_translation": 7.766485214233398e-05,
+        "max_object_rotation": 0.1980571746826172
+      }
+    },
+    {
+      "a": "north-640-auto-0",
+      "b": "north-640-auto-1",
+      "index": 2,
+      "masks_equal": true,
+      "rgb": {
+        "equal": true,
+        "mean_abs_byte": 0.0,
+        "maximum_abs_byte": 0,
+        "changed_pixel_fraction": 0.0,
+        "target_region_mean_abs_byte": null
+      },
+      "geometry": {
+        "max_object_translation": 1.519918441772461e-06,
+        "max_object_rotation": 0.003787994384765625
+      }
+    },
+    {
+      "a": "north-640-auto-0",
+      "b": "north-640-auto-1",
+      "index": 3,
+      "masks_equal": true,
+      "rgb": {
+        "equal": true,
+        "mean_abs_byte": 0.0,
+        "maximum_abs_byte": 0,
+        "changed_pixel_fraction": 0.0,
+        "target_region_mean_abs_byte": null
+      },
+      "geometry": {
+        "max_object_translation": 0.0,
+        "max_object_rotation": 2.47955322265625e-05
+      }
+    },
+    {
+      "a": "north-640-auto-0",
+      "b": "north-640-auto-1",
+      "index": 4,
+      "masks_equal": true,
+      "rgb": {
+        "equal": true,
+        "mean_abs_byte": 0.0,
+        "maximum_abs_byte": 0,
+        "changed_pixel_fraction": 0.0,
+        "target_region_mean_abs_byte": null
+      },
+      "geometry": {
+        "max_object_translation": 0.0,
+        "max_object_rotation": 0.0
+      }
+    },
+    {
+      "a": "north-640-auto-0",
+      "b": "north-640-auto-1",
+      "index": 5,
+      "masks_equal": true,
+      "rgb": {
+        "equal": true,
+        "mean_abs_byte": 0.0,
+        "maximum_abs_byte": 0,
+        "changed_pixel_fraction": 0.0,
+        "target_region_mean_abs_byte": null
+      },
+      "geometry": {
+        "max_object_translation": 0.0,
+        "max_object_rotation": 0.0
+      }
+    },
+    {
+      "a": "north-640-auto-0",
+      "b": "north-640-auto-1",
+      "index": 6,
+      "masks_equal": true,
+      "rgb": {
+        "equal": true,
+        "mean_abs_byte": 0.0,
+        "maximum_abs_byte": 0,
+        "changed_pixel_fraction": 0.0,
+        "target_region_mean_abs_byte": null
+      },
+      "geometry": {
+        "max_object_translation": 0.0,
+        "max_object_rotation": 0.0
+      }
+    },
+    {
+      "a": "north-640-auto-0",
+      "b": "north-640-auto-1",
+      "index": 7,
+      "masks_equal": true,
+      "rgb": {
+        "equal": true,
+        "mean_abs_byte": 0.0,
+        "maximum_abs_byte": 0,
+        "changed_pixel_fraction": 0.0,
+        "target_region_mean_abs_byte": null
+      },
+      "geometry": {
+        "max_object_translation": 0.0,
+        "max_object_rotation": 0.0
+      }
+    },
+    {
+      "a": "north-640-auto-0",
+      "b": "north-640-auto-1",
+      "index": 8,
+      "masks_equal": true,
+      "rgb": {
+        "equal": true,
+        "mean_abs_byte": 0.0,
+        "maximum_abs_byte": 0,
+        "changed_pixel_fraction": 0.0,
+        "target_region_mean_abs_byte": null
+      },
+      "geometry": {
+        "max_object_translation": 0.0,
+        "max_object_rotation": 0.0
+      }
+    },
+    {
+      "a": "north-640-auto-0",
+      "b": "north-640-auto-1",
+      "index": 9,
+      "masks_equal": true,
+      "rgb": {
+        "equal": true,
+        "mean_abs_byte": 0.0,
+        "maximum_abs_byte": 0,
+        "changed_pixel_fraction": 0.0,
+        "target_region_mean_abs_byte": null
+      },
+      "geometry": {
+        "max_object_translation": 0.0,
+        "max_object_rotation": 0.0
+      }
+    },
+    {
+      "a": "north-640-auto-0",
+      "b": "north-640-auto-1",
+      "index": 10,
+      "masks_equal": true,
+      "rgb": {
+        "equal": true,
+        "mean_abs_byte": 0.0,
+        "maximum_abs_byte": 0,
+        "changed_pixel_fraction": 0.0,
+        "target_region_mean_abs_byte": null
+      },
+      "geometry": {
+        "max_object_translation": 0.0,
+        "max_object_rotation": 0.0
+      }
+    },
+    {
+      "a": "north-640-auto-0",
+      "b": "north-640-auto-1",
+      "index": 11,
+      "masks_equal": true,
+      "rgb": {
+        "equal": true,
+        "mean_abs_byte": 0.0,
+        "maximum_abs_byte": 0,
+        "changed_pixel_fraction": 0.0,
+        "target_region_mean_abs_byte": null
+      },
+      "geometry": {
+        "max_object_translation": 0.0,
+        "max_object_rotation": 0.0
+      }
+    },
+    {
+      "a": "north-640-auto-0",
+      "b": "north-640-auto-1",
+      "index": 12,
+      "masks_equal": true,
+      "rgb": {
+        "equal": true,
+        "mean_abs_byte": 0.0,
+        "maximum_abs_byte": 0,
+        "changed_pixel_fraction": 0.0,
+        "target_region_mean_abs_byte": null
+      },
+      "geometry": {
+        "max_object_translation": 0.0,
+        "max_object_rotation": 0.0
+      }
+    },
+    {
+      "a": "north-640-auto-0",
+      "b": "north-640-auto-1",
+      "index": 13,
+      "masks_equal": true,
+      "rgb": {
+        "equal": true,
+        "mean_abs_byte": 0.0,
+        "maximum_abs_byte": 0,
+        "changed_pixel_fraction": 0.0,
+        "target_region_mean_abs_byte": null
+      },
+      "geometry": {
+        "max_object_translation": 0.0,
+        "max_object_rotation": 0.0
+      }
+    },
+    {
+      "a": "north-640-auto-0",
+      "b": "north-640-auto-1",
+      "index": 14,
+      "masks_equal": true,
+      "rgb": {
+        "equal": true,
+        "mean_abs_byte": 0.0,
+        "maximum_abs_byte": 0,
+        "changed_pixel_fraction": 0.0,
+        "target_region_mean_abs_byte": null
+      },
+      "geometry": {
+        "max_object_translation": 0.0,
+        "max_object_rotation": 0.0
+      }
+    },
+    {
+      "a": "north-640-auto-0",
+      "b": "north-640-auto-1",
+      "index": 15,
+      "masks_equal": true,
+      "rgb": {
+        "equal": true,
+        "mean_abs_byte": 0.0,
+        "maximum_abs_byte": 0,
+        "changed_pixel_fraction": 0.0,
+        "target_region_mean_abs_byte": null
+      },
+      "geometry": {
+        "max_object_translation": 0.0,
+        "max_object_rotation": 0.0
+      }
+    },
+    {
+      "a": "north-640-frozen-0",
+      "b": "north-640-frozen-1",
+      "index": 0,
+      "masks_equal": true,
+      "rgb": {
+        "equal": false,
+        "mean_abs_byte": 0.06856852213541667,
+        "maximum_abs_byte": 101,
+        "changed_pixel_fraction": 0.0182373046875,
+        "target_region_mean_abs_byte": null
+      },
+      "geometry": {
+        "max_object_translation": 0.004771053791046143,
+        "max_object_rotation": 12.771249294281006
+      }
+    },
+    {
+      "a": "north-640-frozen-0",
+      "b": "north-640-frozen-1",
+      "index": 1,
+      "masks_equal": true,
+      "rgb": {
+        "equal": false,
+        "mean_abs_byte": 0.06856852213541667,
+        "maximum_abs_byte": 101,
+        "changed_pixel_fraction": 0.0182373046875,
+        "target_region_mean_abs_byte": null
+      },
+      "geometry": {
+        "max_object_translation": 0.004771053791046143,
+        "max_object_rotation": 12.771249294281006
+      }
+    },
+    {
+      "a": "north-640-frozen-0",
+      "b": "north-640-frozen-1",
+      "index": 2,
+      "masks_equal": true,
+      "rgb": {
+        "equal": false,
+        "mean_abs_byte": 0.06856852213541667,
+        "maximum_abs_byte": 101,
+        "changed_pixel_fraction": 0.0182373046875,
+        "target_region_mean_abs_byte": null
+      },
+      "geometry": {
+        "max_object_translation": 0.004771053791046143,
+        "max_object_rotation": 12.771249294281006
+      }
+    },
+    {
+      "a": "north-640-frozen-0",
+      "b": "north-640-frozen-1",
+      "index": 3,
+      "masks_equal": true,
+      "rgb": {
+        "equal": false,
+        "mean_abs_byte": 0.06856852213541667,
+        "maximum_abs_byte": 101,
+        "changed_pixel_fraction": 0.0182373046875,
+        "target_region_mean_abs_byte": null
+      },
+      "geometry": {
+        "max_object_translation": 0.004771053791046143,
+        "max_object_rotation": 12.771249294281006
+      }
+    },
+    {
+      "a": "north-640-frozen-0",
+      "b": "north-640-frozen-1",
+      "index": 4,
+      "masks_equal": true,
+      "rgb": {
+        "equal": false,
+        "mean_abs_byte": 0.06856852213541667,
+        "maximum_abs_byte": 101,
+        "changed_pixel_fraction": 0.0182373046875,
+        "target_region_mean_abs_byte": null
+      },
+      "geometry": {
+        "max_object_translation": 0.004771053791046143,
+        "max_object_rotation": 12.771249294281006
+      }
+    },
+    {
+      "a": "north-640-frozen-0",
+      "b": "north-640-frozen-1",
+      "index": 5,
+      "masks_equal": true,
+      "rgb": {
+        "equal": false,
+        "mean_abs_byte": 0.06856852213541667,
+        "maximum_abs_byte": 101,
+        "changed_pixel_fraction": 0.0182373046875,
+        "target_region_mean_abs_byte": null
+      },
+      "geometry": {
+        "max_object_translation": 0.004771053791046143,
+        "max_object_rotation": 12.771249294281006
+      }
+    },
+    {
+      "a": "north-640-frozen-0",
+      "b": "north-640-frozen-1",
+      "index": 6,
+      "masks_equal": true,
+      "rgb": {
+        "equal": false,
+        "mean_abs_byte": 0.06856852213541667,
+        "maximum_abs_byte": 101,
+        "changed_pixel_fraction": 0.0182373046875,
+        "target_region_mean_abs_byte": null
+      },
+      "geometry": {
+        "max_object_translation": 0.004771053791046143,
+        "max_object_rotation": 12.771249294281006
+      }
+    },
+    {
+      "a": "north-640-frozen-0",
+      "b": "north-640-frozen-1",
+      "index": 7,
+      "masks_equal": true,
+      "rgb": {
+        "equal": false,
+        "mean_abs_byte": 0.06856852213541667,
+        "maximum_abs_byte": 101,
+        "changed_pixel_fraction": 0.0182373046875,
+        "target_region_mean_abs_byte": null
+      },
+      "geometry": {
+        "max_object_translation": 0.004771053791046143,
+        "max_object_rotation": 12.771249294281006
+      }
+    },
+    {
+      "a": "north-640-frozen-0",
+      "b": "north-640-frozen-1",
+      "index": 8,
+      "masks_equal": true,
+      "rgb": {
+        "equal": false,
+        "mean_abs_byte": 0.06856852213541667,
+        "maximum_abs_byte": 101,
+        "changed_pixel_fraction": 0.0182373046875,
+        "target_region_mean_abs_byte": null
+      },
+      "geometry": {
+        "max_object_translation": 0.004771053791046143,
+        "max_object_rotation": 12.771249294281006
+      }
+    },
+    {
+      "a": "north-640-frozen-0",
+      "b": "north-640-frozen-1",
+      "index": 9,
+      "masks_equal": true,
+      "rgb": {
+        "equal": false,
+        "mean_abs_byte": 0.06856852213541667,
+        "maximum_abs_byte": 101,
+        "changed_pixel_fraction": 0.0182373046875,
+        "target_region_mean_abs_byte": null
+      },
+      "geometry": {
+        "max_object_translation": 0.004771053791046143,
+        "max_object_rotation": 12.771249294281006
+      }
+    },
+    {
+      "a": "north-640-frozen-0",
+      "b": "north-640-frozen-1",
+      "index": 10,
+      "masks_equal": true,
+      "rgb": {
+        "equal": false,
+        "mean_abs_byte": 0.06856852213541667,
+        "maximum_abs_byte": 101,
+        "changed_pixel_fraction": 0.0182373046875,
+        "target_region_mean_abs_byte": null
+      },
+      "geometry": {
+        "max_object_translation": 0.004771053791046143,
+        "max_object_rotation": 12.771249294281006
+      }
+    },
+    {
+      "a": "north-640-frozen-0",
+      "b": "north-640-frozen-1",
+      "index": 11,
+      "masks_equal": true,
+      "rgb": {
+        "equal": false,
+        "mean_abs_byte": 0.06856852213541667,
+        "maximum_abs_byte": 101,
+        "changed_pixel_fraction": 0.0182373046875,
+        "target_region_mean_abs_byte": null
+      },
+      "geometry": {
+        "max_object_translation": 0.004771053791046143,
+        "max_object_rotation": 12.771249294281006
+      }
+    },
+    {
+      "a": "north-640-frozen-0",
+      "b": "north-640-frozen-1",
+      "index": 12,
+      "masks_equal": true,
+      "rgb": {
+        "equal": false,
+        "mean_abs_byte": 0.06856852213541667,
+        "maximum_abs_byte": 101,
+        "changed_pixel_fraction": 0.0182373046875,
+        "target_region_mean_abs_byte": null
+      },
+      "geometry": {
+        "max_object_translation": 0.004771053791046143,
+        "max_object_rotation": 12.771249294281006
+      }
+    },
+    {
+      "a": "north-640-frozen-0",
+      "b": "north-640-frozen-1",
+      "index": 13,
+      "masks_equal": true,
+      "rgb": {
+        "equal": false,
+        "mean_abs_byte": 0.06856852213541667,
+        "maximum_abs_byte": 101,
+        "changed_pixel_fraction": 0.0182373046875,
+        "target_region_mean_abs_byte": null
+      },
+      "geometry": {
+        "max_object_translation": 0.004771053791046143,
+        "max_object_rotation": 12.771249294281006
+      }
+    },
+    {
+      "a": "north-640-frozen-0",
+      "b": "north-640-frozen-1",
+      "index": 14,
+      "masks_equal": true,
+      "rgb": {
+        "equal": false,
+        "mean_abs_byte": 0.06856852213541667,
+        "maximum_abs_byte": 101,
+        "changed_pixel_fraction": 0.0182373046875,
+        "target_region_mean_abs_byte": null
+      },
+      "geometry": {
+        "max_object_translation": 0.004771053791046143,
+        "max_object_rotation": 12.771249294281006
+      }
+    },
+    {
+      "a": "north-640-frozen-0",
+      "b": "north-640-frozen-1",
+      "index": 15,
+      "masks_equal": true,
+      "rgb": {
+        "equal": false,
+        "mean_abs_byte": 0.06856852213541667,
+        "maximum_abs_byte": 101,
+        "changed_pixel_fraction": 0.0182373046875,
+        "target_region_mean_abs_byte": null
+      },
+      "geometry": {
+        "max_object_translation": 0.004771053791046143,
+        "max_object_rotation": 12.771249294281006
+      }
+    },
+    {
+      "a": "north-640-stepped-0",
+      "b": "north-640-stepped-1",
+      "index": 0,
+      "masks_equal": true,
+      "rgb": {
+        "equal": true,
+        "mean_abs_byte": 0.0,
+        "maximum_abs_byte": 0,
+        "changed_pixel_fraction": 0.0,
+        "target_region_mean_abs_byte": null
+      },
+      "geometry": {
+        "max_object_translation": 0.0,
+        "max_object_rotation": 0.0
+      }
+    },
+    {
+      "a": "north-640-stepped-0",
+      "b": "north-640-stepped-1",
+      "index": 1,
+      "masks_equal": true,
+      "rgb": {
+        "equal": true,
+        "mean_abs_byte": 0.0,
+        "maximum_abs_byte": 0,
+        "changed_pixel_fraction": 0.0,
+        "target_region_mean_abs_byte": null
+      },
+      "geometry": {
+        "max_object_translation": 0.0,
+        "max_object_rotation": 0.0
+      }
+    },
+    {
+      "a": "north-640-stepped-0",
+      "b": "north-640-stepped-1",
+      "index": 2,
+      "masks_equal": true,
+      "rgb": {
+        "equal": true,
+        "mean_abs_byte": 0.0,
+        "maximum_abs_byte": 0,
+        "changed_pixel_fraction": 0.0,
+        "target_region_mean_abs_byte": null
+      },
+      "geometry": {
+        "max_object_translation": 0.0,
+        "max_object_rotation": 0.0
+      }
+    },
+    {
+      "a": "north-640-stepped-0",
+      "b": "north-640-stepped-1",
+      "index": 3,
+      "masks_equal": true,
+      "rgb": {
+        "equal": true,
+        "mean_abs_byte": 0.0,
+        "maximum_abs_byte": 0,
+        "changed_pixel_fraction": 0.0,
+        "target_region_mean_abs_byte": null
+      },
+      "geometry": {
+        "max_object_translation": 0.0,
+        "max_object_rotation": 0.0
+      }
+    },
+    {
+      "a": "north-640-stepped-0",
+      "b": "north-640-stepped-1",
+      "index": 4,
+      "masks_equal": true,
+      "rgb": {
+        "equal": true,
+        "mean_abs_byte": 0.0,
+        "maximum_abs_byte": 0,
+        "changed_pixel_fraction": 0.0,
+        "target_region_mean_abs_byte": null
+      },
+      "geometry": {
+        "max_object_translation": 0.0,
+        "max_object_rotation": 0.0
+      }
+    },
+    {
+      "a": "north-640-stepped-0",
+      "b": "north-640-stepped-1",
+      "index": 5,
+      "masks_equal": true,
+      "rgb": {
+        "equal": true,
+        "mean_abs_byte": 0.0,
+        "maximum_abs_byte": 0,
+        "changed_pixel_fraction": 0.0,
+        "target_region_mean_abs_byte": null
+      },
+      "geometry": {
+        "max_object_translation": 0.0,
+        "max_object_rotation": 0.0
+      }
+    },
+    {
+      "a": "north-640-stepped-0",
+      "b": "north-640-stepped-1",
+      "index": 6,
+      "masks_equal": true,
+      "rgb": {
+        "equal": true,
+        "mean_abs_byte": 0.0,
+        "maximum_abs_byte": 0,
+        "changed_pixel_fraction": 0.0,
+        "target_region_mean_abs_byte": null
+      },
+      "geometry": {
+        "max_object_translation": 0.0,
+        "max_object_rotation": 0.0
+      }
+    },
+    {
+      "a": "north-640-stepped-0",
+      "b": "north-640-stepped-1",
+      "index": 7,
+      "masks_equal": true,
+      "rgb": {
+        "equal": true,
+        "mean_abs_byte": 0.0,
+        "maximum_abs_byte": 0,
+        "changed_pixel_fraction": 0.0,
+        "target_region_mean_abs_byte": null
+      },
+      "geometry": {
+        "max_object_translation": 0.0,
+        "max_object_rotation": 0.0
+      }
+    },
+    {
+      "a": "north-640-stepped-0",
+      "b": "north-640-stepped-1",
+      "index": 8,
+      "masks_equal": true,
+      "rgb": {
+        "equal": true,
+        "mean_abs_byte": 0.0,
+        "maximum_abs_byte": 0,
+        "changed_pixel_fraction": 0.0,
+        "target_region_mean_abs_byte": null
+      },
+      "geometry": {
+        "max_object_translation": 0.0,
+        "max_object_rotation": 0.0
+      }
+    },
+    {
+      "a": "north-640-stepped-0",
+      "b": "north-640-stepped-1",
+      "index": 9,
+      "masks_equal": true,
+      "rgb": {
+        "equal": true,
+        "mean_abs_byte": 0.0,
+        "maximum_abs_byte": 0,
+        "changed_pixel_fraction": 0.0,
+        "target_region_mean_abs_byte": null
+      },
+      "geometry": {
+        "max_object_translation": 0.0,
+        "max_object_rotation": 0.0
+      }
+    },
+    {
+      "a": "north-640-stepped-0",
+      "b": "north-640-stepped-1",
+      "index": 10,
+      "masks_equal": true,
+      "rgb": {
+        "equal": true,
+        "mean_abs_byte": 0.0,
+        "maximum_abs_byte": 0,
+        "changed_pixel_fraction": 0.0,
+        "target_region_mean_abs_byte": null
+      },
+      "geometry": {
+        "max_object_translation": 0.0,
+        "max_object_rotation": 0.0
+      }
+    },
+    {
+      "a": "north-640-stepped-0",
+      "b": "north-640-stepped-1",
+      "index": 11,
+      "masks_equal": true,
+      "rgb": {
+        "equal": true,
+        "mean_abs_byte": 0.0,
+        "maximum_abs_byte": 0,
+        "changed_pixel_fraction": 0.0,
+        "target_region_mean_abs_byte": null
+      },
+      "geometry": {
+        "max_object_translation": 0.0,
+        "max_object_rotation": 0.0
+      }
+    },
+    {
+      "a": "north-640-stepped-0",
+      "b": "north-640-stepped-1",
+      "index": 12,
+      "masks_equal": true,
+      "rgb": {
+        "equal": true,
+        "mean_abs_byte": 0.0,
+        "maximum_abs_byte": 0,
+        "changed_pixel_fraction": 0.0,
+        "target_region_mean_abs_byte": null
+      },
+      "geometry": {
+        "max_object_translation": 0.0,
+        "max_object_rotation": 0.0
+      }
+    },
+    {
+      "a": "north-640-stepped-0",
+      "b": "north-640-stepped-1",
+      "index": 13,
+      "masks_equal": true,
+      "rgb": {
+        "equal": true,
+        "mean_abs_byte": 0.0,
+        "maximum_abs_byte": 0,
+        "changed_pixel_fraction": 0.0,
+        "target_region_mean_abs_byte": null
+      },
+      "geometry": {
+        "max_object_translation": 0.0,
+        "max_object_rotation": 0.0
+      }
+    },
+    {
+      "a": "north-640-stepped-0",
+      "b": "north-640-stepped-1",
+      "index": 14,
+      "masks_equal": true,
+      "rgb": {
+        "equal": true,
+        "mean_abs_byte": 0.0,
+        "maximum_abs_byte": 0,
+        "changed_pixel_fraction": 0.0,
+        "target_region_mean_abs_byte": null
+      },
+      "geometry": {
+        "max_object_translation": 0.0,
+        "max_object_rotation": 0.0
+      }
+    },
+    {
+      "a": "north-640-stepped-0",
+      "b": "north-640-stepped-1",
+      "index": 15,
+      "masks_equal": true,
+      "rgb": {
+        "equal": true,
+        "mean_abs_byte": 0.0,
+        "maximum_abs_byte": 0,
+        "changed_pixel_fraction": 0.0,
+        "target_region_mean_abs_byte": null
+      },
+      "geometry": {
+        "max_object_translation": 0.0,
+        "max_object_rotation": 0.0
+      }
+    },
+    {
+      "a": "south-320-auto-0",
+      "b": "south-320-auto-1",
+      "index": 0,
+      "masks_equal": true,
+      "rgb": {
+        "equal": false,
+        "mean_abs_byte": 0.019889322916666667,
+        "maximum_abs_byte": 95,
+        "changed_pixel_fraction": 0.007451171875,
+        "target_region_mean_abs_byte": 0.0
+      },
+      "geometry": {
+        "max_object_translation": 0.00054129958152771,
+        "max_object_rotation": 1.404561996459961
+      }
+    },
+    {
+      "a": "south-320-auto-0",
+      "b": "south-320-auto-1",
+      "index": 1,
+      "masks_equal": true,
+      "rgb": {
+        "equal": false,
+        "mean_abs_byte": 0.015875651041666668,
+        "maximum_abs_byte": 93,
+        "changed_pixel_fraction": 0.007216796875,
+        "target_region_mean_abs_byte": 0.0
+      },
+      "geometry": {
+        "max_object_translation": 0.0010057687759399414,
+        "max_object_rotation": 2.6113414764404297
+      }
+    },
+    {
+      "a": "south-320-auto-0",
+      "b": "south-320-auto-1",
+      "index": 2,
+      "masks_equal": true,
+      "rgb": {
+        "equal": false,
+        "mean_abs_byte": 0.0052669270833333335,
+        "maximum_abs_byte": 96,
+        "changed_pixel_fraction": 0.004541015625,
+        "target_region_mean_abs_byte": 0.0
+      },
+      "geometry": {
+        "max_object_translation": 0.0006633996963500977,
+        "max_object_rotation": 1.7053756713867188
+      }
+    },
+    {
+      "a": "south-320-auto-0",
+      "b": "south-320-auto-1",
+      "index": 3,
+      "masks_equal": true,
+      "rgb": {
+        "equal": false,
+        "mean_abs_byte": 0.003798828125,
+        "maximum_abs_byte": 90,
+        "changed_pixel_fraction": 0.0023828125,
+        "target_region_mean_abs_byte": 0.0
+      },
+      "geometry": {
+        "max_object_translation": 0.00018548965454101562,
+        "max_object_rotation": 0.2093524932861328
+      }
+    },
+    {
+      "a": "south-320-auto-0",
+      "b": "south-320-auto-1",
+      "index": 4,
+      "masks_equal": true,
+      "rgb": {
+        "equal": true,
+        "mean_abs_byte": 0.0,
+        "maximum_abs_byte": 0,
+        "changed_pixel_fraction": 0.0,
+        "target_region_mean_abs_byte": 0.0
+      },
+      "geometry": {
+        "max_object_translation": 9.453296661376953e-05,
+        "max_object_rotation": 0.2401905059814453
+      }
+    },
+    {
+      "a": "south-320-auto-0",
+      "b": "south-320-auto-1",
+      "index": 5,
+      "masks_equal": true,
+      "rgb": {
+        "equal": true,
+        "mean_abs_byte": 0.0,
+        "maximum_abs_byte": 0,
+        "changed_pixel_fraction": 0.0,
+        "target_region_mean_abs_byte": 0.0
+      },
+      "geometry": {
+        "max_object_translation": 1.3649463653564453e-05,
+        "max_object_rotation": 0.034423828125
+      }
+    },
+    {
+      "a": "south-320-auto-0",
+      "b": "south-320-auto-1",
+      "index": 6,
+      "masks_equal": true,
+      "rgb": {
+        "equal": true,
+        "mean_abs_byte": 0.0,
+        "maximum_abs_byte": 0,
+        "changed_pixel_fraction": 0.0,
+        "target_region_mean_abs_byte": 0.0
+      },
+      "geometry": {
+        "max_object_translation": 5.662441253662109e-07,
+        "max_object_rotation": 0.001613616943359375
+      }
+    },
+    {
+      "a": "south-320-auto-0",
+      "b": "south-320-auto-1",
+      "index": 7,
+      "masks_equal": true,
+      "rgb": {
+        "equal": true,
+        "mean_abs_byte": 0.0,
+        "maximum_abs_byte": 0,
+        "changed_pixel_fraction": 0.0,
+        "target_region_mean_abs_byte": 0.0
+      },
+      "geometry": {
+        "max_object_translation": 3.5762786865234375e-07,
+        "max_object_rotation": 0.000949859619140625
+      }
+    },
+    {
+      "a": "south-320-auto-0",
+      "b": "south-320-auto-1",
+      "index": 8,
+      "masks_equal": true,
+      "rgb": {
+        "equal": true,
+        "mean_abs_byte": 0.0,
+        "maximum_abs_byte": 0,
+        "changed_pixel_fraction": 0.0,
+        "target_region_mean_abs_byte": 0.0
+      },
+      "geometry": {
+        "max_object_translation": 5.960464477539063e-08,
+        "max_object_rotation": 0.0002079010009765625
+      }
+    },
+    {
+      "a": "south-320-auto-0",
+      "b": "south-320-auto-1",
+      "index": 9,
+      "masks_equal": true,
+      "rgb": {
+        "equal": true,
+        "mean_abs_byte": 0.0,
+        "maximum_abs_byte": 0,
+        "changed_pixel_fraction": 0.0,
+        "target_region_mean_abs_byte": 0.0
+      },
+      "geometry": {
+        "max_object_translation": 0.0,
+        "max_object_rotation": 2.47955322265625e-05
+      }
+    },
+    {
+      "a": "south-320-auto-0",
+      "b": "south-320-auto-1",
+      "index": 10,
+      "masks_equal": true,
+      "rgb": {
+        "equal": true,
+        "mean_abs_byte": 0.0,
+        "maximum_abs_byte": 0,
+        "changed_pixel_fraction": 0.0,
+        "target_region_mean_abs_byte": 0.0
+      },
+      "geometry": {
+        "max_object_translation": 5.960464477539063e-08,
+        "max_object_rotation": 3.814697265625e-06
+      }
+    },
+    {
+      "a": "south-320-auto-0",
+      "b": "south-320-auto-1",
+      "index": 11,
+      "masks_equal": true,
+      "rgb": {
+        "equal": true,
+        "mean_abs_byte": 0.0,
+        "maximum_abs_byte": 0,
+        "changed_pixel_fraction": 0.0,
+        "target_region_mean_abs_byte": 0.0
+      },
+      "geometry": {
+        "max_object_translation": 0.0,
+        "max_object_rotation": 0.0
+      }
+    },
+    {
+      "a": "south-320-auto-0",
+      "b": "south-320-auto-1",
+      "index": 12,
+      "masks_equal": true,
+      "rgb": {
+        "equal": true,
+        "mean_abs_byte": 0.0,
+        "maximum_abs_byte": 0,
+        "changed_pixel_fraction": 0.0,
+        "target_region_mean_abs_byte": 0.0
+      },
+      "geometry": {
+        "max_object_translation": 0.0,
+        "max_object_rotation": 0.0
+      }
+    },
+    {
+      "a": "south-320-auto-0",
+      "b": "south-320-auto-1",
+      "index": 13,
+      "masks_equal": true,
+      "rgb": {
+        "equal": true,
+        "mean_abs_byte": 0.0,
+        "maximum_abs_byte": 0,
+        "changed_pixel_fraction": 0.0,
+        "target_region_mean_abs_byte": 0.0
+      },
+      "geometry": {
+        "max_object_translation": 0.0,
+        "max_object_rotation": 0.0
+      }
+    },
+    {
+      "a": "south-320-auto-0",
+      "b": "south-320-auto-1",
+      "index": 14,
+      "masks_equal": true,
+      "rgb": {
+        "equal": true,
+        "mean_abs_byte": 0.0,
+        "maximum_abs_byte": 0,
+        "changed_pixel_fraction": 0.0,
+        "target_region_mean_abs_byte": 0.0
+      },
+      "geometry": {
+        "max_object_translation": 0.0,
+        "max_object_rotation": 0.0
+      }
+    },
+    {
+      "a": "south-320-auto-0",
+      "b": "south-320-auto-1",
+      "index": 15,
+      "masks_equal": true,
+      "rgb": {
+        "equal": true,
+        "mean_abs_byte": 0.0,
+        "maximum_abs_byte": 0,
+        "changed_pixel_fraction": 0.0,
+        "target_region_mean_abs_byte": 0.0
+      },
+      "geometry": {
+        "max_object_translation": 0.0,
+        "max_object_rotation": 0.0
+      }
+    },
+    {
+      "a": "south-320-frozen-0",
+      "b": "south-320-frozen-1",
+      "index": 0,
+      "masks_equal": true,
+      "rgb": {
+        "equal": false,
+        "mean_abs_byte": 0.021435546875,
+        "maximum_abs_byte": 95,
+        "changed_pixel_fraction": 0.010888671875,
+        "target_region_mean_abs_byte": 0.0
+      },
+      "geometry": {
+        "max_object_translation": 0.0008323192596435547,
+        "max_object_rotation": 2.236417770385742
+      }
+    },
+    {
+      "a": "south-320-frozen-0",
+      "b": "south-320-frozen-1",
+      "index": 1,
+      "masks_equal": true,
+      "rgb": {
+        "equal": false,
+        "mean_abs_byte": 0.021435546875,
+        "maximum_abs_byte": 95,
+        "changed_pixel_fraction": 0.010888671875,
+        "target_region_mean_abs_byte": 0.0
+      },
+      "geometry": {
+        "max_object_translation": 0.0008323192596435547,
+        "max_object_rotation": 2.236417770385742
+      }
+    },
+    {
+      "a": "south-320-frozen-0",
+      "b": "south-320-frozen-1",
+      "index": 2,
+      "masks_equal": true,
+      "rgb": {
+        "equal": false,
+        "mean_abs_byte": 0.021435546875,
+        "maximum_abs_byte": 95,
+        "changed_pixel_fraction": 0.010888671875,
+        "target_region_mean_abs_byte": 0.0
+      },
+      "geometry": {
+        "max_object_translation": 0.0008323192596435547,
+        "max_object_rotation": 2.236417770385742
+      }
+    },
+    {
+      "a": "south-320-frozen-0",
+      "b": "south-320-frozen-1",
+      "index": 3,
+      "masks_equal": true,
+      "rgb": {
+        "equal": false,
+        "mean_abs_byte": 0.021435546875,
+        "maximum_abs_byte": 95,
+        "changed_pixel_fraction": 0.010888671875,
+        "target_region_mean_abs_byte": 0.0
+      },
+      "geometry": {
+        "max_object_translation": 0.0008323192596435547,
+        "max_object_rotation": 2.236417770385742
+      }
+    },
+    {
+      "a": "south-320-frozen-0",
+      "b": "south-320-frozen-1",
+      "index": 4,
+      "masks_equal": true,
+      "rgb": {
+        "equal": false,
+        "mean_abs_byte": 0.021435546875,
+        "maximum_abs_byte": 95,
+        "changed_pixel_fraction": 0.010888671875,
+        "target_region_mean_abs_byte": 0.0
+      },
+      "geometry": {
+        "max_object_translation": 0.0008323192596435547,
+        "max_object_rotation": 2.236417770385742
+      }
+    },
+    {
+      "a": "south-320-frozen-0",
+      "b": "south-320-frozen-1",
+      "index": 5,
+      "masks_equal": true,
+      "rgb": {
+        "equal": false,
+        "mean_abs_byte": 0.021435546875,
+        "maximum_abs_byte": 95,
+        "changed_pixel_fraction": 0.010888671875,
+        "target_region_mean_abs_byte": 0.0
+      },
+      "geometry": {
+        "max_object_translation": 0.0008323192596435547,
+        "max_object_rotation": 2.236417770385742
+      }
+    },
+    {
+      "a": "south-320-frozen-0",
+      "b": "south-320-frozen-1",
+      "index": 6,
+      "masks_equal": true,
+      "rgb": {
+        "equal": false,
+        "mean_abs_byte": 0.021435546875,
+        "maximum_abs_byte": 95,
+        "changed_pixel_fraction": 0.010888671875,
+        "target_region_mean_abs_byte": 0.0
+      },
+      "geometry": {
+        "max_object_translation": 0.0008323192596435547,
+        "max_object_rotation": 2.236417770385742
+      }
+    },
+    {
+      "a": "south-320-frozen-0",
+      "b": "south-320-frozen-1",
+      "index": 7,
+      "masks_equal": true,
+      "rgb": {
+        "equal": false,
+        "mean_abs_byte": 0.021435546875,
+        "maximum_abs_byte": 95,
+        "changed_pixel_fraction": 0.010888671875,
+        "target_region_mean_abs_byte": 0.0
+      },
+      "geometry": {
+        "max_object_translation": 0.0008323192596435547,
+        "max_object_rotation": 2.236417770385742
+      }
+    },
+    {
+      "a": "south-320-frozen-0",
+      "b": "south-320-frozen-1",
+      "index": 8,
+      "masks_equal": true,
+      "rgb": {
+        "equal": false,
+        "mean_abs_byte": 0.021435546875,
+        "maximum_abs_byte": 95,
+        "changed_pixel_fraction": 0.010888671875,
+        "target_region_mean_abs_byte": 0.0
+      },
+      "geometry": {
+        "max_object_translation": 0.0008323192596435547,
+        "max_object_rotation": 2.236417770385742
+      }
+    },
+    {
+      "a": "south-320-frozen-0",
+      "b": "south-320-frozen-1",
+      "index": 9,
+      "masks_equal": true,
+      "rgb": {
+        "equal": false,
+        "mean_abs_byte": 0.021435546875,
+        "maximum_abs_byte": 95,
+        "changed_pixel_fraction": 0.010888671875,
+        "target_region_mean_abs_byte": 0.0
+      },
+      "geometry": {
+        "max_object_translation": 0.0008323192596435547,
+        "max_object_rotation": 2.236417770385742
+      }
+    },
+    {
+      "a": "south-320-frozen-0",
+      "b": "south-320-frozen-1",
+      "index": 10,
+      "masks_equal": true,
+      "rgb": {
+        "equal": false,
+        "mean_abs_byte": 0.021435546875,
+        "maximum_abs_byte": 95,
+        "changed_pixel_fraction": 0.010888671875,
+        "target_region_mean_abs_byte": 0.0
+      },
+      "geometry": {
+        "max_object_translation": 0.0008323192596435547,
+        "max_object_rotation": 2.236417770385742
+      }
+    },
+    {
+      "a": "south-320-frozen-0",
+      "b": "south-320-frozen-1",
+      "index": 11,
+      "masks_equal": true,
+      "rgb": {
+        "equal": false,
+        "mean_abs_byte": 0.021435546875,
+        "maximum_abs_byte": 95,
+        "changed_pixel_fraction": 0.010888671875,
+        "target_region_mean_abs_byte": 0.0
+      },
+      "geometry": {
+        "max_object_translation": 0.0008323192596435547,
+        "max_object_rotation": 2.236417770385742
+      }
+    },
+    {
+      "a": "south-320-frozen-0",
+      "b": "south-320-frozen-1",
+      "index": 12,
+      "masks_equal": true,
+      "rgb": {
+        "equal": false,
+        "mean_abs_byte": 0.021435546875,
+        "maximum_abs_byte": 95,
+        "changed_pixel_fraction": 0.010888671875,
+        "target_region_mean_abs_byte": 0.0
+      },
+      "geometry": {
+        "max_object_translation": 0.0008323192596435547,
+        "max_object_rotation": 2.236417770385742
+      }
+    },
+    {
+      "a": "south-320-frozen-0",
+      "b": "south-320-frozen-1",
+      "index": 13,
+      "masks_equal": true,
+      "rgb": {
+        "equal": false,
+        "mean_abs_byte": 0.021435546875,
+        "maximum_abs_byte": 95,
+        "changed_pixel_fraction": 0.010888671875,
+        "target_region_mean_abs_byte": 0.0
+      },
+      "geometry": {
+        "max_object_translation": 0.0008323192596435547,
+        "max_object_rotation": 2.236417770385742
+      }
+    },
+    {
+      "a": "south-320-frozen-0",
+      "b": "south-320-frozen-1",
+      "index": 14,
+      "masks_equal": true,
+      "rgb": {
+        "equal": false,
+        "mean_abs_byte": 0.021435546875,
+        "maximum_abs_byte": 95,
+        "changed_pixel_fraction": 0.010888671875,
+        "target_region_mean_abs_byte": 0.0
+      },
+      "geometry": {
+        "max_object_translation": 0.0008323192596435547,
+        "max_object_rotation": 2.236417770385742
+      }
+    },
+    {
+      "a": "south-320-frozen-0",
+      "b": "south-320-frozen-1",
+      "index": 15,
+      "masks_equal": true,
+      "rgb": {
+        "equal": false,
+        "mean_abs_byte": 0.021435546875,
+        "maximum_abs_byte": 95,
+        "changed_pixel_fraction": 0.010888671875,
+        "target_region_mean_abs_byte": 0.0
+      },
+      "geometry": {
+        "max_object_translation": 0.0008323192596435547,
+        "max_object_rotation": 2.236417770385742
+      }
+    },
+    {
+      "a": "south-320-stepped-0",
+      "b": "south-320-stepped-1",
+      "index": 0,
+      "masks_equal": true,
+      "rgb": {
+        "equal": true,
+        "mean_abs_byte": 0.0,
+        "maximum_abs_byte": 0,
+        "changed_pixel_fraction": 0.0,
+        "target_region_mean_abs_byte": 0.0
+      },
+      "geometry": {
+        "max_object_translation": 0.0,
+        "max_object_rotation": 0.0
+      }
+    },
+    {
+      "a": "south-320-stepped-0",
+      "b": "south-320-stepped-1",
+      "index": 1,
+      "masks_equal": true,
+      "rgb": {
+        "equal": true,
+        "mean_abs_byte": 0.0,
+        "maximum_abs_byte": 0,
+        "changed_pixel_fraction": 0.0,
+        "target_region_mean_abs_byte": 0.0
+      },
+      "geometry": {
+        "max_object_translation": 0.0,
+        "max_object_rotation": 0.0
+      }
+    },
+    {
+      "a": "south-320-stepped-0",
+      "b": "south-320-stepped-1",
+      "index": 2,
+      "masks_equal": true,
+      "rgb": {
+        "equal": true,
+        "mean_abs_byte": 0.0,
+        "maximum_abs_byte": 0,
+        "changed_pixel_fraction": 0.0,
+        "target_region_mean_abs_byte": 0.0
+      },
+      "geometry": {
+        "max_object_translation": 0.0,
+        "max_object_rotation": 0.0
+      }
+    },
+    {
+      "a": "south-320-stepped-0",
+      "b": "south-320-stepped-1",
+      "index": 3,
+      "masks_equal": true,
+      "rgb": {
+        "equal": true,
+        "mean_abs_byte": 0.0,
+        "maximum_abs_byte": 0,
+        "changed_pixel_fraction": 0.0,
+        "target_region_mean_abs_byte": 0.0
+      },
+      "geometry": {
+        "max_object_translation": 0.0,
+        "max_object_rotation": 0.0
+      }
+    },
+    {
+      "a": "south-320-stepped-0",
+      "b": "south-320-stepped-1",
+      "index": 4,
+      "masks_equal": true,
+      "rgb": {
+        "equal": true,
+        "mean_abs_byte": 0.0,
+        "maximum_abs_byte": 0,
+        "changed_pixel_fraction": 0.0,
+        "target_region_mean_abs_byte": 0.0
+      },
+      "geometry": {
+        "max_object_translation": 0.0,
+        "max_object_rotation": 0.0
+      }
+    },
+    {
+      "a": "south-320-stepped-0",
+      "b": "south-320-stepped-1",
+      "index": 5,
+      "masks_equal": true,
+      "rgb": {
+        "equal": true,
+        "mean_abs_byte": 0.0,
+        "maximum_abs_byte": 0,
+        "changed_pixel_fraction": 0.0,
+        "target_region_mean_abs_byte": 0.0
+      },
+      "geometry": {
+        "max_object_translation": 0.0,
+        "max_object_rotation": 0.0
+      }
+    },
+    {
+      "a": "south-320-stepped-0",
+      "b": "south-320-stepped-1",
+      "index": 6,
+      "masks_equal": true,
+      "rgb": {
+        "equal": true,
+        "mean_abs_byte": 0.0,
+        "maximum_abs_byte": 0,
+        "changed_pixel_fraction": 0.0,
+        "target_region_mean_abs_byte": 0.0
+      },
+      "geometry": {
+        "max_object_translation": 0.0,
+        "max_object_rotation": 0.0
+      }
+    },
+    {
+      "a": "south-320-stepped-0",
+      "b": "south-320-stepped-1",
+      "index": 7,
+      "masks_equal": true,
+      "rgb": {
+        "equal": true,
+        "mean_abs_byte": 0.0,
+        "maximum_abs_byte": 0,
+        "changed_pixel_fraction": 0.0,
+        "target_region_mean_abs_byte": 0.0
+      },
+      "geometry": {
+        "max_object_translation": 0.0,
+        "max_object_rotation": 0.0
+      }
+    },
+    {
+      "a": "south-320-stepped-0",
+      "b": "south-320-stepped-1",
+      "index": 8,
+      "masks_equal": true,
+      "rgb": {
+        "equal": true,
+        "mean_abs_byte": 0.0,
+        "maximum_abs_byte": 0,
+        "changed_pixel_fraction": 0.0,
+        "target_region_mean_abs_byte": 0.0
+      },
+      "geometry": {
+        "max_object_translation": 0.0,
+        "max_object_rotation": 0.0
+      }
+    },
+    {
+      "a": "south-320-stepped-0",
+      "b": "south-320-stepped-1",
+      "index": 9,
+      "masks_equal": true,
+      "rgb": {
+        "equal": true,
+        "mean_abs_byte": 0.0,
+        "maximum_abs_byte": 0,
+        "changed_pixel_fraction": 0.0,
+        "target_region_mean_abs_byte": 0.0
+      },
+      "geometry": {
+        "max_object_translation": 0.0,
+        "max_object_rotation": 0.0
+      }
+    },
+    {
+      "a": "south-320-stepped-0",
+      "b": "south-320-stepped-1",
+      "index": 10,
+      "masks_equal": true,
+      "rgb": {
+        "equal": true,
+        "mean_abs_byte": 0.0,
+        "maximum_abs_byte": 0,
+        "changed_pixel_fraction": 0.0,
+        "target_region_mean_abs_byte": 0.0
+      },
+      "geometry": {
+        "max_object_translation": 0.0,
+        "max_object_rotation": 0.0
+      }
+    },
+    {
+      "a": "south-320-stepped-0",
+      "b": "south-320-stepped-1",
+      "index": 11,
+      "masks_equal": true,
+      "rgb": {
+        "equal": true,
+        "mean_abs_byte": 0.0,
+        "maximum_abs_byte": 0,
+        "changed_pixel_fraction": 0.0,
+        "target_region_mean_abs_byte": 0.0
+      },
+      "geometry": {
+        "max_object_translation": 0.0,
+        "max_object_rotation": 0.0
+      }
+    },
+    {
+      "a": "south-320-stepped-0",
+      "b": "south-320-stepped-1",
+      "index": 12,
+      "masks_equal": true,
+      "rgb": {
+        "equal": true,
+        "mean_abs_byte": 0.0,
+        "maximum_abs_byte": 0,
+        "changed_pixel_fraction": 0.0,
+        "target_region_mean_abs_byte": 0.0
+      },
+      "geometry": {
+        "max_object_translation": 0.0,
+        "max_object_rotation": 0.0
+      }
+    },
+    {
+      "a": "south-320-stepped-0",
+      "b": "south-320-stepped-1",
+      "index": 13,
+      "masks_equal": true,
+      "rgb": {
+        "equal": true,
+        "mean_abs_byte": 0.0,
+        "maximum_abs_byte": 0,
+        "changed_pixel_fraction": 0.0,
+        "target_region_mean_abs_byte": 0.0
+      },
+      "geometry": {
+        "max_object_translation": 0.0,
+        "max_object_rotation": 0.0
+      }
+    },
+    {
+      "a": "south-320-stepped-0",
+      "b": "south-320-stepped-1",
+      "index": 14,
+      "masks_equal": true,
+      "rgb": {
+        "equal": true,
+        "mean_abs_byte": 0.0,
+        "maximum_abs_byte": 0,
+        "changed_pixel_fraction": 0.0,
+        "target_region_mean_abs_byte": 0.0
+      },
+      "geometry": {
+        "max_object_translation": 0.0,
+        "max_object_rotation": 0.0
+      }
+    },
+    {
+      "a": "south-320-stepped-0",
+      "b": "south-320-stepped-1",
+      "index": 15,
+      "masks_equal": true,
+      "rgb": {
+        "equal": true,
+        "mean_abs_byte": 0.0,
+        "maximum_abs_byte": 0,
+        "changed_pixel_fraction": 0.0,
+        "target_region_mean_abs_byte": 0.0
+      },
+      "geometry": {
+        "max_object_translation": 0.0,
+        "max_object_rotation": 0.0
+      }
+    },
+    {
+      "a": "south-640-auto-0",
+      "b": "south-640-auto-1",
+      "index": 0,
+      "masks_equal": true,
+      "rgb": {
+        "equal": false,
+        "mean_abs_byte": 0.02064697265625,
+        "maximum_abs_byte": 97,
+        "changed_pixel_fraction": 0.0089111328125,
+        "target_region_mean_abs_byte": 0.0
+      },
+      "geometry": {
+        "max_object_translation": 0.0018381476402282715,
+        "max_object_rotation": 4.752704620361328
+      }
+    },
+    {
+      "a": "south-640-auto-0",
+      "b": "south-640-auto-1",
+      "index": 1,
+      "masks_equal": true,
+      "rgb": {
+        "equal": true,
+        "mean_abs_byte": 0.0,
+        "maximum_abs_byte": 0,
+        "changed_pixel_fraction": 0.0,
+        "target_region_mean_abs_byte": 0.0
+      },
+      "geometry": {
+        "max_object_translation": 1.913309097290039e-05,
+        "max_object_rotation": 0.04979896545410156
+      }
+    },
+    {
+      "a": "south-640-auto-0",
+      "b": "south-640-auto-1",
+      "index": 2,
+      "masks_equal": true,
+      "rgb": {
+        "equal": true,
+        "mean_abs_byte": 0.0,
+        "maximum_abs_byte": 0,
+        "changed_pixel_fraction": 0.0,
+        "target_region_mean_abs_byte": 0.0
+      },
+      "geometry": {
+        "max_object_translation": 1.043081283569336e-06,
+        "max_object_rotation": 0.0027217864990234375
+      }
+    },
+    {
+      "a": "south-640-auto-0",
+      "b": "south-640-auto-1",
+      "index": 3,
+      "masks_equal": true,
+      "rgb": {
+        "equal": true,
+        "mean_abs_byte": 0.0,
+        "maximum_abs_byte": 0,
+        "changed_pixel_fraction": 0.0,
+        "target_region_mean_abs_byte": 0.0
+      },
+      "geometry": {
+        "max_object_translation": 0.0,
+        "max_object_rotation": 2.47955322265625e-05
+      }
+    },
+    {
+      "a": "south-640-auto-0",
+      "b": "south-640-auto-1",
+      "index": 4,
+      "masks_equal": true,
+      "rgb": {
+        "equal": true,
+        "mean_abs_byte": 0.0,
+        "maximum_abs_byte": 0,
+        "changed_pixel_fraction": 0.0,
+        "target_region_mean_abs_byte": 0.0
+      },
+      "geometry": {
+        "max_object_translation": 0.0,
+        "max_object_rotation": 0.0
+      }
+    },
+    {
+      "a": "south-640-auto-0",
+      "b": "south-640-auto-1",
+      "index": 5,
+      "masks_equal": true,
+      "rgb": {
+        "equal": true,
+        "mean_abs_byte": 0.0,
+        "maximum_abs_byte": 0,
+        "changed_pixel_fraction": 0.0,
+        "target_region_mean_abs_byte": 0.0
+      },
+      "geometry": {
+        "max_object_translation": 0.0,
+        "max_object_rotation": 0.0
+      }
+    },
+    {
+      "a": "south-640-auto-0",
+      "b": "south-640-auto-1",
+      "index": 6,
+      "masks_equal": true,
+      "rgb": {
+        "equal": true,
+        "mean_abs_byte": 0.0,
+        "maximum_abs_byte": 0,
+        "changed_pixel_fraction": 0.0,
+        "target_region_mean_abs_byte": 0.0
+      },
+      "geometry": {
+        "max_object_translation": 0.0,
+        "max_object_rotation": 0.0
+      }
+    },
+    {
+      "a": "south-640-auto-0",
+      "b": "south-640-auto-1",
+      "index": 7,
+      "masks_equal": true,
+      "rgb": {
+        "equal": true,
+        "mean_abs_byte": 0.0,
+        "maximum_abs_byte": 0,
+        "changed_pixel_fraction": 0.0,
+        "target_region_mean_abs_byte": 0.0
+      },
+      "geometry": {
+        "max_object_translation": 0.0,
+        "max_object_rotation": 0.0
+      }
+    },
+    {
+      "a": "south-640-auto-0",
+      "b": "south-640-auto-1",
+      "index": 8,
+      "masks_equal": true,
+      "rgb": {
+        "equal": true,
+        "mean_abs_byte": 0.0,
+        "maximum_abs_byte": 0,
+        "changed_pixel_fraction": 0.0,
+        "target_region_mean_abs_byte": 0.0
+      },
+      "geometry": {
+        "max_object_translation": 0.0,
+        "max_object_rotation": 0.0
+      }
+    },
+    {
+      "a": "south-640-auto-0",
+      "b": "south-640-auto-1",
+      "index": 9,
+      "masks_equal": true,
+      "rgb": {
+        "equal": true,
+        "mean_abs_byte": 0.0,
+        "maximum_abs_byte": 0,
+        "changed_pixel_fraction": 0.0,
+        "target_region_mean_abs_byte": 0.0
+      },
+      "geometry": {
+        "max_object_translation": 0.0,
+        "max_object_rotation": 0.0
+      }
+    },
+    {
+      "a": "south-640-auto-0",
+      "b": "south-640-auto-1",
+      "index": 10,
+      "masks_equal": true,
+      "rgb": {
+        "equal": true,
+        "mean_abs_byte": 0.0,
+        "maximum_abs_byte": 0,
+        "changed_pixel_fraction": 0.0,
+        "target_region_mean_abs_byte": 0.0
+      },
+      "geometry": {
+        "max_object_translation": 0.0,
+        "max_object_rotation": 0.0
+      }
+    },
+    {
+      "a": "south-640-auto-0",
+      "b": "south-640-auto-1",
+      "index": 11,
+      "masks_equal": true,
+      "rgb": {
+        "equal": true,
+        "mean_abs_byte": 0.0,
+        "maximum_abs_byte": 0,
+        "changed_pixel_fraction": 0.0,
+        "target_region_mean_abs_byte": 0.0
+      },
+      "geometry": {
+        "max_object_translation": 0.0,
+        "max_object_rotation": 0.0
+      }
+    },
+    {
+      "a": "south-640-auto-0",
+      "b": "south-640-auto-1",
+      "index": 12,
+      "masks_equal": true,
+      "rgb": {
+        "equal": true,
+        "mean_abs_byte": 0.0,
+        "maximum_abs_byte": 0,
+        "changed_pixel_fraction": 0.0,
+        "target_region_mean_abs_byte": 0.0
+      },
+      "geometry": {
+        "max_object_translation": 0.0,
+        "max_object_rotation": 0.0
+      }
+    },
+    {
+      "a": "south-640-auto-0",
+      "b": "south-640-auto-1",
+      "index": 13,
+      "masks_equal": true,
+      "rgb": {
+        "equal": true,
+        "mean_abs_byte": 0.0,
+        "maximum_abs_byte": 0,
+        "changed_pixel_fraction": 0.0,
+        "target_region_mean_abs_byte": 0.0
+      },
+      "geometry": {
+        "max_object_translation": 0.0,
+        "max_object_rotation": 0.0
+      }
+    },
+    {
+      "a": "south-640-auto-0",
+      "b": "south-640-auto-1",
+      "index": 14,
+      "masks_equal": true,
+      "rgb": {
+        "equal": true,
+        "mean_abs_byte": 0.0,
+        "maximum_abs_byte": 0,
+        "changed_pixel_fraction": 0.0,
+        "target_region_mean_abs_byte": 0.0
+      },
+      "geometry": {
+        "max_object_translation": 0.0,
+        "max_object_rotation": 0.0
+      }
+    },
+    {
+      "a": "south-640-auto-0",
+      "b": "south-640-auto-1",
+      "index": 15,
+      "masks_equal": true,
+      "rgb": {
+        "equal": true,
+        "mean_abs_byte": 0.0,
+        "maximum_abs_byte": 0,
+        "changed_pixel_fraction": 0.0,
+        "target_region_mean_abs_byte": 0.0
+      },
+      "geometry": {
+        "max_object_translation": 0.0,
+        "max_object_rotation": 0.0
+      }
+    },
+    {
+      "a": "south-640-frozen-0",
+      "b": "south-640-frozen-1",
+      "index": 0,
+      "masks_equal": true,
+      "rgb": {
+        "equal": false,
+        "mean_abs_byte": 0.02295491536458333,
+        "maximum_abs_byte": 98,
+        "changed_pixel_fraction": 0.01086181640625,
+        "target_region_mean_abs_byte": 0.0
+      },
+      "geometry": {
+        "max_object_translation": 0.0008323192596435547,
+        "max_object_rotation": 2.236417770385742
+      }
+    },
+    {
+      "a": "south-640-frozen-0",
+      "b": "south-640-frozen-1",
+      "index": 1,
+      "masks_equal": true,
+      "rgb": {
+        "equal": false,
+        "mean_abs_byte": 0.02295491536458333,
+        "maximum_abs_byte": 98,
+        "changed_pixel_fraction": 0.01086181640625,
+        "target_region_mean_abs_byte": 0.0
+      },
+      "geometry": {
+        "max_object_translation": 0.0008323192596435547,
+        "max_object_rotation": 2.236417770385742
+      }
+    },
+    {
+      "a": "south-640-frozen-0",
+      "b": "south-640-frozen-1",
+      "index": 2,
+      "masks_equal": true,
+      "rgb": {
+        "equal": false,
+        "mean_abs_byte": 0.02295491536458333,
+        "maximum_abs_byte": 98,
+        "changed_pixel_fraction": 0.01086181640625,
+        "target_region_mean_abs_byte": 0.0
+      },
+      "geometry": {
+        "max_object_translation": 0.0008323192596435547,
+        "max_object_rotation": 2.236417770385742
+      }
+    },
+    {
+      "a": "south-640-frozen-0",
+      "b": "south-640-frozen-1",
+      "index": 3,
+      "masks_equal": true,
+      "rgb": {
+        "equal": false,
+        "mean_abs_byte": 0.02295491536458333,
+        "maximum_abs_byte": 98,
+        "changed_pixel_fraction": 0.01086181640625,
+        "target_region_mean_abs_byte": 0.0
+      },
+      "geometry": {
+        "max_object_translation": 0.0008323192596435547,
+        "max_object_rotation": 2.236417770385742
+      }
+    },
+    {
+      "a": "south-640-frozen-0",
+      "b": "south-640-frozen-1",
+      "index": 4,
+      "masks_equal": true,
+      "rgb": {
+        "equal": false,
+        "mean_abs_byte": 0.02295491536458333,
+        "maximum_abs_byte": 98,
+        "changed_pixel_fraction": 0.01086181640625,
+        "target_region_mean_abs_byte": 0.0
+      },
+      "geometry": {
+        "max_object_translation": 0.0008323192596435547,
+        "max_object_rotation": 2.236417770385742
+      }
+    },
+    {
+      "a": "south-640-frozen-0",
+      "b": "south-640-frozen-1",
+      "index": 5,
+      "masks_equal": true,
+      "rgb": {
+        "equal": false,
+        "mean_abs_byte": 0.02295491536458333,
+        "maximum_abs_byte": 98,
+        "changed_pixel_fraction": 0.01086181640625,
+        "target_region_mean_abs_byte": 0.0
+      },
+      "geometry": {
+        "max_object_translation": 0.0008323192596435547,
+        "max_object_rotation": 2.236417770385742
+      }
+    },
+    {
+      "a": "south-640-frozen-0",
+      "b": "south-640-frozen-1",
+      "index": 6,
+      "masks_equal": true,
+      "rgb": {
+        "equal": false,
+        "mean_abs_byte": 0.02295491536458333,
+        "maximum_abs_byte": 98,
+        "changed_pixel_fraction": 0.01086181640625,
+        "target_region_mean_abs_byte": 0.0
+      },
+      "geometry": {
+        "max_object_translation": 0.0008323192596435547,
+        "max_object_rotation": 2.236417770385742
+      }
+    },
+    {
+      "a": "south-640-frozen-0",
+      "b": "south-640-frozen-1",
+      "index": 7,
+      "masks_equal": true,
+      "rgb": {
+        "equal": false,
+        "mean_abs_byte": 0.02295491536458333,
+        "maximum_abs_byte": 98,
+        "changed_pixel_fraction": 0.01086181640625,
+        "target_region_mean_abs_byte": 0.0
+      },
+      "geometry": {
+        "max_object_translation": 0.0008323192596435547,
+        "max_object_rotation": 2.236417770385742
+      }
+    },
+    {
+      "a": "south-640-frozen-0",
+      "b": "south-640-frozen-1",
+      "index": 8,
+      "masks_equal": true,
+      "rgb": {
+        "equal": false,
+        "mean_abs_byte": 0.02295491536458333,
+        "maximum_abs_byte": 98,
+        "changed_pixel_fraction": 0.01086181640625,
+        "target_region_mean_abs_byte": 0.0
+      },
+      "geometry": {
+        "max_object_translation": 0.0008323192596435547,
+        "max_object_rotation": 2.236417770385742
+      }
+    },
+    {
+      "a": "south-640-frozen-0",
+      "b": "south-640-frozen-1",
+      "index": 9,
+      "masks_equal": true,
+      "rgb": {
+        "equal": false,
+        "mean_abs_byte": 0.02295491536458333,
+        "maximum_abs_byte": 98,
+        "changed_pixel_fraction": 0.01086181640625,
+        "target_region_mean_abs_byte": 0.0
+      },
+      "geometry": {
+        "max_object_translation": 0.0008323192596435547,
+        "max_object_rotation": 2.236417770385742
+      }
+    },
+    {
+      "a": "south-640-frozen-0",
+      "b": "south-640-frozen-1",
+      "index": 10,
+      "masks_equal": true,
+      "rgb": {
+        "equal": false,
+        "mean_abs_byte": 0.02295491536458333,
+        "maximum_abs_byte": 98,
+        "changed_pixel_fraction": 0.01086181640625,
+        "target_region_mean_abs_byte": 0.0
+      },
+      "geometry": {
+        "max_object_translation": 0.0008323192596435547,
+        "max_object_rotation": 2.236417770385742
+      }
+    },
+    {
+      "a": "south-640-frozen-0",
+      "b": "south-640-frozen-1",
+      "index": 11,
+      "masks_equal": true,
+      "rgb": {
+        "equal": false,
+        "mean_abs_byte": 0.02295491536458333,
+        "maximum_abs_byte": 98,
+        "changed_pixel_fraction": 0.01086181640625,
+        "target_region_mean_abs_byte": 0.0
+      },
+      "geometry": {
+        "max_object_translation": 0.0008323192596435547,
+        "max_object_rotation": 2.236417770385742
+      }
+    },
+    {
+      "a": "south-640-frozen-0",
+      "b": "south-640-frozen-1",
+      "index": 12,
+      "masks_equal": true,
+      "rgb": {
+        "equal": false,
+        "mean_abs_byte": 0.02295491536458333,
+        "maximum_abs_byte": 98,
+        "changed_pixel_fraction": 0.01086181640625,
+        "target_region_mean_abs_byte": 0.0
+      },
+      "geometry": {
+        "max_object_translation": 0.0008323192596435547,
+        "max_object_rotation": 2.236417770385742
+      }
+    },
+    {
+      "a": "south-640-frozen-0",
+      "b": "south-640-frozen-1",
+      "index": 13,
+      "masks_equal": true,
+      "rgb": {
+        "equal": false,
+        "mean_abs_byte": 0.02295491536458333,
+        "maximum_abs_byte": 98,
+        "changed_pixel_fraction": 0.01086181640625,
+        "target_region_mean_abs_byte": 0.0
+      },
+      "geometry": {
+        "max_object_translation": 0.0008323192596435547,
+        "max_object_rotation": 2.236417770385742
+      }
+    },
+    {
+      "a": "south-640-frozen-0",
+      "b": "south-640-frozen-1",
+      "index": 14,
+      "masks_equal": true,
+      "rgb": {
+        "equal": false,
+        "mean_abs_byte": 0.02295491536458333,
+        "maximum_abs_byte": 98,
+        "changed_pixel_fraction": 0.01086181640625,
+        "target_region_mean_abs_byte": 0.0
+      },
+      "geometry": {
+        "max_object_translation": 0.0008323192596435547,
+        "max_object_rotation": 2.236417770385742
+      }
+    },
+    {
+      "a": "south-640-frozen-0",
+      "b": "south-640-frozen-1",
+      "index": 15,
+      "masks_equal": true,
+      "rgb": {
+        "equal": false,
+        "mean_abs_byte": 0.02295491536458333,
+        "maximum_abs_byte": 98,
+        "changed_pixel_fraction": 0.01086181640625,
+        "target_region_mean_abs_byte": 0.0
+      },
+      "geometry": {
+        "max_object_translation": 0.0008323192596435547,
+        "max_object_rotation": 2.236417770385742
+      }
+    },
+    {
+      "a": "south-640-stepped-0",
+      "b": "south-640-stepped-1",
+      "index": 0,
+      "masks_equal": true,
+      "rgb": {
+        "equal": false,
+        "mean_abs_byte": 0.005055338541666667,
+        "maximum_abs_byte": 94,
+        "changed_pixel_fraction": 0.0052001953125,
+        "target_region_mean_abs_byte": 0.0
+      },
+      "geometry": {
+        "max_object_translation": 0.0010125041007995605,
+        "max_object_rotation": 2.68045711517334
+      }
+    },
+    {
+      "a": "south-640-stepped-0",
+      "b": "south-640-stepped-1",
+      "index": 1,
+      "masks_equal": true,
+      "rgb": {
+        "equal": false,
+        "mean_abs_byte": 0.0162646484375,
+        "maximum_abs_byte": 98,
+        "changed_pixel_fraction": 0.00810546875,
+        "target_region_mean_abs_byte": 0.0
+      },
+      "geometry": {
+        "max_object_translation": 0.0012122094631195068,
+        "max_object_rotation": 3.204742431640625
+      }
+    },
+    {
+      "a": "south-640-stepped-0",
+      "b": "south-640-stepped-1",
+      "index": 2,
+      "masks_equal": true,
+      "rgb": {
+        "equal": false,
+        "mean_abs_byte": 0.025777994791666668,
+        "maximum_abs_byte": 95,
+        "changed_pixel_fraction": 0.00993408203125,
+        "target_region_mean_abs_byte": 0.0
+      },
+      "geometry": {
+        "max_object_translation": 0.0014460086822509766,
+        "max_object_rotation": 3.820775032043457
+      }
+    },
+    {
+      "a": "south-640-stepped-0",
+      "b": "south-640-stepped-1",
+      "index": 3,
+      "masks_equal": true,
+      "rgb": {
+        "equal": false,
+        "mean_abs_byte": 0.0287939453125,
+        "maximum_abs_byte": 96,
+        "changed_pixel_fraction": 0.00995849609375,
+        "target_region_mean_abs_byte": 0.0
+      },
+      "geometry": {
+        "max_object_translation": 0.0014625191688537598,
+        "max_object_rotation": 3.860044479370117
+      }
+    },
+    {
+      "a": "south-640-stepped-0",
+      "b": "south-640-stepped-1",
+      "index": 4,
+      "masks_equal": true,
+      "rgb": {
+        "equal": false,
+        "mean_abs_byte": 0.025069173177083334,
+        "maximum_abs_byte": 97,
+        "changed_pixel_fraction": 0.00900390625,
+        "target_region_mean_abs_byte": 0.0
+      },
+      "geometry": {
+        "max_object_translation": 0.0012745857238769531,
+        "max_object_rotation": 3.368739128112793
+      }
+    },
+    {
+      "a": "south-640-stepped-0",
+      "b": "south-640-stepped-1",
+      "index": 5,
+      "masks_equal": true,
+      "rgb": {
+        "equal": false,
+        "mean_abs_byte": 0.01925537109375,
+        "maximum_abs_byte": 97,
+        "changed_pixel_fraction": 0.00828125,
+        "target_region_mean_abs_byte": 0.0
+      },
+      "geometry": {
+        "max_object_translation": 0.0011456608772277832,
+        "max_object_rotation": 3.0163612365722656
+      }
+    },
+    {
+      "a": "south-640-stepped-0",
+      "b": "south-640-stepped-1",
+      "index": 6,
+      "masks_equal": true,
+      "rgb": {
+        "equal": false,
+        "mean_abs_byte": 0.006455078125,
+        "maximum_abs_byte": 100,
+        "changed_pixel_fraction": 0.005205078125,
+        "target_region_mean_abs_byte": 0.0
+      },
+      "geometry": {
+        "max_object_translation": 0.0010496973991394043,
+        "max_object_rotation": 2.7363128662109375
+      }
+    },
+    {
+      "a": "south-640-stepped-0",
+      "b": "south-640-stepped-1",
+      "index": 7,
+      "masks_equal": true,
+      "rgb": {
+        "equal": false,
+        "mean_abs_byte": 0.004258626302083333,
+        "maximum_abs_byte": 94,
+        "changed_pixel_fraction": 0.0043505859375,
+        "target_region_mean_abs_byte": 0.0
+      },
+      "geometry": {
+        "max_object_translation": 0.0009822249412536621,
+        "max_object_rotation": 2.5547523498535156
+      }
+    },
+    {
+      "a": "south-640-stepped-0",
+      "b": "south-640-stepped-1",
+      "index": 8,
+      "masks_equal": true,
+      "rgb": {
+        "equal": false,
+        "mean_abs_byte": 0.009930013020833333,
+        "maximum_abs_byte": 97,
+        "changed_pixel_fraction": 0.0057421875,
+        "target_region_mean_abs_byte": 0.0
+      },
+      "geometry": {
+        "max_object_translation": 0.0009441077709197998,
+        "max_object_rotation": 2.4507789611816406
+      }
+    },
+    {
+      "a": "south-640-stepped-0",
+      "b": "south-640-stepped-1",
+      "index": 9,
+      "masks_equal": true,
+      "rgb": {
+        "equal": false,
+        "mean_abs_byte": 0.01086181640625,
+        "maximum_abs_byte": 96,
+        "changed_pixel_fraction": 0.00630126953125,
+        "target_region_mean_abs_byte": 0.0
+      },
+      "geometry": {
+        "max_object_translation": 0.0009265542030334473,
+        "max_object_rotation": 2.4050025939941406
+      }
+    },
+    {
+      "a": "south-640-stepped-0",
+      "b": "south-640-stepped-1",
+      "index": 10,
+      "masks_equal": true,
+      "rgb": {
+        "equal": false,
+        "mean_abs_byte": 0.0068351236979166665,
+        "maximum_abs_byte": 94,
+        "changed_pixel_fraction": 0.00472412109375,
+        "target_region_mean_abs_byte": 0.0
+      },
+      "geometry": {
+        "max_object_translation": 0.0009438991546630859,
+        "max_object_rotation": 2.4462413787841797
+      }
+    },
+    {
+      "a": "south-640-stepped-0",
+      "b": "south-640-stepped-1",
+      "index": 11,
+      "masks_equal": true,
+      "rgb": {
+        "equal": false,
+        "mean_abs_byte": 0.00236083984375,
+        "maximum_abs_byte": 98,
+        "changed_pixel_fraction": 0.0027685546875,
+        "target_region_mean_abs_byte": 0.0
+      },
+      "geometry": {
+        "max_object_translation": 0.0009883642196655273,
+        "max_object_rotation": 2.5622596740722656
+      }
+    },
+    {
+      "a": "south-640-stepped-0",
+      "b": "south-640-stepped-1",
+      "index": 12,
+      "masks_equal": true,
+      "rgb": {
+        "equal": false,
+        "mean_abs_byte": 0.0010441080729166666,
+        "maximum_abs_byte": 26,
+        "changed_pixel_fraction": 0.00158203125,
+        "target_region_mean_abs_byte": 0.0
+      },
+      "geometry": {
+        "max_object_translation": 0.00105363130569458,
+        "max_object_rotation": 2.7399864196777344
+      }
+    },
+    {
+      "a": "south-640-stepped-0",
+      "b": "south-640-stepped-1",
+      "index": 13,
+      "masks_equal": true,
+      "rgb": {
+        "equal": false,
+        "mean_abs_byte": 0.00345703125,
+        "maximum_abs_byte": 99,
+        "changed_pixel_fraction": 0.0030126953125,
+        "target_region_mean_abs_byte": 0.0
+      },
+      "geometry": {
+        "max_object_translation": 0.0009914636611938477,
+        "max_object_rotation": 2.572641372680664
+      }
+    },
+    {
+      "a": "south-640-stepped-0",
+      "b": "south-640-stepped-1",
+      "index": 14,
+      "masks_equal": true,
+      "rgb": {
+        "equal": false,
+        "mean_abs_byte": 0.00293701171875,
+        "maximum_abs_byte": 81,
+        "changed_pixel_fraction": 0.00323486328125,
+        "target_region_mean_abs_byte": 0.0
+      },
+      "geometry": {
+        "max_object_translation": 0.0006261765956878662,
+        "max_object_rotation": 1.6181163787841797
+      }
+    },
+    {
+      "a": "south-640-stepped-0",
+      "b": "south-640-stepped-1",
+      "index": 15,
+      "masks_equal": true,
+      "rgb": {
+        "equal": false,
+        "mean_abs_byte": 0.0024755859375,
+        "maximum_abs_byte": 93,
+        "changed_pixel_fraction": 0.0028125,
+        "target_region_mean_abs_byte": 0.0
+      },
+      "geometry": {
+        "max_object_translation": 0.00016164779663085938,
+        "max_object_rotation": 0.40772056579589844
+      }
+    }
+  ]
+}

@@ -1,0 +1,42 @@
+{"name": "north-320-auto-0", "site": "north", "size": 320, "mode": "auto", "repeat": 0, "status": "COMPLETE"}
+{"name": "north-320-frozen-0", "site": "north", "size": 320, "mode": "frozen", "repeat": 0, "status": "COMPLETE"}
+{"name": "north-320-stepped-0", "site": "north", "size": 320, "mode": "stepped", "repeat": 0, "status": "COMPLETE"}
+{"name": "north-320-stepped-1", "site": "north", "size": 320, "mode": "stepped", "repeat": 1, "status": "COMPLETE"}
+{"name": "north-320-frozen-1", "site": "north", "size": 320, "mode": "frozen", "repeat": 1, "status": "FAILED", "error": "RuntimeError('Unity worker exited; outcome uncertain')"}
+{"name": "north-320-auto-1", "site": "north", "size": 320, "mode": "auto", "repeat": 1, "status": "COMPLETE"}
+{"name": "north-640-auto-0", "site": "north", "size": 640, "mode": "auto", "repeat": 0, "status": "COMPLETE"}
+{"name": "north-640-frozen-0", "site": "north", "size": 640, "mode": "frozen", "repeat": 0, "status": "COMPLETE"}
+{"name": "north-640-stepped-0", "site": "north", "size": 640, "mode": "stepped", "repeat": 0, "status": "COMPLETE"}
+{"name": "north-640-stepped-1", "site": "north", "size": 640, "mode": "stepped", "repeat": 1, "status": "COMPLETE"}
+{"name": "north-640-frozen-1", "site": "north", "size": 640, "mode": "frozen", "repeat": 1, "status": "COMPLETE"}
+{"name": "north-640-auto-1", "site": "north", "size": 640, "mode": "auto", "repeat": 1, "status": "COMPLETE"}
+{"name": "south-320-auto-0", "site": "south", "size": 320, "mode": "auto", "repeat": 0, "status": "COMPLETE"}
+{"name": "south-320-frozen-0", "site": "south", "size": 320, "mode": "frozen", "repeat": 0, "status": "COMPLETE"}
+{"name": "south-320-stepped-0", "site": "south", "size": 320, "mode": "stepped", "repeat": 0, "status": "COMPLETE"}
+{"name": "south-320-stepped-1", "site": "south", "size": 320, "mode": "stepped", "repeat": 1, "status": "COMPLETE"}
+{"name": "south-320-frozen-1", "site": "south", "size": 320, "mode": "frozen", "repeat": 1, "status": "COMPLETE"}
+{"name": "south-320-auto-1", "site": "south", "size": 320, "mode": "auto", "repeat": 1, "status": "COMPLETE"}
+{"name": "south-640-auto-0", "site": "south", "size": 640, "mode": "auto", "repeat": 0, "status": "COMPLETE"}
+{"name": "south-640-frozen-0", "site": "south", "size": 640, "mode": "frozen", "repeat": 0, "status": "COMPLETE"}
+{"name": "south-640-stepped-0", "site": "south", "size": 640, "mode": "stepped", "repeat": 0, "status": "COMPLETE"}
+{"name": "south-640-stepped-1", "site": "south", "size": 640, "mode": "stepped", "repeat": 1, "status": "COMPLETE"}
+{"name": "south-640-frozen-1", "site": "south", "size": 640, "mode": "frozen", "repeat": 1, "status": "COMPLETE"}
+{"name": "south-640-auto-1", "site": "south", "size": 640, "mode": "auto", "repeat": 1, "status": "COMPLETE"}
+Traceback (most recent call last):
+  File "/private/tmp/cpswm-pc-a-sim-timing-control-20260929/tools/run_simulator_timing.py", line 375, in <module>
+    main(p.parse_args())
+    ~~~~^^^^^^^^^^^^^^^^
+  File "/private/tmp/cpswm-pc-a-sim-timing-control-20260929/tools/run_simulator_timing.py", line 356, in main
+    summary = summarize(results)
+  File "/private/tmp/cpswm-pc-a-sim-timing-control-20260929/tools/run_simulator_timing.py", line 299, in summarize
+    require(
+    ~~~~~~~^
+        [r["cell"] for r in rows] == plan() and all(len(r["frames"]) == STEPS for r in rows),
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        "incomplete timing matrix",
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/private/tmp/cpswm-pc-a-sim-timing-control-20260929/tools/audit_simulation_evidence.py", line 33, in require
+    raise ValueError(reason)
+ValueError: incomplete timing matrix

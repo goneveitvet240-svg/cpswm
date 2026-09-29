@@ -1,0 +1,106 @@
+[
+  {
+    "name": "round1_timing",
+    "command": [
+      "/private/tmp/cpswm-pc-a-sim-timing-control-20260929/.venv/bin/python",
+      "-m",
+      "pytest",
+      "-o",
+      "addopts=",
+      "-q",
+      "tests/test_simulator_timing.py",
+      "tests/test_simulator_repeatability.py",
+      "tests/test_unity_capture_resolution.py",
+      "--junitxml",
+      "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/sim-timing-control-20260929/attempt01/round1.xml"
+    ],
+    "source_head": "a981541fc15bd1e441051f9479dc96b17cdc2f44",
+    "exit_code": 0,
+    "seconds": 3.361325125209987,
+    "source_unchanged": true
+  },
+  {
+    "name": "actual_three_fixtures",
+    "command": [
+      "/private/tmp/cpswm-pc-a-sim-timing-control-20260929/.venv/bin/python",
+      "-u",
+      "tools/run_simulator_timing.py",
+      "--mode",
+      "fixture",
+      "--output",
+      "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/sim-timing-control-20260929/attempt01/fixtures",
+      "--sdk-python",
+      "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/.venv-ai2thor/bin/python",
+      "--binary",
+      "/Users/pangwei/.ai2thor/releases/thor-OSXIntel64-f0825767cd50d69f666c7f282e54abfe58f1e917/thor-OSXIntel64-f0825767cd50d69f666c7f282e54abfe58f1e917.app/Contents/MacOS/AI2-THOR",
+      "--ssdlite-weights",
+      "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/models/torchvision/ssdlite320_mobilenet_v3_large_coco-a79551df.pth",
+      "--fasterrcnn-weights",
+      "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/models/torchvision/fasterrcnn_resnet50_fpn_v2_coco-dd69338a.pth"
+    ],
+    "source_head": "a981541fc15bd1e441051f9479dc96b17cdc2f44",
+    "exit_code": 0,
+    "seconds": 192.28156233299524,
+    "source_unchanged": true
+  },
+  {
+    "name": "round2_actual_attacks",
+    "command": [
+      "/private/tmp/cpswm-pc-a-sim-timing-control-20260929/.venv/bin/python",
+      "-m",
+      "pytest",
+      "-o",
+      "addopts=",
+      "-q",
+      "tests/test_simulator_timing_artifacts.py",
+      "tests/test_pixel_camera_detector_binding.py",
+      "--junitxml",
+      "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/sim-timing-control-20260929/attempt01/round2.xml"
+    ],
+    "source_head": "a981541fc15bd1e441051f9479dc96b17cdc2f44",
+    "exit_code": 0,
+    "seconds": 402.64375362498686,
+    "source_unchanged": true
+  },
+  {
+    "name": "ruff",
+    "command": [
+      "/private/tmp/cpswm-pc-a-sim-timing-control-20260929/.venv/bin/python",
+      "-m",
+      "ruff",
+      "check",
+      "tools/unity_timing_worker.py",
+      "tools/run_simulator_timing.py",
+      "tests/test_simulator_timing.py",
+      "tests/test_simulator_timing_artifacts.py"
+    ],
+    "source_head": "a981541fc15bd1e441051f9479dc96b17cdc2f44",
+    "exit_code": 0,
+    "seconds": 0.07619704166427255,
+    "source_unchanged": true
+  },
+  {
+    "name": "actual_384",
+    "command": [
+      "/private/tmp/cpswm-pc-a-sim-timing-control-20260929/.venv/bin/python",
+      "-u",
+      "tools/run_simulator_timing.py",
+      "--mode",
+      "run",
+      "--output",
+      "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/sim-timing-control-20260929/attempt01/captures",
+      "--sdk-python",
+      "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/.venv-ai2thor/bin/python",
+      "--binary",
+      "/Users/pangwei/.ai2thor/releases/thor-OSXIntel64-f0825767cd50d69f666c7f282e54abfe58f1e917/thor-OSXIntel64-f0825767cd50d69f666c7f282e54abfe58f1e917.app/Contents/MacOS/AI2-THOR",
+      "--ssdlite-weights",
+      "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/models/torchvision/ssdlite320_mobilenet_v3_large_coco-a79551df.pth",
+      "--fasterrcnn-weights",
+      "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/models/torchvision/fasterrcnn_resnet50_fpn_v2_coco-dd69338a.pth"
+    ],
+    "source_head": "a981541fc15bd1e441051f9479dc96b17cdc2f44",
+    "exit_code": 1,
+    "seconds": 1457.480081167072,
+    "source_unchanged": true
+  }
+]

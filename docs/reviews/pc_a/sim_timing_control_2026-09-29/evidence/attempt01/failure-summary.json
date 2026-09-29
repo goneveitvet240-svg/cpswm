@@ -1,0 +1,24 @@
+{
+  "status": "INCOMPLETE_FIRST_MATRIX_RETAINED",
+  "counts": {
+    "COMPLETE": 23,
+    "FAILED": 1,
+    "RUNNING": 0,
+    "PENDING": 0
+  },
+  "failed": [
+    {
+      "cell": {
+        "name": "north-320-frozen-1",
+        "site": "north",
+        "size": 320,
+        "mode": "frozen",
+        "repeat": 1,
+        "status": "FAILED",
+        "error": "RuntimeError('Unity worker exited; outcome uncertain')"
+      },
+      "retained_public_frames": 13
+    }
+  ],
+  "fresh_whole_matrix_inference_ran": false
+}

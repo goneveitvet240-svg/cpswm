@@ -1,0 +1,49 @@
+import sys,json,hashlib
+from pathlib import Path
+import numpy as np
+root=Path('/private/tmp/cpswm-pc-a-sim-timing-control-20260929')
+sys.path[:0]=[str(root/'src'),str(root/'tools'),str(root/'tests')]
+from run_simulator_timing import plan
+from run_simulator_repeatability import image_delta,geometry_delta
+out=Path(__file__).parent
+captures=out/'attempt02/captures'
+summary=json.loads((captures/'summary.json').read_text())
+assert [r['cell'] for r in summary['results']]==plan()
+rows=[]
+for result in summary['results']:
+ c=result['cell'];frames=result['frames']
+ private=captures/c['name']/'unity-logs/evaluator_only/sdk-events'
+ metadata=[json.loads((private/f'{i:03d}.json').read_text())['metadata'] for i in range(34)]
+ sdk_geometry=[geometry_delta(metadata[1],m) for m in metadata[1:]]
+ camera_keys=('agent','cameraPosition','fov','screenWidth','screenHeight')
+ all_camera_equal=all(all(m[k]==metadata[1][k] for k in camera_keys) for m in metadata[1:])
+ mask_prepare=np.load(private/'001-mask.npy')
+ all_masks_equal=all(np.array_equal(mask_prepare,np.load(private/f'{i:03d}-mask.npy')) for i in range(1,34))
+ rows.append(dict(cell=c,category_patterns={k:''.join('1' if f['frontends'][k]['scores'] else '0' for f in frames) for k in ('ssdlite','fasterrcnn')},
+  overlap_patterns={k:''.join('1' if any(v>0 for v in f['frontends'][k]['target_bbox_ious']) else '0' for f in frames) for k in ('ssdlite','fasterrcnn')},
+  scene_rest_count=sum(f['scene_at_rest'] for f in frames),tail_rgb_equal=result['tail_rgb_equal'],tail_mask_equal=result['tail_mask_equal'],
+  target_pixels=[f['target_pixels'] for f in frames],max_translation_from_prepare=max(f['geometry_since_pause']['max_object_translation'] for f in frames),
+  max_rotation_from_prepare=max(f['geometry_since_pause']['max_object_rotation'] for f in frames),
+  tail_max_translation_from_tail_start=max(f['max_object_translation'] for f in result['tail_geometry']),
+  tail_max_rotation_from_tail_start=max(f['max_object_rotation'] for f in result['tail_geometry']),
+  all_sdk_max_translation_after_prepare=max(g['max_object_translation'] for g in sdk_geometry),
+  all_sdk_max_rotation_after_prepare=max(g['max_object_rotation'] for g in sdk_geometry),
+  all_sdk_camera_equal_after_prepare=all_camera_equal,all_sdk_target_masks_equal_after_prepare=all_masks_equal,
+  public_first_last=result['public_first_last'],after_prepare_to_last=result['sdk_first_last'],
+  sdk_adjacent_mean_bytes=[d['mean_abs_byte'] for d in result['sdk_adjacent_deltas']]))
+pairs=[]
+for c in plan():
+ if c['repeat']!=0:continue
+ a=c['name'];b=a[:-1]+'1'
+ pa=captures/a/'unity-logs/evaluator_only';pb=captures/b/'unity-logs/evaluator_only'
+ for i in range(16):
+  ma=np.load(pa/f'{i:03d}-mask.npy');mb=np.load(pb/f'{i:03d}-mask.npy')
+  ia=np.load(pa/f'{i:03d}-rgb.npy');ib=np.load(pb/f'{i:03d}-rgb.npy')
+  meta_a=json.loads((pa/f'sdk-events/{3+2*i:03d}.json').read_text())['metadata']
+  meta_b=json.loads((pb/f'sdk-events/{3+2*i:03d}.json').read_text())['metadata']
+  pairs.append(dict(a=a,b=b,index=i,masks_equal=bool(np.array_equal(ma,mb)),rgb=image_delta(ia,ib,ma|mb),geometry=geometry_delta(meta_a,meta_b)))
+r=dict(scope='FIXED_WINDOWS_DESCRIPTIVE_ONLY_NO_CALIBRATION',script_sha256=hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),cells=rows,reset_pairs=pairs)
+(out/'readout.json').write_text(json.dumps(r,indent=2)+'\n')
+for row in rows:
+ print(row['cell']['name'],'FRCNN',row['category_patterns']['fasterrcnn'],'IoU',row['overlap_patterns']['fasterrcnn'],'tailRGB',row['tail_rgb_equal'],
+  'maxmovement',row['max_translation_from_prepare'],'firstlastRGB',row['public_first_last']['mean_abs_byte'],'SDKrest',row['scene_rest_count'])

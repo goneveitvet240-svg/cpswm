@@ -421,3 +421,50 @@ assert 'cpswm.system.native_visual_source.NativeVisualSource' in registry
         timeout=60,
     )
     assert result.returncode == 0, result.stdout + result.stderr
+
+
+@pytest.mark.parametrize(
+    "change", ["stationary", "yaw", "pitch", "position", "intrinsics", "missing_pose"]
+)
+def test_visual_tracks_do_not_assume_same_image_frame_after_camera_motion(change):
+    from test_unity_rgbd import packet, rewrite_packet
+
+    from cpswm.data_preflight.proposal_perception import (
+        ProposalPixelObservation,
+        pixel_hypothesis_bindings,
+    )
+    from cpswm.perception_mapping.unity_rgbd import PROFILE, surface_support
+    from cpswm.system.reproducibility import content_sha256
+
+    scope = (uuid4(), uuid4(), uuid4())
+    first, when = packet(scope=scope)
+    second, cutoff = packet(
+        scope=scope, capture=first[0].envelope().capture_time + timedelta(seconds=0.5)
+    )
+    change_pose = {
+        "yaw": {"yaw_degrees": 45.0},
+        "pitch": {"pitch_degrees": 30.0},
+        "position": {"position_m": [1.5, 2.0, 3.0]},
+        "intrinsics": {
+            "vertical_fov_degrees": 60.0,
+            "configuration_sha256": content_sha256((PROFILE, 4, 4, 60.0, 0.1, 20.0, False)),
+        },
+    }
+    if change in change_pose:
+        second = rewrite_packet(second, pose_changes=change_pose[change])
+    pixels = []
+    for index, (rows, arrival) in enumerate(((first, when), (second, cutoff))):
+        frame = RGBDSupportDecoder().measurements(rows, cutoff=arrival)[0]
+        geometry = (
+            None
+            if change == "missing_pose" and index == 1
+            else surface_support(rows, frame, cutoff=arrival)
+        )
+        pixels.append(ProposalPixelObservation.from_frame(frame, geometry=geometry))
+    bindings = pixel_hypothesis_bindings(tuple(pixels), cutoff)
+    keys = [{b.key for b in bindings if b.observation_id == p.observation_id} for p in pixels]
+    assert len(keys[0]) == len(keys[1]) == 3
+    if change == "stationary":
+        assert keys[0] == keys[1]
+    else:
+        assert not keys[0] & keys[1]

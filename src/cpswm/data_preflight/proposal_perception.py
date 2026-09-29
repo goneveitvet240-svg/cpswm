@@ -63,6 +63,7 @@ def pixel_causal_readouts(
         associator = CausalInstanceAssociator()
         previous_time: float | None = None
         previous: AssociatedFrame | None = None
+        previous_camera: tuple[Any, ...] | None = None
 
         def clock(pixel: ProposalPixelObservation) -> float:
             return (
@@ -73,13 +74,34 @@ def pixel_causal_readouts(
 
         for pixel in sorted(pixels, key=lambda p: (clock(p), str(p.observation_id))):
             media_time = clock(pixel)
-            if previous_time is not None and media_time <= previous_time:
+            camera = None if pixel.surface_geometry is None else pixel.surface_geometry.camera
+            current_camera = (
+                None
+                if camera is None
+                else (
+                    camera.position_m,
+                    camera.yaw_degrees,
+                    camera.pitch_degrees,
+                    camera.width,
+                    camera.height,
+                    camera.vertical_fov_degrees,
+                    camera.near_plane_m,
+                    camera.far_plane_m,
+                )
+            )
+            # Image IoU does not compensate camera motion. With explicitly
+            # supplied ideal self-pose, any geometric change starts a new local
+            # hypothesis segment; no empirical motion/noise threshold is invented.
+            if (previous_time is not None and media_time <= previous_time) or (
+                previous is not None and current_camera != previous_camera
+            ):
                 associator = CausalInstanceAssociator()
                 previous = None
             frame = associator.update(
                 pixel.visual_frame(), sequence_id=str(key), media_time=media_time
             )
             previous_time = media_time
+            previous_camera = current_camera
             readouts.append((frame, role_readout(previous, frame)))
             previous = frame
     return tuple(readouts)

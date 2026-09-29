@@ -1,0 +1,69 @@
+[
+  {
+    "name": "round1_records",
+    "command": [
+      "/private/tmp/cpswm-pc-a-sim-method-audit-20260929/.venv/bin/python",
+      "-m",
+      "pytest",
+      "-o",
+      "addopts=",
+      "-q",
+      "tests/test_simulation_evidence_audit.py",
+      "tests/test_unity_capture_resolution.py",
+      "tests/test_instance_correspondence.py",
+      "--junitxml",
+      "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/sim-reliability-20260929/archive-audit-attempt01/round1.xml"
+    ],
+    "exit_code": 0,
+    "seconds": 2.3697412917390466,
+    "source_unchanged": true,
+    "source_head": "ebaea38a8fef26ee503c4c0ad69ea67ad3bb4af1"
+  },
+  {
+    "name": "archive_records",
+    "command": [
+      "/private/tmp/cpswm-pc-a-sim-method-audit-20260929/.venv/bin/python",
+      "-u",
+      "tools/audit_simulation_evidence.py",
+      "--archive",
+      "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/neural-native-loop-20260929",
+      "--inventory",
+      "/private/tmp/cpswm-pc-a-sim-method-audit-20260929/docs/reviews/pc_a/neural_native_loop_2026-09-29/evidence/local-artifact-inventory.json",
+      "--ssdlite-weights",
+      "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/models/torchvision/ssdlite320_mobilenet_v3_large_coco-a79551df.pth",
+      "--fasterrcnn-weights",
+      "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/models/torchvision/fasterrcnn_resnet50_fpn_v2_coco-dd69338a.pth",
+      "--mode",
+      "records",
+      "--output",
+      "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/sim-reliability-20260929/archive-audit-attempt01/records"
+    ],
+    "exit_code": 0,
+    "seconds": 2.8375585000030696,
+    "source_unchanged": true,
+    "source_head": "ebaea38a8fef26ee503c4c0ad69ea67ad3bb4af1"
+  },
+  {
+    "name": "live_fixture",
+    "command": [
+      "/private/tmp/cpswm-pc-a-sim-method-audit-20260929/.venv/bin/python",
+      "tools/run_instance_correspondence_diagnostic.py",
+      "--mode",
+      "fixture",
+      "--output",
+      "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/sim-reliability-20260929/archive-audit-attempt01/fixture",
+      "--sdk-python",
+      "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/.venv-ai2thor/bin/python",
+      "--binary",
+      "/Users/pangwei/.ai2thor/releases/thor-OSXIntel64-f0825767cd50d69f666c7f282e54abfe58f1e917/thor-OSXIntel64-f0825767cd50d69f666c7f282e54abfe58f1e917.app/Contents/MacOS/AI2-THOR",
+      "--ssdlite-weights",
+      "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/models/torchvision/ssdlite320_mobilenet_v3_large_coco-a79551df.pth",
+      "--fasterrcnn-weights",
+      "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/models/torchvision/fasterrcnn_resnet50_fpn_v2_coco-dd69338a.pth"
+    ],
+    "exit_code": 1,
+    "seconds": 51.01873291702941,
+    "source_unchanged": true,
+    "source_head": "ebaea38a8fef26ee503c4c0ad69ea67ad3bb4af1"
+  }
+]

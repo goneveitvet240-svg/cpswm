@@ -1,0 +1,40 @@
+import sys,json,hashlib
+from pathlib import Path
+import numpy as np
+root=Path('/private/tmp/cpswm-pc-a-sim-method-audit-20260929')
+sys.path[:0]=[str(root/'src'),str(root/'tools'),str(root/'tests')]
+from run_simulator_repeatability import image_delta,plan
+out=Path(__file__).parent
+captures=out/'repeatability-attempt01/captures'
+summary=json.loads((captures/'summary.json').read_text())
+assert [r['cell'] for r in summary['results']]==plan()
+rows=[]
+for result in summary['results']:
+ cell=result['cell'];private=captures/cell['name']/'unity-logs/evaluator_only'
+ rows.append(dict(cell=cell,unique_rgb=result['unique_rgb'],target_masks_equal=result['target_masks_equal'],first_last=result['first_last'],
+                  rest_flags=[json.loads((private/f'full_metadata/{i:03d}.json').read_text())['metadata']['isSceneAtRest'] for i in range(8)],
+                  max_object_translation=max(f['geometry']['max_object_translation'] for f in result['frames']),
+                  max_object_rotation=max(f['geometry']['max_object_rotation'] for f in result['frames']),
+                  category_patterns={kind:[bool(f['frontends'][kind]['scores']) for f in result['frames']] for kind in ('ssdlite','fasterrcnn')},
+                  target_overlap_patterns={kind:[any(v>0 for v in f['frontends'][kind]['target_bbox_ious']) for f in result['frames']] for kind in ('ssdlite','fasterrcnn')},
+                  target_pixels=[f['target_pixels'] for f in result['frames']],
+                  final_successive_delta=result['successive_deltas'][-1]))
+pairs=[]
+for site in ('north','south'):
+ for size in (320,640):
+  names=[(f'{site}-{size}-direct-{repeat}',f'{site}-{size}-rotate-{repeat}','initialization_route') for repeat in (0,1)]
+  names += [(f'{site}-{size}-{route}-0',f'{site}-{size}-{route}-1','reset_repeat') for route in ('direct','rotate')]
+  for a,b,kind in names:
+   for i in range(8):
+    pa=captures/a/'unity-logs/evaluator_only';pb=captures/b/'unity-logs/evaluator_only'
+    ma=np.load(pa/f'{i:03d}-mask.npy');mb=np.load(pb/f'{i:03d}-mask.npy')
+    ia=np.load(pa/f'{i:03d}-rgb.npy');ib=np.load(pb/f'{i:03d}-rgb.npy')
+    pairs.append(dict(a=a,b=b,kind=kind,index=i,masks_equal=bool(np.array_equal(ma,mb)),delta=image_delta(ia,ib,ma|mb)))
+result=dict(scope='POST_CAPTURE_DESCRIPTIVE_SUMMARY_NO_THRESHOLD_SELECTION_OR_FITTING',script_sha256=hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),cells=rows,pairs=pairs,
+            any_category_flips=[r['cell']['name'] for r in rows if len(set(r['category_patterns']['fasterrcnn']))>1],
+            any_target_overlap_flips=[r['cell']['name'] for r in rows if len(set(r['target_overlap_patterns']['fasterrcnn']))>1],
+            data_scope_reliability='ARCHIVED_NUMBERS_REPRODUCIBLE_STATIC_CALIBRATION_NOT_ESTABLISHED')
+(out/'repetition-readout.json').write_text(json.dumps(result,indent=2)+'\n')
+for r in rows:
+ print(r['cell']['name'],r['unique_rgb'],round(r['first_last']['mean_abs_byte'],4),'FRCNN category',''.join(str(int(x)) for x in r['category_patterns']['fasterrcnn']),'target',''.join(str(int(x)) for x in r['target_overlap_patterns']['fasterrcnn']),'rest',sum(r['rest_flags']))
+print('category flips:',result['any_category_flips']);print('target overlap flips:',result['any_target_overlap_flips'])

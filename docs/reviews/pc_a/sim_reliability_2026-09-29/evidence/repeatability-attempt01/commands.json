@@ -1,0 +1,130 @@
+[
+  {
+    "name": "round1_paths",
+    "command": [
+      "/private/tmp/cpswm-pc-a-sim-method-audit-20260929/.venv/bin/python",
+      "-m",
+      "pytest",
+      "-o",
+      "addopts=",
+      "-q",
+      "tests/test_simulator_repeatability.py",
+      "tests/test_simulation_evidence_audit.py",
+      "tests/test_unity_capture_resolution.py",
+      "--junitxml",
+      "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/sim-reliability-20260929/repeatability-attempt01/round1.xml"
+    ],
+    "source_head": "69ebcf90ea271798b8f0c1eb89df501065954ebd",
+    "exit_code": 0,
+    "seconds": 1.5862180409021676,
+    "source_unchanged": true
+  },
+  {
+    "name": "actual_fixture",
+    "command": [
+      "/private/tmp/cpswm-pc-a-sim-method-audit-20260929/.venv/bin/python",
+      "-u",
+      "tools/run_simulator_repeatability.py",
+      "--mode",
+      "fixture",
+      "--output",
+      "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/sim-reliability-20260929/repeatability-attempt01/fixture",
+      "--sdk-python",
+      "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/.venv-ai2thor/bin/python",
+      "--binary",
+      "/Users/pangwei/.ai2thor/releases/thor-OSXIntel64-f0825767cd50d69f666c7f282e54abfe58f1e917/thor-OSXIntel64-f0825767cd50d69f666c7f282e54abfe58f1e917.app/Contents/MacOS/AI2-THOR",
+      "--ssdlite-weights",
+      "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/models/torchvision/ssdlite320_mobilenet_v3_large_coco-a79551df.pth",
+      "--fasterrcnn-weights",
+      "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/models/torchvision/fasterrcnn_resnet50_fpn_v2_coco-dd69338a.pth"
+    ],
+    "source_head": "69ebcf90ea271798b8f0c1eb89df501065954ebd",
+    "exit_code": 0,
+    "seconds": 20.23711512470618,
+    "source_unchanged": true
+  },
+  {
+    "name": "round2_artifacts",
+    "command": [
+      "/private/tmp/cpswm-pc-a-sim-method-audit-20260929/.venv/bin/python",
+      "-m",
+      "pytest",
+      "-o",
+      "addopts=",
+      "-q",
+      "tests/test_simulator_repeatability_artifacts.py",
+      "tests/test_pixel_camera_detector_binding.py",
+      "--junitxml",
+      "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/sim-reliability-20260929/repeatability-attempt01/round2.xml"
+    ],
+    "source_head": "69ebcf90ea271798b8f0c1eb89df501065954ebd",
+    "exit_code": 0,
+    "seconds": 61.92564491694793,
+    "source_unchanged": true
+  },
+  {
+    "name": "ruff",
+    "command": [
+      "/private/tmp/cpswm-pc-a-sim-method-audit-20260929/.venv/bin/python",
+      "-m",
+      "ruff",
+      "check",
+      "tools/run_simulator_repeatability.py",
+      "tools/unity_repeatability_worker.py",
+      "tests/test_simulator_repeatability.py",
+      "tests/test_simulator_repeatability_artifacts.py"
+    ],
+    "source_head": "69ebcf90ea271798b8f0c1eb89df501065954ebd",
+    "exit_code": 0,
+    "seconds": 0.08769379183650017,
+    "source_unchanged": true
+  },
+  {
+    "name": "actual_128",
+    "command": [
+      "/private/tmp/cpswm-pc-a-sim-method-audit-20260929/.venv/bin/python",
+      "-u",
+      "tools/run_simulator_repeatability.py",
+      "--mode",
+      "run",
+      "--output",
+      "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/sim-reliability-20260929/repeatability-attempt01/captures",
+      "--sdk-python",
+      "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/.venv-ai2thor/bin/python",
+      "--binary",
+      "/Users/pangwei/.ai2thor/releases/thor-OSXIntel64-f0825767cd50d69f666c7f282e54abfe58f1e917/thor-OSXIntel64-f0825767cd50d69f666c7f282e54abfe58f1e917.app/Contents/MacOS/AI2-THOR",
+      "--ssdlite-weights",
+      "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/models/torchvision/ssdlite320_mobilenet_v3_large_coco-a79551df.pth",
+      "--fasterrcnn-weights",
+      "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/models/torchvision/fasterrcnn_resnet50_fpn_v2_coco-dd69338a.pth"
+    ],
+    "source_head": "69ebcf90ea271798b8f0c1eb89df501065954ebd",
+    "exit_code": 0,
+    "seconds": 316.82119291694835,
+    "source_unchanged": true
+  },
+  {
+    "name": "fresh_recompute_128",
+    "command": [
+      "/private/tmp/cpswm-pc-a-sim-method-audit-20260929/.venv/bin/python",
+      "-u",
+      "tools/run_simulator_repeatability.py",
+      "--mode",
+      "verify",
+      "--output",
+      "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/sim-reliability-20260929/repeatability-attempt01/captures",
+      "--sdk-python",
+      "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/.venv-ai2thor/bin/python",
+      "--binary",
+      "/Users/pangwei/.ai2thor/releases/thor-OSXIntel64-f0825767cd50d69f666c7f282e54abfe58f1e917/thor-OSXIntel64-f0825767cd50d69f666c7f282e54abfe58f1e917.app/Contents/MacOS/AI2-THOR",
+      "--ssdlite-weights",
+      "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/models/torchvision/ssdlite320_mobilenet_v3_large_coco-a79551df.pth",
+      "--fasterrcnn-weights",
+      "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/models/torchvision/fasterrcnn_resnet50_fpn_v2_coco-dd69338a.pth"
+    ],
+    "source_head": "69ebcf90ea271798b8f0c1eb89df501065954ebd",
+    "exit_code": 0,
+    "seconds": 251.06554170837626,
+    "source_unchanged": true
+  }
+]

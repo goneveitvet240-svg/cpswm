@@ -17,7 +17,9 @@ jobs:
 
   test:
     runs-on: ubuntu-latest
-    timeout-minutes: 70
+    # Setup, diagnostic finalization and upload are outside the unchanged
+    # 65 minute test execution budget.
+    timeout-minutes: 85
     steps:
       - uses: actions/checkout@v4
       - uses: astral-sh/setup-uv@v5
@@ -27,9 +29,28 @@ jobs:
       # Neural and video tests import torch/cv2 during collection.
       - run: uv sync --frozen --extra dev --extra perception --extra hand-perception
       - name: Collect every test before starting the long regression
-        run: uv run --frozen --extra dev --extra perception --extra hand-perception pytest --collect-only -q
+        shell: bash
+        run: |
+          mkdir -p output/ci-regression
+          git rev-parse HEAD > output/ci-regression/source-sha.txt
+          set +e
+          uv run --frozen --extra dev --extra perception --extra hand-perception pytest --collect-only -q 2>&1 | tee output/ci-regression/collection.log
+          results=("${PIPESTATUS[@]}")
+          result=${results[0]}
+          if [[ "$result" -eq 0 && "${results[1]}" -ne 0 ]]; then
+            result=${results[1]}
+          fi
+          printf '%s\n' "$result" > output/ci-regression/collection-exit-code.txt
+          exit "$result"
       # loadscope keeps module-scoped expensive reports on one worker.  The old
       # default scheduler rebuilt the same SHIFT report once per worker and
       # made the suite exceed the pre-data regression budget.
       - name: Full regression (65 minute execution budget)
-        run: timeout 65m uv run --frozen --extra dev --extra perception --extra hand-perception pytest -n auto --dist=loadscope --durations=25 --cov=src --cov-report=term-missing
+        run: uv run --frozen --extra dev --extra perception --extra hand-perception python tools/run_ci_regression.py --output output/ci-regression/execution --budget-seconds 3900 --grace-seconds 60
+      - name: Preserve regression diagnostics on every outcome
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: regression-${{ github.run_id }}-${{ github.run_attempt }}
+          path: output/ci-regression/
+          if-no-files-found: warn

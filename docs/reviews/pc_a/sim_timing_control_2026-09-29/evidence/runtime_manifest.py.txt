@@ -1,0 +1,15 @@
+import json,hashlib,platform,sys,importlib.metadata,datetime
+from pathlib import Path
+import ai2thor,ai2thor.controller
+
+def digest(p):
+ h=hashlib.sha256()
+ with p.open('rb') as f:
+  for chunk in iter(lambda:f.read(1024*1024),b''):h.update(chunk)
+ return h.hexdigest()
+
+sdk=Path(ai2thor.__file__).parent
+bundle=Path('/Users/pangwei/.ai2thor/releases/thor-OSXIntel64-f0825767cd50d69f666c7f282e54abfe58f1e917/thor-OSXIntel64-f0825767cd50d69f666c7f282e54abfe58f1e917.app')
+result=dict(scope='CURRENT_RUNTIME_IDENTITY_NOT_RETROACTIVE_ATTESTATION',recorded_at=datetime.datetime.now(datetime.UTC).isoformat(),python=sys.version,python_executable=str(Path(sys.executable).resolve()),python_sha256=digest(Path(sys.executable).resolve()),platform=platform.platform(),machine=platform.machine(),sdk_version=importlib.metadata.version('ai2thor'),default_quality=ai2thor.controller.DEFAULT_QUALITY,dependencies={n:importlib.metadata.version(n) for n in ('numpy','requests','msgpack','Pillow')},sdk_sources={str(p.relative_to(sdk)):digest(p) for p in sorted(sdk.rglob('*.py'))},unity_bundle={str(p.relative_to(bundle)):dict(bytes=p.stat().st_size,sha256=digest(p)) for p in sorted(bundle.rglob('*')) if p.is_file()})
+path=Path(__file__).parent/'runtime-identity.json';path.write_text(json.dumps(result,indent=2)+'\n')
+print(json.dumps(dict(sdk=result['sdk_version'],sdk_files=len(result['sdk_sources']),unity_files=len(result['unity_bundle']),unity_bytes=sum(r['bytes'] for r in result['unity_bundle'].values()),quality=result['default_quality'])))

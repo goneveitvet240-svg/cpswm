@@ -1,0 +1,33 @@
+Traceback (most recent call last):
+  File "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/.venv-ai2thor/lib/python3.11/site-packages/ai2thor/controller.py", line 979, in step
+    self.last_event = self.server.receive()
+                      ^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/.venv-ai2thor/lib/python3.11/site-packages/ai2thor/fifo_server.py", line 236, in receive
+    return self.create_event(metadata, files)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/.venv-ai2thor/lib/python3.11/site-packages/ai2thor/server.py", line 798, in create_event
+    image_mapping[key](files[key][i])
+  File "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/.venv-ai2thor/lib/python3.11/site-packages/ai2thor/server.py", line 673, in add_image_ids
+    self.instance_segmentation_frame = read_buffer_image(
+                                       ^^^^^^^^^^^^^^^^^^
+  File "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/.venv-ai2thor/lib/python3.11/site-packages/ai2thor/server.py", line 361, in read_buffer_image
+    im = im_bytes.reshape(height, width, -1)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ValueError: cannot reshape array of size 409600 into shape (1846,2940,newaxis)
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/private/tmp/cpswm-pc-a-sim-timing-control-20260929/tools/unity_timing_worker.py", line 174, in <module>
+    main()
+  File "/private/tmp/cpswm-pc-a-sim-timing-control-20260929/tools/unity_timing_worker.py", line 129, in main
+    event = clock.observe(request)
+            ^^^^^^^^^^^^^^^^^^^^^^
+  File "/private/tmp/cpswm-pc-a-sim-timing-control-20260929/tools/unity_timing_worker.py", line 78, in observe
+    self._step("clock", identity)
+  File "/private/tmp/cpswm-pc-a-sim-timing-control-20260929/tools/unity_timing_worker.py", line 58, in _step
+    event = self.controller.step(**request)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/.venv-ai2thor/lib/python3.11/site-packages/ai2thor/controller.py", line 997, in step
+    raise (TimeoutError if isinstance(e, TimeoutError) else RuntimeError)(
+RuntimeError: Error encountered when running action {'action': 'Pass', 'sequenceId': 30} in scene Procedural.

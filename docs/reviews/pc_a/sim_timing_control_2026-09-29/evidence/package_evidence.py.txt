@@ -1,0 +1,51 @@
+import sys,json,hashlib,shutil
+from pathlib import Path
+import xml.etree.ElementTree as ET
+root=Path('/private/tmp/cpswm-pc-a-sim-timing-control-20260929')
+sys.path.insert(0,str(root/'docs/reviews/pc_a/neural_native_loop_2026-09-29'))
+from run_frozen import snapshot
+out=Path(__file__).parent
+docs=root/'docs/reviews/pc_a/sim_timing_control_2026-09-29'
+e=docs/'evidence';e.mkdir(exist_ok=True)
+source=json.loads((out/'attempt01/source.json').read_text())
+assert snapshot()==source['files']==json.loads((out/'attempt02/source.json').read_text())['files']
+for name,count in [('round1',32),('round2',17)]:
+ suite=ET.parse(out/'attempt01'/f'{name}.xml').getroot().find('testsuite')
+ assert int(suite.attrib['tests'])==count and all(int(suite.attrib[k])==0 for k in ('errors','failures','skipped'))
+assert json.loads((out/'attempt01/failure-summary.json').read_text())['counts']==dict(COMPLETE=23,FAILED=1,RUNNING=0,PENDING=0)
+commands=json.loads((out/'attempt02/commands.json').read_text())
+assert len(commands)==2 and all(c['exit_code']==0 and c['source_unchanged'] for c in commands)
+assert json.loads((out/'attempt02/captures/verification.json').read_text())['frames']==384
+assert json.loads((out/'attempt02/runtime-verification.json').read_text())['unchanged']
+for attempt in ('attempt01','attempt02'):
+ target=e/attempt;target.mkdir(exist_ok=True)
+ for p in (out/attempt).iterdir():
+  if p.is_file():shutil.copy2(p,target/p.name)
+ for name in ('matrix.json','summary.json','completion.json','verification.json'):
+  p=out/attempt/'captures'/name
+  if p.exists():shutil.copy2(p,target/name)
+failure=out/'attempt01/captures/north-320-frozen-1/unity-logs'
+for name in ('transport.stderr','unity.log'):
+ shutil.copy2(failure/name,e/'attempt01'/('resize-'+name))
+for case in ('south-320-frozen-0','north-640-frozen-0','south-640-frozen-0'):
+ src=out/'attempt02/captures'/case;dst=e/'raw-examples'/case
+ shutil.copytree(src,dst)
+ for p in src.rglob('*'):
+  if p.is_file():assert p.read_bytes()==(dst/p.relative_to(src)).read_bytes()
+for name in ('run_timing.py','run_timing_attempt02.py','runtime_manifest.py','summarize_timing.py','plot_timing.py','package_evidence.py'):
+ shutil.copy2(out/name,e/(name+'.txt'))
+for name in ('readout.json','plot-data.json','runtime-between-attempts.json'):
+ shutil.copy2(out/name,e/name)
+for name in ('timing-control.png','timing-control.svg'):
+ shutil.copy2(out/name,docs/name)
+def inventory(directory,excluded):
+ rows=[]
+ for p in sorted(directory.rglob('*')):
+  if p.is_file() and p.name not in excluded:
+   raw=p.read_bytes();rows.append(dict(path=str(p.relative_to(directory)),bytes=len(raw),sha256=hashlib.sha256(raw).hexdigest()))
+ return dict(root=str(directory),files=rows,file_count=len(rows),bytes=sum(r['bytes'] for r in rows))
+raw=inventory(out,{'RAW_INVENTORY.json','DELIVERY.json','REPORT.md','REPORT_LOCAL.md'})
+(out/'RAW_INVENTORY.json').write_text(json.dumps(raw,indent=2)+'\n');shutil.copy2(out/'RAW_INVENTORY.json',e/'RAW_INVENTORY.json')
+shared=inventory(e,{'SHARED_INVENTORY.json'})
+(e/'SHARED_INVENTORY.json').write_text(json.dumps(shared,indent=2)+'\n')
+print(json.dumps(dict(source_unchanged=True,raw_files=raw['file_count'],raw_bytes=raw['bytes'],shared_files=shared['file_count'],shared_bytes=shared['bytes'])))

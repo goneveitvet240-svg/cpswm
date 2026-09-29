@@ -1,0 +1,38 @@
+import sys,subprocess,os,json,time
+from pathlib import Path
+root=Path('/private/tmp/cpswm-pc-a-sim-timing-control-20260929')
+sys.path.insert(0,str(root/'docs/reviews/pc_a/neural_native_loop_2026-09-29'))
+from run_frozen import snapshot
+out=Path(__file__).parent/'attempt01';out.mkdir(exist_ok=False)
+main=Path('/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model')
+py=str(root/'.venv/bin/python');sdk=main/'.venv-ai2thor/bin/python'
+weights=main/'output/models/torchvision';ssd=weights/'ssdlite320_mobilenet_v3_large_coco-a79551df.pth';frcnn=weights/'fasterrcnn_resnet50_fpn_v2_coco-dd69338a.pth'
+binary=Path('/Users/pangwei/.ai2thor/releases/thor-OSXIntel64-f0825767cd50d69f666c7f282e54abfe58f1e917/thor-OSXIntel64-f0825767cd50d69f666c7f282e54abfe58f1e917.app/Contents/MacOS/AI2-THOR')
+shared=['--sdk-python',str(sdk),'--binary',str(binary),'--ssdlite-weights',str(ssd),'--fasterrcnn-weights',str(frcnn)]
+pytest=[py,'-m','pytest','-o','addopts=','-q'];cli=[py,'-u','tools/run_simulator_timing.py']
+commands=[
+ ('round1_timing',pytest+['tests/test_simulator_timing.py','tests/test_simulator_repeatability.py','tests/test_unity_capture_resolution.py','--junitxml',str(out/'round1.xml')]),
+ ('actual_three_fixtures',cli+['--mode','fixture','--output',str(out/'fixtures'),*shared]),
+ ('round2_actual_attacks',pytest+['tests/test_simulator_timing_artifacts.py','tests/test_pixel_camera_detector_binding.py','--junitxml',str(out/'round2.xml')]),
+ ('ruff',[py,'-m','ruff','check','tools/unity_timing_worker.py','tools/run_simulator_timing.py','tests/test_simulator_timing.py','tests/test_simulator_timing_artifacts.py']),
+ ('actual_384',cli+['--mode','run','--output',str(out/'captures'),*shared]),
+ ('fresh_recompute_384',cli+['--mode','verify','--output',str(out/'captures'),*shared])]
+source=snapshot();head=subprocess.check_output(['git','rev-parse','HEAD'],cwd=root,text=True).strip()
+(out/'source.json').write_text(json.dumps(dict(head=head,files=source),indent=2)+'\n')
+runtime=Path(__file__).parent/'runtime-identity.json'
+subprocess.run([str(sdk),str(Path(__file__).parent/'runtime_manifest.py')],check=True)
+before=json.loads(runtime.read_text());(out/'runtime-before.json').write_text(runtime.read_text())
+env=dict(os.environ,PYTHONPATH='src:tests:tools',PYTHONHASHSEED='0',OMP_NUM_THREADS='2',MKL_NUM_THREADS='2',CPSWM_TIMING_FIXTURE=str(out/'fixtures'),CPSWM_SSDLITE_WEIGHTS=str(ssd),CPSWM_FASTERRCNN_WEIGHTS=str(frcnn))
+rows=[]
+for name,command in commands:
+ assert snapshot()==source
+ start=time.monotonic()
+ with (out/(name+'.log')).open('w') as log:
+  result=subprocess.run(command,cwd=root,env=env,stdout=log,stderr=subprocess.STDOUT,timeout=3600)
+ row=dict(name=name,command=command,source_head=head,exit_code=result.returncode,seconds=time.monotonic()-start,source_unchanged=snapshot()==source)
+ rows.append(row);(out/'commands.json').write_text(json.dumps(rows,indent=2)+'\n');print(json.dumps(row),flush=True)
+ if row['exit_code'] or not row['source_unchanged']:raise SystemExit(row['exit_code'] or 2)
+subprocess.run([str(sdk),str(Path(__file__).parent/'runtime_manifest.py')],check=True)
+after=json.loads(runtime.read_text());(out/'runtime-after.json').write_text(runtime.read_text())
+before.pop('recorded_at');after.pop('recorded_at');assert before==after
+(out/'runtime-verification.json').write_text(json.dumps(dict(unchanged=True,sdk_files=len(after['sdk_sources']),unity_files=len(after['unity_bundle'])),indent=2)+'\n')

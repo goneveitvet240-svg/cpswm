@@ -61,7 +61,7 @@ where = ["src"]
 [tool.pytest.ini_options]
 addopts = "-q"
 testpaths = ["tests"]
-pythonpath = ["src"]
+pythonpath = ["src", "tests", "tools"]
 [tool.ruff]
 line-length = 100
 target-version = "py313"

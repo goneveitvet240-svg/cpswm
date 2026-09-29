@@ -6,6 +6,8 @@
 
 [报告](../reviews/pc_a/rgbd_camera_geometry_2026-09-30/REPORT.md)、[双审](../reviews/pc_a/rgbd_camera_geometry_2026-09-30/REVIEWS.md)、[复现](../reviews/pc_a/rgbd_camera_geometry_2026-09-30/REPRODUCE.md)。全原件462文件/288,148,940字节，压缩54,907,409字节，逐文件读回核验，SHA256 4ef7f013203f48d5786b1ede52ead6cfc7789a8cc27d39e6d26994e2a127c3a9。SDK27/Unity166文件前后不变。本机原件 output/rgbd-camera-geometry-20260930。保留纯RGB、分类对照、已批准澄清和完整研究范围；B独立、全量CI、旧checkpoint绝对路径及自然长期闭环仍未关闭。
 
+已推送并通过[草稿PR63](https://github.com/goneveitvet240-svg/cpswm/pull/63)叠加PR62交接，未合并。交付fetch核验集成19ddf26830348a2f0b33f0af54d6ba702c5cfb1c、父分支f57d67e4bde4f036cb6cfc13710966d8b289930b、B fd4ca6ef5e81c90d7cf7987b42c0b2810d8a810a未变。
+
 下一主项：完整候选/几何通过运行时拥有的来源进入提议网络，保留类别歧义，不使用评价标签或任意先验制造成功。继续推进，以下为历史时点。
 
 # A：RGB-D / 相机自身位姿主干开工（2026-09-30）

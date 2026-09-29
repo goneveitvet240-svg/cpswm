@@ -1,3 +1,13 @@
+# A：RGB-D 进入原生神经提议交付（2026-09-30）
+
+分支 codex/pc-a-owned-visual-neural-20260930，base c1ae096f55c6487285a83a4aff5e08f743054df5。实际方法/采集源码30d57a0ba7df824ab7fb6fc955e5deacb404f256；新增显式视觉条件输入，由拥有者登记来源、消费者重建网络输入，恢复/行动前再从公共原件复推。默认语义/RGB/分类/澄清及完整框架保持。
+
+初版90d9abb顺序54/34通过后，追加检查发现相机转动45度仍复用3条图像轨迹；失败保留，修复后重新60/34顺序双审零跳过。mypy5模块、Ruff/格式9文件通过。两条真实RGB-D历史各3动作、10候选/30表面点、新进程2/2复算通过；SDK27/Unity166文件前后不变。11个重放源各读入截止时1帧4候选12表面点，几何消融改变11/11个q，目标后验差异0。最终未决均97.5440%，无自然语义/物体操作，不是自然任务收益。
+
+真实归档副本完整重封装假几何、真实网络11源/22记录和全部原生锚点后，内部一致性通过，但保留原件使读出/恢复均拒绝。归档286文件254,979,377字节，压缩33,953,861字节、逐文件读回核验，SHA256 56c4dc23d09ad3dd12dcff9172695131b406514a54e13aae816608944ea76ac5。[报告](../reviews/pc_a/owned_visual_neural_2026-09-30/REPORT.md)、[双审](../reviews/pc_a/owned_visual_neural_2026-09-30/REVIEWS.md)、[复现](../reviews/pc_a/owned_visual_neural_2026-09-30/REPRODUCE.md)。本机原件output/owned-visual-neural-20260930。
+
+[离线仿真监督具体方案](../reviews/pc_a/owned_visual_neural_2026-09-30/CALIBRATION_DECISION.md)已提交用户科学权限选择，未答复前不训练/校准。继续推进绝对checkpoint路径的恢复缺口；自然目标密度、B独立、全仓CI和长期自然闭环仍未关闭。交付fetch核验集成19ddf26830348a2f0b33f0af54d6ba702c5cfb1c、父分支c1ae096f55c6487285a83a4aff5e08f743054df5、B fd4ca6ef5e81c90d7cf7987b42c0b2810d8a810a未变。以下为历史时点。
+
 # A：视觉输入进入原生神经提议开工（2026-09-30）
 
 分支 codex/pc-a-owned-visual-neural-20260930，base/开工源码 c1ae096f55c6487285a83a4aff5e08f743054df5。承接已交付 PR63，推进运行时拥有的完整候选/几何进入提议网络及原生源核验；默认语义对照保留。精确枚举 q 仍抵消，目标密度与自然训练缺口不变。[计划](../reviews/pc_a/owned_visual_neural_2026-09-30/PLAN.md)。输出 output/owned-visual-neural-20260930；冻结后顺序两轮自审，B 独立未关闭。远端集成19ddf26830348a2f0b33f0af54d6ba702c5cfb1c、B fd4ca6ef5e81c90d7cf7987b42c0b2810d8a810a 未变。以下为历史时点。

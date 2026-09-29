@@ -1,3 +1,17 @@
+# A：公共视觉候选同历史接线交付（2026-09-30）
+
+分支codex/pc-a-visual-support-20260930，base 1d3538794b8b86d66414255f8d37f64d8ff0d88e；实际功能源码d699b90db2b0cfa719be7f44f8c7128d27c08780。新增运行时visual_observation_support读出，使用原始动作拥有的公共RGB和既有绑定检测器，返回帧候选/图像位置/原生代际及重复像素组。未拟合自然目标密度，未把图像位置当三维位置、框ID当世界身份或检测分数当概率。
+
+冻结后顺序两轮A局部自审61/42 passed、零跳过，Ruff/格式和两个生产模块mypy通过。命令与JUnit见[双审](../reviews/pc_a/visual_support_2026-09-30/REVIEWS.md)及原件attempt01/commands.json。两条固定北侧真实历史完成：5帧13候选，另进程2/2重建通过；真实完整归档副本的伪造阳性/派生候选被原图复推拒绝。未决仍97.5440%/99.1422%，不是任务收益；保留受控语义/撤回、原分类对照和完整框架。
+
+[完整报告](../reviews/pc_a/visual_support_2026-09-30/REPORT.md)、[复现](../reviews/pc_a/visual_support_2026-09-30/REPRODUCE.md)、[下一实现单元](../reviews/pc_a/visual_support_2026-09-30/NEXT_STEP.md)。原件173文件143,006,032字节，压缩14,843,221字节并逐文件读回核验；持久位置output/visual-support-20260930。SDK27/Unity166文件前后不变；同机复用环境，不是B独立验收。完整CI、旧神经归档绝对路径跨机定位和自然长期闭环仍未关闭。
+
+交付前fetch核验集成19ddf26830348a2f0b33f0af54d6ba702c5cfb1c、父分支1d3538794b8b86d66414255f8d37f64d8ff0d88e、B fd4ca6ef5e81c90d7cf7987b42c0b2810d8a810a未变。下一主项仍是自然实例/位置候选密度与测量模型；新增RGB-D及相机自身位姿权限已提出具体选择，未收到答复前维持纯RGB，不自行新增先验/指标或收窄框架。已推送并通过[草稿PR62](https://github.com/goneveitvet240-svg/cpswm/pull/62)叠加PR61交接，未合并。以下为历史时点。
+
+# A：公共视觉候选同历史接线开工（2026-09-30）
+
+分支codex/pc-a-visual-support-20260930，base/当前实际源码1d3538794b8b86d66414255f8d37f64d8ff0d88e。核验远端后从父分支独立开工；[计划](../reviews/pc_a/visual_support_2026-09-30/PLAN.md)固定两轮审查后再跑两条北侧历史。生产候选读出接线，不添加传感器权限、世界身份、密度先验或阈值；完整框架保持。证据output/visual-support-20260930，目前未验收。B独立及全仓CI缺口仍未关闭。
+
 # A：视觉历史测试依赖修复及重审（2026-09-30）
 
 分支codex/pc-a-visual-history-20260929，base 00cc5a47cad988b453d5839b63fd7c6a89f4246d；测试修复源ac93f8d489209943cbcff9292ab483330538854b。仅两个测试隔离可选依赖/权重；真实权重下重新顺序33/42双审零跳过，局部Ruff通过。四条实际历史仍绑定00283c607a5fb49c293cefe8eafd65cc2192f558，原封存包不变；其他Python/依赖源码一致。见[补充命令与失败记录](../reviews/pc_a/visual_history_2026-09-29/CI_FOLLOWUP.md)。

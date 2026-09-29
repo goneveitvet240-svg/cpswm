@@ -177,6 +177,7 @@ def verify_revision_chain(output, *, final_stream, checkpoint, decoder, builder,
                 (output / "before-memory.json").read_text()
             ) or stream.current_joint_decision_view() != load(output / "before-view.json"):
                 raise ValueError("history pre-correction evidence differs")
+            stream.visual_observation_support(expected=load(output / "before-visual-support.json"))
             pending = load(output / "old-pending.json")
             if (
                 pending is not None
@@ -377,6 +378,7 @@ def run(output, *, sdk_python, binary, weights, checkpoint, site, task, detector
         )
         _, pending = stream.prepare_posterior_observation(problem, decision_time=when)
         save(output / "old-pending.json", pending)
+        save(output / "before-visual-support.json", stream.visual_observation_support())
         backup(store, output / "before-feedback.sqlite")
         bundles = correction_bundles(probe, stream)
         if not bundles:
@@ -408,6 +410,8 @@ def run(output, *, sdk_python, binary, weights, checkpoint, site, task, detector
         model = (ClarificationViewModel if task == "clarification" else DiagnosticViewModel)(
             decoder
         )
+        if stream.visual_observation_support() != load(output / "before-visual-support.json"):
+            raise ValueError("visual support changed across feedback and store recovery")
         steps = []
         for _ in range(2):
             result = collect_revised_posterior_step(
@@ -422,6 +426,7 @@ def run(output, *, sdk_python, binary, weights, checkpoint, site, task, detector
         save(output / "final-view.json", stream.current_joint_decision_view())
         save(output / "camera-updates.json", stream.joint_observation_updates())
         save(output / "owned-history.json", stream.observation_history())
+        save(output / "visual-support.json", stream.visual_observation_support())
         write(output / "final-memory.json", summary(stream))
         first = steps[0]
         result = dict(
@@ -529,6 +534,7 @@ def verify(output, *, weights, checkpoint):
             raise ValueError("history action chain differs")
         if stream.joint_observation_updates() != load(output / "camera-updates.json"):
             raise ValueError("history camera update consequences differ")
+        stream.visual_observation_support(expected=load(output / "visual-support.json"))
         verify_revision_chain(
             output,
             final_stream=stream,

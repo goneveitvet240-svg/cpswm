@@ -1,0 +1,11 @@
+# 复现边界
+
+从功能源码d699b90db2b0cfa719be7f44f8c7128d27c08780复现；base 1d3538794b8b86d66414255f8d37f64d8ff0d88e。源码映射包含所有Python文件、pyproject.toml与uv.lock，改测试文件也会使旧归档源码校验不一致。后续文档/压缩包不改变该映射。
+
+按锁文件独立创建环境；本次复用本机环境，实际版本见python-environment.json。设置PYTHONPATH=src:tests:tools、PYTHONHASHSEED=0、OMP_NUM_THREADS=2、MKL_NUM_THREADS=2，真实测试还须显式指定CPSWM_SSDLITE_WEIGHTS和CPSWM_FASTERRCNN_WEIGHTS。模型文件本身未打入原件包，官方固定全摘要由已有解码器校验。缺依赖/权重造成的skip不可当模型通过；本次冻结双审零跳过。
+
+共享原件内run_frozen_support.py记录顺序reviews/run命令，verify_completed.py记录每条完成后另进程验证。修改外部编排脚本的root/output路径只用于新运行；实际命令、完整路径、退出码、时间、源码前后摘要在attempt01/commands.json与fresh-verification-commands.json。新运行使用新目录，不覆盖失败试次。run_history_action_loop.py与history_visual_evidence.py均有run/verify模式，verify重算历史且不再启动Unity。
+
+旧神经证据仍保存绝对checkpoint_directory，本轮未做跨平台定位适配。仅把归档解压到新目录不等于旧神经证据可在Windows上直接重跑，不能编辑已绑定路径冒充原身份；可在正确源码/权重/SDK环境新建实际历史，或后续实现正式定位适配。另进程通过不等于B独立验收。
+
+before-visual-support.json是纠正前原动作候选，visual-support.json是最终完整动作历史候选；两者均由运行时只接受原始公共图像的接口生成。验证会恢复原SQLite并真实复推比较，不信任导出的候选/身份/概率声明。私有instances/sdk-events仅作原有完整仿真核查，不是该接口参数。图像框不提供公制位置或朝向，也不能代替接触/释放和自然语义写入。

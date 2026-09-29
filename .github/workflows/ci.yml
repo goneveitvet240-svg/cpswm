@@ -35,7 +35,11 @@ jobs:
           git rev-parse HEAD > output/ci-regression/source-sha.txt
           set +e
           uv run --frozen --extra dev --extra perception --extra hand-perception pytest --collect-only -q 2>&1 | tee output/ci-regression/collection.log
-          result=${PIPESTATUS[0]}
+          results=("${PIPESTATUS[@]}")
+          result=${results[0]}
+          if [[ "$result" -eq 0 && "${results[1]}" -ne 0 ]]; then
+            result=${results[1]}
+          fi
           printf '%s\n' "$result" > output/ci-regression/collection-exit-code.txt
           exit "$result"
       # loadscope keeps module-scoped expensive reports on one worker.  The old

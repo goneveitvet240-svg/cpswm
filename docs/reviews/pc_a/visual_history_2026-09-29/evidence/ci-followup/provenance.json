@@ -1,0 +1,39 @@
+{
+  "experiment_source": "00283c607a5fb49c293cefe8eafd65cc2192f558",
+  "test_followup_source": "ac93f8d489209943cbcff9292ab483330538854b",
+  "changed_python_files": [
+    "tests/test_history_detector_profile.py",
+    "tests/test_history_visual_evidence.py"
+  ],
+  "all_other_python_and_dependencies_exact": true,
+  "archive_replay_requires_original_source": true,
+  "reason": "test-only optional dependency isolation; experiment method source unchanged",
+  "inherited_format_failures": {
+    "tests/dual_pc_review/test_w3_five_boundaries_repair.py": {
+      "base_blob": "95e092cf3d5f717d92a0b9e41bfa612c949f614b",
+      "current_blob": "95e092cf3d5f717d92a0b9e41bfa612c949f614b"
+    },
+    "tests/test_structure_two_ciav_negative_observation_layers.py": {
+      "base_blob": "f72b6519acf90c07ef23479312c91c7b4c477f1e",
+      "current_blob": "f72b6519acf90c07ef23479312c91c7b4c477f1e"
+    }
+  },
+  "dependency_probes": {
+    "before_missing_weights": {
+      "exit_code": 1,
+      "passed": 1,
+      "failed": 2
+    },
+    "after_missing_weights": {
+      "exit_code": 0,
+      "passed": 13,
+      "skipped": 2
+    },
+    "simulated_no_torch": {
+      "exit_code": 5,
+      "skipped_modules": 2,
+      "not_an_independent_environment": true
+    }
+  },
+  "initial_followup_hook": "Unused E402 suppressions were removed by Ruff hook before committing; the first hook attempt did not commit."
+}

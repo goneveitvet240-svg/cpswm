@@ -1,0 +1,478 @@
+﻿2026-09-29T15:50:30.2481535Z Current runner version: '2.337.0'
+2026-09-29T15:50:30.2517970Z ##[group]Runner Image Provisioner
+2026-09-29T15:50:30.2519301Z Hosted Compute Agent
+2026-09-29T15:50:30.2520405Z Version: 20260828.587
+2026-09-29T15:50:30.2521640Z Commit: abac92662cab4cc7352de4f9f9d2e2419aad9c29
+2026-09-29T15:50:30.2523434Z Build Date: 2026-08-28T16:44:25Z
+2026-09-29T15:50:30.2524751Z Worker ID: {d6892577-8d4b-4b00-8f62-2c1d704b2d58}
+2026-09-29T15:50:30.2525990Z Azure Region: eastus2
+2026-09-29T15:50:30.2527068Z ##[endgroup]
+2026-09-29T15:50:30.2529464Z ##[group]Operating System
+2026-09-29T15:50:30.2530517Z Ubuntu
+2026-09-29T15:50:30.2531488Z 24.04.5
+2026-09-29T15:50:30.2532267Z LTS
+2026-09-29T15:50:30.2533474Z ##[endgroup]
+2026-09-29T15:50:30.2534468Z ##[group]Runner Image
+2026-09-29T15:50:30.2535560Z Image: ubuntu-24.04
+2026-09-29T15:50:30.2536464Z Version: 20260920.314.1
+2026-09-29T15:50:30.2538593Z Included Software: https://github.com/actions/runner-images/blob/ubuntu24/20260920.314/images/ubuntu/Ubuntu2404-Readme.md
+2026-09-29T15:50:30.2541250Z Image Release: https://github.com/actions/runner-images/releases/tag/ubuntu24%2F20260920.314
+2026-09-29T15:50:30.2543003Z ##[endgroup]
+2026-09-29T15:50:30.2545253Z ##[group]GITHUB_TOKEN Permissions
+2026-09-29T15:50:30.2548146Z Contents: read
+2026-09-29T15:50:30.2549071Z Metadata: read
+2026-09-29T15:50:30.2549953Z Packages: read
+2026-09-29T15:50:30.2551018Z ##[endgroup]
+2026-09-29T15:50:30.2554226Z Secret source: Actions
+2026-09-29T15:50:30.2555816Z Cache mode: write
+2026-09-29T15:50:30.2556854Z Prepare workflow directory
+2026-09-29T15:50:30.3020241Z Prepare all required actions
+2026-09-29T15:50:30.3090559Z Getting action download info
+2026-09-29T15:50:30.5397805Z Download action repository 'actions/checkout@v4' (SHA:11d5960a326750d5838078e36cf38b85af677262)
+2026-09-29T15:50:30.6676963Z Download action repository 'astral-sh/setup-uv@v5' (SHA:d4b2f3b6ecc6e67c4457f6d3e41ec42d3d0fcb86)
+2026-09-29T15:50:31.0359592Z Complete job name: static-quality
+2026-09-29T15:50:31.1135320Z ##[group]Run actions/checkout@v4
+2026-09-29T15:50:31.1136698Z with:
+2026-09-29T15:50:31.1137420Z   repository: goneveitvet240-svg/cpswm
+2026-09-29T15:50:31.1142076Z   token: ***
+2026-09-29T15:50:31.1142532Z   ssh-strict: true
+2026-09-29T15:50:31.1142987Z   ssh-user: git
+2026-09-29T15:50:31.1143653Z   persist-credentials: true
+2026-09-29T15:50:31.1144166Z   clean: true
+2026-09-29T15:50:31.1144627Z   sparse-checkout-cone-mode: true
+2026-09-29T15:50:31.1145164Z   fetch-depth: 1
+2026-09-29T15:50:31.1145618Z   fetch-tags: false
+2026-09-29T15:50:31.1146080Z   show-progress: true
+2026-09-29T15:50:31.1146572Z   lfs: false
+2026-09-29T15:50:31.1147005Z   submodules: false
+2026-09-29T15:50:31.1147471Z   set-safe-directory: true
+2026-09-29T15:50:31.1147983Z   allow-unsafe-pr-checkout: false
+2026-09-29T15:50:31.1148804Z ##[endgroup]
+2026-09-29T15:50:31.2158819Z Syncing repository: goneveitvet240-svg/cpswm
+2026-09-29T15:50:31.2161433Z ##[group]Getting Git version info
+2026-09-29T15:50:31.2162494Z Working directory is '/home/runner/work/cpswm/cpswm'
+2026-09-29T15:50:31.2199586Z [command]/usr/bin/git version
+2026-09-29T15:50:31.2328421Z git version 2.55.0
+2026-09-29T15:50:31.2362844Z ##[endgroup]
+2026-09-29T15:50:31.2371118Z Temporarily overriding HOME='/home/runner/work/_temp/1f5f2b6a-0d04-494d-9164-0ede5d142708' before making global git config changes
+2026-09-29T15:50:31.2373806Z Adding repository directory to the temporary git global config as a safe directory
+2026-09-29T15:50:31.2376321Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/cpswm/cpswm
+2026-09-29T15:50:31.2441026Z Deleting the contents of '/home/runner/work/cpswm/cpswm'
+2026-09-29T15:50:31.2447479Z ##[group]Initializing the repository
+2026-09-29T15:50:31.2452259Z [command]/usr/bin/git init /home/runner/work/cpswm/cpswm
+2026-09-29T15:50:31.2560410Z hint: Using 'master' as the name for the initial branch. This default branch name
+2026-09-29T15:50:31.2562442Z hint: will change to "main" in Git 3.0. To configure the initial branch name
+2026-09-29T15:50:31.2564868Z hint: to use in all of your new repositories, which will suppress this warning,
+2026-09-29T15:50:31.2566442Z hint: call:
+2026-09-29T15:50:31.2568668Z hint:
+2026-09-29T15:50:31.2569904Z hint: 	git config --global init.defaultBranch <name>
+2026-09-29T15:50:31.2571449Z hint:
+2026-09-29T15:50:31.2572779Z hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+2026-09-29T15:50:31.2575009Z hint: 'development'. The just-created branch can be renamed via this command:
+2026-09-29T15:50:31.2576461Z hint:
+2026-09-29T15:50:31.2577583Z hint: 	git branch -m <name>
+2026-09-29T15:50:31.2578738Z hint:
+2026-09-29T15:50:31.2580141Z hint: Disable this message with "git config set advice.defaultBranchName false"
+2026-09-29T15:50:31.2582257Z Initialized empty Git repository in /home/runner/work/cpswm/cpswm/.git/
+2026-09-29T15:50:31.2585957Z [command]/usr/bin/git remote add origin https://github.com/goneveitvet240-svg/cpswm
+2026-09-29T15:50:31.2637298Z ##[endgroup]
+2026-09-29T15:50:31.2638825Z ##[group]Disabling automatic garbage collection
+2026-09-29T15:50:31.2642020Z [command]/usr/bin/git config --local gc.auto 0
+2026-09-29T15:50:31.2695711Z ##[endgroup]
+2026-09-29T15:50:31.2697097Z ##[group]Setting up auth
+2026-09-29T15:50:31.2698432Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-09-29T15:50:31.2723902Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-09-29T15:50:31.3173126Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-09-29T15:50:31.3235628Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-09-29T15:50:31.3502694Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-09-29T15:50:31.3540635Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-09-29T15:50:31.3782655Z [command]/usr/bin/git config --local http.https://github.com/.extraheader AUTHORIZATION: basic ***
+2026-09-29T15:50:31.3825488Z ##[endgroup]
+2026-09-29T15:50:31.3827833Z ##[group]Fetching the repository
+2026-09-29T15:50:31.3836785Z [command]/usr/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin +ced2fc1d0efaf0257d8d1e935cd46ba5e2d7815f:refs/remotes/pull/61/merge
+2026-09-29T15:50:42.9344751Z From https://github.com/goneveitvet240-svg/cpswm
+2026-09-29T15:50:42.9347238Z  * [new ref]         ced2fc1d0efaf0257d8d1e935cd46ba5e2d7815f -> pull/61/merge
+2026-09-29T15:50:42.9351577Z ##[endgroup]
+2026-09-29T15:50:42.9353412Z ##[group]Determining the checkout info
+2026-09-29T15:50:42.9355369Z ##[endgroup]
+2026-09-29T15:50:42.9357475Z [command]/usr/bin/git sparse-checkout disable
+2026-09-29T15:50:42.9447256Z [command]/usr/bin/git config --local --unset-all extensions.worktreeConfig
+2026-09-29T15:50:42.9481844Z ##[group]Checking out the ref
+2026-09-29T15:50:42.9484921Z [command]/usr/bin/git checkout --progress --force refs/remotes/pull/61/merge
+2026-09-29T15:50:43.9842525Z Updating files:  11% (923/8365)
+2026-09-29T15:50:44.0003109Z Updating files:  12% (1004/8365)
+2026-09-29T15:50:44.0153589Z Updating files:  13% (1088/8365)
+2026-09-29T15:50:44.0217846Z Updating files:  14% (1172/8365)
+2026-09-29T15:50:44.0286505Z Updating files:  15% (1255/8365)
+2026-09-29T15:50:44.1975220Z Updating files:  16% (1339/8365)
+2026-09-29T15:50:44.3697487Z Updating files:  17% (1423/8365)
+2026-09-29T15:50:44.3819060Z Updating files:  18% (1506/8365)
+2026-09-29T15:50:44.3885930Z Updating files:  19% (1590/8365)
+2026-09-29T15:50:44.3947584Z Updating files:  20% (1673/8365)
+2026-09-29T15:50:44.4018724Z Updating files:  21% (1757/8365)
+2026-09-29T15:50:44.4074213Z Updating files:  22% (1841/8365)
+2026-09-29T15:50:44.4136533Z Updating files:  23% (1924/8365)
+2026-09-29T15:50:44.5441499Z Updating files:  24% (2008/8365)
+2026-09-29T15:50:44.5497197Z Updating files:  25% (2092/8365)
+2026-09-29T15:50:44.5866209Z Updating files:  26% (2175/8365)
+2026-09-29T15:50:44.6009344Z Updating files:  27% (2259/8365)
+2026-09-29T15:50:44.6121411Z Updating files:  28% (2343/8365)
+2026-09-29T15:50:44.6303382Z Updating files:  29% (2426/8365)
+2026-09-29T15:50:44.6352917Z Updating files:  30% (2510/8365)
+2026-09-29T15:50:44.7264521Z Updating files:  31% (2594/8365)
+2026-09-29T15:50:44.7419847Z Updating files:  32% (2677/8365)
+2026-09-29T15:50:44.8412975Z Updating files:  33% (2761/8365)
+2026-09-29T15:50:44.8632508Z Updating files:  34% (2845/8365)
+2026-09-29T15:50:44.8722955Z Updating files:  35% (2928/8365)
+2026-09-29T15:50:44.8800715Z Updating files:  36% (3012/8365)
+2026-09-29T15:50:44.8848533Z Updating files:  37% (3096/8365)
+2026-09-29T15:50:44.8897583Z Updating files:  38% (3179/8365)
+2026-09-29T15:50:44.8996563Z Updating files:  39% (3263/8365)
+2026-09-29T15:50:44.9092754Z Updating files:  40% (3346/8365)
+2026-09-29T15:50:44.9147098Z Updating files:  41% (3430/8365)
+2026-09-29T15:50:44.9289783Z Updating files:  42% (3514/8365)
+2026-09-29T15:50:44.9347169Z Updating files:  43% (3597/8365)
+2026-09-29T15:50:44.9405700Z Updating files:  44% (3681/8365)
+2026-09-29T15:50:44.9517065Z Updating files:  45% (3765/8365)
+2026-09-29T15:50:44.9572108Z Updating files:  46% (3848/8365)
+2026-09-29T15:50:44.9606661Z Updating files:  47% (3932/8365)
+2026-09-29T15:50:44.9650956Z Updating files:  47% (3976/8365)
+2026-09-29T15:50:44.9805704Z Updating files:  48% (4016/8365)
+2026-09-29T15:50:44.9886841Z Updating files:  49% (4099/8365)
+2026-09-29T15:50:44.9979496Z Updating files:  50% (4183/8365)
+2026-09-29T15:50:45.0054905Z Updating files:  51% (4267/8365)
+2026-09-29T15:50:45.0099555Z Updating files:  52% (4350/8365)
+2026-09-29T15:50:45.0129485Z Updating files:  53% (4434/8365)
+2026-09-29T15:50:45.0169974Z Updating files:  54% (4518/8365)
+2026-09-29T15:50:45.0216221Z Updating files:  55% (4601/8365)
+2026-09-29T15:50:45.0260166Z Updating files:  56% (4685/8365)
+2026-09-29T15:50:45.0292312Z Updating files:  57% (4769/8365)
+2026-09-29T15:50:45.0320951Z Updating files:  58% (4852/8365)
+2026-09-29T15:50:45.0352419Z Updating files:  59% (4936/8365)
+2026-09-29T15:50:45.0380960Z Updating files:  60% (5019/8365)
+2026-09-29T15:50:45.0409265Z Updating files:  61% (5103/8365)
+2026-09-29T15:50:45.0438807Z Updating files:  62% (5187/8365)
+2026-09-29T15:50:45.0467533Z Updating files:  63% (5270/8365)
+2026-09-29T15:50:45.0497393Z Updating files:  64% (5354/8365)
+2026-09-29T15:50:45.0525555Z Updating files:  65% (5438/8365)
+2026-09-29T15:50:45.0553767Z Updating files:  66% (5521/8365)
+2026-09-29T15:50:45.0607837Z Updating files:  67% (5605/8365)
+2026-09-29T15:50:45.0704464Z Updating files:  68% (5689/8365)
+2026-09-29T15:50:45.0808469Z Updating files:  69% (5772/8365)
+2026-09-29T15:50:45.0946271Z Updating files:  70% (5856/8365)
+2026-09-29T15:50:45.1342872Z Updating files:  71% (5940/8365)
+2026-09-29T15:50:45.1669663Z Updating files:  72% (6023/8365)
+2026-09-29T15:50:45.2160793Z Updating files:  73% (6107/8365)
+2026-09-29T15:50:45.2449455Z Updating files:  74% (6191/8365)
+2026-09-29T15:50:45.2977427Z Updating files:  75% (6274/8365)
+2026-09-29T15:50:45.3253851Z Updating files:  76% (6358/8365)
+2026-09-29T15:50:45.3400952Z Updating files:  77% (6442/8365)
+2026-09-29T15:50:45.3457606Z Updating files:  78% (6525/8365)
+2026-09-29T15:50:45.3510457Z Updating files:  79% (6609/8365)
+2026-09-29T15:50:45.4860739Z Updating files:  80% (6692/8365)
+2026-09-29T15:50:45.4911539Z Updating files:  81% (6776/8365)
+2026-09-29T15:50:45.4962422Z Updating files:  82% (6860/8365)
+2026-09-29T15:50:45.5018112Z Updating files:  83% (6943/8365)
+2026-09-29T15:50:45.5469157Z Updating files:  84% (7027/8365)
+2026-09-29T15:50:45.5533058Z Updating files:  85% (7111/8365)
+2026-09-29T15:50:45.5670004Z Updating files:  86% (7194/8365)
+2026-09-29T15:50:45.5711604Z Updating files:  87% (7278/8365)
+2026-09-29T15:50:45.5780490Z Updating files:  88% (7362/8365)
+2026-09-29T15:50:45.5855330Z Updating files:  89% (7445/8365)
+2026-09-29T15:50:45.5913854Z Updating files:  90% (7529/8365)
+2026-09-29T15:50:45.6003934Z Updating files:  91% (7613/8365)
+2026-09-29T15:50:45.6134167Z Updating files:  92% (7696/8365)
+2026-09-29T15:50:45.6232362Z Updating files:  93% (7780/8365)
+2026-09-29T15:50:45.6291841Z Updating files:  94% (7864/8365)
+2026-09-29T15:50:45.6352370Z Updating files:  95% (7947/8365)
+2026-09-29T15:50:45.6411279Z Updating files:  96% (8031/8365)
+2026-09-29T15:50:45.6483568Z Updating files:  97% (8115/8365)
+2026-09-29T15:50:45.6547054Z Updating files:  98% (8198/8365)
+2026-09-29T15:50:45.6643009Z Updating files:  99% (8282/8365)
+2026-09-29T15:50:45.6643731Z Updating files: 100% (8365/8365)
+2026-09-29T15:50:45.6644258Z Updating files: 100% (8365/8365), done.
+2026-09-29T15:50:45.8029751Z Note: switching to 'refs/remotes/pull/61/merge'.
+2026-09-29T15:50:45.8030893Z 
+2026-09-29T15:50:45.8031581Z You are in 'detached HEAD' state. You can look around, make experimental
+2026-09-29T15:50:45.8032942Z changes and commit them, and you can discard any commits you make in this
+2026-09-29T15:50:45.8034328Z state without impacting any branches by switching back to a branch.
+2026-09-29T15:50:45.8034757Z 
+2026-09-29T15:50:45.8035017Z If you want to create a new branch to retain commits you create, you may
+2026-09-29T15:50:45.8035664Z do so (now or later) by using -c with the switch command. Example:
+2026-09-29T15:50:45.8036075Z 
+2026-09-29T15:50:45.8036275Z   git switch -c <new-branch-name>
+2026-09-29T15:50:45.8036545Z 
+2026-09-29T15:50:45.8036722Z Or undo this operation with:
+2026-09-29T15:50:45.8036937Z 
+2026-09-29T15:50:45.8037130Z   git switch -
+2026-09-29T15:50:45.8037316Z 
+2026-09-29T15:50:45.8037631Z Turn off this advice by setting config variable advice.detachedHead to false
+2026-09-29T15:50:45.8038067Z 
+2026-09-29T15:50:45.8038814Z HEAD is now at ced2fc1 Merge 14f5709a5fd5cf3adc474a528f09e22e0ff23058 into 00cc5a47cad988b453d5839b63fd7c6a89f4246d
+2026-09-29T15:50:45.8132585Z ##[endgroup]
+2026-09-29T15:50:45.8186039Z [command]/usr/bin/git log -1 --format=%H
+2026-09-29T15:50:45.8258868Z ced2fc1d0efaf0257d8d1e935cd46ba5e2d7815f
+2026-09-29T15:50:45.8482864Z ##[group]Run astral-sh/setup-uv@v5
+2026-09-29T15:50:45.8483468Z with:
+2026-09-29T15:50:45.8483707Z   python-version: 3.13
+2026-09-29T15:50:45.8483964Z   enable-cache: true
+2026-09-29T15:50:45.8486927Z   github-token: ***
+2026-09-29T15:50:45.8487269Z   cache-dependency-glob: **/uv.lock
+**/requirements*.txt
+
+2026-09-29T15:50:45.8487667Z   prune-cache: true
+2026-09-29T15:50:45.8487913Z   ignore-nothing-to-cache: false
+2026-09-29T15:50:45.8488213Z   ignore-empty-workdir: false
+2026-09-29T15:50:45.8488494Z ##[endgroup]
+2026-09-29T15:50:46.0277588Z (node:2191) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+2026-09-29T15:50:46.0278898Z (Use `node --trace-deprecation ...` to show where the warning was created)
+2026-09-29T15:50:46.2636247Z Downloading uv from "https://github.com/astral-sh/uv/releases/download/0.12.20/uv-x86_64-unknown-linux-gnu.tar.gz" ...
+2026-09-29T15:50:46.5661441Z [command]/usr/bin/tar xz --warning=no-unknown-keyword --overwrite -C /home/runner/work/_temp/062988ce-cd24-4db2-bb23-36fb80227b0c -f /home/runner/work/_temp/d0723eee-9fdc-41a8-a943-61f6120aa43f
+2026-09-29T15:50:46.9694946Z Added /home/runner/.local/bin to the path
+2026-09-29T15:50:46.9699444Z Added /opt/hostedtoolcache/uv/0.12.20/x86_64 to the path
+2026-09-29T15:50:46.9700317Z Set UV_PYTHON to 3.13
+2026-09-29T15:50:46.9700906Z Activating python venv...
+2026-09-29T15:50:48.2145545Z Set UV_CACHE_DIR to /home/runner/work/_temp/setup-uv-cache
+2026-09-29T15:50:48.2145990Z Successfully installed uv version 0.12.20
+2026-09-29T15:50:48.2146423Z Searching files using cache dependency glob: **/uv.lock,**/requirements*.txt
+2026-09-29T15:50:49.0139005Z /home/runner/work/cpswm/cpswm/uv.lock
+2026-09-29T15:50:49.0178448Z Found 1 files to hash.
+2026-09-29T15:50:49.0244469Z Trying to restore uv cache from GitHub Actions cache with key: setup-uv-1-x86_64-unknown-linux-gnu-3.13-2ca490cfdbd82a2b5d2f4d7f7811964d4521f9dcd1edf6869894dbadcfd6e844
+2026-09-29T15:50:49.1094763Z No GitHub Actions cache found for key: setup-uv-1-x86_64-unknown-linux-gnu-3.13-2ca490cfdbd82a2b5d2f4d7f7811964d4521f9dcd1edf6869894dbadcfd6e844
+2026-09-29T15:50:49.1256340Z ##[group]Run uv sync --extra dev
+2026-09-29T15:50:49.1256692Z [36;1muv sync --extra dev[0m
+2026-09-29T15:50:49.1565213Z shell: /usr/bin/bash -e {0}
+2026-09-29T15:50:49.1565533Z env:
+2026-09-29T15:50:49.1565763Z   UV_PYTHON: 3.13
+2026-09-29T15:50:49.1566053Z   VIRTUAL_ENV: /home/runner/work/cpswm/cpswm/.venv
+2026-09-29T15:50:49.1566465Z   UV_CACHE_DIR: /home/runner/work/_temp/setup-uv-cache
+2026-09-29T15:50:49.1566808Z ##[endgroup]
+2026-09-29T15:50:49.3233430Z Resolved 214 packages in 1ms
+2026-09-29T15:50:49.3424477Z    Building cpswm @ file:///home/runner/work/cpswm/cpswm
+2026-09-29T15:50:49.4308447Z Downloading pygments (1.2MiB)
+2026-09-29T15:50:49.4311815Z Downloading scikit-learn (8.7MiB)
+2026-09-29T15:50:49.4312935Z Downloading hypothesis (1.1MiB)
+2026-09-29T15:50:49.4317673Z Downloading mypy (14.5MiB)
+2026-09-29T15:50:49.4329658Z Downloading pillow (6.6MiB)
+2026-09-29T15:50:49.4332871Z Downloading matplotlib (9.6MiB)
+2026-09-29T15:50:49.4336559Z Downloading fonttools (4.7MiB)
+2026-09-29T15:50:49.4339749Z Downloading pydantic-core (2.0MiB)
+2026-09-29T15:50:49.4341464Z Downloading ruff (10.5MiB)
+2026-09-29T15:50:49.4343450Z Downloading cryptography (4.5MiB)
+2026-09-29T15:50:49.4353840Z Downloading scipy (33.6MiB)
+2026-09-29T15:50:49.4355274Z Downloading ast-serialize (1.2MiB)
+2026-09-29T15:50:49.4358191Z Downloading networkx (2.0MiB)
+2026-09-29T15:50:49.4360793Z Downloading kiwisolver (1.4MiB)
+2026-09-29T15:50:49.4363498Z Downloading virtualenv (5.1MiB)
+2026-09-29T15:50:49.4366362Z Downloading numpy (15.9MiB)
+2026-09-29T15:50:49.5874156Z    Building antlr4-python3-runtime==4.9.3
+2026-09-29T15:50:50.0869677Z  Downloaded ast-serialize
+2026-09-29T15:50:50.0873838Z  Downloaded hypothesis
+2026-09-29T15:50:50.1003107Z  Downloaded kiwisolver
+2026-09-29T15:50:50.1094466Z  Downloaded pygments
+2026-09-29T15:50:50.1687524Z  Downloaded pydantic-core
+2026-09-29T15:50:50.1804668Z  Downloaded networkx
+2026-09-29T15:50:50.5085054Z  Downloaded virtualenv
+2026-09-29T15:50:50.5234209Z  Downloaded cryptography
+2026-09-29T15:50:50.5744267Z  Downloaded fonttools
+2026-09-29T15:50:50.6647805Z  Downloaded pillow
+2026-09-29T15:50:50.7807904Z  Downloaded ruff
+2026-09-29T15:50:50.8294309Z  Downloaded scikit-learn
+2026-09-29T15:50:50.8524564Z  Downloaded matplotlib
+2026-09-29T15:50:50.9476183Z  Downloaded numpy
+2026-09-29T15:50:50.9829491Z  Downloaded mypy
+2026-09-29T15:50:51.0905027Z  Downloaded scipy
+2026-09-29T15:50:51.7796191Z       Built antlr4-python3-runtime==4.9.3
+2026-09-29T15:50:51.8931388Z       Built cpswm @ file:///home/runner/work/cpswm/cpswm
+2026-09-29T15:50:51.8941288Z Prepared 55 packages in 2.56s
+2026-09-29T15:50:51.9719392Z Installed 55 packages in 77ms
+2026-09-29T15:50:51.9719978Z  + annotated-types==0.8.0
+2026-09-29T15:50:51.9720421Z  + antlr4-python3-runtime==4.9.3
+2026-09-29T15:50:51.9720879Z  + ast-serialize==0.8.0
+2026-09-29T15:50:51.9721268Z  + cffi==2.1.1
+2026-09-29T15:50:51.9721599Z  + cfgv==3.5.0
+2026-09-29T15:50:51.9721946Z  + contourpy==1.3.3
+2026-09-29T15:50:51.9722309Z  + coverage==7.15.4
+2026-09-29T15:50:51.9722770Z  + cpswm==0.1.0 (from file:///home/runner/work/cpswm/cpswm)
+2026-09-29T15:50:51.9723550Z  + cryptography==47.0.0
+2026-09-29T15:50:51.9729845Z  + cycler==0.12.1
+2026-09-29T15:50:51.9730348Z  + distlib==0.4.3
+2026-09-29T15:50:51.9730802Z  + execnet==2.1.2
+2026-09-29T15:50:51.9731208Z  + filelock==3.32.3
+2026-09-29T15:50:51.9731625Z  + fonttools==4.63.0
+2026-09-29T15:50:51.9732115Z  + hydra-core==1.3.5
+2026-09-29T15:50:51.9732563Z  + hypothesis==6.165.10
+2026-09-29T15:50:51.9733043Z  + identify==2.6.19
+2026-09-29T15:50:51.9733664Z  + iniconfig==2.3.0
+2026-09-29T15:50:51.9734103Z  + joblib==1.5.3
+2026-09-29T15:50:51.9734768Z  + kiwisolver==1.5.0
+2026-09-29T15:50:51.9735684Z  + librt==0.15.0
+2026-09-29T15:50:51.9736068Z  + matplotlib==3.11.1
+2026-09-29T15:50:51.9736512Z  + mypy==2.3.1
+2026-09-29T15:50:51.9736968Z  + mypy-extensions==1.1.0
+2026-09-29T15:50:51.9737420Z  + narwhals==2.24.0
+2026-09-29T15:50:51.9737862Z  + networkx==3.6.1
+2026-09-29T15:50:51.9738521Z  + nodeenv==1.10.0
+2026-09-29T15:50:51.9738988Z  + numpy==2.5.2
+2026-09-29T15:50:51.9739409Z  + omegaconf==2.3.1
+2026-09-29T15:50:51.9739866Z  + packaging==26.3
+2026-09-29T15:50:51.9740276Z  + pathspec==1.1.1
+2026-09-29T15:50:51.9740675Z  + pillow==12.3.0
+2026-09-29T15:50:51.9741082Z  + platformdirs==4.11.3
+2026-09-29T15:50:51.9741560Z  + pluggy==1.6.0
+2026-09-29T15:50:51.9741962Z  + pre-commit==4.6.2
+2026-09-29T15:50:51.9742393Z  + pycparser==3.0
+2026-09-29T15:50:51.9742795Z  + pydantic==2.13.4
+2026-09-29T15:50:51.9743423Z  + pydantic-core==2.46.4
+2026-09-29T15:50:51.9743890Z  + pygments==2.20.0
+2026-09-29T15:50:51.9744308Z  + pyparsing==3.3.2
+2026-09-29T15:50:51.9744704Z  + pytest==9.1.1
+2026-09-29T15:50:51.9745110Z  + pytest-cov==7.1.0
+2026-09-29T15:50:51.9745535Z  + pytest-xdist==3.8.0
+2026-09-29T15:50:51.9746033Z  + python-dateutil==2.9.0.post0
+2026-09-29T15:50:51.9746564Z  + python-discovery==1.5.2
+2026-09-29T15:50:51.9747053Z  + pyyaml==6.0.3
+2026-09-29T15:50:51.9747448Z  + ruff==0.16.3
+2026-09-29T15:50:51.9747963Z  + scikit-learn==1.9.0
+2026-09-29T15:50:51.9748367Z  + scipy==1.18.0
+2026-09-29T15:50:51.9748712Z  + six==1.17.0
+2026-09-29T15:50:51.9749220Z  + sortedcontainers==2.4.0
+2026-09-29T15:50:51.9749650Z  + threadpoolctl==3.6.0
+2026-09-29T15:50:51.9750177Z  + typing-extensions==4.16.0
+2026-09-29T15:50:51.9750731Z  + typing-inspection==0.4.4
+2026-09-29T15:50:51.9751236Z  + virtualenv==21.7.4
+2026-09-29T15:50:51.9979759Z ##[group]Run uv run --extra dev ruff check src tests
+2026-09-29T15:50:51.9980202Z [36;1muv run --extra dev ruff check src tests[0m
+2026-09-29T15:50:52.0046389Z shell: /usr/bin/bash -e {0}
+2026-09-29T15:50:52.0046667Z env:
+2026-09-29T15:50:52.0046870Z   UV_PYTHON: 3.13
+2026-09-29T15:50:52.0047162Z   VIRTUAL_ENV: /home/runner/work/cpswm/cpswm/.venv
+2026-09-29T15:50:52.0047564Z   UV_CACHE_DIR: /home/runner/work/_temp/setup-uv-cache
+2026-09-29T15:50:52.0047906Z ##[endgroup]
+2026-09-29T15:50:52.2753738Z All checks passed!
+2026-09-29T15:50:52.2834304Z ##[group]Run uv run --extra dev ruff format --check src tests
+2026-09-29T15:50:52.2834842Z [36;1muv run --extra dev ruff format --check src tests[0m
+2026-09-29T15:50:52.2906427Z shell: /usr/bin/bash -e {0}
+2026-09-29T15:50:52.2906692Z env:
+2026-09-29T15:50:52.2906884Z   UV_PYTHON: 3.13
+2026-09-29T15:50:52.2907143Z   VIRTUAL_ENV: /home/runner/work/cpswm/cpswm/.venv
+2026-09-29T15:50:52.2907523Z   UV_CACHE_DIR: /home/runner/work/_temp/setup-uv-cache
+2026-09-29T15:50:52.2907841Z ##[endgroup]
+2026-09-29T15:50:52.5681803Z unformatted: File would be reformatted
+2026-09-29T15:50:52.5682650Z    --> tests/dual_pc_review/test_w3_five_boundaries_repair.py:88:34
+2026-09-29T15:50:52.5683616Z     |
+2026-09-29T15:50:52.5684198Z 87  |         "alpha": original.alpha if alpha is None else alpha,
+2026-09-29T15:50:52.5684966Z     -         "evidence_cluster_ids": (
+2026-09-29T15:50:52.5685710Z     -             original.evidence_cluster_ids if clusters is None else clusters
+2026-09-29T15:50:52.5686510Z     -         ),
+2026-09-29T15:50:52.5687285Z 88  +         "evidence_cluster_ids": (original.evidence_cluster_ids if clusters is None else clusters),
+2026-09-29T15:50:52.5688194Z 89  |     }
+2026-09-29T15:50:52.5688702Z --------------------------------------------------------------------------------
+2026-09-29T15:50:52.5689700Z 187 |     arguments = candidates(core)
+2026-09-29T15:50:52.5690243Z     -     original = arguments["statistics"][
+2026-09-29T15:50:52.5690981Z     -         arguments["receipts"][0].proposal.proposed_state.particle_id
+2026-09-29T15:50:52.5691598Z     -     ]
+2026-09-29T15:50:52.5692292Z 188 +     original = arguments["statistics"][arguments["receipts"][0].proposal.proposed_state.particle_id]
+2026-09-29T15:50:52.5693512Z 189 |     paired = tuple(zip(original.locations, original.alpha, strict=True))
+2026-09-29T15:50:52.5694585Z --------------------------------------------------------------------------------
+2026-09-29T15:50:52.5695201Z 349 |     bad = deepcopy(good)
+2026-09-29T15:50:52.5695644Z     -     statistic = bad["statistics"][
+2026-09-29T15:50:52.5696228Z     -         bad["receipts"][0].proposal.proposed_state.particle_id
+2026-09-29T15:50:52.5696798Z     -     ]
+2026-09-29T15:50:52.5697411Z 350 +     statistic = bad["statistics"][bad["receipts"][0].proposal.proposed_state.particle_id]
+2026-09-29T15:50:52.5698222Z 351 |     lineage = statistic.evidence_cluster_ids
+2026-09-29T15:50:52.5698863Z --------------------------------------------------------------------------------
+2026-09-29T15:50:52.5699700Z 367 |     # conditional-statistic digest and resealed the public particle state.
+2026-09-29T15:50:52.5700416Z     -     assert (
+2026-09-29T15:50:52.5700942Z     -         bad["receipts"][0].proposal.proposed_state.statistic_state_ref
+2026-09-29T15:50:52.5701553Z     -         == resealed.reference
+2026-09-29T15:50:52.5701833Z     -     )
+2026-09-29T15:50:52.5702258Z 368 +     assert bad["receipts"][0].proposal.proposed_state.statistic_state_ref == resealed.reference
+2026-09-29T15:50:52.5702760Z 369 |     _reject_without_effect_then_retry(
+2026-09-29T15:50:52.5703118Z --------------------------------------------------------------------------------
+2026-09-29T15:50:52.5703797Z 434 | )
+2026-09-29T15:50:52.5704071Z     - def test_receipt_statistic_input_closure_attacks_are_atomic(
+2026-09-29T15:50:52.5704425Z     -     fault: str, match: str
+2026-09-29T15:50:52.5704673Z     - ) -> None:
+2026-09-29T15:50:52.5705071Z 435 + def test_receipt_statistic_input_closure_attacks_are_atomic(fault: str, match: str) -> None:
+2026-09-29T15:50:52.5705573Z 436 |     core = old._legacy_history(1).system.core
+2026-09-29T15:50:52.5705949Z --------------------------------------------------------------------------------
+2026-09-29T15:50:52.5706315Z 447 |     bad = deepcopy(good)
+2026-09-29T15:50:52.5706578Z     -     particle_ids = tuple(
+2026-09-29T15:50:52.5706977Z     -         receipt.proposal.proposed_state.particle_id for receipt in bad["receipts"]
+2026-09-29T15:50:52.5707393Z     -     )
+2026-09-29T15:50:52.5708014Z 448 +     particle_ids = tuple(receipt.proposal.proposed_state.particle_id for receipt in bad["receipts"])
+2026-09-29T15:50:52.5708563Z 449 |     shared = bad["statistics"][particle_ids[0]]
+2026-09-29T15:50:52.5708865Z     |
+2026-09-29T15:50:52.5708968Z 
+2026-09-29T15:50:52.5709081Z unformatted: File would be reformatted
+2026-09-29T15:50:52.5709467Z    --> tests/test_structure_two_ciav_negative_observation_layers.py:213:33
+2026-09-29T15:50:52.5709888Z     |
+2026-09-29T15:50:52.5710172Z 212 |         transition = probe.transition_for(probe.observed_days()[0])
+2026-09-29T15:50:52.5710557Z     -         ciav = probe.ciav_input(
+2026-09-29T15:50:52.5710924Z     -             transition, outcome=CIAVOutcomeKind.DETECTED_DIFFERENT_LOCATION
+2026-09-29T15:50:52.5711302Z     -         )
+2026-09-29T15:50:52.5711694Z 213 +         ciav = probe.ciav_input(transition, outcome=CIAVOutcomeKind.DETECTED_DIFFERENT_LOCATION)
+2026-09-29T15:50:52.5712250Z 214 |         result, _ = probe.run_direct_p5(transition, ciav_input=ciav)
+2026-09-29T15:50:52.5712676Z --------------------------------------------------------------------------------
+2026-09-29T15:50:52.5713111Z 219 |         transition = probe.transition_for(probe.observed_days()[0])
+2026-09-29T15:50:52.5713883Z     -         ciav = probe.ciav_input(
+2026-09-29T15:50:52.5714262Z     -             transition, outcome=CIAVOutcomeKind.DETECTED_DIFFERENT_LOCATION
+2026-09-29T15:50:52.5714628Z     -         )
+2026-09-29T15:50:52.5715015Z 220 +         ciav = probe.ciav_input(transition, outcome=CIAVOutcomeKind.DETECTED_DIFFERENT_LOCATION)
+2026-09-29T15:50:52.5715497Z 221 |         deferred, _ = probe.run_adaptive(
+2026-09-29T15:50:52.5715864Z --------------------------------------------------------------------------------
+2026-09-29T15:50:52.5716371Z 225 |             debt_expiry_steps=1,
+2026-09-29T15:50:52.5716620Z     -         )
+2026-09-29T15:50:52.5716850Z     -         result, _ = probe.replay_debt(
+2026-09-29T15:50:52.5717310Z     -             deferred.debt_certificates[0].debt_id, ciav_input=ciav
+2026-09-29T15:50:52.5717637Z 226 |         )
+2026-09-29T15:50:52.5718006Z 227 +         result, _ = probe.replay_debt(deferred.debt_certificates[0].debt_id, ciav_input=ciav)
+2026-09-29T15:50:52.5718454Z 228 |         return probe, result
+2026-09-29T15:50:52.5718781Z --------------------------------------------------------------------------------
+2026-09-29T15:50:52.5719116Z 237 |     )
+2026-09-29T15:50:52.5719379Z     -     assert len(direct_probe.committed_revision_ids()) == len(
+2026-09-29T15:50:52.5719749Z     -         replay_probe.committed_revision_ids()
+2026-09-29T15:50:52.5720032Z     -     )
+2026-09-29T15:50:52.5720430Z 238 +     assert len(direct_probe.committed_revision_ids()) == len(replay_probe.committed_revision_ids())
+2026-09-29T15:50:52.5720952Z 239 |     for location in direct_probe.case.locations:
+2026-09-29T15:50:52.5721472Z 240 |         assert direct_probe.system.core.hybrid_alpha(location) == pytest.approx(
+2026-09-29T15:50:52.5721991Z 241 |             replay_probe.system.core.hybrid_alpha(location)
+2026-09-29T15:50:52.5722451Z 242 |         )
+2026-09-29T15:50:52.5722820Z     -     assert direct_probe.action_distribution_sha256() == (
+2026-09-29T15:50:52.5723580Z     -         replay_probe.action_distribution_sha256()
+2026-09-29T15:50:52.5724036Z     -     )
+2026-09-29T15:50:52.5724585Z 243 +     assert direct_probe.action_distribution_sha256() == (replay_probe.action_distribution_sha256())
+2026-09-29T15:50:52.5725055Z 244 |
+2026-09-29T15:50:52.5725322Z --------------------------------------------------------------------------------
+2026-09-29T15:50:52.5725765Z 265 |         object_instance_id=probe.system.core.object_instance_id,
+2026-09-29T15:50:52.5726128Z     -         actor_keys=tuple(
+2026-09-29T15:50:52.5726494Z     -             actor for actor in transition.actor_prior if actor != "unknown_actor"
+2026-09-29T15:50:52.5726885Z     -         ),
+2026-09-29T15:50:52.5727417Z 266 +         actor_keys=tuple(actor for actor in transition.actor_prior if actor != "unknown_actor"),
+2026-09-29T15:50:52.5727963Z 267 |         actor_prior=dict(result.primary_result.actor_posterior),
+2026-09-29T15:50:52.5728329Z 268 |         actor_likelihoods_by_outcome={
+2026-09-29T15:50:52.5728651Z     -             outcome: dict(values)
+2026-09-29T15:50:52.5729016Z     -             for outcome, values in ciav.actor_likelihoods_by_outcome.items()
+2026-09-29T15:50:52.5729778Z 269 +             outcome: dict(values) for outcome, values in ciav.actor_likelihoods_by_outcome.items()
+2026-09-29T15:50:52.5750571Z 270 |         },
+2026-09-29T15:50:52.5750928Z     |
+2026-09-29T15:50:52.5751144Z 
+2026-09-29T15:50:52.5751402Z 2 files would be reformatted, 742 files already formatted
+2026-09-29T15:50:52.5762493Z ##[error]Process completed with exit code 1.
+2026-09-29T15:50:52.6205997Z Post job cleanup.
+2026-09-29T15:50:52.7164864Z [command]/usr/bin/git version
+2026-09-29T15:50:52.7194930Z git version 2.55.0
+2026-09-29T15:50:52.7239071Z Temporarily overriding HOME='/home/runner/work/_temp/56770961-8c80-4714-bf84-c21f88a089fd' before making global git config changes
+2026-09-29T15:50:52.7240789Z Adding repository directory to the temporary git global config as a safe directory
+2026-09-29T15:50:52.7255807Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/cpswm/cpswm
+2026-09-29T15:50:52.7291900Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-09-29T15:50:52.7344522Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-09-29T15:50:52.7631891Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-09-29T15:50:52.7662361Z http.https://github.com/.extraheader
+2026-09-29T15:50:52.7673638Z [command]/usr/bin/git config --local --unset-all http.https://github.com/.extraheader
+2026-09-29T15:50:52.7708727Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-09-29T15:50:52.7977774Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-09-29T15:50:52.8020708Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-09-29T15:50:52.8424449Z Cleaning up orphan processes
+2026-09-29T15:50:52.8791427Z ##[warning]Node.js 20 is deprecated. The following actions target Node.js 20 but are being forced to run on Node.js 24: actions/checkout@v4, astral-sh/setup-uv@v5. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/

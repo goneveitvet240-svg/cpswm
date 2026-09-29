@@ -44,7 +44,7 @@ class HistoryCameraRecorder:
         return self.step(dict(action=action, **kwargs), identity)
 
 
-def main():
+def main(recorder_type=HistoryCameraRecorder):
     from ai2thor.controller import Controller
 
     parser = argparse.ArgumentParser(description=__doc__)
@@ -79,7 +79,7 @@ def main():
             o["objectId"] == target and o["objectType"] == "Apple" for o in initial["objects"]
         ):
             raise ValueError("history diagnostic target missing")
-        recorder = HistoryCameraRecorder(controller, private, target)
+        recorder = recorder_type(controller, private, target)
         recorder.prepare()
         print("CPSWM_RESPONSE " + json.dumps(dict(ready=True)), flush=True)
         for line in sys.stdin:

@@ -1,0 +1,103 @@
+[
+  {
+    "name": "round1",
+    "command": [
+      "/private/tmp/cpswm-pc-a-visual-history-20260929/.venv/bin/python",
+      "-m",
+      "pytest",
+      "-o",
+      "addopts=",
+      "-q",
+      "tests/test_history_visual_evidence.py",
+      "tests/test_history_detector_profile.py",
+      "tests/test_clarification_camera_model.py",
+      "tests/test_revised_camera_collection.py",
+      "tests/test_history_camera_worker.py",
+      "tests/test_continuous_camera_collection.py",
+      "--junitxml",
+      "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/visual-history-20260929/ci-followup/review02/round1.xml"
+    ],
+    "source_head": "ac93f8d489209943cbcff9292ab483330538854b",
+    "started_at": "2026-09-29T15:57:50.777837+00:00",
+    "seconds": 103.04040887532756,
+    "exit_code": 0,
+    "source_unchanged": true,
+    "tests": {
+      "tests": 33,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    }
+  },
+  {
+    "name": "round2",
+    "command": [
+      "/private/tmp/cpswm-pc-a-visual-history-20260929/.venv/bin/python",
+      "-m",
+      "pytest",
+      "-o",
+      "addopts=",
+      "-q",
+      "tests/test_instance_correspondence.py",
+      "tests/test_pixel_camera_detector_binding.py",
+      "tests/test_revised_camera_attacks.py",
+      "tests/test_history_reconstruction.py",
+      "tests/test_native_neural_recovery.py",
+      "tests/test_joint_camera_feedback_recovery.py",
+      "--junitxml",
+      "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/visual-history-20260929/ci-followup/review02/round2.xml"
+    ],
+    "source_head": "ac93f8d489209943cbcff9292ab483330538854b",
+    "started_at": "2026-09-29T15:59:33.986129+00:00",
+    "seconds": 256.30148070771247,
+    "exit_code": 0,
+    "source_unchanged": true,
+    "tests": {
+      "tests": 42,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    }
+  },
+  {
+    "name": "ruff",
+    "command": [
+      "/private/tmp/cpswm-pc-a-visual-history-20260929/.venv/bin/python",
+      "-m",
+      "ruff",
+      "check",
+      "tests/test_history_detector_profile.py",
+      "tests/test_history_visual_evidence.py",
+      "tools/history_visual_evidence.py",
+      "tools/run_history_action_loop.py",
+      "tools/unity_history_loop_worker.py",
+      "tools/unity_visual_history_worker.py"
+    ],
+    "source_head": "ac93f8d489209943cbcff9292ab483330538854b",
+    "started_at": "2026-09-29T16:03:50.727140+00:00",
+    "seconds": 0.08995062485337257,
+    "exit_code": 0,
+    "source_unchanged": true
+  },
+  {
+    "name": "ruff_format",
+    "command": [
+      "/private/tmp/cpswm-pc-a-visual-history-20260929/.venv/bin/python",
+      "-m",
+      "ruff",
+      "format",
+      "--check",
+      "tests/test_history_detector_profile.py",
+      "tests/test_history_visual_evidence.py",
+      "tools/history_visual_evidence.py",
+      "tools/run_history_action_loop.py",
+      "tools/unity_history_loop_worker.py",
+      "tools/unity_visual_history_worker.py"
+    ],
+    "source_head": "ac93f8d489209943cbcff9292ab483330538854b",
+    "started_at": "2026-09-29T16:03:50.998563+00:00",
+    "seconds": 0.04565474996343255,
+    "exit_code": 0,
+    "source_unchanged": true
+  }
+]

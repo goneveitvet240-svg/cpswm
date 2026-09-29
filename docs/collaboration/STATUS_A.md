@@ -1,3 +1,23 @@
+# A：视觉历史测试依赖修复及重审（2026-09-30）
+
+分支codex/pc-a-visual-history-20260929，base 00cc5a47cad988b453d5839b63fd7c6a89f4246d；测试修复源ac93f8d489209943cbcff9292ab483330538854b。仅两个测试隔离可选依赖/权重；真实权重下重新顺序33/42双审零跳过，局部Ruff通过。四条实际历史仍绑定00283c607a5fb49c293cefe8eafd65cc2192f558，原封存包不变；其他Python/依赖源码一致。见[补充命令与失败记录](../reviews/pc_a/visual_history_2026-09-29/CI_FOLLOWUP.md)。
+
+[草稿PR61](https://github.com/goneveitvet240-svg/cpswm/pull/61)继续交接，未合并。远端全仓静态检查的两个继承格式失败已复现并保留，全量测试未取得完成结果；B独立/统一验收未关闭。下一主项仍是自然观测支持的实例/位置候选密度及测量校准。以下为此前时点。
+
+# A：同历史视觉对照与瓶颈定位交付（2026-09-29）
+
+分支codex/pc-a-visual-history-20260929，base 00cc5a47cad988b453d5839b63fd7c6a89f4246d，实际功能源码00283c607a5fb49c293cefe8eafd65cc2192f558。顺序两轮A局部自审33/42通过、零跳过，Ruff/格式通过；后续精确枚举诊断3项通过。固定4条历史、11次实际观察及另进程4/4复算完成；4个完整归档副本攻击拒绝。SDK27/Unity166文件前后不变。
+
+6个目标可见帧：同图SSDLite目标框覆盖0/6、Faster4/6，但北Faster最终未决99.1422%并因预期收益不足停止，其余97.5440%。两个视角四种结果的代数穷举显示当前实际先验/假设模型最低未决81.7963%；候选密度仍由受控fixture给出，精确枚举q正确抵消，因此单换前端或多训练q不自动补齐自然推断。自然任务完成/收益尚未成立。
+
+完整原件326文件289,262,814字节，压缩31,019,073字节并逐文件读回验证；监督索引保留11观测/5份不同RGB/1房屋来源组，不当独立holdout。见[报告](../reviews/pc_a/visual_history_2026-09-29/REPORT.md)、[双审](../reviews/pc_a/visual_history_2026-09-29/REVIEWS.md)、[复现](../reviews/pc_a/visual_history_2026-09-29/REPRODUCE.md)、[下一实现单元](../reviews/pc_a/visual_history_2026-09-29/NEXT_STEP.md)。本机原件output/visual-history-20260929。旧神经归档绝对路径跨机定位、B独立/统一验收及既有全量CI仍未关闭；完整框架、原任务对照和已批准澄清任务保持。下一主项为公共自然观测支持的实例/位置候选密度及校准，不能用任意降未决或私有标签入策略造成功。
+
+交付前fetch核验集成19ddf26830348a2f0b33f0af54d6ba702c5cfb1c、父分支00cc5a47cad988b453d5839b63fd7c6a89f4246d、B fd4ca6ef5e81c90d7cf7987b42c0b2810d8a810a未变。已推送并通过[草稿PR61](https://github.com/goneveitvet240-svg/cpswm/pull/61)叠加父分支交接，未合并；以下为历史时点。
+
+# A：同历史视觉证据接线开工（2026-09-29）
+
+分支codex/pc-a-visual-history-20260929，base/当前源码00cc5a47cad988b453d5839b63fd7c6a89f4246d。延续已批准主动澄清任务，固定4条两前端×南北同历史，增加同原图完整实例评价，默认/正式配置和证据权限不改。冻结后顺序两轮局部自审再实际实验；现在未验收。见[计划](../reviews/pc_a/visual_history_2026-09-29/PLAN.md)，证据output/visual-history-20260929。远端集成19ddf26830348a2f0b33f0af54d6ba702c5cfb1c、B fd4ca6ef5e81c90d7cf7987b42c0b2810d8a810a未变，B未独立复核；复用本机环境。
+
 # A：同历史纠正—行动续接交付（2026-09-29）
 
 独立分支 `codex/pc-a-history-action-loop-20260929`，base `bf374f9331426cfa384f2ec23bf0bd0a098ba033`，实际功能源码 `c59b8c88d9d3cb1d03f9042909a58fd7378f7e03`。当前冻结源顺序两轮局部A自审18/24通过、零跳过；Ruff/check-format及两个生产模块mypy通过。命令/源码映射见下方报告及原件中attempt02/commands.json。

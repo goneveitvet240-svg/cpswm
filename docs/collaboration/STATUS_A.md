@@ -1,3 +1,7 @@
+# A：同历史视觉证据接线开工（2026-09-29）
+
+分支codex/pc-a-visual-history-20260929，base/当前源码00cc5a47cad988b453d5839b63fd7c6a89f4246d。延续已批准主动澄清任务，固定4条两前端×南北同历史，增加同原图完整实例评价，默认/正式配置和证据权限不改。冻结后顺序两轮局部自审再实际实验；现在未验收。见[计划](../reviews/pc_a/visual_history_2026-09-29/PLAN.md)，证据output/visual-history-20260929。远端集成19ddf26830348a2f0b33f0af54d6ba702c5cfb1c、B fd4ca6ef5e81c90d7cf7987b42c0b2810d8a810a未变，B未独立复核；复用本机环境。
+
 # A：同历史纠正—行动续接交付（2026-09-29）
 
 独立分支 `codex/pc-a-history-action-loop-20260929`，base `bf374f9331426cfa384f2ec23bf0bd0a098ba033`，实际功能源码 `c59b8c88d9d3cb1d03f9042909a58fd7378f7e03`。当前冻结源顺序两轮局部A自审18/24通过、零跳过；Ruff/check-format及两个生产模块mypy通过。命令/源码映射见下方报告及原件中attempt02/commands.json。

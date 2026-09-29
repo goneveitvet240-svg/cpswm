@@ -1,3 +1,7 @@
+# A：仿真操作与数据可靠性核验开工（2026-09-29）
+
+独立分支codex/pc-a-sim-method-audit-20260929，base/审计对象915d7614026ac2b90be5b7bc91bc2bbe5201595d，源码对应b1969f30b85434452f6b23ec53c93d84799ff62f。用户授权先核验可靠性，可靠后推进。先检查归档完整性、动作/几何、真值隔离、原图重算和分母；再核查同位姿重置/采集序列导致的图像变化。计划docs/reviews/pc_a/sim_reliability_2026-09-29/PLAN.md；持久工件output/sim-reliability-20260929。复用相同本机锁定Python依赖、显式PYTHONPATH加载本任务源码，不声称独立机器复现。B正式协议和独立验收不变，旧原件不覆盖。开工fetch成功，集成19ddf26830348a2f0b33f0af54d6ba702c5cfb1c与B fd4ca6ef5e81c90d7cf7987b42c0b2810d8a810a未变；本轮尚未验收。
+
 # A：五小时主线八轮交付，当前功能版双审完成（2026-09-29）
 
 分支`codex/pc-a-neural-native-loop-20260929`，base `2a0bbdf2e77e76b8e45d5f92211e820d337c3cf3`，最终实际功能代码 `b1969f30b85434452f6b23ec53c93d84799ff62f`；交付后续提交仅文档/证据。三主项依序已完成受控神经原生接入、实际相机反馈和开发比较，共八轮各自两轮顺序A自审。最终当前源码145/69交叉复核，214通过、0跳过，mypy377/Ruff通过。此前缺权重参数的5skip单独保留并完整重跑。具体命令、完整SHA和证据见[总报告](../reviews/pc_a/neural_native_loop_2026-09-29/REPORT.md)、[最终复核](../reviews/pc_a/neural_native_loop_2026-09-29/FINAL_INTEGRATION.md)。

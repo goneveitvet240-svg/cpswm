@@ -6,7 +6,7 @@
 
 真实归档副本完整重封装假几何、真实网络11源/22记录和全部原生锚点后，内部一致性通过，但保留原件使读出/恢复均拒绝。归档286文件254,979,377字节，压缩33,953,861字节、逐文件读回核验，SHA256 56c4dc23d09ad3dd12dcff9172695131b406514a54e13aae816608944ea76ac5。[报告](../reviews/pc_a/owned_visual_neural_2026-09-30/REPORT.md)、[双审](../reviews/pc_a/owned_visual_neural_2026-09-30/REVIEWS.md)、[复现](../reviews/pc_a/owned_visual_neural_2026-09-30/REPRODUCE.md)。本机原件output/owned-visual-neural-20260930。
 
-[离线仿真监督具体方案](../reviews/pc_a/owned_visual_neural_2026-09-30/CALIBRATION_DECISION.md)已提交用户科学权限选择，未答复前不训练/校准。继续推进绝对checkpoint路径的恢复缺口；自然目标密度、B独立、全仓CI和长期自然闭环仍未关闭。交付fetch核验集成19ddf26830348a2f0b33f0af54d6ba702c5cfb1c、父分支c1ae096f55c6487285a83a4aff5e08f743054df5、B fd4ca6ef5e81c90d7cf7987b42c0b2810d8a810a未变。以下为历史时点。
+[离线仿真监督具体方案](../reviews/pc_a/owned_visual_neural_2026-09-30/CALIBRATION_DECISION.md)已提交用户科学权限选择，未答复前不训练/校准。继续推进绝对checkpoint路径的恢复缺口；自然目标密度、B独立、全仓CI和长期自然闭环仍未关闭。交付fetch核验集成19ddf26830348a2f0b33f0af54d6ba702c5cfb1c、父分支c1ae096f55c6487285a83a4aff5e08f743054df5、B fd4ca6ef5e81c90d7cf7987b42c0b2810d8a810a未变。已推送并通过[草稿PR64](https://github.com/goneveitvet240-svg/cpswm/pull/64)叠加PR63交接，未合并。以下为历史时点。
 
 # A：视觉输入进入原生神经提议开工（2026-09-30）
 

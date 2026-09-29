@@ -359,7 +359,10 @@ def _tool_version(
     environment_overrides: Mapping[str, str] | None = None,
 ) -> dict[str, object]:
     identity = command_executable_identity(argv, repository_root=repository_root)
-    version_argv = (identity["resolved_executable"], *argv[1:])
+    # Resolving a venv Python symlink before execution discards pyvenv.cfg
+    # discovery and queries the base environment. Execute the same entry point
+    # as the audited command; retain the resolved file and its hash as identity.
+    version_argv = (identity["invocation_executable"], *argv[1:])
     environment = dict(os.environ)
     environment.update(environment_overrides or {})
     completed = subprocess.run(

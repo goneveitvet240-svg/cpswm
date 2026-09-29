@@ -1,0 +1,11 @@
+# 下一主项：自然联合候选密度
+
+本轮生产入口ContinuousEvidenceInput.visual_observation_support()提供动作拥有的完整检测框、图像位置、模型来源、原生代际和相同像素组。它是模型可消费的观测支持接口，当前NeuralNativeProducer/OpenWorldJointFixture仍未消费这些候选生成目标密度；不是已经替换受控先验。
+
+已存在ProposalPixelObservation.from_frame可承接此VisualFrame，但pixel_causal_readouts采用图像IoU基线，不能因转动相机后的框相近就确定同一世界实例。接线前须显式处理运动、遮挡和无对应，保留类别错误/未知实例；不把frame detection UUID写成全局对象ID。新输入加入提议q也不改变有限精确枚举下的目标密度。
+
+需要替换的实际接口是NativeJointProducer.produce返回的候选及ConditionalAnalyticState，而非只训练提议分数。逐项落实：公共观测到实例/位置假设；观测模型及未知支持的来源与独立开发/验证划分；与语义历史的兼容假设；后验、动作、自然纠正与长期恢复的同历史后果。
+
+现有公开RGB不能直接产生已校准公制位置/朝向。可继续用图像证据、多视角估计并传播不确定性，或另行引入明确授权的深度/相机自身位姿通道。具体新增传感器权限、几何/噪声先验及正式任务指标属于AGENTS第9条的用户科学决定；本轮未擅自指定，也未把私有实例掩膜/对象真值作为方法输入。
+
+完整统一范围、原分类对照与已批准的主动澄清任务保持；候选读出修复不能替代事件/人物身份/接触释放监督、自然长期写入或方法收益验证。

@@ -1,3 +1,7 @@
+# A：同历史纠正与实际行动续接开工（2026-09-29）
+
+用户要求回归完整闭环。分支 `codex/pc-a-history-action-loop-20260929`，base/开工源码 `bf374f9331426cfa384f2ec23bf0bd0a098ba033`。本轮连接合法长期源纠正、联合重算、SQLite恢复和同一Unity进程的后续行动；不继续扩大静态帧矩阵。计划见 [PLAN](../reviews/pc_a/history_action_loop_2026-09-29/PLAN.md)，持久原件 `output/history-action-loop-20260929/`。语义及反证仍受控、自然证据缺口明确保留，每轮冻结后顺序两轮对抗自审再实际运行，尚无验收结论。独立审核窗口F1/F3/F5已读，B协议不改，完整框架保留。开工远端核验集成19ddf26830348a2f0b33f0af54d6ba702c5cfb1c、B fd4ca6ef5e81c90d7cf7987b42c0b2810d8a810a 未变。
+
 # A：时序诊断完成，实例对应为下一主项（2026-09-29）
 
 `codex/pc-a-sim-timing-control-20260929`，base `e80ddab4f4f792a372c1410862b071f79aebdb64`，受测 `a981541fc15bd1e441051f9479dc96b17cdc2f44`。32/17 顺序双审、Ruff、第二批完整24格384帧及768次原图重新推理通过；首批23完成/1失败单列，不拼接、不报运行100%可靠。冻结有效但稳定误报/漏检仍在，且跨启动物理初始态不完全相同。见[完整报告](../reviews/pc_a/sim_timing_control_2026-09-29/REPORT.md)。

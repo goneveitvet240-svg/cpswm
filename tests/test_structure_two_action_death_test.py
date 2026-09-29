@@ -7,6 +7,8 @@ fair baselines, and the scientific-status gate that only grants
 
 from __future__ import annotations
 
+import sys
+from contextlib import contextmanager
 from itertools import permutations
 
 import pytest
@@ -19,7 +21,26 @@ from cpswm.system.evaluation_operations import (
 )
 
 
-def test_v02_calls_real_feedback_revision_loop_and_project_one_interface(monkeypatch):
+@contextmanager
+def _observe_calls(callbacks):
+    """Observe real calls without replacing provenance-checked implementations."""
+    by_code = {function.__code__: callback for function, callback in callbacks.items()}
+    previous = sys.getprofile()
+
+    def profile(frame, event, value):
+        if previous is not None:
+            previous(frame, event, value)
+        if event == "call" and frame.f_code in by_code:
+            by_code[frame.f_code](frame.f_locals)
+
+    try:
+        sys.setprofile(profile)
+        yield
+    finally:
+        sys.setprofile(previous)
+
+
+def test_v02_calls_real_feedback_revision_loop_and_project_one_interface():
     """The v0.2 full arm cannot regress to the stand-in owner write gate."""
     import cpswm.system.evaluation_operations.project_two_action_benchmark as module
     from cpswm.system.counterfactual_event_hypergraph import ProjectTwoFeedbackRevisionLoop
@@ -33,25 +54,27 @@ def test_v02_calls_real_feedback_revision_loop_and_project_one_interface(monkeyp
     original_ingest = ProjectTwoFeedbackRevisionLoop.ingest_feedback
     original_apply = module.apply_project_one_request
 
-    def ingest(self, **kwargs):
+    def ingest(arguments):
         calls["feedback"] += 1
-        return original_ingest(self, **kwargs)
+        assert isinstance(arguments["self"], ProjectTwoFeedbackRevisionLoop)
 
-    def apply(request, loop):
+    def apply(arguments):
         calls["project_one"] += 1
         # Project two can only submit a typed request; it receives no direct
         # access to the project's internal statistic dictionaries here.
         from cpswm.system.counterfactual_event_hypergraph import ProjectOneStatRequest
 
-        assert isinstance(request, ProjectOneStatRequest)
-        return original_apply(request, loop)
+        assert isinstance(arguments["request"], ProjectOneStatRequest)
 
-    monkeypatch.setattr(ProjectTwoFeedbackRevisionLoop, "ingest_feedback", ingest)
-    monkeypatch.setattr(module, "apply_project_one_request", apply)
     dataset = D0SyntheticOracleReplayAdapter(
         validation_seeds=(101,), test_seeds=(211,), max_steps_per_episode=8
     ).build()
-    report = ProjectTwoActionBenchmarkV02().run(dataset)
+    previous = sys.getprofile()
+    with _observe_calls({original_ingest: ingest, original_apply: apply}):
+        report = ProjectTwoActionBenchmarkV02().run(dataset)
+    assert sys.getprofile() is previous
+    assert ProjectTwoFeedbackRevisionLoop.ingest_feedback is original_ingest
+    assert module.apply_project_one_request is original_apply
     full = next(
         item for item in report.case_metrics if item.method is ProjectTwoActionMethod.PROJECT_TWO
     )
@@ -100,26 +123,30 @@ def test_v02_fairness_split_tuning_and_baseline_fidelity():
     assert not adapters[ProjectTwoActionMethod.DYNAMEM].qualifies_for_paper_superiority
 
 
-def test_v02_evaluator_truth_never_enters_method_input(monkeypatch):
+def test_v02_evaluator_truth_never_enters_method_input():
     from cpswm.system.evaluation_operations import (
         D0SyntheticOracleReplayAdapter,
         ProjectTwoActionBenchmarkV02,
     )
 
     original = ProjectTwoActionBenchmarkV02._method
+    observed = []
 
-    def guarded(self, episode, method, params):
+    def guarded(arguments):
+        episode = arguments["episode"]
         payload = episode.model_dump(mode="json")
         assert "true_actor" not in repr(payload)
         assert "true_location" not in repr(payload)
         assert not hasattr(episode, "truth_by_step")
-        return original(self, episode, method, params)
+        observed.append(episode.episode_id)
 
-    monkeypatch.setattr(ProjectTwoActionBenchmarkV02, "_method", guarded)
     dataset = D0SyntheticOracleReplayAdapter(
         validation_seeds=(101,), test_seeds=(211,), max_steps_per_episode=5
     ).build()
-    ProjectTwoActionBenchmarkV02().run(dataset)
+    with _observe_calls({original: guarded}):
+        ProjectTwoActionBenchmarkV02().run(dataset)
+    assert observed
+    assert ProjectTwoActionBenchmarkV02._method is original
 
 
 def test_corrected_report_is_byte_stable_with_a_fixed_dataset_seal() -> None:
@@ -140,7 +167,7 @@ def test_corrected_report_is_byte_stable_with_a_fixed_dataset_seal() -> None:
     assert render() == render()
 
 
-def test_v02_success_and_failure_feedback_both_flow_through_full_loop(monkeypatch):
+def test_v02_success_and_failure_feedback_both_flow_through_full_loop():
     from cpswm.contracts import RobotActionOutcome
     from cpswm.system.counterfactual_event_hypergraph import ProjectTwoFeedbackRevisionLoop
     from cpswm.system.evaluation_operations import (
@@ -151,18 +178,18 @@ def test_v02_success_and_failure_feedback_both_flow_through_full_loop(monkeypatc
     observed_success_probabilities = []
     original = ProjectTwoFeedbackRevisionLoop.ingest_feedback
 
-    def capture(self, **kwargs):
-        feedback = kwargs["feedback"]
+    def capture(arguments):
+        feedback = arguments["feedback"]
         observed_success_probabilities.append(
             feedback.outcome_distribution.get(RobotActionOutcome.SUCCESS, 0.0)
         )
-        return original(self, **kwargs)
 
-    monkeypatch.setattr(ProjectTwoFeedbackRevisionLoop, "ingest_feedback", capture)
     dataset = D0SyntheticOracleReplayAdapter(
         validation_seeds=(101,), test_seeds=(211,), max_steps_per_episode=8
     ).build()
-    ProjectTwoActionBenchmarkV02().run(dataset)
+    with _observe_calls({original: capture}):
+        ProjectTwoActionBenchmarkV02().run(dataset)
+    assert ProjectTwoFeedbackRevisionLoop.ingest_feedback is original
     assert any(value > 0.5 for value in observed_success_probabilities)
     assert any(value <= 0.5 for value in observed_success_probabilities)
 

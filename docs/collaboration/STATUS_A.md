@@ -1,3 +1,11 @@
+# A：同语义新观测的原件描述接口开发中（2026-10-01 05:26）
+
+独立分支 codex/pc-a-owned-rgbd-descriptor-20261001，base 82c7a81fba0c3af3688978ce222b1b94e4cc5bd9（901 Python）。父桥接轮已通过顺序R1/R2；当前真实bridge/bare run/fresh在父工作树继续，不动其源码/输入。本轮限 action_id→当前严格匹配Native origin/source的owner RGB-D描述，拒绝archive/direct-admit、stale和完整派生数据替换，不改变持久化格式、后验或相机执行行为。它不是完整raw更新事务或历史执行证明。
+
+证据 output/owned-rgbd-descriptor-20261001；作者开发后冻结，再两轮顺序对抗（含真实owner prepare/execute/accept受控正路径、完整错误数据、无副作用及fresh恢复）。未完成不计通过。完整原子后验更新设计仍在父NEXT_OBSERVATION_IMPLEMENTATION.md；正式科研定义/完整框架保持。原用户树和STATUS_B不改。父完成交付后合入其纯文档再冻结本轮功能SHA。
+
+---
+
 > 2026-10-01 04:39 更新：父轮已完成实际run/fresh、独立算术与全原件封存并推送，[草稿PR78](https://github.com/goneveitvet240-svg/cpswm/pull/78)。父交付df8e30b，实际功能仍1bd6c204d349024196c23df12cca61dbcea91e6c。当前分支正在完成桥接及裸seed的受控回归，尚未冻结双审或实数据运行。
 
 # A：真实归档位置模型 Native 桥接开工（2026-10-01 04:22）

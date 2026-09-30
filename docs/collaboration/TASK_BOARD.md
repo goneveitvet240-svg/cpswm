@@ -1,3 +1,9 @@
+# 2026-10-01 第二轮开工：公开位置读出与受控目标密度消费
+
+A分支codex/pc-a-soft-position-factor-20261001，base PR77 8623e7890594fce2b3c872bd2484b30138a9f408。[协议](../reviews/pc_a/soft_position_factor_2026-10-01/PLAN.md)。做soft/uniform读出、pivot/AABB双3D残差、正确Gaussian预测密度及后验/重放后果；不据验证改正式定义、不直接赋身份或自然权威。每轮仍两审后实数据运行，B边界不变。
+
+---
+
 # 2026-10-01 六小时主线：固定特征对照PR77已交付
 
 A分支codex/pc-a-affinity-controls-20261001，实际功能SHA a6c026963b5fec1503fa0d582fe016eccf60c756；两轮各447、真实run/fresh与独立算术通过，已推送[草稿PR77](https://github.com/goneveitvet240-svg/cpswm/pull/77)叠加PR76，文档/原件交付82bd0c4570279ed65f9f32384e9386686535297a，未合并。联合验证损失低于单组但负类仍高、失败屋保留，非身份或自然因子验收。[交付](../reviews/pc_a/affinity_controls_2026-10-01/DELIVERY.md)。下一主项公开软表面+双参考位置残差+受控目标权重后果，B边界不变。

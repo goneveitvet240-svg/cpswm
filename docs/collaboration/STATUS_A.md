@@ -1,3 +1,15 @@
+# A：软表面位置开发因子开工（2026-10-01）
+
+分支codex/pc-a-soft-position-factor-20261001，base/开工源码为PR77 head 8623e7890594fce2b3c872bd2484b30138a9f408。开工fetch成功：集成19ddf26830348a2f0b33f0af54d6ba702c5cfb1c、B fd4ca6ef5e81c90d7cf7987b42c0b2810d8a810a未变。旧包/用户工作树保留，STATUS_B不改。
+
+本轮固定所有公开8×8 seed：原combined软加权surface representative并列同网格uniform读出，不由mask选点、不阈值聚类、不赋world ID。离线唯一合格seed mask分别连接SDK pivot/AABB两参考；两估计器×两参考仅原train拟合3D bias/full covariance，rank不足拒绝不加epsilon。逐屋/对象帧/对象/seed分母完整记录，相关seed不算独立校准。
+
+接线重点是既有Gaussian家族的受控raw-observation likelihood：H=[I3,0]保留6D状态不捏造朝向；用更新前S=HΣHᵀ+R算预测logpdf，再用R更新同证据。一个预声明seed/簇及显式fixture身份关联、prior和unknown分支，检查目标权重/后验真实变化与纠正/撤回/恢复，不只改变q或hash。不能给旧posterior_projection receipt直接加likelihood，不能堆乘相关seed。
+
+[固定开发协议](../reviews/pc_a/soft_position_factor_2026-10-01/PLAN.md)。实现后冻结→顺序两轮对抗→真实96帧run/fresh→独立算术→草稿PR；功能修复须重审。完整框架、原对照、位置+朝向和主动澄清保持。正式位置参考、自然I→Z、校准门槛和自然相机结果模型尚未决定/完成。用户离线训练监督授权已生效，不再重复询问。原件output/soft-position-factor-20261001；六小时窗口继续至06:18:40上海。
+
+---
+
 # A：固定特征组对照已完成，六小时主线继续（2026-10-01）
 
 分支codex/pc-a-affinity-controls-20261001，base PR76 ffcaa7b292c73201d799f6631688387409c21cb7；实际双审/运行源码a6c026963b5fec1503fa0d582fe016eccf60c756，879份源码。已推送并通过[草稿PR77](https://github.com/goneveitvet240-svg/cpswm/pull/77)叠加PR76交接，未合并。文档与原件交付82bd0c4570279ed65f9f32384e9386686535297a；后续交接记录不改879份功能源码。

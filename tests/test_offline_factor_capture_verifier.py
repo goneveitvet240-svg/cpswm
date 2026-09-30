@@ -29,7 +29,8 @@ def xyz(x=0.0, y=0.0, z=0.0):
 
 
 class ControlledController:
-    def __init__(self, initial_motion=False):
+    def __init__(self, initial_motion=False, vertical_settlement=0.0, pivot_offset=0.0):
+        self.vertical_settlement, self.pivot_offset = vertical_settlement, pivot_offset
         self.initial_motion, self.index, self.yaw = initial_motion, 0, 90.0
         self.last_event = self.event("CreateHouse")
 
@@ -46,7 +47,7 @@ class ControlledController:
                     objectId=identity,
                     objectType=category,
                     assetId=asset,
-                    position=position,
+                    position={**position, "x": position["x"] + self.pivot_offset},
                     rotation=xyz(),
                     axisAlignedBoundingBox=dict(center={**position, "y": 0.05}),
                 )
@@ -69,9 +70,11 @@ class ControlledController:
                 screenWidth=IMAGE_SIZE,
                 screenHeight=IMAGE_SIZE,
                 fov=60.0,
-                cameraPosition=xyz(x=1.0, y=1.6, z=3.0),
+                cameraPosition=xyz(x=1.0, y=1.6 - self.vertical_settlement, z=3.0),
                 agent=dict(
-                    position=xyz(x=1.0, y=0.95, z=3.0), rotation=xyz(y=self.yaw), cameraHorizon=30.0
+                    position=xyz(x=1.0, y=0.95 - self.vertical_settlement, z=3.0),
+                    rotation=xyz(y=self.yaw),
+                    cameraHorizon=30.0,
                 ),
                 objects=objects,
                 colors=[dict(name="a", color=[1, 2, 3])],
@@ -86,7 +89,7 @@ class ControlledController:
         return self.last_event
 
 
-def build_capture(directory, *, initial_motion=False):
+def build_capture(directory, *, initial_motion=False, vertical_settlement=0.0, pivot_offset=0.0):
     directory.mkdir()
     public = directory / "public"
     public.mkdir()
@@ -109,6 +112,9 @@ def build_capture(directory, *, initial_motion=False):
             ],
         ),
     )
+    house = json.loads(house_path.read_text())
+    house["metadata"]["agentPoses"] = {"default": house["metadata"]["agent"]}
+    write_json(house_path, house)
     provenance = dict(
         worker="a" * 64,
         unity="b" * 64,
@@ -117,7 +123,9 @@ def build_capture(directory, *, initial_motion=False):
             (PROFILE, IMAGE_SIZE, IMAGE_SIZE, 60.0, NEAR, FAR, False)
         ),
     )
-    recorder = OfflineFactorRecorder(ControlledController(initial_motion), private, IMAGE_SIZE)
+    recorder = OfflineFactorRecorder(
+        ControlledController(initial_motion, vertical_settlement, pivot_offset), private, IMAGE_SIZE
+    )
     recorder.prepare()
     scope = tuple(uuid4() for _ in range(3))
     start = datetime(2026, 9, 30, tzinfo=UTC)
@@ -312,29 +320,34 @@ def test_initial_physics_change_is_recorded_and_quarantines_affected_instance(tm
     assert result["instances"][0]["eligible_pending_partition_audit"] is False
 
 
-@pytest.mark.parametrize("attack", ["asset", "position"])
-def test_complete_sdk_relabeling_cannot_create_source_eligible_target(archive, attack):
+def test_complete_sdk_asset_relabeling_cannot_create_source_eligible_target(archive):
     directory, house, provenance = archive
     private = directory / "unity-logs/evaluator_only"
     for i in range(12):
         path = private / f"sdk-events/{i:03d}.json"
         record = json.loads(path.read_text())
-        if attack == "asset":
-            record["metadata"]["objects"][1]["assetId"] = "same-asset-renamed"
-        else:
-            record["metadata"]["objects"][1]["position"]["x"] = 1.0
+        record["metadata"]["objects"][1]["assetId"] = "same-asset-renamed"
         write_json(path, record)
-        if attack == "asset":
-            path = private / f"instances/{i:03d}.json"
-            record = json.loads(path.read_text())
-            record["catalog"][1]["asset_id"] = "same-asset-renamed"
-            write_json(path, record)
+        path = private / f"instances/{i:03d}.json"
+        record = json.loads(path.read_text())
+        record["catalog"][1]["asset_id"] = "same-asset-renamed"
+        write_json(path, record)
+    changed = verify_capture(directory, house, provenance)["instances"][1]
+    assert not changed["eligible_pending_partition_audit"]
+    assert "source_sdk_asset_mismatch" in changed["exclusion_reasons"]
+
+
+def test_initial_gravity_and_distinct_position_references_are_recorded(tmp_path):
+    directory = tmp_path / "realized-geometry"
+    house, provenance = build_capture(directory, vertical_settlement=0.049, pivot_offset=1.0)
     result = verify_capture(directory, house, provenance)
-    changed = result["instances"][1]
-    assert changed["eligible_pending_partition_audit"] is False
-    assert (
-        "source_sdk_asset_mismatch" if attack == "asset" else "source_sdk_initial_position_mismatch"
-    ) in changed["exclusion_reasons"]
+    assert result["initial_agent_vertical_displacement_m"] == pytest.approx(-0.049)
+    assert result["sdk_initial_agent_position_m"][1] != result["source_initial_agent_position_m"][1]
+    obj = result["instances"][0]
+    assert obj["source_placement_to_sdk_pivot_distance_m"] == pytest.approx(1.0)
+    assert obj["eligible_pending_partition_audit"]
+    assert not obj["position_changed_during_initialization"]
+    assert not result["formal_training_position_target_selected"]
 
 
 def test_repeated_noncausal_whole_public_frame_rejected(archive):

@@ -57,6 +57,8 @@ def _load_house(raw: bytes) -> dict[str, Any]:
     if not isinstance(metadata, dict) or not isinstance(metadata.get("agent"), dict):
         raise ValueError("house must retain its original metadata.agent")
     agent = metadata["agent"]
+    if metadata.get("agentPoses", {}).get("default") != agent:
+        raise ValueError("original agent alias differs from actual default agentPoses")
     if agent.get("horizon") != 30 or isinstance(agent.get("horizon"), bool):
         raise ValueError("fixed plan requires original horizon 30; do not rewrite house")
     for name in ("position", "rotation"):
@@ -156,7 +158,9 @@ def acquisition_schedule() -> dict[str, Any]:
         "depth_near_m": NEAR,
         "depth_far_m": FAR,
         "sensor_inputs": ["RGB", "depth", "camera_self_pose"],
-        "start": "original metadata.agent; retain original horizon 30 and position",
+        "start": "original metadata.agentPoses.default; preserve x/z, yaw and horizon 30",
+        "agent_mode": "default",
+        "initial_vertical_pose": "record SDK gravity settlement; use measured self-pose y",
         "pre_capture_actions": ["PausePhysicsAutoSim", "Pass", "Pass"],
         "observation_actions": [
             {"action": action, "degrees": degrees} for action, degrees in OBSERVATION_ACTIONS

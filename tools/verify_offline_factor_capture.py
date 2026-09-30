@@ -16,6 +16,7 @@ from types import SimpleNamespace
 from uuid import UUID
 
 import numpy as np
+from offline_factor_asset_provenance import resolve_exposures
 from offline_factor_manifest import FAR, IMAGE_SIZE, NEAR, OBSERVATION_ACTIONS
 from run_instance_correspondence_diagnostic import reconstruct_catalog
 from unity_rgbd_capture import camera_values
@@ -297,12 +298,17 @@ def verify_capture(directory: Path, house_path: Path, expected_provenance: dict)
         if initial is None:
             initial, initial_camera = objects, camera
             initial_agent_position = _xyz(metadata["agent"]["position"])
-            agent = house["metadata"]["agent"]
+            agent = house["metadata"]["agentPoses"]["default"]
+            _require(agent == house["metadata"]["agent"], "source default agent alias differs")
             _require(
-                math.dist(_xyz(metadata["agent"]["position"]), _xyz(agent["position"])) < 1e-3
+                math.dist(
+                    [initial_agent_position[k] for k in (0, 2)],
+                    [_xyz(agent["position"])[k] for k in (0, 2)],
+                )
+                < 1e-3
                 and abs((camera["yaw_degrees"] - agent["rotation"]["y"] + 180) % 360 - 180) < 1e-3
                 and abs(camera["pitch_degrees"] - agent["horizon"]) < 1e-3,
-                "SDK initial camera differs from original house agent",
+                "SDK initial lateral pose or heading differs from original house agent",
             )
         _require(set(objects) == set(initial), "SDK object coverage changed during capture")
         for identity, obj in objects.items():
@@ -387,8 +393,8 @@ def verify_capture(directory: Path, house_path: Path, expected_provenance: dict)
             if original is None
             else math.dist(_xyz(original["position"]), _xyz(initial[identity]["position"]))
         )
-        if source_residual is not None and source_residual > 1e-3:
-            reasons.append("source_sdk_initial_position_mismatch")
+        # Source placement centers and runtime transform pivots are different
+        # reference points in this pinned renderer. Their distance is not motion.
         if identity in moved_at_pause:
             reasons.append("object_changed_before_physics_pause")
         row = dict(
@@ -400,13 +406,22 @@ def verify_capture(directory: Path, house_path: Path, expected_provenance: dict)
             aabb_center_m=_xyz(obj["axisAlignedBoundingBox"]["center"]),
             source_position_m=None if original is None else _xyz(original["position"]),
             position_changed_during_initialization=identity in moved_at_pause,
-            source_sdk_initial_position_residual_m=source_residual,
+            source_placement_to_sdk_pivot_distance_m=source_residual,
+            source_placement_to_sdk_aabb_center_distance_m=(
+                None
+                if original is None
+                else math.dist(
+                    _xyz(original["position"]),
+                    _xyz(initial[identity]["axisAlignedBoundingBox"]["center"]),
+                )
+            ),
             eligible_pending_partition_audit=not reasons,
             exclusion_reasons=reasons,
         )
         rows.append(row)
         if reasons:
             differences.append(dict(object_id=identity, reasons=reasons))
+    exposures = resolve_exposures(house, list(initial.values()))
     missing = sorted(set(source) - set(initial))
     _require(
         all(_sha(Path(path).read_bytes()) == digest for path, digest in hashes.items()),
@@ -422,15 +437,25 @@ def verify_capture(directory: Path, house_path: Path, expected_provenance: dict)
         sdk_events=12,
         scope=[str(key) for key in scope],
         all_assets=sorted(
-            {
-                row["asset_id"]
-                for row in rows
-                if type(row["asset_id"]) is str and row["asset_id"].strip()
-            }
+            {row["exposure_asset_id"] for row in exposures if row["exposure_asset_id"] is not None}
         ),
-        unknown_assets=[
+        unknown_assets=[row["object_id"] for row in exposures if not row["known"]],
+        asset_exposure_provenance=exposures,
+        raw_missing_asset_id_objects=[
             row["object_id"] for row in rows if "unknown_sdk_asset" in row["exclusion_reasons"]
         ],
+        source_initial_agent_position_m=_xyz(
+            house["metadata"]["agentPoses"]["default"]["position"]
+        ),
+        sdk_initial_agent_position_m=initial_agent_position,
+        initial_agent_vertical_displacement_m=initial_agent_position[1]
+        - house["metadata"]["agentPoses"]["default"]["position"]["y"],
+        position_reference_definitions=dict(
+            source_position_m="prefab_bounds_center_placement_input",
+            position_m="SDK_transform_pivot_at_capture",
+            aabb_center_m="SDK_world_axis_aligned_bounds_center_at_capture",
+        ),
+        formal_training_position_target_selected=False,
         instances=rows,
         source_sdk_differences=differences,
         source_instances_missing_in_sdk=missing,

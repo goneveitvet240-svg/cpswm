@@ -459,3 +459,31 @@ def test_rehashed_causal_utc_intervals_must_enclose_public_capture(monkeypatch, 
     )
     with pytest.raises(ValueError, match="attempt state"):
         task.verify_collection(matrix.output, matrix.archive, matrix.sdk_python, matrix.binary)
+
+
+def test_rehashed_entire_archive_cannot_replace_external_capture_pin(monkeypatch, tmp_path):
+    matrix = ControlledMatrix(monkeypatch, tmp_path)
+    baseline = matrix.collect()
+    pin = task.digest(matrix.output / "inventory.json")
+    assert (
+        task.verify_collection(
+            matrix.output, matrix.archive, matrix.sdk_python, matrix.binary, inventory_sha256=pin
+        )
+        == baseline
+    )
+    # This test is the external custody boundary; other rehash tests intentionally
+    # exercise only structural consistency with a new self-reported inventory.
+    path = matrix.output / "house-01.log"
+    path.write_text("whole-SDK transcript replaced after capture")
+    task.write_json(
+        matrix.output / "inventory.json",
+        {
+            str(p.relative_to(matrix.output)): task.digest(p)
+            for p in sorted(matrix.output.rglob("*"))
+            if p.is_file() and p.name != "inventory.json"
+        },
+    )
+    with pytest.raises(ValueError, match="trusted external pin"):
+        task.verify_collection(
+            matrix.output, matrix.archive, matrix.sdk_python, matrix.binary, inventory_sha256=pin
+        )

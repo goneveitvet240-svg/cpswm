@@ -373,10 +373,12 @@ def collect(output, archive, sdk_python, binary):
     return audit
 
 
-def verify_collection(output, archive, sdk_python, binary):
+def verify_collection(output, archive, sdk_python, binary, *, inventory_sha256=None):
     """Recompute saved outcomes under current caller pins, without modifying data."""
     from verify_offline_factor_capture import verify_capture
 
+    if inventory_sha256 is not None and digest(output / "inventory.json") != inventory_sha256:
+        raise ValueError("collection inventory differs from caller trusted external pin")
     before = {
         str(p.relative_to(output)): digest(p)
         for p in sorted(output.rglob("*"))
@@ -431,6 +433,10 @@ def main():
         parser.add_argument(
             "--" + key, type=Path, required=key in ("output", "sdk-python", "binary")
         )
+    parser.add_argument(
+        "--inventory-sha256",
+        help="trusted external inventory digest; required for CLI re-verification",
+    )
     modes = parser.add_mutually_exclusive_group()
     modes.add_argument("--one", action="store_true")
     modes.add_argument("--verify", action="store_true")
@@ -442,8 +448,18 @@ def main():
     else:
         if args.archive is None:
             parser.error("collection needs --archive")
-        method = verify_collection if args.verify else collect
-        result = method(args.output, args.archive, args.sdk_python, args.binary)
+        if args.verify:
+            if args.inventory_sha256 is None:
+                parser.error("--verify requires --inventory-sha256 from a trusted external record")
+            result = verify_collection(
+                args.output,
+                args.archive,
+                args.sdk_python,
+                args.binary,
+                inventory_sha256=args.inventory_sha256,
+            )
+        else:
+            result = collect(args.output, args.archive, args.sdk_python, args.binary)
         print(
             json.dumps(
                 {k: v for k, v in result.items() if k not in ("instances", "asset_exposures")},

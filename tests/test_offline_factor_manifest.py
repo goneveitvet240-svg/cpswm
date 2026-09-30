@@ -23,7 +23,7 @@ def object_row(index, *, asset=None, object_id=None, children=None):
 
 
 def source_houses():
-    return [
+    houses = [
         {
             "metadata": {
                 "agent": {
@@ -37,6 +37,9 @@ def source_houses():
         }
         for i in range(13)
     ]
+    for house in houses:
+        house["metadata"]["agentPoses"] = {"default": copy.deepcopy(house["metadata"]["agent"])}
+    return houses
 
 
 def packed(houses):
@@ -142,6 +145,7 @@ def test_duplicate_old_or_new_house_is_quarantined_without_substitution(duplicat
         houses[1]["objects"].reverse()
         houses[1]["metadata"]["split"] = "not-really-validation"
         houses[1]["metadata"]["agent"]["rotation"]["y"] = 180
+        houses[1]["metadata"]["agentPoses"]["default"]["rotation"]["y"] = 180
     manifest, *_ = build(houses)
     assert manifest["houses"][1]["duplicate_house_indices"] == [0]
     assert manifest["houses"][1]["split"] == "train"
@@ -325,3 +329,10 @@ def test_schedule_mutation_does_not_change_next_plan():
     first = task.acquisition_schedule()
     first["observation_actions"][0]["action"] = "TeleportFull"
     assert task.acquisition_schedule()["observation_actions"][0]["action"] == "Pass"
+
+
+def test_agent_alias_cannot_replace_actual_default_pose():
+    houses = source_houses()
+    houses[3]["metadata"]["agentPoses"]["default"]["position"]["x"] += 1
+    with pytest.raises(ValueError, match="agent alias"):
+        build(houses)

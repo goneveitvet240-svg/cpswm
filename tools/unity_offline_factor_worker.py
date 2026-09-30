@@ -94,6 +94,7 @@ def main():
     controller = LocalLogs(
         local_executable_path=str(args.binary),
         scene=house,
+        agentMode="default",
         width=args.image_size,
         height=args.image_size,
         fieldOfView=60,

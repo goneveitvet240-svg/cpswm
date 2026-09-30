@@ -1,0 +1,1623 @@
+{
+  "complete": true,
+  "role": "A-side independent numeric review; not machine-B acceptance",
+  "source_sha": "a6c026963b5fec1503fa0d582fe016eccf60c756",
+  "source_files": 879,
+  "parent_source_sha": "0a8a2384c321c3a2dc14cf218854754161af9ffd",
+  "parent_source_files": 875,
+  "case_ledger_sha256": "5eaabaaae15e4ed453c0f84b4f243103e25e5e9c1125f87f23e82e2be352bad2",
+  "parent_ledger_sha256": "32e0dc7cec8fce6dfca5bc36755cfba5cf3551b454c1f746f20ac2076936e842",
+  "output_files": 292,
+  "parent_files": 674,
+  "externally_pinned_case_inventories_match": true,
+  "all_member_hashes_match": true,
+  "source_commits_and_complete_files_match": true,
+  "fixed_96_frame_pairing_preserved": true,
+  "original_and_projected_training_digests_match": true,
+  "train_only_scaling_and_frequency_match": true,
+  "public_scores_including_void_recomputed": true,
+  "l2_objectives_and_gradients_recomputed": true,
+  "combined_inner_model_and_score_bytes_equal_parent": true,
+  "all_frame_house_partition_class_metrics_match": true,
+  "empty_classes_are_null_and_macro_houses_counted": true,
+  "production_fit_predict_summarize_called": false,
+  "raw_rgbd_and_masks_rechecked_this_round": false,
+  "input_scope": "This round starts from externally pinned PR76 pair features/valid/targets; no new raw-pixel audit.",
+  "model_pins": {
+    "rgb_only": "1db4bf10ded78386cdb200b3ac217b43a4f30a5093ff68b544a9d8a8d48d2cf6",
+    "geometry_only": "51a39c4ec82bbb68c716c3e362bc37c7ed63e16b948731045c98f0438e36829b",
+    "combined": "428bb6adb7d5c6feefcbd3dab920f61012d0b4a0740bf10fdadb66dcc73c0f9a"
+  },
+  "model_diagnostics": {
+    "rgb_only": {
+      "original_features_sha256": "a2439a7280ca42923456f77c6084f3ec63c73cc151151ccb7e8c5baf4b15c71a",
+      "projected_features_sha256": "e8ae8cb516c1f48c5c5f36020b1dd217f91e8ef7ce4eda7736bebb146ce33961",
+      "targets_sha256": "6c3b10d45a9b2b8c09eaa5b1114dbe933134b05895cbd498288d6684748875e9",
+      "rows_total": 197442,
+      "rows_fit": 38993,
+      "rows_void": 158449,
+      "class_counts": [
+        4541,
+        34452
+      ],
+      "prevalence": 0.8835432000615495,
+      "independently_recomputed_mean": [
+        0.1114043093707374,
+        0.10126473177938455,
+        0.10781382078127595,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "independently_recomputed_scale": [
+        0.11801379116929078,
+        0.10188318849656466,
+        0.1144662479255535,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "final_unclipped_bce": 0.3337476364390138,
+      "l2_weight_penalty": 0.0016353951487561669,
+      "final_regularized_objective": 0.33538303158776994,
+      "gradient_weights_and_bias": [
+        -5.99635358727868e-13,
+        -3.0134547201327022e-12,
+        1.324477420100445e-12,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        -2.6829832758748024e-11
+      ],
+      "gradient_infinity_norm": 2.6829832758748024e-11,
+      "gradient_is_diagnostic_not_a_new_acceptance_threshold": true
+    },
+    "geometry_only": {
+      "original_features_sha256": "a2439a7280ca42923456f77c6084f3ec63c73cc151151ccb7e8c5baf4b15c71a",
+      "projected_features_sha256": "cefee275045a60cc8c016fa5aa06b65d32dd8fdd2232139f9c7cc950a792dbec",
+      "targets_sha256": "6c3b10d45a9b2b8c09eaa5b1114dbe933134b05895cbd498288d6684748875e9",
+      "rows_total": 197442,
+      "rows_fit": 38993,
+      "rows_void": 158449,
+      "class_counts": [
+        4541,
+        34452
+      ],
+      "prevalence": 0.8835432000615495,
+      "independently_recomputed_mean": [
+        0.0,
+        0.0,
+        0.0,
+        0.07192028056318593,
+        0.08049649937167745,
+        0.2871679969668294,
+        0.10272241152615506,
+        0.5283517465975
+      ],
+      "independently_recomputed_scale": [
+        1.0,
+        1.0,
+        1.0,
+        0.08790557875919981,
+        0.09561178015252506,
+        0.3755840459405617,
+        0.13338526049296384,
+        0.48823329485511113
+      ],
+      "final_unclipped_bce": 0.2879086432608567,
+      "l2_weight_penalty": 0.0032252413319240536,
+      "final_regularized_objective": 0.2911338845927807,
+      "gradient_weights_and_bias": [
+        0.0,
+        0.0,
+        0.0,
+        -8.258083453172027e-12,
+        -3.444542828051622e-12,
+        2.42951839202199e-12,
+        1.043542856293822e-12,
+        -1.3921225283652916e-12,
+        -6.1669431390567036e-12
+      ],
+      "gradient_infinity_norm": 8.258083453172027e-12,
+      "gradient_is_diagnostic_not_a_new_acceptance_threshold": true
+    },
+    "combined": {
+      "original_features_sha256": "a2439a7280ca42923456f77c6084f3ec63c73cc151151ccb7e8c5baf4b15c71a",
+      "projected_features_sha256": "a2439a7280ca42923456f77c6084f3ec63c73cc151151ccb7e8c5baf4b15c71a",
+      "targets_sha256": "6c3b10d45a9b2b8c09eaa5b1114dbe933134b05895cbd498288d6684748875e9",
+      "rows_total": 197442,
+      "rows_fit": 38993,
+      "rows_void": 158449,
+      "class_counts": [
+        4541,
+        34452
+      ],
+      "prevalence": 0.8835432000615495,
+      "independently_recomputed_mean": [
+        0.1114043093707374,
+        0.10126473177938455,
+        0.10781382078127595,
+        0.07192028056318593,
+        0.08049649937167745,
+        0.2871679969668294,
+        0.10272241152615506,
+        0.5283517465975
+      ],
+      "independently_recomputed_scale": [
+        0.11801379116929078,
+        0.10188318849656466,
+        0.1144662479255535,
+        0.08790557875919981,
+        0.09561178015252506,
+        0.3755840459405617,
+        0.13338526049296384,
+        0.48823329485511113
+      ],
+      "final_unclipped_bce": 0.2618167533751813,
+      "l2_weight_penalty": 0.006530211772651975,
+      "final_regularized_objective": 0.26834696514783324,
+      "gradient_weights_and_bias": [
+        2.4884894492260834e-12,
+        2.450815592136557e-12,
+        2.614392209665528e-12,
+        -1.2051202050167298e-12,
+        9.361942644725563e-13,
+        2.897347292640795e-12,
+        2.5871249587083867e-12,
+        1.9528684225278425e-12,
+        -6.58807177622382e-12
+      ],
+      "gradient_infinity_norm": 6.58807177622382e-12,
+      "gradient_is_diagnostic_not_a_new_acceptance_threshold": true
+    }
+  },
+  "overall": {
+    "frames": 96,
+    "zero_candidate_frames": 38,
+    "frames_without_supervision": 58,
+    "unique_pairs": 352719,
+    "public_valid_pairs": 352719,
+    "positive_pairs": 64506,
+    "negative_pairs": 10222,
+    "void_pairs": 277991,
+    "methods": {
+      "rgb_only": {
+        "all": {
+          "pairs": 74728,
+          "bce": 0.37052548480818703,
+          "brier": 0.11148513637063971
+        },
+        "same_instance": {
+          "pairs": 64506,
+          "bce": 0.11218869728228684,
+          "brier": 0.014628571915304683
+        },
+        "different_instance": {
+          "pairs": 10222,
+          "bce": 2.0007615263016048,
+          "brier": 0.7226991401620544
+        }
+      },
+      "geometry_only": {
+        "all": {
+          "pairs": 74728,
+          "bce": 0.3020893320940269,
+          "brier": 0.08621130330713293
+        },
+        "same_instance": {
+          "pairs": 64506,
+          "bce": 0.10422723729366207,
+          "brier": 0.01753075392483259
+        },
+        "different_instance": {
+          "pairs": 10222,
+          "bce": 1.5506994169299038,
+          "brier": 0.5196203737879259
+        }
+      },
+      "combined": {
+        "all": {
+          "pairs": 74728,
+          "bce": 0.2792679050738836,
+          "brier": 0.08195226300685454
+        },
+        "same_instance": {
+          "pairs": 64506,
+          "bce": 0.0941507822399994,
+          "brier": 0.01743204103391761
+        },
+        "different_instance": {
+          "pairs": 10222,
+          "bce": 1.4474507582848533,
+          "brier": 0.4891075592880393
+        }
+      },
+      "training_frequency_constant": {
+        "all": {
+          "pairs": 74728,
+          "bce": 0.4010078868959128,
+          "brier": 0.11849149229593488
+        },
+        "same_instance": {
+          "pairs": 64506,
+          "bce": 0.12381509191348053,
+          "brier": 0.01356218625190428
+        },
+        "different_instance": {
+          "pairs": 10222,
+          "bce": 2.150234890724594,
+          "brier": 0.7806485863750033
+        }
+      }
+    }
+  },
+  "by_house": {
+    "1": {
+      "frames": 8,
+      "zero_candidate_frames": 3,
+      "frames_without_supervision": 4,
+      "unique_pairs": 12096,
+      "public_valid_pairs": 12096,
+      "positive_pairs": 998,
+      "negative_pairs": 22,
+      "void_pairs": 11076,
+      "methods": {
+        "rgb_only": {
+          "all": {
+            "pairs": 1020,
+            "bce": 0.11954665883835774,
+            "brier": 0.02070778715656811
+          },
+          "same_instance": {
+            "pairs": 998,
+            "bce": 0.08433806263725661,
+            "brier": 0.007256946504554216
+          },
+          "different_instance": {
+            "pairs": 22,
+            "bce": 1.7167366137792186,
+            "brier": 0.6308868312797439
+          }
+        },
+        "geometry_only": {
+          "all": {
+            "pairs": 1020,
+            "bce": 0.1285112946948322,
+            "brier": 0.02300625194413251
+          },
+          "same_instance": {
+            "pairs": 998,
+            "bce": 0.06348219394233283,
+            "brier": 0.0038120773632235113
+          },
+          "different_instance": {
+            "pairs": 22,
+            "bce": 3.078467774285485,
+            "brier": 0.8937238079326406
+          }
+        },
+        "combined": {
+          "all": {
+            "pairs": 1020,
+            "bce": 0.0994742002163136,
+            "brier": 0.019504899837582794
+          },
+          "same_instance": {
+            "pairs": 998,
+            "bce": 0.04268546911418803,
+            "brier": 0.00197598367385089
+          },
+          "different_instance": {
+            "pairs": 22,
+            "bce": 2.6756175474854644,
+            "brier": 0.8146802785377847
+          }
+        },
+        "training_frequency_constant": {
+          "all": {
+            "pairs": 1020,
+            "bce": 0.16752218561332807,
+            "brier": 0.030107187038873086
+          },
+          "same_instance": {
+            "pairs": 998,
+            "bce": 0.12381509191348053,
+            "brier": 0.013562186251904283
+          },
+          "different_instance": {
+            "pairs": 22,
+            "bce": 2.150234890724594,
+            "brier": 0.7806485863750033
+          }
+        }
+      }
+    },
+    "2": {
+      "frames": 8,
+      "zero_candidate_frames": 4,
+      "frames_without_supervision": 6,
+      "unique_pairs": 12096,
+      "public_valid_pairs": 12096,
+      "positive_pairs": 3503,
+      "negative_pairs": 761,
+      "void_pairs": 7832,
+      "methods": {
+        "rgb_only": {
+          "all": {
+            "pairs": 4264,
+            "bce": 0.2998882567926306,
+            "brier": 0.09410939971209098
+          },
+          "same_instance": {
+            "pairs": 3503,
+            "bce": 0.09620153523415058,
+            "brier": 0.009041317243014843
+          },
+          "different_instance": {
+            "pairs": 761,
+            "bce": 1.2374895519560412,
+            "brier": 0.48569086211573576
+          }
+        },
+        "geometry_only": {
+          "all": {
+            "pairs": 4264,
+            "bce": 0.41776580916592043,
+            "brier": 0.13209964280964417
+          },
+          "same_instance": {
+            "pairs": 3503,
+            "bce": 0.06690563747926956,
+            "brier": 0.005096760601844117
+          },
+          "different_instance": {
+            "pairs": 761,
+            "bce": 2.032829122462028,
+            "brier": 0.7167134356794519
+          }
+        },
+        "combined": {
+          "all": {
+            "pairs": 4264,
+            "bce": 0.2292120953164393,
+            "brier": 0.0694766559703269
+          },
+          "same_instance": {
+            "pairs": 3503,
+            "bce": 0.0522111589823466,
+            "brier": 0.003838414972005481
+          },
+          "different_instance": {
+            "pairs": 761,
+            "bce": 1.043974618284017,
+            "brier": 0.3716195708417065
+          }
+        },
+        "training_frequency_constant": {
+          "all": {
+            "pairs": 4264,
+            "bce": 0.4854720963448261,
+            "brier": 0.15046480128325476
+          },
+          "same_instance": {
+            "pairs": 3503,
+            "bce": 0.12381509191348053,
+            "brier": 0.01356218625190428
+          },
+          "different_instance": {
+            "pairs": 761,
+            "bce": 2.150234890724594,
+            "brier": 0.7806485863750033
+          }
+        }
+      }
+    },
+    "3": {
+      "frames": 8,
+      "zero_candidate_frames": 1,
+      "frames_without_supervision": 2,
+      "unique_pairs": 46367,
+      "public_valid_pairs": 46367,
+      "positive_pairs": 12402,
+      "negative_pairs": 1843,
+      "void_pairs": 32122,
+      "methods": {
+        "rgb_only": {
+          "all": {
+            "pairs": 14245,
+            "bce": 0.38614713154764135,
+            "brier": 0.11147455460114478
+          },
+          "same_instance": {
+            "pairs": 12402,
+            "bce": 0.11712353011806721,
+            "brier": 0.01614802875155382
+          },
+          "different_instance": {
+            "pairs": 1843,
+            "bce": 2.196473070196355,
+            "brier": 0.7529501778168947
+          }
+        },
+        "geometry_only": {
+          "all": {
+            "pairs": 14245,
+            "bce": 0.2305242734861914,
+            "brier": 0.06550926480576431
+          },
+          "same_instance": {
+            "pairs": 12402,
+            "bce": 0.13173573168343375,
+            "brier": 0.02874846841985331
+          },
+          "different_instance": {
+            "pairs": 1843,
+            "bce": 0.8952966529966636,
+            "brier": 0.31288169930281706
+          }
+        },
+        "combined": {
+          "all": {
+            "pairs": 14245,
+            "bce": 0.2304441401873065,
+            "brier": 0.06994459905624725
+          },
+          "same_instance": {
+            "pairs": 12402,
+            "bce": 0.12916959745393927,
+            "brier": 0.03091605941166031
+          },
+          "different_instance": {
+            "pairs": 1843,
+            "bce": 0.9119454310061996,
+            "brier": 0.33257723534065703
+          }
+        },
+        "training_frequency_constant": {
+          "all": {
+            "pairs": 14245,
+            "bce": 0.3859907106715628,
+            "brier": 0.11280685002353444
+          },
+          "same_instance": {
+            "pairs": 12402,
+            "bce": 0.12381509191348053,
+            "brier": 0.013562186251904283
+          },
+          "different_instance": {
+            "pairs": 1843,
+            "bce": 2.150234890724594,
+            "brier": 0.7806485863750033
+          }
+        }
+      }
+    },
+    "4": {
+      "frames": 8,
+      "zero_candidate_frames": 2,
+      "frames_without_supervision": 6,
+      "unique_pairs": 30237,
+      "public_valid_pairs": 30237,
+      "positive_pairs": 2212,
+      "negative_pairs": 318,
+      "void_pairs": 27707,
+      "methods": {
+        "rgb_only": {
+          "all": {
+            "pairs": 2530,
+            "bce": 0.3595580185354833,
+            "brier": 0.10552933380924077
+          },
+          "same_instance": {
+            "pairs": 2212,
+            "bce": 0.13569702398878503,
+            "brier": 0.01934812108829114
+          },
+          "different_instance": {
+            "pairs": 318,
+            "bce": 1.9167294648791833,
+            "brier": 0.7050036814153432
+          }
+        },
+        "geometry_only": {
+          "all": {
+            "pairs": 2530,
+            "bce": 0.45236474473281096,
+            "brier": 0.11933830843902504
+          },
+          "same_instance": {
+            "pairs": 2212,
+            "bce": 0.09083841190826096,
+            "brier": 0.010893985798341319
+          },
+          "different_instance": {
+            "pairs": 318,
+            "bce": 2.967132820858297,
+            "brier": 0.873674288568561
+          }
+        },
+        "combined": {
+          "all": {
+            "pairs": 2530,
+            "bce": 0.4352907239379421,
+            "brier": 0.11518818742747854
+          },
+          "same_instance": {
+            "pairs": 2212,
+            "bce": 0.08581122991331808,
+            "brier": 0.010535567110471222
+          },
+          "different_instance": {
+            "pairs": 318,
+            "bce": 2.8662612924362705,
+            "brier": 0.843149181582259
+          }
+        },
+        "training_frequency_constant": {
+          "all": {
+            "pairs": 2530,
+            "bce": 0.3785192405387509,
+            "brier": 0.10997857962706062
+          },
+          "same_instance": {
+            "pairs": 2212,
+            "bce": 0.12381509191348052,
+            "brier": 0.01356218625190428
+          },
+          "different_instance": {
+            "pairs": 318,
+            "bce": 2.150234890724594,
+            "brier": 0.7806485863750033
+          }
+        }
+      }
+    },
+    "5": {
+      "frames": 8,
+      "zero_candidate_frames": 3,
+      "frames_without_supervision": 5,
+      "unique_pairs": 30222,
+      "public_valid_pairs": 30222,
+      "positive_pairs": 4041,
+      "negative_pairs": 830,
+      "void_pairs": 25351,
+      "methods": {
+        "rgb_only": {
+          "all": {
+            "pairs": 4871,
+            "bce": 0.4933622026508217,
+            "brier": 0.1544595917100329
+          },
+          "same_instance": {
+            "pairs": 4041,
+            "bce": 0.1434563246494874,
+            "brier": 0.027550690956491247
+          },
+          "different_instance": {
+            "pairs": 830,
+            "bce": 2.1969400978356313,
+            "brier": 0.7723377458607099
+          }
+        },
+        "geometry_only": {
+          "all": {
+            "pairs": 4871,
+            "bce": 0.37097766017358175,
+            "brier": 0.11617713989548845
+          },
+          "same_instance": {
+            "pairs": 4041,
+            "bce": 0.08648281777562192,
+            "brier": 0.009780662179915732
+          },
+          "different_instance": {
+            "pairs": 830,
+            "bce": 1.7560905012942511,
+            "brier": 0.6341869789902226
+          }
+        },
+        "combined": {
+          "all": {
+            "pairs": 4871,
+            "bce": 0.3900543798165852,
+            "brier": 0.1236325702770354
+          },
+          "same_instance": {
+            "pairs": 4041,
+            "bce": 0.10110246667745479,
+            "brier": 0.017998447704091914
+          },
+          "different_instance": {
+            "pairs": 830,
+            "bce": 1.7968672484855317,
+            "brier": 0.6379307501773543
+          }
+        },
+        "training_frequency_constant": {
+          "all": {
+            "pairs": 4871,
+            "bce": 0.4691093709143477,
+            "brier": 0.14427081119589366
+          },
+          "same_instance": {
+            "pairs": 4041,
+            "bce": 0.12381509191348053,
+            "brier": 0.01356218625190428
+          },
+          "different_instance": {
+            "pairs": 830,
+            "bce": 2.150234890724594,
+            "brier": 0.7806485863750033
+          }
+        }
+      }
+    },
+    "6": {
+      "frames": 8,
+      "zero_candidate_frames": 5,
+      "frames_without_supervision": 6,
+      "unique_pairs": 14015,
+      "public_valid_pairs": 14015,
+      "positive_pairs": 3360,
+      "negative_pairs": 153,
+      "void_pairs": 10502,
+      "methods": {
+        "rgb_only": {
+          "all": {
+            "pairs": 3513,
+            "bce": 0.21710930783522434,
+            "brier": 0.0503289474573022
+          },
+          "same_instance": {
+            "pairs": 3360,
+            "bce": 0.1452515237037386,
+            "brier": 0.021714908232045103
+          },
+          "different_instance": {
+            "pairs": 153,
+            "bce": 1.795162606409029,
+            "brier": 0.6787156912276541
+          }
+        },
+        "geometry_only": {
+          "all": {
+            "pairs": 3513,
+            "bce": 0.272364915882725,
+            "brier": 0.07945610892655036
+          },
+          "same_instance": {
+            "pairs": 3360,
+            "bce": 0.21012224486042924,
+            "brier": 0.0558186313882985
+          },
+          "different_instance": {
+            "pairs": 153,
+            "bce": 1.6392627893135332,
+            "brier": 0.5985536548646303
+          }
+        },
+        "combined": {
+          "all": {
+            "pairs": 3513,
+            "bce": 0.26973846518026495,
+            "brier": 0.08015237544185118
+          },
+          "same_instance": {
+            "pairs": 3360,
+            "bce": 0.2234170954328791,
+            "brier": 0.061840521677948214
+          },
+          "different_instance": {
+            "pairs": 153,
+            "bce": 1.2869920753189337,
+            "brier": 0.4822950463354064
+          }
+        },
+        "training_frequency_constant": {
+          "all": {
+            "pairs": 3513,
+            "bce": 0.21207077913753414,
+            "brier": 0.0469707314323296
+          },
+          "same_instance": {
+            "pairs": 3360,
+            "bce": 0.12381509191348052,
+            "brier": 0.01356218625190428
+          },
+          "different_instance": {
+            "pairs": 153,
+            "bce": 2.150234890724594,
+            "brier": 0.7806485863750033
+          }
+        }
+      }
+    },
+    "7": {
+      "frames": 8,
+      "zero_candidate_frames": 4,
+      "frames_without_supervision": 5,
+      "unique_pairs": 18143,
+      "public_valid_pairs": 18143,
+      "positive_pairs": 1671,
+      "negative_pairs": 0,
+      "void_pairs": 16472,
+      "methods": {
+        "rgb_only": {
+          "all": {
+            "pairs": 1671,
+            "bce": 0.09742333257624851,
+            "brier": 0.009361378470116711
+          },
+          "same_instance": {
+            "pairs": 1671,
+            "bce": 0.09742333257624851,
+            "brier": 0.009361378470116711
+          },
+          "different_instance": {
+            "pairs": 0,
+            "bce": null,
+            "brier": null
+          }
+        },
+        "geometry_only": {
+          "all": {
+            "pairs": 1671,
+            "bce": 0.06468908511653323,
+            "brier": 0.004517257772753486
+          },
+          "same_instance": {
+            "pairs": 1671,
+            "bce": 0.06468908511653323,
+            "brier": 0.004517257772753486
+          },
+          "different_instance": {
+            "pairs": 0,
+            "bce": null,
+            "brier": null
+          }
+        },
+        "combined": {
+          "all": {
+            "pairs": 1671,
+            "bce": 0.04506917711429217,
+            "brier": 0.002316752607342085
+          },
+          "same_instance": {
+            "pairs": 1671,
+            "bce": 0.04506917711429217,
+            "brier": 0.002316752607342085
+          },
+          "different_instance": {
+            "pairs": 0,
+            "bce": null,
+            "brier": null
+          }
+        },
+        "training_frequency_constant": {
+          "all": {
+            "pairs": 1671,
+            "bce": 0.12381509191348053,
+            "brier": 0.01356218625190428
+          },
+          "same_instance": {
+            "pairs": 1671,
+            "bce": 0.12381509191348053,
+            "brier": 0.01356218625190428
+          },
+          "different_instance": {
+            "pairs": 0,
+            "bce": null,
+            "brier": null
+          }
+        }
+      }
+    },
+    "8": {
+      "frames": 8,
+      "zero_candidate_frames": 3,
+      "frames_without_supervision": 4,
+      "unique_pairs": 34266,
+      "public_valid_pairs": 34266,
+      "positive_pairs": 6265,
+      "negative_pairs": 614,
+      "void_pairs": 27387,
+      "methods": {
+        "rgb_only": {
+          "all": {
+            "pairs": 6879,
+            "bce": 0.27244455831144543,
+            "brier": 0.07350429548053837
+          },
+          "same_instance": {
+            "pairs": 6265,
+            "bce": 0.10981663394678032,
+            "brier": 0.01251421269499368
+          },
+          "different_instance": {
+            "pairs": 614,
+            "bce": 1.9318320927489483,
+            "brier": 0.6958216711343452
+          }
+        },
+        "geometry_only": {
+          "all": {
+            "pairs": 6879,
+            "bce": 0.2927373342611292,
+            "brier": 0.08080002865397394
+          },
+          "same_instance": {
+            "pairs": 6265,
+            "bce": 0.08112871572718752,
+            "brier": 0.007932064713049046
+          },
+          "different_instance": {
+            "pairs": 614,
+            "bce": 2.45190345008384,
+            "brier": 0.824314351275952
+          }
+        },
+        "combined": {
+          "all": {
+            "pairs": 6879,
+            "bce": 0.2650643392868868,
+            "brier": 0.0743422137337886
+          },
+          "same_instance": {
+            "pairs": 6265,
+            "bce": 0.06832280248025929,
+            "brier": 0.006492502838065014
+          },
+          "different_instance": {
+            "pairs": 614,
+            "bce": 2.2725329518170514,
+            "brier": 0.7666523745834762
+          }
+        },
+        "training_frequency_constant": {
+          "all": {
+            "pairs": 6879,
+            "bce": 0.3046875670508586,
+            "brier": 0.08203013939561454
+          },
+          "same_instance": {
+            "pairs": 6265,
+            "bce": 0.12381509191348053,
+            "brier": 0.01356218625190428
+          },
+          "different_instance": {
+            "pairs": 614,
+            "bce": 2.150234890724594,
+            "brier": 0.7806485863750033
+          }
+        }
+      }
+    },
+    "9": {
+      "frames": 8,
+      "zero_candidate_frames": 3,
+      "frames_without_supervision": 7,
+      "unique_pairs": 16127,
+      "public_valid_pairs": 16127,
+      "positive_pairs": 232,
+      "negative_pairs": 0,
+      "void_pairs": 15895,
+      "methods": {
+        "rgb_only": {
+          "all": {
+            "pairs": 232,
+            "bce": 0.06690896947222941,
+            "brier": 0.004190799333728911
+          },
+          "same_instance": {
+            "pairs": 232,
+            "bce": 0.06690896947222941,
+            "brier": 0.004190799333728911
+          },
+          "different_instance": {
+            "pairs": 0,
+            "bce": null,
+            "brier": null
+          }
+        },
+        "geometry_only": {
+          "all": {
+            "pairs": 232,
+            "bce": 0.09859611869307913,
+            "brier": 0.009725577451907622
+          },
+          "same_instance": {
+            "pairs": 232,
+            "bce": 0.09859611869307913,
+            "brier": 0.009725577451907622
+          },
+          "different_instance": {
+            "pairs": 0,
+            "bce": null,
+            "brier": null
+          }
+        },
+        "combined": {
+          "all": {
+            "pairs": 232,
+            "bce": 0.053950219905683605,
+            "brier": 0.003111567723569205
+          },
+          "same_instance": {
+            "pairs": 232,
+            "bce": 0.053950219905683605,
+            "brier": 0.003111567723569205
+          },
+          "different_instance": {
+            "pairs": 0,
+            "bce": null,
+            "brier": null
+          }
+        },
+        "training_frequency_constant": {
+          "all": {
+            "pairs": 232,
+            "bce": 0.12381509191348053,
+            "brier": 0.01356218625190428
+          },
+          "same_instance": {
+            "pairs": 232,
+            "bce": 0.12381509191348053,
+            "brier": 0.01356218625190428
+          },
+          "different_instance": {
+            "pairs": 0,
+            "bce": null,
+            "brier": null
+          }
+        }
+      }
+    },
+    "10": {
+      "frames": 8,
+      "zero_candidate_frames": 3,
+      "frames_without_supervision": 5,
+      "unique_pairs": 49961,
+      "public_valid_pairs": 49961,
+      "positive_pairs": 9336,
+      "negative_pairs": 6,
+      "void_pairs": 40619,
+      "methods": {
+        "rgb_only": {
+          "all": {
+            "pairs": 9342,
+            "bce": 0.0952600190037347,
+            "brier": 0.009563798148226204
+          },
+          "same_instance": {
+            "pairs": 9336,
+            "bce": 0.09480104612610868,
+            "brier": 0.009372656388840942
+          },
+          "different_instance": {
+            "pairs": 6,
+            "bce": 0.809421816589836,
+            "brier": 0.30698037575169385
+          }
+        },
+        "geometry_only": {
+          "all": {
+            "pairs": 9342,
+            "bce": 0.07258618877600365,
+            "brier": 0.005540324311062502
+          },
+          "same_instance": {
+            "pairs": 9336,
+            "bce": 0.07122117341574485,
+            "brier": 0.005043717540785772
+          },
+          "different_instance": {
+            "pairs": 6,
+            "bce": 2.1965500893386762,
+            "brier": 0.7782604588616556
+          }
+        },
+        "combined": {
+          "all": {
+            "pairs": 9342,
+            "bce": 0.05312660115668695,
+            "brier": 0.003342616134464268
+          },
+          "same_instance": {
+            "pairs": 9336,
+            "bce": 0.052498688661292564,
+            "brier": 0.0030798871260909987
+          },
+          "different_instance": {
+            "pairs": 6,
+            "bce": 1.030158443990347,
+            "brier": 0.4121489531632714
+          }
+        },
+        "training_frequency_constant": {
+          "all": {
+            "pairs": 9342,
+            "bce": 0.12511658182922306,
+            "brier": 0.014054855744597345
+          },
+          "same_instance": {
+            "pairs": 9336,
+            "bce": 0.12381509191348053,
+            "brier": 0.01356218625190428
+          },
+          "different_instance": {
+            "pairs": 6,
+            "bce": 2.150234890724594,
+            "brier": 0.7806485863750033
+          }
+        }
+      }
+    },
+    "11": {
+      "frames": 8,
+      "zero_candidate_frames": 2,
+      "frames_without_supervision": 3,
+      "unique_pairs": 44232,
+      "public_valid_pairs": 44232,
+      "positive_pairs": 9034,
+      "negative_pairs": 3740,
+      "void_pairs": 31458,
+      "methods": {
+        "rgb_only": {
+          "all": {
+            "pairs": 12774,
+            "bce": 0.6580244097702507,
+            "brier": 0.22557336345218115
+          },
+          "same_instance": {
+            "pairs": 9034,
+            "bce": 0.08059503732022177,
+            "brier": 0.006489197859256751
+          },
+          "different_instance": {
+            "pairs": 3740,
+            "bce": 2.0528096907097053,
+            "brier": 0.7547729228015071
+          }
+        },
+        "geometry_only": {
+          "all": {
+            "pairs": 12774,
+            "bce": 0.6770375925106319,
+            "brier": 0.21192175983687736
+          },
+          "same_instance": {
+            "pairs": 9034,
+            "bce": 0.10648623766968433,
+            "brier": 0.01811331957047106
+          },
+          "different_instance": {
+            "pairs": 3740,
+            "bce": 2.0552089667440865,
+            "brier": 0.6800676019135389
+          }
+        },
+        "combined": {
+          "all": {
+            "pairs": 12774,
+            "bce": 0.6458823533388672,
+            "brier": 0.2074138731210334
+          },
+          "same_instance": {
+            "pairs": 9034,
+            "bce": 0.07700841879140945,
+            "brier": 0.013562417470524332
+          },
+          "different_instance": {
+            "pairs": 3740,
+            "bce": 2.020001905398154,
+            "brier": 0.6756636192030385
+          }
+        },
+        "training_frequency_constant": {
+          "all": {
+            "pairs": 12774,
+            "bce": 0.717114766843304,
+            "brier": 0.2381514407109923
+          },
+          "same_instance": {
+            "pairs": 9034,
+            "bce": 0.12381509191348054,
+            "brier": 0.01356218625190428
+          },
+          "different_instance": {
+            "pairs": 3740,
+            "bce": 2.150234890724594,
+            "brier": 0.7806485863750033
+          }
+        }
+      }
+    },
+    "12": {
+      "frames": 8,
+      "zero_candidate_frames": 5,
+      "frames_without_supervision": 5,
+      "unique_pairs": 44957,
+      "public_valid_pairs": 44957,
+      "positive_pairs": 11452,
+      "negative_pairs": 1935,
+      "void_pairs": 31570,
+      "methods": {
+        "rgb_only": {
+          "all": {
+            "pairs": 13387,
+            "bce": 0.4006693846436173,
+            "brier": 0.1218692772426118
+          },
+          "same_instance": {
+            "pairs": 11452,
+            "bce": 0.1323545373908574,
+            "brier": 0.020626349799687783
+          },
+          "different_instance": {
+            "pairs": 1935,
+            "bce": 1.9886495555679617,
+            "brier": 0.7210599775404753
+          }
+        },
+        "geometry_only": {
+          "all": {
+            "pairs": 13387,
+            "bce": 0.14929836410239974,
+            "brier": 0.033693219117452176
+          },
+          "same_instance": {
+            "pairs": 11452,
+            "bce": 0.11082683020124116,
+            "brier": 0.02019273617892441
+          },
+          "different_instance": {
+            "pairs": 1935,
+            "bce": 0.3769862226223315,
+            "brier": 0.11359375173348318
+          }
+        },
+        "combined": {
+          "all": {
+            "pairs": 13387,
+            "bce": 0.14198737621783444,
+            "brier": 0.03284410083067739
+          },
+          "same_instance": {
+            "pairs": 11452,
+            "bce": 0.10435653668999763,
+            "brier": 0.019670477039942343
+          },
+          "different_instance": {
+            "pairs": 1935,
+            "bce": 0.36469971434330584,
+            "brier": 0.11081016783403543
+          }
+        },
+        "training_frequency_constant": {
+          "all": {
+            "pairs": 13387,
+            "bce": 0.4167203216661887,
+            "brier": 0.1244393196080107
+          },
+          "same_instance": {
+            "pairs": 11452,
+            "bce": 0.12381509191348052,
+            "brier": 0.013562186251904283
+          },
+          "different_instance": {
+            "pairs": 1935,
+            "bce": 2.150234890724594,
+            "brier": 0.7806485863750033
+          }
+        }
+      }
+    }
+  },
+  "by_split": {
+    "train": {
+      "frames": 64,
+      "zero_candidate_frames": 25,
+      "frames_without_supervision": 38,
+      "unique_pairs": 197442,
+      "public_valid_pairs": 197442,
+      "positive_pairs": 34452,
+      "negative_pairs": 4541,
+      "void_pairs": 158449,
+      "methods": {
+        "rgb_only": {
+          "all": {
+            "pairs": 38993,
+            "bce": 0.3337476364390138,
+            "brier": 0.09560192454476453
+          },
+          "same_instance": {
+            "pairs": 34452,
+            "bce": 0.11878668669422106,
+            "brier": 0.016263755460073425
+          },
+          "different_instance": {
+            "pairs": 4541,
+            "bce": 1.9646295216201635,
+            "brier": 0.6975307070388799
+          }
+        },
+        "geometry_only": {
+          "all": {
+            "pairs": 38993,
+            "bce": 0.2879086432608567,
+            "brier": 0.08284165222914465
+          },
+          "same_instance": {
+            "pairs": 34452,
+            "bce": 0.11042323997870182,
+            "brier": 0.019929507373300664
+          },
+          "different_instance": {
+            "pairs": 4541,
+            "bce": 1.6344682367153383,
+            "brier": 0.5601482398912316
+          }
+        },
+        "combined": {
+          "all": {
+            "pairs": 38993,
+            "bce": 0.2618167533751813,
+            "brier": 0.07701360021716294
+          },
+          "same_instance": {
+            "pairs": 34452,
+            "bce": 0.10681124571223759,
+            "brier": 0.02168833003955356
+          },
+          "different_instance": {
+            "pairs": 4541,
+            "bce": 1.437824185659642,
+            "brier": 0.4967595170106001
+          }
+        },
+        "training_frequency_constant": {
+          "all": {
+            "pairs": 38993,
+            "bce": 0.35980545701494143,
+            "brier": 0.10289461368654622
+          },
+          "same_instance": {
+            "pairs": 34452,
+            "bce": 0.12381509191348053,
+            "brier": 0.01356218625190428
+          },
+          "different_instance": {
+            "pairs": 4541,
+            "bce": 2.150234890724594,
+            "brier": 0.7806485863750033
+          }
+        }
+      },
+      "house_macro": {
+        "rgb_only": {
+          "all": {
+            "houses": 8,
+            "bce": 0.2806849333859816,
+            "brier": 0.07743441104962935
+          },
+          "same_instance": {
+            "houses": 8,
+            "bce": 0.11616349585681428,
+            "brier": 0.015366950492632595
+          },
+          "different_instance": {
+            "houses": 7,
+            "bce": 1.8559090711149153,
+            "brier": 0.6744866658357752
+          }
+        },
+        "geometry_only": {
+          "all": {
+            "houses": 8,
+            "bce": 0.27874188968921554,
+            "brier": 0.07761300040591654
+          },
+          "same_instance": {
+            "houses": 8,
+            "bce": 0.09942310481163363,
+            "brier": 0.015824988529659877
+          },
+          "different_instance": {
+            "houses": 7,
+            "bce": 2.1172833016134427,
+            "brier": 0.6934354595163251
+          }
+        },
+        "combined": {
+          "all": {
+            "houses": 8,
+            "bce": 0.24554344013200383,
+            "brier": 0.06931978179395659
+          },
+          "same_instance": {
+            "houses": 8,
+            "bce": 0.09347362464608466,
+            "brier": 0.016989281249429392
+          },
+          "different_instance": {
+            "houses": 7,
+            "bce": 1.8363130235476384,
+            "brier": 0.6069863481998062
+          }
+        },
+        "training_frequency_constant": {
+          "all": {
+            "houses": 8,
+            "bce": 0.3158983802730861,
+            "brier": 0.08627391078105813
+          },
+          "same_instance": {
+            "houses": 8,
+            "bce": 0.12381509191348053,
+            "brier": 0.01356218625190428
+          },
+          "different_instance": {
+            "houses": 7,
+            "bce": 2.150234890724594,
+            "brier": 0.7806485863750033
+          }
+        }
+      }
+    },
+    "validation": {
+      "frames": 32,
+      "zero_candidate_frames": 13,
+      "frames_without_supervision": 20,
+      "unique_pairs": 155277,
+      "public_valid_pairs": 155277,
+      "positive_pairs": 30054,
+      "negative_pairs": 5681,
+      "void_pairs": 119542,
+      "methods": {
+        "rgb_only": {
+          "all": {
+            "pairs": 35735,
+            "bce": 0.41065641083195,
+            "brier": 0.12881643841978901
+          },
+          "same_instance": {
+            "pairs": 30054,
+            "bce": 0.10462518057170062,
+            "brier": 0.012754101179816136
+          },
+          "different_instance": {
+            "pairs": 5681,
+            "bce": 2.0296429614817537,
+            "brier": 0.7428170515882708
+          }
+        },
+        "geometry_only": {
+          "all": {
+            "pairs": 35735,
+            "bce": 0.3175628902211237,
+            "brier": 0.08988816925043772
+          },
+          "same_instance": {
+            "pairs": 30054,
+            "bce": 0.09712453267846977,
+            "brier": 0.014780975066556746
+          },
+          "different_instance": {
+            "pairs": 5681,
+            "bce": 1.4837403937569311,
+            "brier": 0.48722518984581864
+          }
+        },
+        "combined": {
+          "all": {
+            "pairs": 35735,
+            "bce": 0.29831009783133416,
+            "brier": 0.08734118921808849
+          },
+          "same_instance": {
+            "pairs": 30054,
+            "bce": 0.07963762966311944,
+            "brier": 0.012552901191561527
+          },
+          "different_instance": {
+            "pairs": 5681,
+            "bce": 1.4551455772060085,
+            "brier": 0.4829911114763602
+          }
+        },
+        "training_frequency_constant": {
+          "all": {
+            "pairs": 35735,
+            "bce": 0.4459667884867542,
+            "brier": 0.13551035580834267
+          },
+          "same_instance": {
+            "pairs": 30054,
+            "bce": 0.12381509191348053,
+            "brier": 0.01356218625190428
+          },
+          "different_instance": {
+            "pairs": 5681,
+            "bce": 2.150234890724594,
+            "brier": 0.7806485863750035
+          }
+        }
+      },
+      "house_macro": {
+        "rgb_only": {
+          "all": {
+            "houses": 4,
+            "bce": 0.305215695722458,
+            "brier": 0.09029930954418702
+          },
+          "same_instance": {
+            "houses": 4,
+            "bce": 0.09366489757735431,
+            "brier": 0.010169750845378597
+          },
+          "different_instance": {
+            "houses": 3,
+            "bce": 1.6169603542891677,
+            "brier": 0.5942710920312254
+          }
+        },
+        "geometry_only": {
+          "all": {
+            "houses": 4,
+            "bce": 0.2493795660205286,
+            "brier": 0.06522022017932491
+          },
+          "same_instance": {
+            "houses": 4,
+            "bce": 0.09678258999493737,
+            "brier": 0.013268837685522216
+          },
+          "different_instance": {
+            "houses": 3,
+            "bce": 1.542915092901698,
+            "brier": 0.5239739375028926
+          }
+        },
+        "combined": {
+          "all": {
+            "houses": 4,
+            "bce": 0.22373663765476806,
+            "brier": 0.061678039452436065
+          },
+          "same_instance": {
+            "houses": 4,
+            "bce": 0.07195346601209582,
+            "brier": 0.00985608734003172
+          },
+          "different_instance": {
+            "houses": 3,
+            "bce": 1.1382866879106024,
+            "brier": 0.3995409134001151
+          }
+        },
+        "training_frequency_constant": {
+          "all": {
+            "houses": 4,
+            "bce": 0.34569169056304905,
+            "brier": 0.09755195057887617
+          },
+          "same_instance": {
+            "houses": 4,
+            "bce": 0.12381509191348053,
+            "brier": 0.01356218625190428
+          },
+          "different_instance": {
+            "houses": 3,
+            "bce": 2.150234890724594,
+            "brier": 0.7806485863750033
+          }
+        }
+      }
+    }
+  },
+  "overall_house_macro": {
+    "rgb_only": {
+      "all": {
+        "houses": 12,
+        "bce": 0.2888618541648071,
+        "brier": 0.08172271054781524
+      },
+      "same_instance": {
+        "houses": 12,
+        "bce": 0.10866396309699429,
+        "brier": 0.013634550610214596
+      },
+      "different_instance": {
+        "houses": 10,
+        "bce": 1.7842244560671907,
+        "brier": 0.6504219936944102
+      }
+    },
+    "geometry_only": {
+      "all": {
+        "houses": 12,
+        "bce": 0.2689544484663199,
+        "brier": 0.07348207366371932
+      },
+      "same_instance": {
+        "houses": 12,
+        "bce": 0.09854293320606822,
+        "brier": 0.014972938248280656
+      },
+      "different_instance": {
+        "houses": 10,
+        "bce": 1.9449728389999195,
+        "brier": 0.6425970029122954
+      }
+    },
+    "combined": {
+      "all": {
+        "houses": 12,
+        "bce": 0.23827450597292524,
+        "brier": 0.06677253434678308
+      },
+      "same_instance": {
+        "houses": 12,
+        "bce": 0.08630023843475505,
+        "brier": 0.014611549946296834
+      },
+      "different_instance": {
+        "houses": 10,
+        "bce": 1.6269051228565274,
+        "brier": 0.544752717759899
+      }
+    },
+    "training_frequency_constant": {
+      "all": {
+        "houses": 12,
+        "bce": 0.32582948370307374,
+        "brier": 0.0900332573803308
+      },
+      "same_instance": {
+        "houses": 12,
+        "bce": 0.12381509191348052,
+        "brier": 0.01356218625190428
+      },
+      "different_instance": {
+        "houses": 10,
+        "bce": 2.150234890724594,
+        "brier": 0.7806485863750033
+      }
+    }
+  },
+  "score_coverage": {
+    "rgb_only": {
+      "valid_pairs": 352719,
+      "void_with_valid_depth": 277991,
+      "finite_scores_on_void": 277991,
+      "null_scores_on_invalid_depth": 0
+    },
+    "geometry_only": {
+      "valid_pairs": 352719,
+      "void_with_valid_depth": 277991,
+      "finite_scores_on_void": 277991,
+      "null_scores_on_invalid_depth": 0
+    },
+    "combined": {
+      "valid_pairs": 352719,
+      "void_with_valid_depth": 277991,
+      "finite_scores_on_void": 277991,
+      "null_scores_on_invalid_depth": 0
+    }
+  },
+  "candidate_count": 176,
+  "raw_candidate_pair_occurrences": 353452,
+  "caveats": [
+    "Feature-group controls share RGB detector candidates and RGB-D depth-validity gating.",
+    "These are not independent RGB-only/depth-only sensor systems.",
+    "Previously exposed development houses and correlated pixel pairs; no untouched-test claim.",
+    "No model selection, thresholds, calibrated observation likelihood, complete mask or world identity.",
+    "Rendered membership labels do not prove physical depth surface ownership or action-loop benefit."
+  ]
+}

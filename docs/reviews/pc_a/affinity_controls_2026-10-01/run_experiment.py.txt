@@ -1,0 +1,53 @@
+from pathlib import Path
+from datetime import datetime, UTC
+import hashlib
+import json
+import os
+import subprocess
+import time
+
+OUT = Path(__file__).resolve().parent
+WORK = Path('/private/tmp/cpswm-pc-a-affinity-controls-20261001')
+PYTHON = '/private/tmp/cpswm-pc-a-camera-checkpoint-fixture-20260930/.venv/bin/python'
+PROJECT = Path('/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model')
+source = subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=WORK, text=True).strip()
+assert subprocess.check_output(['git', 'status', '--porcelain'], cwd=WORK, text=True) == ''
+command = [PYTHON, 'tools/run_instance_affinity_controls.py',
+    '--affinity-results', str(PROJECT/'output/instance-foreground-20260930'),
+    '--affinity-source', '/private/tmp/cpswm-pc-a-instance-foreground-20260930',
+    '--historical-python', PYTHON,
+    '--affinity-ledger-sha256', '32e0dc7cec8fce6dfca5bc36755cfba5cf3551b454c1f746f20ac2076936e842',
+    '--collection', str(PROJECT/'output/offline-factor-data-20260930/collection-attempt02'),
+    '--capture-source', '/private/tmp/cpswm-pc-a-offline-factor-data-20260930',
+    '--archive', '/Users/pangwei/.prior/datasets/allenai/procthor-10k/439193522244720b86d8c81cde2e51e3a4d150cf/train.jsonl.gz',
+    '--sdk-python', str(PROJECT/'.venv-ai2thor/bin/python'),
+    '--binary', '/Users/pangwei/.ai2thor/releases/thor-OSXIntel64-f0825767cd50d69f666c7f282e54abfe58f1e917/thor-OSXIntel64-f0825767cd50d69f666c7f282e54abfe58f1e917.app/Contents/MacOS/AI2-THOR',
+    '--frontends', str(PROJECT/'output/offline-front-end-20260930'),
+    '--frontend-source', '/private/tmp/cpswm-pc-a-offline-front-end-20260930',
+    '--inventory-sha256', '9791a946543b9158890324d3ff35a80ea04d51c9cabb6e09540f569abd903d47',
+    '--frontend-ledger-sha256', '517fc5b24afd80e4311d0de66dcfa6d113de6cd11763d61aeaaecd345740ccf6',
+    '--output', str(OUT/'experiment')]
+environment = os.environ.copy()
+environment.update(PYTHONPATH='src:tests:tools', OPENBLAS_NUM_THREADS='1')
+results = []
+for phase in ('run', 'verify'):
+    argv = command + (['--verify'] if phase == 'verify' else [])
+    result = dict(phase=phase, source_sha=source, argv=argv,
+        started_at=datetime.now(UTC).isoformat())
+    print(json.dumps(dict(phase=phase, status='started')), flush=True)
+    start = time.monotonic()
+    with (OUT/f'{phase}.log').open('xb') as log:
+        process = subprocess.run(argv, cwd=WORK, env=environment,
+            stdout=log, stderr=subprocess.STDOUT, timeout=1800)
+    result.update(exit_code=process.returncode, elapsed_seconds=time.monotonic()-start,
+        finished_at=datetime.now(UTC).isoformat())
+    if process.returncode == 0:
+        result['output_sha256'] = {str(p.relative_to(OUT/'experiment')):hashlib.sha256(p.read_bytes()).hexdigest()
+            for p in sorted((OUT/'experiment').rglob('*')) if p.is_file()}
+    results.append(result)
+    (OUT/'case-results.json').write_text(json.dumps(results,indent=2)+'\n')
+    print(json.dumps({k:v for k,v in result.items() if k not in ('argv','output_sha256')}), flush=True)
+    if process.returncode:
+        raise SystemExit(process.returncode)
+assert results[0]['output_sha256'] == results[1]['output_sha256']
+print('full fresh training and all saved outputs reproduced', flush=True)

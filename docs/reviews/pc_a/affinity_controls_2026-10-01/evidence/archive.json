@@ -1,0 +1,1091 @@
+{
+  "actual_source_sha": "a6c026963b5fec1503fa0d582fe016eccf60c756",
+  "input_collection_inventory_sha256": "9791a946543b9158890324d3ff35a80ea04d51c9cabb6e09540f569abd903d47",
+  "parent_affinity_ledger_sha256": "32e0dc7cec8fce6dfca5bc36755cfba5cf3551b454c1f746f20ac2076936e842",
+  "frontend_ledger_sha256": "517fc5b24afd80e4311d0de66dcfa6d113de6cd11763d61aeaaecd345740ccf6",
+  "case_ledger_sha256": "5eaabaaae15e4ed453c0f84b4f243103e25e5e9c1125f87f23e82e2be352bad2",
+  "files": 11831,
+  "raw_bytes": 331243846,
+  "archive": "affinity-controls.tar.gz",
+  "compressed_bytes": 21520290,
+  "sha256": "47d1d831a0f8025bd22895017b47cc66244dd5642d5b879d02ea207cab8c8893",
+  "all_members_readback_verified": true,
+  "originals_unchanged_after_readback": true,
+  "excluded_derived_files": [
+    {
+      "path": "round2-controlled-artifacts/entire dependency tree with spaces/historical affinity and frontend source/src/cpswm/__pycache__/__init__.cpython-313.pyc",
+      "bytes": 415,
+      "sha256": "fd541e1ca7ffd8076e1b5ec4cc074ac6fb38a7b7cbef10d23758a627c8af5e5b",
+      "reason": "derived Python cache only"
+    },
+    {
+      "path": "round2-controlled-artifacts/entire dependency tree with spaces/historical affinity and frontend source/src/cpswm/contracts/__pycache__/__init__.cpython-313.pyc",
+      "bytes": 7401,
+      "sha256": "1d5eaae1e8835302d2e6d752a1c317dc4263542c762e1e77cf39dcd630adfdd9",
+      "reason": "derived Python cache only"
+    },
+    {
+      "path": "round2-controlled-artifacts/entire dependency tree with spaces/historical affinity and frontend source/src/cpswm/contracts/__pycache__/assertions.cpython-313.pyc",
+      "bytes": 3737,
+      "sha256": "4343d62838c7a666b2659eef322ebe5507b781e73e16d8c5a23ee523b88ca677",
+      "reason": "derived Python cache only"
+    },
+    {
+      "path": "round2-controlled-artifacts/entire dependency tree with spaces/historical affinity and frontend source/src/cpswm/contracts/__pycache__/base.cpython-313.pyc",
+      "bytes": 10074,
+      "sha256": "5ecc3a07d5a80963e6c370b85e8f4381b1350bb8490279f7d02ae2593e6d2344",
+      "reason": "derived Python cache only"
+    },
+    {
+      "path": "round2-controlled-artifacts/entire dependency tree with spaces/historical affinity and frontend source/src/cpswm/contracts/__pycache__/beliefs.cpython-313.pyc",
+      "bytes": 6159,
+      "sha256": "c5c2fd01469021d3cb0f3bf068d59640940c1b9dea292d97e82aa3404fd12e06",
+      "reason": "derived Python cache only"
+    },
+    {
+      "path": "round2-controlled-artifacts/entire dependency tree with spaces/historical affinity and frontend source/src/cpswm/contracts/__pycache__/corrections.cpython-313.pyc",
+      "bytes": 4942,
+      "sha256": "430a4badb9a9af9f01c8c1d04d51526b71b8b20b5aa0b5671a5f9a84d33d56ad",
+      "reason": "derived Python cache only"
+    },
+    {
+      "path": "round2-controlled-artifacts/entire dependency tree with spaces/historical affinity and frontend source/src/cpswm/contracts/__pycache__/decision_context.cpython-313.pyc",
+      "bytes": 17356,
+      "sha256": "5d7eab884949d1ed682bd9c13047a82c5865fd9f753f10273e0e9432cc3ddf95",
+      "reason": "derived Python cache only"
+    },
+    {
+      "path": "round2-controlled-artifacts/entire dependency tree with spaces/historical affinity and frontend source/src/cpswm/contracts/__pycache__/events.cpython-313.pyc",
+      "bytes": 4261,
+      "sha256": "049770a04f56ac41dbff06110eaa7e26242e2c5bbbdb476e081214169a21d1c0",
+      "reason": "derived Python cache only"
+    },
+    {
+      "path": "round2-controlled-artifacts/entire dependency tree with spaces/historical affinity and frontend source/src/cpswm/contracts/__pycache__/evidence_factor_trace.cpython-313.pyc",
+      "bytes": 19364,
+      "sha256": "cad4d996af54b3b240369cd236d5f7af0587b6018f3a0842e6bc38959ce40b9c",
+      "reason": "derived Python cache only"
+    },
+    {
+      "path": "round2-controlled-artifacts/entire dependency tree with spaces/historical affinity and frontend source/src/cpswm/contracts/__pycache__/evidence_protocol.cpython-313.pyc",
+      "bytes": 12306,
+      "sha256": "d2e0df06a0ab2f6d08892ef828f3c68e12660cd28461a18a1f0bf25401a30695",
+      "reason": "derived Python cache only"
+    },
+    {
+      "path": "round2-controlled-artifacts/entire dependency tree with spaces/historical affinity and frontend source/src/cpswm/contracts/__pycache__/grounded_search.cpython-313.pyc",
+      "bytes": 47262,
+      "sha256": "407c339dc8d1fe815c06db9ebb71fcb688f6790e93b5900e6fd076feb827a009",
+      "reason": "derived Python cache only"
+    },
+    {
+      "path": "round2-controlled-artifacts/entire dependency tree with spaces/historical affinity and frontend source/src/cpswm/contracts/__pycache__/habit_learning.cpython-313.pyc",
+      "bytes": 20100,
+      "sha256": "9eabcfe26ae4841426b9a6a35c1e12ba84b2f066ab9f9ceeed9cc98af7f6274b",
+      "reason": "derived Python cache only"
+    },
+    {
+      "path": "round2-controlled-artifacts/entire dependency tree with spaces/historical affinity and frontend source/src/cpswm/contracts/__pycache__/hidden_event_evidence.cpython-313.pyc",
+      "bytes": 12765,
+      "sha256": "8f14d6c6416b152a64d94e196413de9999dcac5f00ecbdcd03aff68e0e6ff5fb",
+      "reason": "derived Python cache only"
+    },
+    {
+      "path": "round2-controlled-artifacts/entire dependency tree with spaces/historical affinity and frontend source/src/cpswm/contracts/__pycache__/likelihoods.cpython-313.pyc",
+      "bytes": 4628,
+      "sha256": "f54894f49cacbd19ee7ab93de3e7de3ec509c8954286a4efd073732b873af208",
+      "reason": "derived Python cache only"
+    },
+    {
+      "path": "round2-controlled-artifacts/entire dependency tree with spaces/historical affinity and frontend source/src/cpswm/contracts/__pycache__/llm_roles.cpython-313.pyc",
+      "bytes": 6038,
+      "sha256": "bb0e3deaa0cd5334db567dbdce9b3200406e5ee0d7bef2733b29c8efb321dac0",
+      "reason": "derived Python cache only"
+    },
+    {
+      "path": "round2-controlled-artifacts/entire dependency tree with spaces/historical affinity and frontend source/src/cpswm/contracts/__pycache__/observation_mechanism.cpython-313.pyc",
+      "bytes": 19502,
+      "sha256": "71ea1a9e8083eb2c5d3adc1ac179be58e9a7250ee63391d1ef6fecf8fd53f855",
+      "reason": "derived Python cache only"
+    },
+    {
+      "path": "round2-controlled-artifacts/entire dependency tree with spaces/historical affinity and frontend source/src/cpswm/contracts/__pycache__/placement_memory.cpython-313.pyc",
+      "bytes": 9300,
+      "sha256": "f6f6f3e8b61f383f00ef1aaca61c391cf8120621a7020d207462a458c95274fd",
+      "reason": "derived Python cache only"
+    },
+    {
+      "path": "round2-controlled-artifacts/entire dependency tree with spaces/historical affinity and frontend source/src/cpswm/contracts/__pycache__/project_two_replay.cpython-313.pyc",
+      "bytes": 24933,
+      "sha256": "d86aba073ad24d713364a5f017fd57452d2143f79be9a7d966c8cb104684d452",
+      "reason": "derived Python cache only"
+    },
+    {
+      "path": "round2-controlled-artifacts/entire dependency tree with spaces/historical affinity and frontend source/src/cpswm/contracts/__pycache__/project_two_revision_action.cpython-313.pyc",
+      "bytes": 28906,
+      "sha256": "0b763c739e16b13ff7f034efbc17fc8fa899445c05c75eb5a062d08a6548faf3",
+      "reason": "derived Python cache only"
+    },
+    {
+      "path": "round2-controlled-artifacts/entire dependency tree with spaces/historical affinity and frontend source/src/cpswm/contracts/__pycache__/queries.cpython-313.pyc",
+      "bytes": 18464,
+      "sha256": "ef9bcba7b484a0e39aced05d15dc9a4c0444868b0fa99d9f793a0fec1bb61ee8",
+      "reason": "derived Python cache only"
+    },
+    {
+      "path": "round2-controlled-artifacts/entire dependency tree with spaces/historical affinity and frontend source/src/cpswm/data_preflight/__pycache__/__init__.cpython-313.pyc",
+      "bytes": 440,
+      "sha256": "dfdc340bd96a5446eb13aca9be4911da29b4ea6d1d91cca87280f0f038e36f7c",
+      "reason": "derived Python cache only"
+    },
+    {
+      "path": "round2-controlled-artifacts/entire dependency tree with spaces/historical affinity and frontend source/src/cpswm/data_preflight/__pycache__/capture_prefix.cpython-313.pyc",
+      "bytes": 9797,
+      "sha256": "654972665147c530dcb6ab5838c5df4b214dd0789992a656f4daef7fa6b84ad5",
+      "reason": "derived Python cache only"
+    },
+    {
+      "path": "round2-controlled-artifacts/entire dependency tree with spaces/historical affinity and frontend source/src/cpswm/data_preflight/__pycache__/instance_affinity.cpython-313.pyc",
+      "bytes": 27730,
+      "sha256": "465c7ec6bf910fce6c90bbe7e7ff76926853c86cd311b0ef682d3f6fc69490d4",
+      "reason": "derived Python cache only"
+    },
+    {
+      "path": "round2-controlled-artifacts/entire dependency tree with spaces/historical affinity and frontend source/src/cpswm/data_preflight/__pycache__/proposal_decoder.cpython-313.pyc",
+      "bytes": 14433,
+      "sha256": "b511cdb5e66e7d6ac80013f55e2622e9dc82d7cf6676eb578645f836c716b719",
+      "reason": "derived Python cache only"
+    },
+    {
+      "path": "round2-controlled-artifacts/entire dependency tree with spaces/historical affinity and frontend source/src/cpswm/data_preflight/__pycache__/proposal_graph_compute.cpython-313.pyc",
+      "bytes": 11563,
+      "sha256": "4b6d44c30ef56a5bcca1602405dc4f5492fff29b66d769d02248f244f30b976a",
+      "reason": "derived Python cache only"
+    },
+    {
+      "path": "round2-controlled-artifacts/entire dependency tree with spaces/historical affinity and frontend source/src/cpswm/data_preflight/__pycache__/proposal_hand_perception.cpython-313.pyc",
+      "bytes": 7668,
+      "sha256": "5ffe6081acb64cf3916e153e3b7c24d9e95dab98764bfc3f93f990fa6a786d91",
+      "reason": "derived Python cache only"
+    },
+    {
+      "path": "round2-controlled-artifacts/entire dependency tree with spaces/historical affinity and frontend source/src/cpswm/data_preflight/__pycache__/proposal_inference_session.cpython-313.pyc",
+      "bytes": 13819,
+      "sha256": "cf4a500ba362a1d732c4ce8ff76b2013ab2946e596f37897d69cec1c1b97e112",
+      "reason": "derived Python cache only"
+    },
+    {
+      "path": "round2-controlled-artifacts/entire dependency tree with spaces/historical affinity and frontend source/src/cpswm/data_preflight/__pycache__/proposal_learning.cpython-313.pyc",
+      "bytes": 5940,
+      "sha256": "435ee17e12806b1119b84add84c2e7a8626c327a99824e3669ec3ca7fe1161df",
+      "reason": "derived Python cache only"
+    },
+    {
+      "path": "round2-controlled-artifacts/entire dependency tree with spaces/historical affinity and frontend source/src/cpswm/data_preflight/__pycache__/proposal_perception.cpython-313.pyc",
+      "bytes": 18908,
+      "sha256": "b0ab010d0ce2eab157703c06d84eb70e776bfef78802c678bb7b05640142b5ae",
+      "reason": "derived Python cache only"
+    },
+    {
+      "path": "round2-controlled-artifacts/entire dependency tree with spaces/historical affinity and frontend source/src/cpswm/data_preflight/__pycache__/proposal_samples.cpython-313.pyc",
+      "bytes": 49165,
+      "sha256": "038c0142a469550f4982ccbd9e663aedb8437f7fb83499f6ef26e7395e2141e1",
+      "reason": "derived Python cache only"
+    },
+    {
+      "path": "round2-controlled-artifacts/entire dependency tree with spaces/historical affinity and frontend source/src/cpswm/data_preflight/__pycache__/proposal_trainer.cpython-313.pyc",
+      "bytes": 20620,
+      "sha256": "5d6f75b7f63be2b8127e9d918e44e6125cfed21fefad4f5665873890ec74f68e",
+      "reason": "derived Python cache only"
+    },
+    {
+      "path": "round2-controlled-artifacts/entire dependency tree with spaces/historical affinity and frontend source/src/cpswm/data_preflight/__pycache__/typed_proposal_networks.cpython-313.pyc",
+      "bytes": 31290,
+      "sha256": "4169587b2c218f9db4627a3c11e21abae0c1484eda9e1a350b2e58e3e110a3e1",
+      "reason": "derived Python cache only"
+    },
+    {
+      "path": "round2-controlled-artifacts/entire dependency tree with spaces/historical affinity and frontend source/src/cpswm/data_preflight/__pycache__/visible_prefix.cpython-313.pyc",
+      "bytes": 9848,
+      "sha256": "ddc60840189caf0ef2fc77eae1aaf6988f8c0caef6acd04012d27e1c3a6fe135",
+      "reason": "derived Python cache only"
+    },
+    {
+      "path": "round2-controlled-artifacts/entire dependency tree with spaces/historical affinity and frontend source/src/cpswm/foundation/__pycache__/__init__.cpython-313.pyc",
+      "bytes": 1401,
+      "sha256": "f4ba7479a61163a8767304876c2247d90000437bb1c4a95ed772e61c5a2a4efe",
+      "reason": "derived Python cache only"
+    },
+    {
+      "path": "round2-controlled-artifacts/entire dependency tree with spaces/historical affinity and frontend source/src/cpswm/foundation/identity_time_frames/__pycache__/__init__.cpython-313.pyc",
+      "bytes": 1022,
+      "sha256": "787ce5e20e9460abe576188a8df268227837935344ee82c0f2f67f9bd0ae227e",
+      "reason": "derived Python cache only"
+    },
+    {
+      "path": "round2-controlled-artifacts/entire dependency tree with spaces/historical affinity and frontend source/src/cpswm/foundation/identity_time_frames/__pycache__/clocks.cpython-313.pyc",
+      "bytes": 5862,
+      "sha256": "7176ce0ca336962cedcc51a36fdedaa2f0054c9294d36db0cf80d2baa8d5b93c",
+      "reason": "derived Python cache only"
+    },
+    {
+      "path": "round2-controlled-artifacts/entire dependency tree with spaces/historical affinity and frontend source/src/cpswm/foundation/identity_time_frames/__pycache__/contracts.cpython-313.pyc",
+      "bytes": 7141,
+      "sha256": "61378633a1004488a9fc30ef17c9a088ce75a4a5bf04b276a60cef37259c2f95",
+      "reason": "derived Python cache only"
+    },
+    {
+      "path": "round2-controlled-artifacts/entire dependency tree with spaces/historical affinity and frontend source/src/cpswm/foundation/identity_time_frames/__pycache__/frames.cpython-313.pyc",
+      "bytes": 11370,
+      "sha256": "ffd014e89af71a151e5ebca943ec90aeda56017775a35174e80fd791c8ef5a71",
+      "reason": "derived Python cache only"
+    },
+    {
+      "path": "round2-controlled-artifacts/entire dependency tree with spaces/historical affinity and frontend source/src/cpswm/foundation/identity_time_frames/__pycache__/identity.cpython-313.pyc",
+      "bytes": 3726,
+      "sha256": "47f94b41450a833ab9a1fbc1b22463ea2e9284d04cede6e73699d82215fb2781",
+      "reason": "derived Python cache only"
+    },
+    {
+      "path": "round2-controlled-artifacts/entire dependency tree with spaces/historical affinity and frontend source/src/cpswm/foundation/identity_time_frames/__pycache__/service.cpython-313.pyc",
+      "bytes": 1144,
+      "sha256": "f4a34a3f7abafc9b542869aee34240b1c5042720591b8fa3f9a2c8364eec7b16",
+      "reason": "derived Python cache only"
+    },
+    {
+      "path": "round2-controlled-artifacts/entire dependency tree with spaces/historical affinity and frontend source/src/cpswm/foundation/persistence_replay/__pycache__/__init__.cpython-313.pyc",
+      "bytes": 1089,
+      "sha256": "3e2c5b5fab9e6e5b9cbab61480b0f989f296710f96a014c5bb40cc70a575d46a",
+      "reason": "derived Python cache only"
+    },
+    {
+      "path": "round2-controlled-artifacts/entire dependency tree with spaces/historical affinity and frontend source/src/cpswm/foundation/persistence_replay/__pycache__/contracts.cpython-313.pyc",
+      "bytes": 12182,
+      "sha256": "18e24aa4d3db08b8c0a8e6270805a91c51b3a7473d0dd88584a7a40b4f02b5de",
+      "reason": "derived Python cache only"
+    },
+    {
+      "path": "round2-controlled-artifacts/entire dependency tree with spaces/historical affinity and frontend source/src/cpswm/foundation/persistence_replay/__pycache__/memory_store.cpython-313.pyc",
+      "bytes": 16525,
+      "sha256": "9abacd90f52bfe516299cde2ea08eaf03fde37e0033c3f0c52d0f7f1c92a8a9a",
+      "reason": "derived Python cache only"
+    },
+    {
+      "path": "round2-controlled-artifacts/entire dependency tree with spaces/historical affinity and frontend source/src/cpswm/foundation/persistence_replay/__pycache__/snapshots.cpython-313.pyc",
+      "bytes": 2203,
+      "sha256": "7b07a6fedc0b8baaecd152a1a88428aca6ae9e0440525a206aa12c4824130308",
+      "reason": "derived Python cache only"
+    },
+    {
+      "path": "round2-controlled-artifacts/entire dependency tree with spaces/historical affinity and frontend source/src/cpswm/foundation/runtime_orchestration/__pycache__/__init__.cpython-313.pyc",
+      "bytes": 1388,
+      "sha256": "13e166b814cda93c329eb1adaa6b417d25077c36c20cb26b4b75cc351ef6413c",
+      "reason": "derived Python cache only"
+    },
+    {
+      "path": "round2-controlled-artifacts/entire dependency tree with spaces/historical affinity and frontend source/src/cpswm/foundation/runtime_orchestration/__pycache__/contracts.cpython-313.pyc",
+      "bytes": 9367,
+      "sha256": "61afa46b8c57e3d7681614521a60191f6a58950dacecd5851ac1bea0e78618e2",
+      "reason": "derived Python cache only"
+    },
+    {
+      "path": "round2-controlled-artifacts/entire dependency tree with spaces/historical affinity and frontend source/src/cpswm/foundation/runtime_orchestration/__pycache__/handlers.cpython-313.pyc",
+      "bytes": 2717,
+      "sha256": "21c9ea3c2cc62f6316e1aa83ea67a88d6540e4d205f50bd1b9bf7559d1bd1b5b",
+      "reason": "derived Python cache only"
+    },
+    {
+      "path": "round2-controlled-artifacts/entire dependency tree with spaces/historical affinity and frontend source/src/cpswm/foundation/runtime_orchestration/__pycache__/provenance.cpython-313.pyc",
+      "bytes": 12212,
+      "sha256": "e66e9369e2ffb59d41ac7b0fdfd904f9383b143f9626aa42b9537615cba78eb7",
+      "reason": "derived Python cache only"
+    },
+    {
+      "path": "round2-controlled-artifacts/entire dependency tree with spaces/historical affinity and frontend source/src/cpswm/foundation/runtime_orchestration/__pycache__/replay.cpython-313.pyc",
+      "bytes": 15237,
+      "sha256": "d9602ee15b77708bd73513ddf3f59ceb467c0d27ad95c7f7f0c2a80338e3c681",
+      "reason": "derived Python cache only"
+    },
+    {
+      "path": "round2-controlled-artifacts/entire dependency tree with spaces/historical affinity and frontend source/src/cpswm/foundation/runtime_orchestration/__pycache__/runtime.cpython-313.pyc",
+      "bytes": 21498,
+      "sha256": "48f8dbba4cfe461c6852bdc57c27cf7f059951a8e08767e3f1efa7f699b2f1ce",
+      "reason": "derived Python cache only"
+    },
+    {
+      "path": "round2-controlled-artifacts/entire dependency tree with spaces/historical affinity and frontend source/src/cpswm/perception_mapping/__pycache__/__init__.cpython-313.pyc",
+      "bytes": 1407,
+      "sha256": "1c4edadb92ce0e5554c22b937ee7a3d26f1b876711dc0f538d53b38b355dfce0",
+      "reason": "derived Python cache only"
+    },
+    {
+      "path": "round2-controlled-artifacts/entire dependency tree with spaces/historical affinity and frontend source/src/cpswm/perception_mapping/__pycache__/interaction_evidence.cpython-313.pyc",
+      "bytes": 30331,
+      "sha256": "4ac133a7b45d8885abb736743a44d1ce8ea69c9e0bc678a98aec2da2d4edc952",
+      "reason": "derived Python cache only"
+    },
+    {
+      "path": "round2-controlled-artifacts/entire dependency tree with spaces/historical affinity and frontend source/src/cpswm/perception_mapping/__pycache__/natural_hands.cpython-313.pyc",
+      "bytes": 20402,
+      "sha256": "44f0dfde58356b54f1efe87e323f1946b35440a232fc57f4a0d92e131e79f9bd",
+      "reason": "derived Python cache only"
+    },
+    {
+      "path": "round2-controlled-artifacts/entire dependency tree with spaces/historical affinity and frontend source/src/cpswm/perception_mapping/__pycache__/natural_vision.cpython-313.pyc",
+      "bytes": 39565,
+      "sha256": "778af5f5ac1be476e845a44ec654945dea2a0e8b73d1c31df9670b7a9cbb8c01",
+      "reason": "derived Python cache only"
+    },
+    {
+      "path": "round2-controlled-artifacts/entire dependency tree with spaces/historical affinity and frontend source/src/cpswm/perception_mapping/__pycache__/pixel_camera_feedback.cpython-313.pyc",
+      "bytes": 12871,
+      "sha256": "e75f6686638b1baad5e7dad1f0f9db1016ba3564d470f0ff9641dafd4b091517",
+      "reason": "derived Python cache only"
+    },
+    {
+      "path": "round2-controlled-artifacts/entire dependency tree with spaces/historical affinity and frontend source/src/cpswm/perception_mapping/__pycache__/unity_rgbd.cpython-313.pyc",
+      "bytes": 27554,
+      "sha256": "2a228a295aea4dd4db83ed070a4eddcfac26825240ccf7fc3f072887a9513460",
+      "reason": "derived Python cache only"
+    },
+    {
+      "path": "round2-controlled-artifacts/entire dependency tree with spaces/historical affinity and frontend source/src/cpswm/perception_mapping/adapters/__pycache__/__init__.cpython-313.pyc",
+      "bytes": 998,
+      "sha256": "66ad41eb219a2986d8ffcc185ef7392a6c1326f90ed1b57e4f9ebefed56005f6",
+      "reason": "derived Python cache only"
+    },
+    {
+      "path": "round2-controlled-artifacts/entire dependency tree with spaces/historical affinity and frontend source/src/cpswm/perception_mapping/adapters/__pycache__/contracts.cpython-313.pyc",
+      "bytes": 9850,
+      "sha256": "1b125fd5c988a4b809d9244927c0fab335768f7eff4b62fc13d2ebd7a22d2f33",
+      "reason": "derived Python cache only"
+    },
+    {
+      "path": "round2-controlled-artifacts/entire dependency tree with spaces/historical affinity and frontend source/src/cpswm/perception_mapping/adapters/__pycache__/rgbd_capture.cpython-313.pyc",
+      "bytes": 12955,
+      "sha256": "c5a1a7c4bd10cba094992cb1fee941759dd2a9638a1722bad3612df749f93fdc",
+      "reason": "derived Python cache only"
+    },
+    {
+      "path": "round2-controlled-artifacts/entire dependency tree with spaces/historical affinity and frontend source/src/cpswm/perception_mapping/adapters/__pycache__/synthetic_adapter.cpython-313.pyc",
+      "bytes": 5601,
+      "sha256": "b8c3b2d5ca21edf1acdc6e0733a3c29993c6bf2a8870561c23cb8e56fd95a349",
+      "reason": "derived Python cache only"
+    },
+    {
+      "path": "round2-controlled-artifacts/entire dependency tree with spaces/historical affinity and frontend source/src/cpswm/perception_mapping/adapters/__pycache__/validation.cpython-313.pyc",
+      "bytes": 9619,
+      "sha256": "0ab1f0706876b393d37715acce3578ea7da55a7ab18bfd1aa660d8754aadebb1",
+      "reason": "derived Python cache only"
+    },
+    {
+      "path": "round2-controlled-artifacts/entire dependency tree with spaces/historical affinity and frontend source/src/cpswm/perception_mapping/calibration_sync/__pycache__/__init__.cpython-313.pyc",
+      "bytes": 901,
+      "sha256": "3971ed06f84685ef9a6cfd5c064b5c3b3b63a9b065501916e960c8cd2584fe3e",
+      "reason": "derived Python cache only"
+    },
+    {
+      "path": "round2-controlled-artifacts/entire dependency tree with spaces/historical affinity and frontend source/src/cpswm/perception_mapping/calibration_sync/__pycache__/contracts.cpython-313.pyc",
+      "bytes": 12565,
+      "sha256": "74c9a28b21c4971821e7a233b534af4065c52c98a2d5a6416272a481a4884eb9",
+      "reason": "derived Python cache only"
+    },
+    {
+      "path": "round2-controlled-artifacts/entire dependency tree with spaces/historical affinity and frontend source/src/cpswm/perception_mapping/calibration_sync/__pycache__/registry.cpython-313.pyc",
+      "bytes": 12149,
+      "sha256": "586b8ad06007b1ed8234d425557681c1a203fcfb7208cd921244c821de22ca99",
+      "reason": "derived Python cache only"
+    },
+    {
+      "path": "round2-controlled-artifacts/entire dependency tree with spaces/historical affinity and frontend source/src/cpswm/system/__pycache__/__init__.cpython-313.pyc",
+      "bytes": 414,
+      "sha256": "6425437cb8fd1eb290b6621f7d1f40611fca11b35b2277119aa41bbb845ae94f",
+      "reason": "derived Python cache only"
+    },
+    {
+      "path": "round2-controlled-artifacts/entire dependency tree with spaces/historical affinity and frontend source/src/cpswm/system/__pycache__/checkpoint_artifacts.cpython-313.pyc",
+      "bytes": 3355,
+      "sha256": "2cef915e3e178b8e52fa15f0356106308b6d3b5c866a77b7c321ae58efe8c1a2",
+      "reason": "derived Python cache only"
+    },
+    {
+      "path": "round2-controlled-artifacts/entire dependency tree with spaces/historical affinity and frontend source/src/cpswm/system/__pycache__/continuous_camera_collection.cpython-313.pyc",
+      "bytes": 7064,
+      "sha256": "7be1030d00402ab4c43325bcb16e6e825e13099844d5cd160e2b664c8fbdab56",
+      "reason": "derived Python cache only"
+    },
+    {
+      "path": "round2-controlled-artifacts/entire dependency tree with spaces/historical affinity and frontend source/src/cpswm/system/__pycache__/continuous_state_codec.cpython-313.pyc",
+      "bytes": 13250,
+      "sha256": "a6618639a2dd57ac0a14ce2df1a544c30984150e514aeafbee973548ef160306",
+      "reason": "derived Python cache only"
+    },
+    {
+      "path": "round2-controlled-artifacts/entire dependency tree with spaces/historical affinity and frontend source/src/cpswm/system/__pycache__/continuous_state_store.cpython-313.pyc",
+      "bytes": 11258,
+      "sha256": "9411ff5cb0d2000028469a63531abab34d8e94feb2d5326cf8204b4573a952ff",
+      "reason": "derived Python cache only"
+    },
+    {
+      "path": "round2-controlled-artifacts/entire dependency tree with spaces/historical affinity and frontend source/src/cpswm/system/__pycache__/joint_camera_feedback.cpython-313.pyc",
+      "bytes": 15459,
+      "sha256": "09dcdb11b21d200ef918cf423032bd18d4877cad851980c181169e6b9628213c",
+      "reason": "derived Python cache only"
+    },
+    {
+      "path": "round2-controlled-artifacts/entire dependency tree with spaces/historical affinity and frontend source/src/cpswm/system/__pycache__/joint_camera_policy.cpython-313.pyc",
+      "bytes": 6652,
+      "sha256": "f8c4ed3bb6adb03c09aafb8410f74914686343cd2f5f77e813cc163fa34865e6",
+      "reason": "derived Python cache only"
+    },
+    {
+      "path": "round2-controlled-artifacts/entire dependency tree with spaces/historical affinity and frontend source/src/cpswm/system/__pycache__/native_joint_production.cpython-313.pyc",
+      "bytes": 11167,
+      "sha256": "95ab3ee546130e864e7534825a567dc48a8738b195c75334f7473b78447f9394",
+      "reason": "derived Python cache only"
+    },
+    {
+      "path": "round2-controlled-artifacts/entire dependency tree with spaces/historical affinity and frontend source/src/cpswm/system/__pycache__/native_joint_replay.cpython-313.pyc",
+      "bytes": 15274,
+      "sha256": "6001eefaebcf02cb8974797690797d7d8f8668c63ee4efdfb401f98d31200379",
+      "reason": "derived Python cache only"
+    },
+    {
+      "path": "round2-controlled-artifacts/entire dependency tree with spaces/historical affinity and frontend source/src/cpswm/system/__pycache__/native_neural_production.cpython-313.pyc",
+      "bytes": 32610,
+      "sha256": "ed8efaf66ed9bee3c16e6b41be7dce0509cd5e037301b5799472e20c59d57c84",
+      "reason": "derived Python cache only"
+    },
+    {
+      "path": "round2-controlled-artifacts/entire dependency tree with spaces/historical affinity and frontend source/src/cpswm/system/__pycache__/native_visual_source.cpython-313.pyc",
+      "bytes": 4031,
+      "sha256": "b4304e8fe90554907803869e2edd752582ade6f4f663e9d6f5a7fd39212e3778",
+      "reason": "derived Python cache only"
+    },
+    {
+      "path": "round2-controlled-artifacts/entire dependency tree with spaces/historical affinity and frontend source/src/cpswm/system/__pycache__/owned_visual_support.cpython-313.pyc",
+      "bytes": 16401,
+      "sha256": "c25239640f7838d19f7c8e1d2e319972b699a79045252da9a5d1829ac9985316",
+      "reason": "derived Python cache only"
+    },
+    {
+      "path": "round2-controlled-artifacts/entire dependency tree with spaces/historical affinity and frontend source/src/cpswm/system/__pycache__/prototype_spine.cpython-313.pyc",
+      "bytes": 281701,
+      "sha256": "c3e94aaa19d8535d84ce9f245fd17bd9b4cf125215253234f61e5db6ee6a3e42",
+      "reason": "derived Python cache only"
+    },
+    {
+      "path": "round2-controlled-artifacts/entire dependency tree with spaces/historical affinity and frontend source/src/cpswm/system/__pycache__/reproducibility.cpython-313.pyc",
+      "bytes": 4191,
+      "sha256": "3e09e986f352429e95117ca642276754f603e5b954bd05c60befa62a3dad50e3",
+      "reason": "derived Python cache only"
+    },
+    {
+      "path": "round2-controlled-artifacts/entire dependency tree with spaces/historical affinity and frontend source/src/cpswm/system/__pycache__/structure_two_adaptive_runtime.cpython-313.pyc",
+      "bytes": 22999,
+      "sha256": "fd78267cdf939ac2f32d69a7f0d43f35d7a37f25588531cf41c1533266238102",
+      "reason": "derived Python cache only"
+    },
+    {
+      "path": "round2-controlled-artifacts/entire dependency tree with spaces/historical affinity and frontend source/src/cpswm/system/__pycache__/structure_two_conditional_updates.cpython-313.pyc",
+      "bytes": 11609,
+      "sha256": "d155ca667bf64bb28eda55666e6b523dba8e0db3e632088545a1bf965edb4c1b",
+      "reason": "derived Python cache only"
+    },
+    {
+      "path": "round2-controlled-artifacts/entire dependency tree with spaces/historical affinity and frontend source/src/cpswm/system/__pycache__/structure_two_continuous_input.cpython-313.pyc",
+      "bytes": 85757,
+      "sha256": "f3731dd71af627a7b7f4f4521c1ab83773080a23600b333067096085bd13948a",
+      "reason": "derived Python cache only"
+    },
+    {
+      "path": "round2-controlled-artifacts/entire dependency tree with spaces/historical affinity and frontend source/src/cpswm/system/__pycache__/structure_two_execution.cpython-313.pyc",
+      "bytes": 61301,
+      "sha256": "0e12b3faca37b80277827ec0040e3506d21e00fdf0331fc870fa7e07f0838e6a",
+      "reason": "derived Python cache only"
+    },
+    {
+      "path": "round2-controlled-artifacts/entire dependency tree with spaces/historical affinity and frontend source/src/cpswm/system/__pycache__/structure_two_joint_consumption.cpython-313.pyc",
+      "bytes": 11886,
+      "sha256": "0e96278d5a8542e3b2459a5a3c73d6e8194040fba70a2275f47b8ef750f9f280",
+      "reason": "derived Python cache only"
+    },
+    {
+      "path": "round2-controlled-artifacts/entire dependency tree with spaces/historical affinity and frontend source/src/cpswm/system/__pycache__/structure_two_particle_workspace.cpython-313.pyc",
+      "bytes": 59979,
+      "sha256": "1fe9c1cf719faae8a3856ea048626f73d348a0e7554318e545a638b12da4872c",
+      "reason": "derived Python cache only"
+    },
+    {
+      "path": "round2-controlled-artifacts/entire dependency tree with spaces/historical affinity and frontend source/src/cpswm/system/__pycache__/structure_two_production_system.cpython-313.pyc",
+      "bytes": 100650,
+      "sha256": "e8324b0f232bb196b47679297df5f94ea24e1a6610807b6754f050e5b58e53ae",
+      "reason": "derived Python cache only"
+    },
+    {
+      "path": "round2-controlled-artifacts/entire dependency tree with spaces/historical affinity and frontend source/src/cpswm/system/__pycache__/structure_two_semantic_identity.cpython-313.pyc",
+      "bytes": 28164,
+      "sha256": "e2031c76be45ac231e36b693358180a4c0382b68d344a361ecda4549fe628a80",
+      "reason": "derived Python cache only"
+    },
+    {
+      "path": "round2-controlled-artifacts/entire dependency tree with spaces/historical affinity and frontend source/src/cpswm/system/__pycache__/unity_observation.cpython-313.pyc",
+      "bytes": 10524,
+      "sha256": "4b09ecfc65593a00bdd244dd266c687816563a5c8145fb72a6a8d3f2ce5fab7b",
+      "reason": "derived Python cache only"
+    },
+    {
+      "path": "round2-controlled-artifacts/entire dependency tree with spaces/historical affinity and frontend source/src/cpswm/system/attestation/__pycache__/__init__.cpython-313.pyc",
+      "bytes": 1068,
+      "sha256": "3a9f96187793c72114a1b8a42b7edba4cd61392fb7917fa1b42bba841f918c4b",
+      "reason": "derived Python cache only"
+    },
+    {
+      "path": "round2-controlled-artifacts/entire dependency tree with spaces/historical affinity and frontend source/src/cpswm/system/attestation/__pycache__/authority.cpython-313.pyc",
+      "bytes": 16263,
+      "sha256": "63ba5389dc8ff29a1d1fbb950958c468c3c2a562b8c3ae3854bbe4490dec0e4f",
+      "reason": "derived Python cache only"
+    },
+    {
+      "path": "round2-controlled-artifacts/entire dependency tree with spaces/historical affinity and frontend source/src/cpswm/system/continual/__pycache__/__init__.cpython-313.pyc",
+      "bytes": 2387,
+      "sha256": "071a86fcb5d0b5480f6d319d82481ce20685364bb31e5a4c0644f13310274635",
+      "reason": "derived Python cache only"
+    },
+    {
+      "path": "round2-controlled-artifacts/entire dependency tree with spaces/historical affinity and frontend source/src/cpswm/system/continual/__pycache__/event_derived_update_ledger.cpython-313.pyc",
+      "bytes": 29346,
+      "sha256": "0ffbed05534f1208aa2d629de342685ab2f478d624d4c919997231fe40c3aafd",
+      "reason": "derived Python cache only"
+    },
+    {
+      "path": "round2-controlled-artifacts/entire dependency tree with spaces/historical affinity and frontend source/src/cpswm/system/continual/__pycache__/execution_feedback_projector.cpython-313.pyc",
+      "bytes": 19601,
+      "sha256": "6cb2d2729af6abfb8cfc48173a283312a833fb2cfa0b0a12173ace6f41b0b54c",
+      "reason": "derived Python cache only"
+    },
+    {
+      "path": "round2-controlled-artifacts/entire dependency tree with spaces/historical affinity and frontend source/src/cpswm/system/continual/__pycache__/hybrid_event_to_task_loop.cpython-313.pyc",
+      "bytes": 28842,
+      "sha256": "217d28685a1b0bd3275a489b851021fb85223377bb2f54b0697915de086344f1",
+      "reason": "derived Python cache only"
+    },
+    {
+      "path": "round2-controlled-artifacts/entire dependency tree with spaces/historical affinity and frontend source/src/cpswm/system/continual/__pycache__/hybrid_statistics.cpython-313.pyc",
+      "bytes": 100690,
+      "sha256": "373a9520592af8c5c603ea61a8069eefef34b3f5320ac93ebef6b54d3d95de79",
+      "reason": "derived Python cache only"
+    },
+    {
+      "path": "round2-controlled-artifacts/entire dependency tree with spaces/historical affinity and frontend source/src/cpswm/system/continual/__pycache__/project_one_feedback.cpython-313.pyc",
+      "bytes": 6355,
+      "sha256": "eb20ae8771191d1a7bdae9aec30b0a643823f99ae71901fdb5fb1bac613af8cf",
+      "reason": "derived Python cache only"
+    },
+    {
+      "path": "round2-controlled-artifacts/entire dependency tree with spaces/historical affinity and frontend source/src/cpswm/system/continual/__pycache__/project_one_regime_loop.cpython-313.pyc",
+      "bytes": 20536,
+      "sha256": "7432f20ce5e1c5f1c0e5214b99354a895ed9aea99fb5792e07e1e3617f070a27",
+      "reason": "derived Python cache only"
+    },
+    {
+      "path": "round2-controlled-artifacts/entire dependency tree with spaces/historical affinity and frontend source/src/cpswm/system/continual/__pycache__/regime_authority.cpython-313.pyc",
+      "bytes": 3718,
+      "sha256": "35f5367e84acfdec6775ee5209dc9ebe8c7936ac37c9fc4db8099970440a037b",
+      "reason": "derived Python cache only"
+    },
+    {
+      "path": "round2-controlled-artifacts/entire dependency tree with spaces/historical affinity and frontend source/src/cpswm/system/continual/rls/__pycache__/__init__.cpython-313.pyc",
+      "bytes": 829,
+      "sha256": "757f482f1a81f95ec6435648bb4a831960cf000c609c9e262b0eb6ee770728b1",
+      "reason": "derived Python cache only"
+    },
+    {
+      "path": "round2-controlled-artifacts/entire dependency tree with spaces/historical affinity and frontend source/src/cpswm/system/continual/rls/__pycache__/channel_calibrator.cpython-313.pyc",
+      "bytes": 3852,
+      "sha256": "6eecb508fe00db7c795b2b0c7590a0bc36967e0a2710db0481a54475da9e014e",
+      "reason": "derived Python cache only"
+    },
+    {
+      "path": "round2-controlled-artifacts/entire dependency tree with spaces/historical affinity and frontend source/src/cpswm/system/continual/rls/__pycache__/core.cpython-313.pyc",
+      "bytes": 9179,
+      "sha256": "178fe412cf46bbc57687acc4632d94880fe2ad607d78aa0d9af999f8a0b790e2",
+      "reason": "derived Python cache only"
+    },
+    {
+      "path": "round2-controlled-artifacts/entire dependency tree with spaces/historical affinity and frontend source/src/cpswm/system/continual/rls/__pycache__/habit_head.cpython-313.pyc",
+      "bytes": 12622,
+      "sha256": "fb8d98dad07fcb2dcbd8156299c303d7d357cab4d42742537b5fffb56ea316f8",
+      "reason": "derived Python cache only"
+    },
+    {
+      "path": "round2-controlled-artifacts/entire dependency tree with spaces/historical affinity and frontend source/src/cpswm/system/continual/rls/__pycache__/regime_bank.cpython-313.pyc",
+      "bytes": 13035,
+      "sha256": "4c0d399eef6dfd4b88639ef76bf97814e1baccc4aef3c232302e633127ff092d",
+      "reason": "derived Python cache only"
+    },
+    {
+      "path": "round2-controlled-artifacts/entire dependency tree with spaces/historical affinity and frontend source/src/cpswm/system/counterfactual_event_hypergraph/__pycache__/__init__.cpython-313.pyc",
+      "bytes": 2841,
+      "sha256": "f43d064c42842cc74d2790dafdbe0a597a82b0fe1ce8ef524c7b516d2d4d08fe",
+      "reason": "derived Python cache only"
+    },
+    {
+      "path": "round2-controlled-artifacts/entire dependency tree with spaces/historical affinity and frontend source/src/cpswm/system/counterfactual_event_hypergraph/__pycache__/baselines.cpython-313.pyc",
+      "bytes": 22522,
+      "sha256": "694750a07ed4898d5e87cf29ee0e1e5d438ba3aa62bc53cae5e9add074e3e677",
+      "reason": "derived Python cache only"
+    },
+    {
+      "path": "round2-controlled-artifacts/entire dependency tree with spaces/historical affinity and frontend source/src/cpswm/system/counterfactual_event_hypergraph/__pycache__/contracts.cpython-313.pyc",
+      "bytes": 39973,
+      "sha256": "86814f67fa23daf232ccf501308ac21b6f7cfa6b98f13f8aaae733ce156bccd1",
+      "reason": "derived Python cache only"
+    },
+    {
+      "path": "round2-controlled-artifacts/entire dependency tree with spaces/historical affinity and frontend source/src/cpswm/system/counterfactual_event_hypergraph/__pycache__/engine.cpython-313.pyc",
+      "bytes": 52766,
+      "sha256": "b29ac56dc4dabf0e940aacf8e270ab6fdb3170d56d58dd6f7712462a6f8cb86f",
+      "reason": "derived Python cache only"
+    },
+    {
+      "path": "round2-controlled-artifacts/entire dependency tree with spaces/historical affinity and frontend source/src/cpswm/system/counterfactual_event_hypergraph/__pycache__/feedback_revision_loop.cpython-313.pyc",
+      "bytes": 49285,
+      "sha256": "d91bac0018f2fbd7c6afd22b562b8798cc38fecd17ce3724e4db79d173c9ee55",
+      "reason": "derived Python cache only"
+    },
+    {
+      "path": "round2-controlled-artifacts/entire dependency tree with spaces/historical affinity and frontend source/src/cpswm/system/counterfactual_event_hypergraph/__pycache__/hypothesis_message_passing.cpython-313.pyc",
+      "bytes": 50979,
+      "sha256": "0b6bab874c517f83c13f06b0e92f871c496b587bf0b415e48dcb7c76eab87f63",
+      "reason": "derived Python cache only"
+    },
+    {
+      "path": "round2-controlled-artifacts/entire dependency tree with spaces/historical affinity and frontend source/src/cpswm/system/evaluation_operations/__pycache__/__init__.cpython-313.pyc",
+      "bytes": 36395,
+      "sha256": "4377642c3afeb722660f4c4abe5b06c36ef93b1fc87b5bbe60ec69cb7f27f988",
+      "reason": "derived Python cache only"
+    },
+    {
+      "path": "round2-controlled-artifacts/entire dependency tree with spaces/historical affinity and frontend source/src/cpswm/system/evaluation_operations/__pycache__/project_two_ablation.cpython-313.pyc",
+      "bytes": 10453,
+      "sha256": "89d5483ab62a7c7cb267595487fa37f6ee7f8068a9265a75f04c582431c641ad",
+      "reason": "derived Python cache only"
+    },
+    {
+      "path": "round2-controlled-artifacts/entire dependency tree with spaces/historical affinity and frontend source/src/cpswm/system/evaluation_operations/__pycache__/structure_two_action_death_test.cpython-313.pyc",
+      "bytes": 77900,
+      "sha256": "2997785e80b65b4c7632b27e13719e0d84d81dc4d52f9f19f245ad69ef44df16",
+      "reason": "derived Python cache only"
+    },
+    {
+      "path": "round2-controlled-artifacts/entire dependency tree with spaces/historical affinity and frontend source/src/cpswm/system/evaluation_operations/__pycache__/structure_two_search_utility.cpython-313.pyc",
+      "bytes": 40693,
+      "sha256": "af7b1481b0b8cd1a3e05f043271d4e63d4ce513259cbbd62f54da827045fe3b2",
+      "reason": "derived Python cache only"
+    },
+    {
+      "path": "round2-controlled-artifacts/entire dependency tree with spaces/historical affinity and frontend source/src/cpswm/system/evaluation_operations/__pycache__/structure_two_selected_method.cpython-313.pyc",
+      "bytes": 34409,
+      "sha256": "e1f85822ed33fb046a0860d8c47dc1f156afc05557321adce17fd84f8a7e5b50",
+      "reason": "derived Python cache only"
+    },
+    {
+      "path": "round2-controlled-artifacts/entire dependency tree with spaces/historical affinity and frontend source/src/cpswm/system/privacy_governance/__pycache__/__init__.cpython-313.pyc",
+      "bytes": 1109,
+      "sha256": "659d09a4cde8a6dd2c88156b12d0162733223fa2ee6b8738a7c53437a79960a0",
+      "reason": "derived Python cache only"
+    },
+    {
+      "path": "round2-controlled-artifacts/entire dependency tree with spaces/historical affinity and frontend source/src/cpswm/system/privacy_governance/__pycache__/contracts.cpython-313.pyc",
+      "bytes": 14962,
+      "sha256": "7b363eafb97dc0aa2b678bf67e0fc580c6240dd539bbb9e181a02d7727a69671",
+      "reason": "derived Python cache only"
+    },
+    {
+      "path": "round2-controlled-artifacts/entire dependency tree with spaces/historical affinity and frontend source/src/cpswm/system/privacy_governance/__pycache__/governance.cpython-313.pyc",
+      "bytes": 34119,
+      "sha256": "54d2fe982393028849f57bbc0850e888466cbe9a5d237ae4510270bab84068b3",
+      "reason": "derived Python cache only"
+    },
+    {
+      "path": "round2-controlled-artifacts/entire dependency tree with spaces/historical affinity and frontend source/src/cpswm/world_model/__pycache__/__init__.cpython-313.pyc",
+      "bytes": 464,
+      "sha256": "1a591e6c96b8d0d914be64413a0af04e25486a01b3f65951d31ed18a7b07cbc0",
+      "reason": "derived Python cache only"
+    },
+    {
+      "path": "round2-controlled-artifacts/entire dependency tree with spaces/historical affinity and frontend source/src/cpswm/world_model/grounded_search/__pycache__/__init__.cpython-313.pyc",
+      "bytes": 4786,
+      "sha256": "1b63164a012ff9e748b665736521b8e0a3cf769749018400e1eaac45c111b6f0",
+      "reason": "derived Python cache only"
+    },
+    {
+      "path": "round2-controlled-artifacts/entire dependency tree with spaces/historical affinity and frontend source/src/cpswm/world_model/grounded_search/__pycache__/active_verification.cpython-313.pyc",
+      "bytes": 45203,
+      "sha256": "b00174a2572ff2c2628f5c3c85ff4311199825b7ff339f8ca205784f615203a1",
+      "reason": "derived Python cache only"
+    },
+    {
+      "path": "round2-controlled-artifacts/entire dependency tree with spaces/historical affinity and frontend source/src/cpswm/world_model/grounded_search/__pycache__/adapters.cpython-313.pyc",
+      "bytes": 13550,
+      "sha256": "66b21a090314129bb60a3d57c0a95de6386c5e9387260b668a3b6b6ad68c3e27",
+      "reason": "derived Python cache only"
+    },
+    {
+      "path": "round2-controlled-artifacts/entire dependency tree with spaces/historical affinity and frontend source/src/cpswm/world_model/grounded_search/__pycache__/ciav_opceu_loop.cpython-313.pyc",
+      "bytes": 14959,
+      "sha256": "d3f390637633e911e68df9d6e461f2fdd8d22a87d1184ac6401010decee96dc9",
+      "reason": "derived Python cache only"
+    },
+    {
+      "path": "round2-controlled-artifacts/entire dependency tree with spaces/historical affinity and frontend source/src/cpswm/world_model/grounded_search/__pycache__/concurrent_map_task.cpython-313.pyc",
+      "bytes": 33839,
+      "sha256": "4e30f3dab21b3cc2f79dc9055de01c6fafa6fe8eccdb65f0a23ae013c8a472d0",
+      "reason": "derived Python cache only"
+    },
+    {
+      "path": "round2-controlled-artifacts/entire dependency tree with spaces/historical affinity and frontend source/src/cpswm/world_model/grounded_search/__pycache__/embodiment_platforms.cpython-313.pyc",
+      "bytes": 10993,
+      "sha256": "c0e35a2fae0d6151ef2805609934149e79ef0060a296dcb281e95919ae56bb97",
+      "reason": "derived Python cache only"
+    },
+    {
+      "path": "round2-controlled-artifacts/entire dependency tree with spaces/historical affinity and frontend source/src/cpswm/world_model/grounded_search/__pycache__/execution_feedback.cpython-313.pyc",
+      "bytes": 4064,
+      "sha256": "49332510f8483feed9b21df982b61f7ebe223de73a94815a126dd5bb8bc8ba1c",
+      "reason": "derived Python cache only"
+    },
+    {
+      "path": "round2-controlled-artifacts/entire dependency tree with spaces/historical affinity and frontend source/src/cpswm/world_model/grounded_search/__pycache__/feedback_replay.cpython-313.pyc",
+      "bytes": 14668,
+      "sha256": "507825885b5de200058d9d4fe0f6d59ed9d196204e803c03a1336eb9cb20fc25",
+      "reason": "derived Python cache only"
+    },
+    {
+      "path": "round2-controlled-artifacts/entire dependency tree with spaces/historical affinity and frontend source/src/cpswm/world_model/grounded_search/__pycache__/identity_verification.cpython-313.pyc",
+      "bytes": 4921,
+      "sha256": "693e99c69c460e336e9420af66fb97387092fa5174beb6acc86d10f5732ad569",
+      "reason": "derived Python cache only"
+    },
+    {
+      "path": "round2-controlled-artifacts/entire dependency tree with spaces/historical affinity and frontend source/src/cpswm/world_model/grounded_search/__pycache__/joint_posterior.cpython-313.pyc",
+      "bytes": 8680,
+      "sha256": "e264c5ce39c15b1c5c9fbf03e6baad364a61a38c33ea915394102fb9f2d37757",
+      "reason": "derived Python cache only"
+    },
+    {
+      "path": "round2-controlled-artifacts/entire dependency tree with spaces/historical affinity and frontend source/src/cpswm/world_model/grounded_search/__pycache__/layered_map.cpython-313.pyc",
+      "bytes": 4343,
+      "sha256": "99c4767996547981e3fb445d2870dbc9e5470838a91c6ed0534489def3ddec7a",
+      "reason": "derived Python cache only"
+    },
+    {
+      "path": "round2-controlled-artifacts/entire dependency tree with spaces/historical affinity and frontend source/src/cpswm/world_model/grounded_search/__pycache__/memory_reliability.cpython-313.pyc",
+      "bytes": 4834,
+      "sha256": "219b95170da0884805ce91e543ba14ffeebb6664b631ab34932676a0ce1b7feb",
+      "reason": "derived Python cache only"
+    },
+    {
+      "path": "round2-controlled-artifacts/entire dependency tree with spaces/historical affinity and frontend source/src/cpswm/world_model/grounded_search/__pycache__/multi_parse_query.cpython-313.pyc",
+      "bytes": 18322,
+      "sha256": "f6d5bbfcc79e39a1b5d7d9af84d2319b900dc990ab3ae03e26faf6852940f777",
+      "reason": "derived Python cache only"
+    },
+    {
+      "path": "round2-controlled-artifacts/entire dependency tree with spaces/historical affinity and frontend source/src/cpswm/world_model/grounded_search/__pycache__/oracle.cpython-313.pyc",
+      "bytes": 8641,
+      "sha256": "b6b3a59947eea741d5dc1740c3aef88595bdf92dd3c04683ea2c2660455074e4",
+      "reason": "derived Python cache only"
+    },
+    {
+      "path": "round2-controlled-artifacts/entire dependency tree with spaces/historical affinity and frontend source/src/cpswm/world_model/grounded_search/__pycache__/pipeline.cpython-313.pyc",
+      "bytes": 35067,
+      "sha256": "0becff49cda1a641f50830371143f1cae078057508538f93c059a9af43db6245",
+      "reason": "derived Python cache only"
+    },
+    {
+      "path": "round2-controlled-artifacts/entire dependency tree with spaces/historical affinity and frontend source/src/cpswm/world_model/grounded_search/__pycache__/probabilistic_instance_graph.cpython-313.pyc",
+      "bytes": 15849,
+      "sha256": "fed177dbc4e96913ce94baa795721925212f0537d5c9a91b5c4857727635418c",
+      "reason": "derived Python cache only"
+    },
+    {
+      "path": "round2-controlled-artifacts/entire dependency tree with spaces/historical affinity and frontend source/src/cpswm/world_model/grounded_search/__pycache__/revision_aware_evidence.cpython-313.pyc",
+      "bytes": 21614,
+      "sha256": "9359fe5c2d1b72a8b163800f33776d97f9b274c132d4cabcba4e58127bac8725",
+      "reason": "derived Python cache only"
+    },
+    {
+      "path": "round2-controlled-artifacts/entire dependency tree with spaces/historical affinity and frontend source/src/cpswm/world_model/habits_transitions/__pycache__/__init__.cpython-313.pyc",
+      "bytes": 3307,
+      "sha256": "461f144ebd12eb8363f54ebfedf06c260dee7dbaef22eeb5725ac830993d97af",
+      "reason": "derived Python cache only"
+    },
+    {
+      "path": "round2-controlled-artifacts/entire dependency tree with spaces/historical affinity and frontend source/src/cpswm/world_model/habits_transitions/__pycache__/cause_factorized_bocpd.cpython-313.pyc",
+      "bytes": 12958,
+      "sha256": "7e8ca4e0c29170d33aea9c8842de679d4941ae31ee98e8f2427882533403c64d",
+      "reason": "derived Python cache only"
+    },
+    {
+      "path": "round2-controlled-artifacts/entire dependency tree with spaces/historical affinity and frontend source/src/cpswm/world_model/habits_transitions/__pycache__/cause_gated_consolidation.cpython-313.pyc",
+      "bytes": 6258,
+      "sha256": "d790943d34b1ab64b1c9639d4fd3f400d76bf46058778554dcfcca9719c5513a",
+      "reason": "derived Python cache only"
+    },
+    {
+      "path": "round2-controlled-artifacts/entire dependency tree with spaces/historical affinity and frontend source/src/cpswm/world_model/habits_transitions/__pycache__/cause_regime_semantics.cpython-313.pyc",
+      "bytes": 10372,
+      "sha256": "80fa097a13730eb9abfc4325de961e272b4c34f2a42eb48b90db5a01afe82b2b",
+      "reason": "derived Python cache only"
+    },
+    {
+      "path": "round2-controlled-artifacts/entire dependency tree with spaces/historical affinity and frontend source/src/cpswm/world_model/habits_transitions/__pycache__/context_conditioned_regime.cpython-313.pyc",
+      "bytes": 46249,
+      "sha256": "bb176e28dd874f9eed987fab7098f91a3a88785d424d4f7ddaee076816bba3be",
+      "reason": "derived Python cache only"
+    },
+    {
+      "path": "round2-controlled-artifacts/entire dependency tree with spaces/historical affinity and frontend source/src/cpswm/world_model/habits_transitions/__pycache__/habit_regime_write.cpython-313.pyc",
+      "bytes": 18966,
+      "sha256": "e64254c1d515a46cc9e5fa26c6c5c931b9fcddcdfe8bcd61fcfbee35a322aa30",
+      "reason": "derived Python cache only"
+    },
+    {
+      "path": "round2-controlled-artifacts/entire dependency tree with spaces/historical affinity and frontend source/src/cpswm/world_model/habits_transitions/__pycache__/hierarchical_dirichlet.cpython-313.pyc",
+      "bytes": 21546,
+      "sha256": "a96f3a19b4635266ab6c477cab9d27d15f00069c837a4c40ee4e50c9bf2a2928",
+      "reason": "derived Python cache only"
+    },
+    {
+      "path": "round2-controlled-artifacts/entire dependency tree with spaces/historical affinity and frontend source/src/cpswm/world_model/habits_transitions/__pycache__/joint_cause_bocpd.cpython-313.pyc",
+      "bytes": 37123,
+      "sha256": "73b1fddc0077e93564951a17f19457a8e2e282f70d41e1894fbf09ab776507ad",
+      "reason": "derived Python cache only"
+    },
+    {
+      "path": "round2-controlled-artifacts/entire dependency tree with spaces/historical affinity and frontend source/src/cpswm/world_model/habits_transitions/__pycache__/layered_habit_posterior.cpython-313.pyc",
+      "bytes": 26614,
+      "sha256": "ea93c87a2a637e6b71a7c969496d10dac525995e06e24a4045d9d6130514c40a",
+      "reason": "derived Python cache only"
+    },
+    {
+      "path": "round2-controlled-artifacts/entire dependency tree with spaces/historical affinity and frontend source/src/cpswm/world_model/habits_transitions/__pycache__/mobility_axes.cpython-313.pyc",
+      "bytes": 39782,
+      "sha256": "76d801789cf4fcc323040f4d6f28c05e5edf39a42f7b9bdfc16305fde73e455c",
+      "reason": "derived Python cache only"
+    },
+    {
+      "path": "round2-controlled-artifacts/entire dependency tree with spaces/historical affinity and frontend source/src/cpswm/world_model/habits_transitions/__pycache__/mobility_profile.cpython-313.pyc",
+      "bytes": 16430,
+      "sha256": "116387a342012101d276b8ce14d8c3b9ad5d92a558797dcfa8a9f9f4951ad568",
+      "reason": "derived Python cache only"
+    },
+    {
+      "path": "round2-controlled-artifacts/entire dependency tree with spaces/historical affinity and frontend source/src/cpswm/world_model/habits_transitions/__pycache__/propensity_correction.cpython-313.pyc",
+      "bytes": 13219,
+      "sha256": "1586261b6a99891f342f5ed8695eda05cc862e1889b26b187f0acfffbcb7e6ae",
+      "reason": "derived Python cache only"
+    },
+    {
+      "path": "round2-controlled-artifacts/entire dependency tree with spaces/historical affinity and frontend source/src/simobs/__pycache__/__init__.cpython-313.pyc",
+      "bytes": 607,
+      "sha256": "dbfb176b2677738869a815adbf32062b1b5e13c8ea4764202cb4a4ca629823e0",
+      "reason": "derived Python cache only"
+    },
+    {
+      "path": "round2-controlled-artifacts/entire dependency tree with spaces/historical affinity and frontend source/src/simobs/__pycache__/habit_observations.cpython-313.pyc",
+      "bytes": 3751,
+      "sha256": "ec3631434be031a5a7b4bfd8c2418c70aab97a48e46fbc9c3f686306cc7b2018",
+      "reason": "derived Python cache only"
+    },
+    {
+      "path": "round2-controlled-artifacts/entire dependency tree with spaces/historical affinity and frontend source/src/simobs/__pycache__/observations.cpython-313.pyc",
+      "bytes": 1851,
+      "sha256": "410a62d7a29dd27b549e6fc5c1e64769baf9db2872275b1b1b6cbb8b4864359d",
+      "reason": "derived Python cache only"
+    },
+    {
+      "path": "round2-controlled-artifacts/entire dependency tree with spaces/historical affinity and frontend source/tests/__pycache__/structure_two_backbone_wiring_probe.cpython-313.pyc",
+      "bytes": 43715,
+      "sha256": "f8ff8498e63ecee129cee775256c455996632e5c504276d90a4826d4beca544a",
+      "reason": "derived Python cache only"
+    },
+    {
+      "path": "round2-controlled-artifacts/entire dependency tree with spaces/historical affinity and frontend source/tests/__pycache__/structure_two_revision_oracle.cpython-313.pyc",
+      "bytes": 30353,
+      "sha256": "d3feef942eee78d54a69fef19e8fed2bd09eb39a55ccf2c26818b2041243a3d6",
+      "reason": "derived Python cache only"
+    },
+    {
+      "path": "round2-controlled-artifacts/entire dependency tree with spaces/historical affinity and frontend source/tests/__pycache__/test_continuous_camera_collection.cpython-313.pyc",
+      "bytes": 11857,
+      "sha256": "721945ebc4c38d30eaea6b30105f9b78770fc42976f90b2461b42752e5b1e069",
+      "reason": "derived Python cache only"
+    },
+    {
+      "path": "round2-controlled-artifacts/entire dependency tree with spaces/historical affinity and frontend source/tests/__pycache__/test_continuous_state_recovery.cpython-313.pyc",
+      "bytes": 27830,
+      "sha256": "5fcae22494acc4be7d45f3b8fb25f436e15f26ed80e93a9f34edddd626f5e1cb",
+      "reason": "derived Python cache only"
+    },
+    {
+      "path": "round2-controlled-artifacts/entire dependency tree with spaces/historical affinity and frontend source/tests/__pycache__/test_joint_camera_policy.cpython-313.pyc",
+      "bytes": 12484,
+      "sha256": "e8f2933a0adccc316561f8f295d74822a457eeb0ed0398547ddc06171dfef41f",
+      "reason": "derived Python cache only"
+    },
+    {
+      "path": "round2-controlled-artifacts/entire dependency tree with spaces/historical affinity and frontend source/tests/__pycache__/test_native_joint_production.cpython-313.pyc",
+      "bytes": 25984,
+      "sha256": "4043861dfcd4f798745fe1636d044493d1a129fc967be48f336a6e2809f5833b",
+      "reason": "derived Python cache only"
+    },
+    {
+      "path": "round2-controlled-artifacts/entire dependency tree with spaces/historical affinity and frontend source/tests/__pycache__/test_structure_two_adaptive_runtime.cpython-313.pyc",
+      "bytes": 26225,
+      "sha256": "43851d68aad268798048c0c75c4d3ef2f11f152bdfeb27ffe75fb0ee4d65cad4",
+      "reason": "derived Python cache only"
+    },
+    {
+      "path": "round2-controlled-artifacts/entire dependency tree with spaces/historical affinity and frontend source/tests/__pycache__/test_structure_two_continuous_input.cpython-313.pyc",
+      "bytes": 31667,
+      "sha256": "e3896af53e71060910a06a1d167b50c48e1e61d8a53afb9b3234442697063b52",
+      "reason": "derived Python cache only"
+    },
+    {
+      "path": "round2-controlled-artifacts/entire dependency tree with spaces/historical affinity and frontend source/tests/__pycache__/test_structure_two_execution_interface.cpython-313.pyc",
+      "bytes": 95413,
+      "sha256": "66e7a2740ee6efc34a73c3a747d09b011c5b85a0396c8acd21b4ed21bf98c363",
+      "reason": "derived Python cache only"
+    },
+    {
+      "path": "round2-controlled-artifacts/entire dependency tree with spaces/historical affinity and frontend source/tests/__pycache__/test_structure_two_formal_revision_lineage.cpython-313.pyc",
+      "bytes": 33646,
+      "sha256": "43e947138ad3b9b14e43a5adf605e6347312b767358a4860bc9098eb63896eac",
+      "reason": "derived Python cache only"
+    },
+    {
+      "path": "round2-controlled-artifacts/entire dependency tree with spaces/historical affinity and frontend source/tests/__pycache__/test_structure_two_production_system.cpython-313.pyc",
+      "bytes": 8691,
+      "sha256": "1544a415a535aada0c5a253e8ef06ec1b3aa1c64565ecab82a0f70d062106450",
+      "reason": "derived Python cache only"
+    },
+    {
+      "path": "round2-controlled-artifacts/entire dependency tree with spaces/historical affinity and frontend source/tests/__pycache__/test_structure_two_w3_native_particles.cpython-313.pyc",
+      "bytes": 20710,
+      "sha256": "bc57d130b9a9551ec8bf4e66803c8ab673a595f92f43f85afb65b95561815d42",
+      "reason": "derived Python cache only"
+    },
+    {
+      "path": "round2-controlled-artifacts/entire dependency tree with spaces/historical affinity and frontend source/tests/__pycache__/test_structure_two_w3_native_posterior_projection.cpython-313.pyc",
+      "bytes": 15498,
+      "sha256": "4958ba560c3b4cb15d8e3385e1930fa9f64f6ce69104eeadffffc5c43ab16644",
+      "reason": "derived Python cache only"
+    },
+    {
+      "path": "round2-controlled-artifacts/entire dependency tree with spaces/historical affinity and frontend source/tests/__pycache__/test_structure_two_w3_operator_acceptance.cpython-313.pyc",
+      "bytes": 21024,
+      "sha256": "ef0fae37c3418204cdc91184353013f51428dcb7af74994ab2e72f01ac6a9397",
+      "reason": "derived Python cache only"
+    },
+    {
+      "path": "round2-controlled-artifacts/entire dependency tree with spaces/historical affinity and frontend source/tests/__pycache__/test_structure_two_w3_revision_acceptance.cpython-313.pyc",
+      "bytes": 25637,
+      "sha256": "bd45ac247d4a532a8e69a13db8315319fd722797a6ca6558a0ea2b5270ebdcd0",
+      "reason": "derived Python cache only"
+    },
+    {
+      "path": "round2-controlled-artifacts/entire dependency tree with spaces/historical affinity and frontend source/tests/__pycache__/test_structure_two_w3_round5_boundaries.cpython-313.pyc",
+      "bytes": 32979,
+      "sha256": "eef765cbc9f683494e2c08600ed4b59366c2ab2def6c7931c1e5c94fdc7bc51e",
+      "reason": "derived Python cache only"
+    },
+    {
+      "path": "round2-controlled-artifacts/entire dependency tree with spaces/historical affinity and frontend source/tests/__pycache__/test_structure_two_w3_round6_prepared_boundary.cpython-313.pyc",
+      "bytes": 24185,
+      "sha256": "e894f0880e24a75a043d637f0c56ee4c165fda40054328b5789be9501a1d4500",
+      "reason": "derived Python cache only"
+    },
+    {
+      "path": "round2-controlled-artifacts/entire dependency tree with spaces/historical affinity and frontend source/tools/__pycache__/clarification_camera_model.cpython-313.pyc",
+      "bytes": 7695,
+      "sha256": "31ffe39731dd20b84f94c95c8a8407a15c09a9cd9ce8c8f9aae95bde6943b14f",
+      "reason": "derived Python cache only"
+    },
+    {
+      "path": "round2-controlled-artifacts/entire dependency tree with spaces/historical affinity and frontend source/tools/__pycache__/diagnose_offline_frontend.cpython-313.pyc",
+      "bytes": 17029,
+      "sha256": "d9d18818d83cad6a6bcd65dc7feb79b106f8a65cfd606c199bada458c486ea4c",
+      "reason": "derived Python cache only"
+    },
+    {
+      "path": "round2-controlled-artifacts/entire dependency tree with spaces/historical affinity and frontend source/tools/__pycache__/instance_affinity_dataset.cpython-313.pyc",
+      "bytes": 19356,
+      "sha256": "cc11719d7487442cc4a0bf9426e72b7a8b2620e28689d5ff968feeaea81cf3bc",
+      "reason": "derived Python cache only"
+    },
+    {
+      "path": "round2-controlled-artifacts/entire dependency tree with spaces/historical affinity and frontend source/tools/__pycache__/offline_factor_asset_provenance.cpython-313.pyc",
+      "bytes": 14411,
+      "sha256": "843ccc1823d73c1ca0de8e77e03bbf72d5d549bfdce3e8192557d04d2339863e",
+      "reason": "derived Python cache only"
+    },
+    {
+      "path": "round2-controlled-artifacts/entire dependency tree with spaces/historical affinity and frontend source/tools/__pycache__/offline_factor_manifest.cpython-313.pyc",
+      "bytes": 20264,
+      "sha256": "b0a9f89db8e899c1e9388533d6a1087851afb7b0621f8e544d2ddda009c2fe9e",
+      "reason": "derived Python cache only"
+    },
+    {
+      "path": "round2-controlled-artifacts/entire dependency tree with spaces/historical affinity and frontend source/tools/__pycache__/offline_frontend_evaluation.cpython-313.pyc",
+      "bytes": 28817,
+      "sha256": "a49f89291be0a2e531a25f138dbf7a43d08280d2105adae732d05e5e54349d22",
+      "reason": "derived Python cache only"
+    },
+    {
+      "path": "round2-controlled-artifacts/entire dependency tree with spaces/historical affinity and frontend source/tools/__pycache__/run_camera_measurement_grid.cpython-313.pyc",
+      "bytes": 33213,
+      "sha256": "c998f602373e2b2c4f56f011e4905a19f8f949bede46400d437f5dcc1733d2c2",
+      "reason": "derived Python cache only"
+    },
+    {
+      "path": "round2-controlled-artifacts/entire dependency tree with spaces/historical affinity and frontend source/tools/__pycache__/run_instance_correspondence_diagnostic.cpython-313.pyc",
+      "bytes": 23519,
+      "sha256": "d57b8dfc3b31f34515400c2beb0408cacaf037bdd145e310b13a6d4c8c3c5a74",
+      "reason": "derived Python cache only"
+    },
+    {
+      "path": "round2-controlled-artifacts/entire dependency tree with spaces/historical affinity and frontend source/tools/__pycache__/run_neural_pixel_camera_loop.cpython-313.pyc",
+      "bytes": 28204,
+      "sha256": "30e8dfa8c4831c442909c4a2a1cb5674706dc92e6c5a9e0d2feb7d525ce00e51",
+      "reason": "derived Python cache only"
+    },
+    {
+      "path": "round2-controlled-artifacts/entire dependency tree with spaces/historical affinity and frontend source/tools/__pycache__/unity_camera_feedback_worker.cpython-313.pyc",
+      "bytes": 8433,
+      "sha256": "a9822f2799032f3c1c7cc056b04d3249f5e02e3a343254f537f6eb58596b618a",
+      "reason": "derived Python cache only"
+    },
+    {
+      "path": "round2-controlled-artifacts/entire dependency tree with spaces/historical affinity and frontend source/tools/__pycache__/unity_rgbd_capture.cpython-313.pyc",
+      "bytes": 3595,
+      "sha256": "caef8408b5b25edfbd3e61bd15ab1da1f326c738c74ab6877f891251dbd4b5fa",
+      "reason": "derived Python cache only"
+    },
+    {
+      "path": "round2-controlled-artifacts/entire dependency tree with spaces/historical affinity and frontend source/tools/__pycache__/verify_neural_camera_comparison.cpython-313.pyc",
+      "bytes": 31049,
+      "sha256": "f30c8e288825df80aa29e01b21acc753936fa6229ef361f96b478afd0ba945f9",
+      "reason": "derived Python cache only"
+    },
+    {
+      "path": "round2-controlled-artifacts/entire dependency tree with spaces/historical affinity and frontend source/tools/__pycache__/verify_offline_factor_capture.cpython-313.pyc",
+      "bytes": 28922,
+      "sha256": "fdc2772aa001a2fa12b1b09a5ee461ad8173f50fe9d1cd260002c9bfc25d2cd0",
+      "reason": "derived Python cache only"
+    }
+  ],
+  "independent_custody": false
+}

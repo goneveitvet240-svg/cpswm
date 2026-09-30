@@ -1,6 +1,6 @@
-# 2026-10-01 六小时主线：固定特征对照本地交付
+# 2026-10-01 六小时主线：固定特征对照PR77已交付
 
-A分支codex/pc-a-affinity-controls-20261001，实际功能SHA a6c026963b5fec1503fa0d582fe016eccf60c756；两轮各447、真实run/fresh与独立算术通过，待push/草稿PR确认。联合验证损失低于单组但负类仍高、失败屋保留，非身份或自然因子验收。[交付](../reviews/pc_a/affinity_controls_2026-10-01/DELIVERY.md)。下一主项公开软表面+双参考位置残差+受控目标权重后果，B边界不变。
+A分支codex/pc-a-affinity-controls-20261001，实际功能SHA a6c026963b5fec1503fa0d582fe016eccf60c756；两轮各447、真实run/fresh与独立算术通过，已推送[草稿PR77](https://github.com/goneveitvet240-svg/cpswm/pull/77)叠加PR76，文档/原件交付82bd0c4570279ed65f9f32384e9386686535297a，未合并。联合验证损失低于单组但负类仍高、失败屋保留，非身份或自然因子验收。[交付](../reviews/pc_a/affinity_controls_2026-10-01/DELIVERY.md)。下一主项公开软表面+双参考位置残差+受控目标权重后果，B边界不变。
 
 ---
 

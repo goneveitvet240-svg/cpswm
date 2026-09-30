@@ -1,6 +1,6 @@
 # 固定特征组对照交付
 
-分支codex/pc-a-affinity-controls-20261001，base/父PR76 ffcaa7b292c73201d799f6631688387409c21cb7，实际双审/运行源码a6c026963b5fec1503fa0d582fe016eccf60c756。当前为本地待推送交付；实际草稿PR及交付提交由后续交接记录补充。879份源码与冻结原件绑定，文档提交不会冒充实际运行源码。
+分支codex/pc-a-affinity-controls-20261001，base/父PR76 ffcaa7b292c73201d799f6631688387409c21cb7，实际双审/运行源码a6c026963b5fec1503fa0d582fe016eccf60c756。已推送[草稿PR77](https://github.com/goneveitvet240-svg/cpswm/pull/77)叠加PR76，文档/原件交付82bd0c4570279ed65f9f32384e9386686535297a，未合并。879份源码与冻结原件绑定，文档提交不会冒充实际运行源码。
 
 两轮顺序A辅助审查各447通过，真实run/fresh exit0、292文件逐字节一致，独立从已pin父特征的算术检查通过。未重新运行Unity/检测器，非B独立、非全仓CI。见[报告](REPORT.md)、[复现](REPRODUCE.md)、[数据复核](DATA_REVIEW.md)。
 

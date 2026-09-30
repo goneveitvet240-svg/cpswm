@@ -1,0 +1,220 @@
+F
+=================================== FAILURES ===================================
+_____ test_finite_owner_configured_density_survives_probability_underflow ______
+
+tmp_path = PosixPath('/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/soft-position-factor-20261001/RepairR2/formal-numeric-01/test_finite_owner_configured_d0')
+checkpoints = {'typed_factor_graph_transformer': (PosixPath('/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model...-checkpoints0/autoregressive_typed_graph_policy'), '1c9442061b47a74acd4f4e70c33f1ff023b6bf7eceeee90c1f1d47ca03c31b3d')}
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x1126b2b10>
+
+    def test_finite_owner_configured_density_survives_probability_underflow(
+        tmp_path, checkpoints, monkeypatch,
+    ):
+        original_models = fixture.fixture_models
+    
+        def stress_models():
+            models = deepcopy(original_models())
+            models["position_model"]["bias"] = [100.0, 0.0, 0.0]
+            models["position_pin"] = position.checkpoint_sha256(models["position_model"])
+            assert position.restore(models["position_model"], models["position_pin"])
+            return models
+    
+        # Only the test fixture factory changes, before owner/joint construction.
+        # No configured production object, source helper, input proof or pin is replaced.
+        monkeypatch.setattr(fixture, "fixture_models", stress_models)
+        case = fixture.scenario(tmp_path / "finite-density.db", checkpoints)
+        result = dict(scope="legal_owner_configured_numeric_stress_not_natural_calibration",
+                      configured_bias=[100.0, 0.0, 0.0], model_restored=True)
+        try:
+            fixture.advance(case, 0)
+            workspace = case["stream"]._system.core._particle_workspace
+            known = next(row for row in workspace.batch.particle_weights
+                         if workspace.records[row.particle_id].state.instance_association_key
+                         != "unknown_instance")
+            receipt = next(row for row in workspace.receipts
+                           if row.proposal.proposed_state.particle_id == known.particle_id)
+            result.update(active_published=True, known_probability=known.posterior_probability,
+                          observation_log_likelihood=receipt.observation_log_likelihood,
+                          source_snapshot=fixture.snapshot(case),
+                          producer_state_sha256=native_content_sha256(case["joint"].checkpoint_state()))
+            assert isfinite(receipt.observation_log_likelihood)
+            assert known.posterior_probability == 0.0
+            (tmp_path / "result.json").write_text(json.dumps(result, indent=2)+'\n')
+            try:
+>               fixture.advance(case, 1)
+
+/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/soft-position-factor-20261001/RepairR2/test_finite_log_weight_continuation.py:50: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_native_position_production.py:140: in advance
+    stream.produce_joint_posterior()
+src/cpswm/system/structure_two_continuous_input.py:939: in produce_joint_posterior
+    produced = deepcopy(producer.produce(context))
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^
+src/cpswm/system/native_neural_production.py:537: in produce
+    base = deepcopy(self._candidate_model.produce(deepcopy(context)))
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <cpswm.system.controlled_position_producer.ControlledPositionProducer object at 0x115022f90>
+context = NativeJointContext(source=NativePosteriorSource(source_id=UUID('8f07e968-7865-5574-bd25-7c3602392724'), runtime_id=UUI...ve_sampling_json=None)), cutoff=datetime.datetime(2026, 1, 2, 8, 11, tzinfo=datetime.timezone.utc), visual_source=None)
+
+    def produce(self, context):
+        # All validations and arithmetic precede mutation of the producer state.
+        binding = self.binding_sha256
+        source = context.source
+        source.validate_content()
+        record_id = source.transition.after.metadata.record_id
+        selected = self._selected(source)
+        active = selected and self.configuration["enabled"]
+        _require(not active or not self.consumed_keys, "bound raw observation already consumed")
+        observation = self._public(context) if active else None
+        cluster = content_uuid(FORMAT + ":cluster", (source.source_id, binding))
+        weights = (
+            {}
+            if context.previous_batch is None
+            else {
+                row.particle_id: row.posterior_probability
+                for row in context.previous_batch.particle_weights
+            }
+        )
+        unresolved = (
+            0.0
+            if context.previous_batch is None
+            else log(context.previous_batch.unresolved_probability)
+        )
+        unknown_logpdf = (
+            0.0
+            if observation is None
+            else float(
+                -0.5
+                * (
+                    3 * log(2 * pi * 100.0)
+                    + np.dot(observation["world_point_m"], observation["world_point_m"]) / 100.0
+                )
+            )
+        )
+        receipts, statistics = [], {}
+        diagnostic = dict(
+            active=active,
+            semantic_record_id=str(record_id),
+            public_observation=observation,
+            configured_record_id=self.configuration["semantic_record_id"],
+            native_before_record_id=str(source.transition.before.metadata.record_id)
+            if source.transition.before is not None
+            else None,
+            native_after_record_id=str(record_id),
+            mapping="exact-native-after"
+            if str(record_id) == self.configuration["semantic_record_id"]
+            else "controlled-ciav-before"
+            if selected
+            else "unrelated-source",
+        )
+        for index, actor in enumerate(("owner", "unknown_actor")):
+            chains = [
+                h
+                for h in source.history_after.latest.hypotheses
+                if len(h.steps) == 3 and h.responsible_actor_key == actor
+            ]
+            _require(len(chains) == 1, "controlled actor chain not uniquely supported")
+            chain = chains[0]
+            parents = [
+                r
+                for r in context.records
+                if r.state.particle_id in weights
+                and r.state.ordered_actor_roles[0].actor_key == actor
+            ]
+            _require(len(parents) == (1 if weights else 0), "controlled parent support differs")
+            parent = parents[0] if parents else None
+            prior = (
+                parent.statistics
+                if parent
+                else ConditionalAnalyticState(
+                    source.locations,
+                    (1.0,) * len(source.locations),
+                    ((1.0, 0.0), (0.0, 1.0)),
+                    (0.0, 0.0),
+                    EYE6,
+                    (0.0,) * 6,
+                )
+            )
+            measure = self._neutral(prior, cluster, record_id)
+            logpdf = unknown_logpdf
+            if observation is not None and index == 0:
+                reference = dict(
+                    reference_id=content_sha256(
+                        (FORMAT, "controlled-origin-zero", self.position_pin)
+                    ),
+                    reference_kind=self.position_model["reference_kind"],
+                    domain_id=observation["domain_id"],
+                    frame_id=observation["frame_id"],
+                    valid_at=observation["valid_at"],
+                    xyz_m=[0.0, 0.0, 0.0],
+                )
+                measure, diagnostic["known"] = position.condition(
+                    self.position_model,
+                    self.position_pin,
+                    observation,
+                    reference,
+                    prior,
+                    evidence_cluster_id=cluster,
+                    source_record_ids=tuple(
+                        UUID(v) for v in self.configuration["packet"]["observation_ids"]
+                    ),
+                )
+                logpdf = diagnostic["known"]["observation_log_likelihood"]
+            analytic = rebuild_conditional_state(prior, (measure,))
+            pid = content_uuid(FORMAT + ":particle", (cluster, index))
+            statistics[pid] = analytic
+            state = TypedParticleState(
+                particle_id=pid,
+                parent_particle_id=None if parent is None else parent.state.particle_id,
+                parent_revision_id=None if parent is None else parent.state.revision_id,
+                source_snapshot_id=source.snapshot_id,
+                event_hypothesis_id=chain.hypothesis_id,
+                revision_id=source.history_after.latest.revision_id,
+                ordered_actor_roles=tuple(
+                    OrderedActorRole(role=role, actor_key=actor)
+                    for role in ("pickup_actor", "carrier", "placer")
+                ),
+                instance_association_key=str(source.object_instance_id)
+                if index == 0
+                else "unknown_instance",
+                change_cause="unresolved",
+                regime_decision="unresolved",
+                regime_id=None,
+                run_length=len(prior.evidence_cluster_ids),
+                statistic_state_ref=analytic.reference,
+                ledger_lineage_ref="hybrid-ledger:" + context.ledger_head_sha256,
+            )
+            receipts.append(
+                ParticleRevisionReceipt(
+                    proposal=NeuralParticleProposal(
+                        proposal_id=content_uuid(FORMAT + ":proposal", pid),
+                        evidence_cluster_id=cluster,
+                        operation="branch" if parent and index == 0 else "preserve_unresolved",
+                        source_particle_id=state.parent_particle_id,
+                        source_snapshot_id=source.snapshot_id,
+                        proposed_state=state,
+                        proposal_log_probability=log(0.5),
+                        proposer_model_version="explicit-prepared-candidates@1",
+                        proposer_code_version=FORMAT,
+                    ),
+                    prior_log_weight=0.0
+                    if parent is None
+>                   else log(weights[parent.state.particle_id]),
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                    transition_log_probability=0.0,
+                    observation_log_likelihood=logpdf,
+                    constraints=tuple(
+                        StructuredConstraint(factor=f, accepted=True, log_potential=0.0)
+                        for f in StructuredWeightFactor
+                        if f.value.endswith("constraint")
+                    ),
+                )
+            )
+E           ValueError: math domain error
+
+src/cpswm/system/controlled_position_producer.py:505: ValueError
+=========================== short test summary info ============================
+FAILED ::test_finite_owner_configured_density_survives_probability_underflow
+!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!!
+1 failed in 5.44s

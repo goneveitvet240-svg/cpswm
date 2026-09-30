@@ -1,0 +1,17 @@
+# Next-round matched bare-depth-seed diagnostic (plan only)
+
+Declared before the real96 position run. Not implemented, executed, or reviewed as an experiment in this round. It will accompany the actual archive-to-Native bridge only after the current source passes both sequential reviews and its data delivery is complete.
+
+Question: does neighborhood aggregation improve position error relative to retaining the same seed's original backprojected world point? This is a descriptive development comparison, not a new formal estimator/identity/reference decision.
+
+Keep exactly the original96 frame schedule, canonical complete8x8 grids, candidate provenance, public depth-validity rule, all seed and VOID entries, unique eligible seed-mask connection, train houses1–8 and exposed validation9–12. Preserve both SDK pivot and AABB references. The bare seed is the matching entry in the complete original neighborhood's world_points, never a mask-selected pixel. Do not subsample or filter after looking at error. All three estimators must use identical eligible seed/object-frame/object/house denominators; empty frames/strata remain explicit.
+
+Save a standalone bare-seed-development artifact/schema rather than adding bare_seed to the previously frozen soft/uniform ESTIMATORS or silently making it a Native candidate. Both reference residual models use the same existing descriptive train-only mean bias and full3x3 ddof1 covariance rule: at least4, full rank, positive definite and finite, else explicit fit_failed. No covariance floor, validation tuning, model selection or runtime estimator switch. Retain the actual training residual/member arrays and fixed source/input pins. Existing soft/uniform rows are the frozen parent results, not reselected versions.
+
+Generate all public bare points first, fit only with train reference rows, compute all public bias-corrected points, and then attach validation errors. Historical parent fresh verification can read all saved data; do not describe this ordering as malicious-process isolation. Seeds within an image are correlated, and uniform representative repeats are not independent samples.
+
+Report the same raw/corrected Euclidean RMSE, axis errors, median/max errors, per-house and object-frame summaries and exact denominators for all three estimators and both references. If likelihood diagnostics are included, label them descriptive under each train residual covariance, not calibrated confidence or decision utility. No p-values, independent-sample confidence intervals, winner selection or outlier removal from the exposed data. Include all failures and missing strata.
+
+Verification must bind the parent case ledger externally, all302 saved parent members, the original capture inventory and original pixel/candidate lineage, then use its matching historical source for fresh verification. Complete forged models/corrected arrays/report and a self-consistently re-signed local ledger must not replace the caller's pins or independent recomputation. A lawful run and a lawful rerun/recovery after rejection must be covered. The implementation, along with the Native bridge, receives its own frozen-source sequential R1 and R2 before real execution.
+
+This experiment can diagnose mixed neighborhoods or inappropriate reference assumptions. It does not supply natural instance identity, object-center truth at online inference, orientation measurements, independence across frames, action value, or independent calibration. Keep all current task and unified-framework alternatives.

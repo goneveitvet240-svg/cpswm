@@ -1,3 +1,41 @@
+# A：位置观测开发与受控原生消费已完成（2026-10-01 04:32）
+
+分支codex/pc-a-soft-position-factor-20261001，base PR77 head8623e7890594fce2b3c872bd2484b30138a9f408；实际源码1bd6c204d349024196c23df12cca61dbcea91e6c，895 Python。174项最终开发回归、新R1 68项、新R2 35项不同测试通过。早期493观测似然完整替换缺陷、379显示下溢后log(0)、首次171组合helper误拒绝均保留且阻断原版，不用后续通过抹去。最终保护保留完整raw重算/父链/core锚及loaded code检查，增加原始log权重继续支持。
+
+真实12屋96帧四模型拟合；run324.36s/fresh326.64s exit0、302输出逐字节一致，独立像素几何/监督/残差/指标/高斯更新复核通过。2004train/1664validation监督seed，55/96无监督帧保留。验证RMSE(m)：soft pivot .674738→.615581；soft AABB .513540→.523058；uniform pivot .833717→.785566；uniform AABB .712308→.711919。去bias有改善也有退化，两参考并列，不选正式参考/声称校准；需裸seed基线、自然关联与任务效果。
+
+[报告](../reviews/pc_a/soft_position_factor_2026-10-01/REPORT.md)、[交付](../reviews/pc_a/soft_position_factor_2026-10-01/DELIVERY.md)。完整原件9295文件/3713960160bytes，压缩427706204bytes，SHA256 fa7620a0b1ba5f522db4fdf10d8e1778fcf83adb7608b5facc402984b808174f；全部读回，日志/失败/模型/DB保留。case ledger pin9b9ed2d9208c1907d8295d5edc5aeb2f48af7b9b3625108b9642430a06780efc。A辅助非B独立/全仓CI；真实四模型仅进入数值诊断，Native消费/撤回恢复仍是受控像素/模型测试，不能合称真实模型已进Native。
+
+下一独立分支codex/pc-a-archive-native-bridge-20261001已从通过双审源码隔离开工：实际归档/四模型Native桥接、重复/撤回/SQLite恢复，保留原raw字节、合成语义关联明示。尚未冻结双审/实数据验收。逐raw观测事务、自然I、朝向和行动收益继续开放。原分类对照/主动澄清及完整H/R/I/C/Z/r/V、三RB块、七算子保持；原树与STATUS_B不改。交付前fetch确认集成19ddf26830348a2f0b33f0af54d6ba702c5cfb1c、B fd4ca6ef5e81c90d7cf7987b42c0b2810d8a810a未变。
+
+---
+
+# 位置因子第二次冻结：完整历史检查通过，数值继续路径阻断（2026-10-01 03:15）
+
+实际源码 `37981c3c44475b0bcbeff3379dcf90be288c49c9`，894份Python。修复完整raw数值替换后，最终兼容97项、新R1的49项及受控CLI完整伪造拒绝通过；新R2三条完整历史重签与32项恢复通过，但追加合法数值压力失败，当前版本仍不能通过推进门槛。真实96帧位置实验尚未启动。
+
+合法owner配置在首步产生有限LL `-2465.7563115023117`，known显示概率下溢为0；下一neutral语义步骤调用log(0)报错。[二轮阻断与证据](../reviews/pc_a/soft_position_factor_2026-10-01/ADVERSARIAL_REVIEW_2_ATTEMPT_2.md)。不能用epsilon抬高概率或丢掉分支；正在补实际前批原始log权重证据、稳定对数域传递、零显示概率的有效q支持和consumer prior核验，仍从owner接受历史重建。修复后新SHA重新两审。
+
+此次完整历史反例把中间active因子与全部后代q/receipt/state/journal重签：局部neutral后代可自洽，完整workspace仍进入真实位置condition后拒绝错误祖先；core外部锚和READY动作拒绝另外记录。该完整性结果不抵消数值继续失败。A辅助、非B独立/全仓CI/自然任务收益。用户原树、STATUS_B及全部旧失败证据保留，六小时主线继续。
+
+---
+
+# 位置观测因子第二轮审核发现阻断，正在修复（2026-10-01 02:09）
+
+实际被审核源码493e05720f066c5db7173502d03b245bf74b6d43（891份Python）；首轮通过后，第二轮实际发现完整观测似然和未决aggregate自洽替换仍被原consumer接受，导致后验改变。728项冻结前回归不覆盖此缺陷，当前SHA不通过推进门槛；真实96帧新实验尚未启动。
+
+[失败审核与数值后果](../reviews/pc_a/soft_position_factor_2026-10-01/ADVERSARIAL_REVIEW_2_ATTEMPT_1.md)。原packet、配置和模型绑定不变，known概率0.097778可被错误发布成0.444687；完整aggregate替换也被接受。修复须在consumer重算完整观测包并使用真实父链，而非只验证q或增加自签摘要。缺少验证材料不能降级为旧路径。
+
+跨进程恢复的初次失败已定位为测试重新生成配置；使用原持久化配置/模型的独立进程复核exit0，view/state/workspace/ledger一致、重复不增量、下一neutral步骤保留统计。此合法路径不能抵消观测因子的阻断缺陷。完整原件保留output/soft-position-factor-20261001，修复后新SHA重新做顺序两轮审核，再进入原固定实数据run/fresh。当前仅本机修复进行中，非B独立/非统一验收，六小时主线继续。
+
+---
+
+# 2026-10-01 第二轮开工：公开位置读出与受控目标密度消费
+
+A分支codex/pc-a-soft-position-factor-20261001，base PR77 8623e7890594fce2b3c872bd2484b30138a9f408。[协议](../reviews/pc_a/soft_position_factor_2026-10-01/PLAN.md)。做soft/uniform读出、pivot/AABB双3D残差、正确Gaussian预测密度及后验/重放后果；不据验证改正式定义、不直接赋身份或自然权威。每轮仍两审后实数据运行，B边界不变。
+
+---
+
 # 2026-10-01 六小时主线：固定特征对照PR77已交付
 
 A分支codex/pc-a-affinity-controls-20261001，实际功能SHA a6c026963b5fec1503fa0d582fe016eccf60c756；两轮各447、真实run/fresh与独立算术通过，已推送[草稿PR77](https://github.com/goneveitvet240-svg/cpswm/pull/77)叠加PR76，文档/原件交付82bd0c4570279ed65f9f32384e9386686535297a，未合并。联合验证损失低于单组但负类仍高、失败屋保留，非身份或自然因子验收。[交付](../reviews/pc_a/affinity_controls_2026-10-01/DELIVERY.md)。下一主项公开软表面+双参考位置残差+受控目标权重后果，B边界不变。

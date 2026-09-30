@@ -1,0 +1,18 @@
+{
+  "scope": "legal_owner_configured_numeric_stress_not_natural_calibration",
+  "configured_bias": [
+    100.0,
+    0.0,
+    0.0
+  ],
+  "model_restored": true,
+  "active_published": true,
+  "known_probability": 0.0,
+  "observation_log_likelihood": -2465.7563115023117,
+  "source_snapshot": "aaf2eb1e450bd422ee6194d968eceeccba9ef38a82cb2c41fc378182029ea5f3",
+  "producer_state_sha256": "4d755205ca01d506b8adf09de0428c827825682efbc400797302d1a295360b51",
+  "neutral_continuation": false,
+  "error_type": "ValueError",
+  "error": "math domain error",
+  "traceback": "Traceback (most recent call last):\n  File \"/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/soft-position-factor-20261001/RepairR2/test_finite_log_weight_continuation.py\", line 50, in test_finite_owner_configured_density_survives_probability_underflow\n    fixture.advance(case, 1)\n    ~~~~~~~~~~~~~~~^^^^^^^^^\n  File \"/private/tmp/cpswm-pc-a-soft-position-factor-20261001/tests/test_native_position_production.py\", line 140, in advance\n    stream.produce_joint_posterior()\n    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^\n  File \"/private/tmp/cpswm-pc-a-soft-position-factor-20261001/src/cpswm/system/structure_two_continuous_input.py\", line 939, in produce_joint_posterior\n    produced = deepcopy(producer.produce(context))\n                        ~~~~~~~~~~~~~~~~^^^^^^^^^\n  File \"/private/tmp/cpswm-pc-a-soft-position-factor-20261001/src/cpswm/system/native_neural_production.py\", line 537, in produce\n    base = deepcopy(self._candidate_model.produce(deepcopy(context)))\n                    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^\n  File \"/private/tmp/cpswm-pc-a-soft-position-factor-20261001/src/cpswm/system/controlled_position_producer.py\", line 505, in produce\n    else log(weights[parent.state.particle_id]),\n         ~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nValueError: math domain error\n"
+}

@@ -37,6 +37,11 @@ from cpswm.system.native_joint_production import (
     producer_binding,
     producer_implementation_binding,
 )
+from cpswm.system.native_raw_verification import (
+    RawCandidateAuthority,
+    profile_for,
+    raw_context_digest,
+)
 from cpswm.system.native_visual_source import NativeVisualAuthority, NativeVisualSource
 from cpswm.system.owned_visual_support import (
     OwnedVisualSupport,
@@ -273,6 +278,12 @@ class ContinuousEvidenceInput:
         self._joint_initial_state_sha256 = native_content_sha256(self._joint_initial_state)
         if self._joint_dependency_binding is not None:
             self._system.core.configure_native_joint_dependency(self._joint_dependency_binding)
+        self._raw_candidate_authority = RawCandidateAuthority.create()
+        raw_profile = profile_for(joint_producer)
+        if raw_profile is not None:
+            self._system.core.configure_native_raw_profile(
+                raw_profile, authority=self._raw_candidate_authority
+            )
         self._joint_published_batch_sha256: str | None = None
         self._joint_published_source_sha256: str | None = None
         from cpswm.system.joint_camera_feedback import decoder_binding
@@ -409,6 +420,7 @@ class ContinuousEvidenceInput:
                 else:
                     produced = self._producer.infer(prefix, cutoff=when)
                 if produced is None:
+                    self._admit_current_raw_context(cutoff=when, allow_no_source=True)
                     self._last_cutoff = when
                     self._persist()
                     return DeliveryReceipt((), digest, when, "INSUFFICIENT_SEMANTIC_EVIDENCE", None)
@@ -445,6 +457,7 @@ class ContinuousEvidenceInput:
                 if old is not None:
                     if old[0] != input_hash:
                         raise ValueError("perception record identity reused with changed evidence")
+                    self._admit_current_raw_context(cutoff=when, allow_no_source=True)
                     self._last_cutoff = when
                     self._persist()
                     return deepcopy(old[1])
@@ -508,6 +521,10 @@ class ContinuousEvidenceInput:
                 receipt = DeliveryReceipt(
                     ids, digest, when, "PRODUCTION_TRANSITION_COMMITTED", deepcopy(result)
                 )
+                # A failed raw admission must retain the durable pending step.
+                # P5 may already have run; this is fail-closed recovery, not an
+                # assertion that an external/semantic action was rolled back.
+                self._admit_current_raw_context(cutoff=when)
                 self._advanced[key] = (input_hash, receipt)
                 self._pending_step = None
                 self._last_cutoff = when
@@ -771,6 +788,7 @@ class ContinuousEvidenceInput:
         ):
             raise ValueError("joint posterior source changed; production required")
         self._verify_native_visual_sources()
+        self._verify_native_raw_sources()
         # Use the existing native consumer validation before exposing whole atoms.
         core.prepared_particle_location_marginal()
         batch = core._particle_workspace.batch
@@ -811,6 +829,54 @@ class ContinuousEvidenceInput:
                 return self._joint_decision_and_observation_updates()[1]
             finally:
                 self._busy = False
+
+    def _admit_current_raw_context(
+        self, *, cutoff: datetime, allow_no_source: bool = False
+    ) -> None:
+        """Anchor actual owner advances, including no-new-semantic collection.
+
+        No inference result cannot invent a first semantic source. Once a source
+        exists, each real owner cutoff has its own admitted prefix and prior;
+        this grants no additional measurement consumption to a published batch.
+        """
+        core = self._system.core
+        with core._execution_lock:
+            core._check_particle_workspace_binding()
+            workspace = core._particle_workspace
+            if workspace.raw_candidate_profile is None:
+                return
+            core._validate_particle_input_anchors()
+            if allow_no_source and not workspace.posterior_sources:
+                # The independent core source catalogue was checked above too.
+                return
+            context = NativeJointContext(
+                source=core.current_posterior_projection_source(),
+                previous_batch=workspace.batch,
+                records=tuple(workspace.records.values()),
+                ledger_head_sha256=core._hybrid_loop.ledger.export_state().manifest.head_hash,
+                visible_prefix=self.visible_prefix(cutoff=cutoff),
+                cutoff=cutoff,
+                visual_source=self._native_visual_source(cutoff),
+                previous_weight_evidence=workspace.previous_weight_evidence(workspace.batch),
+            )
+            core._register_native_raw_context(context, authority=self._raw_candidate_authority)
+
+    def _verify_native_raw_sources(self) -> None:
+        core = self._system.core
+        core._check_particle_workspace_binding()
+        workspace = core._particle_workspace
+        if (
+            native_content_sha256(profile_for(self._joint_producer))
+            != core._particle_raw_profile_sha256
+        ):
+            raise ValueError("restored raw profile differs from configured producer")
+        for key, context in workspace.raw_contexts.items():
+            expected = replace(context, visible_prefix=self.visible_prefix(cutoff=context.cutoff))
+            if key != context.content_sha256 or raw_context_digest(
+                expected
+            ) != core._particle_raw_context_anchors.get(key):
+                raise ValueError("raw candidate context differs from original admitted bytes")
+        workspace._validate_persisted_state()
 
     def produce_joint_posterior(self) -> None:
         """Populate the current native batch with the configured producer, once.
@@ -862,9 +928,17 @@ class ContinuousEvidenceInput:
                         visible_prefix=self.visible_prefix(cutoff=self._last_cutoff),
                         cutoff=self._last_cutoff,
                         visual_source=self._native_visual_source(self._last_cutoff),
+                        previous_weight_evidence=workspace.previous_weight_evidence(workspace.batch)
+                        if workspace.raw_candidate_profile is not None
+                        else None,
                     )
                 )
                 context_hash = context.content_sha256
+                if (
+                    workspace.raw_candidate_profile is not None
+                    and context_hash not in workspace.raw_contexts
+                ):
+                    raise ValueError("current raw context lacks its owner P5 admission")
                 previous = deepcopy(producer.checkpoint_state())
                 produced = deepcopy(producer.produce(context))
                 if (
@@ -971,9 +1045,18 @@ class ContinuousEvidenceInput:
                             visible_prefix=self.visible_prefix(cutoff=cutoff),
                             cutoff=cutoff,
                             visual_source=self._native_visual_source(cutoff),
+                            previous_weight_evidence=workspace.previous_weight_evidence(
+                                workspace.batch
+                            )
+                            if workspace.raw_candidate_profile is not None
+                            else None,
                         )
                     )
                     expected = context.content_sha256
+                    if workspace.raw_candidate_profile is not None:
+                        core._register_native_raw_context(
+                            context, authority=self._raw_candidate_authority
+                        )
                     produced = deepcopy(producer.produce(context))
                     if (
                         type(produced) is not ProducedJointCandidates
@@ -1488,4 +1571,5 @@ class ContinuousEvidenceInput:
         restored._durability_failed = False
         restored._checkpoint_suspended = False
         restored._verify_native_visual_sources()
+        restored._verify_native_raw_sources()
         return restored

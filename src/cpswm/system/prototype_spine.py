@@ -109,7 +109,6 @@ from cpswm.system.structure_two_execution import (
     TracePhaseName,
     TraceSink,
     UnsupportedStructureTwoExecutionPlan,
-    _code_object_sha256,
     _restore_runtime_rlock_depth,
     _runtime_rlock_depth,
     bind_runtime_callable,
@@ -159,6 +158,7 @@ _PARTICLE_WORKSPACE_BOUND_METHOD_NAMES: Final = (
     "_validated_input_body",
     "_validate_record_binding",
     "_validate_neural_implementation",
+    "previous_weight_evidence",
 )
 
 
@@ -200,10 +200,21 @@ def _bootstrap_particle_workspace_bindings() -> tuple[
             raise RuntimeError(f"native particle workspace method has no code: {method_name}")
         source_paths.add(Path(code.co_filename).resolve())
         source_digests.add(binding.implementation_source_sha256)
-        anchors.append((method_name, target, binding.loaded_callable_code_sha256))
+        anchors.append((method_name, target, _particle_workspace_code_sha256(code)))
     if len(source_paths) != 1 or len(source_digests) != 1:
         raise RuntimeError("native particle workspace methods do not share one bound source")
     return source_paths.pop(), source_digests.pop(), tuple(anchors)
+
+
+def _particle_workspace_code_sha256(code: CodeType) -> str:
+    """Type-exact workspace code identity independent of live traceback refs.
+
+    Keep this local to the workspace anchors; existing execution/checkpoint
+    identities elsewhere retain their original encoding and protocol.
+    """
+    from cpswm.system.structure_two_execution import _code_object_payload
+
+    return hashlib.sha256(marshal.dumps(_code_object_payload(code), 2)).hexdigest()
 
 
 (
@@ -1225,6 +1236,9 @@ class CorePrototypeSpine:
         self._particle_workspace_anchor = self._particle_workspace
         self._particle_joint_dependency_binding: str | None = None
         self._particle_neural_source_sha256: str | None = None
+        self._particle_raw_profile_sha256 = native_content_sha256(None)
+        self._particle_raw_authority: Any = None
+        self._particle_raw_context_anchors: dict[str, str] = {}
         self._particle_posterior_source_anchors: dict[UUID, str] = {}
         self._particle_replay_generations: tuple[JointReplayGeneration, ...] = ()
         self._particle_replay_generation_anchors: tuple[str, ...] = ()
@@ -2895,6 +2909,54 @@ class CorePrototypeSpine:
         self._particle_workspace.neural_source_sha256 = self._particle_neural_source_sha256
 
     @_serialized_core_mutation
+    def configure_native_raw_profile(self, profile: Any, *, authority: Any) -> None:
+        """Owner-only fixed profile, separate from any submitted neural proof."""
+        from cpswm.system.native_raw_verification import RawCandidateAuthority, reconstruct
+
+        self._check_particle_workspace_binding()
+        if type(authority) is not RawCandidateAuthority or self._particle_raw_authority is not None:
+            raise ValueError("raw owner profile cannot be rebound")
+        if self._particle_workspace.records:
+            raise ValueError("raw owner profile must precede publication")
+        reconstruct(profile)
+        if profile["joint_binding"] != self._particle_joint_dependency_binding:
+            raise ValueError("raw profile does not match configured joint producer")
+        self._particle_raw_authority = authority
+        self._particle_raw_profile_sha256 = native_content_sha256(profile)
+        self._particle_workspace.raw_candidate_profile = deepcopy(profile)
+        self._particle_workspace.raw_candidate_profile_sha256 = self._particle_raw_profile_sha256
+
+    def _register_native_raw_context(self, context: Any, *, authority: Any) -> None:
+        """Internal owner admission, not candidate proof or a camera capability."""
+        from cpswm.system.native_raw_verification import RawCandidateAuthority, raw_context_digest
+
+        with self._execution_lock:
+            self._check_particle_workspace_binding()
+            self._particle_workspace._validate_neural_implementation()
+            if (
+                type(authority) is not RawCandidateAuthority
+                or authority != self._particle_raw_authority
+                or self._particle_workspace.raw_candidate_profile is None
+            ):
+                raise ValueError("raw context admission is not owner-authorized")
+            source = self._particle_workspace.posterior_sources.get(context.source.source_id)
+            if source is None or source.body_sha256 != context.source.body_sha256:
+                raise ValueError("raw context source is not owned")
+            if (
+                context.previous_batch != self._particle_workspace.batch
+                or context.previous_weight_evidence
+                != self._particle_workspace.previous_weight_evidence(self._particle_workspace.batch)
+            ):
+                raise ValueError("raw context previous weights are not owned")
+            key, digest = context.content_sha256, raw_context_digest(context)
+            prior = self._particle_raw_context_anchors.get(key)
+            if prior is not None and prior != digest:
+                raise ValueError("owned raw context cannot be replaced")
+            self._particle_workspace.raw_contexts[key] = deepcopy(context)
+            self._particle_workspace.raw_context_anchors[key] = digest
+            self._particle_raw_context_anchors[key] = digest
+
+    @_serialized_core_mutation
     def rebuild_prepared_particle_history(self, produce: Any) -> None:
         """Recompute a complete retained history, atomically, with an owned producer.
 
@@ -3130,6 +3192,14 @@ class CorePrototypeSpine:
             or self._particle_workspace.neural_source_sha256 != self._particle_neural_source_sha256
         ):
             raise ValueError("native joint dependency differs from its core configuration anchor")
+        if (
+            native_content_sha256(self._particle_workspace.raw_candidate_profile)
+            != self._particle_raw_profile_sha256
+            or self._particle_workspace.raw_candidate_profile_sha256
+            != self._particle_raw_profile_sha256
+            or self._particle_workspace.raw_context_anchors != self._particle_raw_context_anchors
+        ):
+            raise ValueError("native raw owner inputs differ from core anchors")
         instance_attributes = vars(self._particle_workspace)
         for (
             method_name,
@@ -3151,7 +3221,10 @@ class CorePrototypeSpine:
                 raise ValueError(
                     "native particle workspace callable binding was replaced: " + method_name
                 )
-            if not isinstance(code, CodeType) or _code_object_sha256(code) != expected_code_sha256:
+            if (
+                not isinstance(code, CodeType)
+                or _particle_workspace_code_sha256(code) != expected_code_sha256
+            ):
                 raise ValueError(
                     "native particle workspace loaded callable code changed: " + method_name
                 )
@@ -3977,6 +4050,7 @@ class CorePrototypeSpine:
             "particle_workspace": self._particle_workspace,
             "particle_workspace_state": deepcopy(self._particle_workspace),
             "particle_input_anchors": dict(self._particle_input_anchors),
+            "particle_raw_context_anchors": dict(self._particle_raw_context_anchors),
             "particle_posterior_source_anchors": dict(self._particle_posterior_source_anchors),
             "particle_replay_generations": self._particle_replay_generations,
             "particle_replay_generation_anchors": self._particle_replay_generation_anchors,
@@ -4134,6 +4208,7 @@ class CorePrototypeSpine:
         _restore_reference_state(workspace, checkpoint["particle_workspace_state"])
         self._particle_workspace = workspace  # type: ignore[assignment]
         self._particle_input_anchors = cast(dict[UUID, str], checkpoint["particle_input_anchors"])
+        self._particle_raw_context_anchors = dict(checkpoint["particle_raw_context_anchors"])
         self._particle_posterior_source_anchors = cast(
             dict[UUID, str], checkpoint["particle_posterior_source_anchors"]
         )

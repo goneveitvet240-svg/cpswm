@@ -154,12 +154,10 @@ def proposal_view(
         cutoff=context.cutoff,
         pixel_observations=() if context.visual_source is None else context.visual_source.pixels(),
     )
-    weights = (
-        {}
+    active_ids = (
+        set()
         if context.previous_batch is None
-        else {
-            w.particle_id: w.posterior_probability for w in context.previous_batch.particle_weights
-        }
+        else {w.particle_id for w in context.previous_batch.particle_weights if w.accepted}
     )
     parents = tuple(
         _hypothesis(r.state, r.event_chain_history[-1], context) for r in context.records
@@ -172,7 +170,7 @@ def proposal_view(
             event_hypothesis_id=h.state.event_hypothesis_id,
             ledger_lineage_ref=h.state.ledger_lineage_ref,
             statistic_state_ref=h.state.statistic_state_ref,
-            status="active" if weights.get(h.state.particle_id, 0) > 0 else "retracted",
+            status="active" if h.state.particle_id in active_ids else "retracted",
         )
         for h in parents
     )
@@ -189,7 +187,7 @@ def proposal_view(
         state = proposal.proposed_state
         if state.revision_id != source.history_after.latest.revision_id:
             raise ValueError("neural candidate refers to another native source revision")
-        if state.parent_particle_id is not None and weights.get(state.parent_particle_id, 0) <= 0:
+        if state.parent_particle_id is not None and state.parent_particle_id not in active_ids:
             raise ValueError("neural enumeration requires a current active native parent")
         chain = chains.get(state.event_hypothesis_id)
         if chain is None:
@@ -431,7 +429,13 @@ def validate_neural_input_body(body: Any, workspace: Any, *, current: bool = Fal
         (),
         evidence.cutoff,
         visual,
+        workspace.previous_weight_evidence(previous_batch)
+        if workspace.raw_candidate_profile is not None
+        else None,
     )
+    from cpswm.system.native_raw_verification import verify_raw_base
+
+    verify_raw_base(evidence, workspace, native_context)
     context, support = proposal_view(native_context, base)
     if context != evidence.context or support != evidence.support:
         raise ValueError("neural execution inputs differ from actual native history")

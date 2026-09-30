@@ -44,9 +44,15 @@ class JointReplayGeneration:
     def content_sha256(self) -> str:
         if type(self.old_workspace) is not NativeParticleWorkspace:
             raise ValueError("joint replay archive has an invalid workspace type")
+        from cpswm.system.native_raw_verification import raw_context_digest
+
+        archived = dict(vars(self.old_workspace))
+        archived["raw_contexts"] = {
+            key: raw_context_digest(value) for key, value in self.old_workspace.raw_contexts.items()
+        }
         return native_content_sha256(
             (
-                vars(self.old_workspace),
+                archived,
                 self.old_input_anchors,
                 self.old_source_anchors,
                 self.basis_sha256,
@@ -238,6 +244,9 @@ def install_empty_generation(core: Any, generation: JointReplayGeneration) -> No
     fresh = NativeParticleWorkspace(registered_locations=core._registered_particle_locations)
     fresh.joint_dependency_binding = core._particle_joint_dependency_binding
     fresh.neural_source_sha256 = core._particle_neural_source_sha256
+    fresh.raw_candidate_profile = deepcopy(workspace.raw_candidate_profile)
+    fresh.raw_candidate_profile_sha256 = workspace.raw_candidate_profile_sha256
+    core._particle_raw_context_anchors = {}
     fresh.runtime_id = generation.sources[0].runtime_id
     # Keep the runtime-owned object identity and method bindings intact.
     vars(workspace).clear()

@@ -1,0 +1,11 @@
+# Repaired position-factor review brief
+
+Read the newly frozen source identity and exact clean worktree at review start. This brief is a scope guide only, not an executed review or passing certificate. Round 2 starts only after round 1 completes on unchanged functional source. Any repair restarts the sequence.
+
+Initial 493e057 source was rejected despite728 regression passes. Complete raw known likelihood+2 changed published probability .0977778 to .4446866 while preserving original models/binding/q. Aggregate+2 changed unresolved probability .8586130. First-stage future-cutoff substitution was also accepted. Original evidence and ATTEMPT_1 reports remain immutable historical evidence; tests that assert a defect exists are not protection passes.
+
+Review the owner-held fixed producer specification and raw context catalogue, original cutoff/source/runtime binding, actual ancestor prior and complete base recomputation. Changing LL, unknown/aggregate, any RB statistics, constraints or prior/support must not be accepted merely because all submitted fields agree. Statistics that affect q must use genuinely rescored q in the invalid-input test. Missing/legacy/None verification material cannot downgrade the configured protected profile. Deep current/historical validation and replay/SQLite restore must reach the same mathematical check without mutating the production dependency.
+
+Exercise legal publication first, rejection with unchanged posterior/statistics/journal/producer and ledger, then successful legal recovery. Preserve original controls and explicit legacy profile behavior. Distinguish owner accepted anchors from self-consistency hashes; do not call a hash-only rejection independent factor recomputation. Fresh-process recovery must reconstruct from saved original configuration/models, not regenerate a random packet. The root RepairValidation harness provides the correct original-config setup.
+
+State exact author participation, commands, counts, source SHA and paths, observed consequences and untested boundaries. This is A auxiliary review, not B independent acceptance, full CI, natural identity calibration or a scientific benefit claim. No real96-frame experiment or new Unity/detector execution before both reviews pass.

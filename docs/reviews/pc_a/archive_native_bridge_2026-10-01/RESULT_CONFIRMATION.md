@@ -1,0 +1,15 @@
+# 实际结果最终确认
+
+实际源82c7a81fba0c3af3688978ce222b1b94e4cc5bd9（901 Python）同SHA两审通过后，bridge run761.5571s/fresh722.5418s、bare run354.2229s/fresh398.4832s全部exit0；两组原产物分别76/103文件逐字节一致。独立SciPy/Joseph、裸点残差/训练矩与split/house算术1.486s通过，图表与报告携完整外部分析pin生成。
+
+case ledger外pin328b4b10276c44a05b91cfcbb7f24d370ff8092e85a9fe729939311bc6b4fc42；独立JSON外pin58b9a26a0e86614a73dbb6b3fc7b6b081c4ba3a61994a1cdd12b2e56e75dacdd。
+
+先前PAIRED_RESULT_READOUT.md原文及其等待状态保留；现已核它绑定的bare report d28838f6a46f1da60c5fed591c8fa7bc7e8e839679bdfaf4b97ed24140f66fb7未变，fresh和独立算术均完成，因此其描述性数值可按“已复核”阅读。soft去bias验证RMSE相对bare降低6.98%（pivot）/6.88%（AABB）；并非所有房屋都更好。house9裸点更好且仅25监督seed，house11+12占验证seed76.98%；38/96无候选、55/96无合格监督；强相关且已曝光开发数据不支持显著性、独立泛化或校准结论。
+
+REPORT中“真实位置似然”准确含义是实际训练模型算出并进入Native的似然，不是经验校准后的真概率。实际known后验约1e-40至1e-38由明示世界原点prior与实际14米级世界点的失配等设定决定，不能当识别正确率。synthetic身份/prior/unknown、0新物理camera命令、原三提议备选均保留。
+
+position-comparison.png已目视核验：四面板可读、上部同一纵轴容纳raw与corrected、退化柱未裁切、逐屋反例及曝光validation阴影可见。PDF为同图导出；未单独渲染审查PDF。输出SHA随最终完整inventory封存。
+
+PORTABILITY_REVIEW.md列出静态跨平台限制：原SQLite依赖A环境与路径，历史verify还耦合原SDK/runtime/binary和POSIX成员名；不能称Windows换路径即能复现。B可先静态核验和独立受控测试，跨平台端到端仍待受审适配。
+
+下一只读owner RGB-D描述前置已在独立codex/pc-a-owned-rgbd-descriptor-20261001完成作者6项开发测试，待冻结双审，尚不计入本轮结果。完整同语义新capture的目标更新、一次消费、失败回滚及逐cluster replay仍未完成。该描述器依赖原owner目录可信，不能认证一致重写的delivery/raw/receipt子图，不赋予消费authority。完整统一范围及用户科研选择保持。

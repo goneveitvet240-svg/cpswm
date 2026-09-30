@@ -1,3 +1,28 @@
+# A：实际位置归档到 Native 桥接与裸 seed 对照完成（2026-10-01 05:46）
+
+本轮分支codex/pc-a-archive-native-bridge-20261001，实际源码82c7a81fba0c3af3688978ce222b1b94e4cc5bd9（901 Python），base父功能1bd6c20 / 交付df8e30bd7eb436444b191ea242e938c8948d08a1。两轮顺序对抗审查绑定同源码；实际bridge: run 761.56s / verify 722.54s / 76 files；bare: run 354.22s / verify 398.48s / 103 files，四次成功，原件不变。R1 180不同测试，R2完整覆盖/限制见报告；A辅助非B独立/全仓CI。独立数值检查与图表已完成，case pin 328b4b10276c44a05b91cfcbb7f24d370ff8092e85a9fe729939311bc6b4fc42。
+
+真实RGB-D原件、公开读出及四模型改变受控Native的likelihood、log权重和Gaussian信息统计；8臂重复/中性继续/撤回及16次SQLite新进程验证，fresh重新复算并验证原数据库副本。身份/语义/prior/unknown仍合成，frame000来自训练屋，本轮0物理相机命令；不是自然在线闭环或动作收益。
+
+配对位置结果：sdk_transform_position_m: bare_seed 0.750330→0.661757m (n=1664), soft_affinity 0.674738→0.615581m (n=1664), uniform 0.833717→0.785566m (n=1664)；sdk_aabb_center_m: bare_seed 0.549088→0.561687m (n=1664), soft_affinity 0.513540→0.523058m (n=1664), uniform 0.712308→0.711919m (n=1664)。所有96帧、空/VOID保留，样本强相关，两种参考目标并列，不选正式目标、不声称独立校准。详[报告](../reviews/pc_a/archive_native_bridge_2026-10-01/REPORT.md)、[交付](../reviews/pc_a/archive_native_bridge_2026-10-01/DELIVERY.md)。证据11429成员/342551816压缩bytes/SHA256 807e4ab4a2ae1cd9551edcf8d20faecf52d6ab2ec4504c0f7739fc0c408bce4f，全部读回，失败与原DB均保留。
+
+下一主项是同一semantic source后续owner capture更新与逐cluster重放，当前尚未完成；设计已列原子范围，不以archive消费替代新观测。自然I/未知模型、正式参考与prior/时间相关性、朝向、长时程、完整任务效用、公平对照与B验收继续开放。完整H/R/I/C/Z/r/V、三个RB blocks、七算子、分类对照与主动澄清不缩减。原用户树、STATUS_B不改，当前仅草稿PR交接，不自动合并。
+
+---
+
+> 2026-10-01 04:39 更新：父轮已完成实际run/fresh、独立算术与全原件封存并推送，[草稿PR78](https://github.com/goneveitvet240-svg/cpswm/pull/78)。父交付df8e30b，实际功能仍1bd6c204d349024196c23df12cca61dbcea91e6c。当前分支正在完成桥接及裸seed的受控回归，尚未冻结双审或实数据运行。
+
+# A：真实归档位置模型 Native 桥接开工（2026-10-01 04:22）
+
+独立分支 codex/pc-a-archive-native-bridge-20261001，base/实际开工源码1bd6c204d349024196c23df12cca61dbcea91e6c。父轮同一895份源码顺序R1 68项、R2 35项通过，实际96帧run/fresh尚在执行，尚无交付结果；本轮只开始隔离实现，依赖的实数据执行必须待父轮结果/pin/独立核验就绪。父轮文档封存提交稍后合入，不改其功能源码。fetch确认集成19ddf26830348a2f0b33f0af54d6ba702c5cfb1c与B fd4ca6ef5e81c90d7cf7987b42c0b2810d8a810a未变。
+
+主项：实际原始RGB-D/自位姿、公开固定seed及四个训练残差模型接入受控Native发布，验证真实LL/统计/权重、重复不增量、撤回重放与新进程恢复。原始归档字节/UUID/采集回执不改；仅显式合成语义关联/先验，不伪造新owner相机动作。固定首个公开有效seed，无私有标签选择。正式自然身份、参考、未知模型与任务效用保持未决，不改原分类和主动澄清任务。若时间允许补同分母裸seed诊断，独立schema不改旧估计器枚举。逐raw观测事务/自然新帧循环另列缺口。
+
+[协议与边界](../reviews/pc_a/archive_native_bridge_2026-10-01/ARCHIVE_NATIVE_BRIDGE_DESIGN.md)。实现/定向测试后冻结源码、顺序两轮对抗，然后实际桥接与新进程复算；本轮尚未实施/验收。原件output/archive-native-bridge-20261001。电脑A辅助不等于B独立；完整H/R/I/C/Z/r/V、三个RB blocks、七算子和位置+朝向范围保留。原树与STATUS_B未改。
+
+
+---
+
 # A：位置观测开发与受控原生消费已完成（2026-10-01 04:32）
 
 分支codex/pc-a-soft-position-factor-20261001，base PR77 head8623e7890594fce2b3c872bd2484b30138a9f408；实际源码1bd6c204d349024196c23df12cca61dbcea91e6c，895 Python。174项最终开发回归、新R1 68项、新R2 35项不同测试通过。早期493观测似然完整替换缺陷、379显示下溢后log(0)、首次171组合helper误拒绝均保留且阻断原版，不用后续通过抹去。最终保护保留完整raw重算/父链/core锚及loaded code检查，增加原始log权重继续支持。

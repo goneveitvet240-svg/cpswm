@@ -1,3 +1,5 @@
+> 2026-10-01 最新：[实际归档位置 Native 桥接与裸点配对对照](../reviews/pc_a/archive_native_bridge_2026-10-01/REPORT.md)，功能82c7a81同源码双审及真实run/fresh通过；真实位置因子已进入受控Native。自然身份、同语义后续相机更新与任务效用仍未完成。
+
 > 2026-10-01 最新：[位置观测开发交付](../reviews/pc_a/soft_position_factor_2026-10-01/REPORT.md)，实际1bd6c20源码双审68/35通过，96帧四模型run/fresh302产物一致与独立算术通过。参考不同有改善也有退化；Native仍受控，真实桥接正隔离实施，非自然闭环完成。
 
 > 2026-10-01 最新：位置因子修复源码37981c3的完整历史重签检查通过，但合法有限似然导致显示概率下溢后，下一步log(0)报错；[二轮报告](../reviews/pc_a/soft_position_factor_2026-10-01/ADVERSARIAL_REVIEW_2_ATTEMPT_2.md)。正在补对数域继续路径，真实96帧新实验尚未启动，非已完成交付。

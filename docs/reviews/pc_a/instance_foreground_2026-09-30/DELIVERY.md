@@ -1,6 +1,6 @@
 # 实例像素亲和度开发基线交付
 
-本地完成，待通过草稿 PR 叠加 PR74 推送交接，未合入共享集成。
+已推送并以[草稿 PR76](https://github.com/goneveitvet240-svg/cpswm/pull/76)叠加 PR74 交接，未合并。文档/原件交付 `837c1dc776dbd448999b4a06abd45b087eae9987`；实际双审/训练源码 `0a8a2384c321c3a2dc14cf218854754161af9ffd`，后续交接记录不改变冻结功能字节。
 
 实际双审/训练源码 `0a8a2384c321c3a2dc14cf218854754161af9ffd`，base/父 PR74 `d698792a8e3750af284a2c991a28aff2453b0729`。分支 `codex/pc-a-instance-foreground-20260930`；后续文档/证据提交与实际源码分开记录，src/tests/tools/依赖保持冻结字节。
 

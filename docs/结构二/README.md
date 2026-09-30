@@ -1,3 +1,5 @@
+> 2026-09-30：离线实例／掩膜／位置训练校准用途已获批准；[PR73数据入口](../reviews/pc_a/offline_factor_data_2026-09-30/REPORT.md)完成12屋96帧采集与复核。当前推进[固定新数据公开前端诊断](../reviews/pc_a/offline_frontend_2026-09-30/PLAN.md)。历史待决标签用途不覆盖本批准；自然因子训练与收益仍未完成。
+
 > 2026-09-30：[全类别实例／位置诊断](../reviews/pc_a/surface_factor_diagnostic_2026-09-30/REPORT.md)已完成 70/52 顺序双审及五份旧 RGB-D 归档复推。14 帧仅 3 组不同输入；跨类别重复框与背景采样已量化。自然观测因子、训练/校准和任务收益尚未完成，待决标签用途保持。
 
 最新总交接：[八小时主干推进与未完成门槛](../reviews/pc_a/mainline_handoff_2026-09-30/MAINLINE_PROGRESS.md)；最后批次[checkpoint准备修复](../reviews/pc_a/camera_checkpoint_fixture_2026-09-30/REPORT.md)。所有结果按实际源码绑定，完整CI/B独立/自然任务收益未完成。

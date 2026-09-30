@@ -1,3 +1,5 @@
+> 2026-09-30：[全类别实例／位置诊断](../reviews/pc_a/surface_factor_diagnostic_2026-09-30/REPORT.md)已完成 70/52 顺序双审及五份旧 RGB-D 归档复推。14 帧仅 3 组不同输入；跨类别重复框与背景采样已量化。自然观测因子、训练/校准和任务收益尚未完成，待决标签用途保持。
+
 最新总交接：[八小时主干推进与未完成门槛](../reviews/pc_a/mainline_handoff_2026-09-30/MAINLINE_PROGRESS.md)；最后批次[checkpoint准备修复](../reviews/pc_a/camera_checkpoint_fixture_2026-09-30/REPORT.md)。所有结果按实际源码绑定，完整CI/B独立/自然任务收益未完成。
 
 最新本轮交付：[当前比较材料与上下文修复](../reviews/pc_a/comparison_test_context_2026-09-30/REPORT.md)，实际源码fa4dc032c9ef843d8ec0975810c010cd1c5ca7d6，两轮14/2通过；科学验收仍未通过。

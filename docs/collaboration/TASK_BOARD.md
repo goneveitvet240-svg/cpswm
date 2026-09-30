@@ -1,3 +1,37 @@
+# A：八小时窗口最终交接记录（2026-09-30）
+
+最后两批已由[草稿PR71](https://github.com/goneveitvet240-svg/cpswm/pull/71)统一交接，父PR70；GitHub读回OPEN/DRAFT、CLEAN/MERGEABLE，未合并。最后实际源码14409b3beabbd298196ea8f65c4e4f7a0cf719f2；前批比较实际源码fa4dc032c9ef843d8ec0975810c010cd1c5ca7d6；后续提交仅文档/原件，生产/测试/工具/依赖字节核验不变。
+
+十个批次的4500原件/1446503881字节已在最终候选再次逐文件读回核验。补充总交接、4个远端源码CI原始包及失败分类另封存85文件/25154909字节，压缩5428343字节，SHA256 92eb31eb03d903e90c1afbc4ec914e1304978d23e48678e6f794c34f61edcf1b；归档meta指交付候选，内部每个历史远端结果保留自己的源码SHA。
+
+总报告 docs/reviews/pc_a/mainline_handoff_2026-09-30/MAINLINE_PROGRESS.md；本机可读副本 output/mainline-handoff-20260930/MAINLINE_PROGRESS.md。全仓/B独立/自然任务收益未通过，已提出的离线标签用途尚待用户答复。最新14409b3完整远端CI仍未完成，不能用前一版部分结果替代。共享集成19ddf26830348a2f0b33f0af54d6ba702c5cfb1c与B当前审查fd4ca6ef5e81c90d7cf7987b42c0b2810d8a810a保持，完整研究范围和原对照保留。
+
+# A：最后两批与主干窗口交付（2026-09-30）
+
+当前分支codex/pc-a-camera-checkpoint-fixture-20260930，base175a54baf91b782907518906b56f28acc84541be，实际源码14409b3beabbd298196ea8f65c4e4f7a0cf719f2。相机checkpoint默认目录修复13/13顺序双审零跳过；3种显式非法覆盖按预期exit1拒绝、不回落，3条真实网络/反馈/行动输出保留。原件99文件，压缩12295469字节，SHA256 f4ab144cc3bbaac8f8f94d0e14d975c99743b9a144de89af09ae62ee6f8ebf9e，逐文件读回。前批fa4dc03的14/2双审和10完整伪造原件保留，两个批次分别绑定实际源码。
+
+当前fa4dc03远端完整选择6059项，65分钟超时；4576通过、27失败、8准备错误、30跳过、1预期失败，3匿名节点不计通过。最新14409b3的全CI尚未完成。旧60历史缺失失败有53节点配对转为通过、7未完成；当前自然后验仍受控、未决高，任务收益未确立。总交接见docs/reviews/pc_a/mainline_handoff_2026-09-30/MAINLINE_PROGRESS.md；原始远端材料与失败分类在output/mainline-handoff-20260930。
+
+本轮所有改动仍为独立A候选；共享集成19ddf26830348a2f0b33f0af54d6ba702c5cfb1c不变，B独立/跨平台/自然观察因子与离线监督用途选择仍待闭合。完整统一框架及原对照保留。以下历史状态保留。
+
+# A：相机模型测试默认材料修复开工（2026-09-30）
+
+分支 codex/pc-a-camera-checkpoint-fixture-20260930，base175a54baf91b782907518906b56f28acc84541be；前轮fa4dc03的顺序14/2双审已完成，原件封存并推送。重新fetch核对集成19ddf26830348a2f0b33f0af54d6ba702c5cfb1c，B当前审查分支codex/pc-b-adversarial-audit-fix-20260913为fd4ca6ef5e81c90d7cf7987b42c0b2810d8a810a。
+
+当前远端出现8个CPSWM_CHECKPOINTS缺失准备错误。本轮仅在环境变量未设置时使用仓库已经登记的三个受控开发checkpoint；显式覆盖路径必须照常验证，错误路径/损坏模型不得回落。保留三个真实网络、所有完整伪造和公平对照断言，不训练/重写模型。先留修前错误，冻结后两轮顺序审查：默认目录真实正路径及完整伪造；搬移覆盖路径的正路径、全部矩阵攻击及错误覆盖不回落。原件output/camera-checkpoint-fixture-20260930。全仓/B独立/自然闭环不升格。
+
+# A：当前比较数据与测试上下文交付（2026-09-30）
+
+分支 codex/pc-a-comparison-test-context-20260930；base3e030d2345d53f0fa4a4e9b41795a038dca10dc2；实际源码fa4dc032c9ef843d8ec0975810c010cd1c5ca7d6。只修两个旧测试上下文，不改生产机制。冻结后顺序14/2 passed、零跳过；生成当前60段/1920步，两个完整fresh replay正路径通过，10类完整重签伪造拒绝；Ruff/格式通过。
+
+长期P5提交全0、三臂搜索相同，公平性和科学验收仍未建立。封存72文件/106435466字节，压缩21790329，SHA256 2aa7b5a739445dc4bb8dddba2aea4fcc2a9b745a1cad5ecc63bc72678cc7d88a，逐文件读回。报告 docs/reviews/pc_a/comparison_test_context_2026-09-30/REPORT.md；原件 output/comparison-test-context-20260930。同步自己父分支交付文档，实际生产/测试/工具/依赖字节核验未改。全仓/B独立/自然实例位置因子及离线标签选择仍待闭合；旧P0不刷新。
+
+# A：当前比较测试上下文修复开工（2026-09-30）
+
+分支codex/pc-a-comparison-test-context-20260930，base3e030d2345d53f0fa4a4e9b41795a038dca10dc2，前轮PR70实际源码818d83a的9/49顺序双审已完成。远端fetch已核对，集成19ddf26830348a2f0b33f0af54d6ba702c5cfb1c、B fd4ca6ef5e81c90d7cf7987b42c0b2810d8a810a未变。只适配两个实际暴露的测试问题：未获CCRR准入更正应事务回滚而非保留历史丢失预期；覆盖率与消费追踪在不同实际进程执行，不移除生产探针对既有tracer的拒绝。
+
+冻结源码后两轮审查：第一轮真实动态边界、消费观测和正式修订谱系；第二轮先由当前CLI生成既有D0的当前比较材料，再真实完整重放合法包与完整伪造动态/公平性包。材料生成是受控开发协议，不是新仿真私有标签训练；旧P0与旧比较包保留。原件output/comparison-test-context-20260930。
+
 # A：审查虚拟环境入口修复交付（2026-09-30）
 
 分支codex/pc-a-audit-venv-invocation-20260930，base21619f014b43c724b28a93fa4612e03e5a10e2c7，实际源码818d83a36cc1812d68662297b76bc6940272b25c。版本核验按真实venv入口执行，继续绑定解析后解释器字节身份；修复前/后sys.prefix因果对照、两轮顺序9/49 passed零跳过、真实指纹合法与2种完整重签伪造全部保留。旧P0仍报实际toolchain drift，未刷新、未升格验收。

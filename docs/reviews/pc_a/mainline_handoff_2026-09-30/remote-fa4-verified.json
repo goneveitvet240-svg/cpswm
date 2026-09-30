@@ -1,0 +1,60 @@
+{
+  "archive_sha256": "97eda5266f33207dd185c6b5bb80a049709615b3694386ef4ff379dc9440d721",
+  "github_digest_matches": true,
+  "source_sha": "fa4dc032c9ef843d8ec0975810c010cd1c5ca7d6",
+  "log_sha_matches": true,
+  "execution": {
+    "scope": "REGRESSION_EXECUTION_DIAGNOSTIC_NOT_SCIENTIFIC_ACCEPTANCE",
+    "command": [
+      "/home/runner/work/cpswm/cpswm/.venv/bin/python",
+      "-u",
+      "-m",
+      "pytest",
+      "-o",
+      "addopts=",
+      "-v",
+      "--tb=short",
+      "-n",
+      "auto",
+      "--dist=loadscope",
+      "--durations=25",
+      "--cov=src",
+      "--cov-report=term-missing",
+      "--cov-report=xml:/home/runner/work/cpswm/cpswm/output/ci-regression/execution/coverage.xml",
+      "--junitxml=/home/runner/work/cpswm/cpswm/output/ci-regression/execution/pytest.xml"
+    ],
+    "cwd": "/home/runner/work/cpswm/cpswm",
+    "started_at": "2026-09-29T23:25:56.740390+00:00",
+    "budget_seconds": 3900.0,
+    "grace_seconds": 60.0,
+    "status": "TIMED_OUT",
+    "process_group_cleanup_supported": true,
+    "pid": 2237,
+    "exit_code": 124,
+    "child_exit_code": 2,
+    "timed_out": true,
+    "interrupted": false,
+    "force_required": false,
+    "interrupted_group_cleanup_attempted": true,
+    "seconds": 3910.743234986,
+    "log_sha256": "a7d85ab2f281a6888b5456b77e65a7890c0db586907653667632d23faeb0e5bb",
+    "pytest_junit_present": true,
+    "coverage_xml_present": false
+  },
+  "junit_counts": {
+    "passed": 4576,
+    "xfailed": 1,
+    "unattributed": 3,
+    "failed": 27,
+    "skipped": 30,
+    "errors": 8
+  },
+  "unattributed_not_counted_as_pass": [
+    "<testcase time=\"0.001\" />",
+    "<testcase time=\"0.000\" />",
+    "<testcase time=\"0.001\" />"
+  ],
+  "run_status": "completed",
+  "run_conclusion": "failure",
+  "not_scientific_acceptance": true
+}

@@ -147,14 +147,19 @@ def test_controlled_intervention_measures_actions_and_posterior(results):
     assert any(v["habit_total_variation"] > 0 for r in rows for v in r["arms"].values())
 
 
-def test_current_production_revision_defect_is_not_promoted_to_success(results):
+def test_unadmitted_production_correction_rolls_back_and_retraction_executes(results):
     correct = results["production_boundary_probes"]["correct"]
     assert correct["nonempty_target"]
-    assert correct["operations"] == ["correct"]
-    assert not correct["old_committed"] and not correct["new_committed"]
-    assert not correct["new_quarantined"]
-    assert correct["repeat_semantic_unchanged"]
+    # This fixture does not earn CCRR admission. Current production must reject
+    # it atomically; the historical partial-write defect is not the contract.
+    assert correct["status"] == "REJECTED"
+    assert correct["error_type"] == "ValueError"
+    assert correct["error"] == "CORRECT not admitted by CCRR; transaction rolled back"
+    assert correct["semantic_unchanged"]
+    assert correct["after"] == correct["before"]
     retract = results["production_boundary_probes"]["retract"]
+    assert retract["status"] == "RETURNED"
+    assert retract["operations"] == ["retract"]
     assert retract["after"]["committed"] < retract["before"]["committed"]
 
 

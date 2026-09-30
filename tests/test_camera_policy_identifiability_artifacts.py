@@ -21,7 +21,12 @@ from run_camera_policy_identifiability import (
 def actual(tmp_path_factory):
     torch.set_num_threads(2)
     root = tmp_path_factory.mktemp("binary-actual-neural")
-    checkpoints = Path(os.environ["CPSWM_CHECKPOINTS"])
+    default_checkpoints = (
+        Path(__file__).resolve().parents[1]
+        / "docs/reviews/pc_a/neural_native_loop_2026-09-29/evidence/development-checkpoints"
+    )
+    # An explicit override remains authoritative and must fail if it is invalid.
+    checkpoints = Path(os.environ.get("CPSWM_CHECKPOINTS", str(default_checkpoints)))
     rows = {}
     for arm in ARMS:
         row = run_case(

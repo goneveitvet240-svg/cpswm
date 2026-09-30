@@ -1,3 +1,17 @@
+# A：固定96帧公开前端诊断交付（2026-09-30）
+
+分支codex/pc-a-offline-front-end-20260930；base为PR73 head 5a2a963d7f3b9fc8c3084e0b50d1696b2a7314f2，实际双审/实归档源码3babc6d1557b4fe54abc6c8ac1f6054cdeb03e57。新增两个诊断工具和两个测试；生产src、依赖、权重及原采集数据不改。869份源码摘要运行前后匹配。
+
+同一12屋96帧，Faster R-CNN与SSDLite各首次运行和新进程完整重推，四项exit0且结果一致。两轮顺序A辅助审查各231 passed，Ruff/格式通过，完整正路径与伪造原件保留。非B独立、非全仓CI；本轮没有新启动Unity。
+
+503合格对象中159可见；两方法任意框交叠81/65、样点命中48/20；至少两个实际相机航向样点命中9/3。105/109与67/67框交叠多个SDK实例不是误检数量。mask覆盖非身份识别，表面点到pivot/AABB距离非位置校准误差。固定视点只转yaw，没有平移视差，当前验证来源已经用于开发诊断。
+
+完整原件229文件/206306336字节，压缩14530311字节，SHA256 19f379aefd42434e311bba00b5116fdc9f562f73982b67e280244bf038742177，全部逐件读回无排除。[报告](../reviews/pc_a/offline_frontend_2026-09-30/REPORT.md)、[交付](../reviews/pc_a/offline_frontend_2026-09-30/DELIVERY.md)、[复现](../reviews/pc_a/offline_frontend_2026-09-30/REPRODUCE.md)。本机原件output/offline-front-end-20260930。
+
+离线实例/掩膜/位置训练校准用途已获批准，线上仍仅RGB-D与自位姿。下一主项为实例级前景监督与自然观测支持，再推进位置模型/校准/目标密度和主动闭环。正式位置参照尚未选择，不能填造朝向凑6D；位置+朝向、原分类对照和完整框架保持。训练、自然因子和科学收益尚未完成。
+
+交付前fetch核对共享集成19ddf26830348a2f0b33f0af54d6ba702c5cfb1c、B当前fd4ca6ef5e81c90d7cf7987b42c0b2810d8a810a、父PR73 head未变；通过草稿PR叠加PR73交接，未合入集成。以下历史状态不覆盖本节。
+
 # 固定新数据的公开前端诊断开工
 
 分支 codex/pc-a-offline-front-end-20260930；base／开工源码5a2a963d7f3b9fc8c3084e0b50d1696b2a7314f2（PR73）。fetch核对共享集成19ddf26830348a2f0b33f0af54d6ba702c5cfb1c、B当前fd4ca6ef5e81c90d7cf7987b42c0b2810d8a810a未变。主用户工作树与历史原件保留。

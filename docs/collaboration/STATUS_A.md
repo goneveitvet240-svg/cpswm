@@ -1,3 +1,5 @@
+> 2026-10-01 04:39 更新：父轮已完成实际run/fresh、独立算术与全原件封存并推送，[草稿PR78](https://github.com/goneveitvet240-svg/cpswm/pull/78)。父交付df8e30b，实际功能仍1bd6c204d349024196c23df12cca61dbcea91e6c。当前分支正在完成桥接及裸seed的受控回归，尚未冻结双审或实数据运行。
+
 # A：真实归档位置模型 Native 桥接开工（2026-10-01 04:22）
 
 独立分支 codex/pc-a-archive-native-bridge-20261001，base/实际开工源码1bd6c204d349024196c23df12cca61dbcea91e6c。父轮同一895份源码顺序R1 68项、R2 35项通过，实际96帧run/fresh尚在执行，尚无交付结果；本轮只开始隔离实现，依赖的实数据执行必须待父轮结果/pin/独立核验就绪。父轮文档封存提交稍后合入，不改其功能源码。fetch确认集成19ddf26830348a2f0b33f0af54d6ba702c5cfb1c与B fd4ca6ef5e81c90d7cf7987b42c0b2810d8a810a未变。
@@ -5,6 +7,19 @@
 主项：实际原始RGB-D/自位姿、公开固定seed及四个训练残差模型接入受控Native发布，验证真实LL/统计/权重、重复不增量、撤回重放与新进程恢复。原始归档字节/UUID/采集回执不改；仅显式合成语义关联/先验，不伪造新owner相机动作。固定首个公开有效seed，无私有标签选择。正式自然身份、参考、未知模型与任务效用保持未决，不改原分类和主动澄清任务。若时间允许补同分母裸seed诊断，独立schema不改旧估计器枚举。逐raw观测事务/自然新帧循环另列缺口。
 
 [协议与边界](../reviews/pc_a/archive_native_bridge_2026-10-01/ARCHIVE_NATIVE_BRIDGE_DESIGN.md)。实现/定向测试后冻结源码、顺序两轮对抗，然后实际桥接与新进程复算；本轮尚未实施/验收。原件output/archive-native-bridge-20261001。电脑A辅助不等于B独立；完整H/R/I/C/Z/r/V、三个RB blocks、七算子和位置+朝向范围保留。原树与STATUS_B未改。
+
+
+---
+
+# A：位置观测开发与受控原生消费已完成（2026-10-01 04:32）
+
+分支codex/pc-a-soft-position-factor-20261001，base PR77 head8623e7890594fce2b3c872bd2484b30138a9f408；实际源码1bd6c204d349024196c23df12cca61dbcea91e6c，895 Python。174项最终开发回归、新R1 68项、新R2 35项不同测试通过。早期493观测似然完整替换缺陷、379显示下溢后log(0)、首次171组合helper误拒绝均保留且阻断原版，不用后续通过抹去。最终保护保留完整raw重算/父链/core锚及loaded code检查，增加原始log权重继续支持。
+
+真实12屋96帧四模型拟合；run324.36s/fresh326.64s exit0、302输出逐字节一致，独立像素几何/监督/残差/指标/高斯更新复核通过。2004train/1664validation监督seed，55/96无监督帧保留。验证RMSE(m)：soft pivot .674738→.615581；soft AABB .513540→.523058；uniform pivot .833717→.785566；uniform AABB .712308→.711919。去bias有改善也有退化，两参考并列，不选正式参考/声称校准；需裸seed基线、自然关联与任务效果。
+
+[报告](../reviews/pc_a/soft_position_factor_2026-10-01/REPORT.md)、[交付](../reviews/pc_a/soft_position_factor_2026-10-01/DELIVERY.md)。完整原件9295文件/3713960160bytes，压缩427706204bytes，SHA256 fa7620a0b1ba5f522db4fdf10d8e1778fcf83adb7608b5facc402984b808174f；全部读回，日志/失败/模型/DB保留。case ledger pin9b9ed2d9208c1907d8295d5edc5aeb2f48af7b9b3625108b9642430a06780efc。A辅助非B独立/全仓CI；真实四模型仅进入数值诊断，Native消费/撤回恢复仍是受控像素/模型测试，不能合称真实模型已进Native。
+
+下一独立分支codex/pc-a-archive-native-bridge-20261001已从通过双审源码隔离开工：实际归档/四模型Native桥接、重复/撤回/SQLite恢复，保留原raw字节、合成语义关联明示。尚未冻结双审/实数据验收。逐raw观测事务、自然I、朝向和行动收益继续开放。原分类对照/主动澄清及完整H/R/I/C/Z/r/V、三RB块、七算子保持；原树与STATUS_B不改。交付前fetch确认集成19ddf26830348a2f0b33f0af54d6ba702c5cfb1c、B fd4ca6ef5e81c90d7cf7987b42c0b2810d8a810a未变。
 
 ---
 

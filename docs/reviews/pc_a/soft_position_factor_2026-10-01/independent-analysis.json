@@ -1,0 +1,210 @@
+{
+  "scope": "independent raw public RGBD numeric reconstruction; transport deserializer reused",
+  "ledger_sha256": "9b9ed2d9208c1907d8295d5edc5aeb2f48af7b9b3625108b9642430a06780efc",
+  "source_sha": "1bd6c204d349024196c23df12cca61dbcea91e6c",
+  "counters": {
+    "valid_seeds": 11240,
+    "frames": 96,
+    "seeds": 11240
+  },
+  "models": {
+    "soft_affinity/sdk_aabb_center_m": {
+      "bias": [
+        -0.02557283486655111,
+        0.021711833244377438,
+        0.047170206919764285
+      ],
+      "covariance": [
+        [
+          0.1287795334351506,
+          0.0037523755137664205,
+          0.029377393144624852
+        ],
+        [
+          0.0037523755137664205,
+          0.03691440172820153,
+          0.001582044639007755
+        ],
+        [
+          0.029377393144624852,
+          0.001582044639007755,
+          0.1349436273407048
+        ]
+      ],
+      "covariance_eigenvalues": [
+        0.036759726419049434,
+        0.10236850206507214,
+        0.16150933401993536
+      ],
+      "train_seeds": 2004,
+      "validation_seeds": 1664
+    },
+    "soft_affinity/sdk_transform_position_m": {
+      "bias": [
+        0.032581106148791845,
+        0.3936195429944886,
+        0.04203292504447258
+      ],
+      "covariance": [
+        [
+          0.1444199735684965,
+          -0.002827721479465138,
+          0.043670923666712
+        ],
+        [
+          -0.002827721479465138,
+          0.08140482072958358,
+          0.003604261809021562
+        ],
+        [
+          0.043670923666712,
+          0.003604261809021562,
+          0.2347672697147962
+        ]
+      ],
+      "covariance_eigenvalues": [
+        0.0810293669312849,
+        0.12710703844732774,
+        0.25245565863426367
+      ],
+      "train_seeds": 2004,
+      "validation_seeds": 1664
+    },
+    "uniform/sdk_aabb_center_m": {
+      "bias": [
+        -0.034470858721161346,
+        0.009702463074314995,
+        -0.04887509113925669
+      ],
+      "covariance": [
+        [
+          0.17029848475146067,
+          -0.0031871452364189493,
+          0.02309669111252067
+        ],
+        [
+          -0.0031871452364189493,
+          0.03757362022091413,
+          0.014117193330864457
+        ],
+        [
+          0.02309669111252067,
+          0.014117193330864457,
+          0.13404767922208274
+        ]
+      ],
+      "covariance_eigenvalues": [
+        0.03523226297486343,
+        0.12507698395390315,
+        0.18161053726569099
+      ],
+      "train_seeds": 2004,
+      "validation_seeds": 1664
+    },
+    "uniform/sdk_transform_position_m": {
+      "bias": [
+        0.023683082294181593,
+        0.3816101728244266,
+        -0.0540123730145484
+      ],
+      "covariance": [
+        [
+          0.16988158797046576,
+          -0.011343070281964941,
+          0.04072308102580861
+        ],
+        [
+          -0.011343070281964941,
+          0.08478887863207271,
+          0.010701599871191769
+        ],
+        [
+          0.04072308102580861,
+          0.010701599871191769,
+          0.23148495424361523
+        ]
+      ],
+      "covariance_eigenvalues": [
+        0.0814043324803018,
+        0.15288351239040274,
+        0.25186757597544923
+      ],
+      "train_seeds": 2004,
+      "validation_seeds": 1664
+    }
+  },
+  "controlled_numeric_consumption": {
+    "soft_affinity/sdk_aabb_center_m": {
+      "frame_ordinal": 0,
+      "observation_ordinal": 0,
+      "log_factors": [
+        -100.23313325037071,
+        -10.77010919697969,
+        -10.77010919697969
+      ],
+      "normalized_weights": [
+        7.0092624799980104e-40,
+        0.5,
+        0.5
+      ]
+    },
+    "soft_affinity/sdk_transform_position_m": {
+      "frame_ordinal": 0,
+      "observation_ordinal": 0,
+      "log_factors": [
+        -97.75139422865067,
+        -10.77010919697969,
+        -10.77010919697969
+      ],
+      "normalized_weights": [
+        8.384513845603166e-39,
+        0.5,
+        0.5
+      ]
+    },
+    "uniform/sdk_aabb_center_m": {
+      "frame_ordinal": 0,
+      "observation_ordinal": 1,
+      "log_factors": [
+        -97.23798005682919,
+        -10.768322577664879,
+        -10.768322577664879
+      ],
+      "normalized_weights": [
+        1.3985400541584387e-38,
+        0.5,
+        0.5
+      ]
+    },
+    "uniform/sdk_transform_position_m": {
+      "frame_ordinal": 0,
+      "observation_ordinal": 1,
+      "log_factors": [
+        -95.95043211616895,
+        -10.768322577664879,
+        -10.768322577664879
+      ],
+      "normalized_weights": [
+        5.068154841172511e-38,
+        0.5,
+        0.5
+      ]
+    }
+  },
+  "checked_fields": [
+    "external input/current output pins and complete members",
+    "parent cached detector candidate support and independent complete grid/seed reconstruction",
+    "original public pixel geometry, all surface coefficients and available world points",
+    "original mask seed association, eligible SDK references and residual rows",
+    "train-only empirical bias/covariance, split denominators and split/house raw/corrected metrics",
+    "all public corrected predictions including VOID seeds",
+    "selected one-factor diagnostic log densities, weights and Gaussian information increments"
+  ],
+  "limitations": [
+    "transport _public includes production contract validation",
+    "detector candidates and affinity parameters are retained pinned dependencies, not newly trained",
+    "per-object-frame metric entries and all provenance hash formulas are not independently recomputed",
+    "native state/replay receipt acceptance is covered by separate tests, not by this script"
+  ],
+  "all_numeric_checks_passed": true
+}

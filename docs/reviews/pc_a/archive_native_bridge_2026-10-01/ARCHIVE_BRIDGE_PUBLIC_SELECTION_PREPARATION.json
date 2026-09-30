@@ -1,0 +1,619 @@
+{
+  "schema": "archive-native-public-selection-preparation@1",
+  "status": "INPUT_PREPARATION_ONLY_NOT_NATIVE_RUN",
+  "created_at": "2026-09-30T19:56:32.241281+00:00",
+  "selection_rule": {
+    "order": [
+      "frame ordinal ascending",
+      "candidate (method,id) lexicographic ascending",
+      "deduplicated 8x8 grid (u,v) lexicographic ascending"
+    ],
+    "public_valid": "finite rendered depth and 0 < depth < far_plane_m - near_plane_m",
+    "private_selection": false,
+    "detector_category_selection": false,
+    "detector_score_selection": false
+  },
+  "selected": {
+    "frame_ordinal": 0,
+    "house_index_from_schedule": 1,
+    "public_local_index": 0,
+    "sdk_index_from_schedule": 4,
+    "public_state_path": "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/offline-factor-data-20260930/collection-attempt02/house-01/public/000-state.json",
+    "pr76_public_path": "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/instance-foreground-20260930/experiment/frames/000/public.json",
+    "candidate": {
+      "box": [
+        1.7716217041015625,
+        14.789138793945312,
+        317.8302001953125,
+        316.30072021484375
+      ],
+      "id": "de8a15ab-6a24-503c-87e3-f3dbd7646311",
+      "method": "ssdlite"
+    },
+    "candidate_count": 1,
+    "candidate_ordinal_sorted": 0,
+    "seed_uv": [
+      21,
+      33
+    ],
+    "seed_ordinal_sorted": 0,
+    "seed_rendered_depth_m": 2.960951805114746,
+    "grid_pixels_uv": [
+      [
+        21,
+        33
+      ],
+      [
+        21,
+        71
+      ],
+      [
+        21,
+        109
+      ],
+      [
+        21,
+        146
+      ],
+      [
+        21,
+        184
+      ],
+      [
+        21,
+        222
+      ],
+      [
+        21,
+        259
+      ],
+      [
+        21,
+        297
+      ],
+      [
+        61,
+        33
+      ],
+      [
+        61,
+        71
+      ],
+      [
+        61,
+        109
+      ],
+      [
+        61,
+        146
+      ],
+      [
+        61,
+        184
+      ],
+      [
+        61,
+        222
+      ],
+      [
+        61,
+        259
+      ],
+      [
+        61,
+        297
+      ],
+      [
+        100,
+        33
+      ],
+      [
+        100,
+        71
+      ],
+      [
+        100,
+        109
+      ],
+      [
+        100,
+        146
+      ],
+      [
+        100,
+        184
+      ],
+      [
+        100,
+        222
+      ],
+      [
+        100,
+        259
+      ],
+      [
+        100,
+        297
+      ],
+      [
+        140,
+        33
+      ],
+      [
+        140,
+        71
+      ],
+      [
+        140,
+        109
+      ],
+      [
+        140,
+        146
+      ],
+      [
+        140,
+        184
+      ],
+      [
+        140,
+        222
+      ],
+      [
+        140,
+        259
+      ],
+      [
+        140,
+        297
+      ],
+      [
+        179,
+        33
+      ],
+      [
+        179,
+        71
+      ],
+      [
+        179,
+        109
+      ],
+      [
+        179,
+        146
+      ],
+      [
+        179,
+        184
+      ],
+      [
+        179,
+        222
+      ],
+      [
+        179,
+        259
+      ],
+      [
+        179,
+        297
+      ],
+      [
+        219,
+        33
+      ],
+      [
+        219,
+        71
+      ],
+      [
+        219,
+        109
+      ],
+      [
+        219,
+        146
+      ],
+      [
+        219,
+        184
+      ],
+      [
+        219,
+        222
+      ],
+      [
+        219,
+        259
+      ],
+      [
+        219,
+        297
+      ],
+      [
+        258,
+        33
+      ],
+      [
+        258,
+        71
+      ],
+      [
+        258,
+        109
+      ],
+      [
+        258,
+        146
+      ],
+      [
+        258,
+        184
+      ],
+      [
+        258,
+        222
+      ],
+      [
+        258,
+        259
+      ],
+      [
+        258,
+        297
+      ],
+      [
+        298,
+        33
+      ],
+      [
+        298,
+        71
+      ],
+      [
+        298,
+        109
+      ],
+      [
+        298,
+        146
+      ],
+      [
+        298,
+        184
+      ],
+      [
+        298,
+        222
+      ],
+      [
+        298,
+        259
+      ],
+      [
+        298,
+        297
+      ]
+    ],
+    "grid_public_valid": [
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true
+    ],
+    "grid_size": 64,
+    "grid_valid_count": 64,
+    "grid_content_sha256": "0892aadd52ba8faff6e6707d461c0a5c860470f3545bee2574a6855dbddbc783",
+    "earlier_frames_skipped": 0,
+    "earlier_candidates_skipped": 0,
+    "earlier_pixels_skipped": 0
+  },
+  "packet_binding": {
+    "observation_ids": [
+      "4d39d7cc-7f78-482b-b6e0-214842e8309a",
+      "c41f9323-7c00-45f3-8605-e301f14a398c",
+      "b583a45a-efb8-41ad-b33f-429bfbef422c"
+    ],
+    "scope": [
+      "61c0fdef-55af-43d8-bb04-f4e2f9f3791e",
+      "b5bf67fa-59ba-4dca-b664-136f437edf12",
+      "eada3ff0-a87a-4b59-ad41-3f53061bec21"
+    ],
+    "action_id": "09cab850-18ce-4329-9d45-189d6df2a0b8",
+    "raw_sha256": "c5cd7dd0741ae73f5fb89d10d978b969cec35297169ef9d51b5c88d178970399"
+  },
+  "raw_channels": [
+    {
+      "observation_id": "4d39d7cc-7f78-482b-b6e0-214842e8309a",
+      "identity": {
+        "observation_id": "4d39d7cc-7f78-482b-b6e0-214842e8309a",
+        "household_id": "61c0fdef-55af-43d8-bb04-f4e2f9f3791e",
+        "session_id": "b5bf67fa-59ba-4dca-b664-136f437edf12",
+        "trace_id": "eada3ff0-a87a-4b59-ad41-3f53061bec21"
+      },
+      "metadata": {
+        "record_id": "4d39d7cc-7f78-482b-b6e0-214842e8309a",
+        "schema_name": "unity-rgbd-self-pose@1",
+        "schema_version": "0.1.0",
+        "household_id": "61c0fdef-55af-43d8-bb04-f4e2f9f3791e",
+        "session_id": "b5bf67fa-59ba-4dca-b664-136f437edf12",
+        "recorded_time": "2026-09-30T14:18:51.085281Z",
+        "source_type": "simulation",
+        "source_id": "09cab850-18ce-4329-9d45-189d6df2a0b8",
+        "model_version": "unity-camera-transport-rgbd-v1",
+        "privacy_scope": "household",
+        "trace_id": "eada3ff0-a87a-4b59-ad41-3f53061bec21"
+      },
+      "sensor": {
+        "sensor_id": "live-unity-rgbd:rgb",
+        "modality": "rgb"
+      },
+      "frame_id": "unity-main-camera",
+      "clock_domain": "host-utc",
+      "capture_time": "2026-09-30T14:18:51.082561+00:00",
+      "arrival_time": "2026-09-30T14:18:51.085281+00:00",
+      "envelope_json_sha256": "06e8064e9156ee5e4a495063e6be084d44a0f88a820e0e763316e36ef0d02bf6",
+      "payload_sha256": "5e768e3879d06d581bbe30964f075f3989f52886981b5f4d4399c77fab26cfa4",
+      "payload_size_bytes": 307328,
+      "capture_receipt_sha256": "2fd74e969fb5ae2fed7f63f14978c230b972ee7f565fd0fac93b6abe939a90d6",
+      "archive_sampling_json": null,
+      "depth_unit": null
+    },
+    {
+      "observation_id": "c41f9323-7c00-45f3-8605-e301f14a398c",
+      "identity": {
+        "observation_id": "c41f9323-7c00-45f3-8605-e301f14a398c",
+        "household_id": "61c0fdef-55af-43d8-bb04-f4e2f9f3791e",
+        "session_id": "b5bf67fa-59ba-4dca-b664-136f437edf12",
+        "trace_id": "eada3ff0-a87a-4b59-ad41-3f53061bec21"
+      },
+      "metadata": {
+        "record_id": "c41f9323-7c00-45f3-8605-e301f14a398c",
+        "schema_name": "unity-rgbd-self-pose@1",
+        "schema_version": "0.1.0",
+        "household_id": "61c0fdef-55af-43d8-bb04-f4e2f9f3791e",
+        "session_id": "b5bf67fa-59ba-4dca-b664-136f437edf12",
+        "recorded_time": "2026-09-30T14:18:51.085281Z",
+        "source_type": "simulation",
+        "source_id": "09cab850-18ce-4329-9d45-189d6df2a0b8",
+        "model_version": "unity-camera-transport-rgbd-v1",
+        "privacy_scope": "household",
+        "trace_id": "eada3ff0-a87a-4b59-ad41-3f53061bec21"
+      },
+      "sensor": {
+        "sensor_id": "live-unity-rgbd:depth",
+        "modality": "depth"
+      },
+      "frame_id": "unity-main-camera",
+      "clock_domain": "host-utc",
+      "capture_time": "2026-09-30T14:18:51.082561+00:00",
+      "arrival_time": "2026-09-30T14:18:51.085281+00:00",
+      "envelope_json_sha256": "2207c75bcb21b589de72b4f57e97b8c7ece899367a189df75f231213870ead6f",
+      "payload_sha256": "58ade1ed37406316284bda593aaa8819a58e413234d640b42627d55feeb57146",
+      "payload_size_bytes": 409728,
+      "capture_receipt_sha256": "2fd74e969fb5ae2fed7f63f14978c230b972ee7f565fd0fac93b6abe939a90d6",
+      "archive_sampling_json": null,
+      "depth_unit": "m"
+    },
+    {
+      "observation_id": "b583a45a-efb8-41ad-b33f-429bfbef422c",
+      "identity": {
+        "observation_id": "b583a45a-efb8-41ad-b33f-429bfbef422c",
+        "household_id": "61c0fdef-55af-43d8-bb04-f4e2f9f3791e",
+        "session_id": "b5bf67fa-59ba-4dca-b664-136f437edf12",
+        "trace_id": "eada3ff0-a87a-4b59-ad41-3f53061bec21"
+      },
+      "metadata": {
+        "record_id": "b583a45a-efb8-41ad-b33f-429bfbef422c",
+        "schema_name": "unity-rgbd-self-pose@1",
+        "schema_version": "0.1.0",
+        "household_id": "61c0fdef-55af-43d8-bb04-f4e2f9f3791e",
+        "session_id": "b5bf67fa-59ba-4dca-b664-136f437edf12",
+        "recorded_time": "2026-09-30T14:18:51.085281Z",
+        "source_type": "simulation",
+        "source_id": "09cab850-18ce-4329-9d45-189d6df2a0b8",
+        "model_version": "unity-camera-transport-rgbd-v1",
+        "privacy_scope": "household",
+        "trace_id": "eada3ff0-a87a-4b59-ad41-3f53061bec21"
+      },
+      "sensor": {
+        "sensor_id": "live-unity-rgbd:self-pose",
+        "modality": "odometry"
+      },
+      "frame_id": "unity-main-camera",
+      "clock_domain": "host-utc",
+      "capture_time": "2026-09-30T14:18:51.082561+00:00",
+      "arrival_time": "2026-09-30T14:18:51.085281+00:00",
+      "envelope_json_sha256": "c0e840ced51c5beee04398a59ae51d0a43297baa7f82d3eebb12e451b15fcfa7",
+      "payload_sha256": "7ddb3f87f0564c4271f8568f62558dfdaeef5ce60ea92bb99747d84c3e99b300",
+      "payload_size_bytes": 1069,
+      "capture_receipt_sha256": "2fd74e969fb5ae2fed7f63f14978c230b972ee7f565fd0fac93b6abe939a90d6",
+      "archive_sampling_json": null,
+      "depth_unit": null
+    }
+  ],
+  "camera": {
+    "schema_id": "unity-rgbd-self-pose@1",
+    "action_id": "09cab850-18ce-4329-9d45-189d6df2a0b8",
+    "capture_time": "2026-09-30T14:18:51.082561Z",
+    "width": 320,
+    "height": 320,
+    "vertical_fov_degrees": 60.0,
+    "position_m": [
+      12.5,
+      1.5759997367858887,
+      2.5
+    ],
+    "yaw_degrees": 90.0,
+    "pitch_degrees": 30.000003814697266,
+    "near_plane_m": 0.1,
+    "far_plane_m": 20.0,
+    "depth_semantics": "Linear01Depth_times_far_minus_near",
+    "depth_unit": "m",
+    "unity_commit": "f0825767cd50d69f666c7f282e54abfe58f1e917",
+    "world_frame": "unity-scene-world-x-right-y-up-z-forward",
+    "localization": "AUTHORIZED_IDEAL_SIMULATOR_CAMERA_SELF_POSE",
+    "rgb_sha256": "5e768e3879d06d581bbe30964f075f3989f52886981b5f4d4399c77fab26cfa4",
+    "depth_sha256": "58ade1ed37406316284bda593aaa8819a58e413234d640b42627d55feeb57146",
+    "worker_sha256": "e4b0b557626976de6d22738b5358f7180a4d7009f899feb8bb0c2f199ceb4cb4",
+    "unity_sha256": "d8bbfbee47581f4aa4f5df71e095f0a1c00888bed7b493eaffcc0f37d6364df3",
+    "scene_sha256": "d41ecc656086008e55738f565ff5f8000781fc4f8cc77e07fdc9a5ea0a4bbe42",
+    "configuration_sha256": "305933bbb6272a8a48d7601c7d4bf4a2128b153ebe4ee010a469576d5535b66b"
+  },
+  "original_offline_command": {
+    "action": "Pass",
+    "action_id": "09cab850-18ce-4329-9d45-189d6df2a0b8",
+    "decision_time": "2026-09-30T14:18:50.968403Z",
+    "degrees": 0.0,
+    "reason": "fixed-offline-factor-view@1",
+    "snapshot_id": "9db1cabd-36c9-42f7-ae05-8f23d006ca67",
+    "source_ids": []
+  },
+  "semantic_anchor": {
+    "rule": "max(delivery.received_at, all original capture_time, all original arrival_time) + 1 second",
+    "received_at": "2026-09-30T14:18:51.085281+00:00",
+    "maximum_original_time": "2026-09-30T14:18:51.085281+00:00",
+    "T": "2026-09-30T14:18:52.085281+00:00",
+    "original_raw_times_preserved": true,
+    "semantic_record_id": null,
+    "synthetic_fixture_not_yet_created": true
+  },
+  "external_trust_anchors": {
+    "affinity_ledger": {
+      "path": "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/instance-foreground-20260930/case-results.json",
+      "expected_sha256": "32e0dc7cec8fce6dfca5bc36755cfba5cf3551b454c1f746f20ac2076936e842",
+      "actual_sha256": "32e0dc7cec8fce6dfca5bc36755cfba5cf3551b454c1f746f20ac2076936e842",
+      "matches": true
+    },
+    "frontend_ledger": {
+      "path": "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/offline-front-end-20260930/case-results.json",
+      "expected_sha256": "517fc5b24afd80e4311d0de66dcfa6d113de6cd11763d61aeaaecd345740ccf6",
+      "actual_sha256": "517fc5b24afd80e4311d0de66dcfa6d113de6cd11763d61aeaaecd345740ccf6",
+      "matches": true
+    },
+    "collection_inventory": {
+      "path": "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/offline-factor-data-20260930/collection-attempt02/inventory.json",
+      "expected_sha256": "9791a946543b9158890324d3ff35a80ea04d51c9cabb6e09540f569abd903d47",
+      "actual_sha256": "9791a946543b9158890324d3ff35a80ea04d51c9cabb6e09540f569abd903d47",
+      "matches": true
+    }
+  },
+  "verified_originals_sha256": {
+    "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/instance-foreground-20260930/case-results.json": "32e0dc7cec8fce6dfca5bc36755cfba5cf3551b454c1f746f20ac2076936e842",
+    "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/offline-front-end-20260930/case-results.json": "517fc5b24afd80e4311d0de66dcfa6d113de6cd11763d61aeaaecd345740ccf6",
+    "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/offline-factor-data-20260930/collection-attempt02/inventory.json": "9791a946543b9158890324d3ff35a80ea04d51c9cabb6e09540f569abd903d47",
+    "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/offline-front-end-20260930/fasterrcnn/public.json": "1bfc06047fcc11e7eab839a1882a716d2f7117d11e57fd29e8e0350ecf99a554",
+    "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/offline-front-end-20260930/fasterrcnn/inputs.json": "ecdd6b12b95240a956a9019bd102ea88bd35d166ee81564df3e21a4c615e6290",
+    "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/offline-front-end-20260930/ssdlite/public.json": "e19f12c6aa54286e34ffaadab70dec425d4d94cb6e83a6fb60bd068cded31f72",
+    "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/offline-front-end-20260930/ssdlite/inputs.json": "ecdd6b12b95240a956a9019bd102ea88bd35d166ee81564df3e21a4c615e6290",
+    "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/offline-factor-data-20260930/collection-attempt02/house-01/capture.json": "b17ee3fdbe52714521f24b478bbbffccc7ba4d6673f0c6aaaf211d7d858fddd9",
+    "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/offline-factor-data-20260930/collection-attempt02/house-01/public/000-state.json": "ed398b7d629f2fd33324d3932a37a7fbd64d217fa1ca28c57acfb0ee9d6f76e1",
+    "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/offline-factor-data-20260930/collection-attempt02/house-01/public/001-state.json": "bf13971e2e6b1883892a3472c19a15c3af1f987c10afd0b24f35939c2e1266e7",
+    "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/offline-factor-data-20260930/collection-attempt02/house-01/public/002-state.json": "5818d200409b078bfbafead0d5483fb87fb796950752faf261545dd0889a3b05",
+    "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/offline-factor-data-20260930/collection-attempt02/house-01/public/003-state.json": "ab78fc633a374e0a6ca1532b3e410535b3863a1d4983168f56cee4c8ea7964fd",
+    "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/offline-factor-data-20260930/collection-attempt02/house-01/public/004-state.json": "edc43448391b1ad1e3f8cbef40bbd74936df9a4e9d7c83d36f26b5a086445aad",
+    "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/offline-factor-data-20260930/collection-attempt02/house-01/public/005-state.json": "bf2d54d3703c7fde8a607295b9ac1175dfff72e70f843da867c67b6f7ba91a57",
+    "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/offline-factor-data-20260930/collection-attempt02/house-01/public/006-state.json": "58c78e6034477a104d3d2ab0e3aa4506f6ab4e150ef02f729a6990abca5cac08",
+    "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/offline-factor-data-20260930/collection-attempt02/house-01/public/007-state.json": "b3bd80e18d87ea2263d464f0e4048050d2c6bd5d35b9eb4a95f9e9f5c3ffbf5e",
+    "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/instance-foreground-20260930/experiment/frames/000/public.json": "defb5b114c4d8a6de89751d687c42999d33d9d1fa629a2af7a9e08e33312781a"
+  },
+  "verification_scope": {
+    "affinity_run_verify_ledger_phases": [
+      "run",
+      "verify"
+    ],
+    "frontend_run_verify_complete": true,
+    "frontend_inputs_inventory_tables_match": true,
+    "pr76_candidate_matches_pinned_pr74": true,
+    "first_house_public_frames_transport_validated": 8,
+    "all_opened_originals_unchanged": true,
+    "public_only_read_allowlist_enforced": true,
+    "full_historical_cli_fresh_verify_run": false,
+    "full_collection_private_inventory_recomputed": false,
+    "checkpoint_loaded": false,
+    "detector_inference_run": false,
+    "affinity_inference_run": false,
+    "position_fit_run": false,
+    "native_run": false,
+    "unity_run": false,
+    "torch_transitively_imported": true,
+    "torch_model_constructed_or_loaded": false
+  },
+  "preparation_helper_source_sha256": {
+    "tools/verify_offline_factor_capture.py": "95dc1b927806847ef12ae0ee1b16dd0de047edc061744607c2fa22145978f4c0",
+    "src/cpswm/perception_mapping/unity_rgbd.py": "62aa57db068b54125addae7c5981b9834c8e979447310787c9ca70c822ef9883",
+    "src/cpswm/data_preflight/instance_affinity.py": "4684397222d584f87ca9de6d1f41586435cfad551a2a39331d42fabac1c91e16",
+    "src/cpswm/system/reproducibility.py": "d07139b021cf494d2f8bca0ac904a0d10f4cbc2e7779d28ed3ecc71fb8dfbf11",
+    "src/cpswm/system/controlled_position_producer.py": "0a6a6c7986ae96c933b6d072e4896051fbcbaaef380796645d8aaf98cc2703ef"
+  },
+  "required_next_checks": [
+    "After current source reviews and actual 96-frame run, fresh-verify sealed parent and new soft-position packages under external pins.",
+    "Bind exactly this raw tuple/scope/receipt/action/bytes; never convert the historical offline command into an owner-issued camera command.",
+    "Match actual new full readout candidate method/id/box, complete canonical neighborhood pixels, source membership, per-pixel validity and raw RGB-D; compare all coefficients and representative after real model loading.",
+    "Do not require full-frame and single-candidate readout IDs to be equal; bind the explicit receipt between them without rewriting IDs.",
+    "Use controlled semantic association only; no SDK target labels or category mapping decide the seed/identity.",
+    "Keep all four estimator/reference combinations; successful real fits only, and preserve fit_failed items without substitutes.",
+    "Native active/no-factor publication, neutral continuation, correction/replay and fresh SQLite recovery remain unrun for this archive packet."
+  ]
+}

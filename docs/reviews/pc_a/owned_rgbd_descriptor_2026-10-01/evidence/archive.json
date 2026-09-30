@@ -1,0 +1,591 @@
+{
+  "actual_source_sha": "6faa17e178ad001de6b5c0e1094f9e62568d7a7e",
+  "base_functional_source": "82c7a81fba0c3af3688978ce222b1b94e4cc5bd9",
+  "review_gate_sha256": "55c0a7698189498819c777528462ae761b2dbb18129166b6bb964aced109a2da",
+  "members": 244,
+  "regular_files": 244,
+  "preserved_adversarial_symlinks": 0,
+  "raw_bytes": 211966285,
+  "archive": "owned-rgbd-descriptor.tar.gz",
+  "archive_parts": [
+    {
+      "path": "owned-rgbd-descriptor.tar.gz",
+      "bytes": 42835377,
+      "sha256": "d9e925c3ac86042e8bb724709540a5448b76bea53f57897aac0f8faa976aeb98"
+    }
+  ],
+  "reconstruction": "Concatenate parts in listed binary order; check full sha256 before extraction. Preserve test symlink text; do not dereference archived adversarial symlinks.",
+  "compressed_bytes": 42835377,
+  "sha256": "d9e925c3ac86042e8bb724709540a5448b76bea53f57897aac0f8faa976aeb98",
+  "all_members_readback_verified": true,
+  "originals_unchanged_after_readback": true,
+  "excluded_derived_files": [
+    {
+      "path": "Development/controlled-artifacts-01/native-neural-checkpointscurrent",
+      "type": "symlink",
+      "bytes": 69,
+      "sha256": "3705a03be9d09293e2a4128e23bd5b2093bb1cc652c8e5d41719cf137cebff1e",
+      "target": "/private/tmp/owned-rgbd-descriptor-tests01/native-neural-checkpoints0",
+      "reason": "derived pytest current directory alias; all real target files retained"
+    },
+    {
+      "path": "Development/controlled-artifacts-01/test_actual_owner_rgbd_descripcurrent",
+      "type": "symlink",
+      "bytes": 74,
+      "sha256": "702cd5c12d9ce64e66ec541bfab2f9c886e39775b2baea7f9795d1e07c807f07",
+      "target": "/private/tmp/owned-rgbd-descriptor-tests01/test_actual_owner_rgbd_descrip0",
+      "reason": "derived pytest current directory alias; all real target files retained"
+    },
+    {
+      "path": "Development/controlled-artifacts-01/test_archive_unmodeled_pendingcurrent",
+      "type": "symlink",
+      "bytes": 74,
+      "sha256": "cfa001852868e292da8234a6b6402d1961ba84330ecda8510cf699ab7b63512e",
+      "target": "/private/tmp/owned-rgbd-descriptor-tests01/test_archive_unmodeled_pending0",
+      "reason": "derived pytest current directory alias; all real target files retained"
+    },
+    {
+      "path": "Development/controlled-artifacts-01/test_complete_delivery_replacecurrent",
+      "type": "symlink",
+      "bytes": 74,
+      "sha256": "4238d3d31f35b36ad99e8e020eea933609aa33214a3343f51a3579e63473ae98",
+      "target": "/private/tmp/owned-rgbd-descriptor-tests01/test_complete_delivery_replace0",
+      "reason": "derived pytest current directory alias; all real target files retained"
+    },
+    {
+      "path": "Development/controlled-artifacts-01/test_complete_resealed_descripcurrent",
+      "type": "symlink",
+      "bytes": 74,
+      "sha256": "a0fddb7508223eaad87fe57e868dc23ab773e943107b1a0de1ac49e5ea6063d8",
+      "target": "/private/tmp/owned-rgbd-descriptor-tests01/test_complete_resealed_descrip0",
+      "reason": "derived pytest current directory alias; all real target files retained"
+    },
+    {
+      "path": "Development/controlled-artifacts-01/test_new_semantic_source_and_fcurrent",
+      "type": "symlink",
+      "bytes": 74,
+      "sha256": "a8cf36f2b1f3d097e216192b9aeb15b687f0eacc4417824b1cceaa60f76fda76",
+      "target": "/private/tmp/owned-rgbd-descriptor-tests01/test_new_semantic_source_and_f0",
+      "reason": "derived pytest current directory alias; all real target files retained"
+    },
+    {
+      "path": "Development/controlled-artifacts-01/test_zero_display_mass_and_reacurrent",
+      "type": "symlink",
+      "bytes": 74,
+      "sha256": "24cb14b7676e5a042147df5ac8cad693341e6d6da0cbd320d0e9dcca6dc4b230",
+      "target": "/private/tmp/owned-rgbd-descriptor-tests01/test_zero_display_mass_and_rea0",
+      "reason": "derived pytest current directory alias; all real target files retained"
+    },
+    {
+      "path": "Development/controlled-artifacts-02/native-neural-checkpointscurrent",
+      "type": "symlink",
+      "bytes": 69,
+      "sha256": "8b18d38273af51102cacb59558b30e118db0c81a9eb1d6ae94b69ad39ce33cc9",
+      "target": "/private/tmp/owned-rgbd-descriptor-tests02/native-neural-checkpoints0",
+      "reason": "derived pytest current directory alias; all real target files retained"
+    },
+    {
+      "path": "Development/controlled-artifacts-02/test_actual_owner_rgbd_descripcurrent",
+      "type": "symlink",
+      "bytes": 74,
+      "sha256": "aa264faa391cd7c6139739d7998659ad43be7a866ce8bd639ca61abe1284ce87",
+      "target": "/private/tmp/owned-rgbd-descriptor-tests02/test_actual_owner_rgbd_descrip0",
+      "reason": "derived pytest current directory alias; all real target files retained"
+    },
+    {
+      "path": "Development/controlled-artifacts-02/test_archive_unmodeled_pendingcurrent",
+      "type": "symlink",
+      "bytes": 74,
+      "sha256": "cbde2cd7f2365212fbf863ca1adcbd74d1cb0318ecddbd2ebe4089f9fc92f130",
+      "target": "/private/tmp/owned-rgbd-descriptor-tests02/test_archive_unmodeled_pending0",
+      "reason": "derived pytest current directory alias; all real target files retained"
+    },
+    {
+      "path": "Development/controlled-artifacts-02/test_complete_delivery_replacecurrent",
+      "type": "symlink",
+      "bytes": 74,
+      "sha256": "84f069e73abfba6ea9e8eddc1eaffc5750a1c7cbe72f9fb521ffde8e3fcae475",
+      "target": "/private/tmp/owned-rgbd-descriptor-tests02/test_complete_delivery_replace0",
+      "reason": "derived pytest current directory alias; all real target files retained"
+    },
+    {
+      "path": "Development/controlled-artifacts-02/test_complete_resealed_descripcurrent",
+      "type": "symlink",
+      "bytes": 74,
+      "sha256": "7ea356be0cb3eb327f91fa288613644fdc3929fb91296d35ec64234c44548d10",
+      "target": "/private/tmp/owned-rgbd-descriptor-tests02/test_complete_resealed_descrip0",
+      "reason": "derived pytest current directory alias; all real target files retained"
+    },
+    {
+      "path": "Development/controlled-artifacts-02/test_new_semantic_source_and_fcurrent",
+      "type": "symlink",
+      "bytes": 74,
+      "sha256": "3c2a9a431e072fd3a03348336b70d9639f361f4c621ea3c582efa0b17d71db0e",
+      "target": "/private/tmp/owned-rgbd-descriptor-tests02/test_new_semantic_source_and_f0",
+      "reason": "derived pytest current directory alias; all real target files retained"
+    },
+    {
+      "path": "Development/controlled-artifacts-02/test_zero_display_mass_and_reacurrent",
+      "type": "symlink",
+      "bytes": 74,
+      "sha256": "e5892fd7487917b7dbe40eb75607a96daecad63847cd767b2101a724cf92f30b",
+      "target": "/private/tmp/owned-rgbd-descriptor-tests02/test_zero_display_mass_and_rea0",
+      "reason": "derived pytest current directory alias; all real target files retained"
+    },
+    {
+      "path": "R1/__pycache__/test_independent_descriptor_consequences.cpython-313-pytest-9.1.1.pyc",
+      "type": "file",
+      "bytes": 10527,
+      "sha256": "724a6594019d6ad367bd5d63de914ea858062ffa865580c845c91166e869c4b4",
+      "reason": "derived Python cache only"
+    },
+    {
+      "path": "R1/__pycache__/test_profile_actions.cpython-313-pytest-9.1.1.pyc",
+      "type": "file",
+      "bytes": 6632,
+      "sha256": "7b59e4b46246385cfe7d18a70e7c801902e26c8e10243cdd37970942ada7a794",
+      "reason": "derived Python cache only"
+    },
+    {
+      "path": "R1/compat-01/native-neural-checkpointscurrent",
+      "type": "symlink",
+      "bytes": 149,
+      "sha256": "5be8f20e3dc00bbfc35d9ff1912308074d36f1afa4ca8affa7f45b4bd01e57e0",
+      "target": "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/owned-rgbd-descriptor-20261001/R1/compat-01/native-neural-checkpoints1",
+      "reason": "derived pytest current directory alias; all real target files retained"
+    },
+    {
+      "path": "R1/compat-01/test_actual_owner_readout_restcurrent",
+      "type": "symlink",
+      "bytes": 154,
+      "sha256": "7533a15d62a7eee5ccb0b90b2e9c9610e94e0bca9ee40631eb3eae8bf4a612a3",
+      "target": "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/owned-rgbd-descriptor-20261001/R1/compat-01/test_actual_owner_readout_rest0",
+      "reason": "derived pytest current directory alias; all real target files retained"
+    },
+    {
+      "path": "R1/compat-01/test_before_record_mapping_is_current",
+      "type": "symlink",
+      "bytes": 154,
+      "sha256": "ca87792e6b6e24452444cc679fca6eceb43e986b5593757107e8d8f4aa900dfe",
+      "target": "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/owned-rgbd-descriptor-20261001/R1/compat-01/test_before_record_mapping_is_0",
+      "reason": "derived pytest current directory alias; all real target files retained"
+    },
+    {
+      "path": "R1/compat-01/test_changed_loaded_measuremencurrent",
+      "type": "symlink",
+      "bytes": 154,
+      "sha256": "f1e61153a8b5c836e97eaa216b6971dcabb356cf1d78698842512d811d27c9b5",
+      "target": "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/owned-rgbd-descriptor-20261001/R1/compat-01/test_changed_loaded_measuremen0",
+      "reason": "derived pytest current directory alias; all real target files retained"
+    },
+    {
+      "path": "R1/compat-01/test_complete_derived_support_current",
+      "type": "symlink",
+      "bytes": 154,
+      "sha256": "eec0be4ffeceef47e9f028750213d42f09aa9e9ca4cedf74161d3240351adf76",
+      "target": "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/owned-rgbd-descriptor-20261001/R1/compat-01/test_complete_derived_support_3",
+      "reason": "derived pytest current directory alias; all real target files retained"
+    },
+    {
+      "path": "R1/compat-01/test_complete_forged_positive_current",
+      "type": "symlink",
+      "bytes": 154,
+      "sha256": "7d0a93bfdd67d1e48edd3386096bed3a0bafece83a995cf7294a29aedb409460",
+      "target": "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/owned-rgbd-descriptor-20261001/R1/compat-01/test_complete_forged_positive_3",
+      "reason": "derived pytest current directory alias; all real target files retained"
+    },
+    {
+      "path": "R1/compat-01/test_complete_loaded_log_replacurrent",
+      "type": "symlink",
+      "bytes": 154,
+      "sha256": "0d8351f325181cfcc98b6cbd8b3341b674a5b802ad064fe638dd53b846cea9b1",
+      "target": "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/owned-rgbd-descriptor-20261001/R1/compat-01/test_complete_loaded_log_repla0",
+      "reason": "derived pytest current directory alias; all real target files retained"
+    },
+    {
+      "path": "R1/compat-01/test_complete_previous_evidenccurrent",
+      "type": "symlink",
+      "bytes": 154,
+      "sha256": "8f2b34a7dfdc906f17e351e4982b432dd01e7205d765328eb0437c6b017742c2",
+      "target": "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/owned-rgbd-descriptor-20261001/R1/compat-01/test_complete_previous_evidenc0",
+      "reason": "derived pytest current directory alias; all real target files retained"
+    },
+    {
+      "path": "R1/compat-01/test_complete_public_forgery_rcurrent",
+      "type": "symlink",
+      "bytes": 154,
+      "sha256": "ef756c08ab954934dfff319224a5ed184bc31bf4d32375debfffa7cd38251454",
+      "target": "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/owned-rgbd-descriptor-20261001/R1/compat-01/test_complete_public_forgery_r3",
+      "reason": "derived pytest current directory alias; all real target files retained"
+    },
+    {
+      "path": "R1/compat-01/test_conditioning_rejects_misscurrent",
+      "type": "symlink",
+      "bytes": 154,
+      "sha256": "5f40a3d7fdab91d58565f3bebf58cdcd83ed6896eaa603dc6e5061c6a51b21f5",
+      "target": "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/owned-rgbd-descriptor-20261001/R1/compat-01/test_conditioning_rejects_miss0",
+      "reason": "derived pytest current directory alias; all real target files retained"
+    },
+    {
+      "path": "R1/compat-01/test_decoder_source_change_rejcurrent",
+      "type": "symlink",
+      "bytes": 154,
+      "sha256": "ffb9fff93373388b7c8fa386bc3f5948fe67f0ab87874bc64145c17ec44ac944",
+      "target": "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/owned-rgbd-descriptor-20261001/R1/compat-01/test_decoder_source_change_rej0",
+      "reason": "derived pytest current directory alias; all real target files retained"
+    },
+    {
+      "path": "R1/compat-01/test_dictionary_permutation_recurrent",
+      "type": "symlink",
+      "bytes": 154,
+      "sha256": "e6ce965c6832725fcf0dc5c43b59e48cc613af3cf28f62877f3f62a27e30a327",
+      "target": "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/owned-rgbd-descriptor-20261001/R1/compat-01/test_dictionary_permutation_re0",
+      "reason": "derived pytest current directory alias; all real target files retained"
+    },
+    {
+      "path": "R1/compat-01/test_failed_or_abstaining_meascurrent",
+      "type": "symlink",
+      "bytes": 154,
+      "sha256": "a40ae12679759439d383ca13cb856cb6d0060b97b5d3a3018b51a2315d93438e",
+      "target": "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/owned-rgbd-descriptor-20261001/R1/compat-01/test_failed_or_abstaining_meas1",
+      "reason": "derived pytest current directory alias; all real target files retained"
+    },
+    {
+      "path": "R1/compat-01/test_finite_log_mass_and_all_scurrent",
+      "type": "symlink",
+      "bytes": 154,
+      "sha256": "f3e61ca423b56d9c101e324c5dd3d472de8354faa00e8cb51b35088ea45119b8",
+      "target": "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/owned-rgbd-descriptor-20261001/R1/compat-01/test_finite_log_mass_and_all_s1",
+      "reason": "derived pytest current directory alias; all real target files retained"
+    },
+    {
+      "path": "R1/compat-01/test_full_resealed_wrong_delivcurrent",
+      "type": "symlink",
+      "bytes": 154,
+      "sha256": "a14148602239f6ffac07777e5038f1fe6a170f5abee9502ecce94dbc0b091e2b",
+      "target": "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/owned-rgbd-descriptor-20261001/R1/compat-01/test_full_resealed_wrong_deliv0",
+      "reason": "derived pytest current directory alias; all real target files retained"
+    },
+    {
+      "path": "R1/compat-01/test_full_rgbd_owner_restore_fcurrent",
+      "type": "symlink",
+      "bytes": 154,
+      "sha256": "07468a71004bd64e03a1127060d714c856f80da8f551577bf87e33448a9cb66a",
+      "target": "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/owned-rgbd-descriptor-20261001/R1/compat-01/test_full_rgbd_owner_restore_f0",
+      "reason": "derived pytest current directory alias; all real target files retained"
+    },
+    {
+      "path": "R1/compat-01/test_helper_full_forgery_rejeccurrent",
+      "type": "symlink",
+      "bytes": 154,
+      "sha256": "53db4297a6fb49559dd77187ffa249703609765de450e0a5f0f60ca7f7a5d82f",
+      "target": "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/owned-rgbd-descriptor-20261001/R1/compat-01/test_helper_full_forgery_rejec1",
+      "reason": "derived pytest current directory alias; all real target files retained"
+    },
+    {
+      "path": "R1/compat-01/test_loaded_complete_forgery_ccurrent",
+      "type": "symlink",
+      "bytes": 154,
+      "sha256": "6b40be14ca1abdd8c9d1c7fe856381f4a86f8c5191ec8bd6e753f31a056e30a6",
+      "target": "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/owned-rgbd-descriptor-20261001/R1/compat-01/test_loaded_complete_forgery_c2",
+      "reason": "derived pytest current directory alias; all real target files retained"
+    },
+    {
+      "path": "R1/compat-01/test_loaded_decoder_replacemencurrent",
+      "type": "symlink",
+      "bytes": 154,
+      "sha256": "b1eda3b423cbc748bd1682fc2b1bc6a680258ae9ec5debc8003a75a997372653",
+      "target": "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/owned-rgbd-descriptor-20261001/R1/compat-01/test_loaded_decoder_replacemen0",
+      "reason": "derived pytest current directory alias; all real target files retained"
+    },
+    {
+      "path": "R1/compat-01/test_loaded_geometry_dependenccurrent",
+      "type": "symlink",
+      "bytes": 154,
+      "sha256": "4f20fbd9ed1ee4fd9cc553bceac5ae98fd7a699a7526968eb00c5c9dccd55122",
+      "target": "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/owned-rgbd-descriptor-20261001/R1/compat-01/test_loaded_geometry_dependenc1",
+      "reason": "derived pytest current directory alias; all real target files retained"
+    },
+    {
+      "path": "R1/compat-01/test_negative_measurement_chancurrent",
+      "type": "symlink",
+      "bytes": 154,
+      "sha256": "f843fd42ebd95a1b6e97bffe5f9ef53f3186206405929e32bb60e6419a53b89b",
+      "target": "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/owned-rgbd-descriptor-20261001/R1/compat-01/test_negative_measurement_chan0",
+      "reason": "derived pytest current directory alias; all real target files retained"
+    },
+    {
+      "path": "R1/compat-01/test_original_helper_payloads_current",
+      "type": "symlink",
+      "bytes": 154,
+      "sha256": "d66ad0e1aa0a8fce094db966dbd6db662e8e3af49f9725b414ecd1980bbb512e",
+      "target": "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/owned-rgbd-descriptor-20261001/R1/compat-01/test_original_helper_payloads_0",
+      "reason": "derived pytest current directory alias; all real target files retained"
+    },
+    {
+      "path": "R1/compat-01/test_owned_pixels_change_jointcurrent",
+      "type": "symlink",
+      "bytes": 154,
+      "sha256": "40c74afa0be8d9ccb95ba183cbd69a14fe86365625c2283a415907805802e1fa",
+      "target": "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/owned-rgbd-descriptor-20261001/R1/compat-01/test_owned_pixels_change_joint1",
+      "reason": "derived pytest current directory alias; all real target files retained"
+    },
+    {
+      "path": "R1/compat-01/test_previous_evidence_cannot_current",
+      "type": "symlink",
+      "bytes": 154,
+      "sha256": "1396ba17e512321ece46032affc0dfc9ec446ae81c118dd3f65045d87b5217f6",
+      "target": "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/owned-rgbd-descriptor-20261001/R1/compat-01/test_previous_evidence_cannot_0",
+      "reason": "derived pytest current directory alias; all real target files retained"
+    },
+    {
+      "path": "R1/compat-01/test_publishes_preupdate_densicurrent",
+      "type": "symlink",
+      "bytes": 154,
+      "sha256": "4057e5c90676695674acea6be99e0882f4874d4c52570c7c1bbffbb23b699312",
+      "target": "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/owned-rgbd-descriptor-20261001/R1/compat-01/test_publishes_preupdate_densi0",
+      "reason": "derived pytest current directory alias; all real target files retained"
+    },
+    {
+      "path": "R1/compat-01/test_rebuilt_pose_cannot_replacurrent",
+      "type": "symlink",
+      "bytes": 154,
+      "sha256": "0be6cb3d8b14c03c42387c837cb8b07010451e404fb6e4cf36507464e9918d14",
+      "target": "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/owned-rgbd-descriptor-20261001/R1/compat-01/test_rebuilt_pose_cannot_repla0",
+      "reason": "derived pytest current directory alias; all real target files retained"
+    },
+    {
+      "path": "R1/compat-01/test_recovery_recomputes_same_current",
+      "type": "symlink",
+      "bytes": 154,
+      "sha256": "f019b7ad52e1e7595d903805c456753dd7aa32f26fad4d56bcb76be7bb94e301",
+      "target": "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/owned-rgbd-descriptor-20261001/R1/compat-01/test_recovery_recomputes_same_0",
+      "reason": "derived pytest current directory alias; all real target files retained"
+    },
+    {
+      "path": "R1/compat-01/test_repeat_pixels_are_groupedcurrent",
+      "type": "symlink",
+      "bytes": 154,
+      "sha256": "6b97947e82877d0cb472aca41977d70cfecc54ffae5197336d684e6ff8cc1b37",
+      "target": "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/owned-rgbd-descriptor-20261001/R1/compat-01/test_repeat_pixels_are_grouped0",
+      "reason": "derived pytest current directory alias; all real target files retained"
+    },
+    {
+      "path": "R1/compat-01/test_retraction_full_replay_macurrent",
+      "type": "symlink",
+      "bytes": 154,
+      "sha256": "377ddf692e700f9eef2c78d96b265f1b2f4460bbff0ea55edeb9e01d60bcdf67",
+      "target": "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/owned-rgbd-descriptor-20261001/R1/compat-01/test_retraction_full_replay_ma0",
+      "reason": "derived pytest current directory alias; all real target files retained"
+    },
+    {
+      "path": "R1/compat-01/test_sqlite_new_producer_restocurrent",
+      "type": "symlink",
+      "bytes": 154,
+      "sha256": "8d820f9580bcbd067c74c18869821be8bbf1693b358e659e9bbc4da3c31f2740",
+      "target": "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/owned-rgbd-descriptor-20261001/R1/compat-01/test_sqlite_new_producer_resto0",
+      "reason": "derived pytest current directory alias; all real target files retained"
+    },
+    {
+      "path": "R1/compat-01/test_underflow_fresh_process_rcurrent",
+      "type": "symlink",
+      "bytes": 154,
+      "sha256": "1536094041b9cacca8a4b4106223289d4bc380c5981bfbaedd40acdfae3ec57a",
+      "target": "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/owned-rgbd-descriptor-20261001/R1/compat-01/test_underflow_fresh_process_r1",
+      "reason": "derived pytest current directory alias; all real target files retained"
+    },
+    {
+      "path": "R1/compat-01/test_underflow_retraction_replcurrent",
+      "type": "symlink",
+      "bytes": 154,
+      "sha256": "a02a1e35c4d7d9f2af5794723e22269ada67d3e1236ac79fd27faa956e4899e9",
+      "target": "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/owned-rgbd-descriptor-20261001/R1/compat-01/test_underflow_retraction_repl1",
+      "reason": "derived pytest current directory alias; all real target files retained"
+    },
+    {
+      "path": "R1/extra-01/native-neural-checkpointscurrent",
+      "type": "symlink",
+      "bytes": 148,
+      "sha256": "57af7f9fd4c127074f73ac856cd63a95ecc5766dbee24d4ebcb72efe5665be81",
+      "target": "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/owned-rgbd-descriptor-20261001/R1/extra-01/native-neural-checkpoints0",
+      "reason": "derived pytest current directory alias; all real target files retained"
+    },
+    {
+      "path": "R1/extra-01/test_every_complete_derived_ficurrent",
+      "type": "symlink",
+      "bytes": 153,
+      "sha256": "266d2499c5392f1837887d00ead91f73d4522a6c6279c6dbb12671d255e563e1",
+      "target": "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/owned-rgbd-descriptor-20261001/R1/extra-01/test_every_complete_derived_fi0",
+      "reason": "derived pytest current directory alias; all real target files retained"
+    },
+    {
+      "path": "R1/extra-01/test_one_sided_raw_rejected_ancurrent",
+      "type": "symlink",
+      "bytes": 153,
+      "sha256": "29174a9c2d243eee9397f515e38aa16fc8964cc1e6f0ea40738a2fd7cd5f797f",
+      "target": "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/owned-rgbd-descriptor-20261001/R1/extra-01/test_one_sided_raw_rejected_an0",
+      "reason": "derived pytest current directory alias; all real target files retained"
+    },
+    {
+      "path": "R1/new-01/native-neural-checkpointscurrent",
+      "type": "symlink",
+      "bytes": 146,
+      "sha256": "e657ca59ae65e22769e819efbf0f3ab5d2d0cc1dd96339abdce7771195b25a08",
+      "target": "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/owned-rgbd-descriptor-20261001/R1/new-01/native-neural-checkpoints0",
+      "reason": "derived pytest current directory alias; all real target files retained"
+    },
+    {
+      "path": "R1/new-01/test_actual_owner_rgbd_descripcurrent",
+      "type": "symlink",
+      "bytes": 151,
+      "sha256": "b0248a7d0096e7ac138605903076f28482310de4acc7cc39d41dcd2845824092",
+      "target": "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/owned-rgbd-descriptor-20261001/R1/new-01/test_actual_owner_rgbd_descrip0",
+      "reason": "derived pytest current directory alias; all real target files retained"
+    },
+    {
+      "path": "R1/new-01/test_archive_unmodeled_pendingcurrent",
+      "type": "symlink",
+      "bytes": 151,
+      "sha256": "e1c2fc57d8bf0c0df1bd9ff46fa9d978e6d15e2673067410f31d33f8528d9eeb",
+      "target": "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/owned-rgbd-descriptor-20261001/R1/new-01/test_archive_unmodeled_pending0",
+      "reason": "derived pytest current directory alias; all real target files retained"
+    },
+    {
+      "path": "R1/new-01/test_complete_delivery_replacecurrent",
+      "type": "symlink",
+      "bytes": 151,
+      "sha256": "0d85bc1d1132a33f93c2259ebea7b3560f593eeff26c5f86f55230b864e6392c",
+      "target": "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/owned-rgbd-descriptor-20261001/R1/new-01/test_complete_delivery_replace0",
+      "reason": "derived pytest current directory alias; all real target files retained"
+    },
+    {
+      "path": "R1/new-01/test_complete_resealed_descripcurrent",
+      "type": "symlink",
+      "bytes": 151,
+      "sha256": "b3a0115bc432cae80387463dacfd60e1c14e21f63bdd8bd8cfbb556b64b49b9a",
+      "target": "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/owned-rgbd-descriptor-20261001/R1/new-01/test_complete_resealed_descrip0",
+      "reason": "derived pytest current directory alias; all real target files retained"
+    },
+    {
+      "path": "R1/new-01/test_new_semantic_source_and_fcurrent",
+      "type": "symlink",
+      "bytes": 151,
+      "sha256": "ddcd87aa04abf7619364460b4c68bcc041f922f08097d2dcf6aadf9765d2e39d",
+      "target": "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/owned-rgbd-descriptor-20261001/R1/new-01/test_new_semantic_source_and_f0",
+      "reason": "derived pytest current directory alias; all real target files retained"
+    },
+    {
+      "path": "R1/new-01/test_zero_display_mass_and_reacurrent",
+      "type": "symlink",
+      "bytes": 151,
+      "sha256": "f599d97508ecb743a9734112388054642919fa652b0000500d9d344c42cb9918",
+      "target": "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/owned-rgbd-descriptor-20261001/R1/new-01/test_zero_display_mass_and_rea0",
+      "reason": "derived pytest current directory alias; all real target files retained"
+    },
+    {
+      "path": "R1/profile-01/native-neural-checkpointscurrent",
+      "type": "symlink",
+      "bytes": 150,
+      "sha256": "e6fe9d1c3fce4abe24dce226a47dfcd8e6795a62bb92365a61902b4c82663ff7",
+      "target": "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/owned-rgbd-descriptor-20261001/R1/profile-01/native-neural-checkpoints0",
+      "reason": "derived pytest current directory alias; all real target files retained"
+    },
+    {
+      "path": "R1/profile-01/test_old_proof_action_ids_onlycurrent",
+      "type": "symlink",
+      "bytes": 155,
+      "sha256": "658907ecdf53f1184588dcbdf34b3df4e4385e5e44e00b3f417df7e7fee50720",
+      "target": "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/owned-rgbd-descriptor-20261001/R1/profile-01/test_old_proof_action_ids_only0",
+      "reason": "derived pytest current directory alias; all real target files retained"
+    },
+    {
+      "path": "R2/independent-01/native-neural-checkpointscurrent",
+      "type": "symlink",
+      "bytes": 154,
+      "sha256": "2bde46ccacf1d87bda94abbbdc12f9926b6e97b114283c2b51888459b234f4b6",
+      "target": "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/owned-rgbd-descriptor-20261001/R2/independent-01/native-neural-checkpoints0",
+      "reason": "derived pytest current directory alias; all real target files retained"
+    },
+    {
+      "path": "R2/independent-01/test_complete_hidden_log_parencurrent",
+      "type": "symlink",
+      "bytes": 159,
+      "sha256": "de3f047b72acd58e14b7dd68dd258d5f4193d71a07e5806a809a62cd5259a9b5",
+      "target": "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/owned-rgbd-descriptor-20261001/R2/independent-01/test_complete_hidden_log_paren0",
+      "reason": "derived pytest current directory alias; all real target files retained"
+    },
+    {
+      "path": "R2/independent-01/test_consistent_new_capture_sucurrent",
+      "type": "symlink",
+      "bytes": 159,
+      "sha256": "49b430cd537cc389630d2a97664bcb7e466da53fb8947b04d3521e0f8205ee74",
+      "target": "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/owned-rgbd-descriptor-20261001/R2/independent-01/test_consistent_new_capture_su0",
+      "reason": "derived pytest current directory alias; all real target files retained"
+    },
+    {
+      "path": "R2/independent-01/test_two_legal_captures_complecurrent",
+      "type": "symlink",
+      "bytes": 159,
+      "sha256": "6fd4f0959f7cdcf6af542a93def3a93a5d7998b7289deeca3ad93e97b27cca77",
+      "target": "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/owned-rgbd-descriptor-20261001/R2/independent-01/test_two_legal_captures_comple0",
+      "reason": "derived pytest current directory alias; all real target files retained"
+    },
+    {
+      "path": "R2/independent-02/native-neural-checkpointscurrent",
+      "type": "symlink",
+      "bytes": 154,
+      "sha256": "b413cc570133bc101055420c1d972de52823654f73b4c3fdb09bb318a57124dd",
+      "target": "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/owned-rgbd-descriptor-20261001/R2/independent-02/native-neural-checkpoints0",
+      "reason": "derived pytest current directory alias; all real target files retained"
+    },
+    {
+      "path": "R2/independent-02/test_complete_hidden_log_parencurrent",
+      "type": "symlink",
+      "bytes": 159,
+      "sha256": "dc86703b70edefd69449627a7718e6df49f8b14db428b1314b542ac94e65c82b",
+      "target": "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/owned-rgbd-descriptor-20261001/R2/independent-02/test_complete_hidden_log_paren0",
+      "reason": "derived pytest current directory alias; all real target files retained"
+    },
+    {
+      "path": "R2/independent-02/test_consistent_new_capture_sucurrent",
+      "type": "symlink",
+      "bytes": 159,
+      "sha256": "0338d9134b8848567fddf402d9c49b628817b9830bff7552e190d121381fe7ce",
+      "target": "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/owned-rgbd-descriptor-20261001/R2/independent-02/test_consistent_new_capture_su0",
+      "reason": "derived pytest current directory alias; all real target files retained"
+    },
+    {
+      "path": "R2/independent-02/test_real_fresh_resume_indepencurrent",
+      "type": "symlink",
+      "bytes": 159,
+      "sha256": "3d7a19bc2c70e76cbef0e0678f597f4f5b1fe0d2601532606502316a613a47d9",
+      "target": "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/owned-rgbd-descriptor-20261001/R2/independent-02/test_real_fresh_resume_indepen0",
+      "reason": "derived pytest current directory alias; all real target files retained"
+    },
+    {
+      "path": "R2/independent-02/test_two_legal_captures_complecurrent",
+      "type": "symlink",
+      "bytes": 159,
+      "sha256": "224e8bcfc96301523b27cf0126bc7f81dc043d2e17ee79a755c2aceec695d776",
+      "target": "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/owned-rgbd-descriptor-20261001/R2/independent-02/test_two_legal_captures_comple0",
+      "reason": "derived pytest current directory alias; all real target files retained"
+    },
+    {
+      "path": "R2/independent-diagnosis/native-neural-checkpointscurrent",
+      "type": "symlink",
+      "bytes": 161,
+      "sha256": "e70319a5c6d20cd1fae5e561ba8ed3c5c1dc92e69bb8ee2e5ee8a8b02a0d539d",
+      "target": "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/owned-rgbd-descriptor-20261001/R2/independent-diagnosis/native-neural-checkpoints0",
+      "reason": "derived pytest current directory alias; all real target files retained"
+    },
+    {
+      "path": "R2/independent-diagnosis/test_consistent_new_capture_sucurrent",
+      "type": "symlink",
+      "bytes": 166,
+      "sha256": "a2d7060e8e5f75f3c71ad478759913faa182776cfffc8a127322d160b97e6730",
+      "target": "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/owned-rgbd-descriptor-20261001/R2/independent-diagnosis/test_consistent_new_capture_su0",
+      "reason": "derived pytest current directory alias; all real target files retained"
+    }
+  ],
+  "independent_custody": false
+}

@@ -1,3 +1,5 @@
+> 2026-10-01 最新：[当前 owner RGB-D 只读描述](../reviews/pc_a/owned_rgbd_descriptor_2026-10-01/REPORT.md)，6faa17e同源码顺序两审通过。已核对新capture原件与当前来源，未赋消费authority/更新后验；同语义后续观测原子Native更新仍是下一主项。父PR79真实归档消费结果继续有效。
+
 > 2026-10-01 最新：[实际归档位置 Native 桥接与裸点配对对照](../reviews/pc_a/archive_native_bridge_2026-10-01/REPORT.md)，功能82c7a81同源码双审及真实run/fresh通过；真实位置因子已进入受控Native。自然身份、同语义后续相机更新与任务效用仍未完成。
 
 > 2026-10-01 最新：[位置观测开发交付](../reviews/pc_a/soft_position_factor_2026-10-01/REPORT.md)，实际1bd6c20源码双审68/35通过，96帧四模型run/fresh302产物一致与独立算术通过。参考不同有改善也有退化；Native仍受控，真实桥接正隔离实施，非自然闭环完成。

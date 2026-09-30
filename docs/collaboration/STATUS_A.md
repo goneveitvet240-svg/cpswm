@@ -1,3 +1,21 @@
+# A：当前 owner RGB-D 只读描述已交付（2026-10-01 06:05）
+
+分支codex/pc-a-owned-rgbd-descriptor-20261001，实际功能/双审源码6faa17e178ad001de6b5c0e1094f9e62568d7a7e（903 Python），base父功能82c7a81 / 父交付dc57a687f6cfe0912de7415357765fff79f2c2ff。顺序R1/R2同源码通过，详[报告](../reviews/pc_a/owned_rgbd_descriptor_2026-10-01/REPORT.md)和[交付](../reviews/pc_a/owned_rgbd_descriptor_2026-10-01/DELIVERY.md)。A辅助、非B独立/全仓CI。
+
+实际owner prepare/execute/accept的受控RGB-D描述、完整typed派生替换拒绝、stale、有限log但显示零概率父支持、SQLite新进程与无新增后验/动作/DB副作用已按报告核验。仅新增两文件，posterior_updated/consumption_authority均False。允许旧Native证据复核重算；不消费新capture，不提供owner相关原件一致替换的独立历史认证。证据244成员，SHA256 d9e925c3ac86042e8bb724709540a5448b76bea53f57897aac0f8faa976aeb98；全部读回、失败与原DB保留。
+
+六小时主线已形成：公开特征对照→软表面三维/残差模型→实际归档四模型Native消费/撤回/恢复与裸点配对对照→当前owner原件描述。父PR79已推送；本轮草稿叠加它，不自动集成。仍缺同语义后续新capture的原子Native更新；下一轮应整体实施接收锚、消费一次、失败回滚、重放/撤回/fresh，不用重发semantic绕过。自然I/朝向、正式prior/unknown/时间相关性、任务收益和B验收保持开放，完整统一范围与原对照保留。
+
+---
+
+# A：同语义新观测的原件描述接口开发中（2026-10-01 05:26）
+
+独立分支 codex/pc-a-owned-rgbd-descriptor-20261001，base 82c7a81fba0c3af3688978ce222b1b94e4cc5bd9（901 Python）。父桥接轮已通过顺序R1/R2；当前真实bridge/bare run/fresh在父工作树继续，不动其源码/输入。本轮限 action_id→当前严格匹配Native origin/source的owner RGB-D描述，拒绝archive/direct-admit、stale和完整派生数据替换，不改变持久化格式、后验或相机执行行为。它不是完整raw更新事务或历史执行证明。
+
+证据 output/owned-rgbd-descriptor-20261001；作者开发后冻结，再两轮顺序对抗（含真实owner prepare/execute/accept受控正路径、完整错误数据、无副作用及fresh恢复）。未完成不计通过。完整原子后验更新设计仍在父NEXT_OBSERVATION_IMPLEMENTATION.md；正式科研定义/完整框架保持。原用户树和STATUS_B不改。父完成交付后合入其纯文档再冻结本轮功能SHA。
+
+---
+
 # A：实际位置归档到 Native 桥接与裸 seed 对照完成（2026-10-01 05:46）
 
 本轮分支codex/pc-a-archive-native-bridge-20261001，实际源码82c7a81fba0c3af3688978ce222b1b94e4cc5bd9（901 Python），base父功能1bd6c20 / 交付df8e30bd7eb436444b191ea242e938c8948d08a1。两轮顺序对抗审查绑定同源码；实际bridge: run 761.56s / verify 722.54s / 76 files；bare: run 354.22s / verify 398.48s / 103 files，四次成功，原件不变。R1 180不同测试，R2完整覆盖/限制见报告；A辅助非B独立/全仓CI。独立数值检查与图表已完成，case pin 328b4b10276c44a05b91cfcbb7f24d370ff8092e85a9fe729939311bc6b4fc42。

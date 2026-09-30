@@ -1,0 +1,236 @@
+{
+  "scope": "DESCRIPTIVE_PIXEL_COVERAGE_AND_RAW_REFERENCE_DISTANCES_ONLY",
+  "paired_public_inputs": 96,
+  "methods": {
+    "fasterrcnn": {
+      "overall": {
+        "candidates": 109,
+        "surface_samples": 327,
+        "unique_instances": 503,
+        "unique_visible_instances": 159,
+        "unique_box_overlapping_instances": 81,
+        "unique_sample_hit_instances": 48,
+        "visible_instance_frames": 253,
+        "box_overlapping_instance_frames": 101,
+        "sample_hit_instance_frames": 57,
+        "candidate_boxes_with_multiple_selected_instances": 48,
+        "multiply_box_overlapped_instance_frames": 48,
+        "surface_samples_hitting_selected_instances": 116,
+        "frames": 96,
+        "frames_without_candidates": 54,
+        "boxes_mixing_any_sdk_instances": 105,
+        "surface_samples_with_no_sdk_mask": 0,
+        "surface_samples_with_multiple_sdk_masks": 0,
+        "eligible_objects_in_two_or_more_box_overlapped_views": 20,
+        "eligible_objects_in_two_or_more_sample_hit_views": 9,
+        "pivot_distance": {
+          "count": 116,
+          "maximum_m": 2.628331415014787,
+          "median_m": 0.5737395165753594,
+          "minimum_m": 0.02102419096904223,
+          "p90_m": 1.2189923987003648,
+          "quantile_method": "linear interpolation at (n-1)*q"
+        },
+        "aabb_distance": {
+          "count": 116,
+          "maximum_m": 1.8752168773077007,
+          "median_m": 0.39077893375007433,
+          "minimum_m": 0.016968332524725686,
+          "p90_m": 1.0016026644864213,
+          "quantile_method": "linear interpolation at (n-1)*q"
+        }
+      },
+      "train": {
+        "candidates": 61,
+        "surface_samples": 183,
+        "unique_instances": 411,
+        "unique_visible_instances": 118,
+        "unique_box_overlapping_instances": 59,
+        "unique_sample_hit_instances": 31,
+        "visible_instance_frames": 182,
+        "box_overlapping_instance_frames": 66,
+        "sample_hit_instance_frames": 35,
+        "candidate_boxes_with_multiple_selected_instances": 29,
+        "multiply_box_overlapped_instance_frames": 27,
+        "surface_samples_hitting_selected_instances": 62,
+        "frames": 64,
+        "frames_without_candidates": 34,
+        "boxes_mixing_any_sdk_instances": 60,
+        "surface_samples_with_no_sdk_mask": 0,
+        "surface_samples_with_multiple_sdk_masks": 0,
+        "eligible_objects_in_two_or_more_box_overlapped_views": 7,
+        "eligible_objects_in_two_or_more_sample_hit_views": 4,
+        "pivot_distance": {
+          "count": 62,
+          "maximum_m": 2.628331415014787,
+          "median_m": 0.630189441526804,
+          "minimum_m": 0.05666349629478688,
+          "p90_m": 1.2315519174517136,
+          "quantile_method": "linear interpolation at (n-1)*q"
+        },
+        "aabb_distance": {
+          "count": 62,
+          "maximum_m": 1.8752168773077007,
+          "median_m": 0.413835613530688,
+          "minimum_m": 0.027161741041374227,
+          "p90_m": 0.9933562155424511,
+          "quantile_method": "linear interpolation at (n-1)*q"
+        }
+      },
+      "validation": {
+        "candidates": 48,
+        "surface_samples": 144,
+        "unique_instances": 92,
+        "unique_visible_instances": 41,
+        "unique_box_overlapping_instances": 22,
+        "unique_sample_hit_instances": 17,
+        "visible_instance_frames": 71,
+        "box_overlapping_instance_frames": 35,
+        "sample_hit_instance_frames": 22,
+        "candidate_boxes_with_multiple_selected_instances": 19,
+        "multiply_box_overlapped_instance_frames": 21,
+        "surface_samples_hitting_selected_instances": 54,
+        "frames": 32,
+        "frames_without_candidates": 20,
+        "boxes_mixing_any_sdk_instances": 45,
+        "surface_samples_with_no_sdk_mask": 0,
+        "surface_samples_with_multiple_sdk_masks": 0,
+        "eligible_objects_in_two_or_more_box_overlapped_views": 13,
+        "eligible_objects_in_two_or_more_sample_hit_views": 5,
+        "pivot_distance": {
+          "count": 54,
+          "maximum_m": 1.8054167559971979,
+          "median_m": 0.40838408677536053,
+          "minimum_m": 0.02102419096904223,
+          "p90_m": 1.1707480080143315,
+          "quantile_method": "linear interpolation at (n-1)*q"
+        },
+        "aabb_distance": {
+          "count": 54,
+          "maximum_m": 1.177124783756532,
+          "median_m": 0.3390430994263559,
+          "minimum_m": 0.016968332524725686,
+          "p90_m": 1.0044305543601397,
+          "quantile_method": "linear interpolation at (n-1)*q"
+        }
+      }
+    },
+    "ssdlite": {
+      "overall": {
+        "candidates": 67,
+        "surface_samples": 201,
+        "unique_instances": 503,
+        "unique_visible_instances": 159,
+        "unique_box_overlapping_instances": 65,
+        "unique_sample_hit_instances": 20,
+        "visible_instance_frames": 253,
+        "box_overlapping_instance_frames": 86,
+        "sample_hit_instance_frames": 24,
+        "candidate_boxes_with_multiple_selected_instances": 30,
+        "multiply_box_overlapped_instance_frames": 21,
+        "surface_samples_hitting_selected_instances": 44,
+        "frames": 96,
+        "frames_without_candidates": 51,
+        "boxes_mixing_any_sdk_instances": 67,
+        "surface_samples_with_no_sdk_mask": 0,
+        "surface_samples_with_multiple_sdk_masks": 0,
+        "eligible_objects_in_two_or_more_box_overlapped_views": 19,
+        "eligible_objects_in_two_or_more_sample_hit_views": 3,
+        "pivot_distance": {
+          "count": 44,
+          "maximum_m": 1.7081175845096677,
+          "median_m": 0.7045581021924124,
+          "minimum_m": 0.07172069734192661,
+          "p90_m": 1.1885609790380773,
+          "quantile_method": "linear interpolation at (n-1)*q"
+        },
+        "aabb_distance": {
+          "count": 44,
+          "maximum_m": 1.7413588806446623,
+          "median_m": 0.4153722078689194,
+          "minimum_m": 0.1439917214239638,
+          "p90_m": 0.9412470873893843,
+          "quantile_method": "linear interpolation at (n-1)*q"
+        }
+      },
+      "train": {
+        "candidates": 37,
+        "surface_samples": 111,
+        "unique_instances": 411,
+        "unique_visible_instances": 118,
+        "unique_box_overlapping_instances": 38,
+        "unique_sample_hit_instances": 11,
+        "visible_instance_frames": 182,
+        "box_overlapping_instance_frames": 45,
+        "sample_hit_instance_frames": 12,
+        "candidate_boxes_with_multiple_selected_instances": 16,
+        "multiply_box_overlapped_instance_frames": 9,
+        "surface_samples_hitting_selected_instances": 22,
+        "frames": 64,
+        "frames_without_candidates": 36,
+        "boxes_mixing_any_sdk_instances": 37,
+        "surface_samples_with_no_sdk_mask": 0,
+        "surface_samples_with_multiple_sdk_masks": 0,
+        "eligible_objects_in_two_or_more_box_overlapped_views": 7,
+        "eligible_objects_in_two_or_more_sample_hit_views": 1,
+        "pivot_distance": {
+          "count": 22,
+          "maximum_m": 1.4090127743313645,
+          "median_m": 0.9201729777462473,
+          "minimum_m": 0.23599628429679712,
+          "p90_m": 1.3610218874002902,
+          "quantile_method": "linear interpolation at (n-1)*q"
+        },
+        "aabb_distance": {
+          "count": 22,
+          "maximum_m": 1.2872732387155656,
+          "median_m": 0.5380285165787944,
+          "minimum_m": 0.1937460648482998,
+          "p90_m": 1.1524657387486217,
+          "quantile_method": "linear interpolation at (n-1)*q"
+        }
+      },
+      "validation": {
+        "candidates": 30,
+        "surface_samples": 90,
+        "unique_instances": 92,
+        "unique_visible_instances": 41,
+        "unique_box_overlapping_instances": 27,
+        "unique_sample_hit_instances": 9,
+        "visible_instance_frames": 71,
+        "box_overlapping_instance_frames": 41,
+        "sample_hit_instance_frames": 12,
+        "candidate_boxes_with_multiple_selected_instances": 14,
+        "multiply_box_overlapped_instance_frames": 12,
+        "surface_samples_hitting_selected_instances": 22,
+        "frames": 32,
+        "frames_without_candidates": 15,
+        "boxes_mixing_any_sdk_instances": 30,
+        "surface_samples_with_no_sdk_mask": 0,
+        "surface_samples_with_multiple_sdk_masks": 0,
+        "eligible_objects_in_two_or_more_box_overlapped_views": 12,
+        "eligible_objects_in_two_or_more_sample_hit_views": 2,
+        "pivot_distance": {
+          "count": 22,
+          "maximum_m": 1.7081175845096677,
+          "median_m": 0.4893389360728647,
+          "minimum_m": 0.07172069734192661,
+          "p90_m": 1.1105606624317212,
+          "quantile_method": "linear interpolation at (n-1)*q"
+        },
+        "aabb_distance": {
+          "count": 22,
+          "maximum_m": 1.7413588806446623,
+          "median_m": 0.39024733182345883,
+          "minimum_m": 0.1439917214239638,
+          "p90_m": 0.9366348057278274,
+          "quantile_method": "linear interpolation at (n-1)*q"
+        }
+      }
+    }
+  },
+  "report_sha256": {
+    "fasterrcnn": "dcdd1b0b6b3161450c6132f0a4ad4ef25ab0cce655e000f2f9785c5b28bcabd3",
+    "ssdlite": "343d5f469e83a4691ed7fe04bca7a62c2247cb66a3053f9b24d140bf12430d8e"
+  }
+}

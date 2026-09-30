@@ -1,0 +1,720 @@
+"""Independent A-side numerical review of fixed RGB/geometry/combined controls.
+
+Starts from the externally pinned PR76 pair features/valid/targets, not raw
+images or masks. No production imports, fitting, prediction or summarization.
+Run only after the real run and fresh verify are both complete. Creates one
+independent-analysis.json after all checks, refusing to overwrite a prior result.
+"""
+
+from __future__ import annotations
+
+import argparse
+import hashlib
+import itertools
+import json
+import math
+import subprocess
+from pathlib import Path
+
+import numpy as np
+
+PARENT_LEDGER_PIN = "32e0dc7cec8fce6dfca5bc36755cfba5cf3551b454c1f746f20ac2076936e842"
+PARENT_SOURCE = "0a8a2384c321c3a2dc14cf218854754161af9ffd"
+COLLECTION_PIN = "9791a946543b9158890324d3ff35a80ea04d51c9cabb6e09540f569abd903d47"
+MODES = ("rgb_only", "geometry_only", "combined")
+METHODS = (*MODES, "training_frequency_constant")
+COLUMNS = {"rgb_only": [0, 1, 2], "geometry_only": [3, 4, 5, 6, 7], "combined": list(range(8))}
+CLASSES = ("all", "same_instance", "different_instance")
+FEATURES = [
+    "abs_red_difference_div_255",
+    "abs_green_difference_div_255",
+    "abs_blue_difference_div_255",
+    "abs_u_difference_div_width",
+    "abs_v_difference_div_height",
+    "abs_rendered_depth_difference_m",
+    "abs_log_rendered_depth_difference",
+    "camera_world_point_distance_m",
+]
+INNER_CONFIG = dict(
+    grid_cells_per_axis=8,
+    solver="damped_newton",
+    iterations=30,
+    backtracking_steps=40,
+    l2_weights_only=0.01,
+    gradient_tolerance=1e-10,
+    armijo=1e-4,
+    constant_feature_scale=1.0,
+)
+WRAPPER_CONFIG = dict(
+    projection="zero_disabled_columns",
+    sample_selection="unchanged",
+    inner_schema="offline-instance-affinity-logistic@1",
+)
+
+
+def require(condition, message):
+    if not condition:
+        raise ValueError(message)
+
+
+def sha(raw):
+    return hashlib.sha256(raw).hexdigest()
+
+
+def normalize(value):
+    if type(value) is float and value == 0:
+        return 0.0
+    if type(value) is dict:
+        return {k: normalize(v) for k, v in value.items()}
+    if type(value) is list:
+        return [normalize(v) for v in value]
+    return value
+
+
+def canonical(value):
+    return json.dumps(
+        normalize(value), sort_keys=True, separators=(",", ":"), ensure_ascii=False, allow_nan=False
+    )
+
+
+def digest(value):
+    return sha(canonical(value).encode())
+
+
+def read_json(path):
+    require(path.is_file() and not path.is_symlink(), f"invalid JSON path: {path}")
+
+    def pairs(items):
+        result = {}
+        for key, value in items:
+            require(key not in result, f"duplicate JSON key: {path}/{key}")
+            result[key] = value
+        return result
+
+    def invalid(value):
+        raise ValueError(f"nonfinite JSON value: {value}")
+
+    return json.loads(path.read_bytes(), object_pairs_hook=pairs, parse_constant=invalid)
+
+
+def inventory(root):
+    require(root.is_dir() and not root.is_symlink(), f"invalid inventory root {root}")
+    result = {}
+    for path in sorted(root.rglob("*")):
+        require(not path.is_symlink(), f"symlink member {path}")
+        if path.is_file():
+            result[str(path.relative_to(root))] = sha(path.read_bytes())
+    return result
+
+
+def argument(argv, name):
+    require(argv.count(name) == 1, f"missing/duplicate CLI argument {name}")
+    return argv[argv.index(name) + 1]
+
+
+def close(left, right, name, *, atol=2e-12, rtol=2e-12):
+    require(np.shape(left) == np.shape(right), name + " shape differs")
+    require(np.allclose(left, right, atol=atol, rtol=rtol, equal_nan=True), name + " differs")
+
+
+def compare(left, right, name):
+    if type(right) is dict:
+        require(type(left) is dict and set(left) == set(right), name + " keys differ")
+        for key in right:
+            compare(left[key], right[key], name + "." + key)
+    elif type(right) is list:
+        require(type(left) is list and len(left) == len(right), name + " length differs")
+        for i, (a, b) in enumerate(zip(left, right, strict=True)):
+            compare(a, b, name + f"[{i}]")
+    elif type(right) is float:
+        require(type(left) in (int, float) and math.isfinite(left), name + " nonfinite")
+        close(left, right, name)
+    else:
+        require(type(left) is type(right) and left == right, name + " value differs")
+
+
+def source_commit(source, commit, members):
+    """Read only audited source trees, then hash each immutable Git blob in one batch."""
+    paths = subprocess.check_output(
+        ["git", "ls-tree", "-r", "--name-only", commit, "--", "src", "tests", "tools"],
+        cwd=source,
+        text=True,
+    ).splitlines()
+    names = sorted(path for path in paths if path.endswith(".py"))
+    require(names and set(names) == set(members), "complete frozen source inventory differs")
+    requests = "".join(f"{commit}:{name}\n" for name in names).encode()
+    raw = subprocess.check_output(["git", "cat-file", "--batch"], input=requests, cwd=source)
+    cursor = 0
+    for name in names:
+        end = raw.index(b"\n", cursor)
+        header = raw[cursor:end].split()
+        require(len(header) == 3 and header[1] == b"blob", "missing source blob " + name)
+        length, cursor = int(header[2]), end + 1
+        blob = raw[cursor : cursor + length]
+        require(len(blob) == length and sha(blob) == members[name], "source blob differs: " + name)
+        cursor += length
+        require(raw[cursor : cursor + 1] == b"\n", "invalid git batch boundary")
+        cursor += 1
+    require(cursor == len(raw), "unexpected git batch tail")
+    return len(names)
+
+
+def array_digest(array):
+    return digest(
+        dict(
+            dtype=array.dtype.str,
+            shape=list(array.shape),
+            bytes_sha256=sha(np.ascontiguousarray(array).tobytes()),
+        )
+    )
+
+
+def projection(features, mode):
+    # Independent explicit projection; preserve shape, order and original dtype.
+    result = np.zeros_like(features)
+    result[:, COLUMNS[mode]] = features[:, COLUMNS[mode]]
+    return result
+
+
+def sigmoid(logits):
+    values = np.empty(len(logits), dtype=np.float64)
+    positive = logits >= 0
+    values[positive] = 1 / (1 + np.exp(-logits[positive]))
+    negative_exp = np.exp(logits[~positive])
+    values[~positive] = negative_exp / (1 + negative_exp)
+    return values
+
+
+def checkpoint_scores(features, valid, inner):
+    result = np.full(len(features), np.nan)
+    z = (features[valid] - np.asarray(inner["mean"])) / np.asarray(inner["scale"])
+    logits = z @ np.asarray(inner["weights"]) + inner["bias"]
+    require(np.isfinite(logits).all(), "nonfinite independently reconstructed logits")
+    result[valid] = sigmoid(logits)
+    return result
+
+
+def metrics(targets, scores):
+    keep = targets != -1
+    y, p = targets[keep], scores[keep]
+    require(np.isfinite(p).all() and np.all((p >= 0) & (p <= 1)), "invalid labelled score")
+    if not len(y):
+        return dict(pairs=0, bce=None, brier=None)
+    losses, squares = [], []
+    for target, probability in zip(y.tolist(), p.tolist(), strict=True):
+        q = min(1 - 1e-12, max(1e-12, probability))
+        losses.append(-math.log(q) if target == 1 else -math.log1p(-q))
+        squares.append((probability - target) ** 2)
+    return dict(pairs=len(y), bce=math.fsum(losses) / len(y), brier=math.fsum(squares) / len(y))
+
+
+def class_metrics(targets, scores):
+    return dict(
+        all=metrics(targets, scores),
+        same_instance=metrics(targets[targets == 1], scores[targets == 1]),
+        different_instance=metrics(targets[targets == 0], scores[targets == 0]),
+    )
+
+
+def aggregate(records):
+    y = np.concatenate([r["targets"] for r in records])
+    valid = np.concatenate([r["valid"] for r in records])
+    return dict(
+        frames=len(records),
+        zero_candidate_frames=sum(not r["candidates"] for r in records),
+        frames_without_supervision=sum(not np.any(r["targets"] != -1) for r in records),
+        unique_pairs=len(y),
+        public_valid_pairs=int(valid.sum()),
+        positive_pairs=int((y == 1).sum()),
+        negative_pairs=int((y == 0).sum()),
+        void_pairs=int((y == -1).sum()),
+        methods={
+            method: class_metrics(y, np.concatenate([r["predictions"][method] for r in records]))
+            for method in METHODS
+        },
+    )
+
+
+def macro(houses):
+    result = {}
+    for method in METHODS:
+        result[method] = {}
+        for group in CLASSES:
+            observed = [
+                house["methods"][method][group]
+                for house in houses
+                if house["methods"][method][group]["pairs"] > 0
+            ]
+            result[method][group] = dict(
+                houses=len(observed),
+                **{
+                    metric: math.fsum(row[metric] for row in observed) / len(observed)
+                    if observed
+                    else None
+                    for metric in ("bce", "brier")
+                },
+            )
+    return result
+
+
+def inspect_model(wrapper, mode, train_x, train_y):
+    require(
+        wrapper["schema"] == "offline-instance-affinity-feature-controls@1"
+        and wrapper["scope"] == "UNCALIBRATED_RENDERED_INSTANCE_PAIR_FEATURE_CONTROLS_ONLY"
+        and wrapper["mode"] == mode
+        and wrapper["active_columns"] == COLUMNS[mode]
+        and wrapper["config"] == WRAPPER_CONFIG
+        and wrapper["runtime_authority"] is False
+        and wrapper["calibrated"] is False,
+        "control definition differs",
+    )
+    require(
+        wrapper["training_features_sha256"] == array_digest(train_x)
+        and wrapper["training_targets_sha256"] == array_digest(train_y),
+        "original train-only digest differs",
+    )
+    inner = wrapper["inner_checkpoint"]
+    require(digest(inner) == wrapper["inner_sha256"], "inner checkpoint digest differs")
+    require(
+        inner["schema"] == "offline-instance-affinity-logistic@1"
+        and inner["scope"] == "UNCALIBRATED_RENDERED_INSTANCE_PAIR_AFFINITY_ONLY"
+        and inner["config"] == INNER_CONFIG
+        and inner["features"] == FEATURES
+        and inner["training_partition"] == "train"
+        and inner["runtime_authority"] is False
+        and inner["calibrated"] is False,
+        "inner checkpoint definition differs",
+    )
+    projected = projection(train_x, mode)
+    require(
+        inner["training_features_sha256"] == array_digest(projected)
+        and inner["training_targets_sha256"] == array_digest(train_y),
+        "projected train digest differs",
+    )
+    keep = train_y != -1
+    selected, y = projected[keep], train_y[keep].astype(float)
+    counts = [int((y == value).sum()) for value in (0, 1)]
+    require(all(counts) and inner["class_counts"] == counts, "train class counts differ")
+    require(
+        (inner["rows_total"], inner["rows_fit"], inner["rows_void"])
+        == (len(train_y), len(y), int((~keep).sum())),
+        "train denominators differ",
+    )
+    prevalence = counts[1] / sum(counts)
+    require(inner["prevalence"] == prevalence, "train-only prevalence differs")
+    mean, scale = selected.mean(axis=0), selected.std(axis=0)
+    constant = selected.min(axis=0) == selected.max(axis=0)
+    mean[constant], scale[constant] = selected[0, constant], 1.0
+    scale[scale == 0] = 1.0
+    close(inner["mean"], mean, "train-only feature mean", atol=1e-10, rtol=1e-10)
+    close(inner["scale"], scale, "train-only feature scale", atol=1e-10, rtol=1e-10)
+    weights, means, scales = (
+        np.asarray(inner[k], dtype=float) for k in ("weights", "mean", "scale")
+    )
+    require(
+        weights.shape == means.shape == scales.shape == (8,)
+        and np.isfinite(weights).all()
+        and np.isfinite(means).all()
+        and np.isfinite(scales).all()
+        and np.all(scales > 0)
+        and math.isfinite(inner["bias"]),
+        "invalid checkpoint parameter vector",
+    )
+    disabled = [column for column in range(8) if column not in COLUMNS[mode]]
+    require(
+        np.all(weights[disabled] == 0)
+        and np.all(means[disabled] == 0)
+        and np.all(scales[disabled] == 1),
+        "disabled column parameters differ",
+    )
+    z = (selected - means) / scales
+    logits = z @ weights + inner["bias"]
+    require(np.isfinite(logits).all(), "nonfinite training logits")
+    bce = float(np.mean(np.logaddexp(0, logits) - y * logits))
+    penalty = float(0.005 * (weights @ weights))
+    objective = bce + penalty
+    residual = sigmoid(logits) - y
+    gradient_weights = z.T @ residual / len(y) + 0.01 * weights
+    gradient_bias = float(np.mean(residual))
+    gradient = [*gradient_weights.tolist(), gradient_bias]
+    require(all(math.isfinite(value) for value in gradient), "nonfinite objective gradient")
+    losses = inner["optimization_loss"]
+    require(
+        len(losses) == 31
+        and all(math.isfinite(value) and value >= 0 for value in losses)
+        and all(right <= left for left, right in itertools.pairwise(losses)),
+        "optimization record differs",
+    )
+    initial = -prevalence * math.log(prevalence) - (1 - prevalence) * math.log1p(-prevalence)
+    close(losses[0], initial, "initial constant training objective")
+    close(losses[-1], objective, "final L2 training objective")
+    return dict(
+        original_features_sha256=array_digest(train_x),
+        projected_features_sha256=array_digest(projected),
+        targets_sha256=array_digest(train_y),
+        rows_total=len(train_y),
+        rows_fit=len(y),
+        rows_void=int((~keep).sum()),
+        class_counts=counts,
+        prevalence=prevalence,
+        independently_recomputed_mean=mean.tolist(),
+        independently_recomputed_scale=scale.tolist(),
+        final_unclipped_bce=bce,
+        l2_weight_penalty=penalty,
+        final_regularized_objective=objective,
+        gradient_weights_and_bias=gradient,
+        gradient_infinity_norm=max(abs(value) for value in gradient),
+        gradient_is_diagnostic_not_a_new_acceptance_threshold=True,
+    )
+
+
+def review(args):
+    root = args.directory.resolve()
+    ledger = root / "case-results.json"
+    require(sha(ledger.read_bytes()) == args.ledger_sha256, "external controls ledger pin differs")
+    cases = read_json(ledger)
+    require(
+        type(cases) is list
+        and [c["phase"] for c in cases] == ["run", "verify"]
+        and all(
+            type(c["exit_code"]) is int
+            and c["exit_code"] == 0
+            and c["source_sha"] == args.source_sha
+            for c in cases
+        ),
+        "complete successful controls cases required",
+    )
+    argv = cases[0]["argv"]
+    require(cases[1]["argv"] == [*argv, "--verify"], "fresh verify command differs")
+    output = Path(argument(argv, "--output")).resolve()
+    require(
+        output != root and output.is_relative_to(root), "controls output outside this artifact root"
+    )
+    require(
+        argument(argv, "--affinity-ledger-sha256") == PARENT_LEDGER_PIN, "parent pin substituted"
+    )
+    parent_root = Path(argument(argv, "--affinity-results")).resolve()
+    require(
+        not root.is_relative_to(parent_root) and not parent_root.is_relative_to(root),
+        "parent/output overlap",
+    )
+    current_files = inventory(output)
+    expected_current = (
+        {"report.json"}
+        | {f"models/{m}.json" for m in MODES}
+        | {f"frames/{index:03d}/{mode}.npy" for index in range(96) for mode in MODES}
+    )
+    require(
+        len(current_files) == 292 and set(current_files) == expected_current,
+        "292-file controls inventory differs",
+    )
+    require(
+        all(c["output_sha256"] == current_files for c in cases), "run/verify byte mappings differ"
+    )
+    report = read_json(output / "report.json")
+    require(
+        report["members"] == {k: v for k, v in current_files.items() if k != "report.json"},
+        "control member hashes differ",
+    )
+    source_count = source_commit(args.source, args.source_sha, report["source_files"])
+    parent_ledger = parent_root / "case-results.json"
+    require(
+        sha(parent_ledger.read_bytes()) == PARENT_LEDGER_PIN, "external parent ledger pin differs"
+    )
+    parent_cases = read_json(parent_ledger)
+    require(
+        type(parent_cases) is list
+        and [c["phase"] for c in parent_cases] == ["run", "verify"]
+        and all(
+            type(c["exit_code"]) is int and c["exit_code"] == 0 and c["source_sha"] == PARENT_SOURCE
+            for c in parent_cases
+        ),
+        "fixed parent source/cases differ",
+    )
+    parent = parent_root / "experiment"
+    parent_files = inventory(parent)
+    expected_parent = {"model.json", "report.json"} | {
+        f"frames/{i:03d}/{name}"
+        for i in range(96)
+        for name in (
+            "features.npy",
+            "pairs.npy",
+            "valid.npy",
+            "targets.npy",
+            "scores.npy",
+            "public.json",
+            "supervision.json",
+        )
+    }
+    require(
+        len(parent_files) == 674 and set(parent_files) == expected_parent,
+        "674-file parent inventory differs",
+    )
+    require(
+        all(c["output_sha256"] == parent_files for c in parent_cases),
+        "parent run/verify output mapping differs",
+    )
+    parent_report, parent_model = (
+        read_json(parent / "report.json"),
+        read_json(parent / "model.json"),
+    )
+    require(
+        parent_report["members"] == {k: v for k, v in parent_files.items() if k != "report.json"},
+        "parent member hashes differ",
+    )
+    require(
+        digest(parent_model) == parent_report["model_sha256"], "parent model content pin differs"
+    )
+    require(
+        parent_report["collection_inventory_sha256"] == COLLECTION_PIN,
+        "parent collection pin differs",
+    )
+    parent_source = Path(argument(argv, "--affinity-source")).resolve()
+    parent_source_count = source_commit(parent_source, PARENT_SOURCE, parent_report["source_files"])
+    expected_binding = dict(
+        ledger_sha256=PARENT_LEDGER_PIN,
+        actual_source_sha=PARENT_SOURCE,
+        source_files=parent_report["source_files"],
+        output_files=parent_files,
+    )
+    require(report["parent_binding"] == expected_binding, "controls parent binding differs")
+    require(
+        report["schema"] == "instance-affinity-feature-controls@1"
+        and report["scope"] == "FIXED_CANDIDATE_PAIR_FEATURE_GROUP_DEVELOPMENT_CONTROLS"
+        and report["modes"] == list(MODES)
+        and report["training_performed"] is True
+        and report["combined_exact_parent_model_and_predictions"] is True
+        and report["runtime_authority"] is False
+        and report["calibrated"] is False
+        and report["observation_likelihood_written"] is False,
+        "controls scope/authority differs",
+    )
+    require(
+        len(parent_report["frames"]) == len(report["frames"]) == 96, "fixed frame count differs"
+    )
+    records = []
+    for index, (old_frame, frame) in enumerate(
+        zip(parent_report["frames"], report["frames"], strict=True)
+    ):
+        house, prefix = index // 8 + 1, f"frames/{index:03d}"
+        split = "train" if house <= 8 else "validation"
+        require(
+            (
+                old_frame["house_index"],
+                old_frame["sdk_index"],
+                old_frame["split"],
+                old_frame["prefix"],
+            )
+            == (house, index % 8 + 4, split, prefix),
+            "parent fixed schedule differs",
+        )
+        require(
+            {key: frame[key] for key in ("house_index", "split", "prefix", "action_id")}
+            == {key: old_frame[key] for key in ("house_index", "split", "prefix", "action_id")},
+            "matched controls frame differs",
+        )
+        folder = parent / prefix
+        arrays = {
+            name: np.load(folder / f"{name}.npy", allow_pickle=False)
+            for name in ("features", "pairs", "valid", "targets")
+        }
+        x, pairs, valid, y = [arrays[k] for k in ("features", "pairs", "valid", "targets")]
+        n = len(x)
+        require(
+            x.dtype == np.float64
+            and x.shape == (n, 8)
+            and np.isfinite(x).all()
+            and np.all(x >= 0)
+            and np.all(x[:, :5] <= 1),
+            "parent feature contract differs",
+        )
+        require(pairs.dtype == np.int64 and pairs.shape == (n, 4), "parent pair shape/type differs")
+        require(
+            valid.dtype == np.bool_ and valid.shape == (n,) and np.all(x[~valid] == 0),
+            "parent valid contract differs",
+        )
+        require(
+            y.dtype == np.int8
+            and y.shape == (n,)
+            and np.isin(y, (-1, 0, 1)).all()
+            and np.all(y[~valid] == -1),
+            "parent supervision contract differs",
+        )
+        public = read_json(folder / "public.json")
+        require(
+            public["metadata"]["action_id"] == frame["action_id"]
+            and public["metadata"]["pair_count"] == n,
+            "parent public action/count differs",
+        )
+        predictions = {}
+        for mode in MODES:
+            raw = (output / prefix / f"{mode}.npy").read_bytes()
+            if mode == "combined":
+                require(
+                    raw == (folder / "scores.npy").read_bytes(),
+                    "combined score NPY bytes differ from parent",
+                )
+            p = np.load(output / prefix / f"{mode}.npy", allow_pickle=False)
+            require(
+                p.dtype == np.float64
+                and p.shape == (n,)
+                and np.isfinite(p[valid]).all()
+                and np.all((p[valid] >= 0) & (p[valid] <= 1))
+                and np.isnan(p[~valid]).all(),
+                "public score coverage differs",
+            )
+            predictions[mode] = p
+        records.append(
+            dict(
+                house=house,
+                split=split,
+                prefix=prefix,
+                action=frame["action_id"],
+                features=x,
+                pairs=pairs,
+                valid=valid,
+                targets=y,
+                candidates=public["candidates"],
+                predictions=predictions,
+            )
+        )
+    require(len({r["action"] for r in records}) == 96, "repeated action across fixed frames")
+    train = [r for r in records if r["split"] == "train"]
+    train_x, train_y = (
+        np.concatenate([r["features"] for r in train]),
+        np.concatenate([r["targets"] for r in train]),
+    )
+    diagnostics, wrappers, prevalence = {}, {}, None
+    for mode in MODES:
+        wrapper = read_json(output / f"models/{mode}.json")
+        require(digest(wrapper) == report["model_pins"][mode], "outer checkpoint model pin differs")
+        diagnostics[mode] = inspect_model(wrapper, mode, train_x, train_y)
+        wrappers[mode] = wrapper
+        p = wrapper["inner_checkpoint"]["prevalence"]
+        require(prevalence is None or prevalence == p, "three modes frequency differs")
+        prevalence = p
+        if mode == "combined":
+            require(
+                (canonical(wrapper["inner_checkpoint"]) + "\n").encode()
+                == (parent / "model.json").read_bytes(),
+                "combined inner model bytes differ from parent",
+            )
+        for record in records:
+            calculated = checkpoint_scores(
+                projection(record["features"], mode), record["valid"], wrapper["inner_checkpoint"]
+            )
+            close(record["predictions"][mode], calculated, "independent sigmoid scores " + mode)
+            record["predictions"][mode] = calculated
+    for record in records:
+        record["predictions"]["training_frequency_constant"] = np.where(
+            record["valid"], prevalence, np.nan
+        )
+    by_house = {str(h): aggregate([r for r in records if r["house"] == h]) for h in range(1, 13)}
+    by_split = {}
+    for split in ("train", "validation"):
+        row = aggregate([r for r in records if r["split"] == split])
+        row["house_macro"] = macro(
+            [by_house[str(h)] for h in range(1, 13) if (h <= 8) == (split == "train")]
+        )
+        by_split[split] = row
+    overall = aggregate(records)
+    for index, record in enumerate(records):
+        compare(report["frames"][index]["summary"], aggregate([record]), f"frame[{index}]")
+    compare(report["by_house"], by_house, "by_house")
+    compare(report["by_split"], by_split, "by_split")
+    compare(report["overall"], overall, "overall")
+    score_coverage = {
+        mode: dict(
+            valid_pairs=sum(int(r["valid"].sum()) for r in records),
+            void_with_valid_depth=sum(
+                int(((r["targets"] == -1) & r["valid"]).sum()) for r in records
+            ),
+            finite_scores_on_void=sum(
+                int(np.isfinite(r["predictions"][mode][r["targets"] == -1]).sum()) for r in records
+            ),
+            null_scores_on_invalid_depth=sum(
+                int(np.isnan(r["predictions"][mode][~r["valid"]]).sum()) for r in records
+            ),
+        )
+        for mode in MODES
+    }
+    require(
+        inventory(output) == current_files
+        and inventory(parent) == parent_files
+        and sha(ledger.read_bytes()) == args.ledger_sha256
+        and sha(parent_ledger.read_bytes()) == PARENT_LEDGER_PIN,
+        "inputs changed during independent review",
+    )
+    return dict(
+        complete=True,
+        role="A-side independent numeric review; not machine-B acceptance",
+        source_sha=args.source_sha,
+        source_files=source_count,
+        parent_source_sha=PARENT_SOURCE,
+        parent_source_files=parent_source_count,
+        case_ledger_sha256=args.ledger_sha256,
+        parent_ledger_sha256=PARENT_LEDGER_PIN,
+        output_files=len(current_files),
+        parent_files=len(parent_files),
+        externally_pinned_case_inventories_match=True,
+        all_member_hashes_match=True,
+        source_commits_and_complete_files_match=True,
+        fixed_96_frame_pairing_preserved=True,
+        original_and_projected_training_digests_match=True,
+        train_only_scaling_and_frequency_match=True,
+        public_scores_including_void_recomputed=True,
+        l2_objectives_and_gradients_recomputed=True,
+        combined_inner_model_and_score_bytes_equal_parent=True,
+        all_frame_house_partition_class_metrics_match=True,
+        empty_classes_are_null_and_macro_houses_counted=True,
+        production_fit_predict_summarize_called=False,
+        raw_rgbd_and_masks_rechecked_this_round=False,
+        input_scope=("This round starts from externally pinned PR76 pair features/valid/targets; "
+                     "no new raw-pixel audit."),
+        model_pins={mode: digest(wrappers[mode]) for mode in MODES},
+        model_diagnostics=diagnostics,
+        overall=overall,
+        by_house=by_house,
+        by_split=by_split,
+        overall_house_macro=macro(list(by_house.values())),
+        score_coverage=score_coverage,
+        candidate_count=sum(len(r["candidates"]) for r in records),
+        raw_candidate_pair_occurrences=sum(
+            len(c["pair_indices"]) for r in records for c in r["candidates"]
+        ),
+        caveats=[
+            "Feature-group controls share RGB detector candidates and RGB-D depth-validity gating.",
+            "These are not independent RGB-only/depth-only sensor systems.",
+            "Previously exposed development houses and correlated pixel pairs; "
+            "no untouched-test claim.",
+            "No model selection, thresholds, calibrated observation likelihood, "
+            "complete mask or world identity.",
+            "Rendered membership labels do not prove physical depth surface ownership "
+            "or action-loop benefit.",
+        ],
+    )
+
+
+def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--directory", type=Path, default=Path(__file__).resolve().parent)
+    parser.add_argument(
+        "--source", type=Path, default=Path("/private/tmp/cpswm-pc-a-affinity-controls-20261001")
+    )
+    parser.add_argument("--ledger-sha256", required=True)
+    parser.add_argument("--source-sha", required=True)
+    args = parser.parse_args()
+    destination = args.directory.resolve() / "independent-analysis.json"
+    require(
+        not destination.exists() and not destination.is_symlink(),
+        "refuse to overwrite independent review",
+    )
+    result = review(args)
+    raw = (json.dumps(result, indent=2, ensure_ascii=False, allow_nan=False) + "\n").encode()
+    with destination.open("xb") as stream:
+        stream.write(raw)
+    print(json.dumps(dict(complete=True, output=str(destination), sha256=sha(raw))))
+
+
+if __name__ == "__main__":
+    main()

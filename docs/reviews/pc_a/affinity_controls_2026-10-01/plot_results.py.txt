@@ -1,0 +1,44 @@
+"""Descriptive figure from the frozen report; no refit or method selection."""
+from pathlib import Path
+import json
+import os
+
+os.environ.setdefault('MPLCONFIGDIR', '/private/tmp/cpswm-affinity-matplotlib')
+import matplotlib
+matplotlib.use('Agg')
+import matplotlib.pyplot as plt
+import numpy as np
+
+root = Path(__file__).resolve().parent
+report = json.loads((root / 'experiment/report.json').read_text())
+methods = ['training_frequency_constant', 'rgb_only', 'geometry_only', 'combined']
+names = ['Training-frequency constant', 'RGB features', 'Geometry features', 'Combined']
+colors = ['#87929c', '#3977ab', '#e49330', '#128477']
+fig, axes = plt.subplots(2, 2, figsize=(12, 8), layout='constrained')
+for ax, metric in zip(axes[0], ['bce', 'brier']):
+    groups = ['all', 'same_instance', 'different_instance']
+    x = np.arange(len(groups))
+    for i, (method, name, color) in enumerate(zip(methods, names, colors)):
+        values = [report['by_split']['validation']['methods'][method][g][metric] for g in groups]
+        ax.bar(x + (i - 1.5) * .19, values, .18, label=name, color=color)
+    labels = ['All pairs', 'Same instance', 'Different instance']
+    counts = [report['by_split']['validation']['methods']['combined'][g]['pairs'] for g in groups]
+    ax.set_xticks(x, [f'{label}\n(n={count:,})' for label, count in zip(labels, counts)])
+    ax.set_ylabel(metric.upper() + ' (lower is better)')
+    ax.set_title('Exposed development houses: pair-weighted ' + metric.upper())
+    ax.grid(axis='y', alpha=.2)
+for ax, metric in zip(axes[1], ['bce', 'brier']):
+    for method, name, color in zip(methods, names, colors):
+        ax.plot(range(1, 13), [report['by_house'][str(h)]['methods'][method]['all'][metric] for h in range(1, 13)], marker='o', label=name, color=color)
+    ax.axvline(8.5, linestyle='--', color='#667788', alpha=.7)
+    ax.set_xticks(range(1, 13))
+    ax.set_xlabel('House (1–8 train; 9–12 exposed development validation)')
+    ax.set_ylabel(metric.upper() + ' (lower is better)')
+    ax.set_title('Per-house ' + metric.upper())
+    ax.grid(alpha=.2)
+axes[0, 0].legend(fontsize=8)
+fig.suptitle('Matched feature controls: fixed boxes, pairs, depth validity and training budget\nShared RGB proposals / RGB-D gating; correlated pairs; no calibrated likelihood or task-success claim', fontsize=12)
+for ext in ('png', 'pdf'):
+    destination = root / ('feature-controls.' + ext)
+    assert not destination.exists()
+    fig.savefig(destination, dpi=160)

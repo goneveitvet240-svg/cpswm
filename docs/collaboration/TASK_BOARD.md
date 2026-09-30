@@ -1,5 +1,7 @@
 # A：已批准离线实例／位置数据入口交付（2026-09-30）
 
+已推送并以[草稿PR73](https://github.com/goneveitvet240-svg/cpswm/pull/73)叠加PR72交接，未合并。文档／原件交付 b9d6b6e7e095b1c91873d9d7af60f0182282ac1f；实际双审与采集源码 e88f50752ca50843fc5382b853c65abe134f1281，交付时865份绑定源码摘要一致，生产／测试／工具／依赖字节不变。
+
 用户“选择1”已生效：仿真实例ID、mask、位置可用于离线训练／校准；线上仍仅RGB-D与相机自位姿。该用途不再是待决权限。完整统一框架、三个RB blocks、七算子、原对照与正式任务效用保留。
 
 分支 codex/pc-a-offline-factor-data-20260930；base 0ce10502e8c2292c6d7b34dcbf62f795133ad4c4；实际双审／采集源码 e88f50752ca50843fc5382b853c65abe134f1281。五工具／六测试共160 passed、零跳过，Ruff／格式通过，顺序两轮A辅助对抗审查完成。第一批12项失败及修复前两种完整伪造漏洞全部保留；第二批固定12屋verified、exit0，96公开帧、144 SDK事件，外部inventory pin CLI复核exit0。

@@ -1,0 +1,62 @@
+[
+  {
+    "detector": "fasterrcnn",
+    "argv": [
+      "/private/tmp/cpswm-pc-a-camera-checkpoint-fixture-20260930/.venv/bin/python",
+      "tools/diagnose_offline_frontend.py",
+      "--collection",
+      "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/offline-factor-data-20260930/collection-attempt02",
+      "--capture-source",
+      "/private/tmp/cpswm-pc-a-offline-factor-data-20260930",
+      "--archive",
+      "/Users/pangwei/.prior/datasets/allenai/procthor-10k/439193522244720b86d8c81cde2e51e3a4d150cf/train.jsonl.gz",
+      "--sdk-python",
+      "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/.venv-ai2thor/bin/python",
+      "--binary",
+      "/Users/pangwei/.ai2thor/releases/thor-OSXIntel64-f0825767cd50d69f666c7f282e54abfe58f1e917/thor-OSXIntel64-f0825767cd50d69f666c7f282e54abfe58f1e917.app/Contents/MacOS/AI2-THOR",
+      "--weights",
+      "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/models/torchvision/fasterrcnn_resnet50_fpn_v2_coco-dd69338a.pth",
+      "--output",
+      "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/offline-front-end-20260930/fasterrcnn",
+      "--inventory-sha256",
+      "9791a946543b9158890324d3ff35a80ea04d51c9cabb6e09540f569abd903d47",
+      "--detector",
+      "fasterrcnn",
+      "--verify"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 363.5470347497612,
+    "source_file_count": 869,
+    "source_files_unchanged": true
+  },
+  {
+    "detector": "ssdlite",
+    "argv": [
+      "/private/tmp/cpswm-pc-a-camera-checkpoint-fixture-20260930/.venv/bin/python",
+      "tools/diagnose_offline_frontend.py",
+      "--collection",
+      "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/offline-factor-data-20260930/collection-attempt02",
+      "--capture-source",
+      "/private/tmp/cpswm-pc-a-offline-factor-data-20260930",
+      "--archive",
+      "/Users/pangwei/.prior/datasets/allenai/procthor-10k/439193522244720b86d8c81cde2e51e3a4d150cf/train.jsonl.gz",
+      "--sdk-python",
+      "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/.venv-ai2thor/bin/python",
+      "--binary",
+      "/Users/pangwei/.ai2thor/releases/thor-OSXIntel64-f0825767cd50d69f666c7f282e54abfe58f1e917/thor-OSXIntel64-f0825767cd50d69f666c7f282e54abfe58f1e917.app/Contents/MacOS/AI2-THOR",
+      "--weights",
+      "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/models/torchvision/ssdlite320_mobilenet_v3_large_coco-a79551df.pth",
+      "--output",
+      "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/offline-front-end-20260930/ssdlite",
+      "--inventory-sha256",
+      "9791a946543b9158890324d3ff35a80ea04d51c9cabb6e09540f569abd903d47",
+      "--detector",
+      "ssdlite",
+      "--verify"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 71.72157662501559,
+    "source_file_count": 869,
+    "source_files_unchanged": true
+  }
+]

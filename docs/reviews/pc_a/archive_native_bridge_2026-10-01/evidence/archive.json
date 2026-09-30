@@ -1,0 +1,566 @@
+{
+  "actual_source_sha": "82c7a81fba0c3af3688978ce222b1b94e4cc5bd9",
+  "parent_position_ledger_sha256": "9b9ed2d9208c1907d8295d5edc5aeb2f48af7b9b3625108b9642430a06780efc",
+  "case_ledger_sha256": "328b4b10276c44a05b91cfcbb7f24d370ff8092e85a9fe729939311bc6b4fc42",
+  "members": 11429,
+  "regular_files": 11428,
+  "preserved_adversarial_symlinks": 1,
+  "raw_bytes": 3162036763,
+  "archive": "archive-native-bridge.tar.gz",
+  "archive_parts": [
+    {
+      "path": "archive-native-bridge.tar.gz.part001",
+      "bytes": 40000000,
+      "sha256": "7d0df9a116ee7fc25d299711fcb3db5c3f3fdba0d44aa77fad824806ac8e1b9b"
+    },
+    {
+      "path": "archive-native-bridge.tar.gz.part002",
+      "bytes": 40000000,
+      "sha256": "5d65dc888d18c8cba0fd960547c455117d9ecb6e4dc9101df8afa77456efa0cf"
+    },
+    {
+      "path": "archive-native-bridge.tar.gz.part003",
+      "bytes": 40000000,
+      "sha256": "df411c15f1ae9c751cb7cb46479b2063bd43e95cec60e0b188ac1684a9b44798"
+    },
+    {
+      "path": "archive-native-bridge.tar.gz.part004",
+      "bytes": 40000000,
+      "sha256": "91449af0d370e1fd763bd71dcf0dcb00c6dc53c99034bc913a3a42d15987ed56"
+    },
+    {
+      "path": "archive-native-bridge.tar.gz.part005",
+      "bytes": 40000000,
+      "sha256": "168043acad3213408796bffc31913ccfd70d29e46cff7b2d27fda49ee2051e11"
+    },
+    {
+      "path": "archive-native-bridge.tar.gz.part006",
+      "bytes": 40000000,
+      "sha256": "ebef3876b0a38da28c1d98ca93a2be85cad9c8634568c06839c0b4018597c093"
+    },
+    {
+      "path": "archive-native-bridge.tar.gz.part007",
+      "bytes": 40000000,
+      "sha256": "6bc4f1f2938f2a1f4c694a9b8d9bc99b275b82a430a71638abd7496e2f821279"
+    },
+    {
+      "path": "archive-native-bridge.tar.gz.part008",
+      "bytes": 40000000,
+      "sha256": "60642be101a0f7ed08334215b9219cfdeeb24783cf8dc1decf25e2f2dc637688"
+    },
+    {
+      "path": "archive-native-bridge.tar.gz.part009",
+      "bytes": 22551816,
+      "sha256": "2f22e66f5a9071357580a01947aee86ab5ca209652ac5770b1836f1ca8951826"
+    }
+  ],
+  "reconstruction": "Concatenate parts in listed binary order; check full sha256 before extraction. Preserve test symlink text; do not dereference archived adversarial symlinks.",
+  "compressed_bytes": 342551816,
+  "sha256": "807e4ab4a2ae1cd9551edcf8d20faecf52d6ab2ec4504c0f7739fc0c408bce4f",
+  "all_members_readback_verified": true,
+  "originals_unchanged_after_readback": true,
+  "excluded_derived_files": [
+    {
+      "path": "R1/__pycache__/test_additional_consequences.cpython-313-pytest-9.1.1.pyc",
+      "type": "file",
+      "bytes": 16588,
+      "sha256": "30779b9a2919131b10f03cdcb8b3b2dc11ea26e21c55f1741a489126d336bd25",
+      "reason": "derived Python cache only"
+    },
+    {
+      "path": "R1/additional-01/intact-saved-nativecurrent",
+      "type": "symlink",
+      "bytes": 147,
+      "sha256": "72298622944c35c2b6b1e14f9d5b2a3cfba722e9784fe6cb48cb43f1b982c866",
+      "target": "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/archive-native-bridge-20261001/R1/additional-01/intact-saved-native0",
+      "reason": "derived pytest current directory alias; all real target files retained"
+    },
+    {
+      "path": "R1/additional-01/test_complete_self_sealed_savecurrent",
+      "type": "symlink",
+      "bytes": 158,
+      "sha256": "e6fcb4aa852ca2e5c7b3a5da2f2de48dea6d32aafdad2ae8be523b49a3b72e04",
+      "target": "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/archive-native-bridge-20261001/R1/additional-01/test_complete_self_sealed_save5",
+      "reason": "derived pytest current directory alias; all real target files retained"
+    },
+    {
+      "path": "R1/bridge-02/native-neural-checkpointscurrent",
+      "type": "symlink",
+      "bytes": 149,
+      "sha256": "a90347d9d5675562facce9b7676336f75e7a8a588dee01de67392090c2f9849c",
+      "target": "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/archive-native-bridge-20261001/R1/bridge-02/native-neural-checkpoints0",
+      "reason": "derived pytest current directory alias; all real target files retained"
+    },
+    {
+      "path": "R1/bridge-02/test_actual_four_model_native_current",
+      "type": "symlink",
+      "bytes": 154,
+      "sha256": "4ac01dcbd08363b2253740926e45bc86ab5b33a6a77e94537047161e4023269e",
+      "target": "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/archive-native-bridge-20261001/R1/bridge-02/test_actual_four_model_native_0",
+      "reason": "derived pytest current directory alias; all real target files retained"
+    },
+    {
+      "path": "R1/bridge-02/test_all_unavailable_are_recorcurrent",
+      "type": "symlink",
+      "bytes": 154,
+      "sha256": "b30ad2dfef4bae2ed93d0784aca99d7112b09bdf79f7e9444ee602d954807ce7",
+      "target": "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/archive-native-bridge-20261001/R1/bridge-02/test_all_unavailable_are_recor0",
+      "reason": "derived pytest current directory alias; all real target files retained"
+    },
+    {
+      "path": "R1/bridge-02/test_ancestor_change_rejected_current",
+      "type": "symlink",
+      "bytes": 154,
+      "sha256": "e60756e5b22a367874f3576987b2f80113e86edbd0c6dd16fc148567febb241b",
+      "target": "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/archive-native-bridge-20261001/R1/bridge-02/test_ancestor_change_rejected_3",
+      "reason": "derived pytest current directory alias; all real target files retained"
+    },
+    {
+      "path": "R1/bridge-02/test_complete_parent_neighborhcurrent",
+      "type": "symlink",
+      "bytes": 154,
+      "sha256": "2f1a38dcadb52005334609120171c8a3f88e33a7ec6b4d03b2f8916419eb8f86",
+      "target": "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/archive-native-bridge-20261001/R1/bridge-02/test_complete_parent_neighborh3",
+      "reason": "derived pytest current directory alias; all real target files retained"
+    },
+    {
+      "path": "R1/bridge-02/test_saved_configuration_json_current",
+      "type": "symlink",
+      "bytes": 154,
+      "sha256": "0360789c4db035be2b766f63e5a64a9ac78e4d7aeab882274fa5beecacd9b115",
+      "target": "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/archive-native-bridge-20261001/R1/bridge-02/test_saved_configuration_json_1",
+      "reason": "derived pytest current directory alias; all real target files retained"
+    },
+    {
+      "path": "R1/bridge-02/test_scope_time_adaptation_precurrent",
+      "type": "symlink",
+      "bytes": 154,
+      "sha256": "3405e24fece56058db5a18f179aec50a2d26fe118aec82a4e8304274e680fa94",
+      "target": "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/archive-native-bridge-20261001/R1/bridge-02/test_scope_time_adaptation_pre0",
+      "reason": "derived pytest current directory alias; all real target files retained"
+    },
+    {
+      "path": "R1/extended-01/native-neural-checkpointscurrent",
+      "type": "symlink",
+      "bytes": 151,
+      "sha256": "9cb19f96d66aeab091b895759d5bfc6b9d6526a92c4a9e26b4e7c2e302d2e5f9",
+      "target": "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/archive-native-bridge-20261001/R1/extended-01/native-neural-checkpoints1",
+      "reason": "derived pytest current directory alias; all real target files retained"
+    },
+    {
+      "path": "R1/extended-01/native-neural-checkpointscurrent 2",
+      "type": "symlink",
+      "bytes": 151,
+      "sha256": "5702ddf0ebd952178abb6bea86fc80e48c6fe74bb354a89b13c70f9c4d22547f",
+      "target": "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/archive-native-bridge-20261001/R1/extended-01/native-neural-checkpoints0",
+      "reason": "derived pytest current directory alias; all real target files retained"
+    },
+    {
+      "path": "R1/extended-01/test_ancestor_pin_mismatch_precurrent",
+      "type": "symlink",
+      "bytes": 156,
+      "sha256": "43284262da25820f509d0ef633a7bbde5c49dd6f057215c0f46708f1eca0a84d",
+      "target": "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/archive-native-bridge-20261001/R1/extended-01/test_ancestor_pin_mismatch_pre0",
+      "reason": "derived pytest current directory alias; all real target files retained"
+    },
+    {
+      "path": "R1/extended-01/test_arguments_build_fixed_entcurrent",
+      "type": "symlink",
+      "bytes": 156,
+      "sha256": "c4294d5c9db6ee259ea901cf14058a032e7733cc3593b737eb983654a405c60a",
+      "target": "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/archive-native-bridge-20261001/R1/extended-01/test_arguments_build_fixed_ent0",
+      "reason": "derived pytest current directory alias; all real target files retained"
+    },
+    {
+      "path": "R1/extended-01/test_before_record_mapping_is_current",
+      "type": "symlink",
+      "bytes": 156,
+      "sha256": "35e2c4b656d1ddff9de1adb010dca9f188d0eb73aef958bdc69337d20f7e1248",
+      "target": "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/archive-native-bridge-20261001/R1/extended-01/test_before_record_mapping_is_0",
+      "reason": "derived pytest current directory alias; all real target files retained"
+    },
+    {
+      "path": "R1/extended-01/test_complete_forged_public_oucurrent",
+      "type": "symlink",
+      "bytes": 156,
+      "sha256": "9df2daba22a3614e8c24b9e9ba98c3ae5300c9c88f71e7fcf8077c6863912675",
+      "target": "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/archive-native-bridge-20261001/R1/extended-01/test_complete_forged_public_ou5",
+      "reason": "derived pytest current directory alias; all real target files retained"
+    },
+    {
+      "path": "R1/extended-01/test_complete_loaded_log_replacurrent",
+      "type": "symlink",
+      "bytes": 156,
+      "sha256": "346d5626a818ffc482c9acbc34a20d4e4055753def33e4763c0e6c6be2f13cb1",
+      "target": "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/archive-native-bridge-20261001/R1/extended-01/test_complete_loaded_log_repla0",
+      "reason": "derived pytest current directory alias; all real target files retained"
+    },
+    {
+      "path": "R1/extended-01/test_complete_previous_evidenccurrent",
+      "type": "symlink",
+      "bytes": 156,
+      "sha256": "2e25e2be7ceb6931471553240f23f6c9345d3be0a4ca84867ae44a27ca056821",
+      "target": "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/archive-native-bridge-20261001/R1/extended-01/test_complete_previous_evidenc0",
+      "reason": "derived pytest current directory alias; all real target files retained"
+    },
+    {
+      "path": "R1/extended-01/test_complete_public_forgery_rcurrent",
+      "type": "symlink",
+      "bytes": 156,
+      "sha256": "e83da4509840f840f4900d194460a115d6517b6d58a6c5e67756bd0526cd14ee",
+      "target": "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/archive-native-bridge-20261001/R1/extended-01/test_complete_public_forgery_r3",
+      "reason": "derived pytest current directory alias; all real target files retained"
+    },
+    {
+      "path": "R1/extended-01/test_complete_self_reseal_canncurrent",
+      "type": "symlink",
+      "bytes": 156,
+      "sha256": "ac464916dc33d69020635d264b9da9fdcaac83fdb38f0aec6c824bf6e9151697",
+      "target": "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/archive-native-bridge-20261001/R1/extended-01/test_complete_self_reseal_cann0",
+      "reason": "derived pytest current directory alias; all real target files retained"
+    },
+    {
+      "path": "R1/extended-01/test_controlled_bundle_keeps_ecurrent",
+      "type": "symlink",
+      "bytes": 156,
+      "sha256": "4e2682add498c09be492212637b360288e5835400bfb3f6384cfbe1f695c1472",
+      "target": "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/archive-native-bridge-20261001/R1/extended-01/test_controlled_bundle_keeps_e0",
+      "reason": "derived pytest current directory alias; all real target files retained"
+    },
+    {
+      "path": "R1/extended-01/test_direct_seed_uses_originalcurrent",
+      "type": "symlink",
+      "bytes": 156,
+      "sha256": "a90b62df3a1d15e4f3ca1166fe86e0705d53f5b3e2d067bd9b3eeff3004e7999",
+      "target": "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/archive-native-bridge-20261001/R1/extended-01/test_direct_seed_uses_original0",
+      "reason": "derived pytest current directory alias; all real target files retained"
+    },
+    {
+      "path": "R1/extended-01/test_duplicate_seed_and_grid_pcurrent",
+      "type": "symlink",
+      "bytes": 156,
+      "sha256": "2e16113230c2f393270c140b4d393eb80be172c5a5cb62389341526943907760",
+      "target": "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/archive-native-bridge-20261001/R1/extended-01/test_duplicate_seed_and_grid_p0",
+      "reason": "derived pytest current directory alias; all real target files retained"
+    },
+    {
+      "path": "R1/extended-01/test_finite_log_mass_and_all_scurrent",
+      "type": "symlink",
+      "bytes": 156,
+      "sha256": "93c1d49a3969e2e941b8a021ded9e538f76aba124fb2034a6f3674d0d3b0a4d8",
+      "target": "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/archive-native-bridge-20261001/R1/extended-01/test_finite_log_mass_and_all_s1",
+      "reason": "derived pytest current directory alias; all real target files retained"
+    },
+    {
+      "path": "R1/extended-01/test_fresh_failure_is_not_ignocurrent",
+      "type": "symlink",
+      "bytes": 156,
+      "sha256": "cfd5e3d386984b3f0786f32a2ed36063a2d4d6d5819b7c02a273ee675d91b42e",
+      "target": "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/archive-native-bridge-20261001/R1/extended-01/test_fresh_failure_is_not_igno0",
+      "reason": "derived pytest current directory alias; all real target files retained"
+    },
+    {
+      "path": "R1/extended-01/test_helper_full_forgery_rejeccurrent",
+      "type": "symlink",
+      "bytes": 156,
+      "sha256": "4050da82cd6816bedcb7dbcc166fd6a20e35738ca7a30ca6bca8e5cbc06c4f4a",
+      "target": "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/archive-native-bridge-20261001/R1/extended-01/test_helper_full_forgery_rejec1",
+      "reason": "derived pytest current directory alias; all real target files retained"
+    },
+    {
+      "path": "R1/extended-01/test_invalid_seed_priority_andcurrent",
+      "type": "symlink",
+      "bytes": 156,
+      "sha256": "e855cda6d89d84688bc889c35cdaa7a48a0e6509c61f473365fcd0890eb02bba",
+      "target": "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/archive-native-bridge-20261001/R1/extended-01/test_invalid_seed_priority_and0",
+      "reason": "derived pytest current directory alias; all real target files retained"
+    },
+    {
+      "path": "R1/extended-01/test_loaded_complete_forgery_ccurrent",
+      "type": "symlink",
+      "bytes": 156,
+      "sha256": "072d7166cb04a77b3dee34b0bbfb19e9f67e8ddf6ca2372f02d21499bb0fae8a",
+      "target": "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/archive-native-bridge-20261001/R1/extended-01/test_loaded_complete_forgery_c2",
+      "reason": "derived pytest current directory alias; all real target files retained"
+    },
+    {
+      "path": "R1/extended-01/test_mask_eligibility_only_chacurrent",
+      "type": "symlink",
+      "bytes": 156,
+      "sha256": "759069a04a93022bb759acf2493b685ce45d27f093829f999551a124baace9a8",
+      "target": "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/archive-native-bridge-20261001/R1/extended-01/test_mask_eligibility_only_cha0",
+      "reason": "derived pytest current directory alias; all real target files retained"
+    },
+    {
+      "path": "R1/extended-01/test_only_exact_pinned_json_mecurrent",
+      "type": "symlink",
+      "bytes": 156,
+      "sha256": "13e5a41a241bb09162aba29d33983eed732b9c6a645db6c774f82712aa1e9ed0",
+      "target": "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/archive-native-bridge-20261001/R1/extended-01/test_only_exact_pinned_json_me4",
+      "reason": "derived pytest current directory alias; all real target files retained"
+    },
+    {
+      "path": "R1/extended-01/test_only_exact_pinned_json_mecurrent 2",
+      "type": "symlink",
+      "bytes": 156,
+      "sha256": "0e653f15a344d216d755ab5f35948700315201a1491df1d392a6160018b716dd",
+      "target": "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/archive-native-bridge-20261001/R1/extended-01/test_only_exact_pinned_json_me0",
+      "reason": "derived pytest current directory alias; all real target files retained"
+    },
+    {
+      "path": "R1/extended-01/test_original_helper_payloads_current",
+      "type": "symlink",
+      "bytes": 156,
+      "sha256": "cba977cdd0f70945310c6be4bd9257521314a1912a54d309b9fb7498989dce20",
+      "target": "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/archive-native-bridge-20261001/R1/extended-01/test_original_helper_payloads_0",
+      "reason": "derived pytest current directory alias; all real target files retained"
+    },
+    {
+      "path": "R1/extended-01/test_paired_labels_cannot_silecurrent",
+      "type": "symlink",
+      "bytes": 156,
+      "sha256": "013df3ca038fda5cacef4a8331f0e3a17efd093d96550faf1a26c51464abc543",
+      "target": "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/archive-native-bridge-20261001/R1/extended-01/test_paired_labels_cannot_sile5",
+      "reason": "derived pytest current directory alias; all real target files retained"
+    },
+    {
+      "path": "R1/extended-01/test_persisted_member_and_sourcurrent",
+      "type": "symlink",
+      "bytes": 156,
+      "sha256": "7d29530214eb4eb74ad6cc8c94df2fbca43e522214efab2e5be0f64c77f0657c",
+      "target": "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/archive-native-bridge-20261001/R1/extended-01/test_persisted_member_and_sour0",
+      "reason": "derived pytest current directory alias; all real target files retained"
+    },
+    {
+      "path": "R1/extended-01/test_previous_evidence_cannot_current",
+      "type": "symlink",
+      "bytes": 156,
+      "sha256": "0ab56876d512b7cc64a610368c0473bfe14604573c035786e9a5194ecbe29213",
+      "target": "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/archive-native-bridge-20261001/R1/extended-01/test_previous_evidence_cannot_0",
+      "reason": "derived pytest current directory alias; all real target files retained"
+    },
+    {
+      "path": "R1/extended-01/test_public_to_private_full_pacurrent",
+      "type": "symlink",
+      "bytes": 156,
+      "sha256": "c9c32438658a63dafb779cea9f6311707e08059bb8e31dbb8eddb6683d0d7ae6",
+      "target": "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/archive-native-bridge-20261001/R1/extended-01/test_public_to_private_full_pa0",
+      "reason": "derived pytest current directory alias; all real target files retained"
+    },
+    {
+      "path": "R1/extended-01/test_publishes_preupdate_densicurrent",
+      "type": "symlink",
+      "bytes": 156,
+      "sha256": "edb439733381e6920875c73834cc3419d5978dda7349022ce5cca37578c9d9bc",
+      "target": "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/archive-native-bridge-20261001/R1/extended-01/test_publishes_preupdate_densi0",
+      "reason": "derived pytest current directory alias; all real target files retained"
+    },
+    {
+      "path": "R1/extended-01/test_rendered_membership_void_current",
+      "type": "symlink",
+      "bytes": 156,
+      "sha256": "f3231253ca08ae5a0fb32d646a5284f3331c488813b9213a45fe65d66dab9f40",
+      "target": "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/archive-native-bridge-20261001/R1/extended-01/test_rendered_membership_void_1",
+      "reason": "derived pytest current directory alias; all real target files retained"
+    },
+    {
+      "path": "R1/extended-01/test_retraction_full_replay_macurrent",
+      "type": "symlink",
+      "bytes": 156,
+      "sha256": "f92bbcb3a0f0cb332c587a2e67f0ec27e71b79f247189aa657774ef6777b4c65",
+      "target": "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/archive-native-bridge-20261001/R1/extended-01/test_retraction_full_replay_ma0",
+      "reason": "derived pytest current directory alias; all real target files retained"
+    },
+    {
+      "path": "R1/extended-01/test_same_event_private_bindincurrent",
+      "type": "symlink",
+      "bytes": 156,
+      "sha256": "8731f4c8bb6b264bd24cb481cfe17b3ea35cfb0eed62f63a6acd589a21631034",
+      "target": "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/archive-native-bridge-20261001/R1/extended-01/test_same_event_private_bindin6",
+      "reason": "derived pytest current directory alias; all real target files retained"
+    },
+    {
+      "path": "R1/extended-01/test_single_pixel_grid_has_supcurrent",
+      "type": "symlink",
+      "bytes": 156,
+      "sha256": "be816f43bf42868302cebc82e497bec80c53ad9bdb7de945f9a5a8ff5ec068e9",
+      "target": "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/archive-native-bridge-20261001/R1/extended-01/test_single_pixel_grid_has_sup0",
+      "reason": "derived pytest current directory alias; all real target files retained"
+    },
+    {
+      "path": "R1/extended-01/test_sqlite_new_producer_restocurrent",
+      "type": "symlink",
+      "bytes": 156,
+      "sha256": "a7025f21cd1afdde7205d6c498bd8d758a8f182b21e9146c69d0af6cd7401cb1",
+      "target": "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/archive-native-bridge-20261001/R1/extended-01/test_sqlite_new_producer_resto0",
+      "reason": "derived pytest current directory alias; all real target files retained"
+    },
+    {
+      "path": "R1/extended-01/test_symlink_member_cannot_be_current",
+      "type": "symlink",
+      "bytes": 156,
+      "sha256": "b0fffe08afe3dec7e9d9fdb58b0612f86c83156f44e35fe501f05bfe16cd2d2f",
+      "target": "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/archive-native-bridge-20261001/R1/extended-01/test_symlink_member_cannot_be_0",
+      "reason": "derived pytest current directory alias; all real target files retained"
+    },
+    {
+      "path": "R1/extended-01/test_underflow_fresh_process_rcurrent",
+      "type": "symlink",
+      "bytes": 156,
+      "sha256": "7931270b44ca82e7ef848ef63f1f64fc24c8b0e560f7cb8a03e0701e5a1a6e17",
+      "target": "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/archive-native-bridge-20261001/R1/extended-01/test_underflow_fresh_process_r1",
+      "reason": "derived pytest current directory alias; all real target files retained"
+    },
+    {
+      "path": "R1/extended-01/test_underflow_retraction_replcurrent",
+      "type": "symlink",
+      "bytes": 156,
+      "sha256": "4f259f7a0838b855344ec40dc31fc99af28c43f37e46a1cd52664231cf45dfca",
+      "target": "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/archive-native-bridge-20261001/R1/extended-01/test_underflow_retraction_repl1",
+      "reason": "derived pytest current directory alias; all real target files retained"
+    },
+    {
+      "path": "R1/extended-01/test_valid_parent_and_readonlycurrent",
+      "type": "symlink",
+      "bytes": 156,
+      "sha256": "6cc0ce9235b69b2b4a0cbf04dd243e4432902dfacd4c283abc5ef5868d52408a",
+      "target": "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/archive-native-bridge-20261001/R1/extended-01/test_valid_parent_and_readonly1",
+      "reason": "derived pytest current directory alias; all real target files retained"
+    },
+    {
+      "path": "R1/extended-01/test_zero_candidates_keeps_comcurrent",
+      "type": "symlink",
+      "bytes": 156,
+      "sha256": "8618544686ead22fce71fe2d1593277a068063034c4b3cbcaefe447ed5b813ca",
+      "target": "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/archive-native-bridge-20261001/R1/extended-01/test_zero_candidates_keeps_com0",
+      "reason": "derived pytest current directory alias; all real target files retained"
+    },
+    {
+      "path": "R2/integrity-01/public-inputcurrent",
+      "type": "symlink",
+      "bytes": 139,
+      "sha256": "f808301e3df214cb29875fd71e200e1ec07c4d49fe9f9032f120e6ba0c1abd38",
+      "target": "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/archive-native-bridge-20261001/R2/integrity-01/public-input0",
+      "reason": "derived pytest current directory alias; all real target files retained"
+    },
+    {
+      "path": "R2/integrity-01/saved-originalcurrent",
+      "type": "symlink",
+      "bytes": 141,
+      "sha256": "f8809eb76bd314c8b96b2bc8846155c690aed7695db7df11316af96da74a6d11",
+      "target": "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/archive-native-bridge-20261001/R2/integrity-01/saved-original0",
+      "reason": "derived pytest current directory alias; all real target files retained"
+    },
+    {
+      "path": "R2/integrity-01/test_complete_saved_packages_rcurrent",
+      "type": "symlink",
+      "bytes": 157,
+      "sha256": "70d7337b249839e8a5bb365b6590914ebedd6a915aab61e4417efa7c47ef577f",
+      "target": "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/archive-native-bridge-20261001/R2/integrity-01/test_complete_saved_packages_r3",
+      "reason": "derived pytest current directory alias; all real target files retained"
+    },
+    {
+      "path": "R2/integrity-01/test_correspondence_recomputescurrent",
+      "type": "symlink",
+      "bytes": 157,
+      "sha256": "09de667cce4d56d86176fda28e9eb226d6c1204d87e725ab98498e394eef771e",
+      "target": "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/archive-native-bridge-20261001/R2/integrity-01/test_correspondence_recomputes3",
+      "reason": "derived pytest current directory alias; all real target files retained"
+    },
+    {
+      "path": "R2/integrity-01/test_original_saved_state_restcurrent",
+      "type": "symlink",
+      "bytes": 157,
+      "sha256": "e20959aacd29dfea4997043de4360e815338e362cb9f2355c98613bfd9e138b7",
+      "target": "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/archive-native-bridge-20261001/R2/integrity-01/test_original_saved_state_rest0",
+      "reason": "derived pytest current directory alias; all real target files retained"
+    },
+    {
+      "path": "R2/integrity-01/test_selector_stays_public_andcurrent",
+      "type": "symlink",
+      "bytes": 157,
+      "sha256": "58287a8edc442e684598b6a57eb2162ffe4ae9a07e7d29c87629864c24e5a0e4",
+      "target": "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/archive-native-bridge-20261001/R2/integrity-01/test_selector_stays_public_and0",
+      "reason": "derived pytest current directory alias; all real target files retained"
+    },
+    {
+      "path": "R2/integrity-02/public-inputcurrent",
+      "type": "symlink",
+      "bytes": 139,
+      "sha256": "b07875520f5f76d26c4eb3689a599b898293e3a89b4ff96595c2ed3c995ce259",
+      "target": "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/archive-native-bridge-20261001/R2/integrity-02/public-input0",
+      "reason": "derived pytest current directory alias; all real target files retained"
+    },
+    {
+      "path": "R2/integrity-02/saved-originalcurrent",
+      "type": "symlink",
+      "bytes": 141,
+      "sha256": "c907170592df0e84219dfc0ca98036d6bc65b9138140d9f7f394d6221ef87a75",
+      "target": "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/archive-native-bridge-20261001/R2/integrity-02/saved-original0",
+      "reason": "derived pytest current directory alias; all real target files retained"
+    },
+    {
+      "path": "R2/integrity-02/test_complete_saved_packages_rcurrent",
+      "type": "symlink",
+      "bytes": 157,
+      "sha256": "5842b0d121a66b51000803904ce80d09ce7628e760349837e820b8b39516aaab",
+      "target": "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/archive-native-bridge-20261001/R2/integrity-02/test_complete_saved_packages_r3",
+      "reason": "derived pytest current directory alias; all real target files retained"
+    },
+    {
+      "path": "R2/integrity-02/test_complete_saved_packages_rcurrent 2",
+      "type": "symlink",
+      "bytes": 157,
+      "sha256": "f2f180f0459aa8e61ce6e3a1c6013dd4b2f0f1064cc5d49103df5a5421983751",
+      "target": "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/archive-native-bridge-20261001/R2/integrity-02/test_complete_saved_packages_r0",
+      "reason": "derived pytest current directory alias; all real target files retained"
+    },
+    {
+      "path": "R2/integrity-02/test_correspondence_recomputescurrent",
+      "type": "symlink",
+      "bytes": 157,
+      "sha256": "6bf9b25d3e5355f69b0ddf324ab531ba2cef253fd5e5208b7e9e35a683028cfa",
+      "target": "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/archive-native-bridge-20261001/R2/integrity-02/test_correspondence_recomputes3",
+      "reason": "derived pytest current directory alias; all real target files retained"
+    },
+    {
+      "path": "R2/integrity-02/test_original_saved_state_restcurrent",
+      "type": "symlink",
+      "bytes": 157,
+      "sha256": "a64e8aab33baceda621a5099d919df171db7b2b92702fa8eacafba2c661d1c8b",
+      "target": "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/archive-native-bridge-20261001/R2/integrity-02/test_original_saved_state_rest0",
+      "reason": "derived pytest current directory alias; all real target files retained"
+    },
+    {
+      "path": "R2/integrity-02/test_selector_stays_public_andcurrent",
+      "type": "symlink",
+      "bytes": 157,
+      "sha256": "aedb016e63a70b2103ac7c7c2db2db24b4168a79c56847f3bd04d213b9fa3709",
+      "target": "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/archive-native-bridge-20261001/R2/integrity-02/test_selector_stays_public_and0",
+      "reason": "derived pytest current directory alias; all real target files retained"
+    },
+    {
+      "path": "R2/private-selection-01/test_complete_private_preferrecurrent",
+      "type": "symlink",
+      "bytes": 165,
+      "sha256": "1e4d559be4b449d349bf88216a8cef3f312877f9822da851cbcd0389336f9df0",
+      "target": "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/archive-native-bridge-20261001/R2/private-selection-01/test_complete_private_preferre0",
+      "reason": "derived pytest current directory alias; all real target files retained"
+    },
+    {
+      "path": "__pycache__/analysis_binding.cpython-313.pyc",
+      "type": "file",
+      "bytes": 4982,
+      "sha256": "848923afdc08f9c0021b58c6b11b114cb489c4f20fcbdbfe9313abe1c8c2ee61",
+      "reason": "derived Python cache only"
+    },
+    {
+      "path": "__pycache__/run_analysis.cpython-313.pyc",
+      "type": "file",
+      "bytes": 3114,
+      "sha256": "e75fe5157d957e970d5f16160596c8307d76d74bea208bb37034c2bf766ff94d",
+      "reason": "derived Python cache only"
+    }
+  ],
+  "independent_custody": false
+}

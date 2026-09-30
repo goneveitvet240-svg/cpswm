@@ -1,3 +1,15 @@
+# A：实际位置归档到 Native 桥接与裸 seed 对照完成（2026-10-01 05:46）
+
+本轮分支codex/pc-a-archive-native-bridge-20261001，实际源码82c7a81fba0c3af3688978ce222b1b94e4cc5bd9（901 Python），base父功能1bd6c20 / 交付df8e30bd7eb436444b191ea242e938c8948d08a1。两轮顺序对抗审查绑定同源码；实际bridge: run 761.56s / verify 722.54s / 76 files；bare: run 354.22s / verify 398.48s / 103 files，四次成功，原件不变。R1 180不同测试，R2完整覆盖/限制见报告；A辅助非B独立/全仓CI。独立数值检查与图表已完成，case pin 328b4b10276c44a05b91cfcbb7f24d370ff8092e85a9fe729939311bc6b4fc42。
+
+真实RGB-D原件、公开读出及四模型改变受控Native的likelihood、log权重和Gaussian信息统计；8臂重复/中性继续/撤回及16次SQLite新进程验证，fresh重新复算并验证原数据库副本。身份/语义/prior/unknown仍合成，frame000来自训练屋，本轮0物理相机命令；不是自然在线闭环或动作收益。
+
+配对位置结果：sdk_transform_position_m: bare_seed 0.750330→0.661757m (n=1664), soft_affinity 0.674738→0.615581m (n=1664), uniform 0.833717→0.785566m (n=1664)；sdk_aabb_center_m: bare_seed 0.549088→0.561687m (n=1664), soft_affinity 0.513540→0.523058m (n=1664), uniform 0.712308→0.711919m (n=1664)。所有96帧、空/VOID保留，样本强相关，两种参考目标并列，不选正式目标、不声称独立校准。详[报告](../reviews/pc_a/archive_native_bridge_2026-10-01/REPORT.md)、[交付](../reviews/pc_a/archive_native_bridge_2026-10-01/DELIVERY.md)。证据11429成员/342551816压缩bytes/SHA256 807e4ab4a2ae1cd9551edcf8d20faecf52d6ab2ec4504c0f7739fc0c408bce4f，全部读回，失败与原DB均保留。
+
+下一主项是同一semantic source后续owner capture更新与逐cluster重放，当前尚未完成；设计已列原子范围，不以archive消费替代新观测。自然I/未知模型、正式参考与prior/时间相关性、朝向、长时程、完整任务效用、公平对照与B验收继续开放。完整H/R/I/C/Z/r/V、三个RB blocks、七算子、分类对照与主动澄清不缩减。原用户树、STATUS_B不改，当前仅草稿PR交接，不自动合并。
+
+---
+
 # A：位置观测开发与受控原生消费已完成（2026-10-01 04:32）
 
 分支codex/pc-a-soft-position-factor-20261001，base PR77 head8623e7890594fce2b3c872bd2484b30138a9f408；实际源码1bd6c204d349024196c23df12cca61dbcea91e6c，895 Python。174项最终开发回归、新R1 68项、新R2 35项不同测试通过。早期493观测似然完整替换缺陷、379显示下溢后log(0)、首次171组合helper误拒绝均保留且阻断原版，不用后续通过抹去。最终保护保留完整raw重算/父链/core锚及loaded code检查，增加原始log权重继续支持。

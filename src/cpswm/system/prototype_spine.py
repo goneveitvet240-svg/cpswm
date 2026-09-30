@@ -1225,6 +1225,9 @@ class CorePrototypeSpine:
         self._particle_workspace_anchor = self._particle_workspace
         self._particle_joint_dependency_binding: str | None = None
         self._particle_neural_source_sha256: str | None = None
+        self._particle_raw_profile_sha256 = native_content_sha256(None)
+        self._particle_raw_authority: Any = None
+        self._particle_raw_context_anchors: dict[str, str] = {}
         self._particle_posterior_source_anchors: dict[UUID, str] = {}
         self._particle_replay_generations: tuple[JointReplayGeneration, ...] = ()
         self._particle_replay_generation_anchors: tuple[str, ...] = ()
@@ -2895,6 +2898,48 @@ class CorePrototypeSpine:
         self._particle_workspace.neural_source_sha256 = self._particle_neural_source_sha256
 
     @_serialized_core_mutation
+    def configure_native_raw_profile(self, profile: Any, *, authority: Any) -> None:
+        """Owner-only fixed profile, separate from any submitted neural proof."""
+        from cpswm.system.native_raw_verification import RawCandidateAuthority, reconstruct
+
+        self._check_particle_workspace_binding()
+        if type(authority) is not RawCandidateAuthority or self._particle_raw_authority is not None:
+            raise ValueError("raw owner profile cannot be rebound")
+        if self._particle_workspace.records:
+            raise ValueError("raw owner profile must precede publication")
+        reconstruct(profile)
+        if profile["joint_binding"] != self._particle_joint_dependency_binding:
+            raise ValueError("raw profile does not match configured joint producer")
+        self._particle_raw_authority = authority
+        self._particle_raw_profile_sha256 = native_content_sha256(profile)
+        self._particle_workspace.raw_candidate_profile = deepcopy(profile)
+        self._particle_workspace.raw_candidate_profile_sha256 = self._particle_raw_profile_sha256
+
+    def _register_native_raw_context(self, context: Any, *, authority: Any) -> None:
+        """Internal owner admission, not candidate proof or a camera capability."""
+        from cpswm.system.native_raw_verification import RawCandidateAuthority, raw_context_digest
+
+        with self._execution_lock:
+            self._check_particle_workspace_binding()
+            self._particle_workspace._validate_neural_implementation()
+            if (
+                type(authority) is not RawCandidateAuthority
+                or authority != self._particle_raw_authority
+                or self._particle_workspace.raw_candidate_profile is None
+            ):
+                raise ValueError("raw context admission is not owner-authorized")
+            source = self._particle_workspace.posterior_sources.get(context.source.source_id)
+            if source is None or source.body_sha256 != context.source.body_sha256:
+                raise ValueError("raw context source is not owned")
+            key, digest = context.content_sha256, raw_context_digest(context)
+            prior = self._particle_raw_context_anchors.get(key)
+            if prior is not None and prior != digest:
+                raise ValueError("owned raw context cannot be replaced")
+            self._particle_workspace.raw_contexts[key] = deepcopy(context)
+            self._particle_workspace.raw_context_anchors[key] = digest
+            self._particle_raw_context_anchors[key] = digest
+
+    @_serialized_core_mutation
     def rebuild_prepared_particle_history(self, produce: Any) -> None:
         """Recompute a complete retained history, atomically, with an owned producer.
 
@@ -3130,6 +3175,14 @@ class CorePrototypeSpine:
             or self._particle_workspace.neural_source_sha256 != self._particle_neural_source_sha256
         ):
             raise ValueError("native joint dependency differs from its core configuration anchor")
+        if (
+            native_content_sha256(self._particle_workspace.raw_candidate_profile)
+            != self._particle_raw_profile_sha256
+            or self._particle_workspace.raw_candidate_profile_sha256
+            != self._particle_raw_profile_sha256
+            or self._particle_workspace.raw_context_anchors != self._particle_raw_context_anchors
+        ):
+            raise ValueError("native raw owner inputs differ from core anchors")
         instance_attributes = vars(self._particle_workspace)
         for (
             method_name,
@@ -3977,6 +4030,7 @@ class CorePrototypeSpine:
             "particle_workspace": self._particle_workspace,
             "particle_workspace_state": deepcopy(self._particle_workspace),
             "particle_input_anchors": dict(self._particle_input_anchors),
+            "particle_raw_context_anchors": dict(self._particle_raw_context_anchors),
             "particle_posterior_source_anchors": dict(self._particle_posterior_source_anchors),
             "particle_replay_generations": self._particle_replay_generations,
             "particle_replay_generation_anchors": self._particle_replay_generation_anchors,
@@ -4134,6 +4188,7 @@ class CorePrototypeSpine:
         _restore_reference_state(workspace, checkpoint["particle_workspace_state"])
         self._particle_workspace = workspace  # type: ignore[assignment]
         self._particle_input_anchors = cast(dict[UUID, str], checkpoint["particle_input_anchors"])
+        self._particle_raw_context_anchors = dict(checkpoint["particle_raw_context_anchors"])
         self._particle_posterior_source_anchors = cast(
             dict[UUID, str], checkpoint["particle_posterior_source_anchors"]
         )

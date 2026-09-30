@@ -432,6 +432,9 @@ def validate_neural_input_body(body: Any, workspace: Any, *, current: bool = Fal
         evidence.cutoff,
         visual,
     )
+    from cpswm.system.native_raw_verification import verify_raw_base
+
+    verify_raw_base(evidence, workspace, native_context)
     context, support = proposal_view(native_context, base)
     if context != evidence.context or support != evidence.support:
         raise ValueError("neural execution inputs differ from actual native history")

@@ -45,3 +45,13 @@
 受控消费固定 known 的初始六维 mean=0、covariance=I6，显式 reference world translation=0；unknown candidate 与 aggregate unresolved 使用相同世界三维 Gaussian(mean=0,covariance=100I3) 作为开发背景密度，从而所有分支比较使用相同量纲。两个 candidate 与 aggregate 初始未归一化权重均为1；这些为预先明示的测试/诊断条件，不是学习到的自然未知模型。后续步骤继承真实 parent posterior 和 aggregate unresolved 权重，不重置为1。只在预先绑定的 semantic metadata.record_id 上消费固定公开seed，其余步骤只附加零信息的谱系记录；撤回该semantic record后不能把保留的RGB-D移接到其他步骤。诊断和native fixture使用同样的假设，无效公共观测及拟合失败不得根据标签换seed。
 
 原生受控测试中的 P5 CIAV closure 会生成新的 after record ID，因此配置锚点保留原输入 metadata.record_id；只有明确 `structure-two-adaptive-ciav-feedback-closure` 来源类型允许它匹配 native.transition.before.metadata.record_id。普通来源必须匹配 native.after.metadata.record_id。消费诊断同时保存原配置ID及实际native before/after ID，撤回测试精确定位实际published after所对应的事件修订，不宽泛匹配历史中出现过的ID。
+
+## 初版审核阻断后的消费验证修复
+
+初版493e057在728项定向回归及首轮审核后，第二轮发现完整raw LL与aggregate数值替换可保留原model/binding/q并被发布；该版未进入真实96帧实验。原失败与合法后果保留在ATTEMPT_1报告。修复后须新SHA及重新顺序两轮审核，旧首轮不能授权新版本。
+
+新增的是受控位置profile的工程数值核验：canonical producer移至src，tools原入口兼容重导出；原owner固定producer配置、模型/pin、实现及verifier文件原pin，按真实已接收raw原件与cutoff登记context。消费端从固定配置和实际祖先source/prior独立重建完整base，比较所有LL、aggregate、prior/transition/constraints、RB统计、support/cluster/source。重建使用隔离的新producer，已消费测量依据实际祖先来源推导，不相信proof自报pre-state，也不改变线上producer的calls/consumedkeys。
+
+受保护profile由owner配置固定；缺proof、删catalogue、改profile/未来cutoff不能降级为只查q。当前、历史、replay和SQLite路径均复用深层核验。独立新进程测试必须读原持久化configuration/models，不能重新随机生成另一个rawpacket后声称恢复失败。helper实际原文件pin在已锚定的consumer中核对，loaded函数与源代码也核对；这是有界本机实现完整性，不是任意Python内存攻击隔离。
+
+既有未启用该profile的显式fixture保留原合同；本修复不证明任意legacy候选模型的自然likelihood。位置模型科学定义、两参考/两估计器、96帧固定分区、未知先验与所有公开采样规则保持。新相机结果独立于semantic source的事务/replay仍是下一轮，不能把本次owner原件登记误写为多capture实时更新已完成。

@@ -236,6 +236,10 @@ class NativeParticleWorkspace:
         self.neural_source_sha256: str | None = None
         self._visual_authority: Any = None
         self.visual_sources: dict[str, Any] = {}
+        self.raw_candidate_profile: Any = None
+        self.raw_candidate_profile_sha256 = native_content_sha256(None)
+        self.raw_contexts: dict[str, Any] = {}
+        self.raw_context_anchors: dict[str, str] = {}
 
     def bind_visual_owner(self, authority: Any) -> None:
         from cpswm.system.native_visual_source import NativeVisualAuthority
@@ -279,6 +283,9 @@ class NativeParticleWorkspace:
                     "joint_dependency_binding": self.joint_dependency_binding,
                     "neural_source_sha256": self.neural_source_sha256,
                     "visual_sources": self.visual_sources,
+                    "raw_candidate_profile": self.raw_candidate_profile,
+                    "raw_candidate_profile_sha256": self.raw_candidate_profile_sha256,
+                    "raw_context_anchors": self.raw_context_anchors,
                     "input_status": "explicit_prepared_inputs_not_calibrated",
                 }
             ),
@@ -288,6 +295,19 @@ class NativeParticleWorkspace:
         self,
     ) -> tuple[dict[UUID, NativePreparedInputBody], dict[UUID, NativeParticleRecord]]:
         self.validate_world_support(self.registered_locations)
+        from cpswm.system.native_raw_verification import raw_context_digest
+
+        if native_content_sha256(self.raw_candidate_profile) != self.raw_candidate_profile_sha256:
+            raise ValueError("configured raw candidate profile was changed or removed")
+        if set(self.raw_contexts) != set(self.raw_context_anchors):
+            raise ValueError("raw owner context catalogue closure differs")
+        for key, context in self.raw_contexts.items():
+            if (
+                key != context.content_sha256
+                or context.source.runtime_id != self.runtime_id
+                or raw_context_digest(context) != self.raw_context_anchors[key]
+            ):
+                raise ValueError("raw owner context catalogue changed")
         for key, source in self.visual_sources.items():
             if key != source.content_sha256 or source.runtime_id != self.runtime_id:
                 raise ValueError("native visual source catalogue changed")
@@ -464,11 +484,22 @@ class NativeParticleWorkspace:
 
         from cpswm.system.structure_two_execution import _code_object_sha256, _source_code_objects
 
+        if native_content_sha256(self.raw_candidate_profile) != self.raw_candidate_profile_sha256:
+            raise ValueError("configured raw candidate profile was changed or removed")
+        if self.raw_candidate_profile is not None:
+            raw_path = Path(__file__).with_name("native_raw_verification.py")
+            if (
+                hashlib.sha256(raw_path.read_bytes()).hexdigest()
+                != self.raw_candidate_profile["verifier_source"]
+            ):
+                raise ValueError("raw verifier source differs from owner configuration")
         own_path = Path(__file__).with_name("native_neural_production.py")
         if hashlib.sha256(own_path.read_bytes()).hexdigest() != self.neural_source_sha256:
             raise ValueError("native neural verifier source differs from configured implementation")
         for name in (
             "cpswm.system.native_neural_production",
+            "cpswm.system.native_raw_verification",
+            "cpswm.system.controlled_position_producer",
             "cpswm.system.checkpoint_artifacts",
             "cpswm.system.native_visual_source",
             "cpswm.system.owned_visual_support",
@@ -531,6 +562,8 @@ class NativeParticleWorkspace:
             raise ValueError("prepared input journal body is missing or has the wrong type")
         if digest != native_content_sha256(body):
             raise ValueError("prepared input journal body changed")
+        if self.raw_candidate_profile is not None and body.neural_evidence is None:
+            raise ValueError("configured raw candidate requires complete neural evidence")
         if body.neural_evidence is not None:
             self._validate_neural_implementation()
             from cpswm.system.native_neural_production import validate_neural_input_body
@@ -783,6 +816,8 @@ class NativeParticleWorkspace:
             validated_projections=validated_projections,
             neural_evidence=deepcopy(neural_evidence),
         )
+        if self.raw_candidate_profile is not None and neural_evidence is None:
+            raise ValueError("configured raw candidate requires complete neural evidence")
         if neural_evidence is not None:
             self._validate_neural_implementation()
             from cpswm.system.native_neural_production import validate_neural_input_body

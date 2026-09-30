@@ -19,6 +19,7 @@ from run_history_action_loop import decoder_for, load
 from run_instance_correspondence_diagnostic import reconstruct_catalog
 
 from cpswm.perception_mapping.unity_rgbd import PROFILE, surface_support
+from cpswm.system.joint_camera_feedback import decoder_binding
 from cpswm.system.owned_visual_support import _frame_support
 from cpswm.system.reproducibility import content_sha256
 from cpswm.system.structure_two_continuous_input import ObservationCommand, ObservationDelivery
@@ -54,7 +55,7 @@ def public_predictions(history, decoder, expected):
     )
     require(
         [a.command for a in expected.actions] == [c for c, _ in history]
-        and expected.decoder_binding_sha256 == decoder.binding_sha256
+        and expected.decoder_binding_sha256 == decoder_binding(decoder)
         and expected.scored_joint_density is None
         and not expected.memory_write_authorized
         and not expected.negative_observation_authorized,
@@ -67,7 +68,7 @@ def public_predictions(history, decoder, expected):
         require(type(command) is ObservationCommand, "invalid public command")
         if type(delivery) is not ObservationDelivery:
             require(
-                delivery in {"READY", "CANCELLED", "DISPATCHED"}
+                delivery in {"READY", "OUTCOME_UNCERTAIN", "CANCELLED_STALE_JOINT"}
                 and delivery == old.status
                 and not old.frames,
                 "pending action differs",

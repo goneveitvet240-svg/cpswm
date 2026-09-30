@@ -78,7 +78,7 @@ def archive(tmp_path, decoder=None, depth=None, repeat=False):
             )
             history.append((command, delivery))
             actions.append(OwnedVisualAction(command, "DELIVERED", None, None, (public,)))
-    support = OwnedVisualSupport(decoder.binding_sha256, "a" * 64, tuple(actions))
+    support = OwnedVisualSupport(task.decoder_binding(decoder), "a" * 64, tuple(actions))
     save(directory / "owned-history.json", tuple(history))
     save(directory / "visual-support.json", support)
     (directory / "manifest.json").write_text(
@@ -243,6 +243,34 @@ def test_failed_delivery_is_rejected_instead_of_disappearing(tmp_path):
     failed = replace(delivered, success=False, error="capture failed")
     with pytest.raises(ValueError, match="failed or mismatched"):
         task.public_predictions(((command, failed),), decoder, expected)
+
+
+def test_real_runtime_issued_support_uses_full_binding(tmp_path):
+    from test_joint_camera_feedback import setup
+    from test_owned_rgbd_support import collect
+
+    decoder = RGBDSupportDecoder()
+    stream, store, _, _, start = setup(tmp_path / "state.sqlite", decoder=decoder)
+    try:
+        collect(stream, start)
+        expected = stream.visual_observation_support()
+        assert expected.decoder_binding_sha256 != decoder.binding_sha256
+        public = task.public_predictions(stream.observation_history(), decoder, expected)
+        assert len(public) == 1 and public[0][2] == expected.actions[0].frames[0]
+    finally:
+        store.close()
+
+
+@pytest.mark.parametrize("status", ["READY", "OUTCOME_UNCERTAIN", "CANCELLED_STALE_JOINT"])
+def test_unobserved_action_states_retain_history_without_fake_pixels(tmp_path, status):
+    directory, decoder, _ = archive(tmp_path)
+    history = task.load(directory / "owned-history.json")
+    support = task.load(directory / "visual-support.json")
+    command = replace(history[0][0], action_id=uuid4())
+    pending = OwnedVisualAction(command, status, None, None, ())
+    expected = replace(support, actions=(*support.actions, pending))
+    rows = task.public_predictions((*history, (command, status)), decoder, expected)
+    assert len(rows) == 1
 
 
 @pytest.mark.parametrize("attack", ["candidate_omission", "world_point", "authority"])

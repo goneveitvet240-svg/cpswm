@@ -130,8 +130,47 @@ def stop_owned_group(process):
     process.wait(timeout=10)
 
 
+def validate_attempt_states(attempts):
+    if [r["index"] for r in attempts] != list(range(1, 13)) or any(
+        type(r["index"]) is not int for r in attempts
+    ):
+        raise ValueError("attempt state must retain the ordered twelve house matrix")
+    common = {"index", "split", "status", "started_at", "finished_at"}
+    previous = None
+    for row in attempts:
+        if row["status"] == "verified":
+            if (
+                set(row) != common | {"exit_code", "verification"}
+                or type(row["exit_code"]) is not int
+                or row["exit_code"] != 0
+                or type(row["verification"]) is not dict
+            ):
+                raise ValueError("verified attempt state contradicts process outcome")
+        elif row["status"] == "failed":
+            required = common | {"error", "traceback"}
+            if (
+                not required <= set(row) <= required | {"exit_code"}
+                or any(type(row[k]) is not str or not row[k] for k in ("error", "traceback"))
+                or ("exit_code" in row and type(row["exit_code"]) is not int)
+            ):
+                raise ValueError(
+                    "failed attempt state omits failure evidence or retains verification"
+                )
+        else:
+            raise ValueError("unknown or interrupted attempt state")
+        start, finish = (datetime.fromisoformat(row[k]) for k in ("started_at", "finished_at"))
+        if (
+            any(t.tzinfo is None or t.utcoffset().total_seconds() != 0 for t in (start, finish))
+            or finish < start
+            or (previous is not None and start < previous)
+        ):
+            raise ValueError("attempt state timestamps are not causal UTC")
+        previous = finish
+
+
 def runtime_partition_audit(plan, attempts):
     """Keep every source/runtime asset exposure, even when no target label survives."""
+    validate_attempt_states(attempts)
     if len(attempts) != 12 or {r["index"] for r in attempts} != set(range(1, 13)):
         raise ValueError("runtime audit must retain all twelve house attempts")
     houses = {h["index"]: h for h in plan["houses"]}

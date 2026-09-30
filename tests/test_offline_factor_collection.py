@@ -22,6 +22,9 @@ def matrix():
                     index=index,
                     split=split,
                     status="verified",
+                    exit_code=0,
+                    started_at=f"2026-09-30T00:00:{index * 2:02d}+00:00",
+                    finished_at=f"2026-09-30T00:00:{index * 2 + 1:02d}+00:00",
                     verification=dict(
                         all_assets=[instance["asset_id"]],
                         scope=[f"scope-{index}-{i}" for i in range(3)],
@@ -74,6 +77,8 @@ def test_complete_but_contaminated_matrix_quarantines_affected_validation_target
         attempts[0]["verification"]["unknown_assets"].append("unidentified")
     elif attack == "failed":
         attempts[0]["status"] = "failed"
+        attempts[0].update(exit_code=7, error="controlled failure", traceback="controlled trace")
+        attempts[0].pop("verification")
     elif attack == "moved":
         attempts[8]["verification"]["instances"][0]["position_changed_during_initialization"] = True
     elif attack == "static_excluded":

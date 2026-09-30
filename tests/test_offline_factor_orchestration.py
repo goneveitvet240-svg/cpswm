@@ -359,3 +359,56 @@ def test_rehashed_inventory_cannot_make_forged_summary_match_raw_evidence(
     with pytest.raises(ValueError, match=match):
         task.verify_collection(matrix.output, matrix.archive, matrix.sdk_python, matrix.binary)
     assert len(matrix.dispatches) == 12
+
+
+@pytest.mark.parametrize(
+    "attack",
+    [
+        "nonzero_exit",
+        "bool_exit",
+        "success_with_error",
+        "unknown_status",
+        "failed_with_verification",
+        "no_failure_trace",
+        "time_reversal",
+        "naive_time",
+        "reorder",
+    ],
+)
+def test_fully_rehashed_attempt_state_cannot_promote_contradictory_outcome(
+    monkeypatch, tmp_path, attack
+):
+    matrix = ControlledMatrix(monkeypatch, tmp_path)
+    matrix.collect()
+    path = matrix.output / "attempts.json"
+    rows = json.loads(path.read_text())
+    if attack == "nonzero_exit":
+        rows[0]["exit_code"] = 7
+    elif attack == "bool_exit":
+        rows[0]["exit_code"] = False
+    elif attack == "success_with_error":
+        rows[0]["error"] = "capture failed"
+    elif attack == "unknown_status":
+        rows[0]["status"] = "passed_anyway"
+    elif attack == "failed_with_verification":
+        rows[0].update(status="failed", error="failure", traceback="trace")
+    elif attack == "no_failure_trace":
+        rows[0].update(status="failed", error="failure")
+        rows[0].pop("verification")
+    elif attack == "time_reversal":
+        rows[0]["finished_at"] = "2000-01-01T00:00:00+00:00"
+    elif attack == "naive_time":
+        rows[0]["started_at"] = "2000-01-01T00:00:00"
+    else:
+        rows[0], rows[1] = rows[1], rows[0]
+    task.write_json(path, rows)
+    task.write_json(
+        matrix.output / "inventory.json",
+        {
+            str(p.relative_to(matrix.output)): task.digest(p)
+            for p in sorted(matrix.output.rglob("*"))
+            if p.is_file() and p.name != "inventory.json"
+        },
+    )
+    with pytest.raises(ValueError, match="attempt state"):
+        task.verify_collection(matrix.output, matrix.archive, matrix.sdk_python, matrix.binary)

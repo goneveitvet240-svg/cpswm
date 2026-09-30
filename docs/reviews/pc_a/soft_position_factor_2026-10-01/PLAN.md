@@ -37,3 +37,11 @@
 ## 顺序与证据
 
 实现/定向测试→冻结实际源码→顺序R1/R2对抗（完整合法路径、完整自签伪造、来源/模式/参考/训练分区、状态/账本与后验后果）→实际固定96帧运行及新进程完整fresh→独立数值复核→原件封存/报告/草稿PR。任何功能修复重新冻结并使旧审查过期。A辅助不是B独立/全仓CI。工程失败不覆盖、不删除，输出output/soft-position-factor-20261001。
+
+## 实现前的坐标及受控先验补充
+
+公开 domain_id 固定为 `unity-rgbd-world-m-fixed-grid@1`，指传感器/米制世界坐标约定；每个 scene_sha 继续绑定于输入/测量身份，不作为共享残差模型 domain_id。frame_id 保留 camera.world_frame，valid_at 保留公开捕获时间。
+
+受控消费固定 known 的初始六维 mean=0、covariance=I6，显式 reference world translation=0；unknown candidate 与 aggregate unresolved 使用相同世界三维 Gaussian(mean=0,covariance=100I3) 作为开发背景密度，从而所有分支比较使用相同量纲。两个 candidate 与 aggregate 初始未归一化权重均为1；这些为预先明示的测试/诊断条件，不是学习到的自然未知模型。后续步骤继承真实 parent posterior 和 aggregate unresolved 权重，不重置为1。只在预先绑定的 semantic metadata.record_id 上消费固定公开seed，其余步骤只附加零信息的谱系记录；撤回该semantic record后不能把保留的RGB-D移接到其他步骤。诊断和native fixture使用同样的假设，无效公共观测及拟合失败不得根据标签换seed。
+
+原生受控测试中的 P5 CIAV closure 会生成新的 after record ID，因此配置锚点保留原输入 metadata.record_id；只有明确 `structure-two-adaptive-ciav-feedback-closure` 来源类型允许它匹配 native.transition.before.metadata.record_id。普通来源必须匹配 native.after.metadata.record_id。消费诊断同时保存原配置ID及实际native before/after ID，撤回测试精确定位实际published after所对应的事件修订，不宽泛匹配历史中出现过的ID。

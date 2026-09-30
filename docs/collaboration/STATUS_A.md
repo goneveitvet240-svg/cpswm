@@ -1,3 +1,11 @@
+# A：最后两批与主干窗口交付（2026-09-30）
+
+当前分支codex/pc-a-camera-checkpoint-fixture-20260930，base175a54baf91b782907518906b56f28acc84541be，实际源码14409b3beabbd298196ea8f65c4e4f7a0cf719f2。相机checkpoint默认目录修复13/13顺序双审零跳过；3种显式非法覆盖按预期exit1拒绝、不回落，3条真实网络/反馈/行动输出保留。原件99文件，压缩12295469字节，SHA256 f4ab144cc3bbaac8f8f94d0e14d975c99743b9a144de89af09ae62ee6f8ebf9e，逐文件读回。前批fa4dc03的14/2双审和10完整伪造原件保留，两个批次分别绑定实际源码。
+
+当前fa4dc03远端完整选择6059项，65分钟超时；4576通过、27失败、8准备错误、30跳过、1预期失败，3匿名节点不计通过。最新14409b3的全CI尚未完成。旧60历史缺失失败有53节点配对转为通过、7未完成；当前自然后验仍受控、未决高，任务收益未确立。总交接见docs/reviews/pc_a/mainline_handoff_2026-09-30/MAINLINE_PROGRESS.md；原始远端材料与失败分类在output/mainline-handoff-20260930。
+
+本轮所有改动仍为独立A候选；共享集成19ddf26830348a2f0b33f0af54d6ba702c5cfb1c不变，B独立/跨平台/自然观察因子与离线监督用途选择仍待闭合。完整统一框架及原对照保留。以下历史状态保留。
+
 # A：相机模型测试默认材料修复开工（2026-09-30）
 
 分支 codex/pc-a-camera-checkpoint-fixture-20260930，base175a54baf91b782907518906b56f28acc84541be；前轮fa4dc03的顺序14/2双审已完成，原件封存并推送。重新fetch核对集成19ddf26830348a2f0b33f0af54d6ba702c5cfb1c，B当前审查分支codex/pc-b-adversarial-audit-fix-20260913为fd4ca6ef5e81c90d7cf7987b42c0b2810d8a810a。

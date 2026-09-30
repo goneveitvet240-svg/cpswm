@@ -1,3 +1,5 @@
+最新总交接：[八小时主干推进与未完成门槛](../reviews/pc_a/mainline_handoff_2026-09-30/MAINLINE_PROGRESS.md)；最后批次[checkpoint准备修复](../reviews/pc_a/camera_checkpoint_fixture_2026-09-30/REPORT.md)。所有结果按实际源码绑定，完整CI/B独立/自然任务收益未完成。
+
 最新本轮交付：[当前比较材料与上下文修复](../reviews/pc_a/comparison_test_context_2026-09-30/REPORT.md)，实际源码fa4dc032c9ef843d8ec0975810c010cd1c5ca7d6，两轮14/2通过；科学验收仍未通过。
 
 > 2026-09-30：版本核验入口已修复并9/49双审；历史检出7/2双审。完整回归仍被当前材料准备与旧清单/回执等阻塞。见[当前pipeline](../reviews/pc_a/positive_call_observation_2026-09-30/CURRENT_PIPELINE.md)、[入口修复](../reviews/pc_a/audit_venv_invocation_2026-09-30/REPORT.md)。

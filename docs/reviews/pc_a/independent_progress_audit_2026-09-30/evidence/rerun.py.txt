@@ -1,0 +1,22 @@
+import os, json, subprocess, time, hashlib
+from pathlib import Path
+W=Path.cwd()
+E=W/'docs/reviews/pc_a/independent_progress_audit_2026-09-30/evidence'
+O=Path('/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/offline-front-end-20260930')
+cases=json.loads((O/'case-results.json').read_text())
+source={str(p.relative_to(W)):hashlib.sha256(p.read_bytes()).hexdigest() for folder in ['src','tests','tools'] for p in sorted((W/folder).rglob('*.py'))}
+expected=json.loads((O/'fasterrcnn/report.json').read_text())['diagnostic_source_files']
+assert source==expected
+result=[]
+for old in cases:
+ if old['phase']!='verify':continue
+ args=list(old['argv'])
+ env=os.environ.copy();env['PYTHONPATH']='src:tests:tools'
+ start=time.monotonic()
+ with (E/(old['detector']+'-independent-verify.log')).open('w') as f:
+  r=subprocess.run(args,cwd=W,env=env,stdout=f,stderr=subprocess.STDOUT,timeout=900)
+ row=dict(detector=old['detector'],argv=args,exit_code=r.returncode,elapsed_seconds=time.monotonic()-start,source_file_count=len(source),source_files_unchanged=source=={str(p.relative_to(W)):hashlib.sha256(p.read_bytes()).hexdigest() for folder in ['src','tests','tools'] for p in sorted((W/folder).rglob('*.py'))})
+ result.append(row)
+ (E/'independent-inference.json').write_text(json.dumps(result,indent=2)+'\n')
+ print(json.dumps(row),flush=True)
+ if r.returncode:raise SystemExit(r.returncode)

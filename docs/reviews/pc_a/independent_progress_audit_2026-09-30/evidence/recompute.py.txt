@@ -1,0 +1,120 @@
+"""Independent raw-mask arithmetic; no CPSWM evaluation/summary imports."""
+from pathlib import Path
+import json, hashlib, math
+from collections import defaultdict, Counter
+import numpy as np
+
+BASE = Path('/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output')
+DATA = BASE/'offline-factor-data-20260930/collection-attempt02'
+OUT = Path(__file__).parent
+load = lambda p: json.loads(p.read_text())
+pin = '9791a946543b9158890324d3ff35a80ea04d51c9cabb6e09540f569abd903d47'
+assert hashlib.sha256((DATA/'inventory.json').read_bytes()).hexdigest() == pin
+inventory = load(DATA/'inventory.json')
+# Include every child inventory if one exists, excluding only the root inventory.
+actual = {str(p.relative_to(DATA)): hashlib.sha256(p.read_bytes()).hexdigest()
+          for p in DATA.rglob('*') if p.is_file() and p != DATA/'inventory.json'}
+assert inventory == actual
+assert not any(p.is_symlink() for p in DATA.rglob('*'))
+reports = {k: load(BASE/f'offline-front-end-20260930/{k}/report.json')
+           for k in ['fasterrcnn', 'ssdlite']}
+public = {k: load(BASE/f'offline-front-end-20260930/{k}/public.json') for k in reports}
+audit = load(DATA/'runtime-partition-audit.json')['instances']
+elig = {(r['house_index'],r['object_id']):r['eligible'] for r in audit}
+assert len(elig)==len(audit)
+stats = {k: Counter() for k in reports}
+sets = {k: defaultdict(set) for k in reports}
+views = {k: defaultdict(set) for k in reports}
+dist = {k: defaultdict(list) for k in reports}
+byhouse = {k: defaultdict(Counter) for k in reports}
+camera_poses = defaultdict(set)
+camera_positions = defaultdict(set)
+checked_pairs=0
+for offset in range(96):
+    row = reports['fasterrcnn']['frames'][offset]
+    h, sid = row['house_index'], row['sdk_index']
+    assert h == offset//8+1 and sid == offset%8+4
+    root = DATA/f'house-{h:02d}/unity-logs/evaluator_only'
+    info = load(root/f'instances/{sid:03d}.json')
+    sdk = load(root/f'sdk-events/{sid:03d}.json')
+    objects = {o['objectId']:o for o in sdk['metadata']['objects']}
+    segmentation = np.load(root/f'instances/{sid:03d}-segmentation.npy',allow_pickle=False)
+    colors = {c['name']:c['color'] for c in info['colors']}
+    with np.load(root/f'instances/{sid:03d}-masks.npz',allow_pickle=False) as f:
+        masks = {c['object_id']:f[c['array_key']] for c in info['catalog']}
+    assert set(masks)==set(objects)
+    for oid,mask in masks.items():
+        expected = np.all(segmentation == np.asarray(colors[oid]),axis=2) if oid in colors else np.zeros(mask.shape,dtype=bool)
+        assert np.array_equal(mask,expected)
+    yy,xx = np.indices(segmentation.shape[:2])
+    for kind,report in reports.items():
+        r=report['frames'][offset]; p=public[kind][offset]
+        assert r['action_id']==row['action_id']==p['command']['action_id']==info['action_id']==sdk['owner']
+        assert r['split']==('train' if h<=8 else 'validation')
+        assert r['house_index']==h and r['sdk_index']==sid
+        camera=p['frame']['geometry']['camera']
+        pos=tuple(camera['position_m']); pose=(pos,camera['yaw_degrees'],camera['pitch_degrees'])
+        camera_positions[h].add(pos);camera_poses[h].add(pose)
+        for name in ['rgb','depth']:
+            assert hashlib.sha256((root/f'sdk-events/{sid:03d}-{name}.npy').read_bytes()).hexdigest()==r[name+'_sha256']
+        s=stats[kind]; s['frames']+=1;s['zero_candidate_frames']+=not r['candidates']
+        visible=set(); box_hit=set(); sample_hit=set()
+        for inst in r['instances']:
+            oid=inst['object_id'];key=(h,oid); pix=int(masks[oid].sum())
+            assert pix==inst['pixels'] and inst['eligible']==elig[key]
+            if elig[key]:
+                sets[kind]['eligible'].add(key)
+                if pix:
+                    sets[kind]['visible'].add(key);visible.add(oid)
+                    views[kind][('visible',key)].add(pose)
+        for c in r['candidates']:
+            s['boxes']+=1
+            x0,y0,x1,y1=c['box_xyxy']
+            inside=(xx+.5>=x0)&(xx+.5<x1)&(yy+.5>=y0)&(yy+.5<y1)
+            assert int(inside.sum())==c['box_pixel_count']
+            n=0
+            assert {o['object_id'] for o in c['overlaps']}==set(masks)
+            for pair in c['overlaps']:
+                oid=pair['object_id']; key=(h,oid)
+                raw_count=int((masks[oid]&inside).sum())
+                assert raw_count==pair['intersection_pixels'];checked_pairs+=1
+                if raw_count:
+                    n+=1
+                    if elig[key]:
+                        box_hit.add(oid);sets[kind]['box_hit'].add(key)
+                        views[kind][('box_hit',key)].add(pose)
+                for sm,delta in zip(c['samples'],pair['sample_displacements'],strict=True):
+                    u,v=sm['pixel_uv'];member=bool(masks[oid][v,u])
+                    assert member==delta['pixel_on_rendered_instance']
+                    for ref,field in [('to_sdk_transform','position'),('to_sdk_aabb_center','axisAlignedBoundingBox')]:
+                        xyz=objects[oid][field]
+                        if field=='axisAlignedBoundingBox':xyz=xyz['center']
+                        xyz=[xyz[a] for a in ['x','y','z']]
+                        d=math.dist(sm['nominal_world_xyz_m'],xyz)
+                        assert math.isclose(d,delta[ref]['distance_m'],rel_tol=1e-12,abs_tol=1e-12)
+                        if member and elig[key]:dist[kind][ref].append(d)
+            s['multi_instance_boxes']+=n>1
+            for sm in c['samples']:
+                u,v=sm['pixel_uv'];ids={oid for oid,m in masks.items() if m[v,u]}
+                assert ids==set(sm['rendered_instance_ids'])
+                chosen={oid for oid in ids if elig[(h,oid)]}
+                s['samples']+=1;s['eligible_member_samples']+=bool(chosen)
+                for oid in chosen:
+                    key=(h,oid);sample_hit.add(oid);sets[kind]['sample_hit'].add(key)
+                    views[kind][('sample_hit',key)].add(pose)
+        s['visible_object_frames']+=len(visible)
+        s['box_hit_object_frames']+=len(box_hit)
+        s['sample_hit_object_frames']+=len(sample_hit)
+        byhouse[kind][h].update(frames=1,boxes=len(r['candidates']),visible_object_frames=len(visible),box_hit_object_frames=len(box_hit),sample_hit_object_frames=len(sample_hit))
+result={'scope':'RAW_MASK_COUNTS_AND_DISTANCE_ARITHMETIC_NOT_CALIBRATION_OR_NEW_SIMULATOR_RUN',
+        'inventory_pin':pin,'inventory_files':len(actual),'candidate_instance_pairs_checked':checked_pairs,
+        'poses_per_house':{h:len(v) for h,v in camera_poses.items()},
+        'positions_per_house':{h:len(v) for h,v in camera_positions.items()},'methods':{}}
+for k in reports:
+    out=dict(stats[k]);out.update({key+'_objects':len(v) for key,v in sets[k].items()})
+    for typ in ['visible','box_hit','sample_hit']:
+        out[typ+'_objects_in_two_headings']=sum(t==typ and len(v)>=2 for (t,key),v in views[k].items())
+    out['distances_m']={ref:{'count':len(v),'median':float(np.median(v)),'p90':float(np.quantile(v,.9))} for ref,v in dist[k].items()}
+    out['by_house']=dict(byhouse[k]);result['methods'][k]=out
+(OUT/'independent-raw-recomputation.json').write_text(json.dumps(result,indent=2)+'\n')
+print(json.dumps(result,indent=2))

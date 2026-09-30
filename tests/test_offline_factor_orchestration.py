@@ -6,6 +6,7 @@ import json
 import signal
 import subprocess
 import sys
+from datetime import UTC, datetime, timedelta
 from pathlib import Path
 from uuid import uuid4
 
@@ -52,6 +53,7 @@ class ControlledMatrix:
         self.plan_verifications = []
         self.failures = {}
         self.identity_attacks = {}
+        self.frame_times = {}
         self.scopes = {index: [str(uuid4()) for _ in range(3)] for index in range(1, 13)}
         self.action_ids = {index: [str(uuid4()) for _ in range(8)] for index in range(1, 13)}
         self.plan = {
@@ -130,9 +132,19 @@ class ControlledMatrix:
             self.verifications.append(index)
             if self.failures.get(index) == "verification":
                 raise ValueError("controlled frame provenance verification failure")
+            self.frame_times.setdefault(index, datetime.now(UTC).isoformat())
             return {
                 "scope": self.scopes[index],
-                "frame_records": [{"action_id": action} for action in self.action_ids[index]],
+                "frame_records": [
+                    dict(
+                        action_id=action,
+                        **{
+                            k: self.frame_times[index]
+                            for k in ("decision_time", "capture_time", "received_at")
+                        },
+                    )
+                    for action in self.action_ids[index]
+                ],
                 "all_assets": [f"asset-{index}"],
                 "unknown_assets": [],
                 "instances": [
@@ -401,6 +413,41 @@ def test_fully_rehashed_attempt_state_cannot_promote_contradictory_outcome(
         rows[0]["started_at"] = "2000-01-01T00:00:00"
     else:
         rows[0], rows[1] = rows[1], rows[0]
+    task.write_json(path, rows)
+    task.write_json(
+        matrix.output / "inventory.json",
+        {
+            str(p.relative_to(matrix.output)): task.digest(p)
+            for p in sorted(matrix.output.rglob("*"))
+            if p.is_file() and p.name != "inventory.json"
+        },
+    )
+    with pytest.raises(ValueError, match="attempt state"):
+        task.verify_collection(matrix.output, matrix.archive, matrix.sdk_python, matrix.binary)
+
+
+@pytest.mark.parametrize(
+    "attack", ["whole_decade_shift", "decision_before_start", "receive_after_finish"]
+)
+def test_rehashed_causal_utc_intervals_must_enclose_public_capture(monkeypatch, tmp_path, attack):
+    matrix = ControlledMatrix(monkeypatch, tmp_path)
+    matrix.collect()
+    path = matrix.output / "attempts.json"
+    rows = json.loads(path.read_text())
+    if attack == "whole_decade_shift":
+        for row in rows:
+            for key in ("started_at", "finished_at"):
+                row[key] = (datetime.fromisoformat(row[key]) - timedelta(days=3650)).isoformat()
+    elif attack == "decision_before_start":
+        rows[0]["started_at"] = (
+            datetime.fromisoformat(rows[0]["verification"]["frame_records"][0]["decision_time"])
+            + timedelta(microseconds=1)
+        ).isoformat()
+    else:
+        rows[0]["finished_at"] = (
+            datetime.fromisoformat(rows[0]["verification"]["frame_records"][-1]["received_at"])
+            - timedelta(microseconds=1)
+        ).isoformat()
     task.write_json(path, rows)
     task.write_json(
         matrix.output / "inventory.json",

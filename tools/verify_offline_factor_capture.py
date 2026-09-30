@@ -365,7 +365,9 @@ def verify_capture(directory: Path, house_path: Path, expected_provenance: dict)
                     instances=instances,
                     rgb_sha256=public_camera.rgb_sha256,
                     depth_sha256=public_camera.depth_sha256,
+                    decision_time=command.decision_time.isoformat(),
                     capture_time=public_camera.capture_time.isoformat(),
+                    received_at=delivery.received_at.isoformat(),
                 )
             )
     rows, differences = [], []

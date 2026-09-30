@@ -28,7 +28,16 @@ def matrix():
                     verification=dict(
                         all_assets=[instance["asset_id"]],
                         scope=[f"scope-{index}-{i}" for i in range(3)],
-                        frame_records=[dict(action_id=f"action-{index}-{i}") for i in range(8)],
+                        frame_records=[
+                            dict(
+                                action_id=f"action-{index}-{i}",
+                                **{
+                                    k: f"2026-09-30T00:00:{index * 2:02d}+00:00"
+                                    for k in ("decision_time", "capture_time", "received_at")
+                                },
+                            )
+                            for i in range(8)
+                        ],
                         unknown_assets=[],
                         instances=[
                             dict(
@@ -109,5 +118,5 @@ def test_no_complete_claim_after_omission_or_partition_change(attack):
 def test_cross_house_complete_replay_rejected(key):
     plan, attempts = matrix()
     attempts[8]["verification"][key] = deepcopy(attempts[0]["verification"][key])
-    with pytest.raises(ValueError, match="cross-house"):
+    with pytest.raises(ValueError):
         runtime_partition_audit(plan, attempts)

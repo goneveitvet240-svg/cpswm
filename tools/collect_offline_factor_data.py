@@ -182,6 +182,22 @@ def runtime_partition_audit(plan, attempts):
     )
     seen_scope_ids, seen_action_ids = set(), set()
     for row in accepted:
+        start, finish = (datetime.fromisoformat(row[k]) for k in ("started_at", "finished_at"))
+        previous = start
+        for frame in row["verification"]["frame_records"]:
+            decision, capture, received = (
+                datetime.fromisoformat(frame[k])
+                for k in ("decision_time", "capture_time", "received_at")
+            )
+            if (
+                any(
+                    t.tzinfo is None or t.utcoffset().total_seconds() != 0
+                    for t in (decision, capture, received)
+                )
+                or not start <= previous <= decision <= capture <= received <= finish
+            ):
+                raise ValueError("frame times differ from owning attempt state interval")
+            previous = received
         scope_ids = row["verification"]["scope"]
         action_ids = [f["action_id"] for f in row["verification"]["frame_records"]]
         if (

@@ -1,3 +1,15 @@
+# A：位置观测开发与受控原生消费已完成（2026-10-01 04:32）
+
+分支codex/pc-a-soft-position-factor-20261001，base PR77 head8623e7890594fce2b3c872bd2484b30138a9f408；实际源码1bd6c204d349024196c23df12cca61dbcea91e6c，895 Python。174项最终开发回归、新R1 68项、新R2 35项不同测试通过。早期493观测似然完整替换缺陷、379显示下溢后log(0)、首次171组合helper误拒绝均保留且阻断原版，不用后续通过抹去。最终保护保留完整raw重算/父链/core锚及loaded code检查，增加原始log权重继续支持。
+
+真实12屋96帧四模型拟合；run324.36s/fresh326.64s exit0、302输出逐字节一致，独立像素几何/监督/残差/指标/高斯更新复核通过。2004train/1664validation监督seed，55/96无监督帧保留。验证RMSE(m)：soft pivot .674738→.615581；soft AABB .513540→.523058；uniform pivot .833717→.785566；uniform AABB .712308→.711919。去bias有改善也有退化，两参考并列，不选正式参考/声称校准；需裸seed基线、自然关联与任务效果。
+
+[报告](../reviews/pc_a/soft_position_factor_2026-10-01/REPORT.md)、[交付](../reviews/pc_a/soft_position_factor_2026-10-01/DELIVERY.md)。完整原件9295文件/3713960160bytes，压缩427706204bytes，SHA256 fa7620a0b1ba5f522db4fdf10d8e1778fcf83adb7608b5facc402984b808174f；全部读回，日志/失败/模型/DB保留。case ledger pin9b9ed2d9208c1907d8295d5edc5aeb2f48af7b9b3625108b9642430a06780efc。A辅助非B独立/全仓CI；真实四模型仅进入数值诊断，Native消费/撤回恢复仍是受控像素/模型测试，不能合称真实模型已进Native。
+
+下一独立分支codex/pc-a-archive-native-bridge-20261001已从通过双审源码隔离开工：实际归档/四模型Native桥接、重复/撤回/SQLite恢复，保留原raw字节、合成语义关联明示。尚未冻结双审/实数据验收。逐raw观测事务、自然I、朝向和行动收益继续开放。原分类对照/主动澄清及完整H/R/I/C/Z/r/V、三RB块、七算子保持；原树与STATUS_B不改。交付前fetch确认集成19ddf26830348a2f0b33f0af54d6ba702c5cfb1c、B fd4ca6ef5e81c90d7cf7987b42c0b2810d8a810a未变。
+
+---
+
 # 位置因子第二次冻结：完整历史检查通过，数值继续路径阻断（2026-10-01 03:15）
 
 实际源码 `37981c3c44475b0bcbeff3379dcf90be288c49c9`，894份Python。修复完整raw数值替换后，最终兼容97项、新R1的49项及受控CLI完整伪造拒绝通过；新R2三条完整历史重签与32项恢复通过，但追加合法数值压力失败，当前版本仍不能通过推进门槛。真实96帧位置实验尚未启动。

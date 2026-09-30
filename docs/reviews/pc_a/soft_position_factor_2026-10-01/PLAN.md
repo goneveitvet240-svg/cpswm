@@ -55,3 +55,8 @@
 受保护profile由owner配置固定；缺proof、删catalogue、改profile/未来cutoff不能降级为只查q。当前、历史、replay和SQLite路径均复用深层核验。独立新进程测试必须读原持久化configuration/models，不能重新随机生成另一个rawpacket后声称恢复失败。helper实际原文件pin在已锚定的consumer中核对，loaded函数与源代码也核对；这是有界本机实现完整性，不是任意Python内存攻击隔离。
 
 既有未启用该profile的显式fixture保留原合同；本修复不证明任意legacy候选模型的自然likelihood。位置模型科学定义、两参考/两估计器、96帧固定分区、未知先验与所有公开采样规则保持。新相机结果独立于semantic source的事务/replay仍是下一轮，不能把本次owner原件登记误写为多capture实时更新已完成。
+
+
+## 下一轮只读输入准备（不算本轮Native实数据运行）
+
+公开选择协议已固定并核对：frame ordinal→candidate(method,id)→canonical 8×8 pixel顺序的首个public-valid seed；原第000帧SSDLite候选de8a15ab-6a24-503c-87e3-f3dbd7646311、seed[21,33]，完整64点公开有效。此框很宽，其几何读出仍是表面代表点，不能由框或seed赋自然身份/对象中心。原raw字节、scope/时间/UUID/位姿/回执不修改；后续受控语义时间由原delivery与三通道capture/arrival最大值+1秒确定。外pin与原件清单见ARCHIVE_BRIDGE_PUBLIC_SELECTION_PREPARATION.json（SHA256 0d1a0e2241acb0e41fd93da1896288fc217551162d651ae16ef1b88e893f1538）。未用私有label、检测类别或分数选择，未载入模型/执行Native；此准备不替代下一轮源码冻结、两审、完整soft neighborhood对应和实际执行。

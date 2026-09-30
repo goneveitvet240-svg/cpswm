@@ -1,5 +1,7 @@
 # 固定离线前端诊断交付
 
+已推送并以[草稿PR74](https://github.com/goneveitvet240-svg/cpswm/pull/74)叠加PR73交接，未合并。文档/原件交付62c98fb87cc28b6fe7640909c0df24ebc218c7d3；实际双审/运行源码3babc6d1557b4fe54abc6c8ac1f6054cdeb03e57，后续交付未改生产/测试/工具/依赖字节。
+
 实际双审与四项实归档运行源码：`3babc6d1557b4fe54abc6c8ac1f6054cdeb03e57`。base / 父PR73：`5a2a963d7f3b9fc8c3084e0b50d1696b2a7314f2`。分支`codex/pc-a-offline-front-end-20260930`；后续交付提交只有文档与证据，生产/测试/工具/依赖字节保持。
 
 完整原件229文件、206306336字节；压缩14530311字节，全部成员已读回核对，无排除文件。压缩包SHA256：`19f379aefd42434e311bba00b5116fdc9f562f73982b67e280244bf038742177`。

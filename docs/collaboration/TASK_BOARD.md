@@ -1,5 +1,7 @@
 # A：固定96帧公开前端诊断交付（2026-09-30）
 
+已推送并以[草稿PR74](https://github.com/goneveitvet240-svg/cpswm/pull/74)叠加PR73交接，未合并。文档/原件交付62c98fb87cc28b6fe7640909c0df24ebc218c7d3；实际双审/运行源码3babc6d1557b4fe54abc6c8ac1f6054cdeb03e57，后续交付未改生产/测试/工具/依赖字节。
+
 分支codex/pc-a-offline-front-end-20260930；base为PR73 head 5a2a963d7f3b9fc8c3084e0b50d1696b2a7314f2，实际双审/实归档源码3babc6d1557b4fe54abc6c8ac1f6054cdeb03e57。新增两个诊断工具和两个测试；生产src、依赖、权重及原采集数据不改。869份源码摘要运行前后匹配。
 
 同一12屋96帧，Faster R-CNN与SSDLite各首次运行和新进程完整重推，四项exit0且结果一致。两轮顺序A辅助审查各231 passed，Ruff/格式通过，完整正路径与伪造原件保留。非B独立、非全仓CI；本轮没有新启动Unity。

@@ -1,0 +1,69 @@
+[
+  {
+    "name": "round1",
+    "command": [
+      "/private/tmp/cpswm-pc-a-camera-checkpoint-fixture-20260930/.venv/bin/python",
+      "-m",
+      "pytest",
+      "--no-cov",
+      "-rA",
+      "--junitxml",
+      "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/surface-factor-diagnostic-20260930/round1.xml",
+      "tests/test_surface_factor_diagnostic.py",
+      "tests/test_instance_correspondence.py",
+      "tests/test_unity_rgbd.py"
+    ],
+    "cwd": "/private/tmp/cpswm-pc-a-surface-factor-diagnostic-20260930",
+    "source": "4798bd67059eb96f2128a957cfd81d1b1f5d509f",
+    "exit_code": 0,
+    "seconds": 2.3973989486694336
+  },
+  {
+    "name": "round2",
+    "command": [
+      "/private/tmp/cpswm-pc-a-camera-checkpoint-fixture-20260930/.venv/bin/python",
+      "-m",
+      "pytest",
+      "--no-cov",
+      "-rA",
+      "--junitxml",
+      "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/surface-factor-diagnostic-20260930/round2.xml",
+      "tests/test_surface_factor_diagnostic.py",
+      "tests/test_owned_rgbd_support.py",
+      "tests/test_owned_visual_neural.py"
+    ],
+    "cwd": "/private/tmp/cpswm-pc-a-surface-factor-diagnostic-20260930",
+    "source": "4798bd67059eb96f2128a957cfd81d1b1f5d509f",
+    "exit_code": 0,
+    "seconds": 116.49743008613586
+  },
+  {
+    "name": "ruff",
+    "command": [
+      "/private/tmp/cpswm-pc-a-camera-checkpoint-fixture-20260930/.venv/bin/python",
+      "-m",
+      "ruff",
+      "check",
+      "tools/diagnose_surface_factors.py",
+      "tests/test_surface_factor_diagnostic.py"
+    ],
+    "cwd": "/private/tmp/cpswm-pc-a-surface-factor-diagnostic-20260930",
+    "source": "4798bd67059eb96f2128a957cfd81d1b1f5d509f",
+    "exit_code": 0
+  },
+  {
+    "name": "format",
+    "command": [
+      "/private/tmp/cpswm-pc-a-camera-checkpoint-fixture-20260930/.venv/bin/python",
+      "-m",
+      "ruff",
+      "format",
+      "--check",
+      "tools/diagnose_surface_factors.py",
+      "tests/test_surface_factor_diagnostic.py"
+    ],
+    "cwd": "/private/tmp/cpswm-pc-a-surface-factor-diagnostic-20260930",
+    "source": "4798bd67059eb96f2128a957cfd81d1b1f5d509f",
+    "exit_code": 0
+  }
+]

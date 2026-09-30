@@ -1,0 +1,152 @@
+[
+  {
+    "case": "case1",
+    "relative_history": "rgbd-camera-geometry-20260930/attempt01/fasterrcnn-north-rgbd_self_pose",
+    "input_sha256": "062b86a4f76c2ece70f1eba0346bd5c0c7fe851a6e516fe92579efd46a8283db",
+    "input_files": 79,
+    "original_source": "0757ca2d29b710cf9d1d5b6c8594273902572caa72ca9836bd6a3f435c9e67b6",
+    "command": [
+      "/private/tmp/cpswm-pc-a-camera-checkpoint-fixture-20260930/.venv/bin/python",
+      "tools/diagnose_surface_factors.py",
+      "--history",
+      "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/rgbd-camera-geometry-20260930/attempt01/fasterrcnn-north-rgbd_self_pose",
+      "--output",
+      "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/surface-factor-diagnostic-20260930/case1",
+      "--weights",
+      "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/models/torchvision/fasterrcnn_resnet50_fpn_v2_coco-dd69338a.pth",
+      "--input-sha256",
+      "062b86a4f76c2ece70f1eba0346bd5c0c7fe851a6e516fe92579efd46a8283db"
+    ],
+    "exit_code": 0,
+    "seconds": 8.576786994934082,
+    "status": "COMPLETE",
+    "summary": {
+      "frames": 3,
+      "unique_rgb": 2,
+      "unique_geometry_inputs": 2,
+      "candidates": 10,
+      "samples": 30,
+      "target_visible_frames": 2
+    }
+  },
+  {
+    "case": "case2",
+    "relative_history": "owned-visual-neural-20260930/attempt02/rgbd-semantic-control",
+    "input_sha256": "81fa59a7a93e2dd5cdb5a1b069b39de273bef86ced1e219960bc8dc81d39deac",
+    "input_files": 79,
+    "original_source": "6da35c250fb43fd8294e199fc44379a539294da0605e34b990b37fe6099f3065",
+    "command": [
+      "/private/tmp/cpswm-pc-a-camera-checkpoint-fixture-20260930/.venv/bin/python",
+      "tools/diagnose_surface_factors.py",
+      "--history",
+      "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/owned-visual-neural-20260930/attempt02/rgbd-semantic-control",
+      "--output",
+      "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/surface-factor-diagnostic-20260930/case2",
+      "--weights",
+      "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/models/torchvision/fasterrcnn_resnet50_fpn_v2_coco-dd69338a.pth",
+      "--input-sha256",
+      "81fa59a7a93e2dd5cdb5a1b069b39de273bef86ced1e219960bc8dc81d39deac"
+    ],
+    "exit_code": 0,
+    "seconds": 8.397380113601685,
+    "status": "COMPLETE",
+    "summary": {
+      "frames": 3,
+      "unique_rgb": 2,
+      "unique_geometry_inputs": 2,
+      "candidates": 10,
+      "samples": 30,
+      "target_visible_frames": 2
+    }
+  },
+  {
+    "case": "case3",
+    "relative_history": "owned-visual-neural-20260930/attempt02/rgbd-visual-neural",
+    "input_sha256": "d9523d93814d3d7cf270dedbc2cd33655772ea2b76420d508f01ccc6cb5472a5",
+    "input_files": 79,
+    "original_source": "6da35c250fb43fd8294e199fc44379a539294da0605e34b990b37fe6099f3065",
+    "command": [
+      "/private/tmp/cpswm-pc-a-camera-checkpoint-fixture-20260930/.venv/bin/python",
+      "tools/diagnose_surface_factors.py",
+      "--history",
+      "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/owned-visual-neural-20260930/attempt02/rgbd-visual-neural",
+      "--output",
+      "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/surface-factor-diagnostic-20260930/case3",
+      "--weights",
+      "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/models/torchvision/fasterrcnn_resnet50_fpn_v2_coco-dd69338a.pth",
+      "--input-sha256",
+      "d9523d93814d3d7cf270dedbc2cd33655772ea2b76420d508f01ccc6cb5472a5"
+    ],
+    "exit_code": 0,
+    "seconds": 8.31951904296875,
+    "status": "COMPLETE",
+    "summary": {
+      "frames": 3,
+      "unique_rgb": 2,
+      "unique_geometry_inputs": 2,
+      "candidates": 10,
+      "samples": 30,
+      "target_visible_frames": 2
+    }
+  },
+  {
+    "case": "case4",
+    "relative_history": "portable-checkpoints-20260930/attempt01/rgbd-visual-neural",
+    "input_sha256": "b9ad6fe4dfa07016bc4beccaf64deffbaa3061d43c0e3e565878cacb69bd13ba",
+    "input_files": 72,
+    "original_source": "0f748398dfdad7cd0ffb0028d0456b03c51fc4a125e07d0a18c309975beb5dee",
+    "command": [
+      "/private/tmp/cpswm-pc-a-camera-checkpoint-fixture-20260930/.venv/bin/python",
+      "tools/diagnose_surface_factors.py",
+      "--history",
+      "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/portable-checkpoints-20260930/attempt01/rgbd-visual-neural",
+      "--output",
+      "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/surface-factor-diagnostic-20260930/case4",
+      "--weights",
+      "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/models/torchvision/fasterrcnn_resnet50_fpn_v2_coco-dd69338a.pth",
+      "--input-sha256",
+      "b9ad6fe4dfa07016bc4beccaf64deffbaa3061d43c0e3e565878cacb69bd13ba"
+    ],
+    "exit_code": 0,
+    "seconds": 6.860971927642822,
+    "status": "COMPLETE",
+    "summary": {
+      "frames": 2,
+      "unique_rgb": 1,
+      "unique_geometry_inputs": 1,
+      "candidates": 10,
+      "samples": 30,
+      "target_visible_frames": 2
+    }
+  },
+  {
+    "case": "case5",
+    "relative_history": "ci-action-report-20260930/attempt02/rgbd-visual-neural",
+    "input_sha256": "bf7d19838a535f2a31df3a6405ac0f2d5ddad2838a476d2380b02ea55d125697",
+    "input_files": 79,
+    "original_source": "c070e8dbb731d891018b5d407d102bcb7fc8e269968e59fb9b0eaf59ae6ca053",
+    "command": [
+      "/private/tmp/cpswm-pc-a-camera-checkpoint-fixture-20260930/.venv/bin/python",
+      "tools/diagnose_surface_factors.py",
+      "--history",
+      "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/ci-action-report-20260930/attempt02/rgbd-visual-neural",
+      "--output",
+      "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/surface-factor-diagnostic-20260930/case5",
+      "--weights",
+      "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/models/torchvision/fasterrcnn_resnet50_fpn_v2_coco-dd69338a.pth",
+      "--input-sha256",
+      "bf7d19838a535f2a31df3a6405ac0f2d5ddad2838a476d2380b02ea55d125697"
+    ],
+    "exit_code": 0,
+    "seconds": 8.250259160995483,
+    "status": "COMPLETE",
+    "summary": {
+      "frames": 3,
+      "unique_rgb": 2,
+      "unique_geometry_inputs": 2,
+      "candidates": 10,
+      "samples": 30,
+      "target_visible_frames": 2
+    }
+  }
+]

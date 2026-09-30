@@ -1,3 +1,13 @@
+# 位置观测因子第二轮审核发现阻断，正在修复（2026-10-01 02:09）
+
+实际被审核源码493e05720f066c5db7173502d03b245bf74b6d43（891份Python）；首轮通过后，第二轮实际发现完整观测似然和未决aggregate自洽替换仍被原consumer接受，导致后验改变。728项冻结前回归不覆盖此缺陷，当前SHA不通过推进门槛；真实96帧新实验尚未启动。
+
+[失败审核与数值后果](../reviews/pc_a/soft_position_factor_2026-10-01/ADVERSARIAL_REVIEW_2_ATTEMPT_1.md)。原packet、配置和模型绑定不变，known概率0.097778可被错误发布成0.444687；完整aggregate替换也被接受。修复须在consumer重算完整观测包并使用真实父链，而非只验证q或增加自签摘要。缺少验证材料不能降级为旧路径。
+
+跨进程恢复的初次失败已定位为测试重新生成配置；使用原持久化配置/模型的独立进程复核exit0，view/state/workspace/ledger一致、重复不增量、下一neutral步骤保留统计。此合法路径不能抵消观测因子的阻断缺陷。完整原件保留output/soft-position-factor-20261001，修复后新SHA重新做顺序两轮审核，再进入原固定实数据run/fresh。当前仅本机修复进行中，非B独立/非统一验收，六小时主线继续。
+
+---
+
 # A：软表面位置开发因子开工（2026-10-01）
 
 分支codex/pc-a-soft-position-factor-20261001，base/开工源码为PR77 head 8623e7890594fce2b3c872bd2484b30138a9f408。开工fetch成功：集成19ddf26830348a2f0b33f0af54d6ba702c5cfb1c、B fd4ca6ef5e81c90d7cf7987b42c0b2810d8a810a未变。旧包/用户工作树保留，STATUS_B不改。

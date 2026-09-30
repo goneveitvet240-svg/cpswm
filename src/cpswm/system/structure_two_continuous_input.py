@@ -857,6 +857,7 @@ class ContinuousEvidenceInput:
                 visible_prefix=self.visible_prefix(cutoff=cutoff),
                 cutoff=cutoff,
                 visual_source=self._native_visual_source(cutoff),
+                previous_weight_evidence=workspace.previous_weight_evidence(workspace.batch),
             )
             core._register_native_raw_context(context, authority=self._raw_candidate_authority)
 
@@ -927,6 +928,9 @@ class ContinuousEvidenceInput:
                         visible_prefix=self.visible_prefix(cutoff=self._last_cutoff),
                         cutoff=self._last_cutoff,
                         visual_source=self._native_visual_source(self._last_cutoff),
+                        previous_weight_evidence=workspace.previous_weight_evidence(workspace.batch)
+                        if workspace.raw_candidate_profile is not None
+                        else None,
                     )
                 )
                 context_hash = context.content_sha256
@@ -1041,6 +1045,11 @@ class ContinuousEvidenceInput:
                             visible_prefix=self.visible_prefix(cutoff=cutoff),
                             cutoff=cutoff,
                             visual_source=self._native_visual_source(cutoff),
+                            previous_weight_evidence=workspace.previous_weight_evidence(
+                                workspace.batch
+                            )
+                            if workspace.raw_candidate_profile is not None
+                            else None,
                         )
                     )
                     expected = context.content_sha256

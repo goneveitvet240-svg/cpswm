@@ -46,6 +46,9 @@ def profile_for(producer):
     return dict(
         profile="controlled-position-raw@1",
         verifier_source=sha256(Path(__file__).read_bytes()).hexdigest(),
+        weight_source=sha256(
+            Path(__file__).with_name("structure_two_particle_workspace.py").read_bytes()
+        ).hexdigest(),
         joint_binding=producer.binding_sha256,
         candidate_binding=candidate.binding_sha256,
         implementation=producer_implementation_binding(candidate),
@@ -70,6 +73,7 @@ def reconstruct(profile):
         != {
             "profile",
             "verifier_source",
+            "weight_source",
             "joint_binding",
             "candidate_binding",
             "implementation",
@@ -80,6 +84,13 @@ def reconstruct(profile):
         raise ValueError("unrecognized configured raw candidate profile")
     if profile["verifier_source"] != sha256(Path(__file__).read_bytes()).hexdigest():
         raise ValueError("raw verifier source differs from owner configuration")
+    if (
+        profile["weight_source"]
+        != sha256(
+            Path(__file__).with_name("structure_two_particle_workspace.py").read_bytes()
+        ).hexdigest()
+    ):
+        raise ValueError("raw weight source differs from owner configuration")
     result = ControlledPositionProducer(**deepcopy(profile["arguments"]))
     if (
         result.binding_sha256 != profile["candidate_binding"]

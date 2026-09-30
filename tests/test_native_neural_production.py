@@ -63,6 +63,9 @@ def context_for(stream, when):
         core._hybrid_loop.ledger.export_state().manifest.head_hash,
         stream.visible_prefix(cutoff=when),
         when,
+        previous_weight_evidence=workspace.previous_weight_evidence(workspace.batch)
+        if workspace.raw_candidate_profile is not None
+        else None,
     )
 
 

@@ -23,6 +23,7 @@ from cpswm.system.structure_two_particle_workspace import (
     ConditionalAnalyticState,
     NativeParticleRecord,
     NativePosteriorSource,
+    NativePreviousWeightEvidence,
     native_content_sha256,
 )
 
@@ -39,6 +40,7 @@ class NativeJointContext:
     visible_prefix: tuple[RawModalityObservation, ...]
     cutoff: datetime
     visual_source: NativeVisualSource | None = None
+    previous_weight_evidence: NativePreviousWeightEvidence | None = None
 
     @property
     def content_sha256(self) -> str:
@@ -59,6 +61,11 @@ class NativeJointContext:
                 ),
                 self.cutoff,
                 *((self.visual_source,) if self.visual_source is not None else ()),
+                *(
+                    (self.previous_weight_evidence,)
+                    if self.previous_weight_evidence is not None
+                    else ()
+                ),
             )
         )
 

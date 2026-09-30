@@ -10,7 +10,8 @@ from __future__ import annotations
 from collections.abc import Mapping
 from copy import deepcopy
 from dataclasses import asdict, dataclass, fields, is_dataclass
-from math import fsum, isclose, isfinite, log
+from fractions import Fraction
+from math import exp, fsum, isclose, isfinite, log
 from pathlib import Path
 from typing import Any, cast
 from uuid import UUID, uuid4
@@ -204,6 +205,63 @@ class NativePreparedInputBody:
     world_support_sha256: str
     validated_projections: dict[UUID, NativePosteriorSource]
     neural_evidence: Any = None
+
+
+@dataclass(frozen=True)
+class NativePreviousWeightEvidence:
+    """Previous accepted receipt terms, never reconstructed from display mass.
+
+    The owner extracts these from its actual input journal. Consumers independently
+    reconstruct the same evidence from the current/historical predecessor body.
+    Rejected particles have no finite log mass; accepted underflowed particles do.
+    """
+
+    receipts: tuple[ParticleRevisionReceipt, ...]
+    unresolved_log_weight: float
+
+    def batch(self) -> ParticleRevisionBatch:
+        if (
+            type(self.receipts) is not tuple
+            or any(type(row) is not ParticleRevisionReceipt for row in self.receipts)
+            or type(self.unresolved_log_weight) is not float
+        ):
+            raise ValueError("previous log weight evidence has invalid types")
+        return normalize_particle_revisions(
+            self.receipts, unresolved_log_weight=self.unresolved_log_weight
+        )
+
+    def normalized_logs(self) -> tuple[dict[UUID, float], float]:
+        self.batch()  # Validate complete receipt terms/support before arithmetic.
+        values = {
+            row.proposal.proposed_state.particle_id: row.exact_log_weight
+            for row in self.receipts
+            if row.accepted
+        }
+        unresolved = Fraction(self.unresolved_log_weight)
+        maximum = max((unresolved, *values.values()))
+
+        def mass(value: Fraction) -> float:
+            difference = value - maximum
+            try:
+                high = float(difference)
+            except OverflowError:
+                return 0.0  # Only a denominator term, never the retained log mass.
+            upper = exp(high)
+            return 0.0 if upper == 0.0 else upper * exp(float(difference - Fraction(high)))
+
+        denominator = fsum(mass(value) for value in (unresolved, *values.values()))
+        log_denominator = Fraction(log(denominator))
+
+        def normalized(value: Fraction) -> float:
+            try:
+                result = float(value - maximum - log_denominator)
+            except OverflowError as error:
+                raise ValueError("normalized particle log weight exceeds finite range") from error
+            if not isfinite(result):
+                raise ValueError("normalized particle log weight exceeds finite range")
+            return result
+
+        return {key: normalized(value) for key, value in values.items()}, normalized(unresolved)
 
 
 class NativeParticleWorkspace:
@@ -480,9 +538,10 @@ class NativeParticleWorkspace:
         import hashlib
         import importlib
         import inspect
+        import marshal
         from types import CodeType
 
-        from cpswm.system.structure_two_execution import _code_object_sha256, _source_code_objects
+        from cpswm.system.structure_two_execution import _code_object_payload, _source_code_objects
 
         if native_content_sha256(self.raw_candidate_profile) != self.raw_candidate_profile_sha256:
             raise ValueError("configured raw candidate profile was changed or removed")
@@ -493,10 +552,17 @@ class NativeParticleWorkspace:
                 != self.raw_candidate_profile["verifier_source"]
             ):
                 raise ValueError("raw verifier source differs from owner configuration")
+            if (
+                hashlib.sha256(Path(__file__).read_bytes()).hexdigest()
+                != self.raw_candidate_profile["weight_source"]
+            ):
+                raise ValueError("raw weight source differs from owner configuration")
         own_path = Path(__file__).with_name("native_neural_production.py")
         if hashlib.sha256(own_path.read_bytes()).hexdigest() != self.neural_source_sha256:
             raise ValueError("native neural verifier source differs from configured implementation")
         for name in (
+            "cpswm.system.structure_two_particle_workspace",
+            "cpswm.system.native_joint_production",
             "cpswm.system.native_neural_production",
             "cpswm.system.native_raw_verification",
             "cpswm.system.controlled_position_producer",
@@ -515,7 +581,9 @@ class NativeParticleWorkspace:
             key = (str(path), hashlib.sha256(data).hexdigest())
             if key not in _NEURAL_COMPILED_SOURCES:
                 _NEURAL_COMPILED_SOURCES[key] = {
-                    code.co_qualname: _code_object_sha256(code)
+                    code.co_qualname: hashlib.sha256(
+                        marshal.dumps(_code_object_payload(code), 2)
+                    ).hexdigest()
                     for code in _source_code_objects(path, data)
                     if code.co_flags & inspect.CO_NEWLOCALS and "<" not in code.co_qualname
                 }
@@ -536,7 +604,10 @@ class NativeParticleWorkspace:
                 if (
                     not isinstance(code, CodeType)
                     or getattr(function, "__globals__", None) is not vars(module)
-                    or expected != _code_object_sha256(code)
+                    # v2 encodes all fields/types without object-reference flags,
+                    # which can change while a live checker scans its own code.
+                    or expected
+                    != hashlib.sha256(marshal.dumps(_code_object_payload(code), 2)).hexdigest()
                 ):
                     raise ValueError("native neural loaded implementation changed: " + qualname)
             # Also bind the imported objects actually called by these helpers.
@@ -554,6 +625,26 @@ class NativeParticleWorkspace:
                         raise ValueError(
                             "native neural imported implementation changed: " + local_name
                         )
+
+    def previous_weight_evidence(
+        self, batch: ParticleRevisionBatch | None
+    ) -> NativePreviousWeightEvidence | None:
+        """Extract a selected actual predecessor; do not recurse into validation.
+
+        Current owner calls follow its full anchor checks; historical consumers
+        select this batch by the real parent chain and validate the complete graph.
+        """
+        if batch is None:
+            return None
+        body = self.input_bodies.get(batch.evidence_cluster_id)
+        if type(body) is not NativePreparedInputBody or native_content_sha256(
+            body
+        ) != self.input_journal.get(batch.evidence_cluster_id):
+            raise ValueError("previous log weight input body is missing or changed")
+        evidence = NativePreviousWeightEvidence(body.receipts, float(body.unresolved_log_weight))
+        if evidence.batch() != batch:
+            raise ValueError("previous log weight evidence differs from its actual batch")
+        return deepcopy(evidence)
 
     def _validated_input_body(self, cluster: UUID) -> NativePreparedInputBody:
         body = self.input_bodies.get(cluster)
@@ -839,11 +930,8 @@ class NativeParticleWorkspace:
                 self._validate_record_binding(record, expected_particle_id=weight.particle_id)
             self._validate_current_batch()
             return self.batch
-        weights = (
-            {}
-            if self.batch is None
-            else {p.particle_id: p.posterior_probability for p in self.batch.particle_weights}
-        )
+        prior_evidence = self.previous_weight_evidence(self.batch)
+        weights = {} if prior_evidence is None else prior_evidence.normalized_logs()[0]
         records = dict(self.records)
         for receipt in receipts:
             proposal, state = receipt.proposal, receipt.proposal.proposed_state
@@ -932,11 +1020,11 @@ class NativeParticleWorkspace:
                 else None
             )
             if state.parent_particle_id is not None:
-                if parent is None or weights.get(state.parent_particle_id, 0.0) <= 0.0:
+                if parent is None or state.parent_particle_id not in weights:
                     raise ValueError("missing or inactive particle parent")
                 if state.parent_revision_id != parent.state.revision_id or not isclose(
                     receipt.prior_log_weight,
-                    log(weights[state.parent_particle_id]),
+                    weights[state.parent_particle_id],
                     rel_tol=0.0,
                     abs_tol=1e-12,
                 ):
@@ -1001,8 +1089,10 @@ class NativeParticleWorkspace:
         ):
             raise ValueError("prepared candidates must preserve source unknown actor support")
         batch = normalize_particle_revisions(receipts, unresolved_log_weight=unresolved_log_weight)
-        if batch.unresolved_probability <= 0.0:
-            raise ValueError("prepared candidate normalization lost unresolved mass")
+        # Positive mathematical mass is represented by the finite original log,
+        # even when its display probability underflows. Validate representable
+        # continuation logs without rounding through exp() and log(0).
+        NativePreviousWeightEvidence(receipts, float(unresolved_log_weight)).normalized_logs()
         _location_marginal(batch, records)
         # No mutation precedes validation and actual importance weighting.
         self.records, self.batch, self.receipts, self.input_journal, self.input_bodies = (

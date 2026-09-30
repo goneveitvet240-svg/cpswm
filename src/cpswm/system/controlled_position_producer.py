@@ -9,6 +9,7 @@ metre density N(0, 100 I3). They are not empirically calibrated clutter models.
 from __future__ import annotations
 
 import inspect
+import marshal
 from copy import deepcopy
 from hashlib import sha256
 from math import isfinite, log, pi
@@ -34,7 +35,7 @@ from cpswm.system.structure_two_conditional_updates import (
     ConditionalMeasurement,
     rebuild_conditional_state,
 )
-from cpswm.system.structure_two_execution import _code_object_sha256
+from cpswm.system.structure_two_execution import _code_object_payload
 from cpswm.system.structure_two_particle_workspace import (
     ConditionalAnalyticState,
     native_content_sha256,
@@ -52,6 +53,15 @@ def _require(value, message):
 
 def _uuid(value):
     return type(value) is str and str(UUID(value)) == value
+
+
+def _helper_code_sha256(code):
+    """Full type-exact code identity without execution/reference-count flags.
+
+    This encoding is local to this declared controlled producer. It preserves
+    every existing code-payload field; generic checkpoint protocols are unchanged.
+    """
+    return sha256(marshal.dumps(_code_object_payload(code), 2)).hexdigest()
 
 
 def packet_binding(observations):
@@ -86,7 +96,7 @@ def implementation_binding():
         functions = []
         for name, value in sorted(vars(module).items()):
             if inspect.isfunction(value):
-                functions.append((name, _code_object_sha256(value.__code__)))
+                functions.append((name, _helper_code_sha256(value.__code__)))
             elif inspect.isclass(value) and value.__module__ == module.__name__:
                 for key, descriptor in sorted(vars(value).items()):
                     bodies = (
@@ -101,7 +111,7 @@ def implementation_binding():
                     for index, body in enumerate(bodies):
                         if inspect.isfunction(body):
                             functions.append(
-                                (f"{name}.{key}.{index}", _code_object_sha256(body.__code__))
+                                (f"{name}.{key}.{index}", _helper_code_sha256(body.__code__))
                             )
         members.append(
             (module.__name__, sha256(Path(module.__file__).read_bytes()).hexdigest(), functions)
@@ -217,7 +227,7 @@ class ControlledPositionProducer:
                 self.position_pin,
                 current_implementation,
                 tuple(
-                    (name, _code_object_sha256(value.__code__))
+                    (name, _helper_code_sha256(value.__code__))
                     for name, value in sorted(globals().items())
                     if inspect.isfunction(value) and value.__module__ == __name__
                 ),
@@ -370,19 +380,19 @@ class ControlledPositionProducer:
         _require(not active or not self.consumed_keys, "bound raw observation already consumed")
         observation = self._public(context) if active else None
         cluster = content_uuid(FORMAT + ":cluster", (source.source_id, binding))
-        weights = (
-            {}
-            if context.previous_batch is None
-            else {
-                row.particle_id: row.posterior_probability
-                for row in context.previous_batch.particle_weights
-            }
-        )
-        unresolved = (
-            0.0
-            if context.previous_batch is None
-            else log(context.previous_batch.unresolved_probability)
-        )
+        from cpswm.system.structure_two_particle_workspace import NativePreviousWeightEvidence
+
+        evidence = context.previous_weight_evidence
+        if context.previous_batch is None:
+            _require(evidence is None, "initial raw context cannot invent previous weights")
+            weights, unresolved = {}, 0.0
+        else:
+            _require(
+                type(evidence) is NativePreviousWeightEvidence
+                and evidence.batch() == context.previous_batch,
+                "raw context requires actual previous log weight evidence",
+            )
+            weights, unresolved = evidence.normalized_logs()
         unknown_logpdf = (
             0.0
             if observation is None
@@ -500,9 +510,7 @@ class ControlledPositionProducer:
                         proposer_model_version="explicit-prepared-candidates@1",
                         proposer_code_version=FORMAT,
                     ),
-                    prior_log_weight=0.0
-                    if parent is None
-                    else log(weights[parent.state.particle_id]),
+                    prior_log_weight=0.0 if parent is None else weights[parent.state.particle_id],
                     transition_log_probability=0.0,
                     observation_log_likelihood=logpdf,
                     constraints=tuple(

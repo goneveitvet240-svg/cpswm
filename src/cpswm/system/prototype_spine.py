@@ -109,7 +109,6 @@ from cpswm.system.structure_two_execution import (
     TracePhaseName,
     TraceSink,
     UnsupportedStructureTwoExecutionPlan,
-    _code_object_sha256,
     _restore_runtime_rlock_depth,
     _runtime_rlock_depth,
     bind_runtime_callable,
@@ -159,6 +158,7 @@ _PARTICLE_WORKSPACE_BOUND_METHOD_NAMES: Final = (
     "_validated_input_body",
     "_validate_record_binding",
     "_validate_neural_implementation",
+    "previous_weight_evidence",
 )
 
 
@@ -200,10 +200,21 @@ def _bootstrap_particle_workspace_bindings() -> tuple[
             raise RuntimeError(f"native particle workspace method has no code: {method_name}")
         source_paths.add(Path(code.co_filename).resolve())
         source_digests.add(binding.implementation_source_sha256)
-        anchors.append((method_name, target, binding.loaded_callable_code_sha256))
+        anchors.append((method_name, target, _particle_workspace_code_sha256(code)))
     if len(source_paths) != 1 or len(source_digests) != 1:
         raise RuntimeError("native particle workspace methods do not share one bound source")
     return source_paths.pop(), source_digests.pop(), tuple(anchors)
+
+
+def _particle_workspace_code_sha256(code: CodeType) -> str:
+    """Type-exact workspace code identity independent of live traceback refs.
+
+    Keep this local to the workspace anchors; existing execution/checkpoint
+    identities elsewhere retain their original encoding and protocol.
+    """
+    from cpswm.system.structure_two_execution import _code_object_payload
+
+    return hashlib.sha256(marshal.dumps(_code_object_payload(code), 2)).hexdigest()
 
 
 (
@@ -2931,6 +2942,12 @@ class CorePrototypeSpine:
             source = self._particle_workspace.posterior_sources.get(context.source.source_id)
             if source is None or source.body_sha256 != context.source.body_sha256:
                 raise ValueError("raw context source is not owned")
+            if (
+                context.previous_batch != self._particle_workspace.batch
+                or context.previous_weight_evidence
+                != self._particle_workspace.previous_weight_evidence(self._particle_workspace.batch)
+            ):
+                raise ValueError("raw context previous weights are not owned")
             key, digest = context.content_sha256, raw_context_digest(context)
             prior = self._particle_raw_context_anchors.get(key)
             if prior is not None and prior != digest:
@@ -3204,7 +3221,10 @@ class CorePrototypeSpine:
                 raise ValueError(
                     "native particle workspace callable binding was replaced: " + method_name
                 )
-            if not isinstance(code, CodeType) or _code_object_sha256(code) != expected_code_sha256:
+            if (
+                not isinstance(code, CodeType)
+                or _particle_workspace_code_sha256(code) != expected_code_sha256
+            ):
                 raise ValueError(
                     "native particle workspace loaded callable code changed: " + method_name
                 )

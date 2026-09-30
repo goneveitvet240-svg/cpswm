@@ -1,0 +1,844 @@
+"""Independent A-side arithmetic review of the frozen instance-affinity artifacts.
+
+No CPSWM imports, model fit, production prediction or production summarization.
+Run only after both real run and fresh verify have completed, using separately
+retained ledger and source pins. Only after verification it creates one JSON review.
+Previously exposed validation is development data, not independent acceptance.
+"""
+
+from __future__ import annotations
+
+import argparse
+import hashlib
+import io
+import itertools
+import json
+import math
+import subprocess
+from collections import Counter
+from pathlib import Path
+
+import numpy as np
+
+COLLECTION_PIN = "9791a946543b9158890324d3ff35a80ea04d51c9cabb6e09540f569abd903d47"
+FRONTEND_LEDGER_PIN = "517fc5b24afd80e4311d0de66dcfa6d113de6cd11763d61aeaaecd345740ccf6"
+METHODS = ("fasterrcnn", "ssdlite")
+REASONS = ("invalid_depth", "ambiguous_membership", "unmapped_pixel", "ineligible_instance")
+FEATURES = [
+    "abs_red_difference_div_255",
+    "abs_green_difference_div_255",
+    "abs_blue_difference_div_255",
+    "abs_u_difference_div_width",
+    "abs_v_difference_div_height",
+    "abs_rendered_depth_difference_m",
+    "abs_log_rendered_depth_difference",
+    "camera_world_point_distance_m",
+]
+CONFIG = dict(
+    grid_cells_per_axis=8,
+    solver="damped_newton",
+    iterations=30,
+    backtracking_steps=40,
+    l2_weights_only=0.01,
+    gradient_tolerance=1e-10,
+    armijo=1e-4,
+    constant_feature_scale=1.0,
+)
+
+
+def require(value, message):
+    if not value:
+        raise ValueError(message)
+
+
+def sha(raw):
+    return hashlib.sha256(raw).hexdigest()
+
+
+def normalize(value):
+    if type(value) is float and value == 0.0:
+        return 0.0
+    if type(value) is dict:
+        return {key: normalize(item) for key, item in value.items()}
+    if type(value) is list:
+        return [normalize(item) for item in value]
+    return value
+
+
+def content_digest(value):
+    return sha(
+        json.dumps(
+            normalize(value),
+            ensure_ascii=False,
+            sort_keys=True,
+            separators=(",", ":"),
+            allow_nan=False,
+        ).encode()
+    )
+
+
+def read_json(path):
+    def pairs(rows):
+        result = {}
+        for key, value in rows:
+            require(key not in result, f"duplicate JSON key in {path}: {key}")
+            result[key] = value
+        return result
+
+    def invalid(value):
+        raise ValueError(f"nonfinite JSON value in {path}: {value}")
+
+    return json.loads(path.read_bytes(), object_pairs_hook=pairs, parse_constant=invalid)
+
+
+def inventory(directory):
+    require(directory.is_dir() and not directory.is_symlink(), f"invalid directory: {directory}")
+    result = {}
+    for path in sorted(directory.rglob("*")):
+        require(not path.is_symlink(), f"symlink: {path}")
+        if path.is_file():
+            result[str(path.relative_to(directory))] = sha(path.read_bytes())
+    return result
+
+
+def flag(argv, name):
+    require(argv.count(name) == 1, f"missing/duplicate argument {name}")
+    return argv[argv.index(name) + 1]
+
+
+def close(actual, expected, message, *, atol=2e-12, rtol=2e-12):
+    require(np.shape(actual) == np.shape(expected), message + " shape")
+    require(np.allclose(actual, expected, atol=atol, rtol=rtol, equal_nan=True), message)
+
+
+def compare_json(actual, expected, prefix):
+    if type(expected) is dict:
+        require(type(actual) is dict and set(actual) == set(expected), prefix + " keys")
+        for key in expected:
+            compare_json(actual[key], expected[key], prefix + "." + key)
+    elif type(expected) is list:
+        require(type(actual) is list and len(actual) == len(expected), prefix + " length")
+        for index, (left, right) in enumerate(zip(actual, expected, strict=True)):
+            compare_json(left, right, prefix + f"[{index}]")
+    elif type(expected) is float:
+        require(type(actual) in (int, float) and math.isfinite(actual), prefix + " finite")
+        close(actual, expected, prefix)
+    else:
+        require(type(actual) is type(expected) and actual == expected, prefix + " differs")
+
+
+def legal_grid(box, width, height):
+    """Independent enumeration of legal pixel centres and the fixed 8x8 cells."""
+    x0, y0, x1, y1 = map(float, box)
+    require(all(math.isfinite(v) for v in (x0, y0, x1, y1)), "nonfinite public box")
+    require(0 <= x0 < x1 <= width and 0 <= y0 < y1 <= height, "public box outside image")
+    axes = []
+    for lower, upper, size in ((x0, x1, width), (y0, y1, height)):
+        legal = [index for index in range(size) if lower <= index + 0.5 < upper]
+        if not legal:
+            return []
+        chosen = set()
+        for cell in range(8):
+            proposed = math.floor(lower + (cell + 0.5) * (upper - lower) / 8)
+            chosen.add(min(legal[-1], max(legal[0], proposed)))
+        axes.append(sorted(chosen))
+    return sorted(itertools.product(*axes))
+
+
+def pairs_from_grid(points):
+    return [(*first, *second) for first, second in itertools.combinations(points, 2)]
+
+
+def reconstruct_features(rgb, depth, camera, pairs):
+    """Use camera-coordinate distances: rotation/translation preserve Euclidean norm."""
+    height, width = depth.shape
+    require(rgb.dtype == np.uint8 and rgb.shape == (height, width, 3), "raw RGB shape/type")
+    require(depth.dtype == np.float32, "raw depth dtype")
+    require((camera["width"], camera["height"]) == (width, height), "camera dimensions")
+    require(camera["depth_semantics"] == "Linear01Depth_times_far_minus_near", "depth semantics")
+    far, near = camera["far_plane_m"], camera["near_plane_m"]
+    require(0 < near < far and np.isfinite(depth).all(), "raw depth/clipping")
+    require(np.all((depth >= 0) & (depth <= far - near + 1e-5)), "raw depth range")
+    result = np.zeros((len(pairs), 8), dtype=np.float64)
+    if not len(pairs):
+        return result, np.zeros(0, dtype=bool)
+    u1, v1, u2, v2 = pairs.T
+    first, second = depth[v1, u1].astype(float), depth[v2, u2].astype(float)
+    valid = (first > 0) & (second > 0) & (first < far - near) & (second < far - near)
+    focal = height / (2 * math.tan(math.radians(camera["vertical_fov_degrees"]) / 2))
+    for index in np.flatnonzero(valid):
+        a, b = first[index], second[index]
+        za, zb = a * far / (far - near), b * far / (far - near)
+        pa = (
+            (u1[index] + 0.5 - width / 2) * za / focal,
+            (height / 2 - v1[index] - 0.5) * za / focal,
+            za,
+        )
+        pb = (
+            (u2[index] + 0.5 - width / 2) * zb / focal,
+            (height / 2 - v2[index] - 0.5) * zb / focal,
+            zb,
+        )
+        result[index] = [
+            *(abs(rgb[v1[index], u1[index]].astype(float) - rgb[v2[index], u2[index]]) / 255),
+            abs(int(u1[index]) - int(u2[index])) / width,
+            abs(int(v1[index]) - int(v2[index])) / height,
+            abs(a - b),
+            abs(math.log(a) - math.log(b)),
+            math.dist(pa, pb),
+        ]
+    return result, valid
+
+
+def array_digest(array):
+    return content_digest(
+        dict(
+            dtype=array.dtype.str,
+            shape=list(array.shape),
+            bytes_sha256=sha(np.ascontiguousarray(array).tobytes()),
+        )
+    )
+
+
+def independent_scores(features, valid, model):
+    result = np.full(len(features), np.nan)
+    z = (features[valid] - np.asarray(model["mean"])) / np.asarray(model["scale"])
+    logits = z @ np.asarray(model["weights"]) + model["bias"]
+    require(np.isfinite(logits).all(), "nonfinite recomputed logits")
+    values = np.empty(len(logits))
+    positive = logits >= 0
+    values[positive] = 1 / (1 + np.exp(-logits[positive]))
+    exponent = np.exp(logits[~positive])
+    values[~positive] = exponent / (1 + exponent)
+    result[valid] = values
+    return result
+
+
+def metrics(targets, predictions):
+    selected = targets != -1
+    y, p = targets[selected], predictions[selected]
+    require(np.isfinite(p).all() and ((p >= 0) & (p <= 1)).all(), "invalid labelled score")
+    if not len(y):
+        return dict(pairs=0, bce=None, brier=None)
+    losses, squares = [], []
+    for target, probability in zip(y.tolist(), p.tolist(), strict=True):
+        clipped = max(1e-12, min(1 - 1e-12, probability))
+        losses.append(-math.log(clipped) if target == 1 else -math.log1p(-clipped))
+        squares.append((probability - target) ** 2)
+    return dict(pairs=len(y), bce=math.fsum(losses) / len(y), brier=math.fsum(squares) / len(y))
+
+
+def aggregate(records, prevalence):
+    y = np.concatenate([r["targets"] for r in records])
+    p = np.concatenate([r["scores"] for r in records])
+    valid = np.concatenate([r["valid"] for r in records])
+    reasons = {key: sum(r["void_reasons"][key] for r in records) for key in REASONS}
+    return dict(
+        frames=len(records),
+        zero_candidate_frames=sum(not r["candidates"] for r in records),
+        raw_candidate_pairs=sum(len(c["pair_indices"]) for r in records for c in r["candidates"]),
+        unique_pairs=len(y),
+        public_valid_pairs=int(valid.sum()),
+        positive_pairs=int((y == 1).sum()),
+        negative_pairs=int((y == 0).sum()),
+        void_pairs=int((y == -1).sum()),
+        void_reasons=reasons,
+        model=metrics(y, p),
+        training_frequency_constant=metrics(y, np.where(valid, prevalence, np.nan)),
+    )
+
+
+def object_coverage(records):
+    groups = ("catalog", "eligible", "visible_eligible", "grid_eligible", "supervised_eligible")
+    result = {}
+    for group in groups:
+        identities = {(r["house"], identity) for r in records for identity in r[group]}
+        result[group + "_unique_instances"] = len(identities)
+        result[group + "_instance_frames"] = sum(len(r[group]) for r in records)
+    return result
+
+
+def read_frame(output, collection, ordinal, description, frontend_rows, audit):
+    house, event = ordinal // 8 + 1, ordinal % 8 + 4
+    prefix = f"frames/{ordinal:03d}"
+    require(
+        description["prefix"] == prefix and description["house_index"] == house,
+        "fixed frame order/house differs",
+    )
+    require(
+        description["sdk_index"] == event
+        and description["split"] == ("train" if house <= 8 else "validation"),
+        "fixed event/split differs",
+    )
+    folder = output / prefix
+    public = read_json(folder / "public.json")
+    supervision = read_json(folder / "supervision.json")
+    arrays = {
+        name: np.load(folder / (name + ".npy"), allow_pickle=False)
+        for name in ("features", "pairs", "valid", "targets", "scores")
+    }
+    x, pairs, valid, targets, scores = [
+        arrays[k] for k in ("features", "pairs", "valid", "targets", "scores")
+    ]
+    require(pairs.dtype == np.int64 and pairs.ndim == 2 and pairs.shape[1] == 4, "pair dtype/shape")
+    n = len(pairs)
+    require(
+        x.dtype == np.float64 and x.shape == (n, 8) and np.isfinite(x).all(), "feature dtype/shape"
+    )
+    require(valid.dtype == np.bool_ and valid.shape == (n,), "valid dtype/shape")
+    require(targets.dtype == np.int8 and targets.shape == (n,), "target dtype/shape")
+    require(scores.dtype == np.float64 and scores.shape == (n,), "score dtype/shape")
+    metadata, candidates = public["metadata"], public["candidates"]
+    action = description["action_id"]
+    require(metadata["action_id"] == supervision["action_id"] == action, "frame action mismatch")
+    camera = metadata["camera"]
+    require(
+        camera["action_id"] == metadata["command"]["action_id"] == action, "public action mismatch"
+    )
+    require(
+        metadata["feature_columns"] == 8
+        and metadata["instance_labels_used"] is False
+        and metadata["semantic_mapping"] is False,
+        "public feature authority differs",
+    )
+    require(
+        metadata["candidate_count"] == len(candidates) and metadata["pair_count"] == n,
+        "public feature count differs",
+    )
+    width, height = camera["width"], camera["height"]
+    expected_candidates, union = [], set()
+    for method in METHODS:
+        entry = frontend_rows[method][ordinal]
+        require(entry["command"] == metadata["command"], "paired source command differs")
+        require(
+            content_digest(entry) == metadata["sources"][method]["entry_sha256"],
+            "public source entry hash differs",
+        )
+        visual = entry["frame"]["frame"]
+        expected_source = dict(
+            entry_sha256=content_digest(entry),
+            decoder_binding=entry["decoder_binding"],
+            **{
+                key: visual[key]
+                for key in (
+                    "model_id",
+                    "weights_sha256",
+                    "torch_version",
+                    "torchvision_version",
+                    "minimum_score",
+                )
+            },
+        )
+        require(metadata["sources"][method] == expected_source, "public source metadata differs")
+        # Full camera field value matches upstream public source, including raw input hashes.
+        source_camera = entry["frame"]["geometry"]["camera"]
+        require(camera == source_camera, "camera differs from pinned public source")
+        for candidate in visual["candidates"]:
+            box = candidate["box_xyxy"]
+            points = legal_grid(box, width, height)
+            selected_pairs = pairs_from_grid(points)
+            union.update(selected_pairs)
+            pixel_count = sum(box[0] <= u + 0.5 < box[2] for u in range(width)) * sum(
+                box[1] <= v + 0.5 < box[3] for v in range(height)
+            )
+            expected_candidates.append(
+                dict(
+                    method=method,
+                    id=candidate["candidate_id"],
+                    box=box,
+                    pixel_count=len(points),
+                    box_pixel_count=pixel_count,
+                    _pairs=selected_pairs,
+                )
+            )
+    expected_pairs = np.asarray(sorted(union), dtype=np.int64).reshape((-1, 4))
+    require(np.array_equal(pairs, expected_pairs), "fixed public all-pair union differs")
+    lookup = {tuple(pair): index for index, pair in enumerate(pairs.tolist())}
+    for candidate in expected_candidates:
+        candidate["pair_indices"] = [lookup[pair] for pair in candidate.pop("_pairs")]
+    require(candidates == expected_candidates, "candidate provenance or pair indices differ")
+    private = collection / f"house-{house:02d}/unity-logs/evaluator_only"
+    rgb_raw = (private / f"sdk-events/{event:03d}-rgb.npy").read_bytes()
+    depth_raw = (private / f"sdk-events/{event:03d}-depth.npy").read_bytes()
+    require(
+        [sha(rgb_raw), sha(depth_raw)] == metadata["payload_sha256"][:2], "raw RGBD hash differs"
+    )
+    require(
+        sha(rgb_raw) == camera["rgb_sha256"] and sha(depth_raw) == camera["depth_sha256"],
+        "camera/raw RGB-D binding differs",
+    )
+    rgb, depth = (
+        np.load(io.BytesIO(rgb_raw), allow_pickle=False),
+        np.load(io.BytesIO(depth_raw), allow_pickle=False),
+    )
+    expected_x, expected_valid = reconstruct_features(rgb, depth, camera, pairs)
+    close(x, expected_x, "independent 8D public feature reconstruction", atol=2e-10, rtol=2e-10)
+    require(np.array_equal(valid, expected_valid), "independent raw depth validity differs")
+    require(np.all(x[~valid] == 0) and np.isnan(scores[~valid]).all(), "invalid rows not retained")
+    sdk = read_json(private / f"sdk-events/{event:03d}.json")
+    info = read_json(private / f"instances/{event:03d}.json")
+    require(sdk["owner"] == info["action_id"] == action, "original private event differs")
+    sdk_meta = sdk["metadata"]
+    require(
+        camera["position_m"] == [sdk_meta["cameraPosition"][k] for k in "xyz"]
+        and camera["yaw_degrees"] == sdk_meta["agent"]["rotation"]["y"]
+        and camera["pitch_degrees"] == sdk_meta["agent"]["cameraHorizon"]
+        and camera["vertical_fov_degrees"] == sdk_meta["fov"],
+        "raw camera values differ",
+    )
+    objects = {obj["objectId"]: obj for obj in sdk_meta["objects"]}
+    require(len(objects) == len(sdk_meta["objects"]), "duplicate original SDK instance")
+    house_audit = {row["object_id"]: row for row in audit if row["house_index"] == house}
+    require(set(objects) == set(house_audit), "final audit object coverage differs")
+    catalog = {row["object_id"]: row for row in info["catalog"]}
+    require(
+        len(catalog) == len(info["catalog"]) and set(catalog) == set(objects),
+        "catalog coverage differs",
+    )
+    saved_instances = {row["object_id"]: row for row in supervision["instances"]}
+    require(
+        len(saved_instances) == len(supervision["instances"])
+        and set(saved_instances) == set(objects),
+        "saved supervision catalog coverage differs",
+    )
+    point_list = sorted({tuple(point) for pair in pairs.tolist() for point in (pair[:2], pair[2:])})
+    memberships = [[] for _ in point_list]
+    visible = set()
+    with np.load(private / f"instances/{event:03d}-masks.npz", allow_pickle=False) as masks:
+        require(
+            set(masks.files) == {r["array_key"] for r in catalog.values()},
+            "original mask inventory",
+        )
+        for identity, row in catalog.items():
+            mask = masks[row["array_key"]]
+            require(
+                mask.dtype == np.bool_ and mask.shape == (height, width), "original mask dimensions"
+            )
+            audit_row = house_audit[identity]
+            require(
+                audit_row["split"] == description["split"]
+                and audit_row["eligible"] == (not audit_row["exclusion_reasons"]),
+                "audit eligibility/split",
+            )
+            saved = saved_instances[identity]
+            require(
+                saved["eligibility"] == audit_row
+                and saved["eligible"] == audit_row["eligible"]
+                and saved["exclusion_reasons"] == audit_row["exclusion_reasons"],
+                "saved eligibility differs",
+            )
+            require(
+                all(saved[key] == row[key] for key in row), "saved catalog source fields differ"
+            )
+            require(saved["pixels"] == int(mask.sum()), "saved mask count differs")
+            require(
+                row["object_type"] == objects[identity]["objectType"]
+                and row["asset_id"] == objects[identity].get("assetId"),
+                "catalog SDK attributes differ",
+            )
+            if audit_row["eligible"] and mask.any():
+                visible.add(identity)
+            for index, (u, v) in enumerate(point_list):
+                if mask[v, u]:
+                    memberships[index].append(identity)
+    expected_points = [
+        dict(
+            pixel_uv=list(point),
+            object_ids=sorted(members),
+            eligible_object_ids=sorted(obj for obj in members if house_audit[obj]["eligible"]),
+        )
+        for point, members in zip(point_list, memberships, strict=True)
+    ]
+    require(
+        supervision["point_members"] == expected_points,
+        "point members differ from original masks/audit",
+    )
+    point_lookup = {point: index for index, point in enumerate(point_list)}
+    joins = [
+        [point_lookup[tuple(pair[:2])], point_lookup[tuple(pair[2:])]] for pair in pairs.tolist()
+    ]
+    require(supervision["pair_point_indices"] == joins, "pair/point join differs")
+    require(supervision["void_reason_priority"] == list(REASONS), "VOID priority changed")
+    expected_y, reasons, supervised = (
+        np.full(n, -1, np.int8),
+        Counter({r: 0 for r in REASONS}),
+        set(),
+    )
+    for index, join in enumerate(joins):
+        endpoints = [expected_points[j] for j in join]
+        if not valid[index]:
+            reason = REASONS[0]
+        elif any(len(end["object_ids"]) > 1 for end in endpoints):
+            reason = REASONS[1]
+        elif any(not end["object_ids"] for end in endpoints):
+            reason = REASONS[2]
+        elif any(not end["eligible_object_ids"] for end in endpoints):
+            reason = REASONS[3]
+        else:
+            first, second = (end["object_ids"][0] for end in endpoints)
+            expected_y[index] = int(first == second)
+            supervised.update((first, second))
+            continue
+        reasons[reason] += 1
+    require(np.array_equal(targets, expected_y), "labels differ from unique eligible membership")
+    require(
+        dict(reasons) == supervision["void_reasons"]
+        and sum(reasons.values()) == int((targets == -1).sum()),
+        "exclusive VOID accounting differs",
+    )
+    require(
+        supervision["semantic_category_mapping"] is False
+        and supervision["formal_position_reference_selected"] is False,
+        "private authority differs",
+    )
+    return dict(
+        house=house,
+        ordinal=ordinal,
+        action=action,
+        features=x,
+        pairs=pairs,
+        valid=valid,
+        targets=targets,
+        scores=scores,
+        candidates=candidates,
+        void_reasons=dict(reasons),
+        catalog=set(catalog),
+        eligible={obj for obj in catalog if house_audit[obj]["eligible"]},
+        visible_eligible=visible,
+        grid_eligible={obj for point in expected_points for obj in point["eligible_object_ids"]},
+        supervised_eligible=supervised,
+    )
+
+
+def review(args):
+    root, output = args.directory.resolve(), args.directory.resolve() / "experiment"
+    ledger_path = root / "case-results.json"
+    require(sha(ledger_path.read_bytes()) == args.ledger_sha256, "external case ledger pin differs")
+    cases = read_json(ledger_path)
+    require(
+        type(cases) is list and [row["phase"] for row in cases] == ["run", "verify"],
+        "two cases required",
+    )
+    require(
+        all(
+            type(row["exit_code"]) is int
+            and row["exit_code"] == 0
+            and row["source_sha"] == args.source_sha
+            for row in cases
+        ),
+        "case failure/source differs",
+    )
+    argv = cases[0]["argv"]
+    require(cases[1]["argv"] == [*argv, "--verify"], "fresh verify command differs")
+    require(Path(flag(argv, "--output")).resolve() == output, "case output path differs")
+    require(flag(argv, "--inventory-sha256") == COLLECTION_PIN, "collection pin substituted")
+    require(
+        flag(argv, "--frontend-ledger-sha256") == FRONTEND_LEDGER_PIN, "frontend pin substituted"
+    )
+    before = inventory(output)
+    require(
+        all(case["output_sha256"] == before for case in cases),
+        "case output byte inventories differ",
+    )
+    report, model = read_json(output / "report.json"), read_json(output / "model.json")
+    expected_files = {"model.json", "report.json"} | {
+        f"frames/{ordinal:03d}/{name}"
+        for ordinal in range(96)
+        for name in (
+            "features.npy",
+            "pairs.npy",
+            "valid.npy",
+            "targets.npy",
+            "scores.npy",
+            "public.json",
+            "supervision.json",
+        )
+    }
+    require(set(before) == expected_files, "complete experiment file inventory differs")
+    require(
+        report["members"] == {key: value for key, value in before.items() if key != "report.json"},
+        "report member byte hashes differ",
+    )
+    require(
+        report["collection_inventory_sha256"] == COLLECTION_PIN, "report collection pin differs"
+    )
+    require(content_digest(model) == report["model_sha256"], "checkpoint content digest differs")
+    expected_source = report["source_files"]
+    require(expected_source, "missing source files")
+    for relative, digest in expected_source.items():
+        require(
+            Path(relative).parts[0] in ("src", "tests", "tools")
+            and ".." not in Path(relative).parts,
+            "unsafe source member",
+        )
+        blob = subprocess.check_output(
+            ["git", "show", f"{args.source_sha}:{relative}"], cwd=args.source
+        )
+        require(sha(blob) == digest, "report source file differs from frozen commit: " + relative)
+    tracked = subprocess.check_output(
+        ["git", "ls-tree", "-r", "--name-only", args.source_sha, "--", "src", "tests", "tools"],
+        cwd=args.source,
+        text=True,
+    ).splitlines()
+    require(
+        set(expected_source)
+        == {
+            p for p in tracked if p.endswith(".py") and p.split("/")[0] in ("src", "tests", "tools")
+        },
+        "frozen source inventory incomplete",
+    )
+    collection = Path(flag(argv, "--collection")).resolve()
+    require(
+        sha((collection / "inventory.json").read_bytes()) == COLLECTION_PIN,
+        "original collection inventory pin",
+    )
+    collection_before = inventory(collection)
+    collection_manifest = read_json(collection / "inventory.json")
+    require(
+        collection_manifest
+        == {key: value for key, value in collection_before.items() if key != "inventory.json"},
+        "original collection member bytes differ",
+    )
+    frontend_dir = Path(flag(argv, "--frontends")).resolve()
+    require(
+        sha((frontend_dir / "case-results.json").read_bytes()) == FRONTEND_LEDGER_PIN,
+        "original frontend ledger pin",
+    )
+    frontend_cases = read_json(frontend_dir / "case-results.json")
+    require(
+        [(c["phase"], c["detector"]) for c in frontend_cases]
+        == [(phase, method) for phase in ("run", "verify") for method in METHODS]
+        and all(c["exit_code"] == 0 for c in frontend_cases),
+        "original frontend cases differ",
+    )
+    frontend_rows, frontend_inventories = {}, {}
+    for method in METHODS:
+        observed = inventory(frontend_dir / method)
+        frontend_inventories[method] = observed
+        require(
+            all(
+                case["output_sha256"] == observed
+                for case in frontend_cases
+                if case["detector"] == method
+            ),
+            "original frontend artifact bytes differ",
+        )
+        require(
+            report["frontend_binding"]["files"][method] == observed, "report frontend files differ"
+        )
+        frontend_rows[method] = read_json(frontend_dir / method / "public.json")
+        require(len(frontend_rows[method]) == 96, "source frontend omits frames")
+    require(
+        report["frontend_binding"]["ledger_sha256"] == FRONTEND_LEDGER_PIN,
+        "report frontend ledger differs",
+    )
+    audit = read_json(collection / "runtime-partition-audit.json")["instances"]
+    require(len(report["frames"]) == 96, "report omits frames")
+    records = [
+        read_frame(output, collection, index, description, frontend_rows, audit)
+        for index, description in enumerate(report["frames"])
+    ]
+    require(len({r["action"] for r in records}) == 96, "repeated action across frames")
+    train = [r for r in records if r["house"] <= 8]
+    tx, ty = (
+        np.concatenate([r["features"] for r in train]),
+        np.concatenate([r["targets"] for r in train]),
+    )
+    require(
+        model["training_partition"] == "train"
+        and model["features"] == FEATURES
+        and model["config"] == CONFIG
+        and model["calibrated"] is False
+        and model["runtime_authority"] is False,
+        "checkpoint task/authority differs",
+    )
+    require(
+        model["training_features_sha256"] == array_digest(tx)
+        and model["training_targets_sha256"] == array_digest(ty),
+        "train-only content digest differs",
+    )
+    selected = tx[ty != -1]
+    require(len(selected) > 0, "no supervised training rows")
+    counts = [int((ty == value).sum()) for value in (0, 1)]
+    require(model["class_counts"] == counts and all(counts), "training class counts differ")
+    require(
+        (model["rows_total"], model["rows_fit"], model["rows_void"])
+        == (len(ty), len(selected), int((ty == -1).sum())),
+        "training row counts differ",
+    )
+    mean, scale = selected.mean(axis=0), selected.std(axis=0)
+    constant = selected.min(axis=0) == selected.max(axis=0)
+    mean[constant], scale[constant] = selected[0, constant], 1.0
+    scale[scale == 0] = 1.0
+    close(model["mean"], mean, "train-only mean", atol=1e-10, rtol=1e-10)
+    close(model["scale"], scale, "train-only standard deviation", atol=1e-10, rtol=1e-10)
+    prevalence = counts[1] / sum(counts)
+    require(model["prevalence"] == prevalence, "train-only frequency constant differs")
+    require(
+        len(model["optimization_loss"]) == 31
+        and all(math.isfinite(v) and v >= 0 for v in model["optimization_loss"])
+        and all(b <= a for a, b in itertools.pairwise(model["optimization_loss"])),
+        "optimization history structure differs",
+    )
+    initial_loss = metrics(ty, np.full(len(ty), prevalence))["bce"]
+    # The final objective uses logits directly to avoid probability clipping.
+    fit_logits = ((selected - np.asarray(model["mean"])) / np.asarray(model["scale"])) @ np.asarray(
+        model["weights"]
+    ) + model["bias"]
+    fitted_y = ty[ty != -1]
+    final_loss = float(
+        np.mean(np.logaddexp(0, fit_logits) - fitted_y * fit_logits)
+        + 0.005 * np.dot(model["weights"], model["weights"])
+    )
+    close(model["optimization_loss"][0], initial_loss, "initial train-only frequency objective")
+    close(model["optimization_loss"][-1], final_loss, "final checkpoint training objective")
+    for record in records:
+        prediction = independent_scores(record["features"], record["valid"], model)
+        close(record["scores"], prediction, "checkpoint score recomputation")
+        record["scores"] = prediction
+        compare_json(
+            report["frames"][record["ordinal"]]["summary"],
+            aggregate([record], prevalence),
+            f"frame[{record['ordinal']}]",
+        )
+    by_house = {
+        str(h): aggregate([r for r in records if r["house"] == h], prevalence) for h in range(1, 13)
+    }
+    by_split = {}
+    coverage = {}
+    for split in ("train", "validation"):
+        group = [r for r in records if (r["house"] <= 8) == (split == "train")]
+        summary = aggregate(group, prevalence)
+        observed = [
+            by_house[str(h)]
+            for h in range(1, 13)
+            if (h <= 8) == (split == "train") and by_house[str(h)]["model"]["pairs"]
+        ]
+        summary["houses_with_supervision"] = len(observed)
+        summary["house_macro"] = {
+            method: {
+                metric: math.fsum(h[method][metric] for h in observed) / len(observed)
+                if observed
+                else None
+                for metric in ("bce", "brier")
+            }
+            for method in ("model", "training_frequency_constant")
+        }
+        by_split[split], coverage[split] = summary, object_coverage(group)
+    overall = aggregate(records, prevalence)
+    compare_json(report["overall"], overall, "overall")
+    compare_json(report["by_house"], by_house, "by_house")
+    compare_json(report["by_split"], by_split, "by_split")
+    for key in (
+        "calibration_performed",
+        "world_instance_identity_assigned",
+        "observation_likelihood_written",
+        "online_memory_write",
+        "full_mask_predicted",
+        "formal_position_reference_selected",
+        "independent_acceptance",
+    ):
+        require(report[key] is False, "unsupported report authority: " + key)
+    require(
+        report["training_performed"] is True and report["detector_inference_reused"] is True,
+        "reported experiment scope differs",
+    )
+    require(
+        inventory(output) == before and inventory(collection) == collection_before,
+        "inputs changed during independent review",
+    )
+    require(
+        sha(ledger_path.read_bytes()) == args.ledger_sha256
+        and sha((frontend_dir / "case-results.json").read_bytes()) == FRONTEND_LEDGER_PIN
+        and all(
+            inventory(frontend_dir / method) == frontend_inventories[method] for method in METHODS
+        ),
+        "case or frontend inputs changed during independent review",
+    )
+    return dict(
+        complete=True,
+        review_role="A-side independent arithmetic; not machine-B acceptance",
+        source_sha=args.source_sha,
+        case_ledger_sha256=args.ledger_sha256,
+        collection_inventory_sha256=COLLECTION_PIN,
+        model_content_sha256=content_digest(model),
+        model_file_sha256=before["model.json"],
+        report_file_sha256=before["report.json"],
+        output_files=len(before),
+        source_files=len(expected_source),
+        frames=96,
+        externally_pinned_cases=2,
+        case_output_inventories_match=True,
+        original_collection_inventory_verified=True,
+        experiment_member_hashes_verified=True,
+        fixed_96_unique_actions_checked=True,
+        source_commit_bytes_checked=True,
+        grid_reconstructed=True,
+        candidate_sources_and_pair_deduplication_checked=True,
+        original_point_masks_checked=True,
+        final_audit_membership_checked=True,
+        unique_eligible_targets_and_exclusive_void_recomputed=True,
+        raw_depth_validity_recomputed=True,
+        public_features_reconstructed=True,
+        checkpoint_scores_recomputed=True,
+        train_only_content_and_scaling_recomputed=True,
+        train_only_frequency_recomputed=True,
+        checkpoint_training_objective_checked=True,
+        all_report_metrics_match=True,
+        production_numeric_functions_called=False,
+        overall=overall,
+        by_split=by_split,
+        by_house=by_house,
+        object_coverage=dict(
+            overall=object_coverage(records),
+            **coverage,
+            by_house={
+                str(h): object_coverage([r for r in records if r["house"] == h])
+                for h in range(1, 13)
+            },
+        ),
+        candidate_count=sum(len(r["candidates"]) for r in records),
+        duplicate_candidate_pair_occurrences=overall["raw_candidate_pairs"]
+        - overall["unique_pairs"],
+        caveats=[
+            "Previously exposed 12-house development data; "
+            "no untouched-validation or independent acceptance claim.",
+            "Grid coverage changed versus the older three-sample diagnostic; "
+            "that difference is not learning benefit.",
+            "Rendered mask membership does not prove physical ownership of depth samples.",
+            "Within-house pairs and rotating views are correlated; "
+            "pairs are not independent statistical samples.",
+            "Uncalibrated same-frame affinity is not a complete mask, "
+            "cross-view identity or action-loop benefit.",
+        ],
+    )
+
+
+def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--directory", type=Path, default=Path(__file__).resolve().parent)
+    parser.add_argument(
+        "--source", type=Path, default=Path("/private/tmp/cpswm-pc-a-instance-foreground-20260930")
+    )
+    parser.add_argument("--ledger-sha256", required=True)
+    parser.add_argument("--source-sha", required=True)
+    args = parser.parse_args()
+    destination = args.directory.resolve() / "independent-analysis.json"
+    require(
+        not destination.exists() and not destination.is_symlink(),
+        "refuse to overwrite independent review",
+    )
+    result = review(args)
+    document = json.dumps(result, indent=2, ensure_ascii=False, allow_nan=False) + "\n"
+    with destination.open("x") as stream:
+        stream.write(document)
+    print(
+        json.dumps(
+            dict(complete=True, output=str(destination), output_sha256=sha(document.encode())),
+            ensure_ascii=False,
+        )
+    )
+
+
+if __name__ == "__main__":
+    main()

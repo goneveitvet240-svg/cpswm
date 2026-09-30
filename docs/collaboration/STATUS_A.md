@@ -1,3 +1,11 @@
+# A：八小时窗口最终交接记录（2026-09-30）
+
+最后两批已由[草稿PR71](https://github.com/goneveitvet240-svg/cpswm/pull/71)统一交接，父PR70；GitHub读回OPEN/DRAFT、CLEAN/MERGEABLE，未合并。最后实际源码14409b3beabbd298196ea8f65c4e4f7a0cf719f2；前批比较实际源码fa4dc032c9ef843d8ec0975810c010cd1c5ca7d6；后续提交仅文档/原件，生产/测试/工具/依赖字节核验不变。
+
+十个批次的4500原件/1446503881字节已在最终候选再次逐文件读回核验。补充总交接、4个远端源码CI原始包及失败分类另封存85文件/25154909字节，压缩5428343字节，SHA256 92eb31eb03d903e90c1afbc4ec914e1304978d23e48678e6f794c34f61edcf1b；归档meta指交付候选，内部每个历史远端结果保留自己的源码SHA。
+
+总报告 docs/reviews/pc_a/mainline_handoff_2026-09-30/MAINLINE_PROGRESS.md；本机可读副本 output/mainline-handoff-20260930/MAINLINE_PROGRESS.md。全仓/B独立/自然任务收益未通过，已提出的离线标签用途尚待用户答复。最新14409b3完整远端CI仍未完成，不能用前一版部分结果替代。共享集成19ddf26830348a2f0b33f0af54d6ba702c5cfb1c与B当前审查fd4ca6ef5e81c90d7cf7987b42c0b2810d8a810a保持，完整研究范围和原对照保留。
+
 # A：最后两批与主干窗口交付（2026-09-30）
 
 当前分支codex/pc-a-camera-checkpoint-fixture-20260930，base175a54baf91b782907518906b56f28acc84541be，实际源码14409b3beabbd298196ea8f65c4e4f7a0cf719f2。相机checkpoint默认目录修复13/13顺序双审零跳过；3种显式非法覆盖按预期exit1拒绝、不回落，3条真实网络/反馈/行动输出保留。原件99文件，压缩12295469字节，SHA256 f4ab144cc3bbaac8f8f94d0e14d975c99743b9a144de89af09ae62ee6f8ebf9e，逐文件读回。前批fa4dc03的14/2双审和10完整伪造原件保留，两个批次分别绑定实际源码。

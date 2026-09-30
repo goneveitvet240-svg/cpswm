@@ -1,3 +1,11 @@
+# 当前推进独立复核开工（2026-09-30）
+
+本窗口负责对既有推进作独立复核；不修改生产实现。分支 codex/pc-a-independent-progress-audit-20260930；工作目录 /private/tmp/cpswm-pc-a-independent-progress-audit-20260930；base/受审交付 d698792a8e3750af284a2c991a28aff2453b0729（PR74），实际前端工具源码 3babc6d1557b4fe54abc6c8ac1f6054cdeb03e57。已 fetch 核对集成 19ddf26830348a2f0b33f0af54d6ba702c5cfb1c、B fd4ca6ef5e81c90d7cf7987b42c0b2810d8a810a；新实例前景任务当前 c8c05b85bc7c6d3fa23046b84d8db4e4e98e6aaa 仅作为计划审阅。
+
+范围：对照上一轮 PR58 问题，检查 PR59–74 的技术路线、物理时序/RGB-D安排、12屋数据及固定前端诊断、当前真实CI和自然因子/动作结论。独立运行目标检查与归档完整重推，按房屋、资产、对象和帧区分分母。共享既有本机环境的复核不称新环境或B验收，不称完整统一科学验收。原数据与其他窗口不改动。
+
+证据目录 output/independent-progress-audit-20260930/review；结束记录具体命令、源码、失败/限制和后续门槛，再以草稿PR叠加PR74交接。本段开工时尚未交付。
+
 # A：固定96帧公开前端诊断交付（2026-09-30）
 
 已推送并以[草稿PR74](https://github.com/goneveitvet240-svg/cpswm/pull/74)叠加PR73交接，未合并。文档/原件交付62c98fb87cc28b6fe7640909c0df24ebc218c7d3；实际双审/运行源码3babc6d1557b4fe54abc6c8ac1f6054cdeb03e57，后续交付未改生产/测试/工具/依赖字节。

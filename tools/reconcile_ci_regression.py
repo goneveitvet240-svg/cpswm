@@ -43,7 +43,7 @@ def reconcile(collection, collection_exit_code, junit, execution, *, source_unch
             if len(matches) == 1:
                 seen.update(matches)
             outcomes = [child for child in case if child.tag in ("failure", "error", "skipped")]
-            status = "passed"
+            status = "passed" if len(matches) == 1 else "unidentified"
             if outcomes:
                 status = outcomes[0].tag
                 if status == "skipped" and outcomes[0].get("type") == "pytest.xfail":

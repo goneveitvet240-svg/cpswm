@@ -96,6 +96,9 @@ def test_edited_real_junit_cannot_become_a_complete_pass(actual_reports, attack)
     result = reconcile(collection, 0, mutated, SUCCESS, source_unchanged=True)
     assert not result["ordinary_regression_passed"]
     assert not result["strict_all_nodes_passed"]
+    if attack == "anonymous":
+        assert result["outcomes"]["passed"] == 2
+        assert result["outcomes"]["unidentified"] == 1
 
 
 @pytest.mark.parametrize(

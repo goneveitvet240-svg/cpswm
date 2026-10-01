@@ -71,7 +71,7 @@ jobs:
           mkdir -p output/ci-regression
           git rev-parse HEAD > output/ci-regression/source-sha.txt
           set +e
-          uv run --frozen --extra dev --extra perception --extra hand-perception pytest --collect-only -q 2>&1 | tee output/ci-regression/collection.log
+          uv run --frozen --extra dev --extra perception --extra hand-perception pytest -o addopts= --collect-only -q 2>&1 | tee output/ci-regression/collection.log
           results=("${PIPESTATUS[@]}")
           result=${results[0]}
           if [[ "$result" -eq 0 && "${results[1]}" -ne 0 ]]; then

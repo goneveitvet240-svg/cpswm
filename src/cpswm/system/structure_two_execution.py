@@ -12,6 +12,7 @@ import hashlib
 import inspect
 import marshal
 from collections.abc import Mapping
+from functools import lru_cache
 from pathlib import Path
 from types import CodeType, MappingProxyType
 from typing import Annotated, Any, Final, Literal, Protocol, cast, runtime_checkable
@@ -489,7 +490,11 @@ def _code_object_sha256(code: CodeType) -> str:
     return hashlib.sha256(marshal.dumps(cast(Any, _code_object_payload(code)))).hexdigest()
 
 
+@lru_cache(maxsize=32)
 def _source_code_objects(source_path: Path, source_bytes: bytes) -> tuple[CodeType, ...]:
+    # Cache compilation, never authorization. Callers still read the current file
+    # and compare the live callable on every binding. Complete bytes (not mtime,
+    # size, or an unchecked pyc) and path form the bounded cache key.
     root = compile(source_bytes, str(source_path), "exec")
     discovered: list[CodeType] = []
 

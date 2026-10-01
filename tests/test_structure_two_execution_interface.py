@@ -1551,6 +1551,7 @@ def test_cross_thread_lock_handoff_fails_without_waiting_for_foreign_release(
         "ccrr": system.core._automatic_regimes.ccrr._lock,
     }[lock_target]
     worker_has_lock = Event()
+    handoff_ready = Event()
     release_worker = Event()
     worker: Thread | None = None
 
@@ -1569,6 +1570,7 @@ def test_cross_thread_lock_handoff_fails_without_waiting_for_foreign_release(
             worker = Thread(target=hold_lock, daemon=True)
             worker.start()
             assert worker_has_lock.wait(timeout=5.0)
+            handoff_ready.set()
             return acknowledgement
 
     sink = LockHandoffSink()
@@ -1589,6 +1591,9 @@ def test_cross_thread_lock_handoff_fails_without_waiting_for_foreign_release(
     caller = Thread(target=invoke, daemon=True)
     caller.start()
     try:
+        # Setup and trace construction are not part of the nonblocking lock
+        # contract. Start its deadline only once the foreign owner holds it.
+        assert handoff_ready.wait(timeout=10.0), "lock handoff was not reached"
         caller.join(timeout=1.0)
         assert not caller.is_alive(), "transaction waited for a foreign lock owner"
         assert len(outcome) == 1
@@ -1605,6 +1610,22 @@ def test_cross_thread_lock_handoff_fails_without_waiting_for_foreign_release(
     assert target_lock.acquire(blocking=False) is True
     target_lock.release()
     assert _state_fingerprint(system) == before_state
+
+
+@pytest.mark.parametrize("lock_target", ["core", "wrapper", "ccrr"])
+def test_lock_handoff_deadline_excludes_slow_trace_preparation(
+    lock_target: str, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    from time import sleep
+
+    original = RecordingSink.commit
+
+    def slow_commit(self, trace):
+        sleep(1.2)  # Longer than the lock contract, before any foreign handoff.
+        return original(self, trace)
+
+    monkeypatch.setattr(RecordingSink, "commit", slow_commit)
+    test_cross_thread_lock_handoff_fails_without_waiting_for_foreign_release(lock_target)
 
 
 def test_callable_binding_rejects_disk_source_drift_from_loaded_code(

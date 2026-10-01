@@ -72,3 +72,29 @@ def evidence_ref():
         source_record_id=uuid4(),
         locator="frame:17",
     )
+
+
+@pytest.fixture(scope="session")
+def current_full_scientific_loop(tmp_path_factory):
+    """Use a fully verified current result; never promote historical fixture bytes."""
+    import json
+    import os
+    from pathlib import Path
+
+    from cpswm.system.evaluation_operations.structure_two_full_scientific_loop import (
+        run_full_scientific_loop_development,
+        verify_full_scientific_loop_result,
+    )
+
+    root = Path(__file__).resolve().parents[1]
+    override = os.environ.get("S2_CURRENT_FULL_SCIENTIFIC_LOOP")
+    if override is not None:
+        if not override:
+            raise ValueError("explicit current scientific-loop path is empty")
+        payload = json.loads(Path(override).read_text())
+    else:
+        payload = run_full_scientific_loop_development(repository_root=root)
+        output = tmp_path_factory.mktemp("current-full-scientific-loop") / "result.json"
+        output.write_text(json.dumps(payload, indent=2, allow_nan=False) + "\n")
+    verify_full_scientific_loop_result(payload, repository_root=root, fresh_replay=True)
+    return payload

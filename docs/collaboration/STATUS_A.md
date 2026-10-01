@@ -1,3 +1,43 @@
+# A：当前材料功能已交付，完整回归超时仍未验收（2026-10-01）
+
+分支codex/pc-a-current-validation-inputs-20261001；base3d6b9f13cf4e71a482cf36974be92220602542b0，实际功能fd08b59bdc01ca9ffe4e9b159cb1393052711d15。顺序A自审R1 162通过、R2八阶段真实准备2552.77秒通过，真实CLI合法包及21完整伪造核验通过。非独立B。详[报告](../reviews/pc_a/current_validation_inputs_2026-10-01/REPORT.md)，草稿PR83，未合并。
+
+本机完整收集6758，65分钟实际超时124：4687 passed、1 failed、29 skipped、1 xfailed；4718具名终态、4匿名中断记录不计通过、2040节点缺少终态。1117源/配置/工作流/锁摘要不变。原31失败本轮仅8项有通过终态、23未观察到；不能声称31项关闭。单独当前checkpoint仍7 failed/8 passed，旧回执未闭合。
+
+Linux CI36847860851静态通过，新增准备阶段第4步65分钟超时，test未执行。后续独立PR84修复依赖声明、PR85将准备单独设120分钟，原回归65分钟不变；清理竞争的候选34b66c3另行审查，不改本轮失败。新capture原子更新未启动，科学收益/B独立验收仍未完成，完整研究范围保留。原用户树/STATUS_B不覆盖。
+
+证据/private/tmp/cpswm-current-validation-evidence-20261001；结束后已核对准备包并恢复本工作树P0至原HEAD，当前生成原件及测试journal保留。归档与精确命令见报告。
+
+---
+
+# A：第三候选R1通过，完整材料与全仓回归继续（2026-10-01）
+
+分支codex/pc-a-current-validation-inputs-20261001，base3d6b9f13cf4e71a482cf36974be92220602542b0，实际功能fd08b59bdc01ca9ffe4e9b159cb1393052711d15。R1为162 passed，6758项收集，1027摘要不变。当前源码材料准备、跨进程、完整伪造消费者与全仓仍待完成；工程门槛未关闭。新增有限源码编译缓存仍每次读盘/live代码核对，锁测试从实际handoff起计1s；没有删测试、弱化阈值或延长原回归65分钟。
+
+PR82 CI36836009498已实际65min超时124：4349 passed、2 failed、1 xfailed；4个匿名JUnit记录不计通过，有名结果4352/6738，至少2386项缺少结果。原31失败未全部执行，不称降至2。类型检查Linux已通过；当前P0及锁期限失败继续在本候选核验。详[第二候选记录](../reviews/pc_a/current_validation_inputs_2026-10-01/ADVERSARIAL_REVIEW_2_ATTEMPT_2.md)。旧候选主动中断/取消均保留，不算自然失败或成功。
+
+当前证据output/current-validation-inputs-20261001。原用户树/STATUS_B不改，两轮A同实现者自审，独立B未完成；未启动新capture事务、Unity或行为收益研究。完整统一范围保留。
+
+---
+
+> 更新：R2发现准备阶段缺少内部超时/进程组清理，已修复并重新冻结a8ebb1b0969b871daf079bd0a66f6c6031ef6d85。新R1 61项通过，6751项完整收集，源/工作流/锁共1026摘要不变；新R2真实全链运行中。旧fad9580不再是验收候选，其结果和中间失败保留。准备阶段新增65分钟受控预算，CI任务85分钟留诊断上传余量；原回归65分钟不变。
+
+# A：当前验收材料第一轮通过，第二轮实际流水线验证中
+
+分支codex/pc-a-current-validation-inputs-20261001；实际功能fad9580a81edd6d9e35b249ff186f3f63819d393，base 3d6b9f13cf4e71a482cf36974be92220602542b0。R1同实现者A自审60项通过，严格mypy389文件/格式通过；R2正在执行真实比较生成/重算/归因重算与当前科学循环、P0准备全链，未通过前不进入下一轮功能修改。当前CI新增独立准备job，回归仍完整收集、保留65分钟预算和所有失败，不弱化保护。当前材料准备不等于工程回执通过。
+
+[依赖与新增阻断](../reviews/pc_a/current_validation_inputs_2026-10-01/ENGINEERING_DEPENDENCIES.md)：工程回执要求零skip/xfail，而全仓含平台限定/显式实数据用例和项目一已知RLS strict xfail；不得靠降低阈值或重签旧回执消除。正式全仓/严格工程/科学收益分开。后续新capture事务仍未开始。原用户树/STATUS_B保持，完整研究范围不变。R2证据output/current-validation-inputs-20261001/review2-prepared；真实执行和Linux CI后更新结果，不提前计通过。
+
+---
+
+# A：当前验收材料与完整回归接线开工（2026-10-01）
+
+分支 codex/pc-a-current-validation-inputs-20261001，base/开工源码3d6b9f13cf4e71a482cf36974be92220602542b0（PR82），独立工作目录。远端集成19ddf26830348a2f0b33f0af54d6ba702c5cfb1c、B fd4ca6ef5e81c90d7cf7987b42c0b2810d8a810a 已核对。PR82全仓CI仍运行，未计通过。
+
+本轮先建立真实当前比较包与测试材料准备、核对工程回执依赖并完整执行回归；不重签旧结果、不弱化验证、不用skip掩盖缺口。实施后冻结源码，顺序两轮同实现者A自审，独立B仍待完成。证据output/current-validation-inputs-20261001；原用户树和STATUS_B不改。工程门槛未通过前不启动新观测事务或科学收益实验。保留完整统一范围及用户既有研究选择。
+
+---
+
 # A：工程回归首批修复，整体验收仍阻断（2026-10-01）
 
 分支 `codex/pc-a-engineering-regressions-20261001`；base `b6c6317a35c99cd95fe636251ce1e63bfba5f402`，实际修复/双审源码 `8f7edafd51cdf735ca9c65a7c8e4ac367cebdc68`。严格 mypy 155→0（389文件），两项子进程导入和两项有限log下溢契约已本地修复。顺序 A 同实现者自审 R1 283 / R2 120 passed；异目录污染路径2项通过，完整收集仍6738。非独立B/非全仓CI，不能相加为独立覆盖。

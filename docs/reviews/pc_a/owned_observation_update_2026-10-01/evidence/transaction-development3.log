@@ -1,0 +1,20 @@
+.FF..                                                                    [100%]
+=================================== FAILURES ===================================
+___ test_replay_retains_each_update_or_removes_its_semantic_dependency[True] ___
+tests/test_owned_position_update.py:176: in test_replay_retains_each_update_or_removes_its_semantic_dependency
+    withdraw(case, case["native_selected_record_id"] if remove_selected else source_ids[0])
+tests/test_owned_position_update.py:134: in withdraw
+    assert len(targets) == 1, (
+           ^^^^^^^^^^^^^^^^^
+E   AssertionError: ('f0f33232-a9ac-56da-a7f6-f97e5590cc0a', ['d5df2cf8-57be-5bb9-99d3-ce7bed2aacc7'])
+__ test_replay_retains_each_update_or_removes_its_semantic_dependency[False] ___
+tests/test_owned_position_update.py:176: in test_replay_retains_each_update_or_removes_its_semantic_dependency
+    withdraw(case, case["native_selected_record_id"] if remove_selected else source_ids[0])
+tests/test_owned_position_update.py:134: in withdraw
+    assert len(targets) == 1, (
+           ^^^^^^^^^^^^^^^^^
+E   AssertionError: ('4f70bb24-2341-b21f-85d6-10cda7876102', ['57e1d03c-6955-5981-965d-7030cf86987b'])
+=========================== short test summary info ============================
+FAILED tests/test_owned_position_update.py::test_replay_retains_each_update_or_removes_its_semantic_dependency[True]
+FAILED tests/test_owned_position_update.py::test_replay_retains_each_update_or_removes_its_semantic_dependency[False]
+2 failed, 3 passed in 43.54s

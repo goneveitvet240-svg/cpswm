@@ -280,7 +280,7 @@ class ControlledPositionProducer:
         self.last_diagnostic = deepcopy(state["last_diagnostic"])
 
     def _public(self, context: NativeJointContext) -> dict[str, Any]:
-        expected = self.configuration["packet"]
+        expected = self._packet(context)
         lookup = {
             str(row.envelope().identity.observation_id): row for row in context.visible_prefix
         }
@@ -291,13 +291,7 @@ class ControlledPositionProducer:
         rows = tuple(lookup[key] for key in expected["observation_ids"])
         _require(packet_binding(rows) == expected, "bound raw packet differs")
         camera, depth = unity_rgbd.decode_unity_rgbd(rows, cutoff=context.cutoff)
-        meta = context.source.transition.after.metadata
-        _require(
-            expected["scope"] == [str(meta.household_id), str(meta.session_id), str(meta.trace_id)]
-            and camera.capture_time <= context.source.transition.after.detection_time
-            and all(row.envelope().arrival_time <= context.cutoff for row in rows),
-            "public packet outside semantic scope or epoch",
-        )
+        self._validate_packet_epoch(context, camera, rows, expected)
         _, rgb = natural_vision.decode_rgb(rows[0], cutoff=context.cutoff)
         payload_pins = []
         for row in rows:
@@ -340,6 +334,20 @@ class ControlledPositionProducer:
                 "world_point_m",
             )
         }
+
+    def _packet(self, context: NativeJointContext) -> dict[str, Any]:
+        return cast(dict[str, Any], self.configuration["packet"])
+
+    def _validate_packet_epoch(
+        self, context: NativeJointContext, camera: Any, rows: Any, expected: dict[str, Any]
+    ) -> None:
+        meta = context.source.transition.after.metadata
+        _require(
+            expected["scope"] == [str(meta.household_id), str(meta.session_id), str(meta.trace_id)]
+            and camera.capture_time <= context.source.transition.after.detection_time
+            and all(row.envelope().arrival_time <= context.cutoff for row in rows),
+            "public packet outside semantic scope or epoch",
+        )
 
     def _neutral(
         self, prior: ConditionalAnalyticState, cluster: UUID, record_id: UUID
@@ -393,10 +401,10 @@ class ControlledPositionProducer:
         source.validate_content()
         record_id = source.transition.after.metadata.record_id
         selected = self._selected(source)
-        active = selected and self.configuration["enabled"]
+        active = self._active(context)
         _require(not active or not self.consumed_keys, "bound raw observation already consumed")
         observation = self._public(context) if active else None
-        cluster = content_uuid(FORMAT + ":cluster", (source.source_id, binding))
+        cluster = self._cluster(context, binding)
         from cpswm.system.structure_two_particle_workspace import NativePreviousWeightEvidence
 
         evidence = context.previous_weight_evidence
@@ -488,9 +496,7 @@ class ControlledPositionProducer:
                     reference,
                     prior,
                     evidence_cluster_id=cluster,
-                    source_record_ids=tuple(
-                        UUID(v) for v in self.configuration["packet"]["observation_ids"]
-                    ),
+                    source_record_ids=self._position_record_ids(context),
                 )
                 logpdf = diagnostic["known"]["observation_log_likelihood"]
             analytic = rebuild_conditional_state(prior, (measure,))
@@ -557,3 +563,12 @@ class ControlledPositionProducer:
             self.consumed_keys.append(self._measurement_key())
         self.last_diagnostic = diagnostic
         return result
+
+    def _active(self, context: NativeJointContext) -> bool:
+        return self._selected(context.source) and bool(self.configuration["enabled"])
+
+    def _cluster(self, context: NativeJointContext, binding: str) -> UUID:
+        return content_uuid(FORMAT + ":cluster", (context.source.source_id, binding))
+
+    def _position_record_ids(self, context: NativeJointContext) -> tuple[UUID, ...]:
+        return tuple(UUID(v) for v in self.configuration["packet"]["observation_ids"])

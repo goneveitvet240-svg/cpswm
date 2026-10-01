@@ -1,0 +1,42 @@
+E702 Multiple statements on one line (semicolon)
+   --> tests/test_owned_position_update.py:466:40
+    |
+464 |         unknown = -.5 * (3*math.log(2*math.pi*100) + point@point/100)
+465 |         logs = np.array([known, unknown, unknown])
+466 |         probs = np.exp(logs-logs.max()); probs /= probs.sum()
+    |                                        ^
+467 |         state = weight_state(case)
+468 |         assert [state[False][0], state[True][0], state['aggregate']] == pytest.approx(probs)
+    |
+
+E702 Multiple statements on one line (semicolon)
+   --> tests/test_owned_position_update.py:469:30
+    |
+467 |         state = weight_state(case)
+468 |         assert [state[False][0], state[True][0], state['aggregate']] == pytest.approx(probs)
+469 |         precision = np.eye(6); precision[:3,:3] += np.linalg.inv(covariance)
+    |                              ^
+470 |         eta = np.zeros(6); eta[:3] = np.linalg.solve(covariance, residual)
+471 |         assert np.allclose(state[False][1], precision)
+    |
+
+E702 Multiple statements on one line (semicolon)
+   --> tests/test_owned_position_update.py:470:26
+    |
+468 |         assert [state[False][0], state[True][0], state['aggregate']] == pytest.approx(probs)
+469 |         precision = np.eye(6); precision[:3,:3] += np.linalg.inv(covariance)
+470 |         eta = np.zeros(6); eta[:3] = np.linalg.solve(covariance, residual)
+    |                          ^
+471 |         assert np.allclose(state[False][1], precision)
+472 |         assert np.allclose(state[False][2], eta)
+    |
+
+E702 Multiple statements on one line (semicolon)
+   --> tests/test_owned_position_update.py:479:30
+    |
+477 |         assert state[False][3:] == neutral[False][3:]
+478 |     finally:
+479 |         case['store'].close(); control['store'].close()
+    |                              ^
+
+Found 6 errors (2 fixed, 4 remaining).

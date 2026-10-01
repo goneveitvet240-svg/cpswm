@@ -1,0 +1,13 @@
+Traceback (most recent call last):
+  File "/private/tmp/cpswm-owned-observation-evidence-20261001/live_probe.py", line 29, in <module>
+    camera = UnityObservationExecutor(
+        python=Path('/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/.venv-ai2thor/bin/python'),
+    ...<3 lines>...
+        log_dir=root/'transport', household_id=stream._scope[0],session_id=stream._scope[1],trace_id=stream._scope[2],
+        image_size=320,sensor_profile='rgbd_self_pose')
+  File "/private/tmp/cpswm-pc-a-owned-observation-update-20261001/src/cpswm/system/unity_observation.py", line 91, in __init__
+    if self._receive().get("ready") is not True:
+       ~~~~~~~~~~~~~^^
+  File "/private/tmp/cpswm-pc-a-owned-observation-update-20261001/src/cpswm/system/unity_observation.py", line 108, in _receive
+    raise TimeoutError("Unity receipt timed out; outcome uncertain")
+TimeoutError: Unity receipt timed out; outcome uncertain

@@ -1,0 +1,20 @@
+F                                                                        [100%]
+=================================== FAILURES ===================================
+_____ test_later_owned_frame_updates_same_semantics_and_duplicate_is_inert _____
+tests/test_owned_position_update.py:82: in test_later_owned_frame_updates_same_semantics_and_duplicate_is_inert
+    case = make_case(tmp_path / "state.sqlite", checkpoints)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/test_owned_position_update.py:42: in make_case
+    probe, backend, stream, store, builder = build(
+tools/run_correction_replay_comparison.py:111: in build
+    stream = ContinuousEvidenceInput(
+src/cpswm/system/structure_two_continuous_input.py:282: in __init__
+    raw_profile = profile_for(joint_producer)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/cpswm/system/native_raw_verification.py:58: in profile_for
+    if type(candidate) not in (ControlledPositionProducer, OwnedPositionProducer):
+                                                           ^^^^^^^^^^^^^^^^^^^^^
+E   NameError: name 'OwnedPositionProducer' is not defined
+=========================== short test summary info ============================
+FAILED tests/test_owned_position_update.py::test_later_owned_frame_updates_same_semantics_and_duplicate_is_inert
+1 failed in 6.55s

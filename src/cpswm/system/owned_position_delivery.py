@@ -242,7 +242,9 @@ def describe_current_owned_rgbd(
             workspace = core._particle_workspace
             profile = workspace.raw_candidate_profile
             _require(
-                type(profile) is dict and profile.get("profile") == "controlled-position-raw@1",
+                type(profile) is dict
+                and profile.get("profile")
+                in ("controlled-position-raw@1", "owned-single-position-raw@1"),
                 "descriptor requires the protected canonical raw profile",
             )
             batch = workspace.batch

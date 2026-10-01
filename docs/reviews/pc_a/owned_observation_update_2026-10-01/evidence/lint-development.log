@@ -1,0 +1,87 @@
+E501 Line too long (101 > 100)
+  --> src/cpswm/system/native_raw_verification.py:61:101
+   |
+59 |         return None
+60 |     return dict(
+61 |         profile=PROFILE if type(candidate) is OwnedPositionProducer else "controlled-position-raw@1",
+   |                                                                                                     ^
+62 |         verifier_source=sha256(Path(__file__).read_bytes()).hexdigest(),
+63 |         weight_source=sha256(
+   |
+
+E501 Line too long (102 > 100)
+  --> src/cpswm/system/owned_position_update.py:24:101
+   |
+22 |     return native_content_sha256((
+23 |         sha256(Path(__file__).read_bytes()).hexdigest(),
+24 |         tuple((name, _helper_code_sha256(value.__code__)) for name, value in sorted(globals().items())
+   |                                                                                                     ^^
+25 |               if inspect.isfunction(value) and value.__module__ == __name__),
+26 |     ))
+   |
+
+E501 Line too long (104 > 100)
+  --> src/cpswm/system/owned_position_update.py:82:101
+   |
+80 |             or (env.identity.household_id, env.identity.session_id, env.identity.trace_id)
+81 |             != stream._scope
+82 |             or not command.decision_time <= env.capture_time <= env.arrival_time <= delivery.received_at
+   |                                                                                                     ^^^^
+83 |         ):
+84 |             raise ValueError("owned observation raw bytes or historical timing changed")
+   |
+
+E501 Line too long (104 > 100)
+   --> src/cpswm/system/owned_position_update.py:112:101
+    |
+110 |         for context in workspace.raw_contexts.values():
+111 |             update = context.observation_update
+112 |             if update is not None and expected.get(update.logical_key) != native_content_sha256(update):
+    |                                                                                                     ^^^^
+113 |                 raise ValueError("raw context has no original accepted observation")
+    |
+
+E501 Line too long (128 > 100)
+   --> src/cpswm/system/owned_position_update.py:140:101
+    |
+138 |             stream._busy = False
+139 |         describe_current_owned_rgbd(stream, action_id)
+140 |         if issue_anchor(stream, stream._observation_commands[action_id][0]) != core._particle_observation_issues.get(action_id):
+    |                                                                                                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+141 |             raise ValueError("issued observation parent/source is stale")
+142 |         update = accepted_update(stream, action_id)
+    |
+
+E501 Line too long (105 > 100)
+   --> src/cpswm/system/owned_position_update.py:165:101
+    |
+163 |                 workspace.previous_weight_evidence(workspace.batch), update,
+164 |             )
+165 |             core._particle_observation_update_anchors[update.logical_key] = native_content_sha256(update)
+    |                                                                                                     ^^^^^
+166 |             core._register_native_raw_context(context, authority=stream._raw_candidate_authority)
+167 |             produced = deepcopy(producer.produce(deepcopy(context)))
+    |
+
+E501 Line too long (112 > 100)
+   --> src/cpswm/system/owned_position_update.py:199:101
+    |
+197 |                 if producer is not None and prior_state is not None:
+198 |                     producer.restore_state(prior_state)
+199 |                     if native_content_sha256(producer.checkpoint_state()) != native_content_sha256(prior_state):
+    |                                                                                                     ^^^^^^^^^^^^
+200 |                         stream._durability_failed = True
+201 |                         raise RuntimeError("owned position producer rollback failed") from None
+    |
+
+E501 Line too long (106 > 100)
+    --> src/cpswm/system/structure_two_continuous_input.py:1346:101
+     |
+1345 |         if enabled(self):
+1346 |             self._system.core._particle_observation_deliveries[command.action_id] = delivery_pin(delivery)
+     |                                                                                                     ^^^^^^
+1347 |         self._last_arrival = when
+1348 |         self._persist()
+     |
+
+Found 10 errors (2 fixed, 8 remaining).

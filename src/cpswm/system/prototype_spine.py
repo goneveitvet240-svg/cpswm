@@ -1239,6 +1239,9 @@ class CorePrototypeSpine:
         self._particle_raw_profile_sha256 = native_content_sha256(None)
         self._particle_raw_authority: Any = None
         self._particle_raw_context_anchors: dict[str, str] = {}
+        self._particle_observation_issues: dict[UUID, tuple[Any, ...]] = {}
+        self._particle_observation_deliveries: dict[UUID, str] = {}
+        self._particle_observation_update_anchors: dict[str, str] = {}
         self._particle_posterior_source_anchors: dict[UUID, str] = {}
         self._particle_replay_generations: tuple[JointReplayGeneration, ...] = ()
         self._particle_replay_generation_anchors: tuple[str, ...] = ()
@@ -2949,6 +2952,11 @@ class CorePrototypeSpine:
             ):
                 raise ValueError("raw context previous weights are not owned")
             key, digest = context.content_sha256, raw_context_digest(context)
+            update = context.observation_update
+            if update is not None and self._particle_observation_update_anchors.get(
+                update.logical_key
+            ) != native_content_sha256(update):
+                raise ValueError("raw observation update lacks original owner acceptance")
             prior = self._particle_raw_context_anchors.get(key)
             if prior is not None and prior != digest:
                 raise ValueError("owned raw context cannot be replaced")
@@ -2979,7 +2987,16 @@ class CorePrototypeSpine:
             for source in generation.sources:
                 self._particle_workspace.posterior_sources[source.source_id] = source
                 self._particle_posterior_source_anchors[source.source_id] = source.body_sha256
-                produced = produce(deepcopy(source))
+            sources_by_revision = {
+                s.history_after.latest.revision_id: s for s in generation.sources
+            }
+            for update in generation.updates:
+                source = sources_by_revision[update.revision_id]
+                produced = (
+                    produce(deepcopy(source), deepcopy(update))
+                    if update.context is not None
+                    else produce(deepcopy(source))
+                )
                 self.stage_prepared_particle_candidates(
                     receipts=produced.receipts,
                     statistics=produced.statistics,
@@ -4051,6 +4068,9 @@ class CorePrototypeSpine:
             "particle_workspace_state": deepcopy(self._particle_workspace),
             "particle_input_anchors": dict(self._particle_input_anchors),
             "particle_raw_context_anchors": dict(self._particle_raw_context_anchors),
+            "particle_observation_issues": dict(self._particle_observation_issues),
+            "particle_observation_deliveries": dict(self._particle_observation_deliveries),
+            "particle_observation_update_anchors": dict(self._particle_observation_update_anchors),
             "particle_posterior_source_anchors": dict(self._particle_posterior_source_anchors),
             "particle_replay_generations": self._particle_replay_generations,
             "particle_replay_generation_anchors": self._particle_replay_generation_anchors,
@@ -4210,6 +4230,15 @@ class CorePrototypeSpine:
         self._particle_input_anchors = cast(dict[UUID, str], checkpoint["particle_input_anchors"])
         self._particle_raw_context_anchors = dict(
             cast(dict[str, str], checkpoint["particle_raw_context_anchors"])
+        )
+        self._particle_observation_issues = dict(
+            cast(dict[UUID, tuple[Any, ...]], checkpoint["particle_observation_issues"])
+        )
+        self._particle_observation_deliveries = dict(
+            cast(dict[UUID, str], checkpoint["particle_observation_deliveries"])
+        )
+        self._particle_observation_update_anchors = dict(
+            cast(dict[str, str], checkpoint["particle_observation_update_anchors"])
         )
         self._particle_posterior_source_anchors = cast(
             dict[UUID, str], checkpoint["particle_posterior_source_anchors"]

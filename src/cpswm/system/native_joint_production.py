@@ -32,6 +32,25 @@ if TYPE_CHECKING:
 
 
 @dataclass(frozen=True)
+class NativeObservationUpdate:
+    """Original owner acceptance, stable across recomputation generations."""
+
+    logical_key: str
+    action_id: UUID
+    semantic_revision_id: UUID
+    issued_source_id: UUID
+    issued_source_body_sha256: str
+    original_runtime_id: UUID
+    original_parent_cluster: UUID
+    original_parent_sha256: str
+    command_sha256: str
+    delivery_sha256: str
+    packet: dict[str, Any]
+    decision_time: datetime
+    received_at: datetime
+
+
+@dataclass(frozen=True)
 class NativeJointContext:
     source: NativePosteriorSource
     previous_batch: ParticleRevisionBatch | None
@@ -41,6 +60,7 @@ class NativeJointContext:
     cutoff: datetime
     visual_source: NativeVisualSource | None = None
     previous_weight_evidence: NativePreviousWeightEvidence | None = None
+    observation_update: NativeObservationUpdate | None = None
 
     @property
     def content_sha256(self) -> str:
@@ -66,6 +86,7 @@ class NativeJointContext:
                     if self.previous_weight_evidence is not None
                     else ()
                 ),
+                *((self.observation_update,) if self.observation_update is not None else ()),
             )
         )
 

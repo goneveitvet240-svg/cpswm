@@ -432,6 +432,9 @@ def validate_neural_input_body(body: Any, workspace: Any, *, current: bool = Fal
         workspace.previous_weight_evidence(previous_batch)
         if workspace.raw_candidate_profile is not None
         else None,
+        workspace.raw_contexts[evidence.input_context_sha256].observation_update
+        if evidence.input_context_sha256 in workspace.raw_contexts
+        else None,
     )
     from cpswm.system.native_raw_verification import verify_raw_base
 

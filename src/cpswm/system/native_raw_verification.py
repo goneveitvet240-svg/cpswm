@@ -51,13 +51,17 @@ def profile_for(producer: NativeJointProducer | None) -> dict[str, Any] | None:
         raise ValueError("canonical neural producer class was replaced")
     # Closed registry, imported from installed source, never a checkpoint path.
     from cpswm.system.controlled_position_producer import ControlledPositionProducer
+    from cpswm.system.owned_position_producer import PROFILE, OwnedPositionProducer
 
     neural = cast("NeuralNativeProducer", producer)
     candidate = neural._candidate_model
-    if type(candidate) is not ControlledPositionProducer:
+    if type(candidate) not in (ControlledPositionProducer, OwnedPositionProducer):
         return None
+    candidate = cast("ControlledPositionProducer", candidate)
     return dict(
-        profile="controlled-position-raw@1",
+        profile=PROFILE
+        if type(candidate) is OwnedPositionProducer
+        else "controlled-position-raw@1",
         verifier_source=sha256(Path(__file__).read_bytes()).hexdigest(),
         weight_source=sha256(
             Path(__file__).with_name("structure_two_particle_workspace.py").read_bytes()
@@ -79,6 +83,7 @@ def profile_for(producer: NativeJointProducer | None) -> dict[str, Any] | None:
 
 def reconstruct(profile: dict[str, Any]) -> ControlledPositionProducer:
     from cpswm.system.controlled_position_producer import ControlledPositionProducer
+    from cpswm.system.owned_position_producer import PROFILE, OwnedPositionProducer
 
     if (
         type(profile) is not dict
@@ -92,7 +97,7 @@ def reconstruct(profile: dict[str, Any]) -> ControlledPositionProducer:
             "implementation",
             "arguments",
         }
-        or profile["profile"] != "controlled-position-raw@1"
+        or profile["profile"] not in ("controlled-position-raw@1", PROFILE)
     ):
         raise ValueError("unrecognized configured raw candidate profile")
     if profile["verifier_source"] != sha256(Path(__file__).read_bytes()).hexdigest():
@@ -104,7 +109,8 @@ def reconstruct(profile: dict[str, Any]) -> ControlledPositionProducer:
         ).hexdigest()
     ):
         raise ValueError("raw weight source differs from owner configuration")
-    result = ControlledPositionProducer(**deepcopy(profile["arguments"]))
+    cls = OwnedPositionProducer if profile["profile"] == PROFILE else ControlledPositionProducer
+    result = cls(**deepcopy(profile["arguments"]))
     if (
         result.binding_sha256 != profile["candidate_binding"]
         or producer_implementation_binding(result) != profile["implementation"]
@@ -163,6 +169,7 @@ def verify_raw_base(
     candidate = reconstruct(profile)
     clusters = {record.evidence_cluster_id for record in native_context.records}
     sources = []
+    contexts = []
     for cluster in clusters:
         prior = workspace.input_bodies.get(cluster)
         if prior is None or prior.neural_evidence is None:
@@ -172,9 +179,18 @@ def verify_raw_base(
         if source is None:
             raise ValueError("raw candidate predecessor source is not owned")
         sources.append(source)
-    expected = candidate.recompute(
-        replace(native_context, visible_prefix=original.visible_prefix), tuple(sources)
-    )
+        key = prior.neural_evidence.input_context_sha256
+        if key in workspace.raw_contexts:
+            contexts.append(workspace.raw_contexts[key])
+    from cpswm.system.owned_position_producer import OwnedPositionProducer
+
+    full_context = replace(native_context, visible_prefix=original.visible_prefix)
+    if type(candidate) is OwnedPositionProducer:
+        if len(contexts) != len(clusters):
+            raise ValueError("owned update predecessor context is missing")
+        expected = candidate.recompute_updates(full_context, tuple(contexts))
+    else:
+        expected = candidate.recompute(full_context, tuple(sources))
     expected = replace(expected, context_sha256=native_context.content_sha256)
     if native_content_sha256(expected) != native_content_sha256(evidence.base_candidates):
         raise ValueError("raw candidate base differs from complete owner recomputation")

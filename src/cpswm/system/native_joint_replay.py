@@ -13,6 +13,7 @@ from dataclasses import dataclass
 from typing import Any
 from uuid import UUID
 
+from cpswm.system.native_joint_production import NativeJointContext
 from cpswm.system.reproducibility import content_sha256, content_uuid
 from cpswm.system.structure_two_particle_workspace import (
     NativeParticleWorkspace,
@@ -32,6 +33,25 @@ class ReplayAssessment:
 
 
 @dataclass(frozen=True)
+class AcceptedNativeUpdate:
+    logical_key: str
+    revision_id: UUID
+    context: NativeJointContext | None
+
+    @property
+    def content_sha256(self) -> str:
+        from cpswm.system.native_raw_verification import raw_context_digest
+
+        return native_content_sha256(
+            (
+                self.logical_key,
+                self.revision_id,
+                None if self.context is None else raw_context_digest(self.context),
+            )
+        )
+
+
+@dataclass(frozen=True)
 class JointReplayGeneration:
     old_workspace: NativeParticleWorkspace
     old_input_anchors: dict[UUID, str]
@@ -39,6 +59,7 @@ class JointReplayGeneration:
     basis_sha256: str
     sources: tuple[NativePosteriorSource, ...]
     removed_revision_ids: tuple[UUID, ...]
+    updates: tuple[AcceptedNativeUpdate, ...] = ()
 
     @property
     def content_sha256(self) -> str:
@@ -58,6 +79,7 @@ class JointReplayGeneration:
                 self.basis_sha256,
                 self.sources,
                 self.removed_revision_ids,
+                *((tuple(u.content_sha256 for u in self.updates),) if self.updates else ()),
             )
         )
 
@@ -113,7 +135,7 @@ def validate_replay_source(core: Any, source: NativePosteriorSource) -> None:
         raise ValueError("joint replay source is stale after semantic correction")
 
 
-def consumed_schedule(workspace: NativeParticleWorkspace) -> tuple[UUID, ...]:
+def consumed_schedule(workspace: NativeParticleWorkspace) -> tuple[AcceptedNativeUpdate, ...]:
     """Recover update order from accepted parent links, never dictionary order."""
     if workspace.batch is None:
         if workspace.input_bodies:
@@ -130,7 +152,17 @@ def consumed_schedule(workspace: NativeParticleWorkspace) -> tuple[UUID, ...]:
         revisions = {r.proposal.proposed_state.revision_id for r in body.receipts}
         if len(revisions) != 1:
             raise ValueError("joint replay cannot infer a unique consumed source per batch")
-        reverse.append(next(iter(revisions)))
+        revision = next(iter(revisions))
+        context = (
+            workspace.raw_contexts.get(body.neural_evidence.input_context_sha256)
+            if body.neural_evidence is not None
+            else None
+        )
+        observation = None if context is None else context.observation_update
+        logical_key = str(revision) if observation is None else observation.logical_key
+        if observation is not None and observation.semantic_revision_id != revision:
+            raise ValueError("observation replay is attached to another semantic source")
+        reverse.append(AcceptedNativeUpdate(logical_key, revision, deepcopy(context)))
         parents = {
             None
             if r.proposal.proposed_state.parent_particle_id is None
@@ -140,7 +172,9 @@ def consumed_schedule(workspace: NativeParticleWorkspace) -> tuple[UUID, ...]:
         if len(parents) != 1:
             raise ValueError("joint replay has ambiguous predecessor batches")
         cursor = parents.pop()
-    if visited != set(workspace.input_bodies) or len(set(reverse)) != len(reverse):
+    if visited != set(workspace.input_bodies) or len({u.logical_key for u in reverse}) != len(
+        reverse
+    ):
         raise ValueError("joint replay history has orphan or repeated source updates")
     return tuple(reversed(reverse))
 
@@ -162,14 +196,17 @@ def prepare_generation(core: Any) -> JointReplayGeneration:
     source_pool: dict[UUID, NativePosteriorSource] = {}
     # Current and archived bodies have each already passed their core anchors.
     workspaces = [g.old_workspace for g in core._particle_replay_generations] + [old]
-    schedule: list[UUID] = []
+    schedule: list[AcceptedNativeUpdate] = []
+    seen_updates: set[str] = set()
     for workspace in workspaces:
-        for revision in consumed_schedule(workspace):
-            if revision not in schedule:
-                schedule.append(revision)
+        for update in consumed_schedule(workspace):
+            if update.logical_key not in seen_updates:
+                schedule.append(update)
+                seen_updates.add(update.logical_key)
         for source in workspace.posterior_sources.values():
             source_pool[source.history_after.latest.revision_id] = source
-    retained = [rid for rid in schedule if rid in core._observed_events]
+    retained_updates = tuple(u for u in schedule if u.revision_id in core._observed_events)
+    retained = list(dict.fromkeys(u.revision_id for u in retained_updates))
     if not retained:
         raise ValueError("no retained consumed source for a nonempty joint posterior")
     # Intermediate PCHMP results can already be included in the next CIAV prior.
@@ -233,6 +270,7 @@ def prepare_generation(core: Any) -> JointReplayGeneration:
         basis,
         tuple(sources),
         tuple(sorted(old.invalidated_revisions, key=str)),
+        retained_updates,
     )
 
 

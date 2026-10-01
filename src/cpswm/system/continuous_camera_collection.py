@@ -126,4 +126,8 @@ def collect_posterior_step(
         assert command is not None
         delivery = stream.execute_observation(command, executor=executor)
         receipt = stream.advance(cutoff=delivery.received_at)
+        from cpswm.system.owned_position_update import enabled
+
+        if delivery.success and enabled(stream):
+            stream.consume_owned_position_observation(command.action_id)
         return CollectionStep(plan, command, delivery, receipt, recovered)

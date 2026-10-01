@@ -33,6 +33,7 @@ from cpswm.system.continuous_state_store import ContinuousStateStore
 from cpswm.system.native_joint_production import (
     NativeJointContext,
     NativeJointProducer,
+    NativeObservationUpdate,
     ProducedJointCandidates,
     producer_binding,
     producer_implementation_binding,
@@ -315,6 +316,7 @@ class ContinuousEvidenceInput:
         # Captured by the owner at command issue, outside the caller's problem
         # body: disconnected current actions cannot masquerade as older epochs.
         self._observation_native_origins: dict[UUID, str] = {}
+        self._position_consumptions: dict[UUID, NativeObservationUpdate] = {}
         self._lock = RLock()
         self._busy = False
         self._persist()
@@ -807,6 +809,12 @@ class ContinuousEvidenceInput:
         from cpswm.system.joint_camera_feedback import replay_camera_history
 
         view = self._native_joint_decision_view()
+        from cpswm.system.owned_position_update import enabled
+
+        if enabled(self):
+            # Explicit position-only profile: never also multiply this image's
+            # classification likelihood into the decision view.
+            return view, ()
         if self._observation_decoder is None:
             return view, ()
         assert self._observation_decoder_binding is not None
@@ -862,6 +870,9 @@ class ContinuousEvidenceInput:
             core._register_native_raw_context(context, authority=self._raw_candidate_authority)
 
     def _verify_native_raw_sources(self) -> None:
+        from cpswm.system.owned_position_update import verify_journal
+
+        verify_journal(self)
         core = self._system.core
         core._check_particle_workspace_binding()
         workspace = core._particle_workspace
@@ -877,6 +888,12 @@ class ContinuousEvidenceInput:
             ) != core._particle_raw_context_anchors.get(key):
                 raise ValueError("raw candidate context differs from original admitted bytes")
         workspace._validate_persisted_state()
+
+    def consume_owned_position_observation(self, action_id: UUID) -> NativeObservationUpdate:
+        """Atomically consume the original delivered frame, without rerunning P5."""
+        from cpswm.system.owned_position_update import consume
+
+        return consume(self, action_id)
 
     def produce_joint_posterior(self) -> None:
         """Populate the current native batch with the configured producer, once.
@@ -1034,22 +1051,29 @@ class ContinuousEvidenceInput:
 
                 cutoff = max(self._last_cutoff, self._last_arrival or self._last_cutoff)
 
-                def produce(source: NativePosteriorSource) -> ProducedJointCandidates:
+                def produce(
+                    source: NativePosteriorSource, update: Any = None
+                ) -> ProducedJointCandidates:
                     workspace = core._particle_workspace
+                    historical = None if update is None else update.context
+                    update_cutoff = cutoff if historical is None else historical.cutoff
                     context = deepcopy(
                         NativeJointContext(
                             source=source,
                             previous_batch=workspace.batch,
                             records=tuple(workspace.records.values()),
                             ledger_head_sha256=core._hybrid_loop.ledger.export_state().manifest.head_hash,
-                            visible_prefix=self.visible_prefix(cutoff=cutoff),
-                            cutoff=cutoff,
-                            visual_source=self._native_visual_source(cutoff),
+                            visible_prefix=self.visible_prefix(cutoff=update_cutoff),
+                            cutoff=update_cutoff,
+                            visual_source=self._native_visual_source(update_cutoff),
                             previous_weight_evidence=workspace.previous_weight_evidence(
                                 workspace.batch
                             )
                             if workspace.raw_candidate_profile is not None
                             else None,
+                            observation_update=None
+                            if historical is None
+                            else historical.observation_update,
                         )
                     )
                     expected = context.content_sha256
@@ -1238,6 +1262,12 @@ class ContinuousEvidenceInput:
                 self._observation_status[command.action_id] = "READY"
                 if native_origin is not None:
                     self._observation_native_origins[command.action_id] = native_origin
+                    from cpswm.system.owned_position_update import enabled, issue_anchor
+
+                    if enabled(self):
+                        self._system.core._particle_observation_issues[command.action_id] = (
+                            issue_anchor(self, command)
+                        )
                 self._last_cutoff = when
                 self._persist()
                 return command
@@ -1318,6 +1348,12 @@ class ContinuousEvidenceInput:
             self._busy = True
             self._checkpoint_suspended = False
         self._observation_status[command.action_id] = delivery
+        from cpswm.system.owned_position_update import delivery_pin, enabled
+
+        if enabled(self):
+            self._system.core._particle_observation_deliveries[command.action_id] = delivery_pin(
+                delivery
+            )
         self._last_arrival = when
         self._persist()
         return deepcopy(delivery)
@@ -1570,6 +1606,7 @@ class ContinuousEvidenceInput:
         restored._busy = False
         restored._durability_failed = False
         restored._checkpoint_suspended = False
+        restored._position_consumptions = getattr(restored, "_position_consumptions", {})
         restored._verify_native_visual_sources()
         restored._verify_native_raw_sources()
         return restored

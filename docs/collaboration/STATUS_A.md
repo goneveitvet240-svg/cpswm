@@ -1,3 +1,9 @@
+# A：工程回归修复开工（2026-10-01）
+
+分支codex/pc-a-engineering-regressions-20261001，base/当前源码b6c6317a35c99cd95fe636251ce1e63bfba5f402。远端CI36783640567为155类型错误、31失败及65分钟退出124；不能以PR76–80局部通过覆盖。失败审计793f5e0c9a20094e9c482dde1ba4d10bd1f0b018已读。先修工程回归，再同语义新观测完整更新事务，随后行为收益；完整统一范围与既有科学选择保持。独立工作树，原树/STATUS_B不改。证据output/engineering-regressions-20261001；实现后冻结并进行两轮明确标记的本机自审，独立B仍开放。
+
+---
+
 # A：当前 owner RGB-D 只读描述已交付（2026-10-01 06:05）
 
 分支codex/pc-a-owned-rgbd-descriptor-20261001，实际功能/双审源码6faa17e178ad001de6b5c0e1094f9e62568d7a7e（903 Python），base父功能82c7a81 / 父交付dc57a687f6cfe0912de7415357765fff79f2c2ff。顺序R1/R2同源码通过，详[报告](../reviews/pc_a/owned_rgbd_descriptor_2026-10-01/REPORT.md)和[交付](../reviews/pc_a/owned_rgbd_descriptor_2026-10-01/DELIVERY.md)。A辅助、非B独立/全仓CI。

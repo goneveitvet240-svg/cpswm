@@ -330,6 +330,12 @@ def stop_process(proc):
             os.killpg(proc.pid, 0)
         except ProcessLookupError:
             break
+        except PermissionError:
+            # Darwin can transiently deny a probe while an exiting group is
+            # being reaped. Retry within the same deadline; EPERM never proves
+            # disappearance. Persistent denial still reaches the hard cleanup
+            # below, whose permission failure remains an error.
+            pass
         time.sleep(0.02)
     else:
         with suppress(ProcessLookupError):

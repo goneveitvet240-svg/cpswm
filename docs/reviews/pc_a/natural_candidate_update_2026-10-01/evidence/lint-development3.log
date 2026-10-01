@@ -1,0 +1,46 @@
+E501 Line too long (117 > 100)
+   --> tests/test_natural_candidate_position.py:410:101
+    |
+408 |                 selected["world_point_m"][0]+=2.0
+409 |                 for row in value["surface"]["observations"]:
+410 |                     if row["measurement_id"]==selected["measurement_id"] and row["estimator"]==selected["estimator"]:
+    |                                                                                                     ^^^^^^^^^^^^^^^^^
+411 |                         row["world_point_m"]=list(selected["world_point_m"])
+412 |                 attacked.append(True)
+    |
+
+E501 Line too long (117 > 100)
+   --> tests/test_natural_candidate_position.py:413:101
+    |
+411 |                         row["world_point_m"]=list(selected["world_point_m"])
+412 |                 attacked.append(True)
+413 |             if frame.f_code is NeuralNativeProducer.produce.__code__ and frame.f_locals.get("self") is case["joint"]:
+    |                                                                                                     ^^^^^^^^^^^^^^^^^
+414 |                 verify_neural_evidence(value.neural_evidence)
+415 |                 proofs.append(True)
+    |
+
+RUF043 Pattern passed to `match=` contains metacharacters but is neither escaped nor raw
+   --> tests/test_natural_candidate_position.py:443:49
+    |
+441 |         with monkeypatch.context() as patch:
+442 |             patch.setattr(natural,"candidate_readout",lambda *args,**kwargs: {})
+443 |             with pytest.raises(ValueError,match="dependency changed|implementation|producer dependency"):
+    |                                                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+444 |                 case["stream"].consume_owned_position_observation(command.action_id)
+445 |         assert state(case)==before
+    |
+help: Use a raw string or `re.escape()` to make the intention explicit
+
+E501 Line too long (105 > 100)
+   --> tests/test_natural_candidate_position.py:443:101
+    |
+441 |         with monkeypatch.context() as patch:
+442 |             patch.setattr(natural,"candidate_readout",lambda *args,**kwargs: {})
+443 |             with pytest.raises(ValueError,match="dependency changed|implementation|producer dependency"):
+    |                                                                                                     ^^^^^
+444 |                 case["stream"].consume_owned_position_observation(command.action_id)
+445 |         assert state(case)==before
+    |
+
+Found 5 errors (1 fixed, 4 remaining).

@@ -403,7 +403,9 @@ class ControlledPositionProducer:
         selected = self._selected(source)
         active = self._active(context)
         _require(not active or not self.consumed_keys, "bound raw observation already consumed")
-        observation = self._public(context) if active else None
+        observation, public_diagnostic = (
+            self._observation_and_diagnostic(context) if active else (None, {})
+        )
         cluster = self._cluster(context, binding)
         from cpswm.system.structure_two_particle_workspace import NativePreviousWeightEvidence
 
@@ -448,6 +450,7 @@ class ControlledPositionProducer:
             if selected
             else "unrelated-source",
         )
+        diagnostic.update(public_diagnostic)
         for index, actor in enumerate(("owner", "unknown_actor")):
             chains = [
                 h
@@ -563,6 +566,11 @@ class ControlledPositionProducer:
             self.consumed_keys.append(self._measurement_key())
         self.last_diagnostic = diagnostic
         return result
+
+    def _observation_and_diagnostic(
+        self, context: NativeJointContext
+    ) -> tuple[dict[str, Any], dict[str, Any]]:
+        return self._public(context), {}
 
     def _active(self, context: NativeJointContext) -> bool:
         return self._selected(context.source) and bool(self.configuration["enabled"])

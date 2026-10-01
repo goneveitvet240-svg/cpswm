@@ -46,6 +46,13 @@ class OwnedPositionProducer(ControlledPositionProducer):
         self.position_model = position.restore(position_model, position_pin)
         self.position_pin = position_pin
         self._implementation = implementation_binding()
+        self._validate_configuration()
+        self._binding = self._content_binding()
+        self.calls = 0
+        self.consumed_keys: list[str] = []
+        self.last_diagnostic: dict[str, Any] | None = None
+
+    def _validate_configuration(self) -> None:
         c = self.configuration
         _require(
             type(c) is dict
@@ -69,10 +76,6 @@ class OwnedPositionProducer(ControlledPositionProducer):
             and all(type(v) is float and isfinite(v) for v in candidate["box"]),
             "one declared controlled candidate and public seed required",
         )
-        self._binding = self._content_binding()
-        self.calls = 0
-        self.consumed_keys: list[str] = []
-        self.last_diagnostic: dict[str, Any] | None = None
 
     def _content_binding(self) -> str:
         from cpswm.system.owned_position_update import implementation_binding as owner_binding

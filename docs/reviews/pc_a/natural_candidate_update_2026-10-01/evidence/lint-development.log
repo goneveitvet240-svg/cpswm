@@ -1,0 +1,44 @@
+E501 Line too long (116 > 100)
+  --> src/cpswm/system/native_raw_verification.py:62:101
+   |
+60 |     neural = cast("NeuralNativeProducer", producer)
+61 |     candidate = neural._candidate_model
+62 |     if type(candidate) not in (ControlledPositionProducer, OwnedPositionProducer, NaturalCandidatePositionProducer):
+   |                                                                                                     ^^^^^^^^^^^^^^^^
+63 |         return None
+64 |     candidate = cast("ControlledPositionProducer", candidate)
+   |
+
+E501 Line too long (117 > 100)
+  --> src/cpswm/system/native_raw_verification.py:67:101
+   |
+65 |     return dict(
+66 |         profile={ControlledPositionProducer: "controlled-position-raw@1",
+67 |                  OwnedPositionProducer: PROFILE, NaturalCandidatePositionProducer: NATURAL_PROFILE}[type(candidate)],
+   |                                                                                                     ^^^^^^^^^^^^^^^^^
+68 |         verifier_source=sha256(Path(__file__).read_bytes()).hexdigest(),
+69 |         weight_source=sha256(
+   |
+
+E501 Line too long (102 > 100)
+  --> src/cpswm/system/natural_candidate_position.py:34:101
+   |
+32 |     return content_sha256((
+33 |         sha256(Path(__file__).read_bytes()).hexdigest(), SELECTION, OBSERVATION_KEYS,
+34 |         tuple((name, _helper_code_sha256(value.__code__)) for name, value in sorted(globals().items())
+   |                                                                                                     ^^
+35 |               if inspect.isfunction(value) and value.__module__ == __name__),
+36 |         version("torch"), version("torchvision"),
+   |
+
+E501 Line too long (103 > 100)
+   --> src/cpswm/system/natural_candidate_position.py:123:101
+    |
+121 |         )
+122 |         selected = result["selected"]
+123 |         _require(selected is not None, f"natural position unavailable: {result['unavailable_reason']}")
+    |                                                                                                     ^^^
+124 |         return selected["observation"], dict(natural_candidates=result)
+    |
+
+Found 6 errors (2 fixed, 4 remaining).

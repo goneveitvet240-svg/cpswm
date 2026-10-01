@@ -1,3 +1,13 @@
+# A：自然检测候选接入观测事务开工（2026-10-01）
+
+分支 `codex/pc-a-natural-candidate-update-20261001`，base/开工源码 `0061bf82c5db70367f8afa513478e3e86c4ca470`（PR88）。本轮 fetch 已核验集成 `19ddf26830348a2f0b33f0af54d6ba702c5cfb1c`、B `fd4ca6ef5e81c90d7cf7987b42c0b2810d8a810a`，目标分支与远端一致。
+
+先把固定候选框/固定 seed 改为从 owner 实际 RGB-D 重算自然检测候选及公开有效读出，接入原单测量事务、复算、重放和恢复，保留原受控对照。既有 detector 分数/同帧 affinity 不自动变成自然世界身份概率；新增外观/三维关联开发基线已询问用户，未答复前不实施依赖该选择的科学模型。原统一范围/指标/阈值不变。
+
+工作目录 `/private/tmp/cpswm-pc-a-natural-candidate-update-20261001`，证据 `/private/tmp/cpswm-natural-candidate-evidence-20261001`。计划冻结源码后顺序两轮 A 对抗自审，非 B 独立验收。原用户目录与 STATUS_B 不改。本段为开工登记，尚无新增通过结论。
+
+---
+
 # A：同语义新观测事务与一次实时 Unity 闭环通过（2026-10-01）
 
 分支 `codex/pc-a-owned-observation-update-20261001`，base `cab777ff69c250696611a65e387aa305f7b5f30d`，实际功能源码 `d84d570d0c12ec56d5f47f699f7211ffd99422b9`。已 fetch 集成 `19ddf26830348a2f0b33f0af54d6ba702c5cfb1c`、B `fd4ca6ef5e81c90d7cf7987b42c0b2810d8a810a`。主线开发与全仓诊断分开推进。

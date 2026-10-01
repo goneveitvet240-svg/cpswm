@@ -17,9 +17,10 @@ jobs:
 
   current-inputs:
     runs-on: ubuntu-latest
-    # Preparation has its own 65-minute process-group budget. Leave time for
-    # setup, graceful cleanup and artifact upload outside that execution budget.
-    timeout-minutes: 85
+    # Full comparison and attribution replays exceeded 65 minutes on the Linux
+    # runner. Budget preparation separately; the test execution stays 65 minutes.
+    # Leave 20 minutes outside this budget for setup, cleanup and artifact upload.
+    timeout-minutes: 140
     steps:
       - uses: actions/checkout@v4
         with:
@@ -30,7 +31,7 @@ jobs:
           enable-cache: true
       - run: uv sync --frozen --extra dev --extra perception --extra hand-perception
       - name: Generate and independently replay current test inputs
-        run: .venv/bin/python tools/prepare_current_validation_inputs.py --output "${GITHUB_WORKSPACE}/output/ci-validation-inputs"
+        run: .venv/bin/python tools/prepare_current_validation_inputs.py --output "${GITHUB_WORKSPACE}/output/ci-validation-inputs" --budget-seconds 7200 --grace-seconds 60
       - name: Preserve preparation logs and inputs on every outcome
         if: always()
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02

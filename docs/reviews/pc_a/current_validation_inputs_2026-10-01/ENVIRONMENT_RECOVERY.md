@@ -1,0 +1,11 @@
+# 本机云端占位阻塞与精确Git恢复
+
+R1结束后，原Documents项目的Git pack索引、packed-refs及本轮脚本被系统标记compressed,dataless。进程采样确认git add停在索引mmap，git status停在packed refs读取；三次R2包装器在读取HEAD时被阻塞，尚未启动实际验证。相关进程由实施者停止，不能计为测试失败或通过。
+
+先请求系统取回Git元数据；从本地完整pack fc0b8044a4b99285bc0baf36812e004cf2b68c28重建同格式索引，保留原占位索引备份。该修复不改提交、refs或工作区文件。其后从GitHub建立/private/tmp/cpswm-local-git-recovery-20261001独立副本。原未推送功能提交fd08b59bdc01ca9ffe4e9b159cb1393052711d15及其父580e9b475d59c6ac5d45dc95e679b27289c6c2ea均保留；用原五个修改文件恢复根树，精确匹配75b8ca8920ac7896cfd047f683a5ea06a0c3bdcf，未重写功能提交。
+
+本轮工作目录/private/tmp/cpswm-pc-a-current-validation-inputs-20261001的.git指向独立副本，原指针备份在本机证据目录。源码路径、虚拟环境和冻结源/配置内容未变。恢复11574份本地物化对象及1552份当前checkout对象时逐一核对原Git对象哈希；没有用云端占位文件拼造内容。后续Git操作正常，fd08b59及交接c8f1d29b90b60ef4ddc5303628c87def428d1d1b已正常推送。
+
+实际R2输出迁到/private/tmp/cpswm-current-validation-evidence-20261001。原output/current-validation-inputs-20261001保留，包括中间失败；不可读取的云端原件不算已完成本地归档。为保留可读取的R1原件，在同源码再次运行162项并通过，作为记录恢复，不冒充新增独立覆盖。R1临时测试目录归档后88727成员全部读回验证，才清理其原暂存目录；1.0GiB归档保留本机，.venv不得作为跨机器环境直接复用。
+
+系统随后已取回原packed-refs；原用户目录HEAD仍09eb4d48e1c11082e90ca18332d04333e6b5b47a，原checkpoint分支及原未跟踪文件清单保持。没有切换、覆盖或提交原用户工作树。独立仓库的提交身份恢复为项目原有本地Git配置，仅修订了尚未推送的文档提交身份，不改已共享功能历史。

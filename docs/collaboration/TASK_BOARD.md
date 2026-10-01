@@ -2,7 +2,19 @@
 
 独立分支codex/pc-a-audit-environment-20261001，base c8f1d29b90b60ef4ddc5303628c87def428d1d1b，实际源码488c7a62e5562e340b61bbe735c1c2bad858933e。原生审计只读uv检查补齐perception/hand-perception，与CI一致；冻结后顺序R1/R2真实命令正路径、旧契约拒绝、缺必需依赖拒绝及恢复后正路径通过。现有契约测试1 passed，变更文件lint/format通过。非全仓/独立B/科学收益验收。详[报告](../reviews/pc_a/audit_environment_2026-10-01/REPORT.md)。
 
-父当前输入准备分支的6758项完整回归仍运行；独立目录及源码保持。工程历史回执过期与新增运行时失败仍待闭合，未开始后续新capture事务。原用户工作树、STATUS_B与完整统一范围保持。
+父fd08b59的6758项回归已超时：4687通过、1失败、29跳过、1预期失败，2040节点缺少具名终态。工程历史回执过期与新增运行时失败仍待闭合，未开始后续新capture事务。原用户工作树、STATUS_B与完整统一范围保持。
+
+---
+
+# A：当前材料功能已交付，完整回归超时仍未验收（2026-10-01）
+
+分支codex/pc-a-current-validation-inputs-20261001；base3d6b9f13cf4e71a482cf36974be92220602542b0，实际功能fd08b59bdc01ca9ffe4e9b159cb1393052711d15。顺序A自审R1 162通过、R2八阶段真实准备2552.77秒通过，真实CLI合法包及21完整伪造核验通过。非独立B。详[报告](../reviews/pc_a/current_validation_inputs_2026-10-01/REPORT.md)，草稿PR83，未合并。
+
+本机完整收集6758，65分钟实际超时124：4687 passed、1 failed、29 skipped、1 xfailed；4718具名终态、4匿名中断记录不计通过、2040节点缺少终态。1117源/配置/工作流/锁摘要不变。原31失败本轮仅8项有通过终态、23未观察到；不能声称31项关闭。单独当前checkpoint仍7 failed/8 passed，旧回执未闭合。
+
+Linux CI36847860851静态通过，新增准备阶段第4步65分钟超时，test未执行。后续独立PR84修复依赖声明、PR85将准备单独设120分钟，原回归65分钟不变；清理竞争的候选34b66c3另行审查，不改本轮失败。新capture原子更新未启动，科学收益/B独立验收仍未完成，完整研究范围保留。原用户树/STATUS_B不覆盖。
+
+证据/private/tmp/cpswm-current-validation-evidence-20261001；结束后已核对准备包并恢复本工作树P0至原HEAD，当前生成原件及测试journal保留。归档与精确命令见报告。
 
 ---
 

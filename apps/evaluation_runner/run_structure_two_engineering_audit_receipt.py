@@ -63,6 +63,10 @@ COMMANDS: Final = {
         "--check",
         "--extra",
         "dev",
+        "--extra",
+        "perception",
+        "--extra",
+        "hand-perception",
         "--no-cache",
     ),
     # Generated audit logs are outputs of this very command matrix. Excluding

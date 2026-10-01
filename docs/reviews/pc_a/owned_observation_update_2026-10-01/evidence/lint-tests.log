@@ -1,0 +1,94 @@
+E501 Line too long (102 > 100)
+   --> tests/test_owned_position_update.py:138:101
+    |
+136 |     ) for rid, e in targets]
+137 |     result = apply_feedback(case['stream'], bundles,
+138 |                            case['probe'].observed_days()[3].after.detection_time + timedelta(hours=2))
+    |                                                                                                     ^^
+139 |     assert all('retract' in row['operations'] for row in result)
+140 |     assert all(rid not in core._observed_events for rid, _ in targets)
+    |
+
+F821 Undefined name `pytest`
+   --> tests/test_owned_position_update.py:143:2
+    |
+143 | @pytest.mark.parametrize('remove_selected', [True, False])
+    |  ^^^^^^
+144 | def test_replay_retains_each_update_or_removes_its_semantic_dependency(tmp_path, checkpoints, remove_selected):
+145 |     case = make_case(tmp_path/'state.sqlite', checkpoints)
+    |
+
+E501 Line too long (111 > 100)
+   --> tests/test_owned_position_update.py:144:101
+    |
+143 | @pytest.mark.parametrize('remove_selected', [True, False])
+144 | def test_replay_retains_each_update_or_removes_its_semantic_dependency(tmp_path, checkpoints, remove_selected):
+    |                                                                                                     ^^^^^^^^^^^
+145 |     case = make_case(tmp_path/'state.sqlite', checkpoints)
+146 |     try:
+    |
+
+F821 Undefined name `pytest`
+   --> tests/test_owned_position_update.py:165:18
+    |
+163 |         if remove_selected:
+164 |             assert case['candidate'].consumed_keys == []
+165 |             with pytest.raises(ValueError, match='withdrawn'):
+    |                  ^^^^^^
+166 |                 stream.consume_owned_position_observation(command.action_id)
+167 |             assert weight_state(case)['aggregate'] == pytest.approx(1/3)
+    |
+
+F821 Undefined name `pytest`
+   --> tests/test_owned_position_update.py:167:55
+    |
+165 |             with pytest.raises(ValueError, match='withdrawn'):
+166 |                 stream.consume_owned_position_observation(command.action_id)
+167 |             assert weight_state(case)['aggregate'] == pytest.approx(1/3)
+    |                                                       ^^^^^^
+168 |         else:
+169 |             assert schedule[0].revision_id == schedule[1].revision_id
+    |
+
+F821 Undefined name `pytest`
+   --> tests/test_owned_position_update.py:189:2
+    |
+189 | @pytest.mark.parametrize('boundary', ['admission', 'published'])
+    |  ^^^^^^
+190 | def test_failure_rolls_back_computation_but_keeps_delivery_and_retry(tmp_path, checkpoints, boundary):
+191 |     import sys
+    |
+
+E501 Line too long (102 > 100)
+   --> tests/test_owned_position_update.py:190:101
+    |
+189 | @pytest.mark.parametrize('boundary', ['admission', 'published'])
+190 | def test_failure_rolls_back_computation_but_keeps_delivery_and_retry(tmp_path, checkpoints, boundary):
+    |                                                                                                     ^^
+191 |     import sys
+192 |     from copy import deepcopy
+    |
+
+E501 Line too long (108 > 100)
+   --> tests/test_owned_position_update.py:202:101
+    |
+200 |         core = stream._system.core
+201 |         extra = deepcopy((core._particle_observation_update_anchors, stream._position_consumptions))
+202 |         name = '_register_native_raw_context' if boundary == 'admission' else '_cancel_stale_joint_commands'
+    |                                                                                                     ^^^^^^^^
+203 |         def fault(frame, event, arg):
+204 |             if event == 'return' and frame.f_code.co_name == name:
+    |
+
+F821 Undefined name `pytest`
+   --> tests/test_owned_position_update.py:209:18
+    |
+207 |         sys.setprofile(fault)
+208 |         try:
+209 |             with pytest.raises(RuntimeError, match='injected owned'):
+    |                  ^^^^^^
+210 |                 stream.consume_owned_position_observation(command.action_id)
+211 |         finally:
+    |
+
+Found 12 errors (3 fixed, 9 remaining).

@@ -1,0 +1,11 @@
+
+==================================== ERRORS ====================================
+_____________ ERROR collecting tests/test_owned_position_update.py _____________
+tests/test_owned_position_update.py:157: in <module>
+    @pytest.mark.parametrize("remove_selected", [True, False])
+     ^^^^^^
+E   NameError: name 'pytest' is not defined
+=========================== short test summary info ============================
+ERROR tests/test_owned_position_update.py - NameError: name 'pytest' is not d...
+!!!!!!!!!!!!!!!!!!!! Interrupted: 1 error during collection !!!!!!!!!!!!!!!!!!!!
+1 error in 1.24s

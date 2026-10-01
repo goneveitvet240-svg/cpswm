@@ -1,0 +1,52 @@
+E501 Line too long (106 > 100)
+  --> src/cpswm/system/native_joint_replay.py:46:101
+   |
+45 |         return native_content_sha256((self.logical_key, self.revision_id,
+46 |                                       None if self.context is None else raw_context_digest(self.context)))
+   |                                                                                                     ^^^^^^
+
+E501 Line too long (103 > 100)
+   --> src/cpswm/system/native_joint_replay.py:167:101
+    |
+165 |             raise ValueError("joint replay has ambiguous predecessor batches")
+166 |         cursor = parents.pop()
+167 |     if visited != set(workspace.input_bodies) or len({u.logical_key for u in reverse}) != len(reverse):
+    |                                                                                                     ^^^
+168 |         raise ValueError("joint replay history has orphan or repeated source updates")
+169 |     return tuple(reversed(reverse))
+    |
+
+E501 Line too long (101 > 100)
+    --> src/cpswm/system/prototype_spine.py:2990:101
+     |
+2988 |                 self._particle_workspace.posterior_sources[source.source_id] = source
+2989 |                 self._particle_posterior_source_anchors[source.source_id] = source.body_sha256
+2990 |             sources_by_revision = {s.history_after.latest.revision_id: s for s in generation.sources}
+     |                                                                                                     ^
+2991 |             for update in generation.updates:
+2992 |                 source = sources_by_revision[update.revision_id]
+     |
+
+E501 Line too long (106 > 100)
+    --> src/cpswm/system/structure_two_continuous_input.py:1053:101
+     |
+1051 |                 cutoff = max(self._last_cutoff, self._last_arrival or self._last_cutoff)
+1052 |
+1053 |                 def produce(source: NativePosteriorSource, update: Any = None) -> ProducedJointCandidates:
+     |                                                                                                     ^^^^^^
+1054 |                     workspace = core._particle_workspace
+1055 |                     historical = None if update is None else update.context
+     |
+
+E501 Line too long (109 > 100)
+    --> src/cpswm/system/structure_two_continuous_input.py:1071:101
+     |
+1069 |                             if workspace.raw_candidate_profile is not None
+1070 |                             else None,
+1071 |                             observation_update=None if historical is None else historical.observation_update,
+     |                                                                                                     ^^^^^^^^^
+1072 |                         )
+1073 |                     )
+     |
+
+Found 7 errors (2 fixed, 5 remaining).

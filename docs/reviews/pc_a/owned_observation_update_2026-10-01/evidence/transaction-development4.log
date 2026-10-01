@@ -1,0 +1,10 @@
+..F.......                                                               [100%]
+=================================== FAILURES ===================================
+__ test_replay_retains_each_update_or_removes_its_semantic_dependency[False] ___
+tests/test_owned_position_update.py:206: in test_replay_retains_each_update_or_removes_its_semantic_dependency
+    assert case["candidate"].last_diagnostic["active"]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   AssertionError
+=========================== short test summary info ============================
+FAILED tests/test_owned_position_update.py::test_replay_retains_each_update_or_removes_its_semantic_dependency[False]
+1 failed, 9 passed in 121.18s (0:02:01)

@@ -1,0 +1,108 @@
+[
+  {
+    "trial": "live",
+    "tracks": [
+      {
+        "category": "dining table",
+        "score": 0.730130672454834,
+        "rows": [
+          {
+            "frame_index": 0,
+            "input_sha256": "412b7ee940bc0f91ec4929ebb0ae61d1fd186957f2bf6a1ff06ba283de14cb1c",
+            "box_xyxy": [
+              1.0,
+              91.0,
+              319.0,
+              314.0
+            ],
+            "surviving_points": 80,
+            "forward_backward_error_px": null,
+            "status": "INITIALIZED_PIXEL_TRACK_NOT_WORLD_IDENTITY"
+          },
+          {
+            "frame_index": 1,
+            "input_sha256": "ba16059e1b2566fbec465921071b93b78a26498c673b1d4709889499f6105b10",
+            "box_xyxy": null,
+            "surviving_points": 5,
+            "forward_backward_error_px": 0.8802983164787292,
+            "status": "LOST"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "trial": "live-targeted",
+    "tracks": [
+      {
+        "category": "bottle",
+        "score": 0.5136972665786743,
+        "rows": [
+          {
+            "frame_index": 0,
+            "input_sha256": "2d2a049404937fd58159a398662a3acd9121a044874c4a72b1fcad79d84cf06d",
+            "box_xyxy": [
+              70.0,
+              89.0,
+              100.0,
+              165.0
+            ],
+            "surviving_points": 24,
+            "forward_backward_error_px": null,
+            "status": "INITIALIZED_PIXEL_TRACK_NOT_WORLD_IDENTITY"
+          },
+          {
+            "frame_index": 1,
+            "input_sha256": "94c95d4e0b480ffeec5796b1c295a3de3254e0a67fe2ec12ba8278464259b97d",
+            "box_xyxy": [
+              45.8850212097168,
+              92.42347717285156,
+              75.8850212097168,
+              168.42347717285156
+            ],
+            "surviving_points": 24,
+            "forward_backward_error_px": 0.0561179518699646,
+            "status": "INITIALIZED_PIXEL_TRACK_NOT_WORLD_IDENTITY"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "trial": "live-small-view",
+    "tracks": [
+      {
+        "category": "bottle",
+        "score": 0.5136972665786743,
+        "rows": [
+          {
+            "frame_index": 0,
+            "input_sha256": "2d2a049404937fd58159a398662a3acd9121a044874c4a72b1fcad79d84cf06d",
+            "box_xyxy": [
+              70.0,
+              89.0,
+              100.0,
+              165.0
+            ],
+            "surviving_points": 24,
+            "forward_backward_error_px": null,
+            "status": "INITIALIZED_PIXEL_TRACK_NOT_WORLD_IDENTITY"
+          },
+          {
+            "frame_index": 1,
+            "input_sha256": "237303387bf5fe0b37a2031ab123d9ed9f08738ff87d4a4ff9eebfa9cb9a1718",
+            "box_xyxy": [
+              65.09939575195312,
+              89.3907699584961,
+              95.09939575195312,
+              165.3907699584961
+            ],
+            "surviving_points": 23,
+            "forward_backward_error_px": 0.02832961082458496,
+            "status": "INITIALIZED_PIXEL_TRACK_NOT_WORLD_IDENTITY"
+          }
+        ]
+      }
+    ]
+  }
+]

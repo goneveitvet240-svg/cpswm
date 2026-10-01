@@ -1,3 +1,14 @@
+## 2026-10-01：外观＋三维几何关联开发基线开工
+
+- 用户已同意新增未校准关联开发基线，保留多候选、未知分支和原对照。
+- 分支：`codex/pc-a-appearance-geometry-association-20261001`。
+- base / 开工源码：`0a5e38c0e59ce2a42342925be7dc5de6fc994c19`（PR #89）。
+- fetch 成功；共享集成 `19ddf26830348a2f0b33f0af54d6ba702c5cfb1c`，B `fd4ca6ef5e81c90d7cf7987b42c0b2810d8a810a`，没有改动共享分支或 B 文件。
+- 实施：绑定原始 owner 参考帧和查询帧，用公开 RGB 外观及三维表面点保留候选关联分支，进入一次完整观测更新事务；原固定选择/无因子对照保留。
+- 计划验证：合法多候选/未知、完整重封伪造、状态回滚、撤回重放、全新解释器恢复和后续动作读出；两轮 A 自审，不冒称 B 独立验收。
+- 当前尚未实现/测试；证据拟放 `docs/reviews/pc_a/appearance_geometry_association_2026-10-01/`。
+- 边界：开发模型不代表校准、自然语义身份锚定或任务收益；不修改既有统一科学范围。
+
 # A：自然候选后验接线通过双审与实时 Unity（2026-10-01）
 
 分支 `codex/pc-a-natural-candidate-update-20261001`，base `0061bf82c5db70367f8afa513478e3e86c4ca470`，实际功能源码 `63b053fa30a508a0c73dcff44d47a645f5a1362f`。开工 fetch 核验集成 `19ddf26830348a2f0b33f0af54d6ba702c5cfb1c`、B `fd4ca6ef5e81c90d7cf7987b42c0b2810d8a810a`。

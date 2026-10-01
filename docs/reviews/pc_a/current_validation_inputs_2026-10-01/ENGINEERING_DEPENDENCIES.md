@@ -1,0 +1,9 @@
+# 当前工程依赖，不是验收证明
+
+本轮修复：CI专门生成当前比较包、重新执行比较与归因验证、生成当前D0科学循环并完整重放、重建可变P0清单并运行清单消费者；只在所有真实命令完成后发布消费路径。读取路径、源文件与产物摘要变化均拒绝。旧科学循环文件继续单独测试为历史过期；三个当前语义对抗模块从全新合法对象开始，不改写其侧车后冒称当前。
+
+仍未闭合：工程checkpoint测试需要当前Task7/8/10实际运行、五个P5当前生成、历史源复算、native命令矩阵实际回执，再生成新的checkpoint，且现有封存输出禁止覆盖。下一版本须显式新路径；不能只刷新旧摘要。现有全链的core_pytest不会自动准备当前比较包，需要传入已验证的材料。
+
+额外阻断：tools/structure_two_unified_acceptance.py validate_runtime_records和JUnit检查拒绝任何skip/xfail；全仓含平台限定macOS sandbox tests、需真实历史/权重的显式artifact tests，以及tests/test_project_one_same_context_rls_ablation.py::test_shipped_wiring_shuffling_costs_real_discrimination的strict xfail。该用例断言现有RLS残差对打乱输入的区分收益超过0.1，而当前实现未达到，属于已知方法行为而非缺少test fixture。不得删除标记/降低阈值/改变先验以伪造工程回执。完整CI退出0与严格工程checkpoint通过须分开记录；用户科学选择与完整结构二范围不变。
+
+本轮先获得完整收集/执行诊断和当前合法输入正路径，保留所有未过项。工程门槛未关闭，不启动后续观测更新事务或行为收益结论。

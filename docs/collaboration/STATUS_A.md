@@ -1,3 +1,11 @@
+# A：当前验收材料第一轮通过，第二轮实际流水线验证中
+
+分支codex/pc-a-current-validation-inputs-20261001；实际功能fad9580a81edd6d9e35b249ff186f3f63819d393，base 3d6b9f13cf4e71a482cf36974be92220602542b0。R1同实现者A自审60项通过，严格mypy389文件/格式通过；R2正在执行真实比较生成/重算/归因重算与当前科学循环、P0准备全链，未通过前不进入下一轮功能修改。当前CI新增独立准备job，回归仍完整收集、保留65分钟预算和所有失败，不弱化保护。当前材料准备不等于工程回执通过。
+
+[依赖与新增阻断](../reviews/pc_a/current_validation_inputs_2026-10-01/ENGINEERING_DEPENDENCIES.md)：工程回执要求零skip/xfail，而全仓含平台限定/显式实数据用例和项目一已知RLS strict xfail；不得靠降低阈值或重签旧回执消除。正式全仓/严格工程/科学收益分开。后续新capture事务仍未开始。原用户树/STATUS_B保持，完整研究范围不变。R2证据output/current-validation-inputs-20261001/review2-prepared；真实执行和Linux CI后更新结果，不提前计通过。
+
+---
+
 # A：当前验收材料与完整回归接线开工（2026-10-01）
 
 分支 codex/pc-a-current-validation-inputs-20261001，base/开工源码3d6b9f13cf4e71a482cf36974be92220602542b0（PR82），独立工作目录。远端集成19ddf26830348a2f0b33f0af54d6ba702c5cfb1c、B fd4ca6ef5e81c90d7cf7987b42c0b2810d8a810a 已核对。PR82全仓CI仍运行，未计通过。

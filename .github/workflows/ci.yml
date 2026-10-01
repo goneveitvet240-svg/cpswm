@@ -15,7 +15,30 @@ jobs:
       - run: uv run --frozen --extra dev --extra perception --extra hand-perception ruff format --check src tests
       - run: uv run --frozen --extra dev --extra perception --extra hand-perception mypy src
 
+  current-inputs:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: astral-sh/setup-uv@v5
+        with:
+          python-version: "3.13"
+          enable-cache: true
+      - run: uv sync --frozen --extra dev --extra perception --extra hand-perception
+      - name: Generate and independently replay current test inputs
+        run: .venv/bin/python tools/prepare_current_validation_inputs.py --output "${GITHUB_WORKSPACE}/output/ci-validation-inputs"
+      - name: Preserve preparation logs and inputs on every outcome
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: current-inputs-${{ github.run_id }}-${{ github.run_attempt }}
+          path: output/ci-validation-inputs/
+          if-no-files-found: error
+
   test:
+    needs: current-inputs
     runs-on: ubuntu-latest
     # Setup, diagnostic finalization and upload are outside the unchanged
     # 65 minute test execution budget.
@@ -32,6 +55,12 @@ jobs:
           enable-cache: true
       # Neural and video tests import torch/cv2 during collection.
       - run: uv sync --frozen --extra dev --extra perception --extra hand-perception
+      - uses: actions/download-artifact@v4
+        with:
+          name: current-inputs-${{ github.run_id }}-${{ github.run_attempt }}
+          path: output/ci-validation-inputs/
+      - name: Install the newly generated mutable P0 index
+        run: cp output/ci-validation-inputs/current-p0.json benchmarks/p0_checkpoint/content_manifest_v0_3.json
       - name: Collect every test before starting the long regression
         shell: bash
         run: |
@@ -50,7 +79,7 @@ jobs:
       # default scheduler rebuilt the same SHIFT report once per worker and
       # made the suite exceed the pre-data regression budget.
       - name: Full regression (65 minute execution budget)
-        run: uv run --frozen --extra dev --extra perception --extra hand-perception python tools/run_ci_regression.py --output output/ci-regression/execution --budget-seconds 3900 --grace-seconds 60
+        run: uv run --frozen --extra dev --extra perception --extra hand-perception python tools/run_ci_regression.py --inputs output/ci-validation-inputs --output output/ci-regression/execution --budget-seconds 3900 --grace-seconds 60
       - name: Preserve regression diagnostics on every outcome
         if: always()
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4

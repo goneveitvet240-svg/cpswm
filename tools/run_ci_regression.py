@@ -153,9 +153,14 @@ def main():
     parser.add_argument("--budget-seconds", type=float, default=3900)
     parser.add_argument("--grace-seconds", type=float, default=60)
     parser.add_argument("--workers", default="auto")
+    parser.add_argument("--inputs", type=Path, help="completed current-input preparation directory")
     args = parser.parse_args()
     root = Path(__file__).resolve().parents[1]
     output = args.output.resolve()
+    if args.inputs is not None:
+        from prepare_current_validation_inputs import consumer_environment
+
+        os.environ.update(consumer_environment(root, args.inputs))
     command = [
         sys.executable,
         "-u",

@@ -214,7 +214,7 @@ def _particle_workspace_code_sha256(code: CodeType) -> str:
     """
     from cpswm.system.structure_two_execution import _code_object_payload
 
-    return hashlib.sha256(marshal.dumps(_code_object_payload(code), 2)).hexdigest()
+    return hashlib.sha256(marshal.dumps(cast(Any, _code_object_payload(code)), 2)).hexdigest()
 
 
 (
@@ -4208,7 +4208,9 @@ class CorePrototypeSpine:
         _restore_reference_state(workspace, checkpoint["particle_workspace_state"])
         self._particle_workspace = workspace  # type: ignore[assignment]
         self._particle_input_anchors = cast(dict[UUID, str], checkpoint["particle_input_anchors"])
-        self._particle_raw_context_anchors = dict(checkpoint["particle_raw_context_anchors"])
+        self._particle_raw_context_anchors = dict(
+            cast(dict[str, str], checkpoint["particle_raw_context_anchors"])
+        )
         self._particle_posterior_source_anchors = cast(
             dict[UUID, str], checkpoint["particle_posterior_source_anchors"]
         )

@@ -13,6 +13,7 @@ from dataclasses import dataclass, fields, is_dataclass
 from datetime import datetime
 from hashlib import sha256
 from pathlib import Path
+from typing import Any, cast
 from uuid import UUID
 
 from pydantic import BaseModel
@@ -78,12 +79,12 @@ class CurrentOwnedRGBDDescriptor:
         return content_sha256(self)
 
 
-def _require(condition, message):
+def _require(condition: object, message: str) -> None:
     if not condition:
         raise ValueError(message)
 
 
-def _same_typed(left, right):
+def _same_typed(left: Any, right: Any) -> bool:
     """Reject bool/int, tuple/list and subclass substitutions before equality."""
     if type(left) is not type(right):
         return False
@@ -97,7 +98,7 @@ def _same_typed(left, right):
         )
     if type(left) is dict:
         return list(left) == list(right) and all(_same_typed(left[k], right[k]) for k in left)
-    return left == right
+    return bool(left == right)
 
 
 def describe_current_owned_rgbd(
@@ -143,8 +144,13 @@ def describe_current_owned_rgbd(
                 and len(delivery.observations) == 3,
                 "action has no complete successful RGB-D delivery",
             )
+            delivery = cast(ObservationDelivery, delivery)
             stream._check_observation_decoder()
-            _require(stream._observation_decoder is not None, "modeled decoder is unavailable")
+            if stream._observation_decoder is None:
+                raise ValueError("modeled decoder is unavailable")
+            decoder_binding = stream._observation_decoder_binding
+            if decoder_binding is None:
+                raise ValueError("modeled decoder binding is unavailable")
             base = stream._native_joint_decision_view()
             origin = stream._observation_native_origins[action_id]
             _require(
@@ -251,7 +257,8 @@ def describe_current_owned_rgbd(
                 "parent input source is stale or differs from current source",
             )
             previous = workspace.previous_weight_evidence(batch)
-            _require(previous is not None, "parent weight evidence is unavailable")
+            if previous is None:
+                raise ValueError("parent weight evidence is unavailable")
             logs, aggregate = previous.normalized_logs()
             return CurrentOwnedRGBDDescriptor(
                 "current-owned-rgbd-description@1",
@@ -283,7 +290,7 @@ def describe_current_owned_rgbd(
                 native_content_sha256(previous),
                 tuple(sorted(logs.items(), key=lambda row: str(row[0]))),
                 aggregate,
-                stream._observation_decoder_binding,
+                decoder_binding,
                 content_sha256(
                     (sha256(Path(__file__).read_bytes()).hexdigest(), implementation_binding())
                 ),

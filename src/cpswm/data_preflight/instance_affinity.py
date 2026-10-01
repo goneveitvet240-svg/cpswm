@@ -12,7 +12,7 @@ import itertools
 import json
 import math
 import re
-from typing import Any
+from typing import Any, cast
 
 import numpy as np
 
@@ -180,7 +180,7 @@ def _array_sha256(array: np.ndarray) -> str:
 
 
 def _sigmoid(logits: np.ndarray) -> np.ndarray:
-    return np.exp(-np.logaddexp(0.0, -logits))
+    return cast(np.ndarray, np.exp(-np.logaddexp(0.0, -logits)))
 
 
 def fit(features: np.ndarray, targets: np.ndarray, *, partition: str = "train") -> dict[str, Any]:
@@ -371,7 +371,7 @@ def restore(model: dict[str, Any], externalpin: str) -> dict[str, Any]:
         "invalid external checkpoint pin",
     )
     _require(checkpoint_sha256(model) == externalpin, "external checkpoint pin differs")
-    return json.loads(canonical_json(model))
+    return cast(dict[str, Any], json.loads(canonical_json(model)))
 
 
 def predict(model: dict[str, Any], features: np.ndarray, valid: np.ndarray) -> list[float | None]:

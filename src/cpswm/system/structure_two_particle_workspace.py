@@ -582,7 +582,7 @@ class NativeParticleWorkspace:
             if key not in _NEURAL_COMPILED_SOURCES:
                 _NEURAL_COMPILED_SOURCES[key] = {
                     code.co_qualname: hashlib.sha256(
-                        marshal.dumps(_code_object_payload(code), 2)
+                        marshal.dumps(cast(Any, _code_object_payload(code)), 2)
                     ).hexdigest()
                     for code in _source_code_objects(path, data)
                     if code.co_flags & inspect.CO_NEWLOCALS and "<" not in code.co_qualname
@@ -607,7 +607,9 @@ class NativeParticleWorkspace:
                     # v2 encodes all fields/types without object-reference flags,
                     # which can change while a live checker scans its own code.
                     or expected
-                    != hashlib.sha256(marshal.dumps(_code_object_payload(code), 2)).hexdigest()
+                    != hashlib.sha256(
+                        marshal.dumps(cast(Any, _code_object_payload(code)), 2)
+                    ).hexdigest()
                 ):
                     raise ValueError("native neural loaded implementation changed: " + qualname)
             # Also bind the imported objects actually called by these helpers.

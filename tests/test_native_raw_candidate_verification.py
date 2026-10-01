@@ -3,9 +3,11 @@
 Controlled pixels/identity and fitted synthetic residuals only; no archive fit.
 """
 
+import os
 from copy import deepcopy
 from dataclasses import replace
 from datetime import timedelta
+from pathlib import Path
 
 import pytest
 from test_native_neural_production import checkpoints as _checkpoints
@@ -18,6 +20,14 @@ from cpswm.system.structure_two_particle_workspace import native_content_sha256
 
 checkpoints = _checkpoints
 cpu_threads = _cpu_threads
+
+
+def child_environment():
+    root = Path(__file__).resolve().parents[1]
+    return dict(
+        os.environ,
+        PYTHONPATH=os.pathsep.join(str(root / part) for part in ("src", "tests", "tools")),
+    )
 
 
 @pytest.mark.parametrize("field", ["known_ll", "unknown_ll", "aggregate", "transition"])
@@ -285,6 +295,7 @@ def test_fresh_process_resume_without_constructing_another_stream(tmp_path, chec
             text=True,
             capture_output=True,
             timeout=90,
+            env=child_environment(),
         )
         (tmp_path / "fresh-process.log").write_text(result.stdout + result.stderr)
         assert result.returncode == 0, result.stdout + result.stderr
@@ -400,7 +411,11 @@ assert "torch" not in sys.modules
 print("none-and-legacy-without-torch: PASS")
 """
     result = subprocess.run(
-        [sys.executable, "-c", script, str(tmp_path)], text=True, capture_output=True, timeout=30
+        [sys.executable, "-c", script, str(tmp_path)],
+        text=True,
+        capture_output=True,
+        timeout=30,
+        env=child_environment(),
     )
     (tmp_path / "no-torch.log").write_text(result.stdout + result.stderr)
     assert result.returncode == 0, result.stdout + result.stderr

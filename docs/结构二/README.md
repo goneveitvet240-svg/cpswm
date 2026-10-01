@@ -1,3 +1,5 @@
+> 2026-10-01 工程门槛优先：[工程回归首批修复](../reviews/pc_a/engineering_regressions_2026-10-01/REPORT.md)，源码8f7edafd：严格类型155→0，四项本地回归修复，顺序283/120自审通过。原CI其余27节点当前本机19失败/8未复现，完整CI仍未通过。下一项先闭合当前验收材料和回归，再做同语义新capture完整更新事务；历史局部通过不覆盖此阻断。位置证据仍限4屋15帧25对象1664相关seed，不证明泛化/校准/任务收益。
+
 > 2026-10-01 最新：[当前 owner RGB-D 只读描述](../reviews/pc_a/owned_rgbd_descriptor_2026-10-01/REPORT.md)，6faa17e同源码顺序两审通过。已核对新capture原件与当前来源，未赋消费authority/更新后验；同语义后续观测原子Native更新仍是下一主项。父PR79真实归档消费结果继续有效。
 
 > 2026-10-01 最新：[实际归档位置 Native 桥接与裸点配对对照](../reviews/pc_a/archive_native_bridge_2026-10-01/REPORT.md)，功能82c7a81同源码双审及真实run/fresh通过；真实位置因子已进入受控Native。自然身份、同语义后续相机更新与任务效用仍未完成。

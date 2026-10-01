@@ -1,0 +1,155 @@
+{
+  "schema": "cpswm-independent-progress-audit@1",
+  "completed_at": "2026-10-01T15:20:50.512772+08:00",
+  "reviewed_delivery_sha": "b6c6317a35c99cd95fe636251ce1e63bfba5f402",
+  "reviewed_latest_functional_sha": "6faa17e178ad001de6b5c0e1094f9e62568d7a7e",
+  "reviewed_bridge_functional_sha": "82c7a81fba0c3af3688978ce222b1b94e4cc5bd9",
+  "audit_branch": "codex/pc-a-independent-progress-audit-20261001",
+  "audit_opening_commit": "884682f0df0e0113ca9f4dcbb5135c156623cb69",
+  "audit_cwd": "/private/tmp/cpswm-pc-a-independent-progress-audit-20261001",
+  "remote_fetch_successful": true,
+  "remote_refs_at_final_fetch": {
+    "origin/codex/pc-a-owned-rgbd-descriptor-20261001": "b6c6317a35c99cd95fe636251ce1e63bfba5f402",
+    "origin/codex/dual-pc-handoff-20260912": "19ddf26830348a2f0b33f0af54d6ba702c5cfb1c",
+    "origin/codex/pc-b-adversarial-audit-fix-20260913": "fd4ca6ef5e81c90d7cf7987b42c0b2810d8a810a"
+  },
+  "source_runtime_record": "runtime-source.json",
+  "current_ci_run": 36783640567,
+  "current_ci_summary": "ci-summary.json",
+  "runs": [
+    {
+      "name": "targeted_positive_forged_and_consequence_tests",
+      "argv": [
+        "/private/tmp/cpswm-pc-a-camera-checkpoint-fixture-20260930/.venv/bin/python",
+        "-m",
+        "pytest",
+        "-q",
+        "-o",
+        "addopts=",
+        "tests/test_instance_affinity.py",
+        "tests/test_instance_affinity_controls.py",
+        "tests/test_instance_affinity_dataset.py",
+        "tests/test_soft_surface_position.py",
+        "tests/test_position_observation_model.py",
+        "tests/test_native_position_production.py",
+        "tests/test_native_raw_candidate_verification.py",
+        "tests/test_native_log_weight_continuation.py",
+        "tests/test_owned_position_delivery.py",
+        "tests/test_archive_native_bridge.py",
+        "tests/test_bare_seed_development.py"
+      ],
+      "cwd": "/private/tmp/cpswm-pc-a-independent-progress-audit-20261001",
+      "env_overrides": {
+        "PYTHONPATH": "src:tests:tools",
+        "OPENBLAS_NUM_THREADS": "1"
+      },
+      "exit_code": 0,
+      "passed": 356,
+      "elapsed_seconds": 693.97,
+      "log": "targeted-tests.log"
+    },
+    {
+      "name": "ci_subprocess_import_failure_reproduction",
+      "argv": [
+        "/private/tmp/cpswm-pc-a-camera-checkpoint-fixture-20260930/.venv/bin/python",
+        "-m",
+        "pytest",
+        "-q",
+        "-o",
+        "addopts=",
+        "tests/test_native_raw_candidate_verification.py",
+        "-k",
+        "fresh_process_resume_without_constructing_another_stream or non_neural_collection_keeps_torch_optional"
+      ],
+      "cwd": "/private/tmp/cpswm-pc-a-independent-progress-audit-20261001",
+      "env_overrides": {
+        "PYTHONPATH": "src"
+      },
+      "exit_code": 1,
+      "failed": 2,
+      "deselected": 16,
+      "elapsed_seconds": 10.31,
+      "log": "ci-import-reproduction.log",
+      "note": "these two nodes pass within the 356 when tools is in inherited PYTHONPATH; do not count as additional unique passes"
+    },
+    {
+      "name": "old_underflow_contract_failure",
+      "argv": [
+        "/private/tmp/cpswm-pc-a-camera-checkpoint-fixture-20260930/.venv/bin/python",
+        "-m",
+        "pytest",
+        "-q",
+        "-o",
+        "addopts=",
+        "tests/test_structure_two_w3_round6_prepared_boundary.py",
+        "-k",
+        "unresolved_underflow"
+      ],
+      "cwd": "/private/tmp/cpswm-pc-a-independent-progress-audit-20261001",
+      "env_overrides": {
+        "PYTHONPATH": "src:tests:tools",
+        "OPENBLAS_NUM_THREADS": "1"
+      },
+      "exit_code": 1,
+      "failed": 2,
+      "deselected": 65,
+      "elapsed_seconds": 1.03,
+      "log": "underflow-contract.log"
+    },
+    {
+      "name": "mypy",
+      "argv": [
+        "/private/tmp/cpswm-pc-a-camera-checkpoint-fixture-20260930/.venv/bin/python",
+        "-m",
+        "mypy",
+        "src",
+        "--cache-dir",
+        "/private/tmp/cpswm-independent-mypy-cache-20261001"
+      ],
+      "cwd": "/private/tmp/cpswm-pc-a-independent-progress-audit-20261001",
+      "env_overrides": {
+        "PYTHONPATH": "src",
+        "OPENBLAS_NUM_THREADS": "1"
+      },
+      "exit_code": 1,
+      "errors": 155,
+      "files_with_errors": 12,
+      "checked_files": 389,
+      "log": "local-mypy.log"
+    },
+    {
+      "name": "independent_math",
+      "argv": [
+        "/private/tmp/cpswm-pc-a-camera-checkpoint-fixture-20260930/.venv/bin/python",
+        "/private/tmp/cpswm-pc-a-independent-progress-audit-20261001/docs/reviews/pc_a/independent_progress_audit_2026-10-01/evidence/recompute-results.py.txt"
+      ],
+      "cwd": "/private/tmp/cpswm-pc-a-independent-progress-audit-20261001",
+      "exit_code": 0,
+      "saved_files_verified": 1447,
+      "log": "independent-math.log",
+      "result": "independent-math.json"
+    },
+    {
+      "name": "full_historical_bridge_verify",
+      "argv": [
+        "/private/tmp/cpswm-pc-a-camera-checkpoint-fixture-20260930/.venv/bin/python",
+        "/private/tmp/cpswm-pc-a-independent-progress-audit-20261001/docs/reviews/pc_a/independent_progress_audit_2026-10-01/evidence/verify-bridge.py.txt"
+      ],
+      "cwd": "/private/tmp/cpswm-pc-a-independent-progress-audit-20261001",
+      "exit_code": 0,
+      "details": "bridge-independent-full-verify.json",
+      "elapsed_seconds": 884.902082124725,
+      "original_files_unchanged": 76
+    }
+  ],
+  "coverage_limits": [
+    "A macOS runtime reused, not environment-independent or Windows acceptance",
+    "No new Unity collection or detector inference; existing controlled data and source only",
+    "Independent arithmetic begins at pinned public features and surface points",
+    "Historical bridge verification executes original production pipeline; separate from independently written math checks",
+    "No independent rerun in this turn of upstream owner subgraph-consistent-rewrite probe",
+    "No full local suite rerun; completed CI failure and timeout preserved",
+    "No natural identity association, new-capture posterior transaction, long-horizon or task-benefit acceptance"
+  ],
+  "scientific_verdict": "controlled development learning and posterior effects supported; generalization and natural continuous closed-loop benefit unproven"
+}

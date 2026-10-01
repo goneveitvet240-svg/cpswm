@@ -1,0 +1,101 @@
+FF                                                                       [100%]
+=================================== FAILURES ===================================
+________ test_fresh_process_resume_without_constructing_another_stream _________
+
+tmp_path = PosixPath('/private/var/folders/x2/000r8p0n6s393lj2sg8wk5f40000gn/T/pytest-of-pangwei/pytest-2435/test_fresh_process_resume_with0')
+checkpoints = {'typed_factor_graph_transformer': (PosixPath('/private/var/folders/x2/000r8p0n6s393lj2sg8wk5f40000gn/T/pytest-of-pang...-checkpoints0/autoregressive_typed_graph_policy'), '1fc3a0fca7a32c31368304674ca106b118768e59d47ae5407a2adaeb53ee25e5')}
+
+    def test_fresh_process_resume_without_constructing_another_stream(tmp_path, checkpoints):
+        import json
+        import subprocess
+        import sys
+        from pathlib import Path
+    
+        case = scenario(tmp_path / "resume.db", checkpoints)
+        try:
+            advance(case, 0)
+            advance(case, 1)
+            stream = case["stream"]
+            config = dict(
+                db=str(tmp_path / "resume.db"),
+                configuration=case["config"],
+                models=case["models"],
+                checkpoint=str(case["checkpoint"]),
+                pin=case["pin"],
+                expected_view=native_content_sha256(stream.current_joint_decision_view()),
+                expected_state=native_content_sha256(case["joint"].checkpoint_state()),
+                expected_workspace=snapshot(case),
+                expected_ledger=native_content_sha256(
+                    stream._system.core._hybrid_loop.ledger.export_state()
+                ),
+            )
+            target = tmp_path / "original-config.json"
+            target.write_text(json.dumps(config))
+            case["store"].close()
+            result = subprocess.run(
+                [sys.executable, str(Path(__file__).resolve()), str(target)],
+                text=True,
+                capture_output=True,
+                timeout=90,
+            )
+            (tmp_path / "fresh-process.log").write_text(result.stdout + result.stderr)
+>           assert result.returncode == 0, result.stdout + result.stderr
+E           AssertionError: Traceback (most recent call last):
+E               File "/private/tmp/cpswm-pc-a-independent-progress-audit-20261001/tests/test_native_raw_candidate_verification.py", line 14, in <module>
+E                 from test_native_position_production import advance, scenario, snapshot, weight_state
+E               File "/private/tmp/cpswm-pc-a-independent-progress-audit-20261001/tests/test_native_position_production.py", line 16, in <module>
+E                 from controlled_position_producer import ControlledPositionProducer, packet_binding
+E             ModuleNotFoundError: No module named 'controlled_position_producer'
+E             
+E           assert 1 == 0
+E            +  where 1 = CompletedProcess(args=['/private/tmp/cpswm-pc-a-camera-checkpoint-fixture-20260930/.venv/bin/python', '/private/tmp/cp...t ControlledPositionProducer, packet_binding\nModuleNotFoundError: No module named \'controlled_position_producer\'\n').returncode
+
+tests/test_native_raw_candidate_verification.py:290: AssertionError
+_______________ test_non_neural_collection_keeps_torch_optional ________________
+
+tmp_path = PosixPath('/private/var/folders/x2/000r8p0n6s393lj2sg8wk5f40000gn/T/pytest-of-pangwei/pytest-2435/test_non_neural_collection_kee0')
+
+    def test_non_neural_collection_keeps_torch_optional(tmp_path):
+        import subprocess
+        import sys
+    
+        script = r"""
+    import builtins, sys
+    from pathlib import Path
+    original_import = builtins.__import__
+    def blocked(name, *args, **kwargs):
+        if name == "torch" or name.startswith("torch."):
+            raise ImportError("torch deliberately unavailable")
+        return original_import(name, *args, **kwargs)
+    builtins.__import__ = blocked
+    from run_correction_replay_comparison import build
+    from test_native_joint_production import JointFixture
+    from cpswm.system.reproducibility import content_sha256
+    for name, joint in (("none", None), ("legacy", JointFixture())):
+        _, _, stream, store, _ = build(Path(sys.argv[1]) / (name + ".db"), seed=171,
+            source=content_sha256("no-torch-compatibility"), joint_producer=joint)
+        assert stream._system.core._particle_workspace.raw_candidate_profile is None
+        store.close()
+    assert "torch" not in sys.modules
+    print("none-and-legacy-without-torch: PASS")
+    """
+        result = subprocess.run(
+            [sys.executable, "-c", script, str(tmp_path)], text=True, capture_output=True, timeout=30
+        )
+        (tmp_path / "no-torch.log").write_text(result.stdout + result.stderr)
+>       assert result.returncode == 0, result.stdout + result.stderr
+E       AssertionError: Traceback (most recent call last):
+E           File "<string>", line 10, in <module>
+E             from run_correction_replay_comparison import build
+E           File "<string>", line 8, in blocked
+E             return original_import(name, *args, **kwargs)
+E         ModuleNotFoundError: No module named 'run_correction_replay_comparison'
+E         
+E       assert 1 == 0
+E        +  where 1 = CompletedProcess(args=['/private/tmp/cpswm-pc-a-camera-checkpoint-fixture-20260930/.venv/bin/python', '-c', '\nimport ...n original_import(name, *args, **kwargs)\nModuleNotFoundError: No module named \'run_correction_replay_comparison\'\n').returncode
+
+tests/test_native_raw_candidate_verification.py:406: AssertionError
+=========================== short test summary info ============================
+FAILED tests/test_native_raw_candidate_verification.py::test_fresh_process_resume_without_constructing_another_stream
+FAILED tests/test_native_raw_candidate_verification.py::test_non_neural_collection_keeps_torch_optional
+2 failed, 16 deselected in 10.31s

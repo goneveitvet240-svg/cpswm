@@ -1,3 +1,15 @@
+# 结构二再次独立复核交付（2026-10-01）
+
+独立分支 codex/pc-a-independent-progress-audit-20261001；base/受审交付 b6c6317a35c99cd95fe636251ce1e63bfba5f402（PR80）。实际最新功能 6faa17e178ad001de6b5c0e1094f9e62568d7a7e，903份Python与冻结清单逐字一致；归档桥接实际源码82c7a81fba0c3af3688978ce222b1b94e4cc5bd9的901份在当前版本未变。仅审核文档/证据与本STATUS更新，不修改生产、历史数据、STATUS_B或实施窗口。
+
+实际结果：11文件定向pytest 356 passed / 693.97s；独立数值脚本重算三模型亲和预测、六种位置组合与四模型Native后果，核1447文件，与原报告一致；原归档完整verify在冻结历史源码884.90s成功，原76产物不变，包含父模型重拟合、四模型/八臂、重复、撤回和SQLite新进程。另单独复现子进程模块导入2 failed、旧underflow契约2 failed；mypy src本机155 errors/12 files，与同b6c的CI一致。命令、日志与精确范围见[审核报告](../reviews/pc_a/independent_progress_audit_2026-10-01/REPORT.md)及[复核入口](../reviews/pc_a/independent_progress_audit_2026-10-01/REPRODUCE.md)。
+
+当前同SHA CI 36783640567：4996 passed/31 failed/30 skipped/1 xfailed，65分钟超时124、全仓未完；不能以356局部通过替代全仓或B验收。相比上轮，实际学习与真实位置似然已进入受控Native，旧“仅q改变”判断在该支路关闭。仍缺同语义新owner capture原子更新、自然身份/未知模型和任务收益；1664个位置验证seed只覆盖4屋15帧25对象，且屋9与bias校正存在退化，不能声称普遍收益或独立校准。
+
+复用A/macOS环境；未新增Unity/检测器推理、未独立Windows复现。集成19ddf26830348a2f0b33f0af54d6ba702c5cfb1c、B fd4ca6ef5e81c90d7cf7987b42c0b2810d8a810a仍未覆盖本轮。下一门槛：全仓静态/回归收口与后续capture接收锚、一次消费、回滚/撤回/fresh完整事务；科学定义与完整统一框架保留，不擅自缩减。审核通过草稿PR交接，不自动合并。持久本机副本 output/independent-progress-audit-20261001/review。
+
+---
+
 # 结构二再次独立复核开工（2026-10-01）
 
 本窗口受用户要求重新审核进度，分支codex/pc-a-independent-progress-audit-20261001；独立目录/private/tmp/cpswm-pc-a-independent-progress-audit-20261001。base/最新受审交付b6c6317a35c99cd95fe636251ce1e63bfba5f402（PR80）；实际最新功能6faa17e178ad001de6b5c0e1094f9e62568d7a7e；父位置桥接82c7a81fba0c3af3688978ce222b1b94e4cc5bd9。已fetch核对A交付链，集成19ddf26830348a2f0b33f0af54d6ba702c5cfb1c、B fd4ca6ef5e81c90d7cf7987b42c0b2810d8a810a未变。

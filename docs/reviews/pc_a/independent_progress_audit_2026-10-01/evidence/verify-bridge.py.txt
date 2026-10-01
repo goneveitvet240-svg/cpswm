@@ -1,0 +1,25 @@
+import json,hashlib,subprocess,os,time
+from pathlib import Path
+E=Path(__file__).parent.resolve()
+O=Path('/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output/archive-native-bridge-20261001')
+W=Path('/private/tmp/cpswm-pc-a-archive-native-bridge-20261001')
+A=Path.cwd()
+cases=json.loads((O/'case-results.json').read_text())
+assert hashlib.sha256((O/'case-results.json').read_bytes()).hexdigest()=='328b4b10276c44a05b91cfcbb7f24d370ff8092e85a9fe729939311bc6b4fc42'
+case=next(c for c in cases if c['task']=='bridge' and c['phase']=='verify')
+source=json.loads((O/'frozen-source.json').read_text())['source_files']
+for name,pin in source.items():
+ assert hashlib.sha256((W/name).read_bytes()).hexdigest()==pin
+ assert hashlib.sha256((A/name).read_bytes()).hexdigest()==pin
+assert len(source)==901
+before={name:hashlib.sha256((O/'bridge'/name).read_bytes()).hexdigest() for name in case['output_sha256']}
+assert before==case['output_sha256']
+env=os.environ.copy();env.update(PYTHONPATH='src:tests:tools',OPENBLAS_NUM_THREADS='1')
+start=time.monotonic()
+with (E/'bridge-independent-full-verify.log').open('w') as f:
+ result=subprocess.run(case['argv'],cwd=W,env=env,stdout=f,stderr=subprocess.STDOUT,timeout=1800)
+after={name:hashlib.sha256((O/'bridge'/name).read_bytes()).hexdigest() for name in before}
+r=dict(argv=case['argv'],cwd=str(W),exit_code=result.returncode,elapsed_seconds=time.monotonic()-start,source_files_matching_current_review=len(source),source_unchanged=all(hashlib.sha256((W/n).read_bytes()).hexdigest()==v for n,v in source.items()),original_bridge_outputs_unchanged=before==after,original_files=len(before),scope='full historical parent refit and actual four-model Native run, retraction and SQLite resume; no new Unity or detector execution')
+(E/'bridge-independent-full-verify.json').write_text(json.dumps(r,indent=2)+'\n')
+print(json.dumps(r),flush=True)
+assert r['exit_code']==0 and r['source_unchanged'] and r['original_bridge_outputs_unchanged']

@@ -1,0 +1,111 @@
+{
+  "scope": "pinned pair/public-point arithmetic and original numeric consequences; no independent raw acquisition or identity certification",
+  "checked_output_files": {
+    "instance-foreground-20260930/experiment": 674,
+    "affinity-controls-20261001/experiment": 292,
+    "soft-position-factor-20261001/experiment": 302,
+    "archive-native-bridge-20261001/bare": 103,
+    "archive-native-bridge-20261001/bridge": 76
+  },
+  "affinity_validation": {
+    "rgb_only": {
+      "all": {
+        "pairs": 35735,
+        "bce": 0.41065641083195004,
+        "brier": 0.12881643841978901
+      },
+      "same_instance": {
+        "pairs": 30054,
+        "bce": 0.10462518057170063,
+        "brier": 0.012754101179816136
+      },
+      "different_instance": {
+        "pairs": 5681,
+        "bce": 2.029642961481754,
+        "brier": 0.7428170515882708
+      }
+    },
+    "geometry_only": {
+      "all": {
+        "pairs": 35735,
+        "bce": 0.3175628902211237,
+        "brier": 0.08988816925043773
+      },
+      "same_instance": {
+        "pairs": 30054,
+        "bce": 0.09712453267846978,
+        "brier": 0.014780975066556746
+      },
+      "different_instance": {
+        "pairs": 5681,
+        "bce": 1.4837403937569311,
+        "brier": 0.48722518984581864
+      }
+    },
+    "combined": {
+      "all": {
+        "pairs": 35735,
+        "bce": 0.29831009783133416,
+        "brier": 0.08734118921808849
+      },
+      "same_instance": {
+        "pairs": 30054,
+        "bce": 0.07963762966311944,
+        "brier": 0.012552901191561527
+      },
+      "different_instance": {
+        "pairs": 5681,
+        "bce": 1.455145577206009,
+        "brier": 0.4829911114763602
+      }
+    },
+    "training_frequency_constant": {
+      "all": {
+        "pairs": 35735,
+        "bce": 0.4459667884867542,
+        "brier": 0.1355103558083427
+      },
+      "same_instance": {
+        "pairs": 30054,
+        "bce": 0.12381509191348054,
+        "brier": 0.01356218625190428
+      },
+      "different_instance": {
+        "pairs": 5681,
+        "bce": 2.150234890724594,
+        "brier": 0.7806485863750031
+      }
+    }
+  },
+  "validation_position_denominators": {
+    "frames": 15,
+    "objects": 25,
+    "object_frames": 37
+  },
+  "native": {
+    "soft_affinity/sdk_aabb_center_m": {
+      "known_ll": -100.23313325037071,
+      "unknown_ll": -10.77010919697969,
+      "known_probability": 7.009262479997997e-40,
+      "retraction_numeric_match": true
+    },
+    "soft_affinity/sdk_transform_position_m": {
+      "known_ll": -97.75139422865067,
+      "unknown_ll": -10.77010919697969,
+      "known_probability": 8.38451384560315e-39,
+      "retraction_numeric_match": true
+    },
+    "uniform/sdk_aabb_center_m": {
+      "known_ll": -97.2379800568292,
+      "unknown_ll": -10.768322577664879,
+      "known_probability": 1.3985400541584162e-38,
+      "retraction_numeric_match": true
+    },
+    "uniform/sdk_transform_position_m": {
+      "known_ll": -95.95043211616893,
+      "unknown_ll": -10.768322577664879,
+      "known_probability": 5.068154841172646e-38,
+      "retraction_numeric_match": true
+    }
+  }
+}

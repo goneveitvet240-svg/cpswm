@@ -1,3 +1,11 @@
+# A：原生审计依赖契约修复，整体工程仍未验收（2026-10-01）
+
+独立分支codex/pc-a-audit-environment-20261001，base c8f1d29b90b60ef4ddc5303628c87def428d1d1b，实际源码488c7a62e5562e340b61bbe735c1c2bad858933e。原生审计只读uv检查补齐perception/hand-perception，与CI一致；冻结后顺序R1/R2真实命令正路径、旧契约拒绝、缺必需依赖拒绝及恢复后正路径通过。现有契约测试1 passed，变更文件lint/format通过。非全仓/独立B/科学收益验收。详[报告](../reviews/pc_a/audit_environment_2026-10-01/REPORT.md)。
+
+父当前输入准备分支的6758项完整回归仍运行；独立目录及源码保持。工程历史回执过期与新增运行时失败仍待闭合，未开始后续新capture事务。原用户工作树、STATUS_B与完整统一范围保持。
+
+---
+
 # A：第三候选R1通过，完整材料与全仓回归继续（2026-10-01）
 
 分支codex/pc-a-current-validation-inputs-20261001，base3d6b9f13cf4e71a482cf36974be92220602542b0，实际功能fd08b59bdc01ca9ffe4e9b159cb1393052711d15。R1为162 passed，6758项收集，1027摘要不变。当前源码材料准备、跨进程、完整伪造消费者与全仓仍待完成；工程门槛未关闭。新增有限源码编译缓存仍每次读盘/live代码核对，锁测试从实际handoff起计1s；没有删测试、弱化阈值或延长原回归65分钟。

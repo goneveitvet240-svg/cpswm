@@ -1,5 +1,7 @@
 # A：关联分支已接入；真实跨视角匹配仍未成功（2026-10-01）
 
+交付：[草稿 PR #90](https://github.com/goneveitvet240-svg/cpswm/pull/90)，叠加 PR #89；代码及证据提交 `bc0fdaa47640729ce6274e7c61a10e3a7da42b89` 已推送，实际被测源码仍为下述 `5a4e3a0…`。
+
 用户已同意未校准外观＋三维几何基线，解除此前待答复项。分支 `codex/pc-a-appearance-geometry-association-20261001`；base `0a5e38c0e59ce2a42342925be7dc5de6fc994c19`；实际功能/测试源码 `5a4e3a0660114b3e7bc5b2482f4d49456b825239`。开工 fetch 核验集成 `19ddf26830348a2f0b33f0af54d6ba702c5cfb1c` 与 B `fd4ca6ef5e81c90d7cf7987b42c0b2810d8a810a`。
 
 新增原始 owner 参考—查询帧关联：参考只作为条件，查询多个候选/未知分别进入真实 Native 后验及条件统计；旧对照保留；原事务承担去重、回滚、语义撤回重放及 fresh 恢复。观测依赖的未校准关联能量计入观测项，不冒称转移先验或身份概率。

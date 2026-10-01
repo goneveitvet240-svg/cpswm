@@ -1,5 +1,7 @@
 # 外观＋三维几何关联开发基线
 
+[草稿 PR #90](https://github.com/goneveitvet240-svg/cpswm/pull/90) 已创建，叠加 PR #89；代码与证据 `bc0fdaa47640729ce6274e7c61a10e3a7da42b89` 已推送，未合并。
+
 用户已同意本方案，先前“待选择关联开发基线”的状态已解除。分支 `codex/pc-a-appearance-geometry-association-20261001`；base `0a5e38c0e59ce2a42342925be7dc5de6fc994c19`（PR #89）；实际功能/测试源码 `5a4e3a0660114b3e7bc5b2482f4d49456b825239`。开工 fetch 成功，集成 `19ddf26830348a2f0b33f0af54d6ba702c5cfb1c`，B `fd4ca6ef5e81c90d7cf7987b42c0b2810d8a810a`。未自动合并或修改用户原树、STATUS_B。
 
 ## 本轮实质变化

@@ -12,10 +12,22 @@ from copy import deepcopy
 from dataclasses import dataclass, replace
 from hashlib import sha256
 from pathlib import Path
+from typing import TYPE_CHECKING, Any, cast
 from uuid import UUID, uuid4
 
-from cpswm.system.native_joint_production import NativeJointContext, producer_implementation_binding
-from cpswm.system.structure_two_particle_workspace import native_content_sha256
+from cpswm.system.native_joint_production import (
+    NativeJointContext,
+    NativeJointProducer,
+    producer_implementation_binding,
+)
+from cpswm.system.structure_two_particle_workspace import (
+    NativeParticleWorkspace,
+    native_content_sha256,
+)
+
+if TYPE_CHECKING:
+    from cpswm.system.controlled_position_producer import ControlledPositionProducer
+    from cpswm.system.native_neural_production import NativeNeuralEvidence, NeuralNativeProducer
 
 
 @dataclass(frozen=True)
@@ -23,11 +35,11 @@ class RawCandidateAuthority:
     key: UUID
 
     @classmethod
-    def create(cls):
+    def create(cls) -> RawCandidateAuthority:
         return cls(uuid4())
 
 
-def profile_for(producer):
+def profile_for(producer: NativeJointProducer | None) -> dict[str, Any] | None:
     # Do not make optional torch a dependency of legacy/non-neural collection.
     # A genuine NeuralNativeProducer necessarily loaded its canonical module.
     cls = type(producer)
@@ -40,7 +52,8 @@ def profile_for(producer):
     # Closed registry, imported from installed source, never a checkpoint path.
     from cpswm.system.controlled_position_producer import ControlledPositionProducer
 
-    candidate = producer._candidate_model
+    neural = cast("NeuralNativeProducer", producer)
+    candidate = neural._candidate_model
     if type(candidate) is not ControlledPositionProducer:
         return None
     return dict(
@@ -49,7 +62,7 @@ def profile_for(producer):
         weight_source=sha256(
             Path(__file__).with_name("structure_two_particle_workspace.py").read_bytes()
         ).hexdigest(),
-        joint_binding=producer.binding_sha256,
+        joint_binding=neural.binding_sha256,
         candidate_binding=candidate.binding_sha256,
         implementation=producer_implementation_binding(candidate),
         arguments=deepcopy(
@@ -64,7 +77,7 @@ def profile_for(producer):
     )
 
 
-def reconstruct(profile):
+def reconstruct(profile: dict[str, Any]) -> ControlledPositionProducer:
     from cpswm.system.controlled_position_producer import ControlledPositionProducer
 
     if (
@@ -100,7 +113,7 @@ def reconstruct(profile):
     return result
 
 
-def raw_context_digest(context):
+def raw_context_digest(context: NativeJointContext) -> str:
     if type(context) is not NativeJointContext:
         raise ValueError("raw owner context has the wrong type")
     return native_content_sha256(
@@ -120,7 +133,11 @@ def raw_context_digest(context):
     )
 
 
-def verify_raw_base(evidence, workspace, native_context):
+def verify_raw_base(
+    evidence: NativeNeuralEvidence,
+    workspace: NativeParticleWorkspace,
+    native_context: NativeJointContext,
+) -> None:
     """Reproduce every base field using owned raw inputs and actual ancestry."""
     profile = workspace.raw_candidate_profile
     if native_content_sha256(profile) != workspace.raw_candidate_profile_sha256:

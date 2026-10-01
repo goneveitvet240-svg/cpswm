@@ -11,6 +11,7 @@ import copy
 import math
 import re
 from datetime import UTC
+from typing import Any
 from uuid import UUID
 
 import numpy as np
@@ -49,23 +50,32 @@ DEFINITION = {
 }
 
 
-def _require(condition, message):
+def _require(condition: object, message: str) -> None:
     if not condition:
         raise ValueError(message)
 
 
-def _digest(value):
+def _digest(value: object) -> bool:
     return type(value) is str and re.fullmatch(r"[0-9a-f]{64}", value) is not None
 
 
-def _uuid(value):
+def _uuid(value: object) -> bool:
     try:
         return type(value) is str and str(UUID(value)) == value
     except (ValueError, TypeError, AttributeError):
         return False
 
 
-def readout_frame(rgb, depth, camera, candidates, model, externalpin, *, provenance):
+def readout_frame(
+    rgb: np.ndarray,
+    depth: np.ndarray,
+    camera: CameraSelfPose,
+    candidates: list[dict[str, Any]],
+    model: dict[str, Any],
+    externalpin: str,
+    *,
+    provenance: dict[str, Any],
+) -> dict[str, Any]:
     """Return complete JSON support and two observations for every unique seed.
 
     ``candidates`` contains only method/id/box. ``provenance`` contains source,
@@ -100,7 +110,10 @@ def readout_frame(rgb, depth, camera, candidates, model, externalpin, *, provena
         type(candidates) is list and len(candidates) <= MAX_CANDIDATES,
         "candidate resource limit or type differs",
     )
-    source_keys, rows, grids, all_pairs = set(), [], {}, set()
+    source_keys: set[tuple[str, str]] = set()
+    rows: list[dict[str, Any]] = []
+    grids: dict[tuple[tuple[int, int], ...], list[dict[str, Any]]] = {}
+    all_pairs: set[tuple[int, int, int, int]] = set()
     pair_occurrences = 0
     for candidate in candidates:
         _require(
@@ -172,7 +185,8 @@ def readout_frame(rgb, depth, camera, candidates, model, externalpin, *, provena
         )
         for index, seed in enumerate(grid):
             seed_id = content_sha256(dict(neighborhood_id=neighborhood_id, seed_uv=seed))
-            coefficients, representatives = {}, {}
+            coefficients: dict[str, dict[str, list[float] | float | None]] = {}
+            representatives: dict[str, list[float] | None] = {}
             for estimator in ESTIMATORS:
                 if not point_valid[index]:
                     coefficients[estimator] = dict(raw=None, normalized=None, total=None)
@@ -186,11 +200,14 @@ def readout_frame(rgb, depth, camera, candidates, model, externalpin, *, provena
                         weight = 1.0
                     else:
                         left, right = sorted((seed, other))
-                        weight = score_lookup[(*left, *right)]
-                        _require(
-                            type(weight) is float and math.isfinite(weight) and 0 <= weight <= 1,
-                            "invalid recomputed affinity coefficient",
-                        )
+                        coefficient = score_lookup[(*left, *right)]
+                        if (
+                            type(coefficient) is not float
+                            or not math.isfinite(coefficient)
+                            or not 0 <= coefficient <= 1
+                        ):
+                            raise ValueError("invalid recomputed affinity coefficient")
+                        weight = coefficient
                     weights.append(weight)
                 total = math.fsum(weights)
                 _require(math.isfinite(total) and total >= 1.0, "invalid coefficient sum")

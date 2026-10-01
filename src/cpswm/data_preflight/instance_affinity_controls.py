@@ -9,7 +9,7 @@ from __future__ import annotations
 
 import json
 import re
-from typing import Any
+from typing import Any, cast
 
 import numpy as np
 
@@ -143,7 +143,7 @@ def restore(wrapper: dict[str, Any], externalpin: str) -> dict[str, Any]:
         "invalid external control pin",
     )
     base._require(checkpoint_sha256(wrapper) == externalpin, "external control pin differs")
-    return json.loads(canonical_json(wrapper))
+    return cast(dict[str, Any], json.loads(canonical_json(wrapper)))
 
 
 def predict(wrapper: dict[str, Any], features: np.ndarray, valid: np.ndarray) -> list[float | None]:

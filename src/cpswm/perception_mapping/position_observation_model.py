@@ -14,7 +14,7 @@ import math
 import re
 from dataclasses import fields
 from datetime import datetime, timedelta
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING, Any, cast
 from uuid import UUID
 
 import numpy as np
@@ -137,7 +137,8 @@ def _members(members: Any, n: int) -> tuple[dict[str, int], dict[str, str]]:
             "labels",
         )
     }
-    frame_bindings, object_bindings = {}, {}
+    frame_bindings: dict[str, tuple[int, str]] = {}
+    object_bindings: dict[str, int] = {}
     for row in members:
         _keys(row, keys, "training member")
         _require(type(row["split"]) is str and row["split"] == "train", "member is not train")
@@ -341,7 +342,7 @@ def restore(model: dict[str, Any], externalpin: str) -> dict[str, Any]:
     """Require an external content pin; do not infer authentic fitting from self-signing."""
     _digest(externalpin)
     _require(checkpoint_sha256(model) == externalpin, "external position model pin differs")
-    return json.loads(canonical_json(model))
+    return cast(dict[str, Any], json.loads(canonical_json(model)))
 
 
 def _time(value: Any) -> datetime:

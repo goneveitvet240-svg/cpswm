@@ -14,6 +14,8 @@ from copy import deepcopy
 from hashlib import sha256
 from math import isfinite, log, pi
 from pathlib import Path
+from types import CodeType
+from typing import Any, cast
 from uuid import UUID
 
 import numpy as np
@@ -21,6 +23,7 @@ import numpy as np
 from cpswm.data_preflight import instance_affinity, soft_surface_position
 from cpswm.perception_mapping import natural_vision, unity_rgbd
 from cpswm.perception_mapping import position_observation_model as position
+from cpswm.perception_mapping.adapters.rgbd_capture import RawModalityObservation
 from cpswm.system.evaluation_operations.structure_two_selected_method import (
     NeuralParticleProposal,
     OrderedActorRole,
@@ -29,7 +32,7 @@ from cpswm.system.evaluation_operations.structure_two_selected_method import (
     StructuredWeightFactor,
     TypedParticleState,
 )
-from cpswm.system.native_joint_production import ProducedJointCandidates
+from cpswm.system.native_joint_production import NativeJointContext, ProducedJointCandidates
 from cpswm.system.reproducibility import content_sha256, content_uuid
 from cpswm.system.structure_two_conditional_updates import (
     ConditionalMeasurement,
@@ -38,6 +41,7 @@ from cpswm.system.structure_two_conditional_updates import (
 from cpswm.system.structure_two_execution import _code_object_payload
 from cpswm.system.structure_two_particle_workspace import (
     ConditionalAnalyticState,
+    NativePosteriorSource,
     native_content_sha256,
 )
 
@@ -46,25 +50,25 @@ EYE6 = tuple(tuple(float(i == j) for j in range(6)) for i in range(6))
 EYE3 = tuple(tuple(float(i == j) for j in range(3)) for i in range(3))
 
 
-def _require(value, message):
+def _require(value: object, message: str) -> None:
     if not value:
         raise ValueError(message)
 
 
-def _uuid(value):
+def _uuid(value: object) -> bool:
     return type(value) is str and str(UUID(value)) == value
 
 
-def _helper_code_sha256(code):
+def _helper_code_sha256(code: CodeType) -> str:
     """Full type-exact code identity without execution/reference-count flags.
 
     This encoding is local to this declared controlled producer. It preserves
     every existing code-payload field; generic checkpoint protocols are unchanged.
     """
-    return sha256(marshal.dumps(_code_object_payload(code), 2)).hexdigest()
+    return sha256(marshal.dumps(cast(Any, _code_object_payload(code)), 2)).hexdigest()
 
 
-def packet_binding(observations):
+def packet_binding(observations: tuple[RawModalityObservation, ...]) -> dict[str, Any]:
     """Bind actual public originals; this helper grants no acquisition authority."""
     _require(type(observations) is tuple and len(observations) == 3, "three raw channels required")
     envelopes = tuple(row.envelope() for row in observations)
@@ -89,7 +93,7 @@ def packet_binding(observations):
     )
 
 
-def implementation_binding():
+def implementation_binding() -> str:
     """Bind helper source bytes and loaded Python bodies, including camera math."""
     members = []
     for module in (instance_affinity, soft_surface_position, position, natural_vision, unity_rgbd):
@@ -113,8 +117,11 @@ def implementation_binding():
                             functions.append(
                                 (f"{name}.{key}.{index}", _helper_code_sha256(body.__code__))
                             )
+        module_path = module.__file__
+        if module_path is None:
+            raise ValueError("controlled helper source path is unavailable")
         members.append(
-            (module.__name__, sha256(Path(module.__file__).read_bytes()).hexdigest(), functions)
+            (module.__name__, sha256(Path(module_path).read_bytes()).hexdigest(), functions)
         )
     return content_sha256(
         (
@@ -153,12 +160,12 @@ class ControlledPositionProducer:
     def __init__(
         self,
         *,
-        configuration,
-        affinity_model,
-        affinity_pin,
-        position_model,
-        position_pin,
-    ):
+        configuration: dict[str, Any],
+        affinity_model: dict[str, Any],
+        affinity_pin: str,
+        position_model: dict[str, Any],
+        position_pin: str,
+    ) -> None:
         self.configuration = deepcopy(configuration)
         self.affinity_model = instance_affinity.restore(affinity_model, affinity_pin)
         self.affinity_pin = affinity_pin
@@ -208,10 +215,10 @@ class ControlledPositionProducer:
         )
         self._binding = self._content_binding()
         self.calls = 0
-        self.consumed_keys = []
-        self.last_diagnostic = None
+        self.consumed_keys: list[str] = []
+        self.last_diagnostic: dict[str, Any] | None = None
 
-    def _content_binding(self):
+    def _content_binding(self) -> str:
         current_implementation = implementation_binding()
         _require(
             current_implementation == self._implementation,
@@ -236,16 +243,16 @@ class ControlledPositionProducer:
         )
 
     @property
-    def binding_sha256(self):
+    def binding_sha256(self) -> str:
         binding = self._content_binding()
         if binding != self._binding:
             raise ValueError("controlled dependency changed")
         return binding
 
-    def _measurement_key(self):
+    def _measurement_key(self) -> str:
         return content_sha256((self.binding_sha256, "single-source-single-public-seed"))
 
-    def checkpoint_state(self):
+    def checkpoint_state(self) -> dict[str, Any]:
         return deepcopy(
             dict(
                 binding=self.binding_sha256,
@@ -255,7 +262,7 @@ class ControlledPositionProducer:
             )
         )
 
-    def restore_state(self, state):
+    def restore_state(self, state: dict[str, Any]) -> None:
         _require(
             type(state) is dict
             and set(state) == {"binding", "calls", "consumed_keys", "last_diagnostic"}
@@ -272,7 +279,7 @@ class ControlledPositionProducer:
         self.consumed_keys = deepcopy(state["consumed_keys"])
         self.last_diagnostic = deepcopy(state["last_diagnostic"])
 
-    def _public(self, context):
+    def _public(self, context: NativeJointContext) -> dict[str, Any]:
         expected = self.configuration["packet"]
         lookup = {
             str(row.envelope().identity.observation_id): row for row in context.visible_prefix
@@ -292,6 +299,12 @@ class ControlledPositionProducer:
             "public packet outside semantic scope or epoch",
         )
         _, rgb = natural_vision.decode_rgb(rows[0], cutoff=context.cutoff)
+        payload_pins = []
+        for row in rows:
+            payload = row.envelope().payload
+            if payload is None:
+                raise ValueError("bound RGB-D payload is unavailable")
+            payload_pins.append(payload.payload_sha256)
         result = soft_surface_position.readout_frame(
             rgb,
             depth,
@@ -303,7 +316,7 @@ class ControlledPositionProducer:
                 source_sha256=expected["raw_sha256"],
                 receipt_sha256=rows[0].capture_receipt_sha256,
                 observation_ids=expected["observation_ids"],
-                payload_sha256=[row.envelope().payload.payload_sha256 for row in rows],
+                payload_sha256=payload_pins,
             ),
         )
         seeds = [row for row in result["seeds"] if row["pixel_uv"] == self.configuration["seed_uv"]]
@@ -328,7 +341,9 @@ class ControlledPositionProducer:
             )
         }
 
-    def _neutral(self, prior, cluster, record_id):
+    def _neutral(
+        self, prior: ConditionalAnalyticState, cluster: UUID, record_id: UUID
+    ) -> ConditionalMeasurement:
         return ConditionalMeasurement(
             cluster,
             (record_id,),
@@ -343,7 +358,7 @@ class ControlledPositionProducer:
             0.0,
         )
 
-    def _selected(self, source):
+    def _selected(self, source: NativePosteriorSource) -> bool:
         record_id = source.transition.after.metadata.record_id
         return str(record_id) == self.configuration["semantic_record_id"] or (
             source.transition.after.metadata.source_id
@@ -353,7 +368,9 @@ class ControlledPositionProducer:
             == self.configuration["semantic_record_id"]
         )
 
-    def recompute(self, context, predecessor_sources):
+    def recompute(
+        self, context: NativeJointContext, predecessor_sources: tuple[NativePosteriorSource, ...]
+    ) -> ProducedJointCandidates:
         """On a fresh verifier instance, derive consumption from actual ancestry.
 
         No submitted checkpoint state, diagnostic, or stored measurement is used.
@@ -369,7 +386,7 @@ class ControlledPositionProducer:
             self.consumed_keys = [self._measurement_key()]
         return self.produce(context)
 
-    def produce(self, context):
+    def produce(self, context: NativeJointContext) -> ProducedJointCandidates:
         # All validations and arithmetic precede mutation of the producer state.
         binding = self.binding_sha256
         source = context.source
@@ -385,13 +402,16 @@ class ControlledPositionProducer:
         evidence = context.previous_weight_evidence
         if context.previous_batch is None:
             _require(evidence is None, "initial raw context cannot invent previous weights")
-            weights, unresolved = {}, 0.0
+            weights: dict[UUID, float] = {}
+            unresolved = 0.0
         else:
             _require(
                 type(evidence) is NativePreviousWeightEvidence
                 and evidence.batch() == context.previous_batch,
                 "raw context requires actual previous log weight evidence",
             )
+            if evidence is None:
+                raise ValueError("raw context requires actual previous log weight evidence")
             weights, unresolved = evidence.normalized_logs()
         unknown_logpdf = (
             0.0
@@ -405,7 +425,7 @@ class ControlledPositionProducer:
             )
         )
         receipts, statistics = [], {}
-        diagnostic = dict(
+        diagnostic: dict[str, Any] = dict(
             active=active,
             semantic_record_id=str(record_id),
             public_observation=observation,

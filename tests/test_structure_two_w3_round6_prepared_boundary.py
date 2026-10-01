@@ -245,7 +245,6 @@ def test_weights_match_independent_decimal_reference(obs, q, transition, unresol
     [
         "positive_overflow",
         "negative_overflow",
-        "unresolved_underflow",
         "nan",
         "positive_inf",
         "negative_inf",
@@ -262,8 +261,6 @@ def test_numeric_failure_is_explicit_atomic_and_retryable(fault, step):
         args = reseal(good, observation_log_likelihood=1e308, proposal_log_probability=-1e308)
     elif fault == "negative_overflow":
         args = reseal(good, observation_log_likelihood=-1e308, transition_log_probability=-1e308)
-    elif fault == "unresolved_underflow":
-        args = reseal(good, observation_log_likelihood=1e308)
     else:
         args = deepcopy(good)
         args["receipts"] = (
@@ -387,3 +384,48 @@ def test_structural_rejection_is_audited_even_for_unrepresentable_unused_score(a
     assert not any(probabilities.values())
     if all_rejected:
         assert result.unresolved_probability == 1.0
+
+
+@pytest.mark.parametrize("step", [0, 1])
+def test_finite_unresolved_underflow_retains_log_evidence_and_continues(step):
+    from cpswm.system.continuous_state_codec import StateCodec
+
+    probe = old._legacy_history(1)
+    core = probe.system.core
+    if step:
+        core.stage_prepared_particle_candidates(**candidates(core))
+    args = reseal(candidates(core, step=step), observation_log_likelihood=1e308)
+    ledger_before = content_sha256(core._hybrid_loop.ledger.export_state())
+    batch = core.stage_prepared_particle_candidates(**args)
+    assert batch.unresolved_probability == 0.0
+    workspace = core._particle_workspace
+    logs, aggregate = workspace.previous_weight_evidence(batch).normalized_logs()
+    assert len(logs) == 2 and all(math.isfinite(v) for v in logs.values())
+    assert math.isfinite(aggregate) and aggregate < -745
+    expected = decimal_reference(args["receipts"], args["unresolved_log_weight"])
+    assert [row.posterior_probability for row in batch.particle_weights] + [
+        batch.unresolved_probability
+    ] == pytest.approx(expected)
+    before = snapshot(probe)
+    assert core.stage_prepared_particle_candidates(**args) == batch
+    assert snapshot(probe) == before
+    # Detached serialized state also retains the original finite-log support.
+    restored = StateCodec().loads(StateCodec().dumps(workspace))
+    assert restored.previous_weight_evidence(restored.batch).normalized_logs() == (logs, aggregate)
+    restored.location_marginal()
+    following = candidates(core, step=step + 1, q=0.5)
+    # Uniform q contributes a common +log(2) to both particle terms; include
+    # that same normalization offset in the aggregate for a neutral update.
+    following["unresolved_log_weight"] = aggregate + math.log(2.0)
+    core.stage_prepared_particle_candidates(**following)
+    new_logs, new_aggregate = workspace.previous_weight_evidence(workspace.batch).normalized_logs()
+
+    def by_role(mapping):
+        return {
+            workspace.records[key].state.instance_association_key: value
+            for key, value in mapping.items()
+        }
+
+    assert by_role(new_logs) == pytest.approx(by_role(logs), abs=1e-12)
+    assert new_aggregate == pytest.approx(aggregate, abs=1e-12)
+    assert content_sha256(core._hybrid_loop.ledger.export_state()) == ledger_before

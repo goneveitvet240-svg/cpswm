@@ -33,6 +33,8 @@ def candidates(core, step=0, q=0.25):
         for actor in ("owner", "unknown_actor")
     ]
     receipts, statistics = [], {}
+    previous = core._particle_workspace.previous_weight_evidence(core._particle_workspace.batch)
+    prior_logs = {} if previous is None else previous.normalized_logs()[0]
     cluster_id = UUID(int=3000 + step)
     for index, chain in enumerate(chains):
         pid = UUID(int=1000 + step * 10 + index)
@@ -92,7 +94,7 @@ def candidates(core, step=0, q=0.25):
         receipts.append(
             ParticleRevisionReceipt(
                 proposal=proposal,
-                prior_log_weight=0.0 if parent is None else log(parent.posterior_probability),
+                prior_log_weight=0.0 if parent is None else prior_logs[parent.particle_id],
                 transition_log_probability=0.0,
                 observation_log_likelihood=0.0,
                 constraints=tuple(

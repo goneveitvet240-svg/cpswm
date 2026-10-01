@@ -1,3 +1,19 @@
+# A：工程回归首批修复，整体验收仍阻断（2026-10-01）
+
+分支 `codex/pc-a-engineering-regressions-20261001`；base `b6c6317a35c99cd95fe636251ce1e63bfba5f402`，实际修复/双审源码 `8f7edafd51cdf735ca9c65a7c8e4ac367cebdc68`。严格 mypy 155→0（389文件），两项子进程导入和两项有限log下溢契约已本地修复。顺序 A 同实现者自审 R1 283 / R2 120 passed；异目录污染路径2项通过，完整收集仍6738。非独立B/非全仓CI，不能相加为独立覆盖。
+
+[本轮报告](../reviews/pc_a/engineering_regressions_2026-10-01/REPORT.md)。原CI36783640567为31失败和65分钟超时；其余27节点在新建当前锁定实体环境复跑为19失败/8通过，8项Linux失败本机未复现，不计修复。当前P0、比较包、工程回执生命周期及异环境差异仍阻断。原Task-7条件参考字段本机精确一致，不能假定旧CI错误已解决。证据 output/engineering-regressions-20261001，包含失败原件、源码pin和两轮审查。
+
+优先级已按新审核改为：完整工程回归与当前合法材料准备→同语义新capture的原子更新/一次消费/回滚/撤回重放/恢复→行为收益。尚未实施后续观测事务；新训练和Unity实验0次。位置1664相关seed仍仅4屋15帧25对象，房9反例/校正退化保留。完整统一框架及既有分类/澄清对照不缩减。已推送并创建[草稿PR82](https://github.com/goneveitvet240-svg/cpswm/pull/82)，证据交付46c03527e5043dd1e3c419c277eac832f68cdfc6，未合并。最新CI未完成核验；原用户树与STATUS_B不改。
+
+---
+
+# A：工程回归修复开工（2026-10-01）
+
+分支codex/pc-a-engineering-regressions-20261001，base/当前源码b6c6317a35c99cd95fe636251ce1e63bfba5f402。远端CI36783640567为155类型错误、31失败及65分钟退出124；不能以PR76–80局部通过覆盖。失败审计793f5e0c9a20094e9c482dde1ba4d10bd1f0b018已读。先修工程回归，再同语义新观测完整更新事务，随后行为收益；完整统一范围与既有科学选择保持。独立工作树，原树/STATUS_B不改。证据output/engineering-regressions-20261001；实现后冻结并进行两轮明确标记的本机自审，独立B仍开放。
+
+---
+
 # A：当前 owner RGB-D 只读描述已交付（2026-10-01 06:05）
 
 分支codex/pc-a-owned-rgbd-descriptor-20261001，实际功能/双审源码6faa17e178ad001de6b5c0e1094f9e62568d7a7e（903 Python），base父功能82c7a81 / 父交付dc57a687f6cfe0912de7415357765fff79f2c2ff。顺序R1/R2同源码通过，详[报告](../reviews/pc_a/owned_rgbd_descriptor_2026-10-01/REPORT.md)和[交付](../reviews/pc_a/owned_rgbd_descriptor_2026-10-01/DELIVERY.md)。A辅助、非B独立/全仓CI。

@@ -139,6 +139,7 @@ def test_zero_exit_parent_cannot_leave_an_interrupt_ignoring_child(tmp_path):
         "time.sleep(60)\n"
     )
     result = None
+    writer_closed = False
     try:
         result = run(
             [sys.executable, "-u", "-c", parent],
@@ -153,9 +154,12 @@ def test_zero_exit_parent_cannot_leave_an_interrupt_ignoring_child(tmp_path):
         # cause BlockingIOError here, even if CPU scheduling delayed its work.
         assert select.select([reader], [], [], 5)[0], "owned child retained its writer"
         assert os.read(reader, 1) == b""
+        writer_closed = True
     finally:
         os.close(reader)
-        if result is not None:
+        # The parent has been reaped and EOF proves its only child closed the
+        # writer. Do not signal this already-finished group again (or a reused ID).
+        if result is not None and not writer_closed:
             with suppress(ProcessLookupError):
                 os.killpg(result["pid"], signal.SIGKILL)
 

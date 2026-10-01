@@ -18,7 +18,7 @@ jobs:
   current-inputs:
     runs-on: ubuntu-latest
     # Full comparison and attribution replays exceeded 65 minutes on the Linux
-    # runner. Budget preparation separately; the test execution stays 65 minutes.
+    # runner. Budget preparation separately from the complete regression.
     # Leave 20 minutes outside this budget for setup, cleanup and artifact upload.
     timeout-minutes: 140
     steps:
@@ -45,9 +45,9 @@ jobs:
   test:
     needs: current-inputs
     runs-on: ubuntu-latest
-    # Setup, diagnostic finalization and upload are outside the unchanged
-    # 65 minute test execution budget.
-    timeout-minutes: 85
+    # The prior 65 minute run left 2040 collected nodes without terminal results.
+    # Keep those failures; allow 180 minutes plus setup/finalization/upload here.
+    timeout-minutes: 200
     steps:
       - uses: actions/checkout@v4
         # Evidence verification reads records at pinned ancestor commits.
@@ -83,8 +83,8 @@ jobs:
       # loadscope keeps module-scoped expensive reports on one worker.  The old
       # default scheduler rebuilt the same SHIFT report once per worker and
       # made the suite exceed the pre-data regression budget.
-      - name: Full regression (65 minute execution budget)
-        run: uv run --frozen --extra dev --extra perception --extra hand-perception python tools/run_ci_regression.py --inputs output/ci-validation-inputs --output output/ci-regression/execution --budget-seconds 3900 --grace-seconds 60
+      - name: Full regression with terminal-result accounting (180 minute execution budget)
+        run: uv run --frozen --extra dev --extra perception --extra hand-perception python tools/run_ci_regression.py --inputs output/ci-validation-inputs --output output/ci-regression/execution --budget-seconds 10800 --grace-seconds 60 --collection-log output/ci-regression/collection.log --collection-exit-code-file output/ci-regression/collection-exit-code.txt
       - name: Preserve regression diagnostics on every outcome
         if: always()
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4

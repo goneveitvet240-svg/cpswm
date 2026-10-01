@@ -154,13 +154,24 @@ def main():
     parser.add_argument("--grace-seconds", type=float, default=60)
     parser.add_argument("--workers", default="auto")
     parser.add_argument("--inputs", type=Path, help="completed current-input preparation directory")
+    parser.add_argument("--collection-log", type=Path, help="full pytest collection log")
+    parser.add_argument("--collection-exit-code-file", type=Path)
     args = parser.parse_args()
+    if (args.collection_log is None) != (args.collection_exit_code_file is None):
+        parser.error("collection log and exit-code file must be supplied together")
     root = Path(__file__).resolve().parents[1]
     output = args.output.resolve()
     if args.inputs is not None:
         from prepare_current_validation_inputs import consumer_environment
 
         os.environ.update(consumer_environment(root, args.inputs))
+    collection = source_before = None
+    if args.collection_log is not None:
+        from prepare_current_validation_inputs import source_inventory
+
+        collection = args.collection_log.read_bytes()
+        collection_exit_code = int(args.collection_exit_code_file.read_text().strip())
+        source_before = source_inventory(root)
     command = [
         sys.executable,
         "-u",
@@ -186,8 +197,29 @@ def main():
         budget_seconds=args.budget_seconds,
         grace_seconds=args.grace_seconds,
     )
-    print(json.dumps(result), flush=True)
-    return result["exit_code"]
+    exit_code = result["exit_code"]
+    if collection is not None:
+        from reconcile_ci_regression import reconcile
+
+        # The child's result remains unchanged. Accounting can only fail a run,
+        # never turn a failure, timeout, skip or xfail into strict acceptance.
+        junit = output / "pytest.xml"
+        source_after = source_inventory(root)
+        accounting = reconcile(
+            collection,
+            collection_exit_code,
+            junit.read_bytes() if junit.is_file() else b"",
+            result,
+            source_unchanged=source_before == source_after,
+        )
+        (output / "source-inventory.json").write_text(
+            json.dumps({"before": source_before, "after": source_after}, indent=2) + "\n"
+        )
+        (output / "accounting.json").write_text(json.dumps(accounting, indent=2) + "\n")
+        if not accounting["ordinary_regression_passed"] and exit_code == 0:
+            exit_code = 1
+    print(json.dumps({"execution": result, "effective_exit_code": exit_code}), flush=True)
+    return exit_code
 
 
 if __name__ == "__main__":

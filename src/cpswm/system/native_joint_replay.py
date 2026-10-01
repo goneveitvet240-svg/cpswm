@@ -91,6 +91,7 @@ def correction_basis(core: Any) -> str:
             core.current_snapshot,
             core.current_cause_snapshot,
             core._hybrid_loop.ledger.export_state().manifest.head_hash,
+            core._particle_observation_withdrawals,
             tuple(
                 (rid, core._event_histories.get(rid), event)
                 for rid, event in sorted(core._observed_events.items(), key=lambda x: str(x[0]))
@@ -191,7 +192,10 @@ def prepare_generation(core: Any) -> JointReplayGeneration:
     validate_generations(core)
     old = core._particle_workspace
     old._validate_persisted_state()
-    if not old.invalidated_revisions:
+    pending_withdrawal = any(
+        u.logical_key in core._particle_observation_withdrawals for u in consumed_schedule(old)
+    )
+    if not old.invalidated_revisions and not pending_withdrawal:
         raise ValueError("full joint replay requires a populated invalidated history")
     source_pool: dict[UUID, NativePosteriorSource] = {}
     # Current and archived bodies have each already passed their core anchors.
@@ -205,7 +209,12 @@ def prepare_generation(core: Any) -> JointReplayGeneration:
                 seen_updates.add(update.logical_key)
         for source in workspace.posterior_sources.values():
             source_pool[source.history_after.latest.revision_id] = source
-    retained_updates = tuple(u for u in schedule if u.revision_id in core._observed_events)
+    retained_updates = tuple(
+        u
+        for u in schedule
+        if u.revision_id in core._observed_events
+        and u.logical_key not in core._particle_observation_withdrawals
+    )
     retained = list(dict.fromkeys(u.revision_id for u in retained_updates))
     if not retained:
         raise ValueError("no retained consumed source for a nonempty joint posterior")

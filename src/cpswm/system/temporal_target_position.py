@@ -78,10 +78,10 @@ class TemporalTargetPositionProducer(NaturalCandidatePositionProducer):
 
     def _content_binding(self) -> str:
         _require(
-            natural_target_sequence.InitializedPixelTargetTracker
+            vars(natural_target_sequence)["InitializedPixelTargetTracker"]
             is visual_target_tracking.InitializedPixelTargetTracker
-            and natural_target_sequence.decode_rgb is natural_vision.decode_rgb
-            and natural_target_sequence.NaturalAppearanceDetector
+            and vars(natural_target_sequence)["decode_rgb"] is natural_vision.decode_rgb
+            and vars(natural_target_sequence)["NaturalAppearanceDetector"]
             is natural_vision.NaturalAppearanceDetector,
             "temporal perception alias changed",
         )

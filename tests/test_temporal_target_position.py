@@ -656,7 +656,7 @@ def test_loaded_tracker_alias_is_bound(tmp_path, checkpoints, weights, monkeypat
         with monkeypatch.context() as patch:
             patch.setattr(natural_target_sequence, "InitializedPixelTargetTracker", object)
             with pytest.raises(ValueError, match="alias changed"):
-                case["candidate"].binding_sha256
+                _ = case["candidate"].binding_sha256
         assert case["candidate"].binding_sha256
     finally:
         case["store"].close()

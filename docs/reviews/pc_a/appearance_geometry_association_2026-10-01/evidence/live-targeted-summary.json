@@ -1,0 +1,77 @@
+{
+  "status": "passed",
+  "source_sha": "5a4e3a0660114b3e7bc5b2482f4d49456b825239",
+  "steps": [
+    {
+      "action_id": "128c745a-35a2-45cc-a8a0-92c365a82535",
+      "action": "RotateRight",
+      "degrees": 30.0,
+      "status": "REFERENCE_ONLY",
+      "received_at": "2026-10-01T15:27:04.787243+00:00",
+      "success": true
+    },
+    {
+      "action_id": "8cd4b6d3-1aba-41d3-a70b-abfdf24dc9ba",
+      "action": "RotateRight",
+      "degrees": 5.0,
+      "status": "QUERY_CONSUMED",
+      "received_at": "2026-10-01T15:27:10.549538+00:00",
+      "success": true
+    }
+  ],
+  "physical_dispatches": 2,
+  "semantic_unchanged": true,
+  "posterior_changed": true,
+  "reference_neutral": true,
+  "duplicate_inert": true,
+  "prior_sha": "421065824f1858696472f08b6eb896fc3f2ec64253931aad94bcc4fa4b21c4ff",
+  "posterior_sha": "2f01d0f2b205bf5f00e0fd883899d15696f1ad6265c2021f8465ab88bc2e31b3",
+  "next_action": "RotateRight",
+  "diagnostic_selection": "Targeted 30 then 5 degree positive-path attempt after separate 15/15 category mismatch; not held-out evaluation",
+  "reference_candidates": [
+    {
+      "id": "477b638c-daec-5c6d-8e57-b98292b316a9",
+      "category": "bottle",
+      "point": [
+        0.18057710350317566,
+        1.0672312118721128,
+        2.0972660901246534
+      ]
+    }
+  ],
+  "query_candidates": [
+    {
+      "id": "c8e33d87-4658-5a35-bff8-ffe10127290d",
+      "category": "bowl",
+      "point": [
+        0.42143668601845985,
+        0.9910245953382837,
+        3.0375603892551877
+      ]
+    }
+  ],
+  "association_branches": 0,
+  "native_branches": 2,
+  "comparisons": [
+    {
+      "reference_id": "477b638c-daec-5c6d-8e57-b98292b316a9",
+      "query_id": "c8e33d87-4658-5a35-bff8-ffe10127290d",
+      "compatible": false
+    }
+  ],
+  "unknown_log_gate": 0.0,
+  "branch_summary": [
+    {
+      "query_id": "unmatched",
+      "log_gate": 0.0,
+      "position_log_ratio": 0.0,
+      "instance": "unknown_instance"
+    },
+    {
+      "query_id": "preserve",
+      "log_gate": 0.0,
+      "position_log_ratio": 0.0,
+      "instance": "unknown_instance"
+    }
+  ]
+}

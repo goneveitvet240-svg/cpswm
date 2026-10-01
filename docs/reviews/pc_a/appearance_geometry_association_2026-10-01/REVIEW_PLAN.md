@@ -1,0 +1,13 @@
+# Authorized development association: evidence plan
+
+Base 0a5e38c0e59ce2a42342925be7dc5de6fc994c19. User explicitly agreed to uncalibrated appearance plus 3D geometry, multiple alternatives, unknown and original controls.
+
+Model: fixed 8-bin per-channel RGB histogram, Hellinger distance / 0.25, surface-point Euclidean distance / 0.5 metres, same-category eligibility, unknown log energy -2.0. These are explicit development constants, not validation-selected thresholds or empirical calibration. Divide known energies by reference and query counts; marginalize reference uncertainty, retain each eligible query as a separate Native branch. No argmax or detector-score density. This is a single composite conditional energy; RGB-D is not counted as independent appearance, geometry and classification evidence. Position odds retain the original controlled Gaussian/residual/background assumptions. Reference-to-semantic initial anchor remains controlled and includes all reference detections; no household reidentification claim.
+
+One earlier complete owner-issued/delivered frame from the same original source, runtime and parent, received before the query decision, and present in its source IDs, supplies reference conditions. Choose most recent eligible original capture by (received_at, action_id), independent of inferred labels. Reference-only collection leaves the posterior unchanged. Only one subsequent query factor may be committed in the lifetime profile. Both captures remain in the original journal, use historical cutoffs on replay, and are recomputed from raw bytes. No SDK instance IDs or masks enter inference.
+
+R1: legal default reference-query collection; multiple real-detector candidates on explicitly synthetic image montage; exact target sum and neural q cancellation; normalized ambiguity/unknown/count tests; complete base/readout forgery with actual neural q; rollback; semantic withdrawal/replay; fresh SQLite recovery.
+R2: preserved prior profiles and collector regressions; additional missing/reference/loaded-code attacks and source-bound fresh recovery. Sequential A self-reviews, not B or full-repository acceptance.
+Live: fresh Unity 2-frame reference/query sequence under controlled camera utility, pinned real detector and actual public RGB-D/self pose. Preserve any failure as failure. Independent interpreter recovery from the actual SQLite database. No claim of task benefit or cross-room generalization.
+
+Open: unbounded repeated observations, persistent natural target identity, calibration, natural semantic event inference, independent B and full CI, held-out task outcomes. Prior local results do not close these gates.

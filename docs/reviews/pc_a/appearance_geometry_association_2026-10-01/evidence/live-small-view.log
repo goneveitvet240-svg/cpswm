@@ -1,0 +1,31 @@
+{"source_sha": "5a4e3a0660114b3e7bc5b2482f4d49456b825239", "status": "failed", "steps": [{"action_id": "d97aabd2-d94b-4f73-a5f8-b272f1ecd6f4", "action": "RotateRight", "degrees": 30.0, "status": "REFERENCE_ONLY", "received_at": "2026-10-01T15:28:40.930698+00:00", "success": true}], "scope": "Actual RGB-D frame pair; uncalibrated association energy; controlled initial semantic anchor, actors, Gaussian/residual and camera utility. No task benefit claim.", "error_type": "ValueError", "error": "natural position unavailable: no_detection_candidates", "physical_dispatches": 2}
+Traceback (most recent call last):
+  File "/private/tmp/cpswm-appearance-geometry-evidence-20261001/live_probe_small_view.py", line 46, in <module>
+    step=collect_posterior_step(stream,model=Model(stream),executor=camera,decision_time=datetime.now(UTC))
+  File "/private/tmp/cpswm-pc-a-appearance-geometry-association-20261001/src/cpswm/system/continuous_camera_collection.py", line 141, in collect_posterior_step
+    stream.consume_owned_position_observation(command.action_id)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+  File "/private/tmp/cpswm-pc-a-appearance-geometry-association-20261001/src/cpswm/system/structure_two_continuous_input.py", line 896, in consume_owned_position_observation
+    return consume(self, action_id)
+  File "/private/tmp/cpswm-pc-a-appearance-geometry-association-20261001/src/cpswm/system/owned_position_update.py", line 278, in consume
+    produced = deepcopy(producer.produce(deepcopy(context)))
+                        ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+  File "/private/tmp/cpswm-pc-a-appearance-geometry-association-20261001/src/cpswm/system/native_neural_production.py", line 541, in produce
+    base = deepcopy(self._candidate_model.produce(deepcopy(context)))
+                    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+  File "/private/tmp/cpswm-pc-a-appearance-geometry-association-20261001/src/cpswm/system/appearance_geometry_position.py", line 172, in produce
+    pair = self._pair(context) if active else None
+           ~~~~~~~~~~^^^^^^^^^
+  File "/private/tmp/cpswm-pc-a-appearance-geometry-association-20261001/src/cpswm/system/appearance_geometry_position.py", line 85, in _pair
+    _, query_diagnostic = self._observation_and_diagnostic(context)
+                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "/private/tmp/cpswm-pc-a-appearance-geometry-association-20261001/src/cpswm/system/natural_candidate_position.py", line 191, in _observation_and_diagnostic
+    _require(
+    ~~~~~~~~^
+        selected is not None, f"natural position unavailable: {result['unavailable_reason']}"
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/private/tmp/cpswm-pc-a-appearance-geometry-association-20261001/src/cpswm/system/controlled_position_producer.py", line 55, in _require
+    raise ValueError(message)
+ValueError: natural position unavailable: no_detection_candidates

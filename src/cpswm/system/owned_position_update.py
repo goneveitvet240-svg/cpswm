@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import inspect
 from copy import deepcopy
+from dataclasses import replace
 from hashlib import sha256
 from pathlib import Path
 from typing import TYPE_CHECKING, Any
@@ -36,6 +37,7 @@ def enabled(stream: ContinuousEvidenceInput) -> bool:
     return type(profile) is dict and profile.get("profile") in (
         "owned-single-position-raw@1",
         "natural-candidate-single-position-raw@1",
+        "appearance-geometry-single-pair-raw@1",
     )
 
 
@@ -78,7 +80,7 @@ def issue_anchor(stream: ContinuousEvidenceInput, command: Any) -> tuple[Any, ..
     )
 
 
-def accepted_update(stream: ContinuousEvidenceInput, action_id: UUID) -> NativeObservationUpdate:
+def _original_update(stream: ContinuousEvidenceInput, action_id: UUID) -> NativeObservationUpdate:
     """Rebuild only from original independently retained issue/delivery anchors."""
     from cpswm.system.controlled_position_producer import packet_binding
     from cpswm.system.reproducibility import content_sha256
@@ -133,6 +135,57 @@ def accepted_update(stream: ContinuousEvidenceInput, action_id: UUID) -> NativeO
         command.decision_time,
         delivery.received_at,
     )
+
+
+def uses_association(stream: ContinuousEvidenceInput) -> bool:
+    profile = stream._system.core._particle_workspace.raw_candidate_profile
+    return (
+        type(profile) is dict and profile.get("profile") == "appearance-geometry-single-pair-raw@1"
+    )
+
+
+def reference_for(
+    stream: ContinuousEvidenceInput, action_id: UUID
+) -> NativeObservationUpdate | None:
+    """Most recent complete earlier owned capture, same original semantic base.
+
+    Selection depends only on original acquisition history at query decision time,
+    never detector scores, future captures or a submitted reference descriptor.
+    """
+    from cpswm.system.structure_two_continuous_input import ObservationDelivery
+
+    query = _original_update(stream, action_id)
+    command = stream._observation_commands[action_id][0]
+    options = []
+    for key, status in stream._observation_status.items():
+        if (
+            key == action_id
+            or type(status) is not ObservationDelivery
+            or not status.success
+            or status.received_at > query.decision_time
+            or key not in stream._system.core._particle_observation_issues
+        ):
+            continue
+        ref = _original_update(stream, key)
+        if (
+            ref.semantic_revision_id == query.semantic_revision_id
+            and ref.issued_source_id == query.issued_source_id
+            and ref.original_runtime_id == query.original_runtime_id
+            and ref.original_parent_sha256 == query.original_parent_sha256
+            and set(ref.packet["observation_ids"]) <= {str(k) for k in command.source_ids}
+        ):
+            options.append(ref)
+    return max(options, key=lambda r: (r.received_at, str(r.action_id))) if options else None
+
+
+def accepted_update(stream: ContinuousEvidenceInput, action_id: UUID) -> NativeObservationUpdate:
+    update = _original_update(stream, action_id)
+    if uses_association(stream):
+        reference = reference_for(stream, action_id)
+        if reference is None:
+            raise ValueError("association query requires an earlier owned reference capture")
+        update = replace(update, reference=reference)
+    return update
 
 
 def verify_journal(stream: ContinuousEvidenceInput) -> None:

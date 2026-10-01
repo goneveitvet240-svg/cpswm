@@ -248,6 +248,7 @@ def describe_current_owned_rgbd(
                     "controlled-position-raw@1",
                     "owned-single-position-raw@1",
                     "natural-candidate-single-position-raw@1",
+                    "appearance-geometry-single-pair-raw@1",
                 ),
                 "descriptor requires the protected canonical raw profile",
             )

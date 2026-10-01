@@ -1,0 +1,56 @@
+{
+  "status": "passed",
+  "source_sha": "5a4e3a0660114b3e7bc5b2482f4d49456b825239",
+  "steps": [
+    {
+      "action_id": "2fd7ec1f-9379-415d-9a2a-79121fe4a395",
+      "action": "RotateRight",
+      "degrees": 15.0,
+      "status": "REFERENCE_ONLY",
+      "received_at": "2026-10-01T15:24:37.965471+00:00",
+      "success": true
+    },
+    {
+      "action_id": "e94292be-dae6-42dc-8637-29fbe34c3e8b",
+      "action": "RotateRight",
+      "degrees": 15.0,
+      "status": "QUERY_CONSUMED",
+      "received_at": "2026-10-01T15:24:43.388035+00:00",
+      "success": true
+    }
+  ],
+  "physical_dispatches": 2,
+  "semantic_unchanged": true,
+  "posterior_changed": true,
+  "reference_neutral": true,
+  "duplicate_inert": true,
+  "prior_sha": "8f7b88b33c394fae4e8b7d9eb189f71f17719c077c27416236086e8b8ee279f4",
+  "posterior_sha": "624ecb38cd9a6b89b3d16eab4f7804b2e952fdf7a51a07c58f5acfd5e22977c7",
+  "next_action": "RotateRight",
+  "reference_candidates": 1,
+  "query_candidates": 1,
+  "association_branches": 0,
+  "native_branches": 2,
+  "comparisons": [
+    {
+      "reference_id": "dbcaa93f-5c69-550d-84c9-3a8bdc1fba0f",
+      "query_id": "b9381b87-8181-5ca6-8e4d-fc62b721350c",
+      "compatible": false
+    }
+  ],
+  "unknown_log_gate": 0.0,
+  "branch_summary": [
+    {
+      "query_id": "unmatched",
+      "log_gate": 0.0,
+      "position_log_ratio": 0.0,
+      "instance": "unknown_instance"
+    },
+    {
+      "query_id": "preserve",
+      "log_gate": 0.0,
+      "position_log_ratio": 0.0,
+      "instance": "unknown_instance"
+    }
+  ]
+}

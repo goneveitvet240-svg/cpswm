@@ -48,6 +48,7 @@ class NativeObservationUpdate:
     packet: dict[str, Any]
     decision_time: datetime
     received_at: datetime
+    reference: NativeObservationUpdate | None = None
 
 
 @dataclass(frozen=True)

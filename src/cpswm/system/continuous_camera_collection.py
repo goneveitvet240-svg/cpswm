@@ -61,6 +61,7 @@ class CollectionStep:
     delivery: ObservationDelivery | None
     semantic_receipt: DeliveryReceipt
     recovered_ready_command: bool
+    position_update_status: str | None = None
 
 
 def collect_posterior_step(
@@ -126,8 +127,17 @@ def collect_posterior_step(
         assert command is not None
         delivery = stream.execute_observation(command, executor=executor)
         receipt = stream.advance(cutoff=delivery.received_at)
-        from cpswm.system.owned_position_update import enabled
+        from cpswm.system.owned_position_update import enabled, reference_for, uses_association
 
+        position_status = None
         if delivery.success and enabled(stream):
-            stream.consume_owned_position_observation(command.action_id)
-        return CollectionStep(plan, command, delivery, receipt, recovered)
+            if uses_association(stream) and reference_for(stream, command.action_id) is None:
+                # Original delivery is durable reference-only input, not a factor.
+                from cpswm.system.owned_position_delivery import describe_current_owned_rgbd
+
+                describe_current_owned_rgbd(stream, command.action_id)
+                position_status = "REFERENCE_ONLY"
+            else:
+                stream.consume_owned_position_observation(command.action_id)
+                position_status = "QUERY_CONSUMED"
+        return CollectionStep(plan, command, delivery, receipt, recovered, position_status)

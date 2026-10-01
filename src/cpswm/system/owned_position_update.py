@@ -33,7 +33,10 @@ def implementation_binding() -> str:
 
 def enabled(stream: ContinuousEvidenceInput) -> bool:
     profile = stream._system.core._particle_workspace.raw_candidate_profile
-    return type(profile) is dict and profile.get("profile") == "owned-single-position-raw@1"
+    return type(profile) is dict and profile.get("profile") in (
+        "owned-single-position-raw@1",
+        "natural-candidate-single-position-raw@1",
+    )
 
 
 def delivery_pin(delivery: Any) -> str:

@@ -244,7 +244,11 @@ def describe_current_owned_rgbd(
             _require(
                 type(profile) is dict
                 and profile.get("profile")
-                in ("controlled-position-raw@1", "owned-single-position-raw@1"),
+                in (
+                    "controlled-position-raw@1",
+                    "owned-single-position-raw@1",
+                    "natural-candidate-single-position-raw@1",
+                ),
                 "descriptor requires the protected canonical raw profile",
             )
             batch = workspace.batch

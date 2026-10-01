@@ -17,6 +17,16 @@ TOOLS = Path(__file__).resolve().parents[1] / "tools"
 SUCCESS = {"status": "PASSED", "exit_code": 0, "child_exit_code": 0}
 
 
+def test_fully_fabricated_consistent_records_are_not_execution_authentication():
+    # An offline, unkeyed accounting function cannot distinguish this from
+    # actual execution. Preserve that boundary even when every field agrees.
+    collection = b"tests/test_fake.py::test_fake\n1 test collected in 0.01s\n"
+    junit = b'<testsuite><testcase classname="tests.test_fake" name="test_fake"/></testsuite>'
+    result = reconcile(collection, 0, junit, SUCCESS, source_unchanged=True)
+    assert result["strict_all_nodes_passed"]
+    assert result["execution_authenticity_established"] is False
+
+
 @pytest.fixture(scope="module")
 def actual_reports(tmp_path_factory):
     root = tmp_path_factory.mktemp("accounting-real-pytest")

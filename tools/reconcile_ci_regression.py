@@ -69,6 +69,7 @@ def reconcile(collection, collection_exit_code, junit, execution, *, source_unch
     )
     return {
         "scope": "COLLECTED_TEST_ACCOUNTING_NOT_AUTHENTICATED_OR_SCIENTIFIC_ACCEPTANCE",
+        "execution_authenticity_established": False,
         "collection_sha256": hashlib.sha256(collection).hexdigest(),
         "junit_sha256": hashlib.sha256(junit).hexdigest(),
         "collection_valid": valid_collection,

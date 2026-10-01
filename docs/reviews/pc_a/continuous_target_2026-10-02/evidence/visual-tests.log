@@ -1,0 +1,418 @@
+FFFFF...                                                                 [100%]
+=================================== FAILURES ===================================
+_________ test_natural_initialization_translation_duplicate_and_replay _________
+
+weights = PosixPath('/private/tmp/cpswm-natural-candidate-evidence-20261001/ssdlite.pth')
+
+    def test_natural_initialization_translation_duplicate_and_replay(weights):
+        image = public_image()
+        inputs = [
+>           observation(image, 0),
+            ^^^^^^^^^^^^^^^^^^^^^
+            observation(np.roll(image, 2, axis=1), 1),
+            observation(np.roll(image, 2, axis=1), 2),
+        ]
+
+tests/test_natural_target_sequence.py:46: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_natural_target_sequence.py:35: in observation
+    rows, cutoff = packet(
+tests/test_unity_rgbd.py:63: in packet
+    return observations_from_response(
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+response = {'action_id': 'a86f23da-322b-4f08-82a6-1340346d5335', 'capture_time': '2026-10-02T00:00:00+00:00', 'success': True, 'error': '', ...}
+action_id = UUID('a86f23da-322b-4f08-82a6-1340346d5335')
+scope = (UUID('00000000-0000-0000-0000-000000000001'), UUID('00000000-0000-0000-0000-000000000002'), UUID('00000000-0000-0000-0000-000000000003'))
+arrival = datetime.datetime(2026, 10, 2, 0, 0, 1, tzinfo=datetime.timezone.utc)
+provenance = {'worker': 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa', 'unity': 'bbbbbbbbbbbbbbbbbbbbbbbbbbbbb...cccccccccccccccccccccccc', 'capture_configuration': '6b81d2f5bc1f40cdb42193941659485e193f805bd5a4514355becf4478092cc4'}
+
+    def observations_from_response(
+        response: dict[str, Any],
+        *,
+        action_id: UUID,
+        scope: tuple[UUID, UUID, UUID],
+        arrival: datetime,
+        provenance: dict[str, str],
+    ) -> tuple[RawModalityObservation, ...]:
+        """Transport-only constructor; validate before admission to the owner journal."""
+        import base64
+        from uuid import uuid4
+    
+        from cpswm.contracts.base import BaseRecordMetadata
+        from cpswm.perception_mapping.adapters.contracts import (
+            ObservationEnvelope,
+            ObservationIdentity,
+            PayloadRef,
+            SensorRef,
+        )
+    
+        if (
+            set(response)
+            != {"action_id", "capture_time", "success", "error", "rgb_npy", "depth_npy", "camera"}
+            or response["action_id"] != str(action_id)
+            or type(response["success"]) is not bool
+            or type(response["error"]) is not str
+        ):
+            raise ValueError("unexpected public RGB-D response fields or owner")
+        if any(
+            type(response[k]) is not str or len(response[k]) > 4_000_000
+            for k in ("rgb_npy", "depth_npy")
+        ):
+            raise ValueError("RGB-D transport payload exceeds bound")
+        rgb, depth = (base64.b64decode(response[k], validate=True) for k in ("rgb_npy", "depth_npy"))
+        # The worker may supply only camera sensor fields; conflicting/privileged keys fail.
+        fixed = dict(
+            schema_id=SCHEMA,
+            action_id=action_id,
+            capture_time=response["capture_time"],
+            rgb_sha256=sha256(rgb).hexdigest(),
+            depth_sha256=sha256(depth).hexdigest(),
+            worker_sha256=provenance["worker"],
+            unity_sha256=provenance["unity"],
+            scene_sha256=provenance["house"],
+            configuration_sha256=provenance["capture_configuration"],
+        )
+        if type(response["camera"]) is not dict or set(fixed) & set(response["camera"]):
+            raise ValueError("worker camera packet overrides capture binding")
+>       camera = CameraSelfPose.model_validate({**response["camera"], **fixed})
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       pydantic_core._pydantic_core.ValidationError: 1 validation error for CameraSelfPose
+E         Value error, camera configuration differs from capture binding [type=value_error, input_value={'width': 320, 'height': ...a4514355becf4478092cc4'}, input_type=dict]
+E           For further information visit https://errors.pydantic.dev/2.13/v/value_error
+
+src/cpswm/perception_mapping/unity_rgbd.py:331: ValidationError
+_____________ test_unknown_is_retained_and_not_forcibly_reacquired _____________
+
+weights = PosixPath('/private/tmp/cpswm-natural-candidate-evidence-20261001/ssdlite.pth')
+
+    def test_unknown_is_retained_and_not_forcibly_reacquired(weights):
+        image = public_image()
+        seq = NaturalTargetSequence(weights_path=weights)
+        records = [
+            seq.observe(r, cutoff=c)
+            for r, c in (
+>               observation(image, 0),
+                ^^^^^^^^^^^^^^^^^^^^^
+                observation(np.zeros_like(image), 1),
+                observation(image, 2),
+            )
+        ]
+
+tests/test_natural_target_sequence.py:74: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_natural_target_sequence.py:35: in observation
+    rows, cutoff = packet(
+tests/test_unity_rgbd.py:63: in packet
+    return observations_from_response(
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+response = {'action_id': 'e5f17a54-4851-44cd-acb3-42b2b7e46fca', 'capture_time': '2026-10-02T00:00:00+00:00', 'success': True, 'error': '', ...}
+action_id = UUID('e5f17a54-4851-44cd-acb3-42b2b7e46fca')
+scope = (UUID('00000000-0000-0000-0000-000000000001'), UUID('00000000-0000-0000-0000-000000000002'), UUID('00000000-0000-0000-0000-000000000003'))
+arrival = datetime.datetime(2026, 10, 2, 0, 0, 1, tzinfo=datetime.timezone.utc)
+provenance = {'worker': 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa', 'unity': 'bbbbbbbbbbbbbbbbbbbbbbbbbbbbb...cccccccccccccccccccccccc', 'capture_configuration': '6b81d2f5bc1f40cdb42193941659485e193f805bd5a4514355becf4478092cc4'}
+
+    def observations_from_response(
+        response: dict[str, Any],
+        *,
+        action_id: UUID,
+        scope: tuple[UUID, UUID, UUID],
+        arrival: datetime,
+        provenance: dict[str, str],
+    ) -> tuple[RawModalityObservation, ...]:
+        """Transport-only constructor; validate before admission to the owner journal."""
+        import base64
+        from uuid import uuid4
+    
+        from cpswm.contracts.base import BaseRecordMetadata
+        from cpswm.perception_mapping.adapters.contracts import (
+            ObservationEnvelope,
+            ObservationIdentity,
+            PayloadRef,
+            SensorRef,
+        )
+    
+        if (
+            set(response)
+            != {"action_id", "capture_time", "success", "error", "rgb_npy", "depth_npy", "camera"}
+            or response["action_id"] != str(action_id)
+            or type(response["success"]) is not bool
+            or type(response["error"]) is not str
+        ):
+            raise ValueError("unexpected public RGB-D response fields or owner")
+        if any(
+            type(response[k]) is not str or len(response[k]) > 4_000_000
+            for k in ("rgb_npy", "depth_npy")
+        ):
+            raise ValueError("RGB-D transport payload exceeds bound")
+        rgb, depth = (base64.b64decode(response[k], validate=True) for k in ("rgb_npy", "depth_npy"))
+        # The worker may supply only camera sensor fields; conflicting/privileged keys fail.
+        fixed = dict(
+            schema_id=SCHEMA,
+            action_id=action_id,
+            capture_time=response["capture_time"],
+            rgb_sha256=sha256(rgb).hexdigest(),
+            depth_sha256=sha256(depth).hexdigest(),
+            worker_sha256=provenance["worker"],
+            unity_sha256=provenance["unity"],
+            scene_sha256=provenance["house"],
+            configuration_sha256=provenance["capture_configuration"],
+        )
+        if type(response["camera"]) is not dict or set(fixed) & set(response["camera"]):
+            raise ValueError("worker camera packet overrides capture binding")
+>       camera = CameraSelfPose.model_validate({**response["camera"], **fixed})
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       pydantic_core._pydantic_core.ValidationError: 1 validation error for CameraSelfPose
+E         Value error, camera configuration differs from capture binding [type=value_error, input_value={'width': 320, 'height': ...a4514355becf4478092cc4'}, input_type=dict]
+E           For further information visit https://errors.pydantic.dev/2.13/v/value_error
+
+src/cpswm/perception_mapping/unity_rgbd.py:331: ValidationError
+____________________ test_empty_initial_frame_stays_unknown ____________________
+
+weights = PosixPath('/private/tmp/cpswm-natural-candidate-evidence-20261001/ssdlite.pth')
+
+    def test_empty_initial_frame_stays_unknown(weights):
+        image = public_image()
+        seq = NaturalTargetSequence(weights_path=weights)
+        records = [
+            seq.observe(r, cutoff=c)
+>           for r, c in (observation(np.zeros_like(image), 0), observation(image, 1))
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        ]
+
+tests/test_natural_target_sequence.py:91: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_natural_target_sequence.py:35: in observation
+    rows, cutoff = packet(
+tests/test_unity_rgbd.py:63: in packet
+    return observations_from_response(
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+response = {'action_id': '38843f20-ddc0-468a-8027-5baa15228774', 'capture_time': '2026-10-02T00:00:00+00:00', 'success': True, 'error': '', ...}
+action_id = UUID('38843f20-ddc0-468a-8027-5baa15228774')
+scope = (UUID('00000000-0000-0000-0000-000000000001'), UUID('00000000-0000-0000-0000-000000000002'), UUID('00000000-0000-0000-0000-000000000003'))
+arrival = datetime.datetime(2026, 10, 2, 0, 0, 1, tzinfo=datetime.timezone.utc)
+provenance = {'worker': 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa', 'unity': 'bbbbbbbbbbbbbbbbbbbbbbbbbbbbb...cccccccccccccccccccccccc', 'capture_configuration': '6b81d2f5bc1f40cdb42193941659485e193f805bd5a4514355becf4478092cc4'}
+
+    def observations_from_response(
+        response: dict[str, Any],
+        *,
+        action_id: UUID,
+        scope: tuple[UUID, UUID, UUID],
+        arrival: datetime,
+        provenance: dict[str, str],
+    ) -> tuple[RawModalityObservation, ...]:
+        """Transport-only constructor; validate before admission to the owner journal."""
+        import base64
+        from uuid import uuid4
+    
+        from cpswm.contracts.base import BaseRecordMetadata
+        from cpswm.perception_mapping.adapters.contracts import (
+            ObservationEnvelope,
+            ObservationIdentity,
+            PayloadRef,
+            SensorRef,
+        )
+    
+        if (
+            set(response)
+            != {"action_id", "capture_time", "success", "error", "rgb_npy", "depth_npy", "camera"}
+            or response["action_id"] != str(action_id)
+            or type(response["success"]) is not bool
+            or type(response["error"]) is not str
+        ):
+            raise ValueError("unexpected public RGB-D response fields or owner")
+        if any(
+            type(response[k]) is not str or len(response[k]) > 4_000_000
+            for k in ("rgb_npy", "depth_npy")
+        ):
+            raise ValueError("RGB-D transport payload exceeds bound")
+        rgb, depth = (base64.b64decode(response[k], validate=True) for k in ("rgb_npy", "depth_npy"))
+        # The worker may supply only camera sensor fields; conflicting/privileged keys fail.
+        fixed = dict(
+            schema_id=SCHEMA,
+            action_id=action_id,
+            capture_time=response["capture_time"],
+            rgb_sha256=sha256(rgb).hexdigest(),
+            depth_sha256=sha256(depth).hexdigest(),
+            worker_sha256=provenance["worker"],
+            unity_sha256=provenance["unity"],
+            scene_sha256=provenance["house"],
+            configuration_sha256=provenance["capture_configuration"],
+        )
+        if type(response["camera"]) is not dict or set(fixed) & set(response["camera"]):
+            raise ValueError("worker camera packet overrides capture binding")
+>       camera = CameraSelfPose.model_validate({**response["camera"], **fixed})
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       pydantic_core._pydantic_core.ValidationError: 1 validation error for CameraSelfPose
+E         Value error, camera configuration differs from capture binding [type=value_error, input_value={'width': 320, 'height': ...a4514355becf4478092cc4'}, input_type=dict]
+E           For further information visit https://errors.pydantic.dev/2.13/v/value_error
+
+src/cpswm/perception_mapping/unity_rgbd.py:331: ValidationError
+_________ test_wrong_scope_order_shape_and_forged_bytes_do_not_advance _________
+
+weights = PosixPath('/private/tmp/cpswm-natural-candidate-evidence-20261001/ssdlite.pth')
+
+    def test_wrong_scope_order_shape_and_forged_bytes_do_not_advance(weights):
+        image = public_image()
+        seq = NaturalTargetSequence(weights_path=weights)
+>       raw, cutoff = observation(image, 0)
+                      ^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_natural_target_sequence.py:100: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_natural_target_sequence.py:35: in observation
+    rows, cutoff = packet(
+tests/test_unity_rgbd.py:63: in packet
+    return observations_from_response(
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+response = {'action_id': '0fe89927-fe2b-4fa0-a455-aa050b39261e', 'capture_time': '2026-10-02T00:00:00+00:00', 'success': True, 'error': '', ...}
+action_id = UUID('0fe89927-fe2b-4fa0-a455-aa050b39261e')
+scope = (UUID('00000000-0000-0000-0000-000000000001'), UUID('00000000-0000-0000-0000-000000000002'), UUID('00000000-0000-0000-0000-000000000003'))
+arrival = datetime.datetime(2026, 10, 2, 0, 0, 1, tzinfo=datetime.timezone.utc)
+provenance = {'worker': 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa', 'unity': 'bbbbbbbbbbbbbbbbbbbbbbbbbbbbb...cccccccccccccccccccccccc', 'capture_configuration': '6b81d2f5bc1f40cdb42193941659485e193f805bd5a4514355becf4478092cc4'}
+
+    def observations_from_response(
+        response: dict[str, Any],
+        *,
+        action_id: UUID,
+        scope: tuple[UUID, UUID, UUID],
+        arrival: datetime,
+        provenance: dict[str, str],
+    ) -> tuple[RawModalityObservation, ...]:
+        """Transport-only constructor; validate before admission to the owner journal."""
+        import base64
+        from uuid import uuid4
+    
+        from cpswm.contracts.base import BaseRecordMetadata
+        from cpswm.perception_mapping.adapters.contracts import (
+            ObservationEnvelope,
+            ObservationIdentity,
+            PayloadRef,
+            SensorRef,
+        )
+    
+        if (
+            set(response)
+            != {"action_id", "capture_time", "success", "error", "rgb_npy", "depth_npy", "camera"}
+            or response["action_id"] != str(action_id)
+            or type(response["success"]) is not bool
+            or type(response["error"]) is not str
+        ):
+            raise ValueError("unexpected public RGB-D response fields or owner")
+        if any(
+            type(response[k]) is not str or len(response[k]) > 4_000_000
+            for k in ("rgb_npy", "depth_npy")
+        ):
+            raise ValueError("RGB-D transport payload exceeds bound")
+        rgb, depth = (base64.b64decode(response[k], validate=True) for k in ("rgb_npy", "depth_npy"))
+        # The worker may supply only camera sensor fields; conflicting/privileged keys fail.
+        fixed = dict(
+            schema_id=SCHEMA,
+            action_id=action_id,
+            capture_time=response["capture_time"],
+            rgb_sha256=sha256(rgb).hexdigest(),
+            depth_sha256=sha256(depth).hexdigest(),
+            worker_sha256=provenance["worker"],
+            unity_sha256=provenance["unity"],
+            scene_sha256=provenance["house"],
+            configuration_sha256=provenance["capture_configuration"],
+        )
+        if type(response["camera"]) is not dict or set(fixed) & set(response["camera"]):
+            raise ValueError("worker camera packet overrides capture binding")
+>       camera = CameraSelfPose.model_validate({**response["camera"], **fixed})
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       pydantic_core._pydantic_core.ValidationError: 1 validation error for CameraSelfPose
+E         Value error, camera configuration differs from capture binding [type=value_error, input_value={'width': 320, 'height': ...a4514355becf4478092cc4'}, input_type=dict]
+E           For further information visit https://errors.pydantic.dev/2.13/v/value_error
+
+src/cpswm/perception_mapping/unity_rgbd.py:331: ValidationError
+_________________ test_tracker_fault_rolls_back_all_candidates _________________
+
+weights = PosixPath('/private/tmp/cpswm-natural-candidate-evidence-20261001/ssdlite.pth')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x11370bbb0>
+
+    def test_tracker_fault_rolls_back_all_candidates(weights, monkeypatch):
+        image = public_image()
+        seq = NaturalTargetSequence(weights_path=weights)
+>       r, c = observation(image, 0)
+               ^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_natural_target_sequence.py:121: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_natural_target_sequence.py:35: in observation
+    rows, cutoff = packet(
+tests/test_unity_rgbd.py:63: in packet
+    return observations_from_response(
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+response = {'action_id': '12a68fc2-2a10-4483-b3ea-d8768cc9377c', 'capture_time': '2026-10-02T00:00:00+00:00', 'success': True, 'error': '', ...}
+action_id = UUID('12a68fc2-2a10-4483-b3ea-d8768cc9377c')
+scope = (UUID('00000000-0000-0000-0000-000000000001'), UUID('00000000-0000-0000-0000-000000000002'), UUID('00000000-0000-0000-0000-000000000003'))
+arrival = datetime.datetime(2026, 10, 2, 0, 0, 1, tzinfo=datetime.timezone.utc)
+provenance = {'worker': 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa', 'unity': 'bbbbbbbbbbbbbbbbbbbbbbbbbbbbb...cccccccccccccccccccccccc', 'capture_configuration': '6b81d2f5bc1f40cdb42193941659485e193f805bd5a4514355becf4478092cc4'}
+
+    def observations_from_response(
+        response: dict[str, Any],
+        *,
+        action_id: UUID,
+        scope: tuple[UUID, UUID, UUID],
+        arrival: datetime,
+        provenance: dict[str, str],
+    ) -> tuple[RawModalityObservation, ...]:
+        """Transport-only constructor; validate before admission to the owner journal."""
+        import base64
+        from uuid import uuid4
+    
+        from cpswm.contracts.base import BaseRecordMetadata
+        from cpswm.perception_mapping.adapters.contracts import (
+            ObservationEnvelope,
+            ObservationIdentity,
+            PayloadRef,
+            SensorRef,
+        )
+    
+        if (
+            set(response)
+            != {"action_id", "capture_time", "success", "error", "rgb_npy", "depth_npy", "camera"}
+            or response["action_id"] != str(action_id)
+            or type(response["success"]) is not bool
+            or type(response["error"]) is not str
+        ):
+            raise ValueError("unexpected public RGB-D response fields or owner")
+        if any(
+            type(response[k]) is not str or len(response[k]) > 4_000_000
+            for k in ("rgb_npy", "depth_npy")
+        ):
+            raise ValueError("RGB-D transport payload exceeds bound")
+        rgb, depth = (base64.b64decode(response[k], validate=True) for k in ("rgb_npy", "depth_npy"))
+        # The worker may supply only camera sensor fields; conflicting/privileged keys fail.
+        fixed = dict(
+            schema_id=SCHEMA,
+            action_id=action_id,
+            capture_time=response["capture_time"],
+            rgb_sha256=sha256(rgb).hexdigest(),
+            depth_sha256=sha256(depth).hexdigest(),
+            worker_sha256=provenance["worker"],
+            unity_sha256=provenance["unity"],
+            scene_sha256=provenance["house"],
+            configuration_sha256=provenance["capture_configuration"],
+        )
+        if type(response["camera"]) is not dict or set(fixed) & set(response["camera"]):
+            raise ValueError("worker camera packet overrides capture binding")
+>       camera = CameraSelfPose.model_validate({**response["camera"], **fixed})
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       pydantic_core._pydantic_core.ValidationError: 1 validation error for CameraSelfPose
+E         Value error, camera configuration differs from capture binding [type=value_error, input_value={'width': 320, 'height': ...a4514355becf4478092cc4'}, input_type=dict]
+E           For further information visit https://errors.pydantic.dev/2.13/v/value_error
+
+src/cpswm/perception_mapping/unity_rgbd.py:331: ValidationError
+=========================== short test summary info ============================
+FAILED tests/test_natural_target_sequence.py::test_natural_initialization_translation_duplicate_and_replay
+FAILED tests/test_natural_target_sequence.py::test_unknown_is_retained_and_not_forcibly_reacquired
+FAILED tests/test_natural_target_sequence.py::test_empty_initial_frame_stays_unknown
+FAILED tests/test_natural_target_sequence.py::test_wrong_scope_order_shape_and_forged_bytes_do_not_advance
+FAILED tests/test_natural_target_sequence.py::test_tracker_fault_rolls_back_all_candidates
+5 failed, 3 passed in 2.25s

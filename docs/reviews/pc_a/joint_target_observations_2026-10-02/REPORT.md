@@ -1,5 +1,7 @@
 # 连续联合观测：局部工程交付，任务收益仍未建立
 
+交付：[草稿 PR #92](https://github.com/goneveitvet240-svg/cpswm/pull/92)，叠加 PR91；代码与原件提交 `24c7e352e071af06aa245bf1c65f8ff6b54df6c7` 已推送，冻结被测功能源码仍为 `ccccacc8ced5245ee6c38b2466632bac37d37cd0`。
+
 代码分支 `codex/pc-a-joint-target-observations-20261002`；base `ee4fc7c0885d7fcd12c26525d3a33a56892323b8`（PR91）。冻结功能/测试源码 `ccccacc8ced5245ee6c38b2466632bac37d37cd0`。这是 A 的局部工程验证，不是 B 独立复核、全仓验收或科学收益结论。
 
 ## 实现与边界

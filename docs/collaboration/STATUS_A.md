@@ -1,5 +1,7 @@
 # A：连续联合观测与可撤回事务局部交付（2026-10-02）
 
+交付：[草稿 PR #92](https://github.com/goneveitvet240-svg/cpswm/pull/92)，叠加 PR91；代码与原件提交 `24c7e352e071af06aa245bf1c65f8ff6b54df6c7` 已推送，冻结被测功能源码仍为 `ccccacc8ced5245ee6c38b2466632bac37d37cd0`。
+
 分支 `codex/pc-a-joint-target-observations-20261002`；base `ee4fc7c0885d7fcd12c26525d3a33a56892323b8`（PR91）；冻结实际源码 `ccccacc8ced5245ee6c38b2466632bac37d37cd0` 已推送。用户已批准联合观测方案，下方历史“单簇/联合模型待选择”不再适用。交付前 fetch 复核：集成 `19ddf26830348a2f0b33f0af54d6ba702c5cfb1c`、B `fd4ca6ef5e81c90d7cf7987b42c0b2810d8a810a`，未变。
 
 新闭合 profile：同一自然目标候选序列采用显式共享误差模型，条件增量与整个相关序列联合计算相等；保留多候选、未知与失踪记录，重复采集不重复增加位置信息。连续 owner 更新、故障回滚、语义来源撤回、采集中间帧/初始锚点撤回及重放已接通；物理原件保留，不重拍。原单帧/双帧约束未放宽。

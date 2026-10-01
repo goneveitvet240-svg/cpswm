@@ -1,5 +1,7 @@
 # 2026-10-02：联合观测路线已批准；连续事务局部交付
 
+交付：[草稿 PR #92](https://github.com/goneveitvet240-svg/cpswm/pull/92)，叠加 PR91；代码与原件提交 `24c7e352e071af06aa245bf1c65f8ff6b54df6c7` 已推送，冻结被测功能源码仍为 `ccccacc8ced5245ee6c38b2466632bac37d37cd0`。
+
 `codex/pc-a-joint-target-observations-20261002`，冻结源码 `ccccacc8ced5245ee6c38b2466632bac37d37cd0`，base为PR91的 `ee4fc7c0885d7fcd12c26525d3a33a56892323b8`。相关多帧条件更新、重复证据去重、回滚、语义与采集撤回重放接通；顺序33/61定向检查通过、零跳过，非B或全仓验收。[报告](../reviews/pc_a/joint_target_observations_2026-10-02/REPORT.md)。
 
 真实Unity首帧更新后策略停止，实际主动澄清/后续记忆收益仍未建立；下一项为由用户确定澄清任务成功判定、接通任务损失与实际动作结果模型后执行配对预算比较。原“相关证据方法待选”已解除；完整框架及双机分工不变，不自动合并共享集成分支。

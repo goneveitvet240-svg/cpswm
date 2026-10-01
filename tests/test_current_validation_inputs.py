@@ -151,3 +151,49 @@ def test_plan_keeps_real_generate_replay_and_manifest_consumer_order(tmp_path):
     assert commands[1][1][-1] == commands[3][1][-1] == "--verify"
     assert "--verify" in commands[5][1]
     assert "--no-fresh-replay" not in commands[5][1]
+
+
+def test_actual_preparation_cli_timeout_retains_failure_and_never_exports_inputs(tmp_path):
+    import shutil
+    import subprocess
+    from pathlib import Path
+
+    root = project(tmp_path)
+    tools = root / "tools"
+    tools.mkdir()
+    for name in ("prepare_current_validation_inputs.py", "run_ci_regression.py"):
+        shutil.copy2(Path(__file__).resolve().parents[1] / "tools" / name, tools / name)
+    binary = root / ".venv/bin/python"
+    binary.parent.mkdir(parents=True)
+    binary.symlink_to(sys.executable)
+    runner = root / "apps/evaluation_runner/run_structure_two_comparison_audit.py"
+    runner.parent.mkdir(parents=True)
+    runner.write_text(
+        "import time\nprint('real-preparation-child-started', flush=True)\ntime.sleep(60)\n"
+    )
+    output = root / "output/prepared"
+    result = subprocess.run(
+        [
+            sys.executable,
+            str(tools / "prepare_current_validation_inputs.py"),
+            "--output",
+            str(output),
+            "--budget-seconds",
+            "2",
+            "--grace-seconds",
+            "5",
+        ],
+        cwd=root,
+        text=True,
+        capture_output=True,
+        timeout=15,
+    )
+    assert result.returncode == 124, result.stdout + result.stderr
+    record = json.loads((root / "output/prepared-execution/result.json").read_text())
+    assert record["timed_out"] and record["status"] == "TIMED_OUT"
+    assert record["interrupted_group_cleanup_attempted"]
+    assert "real-preparation-child-started" in (output / "comparison_generate.log").read_text()
+    assert json.loads((output / "preparation.json").read_text())["status"] == "FAILED"
+    assert not (output / "environment.json").exists()
+    with pytest.raises(ValueError, match="did not complete"):
+        consumer_environment(root, output)

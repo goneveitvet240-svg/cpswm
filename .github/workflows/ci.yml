@@ -17,7 +17,9 @@ jobs:
 
   current-inputs:
     runs-on: ubuntu-latest
-    timeout-minutes: 60
+    # Preparation has its own 65-minute process-group budget. Leave time for
+    # setup, graceful cleanup and artifact upload outside that execution budget.
+    timeout-minutes: 85
     steps:
       - uses: actions/checkout@v4
         with:
@@ -34,7 +36,9 @@ jobs:
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         with:
           name: current-inputs-${{ github.run_id }}-${{ github.run_attempt }}
-          path: output/ci-validation-inputs/
+          path: |
+            output/ci-validation-inputs/
+            output/ci-validation-inputs-execution/
           if-no-files-found: error
 
   test:
@@ -58,7 +62,7 @@ jobs:
       - uses: actions/download-artifact@v4
         with:
           name: current-inputs-${{ github.run_id }}-${{ github.run_attempt }}
-          path: output/ci-validation-inputs/
+          path: output/
       - name: Install the newly generated mutable P0 index
         run: cp output/ci-validation-inputs/current-p0.json benchmarks/p0_checkpoint/content_manifest_v0_3.json
       - name: Collect every test before starting the long regression

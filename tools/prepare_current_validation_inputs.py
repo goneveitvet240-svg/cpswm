@@ -7,6 +7,7 @@ import hashlib
 import json
 import os
 import subprocess
+import sys
 from datetime import UTC, datetime
 from pathlib import Path
 
@@ -162,6 +163,7 @@ def prepare(root, output):
             row = dict(name=name, argv=argv, cwd=str(root), status="RUNNING")
             record["commands"].append(row)
             save()
+            print("starting " + name, flush=True)
             with (output / (name + ".log")).open("w") as log:
                 result = subprocess.run(
                     argv,
@@ -175,6 +177,7 @@ def prepare(root, output):
                 exit_code=result.returncode, status="PASSED" if result.returncode == 0 else "FAILED"
             )
             save()
+            print(f"{name} exit={result.returncode}", flush=True)
             if result.returncode:
                 raise RuntimeError(f"{name} failed with exit {result.returncode}")
             if source_inventory(root) != frozen:
@@ -213,10 +216,33 @@ def prepare(root, output):
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--output", required=True, type=Path)
+    parser.add_argument("--budget-seconds", type=float, default=3900)
+    parser.add_argument("--grace-seconds", type=float, default=60)
+    parser.add_argument("--worker", action="store_true", help=argparse.SUPPRESS)
     args = parser.parse_args()
+    if not args.worker:
+        from run_ci_regression import run
+
+        # Bound the entire owned process group, including a stuck preparation
+        # child; retain timeout diagnostics before the outer CI job terminates.
+        result = run(
+            [
+                sys.executable,
+                str(Path(__file__).resolve()),
+                "--worker",
+                "--output",
+                str(args.output),
+            ],
+            cwd=ROOT,
+            output=args.output.absolute().with_name(args.output.name + "-execution"),
+            budget_seconds=args.budget_seconds,
+            grace_seconds=args.grace_seconds,
+        )
+        return result["exit_code"]
     result = prepare(ROOT, args.output)
     print(json.dumps({"status": result["status"], "environment": result["environment"]}))
+    return 0
 
 
 if __name__ == "__main__":
-    main()
+    raise SystemExit(main())

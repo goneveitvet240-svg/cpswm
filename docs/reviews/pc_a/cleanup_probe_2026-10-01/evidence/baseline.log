@@ -1,0 +1,88 @@
+FF                                                                       [100%]
+=================================== FAILURES ===================================
+_ test_group_probe_requires_a_real_disappearance_or_hard_cleanup_failure[False] _
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x10b9e0fc0>
+persistent = False
+
+    @pytest.mark.skipif(os.name != "posix", reason="POSIX process-group cleanup")
+    @pytest.mark.parametrize("persistent", [False, True])
+    def test_group_probe_requires_a_real_disappearance_or_hard_cleanup_failure(monkeypatch, persistent):
+        process = subprocess.Popen(
+            [sys.executable, "-c", "import time; time.sleep(120)"], start_new_session=True
+        )
+        real_killpg = os.killpg
+        probes = []
+    
+        def probe(group, signum):
+            if group == process.pid and signum == 0:
+                probes.append(signum)
+                if persistent or len(probes) == 1:
+                    raise PermissionError("controlled Darwin group-probe race")
+            if group == process.pid and persistent and signum == signal.SIGKILL:
+                raise PermissionError("group remains inaccessible at cleanup deadline")
+            return real_killpg(group, signum)
+    
+        try:
+            with monkeypatch.context() as context:
+                context.setattr(coordinator.os, "killpg", probe)
+                if persistent:
+                    with pytest.raises(PermissionError, match="remains inaccessible"):
+                        coordinator.stop_process(process)
+                else:
+>                   coordinator.stop_process(process)
+
+tests/test_cleanup_group_probe.py:39: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tools/structure_two_unified_acceptance.py:330: in stop_process
+    os.killpg(proc.pid, 0)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+group = 1044, signum = 0
+
+    def probe(group, signum):
+        if group == process.pid and signum == 0:
+            probes.append(signum)
+            if persistent or len(probes) == 1:
+>               raise PermissionError("controlled Darwin group-probe race")
+E               PermissionError: controlled Darwin group-probe race
+
+tests/test_cleanup_group_probe.py:27: PermissionError
+_ test_group_probe_requires_a_real_disappearance_or_hard_cleanup_failure[True] _
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x10bfd7bf0>
+persistent = True
+
+    @pytest.mark.skipif(os.name != "posix", reason="POSIX process-group cleanup")
+    @pytest.mark.parametrize("persistent", [False, True])
+    def test_group_probe_requires_a_real_disappearance_or_hard_cleanup_failure(monkeypatch, persistent):
+        process = subprocess.Popen(
+            [sys.executable, "-c", "import time; time.sleep(120)"], start_new_session=True
+        )
+        real_killpg = os.killpg
+        probes = []
+    
+        def probe(group, signum):
+            if group == process.pid and signum == 0:
+                probes.append(signum)
+                if persistent or len(probes) == 1:
+                    raise PermissionError("controlled Darwin group-probe race")
+            if group == process.pid and persistent and signum == signal.SIGKILL:
+                raise PermissionError("group remains inaccessible at cleanup deadline")
+            return real_killpg(group, signum)
+    
+        try:
+            with monkeypatch.context() as context:
+                context.setattr(coordinator.os, "killpg", probe)
+                if persistent:
+>                   with pytest.raises(PermissionError, match="remains inaccessible"):
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E                   AssertionError: Regex pattern did not match.
+E                     Expected regex: 'remains inaccessible'
+E                     Actual message: 'controlled Darwin group-probe race'
+
+tests/test_cleanup_group_probe.py:36: AssertionError
+=========================== short test summary info ============================
+FAILED tests/test_cleanup_group_probe.py::test_group_probe_requires_a_real_disappearance_or_hard_cleanup_failure[False]
+FAILED tests/test_cleanup_group_probe.py::test_group_probe_requires_a_real_disappearance_or_hard_cleanup_failure[True]
+2 failed in 0.73s

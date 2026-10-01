@@ -1,3 +1,13 @@
+# A：同语义后续观测原子更新开工（2026-10-01）
+
+分支 `codex/pc-a-owned-observation-update-20261001`，base `cab777ff69c250696611a65e387aa305f7b5f30d`。已 fetch 核验集成 `19ddf26830348a2f0b33f0af54d6ba702c5cfb1c`、B `fd4ca6ef5e81c90d7cf7987b42c0b2810d8a810a`。用户现已明确要求主线功能隔离推进，全仓 CI 继续诊断，不作阻止实现的前置条件。
+
+交付目标：同一语义 S 的 neutral Native prior 后，owner-issued RGB-D A 更新真实权重与条件统计；原逻辑一次消费；失败回滚但保留物理 delivery；逐簇撤回重放和 fresh SQLite 恢复；两轮顺序对抗自审。沿已有设计首版单测量开发 profile，第二个 capture 明确 unsupported，不新增跨帧独立性、自然身份或正式科学先验。原对照和完整统一框架保持。STATUS_B/原用户树不改。
+
+本地证据 `/private/tmp/cpswm-owned-observation-evidence-20261001`；开工尚未实现/验收。独立 B、全仓与科学收益仍待验证。
+
+---
+
 # A：全仓执行对账通过两审，远端完整执行待完成（2026-10-01）
 
 分支 `codex/pc-a-regression-completion-20261001`；base `9a4955811be33a2d6443f4c9e13426639a85d551`；实际源码 `d9d409bedd1cae074ef5459307c236de0a872b46`。CI 加入逐节点终态/源码对账，测试执行预算明确 65→180 分钟，准备仍 120 分钟；不改断言或科学阈值。原失败全部保留。

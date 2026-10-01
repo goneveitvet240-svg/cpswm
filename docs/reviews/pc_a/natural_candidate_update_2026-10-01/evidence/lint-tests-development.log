@@ -1,0 +1,43 @@
+E501 Line too long (108 > 100)
+   --> src/cpswm/system/native_raw_verification.py:211:101
+    |
+209 |         if len(contexts) != len(clusters):
+210 |             raise ValueError("owned update predecessor context is missing")
+211 |         expected = cast("OwnedPositionProducer", candidate).recompute_updates(full_context, tuple(contexts))
+    |                                                                                                     ^^^^^^^^
+212 |     else:
+213 |         expected = candidate.recompute(full_context, tuple(sources))
+    |
+
+E501 Line too long (101 > 100)
+  --> tests/test_natural_candidate_position.py:95:101
+   |
+93 |     joint = NeuralNativeProducer(candidate, checkpoint, manifest_sha256=pin)
+94 |     probe, backend, stream, store, builder = build(
+95 |         path, seed=171, source=SOURCE, joint_producer=joint, observation_decoder=RGBDSupportDecoder()
+   |                                                                                                     ^
+96 |     )
+97 |     case = dict(probe=probe,backend=backend,stream=stream,store=store,builder=builder,
+   |
+
+E501 Line too long (102 > 100)
+   --> tests/test_natural_candidate_position.py:113:101
+    |
+113 | def test_real_detector_candidates_update_same_semantics_and_deduplicate(tmp_path,checkpoints,weights):
+    |                                                                                                     ^^
+114 |     case = make_case(tmp_path/"state.db",checkpoints,weights)
+115 |     try:
+    |
+
+E501 Line too long (104 > 100)
+   --> tests/test_natural_candidate_position.py:130:101
+    |
+128 |         assert support["selected"]["seed_uv"] != [0,0]
+129 |         expected=candidate_readout(delivery.observations,cutoff=delivery.received_at,
+130 |                                   weights_path=weights, affinity_model=case["models"]["affinity_model"],
+    |                                                                                                     ^^^^
+131 |                                   affinity_pin=case["models"]["affinity_pin"],
+132 |                                   estimator=case["models"]["position_model"]["estimator"],
+    |
+
+Found 5 errors (1 fixed, 4 remaining).

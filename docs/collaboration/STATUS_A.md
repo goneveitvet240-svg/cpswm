@@ -1,3 +1,15 @@
+# A：自然候选后验接线通过双审与实时 Unity（2026-10-01）
+
+分支 `codex/pc-a-natural-candidate-update-20261001`，base `0061bf82c5db70367f8afa513478e3e86c4ca470`，实际功能源码 `63b053fa30a508a0c73dcff44d47a645f5a1362f`。开工 fetch 核验集成 `19ddf26830348a2f0b33f0af54d6ba702c5cfb1c`、B `fd4ca6ef5e81c90d7cf7987b42c0b2810d8a810a`。
+
+新增自然检测候选 profile：从 owner RGB 重新执行固定官方 SSDLite，RGB-D 重建完整候选/网格，再按公开固定规则将一个读出接入原单测量事务。拒绝 caller 框/seed/分数/XYZ，空候选与无效深度不更新但保留交付、允许后续有效 capture。原受控 profile、完整统一框架及任务对照保持。
+
+冻结后顺序 A 自审 R1 35 / R2 73 passed；392 源文件 mypy 无错误，1022 项冻结源码清单未变。真实新 Unity 一次 RotateRight→1 个自然 bottle 候选/64 有效网格→后验更新→重新决策停止通过；实际 DB fresh 新解释器恢复一致、无重拍/语义重跑。见[报告](../reviews/pc_a/natural_candidate_update_2026-10-01/REPORT.md)。开发恢复装配错误及修正前失败保留；非独立 B/全仓。
+
+身份仍为受控关联假设，不把 bottle 类别或检测分数当作目标身份。新增外观/三维关联开发基线的用户选择仍待答复，依赖该选择的部分未实施；多帧相关性、自然身份概率、校准、跨机持久化迁移及任务收益仍开放。原用户树/STATUS_B 不改，经独立分支和草稿 PR 交付，不自动集成。
+
+---
+
 # A：自然检测候选接入观测事务开工（2026-10-01）
 
 分支 `codex/pc-a-natural-candidate-update-20261001`，base/开工源码 `0061bf82c5db70367f8afa513478e3e86c4ca470`（PR88）。本轮 fetch 已核验集成 `19ddf26830348a2f0b33f0af54d6ba702c5cfb1c`、B `fd4ca6ef5e81c90d7cf7987b42c0b2810d8a810a`，目标分支与远端一致。

@@ -1,0 +1,274 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="3" skipped="0" tests="15" time="203.504" timestamp="2026-10-01T22:35:25.562426+08:00" hostname="MacBook-Air-2.local"><testcase classname="tests.test_natural_candidate_position" name="test_real_detector_candidates_update_same_semantics_and_deduplicate" time="11.345" /><testcase classname="tests.test_natural_candidate_position" name="test_existing_transaction_attacks_with_real_natural_candidates[test_complete_target_forgery_rolls_back_then_legal_retry-kwargs0]" time="10.737" /><testcase classname="tests.test_natural_candidate_position" name="test_existing_transaction_attacks_with_real_natural_candidates[test_complete_target_forgery_rolls_back_then_legal_retry-kwargs1]" time="10.924" /><testcase classname="tests.test_natural_candidate_position" name="test_existing_transaction_attacks_with_real_natural_candidates[test_complete_target_forgery_rolls_back_then_legal_retry-kwargs2]" time="10.871" /><testcase classname="tests.test_natural_candidate_position" name="test_existing_transaction_attacks_with_real_natural_candidates[test_complete_target_forgery_rolls_back_then_legal_retry-kwargs3]" time="10.780" /><testcase classname="tests.test_natural_candidate_position" name="test_existing_transaction_attacks_with_real_natural_candidates[test_failure_rolls_back_computation_but_keeps_delivery_and_retry-kwargs4]" time="8.753" /><testcase classname="tests.test_natural_candidate_position" name="test_existing_transaction_attacks_with_real_natural_candidates[test_failure_rolls_back_computation_but_keeps_delivery_and_retry-kwargs5]" time="12.218" /><testcase classname="tests.test_natural_candidate_position" name="test_existing_transaction_attacks_with_real_natural_candidates[test_replay_retains_each_update_or_removes_its_semantic_dependency-kwargs6]" time="31.506" /><testcase classname="tests.test_natural_candidate_position" name="test_existing_transaction_attacks_with_real_natural_candidates[test_replay_retains_each_update_or_removes_its_semantic_dependency-kwargs7]" time="25.335" /><testcase classname="tests.test_natural_candidate_position" name="test_unavailable_support_preserves_delivery_and_all_state[True-False-no_detection_candidates]" time="10.232" /><testcase classname="tests.test_natural_candidate_position" name="test_unavailable_support_preserves_delivery_and_all_state[False-True-no_valid_candidate_depth]" time="10.245" /><testcase classname="tests.test_natural_candidate_position" name="test_natural_profile_default_collector_updates_and_drives_next_decision" time="11.267" /><testcase classname="tests.test_natural_candidate_position" name="test_fresh_interpreter_natural_reconstruction[delivered]" time="5.492"><failure message="AssertionError: Traceback (most recent call last):&#10;  File &quot;&lt;string&gt;&quot;, line 1, in &lt;module&gt;&#10;    from test_natural_candidate_position import fresh_restore; import sys; fresh_restore(sys.argv[1])&#10;                                                                           ~~~~~~~~~~~~~^^^^^^^^^^^^^&#10;  File &quot;/private/tmp/cpswm-pc-a-natural-candidate-update-20261001/tests/test_natural_candidate_position.py&quot;, line 283, in fresh_restore&#10;    joint = natural_joint(config)&#10;  File &quot;/private/tmp/cpswm-pc-a-natural-candidate-update-20261001/tests/test_natural_candidate_position.py&quot;, line 173, in natural_joint&#10;    return NeuralNativeProducer(&#10;        NaturalCandidatePositionProducer(configuration=case[&quot;config&quot;], **case[&quot;models&quot;]),&#10;        case[&quot;checkpoint&quot;],&#10;        manifest_sha256=case[&quot;pin&quot;],&#10;    )&#10;  File &quot;/private/tmp/cpswm-pc-a-natural-candidate-update-20261001/src/cpswm/system/native_neural_production.py&quot;, line 477, in __init__&#10;    self._session = ProposalInferenceSession(&#10;                    ~~~~~~~~~~~~~~~~~~~~~~~~^&#10;        checkpoint, manifest_sha256=manifest_sha256, seed=0&#10;        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^&#10;    )&#10;    ^&#10;  File &quot;/private/tmp/cpswm-pc-a-natural-candidate-update-20261001/src/cpswm/data_preflight/proposal_inference_session.py&quot;, line 64, in __init__&#10;    self._model, manifest = load_checkpoint(checkpoint, manifest_sha256=manifest_sha256)&#10;                            ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^&#10;  File &quot;/private/tmp/cpswm-pc-a-natural-candidate-update-20261001/src/cpswm/data_preflight/proposal_trainer.py&quot;, line 193, in load_checkpoint&#10;    data = (directory / &quot;manifest.json&quot;).read_bytes()&#10;            ~~~~~~~~~~^~~~~~~~~~~~~~~~~&#10;TypeError: unsupported operand type(s) for /: 'str' and 'str'">tmp_path = PosixPath('/private/var/folders/x2/000r8p0n6s393lj2sg8wk5f40000gn/T/pytest-of-pangwei/pytest-2517/test_fresh_interpreter_natural0')
+checkpoints = {'typed_factor_graph_transformer': (PosixPath('/private/var/folders/x2/000r8p0n6s393lj2sg8wk5f40000gn/T/pytest-of-pang...-checkpoints0/autoregressive_typed_graph_policy'), '82d92da41625082cd2b93cc3e67468f1c9d753d7a31f9412b094e1a85f9a6241')}
+weights = PosixPath('/private/tmp/cpswm-natural-candidate-evidence-20261001/ssdlite.pth')
+phase = 'delivered'
+
+    @pytest.mark.parametrize("phase", ["delivered", "consumed", "replayed"])
+    def test_fresh_interpreter_natural_reconstruction(tmp_path, checkpoints, weights, phase):
+        import json
+        import sqlite3
+        import subprocess
+        import sys
+    
+        from test_owned_position_update import withdraw
+    
+        from cpswm.system.native_joint_replay import consumed_schedule
+        from cpswm.system.structure_two_particle_workspace import native_content_sha256
+    
+        case = make_case(tmp_path / "state.db", checkpoints, weights)
+        try:
+            stream = case["stream"]
+            command, _, camera = collect(case)
+            if phase != "delivered":
+                stream.consume_owned_position_observation(command.action_id)
+            if phase == "replayed":
+                old = consumed_schedule(stream._system.core._particle_workspace)[0]
+                advance(case, 2)
+                withdraw(case, str(old.context.source.transition.after.metadata.record_id))
+                stream.replay_joint_posterior()
+            with sqlite3.connect(tmp_path / "copy.db") as db:
+                case["store"]._db.backup(db)
+            before = case["store"]._db.execute("SELECT * FROM checkpoint").fetchall()
+            (tmp_path / "restore.json").write_text(
+                json.dumps(
+                    dict(
+                        config=case["config"],
+                        models=case["models"],
+                        checkpoint=str(case["checkpoint"]),
+                        pin=case["pin"],
+                        action=str(command.action_id),
+                    )
+                )
+            )
+            root = Path(__file__).resolve().parents[1]
+            env = dict(
+                os.environ,
+                PYTHONPATH=os.pathsep.join(str(root / p) for p in ("src", "tests", "tools")),
+                PYTHONHASHSEED="81731",
+            )
+            with (tmp_path / "fresh.log").open("w") as log:
+                child = subprocess.run(
+                    [
+                        sys.executable,
+                        "-c",
+                        "from test_natural_candidate_position import fresh_restore; import sys; fresh_restore(sys.argv[1])",
+                        str(tmp_path),
+                    ],
+                    cwd=root,
+                    env=env,
+                    stdout=log,
+                    stderr=subprocess.STDOUT,
+                    timeout=180,
+                )
+&gt;           assert child.returncode == 0, (tmp_path / "fresh.log").read_text()
+                   ^^^^^^^^^^^^^^^^^^^^^
+E           AssertionError: Traceback (most recent call last):
+E             File "&lt;string&gt;", line 1, in &lt;module&gt;
+E               from test_natural_candidate_position import fresh_restore; import sys; fresh_restore(sys.argv[1])
+E                                                                                      ~~~~~~~~~~~~~^^^^^^^^^^^^^
+E             File "/private/tmp/cpswm-pc-a-natural-candidate-update-20261001/tests/test_natural_candidate_position.py", line 283, in fresh_restore
+E               joint = natural_joint(config)
+E             File "/private/tmp/cpswm-pc-a-natural-candidate-update-20261001/tests/test_natural_candidate_position.py", line 173, in natural_joint
+E               return NeuralNativeProducer(
+E                   NaturalCandidatePositionProducer(configuration=case["config"], **case["models"]),
+E                   case["checkpoint"],
+E                   manifest_sha256=case["pin"],
+E               )
+E             File "/private/tmp/cpswm-pc-a-natural-candidate-update-20261001/src/cpswm/system/native_neural_production.py", line 477, in __init__
+E               self._session = ProposalInferenceSession(
+E                               ~~~~~~~~~~~~~~~~~~~~~~~~^
+E                   checkpoint, manifest_sha256=manifest_sha256, seed=0
+E                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E               )
+E               ^
+E             File "/private/tmp/cpswm-pc-a-natural-candidate-update-20261001/src/cpswm/data_preflight/proposal_inference_session.py", line 64, in __init__
+E               self._model, manifest = load_checkpoint(checkpoint, manifest_sha256=manifest_sha256)
+E                                       ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E             File "/private/tmp/cpswm-pc-a-natural-candidate-update-20261001/src/cpswm/data_preflight/proposal_trainer.py", line 193, in load_checkpoint
+E               data = (directory / "manifest.json").read_bytes()
+E                       ~~~~~~~~~~^~~~~~~~~~~~~~~~~
+E           TypeError: unsupported operand type(s) for /: 'str' and 'str'
+
+tests/test_natural_candidate_position.py:374: AssertionError</failure></testcase><testcase classname="tests.test_natural_candidate_position" name="test_fresh_interpreter_natural_reconstruction[consumed]" time="7.775"><failure message="AssertionError: Traceback (most recent call last):&#10;  File &quot;&lt;string&gt;&quot;, line 1, in &lt;module&gt;&#10;    from test_natural_candidate_position import fresh_restore; import sys; fresh_restore(sys.argv[1])&#10;                                                                           ~~~~~~~~~~~~~^^^^^^^^^^^^^&#10;  File &quot;/private/tmp/cpswm-pc-a-natural-candidate-update-20261001/tests/test_natural_candidate_position.py&quot;, line 283, in fresh_restore&#10;    joint = natural_joint(config)&#10;  File &quot;/private/tmp/cpswm-pc-a-natural-candidate-update-20261001/tests/test_natural_candidate_position.py&quot;, line 173, in natural_joint&#10;    return NeuralNativeProducer(&#10;        NaturalCandidatePositionProducer(configuration=case[&quot;config&quot;], **case[&quot;models&quot;]),&#10;        case[&quot;checkpoint&quot;],&#10;        manifest_sha256=case[&quot;pin&quot;],&#10;    )&#10;  File &quot;/private/tmp/cpswm-pc-a-natural-candidate-update-20261001/src/cpswm/system/native_neural_production.py&quot;, line 477, in __init__&#10;    self._session = ProposalInferenceSession(&#10;                    ~~~~~~~~~~~~~~~~~~~~~~~~^&#10;        checkpoint, manifest_sha256=manifest_sha256, seed=0&#10;        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^&#10;    )&#10;    ^&#10;  File &quot;/private/tmp/cpswm-pc-a-natural-candidate-update-20261001/src/cpswm/data_preflight/proposal_inference_session.py&quot;, line 64, in __init__&#10;    self._model, manifest = load_checkpoint(checkpoint, manifest_sha256=manifest_sha256)&#10;                            ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^&#10;  File &quot;/private/tmp/cpswm-pc-a-natural-candidate-update-20261001/src/cpswm/data_preflight/proposal_trainer.py&quot;, line 193, in load_checkpoint&#10;    data = (directory / &quot;manifest.json&quot;).read_bytes()&#10;            ~~~~~~~~~~^~~~~~~~~~~~~~~~~&#10;TypeError: unsupported operand type(s) for /: 'str' and 'str'">tmp_path = PosixPath('/private/var/folders/x2/000r8p0n6s393lj2sg8wk5f40000gn/T/pytest-of-pangwei/pytest-2517/test_fresh_interpreter_natural1')
+checkpoints = {'typed_factor_graph_transformer': (PosixPath('/private/var/folders/x2/000r8p0n6s393lj2sg8wk5f40000gn/T/pytest-of-pang...-checkpoints0/autoregressive_typed_graph_policy'), '82d92da41625082cd2b93cc3e67468f1c9d753d7a31f9412b094e1a85f9a6241')}
+weights = PosixPath('/private/tmp/cpswm-natural-candidate-evidence-20261001/ssdlite.pth')
+phase = 'consumed'
+
+    @pytest.mark.parametrize("phase", ["delivered", "consumed", "replayed"])
+    def test_fresh_interpreter_natural_reconstruction(tmp_path, checkpoints, weights, phase):
+        import json
+        import sqlite3
+        import subprocess
+        import sys
+    
+        from test_owned_position_update import withdraw
+    
+        from cpswm.system.native_joint_replay import consumed_schedule
+        from cpswm.system.structure_two_particle_workspace import native_content_sha256
+    
+        case = make_case(tmp_path / "state.db", checkpoints, weights)
+        try:
+            stream = case["stream"]
+            command, _, camera = collect(case)
+            if phase != "delivered":
+                stream.consume_owned_position_observation(command.action_id)
+            if phase == "replayed":
+                old = consumed_schedule(stream._system.core._particle_workspace)[0]
+                advance(case, 2)
+                withdraw(case, str(old.context.source.transition.after.metadata.record_id))
+                stream.replay_joint_posterior()
+            with sqlite3.connect(tmp_path / "copy.db") as db:
+                case["store"]._db.backup(db)
+            before = case["store"]._db.execute("SELECT * FROM checkpoint").fetchall()
+            (tmp_path / "restore.json").write_text(
+                json.dumps(
+                    dict(
+                        config=case["config"],
+                        models=case["models"],
+                        checkpoint=str(case["checkpoint"]),
+                        pin=case["pin"],
+                        action=str(command.action_id),
+                    )
+                )
+            )
+            root = Path(__file__).resolve().parents[1]
+            env = dict(
+                os.environ,
+                PYTHONPATH=os.pathsep.join(str(root / p) for p in ("src", "tests", "tools")),
+                PYTHONHASHSEED="81731",
+            )
+            with (tmp_path / "fresh.log").open("w") as log:
+                child = subprocess.run(
+                    [
+                        sys.executable,
+                        "-c",
+                        "from test_natural_candidate_position import fresh_restore; import sys; fresh_restore(sys.argv[1])",
+                        str(tmp_path),
+                    ],
+                    cwd=root,
+                    env=env,
+                    stdout=log,
+                    stderr=subprocess.STDOUT,
+                    timeout=180,
+                )
+&gt;           assert child.returncode == 0, (tmp_path / "fresh.log").read_text()
+                   ^^^^^^^^^^^^^^^^^^^^^
+E           AssertionError: Traceback (most recent call last):
+E             File "&lt;string&gt;", line 1, in &lt;module&gt;
+E               from test_natural_candidate_position import fresh_restore; import sys; fresh_restore(sys.argv[1])
+E                                                                                      ~~~~~~~~~~~~~^^^^^^^^^^^^^
+E             File "/private/tmp/cpswm-pc-a-natural-candidate-update-20261001/tests/test_natural_candidate_position.py", line 283, in fresh_restore
+E               joint = natural_joint(config)
+E             File "/private/tmp/cpswm-pc-a-natural-candidate-update-20261001/tests/test_natural_candidate_position.py", line 173, in natural_joint
+E               return NeuralNativeProducer(
+E                   NaturalCandidatePositionProducer(configuration=case["config"], **case["models"]),
+E                   case["checkpoint"],
+E                   manifest_sha256=case["pin"],
+E               )
+E             File "/private/tmp/cpswm-pc-a-natural-candidate-update-20261001/src/cpswm/system/native_neural_production.py", line 477, in __init__
+E               self._session = ProposalInferenceSession(
+E                               ~~~~~~~~~~~~~~~~~~~~~~~~^
+E                   checkpoint, manifest_sha256=manifest_sha256, seed=0
+E                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E               )
+E               ^
+E             File "/private/tmp/cpswm-pc-a-natural-candidate-update-20261001/src/cpswm/data_preflight/proposal_inference_session.py", line 64, in __init__
+E               self._model, manifest = load_checkpoint(checkpoint, manifest_sha256=manifest_sha256)
+E                                       ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E             File "/private/tmp/cpswm-pc-a-natural-candidate-update-20261001/src/cpswm/data_preflight/proposal_trainer.py", line 193, in load_checkpoint
+E               data = (directory / "manifest.json").read_bytes()
+E                       ~~~~~~~~~~^~~~~~~~~~~~~~~~~
+E           TypeError: unsupported operand type(s) for /: 'str' and 'str'
+
+tests/test_natural_candidate_position.py:374: AssertionError</failure></testcase><testcase classname="tests.test_natural_candidate_position" name="test_fresh_interpreter_natural_reconstruction[replayed]" time="25.061"><failure message="AssertionError: Traceback (most recent call last):&#10;  File &quot;&lt;string&gt;&quot;, line 1, in &lt;module&gt;&#10;    from test_natural_candidate_position import fresh_restore; import sys; fresh_restore(sys.argv[1])&#10;                                                                           ~~~~~~~~~~~~~^^^^^^^^^^^^^&#10;  File &quot;/private/tmp/cpswm-pc-a-natural-candidate-update-20261001/tests/test_natural_candidate_position.py&quot;, line 283, in fresh_restore&#10;    joint = natural_joint(config)&#10;  File &quot;/private/tmp/cpswm-pc-a-natural-candidate-update-20261001/tests/test_natural_candidate_position.py&quot;, line 173, in natural_joint&#10;    return NeuralNativeProducer(&#10;        NaturalCandidatePositionProducer(configuration=case[&quot;config&quot;], **case[&quot;models&quot;]),&#10;        case[&quot;checkpoint&quot;],&#10;        manifest_sha256=case[&quot;pin&quot;],&#10;    )&#10;  File &quot;/private/tmp/cpswm-pc-a-natural-candidate-update-20261001/src/cpswm/system/native_neural_production.py&quot;, line 477, in __init__&#10;    self._session = ProposalInferenceSession(&#10;                    ~~~~~~~~~~~~~~~~~~~~~~~~^&#10;        checkpoint, manifest_sha256=manifest_sha256, seed=0&#10;        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^&#10;    )&#10;    ^&#10;  File &quot;/private/tmp/cpswm-pc-a-natural-candidate-update-20261001/src/cpswm/data_preflight/proposal_inference_session.py&quot;, line 64, in __init__&#10;    self._model, manifest = load_checkpoint(checkpoint, manifest_sha256=manifest_sha256)&#10;                            ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^&#10;  File &quot;/private/tmp/cpswm-pc-a-natural-candidate-update-20261001/src/cpswm/data_preflight/proposal_trainer.py&quot;, line 193, in load_checkpoint&#10;    data = (directory / &quot;manifest.json&quot;).read_bytes()&#10;            ~~~~~~~~~~^~~~~~~~~~~~~~~~~&#10;TypeError: unsupported operand type(s) for /: 'str' and 'str'">tmp_path = PosixPath('/private/var/folders/x2/000r8p0n6s393lj2sg8wk5f40000gn/T/pytest-of-pangwei/pytest-2517/test_fresh_interpreter_natural2')
+checkpoints = {'typed_factor_graph_transformer': (PosixPath('/private/var/folders/x2/000r8p0n6s393lj2sg8wk5f40000gn/T/pytest-of-pang...-checkpoints0/autoregressive_typed_graph_policy'), '82d92da41625082cd2b93cc3e67468f1c9d753d7a31f9412b094e1a85f9a6241')}
+weights = PosixPath('/private/tmp/cpswm-natural-candidate-evidence-20261001/ssdlite.pth')
+phase = 'replayed'
+
+    @pytest.mark.parametrize("phase", ["delivered", "consumed", "replayed"])
+    def test_fresh_interpreter_natural_reconstruction(tmp_path, checkpoints, weights, phase):
+        import json
+        import sqlite3
+        import subprocess
+        import sys
+    
+        from test_owned_position_update import withdraw
+    
+        from cpswm.system.native_joint_replay import consumed_schedule
+        from cpswm.system.structure_two_particle_workspace import native_content_sha256
+    
+        case = make_case(tmp_path / "state.db", checkpoints, weights)
+        try:
+            stream = case["stream"]
+            command, _, camera = collect(case)
+            if phase != "delivered":
+                stream.consume_owned_position_observation(command.action_id)
+            if phase == "replayed":
+                old = consumed_schedule(stream._system.core._particle_workspace)[0]
+                advance(case, 2)
+                withdraw(case, str(old.context.source.transition.after.metadata.record_id))
+                stream.replay_joint_posterior()
+            with sqlite3.connect(tmp_path / "copy.db") as db:
+                case["store"]._db.backup(db)
+            before = case["store"]._db.execute("SELECT * FROM checkpoint").fetchall()
+            (tmp_path / "restore.json").write_text(
+                json.dumps(
+                    dict(
+                        config=case["config"],
+                        models=case["models"],
+                        checkpoint=str(case["checkpoint"]),
+                        pin=case["pin"],
+                        action=str(command.action_id),
+                    )
+                )
+            )
+            root = Path(__file__).resolve().parents[1]
+            env = dict(
+                os.environ,
+                PYTHONPATH=os.pathsep.join(str(root / p) for p in ("src", "tests", "tools")),
+                PYTHONHASHSEED="81731",
+            )
+            with (tmp_path / "fresh.log").open("w") as log:
+                child = subprocess.run(
+                    [
+                        sys.executable,
+                        "-c",
+                        "from test_natural_candidate_position import fresh_restore; import sys; fresh_restore(sys.argv[1])",
+                        str(tmp_path),
+                    ],
+                    cwd=root,
+                    env=env,
+                    stdout=log,
+                    stderr=subprocess.STDOUT,
+                    timeout=180,
+                )
+&gt;           assert child.returncode == 0, (tmp_path / "fresh.log").read_text()
+                   ^^^^^^^^^^^^^^^^^^^^^
+E           AssertionError: Traceback (most recent call last):
+E             File "&lt;string&gt;", line 1, in &lt;module&gt;
+E               from test_natural_candidate_position import fresh_restore; import sys; fresh_restore(sys.argv[1])
+E                                                                                      ~~~~~~~~~~~~~^^^^^^^^^^^^^
+E             File "/private/tmp/cpswm-pc-a-natural-candidate-update-20261001/tests/test_natural_candidate_position.py", line 283, in fresh_restore
+E               joint = natural_joint(config)
+E             File "/private/tmp/cpswm-pc-a-natural-candidate-update-20261001/tests/test_natural_candidate_position.py", line 173, in natural_joint
+E               return NeuralNativeProducer(
+E                   NaturalCandidatePositionProducer(configuration=case["config"], **case["models"]),
+E                   case["checkpoint"],
+E                   manifest_sha256=case["pin"],
+E               )
+E             File "/private/tmp/cpswm-pc-a-natural-candidate-update-20261001/src/cpswm/system/native_neural_production.py", line 477, in __init__
+E               self._session = ProposalInferenceSession(
+E                               ~~~~~~~~~~~~~~~~~~~~~~~~^
+E                   checkpoint, manifest_sha256=manifest_sha256, seed=0
+E                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E               )
+E               ^
+E             File "/private/tmp/cpswm-pc-a-natural-candidate-update-20261001/src/cpswm/data_preflight/proposal_inference_session.py", line 64, in __init__
+E               self._model, manifest = load_checkpoint(checkpoint, manifest_sha256=manifest_sha256)
+E                                       ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E             File "/private/tmp/cpswm-pc-a-natural-candidate-update-20261001/src/cpswm/data_preflight/proposal_trainer.py", line 193, in load_checkpoint
+E               data = (directory / "manifest.json").read_bytes()
+E                       ~~~~~~~~~~^~~~~~~~~~~~~~~~~
+E           TypeError: unsupported operand type(s) for /: 'str' and 'str'
+
+tests/test_natural_candidate_position.py:374: AssertionError</failure></testcase></testsuite></testsuites>

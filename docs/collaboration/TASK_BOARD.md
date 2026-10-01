@@ -1,3 +1,11 @@
+# A：为真实输入准备配置独立预算，远端全链待完成（2026-10-01）
+
+分支codex/pc-a-validation-budget-20261001，base3644873f74c34e3ace340d544a3f25faa189493e，实际源码5a6cce24d633acea5e690f47667cdf57b95465c1，仅改CI工作流。真实CI36847860851在准备第4步65分钟超时124，未发布成功输入、test未运行；改为独立120分钟准备预算，保留原65分钟全仓测试与全部重算。顺序R1 28 passed、R2生产执行器真实成功/失败/超时探针通过，非实际Linux全链通过。详[报告](../reviews/pc_a/preparation_budget_2026-10-01/REPORT.md)。
+
+父分支材料/依赖修复见草稿PR83/84；本机fd08b59完整回归已超时并完成逐节点对账，不混用本候选源码。工程回执、全仓终态和新观测事务仍未闭合；无新科学收益声明。原用户树、STATUS_B及完整统一研究范围不改。
+
+---
+
 # A：原生审计依赖契约修复，整体工程仍未验收（2026-10-01）
 
 独立分支codex/pc-a-audit-environment-20261001，base c8f1d29b90b60ef4ddc5303628c87def428d1d1b，实际源码488c7a62e5562e340b61bbe735c1c2bad858933e。原生审计只读uv检查补齐perception/hand-perception，与CI一致；冻结后顺序R1/R2真实命令正路径、旧契约拒绝、缺必需依赖拒绝及恢复后正路径通过。现有契约测试1 passed，变更文件lint/format通过。非全仓/独立B/科学收益验收。详[报告](../reviews/pc_a/audit_environment_2026-10-01/REPORT.md)。

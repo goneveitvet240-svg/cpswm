@@ -1,3 +1,11 @@
+# 结构二再次独立复核开工（2026-10-01）
+
+本窗口受用户要求重新审核进度，分支codex/pc-a-independent-progress-audit-20261001；独立目录/private/tmp/cpswm-pc-a-independent-progress-audit-20261001。base/最新受审交付b6c6317a35c99cd95fe636251ce1e63bfba5f402（PR80）；实际最新功能6faa17e178ad001de6b5c0e1094f9e62568d7a7e；父位置桥接82c7a81fba0c3af3688978ce222b1b94e4cc5bd9。已fetch核对A交付链，集成19ddf26830348a2f0b33f0af54d6ba702c5cfb1c、B fd4ca6ef5e81c90d7cf7987b42c0b2810d8a810a未变。
+
+对照上一轮PR75审核，检查PR76–80新增亲和学习/特征对照、位置开发模型、原生似然消费/撤回/恢复及owner新观测描述。独立运行必要测试与原件数值复核，验证当前真实CI，不复写生产/历史数据，不修改其他窗口。复用本机环境不称B或统一验收，新源码/证据使旧判断需要逐项更新。
+
+证据docs/reviews/pc_a/independent_progress_audit_2026-10-01；本机交付output/independent-progress-audit-20261001/review。结束按实际SHA、命令、结果、失败与未覆盖范围交付草稿PR，不自动集成；完整框架与原对照保留。
+
 # A：当前 owner RGB-D 只读描述已交付（2026-10-01 06:05）
 
 分支codex/pc-a-owned-rgbd-descriptor-20261001，实际功能/双审源码6faa17e178ad001de6b5c0e1094f9e62568d7a7e（903 Python），base父功能82c7a81 / 父交付dc57a687f6cfe0912de7415357765fff79f2c2ff。顺序R1/R2同源码通过，详[报告](../reviews/pc_a/owned_rgbd_descriptor_2026-10-01/REPORT.md)和[交付](../reviews/pc_a/owned_rgbd_descriptor_2026-10-01/DELIVERY.md)。A辅助、非B独立/全仓CI。

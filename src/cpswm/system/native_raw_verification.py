@@ -50,6 +50,12 @@ def profile_for(producer: NativeJointProducer | None) -> dict[str, Any] | None:
     if module is None or vars(module).get("NeuralNativeProducer") is not cls:
         raise ValueError("canonical neural producer class was replaced")
     # Closed registry, imported from installed source, never a checkpoint path.
+    from cpswm.system.appearance_geometry_position import (
+        PROFILE as ASSOCIATION_PROFILE,
+    )
+    from cpswm.system.appearance_geometry_position import (
+        AppearanceGeometryPositionProducer,
+    )
     from cpswm.system.controlled_position_producer import ControlledPositionProducer
     from cpswm.system.natural_candidate_position import (
         NATURAL_PROFILE,
@@ -63,6 +69,7 @@ def profile_for(producer: NativeJointProducer | None) -> dict[str, Any] | None:
         ControlledPositionProducer,
         OwnedPositionProducer,
         NaturalCandidatePositionProducer,
+        AppearanceGeometryPositionProducer,
     ):
         return None
     candidate = cast("ControlledPositionProducer", candidate)
@@ -71,6 +78,7 @@ def profile_for(producer: NativeJointProducer | None) -> dict[str, Any] | None:
             ControlledPositionProducer: "controlled-position-raw@1",
             OwnedPositionProducer: PROFILE,
             NaturalCandidatePositionProducer: NATURAL_PROFILE,
+            AppearanceGeometryPositionProducer: ASSOCIATION_PROFILE,
         }[type(candidate)],
         verifier_source=sha256(Path(__file__).read_bytes()).hexdigest(),
         weight_source=sha256(
@@ -92,6 +100,12 @@ def profile_for(producer: NativeJointProducer | None) -> dict[str, Any] | None:
 
 
 def reconstruct(profile: dict[str, Any]) -> ControlledPositionProducer:
+    from cpswm.system.appearance_geometry_position import (
+        PROFILE as ASSOCIATION_PROFILE,
+    )
+    from cpswm.system.appearance_geometry_position import (
+        AppearanceGeometryPositionProducer,
+    )
     from cpswm.system.controlled_position_producer import ControlledPositionProducer
     from cpswm.system.natural_candidate_position import (
         NATURAL_PROFILE,
@@ -111,7 +125,8 @@ def reconstruct(profile: dict[str, Any]) -> ControlledPositionProducer:
             "implementation",
             "arguments",
         }
-        or profile["profile"] not in ("controlled-position-raw@1", PROFILE, NATURAL_PROFILE)
+        or profile["profile"]
+        not in ("controlled-position-raw@1", PROFILE, NATURAL_PROFILE, ASSOCIATION_PROFILE)
     ):
         raise ValueError("unrecognized configured raw candidate profile")
     if profile["verifier_source"] != sha256(Path(__file__).read_bytes()).hexdigest():
@@ -126,6 +141,7 @@ def reconstruct(profile: dict[str, Any]) -> ControlledPositionProducer:
     cls = {
         PROFILE: OwnedPositionProducer,
         NATURAL_PROFILE: NaturalCandidatePositionProducer,
+        ASSOCIATION_PROFILE: AppearanceGeometryPositionProducer,
         "controlled-position-raw@1": ControlledPositionProducer,
     }[profile["profile"]]
     result = cls(**deepcopy(profile["arguments"]))
@@ -203,9 +219,14 @@ def verify_raw_base(
     from cpswm.system.owned_position_producer import OwnedPositionProducer
 
     full_context = replace(native_context, visible_prefix=original.visible_prefix)
+    from cpswm.system.appearance_geometry_position import AppearanceGeometryPositionProducer
     from cpswm.system.natural_candidate_position import NaturalCandidatePositionProducer
 
-    if type(candidate) in (OwnedPositionProducer, NaturalCandidatePositionProducer):
+    if type(candidate) in (
+        OwnedPositionProducer,
+        NaturalCandidatePositionProducer,
+        AppearanceGeometryPositionProducer,
+    ):
         if len(contexts) != len(clusters):
             raise ValueError("owned update predecessor context is missing")
         expected = cast("OwnedPositionProducer", candidate).recompute_updates(

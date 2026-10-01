@@ -1,0 +1,136 @@
+"""Independent arithmetic from pinned pair arrays and public surface points.
+
+No production fit, predict, condition or report functions. This is not a new
+detector/Unity run or an independent verification of every provenance formula.
+"""
+from pathlib import Path
+from collections import defaultdict
+import hashlib, json, math
+import numpy as np
+from scipy.special import expit, logsumexp
+from scipy.stats import multivariate_normal
+
+B=Path('/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/output')
+E=Path(__file__).parent
+load=lambda p:json.loads(p.read_bytes())
+sha=lambda p:hashlib.sha256(p.read_bytes()).hexdigest()
+close=lambda a,b:np.testing.assert_allclose(a,b,rtol=3e-10,atol=3e-12)
+pins={
+ 'instance-foreground-20260930':'32e0dc7cec8fce6dfca5bc36755cfba5cf3551b454c1f746f20ac2076936e842',
+ 'affinity-controls-20261001':'5eaabaaae15e4ed453c0f84b4f243103e25e5e9c1125f87f23e82e2be352bad2',
+ 'soft-position-factor-20261001':'9b9ed2d9208c1907d8295d5edc5aeb2f48af7b9b3625108b9642430a06780efc',
+ 'archive-native-bridge-20261001':'328b4b10276c44a05b91cfcbb7f24d370ff8092e85a9fe729939311bc6b4fc42'}
+checked={}
+for name,pin in pins.items():
+ root=B/name; assert sha(root/'case-results.json')==pin
+ rows=load(root/'case-results.json')
+ for case in rows:
+  if case['phase']!='verify':continue
+  folder=root/case.get('task','experiment')
+  actual={str(p.relative_to(folder)):sha(p) for p in folder.rglob('*') if p.is_file()}
+  assert actual==case['output_sha256'];assert case['exit_code']==0
+  checked[name+'/'+folder.name]=len(actual)
+
+# Recompute every fixed-feature prediction, training standardization and metrics.
+A=B/'instance-foreground-20260930/experiment';C=B/'affinity-controls-20261001/experiment'
+cr=load(C/'report.json'); base=load(A/'model.json');data=[]
+for i in range(96):
+ folder=A/f'frames/{i:03d}'
+ data.append(tuple(np.load(folder/name,allow_pickle=False) for name in ['features.npy','targets.npy','valid.npy']))
+xt=np.concatenate([x for x,y,v in data[:64]]);yt=np.concatenate([y for x,y,v in data[:64]])
+close(base['prevalence'],float(np.mean(yt[yt>=0])))
+predictions={};all_affinity={};by_house={}
+for mode,columns in {'rgb_only':[0,1,2],'geometry_only':[3,4,5,6,7],'combined':list(range(8))}.items():
+ wrapper=load(C/f'models/{mode}.json');m=wrapper['inner_checkpoint']
+ masked=np.zeros_like(xt);masked[:,columns]=xt[:,columns];fitx=masked[yt>=0]
+ close(m['mean'],fitx.mean(0))
+ std=fitx.std(0);std[np.ptp(fitx,axis=0)==0]=1
+ close(m['scale'],std)
+ theta=np.r_[m['weights'],m['bias']];z=np.column_stack(((fitx-m['mean'])/m['scale'],np.ones(len(fitx))))
+ grad=z.T@(expit(z@theta)-yt[yt>=0])/len(z)+np.r_[.01*np.asarray(m['weights']),0]
+ assert np.max(np.abs(grad))<1e-8
+ values=[]
+ for i,(x,y,valid) in enumerate(data):
+  masked=np.zeros_like(x);masked[:,columns]=x[:,columns]
+  pred=expit(((masked-np.asarray(m['mean']))/m['scale'])@m['weights']+m['bias'])
+  saved=np.load(C/f'frames/{i:03d}/{mode}.npy',allow_pickle=False)
+  close(pred[valid],saved[valid]);assert len(saved)==len(x)
+  values.append(pred)
+ predictions[mode]=values
+predictions['training_frequency_constant']=[np.full(len(y),base['prevalence']) for x,y,v in data]
+for mode,values in predictions.items():
+ def metrics(indices):
+  y=np.concatenate([data[i][1] for i in indices]);p=np.concatenate([values[i] for i in indices]);result={}
+  for label,keep in {'all':y>=0,'same_instance':y==1,'different_instance':y==0}.items():
+   yy=y[keep];pp=p[keep]
+   result[label]={'pairs':len(yy),'bce':float(np.mean(-yy*np.log(pp)-(1-yy)*np.log1p(-pp))) if len(yy) else None,'brier':float(np.mean((pp-yy)**2)) if len(yy) else None}
+  return result
+ all_affinity[mode]=metrics(range(64,96))
+ for cls,r in all_affinity[mode].items():
+  expected=cr['by_split']['validation']['methods'][mode][cls]
+  assert r['pairs']==expected['pairs'];close(r['bce'],expected['bce']);close(r['brier'],expected['brier'])
+ by_house[mode]={str(h):metrics(range((h-1)*8,h*8)) for h in range(1,13)}
+
+# Derive all six residual arrays, fit moments, and split/house metrics.
+P=B/'soft-position-factor-20261001/experiment';N=B/'archive-native-bridge-20261001'
+pr=load(P/'report.json');br=load(N/'bare/report.json');refs=['sdk_transform_position_m','sdk_aabb_center_m']
+errors=defaultdict(list);den=defaultdict(set)
+for i in range(96):
+ p=load(P/f'frames/{i:03d}/public.json');labels=load(P/f'frames/{i:03d}/labels.json')['labels']
+ bare=load(N/f'bare/frames/{i:03d}/bare-public.json')
+ ns={n['neighborhood_id']:n for n in p['neighborhoods']};obs={(o['seed_id'],o['estimator']):o for o in p['observations']}
+ for seed,point in zip(p['seeds'],bare,strict=True):
+  n=ns[seed['neighborhood_id']];j=n['pixels_uv'].index(seed['pixel_uv'])
+  assert point['world_point_m']==n['world_points_m'][j]
+  labs=[l for l in labels if l['seed_id']==seed['seed_id']]
+  assert len(labs)==2 and labs[0]['eligible']==labs[1]['eligible']
+  if not labs[0]['eligible']:continue
+  lab=labs[0];h=i//8+1
+  assert lab['house_index']==h and lab['split']==('train' if h<=8 else 'validation')
+  for estimator in ['bare_seed','soft_affinity','uniform']:
+   x=point['world_point_m'] if estimator=='bare_seed' else obs[(seed['seed_id'],estimator)]['world_point_m']
+   for ref in refs:errors[(estimator,ref)].append((i,h,lab['object_id'],np.asarray(x)-lab['targets'][ref]))
+  if h>8:
+   den['frames'].add(i);den['objects'].add((h,lab['object_id']));den['object_frames'].add((i,lab['object_id']))
+position={};models={}
+for (est,ref),rows in errors.items():
+ name=est+'/'+ref;path=(N/'bare/models'/f'{ref}.json') if est=='bare_seed' else P/'models'/f'{name}.json'
+ m=load(path);models[name]=m
+ train=np.asarray([r[3] for r in rows if r[1]<=8]);bias=train.mean(0);cov=np.cov(train,rowvar=False,ddof=1)
+ close(bias,m['bias']);close(cov,m['covariance'])
+ summary=br['results'][ref] if est=='bare_seed' else pr['results'][name]
+ result={}
+ for label,selected in [('validation',[r for r in rows if r[1]>8])]+[(str(h),[r for r in rows if r[1]==h]) for h in range(1,13)]:
+  x=np.asarray([r[3] for r in selected]).reshape(-1,3);actual={}
+  target=summary['by_split']['validation'] if label=='validation' else summary['by_house'][label]
+  assert len(x)==target['seeds']
+  for kind,v in [('raw',x),('corrected',x-bias)]:
+   rmse=float(np.sqrt(np.mean(np.sum(v*v,axis=1)))) if len(v) else None
+   if rmse is None:assert target[kind]['euclidean_rmse_m'] is None
+   else:close(rmse,target[kind]['euclidean_rmse_m'])
+   actual[kind]=rmse
+  if len(x):close(float(-np.mean(multivariate_normal.logpdf(x-bias,cov=cov))),target['corrected']['mean_nll'])
+  result[label]={'seeds':len(x),**actual}
+ position[name]=result
+
+# Independent Gaussian/Kalman arithmetic for the four actual Native outputs.
+native={};nr=load(N/'bridge/report.json');cor=load(N/'bridge/public-correspondence.json')
+for name,result in nr['results'].items():
+ m=models[name];est=name.split('/')[0];x=np.asarray(cor['observations'][est]['world_point_m']);R=np.asarray(m['covariance']);z=x-m['bias']
+ ll=multivariate_normal.logpdf(z,cov=np.eye(3)+R);unknown=multivariate_normal.logpdf(x,cov=100*np.eye(3))
+ logs=np.array([ll,unknown,unknown]);logs-=logsumexp(logs)
+ precision=np.eye(6);precision[:3,:3]+=np.linalg.inv(R);natural=np.r_[np.linalg.solve(R,z),np.zeros(3)]
+ a=result['arms']['active'];d=a['likelihood_diagnostic'];close(d['known']['observation_log_likelihood'],ll);close(d['unknown_log_likelihood'],unknown)
+ for key,logv in zip(['known','unknown','aggregate'],logs,strict=True):
+  close(a['active'][key]['normalized_log_weight'],logv)
+  assert math.isclose(a['active'][key]['probability'],float(np.exp(logv)),rel_tol=3e-10,abs_tol=0)
+ close(a['active']['known']['information'],precision);close(a['active']['known']['information_vector'],natural)
+ for arm in result['arms'].values():
+  for key in ['known','unknown','aggregate']:
+   expected=result['arms']['no_factor']['active'][key];got=arm['after_retraction'][key]
+   for field in expected:close(got[field],expected[field])
+  assert arm['duplicate_unchanged'] and arm['raw_packet_unchanged'] and arm['physical_camera_commands']==0
+ native[name]={'known_ll':float(ll),'unknown_ll':float(unknown),'known_probability':float(np.exp(logs[0])),'retraction_numeric_match':True}
+out={'scope':'pinned pair/public-point arithmetic and original numeric consequences; no independent raw acquisition or identity certification','checked_output_files':checked,'affinity_validation':all_affinity,'affinity_by_house':by_house,'position_by_house_and_validation':position,'validation_position_denominators':{k:len(v) for k,v in den.items()},'native':native}
+(E/'independent-math.json').write_text(json.dumps(out,indent=2)+'\n')
+print(json.dumps({k:v for k,v in out.items() if k not in ['affinity_by_house','position_by_house_and_validation']},indent=2))

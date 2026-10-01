@@ -1,0 +1,126 @@
+FF                                                                       [100%]
+=================================== FAILURES ===================================
+_ test_numeric_failure_is_explicit_atomic_and_retryable[0-unresolved_underflow] _
+
+fault = 'unresolved_underflow', step = 0
+
+    @pytest.mark.parametrize(
+        "fault",
+        [
+            "positive_overflow",
+            "negative_overflow",
+            "unresolved_underflow",
+            "nan",
+            "positive_inf",
+            "negative_inf",
+        ],
+    )
+    @pytest.mark.parametrize("step", [0, 1])
+    def test_numeric_failure_is_explicit_atomic_and_retryable(fault, step):
+        probe = old._legacy_history(1)
+        core = probe.system.core
+        if step:
+            core.stage_prepared_particle_candidates(**candidates(core))
+        good = candidates(core, step=step)
+        if fault == "positive_overflow":
+            args = reseal(good, observation_log_likelihood=1e308, proposal_log_probability=-1e308)
+        elif fault == "negative_overflow":
+            args = reseal(good, observation_log_likelihood=-1e308, transition_log_probability=-1e308)
+        elif fault == "unresolved_underflow":
+            args = reseal(good, observation_log_likelihood=1e308)
+        else:
+            args = deepcopy(good)
+            args["receipts"] = (
+                args["receipts"][0].model_copy(
+                    update={
+                        "observation_log_likelihood": {
+                            "nan": math.nan,
+                            "positive_inf": math.inf,
+                            "negative_inf": -math.inf,
+                        }[fault]
+                    }
+                ),
+                args["receipts"][1],
+            )
+>       reject_retry(probe, args, good=good)
+
+tests/test_structure_two_w3_round6_prepared_boundary.py:281: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+probe = BackboneWiringProbe(case=VisibleActionCase(case_id=UUID('0124fb07-178e-2380-17ea-f51cf62d31fa'), object_instance_id=UU...e_two_production_system.StructureTwoProductionSystem object at 0x10b8c2f90>, step_index=0, router_feature_overrides={})
+args = {'receipts': (ParticleRevisionReceipt(proposal=NeuralParticleProposal(proposal_id=UUID('00000000-0000-0000-0000-000000...ector=(2.0, 1.0), evidence_cluster_ids=(UUID('00000000-0000-0000-0000-000000000bb8'),))}, 'unresolved_log_weight': 0.0}
+match = None
+good = {'receipts': (ParticleRevisionReceipt(proposal=NeuralParticleProposal(proposal_id=UUID('00000000-0000-0000-0000-000000...ector=(2.0, 1.0), evidence_cluster_ids=(UUID('00000000-0000-0000-0000-000000000bb8'),))}, 'unresolved_log_weight': 0.0}
+
+    def reject_retry(probe, args, *, match=None, good=None):
+        core = probe.system.core
+        before = snapshot(probe)
+>       with pytest.raises(ValueError, match=match):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE ValueError
+
+tests/test_structure_two_w3_round6_prepared_boundary.py:65: Failed
+_ test_numeric_failure_is_explicit_atomic_and_retryable[1-unresolved_underflow] _
+
+fault = 'unresolved_underflow', step = 1
+
+    @pytest.mark.parametrize(
+        "fault",
+        [
+            "positive_overflow",
+            "negative_overflow",
+            "unresolved_underflow",
+            "nan",
+            "positive_inf",
+            "negative_inf",
+        ],
+    )
+    @pytest.mark.parametrize("step", [0, 1])
+    def test_numeric_failure_is_explicit_atomic_and_retryable(fault, step):
+        probe = old._legacy_history(1)
+        core = probe.system.core
+        if step:
+            core.stage_prepared_particle_candidates(**candidates(core))
+        good = candidates(core, step=step)
+        if fault == "positive_overflow":
+            args = reseal(good, observation_log_likelihood=1e308, proposal_log_probability=-1e308)
+        elif fault == "negative_overflow":
+            args = reseal(good, observation_log_likelihood=-1e308, transition_log_probability=-1e308)
+        elif fault == "unresolved_underflow":
+            args = reseal(good, observation_log_likelihood=1e308)
+        else:
+            args = deepcopy(good)
+            args["receipts"] = (
+                args["receipts"][0].model_copy(
+                    update={
+                        "observation_log_likelihood": {
+                            "nan": math.nan,
+                            "positive_inf": math.inf,
+                            "negative_inf": -math.inf,
+                        }[fault]
+                    }
+                ),
+                args["receipts"][1],
+            )
+>       reject_retry(probe, args, good=good)
+
+tests/test_structure_two_w3_round6_prepared_boundary.py:281: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+probe = BackboneWiringProbe(case=VisibleActionCase(case_id=UUID('0124fb07-178e-2380-17ea-f51cf62d31fa'), object_instance_id=UU...e_two_production_system.StructureTwoProductionSystem object at 0x10bd95a90>, step_index=0, router_feature_overrides={})
+args = {'receipts': (ParticleRevisionReceipt(proposal=NeuralParticleProposal(proposal_id=UUID('00000000-0000-0000-0000-000000...'00000000-0000-0000-0000-000000000bb8'), UUID('00000000-0000-0000-0000-000000000bb9')))}, 'unresolved_log_weight': 0.0}
+match = None
+good = {'receipts': (ParticleRevisionReceipt(proposal=NeuralParticleProposal(proposal_id=UUID('00000000-0000-0000-0000-000000...'00000000-0000-0000-0000-000000000bb8'), UUID('00000000-0000-0000-0000-000000000bb9')))}, 'unresolved_log_weight': 0.0}
+
+    def reject_retry(probe, args, *, match=None, good=None):
+        core = probe.system.core
+        before = snapshot(probe)
+>       with pytest.raises(ValueError, match=match):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE ValueError
+
+tests/test_structure_two_w3_round6_prepared_boundary.py:65: Failed
+=========================== short test summary info ============================
+FAILED tests/test_structure_two_w3_round6_prepared_boundary.py::test_numeric_failure_is_explicit_atomic_and_retryable[0-unresolved_underflow]
+FAILED tests/test_structure_two_w3_round6_prepared_boundary.py::test_numeric_failure_is_explicit_atomic_and_retryable[1-unresolved_underflow]
+2 failed, 65 deselected in 1.03s

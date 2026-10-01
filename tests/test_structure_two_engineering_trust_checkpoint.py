@@ -166,6 +166,10 @@ def test_audit_matrix_contains_frozen_offline_uv_environment_check() -> None:
         "--check",
         "--extra",
         "dev",
+        "--extra",
+        "perception",
+        "--extra",
+        "hand-perception",
         "--no-cache",
     )
     for command_id in ("p0_adversarial_tests", "core_pytest"):

@@ -1,0 +1,44 @@
+current-inputs	Generate and independently replay current test inputs	﻿2026-10-01T10:15:20.9605096Z ##[group]Run .venv/bin/python tools/prepare_current_validation_inputs.py --output "${GITHUB_WORKSPACE}/output/ci-validation-inputs"
+current-inputs	Generate and independently replay current test inputs	2026-10-01T10:15:20.9606283Z ^[[36;1m.venv/bin/python tools/prepare_current_validation_inputs.py --output "${GITHUB_WORKSPACE}/output/ci-validation-inputs"^[[0m
+current-inputs	Generate and independently replay current test inputs	2026-10-01T10:15:20.9676520Z shell: /usr/bin/bash -e {0}
+current-inputs	Generate and independently replay current test inputs	2026-10-01T10:15:20.9676788Z env:
+current-inputs	Generate and independently replay current test inputs	2026-10-01T10:15:20.9676998Z   UV_PYTHON: 3.13
+current-inputs	Generate and independently replay current test inputs	2026-10-01T10:15:20.9677267Z   VIRTUAL_ENV: /home/runner/work/cpswm/cpswm/.venv
+current-inputs	Generate and independently replay current test inputs	2026-10-01T10:15:20.9677636Z   UV_CACHE_DIR: /home/runner/work/_temp/setup-uv-cache
+current-inputs	Generate and independently replay current test inputs	2026-10-01T10:15:20.9677947Z ##[endgroup]
+current-inputs	Generate and independently replay current test inputs	2026-10-01T10:15:21.2296118Z starting comparison_generate
+current-inputs	Generate and independently replay current test inputs	2026-10-01T10:41:32.8559464Z comparison_generate exit=0
+current-inputs	Generate and independently replay current test inputs	2026-10-01T10:41:32.9560084Z starting comparison_recompute
+current-inputs	Generate and independently replay current test inputs	2026-10-01T11:08:15.8379250Z comparison_recompute exit=0
+current-inputs	Generate and independently replay current test inputs	2026-10-01T11:08:15.9380450Z starting attribution_generate
+current-inputs	Generate and independently replay current test inputs	2026-10-01T11:08:24.4514838Z attribution_generate exit=0
+current-inputs	Generate and independently replay current test inputs	2026-10-01T11:08:24.5516292Z starting attribution_recompute
+current-inputs	Generate and independently replay current test inputs	2026-10-01T11:20:21.3302975Z Traceback (most recent call last):
+current-inputs	Generate and independently replay current test inputs	2026-10-01T11:20:21.3309619Z   File "/home/runner/work/cpswm/cpswm/tools/prepare_current_validation_inputs.py", line 248, in <module>
+current-inputs	Generate and independently replay current test inputs	2026-10-01T11:20:21.3310245Z     raise SystemExit(main())
+current-inputs	Generate and independently replay current test inputs	2026-10-01T11:20:21.3310525Z                      ~~~~^^
+current-inputs	Generate and independently replay current test inputs	2026-10-01T11:20:21.3311034Z   File "/home/runner/work/cpswm/cpswm/tools/prepare_current_validation_inputs.py", line 242, in main
+current-inputs	Generate and independently replay current test inputs	2026-10-01T11:20:21.3311561Z     result = prepare(ROOT, args.output)
+current-inputs	Generate and independently replay current test inputs	2026-10-01T11:20:21.3312103Z   File "/home/runner/work/cpswm/cpswm/tools/prepare_current_validation_inputs.py", line 168, in prepare
+current-inputs	Generate and independently replay current test inputs	2026-10-01T11:20:21.3312615Z     result = subprocess.run(
+current-inputs	Generate and independently replay current test inputs	2026-10-01T11:20:21.3312863Z         argv,
+current-inputs	Generate and independently replay current test inputs	2026-10-01T11:20:21.3313098Z     ...<4 lines>...
+current-inputs	Generate and independently replay current test inputs	2026-10-01T11:20:21.3313305Z         check=False,
+current-inputs	Generate and independently replay current test inputs	2026-10-01T11:20:21.3313515Z     )
+current-inputs	Generate and independently replay current test inputs	2026-10-01T11:20:21.3314016Z   File "/home/runner/.local/share/uv/python/cpython-3.13.15-linux-x86_64-gnu/lib/python3.13/subprocess.py", line 556, in run
+current-inputs	Generate and independently replay current test inputs	2026-10-01T11:20:21.3314647Z     stdout, stderr = process.communicate(input, timeout=timeout)
+current-inputs	Generate and independently replay current test inputs	2026-10-01T11:20:21.3315019Z                      ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^
+current-inputs	Generate and independently replay current test inputs	2026-10-01T11:20:21.3315900Z   File "/home/runner/.local/share/uv/python/cpython-3.13.15-linux-x86_64-gnu/lib/python3.13/subprocess.py", line 1214, in communicate
+current-inputs	Generate and independently replay current test inputs	2026-10-01T11:20:21.3316469Z     self.wait()
+current-inputs	Generate and independently replay current test inputs	2026-10-01T11:20:21.3316671Z     ~~~~~~~~~^^
+current-inputs	Generate and independently replay current test inputs	2026-10-01T11:20:21.3317163Z   File "/home/runner/.local/share/uv/python/cpython-3.13.15-linux-x86_64-gnu/lib/python3.13/subprocess.py", line 1280, in wait
+current-inputs	Generate and independently replay current test inputs	2026-10-01T11:20:21.3317714Z     return self._wait(timeout=timeout)
+current-inputs	Generate and independently replay current test inputs	2026-10-01T11:20:21.3317993Z            ~~~~~~~~~~^^^^^^^^^^^^^^^^^
+current-inputs	Generate and independently replay current test inputs	2026-10-01T11:20:21.3318549Z   File "/home/runner/.local/share/uv/python/cpython-3.13.15-linux-x86_64-gnu/lib/python3.13/subprocess.py", line 2085, in _wait
+current-inputs	Generate and independently replay current test inputs	2026-10-01T11:20:21.3319088Z     (pid, sts) = self._try_wait(0)
+current-inputs	Generate and independently replay current test inputs	2026-10-01T11:20:21.3319352Z                  ~~~~~~~~~~~~~~^^^
+current-inputs	Generate and independently replay current test inputs	2026-10-01T11:20:21.3319889Z   File "/home/runner/.local/share/uv/python/cpython-3.13.15-linux-x86_64-gnu/lib/python3.13/subprocess.py", line 2043, in _try_wait
+current-inputs	Generate and independently replay current test inputs	2026-10-01T11:20:21.3320467Z     (pid, sts) = os.waitpid(self.pid, wait_flags)
+current-inputs	Generate and independently replay current test inputs	2026-10-01T11:20:21.3320772Z                  ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^
+current-inputs	Generate and independently replay current test inputs	2026-10-01T11:20:21.3321045Z KeyboardInterrupt
+current-inputs	Generate and independently replay current test inputs	2026-10-01T11:20:21.3376439Z ##[error]Process completed with exit code 124.

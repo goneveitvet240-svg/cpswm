@@ -1,0 +1,57 @@
+{
+  "run_id": 36847860851,
+  "source": "c8f1d29b90b60ef4ddc5303628c87def428d1d1b",
+  "static_quality": "success",
+  "preparation": {
+    "scope": "REGRESSION_EXECUTION_DIAGNOSTIC_NOT_SCIENTIFIC_ACCEPTANCE",
+    "command": [
+      "/home/runner/work/cpswm/cpswm/.venv/bin/python",
+      "/home/runner/work/cpswm/cpswm/tools/prepare_current_validation_inputs.py",
+      "--worker",
+      "--output",
+      "/home/runner/work/cpswm/cpswm/output/ci-validation-inputs"
+    ],
+    "cwd": "/home/runner/work/cpswm/cpswm",
+    "started_at": "2026-10-01T10:15:21.028274+00:00",
+    "budget_seconds": 3900,
+    "grace_seconds": 60,
+    "status": "TIMED_OUT",
+    "process_group_cleanup_supported": true,
+    "pid": 2433,
+    "exit_code": 124,
+    "child_exit_code": -2,
+    "timed_out": true,
+    "interrupted": false,
+    "force_required": false,
+    "interrupted_group_cleanup_attempted": true,
+    "seconds": 3900.300784573,
+    "log_sha256": "457f81b508c6fde94acd94825e3e78b827d41be4468c4bf466a073175cce19fb",
+    "pytest_junit_present": false,
+    "coverage_xml_present": false
+  },
+  "commands": [
+    {
+      "name": "comparison_generate",
+      "status": "PASSED",
+      "exit_code": 0
+    },
+    {
+      "name": "comparison_recompute",
+      "status": "PASSED",
+      "exit_code": 0
+    },
+    {
+      "name": "attribution_generate",
+      "status": "PASSED",
+      "exit_code": 0
+    },
+    {
+      "name": "attribution_recompute",
+      "status": "RUNNING",
+      "exit_code": null
+    }
+  ],
+  "test_job": "skipped_due_to_failed_preparation",
+  "environment_published": false,
+  "scope": "ACTUAL_CI_FAILURE_NO_FULL_TEST_RESULT"
+}

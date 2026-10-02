@@ -1,3 +1,25 @@
+# A：位置校准与表面诊断局部交付（2026-10-02）
+
+交付：[草稿 PR #94](https://github.com/goneveitvet240-svg/cpswm/pull/94)，叠加PR93，未合并。代码与完整证据提交 `cfc70b4779a6847a5d25ae1739683aec06de4287` 已推送；功能仍为 `27d396d6db4c248992f37285d3b7ad42b20df408`。本次追加仅确认交接链接，不改变已验证源码。
+
+用户批准的校准已完成首轮开发比较。分支 `codex/pc-a-position-calibration-20261002`，base `5073311fbd9aa5cdc0520876d2b34b02ab92c8b1`，最终功能 SHA `27d396d6db4c248992f37285d3b7ad42b20df408`。交付前fetch成功，集成 `19ddf26830348a2f0b33f0af54d6ba702c5cfb1c` 与B `fd4ca6ef5e81c90d7cf7987b42c0b2810d8a810a` 未变。
+
+[报告](../reviews/pc_a/position_calibration_2026-10-02/REPORT.md)、[验证范围](../reviews/pc_a/position_calibration_2026-10-02/VALIDATION.md)、[复现命令](../reviews/pc_a/position_calibration_2026-10-02/COMMANDS.md)。六模型拟合完成，训练与评估分开，完整96帧、VOID和失败保留。最终27项新检查通过；旧连续事务兼容49项通过，生产源码未变，版本边界逐文件说明；mypy399/Ruff/格式816通过。两次最终实跑四JSON一致，独立复算269760预测点与120组计数一致；非B、全仓或科学收益。
+
+自然WineBottle固定首点在目标外，64网格只有32点在目标AABB内；旧软聚合也在盒外，再被旧先验拉偏。验证固定首点23条可评分/78公开记录，soft/AABB新模型6命中，对照旧0、原始soft19、裸点22。标签是seed离线对象对应，不是自然目标身份。校准改善旧模型但弱于原始表面读数，未替换默认或接新Native profile，不能用RMSE下降覆盖盒内成功退化。
+
+证据全部在报告目录evidence，完整准备/预测/逐行评分13MB封存包可复查。本次未动原用户树、STATUS_B和共享集成。下一步处理自然表面对应/适合表面报告的误差，再接可撤回更新和联合效用；同预算主动/后续记忆实验未完成，完整统一框架保持。代码与证据已在上述独立分支和草稿PR交接。
+
+---
+
+# A：位置先验与误差校准开工（2026-10-02）
+
+用户已批准新校准方案，原“新先验待选择”解除。分支 `codex/pc-a-position-calibration-20261002`，base/开工源码 `5073311fbd9aa5cdc0520876d2b34b02ab92c8b1`；fetch成功，集成 `19ddf26830348a2f0b33f0af54d6ba702c5cfb1c`、B `fd4ca6ef5e81c90d7cf7987b42c0b2810d8a810a`未变，旧窗口无重复活动。
+
+[方案](../reviews/pc_a/position_calibration_2026-10-02/PLAN.md)：先查表面读数，再按固定训练/验证分区拟合相机坐标先验和误差，比较旧/仅先验/仅误差/两者；保留双参考、VOID和失败。当前尚无新测试或结果。证据拟存 `/private/tmp/cpswm-position-calibration-evidence-20261002`；保留旧受控对照与完整框架，不改原用户树/STATUS_B/集成分支。
+
+---
+
 # A：联合报告/评分局部交付，真实位置失败已定位（2026-10-02）
 
 交付：[草稿 PR #93](https://github.com/goneveitvet240-svg/cpswm/pull/93)，叠加PR92，未合并。代码与证据提交 `5b6d6fc3a5322c1270aac5441622ba9ea48bd5b2` 已推送；冻结功能源码仍为 `10af59aba3a26bbbe66346b1bee89ae9b0a55de1`。

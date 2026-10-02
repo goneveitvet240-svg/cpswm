@@ -1,0 +1,407 @@
+{
+  "results": {
+    "bare_seed/sdk_aabb_center_m": {
+      "model": {
+        "coverage_calibrated": false,
+        "estimator": "bare_seed",
+        "house_count": 8,
+        "natural_identity_authority": false,
+        "object_count": 57,
+        "object_frame_count": 67,
+        "parent_artifact_sha256": "9b9ed2d9208c1907d8295d5edc5aeb2f48af7b9b3625108b9642430a06780efc",
+        "prior": {
+          "covariance": [
+            [
+              0.9381529332624933,
+              0.261446817693055,
+              0.41349090168945435
+            ],
+            [
+              0.261446817693055,
+              1.076851566556574,
+              1.763535090309655
+            ],
+            [
+              0.41349090168945435,
+              1.763535090309655,
+              3.1861183246059883
+            ]
+          ],
+          "mean": [
+            -0.16508465286007934,
+            0.895551805813334,
+            3.3596355273273426
+          ]
+        },
+        "readout_sha256": "41495afe18b0b8ad484cc86b3525a5a5694044e39169b3b3ecf71b2dd1eb1e0d",
+        "reference": "sdk_aabb_center_m",
+        "residual": {
+          "covariance": [
+            [
+              0.07897135852014707,
+              -0.00741292005688266,
+              -0.007821720131040152
+            ],
+            [
+              -0.00741292005688266,
+              0.07436274608417169,
+              0.015817702890309083
+            ],
+            [
+              -0.007821720131040152,
+              0.015817702890309083,
+              0.06061159585471454
+            ]
+          ],
+          "mean": [
+            0.04442796547603532,
+            0.005927095651523053,
+            -0.09605240211411605
+          ]
+        },
+        "row_count": 2004,
+        "schema_id": "camera-position-prior-error-development@1",
+        "training_rows_sha256": "f8097c82a6bbc8ec0540fa8d6924059d449ce795a8caa191f1e0f50ca1aaf2e2",
+        "weighting": "equal-house-object-frame-measurement-population-moments"
+      },
+      "pin": "57180162085b5de144774921d8a1725b74e2f67a1b28e994aa976243ed9ed83f",
+      "status": "FITTED"
+    },
+    "bare_seed/sdk_transform_position_m": {
+      "model": {
+        "coverage_calibrated": false,
+        "estimator": "bare_seed",
+        "house_count": 8,
+        "natural_identity_authority": false,
+        "object_count": 57,
+        "object_frame_count": 67,
+        "parent_artifact_sha256": "9b9ed2d9208c1907d8295d5edc5aeb2f48af7b9b3625108b9642430a06780efc",
+        "prior": {
+          "covariance": [
+            [
+              0.9820876042070833,
+              0.3028382662722943,
+              0.42002130662486964
+            ],
+            [
+              0.3028382662722943,
+              1.1808433440168808,
+              1.7243200876337204
+            ],
+            [
+              0.42002130662486964,
+              1.7243200876337204,
+              3.206030578721398
+            ]
+          ],
+          "mean": [
+            -0.1837737803928462,
+            0.6507512844842968,
+            3.549304744385624
+          ]
+        },
+        "readout_sha256": "41495afe18b0b8ad484cc86b3525a5a5694044e39169b3b3ecf71b2dd1eb1e0d",
+        "reference": "sdk_transform_position_m",
+        "residual": {
+          "covariance": [
+            [
+              0.11408981361748957,
+              0.011514787586655348,
+              0.003056339498677321
+            ],
+            [
+              0.011514787586655348,
+              0.11481337679461684,
+              -0.007089032552215399
+            ],
+            [
+              0.003056339498677321,
+              -0.007089032552215399,
+              0.11560708750700699
+            ]
+          ],
+          "mean": [
+            0.06311709300880078,
+            0.2507276169805578,
+            -0.28572161917239935
+          ]
+        },
+        "row_count": 2004,
+        "schema_id": "camera-position-prior-error-development@1",
+        "training_rows_sha256": "f013b19efe96c992f2e8d71292e7ae867ca2034b8cec384ab011f8bed3300d6d",
+        "weighting": "equal-house-object-frame-measurement-population-moments"
+      },
+      "pin": "e596d91c3b8a3295eaeed5506ee1d6956aa6f160048400fae3f04aca40124412",
+      "status": "FITTED"
+    },
+    "soft_affinity/sdk_aabb_center_m": {
+      "model": {
+        "coverage_calibrated": false,
+        "estimator": "soft_affinity",
+        "house_count": 8,
+        "natural_identity_authority": false,
+        "object_count": 57,
+        "object_frame_count": 67,
+        "parent_artifact_sha256": "9b9ed2d9208c1907d8295d5edc5aeb2f48af7b9b3625108b9642430a06780efc",
+        "prior": {
+          "covariance": [
+            [
+              0.9381529332624933,
+              0.261446817693055,
+              0.41349090168945435
+            ],
+            [
+              0.261446817693055,
+              1.076851566556574,
+              1.763535090309655
+            ],
+            [
+              0.41349090168945435,
+              1.763535090309655,
+              3.1861183246059883
+            ]
+          ],
+          "mean": [
+            -0.16508465286007934,
+            0.895551805813334,
+            3.3596355273273426
+          ]
+        },
+        "readout_sha256": "0025577c24e5b83f63c5bae497eda535d4e5903dde3797b37793d16346ae2266",
+        "reference": "sdk_aabb_center_m",
+        "residual": {
+          "covariance": [
+            [
+              0.2659211079143713,
+              -0.0677576482545485,
+              -0.035737494763942876
+            ],
+            [
+              -0.0677576482545485,
+              0.19259196398193518,
+              0.09784280053602691
+            ],
+            [
+              -0.035737494763942876,
+              0.09784280053602691,
+              0.11530634400530566
+            ]
+          ],
+          "mean": [
+            0.13239640447491927,
+            -0.20210315779714846,
+            -0.12399640514930912
+          ]
+        },
+        "row_count": 2004,
+        "schema_id": "camera-position-prior-error-development@1",
+        "training_rows_sha256": "c30415dd724e168b7e9db26002cb51c38a2b4f125a5a16b3b43ac484c6e1ac42",
+        "weighting": "equal-house-object-frame-measurement-population-moments"
+      },
+      "pin": "1bd92b791434c0025350cedd215f16c169ae4662f437304fa797a93fb0dee6e3",
+      "status": "FITTED"
+    },
+    "soft_affinity/sdk_transform_position_m": {
+      "model": {
+        "coverage_calibrated": false,
+        "estimator": "soft_affinity",
+        "house_count": 8,
+        "natural_identity_authority": false,
+        "object_count": 57,
+        "object_frame_count": 67,
+        "parent_artifact_sha256": "9b9ed2d9208c1907d8295d5edc5aeb2f48af7b9b3625108b9642430a06780efc",
+        "prior": {
+          "covariance": [
+            [
+              0.9820876042070833,
+              0.3028382662722943,
+              0.42002130662486964
+            ],
+            [
+              0.3028382662722943,
+              1.1808433440168808,
+              1.7243200876337204
+            ],
+            [
+              0.42002130662486964,
+              1.7243200876337204,
+              3.206030578721398
+            ]
+          ],
+          "mean": [
+            -0.1837737803928462,
+            0.6507512844842968,
+            3.549304744385624
+          ]
+        },
+        "readout_sha256": "0025577c24e5b83f63c5bae497eda535d4e5903dde3797b37793d16346ae2266",
+        "reference": "sdk_transform_position_m",
+        "residual": {
+          "covariance": [
+            [
+              0.30939252205741485,
+              -0.05470514158452255,
+              -0.015465502036760179
+            ],
+            [
+              -0.05470514158452255,
+              0.2617876176211961,
+              0.07406174423755278
+            ],
+            [
+              -0.015465502036760179,
+              0.07406174423755278,
+              0.17933038122455403
+            ]
+          ],
+          "mean": [
+            0.1510855320076847,
+            0.04269736353188607,
+            -0.31366562220759353
+          ]
+        },
+        "row_count": 2004,
+        "schema_id": "camera-position-prior-error-development@1",
+        "training_rows_sha256": "85ddc386987898ee3f4e275dd2910b8b679a1d6ef8fb863e20a4620b6d92d771",
+        "weighting": "equal-house-object-frame-measurement-population-moments"
+      },
+      "pin": "72e19dbf09fceb44081f8e89d024adf068513faae52a63eeb231a82302751333",
+      "status": "FITTED"
+    },
+    "uniform/sdk_aabb_center_m": {
+      "model": {
+        "coverage_calibrated": false,
+        "estimator": "uniform",
+        "house_count": 8,
+        "natural_identity_authority": false,
+        "object_count": 57,
+        "object_frame_count": 67,
+        "parent_artifact_sha256": "9b9ed2d9208c1907d8295d5edc5aeb2f48af7b9b3625108b9642430a06780efc",
+        "prior": {
+          "covariance": [
+            [
+              0.9381529332624933,
+              0.261446817693055,
+              0.41349090168945435
+            ],
+            [
+              0.261446817693055,
+              1.076851566556574,
+              1.763535090309655
+            ],
+            [
+              0.41349090168945435,
+              1.763535090309655,
+              3.1861183246059883
+            ]
+          ],
+          "mean": [
+            -0.16508465286007934,
+            0.895551805813334,
+            3.3596355273273426
+          ]
+        },
+        "readout_sha256": "5a9617a761d5453a8407ec893be92a4d2bca410ffa852191fe1727a7893c6c02",
+        "reference": "sdk_aabb_center_m",
+        "residual": {
+          "covariance": [
+            [
+              0.2374786530260829,
+              -0.07650836129369219,
+              -0.053205736344744944
+            ],
+            [
+              -0.07650836129369219,
+              0.31889940520893256,
+              0.3173613344422056
+            ],
+            [
+              -0.053205736344744944,
+              0.3173613344422056,
+              0.4813091056943798
+            ]
+          ],
+          "mean": [
+            0.12591632537447692,
+            -0.21614390046185614,
+            -0.14020548677473607
+          ]
+        },
+        "row_count": 2004,
+        "schema_id": "camera-position-prior-error-development@1",
+        "training_rows_sha256": "c8db7fe202de0fb4e62353882816104f4d5932cd97341a570607f6ee4818b39c",
+        "weighting": "equal-house-object-frame-measurement-population-moments"
+      },
+      "pin": "a894c7b0b2bf807a43c65dc114c032af47fc9344709b3f83dc10cad225ab9685",
+      "status": "FITTED"
+    },
+    "uniform/sdk_transform_position_m": {
+      "model": {
+        "coverage_calibrated": false,
+        "estimator": "uniform",
+        "house_count": 8,
+        "natural_identity_authority": false,
+        "object_count": 57,
+        "object_frame_count": 67,
+        "parent_artifact_sha256": "9b9ed2d9208c1907d8295d5edc5aeb2f48af7b9b3625108b9642430a06780efc",
+        "prior": {
+          "covariance": [
+            [
+              0.9820876042070833,
+              0.3028382662722943,
+              0.42002130662486964
+            ],
+            [
+              0.3028382662722943,
+              1.1808433440168808,
+              1.7243200876337204
+            ],
+            [
+              0.42002130662486964,
+              1.7243200876337204,
+              3.206030578721398
+            ]
+          ],
+          "mean": [
+            -0.1837737803928462,
+            0.6507512844842968,
+            3.549304744385624
+          ]
+        },
+        "readout_sha256": "5a9617a761d5453a8407ec893be92a4d2bca410ffa852191fe1727a7893c6c02",
+        "reference": "sdk_transform_position_m",
+        "residual": {
+          "covariance": [
+            [
+              0.27948499967646795,
+              -0.06586061762700851,
+              -0.034999007469206006
+            ],
+            [
+              -0.06586061762700851,
+              0.3780446002913388,
+              0.2874150695598699
+            ],
+            [
+              -0.034999007469206006,
+              0.2874150695598699,
+              0.5531307676681603
+            ]
+          ],
+          "mean": [
+            0.14460545290724175,
+            0.028656620867178458,
+            -0.32987470383302037
+          ]
+        },
+        "row_count": 2004,
+        "schema_id": "camera-position-prior-error-development@1",
+        "training_rows_sha256": "df37f68c76001606b8c840b9f6af2c953ea72566fb97407abde18d6316a38f27",
+        "weighting": "equal-house-object-frame-measurement-population-moments"
+      },
+      "pin": "3a71961e0ce98b621bed097846801fbb64917efe97a818ec8b32f8a25f31af2a",
+      "status": "FITTED"
+    }
+  },
+  "training_file_sha256": "711a33e7ab8236f5a62b20009053dd09eb66b9aabd79904f043186a63b64fd72"
+}

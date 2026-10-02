@@ -33,7 +33,10 @@ def main(a):
     )
     arms = []
     try:
-        for name in ("fixed", "active", "no-update"):
+        names = (
+            ("memory-retain", "memory-reset") if a.memory_only else ("fixed", "active", "no-update")
+        )
+        for name in names:
             assert camera._process.stdin is not None
             camera._process.stdin.write(json.dumps(dict(reset_camera=True)) + "\n")
             camera._process.stdin.flush()
@@ -42,6 +45,7 @@ def main(a):
             options = copy.copy(a)
             options.output = a.output / name
             options.no_update = name == "no-update"
+            options.reset_before = 2 if name == "memory-reset" else None
             options.model = a.model if name == "active" else None
             run(options, shared_camera=camera)
             arms.append(name)
@@ -66,6 +70,8 @@ def main(a):
                     initialization="single frozen world; camera reset before each arm",
                     fairness="requires isolated exact initial RGB/depth/pose/world comparison",
                     scope="single-house development pilot; controlled semantic bootstrap",
+                    memory_only=a.memory_only,
+                    later_task_budget=1 if a.memory_only else None,
                 ),
                 indent=2,
             )
@@ -79,6 +85,7 @@ if __name__ == "__main__":
         p.add_argument("--" + k, type=Path, required=True)
     p.add_argument("--degrees", type=float, nargs="+", required=True)
     p.add_argument("--target", nargs="+", required=True)
+    p.add_argument("--memory-only", action="store_true")
     a = p.parse_args()
     torch.set_num_threads(2)
     main(a)

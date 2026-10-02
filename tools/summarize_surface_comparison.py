@@ -47,7 +47,12 @@ def summarize(root, output):
     if output.exists():
         raise ValueError("comparison output must be new")
     manifest = read(root / "manifest.json")
-    expected = ["fixed", "active", "no-update"]
+    expected = (
+        ["memory-retain", "memory-reset"]
+        if manifest.get("memory_only")
+        else ["fixed", "active", "no-update"]
+    )
+    reference = expected[0]
     if manifest["arms"] != expected:
         raise ValueError("missing arm must remain incomplete")
     signatures, worlds, runs, truths = {}, {}, {}, {}
@@ -130,12 +135,12 @@ def summarize(root, output):
     )
     comparisons = {
         name: compare_report_runs(
-            tuple(runs["fixed"]),
+            tuple(runs[reference]),
             tuple(runs[name]),
-            first_truth=tuple(truths["fixed"]),
+            first_truth=tuple(truths[reference]),
             second_truth=tuple(truths[name]),
         )
-        for name in ("active", "no-update")
+        for name in expected[1:]
     }
     valid = all(equality.values()) and all(
         c["paired_design_and_count_budget_valid"] for c in comparisons.values()

@@ -121,6 +121,27 @@ def run(args, shared_camera=None):
             (root / "transport").mkdir()
         reference = None
         for index in range(len(schedule)):
+            if getattr(args, "reset_before", None) == index:
+                from uuid import UUID
+
+                prior_actions = effective_surface_state(stream)["action_ids"]
+                physical_before = len(stream.observation_history())
+                # Preserve the public task's original reference; remove only
+                # intervening visual memory, then acquire the same next input.
+                for action in reversed(prior_actions[1:]):
+                    stream.withdraw_owned_position_observation(
+                        UUID(action), reason="later-task intermediate-memory reset control"
+                    )
+                result.setdefault("memory_interventions", []).append(
+                    dict(
+                        before_index=index,
+                        retained_reference=reference,
+                        withdrawn=prior_actions[1:],
+                        physical_before=physical_before,
+                        physical_after=len(stream.observation_history()),
+                        effective_after=effective_surface_state(stream)["action_ids"],
+                    )
+                )
             step = collect_scheduled_surface(
                 stream, executor=camera, decision_time=datetime.now(UTC)
             )
@@ -290,6 +311,7 @@ if __name__ == "__main__":
     p.add_argument("--target", nargs="+", required=True)
     p.add_argument("--model", type=Path)
     p.add_argument("--no-update", action="store_true")
+    p.add_argument("--reset-before", type=int)
     p = sub.add_parser("restore")
     p.add_argument("--output", type=Path, required=True)
     p.add_argument("--withdraw", type=int)

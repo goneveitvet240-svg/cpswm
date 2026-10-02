@@ -56,12 +56,30 @@ def summarize(root, output):
     if manifest["arms"] != expected:
         raise ValueError("missing arm must remain incomplete")
     signatures, worlds, runs, truths = {}, {}, {}, {}
+    trajectories, controls = {}, {}
     common_tasks = None
     for arm in expected:
         folder = root / arm
         result, scored = read(folder / "result.json"), read(folder / "evaluation.json")
         raws = [read(p) for p in sorted((folder / "public").glob("*/raw.json"))]
         signatures[arm] = public_signature(raws[0])
+        trajectories[arm] = [public_signature(raw) for raw in raws]
+        controls[arm] = result.get("memory_interventions", [])
+        if arm == "memory-reset":
+            if (
+                len(raws) != 3
+                or len(controls[arm]) != 1
+                or controls[arm][0]
+                != dict(
+                    before_index=2,
+                    retained_reference=raws[0]["action_id"],
+                    withdrawn=[raws[1]["action_id"]],
+                    physical_before=2,
+                    physical_after=2,
+                    effective_after=[raws[0]["action_id"]],
+                )
+            ):
+                raise ValueError("memory intervention or physical prefix differs")
         events = {}
         for p in (folder / "transport/evaluator_only/sdk-events").glob("*.json"):
             if p.stem.isdigit():
@@ -133,6 +151,8 @@ def summarize(root, output):
         initial_public_equal=len(set(signatures.values())) == 1,
         entire_frozen_world_equal=len({v for vs in worlds.values() for v in vs}) == 1,
     )
+    if manifest.get("memory_only"):
+        equality["all_public_inputs_equal"] = len({tuple(v) for v in trajectories.values()}) == 1
     comparisons = {
         name: compare_report_runs(
             tuple(runs[reference]),
@@ -152,6 +172,9 @@ def summarize(root, output):
                 equality=equality,
                 public_signatures=signatures,
                 world_signatures=worlds,
+                public_trajectories=trajectories,
+                memory_controls=controls,
+                later_task_budget=manifest.get("later_task_budget"),
                 comparisons=comparisons,
                 task_count=3,
                 independent_scenes=1,

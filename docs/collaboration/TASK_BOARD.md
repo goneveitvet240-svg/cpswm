@@ -1,3 +1,11 @@
+# A：六步流水线已公开交接（2026-10-02）
+
+[草稿PR #96](https://github.com/goneveitvet240-svg/cpswm/pull/96)堆叠PR95，未合并。完整源码/原始证据提交 `284ccb00f7a55e4d10988d9ea5f0fdc3d8560c32` 已成功推送；生产冻结仍 `745613ef0b804b5da4d1d2afcbba56fd9f78925c`，驱动/评分仍 `9581ebcd94e11e79dd459761df3b3cdfcedb100a`，本次只追加交接确认。
+
+一次自动审批因新增公开原始数据载荷而拒绝推送；用户随后明确授权“公开本次全部证据”（106.9MB压缩/548.5MB原始），重新推送成功，数据发布阻塞已解除。B独立复核仍待实际B执行，不以A的归档核验/新进程恢复替代。下一位从本PR head核对源文件pin、[报告](../reviews/pc_a/six_step_pipeline_2026-10-02/REPORT.md)与[复现命令](../reviews/pc_a/six_step_pipeline_2026-10-02/COMMANDS.md)开始；不要混用默认main或旧集成源码。
+
+---
+
 # A：六步开发闭环本机交付，B复核待执行（2026-10-02）
 
 分支 `codex/pc-a-six-step-final-20261002`；原始base/PR95 `1bdacaec1b97e6e82e4138ea94fcd48e5b9f6130`；生产冻结 `745613ef0b804b5da4d1d2afcbba56fd9f78925c`，驱动/评分冻结 `9581ebcd94e11e79dd459761df3b3cdfcedb100a`。[报告](../reviews/pc_a/six_step_pipeline_2026-10-02/REPORT.md)、[协议](../reviews/pc_a/six_step_pipeline_2026-10-02/PROTOCOL.md)、[命令](../reviews/pc_a/six_step_pipeline_2026-10-02/COMMANDS.md)、[证据清单](../reviews/pc_a/six_step_pipeline_2026-10-02/evidence/MANIFEST.json)。本节所属提交推送前仍为本地交付。

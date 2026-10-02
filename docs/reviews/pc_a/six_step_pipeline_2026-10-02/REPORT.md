@@ -51,3 +51,5 @@
 复现入口见 [COMMANDS.md](COMMANDS.md)，完整约束见 [PROTOCOL.md](PROTOCOL.md)。代码和证据送B绑定冻结SHA复核，B未执行就保留pending；不自动合并、不覆盖原用户工作树或STATUS_B。
 
 完整证据为1791文件＋8原有链接，原始548.5MB，三包106.9MB；包内相同内容使用hardlink去重并逐路径验SHA。见[evidence/README.md](evidence/README.md)。所有推断源文件封存时960/960未变。
+
+交接：[草稿PR #96](https://github.com/goneveitvet240-svg/cpswm/pull/96)，完整代码/证据提交284ccb00f7a55e4d10988d9ea5f0fdc3d8560c32已推送，未合并。新增原始数据曾被自动审批拦截，用户随后明确授权本次106.9MB压缩证据全部公开，发布现已成功；B独立复核仍pending。

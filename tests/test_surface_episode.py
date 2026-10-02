@@ -69,7 +69,7 @@ def test_real_mask_surface_owned_sequence_duplicate_and_budget(tmp_path, checkpo
             saved_before = state(case)
             attacked, proofs = [], []
 
-            def attack(frame, event, value):
+            def attack(frame, event, value, fault=fault, attacked=attacked, proofs=proofs):
                 if event != "return":
                     return
                 if fault == "published" and frame.f_code.co_name == "_cancel_stale_joint_commands":
@@ -98,7 +98,7 @@ def test_real_mask_surface_owned_sequence_duplicate_and_budget(tmp_path, checkpo
             try:
                 with pytest.raises(
                     (ValueError, RuntimeError),
-                    match="complete owner recomputation|injected surface",
+                    match=r"complete owner recomputation|injected surface",
                 ):
                     stream.consume_owned_position_observation(command.action_id)
             finally:

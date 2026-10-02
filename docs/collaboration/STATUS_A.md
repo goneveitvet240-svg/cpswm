@@ -1,3 +1,13 @@
+# A：联合成功标准已由用户确定（2026-10-02）
+
+用户明确选择第三项：身份和位置都正确才算目标澄清成功，并分别报告两项结果；不再询问该方向是否批准。已写入[比较协议](../reviews/pc_a/joint_target_observations_2026-10-02/COMPARISON_PROTOCOL.md)，明确逐任务联合判定、同分母、未知/失败保留以及策略停止不等于成功。
+
+本次是原任务协议续接，分支 `codex/pc-a-joint-target-observations-20261002`，本次 base `98560609501dfe8bab2b37cfd4bd4c4d9f11ba5e`，实际功能源码仍为 `ccccacc8ced5245ee6c38b2466632bac37d37cd0`。开工 fetch 成功，集成 `19ddf26830348a2f0b33f0af54d6ba702c5cfb1c`、B `fd4ca6ef5e81c90d7cf7987b42c0b2810d8a810a` 未变。仅文档更新，检查 `git diff --check` 及 src/tests/tools 无差异，不新增功能测试或科学结果；本段提交前为本地进行中，远端以该分支提交为准。
+
+剩余依赖：后续任务决定空间判定，已询问用户首轮是报告位置、移动到附近还是取物；没有擅自固定距离阈值。检查现有 `PositionCameraModel/problem_for` 和 `ClarificationViewModel`：分别为离散分类效用、未校准假设信息价值，均不能直接作为自然身份＋位置成功模型。下一步按任务定义接通联合任务损失与实际相机结果，再执行同任务同预算及后续记忆配对比较。功能交付与94项历史检查仍绑定原SHA，完整CI/B验收及科学收益保持未完成。
+
+---
+
 # A：连续联合观测与可撤回事务局部交付（2026-10-02）
 
 交付：[草稿 PR #92](https://github.com/goneveitvet240-svg/cpswm/pull/92)，叠加 PR91；代码与原件提交 `24c7e352e071af06aa245bf1c65f8ff6b54df6c7` 已推送，冻结被测功能源码仍为 `ccccacc8ced5245ee6c38b2466632bac37d37cd0`。

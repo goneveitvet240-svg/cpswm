@@ -1,3 +1,11 @@
+# A：公开方法/代码与S1失败对照开工（2026-10-03）
+
+用户要求核查别人成功的方法与代码，再分析本项目。分支 `codex/pc-a-method-code-review-20261003`，base/当前被审源码 `1c21e4eb4fb998a8fcdc334bb727441052aea4b3`（PR97）；S1执行SHA为747ea0187a6a03c4decaa2d3ad05e000a31f1dca。已fetch核对集成仍19ddf26830348a2f0b33f0af54d6ba702c5cfb1c。只进行公开原文/官方代码与冻结结果对照，不改生产实现、指标、先验或研究范围。
+
+[检索计划](../reviews/pc_a/method_code_review_2026-10-03/SEARCH_PLAN.md)。证据拟保存于 `/private/tmp/cpswm-prior-art-20261003`；报告记录公开代码精确SHA、读取位置、全文/摘要证据级别和未复现实验的边界。原S1工作树、STATUS_B和共享集成不改，B独立验收仍pending。此节推送前为本地进行中。
+
+---
+
 # A：S1 首批系统矩阵完成，收益边界已核验（2026-10-02）
 
 分支 `codex/pc-a-system-experiments-s1-20261002`，base PR96 `9c0206be16057689a2b06ee1c64b008a30c35f19`；实际执行源码 `747ea0187a6a03c4decaa2d3ad05e000a31f1dca`，生产src/及tests/未改。[草稿PR97](https://github.com/goneveitvet240-svg/cpswm/pull/97)堆叠PR96，未合并。[报告](../reviews/pc_a/system_experiments_s1_2026-10-02/REPORT.md)、[协议](../reviews/pc_a/system_experiments_s1_2026-10-02/PROTOCOL.md)、[命令](../reviews/pc_a/system_experiments_s1_2026-10-02/COMMANDS.md)。

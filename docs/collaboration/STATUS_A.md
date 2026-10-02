@@ -1,3 +1,23 @@
+# A：自然掩码表面支持局部交付（2026-10-02）
+
+分支 `codex/pc-a-natural-mask-surface-20261002`，base/PR94 head `01c52fef24d5fafc95bf8f6584602771aa176d5c`，冻结实际功能/测试/驱动 SHA `d2c3f51b005b49b97812f43b5dc75c3801017807`。[报告](../reviews/pc_a/natural_mask_surface_2026-10-02/REPORT.md)、[验证](../reviews/pc_a/natural_mask_surface_2026-10-02/VALIDATION.md)、[命令](../reviews/pc_a/natural_mask_surface_2026-10-02/COMMANDS.md)。用户明确授权发布后，代码与完整证据提交 `992724e8698ab114e708b0c6f88bfb636f514e12` 已推送；[草稿 PR #95](https://github.com/goneveitvet240-svg/cpswm/pull/95)叠加PR94，未合并。本次追加仅确认交接，冻结功能源码不变。此前自动审批两次拦截证据包公开发布，已由用户本轮明确授权解除。
+
+一屋16帧/14组RGB冻结比较：WineBottle离线首帧参考，mask内原光流表面点11/11、3/5盒内，末2帧永久丢失；旧constant-soft为0/16。10条初始轨迹/80记录全留，49有点/31未知丢失；碗0/16命中及类别误识保留。不是正式自然身份或联合任务成功；两模型/分辨率同时改变，非mask单因素消融或同计算预算优势。新组件无Native/记忆权限，旧默认保持。
+
+顺序R1 89项、R2既有事务定向2项通过，零跳过；mypy401/Ruff/format819通过，938冻结文件未变。run/fresh33输出和评分一致；独立复算76+49点、7038 AABB成员关系通过。封存106文件14.4MB含实际消费raw/SDK/masks/评分/日志，不含权重但提供完整pin。非B/全仓验收，不宣称新mask已接事务。
+
+下步将可变表面feature谱系与相关观测模型对齐，再接撤回/重放；当前选点会换feature，不能强当静态中心累计。实际同任务同动作预算主动澄清、后续记忆收益未完成；完整统一框架保持。恢复树fetch核对集成19ddf26830348a2f0b33f0af54d6ba702c5cfb1c、B fd4ca6ef5e81c90d7cf7987b42c0b2810d8a810a；原树fetch失败另留，不改原树源码/STATUS_B/共享集成、不自动合并。
+
+---
+
+# A：自然掩码表面支持开工（2026-10-02）
+
+用户要求继续推进，A在 `codex/pc-a-natural-mask-surface-20261002` 从PR94 head `01c52fef24d5fafc95bf8f6584602771aa176d5c` 开工。[计划](../reviews/pc_a/natural_mask_surface_2026-10-02/PLAN.md)：固定预训练RGB实例分割与公开深度读点，保留旧框读出、全部候选与UNKNOWN，查清自然目标表面对应。当前无新结果，不默认替换或宣称Native接通；完整框架和已批准指标保持。
+
+恢复工作树fetch成功；集成19ddf26830348a2f0b33f0af54d6ba702c5cfb1c、B fd4ca6ef5e81c90d7cf7987b42c0b2810d8a810a未变，旧窗口无同项活动。原用户树只尝试fetch，不改其代码。证据拟存 `/private/tmp/cpswm-natural-mask-surface-evidence-20261002`；开工仅文档，功能源码仍为27d396d6db4c248992f37285d3b7ad42b20df408。提交推送后以本独立分支为准。
+
+---
+
 # A：位置校准与表面诊断局部交付（2026-10-02）
 
 交付：[草稿 PR #94](https://github.com/goneveitvet240-svg/cpswm/pull/94)，叠加PR93，未合并。代码与完整证据提交 `cfc70b4779a6847a5d25ae1739683aec06de4287` 已推送；功能仍为 `27d396d6db4c248992f37285d3b7ad42b20df408`。本次追加仅确认交接链接，不改变已验证源码。

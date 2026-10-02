@@ -34,18 +34,42 @@ class InitializedPixelTargetTracker:
     may cause failure and must be evaluated separately.
     """
 
-    def __init__(self, box_xyxy: tuple[int, int, int, int]) -> None:
+    def __init__(
+        self, box_xyxy: tuple[int, int, int, int], *, initial_mask: NDArray[np.bool_] | None = None
+    ) -> None:
         if len(box_xyxy) != 4 or not all(isfinite(v) for v in box_xyxy):
             raise ValueError("finite initialization box required")
         x1, y1, x2, y2 = box_xyxy
         if not 0 <= x1 < x2 or not 0 <= y1 < y2:
             raise ValueError("invalid initialization box")
+        if initial_mask is not None and (
+            not isinstance(initial_mask, np.ndarray)
+            or initial_mask.dtype != np.bool_
+            or initial_mask.ndim != 2
+        ):
+            raise ValueError("initial mask must be a boolean image")
+        self._initial_mask = None if initial_mask is None else initial_mask.copy()
         self._box = (float(x1), float(y1), float(x2), float(y2))
         self._gray: Any = None
         self._points: Any = None
+        self._point_ids: Any = None
         self._index = -1
         self._shape: tuple[int, ...] | None = None
         self._lost = False
+
+    @property
+    def points_uv(self) -> tuple[tuple[float, float], ...]:
+        """Detached public pixel support, never world-object identity."""
+        if self._lost or self._points is None:
+            return ()
+        return tuple((float(x), float(y)) for x, y in self._points[:, 0])
+
+    @property
+    def point_ids(self) -> tuple[int, ...]:
+        """Stable local feature lineage; not a physical identity guarantee."""
+        if self._lost or self._point_ids is None:
+            return ()
+        return tuple(int(i) for i in self._point_ids)
 
     def update(self, rgb: NDArray[np.uint8], *, frame_index: int) -> TargetTrackMeasurement:
         import cv2
@@ -61,20 +85,30 @@ class InitializedPixelTargetTracker:
         if self._shape is not None and rgb.shape != self._shape:
             raise ValueError("camera dimensions changed")
         h, w = rgb.shape[:2]
+        if (
+            self._index == -1
+            and self._initial_mask is not None
+            and self._initial_mask.shape != (h, w)
+        ):
+            raise ValueError("initial mask dimensions differ from image")
         if self._index == -1 and (self._box[2] > w or self._box[3] > h):
             raise ValueError("initialization outside image")
         gray = cv2.cvtColor(rgb, cv2.COLOR_RGB2GRAY)
         digest = sha256(rgb.tobytes()).hexdigest()
         points = self._points
+        point_ids = self._point_ids
         box = self._box
         fb_error: float | None = None
         if self._index == -1:
             mask = np.zeros(gray.shape, dtype=np.uint8)
             x1, y1, x2, y2 = (int(v) for v in box)
             mask[y1:y2, x1:x2] = 255
+            if self._initial_mask is not None:
+                mask[~self._initial_mask] = 0
             points = cv2.goodFeaturesToTrack(
                 gray, maxCorners=80, qualityLevel=0.03, minDistance=5, mask=mask
             )
+            point_ids = None if points is None else np.arange(len(points))
         elif not self._lost:
             new, ok, _ = cv2.calcOpticalFlowPyrLK(self._gray, gray, points, np.empty_like(points))
             if new is None or ok is None:
@@ -106,11 +140,15 @@ class InitializedPixelTargetTracker:
                         box = (box[0] + dx, box[1] + dy, box[2] + dx, box[3] + dy)
                         fb_error = float(np.median(errors[good]))
                         points = new[good]
+                        point_ids = point_ids[good]
         count = 0 if points is None else len(points)
+        if points is None:
+            point_ids = None
         lost = (
             self._lost or count < 4 or not (0 <= box[0] < box[2] <= w and 0 <= box[1] < box[3] <= h)
         )
         self._gray, self._points, self._box = gray, points, box
+        self._point_ids = point_ids
         self._index, self._shape, self._lost = frame_index, rgb.shape, lost
         return TargetTrackMeasurement(
             frame_index,

@@ -1,0 +1,155 @@
+{
+  "all_initial_anchors": {
+    "live-1deg": {
+      "3f39c3ba-62f9-547d-a012-e684423ee2a9": {
+        "category": "bowl",
+        "initial_iou": 0.9329980800422268,
+        "inside_reference_aabb": 0,
+        "offline_first_frame_box_reference": "Bowl|surface|2|11",
+        "reported": 9,
+        "selected_feature_changes": 0,
+        "statuses": {
+          "FLOW_AND_MASK_SUPPORTED": 9,
+          "UNKNOWN_NO_CURRENT_MASK_SUPPORT": 2
+        }
+      },
+      "5abaa0fe-12a1-5b08-a482-f4e039361136": {
+        "category": "bottle",
+        "initial_iou": 0.895065781008169,
+        "inside_reference_aabb": 11,
+        "offline_first_frame_box_reference": "WineBottle|surface|2|8",
+        "reported": 11,
+        "selected_feature_changes": 6,
+        "statuses": {
+          "FLOW_AND_MASK_SUPPORTED": 11
+        }
+      },
+      "6f81a366-f0b3-50d7-bed1-a2d4c9d64135": {
+        "category": "bottle",
+        "initial_iou": 0.9372226158092466,
+        "inside_reference_aabb": 11,
+        "offline_first_frame_box_reference": "SoapBottle|surface|2|14",
+        "reported": 11,
+        "selected_feature_changes": 4,
+        "statuses": {
+          "FLOW_AND_MASK_SUPPORTED": 11
+        }
+      },
+      "a3c48f15-85d7-5e22-841e-b84639bd8e2c": {
+        "category": "sink",
+        "initial_iou": 0.6975784818680063,
+        "inside_reference_aabb": 4,
+        "offline_first_frame_box_reference": "Kettle|surface|2|5",
+        "reported": 4,
+        "selected_feature_changes": 0,
+        "statuses": {
+          "FLOW_AND_MASK_SUPPORTED": 4,
+          "UNKNOWN_NO_CURRENT_MASK_SUPPORT": 7
+        }
+      },
+      "f6d34a43-9325-5e5f-9c1a-5bfdd1696bfc": {
+        "category": "dining table",
+        "initial_iou": 0.6963922492524715,
+        "inside_reference_aabb": 1,
+        "offline_first_frame_box_reference": "CounterTop|2|0",
+        "reported": 1,
+        "selected_feature_changes": 0,
+        "statuses": {
+          "FLOW_AND_MASK_SUPPORTED": 1,
+          "LOST_NO_REINITIALIZATION": 10
+        }
+      }
+    },
+    "live-5deg": {
+      "3ede923c-9525-5cb8-b007-759d51c490d1": {
+        "category": "sink",
+        "initial_iou": 0.6975784818680063,
+        "inside_reference_aabb": 1,
+        "offline_first_frame_box_reference": "Kettle|surface|2|5",
+        "reported": 1,
+        "selected_feature_changes": 0,
+        "statuses": {
+          "FLOW_AND_MASK_SUPPORTED": 1,
+          "UNKNOWN_NO_CURRENT_MASK_SUPPORT": 4
+        }
+      },
+      "80352e12-9fc2-5f80-83b5-2ab46610577c": {
+        "category": "bottle",
+        "initial_iou": 0.9372226158092466,
+        "inside_reference_aabb": 5,
+        "offline_first_frame_box_reference": "SoapBottle|surface|2|14",
+        "reported": 5,
+        "selected_feature_changes": 2,
+        "statuses": {
+          "FLOW_AND_MASK_SUPPORTED": 5
+        }
+      },
+      "87d49094-d7e7-5792-bfb9-5fe47d2ce6fc": {
+        "category": "bowl",
+        "initial_iou": 0.9329980800422268,
+        "inside_reference_aabb": 0,
+        "offline_first_frame_box_reference": "Bowl|surface|2|11",
+        "reported": 3,
+        "selected_feature_changes": 0,
+        "statuses": {
+          "FLOW_AND_MASK_SUPPORTED": 3,
+          "UNKNOWN_NO_CURRENT_MASK_SUPPORT": 2
+        }
+      },
+      "bcd08431-3ff4-58f8-9a7a-b06a5654ff5a": {
+        "category": "bottle",
+        "initial_iou": 0.895065781008169,
+        "inside_reference_aabb": 3,
+        "offline_first_frame_box_reference": "WineBottle|surface|2|8",
+        "reported": 3,
+        "selected_feature_changes": 0,
+        "statuses": {
+          "FLOW_AND_MASK_SUPPORTED": 3,
+          "LOST_NO_REINITIALIZATION": 2
+        }
+      },
+      "dcb43767-5a84-55e8-b900-209eef755193": {
+        "category": "dining table",
+        "initial_iou": 0.6963922492524715,
+        "inside_reference_aabb": 1,
+        "offline_first_frame_box_reference": "CounterTop|2|0",
+        "reported": 1,
+        "selected_feature_changes": 0,
+        "statuses": {
+          "FLOW_AND_MASK_SUPPORTED": 1,
+          "LOST_NO_REINITIALIZATION": 4
+        }
+      }
+    }
+  },
+  "counts": {
+    "aabb_membership_checks": 7038,
+    "aabb_point_checks": 153,
+    "flow_supported_points_recomputed": 49,
+    "frames": 16,
+    "retained_low_score": 187,
+    "retained_unknown_or_lost": 31,
+    "standalone_points_recomputed": 76
+  },
+  "old_wine_reference": {
+    "live-1deg": {
+      "constant_soft_inside_wine": 0,
+      "first_inside_wine": 3,
+      "frames": 11,
+      "statuses": {
+        "SURFACE_CANDIDATE": 11
+      }
+    },
+    "live-5deg": {
+      "constant_soft_inside_wine": 0,
+      "first_inside_wine": 1,
+      "frames": 5,
+      "statuses": {
+        "SURFACE_CANDIDATE": 3,
+        "UNKNOWN": 2
+      }
+    }
+  },
+  "passed": true,
+  "scope": "independent selection/projection/AABB arithmetic using saved masks and flow; not independent perception or identity"
+}

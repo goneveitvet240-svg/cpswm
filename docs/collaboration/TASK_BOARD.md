@@ -1,3 +1,9 @@
+# 2026-10-02：位置校准已获用户批准
+
+A在 `codex/pc-a-position-calibration-20261002` 开始表面对应检查和训练/评测分离的位置先验、误差校准，base `5073311fbd9aa5cdc0520876d2b34b02ab92c8b1`。保留旧受控对照和三项已批准任务定义。[计划](../reviews/pc_a/position_calibration_2026-10-02/PLAN.md)。尚无新结果；下方新先验待批准为历史状态。
+
+---
+
 # 2026-10-02：联合报告评分已接通，位置模型仍阻断任务成功
 
 交付：[草稿 PR #93](https://github.com/goneveitvet240-svg/cpswm/pull/93)，叠加PR92，未合并。代码与证据提交 `5b6d6fc3a5322c1270aac5441622ba9ea48bd5b2` 已推送；冻结功能源码仍为 `10af59aba3a26bbbe66346b1bee89ae9b0a55de1`。

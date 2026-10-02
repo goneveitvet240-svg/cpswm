@@ -1,3 +1,11 @@
+# A：位置先验与误差校准开工（2026-10-02）
+
+用户已批准新校准方案，原“新先验待选择”解除。分支 `codex/pc-a-position-calibration-20261002`，base/开工源码 `5073311fbd9aa5cdc0520876d2b34b02ab92c8b1`；fetch成功，集成 `19ddf26830348a2f0b33f0af54d6ba702c5cfb1c`、B `fd4ca6ef5e81c90d7cf7987b42c0b2810d8a810a`未变，旧窗口无重复活动。
+
+[方案](../reviews/pc_a/position_calibration_2026-10-02/PLAN.md)：先查表面读数，再按固定训练/验证分区拟合相机坐标先验和误差，比较旧/仅先验/仅误差/两者；保留双参考、VOID和失败。当前尚无新测试或结果。证据拟存 `/private/tmp/cpswm-position-calibration-evidence-20261002`；保留旧受控对照与完整框架，不改原用户树/STATUS_B/集成分支。
+
+---
+
 # A：联合报告/评分局部交付，真实位置失败已定位（2026-10-02）
 
 交付：[草稿 PR #93](https://github.com/goneveitvet240-svg/cpswm/pull/93)，叠加PR92，未合并。代码与证据提交 `5b6d6fc3a5322c1270aac5441622ba9ea48bd5b2` 已推送；冻结功能源码仍为 `10af59aba3a26bbbe66346b1bee89ae9b0a55de1`。

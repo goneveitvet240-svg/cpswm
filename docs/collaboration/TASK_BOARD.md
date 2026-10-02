@@ -4,7 +4,7 @@
 
 核查 ConceptGraphs、3D-Mem、GOAT/HomeRobot、Where Did I Leave My Glasses 原文与所选官方代码，26 文件全部与固定提交的 Git blob 哈希一致。确认 S1 支路只首帧建轨、光流丢失不可恢复、主动决策仅类别/序号/状态查表、表面更新 neutral 且最后帧位置读出。记忆消融仅撤回中间帧，不是跨任务清记忆；论文导航成功判据不能与严格 AABB 直接排名。碗毫米误差根因仍待独立几何校验。建议先持续对象层及最强邻近基线配对效用检验，再扩展矩阵；不改变用户指标/先验/研究范围。
 
-验证：26 外部 blob、所有报告本地链接、src/tests/tools 相对 base 无差异、git diff --check。未执行对方方法、未重跑生产回归/仿真、未宣称对方论文成功率已复现。外部完整源码及论文只在 `/private/tmp/cpswm-prior-art-20261003`，仓库仅分析与来源索引；无新原始实验包公开。B 独立验收仍 pending。此节推送前为本地交付，PR 交接后补记录。
+验证：26 外部 blob、所有报告本地链接、src/tests/tools 相对 base 无差异、git diff --check。未执行对方方法、未重跑生产回归/仿真、未宣称对方论文成功率已复现。外部完整源码及论文只在 `/private/tmp/cpswm-prior-art-20261003`，仓库仅分析与来源索引；无新原始实验包公开。B 独立验收仍 pending。报告/来源清单提交 `882f36a9b905af29525fc2099bcb53186239f43b` 已推送；[草稿 PR98](https://github.com/goneveitvet240-svg/cpswm/pull/98) 堆叠 PR97，未合并。
 
 ---
 

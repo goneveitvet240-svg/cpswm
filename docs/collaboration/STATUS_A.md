@@ -1,3 +1,13 @@
+# A：公开方法与 S1 代码对照完成（2026-10-03）
+
+分支 `codex/pc-a-method-code-review-20261003`，base/被审代码 `1c21e4eb4fb998a8fcdc334bb727441052aea4b3`；开工提交 `76e978c830d70c2f82db7673c3a2b4dc1a98fc08` 已推送。S1 实际执行 SHA `747ea0187a6a03c4decaa2d3ad05e000a31f1dca`，本次仅追加文档，生产代码无变化。[对照报告](../reviews/pc_a/method_code_review_2026-10-03/REPORT.md)及[官方源码清单](../reviews/pc_a/method_code_review_2026-10-03/SOURCES.json)。
+
+核查 ConceptGraphs、3D-Mem、GOAT/HomeRobot、Where Did I Leave My Glasses 原文与所选官方代码，26 文件全部与固定提交的 Git blob 哈希一致。确认 S1 支路只首帧建轨、光流丢失不可恢复、主动决策仅类别/序号/状态查表、表面更新 neutral 且最后帧位置读出。记忆消融仅撤回中间帧，不是跨任务清记忆；论文导航成功判据不能与严格 AABB 直接排名。碗毫米误差根因仍待独立几何校验。建议先持续对象层及最强邻近基线配对效用检验，再扩展矩阵；不改变用户指标/先验/研究范围。
+
+验证：26 外部 blob、所有报告本地链接、src/tests/tools 相对 base 无差异、git diff --check。未执行对方方法、未重跑生产回归/仿真、未宣称对方论文成功率已复现。外部完整源码及论文只在 `/private/tmp/cpswm-prior-art-20261003`，仓库仅分析与来源索引；无新原始实验包公开。B 独立验收仍 pending。此节推送前为本地交付，PR 交接后补记录。
+
+---
+
 # A：公开方法/代码与S1失败对照开工（2026-10-03）
 
 用户要求核查别人成功的方法与代码，再分析本项目。分支 `codex/pc-a-method-code-review-20261003`，base/当前被审源码 `1c21e4eb4fb998a8fcdc334bb727441052aea4b3`（PR97）；S1执行SHA为747ea0187a6a03c4decaa2d3ad05e000a31f1dca。已fetch核对集成仍19ddf26830348a2f0b33f0af54d6ba702c5cfb1c。只进行公开原文/官方代码与冻结结果对照，不改生产实现、指标、先验或研究范围。

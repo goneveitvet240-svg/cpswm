@@ -211,3 +211,18 @@ def test_complete_public_readout_profile_swap_rejected(case):
             output,
         )
     assert not output.exists()
+
+
+def test_scoring_never_overwrites_an_existing_row_ledger(case):
+    existing = case["root"] / "scored-rows.json"
+    existing.write_text("existing evidence\n")
+    output = case["root"] / "new-report.json"
+    with pytest.raises(ValueError, match="both be new"):
+        driver.evaluate(
+            case["predictions"],
+            driver.digest(case["predictions"]),
+            case["labels"],
+            driver.digest(case["labels"]),
+            output,
+        )
+    assert existing.read_text() == "existing evidence\n" and not output.exists()

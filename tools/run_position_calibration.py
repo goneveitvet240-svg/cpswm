@@ -358,8 +358,9 @@ def predict(public, public_pin, models, model_pin, output):
 
 
 def evaluate(predictions, prediction_pin, evaluation, evaluation_pin, output):
-    if output.exists():
-        raise ValueError("evaluation output must be new")
+    scored_output = output.with_name("scored-rows.json")
+    if output.exists() or scored_output.exists() or output == scored_output:
+        raise ValueError("evaluation report and scored-row outputs must both be new and distinct")
     predictions = checked(predictions, prediction_pin)
     labels = checked(evaluation, evaluation_pin)
     panel(predictions["frames"])
@@ -493,7 +494,7 @@ def evaluate(predictions, prediction_pin, evaluation, evaluation_pin, output):
             summaries=summaries,
         ),
     )
-    save(output.with_name("scored-rows.json"), scores)
+    save(scored_output, scores)
     print(
         json.dumps(dict(phase="evaluated", frames=len(labels), score_rows=len(scores))), flush=True
     )

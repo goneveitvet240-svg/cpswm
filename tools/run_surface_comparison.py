@@ -65,7 +65,11 @@ def main(a):
                     degrees=a.degrees,
                     queries=a.target,
                     common_allowed_actions=[
-                        dict(action="RotateRight", degrees=d) for d in (1.0, 5.0, 30.0)
+                        dict(
+                            action="Pass" if d == 0 else "RotateRight" if d > 0 else "RotateLeft",
+                            degrees=abs(d),
+                        )
+                        for d in sorted({1.0, 5.0, *a.degrees})
                     ],
                     initialization="single frozen world; camera reset before each arm",
                     fairness="requires isolated exact initial RGB/depth/pose/world comparison",

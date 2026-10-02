@@ -1,0 +1,37 @@
+{
+  "arms": [
+    "fixed",
+    "active",
+    "no-update"
+  ],
+  "budget": 3,
+  "degrees": [
+    30.0,
+    5.0,
+    5.0
+  ],
+  "queries": [
+    "bottle:0",
+    "bottle:1",
+    "bowl:0"
+  ],
+  "common_allowed_actions": [
+    {
+      "action": "RotateRight",
+      "degrees": 1.0
+    },
+    {
+      "action": "RotateRight",
+      "degrees": 5.0
+    },
+    {
+      "action": "RotateRight",
+      "degrees": 30.0
+    }
+  ],
+  "initialization": "single frozen world; camera reset before each arm",
+  "fairness": "requires isolated exact initial RGB/depth/pose/world comparison",
+  "scope": "single-house development pilot; controlled semantic bootstrap",
+  "memory_only": false,
+  "later_task_budget": null
+}

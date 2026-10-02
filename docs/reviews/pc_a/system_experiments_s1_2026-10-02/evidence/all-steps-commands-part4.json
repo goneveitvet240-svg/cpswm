@@ -1,0 +1,31 @@
+{
+  "scope": "post-hoc diagnostics, unchanged metric, not policy input",
+  "commands": [
+    {
+      "command": [
+        "/private/tmp/cpswm-pc-a-system-experiments-s1-20261002/.venv/bin/python",
+        "tools/evaluate_surface_episode.py",
+        "/private/tmp/cpswm-system-s1-evidence-20261002/view-35-memory/memory-retain",
+        "/private/tmp/cpswm-six-step-evidence-20261002/targets.json",
+        "/private/tmp/cpswm-system-s1-evidence-20261002/view-35-memory/memory-retain/all-steps-evaluation.json",
+        "--all-steps"
+      ],
+      "returncode": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "/private/tmp/cpswm-pc-a-system-experiments-s1-20261002/.venv/bin/python",
+        "tools/evaluate_surface_episode.py",
+        "/private/tmp/cpswm-system-s1-evidence-20261002/view-35-memory/memory-reset",
+        "/private/tmp/cpswm-six-step-evidence-20261002/targets.json",
+        "/private/tmp/cpswm-system-s1-evidence-20261002/view-35-memory/memory-reset/all-steps-evaluation.json",
+        "--all-steps"
+      ],
+      "returncode": 0,
+      "stdout": "",
+      "stderr": ""
+    }
+  ]
+}

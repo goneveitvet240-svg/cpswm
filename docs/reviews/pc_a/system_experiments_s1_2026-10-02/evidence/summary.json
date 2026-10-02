@@ -1,0 +1,1033 @@
+{
+  "commands": [
+    {
+      "command": [
+        "/private/tmp/cpswm-pc-a-system-experiments-s1-20261002/.venv/bin/python",
+        "tools/run_surface_comparison.py",
+        "--output",
+        "/private/tmp/cpswm-system-s1-evidence-20261002/view-25-policy",
+        "--weights",
+        "/private/tmp/cpswm-natural-candidate-evidence-20261001/ssdlite.pth",
+        "--mask-weights",
+        "/private/tmp/cpswm-natural-mask-surface-evidence-20261002/maskrcnn.pth",
+        "--sdk-python",
+        "/private/tmp/cpswm-ai2thor-owned-20261001/bin/python",
+        "--binary",
+        "/Users/pangwei/.ai2thor/releases/thor-OSXIntel64-f0825767cd50d69f666c7f282e54abfe58f1e917/thor-OSXIntel64-f0825767cd50d69f666c7f282e54abfe58f1e917.app/Contents/MacOS/AI2-THOR",
+        "--house",
+        "docs/reviews/pc_a/sim_timing_control_2026-09-29/evidence/raw-examples/south-320-frozen-0/evaluator_house.json",
+        "--model",
+        "/private/tmp/cpswm-six-step-evidence-20261002/action-model.json",
+        "--degrees",
+        "25",
+        "5",
+        "5",
+        "--target",
+        "bottle:0",
+        "bottle:1",
+        "bowl:0"
+      ],
+      "elapsed_seconds": 277.990165582858,
+      "log": "/private/tmp/cpswm-system-s1-evidence-20261002/view-25-policy.log",
+      "returncode": 0,
+      "started": "2026-10-02T14:38:05.076606+00:00"
+    },
+    {
+      "command": [
+        "/private/tmp/cpswm-pc-a-system-experiments-s1-20261002/.venv/bin/python",
+        "tools/evaluate_surface_episode.py",
+        "/private/tmp/cpswm-system-s1-evidence-20261002/view-25-policy/fixed",
+        "/private/tmp/cpswm-six-step-evidence-20261002/targets.json",
+        "/private/tmp/cpswm-system-s1-evidence-20261002/view-25-policy/fixed/evaluation.json"
+      ],
+      "elapsed_seconds": 0.2570800422690809,
+      "log": "/private/tmp/cpswm-system-s1-evidence-20261002/view-25-policy-fixed-evaluation.log",
+      "returncode": 0,
+      "started": "2026-10-02T14:42:43.069317+00:00"
+    },
+    {
+      "command": [
+        "/private/tmp/cpswm-pc-a-system-experiments-s1-20261002/.venv/bin/python",
+        "tools/run_surface_episode.py",
+        "restore",
+        "--output",
+        "/private/tmp/cpswm-system-s1-evidence-20261002/view-25-policy/fixed"
+      ],
+      "elapsed_seconds": 36.56227566720918,
+      "log": "/private/tmp/cpswm-system-s1-evidence-20261002/view-25-policy-fixed-restore.log",
+      "returncode": 0,
+      "started": "2026-10-02T14:42:43.326589+00:00"
+    },
+    {
+      "command": [
+        "/private/tmp/cpswm-pc-a-system-experiments-s1-20261002/.venv/bin/python",
+        "tools/evaluate_surface_episode.py",
+        "/private/tmp/cpswm-system-s1-evidence-20261002/view-25-policy/active",
+        "/private/tmp/cpswm-six-step-evidence-20261002/targets.json",
+        "/private/tmp/cpswm-system-s1-evidence-20261002/view-25-policy/active/evaluation.json"
+      ],
+      "elapsed_seconds": 0.2078371667303145,
+      "log": "/private/tmp/cpswm-system-s1-evidence-20261002/view-25-policy-active-evaluation.log",
+      "returncode": 0,
+      "started": "2026-10-02T14:43:19.892427+00:00"
+    },
+    {
+      "command": [
+        "/private/tmp/cpswm-pc-a-system-experiments-s1-20261002/.venv/bin/python",
+        "tools/run_surface_episode.py",
+        "restore",
+        "--output",
+        "/private/tmp/cpswm-system-s1-evidence-20261002/view-25-policy/active"
+      ],
+      "elapsed_seconds": 14.934995000250638,
+      "log": "/private/tmp/cpswm-system-s1-evidence-20261002/view-25-policy-active-restore.log",
+      "returncode": 0,
+      "started": "2026-10-02T14:43:20.100604+00:00"
+    },
+    {
+      "command": [
+        "/private/tmp/cpswm-pc-a-system-experiments-s1-20261002/.venv/bin/python",
+        "tools/evaluate_surface_episode.py",
+        "/private/tmp/cpswm-system-s1-evidence-20261002/view-25-policy/no-update",
+        "/private/tmp/cpswm-six-step-evidence-20261002/targets.json",
+        "/private/tmp/cpswm-system-s1-evidence-20261002/view-25-policy/no-update/evaluation.json"
+      ],
+      "elapsed_seconds": 0.2065997919999063,
+      "log": "/private/tmp/cpswm-system-s1-evidence-20261002/view-25-policy-no-update-evaluation.log",
+      "returncode": 0,
+      "started": "2026-10-02T14:43:35.035958+00:00"
+    },
+    {
+      "command": [
+        "/private/tmp/cpswm-pc-a-system-experiments-s1-20261002/.venv/bin/python",
+        "tools/run_surface_episode.py",
+        "restore",
+        "--output",
+        "/private/tmp/cpswm-system-s1-evidence-20261002/view-25-policy/no-update"
+      ],
+      "elapsed_seconds": 20.280184417031705,
+      "log": "/private/tmp/cpswm-system-s1-evidence-20261002/view-25-policy-no-update-restore.log",
+      "returncode": 0,
+      "started": "2026-10-02T14:43:35.242751+00:00"
+    },
+    {
+      "command": [
+        "/private/tmp/cpswm-pc-a-system-experiments-s1-20261002/.venv/bin/python",
+        "tools/summarize_surface_comparison.py",
+        "/private/tmp/cpswm-system-s1-evidence-20261002/view-25-policy",
+        "/private/tmp/cpswm-system-s1-evidence-20261002/view-25-policy/comparison.json"
+      ],
+      "elapsed_seconds": 0.23226812481880188,
+      "log": "/private/tmp/cpswm-system-s1-evidence-20261002/view-25-policy-comparison.log",
+      "returncode": 0,
+      "started": "2026-10-02T14:43:55.523154+00:00"
+    },
+    {
+      "command": [
+        "/private/tmp/cpswm-pc-a-system-experiments-s1-20261002/.venv/bin/python",
+        "tools/run_surface_comparison.py",
+        "--output",
+        "/private/tmp/cpswm-system-s1-evidence-20261002/view-25-memory",
+        "--weights",
+        "/private/tmp/cpswm-natural-candidate-evidence-20261001/ssdlite.pth",
+        "--mask-weights",
+        "/private/tmp/cpswm-natural-mask-surface-evidence-20261002/maskrcnn.pth",
+        "--sdk-python",
+        "/private/tmp/cpswm-ai2thor-owned-20261001/bin/python",
+        "--binary",
+        "/Users/pangwei/.ai2thor/releases/thor-OSXIntel64-f0825767cd50d69f666c7f282e54abfe58f1e917/thor-OSXIntel64-f0825767cd50d69f666c7f282e54abfe58f1e917.app/Contents/MacOS/AI2-THOR",
+        "--house",
+        "docs/reviews/pc_a/sim_timing_control_2026-09-29/evidence/raw-examples/south-320-frozen-0/evaluator_house.json",
+        "--model",
+        "/private/tmp/cpswm-six-step-evidence-20261002/action-model.json",
+        "--degrees",
+        "25",
+        "5",
+        "5",
+        "--target",
+        "bottle:0",
+        "bottle:1",
+        "bowl:0",
+        "--memory-only"
+      ],
+      "elapsed_seconds": 333.29423950007185,
+      "log": "/private/tmp/cpswm-system-s1-evidence-20261002/view-25-memory.log",
+      "returncode": 0,
+      "started": "2026-10-02T14:43:55.908603+00:00"
+    },
+    {
+      "command": [
+        "/private/tmp/cpswm-pc-a-system-experiments-s1-20261002/.venv/bin/python",
+        "tools/evaluate_surface_episode.py",
+        "/private/tmp/cpswm-system-s1-evidence-20261002/view-25-memory/memory-retain",
+        "/private/tmp/cpswm-six-step-evidence-20261002/targets.json",
+        "/private/tmp/cpswm-system-s1-evidence-20261002/view-25-memory/memory-retain/evaluation.json"
+      ],
+      "elapsed_seconds": 0.27000912511721253,
+      "log": "/private/tmp/cpswm-system-s1-evidence-20261002/view-25-memory-memory-retain-evaluation.log",
+      "returncode": 0,
+      "started": "2026-10-02T14:49:29.205750+00:00"
+    },
+    {
+      "command": [
+        "/private/tmp/cpswm-pc-a-system-experiments-s1-20261002/.venv/bin/python",
+        "tools/run_surface_episode.py",
+        "restore",
+        "--output",
+        "/private/tmp/cpswm-system-s1-evidence-20261002/view-25-memory/memory-retain"
+      ],
+      "elapsed_seconds": 36.634054750204086,
+      "log": "/private/tmp/cpswm-system-s1-evidence-20261002/view-25-memory-memory-retain-restore.log",
+      "returncode": 0,
+      "started": "2026-10-02T14:49:29.475960+00:00"
+    },
+    {
+      "command": [
+        "/private/tmp/cpswm-pc-a-system-experiments-s1-20261002/.venv/bin/python",
+        "tools/evaluate_surface_episode.py",
+        "/private/tmp/cpswm-system-s1-evidence-20261002/view-25-memory/memory-reset",
+        "/private/tmp/cpswm-six-step-evidence-20261002/targets.json",
+        "/private/tmp/cpswm-system-s1-evidence-20261002/view-25-memory/memory-reset/evaluation.json"
+      ],
+      "elapsed_seconds": 0.2075972082093358,
+      "log": "/private/tmp/cpswm-system-s1-evidence-20261002/view-25-memory-memory-reset-evaluation.log",
+      "returncode": 0,
+      "started": "2026-10-02T14:50:06.110491+00:00"
+    },
+    {
+      "command": [
+        "/private/tmp/cpswm-pc-a-system-experiments-s1-20261002/.venv/bin/python",
+        "tools/run_surface_episode.py",
+        "restore",
+        "--output",
+        "/private/tmp/cpswm-system-s1-evidence-20261002/view-25-memory/memory-reset"
+      ],
+      "elapsed_seconds": 40.82262137485668,
+      "log": "/private/tmp/cpswm-system-s1-evidence-20261002/view-25-memory-memory-reset-restore.log",
+      "returncode": 0,
+      "started": "2026-10-02T14:50:06.318355+00:00"
+    },
+    {
+      "command": [
+        "/private/tmp/cpswm-pc-a-system-experiments-s1-20261002/.venv/bin/python",
+        "tools/summarize_surface_comparison.py",
+        "/private/tmp/cpswm-system-s1-evidence-20261002/view-25-memory",
+        "/private/tmp/cpswm-system-s1-evidence-20261002/view-25-memory/comparison.json"
+      ],
+      "elapsed_seconds": 0.22154199983924627,
+      "log": "/private/tmp/cpswm-system-s1-evidence-20261002/view-25-memory-comparison.log",
+      "returncode": 0,
+      "started": "2026-10-02T14:50:47.141310+00:00"
+    },
+    {
+      "command": [
+        "/private/tmp/cpswm-pc-a-system-experiments-s1-20261002/.venv/bin/python",
+        "tools/run_surface_comparison.py",
+        "--output",
+        "/private/tmp/cpswm-system-s1-evidence-20261002/view-30-policy",
+        "--weights",
+        "/private/tmp/cpswm-natural-candidate-evidence-20261001/ssdlite.pth",
+        "--mask-weights",
+        "/private/tmp/cpswm-natural-mask-surface-evidence-20261002/maskrcnn.pth",
+        "--sdk-python",
+        "/private/tmp/cpswm-ai2thor-owned-20261001/bin/python",
+        "--binary",
+        "/Users/pangwei/.ai2thor/releases/thor-OSXIntel64-f0825767cd50d69f666c7f282e54abfe58f1e917/thor-OSXIntel64-f0825767cd50d69f666c7f282e54abfe58f1e917.app/Contents/MacOS/AI2-THOR",
+        "--house",
+        "docs/reviews/pc_a/sim_timing_control_2026-09-29/evidence/raw-examples/south-320-frozen-0/evaluator_house.json",
+        "--model",
+        "/private/tmp/cpswm-six-step-evidence-20261002/action-model.json",
+        "--degrees",
+        "30",
+        "5",
+        "5",
+        "--target",
+        "bottle:0",
+        "bottle:1",
+        "bowl:0"
+      ],
+      "elapsed_seconds": 279.64945212518796,
+      "log": "/private/tmp/cpswm-system-s1-evidence-20261002/view-30-policy.log",
+      "returncode": 0,
+      "started": "2026-10-02T14:50:47.514373+00:00"
+    },
+    {
+      "command": [
+        "/private/tmp/cpswm-pc-a-system-experiments-s1-20261002/.venv/bin/python",
+        "tools/evaluate_surface_episode.py",
+        "/private/tmp/cpswm-system-s1-evidence-20261002/view-30-policy/fixed",
+        "/private/tmp/cpswm-six-step-evidence-20261002/targets.json",
+        "/private/tmp/cpswm-system-s1-evidence-20261002/view-30-policy/fixed/evaluation.json"
+      ],
+      "elapsed_seconds": 0.26981433387845755,
+      "log": "/private/tmp/cpswm-system-s1-evidence-20261002/view-30-policy-fixed-evaluation.log",
+      "returncode": 0,
+      "started": "2026-10-02T14:55:27.166365+00:00"
+    },
+    {
+      "command": [
+        "/private/tmp/cpswm-pc-a-system-experiments-s1-20261002/.venv/bin/python",
+        "tools/run_surface_episode.py",
+        "restore",
+        "--output",
+        "/private/tmp/cpswm-system-s1-evidence-20261002/view-30-policy/fixed"
+      ],
+      "elapsed_seconds": 37.88237199978903,
+      "log": "/private/tmp/cpswm-system-s1-evidence-20261002/view-30-policy-fixed-restore.log",
+      "returncode": 0,
+      "started": "2026-10-02T14:55:27.436364+00:00"
+    },
+    {
+      "command": [
+        "/private/tmp/cpswm-pc-a-system-experiments-s1-20261002/.venv/bin/python",
+        "tools/evaluate_surface_episode.py",
+        "/private/tmp/cpswm-system-s1-evidence-20261002/view-30-policy/active",
+        "/private/tmp/cpswm-six-step-evidence-20261002/targets.json",
+        "/private/tmp/cpswm-system-s1-evidence-20261002/view-30-policy/active/evaluation.json"
+      ],
+      "elapsed_seconds": 0.20516541693359613,
+      "log": "/private/tmp/cpswm-system-s1-evidence-20261002/view-30-policy-active-evaluation.log",
+      "returncode": 0,
+      "started": "2026-10-02T14:56:05.321330+00:00"
+    },
+    {
+      "command": [
+        "/private/tmp/cpswm-pc-a-system-experiments-s1-20261002/.venv/bin/python",
+        "tools/run_surface_episode.py",
+        "restore",
+        "--output",
+        "/private/tmp/cpswm-system-s1-evidence-20261002/view-30-policy/active"
+      ],
+      "elapsed_seconds": 15.075016375165433,
+      "log": "/private/tmp/cpswm-system-s1-evidence-20261002/view-30-policy-active-restore.log",
+      "returncode": 0,
+      "started": "2026-10-02T14:56:05.526701+00:00"
+    },
+    {
+      "command": [
+        "/private/tmp/cpswm-pc-a-system-experiments-s1-20261002/.venv/bin/python",
+        "tools/evaluate_surface_episode.py",
+        "/private/tmp/cpswm-system-s1-evidence-20261002/view-30-policy/no-update",
+        "/private/tmp/cpswm-six-step-evidence-20261002/targets.json",
+        "/private/tmp/cpswm-system-s1-evidence-20261002/view-30-policy/no-update/evaluation.json"
+      ],
+      "elapsed_seconds": 0.20784279191866517,
+      "log": "/private/tmp/cpswm-system-s1-evidence-20261002/view-30-policy-no-update-evaluation.log",
+      "returncode": 0,
+      "started": "2026-10-02T14:56:20.602033+00:00"
+    },
+    {
+      "command": [
+        "/private/tmp/cpswm-pc-a-system-experiments-s1-20261002/.venv/bin/python",
+        "tools/run_surface_episode.py",
+        "restore",
+        "--output",
+        "/private/tmp/cpswm-system-s1-evidence-20261002/view-30-policy/no-update"
+      ],
+      "elapsed_seconds": 20.15820604097098,
+      "log": "/private/tmp/cpswm-system-s1-evidence-20261002/view-30-policy-no-update-restore.log",
+      "returncode": 0,
+      "started": "2026-10-02T14:56:20.810077+00:00"
+    },
+    {
+      "command": [
+        "/private/tmp/cpswm-pc-a-system-experiments-s1-20261002/.venv/bin/python",
+        "tools/summarize_surface_comparison.py",
+        "/private/tmp/cpswm-system-s1-evidence-20261002/view-30-policy",
+        "/private/tmp/cpswm-system-s1-evidence-20261002/view-30-policy/comparison.json"
+      ],
+      "elapsed_seconds": 0.2339908331632614,
+      "log": "/private/tmp/cpswm-system-s1-evidence-20261002/view-30-policy-comparison.log",
+      "returncode": 0,
+      "started": "2026-10-02T14:56:40.968479+00:00"
+    },
+    {
+      "command": [
+        "/private/tmp/cpswm-pc-a-system-experiments-s1-20261002/.venv/bin/python",
+        "tools/run_surface_comparison.py",
+        "--output",
+        "/private/tmp/cpswm-system-s1-evidence-20261002/view-30-memory",
+        "--weights",
+        "/private/tmp/cpswm-natural-candidate-evidence-20261001/ssdlite.pth",
+        "--mask-weights",
+        "/private/tmp/cpswm-natural-mask-surface-evidence-20261002/maskrcnn.pth",
+        "--sdk-python",
+        "/private/tmp/cpswm-ai2thor-owned-20261001/bin/python",
+        "--binary",
+        "/Users/pangwei/.ai2thor/releases/thor-OSXIntel64-f0825767cd50d69f666c7f282e54abfe58f1e917/thor-OSXIntel64-f0825767cd50d69f666c7f282e54abfe58f1e917.app/Contents/MacOS/AI2-THOR",
+        "--house",
+        "docs/reviews/pc_a/sim_timing_control_2026-09-29/evidence/raw-examples/south-320-frozen-0/evaluator_house.json",
+        "--model",
+        "/private/tmp/cpswm-six-step-evidence-20261002/action-model.json",
+        "--degrees",
+        "30",
+        "5",
+        "5",
+        "--target",
+        "bottle:0",
+        "bottle:1",
+        "bowl:0",
+        "--memory-only"
+      ],
+      "elapsed_seconds": 337.4672773750499,
+      "log": "/private/tmp/cpswm-system-s1-evidence-20261002/view-30-memory.log",
+      "returncode": 0,
+      "started": "2026-10-02T14:56:41.352489+00:00"
+    },
+    {
+      "command": [
+        "/private/tmp/cpswm-pc-a-system-experiments-s1-20261002/.venv/bin/python",
+        "tools/evaluate_surface_episode.py",
+        "/private/tmp/cpswm-system-s1-evidence-20261002/view-30-memory/memory-retain",
+        "/private/tmp/cpswm-six-step-evidence-20261002/targets.json",
+        "/private/tmp/cpswm-system-s1-evidence-20261002/view-30-memory/memory-retain/evaluation.json"
+      ],
+      "elapsed_seconds": 0.27985708322376013,
+      "log": "/private/tmp/cpswm-system-s1-evidence-20261002/view-30-memory-memory-retain-evaluation.log",
+      "returncode": 0,
+      "started": "2026-10-02T15:02:18.822514+00:00"
+    },
+    {
+      "command": [
+        "/private/tmp/cpswm-pc-a-system-experiments-s1-20261002/.venv/bin/python",
+        "tools/run_surface_episode.py",
+        "restore",
+        "--output",
+        "/private/tmp/cpswm-system-s1-evidence-20261002/view-30-memory/memory-retain"
+      ],
+      "elapsed_seconds": 38.02717295894399,
+      "log": "/private/tmp/cpswm-system-s1-evidence-20261002/view-30-memory-memory-retain-restore.log",
+      "returncode": 0,
+      "started": "2026-10-02T15:02:19.102549+00:00"
+    },
+    {
+      "command": [
+        "/private/tmp/cpswm-pc-a-system-experiments-s1-20261002/.venv/bin/python",
+        "tools/evaluate_surface_episode.py",
+        "/private/tmp/cpswm-system-s1-evidence-20261002/view-30-memory/memory-reset",
+        "/private/tmp/cpswm-six-step-evidence-20261002/targets.json",
+        "/private/tmp/cpswm-system-s1-evidence-20261002/view-30-memory/memory-reset/evaluation.json"
+      ],
+      "elapsed_seconds": 0.2102635418996215,
+      "log": "/private/tmp/cpswm-system-s1-evidence-20261002/view-30-memory-memory-reset-evaluation.log",
+      "returncode": 0,
+      "started": "2026-10-02T15:02:57.130228+00:00"
+    },
+    {
+      "command": [
+        "/private/tmp/cpswm-pc-a-system-experiments-s1-20261002/.venv/bin/python",
+        "tools/run_surface_episode.py",
+        "restore",
+        "--output",
+        "/private/tmp/cpswm-system-s1-evidence-20261002/view-30-memory/memory-reset"
+      ],
+      "elapsed_seconds": 42.03905866667628,
+      "log": "/private/tmp/cpswm-system-s1-evidence-20261002/view-30-memory-memory-reset-restore.log",
+      "returncode": 0,
+      "started": "2026-10-02T15:02:57.340675+00:00"
+    },
+    {
+      "command": [
+        "/private/tmp/cpswm-pc-a-system-experiments-s1-20261002/.venv/bin/python",
+        "tools/summarize_surface_comparison.py",
+        "/private/tmp/cpswm-system-s1-evidence-20261002/view-30-memory",
+        "/private/tmp/cpswm-system-s1-evidence-20261002/view-30-memory/comparison.json"
+      ],
+      "elapsed_seconds": 0.22194404108449817,
+      "log": "/private/tmp/cpswm-system-s1-evidence-20261002/view-30-memory-comparison.log",
+      "returncode": 0,
+      "started": "2026-10-02T15:03:39.380116+00:00"
+    },
+    {
+      "command": [
+        "/private/tmp/cpswm-pc-a-system-experiments-s1-20261002/.venv/bin/python",
+        "tools/run_surface_comparison.py",
+        "--output",
+        "/private/tmp/cpswm-system-s1-evidence-20261002/view-35-policy",
+        "--weights",
+        "/private/tmp/cpswm-natural-candidate-evidence-20261001/ssdlite.pth",
+        "--mask-weights",
+        "/private/tmp/cpswm-natural-mask-surface-evidence-20261002/maskrcnn.pth",
+        "--sdk-python",
+        "/private/tmp/cpswm-ai2thor-owned-20261001/bin/python",
+        "--binary",
+        "/Users/pangwei/.ai2thor/releases/thor-OSXIntel64-f0825767cd50d69f666c7f282e54abfe58f1e917/thor-OSXIntel64-f0825767cd50d69f666c7f282e54abfe58f1e917.app/Contents/MacOS/AI2-THOR",
+        "--house",
+        "docs/reviews/pc_a/sim_timing_control_2026-09-29/evidence/raw-examples/south-320-frozen-0/evaluator_house.json",
+        "--model",
+        "/private/tmp/cpswm-six-step-evidence-20261002/action-model.json",
+        "--degrees",
+        "35",
+        "5",
+        "5",
+        "--target",
+        "bottle:0",
+        "bottle:1",
+        "bowl:0"
+      ],
+      "elapsed_seconds": 278.5153905423358,
+      "log": "/private/tmp/cpswm-system-s1-evidence-20261002/view-35-policy.log",
+      "returncode": 0,
+      "started": "2026-10-02T15:03:39.754280+00:00"
+    },
+    {
+      "command": [
+        "/private/tmp/cpswm-pc-a-system-experiments-s1-20261002/.venv/bin/python",
+        "tools/evaluate_surface_episode.py",
+        "/private/tmp/cpswm-system-s1-evidence-20261002/view-35-policy/fixed",
+        "/private/tmp/cpswm-six-step-evidence-20261002/targets.json",
+        "/private/tmp/cpswm-system-s1-evidence-20261002/view-35-policy/fixed/evaluation.json"
+      ],
+      "elapsed_seconds": 0.2452527917921543,
+      "log": "/private/tmp/cpswm-system-s1-evidence-20261002/view-35-policy-fixed-evaluation.log",
+      "returncode": 0,
+      "started": "2026-10-02T15:08:18.185727+00:00"
+    },
+    {
+      "command": [
+        "/private/tmp/cpswm-pc-a-system-experiments-s1-20261002/.venv/bin/python",
+        "tools/run_surface_episode.py",
+        "restore",
+        "--output",
+        "/private/tmp/cpswm-system-s1-evidence-20261002/view-35-policy/fixed"
+      ],
+      "elapsed_seconds": 37.99268741719425,
+      "log": "/private/tmp/cpswm-system-s1-evidence-20261002/view-35-policy-fixed-restore.log",
+      "returncode": 0,
+      "started": "2026-10-02T15:08:18.431255+00:00"
+    },
+    {
+      "command": [
+        "/private/tmp/cpswm-pc-a-system-experiments-s1-20261002/.venv/bin/python",
+        "tools/evaluate_surface_episode.py",
+        "/private/tmp/cpswm-system-s1-evidence-20261002/view-35-policy/active",
+        "/private/tmp/cpswm-six-step-evidence-20261002/targets.json",
+        "/private/tmp/cpswm-system-s1-evidence-20261002/view-35-policy/active/evaluation.json"
+      ],
+      "elapsed_seconds": 0.20775116607546806,
+      "log": "/private/tmp/cpswm-system-s1-evidence-20261002/view-35-policy-active-evaluation.log",
+      "returncode": 0,
+      "started": "2026-10-02T15:08:56.424188+00:00"
+    },
+    {
+      "command": [
+        "/private/tmp/cpswm-pc-a-system-experiments-s1-20261002/.venv/bin/python",
+        "tools/run_surface_episode.py",
+        "restore",
+        "--output",
+        "/private/tmp/cpswm-system-s1-evidence-20261002/view-35-policy/active"
+      ],
+      "elapsed_seconds": 15.082450124900788,
+      "log": "/private/tmp/cpswm-system-s1-evidence-20261002/view-35-policy-active-restore.log",
+      "returncode": 0,
+      "started": "2026-10-02T15:08:56.632126+00:00"
+    },
+    {
+      "command": [
+        "/private/tmp/cpswm-pc-a-system-experiments-s1-20261002/.venv/bin/python",
+        "tools/evaluate_surface_episode.py",
+        "/private/tmp/cpswm-system-s1-evidence-20261002/view-35-policy/no-update",
+        "/private/tmp/cpswm-six-step-evidence-20261002/targets.json",
+        "/private/tmp/cpswm-system-s1-evidence-20261002/view-35-policy/no-update/evaluation.json"
+      ],
+      "elapsed_seconds": 0.20599504187703133,
+      "log": "/private/tmp/cpswm-system-s1-evidence-20261002/view-35-policy-no-update-evaluation.log",
+      "returncode": 0,
+      "started": "2026-10-02T15:09:11.714731+00:00"
+    },
+    {
+      "command": [
+        "/private/tmp/cpswm-pc-a-system-experiments-s1-20261002/.venv/bin/python",
+        "tools/run_surface_episode.py",
+        "restore",
+        "--output",
+        "/private/tmp/cpswm-system-s1-evidence-20261002/view-35-policy/no-update"
+      ],
+      "elapsed_seconds": 20.138305041007698,
+      "log": "/private/tmp/cpswm-system-s1-evidence-20261002/view-35-policy-no-update-restore.log",
+      "returncode": 0,
+      "started": "2026-10-02T15:09:11.920927+00:00"
+    },
+    {
+      "command": [
+        "/private/tmp/cpswm-pc-a-system-experiments-s1-20261002/.venv/bin/python",
+        "tools/summarize_surface_comparison.py",
+        "/private/tmp/cpswm-system-s1-evidence-20261002/view-35-policy",
+        "/private/tmp/cpswm-system-s1-evidence-20261002/view-35-policy/comparison.json"
+      ],
+      "elapsed_seconds": 0.23810512479394674,
+      "log": "/private/tmp/cpswm-system-s1-evidence-20261002/view-35-policy-comparison.log",
+      "returncode": 0,
+      "started": "2026-10-02T15:09:32.059218+00:00"
+    },
+    {
+      "command": [
+        "/private/tmp/cpswm-pc-a-system-experiments-s1-20261002/.venv/bin/python",
+        "tools/run_surface_comparison.py",
+        "--output",
+        "/private/tmp/cpswm-system-s1-evidence-20261002/view-35-memory",
+        "--weights",
+        "/private/tmp/cpswm-natural-candidate-evidence-20261001/ssdlite.pth",
+        "--mask-weights",
+        "/private/tmp/cpswm-natural-mask-surface-evidence-20261002/maskrcnn.pth",
+        "--sdk-python",
+        "/private/tmp/cpswm-ai2thor-owned-20261001/bin/python",
+        "--binary",
+        "/Users/pangwei/.ai2thor/releases/thor-OSXIntel64-f0825767cd50d69f666c7f282e54abfe58f1e917/thor-OSXIntel64-f0825767cd50d69f666c7f282e54abfe58f1e917.app/Contents/MacOS/AI2-THOR",
+        "--house",
+        "docs/reviews/pc_a/sim_timing_control_2026-09-29/evidence/raw-examples/south-320-frozen-0/evaluator_house.json",
+        "--model",
+        "/private/tmp/cpswm-six-step-evidence-20261002/action-model.json",
+        "--degrees",
+        "35",
+        "5",
+        "5",
+        "--target",
+        "bottle:0",
+        "bottle:1",
+        "bowl:0",
+        "--memory-only"
+      ],
+      "elapsed_seconds": 338.18153575016186,
+      "log": "/private/tmp/cpswm-system-s1-evidence-20261002/view-35-memory.log",
+      "returncode": 0,
+      "started": "2026-10-02T15:09:32.448587+00:00"
+    },
+    {
+      "command": [
+        "/private/tmp/cpswm-pc-a-system-experiments-s1-20261002/.venv/bin/python",
+        "tools/evaluate_surface_episode.py",
+        "/private/tmp/cpswm-system-s1-evidence-20261002/view-35-memory/memory-retain",
+        "/private/tmp/cpswm-six-step-evidence-20261002/targets.json",
+        "/private/tmp/cpswm-system-s1-evidence-20261002/view-35-memory/memory-retain/evaluation.json"
+      ],
+      "elapsed_seconds": 0.26527733262628317,
+      "log": "/private/tmp/cpswm-system-s1-evidence-20261002/view-35-memory-memory-retain-evaluation.log",
+      "returncode": 0,
+      "started": "2026-10-02T15:15:10.629023+00:00"
+    },
+    {
+      "command": [
+        "/private/tmp/cpswm-pc-a-system-experiments-s1-20261002/.venv/bin/python",
+        "tools/run_surface_episode.py",
+        "restore",
+        "--output",
+        "/private/tmp/cpswm-system-s1-evidence-20261002/view-35-memory/memory-retain"
+      ],
+      "elapsed_seconds": 37.92915733298287,
+      "log": "/private/tmp/cpswm-system-s1-evidence-20261002/view-35-memory-memory-retain-restore.log",
+      "returncode": 0,
+      "started": "2026-10-02T15:15:10.894486+00:00"
+    },
+    {
+      "command": [
+        "/private/tmp/cpswm-pc-a-system-experiments-s1-20261002/.venv/bin/python",
+        "tools/evaluate_surface_episode.py",
+        "/private/tmp/cpswm-system-s1-evidence-20261002/view-35-memory/memory-reset",
+        "/private/tmp/cpswm-six-step-evidence-20261002/targets.json",
+        "/private/tmp/cpswm-system-s1-evidence-20261002/view-35-memory/memory-reset/evaluation.json"
+      ],
+      "elapsed_seconds": 0.2065568338148296,
+      "log": "/private/tmp/cpswm-system-s1-evidence-20261002/view-35-memory-memory-reset-evaluation.log",
+      "returncode": 0,
+      "started": "2026-10-02T15:15:48.823706+00:00"
+    },
+    {
+      "command": [
+        "/private/tmp/cpswm-pc-a-system-experiments-s1-20261002/.venv/bin/python",
+        "tools/run_surface_episode.py",
+        "restore",
+        "--output",
+        "/private/tmp/cpswm-system-s1-evidence-20261002/view-35-memory/memory-reset"
+      ],
+      "elapsed_seconds": 42.0078770830296,
+      "log": "/private/tmp/cpswm-system-s1-evidence-20261002/view-35-memory-memory-reset-restore.log",
+      "returncode": 0,
+      "started": "2026-10-02T15:15:49.030439+00:00"
+    },
+    {
+      "command": [
+        "/private/tmp/cpswm-pc-a-system-experiments-s1-20261002/.venv/bin/python",
+        "tools/summarize_surface_comparison.py",
+        "/private/tmp/cpswm-system-s1-evidence-20261002/view-35-memory",
+        "/private/tmp/cpswm-system-s1-evidence-20261002/view-35-memory/comparison.json"
+      ],
+      "elapsed_seconds": 0.22435379214584827,
+      "log": "/private/tmp/cpswm-system-s1-evidence-20261002/view-35-memory-comparison.log",
+      "returncode": 0,
+      "started": "2026-10-02T15:16:31.038165+00:00"
+    }
+  ],
+  "groups": [
+    {
+      "arms": [
+        {
+          "arm": "fixed",
+          "evaluated_query_slots": 3,
+          "evaluation_returncode": 0,
+          "identity_correct": 2,
+          "joint_success": 2,
+          "physical_dispatches": 3,
+          "planned_query_slots": 3,
+          "position_correct": 2,
+          "reported_statuses": [
+            "reported",
+            "reported",
+            "unknown"
+          ],
+          "restore_returncode": 0,
+          "runtime_status": "COMPLETED"
+        },
+        {
+          "arm": "active",
+          "evaluated_query_slots": 3,
+          "evaluation_returncode": 0,
+          "identity_correct": 2,
+          "joint_success": 2,
+          "physical_dispatches": 1,
+          "planned_query_slots": 3,
+          "position_correct": 2,
+          "reported_statuses": [
+            "reported",
+            "reported",
+            "unknown"
+          ],
+          "restore_returncode": 0,
+          "runtime_status": "COMPLETED"
+        },
+        {
+          "arm": "no-update",
+          "evaluated_query_slots": 3,
+          "evaluation_returncode": 0,
+          "identity_correct": 0,
+          "joint_success": 0,
+          "physical_dispatches": 3,
+          "planned_query_slots": 3,
+          "position_correct": 0,
+          "reported_statuses": [
+            "unknown",
+            "unknown",
+            "unknown"
+          ],
+          "restore_returncode": 0,
+          "runtime_status": "COMPLETED"
+        }
+      ],
+      "comparison_returncode": 0,
+      "id": "view-25-policy",
+      "pair_status": "VALID_DEVELOPMENT_PAIR",
+      "runtime_returncode": 0
+    },
+    {
+      "arms": [
+        {
+          "arm": "memory-retain",
+          "evaluated_query_slots": 3,
+          "evaluation_returncode": 0,
+          "identity_correct": 2,
+          "joint_success": 2,
+          "physical_dispatches": 3,
+          "planned_query_slots": 3,
+          "position_correct": 2,
+          "reported_statuses": [
+            "reported",
+            "reported",
+            "unknown"
+          ],
+          "restore_returncode": 0,
+          "runtime_status": "COMPLETED"
+        },
+        {
+          "arm": "memory-reset",
+          "evaluated_query_slots": 3,
+          "evaluation_returncode": 0,
+          "identity_correct": 2,
+          "joint_success": 2,
+          "physical_dispatches": 3,
+          "planned_query_slots": 3,
+          "position_correct": 2,
+          "reported_statuses": [
+            "reported",
+            "reported",
+            "unknown"
+          ],
+          "restore_returncode": 0,
+          "runtime_status": "COMPLETED"
+        }
+      ],
+      "comparison_returncode": 0,
+      "id": "view-25-memory",
+      "pair_status": "VALID_DEVELOPMENT_PAIR",
+      "runtime_returncode": 0
+    },
+    {
+      "arms": [
+        {
+          "arm": "fixed",
+          "evaluated_query_slots": 3,
+          "evaluation_returncode": 0,
+          "identity_correct": 2,
+          "joint_success": 2,
+          "physical_dispatches": 3,
+          "planned_query_slots": 3,
+          "position_correct": 2,
+          "reported_statuses": [
+            "reported",
+            "reported",
+            "unknown"
+          ],
+          "restore_returncode": 0,
+          "runtime_status": "COMPLETED"
+        },
+        {
+          "arm": "active",
+          "evaluated_query_slots": 3,
+          "evaluation_returncode": 0,
+          "identity_correct": 3,
+          "joint_success": 2,
+          "physical_dispatches": 1,
+          "planned_query_slots": 3,
+          "position_correct": 2,
+          "reported_statuses": [
+            "reported",
+            "reported",
+            "reported"
+          ],
+          "restore_returncode": 0,
+          "runtime_status": "COMPLETED"
+        },
+        {
+          "arm": "no-update",
+          "evaluated_query_slots": 3,
+          "evaluation_returncode": 0,
+          "identity_correct": 0,
+          "joint_success": 0,
+          "physical_dispatches": 3,
+          "planned_query_slots": 3,
+          "position_correct": 0,
+          "reported_statuses": [
+            "unknown",
+            "unknown",
+            "unknown"
+          ],
+          "restore_returncode": 0,
+          "runtime_status": "COMPLETED"
+        }
+      ],
+      "comparison_returncode": 0,
+      "id": "view-30-policy",
+      "pair_status": "VALID_DEVELOPMENT_PAIR",
+      "runtime_returncode": 0
+    },
+    {
+      "arms": [
+        {
+          "arm": "memory-retain",
+          "evaluated_query_slots": 3,
+          "evaluation_returncode": 0,
+          "identity_correct": 3,
+          "joint_success": 2,
+          "physical_dispatches": 3,
+          "planned_query_slots": 3,
+          "position_correct": 2,
+          "reported_statuses": [
+            "reported",
+            "reported",
+            "reported"
+          ],
+          "restore_returncode": 0,
+          "runtime_status": "COMPLETED"
+        },
+        {
+          "arm": "memory-reset",
+          "evaluated_query_slots": 3,
+          "evaluation_returncode": 0,
+          "identity_correct": 3,
+          "joint_success": 2,
+          "physical_dispatches": 3,
+          "planned_query_slots": 3,
+          "position_correct": 2,
+          "reported_statuses": [
+            "reported",
+            "reported",
+            "reported"
+          ],
+          "restore_returncode": 0,
+          "runtime_status": "COMPLETED"
+        }
+      ],
+      "comparison_returncode": 0,
+      "id": "view-30-memory",
+      "pair_status": "VALID_DEVELOPMENT_PAIR",
+      "runtime_returncode": 0
+    },
+    {
+      "arms": [
+        {
+          "arm": "fixed",
+          "evaluated_query_slots": 3,
+          "evaluation_returncode": 0,
+          "identity_correct": 1,
+          "joint_success": 1,
+          "physical_dispatches": 3,
+          "planned_query_slots": 3,
+          "position_correct": 1,
+          "reported_statuses": [
+            "unknown",
+            "reported",
+            "unknown"
+          ],
+          "restore_returncode": 0,
+          "runtime_status": "COMPLETED"
+        },
+        {
+          "arm": "active",
+          "evaluated_query_slots": 3,
+          "evaluation_returncode": 0,
+          "identity_correct": 3,
+          "joint_success": 2,
+          "physical_dispatches": 1,
+          "planned_query_slots": 3,
+          "position_correct": 2,
+          "reported_statuses": [
+            "reported",
+            "reported",
+            "reported"
+          ],
+          "restore_returncode": 0,
+          "runtime_status": "COMPLETED"
+        },
+        {
+          "arm": "no-update",
+          "evaluated_query_slots": 3,
+          "evaluation_returncode": 0,
+          "identity_correct": 0,
+          "joint_success": 0,
+          "physical_dispatches": 3,
+          "planned_query_slots": 3,
+          "position_correct": 0,
+          "reported_statuses": [
+            "unknown",
+            "unknown",
+            "unknown"
+          ],
+          "restore_returncode": 0,
+          "runtime_status": "COMPLETED"
+        }
+      ],
+      "comparison_returncode": 0,
+      "id": "view-35-policy",
+      "pair_status": "VALID_DEVELOPMENT_PAIR",
+      "runtime_returncode": 0
+    },
+    {
+      "arms": [
+        {
+          "arm": "memory-retain",
+          "evaluated_query_slots": 3,
+          "evaluation_returncode": 0,
+          "identity_correct": 1,
+          "joint_success": 1,
+          "physical_dispatches": 3,
+          "planned_query_slots": 3,
+          "position_correct": 1,
+          "reported_statuses": [
+            "unknown",
+            "reported",
+            "unknown"
+          ],
+          "restore_returncode": 0,
+          "runtime_status": "COMPLETED"
+        },
+        {
+          "arm": "memory-reset",
+          "evaluated_query_slots": 3,
+          "evaluation_returncode": 0,
+          "identity_correct": 1,
+          "joint_success": 1,
+          "physical_dispatches": 3,
+          "planned_query_slots": 3,
+          "position_correct": 1,
+          "reported_statuses": [
+            "unknown",
+            "reported",
+            "unknown"
+          ],
+          "restore_returncode": 0,
+          "runtime_status": "COMPLETED"
+        }
+      ],
+      "comparison_returncode": 0,
+      "id": "view-35-memory",
+      "pair_status": "VALID_DEVELOPMENT_PAIR",
+      "runtime_returncode": 0
+    }
+  ],
+  "independence": "no independent scene replication or B acceptance",
+  "scope": "one development house, three correlated viewpoints, controlled semantic bootstrap",
+  "sources_unchanged": true,
+  "statistics": "descriptive counts only; shared query actions counted once per episode",
+  "status": "COMPLETE_DEVELOPMENT_MATRIX",
+  "totals": {
+    "active": {
+      "completed_episodes": 3,
+      "confirmed_joint_success": 6,
+      "evaluated_query_slots": 9,
+      "identity_correct": 8,
+      "known_physical_dispatches": 3,
+      "planned_episodes": 3,
+      "planned_query_slots": 9,
+      "position_correct": 6,
+      "successful_fresh_restores": 3,
+      "unaccounted_episode_dispatches": 0
+    },
+    "fixed": {
+      "completed_episodes": 3,
+      "confirmed_joint_success": 5,
+      "evaluated_query_slots": 9,
+      "identity_correct": 5,
+      "known_physical_dispatches": 9,
+      "planned_episodes": 3,
+      "planned_query_slots": 9,
+      "position_correct": 5,
+      "successful_fresh_restores": 3,
+      "unaccounted_episode_dispatches": 0
+    },
+    "memory-reset": {
+      "completed_episodes": 3,
+      "confirmed_joint_success": 5,
+      "evaluated_query_slots": 9,
+      "identity_correct": 6,
+      "known_physical_dispatches": 9,
+      "planned_episodes": 3,
+      "planned_query_slots": 9,
+      "position_correct": 5,
+      "successful_fresh_restores": 3,
+      "unaccounted_episode_dispatches": 0
+    },
+    "memory-retain": {
+      "completed_episodes": 3,
+      "confirmed_joint_success": 5,
+      "evaluated_query_slots": 9,
+      "identity_correct": 6,
+      "known_physical_dispatches": 9,
+      "planned_episodes": 3,
+      "planned_query_slots": 9,
+      "position_correct": 5,
+      "successful_fresh_restores": 3,
+      "unaccounted_episode_dispatches": 0
+    },
+    "no-update": {
+      "completed_episodes": 3,
+      "confirmed_joint_success": 0,
+      "evaluated_query_slots": 9,
+      "identity_correct": 0,
+      "known_physical_dispatches": 9,
+      "planned_episodes": 3,
+      "planned_query_slots": 9,
+      "position_correct": 0,
+      "successful_fresh_restores": 3,
+      "unaccounted_episode_dispatches": 0
+    }
+  }
+}

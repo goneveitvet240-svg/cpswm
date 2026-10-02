@@ -1,6 +1,6 @@
 # A：自然掩码表面支持局部交付（2026-10-02）
 
-分支 `codex/pc-a-natural-mask-surface-20261002`，base/PR94 head `01c52fef24d5fafc95bf8f6584602771aa176d5c`，冻结实际功能/测试/驱动 SHA `d2c3f51b005b49b97812f43b5dc75c3801017807`。[报告](../reviews/pc_a/natural_mask_surface_2026-10-02/REPORT.md)、[验证](../reviews/pc_a/natural_mask_surface_2026-10-02/VALIDATION.md)、[命令](../reviews/pc_a/natural_mask_surface_2026-10-02/COMMANDS.md)。本段推送前仅本地交付准备，远端以本分支及随后草稿PR为准。
+分支 `codex/pc-a-natural-mask-surface-20261002`，base/PR94 head `01c52fef24d5fafc95bf8f6584602771aa176d5c`，冻结实际功能/测试/驱动 SHA `d2c3f51b005b49b97812f43b5dc75c3801017807`。[报告](../reviews/pc_a/natural_mask_surface_2026-10-02/REPORT.md)、[验证](../reviews/pc_a/natural_mask_surface_2026-10-02/VALIDATION.md)、[命令](../reviews/pc_a/natural_mask_surface_2026-10-02/COMMANDS.md)。用户明确授权发布后，代码与完整证据提交 `992724e8698ab114e708b0c6f88bfb636f514e12` 已推送；[草稿 PR #95](https://github.com/goneveitvet240-svg/cpswm/pull/95)叠加PR94，未合并。本次追加仅确认交接，冻结功能源码不变。此前自动审批两次拦截证据包公开发布，已由用户本轮明确授权解除。
 
 一屋16帧/14组RGB冻结比较：WineBottle离线首帧参考，mask内原光流表面点11/11、3/5盒内，末2帧永久丢失；旧constant-soft为0/16。10条初始轨迹/80记录全留，49有点/31未知丢失；碗0/16命中及类别误识保留。不是正式自然身份或联合任务成功；两模型/分辨率同时改变，非mask单因素消融或同计算预算优势。新组件无Native/记忆权限，旧默认保持。
 

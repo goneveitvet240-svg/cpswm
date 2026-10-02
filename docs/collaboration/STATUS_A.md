@@ -1,3 +1,11 @@
+# A：自然掩码表面支持开工（2026-10-02）
+
+用户要求继续推进，A在 `codex/pc-a-natural-mask-surface-20261002` 从PR94 head `01c52fef24d5fafc95bf8f6584602771aa176d5c` 开工。[计划](../reviews/pc_a/natural_mask_surface_2026-10-02/PLAN.md)：固定预训练RGB实例分割与公开深度读点，保留旧框读出、全部候选与UNKNOWN，查清自然目标表面对应。当前无新结果，不默认替换或宣称Native接通；完整框架和已批准指标保持。
+
+恢复工作树fetch成功；集成19ddf26830348a2f0b33f0af54d6ba702c5cfb1c、B fd4ca6ef5e81c90d7cf7987b42c0b2810d8a810a未变，旧窗口无同项活动。原用户树只尝试fetch，不改其代码。证据拟存 `/private/tmp/cpswm-natural-mask-surface-evidence-20261002`；开工仅文档，功能源码仍为27d396d6db4c248992f37285d3b7ad42b20df408。提交推送后以本独立分支为准。
+
+---
+
 # A：位置校准与表面诊断局部交付（2026-10-02）
 
 交付：[草稿 PR #94](https://github.com/goneveitvet240-svg/cpswm/pull/94)，叠加PR93，未合并。代码与完整证据提交 `cfc70b4779a6847a5d25ae1739683aec06de4287` 已推送；功能仍为 `27d396d6db4c248992f37285d3b7ad42b20df408`。本次追加仅确认交接链接，不改变已验证源码。

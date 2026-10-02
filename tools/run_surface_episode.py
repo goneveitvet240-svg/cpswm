@@ -230,6 +230,7 @@ def run(args, shared_camera=None):
         result["failures"].append(dict(type=type(exc).__name__, message=str(exc)))
         raise
     finally:
+        result["physical_dispatches"] = len(camera._seen) - initial_dispatches if camera else 0
         save(root / "result.json", result)
         if camera and shared_camera is None:
             camera.close()

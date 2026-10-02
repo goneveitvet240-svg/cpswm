@@ -127,6 +127,7 @@ def run(args):
         result["failures"].append(dict(type=type(e).__name__, message=str(e)))
         raise
     finally:
+        result["physical_dispatches"] = len(camera._seen) if camera else 0
         save(root / "result.json", result)
         if camera:
             camera.close()

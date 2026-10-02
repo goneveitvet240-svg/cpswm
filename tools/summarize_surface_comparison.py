@@ -65,21 +65,20 @@ def summarize(root, output):
         signatures[arm] = public_signature(raws[0])
         trajectories[arm] = [public_signature(raw) for raw in raws]
         controls[arm] = result.get("memory_interventions", [])
-        if arm == "memory-reset":
-            if (
-                len(raws) != 3
-                or len(controls[arm]) != 1
-                or controls[arm][0]
-                != dict(
-                    before_index=2,
-                    retained_reference=raws[0]["action_id"],
-                    withdrawn=[raws[1]["action_id"]],
-                    physical_before=2,
-                    physical_after=2,
-                    effective_after=[raws[0]["action_id"]],
-                )
-            ):
-                raise ValueError("memory intervention or physical prefix differs")
+        if arm == "memory-reset" and (
+            len(raws) != 3
+            or len(controls[arm]) != 1
+            or controls[arm][0]
+            != dict(
+                before_index=2,
+                retained_reference=raws[0]["action_id"],
+                withdrawn=[raws[1]["action_id"]],
+                physical_before=2,
+                physical_after=2,
+                effective_after=[raws[0]["action_id"]],
+            )
+        ):
+            raise ValueError("memory intervention or physical prefix differs")
         events = {}
         for p in (folder / "transport/evaluator_only/sdk-events").glob("*.json"):
             if p.stem.isdigit():

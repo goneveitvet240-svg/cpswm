@@ -39,12 +39,16 @@ def enabled(stream: ContinuousEvidenceInput) -> bool:
         "natural-candidate-single-position-raw@1",
         "appearance-geometry-single-pair-raw@1",
         "natural-target-temporal-joint-raw@1",
+        "owned-mask-surface-support-raw@1",
     )
 
 
 def uses_temporal(stream: ContinuousEvidenceInput) -> bool:
     profile = stream._system.core._particle_workspace.raw_candidate_profile
-    return type(profile) is dict and profile.get("profile") == "natural-target-temporal-joint-raw@1"
+    return type(profile) is dict and profile.get("profile") in (
+        "natural-target-temporal-joint-raw@1",
+        "owned-mask-surface-support-raw@1",
+    )
 
 
 def delivery_pin(delivery: Any) -> str:

@@ -1160,17 +1160,23 @@ class ContinuousEvidenceInput:
         view = self._current_joint_decision_view()
         for action_id, (command, digest) in self._observation_commands.items():
             if self._observation_status[action_id] != "READY" or not command.reason.startswith(
-                "joint-ciav@1:"
+                ("joint-ciav@1:", "owned-surface-policy@1:")
             ):
                 continue
             if content_sha256(command) != digest:
                 raise ValueError("joint observation command changed before replay cancellation")
-            problem = JointCameraProblem.model_validate_json(
-                command.reason.removeprefix("joint-ciav@1:")
-            )
+            if command.reason.startswith("owned-surface-policy@1:"):
+                import json
+
+                source_belief = json.loads(command.reason.split(":", 1)[1])["source_belief_sha256"]
+            else:
+                problem = JointCameraProblem.model_validate_json(
+                    command.reason.removeprefix("joint-ciav@1:")
+                )
+                source_belief = problem.source_belief_sha256
             if (
                 command.snapshot_id != view.snapshot_id
-                or problem.source_belief_sha256 != view.content_sha256
+                or source_belief != view.content_sha256
                 or command.decision_time < self._last_cutoff
             ):
                 self._observation_status[action_id] = "CANCELLED_STALE_JOINT"
@@ -1258,7 +1264,8 @@ class ContinuousEvidenceInput:
                     raise ValueError("observation request references unseen evidence")
                 native_origin = (
                     self._native_joint_decision_view().content_sha256
-                    if self._observation_decoder is not None and reason.startswith("joint-ciav@1:")
+                    if self._observation_decoder is not None
+                    and reason.startswith(("joint-ciav@1:", "owned-surface-policy@1:"))
                     else None
                 )
                 command = ObservationCommand(
@@ -1270,6 +1277,10 @@ class ContinuousEvidenceInput:
                     source_ids,
                     when,
                 )
+                if reason.startswith("owned-surface-policy@1:"):
+                    from cpswm.system.surface_episode import validate_surface_command
+
+                    validate_surface_command(self, command, self._current_joint_decision_view())
                 self._observation_commands[command.action_id] = (command, content_sha256(command))
                 self._observation_status[command.action_id] = "READY"
                 if native_origin is not None:
@@ -1317,6 +1328,10 @@ class ContinuousEvidenceInput:
                         or problem.source_observation_ids != command.source_ids
                     ):
                         raise ValueError("observation command differs from joint model decision")
+                if command.reason.startswith("owned-surface-policy@1:"):
+                    from cpswm.system.surface_episode import validate_surface_command
+
+                    validate_surface_command(self, command, self._current_joint_decision_view())
                 if any(
                     t is not None and command.decision_time < t
                     for t in (self._last_arrival, self._last_cutoff)

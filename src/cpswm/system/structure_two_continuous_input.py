@@ -317,6 +317,7 @@ class ContinuousEvidenceInput:
         # body: disconnected current actions cannot masquerade as older epochs.
         self._observation_native_origins: dict[UUID, str] = {}
         self._position_consumptions: dict[UUID, NativeObservationUpdate] = {}
+        self._position_withdrawals: dict[UUID, tuple[Any, ...]] = {}
         self._lock = RLock()
         self._busy = False
         self._persist()
@@ -894,6 +895,17 @@ class ContinuousEvidenceInput:
         from cpswm.system.owned_position_update import consume
 
         return consume(self, action_id)
+
+    def withdraw_owned_position_observation(self, action_id: UUID, *, reason: str) -> None:
+        """Withdraw position evidence and atomically replay; keep acquisition history.
+
+        This does not erase the physical observation or retrospectively undo a
+        camera action. An initial tracking-anchor withdrawal also excludes its
+        dependent captures. Middle-capture withdrawal recomputes the suffix.
+        """
+        from cpswm.system.owned_position_update import withdraw
+
+        withdraw(self, action_id, reason=reason)
 
     def produce_joint_posterior(self) -> None:
         """Populate the current native batch with the configured producer, once.
@@ -1607,6 +1619,7 @@ class ContinuousEvidenceInput:
         restored._durability_failed = False
         restored._checkpoint_suspended = False
         restored._position_consumptions = getattr(restored, "_position_consumptions", {})
+        restored._position_withdrawals = getattr(restored, "_position_withdrawals", {})
         restored._verify_native_visual_sources()
         restored._verify_native_raw_sources()
         return restored

@@ -1242,6 +1242,7 @@ class CorePrototypeSpine:
         self._particle_observation_issues: dict[UUID, tuple[Any, ...]] = {}
         self._particle_observation_deliveries: dict[UUID, str] = {}
         self._particle_observation_update_anchors: dict[str, str] = {}
+        self._particle_observation_withdrawals: dict[str, str] = {}
         self._particle_posterior_source_anchors: dict[UUID, str] = {}
         self._particle_replay_generations: tuple[JointReplayGeneration, ...] = ()
         self._particle_replay_generation_anchors: tuple[str, ...] = ()
@@ -2957,6 +2958,8 @@ class CorePrototypeSpine:
                 update.logical_key
             ) != native_content_sha256(update):
                 raise ValueError("raw observation update lacks original owner acceptance")
+            if update is not None and update.logical_key in self._particle_observation_withdrawals:
+                raise ValueError("withdrawn observation cannot enter a new raw context")
             prior = self._particle_raw_context_anchors.get(key)
             if prior is not None and prior != digest:
                 raise ValueError("owned raw context cannot be replaced")
@@ -4071,6 +4074,7 @@ class CorePrototypeSpine:
             "particle_observation_issues": dict(self._particle_observation_issues),
             "particle_observation_deliveries": dict(self._particle_observation_deliveries),
             "particle_observation_update_anchors": dict(self._particle_observation_update_anchors),
+            "particle_observation_withdrawals": dict(self._particle_observation_withdrawals),
             "particle_posterior_source_anchors": dict(self._particle_posterior_source_anchors),
             "particle_replay_generations": self._particle_replay_generations,
             "particle_replay_generation_anchors": self._particle_replay_generation_anchors,
@@ -4236,6 +4240,9 @@ class CorePrototypeSpine:
         )
         self._particle_observation_deliveries = dict(
             cast(dict[UUID, str], checkpoint["particle_observation_deliveries"])
+        )
+        self._particle_observation_withdrawals = dict(
+            cast(dict[str, str], checkpoint["particle_observation_withdrawals"])
         )
         self._particle_observation_update_anchors = dict(
             cast(dict[str, str], checkpoint["particle_observation_update_anchors"])

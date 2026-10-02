@@ -62,6 +62,8 @@ def profile_for(producer: NativeJointProducer | None) -> dict[str, Any] | None:
         NaturalCandidatePositionProducer,
     )
     from cpswm.system.owned_position_producer import PROFILE, OwnedPositionProducer
+    from cpswm.system.temporal_target_position import PROFILE as TEMPORAL_PROFILE
+    from cpswm.system.temporal_target_position import TemporalTargetPositionProducer
 
     neural = cast("NeuralNativeProducer", producer)
     candidate = neural._candidate_model
@@ -70,6 +72,7 @@ def profile_for(producer: NativeJointProducer | None) -> dict[str, Any] | None:
         OwnedPositionProducer,
         NaturalCandidatePositionProducer,
         AppearanceGeometryPositionProducer,
+        TemporalTargetPositionProducer,
     ):
         return None
     candidate = cast("ControlledPositionProducer", candidate)
@@ -79,6 +82,7 @@ def profile_for(producer: NativeJointProducer | None) -> dict[str, Any] | None:
             OwnedPositionProducer: PROFILE,
             NaturalCandidatePositionProducer: NATURAL_PROFILE,
             AppearanceGeometryPositionProducer: ASSOCIATION_PROFILE,
+            TemporalTargetPositionProducer: TEMPORAL_PROFILE,
         }[type(candidate)],
         verifier_source=sha256(Path(__file__).read_bytes()).hexdigest(),
         weight_source=sha256(
@@ -112,6 +116,8 @@ def reconstruct(profile: dict[str, Any]) -> ControlledPositionProducer:
         NaturalCandidatePositionProducer,
     )
     from cpswm.system.owned_position_producer import PROFILE, OwnedPositionProducer
+    from cpswm.system.temporal_target_position import PROFILE as TEMPORAL_PROFILE
+    from cpswm.system.temporal_target_position import TemporalTargetPositionProducer
 
     if (
         type(profile) is not dict
@@ -126,7 +132,13 @@ def reconstruct(profile: dict[str, Any]) -> ControlledPositionProducer:
             "arguments",
         }
         or profile["profile"]
-        not in ("controlled-position-raw@1", PROFILE, NATURAL_PROFILE, ASSOCIATION_PROFILE)
+        not in (
+            "controlled-position-raw@1",
+            PROFILE,
+            NATURAL_PROFILE,
+            ASSOCIATION_PROFILE,
+            TEMPORAL_PROFILE,
+        )
     ):
         raise ValueError("unrecognized configured raw candidate profile")
     if profile["verifier_source"] != sha256(Path(__file__).read_bytes()).hexdigest():
@@ -142,6 +154,7 @@ def reconstruct(profile: dict[str, Any]) -> ControlledPositionProducer:
         PROFILE: OwnedPositionProducer,
         NATURAL_PROFILE: NaturalCandidatePositionProducer,
         ASSOCIATION_PROFILE: AppearanceGeometryPositionProducer,
+        TEMPORAL_PROFILE: TemporalTargetPositionProducer,
         "controlled-position-raw@1": ControlledPositionProducer,
     }[profile["profile"]]
     result = cls(**deepcopy(profile["arguments"]))
@@ -221,11 +234,13 @@ def verify_raw_base(
     full_context = replace(native_context, visible_prefix=original.visible_prefix)
     from cpswm.system.appearance_geometry_position import AppearanceGeometryPositionProducer
     from cpswm.system.natural_candidate_position import NaturalCandidatePositionProducer
+    from cpswm.system.temporal_target_position import TemporalTargetPositionProducer
 
     if type(candidate) in (
         OwnedPositionProducer,
         NaturalCandidatePositionProducer,
         AppearanceGeometryPositionProducer,
+        TemporalTargetPositionProducer,
     ):
         if len(contexts) != len(clusters):
             raise ValueError("owned update predecessor context is missing")

@@ -38,7 +38,13 @@ def enabled(stream: ContinuousEvidenceInput) -> bool:
         "owned-single-position-raw@1",
         "natural-candidate-single-position-raw@1",
         "appearance-geometry-single-pair-raw@1",
+        "natural-target-temporal-joint-raw@1",
     )
+
+
+def uses_temporal(stream: ContinuousEvidenceInput) -> bool:
+    profile = stream._system.core._particle_workspace.raw_candidate_profile
+    return type(profile) is dict and profile.get("profile") == "natural-target-temporal-joint-raw@1"
 
 
 def delivery_pin(delivery: Any) -> str:
@@ -198,8 +204,27 @@ def verify_journal(stream: ContinuousEvidenceInput) -> None:
         if type(update) is not NativeObservationUpdate or original != update:
             raise ValueError("position consumption differs from accepted original")
         expected[update.logical_key] = native_content_sha256(update)
-    if expected != core._particle_observation_update_anchors or len(expected) > 1:
+    if expected != core._particle_observation_update_anchors or (
+        len(expected) > 1 and not uses_temporal(stream)
+    ):
         raise ValueError("position consumption catalogue closure differs")
+    withdrawals = getattr(stream, "_position_withdrawals", {})
+    expected_withdrawals = {}
+    for action_id, record in withdrawals.items():
+        withdrawn_update = stream._position_consumptions.get(action_id)
+        if (
+            withdrawn_update is None
+            or type(record) is not tuple
+            or len(record) != 4
+            or record[0] != withdrawn_update.logical_key
+            or record[1] != native_content_sha256(withdrawn_update)
+            or type(record[2]) is not str
+            or not record[2].strip()
+        ):
+            raise ValueError("position withdrawal lacks original consumed dependency")
+        expected_withdrawals[withdrawn_update.logical_key] = native_content_sha256(record)
+    if expected_withdrawals != core._particle_observation_withdrawals:
+        raise ValueError("position withdrawal catalogue differs")
     workspaces = [g.old_workspace for g in core._particle_replay_generations]
     for workspace in (*workspaces, core._particle_workspace):
         for context in workspace.raw_contexts.values():
@@ -223,13 +248,22 @@ def consume(stream: ContinuousEvidenceInput, action_id: UUID) -> NativeObservati
         stream._enter()
         try:
             verify_journal(stream)
+            if action_id in stream._position_withdrawals:
+                raise ValueError("position observation was withdrawn")
+            if uses_temporal(stream) and stream._position_consumptions:
+                first = min(
+                    stream._position_consumptions,
+                    key=lambda k: (stream._position_consumptions[k].received_at, str(k)),
+                )
+                if first in stream._position_withdrawals:
+                    raise ValueError("sequence anchor withdrawn; new semantic anchor required")
             if action_id in stream._position_consumptions:
                 update = stream._position_consumptions[action_id]
                 if update.semantic_revision_id not in core._observed_events:
                     raise ValueError("consumed observation semantic anchor was withdrawn")
                 core.prepared_particle_location_marginal()
                 return deepcopy(update)
-            if stream._position_consumptions:
+            if stream._position_consumptions and not uses_temporal(stream):
                 raise ValueError("second measurement unsupported by single measurement profile")
         finally:
             stream._busy = False
@@ -320,6 +354,59 @@ def consume(stream: ContinuousEvidenceInput, action_id: UUID) -> NativeObservati
                     except BaseException:
                         stream._durability_failed = True
                         raise
+            raise
+        finally:
+            stream._busy = False
+
+
+def withdraw(stream: ContinuousEvidenceInput, action_id: UUID, *, reason: str) -> None:
+    """Atomic position-only tombstone and full retained-history recomputation."""
+    if type(action_id) is not UUID or type(reason) is not str or not reason.strip():
+        raise ValueError("withdrawal requires action UUID and a nonempty audit reason")
+    if not uses_temporal(stream):
+        raise ValueError("capture withdrawal requires the temporal profile")
+    core = stream._system.core
+    with stream._lock, core._execution_lock:
+        stream._enter()
+        checkpoint = None
+        previous = deepcopy(stream._position_withdrawals)
+        try:
+            verify_journal(stream)
+            if action_id not in stream._position_consumptions:
+                raise ValueError("only originally consumed captures can be withdrawn")
+            if action_id in previous:
+                if previous[action_id][2] != reason:
+                    raise ValueError("withdrawal audit reason conflicts with original")
+                core.prepared_particle_location_marginal()
+                return
+            checkpoint = core._capture_revision_transaction(include_operator_state=True)
+            keys = sorted(
+                stream._position_consumptions,
+                key=lambda k: (stream._position_consumptions[k].received_at, str(k)),
+            )
+            excluded = keys if keys[0] == action_id else [action_id]
+            for key in excluded:
+                if key in stream._position_withdrawals:
+                    continue
+                update = stream._position_consumptions[key]
+                record = (
+                    update.logical_key,
+                    native_content_sha256(update),
+                    reason,
+                    stream._last_cutoff,
+                )
+                stream._position_withdrawals[key] = record
+                core._particle_observation_withdrawals[update.logical_key] = native_content_sha256(
+                    record
+                )
+            # Reentrant lock stays held; replay owns the inner computation and
+            # persistence transaction. No partial tombstone is published.
+            stream._busy = False
+            stream.replay_joint_posterior()
+        except BaseException:
+            if checkpoint is not None and not stream._durability_failed:
+                core._restore_revision_transaction(checkpoint)
+                stream._position_withdrawals = previous
             raise
         finally:
             stream._busy = False

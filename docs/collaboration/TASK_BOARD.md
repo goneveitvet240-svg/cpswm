@@ -1,5 +1,7 @@
 # 2026-10-02：联合报告评分已接通，位置模型仍阻断任务成功
 
+交付：[草稿 PR #93](https://github.com/goneveitvet240-svg/cpswm/pull/93)，叠加PR92，未合并。代码与证据提交 `5b6d6fc3a5322c1270aac5441622ba9ea48bd5b2` 已推送；冻结功能源码仍为 `10af59aba3a26bbbe66346b1bee89ae9b0a55de1`。
+
 A独立分支 `codex/pc-a-joint-report-evaluation-20261002`，源码 `10af59aba3a26bbbe66346b1bee89ae9b0a55de1`。用户三项任务定义已批准；owner报告/撤回、隔离身份＋AABB评分、同清单预算汇总局部实现，26/37顺序检查通过。[报告](../reviews/pc_a/joint_report_task_2026-10-02/REPORT.md)。旧真实输入的位置报告明确失败，原始读数与受控先验均存在问题；新先验/误差校准方案待用户决定。主动与后续记忆收益仍未实验，非B/全仓验收，不改统一范围。
 
 ---

@@ -1,5 +1,7 @@
 # A：联合报告/评分局部交付，真实位置失败已定位（2026-10-02）
 
+交付：[草稿 PR #93](https://github.com/goneveitvet240-svg/cpswm/pull/93)，叠加PR92，未合并。代码与证据提交 `5b6d6fc3a5322c1270aac5441622ba9ea48bd5b2` 已推送；冻结功能源码仍为 `10af59aba3a26bbbe66346b1bee89ae9b0a55de1`。
+
 用户已批准身份＋位置联合成功、报告可复查位置、三维包围盒开发判据；三项均不再待确认。分支 `codex/pc-a-joint-report-evaluation-20261002`，base `5907f85b5b3171fd1c71121c095d4589dc7339ae`，实际功能/测试源码 `10af59aba3a26bbbe66346b1bee89ae9b0a55de1`。
 
 新增当前owner报告、隔离联合评分和配对预算汇总，保留未知、失败、超预算及缺真值；恢复后报告一致，初始观测撤回后旧支持拒绝。冻结R1 26/57.47s、R2 37/1.57s通过，零跳过；mypy398/Ruff/format811通过，928Python文件未变。详见[报告](../reviews/pc_a/joint_report_task_2026-10-02/REPORT.md)和[命令](../reviews/pc_a/joint_report_task_2026-10-02/COMMANDS.md)。非B/全仓/科学收益。

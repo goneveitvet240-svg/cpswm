@@ -1,5 +1,7 @@
 # 身份＋位置报告与评分：局部接通，真实位置仍失败
 
+交付：[草稿 PR #93](https://github.com/goneveitvet240-svg/cpswm/pull/93)，叠加PR92，未合并。代码与证据提交 `5b6d6fc3a5322c1270aac5441622ba9ea48bd5b2` 已推送；冻结功能源码仍为 `10af59aba3a26bbbe66346b1bee89ae9b0a55de1`。
+
 用户已确定三项：身份和位置同时正确；首轮任务为找对物体并报告可复查位置；位置使用真实物体三维包围盒开发判据。三项均不再待批准。
 
 分支 `codex/pc-a-joint-report-evaluation-20261002`，base `5907f85b5b3171fd1c71121c095d4589dc7339ae`（PR92）；实际新增功能/测试源码 `10af59aba3a26bbbe66346b1bee89ae9b0a55de1`。本报告为A局部工程检查及旧真实输入的回顾性诊断，不是B独立复核、全仓验收或同预算收益实验。

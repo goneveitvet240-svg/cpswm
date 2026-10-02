@@ -60,13 +60,55 @@ class MaskSurfaceSupportProducer(TemporalTargetPositionProducer):
     def _content_binding(self) -> str:
         pin = sha256(Path(self.configuration["mask_weights_path"]).read_bytes()).hexdigest()
         _require(pin == NaturalMaskSurfaceDetector.weights_sha256, "mask checkpoint differs")
+        from cpswm.perception_mapping import natural_vision, unity_rgbd, visual_target_tracking
         from cpswm.system import surface_episode
 
+        _require(
+            MaskSurfaceSequence is mask_surface_sequence.MaskSurfaceSequence
+            and NaturalMaskSurfaceDetector is natural_mask_surface.NaturalMaskSurfaceDetector
+            and vars(mask_surface_sequence)["NaturalMaskSurfaceDetector"] is NaturalMaskSurfaceDetector
+            and vars(mask_surface_sequence)["select_surface"] is natural_mask_surface.select_surface
+            and vars(mask_surface_sequence)["InitializedPixelTargetTracker"]
+            is visual_target_tracking.InitializedPixelTargetTracker
+            and vars(mask_surface_sequence)["decode_rgb"] is natural_vision.decode_rgb
+            and vars(mask_surface_sequence)["decode_unity_rgbd"] is unity_rgbd.decode_unity_rgbd
+            and decode_unity_rgbd is unity_rgbd.decode_unity_rgbd,
+            "surface helper alias changed",
+        )
+        modules = (
+            mask_surface_sequence,
+            natural_mask_surface,
+            surface_episode,
+            surface_action_model,
+        )
+        bodies: list[tuple[str, ...]] = []
+        for module in modules:
+            for name, value in sorted(vars(module).items()):
+                if inspect.isfunction(value):
+                    bodies.append((module.__name__, name, _helper_code_sha256(value.__code__)))
+                elif inspect.isclass(value) and value.__module__ == module.__name__:
+                    for key, item in sorted(vars(value).items()):
+                        body = (
+                            item.fget
+                            if isinstance(item, property)
+                            else (
+                                item.__func__
+                                if isinstance(item, (staticmethod, classmethod))
+                                else item
+                            )
+                        )
+                        if inspect.isfunction(body):
+                            bodies.append(
+                                (module.__name__, name, key, _helper_code_sha256(body.__code__))
+                            )
         return content_sha256(
             (
                 PROFILE,
                 super()._content_binding(),
                 pin,
+                bodies,
+                mask_surface_sequence.MINIMUM_POINTS,
+                natural_mask_surface.MASK_THRESHOLD,
                 _helper_code_sha256(inspect.unwrap(_infer_prefix).__code__),
                 tuple(
                     (m.__name__, sha256(Path(str(m.__file__)).read_bytes()).hexdigest())

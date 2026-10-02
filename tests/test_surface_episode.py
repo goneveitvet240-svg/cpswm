@@ -35,7 +35,9 @@ def weights():
     return paths
 
 
-def test_real_mask_surface_owned_sequence_duplicate_and_budget(tmp_path, checkpoints, weights):
+def test_real_mask_surface_owned_sequence_duplicate_and_budget(
+    tmp_path, checkpoints, weights, monkeypatch
+):
     schedule = [dict(action="RotateRight", degrees=1.0)] * 2
     case = make_case(tmp_path / "state.db", checkpoints, *weights, schedule=schedule)
     try:
@@ -131,6 +133,17 @@ def test_real_mask_surface_owned_sequence_duplicate_and_budget(tmp_path, checkpo
             is None
         )
         assert camera.calls == 2
+        from cpswm.perception_mapping import mask_surface_sequence, natural_mask_surface
+
+        def forged_surface(*args, **kwargs):
+            return {"world_point_m": [0.0, 0.0, 0.0]}
+
+        with monkeypatch.context() as patch:
+            patch.setattr(natural_mask_surface, "select_surface", forged_surface)
+            patch.setattr(mask_surface_sequence, "select_surface", forged_surface)
+            with pytest.raises(ValueError, match="dependency changed"):
+                stream.current_joint_decision_view()
+        assert state(case) == saved
         stream.withdraw_owned_position_observation(
             first[0].action_id, reason="withdraw initial support"
         )

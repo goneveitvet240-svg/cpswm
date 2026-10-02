@@ -1,0 +1,12 @@
+Traceback (most recent call last):
+  File "/private/tmp/cpswm-pc-a-joint-report-evaluation-20261002/docs/reviews/pc_a/joint_report_task_2026-10-02/evidence/archive_report_probe.py", line 101, in <module>
+    run(args.source,args.output,args.evaluator_instance)
+    ~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/private/tmp/cpswm-pc-a-joint-report-evaluation-20261002/docs/reviews/pc_a/joint_report_task_2026-10-02/evidence/archive_report_probe.py", line 34, in run
+    stream = ContinuousEvidenceInput.resume(
+        store, producer=OracleProducer(), context_builder=forbidden,
+        joint_producer=association_joint(config), observation_decoder=RGBDSupportDecoder(),
+    )
+  File "/private/tmp/cpswm-pc-a-joint-report-evaluation-20261002/src/cpswm/system/structure_two_continuous_input.py", line 1581, in resume
+    raise ValueError("checkpoint joint producer dependency missing or changed")
+ValueError: checkpoint joint producer dependency missing or changed

@@ -1,3 +1,39 @@
+# A：六步流水线已公开交接（2026-10-02）
+
+[草稿PR #96](https://github.com/goneveitvet240-svg/cpswm/pull/96)堆叠PR95，未合并。完整源码/原始证据提交 `284ccb00f7a55e4d10988d9ea5f0fdc3d8560c32` 已成功推送；生产冻结仍 `745613ef0b804b5da4d1d2afcbba56fd9f78925c`，驱动/评分仍 `9581ebcd94e11e79dd459761df3b3cdfcedb100a`，本次只追加交接确认。
+
+一次自动审批因新增公开原始数据载荷而拒绝推送；用户随后明确授权“公开本次全部证据”（106.9MB压缩/548.5MB原始），重新推送成功，数据发布阻塞已解除。B独立复核仍待实际B执行，不以A的归档核验/新进程恢复替代。下一位从本PR head核对源文件pin、[报告](../reviews/pc_a/six_step_pipeline_2026-10-02/REPORT.md)与[复现命令](../reviews/pc_a/six_step_pipeline_2026-10-02/COMMANDS.md)开始；不要混用默认main或旧集成源码。
+
+---
+
+# A：六步开发闭环本机交付，B复核待执行（2026-10-02）
+
+分支 `codex/pc-a-six-step-final-20261002`；原始base/PR95 `1bdacaec1b97e6e82e4138ea94fcd48e5b9f6130`；生产冻结 `745613ef0b804b5da4d1d2afcbba56fd9f78925c`，驱动/评分冻结 `9581ebcd94e11e79dd459761df3b3cdfcedb100a`。[报告](../reviews/pc_a/six_step_pipeline_2026-10-02/REPORT.md)、[协议](../reviews/pc_a/six_step_pipeline_2026-10-02/PROTOCOL.md)、[命令](../reviews/pc_a/six_step_pipeline_2026-10-02/COMMANDS.md)、[证据清单](../reviews/pc_a/six_step_pipeline_2026-10-02/evidence/MANIFEST.json)。本节所属提交推送前仍为本地交付。
+
+统一入口、自然表面支持owner事务、固定连续观察、冻结联合成功策略、跨进程记忆及撤回、同任务同预算比较均已实际运行。最终fixed 3动作2/3；active 1动作2/3；no-update 3动作0/3，身份/位置分别记录，初始RGB/depth/pose和全物体状态完全一致。后续记忆保留与仅撤回中间观察均2/3，后续各1动作，逐帧公共输入完全一致，**未测到额外记忆收益**。碗身份正确但y低于真盒约1.46mm，判据不改。保持一屋开发/受控语义bootstrap范围，未宣称完整自然语义或统一科学成功。
+
+最终54项事务/策略回归通过；Ruff、mypy398、format413通过，960源文件封存未变。最终fixed及中间撤回后继续观察的数据库均新进程恢复一致；早期四种静态记忆控制另有四进程复核，绑定822fc3e/7083056而非混称最终SHA。完整1791文件+8链接封存，首轮Unity初始化超时、中止运行、UNKNOWN和故意故障均保留；详见报告区分各证据层级。
+
+原集成仍19ddf26830348a2f0b33f0af54d6ba702c5cfb1c，B仍fd4ca6ef5e81c90d7cf7987b42c0b2810d8a810a（fetch核对）。B执行入口未连接、未自签独立验收、未合并。下一步由真实B绑定冻结SHA复核合法/完整伪造/状态机/账本动作后果与公平性；研究下一缺口为自然位置读出误差、独立场景联合效用与长时/动态记忆收益。完整统一框架不缩小；原用户树、STATUS_B及共享集成未改。
+
+---
+
+# A：六步流水线最终收口（2026-10-02）
+
+为保持旧工作树正在执行的源绑定恢复实验不受修改影响，从 `7083056` 单独创建 `codex/pc-a-six-step-final-20261002`，工作目录 `/private/tmp/cpswm-pc-a-six-step-final-20261002`。功能冻结 `745613ef0b804b5da4d1d2afcbba56fd9f78925c`；仅修复撤回首参考后策略可能重锚定的边界，并把同组报告合并为一次owner状态读取。旧树/旧证据保留，不改变共享集成分支。
+
+反例已在旧源码复现（3 passed / 1 failed），修后4项通过。第一次真实同屋配对确认初始RGB/depth/pose和全物体状态完全相同：固定3动作与主动1动作均2/3联合成功，不更新3动作0/3。旧冻版本53项事务回归、3项旧连续回归通过；最终修复版本正在重新实跑/恢复验证，不能用前一SHA结果代替最终验收。[协议](../reviews/pc_a/six_step_pipeline_2026-10-02/PROTOCOL.md)。未连接电脑B执行入口，独立复核仍pending；本节推送前为本地进行中。
+
+---
+
+# A：六步任务流水线开工（2026-10-02）
+
+用户明确要求执行统一入口、自然观察更新、固定扫描、联合任务决策、后续记忆与配对验收六步。独立分支 `codex/pc-a-six-step-pipeline-20261002`，base/当前代码 `1bdacaec1b97e6e82e4138ea94fcd48e5b9f6130`（PR95）。fetch成功，集成19ddf26830348a2f0b33f0af54d6ba702c5cfb1c、B fd4ca6ef5e81c90d7cf7987b42c0b2810d8a810a未变，旧窗口无重复活动。
+
+优先复用已有owner事务/持久化/撤回，区分表面特征与对象状态；固定扫描独立于主动策略，不改停止条件制造成功。身份＋位置/AABB既有指标保持，未知/失败保留，训练开发与评分隔离。本轮未产生新结果；B独立复核必须由实际B执行，不冒称完成。完整统一框架、原用户树/STATUS_B/集成分支保持。证据拟存 `/private/tmp/cpswm-six-step-evidence-20261002`。提交推送前为本地进行中。
+
+---
+
 # A：自然掩码表面支持局部交付（2026-10-02）
 
 分支 `codex/pc-a-natural-mask-surface-20261002`，base/PR94 head `01c52fef24d5fafc95bf8f6584602771aa176d5c`，冻结实际功能/测试/驱动 SHA `d2c3f51b005b49b97812f43b5dc75c3801017807`。[报告](../reviews/pc_a/natural_mask_surface_2026-10-02/REPORT.md)、[验证](../reviews/pc_a/natural_mask_surface_2026-10-02/VALIDATION.md)、[命令](../reviews/pc_a/natural_mask_surface_2026-10-02/COMMANDS.md)。用户明确授权发布后，代码与完整证据提交 `992724e8698ab114e708b0c6f88bfb636f514e12` 已推送；[草稿 PR #95](https://github.com/goneveitvet240-svg/cpswm/pull/95)叠加PR94，未合并。本次追加仅确认交接，冻结功能源码不变。此前自动审批两次拦截证据包公开发布，已由用户本轮明确授权解除。

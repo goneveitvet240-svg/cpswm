@@ -57,6 +57,8 @@ def profile_for(producer: NativeJointProducer | None) -> dict[str, Any] | None:
         AppearanceGeometryPositionProducer,
     )
     from cpswm.system.controlled_position_producer import ControlledPositionProducer
+    from cpswm.system.mask_surface_support import PROFILE as SURFACE_PROFILE
+    from cpswm.system.mask_surface_support import MaskSurfaceSupportProducer
     from cpswm.system.natural_candidate_position import (
         NATURAL_PROFILE,
         NaturalCandidatePositionProducer,
@@ -73,6 +75,7 @@ def profile_for(producer: NativeJointProducer | None) -> dict[str, Any] | None:
         NaturalCandidatePositionProducer,
         AppearanceGeometryPositionProducer,
         TemporalTargetPositionProducer,
+        MaskSurfaceSupportProducer,
     ):
         return None
     candidate = cast("ControlledPositionProducer", candidate)
@@ -83,6 +86,7 @@ def profile_for(producer: NativeJointProducer | None) -> dict[str, Any] | None:
             NaturalCandidatePositionProducer: NATURAL_PROFILE,
             AppearanceGeometryPositionProducer: ASSOCIATION_PROFILE,
             TemporalTargetPositionProducer: TEMPORAL_PROFILE,
+            MaskSurfaceSupportProducer: SURFACE_PROFILE,
         }[type(candidate)],
         verifier_source=sha256(Path(__file__).read_bytes()).hexdigest(),
         weight_source=sha256(
@@ -111,6 +115,8 @@ def reconstruct(profile: dict[str, Any]) -> ControlledPositionProducer:
         AppearanceGeometryPositionProducer,
     )
     from cpswm.system.controlled_position_producer import ControlledPositionProducer
+    from cpswm.system.mask_surface_support import PROFILE as SURFACE_PROFILE
+    from cpswm.system.mask_surface_support import MaskSurfaceSupportProducer
     from cpswm.system.natural_candidate_position import (
         NATURAL_PROFILE,
         NaturalCandidatePositionProducer,
@@ -138,6 +144,7 @@ def reconstruct(profile: dict[str, Any]) -> ControlledPositionProducer:
             NATURAL_PROFILE,
             ASSOCIATION_PROFILE,
             TEMPORAL_PROFILE,
+            SURFACE_PROFILE,
         )
     ):
         raise ValueError("unrecognized configured raw candidate profile")
@@ -155,6 +162,7 @@ def reconstruct(profile: dict[str, Any]) -> ControlledPositionProducer:
         NATURAL_PROFILE: NaturalCandidatePositionProducer,
         ASSOCIATION_PROFILE: AppearanceGeometryPositionProducer,
         TEMPORAL_PROFILE: TemporalTargetPositionProducer,
+        SURFACE_PROFILE: MaskSurfaceSupportProducer,
         "controlled-position-raw@1": ControlledPositionProducer,
     }[profile["profile"]]
     result = cls(**deepcopy(profile["arguments"]))
@@ -233,6 +241,7 @@ def verify_raw_base(
 
     full_context = replace(native_context, visible_prefix=original.visible_prefix)
     from cpswm.system.appearance_geometry_position import AppearanceGeometryPositionProducer
+    from cpswm.system.mask_surface_support import MaskSurfaceSupportProducer
     from cpswm.system.natural_candidate_position import NaturalCandidatePositionProducer
     from cpswm.system.temporal_target_position import TemporalTargetPositionProducer
 
@@ -241,6 +250,7 @@ def verify_raw_base(
         NaturalCandidatePositionProducer,
         AppearanceGeometryPositionProducer,
         TemporalTargetPositionProducer,
+        MaskSurfaceSupportProducer,
     ):
         if len(contexts) != len(clusters):
             raise ValueError("owned update predecessor context is missing")

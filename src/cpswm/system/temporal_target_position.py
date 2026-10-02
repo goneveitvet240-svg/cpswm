@@ -42,12 +42,18 @@ from cpswm.system.natural_candidate_position import (
     NaturalCandidatePositionProducer,
 )
 from cpswm.system.reproducibility import content_sha256, content_uuid
-from cpswm.system.structure_two_conditional_updates import rebuild_conditional_state
+from cpswm.system.structure_two_conditional_updates import (
+    ConditionalMeasurement,
+    rebuild_conditional_state,
+)
+from cpswm.system.structure_two_particle_workspace import ConditionalAnalyticState
 
 PROFILE = "natural-target-temporal-joint-raw@1"
 
 
 class TemporalTargetPositionProducer(NaturalCandidatePositionProducer):
+    profile_id = PROFILE
+
     def _validate_configuration(self) -> None:
         c = self.configuration
         _require(
@@ -192,7 +198,7 @@ class TemporalTargetPositionProducer(NaturalCandidatePositionProducer):
                     keys = ["preserve"]
                 for key in keys:
                     pid = content_uuid(
-                        PROFILE + ":branch", (cluster, parent.state.particle_id, key)
+                        self.profile_id + ":branch", (cluster, parent.state.particle_id, key)
                     )
                     mapping[str(pid)] = (
                         key
@@ -288,6 +294,26 @@ class TemporalTargetPositionProducer(NaturalCandidatePositionProducer):
             records.append(record)
         return dict(records=records, history=history, current=current, captures=captures)
 
+    def _condition_observation(
+        self,
+        sequence: dict[str, Any],
+        key: str,
+        prior: ConditionalAnalyticState,
+        cluster: UUID,
+        record_id: UUID,
+    ) -> tuple[ConditionalMeasurement, dict[str, Any]]:
+        return temporal_position.condition(
+            self.position_model,
+            self.position_pin,
+            sequence["history"][key],
+            prior,
+            rho=self.configuration["shared_fraction"],
+            evidence_cluster_id=cluster,
+            source_record_ids=tuple(
+                UUID(k) for c in sequence["captures"] for k in c.packet["observation_ids"]
+            ),
+        )
+
     def produce(self, context: NativeJointContext) -> ProducedJointCandidates:
         if context.previous_batch is None:
             _require(
@@ -353,22 +379,14 @@ class TemporalTargetPositionProducer(NaturalCandidatePositionProducer):
                 detail = None
                 if observation is not None:
                     assert sequence is not None
-                    measure, detail = temporal_position.condition(
-                        self.position_model,
-                        self.position_pin,
-                        sequence["history"][key],
-                        prior,
-                        rho=self.configuration["shared_fraction"],
-                        evidence_cluster_id=cluster,
-                        source_record_ids=tuple(
-                            UUID(k)
-                            for c in sequence["captures"]
-                            for k in c.packet["observation_ids"]
-                        ),
+                    measure, detail = self._condition_observation(
+                        sequence, key, prior, cluster, record_id
                     )
                     log_ratio = detail["log_ratio"]
                 analytic = rebuild_conditional_state(prior, (measure,))
-                pid = content_uuid(PROFILE + ":branch", (cluster, parent.state.particle_id, key))
+                pid = content_uuid(
+                    self.profile_id + ":branch", (cluster, parent.state.particle_id, key)
+                )
                 statistics[pid] = analytic
                 mapping[str(pid)] = (
                     key
@@ -398,7 +416,7 @@ class TemporalTargetPositionProducer(NaturalCandidatePositionProducer):
                 receipts.append(
                     ParticleRevisionReceipt(
                         proposal=NeuralParticleProposal(
-                            proposal_id=content_uuid(PROFILE + ":proposal", pid),
+                            proposal_id=content_uuid(self.profile_id + ":proposal", pid),
                             evidence_cluster_id=cluster,
                             operation="branch" if associated else "preserve_unresolved",
                             source_particle_id=parent.state.particle_id,
@@ -406,7 +424,7 @@ class TemporalTargetPositionProducer(NaturalCandidatePositionProducer):
                             proposed_state=state,
                             proposal_log_probability=0.0,
                             proposer_model_version="explicit-prepared-candidates@1",
-                            proposer_code_version=PROFILE,
+                            proposer_code_version=self.profile_id,
                         ),
                         prior_log_weight=weights[parent.state.particle_id],
                         # Observation-dependent routing is not a transition prior.

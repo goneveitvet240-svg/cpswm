@@ -128,7 +128,7 @@ def describe_current_owned_rgbd(
                 and type(command.action_id) is UUID
                 and command.action_id == action_id
                 and content_sha256(command) == command_pin
-                and command.reason.startswith("joint-ciav@1:")
+                and command.reason.startswith(("joint-ciav@1:", "owned-surface-policy@1:"))
                 and action_id in stream._observation_native_origins,
                 "action is not an original modeled owner command",
             )
@@ -159,22 +159,27 @@ def describe_current_owned_rgbd(
                 and command.snapshot_id == base.snapshot_id,
                 "issued native origin is stale",
             )
-            problem = JointCameraProblem.model_validate_json(
-                command.reason.removeprefix("joint-ciav@1:")
-            )
-            _require(
-                problem.source_belief_sha256 == origin
-                and problem.model_sources == stream._observation_decoder.sources
-                and problem.source_observation_ids == command.source_ids,
-                "only the unchanged native-base decision is supported",
-            )
-            _, selected = problem.select(base, stream._system.cause_information_planner)
-            _require(
-                selected is not None
-                and selected.action == command.action
-                and selected.degrees == command.degrees,
-                "command differs from the original selected action",
-            )
+            if command.reason.startswith("owned-surface-policy@1:"):
+                from cpswm.system.surface_episode import validate_surface_command
+
+                validate_surface_command(stream, command, base)
+            else:
+                problem = JointCameraProblem.model_validate_json(
+                    command.reason.removeprefix("joint-ciav@1:")
+                )
+                _require(
+                    problem.source_belief_sha256 == origin
+                    and problem.model_sources == stream._observation_decoder.sources
+                    and problem.source_observation_ids == command.source_ids,
+                    "only the unchanged native-base decision is supported",
+                )
+                _, selected = problem.select(base, stream._system.cause_information_planner)
+                _require(
+                    selected is not None
+                    and selected.action == command.action
+                    and selected.degrees == command.degrees,
+                    "command differs from the original selected action",
+                )
             require_aware(command.decision_time, "decision")
             require_aware(delivery.received_at, "received")
             _require(
@@ -250,6 +255,7 @@ def describe_current_owned_rgbd(
                     "natural-candidate-single-position-raw@1",
                     "appearance-geometry-single-pair-raw@1",
                     "natural-target-temporal-joint-raw@1",
+                    "owned-mask-surface-support-raw@1",
                 ),
                 "descriptor requires the protected canonical raw profile",
             )

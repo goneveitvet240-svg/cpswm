@@ -1,0 +1,33 @@
+...F                                                                     [100%]
+=================================== FAILURES ===================================
+__________ test_withdrawn_first_reference_cannot_change_policy_target __________
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x1098d3100>
+
+    def test_withdrawn_first_reference_cannot_change_policy_target(monkeypatch):
+        model = fit(rows(), training_manifest="a" * 64)
+        policy = dict(mode="empirical_joint", budget=3,
+                      schedule=[dict(action="RotateRight", degrees=1.0)] * 3,
+                      queries=[dict(category="bottle", ordinal=0)], model=model,
+                      model_pin=content_sha256(model), action_cost=0.0001,
+                      alternatives=[dict(action="RotateRight", degrees=1.0)])
+        monkeypatch.setattr(episode, "owner_policy", lambda s: policy)
+        monkeypatch.setattr(episode, "effective_surface_state", lambda s: dict(action_ids=["remaining"]))
+        monkeypatch.setattr(episode, "report_from_surface_state", lambda *a, **kw: dict(
+            category="bottle", ordinal=0,
+            status="unknown" if kw["reference_action"] == "original" else "reported"))
+        stream = SimpleNamespace(observation_history=lambda: [
+            (SimpleNamespace(reason=episode.PREFIX, action_id="original"), "DELIVERED"),
+            (SimpleNamespace(reason=episode.PREFIX, action_id="remaining"), "DELIVERED"),
+        ])
+        reason = episode.policy_reason(stream, view=SimpleNamespace(content_sha256="view"),
+                                       source_ids=(), index=2)
+>       assert reason.get("stopped") and reason["reason"] == "unsupported_current_joint_success"
+E       AssertionError: assert (None)
+E        +  where None = <built-in method get of dict object at 0x10a2eb7c0>('stopped')
+E        +    where <built-in method get of dict object at 0x10a2eb7c0> = {'schema': 'owned-surface-policy@1:', 'policy_sha256': 'd0b565849a8a765130896abc0bd1bb7f38a14cb166467342774ff6003b6955d5', 'index': 2, 'source_belief_sha256': 'view', ...}.get
+
+tests/test_surface_action_model.py:102: AssertionError
+=========================== short test summary info ============================
+FAILED tests/test_surface_action_model.py::test_withdrawn_first_reference_cannot_change_policy_target
+1 failed, 3 passed in 0.13s

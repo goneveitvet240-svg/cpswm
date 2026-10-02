@@ -64,10 +64,15 @@ def test_actual_policy_selects_gain_and_stops_without_support(monkeypatch):
         lambda *a, **kw: dict(category="bottle", ordinal=0, status="reported"),
     )
     view = SimpleNamespace(content_sha256="v")
-    selected = episode.policy_reason(None, view=view, source_ids=(), index=1)
+    stream = SimpleNamespace(
+        observation_history=lambda: [
+            (SimpleNamespace(reason=episode.PREFIX, action_id="ref"), "DELIVERED")
+        ]
+    )
+    selected = episode.policy_reason(stream, view=view, source_ids=(), index=1)
     assert selected["action"] == "RotateRight" and selected["forecast"]["current"] == 0
     next(iter(model["cells"].values())).clear()
-    stopped = episode.policy_reason(None, view=view, source_ids=(), index=1)
+    stopped = episode.policy_reason(stream, view=view, source_ids=(), index=1)
     assert stopped["stopped"] and stopped["reason"] == "unsupported_current_joint_success"
 
 
@@ -77,3 +82,40 @@ def test_fixed_policy_rejects_hidden_model_and_bad_schedule():
     p["schedule"][0]["degrees"] = 1.0
     with pytest.raises(ValueError):
         episode.policy_configuration(p)
+
+
+def test_withdrawn_first_reference_cannot_change_policy_target(monkeypatch):
+    model = fit(rows(), training_manifest="a" * 64)
+    policy = dict(
+        mode="empirical_joint",
+        budget=3,
+        schedule=[dict(action="RotateRight", degrees=1.0)] * 3,
+        queries=[dict(category="bottle", ordinal=0)],
+        model=model,
+        model_pin=content_sha256(model),
+        action_cost=0.0001,
+        alternatives=[dict(action="RotateRight", degrees=1.0)],
+    )
+    monkeypatch.setattr(episode, "owner_policy", lambda s: policy)
+    monkeypatch.setattr(
+        episode, "effective_surface_state", lambda s: dict(action_ids=["remaining"])
+    )
+    monkeypatch.setattr(
+        episode,
+        "report_from_surface_state",
+        lambda *a, **kw: dict(
+            category="bottle",
+            ordinal=0,
+            status="unknown" if kw["reference_action"] == "original" else "reported",
+        ),
+    )
+    stream = SimpleNamespace(
+        observation_history=lambda: [
+            (SimpleNamespace(reason=episode.PREFIX, action_id="original"), "DELIVERED"),
+            (SimpleNamespace(reason=episode.PREFIX, action_id="remaining"), "DELIVERED"),
+        ]
+    )
+    reason = episode.policy_reason(
+        stream, view=SimpleNamespace(content_sha256="view"), source_ids=(), index=2
+    )
+    assert reason.get("stopped") and reason["reason"] == "unsupported_current_joint_success"

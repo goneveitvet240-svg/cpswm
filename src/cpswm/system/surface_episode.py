@@ -111,12 +111,20 @@ def policy_reason(
         state = effective_surface_state(stream)
         if not state["action_ids"]:
             return dict(stopped=True, reason="no_effective_reference")
+        original_commands = [
+            c
+            for c, status in stream.observation_history()
+            if c.reason.startswith(PREFIX) and status != "CANCELLED_STALE_JOINT"
+        ]
+        if not original_commands:
+            return dict(stopped=True, reason="no_original_reference")
+        reference = str(original_commands[0].action_id)
         reports = [
             report_from_surface_state(
                 state,
                 category=q["category"],
                 ordinal=q["ordinal"],
-                reference_action=state["action_ids"][0],
+                reference_action=reference,
             )
             for q in policy["queries"]
         ]

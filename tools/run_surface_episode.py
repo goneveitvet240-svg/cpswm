@@ -25,7 +25,7 @@ from cpswm.system.surface_episode import (
     collect_scheduled_surface,
     effective_surface_state,
     policy_reason,
-    surface_report,
+    report_from_surface_state,
 )
 from cpswm.system.unity_observation import UnityObservationExecutor
 
@@ -37,9 +37,10 @@ def save(path, value):
 
 
 def reports(stream, queries, reference):
+    state = effective_surface_state(stream)
     return [
-        surface_report(
-            stream, category=q["category"], ordinal=q["ordinal"], reference_action=reference
+        report_from_surface_state(
+            state, category=q["category"], ordinal=q["ordinal"], reference_action=reference
         )
         for q in queries
     ]

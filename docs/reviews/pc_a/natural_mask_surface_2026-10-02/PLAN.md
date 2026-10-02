@@ -1,6 +1,6 @@
 # 自然掩码表面支持开发
 
-用户要求继续推进自然表面对应。base `01c52fef24d5fafc95bf8f6584602771aa176d5c`（PR94），独立分支 `codex/pc-a-natural-mask-surface-20261002`。完整统一框架及既有用户科学决定保持。原工作树fetch未完成，恢复工作树fetch成功：集成19ddf26830348a2f0b33f0af54d6ba702c5cfb1c，B fd4ca6ef5e81c90d7cf7987b42c0b2810d8a810a；旧窗口未重复活动。
+用户要求继续推进自然表面对应。base `01c52fef24d5fafc95bf8f6584602771aa176d5c`（PR94），独立分支 `codex/pc-a-natural-mask-surface-20261002`。完整统一框架及既有用户科学决定保持。原工作树fetch最终因curl28/EOF退出128，恢复工作树fetch成功：集成19ddf26830348a2f0b33f0af54d6ba702c5cfb1c，B fd4ca6ef5e81c90d7cf7987b42c0b2810d8a810a；旧窗口未重复活动。
 
 本轮在相同公开RGB-D输入上增加固定预训练Mask R-CNN实例分割对照。它是检测框表面支持的工程替代候选，不是新科学收益声明；不改已批准的身份＋位置任务、AABB位置判据、旧校准模型或默认Native行为。模型及依赖完整固定，纯RGB推理不接收SDK实例/mask/位置。保留全部返回候选和无候选，类别不授予自然实例身份。
 

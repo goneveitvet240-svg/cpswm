@@ -1,0 +1,166 @@
+{
+  "action_accounting": "three query outcomes share each physical episode; group action sums repeat shared actions",
+  "comparisons": {
+    "memory-reset": {
+      "action_log_authentication": "external_requirement",
+      "groups": [
+        {
+          "actions": 9,
+          "cumulative_degrees": 135.0,
+          "elapsed_seconds": 104.08074599999999,
+          "failed_actions": 0,
+          "over_budget_task_ids": [],
+          "policy_id": "memory-retain",
+          "score": {
+            "assessments": [
+              {
+                "identity_correct": false,
+                "joint_success": false,
+                "position_correct": false,
+                "reason": "surface-support-value; not-centre-posterior",
+                "report_sha256": "d33c0957d07a8c19fc6774a00e1fc3d9764b727e8f58b0756e59ca497edac46d",
+                "task_sha256": "54127327a628912d704cfced3c74fe6fdccd4d77c30fa5aa93302e1b63745867",
+                "truth_sha256": "f771d22823141fe91dfa51ef6c17730d31d367c28675e61f928d96d24895c8ed"
+              },
+              {
+                "identity_correct": true,
+                "joint_success": true,
+                "position_correct": true,
+                "reason": "evaluated",
+                "report_sha256": "105798faf74302c825b4fb2613f1b9a9aa954afbabdc6de85ec82d3975045435",
+                "task_sha256": "a040621966c73885d9d7a3e0ab32dd995189da392c30ed1dc7c732d6b566969d",
+                "truth_sha256": "88811d05b888deb3a4c5e3016b6cedb7624739e7464a18c5333f8522360636be"
+              },
+              {
+                "identity_correct": false,
+                "joint_success": false,
+                "position_correct": false,
+                "reason": "surface-support-value; not-centre-posterior",
+                "report_sha256": "18e8eb857f21acb6b5aba110c5911bf1b2d1497ab678cceaf9ca70261c75ac8a",
+                "task_sha256": "6d0be1932bb9d8a10cba022b221bb180dac516c0e84f4a5e13e6d8777cf2dcf8",
+                "truth_sha256": "72b4763ae6ba3efd9184159fcb71489b2be63dce6e5f7357310b42acfe3a1787"
+              }
+            ],
+            "identity_correct": 1,
+            "joint_success": 1,
+            "joint_success_rate": 0.3333333333333333,
+            "position_correct": 1,
+            "task_count": 3,
+            "unadjudicated": 0
+          },
+          "stop_reasons": [
+            "budget_exhausted",
+            "budget_exhausted",
+            "budget_exhausted"
+          ]
+        },
+        {
+          "actions": 9,
+          "cumulative_degrees": 135.0,
+          "elapsed_seconds": 141.31832699999998,
+          "failed_actions": 0,
+          "over_budget_task_ids": [],
+          "policy_id": "memory-reset",
+          "score": {
+            "assessments": [
+              {
+                "identity_correct": false,
+                "joint_success": false,
+                "position_correct": false,
+                "reason": "surface-support-value; not-centre-posterior",
+                "report_sha256": "fe2eb2c4be4017cf6dd0cf8df711d734e3a622253abe95c049380ad4e1a8f460",
+                "task_sha256": "54127327a628912d704cfced3c74fe6fdccd4d77c30fa5aa93302e1b63745867",
+                "truth_sha256": "519d19bf1bbe3e4eb18c4886b73335fd137dfa2f7b8f8f2197042e9709e65029"
+              },
+              {
+                "identity_correct": true,
+                "joint_success": true,
+                "position_correct": true,
+                "reason": "evaluated",
+                "report_sha256": "1b8916646b98c24844032ab4d99d29e17c5df293e8905ad3f4fccc02748f2f34",
+                "task_sha256": "a040621966c73885d9d7a3e0ab32dd995189da392c30ed1dc7c732d6b566969d",
+                "truth_sha256": "f5df8bcd7f3b8b4105b0cbb270c598f605ecfbe7ed79464f447d7f1ca81ddc0a"
+              },
+              {
+                "identity_correct": false,
+                "joint_success": false,
+                "position_correct": false,
+                "reason": "surface-support-value; not-centre-posterior",
+                "report_sha256": "c78911f7496d9486d3bd5f5c7eb3ca8e9e3c6da0abcb0410581654f0b704a271",
+                "task_sha256": "6d0be1932bb9d8a10cba022b221bb180dac516c0e84f4a5e13e6d8777cf2dcf8",
+                "truth_sha256": "8fe05910dd3873e5cad032663715ae35c4aad69611424b413638cfa6fd236140"
+              }
+            ],
+            "identity_correct": 1,
+            "joint_success": 1,
+            "joint_success_rate": 0.3333333333333333,
+            "position_correct": 1,
+            "task_count": 3,
+            "unadjudicated": 0
+          },
+          "stop_reasons": [
+            "budget_exhausted",
+            "budget_exhausted",
+            "budget_exhausted"
+          ]
+        }
+      ],
+      "paired_design_and_count_budget_valid": true
+    }
+  },
+  "equality": {
+    "all_public_inputs_equal": true,
+    "entire_frozen_world_equal": true,
+    "initial_public_equal": true
+  },
+  "independent_scenes": 1,
+  "later_task_budget": 1,
+  "memory_controls": {
+    "memory-reset": [
+      {
+        "before_index": 2,
+        "effective_after": [
+          "59b20e17-0d6e-478f-ac27-7a8b5c08da2b"
+        ],
+        "physical_after": 2,
+        "physical_before": 2,
+        "retained_reference": "59b20e17-0d6e-478f-ac27-7a8b5c08da2b",
+        "withdrawn": [
+          "3e71f67d-9314-4a5a-ac00-8c8f167693a8"
+        ]
+      }
+    ],
+    "memory-retain": []
+  },
+  "public_signatures": {
+    "memory-reset": "3fdfbef0be1bf0cab3098c446e8d25af27c6e6590e3cb7c39766212553a497b8",
+    "memory-retain": "3fdfbef0be1bf0cab3098c446e8d25af27c6e6590e3cb7c39766212553a497b8"
+  },
+  "public_trajectories": {
+    "memory-reset": [
+      "3fdfbef0be1bf0cab3098c446e8d25af27c6e6590e3cb7c39766212553a497b8",
+      "f37be517346b47b9713d8866532b556e6f98168958cf3b08f21200992a0f84e6",
+      "c900a6596859453751dcadf46a0b1f9f3f7117e33653643d8e118e27518b484d"
+    ],
+    "memory-retain": [
+      "3fdfbef0be1bf0cab3098c446e8d25af27c6e6590e3cb7c39766212553a497b8",
+      "f37be517346b47b9713d8866532b556e6f98168958cf3b08f21200992a0f84e6",
+      "c900a6596859453751dcadf46a0b1f9f3f7117e33653643d8e118e27518b484d"
+    ]
+  },
+  "scope": "frozen development pilot; not generalization or B acceptance",
+  "status": "VALID_DEVELOPMENT_PAIR",
+  "task_count": 3,
+  "world_signatures": {
+    "memory-reset": [
+      "97048a2cfc0613294071c67c29f71538d9ea944d7955776b0c52b1318c876ed5",
+      "97048a2cfc0613294071c67c29f71538d9ea944d7955776b0c52b1318c876ed5",
+      "97048a2cfc0613294071c67c29f71538d9ea944d7955776b0c52b1318c876ed5"
+    ],
+    "memory-retain": [
+      "97048a2cfc0613294071c67c29f71538d9ea944d7955776b0c52b1318c876ed5",
+      "97048a2cfc0613294071c67c29f71538d9ea944d7955776b0c52b1318c876ed5",
+      "97048a2cfc0613294071c67c29f71538d9ea944d7955776b0c52b1318c876ed5"
+    ]
+  }
+}

@@ -1,0 +1,272 @@
+{
+  "budget": 3,
+  "failures": [],
+  "final_reports": [
+    {
+      "action_id": null,
+      "anchor_id": null,
+      "category": "bottle",
+      "observation_ids": [],
+      "ordinal": 0,
+      "reason": "reference_not_effective",
+      "reference_action": "6bf8cd52-3484-4d1a-91a7-a0a01383c15f",
+      "scene_id": null,
+      "selected_pixel_uv": null,
+      "source_view_sha256": "f5d66a85eda267f04af3c7988de860b2375fd7f6a7c24752e1ee84435164cb88",
+      "status": "unknown",
+      "temporal_scope": "last_effective_capture_only",
+      "valid_at": null,
+      "world_point_m": null
+    },
+    {
+      "action_id": null,
+      "anchor_id": null,
+      "category": "bottle",
+      "observation_ids": [],
+      "ordinal": 1,
+      "reason": "reference_not_effective",
+      "reference_action": "6bf8cd52-3484-4d1a-91a7-a0a01383c15f",
+      "scene_id": null,
+      "selected_pixel_uv": null,
+      "source_view_sha256": "f5d66a85eda267f04af3c7988de860b2375fd7f6a7c24752e1ee84435164cb88",
+      "status": "unknown",
+      "temporal_scope": "last_effective_capture_only",
+      "valid_at": null,
+      "world_point_m": null
+    },
+    {
+      "action_id": null,
+      "anchor_id": null,
+      "category": "bowl",
+      "observation_ids": [],
+      "ordinal": 0,
+      "reason": "reference_not_effective",
+      "reference_action": "6bf8cd52-3484-4d1a-91a7-a0a01383c15f",
+      "scene_id": null,
+      "selected_pixel_uv": null,
+      "source_view_sha256": "f5d66a85eda267f04af3c7988de860b2375fd7f6a7c24752e1ee84435164cb88",
+      "status": "unknown",
+      "temporal_scope": "last_effective_capture_only",
+      "valid_at": null,
+      "world_point_m": null
+    }
+  ],
+  "physical_dispatches": 3,
+  "policy": {
+    "budget": 3,
+    "mode": "fixed_scan",
+    "schedule": [
+      {
+        "action": "RotateRight",
+        "degrees": 30.0
+      },
+      {
+        "action": "RotateRight",
+        "degrees": 5.0
+      },
+      {
+        "action": "RotateRight",
+        "degrees": 5.0
+      }
+    ]
+  },
+  "queries": [
+    {
+      "category": "bottle",
+      "ordinal": 0
+    },
+    {
+      "category": "bottle",
+      "ordinal": 1
+    },
+    {
+      "category": "bowl",
+      "ordinal": 0
+    }
+  ],
+  "reference_action": "6bf8cd52-3484-4d1a-91a7-a0a01383c15f",
+  "schedule": [
+    {
+      "action": "RotateRight",
+      "degrees": 30.0
+    },
+    {
+      "action": "RotateRight",
+      "degrees": 5.0
+    },
+    {
+      "action": "RotateRight",
+      "degrees": 5.0
+    }
+  ],
+  "scope": "natural surface task; controlled semantic bootstrap",
+  "status": "COMPLETED",
+  "steps": [
+    {
+      "action_id": "6bf8cd52-3484-4d1a-91a7-a0a01383c15f",
+      "index": 0,
+      "reports": [
+        {
+          "action_id": null,
+          "anchor_id": null,
+          "category": "bottle",
+          "observation_ids": [],
+          "ordinal": 0,
+          "reason": "reference_not_effective",
+          "reference_action": "6bf8cd52-3484-4d1a-91a7-a0a01383c15f",
+          "scene_id": null,
+          "selected_pixel_uv": null,
+          "source_view_sha256": "eedeb20207092b868936cc909601528e711f87907aafb3df674557a93cddcce2",
+          "status": "unknown",
+          "temporal_scope": "last_effective_capture_only",
+          "valid_at": null,
+          "world_point_m": null
+        },
+        {
+          "action_id": null,
+          "anchor_id": null,
+          "category": "bottle",
+          "observation_ids": [],
+          "ordinal": 1,
+          "reason": "reference_not_effective",
+          "reference_action": "6bf8cd52-3484-4d1a-91a7-a0a01383c15f",
+          "scene_id": null,
+          "selected_pixel_uv": null,
+          "source_view_sha256": "eedeb20207092b868936cc909601528e711f87907aafb3df674557a93cddcce2",
+          "status": "unknown",
+          "temporal_scope": "last_effective_capture_only",
+          "valid_at": null,
+          "world_point_m": null
+        },
+        {
+          "action_id": null,
+          "anchor_id": null,
+          "category": "bowl",
+          "observation_ids": [],
+          "ordinal": 0,
+          "reason": "reference_not_effective",
+          "reference_action": "6bf8cd52-3484-4d1a-91a7-a0a01383c15f",
+          "scene_id": null,
+          "selected_pixel_uv": null,
+          "source_view_sha256": "eedeb20207092b868936cc909601528e711f87907aafb3df674557a93cddcce2",
+          "status": "unknown",
+          "temporal_scope": "last_effective_capture_only",
+          "valid_at": null,
+          "world_point_m": null
+        }
+      ],
+      "source_view_sha256": "eedeb20207092b868936cc909601528e711f87907aafb3df674557a93cddcce2"
+    },
+    {
+      "action_id": "473f6aa2-0513-4404-bb6f-592e9d119ce5",
+      "index": 1,
+      "reports": [
+        {
+          "action_id": null,
+          "anchor_id": null,
+          "category": "bottle",
+          "observation_ids": [],
+          "ordinal": 0,
+          "reason": "reference_not_effective",
+          "reference_action": "6bf8cd52-3484-4d1a-91a7-a0a01383c15f",
+          "scene_id": null,
+          "selected_pixel_uv": null,
+          "source_view_sha256": "4300b8c6e1d29ee741588d2eb0261fb3933ad701b9a7fb7c792d971e5dc948d7",
+          "status": "unknown",
+          "temporal_scope": "last_effective_capture_only",
+          "valid_at": null,
+          "world_point_m": null
+        },
+        {
+          "action_id": null,
+          "anchor_id": null,
+          "category": "bottle",
+          "observation_ids": [],
+          "ordinal": 1,
+          "reason": "reference_not_effective",
+          "reference_action": "6bf8cd52-3484-4d1a-91a7-a0a01383c15f",
+          "scene_id": null,
+          "selected_pixel_uv": null,
+          "source_view_sha256": "4300b8c6e1d29ee741588d2eb0261fb3933ad701b9a7fb7c792d971e5dc948d7",
+          "status": "unknown",
+          "temporal_scope": "last_effective_capture_only",
+          "valid_at": null,
+          "world_point_m": null
+        },
+        {
+          "action_id": null,
+          "anchor_id": null,
+          "category": "bowl",
+          "observation_ids": [],
+          "ordinal": 0,
+          "reason": "reference_not_effective",
+          "reference_action": "6bf8cd52-3484-4d1a-91a7-a0a01383c15f",
+          "scene_id": null,
+          "selected_pixel_uv": null,
+          "source_view_sha256": "4300b8c6e1d29ee741588d2eb0261fb3933ad701b9a7fb7c792d971e5dc948d7",
+          "status": "unknown",
+          "temporal_scope": "last_effective_capture_only",
+          "valid_at": null,
+          "world_point_m": null
+        }
+      ],
+      "source_view_sha256": "4300b8c6e1d29ee741588d2eb0261fb3933ad701b9a7fb7c792d971e5dc948d7"
+    },
+    {
+      "action_id": "9e3f3fb9-e58e-4a5d-a862-216803d9540d",
+      "index": 2,
+      "reports": [
+        {
+          "action_id": null,
+          "anchor_id": null,
+          "category": "bottle",
+          "observation_ids": [],
+          "ordinal": 0,
+          "reason": "reference_not_effective",
+          "reference_action": "6bf8cd52-3484-4d1a-91a7-a0a01383c15f",
+          "scene_id": null,
+          "selected_pixel_uv": null,
+          "source_view_sha256": "f5d66a85eda267f04af3c7988de860b2375fd7f6a7c24752e1ee84435164cb88",
+          "status": "unknown",
+          "temporal_scope": "last_effective_capture_only",
+          "valid_at": null,
+          "world_point_m": null
+        },
+        {
+          "action_id": null,
+          "anchor_id": null,
+          "category": "bottle",
+          "observation_ids": [],
+          "ordinal": 1,
+          "reason": "reference_not_effective",
+          "reference_action": "6bf8cd52-3484-4d1a-91a7-a0a01383c15f",
+          "scene_id": null,
+          "selected_pixel_uv": null,
+          "source_view_sha256": "f5d66a85eda267f04af3c7988de860b2375fd7f6a7c24752e1ee84435164cb88",
+          "status": "unknown",
+          "temporal_scope": "last_effective_capture_only",
+          "valid_at": null,
+          "world_point_m": null
+        },
+        {
+          "action_id": null,
+          "anchor_id": null,
+          "category": "bowl",
+          "observation_ids": [],
+          "ordinal": 0,
+          "reason": "reference_not_effective",
+          "reference_action": "6bf8cd52-3484-4d1a-91a7-a0a01383c15f",
+          "scene_id": null,
+          "selected_pixel_uv": null,
+          "source_view_sha256": "f5d66a85eda267f04af3c7988de860b2375fd7f6a7c24752e1ee84435164cb88",
+          "status": "unknown",
+          "temporal_scope": "last_effective_capture_only",
+          "valid_at": null,
+          "world_point_m": null
+        }
+      ],
+      "source_view_sha256": "f5d66a85eda267f04af3c7988de860b2375fd7f6a7c24752e1ee84435164cb88"
+    }
+  ],
+  "updates_enabled": false
+}

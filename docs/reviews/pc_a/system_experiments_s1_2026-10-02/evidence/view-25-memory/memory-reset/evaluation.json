@@ -1,0 +1,204 @@
+{
+  "identity_correct": 2,
+  "joint_success": 2,
+  "physical_dispatches": 3,
+  "position_correct": 2,
+  "rows": [
+    {
+      "evaluation_mask": "011-instances.npz",
+      "query": {
+        "category": "bottle",
+        "ordinal": 0
+      },
+      "report": {
+        "instance_hypothesis": "a7e9532f-1c4e-555c-861b-70d4b04341ef",
+        "observation_ids": [
+          "01a56b6e-7566-4067-93c1-40d1d2773e83",
+          "24f1338e-4262-40e6-bb6d-49985aab4a1d",
+          "dc8af51b-a4de-42be-9b68-334e02fe01cf"
+        ],
+        "particle_id": "a7e9532f-1c4e-555c-861b-70d4b04341ef",
+        "point_m": [
+          0.3046661035198812,
+          1.0337830302506323,
+          2.1397676406251613
+        ],
+        "reason": "surface-support-value; not-centre-posterior",
+        "source_view_sha256": "b52b26c0ed0afac84936818c73382384568c9bd9586ee616c1d9e0eb7e548950",
+        "status": "reported",
+        "task_sha256": "af1092eb28db8e77475c6f387b384707c1f50d419121cb3a9fdae2078781ec2a"
+      },
+      "score": {
+        "identity_correct": true,
+        "joint_success": true,
+        "position_correct": true,
+        "reason": "evaluated",
+        "report_sha256": "f7e18fdb0ba8aaa34a8c17b69250485e05375d0834e852c120350087e74d36ea",
+        "task_sha256": "af1092eb28db8e77475c6f387b384707c1f50d419121cb3a9fdae2078781ec2a",
+        "truth_sha256": "812301f0f3dc3fa47534fab5f143266d4253f80f6bbe0657238f24106baf263f"
+      },
+      "step_index": 2,
+      "task": {
+        "action_budget": 3,
+        "allowed_actions_sha256": "2eacdf82413da7d9b8b0b55f989dfd62d2095fccbe26f47e2497f01191562c13",
+        "frame_id": "unity-scene-world-x-right-y-up-z-forward",
+        "initial_input_sha256": "ac355a467c5b6257804d0f52213d37c289e3ff074619f6eaf81f3daaa3f609a9",
+        "position_origin_m": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "scene_id": "1915472607dd07e3114966e00a109064af0115e2f70881f8c185eb5d2ce90b4c",
+        "target_description": "initial bottle at zero-based x-order 0",
+        "task_id": "5b4a1738-0c5d-5fa5-88fd-53c4558782d7",
+        "valid_at": "2026-10-02T14:48:27.125474Z"
+      },
+      "truth": {
+        "annotation_artifact_sha256": "f14f5f81a9bf0a2632f49aaf3db7dad6f82bc41b6a472767b0ecd1b5eb0edd78",
+        "lower_m": [
+          0.2149759829044342,
+          0.9374582767486572,
+          2.0918195247650146
+        ],
+        "report_sha256": "f7e18fdb0ba8aaa34a8c17b69250485e05375d0834e852c120350087e74d36ea",
+        "reported_instance_id": "WineBottle|surface|2|8",
+        "target_instance_id": "WineBottle|surface|2|8",
+        "task_sha256": "af1092eb28db8e77475c6f387b384707c1f50d419121cb3a9fdae2078781ec2a",
+        "upper_m": [
+          0.30542096495628357,
+          1.2638633251190186,
+          2.180610418319702
+        ]
+      }
+    },
+    {
+      "evaluation_mask": "011-instances.npz",
+      "query": {
+        "category": "bottle",
+        "ordinal": 1
+      },
+      "report": {
+        "instance_hypothesis": "73d489af-c514-53d4-858a-bb4b8bae212c",
+        "observation_ids": [
+          "01a56b6e-7566-4067-93c1-40d1d2773e83",
+          "24f1338e-4262-40e6-bb6d-49985aab4a1d",
+          "dc8af51b-a4de-42be-9b68-334e02fe01cf"
+        ],
+        "particle_id": "73d489af-c514-53d4-858a-bb4b8bae212c",
+        "point_m": [
+          0.5239082935962333,
+          1.0801009683572516,
+          2.7614213407310273
+        ],
+        "reason": "surface-support-value; not-centre-posterior",
+        "source_view_sha256": "b52b26c0ed0afac84936818c73382384568c9bd9586ee616c1d9e0eb7e548950",
+        "status": "reported",
+        "task_sha256": "89551fe8d4aa21ad6d4f250bec0d99f47bdd697dfacff8eece28045d59a5b1c3"
+      },
+      "score": {
+        "identity_correct": true,
+        "joint_success": true,
+        "position_correct": true,
+        "reason": "evaluated",
+        "report_sha256": "03389f901a0b902ade8495cdbd36ee945566593b3931397ccb92fad748dfdb12",
+        "task_sha256": "89551fe8d4aa21ad6d4f250bec0d99f47bdd697dfacff8eece28045d59a5b1c3",
+        "truth_sha256": "a1329e888f5253b6a3fd207b97925a56656f6c0928697618572c6187e6ff9127"
+      },
+      "step_index": 2,
+      "task": {
+        "action_budget": 3,
+        "allowed_actions_sha256": "2eacdf82413da7d9b8b0b55f989dfd62d2095fccbe26f47e2497f01191562c13",
+        "frame_id": "unity-scene-world-x-right-y-up-z-forward",
+        "initial_input_sha256": "ac355a467c5b6257804d0f52213d37c289e3ff074619f6eaf81f3daaa3f609a9",
+        "position_origin_m": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "scene_id": "1915472607dd07e3114966e00a109064af0115e2f70881f8c185eb5d2ce90b4c",
+        "target_description": "initial bottle at zero-based x-order 1",
+        "task_id": "c1a684cf-6f09-56e7-9559-58dcacc18b12",
+        "valid_at": "2026-10-02T14:48:27.125474Z"
+      },
+      "truth": {
+        "annotation_artifact_sha256": "f14f5f81a9bf0a2632f49aaf3db7dad6f82bc41b6a472767b0ecd1b5eb0edd78",
+        "lower_m": [
+          0.44335275888442993,
+          0.9374604225158691,
+          2.7023632526397705
+        ],
+        "report_sha256": "03389f901a0b902ade8495cdbd36ee945566593b3931397ccb92fad748dfdb12",
+        "reported_instance_id": "SoapBottle|surface|2|14",
+        "target_instance_id": "SoapBottle|surface|2|14",
+        "task_sha256": "89551fe8d4aa21ad6d4f250bec0d99f47bdd697dfacff8eece28045d59a5b1c3",
+        "upper_m": [
+          0.5377412438392639,
+          1.1750690937042236,
+          2.7896358966827393
+        ]
+      }
+    },
+    {
+      "evaluation_mask": "011-instances.npz",
+      "query": {
+        "category": "bowl",
+        "ordinal": 0
+      },
+      "report": {
+        "instance_hypothesis": null,
+        "observation_ids": [],
+        "particle_id": null,
+        "point_m": null,
+        "reason": "surface-support-value; not-centre-posterior",
+        "source_view_sha256": "b52b26c0ed0afac84936818c73382384568c9bd9586ee616c1d9e0eb7e548950",
+        "status": "unknown",
+        "task_sha256": "27241cf5004a2bd145c9c2fa4005a8f433440eb798d66f0aa7a40b5dbd9bb13b"
+      },
+      "score": {
+        "identity_correct": false,
+        "joint_success": false,
+        "position_correct": false,
+        "reason": "surface-support-value; not-centre-posterior",
+        "report_sha256": "80570d09fe6db7b2c6e02b821988ab5ab8f48097e5d22a39bdc87ab1d784bca0",
+        "task_sha256": "27241cf5004a2bd145c9c2fa4005a8f433440eb798d66f0aa7a40b5dbd9bb13b",
+        "truth_sha256": "2011f81e6aca6e819e53f39aa7ad335eff4dbff041dfbdbd01ccc6b62d1e513a"
+      },
+      "step_index": 2,
+      "task": {
+        "action_budget": 3,
+        "allowed_actions_sha256": "2eacdf82413da7d9b8b0b55f989dfd62d2095fccbe26f47e2497f01191562c13",
+        "frame_id": "unity-scene-world-x-right-y-up-z-forward",
+        "initial_input_sha256": "ac355a467c5b6257804d0f52213d37c289e3ff074619f6eaf81f3daaa3f609a9",
+        "position_origin_m": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "scene_id": "1915472607dd07e3114966e00a109064af0115e2f70881f8c185eb5d2ce90b4c",
+        "target_description": "initial bowl at zero-based x-order 0",
+        "task_id": "9e2af108-6535-5030-ac68-d1236626000d",
+        "valid_at": "2026-10-02T14:48:27.125474Z"
+      },
+      "truth": {
+        "annotation_artifact_sha256": "f14f5f81a9bf0a2632f49aaf3db7dad6f82bc41b6a472767b0ecd1b5eb0edd78",
+        "lower_m": [
+          0.15558236837387085,
+          0.937592625617981,
+          2.339888095855713
+        ],
+        "report_sha256": "80570d09fe6db7b2c6e02b821988ab5ab8f48097e5d22a39bdc87ab1d784bca0",
+        "reported_instance_id": null,
+        "target_instance_id": "Bowl|surface|2|11",
+        "task_sha256": "27241cf5004a2bd145c9c2fa4005a8f433440eb798d66f0aa7a40b5dbd9bb13b",
+        "upper_m": [
+          0.35779547691345215,
+          1.025884747505188,
+          2.5421013832092285
+        ]
+      }
+    }
+  ],
+  "runtime_result_sha256": "708713c053399bcdea086507efe818732d4e2d03e2bd6ef2aa488312f27fcdbf",
+  "status": "EVALUATED",
+  "task_count": 3
+}

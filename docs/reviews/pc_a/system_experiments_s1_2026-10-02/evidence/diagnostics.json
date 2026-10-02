@@ -1,0 +1,2133 @@
+{
+  "active_stops": [
+    {
+      "group": "view-25-policy",
+      "physical_dispatches": 1,
+      "stop": {
+        "current": 0.6666666666666666,
+        "options": [
+          {
+            "action": "RotateRight",
+            "degrees": 1.0,
+            "expected": 0.6666666666666666,
+            "net_gain": -0.0001
+          },
+          {
+            "action": "RotateRight",
+            "degrees": 5.0,
+            "expected": 0.5555555555555555,
+            "net_gain": -0.11121111111111116
+          }
+        ],
+        "reason": "no_positive_predicted_joint_gain",
+        "stopped": true
+      }
+    },
+    {
+      "group": "view-30-policy",
+      "physical_dispatches": 1,
+      "stop": {
+        "current": 0.6666666666666666,
+        "options": [
+          {
+            "action": "RotateRight",
+            "degrees": 1.0,
+            "expected": 0.6666666666666666,
+            "net_gain": -0.0001
+          },
+          {
+            "action": "RotateRight",
+            "degrees": 5.0,
+            "expected": 0.5555555555555555,
+            "net_gain": -0.11121111111111116
+          }
+        ],
+        "reason": "no_positive_predicted_joint_gain",
+        "stopped": true
+      }
+    },
+    {
+      "group": "view-35-policy",
+      "physical_dispatches": 1,
+      "stop": {
+        "current": 0.6666666666666666,
+        "options": [
+          {
+            "action": "RotateRight",
+            "degrees": 1.0,
+            "expected": 0.6666666666666666,
+            "net_gain": -0.0001
+          },
+          {
+            "action": "RotateRight",
+            "degrees": 5.0,
+            "expected": 0.5555555555555555,
+            "net_gain": -0.11121111111111116
+          }
+        ],
+        "reason": "no_positive_predicted_joint_gain",
+        "stopped": true
+      }
+    }
+  ],
+  "bowl_joint_successes": 0,
+  "bowl_vertical_miss_mm_range": [
+    1.5607618796015243,
+    2.0662470316038517
+  ],
+  "final_reason_counts": {
+    "FLOW_AND_MASK_SUPPORTED": 25,
+    "LOST_NO_REINITIALIZATION": 3,
+    "UNKNOWN_NO_CURRENT_MASK_SUPPORT": 4,
+    "initial_query_unresolved": 4,
+    "reference_not_effective": 9
+  },
+  "frame_query_rows": 117,
+  "reported_bowl_rows": 15,
+  "rows": [
+    {
+      "arm": "fixed",
+      "group": "view-25-policy",
+      "identity_correct": true,
+      "joint_success": true,
+      "outside_aabb_mm_xyz": [
+        0,
+        0,
+        0
+      ],
+      "position_correct": true,
+      "query": {
+        "category": "bottle",
+        "ordinal": 0
+      },
+      "reason": "FLOW_AND_MASK_SUPPORTED",
+      "status": "reported",
+      "step": 0
+    },
+    {
+      "arm": "fixed",
+      "group": "view-25-policy",
+      "identity_correct": true,
+      "joint_success": true,
+      "outside_aabb_mm_xyz": [
+        0,
+        0,
+        0
+      ],
+      "position_correct": true,
+      "query": {
+        "category": "bottle",
+        "ordinal": 1
+      },
+      "reason": "FLOW_AND_MASK_SUPPORTED",
+      "status": "reported",
+      "step": 0
+    },
+    {
+      "arm": "fixed",
+      "group": "view-25-policy",
+      "identity_correct": false,
+      "joint_success": false,
+      "outside_aabb_mm_xyz": null,
+      "position_correct": false,
+      "query": {
+        "category": "bowl",
+        "ordinal": 0
+      },
+      "reason": "initial_query_unresolved",
+      "status": "unknown",
+      "step": 0
+    },
+    {
+      "arm": "fixed",
+      "group": "view-25-policy",
+      "identity_correct": true,
+      "joint_success": true,
+      "outside_aabb_mm_xyz": [
+        0,
+        0,
+        0
+      ],
+      "position_correct": true,
+      "query": {
+        "category": "bottle",
+        "ordinal": 0
+      },
+      "reason": "FLOW_AND_MASK_SUPPORTED",
+      "status": "reported",
+      "step": 1
+    },
+    {
+      "arm": "fixed",
+      "group": "view-25-policy",
+      "identity_correct": true,
+      "joint_success": true,
+      "outside_aabb_mm_xyz": [
+        0,
+        0,
+        0
+      ],
+      "position_correct": true,
+      "query": {
+        "category": "bottle",
+        "ordinal": 1
+      },
+      "reason": "FLOW_AND_MASK_SUPPORTED",
+      "status": "reported",
+      "step": 1
+    },
+    {
+      "arm": "fixed",
+      "group": "view-25-policy",
+      "identity_correct": false,
+      "joint_success": false,
+      "outside_aabb_mm_xyz": null,
+      "position_correct": false,
+      "query": {
+        "category": "bowl",
+        "ordinal": 0
+      },
+      "reason": "initial_query_unresolved",
+      "status": "unknown",
+      "step": 1
+    },
+    {
+      "arm": "fixed",
+      "group": "view-25-policy",
+      "identity_correct": true,
+      "joint_success": true,
+      "outside_aabb_mm_xyz": [
+        0,
+        0,
+        0
+      ],
+      "position_correct": true,
+      "query": {
+        "category": "bottle",
+        "ordinal": 0
+      },
+      "reason": "FLOW_AND_MASK_SUPPORTED",
+      "status": "reported",
+      "step": 2
+    },
+    {
+      "arm": "fixed",
+      "group": "view-25-policy",
+      "identity_correct": true,
+      "joint_success": true,
+      "outside_aabb_mm_xyz": [
+        0,
+        0,
+        0
+      ],
+      "position_correct": true,
+      "query": {
+        "category": "bottle",
+        "ordinal": 1
+      },
+      "reason": "FLOW_AND_MASK_SUPPORTED",
+      "status": "reported",
+      "step": 2
+    },
+    {
+      "arm": "fixed",
+      "group": "view-25-policy",
+      "identity_correct": false,
+      "joint_success": false,
+      "outside_aabb_mm_xyz": null,
+      "position_correct": false,
+      "query": {
+        "category": "bowl",
+        "ordinal": 0
+      },
+      "reason": "initial_query_unresolved",
+      "status": "unknown",
+      "step": 2
+    },
+    {
+      "arm": "active",
+      "group": "view-25-policy",
+      "identity_correct": true,
+      "joint_success": true,
+      "outside_aabb_mm_xyz": [
+        0,
+        0,
+        0
+      ],
+      "position_correct": true,
+      "query": {
+        "category": "bottle",
+        "ordinal": 0
+      },
+      "reason": "FLOW_AND_MASK_SUPPORTED",
+      "status": "reported",
+      "step": 0
+    },
+    {
+      "arm": "active",
+      "group": "view-25-policy",
+      "identity_correct": true,
+      "joint_success": true,
+      "outside_aabb_mm_xyz": [
+        0,
+        0,
+        0
+      ],
+      "position_correct": true,
+      "query": {
+        "category": "bottle",
+        "ordinal": 1
+      },
+      "reason": "FLOW_AND_MASK_SUPPORTED",
+      "status": "reported",
+      "step": 0
+    },
+    {
+      "arm": "active",
+      "group": "view-25-policy",
+      "identity_correct": false,
+      "joint_success": false,
+      "outside_aabb_mm_xyz": null,
+      "position_correct": false,
+      "query": {
+        "category": "bowl",
+        "ordinal": 0
+      },
+      "reason": "initial_query_unresolved",
+      "status": "unknown",
+      "step": 0
+    },
+    {
+      "arm": "no-update",
+      "group": "view-25-policy",
+      "identity_correct": false,
+      "joint_success": false,
+      "outside_aabb_mm_xyz": null,
+      "position_correct": false,
+      "query": {
+        "category": "bottle",
+        "ordinal": 0
+      },
+      "reason": "reference_not_effective",
+      "status": "unknown",
+      "step": 0
+    },
+    {
+      "arm": "no-update",
+      "group": "view-25-policy",
+      "identity_correct": false,
+      "joint_success": false,
+      "outside_aabb_mm_xyz": null,
+      "position_correct": false,
+      "query": {
+        "category": "bottle",
+        "ordinal": 1
+      },
+      "reason": "reference_not_effective",
+      "status": "unknown",
+      "step": 0
+    },
+    {
+      "arm": "no-update",
+      "group": "view-25-policy",
+      "identity_correct": false,
+      "joint_success": false,
+      "outside_aabb_mm_xyz": null,
+      "position_correct": false,
+      "query": {
+        "category": "bowl",
+        "ordinal": 0
+      },
+      "reason": "reference_not_effective",
+      "status": "unknown",
+      "step": 0
+    },
+    {
+      "arm": "no-update",
+      "group": "view-25-policy",
+      "identity_correct": false,
+      "joint_success": false,
+      "outside_aabb_mm_xyz": null,
+      "position_correct": false,
+      "query": {
+        "category": "bottle",
+        "ordinal": 0
+      },
+      "reason": "reference_not_effective",
+      "status": "unknown",
+      "step": 1
+    },
+    {
+      "arm": "no-update",
+      "group": "view-25-policy",
+      "identity_correct": false,
+      "joint_success": false,
+      "outside_aabb_mm_xyz": null,
+      "position_correct": false,
+      "query": {
+        "category": "bottle",
+        "ordinal": 1
+      },
+      "reason": "reference_not_effective",
+      "status": "unknown",
+      "step": 1
+    },
+    {
+      "arm": "no-update",
+      "group": "view-25-policy",
+      "identity_correct": false,
+      "joint_success": false,
+      "outside_aabb_mm_xyz": null,
+      "position_correct": false,
+      "query": {
+        "category": "bowl",
+        "ordinal": 0
+      },
+      "reason": "reference_not_effective",
+      "status": "unknown",
+      "step": 1
+    },
+    {
+      "arm": "no-update",
+      "group": "view-25-policy",
+      "identity_correct": false,
+      "joint_success": false,
+      "outside_aabb_mm_xyz": null,
+      "position_correct": false,
+      "query": {
+        "category": "bottle",
+        "ordinal": 0
+      },
+      "reason": "reference_not_effective",
+      "status": "unknown",
+      "step": 2
+    },
+    {
+      "arm": "no-update",
+      "group": "view-25-policy",
+      "identity_correct": false,
+      "joint_success": false,
+      "outside_aabb_mm_xyz": null,
+      "position_correct": false,
+      "query": {
+        "category": "bottle",
+        "ordinal": 1
+      },
+      "reason": "reference_not_effective",
+      "status": "unknown",
+      "step": 2
+    },
+    {
+      "arm": "no-update",
+      "group": "view-25-policy",
+      "identity_correct": false,
+      "joint_success": false,
+      "outside_aabb_mm_xyz": null,
+      "position_correct": false,
+      "query": {
+        "category": "bowl",
+        "ordinal": 0
+      },
+      "reason": "reference_not_effective",
+      "status": "unknown",
+      "step": 2
+    },
+    {
+      "arm": "memory-retain",
+      "group": "view-25-memory",
+      "identity_correct": true,
+      "joint_success": true,
+      "outside_aabb_mm_xyz": [
+        0,
+        0,
+        0
+      ],
+      "position_correct": true,
+      "query": {
+        "category": "bottle",
+        "ordinal": 0
+      },
+      "reason": "FLOW_AND_MASK_SUPPORTED",
+      "status": "reported",
+      "step": 0
+    },
+    {
+      "arm": "memory-retain",
+      "group": "view-25-memory",
+      "identity_correct": true,
+      "joint_success": true,
+      "outside_aabb_mm_xyz": [
+        0,
+        0,
+        0
+      ],
+      "position_correct": true,
+      "query": {
+        "category": "bottle",
+        "ordinal": 1
+      },
+      "reason": "FLOW_AND_MASK_SUPPORTED",
+      "status": "reported",
+      "step": 0
+    },
+    {
+      "arm": "memory-retain",
+      "group": "view-25-memory",
+      "identity_correct": false,
+      "joint_success": false,
+      "outside_aabb_mm_xyz": null,
+      "position_correct": false,
+      "query": {
+        "category": "bowl",
+        "ordinal": 0
+      },
+      "reason": "initial_query_unresolved",
+      "status": "unknown",
+      "step": 0
+    },
+    {
+      "arm": "memory-retain",
+      "group": "view-25-memory",
+      "identity_correct": true,
+      "joint_success": true,
+      "outside_aabb_mm_xyz": [
+        0,
+        0,
+        0
+      ],
+      "position_correct": true,
+      "query": {
+        "category": "bottle",
+        "ordinal": 0
+      },
+      "reason": "FLOW_AND_MASK_SUPPORTED",
+      "status": "reported",
+      "step": 1
+    },
+    {
+      "arm": "memory-retain",
+      "group": "view-25-memory",
+      "identity_correct": true,
+      "joint_success": true,
+      "outside_aabb_mm_xyz": [
+        0,
+        0,
+        0
+      ],
+      "position_correct": true,
+      "query": {
+        "category": "bottle",
+        "ordinal": 1
+      },
+      "reason": "FLOW_AND_MASK_SUPPORTED",
+      "status": "reported",
+      "step": 1
+    },
+    {
+      "arm": "memory-retain",
+      "group": "view-25-memory",
+      "identity_correct": false,
+      "joint_success": false,
+      "outside_aabb_mm_xyz": null,
+      "position_correct": false,
+      "query": {
+        "category": "bowl",
+        "ordinal": 0
+      },
+      "reason": "initial_query_unresolved",
+      "status": "unknown",
+      "step": 1
+    },
+    {
+      "arm": "memory-retain",
+      "group": "view-25-memory",
+      "identity_correct": true,
+      "joint_success": true,
+      "outside_aabb_mm_xyz": [
+        0,
+        0,
+        0
+      ],
+      "position_correct": true,
+      "query": {
+        "category": "bottle",
+        "ordinal": 0
+      },
+      "reason": "FLOW_AND_MASK_SUPPORTED",
+      "status": "reported",
+      "step": 2
+    },
+    {
+      "arm": "memory-retain",
+      "group": "view-25-memory",
+      "identity_correct": true,
+      "joint_success": true,
+      "outside_aabb_mm_xyz": [
+        0,
+        0,
+        0
+      ],
+      "position_correct": true,
+      "query": {
+        "category": "bottle",
+        "ordinal": 1
+      },
+      "reason": "FLOW_AND_MASK_SUPPORTED",
+      "status": "reported",
+      "step": 2
+    },
+    {
+      "arm": "memory-retain",
+      "group": "view-25-memory",
+      "identity_correct": false,
+      "joint_success": false,
+      "outside_aabb_mm_xyz": null,
+      "position_correct": false,
+      "query": {
+        "category": "bowl",
+        "ordinal": 0
+      },
+      "reason": "initial_query_unresolved",
+      "status": "unknown",
+      "step": 2
+    },
+    {
+      "arm": "memory-reset",
+      "group": "view-25-memory",
+      "identity_correct": true,
+      "joint_success": true,
+      "outside_aabb_mm_xyz": [
+        0,
+        0,
+        0
+      ],
+      "position_correct": true,
+      "query": {
+        "category": "bottle",
+        "ordinal": 0
+      },
+      "reason": "FLOW_AND_MASK_SUPPORTED",
+      "status": "reported",
+      "step": 0
+    },
+    {
+      "arm": "memory-reset",
+      "group": "view-25-memory",
+      "identity_correct": true,
+      "joint_success": true,
+      "outside_aabb_mm_xyz": [
+        0,
+        0,
+        0
+      ],
+      "position_correct": true,
+      "query": {
+        "category": "bottle",
+        "ordinal": 1
+      },
+      "reason": "FLOW_AND_MASK_SUPPORTED",
+      "status": "reported",
+      "step": 0
+    },
+    {
+      "arm": "memory-reset",
+      "group": "view-25-memory",
+      "identity_correct": false,
+      "joint_success": false,
+      "outside_aabb_mm_xyz": null,
+      "position_correct": false,
+      "query": {
+        "category": "bowl",
+        "ordinal": 0
+      },
+      "reason": "initial_query_unresolved",
+      "status": "unknown",
+      "step": 0
+    },
+    {
+      "arm": "memory-reset",
+      "group": "view-25-memory",
+      "identity_correct": true,
+      "joint_success": true,
+      "outside_aabb_mm_xyz": [
+        0,
+        0,
+        0
+      ],
+      "position_correct": true,
+      "query": {
+        "category": "bottle",
+        "ordinal": 0
+      },
+      "reason": "FLOW_AND_MASK_SUPPORTED",
+      "status": "reported",
+      "step": 1
+    },
+    {
+      "arm": "memory-reset",
+      "group": "view-25-memory",
+      "identity_correct": true,
+      "joint_success": true,
+      "outside_aabb_mm_xyz": [
+        0,
+        0,
+        0
+      ],
+      "position_correct": true,
+      "query": {
+        "category": "bottle",
+        "ordinal": 1
+      },
+      "reason": "FLOW_AND_MASK_SUPPORTED",
+      "status": "reported",
+      "step": 1
+    },
+    {
+      "arm": "memory-reset",
+      "group": "view-25-memory",
+      "identity_correct": false,
+      "joint_success": false,
+      "outside_aabb_mm_xyz": null,
+      "position_correct": false,
+      "query": {
+        "category": "bowl",
+        "ordinal": 0
+      },
+      "reason": "initial_query_unresolved",
+      "status": "unknown",
+      "step": 1
+    },
+    {
+      "arm": "memory-reset",
+      "group": "view-25-memory",
+      "identity_correct": true,
+      "joint_success": true,
+      "outside_aabb_mm_xyz": [
+        0,
+        0,
+        0
+      ],
+      "position_correct": true,
+      "query": {
+        "category": "bottle",
+        "ordinal": 0
+      },
+      "reason": "FLOW_AND_MASK_SUPPORTED",
+      "status": "reported",
+      "step": 2
+    },
+    {
+      "arm": "memory-reset",
+      "group": "view-25-memory",
+      "identity_correct": true,
+      "joint_success": true,
+      "outside_aabb_mm_xyz": [
+        0,
+        0,
+        0
+      ],
+      "position_correct": true,
+      "query": {
+        "category": "bottle",
+        "ordinal": 1
+      },
+      "reason": "FLOW_AND_MASK_SUPPORTED",
+      "status": "reported",
+      "step": 2
+    },
+    {
+      "arm": "memory-reset",
+      "group": "view-25-memory",
+      "identity_correct": false,
+      "joint_success": false,
+      "outside_aabb_mm_xyz": null,
+      "position_correct": false,
+      "query": {
+        "category": "bowl",
+        "ordinal": 0
+      },
+      "reason": "initial_query_unresolved",
+      "status": "unknown",
+      "step": 2
+    },
+    {
+      "arm": "fixed",
+      "group": "view-30-policy",
+      "identity_correct": true,
+      "joint_success": true,
+      "outside_aabb_mm_xyz": [
+        0,
+        0,
+        0
+      ],
+      "position_correct": true,
+      "query": {
+        "category": "bottle",
+        "ordinal": 0
+      },
+      "reason": "FLOW_AND_MASK_SUPPORTED",
+      "status": "reported",
+      "step": 0
+    },
+    {
+      "arm": "fixed",
+      "group": "view-30-policy",
+      "identity_correct": true,
+      "joint_success": true,
+      "outside_aabb_mm_xyz": [
+        0,
+        0,
+        0
+      ],
+      "position_correct": true,
+      "query": {
+        "category": "bottle",
+        "ordinal": 1
+      },
+      "reason": "FLOW_AND_MASK_SUPPORTED",
+      "status": "reported",
+      "step": 0
+    },
+    {
+      "arm": "fixed",
+      "group": "view-30-policy",
+      "identity_correct": true,
+      "joint_success": false,
+      "outside_aabb_mm_xyz": [
+        0,
+        1.5607618796015243,
+        0
+      ],
+      "position_correct": false,
+      "query": {
+        "category": "bowl",
+        "ordinal": 0
+      },
+      "reason": "FLOW_AND_MASK_SUPPORTED",
+      "status": "reported",
+      "step": 0
+    },
+    {
+      "arm": "fixed",
+      "group": "view-30-policy",
+      "identity_correct": true,
+      "joint_success": true,
+      "outside_aabb_mm_xyz": [
+        0,
+        0,
+        0
+      ],
+      "position_correct": true,
+      "query": {
+        "category": "bottle",
+        "ordinal": 0
+      },
+      "reason": "FLOW_AND_MASK_SUPPORTED",
+      "status": "reported",
+      "step": 1
+    },
+    {
+      "arm": "fixed",
+      "group": "view-30-policy",
+      "identity_correct": true,
+      "joint_success": true,
+      "outside_aabb_mm_xyz": [
+        0,
+        0,
+        0
+      ],
+      "position_correct": true,
+      "query": {
+        "category": "bottle",
+        "ordinal": 1
+      },
+      "reason": "FLOW_AND_MASK_SUPPORTED",
+      "status": "reported",
+      "step": 1
+    },
+    {
+      "arm": "fixed",
+      "group": "view-30-policy",
+      "identity_correct": false,
+      "joint_success": false,
+      "outside_aabb_mm_xyz": null,
+      "position_correct": false,
+      "query": {
+        "category": "bowl",
+        "ordinal": 0
+      },
+      "reason": "UNKNOWN_NO_CURRENT_MASK_SUPPORT",
+      "status": "unknown",
+      "step": 1
+    },
+    {
+      "arm": "fixed",
+      "group": "view-30-policy",
+      "identity_correct": true,
+      "joint_success": true,
+      "outside_aabb_mm_xyz": [
+        0,
+        0,
+        0
+      ],
+      "position_correct": true,
+      "query": {
+        "category": "bottle",
+        "ordinal": 0
+      },
+      "reason": "FLOW_AND_MASK_SUPPORTED",
+      "status": "reported",
+      "step": 2
+    },
+    {
+      "arm": "fixed",
+      "group": "view-30-policy",
+      "identity_correct": true,
+      "joint_success": true,
+      "outside_aabb_mm_xyz": [
+        0,
+        0,
+        0
+      ],
+      "position_correct": true,
+      "query": {
+        "category": "bottle",
+        "ordinal": 1
+      },
+      "reason": "FLOW_AND_MASK_SUPPORTED",
+      "status": "reported",
+      "step": 2
+    },
+    {
+      "arm": "fixed",
+      "group": "view-30-policy",
+      "identity_correct": false,
+      "joint_success": false,
+      "outside_aabb_mm_xyz": null,
+      "position_correct": false,
+      "query": {
+        "category": "bowl",
+        "ordinal": 0
+      },
+      "reason": "UNKNOWN_NO_CURRENT_MASK_SUPPORT",
+      "status": "unknown",
+      "step": 2
+    },
+    {
+      "arm": "active",
+      "group": "view-30-policy",
+      "identity_correct": true,
+      "joint_success": true,
+      "outside_aabb_mm_xyz": [
+        0,
+        0,
+        0
+      ],
+      "position_correct": true,
+      "query": {
+        "category": "bottle",
+        "ordinal": 0
+      },
+      "reason": "FLOW_AND_MASK_SUPPORTED",
+      "status": "reported",
+      "step": 0
+    },
+    {
+      "arm": "active",
+      "group": "view-30-policy",
+      "identity_correct": true,
+      "joint_success": true,
+      "outside_aabb_mm_xyz": [
+        0,
+        0,
+        0
+      ],
+      "position_correct": true,
+      "query": {
+        "category": "bottle",
+        "ordinal": 1
+      },
+      "reason": "FLOW_AND_MASK_SUPPORTED",
+      "status": "reported",
+      "step": 0
+    },
+    {
+      "arm": "active",
+      "group": "view-30-policy",
+      "identity_correct": true,
+      "joint_success": false,
+      "outside_aabb_mm_xyz": [
+        0,
+        1.5607618796015243,
+        0
+      ],
+      "position_correct": false,
+      "query": {
+        "category": "bowl",
+        "ordinal": 0
+      },
+      "reason": "FLOW_AND_MASK_SUPPORTED",
+      "status": "reported",
+      "step": 0
+    },
+    {
+      "arm": "no-update",
+      "group": "view-30-policy",
+      "identity_correct": false,
+      "joint_success": false,
+      "outside_aabb_mm_xyz": null,
+      "position_correct": false,
+      "query": {
+        "category": "bottle",
+        "ordinal": 0
+      },
+      "reason": "reference_not_effective",
+      "status": "unknown",
+      "step": 0
+    },
+    {
+      "arm": "no-update",
+      "group": "view-30-policy",
+      "identity_correct": false,
+      "joint_success": false,
+      "outside_aabb_mm_xyz": null,
+      "position_correct": false,
+      "query": {
+        "category": "bottle",
+        "ordinal": 1
+      },
+      "reason": "reference_not_effective",
+      "status": "unknown",
+      "step": 0
+    },
+    {
+      "arm": "no-update",
+      "group": "view-30-policy",
+      "identity_correct": false,
+      "joint_success": false,
+      "outside_aabb_mm_xyz": null,
+      "position_correct": false,
+      "query": {
+        "category": "bowl",
+        "ordinal": 0
+      },
+      "reason": "reference_not_effective",
+      "status": "unknown",
+      "step": 0
+    },
+    {
+      "arm": "no-update",
+      "group": "view-30-policy",
+      "identity_correct": false,
+      "joint_success": false,
+      "outside_aabb_mm_xyz": null,
+      "position_correct": false,
+      "query": {
+        "category": "bottle",
+        "ordinal": 0
+      },
+      "reason": "reference_not_effective",
+      "status": "unknown",
+      "step": 1
+    },
+    {
+      "arm": "no-update",
+      "group": "view-30-policy",
+      "identity_correct": false,
+      "joint_success": false,
+      "outside_aabb_mm_xyz": null,
+      "position_correct": false,
+      "query": {
+        "category": "bottle",
+        "ordinal": 1
+      },
+      "reason": "reference_not_effective",
+      "status": "unknown",
+      "step": 1
+    },
+    {
+      "arm": "no-update",
+      "group": "view-30-policy",
+      "identity_correct": false,
+      "joint_success": false,
+      "outside_aabb_mm_xyz": null,
+      "position_correct": false,
+      "query": {
+        "category": "bowl",
+        "ordinal": 0
+      },
+      "reason": "reference_not_effective",
+      "status": "unknown",
+      "step": 1
+    },
+    {
+      "arm": "no-update",
+      "group": "view-30-policy",
+      "identity_correct": false,
+      "joint_success": false,
+      "outside_aabb_mm_xyz": null,
+      "position_correct": false,
+      "query": {
+        "category": "bottle",
+        "ordinal": 0
+      },
+      "reason": "reference_not_effective",
+      "status": "unknown",
+      "step": 2
+    },
+    {
+      "arm": "no-update",
+      "group": "view-30-policy",
+      "identity_correct": false,
+      "joint_success": false,
+      "outside_aabb_mm_xyz": null,
+      "position_correct": false,
+      "query": {
+        "category": "bottle",
+        "ordinal": 1
+      },
+      "reason": "reference_not_effective",
+      "status": "unknown",
+      "step": 2
+    },
+    {
+      "arm": "no-update",
+      "group": "view-30-policy",
+      "identity_correct": false,
+      "joint_success": false,
+      "outside_aabb_mm_xyz": null,
+      "position_correct": false,
+      "query": {
+        "category": "bowl",
+        "ordinal": 0
+      },
+      "reason": "reference_not_effective",
+      "status": "unknown",
+      "step": 2
+    },
+    {
+      "arm": "memory-retain",
+      "group": "view-30-memory",
+      "identity_correct": true,
+      "joint_success": true,
+      "outside_aabb_mm_xyz": [
+        0,
+        0,
+        0
+      ],
+      "position_correct": true,
+      "query": {
+        "category": "bottle",
+        "ordinal": 0
+      },
+      "reason": "FLOW_AND_MASK_SUPPORTED",
+      "status": "reported",
+      "step": 0
+    },
+    {
+      "arm": "memory-retain",
+      "group": "view-30-memory",
+      "identity_correct": true,
+      "joint_success": true,
+      "outside_aabb_mm_xyz": [
+        0,
+        0,
+        0
+      ],
+      "position_correct": true,
+      "query": {
+        "category": "bottle",
+        "ordinal": 1
+      },
+      "reason": "FLOW_AND_MASK_SUPPORTED",
+      "status": "reported",
+      "step": 0
+    },
+    {
+      "arm": "memory-retain",
+      "group": "view-30-memory",
+      "identity_correct": true,
+      "joint_success": false,
+      "outside_aabb_mm_xyz": [
+        0,
+        2.0654089156970645,
+        0
+      ],
+      "position_correct": false,
+      "query": {
+        "category": "bowl",
+        "ordinal": 0
+      },
+      "reason": "FLOW_AND_MASK_SUPPORTED",
+      "status": "reported",
+      "step": 0
+    },
+    {
+      "arm": "memory-retain",
+      "group": "view-30-memory",
+      "identity_correct": true,
+      "joint_success": true,
+      "outside_aabb_mm_xyz": [
+        0,
+        0,
+        0
+      ],
+      "position_correct": true,
+      "query": {
+        "category": "bottle",
+        "ordinal": 0
+      },
+      "reason": "FLOW_AND_MASK_SUPPORTED",
+      "status": "reported",
+      "step": 1
+    },
+    {
+      "arm": "memory-retain",
+      "group": "view-30-memory",
+      "identity_correct": true,
+      "joint_success": true,
+      "outside_aabb_mm_xyz": [
+        0,
+        0,
+        0
+      ],
+      "position_correct": true,
+      "query": {
+        "category": "bottle",
+        "ordinal": 1
+      },
+      "reason": "FLOW_AND_MASK_SUPPORTED",
+      "status": "reported",
+      "step": 1
+    },
+    {
+      "arm": "memory-retain",
+      "group": "view-30-memory",
+      "identity_correct": true,
+      "joint_success": false,
+      "outside_aabb_mm_xyz": [
+        0,
+        2.0630927787912423,
+        0
+      ],
+      "position_correct": false,
+      "query": {
+        "category": "bowl",
+        "ordinal": 0
+      },
+      "reason": "FLOW_AND_MASK_SUPPORTED",
+      "status": "reported",
+      "step": 1
+    },
+    {
+      "arm": "memory-retain",
+      "group": "view-30-memory",
+      "identity_correct": true,
+      "joint_success": true,
+      "outside_aabb_mm_xyz": [
+        0,
+        0,
+        0
+      ],
+      "position_correct": true,
+      "query": {
+        "category": "bottle",
+        "ordinal": 0
+      },
+      "reason": "FLOW_AND_MASK_SUPPORTED",
+      "status": "reported",
+      "step": 2
+    },
+    {
+      "arm": "memory-retain",
+      "group": "view-30-memory",
+      "identity_correct": true,
+      "joint_success": true,
+      "outside_aabb_mm_xyz": [
+        0,
+        0,
+        0
+      ],
+      "position_correct": true,
+      "query": {
+        "category": "bottle",
+        "ordinal": 1
+      },
+      "reason": "FLOW_AND_MASK_SUPPORTED",
+      "status": "reported",
+      "step": 2
+    },
+    {
+      "arm": "memory-retain",
+      "group": "view-30-memory",
+      "identity_correct": true,
+      "joint_success": false,
+      "outside_aabb_mm_xyz": [
+        0,
+        2.0662470316038517,
+        0
+      ],
+      "position_correct": false,
+      "query": {
+        "category": "bowl",
+        "ordinal": 0
+      },
+      "reason": "FLOW_AND_MASK_SUPPORTED",
+      "status": "reported",
+      "step": 2
+    },
+    {
+      "arm": "memory-reset",
+      "group": "view-30-memory",
+      "identity_correct": true,
+      "joint_success": true,
+      "outside_aabb_mm_xyz": [
+        0,
+        0,
+        0
+      ],
+      "position_correct": true,
+      "query": {
+        "category": "bottle",
+        "ordinal": 0
+      },
+      "reason": "FLOW_AND_MASK_SUPPORTED",
+      "status": "reported",
+      "step": 0
+    },
+    {
+      "arm": "memory-reset",
+      "group": "view-30-memory",
+      "identity_correct": true,
+      "joint_success": true,
+      "outside_aabb_mm_xyz": [
+        0,
+        0,
+        0
+      ],
+      "position_correct": true,
+      "query": {
+        "category": "bottle",
+        "ordinal": 1
+      },
+      "reason": "FLOW_AND_MASK_SUPPORTED",
+      "status": "reported",
+      "step": 0
+    },
+    {
+      "arm": "memory-reset",
+      "group": "view-30-memory",
+      "identity_correct": true,
+      "joint_success": false,
+      "outside_aabb_mm_xyz": [
+        0,
+        2.0654089156970645,
+        0
+      ],
+      "position_correct": false,
+      "query": {
+        "category": "bowl",
+        "ordinal": 0
+      },
+      "reason": "FLOW_AND_MASK_SUPPORTED",
+      "status": "reported",
+      "step": 0
+    },
+    {
+      "arm": "memory-reset",
+      "group": "view-30-memory",
+      "identity_correct": true,
+      "joint_success": true,
+      "outside_aabb_mm_xyz": [
+        0,
+        0,
+        0
+      ],
+      "position_correct": true,
+      "query": {
+        "category": "bottle",
+        "ordinal": 0
+      },
+      "reason": "FLOW_AND_MASK_SUPPORTED",
+      "status": "reported",
+      "step": 1
+    },
+    {
+      "arm": "memory-reset",
+      "group": "view-30-memory",
+      "identity_correct": true,
+      "joint_success": true,
+      "outside_aabb_mm_xyz": [
+        0,
+        0,
+        0
+      ],
+      "position_correct": true,
+      "query": {
+        "category": "bottle",
+        "ordinal": 1
+      },
+      "reason": "FLOW_AND_MASK_SUPPORTED",
+      "status": "reported",
+      "step": 1
+    },
+    {
+      "arm": "memory-reset",
+      "group": "view-30-memory",
+      "identity_correct": true,
+      "joint_success": false,
+      "outside_aabb_mm_xyz": [
+        0,
+        2.0630927787912423,
+        0
+      ],
+      "position_correct": false,
+      "query": {
+        "category": "bowl",
+        "ordinal": 0
+      },
+      "reason": "FLOW_AND_MASK_SUPPORTED",
+      "status": "reported",
+      "step": 1
+    },
+    {
+      "arm": "memory-reset",
+      "group": "view-30-memory",
+      "identity_correct": true,
+      "joint_success": true,
+      "outside_aabb_mm_xyz": [
+        0,
+        0,
+        0
+      ],
+      "position_correct": true,
+      "query": {
+        "category": "bottle",
+        "ordinal": 0
+      },
+      "reason": "FLOW_AND_MASK_SUPPORTED",
+      "status": "reported",
+      "step": 2
+    },
+    {
+      "arm": "memory-reset",
+      "group": "view-30-memory",
+      "identity_correct": true,
+      "joint_success": true,
+      "outside_aabb_mm_xyz": [
+        0,
+        0,
+        0
+      ],
+      "position_correct": true,
+      "query": {
+        "category": "bottle",
+        "ordinal": 1
+      },
+      "reason": "FLOW_AND_MASK_SUPPORTED",
+      "status": "reported",
+      "step": 2
+    },
+    {
+      "arm": "memory-reset",
+      "group": "view-30-memory",
+      "identity_correct": true,
+      "joint_success": false,
+      "outside_aabb_mm_xyz": [
+        0,
+        2.0662470316038517,
+        0
+      ],
+      "position_correct": false,
+      "query": {
+        "category": "bowl",
+        "ordinal": 0
+      },
+      "reason": "FLOW_AND_MASK_SUPPORTED",
+      "status": "reported",
+      "step": 2
+    },
+    {
+      "arm": "fixed",
+      "group": "view-35-policy",
+      "identity_correct": true,
+      "joint_success": true,
+      "outside_aabb_mm_xyz": [
+        0,
+        0,
+        0
+      ],
+      "position_correct": true,
+      "query": {
+        "category": "bottle",
+        "ordinal": 0
+      },
+      "reason": "FLOW_AND_MASK_SUPPORTED",
+      "status": "reported",
+      "step": 0
+    },
+    {
+      "arm": "fixed",
+      "group": "view-35-policy",
+      "identity_correct": true,
+      "joint_success": true,
+      "outside_aabb_mm_xyz": [
+        0,
+        0,
+        0
+      ],
+      "position_correct": true,
+      "query": {
+        "category": "bottle",
+        "ordinal": 1
+      },
+      "reason": "FLOW_AND_MASK_SUPPORTED",
+      "status": "reported",
+      "step": 0
+    },
+    {
+      "arm": "fixed",
+      "group": "view-35-policy",
+      "identity_correct": true,
+      "joint_success": false,
+      "outside_aabb_mm_xyz": [
+        0,
+        2.0630052605000726,
+        0
+      ],
+      "position_correct": false,
+      "query": {
+        "category": "bowl",
+        "ordinal": 0
+      },
+      "reason": "FLOW_AND_MASK_SUPPORTED",
+      "status": "reported",
+      "step": 0
+    },
+    {
+      "arm": "fixed",
+      "group": "view-35-policy",
+      "identity_correct": true,
+      "joint_success": true,
+      "outside_aabb_mm_xyz": [
+        0,
+        0,
+        0
+      ],
+      "position_correct": true,
+      "query": {
+        "category": "bottle",
+        "ordinal": 0
+      },
+      "reason": "FLOW_AND_MASK_SUPPORTED",
+      "status": "reported",
+      "step": 1
+    },
+    {
+      "arm": "fixed",
+      "group": "view-35-policy",
+      "identity_correct": true,
+      "joint_success": true,
+      "outside_aabb_mm_xyz": [
+        0,
+        0,
+        0
+      ],
+      "position_correct": true,
+      "query": {
+        "category": "bottle",
+        "ordinal": 1
+      },
+      "reason": "FLOW_AND_MASK_SUPPORTED",
+      "status": "reported",
+      "step": 1
+    },
+    {
+      "arm": "fixed",
+      "group": "view-35-policy",
+      "identity_correct": true,
+      "joint_success": false,
+      "outside_aabb_mm_xyz": [
+        0,
+        2.0661765336187354,
+        0
+      ],
+      "position_correct": false,
+      "query": {
+        "category": "bowl",
+        "ordinal": 0
+      },
+      "reason": "FLOW_AND_MASK_SUPPORTED",
+      "status": "reported",
+      "step": 1
+    },
+    {
+      "arm": "fixed",
+      "group": "view-35-policy",
+      "identity_correct": false,
+      "joint_success": false,
+      "outside_aabb_mm_xyz": null,
+      "position_correct": false,
+      "query": {
+        "category": "bottle",
+        "ordinal": 0
+      },
+      "reason": "LOST_NO_REINITIALIZATION",
+      "status": "unknown",
+      "step": 2
+    },
+    {
+      "arm": "fixed",
+      "group": "view-35-policy",
+      "identity_correct": true,
+      "joint_success": true,
+      "outside_aabb_mm_xyz": [
+        0,
+        0,
+        0
+      ],
+      "position_correct": true,
+      "query": {
+        "category": "bottle",
+        "ordinal": 1
+      },
+      "reason": "FLOW_AND_MASK_SUPPORTED",
+      "status": "reported",
+      "step": 2
+    },
+    {
+      "arm": "fixed",
+      "group": "view-35-policy",
+      "identity_correct": false,
+      "joint_success": false,
+      "outside_aabb_mm_xyz": null,
+      "position_correct": false,
+      "query": {
+        "category": "bowl",
+        "ordinal": 0
+      },
+      "reason": "UNKNOWN_NO_CURRENT_MASK_SUPPORT",
+      "status": "unknown",
+      "step": 2
+    },
+    {
+      "arm": "active",
+      "group": "view-35-policy",
+      "identity_correct": true,
+      "joint_success": true,
+      "outside_aabb_mm_xyz": [
+        0,
+        0,
+        0
+      ],
+      "position_correct": true,
+      "query": {
+        "category": "bottle",
+        "ordinal": 0
+      },
+      "reason": "FLOW_AND_MASK_SUPPORTED",
+      "status": "reported",
+      "step": 0
+    },
+    {
+      "arm": "active",
+      "group": "view-35-policy",
+      "identity_correct": true,
+      "joint_success": true,
+      "outside_aabb_mm_xyz": [
+        0,
+        0,
+        0
+      ],
+      "position_correct": true,
+      "query": {
+        "category": "bottle",
+        "ordinal": 1
+      },
+      "reason": "FLOW_AND_MASK_SUPPORTED",
+      "status": "reported",
+      "step": 0
+    },
+    {
+      "arm": "active",
+      "group": "view-35-policy",
+      "identity_correct": true,
+      "joint_success": false,
+      "outside_aabb_mm_xyz": [
+        0,
+        2.0630052605000726,
+        0
+      ],
+      "position_correct": false,
+      "query": {
+        "category": "bowl",
+        "ordinal": 0
+      },
+      "reason": "FLOW_AND_MASK_SUPPORTED",
+      "status": "reported",
+      "step": 0
+    },
+    {
+      "arm": "no-update",
+      "group": "view-35-policy",
+      "identity_correct": false,
+      "joint_success": false,
+      "outside_aabb_mm_xyz": null,
+      "position_correct": false,
+      "query": {
+        "category": "bottle",
+        "ordinal": 0
+      },
+      "reason": "reference_not_effective",
+      "status": "unknown",
+      "step": 0
+    },
+    {
+      "arm": "no-update",
+      "group": "view-35-policy",
+      "identity_correct": false,
+      "joint_success": false,
+      "outside_aabb_mm_xyz": null,
+      "position_correct": false,
+      "query": {
+        "category": "bottle",
+        "ordinal": 1
+      },
+      "reason": "reference_not_effective",
+      "status": "unknown",
+      "step": 0
+    },
+    {
+      "arm": "no-update",
+      "group": "view-35-policy",
+      "identity_correct": false,
+      "joint_success": false,
+      "outside_aabb_mm_xyz": null,
+      "position_correct": false,
+      "query": {
+        "category": "bowl",
+        "ordinal": 0
+      },
+      "reason": "reference_not_effective",
+      "status": "unknown",
+      "step": 0
+    },
+    {
+      "arm": "no-update",
+      "group": "view-35-policy",
+      "identity_correct": false,
+      "joint_success": false,
+      "outside_aabb_mm_xyz": null,
+      "position_correct": false,
+      "query": {
+        "category": "bottle",
+        "ordinal": 0
+      },
+      "reason": "reference_not_effective",
+      "status": "unknown",
+      "step": 1
+    },
+    {
+      "arm": "no-update",
+      "group": "view-35-policy",
+      "identity_correct": false,
+      "joint_success": false,
+      "outside_aabb_mm_xyz": null,
+      "position_correct": false,
+      "query": {
+        "category": "bottle",
+        "ordinal": 1
+      },
+      "reason": "reference_not_effective",
+      "status": "unknown",
+      "step": 1
+    },
+    {
+      "arm": "no-update",
+      "group": "view-35-policy",
+      "identity_correct": false,
+      "joint_success": false,
+      "outside_aabb_mm_xyz": null,
+      "position_correct": false,
+      "query": {
+        "category": "bowl",
+        "ordinal": 0
+      },
+      "reason": "reference_not_effective",
+      "status": "unknown",
+      "step": 1
+    },
+    {
+      "arm": "no-update",
+      "group": "view-35-policy",
+      "identity_correct": false,
+      "joint_success": false,
+      "outside_aabb_mm_xyz": null,
+      "position_correct": false,
+      "query": {
+        "category": "bottle",
+        "ordinal": 0
+      },
+      "reason": "reference_not_effective",
+      "status": "unknown",
+      "step": 2
+    },
+    {
+      "arm": "no-update",
+      "group": "view-35-policy",
+      "identity_correct": false,
+      "joint_success": false,
+      "outside_aabb_mm_xyz": null,
+      "position_correct": false,
+      "query": {
+        "category": "bottle",
+        "ordinal": 1
+      },
+      "reason": "reference_not_effective",
+      "status": "unknown",
+      "step": 2
+    },
+    {
+      "arm": "no-update",
+      "group": "view-35-policy",
+      "identity_correct": false,
+      "joint_success": false,
+      "outside_aabb_mm_xyz": null,
+      "position_correct": false,
+      "query": {
+        "category": "bowl",
+        "ordinal": 0
+      },
+      "reason": "reference_not_effective",
+      "status": "unknown",
+      "step": 2
+    },
+    {
+      "arm": "memory-retain",
+      "group": "view-35-memory",
+      "identity_correct": true,
+      "joint_success": true,
+      "outside_aabb_mm_xyz": [
+        0,
+        0,
+        0
+      ],
+      "position_correct": true,
+      "query": {
+        "category": "bottle",
+        "ordinal": 0
+      },
+      "reason": "FLOW_AND_MASK_SUPPORTED",
+      "status": "reported",
+      "step": 0
+    },
+    {
+      "arm": "memory-retain",
+      "group": "view-35-memory",
+      "identity_correct": true,
+      "joint_success": true,
+      "outside_aabb_mm_xyz": [
+        0,
+        0,
+        0
+      ],
+      "position_correct": true,
+      "query": {
+        "category": "bottle",
+        "ordinal": 1
+      },
+      "reason": "FLOW_AND_MASK_SUPPORTED",
+      "status": "reported",
+      "step": 0
+    },
+    {
+      "arm": "memory-retain",
+      "group": "view-35-memory",
+      "identity_correct": true,
+      "joint_success": false,
+      "outside_aabb_mm_xyz": [
+        0,
+        2.0630052605000726,
+        0
+      ],
+      "position_correct": false,
+      "query": {
+        "category": "bowl",
+        "ordinal": 0
+      },
+      "reason": "FLOW_AND_MASK_SUPPORTED",
+      "status": "reported",
+      "step": 0
+    },
+    {
+      "arm": "memory-retain",
+      "group": "view-35-memory",
+      "identity_correct": true,
+      "joint_success": true,
+      "outside_aabb_mm_xyz": [
+        0,
+        0,
+        0
+      ],
+      "position_correct": true,
+      "query": {
+        "category": "bottle",
+        "ordinal": 0
+      },
+      "reason": "FLOW_AND_MASK_SUPPORTED",
+      "status": "reported",
+      "step": 1
+    },
+    {
+      "arm": "memory-retain",
+      "group": "view-35-memory",
+      "identity_correct": true,
+      "joint_success": true,
+      "outside_aabb_mm_xyz": [
+        0,
+        0,
+        0
+      ],
+      "position_correct": true,
+      "query": {
+        "category": "bottle",
+        "ordinal": 1
+      },
+      "reason": "FLOW_AND_MASK_SUPPORTED",
+      "status": "reported",
+      "step": 1
+    },
+    {
+      "arm": "memory-retain",
+      "group": "view-35-memory",
+      "identity_correct": true,
+      "joint_success": false,
+      "outside_aabb_mm_xyz": [
+        0,
+        2.0661765336187354,
+        0
+      ],
+      "position_correct": false,
+      "query": {
+        "category": "bowl",
+        "ordinal": 0
+      },
+      "reason": "FLOW_AND_MASK_SUPPORTED",
+      "status": "reported",
+      "step": 1
+    },
+    {
+      "arm": "memory-retain",
+      "group": "view-35-memory",
+      "identity_correct": false,
+      "joint_success": false,
+      "outside_aabb_mm_xyz": null,
+      "position_correct": false,
+      "query": {
+        "category": "bottle",
+        "ordinal": 0
+      },
+      "reason": "LOST_NO_REINITIALIZATION",
+      "status": "unknown",
+      "step": 2
+    },
+    {
+      "arm": "memory-retain",
+      "group": "view-35-memory",
+      "identity_correct": true,
+      "joint_success": true,
+      "outside_aabb_mm_xyz": [
+        0,
+        0,
+        0
+      ],
+      "position_correct": true,
+      "query": {
+        "category": "bottle",
+        "ordinal": 1
+      },
+      "reason": "FLOW_AND_MASK_SUPPORTED",
+      "status": "reported",
+      "step": 2
+    },
+    {
+      "arm": "memory-retain",
+      "group": "view-35-memory",
+      "identity_correct": false,
+      "joint_success": false,
+      "outside_aabb_mm_xyz": null,
+      "position_correct": false,
+      "query": {
+        "category": "bowl",
+        "ordinal": 0
+      },
+      "reason": "UNKNOWN_NO_CURRENT_MASK_SUPPORT",
+      "status": "unknown",
+      "step": 2
+    },
+    {
+      "arm": "memory-reset",
+      "group": "view-35-memory",
+      "identity_correct": true,
+      "joint_success": true,
+      "outside_aabb_mm_xyz": [
+        0,
+        0,
+        0
+      ],
+      "position_correct": true,
+      "query": {
+        "category": "bottle",
+        "ordinal": 0
+      },
+      "reason": "FLOW_AND_MASK_SUPPORTED",
+      "status": "reported",
+      "step": 0
+    },
+    {
+      "arm": "memory-reset",
+      "group": "view-35-memory",
+      "identity_correct": true,
+      "joint_success": true,
+      "outside_aabb_mm_xyz": [
+        0,
+        0,
+        0
+      ],
+      "position_correct": true,
+      "query": {
+        "category": "bottle",
+        "ordinal": 1
+      },
+      "reason": "FLOW_AND_MASK_SUPPORTED",
+      "status": "reported",
+      "step": 0
+    },
+    {
+      "arm": "memory-reset",
+      "group": "view-35-memory",
+      "identity_correct": true,
+      "joint_success": false,
+      "outside_aabb_mm_xyz": [
+        0,
+        2.0630052605000726,
+        0
+      ],
+      "position_correct": false,
+      "query": {
+        "category": "bowl",
+        "ordinal": 0
+      },
+      "reason": "FLOW_AND_MASK_SUPPORTED",
+      "status": "reported",
+      "step": 0
+    },
+    {
+      "arm": "memory-reset",
+      "group": "view-35-memory",
+      "identity_correct": true,
+      "joint_success": true,
+      "outside_aabb_mm_xyz": [
+        0,
+        0,
+        0
+      ],
+      "position_correct": true,
+      "query": {
+        "category": "bottle",
+        "ordinal": 0
+      },
+      "reason": "FLOW_AND_MASK_SUPPORTED",
+      "status": "reported",
+      "step": 1
+    },
+    {
+      "arm": "memory-reset",
+      "group": "view-35-memory",
+      "identity_correct": true,
+      "joint_success": true,
+      "outside_aabb_mm_xyz": [
+        0,
+        0,
+        0
+      ],
+      "position_correct": true,
+      "query": {
+        "category": "bottle",
+        "ordinal": 1
+      },
+      "reason": "FLOW_AND_MASK_SUPPORTED",
+      "status": "reported",
+      "step": 1
+    },
+    {
+      "arm": "memory-reset",
+      "group": "view-35-memory",
+      "identity_correct": true,
+      "joint_success": false,
+      "outside_aabb_mm_xyz": [
+        0,
+        2.0661765336187354,
+        0
+      ],
+      "position_correct": false,
+      "query": {
+        "category": "bowl",
+        "ordinal": 0
+      },
+      "reason": "FLOW_AND_MASK_SUPPORTED",
+      "status": "reported",
+      "step": 1
+    },
+    {
+      "arm": "memory-reset",
+      "group": "view-35-memory",
+      "identity_correct": false,
+      "joint_success": false,
+      "outside_aabb_mm_xyz": null,
+      "position_correct": false,
+      "query": {
+        "category": "bottle",
+        "ordinal": 0
+      },
+      "reason": "LOST_NO_REINITIALIZATION",
+      "status": "unknown",
+      "step": 2
+    },
+    {
+      "arm": "memory-reset",
+      "group": "view-35-memory",
+      "identity_correct": true,
+      "joint_success": true,
+      "outside_aabb_mm_xyz": [
+        0,
+        0,
+        0
+      ],
+      "position_correct": true,
+      "query": {
+        "category": "bottle",
+        "ordinal": 1
+      },
+      "reason": "FLOW_AND_MASK_SUPPORTED",
+      "status": "reported",
+      "step": 2
+    },
+    {
+      "arm": "memory-reset",
+      "group": "view-35-memory",
+      "identity_correct": false,
+      "joint_success": false,
+      "outside_aabb_mm_xyz": null,
+      "position_correct": false,
+      "query": {
+        "category": "bowl",
+        "ordinal": 0
+      },
+      "reason": "UNKNOWN_NO_CURRENT_MASK_SUPPORT",
+      "status": "unknown",
+      "step": 2
+    }
+  ],
+  "scope": "post-hoc descriptive failure tracing, unchanged AABB criterion"
+}

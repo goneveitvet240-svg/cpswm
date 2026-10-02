@@ -1,0 +1,665 @@
+{
+  "claim": "recomputation only; not simulator rerun or B independent acceptance",
+  "fresh_restore_count": 15,
+  "restored_arms": [
+    "view-25-policy/fixed",
+    "view-25-policy/active",
+    "view-25-policy/no-update",
+    "view-25-memory/memory-retain",
+    "view-25-memory/memory-reset",
+    "view-30-policy/fixed",
+    "view-30-policy/active",
+    "view-30-policy/no-update",
+    "view-30-memory/memory-retain",
+    "view-30-memory/memory-reset",
+    "view-35-policy/fixed",
+    "view-35-policy/active",
+    "view-35-policy/no-update",
+    "view-35-memory/memory-retain",
+    "view-35-memory/memory-reset"
+  ],
+  "rows": [
+    {
+      "actual_instance": "WineBottle|surface|2|8",
+      "arm": "fixed",
+      "group": "view-25-policy",
+      "identity_correct": true,
+      "joint_success": true,
+      "outside_aabb_mm_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "position_correct": true,
+      "query": "bottle:0",
+      "reason": "FLOW_AND_MASK_SUPPORTED",
+      "result": "reported"
+    },
+    {
+      "actual_instance": "SoapBottle|surface|2|14",
+      "arm": "fixed",
+      "group": "view-25-policy",
+      "identity_correct": true,
+      "joint_success": true,
+      "outside_aabb_mm_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "position_correct": true,
+      "query": "bottle:1",
+      "reason": "FLOW_AND_MASK_SUPPORTED",
+      "result": "reported"
+    },
+    {
+      "actual_instance": null,
+      "arm": "fixed",
+      "group": "view-25-policy",
+      "identity_correct": false,
+      "joint_success": false,
+      "outside_aabb_mm_xyz": null,
+      "position_correct": false,
+      "query": "bowl:0",
+      "reason": "initial_query_unresolved",
+      "result": "unknown"
+    },
+    {
+      "actual_instance": "WineBottle|surface|2|8",
+      "arm": "active",
+      "group": "view-25-policy",
+      "identity_correct": true,
+      "joint_success": true,
+      "outside_aabb_mm_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "position_correct": true,
+      "query": "bottle:0",
+      "reason": "FLOW_AND_MASK_SUPPORTED",
+      "result": "reported"
+    },
+    {
+      "actual_instance": "SoapBottle|surface|2|14",
+      "arm": "active",
+      "group": "view-25-policy",
+      "identity_correct": true,
+      "joint_success": true,
+      "outside_aabb_mm_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "position_correct": true,
+      "query": "bottle:1",
+      "reason": "FLOW_AND_MASK_SUPPORTED",
+      "result": "reported"
+    },
+    {
+      "actual_instance": null,
+      "arm": "active",
+      "group": "view-25-policy",
+      "identity_correct": false,
+      "joint_success": false,
+      "outside_aabb_mm_xyz": null,
+      "position_correct": false,
+      "query": "bowl:0",
+      "reason": "initial_query_unresolved",
+      "result": "unknown"
+    },
+    {
+      "actual_instance": null,
+      "arm": "no-update",
+      "group": "view-25-policy",
+      "identity_correct": false,
+      "joint_success": false,
+      "outside_aabb_mm_xyz": null,
+      "position_correct": false,
+      "query": "bottle:0",
+      "reason": "reference_not_effective",
+      "result": "unknown"
+    },
+    {
+      "actual_instance": null,
+      "arm": "no-update",
+      "group": "view-25-policy",
+      "identity_correct": false,
+      "joint_success": false,
+      "outside_aabb_mm_xyz": null,
+      "position_correct": false,
+      "query": "bottle:1",
+      "reason": "reference_not_effective",
+      "result": "unknown"
+    },
+    {
+      "actual_instance": null,
+      "arm": "no-update",
+      "group": "view-25-policy",
+      "identity_correct": false,
+      "joint_success": false,
+      "outside_aabb_mm_xyz": null,
+      "position_correct": false,
+      "query": "bowl:0",
+      "reason": "reference_not_effective",
+      "result": "unknown"
+    },
+    {
+      "actual_instance": "WineBottle|surface|2|8",
+      "arm": "memory-retain",
+      "group": "view-25-memory",
+      "identity_correct": true,
+      "joint_success": true,
+      "outside_aabb_mm_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "position_correct": true,
+      "query": "bottle:0",
+      "reason": "FLOW_AND_MASK_SUPPORTED",
+      "result": "reported"
+    },
+    {
+      "actual_instance": "SoapBottle|surface|2|14",
+      "arm": "memory-retain",
+      "group": "view-25-memory",
+      "identity_correct": true,
+      "joint_success": true,
+      "outside_aabb_mm_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "position_correct": true,
+      "query": "bottle:1",
+      "reason": "FLOW_AND_MASK_SUPPORTED",
+      "result": "reported"
+    },
+    {
+      "actual_instance": null,
+      "arm": "memory-retain",
+      "group": "view-25-memory",
+      "identity_correct": false,
+      "joint_success": false,
+      "outside_aabb_mm_xyz": null,
+      "position_correct": false,
+      "query": "bowl:0",
+      "reason": "initial_query_unresolved",
+      "result": "unknown"
+    },
+    {
+      "actual_instance": "WineBottle|surface|2|8",
+      "arm": "memory-reset",
+      "group": "view-25-memory",
+      "identity_correct": true,
+      "joint_success": true,
+      "outside_aabb_mm_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "position_correct": true,
+      "query": "bottle:0",
+      "reason": "FLOW_AND_MASK_SUPPORTED",
+      "result": "reported"
+    },
+    {
+      "actual_instance": "SoapBottle|surface|2|14",
+      "arm": "memory-reset",
+      "group": "view-25-memory",
+      "identity_correct": true,
+      "joint_success": true,
+      "outside_aabb_mm_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "position_correct": true,
+      "query": "bottle:1",
+      "reason": "FLOW_AND_MASK_SUPPORTED",
+      "result": "reported"
+    },
+    {
+      "actual_instance": null,
+      "arm": "memory-reset",
+      "group": "view-25-memory",
+      "identity_correct": false,
+      "joint_success": false,
+      "outside_aabb_mm_xyz": null,
+      "position_correct": false,
+      "query": "bowl:0",
+      "reason": "initial_query_unresolved",
+      "result": "unknown"
+    },
+    {
+      "actual_instance": "WineBottle|surface|2|8",
+      "arm": "fixed",
+      "group": "view-30-policy",
+      "identity_correct": true,
+      "joint_success": true,
+      "outside_aabb_mm_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "position_correct": true,
+      "query": "bottle:0",
+      "reason": "FLOW_AND_MASK_SUPPORTED",
+      "result": "reported"
+    },
+    {
+      "actual_instance": "SoapBottle|surface|2|14",
+      "arm": "fixed",
+      "group": "view-30-policy",
+      "identity_correct": true,
+      "joint_success": true,
+      "outside_aabb_mm_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "position_correct": true,
+      "query": "bottle:1",
+      "reason": "FLOW_AND_MASK_SUPPORTED",
+      "result": "reported"
+    },
+    {
+      "actual_instance": null,
+      "arm": "fixed",
+      "group": "view-30-policy",
+      "identity_correct": false,
+      "joint_success": false,
+      "outside_aabb_mm_xyz": null,
+      "position_correct": false,
+      "query": "bowl:0",
+      "reason": "UNKNOWN_NO_CURRENT_MASK_SUPPORT",
+      "result": "unknown"
+    },
+    {
+      "actual_instance": "WineBottle|surface|2|8",
+      "arm": "active",
+      "group": "view-30-policy",
+      "identity_correct": true,
+      "joint_success": true,
+      "outside_aabb_mm_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "position_correct": true,
+      "query": "bottle:0",
+      "reason": "FLOW_AND_MASK_SUPPORTED",
+      "result": "reported"
+    },
+    {
+      "actual_instance": "SoapBottle|surface|2|14",
+      "arm": "active",
+      "group": "view-30-policy",
+      "identity_correct": true,
+      "joint_success": true,
+      "outside_aabb_mm_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "position_correct": true,
+      "query": "bottle:1",
+      "reason": "FLOW_AND_MASK_SUPPORTED",
+      "result": "reported"
+    },
+    {
+      "actual_instance": "Bowl|surface|2|11",
+      "arm": "active",
+      "group": "view-30-policy",
+      "identity_correct": true,
+      "joint_success": false,
+      "outside_aabb_mm_xyz": [
+        0.0,
+        1.5607618796015243,
+        0.0
+      ],
+      "position_correct": false,
+      "query": "bowl:0",
+      "reason": "FLOW_AND_MASK_SUPPORTED",
+      "result": "reported"
+    },
+    {
+      "actual_instance": null,
+      "arm": "no-update",
+      "group": "view-30-policy",
+      "identity_correct": false,
+      "joint_success": false,
+      "outside_aabb_mm_xyz": null,
+      "position_correct": false,
+      "query": "bottle:0",
+      "reason": "reference_not_effective",
+      "result": "unknown"
+    },
+    {
+      "actual_instance": null,
+      "arm": "no-update",
+      "group": "view-30-policy",
+      "identity_correct": false,
+      "joint_success": false,
+      "outside_aabb_mm_xyz": null,
+      "position_correct": false,
+      "query": "bottle:1",
+      "reason": "reference_not_effective",
+      "result": "unknown"
+    },
+    {
+      "actual_instance": null,
+      "arm": "no-update",
+      "group": "view-30-policy",
+      "identity_correct": false,
+      "joint_success": false,
+      "outside_aabb_mm_xyz": null,
+      "position_correct": false,
+      "query": "bowl:0",
+      "reason": "reference_not_effective",
+      "result": "unknown"
+    },
+    {
+      "actual_instance": "WineBottle|surface|2|8",
+      "arm": "memory-retain",
+      "group": "view-30-memory",
+      "identity_correct": true,
+      "joint_success": true,
+      "outside_aabb_mm_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "position_correct": true,
+      "query": "bottle:0",
+      "reason": "FLOW_AND_MASK_SUPPORTED",
+      "result": "reported"
+    },
+    {
+      "actual_instance": "SoapBottle|surface|2|14",
+      "arm": "memory-retain",
+      "group": "view-30-memory",
+      "identity_correct": true,
+      "joint_success": true,
+      "outside_aabb_mm_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "position_correct": true,
+      "query": "bottle:1",
+      "reason": "FLOW_AND_MASK_SUPPORTED",
+      "result": "reported"
+    },
+    {
+      "actual_instance": "Bowl|surface|2|11",
+      "arm": "memory-retain",
+      "group": "view-30-memory",
+      "identity_correct": true,
+      "joint_success": false,
+      "outside_aabb_mm_xyz": [
+        0.0,
+        2.0662470316038517,
+        0.0
+      ],
+      "position_correct": false,
+      "query": "bowl:0",
+      "reason": "FLOW_AND_MASK_SUPPORTED",
+      "result": "reported"
+    },
+    {
+      "actual_instance": "WineBottle|surface|2|8",
+      "arm": "memory-reset",
+      "group": "view-30-memory",
+      "identity_correct": true,
+      "joint_success": true,
+      "outside_aabb_mm_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "position_correct": true,
+      "query": "bottle:0",
+      "reason": "FLOW_AND_MASK_SUPPORTED",
+      "result": "reported"
+    },
+    {
+      "actual_instance": "SoapBottle|surface|2|14",
+      "arm": "memory-reset",
+      "group": "view-30-memory",
+      "identity_correct": true,
+      "joint_success": true,
+      "outside_aabb_mm_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "position_correct": true,
+      "query": "bottle:1",
+      "reason": "FLOW_AND_MASK_SUPPORTED",
+      "result": "reported"
+    },
+    {
+      "actual_instance": "Bowl|surface|2|11",
+      "arm": "memory-reset",
+      "group": "view-30-memory",
+      "identity_correct": true,
+      "joint_success": false,
+      "outside_aabb_mm_xyz": [
+        0.0,
+        2.0662470316038517,
+        0.0
+      ],
+      "position_correct": false,
+      "query": "bowl:0",
+      "reason": "FLOW_AND_MASK_SUPPORTED",
+      "result": "reported"
+    },
+    {
+      "actual_instance": null,
+      "arm": "fixed",
+      "group": "view-35-policy",
+      "identity_correct": false,
+      "joint_success": false,
+      "outside_aabb_mm_xyz": null,
+      "position_correct": false,
+      "query": "bottle:0",
+      "reason": "LOST_NO_REINITIALIZATION",
+      "result": "unknown"
+    },
+    {
+      "actual_instance": "SoapBottle|surface|2|14",
+      "arm": "fixed",
+      "group": "view-35-policy",
+      "identity_correct": true,
+      "joint_success": true,
+      "outside_aabb_mm_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "position_correct": true,
+      "query": "bottle:1",
+      "reason": "FLOW_AND_MASK_SUPPORTED",
+      "result": "reported"
+    },
+    {
+      "actual_instance": null,
+      "arm": "fixed",
+      "group": "view-35-policy",
+      "identity_correct": false,
+      "joint_success": false,
+      "outside_aabb_mm_xyz": null,
+      "position_correct": false,
+      "query": "bowl:0",
+      "reason": "UNKNOWN_NO_CURRENT_MASK_SUPPORT",
+      "result": "unknown"
+    },
+    {
+      "actual_instance": "WineBottle|surface|2|8",
+      "arm": "active",
+      "group": "view-35-policy",
+      "identity_correct": true,
+      "joint_success": true,
+      "outside_aabb_mm_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "position_correct": true,
+      "query": "bottle:0",
+      "reason": "FLOW_AND_MASK_SUPPORTED",
+      "result": "reported"
+    },
+    {
+      "actual_instance": "SoapBottle|surface|2|14",
+      "arm": "active",
+      "group": "view-35-policy",
+      "identity_correct": true,
+      "joint_success": true,
+      "outside_aabb_mm_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "position_correct": true,
+      "query": "bottle:1",
+      "reason": "FLOW_AND_MASK_SUPPORTED",
+      "result": "reported"
+    },
+    {
+      "actual_instance": "Bowl|surface|2|11",
+      "arm": "active",
+      "group": "view-35-policy",
+      "identity_correct": true,
+      "joint_success": false,
+      "outside_aabb_mm_xyz": [
+        0.0,
+        2.0630052605000726,
+        0.0
+      ],
+      "position_correct": false,
+      "query": "bowl:0",
+      "reason": "FLOW_AND_MASK_SUPPORTED",
+      "result": "reported"
+    },
+    {
+      "actual_instance": null,
+      "arm": "no-update",
+      "group": "view-35-policy",
+      "identity_correct": false,
+      "joint_success": false,
+      "outside_aabb_mm_xyz": null,
+      "position_correct": false,
+      "query": "bottle:0",
+      "reason": "reference_not_effective",
+      "result": "unknown"
+    },
+    {
+      "actual_instance": null,
+      "arm": "no-update",
+      "group": "view-35-policy",
+      "identity_correct": false,
+      "joint_success": false,
+      "outside_aabb_mm_xyz": null,
+      "position_correct": false,
+      "query": "bottle:1",
+      "reason": "reference_not_effective",
+      "result": "unknown"
+    },
+    {
+      "actual_instance": null,
+      "arm": "no-update",
+      "group": "view-35-policy",
+      "identity_correct": false,
+      "joint_success": false,
+      "outside_aabb_mm_xyz": null,
+      "position_correct": false,
+      "query": "bowl:0",
+      "reason": "reference_not_effective",
+      "result": "unknown"
+    },
+    {
+      "actual_instance": null,
+      "arm": "memory-retain",
+      "group": "view-35-memory",
+      "identity_correct": false,
+      "joint_success": false,
+      "outside_aabb_mm_xyz": null,
+      "position_correct": false,
+      "query": "bottle:0",
+      "reason": "LOST_NO_REINITIALIZATION",
+      "result": "unknown"
+    },
+    {
+      "actual_instance": "SoapBottle|surface|2|14",
+      "arm": "memory-retain",
+      "group": "view-35-memory",
+      "identity_correct": true,
+      "joint_success": true,
+      "outside_aabb_mm_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "position_correct": true,
+      "query": "bottle:1",
+      "reason": "FLOW_AND_MASK_SUPPORTED",
+      "result": "reported"
+    },
+    {
+      "actual_instance": null,
+      "arm": "memory-retain",
+      "group": "view-35-memory",
+      "identity_correct": false,
+      "joint_success": false,
+      "outside_aabb_mm_xyz": null,
+      "position_correct": false,
+      "query": "bowl:0",
+      "reason": "UNKNOWN_NO_CURRENT_MASK_SUPPORT",
+      "result": "unknown"
+    },
+    {
+      "actual_instance": null,
+      "arm": "memory-reset",
+      "group": "view-35-memory",
+      "identity_correct": false,
+      "joint_success": false,
+      "outside_aabb_mm_xyz": null,
+      "position_correct": false,
+      "query": "bottle:0",
+      "reason": "LOST_NO_REINITIALIZATION",
+      "result": "unknown"
+    },
+    {
+      "actual_instance": "SoapBottle|surface|2|14",
+      "arm": "memory-reset",
+      "group": "view-35-memory",
+      "identity_correct": true,
+      "joint_success": true,
+      "outside_aabb_mm_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "position_correct": true,
+      "query": "bottle:1",
+      "reason": "FLOW_AND_MASK_SUPPORTED",
+      "result": "reported"
+    },
+    {
+      "actual_instance": null,
+      "arm": "memory-reset",
+      "group": "view-35-memory",
+      "identity_correct": false,
+      "joint_success": false,
+      "outside_aabb_mm_xyz": null,
+      "position_correct": false,
+      "query": "bowl:0",
+      "reason": "UNKNOWN_NO_CURRENT_MASK_SUPPORT",
+      "result": "unknown"
+    }
+  ],
+  "source_files": 954,
+  "status": "A_SIDE_ARTIFACT_RECOMPUTATION_PASS"
+}

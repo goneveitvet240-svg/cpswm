@@ -1,3 +1,15 @@
+# A：S1 首批系统矩阵完成，收益边界已核验（2026-10-02）
+
+分支 `codex/pc-a-system-experiments-s1-20261002`，base PR96 `9c0206be16057689a2b06ee1c64b008a30c35f19`；实际执行源码 `747ea0187a6a03c4decaa2d3ad05e000a31f1dca`，生产src/及tests/未改。[草稿PR97](https://github.com/goneveitvet240-svg/cpswm/pull/97)堆叠PR96，未合并。[报告](../reviews/pc_a/system_experiments_s1_2026-10-02/REPORT.md)、[协议](../reviews/pc_a/system_experiments_s1_2026-10-02/PROTOCOL.md)、[命令](../reviews/pc_a/system_experiments_s1_2026-10-02/COMMANDS.md)。
+
+预声明15运行/45查询槽全部完成，39真实动作；6/6组公共输入和全物体状态匹配，15/15新进程恢复一致，42主流程子命令返回0。固定5/9（9动作）、主动6/9（3动作）、关闭更新0/9；保留/撤回中间记忆均5/9、各9动作。三次主动都首步停止，局部优势来自避免后续丢失，不是新视角澄清证据；未测到中间记忆增益。20个最终unknown保留；逐帧15个有报告碗观测均位置失败，高度越界约1.561–2.066mm，根因未确证，未改AABB容差。
+
+954源码pin和冻结资源核对，45主评分按原始SDK掩码/AABB重算一致；117逐帧查询作为事后诊断。新增驱动Ruff/format/编译通过，旧54回归不冒称本批重跑。完整2067文件/608.5MB原始证据与已逐文件核验的103.8MB压缩包在 `/private/tmp/cpswm-system-s1-evidence-20261002` 及同名tar.gz；新大包未上传，本分支提供源/协议/派生评分恢复记录/原始哈希清单。原PR96已公开证据保持。
+
+当前结论限单屋相关视角、受控语义bootstrap，非完整自然联合系统/独立场景/长时动态或B验收。下步依据为自然目标初始化、持续关联和几何读出问题，完整统一框架不缩小。B需实际绑定SHA复核，A不代签、不改STATUS_B/原用户树/共享集成、不自动合并。
+
+---
+
 # A：S1 系统试验开工（2026-10-02）
 
 用户要求开始系统试验。独立分支 `codex/pc-a-system-experiments-s1-20261002`，base/开工代码 `9c0206be16057689a2b06ee1c64b008a30c35f19`（PR96）。生产源码保持 `745613ef0b804b5da4d1d2afcbba56fd9f78925c` 内容，仅补矩阵编排及如实枚举各组动作集合。fetch 已核对集成 `19ddf26830348a2f0b33f0af54d6ba702c5cfb1c`、B `fd4ca6ef5e81c90d7cf7987b42c0b2810d8a810a`，无新集成进度。

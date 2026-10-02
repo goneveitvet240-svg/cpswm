@@ -1,0 +1,166 @@
+{
+  "action_accounting": "three query outcomes share each physical episode; group action sums repeat shared actions",
+  "comparisons": {
+    "memory-reset": {
+      "action_log_authentication": "external_requirement",
+      "groups": [
+        {
+          "actions": 9,
+          "cumulative_degrees": 105.0,
+          "elapsed_seconds": 103.48006199999999,
+          "failed_actions": 0,
+          "over_budget_task_ids": [],
+          "policy_id": "memory-retain",
+          "score": {
+            "assessments": [
+              {
+                "identity_correct": true,
+                "joint_success": true,
+                "position_correct": true,
+                "reason": "evaluated",
+                "report_sha256": "3a6105bf2edc62a9af2ffd47566945ace9b3b050c176985bb018ce221a11b7d4",
+                "task_sha256": "2c7bb9f6c6a16a4fc116c24fdb0f6d100f1ecf658b24cc54e1419f6d2c6d34b2",
+                "truth_sha256": "93f879d3941fc670ce1b045acf11c0f7e3ee827abd6e7d3c5b9909eeb6e979f2"
+              },
+              {
+                "identity_correct": true,
+                "joint_success": true,
+                "position_correct": true,
+                "reason": "evaluated",
+                "report_sha256": "bdc8c52cafc931ec211bb28bfbfb2b0b18700775e746c9b20a56562f441ab6e3",
+                "task_sha256": "542563071e32eabc2eaa868bceedf391604af126ddf780c79a311531b4f5aaf2",
+                "truth_sha256": "d2ff0e5d545fdf90196d6df414d38ba96a4e38449f43c92e51f12f7df2765390"
+              },
+              {
+                "identity_correct": false,
+                "joint_success": false,
+                "position_correct": false,
+                "reason": "surface-support-value; not-centre-posterior",
+                "report_sha256": "538aa3b510a2f960b0d253dee3e13ffc4db6690c710f72f61eabb3fdb04c060b",
+                "task_sha256": "103dc7692cefc2b221ed50732669a7429a7f459829cf5a808061ba871c9510e9",
+                "truth_sha256": "8ad0c58b2cb64ea5e4825d27ada97273fdbfff908c0e887fe2d3e0e3e78abcf8"
+              }
+            ],
+            "identity_correct": 2,
+            "joint_success": 2,
+            "joint_success_rate": 0.6666666666666666,
+            "position_correct": 2,
+            "task_count": 3,
+            "unadjudicated": 0
+          },
+          "stop_reasons": [
+            "budget_exhausted",
+            "budget_exhausted",
+            "budget_exhausted"
+          ]
+        },
+        {
+          "actions": 9,
+          "cumulative_degrees": 105.0,
+          "elapsed_seconds": 139.993401,
+          "failed_actions": 0,
+          "over_budget_task_ids": [],
+          "policy_id": "memory-reset",
+          "score": {
+            "assessments": [
+              {
+                "identity_correct": true,
+                "joint_success": true,
+                "position_correct": true,
+                "reason": "evaluated",
+                "report_sha256": "2a67cde0e1c94e090a23b96a6e5576b4cc631c6a7f3105fffa733fb781d8b570",
+                "task_sha256": "2c7bb9f6c6a16a4fc116c24fdb0f6d100f1ecf658b24cc54e1419f6d2c6d34b2",
+                "truth_sha256": "a9b7845aa3155ec150e34ec0038cd952527c4c129f2f0a885ddedc08424791d3"
+              },
+              {
+                "identity_correct": true,
+                "joint_success": true,
+                "position_correct": true,
+                "reason": "evaluated",
+                "report_sha256": "2df183152bc0ca4e879a6ca3afaa95dcd92d3d7a266bbb0017c92cb346f4ea7c",
+                "task_sha256": "542563071e32eabc2eaa868bceedf391604af126ddf780c79a311531b4f5aaf2",
+                "truth_sha256": "317d77358ba23a54292795bdaf14df20c8e9621c7e8133481e9a4946f6a96134"
+              },
+              {
+                "identity_correct": false,
+                "joint_success": false,
+                "position_correct": false,
+                "reason": "surface-support-value; not-centre-posterior",
+                "report_sha256": "57f9dd43ed5b4d69ea94aa597d86d912e37d6ce2cbaaf2bb13e9b41a90da37ab",
+                "task_sha256": "103dc7692cefc2b221ed50732669a7429a7f459829cf5a808061ba871c9510e9",
+                "truth_sha256": "39c90ef5dc6b009be725eec1ee3fdccf1d0808263021743ab7140624d2041459"
+              }
+            ],
+            "identity_correct": 2,
+            "joint_success": 2,
+            "joint_success_rate": 0.6666666666666666,
+            "position_correct": 2,
+            "task_count": 3,
+            "unadjudicated": 0
+          },
+          "stop_reasons": [
+            "budget_exhausted",
+            "budget_exhausted",
+            "budget_exhausted"
+          ]
+        }
+      ],
+      "paired_design_and_count_budget_valid": true
+    }
+  },
+  "equality": {
+    "all_public_inputs_equal": true,
+    "entire_frozen_world_equal": true,
+    "initial_public_equal": true
+  },
+  "independent_scenes": 1,
+  "later_task_budget": 1,
+  "memory_controls": {
+    "memory-reset": [
+      {
+        "before_index": 2,
+        "effective_after": [
+          "288130a6-dc35-436c-a99e-88925a34e93c"
+        ],
+        "physical_after": 2,
+        "physical_before": 2,
+        "retained_reference": "288130a6-dc35-436c-a99e-88925a34e93c",
+        "withdrawn": [
+          "732e540f-3d77-49f9-a08a-8559567e6ff8"
+        ]
+      }
+    ],
+    "memory-retain": []
+  },
+  "public_signatures": {
+    "memory-reset": "e79a884bceb039bcae80360c4886155673bd22459713b97ec345b6afd20476c7",
+    "memory-retain": "e79a884bceb039bcae80360c4886155673bd22459713b97ec345b6afd20476c7"
+  },
+  "public_trajectories": {
+    "memory-reset": [
+      "e79a884bceb039bcae80360c4886155673bd22459713b97ec345b6afd20476c7",
+      "462159876b5cb28335f3979f875ebb6ec60cee8e93a3a5d9fda46d3271f04d8c",
+      "ef5ff50c2ef3d842f65f4e8b22e8b0ca3b9a67f02b0c99e149683f32d1c93960"
+    ],
+    "memory-retain": [
+      "e79a884bceb039bcae80360c4886155673bd22459713b97ec345b6afd20476c7",
+      "462159876b5cb28335f3979f875ebb6ec60cee8e93a3a5d9fda46d3271f04d8c",
+      "ef5ff50c2ef3d842f65f4e8b22e8b0ca3b9a67f02b0c99e149683f32d1c93960"
+    ]
+  },
+  "scope": "frozen development pilot; not generalization or B acceptance",
+  "status": "VALID_DEVELOPMENT_PAIR",
+  "task_count": 3,
+  "world_signatures": {
+    "memory-reset": [
+      "9e67c05d1c8978f4c6fb8d0348f51e0cacb2f9cb3839fd5082fe861e7e34f2dd",
+      "9e67c05d1c8978f4c6fb8d0348f51e0cacb2f9cb3839fd5082fe861e7e34f2dd",
+      "9e67c05d1c8978f4c6fb8d0348f51e0cacb2f9cb3839fd5082fe861e7e34f2dd"
+    ],
+    "memory-retain": [
+      "9e67c05d1c8978f4c6fb8d0348f51e0cacb2f9cb3839fd5082fe861e7e34f2dd",
+      "9e67c05d1c8978f4c6fb8d0348f51e0cacb2f9cb3839fd5082fe861e7e34f2dd",
+      "9e67c05d1c8978f4c6fb8d0348f51e0cacb2f9cb3839fd5082fe861e7e34f2dd"
+    ]
+  }
+}

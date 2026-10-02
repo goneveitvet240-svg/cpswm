@@ -1,0 +1,393 @@
+{
+  "budget": 3,
+  "failures": [],
+  "final_reports": [
+    {
+      "action_id": "4eab0c14-e08a-4ba8-b84d-148297f97133",
+      "anchor_id": "7ed1bb61-094f-5de9-99e6-84241c3f8ad8",
+      "category": "bottle",
+      "feature_ids": [
+        8
+      ],
+      "observation_ids": [
+        "4ac547ab-1a45-4bd3-bb6a-e948da81c32d",
+        "08a26a94-fa52-4a12-93fa-eca6203cc861",
+        "f6006b9f-5ad9-49a8-875f-bdb74145ce90"
+      ],
+      "ordinal": 0,
+      "reason": "FLOW_AND_MASK_SUPPORTED",
+      "reference_action": "4eab0c14-e08a-4ba8-b84d-148297f97133",
+      "scene_id": "5909afb2274525115543e6ae278648d3fd0c72c2b36992ef790274ea65531db0",
+      "selected_pixel_uv": [
+        58,
+        144
+      ],
+      "source_view_sha256": "d9687c49deb9d757e6e988122d93c3775b30899cb0e207ea53344324b97a7b51",
+      "status": "reported",
+      "temporal_scope": "last_effective_capture_only",
+      "valid_at": "2026-10-02T15:06:09.072656Z",
+      "world_point_m": [
+        0.30316286289694516,
+        1.0525528403426274,
+        2.147213714242045
+      ]
+    },
+    {
+      "action_id": "4eab0c14-e08a-4ba8-b84d-148297f97133",
+      "anchor_id": "f6747b83-0eba-572c-b34b-dd92f14c646d",
+      "category": "bottle",
+      "feature_ids": [
+        16
+      ],
+      "observation_ids": [
+        "4ac547ab-1a45-4bd3-bb6a-e948da81c32d",
+        "08a26a94-fa52-4a12-93fa-eca6203cc861",
+        "f6006b9f-5ad9-49a8-875f-bdb74145ce90"
+      ],
+      "ordinal": 1,
+      "reason": "FLOW_AND_MASK_SUPPORTED",
+      "reference_action": "4eab0c14-e08a-4ba8-b84d-148297f97133",
+      "scene_id": "5909afb2274525115543e6ae278648d3fd0c72c2b36992ef790274ea65531db0",
+      "selected_pixel_uv": [
+        206,
+        182
+      ],
+      "source_view_sha256": "d9687c49deb9d757e6e988122d93c3775b30899cb0e207ea53344324b97a7b51",
+      "status": "reported",
+      "temporal_scope": "last_effective_capture_only",
+      "valid_at": "2026-10-02T15:06:09.072656Z",
+      "world_point_m": [
+        0.5214192464610314,
+        1.0825253646177426,
+        2.7642341891443354
+      ]
+    },
+    {
+      "action_id": "4eab0c14-e08a-4ba8-b84d-148297f97133",
+      "anchor_id": "d2f70cee-7678-58f0-bcfc-c1ca4e7f08e2",
+      "category": "bowl",
+      "feature_ids": [
+        9
+      ],
+      "observation_ids": [
+        "4ac547ab-1a45-4bd3-bb6a-e948da81c32d",
+        "08a26a94-fa52-4a12-93fa-eca6203cc861",
+        "f6006b9f-5ad9-49a8-875f-bdb74145ce90"
+      ],
+      "ordinal": 0,
+      "reason": "FLOW_AND_MASK_SUPPORTED",
+      "reference_action": "4eab0c14-e08a-4ba8-b84d-148297f97133",
+      "scene_id": "5909afb2274525115543e6ae278648d3fd0c72c2b36992ef790274ea65531db0",
+      "selected_pixel_uv": [
+        141,
+        160
+      ],
+      "source_view_sha256": "d9687c49deb9d757e6e988122d93c3775b30899cb0e207ea53344324b97a7b51",
+      "status": "reported",
+      "temporal_scope": "last_effective_capture_only",
+      "valid_at": "2026-10-02T15:06:09.072656Z",
+      "world_point_m": [
+        0.17771270908361436,
+        0.9360343524894389,
+        2.4697129726654685
+      ]
+    }
+  ],
+  "physical_dispatches": 1,
+  "policy": {
+    "action_cost": 0.0001,
+    "alternatives": [
+      {
+        "action": "RotateRight",
+        "degrees": 1.0
+      },
+      {
+        "action": "RotateRight",
+        "degrees": 5.0
+      }
+    ],
+    "budget": 3,
+    "mode": "empirical_joint",
+    "model": {
+      "calibrated": false,
+      "cells": {
+        "2ffa48646103181a4a999c13b7e875e5070ce1dea7bcadeb068e9b23b97bb551": {
+          "73b9bb514bba79088faf08bd686e51183a4b59b6f21cb84246d18fa27e3f5f76": {
+            "action": "Stop",
+            "count": 14,
+            "degrees": 0.0,
+            "successes": 14
+          },
+          "aed6f5daee54a6eb24c1b97fe4b22aa5c11efc1ac40809121dda03635eabdd88": {
+            "action": "RotateRight",
+            "count": 10,
+            "degrees": 1.0,
+            "successes": 10
+          },
+          "e12e5bd0d642d92336bd322c0f957d420a6036afd7b0b127e5f4e782cc04c8e0": {
+            "action": "RotateRight",
+            "count": 4,
+            "degrees": 5.0,
+            "successes": 4
+          }
+        },
+        "7029e76f7f36067bb3baab02c15aa9174384cf5a4151299c0364a740e463f071": {
+          "73b9bb514bba79088faf08bd686e51183a4b59b6f21cb84246d18fa27e3f5f76": {
+            "action": "Stop",
+            "count": 2,
+            "degrees": 0.0,
+            "successes": 0
+          },
+          "e12e5bd0d642d92336bd322c0f957d420a6036afd7b0b127e5f4e782cc04c8e0": {
+            "action": "RotateRight",
+            "count": 1,
+            "degrees": 5.0,
+            "successes": 0
+          }
+        },
+        "73b50f5e430045ddf84605e37e9359e92ab06da3e4d0f92fe2f31da80be6b92a": {
+          "73b9bb514bba79088faf08bd686e51183a4b59b6f21cb84246d18fa27e3f5f76": {
+            "action": "Stop",
+            "count": 12,
+            "degrees": 0.0,
+            "successes": 12
+          },
+          "aed6f5daee54a6eb24c1b97fe4b22aa5c11efc1ac40809121dda03635eabdd88": {
+            "action": "RotateRight",
+            "count": 10,
+            "degrees": 1.0,
+            "successes": 10
+          },
+          "e12e5bd0d642d92336bd322c0f957d420a6036afd7b0b127e5f4e782cc04c8e0": {
+            "action": "RotateRight",
+            "count": 3,
+            "degrees": 5.0,
+            "successes": 2
+          }
+        },
+        "75fb43dc69327f3fef9893718292986c2ac03f0537dec9faa38b270e358fb607": {
+          "73b9bb514bba79088faf08bd686e51183a4b59b6f21cb84246d18fa27e3f5f76": {
+            "action": "Stop",
+            "count": 4,
+            "degrees": 0.0,
+            "successes": 0
+          },
+          "aed6f5daee54a6eb24c1b97fe4b22aa5c11efc1ac40809121dda03635eabdd88": {
+            "action": "RotateRight",
+            "count": 4,
+            "degrees": 1.0,
+            "successes": 0
+          },
+          "e12e5bd0d642d92336bd322c0f957d420a6036afd7b0b127e5f4e782cc04c8e0": {
+            "action": "RotateRight",
+            "count": 1,
+            "degrees": 5.0,
+            "successes": 0
+          }
+        },
+        "aacc2213818b11f5081f1e333306f12a0523b6d502beafdd62d8eef08052f57c": {
+          "73b9bb514bba79088faf08bd686e51183a4b59b6f21cb84246d18fa27e3f5f76": {
+            "action": "Stop",
+            "count": 10,
+            "degrees": 0.0,
+            "successes": 0
+          },
+          "aed6f5daee54a6eb24c1b97fe4b22aa5c11efc1ac40809121dda03635eabdd88": {
+            "action": "RotateRight",
+            "count": 6,
+            "degrees": 1.0,
+            "successes": 0
+          },
+          "e12e5bd0d642d92336bd322c0f957d420a6036afd7b0b127e5f4e782cc04c8e0": {
+            "action": "RotateRight",
+            "count": 3,
+            "degrees": 5.0,
+            "successes": 0
+          }
+        }
+      },
+      "schema": "surface-action-joint-frequency-development@1",
+      "training_manifest": "35c39cdcd92dfed1c5d6a925d938defd3c3bfa78145bd826122e56cea1ab0c16",
+      "unique_transition_count": 84
+    },
+    "model_pin": "e88e1ff18b0da5c4698285cc362d40a8e0e22a15e0a08cb406e7cf762775d693",
+    "queries": [
+      {
+        "category": "bottle",
+        "ordinal": 0
+      },
+      {
+        "category": "bottle",
+        "ordinal": 1
+      },
+      {
+        "category": "bowl",
+        "ordinal": 0
+      }
+    ],
+    "schedule": [
+      {
+        "action": "RotateRight",
+        "degrees": 35.0
+      },
+      {
+        "action": "RotateRight",
+        "degrees": 5.0
+      },
+      {
+        "action": "RotateRight",
+        "degrees": 5.0
+      }
+    ]
+  },
+  "queries": [
+    {
+      "category": "bottle",
+      "ordinal": 0
+    },
+    {
+      "category": "bottle",
+      "ordinal": 1
+    },
+    {
+      "category": "bowl",
+      "ordinal": 0
+    }
+  ],
+  "reference_action": "4eab0c14-e08a-4ba8-b84d-148297f97133",
+  "schedule": [
+    {
+      "action": "RotateRight",
+      "degrees": 35.0
+    },
+    {
+      "action": "RotateRight",
+      "degrees": 5.0
+    },
+    {
+      "action": "RotateRight",
+      "degrees": 5.0
+    }
+  ],
+  "scope": "natural surface task; controlled semantic bootstrap",
+  "status": "COMPLETED",
+  "steps": [
+    {
+      "action_id": "4eab0c14-e08a-4ba8-b84d-148297f97133",
+      "index": 0,
+      "reports": [
+        {
+          "action_id": "4eab0c14-e08a-4ba8-b84d-148297f97133",
+          "anchor_id": "7ed1bb61-094f-5de9-99e6-84241c3f8ad8",
+          "category": "bottle",
+          "feature_ids": [
+            8
+          ],
+          "observation_ids": [
+            "4ac547ab-1a45-4bd3-bb6a-e948da81c32d",
+            "08a26a94-fa52-4a12-93fa-eca6203cc861",
+            "f6006b9f-5ad9-49a8-875f-bdb74145ce90"
+          ],
+          "ordinal": 0,
+          "reason": "FLOW_AND_MASK_SUPPORTED",
+          "reference_action": "4eab0c14-e08a-4ba8-b84d-148297f97133",
+          "scene_id": "5909afb2274525115543e6ae278648d3fd0c72c2b36992ef790274ea65531db0",
+          "selected_pixel_uv": [
+            58,
+            144
+          ],
+          "source_view_sha256": "d9687c49deb9d757e6e988122d93c3775b30899cb0e207ea53344324b97a7b51",
+          "status": "reported",
+          "temporal_scope": "last_effective_capture_only",
+          "valid_at": "2026-10-02T15:06:09.072656Z",
+          "world_point_m": [
+            0.30316286289694516,
+            1.0525528403426274,
+            2.147213714242045
+          ]
+        },
+        {
+          "action_id": "4eab0c14-e08a-4ba8-b84d-148297f97133",
+          "anchor_id": "f6747b83-0eba-572c-b34b-dd92f14c646d",
+          "category": "bottle",
+          "feature_ids": [
+            16
+          ],
+          "observation_ids": [
+            "4ac547ab-1a45-4bd3-bb6a-e948da81c32d",
+            "08a26a94-fa52-4a12-93fa-eca6203cc861",
+            "f6006b9f-5ad9-49a8-875f-bdb74145ce90"
+          ],
+          "ordinal": 1,
+          "reason": "FLOW_AND_MASK_SUPPORTED",
+          "reference_action": "4eab0c14-e08a-4ba8-b84d-148297f97133",
+          "scene_id": "5909afb2274525115543e6ae278648d3fd0c72c2b36992ef790274ea65531db0",
+          "selected_pixel_uv": [
+            206,
+            182
+          ],
+          "source_view_sha256": "d9687c49deb9d757e6e988122d93c3775b30899cb0e207ea53344324b97a7b51",
+          "status": "reported",
+          "temporal_scope": "last_effective_capture_only",
+          "valid_at": "2026-10-02T15:06:09.072656Z",
+          "world_point_m": [
+            0.5214192464610314,
+            1.0825253646177426,
+            2.7642341891443354
+          ]
+        },
+        {
+          "action_id": "4eab0c14-e08a-4ba8-b84d-148297f97133",
+          "anchor_id": "d2f70cee-7678-58f0-bcfc-c1ca4e7f08e2",
+          "category": "bowl",
+          "feature_ids": [
+            9
+          ],
+          "observation_ids": [
+            "4ac547ab-1a45-4bd3-bb6a-e948da81c32d",
+            "08a26a94-fa52-4a12-93fa-eca6203cc861",
+            "f6006b9f-5ad9-49a8-875f-bdb74145ce90"
+          ],
+          "ordinal": 0,
+          "reason": "FLOW_AND_MASK_SUPPORTED",
+          "reference_action": "4eab0c14-e08a-4ba8-b84d-148297f97133",
+          "scene_id": "5909afb2274525115543e6ae278648d3fd0c72c2b36992ef790274ea65531db0",
+          "selected_pixel_uv": [
+            141,
+            160
+          ],
+          "source_view_sha256": "d9687c49deb9d757e6e988122d93c3775b30899cb0e207ea53344324b97a7b51",
+          "status": "reported",
+          "temporal_scope": "last_effective_capture_only",
+          "valid_at": "2026-10-02T15:06:09.072656Z",
+          "world_point_m": [
+            0.17771270908361436,
+            0.9360343524894389,
+            2.4697129726654685
+          ]
+        }
+      ],
+      "source_view_sha256": "d9687c49deb9d757e6e988122d93c3775b30899cb0e207ea53344324b97a7b51"
+    }
+  ],
+  "stop": {
+    "current": 0.6666666666666666,
+    "options": [
+      {
+        "action": "RotateRight",
+        "degrees": 1.0,
+        "expected": 0.6666666666666666,
+        "net_gain": -0.0001
+      },
+      {
+        "action": "RotateRight",
+        "degrees": 5.0,
+        "expected": 0.5555555555555555,
+        "net_gain": -0.11121111111111116
+      }
+    ],
+    "reason": "no_positive_predicted_joint_gain",
+    "stopped": true
+  },
+  "updates_enabled": true
+}

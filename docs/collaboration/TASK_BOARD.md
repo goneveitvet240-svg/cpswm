@@ -1,3 +1,11 @@
+# A：S1 系统试验开工（2026-10-02）
+
+用户要求开始系统试验。独立分支 `codex/pc-a-system-experiments-s1-20261002`，base/开工代码 `9c0206be16057689a2b06ee1c64b008a30c35f19`（PR96）。生产源码保持 `745613ef0b804b5da4d1d2afcbba56fd9f78925c` 内容，仅补矩阵编排及如实枚举各组动作集合。fetch 已核对集成 `19ddf26830348a2f0b33f0af54d6ba702c5cfb1c`、B `fd4ca6ef5e81c90d7cf7987b42c0b2810d8a810a`，无新集成进度。
+
+[预声明协议](../reviews/pc_a/system_experiments_s1_2026-10-02/PROTOCOL.md)：25°/30°/35°三个首观察设置，fixed/active/no-update及保留/撤回中间记忆，共15运行、45查询槽、每运行预算3。旧模型冻结，严格AABB，保留未知/失败，真实同世界组内配对；15个完成运行拟逐一新进程恢复。源冻结和证据在 `/private/tmp/cpswm-system-s1-evidence-20261002`，实际执行SHA由 plan.json 记录。当前尚无新实验结果，推送前为本地进行中。完整研究框架保持，B独立验收待实际B执行；不改原工作树、STATUS_B、共享集成，不自动合并。
+
+---
+
 # A：六步流水线已公开交接（2026-10-02）
 
 [草稿PR #96](https://github.com/goneveitvet240-svg/cpswm/pull/96)堆叠PR95，未合并。完整源码/原始证据提交 `284ccb00f7a55e4d10988d9ea5f0fdc3d8560c32` 已成功推送；生产冻结仍 `745613ef0b804b5da4d1d2afcbba56fd9f78925c`，驱动/评分仍 `9581ebcd94e11e79dd459761df3b3cdfcedb100a`，本次只追加交接确认。

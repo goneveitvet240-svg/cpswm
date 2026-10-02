@@ -1,0 +1,57 @@
+{
+  "status": "READOUT_VERIFIED",
+  "scope": "retrospective geometry diagnostic only",
+  "posterior_sha256": "ea2f1883d2af2e1b1d422080adb0171772f2b59291d86b96637d5c4ca425bcb4",
+  "database_unchanged": true,
+  "new_actions": 0,
+  "evaluator_target": "WineBottle|surface|2|8",
+  "lower_m": [
+    0.2149759829044342,
+    0.9374582767486572,
+    2.0918195247650146
+  ],
+  "upper_m": [
+    0.30542096495628357,
+    1.2638633251190186,
+    2.180610418319702
+  ],
+  "natural_identity_adjudicated": false,
+  "selected_classification_baseline": {
+    "task_sha256": "4e538954005b842ea8e451ec4f191a433f5e23779d772ec376ae534a9c2270db",
+    "report_sha256": "88da3795f554915b5ee1f10af705a9affc57fc7bc154fd40c3a96d67e08bdf62",
+    "truth_sha256": null,
+    "identity_correct": null,
+    "position_correct": null,
+    "joint_success": null,
+    "reason": "missing_evaluator_truth"
+  },
+  "all_hypothesis_scores": [
+    {
+      "task_sha256": "4e538954005b842ea8e451ec4f191a433f5e23779d772ec376ae534a9c2270db",
+      "report_sha256": "3900613b3a822baae5a5bd7184559906a6b9c82149e6b16c502200464fc982c6",
+      "truth_sha256": null,
+      "identity_correct": false,
+      "position_correct": false,
+      "joint_success": false,
+      "reason": "no_resolved_hypothesis_selected"
+    },
+    {
+      "task_sha256": "4e538954005b842ea8e451ec4f191a433f5e23779d772ec376ae534a9c2270db",
+      "report_sha256": "3900613b3a822baae5a5bd7184559906a6b9c82149e6b16c502200464fc982c6",
+      "truth_sha256": null,
+      "identity_correct": false,
+      "position_correct": false,
+      "joint_success": false,
+      "reason": "no_resolved_hypothesis_selected"
+    },
+    {
+      "task_sha256": "4e538954005b842ea8e451ec4f191a433f5e23779d772ec376ae534a9c2270db",
+      "report_sha256": "88da3795f554915b5ee1f10af705a9affc57fc7bc154fd40c3a96d67e08bdf62",
+      "truth_sha256": "fa4b9db31ba62ccec253050adf312a9a0ecad44abb830069a6c3de35fb765b39",
+      "identity_correct": null,
+      "position_correct": false,
+      "joint_success": null,
+      "reason": "identity_unadjudicated"
+    }
+  ]
+}

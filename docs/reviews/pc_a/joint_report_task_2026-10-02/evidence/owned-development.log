@@ -1,0 +1,14 @@
+E
+==================================== ERRORS ====================================
+___ ERROR at setup of test_real_owner_report_restore_and_capture_withdrawal ____
+file /private/tmp/cpswm-pc-a-joint-report-evaluation-20261002/tests/test_owned_target_position_report.py, line 48
+  def test_real_owner_report_restore_and_capture_withdrawal(tmp_path, checkpoints, weights):
+E       fixture 'checkpoints' not found
+>       available fixtures: anyio_backend, anyio_backend_name, anyio_backend_options, cache, capfd, capfdbinary, caplog, capsys, capsysbinary, capteesys, cov, current_full_scientific_loop, doctest_namespace, entity_factory, evidence_ref, free_tcp_port, free_tcp_port_factory, free_udp_port, free_udp_port_factory, household_id, hydra_restore_singletons, hydra_sweep_runner, hydra_task_runner, interval, metadata_factory, monkeypatch, no_cover, now, pytestconfig, record_property, record_testsuite_property, record_xml_attribute, recwarn, session_id, subtests, testrun_uid, tmp_path, tmp_path_factory, tmpdir, tmpdir_factory, worker_id
+>       use 'pytest --fixtures [testpath]' for help on them.
+
+/private/tmp/cpswm-pc-a-joint-report-evaluation-20261002/tests/test_owned_target_position_report.py:48
+=========================== short test summary info ============================
+ERROR tests/test_owned_target_position_report.py::test_real_owner_report_restore_and_capture_withdrawal
+!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!!
+1 error in 1.58s

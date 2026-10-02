@@ -1,0 +1,122 @@
+[
+  {
+    "source_sha": "27d396d6db4c248992f37285d3b7ad42b20df408",
+    "trial": "run",
+    "phase": "train",
+    "argv": [
+      ".venv/bin/python",
+      "tools/run_position_calibration.py",
+      "train",
+      "/private/tmp/cpswm-position-calibration-evidence-20261002/final/frozen-data/training.json",
+      "/private/tmp/cpswm-position-calibration-evidence-20261002/final/run/models.json",
+      "--pin",
+      "711a33e7ab8236f5a62b20009053dd09eb66b9aabd79904f043186a63b64fd72"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 0.49568915367126465
+  },
+  {
+    "source_sha": "27d396d6db4c248992f37285d3b7ad42b20df408",
+    "trial": "run",
+    "phase": "predict",
+    "argv": [
+      ".venv/bin/python",
+      "tools/run_position_calibration.py",
+      "predict",
+      "/private/tmp/cpswm-position-calibration-evidence-20261002/final/frozen-data/public.json",
+      "/private/tmp/cpswm-position-calibration-evidence-20261002/final/run/models.json",
+      "/private/tmp/cpswm-position-calibration-evidence-20261002/final/run/predictions.json",
+      "--public-pin",
+      "b7ae318c312fec7825443b8295c5117c1e0db9e7aca764ccc2e4aca51e819705",
+      "--model-pin",
+      "7648fbdf3a474e9f096bd1526fe206e804391876abba462b3d9e60367c79adb9"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 1.712906837463379
+  },
+  {
+    "source_sha": "27d396d6db4c248992f37285d3b7ad42b20df408",
+    "trial": "run",
+    "phase": "evaluate",
+    "argv": [
+      ".venv/bin/python",
+      "tools/run_position_calibration.py",
+      "evaluate",
+      "/private/tmp/cpswm-position-calibration-evidence-20261002/final/run/predictions.json",
+      "/private/tmp/cpswm-position-calibration-evidence-20261002/final/frozen-data/evaluation.json",
+      "/private/tmp/cpswm-position-calibration-evidence-20261002/final/run/report.json",
+      "--prediction-pin",
+      "a0d23394c2c280e3acc88ad8d8c3fd8e924659af29a7a95e4048b3c92f885b6a",
+      "--evaluation-pin",
+      "acf3d403f362357d3ce8eab06e3a35b950ef25e59ee341a5788cf9ff391d8c53"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 2.8606879711151123,
+    "output_sha256": {
+      "models.json": "7648fbdf3a474e9f096bd1526fe206e804391876abba462b3d9e60367c79adb9",
+      "report.json": "54b8fcf9004c17c33f1c905be9668751ff5ab4471dee6ffe324c7db02bae550a",
+      "scored-rows.json": "3b885057eab51e66451d25d50834969db7587f1f345da641b39ed852786a13ee",
+      "predictions.json": "a0d23394c2c280e3acc88ad8d8c3fd8e924659af29a7a95e4048b3c92f885b6a"
+    }
+  },
+  {
+    "source_sha": "27d396d6db4c248992f37285d3b7ad42b20df408",
+    "trial": "fresh",
+    "phase": "train",
+    "argv": [
+      ".venv/bin/python",
+      "tools/run_position_calibration.py",
+      "train",
+      "/private/tmp/cpswm-position-calibration-evidence-20261002/final/frozen-data/training.json",
+      "/private/tmp/cpswm-position-calibration-evidence-20261002/final/fresh/models.json",
+      "--pin",
+      "711a33e7ab8236f5a62b20009053dd09eb66b9aabd79904f043186a63b64fd72"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 0.5137450695037842
+  },
+  {
+    "source_sha": "27d396d6db4c248992f37285d3b7ad42b20df408",
+    "trial": "fresh",
+    "phase": "predict",
+    "argv": [
+      ".venv/bin/python",
+      "tools/run_position_calibration.py",
+      "predict",
+      "/private/tmp/cpswm-position-calibration-evidence-20261002/final/frozen-data/public.json",
+      "/private/tmp/cpswm-position-calibration-evidence-20261002/final/fresh/models.json",
+      "/private/tmp/cpswm-position-calibration-evidence-20261002/final/fresh/predictions.json",
+      "--public-pin",
+      "b7ae318c312fec7825443b8295c5117c1e0db9e7aca764ccc2e4aca51e819705",
+      "--model-pin",
+      "7648fbdf3a474e9f096bd1526fe206e804391876abba462b3d9e60367c79adb9"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 1.7161359786987305
+  },
+  {
+    "source_sha": "27d396d6db4c248992f37285d3b7ad42b20df408",
+    "trial": "fresh",
+    "phase": "evaluate",
+    "argv": [
+      ".venv/bin/python",
+      "tools/run_position_calibration.py",
+      "evaluate",
+      "/private/tmp/cpswm-position-calibration-evidence-20261002/final/fresh/predictions.json",
+      "/private/tmp/cpswm-position-calibration-evidence-20261002/final/frozen-data/evaluation.json",
+      "/private/tmp/cpswm-position-calibration-evidence-20261002/final/fresh/report.json",
+      "--prediction-pin",
+      "a0d23394c2c280e3acc88ad8d8c3fd8e924659af29a7a95e4048b3c92f885b6a",
+      "--evaluation-pin",
+      "acf3d403f362357d3ce8eab06e3a35b950ef25e59ee341a5788cf9ff391d8c53"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 2.8807411193847656,
+    "output_sha256": {
+      "models.json": "7648fbdf3a474e9f096bd1526fe206e804391876abba462b3d9e60367c79adb9",
+      "report.json": "54b8fcf9004c17c33f1c905be9668751ff5ab4471dee6ffe324c7db02bae550a",
+      "scored-rows.json": "3b885057eab51e66451d25d50834969db7587f1f345da641b39ed852786a13ee",
+      "predictions.json": "a0d23394c2c280e3acc88ad8d8c3fd8e924659af29a7a95e4048b3c92f885b6a"
+    }
+  }
+]

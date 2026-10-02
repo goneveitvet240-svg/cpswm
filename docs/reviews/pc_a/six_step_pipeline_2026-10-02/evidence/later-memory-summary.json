@@ -1,0 +1,166 @@
+{
+  "action_accounting": "three query outcomes share each physical episode; group action sums repeat shared actions",
+  "comparisons": {
+    "memory-reset": {
+      "action_log_authentication": "external_requirement",
+      "groups": [
+        {
+          "actions": 9,
+          "cumulative_degrees": 120.0,
+          "elapsed_seconds": 167.271345,
+          "failed_actions": 0,
+          "over_budget_task_ids": [],
+          "policy_id": "memory-retain",
+          "score": {
+            "assessments": [
+              {
+                "identity_correct": true,
+                "joint_success": true,
+                "position_correct": true,
+                "reason": "evaluated",
+                "report_sha256": "59de648d138ef20cdabac6b069c54d790c1a84d412f35a16a181d8d5ffab0573",
+                "task_sha256": "d936b0eb6b24cf89915842f7e6944205f8f67f1b6a1718b7c0ec218a16a432b4",
+                "truth_sha256": "2481b7929a9fc4ce16e64e6e63f79c4135b074dd9dc3741811ca8898660d2518"
+              },
+              {
+                "identity_correct": true,
+                "joint_success": true,
+                "position_correct": true,
+                "reason": "evaluated",
+                "report_sha256": "ba9806e9d522265609a1ae586e7d0d9deee0197d8a3b79c2df3a78f77b7d9324",
+                "task_sha256": "2f129d6e1f94aa2bc9b74b3d4b94217c69b739f961f458f9425688bd261e960c",
+                "truth_sha256": "607e7f07478d3d5f021e49cb556ecd2d203685f7bde19092c179eeb34a885063"
+              },
+              {
+                "identity_correct": true,
+                "joint_success": false,
+                "position_correct": false,
+                "reason": "evaluated",
+                "report_sha256": "28e50f9a15f8ec069e039fef25726b5ff3ee296ea1c53dab3c62a7251ad1a318",
+                "task_sha256": "dbc2c0ebc3fe1b8f16cd2a9f8a2dcc4f9ab4a54da7a94ef9c50a0521c79e06e2",
+                "truth_sha256": "2a7035b3ed5bf0d4609e1631706c52e0c19c3f60b6753a492d2a63654a831eef"
+              }
+            ],
+            "identity_correct": 3,
+            "joint_success": 2,
+            "joint_success_rate": 0.6666666666666666,
+            "position_correct": 2,
+            "task_count": 3,
+            "unadjudicated": 0
+          },
+          "stop_reasons": [
+            "budget_exhausted",
+            "budget_exhausted",
+            "budget_exhausted"
+          ]
+        },
+        {
+          "actions": 9,
+          "cumulative_degrees": 120.0,
+          "elapsed_seconds": 160.966881,
+          "failed_actions": 0,
+          "over_budget_task_ids": [],
+          "policy_id": "memory-reset",
+          "score": {
+            "assessments": [
+              {
+                "identity_correct": true,
+                "joint_success": true,
+                "position_correct": true,
+                "reason": "evaluated",
+                "report_sha256": "2c929b1029a85a22704d7ea10093c72e4ca2a97748cb05895ab06bb50e295413",
+                "task_sha256": "d936b0eb6b24cf89915842f7e6944205f8f67f1b6a1718b7c0ec218a16a432b4",
+                "truth_sha256": "b40fd7244a745fffbd8306eb7ec5097e6a64e192a5def0f77bed1e900f26b9b8"
+              },
+              {
+                "identity_correct": true,
+                "joint_success": true,
+                "position_correct": true,
+                "reason": "evaluated",
+                "report_sha256": "8d85b0139d0e044e56fb579916f0bfc85551ed91e8576f1a7dc7db2c75812451",
+                "task_sha256": "2f129d6e1f94aa2bc9b74b3d4b94217c69b739f961f458f9425688bd261e960c",
+                "truth_sha256": "708a6988af773a8a7e1a5b1f5bf61ca9f1fc9be78a1adc5c09689fb0e2f845d1"
+              },
+              {
+                "identity_correct": true,
+                "joint_success": false,
+                "position_correct": false,
+                "reason": "evaluated",
+                "report_sha256": "1eef4b71aabcd958fdd63f81b1c3fb5655ab67b248b6d72e29611c51067b5b43",
+                "task_sha256": "dbc2c0ebc3fe1b8f16cd2a9f8a2dcc4f9ab4a54da7a94ef9c50a0521c79e06e2",
+                "truth_sha256": "04867502f2383510f27cdbe7c2b4125c0069d04db9721f171b6347007ea13a63"
+              }
+            ],
+            "identity_correct": 3,
+            "joint_success": 2,
+            "joint_success_rate": 0.6666666666666666,
+            "position_correct": 2,
+            "task_count": 3,
+            "unadjudicated": 0
+          },
+          "stop_reasons": [
+            "budget_exhausted",
+            "budget_exhausted",
+            "budget_exhausted"
+          ]
+        }
+      ],
+      "paired_design_and_count_budget_valid": true
+    }
+  },
+  "equality": {
+    "all_public_inputs_equal": true,
+    "entire_frozen_world_equal": true,
+    "initial_public_equal": true
+  },
+  "independent_scenes": 1,
+  "later_task_budget": 1,
+  "memory_controls": {
+    "memory-reset": [
+      {
+        "before_index": 2,
+        "effective_after": [
+          "69e98c8a-7246-4c60-b0e9-a4aca9ed2131"
+        ],
+        "physical_after": 2,
+        "physical_before": 2,
+        "retained_reference": "69e98c8a-7246-4c60-b0e9-a4aca9ed2131",
+        "withdrawn": [
+          "5cd10df8-2942-4ab7-94cd-59d6a01be01f"
+        ]
+      }
+    ],
+    "memory-retain": []
+  },
+  "public_signatures": {
+    "memory-reset": "dbf916574777520894055a18e2c618842de4961b287065d097a8b1128141d015",
+    "memory-retain": "dbf916574777520894055a18e2c618842de4961b287065d097a8b1128141d015"
+  },
+  "public_trajectories": {
+    "memory-reset": [
+      "dbf916574777520894055a18e2c618842de4961b287065d097a8b1128141d015",
+      "2508d63f0c6ef32a9141767fc8ea2ff8dee865b5e22562fd7807ef21004f4482",
+      "3e312f36555a45ed3dc907ca7658dff9fa47bb34d515799d6e108538069165dc"
+    ],
+    "memory-retain": [
+      "dbf916574777520894055a18e2c618842de4961b287065d097a8b1128141d015",
+      "2508d63f0c6ef32a9141767fc8ea2ff8dee865b5e22562fd7807ef21004f4482",
+      "3e312f36555a45ed3dc907ca7658dff9fa47bb34d515799d6e108538069165dc"
+    ]
+  },
+  "scope": "frozen development pilot; not generalization or B acceptance",
+  "status": "VALID_DEVELOPMENT_PAIR",
+  "task_count": 3,
+  "world_signatures": {
+    "memory-reset": [
+      "6f4fc805803ec4e0469d0473037cdedb75af2a40def0102f7ba0e6ed1ce79bbc",
+      "6f4fc805803ec4e0469d0473037cdedb75af2a40def0102f7ba0e6ed1ce79bbc",
+      "6f4fc805803ec4e0469d0473037cdedb75af2a40def0102f7ba0e6ed1ce79bbc"
+    ],
+    "memory-retain": [
+      "6f4fc805803ec4e0469d0473037cdedb75af2a40def0102f7ba0e6ed1ce79bbc",
+      "6f4fc805803ec4e0469d0473037cdedb75af2a40def0102f7ba0e6ed1ce79bbc",
+      "6f4fc805803ec4e0469d0473037cdedb75af2a40def0102f7ba0e6ed1ce79bbc"
+    ]
+  }
+}

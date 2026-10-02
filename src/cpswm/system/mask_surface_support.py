@@ -66,7 +66,8 @@ class MaskSurfaceSupportProducer(TemporalTargetPositionProducer):
         _require(
             MaskSurfaceSequence is mask_surface_sequence.MaskSurfaceSequence
             and NaturalMaskSurfaceDetector is natural_mask_surface.NaturalMaskSurfaceDetector
-            and vars(mask_surface_sequence)["NaturalMaskSurfaceDetector"] is NaturalMaskSurfaceDetector
+            and vars(mask_surface_sequence)["NaturalMaskSurfaceDetector"]
+            is NaturalMaskSurfaceDetector
             and vars(mask_surface_sequence)["select_surface"] is natural_mask_surface.select_surface
             and vars(mask_surface_sequence)["InitializedPixelTargetTracker"]
             is visual_target_tracking.InitializedPixelTargetTracker

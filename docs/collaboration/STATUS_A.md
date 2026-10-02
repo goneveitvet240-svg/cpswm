@@ -1,3 +1,11 @@
+# A：六步任务流水线开工（2026-10-02）
+
+用户明确要求执行统一入口、自然观察更新、固定扫描、联合任务决策、后续记忆与配对验收六步。独立分支 `codex/pc-a-six-step-pipeline-20261002`，base/当前代码 `1bdacaec1b97e6e82e4138ea94fcd48e5b9f6130`（PR95）。fetch成功，集成19ddf26830348a2f0b33f0af54d6ba702c5cfb1c、B fd4ca6ef5e81c90d7cf7987b42c0b2810d8a810a未变，旧窗口无重复活动。
+
+优先复用已有owner事务/持久化/撤回，区分表面特征与对象状态；固定扫描独立于主动策略，不改停止条件制造成功。身份＋位置/AABB既有指标保持，未知/失败保留，训练开发与评分隔离。本轮未产生新结果；B独立复核必须由实际B执行，不冒称完成。完整统一框架、原用户树/STATUS_B/集成分支保持。证据拟存 `/private/tmp/cpswm-six-step-evidence-20261002`。提交推送前为本地进行中。
+
+---
+
 # A：自然掩码表面支持局部交付（2026-10-02）
 
 分支 `codex/pc-a-natural-mask-surface-20261002`，base/PR94 head `01c52fef24d5fafc95bf8f6584602771aa176d5c`，冻结实际功能/测试/驱动 SHA `d2c3f51b005b49b97812f43b5dc75c3801017807`。[报告](../reviews/pc_a/natural_mask_surface_2026-10-02/REPORT.md)、[验证](../reviews/pc_a/natural_mask_surface_2026-10-02/VALIDATION.md)、[命令](../reviews/pc_a/natural_mask_surface_2026-10-02/COMMANDS.md)。用户明确授权发布后，代码与完整证据提交 `992724e8698ab114e708b0c6f88bfb636f514e12` 已推送；[草稿 PR #95](https://github.com/goneveitvet240-svg/cpswm/pull/95)叠加PR94，未合并。本次追加仅确认交接，冻结功能源码不变。此前自动审批两次拦截证据包公开发布，已由用户本轮明确授权解除。

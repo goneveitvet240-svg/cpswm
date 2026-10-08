@@ -1,3 +1,11 @@
+# A：持续对象出生与保守重识别开工（2026-10-08）
+
+用户要求继续推进。分支 `codex/pc-a-continuous-object-reid-20261008`，base/远端 PR98 head `6e9c953a81e2fc072f4d079d7a19194b1324ea64`；远端集成仍 `19ddf26830348a2f0b33f0af54d6ba702c5cfb1c`，B 最新仍 `fd4ca6ef5e81c90d7cf7987b42c0b2810d8a810a`，开放 PR 中无同项新工作。完整 fetch 卡住后已用 `git ls-remote`、GitHub PR 元数据和完整 SHA 交叉核对，远端已验证。
+
+[计划](../reviews/pc_a/continuous_object_reid_2026-10-08/PLAN.md)：在自然表面序列中记录晚出生 provisional track，并用既有外观—几何开发能量做唯一一对一、可拒绝的丢失恢复；不新增阈值/先验，不改变首帧 ordinal 任务语义、严格 AABB 或完整研究范围。原用户树、STATUS_B、共享集成不改；本节推送前仅开工，尚无能力结果或科学收益。
+
+---
+
 # A：公开方法与 S1 代码对照完成（2026-10-03）
 
 分支 `codex/pc-a-method-code-review-20261003`，base/被审代码 `1c21e4eb4fb998a8fcdc334bb727441052aea4b3`；开工提交 `76e978c830d70c2f82db7673c3a2b4dc1a98fc08` 已推送。S1 实际执行 SHA `747ea0187a6a03c4decaa2d3ad05e000a31f1dca`，本次仅追加文档，生产代码无变化。[对照报告](../reviews/pc_a/method_code_review_2026-10-03/REPORT.md)及[官方源码清单](../reviews/pc_a/method_code_review_2026-10-03/SOURCES.json)。

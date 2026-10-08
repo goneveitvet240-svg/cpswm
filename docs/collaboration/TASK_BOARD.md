@@ -1,3 +1,9 @@
+# A：持续对象出生与保守重识别开工（2026-10-08）
+
+电脑 A 从 PR98 head `6e9c953a81e2fc072f4d079d7a19194b1324ea64` 在独立分支 `codex/pc-a-continuous-object-reid-20261008` 实现自然对象晚出生和可拒绝重识别。沿用既有外观—几何开发配置，不选择新阈值/先验；晚出生轨迹不冒充首帧任务引用，冲突保持 UNKNOWN。交付需含合法正路径、完整歧义/伪造路径、事务回滚及冻结 S1 只读重放诊断；B 独立验收仍 pending。[计划](../reviews/pc_a/continuous_object_reid_2026-10-08/PLAN.md)。
+
+---
+
 # A：公开方法与 S1 代码对照完成（2026-10-03）
 
 分支 `codex/pc-a-method-code-review-20261003`，base/被审代码 `1c21e4eb4fb998a8fcdc334bb727441052aea4b3`；开工提交 `76e978c830d70c2f82db7673c3a2b4dc1a98fc08` 已推送。S1 实际执行 SHA `747ea0187a6a03c4decaa2d3ad05e000a31f1dca`，本次仅追加文档，生产代码无变化。[对照报告](../reviews/pc_a/method_code_review_2026-10-03/REPORT.md)及[官方源码清单](../reviews/pc_a/method_code_review_2026-10-03/SOURCES.json)。

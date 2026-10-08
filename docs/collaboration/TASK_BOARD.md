@@ -1,6 +1,6 @@
 # A交付：持续对象出生与保守重识别（2026-10-08）
 
-电脑A已在 `codex/pc-a-continuous-object-reid-20261008` 提交生产实现 `a5385ddaf6724d2d346fc222866edc2b7ec9407c`（base `6e9c953a81e2fc072f4d079d7a19194b1324ea64`）。[交付报告](../reviews/pc_a/continuous_object_reid_2026-10-08/REPORT.md)：晚生轨迹与首帧query隔离，丢失恢复复用既有开发能量并要求唯一一对一；合法、无候选、多候选、共享候选、晚生、回滚和依赖绑定路径已验证。17项核心及42项最终组合通过，5组相邻回归另有30通过/21依条件跳过；冻结公开输入只证明旧LOST行达到唯一门控，不等于任务收益。完整S1原始包缺失，15-run重放未完成。下一交接为B绑定该SHA独立验收；随后A在同任务/同预算重新运行fixed/active/no-update与retain/withdraw矩阵。共享集成不自动合并，几何AABB误差和完整统一研究范围不变。
+电脑A已在 `codex/pc-a-continuous-object-reid-20261008` 提交生产实现 `a5385ddaf6724d2d346fc222866edc2b7ec9407c`（base `6e9c953a81e2fc072f4d079d7a19194b1324ea64`），[草稿PR99](https://github.com/goneveitvet240-svg/cpswm/pull/99)已建立。[交付报告](../reviews/pc_a/continuous_object_reid_2026-10-08/REPORT.md)：晚生轨迹与首帧query隔离，丢失恢复复用既有开发能量并要求唯一一对一；合法、无候选、多候选、共享候选、晚生、回滚和依赖绑定路径已验证。17项核心及42项最终组合通过，5组相邻回归另有30通过/21依条件跳过；冻结公开输入只证明旧LOST行达到唯一门控，不等于任务收益。完整S1原始包缺失，15-run重放未完成。下一交接为B绑定该SHA独立验收；随后A在同任务/同预算重新运行fixed/active/no-update与retain/withdraw矩阵。共享集成不自动合并，几何AABB误差和完整统一研究范围不变。
 
 ---
 

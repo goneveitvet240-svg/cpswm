@@ -35,7 +35,11 @@ class InitializedPixelTargetTracker:
     """
 
     def __init__(
-        self, box_xyxy: tuple[int, int, int, int], *, initial_mask: NDArray[np.bool_] | None = None
+        self,
+        box_xyxy: tuple[int, int, int, int],
+        *,
+        initial_mask: NDArray[np.bool_] | None = None,
+        initial_frame_index: int = 0,
     ) -> None:
         if len(box_xyxy) != 4 or not all(isfinite(v) for v in box_xyxy):
             raise ValueError("finite initialization box required")
@@ -48,12 +52,14 @@ class InitializedPixelTargetTracker:
             or initial_mask.ndim != 2
         ):
             raise ValueError("initial mask must be a boolean image")
+        if type(initial_frame_index) is not int or initial_frame_index < 0:
+            raise ValueError("nonnegative initial frame index required")
         self._initial_mask = None if initial_mask is None else initial_mask.copy()
         self._box = (float(x1), float(y1), float(x2), float(y2))
         self._gray: Any = None
         self._points: Any = None
         self._point_ids: Any = None
-        self._index = -1
+        self._index = initial_frame_index - 1
         self._shape: tuple[int, ...] | None = None
         self._lost = False
 
@@ -85,13 +91,10 @@ class InitializedPixelTargetTracker:
         if self._shape is not None and rgb.shape != self._shape:
             raise ValueError("camera dimensions changed")
         h, w = rgb.shape[:2]
-        if (
-            self._index == -1
-            and self._initial_mask is not None
-            and self._initial_mask.shape != (h, w)
-        ):
+        initializing = self._gray is None
+        if initializing and self._initial_mask is not None and self._initial_mask.shape != (h, w):
             raise ValueError("initial mask dimensions differ from image")
-        if self._index == -1 and (self._box[2] > w or self._box[3] > h):
+        if initializing and (self._box[2] > w or self._box[3] > h):
             raise ValueError("initialization outside image")
         gray = cv2.cvtColor(rgb, cv2.COLOR_RGB2GRAY)
         digest = sha256(rgb.tobytes()).hexdigest()
@@ -99,7 +102,7 @@ class InitializedPixelTargetTracker:
         point_ids = self._point_ids
         box = self._box
         fb_error: float | None = None
-        if self._index == -1:
+        if initializing:
             mask = np.zeros(gray.shape, dtype=np.uint8)
             x1, y1, x2, y2 = (int(v) for v in box)
             mask[y1:y2, x1:x2] = 255

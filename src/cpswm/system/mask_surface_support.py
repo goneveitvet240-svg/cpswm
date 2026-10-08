@@ -18,6 +18,7 @@ from typing import Any
 from uuid import UUID
 
 from cpswm.perception_mapping import (
+    appearance_geometry_association,
     mask_surface_sequence,
     natural_mask_surface,
     surface_action_model,
@@ -73,10 +74,13 @@ class MaskSurfaceSupportProducer(TemporalTargetPositionProducer):
             is visual_target_tracking.InitializedPixelTargetTracker
             and vars(mask_surface_sequence)["decode_rgb"] is natural_vision.decode_rgb
             and vars(mask_surface_sequence)["decode_unity_rgbd"] is unity_rgbd.decode_unity_rgbd
+            and vars(mask_surface_sequence)["appearance_geometry_association"]
+            is appearance_geometry_association
             and decode_unity_rgbd is unity_rgbd.decode_unity_rgbd,
             "surface helper alias changed",
         )
         modules = (
+            appearance_geometry_association,
             mask_surface_sequence,
             natural_mask_surface,
             surface_episode,
@@ -114,6 +118,7 @@ class MaskSurfaceSupportProducer(TemporalTargetPositionProducer):
                 tuple(
                     (m.__name__, sha256(Path(str(m.__file__)).read_bytes()).hexdigest())
                     for m in (
+                        appearance_geometry_association,
                         mask_surface_sequence,
                         natural_mask_surface,
                         surface_episode,

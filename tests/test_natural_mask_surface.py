@@ -105,6 +105,129 @@ def test_mask_cannot_borrow_background_texture_and_loss_never_reinitializes():
     )
 
 
+def test_unique_existing_energy_reidentifies_lost_track_without_changing_anchor():
+    scope = tuple(uuid4() for _ in range(3))
+    detector, _ = model(scope)
+    sequence = MaskSurfaceSequence(detector)
+    raw, cutoff = wires(scope)
+    first, _ = sequence.observe(raw, cutoff=cutoff)
+    anchor = first["tracks"][0]["anchor_id"]
+    sequence._tracks[anchor][1]._lost = True
+
+    raw, cutoff = wires(scope, index=1)
+    recovered, _ = sequence.observe(raw, cutoff=cutoff)
+    track = recovered["tracks"][0]
+    assert track["anchor_id"] == anchor
+    assert track["status"] == "REIDENTIFIED_FLOW_AND_MASK_SUPPORTED"
+    assert track["identity_status"] == "CONDITIONAL_APPEARANCE_GEOMETRY_ASSOCIATION"
+    assert track["reidentification"]["status"] == "ACCEPTED_UNIQUE_REIDENTIFICATION"
+    assert recovered["accepted_reidentifications"] == [track["current_candidate_id"]]
+    assert track["world_point_m"] is not None
+
+
+def test_lost_track_keeps_unknown_when_two_candidates_pass_existing_gate():
+    scope = tuple(uuid4() for _ in range(3))
+    detector, _ = model(scope)
+    sequence = MaskSurfaceSequence(detector)
+    raw, cutoff = wires(scope)
+    first, _ = sequence.observe(raw, cutoff=cutoff)
+    anchor = first["tracks"][0]["anchor_id"]
+    sequence._tracks[anchor][1]._lost = True
+
+    detector._model = lambda tensors: [predictions(copies=2)]
+    raw, cutoff = wires(scope, index=1)
+    result, _ = sequence.observe(raw, cutoff=cutoff)
+    track = result["tracks"][0]
+    assert track["status"] == "UNKNOWN_AMBIGUOUS_REIDENTIFICATION"
+    assert track["world_point_m"] is None and track["current_candidate_id"] is None
+    assert (
+        len([row for row in track["reidentification"]["comparisons"] if row["accepted_energy"]])
+        == 2
+    )
+    assert result["accepted_reidentifications"] == []
+
+
+def test_lost_track_keeps_unknown_without_compatible_candidate_then_can_recover():
+    scope = tuple(uuid4() for _ in range(3))
+    detector, _ = model(scope)
+    sequence = MaskSurfaceSequence(detector)
+    raw, cutoff = wires(scope)
+    first, _ = sequence.observe(raw, cutoff=cutoff)
+    anchor = first["tracks"][0]["anchor_id"]
+    sequence._tracks[anchor][1]._lost = True
+    empty = dict(
+        boxes=torch.empty((0, 4)),
+        scores=torch.empty((0,)),
+        labels=torch.empty((0,), dtype=torch.int64),
+        masks=torch.empty((0, 1, 96, 96)),
+    )
+    detector._model = lambda tensors: [empty]
+    raw, cutoff = wires(scope, index=1)
+    unknown, _ = sequence.observe(raw, cutoff=cutoff)
+    assert unknown["tracks"][0]["status"] == "UNKNOWN_NO_REIDENTIFICATION_SUPPORT"
+    assert unknown["accepted_reidentifications"] == []
+
+    detector._model = lambda tensors: [predictions()]
+    raw, cutoff = wires(scope, index=2)
+    recovered, _ = sequence.observe(raw, cutoff=cutoff)
+    assert recovered["tracks"][0]["anchor_id"] == anchor
+    assert recovered["tracks"][0]["status"] == "REIDENTIFIED_FLOW_AND_MASK_SUPPORTED"
+
+
+def test_two_lost_anchors_cannot_share_one_reidentification_candidate():
+    scope = tuple(uuid4() for _ in range(3))
+    detector, _ = model(scope, copies=2)
+    sequence = MaskSurfaceSequence(detector)
+    raw, cutoff = wires(scope)
+    first, _ = sequence.observe(raw, cutoff=cutoff)
+    for anchor in [track["anchor_id"] for track in first["tracks"]]:
+        sequence._tracks[anchor][1]._lost = True
+
+    detector._model = lambda tensors: [predictions()]
+    raw, cutoff = wires(scope, index=1)
+    result, _ = sequence.observe(raw, cutoff=cutoff)
+    assert len(result["tracks"]) == 2
+    assert all(
+        track["status"] == "UNKNOWN_SHARED_REIDENTIFICATION_CANDIDATE" for track in result["tracks"]
+    )
+    assert all(track["current_candidate_id"] is None for track in result["tracks"])
+    assert result["accepted_reidentifications"] == []
+
+
+def test_late_category_birth_is_tracked_but_cannot_replace_first_frame_query():
+    from cpswm.system.surface_episode import report_from_surface_state
+
+    scope = tuple(uuid4() for _ in range(3))
+    detector, _ = model(scope)
+    empty = dict(
+        boxes=torch.empty((0, 4)),
+        scores=torch.empty((0,)),
+        labels=torch.empty((0,), dtype=torch.int64),
+        masks=torch.empty((0, 1, 96, 96)),
+    )
+    detector._model = lambda tensors: [empty]
+    sequence = MaskSurfaceSequence(detector)
+    raw, cutoff = wires(scope)
+    first, _ = sequence.observe(raw, cutoff=cutoff)
+    assert first["tracks"] == []
+
+    detector._model = lambda tensors: [predictions()]
+    raw, cutoff = wires(scope, index=1)
+    second, _ = sequence.observe(raw, cutoff=cutoff)
+    assert len(second["tracks"]) == 1 and len(second["late_births"]) == 1
+    track = second["tracks"][0]
+    assert track["status"] == "LATE_BIRTH_FLOW_AND_MASK_SUPPORTED"
+    assert track["birth_frame"] == 1 and not track["query_eligible"]
+    report = report_from_surface_state(
+        dict(view_sha256="view", records=[first, second], history={}, action_ids=["a", "b"]),
+        category="bottle",
+        ordinal=0,
+        reference_action="a",
+    )
+    assert report["status"] == "unknown"
+    assert report["reason"] == "initial_query_unresolved"
+
+
 def test_public_point_rule_tie_depth_and_unknown_no_fabrication():
     rows, cutoff = packet()
     camera, depth = decode_unity_rgbd(rows, cutoff=cutoff)
@@ -159,7 +282,7 @@ def test_ambiguous_current_masks_do_not_force_a_match_or_replace_anchor():
     assert len(track["mask_support"]) == 2
 
 
-def test_shared_current_mask_missing_mask_and_no_late_initialization():
+def test_shared_current_mask_missing_mask_and_provisional_late_initialization():
     scope = tuple(uuid4() for _ in range(3))
     detector, _ = model(scope, copies=2)
     sequence = MaskSurfaceSequence(detector)
@@ -186,7 +309,10 @@ def test_shared_current_mask_missing_mask_and_no_late_initialization():
     fresh.observe(raw, cutoff=cutoff)
     detector._model = lambda tensors: [predictions()]
     raw, cutoff = wires(scope, index=3)
-    assert fresh.observe(raw, cutoff=cutoff)[0]["tracks"] == []
+    late = fresh.observe(raw, cutoff=cutoff)[0]
+    assert len(late["tracks"]) == 1
+    assert late["tracks"][0]["status"] == "LATE_BIRTH_FLOW_AND_MASK_SUPPORTED"
+    assert not late["tracks"][0]["query_eligible"]
 
 
 def test_scope_time_duplicate_receipt_and_calibration_attacks_preserve_flow_state():
@@ -237,6 +363,7 @@ def test_late_track_failure_rolls_back_all_staged_flows_then_retry(monkeypatch):
     raw, cutoff = wires(scope)
     sequence.observe(raw, cutoff=cutoff)
     before = {k: t.points_uv for k, (_, t) in sequence._tracks.items()}
+    evidence_before = deepcopy(sequence._evidence)
     real = InitializedPixelTargetTracker.update
     count = 0
 
@@ -255,4 +382,5 @@ def test_late_track_failure_rolls_back_all_staged_flows_then_retry(monkeypatch):
             sequence.observe(raw, cutoff=cutoff)
     assert sequence._index == 1
     assert {k: t.points_uv for k, (_, t) in sequence._tracks.items()} == before
+    assert sequence._evidence == evidence_before
     assert sequence.observe(raw, cutoff=cutoff)[0]["frame_index"] == 1

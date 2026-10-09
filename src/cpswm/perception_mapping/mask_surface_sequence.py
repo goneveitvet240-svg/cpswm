@@ -88,6 +88,7 @@ def _reference_feature_rows(
     scale = float(appearance_geometry_association.CONFIG["geometry_scale_m"])
     for feature_id, (u_float, v_float) in zip(point_ids, points_uv, strict=True):
         u, v = int(np.rint(u_float)), int(np.rint(v_float))
+        reference = reference_features.get(feature_id)
         item: dict[str, Any] = dict(
             feature_id=feature_id,
             tracked_pixel_uv=[float(u_float), float(v_float)],
@@ -95,26 +96,55 @@ def _reference_feature_rows(
             inside_image=0 <= u < camera.width and 0 <= v < camera.height,
             inside_candidate_mask=False,
             valid_depth=False,
-            reference_available=feature_id in reference_features,
+            reference_available=reference is not None,
             current_world_point_m=None,
             reference_world_point_m=None,
             residual_m=None,
             passes_geometry=False,
         )
-        if not item["inside_image"]:
+        candidates = [(u, v)]
+        if reference is not None:
+            candidates = sorted(
+                {
+                    (int(horizontal), int(vertical))
+                    for horizontal in (floor(u_float), ceil(u_float))
+                    for vertical in (floor(v_float), ceil(v_float))
+                }
+            )
+        samples = []
+        for sample_u, sample_v in candidates:
+            if not 0 <= sample_u < camera.width or not 0 <= sample_v < camera.height:
+                continue
+            if probability[sample_v, sample_u] < MASK_THRESHOLD:
+                continue
+            z = float(depth[sample_v, sample_u])
+            if not np.isfinite(z) or not 0 < z < camera.far_plane_m - camera.near_plane_m:
+                continue
+            current = tuple(float(value) for value in camera.world_point(sample_u, sample_v, z))
+            residual = (
+                None
+                if reference is None
+                else float(np.linalg.norm(np.asarray(reference) - np.asarray(current)))
+            )
+            samples.append((residual, sample_u, sample_v, current))
+        if not samples:
             rows.append(item)
             continue
-        item["inside_candidate_mask"] = bool(probability[v, u] >= MASK_THRESHOLD)
-        z = float(depth[v, u])
-        item["valid_depth"] = bool(
-            np.isfinite(z) and 0 < z < camera.far_plane_m - camera.near_plane_m
+        _, u, v, current = min(
+            samples,
+            key=lambda sample: (
+                float("inf") if sample[0] is None else sample[0],
+                sample[1],
+                sample[2],
+            ),
         )
-        if not item["inside_candidate_mask"] or not item["valid_depth"]:
-            rows.append(item)
-            continue
-        current = tuple(float(value) for value in camera.world_point(u, v, z))
+        item.update(
+            pixel_uv=[u, v],
+            inside_image=True,
+            inside_candidate_mask=True,
+            valid_depth=True,
+        )
         item["current_world_point_m"] = list(current)
-        reference = reference_features.get(feature_id)
         if reference is not None:
             residual = float(np.linalg.norm(np.asarray(reference) - np.asarray(current)))
             item.update(

@@ -9,7 +9,10 @@ import pytest
 from test_unity_rgbd import event_for, packet, rewrite_packet
 from unity_rgbd_capture import rgbd_response
 
-from cpswm.perception_mapping.mask_surface_sequence import MaskSurfaceSequence
+from cpswm.perception_mapping.mask_surface_sequence import (
+    MaskSurfaceSequence,
+    _reference_feature_rows,
+)
 from cpswm.perception_mapping.natural_mask_surface import NaturalMaskSurfaceDetector, select_surface
 from cpswm.perception_mapping.unity_rgbd import (
     PROFILE,
@@ -20,6 +23,17 @@ from cpswm.perception_mapping.visual_target_tracking import InitializedPixelTarg
 from cpswm.system.reproducibility import content_sha256
 
 torch = pytest.importorskip("torch")
+
+
+class _PixelWorldCamera:
+    width = 8
+    height = 8
+    near_plane_m = 0.1
+    far_plane_m = 10.0
+
+    @staticmethod
+    def world_point(u, v, z):
+        return float(u), float(v), float(z)
 
 
 def model(scope, *, shift=(0, 0), copies=1):
@@ -266,6 +280,22 @@ def test_public_point_rule_tie_depth_and_unknown_no_fabrication():
     assert select_surface(camera, depth, p, support_uv=())["world_point_m"] is None
     point = select_surface(camera, depth, p, support_uv=((2, 0),))
     assert point["selected_pixel_uv"] == [2, 0]
+
+
+def test_reference_geometry_resolves_subpixel_depth_without_truth_or_forced_match():
+    depth = np.ones((8, 8), dtype=np.float32)
+    probability = np.ones((8, 8), dtype=np.float32)
+    rows = _reference_feature_rows(
+        _PixelWorldCamera(),
+        depth,
+        probability,
+        (9,),
+        ((4.51, 4.2),),
+        {9: (4.0, 4.0, 1.0)},
+    )
+    assert rows[0]["pixel_uv"] == [4, 4]
+    assert rows[0]["residual_m"] == 0.0
+    assert rows[0]["passes_geometry"]
 
 
 @pytest.mark.parametrize("attack", ["nan", "range", "dtype", "shape"])

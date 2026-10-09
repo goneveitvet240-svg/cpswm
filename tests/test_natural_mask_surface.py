@@ -105,22 +105,30 @@ def test_mask_cannot_borrow_background_texture_and_loss_never_reinitializes():
     )
 
 
-def test_unique_existing_energy_reidentifies_lost_track_without_changing_anchor():
+def test_direct_reference_geometry_reidentifies_boundary_box_loss_without_new_ids():
     scope = tuple(uuid4() for _ in range(3))
     detector, _ = model(scope)
     sequence = MaskSurfaceSequence(detector)
     raw, cutoff = wires(scope)
     first, _ = sequence.observe(raw, cutoff=cutoff)
     anchor = first["tracks"][0]["anchor_id"]
-    sequence._tracks[anchor][1]._lost = True
+    initial_ids = set(first["tracks"][0]["flow_feature_ids"])
+    sequence._tracks[anchor][1]._box = (-1.0, 20.0, 39.0, 60.0)
 
     raw, cutoff = wires(scope, index=1)
     recovered, _ = sequence.observe(raw, cutoff=cutoff)
     track = recovered["tracks"][0]
     assert track["anchor_id"] == anchor
     assert track["status"] == "REIDENTIFIED_FLOW_AND_MASK_SUPPORTED"
-    assert track["identity_status"] == "CONDITIONAL_APPEARANCE_GEOMETRY_ASSOCIATION"
+    assert track["identity_status"] == "CONDITIONAL_REFERENCE_FEATURE_GEOMETRY_ASSOCIATION"
     assert track["reidentification"]["status"] == "ACCEPTED_UNIQUE_REIDENTIFICATION"
+    assert set(track["flow_feature_ids"]) <= initial_ids
+    assert len(track["flow_feature_ids"]) == 4
+    assert track["reidentification"]["selected_feature_id"] in initial_ids
+    comparison = track["reidentification"]["comparisons"][0]
+    assert comparison["accepted_energy"]
+    assert comparison["accepted_reference_feature_geometry"]
+    assert comparison["verified_reference_feature_count"] >= 4
     assert recovered["accepted_reidentifications"] == [track["current_candidate_id"]]
     assert track["world_point_m"] is not None
 
@@ -132,7 +140,7 @@ def test_lost_track_keeps_unknown_when_two_candidates_pass_existing_gate():
     raw, cutoff = wires(scope)
     first, _ = sequence.observe(raw, cutoff=cutoff)
     anchor = first["tracks"][0]["anchor_id"]
-    sequence._tracks[anchor][1]._lost = True
+    sequence._tracks[anchor][1]._box = (-1.0, 20.0, 39.0, 60.0)
 
     detector._model = lambda tensors: [predictions(copies=2)]
     raw, cutoff = wires(scope, index=1)
@@ -147,7 +155,7 @@ def test_lost_track_keeps_unknown_when_two_candidates_pass_existing_gate():
     assert result["accepted_reidentifications"] == []
 
 
-def test_lost_track_keeps_unknown_without_compatible_candidate_then_can_recover():
+def test_lost_track_without_direct_lineage_stays_unknown_across_later_candidate():
     scope = tuple(uuid4() for _ in range(3))
     detector, _ = model(scope)
     sequence = MaskSurfaceSequence(detector)
@@ -171,7 +179,8 @@ def test_lost_track_keeps_unknown_without_compatible_candidate_then_can_recover(
     raw, cutoff = wires(scope, index=2)
     recovered, _ = sequence.observe(raw, cutoff=cutoff)
     assert recovered["tracks"][0]["anchor_id"] == anchor
-    assert recovered["tracks"][0]["status"] == "REIDENTIFIED_FLOW_AND_MASK_SUPPORTED"
+    assert recovered["tracks"][0]["status"] == "UNKNOWN_NO_REFERENCE_FEATURE_GEOMETRY"
+    assert recovered["accepted_reidentifications"] == []
 
 
 def test_two_lost_anchors_cannot_share_one_reidentification_candidate():
@@ -180,8 +189,16 @@ def test_two_lost_anchors_cannot_share_one_reidentification_candidate():
     sequence = MaskSurfaceSequence(detector)
     raw, cutoff = wires(scope)
     first, _ = sequence.observe(raw, cutoff=cutoff)
+    camera, depth = decode_unity_rgbd(raw, cutoff=cutoff)
     for anchor in [track["anchor_id"] for track in first["tracks"]]:
-        sequence._tracks[anchor][1]._lost = True
+        tracker = sequence._tracks[anchor][1]
+        sequence._evidence[anchor]["reference_features"] = {
+            feature_id: camera.world_point(
+                int(np.rint(u)), int(np.rint(v)), float(depth[int(np.rint(v)), int(np.rint(u))])
+            )
+            for feature_id, (u, v) in zip(tracker.point_ids, tracker.points_uv, strict=True)
+        }
+        sequence._tracks[anchor][1]._box = (-1.0, 20.0, 39.0, 60.0)
 
     detector._model = lambda tensors: [predictions()]
     raw, cutoff = wires(scope, index=1)

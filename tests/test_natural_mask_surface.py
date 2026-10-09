@@ -132,6 +132,13 @@ def test_direct_reference_geometry_reidentifies_boundary_box_loss_without_new_id
     assert recovered["accepted_reidentifications"] == [track["current_candidate_id"]]
     assert track["world_point_m"] is not None
 
+    raw, cutoff = wires(scope, index=2)
+    continued, _ = sequence.observe(raw, cutoff=cutoff)
+    next_track = continued["tracks"][0]
+    assert next_track["status"] == "FLOW_AND_MASK_SUPPORTED"
+    assert next_track["selected_feature_ids"] == track["selected_feature_ids"]
+    assert next_track["identity_status"] == "CONDITIONAL_REFERENCE_FEATURE_GEOMETRY_CONTINUITY"
+
 
 def test_lost_track_keeps_unknown_when_two_candidates_pass_existing_gate():
     scope = tuple(uuid4() for _ in range(3))

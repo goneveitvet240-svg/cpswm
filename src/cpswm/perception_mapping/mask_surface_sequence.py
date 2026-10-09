@@ -56,6 +56,7 @@ def _descriptor(rgb: np.ndarray, candidate: dict[str, Any], *, birth_frame: int)
         reference_features={},
         reference_feature_cohort_ids=(),
         reference_geometry_readout=False,
+        selected_reference_feature_id=None,
         birth_frame=birth_frame,
     )
 
@@ -276,14 +277,29 @@ class MaskSurfaceSequence:
                     evidence[anchor]["reference_features"],
                 )
                 passing = _passing_reference_features(feature_rows)
-                if evidence[anchor]["reference_geometry_readout"]:
+                use_geometry = evidence[anchor]["reference_geometry_readout"]
+                selected_geometry_row = None
+                if use_geometry:
                     supported = tuple(tuple(row["pixel_uv"]) for row in passing)
+                    selected_geometry_row = next(
+                        (
+                            row
+                            for row in passing
+                            if row["feature_id"]
+                            == evidence[anchor]["selected_reference_feature_id"]
+                        ),
+                        None,
+                    )
                 else:
                     supported = tuple(
                         (x, y) for x, y in points if probability[y, x] >= MASK_THRESHOLD
                     )
-                if len(supported) >= MINIMUM_POINTS:
-                    support.append((candidate, supported, feature_rows, passing))
+                if len(supported) >= MINIMUM_POINTS and (
+                    not use_geometry or selected_geometry_row is not None
+                ):
+                    support.append(
+                        (candidate, supported, feature_rows, passing, selected_geometry_row)
+                    )
             row = dict(
                 anchor_id=anchor,
                 category=category,
@@ -297,7 +313,7 @@ class MaskSurfaceSequence:
                         points_uv=p,
                         reference_feature_verification=feature_rows,
                     )
-                    for c, p, feature_rows, _ in support
+                    for c, p, feature_rows, _, _ in support
                 ],
                 current_candidate_id=None,
                 selected_pixel_uv=None,
@@ -315,15 +331,34 @@ class MaskSurfaceSequence:
             elif len(support) > 1:
                 row["status"] = "UNKNOWN_AMBIGUOUS_CURRENT_MASK_SUPPORT"
             else:
-                candidate, pixels, feature_rows, passing = support[0]
+                candidate, pixels, feature_rows, passing, selected_geometry_row = support[0]
                 use_geometry = evidence[anchor]["reference_geometry_readout"]
-                selected_support = (tuple(passing[0]["pixel_uv"]),) if use_geometry else pixels
+                selected_support: tuple[tuple[int, int], ...]
+                selected_feature_ids: tuple[int, ...]
+                if use_geometry:
+                    assert selected_geometry_row is not None
+                    selected_support = (
+                        (
+                            int(selected_geometry_row["pixel_uv"][0]),
+                            int(selected_geometry_row["pixel_uv"][1]),
+                        ),
+                    )
+                    selected_feature_ids = (int(selected_geometry_row["feature_id"]),)
+                else:
+                    selected_support = pixels
+                    selected_feature_ids = ()
                 point = select_surface(
                     camera,
                     depth,
                     masks[candidate["native_index"]],
                     support_uv=selected_support,
                 )
+                if not use_geometry:
+                    selected_feature_ids = tuple(
+                        key
+                        for key, (x, y) in zip(tracker.point_ids, tracker.points_uv, strict=True)
+                        if point["selected_pixel_uv"] == [int(np.rint(x)), int(np.rint(y))]
+                    )
                 row.update(
                     status="FLOW_AND_MASK_SUPPORTED"
                     if point["status"] == "SURFACE_CANDIDATE"
@@ -332,13 +367,7 @@ class MaskSurfaceSequence:
                     selected_pixel_uv=point["selected_pixel_uv"],
                     world_point_m=point["world_point_m"],
                     surface=point,
-                    selected_feature_ids=(passing[0]["feature_id"],)
-                    if use_geometry
-                    else tuple(
-                        key
-                        for key, (x, y) in zip(tracker.point_ids, tracker.points_uv, strict=True)
-                        if point["selected_pixel_uv"] == [int(np.rint(x)), int(np.rint(y))]
-                    ),
+                    selected_feature_ids=selected_feature_ids,
                     identity_status=(
                         "CONDITIONAL_REFERENCE_FEATURE_GEOMETRY_CONTINUITY"
                         if use_geometry
@@ -511,6 +540,7 @@ class MaskSurfaceSequence:
             )
             tracks[anchor] = (row["category"], tracker)
             evidence[anchor]["reference_geometry_readout"] = True
+            evidence[anchor]["selected_reference_feature_id"] = verified[0]["feature_id"]
             accepted_reidentifications.add(candidate_id)
 
         # A category absent from every previous track may enter after frame zero.

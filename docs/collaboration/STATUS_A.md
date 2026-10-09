@@ -1,6 +1,6 @@
 # A：匹配过渡死亡测试完成，当前重识别未过门（2026-10-09）
 
-分支 `codex/pc-a-matched-transition-death-test-20261009`，base `72d1741b05efc5198c162335d7ea123e991140f8`，完整实验代码/报告/证据提交 `ebc52828af02b4825aa153d5f1deca27974356d1`；旧对照 `6e9c953a81e2fc072f4d079d7a19194b1324ea64`，候选生产实现 `a5385ddaf6724d2d346fc222866edc2b7ec9407c`。[报告](../reviews/pc_a/matched_transition_death_test_2026-10-09/REPORT.md)、[复现命令](../reviews/pc_a/matched_transition_death_test_2026-10-09/COMMANDS.md)及[机器结果](../reviews/pc_a/matched_transition_death_test_2026-10-09/evidence/summary.json)。
+分支 `codex/pc-a-matched-transition-death-test-20261009`，base `72d1741b05efc5198c162335d7ea123e991140f8`，完整实验代码/报告/证据提交 `ebc52828af02b4825aa153d5f1deca27974356d1`；旧对照 `6e9c953a81e2fc072f4d079d7a19194b1324ea64`，候选生产实现 `a5385ddaf6724d2d346fc222866edc2b7ec9407c`。[草稿 PR100](https://github.com/goneveitvet240-svg/cpswm/pull/100) 堆叠 PR99；[报告](../reviews/pc_a/matched_transition_death_test_2026-10-09/REPORT.md)、[复现命令](../reviews/pc_a/matched_transition_death_test_2026-10-09/COMMANDS.md)及[机器结果](../reviews/pc_a/matched_transition_death_test_2026-10-09/evidence/summary.json)。
 
 一次真实 Mask R-CNN 捕获冻结三帧 RGB-D/native masks/位姿和 `30°→5°→5°` 三动作账本；SDK identity/AABB 只离线评分。旧/新两臂逐字节同输入各重放两次且确定；严格身份/AABB/联合得分旧版与候选均为 `7/9、6/9、6/9`，无查询级收益。候选两次把首帧实际 Kettle 锚点错误重识别成 CounterTop，正确自然联合恢复为零，死亡测试 FAIL；不启动完整 S1 矩阵。
 

@@ -198,6 +198,7 @@ def test_two_lost_anchors_cannot_share_one_reidentification_candidate():
             )
             for feature_id, (u, v) in zip(tracker.point_ids, tracker.points_uv, strict=True)
         }
+        sequence._evidence[anchor]["reference_feature_cohort_ids"] = tracker.point_ids[:4]
         sequence._tracks[anchor][1]._box = (-1.0, 20.0, 39.0, 60.0)
 
     detector._model = lambda tensors: [predictions()]

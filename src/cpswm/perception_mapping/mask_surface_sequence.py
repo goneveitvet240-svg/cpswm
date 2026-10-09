@@ -54,6 +54,8 @@ def _descriptor(rgb: np.ndarray, candidate: dict[str, Any], *, birth_frame: int)
         reference_appearance=_appearance(rgb, candidate),
         last_world_point_m=None if point is None else tuple(float(value) for value in point),
         reference_features={},
+        reference_feature_cohort_ids=(),
+        reference_geometry_readout=False,
         birth_frame=birth_frame,
     )
 
@@ -130,12 +132,27 @@ def _passing_reference_features(rows: list[dict[str, Any]]) -> list[dict[str, An
     )
 
 
-def _store_reference_features(evidence: dict[str, Any], rows: list[dict[str, Any]]) -> None:
+def _store_reference_features(
+    evidence: dict[str, Any],
+    rows: list[dict[str, Any]],
+    *,
+    selected_pixel_uv: list[int],
+) -> None:
+    valid = [row for row in rows if row["inside_candidate_mask"] and row["valid_depth"]]
     evidence["reference_features"] = {
-        row["feature_id"]: tuple(row["current_world_point_m"])
-        for row in rows
-        if row["inside_candidate_mask"] and row["valid_depth"]
+        row["feature_id"]: tuple(row["current_world_point_m"]) for row in valid
     }
+    if not evidence["reference_feature_cohort_ids"] and len(valid) >= MINIMUM_POINTS:
+        selected_u, selected_v = selected_pixel_uv
+        local = sorted(
+            valid,
+            key=lambda row: (
+                (row["pixel_uv"][0] - selected_u) ** 2 + (row["pixel_uv"][1] - selected_v) ** 2,
+                row["feature_id"],
+                row["pixel_uv"],
+            ),
+        )[:MINIMUM_POINTS]
+        evidence["reference_feature_cohort_ids"] = tuple(row["feature_id"] for row in local)
 
 
 def _comparison(
@@ -259,7 +276,7 @@ class MaskSurfaceSequence:
                     evidence[anchor]["reference_features"],
                 )
                 passing = _passing_reference_features(feature_rows)
-                if evidence[anchor]["reference_features"]:
+                if evidence[anchor]["reference_geometry_readout"]:
                     supported = tuple(tuple(row["pixel_uv"]) for row in passing)
                 else:
                     supported = tuple(
@@ -299,7 +316,8 @@ class MaskSurfaceSequence:
                 row["status"] = "UNKNOWN_AMBIGUOUS_CURRENT_MASK_SUPPORT"
             else:
                 candidate, pixels, feature_rows, passing = support[0]
-                selected_support = (tuple(passing[0]["pixel_uv"]),) if passing else pixels
+                use_geometry = evidence[anchor]["reference_geometry_readout"]
+                selected_support = (tuple(passing[0]["pixel_uv"]),) if use_geometry else pixels
                 point = select_surface(
                     camera,
                     depth,
@@ -315,7 +333,7 @@ class MaskSurfaceSequence:
                     world_point_m=point["world_point_m"],
                     surface=point,
                     selected_feature_ids=(passing[0]["feature_id"],)
-                    if passing
+                    if use_geometry
                     else tuple(
                         key
                         for key, (x, y) in zip(tracker.point_ids, tracker.points_uv, strict=True)
@@ -323,7 +341,7 @@ class MaskSurfaceSequence:
                     ),
                     identity_status=(
                         "CONDITIONAL_REFERENCE_FEATURE_GEOMETRY_CONTINUITY"
-                        if passing
+                        if use_geometry
                         else "UNRESOLVED"
                     ),
                 )
@@ -352,13 +370,19 @@ class MaskSurfaceSequence:
                     candidate_appearance[candidate["candidate_id"]],
                 )
                 lost_tracker = tracks[anchor][1]
+                cohort = set(evidence[anchor]["reference_feature_cohort_ids"])
+                cohort_references = {
+                    feature_id: point
+                    for feature_id, point in evidence[anchor]["reference_features"].items()
+                    if feature_id in cohort
+                }
                 feature_rows = _reference_feature_rows(
                     camera,
                     depth,
                     masks[candidate["native_index"]],
                     lost_tracker.direct_point_ids,
                     lost_tracker.direct_points_uv,
-                    evidence[anchor]["reference_features"],
+                    cohort_references,
                 )
                 passing = _passing_reference_features(feature_rows)
                 item.update(
@@ -486,6 +510,7 @@ class MaskSurfaceSequence:
                 reidentification=detail,
             )
             tracks[anchor] = (row["category"], tracker)
+            evidence[anchor]["reference_geometry_readout"] = True
             accepted_reidentifications.add(candidate_id)
 
         # A category absent from every previous track may enter after frame zero.
@@ -599,7 +624,11 @@ class MaskSurfaceSequence:
                 current_tracker.points_uv,
                 {},
             )
-            _store_reference_features(evidence[row["anchor_id"]], feature_rows)
+            _store_reference_features(
+                evidence[row["anchor_id"]],
+                feature_rows,
+                selected_pixel_uv=row["selected_pixel_uv"],
+            )
             evidence[row["anchor_id"]]["last_world_point_m"] = tuple(row["world_point_m"])
         signature = content_sha256(
             camera.model_dump(mode="json", exclude={"action_id", "capture_time"})

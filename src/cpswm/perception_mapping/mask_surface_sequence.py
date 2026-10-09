@@ -29,7 +29,7 @@ from cpswm.perception_mapping.unity_rgbd import decode_unity_rgbd
 from cpswm.perception_mapping.visual_target_tracking import InitializedPixelTargetTracker
 from cpswm.system.reproducibility import content_sha256
 
-PROFILE = "natural-mask-conservative-object-continuity@2"
+PROFILE = "natural-mask-conservative-object-continuity@3"
 MINIMUM_POINTS = 4  # Same minimum flow support as the existing public pixel tracker.
 
 
@@ -53,8 +53,137 @@ def _descriptor(rgb: np.ndarray, candidate: dict[str, Any], *, birth_frame: int)
         category=candidate["category"],
         reference_appearance=_appearance(rgb, candidate),
         last_world_point_m=None if point is None else tuple(float(value) for value in point),
+        reference_features={},
+        reference_feature_cohort_ids=(),
+        reference_geometry_readout=False,
+        selected_reference_feature_id=None,
         birth_frame=birth_frame,
     )
+
+
+def _rounded_points(
+    points_uv: tuple[tuple[float, float], ...], *, width: int, height: int
+) -> tuple[tuple[int, int], ...]:
+    return tuple(
+        sorted(
+            {
+                (int(np.rint(x)), int(np.rint(y)))
+                for x, y in points_uv
+                if 0 <= np.rint(x) < width and 0 <= np.rint(y) < height
+            }
+        )
+    )
+
+
+def _reference_feature_rows(
+    camera: Any,
+    depth: np.ndarray,
+    probability: np.ndarray,
+    point_ids: tuple[int, ...],
+    points_uv: tuple[tuple[float, float], ...],
+    reference_features: dict[int, tuple[float, float, float]],
+) -> list[dict[str, Any]]:
+    """Audit public RGB-D geometry for stable feature ids inside one candidate mask."""
+    rows = []
+    scale = float(appearance_geometry_association.CONFIG["geometry_scale_m"])
+    for feature_id, (u_float, v_float) in zip(point_ids, points_uv, strict=True):
+        u, v = int(np.rint(u_float)), int(np.rint(v_float))
+        reference = reference_features.get(feature_id)
+        item: dict[str, Any] = dict(
+            feature_id=feature_id,
+            tracked_pixel_uv=[float(u_float), float(v_float)],
+            pixel_uv=[u, v],
+            inside_image=0 <= u < camera.width and 0 <= v < camera.height,
+            inside_candidate_mask=False,
+            valid_depth=False,
+            reference_available=reference is not None,
+            current_world_point_m=None,
+            reference_world_point_m=None,
+            residual_m=None,
+            passes_geometry=False,
+        )
+        candidates = [(u, v)]
+        if reference is not None:
+            candidates = sorted(
+                {
+                    (int(horizontal), int(vertical))
+                    for horizontal in (floor(u_float), ceil(u_float))
+                    for vertical in (floor(v_float), ceil(v_float))
+                }
+            )
+        samples = []
+        for sample_u, sample_v in candidates:
+            if not 0 <= sample_u < camera.width or not 0 <= sample_v < camera.height:
+                continue
+            if probability[sample_v, sample_u] < MASK_THRESHOLD:
+                continue
+            z = float(depth[sample_v, sample_u])
+            if not np.isfinite(z) or not 0 < z < camera.far_plane_m - camera.near_plane_m:
+                continue
+            current = tuple(float(value) for value in camera.world_point(sample_u, sample_v, z))
+            residual = (
+                None
+                if reference is None
+                else float(np.linalg.norm(np.asarray(reference) - np.asarray(current)))
+            )
+            samples.append((residual, sample_u, sample_v, current))
+        if not samples:
+            rows.append(item)
+            continue
+        _, u, v, current = min(
+            samples,
+            key=lambda sample: (
+                float("inf") if sample[0] is None else sample[0],
+                sample[1],
+                sample[2],
+            ),
+        )
+        item.update(
+            pixel_uv=[u, v],
+            inside_image=True,
+            inside_candidate_mask=True,
+            valid_depth=True,
+        )
+        item["current_world_point_m"] = list(current)
+        if reference is not None:
+            residual = float(np.linalg.norm(np.asarray(reference) - np.asarray(current)))
+            item.update(
+                reference_world_point_m=list(reference),
+                residual_m=residual,
+                passes_geometry=residual <= scale,
+            )
+        rows.append(item)
+    return rows
+
+
+def _passing_reference_features(rows: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    return sorted(
+        (row for row in rows if row["passes_geometry"]),
+        key=lambda row: (row["residual_m"], row["feature_id"], row["pixel_uv"]),
+    )
+
+
+def _store_reference_features(
+    evidence: dict[str, Any],
+    rows: list[dict[str, Any]],
+    *,
+    selected_pixel_uv: list[int],
+) -> None:
+    valid = [row for row in rows if row["inside_candidate_mask"] and row["valid_depth"]]
+    evidence["reference_features"] = {
+        row["feature_id"]: tuple(row["current_world_point_m"]) for row in valid
+    }
+    if not evidence["reference_feature_cohort_ids"] and len(valid) >= MINIMUM_POINTS:
+        selected_u, selected_v = selected_pixel_uv
+        local = sorted(
+            valid,
+            key=lambda row: (
+                (row["pixel_uv"][0] - selected_u) ** 2 + (row["pixel_uv"][1] - selected_v) ** 2,
+                row["feature_id"],
+                row["pixel_uv"],
+            ),
+        )[:MINIMUM_POINTS]
+        evidence["reference_feature_cohort_ids"] = tuple(row["feature_id"] for row in local)
 
 
 def _comparison(
@@ -163,21 +292,44 @@ class MaskSurfaceSequence:
         rows = []
         for anchor, (category, tracker) in sorted(tracks.items()):
             measured = tracker.update(rgb, frame_index=self._index)
-            points = sorted(
-                {
-                    (int(np.rint(x)), int(np.rint(y)))
-                    for x, y in tracker.points_uv
-                    if 0 <= np.rint(x) < camera.width and 0 <= np.rint(y) < camera.height
-                }
-            )
+            points = _rounded_points(tracker.points_uv, width=camera.width, height=camera.height)
             support = []
             for candidate in active:
                 if candidate["category"] != category:
                     continue
                 probability = masks[candidate["native_index"]]
-                supported = tuple((x, y) for x, y in points if probability[y, x] >= MASK_THRESHOLD)
-                if len(supported) >= MINIMUM_POINTS:
-                    support.append((candidate, supported))
+                feature_rows = _reference_feature_rows(
+                    camera,
+                    depth,
+                    probability,
+                    tracker.point_ids,
+                    tracker.points_uv,
+                    evidence[anchor]["reference_features"],
+                )
+                passing = _passing_reference_features(feature_rows)
+                use_geometry = evidence[anchor]["reference_geometry_readout"]
+                selected_geometry_row = None
+                if use_geometry:
+                    supported = tuple(tuple(row["pixel_uv"]) for row in passing)
+                    selected_geometry_row = next(
+                        (
+                            row
+                            for row in passing
+                            if row["feature_id"]
+                            == evidence[anchor]["selected_reference_feature_id"]
+                        ),
+                        None,
+                    )
+                else:
+                    supported = tuple(
+                        (x, y) for x, y in points if probability[y, x] >= MASK_THRESHOLD
+                    )
+                if len(supported) >= MINIMUM_POINTS and (
+                    not use_geometry or selected_geometry_row is not None
+                ):
+                    support.append(
+                        (candidate, supported, feature_rows, passing, selected_geometry_row)
+                    )
             row = dict(
                 anchor_id=anchor,
                 category=category,
@@ -186,7 +338,12 @@ class MaskSurfaceSequence:
                 flow_feature_ids=tracker.point_ids,
                 selected_feature_ids=(),
                 mask_support=[
-                    dict(candidate_id=c["candidate_id"], points_uv=p) for c, p in support
+                    dict(
+                        candidate_id=c["candidate_id"],
+                        points_uv=p,
+                        reference_feature_verification=feature_rows,
+                    )
+                    for c, p, feature_rows, _, _ in support
                 ],
                 current_candidate_id=None,
                 selected_pixel_uv=None,
@@ -204,10 +361,34 @@ class MaskSurfaceSequence:
             elif len(support) > 1:
                 row["status"] = "UNKNOWN_AMBIGUOUS_CURRENT_MASK_SUPPORT"
             else:
-                candidate, pixels = support[0]
+                candidate, pixels, feature_rows, passing, selected_geometry_row = support[0]
+                use_geometry = evidence[anchor]["reference_geometry_readout"]
+                selected_support: tuple[tuple[int, int], ...]
+                selected_feature_ids: tuple[int, ...]
+                if use_geometry:
+                    assert selected_geometry_row is not None
+                    selected_support = (
+                        (
+                            int(selected_geometry_row["pixel_uv"][0]),
+                            int(selected_geometry_row["pixel_uv"][1]),
+                        ),
+                    )
+                    selected_feature_ids = (int(selected_geometry_row["feature_id"]),)
+                else:
+                    selected_support = pixels
+                    selected_feature_ids = ()
                 point = select_surface(
-                    camera, depth, masks[candidate["native_index"]], support_uv=pixels
+                    camera,
+                    depth,
+                    masks[candidate["native_index"]],
+                    support_uv=selected_support,
                 )
+                if not use_geometry:
+                    selected_feature_ids = tuple(
+                        key
+                        for key, (x, y) in zip(tracker.point_ids, tracker.points_uv, strict=True)
+                        if point["selected_pixel_uv"] == [int(np.rint(x)), int(np.rint(y))]
+                    )
                 row.update(
                     status="FLOW_AND_MASK_SUPPORTED"
                     if point["status"] == "SURFACE_CANDIDATE"
@@ -216,14 +397,13 @@ class MaskSurfaceSequence:
                     selected_pixel_uv=point["selected_pixel_uv"],
                     world_point_m=point["world_point_m"],
                     surface=point,
-                    selected_feature_ids=tuple(
-                        key
-                        for key, (x, y) in zip(tracker.point_ids, tracker.points_uv, strict=True)
-                        if point["selected_pixel_uv"] == [int(np.rint(x)), int(np.rint(y))]
+                    selected_feature_ids=selected_feature_ids,
+                    identity_status=(
+                        "CONDITIONAL_REFERENCE_FEATURE_GEOMETRY_CONTINUITY"
+                        if use_geometry
+                        else "UNRESOLVED"
                     ),
                 )
-                if point["world_point_m"] is not None:
-                    evidence[anchor]["last_world_point_m"] = tuple(point["world_point_m"])
             rows.append(row)
 
         # A live track owns every mask it currently supports, including ambiguous
@@ -248,11 +428,37 @@ class MaskSurfaceSequence:
                     candidate,
                     candidate_appearance[candidate["candidate_id"]],
                 )
+                lost_tracker = tracks[anchor][1]
+                cohort = set(evidence[anchor]["reference_feature_cohort_ids"])
+                cohort_references = {
+                    feature_id: point
+                    for feature_id, point in evidence[anchor]["reference_features"].items()
+                    if feature_id in cohort
+                }
+                feature_rows = _reference_feature_rows(
+                    camera,
+                    depth,
+                    masks[candidate["native_index"]],
+                    lost_tracker.direct_point_ids,
+                    lost_tracker.direct_points_uv,
+                    cohort_references,
+                )
+                passing = _passing_reference_features(feature_rows)
+                item.update(
+                    reference_feature_verification=feature_rows,
+                    verified_reference_feature_count=len(passing),
+                    minimum_reference_feature_count=MINIMUM_POINTS,
+                    geometry_scale_m=appearance_geometry_association.CONFIG["geometry_scale_m"],
+                    accepted_reference_feature_geometry=len(passing) >= MINIMUM_POINTS,
+                )
                 if candidate["candidate_id"] in unavailable:
                     item["unavailable_to_lost_track"] = True
                     item["accepted_energy"] = False
+                item["accepted_reidentification"] = bool(
+                    item["accepted_energy"] and item["accepted_reference_feature_geometry"]
+                )
                 comparisons.append(item)
-                if item["accepted_energy"]:
+                if item["accepted_reidentification"]:
                     eligible_by_anchor[anchor].append(candidate["candidate_id"])
                     eligible_by_candidate.setdefault(candidate["candidate_id"], []).append(anchor)
 
@@ -260,19 +466,26 @@ class MaskSurfaceSequence:
         for row in lost_rows:
             anchor = row["anchor_id"]
             options = eligible_by_anchor[anchor]
+            anchor_comparisons = [item for item in comparisons if item["anchor_id"] == anchor]
             detail = dict(
                 model=appearance_geometry_association.MODEL,
                 config=dict(appearance_geometry_association.CONFIG),
-                comparisons=[item for item in comparisons if item["anchor_id"] == anchor],
+                comparisons=anchor_comparisons,
                 detector_scores_used_in_energy=False,
                 calibration="UNCALIBRATED_COMPOSITE_DEVELOPMENT_ENERGY",
             )
             if len(options) != 1:
-                detail["status"] = (
-                    "UNKNOWN_NO_REIDENTIFICATION_SUPPORT"
-                    if not options
-                    else "UNKNOWN_AMBIGUOUS_REIDENTIFICATION"
-                )
+                energy_options = [
+                    item
+                    for item in anchor_comparisons
+                    if item["accepted_energy"] and not item.get("unavailable_to_lost_track")
+                ]
+                if len(options) > 1:
+                    detail["status"] = "UNKNOWN_AMBIGUOUS_REIDENTIFICATION"
+                elif energy_options:
+                    detail["status"] = "UNKNOWN_NO_REFERENCE_FEATURE_GEOMETRY"
+                else:
+                    detail["status"] = "UNKNOWN_NO_REIDENTIFICATION_SUPPORT"
                 row["status"] = detail["status"]
                 row["reidentification"] = detail
                 continue
@@ -283,10 +496,25 @@ class MaskSurfaceSequence:
                 row["reidentification"] = detail
                 continue
             candidate = active_by_id[candidate_id]
-            x0, y0, x1, y1 = candidate["box_xyxy"]
+            comparison = next(
+                item for item in anchor_comparisons if item["candidate_id"] == candidate_id
+            )
+            verified = _passing_reference_features(comparison["reference_feature_verification"])[
+                :MINIMUM_POINTS
+            ]
+            seed_points = tuple(tuple(row["tracked_pixel_uv"]) for row in verified)
+            seed_ids = tuple(row["feature_id"] for row in verified)
+            x_values = [point[0] for point in seed_points]
+            y_values = [point[1] for point in seed_points]
+            x0 = max(0, floor(min(x_values)))
+            y0 = max(0, floor(min(y_values)))
+            x1 = min(camera.width, ceil(max(x_values)) + 1)
+            y1 = min(camera.height, ceil(max(y_values)) + 1)
             tracker = InitializedPixelTargetTracker(
-                (floor(x0), floor(y0), ceil(x1), ceil(y1)),
+                (x0, y0, x1, y1),
                 initial_mask=masks[candidate["native_index"]] >= MASK_THRESHOLD,
+                initial_points_uv=seed_points,
+                initial_point_ids=seed_ids,
                 initial_frame_index=self._index,
             )
             measured = tracker.update(rgb, frame_index=self._index)
@@ -301,25 +529,21 @@ class MaskSurfaceSequence:
                     reidentification=detail,
                 )
                 continue
-            pixels = tuple(
-                sorted(
-                    {
-                        (int(np.rint(x)), int(np.rint(y)))
-                        for x, y in tracker.points_uv
-                        if masks[candidate["native_index"]][int(np.rint(y)), int(np.rint(x))]
-                        >= MASK_THRESHOLD
-                    }
-                )
-            )
+            pixels = tuple(tuple(row["pixel_uv"]) for row in verified)
             if len(pixels) < MINIMUM_POINTS:
                 detail["status"] = "UNKNOWN_REIDENTIFICATION_NO_MASK_SUPPORT"
                 row["status"] = detail["status"]
                 row["reidentification"] = detail
                 continue
             point = select_surface(
-                camera, depth, masks[candidate["native_index"]], support_uv=pixels
+                camera,
+                depth,
+                masks[candidate["native_index"]],
+                support_uv=(tuple(verified[0]["pixel_uv"]),),
             )
             detail["status"] = "ACCEPTED_UNIQUE_REIDENTIFICATION"
+            detail["selected_feature_id"] = verified[0]["feature_id"]
+            detail["reinitialized_feature_ids"] = list(seed_ids)
             row.update(
                 status=(
                     "REIDENTIFIED_FLOW_AND_MASK_SUPPORTED"
@@ -329,22 +553,24 @@ class MaskSurfaceSequence:
                 flow=measured.__dict__,
                 flow_points_uv=tracker.points_uv,
                 flow_feature_ids=tracker.point_ids,
-                mask_support=[dict(candidate_id=candidate_id, points_uv=pixels)],
+                mask_support=[
+                    dict(
+                        candidate_id=candidate_id,
+                        points_uv=pixels,
+                        reference_feature_verification=comparison["reference_feature_verification"],
+                    )
+                ],
                 current_candidate_id=candidate_id,
                 selected_pixel_uv=point["selected_pixel_uv"],
                 world_point_m=point["world_point_m"],
                 surface=point,
-                selected_feature_ids=tuple(
-                    key
-                    for key, (x, y) in zip(tracker.point_ids, tracker.points_uv, strict=True)
-                    if point["selected_pixel_uv"] == [int(np.rint(x)), int(np.rint(y))]
-                ),
-                identity_status="CONDITIONAL_APPEARANCE_GEOMETRY_ASSOCIATION",
+                selected_feature_ids=(verified[0]["feature_id"],),
+                identity_status="CONDITIONAL_REFERENCE_FEATURE_GEOMETRY_ASSOCIATION",
                 reidentification=detail,
             )
             tracks[anchor] = (row["category"], tracker)
-            if point["world_point_m"] is not None:
-                evidence[anchor]["last_world_point_m"] = tuple(point["world_point_m"])
+            evidence[anchor]["reference_geometry_readout"] = True
+            evidence[anchor]["selected_reference_feature_id"] = verified[0]["feature_id"]
             accepted_reidentifications.add(candidate_id)
 
         # A category absent from every previous track may enter after frame zero.
@@ -444,6 +670,26 @@ class MaskSurfaceSequence:
                     surface=None,
                     selected_feature_ids=(),
                 )
+        for row in rows:
+            candidate_id = row["current_candidate_id"]
+            if candidate_id is None or row["world_point_m"] is None:
+                continue
+            candidate = active_by_id[candidate_id]
+            current_tracker = tracks[row["anchor_id"]][1]
+            feature_rows = _reference_feature_rows(
+                camera,
+                depth,
+                masks[candidate["native_index"]],
+                current_tracker.point_ids,
+                current_tracker.points_uv,
+                {},
+            )
+            _store_reference_features(
+                evidence[row["anchor_id"]],
+                feature_rows,
+                selected_pixel_uv=row["selected_pixel_uv"],
+            )
+            evidence[row["anchor_id"]]["last_world_point_m"] = tuple(row["world_point_m"])
         signature = content_sha256(
             camera.model_dump(mode="json", exclude={"action_id", "capture_time"})
         )

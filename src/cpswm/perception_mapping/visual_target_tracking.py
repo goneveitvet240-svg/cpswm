@@ -39,6 +39,8 @@ class InitializedPixelTargetTracker:
         box_xyxy: tuple[int, int, int, int],
         *,
         initial_mask: NDArray[np.bool_] | None = None,
+        initial_points_uv: tuple[tuple[float, float], ...] | None = None,
+        initial_point_ids: tuple[int, ...] | None = None,
         initial_frame_index: int = 0,
     ) -> None:
         if len(box_xyxy) != 4 or not all(isfinite(v) for v in box_xyxy):
@@ -54,11 +56,36 @@ class InitializedPixelTargetTracker:
             raise ValueError("initial mask must be a boolean image")
         if type(initial_frame_index) is not int or initial_frame_index < 0:
             raise ValueError("nonnegative initial frame index required")
+        if (initial_points_uv is None) != (initial_point_ids is None):
+            raise ValueError("initial points and feature ids must be supplied together")
+        seeded_points: NDArray[np.float32] | None = None
+        seeded_ids: NDArray[np.int64] | None = None
+        if initial_points_uv is not None and initial_point_ids is not None:
+            values = np.asarray(initial_points_uv, dtype=np.float64)
+            ids = np.asarray(initial_point_ids)
+            if (
+                values.ndim != 2
+                or values.shape[1:] != (2,)
+                or len(values) < 4
+                or not np.isfinite(values).all()
+                or ids.ndim != 1
+                or len(ids) != len(values)
+                or not np.issubdtype(ids.dtype, np.integer)
+                or np.any(ids < 0)
+                or len(set(int(value) for value in ids)) != len(ids)
+            ):
+                raise ValueError("at least four finite points with unique nonnegative ids required")
+            seeded_points = values.astype(np.float32).reshape(-1, 1, 2)
+            seeded_ids = ids.astype(np.int64)
         self._initial_mask = None if initial_mask is None else initial_mask.copy()
+        self._initial_points = seeded_points
+        self._initial_point_ids = seeded_ids
         self._box = (float(x1), float(y1), float(x2), float(y2))
         self._gray: Any = None
         self._points: Any = None
         self._point_ids: Any = None
+        self._direct_points: Any = None
+        self._direct_point_ids: Any = None
         self._index = initial_frame_index - 1
         self._shape: tuple[int, ...] | None = None
         self._lost = False
@@ -76,6 +103,20 @@ class InitializedPixelTargetTracker:
         if self._lost or self._point_ids is None:
             return ()
         return tuple(int(i) for i in self._point_ids)
+
+    @property
+    def direct_points_uv(self) -> tuple[tuple[float, float], ...]:
+        """Latest direct frame-to-frame correspondences, including a boundary-box loss."""
+        if self._direct_points is None:
+            return ()
+        return tuple((float(x), float(y)) for x, y in self._direct_points[:, 0])
+
+    @property
+    def direct_point_ids(self) -> tuple[int, ...]:
+        """Feature ids paired with :attr:`direct_points_uv`; never inferred after a gap."""
+        if self._direct_point_ids is None:
+            return ()
+        return tuple(int(i) for i in self._direct_point_ids)
 
     def update(self, rgb: NDArray[np.uint8], *, frame_index: int) -> TargetTrackMeasurement:
         import cv2
@@ -102,16 +143,32 @@ class InitializedPixelTargetTracker:
         point_ids = self._point_ids
         box = self._box
         fb_error: float | None = None
+        direct_points = None
+        direct_point_ids = None
         if initializing:
             mask = np.zeros(gray.shape, dtype=np.uint8)
             x1, y1, x2, y2 = (int(v) for v in box)
             mask[y1:y2, x1:x2] = 255
             if self._initial_mask is not None:
                 mask[~self._initial_mask] = 0
-            points = cv2.goodFeaturesToTrack(
-                gray, maxCorners=80, qualityLevel=0.03, minDistance=5, mask=mask
-            )
-            point_ids = None if points is None else np.arange(len(points))
+            if self._initial_points is None:
+                points = cv2.goodFeaturesToTrack(
+                    gray, maxCorners=80, qualityLevel=0.03, minDistance=5, mask=mask
+                )
+                point_ids = None if points is None else np.arange(len(points))
+            else:
+                assert self._initial_point_ids is not None
+                rounded = np.rint(self._initial_points[:, 0]).astype(np.int64)
+                if (
+                    np.any(rounded[:, 0] < 0)
+                    or np.any(rounded[:, 0] >= w)
+                    or np.any(rounded[:, 1] < 0)
+                    or np.any(rounded[:, 1] >= h)
+                    or np.any(mask[rounded[:, 1], rounded[:, 0]] == 0)
+                ):
+                    raise ValueError("seeded points must lie inside the initialization support")
+                points = self._initial_points.copy()
+                point_ids = self._initial_point_ids.copy()
         elif not self._lost:
             new, ok, _ = cv2.calcOpticalFlowPyrLK(self._gray, gray, points, np.empty_like(points))
             if new is None or ok is None:
@@ -144,6 +201,8 @@ class InitializedPixelTargetTracker:
                         fb_error = float(np.median(errors[good]))
                         points = new[good]
                         point_ids = point_ids[good]
+                        direct_points = points.copy()
+                        direct_point_ids = point_ids.copy()
         count = 0 if points is None else len(points)
         if points is None:
             point_ids = None
@@ -152,6 +211,7 @@ class InitializedPixelTargetTracker:
         )
         self._gray, self._points, self._box = gray, points, box
         self._point_ids = point_ids
+        self._direct_points, self._direct_point_ids = direct_points, direct_point_ids
         self._index, self._shape, self._lost = frame_index, rgb.shape, lost
         return TargetTrackMeasurement(
             frame_index,

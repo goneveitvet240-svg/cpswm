@@ -1,3 +1,21 @@
+# A：参考特征几何核验修复交付，局部门通过但完整死亡测试仍 FAIL（2026-10-09）
+
+分支 `codex/pc-a-reference-feature-reid-20261009`；base `2d54c541107bd718d02c5427220f5715a0eca93a`；最终生产代码 SHA `8acab228c6cdaa85865088f73c82b9455fb3fea1`；报告与 7,125,614 bytes 散列证据提交 `c4d7bf4ee9913cd7b295591828caa36a330deeb3`。[草稿 PR101](https://github.com/goneveitvet240-svg/cpswm/pull/101) 堆叠 PR100；[报告](../reviews/pc_a/reference_feature_reid_2026-10-09/REPORT.md)、[复现命令](../reviews/pc_a/reference_feature_reid_2026-10-09/COMMANDS.md)、[机器汇总](../reviews/pc_a/reference_feature_reid_2026-10-09/evidence/subpixel-summary.json)。
+
+同一冻结三帧中，旧实现的 2 次错误重识别降为 0；LOST 的 kettle 在 step 1 正确恢复且 step 2 保持正确，重复候选仍 UNKNOWN，候选 A/B 逐字节一致，查询无退化。原查询联合分数仍为旧版 `6/9`、最终版 `6/9`，所以预声明 `query_level_joint_gain` 未过，完整死亡测试保持 FAIL且未启动 S1 全矩阵。四个迭代 SHA 和失败输出均保留。54 项聚焦测试、Ruff、mypy、Python 编译、diff check 与证据清单核验通过。
+
+电脑 B 尚未对最终 SHA 独立复核；未共享集成。下一步若构建包含自然 LOST 查询目标的匹配面板，会改变任务构成，按第9条等用户决定后再开工。
+
+---
+
+# A：参考特征几何核验修复开工（2026-10-09）
+
+用户批准推荐路线。A从PR100最终head `2d54c541107bd718d02c5427220f5715a0eca93a` 建立 `codex/pc-a-reference-feature-reid-20261009`；开工fetch确认远端PR100仍绑定该SHA，static-quality通过，current-inputs仍执行中。使用同一已冻结三帧和原严格身份＋AABB评分，不重新采集或调检测器。
+
+[计划](../reviews/pc_a/reference_feature_reid_2026-10-09/PLAN.md)：保留LOST当帧实际存活的直接光流feature谱系，用既有至少4点、FB≤1.5px和geometry_scale_m=0.5条件核验候选，并以最小三维残差对应读点；无谱系或歧义继续UNKNOWN。原死亡测试的查询级收益门不删除，失败如实保留。本节推送前无修复结果、B验收或共享集成；STATUS_B和原用户树不改。
+
+---
+
 # A：匹配过渡死亡测试完成，当前重识别未过门（2026-10-09）
 
 分支 `codex/pc-a-matched-transition-death-test-20261009`，base `72d1741b05efc5198c162335d7ea123e991140f8`，完整实验代码/报告/证据提交 `ebc52828af02b4825aa153d5f1deca27974356d1`；旧对照 `6e9c953a81e2fc072f4d079d7a19194b1324ea64`，候选生产实现 `a5385ddaf6724d2d346fc222866edc2b7ec9407c`。[草稿 PR100](https://github.com/goneveitvet240-svg/cpswm/pull/100) 堆叠 PR99；[报告](../reviews/pc_a/matched_transition_death_test_2026-10-09/REPORT.md)、[复现命令](../reviews/pc_a/matched_transition_death_test_2026-10-09/COMMANDS.md)及[机器结果](../reviews/pc_a/matched_transition_death_test_2026-10-09/evidence/summary.json)。

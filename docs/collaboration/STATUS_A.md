@@ -1,3 +1,15 @@
+# A：匹配过渡死亡测试完成，当前重识别未过门（2026-10-09）
+
+分支 `codex/pc-a-matched-transition-death-test-20261009`，base `72d1741b05efc5198c162335d7ea123e991140f8`，完整实验代码/报告/证据提交 `ebc52828af02b4825aa153d5f1deca27974356d1`；旧对照 `6e9c953a81e2fc072f4d079d7a19194b1324ea64`，候选生产实现 `a5385ddaf6724d2d346fc222866edc2b7ec9407c`。[草稿 PR100](https://github.com/goneveitvet240-svg/cpswm/pull/100) 堆叠 PR99；[报告](../reviews/pc_a/matched_transition_death_test_2026-10-09/REPORT.md)、[复现命令](../reviews/pc_a/matched_transition_death_test_2026-10-09/COMMANDS.md)及[机器结果](../reviews/pc_a/matched_transition_death_test_2026-10-09/evidence/summary.json)。
+
+一次真实 Mask R-CNN 捕获冻结三帧 RGB-D/native masks/位姿和 `30°→5°→5°` 三动作账本；SDK identity/AABB 只离线评分。旧/新两臂逐字节同输入各重放两次且确定；严格身份/AABB/联合得分旧版与候选均为 `7/9、6/9、6/9`，无查询级收益。候选两次把首帧实际 Kettle 锚点错误重识别成 CounterTop，正确自然联合恢复为零，死亡测试 FAIL；不启动完整 S1 矩阵。
+
+根因证据显示两个被接受的 dining-table mask 中 CounterTop 占 `67.30%/74.07%`，目标 Kettle 只占 `7.28%/6.63%`；粗类别＋RGB 直方图＋表面距离给出唯一但错误的候选。显式双候选歧义拒绝、晚生 query 隔离、零查询退化和所有接受可评分通过，但不能抵消错误重识别。完整伪造攻击测试及相关4文件共48项通过，Ruff/format、编译、diff检查通过；仓库封存69个清单约束文件、10,010,310 bytes。
+
+下一主干建议为 reference-feature geometric verification（参考特征几何核验），复用既有 `min 4` 与 `FB≤1.5 px` 条件，先在同一冻结反例上要求错误接受归零且至少一次正确联合恢复，再扩展多屋/多动作矩阵。B独立验收、共享集成、几何误差和完整统一范围仍 pending；STATUS_B、原用户树和共享集成未改。
+
+---
+
 # A：持续对象出生与保守重识别已交付（2026-10-08）
 
 生产代码提交 `a5385ddaf6724d2d346fc222866edc2b7ec9407c`，分支 `codex/pc-a-continuous-object-reid-20261008`，base为PR98 head `6e9c953a81e2fc072f4d079d7a19194b1324ea64`；[草稿PR99](https://github.com/goneveitvet240-svg/cpswm/pull/99)已建立。[报告](../reviews/pc_a/continuous_object_reid_2026-10-08/REPORT.md)和[冻结门控证据](../reviews/pc_a/continuous_object_reid_2026-10-08/evidence/frozen-release-gate-replay.json)。晚出生新类别现在建立`query_eligible=false`的provisional track；LOST轨迹仅在既有外观—几何能量胜过UNKNOWN且锚点—候选唯一一对一时重初始化。无候选、多候选、多锚点共享、缺几何/流/mask支持继续输出UNKNOWN；没有新增阈值、先验、指标或AABB容差。

@@ -1,0 +1,326 @@
+{
+  "action_budget": 3,
+  "ambiguity_rows": [
+    {
+      "anchor_id": "a29329cd-2e82-5f52-a35f-e9d16c21e988",
+      "birth_frame": 0,
+      "expected_instance_id": "Kettle|surface|2|6",
+      "identity_correct": null,
+      "identity_status": "UNRESOLVED",
+      "joint_success": null,
+      "position_correct": null,
+      "query_eligible": true,
+      "reidentification": {
+        "calibration": "UNCALIBRATED_COMPOSITE_DEVELOPMENT_ENERGY",
+        "comparisons": [
+          {
+            "accepted_energy": false,
+            "anchor_id": "a29329cd-2e82-5f52-a35f-e9d16c21e988",
+            "candidate_id": "e649b2db-08cf-53e5-acb2-f45d65f74b5e",
+            "category": "bottle",
+            "compatible": false,
+            "unavailable_to_lost_track": true
+          },
+          {
+            "accepted_energy": false,
+            "anchor_id": "a29329cd-2e82-5f52-a35f-e9d16c21e988",
+            "candidate_id": "34614e8a-df9c-5507-b3d5-81e9f5c309e8",
+            "category": "bottle",
+            "compatible": false,
+            "unavailable_to_lost_track": true
+          },
+          {
+            "accepted_energy": true,
+            "anchor_id": "a29329cd-2e82-5f52-a35f-e9d16c21e988",
+            "appearance_distance": 0.05096876455559462,
+            "candidate_id": "6e02e7b8-7d97-5d56-be24-d8ccf08f4aa5",
+            "category": "dining table",
+            "compatible": true,
+            "log_energy": -0.04994609364422677,
+            "surface_distance_m": 0.1207550702075024
+          },
+          {
+            "accepted_energy": false,
+            "anchor_id": "a29329cd-2e82-5f52-a35f-e9d16c21e988",
+            "candidate_id": "a0c1bc26-68e6-5382-8adf-d86ad3e00495",
+            "category": "sports ball",
+            "compatible": false
+          },
+          {
+            "accepted_energy": true,
+            "anchor_id": "a29329cd-2e82-5f52-a35f-e9d16c21e988",
+            "appearance_distance": 0.05096876455559462,
+            "candidate_id": "580cbabb-d896-54ee-966b-0fc8e30c31d1",
+            "category": "dining table",
+            "compatible": true,
+            "log_energy": -0.04994609364422677,
+            "surface_distance_m": 0.1207550702075024
+          }
+        ],
+        "config": {
+          "appearance_scale": 0.25,
+          "geometry_scale_m": 0.5,
+          "histogram_bins": 8,
+          "unknown_logit": -2.0
+        },
+        "detector_scores_used_in_energy": false,
+        "model": "appearance-rgb-histogram-surface-geometry-development@1",
+        "status": "UNKNOWN_AMBIGUOUS_REIDENTIFICATION"
+      },
+      "reported_instance_id": null,
+      "status": "UNKNOWN_AMBIGUOUS_REIDENTIFICATION",
+      "step_index": 1
+    }
+  ],
+  "deterministic": {
+    "baseline": true,
+    "candidate": true
+  },
+  "false_reidentifications": [
+    {
+      "baseline": {
+        "anchor_id": "a29329cd-2e82-5f52-a35f-e9d16c21e988",
+        "birth_frame": 0,
+        "expected_instance_id": "Kettle|surface|2|6",
+        "identity_correct": null,
+        "identity_status": "UNRESOLVED",
+        "joint_success": null,
+        "position_correct": null,
+        "query_eligible": true,
+        "reidentification": null,
+        "reported_instance_id": null,
+        "status": "LOST_NO_REINITIALIZATION",
+        "step_index": 1
+      },
+      "candidate": {
+        "anchor_id": "a29329cd-2e82-5f52-a35f-e9d16c21e988",
+        "birth_frame": 0,
+        "expected_instance_id": "Kettle|surface|2|6",
+        "identity_correct": false,
+        "identity_status": "CONDITIONAL_APPEARANCE_GEOMETRY_ASSOCIATION",
+        "joint_success": false,
+        "position_correct": false,
+        "query_eligible": true,
+        "reidentification": {
+          "calibration": "UNCALIBRATED_COMPOSITE_DEVELOPMENT_ENERGY",
+          "candidate_id": "6e02e7b8-7d97-5d56-be24-d8ccf08f4aa5",
+          "comparisons": [
+            {
+              "accepted_energy": false,
+              "anchor_id": "a29329cd-2e82-5f52-a35f-e9d16c21e988",
+              "candidate_id": "e649b2db-08cf-53e5-acb2-f45d65f74b5e",
+              "category": "bottle",
+              "compatible": false,
+              "unavailable_to_lost_track": true
+            },
+            {
+              "accepted_energy": false,
+              "anchor_id": "a29329cd-2e82-5f52-a35f-e9d16c21e988",
+              "candidate_id": "34614e8a-df9c-5507-b3d5-81e9f5c309e8",
+              "category": "bottle",
+              "compatible": false,
+              "unavailable_to_lost_track": true
+            },
+            {
+              "accepted_energy": true,
+              "anchor_id": "a29329cd-2e82-5f52-a35f-e9d16c21e988",
+              "appearance_distance": 0.05096876455559462,
+              "candidate_id": "6e02e7b8-7d97-5d56-be24-d8ccf08f4aa5",
+              "category": "dining table",
+              "compatible": true,
+              "log_energy": -0.04994609364422677,
+              "surface_distance_m": 0.1207550702075024
+            },
+            {
+              "accepted_energy": false,
+              "anchor_id": "a29329cd-2e82-5f52-a35f-e9d16c21e988",
+              "candidate_id": "a0c1bc26-68e6-5382-8adf-d86ad3e00495",
+              "category": "sports ball",
+              "compatible": false
+            }
+          ],
+          "config": {
+            "appearance_scale": 0.25,
+            "geometry_scale_m": 0.5,
+            "histogram_bins": 8,
+            "unknown_logit": -2.0
+          },
+          "detector_scores_used_in_energy": false,
+          "model": "appearance-rgb-histogram-surface-geometry-development@1",
+          "status": "ACCEPTED_UNIQUE_REIDENTIFICATION"
+        },
+        "reported_instance_id": "CounterTop|2|0",
+        "status": "REIDENTIFIED_FLOW_AND_MASK_SUPPORTED",
+        "step_index": 1
+      }
+    },
+    {
+      "baseline": {
+        "anchor_id": "a29329cd-2e82-5f52-a35f-e9d16c21e988",
+        "birth_frame": 0,
+        "expected_instance_id": "Kettle|surface|2|6",
+        "identity_correct": null,
+        "identity_status": "UNRESOLVED",
+        "joint_success": null,
+        "position_correct": null,
+        "query_eligible": true,
+        "reidentification": null,
+        "reported_instance_id": null,
+        "status": "LOST_NO_REINITIALIZATION",
+        "step_index": 2
+      },
+      "candidate": {
+        "anchor_id": "a29329cd-2e82-5f52-a35f-e9d16c21e988",
+        "birth_frame": 0,
+        "expected_instance_id": "Kettle|surface|2|6",
+        "identity_correct": false,
+        "identity_status": "CONDITIONAL_APPEARANCE_GEOMETRY_ASSOCIATION",
+        "joint_success": false,
+        "position_correct": false,
+        "query_eligible": true,
+        "reidentification": {
+          "calibration": "UNCALIBRATED_COMPOSITE_DEVELOPMENT_ENERGY",
+          "candidate_id": "eae28f1d-ece5-5c50-b0ac-01dcb9e202ad",
+          "comparisons": [
+            {
+              "accepted_energy": false,
+              "anchor_id": "a29329cd-2e82-5f52-a35f-e9d16c21e988",
+              "candidate_id": "3f9b8f35-8106-54d3-8cd6-7188cec1dcdd",
+              "category": "bottle",
+              "compatible": false,
+              "unavailable_to_lost_track": true
+            },
+            {
+              "accepted_energy": false,
+              "anchor_id": "a29329cd-2e82-5f52-a35f-e9d16c21e988",
+              "candidate_id": "40df58a1-91b6-5aa7-a714-7aca04d9985c",
+              "category": "bottle",
+              "compatible": false,
+              "unavailable_to_lost_track": true
+            },
+            {
+              "accepted_energy": true,
+              "anchor_id": "a29329cd-2e82-5f52-a35f-e9d16c21e988",
+              "appearance_distance": 0.1179245779871548,
+              "candidate_id": "eae28f1d-ece5-5c50-b0ac-01dcb9e202ad",
+              "category": "dining table",
+              "compatible": true,
+              "log_energy": -0.30542555475504485,
+              "surface_distance_m": 0.3115893980926312
+            }
+          ],
+          "config": {
+            "appearance_scale": 0.25,
+            "geometry_scale_m": 0.5,
+            "histogram_bins": 8,
+            "unknown_logit": -2.0
+          },
+          "detector_scores_used_in_energy": false,
+          "model": "appearance-rgb-histogram-surface-geometry-development@1",
+          "status": "ACCEPTED_UNIQUE_REIDENTIFICATION"
+        },
+        "reported_instance_id": "CounterTop|2|0",
+        "status": "REIDENTIFIED_FLOW_AND_MASK_SUPPORTED",
+        "step_index": 2
+      }
+    }
+  ],
+  "gates": {
+    "all_reidentifications_adjudicated": true,
+    "ambiguity_rejected": true,
+    "deterministic_replay": true,
+    "late_birth_isolated": true,
+    "natural_joint_recovery": false,
+    "query_level_joint_gain": false,
+    "zero_false_reidentification": false,
+    "zero_query_regression": true
+  },
+  "late_birth_rows": [
+    {
+      "anchor_id": "a0c1bc26-68e6-5382-8adf-d86ad3e00495",
+      "birth_frame": 1,
+      "expected_instance_id": null,
+      "identity_correct": null,
+      "identity_status": "PROVISIONAL_LATE_BIRTH",
+      "joint_success": null,
+      "position_correct": null,
+      "query_eligible": false,
+      "reidentification": null,
+      "reported_instance_id": "Apple|surface|2|0",
+      "status": "LATE_BIRTH_FLOW_AND_MASK_SUPPORTED",
+      "step_index": 1
+    },
+    {
+      "anchor_id": "a0c1bc26-68e6-5382-8adf-d86ad3e00495",
+      "birth_frame": 1,
+      "expected_instance_id": null,
+      "identity_correct": null,
+      "identity_status": "UNRESOLVED",
+      "joint_success": null,
+      "position_correct": null,
+      "query_eligible": false,
+      "reidentification": {
+        "calibration": "UNCALIBRATED_COMPOSITE_DEVELOPMENT_ENERGY",
+        "comparisons": [
+          {
+            "accepted_energy": false,
+            "anchor_id": "a0c1bc26-68e6-5382-8adf-d86ad3e00495",
+            "candidate_id": "3f9b8f35-8106-54d3-8cd6-7188cec1dcdd",
+            "category": "bottle",
+            "compatible": false,
+            "unavailable_to_lost_track": true
+          },
+          {
+            "accepted_energy": false,
+            "anchor_id": "a0c1bc26-68e6-5382-8adf-d86ad3e00495",
+            "candidate_id": "40df58a1-91b6-5aa7-a714-7aca04d9985c",
+            "category": "bottle",
+            "compatible": false,
+            "unavailable_to_lost_track": true
+          },
+          {
+            "accepted_energy": false,
+            "anchor_id": "a0c1bc26-68e6-5382-8adf-d86ad3e00495",
+            "candidate_id": "eae28f1d-ece5-5c50-b0ac-01dcb9e202ad",
+            "category": "dining table",
+            "compatible": false
+          }
+        ],
+        "config": {
+          "appearance_scale": 0.25,
+          "geometry_scale_m": 0.5,
+          "histogram_bins": 8,
+          "unknown_logit": -2.0
+        },
+        "detector_scores_used_in_energy": false,
+        "model": "appearance-rgb-histogram-surface-geometry-development@1",
+        "status": "UNKNOWN_NO_REIDENTIFICATION_SUPPORT"
+      },
+      "reported_instance_id": null,
+      "status": "UNKNOWN_NO_REIDENTIFICATION_SUPPORT",
+      "step_index": 2
+    }
+  ],
+  "matched_input_sha256": "91d0863e83ea97afa7b9b79d895a1bc57a0f6edc234744d72a2bf01277919f13",
+  "natural_joint_recoveries": [],
+  "query_regressions": [],
+  "schema": "cpswm-matched-transition-death-test@1",
+  "scope": "single-house matched transition death test; not general scientific acceptance",
+  "source_physical_dispatches": 3,
+  "status": "FAIL",
+  "task_score": {
+    "baseline": {
+      "identity_correct": 7,
+      "joint_success": 6,
+      "position_correct": 6,
+      "task_slots": 9
+    },
+    "candidate": {
+      "identity_correct": 7,
+      "joint_success": 6,
+      "position_correct": 6,
+      "task_slots": 9
+    }
+  },
+  "unadjudicated_reidentifications": []
+}

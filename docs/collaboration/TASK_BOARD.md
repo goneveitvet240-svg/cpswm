@@ -1,3 +1,13 @@
+# A交付：匹配过渡死亡测试未过门（2026-10-09）
+
+电脑 A 在 `codex/pc-a-matched-transition-death-test-20261009` 完成同一冻结 RGB-D/native-mask 输入、同一三动作预算的旧/新源码配对重放；实验代码/报告/完整9.7 MB证据提交 `ebc52828af02b4825aa153d5f1deca27974356d1`，[草稿 PR100](https://github.com/goneveitvet240-svg/cpswm/pull/100) 堆叠 PR99。[报告](../reviews/pc_a/matched_transition_death_test_2026-10-09/REPORT.md)与[机器汇总](../reviews/pc_a/matched_transition_death_test_2026-10-09/evidence/summary.json)。两臂身份/位置/联合得分均为 `7/9、6/9、6/9`；候选两次将实际 Kettle 错误恢复为 CounterTop，正确自然联合恢复为零，死亡测试 FAIL。UNKNOWN、LOST、错误接受和晚出生均保留；SDK真值仅离线评分。
+
+确定性重放、完整双候选歧义拒绝、晚生 query 隔离和零查询退化通过，不能代替任务收益。mask 成分诊断显示被接受的 dining-table mask 主要是 CounterTop（`67.30%/74.07%`），目标 Kettle 仅 `7.28%/6.63%`，说明当前粗类别＋RGB直方图＋单点几何会产生唯一但错误的实例匹配。相关4文件48项、Ruff/format、编译和diff检查通过；完整S1矩阵因预声明门失败而未启动。
+
+下一项建议：在保留现有指标与 UNKNOWN 语义的前提下加入 reference-feature geometric verification，先复用已有 `min 4`、`FB≤1.5 px` 条件修复本冻结反例，再重跑死亡门。B需绑定最终SHA独立复核；A不集成当前失败方法、不改STATUS_B/原用户树/共享集成，完整统一范围保持。
+
+---
+
 # A交付：持续对象出生与保守重识别（2026-10-08）
 
 电脑A已在 `codex/pc-a-continuous-object-reid-20261008` 提交生产实现 `a5385ddaf6724d2d346fc222866edc2b7ec9407c`（base `6e9c953a81e2fc072f4d079d7a19194b1324ea64`），[草稿PR99](https://github.com/goneveitvet240-svg/cpswm/pull/99)已建立。[交付报告](../reviews/pc_a/continuous_object_reid_2026-10-08/REPORT.md)：晚生轨迹与首帧query隔离，丢失恢复复用既有开发能量并要求唯一一对一；合法、无候选、多候选、共享候选、晚生、回滚和依赖绑定路径已验证。17项核心及42项最终组合通过，5组相邻回归另有30通过/21依条件跳过；冻结公开输入只证明旧LOST行达到唯一门控，不等于任务收益。完整S1原始包缺失，15-run重放未完成。下一交接为B绑定该SHA独立验收；随后A在同任务/同预算重新运行fixed/active/no-update与retain/withdraw矩阵。共享集成不自动合并，几何AABB误差和完整统一研究范围不变。

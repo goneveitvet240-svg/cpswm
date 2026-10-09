@@ -1,6 +1,6 @@
 # A：参考特征几何核验修复交付，局部门通过但完整死亡测试仍 FAIL（2026-10-09）
 
-分支 `codex/pc-a-reference-feature-reid-20261009`；base `2d54c541107bd718d02c5427220f5715a0eca93a`；最终生产代码 SHA `8acab228c6cdaa85865088f73c82b9455fb3fea1`；报告与 7,125,614 bytes 散列证据提交 `c4d7bf4ee9913cd7b295591828caa36a330deeb3`。[报告](../reviews/pc_a/reference_feature_reid_2026-10-09/REPORT.md)、[复现命令](../reviews/pc_a/reference_feature_reid_2026-10-09/COMMANDS.md)、[机器汇总](../reviews/pc_a/reference_feature_reid_2026-10-09/evidence/subpixel-summary.json)。
+分支 `codex/pc-a-reference-feature-reid-20261009`；base `2d54c541107bd718d02c5427220f5715a0eca93a`；最终生产代码 SHA `8acab228c6cdaa85865088f73c82b9455fb3fea1`；报告与 7,125,614 bytes 散列证据提交 `c4d7bf4ee9913cd7b295591828caa36a330deeb3`。[草稿 PR101](https://github.com/goneveitvet240-svg/cpswm/pull/101) 堆叠 PR100；[报告](../reviews/pc_a/reference_feature_reid_2026-10-09/REPORT.md)、[复现命令](../reviews/pc_a/reference_feature_reid_2026-10-09/COMMANDS.md)、[机器汇总](../reviews/pc_a/reference_feature_reid_2026-10-09/evidence/subpixel-summary.json)。
 
 同一冻结三帧中，旧实现的 2 次错误重识别降为 0；LOST 的 kettle 在 step 1 正确恢复且 step 2 保持正确，重复候选仍 UNKNOWN，候选 A/B 逐字节一致，查询无退化。原查询联合分数仍为旧版 `6/9`、最终版 `6/9`，所以预声明 `query_level_joint_gain` 未过，完整死亡测试保持 FAIL且未启动 S1 全矩阵。四个迭代 SHA 和失败输出均保留。54 项聚焦测试、Ruff、mypy、Python 编译、diff check 与证据清单核验通过。
 

@@ -1,6 +1,6 @@
 # A交付：参考特征几何核验修复局部门通过，完整死亡测试仍 FAIL（2026-10-09）
 
-分支 `codex/pc-a-reference-feature-reid-20261009`，base `2d54c541107bd718d02c5427220f5715a0eca93a`，生产代码 `8acab228c6cdaa85865088f73c82b9455fb3fea1`，报告/证据提交 `c4d7bf4ee9913cd7b295591828caa36a330deeb3`。[报告](../reviews/pc_a/reference_feature_reid_2026-10-09/REPORT.md)与[机器汇总](../reviews/pc_a/reference_feature_reid_2026-10-09/evidence/subpixel-summary.json)。
+分支 `codex/pc-a-reference-feature-reid-20261009`，base `2d54c541107bd718d02c5427220f5715a0eca93a`，生产代码 `8acab228c6cdaa85865088f73c82b9455fb3fea1`，报告/证据提交 `c4d7bf4ee9913cd7b295591828caa36a330deeb3`。[草稿 PR101](https://github.com/goneveitvet240-svg/cpswm/pull/101) 堆叠 PR100；[报告](../reviews/pc_a/reference_feature_reid_2026-10-09/REPORT.md)与[机器汇总](../reviews/pc_a/reference_feature_reid_2026-10-09/evidence/subpixel-summary.json)。
 
 同一输入/三动作预算下错误重识别 `2→0`，得到 1 次自然身份＋严格 AABB 联合恢复且下一帧保持正确；确定性、歧义拒绝、晚出生隔离、可评分和零查询退化均通过。既定查询联合分数仍 `6/9→6/9`，因此 `query_level_joint_gain=false`、总状态 FAIL、不扩 S1 全矩阵。54 项聚焦测试和静态/类型/编译/证据清单检查通过；B独立复核、PR审查和共享集成待办。若下一轮改变查询面板，须由用户决定。
 

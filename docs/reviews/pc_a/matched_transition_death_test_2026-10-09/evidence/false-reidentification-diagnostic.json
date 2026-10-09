@@ -1,0 +1,268 @@
+{
+  "accepted_reidentifications": 2,
+  "evaluation_sha256": "0c6088a53c265a876c7179a628c46f41502b0e476057ebf182484031c9f49f8a",
+  "manifest_sha256": "5a421a8abda3bafc5933fc3e6262dc22444e10eabdaa3353243b18f37b156d7e",
+  "replay_sha256": "da595851667fa3412fdf81766a6b84e6a605920b34491e0f18dbdb5b01d1ce4c",
+  "rows": [
+    {
+      "anchor_id": "a29329cd-2e82-5f52-a35f-e9d16c21e988",
+      "candidate_category": "dining table",
+      "candidate_id": "6e02e7b8-7d97-5d56-be24-d8ccf08f4aa5",
+      "detector_score": 0.8889174461364746,
+      "expected_instance_id": "Kettle|surface|2|6",
+      "identity_correct": false,
+      "instance_composition": [
+        {
+          "fraction_of_predicted_mask": 0.6730364873222016,
+          "instance_id": "CounterTop|2|0",
+          "intersection_pixels": 21766
+        },
+        {
+          "fraction_of_predicted_mask": 0.08138528138528138,
+          "instance_id": "Kettle|surface|2|5",
+          "intersection_pixels": 2632
+        },
+        {
+          "fraction_of_predicted_mask": 0.0728200371057514,
+          "instance_id": "Kettle|surface|2|6",
+          "intersection_pixels": 2355
+        },
+        {
+          "fraction_of_predicted_mask": 0.040661719233147806,
+          "instance_id": "SoapBottle|surface|2|14",
+          "intersection_pixels": 1315
+        },
+        {
+          "fraction_of_predicted_mask": 0.03623995052566481,
+          "instance_id": "Bowl|surface|2|11",
+          "intersection_pixels": 1172
+        },
+        {
+          "fraction_of_predicted_mask": 0.02943722943722944,
+          "instance_id": "Plate|surface|2|15",
+          "intersection_pixels": 952
+        },
+        {
+          "fraction_of_predicted_mask": 0.024366110080395794,
+          "instance_id": "Apple|surface|2|0",
+          "intersection_pixels": 788
+        },
+        {
+          "fraction_of_predicted_mask": 0.014842300556586271,
+          "instance_id": "WineBottle|surface|2|8",
+          "intersection_pixels": 480
+        },
+        {
+          "fraction_of_predicted_mask": 0.012956091527520098,
+          "instance_id": "Lettuce|surface|2|3",
+          "intersection_pixels": 419
+        },
+        {
+          "fraction_of_predicted_mask": 0.004329004329004329,
+          "instance_id": "wall|2|0.00|0.00|0.00|3.99",
+          "intersection_pixels": 140
+        },
+        {
+          "fraction_of_predicted_mask": 0.003865182436611008,
+          "instance_id": "Tomato|surface|2|7",
+          "intersection_pixels": 125
+        },
+        {
+          "fraction_of_predicted_mask": 0.003772418058132344,
+          "instance_id": "Potato|surface|2|9",
+          "intersection_pixels": 122
+        },
+        {
+          "fraction_of_predicted_mask": 0.001422387136672851,
+          "instance_id": "Pencil|surface|2|13",
+          "intersection_pixels": 46
+        },
+        {
+          "fraction_of_predicted_mask": 0.0008658008658008658,
+          "instance_id": "Fork|surface|2|17",
+          "intersection_pixels": 28
+        }
+      ],
+      "position_correct": false,
+      "predicted_mask_pixels": 32340,
+      "reidentification": {
+        "calibration": "UNCALIBRATED_COMPOSITE_DEVELOPMENT_ENERGY",
+        "candidate_id": "6e02e7b8-7d97-5d56-be24-d8ccf08f4aa5",
+        "comparisons": [
+          {
+            "accepted_energy": false,
+            "anchor_id": "a29329cd-2e82-5f52-a35f-e9d16c21e988",
+            "candidate_id": "e649b2db-08cf-53e5-acb2-f45d65f74b5e",
+            "category": "bottle",
+            "compatible": false,
+            "unavailable_to_lost_track": true
+          },
+          {
+            "accepted_energy": false,
+            "anchor_id": "a29329cd-2e82-5f52-a35f-e9d16c21e988",
+            "candidate_id": "34614e8a-df9c-5507-b3d5-81e9f5c309e8",
+            "category": "bottle",
+            "compatible": false,
+            "unavailable_to_lost_track": true
+          },
+          {
+            "accepted_energy": true,
+            "anchor_id": "a29329cd-2e82-5f52-a35f-e9d16c21e988",
+            "appearance_distance": 0.05096876455559462,
+            "candidate_id": "6e02e7b8-7d97-5d56-be24-d8ccf08f4aa5",
+            "category": "dining table",
+            "compatible": true,
+            "log_energy": -0.04994609364422677,
+            "surface_distance_m": 0.1207550702075024
+          },
+          {
+            "accepted_energy": false,
+            "anchor_id": "a29329cd-2e82-5f52-a35f-e9d16c21e988",
+            "candidate_id": "a0c1bc26-68e6-5382-8adf-d86ad3e00495",
+            "category": "sports ball",
+            "compatible": false
+          }
+        ],
+        "config": {
+          "appearance_scale": 0.25,
+          "geometry_scale_m": 0.5,
+          "histogram_bins": 8,
+          "unknown_logit": -2.0
+        },
+        "detector_scores_used_in_energy": false,
+        "model": "appearance-rgb-histogram-surface-geometry-development@1",
+        "status": "ACCEPTED_UNIQUE_REIDENTIFICATION"
+      },
+      "reported_instance_id": "CounterTop|2|0",
+      "selected_pixel_instance_id": "CounterTop|2|0",
+      "selected_pixel_uv": [
+        134,
+        233
+      ],
+      "step_index": 1
+    },
+    {
+      "anchor_id": "a29329cd-2e82-5f52-a35f-e9d16c21e988",
+      "candidate_category": "dining table",
+      "candidate_id": "eae28f1d-ece5-5c50-b0ac-01dcb9e202ad",
+      "detector_score": 0.5650928020477295,
+      "expected_instance_id": "Kettle|surface|2|6",
+      "identity_correct": false,
+      "instance_composition": [
+        {
+          "fraction_of_predicted_mask": 0.7406540799311495,
+          "instance_id": "CounterTop|2|0",
+          "intersection_pixels": 27539
+        },
+        {
+          "fraction_of_predicted_mask": 0.06634930880533592,
+          "instance_id": "Kettle|surface|2|6",
+          "intersection_pixels": 2467
+        },
+        {
+          "fraction_of_predicted_mask": 0.06468183529664892,
+          "instance_id": "Kettle|surface|2|5",
+          "intersection_pixels": 2405
+        },
+        {
+          "fraction_of_predicted_mask": 0.0341563121940724,
+          "instance_id": "SoapBottle|surface|2|14",
+          "intersection_pixels": 1270
+        },
+        {
+          "fraction_of_predicted_mask": 0.03291915442956269,
+          "instance_id": "Bowl|surface|2|11",
+          "intersection_pixels": 1224
+        },
+        {
+          "fraction_of_predicted_mask": 0.023532892259695553,
+          "instance_id": "Plate|surface|2|15",
+          "intersection_pixels": 875
+        },
+        {
+          "fraction_of_predicted_mask": 0.013017051261363025,
+          "instance_id": "WineBottle|surface|2|8",
+          "intersection_pixels": 484
+        },
+        {
+          "fraction_of_predicted_mask": 0.008444946479479317,
+          "instance_id": "Lettuce|surface|2|3",
+          "intersection_pixels": 314
+        },
+        {
+          "fraction_of_predicted_mask": 0.0073960518530471735,
+          "instance_id": "wall|2|0.00|0.00|0.00|3.99",
+          "intersection_pixels": 275
+        },
+        {
+          "fraction_of_predicted_mask": 0.004034210101662094,
+          "instance_id": "Apple|surface|2|0",
+          "intersection_pixels": 150
+        },
+        {
+          "fraction_of_predicted_mask": 0.003576999623473724,
+          "instance_id": "Potato|surface|2|9",
+          "intersection_pixels": 133
+        },
+        {
+          "fraction_of_predicted_mask": 0.001237157764509709,
+          "instance_id": "Pencil|surface|2|13",
+          "intersection_pixels": 46
+        }
+      ],
+      "position_correct": false,
+      "predicted_mask_pixels": 37182,
+      "reidentification": {
+        "calibration": "UNCALIBRATED_COMPOSITE_DEVELOPMENT_ENERGY",
+        "candidate_id": "eae28f1d-ece5-5c50-b0ac-01dcb9e202ad",
+        "comparisons": [
+          {
+            "accepted_energy": false,
+            "anchor_id": "a29329cd-2e82-5f52-a35f-e9d16c21e988",
+            "candidate_id": "3f9b8f35-8106-54d3-8cd6-7188cec1dcdd",
+            "category": "bottle",
+            "compatible": false,
+            "unavailable_to_lost_track": true
+          },
+          {
+            "accepted_energy": false,
+            "anchor_id": "a29329cd-2e82-5f52-a35f-e9d16c21e988",
+            "candidate_id": "40df58a1-91b6-5aa7-a714-7aca04d9985c",
+            "category": "bottle",
+            "compatible": false,
+            "unavailable_to_lost_track": true
+          },
+          {
+            "accepted_energy": true,
+            "anchor_id": "a29329cd-2e82-5f52-a35f-e9d16c21e988",
+            "appearance_distance": 0.1179245779871548,
+            "candidate_id": "eae28f1d-ece5-5c50-b0ac-01dcb9e202ad",
+            "category": "dining table",
+            "compatible": true,
+            "log_energy": -0.30542555475504485,
+            "surface_distance_m": 0.3115893980926312
+          }
+        ],
+        "config": {
+          "appearance_scale": 0.25,
+          "geometry_scale_m": 0.5,
+          "histogram_bins": 8,
+          "unknown_logit": -2.0
+        },
+        "detector_scores_used_in_energy": false,
+        "model": "appearance-rgb-histogram-surface-geometry-development@1",
+        "status": "ACCEPTED_UNIQUE_REIDENTIFICATION"
+      },
+      "reported_instance_id": "CounterTop|2|0",
+      "selected_pixel_instance_id": "CounterTop|2|0",
+      "selected_pixel_uv": [
+        128,
+        215
+      ],
+      "step_index": 2
+    }
+  ],
+  "schema": "cpswm-matched-transition-death-test@1",
+  "status": "DIAGNOSED",
+  "truth_usage": "offline evaluation only; no SDK value enters replay inference"
+}

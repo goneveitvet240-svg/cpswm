@@ -1,0 +1,93 @@
+{
+  "budget": 3,
+  "capture_result_sha256": "f259fd16ae4841457c44e5beb140c753cd50c2f895321a2e4811e1e7d211612c",
+  "detector_runs": 1,
+  "frames": [
+    {
+      "action_id": "5104ae2a-9b0c-4ea9-a59d-8a4fcee7076a",
+      "boxes": "transport/evaluator_only/sdk-events/004-boxes.json",
+      "boxes_sha256": "62647ac83040f81a5dae0d110821e46222b40a640d656f8126b35e62ba628219",
+      "index": 0,
+      "instance_ids": "transport/evaluator_only/sdk-events/004-instances.json",
+      "instance_ids_sha256": "d70fb592596e0784da5295cdd8cbd0b236db1840febd3fe8c4a188c26ffcfb96",
+      "instances": "transport/evaluator_only/sdk-events/004-instances.npz",
+      "instances_sha256": "481edc13f0fed7a8eb54a6af601fe32af0c6addc56ea6b7f3d77a6fe54648cc9",
+      "masks": "public/000/masks.npy.gz",
+      "masks_sha256": "62375b218ba79fc4794525854720de8edc9639370b9d0ccf644a1e8945f9bab1",
+      "prediction": "public/000/prediction.json",
+      "prediction_sha256": "4941c356fcc12395c92136dcaea0f570c34c3502f70353b74c86c65bf877ec2d",
+      "raw": "public/000/raw.json",
+      "raw_sha256": "ae045d7f01e81513dcae4d27b6c7b556eda1468620f0b47a77995103d2bcf340",
+      "sdk": "transport/evaluator_only/sdk-events/004.json",
+      "sdk_sha256": "8e2006518b0dac8deb53cc31d56b1ff46a7acedc55e1e3932f916cc820e5f1cc"
+    },
+    {
+      "action_id": "6477c186-6a48-4f36-bcd0-b7032f0b58b5",
+      "boxes": "transport/evaluator_only/sdk-events/005-boxes.json",
+      "boxes_sha256": "673a6f745a4dba07756f59ddf111c305a50c53fe7349bcf66b7da8e9f7de804a",
+      "index": 1,
+      "instance_ids": "transport/evaluator_only/sdk-events/005-instances.json",
+      "instance_ids_sha256": "d3597185c67fe7698e93fd820adf349bb0db6ed6763081c4e38e856bbf9cd270",
+      "instances": "transport/evaluator_only/sdk-events/005-instances.npz",
+      "instances_sha256": "1adfdeb622da3ae88c4c0821029af8afad381d4a2b358475998f71a13ca5e7e1",
+      "masks": "public/001/masks.npy.gz",
+      "masks_sha256": "cdad6c5e577fad43bc03f3e98e8af69bf6e0e3e2a05f9956b8337497152793bd",
+      "prediction": "public/001/prediction.json",
+      "prediction_sha256": "d7e85f207b070dc13b76835a859ae4ba387ff7af0a0db1c47e6582f45a0ab579",
+      "raw": "public/001/raw.json",
+      "raw_sha256": "5e2457e305638a2b10e2b6511fe1a0d2faa881991b848f13ad0c75b88bbf93d6",
+      "sdk": "transport/evaluator_only/sdk-events/005.json",
+      "sdk_sha256": "c90bb052daa19918b7b2637513cef666674dfac7a49a4297b2a119cbc2022e6b"
+    },
+    {
+      "action_id": "ef5571bb-79c3-4340-864b-14f2f96106ee",
+      "boxes": "transport/evaluator_only/sdk-events/006-boxes.json",
+      "boxes_sha256": "1f1de9cd6d21e1ac484104e87afdfec2c91871bbef350cff56cbdae523ee6d93",
+      "index": 2,
+      "instance_ids": "transport/evaluator_only/sdk-events/006-instances.json",
+      "instance_ids_sha256": "617d0bcaafde5b65611744d58d37fe03d591de8631db444d22c23df2c375d150",
+      "instances": "transport/evaluator_only/sdk-events/006-instances.npz",
+      "instances_sha256": "8942c3a318e22bf9c56cae5c8574954bd52049b6f9b6f890d53dea5aa212a702",
+      "masks": "public/002/masks.npy.gz",
+      "masks_sha256": "77e117d76da59bd2cd9edbd2f82a733e3d5b18a06aa08bb6833a1cbee248d018",
+      "prediction": "public/002/prediction.json",
+      "prediction_sha256": "f677745adf5708257eae4fe3471460f79b6c7ec3f85909f061da8cd765a75d74",
+      "raw": "public/002/raw.json",
+      "raw_sha256": "ce507b82d1bc548eabe2190903b8299a0959f220b9b5dfa9926fb05e33ad8442",
+      "sdk": "transport/evaluator_only/sdk-events/006.json",
+      "sdk_sha256": "75d66eb70bd5a8edd6d16c278705150a89d6b1ce27f018bb9c53c0d6ba101526"
+    }
+  ],
+  "inference_truth_isolation": "SDK artifacts are evaluator-only",
+  "input_sha256": "91d0863e83ea97afa7b9b79d895a1bc57a0f6edc234744d72a2bf01277919f13",
+  "physical_dispatches": 3,
+  "queries": [
+    {
+      "category": "bottle",
+      "ordinal": 0
+    },
+    {
+      "category": "bottle",
+      "ordinal": 1
+    },
+    {
+      "category": "bowl",
+      "ordinal": 0
+    }
+  ],
+  "schedule": [
+    {
+      "action": "RotateRight",
+      "degrees": 30.0
+    },
+    {
+      "action": "RotateRight",
+      "degrees": 5.0
+    },
+    {
+      "action": "RotateRight",
+      "degrees": 5.0
+    }
+  ],
+  "schema": "cpswm-matched-transition-death-test@1"
+}

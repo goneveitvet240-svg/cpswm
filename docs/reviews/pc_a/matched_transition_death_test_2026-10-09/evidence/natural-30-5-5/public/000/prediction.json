@@ -1,0 +1,2614 @@
+{
+  "accepted_reidentifications": [],
+  "detector": {
+    "active_candidate_count": 5,
+    "calibrated": false,
+    "camera": {
+      "action_id": "5104ae2a-9b0c-4ea9-a59d-8a4fcee7076a",
+      "capture_time": "2026-10-09T04:09:43.293601Z",
+      "configuration_sha256": "305933bbb6272a8a48d7601c7d4bf4a2128b153ebe4ee010a469576d5535b66b",
+      "depth_semantics": "Linear01Depth_times_far_minus_near",
+      "depth_sha256": "49b20fa8948fb397039d11330a950052066886c579937a1ed41c1e8de26663a1",
+      "depth_unit": "m",
+      "far_plane_m": 20.0,
+      "height": 320,
+      "localization": "AUTHORIZED_IDEAL_SIMULATOR_CAMERA_SELF_POSE",
+      "near_plane_m": 0.1,
+      "pitch_degrees": 30.000003814697266,
+      "position_m": [
+        1.25,
+        1.5759997367858887,
+        2.745277166366577
+      ],
+      "rgb_sha256": "debd14498840ecde373ab1f1797a1e7211ec2bbdd38b51a407693856020b6d41",
+      "scene_sha256": "5909afb2274525115543e6ae278648d3fd0c72c2b36992ef790274ea65531db0",
+      "schema_id": "unity-rgbd-self-pose@1",
+      "unity_commit": "f0825767cd50d69f666c7f282e54abfe58f1e917",
+      "unity_sha256": "d8bbfbee47581f4aa4f5df71e095f0a1c00888bed7b493eaffcc0f37d6364df3",
+      "vertical_fov_degrees": 60.0,
+      "width": 320,
+      "worker_sha256": "0256a4ae90fa708d86dd496157fc2012421c20f6872938ff4a55b4c234da2d71",
+      "world_frame": "unity-scene-world-x-right-y-up-z-forward",
+      "yaw_degrees": 255.0
+    },
+    "candidates": [
+      {
+        "box_xyxy": [
+          72.18590545654297,
+          88.43571472167969,
+          98.62114715576172,
+          165.50193786621094
+        ],
+        "candidate_id": "6cea16c9-03ba-5a17-afea-812c8e640ce3",
+        "category": "bottle",
+        "depth_m": 1.156353235244751,
+        "detector_score": 0.9940136075019836,
+        "mask_array_sha256": "f6217ed4bf28ece856ffbe7c28a741988a6b99e34b30d940bbd9b0dfeb4710ce",
+        "mask_pixels": 1253,
+        "native_index": 0,
+        "selected_mask_probability": 0.9994195699691772,
+        "selected_pixel_uv": [
+          80,
+          130
+        ],
+        "status": "SURFACE_CANDIDATE",
+        "support_uv": null,
+        "valid_mask_pixels": 1253,
+        "world_point_m": [
+          0.3043709102381733,
+          1.102054636765525,
+          2.1467447860424858
+        ]
+      },
+      {
+        "box_xyxy": [
+          205.4586181640625,
+          150.93980407714844,
+          235.5501251220703,
+          222.13572692871094
+        ],
+        "candidate_id": "eb6da42e-37f3-51c2-b801-e6476b11a94b",
+        "category": "bottle",
+        "depth_m": 0.8419077396392822,
+        "detector_score": 0.9907953143119812,
+        "mask_array_sha256": "b0e94f31cad67a9db4044a7cc898202962be43708449267ddfd6bcda39fc75fb",
+        "mask_pixels": 1495,
+        "native_index": 1,
+        "selected_mask_probability": 0.9993739724159241,
+        "selected_pixel_uv": [
+          222,
+          167
+        ],
+        "status": "SURFACE_CANDIDATE",
+        "support_uv": null,
+        "valid_mask_pixels": 1495,
+        "world_point_m": [
+          0.5038611680342074,
+          1.1330991033661824,
+          2.742908974110538
+        ]
+      },
+      {
+        "box_xyxy": [
+          0.0,
+          105.0636978149414,
+          319.9421081542969,
+          269.9007568359375
+        ],
+        "candidate_id": "a29329cd-2e82-5f52-a35f-e9d16c21e988",
+        "category": "dining table",
+        "depth_m": 0.9283170700073242,
+        "detector_score": 0.8312312364578247,
+        "mask_array_sha256": "1bf110340184635917df487ee7ea395011bd73d7481338c1bfd25ff260bc397f",
+        "mask_pixels": 32787,
+        "native_index": 2,
+        "selected_mask_probability": 0.998900830745697,
+        "selected_pixel_uv": [
+          177,
+          219
+        ],
+        "status": "SURFACE_CANDIDATE",
+        "support_uv": null,
+        "valid_mask_pixels": 32787,
+        "world_point_m": [
+          0.5510407669455851,
+          0.9360323628169307,
+          2.6189855763494005
+        ]
+      },
+      {
+        "box_xyxy": [
+          127.80145263671875,
+          140.02964782714844,
+          174.26295471191406,
+          172.96951293945312
+        ],
+        "candidate_id": "69b010aa-e71a-5e08-823a-3e7448ac845f",
+        "category": "bowl",
+        "depth_m": 1.2539423704147339,
+        "detector_score": 0.7658957242965698,
+        "mask_array_sha256": "cee637dc049ce41e36eed91d575ca0c6c0c19f99bcc4b93e80ba8992344d1796",
+        "mask_pixels": 1172,
+        "native_index": 3,
+        "selected_mask_probability": 0.9995543956756592,
+        "selected_pixel_uv": [
+          159,
+          162
+        ],
+        "status": "SURFACE_CANDIDATE",
+        "support_uv": null,
+        "valid_mask_pixels": 1172,
+        "world_point_m": [
+          0.20186492373909815,
+          0.9360322172875102,
+          2.4620762535189904
+        ]
+      },
+      {
+        "box_xyxy": [
+          277.2560119628906,
+          180.31192016601562,
+          319.547119140625,
+          236.9375457763672
+        ],
+        "candidate_id": "23f1948b-49c5-566c-8be1-f17f2694a8df",
+        "category": "sink",
+        "depth_m": 0.8482657074928284,
+        "detector_score": 0.7461349368095398,
+        "mask_array_sha256": "ed71ac75badcdf72286cd450c1e46471b427780a2440a0c4e0c0c068fa06b004",
+        "mask_pixels": 1747,
+        "native_index": 4,
+        "selected_mask_probability": 0.9990817904472351,
+        "selected_pixel_uv": [
+          312,
+          213
+        ],
+        "status": "SURFACE_CANDIDATE",
+        "support_uv": null,
+        "valid_mask_pixels": 1747,
+        "world_point_m": [
+          0.49491197751321603,
+          1.0072034351007875,
+          3.028636486803844
+        ]
+      },
+      {
+        "box_xyxy": [
+          105.1275863647461,
+          145.90284729003906,
+          168.3846893310547,
+          215.516845703125
+        ],
+        "candidate_id": "6dad045d-e75c-57be-a961-1f6ff8c63ce7",
+        "category": "sink",
+        "depth_m": null,
+        "detector_score": 0.424005925655365,
+        "mask_array_sha256": "bef0e5db3ac7da3f83d829cf5390e38080f4716055058c46a58645fb1c6a55b0",
+        "mask_pixels": 2605,
+        "native_index": 5,
+        "selected_mask_probability": null,
+        "selected_pixel_uv": null,
+        "status": "BELOW_DETECTOR_THRESHOLD",
+        "valid_mask_pixels": null,
+        "world_point_m": null
+      },
+      {
+        "box_xyxy": [
+          269.1334533691406,
+          159.1797332763672,
+          319.68780517578125,
+          197.08834838867188
+        ],
+        "candidate_id": "55931137-e1e7-53a3-8756-aae86aa4d41b",
+        "category": "cup",
+        "depth_m": null,
+        "detector_score": 0.19850832223892212,
+        "mask_array_sha256": "3c377b477374186d067bcaaf6fdb7ab8675f9e819c8fb000c9fa18b05e58797d",
+        "mask_pixels": 1194,
+        "native_index": 6,
+        "selected_mask_probability": null,
+        "selected_pixel_uv": null,
+        "status": "BELOW_DETECTOR_THRESHOLD",
+        "valid_mask_pixels": null,
+        "world_point_m": null
+      },
+      {
+        "box_xyxy": [
+          29.628408432006836,
+          167.92283630371094,
+          59.20258712768555,
+          199.18568420410156
+        ],
+        "candidate_id": "83dc7ccf-c2ad-50f2-88ad-a10076865886",
+        "category": "sports ball",
+        "depth_m": null,
+        "detector_score": 0.1667950600385666,
+        "mask_array_sha256": "bdc8c1489453c34e88f3a4d56406ce1a73a4a8635858721359847b52e7832dca",
+        "mask_pixels": 786,
+        "native_index": 7,
+        "selected_mask_probability": null,
+        "selected_pixel_uv": null,
+        "status": "BELOW_DETECTOR_THRESHOLD",
+        "valid_mask_pixels": null,
+        "world_point_m": null
+      },
+      {
+        "box_xyxy": [
+          0.0,
+          135.5386199951172,
+          317.9408874511719,
+          276.0165710449219
+        ],
+        "candidate_id": "fccc9804-9ceb-5a54-a6f0-632f301a9125",
+        "category": "sink",
+        "depth_m": null,
+        "detector_score": 0.13414433598518372,
+        "mask_array_sha256": "1e57476b87f7341dc2ca93bce1d32a8056b8ffb3c6e9ce914deb9cc103718110",
+        "mask_pixels": 28193,
+        "native_index": 8,
+        "selected_mask_probability": null,
+        "selected_pixel_uv": null,
+        "status": "BELOW_DETECTOR_THRESHOLD",
+        "valid_mask_pixels": null,
+        "world_point_m": null
+      },
+      {
+        "box_xyxy": [
+          29.38410758972168,
+          167.7987518310547,
+          59.485511779785156,
+          198.5478973388672
+        ],
+        "candidate_id": "f71c2eb1-2352-5634-942c-d55cf3a0f6c6",
+        "category": "orange",
+        "depth_m": null,
+        "detector_score": 0.10722033679485321,
+        "mask_array_sha256": "addef9fde1a510a4c8d124746dbf15c887855966eb42e09d7270c4b3369e604f",
+        "mask_pixels": 762,
+        "native_index": 9,
+        "selected_mask_probability": null,
+        "selected_pixel_uv": null,
+        "status": "BELOW_DETECTOR_THRESHOLD",
+        "valid_mask_pixels": null,
+        "world_point_m": null
+      },
+      {
+        "box_xyxy": [
+          268.94232177734375,
+          159.09800720214844,
+          319.9446105957031,
+          197.35508728027344
+        ],
+        "candidate_id": "1ebbaf79-5c7c-5695-a7ea-57cb0b04b0b8",
+        "category": "chair",
+        "depth_m": null,
+        "detector_score": 0.10556178539991379,
+        "mask_array_sha256": "724d1c43c7223aaeb7934f4d72b87c2e4621fda12475dbc76744a0a514facb1d",
+        "mask_pixels": 1146,
+        "native_index": 10,
+        "selected_mask_probability": null,
+        "selected_pixel_uv": null,
+        "status": "BELOW_DETECTOR_THRESHOLD",
+        "valid_mask_pixels": null,
+        "world_point_m": null
+      },
+      {
+        "box_xyxy": [
+          269.32177734375,
+          158.6008758544922,
+          319.6031188964844,
+          191.90762329101562
+        ],
+        "candidate_id": "43fb5fe5-1063-599c-b912-4fc70715964e",
+        "category": "bowl",
+        "depth_m": null,
+        "detector_score": 0.0977732464671135,
+        "mask_array_sha256": "c39ceb771819642f4ee4748f7c1d900efbbc58902041610332fc6b402b335abe",
+        "mask_pixels": 1184,
+        "native_index": 11,
+        "selected_mask_probability": null,
+        "selected_pixel_uv": null,
+        "status": "BELOW_DETECTOR_THRESHOLD",
+        "valid_mask_pixels": null,
+        "world_point_m": null
+      },
+      {
+        "box_xyxy": [
+          29.559375762939453,
+          167.3428192138672,
+          58.401302337646484,
+          198.8345184326172
+        ],
+        "candidate_id": "e473e61b-aed3-55ff-83d1-aa099f5cfd17",
+        "category": "apple",
+        "depth_m": null,
+        "detector_score": 0.08540019392967224,
+        "mask_array_sha256": "67a763e62c23ecc024184978d928a4c883b65d288d06949a3adc35265d502d67",
+        "mask_pixels": 753,
+        "native_index": 12,
+        "selected_mask_probability": null,
+        "selected_pixel_uv": null,
+        "status": "BELOW_DETECTOR_THRESHOLD",
+        "valid_mask_pixels": null,
+        "world_point_m": null
+      },
+      {
+        "box_xyxy": [
+          205.08567810058594,
+          133.72744750976562,
+          242.7801513671875,
+          183.35498046875
+        ],
+        "candidate_id": "649d2256-89b0-50e2-9ae0-17a9ec6b8d87",
+        "category": "bottle",
+        "depth_m": null,
+        "detector_score": 0.07701388001441956,
+        "mask_array_sha256": "c4495a10fbce7b220f09b8da6b66a49a65e745a967003f27f6a96bd459764bdb",
+        "mask_pixels": 793,
+        "native_index": 13,
+        "selected_mask_probability": null,
+        "selected_pixel_uv": null,
+        "status": "BELOW_DETECTOR_THRESHOLD",
+        "valid_mask_pixels": null,
+        "world_point_m": null
+      },
+      {
+        "box_xyxy": [
+          278.0320739746094,
+          180.76971435546875,
+          319.91644287109375,
+          237.93272399902344
+        ],
+        "candidate_id": "7017e4e6-95df-516a-bc7d-d7630960e06b",
+        "category": "bowl",
+        "depth_m": null,
+        "detector_score": 0.07603186368942261,
+        "mask_array_sha256": "29e0c45b91cbfeb3535c42a521ee4a06ed00741e44e41fea7de6b464c62ebea2",
+        "mask_pixels": 1764,
+        "native_index": 14,
+        "selected_mask_probability": null,
+        "selected_pixel_uv": null,
+        "status": "BELOW_DETECTOR_THRESHOLD",
+        "valid_mask_pixels": null,
+        "world_point_m": null
+      },
+      {
+        "box_xyxy": [
+          13.114277839660645,
+          128.791748046875,
+          44.190364837646484,
+          154.760986328125
+        ],
+        "candidate_id": "378e6815-aaae-5ed3-8d8e-407308cd03be",
+        "category": "sports ball",
+        "depth_m": null,
+        "detector_score": 0.07295434921979904,
+        "mask_array_sha256": "9f828b6faae9aac879d3d4f037c4ec85954a7de7b230d5c6bb3ee2b1e0815b05",
+        "mask_pixels": 666,
+        "native_index": 15,
+        "selected_mask_probability": null,
+        "selected_pixel_uv": null,
+        "status": "BELOW_DETECTOR_THRESHOLD",
+        "valid_mask_pixels": null,
+        "world_point_m": null
+      },
+      {
+        "box_xyxy": [
+          268.750732421875,
+          159.16932678222656,
+          320.0,
+          196.56112670898438
+        ],
+        "candidate_id": "fdb0734d-bacf-5467-8d97-6ee976ce8a68",
+        "category": "laptop",
+        "depth_m": null,
+        "detector_score": 0.06496424973011017,
+        "mask_array_sha256": "1a1c55039aca9a2683e98e4d686ae02e03648962a4cad54aa95b47243f7bc098",
+        "mask_pixels": 1183,
+        "native_index": 16,
+        "selected_mask_probability": null,
+        "selected_pixel_uv": null,
+        "status": "BELOW_DETECTOR_THRESHOLD",
+        "valid_mask_pixels": null,
+        "world_point_m": null
+      },
+      {
+        "box_xyxy": [
+          271.82794189453125,
+          161.0599822998047,
+          320.0,
+          247.3205108642578
+        ],
+        "candidate_id": "63e60f87-6b91-524d-8fd8-46287d2aae45",
+        "category": "toilet",
+        "depth_m": null,
+        "detector_score": 0.054699815809726715,
+        "mask_array_sha256": "b253e16c34341ae28c46fcdd7ee426e17ba21b199e0f2f1e52c0baeefcf7ea00",
+        "mask_pixels": 1835,
+        "native_index": 17,
+        "selected_mask_probability": null,
+        "selected_pixel_uv": null,
+        "status": "BELOW_DETECTOR_THRESHOLD",
+        "valid_mask_pixels": null,
+        "world_point_m": null
+      },
+      {
+        "box_xyxy": [
+          204.3308563232422,
+          131.34854125976562,
+          246.38194274902344,
+          178.10794067382812
+        ],
+        "candidate_id": "22472542-2d8e-57f0-84ee-96948e8cdd63",
+        "category": "potted plant",
+        "depth_m": null,
+        "detector_score": 0.05241336300969124,
+        "mask_array_sha256": "5ef5efa984b762c4abcf500ca28a2840aaae97c365c8c4d260866ff2818e4b46",
+        "mask_pixels": 1224,
+        "native_index": 18,
+        "selected_mask_probability": null,
+        "selected_pixel_uv": null,
+        "status": "BELOW_DETECTOR_THRESHOLD",
+        "valid_mask_pixels": null,
+        "world_point_m": null
+      },
+      {
+        "box_xyxy": [
+          3.1059937477111816,
+          130.95440673828125,
+          194.98300170898438,
+          221.0405731201172
+        ],
+        "candidate_id": "8563ef76-cff2-5026-8a12-2c8c27f8abad",
+        "category": "sink",
+        "depth_m": null,
+        "detector_score": 0.05090821534395218,
+        "mask_array_sha256": "0745cdb31096b8eaca7b73488613dfdc753bbe24d74f489e7c9d48e99382ca90",
+        "mask_pixels": 13326,
+        "native_index": 19,
+        "selected_mask_probability": null,
+        "selected_pixel_uv": null,
+        "status": "BELOW_DETECTOR_THRESHOLD",
+        "valid_mask_pixels": null,
+        "world_point_m": null
+      }
+    ],
+    "identity_status": "UNRESOLVED",
+    "mask_threshold": 0.5,
+    "masks_npy_sha256": "fd11dc2fc5eb007971e5e4971342eebe2bff75065d81b6444ca3581a9e75c97a",
+    "memory_update_authorized": false,
+    "minimum_detector_score": 0.5,
+    "model_id": "torchvision/maskrcnn_resnet50_fpn_v2/COCO_V1",
+    "native_candidate_count": 20,
+    "negative_observation_authorized": false,
+    "observation_ids": [
+      "bafff440-d3bf-497e-ad16-0645f05f8422",
+      "e2458bc6-ed62-4330-970f-d0521a46bd1b",
+      "401cc212-5618-49a6-b24e-2759f2ddab1e"
+    ],
+    "payload_sha256": [
+      "debd14498840ecde373ab1f1797a1e7211ec2bbdd38b51a407693856020b6d41",
+      "49b20fa8948fb397039d11330a950052066886c579937a1ed41c1e8de26663a1",
+      "e26a7d35fe9f6c285c93b0099a6750509a1d12d3ff865b96f56b02b34d42015b"
+    ],
+    "point_selection": "maximum-mask-probability-valid-depth-tie-lexicographic-u-v",
+    "profile": "natural-mask-surface-development@1",
+    "receipt_sha256": "ad834166ec48b18e6cc0cd9297eedd1820efc816e03352d03870547d2d4f05b9",
+    "resize_roundoff_clamps": 0,
+    "torch_version": "2.13.0",
+    "torchvision_version": "0.28.0",
+    "weights_sha256": "73cbd0190fcbe3ba339921fbce2c3a0b6bb9126c9a133c85e43a2a8e060a109e"
+  },
+  "duplicate_sensor_content": false,
+  "frame_index": 0,
+  "identity_status": "UNRESOLVED",
+  "late_births": [],
+  "memory_update_authorized": false,
+  "negative_observation_authorized": false,
+  "point_semantics": "visible-surface-feature-may-change; not-static-object-centre",
+  "profile": "natural-mask-conservative-object-continuity@2",
+  "reidentification_comparisons": [],
+  "tracks": [
+    {
+      "anchor_id": "23f1948b-49c5-566c-8be1-f17f2694a8df",
+      "birth_frame": 0,
+      "category": "sink",
+      "current_candidate_id": "23f1948b-49c5-566c-8be1-f17f2694a8df",
+      "flow": {
+        "box_xyxy": [
+          277.0,
+          180.0,
+          320.0,
+          237.0
+        ],
+        "forward_backward_error_px": null,
+        "frame_index": 0,
+        "input_sha256": "2d2a049404937fd58159a398662a3acd9121a044874c4a72b1fcad79d84cf06d",
+        "status": "INITIALIZED_PIXEL_TRACK_NOT_WORLD_IDENTITY",
+        "surviving_points": 9
+      },
+      "flow_feature_ids": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8
+      ],
+      "flow_points_uv": [
+        [
+          313.0,
+          205.0
+        ],
+        [
+          278.0,
+          206.0
+        ],
+        [
+          316.0,
+          196.0
+        ],
+        [
+          297.0,
+          182.0
+        ],
+        [
+          280.0,
+          199.0
+        ],
+        [
+          302.0,
+          229.0
+        ],
+        [
+          284.0,
+          190.0
+        ],
+        [
+          317.0,
+          201.0
+        ],
+        [
+          282.0,
+          215.0
+        ]
+      ],
+      "identity_status": "UNRESOLVED",
+      "mask_support": [
+        {
+          "candidate_id": "23f1948b-49c5-566c-8be1-f17f2694a8df",
+          "points_uv": [
+            [
+              278,
+              206
+            ],
+            [
+              280,
+              199
+            ],
+            [
+              282,
+              215
+            ],
+            [
+              284,
+              190
+            ],
+            [
+              297,
+              182
+            ],
+            [
+              302,
+              229
+            ],
+            [
+              313,
+              205
+            ],
+            [
+              316,
+              196
+            ],
+            [
+              317,
+              201
+            ]
+          ]
+        }
+      ],
+      "query_eligible": true,
+      "reidentification": null,
+      "selected_feature_ids": [
+        0
+      ],
+      "selected_pixel_uv": [
+        313,
+        205
+      ],
+      "status": "FLOW_AND_MASK_SUPPORTED",
+      "surface": {
+        "depth_m": 0.8511177897453308,
+        "mask_pixels": 1747,
+        "selected_mask_probability": 0.9922821521759033,
+        "selected_pixel_uv": [
+          313,
+          205
+        ],
+        "status": "SURFACE_CANDIDATE",
+        "support_uv": [
+          [
+            278,
+            206
+          ],
+          [
+            280,
+            199
+          ],
+          [
+            282,
+            215
+          ],
+          [
+            284,
+            190
+          ],
+          [
+            297,
+            182
+          ],
+          [
+            302,
+            229
+          ],
+          [
+            313,
+            205
+          ],
+          [
+            316,
+            196
+          ],
+          [
+            317,
+            201
+          ]
+        ],
+        "valid_mask_pixels": 9,
+        "world_point_m": [
+          0.47964843834316784,
+          1.0266758674141148,
+          3.029375152027855
+        ]
+      },
+      "world_point_m": [
+        0.47964843834316784,
+        1.0266758674141148,
+        3.029375152027855
+      ]
+    },
+    {
+      "anchor_id": "69b010aa-e71a-5e08-823a-3e7448ac845f",
+      "birth_frame": 0,
+      "category": "bowl",
+      "current_candidate_id": "69b010aa-e71a-5e08-823a-3e7448ac845f",
+      "flow": {
+        "box_xyxy": [
+          127.0,
+          140.0,
+          175.0,
+          173.0
+        ],
+        "forward_backward_error_px": null,
+        "frame_index": 0,
+        "input_sha256": "2d2a049404937fd58159a398662a3acd9121a044874c4a72b1fcad79d84cf06d",
+        "status": "INITIALIZED_PIXEL_TRACK_NOT_WORLD_IDENTITY",
+        "surviving_points": 11
+      },
+      "flow_feature_ids": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10
+      ],
+      "flow_points_uv": [
+        [
+          138.0,
+          166.0
+        ],
+        [
+          159.0,
+          140.0
+        ],
+        [
+          134.0,
+          143.0
+        ],
+        [
+          141.0,
+          154.0
+        ],
+        [
+          144.0,
+          140.0
+        ],
+        [
+          163.0,
+          159.0
+        ],
+        [
+          139.0,
+          141.0
+        ],
+        [
+          128.0,
+          150.0
+        ],
+        [
+          166.0,
+          142.0
+        ],
+        [
+          158.0,
+          172.0
+        ],
+        [
+          166.0,
+          168.0
+        ]
+      ],
+      "identity_status": "UNRESOLVED",
+      "mask_support": [
+        {
+          "candidate_id": "69b010aa-e71a-5e08-823a-3e7448ac845f",
+          "points_uv": [
+            [
+              128,
+              150
+            ],
+            [
+              134,
+              143
+            ],
+            [
+              138,
+              166
+            ],
+            [
+              139,
+              141
+            ],
+            [
+              141,
+              154
+            ],
+            [
+              144,
+              140
+            ],
+            [
+              158,
+              172
+            ],
+            [
+              159,
+              140
+            ],
+            [
+              163,
+              159
+            ],
+            [
+              166,
+              142
+            ],
+            [
+              166,
+              168
+            ]
+          ]
+        }
+      ],
+      "query_eligible": true,
+      "reidentification": null,
+      "selected_feature_ids": [
+        5
+      ],
+      "selected_pixel_uv": [
+        163,
+        159
+      ],
+      "status": "FLOW_AND_MASK_SUPPORTED",
+      "surface": {
+        "depth_m": 1.2775280475616455,
+        "mask_pixels": 1172,
+        "selected_mask_probability": 0.9988664984703064,
+        "selected_pixel_uv": [
+          163,
+          159
+        ],
+        "status": "SURFACE_CANDIDATE",
+        "support_uv": [
+          [
+            128,
+            150
+          ],
+          [
+            134,
+            143
+          ],
+          [
+            138,
+            166
+          ],
+          [
+            139,
+            141
+          ],
+          [
+            141,
+            154
+          ],
+          [
+            144,
+            140
+          ],
+          [
+            158,
+            172
+          ],
+          [
+            159,
+            140
+          ],
+          [
+            163,
+            159
+          ],
+          [
+            166,
+            142
+          ],
+          [
+            166,
+            168
+          ]
+        ],
+        "valid_mask_pixels": 11,
+        "world_point_m": [
+          0.1706410662918596,
+          0.9360319378468022,
+          2.4728515047578417
+        ]
+      },
+      "world_point_m": [
+        0.1706410662918596,
+        0.9360319378468022,
+        2.4728515047578417
+      ]
+    },
+    {
+      "anchor_id": "6cea16c9-03ba-5a17-afea-812c8e640ce3",
+      "birth_frame": 0,
+      "category": "bottle",
+      "current_candidate_id": "6cea16c9-03ba-5a17-afea-812c8e640ce3",
+      "flow": {
+        "box_xyxy": [
+          72.0,
+          88.0,
+          99.0,
+          166.0
+        ],
+        "forward_backward_error_px": null,
+        "frame_index": 0,
+        "input_sha256": "2d2a049404937fd58159a398662a3acd9121a044874c4a72b1fcad79d84cf06d",
+        "status": "INITIALIZED_PIXEL_TRACK_NOT_WORLD_IDENTITY",
+        "surviving_points": 21
+      },
+      "flow_feature_ids": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20
+      ],
+      "flow_points_uv": [
+        [
+          85.0,
+          149.0
+        ],
+        [
+          82.0,
+          125.0
+        ],
+        [
+          76.0,
+          147.0
+        ],
+        [
+          93.0,
+          123.0
+        ],
+        [
+          73.0,
+          124.0
+        ],
+        [
+          94.0,
+          130.0
+        ],
+        [
+          75.0,
+          137.0
+        ],
+        [
+          96.0,
+          145.0
+        ],
+        [
+          81.0,
+          143.0
+        ],
+        [
+          77.0,
+          154.0
+        ],
+        [
+          95.0,
+          138.0
+        ],
+        [
+          97.0,
+          153.0
+        ],
+        [
+          92.0,
+          118.0
+        ],
+        [
+          82.0,
+          102.0
+        ],
+        [
+          81.0,
+          91.0
+        ],
+        [
+          83.0,
+          131.0
+        ],
+        [
+          73.0,
+          132.0
+        ],
+        [
+          81.0,
+          108.0
+        ],
+        [
+          97.0,
+          158.0
+        ],
+        [
+          87.0,
+          122.0
+        ],
+        [
+          78.0,
+          160.0
+        ]
+      ],
+      "identity_status": "UNRESOLVED",
+      "mask_support": [
+        {
+          "candidate_id": "6cea16c9-03ba-5a17-afea-812c8e640ce3",
+          "points_uv": [
+            [
+              73,
+              124
+            ],
+            [
+              73,
+              132
+            ],
+            [
+              75,
+              137
+            ],
+            [
+              76,
+              147
+            ],
+            [
+              77,
+              154
+            ],
+            [
+              78,
+              160
+            ],
+            [
+              81,
+              91
+            ],
+            [
+              81,
+              108
+            ],
+            [
+              81,
+              143
+            ],
+            [
+              82,
+              102
+            ],
+            [
+              82,
+              125
+            ],
+            [
+              83,
+              131
+            ],
+            [
+              85,
+              149
+            ],
+            [
+              87,
+              122
+            ],
+            [
+              92,
+              118
+            ],
+            [
+              93,
+              123
+            ],
+            [
+              94,
+              130
+            ],
+            [
+              95,
+              138
+            ],
+            [
+              96,
+              145
+            ],
+            [
+              97,
+              153
+            ],
+            [
+              97,
+              158
+            ]
+          ]
+        }
+      ],
+      "query_eligible": true,
+      "reidentification": null,
+      "selected_feature_ids": [
+        8
+      ],
+      "selected_pixel_uv": [
+        81,
+        143
+      ],
+      "status": "FLOW_AND_MASK_SUPPORTED",
+      "surface": {
+        "depth_m": 1.187970519065857,
+        "mask_pixels": 1253,
+        "selected_mask_probability": 0.9989457130432129,
+        "selected_pixel_uv": [
+          81,
+          143
+        ],
+        "status": "SURFACE_CANDIDATE",
+        "support_uv": [
+          [
+            73,
+            124
+          ],
+          [
+            73,
+            132
+          ],
+          [
+            75,
+            137
+          ],
+          [
+            76,
+            147
+          ],
+          [
+            77,
+            154
+          ],
+          [
+            78,
+            160
+          ],
+          [
+            81,
+            91
+          ],
+          [
+            81,
+            108
+          ],
+          [
+            81,
+            143
+          ],
+          [
+            82,
+            102
+          ],
+          [
+            82,
+            125
+          ],
+          [
+            83,
+            131
+          ],
+          [
+            85,
+            149
+          ],
+          [
+            87,
+            122
+          ],
+          [
+            92,
+            118
+          ],
+          [
+            93,
+            123
+          ],
+          [
+            94,
+            130
+          ],
+          [
+            95,
+            138
+          ],
+          [
+            96,
+            145
+          ],
+          [
+            97,
+            153
+          ],
+          [
+            97,
+            158
+          ]
+        ],
+        "valid_mask_pixels": 21,
+        "world_point_m": [
+          0.304449730700211,
+          1.0405920980969081,
+          2.141788922571519
+        ]
+      },
+      "world_point_m": [
+        0.304449730700211,
+        1.0405920980969081,
+        2.141788922571519
+      ]
+    },
+    {
+      "anchor_id": "a29329cd-2e82-5f52-a35f-e9d16c21e988",
+      "birth_frame": 0,
+      "category": "dining table",
+      "current_candidate_id": "a29329cd-2e82-5f52-a35f-e9d16c21e988",
+      "flow": {
+        "box_xyxy": [
+          0.0,
+          105.0,
+          320.0,
+          270.0
+        ],
+        "forward_backward_error_px": null,
+        "frame_index": 0,
+        "input_sha256": "2d2a049404937fd58159a398662a3acd9121a044874c4a72b1fcad79d84cf06d",
+        "status": "INITIALIZED_PIXEL_TRACK_NOT_WORLD_IDENTITY",
+        "surviving_points": 80
+      },
+      "flow_feature_ids": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23,
+        24,
+        25,
+        26,
+        27,
+        28,
+        29,
+        30,
+        31,
+        32,
+        33,
+        34,
+        35,
+        36,
+        37,
+        38,
+        39,
+        40,
+        41,
+        42,
+        43,
+        44,
+        45,
+        46,
+        47,
+        48,
+        49,
+        50,
+        51,
+        52,
+        53,
+        54,
+        55,
+        56,
+        57,
+        58,
+        59,
+        60,
+        61,
+        62,
+        63,
+        64,
+        65,
+        66,
+        67,
+        68,
+        69,
+        70,
+        71,
+        72,
+        73,
+        74,
+        75,
+        76,
+        77,
+        78,
+        79
+      ],
+      "flow_points_uv": [
+        [
+          138.0,
+          166.0
+        ],
+        [
+          217.0,
+          167.0
+        ],
+        [
+          123.0,
+          186.0
+        ],
+        [
+          313.0,
+          205.0
+        ],
+        [
+          229.0,
+          169.0
+        ],
+        [
+          85.0,
+          149.0
+        ],
+        [
+          133.0,
+          158.0
+        ],
+        [
+          132.0,
+          167.0
+        ],
+        [
+          235.0,
+          181.0
+        ],
+        [
+          76.0,
+          147.0
+        ],
+        [
+          225.0,
+          158.0
+        ],
+        [
+          71.0,
+          175.0
+        ],
+        [
+          206.0,
+          196.0
+        ],
+        [
+          134.0,
+          143.0
+        ],
+        [
+          274.0,
+          186.0
+        ],
+        [
+          207.0,
+          186.0
+        ],
+        [
+          141.0,
+          154.0
+        ],
+        [
+          152.0,
+          173.0
+        ],
+        [
+          205.0,
+          205.0
+        ],
+        [
+          144.0,
+          140.0
+        ],
+        [
+          234.0,
+          188.0
+        ],
+        [
+          278.0,
+          206.0
+        ],
+        [
+          231.0,
+          206.0
+        ],
+        [
+          132.0,
+          182.0
+        ],
+        [
+          316.0,
+          196.0
+        ],
+        [
+          230.0,
+          212.0
+        ],
+        [
+          281.0,
+          187.0
+        ],
+        [
+          233.0,
+          194.0
+        ],
+        [
+          232.0,
+          200.0
+        ],
+        [
+          75.0,
+          137.0
+        ],
+        [
+          57.0,
+          175.0
+        ],
+        [
+          59.0,
+          184.0
+        ],
+        [
+          96.0,
+          145.0
+        ],
+        [
+          234.0,
+          175.0
+        ],
+        [
+          81.0,
+          143.0
+        ],
+        [
+          31.0,
+          188.0
+        ],
+        [
+          305.0,
+          180.0
+        ],
+        [
+          122.0,
+          168.0
+        ],
+        [
+          129.0,
+          189.0
+        ],
+        [
+          77.0,
+          154.0
+        ],
+        [
+          289.0,
+          185.0
+        ],
+        [
+          107.0,
+          205.0
+        ],
+        [
+          316.0,
+          180.0
+        ],
+        [
+          208.0,
+          178.0
+        ],
+        [
+          95.0,
+          138.0
+        ],
+        [
+          299.0,
+          181.0
+        ],
+        [
+          205.0,
+          213.0
+        ],
+        [
+          210.0,
+          172.0
+        ],
+        [
+          160.0,
+          200.0
+        ],
+        [
+          228.0,
+          162.0
+        ],
+        [
+          122.0,
+          173.0
+        ],
+        [
+          217.0,
+          162.0
+        ],
+        [
+          34.0,
+          168.0
+        ],
+        [
+          153.0,
+          209.0
+        ],
+        [
+          44.0,
+          198.0
+        ],
+        [
+          157.0,
+          204.0
+        ],
+        [
+          37.0,
+          194.0
+        ],
+        [
+          163.0,
+          159.0
+        ],
+        [
+          139.0,
+          141.0
+        ],
+        [
+          28.0,
+          210.0
+        ],
+        [
+          123.0,
+          181.0
+        ],
+        [
+          24.0,
+          213.0
+        ],
+        [
+          160.0,
+          192.0
+        ],
+        [
+          138.0,
+          215.0
+        ],
+        [
+          97.0,
+          153.0
+        ],
+        [
+          15.0,
+          166.0
+        ],
+        [
+          130.0,
+          172.0
+        ],
+        [
+          128.0,
+          150.0
+        ],
+        [
+          159.0,
+          183.0
+        ],
+        [
+          4.0,
+          164.0
+        ],
+        [
+          30.0,
+          176.0
+        ],
+        [
+          146.0,
+          232.0
+        ],
+        [
+          224.0,
+          219.0
+        ],
+        [
+          170.0,
+          144.0
+        ],
+        [
+          13.0,
+          139.0
+        ],
+        [
+          280.0,
+          199.0
+        ],
+        [
+          43.0,
+          147.0
+        ],
+        [
+          107.0,
+          186.0
+        ],
+        [
+          51.0,
+          169.0
+        ],
+        [
+          27.0,
+          129.0
+        ]
+      ],
+      "identity_status": "UNRESOLVED",
+      "mask_support": [
+        {
+          "candidate_id": "a29329cd-2e82-5f52-a35f-e9d16c21e988",
+          "points_uv": [
+            [
+              4,
+              164
+            ],
+            [
+              13,
+              139
+            ],
+            [
+              15,
+              166
+            ],
+            [
+              24,
+              213
+            ],
+            [
+              27,
+              129
+            ],
+            [
+              28,
+              210
+            ],
+            [
+              30,
+              176
+            ],
+            [
+              31,
+              188
+            ],
+            [
+              34,
+              168
+            ],
+            [
+              37,
+              194
+            ],
+            [
+              43,
+              147
+            ],
+            [
+              44,
+              198
+            ],
+            [
+              51,
+              169
+            ],
+            [
+              57,
+              175
+            ],
+            [
+              59,
+              184
+            ],
+            [
+              71,
+              175
+            ],
+            [
+              75,
+              137
+            ],
+            [
+              76,
+              147
+            ],
+            [
+              77,
+              154
+            ],
+            [
+              81,
+              143
+            ],
+            [
+              85,
+              149
+            ],
+            [
+              95,
+              138
+            ],
+            [
+              96,
+              145
+            ],
+            [
+              97,
+              153
+            ],
+            [
+              107,
+              186
+            ],
+            [
+              107,
+              205
+            ],
+            [
+              122,
+              168
+            ],
+            [
+              122,
+              173
+            ],
+            [
+              123,
+              181
+            ],
+            [
+              123,
+              186
+            ],
+            [
+              128,
+              150
+            ],
+            [
+              129,
+              189
+            ],
+            [
+              130,
+              172
+            ],
+            [
+              132,
+              167
+            ],
+            [
+              132,
+              182
+            ],
+            [
+              133,
+              158
+            ],
+            [
+              134,
+              143
+            ],
+            [
+              138,
+              166
+            ],
+            [
+              138,
+              215
+            ],
+            [
+              139,
+              141
+            ],
+            [
+              141,
+              154
+            ],
+            [
+              144,
+              140
+            ],
+            [
+              146,
+              232
+            ],
+            [
+              152,
+              173
+            ],
+            [
+              153,
+              209
+            ],
+            [
+              157,
+              204
+            ],
+            [
+              159,
+              183
+            ],
+            [
+              160,
+              192
+            ],
+            [
+              160,
+              200
+            ],
+            [
+              163,
+              159
+            ],
+            [
+              170,
+              144
+            ],
+            [
+              205,
+              205
+            ],
+            [
+              205,
+              213
+            ],
+            [
+              206,
+              196
+            ],
+            [
+              207,
+              186
+            ],
+            [
+              208,
+              178
+            ],
+            [
+              210,
+              172
+            ],
+            [
+              217,
+              162
+            ],
+            [
+              217,
+              167
+            ],
+            [
+              224,
+              219
+            ],
+            [
+              225,
+              158
+            ],
+            [
+              228,
+              162
+            ],
+            [
+              229,
+              169
+            ],
+            [
+              230,
+              212
+            ],
+            [
+              231,
+              206
+            ],
+            [
+              232,
+              200
+            ],
+            [
+              233,
+              194
+            ],
+            [
+              234,
+              175
+            ],
+            [
+              234,
+              188
+            ],
+            [
+              235,
+              181
+            ],
+            [
+              274,
+              186
+            ],
+            [
+              278,
+              206
+            ],
+            [
+              280,
+              199
+            ],
+            [
+              281,
+              187
+            ],
+            [
+              289,
+              185
+            ],
+            [
+              299,
+              181
+            ],
+            [
+              305,
+              180
+            ],
+            [
+              313,
+              205
+            ],
+            [
+              316,
+              180
+            ],
+            [
+              316,
+              196
+            ]
+          ]
+        }
+      ],
+      "query_eligible": true,
+      "reidentification": null,
+      "selected_feature_ids": [
+        63
+      ],
+      "selected_pixel_uv": [
+        138,
+        215
+      ],
+      "status": "FLOW_AND_MASK_SUPPORTED",
+      "surface": {
+        "depth_m": 0.9360085129737854,
+        "mask_pixels": 32787,
+        "selected_mask_probability": 0.9924002289772034,
+        "selected_pixel_uv": [
+          138,
+          215
+        ],
+        "status": "SURFACE_CANDIDATE",
+        "support_uv": [
+          [
+            4,
+            164
+          ],
+          [
+            13,
+            139
+          ],
+          [
+            15,
+            166
+          ],
+          [
+            24,
+            213
+          ],
+          [
+            27,
+            129
+          ],
+          [
+            28,
+            210
+          ],
+          [
+            30,
+            176
+          ],
+          [
+            31,
+            188
+          ],
+          [
+            34,
+            168
+          ],
+          [
+            37,
+            194
+          ],
+          [
+            43,
+            147
+          ],
+          [
+            44,
+            198
+          ],
+          [
+            51,
+            169
+          ],
+          [
+            57,
+            175
+          ],
+          [
+            59,
+            184
+          ],
+          [
+            71,
+            175
+          ],
+          [
+            75,
+            137
+          ],
+          [
+            76,
+            147
+          ],
+          [
+            77,
+            154
+          ],
+          [
+            81,
+            143
+          ],
+          [
+            85,
+            149
+          ],
+          [
+            95,
+            138
+          ],
+          [
+            96,
+            145
+          ],
+          [
+            97,
+            153
+          ],
+          [
+            107,
+            186
+          ],
+          [
+            107,
+            205
+          ],
+          [
+            122,
+            168
+          ],
+          [
+            122,
+            173
+          ],
+          [
+            123,
+            181
+          ],
+          [
+            123,
+            186
+          ],
+          [
+            128,
+            150
+          ],
+          [
+            129,
+            189
+          ],
+          [
+            130,
+            172
+          ],
+          [
+            132,
+            167
+          ],
+          [
+            132,
+            182
+          ],
+          [
+            133,
+            158
+          ],
+          [
+            134,
+            143
+          ],
+          [
+            138,
+            166
+          ],
+          [
+            138,
+            215
+          ],
+          [
+            139,
+            141
+          ],
+          [
+            141,
+            154
+          ],
+          [
+            144,
+            140
+          ],
+          [
+            146,
+            232
+          ],
+          [
+            152,
+            173
+          ],
+          [
+            153,
+            209
+          ],
+          [
+            157,
+            204
+          ],
+          [
+            159,
+            183
+          ],
+          [
+            160,
+            192
+          ],
+          [
+            160,
+            200
+          ],
+          [
+            163,
+            159
+          ],
+          [
+            170,
+            144
+          ],
+          [
+            205,
+            205
+          ],
+          [
+            205,
+            213
+          ],
+          [
+            206,
+            196
+          ],
+          [
+            207,
+            186
+          ],
+          [
+            208,
+            178
+          ],
+          [
+            210,
+            172
+          ],
+          [
+            217,
+            162
+          ],
+          [
+            217,
+            167
+          ],
+          [
+            224,
+            219
+          ],
+          [
+            225,
+            158
+          ],
+          [
+            228,
+            162
+          ],
+          [
+            229,
+            169
+          ],
+          [
+            230,
+            212
+          ],
+          [
+            231,
+            206
+          ],
+          [
+            232,
+            200
+          ],
+          [
+            233,
+            194
+          ],
+          [
+            234,
+            175
+          ],
+          [
+            234,
+            188
+          ],
+          [
+            235,
+            181
+          ],
+          [
+            274,
+            186
+          ],
+          [
+            278,
+            206
+          ],
+          [
+            280,
+            199
+          ],
+          [
+            281,
+            187
+          ],
+          [
+            289,
+            185
+          ],
+          [
+            299,
+            181
+          ],
+          [
+            305,
+            180
+          ],
+          [
+            313,
+            205
+          ],
+          [
+            316,
+            180
+          ],
+          [
+            316,
+            196
+          ]
+        ],
+        "valid_mask_pixels": 80,
+        "world_point_m": [
+          0.5729558730002805,
+          0.9424889019265905,
+          2.4883074206151727
+        ]
+      },
+      "world_point_m": [
+        0.5729558730002805,
+        0.9424889019265905,
+        2.4883074206151727
+      ]
+    },
+    {
+      "anchor_id": "eb6da42e-37f3-51c2-b801-e6476b11a94b",
+      "birth_frame": 0,
+      "category": "bottle",
+      "current_candidate_id": "eb6da42e-37f3-51c2-b801-e6476b11a94b",
+      "flow": {
+        "box_xyxy": [
+          205.0,
+          150.0,
+          236.0,
+          223.0
+        ],
+        "forward_backward_error_px": null,
+        "frame_index": 0,
+        "input_sha256": "2d2a049404937fd58159a398662a3acd9121a044874c4a72b1fcad79d84cf06d",
+        "status": "INITIALIZED_PIXEL_TRACK_NOT_WORLD_IDENTITY",
+        "surviving_points": 16
+      },
+      "flow_feature_ids": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15
+      ],
+      "flow_points_uv": [
+        [
+          217.0,
+          167.0
+        ],
+        [
+          229.0,
+          169.0
+        ],
+        [
+          225.0,
+          158.0
+        ],
+        [
+          206.0,
+          196.0
+        ],
+        [
+          207.0,
+          186.0
+        ],
+        [
+          205.0,
+          205.0
+        ],
+        [
+          230.0,
+          212.0
+        ],
+        [
+          208.0,
+          178.0
+        ],
+        [
+          232.0,
+          182.0
+        ],
+        [
+          205.0,
+          213.0
+        ],
+        [
+          228.0,
+          162.0
+        ],
+        [
+          224.0,
+          219.0
+        ],
+        [
+          228.0,
+          153.0
+        ],
+        [
+          218.0,
+          173.0
+        ],
+        [
+          211.0,
+          219.0
+        ],
+        [
+          221.0,
+          177.0
+        ]
+      ],
+      "identity_status": "UNRESOLVED",
+      "mask_support": [
+        {
+          "candidate_id": "eb6da42e-37f3-51c2-b801-e6476b11a94b",
+          "points_uv": [
+            [
+              205,
+              205
+            ],
+            [
+              205,
+              213
+            ],
+            [
+              206,
+              196
+            ],
+            [
+              207,
+              186
+            ],
+            [
+              208,
+              178
+            ],
+            [
+              211,
+              219
+            ],
+            [
+              217,
+              167
+            ],
+            [
+              218,
+              173
+            ],
+            [
+              221,
+              177
+            ],
+            [
+              224,
+              219
+            ],
+            [
+              225,
+              158
+            ],
+            [
+              228,
+              153
+            ],
+            [
+              228,
+              162
+            ],
+            [
+              229,
+              169
+            ],
+            [
+              230,
+              212
+            ],
+            [
+              232,
+              182
+            ]
+          ]
+        }
+      ],
+      "query_eligible": true,
+      "reidentification": null,
+      "selected_feature_ids": [
+        13
+      ],
+      "selected_pixel_uv": [
+        218,
+        173
+      ],
+      "status": "FLOW_AND_MASK_SUPPORTED",
+      "surface": {
+        "depth_m": 0.8541516065597534,
+        "mask_pixels": 1495,
+        "selected_mask_probability": 0.9984164237976074,
+        "selected_pixel_uv": [
+          218,
+          173
+        ],
+        "status": "SURFACE_CANDIDATE",
+        "support_uv": [
+          [
+            205,
+            205
+          ],
+          [
+            205,
+            213
+          ],
+          [
+            206,
+            196
+          ],
+          [
+            207,
+            186
+          ],
+          [
+            208,
+            178
+          ],
+          [
+            211,
+            219
+          ],
+          [
+            217,
+            167
+          ],
+          [
+            218,
+            173
+          ],
+          [
+            221,
+            177
+          ],
+          [
+            224,
+            219
+          ],
+          [
+            225,
+            158
+          ],
+          [
+            228,
+            153
+          ],
+          [
+            228,
+            162
+          ],
+          [
+            229,
+            169
+          ],
+          [
+            230,
+            212
+          ],
+          [
+            232,
+            182
+          ]
+        ],
+        "valid_mask_pixels": 16,
+        "world_point_m": [
+          0.5051932632029038,
+          1.1105621769405551,
+          2.733311349321408
+        ]
+      },
+      "world_point_m": [
+        0.5051932632029038,
+        1.1105621769405551,
+        2.733311349321408
+      ]
+    }
+  ]
+}

@@ -1,3 +1,11 @@
+# A：匹配过渡死亡测试开工（2026-10-09）
+
+用户授权推进当前最优先步骤。电脑 A 从 PR99 交接头 `72d1741b05efc5198c162335d7ea123e991140f8` 建立独立分支 `codex/pc-a-matched-transition-death-test-20261009`，比较旧 `6e9c953a81e2fc072f4d079d7a19194b1324ea64` 与重识别实现 `a5385ddaf6724d2d346fc222866edc2b7ec9407c`。同一组新冻结 RGB-D、原生 masks、相机位姿和动作预算只采集/检测一次，两臂只读重放；SDK identity/AABB 仅离线评分。覆盖稳定、唯一恢复、歧义拒绝、晚生隔离、重复重放和完整伪造拒绝；自然未出现的过渡保留 NOT_OBSERVED，不换任务制造成功。[预声明计划](../reviews/pc_a/matched_transition_death_test_2026-10-09/PLAN.md)。
+
+本轮沿用严格未扩张 AABB、现有能量与 UNKNOWN 门，不选新阈值/先验/指标。通过后才进入完整 fixed/active/no-update 与 retain/withdraw 重采集矩阵；B 独立验收、几何误差和完整统一研究范围保持。当前为本地开工，尚无运行结果或推送交付。
+
+---
+
 # A交付：持续对象出生与保守重识别（2026-10-08）
 
 电脑A已在 `codex/pc-a-continuous-object-reid-20261008` 提交生产实现 `a5385ddaf6724d2d346fc222866edc2b7ec9407c`（base `6e9c953a81e2fc072f4d079d7a19194b1324ea64`），[草稿PR99](https://github.com/goneveitvet240-svg/cpswm/pull/99)已建立。[交付报告](../reviews/pc_a/continuous_object_reid_2026-10-08/REPORT.md)：晚生轨迹与首帧query隔离，丢失恢复复用既有开发能量并要求唯一一对一；合法、无候选、多候选、共享候选、晚生、回滚和依赖绑定路径已验证。17项核心及42项最终组合通过，5组相邻回归另有30通过/21依条件跳过；冻结公开输入只证明旧LOST行达到唯一门控，不等于任务收益。完整S1原始包缺失，15-run重放未完成。下一交接为B绑定该SHA独立验收；随后A在同任务/同预算重新运行fixed/active/no-update与retain/withdraw矩阵。共享集成不自动合并，几何AABB误差和完整统一研究范围不变。

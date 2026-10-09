@@ -1,3 +1,12 @@
+# A：匹配过渡死亡测试（2026-10-09 开工）
+
+- 分支 `codex/pc-a-matched-transition-death-test-20261009`，base/开工 SHA `72d1741b05efc5198c162335d7ea123e991140f8`；旧对照 `6e9c953a81e2fc072f4d079d7a19194b1324ea64`，候选生产实现 `a5385ddaf6724d2d346fc222866edc2b7ec9407c`。开工 fetch 已核对共享集成仍为 `19ddf26830348a2f0b33f0af54d6ba702c5cfb1c`。
+- 任务：一次采集并冻结 RGB-D、native masks、自位姿、动作账本与隔离 SDK 真值；旧/新两臂相同字节、相同动作预算重放，验证稳定、唯一恢复、歧义拒绝和晚生不劫持首帧 query。
+- 指标沿用用户已批准的身份＋未扩张三维 AABB 联合判据；现有能量、UNKNOWN 门和动作预算不改。完整伪造/乱序/遗漏与两次确定性重放必须覆盖，失败与 NOT_OBSERVED 保留。
+- 证据计划见 [PLAN](../reviews/pc_a/matched_transition_death_test_2026-10-09/PLAN.md)。当前尚无本轮生产代码、自然运行结果、B 验收或共享集成；原用户工作树和 STATUS_B 不改。
+
+---
+
 # A：持续对象出生与保守重识别已交付（2026-10-08）
 
 生产代码提交 `a5385ddaf6724d2d346fc222866edc2b7ec9407c`，分支 `codex/pc-a-continuous-object-reid-20261008`，base为PR98 head `6e9c953a81e2fc072f4d079d7a19194b1324ea64`；[草稿PR99](https://github.com/goneveitvet240-svg/cpswm/pull/99)已建立。[报告](../reviews/pc_a/continuous_object_reid_2026-10-08/REPORT.md)和[冻结门控证据](../reviews/pc_a/continuous_object_reid_2026-10-08/evidence/frozen-release-gate-replay.json)。晚出生新类别现在建立`query_eligible=false`的provisional track；LOST轨迹仅在既有外观—几何能量胜过UNKNOWN且锚点—候选唯一一对一时重初始化。无候选、多候选、多锚点共享、缺几何/流/mask支持继续输出UNKNOWN；没有新增阈值、先验、指标或AABB容差。

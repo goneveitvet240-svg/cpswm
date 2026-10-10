@@ -1,3 +1,13 @@
+# A进行中：三个流程已形成可执行实验，最终边界修复复测中（2026-10-10）
+
+分支 `codex/pc-a-object-memory-integration-20261010`；base `2b99bbd53bfdb622f171eca9572b58e8df67e6a6`。首次功能源码 `290f629531daa75b3f21939b60f018f83d5d778c`，当前修复源码 `d3e1d448261f0fef456aab4db32277cec6e6b938`。[计划](../reviews/pc_a/object_memory_integration_2026-10-10/PLAN.md)、[调整记录](../reviews/pc_a/object_memory_integration_2026-10-10/ADJUSTMENT.md)。
+
+接入原ViT-H-14特征、几何+视觉关联及点云融合，可选进入原owner；同前端普通来源记忆与CPSWM的3前缀/中间撤回读出相同，290f629冷启动状态一致、helper替换被拒、物理账本不变。原查询9槽仍联合6，无新增科学收益。加入同mask参考特征读点消除额外初始轨迹退化。16帧历史复查的5°第3帧发现rounded seed在mask外会崩溃；d3e1d44改为合法seed不足时UNKNOWN，不放宽输入门。
+
+当前在d3e1d44重新运行三臂19帧、hybrid真实owner/普通来源记忆、定向回归；最终结果尚待汇总。33项轻量检查、3文件mypy与Ruff已通过，完整全仓/B验收/共享集成未完成。新增物理动作0，语义为受控bootstrap。13个官方符号加适配器，不冒充完整ConceptGraphs系统或强系统死亡测试通过。完整研究范围保留。
+
+---
+
 # A开工：原版对象特征、匹配记忆对照和观测驱动调整（2026-10-10）
 
 用户明确授权推进三个流程。独立分支 `codex/pc-a-object-memory-integration-20261010`，base `2b99bbd53bfdb622f171eca9572b58e8df67e6a6`；[计划](../reviews/pc_a/object_memory_integration_2026-10-10/PLAN.md)。ConceptGraphs 官方算子已锁定，原 ViT-H-14/laion2b_s32b_b79k 权重下载完成。尚未产生本轮实验结果；完整生产验收/B复核/共享集成均未完成。此开工提交只包含源码来源与实验协议，不宣称代码完成。完整框架和其他工作树保留。

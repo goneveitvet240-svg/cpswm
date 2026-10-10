@@ -1,5 +1,7 @@
 # A交付：首个外部对象组件已运行，原查询收益为零（2026-10-10）
 
+[草稿 PR102](https://github.com/goneveitvet240-svg/cpswm/pull/102) 已建立并堆叠 PR101；报告与13个散列证据文件（13,597,153 bytes）提交 `84caf84bd4b7f95fe69cd17c5b0f0cc0e44412b6` 已推送。实际适配器仍为 `c642f4cfdde0359be762eaa15d9d7f2cd1b3b74d`，未合并。
+
 分支 `codex/pc-a-external-object-pilot-20261010`，base `ac1df559f36630cd7e587936f5d56e7dbf30ed14`，实际适配器源码 `c642f4cfdde0359be762eaa15d9d7f2cd1b3b74d`。[报告](../reviews/pc_a/external_object_pilot_2026-10-10/REPORT.md)、[复现](../reviews/pc_a/external_object_pilot_2026-10-10/COMMANDS.md)、[机器结果](../reviews/pc_a/external_object_pilot_2026-10-10/evidence/summary.json)。
 
 ConceptGraphs 官方最大点云簇函数已通过独立 Open3D worker 接入冻结 RGB-D 到只读表面报告的实验边界。四组同输入/查询/源动作预算均为身份7/9、位置6/9、联合6/9；过滤1272/114571点，未改变主对照选点，无查询收益。四组各重复一次逐字节一致，第二遍仅提供public目录；36评分独立算术复算一致，当前对照与上一轮记录完全一致。11定向检查及Ruff/提交钩子通过；未跑全仓/S1完整矩阵。

@@ -1,3 +1,9 @@
+# A交付回执：三流程证据已推送，PR103保持草稿（2026-10-10）
+
+报告、复现和45份散列证据提交 `7c266e23ef244616df86bd89a3d05a33365c4bd8` 已成功推送到 `codex/pc-a-object-memory-integration-20261010`。[PR103](https://github.com/goneveitvet240-svg/cpswm/pull/103) 已更新最终结果，未合并；实际工具源码仍 `9480c489a22036e1980a813eb83b28b5149d8c1f`。47定向检查、19帧三臂public-only重跑、312条算术复核、最终owner撤回/冷启动检查通过。原联合6/9和同前端记忆读出无净收益；历史几何39/80→hybrid47/80不等于身份/泛化收益。完整S1/全仓/B与共享集成待完成。
+
+---
+
 # A交付：三流程首轮完成，查询/记忆无净收益，历史几何局部改善（2026-10-10）
 
 [草稿 PR103](https://github.com/goneveitvet240-svg/cpswm/pull/103) 堆叠PR102，独立分支 `codex/pc-a-object-memory-integration-20261010`，base `2b99bbd53bfdb622f171eca9572b58e8df67e6a6`。生产src `d3e1d448261f0fef456aab4db32277cec6e6b938`，实际完整工具源码 `9480c489a22036e1980a813eb83b28b5149d8c1f`。[报告](../reviews/pc_a/object_memory_integration_2026-10-10/REPORT.md)、[复现](../reviews/pc_a/object_memory_integration_2026-10-10/COMMANDS.md)、[结果](../reviews/pc_a/object_memory_integration_2026-10-10/evidence/summary.json)。

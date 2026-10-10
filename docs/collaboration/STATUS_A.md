@@ -1,3 +1,13 @@
+# A交付：首个外部对象组件已运行，原查询收益为零（2026-10-10）
+
+分支 `codex/pc-a-external-object-pilot-20261010`，base `ac1df559f36630cd7e587936f5d56e7dbf30ed14`，实际适配器源码 `c642f4cfdde0359be762eaa15d9d7f2cd1b3b74d`。[报告](../reviews/pc_a/external_object_pilot_2026-10-10/REPORT.md)、[复现](../reviews/pc_a/external_object_pilot_2026-10-10/COMMANDS.md)、[机器结果](../reviews/pc_a/external_object_pilot_2026-10-10/evidence/summary.json)。
+
+ConceptGraphs 官方最大点云簇函数已通过独立 Open3D worker 接入冻结 RGB-D 到只读表面报告的实验边界。四组同输入/查询/源动作预算均为身份7/9、位置6/9、联合6/9；过滤1272/114571点，未改变主对照选点，无查询收益。四组各重复一次逐字节一致，第二遍仅提供public目录；36评分独立算术复算一致，当前对照与上一轮记录完全一致。11定向检查及Ruff/提交钩子通过；未跑全仓/S1完整矩阵。
+
+只是官方去噪组件，非完整ConceptGraphs/强系统基线；未接生产owner、记忆或新动作策略，生产src未改。两Python环境隔离兼容已落实。下一批应检验完整对象关联，以及同强前端下普通记忆和CPSWM的效用差异；新科学路线/面板仍交用户决定。B独立复核、PR审查和共享集成未完成，完整框架保持。
+
+---
+
 # A：外部对象组件接入试验开工（2026-10-10）
 
 用户授权接入已有组件并根据实测迭代。独立分支 `codex/pc-a-external-object-pilot-20261010`，base/生产源码 `ac1df559f36630cd7e587936f5d56e7dbf30ed14`。首次接入 ConceptGraphs 官方最大点云簇去噪函数，用现有冻结 RGB-D、同查询同动作预算和严格身份+AABB做四臂读出对照；不冒充完整外部系统/强基线/新主动策略。

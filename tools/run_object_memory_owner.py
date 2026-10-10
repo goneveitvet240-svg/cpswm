@@ -148,9 +148,16 @@ def run(args):
             reports(state, manifest["queries"], reference),
             reports(plain, manifest["queries"], reference),
         )
-        if frontend_records(state) != frontend_records(plain) or public_report(
-            ours
-        ) != public_report(baseline):
+        comparison = dict(
+            frontend_equal=content_sha256(frontend_records(state))
+            == content_sha256(frontend_records(plain)),
+            readout_equal=content_sha256(public_report(ours))
+            == content_sha256(public_report(baseline)),
+            raw_python_frontend_equal=frontend_records(state) == frontend_records(plain),
+            comparison_scope="canonical JSON; owner persistence normalizes tuples to lists",
+        )
+        save(args.output / f"comparison-{index}.json", comparison)
+        if not comparison["frontend_equal"] or not comparison["readout_equal"]:
             raise ValueError("same frontend / memory readout differs on normal replay")
         steps.append(
             dict(
@@ -209,9 +216,9 @@ def run(args):
         reports(state, manifest["queries"], reference),
         reports(plain, manifest["queries"], reference),
     )
-    if frontend_records(state) != frontend_records(plain) or public_report(after) != public_report(
-        baseline
-    ):
+    if content_sha256(frontend_records(state)) != content_sha256(
+        frontend_records(plain)
+    ) or content_sha256(public_report(after)) != content_sha256(public_report(baseline)):
         raise ValueError("ordinary source-aware rebuilding differs after same effective withdrawal")
     removed_ids = {
         str(r.envelope().identity.observation_id) for r in camera.deliveries[1].observations

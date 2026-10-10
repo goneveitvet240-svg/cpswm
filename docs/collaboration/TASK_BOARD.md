@@ -1,3 +1,11 @@
+# A交付回执：三项修复及反证/长期比较已推送（2026-10-11）
+
+[草稿PR105](https://github.com/goneveitvet240-svg/cpswm/pull/105) 已创建，堆叠PR104，未合并。生产/实验源码 `4419ab5bb095cf821b6f04241a95e838ac3bb608`，报告证据提交 `352e73258b4a5def5056417fe98eb303cffa8b7f` 已推送。[报告](../reviews/pc_a/grounding_readout_feedback_2026-10-11/REPORT.md)。交付前fetch确认集成19ddf26830348a2f0b33f0af54d6ba702c5cfb1c、上游fbe6277d545f98ac570f0ea44513a9b1ea2fbdd4、B fd4ca6ef5e81c90d7cf7987b42c0b2810d8a810a均未变。
+
+原查询仍6/9；真实碗移除确认深度来自背景，两个瓶子报告随移除撤回。32天受控配置9/94→94/94，但简单快基线同为94/94、长期提交全0。153项扩展通过与42/23项重叠补测、2574本地证据验算通过；两pinned checkpoints相关项跳过。完整机制独有收益、真实自然习惯纠正、人物校准、全仓/S1/B独立/共享集成未完成。完整框架及原工作树保留。
+
+---
+
 # A交付：三项修复与真实干预/32天对照（2026-10-11）
 
 独立分支 `codex/pc-a-grounding-readout-feedback-20261011`，base `fbe6277d545f98ac570f0ea44513a9b1ea2fbdd4`，生产/实验源码 `4419ab5bb095cf821b6f04241a95e838ac3bb608`。[报告](../reviews/pc_a/grounding_readout_feedback_2026-10-11/REPORT.md)、[复现](../reviews/pc_a/grounding_readout_feedback_2026-10-11/COMMANDS.md)。本节推送前为本地完成。

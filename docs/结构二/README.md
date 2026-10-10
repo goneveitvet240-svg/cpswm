@@ -1,3 +1,5 @@
+[三项修复草稿PR105](https://github.com/goneveitvet240-svg/cpswm/pull/105) 已推送，证据提交 `352e73258b4a5def5056417fe98eb303cffa8b7f`，未合并/B独立复核。
+
 2026-10-11：[三项修复与真实反证/32天对照](../reviews/pc_a/grounding_readout_feedback_2026-10-11/REPORT.md)，源码 `4419ab5bb095cf821b6f04241a95e838ac3bb608`。玻璃背景深度拒绝、当前v0.6读出与人物中性似然已接入。真实Unity移除确认碗深度完全不变，原查询仍6/9。受控32天旧9/94→两项修复94/94，但简单快基线同为94/94、长期提交全0；不构成完整机制科学收益。自然语义反证/人物校准/B/全仓/S1/共享集成未完成。下面历史结果不覆盖本轮边界。
 
 [双线诊断草稿PR104](https://github.com/goneveitvet240-svg/cpswm/pull/104) 已交付，证据提交 `7198f29c705bf583f436a721c70fda230aa4878c`，未合并/B复核。

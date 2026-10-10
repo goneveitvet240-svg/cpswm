@@ -1,3 +1,9 @@
+# A开工：原版对象特征、匹配记忆对照和观测驱动调整（2026-10-10）
+
+用户明确授权推进三个流程。独立分支 `codex/pc-a-object-memory-integration-20261010`，base `2b99bbd53bfdb622f171eca9572b58e8df67e6a6`；[计划](../reviews/pc_a/object_memory_integration_2026-10-10/PLAN.md)。ConceptGraphs 官方算子已锁定，原 ViT-H-14/laion2b_s32b_b79k 权重下载完成。尚未产生本轮实验结果；完整生产验收/B复核/共享集成均未完成。此开工提交只包含源码来源与实验协议，不宣称代码完成。完整框架和其他工作树保留。
+
+---
+
 # A交付：首个外部对象组件已运行，原查询收益为零（2026-10-10）
 
 [草稿 PR102](https://github.com/goneveitvet240-svg/cpswm/pull/102) 已建立并堆叠 PR101；报告与13个散列证据文件（13,597,153 bytes）提交 `84caf84bd4b7f95fe69cd17c5b0f0cc0e44412b6` 已推送。实际适配器仍为 `c642f4cfdde0359be762eaa15d9d7f2cd1b3b74d`，未合并。

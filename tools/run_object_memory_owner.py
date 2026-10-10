@@ -8,6 +8,7 @@ import argparse
 import base64
 import json
 import sqlite3
+import subprocess
 from datetime import timedelta
 from pathlib import Path
 
@@ -224,6 +225,8 @@ def run(args):
     save(args.output / "withdraw-state.json", state)
     result = dict(
         status="COMPLETED",
+        code_sha=subprocess.check_output(["git", "rev-parse", "HEAD"], text=True).strip(),
+        frontend_configuration=args.frontend,
         steps=steps,
         final_reports=final,
         withdrawn_action=str(removed),

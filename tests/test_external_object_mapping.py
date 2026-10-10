@@ -130,3 +130,17 @@ def test_reference_point_preserved_inside_a_matched_mixed_mask():
     assert result["tracks"][0]["selected_feature_ids"] == [10]
     reference["tracks"][0]["current_candidate_id"] = "conflicting-mask"
     assert reference_fallback(mapped, reference)["tracks"][0]["world_point_m"] == [1, 2, 3]
+
+
+def test_neighbor_pixel_geometry_does_not_authorize_an_outside_mask_seed():
+    import numpy as np
+
+    from cpswm.perception_mapping.mask_surface_sequence import _seedable_reference_features
+
+    mask = np.zeros((8, 8), dtype=bool)
+    mask[3, 1] = True
+    # Geometry can sample neighbor (1,3); tracker rounds this correspondence to (0,3).
+    outside = dict(feature_id=1, tracked_pixel_uv=[0.4, 3.0], pixel_uv=[1, 3])
+    inside = dict(feature_id=2, tracked_pixel_uv=[0.6, 3.0], pixel_uv=[1, 3])
+    assert _seedable_reference_features([outside, inside], mask) == [inside]
+    assert _seedable_reference_features([dict(tracked_pixel_uv=[-1.0, 3.0])], mask) == []

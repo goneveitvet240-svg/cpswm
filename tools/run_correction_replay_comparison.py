@@ -246,6 +246,34 @@ def run(output: Path, seed: int, *, ciav_outcome=CIAVOutcomeKind.DETECTED_DIFFER
         if e.evidence.event_time.date() in invalid_sources
     ]
     if not targets:
+        # Preserve the actual pre-intervention result; an empty correction is
+        # never counted as a successful retraction/replay comparison.
+        partial = {
+            "status": "NO_LEGAL_CORRECTION_TARGET",
+            "seed": seed,
+            "ciav_outcome": str(ciav_outcome),
+            "source_sha256": source,
+            "source_files": files,
+            "visible_case_sha256": content_sha256(probe.case),
+            "steps": steps,
+            "before": before,
+            "memory_ablation_before": soft_memory_baseline(probe, event_rows),
+            "targets": 0,
+            "correction_comparison_completed": False,
+            "strong_matched_baseline_completed": False,
+            "natural_closed_loop_completed": False,
+            "source_unchanged": all(
+                hashlib.sha256((ROOT / name).read_bytes()).hexdigest() == digest
+                for name, digest in files.items()
+            ),
+        }
+        (output / "comparison.json").write_text(json.dumps(partial, indent=2) + "\n")
+        (output / "semantic-input-journal.json").write_text(canonical_json(input_journal) + "\n")
+        (output / "traces.json").write_text(
+            json.dumps([t.model_dump(mode="json") for t in stream.execution_traces()], indent=2)
+            + "\n"
+        )
+        store.close()
         raise RuntimeError("no legal nonempty invalidation targets; comparison is not executed")
     target_sources = {e.evidence.event_time.date() for _, e in targets}
     invalid_days = tuple(

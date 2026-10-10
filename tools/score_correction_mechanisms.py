@@ -47,6 +47,27 @@ def score_case(result):
                 "observed_sources": len(step["state"]["observed_sources"]),
             }
         )
+    if result.get("status") == "NO_LEGAL_CORRECTION_TARGET":
+        return {
+            "seed": result["seed"],
+            "ciav_outcome": result["ciav_outcome"],
+            "truth_visible_binding_verified": True,
+            "rows": rows,
+            "production_correct": sum(x["production_correct"] for x in rows),
+            "soft_memory_correct": sum(x["soft_memory_correct"] for x in rows),
+            "actor_argmax_correct": sum(x["actor_argmax_correct"] for x in rows),
+            "decision_disagreements": sum(
+                x["production_choice"] != x["soft_memory_choice"] for x in rows
+            ),
+            "correction_status": "NO_LEGAL_CORRECTION_TARGET",
+            "correction_targets": 0,
+            "post_correction": None,
+            "before_committed": len(result["before"]["committed_sources"]),
+            "before_observed": len(result["before"]["observed_sources"]),
+            "recovery_equal": None,
+            "full_semantic_replay": None,
+            "scope": "Readout diagnostic only; no eligible correction, recovery or replay claim.",
+        }
     target = rows[-1]["true_habit_location"]
     post = {
         "production": result["after"],

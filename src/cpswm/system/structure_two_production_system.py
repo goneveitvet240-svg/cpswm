@@ -157,6 +157,7 @@ def _snapshot_adaptive_ciav_input(
         realizer=value.realizer,
         identity_switch_probability=float(value.identity_switch_probability),
         minimum_net_value=float(value.minimum_net_value),
+        actor_evidence_source_sha256=value.actor_evidence_source_sha256,
     )
 
 
@@ -1655,7 +1656,7 @@ class StructureTwoProductionSystem:
             actor_prior=primary_actor_prior,
             actor_likelihoods_by_outcome={
                 outcome: dict(values)
-                for outcome, values in ciav_input.actor_likelihoods_by_outcome.items()
+                for outcome, values in ciav_input.effective_actor_likelihoods.items()
             },
             location_keys=tuple(str(item) for item in self.core.locations),
             expected_detected_location_id=ciav_input.expected_detected_location_id,

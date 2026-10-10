@@ -89,8 +89,19 @@ def build(
     joint_producer=None,
     observation_decoder=None,
     ciav_outcome=CIAVOutcomeKind.DETECTED_DIFFERENT_LOCATION,
+    action_readout=None,
+    legacy_actor_fixture=False,
+    include_open_world_unknown_events=False,
 ):
-    probe = BackboneWiringProbe.build(seed=seed)
+    from dataclasses import replace
+
+    from cpswm.system.runtime_readout import current_action_readout
+
+    probe = BackboneWiringProbe.build(
+        seed=seed,
+        action_readout=action_readout if action_readout is not None else current_action_readout(),
+        include_open_world_unknown_events=include_open_world_unknown_events,
+    )
     producer = OracleProducer()
     store = ContinuousStateStore(
         output, source_identity=source, dependency_identity=content_sha256(sys.version)
@@ -105,6 +116,15 @@ def build(
             ciav = deepcopy(ciav_journal[key])
         else:
             ciav = probe.ciav_input(item.transition, outcome=ciav_outcome)
+            if legacy_actor_fixture:
+                # Deliberately invalid measurement assumption, retained only as
+                # an explicitly named controlled negative-control arm.
+                ciav = replace(
+                    ciav,
+                    actor_evidence_source_sha256=content_sha256(
+                        {"fixture": "legacy-owner-biased-no-actor-measurement", "source": source}
+                    ),
+                )
             if ciav_journal is not None:
                 ciav_journal[key] = deepcopy(ciav)
         return AdaptiveExecutionContext(

@@ -29,7 +29,7 @@ from cpswm.perception_mapping.unity_rgbd import decode_unity_rgbd
 from cpswm.perception_mapping.visual_target_tracking import InitializedPixelTargetTracker
 from cpswm.system.reproducibility import content_sha256
 
-PROFILE = "natural-mask-conservative-object-continuity@3"
+PROFILE = "natural-mask-conservative-object-continuity@4"
 MINIMUM_POINTS = 4  # Same minimum flow support as the existing public pixel tracker.
 
 
@@ -84,6 +84,9 @@ def _reference_feature_rows(
     reference_features: dict[int, tuple[float, float, float]],
 ) -> list[dict[str, Any]]:
     """Audit public RGB-D geometry for stable feature ids inside one candidate mask."""
+    from cpswm.perception_mapping.depth_validity import background_continuity
+
+    ambiguous, _ = background_continuity(depth, probability >= MASK_THRESHOLD)
     rows = []
     scale = float(appearance_geometry_association.CONFIG["geometry_scale_m"])
     for feature_id, (u_float, v_float) in zip(point_ids, points_uv, strict=True):
@@ -116,6 +119,10 @@ def _reference_feature_rows(
             if not 0 <= sample_u < camera.width or not 0 <= sample_v < camera.height:
                 continue
             if probability[sample_v, sample_u] < MASK_THRESHOLD:
+                continue
+            if ambiguous[sample_v, sample_u]:
+                # Background-continuous points cannot become geometric identity
+                # references even when another point on this mask is usable.
                 continue
             z = float(depth[sample_v, sample_u])
             if not np.isfinite(z) or not 0 < z < camera.far_plane_m - camera.near_plane_m:

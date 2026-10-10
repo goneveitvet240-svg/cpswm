@@ -131,7 +131,9 @@ def state_summary(stream):
 
 def run_case(output: Path, *, variant: str, source: str, days: int = 12) -> dict[str, Any]:
     output.mkdir(parents=True, exist_ok=False)
-    probe = BackboneWiringProbe.build(seed=7)
+    from cpswm.system.runtime_readout import current_action_readout
+
+    probe = BackboneWiringProbe.build(seed=7, action_readout=current_action_readout())
     producer = OracleProducer()
     dependencies = content_sha256({"python": sys.version, "numpy": np.__version__})
     store = ContinuousStateStore(

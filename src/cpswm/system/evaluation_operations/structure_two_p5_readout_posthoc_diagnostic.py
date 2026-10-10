@@ -55,7 +55,7 @@ from cpswm.system.evaluation_operations.structure_two_p5_three_arm_death_test im
 from cpswm.system.evaluation_operations.structure_two_p5_three_arm_death_test import (
     _load_config as _load_retained_config,
 )
-from cpswm.system.prototype_spine import ActionReadout, ActionReadoutConfig
+from cpswm.system.prototype_spine import ActionReadoutConfig
 from cpswm.system.reproducibility import content_sha256, content_uuid
 from cpswm.system.structure_two_adaptive_runtime import AdaptiveAuthorizationPolicy
 from cpswm.system.structure_two_production_system import (
@@ -116,16 +116,9 @@ def _semantic_metric(metric: _EpisodeMetric | Mapping[str, Any]) -> dict[str, An
 def selected_v0_6_action_readout() -> ActionReadoutConfig:
     """Return the exact validation-selected v0.6 readout already frozen in the repo."""
 
-    return ActionReadoutConfig(
-        readout=ActionReadout.DUAL_TIMESCALE_REVERSIBLE,
-        hybrid_alpha_weight=0.0,
-        fast_action_weight=0.7,
-        surviving_revision_weight=0.2,
-        regime_local_weight=0.1,
-        fast_owner_mass_floor=0.5,
-        owner_mass_floor=0.5,
-        recency_half_life=1.0,
-    )
+    from cpswm.system.runtime_readout import current_action_readout
+
+    return current_action_readout()
 
 
 class ReadoutCorrectedDirectP5LocationAdapter(DirectP5LocationAdapter):

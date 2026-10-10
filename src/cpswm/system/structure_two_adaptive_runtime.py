@@ -349,6 +349,9 @@ class AdaptiveCIAVRuntimeInput:
     realizer: Callable[[ObservationOpportunityRecord], RealizedCIAVObservation]
     identity_switch_probability: float = 0.0
     minimum_net_value: float = 0.0
+    # No actor-discriminating measurement means a neutral likelihood. This is
+    # a source commitment, not independent authentication or calibration.
+    actor_evidence_source_sha256: str | None = None
 
     def __post_init__(self) -> None:
         if not self.actions:
@@ -375,7 +378,30 @@ class AdaptiveCIAVRuntimeInput:
             raise ValueError("privacy_budget must be non-negative")
         if self.opportunity_time.tzinfo is None or self.opportunity_time.utcoffset() is None:
             raise ValueError("CIAV opportunity_time must be timezone-aware")
+        if self.actor_evidence_source_sha256 is not None and (
+            len(self.actor_evidence_source_sha256) != 64
+            or any(c not in "0123456789abcdef" for c in self.actor_evidence_source_sha256)
+        ):
+            raise ValueError("actor evidence requires a SHA256 source commitment")
+        for row in self.actor_likelihoods_by_outcome.values():
+            if not row or any(not isfinite(v) or not 0 <= v <= 1 for v in row.values()):
+                raise ValueError("actor likelihoods must be finite probabilities")
         _callable_source_binding(self.realizer)
+
+    @property
+    def effective_actor_likelihoods(self) -> dict[str, dict[str, float]]:
+        """Object presence alone cannot identify the actor who moved it.
+
+        Explicit actor sources remain caller-owned D0 evidence. A content hash
+        is not a certificate that the likelihoods are calibrated or truthful.
+        """
+        return {
+            outcome: {
+                actor: value if self.actor_evidence_source_sha256 is not None else 1.0
+                for actor, value in row.items()
+            }
+            for outcome, row in self.actor_likelihoods_by_outcome.items()
+        }
 
     @property
     def content_sha256(self) -> str:
@@ -412,6 +438,8 @@ class AdaptiveCIAVRuntimeInput:
                 "p_detect_given_visible": self.p_detect_given_visible,
                 "identity_switch_probability": self.identity_switch_probability,
                 "minimum_net_value": self.minimum_net_value,
+                "actor_evidence_source_sha256": self.actor_evidence_source_sha256,
+                "effective_actor_likelihoods": self.effective_actor_likelihoods,
                 "realizer_binding": realizer_binding,
             }
         )

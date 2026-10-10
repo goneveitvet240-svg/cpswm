@@ -60,13 +60,12 @@ def _run(outcome: CIAVOutcomeKind, **ciav):
 def test_layer_one_the_local_actor_posterior_is_an_exact_bayes_update(
     outcome: CIAVOutcomeKind,
 ) -> None:
-    probe, result, _, _ = _run(outcome, owner_likelihood=0.8)
+    _probe, result, _, _ = _run(outcome, owner_likelihood=0.8)
     assert result.ciav_receipt is not None
 
     prior = dict(result.primary_result.actor_posterior)
-    owner, guest = probe.case.owner_actor, probe.case.guest_actor
-    remainder = (1.0 - 0.8) / 2.0
-    likelihood = {owner: 0.8, guest: remainder, "unknown_actor": remainder}
+    # This fixture realizes object presence, not an actor measurement.
+    likelihood = dict.fromkeys(prior, 1.0)
     unnormalized = {actor: prior[actor] * likelihood[actor] for actor in prior}
     total = sum(unnormalized.values())
     expected = {actor: value / total for actor, value in unnormalized.items()}
@@ -266,7 +265,7 @@ def test_repeating_the_identical_ciav_execution_produces_no_second_factor() -> N
         actor_keys=tuple(actor for actor in transition.actor_prior if actor != "unknown_actor"),
         actor_prior=dict(result.primary_result.actor_posterior),
         actor_likelihoods_by_outcome={
-            outcome: dict(values) for outcome, values in ciav.actor_likelihoods_by_outcome.items()
+            outcome: dict(values) for outcome, values in ciav.effective_actor_likelihoods.items()
         },
         location_keys=tuple(str(item) for item in probe.system.core.locations),
         expected_detected_location_id=ciav.expected_detected_location_id,

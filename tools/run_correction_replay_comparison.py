@@ -81,7 +81,14 @@ def distance(a, b):
 
 
 def build(
-    output, *, seed, source, ciav_journal=None, joint_producer=None, observation_decoder=None
+    output,
+    *,
+    seed,
+    source,
+    ciav_journal=None,
+    joint_producer=None,
+    observation_decoder=None,
+    ciav_outcome=CIAVOutcomeKind.DETECTED_DIFFERENT_LOCATION,
 ):
     probe = BackboneWiringProbe.build(seed=seed)
     producer = OracleProducer()
@@ -97,9 +104,7 @@ def build(
         if ciav_journal is not None and key in ciav_journal:
             ciav = deepcopy(ciav_journal[key])
         else:
-            ciav = probe.ciav_input(
-                item.transition, outcome=CIAVOutcomeKind.DETECTED_DIFFERENT_LOCATION
-            )
+            ciav = probe.ciav_input(item.transition, outcome=ciav_outcome)
             if ciav_journal is not None:
                 ciav_journal[key] = deepcopy(ciav)
         return AdaptiveExecutionContext(
@@ -209,7 +214,7 @@ def event_key(event):
     )
 
 
-def run(output: Path, seed: int):
+def run(output: Path, seed: int, *, ciav_outcome=CIAVOutcomeKind.DETECTED_DIFFERENT_LOCATION):
     output.mkdir(parents=True, exist_ok=False)
     source, files = source_identity()
     # This runner also belongs to the execution identity.
@@ -221,9 +226,17 @@ def run(output: Path, seed: int):
     source = content_sha256(files)
     input_journal, ciav_journal = {}, {}
     probe, producer, stream, store, context = build(
-        output / "online.db", seed=seed, source=source, ciav_journal=ciav_journal
+        output / "online.db",
+        seed=seed,
+        source=source,
+        ciav_journal=ciav_journal,
+        ciav_outcome=ciav_outcome,
     )
     steps = ingest(probe, producer, stream, input_journal=input_journal)
+    for step in steps:
+        step["ciav_expected_location"] = str(
+            ciav_journal[step["primary_source"]].expected_detected_location_id
+        )
     before = summary(stream)
     event_rows = tuple(stream._system.core._observed_events.items())
     invalid_sources = {probe.observed_days()[i].after.detection_time.date() for i in range(7)}
@@ -332,6 +345,7 @@ def run(output: Path, seed: int):
     fresh_summary = summary(fresh)
     result = {
         "seed": seed,
+        "ciav_outcome": str(ciav_outcome),
         "track": "CONTROLLED_INVALIDATION_DEVELOPMENT_ONLY",
         "source_sha256": source,
         "source_files": files,
@@ -389,7 +403,7 @@ def run(output: Path, seed: int):
             key: {f.name: getattr(value, f.name) for f in fields(value) if f.name != "realizer"}
             for key, value in ciav_journal.items()
         },
-        "ciav_realizer": "test fixture deterministic DIFFERENT_LOCATION; source-bound runner",
+        "ciav_realizer": f"test fixture deterministic {ciav_outcome}; source-bound runner",
         "delayed_feedback": bundles,
     }
     (output / "semantic-input-journal.json").write_text(canonical_json(journal) + "\n")
@@ -414,8 +428,13 @@ if __name__ == "__main__":
     p = argparse.ArgumentParser(description=__doc__)
     p.add_argument("--output", type=Path, required=True)
     p.add_argument("--seed", type=int, default=7)
+    p.add_argument(
+        "--ciav-outcome",
+        choices=[str(x) for x in CIAVOutcomeKind],
+        default=str(CIAVOutcomeKind.DETECTED_DIFFERENT_LOCATION),
+    )
     a = p.parse_args()
-    r = run(a.output, a.seed)
+    r = run(a.output, a.seed, ciav_outcome=CIAVOutcomeKind(a.ciav_outcome))
     print(
         json.dumps(
             {

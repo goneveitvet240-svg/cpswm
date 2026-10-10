@@ -33,6 +33,8 @@ def score_case(result):
                 "day": truth.day,
                 "true_actor": truth.true_actor,
                 "true_habit_location": target,
+                "ciav_location_matches_scenario": step.get("ciav_expected_location")
+                == str(truth.true_location_after),
                 "production_choice": step["state"]["argmax"],
                 "soft_memory_choice": step["soft_memory"]["argmax"],
                 "production_correct": step["state"]["argmax"] == target,
@@ -53,6 +55,7 @@ def score_case(result):
     }
     return {
         "seed": result["seed"],
+        "ciav_outcome": result.get("ciav_outcome", "legacy_different_location"),
         "truth_visible_binding_verified": True,
         "rows": rows,
         "production_correct": sum(x["production_correct"] for x in rows),

@@ -75,6 +75,27 @@ def run(output, reference_root):
                     probe, tuple(core._observed_events.items())
                 )
                 readouts["soft_memory"]["choice"] = readouts["soft_memory"]["argmax"]
+                # Also give ordinary counts the *current* CIAV-revised actor
+                # masses, not only the earlier event.evidence actor posterior.
+                counts = dict.fromkeys(probe.case.locations, 1.0)
+                actor_events = []
+                for event in core._fast_action_events.values():
+                    counts[event.location_id] += event.owner_mass
+                    actor_events.append(
+                        {
+                            "time": event.evidence.event_time.isoformat(),
+                            "location": str(event.location_id),
+                            "current_owner_mass": event.owner_mass,
+                            "original_owner_mass": event.evidence.actor_posterior[
+                                probe.case.owner_actor
+                            ],
+                        }
+                    )
+                total = sum(counts.values())
+                readouts["soft_current_actor"] = {
+                    "distribution": {str(k): v / total for k, v in counts.items()},
+                    "choice": str(max(sorted(counts, key=str), key=counts.__getitem__)),
+                }
                 if summary(stream) != before:
                     raise RuntimeError("post-hoc readout mutated production state")
                 rows.append(
@@ -84,6 +105,7 @@ def run(output, reference_root):
                         "committed": len(core._committed_events),
                         "fast_events": len(core._fast_action_events),
                         "observed": len(core._observed_events),
+                        "current_actor_events": actor_events,
                         "primary_conclusion": str(
                             receipt.result.primary_result.decision.conclusion
                         ),

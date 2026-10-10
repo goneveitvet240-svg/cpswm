@@ -1,3 +1,15 @@
+# A交付：三流程首轮完成，查询/记忆无净收益，历史几何局部改善（2026-10-10）
+
+[草稿 PR103](https://github.com/goneveitvet240-svg/cpswm/pull/103) 堆叠PR102，独立分支 `codex/pc-a-object-memory-integration-20261010`，base `2b99bbd53bfdb622f171eca9572b58e8df67e6a6`。生产src `d3e1d448261f0fef456aab4db32277cec6e6b938`，实际完整工具源码 `9480c489a22036e1980a813eb83b28b5149d8c1f`。[报告](../reviews/pc_a/object_memory_integration_2026-10-10/REPORT.md)、[复现](../reviews/pc_a/object_memory_integration_2026-10-10/COMMANDS.md)、[结果](../reviews/pc_a/object_memory_integration_2026-10-10/evidence/summary.json)。
+
+已实际接入原OpenCLIP ViT-H-14＋ConceptGraphs 13个官方函数/类的对象匹配/融合，可选进入现有owner；并非完整作者系统复现。原9查询当前/CG/hybrid均身份7、位置6、联合6，额外相同初始身份轨迹10/15→7/15→10/15。历史16帧AABB几何当前39/80、CG51/80、hybrid47/80；缺少instance masks且同屋开发暴露，不报身份联合或泛化收益。Bowl0/16未解决。
+
+普通来源记忆与CPSWM共享同一前端、原始历史及撤回信息；最终hybrid三前缀和中间来源撤回后规范读出相同，来源3→2、账本仍3，冷启动完整state相等、运行期helper篡改拒绝。新物理动作0、语义受控。修复混合mask内参考点被替换的退化、rounded seed在mask外导致的崩溃、重复4GB权重散列开销及tuple/list对照误报。未微调模型。
+
+47定向检查、Ruff、3文件mypy、312条独立算术复核通过；public-only新worker重复19帧三臂，9组逐步payload完全一致。封存45个清单约束证据文件30,534,160 bytes，含SQLite/检查点/交付原件。owner检查477秒，尚非实时。完整S1/全仓/完整伪造状态机矩阵、B独立复核与共享集成未完成；PR保持draft、主收益门未过、完整框架保留。本节提交推送前结果为本地完成。
+
+---
+
 # A进行中：三个流程已形成可执行实验，最终边界修复复测中（2026-10-10）
 
 分支 `codex/pc-a-object-memory-integration-20261010`；base `2b99bbd53bfdb622f171eca9572b58e8df67e6a6`。首次功能源码 `290f629531daa75b3f21939b60f018f83d5d778c`，当前修复源码 `d3e1d448261f0fef456aab4db32277cec6e6b938`。[计划](../reviews/pc_a/object_memory_integration_2026-10-10/PLAN.md)、[调整记录](../reviews/pc_a/object_memory_integration_2026-10-10/ADJUSTMENT.md)。

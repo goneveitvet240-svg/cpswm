@@ -1,0 +1,642 @@
+{
+  "anchor_truth": {
+    "23f1948b-49c5-566c-8be1-f17f2694a8df": "Kettle|surface|2|5",
+    "69b010aa-e71a-5e08-823a-3e7448ac845f": "Bowl|surface|2|11",
+    "6cea16c9-03ba-5a17-afea-812c8e640ce3": "WineBottle|surface|2|8",
+    "a29329cd-2e82-5f52-a35f-e9d16c21e988": "CounterTop|2|0",
+    "eb6da42e-37f3-51c2-b801-e6476b11a94b": "SoapBottle|surface|2|14"
+  },
+  "arm": "iou",
+  "control": null,
+  "identity_correct": 7,
+  "joint_success": 6,
+  "manifest_sha256": "5a421a8abda3bafc5933fc3e6262dc22444e10eabdaa3353243b18f37b156d7e",
+  "position_correct": 6,
+  "replay_sha256": "69bd16fff676afb1f3e5d7796e82343c44467b3c1afdccdc809296337882a1bc",
+  "rows": [
+    {
+      "query": {
+        "category": "bottle",
+        "ordinal": 0
+      },
+      "report": {
+        "action_id": "5104ae2a-9b0c-4ea9-a59d-8a4fcee7076a",
+        "anchor_id": "6cea16c9-03ba-5a17-afea-812c8e640ce3",
+        "category": "bottle",
+        "feature_ids": [],
+        "observation_ids": [
+          "bafff440-d3bf-497e-ad16-0645f05f8422",
+          "e2458bc6-ed62-4330-970f-d0521a46bd1b",
+          "401cc212-5618-49a6-b24e-2759f2ddab1e"
+        ],
+        "ordinal": 0,
+        "reason": "CG_MATCHED_CURRENT",
+        "reference_action": "5104ae2a-9b0c-4ea9-a59d-8a4fcee7076a",
+        "scene_id": "5909afb2274525115543e6ae278648d3fd0c72c2b36992ef790274ea65531db0",
+        "selected_pixel_uv": [
+          80,
+          130
+        ],
+        "source_view_sha256": "95b96b4a784871134a4ffec22bf23ff8453b343351abc6067953a75d9db7b092",
+        "status": "reported",
+        "temporal_scope": "last_effective_capture_only",
+        "valid_at": "2026-10-09T04:09:43.293601Z",
+        "world_point_m": [
+          0.3043709102381733,
+          1.102054636765525,
+          2.1467447860424858
+        ]
+      },
+      "score": {
+        "identity_correct": true,
+        "joint_success": true,
+        "position_correct": true,
+        "reason": "evaluated",
+        "report_sha256": "926a91b822a1dfa6b42332a7c2d00a4e0747de749a507618c29617d36b77c173",
+        "task_sha256": "94b687eeb49902605de7ee33b42c18db49afce0d6fd2e7a185c9bbc8ddc5abf4",
+        "truth_sha256": "c438fa8316d3330184f7ae62e00ed58758d2a404083689b72bf5112fd0ac9454"
+      },
+      "step_index": 0,
+      "target_instance_id": "WineBottle|surface|2|8"
+    },
+    {
+      "query": {
+        "category": "bottle",
+        "ordinal": 1
+      },
+      "report": {
+        "action_id": "5104ae2a-9b0c-4ea9-a59d-8a4fcee7076a",
+        "anchor_id": "eb6da42e-37f3-51c2-b801-e6476b11a94b",
+        "category": "bottle",
+        "feature_ids": [],
+        "observation_ids": [
+          "bafff440-d3bf-497e-ad16-0645f05f8422",
+          "e2458bc6-ed62-4330-970f-d0521a46bd1b",
+          "401cc212-5618-49a6-b24e-2759f2ddab1e"
+        ],
+        "ordinal": 1,
+        "reason": "CG_MATCHED_CURRENT",
+        "reference_action": "5104ae2a-9b0c-4ea9-a59d-8a4fcee7076a",
+        "scene_id": "5909afb2274525115543e6ae278648d3fd0c72c2b36992ef790274ea65531db0",
+        "selected_pixel_uv": [
+          222,
+          167
+        ],
+        "source_view_sha256": "95b96b4a784871134a4ffec22bf23ff8453b343351abc6067953a75d9db7b092",
+        "status": "reported",
+        "temporal_scope": "last_effective_capture_only",
+        "valid_at": "2026-10-09T04:09:43.293601Z",
+        "world_point_m": [
+          0.5038611680342074,
+          1.1330991033661824,
+          2.742908974110538
+        ]
+      },
+      "score": {
+        "identity_correct": true,
+        "joint_success": true,
+        "position_correct": true,
+        "reason": "evaluated",
+        "report_sha256": "cb91626a56f63808323c85f5d4c715093e1c204a8b5253b35410cc3888ad2002",
+        "task_sha256": "d35ddbe8f479c05ddabebae57c091a6a0f02770f787706f173ad40d2558efdd8",
+        "truth_sha256": "5f7459fea20737d42c0ef7d62c997a25d7e21c9e176e638a2c7c657c3418e368"
+      },
+      "step_index": 0,
+      "target_instance_id": "SoapBottle|surface|2|14"
+    },
+    {
+      "query": {
+        "category": "bowl",
+        "ordinal": 0
+      },
+      "report": {
+        "action_id": "5104ae2a-9b0c-4ea9-a59d-8a4fcee7076a",
+        "anchor_id": "69b010aa-e71a-5e08-823a-3e7448ac845f",
+        "category": "bowl",
+        "feature_ids": [],
+        "observation_ids": [
+          "bafff440-d3bf-497e-ad16-0645f05f8422",
+          "e2458bc6-ed62-4330-970f-d0521a46bd1b",
+          "401cc212-5618-49a6-b24e-2759f2ddab1e"
+        ],
+        "ordinal": 0,
+        "reason": "CG_MATCHED_CURRENT",
+        "reference_action": "5104ae2a-9b0c-4ea9-a59d-8a4fcee7076a",
+        "scene_id": "5909afb2274525115543e6ae278648d3fd0c72c2b36992ef790274ea65531db0",
+        "selected_pixel_uv": [
+          159,
+          162
+        ],
+        "source_view_sha256": "95b96b4a784871134a4ffec22bf23ff8453b343351abc6067953a75d9db7b092",
+        "status": "reported",
+        "temporal_scope": "last_effective_capture_only",
+        "valid_at": "2026-10-09T04:09:43.293601Z",
+        "world_point_m": [
+          0.20186492373909815,
+          0.9360322172875102,
+          2.4620762535189904
+        ]
+      },
+      "score": {
+        "identity_correct": true,
+        "joint_success": false,
+        "position_correct": false,
+        "reason": "evaluated",
+        "report_sha256": "4cae2e9190929625b27373f05f4e2059d3f3730e1c2f4fe1d2f6256780edfcc0",
+        "task_sha256": "78b347dede927656a284079503f2d9ba3a70b285e1ef23df98f8dc8929ccb626",
+        "truth_sha256": "51f7226f598d677f5935d7bf8e6845ebdfef92b15465b8d0ce904d018f267ac6"
+      },
+      "step_index": 0,
+      "target_instance_id": "Bowl|surface|2|11"
+    },
+    {
+      "query": {
+        "category": "bottle",
+        "ordinal": 0
+      },
+      "report": {
+        "action_id": "6477c186-6a48-4f36-bcd0-b7032f0b58b5",
+        "anchor_id": "6cea16c9-03ba-5a17-afea-812c8e640ce3",
+        "category": "bottle",
+        "feature_ids": [],
+        "observation_ids": [
+          "cc853f0c-d644-41d0-be8e-f84c3d6ad4dd",
+          "1ee53319-9eef-4b4e-bafd-bdef7c42ddeb",
+          "dae00dc8-6385-431e-b0d5-6d7ce608599e"
+        ],
+        "ordinal": 0,
+        "reason": "CG_MATCHED_CURRENT",
+        "reference_action": "5104ae2a-9b0c-4ea9-a59d-8a4fcee7076a",
+        "scene_id": "5909afb2274525115543e6ae278648d3fd0c72c2b36992ef790274ea65531db0",
+        "selected_pixel_uv": [
+          56,
+          133
+        ],
+        "source_view_sha256": "a5640ed8b0261878f41c45190f476422a783a8f2ac4750d5919cf2ff02a51db4",
+        "status": "reported",
+        "temporal_scope": "last_effective_capture_only",
+        "valid_at": "2026-10-09T04:09:45.270046Z",
+        "world_point_m": [
+          0.30383634409772586,
+          1.1033290993335734,
+          2.1487724684585863
+        ]
+      },
+      "score": {
+        "identity_correct": true,
+        "joint_success": true,
+        "position_correct": true,
+        "reason": "evaluated",
+        "report_sha256": "71ec550e9209fde2696bb827f2dbdb8d8985a706f127e9156c4af20afcc9e1f4",
+        "task_sha256": "fcf8b253f2209d7e5da9d7703312652394792a9f0623ecf0c9cf20193513556a",
+        "truth_sha256": "a2a1bd826b3c03bb1912e5523dee82a66ae5587457ac97cf55bd4c36741d3e4d"
+      },
+      "step_index": 1,
+      "target_instance_id": "WineBottle|surface|2|8"
+    },
+    {
+      "query": {
+        "category": "bottle",
+        "ordinal": 1
+      },
+      "report": {
+        "action_id": "6477c186-6a48-4f36-bcd0-b7032f0b58b5",
+        "anchor_id": "eb6da42e-37f3-51c2-b801-e6476b11a94b",
+        "category": "bottle",
+        "feature_ids": [],
+        "observation_ids": [
+          "cc853f0c-d644-41d0-be8e-f84c3d6ad4dd",
+          "1ee53319-9eef-4b4e-bafd-bdef7c42ddeb",
+          "dae00dc8-6385-431e-b0d5-6d7ce608599e"
+        ],
+        "ordinal": 1,
+        "reason": "CG_MATCHED_CURRENT",
+        "reference_action": "5104ae2a-9b0c-4ea9-a59d-8a4fcee7076a",
+        "scene_id": "5909afb2274525115543e6ae278648d3fd0c72c2b36992ef790274ea65531db0",
+        "selected_pixel_uv": [
+          198,
+          191
+        ],
+        "source_view_sha256": "a5640ed8b0261878f41c45190f476422a783a8f2ac4750d5919cf2ff02a51db4",
+        "status": "reported",
+        "temporal_scope": "last_effective_capture_only",
+        "valid_at": "2026-10-09T04:09:45.270046Z",
+        "world_point_m": [
+          0.5271549592749405,
+          1.0491234003861316,
+          2.742019201750778
+        ]
+      },
+      "score": {
+        "identity_correct": true,
+        "joint_success": true,
+        "position_correct": true,
+        "reason": "evaluated",
+        "report_sha256": "addb4a747556a78f740479e009b37c171c1dab96f4fa865a61fa5da5a422be9e",
+        "task_sha256": "142c2854c23872abe6a738c71fb5075b239f712ce14843df830556cf0c89dae4",
+        "truth_sha256": "9abe0ef6486900511eafce7f5badb434c26201cb1f72a534599f2be1656de7eb"
+      },
+      "step_index": 1,
+      "target_instance_id": "SoapBottle|surface|2|14"
+    },
+    {
+      "query": {
+        "category": "bowl",
+        "ordinal": 0
+      },
+      "report": {
+        "action_id": null,
+        "anchor_id": null,
+        "category": "bowl",
+        "observation_ids": [],
+        "ordinal": 0,
+        "reason": "CG_NOT_OBSERVED_CURRENT",
+        "reference_action": "5104ae2a-9b0c-4ea9-a59d-8a4fcee7076a",
+        "scene_id": null,
+        "selected_pixel_uv": null,
+        "source_view_sha256": "a5640ed8b0261878f41c45190f476422a783a8f2ac4750d5919cf2ff02a51db4",
+        "status": "unknown",
+        "temporal_scope": "last_effective_capture_only",
+        "valid_at": null,
+        "world_point_m": null
+      },
+      "score": {
+        "identity_correct": false,
+        "joint_success": false,
+        "position_correct": false,
+        "reason": "CG_NOT_OBSERVED_CURRENT",
+        "report_sha256": "c6923276acef757de430a990eecb5840c5b4c7526ad2ab6e8499727dc80d43b7",
+        "task_sha256": "838554246c7c10c0c6cd4d49fd6bf7594824c9acf4859dda1794d033233121ce",
+        "truth_sha256": "b2cac085a6bbb52733168508c0490a14a4fef9c4d7350a471f97424b13887e44"
+      },
+      "step_index": 1,
+      "target_instance_id": "Bowl|surface|2|11"
+    },
+    {
+      "query": {
+        "category": "bottle",
+        "ordinal": 0
+      },
+      "report": {
+        "action_id": "ef5571bb-79c3-4340-864b-14f2f96106ee",
+        "anchor_id": "6cea16c9-03ba-5a17-afea-812c8e640ce3",
+        "category": "bottle",
+        "feature_ids": [],
+        "observation_ids": [
+          "24cf9c63-2769-4efd-b3b0-7aebbfba0035",
+          "44883f42-8eaf-4834-9b12-55713f27ad9b",
+          "62ce7e46-2650-4814-b253-49d3a8acc77c"
+        ],
+        "ordinal": 0,
+        "reason": "CG_MATCHED_CURRENT",
+        "reference_action": "5104ae2a-9b0c-4ea9-a59d-8a4fcee7076a",
+        "scene_id": "5909afb2274525115543e6ae278648d3fd0c72c2b36992ef790274ea65531db0",
+        "selected_pixel_uv": [
+          27,
+          123
+        ],
+        "source_view_sha256": "bd496dc6c181adb2c7850c74e99fdfae3165949651335cbcd4cabcc8314b0c1c",
+        "status": "reported",
+        "temporal_scope": "last_effective_capture_only",
+        "valid_at": "2026-10-09T04:09:46.991699Z",
+        "world_point_m": [
+          0.2913500122337196,
+          1.158728213328001,
+          2.1424953232066852
+        ]
+      },
+      "score": {
+        "identity_correct": true,
+        "joint_success": true,
+        "position_correct": true,
+        "reason": "evaluated",
+        "report_sha256": "26ffc229fef435a53174d8db00ae9fdbd8b90ac98813e50f01afac1996d42f01",
+        "task_sha256": "44a13b46b4bffd44949a1afbaea916a922d9c3715d824e3690ec2f0f3746fb23",
+        "truth_sha256": "bcd4e1767798a5220f16a888e49d786acafbc685c41ad5774e7b5f7da013786f"
+      },
+      "step_index": 2,
+      "target_instance_id": "WineBottle|surface|2|8"
+    },
+    {
+      "query": {
+        "category": "bottle",
+        "ordinal": 1
+      },
+      "report": {
+        "action_id": "ef5571bb-79c3-4340-864b-14f2f96106ee",
+        "anchor_id": "eb6da42e-37f3-51c2-b801-e6476b11a94b",
+        "category": "bottle",
+        "feature_ids": [],
+        "observation_ids": [
+          "24cf9c63-2769-4efd-b3b0-7aebbfba0035",
+          "44883f42-8eaf-4834-9b12-55713f27ad9b",
+          "62ce7e46-2650-4814-b253-49d3a8acc77c"
+        ],
+        "ordinal": 1,
+        "reason": "CG_MATCHED_CURRENT",
+        "reference_action": "5104ae2a-9b0c-4ea9-a59d-8a4fcee7076a",
+        "scene_id": "5909afb2274525115543e6ae278648d3fd0c72c2b36992ef790274ea65531db0",
+        "selected_pixel_uv": [
+          177,
+          178
+        ],
+        "source_view_sha256": "bd496dc6c181adb2c7850c74e99fdfae3165949651335cbcd4cabcc8314b0c1c",
+        "status": "reported",
+        "temporal_scope": "last_effective_capture_only",
+        "valid_at": "2026-10-09T04:09:46.991699Z",
+        "world_point_m": [
+          0.5230362147535833,
+          1.0903494144043684,
+          2.7368645787069186
+        ]
+      },
+      "score": {
+        "identity_correct": true,
+        "joint_success": true,
+        "position_correct": true,
+        "reason": "evaluated",
+        "report_sha256": "3a3d5265803526ec6009e040dd77d3e1e04526cd6d59f40f42bd1774389e3629",
+        "task_sha256": "6b0ce2ec50c3c895878f30e8c4f9298be30bddd5930eb9d1e134d68e1d067f08",
+        "truth_sha256": "a87c7ac83f968144670e72f441ab4832950edac2b578ce4e2d950a4cd38082fd"
+      },
+      "step_index": 2,
+      "target_instance_id": "SoapBottle|surface|2|14"
+    },
+    {
+      "query": {
+        "category": "bowl",
+        "ordinal": 0
+      },
+      "report": {
+        "action_id": null,
+        "anchor_id": null,
+        "category": "bowl",
+        "observation_ids": [],
+        "ordinal": 0,
+        "reason": "CG_NOT_OBSERVED_CURRENT",
+        "reference_action": "5104ae2a-9b0c-4ea9-a59d-8a4fcee7076a",
+        "scene_id": null,
+        "selected_pixel_uv": null,
+        "source_view_sha256": "bd496dc6c181adb2c7850c74e99fdfae3165949651335cbcd4cabcc8314b0c1c",
+        "status": "unknown",
+        "temporal_scope": "last_effective_capture_only",
+        "valid_at": null,
+        "world_point_m": null
+      },
+      "score": {
+        "identity_correct": false,
+        "joint_success": false,
+        "position_correct": false,
+        "reason": "CG_NOT_OBSERVED_CURRENT",
+        "report_sha256": "1153062f37a14ef0ab283d6acbd9e29ba5e5a1b3495fd96d75a5f8d2f1e4f8cd",
+        "task_sha256": "e35ff1048176cfc40581dc4d1ba5f1ae4671283f73aa2e0d06d5ff6ddf9aab67",
+        "truth_sha256": "cb4b789eaf2d186f532b4596842854ae83ee9d18958dd9d7542fbbbb7555654c"
+      },
+      "step_index": 2,
+      "target_instance_id": "Bowl|surface|2|11"
+    }
+  ],
+  "schema": "cpswm-matched-transition-death-test@1",
+  "status": "EVALUATED",
+  "task_slots": 9,
+  "track_rows": [
+    {
+      "anchor_id": "23f1948b-49c5-566c-8be1-f17f2694a8df",
+      "birth_frame": 0,
+      "expected_instance_id": "Kettle|surface|2|5",
+      "identity_correct": true,
+      "identity_status": "PROVISIONAL",
+      "joint_success": true,
+      "position_correct": true,
+      "query_eligible": true,
+      "reidentification": null,
+      "reported_instance_id": "Kettle|surface|2|5",
+      "status": "CG_MATCHED_CURRENT",
+      "step_index": 0
+    },
+    {
+      "anchor_id": "69b010aa-e71a-5e08-823a-3e7448ac845f",
+      "birth_frame": 0,
+      "expected_instance_id": "Bowl|surface|2|11",
+      "identity_correct": true,
+      "identity_status": "PROVISIONAL",
+      "joint_success": false,
+      "position_correct": false,
+      "query_eligible": true,
+      "reidentification": null,
+      "reported_instance_id": "Bowl|surface|2|11",
+      "status": "CG_MATCHED_CURRENT",
+      "step_index": 0
+    },
+    {
+      "anchor_id": "6cea16c9-03ba-5a17-afea-812c8e640ce3",
+      "birth_frame": 0,
+      "expected_instance_id": "WineBottle|surface|2|8",
+      "identity_correct": true,
+      "identity_status": "PROVISIONAL",
+      "joint_success": true,
+      "position_correct": true,
+      "query_eligible": true,
+      "reidentification": null,
+      "reported_instance_id": "WineBottle|surface|2|8",
+      "status": "CG_MATCHED_CURRENT",
+      "step_index": 0
+    },
+    {
+      "anchor_id": "a29329cd-2e82-5f52-a35f-e9d16c21e988",
+      "birth_frame": 0,
+      "expected_instance_id": "CounterTop|2|0",
+      "identity_correct": true,
+      "identity_status": "PROVISIONAL",
+      "joint_success": true,
+      "position_correct": true,
+      "query_eligible": true,
+      "reidentification": null,
+      "reported_instance_id": "CounterTop|2|0",
+      "status": "CG_MATCHED_CURRENT",
+      "step_index": 0
+    },
+    {
+      "anchor_id": "eb6da42e-37f3-51c2-b801-e6476b11a94b",
+      "birth_frame": 0,
+      "expected_instance_id": "SoapBottle|surface|2|14",
+      "identity_correct": true,
+      "identity_status": "PROVISIONAL",
+      "joint_success": true,
+      "position_correct": true,
+      "query_eligible": true,
+      "reidentification": null,
+      "reported_instance_id": "SoapBottle|surface|2|14",
+      "status": "CG_MATCHED_CURRENT",
+      "step_index": 0
+    },
+    {
+      "anchor_id": "23f1948b-49c5-566c-8be1-f17f2694a8df",
+      "birth_frame": 0,
+      "expected_instance_id": "Kettle|surface|2|5",
+      "identity_correct": null,
+      "identity_status": "PROVISIONAL",
+      "joint_success": null,
+      "position_correct": null,
+      "query_eligible": true,
+      "reidentification": null,
+      "reported_instance_id": null,
+      "status": "CG_NOT_OBSERVED_CURRENT",
+      "step_index": 1
+    },
+    {
+      "anchor_id": "69b010aa-e71a-5e08-823a-3e7448ac845f",
+      "birth_frame": 0,
+      "expected_instance_id": "Bowl|surface|2|11",
+      "identity_correct": null,
+      "identity_status": "PROVISIONAL",
+      "joint_success": null,
+      "position_correct": null,
+      "query_eligible": true,
+      "reidentification": null,
+      "reported_instance_id": null,
+      "status": "CG_NOT_OBSERVED_CURRENT",
+      "step_index": 1
+    },
+    {
+      "anchor_id": "6cea16c9-03ba-5a17-afea-812c8e640ce3",
+      "birth_frame": 0,
+      "expected_instance_id": "WineBottle|surface|2|8",
+      "identity_correct": true,
+      "identity_status": "PROVISIONAL",
+      "joint_success": true,
+      "position_correct": true,
+      "query_eligible": true,
+      "reidentification": null,
+      "reported_instance_id": "WineBottle|surface|2|8",
+      "status": "CG_MATCHED_CURRENT",
+      "step_index": 1
+    },
+    {
+      "anchor_id": "a0c1bc26-68e6-5382-8adf-d86ad3e00495",
+      "birth_frame": 1,
+      "expected_instance_id": null,
+      "identity_correct": null,
+      "identity_status": "PROVISIONAL",
+      "joint_success": null,
+      "position_correct": null,
+      "query_eligible": false,
+      "reidentification": null,
+      "reported_instance_id": "Apple|surface|2|0",
+      "status": "CG_MATCHED_CURRENT",
+      "step_index": 1
+    },
+    {
+      "anchor_id": "a29329cd-2e82-5f52-a35f-e9d16c21e988",
+      "birth_frame": 0,
+      "expected_instance_id": "CounterTop|2|0",
+      "identity_correct": true,
+      "identity_status": "PROVISIONAL",
+      "joint_success": true,
+      "position_correct": true,
+      "query_eligible": true,
+      "reidentification": null,
+      "reported_instance_id": "CounterTop|2|0",
+      "status": "CG_MATCHED_CURRENT",
+      "step_index": 1
+    },
+    {
+      "anchor_id": "eb6da42e-37f3-51c2-b801-e6476b11a94b",
+      "birth_frame": 0,
+      "expected_instance_id": "SoapBottle|surface|2|14",
+      "identity_correct": true,
+      "identity_status": "PROVISIONAL",
+      "joint_success": true,
+      "position_correct": true,
+      "query_eligible": true,
+      "reidentification": null,
+      "reported_instance_id": "SoapBottle|surface|2|14",
+      "status": "CG_MATCHED_CURRENT",
+      "step_index": 1
+    },
+    {
+      "anchor_id": "23f1948b-49c5-566c-8be1-f17f2694a8df",
+      "birth_frame": 0,
+      "expected_instance_id": "Kettle|surface|2|5",
+      "identity_correct": null,
+      "identity_status": "PROVISIONAL",
+      "joint_success": null,
+      "position_correct": null,
+      "query_eligible": true,
+      "reidentification": null,
+      "reported_instance_id": null,
+      "status": "CG_NOT_OBSERVED_CURRENT",
+      "step_index": 2
+    },
+    {
+      "anchor_id": "69b010aa-e71a-5e08-823a-3e7448ac845f",
+      "birth_frame": 0,
+      "expected_instance_id": "Bowl|surface|2|11",
+      "identity_correct": null,
+      "identity_status": "PROVISIONAL",
+      "joint_success": null,
+      "position_correct": null,
+      "query_eligible": true,
+      "reidentification": null,
+      "reported_instance_id": null,
+      "status": "CG_NOT_OBSERVED_CURRENT",
+      "step_index": 2
+    },
+    {
+      "anchor_id": "6cea16c9-03ba-5a17-afea-812c8e640ce3",
+      "birth_frame": 0,
+      "expected_instance_id": "WineBottle|surface|2|8",
+      "identity_correct": true,
+      "identity_status": "PROVISIONAL",
+      "joint_success": true,
+      "position_correct": true,
+      "query_eligible": true,
+      "reidentification": null,
+      "reported_instance_id": "WineBottle|surface|2|8",
+      "status": "CG_MATCHED_CURRENT",
+      "step_index": 2
+    },
+    {
+      "anchor_id": "a0c1bc26-68e6-5382-8adf-d86ad3e00495",
+      "birth_frame": 1,
+      "expected_instance_id": null,
+      "identity_correct": null,
+      "identity_status": "PROVISIONAL",
+      "joint_success": null,
+      "position_correct": null,
+      "query_eligible": false,
+      "reidentification": null,
+      "reported_instance_id": null,
+      "status": "CG_NOT_OBSERVED_CURRENT",
+      "step_index": 2
+    },
+    {
+      "anchor_id": "a29329cd-2e82-5f52-a35f-e9d16c21e988",
+      "birth_frame": 0,
+      "expected_instance_id": "CounterTop|2|0",
+      "identity_correct": true,
+      "identity_status": "PROVISIONAL",
+      "joint_success": true,
+      "position_correct": true,
+      "query_eligible": true,
+      "reidentification": null,
+      "reported_instance_id": "CounterTop|2|0",
+      "status": "CG_MATCHED_CURRENT",
+      "step_index": 2
+    },
+    {
+      "anchor_id": "eb6da42e-37f3-51c2-b801-e6476b11a94b",
+      "birth_frame": 0,
+      "expected_instance_id": "SoapBottle|surface|2|14",
+      "identity_correct": true,
+      "identity_status": "PROVISIONAL",
+      "joint_success": true,
+      "position_correct": true,
+      "query_eligible": true,
+      "reidentification": null,
+      "reported_instance_id": "SoapBottle|surface|2|14",
+      "status": "CG_MATCHED_CURRENT",
+      "step_index": 2
+    }
+  ]
+}

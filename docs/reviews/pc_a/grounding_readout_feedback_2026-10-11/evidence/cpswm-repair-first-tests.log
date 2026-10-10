@@ -1,0 +1,388 @@
+F.FFFFF..FFFF.F................F...............                          [100%]
+=================================== FAILURES ===================================
+_ test_positive_surface_point_and_stable_masked_flow_with_duplicate_content_flag _
+
+    def test_positive_surface_point_and_stable_masked_flow_with_duplicate_content_flag():
+        scope = tuple(uuid4() for _ in range(3))
+        detector, _ = model(scope)
+        sequence = MaskSurfaceSequence(detector)
+        raw, cutoff = wires(scope)
+        first, _ = sequence.observe(raw, cutoff=cutoff)
+>       assert first["tracks"][0]["status"] == "FLOW_AND_MASK_SUPPORTED"
+E       AssertionError: assert 'UNKNOWN_BACK...TINUOUS_DEPTH' == 'FLOW_AND_MASK_SUPPORTED'
+E         
+E         - FLOW_AND_MASK_SUPPORTED
+E         + UNKNOWN_BACKGROUND_CONTINUOUS_DEPTH
+
+tests/test_natural_mask_surface.py:90: AssertionError
+_ test_direct_reference_geometry_reidentifies_boundary_box_loss_without_new_ids _
+
+    def test_direct_reference_geometry_reidentifies_boundary_box_loss_without_new_ids():
+        scope = tuple(uuid4() for _ in range(3))
+        detector, _ = model(scope)
+        sequence = MaskSurfaceSequence(detector)
+        raw, cutoff = wires(scope)
+        first, _ = sequence.observe(raw, cutoff=cutoff)
+        anchor = first["tracks"][0]["anchor_id"]
+        initial_ids = set(first["tracks"][0]["flow_feature_ids"])
+        sequence._tracks[anchor][1]._box = (-1.0, 20.0, 39.0, 60.0)
+    
+        raw, cutoff = wires(scope, index=1)
+        recovered, _ = sequence.observe(raw, cutoff=cutoff)
+        track = recovered["tracks"][0]
+        assert track["anchor_id"] == anchor
+>       assert track["status"] == "REIDENTIFIED_FLOW_AND_MASK_SUPPORTED"
+E       AssertionError: assert 'UNKNOWN_NO_R...ATION_SUPPORT' == 'REIDENTIFIED...ASK_SUPPORTED'
+E         
+E         - REIDENTIFIED_FLOW_AND_MASK_SUPPORTED
+E         + UNKNOWN_NO_REIDENTIFICATION_SUPPORT
+
+tests/test_natural_mask_surface.py:136: AssertionError
+_____ test_lost_track_keeps_unknown_when_two_candidates_pass_existing_gate _____
+
+    def test_lost_track_keeps_unknown_when_two_candidates_pass_existing_gate():
+        scope = tuple(uuid4() for _ in range(3))
+        detector, _ = model(scope)
+        sequence = MaskSurfaceSequence(detector)
+        raw, cutoff = wires(scope)
+        first, _ = sequence.observe(raw, cutoff=cutoff)
+        anchor = first["tracks"][0]["anchor_id"]
+        sequence._tracks[anchor][1]._box = (-1.0, 20.0, 39.0, 60.0)
+    
+        detector._model = lambda tensors: [predictions(copies=2)]
+        raw, cutoff = wires(scope, index=1)
+        result, _ = sequence.observe(raw, cutoff=cutoff)
+        track = result["tracks"][0]
+>       assert track["status"] == "UNKNOWN_AMBIGUOUS_REIDENTIFICATION"
+E       AssertionError: assert 'UNKNOWN_NO_R...ATION_SUPPORT' == 'UNKNOWN_AMBI...DENTIFICATION'
+E         
+E         - UNKNOWN_AMBIGUOUS_REIDENTIFICATION
+E         ?         ^^^^^^ --
+E         + UNKNOWN_NO_REIDENTIFICATION_SUPPORT
+E         ?         ^                  ++++++++
+
+tests/test_natural_mask_surface.py:170: AssertionError
+_ test_lost_track_without_direct_lineage_stays_unknown_across_later_candidate __
+
+    def test_lost_track_without_direct_lineage_stays_unknown_across_later_candidate():
+        scope = tuple(uuid4() for _ in range(3))
+        detector, _ = model(scope)
+        sequence = MaskSurfaceSequence(detector)
+        raw, cutoff = wires(scope)
+        first, _ = sequence.observe(raw, cutoff=cutoff)
+        anchor = first["tracks"][0]["anchor_id"]
+        sequence._tracks[anchor][1]._lost = True
+        empty = dict(
+            boxes=torch.empty((0, 4)),
+            scores=torch.empty((0,)),
+            labels=torch.empty((0,), dtype=torch.int64),
+            masks=torch.empty((0, 1, 96, 96)),
+        )
+        detector._model = lambda tensors: [empty]
+        raw, cutoff = wires(scope, index=1)
+        unknown, _ = sequence.observe(raw, cutoff=cutoff)
+        assert unknown["tracks"][0]["status"] == "UNKNOWN_NO_REIDENTIFICATION_SUPPORT"
+        assert unknown["accepted_reidentifications"] == []
+    
+        detector._model = lambda tensors: [predictions()]
+        raw, cutoff = wires(scope, index=2)
+        recovered, _ = sequence.observe(raw, cutoff=cutoff)
+        assert recovered["tracks"][0]["anchor_id"] == anchor
+>       assert recovered["tracks"][0]["status"] == "UNKNOWN_NO_REFERENCE_FEATURE_GEOMETRY"
+E       AssertionError: assert 'UNKNOWN_NO_R...ATION_SUPPORT' == 'UNKNOWN_NO_R...TURE_GEOMETRY'
+E         
+E         - UNKNOWN_NO_REFERENCE_FEATURE_GEOMETRY
+E         + UNKNOWN_NO_REIDENTIFICATION_SUPPORT
+
+tests/test_natural_mask_surface.py:203: AssertionError
+______ test_two_lost_anchors_cannot_share_one_reidentification_candidate _______
+
+    def test_two_lost_anchors_cannot_share_one_reidentification_candidate():
+        scope = tuple(uuid4() for _ in range(3))
+        detector, _ = model(scope, copies=2)
+        sequence = MaskSurfaceSequence(detector)
+        raw, cutoff = wires(scope)
+        first, _ = sequence.observe(raw, cutoff=cutoff)
+        camera, depth = decode_unity_rgbd(raw, cutoff=cutoff)
+        for anchor in [track["anchor_id"] for track in first["tracks"]]:
+            tracker = sequence._tracks[anchor][1]
+            sequence._evidence[anchor]["reference_features"] = {
+                feature_id: camera.world_point(
+                    int(np.rint(u)), int(np.rint(v)), float(depth[int(np.rint(v)), int(np.rint(u))])
+                )
+                for feature_id, (u, v) in zip(tracker.point_ids, tracker.points_uv, strict=True)
+            }
+            sequence._evidence[anchor]["reference_feature_cohort_ids"] = tracker.point_ids[:4]
+            sequence._tracks[anchor][1]._box = (-1.0, 20.0, 39.0, 60.0)
+    
+        detector._model = lambda tensors: [predictions()]
+        raw, cutoff = wires(scope, index=1)
+        result, _ = sequence.observe(raw, cutoff=cutoff)
+        assert len(result["tracks"]) == 2
+>       assert all(
+            track["status"] == "UNKNOWN_SHARED_REIDENTIFICATION_CANDIDATE" for track in result["tracks"]
+        )
+E       assert False
+E        +  where False = all(<generator object test_two_lost_anchors_cannot_share_one_reidentification_candidate.<locals>.<genexpr> at 0x1238fa9b0>)
+
+tests/test_natural_mask_surface.py:229: AssertionError
+___ test_late_category_birth_is_tracked_but_cannot_replace_first_frame_query ___
+
+    def test_late_category_birth_is_tracked_but_cannot_replace_first_frame_query():
+        from cpswm.system.surface_episode import report_from_surface_state
+    
+        scope = tuple(uuid4() for _ in range(3))
+        detector, _ = model(scope)
+        empty = dict(
+            boxes=torch.empty((0, 4)),
+            scores=torch.empty((0,)),
+            labels=torch.empty((0,), dtype=torch.int64),
+            masks=torch.empty((0, 1, 96, 96)),
+        )
+        detector._model = lambda tensors: [empty]
+        sequence = MaskSurfaceSequence(detector)
+        raw, cutoff = wires(scope)
+        first, _ = sequence.observe(raw, cutoff=cutoff)
+        assert first["tracks"] == []
+    
+        detector._model = lambda tensors: [predictions()]
+        raw, cutoff = wires(scope, index=1)
+        second, _ = sequence.observe(raw, cutoff=cutoff)
+        assert len(second["tracks"]) == 1 and len(second["late_births"]) == 1
+        track = second["tracks"][0]
+>       assert track["status"] == "LATE_BIRTH_FLOW_AND_MASK_SUPPORTED"
+E       AssertionError: assert 'UNKNOWN_BACK...TINUOUS_DEPTH' == 'LATE_BIRTH_F...ASK_SUPPORTED'
+E         
+E         - LATE_BIRTH_FLOW_AND_MASK_SUPPORTED
+E         + UNKNOWN_BACKGROUND_CONTINUOUS_DEPTH
+
+tests/test_natural_mask_surface.py:258: AssertionError
+_____ test_complete_malformed_native_masks_rejected_then_legal_retry[nan] ______
+
+attack = 'nan'
+
+    @pytest.mark.parametrize("attack", ["nan", "range", "dtype", "shape"])
+    def test_complete_malformed_native_masks_rejected_then_legal_retry(attack):
+        scope = tuple(uuid4() for _ in range(3))
+        detector, prediction = model(scope)
+        raw, cutoff = wires(scope)
+        if attack == "nan":
+            prediction["masks"][0, 0, 0, 0] = float("nan")
+        elif attack == "range":
+            prediction["masks"][0, 0, 0, 0] = 1.01
+        elif attack == "dtype":
+            prediction["masks"] = prediction["masks"].double()
+        else:
+            prediction["masks"] = prediction["masks"][:, :, :95]
+        sequence = MaskSurfaceSequence(detector)
+        with pytest.raises(ValueError):
+            sequence.observe(raw, cutoff=cutoff)
+        assert sequence._index == 0 and not sequence._tracks and not sequence._observations
+        detector._model = lambda tensors: [predictions()]
+>       assert (
+            sequence.observe(raw, cutoff=cutoff)[0]["tracks"][0]["status"] == "FLOW_AND_MASK_SUPPORTED"
+        )
+E       AssertionError: assert 'UNKNOWN_BACK...TINUOUS_DEPTH' == 'FLOW_AND_MASK_SUPPORTED'
+E         
+E         - FLOW_AND_MASK_SUPPORTED
+E         + UNKNOWN_BACKGROUND_CONTINUOUS_DEPTH
+
+tests/test_natural_mask_surface.py:319: AssertionError
+____ test_complete_malformed_native_masks_rejected_then_legal_retry[range] _____
+
+attack = 'range'
+
+    @pytest.mark.parametrize("attack", ["nan", "range", "dtype", "shape"])
+    def test_complete_malformed_native_masks_rejected_then_legal_retry(attack):
+        scope = tuple(uuid4() for _ in range(3))
+        detector, prediction = model(scope)
+        raw, cutoff = wires(scope)
+        if attack == "nan":
+            prediction["masks"][0, 0, 0, 0] = float("nan")
+        elif attack == "range":
+            prediction["masks"][0, 0, 0, 0] = 1.01
+        elif attack == "dtype":
+            prediction["masks"] = prediction["masks"].double()
+        else:
+            prediction["masks"] = prediction["masks"][:, :, :95]
+        sequence = MaskSurfaceSequence(detector)
+        with pytest.raises(ValueError):
+            sequence.observe(raw, cutoff=cutoff)
+        assert sequence._index == 0 and not sequence._tracks and not sequence._observations
+        detector._model = lambda tensors: [predictions()]
+>       assert (
+            sequence.observe(raw, cutoff=cutoff)[0]["tracks"][0]["status"] == "FLOW_AND_MASK_SUPPORTED"
+        )
+E       AssertionError: assert 'UNKNOWN_BACK...TINUOUS_DEPTH' == 'FLOW_AND_MASK_SUPPORTED'
+E         
+E         - FLOW_AND_MASK_SUPPORTED
+E         + UNKNOWN_BACKGROUND_CONTINUOUS_DEPTH
+
+tests/test_natural_mask_surface.py:319: AssertionError
+____ test_complete_malformed_native_masks_rejected_then_legal_retry[dtype] _____
+
+attack = 'dtype'
+
+    @pytest.mark.parametrize("attack", ["nan", "range", "dtype", "shape"])
+    def test_complete_malformed_native_masks_rejected_then_legal_retry(attack):
+        scope = tuple(uuid4() for _ in range(3))
+        detector, prediction = model(scope)
+        raw, cutoff = wires(scope)
+        if attack == "nan":
+            prediction["masks"][0, 0, 0, 0] = float("nan")
+        elif attack == "range":
+            prediction["masks"][0, 0, 0, 0] = 1.01
+        elif attack == "dtype":
+            prediction["masks"] = prediction["masks"].double()
+        else:
+            prediction["masks"] = prediction["masks"][:, :, :95]
+        sequence = MaskSurfaceSequence(detector)
+        with pytest.raises(ValueError):
+            sequence.observe(raw, cutoff=cutoff)
+        assert sequence._index == 0 and not sequence._tracks and not sequence._observations
+        detector._model = lambda tensors: [predictions()]
+>       assert (
+            sequence.observe(raw, cutoff=cutoff)[0]["tracks"][0]["status"] == "FLOW_AND_MASK_SUPPORTED"
+        )
+E       AssertionError: assert 'UNKNOWN_BACK...TINUOUS_DEPTH' == 'FLOW_AND_MASK_SUPPORTED'
+E         
+E         - FLOW_AND_MASK_SUPPORTED
+E         + UNKNOWN_BACKGROUND_CONTINUOUS_DEPTH
+
+tests/test_natural_mask_surface.py:319: AssertionError
+____ test_complete_malformed_native_masks_rejected_then_legal_retry[shape] _____
+
+attack = 'shape'
+
+    @pytest.mark.parametrize("attack", ["nan", "range", "dtype", "shape"])
+    def test_complete_malformed_native_masks_rejected_then_legal_retry(attack):
+        scope = tuple(uuid4() for _ in range(3))
+        detector, prediction = model(scope)
+        raw, cutoff = wires(scope)
+        if attack == "nan":
+            prediction["masks"][0, 0, 0, 0] = float("nan")
+        elif attack == "range":
+            prediction["masks"][0, 0, 0, 0] = 1.01
+        elif attack == "dtype":
+            prediction["masks"] = prediction["masks"].double()
+        else:
+            prediction["masks"] = prediction["masks"][:, :, :95]
+        sequence = MaskSurfaceSequence(detector)
+        with pytest.raises(ValueError):
+            sequence.observe(raw, cutoff=cutoff)
+        assert sequence._index == 0 and not sequence._tracks and not sequence._observations
+        detector._model = lambda tensors: [predictions()]
+>       assert (
+            sequence.observe(raw, cutoff=cutoff)[0]["tracks"][0]["status"] == "FLOW_AND_MASK_SUPPORTED"
+        )
+E       AssertionError: assert 'UNKNOWN_BACK...TINUOUS_DEPTH' == 'FLOW_AND_MASK_SUPPORTED'
+E         
+E         - FLOW_AND_MASK_SUPPORTED
+E         + UNKNOWN_BACKGROUND_CONTINUOUS_DEPTH
+
+tests/test_natural_mask_surface.py:319: AssertionError
+__ test_shared_current_mask_missing_mask_and_provisional_late_initialization ___
+
+    def test_shared_current_mask_missing_mask_and_provisional_late_initialization():
+        scope = tuple(uuid4() for _ in range(3))
+        detector, _ = model(scope, copies=2)
+        sequence = MaskSurfaceSequence(detector)
+        raw, cutoff = wires(scope)
+        sequence.observe(raw, cutoff=cutoff)
+        detector._model = lambda tensors: [predictions()]
+        raw, cutoff = wires(scope, index=1)
+        result, _ = sequence.observe(raw, cutoff=cutoff)
+        assert all(t["status"] == "UNKNOWN_SHARED_CURRENT_MASK" for t in result["tracks"])
+        assert all(
+            t["world_point_m"] is None and t["current_candidate_id"] is None for t in result["tracks"]
+        )
+        empty = dict(
+            boxes=torch.empty((0, 4)),
+            scores=torch.empty((0,)),
+            labels=torch.empty((0,), dtype=torch.int64),
+            masks=torch.empty((0, 1, 96, 96)),
+        )
+        detector._model = lambda tensors: [empty]
+        raw, cutoff = wires(scope, index=2)
+        result, _ = sequence.observe(raw, cutoff=cutoff)
+        assert all(t["status"] == "UNKNOWN_NO_CURRENT_MASK_SUPPORT" for t in result["tracks"])
+        fresh = MaskSurfaceSequence(detector)
+        fresh.observe(raw, cutoff=cutoff)
+        detector._model = lambda tensors: [predictions()]
+        raw, cutoff = wires(scope, index=3)
+        late = fresh.observe(raw, cutoff=cutoff)[0]
+        assert len(late["tracks"]) == 1
+>       assert late["tracks"][0]["status"] == "LATE_BIRTH_FLOW_AND_MASK_SUPPORTED"
+E       AssertionError: assert 'UNKNOWN_BACK...TINUOUS_DEPTH' == 'LATE_BIRTH_F...ASK_SUPPORTED'
+E         
+E         - LATE_BIRTH_FLOW_AND_MASK_SUPPORTED
+E         + UNKNOWN_BACKGROUND_CONTINUOUS_DEPTH
+
+tests/test_natural_mask_surface.py:369: AssertionError
+_ test_evaluation_only_direct_p5_runs_the_real_full_eager_path_without_router_drift _
+
+    def test_evaluation_only_direct_p5_runs_the_real_full_eager_path_without_router_drift() -> None:
+        routed_system, routed_transition = _adaptive_system_and_transition()
+        routed_context = AdaptiveExecutionContext(
+            router_features=_features(routed_system, step=0, route="P0_SAFE_DEFERRED"),
+            step_index=0,
+            ciav_input=_ciav_input(routed_transition),
+        )
+        routed_result = routed_system.process_adaptive_transition(
+            routed_transition,
+            context=routed_context,
+            trace_sink=RecordingSink(),
+        )
+        assert routed_result.path_selection.selected_path_id == "P0_SAFE_DEFERRED"
+    
+        system, transition = _adaptive_system_and_transition()
+        context = AdaptiveExecutionContext(
+            router_features=_features(system, step=0, route="P0_SAFE_DEFERRED"),
+            step_index=0,
+            ciav_input=_ciav_input(transition),
+        )
+        sink = RecordingSink()
+    
+        result = system.process_evaluation_direct_p5_transition(
+            transition,
+            context=context,
+            trace_sink=sink,
+        )
+    
+        assert result.primary_result is not None
+        assert result.ciav_receipt is not None
+        assert context.ciav_input is not None
+        likelihoods = context.ciav_input.actor_likelihoods_by_outcome[result.ciav_receipt.outcome_label]
+        unnormalized = {
+            actor: probability * likelihoods[actor]
+            for actor, probability in result.primary_result.actor_posterior.items()
+        }
+        total = sum(unnormalized.values())
+>       assert result.ciav_receipt.evidence.actor_posterior == pytest.approx(
+            {actor: value / total for actor, value in unnormalized.items()}
+        )
+E       AssertionError: assert {'owner': 0.8...9182929893626} == approx({'gues...92 ± 2.0e-08})
+E         
+E         comparison failed. Mismatched elements: 3 / 3:
+E         Max absolute difference: 0.13756293355323568
+E         Max relative difference: 2.416534048077729
+E         Index         | Obtained           | Expected                      
+E         guest         | 0.1275703576513946 | 0.03733911497916156 ± 3.7e-08 
+E         owner         | 0.8055113493592428 | 0.9430742829124785 ± 9.4e-07  
+E         unknown_actor | 0.0669182929893626 | 0.019586602108359892 ± 2.0e-08
+
+tests/test_structure_two_adaptive_runtime.py:328: AssertionError
+=========================== short test summary info ============================
+FAILED tests/test_natural_mask_surface.py::test_positive_surface_point_and_stable_masked_flow_with_duplicate_content_flag
+FAILED tests/test_natural_mask_surface.py::test_direct_reference_geometry_reidentifies_boundary_box_loss_without_new_ids
+FAILED tests/test_natural_mask_surface.py::test_lost_track_keeps_unknown_when_two_candidates_pass_existing_gate
+FAILED tests/test_natural_mask_surface.py::test_lost_track_without_direct_lineage_stays_unknown_across_later_candidate
+FAILED tests/test_natural_mask_surface.py::test_two_lost_anchors_cannot_share_one_reidentification_candidate
+FAILED tests/test_natural_mask_surface.py::test_late_category_birth_is_tracked_but_cannot_replace_first_frame_query
+FAILED tests/test_natural_mask_surface.py::test_complete_malformed_native_masks_rejected_then_legal_retry[nan]
+FAILED tests/test_natural_mask_surface.py::test_complete_malformed_native_masks_rejected_then_legal_retry[range]
+FAILED tests/test_natural_mask_surface.py::test_complete_malformed_native_masks_rejected_then_legal_retry[dtype]
+FAILED tests/test_natural_mask_surface.py::test_complete_malformed_native_masks_rejected_then_legal_retry[shape]
+FAILED tests/test_natural_mask_surface.py::test_shared_current_mask_missing_mask_and_provisional_late_initialization
+FAILED tests/test_structure_two_adaptive_runtime.py::test_evaluation_only_direct_p5_runs_the_real_full_eager_path_without_router_drift
+12 failed, 35 passed in 3.15s

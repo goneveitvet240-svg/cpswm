@@ -1,0 +1,94 @@
+{
+  "schema": "cpswm-matched-transition-death-test@1",
+  "frames": [
+    {
+      "index": 0,
+      "action_id": "7aa6d2f1-69fc-4781-970d-e40e78d8fbc0",
+      "raw": "source/live-5deg/public/000/raw.json",
+      "raw_sha256": "3c2018b33a308b14c99b281e56059ae1d728d64745c6b6f38ee28622cf3e8f4a",
+      "prediction": "experiment/run/live-5deg/000/public.json",
+      "prediction_sha256": "9fb00a43c00f01a73f1d2bde38c2f5c37c786932a4eed18b032ab9c3a3a86f52",
+      "masks": "experiment/run/live-5deg/000/masks.npy.gz",
+      "masks_sha256": "2058c76c445b184b2840682ee3509a059de8ba7f0b18a97020672c11c950eed5"
+    },
+    {
+      "index": 1,
+      "action_id": "35e8c531-8006-4e5d-a2c6-4fa581eb554a",
+      "raw": "source/live-5deg/public/001/raw.json",
+      "raw_sha256": "2f72d6f8bf869867e8573ca9be28cc5851cd8dd2449bf773d1683b9aeb67cc64",
+      "prediction": "experiment/run/live-5deg/001/public.json",
+      "prediction_sha256": "cb19701f56ea8eef77ba3d5609345ec6cd4357c54516db041fa1b60f95093783",
+      "masks": "experiment/run/live-5deg/001/masks.npy.gz",
+      "masks_sha256": "bea17886afe865fd1b298a93cca8d5181578bfcdc0aa2e6ac65611109dca3254"
+    },
+    {
+      "index": 2,
+      "action_id": "7ba54101-423a-42e8-bb67-f0e7621bd804",
+      "raw": "source/live-5deg/public/002/raw.json",
+      "raw_sha256": "48ee632848c490999db24e0fff266bf8ce69aaecdffba5c04d1960fcf84167e6",
+      "prediction": "experiment/run/live-5deg/002/public.json",
+      "prediction_sha256": "0a5c53f0484bea1e4b04db9288658b6641af4f4034e391d0858fce24bc2be0ba",
+      "masks": "experiment/run/live-5deg/002/masks.npy.gz",
+      "masks_sha256": "a55137acdc4114bd2e415f9af093f493f45076efee06996addff0ad7159a318f"
+    },
+    {
+      "index": 3,
+      "action_id": "e00df221-d9c9-4189-8608-22b4f6e9d00d",
+      "raw": "source/live-5deg/public/003/raw.json",
+      "raw_sha256": "ada199f66f57748b5b32ea8caedf9624e00e4706f4010b020a0cecd5a5b01cc8",
+      "prediction": "experiment/run/live-5deg/003/public.json",
+      "prediction_sha256": "f5eeb60410be341ccdd0090cacccbcac34a44915a713ca95daa587b7c8798286",
+      "masks": "experiment/run/live-5deg/003/masks.npy.gz",
+      "masks_sha256": "a32c62a95d3eff66fcc1abd4722199f23d27ca7e9f0b3af757881c36e6d7d940"
+    },
+    {
+      "index": 4,
+      "action_id": "818c1006-9869-4775-8b59-4ed3ac8a57e4",
+      "raw": "source/live-5deg/public/004/raw.json",
+      "raw_sha256": "8cfcc6836b8e3ab67ef5cedafebbf08aa2db8eabb710f555c165b9da1d2261a0",
+      "prediction": "experiment/run/live-5deg/004/public.json",
+      "prediction_sha256": "a432066ce22ebf5944b884a33b9b371c003ef2a7097158876b3c7640af2a7573",
+      "masks": "experiment/run/live-5deg/004/masks.npy.gz",
+      "masks_sha256": "acf0c847801890bfb60c322aacab1f83b564e5485e37298f75f15c906cc4be60"
+    }
+  ],
+  "budget": 5,
+  "physical_dispatches": 5,
+  "schedule": [
+    {
+      "action": "RotateRight",
+      "degrees": 30.0
+    },
+    {
+      "action": "RotateRight",
+      "degrees": 5.0
+    },
+    {
+      "action": "RotateRight",
+      "degrees": 5.0
+    },
+    {
+      "action": "RotateRight",
+      "degrees": 5.0
+    },
+    {
+      "action": "RotateRight",
+      "degrees": 5.0
+    }
+  ],
+  "queries": [
+    {
+      "category": "bottle",
+      "ordinal": 0
+    },
+    {
+      "category": "bottle",
+      "ordinal": 1
+    },
+    {
+      "category": "bowl",
+      "ordinal": 0
+    }
+  ],
+  "input_sha256": "475d5c8c197d9038ad4db342ccd36e4eb8cdf21ca3fda90988679e415ddf0137"
+}

@@ -1,0 +1,19 @@
+dev
+{"mode": "current", "seconds": 21.261041667312384}
+{"mode": "iou", "seconds": 21.350685500074178}
+{"mode": "hybrid", "seconds": 21.449236917309463}
+1deg
+{"mode": "current", "seconds": 68.6277418336831}
+{"mode": "iou", "seconds": 69.1755566666834}
+{"mode": "hybrid", "seconds": 69.7978081246838}
+5deg
+Traceback (most recent call last):
+  File "<stdin>", line 8, in <module>
+  File "/private/tmp/cpswm-pc-a-object-memory-integration-20261010/tools/run_object_memory_frontend.py", line 49, in run
+    reference_records.append(reference_sequence.observe(rows, cutoff=cutoff)[0])
+                             ~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^
+  File "/private/tmp/cpswm-pc-a-object-memory-integration-20261010/src/cpswm/perception_mapping/mask_surface_sequence.py", line 520, in observe
+    measured = tracker.update(rgb, frame_index=self._index)
+  File "/private/tmp/cpswm-pc-a-object-memory-integration-20261010/src/cpswm/perception_mapping/visual_target_tracking.py", line 169, in update
+    raise ValueError("seeded points must lie inside the initialization support")
+ValueError: seeded points must lie inside the initialization support

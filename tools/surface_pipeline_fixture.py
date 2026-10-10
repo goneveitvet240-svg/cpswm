@@ -20,7 +20,17 @@ from cpswm.system.reproducibility import content_sha256
 SOURCE = content_sha256("six-step-natural-surface-controlled-semantic-bootstrap@1")
 
 
-def make_case(path, checkpoints, weights, mask_weights, *, schedule, enabled=True, policy=None):
+def make_case(
+    path,
+    checkpoints,
+    weights,
+    mask_weights,
+    *,
+    schedule,
+    enabled=True,
+    policy=None,
+    object_frontend=None,
+):
     selected_index = 1
     selected = BackboneWiringProbe.build(seed=171).observed_days()[selected_index].after
     config = dict(
@@ -32,6 +42,8 @@ def make_case(path, checkpoints, weights, mask_weights, *, schedule, enabled=Tru
         unknown_prior=0.2,
         pipeline=policy or dict(mode="fixed_scan", schedule=schedule, budget=len(schedule)),
     )
+    if object_frontend is not None:
+        config["object_frontend"] = object_frontend
     models = fixture_models()
     candidate = MaskSurfaceSupportProducer(configuration=config, **models)
     checkpoint, pin = checkpoints[ARMS[1]]

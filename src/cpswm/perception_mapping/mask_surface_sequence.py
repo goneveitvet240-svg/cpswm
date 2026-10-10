@@ -163,6 +163,19 @@ def _passing_reference_features(rows: list[dict[str, Any]]) -> list[dict[str, An
     )
 
 
+def _seedable_reference_features(
+    rows: list[dict[str, Any]], mask: np.ndarray
+) -> list[dict[str, Any]]:
+    """Geometry may use a neighboring pixel; tracker seeds must pass its own mask gate."""
+    height, width = mask.shape
+    result = []
+    for row in rows:
+        u, v = (int(np.rint(value)) for value in row["tracked_pixel_uv"])
+        if 0 <= u < width and 0 <= v < height and mask[v, u]:
+            result.append(row)
+    return result
+
+
 def _store_reference_features(
     evidence: dict[str, Any],
     rows: list[dict[str, Any]],
@@ -499,9 +512,16 @@ class MaskSurfaceSequence:
             comparison = next(
                 item for item in anchor_comparisons if item["candidate_id"] == candidate_id
             )
-            verified = _passing_reference_features(comparison["reference_feature_verification"])[
-                :MINIMUM_POINTS
-            ]
+            passing = _passing_reference_features(comparison["reference_feature_verification"])
+            verified = _seedable_reference_features(
+                passing, masks[candidate["native_index"]] >= MASK_THRESHOLD
+            )[:MINIMUM_POINTS]
+            detail["seedable_reference_feature_count"] = len(verified)
+            if len(verified) < MINIMUM_POINTS:
+                detail["status"] = "UNKNOWN_REIDENTIFICATION_SEED_OUTSIDE_MASK"
+                row["status"] = detail["status"]
+                row["reidentification"] = detail
+                continue
             seed_points = tuple(tuple(row["tracked_pixel_uv"]) for row in verified)
             seed_ids = tuple(row["feature_id"] for row in verified)
             x_values = [point[0] for point in seed_points]

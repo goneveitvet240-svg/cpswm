@@ -1,3 +1,37 @@
+# A交付回执：三流程证据已推送，PR103保持草稿（2026-10-10）
+
+报告、复现和45份散列证据提交 `7c266e23ef244616df86bd89a3d05a33365c4bd8` 已成功推送到 `codex/pc-a-object-memory-integration-20261010`。[PR103](https://github.com/goneveitvet240-svg/cpswm/pull/103) 已更新最终结果，未合并；实际工具源码仍 `9480c489a22036e1980a813eb83b28b5149d8c1f`。47定向检查、19帧三臂public-only重跑、312条算术复核、最终owner撤回/冷启动检查通过。原联合6/9和同前端记忆读出无净收益；历史几何39/80→hybrid47/80不等于身份/泛化收益。完整S1/全仓/B与共享集成待完成。
+
+---
+
+# A交付：三流程首轮完成，查询/记忆无净收益，历史几何局部改善（2026-10-10）
+
+[草稿 PR103](https://github.com/goneveitvet240-svg/cpswm/pull/103) 堆叠PR102，独立分支 `codex/pc-a-object-memory-integration-20261010`，base `2b99bbd53bfdb622f171eca9572b58e8df67e6a6`。生产src `d3e1d448261f0fef456aab4db32277cec6e6b938`，实际完整工具源码 `9480c489a22036e1980a813eb83b28b5149d8c1f`。[报告](../reviews/pc_a/object_memory_integration_2026-10-10/REPORT.md)、[复现](../reviews/pc_a/object_memory_integration_2026-10-10/COMMANDS.md)、[结果](../reviews/pc_a/object_memory_integration_2026-10-10/evidence/summary.json)。
+
+已实际接入原OpenCLIP ViT-H-14＋ConceptGraphs 13个官方函数/类的对象匹配/融合，可选进入现有owner；并非完整作者系统复现。原9查询当前/CG/hybrid均身份7、位置6、联合6，额外相同初始身份轨迹10/15→7/15→10/15。历史16帧AABB几何当前39/80、CG51/80、hybrid47/80；缺少instance masks且同屋开发暴露，不报身份联合或泛化收益。Bowl0/16未解决。
+
+普通来源记忆与CPSWM共享同一前端、原始历史及撤回信息；最终hybrid三前缀和中间来源撤回后规范读出相同，来源3→2、账本仍3，冷启动完整state相等、运行期helper篡改拒绝。新物理动作0、语义受控。修复混合mask内参考点被替换的退化、rounded seed在mask外导致的崩溃、重复4GB权重散列开销及tuple/list对照误报。未微调模型。
+
+47定向检查、Ruff、3文件mypy、312条独立算术复核通过；public-only新worker重复19帧三臂，9组逐步payload完全一致。封存45个清单约束证据文件30,534,160 bytes，含SQLite/检查点/交付原件。owner检查477秒，尚非实时。完整S1/全仓/完整伪造状态机矩阵、B独立复核与共享集成未完成；PR保持draft、主收益门未过、完整框架保留。本节提交推送前结果为本地完成。
+
+---
+
+# A进行中：三个流程已形成可执行实验，最终边界修复复测中（2026-10-10）
+
+分支 `codex/pc-a-object-memory-integration-20261010`；base `2b99bbd53bfdb622f171eca9572b58e8df67e6a6`。首次功能源码 `290f629531daa75b3f21939b60f018f83d5d778c`，当前修复源码 `d3e1d448261f0fef456aab4db32277cec6e6b938`。[计划](../reviews/pc_a/object_memory_integration_2026-10-10/PLAN.md)、[调整记录](../reviews/pc_a/object_memory_integration_2026-10-10/ADJUSTMENT.md)。
+
+接入原ViT-H-14特征、几何+视觉关联及点云融合，可选进入原owner；同前端普通来源记忆与CPSWM的3前缀/中间撤回读出相同，290f629冷启动状态一致、helper替换被拒、物理账本不变。原查询9槽仍联合6，无新增科学收益。加入同mask参考特征读点消除额外初始轨迹退化。16帧历史复查的5°第3帧发现rounded seed在mask外会崩溃；d3e1d44改为合法seed不足时UNKNOWN，不放宽输入门。
+
+当前在d3e1d44重新运行三臂19帧、hybrid真实owner/普通来源记忆、定向回归；最终结果尚待汇总。33项轻量检查、3文件mypy与Ruff已通过，完整全仓/B验收/共享集成未完成。新增物理动作0，语义为受控bootstrap。13个官方符号加适配器，不冒充完整ConceptGraphs系统或强系统死亡测试通过。完整研究范围保留。
+
+---
+
+# A开工：原版对象特征、匹配记忆对照和观测驱动调整（2026-10-10）
+
+用户明确授权推进三个流程。独立分支 `codex/pc-a-object-memory-integration-20261010`，base `2b99bbd53bfdb622f171eca9572b58e8df67e6a6`；[计划](../reviews/pc_a/object_memory_integration_2026-10-10/PLAN.md)。ConceptGraphs 官方算子已锁定，原 ViT-H-14/laion2b_s32b_b79k 权重下载完成。尚未产生本轮实验结果；完整生产验收/B复核/共享集成均未完成。此开工提交只包含源码来源与实验协议，不宣称代码完成。完整框架和其他工作树保留。
+
+---
+
 # A交付：首个外部对象组件已运行，原查询收益为零（2026-10-10）
 
 [草稿 PR102](https://github.com/goneveitvet240-svg/cpswm/pull/102) 已建立并堆叠 PR101；报告与13个散列证据文件（13,597,153 bytes）提交 `84caf84bd4b7f95fe69cd17c5b0f0cc0e44412b6` 已推送。实际适配器仍为 `c642f4cfdde0359be762eaa15d9d7f2cd1b3b74d`，未合并。

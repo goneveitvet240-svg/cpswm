@@ -1,0 +1,20 @@
+{
+  "checks": [
+    {
+      "index": 0,
+      "raw_rgb_depth_bytes_equal": true,
+      "query_readouts_equal_to_frozen_hybrid": true
+    },
+    {
+      "index": 1,
+      "raw_rgb_depth_bytes_equal": true,
+      "query_readouts_equal_to_frozen_hybrid": true
+    },
+    {
+      "index": 2,
+      "raw_rgb_depth_bytes_equal": true,
+      "query_readouts_equal_to_frozen_hybrid": true
+    }
+  ],
+  "scope": "posthoc transport/readout check; controlled replay envelopes, no new physical acquisition"
+}

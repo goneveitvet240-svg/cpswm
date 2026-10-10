@@ -14,6 +14,7 @@ from datetime import datetime
 from functools import lru_cache
 from hashlib import sha256
 from pathlib import Path
+from types import ModuleType
 from typing import Any
 from uuid import UUID
 
@@ -24,6 +25,7 @@ from cpswm.perception_mapping import (
     surface_action_model,
 )
 from cpswm.perception_mapping.adapters.rgbd_capture import RawModalityObservation
+from cpswm.perception_mapping.external_object_sequence import ExternalObjectSequence
 from cpswm.perception_mapping.mask_surface_sequence import MaskSurfaceSequence
 from cpswm.perception_mapping.natural_mask_surface import NaturalMaskSurfaceDetector
 from cpswm.perception_mapping.unity_rgbd import decode_unity_rgbd
@@ -50,8 +52,14 @@ class MaskSurfaceSupportProducer(TemporalTargetPositionProducer):
         from cpswm.system.surface_episode import policy_configuration
 
         policy_configuration(c["pipeline"])
+        if "object_frontend" in c:
+            from cpswm.perception_mapping.external_object_sequence import validate_configuration
+
+            validate_configuration(c["object_frontend"])
         self.configuration = {
-            k: v for k, v in c.items() if k not in ("mask_weights_path", "pipeline")
+            k: v
+            for k, v in c.items()
+            if k not in ("mask_weights_path", "pipeline", "object_frontend")
         }
         try:
             super()._validate_configuration()
@@ -79,13 +87,17 @@ class MaskSurfaceSupportProducer(TemporalTargetPositionProducer):
             and decode_unity_rgbd is unity_rgbd.decode_unity_rgbd,
             "surface helper alias changed",
         )
-        modules = (
+        modules: tuple[ModuleType, ...] = (
             appearance_geometry_association,
             mask_surface_sequence,
             natural_mask_surface,
             surface_episode,
             surface_action_model,
         )
+        if "object_frontend" in self.configuration:
+            from cpswm.perception_mapping import external_object_sequence
+
+            modules = (*modules, external_object_sequence)
         bodies: list[tuple[str, ...]] = []
         for module in modules:
             for name, value in sorted(vars(module).items()):
@@ -106,9 +118,15 @@ class MaskSurfaceSupportProducer(TemporalTargetPositionProducer):
                             bodies.append(
                                 (module.__name__, name, key, _helper_code_sha256(body.__code__))
                             )
+        external_binding = None
+        if "object_frontend" in self.configuration:
+            from cpswm.perception_mapping.external_object_sequence import validate_configuration
+
+            external_binding = validate_configuration(self.configuration["object_frontend"])
         return content_sha256(
             (
                 PROFILE,
+                external_binding,
                 super()._content_binding(),
                 pin,
                 bodies,
@@ -156,7 +174,12 @@ class MaskSurfaceSupportProducer(TemporalTargetPositionProducer):
             frames.append((rows, capture.received_at, str(capture.action_id)))
         result = json.loads(
             _infer_prefix(
-                self.configuration["mask_weights_path"], self.binding_sha256, tuple(frames)
+                self.configuration["mask_weights_path"],
+                self.binding_sha256,
+                tuple(frames),
+                json.dumps(self.configuration["object_frontend"], sort_keys=True)
+                if "object_frontend" in self.configuration
+                else None,
             )
         )
         result["captures"] = captures
@@ -189,8 +212,13 @@ _Frame = tuple[tuple[RawModalityObservation, ...], datetime, str]
 
 
 @lru_cache(maxsize=8)
-def _infer_prefix(weights_path: str, implementation: str, frames: tuple[_Frame, ...]) -> str:
-    sequence = None
+def _infer_prefix(
+    weights_path: str,
+    implementation: str,
+    frames: tuple[_Frame, ...],
+    object_frontend: str | None = None,
+) -> str:
+    sequence: MaskSurfaceSequence | ExternalObjectSequence | None = None
     records = []
     history: dict[str, list[dict[str, Any]]] = {}
     signatures: dict[str, set[str]] = {}
@@ -199,14 +227,16 @@ def _infer_prefix(weights_path: str, implementation: str, frames: tuple[_Frame, 
         camera, _ = decode_unity_rgbd(rows, cutoff=cutoff)
         if sequence is None:
             identity = rows[0].envelope().identity
-            sequence = MaskSurfaceSequence(
-                NaturalMaskSurfaceDetector(
-                    weights_path=Path(weights_path),
-                    household_id=identity.household_id,
-                    session_id=identity.session_id,
-                    trace_id=identity.trace_id,
-                )
+            detector = NaturalMaskSurfaceDetector(
+                weights_path=Path(weights_path),
+                household_id=identity.household_id,
+                session_id=identity.session_id,
+                trace_id=identity.trace_id,
             )
+            if object_frontend is None:
+                sequence = MaskSurfaceSequence(detector)
+            else:
+                sequence = ExternalObjectSequence(detector, json.loads(object_frontend))
         record, _ = sequence.observe(rows, cutoff=cutoff)
         signature = content_sha256(
             camera.model_dump(mode="json", exclude={"action_id", "capture_time"})

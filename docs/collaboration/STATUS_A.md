@@ -1,3 +1,9 @@
+# A开工：底层失败与核心机制价值双线诊断（2026-10-10）
+
+用户授权本轮实际执行。独立分支 `codex/pc-a-failure-mechanism-diagnostic-20261010`，base/当前生产源码 `9767a2d63f3d4f501911fc1b1cd0fc0f94b48dc7`。计划见 [双线诊断](../reviews/pc_a/failure_mechanism_diagnostic_2026-10-10/PLAN.md)。冻结三帧原查询进行实例/几何失败分解；复用受控语义生产P5与完整历史纠正对照，固定三个开发seed，记录动作、后验、恢复及成本。尚无本轮测试/结果；推送前仅本地进行中。共享集成及STATUS_B不改，正式协议与完整框架保留，B独立验收待交接。
+
+---
+
 # A交付回执：三流程证据已推送，PR103保持草稿（2026-10-10）
 
 报告、复现和45份散列证据提交 `7c266e23ef244616df86bd89a3d05a33365c4bd8` 已成功推送到 `codex/pc-a-object-memory-integration-20261010`。[PR103](https://github.com/goneveitvet240-svg/cpswm/pull/103) 已更新最终结果，未合并；实际工具源码仍 `9480c489a22036e1980a813eb83b28b5149d8c1f`。47定向检查、19帧三臂public-only重跑、312条算术复核、最终owner撤回/冷启动检查通过。原联合6/9和同前端记忆读出无净收益；历史几何39/80→hybrid47/80不等于身份/泛化收益。完整S1/全仓/B与共享集成待完成。

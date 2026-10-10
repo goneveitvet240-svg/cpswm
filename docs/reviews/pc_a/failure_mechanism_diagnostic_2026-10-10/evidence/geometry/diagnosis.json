@@ -1,0 +1,2080 @@
+{
+  "archived_arm_sha256": {
+    "current": "a53c5465514ada7dba1844ae5c7098f11f62e117c565e5699ec639e93ced1465",
+    "hybrid": "97049bbb1f23532b6fd36b16bc775c342967b52b1e750cf8a6dfba84bfc52196",
+    "iou": "a61a316b3383a62bf827d8214e87d354fbef26fd96133c9198af70d1e217e382"
+  },
+  "code_sha": "726f6d1bdb05603dae9c89c21675778eed185ba8",
+  "counts": {
+    "current": {
+      "correct_instance_outside_aabb": 1,
+      "joint_correct": 6,
+      "no_report": 2
+    },
+    "hybrid": {
+      "correct_instance_outside_aabb": 1,
+      "joint_correct": 6,
+      "no_report": 2
+    },
+    "iou": {
+      "correct_instance_outside_aabb": 1,
+      "joint_correct": 6,
+      "no_report": 2
+    }
+  },
+  "formal_scores_unchanged": true,
+  "fresh_current_steps_equal_archive": true,
+  "inference_consumes_truth": false,
+  "limits": "Development panel, no new detector inference; GT pixels and convention variants evaluator-only. Matrix parity does not validate renderer, mesh, mask alignment or AABB truth.",
+  "manifest_sha256": "5a421a8abda3bafc5933fc3e6262dc22444e10eabdaa3353243b18f37b156d7e",
+  "matrix_parity": [
+    {
+      "frame": 0,
+      "max_abs_difference_m": 8.881784197001252e-16,
+      "valid_pixels": 102400
+    },
+    {
+      "frame": 1,
+      "max_abs_difference_m": 8.881784197001252e-16,
+      "valid_pixels": 102400
+    },
+    {
+      "frame": 2,
+      "max_abs_difference_m": 8.881784197001252e-16,
+      "valid_pixels": 102400
+    }
+  ],
+  "new_physical_actions": 0,
+  "pixel_geometry": [
+    {
+      "all": {
+        "inside_aabb": 1119,
+        "max_outside_mm": 214.9751770935866,
+        "median_outside_mm": 0.0,
+        "pixels": 1227
+      },
+      "boundary": {
+        "inside_aabb": 123,
+        "max_outside_mm": 214.9751770935866,
+        "median_outside_mm": 0.0,
+        "pixels": 202
+      },
+      "convention_sensitivity_evaluator_only": {
+        "pixel_index_no_half_offset": {
+          "inside_aabb": 1142,
+          "max_outside_mm": 215.6024608254141,
+          "median_outside_mm": 0.0,
+          "pixels": 1227
+        },
+        "production_convention": {
+          "inside_aabb": 1119,
+          "max_outside_mm": 214.9751770935866,
+          "median_outside_mm": 0.0,
+          "pixels": 1227
+        },
+        "without_shader_scale": {
+          "inside_aabb": 787,
+          "max_outside_mm": 208.72518112264072,
+          "median_outside_mm": 0.0,
+          "pixels": 1227
+        }
+      },
+      "frame": 0,
+      "interior": {
+        "inside_aabb": 996,
+        "max_outside_mm": 214.97496463331677,
+        "median_outside_mm": 0.0,
+        "pixels": 1025
+      },
+      "target": "WineBottle|surface|2|8"
+    },
+    {
+      "all": {
+        "inside_aabb": 1380,
+        "max_outside_mm": 219.14679842253238,
+        "median_outside_mm": 0.0,
+        "pixels": 1475
+      },
+      "boundary": {
+        "inside_aabb": 114,
+        "max_outside_mm": 219.14679842253238,
+        "median_outside_mm": 0.0,
+        "pixels": 205
+      },
+      "convention_sensitivity_evaluator_only": {
+        "pixel_index_no_half_offset": {
+          "inside_aabb": 1378,
+          "max_outside_mm": 219.61869547978964,
+          "median_outside_mm": 0.0,
+          "pixels": 1475
+        },
+        "production_convention": {
+          "inside_aabb": 1380,
+          "max_outside_mm": 219.14679842253238,
+          "median_outside_mm": 0.0,
+          "pixels": 1475
+        },
+        "without_shader_scale": {
+          "inside_aabb": 1375,
+          "max_outside_mm": 214.0178282248417,
+          "median_outside_mm": 0.0,
+          "pixels": 1475
+        }
+      },
+      "frame": 0,
+      "interior": {
+        "inside_aabb": 1266,
+        "max_outside_mm": 0.3483201881060438,
+        "median_outside_mm": 0.0,
+        "pixels": 1270
+      },
+      "target": "SoapBottle|surface|2|14"
+    },
+    {
+      "all": {
+        "inside_aabb": 0,
+        "max_outside_mm": 155.58226331070668,
+        "median_outside_mm": 12.894866022093776,
+        "pixels": 1163
+      },
+      "boundary": {
+        "inside_aabb": 0,
+        "max_outside_mm": 155.582237080238,
+        "median_outside_mm": 24.17270148493489,
+        "pixels": 195
+      },
+      "convention_sensitivity_evaluator_only": {
+        "pixel_index_no_half_offset": {
+          "inside_aabb": 533,
+          "max_outside_mm": 156.17677474786706,
+          "median_outside_mm": 13.420694499691743,
+          "pixels": 1163
+        },
+        "production_convention": {
+          "inside_aabb": 0,
+          "max_outside_mm": 155.58226331070668,
+          "median_outside_mm": 12.894866022093776,
+          "pixels": 1163
+        },
+        "without_shader_scale": {
+          "inside_aabb": 556,
+          "max_outside_mm": 149.33226383602238,
+          "median_outside_mm": 7.358303533852251,
+          "pixels": 1163
+        }
+      },
+      "frame": 0,
+      "interior": {
+        "inside_aabb": 0,
+        "max_outside_mm": 155.58226331070668,
+        "median_outside_mm": 12.260693779598375,
+        "pixels": 968
+      },
+      "target": "Bowl|surface|2|11"
+    },
+    {
+      "all": {
+        "inside_aabb": 1202,
+        "max_outside_mm": 214.97870960383224,
+        "median_outside_mm": 0.0,
+        "pixels": 1324
+      },
+      "boundary": {
+        "inside_aabb": 130,
+        "max_outside_mm": 214.97870960383224,
+        "median_outside_mm": 0.0,
+        "pixels": 218
+      },
+      "convention_sensitivity_evaluator_only": {
+        "pixel_index_no_half_offset": {
+          "inside_aabb": 1230,
+          "max_outside_mm": 215.84646705309797,
+          "median_outside_mm": 0.0,
+          "pixels": 1324
+        },
+        "production_convention": {
+          "inside_aabb": 1202,
+          "max_outside_mm": 214.97870960383224,
+          "median_outside_mm": 0.0,
+          "pixels": 1324
+        },
+        "without_shader_scale": {
+          "inside_aabb": 839,
+          "max_outside_mm": 208.7286959703354,
+          "median_outside_mm": 0.0,
+          "pixels": 1324
+        }
+      },
+      "frame": 1,
+      "interior": {
+        "inside_aabb": 1072,
+        "max_outside_mm": 214.97868355716497,
+        "median_outside_mm": 0.0,
+        "pixels": 1106
+      },
+      "target": "WineBottle|surface|2|8"
+    },
+    {
+      "all": {
+        "inside_aabb": 1322,
+        "max_outside_mm": 209.440783739945,
+        "median_outside_mm": 0.0,
+        "pixels": 1412
+      },
+      "boundary": {
+        "inside_aabb": 108,
+        "max_outside_mm": 209.440783739945,
+        "median_outside_mm": 0.0,
+        "pixels": 194
+      },
+      "convention_sensitivity_evaluator_only": {
+        "pixel_index_no_half_offset": {
+          "inside_aabb": 1316,
+          "max_outside_mm": 210.12752019932645,
+          "median_outside_mm": 0.0,
+          "pixels": 1412
+        },
+        "production_convention": {
+          "inside_aabb": 1322,
+          "max_outside_mm": 209.440783739945,
+          "median_outside_mm": 0.0,
+          "pixels": 1412
+        },
+        "without_shader_scale": {
+          "inside_aabb": 1315,
+          "max_outside_mm": 204.36034361566712,
+          "median_outside_mm": 0.0,
+          "pixels": 1412
+        }
+      },
+      "frame": 1,
+      "interior": {
+        "inside_aabb": 1214,
+        "max_outside_mm": 0.33688309479518175,
+        "median_outside_mm": 0.0,
+        "pixels": 1218
+      },
+      "target": "SoapBottle|surface|2|14"
+    },
+    {
+      "all": {
+        "inside_aabb": 0,
+        "max_outside_mm": 155.58410173871894,
+        "median_outside_mm": 12.746667974127268,
+        "pixels": 1178
+      },
+      "boundary": {
+        "inside_aabb": 0,
+        "max_outside_mm": 155.5840735470173,
+        "median_outside_mm": 26.642188107567797,
+        "pixels": 201
+      },
+      "convention_sensitivity_evaluator_only": {
+        "pixel_index_no_half_offset": {
+          "inside_aabb": 540,
+          "max_outside_mm": 156.4219723979967,
+          "median_outside_mm": 13.496835618474702,
+          "pixels": 1178
+        },
+        "production_convention": {
+          "inside_aabb": 0,
+          "max_outside_mm": 155.58410173871894,
+          "median_outside_mm": 12.746667974127268,
+          "pixels": 1178
+        },
+        "without_shader_scale": {
+          "inside_aabb": 565,
+          "max_outside_mm": 149.3340930718945,
+          "median_outside_mm": 7.210846476125798,
+          "pixels": 1178
+        }
+      },
+      "frame": 1,
+      "interior": {
+        "inside_aabb": 0,
+        "max_outside_mm": 155.58410173871894,
+        "median_outside_mm": 11.742485319006457,
+        "pixels": 977
+      },
+      "target": "Bowl|surface|2|11"
+    },
+    {
+      "all": {
+        "inside_aabb": 1316,
+        "max_outside_mm": 214.9765031939126,
+        "median_outside_mm": 0.0,
+        "pixels": 1452
+      },
+      "boundary": {
+        "inside_aabb": 132,
+        "max_outside_mm": 214.9765031939126,
+        "median_outside_mm": 0.0,
+        "pixels": 228
+      },
+      "convention_sensitivity_evaluator_only": {
+        "pixel_index_no_half_offset": {
+          "inside_aabb": 1347,
+          "max_outside_mm": 216.05829469687922,
+          "median_outside_mm": 0.0,
+          "pixels": 1452
+        },
+        "production_convention": {
+          "inside_aabb": 1316,
+          "max_outside_mm": 214.9765031939126,
+          "median_outside_mm": 0.0,
+          "pixels": 1452
+        },
+        "without_shader_scale": {
+          "inside_aabb": 920,
+          "max_outside_mm": 208.72650059246521,
+          "median_outside_mm": 0.0,
+          "pixels": 1452
+        }
+      },
+      "frame": 2,
+      "interior": {
+        "inside_aabb": 1184,
+        "max_outside_mm": 214.97645165348135,
+        "median_outside_mm": 0.0,
+        "pixels": 1224
+      },
+      "target": "WineBottle|surface|2|8"
+    },
+    {
+      "all": {
+        "inside_aabb": 1288,
+        "max_outside_mm": 211.06890047353244,
+        "median_outside_mm": 0.0,
+        "pixels": 1396
+      },
+      "boundary": {
+        "inside_aabb": 85,
+        "max_outside_mm": 211.06890047353244,
+        "median_outside_mm": 1.4287184354966342,
+        "pixels": 189
+      },
+      "convention_sensitivity_evaluator_only": {
+        "pixel_index_no_half_offset": {
+          "inside_aabb": 1289,
+          "max_outside_mm": 211.9542468276523,
+          "median_outside_mm": 0.0,
+          "pixels": 1396
+        },
+        "production_convention": {
+          "inside_aabb": 1288,
+          "max_outside_mm": 211.06890047353244,
+          "median_outside_mm": 0.0,
+          "pixels": 1396
+        },
+        "without_shader_scale": {
+          "inside_aabb": 1285,
+          "max_outside_mm": 205.98031976558673,
+          "median_outside_mm": 0.0,
+          "pixels": 1396
+        }
+      },
+      "frame": 2,
+      "interior": {
+        "inside_aabb": 1203,
+        "max_outside_mm": 0.3510658399112909,
+        "median_outside_mm": 0.0,
+        "pixels": 1207
+      },
+      "target": "SoapBottle|surface|2|14"
+    },
+    {
+      "all": {
+        "inside_aabb": 0,
+        "max_outside_mm": 155.58286727029747,
+        "median_outside_mm": 12.1538187632384,
+        "pixels": 1224
+      },
+      "boundary": {
+        "inside_aabb": 0,
+        "max_outside_mm": 155.58286727029747,
+        "median_outside_mm": 25.671376322408122,
+        "pixels": 202
+      },
+      "convention_sensitivity_evaluator_only": {
+        "pixel_index_no_half_offset": {
+          "inside_aabb": 556,
+          "max_outside_mm": 156.64815635838548,
+          "median_outside_mm": 13.114823135941034,
+          "pixels": 1224
+        },
+        "production_convention": {
+          "inside_aabb": 0,
+          "max_outside_mm": 155.58286727029747,
+          "median_outside_mm": 12.1538187632384,
+          "pixels": 1224
+        },
+        "without_shader_scale": {
+          "inside_aabb": 587,
+          "max_outside_mm": 149.3328647758152,
+          "median_outside_mm": 6.620961511291434,
+          "pixels": 1224
+        }
+      },
+      "frame": 2,
+      "interior": {
+        "inside_aabb": 0,
+        "max_outside_mm": 155.58285593691878,
+        "median_outside_mm": 11.338702428579595,
+        "pixels": 1022
+      },
+      "target": "Bowl|surface|2|11"
+    }
+  ],
+  "rows": [
+    {
+      "arm": "current",
+      "candidate_mixture": {
+        "candidate_id": "6cea16c9-03ba-5a17-afea-812c8e640ce3",
+        "category": "bottle",
+        "mask_pixels": 1253,
+        "target_pixels": 1211,
+        "target_valid_aabb_pixels": 1118,
+        "top_instances": [
+          [
+            "WineBottle|surface|2|8",
+            1211
+          ],
+          [
+            "CounterTop|2|0",
+            32
+          ],
+          [
+            "wall|2|0.00|0.00|0.00|3.99",
+            10
+          ],
+          [
+            "Apple|surface|2|0",
+            0
+          ],
+          [
+            "Bowl|surface|2|11",
+            0
+          ]
+        ]
+      },
+      "class": "joint_correct",
+      "detector_threshold": 0.5,
+      "frame": 0,
+      "outside_aabb_mm": 0.0,
+      "query": {
+        "category": "bottle",
+        "ordinal": 0
+      },
+      "report_reason": "FLOW_AND_MASK_SUPPORTED",
+      "same_category_candidates": [
+        {
+          "candidate_id": "6cea16c9-03ba-5a17-afea-812c8e640ce3",
+          "detector_score": 0.9940136075019836,
+          "status": "SURFACE_CANDIDATE"
+        },
+        {
+          "candidate_id": "eb6da42e-37f3-51c2-b801-e6476b11a94b",
+          "detector_score": 0.9907953143119812,
+          "status": "SURFACE_CANDIDATE"
+        },
+        {
+          "candidate_id": "649d2256-89b0-50e2-9ae0-17a9ec6b8d87",
+          "detector_score": 0.07701388001441956,
+          "status": "BELOW_DETECTOR_THRESHOLD"
+        }
+      ],
+      "selected_convention_sensitivity_mm": {
+        "pixel_index_no_half_offset": 0.0,
+        "production_convention": 0.0,
+        "without_shader_scale": 3.756517090426348
+      },
+      "selected_instance": "WineBottle|surface|2|8",
+      "selected_pixel": [
+        81,
+        143
+      ],
+      "surviving_flow_points": 21,
+      "target": "WineBottle|surface|2|8",
+      "track_status": "FLOW_AND_MASK_SUPPORTED"
+    },
+    {
+      "arm": "iou",
+      "candidate_mixture": {
+        "candidate_id": "6cea16c9-03ba-5a17-afea-812c8e640ce3",
+        "category": "bottle",
+        "mask_pixels": 1253,
+        "target_pixels": 1211,
+        "target_valid_aabb_pixels": 1118,
+        "top_instances": [
+          [
+            "WineBottle|surface|2|8",
+            1211
+          ],
+          [
+            "CounterTop|2|0",
+            32
+          ],
+          [
+            "wall|2|0.00|0.00|0.00|3.99",
+            10
+          ],
+          [
+            "Apple|surface|2|0",
+            0
+          ],
+          [
+            "Bowl|surface|2|11",
+            0
+          ]
+        ]
+      },
+      "class": "joint_correct",
+      "detector_threshold": 0.5,
+      "frame": 0,
+      "outside_aabb_mm": 0.0,
+      "query": {
+        "category": "bottle",
+        "ordinal": 0
+      },
+      "report_reason": "CG_MATCHED_CURRENT",
+      "same_category_candidates": [
+        {
+          "candidate_id": "6cea16c9-03ba-5a17-afea-812c8e640ce3",
+          "detector_score": 0.9940136075019836,
+          "status": "SURFACE_CANDIDATE"
+        },
+        {
+          "candidate_id": "eb6da42e-37f3-51c2-b801-e6476b11a94b",
+          "detector_score": 0.9907953143119812,
+          "status": "SURFACE_CANDIDATE"
+        },
+        {
+          "candidate_id": "649d2256-89b0-50e2-9ae0-17a9ec6b8d87",
+          "detector_score": 0.07701388001441956,
+          "status": "BELOW_DETECTOR_THRESHOLD"
+        }
+      ],
+      "selected_convention_sensitivity_mm": {
+        "pixel_index_no_half_offset": 0.0,
+        "production_convention": 0.0,
+        "without_shader_scale": 3.678090730698802
+      },
+      "selected_instance": "WineBottle|surface|2|8",
+      "selected_pixel": [
+        80,
+        130
+      ],
+      "surviving_flow_points": null,
+      "target": "WineBottle|surface|2|8",
+      "track_status": "CG_MATCHED_CURRENT"
+    },
+    {
+      "arm": "hybrid",
+      "candidate_mixture": {
+        "candidate_id": "6cea16c9-03ba-5a17-afea-812c8e640ce3",
+        "category": "bottle",
+        "mask_pixels": 1253,
+        "target_pixels": 1211,
+        "target_valid_aabb_pixels": 1118,
+        "top_instances": [
+          [
+            "WineBottle|surface|2|8",
+            1211
+          ],
+          [
+            "CounterTop|2|0",
+            32
+          ],
+          [
+            "wall|2|0.00|0.00|0.00|3.99",
+            10
+          ],
+          [
+            "Apple|surface|2|0",
+            0
+          ],
+          [
+            "Bowl|surface|2|11",
+            0
+          ]
+        ]
+      },
+      "class": "joint_correct",
+      "detector_threshold": 0.5,
+      "frame": 0,
+      "outside_aabb_mm": 0.0,
+      "query": {
+        "category": "bottle",
+        "ordinal": 0
+      },
+      "report_reason": "CG_REFERENCE_GEOMETRY_FALLBACK",
+      "same_category_candidates": [
+        {
+          "candidate_id": "6cea16c9-03ba-5a17-afea-812c8e640ce3",
+          "detector_score": 0.9940136075019836,
+          "status": "SURFACE_CANDIDATE"
+        },
+        {
+          "candidate_id": "eb6da42e-37f3-51c2-b801-e6476b11a94b",
+          "detector_score": 0.9907953143119812,
+          "status": "SURFACE_CANDIDATE"
+        },
+        {
+          "candidate_id": "649d2256-89b0-50e2-9ae0-17a9ec6b8d87",
+          "detector_score": 0.07701388001441956,
+          "status": "BELOW_DETECTOR_THRESHOLD"
+        }
+      ],
+      "selected_convention_sensitivity_mm": {
+        "pixel_index_no_half_offset": 0.0,
+        "production_convention": 0.0,
+        "without_shader_scale": 3.756517090426348
+      },
+      "selected_instance": "WineBottle|surface|2|8",
+      "selected_pixel": [
+        81,
+        143
+      ],
+      "surviving_flow_points": 21,
+      "target": "WineBottle|surface|2|8",
+      "track_status": "CG_REFERENCE_GEOMETRY_FALLBACK"
+    },
+    {
+      "arm": "current",
+      "candidate_mixture": {
+        "candidate_id": "eb6da42e-37f3-51c2-b801-e6476b11a94b",
+        "category": "bottle",
+        "mask_pixels": 1495,
+        "target_pixels": 1456,
+        "target_valid_aabb_pixels": 1375,
+        "top_instances": [
+          [
+            "SoapBottle|surface|2|14",
+            1456
+          ],
+          [
+            "Lettuce|surface|2|3",
+            20
+          ],
+          [
+            "CounterTop|2|0",
+            19
+          ],
+          [
+            "Apple|surface|2|0",
+            0
+          ],
+          [
+            "Bowl|surface|2|11",
+            0
+          ]
+        ]
+      },
+      "class": "joint_correct",
+      "detector_threshold": 0.5,
+      "frame": 0,
+      "outside_aabb_mm": 0.0,
+      "query": {
+        "category": "bottle",
+        "ordinal": 1
+      },
+      "report_reason": "FLOW_AND_MASK_SUPPORTED",
+      "same_category_candidates": [
+        {
+          "candidate_id": "6cea16c9-03ba-5a17-afea-812c8e640ce3",
+          "detector_score": 0.9940136075019836,
+          "status": "SURFACE_CANDIDATE"
+        },
+        {
+          "candidate_id": "eb6da42e-37f3-51c2-b801-e6476b11a94b",
+          "detector_score": 0.9907953143119812,
+          "status": "SURFACE_CANDIDATE"
+        },
+        {
+          "candidate_id": "649d2256-89b0-50e2-9ae0-17a9ec6b8d87",
+          "detector_score": 0.07701388001441956,
+          "status": "BELOW_DETECTOR_THRESHOLD"
+        }
+      ],
+      "selected_convention_sensitivity_mm": {
+        "pixel_index_no_half_offset": 0.0,
+        "production_convention": 0.0,
+        "without_shader_scale": 0.0
+      },
+      "selected_instance": "SoapBottle|surface|2|14",
+      "selected_pixel": [
+        218,
+        173
+      ],
+      "surviving_flow_points": 16,
+      "target": "SoapBottle|surface|2|14",
+      "track_status": "FLOW_AND_MASK_SUPPORTED"
+    },
+    {
+      "arm": "iou",
+      "candidate_mixture": {
+        "candidate_id": "eb6da42e-37f3-51c2-b801-e6476b11a94b",
+        "category": "bottle",
+        "mask_pixels": 1495,
+        "target_pixels": 1456,
+        "target_valid_aabb_pixels": 1375,
+        "top_instances": [
+          [
+            "SoapBottle|surface|2|14",
+            1456
+          ],
+          [
+            "Lettuce|surface|2|3",
+            20
+          ],
+          [
+            "CounterTop|2|0",
+            19
+          ],
+          [
+            "Apple|surface|2|0",
+            0
+          ],
+          [
+            "Bowl|surface|2|11",
+            0
+          ]
+        ]
+      },
+      "class": "joint_correct",
+      "detector_threshold": 0.5,
+      "frame": 0,
+      "outside_aabb_mm": 0.0,
+      "query": {
+        "category": "bottle",
+        "ordinal": 1
+      },
+      "report_reason": "CG_MATCHED_CURRENT",
+      "same_category_candidates": [
+        {
+          "candidate_id": "6cea16c9-03ba-5a17-afea-812c8e640ce3",
+          "detector_score": 0.9940136075019836,
+          "status": "SURFACE_CANDIDATE"
+        },
+        {
+          "candidate_id": "eb6da42e-37f3-51c2-b801-e6476b11a94b",
+          "detector_score": 0.9907953143119812,
+          "status": "SURFACE_CANDIDATE"
+        },
+        {
+          "candidate_id": "649d2256-89b0-50e2-9ae0-17a9ec6b8d87",
+          "detector_score": 0.07701388001441956,
+          "status": "BELOW_DETECTOR_THRESHOLD"
+        }
+      ],
+      "selected_convention_sensitivity_mm": {
+        "pixel_index_no_half_offset": 0.0,
+        "production_convention": 0.0,
+        "without_shader_scale": 0.0
+      },
+      "selected_instance": "SoapBottle|surface|2|14",
+      "selected_pixel": [
+        222,
+        167
+      ],
+      "surviving_flow_points": null,
+      "target": "SoapBottle|surface|2|14",
+      "track_status": "CG_MATCHED_CURRENT"
+    },
+    {
+      "arm": "hybrid",
+      "candidate_mixture": {
+        "candidate_id": "eb6da42e-37f3-51c2-b801-e6476b11a94b",
+        "category": "bottle",
+        "mask_pixels": 1495,
+        "target_pixels": 1456,
+        "target_valid_aabb_pixels": 1375,
+        "top_instances": [
+          [
+            "SoapBottle|surface|2|14",
+            1456
+          ],
+          [
+            "Lettuce|surface|2|3",
+            20
+          ],
+          [
+            "CounterTop|2|0",
+            19
+          ],
+          [
+            "Apple|surface|2|0",
+            0
+          ],
+          [
+            "Bowl|surface|2|11",
+            0
+          ]
+        ]
+      },
+      "class": "joint_correct",
+      "detector_threshold": 0.5,
+      "frame": 0,
+      "outside_aabb_mm": 0.0,
+      "query": {
+        "category": "bottle",
+        "ordinal": 1
+      },
+      "report_reason": "CG_REFERENCE_GEOMETRY_FALLBACK",
+      "same_category_candidates": [
+        {
+          "candidate_id": "6cea16c9-03ba-5a17-afea-812c8e640ce3",
+          "detector_score": 0.9940136075019836,
+          "status": "SURFACE_CANDIDATE"
+        },
+        {
+          "candidate_id": "eb6da42e-37f3-51c2-b801-e6476b11a94b",
+          "detector_score": 0.9907953143119812,
+          "status": "SURFACE_CANDIDATE"
+        },
+        {
+          "candidate_id": "649d2256-89b0-50e2-9ae0-17a9ec6b8d87",
+          "detector_score": 0.07701388001441956,
+          "status": "BELOW_DETECTOR_THRESHOLD"
+        }
+      ],
+      "selected_convention_sensitivity_mm": {
+        "pixel_index_no_half_offset": 0.0,
+        "production_convention": 0.0,
+        "without_shader_scale": 0.0
+      },
+      "selected_instance": "SoapBottle|surface|2|14",
+      "selected_pixel": [
+        218,
+        173
+      ],
+      "surviving_flow_points": 16,
+      "target": "SoapBottle|surface|2|14",
+      "track_status": "CG_REFERENCE_GEOMETRY_FALLBACK"
+    },
+    {
+      "arm": "current",
+      "candidate_mixture": {
+        "candidate_id": "69b010aa-e71a-5e08-823a-3e7448ac845f",
+        "category": "bowl",
+        "mask_pixels": 1172,
+        "target_pixels": 1097,
+        "target_valid_aabb_pixels": 0,
+        "top_instances": [
+          [
+            "Bowl|surface|2|11",
+            1097
+          ],
+          [
+            "wall|2|0.00|0.00|0.00|3.99",
+            34
+          ],
+          [
+            "Kettle|surface|2|6",
+            31
+          ],
+          [
+            "CounterTop|2|0",
+            10
+          ],
+          [
+            "Apple|surface|2|0",
+            0
+          ]
+        ]
+      },
+      "class": "correct_instance_outside_aabb",
+      "detector_threshold": 0.5,
+      "frame": 0,
+      "outside_aabb_mm": 1.5606877711787925,
+      "query": {
+        "category": "bowl",
+        "ordinal": 0
+      },
+      "report_reason": "FLOW_AND_MASK_SUPPORTED",
+      "same_category_candidates": [
+        {
+          "candidate_id": "69b010aa-e71a-5e08-823a-3e7448ac845f",
+          "detector_score": 0.7658957242965698,
+          "status": "SURFACE_CANDIDATE"
+        },
+        {
+          "candidate_id": "43fb5fe5-1063-599c-b912-4fc70715964e",
+          "detector_score": 0.0977732464671135,
+          "status": "BELOW_DETECTOR_THRESHOLD"
+        },
+        {
+          "candidate_id": "7017e4e6-95df-516a-bc7d-d7630960e06b",
+          "detector_score": 0.07603186368942261,
+          "status": "BELOW_DETECTOR_THRESHOLD"
+        }
+      ],
+      "selected_convention_sensitivity_mm": {
+        "pixel_index_no_half_offset": 0.0,
+        "production_convention": 1.5606877711787925,
+        "without_shader_scale": 0.0
+      },
+      "selected_instance": "Bowl|surface|2|11",
+      "selected_pixel": [
+        163,
+        159
+      ],
+      "surviving_flow_points": 11,
+      "target": "Bowl|surface|2|11",
+      "track_status": "FLOW_AND_MASK_SUPPORTED"
+    },
+    {
+      "arm": "iou",
+      "candidate_mixture": {
+        "candidate_id": "69b010aa-e71a-5e08-823a-3e7448ac845f",
+        "category": "bowl",
+        "mask_pixels": 1172,
+        "target_pixels": 1097,
+        "target_valid_aabb_pixels": 0,
+        "top_instances": [
+          [
+            "Bowl|surface|2|11",
+            1097
+          ],
+          [
+            "wall|2|0.00|0.00|0.00|3.99",
+            34
+          ],
+          [
+            "Kettle|surface|2|6",
+            31
+          ],
+          [
+            "CounterTop|2|0",
+            10
+          ],
+          [
+            "Apple|surface|2|0",
+            0
+          ]
+        ]
+      },
+      "class": "correct_instance_outside_aabb",
+      "detector_threshold": 0.5,
+      "frame": 0,
+      "outside_aabb_mm": 1.560408330470775,
+      "query": {
+        "category": "bowl",
+        "ordinal": 0
+      },
+      "report_reason": "CG_MATCHED_CURRENT",
+      "same_category_candidates": [
+        {
+          "candidate_id": "69b010aa-e71a-5e08-823a-3e7448ac845f",
+          "detector_score": 0.7658957242965698,
+          "status": "SURFACE_CANDIDATE"
+        },
+        {
+          "candidate_id": "43fb5fe5-1063-599c-b912-4fc70715964e",
+          "detector_score": 0.0977732464671135,
+          "status": "BELOW_DETECTOR_THRESHOLD"
+        },
+        {
+          "candidate_id": "7017e4e6-95df-516a-bc7d-d7630960e06b",
+          "detector_score": 0.07603186368942261,
+          "status": "BELOW_DETECTOR_THRESHOLD"
+        }
+      ],
+      "selected_convention_sensitivity_mm": {
+        "pixel_index_no_half_offset": 0.0,
+        "production_convention": 1.560408330470775,
+        "without_shader_scale": 0.0
+      },
+      "selected_instance": "Bowl|surface|2|11",
+      "selected_pixel": [
+        159,
+        162
+      ],
+      "surviving_flow_points": null,
+      "target": "Bowl|surface|2|11",
+      "track_status": "CG_MATCHED_CURRENT"
+    },
+    {
+      "arm": "hybrid",
+      "candidate_mixture": {
+        "candidate_id": "69b010aa-e71a-5e08-823a-3e7448ac845f",
+        "category": "bowl",
+        "mask_pixels": 1172,
+        "target_pixels": 1097,
+        "target_valid_aabb_pixels": 0,
+        "top_instances": [
+          [
+            "Bowl|surface|2|11",
+            1097
+          ],
+          [
+            "wall|2|0.00|0.00|0.00|3.99",
+            34
+          ],
+          [
+            "Kettle|surface|2|6",
+            31
+          ],
+          [
+            "CounterTop|2|0",
+            10
+          ],
+          [
+            "Apple|surface|2|0",
+            0
+          ]
+        ]
+      },
+      "class": "correct_instance_outside_aabb",
+      "detector_threshold": 0.5,
+      "frame": 0,
+      "outside_aabb_mm": 1.5606877711787925,
+      "query": {
+        "category": "bowl",
+        "ordinal": 0
+      },
+      "report_reason": "CG_REFERENCE_GEOMETRY_FALLBACK",
+      "same_category_candidates": [
+        {
+          "candidate_id": "69b010aa-e71a-5e08-823a-3e7448ac845f",
+          "detector_score": 0.7658957242965698,
+          "status": "SURFACE_CANDIDATE"
+        },
+        {
+          "candidate_id": "43fb5fe5-1063-599c-b912-4fc70715964e",
+          "detector_score": 0.0977732464671135,
+          "status": "BELOW_DETECTOR_THRESHOLD"
+        },
+        {
+          "candidate_id": "7017e4e6-95df-516a-bc7d-d7630960e06b",
+          "detector_score": 0.07603186368942261,
+          "status": "BELOW_DETECTOR_THRESHOLD"
+        }
+      ],
+      "selected_convention_sensitivity_mm": {
+        "pixel_index_no_half_offset": 0.0,
+        "production_convention": 1.5606877711787925,
+        "without_shader_scale": 0.0
+      },
+      "selected_instance": "Bowl|surface|2|11",
+      "selected_pixel": [
+        163,
+        159
+      ],
+      "surviving_flow_points": 11,
+      "target": "Bowl|surface|2|11",
+      "track_status": "CG_REFERENCE_GEOMETRY_FALLBACK"
+    },
+    {
+      "arm": "current",
+      "candidate_mixture": {
+        "candidate_id": "e649b2db-08cf-53e5-acb2-f45d65f74b5e",
+        "category": "bottle",
+        "mask_pixels": 1332,
+        "target_pixels": 1303,
+        "target_valid_aabb_pixels": 1202,
+        "top_instances": [
+          [
+            "WineBottle|surface|2|8",
+            1303
+          ],
+          [
+            "wall|2|0.00|0.00|0.00|3.99",
+            12
+          ],
+          [
+            "CounterTop|2|0",
+            11
+          ],
+          [
+            "Potato|surface|2|9",
+            6
+          ],
+          [
+            "Apple|surface|2|0",
+            0
+          ]
+        ]
+      },
+      "class": "joint_correct",
+      "detector_threshold": 0.5,
+      "frame": 1,
+      "outside_aabb_mm": 0.0,
+      "query": {
+        "category": "bottle",
+        "ordinal": 0
+      },
+      "report_reason": "FLOW_AND_MASK_SUPPORTED",
+      "same_category_candidates": [
+        {
+          "candidate_id": "e649b2db-08cf-53e5-acb2-f45d65f74b5e",
+          "detector_score": 0.991664469242096,
+          "status": "SURFACE_CANDIDATE"
+        },
+        {
+          "candidate_id": "34614e8a-df9c-5507-b3d5-81e9f5c309e8",
+          "detector_score": 0.9897958636283875,
+          "status": "SURFACE_CANDIDATE"
+        },
+        {
+          "candidate_id": "b2fb5602-19ac-5f1d-82f9-f124f394b45b",
+          "detector_score": 0.1860063672065735,
+          "status": "BELOW_DETECTOR_THRESHOLD"
+        }
+      ],
+      "selected_convention_sensitivity_mm": {
+        "pixel_index_no_half_offset": 0.0,
+        "production_convention": 0.0,
+        "without_shader_scale": 3.892069993706393
+      },
+      "selected_instance": "WineBottle|surface|2|8",
+      "selected_pixel": [
+        57,
+        147
+      ],
+      "surviving_flow_points": 21,
+      "target": "WineBottle|surface|2|8",
+      "track_status": "FLOW_AND_MASK_SUPPORTED"
+    },
+    {
+      "arm": "iou",
+      "candidate_mixture": {
+        "candidate_id": "e649b2db-08cf-53e5-acb2-f45d65f74b5e",
+        "category": "bottle",
+        "mask_pixels": 1332,
+        "target_pixels": 1303,
+        "target_valid_aabb_pixels": 1202,
+        "top_instances": [
+          [
+            "WineBottle|surface|2|8",
+            1303
+          ],
+          [
+            "wall|2|0.00|0.00|0.00|3.99",
+            12
+          ],
+          [
+            "CounterTop|2|0",
+            11
+          ],
+          [
+            "Potato|surface|2|9",
+            6
+          ],
+          [
+            "Apple|surface|2|0",
+            0
+          ]
+        ]
+      },
+      "class": "joint_correct",
+      "detector_threshold": 0.5,
+      "frame": 1,
+      "outside_aabb_mm": 0.0,
+      "query": {
+        "category": "bottle",
+        "ordinal": 0
+      },
+      "report_reason": "CG_MATCHED_CURRENT",
+      "same_category_candidates": [
+        {
+          "candidate_id": "e649b2db-08cf-53e5-acb2-f45d65f74b5e",
+          "detector_score": 0.991664469242096,
+          "status": "SURFACE_CANDIDATE"
+        },
+        {
+          "candidate_id": "34614e8a-df9c-5507-b3d5-81e9f5c309e8",
+          "detector_score": 0.9897958636283875,
+          "status": "SURFACE_CANDIDATE"
+        },
+        {
+          "candidate_id": "b2fb5602-19ac-5f1d-82f9-f124f394b45b",
+          "detector_score": 0.1860063672065735,
+          "status": "BELOW_DETECTOR_THRESHOLD"
+        }
+      ],
+      "selected_convention_sensitivity_mm": {
+        "pixel_index_no_half_offset": 0.0,
+        "production_convention": 0.0,
+        "without_shader_scale": 3.146197420953789
+      },
+      "selected_instance": "WineBottle|surface|2|8",
+      "selected_pixel": [
+        56,
+        133
+      ],
+      "surviving_flow_points": null,
+      "target": "WineBottle|surface|2|8",
+      "track_status": "CG_MATCHED_CURRENT"
+    },
+    {
+      "arm": "hybrid",
+      "candidate_mixture": {
+        "candidate_id": "e649b2db-08cf-53e5-acb2-f45d65f74b5e",
+        "category": "bottle",
+        "mask_pixels": 1332,
+        "target_pixels": 1303,
+        "target_valid_aabb_pixels": 1202,
+        "top_instances": [
+          [
+            "WineBottle|surface|2|8",
+            1303
+          ],
+          [
+            "wall|2|0.00|0.00|0.00|3.99",
+            12
+          ],
+          [
+            "CounterTop|2|0",
+            11
+          ],
+          [
+            "Potato|surface|2|9",
+            6
+          ],
+          [
+            "Apple|surface|2|0",
+            0
+          ]
+        ]
+      },
+      "class": "joint_correct",
+      "detector_threshold": 0.5,
+      "frame": 1,
+      "outside_aabb_mm": 0.0,
+      "query": {
+        "category": "bottle",
+        "ordinal": 0
+      },
+      "report_reason": "CG_REFERENCE_GEOMETRY_FALLBACK",
+      "same_category_candidates": [
+        {
+          "candidate_id": "e649b2db-08cf-53e5-acb2-f45d65f74b5e",
+          "detector_score": 0.991664469242096,
+          "status": "SURFACE_CANDIDATE"
+        },
+        {
+          "candidate_id": "34614e8a-df9c-5507-b3d5-81e9f5c309e8",
+          "detector_score": 0.9897958636283875,
+          "status": "SURFACE_CANDIDATE"
+        },
+        {
+          "candidate_id": "b2fb5602-19ac-5f1d-82f9-f124f394b45b",
+          "detector_score": 0.1860063672065735,
+          "status": "BELOW_DETECTOR_THRESHOLD"
+        }
+      ],
+      "selected_convention_sensitivity_mm": {
+        "pixel_index_no_half_offset": 0.0,
+        "production_convention": 0.0,
+        "without_shader_scale": 3.892069993706393
+      },
+      "selected_instance": "WineBottle|surface|2|8",
+      "selected_pixel": [
+        57,
+        147
+      ],
+      "surviving_flow_points": 21,
+      "target": "WineBottle|surface|2|8",
+      "track_status": "CG_REFERENCE_GEOMETRY_FALLBACK"
+    },
+    {
+      "arm": "current",
+      "candidate_mixture": {
+        "candidate_id": "34614e8a-df9c-5507-b3d5-81e9f5c309e8",
+        "category": "bottle",
+        "mask_pixels": 1494,
+        "target_pixels": 1409,
+        "target_valid_aabb_pixels": 1320,
+        "top_instances": [
+          [
+            "SoapBottle|surface|2|14",
+            1409
+          ],
+          [
+            "CounterTop|2|0",
+            65
+          ],
+          [
+            "Lettuce|surface|2|3",
+            20
+          ],
+          [
+            "Apple|surface|2|0",
+            0
+          ],
+          [
+            "Bowl|surface|2|11",
+            0
+          ]
+        ]
+      },
+      "class": "joint_correct",
+      "detector_threshold": 0.5,
+      "frame": 1,
+      "outside_aabb_mm": 0.0,
+      "query": {
+        "category": "bottle",
+        "ordinal": 1
+      },
+      "report_reason": "FLOW_AND_MASK_SUPPORTED",
+      "same_category_candidates": [
+        {
+          "candidate_id": "e649b2db-08cf-53e5-acb2-f45d65f74b5e",
+          "detector_score": 0.991664469242096,
+          "status": "SURFACE_CANDIDATE"
+        },
+        {
+          "candidate_id": "34614e8a-df9c-5507-b3d5-81e9f5c309e8",
+          "detector_score": 0.9897958636283875,
+          "status": "SURFACE_CANDIDATE"
+        },
+        {
+          "candidate_id": "b2fb5602-19ac-5f1d-82f9-f124f394b45b",
+          "detector_score": 0.1860063672065735,
+          "status": "BELOW_DETECTOR_THRESHOLD"
+        }
+      ],
+      "selected_convention_sensitivity_mm": {
+        "pixel_index_no_half_offset": 0.0,
+        "production_convention": 0.0,
+        "without_shader_scale": 0.0
+      },
+      "selected_instance": "SoapBottle|surface|2|14",
+      "selected_pixel": [
+        197,
+        170
+      ],
+      "surviving_flow_points": 14,
+      "target": "SoapBottle|surface|2|14",
+      "track_status": "FLOW_AND_MASK_SUPPORTED"
+    },
+    {
+      "arm": "iou",
+      "candidate_mixture": {
+        "candidate_id": "34614e8a-df9c-5507-b3d5-81e9f5c309e8",
+        "category": "bottle",
+        "mask_pixels": 1494,
+        "target_pixels": 1409,
+        "target_valid_aabb_pixels": 1320,
+        "top_instances": [
+          [
+            "SoapBottle|surface|2|14",
+            1409
+          ],
+          [
+            "CounterTop|2|0",
+            65
+          ],
+          [
+            "Lettuce|surface|2|3",
+            20
+          ],
+          [
+            "Apple|surface|2|0",
+            0
+          ],
+          [
+            "Bowl|surface|2|11",
+            0
+          ]
+        ]
+      },
+      "class": "joint_correct",
+      "detector_threshold": 0.5,
+      "frame": 1,
+      "outside_aabb_mm": 0.0,
+      "query": {
+        "category": "bottle",
+        "ordinal": 1
+      },
+      "report_reason": "CG_MATCHED_CURRENT",
+      "same_category_candidates": [
+        {
+          "candidate_id": "e649b2db-08cf-53e5-acb2-f45d65f74b5e",
+          "detector_score": 0.991664469242096,
+          "status": "SURFACE_CANDIDATE"
+        },
+        {
+          "candidate_id": "34614e8a-df9c-5507-b3d5-81e9f5c309e8",
+          "detector_score": 0.9897958636283875,
+          "status": "SURFACE_CANDIDATE"
+        },
+        {
+          "candidate_id": "b2fb5602-19ac-5f1d-82f9-f124f394b45b",
+          "detector_score": 0.1860063672065735,
+          "status": "BELOW_DETECTOR_THRESHOLD"
+        }
+      ],
+      "selected_convention_sensitivity_mm": {
+        "pixel_index_no_half_offset": 0.0,
+        "production_convention": 0.0,
+        "without_shader_scale": 0.0
+      },
+      "selected_instance": "SoapBottle|surface|2|14",
+      "selected_pixel": [
+        198,
+        191
+      ],
+      "surviving_flow_points": null,
+      "target": "SoapBottle|surface|2|14",
+      "track_status": "CG_MATCHED_CURRENT"
+    },
+    {
+      "arm": "hybrid",
+      "candidate_mixture": {
+        "candidate_id": "34614e8a-df9c-5507-b3d5-81e9f5c309e8",
+        "category": "bottle",
+        "mask_pixels": 1494,
+        "target_pixels": 1409,
+        "target_valid_aabb_pixels": 1320,
+        "top_instances": [
+          [
+            "SoapBottle|surface|2|14",
+            1409
+          ],
+          [
+            "CounterTop|2|0",
+            65
+          ],
+          [
+            "Lettuce|surface|2|3",
+            20
+          ],
+          [
+            "Apple|surface|2|0",
+            0
+          ],
+          [
+            "Bowl|surface|2|11",
+            0
+          ]
+        ]
+      },
+      "class": "joint_correct",
+      "detector_threshold": 0.5,
+      "frame": 1,
+      "outside_aabb_mm": 0.0,
+      "query": {
+        "category": "bottle",
+        "ordinal": 1
+      },
+      "report_reason": "CG_REFERENCE_GEOMETRY_FALLBACK",
+      "same_category_candidates": [
+        {
+          "candidate_id": "e649b2db-08cf-53e5-acb2-f45d65f74b5e",
+          "detector_score": 0.991664469242096,
+          "status": "SURFACE_CANDIDATE"
+        },
+        {
+          "candidate_id": "34614e8a-df9c-5507-b3d5-81e9f5c309e8",
+          "detector_score": 0.9897958636283875,
+          "status": "SURFACE_CANDIDATE"
+        },
+        {
+          "candidate_id": "b2fb5602-19ac-5f1d-82f9-f124f394b45b",
+          "detector_score": 0.1860063672065735,
+          "status": "BELOW_DETECTOR_THRESHOLD"
+        }
+      ],
+      "selected_convention_sensitivity_mm": {
+        "pixel_index_no_half_offset": 0.0,
+        "production_convention": 0.0,
+        "without_shader_scale": 0.0
+      },
+      "selected_instance": "SoapBottle|surface|2|14",
+      "selected_pixel": [
+        197,
+        170
+      ],
+      "surviving_flow_points": 14,
+      "target": "SoapBottle|surface|2|14",
+      "track_status": "CG_REFERENCE_GEOMETRY_FALLBACK"
+    },
+    {
+      "arm": "current",
+      "candidate_mixture": null,
+      "class": "no_report",
+      "detector_threshold": 0.5,
+      "frame": 1,
+      "outside_aabb_mm": null,
+      "query": {
+        "category": "bowl",
+        "ordinal": 0
+      },
+      "report_reason": "UNKNOWN_NO_CURRENT_MASK_SUPPORT",
+      "same_category_candidates": [
+        {
+          "candidate_id": "2cb8944d-04c3-55bc-9320-077bd59482a9",
+          "detector_score": 0.4704059362411499,
+          "status": "BELOW_DETECTOR_THRESHOLD"
+        }
+      ],
+      "selected_convention_sensitivity_mm": null,
+      "selected_instance": null,
+      "selected_pixel": null,
+      "surviving_flow_points": 10,
+      "target": "Bowl|surface|2|11",
+      "track_status": "UNKNOWN_NO_CURRENT_MASK_SUPPORT"
+    },
+    {
+      "arm": "iou",
+      "candidate_mixture": null,
+      "class": "no_report",
+      "detector_threshold": 0.5,
+      "frame": 1,
+      "outside_aabb_mm": null,
+      "query": {
+        "category": "bowl",
+        "ordinal": 0
+      },
+      "report_reason": "CG_NOT_OBSERVED_CURRENT",
+      "same_category_candidates": [
+        {
+          "candidate_id": "2cb8944d-04c3-55bc-9320-077bd59482a9",
+          "detector_score": 0.4704059362411499,
+          "status": "BELOW_DETECTOR_THRESHOLD"
+        }
+      ],
+      "selected_convention_sensitivity_mm": null,
+      "selected_instance": null,
+      "selected_pixel": null,
+      "surviving_flow_points": null,
+      "target": "Bowl|surface|2|11",
+      "track_status": "CG_NOT_OBSERVED_CURRENT"
+    },
+    {
+      "arm": "hybrid",
+      "candidate_mixture": null,
+      "class": "no_report",
+      "detector_threshold": 0.5,
+      "frame": 1,
+      "outside_aabb_mm": null,
+      "query": {
+        "category": "bowl",
+        "ordinal": 0
+      },
+      "report_reason": "CG_NOT_OBSERVED_CURRENT",
+      "same_category_candidates": [
+        {
+          "candidate_id": "2cb8944d-04c3-55bc-9320-077bd59482a9",
+          "detector_score": 0.4704059362411499,
+          "status": "BELOW_DETECTOR_THRESHOLD"
+        }
+      ],
+      "selected_convention_sensitivity_mm": null,
+      "selected_instance": null,
+      "selected_pixel": null,
+      "surviving_flow_points": null,
+      "target": "Bowl|surface|2|11",
+      "track_status": "CG_NOT_OBSERVED_CURRENT"
+    },
+    {
+      "arm": "current",
+      "candidate_mixture": {
+        "candidate_id": "3f9b8f35-8106-54d3-8cd6-7188cec1dcdd",
+        "category": "bottle",
+        "mask_pixels": 1467,
+        "target_pixels": 1428,
+        "target_valid_aabb_pixels": 1316,
+        "top_instances": [
+          [
+            "WineBottle|surface|2|8",
+            1428
+          ],
+          [
+            "CounterTop|2|0",
+            21
+          ],
+          [
+            "wall|2|0.00|0.00|0.00|3.99",
+            12
+          ],
+          [
+            "Potato|surface|2|9",
+            6
+          ],
+          [
+            "Apple|surface|2|0",
+            0
+          ]
+        ]
+      },
+      "class": "joint_correct",
+      "detector_threshold": 0.5,
+      "frame": 2,
+      "outside_aabb_mm": 0.0,
+      "query": {
+        "category": "bottle",
+        "ordinal": 0
+      },
+      "report_reason": "FLOW_AND_MASK_SUPPORTED",
+      "same_category_candidates": [
+        {
+          "candidate_id": "3f9b8f35-8106-54d3-8cd6-7188cec1dcdd",
+          "detector_score": 0.9897350072860718,
+          "status": "SURFACE_CANDIDATE"
+        },
+        {
+          "candidate_id": "40df58a1-91b6-5aa7-a714-7aca04d9985c",
+          "detector_score": 0.9892218112945557,
+          "status": "SURFACE_CANDIDATE"
+        },
+        {
+          "candidate_id": "c997a67b-86bc-52fa-a03c-bc322e79f83b",
+          "detector_score": 0.20323696732521057,
+          "status": "BELOW_DETECTOR_THRESHOLD"
+        }
+      ],
+      "selected_convention_sensitivity_mm": {
+        "pixel_index_no_half_offset": 0.0,
+        "production_convention": 0.0,
+        "without_shader_scale": 0.0
+      },
+      "selected_instance": "WineBottle|surface|2|8",
+      "selected_pixel": [
+        33,
+        139
+      ],
+      "surviving_flow_points": 21,
+      "target": "WineBottle|surface|2|8",
+      "track_status": "FLOW_AND_MASK_SUPPORTED"
+    },
+    {
+      "arm": "iou",
+      "candidate_mixture": {
+        "candidate_id": "3f9b8f35-8106-54d3-8cd6-7188cec1dcdd",
+        "category": "bottle",
+        "mask_pixels": 1467,
+        "target_pixels": 1428,
+        "target_valid_aabb_pixels": 1316,
+        "top_instances": [
+          [
+            "WineBottle|surface|2|8",
+            1428
+          ],
+          [
+            "CounterTop|2|0",
+            21
+          ],
+          [
+            "wall|2|0.00|0.00|0.00|3.99",
+            12
+          ],
+          [
+            "Potato|surface|2|9",
+            6
+          ],
+          [
+            "Apple|surface|2|0",
+            0
+          ]
+        ]
+      },
+      "class": "joint_correct",
+      "detector_threshold": 0.5,
+      "frame": 2,
+      "outside_aabb_mm": 0.0,
+      "query": {
+        "category": "bottle",
+        "ordinal": 0
+      },
+      "report_reason": "CG_MATCHED_CURRENT",
+      "same_category_candidates": [
+        {
+          "candidate_id": "3f9b8f35-8106-54d3-8cd6-7188cec1dcdd",
+          "detector_score": 0.9897350072860718,
+          "status": "SURFACE_CANDIDATE"
+        },
+        {
+          "candidate_id": "40df58a1-91b6-5aa7-a714-7aca04d9985c",
+          "detector_score": 0.9892218112945557,
+          "status": "SURFACE_CANDIDATE"
+        },
+        {
+          "candidate_id": "c997a67b-86bc-52fa-a03c-bc322e79f83b",
+          "detector_score": 0.20323696732521057,
+          "status": "BELOW_DETECTOR_THRESHOLD"
+        }
+      ],
+      "selected_convention_sensitivity_mm": {
+        "pixel_index_no_half_offset": 0.0,
+        "production_convention": 0.0,
+        "without_shader_scale": 0.0
+      },
+      "selected_instance": "WineBottle|surface|2|8",
+      "selected_pixel": [
+        27,
+        123
+      ],
+      "surviving_flow_points": null,
+      "target": "WineBottle|surface|2|8",
+      "track_status": "CG_MATCHED_CURRENT"
+    },
+    {
+      "arm": "hybrid",
+      "candidate_mixture": {
+        "candidate_id": "3f9b8f35-8106-54d3-8cd6-7188cec1dcdd",
+        "category": "bottle",
+        "mask_pixels": 1467,
+        "target_pixels": 1428,
+        "target_valid_aabb_pixels": 1316,
+        "top_instances": [
+          [
+            "WineBottle|surface|2|8",
+            1428
+          ],
+          [
+            "CounterTop|2|0",
+            21
+          ],
+          [
+            "wall|2|0.00|0.00|0.00|3.99",
+            12
+          ],
+          [
+            "Potato|surface|2|9",
+            6
+          ],
+          [
+            "Apple|surface|2|0",
+            0
+          ]
+        ]
+      },
+      "class": "joint_correct",
+      "detector_threshold": 0.5,
+      "frame": 2,
+      "outside_aabb_mm": 0.0,
+      "query": {
+        "category": "bottle",
+        "ordinal": 0
+      },
+      "report_reason": "CG_REFERENCE_GEOMETRY_FALLBACK",
+      "same_category_candidates": [
+        {
+          "candidate_id": "3f9b8f35-8106-54d3-8cd6-7188cec1dcdd",
+          "detector_score": 0.9897350072860718,
+          "status": "SURFACE_CANDIDATE"
+        },
+        {
+          "candidate_id": "40df58a1-91b6-5aa7-a714-7aca04d9985c",
+          "detector_score": 0.9892218112945557,
+          "status": "SURFACE_CANDIDATE"
+        },
+        {
+          "candidate_id": "c997a67b-86bc-52fa-a03c-bc322e79f83b",
+          "detector_score": 0.20323696732521057,
+          "status": "BELOW_DETECTOR_THRESHOLD"
+        }
+      ],
+      "selected_convention_sensitivity_mm": {
+        "pixel_index_no_half_offset": 0.0,
+        "production_convention": 0.0,
+        "without_shader_scale": 0.0
+      },
+      "selected_instance": "WineBottle|surface|2|8",
+      "selected_pixel": [
+        33,
+        139
+      ],
+      "surviving_flow_points": 21,
+      "target": "WineBottle|surface|2|8",
+      "track_status": "CG_REFERENCE_GEOMETRY_FALLBACK"
+    },
+    {
+      "arm": "current",
+      "candidate_mixture": {
+        "candidate_id": "40df58a1-91b6-5aa7-a714-7aca04d9985c",
+        "category": "bottle",
+        "mask_pixels": 1457,
+        "target_pixels": 1388,
+        "target_valid_aabb_pixels": 1285,
+        "top_instances": [
+          [
+            "SoapBottle|surface|2|14",
+            1388
+          ],
+          [
+            "CounterTop|2|0",
+            55
+          ],
+          [
+            "Lettuce|surface|2|3",
+            14
+          ],
+          [
+            "Apple|surface|2|0",
+            0
+          ],
+          [
+            "Bowl|surface|2|11",
+            0
+          ]
+        ]
+      },
+      "class": "joint_correct",
+      "detector_threshold": 0.5,
+      "frame": 2,
+      "outside_aabb_mm": 0.0,
+      "query": {
+        "category": "bottle",
+        "ordinal": 1
+      },
+      "report_reason": "FLOW_AND_MASK_SUPPORTED",
+      "same_category_candidates": [
+        {
+          "candidate_id": "3f9b8f35-8106-54d3-8cd6-7188cec1dcdd",
+          "detector_score": 0.9897350072860718,
+          "status": "SURFACE_CANDIDATE"
+        },
+        {
+          "candidate_id": "40df58a1-91b6-5aa7-a714-7aca04d9985c",
+          "detector_score": 0.9892218112945557,
+          "status": "SURFACE_CANDIDATE"
+        },
+        {
+          "candidate_id": "c997a67b-86bc-52fa-a03c-bc322e79f83b",
+          "detector_score": 0.20323696732521057,
+          "status": "BELOW_DETECTOR_THRESHOLD"
+        }
+      ],
+      "selected_convention_sensitivity_mm": {
+        "pixel_index_no_half_offset": 0.0,
+        "production_convention": 0.0,
+        "without_shader_scale": 0.0
+      },
+      "selected_instance": "SoapBottle|surface|2|14",
+      "selected_pixel": [
+        179,
+        173
+      ],
+      "surviving_flow_points": 14,
+      "target": "SoapBottle|surface|2|14",
+      "track_status": "FLOW_AND_MASK_SUPPORTED"
+    },
+    {
+      "arm": "iou",
+      "candidate_mixture": {
+        "candidate_id": "40df58a1-91b6-5aa7-a714-7aca04d9985c",
+        "category": "bottle",
+        "mask_pixels": 1457,
+        "target_pixels": 1388,
+        "target_valid_aabb_pixels": 1285,
+        "top_instances": [
+          [
+            "SoapBottle|surface|2|14",
+            1388
+          ],
+          [
+            "CounterTop|2|0",
+            55
+          ],
+          [
+            "Lettuce|surface|2|3",
+            14
+          ],
+          [
+            "Apple|surface|2|0",
+            0
+          ],
+          [
+            "Bowl|surface|2|11",
+            0
+          ]
+        ]
+      },
+      "class": "joint_correct",
+      "detector_threshold": 0.5,
+      "frame": 2,
+      "outside_aabb_mm": 0.0,
+      "query": {
+        "category": "bottle",
+        "ordinal": 1
+      },
+      "report_reason": "CG_MATCHED_CURRENT",
+      "same_category_candidates": [
+        {
+          "candidate_id": "3f9b8f35-8106-54d3-8cd6-7188cec1dcdd",
+          "detector_score": 0.9897350072860718,
+          "status": "SURFACE_CANDIDATE"
+        },
+        {
+          "candidate_id": "40df58a1-91b6-5aa7-a714-7aca04d9985c",
+          "detector_score": 0.9892218112945557,
+          "status": "SURFACE_CANDIDATE"
+        },
+        {
+          "candidate_id": "c997a67b-86bc-52fa-a03c-bc322e79f83b",
+          "detector_score": 0.20323696732521057,
+          "status": "BELOW_DETECTOR_THRESHOLD"
+        }
+      ],
+      "selected_convention_sensitivity_mm": {
+        "pixel_index_no_half_offset": 0.0,
+        "production_convention": 0.0,
+        "without_shader_scale": 0.0
+      },
+      "selected_instance": "SoapBottle|surface|2|14",
+      "selected_pixel": [
+        177,
+        178
+      ],
+      "surviving_flow_points": null,
+      "target": "SoapBottle|surface|2|14",
+      "track_status": "CG_MATCHED_CURRENT"
+    },
+    {
+      "arm": "hybrid",
+      "candidate_mixture": {
+        "candidate_id": "40df58a1-91b6-5aa7-a714-7aca04d9985c",
+        "category": "bottle",
+        "mask_pixels": 1457,
+        "target_pixels": 1388,
+        "target_valid_aabb_pixels": 1285,
+        "top_instances": [
+          [
+            "SoapBottle|surface|2|14",
+            1388
+          ],
+          [
+            "CounterTop|2|0",
+            55
+          ],
+          [
+            "Lettuce|surface|2|3",
+            14
+          ],
+          [
+            "Apple|surface|2|0",
+            0
+          ],
+          [
+            "Bowl|surface|2|11",
+            0
+          ]
+        ]
+      },
+      "class": "joint_correct",
+      "detector_threshold": 0.5,
+      "frame": 2,
+      "outside_aabb_mm": 0.0,
+      "query": {
+        "category": "bottle",
+        "ordinal": 1
+      },
+      "report_reason": "CG_REFERENCE_GEOMETRY_FALLBACK",
+      "same_category_candidates": [
+        {
+          "candidate_id": "3f9b8f35-8106-54d3-8cd6-7188cec1dcdd",
+          "detector_score": 0.9897350072860718,
+          "status": "SURFACE_CANDIDATE"
+        },
+        {
+          "candidate_id": "40df58a1-91b6-5aa7-a714-7aca04d9985c",
+          "detector_score": 0.9892218112945557,
+          "status": "SURFACE_CANDIDATE"
+        },
+        {
+          "candidate_id": "c997a67b-86bc-52fa-a03c-bc322e79f83b",
+          "detector_score": 0.20323696732521057,
+          "status": "BELOW_DETECTOR_THRESHOLD"
+        }
+      ],
+      "selected_convention_sensitivity_mm": {
+        "pixel_index_no_half_offset": 0.0,
+        "production_convention": 0.0,
+        "without_shader_scale": 0.0
+      },
+      "selected_instance": "SoapBottle|surface|2|14",
+      "selected_pixel": [
+        179,
+        173
+      ],
+      "surviving_flow_points": 14,
+      "target": "SoapBottle|surface|2|14",
+      "track_status": "CG_REFERENCE_GEOMETRY_FALLBACK"
+    },
+    {
+      "arm": "current",
+      "candidate_mixture": null,
+      "class": "no_report",
+      "detector_threshold": 0.5,
+      "frame": 2,
+      "outside_aabb_mm": null,
+      "query": {
+        "category": "bowl",
+        "ordinal": 0
+      },
+      "report_reason": "UNKNOWN_NO_CURRENT_MASK_SUPPORT",
+      "same_category_candidates": [
+        {
+          "candidate_id": "0e050e4c-def5-54f4-8c73-f809984b58bc",
+          "detector_score": 0.49626508355140686,
+          "status": "BELOW_DETECTOR_THRESHOLD"
+        }
+      ],
+      "selected_convention_sensitivity_mm": null,
+      "selected_instance": null,
+      "selected_pixel": null,
+      "surviving_flow_points": 10,
+      "target": "Bowl|surface|2|11",
+      "track_status": "UNKNOWN_NO_CURRENT_MASK_SUPPORT"
+    },
+    {
+      "arm": "iou",
+      "candidate_mixture": null,
+      "class": "no_report",
+      "detector_threshold": 0.5,
+      "frame": 2,
+      "outside_aabb_mm": null,
+      "query": {
+        "category": "bowl",
+        "ordinal": 0
+      },
+      "report_reason": "CG_NOT_OBSERVED_CURRENT",
+      "same_category_candidates": [
+        {
+          "candidate_id": "0e050e4c-def5-54f4-8c73-f809984b58bc",
+          "detector_score": 0.49626508355140686,
+          "status": "BELOW_DETECTOR_THRESHOLD"
+        }
+      ],
+      "selected_convention_sensitivity_mm": null,
+      "selected_instance": null,
+      "selected_pixel": null,
+      "surviving_flow_points": null,
+      "target": "Bowl|surface|2|11",
+      "track_status": "CG_NOT_OBSERVED_CURRENT"
+    },
+    {
+      "arm": "hybrid",
+      "candidate_mixture": null,
+      "class": "no_report",
+      "detector_threshold": 0.5,
+      "frame": 2,
+      "outside_aabb_mm": null,
+      "query": {
+        "category": "bowl",
+        "ordinal": 0
+      },
+      "report_reason": "CG_NOT_OBSERVED_CURRENT",
+      "same_category_candidates": [
+        {
+          "candidate_id": "0e050e4c-def5-54f4-8c73-f809984b58bc",
+          "detector_score": 0.49626508355140686,
+          "status": "BELOW_DETECTOR_THRESHOLD"
+        }
+      ],
+      "selected_convention_sensitivity_mm": null,
+      "selected_instance": null,
+      "selected_pixel": null,
+      "surviving_flow_points": null,
+      "target": "Bowl|surface|2|11",
+      "track_status": "CG_NOT_OBSERVED_CURRENT"
+    }
+  ],
+  "schema": "surface-failure-diagnostic@1",
+  "targets_sha256": "6327c2fa4a197e29542e163eca0a7624d7becface66d71a17821b625a9afbd9a",
+  "tool_sha256": "2be9d454c74a44510b8bccba7fc86b9d217ee249fda64208d67b98cb35de064b"
+}

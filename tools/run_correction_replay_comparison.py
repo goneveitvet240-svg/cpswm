@@ -81,7 +81,14 @@ def distance(a, b):
 
 
 def build(
-    output, *, seed, source, ciav_journal=None, joint_producer=None, observation_decoder=None
+    output,
+    *,
+    seed,
+    source,
+    ciav_journal=None,
+    joint_producer=None,
+    observation_decoder=None,
+    ciav_outcome=CIAVOutcomeKind.DETECTED_DIFFERENT_LOCATION,
 ):
     probe = BackboneWiringProbe.build(seed=seed)
     producer = OracleProducer()
@@ -97,9 +104,7 @@ def build(
         if ciav_journal is not None and key in ciav_journal:
             ciav = deepcopy(ciav_journal[key])
         else:
-            ciav = probe.ciav_input(
-                item.transition, outcome=CIAVOutcomeKind.DETECTED_DIFFERENT_LOCATION
-            )
+            ciav = probe.ciav_input(item.transition, outcome=ciav_outcome)
             if ciav_journal is not None:
                 ciav_journal[key] = deepcopy(ciav)
         return AdaptiveExecutionContext(
@@ -150,6 +155,11 @@ def ingest(probe, producer, stream, *, skip_days=(), input_journal=None, produce
                 "operators": receipt.result.executed_operator_count,
                 "primary_source": str(transition.after.metadata.record_id),
                 "actor_posterior": dict(receipt.result.primary_result.actor_posterior),
+                "scenario_day": day.day,
+                "state": summary(stream),
+                "soft_memory": soft_memory_baseline(
+                    probe, tuple(stream._system.core._observed_events.items())
+                ),
             }
         )
     producer.output = None
@@ -204,7 +214,7 @@ def event_key(event):
     )
 
 
-def run(output: Path, seed: int):
+def run(output: Path, seed: int, *, ciav_outcome=CIAVOutcomeKind.DETECTED_DIFFERENT_LOCATION):
     output.mkdir(parents=True, exist_ok=False)
     source, files = source_identity()
     # This runner also belongs to the execution identity.
@@ -216,9 +226,17 @@ def run(output: Path, seed: int):
     source = content_sha256(files)
     input_journal, ciav_journal = {}, {}
     probe, producer, stream, store, context = build(
-        output / "online.db", seed=seed, source=source, ciav_journal=ciav_journal
+        output / "online.db",
+        seed=seed,
+        source=source,
+        ciav_journal=ciav_journal,
+        ciav_outcome=ciav_outcome,
     )
     steps = ingest(probe, producer, stream, input_journal=input_journal)
+    for step in steps:
+        step["ciav_expected_location"] = str(
+            ciav_journal[step["primary_source"]].expected_detected_location_id
+        )
     before = summary(stream)
     event_rows = tuple(stream._system.core._observed_events.items())
     invalid_sources = {probe.observed_days()[i].after.detection_time.date() for i in range(7)}
@@ -228,6 +246,34 @@ def run(output: Path, seed: int):
         if e.evidence.event_time.date() in invalid_sources
     ]
     if not targets:
+        # Preserve the actual pre-intervention result; an empty correction is
+        # never counted as a successful retraction/replay comparison.
+        partial = {
+            "status": "NO_LEGAL_CORRECTION_TARGET",
+            "seed": seed,
+            "ciav_outcome": str(ciav_outcome),
+            "source_sha256": source,
+            "source_files": files,
+            "visible_case_sha256": content_sha256(probe.case),
+            "steps": steps,
+            "before": before,
+            "memory_ablation_before": soft_memory_baseline(probe, event_rows),
+            "targets": 0,
+            "correction_comparison_completed": False,
+            "strong_matched_baseline_completed": False,
+            "natural_closed_loop_completed": False,
+            "source_unchanged": all(
+                hashlib.sha256((ROOT / name).read_bytes()).hexdigest() == digest
+                for name, digest in files.items()
+            ),
+        }
+        (output / "comparison.json").write_text(json.dumps(partial, indent=2) + "\n")
+        (output / "semantic-input-journal.json").write_text(canonical_json(input_journal) + "\n")
+        (output / "traces.json").write_text(
+            json.dumps([t.model_dump(mode="json") for t in stream.execution_traces()], indent=2)
+            + "\n"
+        )
+        store.close()
         raise RuntimeError("no legal nonempty invalidation targets; comparison is not executed")
     target_sources = {e.evidence.event_time.date() for _, e in targets}
     invalid_days = tuple(
@@ -327,6 +373,7 @@ def run(output: Path, seed: int):
     fresh_summary = summary(fresh)
     result = {
         "seed": seed,
+        "ciav_outcome": str(ciav_outcome),
         "track": "CONTROLLED_INVALIDATION_DEVELOPMENT_ONLY",
         "source_sha256": source,
         "source_files": files,
@@ -375,6 +422,8 @@ def run(output: Path, seed: int):
         "memory_ablation_irreversible_after": soft_memory_baseline(probe, event_rows),
         "strong_matched_baseline_completed": False,
         "natural_closed_loop_completed": False,
+        "visible_case_sha256": content_sha256(probe.case),
+        "readout_scope": "habit-distribution argmax diagnostic; not executed put-back",
     }
     journal = {
         "semantic_transitions": input_journal,
@@ -382,7 +431,7 @@ def run(output: Path, seed: int):
             key: {f.name: getattr(value, f.name) for f in fields(value) if f.name != "realizer"}
             for key, value in ciav_journal.items()
         },
-        "ciav_realizer": "test fixture deterministic DIFFERENT_LOCATION; source-bound runner",
+        "ciav_realizer": f"test fixture deterministic {ciav_outcome}; source-bound runner",
         "delayed_feedback": bundles,
     }
     (output / "semantic-input-journal.json").write_text(canonical_json(journal) + "\n")
@@ -407,8 +456,13 @@ if __name__ == "__main__":
     p = argparse.ArgumentParser(description=__doc__)
     p.add_argument("--output", type=Path, required=True)
     p.add_argument("--seed", type=int, default=7)
+    p.add_argument(
+        "--ciav-outcome",
+        choices=[str(x) for x in CIAVOutcomeKind],
+        default=str(CIAVOutcomeKind.DETECTED_DIFFERENT_LOCATION),
+    )
     a = p.parse_args()
-    r = run(a.output, a.seed)
+    r = run(a.output, a.seed, ciav_outcome=CIAVOutcomeKind(a.ciav_outcome))
     print(
         json.dumps(
             {

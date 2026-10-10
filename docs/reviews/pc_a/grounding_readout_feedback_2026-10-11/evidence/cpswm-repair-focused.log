@@ -1,0 +1,219 @@
+................................................................FFF..... [ 94%]
+...F                                                                     [100%]
+=================================== FAILURES ===================================
+_ test_layer_one_the_local_actor_posterior_is_an_exact_bayes_update[detected_same_location] _
+
+outcome = <CIAVOutcomeKind.DETECTED_SAME_LOCATION: 'detected_same_location'>
+
+    @pytest.mark.parametrize("outcome", list(CIAVOutcomeKind))
+    def test_layer_one_the_local_actor_posterior_is_an_exact_bayes_update(
+        outcome: CIAVOutcomeKind,
+    ) -> None:
+        probe, result, _, _ = _run(outcome, owner_likelihood=0.8)
+        assert result.ciav_receipt is not None
+    
+        prior = dict(result.primary_result.actor_posterior)
+        owner, guest = probe.case.owner_actor, probe.case.guest_actor
+        remainder = (1.0 - 0.8) / 2.0
+        likelihood = {owner: 0.8, guest: remainder, "unknown_actor": remainder}
+        unnormalized = {actor: prior[actor] * likelihood[actor] for actor in prior}
+        total = sum(unnormalized.values())
+        expected = {actor: value / total for actor, value in unnormalized.items()}
+    
+        posterior = dict(result.ciav_receipt.evidence.actor_posterior)
+        assert set(posterior) == set(expected)
+        for actor, value in expected.items():
+>           assert posterior[actor] == pytest.approx(value)
+E           assert 0.1285718381467536 == 0.019082599778160434 ± 1.9e-08
+E             
+E             comparison failed
+E             Obtained: 0.1285718381467536
+E             Expected: 0.019082599778160434 ± 1.9e-08
+
+tests/test_structure_two_ciav_negative_observation_layers.py:77: AssertionError
+_ test_layer_one_the_local_actor_posterior_is_an_exact_bayes_update[detected_different_location] _
+
+outcome = <CIAVOutcomeKind.DETECTED_DIFFERENT_LOCATION: 'detected_different_location'>
+
+    @pytest.mark.parametrize("outcome", list(CIAVOutcomeKind))
+    def test_layer_one_the_local_actor_posterior_is_an_exact_bayes_update(
+        outcome: CIAVOutcomeKind,
+    ) -> None:
+        probe, result, _, _ = _run(outcome, owner_likelihood=0.8)
+        assert result.ciav_receipt is not None
+    
+        prior = dict(result.primary_result.actor_posterior)
+        owner, guest = probe.case.owner_actor, probe.case.guest_actor
+        remainder = (1.0 - 0.8) / 2.0
+        likelihood = {owner: 0.8, guest: remainder, "unknown_actor": remainder}
+        unnormalized = {actor: prior[actor] * likelihood[actor] for actor in prior}
+        total = sum(unnormalized.values())
+        expected = {actor: value / total for actor, value in unnormalized.items()}
+    
+        posterior = dict(result.ciav_receipt.evidence.actor_posterior)
+        assert set(posterior) == set(expected)
+        for actor, value in expected.items():
+>           assert posterior[actor] == pytest.approx(value)
+E           assert 0.1285718381467536 == 0.019082599778160434 ± 1.9e-08
+E             
+E             comparison failed
+E             Obtained: 0.1285718381467536
+E             Expected: 0.019082599778160434 ± 1.9e-08
+
+tests/test_structure_two_ciav_negative_observation_layers.py:77: AssertionError
+_ test_layer_one_the_local_actor_posterior_is_an_exact_bayes_update[not_detected] _
+
+outcome = <CIAVOutcomeKind.NOT_DETECTED: 'not_detected'>
+
+    @pytest.mark.parametrize("outcome", list(CIAVOutcomeKind))
+    def test_layer_one_the_local_actor_posterior_is_an_exact_bayes_update(
+        outcome: CIAVOutcomeKind,
+    ) -> None:
+        probe, result, _, _ = _run(outcome, owner_likelihood=0.8)
+        assert result.ciav_receipt is not None
+    
+        prior = dict(result.primary_result.actor_posterior)
+        owner, guest = probe.case.owner_actor, probe.case.guest_actor
+        remainder = (1.0 - 0.8) / 2.0
+        likelihood = {owner: 0.8, guest: remainder, "unknown_actor": remainder}
+        unnormalized = {actor: prior[actor] * likelihood[actor] for actor in prior}
+        total = sum(unnormalized.values())
+        expected = {actor: value / total for actor, value in unnormalized.items()}
+    
+        posterior = dict(result.ciav_receipt.evidence.actor_posterior)
+        assert set(posterior) == set(expected)
+        for actor, value in expected.items():
+>           assert posterior[actor] == pytest.approx(value)
+E           assert 0.1285718381467536 == 0.019082599778160434 ± 1.9e-08
+E             
+E             comparison failed
+E             Obtained: 0.1285718381467536
+E             Expected: 0.019082599778160434 ± 1.9e-08
+
+tests/test_structure_two_ciav_negative_observation_layers.py:77: AssertionError
+____ test_repeating_the_identical_ciav_execution_produces_no_second_factor _____
+
+    def test_repeating_the_identical_ciav_execution_produces_no_second_factor() -> None:
+        """The evidence-factor trace's idempotency keys prevent a duplicate likelihood."""
+    
+        trace = EvidenceFactorConsumptionTrace()
+        probe = BackboneWiringProbe.build(seed=SEED)
+        probe.system.bind_evidence_factor_trace(trace)
+        transition = probe.transition_for(probe.observed_days()[0])
+        ciav = probe.ciav_input(transition, outcome=CIAVOutcomeKind.NOT_DETECTED)
+        result, _ = probe.run_direct_p5(transition, ciav_input=ciav)
+        assert result.ciav_receipt is not None
+        first = len(trace.receipts)
+    
+>       repeat = probe.system.ciav_opceu_loop.execute_selected_action(
+            action=ciav.actions[0],
+            update_id=result.primary_result.event_revision_id,
+            household_id=transition.after.metadata.household_id,
+            session_id=transition.after.metadata.session_id,
+            trace_id=transition.after.metadata.trace_id,
+            opportunity_time=ciav.opportunity_time,
+            object_instance_id=probe.system.core.object_instance_id,
+            actor_keys=tuple(actor for actor in transition.actor_prior if actor != "unknown_actor"),
+            actor_prior=dict(result.primary_result.actor_posterior),
+            actor_likelihoods_by_outcome={
+                outcome: dict(values) for outcome, values in ciav.actor_likelihoods_by_outcome.items()
+            },
+            location_keys=tuple(str(item) for item in probe.system.core.locations),
+            expected_detected_location_id=ciav.expected_detected_location_id,
+            selection_probability=ciav.selection_probability,
+            p_visible_given_state=ciav.p_visible_given_state,
+            p_detect_given_visible=ciav.p_detect_given_visible,
+            realizer=ciav.realizer,
+        )
+
+tests/test_structure_two_ciav_negative_observation_layers.py:258: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/cpswm/world_model/grounded_search/ciav_opceu_loop.py:324: in execute_selected_action
+    summary = self.trace.derive_factor(
+src/cpswm/contracts/evidence_factor_trace.py:349: in derive_factor
+    return self._append(operation=EvidenceFactorOperation.DERIVE, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <cpswm.contracts.evidence_factor_trace.EvidenceFactorConsumptionTrace object at 0x11f4d38d0>
+update_id = UUID('bd0de4c9-3c64-5ee5-8a05-d29daa4158ef')
+evidence_cluster_id = UUID('d90f3b80-f055-5af4-825b-feaa00011f94')
+evidence_record_ids = (UUID('fba7fc8e-f95d-5021-8e73-57204e1c5da1'), UUID('9bb7deba-fcb8-56bb-9aae-cb98db86e610'), UUID('d54c7e95-81be-5c6e-bea2-499219698657'), UUID('0e20e1d3-1b3c-542d-94ef-2bd2e4198954'))
+operator = <EvidenceFactorOperator.CIAV: 'ciav'>
+operation = <EvidenceFactorOperation.DERIVE: 'derive'>
+factor_id = 'posterior:ciav-local-actor-posterior:bd0de4c9-3c64-5ee5-8a05-d29daa4158ef'
+factor_kind = <EvidenceFactorKind.POSTERIOR_SUMMARY: 'posterior_summary'>
+source_semantics = None, source_record_payloads = None
+source_factor_ids = ('opceu:d54c7e95-81be-5c6e-bea2-499219698657',)
+target_distribution_id = 'ciav-local-actor-posterior:bd0de4c9-3c64-5ee5-8a05-d29daa4158ef'
+likelihood_model_id = 'structure-two-backbone-wiring-probe@0.1:ciav'
+consumed_as_likelihood = False
+idempotency_key = 'derive:posterior:ciav-local-actor-posterior:bd0de4c9-3c64-5ee5-8a05-d29daa4158ef'
+
+    def _append(
+        self,
+        *,
+        update_id: UUID,
+        evidence_cluster_id: UUID,
+        evidence_record_ids: Sequence[UUID],
+        operator: EvidenceFactorOperator,
+        operation: EvidenceFactorOperation,
+        factor_id: str,
+        factor_kind: EvidenceFactorKind,
+        source_semantics: EvidenceFactorSourceSemantics | None = None,
+        source_record_payloads: Mapping[UUID, object] | None = None,
+        source_factor_ids: Sequence[str] = (),
+        target_distribution_id: str | None = None,
+        likelihood_model_id: str | None = None,
+        consumed_as_likelihood: bool = False,
+        idempotency_key: str,
+    ) -> EvidenceFactorReceipt:
+        if not factor_id.strip() or not idempotency_key.strip():
+            raise ValueError("factor_id and idempotency_key must be non-empty")
+        record_ids = tuple(evidence_record_ids)
+        if len(record_ids) != len(set(record_ids)):
+            raise ValueError("evidence factor receipt contains duplicate record ids")
+        source_ids = tuple(source_factor_ids)
+        if len(source_ids) != len(set(source_ids)):
+            raise ValueError("evidence factor receipt contains duplicate source factors")
+        payload_hash = (
+            None
+            if source_record_payloads is None
+            else content_sha256(
+                sorted(
+                    (str(record_id), payload)
+                    for record_id, payload in source_record_payloads.items()
+                )
+            )
+        )
+        intent = {
+            "update_id": str(update_id),
+            "evidence_cluster_id": str(evidence_cluster_id),
+            "evidence_record_ids": [str(value) for value in record_ids],
+            "operator": operator.value,
+            "operation": operation.value,
+            "factor_id": factor_id,
+            "factor_kind": factor_kind.value,
+            "source_semantics": None if source_semantics is None else source_semantics.value,
+            "source_payload_sha256": payload_hash,
+            "source_factor_ids": list(source_ids),
+            "target_distribution_id": target_distribution_id,
+            "likelihood_model_id": likelihood_model_id,
+            "consumed_as_likelihood": consumed_as_likelihood,
+            "idempotency_key": idempotency_key,
+        }
+        intent_hash = content_sha256(intent)
+        prior = self._idempotency.get(idempotency_key)
+        if prior is not None:
+            prior_hash, receipt = prior
+            if prior_hash != intent_hash:
+>               raise ValueError("idempotency key was reused with different factor semantics")
+E               ValueError: idempotency key was reused with different factor semantics
+
+src/cpswm/contracts/evidence_factor_trace.py:164: ValueError
+=========================== short test summary info ============================
+FAILED tests/test_structure_two_ciav_negative_observation_layers.py::test_layer_one_the_local_actor_posterior_is_an_exact_bayes_update[detected_same_location]
+FAILED tests/test_structure_two_ciav_negative_observation_layers.py::test_layer_one_the_local_actor_posterior_is_an_exact_bayes_update[detected_different_location]
+FAILED tests/test_structure_two_ciav_negative_observation_layers.py::test_layer_one_the_local_actor_posterior_is_an_exact_bayes_update[not_detected]
+FAILED tests/test_structure_two_ciav_negative_observation_layers.py::test_repeating_the_identical_ciav_execution_produces_no_second_factor
+4 failed, 72 passed in 5.31s

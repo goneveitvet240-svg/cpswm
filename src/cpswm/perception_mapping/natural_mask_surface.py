@@ -21,7 +21,7 @@ from cpswm.perception_mapping.natural_vision import NaturalAppearanceDetector, d
 from cpswm.perception_mapping.unity_rgbd import CameraSelfPose, decode_unity_rgbd
 from cpswm.system.reproducibility import content_sha256
 
-PROFILE = "natural-mask-surface-development@1"
+PROFILE = "natural-mask-surface-development@2"
 MASK_THRESHOLD = 0.5
 SELECTION = "maximum-mask-probability-valid-depth-tie-lexicographic-u-v"
 
@@ -63,7 +63,14 @@ def select_surface(
                 raise ValueError("support must contain in-image integer pixels")
             allowed[y, x] = True
         eligible &= allowed
+    from cpswm.perception_mapping.depth_validity import background_continuity
+
+    ambiguous, validity = background_continuity(depth, mask)
+    numeric_eligible = eligible.copy()
     common: dict[str, Any] = dict(
+        depth_validity=validity,
+        numerically_valid_mask_pixels=int(numeric_eligible.sum()),
+        separated_depth_pixels=int((eligible & ~ambiguous).sum()),
         mask_pixels=int(mask.sum()),
         valid_mask_pixels=int(eligible.sum()),
         selected_pixel_uv=None,
@@ -85,6 +92,10 @@ def select_surface(
     v, u = np.nonzero(eligible & (probability == best))
     index = int(np.argmin(u * camera.height + v))
     x, y = int(u[index]), int(v[index])
+    if ambiguous[y, x]:
+        # Do not search boundary artefacts for a conveniently non-planar point.
+        # The original deterministic pixel remains the observation under test.
+        return dict(common, status="UNKNOWN_BACKGROUND_CONTINUOUS_DEPTH", ambiguous_pixel_uv=[x, y])
     z = float(depth[y, x])
     return dict(
         common,

@@ -319,7 +319,7 @@ def test_evaluation_only_direct_p5_runs_the_real_full_eager_path_without_router_
     assert result.primary_result is not None
     assert result.ciav_receipt is not None
     assert context.ciav_input is not None
-    likelihoods = context.ciav_input.actor_likelihoods_by_outcome[result.ciav_receipt.outcome_label]
+    likelihoods = context.ciav_input.effective_actor_likelihoods[result.ciav_receipt.outcome_label]
     unnormalized = {
         actor: probability * likelihoods[actor]
         for actor, probability in result.primary_result.actor_posterior.items()

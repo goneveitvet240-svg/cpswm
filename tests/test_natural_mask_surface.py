@@ -64,6 +64,10 @@ def wires(scope, *, shift=(0, 0), index=0):
     rgb = np.roll(rgb, (shift[1], shift[0]), axis=(0, 1))
     event = event_for()
     event.frame, event.depth_frame = rgb, np.full((96, 96), 1.99, dtype=np.float32)
+    # Opaque foreground separated from its surroundings; the old flat depth
+    # image is now correctly ambiguous and is tested separately.
+    event.depth_frame = np.full((96, 96), 3.0, dtype=np.float32)
+    event.depth_frame[20 + shift[1] : 60 + shift[1], 30 + shift[0] : 70 + shift[0]] = 1.99
     event.metadata.update(screenWidth=96, screenHeight=96)
     action = uuid4()
     response = rgbd_response(str(action), event)

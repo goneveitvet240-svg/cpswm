@@ -1,0 +1,14 @@
+baseline [('reported', [0.5017835467391307, 1.1120272242659568, 2.732568554028875]), ('unknown', None), ('unknown', None)]
+removed-0 [('reported', [0.5017835467391307, 1.1120272242659568, 2.732568554028875]), ('unknown', None), ('unknown', None)]
+removed-1 [('reported', [0.5017835467391307, 1.1120272242659568, 2.732568554028875]), ('unknown', None), ('unknown', None)]
+removed-2 [('unknown', None), ('unknown', None), ('unknown', None)]
+Traceback (most recent call last):
+  File "/private/tmp/cpswm-pc-a-grounding-readout-feedback-20261011/tools/evaluate_live_depth_counterfactual.py", line 74, in <module>
+    a=p.parse_args();run(a.directory,a.output,a.weights)
+                     ~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/private/tmp/cpswm-pc-a-grounding-readout-feedback-20261011/tools/evaluate_live_depth_counterfactual.py", line 51, in run
+    mask=masks[target]
+         ~~~~~^^^^^^^^
+  File "/private/tmp/cpswm-object-reid-venv/lib/python3.13/site-packages/numpy/lib/_npyio_impl.py", line 243, in __getitem__
+    raise KeyError(f"{key} is not a file in the archive") from None
+KeyError: 'Bowl|surface|2|11 is not a file in the archive'

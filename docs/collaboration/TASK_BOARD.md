@@ -1,3 +1,23 @@
+# A交付：首个外部对象组件已运行，原查询收益为零（2026-10-10）
+
+[草稿 PR102](https://github.com/goneveitvet240-svg/cpswm/pull/102) 已建立并堆叠 PR101；报告与13个散列证据文件（13,597,153 bytes）提交 `84caf84bd4b7f95fe69cd17c5b0f0cc0e44412b6` 已推送。实际适配器仍为 `c642f4cfdde0359be762eaa15d9d7f2cd1b3b74d`，未合并。
+
+分支 `codex/pc-a-external-object-pilot-20261010`，base `ac1df559f36630cd7e587936f5d56e7dbf30ed14`，实际适配器源码 `c642f4cfdde0359be762eaa15d9d7f2cd1b3b74d`。[报告](../reviews/pc_a/external_object_pilot_2026-10-10/REPORT.md)、[复现](../reviews/pc_a/external_object_pilot_2026-10-10/COMMANDS.md)、[机器结果](../reviews/pc_a/external_object_pilot_2026-10-10/evidence/summary.json)。
+
+ConceptGraphs 官方最大点云簇函数已通过独立 Open3D worker 接入冻结 RGB-D 到只读表面报告的实验边界。四组同输入/查询/源动作预算均为身份7/9、位置6/9、联合6/9；过滤1272/114571点，未改变主对照选点，无查询收益。四组各重复一次逐字节一致，第二遍仅提供public目录；36评分独立算术复算一致，当前对照与上一轮记录完全一致。11定向检查及Ruff/提交钩子通过；未跑全仓/S1完整矩阵。
+
+只是官方去噪组件，非完整ConceptGraphs/强系统基线；未接生产owner、记忆或新动作策略，生产src未改。两Python环境隔离兼容已落实。下一批应检验完整对象关联，以及同强前端下普通记忆和CPSWM的效用差异；新科学路线/面板仍交用户决定。B独立复核、PR审查和共享集成未完成，完整框架保持。
+
+---
+
+# A：外部对象组件接入试验开工（2026-10-10）
+
+用户授权接入已有组件并根据实测迭代。独立分支 `codex/pc-a-external-object-pilot-20261010`，base/生产源码 `ac1df559f36630cd7e587936f5d56e7dbf30ed14`。首次接入 ConceptGraphs 官方最大点云簇去噪函数，用现有冻结 RGB-D、同查询同动作预算和严格身份+AABB做四臂读出对照；不冒充完整外部系统/强基线/新主动策略。
+
+[计划](../reviews/pc_a/external_object_pilot_2026-10-10/PLAN.md)。独立 Open3D 环境已建立；当前尚无实验收益，B独立复核和共享集成未完成。保留完整统一框架与原用户树。本节推送前为本地进行中。
+
+---
+
 # A交付：参考特征几何核验修复局部门通过，完整死亡测试仍 FAIL（2026-10-09）
 
 分支 `codex/pc-a-reference-feature-reid-20261009`，base `2d54c541107bd718d02c5427220f5715a0eca93a`，生产代码 `8acab228c6cdaa85865088f73c82b9455fb3fea1`，报告/证据提交 `c4d7bf4ee9913cd7b295591828caa36a330deeb3`。[草稿 PR101](https://github.com/goneveitvet240-svg/cpswm/pull/101) 堆叠 PR100；[报告](../reviews/pc_a/reference_feature_reid_2026-10-09/REPORT.md)与[机器汇总](../reviews/pc_a/reference_feature_reid_2026-10-09/evidence/subpixel-summary.json)。

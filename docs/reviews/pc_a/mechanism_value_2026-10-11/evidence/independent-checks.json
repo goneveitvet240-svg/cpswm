@@ -1,0 +1,1203 @@
+{
+  "boundary": "D0 development; bootstrap descriptive, not a new confirmatory gate",
+  "checks": 7121,
+  "conditions": {
+    "complete32": {
+      "counts": {
+        "matched_amg": {
+          "action_regret": 1.3333333333333333,
+          "n": 320,
+          "put_errors": 0,
+          "search_errors": 2
+        },
+        "matched_full_state_factorized": {
+          "action_regret": 30.0,
+          "n": 320,
+          "put_errors": 0,
+          "search_errors": 90
+        },
+        "shared_spine_latest": {
+          "action_regret": 1.3333333333333333,
+          "n": 320,
+          "put_errors": 0,
+          "search_errors": 2
+        },
+        "stateful_full_joint": {
+          "action_regret": 30.0,
+          "n": 320,
+          "put_errors": 0,
+          "search_errors": 90
+        }
+      },
+      "coverage": {
+        "matched_amg": {
+          "nonempty_long_term_steps": 0,
+          "same_put_back_and_search_first": 232,
+          "search_error_while_habit_correct": 2,
+          "targets_require_distinct_actions": 90
+        },
+        "matched_full_state_factorized": {
+          "changed_ccrr": 305,
+          "changed_cf_bocpd": 305,
+          "changed_ciav": 30,
+          "changed_opceu": 305,
+          "changed_orrer_cheh": 305,
+          "changed_pchmp": 305,
+          "changed_rgrc": 216,
+          "eligible_fast_default_equals_latest": 320,
+          "ledger_promote": 49,
+          "ledger_quarantine": 167,
+          "ledger_retract": 49,
+          "nonempty_long_term_steps": 320,
+          "request_correct": 75,
+          "request_reinforce": 230,
+          "request_status_applied": 295,
+          "request_status_rejected": 10,
+          "same_put_back_and_search_first": 320,
+          "search_error_while_habit_correct": 90,
+          "targets_require_distinct_actions": 90
+        },
+        "shared_spine_latest": {
+          "eligible_fast_default_equals_latest": 320,
+          "nonempty_long_term_steps": 320,
+          "request_correct": 75,
+          "request_reinforce": 230,
+          "request_status_applied": 295,
+          "request_status_rejected": 10,
+          "same_put_back_and_search_first": 232,
+          "search_error_while_habit_correct": 2,
+          "targets_require_distinct_actions": 90
+        },
+        "stateful_full_joint": {
+          "changed_ccrr": 305,
+          "changed_cf_bocpd": 305,
+          "changed_ciav": 30,
+          "changed_opceu": 305,
+          "changed_orrer_cheh": 305,
+          "changed_pchmp": 305,
+          "changed_rgrc": 216,
+          "eligible_fast_default_equals_latest": 320,
+          "ledger_promote": 49,
+          "ledger_quarantine": 167,
+          "ledger_retract": 49,
+          "nonempty_long_term_steps": 320,
+          "request_correct": 75,
+          "request_reinforce": 230,
+          "request_status_applied": 295,
+          "request_status_rejected": 10,
+          "same_put_back_and_search_first": 320,
+          "search_error_while_habit_correct": 90,
+          "targets_require_distinct_actions": 90
+        }
+      },
+      "joint_minus_control_lower_is_better": {
+        "matched_amg": {
+          "action_regret": {
+            "descriptive_seed_bootstrap_95": [
+              0.08333333333333334,
+              0.09375
+            ],
+            "mean": 0.08958333333333333,
+            "per_episode": [
+              0.09375,
+              0.09375,
+              0.09375,
+              0.09375,
+              0.07291666666666667,
+              0.09375,
+              0.07291666666666667,
+              0.09375,
+              0.09375,
+              0.09375
+            ]
+          },
+          "put_errors": {
+            "descriptive_seed_bootstrap_95": [
+              0.0,
+              0.0
+            ],
+            "mean": 0.0,
+            "per_episode": [
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ]
+          },
+          "search_errors": {
+            "descriptive_seed_bootstrap_95": [
+              0.265625,
+              0.28125
+            ],
+            "mean": 0.275,
+            "per_episode": [
+              0.28125,
+              0.28125,
+              0.28125,
+              0.28125,
+              0.25,
+              0.28125,
+              0.25,
+              0.28125,
+              0.28125,
+              0.28125
+            ]
+          }
+        },
+        "matched_full_state_factorized": {
+          "action_regret": {
+            "descriptive_seed_bootstrap_95": [
+              0.0,
+              0.0
+            ],
+            "mean": 0.0,
+            "per_episode": [
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ]
+          },
+          "put_errors": {
+            "descriptive_seed_bootstrap_95": [
+              0.0,
+              0.0
+            ],
+            "mean": 0.0,
+            "per_episode": [
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ]
+          },
+          "search_errors": {
+            "descriptive_seed_bootstrap_95": [
+              0.0,
+              0.0
+            ],
+            "mean": 0.0,
+            "per_episode": [
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ]
+          }
+        },
+        "shared_spine_latest": {
+          "action_regret": {
+            "descriptive_seed_bootstrap_95": [
+              0.08333333333333334,
+              0.09375
+            ],
+            "mean": 0.08958333333333333,
+            "per_episode": [
+              0.09375,
+              0.09375,
+              0.09375,
+              0.09375,
+              0.07291666666666667,
+              0.09375,
+              0.07291666666666667,
+              0.09375,
+              0.09375,
+              0.09375
+            ]
+          },
+          "put_errors": {
+            "descriptive_seed_bootstrap_95": [
+              0.0,
+              0.0
+            ],
+            "mean": 0.0,
+            "per_episode": [
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ]
+          },
+          "search_errors": {
+            "descriptive_seed_bootstrap_95": [
+              0.265625,
+              0.28125
+            ],
+            "mean": 0.275,
+            "per_episode": [
+              0.28125,
+              0.28125,
+              0.28125,
+              0.28125,
+              0.25,
+              0.28125,
+              0.25,
+              0.28125,
+              0.28125,
+              0.28125
+            ]
+          }
+        }
+      },
+      "phases": {
+        "matched_amg": {
+          "guest": {
+            "action_regret": 1.3333333333333333,
+            "n": 80,
+            "put_errors": 0,
+            "search_errors": 2
+          },
+          "initial": {
+            "action_regret": 0.0,
+            "n": 70,
+            "put_errors": 0,
+            "search_errors": 0
+          },
+          "new_habit": {
+            "action_regret": 0.0,
+            "n": 90,
+            "put_errors": 0,
+            "search_errors": 0
+          },
+          "post_guest": {
+            "action_regret": 0.0,
+            "n": 20,
+            "put_errors": 0,
+            "search_errors": 0
+          },
+          "recurrence": {
+            "action_regret": 0.0,
+            "n": 60,
+            "put_errors": 0,
+            "search_errors": 0
+          }
+        },
+        "matched_full_state_factorized": {
+          "guest": {
+            "action_regret": 26.66666666666664,
+            "n": 80,
+            "put_errors": 0,
+            "search_errors": 80
+          },
+          "initial": {
+            "action_regret": 3.3333333333333335,
+            "n": 70,
+            "put_errors": 0,
+            "search_errors": 10
+          },
+          "new_habit": {
+            "action_regret": 0.0,
+            "n": 90,
+            "put_errors": 0,
+            "search_errors": 0
+          },
+          "post_guest": {
+            "action_regret": 0.0,
+            "n": 20,
+            "put_errors": 0,
+            "search_errors": 0
+          },
+          "recurrence": {
+            "action_regret": 0.0,
+            "n": 60,
+            "put_errors": 0,
+            "search_errors": 0
+          }
+        },
+        "shared_spine_latest": {
+          "guest": {
+            "action_regret": 1.3333333333333333,
+            "n": 80,
+            "put_errors": 0,
+            "search_errors": 2
+          },
+          "initial": {
+            "action_regret": 0.0,
+            "n": 70,
+            "put_errors": 0,
+            "search_errors": 0
+          },
+          "new_habit": {
+            "action_regret": 0.0,
+            "n": 90,
+            "put_errors": 0,
+            "search_errors": 0
+          },
+          "post_guest": {
+            "action_regret": 0.0,
+            "n": 20,
+            "put_errors": 0,
+            "search_errors": 0
+          },
+          "recurrence": {
+            "action_regret": 0.0,
+            "n": 60,
+            "put_errors": 0,
+            "search_errors": 0
+          }
+        },
+        "stateful_full_joint": {
+          "guest": {
+            "action_regret": 26.66666666666664,
+            "n": 80,
+            "put_errors": 0,
+            "search_errors": 80
+          },
+          "initial": {
+            "action_regret": 3.3333333333333335,
+            "n": 70,
+            "put_errors": 0,
+            "search_errors": 10
+          },
+          "new_habit": {
+            "action_regret": 0.0,
+            "n": 90,
+            "put_errors": 0,
+            "search_errors": 0
+          },
+          "post_guest": {
+            "action_regret": 0.0,
+            "n": 20,
+            "put_errors": 0,
+            "search_errors": 0
+          },
+          "recurrence": {
+            "action_regret": 0.0,
+            "n": 60,
+            "put_errors": 0,
+            "search_errors": 0
+          }
+        }
+      }
+    },
+    "long64": {
+      "counts": {
+        "matched_amg": {
+          "action_regret": 37.333333333333336,
+          "n": 640,
+          "put_errors": 10,
+          "search_errors": 36
+        },
+        "matched_full_state_factorized": {
+          "action_regret": 80.99999999999999,
+          "n": 640,
+          "put_errors": 12,
+          "search_errors": 179
+        },
+        "shared_spine_latest": {
+          "action_regret": 36.0,
+          "n": 640,
+          "put_errors": 15,
+          "search_errors": 36
+        },
+        "stateful_full_joint": {
+          "action_regret": 80.99999999999999,
+          "n": 640,
+          "put_errors": 12,
+          "search_errors": 179
+        }
+      },
+      "coverage": {
+        "matched_amg": {
+          "nonempty_long_term_steps": 0,
+          "same_put_back_and_search_first": 470,
+          "search_error_while_habit_correct": 27,
+          "targets_require_distinct_actions": 170
+        },
+        "matched_full_state_factorized": {
+          "changed_ccrr": 420,
+          "changed_cf_bocpd": 420,
+          "changed_ciav": 30,
+          "changed_opceu": 420,
+          "changed_orrer_cheh": 420,
+          "changed_pchmp": 420,
+          "changed_rgrc": 249,
+          "eligible_fast_default_equals_latest": 636,
+          "ledger_promote": 53,
+          "ledger_quarantine": 196,
+          "ledger_retract": 53,
+          "nonempty_long_term_steps": 637,
+          "request_correct": 95,
+          "request_reinforce": 325,
+          "request_status_applied": 400,
+          "request_status_rejected": 20,
+          "same_put_back_and_search_first": 640,
+          "search_error_while_habit_correct": 168,
+          "targets_require_distinct_actions": 170
+        },
+        "shared_spine_latest": {
+          "eligible_fast_default_equals_latest": 636,
+          "nonempty_long_term_steps": 637,
+          "request_correct": 95,
+          "request_reinforce": 325,
+          "request_status_applied": 400,
+          "request_status_rejected": 20,
+          "same_put_back_and_search_first": 475,
+          "search_error_while_habit_correct": 27,
+          "targets_require_distinct_actions": 170
+        },
+        "stateful_full_joint": {
+          "changed_ccrr": 420,
+          "changed_cf_bocpd": 420,
+          "changed_ciav": 30,
+          "changed_opceu": 420,
+          "changed_orrer_cheh": 420,
+          "changed_pchmp": 420,
+          "changed_rgrc": 248,
+          "eligible_fast_default_equals_latest": 636,
+          "ledger_promote": 52,
+          "ledger_quarantine": 196,
+          "ledger_retract": 52,
+          "nonempty_long_term_steps": 637,
+          "request_correct": 95,
+          "request_reinforce": 325,
+          "request_status_applied": 400,
+          "request_status_rejected": 20,
+          "same_put_back_and_search_first": 640,
+          "search_error_while_habit_correct": 168,
+          "targets_require_distinct_actions": 170
+        }
+      },
+      "joint_minus_control_lower_is_better": {
+        "matched_amg": {
+          "action_regret": {
+            "descriptive_seed_bootstrap_95": [
+              0.05572916666666665,
+              0.0817708333333333
+            ],
+            "mean": 0.06822916666666665,
+            "per_episode": [
+              0.07812499999999999,
+              0.08333333333333329,
+              0.046874999999999986,
+              0.036458333333333315,
+              0.06770833333333334,
+              0.05208333333333332,
+              0.08854166666666664,
+              0.0520833333333333,
+              0.06770833333333331,
+              0.109375
+            ]
+          },
+          "put_errors": {
+            "descriptive_seed_bootstrap_95": [
+              0.0,
+              0.009375
+            ],
+            "mean": 0.003125,
+            "per_episode": [
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.03125
+            ]
+          },
+          "search_errors": {
+            "descriptive_seed_bootstrap_95": [
+              0.2046875,
+              0.240625
+            ],
+            "mean": 0.2234375,
+            "per_episode": [
+              0.25,
+              0.265625,
+              0.203125,
+              0.1875,
+              0.171875,
+              0.203125,
+              0.25,
+              0.21875,
+              0.234375,
+              0.25
+            ]
+          }
+        },
+        "matched_full_state_factorized": {
+          "action_regret": {
+            "descriptive_seed_bootstrap_95": [
+              0.0,
+              0.0
+            ],
+            "mean": 0.0,
+            "per_episode": [
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ]
+          },
+          "put_errors": {
+            "descriptive_seed_bootstrap_95": [
+              0.0,
+              0.0
+            ],
+            "mean": 0.0,
+            "per_episode": [
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ]
+          },
+          "search_errors": {
+            "descriptive_seed_bootstrap_95": [
+              0.0,
+              0.0
+            ],
+            "mean": 0.0,
+            "per_episode": [
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ]
+          }
+        },
+        "shared_spine_latest": {
+          "action_regret": {
+            "descriptive_seed_bootstrap_95": [
+              0.05781249999999998,
+              0.08489583333333332
+            ],
+            "mean": 0.07031249999999999,
+            "per_episode": [
+              0.062499999999999986,
+              0.08333333333333329,
+              0.062499999999999986,
+              0.05729166666666665,
+              0.06770833333333334,
+              0.046874999999999986,
+              0.09374999999999999,
+              0.06770833333333329,
+              0.04166666666666666,
+              0.11979166666666666
+            ]
+          },
+          "put_errors": {
+            "descriptive_seed_bootstrap_95": [
+              -0.0140625,
+              0.00625
+            ],
+            "mean": -0.0046875,
+            "per_episode": [
+              -0.015625,
+              0.0,
+              0.0,
+              -0.015625,
+              0.0,
+              -0.015625,
+              0.0,
+              0.0,
+              -0.03125,
+              0.03125
+            ]
+          },
+          "search_errors": {
+            "descriptive_seed_bootstrap_95": [
+              0.2046875,
+              0.240625
+            ],
+            "mean": 0.2234375,
+            "per_episode": [
+              0.25,
+              0.265625,
+              0.203125,
+              0.1875,
+              0.171875,
+              0.203125,
+              0.25,
+              0.21875,
+              0.234375,
+              0.25
+            ]
+          }
+        }
+      },
+      "phases": {
+        "matched_amg": {
+          "guest": {
+            "action_regret": 6.0,
+            "n": 150,
+            "put_errors": 0,
+            "search_errors": 9
+          },
+          "initial": {
+            "action_regret": 8.333333333333334,
+            "n": 140,
+            "put_errors": 4,
+            "search_errors": 7
+          },
+          "new_habit": {
+            "action_regret": 13.0,
+            "n": 180,
+            "put_errors": 3,
+            "search_errors": 10
+          },
+          "post_guest": {
+            "action_regret": 4.666666666666666,
+            "n": 50,
+            "put_errors": 0,
+            "search_errors": 7
+          },
+          "recurrence": {
+            "action_regret": 5.333333333333333,
+            "n": 120,
+            "put_errors": 3,
+            "search_errors": 3
+          }
+        },
+        "matched_full_state_factorized": {
+          "guest": {
+            "action_regret": 52.33333333333344,
+            "n": 150,
+            "put_errors": 0,
+            "search_errors": 150
+          },
+          "initial": {
+            "action_regret": 9.0,
+            "n": 140,
+            "put_errors": 4,
+            "search_errors": 11
+          },
+          "new_habit": {
+            "action_regret": 15.666666666666664,
+            "n": 180,
+            "put_errors": 5,
+            "search_errors": 15
+          },
+          "post_guest": {
+            "action_regret": 0.0,
+            "n": 50,
+            "put_errors": 0,
+            "search_errors": 0
+          },
+          "recurrence": {
+            "action_regret": 4.0,
+            "n": 120,
+            "put_errors": 3,
+            "search_errors": 3
+          }
+        },
+        "shared_spine_latest": {
+          "guest": {
+            "action_regret": 11.0,
+            "n": 150,
+            "put_errors": 5,
+            "search_errors": 9
+          },
+          "initial": {
+            "action_regret": 7.666666666666666,
+            "n": 140,
+            "put_errors": 4,
+            "search_errors": 7
+          },
+          "new_habit": {
+            "action_regret": 9.666666666666666,
+            "n": 180,
+            "put_errors": 3,
+            "search_errors": 10
+          },
+          "post_guest": {
+            "action_regret": 2.333333333333333,
+            "n": 50,
+            "put_errors": 0,
+            "search_errors": 7
+          },
+          "recurrence": {
+            "action_regret": 5.333333333333333,
+            "n": 120,
+            "put_errors": 3,
+            "search_errors": 3
+          }
+        },
+        "stateful_full_joint": {
+          "guest": {
+            "action_regret": 52.33333333333344,
+            "n": 150,
+            "put_errors": 0,
+            "search_errors": 150
+          },
+          "initial": {
+            "action_regret": 9.0,
+            "n": 140,
+            "put_errors": 4,
+            "search_errors": 11
+          },
+          "new_habit": {
+            "action_regret": 15.666666666666664,
+            "n": 180,
+            "put_errors": 5,
+            "search_errors": 15
+          },
+          "post_guest": {
+            "action_regret": 0.0,
+            "n": 50,
+            "put_errors": 0,
+            "search_errors": 0
+          },
+          "recurrence": {
+            "action_regret": 4.0,
+            "n": 120,
+            "put_errors": 3,
+            "search_errors": 3
+          }
+        }
+      }
+    },
+    "sparse32": {
+      "counts": {
+        "matched_amg": {
+          "action_regret": 99.0,
+          "n": 320,
+          "put_errors": 44,
+          "search_errors": 77
+        },
+        "matched_full_state_factorized": {
+          "action_regret": 99.66666666666666,
+          "n": 320,
+          "put_errors": 46,
+          "search_errors": 130
+        },
+        "shared_spine_latest": {
+          "action_regret": 94.66666666666667,
+          "n": 320,
+          "put_errors": 45,
+          "search_errors": 77
+        },
+        "stateful_full_joint": {
+          "action_regret": 99.66666666666666,
+          "n": 320,
+          "put_errors": 46,
+          "search_errors": 130
+        }
+      },
+      "coverage": {
+        "matched_amg": {
+          "nonempty_long_term_steps": 0,
+          "same_put_back_and_search_first": 236,
+          "search_error_while_habit_correct": 34,
+          "targets_require_distinct_actions": 90
+        },
+        "matched_full_state_factorized": {
+          "changed_ccrr": 102,
+          "changed_cf_bocpd": 102,
+          "changed_ciav": 20,
+          "changed_opceu": 102,
+          "changed_orrer_cheh": 102,
+          "changed_pchmp": 102,
+          "changed_rgrc": 56,
+          "eligible_fast_default_equals_latest": 308,
+          "ledger_promote": 5,
+          "ledger_quarantine": 51,
+          "ledger_retract": 5,
+          "nonempty_long_term_steps": 309,
+          "request_correct": 26,
+          "request_reinforce": 76,
+          "request_status_applied": 87,
+          "request_status_deferred_due_to_quarantine": 4,
+          "request_status_rejected": 11,
+          "same_put_back_and_search_first": 320,
+          "search_error_while_habit_correct": 85,
+          "targets_require_distinct_actions": 90
+        },
+        "shared_spine_latest": {
+          "eligible_fast_default_equals_latest": 308,
+          "nonempty_long_term_steps": 309,
+          "request_correct": 26,
+          "request_reinforce": 76,
+          "request_status_applied": 87,
+          "request_status_deferred_due_to_quarantine": 4,
+          "request_status_rejected": 11,
+          "same_put_back_and_search_first": 237,
+          "search_error_while_habit_correct": 34,
+          "targets_require_distinct_actions": 90
+        },
+        "stateful_full_joint": {
+          "changed_ccrr": 102,
+          "changed_cf_bocpd": 102,
+          "changed_ciav": 20,
+          "changed_opceu": 102,
+          "changed_orrer_cheh": 102,
+          "changed_pchmp": 102,
+          "changed_rgrc": 57,
+          "eligible_fast_default_equals_latest": 308,
+          "ledger_promote": 5,
+          "ledger_quarantine": 52,
+          "ledger_retract": 5,
+          "nonempty_long_term_steps": 309,
+          "request_correct": 26,
+          "request_reinforce": 76,
+          "request_status_applied": 87,
+          "request_status_deferred_due_to_quarantine": 4,
+          "request_status_rejected": 11,
+          "same_put_back_and_search_first": 320,
+          "search_error_while_habit_correct": 85,
+          "targets_require_distinct_actions": 90
+        }
+      },
+      "joint_minus_control_lower_is_better": {
+        "matched_amg": {
+          "action_regret": {
+            "descriptive_seed_bootstrap_95": [
+              -0.02916666666666675,
+              0.033333333333333284
+            ],
+            "mean": 0.0020833333333333064,
+            "per_episode": [
+              -0.01041666666666663,
+              0.03125,
+              0.08333333333333337,
+              0.03125,
+              -0.0833333333333334,
+              -0.010416666666666852,
+              5.551115123125783e-17,
+              -0.08333333333333331,
+              0.010416666666666574,
+              0.05208333333333326
+            ]
+          },
+          "put_errors": {
+            "descriptive_seed_bootstrap_95": [
+              0.0,
+              0.01875
+            ],
+            "mean": 0.00625,
+            "per_episode": [
+              0.0,
+              0.0,
+              0.0625,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ]
+          },
+          "search_errors": {
+            "descriptive_seed_bootstrap_95": [
+              0.121875,
+              0.2
+            ],
+            "mean": 0.165625,
+            "per_episode": [
+              0.125,
+              0.21875,
+              0.21875,
+              0.21875,
+              0.0,
+              0.1875,
+              0.1875,
+              0.125,
+              0.15625,
+              0.21875
+            ]
+          }
+        },
+        "matched_full_state_factorized": {
+          "action_regret": {
+            "descriptive_seed_bootstrap_95": [
+              0.0,
+              0.0
+            ],
+            "mean": 0.0,
+            "per_episode": [
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ]
+          },
+          "put_errors": {
+            "descriptive_seed_bootstrap_95": [
+              0.0,
+              0.0
+            ],
+            "mean": 0.0,
+            "per_episode": [
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ]
+          },
+          "search_errors": {
+            "descriptive_seed_bootstrap_95": [
+              0.0,
+              0.0
+            ],
+            "mean": 0.0,
+            "per_episode": [
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ]
+          }
+        },
+        "shared_spine_latest": {
+          "action_regret": {
+            "descriptive_seed_bootstrap_95": [
+              -0.016666666666666684,
+              0.04687499999999999
+            ],
+            "mean": 0.01562499999999997,
+            "per_episode": [
+              -0.01041666666666663,
+              0.05208333333333333,
+              0.10416666666666669,
+              0.020833333333333315,
+              -0.07291666666666677,
+              0.010416666666666519,
+              0.02083333333333337,
+              -0.0625,
+              0.031249999999999944,
+              0.062499999999999944
+            ]
+          },
+          "put_errors": {
+            "descriptive_seed_bootstrap_95": [
+              -0.009375,
+              0.01875
+            ],
+            "mean": 0.003125,
+            "per_episode": [
+              0.0,
+              0.0,
+              0.0625,
+              -0.03125,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ]
+          },
+          "search_errors": {
+            "descriptive_seed_bootstrap_95": [
+              0.121875,
+              0.2
+            ],
+            "mean": 0.165625,
+            "per_episode": [
+              0.125,
+              0.21875,
+              0.21875,
+              0.21875,
+              0.0,
+              0.1875,
+              0.1875,
+              0.125,
+              0.15625,
+              0.21875
+            ]
+          }
+        }
+      },
+      "phases": {
+        "matched_amg": {
+          "guest": {
+            "action_regret": 11.33333333333333,
+            "n": 80,
+            "put_errors": 0,
+            "search_errors": 17
+          },
+          "initial": {
+            "action_regret": 20.0,
+            "n": 70,
+            "put_errors": 12,
+            "search_errors": 15
+          },
+          "new_habit": {
+            "action_regret": 26.0,
+            "n": 90,
+            "put_errors": 13,
+            "search_errors": 13
+          },
+          "post_guest": {
+            "action_regret": 8.666666666666666,
+            "n": 20,
+            "put_errors": 0,
+            "search_errors": 13
+          },
+          "recurrence": {
+            "action_regret": 33.0,
+            "n": 60,
+            "put_errors": 19,
+            "search_errors": 19
+          }
+        },
+        "matched_full_state_factorized": {
+          "guest": {
+            "action_regret": 26.99999999999997,
+            "n": 80,
+            "put_errors": 0,
+            "search_errors": 80
+          },
+          "initial": {
+            "action_regret": 19.0,
+            "n": 70,
+            "put_errors": 12,
+            "search_errors": 16
+          },
+          "new_habit": {
+            "action_regret": 28.333333333333336,
+            "n": 90,
+            "put_errors": 15,
+            "search_errors": 15
+          },
+          "post_guest": {
+            "action_regret": 0.0,
+            "n": 20,
+            "put_errors": 0,
+            "search_errors": 0
+          },
+          "recurrence": {
+            "action_regret": 25.333333333333325,
+            "n": 60,
+            "put_errors": 19,
+            "search_errors": 19
+          }
+        },
+        "shared_spine_latest": {
+          "guest": {
+            "action_regret": 12.33333333333333,
+            "n": 80,
+            "put_errors": 1,
+            "search_errors": 17
+          },
+          "initial": {
+            "action_regret": 19.0,
+            "n": 70,
+            "put_errors": 12,
+            "search_errors": 15
+          },
+          "new_habit": {
+            "action_regret": 26.0,
+            "n": 90,
+            "put_errors": 13,
+            "search_errors": 13
+          },
+          "post_guest": {
+            "action_regret": 4.333333333333333,
+            "n": 20,
+            "put_errors": 0,
+            "search_errors": 13
+          },
+          "recurrence": {
+            "action_regret": 33.0,
+            "n": 60,
+            "put_errors": 19,
+            "search_errors": 19
+          }
+        },
+        "stateful_full_joint": {
+          "guest": {
+            "action_regret": 26.99999999999997,
+            "n": 80,
+            "put_errors": 0,
+            "search_errors": 80
+          },
+          "initial": {
+            "action_regret": 19.0,
+            "n": 70,
+            "put_errors": 12,
+            "search_errors": 16
+          },
+          "new_habit": {
+            "action_regret": 28.333333333333336,
+            "n": 90,
+            "put_errors": 15,
+            "search_errors": 15
+          },
+          "post_guest": {
+            "action_regret": 0.0,
+            "n": 20,
+            "put_errors": 0,
+            "search_errors": 0
+          },
+          "recurrence": {
+            "action_regret": 25.333333333333325,
+            "n": 60,
+            "put_errors": 19,
+            "search_errors": 19
+          }
+        }
+      }
+    }
+  }
+}

@@ -150,6 +150,11 @@ def ingest(probe, producer, stream, *, skip_days=(), input_journal=None, produce
                 "operators": receipt.result.executed_operator_count,
                 "primary_source": str(transition.after.metadata.record_id),
                 "actor_posterior": dict(receipt.result.primary_result.actor_posterior),
+                "scenario_day": day.day,
+                "state": summary(stream),
+                "soft_memory": soft_memory_baseline(
+                    probe, tuple(stream._system.core._observed_events.items())
+                ),
             }
         )
     producer.output = None
@@ -375,6 +380,8 @@ def run(output: Path, seed: int):
         "memory_ablation_irreversible_after": soft_memory_baseline(probe, event_rows),
         "strong_matched_baseline_completed": False,
         "natural_closed_loop_completed": False,
+        "visible_case_sha256": content_sha256(probe.case),
+        "readout_scope": "habit-distribution argmax diagnostic; not executed put-back",
     }
     journal = {
         "semantic_transitions": input_journal,

@@ -1,3 +1,9 @@
+# A交付回执：双线诊断已推送，PR104保持草稿（2026-10-10）
+
+证据提交 `7198f29c705bf583f436a721c70fda230aa4878c` 已成功推送，创建 [草稿PR104](https://github.com/goneveitvet240-svg/cpswm/pull/104)，堆叠PR103、未合并。实际最终工具源码 `209b688a322970ee71bf985e13fb5201d6520294`；[报告](../reviews/pc_a/failure_mechanism_diagnostic_2026-10-10/REPORT.md)。165定向测试、482证据验算及41原件散列核验通过。原查询6/9未提升；一致受控观测的已有双时标21/36仍低于相同当前人物权重的普通记忆36/36。已定位默认慢读出与被阻断写入的组合、假设人物似然污染及玻璃实例/深度差异；不是自然任务准确率、整体无价值结论或完整验收。B复核、完整S1/全仓、正式收益与共享集成待完成。
+
+---
+
 # A交付：底层失败定位与核心读出对照（2026-10-10）
 
 分支 `codex/pc-a-failure-mechanism-diagnostic-20261010`，base `9767a2d63f3d4f501911fc1b1cd0fc0f94b48dc7`，最终诊断工具源码 `209b688a322970ee71bf985e13fb5201d6520294`；生产src未改。[报告](../reviews/pc_a/failure_mechanism_diagnostic_2026-10-10/REPORT.md)、[复现](../reviews/pc_a/failure_mechanism_diagnostic_2026-10-10/COMMANDS.md)。

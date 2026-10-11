@@ -1,3 +1,9 @@
+# A交付回执：终端检索反馈证据已推送，PR109为草稿（2026-10-11）
+
+[草稿PR109](https://github.com/goneveitvet240-svg/cpswm/pull/109)已创建，堆叠PR108，未合并。报告/原始证据提交`8fff50850f683b724b587104e026b34e5f826957`已推送；推断/runner/独立评分`c5b53ba3dede16c33cec50449875772d1eb20925`，最终描述性汇总`fcd0d4a636229e0a0d8a87f90acef0a2200b6e3f`。[报告](../reviews/pc_a/executed_search_feedback_2026-10-11/REPORT.md)。实际终端检查与跨步记忆子循环已接通；终端记忆仅sparse32净省33次，高覆盖/64天净效应0。联合/因子化全部动作相同，独有价值仍未成立。204次实际运行、70定向测试、11局部篡改、六臂新进程重复及297归档成员/解压复算通过。D0理想检测器和外生世界边界保持，联合当前位置模型、自然任务、B独立设备与共享集成未完成。
+
+---
+
 # A交付：终端检索执行与跨步记忆反馈（2026-10-11）
 
 分支`codex/pc-a-executed-search-feedback-20261011`，base/PR108 `6aeb772a37931d429f07b6934f3fbe9ac34f6e66`；推断/runner/独立评分`c5b53ba3dede16c33cec50449875772d1eb20925`，最终描述性汇总`fcd0d4a636229e0a0d8a87f90acef0a2200b6e3f`。[报告](../reviews/pc_a/executed_search_feedback_2026-10-11/REPORT.md)、[复现命令](../reviews/pc_a/executed_search_feedback_2026-10-11/COMMANDS.md)、[接入边界](../reviews/pc_a/executed_search_feedback_2026-10-11/INTEGRATION.md)。本节推送前为本地完成。

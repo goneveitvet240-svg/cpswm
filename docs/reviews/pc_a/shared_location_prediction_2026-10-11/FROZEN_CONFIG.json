@@ -1,0 +1,163 @@
+{
+  "dev_totals": {
+    "cue_only": {
+      "factor-s0.0-p0.0": 533,
+      "factor-s0.0-p2.0": 502,
+      "factor-s2.0-p0.0": 532,
+      "factor-s2.0-p2.0": 497,
+      "joint-s0.0-p0.0": 567,
+      "joint-s0.0-p2.0": 519,
+      "joint-s2.0-p0.0": 531,
+      "joint-s2.0-p2.0": 498,
+      "markov-s0.0-p0.0": 567,
+      "markov-s0.0-p2.0": 519,
+      "markov-s2.0-p0.0": 550,
+      "markov-s2.0-p2.0": 502,
+      "old_factor": 533,
+      "old_joint": 567,
+      "recent": 536
+    },
+    "native": {
+      "factor-s0.0-p0.0": 446,
+      "factor-s0.0-p2.0": 423,
+      "factor-s2.0-p0.0": 435,
+      "factor-s2.0-p2.0": 419,
+      "joint-s0.0-p0.0": 446,
+      "joint-s0.0-p2.0": 423,
+      "joint-s2.0-p0.0": 435,
+      "joint-s2.0-p2.0": 419,
+      "markov-s0.0-p0.0": 446,
+      "markov-s0.0-p2.0": 423,
+      "markov-s2.0-p0.0": 437,
+      "markov-s2.0-p2.0": 419,
+      "old_factor": 446,
+      "old_joint": 446,
+      "recent": 431
+    }
+  },
+  "rule": "min actual checks, tie sharing then persistence ascending",
+  "seeds": [
+    7,
+    8,
+    9
+  ],
+  "selected": {
+    "cue_only": {
+      "factor": {
+        "alpha": 0.25,
+        "decay": 0.9,
+        "kind": "factor",
+        "persistence": 2.0,
+        "sharing": 2.0
+      },
+      "joint": {
+        "alpha": 0.25,
+        "decay": 0.9,
+        "kind": "joint",
+        "persistence": 2.0,
+        "sharing": 2.0
+      },
+      "markov": {
+        "alpha": 0.25,
+        "decay": 0.9,
+        "kind": "markov",
+        "persistence": 2.0,
+        "sharing": 2.0
+      },
+      "matched_factor": {
+        "alpha": 0.25,
+        "decay": 0.9,
+        "kind": "factor",
+        "persistence": 2.0,
+        "sharing": 2.0
+      },
+      "no_sharing": {
+        "alpha": 0.25,
+        "decay": 0.9,
+        "kind": "joint",
+        "persistence": 2.0,
+        "sharing": 0.0
+      },
+      "old_factor": {
+        "alpha": 0.25,
+        "decay": 0.9,
+        "kind": "factor",
+        "persistence": 0.0,
+        "sharing": 0.0
+      },
+      "old_joint": {
+        "alpha": 0.25,
+        "decay": 0.9,
+        "kind": "joint",
+        "persistence": 0.0,
+        "sharing": 0.0
+      },
+      "recent": {
+        "alpha": 1.0,
+        "decay": 1.0,
+        "kind": "recent",
+        "persistence": 0.0,
+        "sharing": 0.0
+      }
+    },
+    "native": {
+      "factor": {
+        "alpha": 0.25,
+        "decay": 0.9,
+        "kind": "factor",
+        "persistence": 2.0,
+        "sharing": 2.0
+      },
+      "joint": {
+        "alpha": 0.25,
+        "decay": 0.9,
+        "kind": "joint",
+        "persistence": 2.0,
+        "sharing": 2.0
+      },
+      "markov": {
+        "alpha": 0.25,
+        "decay": 0.9,
+        "kind": "markov",
+        "persistence": 2.0,
+        "sharing": 2.0
+      },
+      "matched_factor": {
+        "alpha": 0.25,
+        "decay": 0.9,
+        "kind": "factor",
+        "persistence": 2.0,
+        "sharing": 2.0
+      },
+      "no_sharing": {
+        "alpha": 0.25,
+        "decay": 0.9,
+        "kind": "joint",
+        "persistence": 2.0,
+        "sharing": 0.0
+      },
+      "old_factor": {
+        "alpha": 0.25,
+        "decay": 0.9,
+        "kind": "factor",
+        "persistence": 0.0,
+        "sharing": 0.0
+      },
+      "old_joint": {
+        "alpha": 0.25,
+        "decay": 0.9,
+        "kind": "joint",
+        "persistence": 0.0,
+        "sharing": 0.0
+      },
+      "recent": {
+        "alpha": 1.0,
+        "decay": 1.0,
+        "kind": "recent",
+        "persistence": 0.0,
+        "sharing": 0.0
+      }
+    }
+  },
+  "source_files_sha256": "ec609d9fefa5640f30110de41c3fe68a719acf017f30905b48fa77a739c4dbb3"
+}

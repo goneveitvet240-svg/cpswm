@@ -1,0 +1,679 @@
+{
+  "boundary": "Ideal D0 detector; completion cost includes evaluator-implied continuation; not physical runtime or calibrated current-location belief.",
+  "condition": "sparse32",
+  "counts": {
+    "current_rank": {
+      "bound_feedback_actions": 99,
+      "charged_action_regret": 138.33333333333334,
+      "charged_completion_inspections": 498,
+      "implied_remaining_inspections": 202,
+      "missing_steps": 217,
+      "n": 320,
+      "negative_queries": 144,
+      "post_query_search_errors": 34,
+      "put_errors": 79,
+      "queries": 296,
+      "query_found": 152,
+      "retrieval_failures": 0,
+      "uncharged_post_query_regret": 90.33333333333334
+    },
+    "factor_habit": {
+      "bound_feedback_actions": 99,
+      "charged_action_regret": 155.33333333333334,
+      "charged_completion_inspections": 549,
+      "implied_remaining_inspections": 206,
+      "missing_steps": 217,
+      "n": 320,
+      "negative_queries": 179,
+      "post_query_search_errors": 50,
+      "put_errors": 79,
+      "queries": 343,
+      "query_found": 164,
+      "retrieval_failures": 0,
+      "uncharged_post_query_regret": 95.66666666666667
+    },
+    "joint_habit": {
+      "bound_feedback_actions": 99,
+      "charged_action_regret": 155.33333333333334,
+      "charged_completion_inspections": 549,
+      "implied_remaining_inspections": 206,
+      "missing_steps": 217,
+      "n": 320,
+      "negative_queries": 179,
+      "post_query_search_errors": 50,
+      "put_errors": 79,
+      "queries": 343,
+      "query_found": 164,
+      "retrieval_failures": 0,
+      "uncharged_post_query_regret": 95.66666666666667
+    },
+    "passive": {
+      "bound_feedback_actions": 99,
+      "charged_action_regret": 145.66666666666666,
+      "charged_completion_inspections": 520,
+      "implied_remaining_inspections": 520,
+      "missing_steps": 217,
+      "n": 320,
+      "negative_queries": 0,
+      "post_query_search_errors": 101,
+      "put_errors": 79,
+      "queries": 0,
+      "query_found": 0,
+      "retrieval_failures": 0,
+      "uncharged_post_query_regret": 145.66666666666666
+    },
+    "recent_id": {
+      "bound_feedback_actions": 99,
+      "charged_action_regret": 140.33333333333334,
+      "charged_completion_inspections": 504,
+      "implied_remaining_inspections": 206,
+      "missing_steps": 217,
+      "n": 320,
+      "negative_queries": 148,
+      "post_query_search_errors": 36,
+      "put_errors": 79,
+      "queries": 298,
+      "query_found": 150,
+      "retrieval_failures": 0,
+      "uncharged_post_query_regret": 91.0
+    }
+  },
+  "joint_minus_control_lower_is_better": {
+    "current_rank": {
+      "charged_action_regret": {
+        "descriptive_seed_bootstrap_95": [
+          -6.106226635438361e-17,
+          0.0875
+        ],
+        "mean": 0.05312499999999999,
+        "per_episode": [
+          0.09375000000000014,
+          0.0625,
+          0.041666666666666685,
+          0.09375000000000003,
+          0.10416666666666657,
+          0.09375,
+          0.09375,
+          0.0625,
+          0.05208333333333326,
+          -0.16666666666666674
+        ]
+      },
+      "charged_completion_inspections": {
+        "descriptive_seed_bootstrap_95": [
+          0.0,
+          0.2625
+        ],
+        "mean": 0.159375,
+        "per_episode": [
+          0.28125,
+          0.1875,
+          0.125,
+          0.28125,
+          0.3125,
+          0.28125,
+          0.28125,
+          0.1875,
+          0.15625,
+          -0.5
+        ]
+      },
+      "post_query_search_errors": {
+        "descriptive_seed_bootstrap_95": [
+          -0.034375,
+          0.128125
+        ],
+        "mean": 0.05,
+        "per_episode": [
+          0.125,
+          0.0,
+          0.0,
+          0.21875,
+          0.0625,
+          0.0625,
+          0.25,
+          0.03125,
+          0.0,
+          -0.25
+        ]
+      }
+    },
+    "factor_habit": {
+      "charged_action_regret": {
+        "descriptive_seed_bootstrap_95": [
+          0.0,
+          0.0
+        ],
+        "mean": 0.0,
+        "per_episode": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "charged_completion_inspections": {
+        "descriptive_seed_bootstrap_95": [
+          0.0,
+          0.0
+        ],
+        "mean": 0.0,
+        "per_episode": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "post_query_search_errors": {
+        "descriptive_seed_bootstrap_95": [
+          0.0,
+          0.0
+        ],
+        "mean": 0.0,
+        "per_episode": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ]
+      }
+    },
+    "passive": {
+      "charged_action_regret": {
+        "descriptive_seed_bootstrap_95": [
+          -0.019791666666666707,
+          0.06562500000000003
+        ],
+        "mean": 0.03020833333333333,
+        "per_episode": [
+          0.09375000000000014,
+          0.0625,
+          0.0,
+          0.08333333333333337,
+          0.06249999999999989,
+          0.02083333333333326,
+          0.07291666666666674,
+          0.02083333333333337,
+          0.05208333333333326,
+          -0.16666666666666674
+        ]
+      },
+      "charged_completion_inspections": {
+        "descriptive_seed_bootstrap_95": [
+          -0.059375,
+          0.196875
+        ],
+        "mean": 0.090625,
+        "per_episode": [
+          0.28125,
+          0.1875,
+          0.0,
+          0.25,
+          0.1875,
+          0.0625,
+          0.21875,
+          0.0625,
+          0.15625,
+          -0.5
+        ]
+      },
+      "post_query_search_errors": {
+        "descriptive_seed_bootstrap_95": [
+          -0.225,
+          -0.09375
+        ],
+        "mean": -0.159375,
+        "per_episode": [
+          -0.03125,
+          -0.0625,
+          -0.25,
+          -0.0625,
+          -0.21875,
+          -0.34375,
+          -0.125,
+          -0.21875,
+          -0.03125,
+          -0.25
+        ]
+      }
+    },
+    "recent_id": {
+      "charged_action_regret": {
+        "descriptive_seed_bootstrap_95": [
+          5.551115123125783e-18,
+          0.09166666666666665
+        ],
+        "mean": 0.046874999999999986,
+        "per_episode": [
+          0.052083333333333426,
+          0.0625,
+          -0.09375,
+          0.020833333333333315,
+          0.05208333333333337,
+          -0.03125,
+          0.12499999999999978,
+          0.1875,
+          0.04166666666666674,
+          0.05208333333333326
+        ]
+      },
+      "charged_completion_inspections": {
+        "descriptive_seed_bootstrap_95": [
+          0.0,
+          0.275
+        ],
+        "mean": 0.140625,
+        "per_episode": [
+          0.15625,
+          0.1875,
+          -0.28125,
+          0.0625,
+          0.15625,
+          -0.09375,
+          0.375,
+          0.5625,
+          0.125,
+          0.15625
+        ]
+      },
+      "post_query_search_errors": {
+        "descriptive_seed_bootstrap_95": [
+          0.00625,
+          0.0875
+        ],
+        "mean": 0.04375,
+        "per_episode": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.09375,
+          0.03125,
+          0.1875,
+          0.125,
+          0.0,
+          0.0
+        ]
+      }
+    }
+  },
+  "paired": {
+    "joint_factor_query_disagreements": 0,
+    "joint_factor_search_disagreements": 0,
+    "joint_fewer_completion_inspections_steps": 19,
+    "joint_more_completion_inspections_steps": 77,
+    "matched_fairness_receipts": 103
+  },
+  "per_episode": [
+    {
+      "index": 0,
+      "metrics": {
+        "current_rank": {
+          "charged_action_regret": 7.999999999999999,
+          "charged_completion_inspections": 41,
+          "post_query_search_errors": 0,
+          "queries": 23
+        },
+        "factor_habit": {
+          "charged_action_regret": 11.0,
+          "charged_completion_inspections": 50,
+          "post_query_search_errors": 4,
+          "queries": 28
+        },
+        "joint_habit": {
+          "charged_action_regret": 11.0,
+          "charged_completion_inspections": 50,
+          "post_query_search_errors": 4,
+          "queries": 28
+        },
+        "passive": {
+          "charged_action_regret": 7.999999999999999,
+          "charged_completion_inspections": 41,
+          "post_query_search_errors": 5,
+          "queries": 0
+        },
+        "recent_id": {
+          "charged_action_regret": 9.333333333333334,
+          "charged_completion_inspections": 45,
+          "post_query_search_errors": 4,
+          "queries": 23
+        }
+      }
+    },
+    {
+      "index": 1,
+      "metrics": {
+        "current_rank": {
+          "charged_action_regret": 1.3333333333333333,
+          "charged_completion_inspections": 36,
+          "post_query_search_errors": 0,
+          "queries": 24
+        },
+        "factor_habit": {
+          "charged_action_regret": 3.333333333333333,
+          "charged_completion_inspections": 42,
+          "post_query_search_errors": 0,
+          "queries": 30
+        },
+        "joint_habit": {
+          "charged_action_regret": 3.333333333333333,
+          "charged_completion_inspections": 42,
+          "post_query_search_errors": 0,
+          "queries": 30
+        },
+        "passive": {
+          "charged_action_regret": 1.3333333333333333,
+          "charged_completion_inspections": 36,
+          "post_query_search_errors": 2,
+          "queries": 0
+        },
+        "recent_id": {
+          "charged_action_regret": 1.3333333333333333,
+          "charged_completion_inspections": 36,
+          "post_query_search_errors": 0,
+          "queries": 24
+        }
+      }
+    },
+    {
+      "index": 2,
+      "metrics": {
+        "current_rank": {
+          "charged_action_regret": 15.333333333333334,
+          "charged_completion_inspections": 51,
+          "post_query_search_errors": 4,
+          "queries": 30
+        },
+        "factor_habit": {
+          "charged_action_regret": 16.666666666666668,
+          "charged_completion_inspections": 55,
+          "post_query_search_errors": 4,
+          "queries": 37
+        },
+        "joint_habit": {
+          "charged_action_regret": 16.666666666666668,
+          "charged_completion_inspections": 55,
+          "post_query_search_errors": 4,
+          "queries": 37
+        },
+        "passive": {
+          "charged_action_regret": 16.666666666666668,
+          "charged_completion_inspections": 55,
+          "post_query_search_errors": 12,
+          "queries": 0
+        },
+        "recent_id": {
+          "charged_action_regret": 19.666666666666664,
+          "charged_completion_inspections": 64,
+          "post_query_search_errors": 4,
+          "queries": 37
+        }
+      }
+    },
+    {
+      "index": 3,
+      "metrics": {
+        "current_rank": {
+          "charged_action_regret": 7.0,
+          "charged_completion_inspections": 47,
+          "post_query_search_errors": 0,
+          "queries": 30
+        },
+        "factor_habit": {
+          "charged_action_regret": 10.0,
+          "charged_completion_inspections": 56,
+          "post_query_search_errors": 7,
+          "queries": 32
+        },
+        "joint_habit": {
+          "charged_action_regret": 10.0,
+          "charged_completion_inspections": 56,
+          "post_query_search_errors": 7,
+          "queries": 32
+        },
+        "passive": {
+          "charged_action_regret": 7.333333333333333,
+          "charged_completion_inspections": 48,
+          "post_query_search_errors": 9,
+          "queries": 0
+        },
+        "recent_id": {
+          "charged_action_regret": 9.333333333333334,
+          "charged_completion_inspections": 54,
+          "post_query_search_errors": 7,
+          "queries": 30
+        }
+      }
+    },
+    {
+      "index": 4,
+      "metrics": {
+        "current_rank": {
+          "charged_action_regret": 14.333333333333332,
+          "charged_completion_inspections": 48,
+          "post_query_search_errors": 3,
+          "queries": 28
+        },
+        "factor_habit": {
+          "charged_action_regret": 17.666666666666668,
+          "charged_completion_inspections": 58,
+          "post_query_search_errors": 5,
+          "queries": 35
+        },
+        "joint_habit": {
+          "charged_action_regret": 17.666666666666668,
+          "charged_completion_inspections": 58,
+          "post_query_search_errors": 5,
+          "queries": 35
+        },
+        "passive": {
+          "charged_action_regret": 15.666666666666666,
+          "charged_completion_inspections": 52,
+          "post_query_search_errors": 12,
+          "queries": 0
+        },
+        "recent_id": {
+          "charged_action_regret": 16.0,
+          "charged_completion_inspections": 53,
+          "post_query_search_errors": 2,
+          "queries": 30
+        }
+      }
+    },
+    {
+      "index": 5,
+      "metrics": {
+        "current_rank": {
+          "charged_action_regret": 14.0,
+          "charged_completion_inspections": 44,
+          "post_query_search_errors": 1,
+          "queries": 30
+        },
+        "factor_habit": {
+          "charged_action_regret": 17.0,
+          "charged_completion_inspections": 53,
+          "post_query_search_errors": 3,
+          "queries": 38
+        },
+        "joint_habit": {
+          "charged_action_regret": 17.0,
+          "charged_completion_inspections": 53,
+          "post_query_search_errors": 3,
+          "queries": 38
+        },
+        "passive": {
+          "charged_action_regret": 16.333333333333332,
+          "charged_completion_inspections": 51,
+          "post_query_search_errors": 14,
+          "queries": 0
+        },
+        "recent_id": {
+          "charged_action_regret": 18.0,
+          "charged_completion_inspections": 56,
+          "post_query_search_errors": 2,
+          "queries": 35
+        }
+      }
+    },
+    {
+      "index": 6,
+      "metrics": {
+        "current_rank": {
+          "charged_action_regret": 21.0,
+          "charged_completion_inspections": 68,
+          "post_query_search_errors": 6,
+          "queries": 41
+        },
+        "factor_habit": {
+          "charged_action_regret": 24.0,
+          "charged_completion_inspections": 77,
+          "post_query_search_errors": 14,
+          "queries": 42
+        },
+        "joint_habit": {
+          "charged_action_regret": 24.0,
+          "charged_completion_inspections": 77,
+          "post_query_search_errors": 14,
+          "queries": 42
+        },
+        "passive": {
+          "charged_action_regret": 21.666666666666668,
+          "charged_completion_inspections": 70,
+          "post_query_search_errors": 18,
+          "queries": 0
+        },
+        "recent_id": {
+          "charged_action_regret": 20.0,
+          "charged_completion_inspections": 65,
+          "post_query_search_errors": 8,
+          "queries": 38
+        }
+      }
+    },
+    {
+      "index": 7,
+      "metrics": {
+        "current_rank": {
+          "charged_action_regret": 16.0,
+          "charged_completion_inspections": 50,
+          "post_query_search_errors": 4,
+          "queries": 32
+        },
+        "factor_habit": {
+          "charged_action_regret": 18.0,
+          "charged_completion_inspections": 56,
+          "post_query_search_errors": 5,
+          "queries": 38
+        },
+        "joint_habit": {
+          "charged_action_regret": 18.0,
+          "charged_completion_inspections": 56,
+          "post_query_search_errors": 5,
+          "queries": 38
+        },
+        "passive": {
+          "charged_action_regret": 17.333333333333332,
+          "charged_completion_inspections": 54,
+          "post_query_search_errors": 12,
+          "queries": 0
+        },
+        "recent_id": {
+          "charged_action_regret": 12.0,
+          "charged_completion_inspections": 38,
+          "post_query_search_errors": 1,
+          "queries": 28
+        }
+      }
+    },
+    {
+      "index": 8,
+      "metrics": {
+        "current_rank": {
+          "charged_action_regret": 16.333333333333332,
+          "charged_completion_inspections": 57,
+          "post_query_search_errors": 8,
+          "queries": 29
+        },
+        "factor_habit": {
+          "charged_action_regret": 18.0,
+          "charged_completion_inspections": 62,
+          "post_query_search_errors": 8,
+          "queries": 34
+        },
+        "joint_habit": {
+          "charged_action_regret": 18.0,
+          "charged_completion_inspections": 62,
+          "post_query_search_errors": 8,
+          "queries": 34
+        },
+        "passive": {
+          "charged_action_regret": 16.333333333333332,
+          "charged_completion_inspections": 57,
+          "post_query_search_errors": 9,
+          "queries": 0
+        },
+        "recent_id": {
+          "charged_action_regret": 16.666666666666668,
+          "charged_completion_inspections": 58,
+          "post_query_search_errors": 8,
+          "queries": 29
+        }
+      }
+    },
+    {
+      "index": 9,
+      "metrics": {
+        "current_rank": {
+          "charged_action_regret": 25.0,
+          "charged_completion_inspections": 56,
+          "post_query_search_errors": 8,
+          "queries": 29
+        },
+        "factor_habit": {
+          "charged_action_regret": 19.666666666666664,
+          "charged_completion_inspections": 40,
+          "post_query_search_errors": 0,
+          "queries": 29
+        },
+        "joint_habit": {
+          "charged_action_regret": 19.666666666666664,
+          "charged_completion_inspections": 40,
+          "post_query_search_errors": 0,
+          "queries": 29
+        },
+        "passive": {
+          "charged_action_regret": 25.0,
+          "charged_completion_inspections": 56,
+          "post_query_search_errors": 8,
+          "queries": 0
+        },
+        "recent_id": {
+          "charged_action_regret": 18.0,
+          "charged_completion_inspections": 35,
+          "post_query_search_errors": 0,
+          "queries": 24
+        }
+      }
+    }
+  ],
+  "phase": "test"
+}

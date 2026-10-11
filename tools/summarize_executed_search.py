@@ -18,6 +18,7 @@ def summarize(base, root):
     probability = Counter()
     examples = []
     carry_effect = Counter()
+    carry_by_transition = defaultdict(Counter)
     conditions = {}
     carry_seed_differences = {}
     for condition in ("complete32", "sparse32", "long64"):
@@ -43,6 +44,7 @@ def summarize(base, root):
             runs = {a: read(folder / f"run-{i}-{a}.json") for a in ARMS}
             scores = {a: score_run(r, v, t)[1] for a, r in runs.items()}
             mechanisms.update(runs["joint_habit"]["ledger_operations"])
+            previous_target = None
             for step_index, (j, f, c) in enumerate(
                 zip(
                     runs["joint_habit"]["actions"],
@@ -60,6 +62,18 @@ def summarize(base, root):
                     more_checks_steps=int(delta < 0),
                     checks_saved=delta,
                 )
+                target = truth["true_location"]
+                transition = (
+                    "no_previous"
+                    if previous_target is None
+                    else "persisted_location"
+                    if target == previous_target
+                    else "changed_location"
+                )
+                carry_by_transition[transition].update(
+                    steps=1, checks_saved=delta, helped=int(delta > 0), hurt=int(delta < 0)
+                )
+                previous_target = target
                 target_not_habit = truth["true_location"] != truth["true_owner_habit_location"]
                 group = f"current_{'differs_from' if target_not_habit else 'equals'}_habit"
                 extra = js["executed_checks"] - cs["executed_checks"]
@@ -105,6 +119,7 @@ def summarize(base, root):
     return {
         "all_counts": totals,
         "terminal_memory_effect_current_vs_no_carry": carry_effect,
+        "carry_by_location_transition_posthoc": dict(carry_by_transition),
         "carry_checks_saved_per_step_positive_is_better": carry_seed_differences,
         "paired": paired,
         "joint_factor_probability_differences": probability,

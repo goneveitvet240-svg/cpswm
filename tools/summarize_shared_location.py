@@ -13,13 +13,14 @@ def summarize(root):
     for key, value in scores["totals"].items():
         view, _, arm = key.split("/")
         totals[view + "/" + arm].update(value)
-    diagnostics, examples = Counter(), []
+    diagnostics, examples, support_failures = Counter(), [], []
     paths = defaultdict(set)
     for item in read(root / "test/index.json"):
         if item["arm"] != "joint":
             continue
         folder = root / "test"
         joint = read(folder / item["file"])
+        truth = read(folder / item["truth"])["truth_by_step"]
         markov = read(folder / item["file"].replace("-joint.json", "-markov.json"))
         factor = read(folder / item["file"].replace("-joint.json", "-factor.json"))
         history = []
@@ -50,9 +51,32 @@ def summarize(root):
             saved = a["paid_checks"] - c["paid_checks"]
             diagnostics[view + "/factor_saved/" + group] += saved
             diagnostics[view + "/factor_saved/" + cue] += saved
-            if a["found"] not in names:
-                names[a["found"]] = len(names)
-            truth_path.append(names[a["found"]])
+            target = truth[a["input"]["step_id"]]["true_location"]
+            if target not in names:
+                names[target] = len(names)
+            truth_path.append(names[target])
+            if a["found"] is None:
+                assert target not in joint["locations"]
+                support_failures.append(
+                    {
+                        "file": item["file"],
+                        "step_index": index,
+                        "step_id": a["input"]["step_id"],
+                        "target": target,
+                        "menu": joint["locations"],
+                        "paid_checks": a["paid_checks"],
+                    }
+                )
+            else:
+                last = a["updates"][-1]["posterior_joint"]
+                actor_tv = (
+                    sum(
+                        abs(sum(last[actor].values()) - sum(a["prior_joint"][actor].values()))
+                        for actor in joint["actors"]
+                    )
+                    / 2
+                )
+                diagnostics[view + "/successful_actor_posterior_changed_steps"] += actor_tv > 1e-10
             if saved > 0 and cue == "cue" and len(examples) < 3:
                 actor = max(a["input"]["actor_cue"], key=a["input"]["actor_cue"].get)
                 context, globally = 0.0, 0.0
@@ -100,6 +124,7 @@ def summarize(root):
         "native_unique_time_status_counts": dict(native_counts),
         "native_unique_time_audits": list(native_cases.values()),
         "posthoc_examples": examples,
+        "support_failures_joint_both_views": support_failures,
         "unique_location_paths_up_to_renaming": {k: len(v) for k, v in sorted(paths.items())},
         "scope": (
             "descriptive decomposition; same scheduled D0 regimes, "

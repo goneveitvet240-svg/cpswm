@@ -1,3 +1,9 @@
+# A交付回执：位置查证证据已推送，PR108为草稿（2026-10-11）
+
+[草稿PR108](https://github.com/goneveitvet240-svg/cpswm/pull/108)已创建，堆叠PR107，未合并。报告/原始证据`749dc1e266a7e1a3c8b91d65fe187164a2542afa`已推送；推断/runner `a8e98dc3a243467b52c62672e1f3ef9c4439e540`，独立评分 `db1942027529984c2a27a6cbae7b1ef7c7a14f48`。[报告](../reviews/pc_a/active_search_value_2026-10-11/REPORT.md)。原排序查证43搜索错/1512总代价，联合及因子化均62/1644且全部动作一致，独有收益仍未成立。58定向测试、8局部篡改拒绝、5臂实际重复、265归档成员和解压复算完成；D0理想检测、隐含续搜限制保持。终端实际执行反馈、自然传感、B独立设备和共享集成未完成。
+
+---
+
 # A交付：带成本的位置查证与新留出比较（2026-10-11）
 
 分支`codex/pc-a-active-search-value-20261011`，base `20f2a1f38125eb5ce973f48238f17d02c38286de`；推断/runner `a8e98dc3a243467b52c62672e1f3ef9c4439e540`，独立评分 `db1942027529984c2a27a6cbae7b1ef7c7a14f48`。[报告](../reviews/pc_a/active_search_value_2026-10-11/REPORT.md)、[复现](../reviews/pc_a/active_search_value_2026-10-11/COMMANDS.md)、[接入边界](../reviews/pc_a/active_search_value_2026-10-11/INTEGRATION.md)。本节推送前为本地完成。

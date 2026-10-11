@@ -1,0 +1,816 @@
+{
+  "boundary": "Every retrieval check executed against ideal D0 detector; world remains exogenous, not physical runtime or joint current-location belief.",
+  "condition": "long64",
+  "counts": {
+    "current_no_carry": {
+      "bound_feedback_actions": 423,
+      "charged_action_regret": 21.666666666666668,
+      "executed_checks": 678,
+      "missing_steps": 211,
+      "n": 640,
+      "negative_queries": 32,
+      "pre_completion_search_errors": 6,
+      "put_errors": 9,
+      "queries": 234,
+      "query_found": 202,
+      "retrieval_failures": 0,
+      "terminal_checks": 444,
+      "uncharged_pre_completion_regret": 10.999999999999998
+    },
+    "current_rank": {
+      "bound_feedback_actions": 423,
+      "charged_action_regret": 21.666666666666668,
+      "executed_checks": 678,
+      "missing_steps": 211,
+      "n": 640,
+      "negative_queries": 33,
+      "pre_completion_search_errors": 5,
+      "put_errors": 9,
+      "queries": 235,
+      "query_found": 202,
+      "retrieval_failures": 0,
+      "terminal_checks": 443,
+      "uncharged_pre_completion_regret": 10.666666666666666
+    },
+    "factor_habit": {
+      "bound_feedback_actions": 423,
+      "charged_action_regret": 39.33333333333333,
+      "executed_checks": 731,
+      "missing_steps": 211,
+      "n": 640,
+      "negative_queries": 85,
+      "pre_completion_search_errors": 6,
+      "put_errors": 9,
+      "queries": 286,
+      "query_found": 201,
+      "retrieval_failures": 0,
+      "terminal_checks": 445,
+      "uncharged_pre_completion_regret": 11.0
+    },
+    "joint_habit": {
+      "bound_feedback_actions": 423,
+      "charged_action_regret": 39.33333333333333,
+      "executed_checks": 731,
+      "missing_steps": 211,
+      "n": 640,
+      "negative_queries": 85,
+      "pre_completion_search_errors": 6,
+      "put_errors": 9,
+      "queries": 286,
+      "query_found": 201,
+      "retrieval_failures": 0,
+      "terminal_checks": 445,
+      "uncharged_pre_completion_regret": 11.0
+    },
+    "recent_id": {
+      "bound_feedback_actions": 423,
+      "charged_action_regret": 25.0,
+      "executed_checks": 688,
+      "missing_steps": 211,
+      "n": 640,
+      "negative_queries": 43,
+      "pre_completion_search_errors": 5,
+      "put_errors": 9,
+      "queries": 235,
+      "query_found": 192,
+      "retrieval_failures": 0,
+      "terminal_checks": 453,
+      "uncharged_pre_completion_regret": 10.666666666666666
+    },
+    "terminal_only": {
+      "bound_feedback_actions": 423,
+      "charged_action_regret": 21.666666666666668,
+      "executed_checks": 678,
+      "missing_steps": 211,
+      "n": 640,
+      "negative_queries": 0,
+      "pre_completion_search_errors": 24,
+      "put_errors": 9,
+      "queries": 0,
+      "query_found": 0,
+      "retrieval_failures": 0,
+      "terminal_checks": 678,
+      "uncharged_pre_completion_regret": 21.666666666666668
+    }
+  },
+  "joint_minus_control_lower_is_better": {
+    "current_no_carry": {
+      "charged_action_regret": {
+        "descriptive_seed_bootstrap_95": [
+          0.019270833333333327,
+          0.03541666666666666
+        ],
+        "mean": 0.02760416666666666,
+        "per_episode": [
+          0.04687499999999998,
+          0.02083333333333333,
+          0.026041666666666664,
+          0.04166666666666666,
+          0.020833333333333332,
+          0.03645833333333333,
+          0.03125,
+          0.0364583333333333,
+          0.015625,
+          0.0
+        ]
+      },
+      "executed_checks": {
+        "descriptive_seed_bootstrap_95": [
+          0.0578125,
+          0.10625
+        ],
+        "mean": 0.0828125,
+        "per_episode": [
+          0.140625,
+          0.0625,
+          0.078125,
+          0.125,
+          0.0625,
+          0.109375,
+          0.09375,
+          0.109375,
+          0.046875,
+          0.0
+        ]
+      },
+      "pre_completion_search_errors": {
+        "descriptive_seed_bootstrap_95": [
+          -0.0046875,
+          0.0046875
+        ],
+        "mean": 0.0,
+        "per_episode": [
+          0.015625,
+          0.0,
+          0.0,
+          -0.015625,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ]
+      }
+    },
+    "current_rank": {
+      "charged_action_regret": {
+        "descriptive_seed_bootstrap_95": [
+          0.017708333333333333,
+          0.03749999999999999
+        ],
+        "mean": 0.02760416666666666,
+        "per_episode": [
+          0.04687499999999998,
+          0.02083333333333333,
+          0.026041666666666664,
+          0.05729166666666666,
+          0.020833333333333332,
+          0.03645833333333333,
+          0.03125,
+          0.026041666666666644,
+          0.010416666666666668,
+          0.0
+        ]
+      },
+      "executed_checks": {
+        "descriptive_seed_bootstrap_95": [
+          0.053125,
+          0.1125
+        ],
+        "mean": 0.0828125,
+        "per_episode": [
+          0.140625,
+          0.0625,
+          0.078125,
+          0.171875,
+          0.0625,
+          0.109375,
+          0.09375,
+          0.078125,
+          0.03125,
+          0.0
+        ]
+      },
+      "pre_completion_search_errors": {
+        "descriptive_seed_bootstrap_95": [
+          0.0,
+          0.0046875
+        ],
+        "mean": 0.0015625,
+        "per_episode": [
+          0.015625,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ]
+      }
+    },
+    "factor_habit": {
+      "charged_action_regret": {
+        "descriptive_seed_bootstrap_95": [
+          0.0,
+          0.0
+        ],
+        "mean": 0.0,
+        "per_episode": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "executed_checks": {
+        "descriptive_seed_bootstrap_95": [
+          0.0,
+          0.0
+        ],
+        "mean": 0.0,
+        "per_episode": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "pre_completion_search_errors": {
+        "descriptive_seed_bootstrap_95": [
+          0.0,
+          0.0
+        ],
+        "mean": 0.0,
+        "per_episode": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ]
+      }
+    },
+    "recent_id": {
+      "charged_action_regret": {
+        "descriptive_seed_bootstrap_95": [
+          0.009374999999999988,
+          0.03489583333333333
+        ],
+        "mean": 0.022395833333333323,
+        "per_episode": [
+          0.041666666666666644,
+          0.005208333333333329,
+          0.02083333333333333,
+          0.05729166666666666,
+          0.03125,
+          0.03645833333333333,
+          0.03645833333333333,
+          0.010416666666666616,
+          -0.005208333333333329,
+          -0.010416666666666666
+        ]
+      },
+      "executed_checks": {
+        "descriptive_seed_bootstrap_95": [
+          0.028125,
+          0.1046875
+        ],
+        "mean": 0.0671875,
+        "per_episode": [
+          0.125,
+          0.015625,
+          0.0625,
+          0.171875,
+          0.09375,
+          0.109375,
+          0.109375,
+          0.03125,
+          -0.015625,
+          -0.03125
+        ]
+      },
+      "pre_completion_search_errors": {
+        "descriptive_seed_bootstrap_95": [
+          0.0,
+          0.0046875
+        ],
+        "mean": 0.0015625,
+        "per_episode": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.015625,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ]
+      }
+    },
+    "terminal_only": {
+      "charged_action_regret": {
+        "descriptive_seed_bootstrap_95": [
+          0.017708333333333333,
+          0.03749999999999999
+        ],
+        "mean": 0.02760416666666666,
+        "per_episode": [
+          0.04687499999999998,
+          0.02083333333333333,
+          0.026041666666666664,
+          0.05729166666666666,
+          0.020833333333333332,
+          0.03645833333333333,
+          0.03125,
+          0.026041666666666644,
+          0.010416666666666668,
+          0.0
+        ]
+      },
+      "executed_checks": {
+        "descriptive_seed_bootstrap_95": [
+          0.053125,
+          0.1125
+        ],
+        "mean": 0.0828125,
+        "per_episode": [
+          0.140625,
+          0.0625,
+          0.078125,
+          0.171875,
+          0.0625,
+          0.109375,
+          0.09375,
+          0.078125,
+          0.03125,
+          0.0
+        ]
+      },
+      "pre_completion_search_errors": {
+        "descriptive_seed_bootstrap_95": [
+          -0.04375,
+          -0.015625
+        ],
+        "mean": -0.028125,
+        "per_episode": [
+          0.0,
+          -0.046875,
+          -0.03125,
+          0.0,
+          -0.015625,
+          -0.015625,
+          -0.015625,
+          -0.078125,
+          -0.046875,
+          -0.03125
+        ]
+      }
+    }
+  },
+  "paired": {
+    "current_no_carry_vs_current_rank_executed_sequence_disagreements": 3,
+    "current_rank_vs_terminal_only_executed_sequence_disagreements": 0,
+    "factor_habit_vs_joint_habit_executed_sequence_disagreements": 0,
+    "joint_factor_query_disagreements": 0,
+    "joint_factor_search_disagreements": 0,
+    "joint_fewer_completion_inspections_steps": 9,
+    "joint_more_completion_inspections_steps": 61,
+    "matched_fairness_receipts": 429
+  },
+  "per_episode": [
+    {
+      "index": 0,
+      "metrics": {
+        "current_no_carry": {
+          "charged_action_regret": 2.6666666666666665,
+          "executed_checks": 66,
+          "pre_completion_search_errors": 0,
+          "queries": 21
+        },
+        "current_rank": {
+          "charged_action_regret": 2.6666666666666665,
+          "executed_checks": 66,
+          "pre_completion_search_errors": 0,
+          "queries": 21
+        },
+        "factor_habit": {
+          "charged_action_regret": 5.666666666666666,
+          "executed_checks": 75,
+          "pre_completion_search_errors": 1,
+          "queries": 29
+        },
+        "joint_habit": {
+          "charged_action_regret": 5.666666666666666,
+          "executed_checks": 75,
+          "pre_completion_search_errors": 1,
+          "queries": 29
+        },
+        "recent_id": {
+          "charged_action_regret": 3.0,
+          "executed_checks": 67,
+          "pre_completion_search_errors": 1,
+          "queries": 21
+        },
+        "terminal_only": {
+          "charged_action_regret": 2.6666666666666665,
+          "executed_checks": 66,
+          "pre_completion_search_errors": 1,
+          "queries": 0
+        }
+      }
+    },
+    {
+      "index": 1,
+      "metrics": {
+        "current_no_carry": {
+          "charged_action_regret": 5.0,
+          "executed_checks": 73,
+          "pre_completion_search_errors": 2,
+          "queries": 25
+        },
+        "current_rank": {
+          "charged_action_regret": 5.0,
+          "executed_checks": 73,
+          "pre_completion_search_errors": 2,
+          "queries": 25
+        },
+        "factor_habit": {
+          "charged_action_regret": 6.333333333333333,
+          "executed_checks": 77,
+          "pre_completion_search_errors": 2,
+          "queries": 29
+        },
+        "joint_habit": {
+          "charged_action_regret": 6.333333333333333,
+          "executed_checks": 77,
+          "pre_completion_search_errors": 2,
+          "queries": 29
+        },
+        "recent_id": {
+          "charged_action_regret": 6.0,
+          "executed_checks": 76,
+          "pre_completion_search_errors": 2,
+          "queries": 25
+        },
+        "terminal_only": {
+          "charged_action_regret": 5.0,
+          "executed_checks": 73,
+          "pre_completion_search_errors": 5,
+          "queries": 0
+        }
+      }
+    },
+    {
+      "index": 2,
+      "metrics": {
+        "current_no_carry": {
+          "charged_action_regret": 0.6666666666666666,
+          "executed_checks": 66,
+          "pre_completion_search_errors": 0,
+          "queries": 17
+        },
+        "current_rank": {
+          "charged_action_regret": 0.6666666666666666,
+          "executed_checks": 66,
+          "pre_completion_search_errors": 0,
+          "queries": 17
+        },
+        "factor_habit": {
+          "charged_action_regret": 2.333333333333333,
+          "executed_checks": 71,
+          "pre_completion_search_errors": 0,
+          "queries": 22
+        },
+        "joint_habit": {
+          "charged_action_regret": 2.333333333333333,
+          "executed_checks": 71,
+          "pre_completion_search_errors": 0,
+          "queries": 22
+        },
+        "recent_id": {
+          "charged_action_regret": 1.0,
+          "executed_checks": 67,
+          "pre_completion_search_errors": 0,
+          "queries": 17
+        },
+        "terminal_only": {
+          "charged_action_regret": 0.6666666666666666,
+          "executed_checks": 66,
+          "pre_completion_search_errors": 2,
+          "queries": 0
+        }
+      }
+    },
+    {
+      "index": 3,
+      "metrics": {
+        "current_no_carry": {
+          "charged_action_regret": 4.0,
+          "executed_checks": 70,
+          "pre_completion_search_errors": 2,
+          "queries": 27
+        },
+        "current_rank": {
+          "charged_action_regret": 3.0,
+          "executed_checks": 67,
+          "pre_completion_search_errors": 1,
+          "queries": 26
+        },
+        "factor_habit": {
+          "charged_action_regret": 6.666666666666666,
+          "executed_checks": 78,
+          "pre_completion_search_errors": 1,
+          "queries": 36
+        },
+        "joint_habit": {
+          "charged_action_regret": 6.666666666666666,
+          "executed_checks": 78,
+          "pre_completion_search_errors": 1,
+          "queries": 36
+        },
+        "recent_id": {
+          "charged_action_regret": 3.0,
+          "executed_checks": 67,
+          "pre_completion_search_errors": 1,
+          "queries": 26
+        },
+        "terminal_only": {
+          "charged_action_regret": 3.0,
+          "executed_checks": 67,
+          "pre_completion_search_errors": 1,
+          "queries": 0
+        }
+      }
+    },
+    {
+      "index": 4,
+      "metrics": {
+        "current_no_carry": {
+          "charged_action_regret": 1.3333333333333333,
+          "executed_checks": 68,
+          "pre_completion_search_errors": 1,
+          "queries": 28
+        },
+        "current_rank": {
+          "charged_action_regret": 1.3333333333333333,
+          "executed_checks": 68,
+          "pre_completion_search_errors": 1,
+          "queries": 28
+        },
+        "factor_habit": {
+          "charged_action_regret": 2.6666666666666665,
+          "executed_checks": 72,
+          "pre_completion_search_errors": 1,
+          "queries": 32
+        },
+        "joint_habit": {
+          "charged_action_regret": 2.6666666666666665,
+          "executed_checks": 72,
+          "pre_completion_search_errors": 1,
+          "queries": 32
+        },
+        "recent_id": {
+          "charged_action_regret": 0.6666666666666666,
+          "executed_checks": 66,
+          "pre_completion_search_errors": 0,
+          "queries": 28
+        },
+        "terminal_only": {
+          "charged_action_regret": 1.3333333333333333,
+          "executed_checks": 68,
+          "pre_completion_search_errors": 2,
+          "queries": 0
+        }
+      }
+    },
+    {
+      "index": 5,
+      "metrics": {
+        "current_no_carry": {
+          "charged_action_regret": 0.3333333333333333,
+          "executed_checks": 65,
+          "pre_completion_search_errors": 0,
+          "queries": 26
+        },
+        "current_rank": {
+          "charged_action_regret": 0.3333333333333333,
+          "executed_checks": 65,
+          "pre_completion_search_errors": 0,
+          "queries": 26
+        },
+        "factor_habit": {
+          "charged_action_regret": 2.6666666666666665,
+          "executed_checks": 72,
+          "pre_completion_search_errors": 0,
+          "queries": 33
+        },
+        "joint_habit": {
+          "charged_action_regret": 2.6666666666666665,
+          "executed_checks": 72,
+          "pre_completion_search_errors": 0,
+          "queries": 33
+        },
+        "recent_id": {
+          "charged_action_regret": 0.3333333333333333,
+          "executed_checks": 65,
+          "pre_completion_search_errors": 0,
+          "queries": 26
+        },
+        "terminal_only": {
+          "charged_action_regret": 0.3333333333333333,
+          "executed_checks": 65,
+          "pre_completion_search_errors": 1,
+          "queries": 0
+        }
+      }
+    },
+    {
+      "index": 6,
+      "metrics": {
+        "current_no_carry": {
+          "charged_action_regret": 0.6666666666666666,
+          "executed_checks": 66,
+          "pre_completion_search_errors": 0,
+          "queries": 26
+        },
+        "current_rank": {
+          "charged_action_regret": 0.6666666666666666,
+          "executed_checks": 66,
+          "pre_completion_search_errors": 0,
+          "queries": 26
+        },
+        "factor_habit": {
+          "charged_action_regret": 2.6666666666666665,
+          "executed_checks": 72,
+          "pre_completion_search_errors": 0,
+          "queries": 32
+        },
+        "joint_habit": {
+          "charged_action_regret": 2.6666666666666665,
+          "executed_checks": 72,
+          "pre_completion_search_errors": 0,
+          "queries": 32
+        },
+        "recent_id": {
+          "charged_action_regret": 0.3333333333333333,
+          "executed_checks": 65,
+          "pre_completion_search_errors": 0,
+          "queries": 26
+        },
+        "terminal_only": {
+          "charged_action_regret": 0.6666666666666666,
+          "executed_checks": 66,
+          "pre_completion_search_errors": 1,
+          "queries": 0
+        }
+      }
+    },
+    {
+      "index": 7,
+      "metrics": {
+        "current_no_carry": {
+          "charged_action_regret": 4.666666666666666,
+          "executed_checks": 69,
+          "pre_completion_search_errors": 0,
+          "queries": 27
+        },
+        "current_rank": {
+          "charged_action_regret": 5.333333333333333,
+          "executed_checks": 71,
+          "pre_completion_search_errors": 0,
+          "queries": 28
+        },
+        "factor_habit": {
+          "charged_action_regret": 6.999999999999999,
+          "executed_checks": 76,
+          "pre_completion_search_errors": 0,
+          "queries": 33
+        },
+        "joint_habit": {
+          "charged_action_regret": 6.999999999999999,
+          "executed_checks": 76,
+          "pre_completion_search_errors": 0,
+          "queries": 33
+        },
+        "recent_id": {
+          "charged_action_regret": 6.333333333333333,
+          "executed_checks": 74,
+          "pre_completion_search_errors": 0,
+          "queries": 28
+        },
+        "terminal_only": {
+          "charged_action_regret": 5.333333333333333,
+          "executed_checks": 71,
+          "pre_completion_search_errors": 5,
+          "queries": 0
+        }
+      }
+    },
+    {
+      "index": 8,
+      "metrics": {
+        "current_no_carry": {
+          "charged_action_regret": 1.6666666666666665,
+          "executed_checks": 69,
+          "pre_completion_search_errors": 1,
+          "queries": 21
+        },
+        "current_rank": {
+          "charged_action_regret": 2.0,
+          "executed_checks": 70,
+          "pre_completion_search_errors": 1,
+          "queries": 22
+        },
+        "factor_habit": {
+          "charged_action_regret": 2.6666666666666665,
+          "executed_checks": 72,
+          "pre_completion_search_errors": 1,
+          "queries": 24
+        },
+        "joint_habit": {
+          "charged_action_regret": 2.6666666666666665,
+          "executed_checks": 72,
+          "pre_completion_search_errors": 1,
+          "queries": 24
+        },
+        "recent_id": {
+          "charged_action_regret": 3.0,
+          "executed_checks": 73,
+          "pre_completion_search_errors": 1,
+          "queries": 22
+        },
+        "terminal_only": {
+          "charged_action_regret": 2.0,
+          "executed_checks": 70,
+          "pre_completion_search_errors": 4,
+          "queries": 0
+        }
+      }
+    },
+    {
+      "index": 9,
+      "metrics": {
+        "current_no_carry": {
+          "charged_action_regret": 0.6666666666666666,
+          "executed_checks": 66,
+          "pre_completion_search_errors": 0,
+          "queries": 16
+        },
+        "current_rank": {
+          "charged_action_regret": 0.6666666666666666,
+          "executed_checks": 66,
+          "pre_completion_search_errors": 0,
+          "queries": 16
+        },
+        "factor_habit": {
+          "charged_action_regret": 0.6666666666666666,
+          "executed_checks": 66,
+          "pre_completion_search_errors": 0,
+          "queries": 16
+        },
+        "joint_habit": {
+          "charged_action_regret": 0.6666666666666666,
+          "executed_checks": 66,
+          "pre_completion_search_errors": 0,
+          "queries": 16
+        },
+        "recent_id": {
+          "charged_action_regret": 1.3333333333333333,
+          "executed_checks": 68,
+          "pre_completion_search_errors": 0,
+          "queries": 16
+        },
+        "terminal_only": {
+          "charged_action_regret": 0.6666666666666666,
+          "executed_checks": 66,
+          "pre_completion_search_errors": 2,
+          "queries": 0
+        }
+      }
+    }
+  ],
+  "phase": "test"
+}

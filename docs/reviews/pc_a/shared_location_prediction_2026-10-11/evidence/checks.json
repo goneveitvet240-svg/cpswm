@@ -1,0 +1,64 @@
+{
+  "actual_runs": {
+    "dev": 270,
+    "integrate": 32,
+    "repeat": 16,
+    "test": 480
+  },
+  "additional_revision_probe_step_executions": 44,
+  "fresh_repeat_runs_exact_except_wall_seconds": 16,
+  "full_adapter_put_habit_ledger_equal_groups": 2,
+  "full_adapter_runs_equal_to_isolated_search": 32,
+  "independent_development_selection": true,
+  "paid_revision_cases": [
+    {
+      "before_checks": 1,
+      "kind": "joint",
+      "restored_exact": true,
+      "view": "native",
+      "withdrawn_checks": 1
+    },
+    {
+      "before_checks": 1,
+      "kind": "factor",
+      "restored_exact": true,
+      "view": "native",
+      "withdrawn_checks": 1
+    },
+    {
+      "before_checks": 1,
+      "kind": "joint",
+      "restored_exact": true,
+      "view": "cue_only",
+      "withdrawn_checks": 1
+    },
+    {
+      "before_checks": 1,
+      "kind": "factor",
+      "restored_exact": true,
+      "view": "cue_only",
+      "withdrawn_checks": 1
+    }
+  ],
+  "scope": "local bounded checks; not B acceptance, malicious-process isolation, or full native joint-location inference",
+  "source_files_checked": 497,
+  "tamper_rejections": [
+    "paid_count",
+    "input_actor",
+    "input_location",
+    "prior",
+    "posterior",
+    "learned_hash",
+    "previous",
+    "plan",
+    "ordinal",
+    "rehashed_false_detector",
+    "duplicate_action",
+    "future_terminal",
+    "remove_step",
+    "input_source_hash",
+    "withdrawal_descendant_edge",
+    "false_native_current_binding",
+    "false_native_write"
+  ]
+}

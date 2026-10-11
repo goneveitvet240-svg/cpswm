@@ -1,3 +1,9 @@
+# A交付回执：当前位置推断诊断已推送，PR110为草稿（2026-10-11）
+
+[草稿PR110](https://github.com/goneveitvet240-svg/cpswm/pull/110)已创建，堆叠PR109，未合并。报告/原始证据提交`b07874636be183bd0f96d2ce5600728ece806b96`已推送；推断/runner/独立评分/测试`1421805b199cb949bc9510c802c4c5ce76ae8e69`。[报告](../reviews/pc_a/current_location_inference_2026-10-11/REPORT.md)。564次实验、84定向测试、14局部篡改拒绝、10实际重复、20完整入口接入与683归档成员/解压复算通过。native最近1424对联合位置表1463；隐藏位置保留cue诊断最近1700、联合1794、因子化1712；新增位置头独有收益未成立，未替换默认。原生联合粒子新位置因子、自然任务、B复核、全仓/S1和共享集成仍未完成，完整范围保持。
+
+---
+
 # A交付：当前位置条件预测开发接入与新留出诊断（2026-10-11）
 
 分支`codex/pc-a-current-location-inference-20261011`，base/PR109 `cbbc69fd40d59ea6daf5ada738ae29dd00e1806f`；推断/runner/评分/新增测试`1421805b199cb949bc9510c802c4c5ce76ae8e69`，开发冻结`3a7f7367e49dacf441859ae69e7c86d1e28c8931`，辅助验证`ece35b704519c5c224a32a9c6a2262d99a0d9479`。[报告](../reviews/pc_a/current_location_inference_2026-10-11/REPORT.md)、[命令](../reviews/pc_a/current_location_inference_2026-10-11/COMMANDS.md)、[接入](../reviews/pc_a/current_location_inference_2026-10-11/INTEGRATION.md)。本节推送前本地完成。

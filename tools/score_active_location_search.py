@@ -177,10 +177,23 @@ def verify(folder, root):
     for i in range(completed["episode_count"]):
         visible, truth = read(folder / f"visible-{i}.json"), read(folder / f"truth-{i}.json")
         results = {a: read(folder / f"run-{i}-{a}.json") for a in ARMS}
-        assert len({r["visible_input_sha256"] for r in results.values()}) == 1
+        assert {r["visible_input_sha256"] for r in results.values()} == {digest(visible)}
+        assert truth["episode_id"] == visible["episode_id"]
         scored = {}
         for arm, r in results.items():
             assert r["arm"] == arm
+            expected_engine = "factorized" if arm == "factor_habit" else "joint"
+            expected_policy = "habit_rank" if arm in ("joint_habit", "factor_habit") else arm
+            assert r["engine"] == expected_engine and r["policy"] == expected_policy
+            expected_runtime_arm = (
+                "matched_full_state_factorized" if arm == "factor_habit" else "stateful_full_joint"
+            )
+            assert r["runtime_audit"]["arm"] == expected_runtime_arm
+            assert r["runtime_audit"]["episode_id"] == visible["episode_id"]
+            assert all(
+                receipt["arm"] == expected_runtime_arm
+                for receipt in r["runtime_audit"]["fairness_receipts"]
+            )
             counts, rows = score_run(r, visible, truth)
             totals[arm].update(counts)
             scored[arm] = rows

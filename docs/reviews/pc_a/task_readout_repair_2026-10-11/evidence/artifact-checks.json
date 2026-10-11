@@ -1,0 +1,21 @@
+{
+  "excluded_cross_run_field": "actions[*].task_readout.source_snapshot_id",
+  "fresh_repeat_actual_runs": 5,
+  "fresh_repeat_logical_arms": 7,
+  "positive_action_trace_verified": true,
+  "raw_snapshot_id_differences_by_actual_arm": {
+    "amg": 0,
+    "latest": 0,
+    "legacy_joint": 0,
+    "matched_factorized": 32,
+    "split_v06": 32
+  },
+  "repeat_actions_metrics_and_runtime_audits_identical": true,
+  "scope": "bounded artifact and replay audit; not complete forged-path acceptance",
+  "tamper_rejections": [
+    "wrong_action",
+    "wrong_search_receipt",
+    "wrong_feedback_distribution",
+    "factorized_alias_laundered_as_joint"
+  ]
+}

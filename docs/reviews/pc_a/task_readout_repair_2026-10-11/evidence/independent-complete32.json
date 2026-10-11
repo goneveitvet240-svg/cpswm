@@ -1,0 +1,872 @@
+{
+  "actual_test_runs": 50,
+  "boundary": "D0 development diagnostic; intervals descriptive; natural sensors and robot execution untested",
+  "condition": "complete32",
+  "counts": {
+    "amg": {
+      "action_regret": 1.3333333333333333,
+      "n": 320,
+      "put_errors": 0,
+      "search_errors": 2
+    },
+    "latest": {
+      "action_regret": 1.3333333333333333,
+      "n": 320,
+      "put_errors": 0,
+      "search_errors": 2
+    },
+    "legacy_joint": {
+      "action_regret": 30.0,
+      "n": 320,
+      "put_errors": 0,
+      "search_errors": 90
+    },
+    "matched_factorized": {
+      "action_regret": 0.6666666666666666,
+      "n": 320,
+      "put_errors": 0,
+      "search_errors": 2
+    },
+    "selected_factorized": {
+      "action_regret": 0.6666666666666666,
+      "n": 320,
+      "put_errors": 0,
+      "search_errors": 2
+    },
+    "selected_joint": {
+      "action_regret": 0.6666666666666666,
+      "n": 320,
+      "put_errors": 0,
+      "search_errors": 2
+    },
+    "split_v06": {
+      "action_regret": 0.6666666666666666,
+      "n": 320,
+      "put_errors": 0,
+      "search_errors": 2
+    }
+  },
+  "coverage": {
+    "amg": {
+      "long_term_nonempty_steps": 0,
+      "put_differs_latest": 0,
+      "same_put_and_search_head": 232,
+      "targets_require_distinct_actions": 90
+    },
+    "latest": {
+      "bound_feedback_actions": 300,
+      "long_term_nonempty_steps": 320,
+      "put_differs_latest": 0,
+      "request_correct": 80,
+      "request_reinforce": 230,
+      "request_status_applied": 300,
+      "request_status_rejected": 10,
+      "same_put_and_search_head": 232,
+      "targets_require_distinct_actions": 90
+    },
+    "legacy_joint": {
+      "bound_feedback_actions": 300,
+      "changed_ccrr": 310,
+      "changed_cf_bocpd": 310,
+      "changed_ciav": 30,
+      "changed_opceu": 310,
+      "changed_orrer_cheh": 310,
+      "changed_pchmp": 310,
+      "changed_rgrc": 187,
+      "ledger_promote": 36,
+      "ledger_quarantine": 151,
+      "ledger_retract": 36,
+      "long_term_nonempty_steps": 320,
+      "put_differs_latest": 0,
+      "request_correct": 80,
+      "request_reinforce": 230,
+      "request_status_applied": 300,
+      "request_status_rejected": 10,
+      "same_put_and_search_head": 320,
+      "targets_require_distinct_actions": 90
+    },
+    "matched_factorized": {
+      "bound_feedback_actions": 300,
+      "changed_ccrr": 310,
+      "changed_cf_bocpd": 310,
+      "changed_ciav": 30,
+      "changed_opceu": 310,
+      "changed_orrer_cheh": 310,
+      "changed_pchmp": 310,
+      "changed_rgrc": 187,
+      "joint_cold_start": 0,
+      "ledger_promote": 36,
+      "ledger_quarantine": 151,
+      "ledger_retract": 36,
+      "long_term_nonempty_steps": 320,
+      "put_differs_latest": 0,
+      "request_correct": 80,
+      "request_reinforce": 230,
+      "request_status_applied": 300,
+      "request_status_rejected": 10,
+      "same_put_and_search_head": 232,
+      "targets_require_distinct_actions": 90
+    },
+    "selected_factorized": {
+      "bound_feedback_actions": 300,
+      "changed_ccrr": 310,
+      "changed_cf_bocpd": 310,
+      "changed_ciav": 30,
+      "changed_opceu": 310,
+      "changed_orrer_cheh": 310,
+      "changed_pchmp": 310,
+      "changed_rgrc": 187,
+      "joint_cold_start": 0,
+      "ledger_promote": 36,
+      "ledger_quarantine": 151,
+      "ledger_retract": 36,
+      "long_term_nonempty_steps": 320,
+      "put_differs_latest": 0,
+      "request_correct": 80,
+      "request_reinforce": 230,
+      "request_status_applied": 300,
+      "request_status_rejected": 10,
+      "same_put_and_search_head": 232,
+      "targets_require_distinct_actions": 90
+    },
+    "selected_joint": {
+      "bound_feedback_actions": 300,
+      "changed_ccrr": 310,
+      "changed_cf_bocpd": 310,
+      "changed_ciav": 30,
+      "changed_opceu": 310,
+      "changed_orrer_cheh": 310,
+      "changed_pchmp": 310,
+      "changed_rgrc": 187,
+      "joint_cold_start": 0,
+      "ledger_promote": 36,
+      "ledger_quarantine": 151,
+      "ledger_retract": 36,
+      "long_term_nonempty_steps": 320,
+      "put_differs_latest": 0,
+      "request_correct": 80,
+      "request_reinforce": 230,
+      "request_status_applied": 300,
+      "request_status_rejected": 10,
+      "same_put_and_search_head": 232,
+      "targets_require_distinct_actions": 90
+    },
+    "split_v06": {
+      "bound_feedback_actions": 300,
+      "changed_ccrr": 310,
+      "changed_cf_bocpd": 310,
+      "changed_ciav": 30,
+      "changed_opceu": 310,
+      "changed_orrer_cheh": 310,
+      "changed_pchmp": 310,
+      "changed_rgrc": 187,
+      "joint_cold_start": 0,
+      "ledger_promote": 36,
+      "ledger_quarantine": 151,
+      "ledger_retract": 36,
+      "long_term_nonempty_steps": 320,
+      "put_differs_latest": 0,
+      "request_correct": 80,
+      "request_reinforce": 230,
+      "request_status_applied": 300,
+      "request_status_rejected": 10,
+      "same_put_and_search_head": 232,
+      "targets_require_distinct_actions": 90
+    }
+  },
+  "development": {
+    "factorized": [
+      {
+        "action_regret": 0.0,
+        "n": 96,
+        "parameter": "v06",
+        "put_errors": 0,
+        "regret": 0.0,
+        "search_errors": 0
+      },
+      {
+        "action_regret": 4.0,
+        "n": 96,
+        "parameter": "balanced",
+        "put_errors": 4,
+        "regret": 0.041666666666666664,
+        "search_errors": 0
+      },
+      {
+        "action_regret": 8.0,
+        "n": 96,
+        "parameter": "slow",
+        "put_errors": 8,
+        "regret": 0.08333333333333333,
+        "search_errors": 0
+      }
+    ],
+    "joint": [
+      {
+        "action_regret": 0.0,
+        "n": 96,
+        "parameter": "v06",
+        "put_errors": 0,
+        "regret": 0.0,
+        "search_errors": 0
+      },
+      {
+        "action_regret": 4.0,
+        "n": 96,
+        "parameter": "balanced",
+        "put_errors": 4,
+        "regret": 0.041666666666666664,
+        "search_errors": 0
+      },
+      {
+        "action_regret": 8.0,
+        "n": 96,
+        "parameter": "slow",
+        "put_errors": 8,
+        "regret": 0.08333333333333333,
+        "search_errors": 0
+      }
+    ],
+    "matched_amg": [
+      {
+        "action_regret": 0.0,
+        "n": 96,
+        "parameter": 0.2,
+        "put_errors": 0,
+        "regret": 0.0,
+        "search_errors": 0
+      },
+      {
+        "action_regret": 0.0,
+        "n": 96,
+        "parameter": 0.33,
+        "put_errors": 0,
+        "regret": 0.0,
+        "search_errors": 0
+      },
+      {
+        "action_regret": 0.0,
+        "n": 96,
+        "parameter": 0.5,
+        "put_errors": 0,
+        "regret": 0.0,
+        "search_errors": 0
+      }
+    ],
+    "shared_spine_latest": [
+      {
+        "action_regret": 1.0,
+        "n": 96,
+        "parameter": 0.3,
+        "put_errors": 1,
+        "regret": 0.010416666666666666,
+        "search_errors": 0
+      },
+      {
+        "action_regret": 0.0,
+        "n": 96,
+        "parameter": 0.5,
+        "put_errors": 0,
+        "regret": 0.0,
+        "search_errors": 0
+      },
+      {
+        "action_regret": 0.0,
+        "n": 96,
+        "parameter": 0.7,
+        "put_errors": 0,
+        "regret": 0.0,
+        "search_errors": 0
+      }
+    ]
+  },
+  "joint_minus_control_lower_is_better": {
+    "amg": {
+      "action_regret": {
+        "descriptive_seed_bootstrap_95": [
+          -0.005208333333333333,
+          0.0
+        ],
+        "mean": -0.0020833333333333333,
+        "per_episode": [
+          0.0,
+          0.0,
+          -0.010416666666666666,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          -0.010416666666666666,
+          0.0,
+          0.0
+        ]
+      },
+      "put_errors": {
+        "descriptive_seed_bootstrap_95": [
+          0.0,
+          0.0
+        ],
+        "mean": 0.0,
+        "per_episode": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "search_errors": {
+        "descriptive_seed_bootstrap_95": [
+          0.0,
+          0.0
+        ],
+        "mean": 0.0,
+        "per_episode": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ]
+      }
+    },
+    "latest": {
+      "action_regret": {
+        "descriptive_seed_bootstrap_95": [
+          -0.005208333333333333,
+          0.0
+        ],
+        "mean": -0.0020833333333333333,
+        "per_episode": [
+          0.0,
+          0.0,
+          -0.010416666666666666,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          -0.010416666666666666,
+          0.0,
+          0.0
+        ]
+      },
+      "put_errors": {
+        "descriptive_seed_bootstrap_95": [
+          0.0,
+          0.0
+        ],
+        "mean": 0.0,
+        "per_episode": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "search_errors": {
+        "descriptive_seed_bootstrap_95": [
+          0.0,
+          0.0
+        ],
+        "mean": 0.0,
+        "per_episode": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ]
+      }
+    },
+    "legacy_joint": {
+      "action_regret": {
+        "descriptive_seed_bootstrap_95": [
+          -0.09375,
+          -0.08854166666666666
+        ],
+        "mean": -0.09166666666666666,
+        "per_episode": [
+          -0.09375,
+          -0.09375,
+          -0.08333333333333333,
+          -0.09375,
+          -0.09375,
+          -0.09375,
+          -0.09375,
+          -0.08333333333333333,
+          -0.09375,
+          -0.09375
+        ]
+      },
+      "put_errors": {
+        "descriptive_seed_bootstrap_95": [
+          0.0,
+          0.0
+        ],
+        "mean": 0.0,
+        "per_episode": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "search_errors": {
+        "descriptive_seed_bootstrap_95": [
+          -0.28125,
+          -0.265625
+        ],
+        "mean": -0.275,
+        "per_episode": [
+          -0.28125,
+          -0.28125,
+          -0.25,
+          -0.28125,
+          -0.28125,
+          -0.28125,
+          -0.28125,
+          -0.25,
+          -0.28125,
+          -0.28125
+        ]
+      }
+    },
+    "matched_factorized": {
+      "action_regret": {
+        "descriptive_seed_bootstrap_95": [
+          0.0,
+          0.0
+        ],
+        "mean": 0.0,
+        "per_episode": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "put_errors": {
+        "descriptive_seed_bootstrap_95": [
+          0.0,
+          0.0
+        ],
+        "mean": 0.0,
+        "per_episode": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "search_errors": {
+        "descriptive_seed_bootstrap_95": [
+          0.0,
+          0.0
+        ],
+        "mean": 0.0,
+        "per_episode": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ]
+      }
+    },
+    "selected_factorized": {
+      "action_regret": {
+        "descriptive_seed_bootstrap_95": [
+          0.0,
+          0.0
+        ],
+        "mean": 0.0,
+        "per_episode": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "put_errors": {
+        "descriptive_seed_bootstrap_95": [
+          0.0,
+          0.0
+        ],
+        "mean": 0.0,
+        "per_episode": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "search_errors": {
+        "descriptive_seed_bootstrap_95": [
+          0.0,
+          0.0
+        ],
+        "mean": 0.0,
+        "per_episode": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ]
+      }
+    },
+    "split_v06": {
+      "action_regret": {
+        "descriptive_seed_bootstrap_95": [
+          0.0,
+          0.0
+        ],
+        "mean": 0.0,
+        "per_episode": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "put_errors": {
+        "descriptive_seed_bootstrap_95": [
+          0.0,
+          0.0
+        ],
+        "mean": 0.0,
+        "per_episode": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "search_errors": {
+        "descriptive_seed_bootstrap_95": [
+          0.0,
+          0.0
+        ],
+        "mean": 0.0,
+        "per_episode": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ]
+      }
+    }
+  },
+  "logical_test_runs": 70,
+  "paired": {
+    "joint_factor_put_disagreements": 0,
+    "joint_factor_search_disagreements": 0,
+    "matched_fairness_receipts": 310,
+    "selected_vs_v06_put_disagreements": 0
+  },
+  "phases": {
+    "amg": {
+      "guest": {
+        "action_regret": 1.3333333333333333,
+        "n": 80,
+        "put_errors": 0,
+        "search_errors": 2
+      },
+      "initial": {
+        "action_regret": 0.0,
+        "n": 70,
+        "put_errors": 0,
+        "search_errors": 0
+      },
+      "new_habit": {
+        "action_regret": 0.0,
+        "n": 90,
+        "put_errors": 0,
+        "search_errors": 0
+      },
+      "post_guest": {
+        "action_regret": 0.0,
+        "n": 20,
+        "put_errors": 0,
+        "search_errors": 0
+      },
+      "recurrence": {
+        "action_regret": 0.0,
+        "n": 60,
+        "put_errors": 0,
+        "search_errors": 0
+      }
+    },
+    "latest": {
+      "guest": {
+        "action_regret": 1.3333333333333333,
+        "n": 80,
+        "put_errors": 0,
+        "search_errors": 2
+      },
+      "initial": {
+        "action_regret": 0.0,
+        "n": 70,
+        "put_errors": 0,
+        "search_errors": 0
+      },
+      "new_habit": {
+        "action_regret": 0.0,
+        "n": 90,
+        "put_errors": 0,
+        "search_errors": 0
+      },
+      "post_guest": {
+        "action_regret": 0.0,
+        "n": 20,
+        "put_errors": 0,
+        "search_errors": 0
+      },
+      "recurrence": {
+        "action_regret": 0.0,
+        "n": 60,
+        "put_errors": 0,
+        "search_errors": 0
+      }
+    },
+    "legacy_joint": {
+      "guest": {
+        "action_regret": 26.666666666666668,
+        "n": 80,
+        "put_errors": 0,
+        "search_errors": 80
+      },
+      "initial": {
+        "action_regret": 3.3333333333333335,
+        "n": 70,
+        "put_errors": 0,
+        "search_errors": 10
+      },
+      "new_habit": {
+        "action_regret": 0.0,
+        "n": 90,
+        "put_errors": 0,
+        "search_errors": 0
+      },
+      "post_guest": {
+        "action_regret": 0.0,
+        "n": 20,
+        "put_errors": 0,
+        "search_errors": 0
+      },
+      "recurrence": {
+        "action_regret": 0.0,
+        "n": 60,
+        "put_errors": 0,
+        "search_errors": 0
+      }
+    },
+    "matched_factorized": {
+      "guest": {
+        "action_regret": 0.6666666666666666,
+        "n": 80,
+        "put_errors": 0,
+        "search_errors": 2
+      },
+      "initial": {
+        "action_regret": 0.0,
+        "n": 70,
+        "put_errors": 0,
+        "search_errors": 0
+      },
+      "new_habit": {
+        "action_regret": 0.0,
+        "n": 90,
+        "put_errors": 0,
+        "search_errors": 0
+      },
+      "post_guest": {
+        "action_regret": 0.0,
+        "n": 20,
+        "put_errors": 0,
+        "search_errors": 0
+      },
+      "recurrence": {
+        "action_regret": 0.0,
+        "n": 60,
+        "put_errors": 0,
+        "search_errors": 0
+      }
+    },
+    "selected_factorized": {
+      "guest": {
+        "action_regret": 0.6666666666666666,
+        "n": 80,
+        "put_errors": 0,
+        "search_errors": 2
+      },
+      "initial": {
+        "action_regret": 0.0,
+        "n": 70,
+        "put_errors": 0,
+        "search_errors": 0
+      },
+      "new_habit": {
+        "action_regret": 0.0,
+        "n": 90,
+        "put_errors": 0,
+        "search_errors": 0
+      },
+      "post_guest": {
+        "action_regret": 0.0,
+        "n": 20,
+        "put_errors": 0,
+        "search_errors": 0
+      },
+      "recurrence": {
+        "action_regret": 0.0,
+        "n": 60,
+        "put_errors": 0,
+        "search_errors": 0
+      }
+    },
+    "selected_joint": {
+      "guest": {
+        "action_regret": 0.6666666666666666,
+        "n": 80,
+        "put_errors": 0,
+        "search_errors": 2
+      },
+      "initial": {
+        "action_regret": 0.0,
+        "n": 70,
+        "put_errors": 0,
+        "search_errors": 0
+      },
+      "new_habit": {
+        "action_regret": 0.0,
+        "n": 90,
+        "put_errors": 0,
+        "search_errors": 0
+      },
+      "post_guest": {
+        "action_regret": 0.0,
+        "n": 20,
+        "put_errors": 0,
+        "search_errors": 0
+      },
+      "recurrence": {
+        "action_regret": 0.0,
+        "n": 60,
+        "put_errors": 0,
+        "search_errors": 0
+      }
+    },
+    "split_v06": {
+      "guest": {
+        "action_regret": 0.6666666666666666,
+        "n": 80,
+        "put_errors": 0,
+        "search_errors": 2
+      },
+      "initial": {
+        "action_regret": 0.0,
+        "n": 70,
+        "put_errors": 0,
+        "search_errors": 0
+      },
+      "new_habit": {
+        "action_regret": 0.0,
+        "n": 90,
+        "put_errors": 0,
+        "search_errors": 0
+      },
+      "post_guest": {
+        "action_regret": 0.0,
+        "n": 20,
+        "put_errors": 0,
+        "search_errors": 0
+      },
+      "recurrence": {
+        "action_regret": 0.0,
+        "n": 60,
+        "put_errors": 0,
+        "search_errors": 0
+      }
+    }
+  }
+}

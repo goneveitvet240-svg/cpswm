@@ -157,6 +157,7 @@ def verify(folder, development, root):
             assert len(records) == 3
             counts = Counter()
             for i, record in enumerate(records):
+                assert record["engine"] == engine and record["parameter"] == parameter
                 c, _, _ = action_counts(
                     record,
                     read(development / f"dev-visible-{i}.json"),

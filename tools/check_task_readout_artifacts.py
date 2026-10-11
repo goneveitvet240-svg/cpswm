@@ -7,6 +7,7 @@ import copy
 import json
 import tempfile
 from pathlib import Path
+from uuid import UUID
 
 from score_task_readout_repair import action_counts, read, verify
 
@@ -62,10 +63,24 @@ def check(folder, development, root, repeat):
     ]
     assert read(repeat / "visible-0.json") == visible
     repeat_aliases = read(repeat / "aliases.json")
+    snapshot_differences = {}
     for label, original in aliases.items():
         a = read(folder / f"test-0-{original}.json")
         b = read(repeat / f"test-0-{repeat_aliases[label]}.json")
-        assert a["actions"] == b["actions"], label
+        # Existing belief metadata uses per-execution UUID4 record IDs. Compare
+        # every action/probability/receipt value, excluding only that raw pointer;
+        # keep the original pointers in both archives and report their differences.
+        left, right = copy.deepcopy(a["actions"]), copy.deepcopy(b["actions"])
+        changed_ids = 0
+        for x, y in zip(left, right, strict=True):
+            if "task_readout" in x:
+                old_id = x["task_readout"].pop("source_snapshot_id")
+                new_id = y["task_readout"].pop("source_snapshot_id")
+                UUID(old_id)
+                UUID(new_id)
+                changed_ids += old_id != new_id
+        snapshot_differences[original] = changed_ids
+        assert left == right, label
         for key in (
             "put_back_error_rate",
             "search_error_rate",
@@ -81,6 +96,8 @@ def check(folder, development, root, repeat):
         "fresh_repeat_logical_arms": len(aliases),
         "fresh_repeat_actual_runs": len(set(aliases.values())),
         "repeat_actions_metrics_and_runtime_audits_identical": True,
+        "excluded_cross_run_field": "actions[*].task_readout.source_snapshot_id",
+        "raw_snapshot_id_differences_by_actual_arm": snapshot_differences,
         "scope": "bounded artifact and replay audit; not complete forged-path acceptance",
     }
 

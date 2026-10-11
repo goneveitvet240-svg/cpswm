@@ -7,7 +7,7 @@ import json
 from collections import Counter, defaultdict
 from pathlib import Path
 
-from score_executed_search import ARMS, read, score_run, verify
+from score_executed_search import ARMS, paired_interval, read, score_run, verify
 
 
 def summarize(base, root):
@@ -19,10 +19,22 @@ def summarize(base, root):
     examples = []
     carry_effect = Counter()
     conditions = {}
+    carry_seed_differences = {}
     for condition in ("complete32", "sparse32", "long64"):
         folder = base / f"test-{condition}"
         summary = verify(folder, root)
         conditions[condition] = summary
+        steps = summary["counts"]["current_rank"]["n"] / len(summary["per_episode"])
+        carry_seed_differences[condition] = paired_interval(
+            [
+                (
+                    r["metrics"]["current_no_carry"]["executed_checks"]
+                    - r["metrics"]["current_rank"]["executed_checks"]
+                )
+                / steps
+                for r in summary["per_episode"]
+            ]
+        )
         paired.update(summary["paired"])
         for arm, counts in summary["counts"].items():
             totals[arm].update(counts)
@@ -93,6 +105,7 @@ def summarize(base, root):
     return {
         "all_counts": totals,
         "terminal_memory_effect_current_vs_no_carry": carry_effect,
+        "carry_checks_saved_per_step_positive_is_better": carry_seed_differences,
         "paired": paired,
         "joint_factor_probability_differences": probability,
         "joint_ledger_operations": mechanisms,

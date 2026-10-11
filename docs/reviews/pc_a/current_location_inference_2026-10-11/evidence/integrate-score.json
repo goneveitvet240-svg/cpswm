@@ -1,0 +1,725 @@
+{
+  "actual_runs": 20,
+  "comparisons": {
+    "cue_only/long64/joint_vs_factor": {
+      "joint_better_steps": 1,
+      "joint_minus_control_checks": 1,
+      "joint_worse_steps": 2,
+      "sequence_disagreements": 3
+    },
+    "cue_only/long64/joint_vs_markov": {
+      "joint_better_steps": 0,
+      "joint_minus_control_checks": 0,
+      "joint_worse_steps": 0,
+      "sequence_disagreements": 0
+    },
+    "cue_only/long64/joint_vs_matched_factor": {
+      "joint_better_steps": 1,
+      "joint_minus_control_checks": 1,
+      "joint_worse_steps": 2,
+      "sequence_disagreements": 3
+    },
+    "cue_only/long64/joint_vs_recent": {
+      "joint_better_steps": 3,
+      "joint_minus_control_checks": 4,
+      "joint_worse_steps": 5,
+      "sequence_disagreements": 9
+    },
+    "cue_only/sparse32/joint_vs_factor": {
+      "joint_better_steps": 0,
+      "joint_minus_control_checks": 2,
+      "joint_worse_steps": 1,
+      "sequence_disagreements": 1
+    },
+    "cue_only/sparse32/joint_vs_markov": {
+      "joint_better_steps": 0,
+      "joint_minus_control_checks": 0,
+      "joint_worse_steps": 0,
+      "sequence_disagreements": 0
+    },
+    "cue_only/sparse32/joint_vs_matched_factor": {
+      "joint_better_steps": 0,
+      "joint_minus_control_checks": 2,
+      "joint_worse_steps": 1,
+      "sequence_disagreements": 1
+    },
+    "cue_only/sparse32/joint_vs_recent": {
+      "joint_better_steps": 2,
+      "joint_minus_control_checks": 3,
+      "joint_worse_steps": 4,
+      "sequence_disagreements": 6
+    },
+    "native/long64/joint_vs_factor": {
+      "joint_better_steps": 0,
+      "joint_minus_control_checks": 0,
+      "joint_worse_steps": 0,
+      "sequence_disagreements": 0
+    },
+    "native/long64/joint_vs_markov": {
+      "joint_better_steps": 0,
+      "joint_minus_control_checks": 0,
+      "joint_worse_steps": 0,
+      "sequence_disagreements": 0
+    },
+    "native/long64/joint_vs_matched_factor": {
+      "joint_better_steps": 0,
+      "joint_minus_control_checks": 0,
+      "joint_worse_steps": 0,
+      "sequence_disagreements": 0
+    },
+    "native/long64/joint_vs_recent": {
+      "joint_better_steps": 1,
+      "joint_minus_control_checks": 3,
+      "joint_worse_steps": 2,
+      "sequence_disagreements": 4
+    },
+    "native/sparse32/joint_vs_factor": {
+      "joint_better_steps": 0,
+      "joint_minus_control_checks": 0,
+      "joint_worse_steps": 0,
+      "sequence_disagreements": 0
+    },
+    "native/sparse32/joint_vs_markov": {
+      "joint_better_steps": 0,
+      "joint_minus_control_checks": 0,
+      "joint_worse_steps": 0,
+      "sequence_disagreements": 0
+    },
+    "native/sparse32/joint_vs_matched_factor": {
+      "joint_better_steps": 0,
+      "joint_minus_control_checks": 0,
+      "joint_worse_steps": 0,
+      "sequence_disagreements": 0
+    },
+    "native/sparse32/joint_vs_recent": {
+      "joint_better_steps": 0,
+      "joint_minus_control_checks": 1,
+      "joint_worse_steps": 1,
+      "sequence_disagreements": 1
+    }
+  },
+  "episodes": [
+    {
+      "arm": "factor",
+      "condition": "sparse32",
+      "counts": {
+        "actor_posterior_changed_steps": 20,
+        "bound_feedback_actions": 12,
+        "checks": 39,
+        "first_position_errors": 4,
+        "missing_location_with_actor_cue": 0,
+        "n": 32,
+        "original_location_missing": 20,
+        "put_errors": 2,
+        "retrieval_failures": 0
+      },
+      "episode": 0,
+      "file": "run-sparse32-0-native-factor.json",
+      "truth": "truth-sparse32-0.json",
+      "view": "native",
+      "visible": "visible-sparse32-0.json"
+    },
+    {
+      "arm": "joint",
+      "condition": "sparse32",
+      "counts": {
+        "actor_posterior_changed_steps": 19,
+        "bound_feedback_actions": 12,
+        "checks": 39,
+        "first_position_errors": 4,
+        "missing_location_with_actor_cue": 0,
+        "n": 32,
+        "original_location_missing": 20,
+        "put_errors": 2,
+        "retrieval_failures": 0
+      },
+      "episode": 0,
+      "file": "run-sparse32-0-native-joint.json",
+      "truth": "truth-sparse32-0.json",
+      "view": "native",
+      "visible": "visible-sparse32-0.json"
+    },
+    {
+      "arm": "markov",
+      "condition": "sparse32",
+      "counts": {
+        "actor_posterior_changed_steps": 0,
+        "bound_feedback_actions": 12,
+        "checks": 39,
+        "first_position_errors": 4,
+        "missing_location_with_actor_cue": 0,
+        "n": 32,
+        "original_location_missing": 20,
+        "put_errors": 2,
+        "retrieval_failures": 0
+      },
+      "episode": 0,
+      "file": "run-sparse32-0-native-markov.json",
+      "truth": "truth-sparse32-0.json",
+      "view": "native",
+      "visible": "visible-sparse32-0.json"
+    },
+    {
+      "arm": "matched_factor",
+      "condition": "sparse32",
+      "counts": {
+        "actor_posterior_changed_steps": 20,
+        "bound_feedback_actions": 12,
+        "checks": 39,
+        "first_position_errors": 4,
+        "missing_location_with_actor_cue": 0,
+        "n": 32,
+        "original_location_missing": 20,
+        "put_errors": 2,
+        "retrieval_failures": 0
+      },
+      "episode": 0,
+      "file": "run-sparse32-0-native-matched_factor.json",
+      "truth": "truth-sparse32-0.json",
+      "view": "native",
+      "visible": "visible-sparse32-0.json"
+    },
+    {
+      "arm": "recent",
+      "condition": "sparse32",
+      "counts": {
+        "actor_posterior_changed_steps": 0,
+        "bound_feedback_actions": 12,
+        "checks": 38,
+        "first_position_errors": 4,
+        "missing_location_with_actor_cue": 0,
+        "n": 32,
+        "original_location_missing": 20,
+        "put_errors": 2,
+        "retrieval_failures": 0
+      },
+      "episode": 0,
+      "file": "run-sparse32-0-native-recent.json",
+      "truth": "truth-sparse32-0.json",
+      "view": "native",
+      "visible": "visible-sparse32-0.json"
+    },
+    {
+      "arm": "factor",
+      "condition": "sparse32",
+      "counts": {
+        "actor_posterior_changed_steps": 31,
+        "bound_feedback_actions": 12,
+        "checks": 43,
+        "first_position_errors": 8,
+        "missing_location_with_actor_cue": 0,
+        "n": 32,
+        "original_location_missing": 20,
+        "put_errors": 2,
+        "retrieval_failures": 0
+      },
+      "episode": 0,
+      "file": "run-sparse32-0-cue_only-factor.json",
+      "truth": "truth-sparse32-0.json",
+      "view": "cue_only",
+      "visible": "visible-sparse32-0.json"
+    },
+    {
+      "arm": "joint",
+      "condition": "sparse32",
+      "counts": {
+        "actor_posterior_changed_steps": 27,
+        "bound_feedback_actions": 12,
+        "checks": 45,
+        "first_position_errors": 8,
+        "missing_location_with_actor_cue": 0,
+        "n": 32,
+        "original_location_missing": 20,
+        "put_errors": 2,
+        "retrieval_failures": 0
+      },
+      "episode": 0,
+      "file": "run-sparse32-0-cue_only-joint.json",
+      "truth": "truth-sparse32-0.json",
+      "view": "cue_only",
+      "visible": "visible-sparse32-0.json"
+    },
+    {
+      "arm": "markov",
+      "condition": "sparse32",
+      "counts": {
+        "actor_posterior_changed_steps": 0,
+        "bound_feedback_actions": 12,
+        "checks": 45,
+        "first_position_errors": 8,
+        "missing_location_with_actor_cue": 0,
+        "n": 32,
+        "original_location_missing": 20,
+        "put_errors": 2,
+        "retrieval_failures": 0
+      },
+      "episode": 0,
+      "file": "run-sparse32-0-cue_only-markov.json",
+      "truth": "truth-sparse32-0.json",
+      "view": "cue_only",
+      "visible": "visible-sparse32-0.json"
+    },
+    {
+      "arm": "matched_factor",
+      "condition": "sparse32",
+      "counts": {
+        "actor_posterior_changed_steps": 31,
+        "bound_feedback_actions": 12,
+        "checks": 43,
+        "first_position_errors": 8,
+        "missing_location_with_actor_cue": 0,
+        "n": 32,
+        "original_location_missing": 20,
+        "put_errors": 2,
+        "retrieval_failures": 0
+      },
+      "episode": 0,
+      "file": "run-sparse32-0-cue_only-matched_factor.json",
+      "truth": "truth-sparse32-0.json",
+      "view": "cue_only",
+      "visible": "visible-sparse32-0.json"
+    },
+    {
+      "arm": "recent",
+      "condition": "sparse32",
+      "counts": {
+        "actor_posterior_changed_steps": 0,
+        "bound_feedback_actions": 12,
+        "checks": 42,
+        "first_position_errors": 6,
+        "missing_location_with_actor_cue": 0,
+        "n": 32,
+        "original_location_missing": 20,
+        "put_errors": 2,
+        "retrieval_failures": 0
+      },
+      "episode": 0,
+      "file": "run-sparse32-0-cue_only-recent.json",
+      "truth": "truth-sparse32-0.json",
+      "view": "cue_only",
+      "visible": "visible-sparse32-0.json"
+    },
+    {
+      "arm": "factor",
+      "condition": "long64",
+      "counts": {
+        "actor_posterior_changed_steps": 26,
+        "bound_feedback_actions": 38,
+        "checks": 76,
+        "first_position_errors": 5,
+        "missing_location_with_actor_cue": 0,
+        "n": 64,
+        "original_location_missing": 26,
+        "put_errors": 1,
+        "retrieval_failures": 0
+      },
+      "episode": 0,
+      "file": "run-long64-0-native-factor.json",
+      "truth": "truth-long64-0.json",
+      "view": "native",
+      "visible": "visible-long64-0.json"
+    },
+    {
+      "arm": "joint",
+      "condition": "long64",
+      "counts": {
+        "actor_posterior_changed_steps": 25,
+        "bound_feedback_actions": 38,
+        "checks": 76,
+        "first_position_errors": 5,
+        "missing_location_with_actor_cue": 0,
+        "n": 64,
+        "original_location_missing": 26,
+        "put_errors": 1,
+        "retrieval_failures": 0
+      },
+      "episode": 0,
+      "file": "run-long64-0-native-joint.json",
+      "truth": "truth-long64-0.json",
+      "view": "native",
+      "visible": "visible-long64-0.json"
+    },
+    {
+      "arm": "markov",
+      "condition": "long64",
+      "counts": {
+        "actor_posterior_changed_steps": 0,
+        "bound_feedback_actions": 38,
+        "checks": 76,
+        "first_position_errors": 5,
+        "missing_location_with_actor_cue": 0,
+        "n": 64,
+        "original_location_missing": 26,
+        "put_errors": 1,
+        "retrieval_failures": 0
+      },
+      "episode": 0,
+      "file": "run-long64-0-native-markov.json",
+      "truth": "truth-long64-0.json",
+      "view": "native",
+      "visible": "visible-long64-0.json"
+    },
+    {
+      "arm": "matched_factor",
+      "condition": "long64",
+      "counts": {
+        "actor_posterior_changed_steps": 26,
+        "bound_feedback_actions": 38,
+        "checks": 76,
+        "first_position_errors": 5,
+        "missing_location_with_actor_cue": 0,
+        "n": 64,
+        "original_location_missing": 26,
+        "put_errors": 1,
+        "retrieval_failures": 0
+      },
+      "episode": 0,
+      "file": "run-long64-0-native-matched_factor.json",
+      "truth": "truth-long64-0.json",
+      "view": "native",
+      "visible": "visible-long64-0.json"
+    },
+    {
+      "arm": "recent",
+      "condition": "long64",
+      "counts": {
+        "actor_posterior_changed_steps": 0,
+        "bound_feedback_actions": 38,
+        "checks": 73,
+        "first_position_errors": 4,
+        "missing_location_with_actor_cue": 0,
+        "n": 64,
+        "original_location_missing": 26,
+        "put_errors": 1,
+        "retrieval_failures": 0
+      },
+      "episode": 0,
+      "file": "run-long64-0-native-recent.json",
+      "truth": "truth-long64-0.json",
+      "view": "native",
+      "visible": "visible-long64-0.json"
+    },
+    {
+      "arm": "factor",
+      "condition": "long64",
+      "counts": {
+        "actor_posterior_changed_steps": 63,
+        "bound_feedback_actions": 38,
+        "checks": 84,
+        "first_position_errors": 11,
+        "missing_location_with_actor_cue": 0,
+        "n": 64,
+        "original_location_missing": 26,
+        "put_errors": 1,
+        "retrieval_failures": 0
+      },
+      "episode": 0,
+      "file": "run-long64-0-cue_only-factor.json",
+      "truth": "truth-long64-0.json",
+      "view": "cue_only",
+      "visible": "visible-long64-0.json"
+    },
+    {
+      "arm": "joint",
+      "condition": "long64",
+      "counts": {
+        "actor_posterior_changed_steps": 59,
+        "bound_feedback_actions": 38,
+        "checks": 85,
+        "first_position_errors": 11,
+        "missing_location_with_actor_cue": 0,
+        "n": 64,
+        "original_location_missing": 26,
+        "put_errors": 1,
+        "retrieval_failures": 0
+      },
+      "episode": 0,
+      "file": "run-long64-0-cue_only-joint.json",
+      "truth": "truth-long64-0.json",
+      "view": "cue_only",
+      "visible": "visible-long64-0.json"
+    },
+    {
+      "arm": "markov",
+      "condition": "long64",
+      "counts": {
+        "actor_posterior_changed_steps": 0,
+        "bound_feedback_actions": 38,
+        "checks": 85,
+        "first_position_errors": 11,
+        "missing_location_with_actor_cue": 0,
+        "n": 64,
+        "original_location_missing": 26,
+        "put_errors": 1,
+        "retrieval_failures": 0
+      },
+      "episode": 0,
+      "file": "run-long64-0-cue_only-markov.json",
+      "truth": "truth-long64-0.json",
+      "view": "cue_only",
+      "visible": "visible-long64-0.json"
+    },
+    {
+      "arm": "matched_factor",
+      "condition": "long64",
+      "counts": {
+        "actor_posterior_changed_steps": 63,
+        "bound_feedback_actions": 38,
+        "checks": 84,
+        "first_position_errors": 11,
+        "missing_location_with_actor_cue": 0,
+        "n": 64,
+        "original_location_missing": 26,
+        "put_errors": 1,
+        "retrieval_failures": 0
+      },
+      "episode": 0,
+      "file": "run-long64-0-cue_only-matched_factor.json",
+      "truth": "truth-long64-0.json",
+      "view": "cue_only",
+      "visible": "visible-long64-0.json"
+    },
+    {
+      "arm": "recent",
+      "condition": "long64",
+      "counts": {
+        "actor_posterior_changed_steps": 0,
+        "bound_feedback_actions": 38,
+        "checks": 81,
+        "first_position_errors": 9,
+        "missing_location_with_actor_cue": 0,
+        "n": 64,
+        "original_location_missing": 26,
+        "put_errors": 1,
+        "retrieval_failures": 0
+      },
+      "episode": 0,
+      "file": "run-long64-0-cue_only-recent.json",
+      "truth": "truth-long64-0.json",
+      "view": "cue_only",
+      "visible": "visible-long64-0.json"
+    }
+  ],
+  "totals": {
+    "cue_only/long64/factor": {
+      "actor_posterior_changed_steps": 63,
+      "bound_feedback_actions": 38,
+      "checks": 84,
+      "first_position_errors": 11,
+      "missing_location_with_actor_cue": 0,
+      "n": 64,
+      "original_location_missing": 26,
+      "put_errors": 1,
+      "retrieval_failures": 0
+    },
+    "cue_only/long64/joint": {
+      "actor_posterior_changed_steps": 59,
+      "bound_feedback_actions": 38,
+      "checks": 85,
+      "first_position_errors": 11,
+      "missing_location_with_actor_cue": 0,
+      "n": 64,
+      "original_location_missing": 26,
+      "put_errors": 1,
+      "retrieval_failures": 0
+    },
+    "cue_only/long64/markov": {
+      "actor_posterior_changed_steps": 0,
+      "bound_feedback_actions": 38,
+      "checks": 85,
+      "first_position_errors": 11,
+      "missing_location_with_actor_cue": 0,
+      "n": 64,
+      "original_location_missing": 26,
+      "put_errors": 1,
+      "retrieval_failures": 0
+    },
+    "cue_only/long64/matched_factor": {
+      "actor_posterior_changed_steps": 63,
+      "bound_feedback_actions": 38,
+      "checks": 84,
+      "first_position_errors": 11,
+      "missing_location_with_actor_cue": 0,
+      "n": 64,
+      "original_location_missing": 26,
+      "put_errors": 1,
+      "retrieval_failures": 0
+    },
+    "cue_only/long64/recent": {
+      "actor_posterior_changed_steps": 0,
+      "bound_feedback_actions": 38,
+      "checks": 81,
+      "first_position_errors": 9,
+      "missing_location_with_actor_cue": 0,
+      "n": 64,
+      "original_location_missing": 26,
+      "put_errors": 1,
+      "retrieval_failures": 0
+    },
+    "cue_only/sparse32/factor": {
+      "actor_posterior_changed_steps": 31,
+      "bound_feedback_actions": 12,
+      "checks": 43,
+      "first_position_errors": 8,
+      "missing_location_with_actor_cue": 0,
+      "n": 32,
+      "original_location_missing": 20,
+      "put_errors": 2,
+      "retrieval_failures": 0
+    },
+    "cue_only/sparse32/joint": {
+      "actor_posterior_changed_steps": 27,
+      "bound_feedback_actions": 12,
+      "checks": 45,
+      "first_position_errors": 8,
+      "missing_location_with_actor_cue": 0,
+      "n": 32,
+      "original_location_missing": 20,
+      "put_errors": 2,
+      "retrieval_failures": 0
+    },
+    "cue_only/sparse32/markov": {
+      "actor_posterior_changed_steps": 0,
+      "bound_feedback_actions": 12,
+      "checks": 45,
+      "first_position_errors": 8,
+      "missing_location_with_actor_cue": 0,
+      "n": 32,
+      "original_location_missing": 20,
+      "put_errors": 2,
+      "retrieval_failures": 0
+    },
+    "cue_only/sparse32/matched_factor": {
+      "actor_posterior_changed_steps": 31,
+      "bound_feedback_actions": 12,
+      "checks": 43,
+      "first_position_errors": 8,
+      "missing_location_with_actor_cue": 0,
+      "n": 32,
+      "original_location_missing": 20,
+      "put_errors": 2,
+      "retrieval_failures": 0
+    },
+    "cue_only/sparse32/recent": {
+      "actor_posterior_changed_steps": 0,
+      "bound_feedback_actions": 12,
+      "checks": 42,
+      "first_position_errors": 6,
+      "missing_location_with_actor_cue": 0,
+      "n": 32,
+      "original_location_missing": 20,
+      "put_errors": 2,
+      "retrieval_failures": 0
+    },
+    "native/long64/factor": {
+      "actor_posterior_changed_steps": 26,
+      "bound_feedback_actions": 38,
+      "checks": 76,
+      "first_position_errors": 5,
+      "missing_location_with_actor_cue": 0,
+      "n": 64,
+      "original_location_missing": 26,
+      "put_errors": 1,
+      "retrieval_failures": 0
+    },
+    "native/long64/joint": {
+      "actor_posterior_changed_steps": 25,
+      "bound_feedback_actions": 38,
+      "checks": 76,
+      "first_position_errors": 5,
+      "missing_location_with_actor_cue": 0,
+      "n": 64,
+      "original_location_missing": 26,
+      "put_errors": 1,
+      "retrieval_failures": 0
+    },
+    "native/long64/markov": {
+      "actor_posterior_changed_steps": 0,
+      "bound_feedback_actions": 38,
+      "checks": 76,
+      "first_position_errors": 5,
+      "missing_location_with_actor_cue": 0,
+      "n": 64,
+      "original_location_missing": 26,
+      "put_errors": 1,
+      "retrieval_failures": 0
+    },
+    "native/long64/matched_factor": {
+      "actor_posterior_changed_steps": 26,
+      "bound_feedback_actions": 38,
+      "checks": 76,
+      "first_position_errors": 5,
+      "missing_location_with_actor_cue": 0,
+      "n": 64,
+      "original_location_missing": 26,
+      "put_errors": 1,
+      "retrieval_failures": 0
+    },
+    "native/long64/recent": {
+      "actor_posterior_changed_steps": 0,
+      "bound_feedback_actions": 38,
+      "checks": 73,
+      "first_position_errors": 4,
+      "missing_location_with_actor_cue": 0,
+      "n": 64,
+      "original_location_missing": 26,
+      "put_errors": 1,
+      "retrieval_failures": 0
+    },
+    "native/sparse32/factor": {
+      "actor_posterior_changed_steps": 20,
+      "bound_feedback_actions": 12,
+      "checks": 39,
+      "first_position_errors": 4,
+      "missing_location_with_actor_cue": 0,
+      "n": 32,
+      "original_location_missing": 20,
+      "put_errors": 2,
+      "retrieval_failures": 0
+    },
+    "native/sparse32/joint": {
+      "actor_posterior_changed_steps": 19,
+      "bound_feedback_actions": 12,
+      "checks": 39,
+      "first_position_errors": 4,
+      "missing_location_with_actor_cue": 0,
+      "n": 32,
+      "original_location_missing": 20,
+      "put_errors": 2,
+      "retrieval_failures": 0
+    },
+    "native/sparse32/markov": {
+      "actor_posterior_changed_steps": 0,
+      "bound_feedback_actions": 12,
+      "checks": 39,
+      "first_position_errors": 4,
+      "missing_location_with_actor_cue": 0,
+      "n": 32,
+      "original_location_missing": 20,
+      "put_errors": 2,
+      "retrieval_failures": 0
+    },
+    "native/sparse32/matched_factor": {
+      "actor_posterior_changed_steps": 20,
+      "bound_feedback_actions": 12,
+      "checks": 39,
+      "first_position_errors": 4,
+      "missing_location_with_actor_cue": 0,
+      "n": 32,
+      "original_location_missing": 20,
+      "put_errors": 2,
+      "retrieval_failures": 0
+    },
+    "native/sparse32/recent": {
+      "actor_posterior_changed_steps": 0,
+      "bound_feedback_actions": 12,
+      "checks": 38,
+      "first_position_errors": 4,
+      "missing_location_with_actor_cue": 0,
+      "n": 32,
+      "original_location_missing": 20,
+      "put_errors": 2,
+      "retrieval_failures": 0
+    }
+  }
+}

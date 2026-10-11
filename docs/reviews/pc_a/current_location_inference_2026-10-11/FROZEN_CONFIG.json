@@ -1,0 +1,97 @@
+{
+  "dev_totals": {
+    "cue_only": {
+      "factor-a0.25-d0.9": 514,
+      "factor-a0.25-d1.0": 517,
+      "factor-a1.0-d0.9": 515,
+      "factor-a1.0-d1.0": 518,
+      "joint-a0.25-d0.9": 541,
+      "joint-a0.25-d1.0": 544,
+      "joint-a1.0-d0.9": 541,
+      "joint-a1.0-d1.0": 544,
+      "markov-a0.25-d0.9": 541,
+      "markov-a0.25-d1.0": 550,
+      "markov-a1.0-d0.9": 541,
+      "markov-a1.0-d1.0": 550,
+      "recent": 508
+    },
+    "native": {
+      "factor-a0.25-d0.9": 438,
+      "factor-a0.25-d1.0": 440,
+      "factor-a1.0-d0.9": 438,
+      "factor-a1.0-d1.0": 440,
+      "joint-a0.25-d0.9": 438,
+      "joint-a0.25-d1.0": 440,
+      "joint-a1.0-d0.9": 438,
+      "joint-a1.0-d1.0": 440,
+      "markov-a0.25-d0.9": 438,
+      "markov-a0.25-d1.0": 440,
+      "markov-a1.0-d0.9": 438,
+      "markov-a1.0-d1.0": 440,
+      "recent": 421
+    }
+  },
+  "rule": "min actual checks, tie alpha then decay ascending",
+  "seeds": [
+    7,
+    8,
+    9
+  ],
+  "selected": {
+    "cue_only": {
+      "factor": {
+        "alpha": 0.25,
+        "decay": 0.9,
+        "kind": "factor"
+      },
+      "joint": {
+        "alpha": 0.25,
+        "decay": 0.9,
+        "kind": "joint"
+      },
+      "markov": {
+        "alpha": 0.25,
+        "decay": 0.9,
+        "kind": "markov"
+      },
+      "matched_factor": {
+        "alpha": 0.25,
+        "decay": 0.9,
+        "kind": "factor"
+      },
+      "recent": {
+        "alpha": 1.0,
+        "decay": 1.0,
+        "kind": "recent"
+      }
+    },
+    "native": {
+      "factor": {
+        "alpha": 0.25,
+        "decay": 0.9,
+        "kind": "factor"
+      },
+      "joint": {
+        "alpha": 0.25,
+        "decay": 0.9,
+        "kind": "joint"
+      },
+      "markov": {
+        "alpha": 0.25,
+        "decay": 0.9,
+        "kind": "markov"
+      },
+      "matched_factor": {
+        "alpha": 0.25,
+        "decay": 0.9,
+        "kind": "factor"
+      },
+      "recent": {
+        "alpha": 1.0,
+        "decay": 1.0,
+        "kind": "recent"
+      }
+    }
+  },
+  "source_files_sha256": "ad4b35cef6f9997197fd19c3ed4772da1ccc0ac4ba4e67b54ba80cf345f2287e"
+}

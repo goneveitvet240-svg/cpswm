@@ -1,0 +1,4922 @@
+{
+  "actual_runs": 234,
+  "comparisons": {},
+  "episodes": [
+    {
+      "arm": "recent",
+      "condition": "complete32",
+      "counts": {
+        "actor_posterior_changed_steps": 0,
+        "checks": 32,
+        "first_position_errors": 0,
+        "missing_location_with_actor_cue": 0,
+        "n": 32,
+        "original_location_missing": 1,
+        "retrieval_failures": 0
+      },
+      "episode": 0,
+      "file": "run-complete32-0-native-recent.json",
+      "truth": "truth-complete32-0.json",
+      "view": "native",
+      "visible": "visible-complete32-0.json"
+    },
+    {
+      "arm": "markov-a0.25-d0.9",
+      "condition": "complete32",
+      "counts": {
+        "actor_posterior_changed_steps": 0,
+        "checks": 35,
+        "first_position_errors": 1,
+        "missing_location_with_actor_cue": 0,
+        "n": 32,
+        "original_location_missing": 1,
+        "retrieval_failures": 0
+      },
+      "episode": 0,
+      "file": "run-complete32-0-native-markov-a0.25-d0.9.json",
+      "truth": "truth-complete32-0.json",
+      "view": "native",
+      "visible": "visible-complete32-0.json"
+    },
+    {
+      "arm": "markov-a0.25-d1.0",
+      "condition": "complete32",
+      "counts": {
+        "actor_posterior_changed_steps": 0,
+        "checks": 35,
+        "first_position_errors": 1,
+        "missing_location_with_actor_cue": 0,
+        "n": 32,
+        "original_location_missing": 1,
+        "retrieval_failures": 0
+      },
+      "episode": 0,
+      "file": "run-complete32-0-native-markov-a0.25-d1.0.json",
+      "truth": "truth-complete32-0.json",
+      "view": "native",
+      "visible": "visible-complete32-0.json"
+    },
+    {
+      "arm": "markov-a1.0-d0.9",
+      "condition": "complete32",
+      "counts": {
+        "actor_posterior_changed_steps": 0,
+        "checks": 35,
+        "first_position_errors": 1,
+        "missing_location_with_actor_cue": 0,
+        "n": 32,
+        "original_location_missing": 1,
+        "retrieval_failures": 0
+      },
+      "episode": 0,
+      "file": "run-complete32-0-native-markov-a1.0-d0.9.json",
+      "truth": "truth-complete32-0.json",
+      "view": "native",
+      "visible": "visible-complete32-0.json"
+    },
+    {
+      "arm": "markov-a1.0-d1.0",
+      "condition": "complete32",
+      "counts": {
+        "actor_posterior_changed_steps": 0,
+        "checks": 35,
+        "first_position_errors": 1,
+        "missing_location_with_actor_cue": 0,
+        "n": 32,
+        "original_location_missing": 1,
+        "retrieval_failures": 0
+      },
+      "episode": 0,
+      "file": "run-complete32-0-native-markov-a1.0-d1.0.json",
+      "truth": "truth-complete32-0.json",
+      "view": "native",
+      "visible": "visible-complete32-0.json"
+    },
+    {
+      "arm": "joint-a0.25-d0.9",
+      "condition": "complete32",
+      "counts": {
+        "actor_posterior_changed_steps": 1,
+        "checks": 35,
+        "first_position_errors": 1,
+        "missing_location_with_actor_cue": 0,
+        "n": 32,
+        "original_location_missing": 1,
+        "retrieval_failures": 0
+      },
+      "episode": 0,
+      "file": "run-complete32-0-native-joint-a0.25-d0.9.json",
+      "truth": "truth-complete32-0.json",
+      "view": "native",
+      "visible": "visible-complete32-0.json"
+    },
+    {
+      "arm": "joint-a0.25-d1.0",
+      "condition": "complete32",
+      "counts": {
+        "actor_posterior_changed_steps": 1,
+        "checks": 35,
+        "first_position_errors": 1,
+        "missing_location_with_actor_cue": 0,
+        "n": 32,
+        "original_location_missing": 1,
+        "retrieval_failures": 0
+      },
+      "episode": 0,
+      "file": "run-complete32-0-native-joint-a0.25-d1.0.json",
+      "truth": "truth-complete32-0.json",
+      "view": "native",
+      "visible": "visible-complete32-0.json"
+    },
+    {
+      "arm": "joint-a1.0-d0.9",
+      "condition": "complete32",
+      "counts": {
+        "actor_posterior_changed_steps": 1,
+        "checks": 35,
+        "first_position_errors": 1,
+        "missing_location_with_actor_cue": 0,
+        "n": 32,
+        "original_location_missing": 1,
+        "retrieval_failures": 0
+      },
+      "episode": 0,
+      "file": "run-complete32-0-native-joint-a1.0-d0.9.json",
+      "truth": "truth-complete32-0.json",
+      "view": "native",
+      "visible": "visible-complete32-0.json"
+    },
+    {
+      "arm": "joint-a1.0-d1.0",
+      "condition": "complete32",
+      "counts": {
+        "actor_posterior_changed_steps": 1,
+        "checks": 35,
+        "first_position_errors": 1,
+        "missing_location_with_actor_cue": 0,
+        "n": 32,
+        "original_location_missing": 1,
+        "retrieval_failures": 0
+      },
+      "episode": 0,
+      "file": "run-complete32-0-native-joint-a1.0-d1.0.json",
+      "truth": "truth-complete32-0.json",
+      "view": "native",
+      "visible": "visible-complete32-0.json"
+    },
+    {
+      "arm": "factor-a0.25-d0.9",
+      "condition": "complete32",
+      "counts": {
+        "actor_posterior_changed_steps": 1,
+        "checks": 35,
+        "first_position_errors": 1,
+        "missing_location_with_actor_cue": 0,
+        "n": 32,
+        "original_location_missing": 1,
+        "retrieval_failures": 0
+      },
+      "episode": 0,
+      "file": "run-complete32-0-native-factor-a0.25-d0.9.json",
+      "truth": "truth-complete32-0.json",
+      "view": "native",
+      "visible": "visible-complete32-0.json"
+    },
+    {
+      "arm": "factor-a0.25-d1.0",
+      "condition": "complete32",
+      "counts": {
+        "actor_posterior_changed_steps": 1,
+        "checks": 35,
+        "first_position_errors": 1,
+        "missing_location_with_actor_cue": 0,
+        "n": 32,
+        "original_location_missing": 1,
+        "retrieval_failures": 0
+      },
+      "episode": 0,
+      "file": "run-complete32-0-native-factor-a0.25-d1.0.json",
+      "truth": "truth-complete32-0.json",
+      "view": "native",
+      "visible": "visible-complete32-0.json"
+    },
+    {
+      "arm": "factor-a1.0-d0.9",
+      "condition": "complete32",
+      "counts": {
+        "actor_posterior_changed_steps": 1,
+        "checks": 35,
+        "first_position_errors": 1,
+        "missing_location_with_actor_cue": 0,
+        "n": 32,
+        "original_location_missing": 1,
+        "retrieval_failures": 0
+      },
+      "episode": 0,
+      "file": "run-complete32-0-native-factor-a1.0-d0.9.json",
+      "truth": "truth-complete32-0.json",
+      "view": "native",
+      "visible": "visible-complete32-0.json"
+    },
+    {
+      "arm": "factor-a1.0-d1.0",
+      "condition": "complete32",
+      "counts": {
+        "actor_posterior_changed_steps": 1,
+        "checks": 35,
+        "first_position_errors": 1,
+        "missing_location_with_actor_cue": 0,
+        "n": 32,
+        "original_location_missing": 1,
+        "retrieval_failures": 0
+      },
+      "episode": 0,
+      "file": "run-complete32-0-native-factor-a1.0-d1.0.json",
+      "truth": "truth-complete32-0.json",
+      "view": "native",
+      "visible": "visible-complete32-0.json"
+    },
+    {
+      "arm": "recent",
+      "condition": "complete32",
+      "counts": {
+        "actor_posterior_changed_steps": 0,
+        "checks": 51,
+        "first_position_errors": 7,
+        "missing_location_with_actor_cue": 0,
+        "n": 32,
+        "original_location_missing": 1,
+        "retrieval_failures": 0
+      },
+      "episode": 0,
+      "file": "run-complete32-0-cue_only-recent.json",
+      "truth": "truth-complete32-0.json",
+      "view": "cue_only",
+      "visible": "visible-complete32-0.json"
+    },
+    {
+      "arm": "markov-a0.25-d0.9",
+      "condition": "complete32",
+      "counts": {
+        "actor_posterior_changed_steps": 0,
+        "checks": 53,
+        "first_position_errors": 9,
+        "missing_location_with_actor_cue": 0,
+        "n": 32,
+        "original_location_missing": 1,
+        "retrieval_failures": 0
+      },
+      "episode": 0,
+      "file": "run-complete32-0-cue_only-markov-a0.25-d0.9.json",
+      "truth": "truth-complete32-0.json",
+      "view": "cue_only",
+      "visible": "visible-complete32-0.json"
+    },
+    {
+      "arm": "markov-a0.25-d1.0",
+      "condition": "complete32",
+      "counts": {
+        "actor_posterior_changed_steps": 0,
+        "checks": 54,
+        "first_position_errors": 10,
+        "missing_location_with_actor_cue": 0,
+        "n": 32,
+        "original_location_missing": 1,
+        "retrieval_failures": 0
+      },
+      "episode": 0,
+      "file": "run-complete32-0-cue_only-markov-a0.25-d1.0.json",
+      "truth": "truth-complete32-0.json",
+      "view": "cue_only",
+      "visible": "visible-complete32-0.json"
+    },
+    {
+      "arm": "markov-a1.0-d0.9",
+      "condition": "complete32",
+      "counts": {
+        "actor_posterior_changed_steps": 0,
+        "checks": 53,
+        "first_position_errors": 9,
+        "missing_location_with_actor_cue": 0,
+        "n": 32,
+        "original_location_missing": 1,
+        "retrieval_failures": 0
+      },
+      "episode": 0,
+      "file": "run-complete32-0-cue_only-markov-a1.0-d0.9.json",
+      "truth": "truth-complete32-0.json",
+      "view": "cue_only",
+      "visible": "visible-complete32-0.json"
+    },
+    {
+      "arm": "markov-a1.0-d1.0",
+      "condition": "complete32",
+      "counts": {
+        "actor_posterior_changed_steps": 0,
+        "checks": 54,
+        "first_position_errors": 10,
+        "missing_location_with_actor_cue": 0,
+        "n": 32,
+        "original_location_missing": 1,
+        "retrieval_failures": 0
+      },
+      "episode": 0,
+      "file": "run-complete32-0-cue_only-markov-a1.0-d1.0.json",
+      "truth": "truth-complete32-0.json",
+      "view": "cue_only",
+      "visible": "visible-complete32-0.json"
+    },
+    {
+      "arm": "joint-a0.25-d0.9",
+      "condition": "complete32",
+      "counts": {
+        "actor_posterior_changed_steps": 28,
+        "checks": 53,
+        "first_position_errors": 9,
+        "missing_location_with_actor_cue": 0,
+        "n": 32,
+        "original_location_missing": 1,
+        "retrieval_failures": 0
+      },
+      "episode": 0,
+      "file": "run-complete32-0-cue_only-joint-a0.25-d0.9.json",
+      "truth": "truth-complete32-0.json",
+      "view": "cue_only",
+      "visible": "visible-complete32-0.json"
+    },
+    {
+      "arm": "joint-a0.25-d1.0",
+      "condition": "complete32",
+      "counts": {
+        "actor_posterior_changed_steps": 28,
+        "checks": 53,
+        "first_position_errors": 9,
+        "missing_location_with_actor_cue": 0,
+        "n": 32,
+        "original_location_missing": 1,
+        "retrieval_failures": 0
+      },
+      "episode": 0,
+      "file": "run-complete32-0-cue_only-joint-a0.25-d1.0.json",
+      "truth": "truth-complete32-0.json",
+      "view": "cue_only",
+      "visible": "visible-complete32-0.json"
+    },
+    {
+      "arm": "joint-a1.0-d0.9",
+      "condition": "complete32",
+      "counts": {
+        "actor_posterior_changed_steps": 28,
+        "checks": 53,
+        "first_position_errors": 9,
+        "missing_location_with_actor_cue": 0,
+        "n": 32,
+        "original_location_missing": 1,
+        "retrieval_failures": 0
+      },
+      "episode": 0,
+      "file": "run-complete32-0-cue_only-joint-a1.0-d0.9.json",
+      "truth": "truth-complete32-0.json",
+      "view": "cue_only",
+      "visible": "visible-complete32-0.json"
+    },
+    {
+      "arm": "joint-a1.0-d1.0",
+      "condition": "complete32",
+      "counts": {
+        "actor_posterior_changed_steps": 28,
+        "checks": 53,
+        "first_position_errors": 9,
+        "missing_location_with_actor_cue": 0,
+        "n": 32,
+        "original_location_missing": 1,
+        "retrieval_failures": 0
+      },
+      "episode": 0,
+      "file": "run-complete32-0-cue_only-joint-a1.0-d1.0.json",
+      "truth": "truth-complete32-0.json",
+      "view": "cue_only",
+      "visible": "visible-complete32-0.json"
+    },
+    {
+      "arm": "factor-a0.25-d0.9",
+      "condition": "complete32",
+      "counts": {
+        "actor_posterior_changed_steps": 31,
+        "checks": 47,
+        "first_position_errors": 9,
+        "missing_location_with_actor_cue": 0,
+        "n": 32,
+        "original_location_missing": 1,
+        "retrieval_failures": 0
+      },
+      "episode": 0,
+      "file": "run-complete32-0-cue_only-factor-a0.25-d0.9.json",
+      "truth": "truth-complete32-0.json",
+      "view": "cue_only",
+      "visible": "visible-complete32-0.json"
+    },
+    {
+      "arm": "factor-a0.25-d1.0",
+      "condition": "complete32",
+      "counts": {
+        "actor_posterior_changed_steps": 31,
+        "checks": 47,
+        "first_position_errors": 9,
+        "missing_location_with_actor_cue": 0,
+        "n": 32,
+        "original_location_missing": 1,
+        "retrieval_failures": 0
+      },
+      "episode": 0,
+      "file": "run-complete32-0-cue_only-factor-a0.25-d1.0.json",
+      "truth": "truth-complete32-0.json",
+      "view": "cue_only",
+      "visible": "visible-complete32-0.json"
+    },
+    {
+      "arm": "factor-a1.0-d0.9",
+      "condition": "complete32",
+      "counts": {
+        "actor_posterior_changed_steps": 31,
+        "checks": 47,
+        "first_position_errors": 9,
+        "missing_location_with_actor_cue": 0,
+        "n": 32,
+        "original_location_missing": 1,
+        "retrieval_failures": 0
+      },
+      "episode": 0,
+      "file": "run-complete32-0-cue_only-factor-a1.0-d0.9.json",
+      "truth": "truth-complete32-0.json",
+      "view": "cue_only",
+      "visible": "visible-complete32-0.json"
+    },
+    {
+      "arm": "factor-a1.0-d1.0",
+      "condition": "complete32",
+      "counts": {
+        "actor_posterior_changed_steps": 31,
+        "checks": 47,
+        "first_position_errors": 9,
+        "missing_location_with_actor_cue": 0,
+        "n": 32,
+        "original_location_missing": 1,
+        "retrieval_failures": 0
+      },
+      "episode": 0,
+      "file": "run-complete32-0-cue_only-factor-a1.0-d1.0.json",
+      "truth": "truth-complete32-0.json",
+      "view": "cue_only",
+      "visible": "visible-complete32-0.json"
+    },
+    {
+      "arm": "recent",
+      "condition": "complete32",
+      "counts": {
+        "actor_posterior_changed_steps": 0,
+        "checks": 32,
+        "first_position_errors": 0,
+        "missing_location_with_actor_cue": 0,
+        "n": 32,
+        "original_location_missing": 1,
+        "retrieval_failures": 0
+      },
+      "episode": 1,
+      "file": "run-complete32-1-native-recent.json",
+      "truth": "truth-complete32-1.json",
+      "view": "native",
+      "visible": "visible-complete32-1.json"
+    },
+    {
+      "arm": "markov-a0.25-d0.9",
+      "condition": "complete32",
+      "counts": {
+        "actor_posterior_changed_steps": 0,
+        "checks": 32,
+        "first_position_errors": 0,
+        "missing_location_with_actor_cue": 0,
+        "n": 32,
+        "original_location_missing": 1,
+        "retrieval_failures": 0
+      },
+      "episode": 1,
+      "file": "run-complete32-1-native-markov-a0.25-d0.9.json",
+      "truth": "truth-complete32-1.json",
+      "view": "native",
+      "visible": "visible-complete32-1.json"
+    },
+    {
+      "arm": "markov-a0.25-d1.0",
+      "condition": "complete32",
+      "counts": {
+        "actor_posterior_changed_steps": 0,
+        "checks": 32,
+        "first_position_errors": 0,
+        "missing_location_with_actor_cue": 0,
+        "n": 32,
+        "original_location_missing": 1,
+        "retrieval_failures": 0
+      },
+      "episode": 1,
+      "file": "run-complete32-1-native-markov-a0.25-d1.0.json",
+      "truth": "truth-complete32-1.json",
+      "view": "native",
+      "visible": "visible-complete32-1.json"
+    },
+    {
+      "arm": "markov-a1.0-d0.9",
+      "condition": "complete32",
+      "counts": {
+        "actor_posterior_changed_steps": 0,
+        "checks": 32,
+        "first_position_errors": 0,
+        "missing_location_with_actor_cue": 0,
+        "n": 32,
+        "original_location_missing": 1,
+        "retrieval_failures": 0
+      },
+      "episode": 1,
+      "file": "run-complete32-1-native-markov-a1.0-d0.9.json",
+      "truth": "truth-complete32-1.json",
+      "view": "native",
+      "visible": "visible-complete32-1.json"
+    },
+    {
+      "arm": "markov-a1.0-d1.0",
+      "condition": "complete32",
+      "counts": {
+        "actor_posterior_changed_steps": 0,
+        "checks": 32,
+        "first_position_errors": 0,
+        "missing_location_with_actor_cue": 0,
+        "n": 32,
+        "original_location_missing": 1,
+        "retrieval_failures": 0
+      },
+      "episode": 1,
+      "file": "run-complete32-1-native-markov-a1.0-d1.0.json",
+      "truth": "truth-complete32-1.json",
+      "view": "native",
+      "visible": "visible-complete32-1.json"
+    },
+    {
+      "arm": "joint-a0.25-d0.9",
+      "condition": "complete32",
+      "counts": {
+        "actor_posterior_changed_steps": 1,
+        "checks": 32,
+        "first_position_errors": 0,
+        "missing_location_with_actor_cue": 0,
+        "n": 32,
+        "original_location_missing": 1,
+        "retrieval_failures": 0
+      },
+      "episode": 1,
+      "file": "run-complete32-1-native-joint-a0.25-d0.9.json",
+      "truth": "truth-complete32-1.json",
+      "view": "native",
+      "visible": "visible-complete32-1.json"
+    },
+    {
+      "arm": "joint-a0.25-d1.0",
+      "condition": "complete32",
+      "counts": {
+        "actor_posterior_changed_steps": 1,
+        "checks": 32,
+        "first_position_errors": 0,
+        "missing_location_with_actor_cue": 0,
+        "n": 32,
+        "original_location_missing": 1,
+        "retrieval_failures": 0
+      },
+      "episode": 1,
+      "file": "run-complete32-1-native-joint-a0.25-d1.0.json",
+      "truth": "truth-complete32-1.json",
+      "view": "native",
+      "visible": "visible-complete32-1.json"
+    },
+    {
+      "arm": "joint-a1.0-d0.9",
+      "condition": "complete32",
+      "counts": {
+        "actor_posterior_changed_steps": 1,
+        "checks": 32,
+        "first_position_errors": 0,
+        "missing_location_with_actor_cue": 0,
+        "n": 32,
+        "original_location_missing": 1,
+        "retrieval_failures": 0
+      },
+      "episode": 1,
+      "file": "run-complete32-1-native-joint-a1.0-d0.9.json",
+      "truth": "truth-complete32-1.json",
+      "view": "native",
+      "visible": "visible-complete32-1.json"
+    },
+    {
+      "arm": "joint-a1.0-d1.0",
+      "condition": "complete32",
+      "counts": {
+        "actor_posterior_changed_steps": 1,
+        "checks": 32,
+        "first_position_errors": 0,
+        "missing_location_with_actor_cue": 0,
+        "n": 32,
+        "original_location_missing": 1,
+        "retrieval_failures": 0
+      },
+      "episode": 1,
+      "file": "run-complete32-1-native-joint-a1.0-d1.0.json",
+      "truth": "truth-complete32-1.json",
+      "view": "native",
+      "visible": "visible-complete32-1.json"
+    },
+    {
+      "arm": "factor-a0.25-d0.9",
+      "condition": "complete32",
+      "counts": {
+        "actor_posterior_changed_steps": 1,
+        "checks": 32,
+        "first_position_errors": 0,
+        "missing_location_with_actor_cue": 0,
+        "n": 32,
+        "original_location_missing": 1,
+        "retrieval_failures": 0
+      },
+      "episode": 1,
+      "file": "run-complete32-1-native-factor-a0.25-d0.9.json",
+      "truth": "truth-complete32-1.json",
+      "view": "native",
+      "visible": "visible-complete32-1.json"
+    },
+    {
+      "arm": "factor-a0.25-d1.0",
+      "condition": "complete32",
+      "counts": {
+        "actor_posterior_changed_steps": 1,
+        "checks": 32,
+        "first_position_errors": 0,
+        "missing_location_with_actor_cue": 0,
+        "n": 32,
+        "original_location_missing": 1,
+        "retrieval_failures": 0
+      },
+      "episode": 1,
+      "file": "run-complete32-1-native-factor-a0.25-d1.0.json",
+      "truth": "truth-complete32-1.json",
+      "view": "native",
+      "visible": "visible-complete32-1.json"
+    },
+    {
+      "arm": "factor-a1.0-d0.9",
+      "condition": "complete32",
+      "counts": {
+        "actor_posterior_changed_steps": 1,
+        "checks": 32,
+        "first_position_errors": 0,
+        "missing_location_with_actor_cue": 0,
+        "n": 32,
+        "original_location_missing": 1,
+        "retrieval_failures": 0
+      },
+      "episode": 1,
+      "file": "run-complete32-1-native-factor-a1.0-d0.9.json",
+      "truth": "truth-complete32-1.json",
+      "view": "native",
+      "visible": "visible-complete32-1.json"
+    },
+    {
+      "arm": "factor-a1.0-d1.0",
+      "condition": "complete32",
+      "counts": {
+        "actor_posterior_changed_steps": 1,
+        "checks": 32,
+        "first_position_errors": 0,
+        "missing_location_with_actor_cue": 0,
+        "n": 32,
+        "original_location_missing": 1,
+        "retrieval_failures": 0
+      },
+      "episode": 1,
+      "file": "run-complete32-1-native-factor-a1.0-d1.0.json",
+      "truth": "truth-complete32-1.json",
+      "view": "native",
+      "visible": "visible-complete32-1.json"
+    },
+    {
+      "arm": "recent",
+      "condition": "complete32",
+      "counts": {
+        "actor_posterior_changed_steps": 0,
+        "checks": 46,
+        "first_position_errors": 7,
+        "missing_location_with_actor_cue": 0,
+        "n": 32,
+        "original_location_missing": 1,
+        "retrieval_failures": 0
+      },
+      "episode": 1,
+      "file": "run-complete32-1-cue_only-recent.json",
+      "truth": "truth-complete32-1.json",
+      "view": "cue_only",
+      "visible": "visible-complete32-1.json"
+    },
+    {
+      "arm": "markov-a0.25-d0.9",
+      "condition": "complete32",
+      "counts": {
+        "actor_posterior_changed_steps": 0,
+        "checks": 50,
+        "first_position_errors": 10,
+        "missing_location_with_actor_cue": 0,
+        "n": 32,
+        "original_location_missing": 1,
+        "retrieval_failures": 0
+      },
+      "episode": 1,
+      "file": "run-complete32-1-cue_only-markov-a0.25-d0.9.json",
+      "truth": "truth-complete32-1.json",
+      "view": "cue_only",
+      "visible": "visible-complete32-1.json"
+    },
+    {
+      "arm": "markov-a0.25-d1.0",
+      "condition": "complete32",
+      "counts": {
+        "actor_posterior_changed_steps": 0,
+        "checks": 51,
+        "first_position_errors": 11,
+        "missing_location_with_actor_cue": 0,
+        "n": 32,
+        "original_location_missing": 1,
+        "retrieval_failures": 0
+      },
+      "episode": 1,
+      "file": "run-complete32-1-cue_only-markov-a0.25-d1.0.json",
+      "truth": "truth-complete32-1.json",
+      "view": "cue_only",
+      "visible": "visible-complete32-1.json"
+    },
+    {
+      "arm": "markov-a1.0-d0.9",
+      "condition": "complete32",
+      "counts": {
+        "actor_posterior_changed_steps": 0,
+        "checks": 50,
+        "first_position_errors": 10,
+        "missing_location_with_actor_cue": 0,
+        "n": 32,
+        "original_location_missing": 1,
+        "retrieval_failures": 0
+      },
+      "episode": 1,
+      "file": "run-complete32-1-cue_only-markov-a1.0-d0.9.json",
+      "truth": "truth-complete32-1.json",
+      "view": "cue_only",
+      "visible": "visible-complete32-1.json"
+    },
+    {
+      "arm": "markov-a1.0-d1.0",
+      "condition": "complete32",
+      "counts": {
+        "actor_posterior_changed_steps": 0,
+        "checks": 51,
+        "first_position_errors": 11,
+        "missing_location_with_actor_cue": 0,
+        "n": 32,
+        "original_location_missing": 1,
+        "retrieval_failures": 0
+      },
+      "episode": 1,
+      "file": "run-complete32-1-cue_only-markov-a1.0-d1.0.json",
+      "truth": "truth-complete32-1.json",
+      "view": "cue_only",
+      "visible": "visible-complete32-1.json"
+    },
+    {
+      "arm": "joint-a0.25-d0.9",
+      "condition": "complete32",
+      "counts": {
+        "actor_posterior_changed_steps": 28,
+        "checks": 50,
+        "first_position_errors": 10,
+        "missing_location_with_actor_cue": 0,
+        "n": 32,
+        "original_location_missing": 1,
+        "retrieval_failures": 0
+      },
+      "episode": 1,
+      "file": "run-complete32-1-cue_only-joint-a0.25-d0.9.json",
+      "truth": "truth-complete32-1.json",
+      "view": "cue_only",
+      "visible": "visible-complete32-1.json"
+    },
+    {
+      "arm": "joint-a0.25-d1.0",
+      "condition": "complete32",
+      "counts": {
+        "actor_posterior_changed_steps": 28,
+        "checks": 50,
+        "first_position_errors": 10,
+        "missing_location_with_actor_cue": 0,
+        "n": 32,
+        "original_location_missing": 1,
+        "retrieval_failures": 0
+      },
+      "episode": 1,
+      "file": "run-complete32-1-cue_only-joint-a0.25-d1.0.json",
+      "truth": "truth-complete32-1.json",
+      "view": "cue_only",
+      "visible": "visible-complete32-1.json"
+    },
+    {
+      "arm": "joint-a1.0-d0.9",
+      "condition": "complete32",
+      "counts": {
+        "actor_posterior_changed_steps": 28,
+        "checks": 50,
+        "first_position_errors": 10,
+        "missing_location_with_actor_cue": 0,
+        "n": 32,
+        "original_location_missing": 1,
+        "retrieval_failures": 0
+      },
+      "episode": 1,
+      "file": "run-complete32-1-cue_only-joint-a1.0-d0.9.json",
+      "truth": "truth-complete32-1.json",
+      "view": "cue_only",
+      "visible": "visible-complete32-1.json"
+    },
+    {
+      "arm": "joint-a1.0-d1.0",
+      "condition": "complete32",
+      "counts": {
+        "actor_posterior_changed_steps": 28,
+        "checks": 50,
+        "first_position_errors": 10,
+        "missing_location_with_actor_cue": 0,
+        "n": 32,
+        "original_location_missing": 1,
+        "retrieval_failures": 0
+      },
+      "episode": 1,
+      "file": "run-complete32-1-cue_only-joint-a1.0-d1.0.json",
+      "truth": "truth-complete32-1.json",
+      "view": "cue_only",
+      "visible": "visible-complete32-1.json"
+    },
+    {
+      "arm": "factor-a0.25-d0.9",
+      "condition": "complete32",
+      "counts": {
+        "actor_posterior_changed_steps": 31,
+        "checks": 43,
+        "first_position_errors": 9,
+        "missing_location_with_actor_cue": 0,
+        "n": 32,
+        "original_location_missing": 1,
+        "retrieval_failures": 0
+      },
+      "episode": 1,
+      "file": "run-complete32-1-cue_only-factor-a0.25-d0.9.json",
+      "truth": "truth-complete32-1.json",
+      "view": "cue_only",
+      "visible": "visible-complete32-1.json"
+    },
+    {
+      "arm": "factor-a0.25-d1.0",
+      "condition": "complete32",
+      "counts": {
+        "actor_posterior_changed_steps": 31,
+        "checks": 43,
+        "first_position_errors": 9,
+        "missing_location_with_actor_cue": 0,
+        "n": 32,
+        "original_location_missing": 1,
+        "retrieval_failures": 0
+      },
+      "episode": 1,
+      "file": "run-complete32-1-cue_only-factor-a0.25-d1.0.json",
+      "truth": "truth-complete32-1.json",
+      "view": "cue_only",
+      "visible": "visible-complete32-1.json"
+    },
+    {
+      "arm": "factor-a1.0-d0.9",
+      "condition": "complete32",
+      "counts": {
+        "actor_posterior_changed_steps": 31,
+        "checks": 43,
+        "first_position_errors": 9,
+        "missing_location_with_actor_cue": 0,
+        "n": 32,
+        "original_location_missing": 1,
+        "retrieval_failures": 0
+      },
+      "episode": 1,
+      "file": "run-complete32-1-cue_only-factor-a1.0-d0.9.json",
+      "truth": "truth-complete32-1.json",
+      "view": "cue_only",
+      "visible": "visible-complete32-1.json"
+    },
+    {
+      "arm": "factor-a1.0-d1.0",
+      "condition": "complete32",
+      "counts": {
+        "actor_posterior_changed_steps": 31,
+        "checks": 43,
+        "first_position_errors": 9,
+        "missing_location_with_actor_cue": 0,
+        "n": 32,
+        "original_location_missing": 1,
+        "retrieval_failures": 0
+      },
+      "episode": 1,
+      "file": "run-complete32-1-cue_only-factor-a1.0-d1.0.json",
+      "truth": "truth-complete32-1.json",
+      "view": "cue_only",
+      "visible": "visible-complete32-1.json"
+    },
+    {
+      "arm": "recent",
+      "condition": "complete32",
+      "counts": {
+        "actor_posterior_changed_steps": 0,
+        "checks": 32,
+        "first_position_errors": 0,
+        "missing_location_with_actor_cue": 0,
+        "n": 32,
+        "original_location_missing": 0,
+        "retrieval_failures": 0
+      },
+      "episode": 2,
+      "file": "run-complete32-2-native-recent.json",
+      "truth": "truth-complete32-2.json",
+      "view": "native",
+      "visible": "visible-complete32-2.json"
+    },
+    {
+      "arm": "markov-a0.25-d0.9",
+      "condition": "complete32",
+      "counts": {
+        "actor_posterior_changed_steps": 0,
+        "checks": 32,
+        "first_position_errors": 0,
+        "missing_location_with_actor_cue": 0,
+        "n": 32,
+        "original_location_missing": 0,
+        "retrieval_failures": 0
+      },
+      "episode": 2,
+      "file": "run-complete32-2-native-markov-a0.25-d0.9.json",
+      "truth": "truth-complete32-2.json",
+      "view": "native",
+      "visible": "visible-complete32-2.json"
+    },
+    {
+      "arm": "markov-a0.25-d1.0",
+      "condition": "complete32",
+      "counts": {
+        "actor_posterior_changed_steps": 0,
+        "checks": 32,
+        "first_position_errors": 0,
+        "missing_location_with_actor_cue": 0,
+        "n": 32,
+        "original_location_missing": 0,
+        "retrieval_failures": 0
+      },
+      "episode": 2,
+      "file": "run-complete32-2-native-markov-a0.25-d1.0.json",
+      "truth": "truth-complete32-2.json",
+      "view": "native",
+      "visible": "visible-complete32-2.json"
+    },
+    {
+      "arm": "markov-a1.0-d0.9",
+      "condition": "complete32",
+      "counts": {
+        "actor_posterior_changed_steps": 0,
+        "checks": 32,
+        "first_position_errors": 0,
+        "missing_location_with_actor_cue": 0,
+        "n": 32,
+        "original_location_missing": 0,
+        "retrieval_failures": 0
+      },
+      "episode": 2,
+      "file": "run-complete32-2-native-markov-a1.0-d0.9.json",
+      "truth": "truth-complete32-2.json",
+      "view": "native",
+      "visible": "visible-complete32-2.json"
+    },
+    {
+      "arm": "markov-a1.0-d1.0",
+      "condition": "complete32",
+      "counts": {
+        "actor_posterior_changed_steps": 0,
+        "checks": 32,
+        "first_position_errors": 0,
+        "missing_location_with_actor_cue": 0,
+        "n": 32,
+        "original_location_missing": 0,
+        "retrieval_failures": 0
+      },
+      "episode": 2,
+      "file": "run-complete32-2-native-markov-a1.0-d1.0.json",
+      "truth": "truth-complete32-2.json",
+      "view": "native",
+      "visible": "visible-complete32-2.json"
+    },
+    {
+      "arm": "joint-a0.25-d0.9",
+      "condition": "complete32",
+      "counts": {
+        "actor_posterior_changed_steps": 0,
+        "checks": 32,
+        "first_position_errors": 0,
+        "missing_location_with_actor_cue": 0,
+        "n": 32,
+        "original_location_missing": 0,
+        "retrieval_failures": 0
+      },
+      "episode": 2,
+      "file": "run-complete32-2-native-joint-a0.25-d0.9.json",
+      "truth": "truth-complete32-2.json",
+      "view": "native",
+      "visible": "visible-complete32-2.json"
+    },
+    {
+      "arm": "joint-a0.25-d1.0",
+      "condition": "complete32",
+      "counts": {
+        "actor_posterior_changed_steps": 0,
+        "checks": 32,
+        "first_position_errors": 0,
+        "missing_location_with_actor_cue": 0,
+        "n": 32,
+        "original_location_missing": 0,
+        "retrieval_failures": 0
+      },
+      "episode": 2,
+      "file": "run-complete32-2-native-joint-a0.25-d1.0.json",
+      "truth": "truth-complete32-2.json",
+      "view": "native",
+      "visible": "visible-complete32-2.json"
+    },
+    {
+      "arm": "joint-a1.0-d0.9",
+      "condition": "complete32",
+      "counts": {
+        "actor_posterior_changed_steps": 0,
+        "checks": 32,
+        "first_position_errors": 0,
+        "missing_location_with_actor_cue": 0,
+        "n": 32,
+        "original_location_missing": 0,
+        "retrieval_failures": 0
+      },
+      "episode": 2,
+      "file": "run-complete32-2-native-joint-a1.0-d0.9.json",
+      "truth": "truth-complete32-2.json",
+      "view": "native",
+      "visible": "visible-complete32-2.json"
+    },
+    {
+      "arm": "joint-a1.0-d1.0",
+      "condition": "complete32",
+      "counts": {
+        "actor_posterior_changed_steps": 0,
+        "checks": 32,
+        "first_position_errors": 0,
+        "missing_location_with_actor_cue": 0,
+        "n": 32,
+        "original_location_missing": 0,
+        "retrieval_failures": 0
+      },
+      "episode": 2,
+      "file": "run-complete32-2-native-joint-a1.0-d1.0.json",
+      "truth": "truth-complete32-2.json",
+      "view": "native",
+      "visible": "visible-complete32-2.json"
+    },
+    {
+      "arm": "factor-a0.25-d0.9",
+      "condition": "complete32",
+      "counts": {
+        "actor_posterior_changed_steps": 0,
+        "checks": 32,
+        "first_position_errors": 0,
+        "missing_location_with_actor_cue": 0,
+        "n": 32,
+        "original_location_missing": 0,
+        "retrieval_failures": 0
+      },
+      "episode": 2,
+      "file": "run-complete32-2-native-factor-a0.25-d0.9.json",
+      "truth": "truth-complete32-2.json",
+      "view": "native",
+      "visible": "visible-complete32-2.json"
+    },
+    {
+      "arm": "factor-a0.25-d1.0",
+      "condition": "complete32",
+      "counts": {
+        "actor_posterior_changed_steps": 0,
+        "checks": 32,
+        "first_position_errors": 0,
+        "missing_location_with_actor_cue": 0,
+        "n": 32,
+        "original_location_missing": 0,
+        "retrieval_failures": 0
+      },
+      "episode": 2,
+      "file": "run-complete32-2-native-factor-a0.25-d1.0.json",
+      "truth": "truth-complete32-2.json",
+      "view": "native",
+      "visible": "visible-complete32-2.json"
+    },
+    {
+      "arm": "factor-a1.0-d0.9",
+      "condition": "complete32",
+      "counts": {
+        "actor_posterior_changed_steps": 0,
+        "checks": 32,
+        "first_position_errors": 0,
+        "missing_location_with_actor_cue": 0,
+        "n": 32,
+        "original_location_missing": 0,
+        "retrieval_failures": 0
+      },
+      "episode": 2,
+      "file": "run-complete32-2-native-factor-a1.0-d0.9.json",
+      "truth": "truth-complete32-2.json",
+      "view": "native",
+      "visible": "visible-complete32-2.json"
+    },
+    {
+      "arm": "factor-a1.0-d1.0",
+      "condition": "complete32",
+      "counts": {
+        "actor_posterior_changed_steps": 0,
+        "checks": 32,
+        "first_position_errors": 0,
+        "missing_location_with_actor_cue": 0,
+        "n": 32,
+        "original_location_missing": 0,
+        "retrieval_failures": 0
+      },
+      "episode": 2,
+      "file": "run-complete32-2-native-factor-a1.0-d1.0.json",
+      "truth": "truth-complete32-2.json",
+      "view": "native",
+      "visible": "visible-complete32-2.json"
+    },
+    {
+      "arm": "recent",
+      "condition": "complete32",
+      "counts": {
+        "actor_posterior_changed_steps": 0,
+        "checks": 46,
+        "first_position_errors": 7,
+        "missing_location_with_actor_cue": 0,
+        "n": 32,
+        "original_location_missing": 0,
+        "retrieval_failures": 0
+      },
+      "episode": 2,
+      "file": "run-complete32-2-cue_only-recent.json",
+      "truth": "truth-complete32-2.json",
+      "view": "cue_only",
+      "visible": "visible-complete32-2.json"
+    },
+    {
+      "arm": "markov-a0.25-d0.9",
+      "condition": "complete32",
+      "counts": {
+        "actor_posterior_changed_steps": 0,
+        "checks": 50,
+        "first_position_errors": 10,
+        "missing_location_with_actor_cue": 0,
+        "n": 32,
+        "original_location_missing": 0,
+        "retrieval_failures": 0
+      },
+      "episode": 2,
+      "file": "run-complete32-2-cue_only-markov-a0.25-d0.9.json",
+      "truth": "truth-complete32-2.json",
+      "view": "cue_only",
+      "visible": "visible-complete32-2.json"
+    },
+    {
+      "arm": "markov-a0.25-d1.0",
+      "condition": "complete32",
+      "counts": {
+        "actor_posterior_changed_steps": 0,
+        "checks": 51,
+        "first_position_errors": 11,
+        "missing_location_with_actor_cue": 0,
+        "n": 32,
+        "original_location_missing": 0,
+        "retrieval_failures": 0
+      },
+      "episode": 2,
+      "file": "run-complete32-2-cue_only-markov-a0.25-d1.0.json",
+      "truth": "truth-complete32-2.json",
+      "view": "cue_only",
+      "visible": "visible-complete32-2.json"
+    },
+    {
+      "arm": "markov-a1.0-d0.9",
+      "condition": "complete32",
+      "counts": {
+        "actor_posterior_changed_steps": 0,
+        "checks": 50,
+        "first_position_errors": 10,
+        "missing_location_with_actor_cue": 0,
+        "n": 32,
+        "original_location_missing": 0,
+        "retrieval_failures": 0
+      },
+      "episode": 2,
+      "file": "run-complete32-2-cue_only-markov-a1.0-d0.9.json",
+      "truth": "truth-complete32-2.json",
+      "view": "cue_only",
+      "visible": "visible-complete32-2.json"
+    },
+    {
+      "arm": "markov-a1.0-d1.0",
+      "condition": "complete32",
+      "counts": {
+        "actor_posterior_changed_steps": 0,
+        "checks": 51,
+        "first_position_errors": 11,
+        "missing_location_with_actor_cue": 0,
+        "n": 32,
+        "original_location_missing": 0,
+        "retrieval_failures": 0
+      },
+      "episode": 2,
+      "file": "run-complete32-2-cue_only-markov-a1.0-d1.0.json",
+      "truth": "truth-complete32-2.json",
+      "view": "cue_only",
+      "visible": "visible-complete32-2.json"
+    },
+    {
+      "arm": "joint-a0.25-d0.9",
+      "condition": "complete32",
+      "counts": {
+        "actor_posterior_changed_steps": 28,
+        "checks": 50,
+        "first_position_errors": 10,
+        "missing_location_with_actor_cue": 0,
+        "n": 32,
+        "original_location_missing": 0,
+        "retrieval_failures": 0
+      },
+      "episode": 2,
+      "file": "run-complete32-2-cue_only-joint-a0.25-d0.9.json",
+      "truth": "truth-complete32-2.json",
+      "view": "cue_only",
+      "visible": "visible-complete32-2.json"
+    },
+    {
+      "arm": "joint-a0.25-d1.0",
+      "condition": "complete32",
+      "counts": {
+        "actor_posterior_changed_steps": 28,
+        "checks": 50,
+        "first_position_errors": 10,
+        "missing_location_with_actor_cue": 0,
+        "n": 32,
+        "original_location_missing": 0,
+        "retrieval_failures": 0
+      },
+      "episode": 2,
+      "file": "run-complete32-2-cue_only-joint-a0.25-d1.0.json",
+      "truth": "truth-complete32-2.json",
+      "view": "cue_only",
+      "visible": "visible-complete32-2.json"
+    },
+    {
+      "arm": "joint-a1.0-d0.9",
+      "condition": "complete32",
+      "counts": {
+        "actor_posterior_changed_steps": 28,
+        "checks": 50,
+        "first_position_errors": 10,
+        "missing_location_with_actor_cue": 0,
+        "n": 32,
+        "original_location_missing": 0,
+        "retrieval_failures": 0
+      },
+      "episode": 2,
+      "file": "run-complete32-2-cue_only-joint-a1.0-d0.9.json",
+      "truth": "truth-complete32-2.json",
+      "view": "cue_only",
+      "visible": "visible-complete32-2.json"
+    },
+    {
+      "arm": "joint-a1.0-d1.0",
+      "condition": "complete32",
+      "counts": {
+        "actor_posterior_changed_steps": 28,
+        "checks": 50,
+        "first_position_errors": 10,
+        "missing_location_with_actor_cue": 0,
+        "n": 32,
+        "original_location_missing": 0,
+        "retrieval_failures": 0
+      },
+      "episode": 2,
+      "file": "run-complete32-2-cue_only-joint-a1.0-d1.0.json",
+      "truth": "truth-complete32-2.json",
+      "view": "cue_only",
+      "visible": "visible-complete32-2.json"
+    },
+    {
+      "arm": "factor-a0.25-d0.9",
+      "condition": "complete32",
+      "counts": {
+        "actor_posterior_changed_steps": 31,
+        "checks": 43,
+        "first_position_errors": 9,
+        "missing_location_with_actor_cue": 0,
+        "n": 32,
+        "original_location_missing": 0,
+        "retrieval_failures": 0
+      },
+      "episode": 2,
+      "file": "run-complete32-2-cue_only-factor-a0.25-d0.9.json",
+      "truth": "truth-complete32-2.json",
+      "view": "cue_only",
+      "visible": "visible-complete32-2.json"
+    },
+    {
+      "arm": "factor-a0.25-d1.0",
+      "condition": "complete32",
+      "counts": {
+        "actor_posterior_changed_steps": 31,
+        "checks": 43,
+        "first_position_errors": 9,
+        "missing_location_with_actor_cue": 0,
+        "n": 32,
+        "original_location_missing": 0,
+        "retrieval_failures": 0
+      },
+      "episode": 2,
+      "file": "run-complete32-2-cue_only-factor-a0.25-d1.0.json",
+      "truth": "truth-complete32-2.json",
+      "view": "cue_only",
+      "visible": "visible-complete32-2.json"
+    },
+    {
+      "arm": "factor-a1.0-d0.9",
+      "condition": "complete32",
+      "counts": {
+        "actor_posterior_changed_steps": 31,
+        "checks": 43,
+        "first_position_errors": 9,
+        "missing_location_with_actor_cue": 0,
+        "n": 32,
+        "original_location_missing": 0,
+        "retrieval_failures": 0
+      },
+      "episode": 2,
+      "file": "run-complete32-2-cue_only-factor-a1.0-d0.9.json",
+      "truth": "truth-complete32-2.json",
+      "view": "cue_only",
+      "visible": "visible-complete32-2.json"
+    },
+    {
+      "arm": "factor-a1.0-d1.0",
+      "condition": "complete32",
+      "counts": {
+        "actor_posterior_changed_steps": 31,
+        "checks": 43,
+        "first_position_errors": 9,
+        "missing_location_with_actor_cue": 0,
+        "n": 32,
+        "original_location_missing": 0,
+        "retrieval_failures": 0
+      },
+      "episode": 2,
+      "file": "run-complete32-2-cue_only-factor-a1.0-d1.0.json",
+      "truth": "truth-complete32-2.json",
+      "view": "cue_only",
+      "visible": "visible-complete32-2.json"
+    },
+    {
+      "arm": "recent",
+      "condition": "sparse32",
+      "counts": {
+        "actor_posterior_changed_steps": 0,
+        "checks": 34,
+        "first_position_errors": 2,
+        "missing_location_with_actor_cue": 0,
+        "n": 32,
+        "original_location_missing": 20,
+        "retrieval_failures": 0
+      },
+      "episode": 0,
+      "file": "run-sparse32-0-native-recent.json",
+      "truth": "truth-sparse32-0.json",
+      "view": "native",
+      "visible": "visible-sparse32-0.json"
+    },
+    {
+      "arm": "markov-a0.25-d0.9",
+      "condition": "sparse32",
+      "counts": {
+        "actor_posterior_changed_steps": 0,
+        "checks": 38,
+        "first_position_errors": 5,
+        "missing_location_with_actor_cue": 0,
+        "n": 32,
+        "original_location_missing": 20,
+        "retrieval_failures": 0
+      },
+      "episode": 0,
+      "file": "run-sparse32-0-native-markov-a0.25-d0.9.json",
+      "truth": "truth-sparse32-0.json",
+      "view": "native",
+      "visible": "visible-sparse32-0.json"
+    },
+    {
+      "arm": "markov-a0.25-d1.0",
+      "condition": "sparse32",
+      "counts": {
+        "actor_posterior_changed_steps": 0,
+        "checks": 39,
+        "first_position_errors": 6,
+        "missing_location_with_actor_cue": 0,
+        "n": 32,
+        "original_location_missing": 20,
+        "retrieval_failures": 0
+      },
+      "episode": 0,
+      "file": "run-sparse32-0-native-markov-a0.25-d1.0.json",
+      "truth": "truth-sparse32-0.json",
+      "view": "native",
+      "visible": "visible-sparse32-0.json"
+    },
+    {
+      "arm": "markov-a1.0-d0.9",
+      "condition": "sparse32",
+      "counts": {
+        "actor_posterior_changed_steps": 0,
+        "checks": 38,
+        "first_position_errors": 5,
+        "missing_location_with_actor_cue": 0,
+        "n": 32,
+        "original_location_missing": 20,
+        "retrieval_failures": 0
+      },
+      "episode": 0,
+      "file": "run-sparse32-0-native-markov-a1.0-d0.9.json",
+      "truth": "truth-sparse32-0.json",
+      "view": "native",
+      "visible": "visible-sparse32-0.json"
+    },
+    {
+      "arm": "markov-a1.0-d1.0",
+      "condition": "sparse32",
+      "counts": {
+        "actor_posterior_changed_steps": 0,
+        "checks": 39,
+        "first_position_errors": 6,
+        "missing_location_with_actor_cue": 0,
+        "n": 32,
+        "original_location_missing": 20,
+        "retrieval_failures": 0
+      },
+      "episode": 0,
+      "file": "run-sparse32-0-native-markov-a1.0-d1.0.json",
+      "truth": "truth-sparse32-0.json",
+      "view": "native",
+      "visible": "visible-sparse32-0.json"
+    },
+    {
+      "arm": "joint-a0.25-d0.9",
+      "condition": "sparse32",
+      "counts": {
+        "actor_posterior_changed_steps": 18,
+        "checks": 38,
+        "first_position_errors": 5,
+        "missing_location_with_actor_cue": 0,
+        "n": 32,
+        "original_location_missing": 20,
+        "retrieval_failures": 0
+      },
+      "episode": 0,
+      "file": "run-sparse32-0-native-joint-a0.25-d0.9.json",
+      "truth": "truth-sparse32-0.json",
+      "view": "native",
+      "visible": "visible-sparse32-0.json"
+    },
+    {
+      "arm": "joint-a0.25-d1.0",
+      "condition": "sparse32",
+      "counts": {
+        "actor_posterior_changed_steps": 18,
+        "checks": 39,
+        "first_position_errors": 6,
+        "missing_location_with_actor_cue": 0,
+        "n": 32,
+        "original_location_missing": 20,
+        "retrieval_failures": 0
+      },
+      "episode": 0,
+      "file": "run-sparse32-0-native-joint-a0.25-d1.0.json",
+      "truth": "truth-sparse32-0.json",
+      "view": "native",
+      "visible": "visible-sparse32-0.json"
+    },
+    {
+      "arm": "joint-a1.0-d0.9",
+      "condition": "sparse32",
+      "counts": {
+        "actor_posterior_changed_steps": 18,
+        "checks": 38,
+        "first_position_errors": 5,
+        "missing_location_with_actor_cue": 0,
+        "n": 32,
+        "original_location_missing": 20,
+        "retrieval_failures": 0
+      },
+      "episode": 0,
+      "file": "run-sparse32-0-native-joint-a1.0-d0.9.json",
+      "truth": "truth-sparse32-0.json",
+      "view": "native",
+      "visible": "visible-sparse32-0.json"
+    },
+    {
+      "arm": "joint-a1.0-d1.0",
+      "condition": "sparse32",
+      "counts": {
+        "actor_posterior_changed_steps": 18,
+        "checks": 39,
+        "first_position_errors": 6,
+        "missing_location_with_actor_cue": 0,
+        "n": 32,
+        "original_location_missing": 20,
+        "retrieval_failures": 0
+      },
+      "episode": 0,
+      "file": "run-sparse32-0-native-joint-a1.0-d1.0.json",
+      "truth": "truth-sparse32-0.json",
+      "view": "native",
+      "visible": "visible-sparse32-0.json"
+    },
+    {
+      "arm": "factor-a0.25-d0.9",
+      "condition": "sparse32",
+      "counts": {
+        "actor_posterior_changed_steps": 19,
+        "checks": 38,
+        "first_position_errors": 5,
+        "missing_location_with_actor_cue": 0,
+        "n": 32,
+        "original_location_missing": 20,
+        "retrieval_failures": 0
+      },
+      "episode": 0,
+      "file": "run-sparse32-0-native-factor-a0.25-d0.9.json",
+      "truth": "truth-sparse32-0.json",
+      "view": "native",
+      "visible": "visible-sparse32-0.json"
+    },
+    {
+      "arm": "factor-a0.25-d1.0",
+      "condition": "sparse32",
+      "counts": {
+        "actor_posterior_changed_steps": 19,
+        "checks": 39,
+        "first_position_errors": 6,
+        "missing_location_with_actor_cue": 0,
+        "n": 32,
+        "original_location_missing": 20,
+        "retrieval_failures": 0
+      },
+      "episode": 0,
+      "file": "run-sparse32-0-native-factor-a0.25-d1.0.json",
+      "truth": "truth-sparse32-0.json",
+      "view": "native",
+      "visible": "visible-sparse32-0.json"
+    },
+    {
+      "arm": "factor-a1.0-d0.9",
+      "condition": "sparse32",
+      "counts": {
+        "actor_posterior_changed_steps": 19,
+        "checks": 38,
+        "first_position_errors": 5,
+        "missing_location_with_actor_cue": 0,
+        "n": 32,
+        "original_location_missing": 20,
+        "retrieval_failures": 0
+      },
+      "episode": 0,
+      "file": "run-sparse32-0-native-factor-a1.0-d0.9.json",
+      "truth": "truth-sparse32-0.json",
+      "view": "native",
+      "visible": "visible-sparse32-0.json"
+    },
+    {
+      "arm": "factor-a1.0-d1.0",
+      "condition": "sparse32",
+      "counts": {
+        "actor_posterior_changed_steps": 19,
+        "checks": 39,
+        "first_position_errors": 6,
+        "missing_location_with_actor_cue": 0,
+        "n": 32,
+        "original_location_missing": 20,
+        "retrieval_failures": 0
+      },
+      "episode": 0,
+      "file": "run-sparse32-0-native-factor-a1.0-d1.0.json",
+      "truth": "truth-sparse32-0.json",
+      "view": "native",
+      "visible": "visible-sparse32-0.json"
+    },
+    {
+      "arm": "recent",
+      "condition": "sparse32",
+      "counts": {
+        "actor_posterior_changed_steps": 0,
+        "checks": 39,
+        "first_position_errors": 6,
+        "missing_location_with_actor_cue": 0,
+        "n": 32,
+        "original_location_missing": 20,
+        "retrieval_failures": 0
+      },
+      "episode": 0,
+      "file": "run-sparse32-0-cue_only-recent.json",
+      "truth": "truth-sparse32-0.json",
+      "view": "cue_only",
+      "visible": "visible-sparse32-0.json"
+    },
+    {
+      "arm": "markov-a0.25-d0.9",
+      "condition": "sparse32",
+      "counts": {
+        "actor_posterior_changed_steps": 0,
+        "checks": 42,
+        "first_position_errors": 8,
+        "missing_location_with_actor_cue": 0,
+        "n": 32,
+        "original_location_missing": 20,
+        "retrieval_failures": 0
+      },
+      "episode": 0,
+      "file": "run-sparse32-0-cue_only-markov-a0.25-d0.9.json",
+      "truth": "truth-sparse32-0.json",
+      "view": "cue_only",
+      "visible": "visible-sparse32-0.json"
+    },
+    {
+      "arm": "markov-a0.25-d1.0",
+      "condition": "sparse32",
+      "counts": {
+        "actor_posterior_changed_steps": 0,
+        "checks": 43,
+        "first_position_errors": 9,
+        "missing_location_with_actor_cue": 0,
+        "n": 32,
+        "original_location_missing": 20,
+        "retrieval_failures": 0
+      },
+      "episode": 0,
+      "file": "run-sparse32-0-cue_only-markov-a0.25-d1.0.json",
+      "truth": "truth-sparse32-0.json",
+      "view": "cue_only",
+      "visible": "visible-sparse32-0.json"
+    },
+    {
+      "arm": "markov-a1.0-d0.9",
+      "condition": "sparse32",
+      "counts": {
+        "actor_posterior_changed_steps": 0,
+        "checks": 42,
+        "first_position_errors": 8,
+        "missing_location_with_actor_cue": 0,
+        "n": 32,
+        "original_location_missing": 20,
+        "retrieval_failures": 0
+      },
+      "episode": 0,
+      "file": "run-sparse32-0-cue_only-markov-a1.0-d0.9.json",
+      "truth": "truth-sparse32-0.json",
+      "view": "cue_only",
+      "visible": "visible-sparse32-0.json"
+    },
+    {
+      "arm": "markov-a1.0-d1.0",
+      "condition": "sparse32",
+      "counts": {
+        "actor_posterior_changed_steps": 0,
+        "checks": 43,
+        "first_position_errors": 9,
+        "missing_location_with_actor_cue": 0,
+        "n": 32,
+        "original_location_missing": 20,
+        "retrieval_failures": 0
+      },
+      "episode": 0,
+      "file": "run-sparse32-0-cue_only-markov-a1.0-d1.0.json",
+      "truth": "truth-sparse32-0.json",
+      "view": "cue_only",
+      "visible": "visible-sparse32-0.json"
+    },
+    {
+      "arm": "joint-a0.25-d0.9",
+      "condition": "sparse32",
+      "counts": {
+        "actor_posterior_changed_steps": 27,
+        "checks": 42,
+        "first_position_errors": 8,
+        "missing_location_with_actor_cue": 0,
+        "n": 32,
+        "original_location_missing": 20,
+        "retrieval_failures": 0
+      },
+      "episode": 0,
+      "file": "run-sparse32-0-cue_only-joint-a0.25-d0.9.json",
+      "truth": "truth-sparse32-0.json",
+      "view": "cue_only",
+      "visible": "visible-sparse32-0.json"
+    },
+    {
+      "arm": "joint-a0.25-d1.0",
+      "condition": "sparse32",
+      "counts": {
+        "actor_posterior_changed_steps": 27,
+        "checks": 43,
+        "first_position_errors": 9,
+        "missing_location_with_actor_cue": 0,
+        "n": 32,
+        "original_location_missing": 20,
+        "retrieval_failures": 0
+      },
+      "episode": 0,
+      "file": "run-sparse32-0-cue_only-joint-a0.25-d1.0.json",
+      "truth": "truth-sparse32-0.json",
+      "view": "cue_only",
+      "visible": "visible-sparse32-0.json"
+    },
+    {
+      "arm": "joint-a1.0-d0.9",
+      "condition": "sparse32",
+      "counts": {
+        "actor_posterior_changed_steps": 27,
+        "checks": 42,
+        "first_position_errors": 8,
+        "missing_location_with_actor_cue": 0,
+        "n": 32,
+        "original_location_missing": 20,
+        "retrieval_failures": 0
+      },
+      "episode": 0,
+      "file": "run-sparse32-0-cue_only-joint-a1.0-d0.9.json",
+      "truth": "truth-sparse32-0.json",
+      "view": "cue_only",
+      "visible": "visible-sparse32-0.json"
+    },
+    {
+      "arm": "joint-a1.0-d1.0",
+      "condition": "sparse32",
+      "counts": {
+        "actor_posterior_changed_steps": 27,
+        "checks": 43,
+        "first_position_errors": 9,
+        "missing_location_with_actor_cue": 0,
+        "n": 32,
+        "original_location_missing": 20,
+        "retrieval_failures": 0
+      },
+      "episode": 0,
+      "file": "run-sparse32-0-cue_only-joint-a1.0-d1.0.json",
+      "truth": "truth-sparse32-0.json",
+      "view": "cue_only",
+      "visible": "visible-sparse32-0.json"
+    },
+    {
+      "arm": "factor-a0.25-d0.9",
+      "condition": "sparse32",
+      "counts": {
+        "actor_posterior_changed_steps": 30,
+        "checks": 42,
+        "first_position_errors": 8,
+        "missing_location_with_actor_cue": 0,
+        "n": 32,
+        "original_location_missing": 20,
+        "retrieval_failures": 0
+      },
+      "episode": 0,
+      "file": "run-sparse32-0-cue_only-factor-a0.25-d0.9.json",
+      "truth": "truth-sparse32-0.json",
+      "view": "cue_only",
+      "visible": "visible-sparse32-0.json"
+    },
+    {
+      "arm": "factor-a0.25-d1.0",
+      "condition": "sparse32",
+      "counts": {
+        "actor_posterior_changed_steps": 30,
+        "checks": 43,
+        "first_position_errors": 9,
+        "missing_location_with_actor_cue": 0,
+        "n": 32,
+        "original_location_missing": 20,
+        "retrieval_failures": 0
+      },
+      "episode": 0,
+      "file": "run-sparse32-0-cue_only-factor-a0.25-d1.0.json",
+      "truth": "truth-sparse32-0.json",
+      "view": "cue_only",
+      "visible": "visible-sparse32-0.json"
+    },
+    {
+      "arm": "factor-a1.0-d0.9",
+      "condition": "sparse32",
+      "counts": {
+        "actor_posterior_changed_steps": 30,
+        "checks": 42,
+        "first_position_errors": 8,
+        "missing_location_with_actor_cue": 0,
+        "n": 32,
+        "original_location_missing": 20,
+        "retrieval_failures": 0
+      },
+      "episode": 0,
+      "file": "run-sparse32-0-cue_only-factor-a1.0-d0.9.json",
+      "truth": "truth-sparse32-0.json",
+      "view": "cue_only",
+      "visible": "visible-sparse32-0.json"
+    },
+    {
+      "arm": "factor-a1.0-d1.0",
+      "condition": "sparse32",
+      "counts": {
+        "actor_posterior_changed_steps": 30,
+        "checks": 43,
+        "first_position_errors": 9,
+        "missing_location_with_actor_cue": 0,
+        "n": 32,
+        "original_location_missing": 20,
+        "retrieval_failures": 0
+      },
+      "episode": 0,
+      "file": "run-sparse32-0-cue_only-factor-a1.0-d1.0.json",
+      "truth": "truth-sparse32-0.json",
+      "view": "cue_only",
+      "visible": "visible-sparse32-0.json"
+    },
+    {
+      "arm": "recent",
+      "condition": "sparse32",
+      "counts": {
+        "actor_posterior_changed_steps": 0,
+        "checks": 42,
+        "first_position_errors": 7,
+        "missing_location_with_actor_cue": 0,
+        "n": 32,
+        "original_location_missing": 22,
+        "retrieval_failures": 0
+      },
+      "episode": 1,
+      "file": "run-sparse32-1-native-recent.json",
+      "truth": "truth-sparse32-1.json",
+      "view": "native",
+      "visible": "visible-sparse32-1.json"
+    },
+    {
+      "arm": "markov-a0.25-d0.9",
+      "condition": "sparse32",
+      "counts": {
+        "actor_posterior_changed_steps": 0,
+        "checks": 43,
+        "first_position_errors": 8,
+        "missing_location_with_actor_cue": 0,
+        "n": 32,
+        "original_location_missing": 22,
+        "retrieval_failures": 0
+      },
+      "episode": 1,
+      "file": "run-sparse32-1-native-markov-a0.25-d0.9.json",
+      "truth": "truth-sparse32-1.json",
+      "view": "native",
+      "visible": "visible-sparse32-1.json"
+    },
+    {
+      "arm": "markov-a0.25-d1.0",
+      "condition": "sparse32",
+      "counts": {
+        "actor_posterior_changed_steps": 0,
+        "checks": 43,
+        "first_position_errors": 8,
+        "missing_location_with_actor_cue": 0,
+        "n": 32,
+        "original_location_missing": 22,
+        "retrieval_failures": 0
+      },
+      "episode": 1,
+      "file": "run-sparse32-1-native-markov-a0.25-d1.0.json",
+      "truth": "truth-sparse32-1.json",
+      "view": "native",
+      "visible": "visible-sparse32-1.json"
+    },
+    {
+      "arm": "markov-a1.0-d0.9",
+      "condition": "sparse32",
+      "counts": {
+        "actor_posterior_changed_steps": 0,
+        "checks": 43,
+        "first_position_errors": 8,
+        "missing_location_with_actor_cue": 0,
+        "n": 32,
+        "original_location_missing": 22,
+        "retrieval_failures": 0
+      },
+      "episode": 1,
+      "file": "run-sparse32-1-native-markov-a1.0-d0.9.json",
+      "truth": "truth-sparse32-1.json",
+      "view": "native",
+      "visible": "visible-sparse32-1.json"
+    },
+    {
+      "arm": "markov-a1.0-d1.0",
+      "condition": "sparse32",
+      "counts": {
+        "actor_posterior_changed_steps": 0,
+        "checks": 43,
+        "first_position_errors": 8,
+        "missing_location_with_actor_cue": 0,
+        "n": 32,
+        "original_location_missing": 22,
+        "retrieval_failures": 0
+      },
+      "episode": 1,
+      "file": "run-sparse32-1-native-markov-a1.0-d1.0.json",
+      "truth": "truth-sparse32-1.json",
+      "view": "native",
+      "visible": "visible-sparse32-1.json"
+    },
+    {
+      "arm": "joint-a0.25-d0.9",
+      "condition": "sparse32",
+      "counts": {
+        "actor_posterior_changed_steps": 15,
+        "checks": 43,
+        "first_position_errors": 8,
+        "missing_location_with_actor_cue": 0,
+        "n": 32,
+        "original_location_missing": 22,
+        "retrieval_failures": 0
+      },
+      "episode": 1,
+      "file": "run-sparse32-1-native-joint-a0.25-d0.9.json",
+      "truth": "truth-sparse32-1.json",
+      "view": "native",
+      "visible": "visible-sparse32-1.json"
+    },
+    {
+      "arm": "joint-a0.25-d1.0",
+      "condition": "sparse32",
+      "counts": {
+        "actor_posterior_changed_steps": 15,
+        "checks": 43,
+        "first_position_errors": 8,
+        "missing_location_with_actor_cue": 0,
+        "n": 32,
+        "original_location_missing": 22,
+        "retrieval_failures": 0
+      },
+      "episode": 1,
+      "file": "run-sparse32-1-native-joint-a0.25-d1.0.json",
+      "truth": "truth-sparse32-1.json",
+      "view": "native",
+      "visible": "visible-sparse32-1.json"
+    },
+    {
+      "arm": "joint-a1.0-d0.9",
+      "condition": "sparse32",
+      "counts": {
+        "actor_posterior_changed_steps": 15,
+        "checks": 43,
+        "first_position_errors": 8,
+        "missing_location_with_actor_cue": 0,
+        "n": 32,
+        "original_location_missing": 22,
+        "retrieval_failures": 0
+      },
+      "episode": 1,
+      "file": "run-sparse32-1-native-joint-a1.0-d0.9.json",
+      "truth": "truth-sparse32-1.json",
+      "view": "native",
+      "visible": "visible-sparse32-1.json"
+    },
+    {
+      "arm": "joint-a1.0-d1.0",
+      "condition": "sparse32",
+      "counts": {
+        "actor_posterior_changed_steps": 15,
+        "checks": 43,
+        "first_position_errors": 8,
+        "missing_location_with_actor_cue": 0,
+        "n": 32,
+        "original_location_missing": 22,
+        "retrieval_failures": 0
+      },
+      "episode": 1,
+      "file": "run-sparse32-1-native-joint-a1.0-d1.0.json",
+      "truth": "truth-sparse32-1.json",
+      "view": "native",
+      "visible": "visible-sparse32-1.json"
+    },
+    {
+      "arm": "factor-a0.25-d0.9",
+      "condition": "sparse32",
+      "counts": {
+        "actor_posterior_changed_steps": 18,
+        "checks": 43,
+        "first_position_errors": 8,
+        "missing_location_with_actor_cue": 0,
+        "n": 32,
+        "original_location_missing": 22,
+        "retrieval_failures": 0
+      },
+      "episode": 1,
+      "file": "run-sparse32-1-native-factor-a0.25-d0.9.json",
+      "truth": "truth-sparse32-1.json",
+      "view": "native",
+      "visible": "visible-sparse32-1.json"
+    },
+    {
+      "arm": "factor-a0.25-d1.0",
+      "condition": "sparse32",
+      "counts": {
+        "actor_posterior_changed_steps": 18,
+        "checks": 43,
+        "first_position_errors": 8,
+        "missing_location_with_actor_cue": 0,
+        "n": 32,
+        "original_location_missing": 22,
+        "retrieval_failures": 0
+      },
+      "episode": 1,
+      "file": "run-sparse32-1-native-factor-a0.25-d1.0.json",
+      "truth": "truth-sparse32-1.json",
+      "view": "native",
+      "visible": "visible-sparse32-1.json"
+    },
+    {
+      "arm": "factor-a1.0-d0.9",
+      "condition": "sparse32",
+      "counts": {
+        "actor_posterior_changed_steps": 18,
+        "checks": 43,
+        "first_position_errors": 8,
+        "missing_location_with_actor_cue": 0,
+        "n": 32,
+        "original_location_missing": 22,
+        "retrieval_failures": 0
+      },
+      "episode": 1,
+      "file": "run-sparse32-1-native-factor-a1.0-d0.9.json",
+      "truth": "truth-sparse32-1.json",
+      "view": "native",
+      "visible": "visible-sparse32-1.json"
+    },
+    {
+      "arm": "factor-a1.0-d1.0",
+      "condition": "sparse32",
+      "counts": {
+        "actor_posterior_changed_steps": 18,
+        "checks": 43,
+        "first_position_errors": 8,
+        "missing_location_with_actor_cue": 0,
+        "n": 32,
+        "original_location_missing": 22,
+        "retrieval_failures": 0
+      },
+      "episode": 1,
+      "file": "run-sparse32-1-native-factor-a1.0-d1.0.json",
+      "truth": "truth-sparse32-1.json",
+      "view": "native",
+      "visible": "visible-sparse32-1.json"
+    },
+    {
+      "arm": "recent",
+      "condition": "sparse32",
+      "counts": {
+        "actor_posterior_changed_steps": 0,
+        "checks": 42,
+        "first_position_errors": 7,
+        "missing_location_with_actor_cue": 0,
+        "n": 32,
+        "original_location_missing": 22,
+        "retrieval_failures": 0
+      },
+      "episode": 1,
+      "file": "run-sparse32-1-cue_only-recent.json",
+      "truth": "truth-sparse32-1.json",
+      "view": "cue_only",
+      "visible": "visible-sparse32-1.json"
+    },
+    {
+      "arm": "markov-a0.25-d0.9",
+      "condition": "sparse32",
+      "counts": {
+        "actor_posterior_changed_steps": 0,
+        "checks": 46,
+        "first_position_errors": 9,
+        "missing_location_with_actor_cue": 0,
+        "n": 32,
+        "original_location_missing": 22,
+        "retrieval_failures": 0
+      },
+      "episode": 1,
+      "file": "run-sparse32-1-cue_only-markov-a0.25-d0.9.json",
+      "truth": "truth-sparse32-1.json",
+      "view": "cue_only",
+      "visible": "visible-sparse32-1.json"
+    },
+    {
+      "arm": "markov-a0.25-d1.0",
+      "condition": "sparse32",
+      "counts": {
+        "actor_posterior_changed_steps": 0,
+        "checks": 47,
+        "first_position_errors": 10,
+        "missing_location_with_actor_cue": 0,
+        "n": 32,
+        "original_location_missing": 22,
+        "retrieval_failures": 0
+      },
+      "episode": 1,
+      "file": "run-sparse32-1-cue_only-markov-a0.25-d1.0.json",
+      "truth": "truth-sparse32-1.json",
+      "view": "cue_only",
+      "visible": "visible-sparse32-1.json"
+    },
+    {
+      "arm": "markov-a1.0-d0.9",
+      "condition": "sparse32",
+      "counts": {
+        "actor_posterior_changed_steps": 0,
+        "checks": 46,
+        "first_position_errors": 9,
+        "missing_location_with_actor_cue": 0,
+        "n": 32,
+        "original_location_missing": 22,
+        "retrieval_failures": 0
+      },
+      "episode": 1,
+      "file": "run-sparse32-1-cue_only-markov-a1.0-d0.9.json",
+      "truth": "truth-sparse32-1.json",
+      "view": "cue_only",
+      "visible": "visible-sparse32-1.json"
+    },
+    {
+      "arm": "markov-a1.0-d1.0",
+      "condition": "sparse32",
+      "counts": {
+        "actor_posterior_changed_steps": 0,
+        "checks": 47,
+        "first_position_errors": 10,
+        "missing_location_with_actor_cue": 0,
+        "n": 32,
+        "original_location_missing": 22,
+        "retrieval_failures": 0
+      },
+      "episode": 1,
+      "file": "run-sparse32-1-cue_only-markov-a1.0-d1.0.json",
+      "truth": "truth-sparse32-1.json",
+      "view": "cue_only",
+      "visible": "visible-sparse32-1.json"
+    },
+    {
+      "arm": "joint-a0.25-d0.9",
+      "condition": "sparse32",
+      "counts": {
+        "actor_posterior_changed_steps": 22,
+        "checks": 46,
+        "first_position_errors": 9,
+        "missing_location_with_actor_cue": 0,
+        "n": 32,
+        "original_location_missing": 22,
+        "retrieval_failures": 0
+      },
+      "episode": 1,
+      "file": "run-sparse32-1-cue_only-joint-a0.25-d0.9.json",
+      "truth": "truth-sparse32-1.json",
+      "view": "cue_only",
+      "visible": "visible-sparse32-1.json"
+    },
+    {
+      "arm": "joint-a0.25-d1.0",
+      "condition": "sparse32",
+      "counts": {
+        "actor_posterior_changed_steps": 22,
+        "checks": 47,
+        "first_position_errors": 10,
+        "missing_location_with_actor_cue": 0,
+        "n": 32,
+        "original_location_missing": 22,
+        "retrieval_failures": 0
+      },
+      "episode": 1,
+      "file": "run-sparse32-1-cue_only-joint-a0.25-d1.0.json",
+      "truth": "truth-sparse32-1.json",
+      "view": "cue_only",
+      "visible": "visible-sparse32-1.json"
+    },
+    {
+      "arm": "joint-a1.0-d0.9",
+      "condition": "sparse32",
+      "counts": {
+        "actor_posterior_changed_steps": 22,
+        "checks": 46,
+        "first_position_errors": 9,
+        "missing_location_with_actor_cue": 0,
+        "n": 32,
+        "original_location_missing": 22,
+        "retrieval_failures": 0
+      },
+      "episode": 1,
+      "file": "run-sparse32-1-cue_only-joint-a1.0-d0.9.json",
+      "truth": "truth-sparse32-1.json",
+      "view": "cue_only",
+      "visible": "visible-sparse32-1.json"
+    },
+    {
+      "arm": "joint-a1.0-d1.0",
+      "condition": "sparse32",
+      "counts": {
+        "actor_posterior_changed_steps": 22,
+        "checks": 47,
+        "first_position_errors": 10,
+        "missing_location_with_actor_cue": 0,
+        "n": 32,
+        "original_location_missing": 22,
+        "retrieval_failures": 0
+      },
+      "episode": 1,
+      "file": "run-sparse32-1-cue_only-joint-a1.0-d1.0.json",
+      "truth": "truth-sparse32-1.json",
+      "view": "cue_only",
+      "visible": "visible-sparse32-1.json"
+    },
+    {
+      "arm": "factor-a0.25-d0.9",
+      "condition": "sparse32",
+      "counts": {
+        "actor_posterior_changed_steps": 27,
+        "checks": 45,
+        "first_position_errors": 9,
+        "missing_location_with_actor_cue": 0,
+        "n": 32,
+        "original_location_missing": 22,
+        "retrieval_failures": 0
+      },
+      "episode": 1,
+      "file": "run-sparse32-1-cue_only-factor-a0.25-d0.9.json",
+      "truth": "truth-sparse32-1.json",
+      "view": "cue_only",
+      "visible": "visible-sparse32-1.json"
+    },
+    {
+      "arm": "factor-a0.25-d1.0",
+      "condition": "sparse32",
+      "counts": {
+        "actor_posterior_changed_steps": 27,
+        "checks": 46,
+        "first_position_errors": 10,
+        "missing_location_with_actor_cue": 0,
+        "n": 32,
+        "original_location_missing": 22,
+        "retrieval_failures": 0
+      },
+      "episode": 1,
+      "file": "run-sparse32-1-cue_only-factor-a0.25-d1.0.json",
+      "truth": "truth-sparse32-1.json",
+      "view": "cue_only",
+      "visible": "visible-sparse32-1.json"
+    },
+    {
+      "arm": "factor-a1.0-d0.9",
+      "condition": "sparse32",
+      "counts": {
+        "actor_posterior_changed_steps": 27,
+        "checks": 45,
+        "first_position_errors": 9,
+        "missing_location_with_actor_cue": 0,
+        "n": 32,
+        "original_location_missing": 22,
+        "retrieval_failures": 0
+      },
+      "episode": 1,
+      "file": "run-sparse32-1-cue_only-factor-a1.0-d0.9.json",
+      "truth": "truth-sparse32-1.json",
+      "view": "cue_only",
+      "visible": "visible-sparse32-1.json"
+    },
+    {
+      "arm": "factor-a1.0-d1.0",
+      "condition": "sparse32",
+      "counts": {
+        "actor_posterior_changed_steps": 27,
+        "checks": 46,
+        "first_position_errors": 10,
+        "missing_location_with_actor_cue": 0,
+        "n": 32,
+        "original_location_missing": 22,
+        "retrieval_failures": 0
+      },
+      "episode": 1,
+      "file": "run-sparse32-1-cue_only-factor-a1.0-d1.0.json",
+      "truth": "truth-sparse32-1.json",
+      "view": "cue_only",
+      "visible": "visible-sparse32-1.json"
+    },
+    {
+      "arm": "recent",
+      "condition": "sparse32",
+      "counts": {
+        "actor_posterior_changed_steps": 0,
+        "checks": 41,
+        "first_position_errors": 4,
+        "missing_location_with_actor_cue": 0,
+        "n": 32,
+        "original_location_missing": 19,
+        "retrieval_failures": 0
+      },
+      "episode": 2,
+      "file": "run-sparse32-2-native-recent.json",
+      "truth": "truth-sparse32-2.json",
+      "view": "native",
+      "visible": "visible-sparse32-2.json"
+    },
+    {
+      "arm": "markov-a0.25-d0.9",
+      "condition": "sparse32",
+      "counts": {
+        "actor_posterior_changed_steps": 0,
+        "checks": 44,
+        "first_position_errors": 6,
+        "missing_location_with_actor_cue": 0,
+        "n": 32,
+        "original_location_missing": 19,
+        "retrieval_failures": 0
+      },
+      "episode": 2,
+      "file": "run-sparse32-2-native-markov-a0.25-d0.9.json",
+      "truth": "truth-sparse32-2.json",
+      "view": "native",
+      "visible": "visible-sparse32-2.json"
+    },
+    {
+      "arm": "markov-a0.25-d1.0",
+      "condition": "sparse32",
+      "counts": {
+        "actor_posterior_changed_steps": 0,
+        "checks": 45,
+        "first_position_errors": 7,
+        "missing_location_with_actor_cue": 0,
+        "n": 32,
+        "original_location_missing": 19,
+        "retrieval_failures": 0
+      },
+      "episode": 2,
+      "file": "run-sparse32-2-native-markov-a0.25-d1.0.json",
+      "truth": "truth-sparse32-2.json",
+      "view": "native",
+      "visible": "visible-sparse32-2.json"
+    },
+    {
+      "arm": "markov-a1.0-d0.9",
+      "condition": "sparse32",
+      "counts": {
+        "actor_posterior_changed_steps": 0,
+        "checks": 44,
+        "first_position_errors": 6,
+        "missing_location_with_actor_cue": 0,
+        "n": 32,
+        "original_location_missing": 19,
+        "retrieval_failures": 0
+      },
+      "episode": 2,
+      "file": "run-sparse32-2-native-markov-a1.0-d0.9.json",
+      "truth": "truth-sparse32-2.json",
+      "view": "native",
+      "visible": "visible-sparse32-2.json"
+    },
+    {
+      "arm": "markov-a1.0-d1.0",
+      "condition": "sparse32",
+      "counts": {
+        "actor_posterior_changed_steps": 0,
+        "checks": 45,
+        "first_position_errors": 7,
+        "missing_location_with_actor_cue": 0,
+        "n": 32,
+        "original_location_missing": 19,
+        "retrieval_failures": 0
+      },
+      "episode": 2,
+      "file": "run-sparse32-2-native-markov-a1.0-d1.0.json",
+      "truth": "truth-sparse32-2.json",
+      "view": "native",
+      "visible": "visible-sparse32-2.json"
+    },
+    {
+      "arm": "joint-a0.25-d0.9",
+      "condition": "sparse32",
+      "counts": {
+        "actor_posterior_changed_steps": 15,
+        "checks": 44,
+        "first_position_errors": 6,
+        "missing_location_with_actor_cue": 0,
+        "n": 32,
+        "original_location_missing": 19,
+        "retrieval_failures": 0
+      },
+      "episode": 2,
+      "file": "run-sparse32-2-native-joint-a0.25-d0.9.json",
+      "truth": "truth-sparse32-2.json",
+      "view": "native",
+      "visible": "visible-sparse32-2.json"
+    },
+    {
+      "arm": "joint-a0.25-d1.0",
+      "condition": "sparse32",
+      "counts": {
+        "actor_posterior_changed_steps": 15,
+        "checks": 45,
+        "first_position_errors": 7,
+        "missing_location_with_actor_cue": 0,
+        "n": 32,
+        "original_location_missing": 19,
+        "retrieval_failures": 0
+      },
+      "episode": 2,
+      "file": "run-sparse32-2-native-joint-a0.25-d1.0.json",
+      "truth": "truth-sparse32-2.json",
+      "view": "native",
+      "visible": "visible-sparse32-2.json"
+    },
+    {
+      "arm": "joint-a1.0-d0.9",
+      "condition": "sparse32",
+      "counts": {
+        "actor_posterior_changed_steps": 15,
+        "checks": 44,
+        "first_position_errors": 6,
+        "missing_location_with_actor_cue": 0,
+        "n": 32,
+        "original_location_missing": 19,
+        "retrieval_failures": 0
+      },
+      "episode": 2,
+      "file": "run-sparse32-2-native-joint-a1.0-d0.9.json",
+      "truth": "truth-sparse32-2.json",
+      "view": "native",
+      "visible": "visible-sparse32-2.json"
+    },
+    {
+      "arm": "joint-a1.0-d1.0",
+      "condition": "sparse32",
+      "counts": {
+        "actor_posterior_changed_steps": 15,
+        "checks": 45,
+        "first_position_errors": 7,
+        "missing_location_with_actor_cue": 0,
+        "n": 32,
+        "original_location_missing": 19,
+        "retrieval_failures": 0
+      },
+      "episode": 2,
+      "file": "run-sparse32-2-native-joint-a1.0-d1.0.json",
+      "truth": "truth-sparse32-2.json",
+      "view": "native",
+      "visible": "visible-sparse32-2.json"
+    },
+    {
+      "arm": "factor-a0.25-d0.9",
+      "condition": "sparse32",
+      "counts": {
+        "actor_posterior_changed_steps": 19,
+        "checks": 44,
+        "first_position_errors": 6,
+        "missing_location_with_actor_cue": 0,
+        "n": 32,
+        "original_location_missing": 19,
+        "retrieval_failures": 0
+      },
+      "episode": 2,
+      "file": "run-sparse32-2-native-factor-a0.25-d0.9.json",
+      "truth": "truth-sparse32-2.json",
+      "view": "native",
+      "visible": "visible-sparse32-2.json"
+    },
+    {
+      "arm": "factor-a0.25-d1.0",
+      "condition": "sparse32",
+      "counts": {
+        "actor_posterior_changed_steps": 19,
+        "checks": 45,
+        "first_position_errors": 7,
+        "missing_location_with_actor_cue": 0,
+        "n": 32,
+        "original_location_missing": 19,
+        "retrieval_failures": 0
+      },
+      "episode": 2,
+      "file": "run-sparse32-2-native-factor-a0.25-d1.0.json",
+      "truth": "truth-sparse32-2.json",
+      "view": "native",
+      "visible": "visible-sparse32-2.json"
+    },
+    {
+      "arm": "factor-a1.0-d0.9",
+      "condition": "sparse32",
+      "counts": {
+        "actor_posterior_changed_steps": 19,
+        "checks": 44,
+        "first_position_errors": 6,
+        "missing_location_with_actor_cue": 0,
+        "n": 32,
+        "original_location_missing": 19,
+        "retrieval_failures": 0
+      },
+      "episode": 2,
+      "file": "run-sparse32-2-native-factor-a1.0-d0.9.json",
+      "truth": "truth-sparse32-2.json",
+      "view": "native",
+      "visible": "visible-sparse32-2.json"
+    },
+    {
+      "arm": "factor-a1.0-d1.0",
+      "condition": "sparse32",
+      "counts": {
+        "actor_posterior_changed_steps": 19,
+        "checks": 45,
+        "first_position_errors": 7,
+        "missing_location_with_actor_cue": 0,
+        "n": 32,
+        "original_location_missing": 19,
+        "retrieval_failures": 0
+      },
+      "episode": 2,
+      "file": "run-sparse32-2-native-factor-a1.0-d1.0.json",
+      "truth": "truth-sparse32-2.json",
+      "view": "native",
+      "visible": "visible-sparse32-2.json"
+    },
+    {
+      "arm": "recent",
+      "condition": "sparse32",
+      "counts": {
+        "actor_posterior_changed_steps": 0,
+        "checks": 46,
+        "first_position_errors": 7,
+        "missing_location_with_actor_cue": 0,
+        "n": 32,
+        "original_location_missing": 19,
+        "retrieval_failures": 0
+      },
+      "episode": 2,
+      "file": "run-sparse32-2-cue_only-recent.json",
+      "truth": "truth-sparse32-2.json",
+      "view": "cue_only",
+      "visible": "visible-sparse32-2.json"
+    },
+    {
+      "arm": "markov-a0.25-d0.9",
+      "condition": "sparse32",
+      "counts": {
+        "actor_posterior_changed_steps": 0,
+        "checks": 50,
+        "first_position_errors": 10,
+        "missing_location_with_actor_cue": 0,
+        "n": 32,
+        "original_location_missing": 19,
+        "retrieval_failures": 0
+      },
+      "episode": 2,
+      "file": "run-sparse32-2-cue_only-markov-a0.25-d0.9.json",
+      "truth": "truth-sparse32-2.json",
+      "view": "cue_only",
+      "visible": "visible-sparse32-2.json"
+    },
+    {
+      "arm": "markov-a0.25-d1.0",
+      "condition": "sparse32",
+      "counts": {
+        "actor_posterior_changed_steps": 0,
+        "checks": 51,
+        "first_position_errors": 11,
+        "missing_location_with_actor_cue": 0,
+        "n": 32,
+        "original_location_missing": 19,
+        "retrieval_failures": 0
+      },
+      "episode": 2,
+      "file": "run-sparse32-2-cue_only-markov-a0.25-d1.0.json",
+      "truth": "truth-sparse32-2.json",
+      "view": "cue_only",
+      "visible": "visible-sparse32-2.json"
+    },
+    {
+      "arm": "markov-a1.0-d0.9",
+      "condition": "sparse32",
+      "counts": {
+        "actor_posterior_changed_steps": 0,
+        "checks": 50,
+        "first_position_errors": 10,
+        "missing_location_with_actor_cue": 0,
+        "n": 32,
+        "original_location_missing": 19,
+        "retrieval_failures": 0
+      },
+      "episode": 2,
+      "file": "run-sparse32-2-cue_only-markov-a1.0-d0.9.json",
+      "truth": "truth-sparse32-2.json",
+      "view": "cue_only",
+      "visible": "visible-sparse32-2.json"
+    },
+    {
+      "arm": "markov-a1.0-d1.0",
+      "condition": "sparse32",
+      "counts": {
+        "actor_posterior_changed_steps": 0,
+        "checks": 51,
+        "first_position_errors": 11,
+        "missing_location_with_actor_cue": 0,
+        "n": 32,
+        "original_location_missing": 19,
+        "retrieval_failures": 0
+      },
+      "episode": 2,
+      "file": "run-sparse32-2-cue_only-markov-a1.0-d1.0.json",
+      "truth": "truth-sparse32-2.json",
+      "view": "cue_only",
+      "visible": "visible-sparse32-2.json"
+    },
+    {
+      "arm": "joint-a0.25-d0.9",
+      "condition": "sparse32",
+      "counts": {
+        "actor_posterior_changed_steps": 24,
+        "checks": 50,
+        "first_position_errors": 10,
+        "missing_location_with_actor_cue": 0,
+        "n": 32,
+        "original_location_missing": 19,
+        "retrieval_failures": 0
+      },
+      "episode": 2,
+      "file": "run-sparse32-2-cue_only-joint-a0.25-d0.9.json",
+      "truth": "truth-sparse32-2.json",
+      "view": "cue_only",
+      "visible": "visible-sparse32-2.json"
+    },
+    {
+      "arm": "joint-a0.25-d1.0",
+      "condition": "sparse32",
+      "counts": {
+        "actor_posterior_changed_steps": 24,
+        "checks": 51,
+        "first_position_errors": 11,
+        "missing_location_with_actor_cue": 0,
+        "n": 32,
+        "original_location_missing": 19,
+        "retrieval_failures": 0
+      },
+      "episode": 2,
+      "file": "run-sparse32-2-cue_only-joint-a0.25-d1.0.json",
+      "truth": "truth-sparse32-2.json",
+      "view": "cue_only",
+      "visible": "visible-sparse32-2.json"
+    },
+    {
+      "arm": "joint-a1.0-d0.9",
+      "condition": "sparse32",
+      "counts": {
+        "actor_posterior_changed_steps": 24,
+        "checks": 50,
+        "first_position_errors": 10,
+        "missing_location_with_actor_cue": 0,
+        "n": 32,
+        "original_location_missing": 19,
+        "retrieval_failures": 0
+      },
+      "episode": 2,
+      "file": "run-sparse32-2-cue_only-joint-a1.0-d0.9.json",
+      "truth": "truth-sparse32-2.json",
+      "view": "cue_only",
+      "visible": "visible-sparse32-2.json"
+    },
+    {
+      "arm": "joint-a1.0-d1.0",
+      "condition": "sparse32",
+      "counts": {
+        "actor_posterior_changed_steps": 24,
+        "checks": 51,
+        "first_position_errors": 11,
+        "missing_location_with_actor_cue": 0,
+        "n": 32,
+        "original_location_missing": 19,
+        "retrieval_failures": 0
+      },
+      "episode": 2,
+      "file": "run-sparse32-2-cue_only-joint-a1.0-d1.0.json",
+      "truth": "truth-sparse32-2.json",
+      "view": "cue_only",
+      "visible": "visible-sparse32-2.json"
+    },
+    {
+      "arm": "factor-a0.25-d0.9",
+      "condition": "sparse32",
+      "counts": {
+        "actor_posterior_changed_steps": 31,
+        "checks": 48,
+        "first_position_errors": 10,
+        "missing_location_with_actor_cue": 0,
+        "n": 32,
+        "original_location_missing": 19,
+        "retrieval_failures": 0
+      },
+      "episode": 2,
+      "file": "run-sparse32-2-cue_only-factor-a0.25-d0.9.json",
+      "truth": "truth-sparse32-2.json",
+      "view": "cue_only",
+      "visible": "visible-sparse32-2.json"
+    },
+    {
+      "arm": "factor-a0.25-d1.0",
+      "condition": "sparse32",
+      "counts": {
+        "actor_posterior_changed_steps": 31,
+        "checks": 49,
+        "first_position_errors": 11,
+        "missing_location_with_actor_cue": 0,
+        "n": 32,
+        "original_location_missing": 19,
+        "retrieval_failures": 0
+      },
+      "episode": 2,
+      "file": "run-sparse32-2-cue_only-factor-a0.25-d1.0.json",
+      "truth": "truth-sparse32-2.json",
+      "view": "cue_only",
+      "visible": "visible-sparse32-2.json"
+    },
+    {
+      "arm": "factor-a1.0-d0.9",
+      "condition": "sparse32",
+      "counts": {
+        "actor_posterior_changed_steps": 31,
+        "checks": 48,
+        "first_position_errors": 10,
+        "missing_location_with_actor_cue": 0,
+        "n": 32,
+        "original_location_missing": 19,
+        "retrieval_failures": 0
+      },
+      "episode": 2,
+      "file": "run-sparse32-2-cue_only-factor-a1.0-d0.9.json",
+      "truth": "truth-sparse32-2.json",
+      "view": "cue_only",
+      "visible": "visible-sparse32-2.json"
+    },
+    {
+      "arm": "factor-a1.0-d1.0",
+      "condition": "sparse32",
+      "counts": {
+        "actor_posterior_changed_steps": 31,
+        "checks": 49,
+        "first_position_errors": 11,
+        "missing_location_with_actor_cue": 0,
+        "n": 32,
+        "original_location_missing": 19,
+        "retrieval_failures": 0
+      },
+      "episode": 2,
+      "file": "run-sparse32-2-cue_only-factor-a1.0-d1.0.json",
+      "truth": "truth-sparse32-2.json",
+      "view": "cue_only",
+      "visible": "visible-sparse32-2.json"
+    },
+    {
+      "arm": "recent",
+      "condition": "long64",
+      "counts": {
+        "actor_posterior_changed_steps": 0,
+        "checks": 67,
+        "first_position_errors": 2,
+        "missing_location_with_actor_cue": 0,
+        "n": 64,
+        "original_location_missing": 21,
+        "retrieval_failures": 0
+      },
+      "episode": 0,
+      "file": "run-long64-0-native-recent.json",
+      "truth": "truth-long64-0.json",
+      "view": "native",
+      "visible": "visible-long64-0.json"
+    },
+    {
+      "arm": "markov-a0.25-d0.9",
+      "condition": "long64",
+      "counts": {
+        "actor_posterior_changed_steps": 0,
+        "checks": 67,
+        "first_position_errors": 2,
+        "missing_location_with_actor_cue": 0,
+        "n": 64,
+        "original_location_missing": 21,
+        "retrieval_failures": 0
+      },
+      "episode": 0,
+      "file": "run-long64-0-native-markov-a0.25-d0.9.json",
+      "truth": "truth-long64-0.json",
+      "view": "native",
+      "visible": "visible-long64-0.json"
+    },
+    {
+      "arm": "markov-a0.25-d1.0",
+      "condition": "long64",
+      "counts": {
+        "actor_posterior_changed_steps": 0,
+        "checks": 67,
+        "first_position_errors": 2,
+        "missing_location_with_actor_cue": 0,
+        "n": 64,
+        "original_location_missing": 21,
+        "retrieval_failures": 0
+      },
+      "episode": 0,
+      "file": "run-long64-0-native-markov-a0.25-d1.0.json",
+      "truth": "truth-long64-0.json",
+      "view": "native",
+      "visible": "visible-long64-0.json"
+    },
+    {
+      "arm": "markov-a1.0-d0.9",
+      "condition": "long64",
+      "counts": {
+        "actor_posterior_changed_steps": 0,
+        "checks": 67,
+        "first_position_errors": 2,
+        "missing_location_with_actor_cue": 0,
+        "n": 64,
+        "original_location_missing": 21,
+        "retrieval_failures": 0
+      },
+      "episode": 0,
+      "file": "run-long64-0-native-markov-a1.0-d0.9.json",
+      "truth": "truth-long64-0.json",
+      "view": "native",
+      "visible": "visible-long64-0.json"
+    },
+    {
+      "arm": "markov-a1.0-d1.0",
+      "condition": "long64",
+      "counts": {
+        "actor_posterior_changed_steps": 0,
+        "checks": 67,
+        "first_position_errors": 2,
+        "missing_location_with_actor_cue": 0,
+        "n": 64,
+        "original_location_missing": 21,
+        "retrieval_failures": 0
+      },
+      "episode": 0,
+      "file": "run-long64-0-native-markov-a1.0-d1.0.json",
+      "truth": "truth-long64-0.json",
+      "view": "native",
+      "visible": "visible-long64-0.json"
+    },
+    {
+      "arm": "joint-a0.25-d0.9",
+      "condition": "long64",
+      "counts": {
+        "actor_posterior_changed_steps": 21,
+        "checks": 67,
+        "first_position_errors": 2,
+        "missing_location_with_actor_cue": 0,
+        "n": 64,
+        "original_location_missing": 21,
+        "retrieval_failures": 0
+      },
+      "episode": 0,
+      "file": "run-long64-0-native-joint-a0.25-d0.9.json",
+      "truth": "truth-long64-0.json",
+      "view": "native",
+      "visible": "visible-long64-0.json"
+    },
+    {
+      "arm": "joint-a0.25-d1.0",
+      "condition": "long64",
+      "counts": {
+        "actor_posterior_changed_steps": 21,
+        "checks": 67,
+        "first_position_errors": 2,
+        "missing_location_with_actor_cue": 0,
+        "n": 64,
+        "original_location_missing": 21,
+        "retrieval_failures": 0
+      },
+      "episode": 0,
+      "file": "run-long64-0-native-joint-a0.25-d1.0.json",
+      "truth": "truth-long64-0.json",
+      "view": "native",
+      "visible": "visible-long64-0.json"
+    },
+    {
+      "arm": "joint-a1.0-d0.9",
+      "condition": "long64",
+      "counts": {
+        "actor_posterior_changed_steps": 21,
+        "checks": 67,
+        "first_position_errors": 2,
+        "missing_location_with_actor_cue": 0,
+        "n": 64,
+        "original_location_missing": 21,
+        "retrieval_failures": 0
+      },
+      "episode": 0,
+      "file": "run-long64-0-native-joint-a1.0-d0.9.json",
+      "truth": "truth-long64-0.json",
+      "view": "native",
+      "visible": "visible-long64-0.json"
+    },
+    {
+      "arm": "joint-a1.0-d1.0",
+      "condition": "long64",
+      "counts": {
+        "actor_posterior_changed_steps": 21,
+        "checks": 67,
+        "first_position_errors": 2,
+        "missing_location_with_actor_cue": 0,
+        "n": 64,
+        "original_location_missing": 21,
+        "retrieval_failures": 0
+      },
+      "episode": 0,
+      "file": "run-long64-0-native-joint-a1.0-d1.0.json",
+      "truth": "truth-long64-0.json",
+      "view": "native",
+      "visible": "visible-long64-0.json"
+    },
+    {
+      "arm": "factor-a0.25-d0.9",
+      "condition": "long64",
+      "counts": {
+        "actor_posterior_changed_steps": 21,
+        "checks": 67,
+        "first_position_errors": 2,
+        "missing_location_with_actor_cue": 0,
+        "n": 64,
+        "original_location_missing": 21,
+        "retrieval_failures": 0
+      },
+      "episode": 0,
+      "file": "run-long64-0-native-factor-a0.25-d0.9.json",
+      "truth": "truth-long64-0.json",
+      "view": "native",
+      "visible": "visible-long64-0.json"
+    },
+    {
+      "arm": "factor-a0.25-d1.0",
+      "condition": "long64",
+      "counts": {
+        "actor_posterior_changed_steps": 21,
+        "checks": 67,
+        "first_position_errors": 2,
+        "missing_location_with_actor_cue": 0,
+        "n": 64,
+        "original_location_missing": 21,
+        "retrieval_failures": 0
+      },
+      "episode": 0,
+      "file": "run-long64-0-native-factor-a0.25-d1.0.json",
+      "truth": "truth-long64-0.json",
+      "view": "native",
+      "visible": "visible-long64-0.json"
+    },
+    {
+      "arm": "factor-a1.0-d0.9",
+      "condition": "long64",
+      "counts": {
+        "actor_posterior_changed_steps": 21,
+        "checks": 67,
+        "first_position_errors": 2,
+        "missing_location_with_actor_cue": 0,
+        "n": 64,
+        "original_location_missing": 21,
+        "retrieval_failures": 0
+      },
+      "episode": 0,
+      "file": "run-long64-0-native-factor-a1.0-d0.9.json",
+      "truth": "truth-long64-0.json",
+      "view": "native",
+      "visible": "visible-long64-0.json"
+    },
+    {
+      "arm": "factor-a1.0-d1.0",
+      "condition": "long64",
+      "counts": {
+        "actor_posterior_changed_steps": 21,
+        "checks": 67,
+        "first_position_errors": 2,
+        "missing_location_with_actor_cue": 0,
+        "n": 64,
+        "original_location_missing": 21,
+        "retrieval_failures": 0
+      },
+      "episode": 0,
+      "file": "run-long64-0-native-factor-a1.0-d1.0.json",
+      "truth": "truth-long64-0.json",
+      "view": "native",
+      "visible": "visible-long64-0.json"
+    },
+    {
+      "arm": "recent",
+      "condition": "long64",
+      "counts": {
+        "actor_posterior_changed_steps": 0,
+        "checks": 79,
+        "first_position_errors": 9,
+        "missing_location_with_actor_cue": 0,
+        "n": 64,
+        "original_location_missing": 21,
+        "retrieval_failures": 0
+      },
+      "episode": 0,
+      "file": "run-long64-0-cue_only-recent.json",
+      "truth": "truth-long64-0.json",
+      "view": "cue_only",
+      "visible": "visible-long64-0.json"
+    },
+    {
+      "arm": "markov-a0.25-d0.9",
+      "condition": "long64",
+      "counts": {
+        "actor_posterior_changed_steps": 0,
+        "checks": 82,
+        "first_position_errors": 11,
+        "missing_location_with_actor_cue": 0,
+        "n": 64,
+        "original_location_missing": 21,
+        "retrieval_failures": 0
+      },
+      "episode": 0,
+      "file": "run-long64-0-cue_only-markov-a0.25-d0.9.json",
+      "truth": "truth-long64-0.json",
+      "view": "cue_only",
+      "visible": "visible-long64-0.json"
+    },
+    {
+      "arm": "markov-a0.25-d1.0",
+      "condition": "long64",
+      "counts": {
+        "actor_posterior_changed_steps": 0,
+        "checks": 83,
+        "first_position_errors": 12,
+        "missing_location_with_actor_cue": 0,
+        "n": 64,
+        "original_location_missing": 21,
+        "retrieval_failures": 0
+      },
+      "episode": 0,
+      "file": "run-long64-0-cue_only-markov-a0.25-d1.0.json",
+      "truth": "truth-long64-0.json",
+      "view": "cue_only",
+      "visible": "visible-long64-0.json"
+    },
+    {
+      "arm": "markov-a1.0-d0.9",
+      "condition": "long64",
+      "counts": {
+        "actor_posterior_changed_steps": 0,
+        "checks": 82,
+        "first_position_errors": 11,
+        "missing_location_with_actor_cue": 0,
+        "n": 64,
+        "original_location_missing": 21,
+        "retrieval_failures": 0
+      },
+      "episode": 0,
+      "file": "run-long64-0-cue_only-markov-a1.0-d0.9.json",
+      "truth": "truth-long64-0.json",
+      "view": "cue_only",
+      "visible": "visible-long64-0.json"
+    },
+    {
+      "arm": "markov-a1.0-d1.0",
+      "condition": "long64",
+      "counts": {
+        "actor_posterior_changed_steps": 0,
+        "checks": 83,
+        "first_position_errors": 12,
+        "missing_location_with_actor_cue": 0,
+        "n": 64,
+        "original_location_missing": 21,
+        "retrieval_failures": 0
+      },
+      "episode": 0,
+      "file": "run-long64-0-cue_only-markov-a1.0-d1.0.json",
+      "truth": "truth-long64-0.json",
+      "view": "cue_only",
+      "visible": "visible-long64-0.json"
+    },
+    {
+      "arm": "joint-a0.25-d0.9",
+      "condition": "long64",
+      "counts": {
+        "actor_posterior_changed_steps": 60,
+        "checks": 82,
+        "first_position_errors": 11,
+        "missing_location_with_actor_cue": 0,
+        "n": 64,
+        "original_location_missing": 21,
+        "retrieval_failures": 0
+      },
+      "episode": 0,
+      "file": "run-long64-0-cue_only-joint-a0.25-d0.9.json",
+      "truth": "truth-long64-0.json",
+      "view": "cue_only",
+      "visible": "visible-long64-0.json"
+    },
+    {
+      "arm": "joint-a0.25-d1.0",
+      "condition": "long64",
+      "counts": {
+        "actor_posterior_changed_steps": 60,
+        "checks": 82,
+        "first_position_errors": 11,
+        "missing_location_with_actor_cue": 0,
+        "n": 64,
+        "original_location_missing": 21,
+        "retrieval_failures": 0
+      },
+      "episode": 0,
+      "file": "run-long64-0-cue_only-joint-a0.25-d1.0.json",
+      "truth": "truth-long64-0.json",
+      "view": "cue_only",
+      "visible": "visible-long64-0.json"
+    },
+    {
+      "arm": "joint-a1.0-d0.9",
+      "condition": "long64",
+      "counts": {
+        "actor_posterior_changed_steps": 60,
+        "checks": 82,
+        "first_position_errors": 11,
+        "missing_location_with_actor_cue": 0,
+        "n": 64,
+        "original_location_missing": 21,
+        "retrieval_failures": 0
+      },
+      "episode": 0,
+      "file": "run-long64-0-cue_only-joint-a1.0-d0.9.json",
+      "truth": "truth-long64-0.json",
+      "view": "cue_only",
+      "visible": "visible-long64-0.json"
+    },
+    {
+      "arm": "joint-a1.0-d1.0",
+      "condition": "long64",
+      "counts": {
+        "actor_posterior_changed_steps": 60,
+        "checks": 82,
+        "first_position_errors": 11,
+        "missing_location_with_actor_cue": 0,
+        "n": 64,
+        "original_location_missing": 21,
+        "retrieval_failures": 0
+      },
+      "episode": 0,
+      "file": "run-long64-0-cue_only-joint-a1.0-d1.0.json",
+      "truth": "truth-long64-0.json",
+      "view": "cue_only",
+      "visible": "visible-long64-0.json"
+    },
+    {
+      "arm": "factor-a0.25-d0.9",
+      "condition": "long64",
+      "counts": {
+        "actor_posterior_changed_steps": 63,
+        "checks": 82,
+        "first_position_errors": 11,
+        "missing_location_with_actor_cue": 0,
+        "n": 64,
+        "original_location_missing": 21,
+        "retrieval_failures": 0
+      },
+      "episode": 0,
+      "file": "run-long64-0-cue_only-factor-a0.25-d0.9.json",
+      "truth": "truth-long64-0.json",
+      "view": "cue_only",
+      "visible": "visible-long64-0.json"
+    },
+    {
+      "arm": "factor-a0.25-d1.0",
+      "condition": "long64",
+      "counts": {
+        "actor_posterior_changed_steps": 63,
+        "checks": 82,
+        "first_position_errors": 11,
+        "missing_location_with_actor_cue": 0,
+        "n": 64,
+        "original_location_missing": 21,
+        "retrieval_failures": 0
+      },
+      "episode": 0,
+      "file": "run-long64-0-cue_only-factor-a0.25-d1.0.json",
+      "truth": "truth-long64-0.json",
+      "view": "cue_only",
+      "visible": "visible-long64-0.json"
+    },
+    {
+      "arm": "factor-a1.0-d0.9",
+      "condition": "long64",
+      "counts": {
+        "actor_posterior_changed_steps": 63,
+        "checks": 82,
+        "first_position_errors": 11,
+        "missing_location_with_actor_cue": 0,
+        "n": 64,
+        "original_location_missing": 21,
+        "retrieval_failures": 0
+      },
+      "episode": 0,
+      "file": "run-long64-0-cue_only-factor-a1.0-d0.9.json",
+      "truth": "truth-long64-0.json",
+      "view": "cue_only",
+      "visible": "visible-long64-0.json"
+    },
+    {
+      "arm": "factor-a1.0-d1.0",
+      "condition": "long64",
+      "counts": {
+        "actor_posterior_changed_steps": 63,
+        "checks": 82,
+        "first_position_errors": 11,
+        "missing_location_with_actor_cue": 0,
+        "n": 64,
+        "original_location_missing": 21,
+        "retrieval_failures": 0
+      },
+      "episode": 0,
+      "file": "run-long64-0-cue_only-factor-a1.0-d1.0.json",
+      "truth": "truth-long64-0.json",
+      "view": "cue_only",
+      "visible": "visible-long64-0.json"
+    },
+    {
+      "arm": "recent",
+      "condition": "long64",
+      "counts": {
+        "actor_posterior_changed_steps": 0,
+        "checks": 72,
+        "first_position_errors": 3,
+        "missing_location_with_actor_cue": 0,
+        "n": 64,
+        "original_location_missing": 19,
+        "retrieval_failures": 0
+      },
+      "episode": 1,
+      "file": "run-long64-1-native-recent.json",
+      "truth": "truth-long64-1.json",
+      "view": "native",
+      "visible": "visible-long64-1.json"
+    },
+    {
+      "arm": "markov-a0.25-d0.9",
+      "condition": "long64",
+      "counts": {
+        "actor_posterior_changed_steps": 0,
+        "checks": 77,
+        "first_position_errors": 6,
+        "missing_location_with_actor_cue": 0,
+        "n": 64,
+        "original_location_missing": 19,
+        "retrieval_failures": 0
+      },
+      "episode": 1,
+      "file": "run-long64-1-native-markov-a0.25-d0.9.json",
+      "truth": "truth-long64-1.json",
+      "view": "native",
+      "visible": "visible-long64-1.json"
+    },
+    {
+      "arm": "markov-a0.25-d1.0",
+      "condition": "long64",
+      "counts": {
+        "actor_posterior_changed_steps": 0,
+        "checks": 77,
+        "first_position_errors": 6,
+        "missing_location_with_actor_cue": 0,
+        "n": 64,
+        "original_location_missing": 19,
+        "retrieval_failures": 0
+      },
+      "episode": 1,
+      "file": "run-long64-1-native-markov-a0.25-d1.0.json",
+      "truth": "truth-long64-1.json",
+      "view": "native",
+      "visible": "visible-long64-1.json"
+    },
+    {
+      "arm": "markov-a1.0-d0.9",
+      "condition": "long64",
+      "counts": {
+        "actor_posterior_changed_steps": 0,
+        "checks": 77,
+        "first_position_errors": 6,
+        "missing_location_with_actor_cue": 0,
+        "n": 64,
+        "original_location_missing": 19,
+        "retrieval_failures": 0
+      },
+      "episode": 1,
+      "file": "run-long64-1-native-markov-a1.0-d0.9.json",
+      "truth": "truth-long64-1.json",
+      "view": "native",
+      "visible": "visible-long64-1.json"
+    },
+    {
+      "arm": "markov-a1.0-d1.0",
+      "condition": "long64",
+      "counts": {
+        "actor_posterior_changed_steps": 0,
+        "checks": 77,
+        "first_position_errors": 6,
+        "missing_location_with_actor_cue": 0,
+        "n": 64,
+        "original_location_missing": 19,
+        "retrieval_failures": 0
+      },
+      "episode": 1,
+      "file": "run-long64-1-native-markov-a1.0-d1.0.json",
+      "truth": "truth-long64-1.json",
+      "view": "native",
+      "visible": "visible-long64-1.json"
+    },
+    {
+      "arm": "joint-a0.25-d0.9",
+      "condition": "long64",
+      "counts": {
+        "actor_posterior_changed_steps": 15,
+        "checks": 77,
+        "first_position_errors": 6,
+        "missing_location_with_actor_cue": 0,
+        "n": 64,
+        "original_location_missing": 19,
+        "retrieval_failures": 0
+      },
+      "episode": 1,
+      "file": "run-long64-1-native-joint-a0.25-d0.9.json",
+      "truth": "truth-long64-1.json",
+      "view": "native",
+      "visible": "visible-long64-1.json"
+    },
+    {
+      "arm": "joint-a0.25-d1.0",
+      "condition": "long64",
+      "counts": {
+        "actor_posterior_changed_steps": 15,
+        "checks": 77,
+        "first_position_errors": 6,
+        "missing_location_with_actor_cue": 0,
+        "n": 64,
+        "original_location_missing": 19,
+        "retrieval_failures": 0
+      },
+      "episode": 1,
+      "file": "run-long64-1-native-joint-a0.25-d1.0.json",
+      "truth": "truth-long64-1.json",
+      "view": "native",
+      "visible": "visible-long64-1.json"
+    },
+    {
+      "arm": "joint-a1.0-d0.9",
+      "condition": "long64",
+      "counts": {
+        "actor_posterior_changed_steps": 15,
+        "checks": 77,
+        "first_position_errors": 6,
+        "missing_location_with_actor_cue": 0,
+        "n": 64,
+        "original_location_missing": 19,
+        "retrieval_failures": 0
+      },
+      "episode": 1,
+      "file": "run-long64-1-native-joint-a1.0-d0.9.json",
+      "truth": "truth-long64-1.json",
+      "view": "native",
+      "visible": "visible-long64-1.json"
+    },
+    {
+      "arm": "joint-a1.0-d1.0",
+      "condition": "long64",
+      "counts": {
+        "actor_posterior_changed_steps": 15,
+        "checks": 77,
+        "first_position_errors": 6,
+        "missing_location_with_actor_cue": 0,
+        "n": 64,
+        "original_location_missing": 19,
+        "retrieval_failures": 0
+      },
+      "episode": 1,
+      "file": "run-long64-1-native-joint-a1.0-d1.0.json",
+      "truth": "truth-long64-1.json",
+      "view": "native",
+      "visible": "visible-long64-1.json"
+    },
+    {
+      "arm": "factor-a0.25-d0.9",
+      "condition": "long64",
+      "counts": {
+        "actor_posterior_changed_steps": 17,
+        "checks": 77,
+        "first_position_errors": 6,
+        "missing_location_with_actor_cue": 0,
+        "n": 64,
+        "original_location_missing": 19,
+        "retrieval_failures": 0
+      },
+      "episode": 1,
+      "file": "run-long64-1-native-factor-a0.25-d0.9.json",
+      "truth": "truth-long64-1.json",
+      "view": "native",
+      "visible": "visible-long64-1.json"
+    },
+    {
+      "arm": "factor-a0.25-d1.0",
+      "condition": "long64",
+      "counts": {
+        "actor_posterior_changed_steps": 17,
+        "checks": 77,
+        "first_position_errors": 6,
+        "missing_location_with_actor_cue": 0,
+        "n": 64,
+        "original_location_missing": 19,
+        "retrieval_failures": 0
+      },
+      "episode": 1,
+      "file": "run-long64-1-native-factor-a0.25-d1.0.json",
+      "truth": "truth-long64-1.json",
+      "view": "native",
+      "visible": "visible-long64-1.json"
+    },
+    {
+      "arm": "factor-a1.0-d0.9",
+      "condition": "long64",
+      "counts": {
+        "actor_posterior_changed_steps": 17,
+        "checks": 77,
+        "first_position_errors": 6,
+        "missing_location_with_actor_cue": 0,
+        "n": 64,
+        "original_location_missing": 19,
+        "retrieval_failures": 0
+      },
+      "episode": 1,
+      "file": "run-long64-1-native-factor-a1.0-d0.9.json",
+      "truth": "truth-long64-1.json",
+      "view": "native",
+      "visible": "visible-long64-1.json"
+    },
+    {
+      "arm": "factor-a1.0-d1.0",
+      "condition": "long64",
+      "counts": {
+        "actor_posterior_changed_steps": 17,
+        "checks": 77,
+        "first_position_errors": 6,
+        "missing_location_with_actor_cue": 0,
+        "n": 64,
+        "original_location_missing": 19,
+        "retrieval_failures": 0
+      },
+      "episode": 1,
+      "file": "run-long64-1-native-factor-a1.0-d1.0.json",
+      "truth": "truth-long64-1.json",
+      "view": "native",
+      "visible": "visible-long64-1.json"
+    },
+    {
+      "arm": "recent",
+      "condition": "long64",
+      "counts": {
+        "actor_posterior_changed_steps": 0,
+        "checks": 81,
+        "first_position_errors": 8,
+        "missing_location_with_actor_cue": 0,
+        "n": 64,
+        "original_location_missing": 19,
+        "retrieval_failures": 0
+      },
+      "episode": 1,
+      "file": "run-long64-1-cue_only-recent.json",
+      "truth": "truth-long64-1.json",
+      "view": "cue_only",
+      "visible": "visible-long64-1.json"
+    },
+    {
+      "arm": "markov-a0.25-d0.9",
+      "condition": "long64",
+      "counts": {
+        "actor_posterior_changed_steps": 0,
+        "checks": 86,
+        "first_position_errors": 10,
+        "missing_location_with_actor_cue": 0,
+        "n": 64,
+        "original_location_missing": 19,
+        "retrieval_failures": 0
+      },
+      "episode": 1,
+      "file": "run-long64-1-cue_only-markov-a0.25-d0.9.json",
+      "truth": "truth-long64-1.json",
+      "view": "cue_only",
+      "visible": "visible-long64-1.json"
+    },
+    {
+      "arm": "markov-a0.25-d1.0",
+      "condition": "long64",
+      "counts": {
+        "actor_posterior_changed_steps": 0,
+        "checks": 87,
+        "first_position_errors": 11,
+        "missing_location_with_actor_cue": 0,
+        "n": 64,
+        "original_location_missing": 19,
+        "retrieval_failures": 0
+      },
+      "episode": 1,
+      "file": "run-long64-1-cue_only-markov-a0.25-d1.0.json",
+      "truth": "truth-long64-1.json",
+      "view": "cue_only",
+      "visible": "visible-long64-1.json"
+    },
+    {
+      "arm": "markov-a1.0-d0.9",
+      "condition": "long64",
+      "counts": {
+        "actor_posterior_changed_steps": 0,
+        "checks": 86,
+        "first_position_errors": 10,
+        "missing_location_with_actor_cue": 0,
+        "n": 64,
+        "original_location_missing": 19,
+        "retrieval_failures": 0
+      },
+      "episode": 1,
+      "file": "run-long64-1-cue_only-markov-a1.0-d0.9.json",
+      "truth": "truth-long64-1.json",
+      "view": "cue_only",
+      "visible": "visible-long64-1.json"
+    },
+    {
+      "arm": "markov-a1.0-d1.0",
+      "condition": "long64",
+      "counts": {
+        "actor_posterior_changed_steps": 0,
+        "checks": 87,
+        "first_position_errors": 11,
+        "missing_location_with_actor_cue": 0,
+        "n": 64,
+        "original_location_missing": 19,
+        "retrieval_failures": 0
+      },
+      "episode": 1,
+      "file": "run-long64-1-cue_only-markov-a1.0-d1.0.json",
+      "truth": "truth-long64-1.json",
+      "view": "cue_only",
+      "visible": "visible-long64-1.json"
+    },
+    {
+      "arm": "joint-a0.25-d0.9",
+      "condition": "long64",
+      "counts": {
+        "actor_posterior_changed_steps": 57,
+        "checks": 86,
+        "first_position_errors": 10,
+        "missing_location_with_actor_cue": 0,
+        "n": 64,
+        "original_location_missing": 19,
+        "retrieval_failures": 0
+      },
+      "episode": 1,
+      "file": "run-long64-1-cue_only-joint-a0.25-d0.9.json",
+      "truth": "truth-long64-1.json",
+      "view": "cue_only",
+      "visible": "visible-long64-1.json"
+    },
+    {
+      "arm": "joint-a0.25-d1.0",
+      "condition": "long64",
+      "counts": {
+        "actor_posterior_changed_steps": 57,
+        "checks": 86,
+        "first_position_errors": 10,
+        "missing_location_with_actor_cue": 0,
+        "n": 64,
+        "original_location_missing": 19,
+        "retrieval_failures": 0
+      },
+      "episode": 1,
+      "file": "run-long64-1-cue_only-joint-a0.25-d1.0.json",
+      "truth": "truth-long64-1.json",
+      "view": "cue_only",
+      "visible": "visible-long64-1.json"
+    },
+    {
+      "arm": "joint-a1.0-d0.9",
+      "condition": "long64",
+      "counts": {
+        "actor_posterior_changed_steps": 57,
+        "checks": 86,
+        "first_position_errors": 10,
+        "missing_location_with_actor_cue": 0,
+        "n": 64,
+        "original_location_missing": 19,
+        "retrieval_failures": 0
+      },
+      "episode": 1,
+      "file": "run-long64-1-cue_only-joint-a1.0-d0.9.json",
+      "truth": "truth-long64-1.json",
+      "view": "cue_only",
+      "visible": "visible-long64-1.json"
+    },
+    {
+      "arm": "joint-a1.0-d1.0",
+      "condition": "long64",
+      "counts": {
+        "actor_posterior_changed_steps": 57,
+        "checks": 86,
+        "first_position_errors": 10,
+        "missing_location_with_actor_cue": 0,
+        "n": 64,
+        "original_location_missing": 19,
+        "retrieval_failures": 0
+      },
+      "episode": 1,
+      "file": "run-long64-1-cue_only-joint-a1.0-d1.0.json",
+      "truth": "truth-long64-1.json",
+      "view": "cue_only",
+      "visible": "visible-long64-1.json"
+    },
+    {
+      "arm": "factor-a0.25-d0.9",
+      "condition": "long64",
+      "counts": {
+        "actor_posterior_changed_steps": 61,
+        "checks": 84,
+        "first_position_errors": 10,
+        "missing_location_with_actor_cue": 0,
+        "n": 64,
+        "original_location_missing": 19,
+        "retrieval_failures": 0
+      },
+      "episode": 1,
+      "file": "run-long64-1-cue_only-factor-a0.25-d0.9.json",
+      "truth": "truth-long64-1.json",
+      "view": "cue_only",
+      "visible": "visible-long64-1.json"
+    },
+    {
+      "arm": "factor-a0.25-d1.0",
+      "condition": "long64",
+      "counts": {
+        "actor_posterior_changed_steps": 61,
+        "checks": 84,
+        "first_position_errors": 10,
+        "missing_location_with_actor_cue": 0,
+        "n": 64,
+        "original_location_missing": 19,
+        "retrieval_failures": 0
+      },
+      "episode": 1,
+      "file": "run-long64-1-cue_only-factor-a0.25-d1.0.json",
+      "truth": "truth-long64-1.json",
+      "view": "cue_only",
+      "visible": "visible-long64-1.json"
+    },
+    {
+      "arm": "factor-a1.0-d0.9",
+      "condition": "long64",
+      "counts": {
+        "actor_posterior_changed_steps": 61,
+        "checks": 84,
+        "first_position_errors": 10,
+        "missing_location_with_actor_cue": 0,
+        "n": 64,
+        "original_location_missing": 19,
+        "retrieval_failures": 0
+      },
+      "episode": 1,
+      "file": "run-long64-1-cue_only-factor-a1.0-d0.9.json",
+      "truth": "truth-long64-1.json",
+      "view": "cue_only",
+      "visible": "visible-long64-1.json"
+    },
+    {
+      "arm": "factor-a1.0-d1.0",
+      "condition": "long64",
+      "counts": {
+        "actor_posterior_changed_steps": 61,
+        "checks": 84,
+        "first_position_errors": 10,
+        "missing_location_with_actor_cue": 0,
+        "n": 64,
+        "original_location_missing": 19,
+        "retrieval_failures": 0
+      },
+      "episode": 1,
+      "file": "run-long64-1-cue_only-factor-a1.0-d1.0.json",
+      "truth": "truth-long64-1.json",
+      "view": "cue_only",
+      "visible": "visible-long64-1.json"
+    },
+    {
+      "arm": "recent",
+      "condition": "long64",
+      "counts": {
+        "actor_posterior_changed_steps": 0,
+        "checks": 69,
+        "first_position_errors": 3,
+        "missing_location_with_actor_cue": 0,
+        "n": 64,
+        "original_location_missing": 15,
+        "retrieval_failures": 0
+      },
+      "episode": 2,
+      "file": "run-long64-2-native-recent.json",
+      "truth": "truth-long64-2.json",
+      "view": "native",
+      "visible": "visible-long64-2.json"
+    },
+    {
+      "arm": "markov-a0.25-d0.9",
+      "condition": "long64",
+      "counts": {
+        "actor_posterior_changed_steps": 0,
+        "checks": 70,
+        "first_position_errors": 4,
+        "missing_location_with_actor_cue": 0,
+        "n": 64,
+        "original_location_missing": 15,
+        "retrieval_failures": 0
+      },
+      "episode": 2,
+      "file": "run-long64-2-native-markov-a0.25-d0.9.json",
+      "truth": "truth-long64-2.json",
+      "view": "native",
+      "visible": "visible-long64-2.json"
+    },
+    {
+      "arm": "markov-a0.25-d1.0",
+      "condition": "long64",
+      "counts": {
+        "actor_posterior_changed_steps": 0,
+        "checks": 70,
+        "first_position_errors": 4,
+        "missing_location_with_actor_cue": 0,
+        "n": 64,
+        "original_location_missing": 15,
+        "retrieval_failures": 0
+      },
+      "episode": 2,
+      "file": "run-long64-2-native-markov-a0.25-d1.0.json",
+      "truth": "truth-long64-2.json",
+      "view": "native",
+      "visible": "visible-long64-2.json"
+    },
+    {
+      "arm": "markov-a1.0-d0.9",
+      "condition": "long64",
+      "counts": {
+        "actor_posterior_changed_steps": 0,
+        "checks": 70,
+        "first_position_errors": 4,
+        "missing_location_with_actor_cue": 0,
+        "n": 64,
+        "original_location_missing": 15,
+        "retrieval_failures": 0
+      },
+      "episode": 2,
+      "file": "run-long64-2-native-markov-a1.0-d0.9.json",
+      "truth": "truth-long64-2.json",
+      "view": "native",
+      "visible": "visible-long64-2.json"
+    },
+    {
+      "arm": "markov-a1.0-d1.0",
+      "condition": "long64",
+      "counts": {
+        "actor_posterior_changed_steps": 0,
+        "checks": 70,
+        "first_position_errors": 4,
+        "missing_location_with_actor_cue": 0,
+        "n": 64,
+        "original_location_missing": 15,
+        "retrieval_failures": 0
+      },
+      "episode": 2,
+      "file": "run-long64-2-native-markov-a1.0-d1.0.json",
+      "truth": "truth-long64-2.json",
+      "view": "native",
+      "visible": "visible-long64-2.json"
+    },
+    {
+      "arm": "joint-a0.25-d0.9",
+      "condition": "long64",
+      "counts": {
+        "actor_posterior_changed_steps": 14,
+        "checks": 70,
+        "first_position_errors": 4,
+        "missing_location_with_actor_cue": 0,
+        "n": 64,
+        "original_location_missing": 15,
+        "retrieval_failures": 0
+      },
+      "episode": 2,
+      "file": "run-long64-2-native-joint-a0.25-d0.9.json",
+      "truth": "truth-long64-2.json",
+      "view": "native",
+      "visible": "visible-long64-2.json"
+    },
+    {
+      "arm": "joint-a0.25-d1.0",
+      "condition": "long64",
+      "counts": {
+        "actor_posterior_changed_steps": 14,
+        "checks": 70,
+        "first_position_errors": 4,
+        "missing_location_with_actor_cue": 0,
+        "n": 64,
+        "original_location_missing": 15,
+        "retrieval_failures": 0
+      },
+      "episode": 2,
+      "file": "run-long64-2-native-joint-a0.25-d1.0.json",
+      "truth": "truth-long64-2.json",
+      "view": "native",
+      "visible": "visible-long64-2.json"
+    },
+    {
+      "arm": "joint-a1.0-d0.9",
+      "condition": "long64",
+      "counts": {
+        "actor_posterior_changed_steps": 14,
+        "checks": 70,
+        "first_position_errors": 4,
+        "missing_location_with_actor_cue": 0,
+        "n": 64,
+        "original_location_missing": 15,
+        "retrieval_failures": 0
+      },
+      "episode": 2,
+      "file": "run-long64-2-native-joint-a1.0-d0.9.json",
+      "truth": "truth-long64-2.json",
+      "view": "native",
+      "visible": "visible-long64-2.json"
+    },
+    {
+      "arm": "joint-a1.0-d1.0",
+      "condition": "long64",
+      "counts": {
+        "actor_posterior_changed_steps": 14,
+        "checks": 70,
+        "first_position_errors": 4,
+        "missing_location_with_actor_cue": 0,
+        "n": 64,
+        "original_location_missing": 15,
+        "retrieval_failures": 0
+      },
+      "episode": 2,
+      "file": "run-long64-2-native-joint-a1.0-d1.0.json",
+      "truth": "truth-long64-2.json",
+      "view": "native",
+      "visible": "visible-long64-2.json"
+    },
+    {
+      "arm": "factor-a0.25-d0.9",
+      "condition": "long64",
+      "counts": {
+        "actor_posterior_changed_steps": 15,
+        "checks": 70,
+        "first_position_errors": 4,
+        "missing_location_with_actor_cue": 0,
+        "n": 64,
+        "original_location_missing": 15,
+        "retrieval_failures": 0
+      },
+      "episode": 2,
+      "file": "run-long64-2-native-factor-a0.25-d0.9.json",
+      "truth": "truth-long64-2.json",
+      "view": "native",
+      "visible": "visible-long64-2.json"
+    },
+    {
+      "arm": "factor-a0.25-d1.0",
+      "condition": "long64",
+      "counts": {
+        "actor_posterior_changed_steps": 15,
+        "checks": 70,
+        "first_position_errors": 4,
+        "missing_location_with_actor_cue": 0,
+        "n": 64,
+        "original_location_missing": 15,
+        "retrieval_failures": 0
+      },
+      "episode": 2,
+      "file": "run-long64-2-native-factor-a0.25-d1.0.json",
+      "truth": "truth-long64-2.json",
+      "view": "native",
+      "visible": "visible-long64-2.json"
+    },
+    {
+      "arm": "factor-a1.0-d0.9",
+      "condition": "long64",
+      "counts": {
+        "actor_posterior_changed_steps": 15,
+        "checks": 70,
+        "first_position_errors": 4,
+        "missing_location_with_actor_cue": 0,
+        "n": 64,
+        "original_location_missing": 15,
+        "retrieval_failures": 0
+      },
+      "episode": 2,
+      "file": "run-long64-2-native-factor-a1.0-d0.9.json",
+      "truth": "truth-long64-2.json",
+      "view": "native",
+      "visible": "visible-long64-2.json"
+    },
+    {
+      "arm": "factor-a1.0-d1.0",
+      "condition": "long64",
+      "counts": {
+        "actor_posterior_changed_steps": 15,
+        "checks": 70,
+        "first_position_errors": 4,
+        "missing_location_with_actor_cue": 0,
+        "n": 64,
+        "original_location_missing": 15,
+        "retrieval_failures": 0
+      },
+      "episode": 2,
+      "file": "run-long64-2-native-factor-a1.0-d1.0.json",
+      "truth": "truth-long64-2.json",
+      "view": "native",
+      "visible": "visible-long64-2.json"
+    },
+    {
+      "arm": "recent",
+      "condition": "long64",
+      "counts": {
+        "actor_posterior_changed_steps": 0,
+        "checks": 78,
+        "first_position_errors": 9,
+        "missing_location_with_actor_cue": 0,
+        "n": 64,
+        "original_location_missing": 15,
+        "retrieval_failures": 0
+      },
+      "episode": 2,
+      "file": "run-long64-2-cue_only-recent.json",
+      "truth": "truth-long64-2.json",
+      "view": "cue_only",
+      "visible": "visible-long64-2.json"
+    },
+    {
+      "arm": "markov-a0.25-d0.9",
+      "condition": "long64",
+      "counts": {
+        "actor_posterior_changed_steps": 0,
+        "checks": 82,
+        "first_position_errors": 11,
+        "missing_location_with_actor_cue": 0,
+        "n": 64,
+        "original_location_missing": 15,
+        "retrieval_failures": 0
+      },
+      "episode": 2,
+      "file": "run-long64-2-cue_only-markov-a0.25-d0.9.json",
+      "truth": "truth-long64-2.json",
+      "view": "cue_only",
+      "visible": "visible-long64-2.json"
+    },
+    {
+      "arm": "markov-a0.25-d1.0",
+      "condition": "long64",
+      "counts": {
+        "actor_posterior_changed_steps": 0,
+        "checks": 83,
+        "first_position_errors": 12,
+        "missing_location_with_actor_cue": 0,
+        "n": 64,
+        "original_location_missing": 15,
+        "retrieval_failures": 0
+      },
+      "episode": 2,
+      "file": "run-long64-2-cue_only-markov-a0.25-d1.0.json",
+      "truth": "truth-long64-2.json",
+      "view": "cue_only",
+      "visible": "visible-long64-2.json"
+    },
+    {
+      "arm": "markov-a1.0-d0.9",
+      "condition": "long64",
+      "counts": {
+        "actor_posterior_changed_steps": 0,
+        "checks": 82,
+        "first_position_errors": 11,
+        "missing_location_with_actor_cue": 0,
+        "n": 64,
+        "original_location_missing": 15,
+        "retrieval_failures": 0
+      },
+      "episode": 2,
+      "file": "run-long64-2-cue_only-markov-a1.0-d0.9.json",
+      "truth": "truth-long64-2.json",
+      "view": "cue_only",
+      "visible": "visible-long64-2.json"
+    },
+    {
+      "arm": "markov-a1.0-d1.0",
+      "condition": "long64",
+      "counts": {
+        "actor_posterior_changed_steps": 0,
+        "checks": 83,
+        "first_position_errors": 12,
+        "missing_location_with_actor_cue": 0,
+        "n": 64,
+        "original_location_missing": 15,
+        "retrieval_failures": 0
+      },
+      "episode": 2,
+      "file": "run-long64-2-cue_only-markov-a1.0-d1.0.json",
+      "truth": "truth-long64-2.json",
+      "view": "cue_only",
+      "visible": "visible-long64-2.json"
+    },
+    {
+      "arm": "joint-a0.25-d0.9",
+      "condition": "long64",
+      "counts": {
+        "actor_posterior_changed_steps": 59,
+        "checks": 82,
+        "first_position_errors": 11,
+        "missing_location_with_actor_cue": 0,
+        "n": 64,
+        "original_location_missing": 15,
+        "retrieval_failures": 0
+      },
+      "episode": 2,
+      "file": "run-long64-2-cue_only-joint-a0.25-d0.9.json",
+      "truth": "truth-long64-2.json",
+      "view": "cue_only",
+      "visible": "visible-long64-2.json"
+    },
+    {
+      "arm": "joint-a0.25-d1.0",
+      "condition": "long64",
+      "counts": {
+        "actor_posterior_changed_steps": 59,
+        "checks": 82,
+        "first_position_errors": 11,
+        "missing_location_with_actor_cue": 0,
+        "n": 64,
+        "original_location_missing": 15,
+        "retrieval_failures": 0
+      },
+      "episode": 2,
+      "file": "run-long64-2-cue_only-joint-a0.25-d1.0.json",
+      "truth": "truth-long64-2.json",
+      "view": "cue_only",
+      "visible": "visible-long64-2.json"
+    },
+    {
+      "arm": "joint-a1.0-d0.9",
+      "condition": "long64",
+      "counts": {
+        "actor_posterior_changed_steps": 59,
+        "checks": 82,
+        "first_position_errors": 11,
+        "missing_location_with_actor_cue": 0,
+        "n": 64,
+        "original_location_missing": 15,
+        "retrieval_failures": 0
+      },
+      "episode": 2,
+      "file": "run-long64-2-cue_only-joint-a1.0-d0.9.json",
+      "truth": "truth-long64-2.json",
+      "view": "cue_only",
+      "visible": "visible-long64-2.json"
+    },
+    {
+      "arm": "joint-a1.0-d1.0",
+      "condition": "long64",
+      "counts": {
+        "actor_posterior_changed_steps": 59,
+        "checks": 82,
+        "first_position_errors": 11,
+        "missing_location_with_actor_cue": 0,
+        "n": 64,
+        "original_location_missing": 15,
+        "retrieval_failures": 0
+      },
+      "episode": 2,
+      "file": "run-long64-2-cue_only-joint-a1.0-d1.0.json",
+      "truth": "truth-long64-2.json",
+      "view": "cue_only",
+      "visible": "visible-long64-2.json"
+    },
+    {
+      "arm": "factor-a0.25-d0.9",
+      "condition": "long64",
+      "counts": {
+        "actor_posterior_changed_steps": 63,
+        "checks": 80,
+        "first_position_errors": 10,
+        "missing_location_with_actor_cue": 0,
+        "n": 64,
+        "original_location_missing": 15,
+        "retrieval_failures": 0
+      },
+      "episode": 2,
+      "file": "run-long64-2-cue_only-factor-a0.25-d0.9.json",
+      "truth": "truth-long64-2.json",
+      "view": "cue_only",
+      "visible": "visible-long64-2.json"
+    },
+    {
+      "arm": "factor-a0.25-d1.0",
+      "condition": "long64",
+      "counts": {
+        "actor_posterior_changed_steps": 63,
+        "checks": 80,
+        "first_position_errors": 10,
+        "missing_location_with_actor_cue": 0,
+        "n": 64,
+        "original_location_missing": 15,
+        "retrieval_failures": 0
+      },
+      "episode": 2,
+      "file": "run-long64-2-cue_only-factor-a0.25-d1.0.json",
+      "truth": "truth-long64-2.json",
+      "view": "cue_only",
+      "visible": "visible-long64-2.json"
+    },
+    {
+      "arm": "factor-a1.0-d0.9",
+      "condition": "long64",
+      "counts": {
+        "actor_posterior_changed_steps": 63,
+        "checks": 81,
+        "first_position_errors": 11,
+        "missing_location_with_actor_cue": 0,
+        "n": 64,
+        "original_location_missing": 15,
+        "retrieval_failures": 0
+      },
+      "episode": 2,
+      "file": "run-long64-2-cue_only-factor-a1.0-d0.9.json",
+      "truth": "truth-long64-2.json",
+      "view": "cue_only",
+      "visible": "visible-long64-2.json"
+    },
+    {
+      "arm": "factor-a1.0-d1.0",
+      "condition": "long64",
+      "counts": {
+        "actor_posterior_changed_steps": 63,
+        "checks": 81,
+        "first_position_errors": 11,
+        "missing_location_with_actor_cue": 0,
+        "n": 64,
+        "original_location_missing": 15,
+        "retrieval_failures": 0
+      },
+      "episode": 2,
+      "file": "run-long64-2-cue_only-factor-a1.0-d1.0.json",
+      "truth": "truth-long64-2.json",
+      "view": "cue_only",
+      "visible": "visible-long64-2.json"
+    }
+  ],
+  "totals": {
+    "cue_only/complete32/factor-a0.25-d0.9": {
+      "actor_posterior_changed_steps": 93,
+      "checks": 133,
+      "first_position_errors": 27,
+      "missing_location_with_actor_cue": 0,
+      "n": 96,
+      "original_location_missing": 2,
+      "retrieval_failures": 0
+    },
+    "cue_only/complete32/factor-a0.25-d1.0": {
+      "actor_posterior_changed_steps": 93,
+      "checks": 133,
+      "first_position_errors": 27,
+      "missing_location_with_actor_cue": 0,
+      "n": 96,
+      "original_location_missing": 2,
+      "retrieval_failures": 0
+    },
+    "cue_only/complete32/factor-a1.0-d0.9": {
+      "actor_posterior_changed_steps": 93,
+      "checks": 133,
+      "first_position_errors": 27,
+      "missing_location_with_actor_cue": 0,
+      "n": 96,
+      "original_location_missing": 2,
+      "retrieval_failures": 0
+    },
+    "cue_only/complete32/factor-a1.0-d1.0": {
+      "actor_posterior_changed_steps": 93,
+      "checks": 133,
+      "first_position_errors": 27,
+      "missing_location_with_actor_cue": 0,
+      "n": 96,
+      "original_location_missing": 2,
+      "retrieval_failures": 0
+    },
+    "cue_only/complete32/joint-a0.25-d0.9": {
+      "actor_posterior_changed_steps": 84,
+      "checks": 153,
+      "first_position_errors": 29,
+      "missing_location_with_actor_cue": 0,
+      "n": 96,
+      "original_location_missing": 2,
+      "retrieval_failures": 0
+    },
+    "cue_only/complete32/joint-a0.25-d1.0": {
+      "actor_posterior_changed_steps": 84,
+      "checks": 153,
+      "first_position_errors": 29,
+      "missing_location_with_actor_cue": 0,
+      "n": 96,
+      "original_location_missing": 2,
+      "retrieval_failures": 0
+    },
+    "cue_only/complete32/joint-a1.0-d0.9": {
+      "actor_posterior_changed_steps": 84,
+      "checks": 153,
+      "first_position_errors": 29,
+      "missing_location_with_actor_cue": 0,
+      "n": 96,
+      "original_location_missing": 2,
+      "retrieval_failures": 0
+    },
+    "cue_only/complete32/joint-a1.0-d1.0": {
+      "actor_posterior_changed_steps": 84,
+      "checks": 153,
+      "first_position_errors": 29,
+      "missing_location_with_actor_cue": 0,
+      "n": 96,
+      "original_location_missing": 2,
+      "retrieval_failures": 0
+    },
+    "cue_only/complete32/markov-a0.25-d0.9": {
+      "actor_posterior_changed_steps": 0,
+      "checks": 153,
+      "first_position_errors": 29,
+      "missing_location_with_actor_cue": 0,
+      "n": 96,
+      "original_location_missing": 2,
+      "retrieval_failures": 0
+    },
+    "cue_only/complete32/markov-a0.25-d1.0": {
+      "actor_posterior_changed_steps": 0,
+      "checks": 156,
+      "first_position_errors": 32,
+      "missing_location_with_actor_cue": 0,
+      "n": 96,
+      "original_location_missing": 2,
+      "retrieval_failures": 0
+    },
+    "cue_only/complete32/markov-a1.0-d0.9": {
+      "actor_posterior_changed_steps": 0,
+      "checks": 153,
+      "first_position_errors": 29,
+      "missing_location_with_actor_cue": 0,
+      "n": 96,
+      "original_location_missing": 2,
+      "retrieval_failures": 0
+    },
+    "cue_only/complete32/markov-a1.0-d1.0": {
+      "actor_posterior_changed_steps": 0,
+      "checks": 156,
+      "first_position_errors": 32,
+      "missing_location_with_actor_cue": 0,
+      "n": 96,
+      "original_location_missing": 2,
+      "retrieval_failures": 0
+    },
+    "cue_only/complete32/recent": {
+      "actor_posterior_changed_steps": 0,
+      "checks": 143,
+      "first_position_errors": 21,
+      "missing_location_with_actor_cue": 0,
+      "n": 96,
+      "original_location_missing": 2,
+      "retrieval_failures": 0
+    },
+    "cue_only/long64/factor-a0.25-d0.9": {
+      "actor_posterior_changed_steps": 187,
+      "checks": 246,
+      "first_position_errors": 31,
+      "missing_location_with_actor_cue": 0,
+      "n": 192,
+      "original_location_missing": 55,
+      "retrieval_failures": 0
+    },
+    "cue_only/long64/factor-a0.25-d1.0": {
+      "actor_posterior_changed_steps": 187,
+      "checks": 246,
+      "first_position_errors": 31,
+      "missing_location_with_actor_cue": 0,
+      "n": 192,
+      "original_location_missing": 55,
+      "retrieval_failures": 0
+    },
+    "cue_only/long64/factor-a1.0-d0.9": {
+      "actor_posterior_changed_steps": 187,
+      "checks": 247,
+      "first_position_errors": 32,
+      "missing_location_with_actor_cue": 0,
+      "n": 192,
+      "original_location_missing": 55,
+      "retrieval_failures": 0
+    },
+    "cue_only/long64/factor-a1.0-d1.0": {
+      "actor_posterior_changed_steps": 187,
+      "checks": 247,
+      "first_position_errors": 32,
+      "missing_location_with_actor_cue": 0,
+      "n": 192,
+      "original_location_missing": 55,
+      "retrieval_failures": 0
+    },
+    "cue_only/long64/joint-a0.25-d0.9": {
+      "actor_posterior_changed_steps": 176,
+      "checks": 250,
+      "first_position_errors": 32,
+      "missing_location_with_actor_cue": 0,
+      "n": 192,
+      "original_location_missing": 55,
+      "retrieval_failures": 0
+    },
+    "cue_only/long64/joint-a0.25-d1.0": {
+      "actor_posterior_changed_steps": 176,
+      "checks": 250,
+      "first_position_errors": 32,
+      "missing_location_with_actor_cue": 0,
+      "n": 192,
+      "original_location_missing": 55,
+      "retrieval_failures": 0
+    },
+    "cue_only/long64/joint-a1.0-d0.9": {
+      "actor_posterior_changed_steps": 176,
+      "checks": 250,
+      "first_position_errors": 32,
+      "missing_location_with_actor_cue": 0,
+      "n": 192,
+      "original_location_missing": 55,
+      "retrieval_failures": 0
+    },
+    "cue_only/long64/joint-a1.0-d1.0": {
+      "actor_posterior_changed_steps": 176,
+      "checks": 250,
+      "first_position_errors": 32,
+      "missing_location_with_actor_cue": 0,
+      "n": 192,
+      "original_location_missing": 55,
+      "retrieval_failures": 0
+    },
+    "cue_only/long64/markov-a0.25-d0.9": {
+      "actor_posterior_changed_steps": 0,
+      "checks": 250,
+      "first_position_errors": 32,
+      "missing_location_with_actor_cue": 0,
+      "n": 192,
+      "original_location_missing": 55,
+      "retrieval_failures": 0
+    },
+    "cue_only/long64/markov-a0.25-d1.0": {
+      "actor_posterior_changed_steps": 0,
+      "checks": 253,
+      "first_position_errors": 35,
+      "missing_location_with_actor_cue": 0,
+      "n": 192,
+      "original_location_missing": 55,
+      "retrieval_failures": 0
+    },
+    "cue_only/long64/markov-a1.0-d0.9": {
+      "actor_posterior_changed_steps": 0,
+      "checks": 250,
+      "first_position_errors": 32,
+      "missing_location_with_actor_cue": 0,
+      "n": 192,
+      "original_location_missing": 55,
+      "retrieval_failures": 0
+    },
+    "cue_only/long64/markov-a1.0-d1.0": {
+      "actor_posterior_changed_steps": 0,
+      "checks": 253,
+      "first_position_errors": 35,
+      "missing_location_with_actor_cue": 0,
+      "n": 192,
+      "original_location_missing": 55,
+      "retrieval_failures": 0
+    },
+    "cue_only/long64/recent": {
+      "actor_posterior_changed_steps": 0,
+      "checks": 238,
+      "first_position_errors": 26,
+      "missing_location_with_actor_cue": 0,
+      "n": 192,
+      "original_location_missing": 55,
+      "retrieval_failures": 0
+    },
+    "cue_only/sparse32/factor-a0.25-d0.9": {
+      "actor_posterior_changed_steps": 88,
+      "checks": 135,
+      "first_position_errors": 27,
+      "missing_location_with_actor_cue": 0,
+      "n": 96,
+      "original_location_missing": 61,
+      "retrieval_failures": 0
+    },
+    "cue_only/sparse32/factor-a0.25-d1.0": {
+      "actor_posterior_changed_steps": 88,
+      "checks": 138,
+      "first_position_errors": 30,
+      "missing_location_with_actor_cue": 0,
+      "n": 96,
+      "original_location_missing": 61,
+      "retrieval_failures": 0
+    },
+    "cue_only/sparse32/factor-a1.0-d0.9": {
+      "actor_posterior_changed_steps": 88,
+      "checks": 135,
+      "first_position_errors": 27,
+      "missing_location_with_actor_cue": 0,
+      "n": 96,
+      "original_location_missing": 61,
+      "retrieval_failures": 0
+    },
+    "cue_only/sparse32/factor-a1.0-d1.0": {
+      "actor_posterior_changed_steps": 88,
+      "checks": 138,
+      "first_position_errors": 30,
+      "missing_location_with_actor_cue": 0,
+      "n": 96,
+      "original_location_missing": 61,
+      "retrieval_failures": 0
+    },
+    "cue_only/sparse32/joint-a0.25-d0.9": {
+      "actor_posterior_changed_steps": 73,
+      "checks": 138,
+      "first_position_errors": 27,
+      "missing_location_with_actor_cue": 0,
+      "n": 96,
+      "original_location_missing": 61,
+      "retrieval_failures": 0
+    },
+    "cue_only/sparse32/joint-a0.25-d1.0": {
+      "actor_posterior_changed_steps": 73,
+      "checks": 141,
+      "first_position_errors": 30,
+      "missing_location_with_actor_cue": 0,
+      "n": 96,
+      "original_location_missing": 61,
+      "retrieval_failures": 0
+    },
+    "cue_only/sparse32/joint-a1.0-d0.9": {
+      "actor_posterior_changed_steps": 73,
+      "checks": 138,
+      "first_position_errors": 27,
+      "missing_location_with_actor_cue": 0,
+      "n": 96,
+      "original_location_missing": 61,
+      "retrieval_failures": 0
+    },
+    "cue_only/sparse32/joint-a1.0-d1.0": {
+      "actor_posterior_changed_steps": 73,
+      "checks": 141,
+      "first_position_errors": 30,
+      "missing_location_with_actor_cue": 0,
+      "n": 96,
+      "original_location_missing": 61,
+      "retrieval_failures": 0
+    },
+    "cue_only/sparse32/markov-a0.25-d0.9": {
+      "actor_posterior_changed_steps": 0,
+      "checks": 138,
+      "first_position_errors": 27,
+      "missing_location_with_actor_cue": 0,
+      "n": 96,
+      "original_location_missing": 61,
+      "retrieval_failures": 0
+    },
+    "cue_only/sparse32/markov-a0.25-d1.0": {
+      "actor_posterior_changed_steps": 0,
+      "checks": 141,
+      "first_position_errors": 30,
+      "missing_location_with_actor_cue": 0,
+      "n": 96,
+      "original_location_missing": 61,
+      "retrieval_failures": 0
+    },
+    "cue_only/sparse32/markov-a1.0-d0.9": {
+      "actor_posterior_changed_steps": 0,
+      "checks": 138,
+      "first_position_errors": 27,
+      "missing_location_with_actor_cue": 0,
+      "n": 96,
+      "original_location_missing": 61,
+      "retrieval_failures": 0
+    },
+    "cue_only/sparse32/markov-a1.0-d1.0": {
+      "actor_posterior_changed_steps": 0,
+      "checks": 141,
+      "first_position_errors": 30,
+      "missing_location_with_actor_cue": 0,
+      "n": 96,
+      "original_location_missing": 61,
+      "retrieval_failures": 0
+    },
+    "cue_only/sparse32/recent": {
+      "actor_posterior_changed_steps": 0,
+      "checks": 127,
+      "first_position_errors": 20,
+      "missing_location_with_actor_cue": 0,
+      "n": 96,
+      "original_location_missing": 61,
+      "retrieval_failures": 0
+    },
+    "native/complete32/factor-a0.25-d0.9": {
+      "actor_posterior_changed_steps": 2,
+      "checks": 99,
+      "first_position_errors": 1,
+      "missing_location_with_actor_cue": 0,
+      "n": 96,
+      "original_location_missing": 2,
+      "retrieval_failures": 0
+    },
+    "native/complete32/factor-a0.25-d1.0": {
+      "actor_posterior_changed_steps": 2,
+      "checks": 99,
+      "first_position_errors": 1,
+      "missing_location_with_actor_cue": 0,
+      "n": 96,
+      "original_location_missing": 2,
+      "retrieval_failures": 0
+    },
+    "native/complete32/factor-a1.0-d0.9": {
+      "actor_posterior_changed_steps": 2,
+      "checks": 99,
+      "first_position_errors": 1,
+      "missing_location_with_actor_cue": 0,
+      "n": 96,
+      "original_location_missing": 2,
+      "retrieval_failures": 0
+    },
+    "native/complete32/factor-a1.0-d1.0": {
+      "actor_posterior_changed_steps": 2,
+      "checks": 99,
+      "first_position_errors": 1,
+      "missing_location_with_actor_cue": 0,
+      "n": 96,
+      "original_location_missing": 2,
+      "retrieval_failures": 0
+    },
+    "native/complete32/joint-a0.25-d0.9": {
+      "actor_posterior_changed_steps": 2,
+      "checks": 99,
+      "first_position_errors": 1,
+      "missing_location_with_actor_cue": 0,
+      "n": 96,
+      "original_location_missing": 2,
+      "retrieval_failures": 0
+    },
+    "native/complete32/joint-a0.25-d1.0": {
+      "actor_posterior_changed_steps": 2,
+      "checks": 99,
+      "first_position_errors": 1,
+      "missing_location_with_actor_cue": 0,
+      "n": 96,
+      "original_location_missing": 2,
+      "retrieval_failures": 0
+    },
+    "native/complete32/joint-a1.0-d0.9": {
+      "actor_posterior_changed_steps": 2,
+      "checks": 99,
+      "first_position_errors": 1,
+      "missing_location_with_actor_cue": 0,
+      "n": 96,
+      "original_location_missing": 2,
+      "retrieval_failures": 0
+    },
+    "native/complete32/joint-a1.0-d1.0": {
+      "actor_posterior_changed_steps": 2,
+      "checks": 99,
+      "first_position_errors": 1,
+      "missing_location_with_actor_cue": 0,
+      "n": 96,
+      "original_location_missing": 2,
+      "retrieval_failures": 0
+    },
+    "native/complete32/markov-a0.25-d0.9": {
+      "actor_posterior_changed_steps": 0,
+      "checks": 99,
+      "first_position_errors": 1,
+      "missing_location_with_actor_cue": 0,
+      "n": 96,
+      "original_location_missing": 2,
+      "retrieval_failures": 0
+    },
+    "native/complete32/markov-a0.25-d1.0": {
+      "actor_posterior_changed_steps": 0,
+      "checks": 99,
+      "first_position_errors": 1,
+      "missing_location_with_actor_cue": 0,
+      "n": 96,
+      "original_location_missing": 2,
+      "retrieval_failures": 0
+    },
+    "native/complete32/markov-a1.0-d0.9": {
+      "actor_posterior_changed_steps": 0,
+      "checks": 99,
+      "first_position_errors": 1,
+      "missing_location_with_actor_cue": 0,
+      "n": 96,
+      "original_location_missing": 2,
+      "retrieval_failures": 0
+    },
+    "native/complete32/markov-a1.0-d1.0": {
+      "actor_posterior_changed_steps": 0,
+      "checks": 99,
+      "first_position_errors": 1,
+      "missing_location_with_actor_cue": 0,
+      "n": 96,
+      "original_location_missing": 2,
+      "retrieval_failures": 0
+    },
+    "native/complete32/recent": {
+      "actor_posterior_changed_steps": 0,
+      "checks": 96,
+      "first_position_errors": 0,
+      "missing_location_with_actor_cue": 0,
+      "n": 96,
+      "original_location_missing": 2,
+      "retrieval_failures": 0
+    },
+    "native/long64/factor-a0.25-d0.9": {
+      "actor_posterior_changed_steps": 53,
+      "checks": 214,
+      "first_position_errors": 12,
+      "missing_location_with_actor_cue": 0,
+      "n": 192,
+      "original_location_missing": 55,
+      "retrieval_failures": 0
+    },
+    "native/long64/factor-a0.25-d1.0": {
+      "actor_posterior_changed_steps": 53,
+      "checks": 214,
+      "first_position_errors": 12,
+      "missing_location_with_actor_cue": 0,
+      "n": 192,
+      "original_location_missing": 55,
+      "retrieval_failures": 0
+    },
+    "native/long64/factor-a1.0-d0.9": {
+      "actor_posterior_changed_steps": 53,
+      "checks": 214,
+      "first_position_errors": 12,
+      "missing_location_with_actor_cue": 0,
+      "n": 192,
+      "original_location_missing": 55,
+      "retrieval_failures": 0
+    },
+    "native/long64/factor-a1.0-d1.0": {
+      "actor_posterior_changed_steps": 53,
+      "checks": 214,
+      "first_position_errors": 12,
+      "missing_location_with_actor_cue": 0,
+      "n": 192,
+      "original_location_missing": 55,
+      "retrieval_failures": 0
+    },
+    "native/long64/joint-a0.25-d0.9": {
+      "actor_posterior_changed_steps": 50,
+      "checks": 214,
+      "first_position_errors": 12,
+      "missing_location_with_actor_cue": 0,
+      "n": 192,
+      "original_location_missing": 55,
+      "retrieval_failures": 0
+    },
+    "native/long64/joint-a0.25-d1.0": {
+      "actor_posterior_changed_steps": 50,
+      "checks": 214,
+      "first_position_errors": 12,
+      "missing_location_with_actor_cue": 0,
+      "n": 192,
+      "original_location_missing": 55,
+      "retrieval_failures": 0
+    },
+    "native/long64/joint-a1.0-d0.9": {
+      "actor_posterior_changed_steps": 50,
+      "checks": 214,
+      "first_position_errors": 12,
+      "missing_location_with_actor_cue": 0,
+      "n": 192,
+      "original_location_missing": 55,
+      "retrieval_failures": 0
+    },
+    "native/long64/joint-a1.0-d1.0": {
+      "actor_posterior_changed_steps": 50,
+      "checks": 214,
+      "first_position_errors": 12,
+      "missing_location_with_actor_cue": 0,
+      "n": 192,
+      "original_location_missing": 55,
+      "retrieval_failures": 0
+    },
+    "native/long64/markov-a0.25-d0.9": {
+      "actor_posterior_changed_steps": 0,
+      "checks": 214,
+      "first_position_errors": 12,
+      "missing_location_with_actor_cue": 0,
+      "n": 192,
+      "original_location_missing": 55,
+      "retrieval_failures": 0
+    },
+    "native/long64/markov-a0.25-d1.0": {
+      "actor_posterior_changed_steps": 0,
+      "checks": 214,
+      "first_position_errors": 12,
+      "missing_location_with_actor_cue": 0,
+      "n": 192,
+      "original_location_missing": 55,
+      "retrieval_failures": 0
+    },
+    "native/long64/markov-a1.0-d0.9": {
+      "actor_posterior_changed_steps": 0,
+      "checks": 214,
+      "first_position_errors": 12,
+      "missing_location_with_actor_cue": 0,
+      "n": 192,
+      "original_location_missing": 55,
+      "retrieval_failures": 0
+    },
+    "native/long64/markov-a1.0-d1.0": {
+      "actor_posterior_changed_steps": 0,
+      "checks": 214,
+      "first_position_errors": 12,
+      "missing_location_with_actor_cue": 0,
+      "n": 192,
+      "original_location_missing": 55,
+      "retrieval_failures": 0
+    },
+    "native/long64/recent": {
+      "actor_posterior_changed_steps": 0,
+      "checks": 208,
+      "first_position_errors": 8,
+      "missing_location_with_actor_cue": 0,
+      "n": 192,
+      "original_location_missing": 55,
+      "retrieval_failures": 0
+    },
+    "native/sparse32/factor-a0.25-d0.9": {
+      "actor_posterior_changed_steps": 56,
+      "checks": 125,
+      "first_position_errors": 19,
+      "missing_location_with_actor_cue": 0,
+      "n": 96,
+      "original_location_missing": 61,
+      "retrieval_failures": 0
+    },
+    "native/sparse32/factor-a0.25-d1.0": {
+      "actor_posterior_changed_steps": 56,
+      "checks": 127,
+      "first_position_errors": 21,
+      "missing_location_with_actor_cue": 0,
+      "n": 96,
+      "original_location_missing": 61,
+      "retrieval_failures": 0
+    },
+    "native/sparse32/factor-a1.0-d0.9": {
+      "actor_posterior_changed_steps": 56,
+      "checks": 125,
+      "first_position_errors": 19,
+      "missing_location_with_actor_cue": 0,
+      "n": 96,
+      "original_location_missing": 61,
+      "retrieval_failures": 0
+    },
+    "native/sparse32/factor-a1.0-d1.0": {
+      "actor_posterior_changed_steps": 56,
+      "checks": 127,
+      "first_position_errors": 21,
+      "missing_location_with_actor_cue": 0,
+      "n": 96,
+      "original_location_missing": 61,
+      "retrieval_failures": 0
+    },
+    "native/sparse32/joint-a0.25-d0.9": {
+      "actor_posterior_changed_steps": 48,
+      "checks": 125,
+      "first_position_errors": 19,
+      "missing_location_with_actor_cue": 0,
+      "n": 96,
+      "original_location_missing": 61,
+      "retrieval_failures": 0
+    },
+    "native/sparse32/joint-a0.25-d1.0": {
+      "actor_posterior_changed_steps": 48,
+      "checks": 127,
+      "first_position_errors": 21,
+      "missing_location_with_actor_cue": 0,
+      "n": 96,
+      "original_location_missing": 61,
+      "retrieval_failures": 0
+    },
+    "native/sparse32/joint-a1.0-d0.9": {
+      "actor_posterior_changed_steps": 48,
+      "checks": 125,
+      "first_position_errors": 19,
+      "missing_location_with_actor_cue": 0,
+      "n": 96,
+      "original_location_missing": 61,
+      "retrieval_failures": 0
+    },
+    "native/sparse32/joint-a1.0-d1.0": {
+      "actor_posterior_changed_steps": 48,
+      "checks": 127,
+      "first_position_errors": 21,
+      "missing_location_with_actor_cue": 0,
+      "n": 96,
+      "original_location_missing": 61,
+      "retrieval_failures": 0
+    },
+    "native/sparse32/markov-a0.25-d0.9": {
+      "actor_posterior_changed_steps": 0,
+      "checks": 125,
+      "first_position_errors": 19,
+      "missing_location_with_actor_cue": 0,
+      "n": 96,
+      "original_location_missing": 61,
+      "retrieval_failures": 0
+    },
+    "native/sparse32/markov-a0.25-d1.0": {
+      "actor_posterior_changed_steps": 0,
+      "checks": 127,
+      "first_position_errors": 21,
+      "missing_location_with_actor_cue": 0,
+      "n": 96,
+      "original_location_missing": 61,
+      "retrieval_failures": 0
+    },
+    "native/sparse32/markov-a1.0-d0.9": {
+      "actor_posterior_changed_steps": 0,
+      "checks": 125,
+      "first_position_errors": 19,
+      "missing_location_with_actor_cue": 0,
+      "n": 96,
+      "original_location_missing": 61,
+      "retrieval_failures": 0
+    },
+    "native/sparse32/markov-a1.0-d1.0": {
+      "actor_posterior_changed_steps": 0,
+      "checks": 127,
+      "first_position_errors": 21,
+      "missing_location_with_actor_cue": 0,
+      "n": 96,
+      "original_location_missing": 61,
+      "retrieval_failures": 0
+    },
+    "native/sparse32/recent": {
+      "actor_posterior_changed_steps": 0,
+      "checks": 117,
+      "first_position_errors": 13,
+      "missing_location_with_actor_cue": 0,
+      "n": 96,
+      "original_location_missing": 61,
+      "retrieval_failures": 0
+    }
+  }
+}

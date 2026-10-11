@@ -1,0 +1,184 @@
+{
+  "diagnostics": {
+    "cue_only/factor_saved/cue": 82,
+    "cue_only/factor_saved/first": 0,
+    "cue_only/factor_saved/move": 51,
+    "cue_only/factor_saved/no_cue": 0,
+    "cue_only/factor_saved/persist": 31,
+    "cue_only/joint_markov_order_different": 0,
+    "cue_only/joint_markov_probability_different": 714,
+    "native/factor_saved/cue": 0,
+    "native/factor_saved/first": 0,
+    "native/factor_saved/move": 0,
+    "native/factor_saved/no_cue": 0,
+    "native/factor_saved/persist": 0,
+    "native/joint_markov_order_different": 0,
+    "native/joint_markov_probability_different": 0
+  },
+  "posthoc_examples": [
+    {
+      "actor": "owner",
+      "all_context_actor_effective_count": 0.8200000000000001,
+      "factor_checks": 1,
+      "factor_prior": {
+        "181a10cb-1e2f-ffcd-afac-1c6c45a96059": 0.23786430808070763,
+        "50ea55f9-8909-3192-a720-98ca8b76025e": 0.12903867070003316,
+        "b89d78ed-6cc8-813b-1ff5-5f506b9ffd18": 0.3952327131385516,
+        "c7c49c43-d375-d19b-0ed1-75b154f3d7f7": 0.23786430808070763
+      },
+      "file": "run-complete32-0-cue_only-joint.json",
+      "joint_checks": 3,
+      "joint_prior": {
+        "181a10cb-1e2f-ffcd-afac-1c6c45a96059": 0.25,
+        "50ea55f9-8909-3192-a720-98ca8b76025e": 0.25,
+        "b89d78ed-6cc8-813b-1ff5-5f506b9ffd18": 0.25,
+        "c7c49c43-d375-d19b-0ed1-75b154f3d7f7": 0.25
+      },
+      "previous_context_actor_effective_count": 0.0,
+      "step_id": "dfa54419-b315-5ec5-bc14-b703b6bd7970",
+      "step_index": 2
+    },
+    {
+      "actor": "owner",
+      "all_context_actor_effective_count": 1.5380000000000003,
+      "factor_checks": 2,
+      "factor_prior": {
+        "181a10cb-1e2f-ffcd-afac-1c6c45a96059": 0.08560316039894932,
+        "50ea55f9-8909-3192-a720-98ca8b76025e": 0.6689606299738133,
+        "b89d78ed-6cc8-813b-1ff5-5f506b9ffd18": 0.15983304922828803,
+        "c7c49c43-d375-d19b-0ed1-75b154f3d7f7": 0.08560316039894932
+      },
+      "file": "run-complete32-0-cue_only-joint.json",
+      "joint_checks": 3,
+      "joint_prior": {
+        "181a10cb-1e2f-ffcd-afac-1c6c45a96059": 0.11547937280561762,
+        "50ea55f9-8909-3192-a720-98ca8b76025e": 0.6535618815831472,
+        "b89d78ed-6cc8-813b-1ff5-5f506b9ffd18": 0.11547937280561762,
+        "c7c49c43-d375-d19b-0ed1-75b154f3d7f7": 0.11547937280561762
+      },
+      "previous_context_actor_effective_count": 0.09000000000000001,
+      "step_id": "e2edaa59-c4e3-52e9-b802-c4bba91e3ae4",
+      "step_index": 3
+    },
+    {
+      "actor": "guest",
+      "all_context_actor_effective_count": 1.477727135,
+      "factor_checks": 2,
+      "factor_prior": {
+        "181a10cb-1e2f-ffcd-afac-1c6c45a96059": 0.1077729995996716,
+        "50ea55f9-8909-3192-a720-98ca8b76025e": 0.15588797957442005,
+        "b89d78ed-6cc8-813b-1ff5-5f506b9ffd18": 0.6285660212262367,
+        "c7c49c43-d375-d19b-0ed1-75b154f3d7f7": 0.1077729995996716
+      },
+      "file": "run-complete32-0-cue_only-joint.json",
+      "joint_checks": 3,
+      "joint_prior": {
+        "181a10cb-1e2f-ffcd-afac-1c6c45a96059": 0.11180492319342741,
+        "50ea55f9-8909-3192-a720-98ca8b76025e": 0.11180492319342741,
+        "b89d78ed-6cc8-813b-1ff5-5f506b9ffd18": 0.6645852304197177,
+        "c7c49c43-d375-d19b-0ed1-75b154f3d7f7": 0.11180492319342741
+      },
+      "previous_context_actor_effective_count": 0.08857350000000001,
+      "step_id": "f9e1d57e-9aef-515b-aa4b-fc1028ab4818",
+      "step_index": 8
+    }
+  ],
+  "scope": "descriptive decomposition; same scheduled D0 regimes, not independent behavioral worlds",
+  "totals": {
+    "cue_only/factor": {
+      "actor_posterior_changed_steps": 1235,
+      "checks": 1712,
+      "first_position_errors": 276,
+      "missing_location_with_actor_cue": 0,
+      "n": 1280,
+      "original_location_missing": 453,
+      "retrieval_failures": 0
+    },
+    "cue_only/joint": {
+      "actor_posterior_changed_steps": 1094,
+      "checks": 1794,
+      "first_position_errors": 291,
+      "missing_location_with_actor_cue": 0,
+      "n": 1280,
+      "original_location_missing": 453,
+      "retrieval_failures": 0
+    },
+    "cue_only/markov": {
+      "actor_posterior_changed_steps": 0,
+      "checks": 1794,
+      "first_position_errors": 291,
+      "missing_location_with_actor_cue": 0,
+      "n": 1280,
+      "original_location_missing": 453,
+      "retrieval_failures": 0
+    },
+    "cue_only/matched_factor": {
+      "actor_posterior_changed_steps": 1235,
+      "checks": 1712,
+      "first_position_errors": 276,
+      "missing_location_with_actor_cue": 0,
+      "n": 1280,
+      "original_location_missing": 453,
+      "retrieval_failures": 0
+    },
+    "cue_only/recent": {
+      "actor_posterior_changed_steps": 0,
+      "checks": 1700,
+      "first_position_errors": 225,
+      "missing_location_with_actor_cue": 0,
+      "n": 1280,
+      "original_location_missing": 453,
+      "retrieval_failures": 0
+    },
+    "native/factor": {
+      "actor_posterior_changed_steps": 438,
+      "checks": 1463,
+      "first_position_errors": 103,
+      "missing_location_with_actor_cue": 0,
+      "n": 1280,
+      "original_location_missing": 453,
+      "retrieval_failures": 0
+    },
+    "native/joint": {
+      "actor_posterior_changed_steps": 380,
+      "checks": 1463,
+      "first_position_errors": 103,
+      "missing_location_with_actor_cue": 0,
+      "n": 1280,
+      "original_location_missing": 453,
+      "retrieval_failures": 0
+    },
+    "native/markov": {
+      "actor_posterior_changed_steps": 0,
+      "checks": 1463,
+      "first_position_errors": 103,
+      "missing_location_with_actor_cue": 0,
+      "n": 1280,
+      "original_location_missing": 453,
+      "retrieval_failures": 0
+    },
+    "native/matched_factor": {
+      "actor_posterior_changed_steps": 438,
+      "checks": 1463,
+      "first_position_errors": 103,
+      "missing_location_with_actor_cue": 0,
+      "n": 1280,
+      "original_location_missing": 453,
+      "retrieval_failures": 0
+    },
+    "native/recent": {
+      "actor_posterior_changed_steps": 0,
+      "checks": 1424,
+      "first_position_errors": 74,
+      "missing_location_with_actor_cue": 0,
+      "n": 1280,
+      "original_location_missing": 453,
+      "retrieval_failures": 0
+    }
+  },
+  "unique_location_paths_up_to_renaming": {
+    "complete32": 1,
+    "long64": 1,
+    "sparse32": 1
+  }
+}

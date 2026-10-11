@@ -1,3 +1,9 @@
+# A交付回执：任务分离读出证据已推送，PR107为草稿（2026-10-11）
+
+[草稿PR107](https://github.com/goneveitvet240-svg/cpswm/pull/107) 已创建，堆叠PR106，未合并。报告/原始证据提交 `0912d6e96fb8d38f34494e6da71a589721c75d0d` 已推送；推断源码 `f6190f1febe0c834674568f67763726c759ea0a9`、独立评分 `4ace116fb13735ce541e222aadaae232445cd084`、最终重复检查 `c5af5c13a1ff67d91f7ee65e654bf525094190c0`。[报告](../reviews/pc_a/task_readout_repair_2026-10-11/REPORT.md)。搜索400→136、放回100不变；完整联合仍与同状态factorized打平。40项定向测试、独立复算、4类篡改拒绝、实际重跑和归档复现完成；自然传感/机器人实证、所有调用方迁移、B复核与共享集成未完成。
+
+---
+
 # A交付：任务分离读出修复与新留出验证（2026-10-11）
 
 分支 `codex/pc-a-task-readout-repair-20261011`，base `97d008d141b5438ec973ba07e12027d94599542a`；推断/runner `f6190f1febe0c834674568f67763726c759ea0a9`，独立评分/分析 `4ace116fb13735ce541e222aadaae232445cd084`，重复/篡改检查 `c5af5c13a1ff67d91f7ee65e654bf525094190c0`。[报告](../reviews/pc_a/task_readout_repair_2026-10-11/REPORT.md)、[复现](../reviews/pc_a/task_readout_repair_2026-10-11/COMMANDS.md)、[新入口与迁移边界](../reviews/pc_a/task_readout_repair_2026-10-11/INTEGRATION.md)。本节推送前为本地完成。

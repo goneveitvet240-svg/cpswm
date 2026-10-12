@@ -1,0 +1,202 @@
+{
+  "actual_runs": {
+    "dev/stratified": 16,
+    "dev/systematic": 16,
+    "test/stratified": 32,
+    "test/systematic": 32
+  },
+  "additional_revision_step_executions": 42,
+  "all_cross_sampler_paid_searches_identical": true,
+  "cross_sampler_repaired_minus_old": {
+    "long64/joint": {
+      "put_action_changes": 0,
+      "put_error_change": 0
+    },
+    "long64/joint_no_new": {
+      "put_action_changes": 0,
+      "put_error_change": 0
+    },
+    "long64/matched_factor": {
+      "put_action_changes": 0,
+      "put_error_change": 0
+    },
+    "long64/matched_factor_no_new": {
+      "put_action_changes": 0,
+      "put_error_change": 0
+    },
+    "sparse32/joint": {
+      "put_action_changes": 1,
+      "put_error_change": -1
+    },
+    "sparse32/joint_no_new": {
+      "put_action_changes": 0,
+      "put_error_change": 0
+    },
+    "sparse32/matched_factor": {
+      "put_action_changes": 1,
+      "put_error_change": -1
+    },
+    "sparse32/matched_factor_no_new": {
+      "put_action_changes": 0,
+      "put_error_change": 0
+    }
+  },
+  "distinct_true_paths_up_to_relabeling": {
+    "long64": 1,
+    "sparse32": 1
+  },
+  "heldout_totals": {
+    "stratified": {
+      "joint": {
+        "actor_posterior_changed_steps": 166,
+        "checks": 431,
+        "first_position_errors": 30,
+        "missing_location_with_actor_cue": 0,
+        "n": 384,
+        "native_location_updates": 169,
+        "native_score_evaluations": 13272,
+        "new_evidence_actor_likelihood_differs": 166,
+        "new_evidence_multiple_actor_particles": 169,
+        "original_location_missing": 169,
+        "put_errors": 33,
+        "retained_event_enumerated_candidates": 4986972,
+        "retrieval_failures": 0,
+        "within_step_action_changes": 3,
+        "within_step_actor_changes": 90
+      },
+      "joint_no_new": {
+        "actor_posterior_changed_steps": 166,
+        "checks": 431,
+        "first_position_errors": 30,
+        "missing_location_with_actor_cue": 0,
+        "n": 384,
+        "native_score_evaluations": 9216,
+        "original_location_missing": 169,
+        "put_errors": 36,
+        "retained_event_enumerated_candidates": 4986972,
+        "retrieval_failures": 0,
+        "within_step_action_changes": 0,
+        "within_step_actor_changes": 0
+      },
+      "matched_factor": {
+        "actor_posterior_changed_steps": 166,
+        "checks": 431,
+        "first_position_errors": 30,
+        "missing_location_with_actor_cue": 0,
+        "n": 384,
+        "native_location_updates": 169,
+        "native_score_evaluations": 13272,
+        "new_evidence_actor_likelihood_differs": 166,
+        "new_evidence_multiple_actor_particles": 169,
+        "original_location_missing": 169,
+        "put_errors": 33,
+        "retained_event_enumerated_candidates": 4986972,
+        "retrieval_failures": 0,
+        "within_step_action_changes": 3,
+        "within_step_actor_changes": 89
+      },
+      "matched_factor_no_new": {
+        "actor_posterior_changed_steps": 166,
+        "checks": 431,
+        "first_position_errors": 30,
+        "missing_location_with_actor_cue": 0,
+        "n": 384,
+        "native_score_evaluations": 9216,
+        "original_location_missing": 169,
+        "put_errors": 36,
+        "retained_event_enumerated_candidates": 4986972,
+        "retrieval_failures": 0,
+        "within_step_action_changes": 0,
+        "within_step_actor_changes": 0
+      }
+    },
+    "systematic": {
+      "joint": {
+        "actor_posterior_changed_steps": 166,
+        "checks": 431,
+        "first_position_errors": 30,
+        "missing_location_with_actor_cue": 0,
+        "n": 384,
+        "native_location_updates": 169,
+        "native_score_evaluations": 13272,
+        "new_evidence_actor_likelihood_differs": 166,
+        "new_evidence_multiple_actor_particles": 3,
+        "original_location_missing": 169,
+        "put_errors": 34,
+        "retained_event_enumerated_candidates": 4842444,
+        "retrieval_failures": 0,
+        "within_step_action_changes": 3,
+        "within_step_actor_changes": 0
+      },
+      "joint_no_new": {
+        "actor_posterior_changed_steps": 166,
+        "checks": 431,
+        "first_position_errors": 30,
+        "missing_location_with_actor_cue": 0,
+        "n": 384,
+        "native_score_evaluations": 9216,
+        "original_location_missing": 169,
+        "put_errors": 36,
+        "retained_event_enumerated_candidates": 4842444,
+        "retrieval_failures": 0,
+        "within_step_action_changes": 0,
+        "within_step_actor_changes": 0
+      },
+      "matched_factor": {
+        "actor_posterior_changed_steps": 166,
+        "checks": 431,
+        "first_position_errors": 30,
+        "missing_location_with_actor_cue": 0,
+        "n": 384,
+        "native_location_updates": 169,
+        "native_score_evaluations": 13272,
+        "new_evidence_actor_likelihood_differs": 166,
+        "new_evidence_multiple_actor_particles": 3,
+        "original_location_missing": 169,
+        "put_errors": 34,
+        "retained_event_enumerated_candidates": 4842444,
+        "retrieval_failures": 0,
+        "within_step_action_changes": 3,
+        "within_step_actor_changes": 0
+      },
+      "matched_factor_no_new": {
+        "actor_posterior_changed_steps": 166,
+        "checks": 431,
+        "first_position_errors": 30,
+        "missing_location_with_actor_cue": 0,
+        "n": 384,
+        "native_score_evaluations": 9216,
+        "original_location_missing": 169,
+        "put_errors": 36,
+        "retained_event_enumerated_candidates": 4842444,
+        "retrieval_failures": 0,
+        "within_step_action_changes": 0,
+        "within_step_actor_changes": 0
+      }
+    }
+  },
+  "repeat_exact_except_wall_runs": 4,
+  "revision_continuations": [
+    {
+      "arm": "stateful_full_joint",
+      "restore_exact": true
+    },
+    {
+      "arm": "matched_full_state_factorized",
+      "restore_exact": true
+    }
+  ],
+  "sampling_tamper_rejections": [
+    "method",
+    "offset",
+    "seed",
+    "count",
+    "index",
+    "probability",
+    "interval",
+    "duplicate_receipt",
+    "importance"
+  ],
+  "scope": "Local paired diagnostic; not B acceptance, fully enumerated native posterior, or natural robot evidence",
+  "source_files_checked": 505
+}

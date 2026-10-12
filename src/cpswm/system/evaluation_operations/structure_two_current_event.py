@@ -29,6 +29,11 @@ from cpswm.system.evaluation_operations.structure_two_stateful_full_joint import
     _complete_cause_posterior,
     _normalize,
 )
+from cpswm.system.evaluation_operations.structure_two_stratified_sampling import (
+    STRATIFIED_POLICY,
+    stratified_draw_indices,
+    stratum_offsets,
+)
 from cpswm.system.evaluation_operations.structure_two_task_readout import (
     TaskSeparatedFullJointActionState,
 )
@@ -62,7 +67,11 @@ class CurrentEventObservation(FullJointObservation):
 class CurrentEventRuntime(StatefulFullJointRuntime):
     """Native filter plus owned operation journal for same-event replacement."""
 
-    def __init__(self, **kwargs):
+    def __init__(self, *, sampling_method=STRATIFIED_POLICY, **kwargs):
+        if sampling_method not in {STRATIFIED_POLICY, "systematic"}:
+            raise ValueError("unknown native proposal sampler")
+        self.sampling_method = sampling_method
+        self.sampling_receipts = []
         super().__init__(**kwargs)
         self.operations = []
         self.location_sources = {}
@@ -71,6 +80,38 @@ class CurrentEventRuntime(StatefulFullJointRuntime):
         self._initial = self._capture_mutable_state()
         self._current_before = None
         self._replaying = False
+
+    def _capture_mutable_state(self):
+        state = super()._capture_mutable_state()
+        state["sampling_receipts"] = copy.deepcopy(self.sampling_receipts)
+        return state
+
+    def _proposal_draw_indices(self, probabilities, count, seed_sha256):
+        if self.sampling_method == "systematic":
+            indices = super()._proposal_draw_indices(probabilities, count, seed_sha256)
+            offsets = (int(seed_sha256[:16], 16) / float(16**16),) * count
+        else:
+            indices = stratified_draw_indices(probabilities, count, seed_sha256)
+            offsets = stratum_offsets(count, seed_sha256)
+        cumulative = [0.0]
+        total = math.fsum(probabilities) if self.sampling_method != "systematic" else 1.0
+        for probability in probabilities:
+            cumulative.append(cumulative[-1] + probability / total)
+        cumulative[-1] = 1.0
+        self.sampling_receipts.append(
+            {
+                "method": self.sampling_method,
+                "seed_sha256": seed_sha256,
+                "proposal_sha256": content_sha256(list(probabilities)),
+                "support_size": len(probabilities),
+                "count": count,
+                "offsets": list(offsets),
+                "indices": list(indices),
+                "selected_probabilities": [probabilities[i] for i in indices],
+                "cdf_intervals": [[cumulative[i], cumulative[i + 1]] for i in indices],
+            }
+        )
+        return indices
 
     def _observation_log_likelihood(self, observation, candidate):
         values = dict(getattr(observation, "location_likelihood", ()))

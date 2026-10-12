@@ -1,0 +1,95 @@
+{
+  "exact_finite_24_iid_self_normalized_mean": [
+    0.5935995250083136,
+    0.22003519114377268,
+    0.18636528384791354
+  ],
+  "exact_toy_target": [
+    0.6206896551724138,
+    0.20689655172413793,
+    0.1724137931034483
+  ],
+  "native": [
+    {
+      "arm": "stateful_full_joint",
+      "drawn_actor_counts": {
+        "unknown_actor": 24
+      },
+      "enumerated_candidates": 11232,
+      "full_cdf_reference_matches_actual_native_draws": true,
+      "method": "systematic",
+      "particle_budget": 24
+    },
+    {
+      "arm": "matched_full_state_factorized",
+      "drawn_actor_counts": {
+        "unknown_actor": 24
+      },
+      "enumerated_candidates": 11232,
+      "full_cdf_reference_matches_actual_native_draws": true,
+      "method": "systematic",
+      "particle_budget": 24
+    },
+    {
+      "arm": "stateful_full_joint",
+      "drawn_actor_counts": {
+        "guest": 6,
+        "owner": 10,
+        "unknown_actor": 8
+      },
+      "enumerated_candidates": 11268,
+      "full_cdf_reference_matches_actual_native_draws": true,
+      "method": "independent_strata_v1",
+      "particle_budget": 24
+    },
+    {
+      "arm": "matched_full_state_factorized",
+      "drawn_actor_counts": {
+        "guest": 6,
+        "owner": 10,
+        "unknown_actor": 8
+      },
+      "enumerated_candidates": 11268,
+      "full_cdf_reference_matches_actual_native_draws": true,
+      "method": "independent_strata_v1",
+      "particle_budget": 24
+    }
+  ],
+  "native_completed_search_steps": 12,
+  "native_observed_steps": 16,
+  "scope": "Toy exact posterior and actual full native proposal CDF; not exact inference of the full native target",
+  "synthetic": {
+    "independent_strata_v1": {
+      "draw_count": 24,
+      "mean_l1_error": 0.23277791376285545,
+      "mean_posterior": [
+        0.59135055371544,
+        0.22261145155581433,
+        0.1860379947287445
+      ],
+      "proposal_frequencies": [
+        0.19873046875,
+        0.3029581705729167,
+        0.4983113606770833
+      ],
+      "seeds": 2048,
+      "single_actor_seeds": 0
+    },
+    "systematic": {
+      "draw_count": 24,
+      "mean_l1_error": 1.460567079741342,
+      "mean_posterior": [
+        0.19384765625,
+        0.3017578125,
+        0.50439453125
+      ],
+      "proposal_frequencies": [
+        0.19384765625,
+        0.3017578125,
+        0.50439453125
+      ],
+      "seeds": 2048,
+      "single_actor_seeds": 2048
+    }
+  }
+}

@@ -16,7 +16,7 @@ from cpswm.system.evaluation_operations.structure_two_stateful_full_joint import
 def diagnose():
     dataset = dataset_for("sparse32", [66001])
     episode = dataset.visible_episodes(ProjectTwoDatasetSplit.VALIDATION)[0]
-    state = build(dataset, episode, FullJointArm.STATEFUL_FULL_JOINT)
+    state = build(dataset, episode, FullJointArm.STATEFUL_FULL_JOINT, sampling_method="systematic")
     for step in episode.steps[:3]:
         state.observe(step)
         state.predict()

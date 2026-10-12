@@ -1,0 +1,469 @@
+{
+  "action_tv": {
+    "max": 0.061897696465012704,
+    "mean": 0.0017780986220105545,
+    "median": 3.4788695173866023e-17,
+    "min": 0.0
+  },
+  "actor_tv": {
+    "max": 0.6705638610514519,
+    "mean": 0.03122613502201496,
+    "median": 1.5913406852393795e-10,
+    "min": 2.2248775799542814e-301
+  },
+  "all_reconstructed_steps": 1536,
+  "arms": {
+    "joint": {
+      "actions_match_base": 381,
+      "actual_errors_on_rb_defined": 18,
+      "analytic_mass": {
+        "max": 0.5140981248394555,
+        "mean": 0.08200152882242084,
+        "median": 4.3108479770108504e-07,
+        "min": 0.0
+      },
+      "base_errors": 36,
+      "consumed_mass": {
+        "max": 0.5985,
+        "mean": 0.13472640801924632,
+        "median": 8.552611828907211e-07,
+        "min": 0.0
+      },
+      "direct_base_mass": {
+        "max": 1.0,
+        "mean": 0.8959646221025166,
+        "median": 0.9999687770670485,
+        "min": 0.400225293669924
+      },
+      "effective_single_actor": 212,
+      "errors": 33,
+      "ess": {
+        "max": 20.41107496127087,
+        "mean": 1.7158187369566522,
+        "median": 1.0000001260666995,
+        "min": 1.0
+      },
+      "ess_below_two": 349,
+      "ledger_active": 43,
+      "ledger_changes_action": 0,
+      "low_prior_draws": 7554,
+      "max_particle_weight": {
+        "max": 1.0,
+        "mean": 0.9092221303506005,
+        "median": 0.9999999369666541,
+        "min": 0.06636471436568595
+      },
+      "mean_cause_mass": {
+        "actor": 0.3532419636271665,
+        "habit": 0.4292766507148892,
+        "identity": 0.07825347295227514,
+        "noise": 0.00018087622519709435,
+        "observation": 0.06811068508809466,
+        "unresolved": 0.020936351392377556
+      },
+      "mean_interaction_term_mass": [
+        0.17571598515887102,
+        0.027661848228942264,
+        0.08645024104361504,
+        0.4406482609145323,
+        0.17210073749234872,
+        0.01066561586684644
+      ],
+      "native_helps_base": 3,
+      "native_hurts_base": 0,
+      "new_actor_changed": 90,
+      "new_effective_single_actor": 81,
+      "new_evidence": 169,
+      "new_likelihood_owner_guest_equal": 9,
+      "new_sampled_multi_actor": 169,
+      "nonroot_steps": 376,
+      "nonzero_regime_change_steps": 91,
+      "one_child_per_parent_steps": 376,
+      "one_hot_base": 52,
+      "owner_target_mass": {
+        "max": 0.950000000000003,
+        "mean": 0.32218045011675894,
+        "median": 2.8280148580394054e-06,
+        "min": 0.0
+      },
+      "parent_ess": {
+        "max": 19.84204176518263,
+        "mean": 1.482231451693615,
+        "median": 1.0000000225228072,
+        "min": 1.0
+      },
+      "positive_weight_count": {
+        "max": 24,
+        "mean": 4.184895833333333,
+        "median": 2.0,
+        "min": 1
+      },
+      "rb_only_breaks_actual": 25,
+      "rb_only_defined": 220,
+      "rb_only_errors": 32,
+      "rb_only_fixes_actual": 11,
+      "readout_error": {
+        "max": 0.0,
+        "mean": 0.0,
+        "median": 0.0,
+        "min": 0.0
+      },
+      "steps": 384
+    },
+    "joint_no_new": {
+      "actions_match_base": 384,
+      "actual_errors_on_rb_defined": 12,
+      "analytic_mass": {
+        "max": 0.5140981248394555,
+        "mean": 0.07554470514338477,
+        "median": 3.915255417409465e-09,
+        "min": 0.0
+      },
+      "base_errors": 36,
+      "consumed_mass": {
+        "max": 0.5985,
+        "mean": 0.13347822863035247,
+        "median": 1.0892443610033055e-06,
+        "min": 0.0
+      },
+      "direct_base_mass": {
+        "max": 1.0,
+        "mean": 0.9155192215927754,
+        "median": 0.9999999960847445,
+        "min": 0.36442640637040835
+      },
+      "effective_single_actor": 212,
+      "errors": 36,
+      "ess": {
+        "max": 20.41107496127087,
+        "mean": 1.7188431496756251,
+        "median": 1.0000000849226374,
+        "min": 1.0
+      },
+      "ess_below_two": 348,
+      "ledger_active": 20,
+      "ledger_changes_action": 0,
+      "low_prior_draws": 7556,
+      "max_particle_weight": {
+        "max": 1.0,
+        "mean": 0.9097565637293494,
+        "median": 0.9999999575386831,
+        "min": 0.06636471436568595
+      },
+      "mean_cause_mass": {
+        "actor": 0.3517452546809637,
+        "habit": 0.4292619908352832,
+        "identity": 0.07925359660334756,
+        "noise": 0.00018087622519709435,
+        "observation": 0.06876827198296825,
+        "unresolved": 0.02079000967224029
+      },
+      "mean_interaction_term_mass": [
+        0.17583601234676585,
+        0.028153516764364516,
+        0.0864079690654036,
+        0.44117308210218337,
+        0.17145177645619228,
+        0.010581568518319175
+      ],
+      "native_helps_base": 0,
+      "native_hurts_base": 0,
+      "new_actor_changed": 0,
+      "new_effective_single_actor": 0,
+      "new_evidence": 0,
+      "new_likelihood_owner_guest_equal": 0,
+      "new_sampled_multi_actor": 0,
+      "nonroot_steps": 376,
+      "nonzero_regime_change_steps": 91,
+      "one_child_per_parent_steps": 376,
+      "one_hot_base": 52,
+      "owner_target_mass": {
+        "max": 0.9500000000000028,
+        "mean": 0.319387063434276,
+        "median": 3.1888874739951395e-06,
+        "min": 0.0
+      },
+      "parent_ess": {
+        "max": 19.84204176518263,
+        "mean": 1.4902228566390643,
+        "median": 1.0000000190462552,
+        "min": 1.0
+      },
+      "positive_weight_count": {
+        "max": 24,
+        "mean": 4.1640625,
+        "median": 2.0,
+        "min": 1
+      },
+      "rb_only_breaks_actual": 23,
+      "rb_only_defined": 205,
+      "rb_only_errors": 35,
+      "rb_only_fixes_actual": 0,
+      "readout_error": {
+        "max": 0.0,
+        "mean": 0.0,
+        "median": 0.0,
+        "min": 0.0
+      },
+      "steps": 384
+    },
+    "matched_factor": {
+      "actions_match_base": 381,
+      "actual_errors_on_rb_defined": 18,
+      "analytic_mass": {
+        "max": 0.5206297555096236,
+        "mean": 0.08106559457397756,
+        "median": 2.7637111168293136e-07,
+        "min": 0.0
+      },
+      "base_errors": 36,
+      "consumed_mass": {
+        "max": 0.5985,
+        "mean": 0.13211907182888663,
+        "median": 4.449666121092458e-07,
+        "min": 0.0
+      },
+      "direct_base_mass": {
+        "max": 1.0,
+        "mean": 0.8984829800444768,
+        "median": 0.9999959607502313,
+        "min": 0.3595276833677823
+      },
+      "effective_single_actor": 213,
+      "errors": 33,
+      "ess": {
+        "max": 20.728357230983214,
+        "mean": 1.7571885100365192,
+        "median": 1.000000081136296,
+        "min": 1.0
+      },
+      "ess_below_two": 339,
+      "ledger_active": 40,
+      "ledger_changes_action": 0,
+      "low_prior_draws": 7625,
+      "max_particle_weight": {
+        "max": 1.0,
+        "mean": 0.8952172286286008,
+        "median": 0.9999999594318537,
+        "min": 0.06794419608561693
+      },
+      "mean_cause_mass": {
+        "actor": 0.35436597682519494,
+        "habit": 0.4257149187616768,
+        "identity": 0.07678250087161037,
+        "noise": 0.00023232891209897823,
+        "observation": 0.07100375359528772,
+        "unresolved": 0.02190052103413133
+      },
+      "mean_interaction_term_mass": [
+        0.1657747265837376,
+        0.02491803765033023,
+        0.08493320132324311,
+        0.42568770271563544,
+        0.16643201498899682,
+        0.011511978676083336
+      ],
+      "native_helps_base": 3,
+      "native_hurts_base": 0,
+      "new_actor_changed": 89,
+      "new_effective_single_actor": 82,
+      "new_evidence": 169,
+      "new_likelihood_owner_guest_equal": 9,
+      "new_sampled_multi_actor": 169,
+      "nonroot_steps": 376,
+      "nonzero_regime_change_steps": 91,
+      "one_child_per_parent_steps": 376,
+      "one_hot_base": 52,
+      "owner_target_mass": {
+        "max": 0.9500000000000004,
+        "mean": 0.31844748956405095,
+        "median": 1.3850106859971877e-06,
+        "min": 0.0
+      },
+      "parent_ess": {
+        "max": 20.55984567697667,
+        "mean": 1.5090116120899717,
+        "median": 1.0000000200515042,
+        "min": 1.0
+      },
+      "positive_weight_count": {
+        "max": 24,
+        "mean": 4.005208333333333,
+        "median": 2.0,
+        "min": 1
+      },
+      "rb_only_breaks_actual": 25,
+      "rb_only_defined": 217,
+      "rb_only_errors": 32,
+      "rb_only_fixes_actual": 11,
+      "readout_error": {
+        "max": 0.0,
+        "mean": 0.0,
+        "median": 0.0,
+        "min": 0.0
+      },
+      "steps": 384
+    },
+    "matched_factor_no_new": {
+      "actions_match_base": 384,
+      "actual_errors_on_rb_defined": 12,
+      "analytic_mass": {
+        "max": 0.5176223228628983,
+        "mean": 0.07481607764154966,
+        "median": 1.7741737618435053e-09,
+        "min": 0.0
+      },
+      "base_errors": 36,
+      "consumed_mass": {
+        "max": 0.5985,
+        "mean": 0.13074141732653385,
+        "median": 4.3591864570431595e-07,
+        "min": 0.0
+      },
+      "direct_base_mass": {
+        "max": 1.0,
+        "mean": 0.9157133445843187,
+        "median": 0.9999999982258263,
+        "min": 0.3617832578528263
+      },
+      "effective_single_actor": 212,
+      "errors": 36,
+      "ess": {
+        "max": 20.728357230983214,
+        "mean": 1.754241718398986,
+        "median": 1.0000000612399296,
+        "min": 1.0
+      },
+      "ess_below_two": 338,
+      "ledger_active": 21,
+      "ledger_changes_action": 0,
+      "low_prior_draws": 7622,
+      "max_particle_weight": {
+        "max": 1.0,
+        "mean": 0.898485396596916,
+        "median": 0.9999999693800363,
+        "min": 0.06794419608561693
+      },
+      "mean_cause_mass": {
+        "actor": 0.35441386962899224,
+        "habit": 0.4250817443818008,
+        "identity": 0.07681077632881517,
+        "noise": 0.00023232891209897823,
+        "observation": 0.07174429638000118,
+        "unresolved": 0.021716984368291743
+      },
+      "mean_interaction_term_mass": [
+        0.16814756168275474,
+        0.024485673150122567,
+        0.08476633846304504,
+        0.4271939649273239,
+        0.16539970669834272,
+        0.01159631496343649
+      ],
+      "native_helps_base": 0,
+      "native_hurts_base": 0,
+      "new_actor_changed": 0,
+      "new_effective_single_actor": 0,
+      "new_evidence": 0,
+      "new_likelihood_owner_guest_equal": 0,
+      "new_sampled_multi_actor": 0,
+      "nonroot_steps": 376,
+      "nonzero_regime_change_steps": 91,
+      "one_child_per_parent_steps": 376,
+      "one_hot_base": 52,
+      "owner_target_mass": {
+        "max": 0.9500000000000013,
+        "mean": 0.3155373537390848,
+        "median": 1.1164800641209147e-06,
+        "min": 0.0
+      },
+      "parent_ess": {
+        "max": 20.55984567697667,
+        "mean": 1.5155489507898057,
+        "median": 1.000000023637207,
+        "min": 1.0
+      },
+      "positive_weight_count": {
+        "max": 24,
+        "mean": 4.0078125,
+        "median": 2.0,
+        "min": 1
+      },
+      "rb_only_breaks_actual": 23,
+      "rb_only_defined": 202,
+      "rb_only_errors": 35,
+      "rb_only_fixes_actual": 0,
+      "readout_error": {
+        "max": 0.0,
+        "mean": 0.0,
+        "median": 0.0,
+        "min": 0.0
+      },
+      "steps": 384
+    }
+  },
+  "base_margin": {
+    "max": 1.0,
+    "mean": 0.9122205004516467,
+    "median": 0.9993516438541779,
+    "min": 0.0
+  },
+  "correction_cases": [
+    {
+      "base": {
+        "677a1b16-69cc-6f26-1707-3619aa408797": 0.25,
+        "985cafca-8892-5352-e2f0-cb1468f56fa1": 0.25,
+        "997cb9ad-e84a-9650-910b-0d84cfa78c22": 0.25,
+        "bbef0a45-a38f-5b20-49d6-1674b8b09420": 0.25
+      },
+      "condition": "sparse32",
+      "episode": 0,
+      "step": 1,
+      "step_id": "4cca9b7f-fd27-5952-bf3b-013acf806799",
+      "target": "997cb9ad-e84a-9650-910b-0d84cfa78c22"
+    },
+    {
+      "base": {
+        "5a966733-ce7b-2dd1-7e8a-991253a7e929": 0.25,
+        "92723973-3056-0b59-09f6-9c475cbc3653": 0.25,
+        "ade17aec-4815-32f3-0276-3ab38430a89c": 0.25,
+        "f5e165af-a27f-ea3b-92e2-7f18c66bb799": 0.25
+      },
+      "condition": "sparse32",
+      "episode": 3,
+      "step": 1,
+      "step_id": "0e34e1dd-c488-5520-af1f-489e2512efa6",
+      "target": "f5e165af-a27f-ea3b-92e2-7f18c66bb799"
+    },
+    {
+      "base": {
+        "25945f61-baf9-fa53-5120-b3c99c0d4dcc": 0.25,
+        "47055163-e75f-d109-3729-2419db9e9e64": 0.25,
+        "a534df76-5802-2a60-9efd-a591c17a39c1": 0.25,
+        "d6907714-8eb9-a964-876b-67bed37891cc": 0.25
+      },
+      "condition": "long64",
+      "episode": 3,
+      "step": 1,
+      "step_id": "6295f6d0-a046-516f-b3ab-54ae5df31f2e",
+      "target": "a534df76-5802-2a60-9efd-a591c17a39c1"
+    }
+  ],
+  "distinct_action_distributions": 162,
+  "distinct_actor_distributions": 194,
+  "equal_base_distributions_all_four_arms": true,
+  "equal_search_logs": true,
+  "evidence_changes_after_first_step": 0,
+  "factor_margin": {
+    "max": 1.0,
+    "mean": 0.8772729961363692,
+    "median": 0.963449577762844,
+    "min": 0.005656991941596523
+  },
+  "identical_put_actions": 384,
+  "margin_bound_holds": 384,
+  "paired_steps": 384,
+  "rb_hashes_verified": 36864,
+  "shared_errors": 33,
+  "source_files_verified": 505
+}

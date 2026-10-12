@@ -1,3 +1,9 @@
+# A交付回执：采样修复已推送，PR113为草稿（2026-10-13）
+
+[草稿PR113](https://github.com/goneveitvet240-svg/cpswm/pull/113)已创建，堆叠PR112，未合并。报告/原件证据提交`40d1dc12a303f3564eb148b86098ba7651592f5d`已推送；推断/runner/评分/测试`b2910c7a0d06f71aefb46d26b70456d984543926`。[报告](../reviews/pc_a/particle_support_repair_2026-10-12/REPORT.md)。当前事件入口人物采样支持故障已修复：新留出多人物支持3/169→169/169，联合/因子化均34→33放回错，但全部动作仍相同，独有收益未成立。100次实际运行、164测试、9局部篡改拒绝、4重复及196归档成员解压重算通过。原默认应用、自然任务、全局撤回、B/全仓/S1/共享集成仍未完成，完整范围保持。
+
+---
+
 # A交付：同预算人物采样支持修复（2026-10-13）
 
 分支`codex/pc-a-particle-support-repair-20261012`，base/PR112 `92823b6364a0a712b76680f60a3152f7b80bcf79`；推断/runner/评分/测试 `b2910c7a0d06f71aefb46d26b70456d984543926`，冻结/辅助工具/默认基准重跑 `7cd811103b03961881be3aa4c1c46b066e3e3ba4`，最终检查器 `7ff5ab5ea34ab449f858c348bb1f4aae3f987962`。[报告](../reviews/pc_a/particle_support_repair_2026-10-12/REPORT.md)、[命令](../reviews/pc_a/particle_support_repair_2026-10-12/COMMANDS.md)、[接入](../reviews/pc_a/particle_support_repair_2026-10-12/INTEGRATION.md)。推送前本地完成。

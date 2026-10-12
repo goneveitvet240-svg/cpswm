@@ -357,7 +357,7 @@ class FullJointObservation:
     cause_posterior: Mapping[ParticleChangeCause, float]
     regime_change_probability: float
     active_regime: str
-    observed_location_id: UUID
+    observed_location_id: UUID | None
     base_location_distribution: Mapping[UUID, float]
     known_location_ids: tuple[UUID, ...]
     unresolved_probability: float
@@ -398,7 +398,9 @@ class FullJointObservation:
             raise ValueError("known location catalogue must be unique")
         if not self.known_location_ids:
             raise ValueError("known location catalogue cannot be empty")
-        if self.observed_location_id not in self.known_location_ids:
+        if self.observed_location_id not in self.known_location_ids and not (
+            self.observed_location_id is None and getattr(self, "prediction_only", False)
+        ):
             raise ValueError("observed location must belong to the visible location catalogue")
         if set(self.base_location_distribution) != set(self.known_location_ids):
             raise ValueError("base action distribution must cover the known location catalogue")
@@ -1211,6 +1213,12 @@ class StatefulFullJointRuntime:
             score += _log(regime_probability)
         return score
 
+    def _observation_log_likelihood(
+        self, observation: FullJointObservation, candidate: FullJointCandidate
+    ) -> float:
+        """Optional independently sourced observation; posterior inputs stay separate."""
+        return 0.0
+
     @staticmethod
     def interaction_terms(
         observation: FullJointObservation,
@@ -1346,6 +1354,7 @@ class StatefulFullJointRuntime:
         if (
             candidate.instance_association_key == "target_instance"
             and StructureTwoOperator.OPCEU not in self.neutralized_operators
+            and observation.observed_location_id is not None
         ):
             cell_key = (candidate.placement_actor, candidate.active_regime_after)
             cell = rb_cells.get(cell_key, RBCellState.prior(len(observation.known_location_ids)))
@@ -1495,7 +1504,10 @@ class StatefulFullJointRuntime:
         opceu = self._append_flow(
             StructureTwoOperator.OPCEU,
             executed=True,
-            changed=StructureTwoOperator.OPCEU not in self.neutralized_operators,
+            changed=(
+                StructureTwoOperator.OPCEU not in self.neutralized_operators
+                and observation.observed_location_id is not None
+            ),
             input_hash=before,
             output_payload={
                 "source": str(observation.source_update_id),
@@ -1639,6 +1651,15 @@ class StatefulFullJointRuntime:
                 },
                 "known_location_ids": [str(value) for value in observation.known_location_ids],
                 "unresolved_probability": observation.unresolved_probability,
+                **(
+                    {
+                        "prediction_only": observation.prediction_only,
+                        "position_source_id": str(observation.position_source_id),
+                        "location_likelihood": observation.location_likelihood,
+                    }
+                    if hasattr(observation, "prediction_only")
+                    else {}
+                ),
             }
         )
         draws = self._systematic_draw_indices(
@@ -1690,13 +1711,22 @@ class StatefulFullJointRuntime:
                         0.0 if parent is None else _log(parent.posterior_probability)
                     ),
                     transition_log_probability=transition_log_probability,
-                    observation_log_likelihood=0.0,
+                    observation_log_likelihood=self._observation_log_likelihood(
+                        observation, candidate
+                    ),
                     posterior_projection_log_factor=(
                         self._main_log_factor(observation, candidate)
                         + self._interaction_log_factor(observation, candidate)
                     ),
-                    evidence_semantics="posterior_projection_not_likelihood",
+                    evidence_semantics=(
+                        "posterior_projection_with_independent_likelihood"
+                        if getattr(observation, "position_source_id", None) is not None
+                        else "posterior_projection_not_likelihood"
+                    ),
                     source_posterior_snapshot_id=observation.source_update_id,
+                    independent_observation_source_id=getattr(
+                        observation, "position_source_id", None
+                    ),
                     constraints=self._constraints(candidate),
                 )
             )
@@ -1723,7 +1753,10 @@ class StatefulFullJointRuntime:
         self._last_observation = observation
         joint_distribution = self._posterior_action_distribution(observation, include_ledger=False)
         ledger_before = self.rgrc_ledger.head_hash
-        if StructureTwoOperator.RGRC not in self.neutralized_operators:
+        if (
+            StructureTwoOperator.RGRC not in self.neutralized_operators
+            and observation.observed_location_id is not None
+        ):
             self.rgrc_ledger.consider(
                 self.particles,
                 owner_key=observation.owner_actor_key,

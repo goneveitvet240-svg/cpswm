@@ -356,9 +356,12 @@ class ParticleRevisionReceipt(ContractModel):
     observation_log_likelihood: float
     posterior_projection_log_factor: float = 0.0
     evidence_semantics: Literal[
-        "raw_observation_likelihood", "posterior_projection_not_likelihood"
+        "raw_observation_likelihood",
+        "posterior_projection_not_likelihood",
+        "posterior_projection_with_independent_likelihood",
     ] = "raw_observation_likelihood"
     source_posterior_snapshot_id: UUID | None = None
+    independent_observation_source_id: UUID | None = None
     constraints: tuple[StructuredConstraint, ...]
     # A native, verified integration kernel may supply a quadrature coefficient.
     # Random proposals retain the historical zero default. Exhaustive finite
@@ -384,8 +387,22 @@ class ParticleRevisionReceipt(ContractModel):
                 )
             if self.source_posterior_snapshot_id is None:
                 raise ValueError("a posterior projection requires its source snapshot identity")
+        elif self.evidence_semantics == "posterior_projection_with_independent_likelihood":
+            if (
+                self.source_posterior_snapshot_id is None
+                or self.independent_observation_source_id is None
+                or self.source_posterior_snapshot_id == self.independent_observation_source_id
+            ):
+                raise ValueError(
+                    "mixed evidence requires distinct posterior and observation sources"
+                )
         elif self.posterior_projection_log_factor != 0.0:
             raise ValueError("raw-likelihood revisions cannot carry a posterior projection factor")
+        if (
+            self.evidence_semantics != "posterior_projection_with_independent_likelihood"
+            and self.independent_observation_source_id is not None
+        ):
+            raise ValueError("independent observation source requires explicit mixed semantics")
         constraint_factors = tuple(constraint.factor for constraint in self.constraints)
         if len(constraint_factors) != len(set(constraint_factors)):
             raise ValueError("a structured weight factor may appear only once per particle")

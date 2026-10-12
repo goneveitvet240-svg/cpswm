@@ -1,0 +1,206 @@
+{
+  "actual_runs": 32,
+  "all_groups_identical_paid_search": true,
+  "comparisons": {
+    "long64/joint_new_evidence_effect": {
+      "action_disagreements": 1,
+      "pre_search_disagreements": 0,
+      "put_error_difference": -1
+    },
+    "long64/joint_vs_joint_no_new": {
+      "action_disagreements": 1,
+      "pre_search_disagreements": 0,
+      "put_error_difference": -1
+    },
+    "long64/joint_vs_matched_factor": {
+      "action_disagreements": 0,
+      "pre_search_disagreements": 0,
+      "put_error_difference": 0
+    },
+    "long64/joint_vs_matched_factor_no_new": {
+      "action_disagreements": 1,
+      "pre_search_disagreements": 0,
+      "put_error_difference": -1
+    },
+    "long64/matched_factor_new_evidence_effect": {
+      "action_disagreements": 1,
+      "pre_search_disagreements": 0,
+      "put_error_difference": -1
+    },
+    "sparse32/joint_new_evidence_effect": {
+      "action_disagreements": 2,
+      "pre_search_disagreements": 0,
+      "put_error_difference": -2
+    },
+    "sparse32/joint_vs_joint_no_new": {
+      "action_disagreements": 2,
+      "pre_search_disagreements": 0,
+      "put_error_difference": -2
+    },
+    "sparse32/joint_vs_matched_factor": {
+      "action_disagreements": 0,
+      "pre_search_disagreements": 0,
+      "put_error_difference": 0
+    },
+    "sparse32/joint_vs_matched_factor_no_new": {
+      "action_disagreements": 2,
+      "pre_search_disagreements": 0,
+      "put_error_difference": -2
+    },
+    "sparse32/matched_factor_new_evidence_effect": {
+      "action_disagreements": 2,
+      "pre_search_disagreements": 0,
+      "put_error_difference": -2
+    }
+  },
+  "logical_rows": 32,
+  "sampling_diagnostics": {
+    "long64/joint": {
+      "informative_full_likelihood": 82,
+      "informative_on_sampled_support": 82,
+      "multiple_actor_support": 83,
+      "updates": 83
+    },
+    "long64/joint_no_new": {},
+    "long64/matched_factor": {
+      "informative_full_likelihood": 82,
+      "informative_on_sampled_support": 82,
+      "multiple_actor_support": 83,
+      "updates": 83
+    },
+    "long64/matched_factor_no_new": {},
+    "sparse32/joint": {
+      "informative_full_likelihood": 84,
+      "informative_on_sampled_support": 84,
+      "multiple_actor_support": 86,
+      "updates": 86
+    },
+    "sparse32/joint_no_new": {},
+    "sparse32/matched_factor": {
+      "informative_full_likelihood": 84,
+      "informative_on_sampled_support": 84,
+      "multiple_actor_support": 86,
+      "updates": 86
+    },
+    "sparse32/matched_factor_no_new": {}
+  },
+  "scope": "Independent recorded arithmetic/interval checks; full proposal support checked in enumerated development probes, not malicious-process isolation",
+  "totals": {
+    "long64/joint": {
+      "actor_posterior_changed_steps": 82,
+      "checks": 273,
+      "first_position_errors": 11,
+      "missing_location_with_actor_cue": 0,
+      "n": 256,
+      "native_location_updates": 83,
+      "native_score_evaluations": 8136,
+      "new_evidence_actor_likelihood_differs": 82,
+      "new_evidence_multiple_actor_particles": 83,
+      "original_location_missing": 83,
+      "put_errors": 7,
+      "retrieval_failures": 0,
+      "within_step_action_changes": 1,
+      "within_step_actor_changes": 27
+    },
+    "long64/joint_no_new": {
+      "actor_posterior_changed_steps": 82,
+      "checks": 273,
+      "first_position_errors": 11,
+      "missing_location_with_actor_cue": 0,
+      "n": 256,
+      "native_score_evaluations": 6144,
+      "original_location_missing": 83,
+      "put_errors": 8,
+      "retrieval_failures": 0,
+      "within_step_action_changes": 0,
+      "within_step_actor_changes": 0
+    },
+    "long64/matched_factor": {
+      "actor_posterior_changed_steps": 82,
+      "checks": 273,
+      "first_position_errors": 11,
+      "missing_location_with_actor_cue": 0,
+      "n": 256,
+      "native_location_updates": 83,
+      "native_score_evaluations": 8136,
+      "new_evidence_actor_likelihood_differs": 82,
+      "new_evidence_multiple_actor_particles": 83,
+      "original_location_missing": 83,
+      "put_errors": 7,
+      "retrieval_failures": 0,
+      "within_step_action_changes": 1,
+      "within_step_actor_changes": 29
+    },
+    "long64/matched_factor_no_new": {
+      "actor_posterior_changed_steps": 82,
+      "checks": 273,
+      "first_position_errors": 11,
+      "missing_location_with_actor_cue": 0,
+      "n": 256,
+      "native_score_evaluations": 6144,
+      "original_location_missing": 83,
+      "put_errors": 8,
+      "retrieval_failures": 0,
+      "within_step_action_changes": 0,
+      "within_step_actor_changes": 0
+    },
+    "sparse32/joint": {
+      "actor_posterior_changed_steps": 84,
+      "checks": 158,
+      "first_position_errors": 19,
+      "missing_location_with_actor_cue": 0,
+      "n": 128,
+      "native_location_updates": 86,
+      "native_score_evaluations": 5136,
+      "new_evidence_actor_likelihood_differs": 84,
+      "new_evidence_multiple_actor_particles": 86,
+      "original_location_missing": 86,
+      "put_errors": 26,
+      "retrieval_failures": 0,
+      "within_step_action_changes": 2,
+      "within_step_actor_changes": 63
+    },
+    "sparse32/joint_no_new": {
+      "actor_posterior_changed_steps": 84,
+      "checks": 158,
+      "first_position_errors": 19,
+      "missing_location_with_actor_cue": 0,
+      "n": 128,
+      "native_score_evaluations": 3072,
+      "original_location_missing": 86,
+      "put_errors": 28,
+      "retrieval_failures": 0,
+      "within_step_action_changes": 0,
+      "within_step_actor_changes": 0
+    },
+    "sparse32/matched_factor": {
+      "actor_posterior_changed_steps": 84,
+      "checks": 158,
+      "first_position_errors": 19,
+      "missing_location_with_actor_cue": 0,
+      "n": 128,
+      "native_location_updates": 86,
+      "native_score_evaluations": 5136,
+      "new_evidence_actor_likelihood_differs": 84,
+      "new_evidence_multiple_actor_particles": 86,
+      "original_location_missing": 86,
+      "put_errors": 26,
+      "retrieval_failures": 0,
+      "within_step_action_changes": 2,
+      "within_step_actor_changes": 60
+    },
+    "sparse32/matched_factor_no_new": {
+      "actor_posterior_changed_steps": 84,
+      "checks": 158,
+      "first_position_errors": 19,
+      "missing_location_with_actor_cue": 0,
+      "n": 128,
+      "native_score_evaluations": 3072,
+      "original_location_missing": 86,
+      "put_errors": 28,
+      "retrieval_failures": 0,
+      "within_step_action_changes": 0,
+      "within_step_actor_changes": 0
+    }
+  }
+}

@@ -1,3 +1,9 @@
+# A交付回执：当前事件证据已推送，PR112为草稿（2026-10-12）
+
+[草稿PR112](https://github.com/goneveitvet240-svg/cpswm/pull/112)已创建，堆叠PR111，未合并。报告/原始证据提交 `f4889550f9464a92e2a4aa274ce7b637025b94c3` 已推送；最终推断/runner/评分/测试 `8ca11cbe2ad42d0f256ba000dcfad513f8134bb5`。[报告](../reviews/pc_a/current_event_binding_2026-10-12/REPORT.md)。缺测当前事件与183次原生付费位置更新已接通开发入口；联合/因子化384步全部动作相同，均32放回错，新证据净收益0。固定开发诊断定位采样支持塌缩，未改变采样。最终52实际运行、149定向测试、11输出篡改拒绝、4重复和109归档成员解压重算通过；48次修复前后推断/动作完全一致。B独立复核、自然任务、全仓/S1/全局撤回与共享集成未完成，完整范围保持。
+
+---
+
 # A交付：当前事件绑定与原生位置证据公平对照（2026-10-12）
 
 分支 `codex/pc-a-current-event-binding-20261012`，base/PR111 `e85e935667e2a4b31104020620a2fe36817fd71b`；最终推断/runner/评分/测试 `8ca11cbe2ad42d0f256ba000dcfad513f8134bb5`，辅助检查/支持诊断 `b852242de94845fb74baa4de26fa41cb34aac4be`。[报告](../reviews/pc_a/current_event_binding_2026-10-12/REPORT.md)、[命令](../reviews/pc_a/current_event_binding_2026-10-12/COMMANDS.md)、[接入边界](../reviews/pc_a/current_event_binding_2026-10-12/INTEGRATION.md)。本节推送前为本地完成。

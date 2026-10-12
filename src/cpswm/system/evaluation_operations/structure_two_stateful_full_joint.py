@@ -962,6 +962,10 @@ class StatefulFullJointRuntime:
             result.append(cursor)
         return tuple(result)
 
+    def _proposal_draw_indices(self, probabilities, count, seed_sha256):
+        """Default production sampler; specialized runtimes may repair the approximation."""
+        return self._systematic_draw_indices(probabilities, count, seed_sha256)
+
     def _neural_features(
         self,
         observation: FullJointObservation,
@@ -1662,7 +1666,7 @@ class StatefulFullJointRuntime:
                 ),
             }
         )
-        draws = self._systematic_draw_indices(
+        draws = self._proposal_draw_indices(
             [entry[0] for entry in all_entries], self.config.particle_budget, seed_sha
         )
         transition_normalizers: dict[UUID | None, float] = {}

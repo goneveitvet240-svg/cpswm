@@ -49,7 +49,9 @@ def dataset_for(condition, seeds):
     ).build()
 
 
-def build(dataset, episode, arm, profile="v06", consume_new=True):
+def build(
+    dataset, episode, arm, profile="v06", consume_new=True, sampling_method="independent_strata_v1"
+):
     original = build_task_separated_full_joint_state(
         repository_root=ROOT,
         dataset=dataset,
@@ -58,6 +60,7 @@ def build(dataset, episode, arm, profile="v06", consume_new=True):
         profile=profile,
     )
     runtime = CurrentEventRuntime(
+        sampling_method=sampling_method,
         arm=original.runtime.arm,
         config=original.runtime.config,
         neural_model=original.runtime.neural_model,
@@ -82,8 +85,10 @@ def build(dataset, episode, arm, profile="v06", consume_new=True):
     )
 
 
-def evaluate(dataset, episode, arm, profile="v06", consume_new=True):
-    state = build(dataset, episode, arm, profile, consume_new)
+def evaluate(
+    dataset, episode, arm, profile="v06", consume_new=True, sampling_method="independent_strata_v1"
+):
+    state = build(dataset, episode, arm, profile, consume_new, sampling_method)
     start = perf_counter()
     evidence = []
     for index, step in enumerate(episode.steps):
@@ -117,6 +122,8 @@ def evaluate(dataset, episode, arm, profile="v06", consume_new=True):
     )
     return {
         "arm": arm,
+        "sampling_method": sampling_method,
+        "sampling_receipts": state.runtime.sampling_receipts,
         "profile": profile,
         "consume_new": consume_new,
         "episode_sha256": content_sha256(episode),

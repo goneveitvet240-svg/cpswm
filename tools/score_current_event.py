@@ -57,6 +57,7 @@ def verify_run(run, visible, truth):
     }
     counts, _ = score_run(head, visible, truth)
     counts = Counter(counts)
+    assert len(run["task_readout_actions"]) == len(run["actions"])
     assert len(run["actions"]) == len(visible["steps"]) == len(run["native_evidence"])
     applied = []
     event_ids = []
@@ -64,6 +65,11 @@ def verify_run(run, visible, truth):
         zip(run["actions"], visible["steps"], run["native_evidence"], strict=True)
     ):
         assert row["step_id"] == step["step_id"] and row["native_step_index"] == i + 1
+        assert run["task_readout_actions"][i] == {
+            "prediction_index": i,
+            "put_back": row["put_back"],
+            "search_order": row["search"]["planned_order"],
+        }
         o = native["observation"]
         event_ids.append(row["event_id"])
         assert row["event_id"] == o["source_update_id"]

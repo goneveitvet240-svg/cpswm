@@ -123,6 +123,14 @@ def evaluate(dataset, episode, arm, profile="v06", consume_new=True):
         "actions": state.event_actions,
         "native_evidence": evidence,
         "location_revisions": state.runtime.location_revisions,
+        "task_readout_actions": [
+            {
+                "prediction_index": r.prediction_index,
+                "put_back": str(r.put_back),
+                "search_order": list(map(str, r.search_order)),
+            }
+            for r in state.task_readout_receipts
+        ],
         "location_sources": {str(k): v for k, v in state.runtime.location_sources.items()},
         "native_audit": _runtime_audit_payload(state.runtime, episode_id=episode.episode_id),
         "put_errors": errors,
@@ -143,6 +151,8 @@ def manifest():
         Path(__file__),
         ROOT / "tools/score_current_event.py",
         ROOT / "tests/test_current_event.py",
+        ROOT / "tests/test_current_event_adversarial.py",
+        ROOT / "tests/test_current_event_task_receipt.py",
         ROOT / "tools/score_shared_location.py",
         ROOT / "tools/verify_full_mechanism_value.py",
         *sorted((ROOT / "configs/project_two_experiments").glob("*.json")),

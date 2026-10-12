@@ -359,6 +359,9 @@ class CurrentEventActionState(TaskSeparatedFullJointActionState):
             native.put_back, tuple(map(UUID, row["planned_order"])), native.unknown_probability
         )
         self._state.bind_prediction_trace(prediction, self._state._prediction_index - 1)
+        self.task_readout_receipts[-1] = replace(
+            self.task_readout_receipts[-1], search_order=prediction.search_order
+        )
         after = self.runtime.action_distribution()
         self.event_actions.append(
             {

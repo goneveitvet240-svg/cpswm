@@ -1,3 +1,9 @@
+# A交付回执：联合动作差异分析已推送，PR114为草稿（2026-10-13）
+
+[草稿PR114](https://github.com/goneveitvet240-svg/cpswm/pull/114)已创建，堆叠PR113，未合并。分析/报告/证据 `58e2f559e6977219c8a61a5c5c5b6da88b79aecb` 已推送。[报告](../reviews/pc_a/joint_action_gap_analysis_2026-10-13/REPORT.md)。联合概率差异未跨越动作排序；有效样本量、基础读出主导及共享搜索设计是已定位瓶颈。3次证据收益全部为首步冷启动。仅回溯分析，生产未改，B复核/自然任务/独有科学收益/共享集成仍待完成。
+
+---
+
 # A交付：联合动作差异回溯诊断（2026-10-13）
 
 分支 `codex/pc-a-joint-action-gap-analysis-20261013`，base/推断版本 `27ef572986feff7af78c04c65f73d850a4017f31`；分析工具/报告/证据提交 `58e2f559e6977219c8a61a5c5c5b6da88b79aecb`。[报告](../reviews/pc_a/joint_action_gap_analysis_2026-10-13/REPORT.md)、[命令](../reviews/pc_a/joint_action_gap_analysis_2026-10-13/COMMANDS.md)。推送前本地完成，非新增推断实验。

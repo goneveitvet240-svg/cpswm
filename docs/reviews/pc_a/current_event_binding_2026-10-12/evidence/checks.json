@@ -1,0 +1,39 @@
+{
+  "actual_runs": {
+    "dev": 16,
+    "test": 32
+  },
+  "additional_revision_step_executions": 42,
+  "independent_profile_selection": {
+    "matched_full_state_factorized": "v06",
+    "stateful_full_joint": "v06"
+  },
+  "repeat_runs_exact_except_wall_seconds": 4,
+  "revision_continuations": [
+    {
+      "arm": "stateful_full_joint",
+      "restore_exact": true,
+      "withdraw_changes_next_action": false
+    },
+    {
+      "arm": "matched_full_state_factorized",
+      "restore_exact": true,
+      "withdraw_changes_next_action": false
+    }
+  ],
+  "scope": "local bounded checks, not B acceptance or malicious-process isolation",
+  "source_files_checked": 501,
+  "tamper_rejections": [
+    "current_event",
+    "step_count",
+    "put",
+    "paid_cost",
+    "receipt",
+    "actor_likelihood",
+    "native_weight",
+    "mixed_source",
+    "remove_native_write",
+    "duplicate_event",
+    "task_readout"
+  ]
+}

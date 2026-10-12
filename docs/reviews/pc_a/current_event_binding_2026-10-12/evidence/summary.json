@@ -1,0 +1,101 @@
+{
+  "diagnostics": {
+    "actor_informative_likelihood": 181,
+    "constant_likelihood_on_sampled_support": 183,
+    "new_location_events": 183,
+    "single_actor_sample_support": 182
+  },
+  "distinct_true_location_paths_up_to_renaming": {
+    "long64": 1,
+    "sparse32": 1
+  },
+  "evidence_interaction": {
+    "long64": {
+      "factor_new_minus_no_new_put_errors": 1,
+      "joint_minus_factor_evidence_effect": 0,
+      "joint_new_minus_no_new_put_errors": 1
+    },
+    "sparse32": {
+      "factor_new_minus_no_new_put_errors": -1,
+      "joint_minus_factor_evidence_effect": 0,
+      "joint_new_minus_no_new_put_errors": -1
+    }
+  },
+  "scope": "D0 fixed-policy search then native habit decisions; descriptive, not a natural robot task or independent worlds",
+  "totals": {
+    "factor": {
+      "actor_posterior_changed_steps": 190,
+      "checks": 451,
+      "first_position_errors": 41,
+      "missing_location_with_actor_cue": 0,
+      "n": 384,
+      "native_location_updates": 183,
+      "native_score_evaluations": 13608,
+      "new_evidence_actor_likelihood_differs": 181,
+      "new_evidence_multiple_actor_particles": 1,
+      "original_location_missing": 192,
+      "put_errors": 32,
+      "retrieval_failures": 9,
+      "within_step_action_changes": 1,
+      "within_step_actor_changes": 0
+    },
+    "joint": {
+      "actor_posterior_changed_steps": 190,
+      "checks": 451,
+      "first_position_errors": 41,
+      "missing_location_with_actor_cue": 0,
+      "n": 384,
+      "native_location_updates": 183,
+      "native_score_evaluations": 13608,
+      "new_evidence_actor_likelihood_differs": 181,
+      "new_evidence_multiple_actor_particles": 1,
+      "original_location_missing": 192,
+      "put_errors": 32,
+      "retrieval_failures": 9,
+      "within_step_action_changes": 1,
+      "within_step_actor_changes": 0
+    },
+    "joint_no_new": {
+      "actor_posterior_changed_steps": 190,
+      "checks": 451,
+      "first_position_errors": 41,
+      "missing_location_with_actor_cue": 0,
+      "n": 384,
+      "native_score_evaluations": 9216,
+      "original_location_missing": 192,
+      "put_errors": 32,
+      "retrieval_failures": 9,
+      "within_step_action_changes": 0,
+      "within_step_actor_changes": 0
+    },
+    "matched_factor": {
+      "actor_posterior_changed_steps": 190,
+      "checks": 451,
+      "first_position_errors": 41,
+      "missing_location_with_actor_cue": 0,
+      "n": 384,
+      "native_location_updates": 183,
+      "native_score_evaluations": 13608,
+      "new_evidence_actor_likelihood_differs": 181,
+      "new_evidence_multiple_actor_particles": 1,
+      "original_location_missing": 192,
+      "put_errors": 32,
+      "retrieval_failures": 9,
+      "within_step_action_changes": 1,
+      "within_step_actor_changes": 0
+    },
+    "matched_factor_no_new": {
+      "actor_posterior_changed_steps": 190,
+      "checks": 451,
+      "first_position_errors": 41,
+      "missing_location_with_actor_cue": 0,
+      "n": 384,
+      "native_score_evaluations": 9216,
+      "original_location_missing": 192,
+      "put_errors": 32,
+      "retrieval_failures": 9,
+      "within_step_action_changes": 0,
+      "within_step_actor_changes": 0
+    }
+  }
+}

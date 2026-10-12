@@ -69,6 +69,7 @@ def check(main, repeat, repository):
         "mixed_source",
         "remove_native_write",
         "duplicate_event",
+        "task_readout",
     ]
     for attack in attacks:
         run = copy.deepcopy(original)
@@ -94,6 +95,8 @@ def check(main, repeat, repository):
             row["location_source_id"] = None
         elif attack == "duplicate_event":
             run["actions"][-1]["event_id"] = run["actions"][0]["event_id"]
+        elif attack == "task_readout":
+            run["task_readout_actions"][changed]["search_order"] = []
         try:
             verify_run(run, visible, truth)
         except (AssertionError, ValueError, KeyError):

@@ -27,6 +27,10 @@ def check(main, repeat, repository):
             assert files == sources
             scores[phase + "/" + method] = result
     assert sources == read(repeat / "source.json")["files"]
+    freeze = read(main / "freeze.json")
+    assert freeze["source_files"] == sources
+    assert freeze["profile"] == "v06" and freeze["particle_budget"] == 24
+    assert freeze["test_seeds"] == [67001, 67002, 67003, 67004]
     for rel, expected in sources.items():
         assert hashlib.sha256((repository / rel).read_bytes()).hexdigest() == expected
     cross = {}
@@ -39,6 +43,9 @@ def check(main, repeat, repository):
             totals[key.split("/")[1]].update(value)
         total[method] = {k: dict(v) for k, v in totals.items()}
         for item in read(root / "index.json"):
+            visible = read(root / item["visible"])
+            assert visible["split"] == "test"
+            assert visible["scene_id"] == f"scene-test-{67001 + item['episode']}"
             run = read(root / item["file"])
             for receipt, native in zip(
                 run["sampling_receipts"], run["native_evidence"], strict=True

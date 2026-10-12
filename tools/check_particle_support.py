@@ -40,6 +40,10 @@ def check(main, repeat, repository):
         total[method] = {k: dict(v) for k, v in totals.items()}
         for item in read(root / "index.json"):
             run = read(root / item["file"])
+            for receipt, native in zip(
+                run["sampling_receipts"], run["native_evidence"], strict=True
+            ):
+                assert receipt["support_size"] == native["fairness"]["proposal_support_size"]
             totals[item["label"]]["retained_event_enumerated_candidates"] += sum(
                 r["support_size"] for r in run["sampling_receipts"]
             )

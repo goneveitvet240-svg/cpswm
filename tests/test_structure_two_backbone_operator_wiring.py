@@ -10,6 +10,7 @@ superiority.
 from __future__ import annotations
 
 import inspect
+from dataclasses import replace
 from uuid import uuid4
 
 import pytest
@@ -34,6 +35,19 @@ from cpswm.system.structure_two_execution import (
 )
 
 P0_ROUTER_FEATURES = {"action_margin": 0.9, "regime_hazard": 0.0}
+
+
+def _synthetic_actor_source(value):
+    """Explicit D0 test commitment; not a calibrated natural person observation."""
+    return replace(
+        value,
+        actor_evidence_source_sha256=content_sha256(
+            {
+                "fixture": "synthetic_actor_cue_for_wiring_positive_path",
+                "input_sha256": value.content_sha256,
+            }
+        ),
+    )
 
 
 def _p0_features(probe: BackboneWiringProbe):
@@ -75,19 +89,22 @@ def test_positive_observation_different_location_runs_the_full_thirteen_call_clo
     assert probe.system.pending_adaptive_debts() == ()
 
 
-def test_same_location_verification_closes_with_one_opceu_receipt_and_no_transition() -> None:
+@pytest.mark.parametrize("actor_source", [False, True])
+def test_same_location_verification_closes_with_one_opceu_receipt_and_no_transition(
+    actor_source,
+) -> None:
     """Invariant: the same-location closure is exactly one OPCEU fast-verification call.
 
-    Expected change: the reversible fast ledger owner mass.
+    Expected change: owner mass only when an explicit synthetic actor source exists.
     Expected unchanged: no second transition, no long-term commit.
     """
 
     probe = BackboneWiringProbe.build(seed=7)
     transition = probe.transition_for(probe.observed_days()[0])
-    result, sink = probe.run_direct_p5(
-        transition,
-        ciav_input=probe.ciav_input(transition, outcome=CIAVOutcomeKind.DETECTED_SAME_LOCATION),
-    )
+    value = probe.ciav_input(transition, outcome=CIAVOutcomeKind.DETECTED_SAME_LOCATION)
+    if actor_source:
+        value = _synthetic_actor_source(value)
+    result, sink = probe.run_direct_p5(transition, ciav_input=value)
     trace, rows = verify_and_flatten(sink)
 
     assert len(rows) == 8
@@ -95,26 +112,30 @@ def test_same_location_verification_closes_with_one_opceu_receipt_and_no_transit
     assert trace.feedback_closure_kind == "same_location_fast_verification"
     assert result.feedback_result is None
     assert result.fast_verification_receipt is not None
-    assert result.fast_verification_receipt.changed is True
+    assert result.fast_verification_receipt.changed is actor_source
     assert probe.committed_revision_ids() == ()
 
 
-def test_negative_observation_stops_at_seven_receipts_and_leaves_no_partial_closure() -> None:
+@pytest.mark.parametrize("actor_source", [False, True])
+def test_negative_observation_stops_at_seven_receipts_and_leaves_no_partial_closure(
+    actor_source,
+) -> None:
     """Invariant: an undetected CIAV observation produces no feedback closure at all.
 
     Expected change: none downstream of CIAV.
     Expected unchanged: closure kind ``none``, no closure receipts, no commit.
 
     This is a *correct* no-op at trace level.  It is also the measurable form of the
-    registered open gap: the CIAV actor posterior is computed and then discarded.
+    registered open gap: even an explicit actor posterior is not consumed by a
+    negative-observation closure. Presence-only evidence stays actor-neutral.
     """
 
     probe = BackboneWiringProbe.build(seed=7)
     transition = probe.transition_for(probe.observed_days()[0])
-    result, sink = probe.run_direct_p5(
-        transition,
-        ciav_input=probe.ciav_input(transition, outcome=CIAVOutcomeKind.NOT_DETECTED),
-    )
+    value = probe.ciav_input(transition, outcome=CIAVOutcomeKind.NOT_DETECTED)
+    if actor_source:
+        value = _synthetic_actor_source(value)
+    result, sink = probe.run_direct_p5(transition, ciav_input=value)
     trace, rows = verify_and_flatten(sink)
 
     assert len(rows) == 7
@@ -127,7 +148,10 @@ def test_negative_observation_stops_at_seven_receipts_and_leaves_no_partial_clos
 
     ciav_owner = result.ciav_receipt.evidence.actor_posterior[probe.case.owner_actor]
     primary_owner = result.primary_result.actor_posterior[probe.case.owner_actor]
-    assert ciav_owner != pytest.approx(primary_owner)
+    if actor_source:
+        assert ciav_owner != pytest.approx(primary_owner)
+    else:
+        assert ciav_owner == pytest.approx(primary_owner)
 
 
 def test_negative_and_same_location_closures_differ_in_state_but_not_in_committed_memory() -> None:
@@ -164,7 +188,7 @@ def test_same_location_verification_moves_the_action_only_across_the_owner_mass_
     rescale of a one-hot component is provably invisible.
     """
 
-    def run(owner_likelihood: float):
+    def run(owner_likelihood: float, actor_source=True):
         probe = BackboneWiringProbe.build(seed=7, action_readout=selected_v0_6_action_readout())
         days = probe.observed_days()
         for observation in days[:4]:
@@ -176,14 +200,14 @@ def test_same_location_verification_moves_the_action_only_across_the_owner_mass_
                 ),
             )
         transition = probe.transition_for(days[4])
-        probe.run_direct_p5(
+        value = probe.ciav_input(
             transition,
-            ciav_input=probe.ciav_input(
-                transition,
-                outcome=CIAVOutcomeKind.DETECTED_SAME_LOCATION,
-                owner_likelihood=owner_likelihood,
-            ),
+            outcome=CIAVOutcomeKind.DETECTED_SAME_LOCATION,
+            owner_likelihood=owner_likelihood,
         )
+        if actor_source:
+            value = _synthetic_actor_source(value)
+        probe.run_direct_p5(transition, ciav_input=value)
         return probe
 
     def baseline():
@@ -205,6 +229,10 @@ def test_same_location_verification_moves_the_action_only_across_the_owner_mass_
         return probe
 
     reference = baseline().action_distribution_sha256()
+
+    neutral = run(0.05, actor_source=False)
+    assert neutral.system.core.fast_action_verification_receipts[-1].changed is False
+    assert neutral.action_distribution_sha256() == reference
 
     above = run(0.95)
     assert above.system.core.fast_action_verification_receipts[-1].changed is True

@@ -1,0 +1,228 @@
+{
+  "changed_sources": [],
+  "exit_code": 2,
+  "gaps": {
+    "default_sampling_migration": "BLOCKED: default runtime retains systematic sampling",
+    "glass_surface_geometry": "BLOCKED: rejection of background depth is not surface recovery",
+    "global_source_retraction": "NOT_VALIDATED: only native location-source transaction exercised",
+    "independent_B_S1_full_suite": "NOT_VALIDATED: local bounded checks only",
+    "joint_scientific_gain": "NOT_ESTABLISHED: engineering checks do not prove action benefit",
+    "natural_person_likelihood": "NOT_VALIDATED: no natural person calibration in this suite",
+    "natural_semantic_bridge": "BLOCKED: natural instance/actor/role event bridge absent",
+    "physical_robot_loop": "NOT_VALIDATED: D0 search is not navigation/grasp/place execution"
+  },
+  "scope": "bounded module execution, not full unified/S1/robot acceptance",
+  "source_unchanged": true,
+  "stages": [
+    {
+      "command": [
+        "/private/tmp/cpswm-pc-a-module-acceptance-20261013/.venv/bin/python",
+        "/private/tmp/cpswm-pc-a-module-acceptance-20261013/tools/run_module_acceptance.py",
+        "--worker",
+        "environment",
+        "--output",
+        "/private/tmp/cpswm-module-acceptance-final/environment/data"
+      ],
+      "exit_code": 0,
+      "name": "environment",
+      "result_sha256": "2271acbc664b0793dac799d68fbd04b27b8fc15cfcf7b25492e87b155296d3d2",
+      "seconds": 0.39922189712524414,
+      "started_unix": 1791861923.032319,
+      "status": "PASSED",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "command": [
+        "/private/tmp/cpswm-pc-a-module-acceptance-20261013/.venv/bin/python",
+        "/private/tmp/cpswm-pc-a-module-acceptance-20261013/tools/run_module_acceptance.py",
+        "--worker",
+        "default_sampling",
+        "--output",
+        "/private/tmp/cpswm-module-acceptance-final/default_sampling/data"
+      ],
+      "exit_code": 0,
+      "name": "default_sampling",
+      "result_sha256": "3881f1c57cb625c66e36d2d712dec506b9d8a0426739353323b9b965548b8617",
+      "seconds": 0.4465010166168213,
+      "started_unix": 1791861923.431982,
+      "status": "PASSED",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "command": [
+        "/private/tmp/cpswm-pc-a-module-acceptance-20261013/.venv/bin/python",
+        "-m",
+        "pytest",
+        "-o",
+        "addopts=",
+        "-q",
+        "tests/test_grounding_readout_feedback_repair.py",
+        "tests/test_natural_vision.py",
+        "tests/test_natural_mask_surface.py",
+        "--junitxml=/private/tmp/cpswm-module-acceptance-final/visual_actor_boundaries/tests.xml"
+      ],
+      "exit_code": 0,
+      "name": "visual_actor_boundaries",
+      "seconds": 39.85010886192322,
+      "started_unix": 1791861923.8789482,
+      "status": "PASSED",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_sha256": "0de90b3e1ea515777fe9f301b684fab479de258b5cb80b35d6b5e99de03e59e0",
+      "tests": {
+        "errors": 0,
+        "failures": 0,
+        "passed": 46,
+        "skipped": 0,
+        "tests": 46
+      }
+    },
+    {
+      "command": [
+        "/private/tmp/cpswm-pc-a-module-acceptance-20261013/.venv/bin/python",
+        "-m",
+        "pytest",
+        "-o",
+        "addopts=",
+        "-q",
+        "tests/test_structure_two_production_system.py",
+        "tests/test_structure_two_backbone_operator_wiring.py",
+        "--junitxml=/private/tmp/cpswm-module-acceptance-final/production_wiring/tests.xml"
+      ],
+      "exit_code": 0,
+      "name": "production_wiring",
+      "seconds": 26.597826719284058,
+      "started_unix": 1791861963.7304902,
+      "status": "PASSED",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_sha256": "fe9177b1d147850b1c443cc5c441708da3de565a5b5b7dc11d295bb03dfbb91c",
+      "tests": {
+        "errors": 0,
+        "failures": 0,
+        "passed": 35,
+        "skipped": 0,
+        "tests": 35
+      }
+    },
+    {
+      "command": [
+        "/private/tmp/cpswm-pc-a-module-acceptance-20261013/.venv/bin/python",
+        "-m",
+        "pytest",
+        "-o",
+        "addopts=",
+        "-q",
+        "tests/test_particle_support_sampling.py",
+        "tests/test_current_event.py",
+        "tests/test_current_event_adversarial.py",
+        "tests/test_current_event_task_receipt.py",
+        "tests/test_shared_location.py",
+        "tests/test_current_location.py",
+        "tests/test_executed_search.py",
+        "tests/test_active_location_search.py",
+        "tests/test_task_readout_repair.py",
+        "tests/test_full_mechanism_value_diagnostic.py",
+        "tests/test_structure_two_stateful_full_joint.py",
+        "tests/test_structure_two_stateful_full_joint_adversarial.py",
+        "tests/test_structure_two_w3_native_posterior_projection.py",
+        "--junitxml=/private/tmp/cpswm-module-acceptance-final/current_event_inference/tests.xml"
+      ],
+      "exit_code": 0,
+      "name": "current_event_inference",
+      "seconds": 50.35962390899658,
+      "started_unix": 1791861990.3291929,
+      "status": "PASSED",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_sha256": "5fffb4686a93acef9ad4e29f7b13255fb4146df78848045d4f5116377eb94251",
+      "tests": {
+        "errors": 0,
+        "failures": 0,
+        "passed": 164,
+        "skipped": 0,
+        "tests": 164
+      }
+    },
+    {
+      "command": [
+        "/private/tmp/cpswm-pc-a-module-acceptance-20261013/.venv/bin/python",
+        "-m",
+        "pytest",
+        "-o",
+        "addopts=",
+        "-q",
+        "tests/test_module_acceptance.py",
+        "--junitxml=/private/tmp/cpswm-module-acceptance-final/acceptance_integrity/tests.xml"
+      ],
+      "exit_code": 0,
+      "name": "acceptance_integrity",
+      "seconds": 0.6079869270324707,
+      "started_unix": 1791862040.690298,
+      "status": "PASSED",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_sha256": "3817260cc1420f191e30ab7b7a0b24bd97633c13927e57fbb803bb0f77ce27f3",
+      "tests": {
+        "errors": 0,
+        "failures": 0,
+        "passed": 11,
+        "skipped": 0,
+        "tests": 11
+      }
+    },
+    {
+      "command": [
+        "/private/tmp/cpswm-pc-a-module-acceptance-20261013/.venv/bin/python",
+        "/private/tmp/cpswm-pc-a-module-acceptance-20261013/tools/run_module_acceptance.py",
+        "--worker",
+        "native_run",
+        "--output",
+        "/private/tmp/cpswm-module-acceptance-final/native_run/data"
+      ],
+      "exit_code": 0,
+      "name": "native_run",
+      "result_sha256": "8015bc0b5f326ce97e8264af3b9f2763901228fcbd224c57025c819756a145a3",
+      "seconds": 22.4805691242218,
+      "started_unix": 1791862041.299008,
+      "status": "PASSED",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_sha256": "0f290989e04aa6134230894a31727b87d509bfbfdbf8fa716bfa26045b5b7682"
+    },
+    {
+      "command": [
+        "/private/tmp/cpswm-pc-a-module-acceptance-20261013/.venv/bin/python",
+        "/private/tmp/cpswm-pc-a-module-acceptance-20261013/tools/run_module_acceptance.py",
+        "--worker",
+        "native_audit",
+        "--output",
+        "/private/tmp/cpswm-module-acceptance-final/native_audit/data"
+      ],
+      "exit_code": 0,
+      "name": "native_audit",
+      "result_sha256": "34c326178066bd2cabc6df0f1d9c2e295597df8786d2f7440dc449252e41a25b",
+      "seconds": 0.49327898025512695,
+      "started_unix": 1791862063.780261,
+      "status": "PASSED",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "command": [
+        "/private/tmp/cpswm-pc-a-module-acceptance-20261013/.venv/bin/python",
+        "/private/tmp/cpswm-pc-a-module-acceptance-20261013/tools/run_module_acceptance.py",
+        "--worker",
+        "revision_continuation",
+        "--output",
+        "/private/tmp/cpswm-module-acceptance-final/revision_continuation/data"
+      ],
+      "exit_code": 0,
+      "name": "revision_continuation",
+      "result_sha256": "00424e2c94f34dfcc73093f967a1426b00a22b006d8b767f34b2c8094274dc25",
+      "seconds": 7.2875449657440186,
+      "started_unix": 1791862064.274038,
+      "status": "PASSED",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "status": "PARTIAL"
+}

@@ -1,0 +1,41 @@
+import copy
+import json
+import shutil
+from pathlib import Path
+from run_module_acceptance import read,save,sha
+from verify_module_acceptance import verify
+
+source=Path('/private/tmp/cpswm-module-acceptance-final')
+repository=Path.cwd()
+base=Path('/private/tmp/cpswm-module-acceptance-attacks')
+base.mkdir(exist_ok=False)
+results=[]
+for kind in ('false_full_pass','erase_gaps','missing_stage','forged_counts','native_weight'):
+    root=base/kind
+    shutil.copytree(source,root)
+    summary=read(root/'summary.json')
+    if kind=='false_full_pass':
+        summary['status']='PASSED'; summary['exit_code']=0
+    elif kind=='erase_gaps':
+        summary['gaps']={}
+    elif kind=='missing_stage':
+        summary['stages']=[s for s in summary['stages'] if s['name']!='production_wiring']
+    elif kind=='forged_counts':
+        stage=next(s for s in summary['stages'] if s['name']=='visual_actor_boundaries')
+        stage['tests']['tests']=stage['tests']['passed']=999
+        save(root/'visual_actor_boundaries/result.json',stage)
+    elif kind=='native_weight':
+        p=root/'native_run/data/joint.json';r=read(p)
+        r['native_evidence'][0]['weights'][0]+=0.1;save(p,r)
+    save(root/'summary.json',summary)
+    # Rebuild every changed member hash: rejection cannot rely on stale hashes.
+    manifest={str(p.relative_to(root)):sha(p) for p in root.rglob('*') if p.is_file() and p.name!='MANIFEST.json'}
+    save(root/'MANIFEST.json',manifest)
+    try:
+        verify(root,repository)
+    except (AssertionError,ValueError,KeyError) as exc:
+        results.append(dict(case=kind,rejected=True,error=type(exc).__name__,detail=str(exc)))
+    else:
+        raise AssertionError('complete rehash bypass accepted: '+kind)
+save(base/'results.json',dict(cases=results,scope='five local fully-rehashed output mutations; not complete malicious-process isolation'))
+print(results)

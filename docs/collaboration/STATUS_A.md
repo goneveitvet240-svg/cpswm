@@ -1,3 +1,9 @@
+# A交付回执：模块联跑验收已推送，PR115为草稿（2026-10-13）
+
+[草稿PR115](https://github.com/goneveitvet240-svg/cpswm/pull/115)已创建，堆叠PR114，未合并。[报告](../reviews/pc_a/module_acceptance_2026-10-13/REPORT.md)。工具/测试`d481e4fb55cb82a871ae88acd151795d41c34def`、报告/证据`56994abdd7d43bb4a9990afa59412ffc3784792c`已推送。256检查、128步联跑及42步撤回恢复通过；总状态PARTIAL，默认迁移/自然语义/机器人/B/全仓/S1/科学收益及共享集成仍未完成。生产src未改，不自动合并。
+
+---
+
 # A交付：单入口模块联跑验收（2026-10-13）
 
 分支`codex/pc-a-module-acceptance-20261013`，base/PR114 `8805c4b9589caf24b6d55c6a567dbd11df636237`；实际工具/测试源码`d481e4fb55cb82a871ae88acd151795d41c34def`，报告/原件证据`56994abdd7d43bb4a9990afa59412ffc3784792c`。[报告](../reviews/pc_a/module_acceptance_2026-10-13/REPORT.md)、[命令](../reviews/pc_a/module_acceptance_2026-10-13/COMMANDS.md)。推送前本地完成。

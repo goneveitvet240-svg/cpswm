@@ -1,3 +1,18 @@
+# A开工：小规模仿真框架（2026-10-17）
+
+用户授权按 2026-10-16 任务书推进，随后明确“先搭框架、在仿真中运行、不上真机”。
+分支 `codex/pc-a-small-sim-pilot-20261017`；base/开工代码
+`61a28f93447bc49f42863374a6af2bc936e8c991`，工作树 `/private/tmp/cpswm-small-sim-20261017`。
+共享集成仍为 `19ddf26830348a2f0b33f0af54d6ba702c5cfb1c`，不自动合并。
+
+- 实施：受控观察合同、现有 Route-C 原生内核适配、来源重放对照、修订取消动作、实际结果回传、事件/MuJoCo可替换后端及独立日志。
+- 第一版是明确标注的 controlled semantic integration fixture；MuJoCo使用简化二维执行体，不冒充LIBERO机械臂、SAM视觉或π0.5。
+- 本机为 Apple Silicon；GPU入口待确认，不新开付费实例。原有完整研究范围与默认参数不改，240条正式比较数据及完整VLA闭环仍待实现。
+- 证据位置：`docs/reviews/pc_a/small_sim_framework_2026-10-17/`。测试待运行，当前仅本地进行中；推送和PR另记实际结果。
+- 开工已fetch并核对远端。原工作树/STATUS_B保持；GitHub CLI认证查询超时，仍继续本地实现。
+
+---
+
 # A交付回执：模块联跑验收已推送，PR115为草稿（2026-10-13）
 
 [草稿PR115](https://github.com/goneveitvet240-svg/cpswm/pull/115)已创建，堆叠PR114，未合并。[报告](../reviews/pc_a/module_acceptance_2026-10-13/REPORT.md)。工具/测试`d481e4fb55cb82a871ae88acd151795d41c34def`、报告/证据`56994abdd7d43bb4a9990afa59412ffc3784792c`已推送。256检查、128步联跑及42步撤回恢复通过；总状态PARTIAL，默认迁移/自然语义/机器人/B/全仓/S1/科学收益及共享集成仍未完成。生产src未改，不自动合并。

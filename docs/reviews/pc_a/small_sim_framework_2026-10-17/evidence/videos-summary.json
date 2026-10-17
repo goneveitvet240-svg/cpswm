@@ -1,0 +1,41 @@
+{
+  "backend": "mujoco",
+  "manifest_digest": "cfa89d66f7bcb84eb962132c0ffec0e25e2e9c812d72cb12d6512e87ee52c193",
+  "results": [
+    {
+      "arm": "native_joint",
+      "condition": "delayed_attribution",
+      "control_steps": 250,
+      "correction_changed_destination": true,
+      "evaluation": {
+        "expected_destination": "left",
+        "task_success": true,
+        "wrong_destination": false
+      },
+      "execution_outcomes": [
+        "succeeded"
+      ],
+      "inspection_count": 3
+    },
+    {
+      "arm": "native_joint",
+      "condition": "execution_failure",
+      "control_steps": 500,
+      "correction_changed_destination": false,
+      "evaluation": {
+        "expected_destination": "left",
+        "task_success": true,
+        "wrong_destination": false
+      },
+      "execution_outcomes": [
+        "failed",
+        "succeeded"
+      ],
+      "inspection_count": 3
+    }
+  ],
+  "runs": 2,
+  "scientific_acceptance": false,
+  "source_unchanged": true,
+  "status": "ENGINEERING_RUN_COMPLETE"
+}

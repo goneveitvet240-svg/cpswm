@@ -1,3 +1,9 @@
+# A交付回执：仿真框架已推送，PR116为草稿（2026-10-17）
+
+[草稿PR116](https://github.com/goneveitvet240-svg/cpswm/pull/116)已创建，堆叠PR115，未合并。实现/正式运行`be7f6a175f37b08ddcbce01d7a3b1e9e377d2c28`、报告/证据`2c2044e`已推送。[报告](../reviews/pc_a/small_sim_framework_2026-10-17/REPORT.md)。188定向测试通过，事件24次+MuJoCo24次及2段录像完成；当前为二维执行体/受控语义工程框架，不是机械臂/自然视觉或完整科学验收。B绑定实现SHA复核；共享集成、完整任务书和联合机制收益仍待完成。下一步按报告接仿真LIBERO/视觉，不上真机。
+
+---
+
 # A交付：仿真框架已运行（2026-10-17）
 
 分支`codex/pc-a-small-sim-pilot-20261017`；base `61a28f93447bc49f42863374a6af2bc936e8c991`；实际实现/正式运行SHA `be7f6a175f37b08ddcbce01d7a3b1e9e377d2c28`已推送。报告与证据随后单独提交。

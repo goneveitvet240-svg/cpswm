@@ -1,3 +1,12 @@
+# A开工：LIBERO / π0.5 / SAM 本机仿真接入（2026-10-17）
+
+用户授权接入三组件，明确仅有自己的Mac，无GPU主机。本机24 GiB统一内存、arm64。分支`codex/pc-a-libero-pi05-sam-20261017`，base/开工代码`4640e2bd41ee3261f2f9276af27260d2f464ff5f`（PR116）。隔离工作树`/private/tmp/cpswm-libero-pi05-sam-20261017`。
+
+范围：锁定官方依赖与输入/动作协议，接真实LIBERO仿真、SAM图像观察与openpi π0.5策略接口；优先验证本机可运行层，完整模型实跑以实际结果为准。不创建云GPU，不接真机，不更改完整科学范围或默认生产入口。开工fetch已核对远端，STATUS_B保留。
+证据计划`docs/reviews/pc_a/libero_pi05_sam_2026-10-17/`；当前本地进行中，测试和运行待完成，B绑定最终SHA复核。
+
+---
+
 # A交付回执：仿真框架已推送，PR116为草稿（2026-10-17）
 
 [草稿PR116](https://github.com/goneveitvet240-svg/cpswm/pull/116)已创建，堆叠PR115，未合并。实现/正式运行`be7f6a175f37b08ddcbce01d7a3b1e9e377d2c28`、报告/证据`2c2044e`已推送。[报告](../reviews/pc_a/small_sim_framework_2026-10-17/REPORT.md)。188定向测试通过，事件24次+MuJoCo24次及2段录像完成；当前为二维执行体/受控语义工程框架，不是机械臂/自然视觉或完整科学验收。B绑定实现SHA复核；共享集成、完整任务书和联合机制收益仍待完成。下一步按报告接仿真LIBERO/视觉，不上真机。

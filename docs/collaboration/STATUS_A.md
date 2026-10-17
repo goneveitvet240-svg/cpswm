@@ -1,3 +1,37 @@
+# A交付回执：仿真框架已推送，PR116为草稿（2026-10-17）
+
+[草稿PR116](https://github.com/goneveitvet240-svg/cpswm/pull/116)已创建，堆叠PR115，未合并。实现/正式运行`be7f6a175f37b08ddcbce01d7a3b1e9e377d2c28`、报告/证据`2c2044e`已推送。[报告](../reviews/pc_a/small_sim_framework_2026-10-17/REPORT.md)。188定向测试通过，事件24次+MuJoCo24次及2段录像完成；当前为二维执行体/受控语义工程框架，不是机械臂/自然视觉或完整科学验收。B绑定实现SHA复核；共享集成、完整任务书和联合机制收益仍待完成。下一步按报告接仿真LIBERO/视觉，不上真机。
+
+---
+
+# A交付：仿真框架已运行（2026-10-17）
+
+分支`codex/pc-a-small-sim-pilot-20261017`；base `61a28f93447bc49f42863374a6af2bc936e8c991`；实际实现/正式运行SHA `be7f6a175f37b08ddcbce01d7a3b1e9e377d2c28`已推送。报告与证据随后单独提交。
+[报告](../reviews/pc_a/small_sim_framework_2026-10-17/REPORT.md)、[命令](../reviews/pc_a/small_sim_framework_2026-10-17/COMMANDS.md)、[使用说明](../simulation/README.md)。
+
+- 观察→原生记忆→版本绑定命令→仿真执行→实际反馈闭环；迟到修订取消旧计划，失败可恢复，反馈写入恢复不重复动作。仅仿真，无真机。
+- 188定向测试通过/0失败/0跳过；Ruff与局部mypy通过。事件24次、MuJoCo24次、另2段录像；24对指定输出字段一致；110原件归档解压逐字节验证。
+- 每后端原生联合/因子化/来源重放各6/6，普通记忆4/6；没有联合独有收益。二维MuJoCo执行体与受控语义传感器，非机械臂/SAM/π0.5/LIBERO；不是240条独立样本或完整科学验收。
+- 当前批工程范围完成；原生全局撤回、自然感知、正式读出与同预算比较、B复核/全仓/共享集成仍未完成。下一步接仿真LIBERO执行及自然视觉，GPU入口待确认，不创建付费实例。
+- 交付前fetch复核集成`19ddf26830348a2f0b33f0af54d6ba702c5cfb1c`及base未变；保留STATUS_B与原工作树。通过草稿PR交接，不自动合并。
+
+---
+
+# A开工：小规模仿真框架（2026-10-17）
+
+用户授权按 2026-10-16 任务书推进，随后明确“先搭框架、在仿真中运行、不上真机”。
+分支 `codex/pc-a-small-sim-pilot-20261017`；base/开工代码
+`61a28f93447bc49f42863374a6af2bc936e8c991`，工作树 `/private/tmp/cpswm-small-sim-20261017`。
+共享集成仍为 `19ddf26830348a2f0b33f0af54d6ba702c5cfb1c`，不自动合并。
+
+- 实施：受控观察合同、现有 Route-C 原生内核适配、来源重放对照、修订取消动作、实际结果回传、事件/MuJoCo可替换后端及独立日志。
+- 第一版是明确标注的 controlled semantic integration fixture；MuJoCo使用简化二维执行体，不冒充LIBERO机械臂、SAM视觉或π0.5。
+- 本机为 Apple Silicon；GPU入口待确认，不新开付费实例。原有完整研究范围与默认参数不改，240条正式比较数据及完整VLA闭环仍待实现。
+- 证据位置：`docs/reviews/pc_a/small_sim_framework_2026-10-17/`。测试待运行，当前仅本地进行中；推送和PR另记实际结果。
+- 开工已fetch并核对远端。原工作树/STATUS_B保持；GitHub CLI认证查询超时，仍继续本地实现。
+
+---
+
 # A交付回执：模块联跑验收已推送，PR115为草稿（2026-10-13）
 
 [草稿PR115](https://github.com/goneveitvet240-svg/cpswm/pull/115)已创建，堆叠PR114，未合并。[报告](../reviews/pc_a/module_acceptance_2026-10-13/REPORT.md)。工具/测试`d481e4fb55cb82a871ae88acd151795d41c34def`、报告/证据`56994abdd7d43bb4a9990afa59412ffc3784792c`已推送。256检查、128步联跑及42步撤回恢复通过；总状态PARTIAL，默认迁移/自然语义/机器人/B/全仓/S1/科学收益及共享集成仍未完成。生产src未改，不自动合并。

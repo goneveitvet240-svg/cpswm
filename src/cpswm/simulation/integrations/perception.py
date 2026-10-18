@@ -7,6 +7,7 @@ slower than a streaming fork but uses the pinned public SAM2 API unmodified.
 from __future__ import annotations
 
 import hashlib
+from importlib import import_module
 from pathlib import Path
 from typing import Any
 
@@ -17,7 +18,7 @@ from PIL import Image
 def visual_event(
     episode: str,
     tick: int,
-    mask: np.ndarray,
+    mask: np.ndarray[Any, Any],
     *,
     initialized: bool,
     image_digest: str,
@@ -69,7 +70,7 @@ class Sam2Tracker:
         self.last_tick = -1
         self.checkpoint = checkpoint
         if predictor is None:
-            from sam2.build_sam import build_sam2_video_predictor
+            build_sam2_video_predictor = import_module("sam2.build_sam").build_sam2_video_predictor
 
             predictor = build_sam2_video_predictor(
                 "configs/sam2.1/sam2.1_hiera_t.yaml",
@@ -81,9 +82,9 @@ class Sam2Tracker:
         self.shape: tuple[int, ...] | None = None
 
     def observe(
-        self, rgb: np.ndarray, episode: str, tick: int
-    ) -> tuple[dict[str, Any], np.ndarray]:
-        import torch
+        self, rgb: np.ndarray[Any, Any], episode: str, tick: int
+    ) -> tuple[dict[str, Any], np.ndarray[Any, Any]]:
+        torch = import_module("torch")
 
         if rgb.dtype != np.uint8 or rgb.ndim != 3 or rgb.shape[-1] != 3:
             raise ValueError("SAM input must be uint8 HWC RGB")

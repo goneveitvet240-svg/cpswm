@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import os
+from importlib import import_module
 from pathlib import Path
 from typing import Any
 
@@ -26,7 +27,7 @@ PUBLIC_KEYS = (
 
 def configure_libero(repository: Path, config_dir: Path) -> None:
     """Avoid upstream interactive config creation in the user's home directory."""
-    import yaml
+    yaml = import_module("yaml")
 
     base = repository.resolve() / "libero" / "libero"
     if not (base / "bddl_files").is_dir():
@@ -49,8 +50,9 @@ def public_observation(obs: dict[str, Any]) -> dict[str, Any]:
 
 class LiberoEnvironment:
     def __init__(self, task_key: str, initial_state: int = 0, seed: int = 7) -> None:
-        from libero.libero import benchmark, get_libero_path
-        from libero.libero.envs import OffScreenRenderEnv
+        benchmark = import_module("libero.libero.benchmark")
+        get_libero_path = import_module("libero.libero").get_libero_path
+        OffScreenRenderEnv = import_module("libero.libero.envs").OffScreenRenderEnv
 
         if task_key not in TASKS or initial_state < 0:
             raise ValueError("unknown declared task or initial state")
@@ -64,7 +66,7 @@ class LiberoEnvironment:
         self.prompt = task.language
         # Trusted initialization artifact from the pinned official repository.
         # PyTorch 2.6 changed the default; upstream was written for older torch.
-        import torch
+        torch = import_module("torch")
 
         state_file = (
             Path(get_libero_path("init_states")) / task.problem_folder / task.init_states_file
@@ -89,7 +91,7 @@ class LiberoEnvironment:
         self.steps = 0
         self.evaluator_success = False
 
-    def step(self, action: np.ndarray) -> dict[str, Any]:
+    def step(self, action: np.ndarray[Any, Any]) -> dict[str, Any]:
         if action.shape != (7,) or not np.isfinite(action).all():
             raise ValueError("expected finite 7-dimensional OSC_POSE action")
         obs, _, done, _ = self.env.step(action.tolist())

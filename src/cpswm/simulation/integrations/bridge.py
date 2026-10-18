@@ -44,6 +44,8 @@ class NativeBridge:
         if not line:
             raise RuntimeError("CPSWM worker exited without a receipt")
         reply = json.loads(line)
+        if not isinstance(reply, dict) or not all(isinstance(k, str) for k in reply):
+            raise RuntimeError("CPSWM worker returned a non-object receipt")
         if not reply.get("ok"):
             raise RuntimeError(reply.get("error", "CPSWM worker error"))
         return reply

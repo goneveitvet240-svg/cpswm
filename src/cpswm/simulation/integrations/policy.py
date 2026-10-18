@@ -3,13 +3,14 @@
 from __future__ import annotations
 
 from collections import deque
+from importlib import import_module
 from typing import Any
 
 import numpy as np
 
 
 def policy_input(obs: dict[str, Any], prompt: str) -> dict[str, Any]:
-    from openpi_client import image_tools
+    image_tools = import_module("openpi_client.image_tools")
 
     if not isinstance(prompt, str) or not prompt.strip():
         raise ValueError("an explicit task instruction is required")
@@ -47,7 +48,7 @@ class ActionChunks:
         if type(replan_steps) is not int or replan_steps < 1:
             raise ValueError("positive replan_steps required")
         self.replan_steps = replan_steps
-        self.actions: deque[np.ndarray] = deque()
+        self.actions: deque[np.ndarray[Any, Any]] = deque()
         self.binding: tuple[str, str] | None = None
         self.cancelled_actions = 0
 
@@ -70,7 +71,7 @@ class ActionChunks:
         # controller input limits. No renormalization or gripper sign inversion.
         self.actions.extend(row.copy() for row in a[: self.replan_steps])
 
-    def pop(self, revision: str, prompt: str) -> np.ndarray:
+    def pop(self, revision: str, prompt: str) -> np.ndarray[Any, Any]:
         if self.binding != (revision, prompt):
             self.bind(revision, prompt)
             raise ValueError("stale action chunk cancelled")
@@ -99,12 +100,15 @@ def local_pi05(checkpoint: str, device: str = "cpu") -> Any:
         raise ValueError(
             "official downloaded checkpoint is JAX; this Mac path requires CPU, not MPS"
         )
-    import jax
-    import jax.numpy as jnp
-    from openpi import transforms as t
-    from openpi.models import model, pi0_config, tokenizer
-    from openpi.policies import libero_policy, policy
-    from openpi.shared import normalize
+    jax = import_module("jax")
+    jnp = import_module("jax.numpy")
+    t = import_module("openpi.transforms")
+    model = import_module("openpi.models.model")
+    pi0_config = import_module("openpi.models.pi0_config")
+    tokenizer = import_module("openpi.models.tokenizer")
+    libero_policy = import_module("openpi.policies.libero_policy")
+    policy = import_module("openpi.policies.policy")
+    normalize = import_module("openpi.shared.normalize")
 
     if any(d.platform != "cpu" for d in jax.devices()):
         raise RuntimeError("Mac inference entry requires JAX_PLATFORMS=cpu")

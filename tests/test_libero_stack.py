@@ -1,5 +1,6 @@
 """Integration contracts; actual model/physics runs are recorded separately."""
 
+import importlib.util
 from pathlib import Path
 
 import numpy as np
@@ -22,7 +23,13 @@ def raw_observation():
     }
 
 
-def test_official_image_orientation_and_state_not_mutated():
+@pytest.fixture
+def openpi_inputs():
+    if importlib.util.find_spec("openpi_client") is None:
+        pytest.skip("requires isolated simulation environment; use tools/simulation_python.py")
+
+
+def test_official_image_orientation_and_state_not_mutated(openpi_inputs):
     from openpi_client.image_tools import resize_with_pad
 
     obs = raw_observation()
@@ -45,7 +52,7 @@ def test_official_image_orientation_and_state_not_mutated():
         ("agentview_image", np.zeros((2, 2, 3))),
     ],
 )
-def test_invalid_policy_observation_rejected(field, value):
+def test_invalid_policy_observation_rejected(field, value, openpi_inputs):
     obs = raw_observation()
     obs[field] = np.asarray(value)
     with pytest.raises(ValueError):
@@ -121,6 +128,8 @@ class PrefixPredictor:
 
 
 def test_sam_adapter_sees_only_received_prefix_and_needs_explicit_reset(tmp_path):
+    if importlib.util.find_spec("torch") is None:
+        pytest.skip("requires torch in the optional perception/simulation environment")
     predictor = PrefixPredictor()
     t = Sam2Tracker(
         tmp_path / "unused.pt",
@@ -172,6 +181,8 @@ def test_jax_weights_not_mislabelled_as_mps():
 def test_official_inference_dependencies_and_checkpoint_normalization():
     # Regression: a successful lightweight adapter import previously hid the
     # incompatible Pydantic/numpydantic combination until the full model run.
+    if importlib.util.find_spec("openpi") is None:
+        pytest.skip("requires isolated simulation environment; use tools/simulation_python.py")
     from openpi.models import pi0_config, tokenizer
     from openpi.policies import policy
     from openpi.shared import normalize

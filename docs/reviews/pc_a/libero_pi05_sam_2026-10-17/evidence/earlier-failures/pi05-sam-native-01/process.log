@@ -1,0 +1,96 @@
+LIBERO: initializing real simulator
+[robosuite WARNING] No private macro file found! (macros.py:53)
+[robosuite WARNING] It is recommended to use a private macro file (macros.py:54)
+[robosuite WARNING] To setup, run: python /Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/.local/simulation-stack/envs/libero/lib/python3.11/site-packages/robosuite/scripts/setup_macros.py (macros.py:55)
+Gym has been unmaintained since 2022 and does not support NumPy 2.0 amongst other critical functionality.
+Please upgrade to Gymnasium, the maintained drop-in replacement of Gym, or contact the authors of your software and request that they upgrade.
+Users of this version of Gym should be able to simply replace 'import gym' with 'import gymnasium as gym' in the vast majority of cases.
+See the migration guide at https://gymnasium.farama.org/introduction/migration_guide/ for additional information.
+[info] using task orders [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+[Warning]: datasets path /Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/.local/simulation-stack/vendor/openpi/third_party/libero/datasets does not exist!
+[Warning]: datasets path /Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/.local/simulation-stack/vendor/openpi/third_party/libero/datasets does not exist!
+LIBERO: ready, task=pick up the black bowl from table center and place it on the plate
+Traceback (most recent call last):
+  File "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/.local/simulation-stack/envs/libero/lib/python3.11/site-packages/pydantic/_internal/_generate_schema.py", line 2855, in finalize_schema
+    gather_result = gather_schemas_for_cleaning(
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/.local/simulation-stack/envs/libero/lib/python3.11/site-packages/pydantic/_internal/_schema_gather.py", line 43, in gather_schemas_for_cleaning
+    collected_references, deferred_discriminator_schemas = _schema_gather.gather_schemas_for_cleaning(
+                                                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+pydantic_core._pydantic_core._schema_gather.MissingDefinitionError: any-shape-array-2b3b6d5522ac5a35
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/.local/simulation-stack/cpswm/tools/simulation_python.py", line 53, in <module>
+    main()
+  File "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/.local/simulation-stack/cpswm/tools/simulation_python.py", line 49, in main
+    runpy.run_path(sys.argv[0], run_name="__main__")
+  File "<frozen runpy>", line 291, in run_path
+  File "<frozen runpy>", line 98, in _run_module_code
+  File "<frozen runpy>", line 88, in _run_code
+  File "tools/run_libero_stack.py", line 254, in <module>
+    main()
+  File "tools/run_libero_stack.py", line 130, in main
+    policy = local_pi05(str(stack / "models/pi05_libero"), args.device, args.seed)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/.local/simulation-stack/cpswm/src/cpswm/simulation/integrations/policy.py", line 104, in local_pi05
+    from openpi import transforms as t
+  File "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/.local/simulation-stack/vendor/openpi/src/openpi/transforms.py", line 13, in <module>
+    from openpi.shared import normalize as _normalize
+  File "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/.local/simulation-stack/vendor/openpi/src/openpi/shared/normalize.py", line 9, in <module>
+    @pydantic.dataclasses.dataclass
+     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/.local/simulation-stack/envs/libero/lib/python3.11/site-packages/pydantic/dataclasses.py", line 281, in dataclass
+    return create_dataclass if _cls is None else create_dataclass(_cls)
+                                                 ^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/.local/simulation-stack/envs/libero/lib/python3.11/site-packages/pydantic/dataclasses.py", line 278, in create_dataclass
+    _pydantic_dataclasses.complete_dataclass(cls, config_wrapper, raise_errors=False)
+  File "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/.local/simulation-stack/envs/libero/lib/python3.11/site-packages/pydantic/_internal/_dataclasses.py", line 165, in complete_dataclass
+    schema = gen_schema.generate_schema(cls)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/.local/simulation-stack/envs/libero/lib/python3.11/site-packages/pydantic/_internal/_generate_schema.py", line 826, in generate_schema
+    schema = self._generate_schema_inner(obj, origin)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/.local/simulation-stack/envs/libero/lib/python3.11/site-packages/pydantic/_internal/_generate_schema.py", line 1132, in _generate_schema_inner
+    return self.match_type(obj, origin)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/.local/simulation-stack/envs/libero/lib/python3.11/site-packages/pydantic/_internal/_generate_schema.py", line 1188, in match_type
+    return self._dataclass_schema(obj, None)  # pyright: ignore[reportArgumentType]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/.local/simulation-stack/envs/libero/lib/python3.11/site-packages/pydantic/_internal/_generate_schema.py", line 1979, in _dataclass_schema
+    args = sorted(
+           ^^^^^^^
+  File "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/.local/simulation-stack/envs/libero/lib/python3.11/site-packages/pydantic/_internal/_generate_schema.py", line 1980, in <genexpr>
+    (self._generate_dc_field_schema(k, v, decorators) for k, v in fields.items()),
+     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/.local/simulation-stack/envs/libero/lib/python3.11/site-packages/pydantic/_internal/_generate_schema.py", line 1277, in _generate_dc_field_schema
+    schema, metadata = self._common_field_schema(name, field_info, decorators)
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/.local/simulation-stack/envs/libero/lib/python3.11/site-packages/pydantic/_internal/_generate_schema.py", line 1316, in _common_field_schema
+    schema = self._apply_annotations(
+             ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/.local/simulation-stack/envs/libero/lib/python3.11/site-packages/pydantic/_internal/_generate_schema.py", line 2324, in _apply_annotations
+    schema = get_inner_schema(source_type)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/.local/simulation-stack/envs/libero/lib/python3.11/site-packages/pydantic/_internal/_schema_generation_shared.py", line 84, in __call__
+    schema = self._handler(source_type)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/.local/simulation-stack/envs/libero/lib/python3.11/site-packages/pydantic/_internal/_generate_schema.py", line 2299, in inner_handler
+    schema = self._generate_schema_from_get_schema_method(obj, source_type)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/.local/simulation-stack/envs/libero/lib/python3.11/site-packages/pydantic/_internal/_generate_schema.py", line 1012, in _generate_schema_from_get_schema_method
+    schema = get_schema(
+             ^^^^^^^^^^^
+  File "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/.local/simulation-stack/envs/libero/lib/python3.11/site-packages/numpydantic/ndarray.py", line 189, in __get_pydantic_core_schema__
+    json_schema = make_json_schema(shape, dtype, _handler)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/.local/simulation-stack/envs/libero/lib/python3.11/site-packages/numpydantic/schema.py", line 255, in make_json_schema
+    list_schema = _handler._generate_schema.clean_schema(list_schema)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/.local/simulation-stack/envs/libero/lib/python3.11/site-packages/pydantic/_internal/_generate_schema.py", line 781, in clean_schema
+    return self.defs.finalize_schema(schema)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/.local/simulation-stack/envs/libero/lib/python3.11/site-packages/pydantic/_internal/_generate_schema.py", line 2860, in finalize_schema
+    raise InvalidSchemaError from e
+pydantic._internal._generate_schema.InvalidSchemaError

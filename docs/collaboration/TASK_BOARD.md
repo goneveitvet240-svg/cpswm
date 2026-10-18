@@ -1,3 +1,38 @@
+# A最终回执补充：类型边界修复及真实复跑（2026-10-18）
+
+[草稿PR117](https://github.com/goneveitvet240-svg/cpswm/pull/117)；类型修复 `1d73a5550134ed0e7886c6f8bcf4ba8bbb0d9998`，最终干净源码复跑 `96c8e026bec097bcc135b3c0d121ad55b9360c68`。5步真实π0.5/LIBERO、2次SAM/原生记忆回执再次完成；首个动作块与此前10步运行逐值相同。推理53.56秒，任务成功仍false。[报告](../reviews/pc_a/libero_pi05_sam_2026-10-17/REPORT.md)。
+
+新增接入的15个类型问题已修复，局部mypy6文件通过；独立环境16测试通过，核心无可选依赖环境9通过/7明确跳过。初次全仓CI剩余130项错误均位于8个与base字节一致的文件，未放宽CI规则、未声称全仓通过。原始日志与修前修后证据分别保留。最终实跑绑定上述96c8完整SHA；后续交付提交仅追加文档/工件。B复核、完整任务、自主目标、科学收益和共享集成仍待完成。
+
+---
+
+# A交付回执：π0.5接入已推送，草稿PR117（2026-10-18）
+
+[草稿PR117](https://github.com/goneveitvet240-svg/cpswm/pull/117)已创建，堆叠PR116，未合并。正式成功运行源码 `85e0664d8fa3d0fc5fa5acc468716ef6c02ce690`；报告/证据提交 `e8dc2bf`已推送，47份归档文件SHA复核通过。[报告](../reviews/pc_a/libero_pi05_sam_2026-10-17/REPORT.md)。真实π0.5推理2次、LIBERO机械臂10步、SAM/CPSWM3次视觉回执，16接入测试通过；任务成功false，CPU非实时，自主目标选择/完整科学验收/B复核/共享集成仍未完成。
+
+---
+
+# A交付：π0.5真实推理已接入LIBERO与SAM/CPSWM（2026-10-18）
+
+分支 `codex/pc-a-libero-pi05-sam-20261017`，base `4c95bc69c0325fe13c6b57a958e5219c3a28d54c`，正式运行源码 `85e0664d8fa3d0fc5fa5acc468716ef6c02ce690`。本机 `.local/simulation-stack/cpswm`，报告/原件 [REPORT](../reviews/pc_a/libero_pi05_sam_2026-10-17/REPORT.md)。
+
+- 官方π0.5 JAX CPU权重2次真实推理、真实LIBERO机械臂10步、SAM3帧与原生24粒子CPSWM回执、11帧录像完成。耗时262.54秒；两次推理103.41/86.11秒，非实时。
+- 16接入测试通过；核心回归23通过/1可选MuJoCo跳过；Ruff、模型16文件12.44GB校验和源码/动作/视频一致性复核通过。成功运行启动工作树干净，三个官方vendor未修改。
+- **任务成功false**；官方任务指令未由CPSWM选取；预测不作独立观测，ledger仍GENESIS，CIAV/ORRER本轮未执行。完整episode、自主目标消费/自然结果确认、B/全仓/统一/科学验收及共享集成未完成。
+- 修复.pth/namespace导入、缺少future、Pydantic版本冲突与显式JAX key兼容。旧失败原件保留。完整科研范围与默认入口不改，不接真机、不建云GPU、不自动合并。
+- 代码及证据整理完成，推送/PR回执随后登记；B绑定上述源码SHA复核。
+
+---
+
+# A开工：LIBERO / π0.5 / SAM 本机仿真接入（2026-10-17）
+
+用户授权接入三组件，明确仅有自己的Mac，无GPU主机。本机24 GiB统一内存、arm64。分支`codex/pc-a-libero-pi05-sam-20261017`，base/开工代码`4640e2bd41ee3261f2f9276af27260d2f464ff5f`（PR116）。隔离工作树`/private/tmp/cpswm-libero-pi05-sam-20261017`。
+
+范围：锁定官方依赖与输入/动作协议，接真实LIBERO仿真、SAM图像观察与openpi π0.5策略接口；优先验证本机可运行层，完整模型实跑以实际结果为准。不创建云GPU，不接真机，不更改完整科学范围或默认生产入口。开工fetch已核对远端，STATUS_B保留。
+证据计划`docs/reviews/pc_a/libero_pi05_sam_2026-10-17/`；当前本地进行中，测试和运行待完成，B绑定最终SHA复核。
+
+---
+
 # A交付回执：仿真框架已推送，PR116为草稿（2026-10-17）
 
 [草稿PR116](https://github.com/goneveitvet240-svg/cpswm/pull/116)已创建，堆叠PR115，未合并。实现/正式运行`be7f6a175f37b08ddcbce01d7a3b1e9e377d2c28`、报告/证据`2c2044e`已推送。[报告](../reviews/pc_a/small_sim_framework_2026-10-17/REPORT.md)。188定向测试通过，事件24次+MuJoCo24次及2段录像完成；当前为二维执行体/受控语义工程框架，不是机械臂/自然视觉或完整科学验收。B绑定实现SHA复核；共享集成、完整任务书和联合机制收益仍待完成。下一步按报告接仿真LIBERO/视觉，不上真机。

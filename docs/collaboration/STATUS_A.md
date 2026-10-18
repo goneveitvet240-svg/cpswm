@@ -1,3 +1,11 @@
+# A续接：π0.5 本机仿真接入（2026-10-18）
+
+用户明确要求继续接入。沿用独占分支 `codex/pc-a-libero-pi05-sam-20261017`，本轮base/远端代码 `4c95bc69c0325fe13c6b57a958e5219c3a28d54c`；fetch成功，共享集成仍为 `19ddf26830348a2f0b33f0af54d6ba702c5cfb1c`。
+工作树现位于项目 `.local/simulation-stack/cpswm`，保留上轮全部未提交适配代码与旧失败记录。无正在运行的 π0.5/LIBERO 任务。当前环境的 .pth 文件带 macOS UF_HIDDEN，Python 3.11.16跳过它们；LIBERO editable 映射也为空。准备重装本地依赖、修复预检并执行真实推理/仿真。当前本地进行中，无模型实跑成功声明。
+证据计划 `docs/reviews/pc_a/libero_pi05_sam_2026-10-17/`。不创建云GPU、不接真机、不修改默认生产入口与科研决策。STATUS_B和原工作树保留；测试、具体代码SHA和推送结果在交付时补记。
+
+---
+
 # A开工：LIBERO / π0.5 / SAM 本机仿真接入（2026-10-17）
 
 用户授权接入三组件，明确仅有自己的Mac，无GPU主机。本机24 GiB统一内存、arm64。分支`codex/pc-a-libero-pi05-sam-20261017`，base/开工代码`4640e2bd41ee3261f2f9276af27260d2f464ff5f`（PR116）。隔离工作树`/private/tmp/cpswm-libero-pi05-sam-20261017`。

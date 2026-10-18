@@ -10,15 +10,27 @@ from typing import Any
 
 
 class NativeBridge:
-    def __init__(self, python: str, root: Path, episode: str, arm: str = "native_joint") -> None:
+    def __init__(
+        self,
+        python: str,
+        root: Path,
+        episode: str,
+        arm: str = "native_joint",
+        *,
+        goal_fixture: Path | None = None,
+    ) -> None:
+        worker = (
+            "simulation_memory_worker.py" if goal_fixture is None else "simulation_goal_worker.py"
+        )
         self.process = subprocess.Popen(
             [
                 python,
-                str(root / "tools/simulation_memory_worker.py"),
+                str(root / "tools" / worker),
                 "--episode",
                 episode,
                 "--arm",
                 arm,
+                *([] if goal_fixture is None else ["--fixture", str(goal_fixture)]),
             ],
             stdin=subprocess.PIPE,
             stdout=subprocess.PIPE,

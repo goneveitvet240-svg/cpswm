@@ -1,3 +1,9 @@
+# A交付回执：π0.5接入已推送，草稿PR117（2026-10-18）
+
+[草稿PR117](https://github.com/goneveitvet240-svg/cpswm/pull/117)已创建，堆叠PR116，未合并。正式成功运行源码 `85e0664d8fa3d0fc5fa5acc468716ef6c02ce690`；报告/证据提交 `e8dc2bf`已推送，47份归档文件SHA复核通过。[报告](../reviews/pc_a/libero_pi05_sam_2026-10-17/REPORT.md)。真实π0.5推理2次、LIBERO机械臂10步、SAM/CPSWM3次视觉回执，16接入测试通过；任务成功false，CPU非实时，自主目标选择/完整科学验收/B复核/共享集成仍未完成。
+
+---
+
 # A交付：π0.5真实推理已接入LIBERO与SAM/CPSWM（2026-10-18）
 
 分支 `codex/pc-a-libero-pi05-sam-20261017`，base `4c95bc69c0325fe13c6b57a958e5219c3a28d54c`，正式运行源码 `85e0664d8fa3d0fc5fa5acc468716ef6c02ce690`。本机 `.local/simulation-stack/cpswm`，报告/原件 [REPORT](../reviews/pc_a/libero_pi05_sam_2026-10-17/REPORT.md)。

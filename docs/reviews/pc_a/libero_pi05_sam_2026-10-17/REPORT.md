@@ -53,3 +53,5 @@
 [使用说明](../../../simulation/LIBERO_PI05_MAC.md)、[命令](COMMANDS.md)、[运行摘要](evidence/run/summary.json)、[一致性复核](evidence/pi05-sam-native-03-verification.json)、[录像](evidence/run/rollout.mp4)、[最终掩码](evidence/run/overlay_00010.png)。
 早期缺包、依赖冲突、显式JAX随机键失败与图形服务阻塞记录保留在 `evidence/earlier-failures/`；图形阻塞进程被结束，没有成功摘要。
 下一阶段需要完整episode执行、自然动作结果确认与CPSWM高层目标消费，再按既定公平协议评估。B绑定正式代码SHA复核，未复核前不标统一验收。
+
+旧失败JUnit原件以gzip无损封装（已解压逐字节核对），保留traceback原始空白，避免把原始日志格式带入Git空白检查。

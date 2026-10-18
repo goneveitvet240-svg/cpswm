@@ -146,7 +146,7 @@ def main() -> None:
             if args.policy == "smoke":
                 policy = SmokePolicy()
             elif args.policy == "pi05-local":
-                policy = local_pi05(str(stack / "models/pi05_libero"), args.device, args.seed)
+                policy = local_pi05(str(stack / "models/pi05_libero"), args.device)
                 save(args.output / "policy_metadata.json", policy.metadata)
                 print("pi05: model ready", flush=True)
             else:

@@ -87,7 +87,7 @@ class SmokePolicy:
         return {"actions": a}
 
 
-def local_pi05(checkpoint: str, device: str = "cpu", seed: int = 7) -> Any:
+def local_pi05(checkpoint: str, device: str = "cpu") -> Any:
     """Inference-only construction matching pinned official pi05_libero config.
 
     Avoids importing unrelated CUDA training/data-loader dependencies on macOS.
@@ -119,7 +119,6 @@ def local_pi05(checkpoint: str, device: str = "cpu", seed: int = 7) -> Any:
     stats = normalize.load(path / "assets/physical-intelligence/libero")
     return policy.Policy(
         network,
-        rng=jax.random.key(seed),
         transforms=[
             libero_policy.LiberoInputs(model_type=config.model_type),
             t.InjectDefaultPrompt(None),
@@ -136,6 +135,7 @@ def local_pi05(checkpoint: str, device: str = "cpu", seed: int = 7) -> Any:
             "config": "pi05_libero",
             "checkpoint": str(path),
             "device": "cpu",
+            "policy_rng_seed": 0,  # pinned upstream Policy default; simulator seed is separate
             "upstream": "215abfb217dbac7d5f1273282331b9b1866c0479",
         },
     )

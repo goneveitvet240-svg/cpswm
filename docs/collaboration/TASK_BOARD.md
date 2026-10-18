@@ -1,3 +1,15 @@
+# A交付：π0.5真实推理已接入LIBERO与SAM/CPSWM（2026-10-18）
+
+分支 `codex/pc-a-libero-pi05-sam-20261017`，base `4c95bc69c0325fe13c6b57a958e5219c3a28d54c`，正式运行源码 `85e0664d8fa3d0fc5fa5acc468716ef6c02ce690`。本机 `.local/simulation-stack/cpswm`，报告/原件 [REPORT](../reviews/pc_a/libero_pi05_sam_2026-10-17/REPORT.md)。
+
+- 官方π0.5 JAX CPU权重2次真实推理、真实LIBERO机械臂10步、SAM3帧与原生24粒子CPSWM回执、11帧录像完成。耗时262.54秒；两次推理103.41/86.11秒，非实时。
+- 16接入测试通过；核心回归23通过/1可选MuJoCo跳过；Ruff、模型16文件12.44GB校验和源码/动作/视频一致性复核通过。成功运行启动工作树干净，三个官方vendor未修改。
+- **任务成功false**；官方任务指令未由CPSWM选取；预测不作独立观测，ledger仍GENESIS，CIAV/ORRER本轮未执行。完整episode、自主目标消费/自然结果确认、B/全仓/统一/科学验收及共享集成未完成。
+- 修复.pth/namespace导入、缺少future、Pydantic版本冲突与显式JAX key兼容。旧失败原件保留。完整科研范围与默认入口不改，不接真机、不建云GPU、不自动合并。
+- 代码及证据整理完成，推送/PR回执随后登记；B绑定上述源码SHA复核。
+
+---
+
 # A开工：LIBERO / π0.5 / SAM 本机仿真接入（2026-10-17）
 
 用户授权接入三组件，明确仅有自己的Mac，无GPU主机。本机24 GiB统一内存、arm64。分支`codex/pc-a-libero-pi05-sam-20261017`，base/开工代码`4640e2bd41ee3261f2f9276af27260d2f464ff5f`（PR116）。隔离工作树`/private/tmp/cpswm-libero-pi05-sam-20261017`。

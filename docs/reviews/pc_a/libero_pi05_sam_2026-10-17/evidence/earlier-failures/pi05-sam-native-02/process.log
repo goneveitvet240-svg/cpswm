@@ -1,0 +1,42 @@
+LIBERO: initializing real simulator
+[robosuite WARNING] No private macro file found! (macros.py:53)
+[robosuite WARNING] It is recommended to use a private macro file (macros.py:54)
+[robosuite WARNING] To setup, run: python /Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/.local/simulation-stack/envs/libero/lib/python3.11/site-packages/robosuite/scripts/setup_macros.py (macros.py:55)
+Gym has been unmaintained since 2022 and does not support NumPy 2.0 amongst other critical functionality.
+Please upgrade to Gymnasium, the maintained drop-in replacement of Gym, or contact the authors of your software and request that they upgrade.
+Users of this version of Gym should be able to simply replace 'import gym' with 'import gymnasium as gym' in the vast majority of cases.
+See the migration guide at https://gymnasium.farama.org/introduction/migration_guide/ for additional information.
+[info] using task orders [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+[Warning]: datasets path /Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/.local/simulation-stack/vendor/openpi/third_party/libero/datasets does not exist!
+[Warning]: datasets path /Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/.local/simulation-stack/vendor/openpi/third_party/libero/datasets does not exist!
+LIBERO: ready, task=pick up the black bowl from table center and place it on the plate
+pi05: restoring official checkpoint on CPU
+pi05: checkpoint restored; constructing upstream model
+/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/.local/simulation-stack/envs/libero/lib/python3.11/site-packages/jax/extend/linear_util.py:38: DeprecationWarning: linear_util.wrap_init is missing a DebugInfo object. This behavior is deprecated, use api_util.debug_info() to construct a proper DebugInfo object and propagate it to this function. See https://github.com/jax-ml/jax/issues/26480 for more details.
+  debug_info = debug_info or _missing_debug_info("linear_util.wrap_init")
+/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/.local/simulation-stack/envs/libero/lib/python3.11/site-packages/jax/extend/linear_util.py:38: DeprecationWarning: linear_util.wrap_init is missing a DebugInfo object. This behavior is deprecated, use api_util.debug_info() to construct a proper DebugInfo object and propagate it to this function. See https://github.com/jax-ml/jax/issues/26480 for more details.
+  debug_info = debug_info or _missing_debug_info("linear_util.wrap_init")
+/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/.local/simulation-stack/envs/libero/lib/python3.11/site-packages/flax/core/scope.py:959: DeprecationWarning: shape requires ndarray or scalar arguments, got <class 'jax._src.api.ShapeDtypeStruct'> at position 0. In a future JAX release this will be an error.
+  if jnp.shape(val) != jnp.shape(abs_val):
+Traceback (most recent call last):
+  File "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/.local/simulation-stack/cpswm/tools/simulation_python.py", line 53, in <module>
+    main()
+  File "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/.local/simulation-stack/cpswm/tools/simulation_python.py", line 49, in main
+    runpy.run_path(sys.argv[0], run_name="__main__")
+  File "<frozen runpy>", line 291, in run_path
+  File "<frozen runpy>", line 98, in _run_module_code
+  File "<frozen runpy>", line 88, in _run_code
+  File "tools/run_libero_stack.py", line 273, in <module>
+    main()
+  File "tools/run_libero_stack.py", line 149, in main
+    policy = local_pi05(str(stack / "models/pi05_libero"), args.device, args.seed)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/.local/simulation-stack/cpswm/src/cpswm/simulation/integrations/policy.py", line 120, in local_pi05
+    return policy.Policy(
+           ^^^^^^^^^^^^^^
+  File "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/.local/simulation-stack/vendor/openpi/src/openpi/policies/policy.py", line 65, in __init__
+    self._rng = rng or jax.random.key(0)
+                ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/.local/simulation-stack/envs/libero/lib/python3.11/site-packages/jax/_src/prng.py", line 247, in __len__
+    raise TypeError('len() of unsized object')
+TypeError: len() of unsized object

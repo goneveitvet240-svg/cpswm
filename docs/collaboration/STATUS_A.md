@@ -1,3 +1,11 @@
+# A开工：CPSWM记忆选目标 → π0.5 → 视觉执行反馈（2026-10-19）
+
+用户授权“进行下一步”。独立分支 `codex/pc-a-memory-goal-pi05-20261019`，base/开工代码 `3e1662542fe3299248eb1f1a25dc37416fe56bc2`（PR117）；工作树 `.local/simulation-stack/cpswm-goal-loop`。已fetch核对，集成分支仍为 `19ddf26830348a2f0b33f0af54d6ba702c5cfb1c`。
+
+本批接通原生记忆目标读出、目标生成π0.5指令、修订取消旧动作、实际执行后的SAM反馈。人物/物理地点历史使用显式受控输入，与真实图像跟踪分开；不会冒充自然语义识别或完整任务成功。沿用既有工程读出与固定官方模型，不更改科学方法/先验/比较指标。证据计划 `docs/reviews/pc_a/memory_goal_pi05_2026-10-19/`。测试与实际源码SHA待完成，当前本地进行中；保留STATUS_B及旧工作树，不自动合并。
+
+---
+
 # A最终回执补充：类型边界修复及真实复跑（2026-10-18）
 
 [草稿PR117](https://github.com/goneveitvet240-svg/cpswm/pull/117)；类型修复 `1d73a5550134ed0e7886c6f8bcf4ba8bbb0d9998`，最终干净源码复跑 `96c8e026bec097bcc135b3c0d121ad55b9360c68`。5步真实π0.5/LIBERO、2次SAM/原生记忆回执再次完成；首个动作块与此前10步运行逐值相同。推理53.56秒，任务成功仍false。[报告](../reviews/pc_a/libero_pi05_sam_2026-10-17/REPORT.md)。

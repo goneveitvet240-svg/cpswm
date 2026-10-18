@@ -1,0 +1,260 @@
+[
+  {
+    "tick": 0,
+    "observation": {
+      "episode_id": "table_center:init0:seed7",
+      "source_id": "sam2:0:0:cf418f9ae9f06c0f99a06a0295a893ef2ce0fdd2e899bfd581c031f5f5d1702e",
+      "event_id": "visual:0:0",
+      "occurred_at": 0,
+      "available_at": 0,
+      "object_id": "target",
+      "visibility": "observed",
+      "location": "image_center",
+      "actors": [
+        [
+          "unknown_actor",
+          1.0
+        ]
+      ],
+      "origin": "sam2.1_tiny_operator_box",
+      "identity_probability": 1.0,
+      "robot_generated": false
+    },
+    "memory": {
+      "ok": true,
+      "revision": "f7c571a34594d36d796cfb91f2910ac9b28a7c797c821591c31c3dac00e58ec3",
+      "audit": {
+        "arm": "native_joint",
+        "memory_revision": "f7c571a34594d36d796cfb91f2910ac9b28a7c797c821591c31c3dac00e58ec3",
+        "event_count": 1,
+        "source_count": 1,
+        "rebuilds": 1,
+        "total_native_target_scores": 24,
+        "current_location": "image_center",
+        "destination_distribution": {
+          "image_left": 0.3333333333333333,
+          "image_center": 0.3333333333333333,
+          "image_right": 0.3333333333333333
+        },
+        "native_steps": 1,
+        "particles": 24,
+        "native_state": "9a2b8064b96cd4f1fffef03197ed4d3ffd8f0c2f36a79f66bec54e29be05dd88",
+        "ledger_head": "GENESIS",
+        "operators": [
+          "ccrr",
+          "cf_bocpd",
+          "ciav",
+          "opceu",
+          "orrer_cheh",
+          "pchmp",
+          "rgrc"
+        ],
+        "native_budget": 24,
+        "operator_executions": {
+          "ccrr": 1,
+          "cf_bocpd": 1,
+          "ciav": 0,
+          "opceu": 1,
+          "orrer_cheh": 0,
+          "pchmp": 1,
+          "rgrc": 1
+        },
+        "evidence_level": "controlled_semantic_integration_not_scientific_acceptance"
+      },
+      "current_location": "image_center"
+    }
+  },
+  {
+    "tick": 0,
+    "event": "policy_inference",
+    "seconds": 53.55888466583565,
+    "policy": "pi05-local",
+    "prompt": "pick up the black bowl from table center and place it on the plate",
+    "revision": "f7c571a34594d36d796cfb91f2910ac9b28a7c797c821591c31c3dac00e58ec3"
+  },
+  {
+    "tick": 0,
+    "event": "executed_action",
+    "action": [
+      -0.0034566450569630813,
+      0.0005312112648486744,
+      0.009224558388471582,
+      -0.0007374238562533608,
+      -0.004114550625088198,
+      -6.154417634052223e-05,
+      -0.9997349314317703
+    ],
+    "revision": "f7c571a34594d36d796cfb91f2910ac9b28a7c797c821591c31c3dac00e58ec3",
+    "result": "simulator_step_returned",
+    "eef_position_after": [
+      -0.20935898707129041,
+      -0.004053694005927639,
+      1.185075323347033
+    ],
+    "gripper_position_after": [
+      0.03884302026267503,
+      -0.03884710103915502
+    ]
+  },
+  {
+    "tick": 1,
+    "event": "executed_action",
+    "action": [
+      0.014585466768681887,
+      0.012629401626646497,
+      0.011583202411055482,
+      -0.0007171730695018225,
+      -0.003805523132605071,
+      0.0008265410977723042,
+      -1.0000405230724811
+    ],
+    "revision": "f7c571a34594d36d796cfb91f2910ac9b28a7c797c821591c31c3dac00e58ec3",
+    "result": "simulator_step_returned",
+    "eef_position_after": [
+      -0.20927148605532003,
+      -0.004019484705820612,
+      1.1852060648782996
+    ],
+    "gripper_position_after": [
+      0.0389140676148128,
+      -0.03891281327807805
+    ]
+  },
+  {
+    "tick": 2,
+    "event": "executed_action",
+    "action": [
+      0.06168261274784792,
+      0.0395527390199899,
+      0.018905513277888253,
+      -0.00041341126822877494,
+      -0.0011517637718169993,
+      0.002025454709681296,
+      -1.0002425425073505
+    ],
+    "revision": "f7c571a34594d36d796cfb91f2910ac9b28a7c797c821591c31c3dac00e58ec3",
+    "result": "simulator_step_returned",
+    "eef_position_after": [
+      -0.2089330678660626,
+      -0.0037608177353234866,
+      1.185328911032514
+    ],
+    "gripper_position_after": [
+      0.038962618805085954,
+      -0.0389594777994527
+    ]
+  },
+  {
+    "tick": 3,
+    "event": "executed_action",
+    "action": [
+      0.16343150877410162,
+      0.09768719013977045,
+      0.03858710094523421,
+      9.674984790074281e-05,
+      -0.00044479301156061246,
+      0.0033772337282813314,
+      -0.998419421394974
+    ],
+    "revision": "f7c571a34594d36d796cfb91f2910ac9b28a7c797c821591c31c3dac00e58ec3",
+    "result": "simulator_step_returned",
+    "eef_position_after": [
+      -0.20792806932431657,
+      -0.0030210272464164245,
+      1.1854555441298869
+    ],
+    "gripper_position_after": [
+      0.03900820668548328,
+      -0.039003024675153035
+    ]
+  },
+  {
+    "tick": 4,
+    "event": "executed_action",
+    "action": [
+      0.32261525564432125,
+      0.16929976534640778,
+      0.06240125998854629,
+      -0.0012375129910294491,
+      -0.0003551147727915427,
+      0.0025030535355585193,
+      -1.0014678887078763
+    ],
+    "revision": "f7c571a34594d36d796cfb91f2910ac9b28a7c797c821591c31c3dac00e58ec3",
+    "result": "simulator_step_returned",
+    "eef_position_after": [
+      -0.20569565341830928,
+      -0.0015468036766212038,
+      1.1855672695165478
+    ],
+    "gripper_position_after": [
+      0.03905232097911729,
+      -0.039044195154139726
+    ]
+  },
+  {
+    "tick": 5,
+    "observation": {
+      "episode_id": "table_center:init0:seed7",
+      "source_id": "sam2:0:5:bf67cdf1022ea65275821ea1ca0ed956a07859c0f0e4334cc21a205499df94c7",
+      "event_id": "visual:0:5",
+      "occurred_at": 5,
+      "available_at": 5,
+      "object_id": "target",
+      "visibility": "predicted",
+      "location": "image_center",
+      "actors": [
+        [
+          "unknown_actor",
+          1.0
+        ]
+      ],
+      "origin": "sam2.1_tiny_propagation",
+      "identity_probability": 0.0,
+      "robot_generated": true
+    },
+    "memory": {
+      "ok": true,
+      "revision": "532d7e5017594f923b2fa5be709b0062b39c219069e201b3093f1cc4660405c3",
+      "audit": {
+        "arm": "native_joint",
+        "memory_revision": "532d7e5017594f923b2fa5be709b0062b39c219069e201b3093f1cc4660405c3",
+        "event_count": 2,
+        "source_count": 2,
+        "rebuilds": 2,
+        "total_native_target_scores": 48,
+        "current_location": null,
+        "destination_distribution": {
+          "image_left": 0.3333333333333333,
+          "image_center": 0.3333333333333333,
+          "image_right": 0.3333333333333333
+        },
+        "native_steps": 1,
+        "particles": 24,
+        "native_state": "9a2b8064b96cd4f1fffef03197ed4d3ffd8f0c2f36a79f66bec54e29be05dd88",
+        "ledger_head": "GENESIS",
+        "operators": [
+          "ccrr",
+          "cf_bocpd",
+          "ciav",
+          "opceu",
+          "orrer_cheh",
+          "pchmp",
+          "rgrc"
+        ],
+        "native_budget": 24,
+        "operator_executions": {
+          "ccrr": 1,
+          "cf_bocpd": 1,
+          "ciav": 0,
+          "opceu": 1,
+          "orrer_cheh": 0,
+          "pchmp": 1,
+          "rgrc": 1
+        },
+        "evidence_level": "controlled_semantic_integration_not_scientific_acceptance"
+      },
+      "current_location": null
+    }
+  }
+]

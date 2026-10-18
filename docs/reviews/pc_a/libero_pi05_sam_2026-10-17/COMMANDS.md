@@ -11,3 +11,6 @@
 
 运行目录已存在时必须换新名字，不覆盖原件。图形仿真在获准访问macOS图形服务的环境执行，纯检查不需要。包版本、vendor SHA、源码哈希、原始参数见 `evidence/run/manifest.json`，模型配置见 `evidence/run/policy_metadata.json`。
 `uv pip check`仍列出openpi的未安装训练/其他平台依赖：equinox、flatbuffers、gym-aloha、lerobot、ml-collections、polars、tyro、wandb。本入口只用已经实跑验证的推理子集；不宣称完整openpi训练环境可用。
+
+最终修复复跑把 `--steps` 改为5，输出 `../runs/pi05-sam-native-04`；绑定 `96c8e026bec097bcc135b3c0d121ad55b9360c68`。
+局部类型检查：`../envs/core/bin/python -m mypy --follow-imports=silent src/cpswm/simulation/integrations`，6文件通过。

@@ -1,0 +1,194 @@
+{
+  "status": "GOAL_LOOP_COMPLETE",
+  "steps": 7,
+  "prompts": [
+    "put the black bowl on the stove",
+    "put the black bowl on the plate"
+  ],
+  "goal_changed": true,
+  "cancelled_actions": 3,
+  "sam_frames": 3,
+  "pi05_inference_executed": true,
+  "elapsed_seconds": 187.1498057921417,
+  "source_unchanged": true,
+  "final_core_receipt": {
+    "ok": true,
+    "audit": {
+      "revision": "3037df2d70bf1d74b65c455d542e0515b8f456b0d5f7d7cde13fd1fd017785b4",
+      "semantic_memory": {
+        "arm": "native_joint",
+        "memory_revision": "5c5231103c958bc1ae5a2fe4ebe5c3052e3062d394f6f6f5b1523bc73e6cb841",
+        "event_count": 3,
+        "source_count": 5,
+        "rebuilds": 5,
+        "total_native_target_scores": 288,
+        "current_location": "stove",
+        "destination_distribution": {
+          "plate": 0.6666666666666666,
+          "stove": 0.3333333333333333
+        },
+        "native_steps": 3,
+        "particles": 24,
+        "native_state": "7d721cb06d50eb21e161db6585bc723b7016c4424e3fe1a0b25ac6aa93b77029",
+        "ledger_head": "5df280b57823995b7461ca2659a9e5d8e2d6cc709e6c399aad535ce0b41e8f22",
+        "operators": [
+          "ccrr",
+          "cf_bocpd",
+          "ciav",
+          "opceu",
+          "orrer_cheh",
+          "pchmp",
+          "rgrc"
+        ],
+        "native_budget": 24,
+        "operator_executions": {
+          "ccrr": 3,
+          "cf_bocpd": 3,
+          "ciav": 0,
+          "opceu": 3,
+          "orrer_cheh": 0,
+          "pchmp": 3,
+          "rgrc": 3
+        },
+        "evidence_level": "controlled_semantic_integration_not_scientific_acceptance"
+      },
+      "visual_memory": {
+        "arm": "native_joint",
+        "memory_revision": "e919092e437069ba405c1c199bb89b7fa42208034921cf2c157bf61eb2cbc999",
+        "event_count": 3,
+        "source_count": 3,
+        "rebuilds": 3,
+        "total_native_target_scores": 72,
+        "current_location": null,
+        "destination_distribution": {
+          "image_left": 0.3333333333333333,
+          "image_center": 0.3333333333333333,
+          "image_right": 0.3333333333333333
+        },
+        "native_steps": 1,
+        "particles": 24,
+        "native_state": "6c18e4332da276c67247106575cfc43ec0abd837f46636838180ff79eccb67ff",
+        "ledger_head": "GENESIS",
+        "operators": [
+          "ccrr",
+          "cf_bocpd",
+          "ciav",
+          "opceu",
+          "orrer_cheh",
+          "pchmp",
+          "rgrc"
+        ],
+        "native_budget": 24,
+        "operator_executions": {
+          "ccrr": 1,
+          "cf_bocpd": 1,
+          "ciav": 0,
+          "opceu": 1,
+          "orrer_cheh": 0,
+          "pchmp": 1,
+          "rgrc": 1
+        },
+        "evidence_level": "controlled_semantic_integration_not_scientific_acceptance"
+      },
+      "queue_history": [
+        {
+          "event": "issued",
+          "command": {
+            "episode_id": "libero-delayed-attribution-goal-v1",
+            "command_id": "23976b6dc60d26f4fc174d56b3fb45614a1a1d08671f6861733d818cacd8b58f",
+            "memory_revision": "908b10bfdc8a99fa24e3958806f50dd1827c80a422d367f84526d8d7e7d055d8",
+            "object_id": "target",
+            "destination": "stove",
+            "issued_at": 100
+          }
+        },
+        {
+          "event": "completed",
+          "feedback": {
+            "command_id": "23976b6dc60d26f4fc174d56b3fb45614a1a1d08671f6861733d818cacd8b58f",
+            "observation": {
+              "episode_id": "libero-delayed-attribution-goal-v1",
+              "source_id": "sam2:0:102:0d81ea3c959ccbef4b5da47793a9c42a390bfa9f7712ab6fa1e604bed9ed4bef",
+              "event_id": "visual:0:102",
+              "occurred_at": 102,
+              "available_at": 102,
+              "object_id": "target",
+              "visibility": "predicted",
+              "location": "image_center",
+              "actors": [
+                [
+                  "unknown_actor",
+                  1.0
+                ]
+              ],
+              "revises": null,
+              "origin": "sam2.1_tiny_propagation",
+              "robot_generated": true,
+              "identity_probability": 0.0
+            },
+            "status": "unknown",
+            "control_steps": 2
+          }
+        },
+        {
+          "event": "issued",
+          "command": {
+            "episode_id": "libero-delayed-attribution-goal-v1",
+            "command_id": "96dfa47cf7980d1b660d09da95f38e699b9d581518661e3357daad20e866098d",
+            "memory_revision": "8b47cccbb36eed4237b2368297d6f067016d66909f4ea7d0534f81fbcfad7b53",
+            "object_id": "target",
+            "destination": "plate",
+            "issued_at": 102
+          }
+        },
+        {
+          "event": "completed",
+          "feedback": {
+            "command_id": "96dfa47cf7980d1b660d09da95f38e699b9d581518661e3357daad20e866098d",
+            "observation": {
+              "episode_id": "libero-delayed-attribution-goal-v1",
+              "source_id": "sam2:0:107:55aab1bba1e50f8ac29afd9debd34fd9548b474779fe024d8a52d502bcd806aa",
+              "event_id": "visual:0:107",
+              "occurred_at": 107,
+              "available_at": 107,
+              "object_id": "target",
+              "visibility": "predicted",
+              "location": "image_center",
+              "actors": [
+                [
+                  "unknown_actor",
+                  1.0
+                ]
+              ],
+              "revises": null,
+              "origin": "sam2.1_tiny_propagation",
+              "robot_generated": true,
+              "identity_probability": 0.0
+            },
+            "status": "unknown",
+            "control_steps": 5
+          }
+        }
+      ],
+      "pending_plan": null,
+      "recorded_step_ticks": [],
+      "feedback_status": "unknown",
+      "evidence_level": "controlled semantic history + separately admitted camera track",
+      "scientific_acceptance": false
+    },
+    "revision": "3037df2d70bf1d74b65c455d542e0515b8f456b0d5f7d7cde13fd1fd017785b4"
+  },
+  "task_success_evaluator_only": false,
+  "evaluator_scope": "original LIBERO bowl-to-plate task only",
+  "limitations": [
+    "single bounded engineering probe, not a full task episode",
+    "semantic history is controlled, not visually inferred",
+    "operator supplies object binding and destination prompt catalogue",
+    "existing fixture readout, not frozen production task readout",
+    "SAM prediction permits continuation but cannot certify placement success",
+    "feedback status unknown; no human habit update from robot motion",
+    "no native global ORRER acceptance or joint-specific scientific gain",
+    "local trusted process protocol; execution evidence is audited separately"
+  ],
+  "scientific_acceptance": false
+}

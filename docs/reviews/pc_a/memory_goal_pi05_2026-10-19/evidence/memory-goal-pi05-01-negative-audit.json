@@ -1,0 +1,42 @@
+{
+  "status": "PASS",
+  "cases": [
+    {
+      "case": "unchanged",
+      "expected_result_observed": true,
+      "exit_code": 0,
+      "stdout": "{\n  \"status\": \"CONSISTENCY_VERIFIED\",\n  \"source_sha\": \"48e065ac425398afd966728a563871f66c7d2814\",\n  \"steps\": 7,\n  \"inferences\": 2,\n  \"feedback_segments\": 2,\n  \"goal_changed\": true,\n  \"prompts\": [\n    \"put the black bowl on the stove\",\n    \"put the black bowl on the plate\"\n  ],\n  \"cancelled_actions\": 3,\n  \"task_success_evaluator_only\": false,\n  \"scientific_acceptance\": false\n}\n",
+      "stderr": ""
+    },
+    {
+      "case": "changed_prompt",
+      "expected_result_observed": true,
+      "exit_code": 1,
+      "stdout": "",
+      "stderr": "Traceback (most recent call last):\n  File \"/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/.local/simulation-stack/cpswm-goal-loop/tools/verify_libero_goal_run.py\", line 243, in <module>\n    main()\n    ~~~~^^\n  File \"/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/.local/simulation-stack/cpswm-goal-loop/tools/verify_libero_goal_run.py\", line 107, in main\n    controller.validate(plan)\n    ~~~~~~~~~~~~~~~~~~~^^^^^^\n  File \"/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/.local/simulation-stack/cpswm-goal-loop/src/cpswm/simulation/goal_control.py\", line 183, in validate\n    raise ValueError(\"unissued, changed or stale goal plan\")\nValueError: unissued, changed or stale goal plan\n"
+    },
+    {
+      "case": "changed_action",
+      "expected_result_observed": true,
+      "exit_code": 1,
+      "stdout": "",
+      "stderr": "Traceback (most recent call last):\n  File \"/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/.local/simulation-stack/cpswm-goal-loop/tools/verify_libero_goal_run.py\", line 243, in <module>\n    main()\n    ~~~~^^\n  File \"/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/.local/simulation-stack/cpswm-goal-loop/tools/verify_libero_goal_run.py\", line 132, in main\n    require(\n    ~~~~~~~^\n        np.array_equal(entry[\"action\"], output[offset]), \"action differs from model output\"\n        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n    )\n    ^\n  File \"/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/.local/simulation-stack/cpswm-goal-loop/tools/verify_libero_goal_run.py\", line 31, in require\n    raise ValueError(message)\nValueError: action differs from model output\n"
+    },
+    {
+      "case": "missing_physics",
+      "expected_result_observed": true,
+      "exit_code": 1,
+      "stdout": "",
+      "stderr": "Traceback (most recent call last):\n  File \"/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/.local/simulation-stack/cpswm-goal-loop/tools/verify_libero_goal_run.py\", line 243, in <module>\n    main()\n    ~~~~^^\n  File \"/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/.local/simulation-stack/cpswm-goal-loop/tools/verify_libero_goal_run.py\", line 162, in main\n    require(pending_physics_receipt is not None, \"step acknowledgment without physics\")\n    ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/.local/simulation-stack/cpswm-goal-loop/tools/verify_libero_goal_run.py\", line 31, in require\n    raise ValueError(message)\nValueError: step acknowledgment without physics\n"
+    },
+    {
+      "case": "promoted_feedback",
+      "expected_result_observed": true,
+      "exit_code": 1,
+      "stdout": "",
+      "stderr": "Traceback (most recent call last):\n  File \"/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/.local/simulation-stack/cpswm-goal-loop/tools/verify_libero_goal_run.py\", line 243, in <module>\n    main()\n    ~~~~^^\n  File \"/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/.local/simulation-stack/cpswm-goal-loop/tools/verify_libero_goal_run.py\", line 190, in main\n    require(\n    ~~~~~~~^\n        entry[\"receipt\"] == json.loads(json.dumps(expected)),\n        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n        f\"core replay differs: {operation}\",\n        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n    )\n    ^\n  File \"/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/.local/simulation-stack/cpswm-goal-loop/tools/verify_libero_goal_run.py\", line 31, in require\n    raise ValueError(message)\nValueError: core replay differs: feedback\n"
+    }
+  ],
+  "scope": "four corruptions and one legal run; partial consistency coverage",
+  "not_claimed": "authentication or detection of arbitrary consistent fabrication"
+}

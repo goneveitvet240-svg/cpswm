@@ -216,7 +216,10 @@ def main() -> None:
         summary["source_unchanged"] and not summary["scientific_acceptance"],
         "invalid claim boundary",
     )
-    require(summary["final_core_receipt"]["audit"] == controller.audit(), "final state mismatch")
+    require(
+        summary["final_core_receipt"]["audit"] == json.loads(json.dumps(controller.audit())),
+        "final state mismatch",
+    )
     print(
         json.dumps(
             {

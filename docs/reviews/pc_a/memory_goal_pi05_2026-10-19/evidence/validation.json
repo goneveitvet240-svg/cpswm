@@ -1,0 +1,26 @@
+{
+  "evidence_kind": "transcription of actual tool output from this session, not raw terminal log",
+  "runtime_code_sha": "48e065ac425398afd966728a563871f66c7d2814",
+  "verifier_fix_sha": "ab63e9215d00610a4c51700ac7f7f7115cd56c87",
+  "commands": [
+    {
+      "command": "../envs/core/bin/python -m pytest -o addopts= -q tests/test_memory_goal_control.py tests/test_small_sim_framework.py tests/test_libero_stack.py",
+      "result": "58 passed, 8 skipped in 13.03s",
+      "skip_reason": "optional simulation/model dependencies absent in core environment"
+    },
+    {
+      "command": "../envs/libero/bin/python tools/simulation_python.py -m pytest -o addopts= -q tests/test_libero_stack.py",
+      "result": "16 passed in 3.95s"
+    },
+    {
+      "command": "../envs/core/bin/python -m mypy --follow-imports=silent src/cpswm/simulation/goal_control.py src/cpswm/simulation/integrations",
+      "result": "Success: no issues found in 7 source files"
+    }
+  ],
+  "initial_failures_and_fixes": [
+    "First new unit run: 24 passed, 2 failed because test used nonexistent native_particles audit key; changed to existing particles key. Subsequent combined run passed.",
+    "First post-run verifier replay passed all per-request receipts but failed final comparison because JSON arrays were compared to Python tuples. Normalize final receipt identically to per-request comparison. Runtime/model/action data unchanged; verification then passed."
+  ],
+  "full_repository_ci_rerun": false,
+  "scientific_acceptance": false
+}

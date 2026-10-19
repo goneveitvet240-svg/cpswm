@@ -1,0 +1,17 @@
+{
+  "evidence_level": "controlled semantic history, not inferred from camera images",
+  "episode_id": "libero-delayed-attribution-goal-v1",
+  "target_binding": "operator identifies black bowl with the supplied SAM box",
+  "catalogue": {
+    "plate": "put the black bowl on the plate",
+    "stove": "put the black bowl on the stove"
+  },
+  "scenario": "delayed_attribution",
+  "location_mapping": {
+    "left": "plate",
+    "right": "stove"
+  },
+  "history_seed": 7,
+  "initial_visual_tick": 100,
+  "correction_after_control_steps": 2
+}

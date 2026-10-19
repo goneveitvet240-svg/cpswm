@@ -1,3 +1,11 @@
+# A交付回执：目标闭环已推送，草稿PR118（2026-10-19）
+
+[草稿PR118](https://github.com/goneveitvet240-svg/cpswm/pull/118)已创建，堆叠PR117，未合并。运行源码`48e065ac425398afd966728a563871f66c7d2814`、审计器修复`ab63e9215d00610a4c51700ac7f7f7115cd56c87`、报告/30份证据`065a5eb653585f68e0c80c85b0947b0a13090909`均已推送。[报告](../reviews/pc_a/memory_goal_pi05_2026-10-19/REPORT.md)。
+
+真实π0.5两次推理、7步动作、stove→plate目标切换与2段SAM unknown反馈已验证；任务成功false，人物历史仍受控，科学/B/统一/共享集成待完成。首次交付推送因本机代理7897关闭失败；仅对命令禁用代理后直连推送及PR创建成功，未更改系统代理。B按上述SHA及PR118源码复核。
+
+---
+
 # A交付：记忆目标已进入真实π0.5指令与执行反馈（2026-10-19）
 
 分支 `codex/pc-a-memory-goal-pi05-20261019`，base `3e1662542fe3299248eb1f1a25dc37416fe56bc2`；正式干净运行源码 `48e065ac425398afd966728a563871f66c7d2814`，审计器修复 `ab63e9215d00610a4c51700ac7f7f7115cd56c87`。[报告](../reviews/pc_a/memory_goal_pi05_2026-10-19/REPORT.md)、[命令](../reviews/pc_a/memory_goal_pi05_2026-10-19/COMMANDS.md)。

@@ -53,6 +53,10 @@ def main() -> None:
         "tools/run_libero_goal_loop.py",
         "tools/simulation_goal_worker.py",
     }
+    memory_replay = manifest["arguments"].get("memory_replay", "full")
+    require(memory_replay in {"full", "suffix"}, "unknown memory replay implementation")
+    if memory_replay == "suffix":
+        required.add("src/cpswm/simulation/suffix_memory.py")
     require(required <= set(manifest["sources"]), "source manifest is incomplete")
     for path, expected in manifest["sources"].items():
         committed = subprocess.check_output(["git", "show", f"{sha}:{path}"], cwd=ROOT)
@@ -81,7 +85,10 @@ def main() -> None:
     )
     require(controlled == expected_sources, "controlled history differs from declared fixture")
     controller = MemoryGoalController(
-        fixture["episode_id"], fixture["catalogue"], manifest["arguments"]["arm"]
+        fixture["episode_id"],
+        fixture["catalogue"],
+        manifest["arguments"]["arm"],
+        memory_replay=memory_replay,
     )
     actual_steps = []
     actual_visual = {}

@@ -64,6 +64,7 @@ def main() -> None:
             "run_libero_stack.py",
             "simulation_goal_worker.py",
             "simulation_python.py",
+            "verify_libero_goal_run.py",
         )
     ]
     manifest = {

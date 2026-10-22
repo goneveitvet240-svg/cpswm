@@ -91,6 +91,11 @@ def test_suffix_goal_worker_crosses_the_actual_core_process_boundary():
             {"operation": "visual", "observation": visual().payload(), "now": 100}
         )
         assert result["audit"]["semantic_memory"]["replay_implementation"] == "checkpoint_suffix_v1"
+        local = ready("native_joint", "suffix")
+        assert result["audit"] == json.loads(json.dumps(local.audit()))
+        assert not any(
+            key.endswith("_seconds") for key in result["audit"]["semantic_memory"]["last_replay"]
+        )
         result = bridge.observe({"operation": "plan", "tick": 100})
         assert result["plan"]["command"]["destination"] == "stove"
     finally:

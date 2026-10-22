@@ -190,5 +190,8 @@ class SuffixReplayMemory(SimulationMemory):
             "checkpoint_stride": self.checkpoint_stride,
             "max_checkpoints": self.max_checkpoints,
             "checkpoint_count": len(self._checkpoints),
-            "last_replay": None if not self.replay_history else dict(self.replay_history[-1]),
+            # Timing is telemetry in replay_history, not deterministic evidence.
+            "last_replay": None
+            if not self.replay_history
+            else {k: v for k, v in self.replay_history[-1].items() if not k.endswith("_seconds")},
         }

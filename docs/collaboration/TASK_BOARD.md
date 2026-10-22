@@ -1,3 +1,11 @@
+# 2026-10-23 交付回执：草稿 PR120
+
+[后缀重放草稿 PR120](https://github.com/goneveitvet240-svg/cpswm/pull/120) 已创建并推送，堆叠 PR119，未合并。成本运行 `8e9d8da9276320f7d747bb4e02fb97bd2e936b5b`、最终 smoke/审计 `4efcd4c4b52a9030c6714d350030c54aa8b7ecde`、报告/81份原件 `6a0980e011245319b86f1af36e9bf63a9035add6`。完整结果与内存代价见[报告](../reviews/pc_a/suffix_replay_2026-10-23/REPORT.md)。B按实际SHA独立复核，统一/全仓/科学验收及共享集成待完成。
+
+12小时自主窗口继续，下一独立任务为两步历史同原生目标枚举及bootstrap/RBPF对照；后续固定正确目标的完整π0.5任务仍在队列，完整E0–E6范围不变。
+
+---
+
 # 2026-10-23 A交付准备：可选后缀重放等价与成本
 
 分支 `codex/pc-a-suffix-replay-20261023`，base `0ee6614a7aecbed8a90fc0248d17a1380bdda92c`。成本运行 `8e9d8da9276320f7d747bb4e02fb97bd2e936b5b`；最终审计/真实 smoke 源码 `4efcd4c4b52a9030c6714d350030c54aa8b7ecde`。[报告](../reviews/pc_a/suffix_replay_2026-10-23/REPORT.md)、[命令](../reviews/pc_a/suffix_replay_2026-10-23/COMMANDS.md)。

@@ -1,3 +1,11 @@
+# 2026-10-23 A开工：按方案书加速 E0/E2 开发诊断
+
+独立分支 `codex/pc-a-e0-e2-research-pilot-20261023`；base/开工源码 `e0043f23a1c3fa62fde5bf73389cdeba2ce735a6`。已 fetch 核对；共享集成仍为 `19ddf26830348a2f0b33f0af54d6ba702c5cfb1c`。工作树 `.local/simulation-stack/cpswm-research-pilot`。先完成生产单步枚举参考及四条件修订对照，沿用模型/先验/开发配置，不代替确认性实验。
+
+[运行前协议](../reviews/pc_a/research_pilot_2026-10-23/PROTOCOL.md)。当前本地进行中，测试及最终源码 SHA 待补。完整 E0–E6 科研范围保留；B 后续按 SHA 独立复核，未自动合并。现有 SimulationMemory 全历史重建，不宣称增量效率收益。
+
+---
+
 # A交付回执：目标闭环已推送，草稿PR118（2026-10-19）
 
 [草稿PR118](https://github.com/goneveitvet240-svg/cpswm/pull/118)已创建，堆叠PR117，未合并。运行源码`48e065ac425398afd966728a563871f66c7d2814`、审计器修复`ab63e9215d00610a4c51700ac7f7f7115cd56c87`、报告/30份证据`065a5eb653585f68e0c80c85b0947b0a13090909`均已推送。[报告](../reviews/pc_a/memory_goal_pi05_2026-10-19/REPORT.md)。
